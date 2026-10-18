@@ -981,6 +981,50 @@ export function drawGirlfriendDaisy(
 /**
  * Procedural Vector Renderer for Collectibles
  */
+/** the hidden Thorn Gate: a ring of thorny vines around a violet glow */
+function drawThornGate(ctx: CanvasRenderingContext2D, time: number) {
+  const pulse = 0.65 + 0.35 * Math.sin(time * 3);
+  const glow = ctx.createRadialGradient(0, 0, 4, 0, 0, 44);
+  glow.addColorStop(0, `rgba(196, 181, 253, ${0.75 * pulse})`);
+  glow.addColorStop(0.6, `rgba(124, 58, 237, ${0.35 * pulse})`);
+  glow.addColorStop(1, 'rgba(124, 58, 237, 0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(0, 0, 44, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.lineCap = 'round';
+  for (let k = 0; k < 2; k++) {
+    ctx.strokeStyle = k === 0 ? '#14532d' : '#4ade80';
+    ctx.lineWidth = k === 0 ? 6 : 3;
+    ctx.beginPath();
+    for (let i = 0; i <= 28; i++) {
+      const a = (i / 28) * Math.PI * 2;
+      const r = 23 + Math.sin(a * 5 + time * 1.5) * 3.5;
+      const x = Math.cos(a) * r * 0.82;
+      const y = Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#c4b5fd';
+  for (let i = 0; i < 10; i++) {
+    const a = (i / 10) * Math.PI * 2 + 0.3;
+    const x = Math.cos(a) * 23 * 0.82;
+    const y = Math.sin(a) * 23;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(a);
+    ctx.beginPath();
+    ctx.moveTo(0, -3);
+    ctx.lineTo(9, 0);
+    ctx.lineTo(0, 3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
 export function drawCollectible(
   ctx: CanvasRenderingContext2D,
   item: Collectible,
@@ -992,7 +1036,7 @@ export function drawCollectible(
   ctx.translate(item.x, item.y);
   const bobY = Math.sin(time * 4 + item.bobPhase) * 4;
   ctx.translate(0, bobY);
-  if (item.type !== 'exit_totem' && item.type !== 'cage') {
+  if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate') {
     const big = item.type === 'relic' ? 1.25 : 1.4;
     ctx.scale(big, big);
     // soft sparkle ring so pickups pop against the foliage
@@ -1007,6 +1051,10 @@ export function drawCollectible(
   }
 
   switch (item.type) {
+    case 'thorn_gate': {
+      drawThornGate(ctx, time);
+      break;
+    }
     case 'flower':
     case 'fruit': {
       const isHibiscus = item.botanicalVariant === 'hibiscus';

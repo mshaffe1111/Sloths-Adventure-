@@ -14,7 +14,8 @@ import { reachJump } from './physics.ts';
 import { swingLandings, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
-import { bossDefFor } from './bossDefs.ts';
+import { bossDefForLevel } from './bossDefs.ts';
+import { SECRET_GATE_LEVEL } from './secret.ts';
 
 export interface GeneratedStage {
   config: LevelConfig;
@@ -972,7 +973,7 @@ function buildAscent(gen: Gen): GeneratedStage {
 function buildBoss(gen: Gen): GeneratedStage {
   const cfg = gen.cfg;
   const world = WORLDS_DATA[cfg.worldIndex - 1] || WORLDS_DATA[0];
-  const def = bossDefFor(cfg.worldIndex);
+  const def = bossDefForLevel(cfg);
   const floor = 560;
   // the fenced arena: wide enough to dodge in, small enough that a phone screen can show the whole fight
   const left = 760;
@@ -991,7 +992,7 @@ function buildBoss(gen: Gen): GeneratedStage {
     gen.plat({ x: b.x, y: b.y, width: b.w, height: 26, type: 'solid', style: 'branch' });
   }
 
-  const maxHp = bossMaxHp(cfg.worldIndex);
+  const maxHp = def.hp ?? bossMaxHp(cfg.worldIndex);
   const boss: BossEntity = {
     id: 1, type: 'boss', x: right - 160, y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
     facing: -1, patrolMinX: left, patrolMaxX: right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
@@ -1014,8 +1015,7 @@ function buildBoss(gen: Gen): GeneratedStage {
     spawnY: floor,
     exitTotemX: cfg.levelWidth - 220,
     exitTotemY: floor,
-    daisyX: right + 150,
-    daisyY: floor - 70,
+    ...(cfg.secret ? {} : { daisyX: right + 150, daisyY: floor - 70 }),
     arena: { left, right, floor },
   };
 }
@@ -1055,5 +1055,24 @@ export function generateStage(config: LevelConfig): GeneratedStage {
     if (attempt < 0) attempt = 0;
     known.set(config.id, attempt);
   }
-  return buildStage(config, attempt);
+  const stage = buildStage(config, attempt);
+  addSecrets(stage);
+  return stage;
+}
+
+/**
+ * Hidden things that are placed after the layout has been checked (they never sit on the main route):
+ * stage 7-7 hides the Thorn Gate on a ledge above the start, reached by a mushroom tucked behind the hero.
+ */
+function addSecrets(stage: GeneratedStage) {
+  if (stage.config.id !== SECRET_GATE_LEVEL || stage.config.secret) return;
+  const floor = stage.spawnY;
+  const mx = Math.max(20, stage.spawnX - 100);
+  const ids = stage.platforms.map((p) => p.id);
+  let pid = (ids.length ? Math.max(...ids) : 0) + 1;
+  const shroom: Platform = { id: pid++, x: mx, y: floor - 30, width: 70, height: 30, type: 'bouncy' } as Platform;
+  const ledge: Platform = { id: pid++, x: mx + 60, y: floor - 172, width: 190, height: 26, type: 'solid', style: 'branch' } as Platform;
+  stage.platforms.push(shroom, ledge);
+  const cids = stage.collectibles.map((c) => c.id);
+  stage.collectibles.push({ id: (cids.length ? Math.max(...cids) : 0) + 1, type: 'thorn_gate', x: ledge.x + ledge.width / 2, y: ledge.y - 40, collected: false, bobPhase: 0 });
 }

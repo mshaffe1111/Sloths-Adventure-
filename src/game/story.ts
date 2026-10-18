@@ -9,6 +9,7 @@ export type ActorKind =
   | 'daisy'
   | 'daisy_wave'
   | 'boss'
+  | 'thornbark'
   | 'bloom';
 
 export interface SceneActor {
@@ -415,6 +416,39 @@ export const ENDING_PANELS: StoryPanel[] = [
 ];
 
 const BOSS_MOODS: Record<number, SceneMood> = { 3: 'night', 6: 'dusk', 8: 'night', 9: 'dusk', 10: 'storm' };
+
+/** The secret boss: the Jungle Guardian, twisted by thorns. After the fight he is himself again. */
+export function thornbarkPanels(kind: 'intro' | 'defeat'): StoryPanel[] {
+  const intro = [
+    { speaker: 'Thornbark', text: 'Grrr… the thorns… they whisper… Leave this hollow, little sloth…' },
+    { speaker: 'Slomatt', text: 'You were the Jungle Guardian. Grandma told me about you. The thorns did this to you, didn\'t they?' },
+    { speaker: 'Thornbark', text: 'I cannot stop them… they want you gone. RUN… or FIGHT.' },
+  ];
+  const defeat = [
+    { speaker: 'Thornbark', text: 'The thorns… they are gone. I can think again. Thank you, small sloth.' },
+    { speaker: 'Slomatt', text: 'Slow and steady. That is the whole trick.' },
+    { speaker: 'Thornbark', text: 'Take this Thorn Heart. The forest gives strength to the kind. Go and find your Jennifur.' },
+  ];
+  const lines = kind === 'intro' ? intro : defeat;
+  return lines.map((line, i) => ({
+    chapter: kind === 'intro' ? 'SECRET BOSS · THORNBARK' : 'VICTORY · THORNBARK',
+    speaker: line.speaker,
+    text: line.text,
+    tip: kind === 'intro' && i === lines.length - 1 ? 'A red glow means an attack is coming. A hook or Mega Punch breaks it. Hit him when he tires.' : undefined,
+    scene: {
+      world: 7,
+      mood: 'night' as SceneMood,
+      zoom: 1.5,
+      focusX: line.speaker === 'Slomatt' ? 0.28 : 0.7,
+      focusY: 0.58,
+      particles: 'sparkles' as const,
+      actors: [
+        { kind: 'milo' as const, x: 0.24, scale: 1.0, pose: kind === 'defeat' && line.speaker === 'Slomatt' ? ('happy' as const) : ('idle' as const) },
+        { kind: 'thornbark' as const, x: 0.72, scale: 1.0, facing: -1 as const, angry: kind === 'intro' && line.speaker !== 'Slomatt', beaten: kind === 'defeat' },
+      ],
+    },
+  }));
+}
 
 /** Build the cutscene panels for a boss encounter (before the fight) or its defeat (after). */
 export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: string): StoryPanel[] {

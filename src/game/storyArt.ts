@@ -2,6 +2,7 @@ import type { BossEntity, Camera, PlayerState } from './types.ts';
 import { WORLDS_DATA } from './worldsData.ts';
 import { backgroundEngine } from './backgroundEngine.ts';
 import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.ts';
+import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor } from './story.ts';
 
 export const SCENE_W = 960;
@@ -260,6 +261,14 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
         p.y = -Math.abs(Math.sin(t * 5)) * 5;
       }
       drawHeroSloth(ctx, p, t);
+      break;
+    }
+    case 'thornbark': {
+      // the corrupted guardian; once freed he is the gentle Jungle Guardian again
+      ctx.scale(s * 1.3, s * 1.3);
+      if (a.facing === -1) ctx.scale(-1, 1);
+      const p = makePlayer(a.angry ? 'punch' : 'idle', 1);
+      drawMilo(ctx, a.beaten ? 5 : 7, p, t);
       break;
     }
     case 'daisy':

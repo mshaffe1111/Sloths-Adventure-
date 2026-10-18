@@ -8,12 +8,13 @@ import { TouchController } from './game/../components/TouchController.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
 import { StoryPlayer } from './game/../components/StoryPlayer.tsx';
-import { INTRO_PANELS, WORLD_STORIES, ENDING_PANELS, bossPanels } from './game/story.ts';
+import { INTRO_PANELS, WORLD_STORIES, ENDING_PANELS, bossPanels, thornbarkPanels } from './game/story.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
+import { THORNBARK_LEVEL, gateFound, hasThornHeart, markGateFound, markThornHeart, maxHearts } from './game/secret.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -47,7 +48,10 @@ export default function App() {
   } = usePWAInstall();
 
   // Live HUD States
-  const [hp, setHp] = useState<number>(5);
+  const [hp, setHp] = useState<number>(() => maxHearts());
+  const [maxHp, setMaxHp] = useState<number>(() => maxHearts());
+  const [secretFound, setSecretFound] = useState<boolean>(() => gateFound());
+  const [thornHeart, setThornHeart] = useState<boolean>(() => hasThornHeart());
   const [score, setScore] = useState<number>(0);
   const [currentCount, setCurrentCount] = useState<number>(0);
   const [targetCount, setTargetCount] = useState<number>(1);
@@ -162,7 +166,7 @@ export default function App() {
   // dev only: jump straight into any level (for testing and screenshots)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __play?: (id: string) => void }).__play = (id: string) => {
-      const lvl = allLevels.find((l) => l.id === id);
+      const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
       if (lvl) launchEngine(lvl);
     };
   }
@@ -182,7 +186,8 @@ export default function App() {
     // wide mode: the browser bars go away so the game gets the whole screen (works from the tap that started play)
     enterWideMode();
 
-    setHp(5);
+    setHp(maxHearts());
+    setMaxHp(maxHearts());
     setLives(3);
     setScore(0);
     setCurrentCount(0);
@@ -209,10 +214,25 @@ export default function App() {
           setPowerUpTimer(curPowerTimer ?? 0);
         },
         onBossUpdate: (info) => setBossInfo(info),
+        onSecret: () => {
+          // the Thorn Gate: a moment to see it open, then the Hollow
+          markGateFound();
+          setSecretFound(true);
+          window.setTimeout(() => startLevel(THORNBARK_LEVEL), 1100);
+        },
         onVictory: (stars, timeSec, finalScore) => {
           setStarsEarned(stars);
           setClearTime(timeSec);
           setScore(finalScore);
+
+          if (lvl.secret) {
+            // Thornbark beaten: the Thorn Heart, no stage to unlock
+            markThornHeart();
+            setThornHeart(true);
+            setMaxHp(maxHearts());
+            setScreen('boss_defeat');
+            return;
+          }
 
           // Save progression
           saveLevelProgress(lvl.id, stars, finalScore, timeSec);
@@ -355,11 +375,11 @@ export default function App() {
       {/* Boss showdown */}
       {screen === 'boss_intro' && (
         <StoryPlayer
-          panels={bossPanels(
-            activeLevel.worldIndex,
-            'intro',
-            (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName
-          )}
+          panels={
+            activeLevel.secret
+              ? thornbarkPanels('intro')
+              : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
+          }
           finishLabel="FIGHT! ⚔"
           skipLabel="Skip to fight"
           onFinish={() => launchEngine(activeLevel)}
@@ -369,11 +389,11 @@ export default function App() {
       {/* Boss defeated */}
       {screen === 'boss_defeat' && (
         <StoryPlayer
-          panels={bossPanels(
-            activeLevel.worldIndex,
-            'defeat',
-            (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName
-          )}
+          panels={
+            activeLevel.secret
+              ? thornbarkPanels('defeat')
+              : bossPanels(activeLevel.worldIndex, 'defeat', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
+          }
           finishLabel="Onward ▶"
           onFinish={() =>
             setScreen(activeLevel.worldIndex === 10 && activeLevel.miniIndex === 10 ? 'ending_story' : 'victory')
@@ -398,6 +418,9 @@ export default function App() {
           onSelectWorld={(wId) => setSelectedWorldId(wId)}
           onSelectLevel={(lvl) => startLevel(lvl)}
           onBackToTitle={() => setScreen('title')}
+          secretFound={secretFound}
+          thornHeart={thornHeart}
+          onPlaySecret={() => startLevel(THORNBARK_LEVEL)}
         />
       )}
 
@@ -407,7 +430,7 @@ export default function App() {
           <GameHUD
             levelConfig={activeLevel}
             hp={hp}
-            maxHp={5}
+            maxHp={maxHp}
             currentObjectiveCount={currentCount}
             targetObjectiveCount={targetCount}
             distanceRatio={distanceRatio}

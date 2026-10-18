@@ -226,3 +226,58 @@ test('hazards that leave the arena or run out are removed', () => {
   for (let i = 0; i < 60 * 5; i++) stepHazards(ctx.hazards, ARENA, 1 / 60, noEv);
   assert.equal(ctx.hazards.length, 0);
 });
+
+// ---------------------------------------------------------------------------
+// The secret boss
+// ---------------------------------------------------------------------------
+
+import { THORNBARK_DEF, bossDefForLevel } from './bossDefs.ts';
+import { THORNBARK_LEVEL, SECRET_GATE_LEVEL, maxHearts } from './secret.ts';
+import { generateStage } from './stageGenerator.ts';
+import { generateAllLevels } from './worldsData.ts';
+
+const getLevelConfig = (id: string) => generateAllLevels().find((l) => l.id === id)!;
+
+test('Thornbark has his own tougher move set, and the secret level picks him', () => {
+  assert.equal(bossDefForLevel(THORNBARK_LEVEL), THORNBARK_DEF);
+  assert.notEqual(bossDefForLevel(getLevelConfig('7-10')), THORNBARK_DEF);
+  const names = Object.keys(THORNBARK_DEF.moves);
+  assert.ok(names.length >= 6);
+  for (const n of names) assert.ok(THORNBARK_DEF.moves[n].tell >= 0.45, `${n} warns first`);
+  for (const phase of [1, 2, 3]) assert.ok(names.some((n) => (THORNBARK_DEF.moves[n].phase ?? 1) <= phase && THORNBARK_DEF.moves[n].min === undefined));
+  assert.ok((THORNBARK_DEF.hp ?? 0) > bossMaxHp(10));
+});
+
+test('the secret level builds an arena fight with Thornbark and no Daisy', () => {
+  const stage = generateStage(THORNBARK_LEVEL);
+  assert.ok(stage.boss);
+  assert.equal(stage.boss!.maxHp, THORNBARK_DEF.hp);
+  assert.ok(stage.arena);
+  assert.equal(stage.daisyX, undefined);
+});
+
+test('stage 7-7 hides a reachable Thorn Gate, and no other stage does', () => {
+  const stage = generateStage(getLevelConfig(SECRET_GATE_LEVEL));
+  const gates = stage.collectibles.filter((c) => c.type === 'thorn_gate');
+  assert.equal(gates.length, 1);
+  const gate = gates[0];
+  const ledge = stage.platforms.find((p) => gate.x >= p.x && gate.x <= p.x + p.width && Math.abs(p.y - (gate.y + 40)) < 2);
+  assert.ok(ledge, 'the gate sits on a ledge');
+  // a mushroom close to the start lets the hero bounce up
+  assert.ok(stage.platforms.some((p) => p.type === 'bouncy' && Math.abs(p.x - stage.spawnX) < 200));
+  for (const id of ['1-1', '7-6', '7-8', '10-10']) {
+    assert.equal(generateStage(getLevelConfig(id)).collectibles.filter((c) => c.type === 'thorn_gate').length, 0, id);
+  }
+});
+
+test('hearts: five to start, six with the Thorn Heart', () => {
+  const store = new Map<string, string>();
+  (globalThis as { localStorage?: unknown }).localStorage = {
+    getItem: (k: string) => store.get(k) ?? null,
+    setItem: (k: string, v: string) => { store.set(k, v); },
+  };
+  assert.equal(maxHearts(), 5);
+  store.set('sloth_thorn_heart', '1');
+  assert.equal(maxHearts(), 6);
+  delete (globalThis as { localStorage?: unknown }).localStorage;
+});

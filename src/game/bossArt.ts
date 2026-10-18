@@ -6,6 +6,7 @@ import type { BossEntity } from './types.ts';
 import type { BossHazard } from './bossAI.ts';
 import type { BossDef, MoveDef } from './bossAI.ts';
 import { drawBossEntity } from './vectorArt.ts';
+import { demoPlayer, drawMilo } from './miloVariants.ts';
 
 /** distance from the picture's origin down to the shadow ellipse the boss drawings carry */
 const ART_FEET = 25.5;
@@ -219,8 +220,12 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   ctx.rotate(xf.lean * dir);
   ctx.scale(xf.sx, xf.sy);
   ctx.translate(-b.x, -feetY);
-  const art: BossEntity = { ...b, y: feetY - ART_FEET + def.artDy };
-  drawBossEntity(ctx, art, time, world);
+  if (def.puppet) {
+    drawPuppet(ctx, b, def, m, time, feetY);
+  } else {
+    const art: BossEntity = { ...b, y: feetY - ART_FEET + def.artDy };
+    drawBossEntity(ctx, art, time, world);
+  }
   ctx.restore();
 
   // dizzy stars
@@ -234,6 +239,84 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
     }
     ctx.restore();
   }
+}
+
+/** Thornbark is drawn with the same sloth rig as Slomatt (the evil variant), posed from what the brain is doing */
+const puppetMemory = new WeakMap<BossEntity, { x: number; t: number; vx: number; walk: number }>();
+
+function drawPuppet(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, m: MoveDef | null, time: number, feetY: number) {
+  const br = b.ai!;
+  let mem = puppetMemory.get(b);
+  if (!mem) {
+    mem = { x: b.x, t: time, vx: 0, walk: 0 };
+    puppetMemory.set(b, mem);
+  }
+  const dt = Math.max(0.001, Math.min(0.1, time - mem.t));
+  mem.vx += ((b.x - mem.x) / dt - mem.vx) * Math.min(1, dt * 12);
+  mem.walk += Math.abs(mem.vx) * dt * 0.075;
+  mem.x = b.x;
+  mem.t = time;
+
+  const air = br.air;
+  const p = demoPlayer({
+    x: b.x,
+    y: feetY,
+    facing: b.facing,
+    vx: mem.vx,
+    vy: 0,
+    grounded: air < 3,
+    walkCycle: mem.walk,
+    invincibleTimer: b.hitFlashTimer > 0 ? 0.2 : 0,
+  });
+  const tellU = br.state === 'tell' && m ? clamp01(br.t / m.tell) : 0;
+  const actU = br.state === 'act' && m ? clamp01(br.t / Math.max(0.01, m.act)) : 0;
+  const pose = m?.pose;
+  if (br.state === 'tell' && pose) {
+    if (pose === 'leap' || pose === 'charge' || pose === 'slam') p.ducking = true;
+    else if (pose === 'lunge' || pose === 'bite' || pose === 'spit') {
+      p.punching = true;
+      p.swingCock = tellU;
+      p.swingReach = 0;
+    }
+  } else if (br.state === 'act' && pose) {
+    if (pose === 'lunge' || pose === 'spit') {
+      p.punching = true;
+      p.swingCock = 0;
+      p.swingReach = pose === 'lunge' ? 1 : 0.7;
+    } else if (pose === 'bite') {
+      p.punching = true;
+      p.swingCock = 0;
+      p.swingReach = Math.abs(Math.sin(br.t * 17));
+    } else if (pose === 'slam') {
+      p.punching = true;
+      p.punchType = 'mega';
+      p.swingCock = 0;
+      p.swingReach = 1;
+    } else if (pose === 'charge') {
+      p.punching = true;
+      p.swingCock = 0;
+      p.swingReach = 0.9;
+      p.vx = b.facing * 300;
+    } else if (pose === 'leap') {
+      p.grounded = false;
+      p.vy = actU < 0.5 ? -300 : 300;
+    }
+  } else if (br.state === 'stun') {
+    p.ducking = true;
+  } else if (br.state === 'roar') {
+    p.punching = true;
+    p.punchType = 'mega';
+    p.swingCock = 0.6;
+    p.swingReach = 0;
+  }
+  if (air >= 3) p.grounded = false;
+  ctx.save();
+  ctx.translate(b.x, feetY);
+  ctx.scale(1.75, 1.75);
+  ctx.translate(-b.x, -feetY);
+  drawMilo(ctx, 7, p, time);
+  ctx.restore();
+  void def;
 }
 
 function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, color: string) {
@@ -428,6 +511,28 @@ function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) 
         ctx.moveTo(x - 24, yy);
         ctx.quadraticCurveTo(x, yy + 7, x + 24, yy);
         ctx.stroke();
+      }
+      break;
+    }
+    case 'thorn': {
+      // a thicket of thorns bursting out of the ground
+      for (let i = -2; i <= 2; i++) {
+        const hh = H * (1 - Math.abs(i) * 0.18);
+        const cx = x + i * 11;
+        ctx.fillStyle = h.color2;
+        ctx.beginPath();
+        ctx.moveTo(cx - 8, fl);
+        ctx.quadraticCurveTo(cx - 5 + i * 2, fl - hh * 0.6, cx + i * 3, fl - hh);
+        ctx.quadraticCurveTo(cx + 5 + i * 2, fl - hh * 0.6, cx + 8, fl);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = h.color;
+        ctx.beginPath();
+        ctx.moveTo(cx - 4, fl);
+        ctx.quadraticCurveTo(cx - 2 + i * 2, fl - hh * 0.6, cx + i * 3, fl - hh * 0.95);
+        ctx.quadraticCurveTo(cx + 1 + i * 2, fl - hh * 0.6, cx + 3, fl);
+        ctx.closePath();
+        ctx.fill();
       }
       break;
     }
@@ -680,6 +785,31 @@ function drawBeam(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     }
     ctx.closePath();
     ctx.fill();
+  } else if (h.look === 'vine') {
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = h.color2;
+    ctx.lineWidth = 12;
+    ctx.beginPath();
+    for (let i = 0; i <= 16; i++) {
+      const x = (len * i) / 16;
+      const y = Math.sin(time * 30 + i * 0.9) * 4;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.strokeStyle = h.color;
+    ctx.lineWidth = 6;
+    ctx.stroke();
+    ctx.fillStyle = '#c4b5fd';
+    for (let i = 1; i < 8; i++) {
+      const x = (len * i) / 8;
+      ctx.beginPath();
+      ctx.moveTo(x - 4, -6);
+      ctx.lineTo(x, -15);
+      ctx.lineTo(x + 4, -6);
+      ctx.closePath();
+      ctx.fill();
+    }
   } else if (h.look === 'tongue') {
     ctx.strokeStyle = h.color2;
     ctx.lineWidth = 12;
@@ -737,6 +867,26 @@ function drawBolt(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     ctx.strokeStyle = h.color2;
     ctx.lineWidth = 1.5;
     ctx.stroke();
+  } else if (h.look === 'thorn') {
+    ctx.fillStyle = h.color2;
+    ctx.beginPath();
+    ctx.moveTo(15, 0);
+    ctx.lineTo(-10, -5);
+    ctx.lineTo(-6, 0);
+    ctx.lineTo(-10, 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = h.color;
+    ctx.beginPath();
+    ctx.moveTo(15, 0);
+    ctx.lineTo(-2, -2.4);
+    ctx.lineTo(-2, 2.4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#c4b5fd';
+    ctx.beginPath();
+    ctx.arc(13, 0, 1.8, 0, Math.PI * 2);
+    ctx.fill();
   } else if (h.look === 'feather') {
     ctx.fillStyle = h.color2;
     ctx.beginPath();

@@ -902,6 +902,151 @@ const GENERAL: BossDef = {
   },
 };
 
+// ───────────────────────────── Secret: Thornbark, the corrupted guardian ─────────────────────────────
+
+const THORNBARK: BossDef = {
+  world: 7,
+  name: 'Thornbark',
+  w: 70,
+  h: 92,
+  artDy: 0,
+  speed: [84, 112, 150],
+  prefer: 230,
+  gap: [1.0, 0.75, 0.5],
+  chain: 0.45,
+  hp: 150,
+  puppet: 'thornbark',
+  color: '#a78bfa',
+  color2: '#14532d',
+  moves: {
+    // a fan of thorns thrown at where you stand
+    thornVolley: {
+      tell: 0.6,
+      act: 0.7,
+      rec: 1.0,
+      min: 160,
+      pose: 'spit',
+      onAct: (b, c) => {
+        const fire = (n: number, speed: number) => {
+          const ang = Math.atan2(c.py - 34 - (b.y - 6), c.px - b.x);
+          const half = (n - 1) / 2;
+          for (let i = 0; i < n; i++) aimed(c, b.x + b.facing * 30, b.y - 6, ang + (i - half) * 0.2, speed, '#86efac', '#14532d').look = 'thorn';
+        };
+        fire(b.phase >= 2 ? 5 : 3, 340);
+        b.ai!.d.second = b.phase >= 3 ? 1 : 0;
+      },
+      tick: (b, c) => {
+        const br = b.ai!;
+        if (br.d.second && br.t > 0.36 && !br.d.fired2) {
+          br.d.fired2 = 1;
+          const ang = Math.atan2(c.py - 34 - (b.y - 6), c.px - b.x);
+          for (let i = -2; i <= 2; i++) aimed(c, b.x + b.facing * 30, b.y - 6, ang + i * 0.17, 380, '#86efac', '#14532d').look = 'thorn';
+        }
+      },
+    },
+    // a whip of briar vines at chest height: duck under it or jump it
+    briarWhip: {
+      tell: 0.55,
+      act: 0.45,
+      rec: 1.0,
+      max: 300,
+      pose: 'lunge',
+      onAct: (b, c) => {
+        beam(c, b, 360, 50, 40, 0, 0.35, '#86efac', '#14532d').look = 'vine';
+      },
+    },
+    // roots burst up under you
+    rootBurst: {
+      tell: 1.0,
+      act: 0.3,
+      rec: 1.1,
+      pose: 'slam',
+      onTell: (b, c) => {
+        const offs = b.phase >= 3 ? [0, -200, 200] : b.phase === 2 ? [0, 210] : [0];
+        offs.forEach((off, i) => {
+          const x = Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, c.px + off));
+          const h = column(c, x, 1.0 + i * 0.1, 160, '#4ade80', '#14532d', 0.6);
+          h.look = 'thorn';
+          addMark(c, b, h, i);
+        });
+      },
+      tellTick: (b, c, dt) => {
+        trackMark(b, c, b.ai!.d.h0, dt, 0.55);
+      },
+    },
+    // a streak across the arena with claws out
+    shadowDash: chargeMove({ tell: 0.6, maxT: 1.0, rec: 0.9, speed: 720, min: 200 }),
+    // up close: three claw swipes
+    clawFlurry: {
+      tell: 0.45,
+      act: 0.95,
+      rec: 1.0,
+      max: 230,
+      pose: 'bite',
+      tick: (b, c, dt, t) => {
+        const br = b.ai!;
+        b.x += b.facing * 70 * dt;
+        const windows: Array<[number, number]> = [[0.1, 0.28], [0.4, 0.58], [0.7, 0.88]];
+        if (windows.some(([a, z]) => t >= a && t <= z)) br.hurt = [frontBox(b, c, 90, 62, 4)];
+      },
+    },
+    // fades into the thorns and appears behind you with a slash
+    mirrorStep: {
+      tell: 0.55,
+      act: 0.3,
+      rec: 0.8,
+      phase: 2,
+      pose: 'fade',
+      tellTick: (b) => {
+        const br = b.ai!;
+        br.alpha = Math.max(0.08, 1 - (br.t / 0.55) * 0.95);
+      },
+      onAct: (b, c) => {
+        const br = b.ai!;
+        const half = b.width / 2;
+        const side = c.px >= b.x ? 1 : -1;
+        b.x = Math.max(c.arena.left + half, Math.min(c.arena.right - half, c.px + side * 110));
+        b.facing = side > 0 ? -1 : 1;
+        br.alpha = 1;
+        c.debris(b.x, c.arena.floor - 20, '#4ade80');
+      },
+      tick: (b, c) => {
+        if (b.ai!.t < 0.22) b.ai!.hurt = [frontBox(b, c, 96, 58, 4)];
+      },
+    },
+    // a huge leap and a slam: thorn waves along the ground and spikes from the roof
+    thornSlam: leapMove({
+      tell: 0.8,
+      act: 0.8,
+      rec: 1.4,
+      height: 230,
+      phase: 2,
+      min: 150,
+      onLand: (b, c) => {
+        impact(b, c, 0.85, '#166534');
+        for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2), d, 340, '#4ade80', '#14532d', true).look = 'thorn';
+        for (const off of [-140, 150]) dropAt(c, Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, c.px + off)), 0.9, 34, '#86efac', '#14532d').look = 'spike';
+      },
+    }),
+    // the whole canopy sheds thorns
+    thornRain: {
+      tell: 1.0,
+      act: 0.3,
+      rec: 1.3,
+      phase: 3,
+      pose: 'roar',
+      onAct: (b, c) => {
+        c.roar();
+        c.shake(0.4);
+        for (let i = 0; i < 7; i++) {
+          const x = Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, c.px + (i - 3) * 130 + (c.rnd() - 0.5) * 50));
+          dropAt(c, x, 0.8 + i * 0.1, 30, '#86efac', '#14532d').look = 'spike';
+        }
+      },
+    },
+  },
+};
+
 export const BOSS_DEFS: Record<number, BossDef> = {
   1: VENOM,
   2: CROC,
@@ -930,3 +1075,11 @@ export const BOSS_TIPS: Record<number, string> = {
   9: 'The Magma Drake breathes fire at chest height: duck or jump. Keep off the lava geysers.',
   10: 'General Iron-Claw charges and crashes into the wall. Keep an eye on his soldiers and spears.',
 };
+
+/** the secret boss lives outside the ten worlds */
+export const THORNBARK_DEF = THORNBARK;
+
+/** which boss a level has: the secret one, or its world's */
+export const bossDefForLevel = (cfg: { worldIndex: number; secret?: string }): BossDef => (cfg.secret === 'thornbark' ? THORNBARK : bossDefFor(cfg.worldIndex));
+
+BOSS_TIPS[11] = 'Thornbark mirrors your own moves, only meaner. Watch for the red glow, then punish the opening. A hook breaks his attack.';

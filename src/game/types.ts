@@ -80,6 +80,8 @@ export interface LevelConfig {
   stars: number;       // 0-3
   highScore: number;
   bestTime: number;
+  /** a hidden bonus level that is not part of the 100 (see secret.ts) */
+  secret?: 'thornbark';
 }
 
 export interface PlayerState {
@@ -246,7 +248,7 @@ export interface Vine {
 
 export interface Collectible {
   id: number;
-  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem';
+  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate';
   botanicalVariant?: 'orchid' | 'hibiscus' | 'monstera' | 'fern' | 'lotus' | 'cheetah_flower' | 'solar_bloom' | 'nectar_spore';
   x: number;
   y: number;

@@ -9,6 +9,10 @@ interface WorldMapProps {
   onSelectLevel: (level: LevelConfig) => void;
   onBackToTitle: () => void;
   onSaveProgressToDesktop?: () => void;
+  /** the hidden Thorn Gate has been found, so the Hollow can be replayed from here */
+  secretFound?: boolean;
+  onPlaySecret?: () => void;
+  thornHeart?: boolean;
 }
 
 export const WorldMap: React.FC<WorldMapProps> = ({
@@ -18,6 +22,9 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   onSelectLevel,
   onBackToTitle,
   onSaveProgressToDesktop,
+  secretFound,
+  onPlaySecret,
+  thornHeart,
 }) => {
   const [activeWorldId, setActiveWorldId] = useState<number>(selectedWorldId);
   const curWorld = WORLDS_DATA.find((w) => w.id === activeWorldId) || WORLDS_DATA[0];
@@ -73,6 +80,12 @@ export const WorldMap: React.FC<WorldMapProps> = ({
             </svg>
             <span className="text-amber-300 font-black text-sm tabular-nums">{totalStars} / 300</span>
           </div>
+          {thornHeart && (
+            <div className="flex items-center gap-1 bg-black/50 border border-violet-400/50 px-2.5 py-1.5 rounded-2xl" title="Thorn Heart: +1 max heart">
+              <span className="text-sm">💜</span>
+              <span className="text-violet-200 font-black text-xs">+1</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -148,6 +161,20 @@ export const WorldMap: React.FC<WorldMapProps> = ({
           <span>Mission Stages (1 - 10)</span>
           <span className="text-stone-400 text-xs font-normal">Stage 10 contains the Apex Boss Lair!</span>
         </h3>
+
+        {secretFound && activeWorldId === 7 && onPlaySecret && (
+          <button
+            type="button"
+            onClick={onPlaySecret}
+            className="mb-4 w-full p-3.5 rounded-2xl border border-violet-400/60 bg-gradient-to-r from-violet-950/80 to-emerald-950/70 hover:border-violet-300 text-left flex items-center gap-3 active:scale-[0.99] transition-transform"
+          >
+            <span className="text-2xl">🌿</span>
+            <span className="flex flex-col">
+              <span className="text-violet-200 font-black text-sm">Thornbark's Hollow</span>
+              <span className="text-stone-300 text-[11px] font-sans">Secret boss. {thornHeart ? 'Thorn Heart earned — fight him again?' : 'Free the Jungle Guardian from the thorns.'}</span>
+            </span>
+          </button>
+        )}
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5 sm:gap-4">
           {worldLevels.map((lvl) => {

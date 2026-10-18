@@ -43,7 +43,8 @@ import {
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
 import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
-import { bossDefFor } from './bossDefs.ts';
+import { bossDefForLevel } from './bossDefs.ts';
+import { maxHearts } from './secret.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 
 /** How many world units tall the screen shows. */
@@ -68,6 +69,8 @@ export interface GameEngineCallbacks {
   onDefeat: (score: number) => void;
   onLivesChange?: (lives: number, maxLives: number) => void;
   onBossEncounter?: (boss: BossEntity) => void;
+  /** Slomatt stepped through the hidden Thorn Gate */
+  onSecret?: () => void;
   /** the boss bar: sent only when something on it changes */
   onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number } | null) => void;
 }
@@ -197,7 +200,7 @@ export class GameEngine {
     this.vines = this.currentStage.vines;
     this.enemies = this.currentStage.enemies;
     this.boss = this.currentStage.boss;
-    if (this.boss) this.bossDef = bossDefFor(config.worldIndex);
+    if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
     this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
 
@@ -223,8 +226,8 @@ export class GameEngine {
       isDoubleJumping: false,
       somersaultAngle: 0,
       megaCharge: 1.0,
-      hp: 5,
-      maxHp: 5,
+      hp: maxHearts(),
+      maxHp: maxHearts(),
       fruitsCollected: 0,
       relicsFound: 0,
       crittersRescued: 0,
@@ -1108,7 +1111,7 @@ export class GameEngine {
     // --- Collectibles Magnet Attraction (when Nectar Magnet power-up is active) ---
     if (p.activePowerUp === 'magnet') {
       for (const c of this.collectibles) {
-        if (c.collected || c.type === 'cage' || c.type === 'exit_totem') continue;
+        if (c.collected || c.type === 'cage' || c.type === 'exit_totem' || c.type === 'thorn_gate') continue;
         const dist = distance2D(p.x, p.y - 20, c.x, c.y);
         if (dist < 260 && dist > 10) {
           const pullSpeed = 460 * dt;
@@ -1129,6 +1132,20 @@ export class GameEngine {
 
       if (c.type === 'exit_totem') {
         // Handled below after objective quota check to guarantee quota locking
+        continue;
+      }
+
+      if (c.type === 'thorn_gate') {
+        // the hidden gate: stepping into it leaves this stage for Thornbark's Hollow
+        if (distance2D(p.x, p.y - 20, c.x, c.y) < 46 && !this.isGameOver) {
+          c.collected = true;
+          this.isGameOver = true;
+          this.camera.trauma = 0.7;
+          this.spawnSparkBurst(c.x, c.y, '#a78bfa');
+          this.addFloatingText('THE THORN GATE OPENS...', c.x, c.y - 30, '#c4b5fd');
+          sound.playBossRoar(this.currentStage.config.worldIndex);
+          this.callbacks.onSecret?.();
+        }
         continue;
       }
 
@@ -1548,7 +1565,7 @@ export class GameEngine {
       this.daisyRescued = true;
       sound.playBossVictory();
       this.camera.trauma = 0.9;
-      this.addFloatingText('VICTORY! JENNIFUR IS SAVED!', b.x, b.y - 70, '#ec4899');
+      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : 'VICTORY! JENNIFUR IS SAVED!', b.x, b.y - 70, '#ec4899');
       this.spawnDebrisBurst(b.x, b.y, '#dc2626');
     }
     this.reportBoss();
@@ -2259,6 +2276,12 @@ export class GameEngine {
 
     // 1. Render Multi-Layer Parallax Background
     renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+
+    // the secret Hollow is a dusk of purple thorn-light
+    if (this.currentStage.config.secret) {
+      ctx.fillStyle = 'rgba(46, 16, 101, 0.5)';
+      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
+    }
 
     // 2. Render In-World Game Elements with Camera Transform
     ctx.save();

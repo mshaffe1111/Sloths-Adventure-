@@ -174,15 +174,15 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
       <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 select-none font-game">
         <div className="w-full max-w-md bg-gradient-to-b from-emerald-900 via-emerald-950 to-stone-950 border-2 border-amber-400/80 rounded-3xl p-6 sm:p-8 text-center shadow-2xl shadow-emerald-900/60 text-white">
           <div className="inline-block px-4 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
-            STAGE CLEARED!
+            {levelConfig.secret ? 'SECRET BOSS DEFEATED!' : 'STAGE CLEARED!'}
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-black text-amber-300 text-stroke mb-4">
-            JUNGLE VICTORY!
+            {levelConfig.secret ? 'THORNBARK IS FREE!' : 'JUNGLE VICTORY!'}
           </h2>
 
           {/* 3 Animated Stars */}
-          <div className="flex items-center justify-center gap-3 my-4">
+          <div className={`flex items-center justify-center gap-3 my-4 ${levelConfig.secret ? 'hidden' : ''}`}>
             {[1, 2, 3].map((s) => (
               <div
                 key={s}
@@ -209,7 +209,22 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             </div>
           </div>
 
+          {levelConfig.secret && (
+            <div className="bg-violet-950/80 border border-violet-400/60 rounded-2xl p-3 my-3 text-left flex items-start gap-2.5 shadow-inner">
+              <div className="w-9 h-9 rounded-xl bg-rose-500/20 border border-rose-400/50 flex items-center justify-center shrink-0 text-lg">
+                💜
+              </div>
+              <div className="flex-1">
+                <span className="text-violet-200 font-black text-[11px] uppercase tracking-wider">Thorn Heart earned!</span>
+                <p className="text-stone-200 text-xs mt-1 leading-snug">
+                  The thorns fall away and the Jungle Guardian is himself again. His gift: one extra heart, for every stage from now on.
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Story Clue Card (Jennifur Rescue Arc) */}
+          {!levelConfig.secret && (
           <div className="bg-emerald-950/80 border border-amber-400/50 rounded-2xl p-3 my-3 text-left flex items-start gap-2.5 shadow-inner">
             <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center shrink-0 text-base">
               🌸
@@ -234,6 +249,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
               </p>
             </div>
           </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex flex-col gap-2.5 mt-6">
@@ -243,7 +259,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
               onClick={onNextStage}
               className="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-emerald-950 font-black text-base shadow-lg shadow-amber-600/50 active:scale-95 transition-transform"
             >
-              NEXT STAGE [Space / Enter]
+              {levelConfig.secret ? 'BACK TO THE MAP [Space / Enter]' : 'NEXT STAGE [Space / Enter]'}
             </button>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -316,7 +332,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
       <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 select-none font-game">
         <div className="w-full max-w-lg bg-gradient-to-b from-red-950 via-stone-950 to-black border-2 border-red-500 rounded-3xl p-6 sm:p-8 text-center shadow-2xl text-white">
           <div className="inline-block px-4 py-1 rounded-full bg-red-600/30 border border-red-500 text-red-300 text-xs font-black uppercase tracking-wider mb-2">
-            STAGE BOSS LAIR
+            {levelConfig.secret ? 'SECRET BOSS' : 'STAGE BOSS LAIR'}
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-black text-amber-400 text-stroke mb-2">
@@ -328,7 +344,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
               "{levelConfig.description}"
             </p>
             <p className="text-xs text-stone-300 font-sans">
-              {BOSS_TIPS[levelConfig.worldIndex] ?? 'Watch for the red warning.'}
+              {BOSS_TIPS[levelConfig.secret ? 11 : levelConfig.worldIndex] ?? 'Watch for the red warning.'}
             </p>
             <p className="text-xs text-amber-200/90 font-sans mt-2">
               A red glow means an attack is coming: light hits bounce off, but a hook or a Mega Punch breaks it. When it tires out, hit it with everything.

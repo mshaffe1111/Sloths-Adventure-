@@ -214,6 +214,10 @@ export interface BossDef {
   /** the world's colours for hazards */
   color: string;
   color2: string;
+  /** hit points, when it is not the usual world formula */
+  hp?: number;
+  /** drawn as a fighter (the evil sloth) instead of one of the animal rigs */
+  puppet?: 'thornbark';
 }
 
 /** boss hit points: 41 in world 1, 122 in world 10 (a jab does 1, a hook or kick 2) */
