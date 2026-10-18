@@ -18,6 +18,8 @@ interface GameHUDProps {
   bossMaxHp?: number;
   bossName?: string;
   bossTitle?: string;
+  activePowerUp?: 'speed' | 'invincible' | 'magnet' | null;
+  powerUpTimer?: number;
 }
 
 export const GameHUD: React.FC<GameHUDProps> = ({
@@ -36,6 +38,8 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   bossMaxHp,
   bossName,
   bossTitle,
+  activePowerUp,
+  powerUpTimer,
 }) => {
   const isDistanceObjective = [
     'sprint',
@@ -152,6 +156,45 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                   🔒 Altar Sealed Until Finished
                 </span>
               )}
+            </div>
+          )}
+
+          {/* Active Power-Up Notification Banner */}
+          {activePowerUp && (
+            <div
+              className="mt-1.5 flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-black shadow-lg animate-pulse"
+              style={{
+                backgroundColor:
+                  activePowerUp === 'speed'
+                    ? 'rgba(6, 78, 59, 0.95)'
+                    : activePowerUp === 'invincible'
+                    ? 'rgba(113, 63, 18, 0.95)'
+                    : 'rgba(12, 74, 110, 0.95)',
+                borderColor:
+                  activePowerUp === 'speed'
+                    ? '#34d399'
+                    : activePowerUp === 'invincible'
+                    ? '#facc15'
+                    : '#38bdf8',
+                borderWidth: '1.5px',
+                color:
+                  activePowerUp === 'speed'
+                    ? '#a7f3d0'
+                    : activePowerUp === 'invincible'
+                    ? '#fef08a'
+                    : '#bae6fd',
+              }}
+            >
+              <span>
+                {activePowerUp === 'speed'
+                  ? '⚡ CHEETAH SPEED'
+                  : activePowerUp === 'invincible'
+                  ? '⭐ SOLAR INVINCIBLE'
+                  : '🧲 NECTAR MAGNET'}
+              </span>
+              <span className="tabular-nums font-mono font-bold">
+                {Math.max(0, Math.ceil(powerUpTimer || 0))}s
+              </span>
             </div>
           )}
         </div>

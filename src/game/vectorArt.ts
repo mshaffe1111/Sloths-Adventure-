@@ -136,6 +136,68 @@ export function drawHeroSloth(
     ctx.globalAlpha = 0.55;
   }
 
+  // --- ACTIVE POWER-UP AURAS ---
+  if (p.activePowerUp === 'speed') {
+    // Neon Emerald Cheetah Speed Wind Stream
+    ctx.save();
+    const windPhase = time * 14;
+    ctx.strokeStyle = 'rgba(52, 211, 153, 0.8)';
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    for (let w = 0; w < 3; w++) {
+      const wy = -38 + w * 14;
+      const wx = -p.facing * (28 + Math.sin(windPhase + w) * 16);
+      ctx.beginPath();
+      ctx.moveTo(wx, wy);
+      ctx.lineTo(wx - p.facing * 35, wy + Math.sin(windPhase + w * 2) * 5);
+      ctx.stroke();
+    }
+    // Speed afterimage glow
+    ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
+    ctx.beginPath();
+    ctx.arc(0, -25, 45, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  } else if (p.activePowerUp === 'invincible') {
+    // Dazzling Golden Solar Radiance Aura
+    ctx.save();
+    const pulse = Math.sin(time * 12) * 0.15 + 0.85;
+    const starAngle = time * 4;
+    const auraGrad = ctx.createRadialGradient(0, -26, 8, 0, -26, 62 * pulse);
+    auraGrad.addColorStop(0, 'rgba(254, 240, 138, 0.8)');
+    auraGrad.addColorStop(0.5, 'rgba(250, 204, 21, 0.45)');
+    auraGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    ctx.fillStyle = auraGrad;
+    ctx.beginPath();
+    ctx.arc(0, -26, 62 * pulse, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Orbiting Golden Stars
+    for (let s = 0; s < 4; s++) {
+      const sa = starAngle + (s * Math.PI) / 2;
+      const sx = Math.cos(sa) * 44;
+      const sy = -26 + Math.sin(sa) * 32;
+      ctx.fillStyle = s % 2 === 0 ? '#fde047' : '#ffffff';
+      ctx.beginPath();
+      ctx.arc(sx, sy, 4.0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  } else if (p.activePowerUp === 'magnet') {
+    // Bioluminescent Violet-Cyan Magnetic Rings
+    ctx.save();
+    const ring1 = (time * 2.5) % 1;
+    const ring2 = (time * 2.5 + 0.5) % 1;
+    [ring1, ring2].forEach((r) => {
+      ctx.strokeStyle = `rgba(56, 189, 248, ${1 - r})`;
+      ctx.lineWidth = 2.0;
+      ctx.beginPath();
+      ctx.ellipse(0, -26, 25 + r * 35, 18 + r * 25, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
   // Mega Punch Whirlwind Aura
   if (p.punching && p.punchType === 'mega') {
     ctx.save();
@@ -1463,7 +1525,23 @@ export function drawCollectible(
     }
 
     case 'heart': {
-      // Juicy Red Heart Fruit Pickup
+      // Sacred Healing Lotus & Ruby Heart Crystal
+      const pulse = Math.sin(time * 5 + item.bobPhase) * 0.12 + 0.88;
+      ctx.save();
+      ctx.scale(pulse, pulse);
+
+      // Soft pink lotus petals framing heart
+      ctx.fillStyle = '#f472b6';
+      [-0.4, 0, 0.4].forEach((rot) => {
+        ctx.save();
+        ctx.rotate(rot);
+        ctx.beginPath();
+        ctx.ellipse(0, 10, 5, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Ruby Heart Crystal
       ctx.fillStyle = '#ef4444';
       ctx.beginPath();
       ctx.arc(-5.5, -4, 6.8, Math.PI, 0, false);
@@ -1472,11 +1550,163 @@ export function drawCollectible(
       ctx.closePath();
       ctx.fill();
 
-      // White shine
-      ctx.fillStyle = '#fca5a5';
+      // White glassy shine
+      ctx.fillStyle = '#ffffff';
       ctx.beginPath();
       ctx.arc(-5, -6, 2.2, 0, Math.PI * 2);
       ctx.fill();
+      ctx.restore();
+      break;
+    }
+
+    case 'super_heart': {
+      // Golden Dragonfruit / Sacred Max Vitality Lotus
+      const pulse = Math.sin(time * 6 + item.bobPhase) * 0.18 + 0.85;
+      ctx.save();
+      ctx.scale(pulse, pulse);
+
+      // Golden Halo Flare
+      const haloGrad = ctx.createRadialGradient(0, 0, 4, 0, 0, 24);
+      haloGrad.addColorStop(0, 'rgba(250, 204, 21, 0.6)');
+      haloGrad.addColorStop(1, 'rgba(234, 179, 8, 0)');
+      ctx.fillStyle = haloGrad;
+      ctx.beginPath();
+      ctx.arc(0, 0, 24, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Golden Lotus Petals
+      ctx.fillStyle = '#facc15';
+      for (let i = 0; i < 6; i++) {
+        const pa = (i * Math.PI) / 3 + time * 2;
+        ctx.beginPath();
+        ctx.ellipse(Math.cos(pa) * 11, Math.sin(pa) * 11, 4.5, 8, pa, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Large Ruby Jewel Heart
+      ctx.fillStyle = '#dc2626';
+      ctx.beginPath();
+      ctx.arc(-6.5, -5, 8, Math.PI, 0, false);
+      ctx.arc(6.5, -5, 8, Math.PI, 0, false);
+      ctx.lineTo(0, 14);
+      ctx.closePath();
+      ctx.fill();
+
+      // Golden Heart Crown
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath();
+      ctx.moveTo(-6, -11);
+      ctx.lineTo(0, -16);
+      ctx.lineTo(6, -11);
+      ctx.lineTo(3, -8);
+      ctx.lineTo(-3, -8);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+      break;
+    }
+
+    case 'powerup_speed': {
+      // Cheetah Speed Orchid: Neon Emerald Flower + Wind Vortex
+      const pulse = Math.sin(time * 8 + item.bobPhase) * 0.12 + 0.9;
+      ctx.save();
+      ctx.scale(pulse, pulse);
+
+      // Spinning wind trails
+      ctx.strokeStyle = 'rgba(52, 211, 153, 0.85)';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.arc(0, 0, 18, time * 8, time * 8 + Math.PI);
+      ctx.stroke();
+
+      // 4 Emerald Arrow Petals
+      ctx.fillStyle = '#10b981';
+      for (let i = 0; i < 4; i++) {
+        const pa = (i * Math.PI) / 2 + time * 3;
+        ctx.beginPath();
+        ctx.ellipse(Math.cos(pa) * 9, Math.sin(pa) * 9, 4.5, 9, pa, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Electric Lightning Stamen
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath();
+      ctx.moveTo(-3, -8);
+      ctx.lineTo(2, -1);
+      ctx.lineTo(-1, 0);
+      ctx.lineTo(3, 8);
+      ctx.lineTo(-2, 1);
+      ctx.lineTo(1, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+      break;
+    }
+
+    case 'powerup_invincible': {
+      // Golden Sun Radiance Star Flower
+      const pulse = Math.sin(time * 10 + item.bobPhase) * 0.15 + 0.9;
+      ctx.save();
+      ctx.scale(pulse, pulse);
+
+      // Rotating Solar Beams
+      const rot = time * 2.5;
+      ctx.fillStyle = 'rgba(250, 204, 21, 0.75)';
+      for (let i = 0; i < 8; i++) {
+        const pa = (i * Math.PI) / 4 + rot;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(Math.cos(pa - 0.2) * 19, Math.sin(pa - 0.2) * 19);
+        ctx.lineTo(Math.cos(pa + 0.2) * 19, Math.sin(pa + 0.2) * 19);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Golden Star Core
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(0, 0, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#eab308';
+      ctx.beginPath();
+      ctx.arc(0, 0, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+      break;
+    }
+
+    case 'powerup_magnet': {
+      // Nectar Magnet Spore Bloom
+      const pulse = Math.sin(time * 6 + item.bobPhase) * 0.12 + 0.9;
+      ctx.save();
+      ctx.scale(pulse, pulse);
+
+      // Magnetic Orbit Rings
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 18, 9, time * 3, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Deep Violet & Cyan Flower Petals
+      ctx.fillStyle = '#818cf8';
+      for (let i = 0; i < 5; i++) {
+        const pa = (i * Math.PI * 2) / 5 + time * 1.5;
+        ctx.beginPath();
+        ctx.ellipse(Math.cos(pa) * 8, Math.sin(pa) * 8, 4.5, 7, pa, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Glowing Cyan Stamen
+      ctx.fillStyle = '#06b6d4';
+      ctx.beginPath();
+      ctx.arc(0, 0, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
       break;
     }
 

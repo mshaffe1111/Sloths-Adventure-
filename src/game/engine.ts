@@ -34,7 +34,15 @@ import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
 
 export interface GameEngineCallbacks {
-  onProgressUpdate: (current: number, target: number, score: number, hp: number, distanceRatio?: number) => void;
+  onProgressUpdate: (
+    current: number,
+    target: number,
+    score: number,
+    hp: number,
+    distanceRatio?: number,
+    activePowerUp?: 'speed' | 'invincible' | 'magnet' | null,
+    powerUpTimer?: number
+  ) => void;
   onVictory: (stars: number, timeSec: number, score: number) => void;
   onDefeat: (score: number) => void;
   onBossEncounter?: (boss: BossEntity) => void;
@@ -79,6 +87,10 @@ export class GameEngine {
   private isGameOver: boolean = false;
   private nearTreeVine: Vine | null = null;
   private nearSwingVine: Vine | null = null;
+  private vineCooldownTimer: number = 0;
+  private lastReleasedVineId: number = -1;
+  private wasQuotaMet: boolean = false;
+  private treeClimbAudioTimer: number = 0;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -239,12 +251,50 @@ export class GameEngine {
       p.invincibleTimer -= dt;
     }
 
+    // --- Active Power-Up Timer & Special State Effects ---
+    if (p.powerUpTimer && p.powerUpTimer > 0) {
+      p.powerUpTimer -= dt;
+      if (p.powerUpTimer <= 0) {
+        p.activePowerUp = null;
+        p.powerUpTimer = 0;
+        this.addFloatingText('POWER-UP EXPIRED', p.x, p.y - 45, '#94a3b8');
+      }
+    }
+
+    if (p.activePowerUp === 'invincible') {
+      p.invincibleTimer = 0.5; // continuous invulnerability while active
+      // Knock out enemies on contact
+      for (const e of this.enemies) {
+        if (e.defeated) continue;
+        if (distance2D(p.x, p.y - 20, e.x, e.y) < 54) {
+          e.hp = 0;
+          e.defeated = true;
+          p.enemiesDefeated++;
+          sound.playEnemyDefeated();
+          this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.2);
+          this.spawnDebrisBurst(e.x, e.y, '#facc15');
+          this.addFloatingText('STAR K.O.! +300', e.x, e.y - 30, '#facc15');
+        }
+      }
+    }
+
     // --- Combo Reset Timer ---
     if (this.comboResetTimer > 0) {
       this.comboResetTimer -= dt;
       if (this.comboResetTimer <= 0) {
         this.comboCount = 0;
       }
+    }
+
+    // --- Vine Re-grab Cooldown & Scratch Audio Timers ---
+    if (this.vineCooldownTimer > 0) {
+      this.vineCooldownTimer -= dt;
+      if (this.vineCooldownTimer <= 0) {
+        this.lastReleasedVineId = -1;
+      }
+    }
+    if (this.treeClimbAudioTimer > 0) {
+      this.treeClimbAudioTimer -= dt;
     }
 
     // --- Camera Trauma Shake Decay ---
@@ -259,13 +309,18 @@ export class GameEngine {
     let nearSwingVine: Vine | null = null;
 
     for (const v of this.vines) {
+      // Prevent instant magnetic re-grabbing when jumping off a vine!
+      if (this.vineCooldownTimer > 0 && v.id === this.lastReleasedVineId) {
+        continue;
+      }
+
       if (v.vineType === 'tree_climb') {
-        if (Math.abs(p.x - v.x) < 42 && p.y >= v.topY - 10 && p.y <= v.bottomY + 25) {
+        if (Math.abs(p.x - v.x) < 42 && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
           nearTreeVine = v;
           break;
         }
       } else {
-        if (Math.abs(p.x - v.x) < 46 && p.y >= v.topY - 15 && p.y <= v.bottomY + 25) {
+        if (Math.abs(p.x - v.x) < 48 && p.y >= v.topY - 15 && p.y <= v.bottomY + 30) {
           nearSwingVine = v;
           break;
         }
@@ -276,6 +331,9 @@ export class GameEngine {
 
     // 1. TREE CLIMBING LOGIC (Vertical vines on tree trunks)
     if (nearTreeVine && (p.climbing || this.input.state.up || (!p.grounded && this.input.state.down))) {
+      if (!p.climbing) {
+        sound.playVineGrab();
+      }
       p.climbing = true;
       p.isVineSwinging = false;
       p.grounded = false;
@@ -285,29 +343,74 @@ export class GameEngine {
 
       // Climb Up / Down
       if (this.input.state.up) {
-        p.y = Math.max(nearTreeVine.topY, p.y - 210 * dt);
+        p.y = Math.max(nearTreeVine.topY - 4, p.y - 220 * dt);
+        if (this.treeClimbAudioTimer <= 0) {
+          sound.playTreeClimb();
+          this.treeClimbAudioTimer = 0.18;
+        }
       } else if (this.input.state.down) {
-        p.y = Math.min(nearTreeVine.bottomY, p.y + 210 * dt);
+        p.y = Math.min(nearTreeVine.bottomY + 4, p.y + 220 * dt);
+        if (this.treeClimbAudioTimer <= 0) {
+          sound.playTreeClimb();
+          this.treeClimbAudioTimer = 0.18;
+        }
       }
 
-      // Jump off tree trunk!
-      if (this.input.state.jumpPressed) {
+      // Natural Exit A: Reached the Top of the Tree -> Vault onto Branch Platform!
+      if (p.y <= nearTreeVine.topY + 12 && (this.input.state.up || this.input.state.jumpPressed || this.input.state.left || this.input.state.right)) {
+        p.climbing = false;
+        this.vineCooldownTimer = 0.35;
+        this.lastReleasedVineId = nearTreeVine.id;
+        this.input.state.jumpPressed = false;
+        p.y = nearTreeVine.topY - 12;
+        p.vy = -190;
+        p.vx = (this.input.state.left ? -1 : this.input.state.right ? 1 : p.facing) * 160;
+        p.grounded = true;
+        p.jumpsLeft = 2;
+        sound.playJump();
+        this.spawnSparkBurst(p.x, p.y, '#34d399');
+        this.addFloatingText('CANOPY REACHED!', p.x, p.y - 40, '#4ade80');
+      }
+      // Natural Exit B: Reached the Ground -> Step off smoothly!
+      else if (p.y >= nearTreeVine.bottomY - 8 && this.input.state.down) {
+        p.climbing = false;
+        this.vineCooldownTimer = 0.30;
+        this.lastReleasedVineId = nearTreeVine.id;
+        p.grounded = true;
+        p.vy = 0;
+      }
+      // Natural Exit C: Deliberate Jump off Tree Trunk!
+      else if (this.input.state.jumpPressed) {
         p.climbing = false;
         this.input.state.jumpPressed = false;
-        p.vy = -500;
+        this.vineCooldownTimer = 0.42; // Prevent immediate re-grab!
+        this.lastReleasedVineId = nearTreeVine.id;
+
         const jumpDir = this.input.state.left ? -1 : this.input.state.right ? 1 : p.facing;
         p.facing = jumpDir as 1 | -1;
-        p.vx = jumpDir * 280;
-        p.jumpsLeft = 1;
+        p.vx = jumpDir * 330;
+        p.vy = -540; // floaty, heroic, natural arc
+        p.jumpsLeft = 2; // Gives double-jump in air for full player control!
         p.isDoubleJumping = false;
+        p.somersaultAngle = 0;
         p.squashX = 0.8;
         p.squashY = 1.3;
+
         sound.playJump();
+        this.spawnSparkBurst(p.x, p.y, '#34d399');
         this.addFloatingText('TREE LEAP!', p.x, p.y - 45, '#4ade80');
-      } else if ((this.input.state.left && p.facing === 1) || (this.input.state.right && p.facing === -1)) {
-        // Disengage if steering away from tree
+      }
+      // Natural Exit D: Steer away with Left / Right -> Natural graceful hop off trunk!
+      else if (this.input.state.left || this.input.state.right) {
+        const steerDir = this.input.state.left ? -1 : 1;
         p.climbing = false;
-        p.vx = (this.input.state.left ? -1 : 1) * 200;
+        this.vineCooldownTimer = 0.35;
+        this.lastReleasedVineId = nearTreeVine.id;
+        p.facing = steerDir;
+        p.vx = steerDir * 240;
+        p.vy = -220; // gentle natural hop away from trunk
+        p.jumpsLeft = 2;
+        sound.playJump();
       }
     } else {
       if (p.climbing && !nearTreeVine) {
@@ -319,7 +422,8 @@ export class GameEngine {
         nearSwingVine &&
         !p.isVineSwinging &&
         !p.grounded &&
-        (this.input.state.up || Math.abs(p.vx) > 25 || this.input.state.left || this.input.state.right)
+        (this.input.state.up || Math.abs(p.vx) > 25 || this.input.state.left || this.input.state.right) &&
+        (this.vineCooldownTimer <= 0 || nearSwingVine.id !== this.lastReleasedVineId)
       ) {
         p.isVineSwinging = true;
         p.climbing = false;
@@ -330,6 +434,7 @@ export class GameEngine {
         p.jumpsLeft = 2;
         p.isDoubleJumping = false;
         p.somersaultAngle = 0;
+        sound.playVineGrab();
       }
 
       if (p.isVineSwinging && nearSwingVine) {
@@ -342,11 +447,11 @@ export class GameEngine {
         p.swingAngularVelocity = (p.swingAngularVelocity || 0) + angularAcc * dt;
 
         if (this.input.state.right) {
-          p.swingAngularVelocity += 4.5 * dt;
+          p.swingAngularVelocity += 4.8 * dt;
           p.facing = 1;
         }
         if (this.input.state.left) {
-          p.swingAngularVelocity -= 4.5 * dt;
+          p.swingAngularVelocity -= 4.8 * dt;
           p.facing = -1;
         }
 
@@ -355,9 +460,9 @@ export class GameEngine {
         p.swingAngle = Math.max(-1.18, Math.min(1.18, p.swingAngle));
 
         if (this.input.state.up) {
-          p.swingLength = Math.max(60, (p.swingLength || 100) - 140 * dt);
+          p.swingLength = Math.max(60, (p.swingLength || 100) - 150 * dt);
         } else if (this.input.state.down) {
-          p.swingLength = Math.min(nearSwingVine.bottomY - nearSwingVine.topY, (p.swingLength || 100) + 140 * dt);
+          p.swingLength = Math.min(nearSwingVine.bottomY - nearSwingVine.topY, (p.swingLength || 100) + 150 * dt);
         }
 
         const vineLen = p.swingLength || 100;
@@ -370,16 +475,42 @@ export class GameEngine {
         p.vx = Math.cos(p.swingAngle) * tangSpeed;
         p.vy = -Math.sin(p.swingAngle) * tangSpeed;
 
-        if (this.input.state.jumpPressed) {
+        // --- NATURAL SWING EXIT 1: DROP / LET GO (Holding Down + Jump, or Down at low speed) ---
+        if (this.input.state.down && this.input.state.jumpPressed) {
           p.isVineSwinging = false;
           nearSwingVine.isSwingingVine = false;
           this.input.state.jumpPressed = false;
+          this.vineCooldownTimer = 0.45; // Prevent re-grab!
+          this.lastReleasedVineId = nearSwingVine.id;
 
-          const releaseDir = Math.sin(p.swingAngle) > 0.05 ? 1 : Math.sin(p.swingAngle) < -0.05 ? -1 : p.facing;
+          const dropDir = this.input.state.left ? -1 : this.input.state.right ? 1 : p.facing;
+          p.facing = dropDir as 1 | -1;
+          p.vx = dropDir * 140;
+          p.vy = 80;
+          p.jumpsLeft = 2;
+          this.addFloatingText('DROP', p.x, p.y - 30, '#94a3b8');
+        }
+        // --- NATURAL SWING EXIT 2: HEROIC TARZAN LEAP (Jump button Pressed) ---
+        else if (this.input.state.jumpPressed) {
+          p.isVineSwinging = false;
+          nearSwingVine.isSwingingVine = false;
+          this.input.state.jumpPressed = false;
+          this.vineCooldownTimer = 0.50; // Guaranteed window to fly free from the vine!
+          this.lastReleasedVineId = nearSwingVine.id;
+
+          // Prioritize active player steer direction, then physical swing momentum
+          const releaseDir = this.input.state.right
+            ? 1
+            : this.input.state.left
+            ? -1
+            : (Math.sin(p.swingAngle) > 0.05 ? 1 : Math.sin(p.swingAngle) < -0.05 ? -1 : p.facing);
+
           p.facing = releaseDir as 1 | -1;
-          p.vx = releaseDir * Math.max(300, Math.abs(p.vx) * 1.35 + 100);
-          p.vy = Math.min(-400, p.vy - 350);
-          p.jumpsLeft = 1;
+          // Generous forward boost + heroic upward elevation arc
+          const launchSpeed = Math.max(350, Math.abs(p.vx) * 1.35 + 130);
+          p.vx = releaseDir * launchSpeed;
+          p.vy = Math.min(-460, p.vy - 320);
+          p.jumpsLeft = 2; // Full air control - player can double jump mid-air!
           p.isDoubleJumping = false;
           p.somersaultAngle = 0;
           p.squashX = 0.72;
@@ -387,7 +518,25 @@ export class GameEngine {
 
           sound.playJump();
           this.spawnSparkBurst(p.x, p.y, '#34d399');
-          this.addFloatingText('TARZAN SWING!', p.x, p.y - 45, '#34d399');
+          this.addFloatingText('TARZAN LEAP!', p.x, p.y - 45, '#34d399');
+        }
+        // --- NATURAL SWING EXIT 3: AUTOMATIC PLATFORM LANDING ---
+        else {
+          for (const plat of this.platforms) {
+            if (p.x >= plat.x - 10 && p.x <= plat.x + plat.width + 10) {
+              if (Math.abs(p.y - plat.y) < 14 && p.vy >= 0) {
+                p.isVineSwinging = false;
+                nearSwingVine.isSwingingVine = false;
+                p.grounded = true;
+                p.y = plat.y;
+                p.vy = 0;
+                this.vineCooldownTimer = 0.40;
+                this.lastReleasedVineId = nearSwingVine.id;
+                this.spawnJumpDust(p.x, p.y);
+                break;
+              }
+            }
+          }
         }
       } else {
         if (p.isVineSwinging) {
@@ -401,8 +550,9 @@ export class GameEngine {
         } else {
           p.ducking = false;
 
-          const moveAcc = p.grounded ? 1500 : 1150;
-          const maxSpeed = 275;
+          const speedMult = p.activePowerUp === 'speed' ? 1.45 : 1.0;
+          const moveAcc = (p.grounded ? 1500 : 1150) * speedMult;
+          const maxSpeed = 275 * speedMult;
           if (this.input.state.left) {
             p.vx -= moveAcc * dt;
             p.facing = -1;
@@ -822,6 +972,19 @@ export class GameEngine {
       }
     }
 
+    // --- Collectibles Magnet Attraction (when Nectar Magnet power-up is active) ---
+    if (p.activePowerUp === 'magnet') {
+      for (const c of this.collectibles) {
+        if (c.collected || c.type === 'cage' || c.type === 'exit_totem') continue;
+        const dist = distance2D(p.x, p.y - 20, c.x, c.y);
+        if (dist < 260 && dist > 10) {
+          const pullSpeed = 460 * dt;
+          c.x += ((p.x - c.x) / dist) * pullSpeed;
+          c.y += ((p.y - 20 - c.y) / dist) * pullSpeed;
+        }
+      }
+    }
+
     // --- Collectibles Pickup & Objectives ---
     for (const c of this.collectibles) {
       if (c.collected) continue;
@@ -832,15 +995,7 @@ export class GameEngine {
       }
 
       if (c.type === 'exit_totem') {
-        const dx = Math.abs(p.x - c.x);
-        // Generous vertical tolerance covering ground floor and upper sanctuary
-        if (dx < 85 && p.y >= c.y - 140 && p.y <= c.y + 190) {
-          c.collected = true;
-          this.exitTotemReached = true;
-          sound.playVictory();
-          this.spawnSparkBurst(c.x, c.y - 30, '#34d399');
-          this.addFloatingText('STAGE CLEAR!', c.x, c.y - 60, '#34d399');
-        }
+        // Handled below after objective quota check to guarantee quota locking
         continue;
       }
 
@@ -850,25 +1005,68 @@ export class GameEngine {
 
         if (c.type === 'flower' || c.type === 'leaf' || c.type === 'fruit') {
           p.fruitsCollected++;
+          this.comboCount++;
+          this.comboResetTimer = 2.5;
           this.runScore += 100;
-          sound.playFruitPickup();
+
+          if (c.type === 'flower') {
+            sound.playFlowerPickup(this.comboCount);
+          } else {
+            sound.playLeafPickup();
+          }
+
           const pColor = c.type === 'flower' ? '#f43f5e' : '#4ade80';
           this.spawnSparkBurst(c.x, c.y, pColor);
           const txt = c.botanicalVariant === 'orchid' ? '+100 ORCHID!'
             : c.botanicalVariant === 'monstera' ? '+100 MONSTERA!'
             : c.botanicalVariant === 'hibiscus' ? '+100 HIBISCUS!'
+            : c.botanicalVariant === 'fern' ? '+100 FERN!'
             : '+100 FLORA!';
           this.addFloatingText(txt, c.x, c.y - 20, pColor);
+
+          if (this.comboCount > 1) {
+            const comboBonus = this.comboCount * 50;
+            this.runScore += comboBonus;
+            this.addFloatingText(`${this.comboCount}x COMBO! +${comboBonus}`, c.x, c.y - 42, '#facc15');
+          }
         } else if (c.type === 'relic') {
           p.relicsFound++;
           this.runScore += 500;
           sound.playRelicFound();
           this.spawnSparkBurst(c.x, c.y, '#38bdf8');
-          this.addFloatingText('JUNGLE IDOL!', c.x, c.y - 30, '#38bdf8');
+          this.addFloatingText('JUNGLE IDOL! +500', c.x, c.y - 30, '#38bdf8');
         } else if (c.type === 'heart') {
           p.hp = Math.min(p.maxHp, p.hp + 1);
-          sound.playFruitPickup();
-          this.addFloatingText('+1 HP', c.x, c.y - 20, '#f43f5e');
+          sound.playHeartPickup();
+          this.spawnSparkBurst(c.x, c.y, '#f43f5e');
+          this.addFloatingText('+1 HP RESTORED', c.x, c.y - 20, '#f43f5e');
+        } else if (c.type === 'super_heart') {
+          p.hp = p.maxHp;
+          p.invincibleTimer = 3.5;
+          sound.playSuperHeart();
+          this.spawnSparkBurst(c.x, c.y, '#facc15');
+          this.addFloatingText('MAX HP RESTORED + SHIELD!', c.x, c.y - 30, '#facc15');
+        } else if (c.type === 'powerup_speed') {
+          p.activePowerUp = 'speed';
+          p.powerUpTimer = 10.0;
+          p.maxPowerUpTimer = 10.0;
+          sound.playPowerUp('speed');
+          this.spawnSparkBurst(c.x, c.y, '#34d399');
+          this.addFloatingText('⚡ CHEETAH SPEED (10s)!', c.x, c.y - 35, '#34d399');
+        } else if (c.type === 'powerup_invincible') {
+          p.activePowerUp = 'invincible';
+          p.powerUpTimer = 8.0;
+          p.maxPowerUpTimer = 8.0;
+          sound.playPowerUp('invincible');
+          this.spawnSparkBurst(c.x, c.y, '#facc15');
+          this.addFloatingText('⭐ SOLAR INVINCIBLE (8s)!', c.x, c.y - 35, '#facc15');
+        } else if (c.type === 'powerup_magnet') {
+          p.activePowerUp = 'magnet';
+          p.powerUpTimer = 12.0;
+          p.maxPowerUpTimer = 12.0;
+          sound.playPowerUp('magnet');
+          this.spawnSparkBurst(c.x, c.y, '#38bdf8');
+          this.addFloatingText('🧲 NECTAR MAGNET (12s)!', c.x, c.y - 35, '#38bdf8');
         }
       }
     }
@@ -906,6 +1104,15 @@ export class GameEngine {
 
     const quotaMet = currentProgress >= this.currentStage.config.targetCount;
     const isExitUnlocked = !isQuotaType || quotaMet;
+
+    // Trigger celebration announcement once quota is fulfilled!
+    if (isQuotaType && quotaMet && !this.wasQuotaMet) {
+      this.wasQuotaMet = true;
+      sound.playShrineUnlocked();
+      this.spawnSparkBurst(p.x, p.y - 40, '#facc15');
+      this.addFloatingText('✨ SHRINE UNSEALED! ENTER TO CLEAR! ✨', p.x, p.y - 65, '#facc15');
+      this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.25);
+    }
 
     // Update Exit Totem locked visual in collectibles list
     const exitItem = this.collectibles.find((c) => c.type === 'exit_totem');
@@ -1000,7 +1207,9 @@ export class GameEngine {
       this.currentStage.config.targetCount,
       this.runScore,
       p.hp,
-      distanceRatio
+      distanceRatio,
+      p.activePowerUp,
+      p.powerUpTimer
     );
   }
 

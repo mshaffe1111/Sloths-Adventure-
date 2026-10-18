@@ -161,6 +161,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   const handleUpPress = (e: React.TouchEvent | React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    inputEngine.triggerHaptic(15);
     const now = performance.now();
     const isUpTwice = now - lastUpTapTimeRef.current < 420;
     lastUpTapTimeRef.current = now;
@@ -173,6 +174,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   const handleDownPress = (e: React.TouchEvent | React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    inputEngine.triggerHaptic(12);
     inputEngine.triggerTouchDuck(true);
     setActiveGesture('DUCK');
   };
@@ -187,6 +189,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   const handlePunchPress = (e: React.TouchEvent | React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    inputEngine.triggerHaptic(20);
     inputEngine.triggerTouchPunch();
     setActiveGesture('TAP: PUNCH!');
     setTimeout(() => setActiveGesture(null), 250);
@@ -195,6 +198,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   const handleKickPress = (e: React.TouchEvent | React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    inputEngine.triggerHaptic(25);
     inputEngine.triggerTouchKick();
     setActiveGesture('DOUBLE TAP: KICK!');
     setTimeout(() => setActiveGesture(null), 300);

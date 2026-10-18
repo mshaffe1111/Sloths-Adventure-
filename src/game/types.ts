@@ -114,6 +114,9 @@ export interface PlayerState {
   squashY: number;
   targetScaleX: number;
   targetScaleY: number;
+  activePowerUp?: 'speed' | 'invincible' | 'magnet' | null;
+  powerUpTimer?: number;
+  maxPowerUpTimer?: number;
 }
 
 export interface Enemy {
@@ -193,8 +196,8 @@ export interface Vine {
 
 export interface Collectible {
   id: number;
-  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'exit_totem';
-  botanicalVariant?: 'orchid' | 'hibiscus' | 'monstera' | 'fern' | 'lotus';
+  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem';
+  botanicalVariant?: 'orchid' | 'hibiscus' | 'monstera' | 'fern' | 'lotus' | 'cheetah_flower' | 'solar_bloom' | 'nectar_spore';
   x: number;
   y: number;
   collected: boolean;

@@ -705,15 +705,41 @@ export function generateStage(config: LevelConfig): GeneratedStage {
       }
     }
 
-    // Occasional Health Nectar Bloom
-    if (Math.random() < 0.12) {
+    // Health Recovery: Sacred Healing Lotus & Golden Super Heart
+    if (Math.random() < 0.22 || (curX > config.levelWidth * 0.45 && curX < config.levelWidth * 0.55 && collectibles.filter(c => c.type === 'heart').length === 0)) {
       collectibles.push({
         id: collectibleId++,
         type: 'heart',
         x: curX + pWidth * 0.8,
         y: curY - 26,
         collected: false,
-        bobPhase: 1,
+        bobPhase: Math.random() * Math.PI,
+      });
+    } else if (curY < 390 && Math.random() < 0.10 && collectibles.filter(c => c.type === 'super_heart').length === 0) {
+      // Golden Super Heart on high canopy perch!
+      collectibles.push({
+        id: collectibleId++,
+        type: 'super_heart',
+        x: curX + pWidth * 0.8,
+        y: curY - 28,
+        collected: false,
+        bobPhase: Math.random() * Math.PI,
+      });
+    }
+
+    // Dynamic Rainforest Power-Ups (Speed Cheetah Orchid, Sun Radiance, Nectar Magnet)
+    if (Math.random() < 0.16) {
+      const pRoll = Math.random();
+      const pType: 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' =
+        pRoll < 0.4 ? 'powerup_speed' : pRoll < 0.75 ? 'powerup_magnet' : 'powerup_invincible';
+
+      collectibles.push({
+        id: collectibleId++,
+        type: pType,
+        x: curX + pWidth * (Math.random() < 0.5 ? 0.3 : 0.7),
+        y: curY - 28,
+        collected: false,
+        bobPhase: Math.random() * Math.PI,
       });
     }
 

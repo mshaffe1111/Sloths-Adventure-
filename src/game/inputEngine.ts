@@ -204,9 +204,70 @@ export class InputEngine {
   }
 
   /**
-   * Frame tick: decay single-frame / buffered inputs
+   * Frame tick: decay single-frame / buffered inputs & poll connected gamepads
    */
   public update(dt: number) {
+    // Poll connected Gamepads (Xbox, PlayStation, standard controllers)
+    try {
+      if (typeof navigator !== 'undefined' && typeof navigator.getGamepads === 'function') {
+        const gamepads = navigator.getGamepads();
+        for (let i = 0; i < gamepads.length; i++) {
+          const gp = gamepads[i];
+          if (!gp) continue;
+
+          // Analog stick axes
+          const axisX = gp.axes[0] ?? 0;
+          const axisY = gp.axes[1] ?? 0;
+
+          // D-Pad buttons (standard mapping: 12=up, 13=down, 14=left, 15=right)
+          const dpadUp = gp.buttons[12]?.pressed;
+          const dpadDown = gp.buttons[13]?.pressed;
+          const dpadLeft = gp.buttons[14]?.pressed;
+          const dpadRight = gp.buttons[15]?.pressed;
+
+          if (axisX < -0.35 || dpadLeft) {
+            this.state.left = true;
+          }
+          if (axisX > 0.35 || dpadRight) {
+            this.state.right = true;
+          }
+
+          // Up / Climb / Jump (D-pad up or A button - index 0)
+          const btnA = gp.buttons[0]?.pressed;
+          if (axisY < -0.4 || dpadUp || btnA) {
+            this.state.up = true;
+            if (!this.state.jumpHeld) {
+              this.state.jumpPressed = true;
+              this.jumpBufferTimer = 0.16;
+            }
+            this.state.jumpHeld = true;
+          }
+
+          if (axisY > 0.4 || dpadDown) {
+            this.state.down = true;
+          }
+
+          // Punch button: X (index 2) or Y (index 3)
+          if (gp.buttons[2]?.pressed || gp.buttons[3]?.pressed) {
+            this.state.punchPressed = true;
+            this.punchBufferTimer = 0.12;
+          }
+
+          // Kick button: B (index 1)
+          if (gp.buttons[1]?.pressed) {
+            this.state.kickPressed = true;
+            this.kickBufferTimer = 0.14;
+          }
+
+          // Mega punch / dash: Bumpers / Triggers (index 4, 5, 6, 7)
+          if (gp.buttons[4]?.pressed || gp.buttons[5]?.pressed || gp.buttons[6]?.pressed || gp.buttons[7]?.pressed) {
+            this.state.megaPunchPressed = true;
+            this.state.layerSwitchPressed = true;
+          }
+        }
+      }
+    } catch {}
+
     if (this.jumpBufferTimer > 0) {
       this.jumpBufferTimer -= dt;
       if (this.jumpBufferTimer <= 0) {
@@ -236,6 +297,14 @@ export class InputEngine {
 
     this.state.megaPunchPressed = false;
     this.state.layerSwitchPressed = false;
+  }
+
+  public triggerHaptic(durationMs = 15) {
+    try {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        navigator.vibrate(durationMs);
+      }
+    } catch {}
   }
 
   public destroy() {

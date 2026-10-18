@@ -35,6 +35,8 @@ export default function App() {
   const [currentCount, setCurrentCount] = useState<number>(0);
   const [targetCount, setTargetCount] = useState<number>(1);
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
+  const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
+  const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
 
   // Victory / Defeat snapshot states
@@ -141,7 +143,7 @@ export default function App() {
       if (!canvasRef.current || !inputEngineRef.current) return;
 
       const engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
-        onProgressUpdate: (current, target, curScore, curHp, distRatio) => {
+        onProgressUpdate: (current, target, curScore, curHp, distRatio, curPowerUp, curPowerTimer) => {
           setCurrentCount(current);
           setTargetCount(target);
           setScore(curScore);
@@ -149,6 +151,8 @@ export default function App() {
           if (distRatio !== undefined) {
             setDistanceRatio(distRatio);
           }
+          setActivePowerUp(curPowerUp ?? null);
+          setPowerUpTimer(curPowerTimer ?? 0);
         },
         onVictory: (stars, timeSec, finalScore) => {
           setStarsEarned(stars);
@@ -292,6 +296,8 @@ export default function App() {
             onPause={pauseGame}
             bossHp={activeLevel.objectiveType === 'boss_lair' ? hp * 2 : undefined}
             bossMaxHp={activeLevel.objectiveType === 'boss_lair' ? 10 : undefined}
+            activePowerUp={activePowerUp}
+            powerUpTimer={powerUpTimer}
           />
           {inputEngineRef.current && (
             <TouchController inputEngine={inputEngineRef.current} />

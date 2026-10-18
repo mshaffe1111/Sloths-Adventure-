@@ -265,9 +265,47 @@ class SoundEngine {
   }
 
   /**
-   * Fruit chomp / berry pickup
+   * Botanical Flower pickup with musical combo arpeggio
    */
-  public playFruitPickup() {
+  public playFlowerPickup(comboCount: number = 0) {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const scale = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51];
+    const baseFreq = scale[comboCount % scale.length];
+
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc1.type = 'triangle';
+    osc2.type = 'sine';
+
+    osc1.frequency.setValueAtTime(baseFreq, now);
+    osc1.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, now + 0.12);
+
+    osc2.frequency.setValueAtTime(baseFreq * 2, now + 0.02);
+    osc2.frequency.exponentialRampToValueAtTime(baseFreq * 2.5, now + 0.14);
+
+    gain.gain.setValueAtTime(0.24, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now + 0.02);
+    osc1.stop(now + 0.16);
+    osc2.stop(now + 0.16);
+  }
+
+  /**
+   * Botanical Leaf rustle & gentle glockenspiel sparkle
+   */
+  public playLeafPickup() {
     if (this.isMuted) return;
     this.initContext();
     if (!this.ctx) return;
@@ -277,17 +315,210 @@ class SoundEngine {
     const gain = this.ctx.createGain();
 
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(480, now);
-    osc.frequency.exponentialRampToValueAtTime(720, now + 0.08);
+    osc.frequency.setValueAtTime(740, now);
+    osc.frequency.exponentialRampToValueAtTime(1100, now + 0.11);
 
-    gain.gain.setValueAtTime(0.22, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+    gain.gain.setValueAtTime(0.20, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.13);
 
     osc.connect(gain);
     gain.connect(this.ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.1);
+    osc.stop(now + 0.13);
+  }
+
+  /**
+   * Heart Vitality pickup
+   */
+  public playHeartPickup() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const notes = [440, 554.37, 659.25];
+    notes.forEach((freq, idx) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+
+      gain.gain.setValueAtTime(0.22, now + idx * 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.05 + 0.2);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now + idx * 0.05);
+      osc.stop(now + idx * 0.05 + 0.2);
+    });
+  }
+
+  /**
+   * Super Heart / Golden Dragonfruit Max Vitality
+   */
+  public playSuperHeart() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+    notes.forEach((freq, idx) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+
+      gain.gain.setValueAtTime(0.28, now + idx * 0.06);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.06 + 0.45);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now + idx * 0.06);
+      osc.stop(now + idx * 0.06 + 0.45);
+    });
+  }
+
+  /**
+   * Power-Up Acquired: Euphoric Ascending Synth Fanfare
+   */
+  public playPowerUp(type: 'speed' | 'invincible' | 'magnet') {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const freqs =
+      type === 'invincible'
+        ? [587.33, 739.99, 880.0, 1174.66, 1479.98, 1760.0]
+        : type === 'speed'
+        ? [440.0, 659.25, 880.0, 1318.51]
+        : [523.25, 698.46, 880.0, 1046.5];
+
+    freqs.forEach((freq, i) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = type === 'invincible' ? 'sawtooth' : 'triangle';
+      osc.frequency.setValueAtTime(freq, now + i * 0.05);
+
+      gain.gain.setValueAtTime(0.24, now + i * 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.05 + 0.3);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now + i * 0.05);
+      osc.stop(now + i * 0.05 + 0.3);
+    });
+  }
+
+  /**
+   * Resonant Vine Latch / Swing Grab
+   */
+  public playVineGrab() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(320, now + 0.06);
+    osc.frequency.exponentialRampToValueAtTime(120, now + 0.12);
+
+    gain.gain.setValueAtTime(0.28, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.13);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.13);
+  }
+
+  /**
+   * Tree Trunk Claw Climb scratch
+   */
+  public playTreeClimb() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(140 + Math.random() * 60, now);
+    osc.frequency.linearRampToValueAtTime(90, now + 0.04);
+
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.05);
+  }
+
+  /**
+   * Sacred Shrine Unlocked: Ancient Gong & Celestial Chime Arpeggio
+   */
+  public playShrineUnlocked() {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    // Deep Gong Fundament
+    const gong = this.ctx.createOscillator();
+    const gongGain = this.ctx.createGain();
+    gong.type = 'sine';
+    gong.frequency.setValueAtTime(110, now);
+    gong.frequency.exponentialRampToValueAtTime(55, now + 0.8);
+    gongGain.gain.setValueAtTime(0.4, now);
+    gongGain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+    gong.connect(gongGain);
+    gongGain.connect(this.ctx.destination);
+    gong.start(now);
+    gong.stop(now + 0.85);
+
+    // Celestial Chimes
+    const chimeNotes = [587.33, 739.99, 880.0, 1174.66, 1479.98];
+    chimeNotes.forEach((freq, i) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now + i * 0.08);
+
+      gain.gain.setValueAtTime(0.25, now + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.45);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now + i * 0.08);
+      osc.stop(now + i * 0.08 + 0.45);
+    });
+  }
+
+  /**
+   * Fruit chomp / berry pickup fallback
+   */
+  public playFruitPickup() {
+    this.playFlowerPickup(0);
   }
 
   /**
