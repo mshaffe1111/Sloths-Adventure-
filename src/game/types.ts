@@ -27,7 +27,11 @@ export type ObjectiveType =
 export type EnemyType =
   | 'snake'        // Tree Snake / Emerald Boa
   | 'eagle'        // Harpy Eagle / Hawk
-  | 'ocelot'       // Jaguar / Ocelot
+  | 'ocelot'       // Ocelot
+  | 'jaguar'       // Jaguar: crouch, leap, land (the big sloth predator)
+  | 'boa'          // Boa constrictor: coiled ambusher with a long strike
+  | 'caiman'       // Spectacled caiman: slow armoured lunger
+  | 'tayra'        // Tayra: fast low dasher
   | 'frog'         // Poison Dart Frog
   | 'spider'       // Canopy Tarantula
   | 'ant_hazard'   // Marching Army Ants
@@ -149,6 +153,16 @@ export interface Enemy {
   hoverTimer?: number;
   /** cruising altitude for fliers (eagles return here after a swoop) */
   homeY?: number;
+  /** predator AI: current move (patrol, alert, windup, leap, strike, bite, recover) and seconds spent in it */
+  state?: string;
+  stateT?: number;
+  /** predator AI: world y of the enemy's own origin while standing (leaps and lunges return to it) */
+  groundY?: number;
+  /** predator AI: where it started this move, and where it is going */
+  fromX?: number;
+  toX?: number;
+  /** predator AI: normal patrol speed (px/s), so a dash or leap can end by restoring it */
+  speed?: number;
   /** drawing only: true world position when the draw call is made in a translated frame (boss props) */
   wx?: number;
   wy?: number;

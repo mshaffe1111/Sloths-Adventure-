@@ -34,6 +34,8 @@ import {
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
+import { isPredator, stepPredator } from './predatorAI.ts';
+import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
 
 /** How many world units tall the screen shows. */
 const WORLD_VIEW_H = 540;
@@ -969,23 +971,26 @@ export class GameEngine {
             e.attackCooldown = 4.0;
           }
         }
-      } else if (e.type === 'ocelot') {
-        // Ocelot ground stalker and pouncer
-        e.x += e.vx * dt;
-        if (e.x < e.patrolMinX || e.x > e.patrolMaxX) {
-          e.vx = -e.vx;
-          e.facing = e.vx > 0 ? 1 : -1;
+      } else if (isPredator(e.type)) {
+        // Ground predators (ocelot, jaguar, boa, caiman, tayra): telegraph -> committed attack -> vulnerable recovery
+        const step = stepPredator(e, { x: p.x, y: p.y }, dt);
+        if (step.ev.telegraph) {
+          sound.playWhoosh();
+          this.addFloatingText('!', e.x, e.y - (e.type === 'boa' ? 46 : 34), '#f97316');
         }
-
-        const dist = Math.abs(e.x - p.x);
-        if (dist < 180 && Math.abs(e.y - p.y) < 40) {
-          // Pounce leap
-          e.vx = e.facing * 160;
-          e.y -= 20 * dt;
+        if (step.ev.launch) sound.playWhoosh();
+        if (step.ev.impact) {
+          if (e.type === 'jaguar' || e.type === 'caiman') {
+            this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.22);
+            sound.playHitImpact(false);
+          }
+          if (e.type === 'jaguar' || e.type === 'tayra') this.spawnDebrisBurst(e.x, e.y + 22, '#a16207');
         }
-
-        if (checkAABBCollision(p.x - 18, p.y - 40, 36, 40, e.x - 22, e.y - 14, 44, 28)) {
-          this.damagePlayer(1);
+        for (const h of step.hurt) {
+          if (checkAABBCollision(p.x - 18, p.y - 40, 36, 40, h.x, h.y, h.w, h.h)) {
+            this.damagePlayer(1);
+            break;
+          }
         }
       } else if (e.type === 'frog') {
         // Poison frog hopping
@@ -1703,6 +1708,14 @@ export class GameEngine {
         drawHarpyEagle(ctx, enemy, this.gameTime);
       } else if (enemy.type === 'ocelot') {
         drawOcelot(ctx, enemy, this.gameTime);
+      } else if (enemy.type === 'jaguar') {
+        drawJaguar(ctx, enemy, this.gameTime);
+      } else if (enemy.type === 'boa') {
+        drawBoa(ctx, enemy, this.gameTime);
+      } else if (enemy.type === 'caiman') {
+        drawCaiman(ctx, enemy, this.gameTime);
+      } else if (enemy.type === 'tayra') {
+        drawTayra(ctx, enemy, this.gameTime);
       } else {
         drawHazardEntity(ctx, enemy, this.gameTime);
       }

@@ -32,14 +32,14 @@ const hash = (n: number) => {
 };
 
 /** true while a periodic event (blink, flick, twitch) is active; `period` seconds, lasting `len`. */
-function pulse(time: number, id: number, period: number, len: number, salt = 0) {
+export function pulse(time: number, id: number, period: number, len: number, salt = 0) {
   const cycle = Math.floor(time / period);
   const start = hash(id * 13.7 + cycle * 3.1 + salt) * (period - len);
   const u = time - cycle * period - start;
   return u >= 0 && u < len ? u / len : -1;
 }
 
-function groundShadow(ctx: CanvasRenderingContext2D, x: number, y: number, rx: number, ry: number, a = 0.28) {
+export function groundShadow(ctx: CanvasRenderingContext2D, x: number, y: number, rx: number, ry: number, a = 0.28) {
   ctx.fillStyle = `rgba(15, 23, 42, ${a})`;
   ctx.beginPath();
   ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
@@ -358,8 +358,10 @@ interface OcelotRig {
   earL: Spring;
   earR: Spring;
   torso: Spring;
+  pitch: Spring;
   dist: number;
   bob: number;
+  wasAir: boolean;
 }
 
 const OC_LEGS = [
@@ -389,12 +391,15 @@ export function drawOcelot(ctx: CanvasRenderingContext2D, enemy: Enemy, time: nu
     tail.reset(ocTailRest(b.wx, b.wy, f, time, enemy.id, 1));
     b.rig = {
       gait: new Gait(OC_LEGS), tail, head: new Spring(0), headY: new Spring(0), earL: new Spring(0), earR: new Spring(0),
-      torso: new Spring(0), dist: 0, bob: 0,
+      torso: new Spring(0), pitch: new Spring(0), dist: 0, bob: 0, wasAir: false,
     } as OcelotRig;
   }
   const r = b.rig as OcelotRig;
   const dt = b.dt;
-  const speed = Math.abs(b.fv);
+  const air = enemy.state === 'leap';
+  const groundWorld = (enemy.groundY !== undefined ? enemy.groundY / (enemy.rigScale ?? 1) : b.wy) + OC_G;
+  const height = Math.max(0, groundWorld - (b.wy + OC_G));
+  const speed = air ? 0 : Math.abs(b.fv);
   const run = clamp(speed / 150, 0, 1);
 
   if (dt > 0) {
@@ -403,15 +408,18 @@ export function drawOcelot(ctx: CanvasRenderingContext2D, enemy: Enemy, time: nu
       mirrorAbout(b.wx, r.tail.pts);
       mirrorAbout(b.wx, r.tail.prev);
     }
+    if (r.wasAir && !air) r.gait.plant(b, groundWorld, 0);
+    r.wasAir = air;
     r.dist += speed * dt;
     const stride = 11 + speed * 0.05;
     const ph = (r.dist / stride) * Math.PI;
-    r.bob = damp(r.bob, -Math.abs(Math.sin(ph)) * (1.2 + run * 2.4), 18, dt) + Math.sin(time * 2.6 + enemy.id) * 0.0;
+    r.bob = damp(r.bob, air ? 0 : -Math.abs(Math.sin(ph)) * (1.2 + run * 2.4), 18, dt);
     r.gait.update(
       b,
-      { stepDist: 8 + speed * 0.02, stepHeight: 5 + run * 4, slow: 0.26, fast: 0.12, groundY: b.wy + OC_G, maxLead: 18 },
+      { stepDist: 8 + speed * 0.02, stepHeight: 5 + run * 4, slow: 0.26, fast: 0.12, groundY: groundWorld, maxLead: 18, airborne: air },
       r.bob
     );
+    r.pitch.step(air ? clamp(b.vy / 300, -0.5, 0.55) : 0, 90, 12, dt);
     r.torso.step(-clamp(b.fv / 150, -1, 1) * 0.08 + Math.sin(ph * 2) * 0.012 * (1 + run), 120, 13, dt);
     r.head.step(-r.bob * 0.4, 130, 12, dt);
     r.headY.step(-r.bob * 0.7 + (run > 0.5 ? 1.5 : 0), 110, 11, dt);
@@ -439,7 +447,12 @@ export function drawOcelot(ctx: CanvasRenderingContext2D, enemy: Enemy, time: nu
   const wx = b.wx;
   const wy = b.wy;
 
-  groundShadow(ctx, -2, OC_G - 1, 31, 5.5);
+  const sh = 1 - clamp(height / 90, 0, 0.5);
+  groundShadow(ctx, -2, OC_G - 1 + height, 31 * sh, 5.5 * sh, 0.28 * sh);
+  ctx.save();
+  ctx.translate(0, -6);
+  ctx.rotate(r.pitch.x);
+  ctx.translate(0, 6);
 
   // tail (behind everything)
   const tp: V2[] = r.tail.pts.map((p) => ({ x: (p.x - wx) * f, y: p.y - wy }));
@@ -454,7 +467,17 @@ export function drawOcelot(ctx: CanvasRenderingContext2D, enemy: Enemy, time: nu
     ctx.stroke();
   }
 
-  const legs = r.gait.solve(b, r.bob);
+  const legs = r.gait.solve(
+    b,
+    r.bob,
+    air
+      ? (i) => {
+          const fall = smooth(clamp((b.vy + 50) / 200, 0, 1));
+          const s = OC_LEGS[i];
+          return i < 2 ? { x: s.hx + lerp(14, 7, fall), y: s.hy + lerp(6, 14, fall) } : { x: s.hx + lerp(-13, -3, fall), y: s.hy + lerp(8, 14, fall) };
+        }
+      : undefined
+  );
   const drawLeg = (i: number, shade: number) => {
     const L = legs[i];
     const s = OC_LEGS[i];
@@ -565,6 +588,7 @@ export function drawOcelot(ctx: CanvasRenderingContext2D, enemy: Enemy, time: nu
   ctx.fill();
   ctx.restore();
 
+  ctx.restore();
   ctx.restore();
 }
 

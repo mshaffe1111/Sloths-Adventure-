@@ -251,9 +251,78 @@ class Gen {
     this.E.push(e);
   }
 
+  jaguar(x: number, surface: number, pMin: number, pMax: number) {
+    const e = this.baseEnemy('jaguar', x, surface - 24, 64, 38, 3, (this.hash01(x, 3) < 0.5 ? -1 : 1) * 42 * this.diff.enemySpeedMultiplier);
+    e.patrolMinX = pMin; e.patrolMaxX = pMax; e.attackCooldown = 1.2;
+    this.E.push(e);
+  }
+
+  boa(x: number, surface: number, pMin: number, pMax: number) {
+    const e = this.baseEnemy('boa', x, surface - 16, 58, 26, 3, 0);
+    e.facing = this.hash01(x, 5) < 0.5 ? -1 : 1;
+    e.speed = 1; e.patrolMinX = pMin; e.patrolMaxX = pMax; e.attackCooldown = 0.8;
+    this.E.push(e);
+  }
+
+  caiman(x: number, surface: number, pMin: number, pMax: number) {
+    const e = this.baseEnemy('caiman', x, surface - 15, 84, 24, 3, (this.hash01(x, 7) < 0.5 ? -1 : 1) * 28 * this.diff.enemySpeedMultiplier);
+    e.patrolMinX = pMin; e.patrolMaxX = pMax; e.attackCooldown = 1.2;
+    this.E.push(e);
+  }
+
+  tayra(x: number, surface: number, pMin: number, pMax: number) {
+    const e = this.baseEnemy('tayra', x, surface - 15, 46, 24, 1, (this.hash01(x, 9) < 0.5 ? -1 : 1) * 70 * this.diff.enemySpeedMultiplier);
+    e.patrolMinX = pMin; e.patrolMaxX = pMax; e.attackCooldown = 1.0;
+    this.E.push(e);
+  }
+
+  /**
+   * Cheap deterministic 0..1 value from a position. Enemy *choice* uses this instead of the level's random
+   * stream, so adding new animals never reshuffles the layout of a stage the player already knows.
+   */
+  hash01(x: number, salt = 0) {
+    const v = Math.sin(x * 12.9898 + (this.eid + salt) * 78.233 + this.world * 37.719 + salt * 5.1) * 43758.5453;
+    return v - Math.floor(v);
+  }
+
+  /** which sloth predator fills a "hard" ground slot in this world: the cast grows as the player moves on */
+  private hardKind(h: number): 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' {
+    const table: Record<number, Array<['ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra', number]>> = {
+      2: [['ocelot', 0.6], ['caiman', 0.4]],
+      3: [['ocelot', 0.55], ['boa', 0.45]],
+      4: [['ocelot', 0.5], ['tayra', 0.5]],
+      5: [['tayra', 0.4], ['boa', 0.3], ['ocelot', 0.3]],
+      6: [['caiman', 0.35], ['boa', 0.3], ['ocelot', 0.2], ['jaguar', 0.15]],
+      7: [['jaguar', 0.35], ['ocelot', 0.25], ['boa', 0.2], ['caiman', 0.2]],
+      8: [['jaguar', 0.35], ['tayra', 0.3], ['ocelot', 0.2], ['boa', 0.15]],
+      9: [['jaguar', 0.3], ['boa', 0.25], ['tayra', 0.2], ['caiman', 0.15], ['ocelot', 0.1]],
+      10: [['jaguar', 0.3], ['boa', 0.2], ['tayra', 0.2], ['caiman', 0.15], ['ocelot', 0.15]],
+    };
+    const row = table[Math.min(10, Math.max(2, this.world))];
+    let acc = 0;
+    for (const [k, w] of row) {
+      acc += w;
+      if (h < acc) return k;
+    }
+    return row[row.length - 1][0];
+  }
+
   ground(x: number, surface: number, pMin: number, pMax: number) {
-    if (this.world >= 2 && this.chance(0.35 + this.d * 0.3)) this.ocelot(x, surface, pMin, pMax);
-    else this.snake(x, surface, pMin, pMax);
+    const hard = this.world >= 2 && this.chance(0.35 + this.d * 0.3);
+    if (!hard) {
+      // from world 4 a fast tayra sometimes scurries where a snake would have been
+      if (this.world >= 4 && this.hash01(x, 11) < 0.22) this.tayra(x, surface, pMin, pMax);
+      else this.snake(x, surface, pMin, pMax);
+      return;
+    }
+    let kind = this.hardKind(this.hash01(x));
+    // big leapers / lungers need room to run; on a short ledge send a lighter animal
+    if ((kind === 'jaguar' || kind === 'caiman') && pMax - pMin < 80) kind = 'ocelot';
+    if (kind === 'jaguar') this.jaguar(x, surface, pMin, pMax);
+    else if (kind === 'boa') this.boa(x, surface, pMin, pMax);
+    else if (kind === 'caiman') this.caiman(x, surface, pMin, pMax);
+    else if (kind === 'tayra') this.tayra(x, surface, pMin, pMax);
+    else this.ocelot(x, surface, pMin, pMax);
   }
 
   eagle(x: number, homeY: number) {

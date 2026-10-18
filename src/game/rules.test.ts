@@ -69,7 +69,9 @@ test('calculateDifficultyScaling correctly scales from 1-1 to 10-10', () => {
 test('isObjectiveComplete checks various mission archetypes', () => {
   // Harvest fruits
   assert.equal(isObjectiveComplete('harvest', 9, 10, false, false), false);
-  assert.equal(isObjectiveComplete('harvest', 10, 10, false, false), true);
+  // quota missions also need the player to touch the unlocked exit shrine
+  assert.equal(isObjectiveComplete('harvest', 10, 10, false, false), false);
+  assert.equal(isObjectiveComplete('harvest', 10, 10, true, false), true);
 
   // Sprint to exit totem
   assert.equal(isObjectiveComplete('sprint', 0, 0, false, false), false);
@@ -81,7 +83,8 @@ test('isObjectiveComplete checks various mission archetypes', () => {
 
   // Relic Hunt (3 idols)
   assert.equal(isObjectiveComplete('relic_hunt', 2, 3, false, false), false);
-  assert.equal(isObjectiveComplete('relic_hunt', 3, 3, false, false), true);
+  assert.equal(isObjectiveComplete('relic_hunt', 3, 3, false, false), false);
+  assert.equal(isObjectiveComplete('relic_hunt', 3, 3, true, false), true);
 });
 
 test('calculateLevelStars awards 1 to 3 stars based on performance', () => {

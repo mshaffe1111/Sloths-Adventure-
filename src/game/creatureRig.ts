@@ -321,20 +321,25 @@ export class Gait {
     return clamp(b.facing * l.spec.restX + lead * 1.6, -slack * 0.8, slack * 0.8);
   }
 
+  /** put every foot at its resting spot on the ground (first frame, or right after a leap) */
+  plant(b: Body, groundY: number, bodyDy = 0) {
+    for (let i = 0; i < this.legs.length; i++) {
+      const h = this.hipWorld(i, b, bodyDy);
+      const l = this.legs[i];
+      l.fx = h.x + b.facing * l.spec.restX;
+      l.fy = groundY;
+      l.planted = true;
+      l.t = 0;
+      l.swing = 0;
+    }
+    this.placed = true;
+  }
+
   update(b: Body, o: GaitOpts, bodyDy = 0) {
     const dt = b.dt;
     const speed = Math.abs(b.vx);
     if (!this.placed || b.fresh) {
-      for (let i = 0; i < this.legs.length; i++) {
-        const h = this.hipWorld(i, b, bodyDy);
-        const l = this.legs[i];
-        l.fx = h.x + b.facing * l.spec.restX;
-        l.fy = o.groundY;
-        l.planted = true;
-        l.t = 0;
-        l.swing = 0;
-      }
-      this.placed = true;
+      this.plant(b, o.groundY, bodyDy);
       return;
     }
     if (dt <= 0) return;
