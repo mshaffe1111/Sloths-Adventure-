@@ -186,7 +186,6 @@ export class GameEngine {
     this.resizeCanvas();
     window.addEventListener('resize', this.handleResize);
 
-    sound.startAmbient();
   }
 
   private handleResize = () => {
@@ -213,6 +212,7 @@ export class GameEngine {
     this.isRunning = true;
     this.lastTime = performance.now();
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
+    sound.playLevelStart();
     this.loop(this.lastTime);
   }
 
@@ -232,7 +232,7 @@ export class GameEngine {
       this.animFrameId = null;
     }
     window.removeEventListener('resize', this.handleResize);
-    sound.stopAmbient();
+    sound.setLowHealth(false);
   }
 
   private loop = (now: number) => {
@@ -270,6 +270,8 @@ export class GameEngine {
     this.input.update(dt);
 
     const p = this.player;
+    const groundedBefore = p.grounded;
+    const vyBefore = p.vy;
 
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
     for (const plat of this.platforms) {
@@ -788,7 +790,7 @@ export class GameEngine {
           this.checkpoint = { x: cp.x, y: cp.y };
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
-          sound.playVineGrab();
+          sound.playCheckpoint();
         }
       }
 
@@ -975,14 +977,14 @@ export class GameEngine {
         // Ground predators (ocelot, jaguar, boa, caiman, tayra): telegraph -> committed attack -> vulnerable recovery
         const step = stepPredator(e, { x: p.x, y: p.y }, dt);
         if (step.ev.telegraph) {
-          sound.playWhoosh();
+          sound.playPredator(e.type, 0);
           this.addFloatingText('!', e.x, e.y - (e.type === 'boa' ? 46 : 34), '#f97316');
         }
-        if (step.ev.launch) sound.playWhoosh();
+        if (step.ev.launch) sound.playPredator(e.type, 1);
         if (step.ev.impact) {
+          sound.playPredator(e.type, 2);
           if (e.type === 'jaguar' || e.type === 'caiman') {
             this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.22);
-            sound.playHitImpact(false);
           }
           if (e.type === 'jaguar' || e.type === 'tayra') this.spawnDebrisBurst(e.x, e.y + 22, '#a16207');
         }
@@ -1296,6 +1298,47 @@ export class GameEngine {
       p.activePowerUp,
       p.powerUpTimer
     );
+
+    this.updateSound(dt, groundedBefore, vyBefore, distanceRatio);
+  }
+
+  /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
+  private soundTimer = 0;
+  private stepDist = 0;
+  private updateSound(dt: number, groundedBefore: boolean, vyBefore: number, progress: number) {
+    const p = this.player;
+    if (p.grounded && !groundedBefore && vyBefore > 140 && !p.climbing && !p.isVineSwinging) {
+      sound.playLand(Math.min(1, vyBefore / 700));
+    }
+    // footsteps: one leaf-crunch every few body-lengths on the ground
+    if (p.grounded && !p.climbing && Math.abs(p.vx) > 25) {
+      this.stepDist += Math.abs(p.vx) * dt;
+      if (this.stepDist > 52) {
+        this.stepDist = 0;
+        sound.playStep();
+      }
+    } else if (!p.grounded) {
+      this.stepDist = 26;
+    }
+
+    this.soundTimer -= dt;
+    if (this.soundTimer > 0) return;
+    this.soundTimer = 0.25;
+    let v = 0.3 + 0.25 * progress;
+    let near = 9999;
+    for (const e of this.enemies) {
+      if (e.defeated) continue;
+      const d = Math.hypot(e.x - p.x, (e.y - p.y) * 0.6);
+      if (d < near) near = d;
+    }
+    if (near < 460) v += 0.32 * (1 - near / 460);
+    if (this.boss && !this.boss.defeated) {
+      const b = this.boss;
+      v = 0.55 + 0.4 * (1 - Math.max(0, b.hp) / Math.max(1, b.maxHp)) + (b.telegraphTimer > 0 ? 0.08 : 0);
+    }
+    if (p.activePowerUp === 'invincible' || p.activePowerUp === 'speed') v = Math.max(v, 0.95);
+    sound.setIntensity(Math.min(1, v));
+    sound.setLowHealth(this.lives <= 1 && p.hp <= 1);
   }
 
   /**
@@ -1365,7 +1408,7 @@ export class GameEngine {
         if (b.hp <= 0) {
           b.defeated = true;
           this.daisyRescued = true;
-          sound.playVictory();
+          sound.playBossVictory();
           this.camera.trauma = 0.9;
           this.addFloatingText('VICTORY! DAISY SAVED!', b.x, b.y - 70, '#ec4899');
           this.spawnDebrisBurst(b.x, b.y, '#dc2626');
@@ -1463,7 +1506,7 @@ export class GameEngine {
         if (b.hp <= 0) {
           b.defeated = true;
           this.daisyRescued = true;
-          sound.playVictory();
+          sound.playBossVictory();
           this.camera.trauma = 0.9;
           this.addFloatingText('VICTORY! DAISY SAVED!', b.x, b.y - 70, '#ec4899');
           this.spawnDebrisBurst(b.x, b.y, '#dc2626');

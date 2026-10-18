@@ -1,4 +1,5 @@
 import React from 'react';
+import { sound } from '../game/audio.ts';
 import type { LevelConfig } from '../game/types.ts';
 
 interface StatusModalsProps {
@@ -17,6 +18,37 @@ interface StatusModalsProps {
   onSaveProgressToDesktop?: () => void;
   onSaveSnapshotToDesktop?: () => void;
 }
+
+/** music and effects volume (saved on the device) */
+const AudioSliders: React.FC = () => {
+  const [music, setMusic] = React.useState(() => sound.musicVolume);
+  const [sfx, setSfx] = React.useState(() => sound.sfxVolume);
+  const row = (label: string, value: number, set: (v: number) => void, apply: (v: number) => void) => (
+    <label className="flex items-center gap-3 text-xs font-bold text-emerald-200">
+      <span className="w-14 text-left">{label}</span>
+      <input
+        type="range"
+        min={0}
+        max={100}
+        value={Math.round(value * 100)}
+        onChange={(e) => {
+          const v = Number(e.target.value) / 100;
+          set(v);
+          apply(v);
+        }}
+        className="flex-1 accent-amber-400"
+        aria-label={`${label} volume`}
+      />
+      <span className="w-8 text-right tabular-nums text-amber-200">{Math.round(value * 100)}</span>
+    </label>
+  );
+  return (
+    <div className="mb-4 flex flex-col gap-2 rounded-2xl border border-emerald-600/30 bg-emerald-950/60 px-4 py-3">
+      {row('Music', music, setMusic, (v) => sound.setMusicVolume(v))}
+      {row('Effects', sfx, setSfx, (v) => sound.setSfxVolume(v))}
+    </div>
+  );
+};
 
 function getStageStoryClue(levelId: string): string {
   const parts = levelId.split('-').map(Number);
@@ -72,6 +104,8 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
           <h2 className="text-3xl font-black text-amber-300 text-stroke mb-6">
             TAKE A BREATHER
           </h2>
+
+          <AudioSliders />
 
           <div className="flex flex-col gap-2.5">
             <button

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { StoryPanel } from '../game/story.ts';
 import { drawStoryScene, SCENE_W, SCENE_H } from '../game/storyArt.ts';
+import { sound } from '../game/audio.ts';
 
 interface StoryPlayerProps {
   panels: StoryPanel[];
@@ -42,6 +43,23 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [idx, panel.text]);
+
+  // the music follows the story: each panel's chapter and mood choose the piece (same piece = no restart)
+  useEffect(() => {
+    sound.storyPanel(panel);
+  }, [panel]);
+
+  // a soft voice blip for each letter as it is typed (not when the whole line is skipped to)
+  const spoken = useRef(0);
+  useEffect(() => {
+    spoken.current = 0;
+  }, [idx]);
+  useEffect(() => {
+    const from = spoken.current;
+    spoken.current = shown;
+    if (shown - from > 4) return;
+    for (let i = from; i < shown; i++) sound.speak(panel.speaker, panel.text[i] ?? ' ', i);
+  }, [shown, panel]);
 
   // fit the 16:9 scene inside the available space
   const boxRef = useRef<HTMLDivElement | null>(null);

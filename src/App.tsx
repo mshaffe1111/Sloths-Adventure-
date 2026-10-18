@@ -83,6 +83,18 @@ export default function App() {
     document.body.dataset.state = bodyState;
   }, [screen]);
 
+  // Music and ambience follow the screen. Cutscenes pick their own music panel by panel (see StoryPlayer).
+  useEffect(() => {
+    const w = activeLevel.worldIndex;
+    sound.screen(screen, w, activeLevel.objectiveType === 'boss_lair');
+    const worldAmbient = (WORLDS_DATA[w - 1] || WORLDS_DATA[0]).ambientType;
+    if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
+    else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');
+    else if (screen === 'world_story' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
+    else if (screen === 'story_cutscene') sound.setAmbient('gentle_breeze');
+    else sound.setAmbient(null);
+  }, [screen, activeLevel]);
+
   // Check URL parameters (?autostart=1)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -242,10 +254,12 @@ export default function App() {
 
   const pauseGame = () => {
     engineRef.current?.pause();
+    sound.playPause(true);
     setScreen('paused');
   };
 
   const resumeGame = () => {
+    sound.playPause(false);
     setScreen('playing');
     engineRef.current?.resume();
   };
@@ -270,7 +284,13 @@ export default function App() {
   };
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-black select-none">
+    <div
+      className="relative w-full h-full overflow-hidden bg-black select-none"
+      onClickCapture={(e) => {
+        // a soft tick on every menu button (not on the in-game touch controls)
+        if (screen !== 'playing' && (e.target as HTMLElement).closest?.('button')) sound.playUiTap();
+      }}
+    >
       {/* Isolated Canvas Container */}
       <div className="absolute inset-0 w-full h-full">
         <canvas
