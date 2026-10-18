@@ -14,6 +14,7 @@ import { WORLDS_DATA } from './worldsData.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { renderScenery, renderOverlay } from './scenery.ts';
+import { setSceneSeed, rollSceneSeed } from './sceneSeed.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import {
   drawHeroSloth,
@@ -193,6 +194,9 @@ export class GameEngine {
     } catch {
       /* no window.location in some test setups */
     }
+
+    // every stage load rolls a fresh look for the backdrop and ground (the layout itself does not change)
+    setSceneSeed(rollSceneSeed());
 
     // Generate Stage data
     this.currentStage = generateStage(config);

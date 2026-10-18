@@ -6,6 +6,8 @@
  * or grabs gets a dark outline in terrain.ts so it always reads against the backdrop.
  */
 
+import { drawBloom, pickBloom, monstera, bananaLeaf } from './flora.ts';
+
 export type RNG = () => number;
 
 export function rng(seed: number): RNG {
@@ -39,6 +41,14 @@ function norm(c: string): string {
   if (!m) return '#808080';
   const h = (v: string) => Number(v).toString(16).padStart(2, '0');
   return `#${h(m[1])}${h(m[2])}${h(m[3])}`;
+}
+
+/** blend two colours and return plain #rrggbb (safe to append alpha digits to) */
+export function mixToHex(a: string, b: string, t: number): string {
+  const A = hex2rgb(norm(a));
+  const B = hex2rgb(norm(b));
+  const c = (i: number) => Math.round(A[i] + (B[i] - A[i]) * t).toString(16).padStart(2, '0');
+  return `#${c(0)}${c(1)}${c(2)}`;
 }
 
 export const lighten = (c: string, t: number) => mixHex(norm(c), '#ffffff', t);
@@ -196,101 +206,14 @@ export function drawFrond(
   ctx.stroke();
 }
 
-/** Split-leaf monstera: real gaps between lobes, no compositing tricks. */
-export function drawMonstera(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, rot: number, t: Tone, veins = true) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(rot);
-  const lobes = 4;
-  // central body
-  const body = ctx.createLinearGradient(-size * 0.5, -size * 0.6, size * 0.5, size * 0.5);
-  body.addColorStop(0, t.light);
-  body.addColorStop(0.55, t.mid);
-  body.addColorStop(1, t.dark);
-  ctx.fillStyle = body;
-  ctx.beginPath();
-  ctx.moveTo(0, size * 0.42);
-  ctx.bezierCurveTo(-size * 0.62, size * 0.32, -size * 0.55, -size * 0.55, 0, -size * 0.78);
-  ctx.bezierCurveTo(size * 0.55, -size * 0.55, size * 0.62, size * 0.32, 0, size * 0.42);
-  ctx.fill();
-  // lobes, as fingers radiating from the rib
-  for (let side = -1; side <= 1; side += 2) {
-    for (let i = 0; i < lobes; i++) {
-      const u = i / lobes;
-      const by = size * (0.25 - u * 0.78);
-      const len = size * (0.62 - u * 0.12) * (i === lobes - 1 ? 0.7 : 1);
-      const ex = side * len;
-      const ey = by - size * (0.12 + u * 0.06);
-      const g = ctx.createLinearGradient(side * size * 0.15, by, ex, ey);
-      g.addColorStop(0, t.mid);
-      g.addColorStop(1, side < 0 ? t.light : t.dark);
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.moveTo(side * size * 0.1, by + size * 0.1);
-      ctx.quadraticCurveTo(side * len * 0.55, by + size * 0.12, ex, ey);
-      ctx.quadraticCurveTo(side * len * 0.55, by - size * 0.14, side * size * 0.1, by - size * 0.1);
-      ctx.fill();
-    }
-  }
-  if (veins) {
-    ctx.strokeStyle = t.deep;
-    ctx.globalAlpha = 0.5;
-    ctx.lineWidth = Math.max(1.2, size * 0.02);
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(0, size * 0.46);
-    ctx.lineTo(0, -size * 0.74);
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-  }
-  ctx.restore();
+/** Split-leaf monstera with real slits and holes (see flora.ts). */
+export function drawMonstera(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, rot: number, t: Tone, _veins = true) {
+  monstera(ctx, x, y + size * 0.1, size * 1.05, rot, t, rng((x * 73 + y * 131 + size * 7) | 0));
 }
 
-/** Broad banana / heliconia leaf with slanted veins. */
+/** Broad banana / heliconia leaf, torn along its veins (see flora.ts). */
 export function drawBananaLeaf(ctx: CanvasRenderingContext2D, x: number, y: number, len: number, wid: number, rot: number, t: Tone) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(rot);
-  const g = ctx.createLinearGradient(-wid, 0, wid, 0);
-  g.addColorStop(0, t.light);
-  g.addColorStop(0.5, t.mid);
-  g.addColorStop(1, t.dark);
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.bezierCurveTo(-wid * 1.15, -len * 0.2, -wid * 0.95, -len * 0.75, 0, -len);
-  ctx.bezierCurveTo(wid * 0.95, -len * 0.75, wid * 1.15, -len * 0.2, 0, 0);
-  ctx.fill();
-  ctx.strokeStyle = t.deep;
-  ctx.lineCap = 'round';
-  ctx.globalAlpha = 0.55;
-  ctx.lineWidth = Math.max(1.4, len * 0.012);
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(0, -len * 0.98);
-  ctx.stroke();
-  ctx.lineWidth = Math.max(1, len * 0.008);
-  for (let i = 1; i < 11; i++) {
-    const u = i / 11;
-    const w = wid * Math.sin(Math.PI * Math.min(1, u * 1.05)) * 0.92;
-    ctx.beginPath();
-    ctx.moveTo(0, -len * u);
-    ctx.lineTo(-w, -len * (u - 0.09));
-    ctx.moveTo(0, -len * u);
-    ctx.lineTo(w, -len * (u - 0.09));
-    ctx.stroke();
-  }
-  ctx.globalAlpha = 1;
-  // sun sheen along the left half
-  ctx.fillStyle = t.hi;
-  ctx.globalAlpha = 0.22;
-  ctx.beginPath();
-  ctx.moveTo(0, -len * 0.05);
-  ctx.bezierCurveTo(-wid * 0.8, -len * 0.25, -wid * 0.7, -len * 0.7, 0, -len * 0.94);
-  ctx.bezierCurveTo(-wid * 0.2, -len * 0.6, -wid * 0.25, -len * 0.3, 0, -len * 0.05);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-  ctx.restore();
+  bananaLeaf(ctx, x, y, len, wid, rot, t, rng((x * 53 + y * 97 + len * 5) | 0));
 }
 
 /** Spiky grass tuft. */
@@ -309,7 +232,7 @@ export function drawGrass(ctx: CanvasRenderingContext2D, x: number, y: number, h
   }
 }
 
-/** Layered tropical flower (hibiscus-ish). */
+/** A flower head: the species is picked from its size and position, so scenes bloom with variety (see flora.ts). */
 export function drawFlower(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -318,33 +241,10 @@ export function drawFlower(
   petal: string,
   core: string,
   rot = 0,
-  petals = 5
+  _petals = 5
 ) {
-  const pt = tone(petal, '#4a1030');
-  for (let layer = 0; layer < 2; layer++) {
-    const rr = rad * (layer ? 0.66 : 1);
-    for (let i = 0; i < petals; i++) {
-      const a = rot + (i / petals) * Math.PI * 2 + layer * (Math.PI / petals);
-      const px = x + Math.cos(a) * rr * 0.55;
-      const py = y + Math.sin(a) * rr * 0.55;
-      const g = ctx.createRadialGradient(x, y, rr * 0.1, px, py, rr * 0.7);
-      g.addColorStop(0, layer ? pt.hi : pt.light);
-      g.addColorStop(0.6, layer ? pt.light : pt.mid);
-      g.addColorStop(1, layer ? pt.mid : pt.dark);
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.ellipse(px, py, rr * 0.55, rr * 0.38, a, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-  ctx.fillStyle = core;
-  ctx.beginPath();
-  ctx.arc(x, y, rad * 0.2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = 'rgba(255,255,255,0.6)';
-  ctx.beginPath();
-  ctx.arc(x - rad * 0.06, y - rad * 0.07, rad * 0.07, 0, Math.PI * 2);
-  ctx.fill();
+  const key = Math.round(x * 0.37 + y * 0.91);
+  drawBloom(ctx, pickBloom(rad, key), x, y, rad, petal, core, rot, rng(key | 0));
 }
 
 /** Toadstool, optionally glowing. */

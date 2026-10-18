@@ -5,8 +5,12 @@
  * parallax each frame. That lets the layers carry far more detail than we could afford to
  * draw live, which is what gives the scenes their depth and richness.
  */
+import { getSceneSeed, onSceneSeedChange } from './sceneSeed.ts';
+import { renderLifeBack, renderLifeFront } from './life.ts';
+import { isRich } from './rainforest.ts';
+import { paintBiomeMid } from './biomes.ts';
 import {
-  rng, tone, mix, lighten, darken, rgba, drawCrown, drawFrond, drawMonstera, drawBananaLeaf,
+  rng, tone, mix, mixToHex, lighten, darken, rgba, drawCrown, drawFrond, drawMonstera, drawBananaLeaf,
   drawGrass, drawFlower, drawMushroom, drawRock, drawCloud, drawRays, drawLiana,
   type RNG, type Tone,
 } from './artKit.ts';
@@ -193,8 +197,79 @@ export const LOOKS: Record<number, Look> = {
   },
 };
 
+// ───────────────────────────── seeded variants ─────────────────────────────
+
+interface Mood {
+  tint: string;
+  amt: number;
+  /** extra brightness for the sky/haze */
+  lift: number;
+}
+/** the light a stage can roll: the same world on a golden evening, a cool morning, in thick mist, or vivid midday */
+const MOODS: Record<string, Mood> = {
+  vivid: { tint: '#ffffff', amt: 0, lift: 0 },
+  golden: { tint: '#ffb050', amt: 0.17, lift: 0.02 },
+  cool: { tint: '#6aa8ff', amt: 0.13, lift: 0 },
+  mist: { tint: '#eef6f0', amt: 0.2, lift: 0.05 },
+  rose: { tint: '#ff8ab0', amt: 0.12, lift: 0 },
+};
+const WORLD_MOODS: Record<number, string[]> = {
+  1: ['vivid', 'golden', 'mist', 'cool'],
+  2: ['golden', 'vivid', 'rose', 'mist'],
+  3: ['vivid', 'cool', 'rose'],
+  4: ['mist', 'cool', 'vivid'],
+  5: ['vivid', 'rose', 'golden', 'mist'],
+  6: ['mist', 'golden', 'vivid'],
+  7: ['golden', 'vivid', 'mist', 'cool'],
+  8: ['vivid', 'cool', 'rose'],
+  9: ['vivid', 'golden'],
+  10: ['vivid', 'cool', 'mist'],
+};
+
+function tintAll(c: string, m: Mood): string {
+  return m.amt > 0 ? mixToHex(c, m.tint, m.amt) : c;
+}
+
+function makeVariant(base: Look, world: number, seed: number): Look {
+  const r = rng(world * 8191 + seed * 31 + 7);
+  const moods = WORLD_MOODS[world] ?? ['vivid'];
+  const m = MOODS[moods[(r() * moods.length) | 0]];
+  const T = (c: string) => tintAll(c, m);
+  const L = (c: string) => (m.lift ? mixToHex(c, '#ffffff', m.lift) : c);
+  const flora = base.flora.slice();
+  // rotate the palette so a different flower colour leads each time
+  const rot = (r() * flora.length) | 0;
+  const rotated = flora.map((_, i) => flora[(i + rot) % flora.length]);
+  return {
+    ...base,
+    sky: base.sky.map((c) => L(T(c))) as Look['sky'],
+    hills: base.hills.map(T) as Look['hills'],
+    farCols: base.farCols.map(T) as Look['farCols'],
+    haze: L(T(base.haze)),
+    rays: T(base.rays),
+    rayA: base.rayA * (0.8 + r() * 0.5),
+    sun: base.sun ? { ...base.sun, x: Math.min(0.9, Math.max(0.1, base.sun.x + (r() - 0.5) * 0.25)), y: Math.min(0.5, Math.max(0.12, base.sun.y + (r() - 0.5) * 0.12)) } : base.sun,
+    crowns: base.crowns.map((c) => mixToHex(c, m.tint, m.amt * 0.5)),
+    leaves: base.leaves.map((c) => mixToHex(c, m.tint, m.amt * 0.35)),
+    flora: rotated,
+    grade: [T(base.grade[0]), base.grade[1]],
+    clouds: base.clouds ? { ...base.clouds, n: Math.max(2, base.clouds.n + ((r() * 3) | 0) - 1) } : null,
+  };
+}
+
+const looks = new Map<string, Look>();
+onSceneSeedChange(() => looks.clear());
+
 export function lookFor(worldId: number): Look {
-  return LOOKS[worldId] ?? LOOKS[1];
+  const world = LOOKS[worldId] ? worldId : 1;
+  const seed = getSceneSeed();
+  const key = `${world}:${seed}`;
+  let v = looks.get(key);
+  if (!v) {
+    v = makeVariant(LOOKS[world], world, seed);
+    looks.set(key, v);
+  }
+  return v;
 }
 
 // ───────────────────────────── layer cache ─────────────────────────────
@@ -204,6 +279,7 @@ const TW = 2400; // tile width in design space
 
 interface LayerSet {
   world: number;
+  seed: number;
   far: HTMLCanvasElement;
   hills: HTMLCanvasElement;
   mid: HTMLCanvasElement;
@@ -212,6 +288,7 @@ interface LayerSet {
   clouds: HTMLCanvasElement[];
 }
 let cache: LayerSet | null = null;
+onSceneSeedChange(() => { cache = null; });
 
 function makeLayer(res: number): [HTMLCanvasElement, CanvasRenderingContext2D] {
   const cv = document.createElement('canvas');
@@ -340,7 +417,7 @@ function waterfall(ctx: CanvasRenderingContext2D, x: number, top: number, bottom
 
 function buildFar(look: Look, world: number): HTMLCanvasElement {
   const [cv, ctx] = makeLayer(1);
-  const r = rng(world * 101 + 7);
+  const r = rng(world * 101 + 7 + getSceneSeed() * 1013);
   const back = tone(look.farCols[0]);
   const front = tone(look.farCols[1]);
 
@@ -635,7 +712,7 @@ function buildFar(look: Look, world: number): HTMLCanvasElement {
 
 function buildHills(look: Look, world: number): HTMLCanvasElement {
   const [cv, ctx] = makeLayer(1);
-  const r = rng(world * 211 + 3);
+  const r = rng(world * 211 + 3 + getSceneSeed() * 1013);
   const rows: Array<[number, number, string, number]> = [
     [430, 130, look.hills[0], 0.35],
     [500, 120, look.hills[1], 0.18],
@@ -863,9 +940,28 @@ function midTree(ctx: CanvasRenderingContext2D, look: Look, kind: TreeKind, x: n
   }
 }
 
+/** worlds that use the new hand-built rainforest (grown world by world) */
+const RICH_MID = (_look: Look, world: number) => isRich(world);
+
+/** the rich backdrop: every world's own cast of trees in three rows, its forest floor and what hangs overhead */
+function buildMidRich(look: Look, world: number): HTMLCanvasElement {
+  const res = 1.2;
+  const [cv, ctx] = makeLayer(res);
+  const r = rng(world * 307 + 11 + getSceneSeed() * 1013);
+  paintBiomeMid(ctx, world, look, r, TW, res, (y0, y1, col, a) => hazeBand(ctx, y0, y1, col, a));
+  drawRays(ctx, TW, H, look.rays, look.rayA, r, 12, 0.3);
+  hazeBand(ctx, 430, 720, look.haze, 0.3);
+  return cv;
+}
+
+function jitter(r: RNG, a: number) {
+  return (r() - 0.5) * 2 * a;
+}
+
 function buildMid(look: Look, world: number): HTMLCanvasElement {
+  if (RICH_MID(look, world)) return buildMidRich(look, world);
   const [cv, ctx] = makeLayer(1.2);
-  const r = rng(world * 307 + 11);
+  const r = rng(world * 307 + 11 + getSceneSeed() * 1013);
   const n = 7;
   for (let i = 0; i < n; i++) {
     const x = (i / n) * TW + 40 + r() * 140;
@@ -888,7 +984,7 @@ function buildMid(look: Look, world: number): HTMLCanvasElement {
 
 function buildNear(look: Look, world: number): HTMLCanvasElement {
   const [cv, ctx] = makeLayer(1.35);
-  const r = rng(world * 419 + 5);
+  const r = rng(world * 419 + 5 + getSceneSeed() * 1013);
   const L = look.leaves.map((c) => tone(c));
   // low undergrowth: ferns, grass, monstera and the odd banana leaf — kept short so play stays readable
   for (let x = 0; x < TW; x += 56) {
@@ -941,7 +1037,7 @@ function buildNear(look: Look, world: number): HTMLCanvasElement {
 
 function buildFront(look: Look, world: number): HTMLCanvasElement {
   const [cv, ctx] = makeLayer(1.2);
-  const r = rng(world * 523 + 9);
+  const r = rng(world * 523 + 9 + getSceneSeed() * 1013);
   const dark = look.leaves.map((c) => tone(mix(c, '#04120c', 0.6)));
   const rim = look.leaves.map((c) => tone(mix(c, '#04120c', 0.38)));
   // low clumps at the bottom edge: just the tips peek in
@@ -967,7 +1063,7 @@ function buildFront(look: Look, world: number): HTMLCanvasElement {
 
 function buildClouds(look: Look, world: number): HTMLCanvasElement[] {
   if (!look.clouds) return [];
-  const r = rng(world * 617 + 1);
+  const r = rng(world * 617 + 1 + getSceneSeed() * 1013);
   const out: HTMLCanvasElement[] = [];
   for (let i = 0; i < look.clouds.n; i++) {
     const cv = document.createElement('canvas');
@@ -981,10 +1077,11 @@ function buildClouds(look: Look, world: number): HTMLCanvasElement[] {
 }
 
 function ensure(world: number): LayerSet {
-  if (cache && cache.world === world) return cache;
+  if (cache && cache.world === world && cache.seed === getSceneSeed()) return cache;
   const look = lookFor(world);
   cache = {
     world,
+    seed: getSceneSeed(),
     far: buildFar(look, world),
     hills: buildHills(look, world),
     mid: buildMid(look, world),
@@ -1089,6 +1186,7 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   drawTile(ctx, set.mid, 0.26, camX, vw, vh, s, yo * 0.8);
   if (!lite) veil(ctx, look.haze, 0.05, vw, vh);
   drawTile(ctx, set.near, 0.5, camX, vw, vh, s, yo);
+  if (RICH_MID(look, world)) renderLifeBack(ctx, look, world, camX, vw, vh, time, lite);
   // colour grade pulls every layer into one mood
   // plain alpha tint (blend modes force a full-canvas flush on software/mobile GPUs)
   ctx.fillStyle = rgba(look.grade[0], look.grade[1]);
@@ -1101,6 +1199,7 @@ export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX
   const set = ensure(world);
   const s = vh / H;
   drawTile(ctx, set.front, 1.25, camX, vw, vh, s, 0, 0.96);
+  if (RICH_MID(look, world)) renderLifeFront(ctx, look, world, camX, vw, vh, time);
   if (!lite) {
     const vg = ctx.createRadialGradient(vw / 2, vh / 2, vh * 0.55, vw / 2, vh / 2, vw * 0.78);
     vg.addColorStop(0, 'rgba(0,0,0,0)');

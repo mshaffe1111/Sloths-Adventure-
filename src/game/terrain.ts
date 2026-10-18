@@ -10,6 +10,12 @@ import {
   type RNG, type Tone,
 } from './artKit.ts';
 import { lookFor, type Look } from './scenery.ts';
+import { getSoil, capTransform } from './soil.ts';
+import { isRich } from './rainforest.ts';
+
+/** worlds painted with the new baked ground (grown world by world) */
+let curWorld = 1;
+const RICH_GROUND = (_look: Look) => isRich(curWorld);
 
 interface Cam {
   x: number;
@@ -20,7 +26,7 @@ interface Cam {
 
 const LW = 3; // outline weight
 
-function stroked(ctx: CanvasRenderingContext2D, fill: CanvasGradient | string, outline: string, lw = LW) {
+function stroked(ctx: CanvasRenderingContext2D, fill: CanvasGradient | CanvasPattern | string, outline: string, lw = LW) {
   ctx.fillStyle = fill;
   ctx.fill();
   ctx.strokeStyle = outline;
@@ -154,18 +160,26 @@ function earthBody(ctx: CanvasRenderingContext2D, p: Platform, look: Look, time:
   } else {
     islandPath(ctx, x, y, w, depth, lobes, p.id);
   }
+  const rich = RICH_GROUND(look) && !kindOverride;
   const grad = ctx.createLinearGradient(0, y, 0, y + Math.min(depth, 420));
   grad.addColorStop(0, g.dirt);
   grad.addColorStop(0.55, mix(g.dirt, g.dirtDark, 0.55));
   grad.addColorStop(1, g.dirtDark);
-  stroked(ctx, grad, g.outline, LW);
+  stroked(ctx, rich ? getSoil(ctx, look, curWorld).soil : grad, g.outline, LW);
 
   // texture, clipped to the body
   ctx.save();
   ctx.clip();
   const st = tone(g.stone);
   const kind = kindOverride ?? g.kind;
-  if (kind === 'stone') {
+  if (rich) {
+    // the baked soil is already the texture; add the light and shade that turn the shape
+    const ao = ctx.createLinearGradient(0, y, 0, y + 70);
+    ao.addColorStop(0, 'rgba(20,8,0,0.5)');
+    ao.addColorStop(1, 'rgba(20,8,0,0)');
+    ctx.fillStyle = ao;
+    ctx.fillRect(x, y, w, 70);
+  } else if (kind === 'stone') {
     brickFill(ctx, x, y + 14, w, Math.min(depth, 360), look, r);
   } else {
     // soil strata
@@ -248,6 +262,14 @@ function drawCap(ctx: CanvasRenderingContext2D, p: Platform, look: Look, time: n
   const x = p.x;
   const y = p.y;
   const w = p.width;
+  if (RICH_GROUND(look)) {
+    // baked strip of layered blades, drips and moss, anchored in world space so neighbours join up
+    const cap = getSoil(ctx, look, curWorld).cap;
+    cap.setTransform(capTransform(y - 30));
+    ctx.fillStyle = cap;
+    ctx.fillRect(x, y - 30, w, 72);
+    return;
+  }
   capPath(ctx, x, y, w, capH, r);
   const grad = ctx.createLinearGradient(0, y - 4, 0, y + capH + 12);
   grad.addColorStop(0, g.capHi);
@@ -344,6 +366,67 @@ function woodTone(look: Look) {
   return tone(mix(look.trunk[0], '#d9a864', 0.35));
 }
 
+/** wood grain, knots, nail heads and a little moss — shared by planks, bridges and logs so timber matches the new look */
+function woodGrain(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, wd: Tone, r: RNG, vertical = false, mossCol?: string) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
+  const n = Math.max(2, Math.round((vertical ? w : h) / 4.5));
+  ctx.lineCap = 'round';
+  for (let i = 0; i < n; i++) {
+    const u = 0.12 + r() * 0.78;
+    ctx.strokeStyle = rgba(wd.deep, 0.18 + r() * 0.22);
+    ctx.lineWidth = 0.7 + r() * 0.9;
+    ctx.beginPath();
+    if (vertical) {
+      const xx = x + w * u;
+      ctx.moveTo(xx, y);
+      ctx.bezierCurveTo(xx + (r() - 0.5) * 4, y + h * 0.33, xx + (r() - 0.5) * 4, y + h * 0.66, xx + (r() - 0.5) * 3, y + h);
+    } else {
+      const yy = y + h * u;
+      ctx.moveTo(x, yy);
+      ctx.bezierCurveTo(x + w * 0.33, yy + (r() - 0.5) * 3, x + w * 0.66, yy + (r() - 0.5) * 3, x + w, yy + (r() - 0.5) * 2);
+    }
+    ctx.stroke();
+  }
+  // a knot
+  if (r() < 0.45) {
+    const kx = x + w * (0.25 + r() * 0.5);
+    const ky = y + h * (0.3 + r() * 0.4);
+    ctx.strokeStyle = rgba(wd.deep, 0.5);
+    ctx.lineWidth = 1;
+    for (let k = 1; k <= 2; k++) {
+      ctx.beginPath();
+      ctx.ellipse(kx, ky, (vertical ? 1.6 : 3.2) * k, (vertical ? 3.2 : 1.6) * k, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
+  // lit top edge
+  ctx.fillStyle = rgba(wd.hi, 0.55);
+  ctx.fillRect(x, y, w, 1.6);
+  ctx.restore();
+  if (mossCol && r() < 0.5) {
+    ctx.fillStyle = mossCol;
+    for (let k = 0; k < 3; k++) {
+      ctx.beginPath();
+      ctx.ellipse(x + w * (0.2 + r() * 0.6), y + 0.5, 2.6 + r() * 3, 1.5 + r() * 1.2, 0, Math.PI, 0);
+      ctx.fill();
+    }
+  }
+}
+
+function nailHeads(ctx: CanvasRenderingContext2D, pts: Array<[number, number]>, ol: string) {
+  for (const [nx, ny] of pts) {
+    ctx.fillStyle = rgba(ol, 0.8);
+    ctx.beginPath();
+    ctx.arc(nx, ny, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillRect(nx - 0.8, ny - 0.8, 0.9, 0.9);
+  }
+}
+
 function drawLog(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG) {
   const wd = woodTone(look);
   const h = Math.max(22, p.height + 6);
@@ -414,6 +497,8 @@ function drawBridge(ctx: CanvasRenderingContext2D, p: Platform, look: Look, time
     ctx.beginPath();
     ctx.roundRect(x, yy, w, 12, 3);
     stroked(ctx, g, ol, 2.2);
+    woodGrain(ctx, x + 1, yy + 1, w - 2, 10, wd, rng(i * 31 + p.id), false, i % 4 === 1 ? look.ground.capDark : undefined);
+    nailHeads(ctx, [[x + 3.5, yy + 6], [x + w - 3.5, yy + 6]], ol);
   }
   // end posts and the handrail
   for (const ex of [x0 + 2, x1 - 2]) {
@@ -452,10 +537,18 @@ function drawSlab(ctx: CanvasRenderingContext2D, p: Platform, look: Look, time: 
   const gr = ctx.createLinearGradient(0, p.y, 0, p.y + h);
   gr.addColorStop(0, st.light);
   gr.addColorStop(1, st.dark);
-  stroked(ctx, gr, g.outline);
+  const rich = RICH_GROUND(look);
+  stroked(ctx, rich ? getSoil(ctx, look, curWorld).soil : gr, g.outline);
   ctx.save();
   ctx.clip();
-  brickFill(ctx, p.x, p.y + 2, p.width, h, look, r);
+  if (rich) {
+    const ao = ctx.createLinearGradient(0, p.y, 0, p.y + h);
+    ao.addColorStop(0, 'rgba(20,8,0,0.4)');
+    ao.addColorStop(0.35, 'rgba(20,8,0,0)');
+    ao.addColorStop(1, 'rgba(20,8,0,0.35)');
+    ctx.fillStyle = ao;
+    ctx.fillRect(p.x, p.y, p.width, h + 4);
+  } else brickFill(ctx, p.x, p.y + 2, p.width, h, look, r);
   ctx.restore();
   ctx.beginPath();
   ctx.roundRect(p.x, p.y + 2, p.width, h, 8);
@@ -482,17 +575,18 @@ function drawPlanks(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: R
     ctx.beginPath();
     ctx.roundRect(x, p.y + jy, pw - 2, p.height + 2, 4);
     stroked(ctx, g, look.ground.outline, 2.6);
-    // grain + nails + cracks
-    ctx.strokeStyle = rgba(wd.deep, 0.45);
-    ctx.lineWidth = 1.4;
-    ctx.beginPath();
-    ctx.moveTo(x + pw * 0.4, p.y + jy + 4);
-    ctx.lineTo(x + pw * 0.35, p.y + jy + p.height - 2);
-    ctx.stroke();
-    ctx.fillStyle = rgba(look.ground.outline, 0.7);
-    ctx.beginPath();
-    ctx.arc(x + pw / 2, p.y + jy + 5, 1.6, 0, Math.PI * 2);
-    ctx.fill();
+    // grain, knots, moss and nails
+    woodGrain(ctx, x + 1, p.y + jy + 1, pw - 4, p.height, wd, rng(i * 53 + p.id), true, i % 3 === 0 ? look.ground.capDark : undefined);
+    nailHeads(ctx, [[x + pw / 2 - 1, p.y + jy + 5], [x + pw / 2 - 1, p.y + jy + p.height - 3]], look.ground.outline);
+    // splintered ends
+    if (i % 2 === 0) {
+      ctx.fillStyle = rgba(wd.dark, 0.9);
+      ctx.beginPath();
+      ctx.moveTo(x + 2, p.y + jy + p.height + 2);
+      ctx.lineTo(x + pw * 0.3, p.y + jy + p.height + 8);
+      ctx.lineTo(x + pw * 0.55, p.y + jy + p.height + 2);
+      ctx.fill();
+    }
   }
   // frayed ropes: this one will not hold
   ctx.strokeStyle = look.ground.outline;
@@ -1108,6 +1202,7 @@ export function renderWorldObjects(
   time: number
 ) {
   const look = lookFor(worldId);
+  curWorld = worldId;
   const left = cam.x - 160;
   const right = cam.x + cam.viewportWidth + 160;
   const bottom = cam.y + cam.viewportHeight + 60;

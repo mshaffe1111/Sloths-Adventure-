@@ -2,6 +2,9 @@ import type { PlayerState, Enemy, BossEntity, Collectible } from './types.ts';
 import { hexRgb, mixc, softBlob, glossEye } from './drawKit';
 import { drawMilo } from './miloVariants.ts';
 import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './creatures.ts';
+import { drawBloom, type Bloom } from './flora.ts';
+import { rng, tone } from './artKit.ts';
+import { leaf } from './rainforest.ts';
 
 export { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity };
 
@@ -1057,58 +1060,48 @@ export function drawCollectible(
     }
     case 'flower':
     case 'fruit': {
-      const isHibiscus = item.botanicalVariant === 'hibiscus';
-      const c1 = isHibiscus ? '#f2455e' : '#e85cc0';
-      const spin = Math.sin(time * 2) * 0.12;
-      const glow = ctx.createRadialGradient(0, 0, 2, 0, 0, 22);
-      glow.addColorStop(0, 'rgba(255, 230, 150, 0.55)');
-      glow.addColorStop(1, 'rgba(255, 230, 150, 0)');
+      // a glowing bloom; the species rotates through the collection so no two pickups in a row look alike
+      const glow = ctx.createRadialGradient(0, 0, 2, 0, 0, 24);
+      glow.addColorStop(0, 'rgba(255, 236, 170, 0.6)');
+      glow.addColorStop(1, 'rgba(255, 236, 170, 0)');
       ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(0, 0, 22, 0, Math.PI * 2);
+      ctx.arc(0, 0, 24, 0, Math.PI * 2);
       ctx.fill();
-      for (let i = 0; i < 5; i++) {
-        const a = (i / 5) * Math.PI * 2 - Math.PI / 2 + spin;
-        softBlob(ctx, Math.cos(a) * 8, Math.sin(a) * 8, 8.4, 6.6, a, c1, 0.3);
-      }
-      softBlob(ctx, 0, 0, 5.4, 5.4, 0, '#ffd23a', 0.2);
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(-1.6, -1.8, 1.7, 0, Math.PI * 2);
-      ctx.fill();
+      const species: Array<[Bloom, string, string]> = [
+        ['hibiscus', '#f2455e', '#ffd23a'],
+        ['orchid', '#f07ad8', '#ffe26a'],
+        ['plumeria', '#fff4e8', '#ffb43a'],
+        ['passion', '#b46aff', '#ffffff'],
+        ['hibiscus', '#ff8a2a', '#ffe26a'],
+        ['daisy', '#ffe66a', '#ff8a2a'],
+      ];
+      const [kind, c1, c2] = species[Math.abs(item.id) % species.length];
+      drawBloom(ctx, kind, 0, 0, 13, c1, c2, Math.sin(time * 2) * 0.12, rng(item.id * 17 + 3));
       break;
     }
 
     case 'leaf': {
+      // a lit, pointed leaf with golden veins and a gentle sway
       ctx.save();
-      ctx.rotate(0.2 + Math.sin(time * 2) * 0.06);
-      const lg = ctx.createLinearGradient(-14, -18, 14, 18);
-      lg.addColorStop(0, '#b6f07a');
-      lg.addColorStop(0.5, '#4cc04a');
-      lg.addColorStop(1, '#238a3c');
-      ctx.fillStyle = lg;
+      ctx.rotate(-0.9 + Math.sin(time * 2) * 0.06);
+      const glow = ctx.createRadialGradient(0, -10, 2, 0, -10, 26);
+      glow.addColorStop(0, 'rgba(200, 255, 140, 0.5)');
+      glow.addColorStop(1, 'rgba(200, 255, 140, 0)');
+      ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.moveTo(0, -20);
-      ctx.bezierCurveTo(18, -14, 18, 8, 0, 20);
-      ctx.bezierCurveTo(-18, 8, -18, -14, 0, -20);
+      ctx.arc(0, -10, 26, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255, 255, 210, 0.8)';
-      ctx.lineWidth = 1.8;
+      ctx.rotate(Math.PI / 2);
+      ctx.translate(-20, 0);
+      leaf(ctx, 0, 0, 40, 15, 0, tone('#42c04a'), 0.12, true);
+      ctx.strokeStyle = 'rgba(255, 244, 170, 0.9)';
+      ctx.lineWidth = 1.6;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(0, -17);
-      ctx.lineTo(0, 17);
-      for (let k = -10; k <= 8; k += 6) {
-        ctx.moveTo(0, k);
-        ctx.lineTo(8, k - 5);
-        ctx.moveTo(0, k);
-        ctx.lineTo(-8, k - 5);
-      }
+      ctx.moveTo(0, 0);
+      ctx.quadraticCurveTo(20, 2, 38, 4);
       ctx.stroke();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.beginPath();
-      ctx.ellipse(-6, -8, 3, 6, 0.5, 0, Math.PI * 2);
-      ctx.fill();
       ctx.restore();
       break;
     }
