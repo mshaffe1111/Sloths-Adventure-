@@ -102,6 +102,57 @@ function frondCluster(
 }
 
 /** How strongly each world is bathed in golden sunset light. */
+
+/**
+ * Per-world art direction, each matched to one of the reference illustrations:
+ * 1 bright toucan-jungle, 2 sunset river jungle, 3 dark teal glow, 4 misty blue-green,
+ * 5 black leaves around a bright clearing, 6 hazy lianas, 7 amber ruins, 8 purple dusk,
+ * 9 volcanic red, 10 storm.
+ */
+interface ArtDirection {
+  sky?: [string, string, string];
+  sun?: { x: number; y: number; r: number; c: string; glow: string } | null;
+  /** silhouette foreground leaves: count per corner, base colours, scale */
+  fg: { n: number; a: string; b: string; scale: number; vein: string; monstera?: boolean };
+  liana: number;
+  haze?: string;
+  grade: [string, string];
+  vignette: number;
+  flowers?: string;
+}
+const ART: Record<number, ArtDirection> = {
+  1: { sky: ['#8fd6ff', '#fff3a8', '#ffc766'], sun: { x: 0.52, y: 0.38, r: 52, c: '#fff6c2', glow: 'rgba(255,214,110,0.75)' },
+       fg: { n: 5, a: '#1d6a3a', b: '#2f8f46', scale: 0.9, vein: 'rgba(210,255,150,0.35)' }, liana: 0.8,
+       grade: ['rgba(255,236,150,0.08)', 'rgba(255,140,40,0.10)'], vignette: 0.28, flowers: '#ff5a52' },
+  2: { sky: ['#ff8a4a', '#ffb86a', '#ffe08a'], sun: { x: 0.5, y: 0.42, r: 96, c: '#fff0b0', glow: 'rgba(255,170,70,0.85)' },
+       fg: { n: 6, a: '#10261f', b: '#173a2c', scale: 1.0, vein: 'rgba(255,170,90,0.28)' }, liana: 0.2,
+       grade: ['rgba(255,120,40,0.14)', 'rgba(40,80,90,0.16)'], vignette: 0.4, flowers: '#ff8a1e' },
+  3: { sky: ['#06303a', '#0f6a66', '#8fe0a0'], sun: { x: 0.55, y: 0.5, r: 40, c: '#f5ffc0', glow: 'rgba(200,255,120,0.9)' },
+       fg: { n: 8, a: '#031c1f', b: '#06292a', scale: 1.25, vein: 'rgba(120,255,200,0.30)', monstera: true }, liana: 0.5,
+       grade: ['rgba(0,40,60,0.2)', 'rgba(0,0,0,0.12)'], vignette: 0.55, flowers: '#ff7a2a' },
+  4: { sky: ['#a9e6ff', '#d8f6ef', '#f7fbd8'], sun: null,
+       fg: { n: 4, a: '#2f7a5c', b: '#3f9b72', scale: 0.8, vein: 'rgba(230,255,230,0.4)' }, liana: 0.7, haze: 'rgba(235,250,255,0.28)',
+       grade: ['rgba(120,200,255,0.08)', 'rgba(200,255,220,0.06)'], vignette: 0.22, flowers: '#ff9a7a' },
+  5: { sky: ['#fff1b8', '#fff8d6', '#f2f0b8'], sun: { x: 0.5, y: 0.4, r: 70, c: '#fffbe0', glow: 'rgba(255,250,190,0.9)' },
+       fg: { n: 9, a: '#06231b', b: '#0b3226', scale: 1.4, vein: 'rgba(180,255,170,0.30)', monstera: true }, liana: 0.3,
+       grade: ['rgba(255,240,170,0.1)', 'rgba(0,30,20,0.18)'], vignette: 0.5, flowers: '#ff7d26' },
+  6: { sky: ['#f4f7c0', '#e3efa6', '#b9d986'], sun: null,
+       fg: { n: 5, a: '#1b4a2a', b: '#2a6a35', scale: 0.95, vein: 'rgba(220,255,160,0.35)' }, liana: 1.0, haze: 'rgba(240,248,190,0.3)',
+       grade: ['rgba(255,255,170,0.08)', 'rgba(40,90,40,0.12)'], vignette: 0.3, flowers: '#ff5f4a' },
+  7: { sky: ['#e58a3c', '#f6c26a', '#ffe9a8'], sun: { x: 0.7, y: 0.36, r: 64, c: '#fff1c2', glow: 'rgba(255,190,90,0.8)' },
+       fg: { n: 6, a: '#25180d', b: '#3a2612', scale: 1.0, vein: 'rgba(255,200,120,0.3)' }, liana: 0.4,
+       grade: ['rgba(255,170,60,0.12)', 'rgba(60,30,10,0.16)'], vignette: 0.42, flowers: '#ffb030' },
+  8: { sky: ['#1b1650', '#5b3a8c', '#ff9ab0'], sun: { x: 0.74, y: 0.26, r: 54, c: '#f4f1ff', glow: 'rgba(200,190,255,0.8)' },
+       fg: { n: 7, a: '#0a0820', b: '#150f33', scale: 1.15, vein: 'rgba(180,150,255,0.28)' }, liana: 0.45,
+       grade: ['rgba(80,40,160,0.18)', 'rgba(255,120,160,0.10)'], vignette: 0.5, flowers: '#c860ff' },
+  9: { sky: ['#4a0f12', '#c4381a', '#ffb347'], sun: { x: 0.62, y: 0.46, r: 84, c: '#ffe6a0', glow: 'rgba(255,110,30,0.9)' },
+       fg: { n: 8, a: '#1a0807', b: '#2c0e0a', scale: 1.15, vein: 'rgba(255,120,40,0.3)' }, liana: 0.2,
+       grade: ['rgba(255,60,20,0.16)', 'rgba(30,0,0,0.2)'], vignette: 0.5, flowers: '#ff4a22' },
+  10: { sky: ['#14122e', '#3a3f6e', '#8a90b8'], sun: null,
+       fg: { n: 8, a: '#07070f', b: '#10111f', scale: 1.2, vein: 'rgba(170,190,255,0.25)' }, liana: 0.3, haze: 'rgba(120,130,180,0.18)',
+       grade: ['rgba(40,40,120,0.2)', 'rgba(0,0,20,0.18)'], vignette: 0.55, flowers: '#8fb0ff' },
+};
+
 const WORLD_WARMTH: Record<number, number> = { 1: 0.8, 2: 0.6, 3: 0.2, 4: 0.5, 5: 0.6, 6: 0.3, 7: 0.45, 8: 0.4, 9: 0.7, 10: 0.15 };
 
 export class BackgroundEngine {
@@ -166,32 +217,42 @@ export class BackgroundEngine {
 
     // --- 1. Rainforest Sky Gradient with Canopy Mist ---
     const warmth = WORLD_WARMTH[world.id] ?? 0.5;
+    const art = ART[world.id];
     const skyGrad = ctx.createLinearGradient(0, 0, 0, vh);
-    skyGrad.addColorStop(0, pal.skyTop);
-    skyGrad.addColorStop(0.7, pal.skyBottom);
-    skyGrad.addColorStop(1, mix(pal.skyBottom, '#ff9f5a', warmth * 0.85));
+    if (art?.sky) {
+      skyGrad.addColorStop(0, art.sky[0]);
+      skyGrad.addColorStop(0.6, art.sky[1]);
+      skyGrad.addColorStop(1, art.sky[2]);
+    } else {
+      skyGrad.addColorStop(0, pal.skyTop);
+      skyGrad.addColorStop(0.7, pal.skyBottom);
+      skyGrad.addColorStop(1, mix(pal.skyBottom, '#ff9f5a', warmth * 0.85));
+    }
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, vw, vh);
 
-    // Warm storybook sunset glow low on the horizon
-    const sunX = vw * 0.6;
-    const sunY = vh * 0.3;
-    const glow = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, vw * 0.7);
-    glow.addColorStop(0, `rgba(255, 236, 170, ${0.25 + warmth * 0.6})`);
-    glow.addColorStop(0.35, `rgba(255, 150, 70, ${0.12 + warmth * 0.45})`);
-    glow.addColorStop(1, 'rgba(255, 150, 90, 0)');
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, vw, vh);
-    [150, 104].forEach((r, ri) => {
-      ctx.fillStyle = `rgba(255, 224, 140, ${0.1 + warmth * (ri ? 0.16 : 0.1)})`;
+    // Sun (per-world art direction)
+    const sunCfg = art ? art.sun : { x: 0.6, y: 0.3, r: 58, c: 'rgba(255, 246, 205, 0.95)', glow: 'rgba(255, 190, 90, 0.7)' };
+    if (sunCfg) {
+      const sunX = vw * sunCfg.x;
+      const sunY = vh * sunCfg.y;
+      const glow = ctx.createRadialGradient(sunX, sunY, sunCfg.r * 0.4, sunX, sunY, vw * 0.75);
+      glow.addColorStop(0, sunCfg.glow);
+      glow.addColorStop(0.3, sunCfg.glow.replace(/[\d.]+\)$/, '0.28)'));
+      glow.addColorStop(1, 'rgba(255, 150, 90, 0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, vw, vh);
+      [2.6, 1.8].forEach((m, ri) => {
+        ctx.fillStyle = `rgba(255, 236, 170, ${0.1 + ri * 0.1})`;
+        ctx.beginPath();
+        ctx.arc(sunX, sunY, sunCfg.r * m + Math.sin(time * 0.8 + ri) * 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.fillStyle = sunCfg.c;
       ctx.beginPath();
-      ctx.arc(sunX, sunY, r + Math.sin(time * 0.8 + ri) * 3, 0, Math.PI * 2);
+      ctx.arc(sunX, sunY, sunCfg.r, 0, Math.PI * 2);
       ctx.fill();
-    });
-    ctx.fillStyle = 'rgba(255, 246, 205, 0.95)';
-    ctx.beginPath();
-    ctx.arc(sunX, sunY, 58, 0, Math.PI * 2);
-    ctx.fill();
+    }
 
     // --- 2. Distant Misty Rainforest Mountain Ridges (Parallax 0.04) ---
     ctx.save();
@@ -1537,45 +1598,128 @@ export class BackgroundEngine {
   ) {
     const { viewportWidth: vw, viewportHeight: vh } = camera;
     const t = _time;
+    const art = ART[world.id] ?? ART[1];
+    const fg = art.fg;
     ctx.save();
-    const leaf = (x: number, y: number, len: number, ang: number, w: number, col: string) => {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(ang);
+
+    const frond = (len: number, wd: number, col: string, vein: string) => {
       ctx.fillStyle = col;
       ctx.beginPath();
       ctx.moveTo(0, 0);
-      ctx.quadraticCurveTo(len * 0.5, -w, len, 0);
-      ctx.quadraticCurveTo(len * 0.5, w, 0, 0);
+      ctx.bezierCurveTo(len * 0.25, -wd * 1.1, len * 0.75, -wd * 0.9, len, 0);
+      ctx.bezierCurveTo(len * 0.75, wd * 0.9, len * 0.25, wd * 1.1, 0, 0);
       ctx.fill();
-      ctx.restore();
+      ctx.strokeStyle = vein;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(len * 0.96, 0);
+      for (let k = 1; k < 6; k++) {
+        const x = (len * k) / 6.4;
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x + len * 0.09, -wd * 0.55);
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x + len * 0.09, wd * 0.55);
+      }
+      ctx.stroke();
     };
-    // Big dark silhouette leaves framing the screen (against the glowing backdrop)
-    [[0, 0, 1], [vw, 0, -1]].forEach(([cx, cy, dir]) => {
-      for (let k = 0; k < 7; k++) {
-        const sway = Math.sin(t * 0.8 + k + cx) * 0.035;
-        const a = dir > 0 ? 0.18 + k * 0.2 + sway : Math.PI - (0.18 + k * 0.2) + sway;
-        leaf(cx, cy, 190 + k * 34, a, 34 + k * 3, k % 2 ? '#0b2f2a' : '#0f3d33');
-        // light vein
+    const monstera = (size: number, col: string, vein: string) => {
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(size * 0.2, -size * 0.7, size * 1.0, -size * 0.75, size * 1.05, -size * 0.1);
+      ctx.bezierCurveTo(size * 1.0, size * 0.55, size * 0.3, size * 0.7, 0, 0);
+      ctx.fill();
+      // leaf splits drawn as light slits
+      ctx.strokeStyle = vein;
+      ctx.lineWidth = 3;
+      for (let k = 0; k < 4; k++) {
+        const a = -0.9 + k * 0.5;
+        ctx.beginPath();
+        ctx.moveTo(size * 0.55, -size * 0.08);
+        ctx.lineTo(size * 0.55 + Math.cos(a) * size * 0.38, -size * 0.08 + Math.sin(a) * size * 0.38);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = vein;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(size * 0.98, -size * 0.08);
+      ctx.stroke();
+    };
+
+    // Big dark silhouette foliage framing the screen against the glowing backdrop
+    const corner = (cx: number, cy: number, dir: number, down: boolean) => {
+      const n = down ? Math.max(3, Math.round(fg.n * 0.6)) : fg.n;
+      for (let k = 0; k < n; k++) {
+        const sway = Math.sin(t * 0.8 + k * 1.7 + cx * 0.01) * 0.035;
+        const spread = (k / Math.max(1, n - 1)) * 1.25 + 0.08;
+        let a = down ? -(0.15 + spread) : 0.15 + spread;
+        if (dir < 0) a = Math.PI - a;
+        a += sway;
         ctx.save();
         ctx.translate(cx, cy);
         ctx.rotate(a);
-        ctx.strokeStyle = 'rgba(160, 230, 120, 0.25)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(190 + k * 34, 0);
-        ctx.stroke();
+        const len = (150 + (k % 3) * 40 + k * 14) * fg.scale;
+        const col = k % 2 ? fg.a : fg.b;
+        if (fg.monstera && k % 3 === 1) monstera(len * 0.9, col, fg.vein);
+        else frond(len, (30 + k * 2.5) * fg.scale, col, fg.vein);
         ctx.restore();
       }
-    });
-    // Bottom corner ferns
-    [[0, vh, 1], [vw, vh, -1]].forEach(([cx, cy, dir]) => {
-      for (let k = 0; k < 4; k++) {
-        const sway = Math.sin(t * 0.9 + k * 1.3 + cx) * 0.05;
-        leaf(cx, cy, 110 + k * 24, dir > 0 ? -0.3 - k * 0.3 + sway : Math.PI + 0.3 + k * 0.3 + sway, 20 + k * 3, k % 2 ? '#14442f' : '#1d6a40');
+    };
+    corner(-10, -10, 1, false);
+    corner(vw + 10, -10, -1, false);
+    corner(-10, vh + 10, 1, true);
+    corner(vw + 10, vh + 10, -1, true);
+
+    // Hanging lianas from the top edge (with leaf clusters)
+    const lianaN = Math.round(art.liana * 7);
+    ctx.lineCap = 'round';
+    for (let i = 0; i < lianaN; i++) {
+      const x = ((i + 0.5) / lianaN) * vw + Math.sin(i * 12.3) * 40;
+      const len = 90 + ((i * 53) % 110) * (0.6 + art.liana * 0.5);
+      const sw = Math.sin(t * 0.9 + i * 1.7) * 7;
+      ctx.strokeStyle = fg.a;
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(x, -4);
+      ctx.bezierCurveTo(x + sw * 0.4, len * 0.3, x - sw, len * 0.7, x + sw, len);
+      ctx.stroke();
+      for (let k = 1; k <= 3; k++) {
+        const ly = (len * k) / 3.2;
+        const lx = x + Math.sin(k * 1.9 + i) * 6 + sw * (k / 3);
+        ctx.fillStyle = k % 2 ? fg.b : fg.a;
+        ctx.beginPath();
+        ctx.ellipse(lx + (k % 2 ? 9 : -9), ly, 11, 5.5, k % 2 ? 0.6 : -0.6, 0, Math.PI * 2);
+        ctx.fill();
       }
-    });
+      if (art.flowers && i % 3 === 0) {
+        ctx.fillStyle = art.flowers;
+        ctx.beginPath();
+        ctx.arc(x + sw, len + 3, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Atmosphere: haze, colour grade, vignette
+    if (art.haze) {
+      const hz = ctx.createLinearGradient(0, vh * 0.35, 0, vh);
+      hz.addColorStop(0, 'rgba(255,255,255,0)');
+      hz.addColorStop(1, art.haze);
+      ctx.fillStyle = hz;
+      ctx.fillRect(0, 0, vw, vh);
+    }
+    const gr = ctx.createLinearGradient(0, 0, 0, vh);
+    gr.addColorStop(0, art.grade[0]);
+    gr.addColorStop(1, art.grade[1]);
+    ctx.fillStyle = gr;
+    ctx.fillRect(0, 0, vw, vh);
+    const vg = ctx.createRadialGradient(vw / 2, vh / 2, vh * 0.45, vw / 2, vh / 2, vw * 0.72);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, `rgba(0,0,0,${art.vignette})`);
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, vw, vh);
+
     ctx.restore();
   }
 }

@@ -16,7 +16,7 @@ export default defineConfig(() => {
           id: '/',
           name: 'Sloths Rainforest Adventures',
           short_name: 'SlothAdv',
-          description: 'High-DPI side-scrolling action adventure game where Sloth navigates 10 lush rainforest stages to save Daisy.',
+          description: 'High-DPI side-scrolling action adventure game where Sloth navigates 10 lush rainforest stages to save Jennifur.',
           theme_color: '#0e3b28',
           background_color: '#0b1a13',
           display: 'standalone',

@@ -7,7 +7,10 @@ export type GameScreen =
   | 'victory'
   | 'game_over'
   | 'boss_intro'
-  | 'story_ending';
+  | 'story_ending'
+  | 'world_story'
+  | 'boss_defeat'
+  | 'ending_story';
 
 export type ObjectiveType =
   | 'sprint'       // Canopy Sprint (Reach exit totem)
@@ -144,6 +147,8 @@ export interface Enemy {
   diveAngle?: number;
   swoopPhase?: 'patrol' | 'telegraph' | 'swoop' | 'hover' | 'ascend';
   hoverTimer?: number;
+  /** cruising altitude for fliers (eagles return here after a swoop) */
+  homeY?: number;
 }
 
 export interface BossEntity extends Enemy {

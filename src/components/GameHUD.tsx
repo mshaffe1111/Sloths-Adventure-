@@ -20,6 +20,8 @@ interface GameHUDProps {
   bossTitle?: string;
   activePowerUp?: 'speed' | 'invincible' | 'magnet' | null;
   powerUpTimer?: number;
+  lives?: number;
+  maxLives?: number;
 }
 
 export const GameHUD: React.FC<GameHUDProps> = ({
@@ -40,6 +42,8 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   bossTitle,
   activePowerUp,
   powerUpTimer,
+  lives = 3,
+  maxLives = 3,
 }) => {
   const isDistanceObjective = [
     'sprint',
@@ -78,6 +82,14 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                 </div>
               );
             })}
+          </div>
+
+          {/* Lives */}
+          <div className="flex items-center gap-1.5 bg-black/60 px-3 py-1 rounded-2xl border border-amber-400/30 shadow-md w-fit">
+            <span className="text-amber-300 text-[11px] font-black tracking-wider">LIVES</span>
+            {Array.from({ length: maxLives }).map((_, i) => (
+              <span key={i} className={`text-base leading-none ${i < lives ? '' : 'opacity-25 grayscale'}`}>🦥</span>
+            ))}
           </div>
 
           {/* Current Level Badge */}

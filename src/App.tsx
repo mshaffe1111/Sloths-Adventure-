@@ -7,10 +7,26 @@ import { GameHUD } from './game/../components/GameHUD.tsx';
 import { TouchController } from './game/../components/TouchController.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
-import { StoryCutscene } from './game/../components/StoryCutscene.tsx';
+import { StoryPlayer } from './game/../components/StoryPlayer.tsx';
+import { INTRO_PANELS, WORLD_STORIES, ENDING_PANELS, bossPanels } from './game/story.ts';
+import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
+
+const worldStoryKey = (w: number) => `sloth_story_w${w}`;
+function hasSeenWorldStory(w: number): boolean {
+  try {
+    return localStorage.getItem(worldStoryKey(w)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markWorldStorySeen(w: number) {
+  try {
+    localStorage.setItem(worldStoryKey(w), '1');
+  } catch {}
+}
 
 export default function App() {
   const [screen, setScreen] = useState<GameScreen>('title');
@@ -37,6 +53,7 @@ export default function App() {
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
+  const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
 
   // Victory / Defeat snapshot states
@@ -117,13 +134,22 @@ export default function App() {
     setActiveLevel(lvl);
     setSelectedWorldId(lvl.worldIndex);
 
-    // If it's a boss level, show brief boss intro
-    if (lvl.objectiveType === 'boss_lair') {
+    // First visit to a world: play its story beat, then continue
+    if (lvl.miniIndex === 1 && !hasSeenWorldStory(lvl.worldIndex)) {
+      setScreen('world_story');
+    } else if (lvl.objectiveType === 'boss_lair') {
+      // Boss showdown cutscene before the fight
       setScreen('boss_intro');
     } else {
       launchEngine(lvl);
     }
   }, []);
+
+  const continueAfterWorldStory = (lvl: LevelConfig) => {
+    markWorldStorySeen(lvl.worldIndex);
+    if (lvl.objectiveType === 'boss_lair') setScreen('boss_intro');
+    else launchEngine(lvl);
+  };
 
   const launchEngine = useCallback((lvl: LevelConfig) => {
     if (engineRef.current) {
@@ -132,6 +158,7 @@ export default function App() {
     }
 
     setHp(5);
+    setLives(3);
     setScore(0);
     setCurrentCount(0);
     setTargetCount(lvl.targetCount);
@@ -162,12 +189,14 @@ export default function App() {
           // Save progression
           saveLevelProgress(lvl.id, stars, finalScore, timeSec);
 
-          if (lvl.worldIndex === 10 && lvl.miniIndex === 10) {
-            setScreen('story_ending');
+          if (lvl.objectiveType === 'boss_lair') {
+            // Boss defeated: play the defeat scene first
+            setScreen('boss_defeat');
           } else {
             setScreen('victory');
           }
         },
+        onLivesChange: (l) => setLives(l),
         onDefeat: (finalScore) => {
           setScore(finalScore);
           setScreen('game_over');
@@ -262,10 +291,61 @@ export default function App() {
 
       {/* Story Cutscene Mode */}
       {screen === 'story_cutscene' && (
-        <StoryCutscene
+        <StoryPlayer
+          panels={INTRO_PANELS}
+          finishLabel="Begin the journey ▶"
+          skipLabel="Skip intro"
           onFinish={() => {
+            markWorldStorySeen(1);
             startLevel(allLevels[0]);
           }}
+        />
+      )}
+
+      {/* World story beat (first visit) */}
+      {screen === 'world_story' && WORLD_STORIES[activeLevel.worldIndex] && (
+        <StoryPlayer
+          panels={WORLD_STORIES[activeLevel.worldIndex].panels}
+          finishLabel="Let's go ▶"
+          onFinish={() => continueAfterWorldStory(activeLevel)}
+        />
+      )}
+
+      {/* Boss showdown */}
+      {screen === 'boss_intro' && (
+        <StoryPlayer
+          panels={bossPanels(
+            activeLevel.worldIndex,
+            'intro',
+            (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName
+          )}
+          finishLabel="FIGHT! ⚔"
+          skipLabel="Skip to fight"
+          onFinish={() => launchEngine(activeLevel)}
+        />
+      )}
+
+      {/* Boss defeated */}
+      {screen === 'boss_defeat' && (
+        <StoryPlayer
+          panels={bossPanels(
+            activeLevel.worldIndex,
+            'defeat',
+            (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName
+          )}
+          finishLabel="Onward ▶"
+          onFinish={() =>
+            setScreen(activeLevel.worldIndex === 10 && activeLevel.miniIndex === 10 ? 'ending_story' : 'victory')
+          }
+        />
+      )}
+
+      {/* The ending */}
+      {screen === 'ending_story' && (
+        <StoryPlayer
+          panels={ENDING_PANELS}
+          finishLabel="The End ❤"
+          onFinish={() => setScreen('story_ending')}
         />
       )}
 
@@ -298,6 +378,7 @@ export default function App() {
             bossMaxHp={activeLevel.objectiveType === 'boss_lair' ? 10 : undefined}
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
+            lives={lives}
           />
           {inputEngineRef.current && (
             <TouchController inputEngine={inputEngineRef.current} />
@@ -309,7 +390,6 @@ export default function App() {
       {(screen === 'paused' ||
         screen === 'victory' ||
         screen === 'game_over' ||
-        screen === 'boss_intro' ||
         screen === 'story_ending') && (
         <StatusModals
           screen={screen}

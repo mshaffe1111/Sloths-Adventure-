@@ -220,11 +220,11 @@ export const WORLDS_DATA: WorldInfo[] = [
   {
     id: 10,
     name: 'Stormy Highlands Fortress',
-    subtitle: 'The treacherous summit stronghold where Daisy is held captive!',
+    subtitle: 'The treacherous summit stronghold where Jennifur is held captive!',
     theme: 'stormy_highlands',
     bossName: 'General Iron-Claw',
     bossTitle: 'The Warlord Baboon Overlord',
-    bossQuote: 'Gwahaha! You made it this far, Sloth? Daisy will never leave my tower!',
+    bossQuote: 'Gwahaha! You made it this far, Sloth? Jennifur will never leave my tower!',
     ambientType: 'thunderstorm',
     palette: {
       skyTop: '#090d16',
@@ -266,7 +266,7 @@ const OBJECTIVE_DESCRIPTIONS: Record<ObjectiveType, (target: number) => string> 
   relic_hunt: (target) => `Search ancient moss-covered tree hollows to uncover ${target} hidden Jungle Idols!`,
   rescue: (target) => `Smash bamboo cages to free ${target} trapped baby rainforest critters!`,
   gauntlet: (target) => `Fight through intense enemy ambushes, defeat ${target} predators, and reach the exit!`,
-  boss_lair: () => 'Confront the Stage Boss! Watch telegraphs, dodge devastating attacks, and rescue Daisy!',
+  boss_lair: () => 'Confront the Stage Boss! Watch telegraphs, dodge devastating attacks, and rescue Jennifur!',
 };
 
 /**
@@ -298,54 +298,54 @@ export function generateAllLevels(): LevelConfig[] {
       let levelWidth = 3200;
       let levelHeight = 900;
 
-      // Substantial level pacing: every stage is an expansive rainforest expedition (3800-5200px)
-      // providing 1.5 - 2.5 minutes of rich exploration, climbing, vine swinging, and combat
-      const worldScale = 1.0 + (world.id - 1) * 0.08;
+      // Level lengths run from short sprints to huge expeditions. The pattern differs per
+      // world so no two worlds feel like the same ten stages; world 1 stays gentle.
+      const pattern = [0.7, 1.0, 1.2, 1.0, 0.8, 1.3, 1.5, 0.9, 1.1];
+      const variety = pattern[(miniIndex + world.id * 3) % pattern.length];
+      const grow = 1 + 0.03 * (world.id - 1);
+      const sized = (base: number) => Math.round((base * Math.min(world.id === 1 ? 1.1 : 2, variety) * grow) / 100) * 100;
 
       switch (objType) {
         case 'sprint':
           targetCount = 1;
-          timeLimit = Math.max(90, 140 - world.id * 5); // 120s+ generous exploration time
-          levelWidth = Math.round(4200 * worldScale);
+          levelWidth = sized(4200);
+          timeLimit = Math.round(levelWidth / 35);
           break;
         case 'harvest':
           targetCount = 8 + (world.id - 1) * 2;
-          timeLimit = 0;
-          levelWidth = Math.round(4400 * worldScale);
+          levelWidth = sized(4800);
           break;
         case 'purge':
           targetCount = 5 + (world.id - 1);
-          timeLimit = 0;
-          levelWidth = Math.round(4200 * worldScale);
+          levelWidth = sized(4600);
           break;
         case 'ascent':
           targetCount = 1;
-          levelWidth = Math.round(3200 * worldScale);
+          levelWidth = Math.round(3200 * grow / 100) * 100;
           levelHeight = 1600 + world.id * 100;
           break;
         case 'stealth':
           targetCount = 1;
-          timeLimit = Math.max(100, 150 - world.id * 5);
-          levelWidth = Math.round(4400 * worldScale);
+          levelWidth = sized(5200);
+          timeLimit = Math.round(levelWidth / 35);
           break;
         case 'vine_runner':
           targetCount = 1;
-          timeLimit = Math.max(100, 150 - world.id * 5);
-          levelWidth = Math.round(4800 * worldScale);
+          levelWidth = sized(5600);
+          timeLimit = Math.round(levelWidth / 35);
           break;
         case 'relic_hunt':
           targetCount = 3;
-          levelWidth = Math.round(4400 * worldScale);
+          levelWidth = sized(5600);
           levelHeight = 1100;
           break;
         case 'rescue':
           targetCount = 3 + (world.id > 5 ? 1 : 0);
-          levelWidth = Math.round(4400 * worldScale);
+          levelWidth = sized(5000);
           break;
         case 'gauntlet':
           targetCount = 7 + (world.id - 1) * 2;
-          timeLimit = 0;
-          levelWidth = Math.round(4600 * worldScale);
+          levelWidth = Math.min(9500, Math.max(sized(5600), 4800 + targetCount * 130));
           break;
         case 'boss_lair':
           targetCount = 1;

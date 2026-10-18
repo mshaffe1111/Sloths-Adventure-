@@ -12,7 +12,9 @@ import type {
 } from './types.ts';
 import { WORLDS_DATA } from './worldsData.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
-import { backgroundEngine } from './backgroundEngine.ts';
+import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
+import { renderScenery, renderOverlay } from './scenery.ts';
+import { renderWorldObjects, drawWater } from './terrain.ts';
 import {
   drawHeroSloth,
   drawTreeSnake,
@@ -33,6 +35,9 @@ import {
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
 
+/** How many world units tall the screen shows. */
+const WORLD_VIEW_H = 540;
+
 export interface GameEngineCallbacks {
   onProgressUpdate: (
     current: number,
@@ -45,6 +50,7 @@ export interface GameEngineCallbacks {
   ) => void;
   onVictory: (stars: number, timeSec: number, score: number) => void;
   onDefeat: (score: number) => void;
+  onLivesChange?: (lives: number, maxLives: number) => void;
   onBossEncounter?: (boss: BossEntity) => void;
 }
 
@@ -63,6 +69,8 @@ export class GameEngine {
   private collectibles: Collectible[];
 
   private camera: Camera;
+  /** screen pixels per world unit */
+  private zoom = 1;
   private particles: Particle[] = [];
   private floatingTexts: FloatingText[] = [];
 
@@ -76,11 +84,18 @@ export class GameEngine {
 
   private hitstopTimer: number = 0;
   private gameTime: number = 0;
+  private standingOnId: number = -1;
+  /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
+  private launched = false;
   private runScore: number = 0;
   private comboCount: number = 0;
   private comboResetTimer: number = 0;
   private coyoteTimer: number = 0;
   private jumpBufferTimer: number = 0;
+  private lives: number = 3;
+  private readonly maxLives: number = 3;
+  private checkpoint = { x: 0, y: 0 };
+  private respawnFlash = 0;
 
   private exitTotemReached: boolean = false;
   private daisyRescued: boolean = false;
@@ -107,11 +122,13 @@ export class GameEngine {
 
     // Generate Stage data
     this.currentStage = generateStage(config);
+    if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
     this.enemies = this.currentStage.enemies;
     this.boss = this.currentStage.boss;
     this.collectibles = this.currentStage.collectibles;
+    this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
 
     // Initialize Hero Sloth
     this.player = {
@@ -180,14 +197,18 @@ export class GameEngine {
 
     this.canvas.width = Math.floor(w * dpr);
     this.canvas.height = Math.floor(h * dpr);
-    this.camera.viewportWidth = w;
-    this.camera.viewportHeight = h;
+    // The world is always about WORLD_VIEW_H tall on screen, so characters keep the same share of the
+    // screen on a phone, a tablet and a desktop (a hero is ~10% of the screen height, like a store platformer).
+    this.zoom = Math.max(0.5, Math.min(1.8, h / WORLD_VIEW_H));
+    this.camera.viewportWidth = w / this.zoom;
+    this.camera.viewportHeight = h / this.zoom;
   }
 
   public start() {
     if (this.isRunning) return;
     this.isRunning = true;
     this.lastTime = performance.now();
+    this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     this.loop(this.lastTime);
   }
 
@@ -246,6 +267,15 @@ export class GameEngine {
 
     const p = this.player;
 
+    // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
+    for (const plat of this.platforms) {
+      if (plat.type !== 'moving' || plat.broken) continue;
+      const nx = (plat.baseX ?? plat.x) + Math.sin(this.gameTime * (plat.moveSpeed ?? 1) + (plat.swayOffset ?? 0)) * (plat.moveRange ?? 0);
+      const dx = nx - plat.x;
+      plat.x = nx;
+      if (p.grounded && this.standingOnId === plat.id) p.x += dx;
+    }
+
     // --- Invincibility Timer ---
     if (p.invincibleTimer > 0) {
       p.invincibleTimer -= dt;
@@ -297,6 +327,8 @@ export class GameEngine {
       this.treeClimbAudioTimer -= dt;
     }
 
+    this.respawnFlash = Math.max(0, this.respawnFlash - dt);
+
     // --- Camera Trauma Shake Decay ---
     this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.2);
 
@@ -309,6 +341,11 @@ export class GameEngine {
     let nearSwingVine: Vine | null = null;
 
     for (const v of this.vines) {
+      // A liana we are already swinging on stays ours however far it carries us
+      if (p.isVineSwinging && v.id === p.swingVineId) {
+        nearSwingVine = v;
+        break;
+      }
       // Prevent instant magnetic re-grabbing when jumping off a vine!
       if (this.vineCooldownTimer > 0 && v.id === this.lastReleasedVineId) {
         continue;
@@ -389,7 +426,8 @@ export class GameEngine {
         const jumpDir = this.input.state.left ? -1 : this.input.state.right ? 1 : p.facing;
         p.facing = jumpDir as 1 | -1;
         p.vx = jumpDir * 330;
-        p.vy = -540; // floaty, heroic, natural arc
+        p.vy = -PHYS.treeLeapV;
+        this.launched = true;
         p.jumpsLeft = 2; // Gives double-jump in air for full player control!
         p.isDoubleJumping = false;
         p.somersaultAngle = 0;
@@ -408,7 +446,8 @@ export class GameEngine {
         this.lastReleasedVineId = nearTreeVine.id;
         p.facing = steerDir;
         p.vx = steerDir * 240;
-        p.vy = -220; // gentle natural hop away from trunk
+        p.vy = -PHYS.treeHopV;
+        this.launched = true;
         p.jumpsLeft = 2;
         sound.playJump();
       }
@@ -428,9 +467,12 @@ export class GameEngine {
         p.isVineSwinging = true;
         p.climbing = false;
         p.swingVineId = nearSwingVine.id;
-        p.swingLength = Math.max(80, Math.min(nearSwingVine.bottomY - nearSwingVine.topY - 10, p.y - nearSwingVine.topY));
-        p.swingAngle = Math.max(-0.65, Math.min(0.65, p.vx / 300));
-        p.swingAngularVelocity = p.vx / p.swingLength;
+        {
+          const sw = swingGrab({ x: p.x, y: p.y, vx: p.vx, vy: p.vy }, nearSwingVine);
+          p.swingLength = sw.len;
+          p.swingAngle = sw.angle;
+          p.swingAngularVelocity = sw.omega;
+        }
         p.jumpsLeft = 2;
         p.isDoubleJumping = false;
         p.somersaultAngle = 0;
@@ -442,38 +484,23 @@ export class GameEngine {
         p.somersaultAngle = 0;
         p.jumpsLeft = 2;
 
-        const g = 1600;
-        const angularAcc = (-g / Math.max(50, p.swingLength || 100)) * Math.sin(p.swingAngle || 0);
-        p.swingAngularVelocity = (p.swingAngularVelocity || 0) + angularAcc * dt;
-
-        if (this.input.state.right) {
-          p.swingAngularVelocity += 4.8 * dt;
-          p.facing = 1;
+        {
+          const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100 };
+          if (this.input.state.right) p.facing = 1;
+          if (this.input.state.left) p.facing = -1;
+          const steer = (this.input.state.right ? 1 : 0) - (this.input.state.left ? 1 : 0);
+          const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
+          const r = swingStep(sw, nearSwingVine, dt, steer as -1 | 0 | 1, climb as -1 | 0 | 1);
+          p.swingAngle = sw.angle;
+          p.swingAngularVelocity = sw.omega;
+          p.swingLength = sw.len;
+          p.x = r.x;
+          p.y = r.y;
+          p.vx = r.vx;
+          p.vy = r.vy;
+          nearSwingVine.swingAngle = sw.angle;
+          nearSwingVine.isSwingingVine = true;
         }
-        if (this.input.state.left) {
-          p.swingAngularVelocity -= 4.8 * dt;
-          p.facing = -1;
-        }
-
-        p.swingAngularVelocity *= 0.993;
-        p.swingAngle = (p.swingAngle || 0) + p.swingAngularVelocity * dt;
-        p.swingAngle = Math.max(-1.18, Math.min(1.18, p.swingAngle));
-
-        if (this.input.state.up) {
-          p.swingLength = Math.max(60, (p.swingLength || 100) - 150 * dt);
-        } else if (this.input.state.down) {
-          p.swingLength = Math.min(nearSwingVine.bottomY - nearSwingVine.topY, (p.swingLength || 100) + 150 * dt);
-        }
-
-        const vineLen = p.swingLength || 100;
-        p.x = nearSwingVine.x + Math.sin(p.swingAngle) * vineLen;
-        p.y = nearSwingVine.topY + Math.cos(p.swingAngle) * vineLen;
-        nearSwingVine.swingAngle = p.swingAngle;
-        nearSwingVine.isSwingingVine = true;
-
-        const tangSpeed = p.swingAngularVelocity * vineLen;
-        p.vx = Math.cos(p.swingAngle) * tangSpeed;
-        p.vy = -Math.sin(p.swingAngle) * tangSpeed;
 
         // --- NATURAL SWING EXIT 1: DROP / LET GO (Holding Down + Jump, or Down at low speed) ---
         if (this.input.state.down && this.input.state.jumpPressed) {
@@ -506,10 +533,13 @@ export class GameEngine {
             : (Math.sin(p.swingAngle) > 0.05 ? 1 : Math.sin(p.swingAngle) < -0.05 ? -1 : p.facing);
 
           p.facing = releaseDir as 1 | -1;
-          // Generous forward boost + heroic upward elevation arc
-          const launchSpeed = Math.max(350, Math.abs(p.vx) * 1.35 + 130);
-          p.vx = releaseDir * launchSpeed;
-          p.vy = Math.min(-460, p.vy - 320);
+          // Forward boost + heroic upward arc (capped so a big swing cannot rocket you off the map)
+          {
+            const l = tarzanLaunch(p.vx, p.vy, releaseDir as 1 | -1);
+            p.vx = l.vx;
+            p.vy = l.vy;
+            this.launched = true;
+          }
           p.jumpsLeft = 2; // Full air control - player can double jump mid-air!
           p.isDoubleJumping = false;
           p.somersaultAngle = 0;
@@ -546,30 +576,34 @@ export class GameEngine {
         // --- Standard Ground / Aerial Movement ---
         if (this.input.state.down && p.grounded) {
           p.ducking = true;
-          p.vx *= Math.pow(0.001, dt);
+          if (Math.abs(p.vx) <= PHYS.groundDec * dt) p.vx = 0;
+          else p.vx -= Math.sign(p.vx) * PHYS.groundDec * dt;
         } else {
           p.ducking = false;
 
-          const speedMult = p.activePowerUp === 'speed' ? 1.45 : 1.0;
-          const moveAcc = (p.grounded ? 1500 : 1150) * speedMult;
-          const maxSpeed = 275 * speedMult;
-          if (this.input.state.left) {
-            p.vx -= moveAcc * dt;
-            p.facing = -1;
-            if (p.vx < -maxSpeed) p.vx = -maxSpeed;
-          } else if (this.input.state.right) {
-            p.vx += moveAcc * dt;
-            p.facing = 1;
-            if (p.vx > maxSpeed) p.vx = maxSpeed;
+          const speedMult = p.activePowerUp === 'speed' ? 1.4 : 1.0;
+          const maxSpeed = PHYS.maxRun * speedMult;
+          const dir = this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
+          if (dir !== 0) {
+            p.facing = dir as 1 | -1;
+            const turning = p.grounded && Math.sign(p.vx) === -dir && Math.abs(p.vx) > 20;
+            const acc = (p.grounded ? PHYS.groundAcc : PHYS.airAcc) * speedMult + (turning ? PHYS.turnBonus : 0);
+            if (dir * p.vx < maxSpeed) {
+              p.vx += dir * acc * dt;
+              if (dir * p.vx > maxSpeed) p.vx = dir * maxSpeed;
+            } else {
+              // launched faster than run speed (vine release, bounce): bleed off gently
+              p.vx -= dir * PHYS.airDec * dt;
+            }
           } else {
-            const friction = p.grounded ? 0.001 : 0.35;
-            p.vx *= Math.pow(friction, dt);
-            if (Math.abs(p.vx) < 5) p.vx = 0;
+            const dec = p.grounded ? PHYS.groundDec : PHYS.airDec;
+            if (Math.abs(p.vx) <= dec * dt) p.vx = 0;
+            else p.vx -= Math.sign(p.vx) * dec * dt;
           }
         }
 
         if (p.grounded) {
-          this.coyoteTimer = 0.22;
+          this.coyoteTimer = PHYS.coyote;
         } else {
           this.coyoteTimer = Math.max(0, this.coyoteTimer - dt);
         }
@@ -580,7 +614,7 @@ export class GameEngine {
 
         if (this.input.state.jumpPressed) {
           if (p.grounded || this.coyoteTimer > 0) {
-            p.vy = -520;
+            p.vy = -PHYS.jumpV;
             p.grounded = false;
             p.jumpsLeft = 1;
             p.isDoubleJumping = false;
@@ -593,7 +627,7 @@ export class GameEngine {
             sound.playJump();
             this.spawnJumpDust(p.x, p.y);
           } else if (p.jumpsLeft > 0 && !p.climbing) {
-            p.vy = -490;
+            p.vy = -PHYS.doubleV;
             p.jumpsLeft = 0;
             p.isDoubleJumping = true;
             p.somersaultAngle = 0;
@@ -605,7 +639,7 @@ export class GameEngine {
             this.addFloatingText('DOUBLE JUMP!', p.x, p.y - 40, '#4ade80');
             this.spawnDoubleJumpBurst(p.x, p.y);
           } else {
-            this.jumpBufferTimer = 0.18;
+            this.jumpBufferTimer = PHYS.buffer;
             this.input.state.jumpPressed = false;
           }
         }
@@ -614,14 +648,17 @@ export class GameEngine {
           p.somersaultAngle += p.facing * dt * 14;
         }
 
-        if (!this.input.state.jumpHeld && p.vy < -280) {
-          p.vy = -280;
+        // Variable jump height: releasing early cuts the ascent (tap = hop, hold = full)
+        if (p.vy >= 0) this.launched = false;
+        if (!this.input.state.jumpHeld && p.vy < -PHYS.cutV && !this.launched) {
+          p.vy = -PHYS.cutV;
         }
 
-        // Gravity only when NOT climbing!
-        const gravity = 900;
+        // Gravity: lighter going up, heavier coming down, a touch of hang at the apex
+        let gravity = p.vy < 0 ? PHYS.gravUp : PHYS.gravDown;
+        if (Math.abs(p.vy) < 90 && this.input.state.jumpHeld) gravity *= 0.72;
         p.vy += gravity * dt;
-        if (p.vy > 800) p.vy = 800;
+        if (p.vy > PHYS.maxFall) p.vy = PHYS.maxFall;
 
         p.x += p.vx * dt;
         p.y += p.vy * dt;
@@ -634,13 +671,49 @@ export class GameEngine {
       }
 
       // Clamp horizontal level bounds (safely stops player right at the victory shrine altar)
-      const maxX = this.currentStage.exitTotemX > 0
+      const maxX = this.currentStage.exitTotemX > 0 && this.currentStage.config.objectiveType !== 'ascent'
         ? this.currentStage.exitTotemX + 35
         : this.currentStage.config.levelWidth - 20;
       p.x = Math.max(20, Math.min(maxX, p.x));
 
+      // --- Solid ground blocks: walls you cannot walk through (Mario-style) ---
+      if (!p.climbing && !p.isVineSwinging) {
+        const half = 19;
+        const prevX = p.x - p.vx * dt;
+        for (const plat of this.platforms) {
+          if (plat.broken || plat.type !== 'solid' || plat.height < 50) continue;
+          if (p.y <= plat.y + 6) continue; // standing on, or above, the top
+          if (p.x + half <= plat.x || p.x - half >= plat.x + plat.width) continue;
+          const fromLeft = prevX + half <= plat.x + 2;
+          const fromRight = prevX - half >= plat.x + plat.width - 2;
+          if (!fromLeft && !fromRight) continue;
+          if (p.y <= plat.y + 26 && p.vy >= -120) {
+            // caught the lip of the ledge: hoist up onto it
+            p.y = plat.y;
+            p.vy = 0;
+            continue;
+          }
+          p.x = fromLeft ? plat.x - half : plat.x + plat.width + half;
+          if (fromLeft && p.vx > 0) p.vx = 0;
+          if (fromRight && p.vx < 0) p.vx = 0;
+        }
+      }
+
+      // Mushrooms spring you up when you run into them, not only when you land on them
+      if (!p.climbing && !p.isVineSwinging) {
+        for (const plat of this.platforms) {
+          if (plat.type !== 'bouncy' || plat.broken) continue;
+          if (p.x + 12 > plat.x && p.x - 12 < plat.x + plat.width && p.y > plat.y && p.y <= plat.y + plat.height + 8 && p.vy >= -100) {
+            p.y = plat.y;
+            this.bounceOff();
+            break;
+          }
+        }
+      }
+
       // --- Platform Collisions (with generous edge forgiveness) ---
       p.grounded = false;
+      this.standingOnId = -1;
       const playerFeet = p.y;
       const playerPrevFeet = p.y - p.vy * dt;
 
@@ -654,6 +727,7 @@ export class GameEngine {
             p.y = plat.y;
             p.vy = 0;
             p.grounded = true;
+            this.standingOnId = plat.id;
             p.jumpsLeft = 2; // Restore double jump capability on landing
             p.isDoubleJumping = false;
             p.somersaultAngle = 0;
@@ -661,7 +735,7 @@ export class GameEngine {
             // Jump Buffering: If jump was tapped just before landing, instantly jump!
             if (this.jumpBufferTimer > 0) {
               this.jumpBufferTimer = 0;
-              p.vy = -520;
+              p.vy = -PHYS.jumpV;
               p.grounded = false;
               p.jumpsLeft = 1;
               p.squashX = 0.82;
@@ -678,17 +752,7 @@ export class GameEngine {
             }
 
             // Bouncy mushroom interaction
-            if (plat.type === 'bouncy') {
-              p.vy = -720;
-              p.grounded = false;
-              p.jumpsLeft = 1;
-              p.isDoubleJumping = false;
-              p.squashX = 0.78;
-              p.squashY = 1.38;
-              sound.playJump();
-              this.addFloatingText('BOING!', p.x, p.y - 40, '#facc15');
-              this.spawnSparkBurst(p.x, p.y, '#facc15');
-            }
+            if (plat.type === 'bouncy') this.bounceOff();
 
             // Fragile branch interaction
             if (plat.type === 'fragile') {
@@ -701,13 +765,26 @@ export class GameEngine {
         }
       }
 
-      // Fall off bottom check (forgiving recovery: 1 damage and safe respawn)
-      if (p.y > this.currentStage.config.levelHeight + 120) {
-        this.damagePlayer(1);
-        p.x = Math.max(100, p.x - 200);
-        p.y = 350;
-        p.vy = 0;
-        p.jumpsLeft = 2;
+      // Pits and water: falling below the surface costs a life (Mario-style)
+      const waterY = this.currentStage.waterY;
+      if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
+        this.spawnWaterSplash(p.x, waterY);
+        sound.playHitImpact(true);
+        this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
+        this.loseLife('water');
+      } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
+        this.loseLife('pit');
+      }
+
+      // Checkpoints
+      for (const cp of this.currentStage.checkpoints ?? []) {
+        if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40) {
+          cp.reached = true;
+          this.checkpoint = { x: cp.x, y: cp.y };
+          this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
+          this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
+          sound.playVineGrab();
+        }
       }
 
     // --- Fragile Platform Decay ---
@@ -836,7 +913,7 @@ export class GameEngine {
         } else if (e.swoopPhase === 'swoop') {
           // Swoop down at gentle readable speed (165 px/s)
           const diveSpeed = 165;
-          const targetY = Math.min(500, p.y - 10);
+          const targetY = Math.min((e.homeY ?? 310) + 190, p.y - 10);
           const dx = p.x - e.x;
           const dy = targetY - e.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -883,8 +960,8 @@ export class GameEngine {
           // Gently ascend back to sky patrol
           e.y -= 110 * dt;
           e.x += e.facing * 40 * dt;
-          if (e.y <= 310) {
-            e.y = 310;
+          if (e.y <= (e.homeY ?? 310)) {
+            e.y = e.homeY ?? 310;
             e.swoopPhase = 'patrol';
             e.attackCooldown = 4.0;
           }
@@ -1418,16 +1495,121 @@ export class GameEngine {
     p.invincibleTimer = 1.2; // 1.2s invulnerability
     p.squashX = 1.3;
     p.squashY = 0.7; // hurt flinch
-    p.vy = -280;     // small knockup
+    p.vy = -PHYS.hurtKnockV;     // small knockup
     p.vx = -p.facing * 180;
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
     this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
 
     if (p.hp <= 0 && !this.isGameOver) {
+      this.loseLife('hurt');
+    }
+  }
+
+  /** Lose a life and respawn at the last checkpoint, or end the run when none are left. */
+  private bounceOff() {
+    const p = this.player;
+    p.vy = -PHYS.bounceV;
+    this.launched = true;
+    p.grounded = false;
+    p.jumpsLeft = 1;
+    p.isDoubleJumping = false;
+    p.squashX = 0.78;
+    p.squashY = 1.38;
+    sound.playJump();
+    this.addFloatingText('BOING!', p.x, p.y - 40, '#facc15');
+    this.spawnSparkBurst(p.x, p.y, '#facc15');
+  }
+
+  private loseLife(reason: 'water' | 'pit' | 'hurt') {
+    const p = this.player;
+    this.lives -= 1;
+    this.callbacks.onLivesChange?.(this.lives, this.maxLives);
+    if (this.lives <= 0) {
       this.isGameOver = true;
       sound.playDefeat();
       this.callbacks.onDefeat(this.runScore);
+      return;
+    }
+    p.hp = p.maxHp;
+    p.x = this.checkpoint.x;
+    p.y = this.checkpoint.y;
+    p.vx = 0;
+    p.vy = 0;
+    p.grounded = false;
+    p.climbing = false;
+    p.isVineSwinging = false;
+    p.jumpsLeft = 2;
+    p.invincibleTimer = 2.0;
+    this.respawnFlash = 0.6;
+    this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * 0.45);
+    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * 0.55);
+    this.camera.targetX = this.camera.x;
+    this.camera.targetY = this.camera.y;
+    this.addFloatingText(
+      reason === 'hurt' ? 'TRY AGAIN!' : 'OH NO!',
+      p.x,
+      p.y - 60,
+      '#fca5a5'
+    );
+    if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 84, '#fde68a');
+  }
+
+  /** Pit water (behind the ground banks) and checkpoint flags. */
+  private drawWaterAndFlags(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number]) {
+    const waterY = this.currentStage.waterY;
+    const t = this.gameTime;
+    const x0 = this.camera.x - 20;
+    const x1 = this.camera.x + this.camera.viewportWidth + 20;
+    if (waterY !== undefined) {
+      const bottom = this.camera.y + this.camera.viewportHeight + 40;
+      drawWater(ctx, world.id, x0, x1, waterY, bottom, t);
+    }
+    for (const cp of this.currentStage.checkpoints ?? []) {
+      if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
+      ctx.save();
+      ctx.translate(cp.x, cp.y);
+      ctx.strokeStyle = '#6b4423';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, -78);
+      ctx.stroke();
+      const wave = Math.sin(t * 5) * 4;
+      ctx.fillStyle = cp.reached ? '#fde047' : '#e5e7eb';
+      ctx.beginPath();
+      ctx.moveTo(2, -76);
+      ctx.quadraticCurveTo(26, -80 + wave, 46, -66 + wave * 0.6);
+      ctx.quadraticCurveTo(26, -58 + wave, 2, -52);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = cp.reached ? '#f59e0b' : '#9ca3af';
+      ctx.beginPath();
+      ctx.arc(22, -66 + wave * 0.5, 5, 0, Math.PI * 2);
+      ctx.fill();
+      if (cp.reached) {
+        const g = ctx.createRadialGradient(0, -60, 4, 0, -60, 60);
+        g.addColorStop(0, 'rgba(253, 224, 71, 0.45)');
+        g.addColorStop(1, 'rgba(253, 224, 71, 0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(0, -60, 60, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+  }
+
+  private spawnWaterSplash(x: number, y: number) {
+    for (let i = 0; i < 26; i++) {
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * 1.5;
+      const sp = 160 + Math.random() * 260;
+      this.particles.push({
+        x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+        color: Math.random() < 0.5 ? '#bae6fd' : '#ffffff',
+        size: 3 + Math.random() * 4, life: 0.8, maxLife: 0.8, type: 'water',
+      });
     }
   }
 
@@ -1462,7 +1644,7 @@ export class GameEngine {
     const world = WORLDS_DATA[this.currentStage.config.worldIndex - 1] || WORLDS_DATA[0];
 
     ctx.save();
-    ctx.scale(dpr, dpr);
+    ctx.scale(dpr * this.zoom, dpr * this.zoom);
 
     // Clean viewport clearing to prevent any screen flicker or ghosting
     ctx.clearRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
@@ -1473,16 +1655,18 @@ export class GameEngine {
     const shakeY = (Math.random() - 0.5) * shakeMag;
 
     // 1. Render Multi-Layer Parallax Background
-    backgroundEngine.renderBackground(ctx, world, this.camera, this.gameTime);
+    renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
 
     // 2. Render In-World Game Elements with Camera Transform
     ctx.save();
     ctx.translate(-Math.round(this.camera.x) + shakeX, -Math.round(this.camera.y) + shakeY);
 
+    this.drawWaterAndFlags(ctx, world);
+
     // Render In-World Trees, Vines and Platforms
-    backgroundEngine.renderPlatformsAndVines(
+    renderWorldObjects(
       ctx,
-      world,
+      world.id,
       this.platforms,
       this.vines,
       this.currentStage.trees,
@@ -1495,7 +1679,7 @@ export class GameEngine {
       drawCollectible(ctx, item, this.gameTime);
     });
 
-    // Render Daisy if present in level
+    // Render Jennifur if present in level
     if (this.currentStage.daisyX !== undefined && this.currentStage.daisyY !== undefined) {
       drawGirlfriendDaisy(
         ctx,
@@ -1602,7 +1786,11 @@ export class GameEngine {
     ctx.restore(); // end world transform
 
     // 3. Render Foreground Foliage (Framing screen edges)
-    backgroundEngine.renderForeground(ctx, world, this.camera, this.gameTime);
+    renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
+    if (this.respawnFlash > 0) {
+      ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
+      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
+    }
 
     ctx.restore(); // end DPR transform
   }

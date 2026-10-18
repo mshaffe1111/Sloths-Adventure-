@@ -23,25 +23,25 @@ function getStageStoryClue(levelId: string): string {
   const stage = parts[1] || 1;
   switch (stage) {
     case 1:
-      return "🌸 Daisy's Petal: You spotted a fresh pink petal from Daisy's flower fluttering downstream! Milo knows she was carried into the highland canopy!";
+      return "🌸 Jennifur's Petal: You spotted a fresh pink petal from Jennifur's flower fluttering downstream! Slomatt knows she was carried into the highland canopy!";
     case 2:
-      return "🌿 Woven Ribbon: Daisy's hand-woven vine ribbon was found caught on a branch! She left it as a trail for Milo to follow!";
+      return "🌿 Woven Ribbon: Jennifur's hand-woven vine ribbon was found caught on a branch! She left it as a trail for Slomatt to follow!";
     case 3:
       return "🐾 Rescued Critters: A chirping jungle marmoset points upward: 'The lady with the flower was taken toward the sacred temple!'";
     case 4:
       return "🦅 Talon Gouges: Fresh Harpy Eagle claw marks on ancient banyan bark confirm General Iron-Claw flew towards the summit!";
     case 5:
-      return "✨ Secret Carving: Hidden under thick leaves, Daisy carved a sweet note on the trunk: 'Milo, I know you will save me!'";
+      return "✨ Secret Carving: Hidden under thick leaves, Jennifur carved a sweet note on the trunk: 'Slomatt, I know you will save me!'";
     case 6:
-      return "💨 Feathers in the Wind: Golden Harpy feathers litter the canyon rim, proof that you are closing in on Daisy!";
+      return "💨 Feathers in the Wind: Golden Harpy feathers litter the canyon rim, proof that you are closing in on Jennifur!";
     case 7:
       return "🗿 Ancient Inscription: The stone idol reveals: 'True courage and sharp claws shall shatter the tyrant's cage.'";
     case 8:
-      return "💕 Echoing Voice: In the quiet jungle mist, you hear Daisy calling your name from the mountain fortress ahead!";
+      return "💕 Echoing Voice: In the quiet jungle mist, you hear Jennifur calling your name from the mountain fortress ahead!";
     case 9:
-      return "⚡ Fortress Gate: The summit gates are within reach! Daisy's cage hangs from the highest bough of the Boss Lair!";
+      return "⚡ Fortress Gate: The summit gates are within reach! Jennifur's cage hangs from the highest bough of the Boss Lair!";
     default:
-      return "🎉 Daisy Rescued: Milo shatters the golden cage with a thunderous Mega Claw strike! Daisy leaps into your arms!";
+      return "🎉 Jennifur Rescued: Slomatt shatters the golden cage with a thunderous Mega Claw strike! Jennifur leaps into your arms!";
   }
 }
 
@@ -174,7 +174,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             </div>
           </div>
 
-          {/* Story Clue Card (Daisy Rescue Arc) */}
+          {/* Story Clue Card (Jennifur Rescue Arc) */}
           <div className="bg-emerald-950/80 border border-amber-400/50 rounded-2xl p-3 my-3 text-left flex items-start gap-2.5 shadow-inner">
             <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center shrink-0 text-base">
               🌸
@@ -182,7 +182,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             <div className="flex-1">
               <div className="flex items-center justify-between">
                 <span className="text-amber-300 font-black text-[11px] uppercase tracking-wider">
-                  Daisy's Trail: Clue Found!
+                  Jennifur's Trail: Clue Found!
                 </span>
                 {onViewStory && (
                   <button
@@ -245,7 +245,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             DEFEATED IN BATTLE
           </h2>
           <p className="text-xs text-stone-300 font-sans max-w-sm mx-auto mb-6">
-            The jungle predators were too fierce! Dust yourself off and try again—Daisy is counting on you!
+            The jungle predators were too fierce! Dust yourself off and try again—Jennifur is counting on you!
           </p>
 
           <div className="bg-black/50 border border-stone-800 p-3.5 rounded-2xl mb-6">
@@ -320,7 +320,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             DAISY IS SAVED!
           </h2>
           <p className="text-sm text-pink-100 font-sans max-w-md mx-auto mb-6">
-            Against all odds, Sloth trekked through 10 perilous rainforest worlds, conquered 100 daunting trials, and defeated General Iron-Claw! Sloth and Daisy are finally reunited, peacefully swinging through the sunlit canopy forever!
+            Slomatt trekked through ten perilous realms, passed one hundred trials, and faced down General Iron-Claw himself. Jennifur is home, the Heartbloom is glowing, and the canopy is at peace again.
           </p>
 
           <div className="bg-black/50 border border-amber-400/40 p-4 rounded-2xl mb-6">
