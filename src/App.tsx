@@ -54,6 +54,7 @@ export default function App() {
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
+  const [bossInfo, setBossInfo] = useState<{ name: string; hp: number; maxHp: number; phase: number } | null>(null);
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
 
@@ -158,6 +159,14 @@ export default function App() {
     }
   }, []);
 
+  // dev only: jump straight into any level (for testing and screenshots)
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __play?: (id: string) => void }).__play = (id: string) => {
+      const lvl = allLevels.find((l) => l.id === id);
+      if (lvl) launchEngine(lvl);
+    };
+  }
+
   const continueAfterWorldStory = (lvl: LevelConfig) => {
     markWorldStorySeen(lvl.worldIndex);
     if (lvl.objectiveType === 'boss_lair') setScreen('boss_intro');
@@ -199,6 +208,7 @@ export default function App() {
           setActivePowerUp(curPowerUp ?? null);
           setPowerUpTimer(curPowerTimer ?? 0);
         },
+        onBossUpdate: (info) => setBossInfo(info),
         onVictory: (stars, timeSec, finalScore) => {
           setStarsEarned(stars);
           setClearTime(timeSec);
@@ -405,8 +415,10 @@ export default function App() {
             isMuted={isMuted}
             onToggleMute={handleToggleMute}
             onPause={pauseGame}
-            bossHp={activeLevel.objectiveType === 'boss_lair' ? hp * 2 : undefined}
-            bossMaxHp={activeLevel.objectiveType === 'boss_lair' ? 10 : undefined}
+            bossHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hp ?? 1 : undefined}
+            bossMaxHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.maxHp ?? 1 : undefined}
+            bossName={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.name : undefined}
+            bossPhase={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.phase : undefined}
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
             lives={lives}

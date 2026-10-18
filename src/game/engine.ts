@@ -21,7 +21,6 @@ import {
   drawHarpyEagle,
   drawOcelot,
   drawHazardEntity,
-  drawBossEntity,
   drawGirlfriendDaisy,
   drawCollectible,
 } from './vectorArt.ts';
@@ -42,6 +41,10 @@ import {
   type AttackWant, type MoveId, type MoveSpec, type Rect,
 } from './fight.ts';
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
+import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability } from './bossAI.ts';
+import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
+import { bossDefFor } from './bossDefs.ts';
+import { drawBossFighter, drawHazards } from './bossArt.ts';
 
 /** How many world units tall the screen shows. */
 const WORLD_VIEW_H = 540;
@@ -65,6 +68,8 @@ export interface GameEngineCallbacks {
   onDefeat: (score: number) => void;
   onLivesChange?: (lives: number, maxLives: number) => void;
   onBossEncounter?: (boss: BossEntity) => void;
+  /** the boss bar: sent only when something on it changes */
+  onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number } | null) => void;
 }
 
 export class GameEngine {
@@ -80,6 +85,19 @@ export class GameEngine {
   private enemies: Enemy[];
   private boss: BossEntity | null;
   private collectibles: Collectible[];
+
+  // --- boss fight (rules in bossAI.ts / bossDefs.ts) ---
+  private hazards: BossHazard[] = [];
+  private bossDef: BossDef | null = null;
+  private bossCtx: BossCtx | null = null;
+  private bossIntro = false;
+  private bossSig = '';
+  private clangCd = 0;
+  /** seconds the player is stuck in web or goo (he runs slower) */
+  private slowTimer = 0;
+  private minionSeq = 0;
+  /** 1 = normal; below 1 pulls the camera back so the boss and Slomatt both stay in view */
+  private bossZoom = 1;
 
   private camera: Camera;
   /** screen pixels per world unit */
@@ -179,6 +197,7 @@ export class GameEngine {
     this.vines = this.currentStage.vines;
     this.enemies = this.currentStage.enemies;
     this.boss = this.currentStage.boss;
+    if (this.boss) this.bossDef = bossDefFor(config.worldIndex);
     this.collectibles = this.currentStage.collectibles;
     this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
 
@@ -300,7 +319,7 @@ export class GameEngine {
     const ease = 1 - Math.pow(1 - t, 3);
     const dolly = INTRO_ZOOM_FROM + (1 - INTRO_ZOOM_FROM) * ease;
     // never show more height than the level has
-    this.zoom = Math.max(base * dolly, h / levelH);
+    this.zoom = Math.max(base * dolly * this.bossZoom, h / levelH);
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -708,7 +727,7 @@ export class GameEngine {
         } else {
           p.ducking = false;
 
-          const speedMult = p.activePowerUp === 'speed' ? 1.4 : 1.0;
+          const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1);
           const maxSpeed = PHYS.maxRun * speedMult * this.attackMoveMul();
           const dir = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
           if (dir !== 0) {
@@ -1071,6 +1090,13 @@ export class GameEngine {
             break;
           }
         }
+      } else if (e.type === 'spider') {
+        // a spiderling scuttles straight at Slomatt
+        e.animTimer += dt;
+        const dir = p.x < e.x ? -1 : 1;
+        e.facing = dir;
+        e.x = Math.max(e.patrolMinX, Math.min(e.patrolMaxX, e.x + dir * 80 * dt));
+        if (checkAABBCollision(...this.pBox(), e.x - 16, e.y - 10, 32, 20)) this.damagePlayer(1);
       } else if (e.type === 'frog') {
         // Poison frog hopping
         e.animTimer += dt;
@@ -1080,63 +1106,10 @@ export class GameEngine {
       }
     }
 
-    // --- Boss AI (Stage 10 Hardcoded Boss Encounter) ---
-    if (this.boss && !this.boss.defeated) {
-      const b = this.boss;
-      if (b.hitFlashTimer > 0) b.hitFlashTimer -= dt;
-
-      b.behaviorTimer += dt;
-      b.specialAttackTimer -= dt;
-
-      // Boss phases based on HP
-      const hpRatio = b.hp / b.maxHp;
-      if (hpRatio <= 0.35 && b.phase < 3) {
-        b.phase = 3; // Enrage Phase 3!
-        sound.playBossRoar(this.currentStage.config.worldIndex);
-        sound.setTempo(1.08);
-        this.camera.trauma = 0.8;
-        this.addFloatingText('PHASE 3: ENRAGED!', b.x, b.y - 60, '#ef4444');
-      } else if (hpRatio <= 0.7 && b.phase < 2) {
-        b.phase = 2; // Phase 2
-        sound.playBossRoar(this.currentStage.config.worldIndex);
-        sound.setTempo(1.04);
-        this.camera.trauma = 0.5;
-        this.addFloatingText('PHASE 2: SPEED UP!', b.x, b.y - 60, '#f97316');
-      }
-
-      // Boss movement towards player
-      const bossSpeed = b.phase === 3 ? 95 : b.phase === 2 ? 65 : 45;
-      b.facing = p.x < b.x ? -1 : 1;
-      b.x += b.facing * bossSpeed * dt;
-
-      // Special attack: Seismic Smash or Dash
-      if (b.specialAttackTimer <= 0) {
-        b.specialAttackTimer = b.phase === 3 ? 2.5 : 4.0;
-        b.telegraphTimer = 0.75;
-        sound.playBossRoar(this.currentStage.config.worldIndex);
-      }
-
-      if (b.telegraphTimer > 0) {
-        b.telegraphTimer -= dt;
-        if (b.telegraphTimer <= 0) {
-          // Smash shockwave!
-          this.camera.trauma = 0.6;
-          sound.playHitImpact(true);
-          this.spawnDebrisBurst(b.x, b.y + 20, '#e2e8f0');
-
-          // Ground shockwave damages player if not jumping!
-          if (p.grounded && Math.abs(p.x - b.x) < 280) {
-            this.damagePlayer(1);
-            this.addFloatingText('SHOCKWAVE HIT!', p.x, p.y - 40, '#ef4444');
-          }
-        }
-      }
-
-      // Contact damage
-      if (checkAABBCollision(...this.pBox(), b.x - 30, b.y - 35, 60, 70)) {
-        this.damagePlayer(1);
-      }
-    }
+    // --- Boss fight ---
+    if (this.boss && this.bossDef && !this.boss.defeated) this.updateBoss(dt);
+    if (this.clangCd > 0) this.clangCd -= dt;
+    if (this.slowTimer > 0) this.slowTimer -= dt;
 
     // --- Collectibles Magnet Attraction (when Nectar Magnet power-up is active) ---
     if (p.activePowerUp === 'magnet') {
@@ -1360,6 +1333,7 @@ export class GameEngine {
     }
 
     // --- Camera Tracking ---
+    this.bossFrame(dt);
     this.updateCamera(dt);
 
     // Calculate progress ratio across the level
@@ -1418,6 +1392,219 @@ export class GameEngine {
     if (p.activePowerUp === 'invincible' || p.activePowerUp === 'speed') v = Math.max(v, 0.95);
     sound.setIntensity(Math.min(1, v));
     sound.setLowHealth(this.lives <= 1 && p.hp <= 1);
+  }
+
+  // ===========================================================================================
+  // The boss fight (rules live in bossAI.ts and bossDefs.ts; this is the part that touches the world)
+  // ===========================================================================================
+
+  /** what the boss may ask of the world this tick */
+  private bossContext(): BossCtx {
+    const p = this.player;
+    const arena = this.currentStage.arena ?? { left: 0, right: this.currentStage.config.levelWidth, floor: 560 };
+    if (!this.bossCtx) {
+      const world = this.currentStage.config.worldIndex;
+      this.bossCtx = {
+        px: p.x,
+        py: p.y,
+        pGrounded: p.grounded,
+        pDucking: p.ducking,
+        arena,
+        rnd: Math.random,
+        hazards: this.hazards,
+        minionsAlive: 0,
+        spawnMinion: (kind, x, y) => this.spawnMinion(kind, x, y),
+        shake: (a) => {
+          this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, a));
+        },
+        roar: () => sound.playBossRoar(world),
+        thud: (heavy) => sound.playHitImpact(heavy ?? true, bossMaterial(world)),
+        debris: (x, y, color) => this.spawnDebrisBurst(x, y, color),
+        text: (msg, x, y, color) => this.addFloatingText(msg, x, y, color),
+      };
+    }
+    const c = this.bossCtx;
+    c.px = p.x;
+    c.py = p.y;
+    c.pGrounded = p.grounded;
+    c.pDucking = p.ducking;
+    c.arena = arena;
+    let alive = 0;
+    for (const e of this.enemies) if (e.id >= 9000 && !e.defeated) alive++;
+    c.minionsAlive = alive;
+    return c;
+  }
+
+  /** a summoned animal joins the fight */
+  private spawnMinion(kind: 'spider' | 'snake' | 'ocelot' | 'frog' | 'eagle' | 'tayra', x: number, y: number) {
+    const arena = this.currentStage.arena;
+    if (!arena) return;
+    const f = arena.floor;
+    const id = 9000 + this.minionSeq++;
+    const mk = (w: number, h: number, hp: number, oy: number, vx: number): Enemy => ({
+      id, type: kind, x, y: f - oy, vx, vy: 0, width: w, height: h, hp, maxHp: hp, facing: vx >= 0 ? 1 : -1,
+      patrolMinX: arena.left + 30, patrolMaxX: arena.right - 30, attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false,
+      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
+    });
+    let e: Enemy;
+    if (kind === 'ocelot') e = mk(48, 28, 2, 18, x < (arena.left + arena.right) / 2 ? 55 : -55);
+    else if (kind === 'tayra') e = mk(46, 26, 1, 15, 70);
+    else if (kind === 'spider') {
+      e = mk(34, 22, 1, 12, 0);
+      (e as unknown as { noThread: boolean }).noThread = true;
+    } else e = mk(38, 22, 1, 14, 30);
+    e.x = Math.max(arena.left + 30, Math.min(arena.right - 30, x));
+    this.enemies.push(e);
+    this.spawnDebrisBurst(e.x, f - 10, '#e5e7eb');
+  }
+
+  private updateBoss(dt: number) {
+    const b = this.boss!;
+    const def = this.bossDef!;
+    const br = b.ai;
+    if (!br) return;
+    const p = this.player;
+    const c = this.bossContext();
+    const world = this.currentStage.config.worldIndex;
+    if (b.hitFlashTimer > 0) b.hitFlashTimer -= dt;
+    b.behaviorTimer += dt;
+
+    if (!this.bossIntro) {
+      this.bossIntro = true;
+      sound.playBossRoar(world);
+      this.camera.trauma = Math.max(this.camera.trauma, 0.5);
+    }
+
+    if (br.state === 'dying') {
+      this.stepBossDeath(b, def, dt);
+      return;
+    }
+
+    const prevPhase = b.phase;
+    const prevState = br.state;
+    stepBoss(b, def, c, dt);
+
+    if (b.phase !== prevPhase) {
+      if (b.phase === 3) {
+        sound.setTempo(1.08);
+        this.addFloatingText('PHASE 3: ENRAGED!', b.x, b.y - b.height, '#ef4444');
+      } else {
+        sound.setTempo(1.04);
+        this.addFloatingText('PHASE 2: SPEED UP!', b.x, b.y - b.height, '#f97316');
+      }
+    }
+    if (br.state === 'tell' && prevState !== 'tell') sound.playPredator('jaguar', 0);
+    if (br.state === 'act' && prevState !== 'act') sound.playWhoosh();
+    if (br.state === 'stun' && prevState !== 'stun') this.hitstopTimer = Math.max(this.hitstopTimer, 0.08);
+
+    stepHazards(this.hazards, c.arena, dt, {
+      land: (x, y, heavy, color) => {
+        this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, heavy ? 0.4 : 0.2));
+        sound.playHitImpact(heavy, bossMaterial(world));
+        this.spawnDebrisBurst(x, y - 6, color);
+      },
+    });
+
+    // ---- what hurts Slomatt ----
+    const boxes: Rect[] = [];
+    if (bodyHurts(b)) boxes.push({ x: b.x - b.width / 2, y: b.y - b.height / 2, w: b.width, h: b.height });
+    for (const r of br.hurt) boxes.push(r);
+    const hz: Array<{ r: Rect; h: BossHazard }> = [];
+    for (const h of this.hazards) {
+      const r = hazardBox(h);
+      if (r) hz.push({ r, h });
+    }
+    if (this.debugBoxes) {
+      for (const r of boxes) this.dbgHurt.push(r);
+      for (const z of hz) this.dbgHurt.push(z.r);
+    }
+    const pb = this.pBox();
+    for (const r of boxes) {
+      if (checkAABBCollision(...pb, r.x, r.y, r.w, r.h)) {
+        this.damagePlayer(1);
+        break;
+      }
+    }
+    for (const { r, h } of hz) {
+      if (!checkAABBCollision(...pb, r.x, r.y, r.w, r.h)) continue;
+      if (h.eff === 'slow') {
+        if (this.slowTimer <= 0) this.addFloatingText('STUCK!', p.x, p.y - 50, '#e2e8f0');
+        this.slowTimer = Math.max(this.slowTimer, h.kind === 'puddle' ? 0.4 : 2.5);
+        if (h.kind !== 'puddle') h.spent = true;
+      }
+      if (h.dmg > 0 && p.invincibleTimer <= 0 && this.stompGrace <= 0) {
+        this.damagePlayer(h.dmg);
+        if (h.kind === 'glob' || h.kind === 'bolt' || h.kind === 'web') h.spent = true;
+        if (h.kind === 'bolt' || h.kind === 'glob') h.life = 0;
+      }
+    }
+
+    this.reportBoss();
+  }
+
+  private stepBossDeath(b: BossEntity, def: BossDef, dt: number) {
+    const br = b.ai!;
+    br.t += dt;
+    br.air += (0 - br.air) * Math.min(1, dt * 5);
+    b.y = (this.currentStage.arena?.floor ?? 560) - b.height / 2 - br.air;
+    if (Math.random() < dt * 14) this.spawnDebrisBurst(b.x + (Math.random() - 0.5) * def.w, b.y + (Math.random() - 0.5) * def.h, '#fde68a');
+    if (br.t > 0.2) this.camera.trauma = Math.max(this.camera.trauma, 0.35);
+    if (br.t >= 2.0) {
+      b.defeated = true;
+      this.daisyRescued = true;
+      sound.playBossVictory();
+      this.camera.trauma = 0.9;
+      this.addFloatingText('VICTORY! JENNIFUR IS SAVED!', b.x, b.y - 70, '#ec4899');
+      this.spawnDebrisBurst(b.x, b.y, '#dc2626');
+    }
+    this.reportBoss();
+  }
+
+  /** tell the HUD about the boss, only when its bar would change */
+  private reportBoss() {
+    const b = this.boss;
+    const def = this.bossDef;
+    if (!b || !def || !this.callbacks.onBossUpdate) return;
+    const sig = `${b.hp}|${b.phase}|${b.defeated ? 1 : 0}`;
+    if (sig === this.bossSig) return;
+    this.bossSig = sig;
+    this.callbacks.onBossUpdate(b.defeated ? null : { name: def.name, hp: b.hp, maxHp: b.maxHp, phase: b.phase });
+  }
+
+  /** while the boss lives the fight is fenced in, and the camera follows both fighters */
+  private bossFrame(dt: number) {
+    const b = this.boss;
+    const arena = this.currentStage.arena;
+    if (!b || !arena || b.defeated) {
+      if (this.bossZoom !== 1) {
+        this.bossZoom = 1;
+        this.applyZoom();
+      }
+      return;
+    }
+    const p = this.player;
+    if (p.x < arena.left + 14) {
+      p.x = arena.left + 14;
+      if (p.vx < 0) p.vx = 0;
+    } else if (p.x > arena.right - 14) {
+      p.x = arena.right - 14;
+      if (p.vx > 0) p.vx = 0;
+    }
+    // pull back just far enough that both of them fit
+    const w = this.viewCssW;
+    const h = this.viewCssH;
+    if (!w || !h) return;
+    const levelH = this.currentStage.config.levelHeight;
+    const portrait = h > w;
+    let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
+    base = Math.max(0.5, Math.min(1.8, base));
+    const baseViewW = w / base;
+    const need = Math.abs(p.x - b.x) + 440;
+    const want = Math.max(baseViewW, Math.min(need, arena.right - arena.left + 200));
+    const target = Math.max(0.4, baseViewW / want);
+    const prev = this.bossZoom;
+    this.bossZoom += (target - this.bossZoom) * Math.min(1, dt * 2.2);
+    if (Math.abs(this.bossZoom - prev) > 0.001) this.applyZoom();
   }
 
   // ===========================================================================================
@@ -1652,25 +1839,70 @@ export class GameEngine {
 
   private hitBoss(b: BossEntity, m: MoveSpec, box: Rect, hr: Rect) {
     const world = this.currentStage.config.worldIndex;
+    const def = this.bossDef;
+    const c = this.bossContext();
     const cp = contactPoint(box, hr);
-    b.hp -= m.bossDamage;
+    const vul = vulnerability(b);
+
+    // roaring or dying: nothing gets through
+    if (vul === 'closed') {
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.03);
+      sound.playHitImpact(false, 'armor');
+      return;
+    }
+
+    if (vul === 'armored') {
+      if (!m.heavy) {
+        // a light hit bounces off a boss that is mid-attack: wait for the opening
+        this.hitstopTimer = Math.max(this.hitstopTimer, 0.04);
+        sound.playHitImpact(false, 'armor');
+        this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
+        if (this.clangCd <= 0) {
+          this.clangCd = 0.45;
+          this.addFloatingText('CLANG!', b.x, b.y - b.height * 0.7, '#cbd5e1');
+        }
+        return;
+      }
+      // a heavy blow breaks the attack
+      if (def) interruptBoss(b, def, c);
+    }
+
+    let dmg = m.bossDamage;
+    const crit = vul === 'stunned';
+    if (crit) dmg = Math.ceil(dmg * 1.5);
+    b.hp = Math.max(0, b.hp - dmg);
     b.hitFlashTimer = 0.15;
     this.hitstopTimer = Math.max(this.hitstopTimer, m.hitstop + 0.02);
     this.camera.trauma = Math.min(1, this.camera.trauma + 0.4);
     sound.playHitImpact(true, bossMaterial(world));
     if (m.kind === 'kick') this.spawnKickHitBurst(cp.x, cp.y);
     else this.spawnClawHitSparks(cp.x, cp.y, true);
+    this.comboCount++;
+    this.comboResetTimer = 2.0;
     const pts = calculateHitScore('boss', m.kind === 'mega', this.comboCount) * (m.kind === 'kick' ? 2 : 1);
     this.runScore += pts;
-    this.addFloatingText(`BOSS HIT! +${pts}`, b.x, b.y - 45, '#facc15');
-    if (b.hp <= 0) {
-      b.defeated = true;
-      this.daisyRescued = true;
-      sound.playBossVictory();
-      this.camera.trauma = 0.9;
-      this.addFloatingText('VICTORY! DAISY SAVED!', b.x, b.y - 70, '#ec4899');
-      this.spawnDebrisBurst(b.x, b.y, '#dc2626');
+    this.addFloatingText(crit ? `CRITICAL! +${pts}` : `BOSS HIT! +${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
+    if (b.hp <= 0) this.startBossDeath(b);
+  }
+
+  /** the last hit: the boss does not vanish, it falls apart */
+  private startBossDeath(b: BossEntity) {
+    const br = b.ai;
+    if (br) {
+      br.state = 'dying';
+      br.t = 0;
+      br.hurt = [];
+      br.move = null;
+      br.alpha = 1;
     }
+    b.telegraphTimer = 0;
+    b.isAttacking = false;
+    this.hazards.length = 0;
+    for (const e of this.enemies) if (!e.defeated && e.id >= 9000) this.knockOut(e, e.x >= b.x ? 1 : -1, 'FREE!');
+    this.hitstopTimer = Math.max(this.hitstopTimer, 0.3);
+    this.camera.trauma = 1;
+    this.addFloatingText('K.O.!', b.x, b.y - b.height, '#fde047');
+    this.spawnDebrisBurst(b.x, b.y, '#fde047');
   }
 
   /** an animal is beaten: it is launched away in its own style instead of vanishing */
@@ -1897,6 +2129,8 @@ export class GameEngine {
       this.callbacks.onDefeat(this.runScore);
       return;
     }
+    this.hazards.length = 0;
+    this.slowTimer = 0;
     p.hp = p.maxHp;
     p.x = this.checkpoint.x;
     p.y = this.checkpoint.y;
@@ -1991,6 +2225,14 @@ export class GameEngine {
     const lookAhead = p.facing * 90;
     this.camera.targetX = p.x - vw * 0.45 + lookAhead;
     this.camera.targetY = p.y - vh * 0.55;
+    const bs = this.boss;
+    if (bs && !bs.defeated && this.currentStage.arena) {
+      // frame both fighters, but never let Slomatt slip off the edge
+      let tx = (p.x + bs.x) / 2 - vw / 2;
+      tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
+      this.camera.targetX = tx;
+      this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * 0.7);
+    }
 
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * 6.5);
@@ -2083,12 +2325,14 @@ export class GameEngine {
     });
 
     // Render Boss
-    if (this.boss && !this.boss.defeated) {
-      drawBossEntity(ctx, this.boss, this.gameTime, this.currentStage.config.worldIndex);
+    if (this.boss && !this.boss.defeated && this.bossDef) {
+      drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560);
     }
 
     // Render Hero Sloth
     drawHeroSloth(ctx, this.player, this.gameTime);
+    // the boss's attacks go over him, so a warning is never hidden behind Slomatt
+    if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);
     if (this.debugBoxes) this.drawHitboxes(ctx);
 
     // Contextual Action Badges (Climb Tree / Swing Liana / Jump Off)

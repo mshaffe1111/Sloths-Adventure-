@@ -1,6 +1,7 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
 import type { LevelConfig } from '../game/types.ts';
+import { BOSS_TIPS } from '../game/bossDefs.ts';
 
 interface StatusModalsProps {
   screen: 'paused' | 'victory' | 'game_over' | 'boss_intro' | 'story_ending';
@@ -327,8 +328,14 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
               "{levelConfig.description}"
             </p>
             <p className="text-xs text-stone-300 font-sans">
-              Tactical Advice: Dodge seismic shockwaves by jumping on upper branches or swinging from vines. Watch for attack telegraph rings and counter-attack with Mega Punch!
+              {BOSS_TIPS[levelConfig.worldIndex] ?? 'Watch for the red warning.'}
             </p>
+            <p className="text-xs text-amber-200/90 font-sans mt-2">
+              A red glow means an attack is coming: light hits bounce off, but a hook or a Mega Punch breaks it. When it tires out, hit it with everything.
+            </p>
+            {typeof window !== 'undefined' && window.innerHeight > window.innerWidth && (
+              <p className="text-xs text-sky-300 font-sans mt-2 font-bold">↻ Turn your phone sideways to see the whole fight.</p>
+            )}
           </div>
 
           <button
@@ -351,7 +358,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
         <div className="w-full max-w-lg bg-stone-950/90 border-2 border-pink-400 rounded-3xl p-6 sm:p-8 text-center shadow-2xl">
           <div className="text-5xl mb-3">❤️</div>
           <h2 className="text-3xl sm:text-4xl font-black text-pink-300 text-stroke mb-2">
-            DAISY IS SAVED!
+            JENNIFUR IS SAVED!
           </h2>
           <p className="text-sm text-pink-100 font-sans max-w-md mx-auto mb-6">
             Slomatt trekked through ten perilous realms, passed one hundred trials, and faced down General Iron-Claw himself. Jennifur is home, the Heartbloom is glowing, and the canopy is at peace again.

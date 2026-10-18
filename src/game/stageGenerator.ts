@@ -13,6 +13,8 @@ import { WORLDS_DATA } from './worldsData.ts';
 import { reachJump } from './physics.ts';
 import { swingLandings, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
+import { bossMaxHp, newBrain } from './bossAI.ts';
+import { bossDefFor } from './bossDefs.ts';
 
 export interface GeneratedStage {
   config: LevelConfig;
@@ -28,6 +30,8 @@ export interface GeneratedStage {
   exitTotemY: number;
   daisyX?: number;
   daisyY?: number;
+  /** boss levels: the fenced fighting area (the player is kept inside while the boss lives) */
+  arena?: { left: number; right: number; floor: number };
   /** mid-level respawn flags (Mario-style) */
   checkpoints?: Array<{ x: number; y: number; reached: boolean }>;
   /** y of the water/pit surface; falling below it costs a life */
@@ -968,31 +972,35 @@ function buildAscent(gen: Gen): GeneratedStage {
 function buildBoss(gen: Gen): GeneratedStage {
   const cfg = gen.cfg;
   const world = WORLDS_DATA[cfg.worldIndex - 1] || WORLDS_DATA[0];
+  const def = bossDefFor(cfg.worldIndex);
   const floor = 560;
+  // the fenced arena: wide enough to dodge in, small enough that a phone screen can show the whole fight
+  const left = 760;
+  const right = 1840;
   gen.plat({ x: 0, y: floor, width: cfg.levelWidth, height: 80, type: 'solid', style: 'log' });
 
-  for (const tx of [420, 1380]) {
-    const tree: TreeStructure = { id: gen.tid++, x: tx, groundY: floor, topY: 110, trunkWidth: 80, hasClimbVine: true, canopyRadius: 160 };
+  // two great trunks are the walls
+  for (const tx of [left - 40, right + 40]) {
+    const tree: TreeStructure = { id: gen.tid++, x: tx, groundY: floor, topY: 90, trunkWidth: 90, hasClimbVine: true, canopyRadius: 170 };
     gen.T.push(tree);
-    gen.V.push({ id: gen.vid++, x: tx, topY: 140, bottomY: 540, swaySpeed: 1.0, swayPhase: tx > 800 ? 1 : 0, vineType: 'tree_climb', treeId: tree.id });
+    gen.V.push({ id: gen.vid++, x: tx, topY: 140, bottomY: 540, swaySpeed: 1.0, swayPhase: tx > 1300 ? 1 : 0, vineType: 'tree_climb', treeId: tree.id });
   }
-  gen.V.push({ id: gen.vid++, x: 880, topY: 130, bottomY: 480, swaySpeed: 1.2, swayPhase: 0.5, vineType: 'swing_liana', isSwingingVine: true });
 
-  for (const b of [{ x: 310, y: 420, w: 240 }, { x: 750, y: 350, w: 260 }, { x: 1260, y: 420, w: 240 }]) {
-    gen.plat({ x: b.x, y: b.y, width: b.w, height: 28, type: 'solid', style: 'branch' });
+  // a high perch in the middle and a low branch on each side: somewhere to jump to, never a place to hide
+  for (const b of [{ x: left + 70, y: 440, w: 200 }, { x: right - 270, y: 440, w: 200 }, { x: (left + right) / 2 - 130, y: 340, w: 260 }]) {
+    gen.plat({ x: b.x, y: b.y, width: b.w, height: 26, type: 'solid', style: 'branch' });
   }
-  gen.plat({ x: 180, y: 530, width: 70, height: 30, type: 'bouncy' });
-  gen.plat({ x: 1620, y: 530, width: 70, height: 30, type: 'bouncy' });
 
-  const maxHp = 10 + cfg.worldIndex * 4;
+  const maxHp = bossMaxHp(cfg.worldIndex);
   const boss: BossEntity = {
-    id: 1, type: 'boss', x: 1200, y: 510, vx: -40, vy: 0, width: 60, height: 70, hp: maxHp, maxHp,
-    facing: -1, patrolMinX: 300, patrolMaxX: 1700, attackCooldown: 2.5, telegraphTimer: 0, isAttacking: false,
+    id: 1, type: 'boss', x: right - 160, y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
+    facing: -1, patrolMinX: left, patrolMaxX: right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
-    specialAttackTimer: 4, shieldActive: false, dialogueIntro: world.bossQuote, dialogueDefeat: 'Nooo! Defeated by a sloth...!',
+    specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote, dialogueDefeat: 'Nooo! Defeated by a sloth...!',
+    ai: newBrain(),
   };
-  gen.item('heart', 400, 380);
-  gen.item('heart', 1350, 380);
+  gen.item('heart', left + 170, 400);
+  gen.item('heart', right - 170, 400);
 
   return {
     config: cfg,
@@ -1002,12 +1010,13 @@ function buildBoss(gen: Gen): GeneratedStage {
     enemies: [],
     boss,
     collectibles: gen.C,
-    spawnX: 140,
+    spawnX: left + 90,
     spawnY: floor,
     exitTotemX: cfg.levelWidth - 220,
     exitTotemY: floor,
-    daisyX: 1800,
-    daisyY: 490,
+    daisyX: right + 150,
+    daisyY: floor - 70,
+    arena: { left, right, floor },
   };
 }
 

@@ -17,6 +17,7 @@ interface GameHUDProps {
   bossHp?: number;
   bossMaxHp?: number;
   bossName?: string;
+  bossPhase?: number;
   bossTitle?: string;
   activePowerUp?: 'speed' | 'invincible' | 'magnet' | null;
   powerUpTimer?: number;
@@ -39,6 +40,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   bossHp,
   bossMaxHp,
   bossName,
+  bossPhase,
   bossTitle,
   activePowerUp,
   powerUpTimer,
@@ -107,7 +109,11 @@ export const GameHUD: React.FC<GameHUDProps> = ({
             <div className="flex flex-col items-center w-48 sm:w-80 bg-black/70 border border-red-500/50 px-3 py-1.5 rounded-2xl shadow-xl">
               <div className="flex items-center justify-between w-full mb-1">
                 <span className="text-red-400 font-black text-[10px] sm:text-xs uppercase tracking-wider truncate">{bossName || 'STAGE BOSS'}</span>
-                <span className="text-stone-300 text-[9px] sm:text-[10px] hidden sm:inline">{bossTitle || 'Apex Predator'}</span>
+                <span className="text-stone-300 text-[9px] sm:text-[10px] flex items-center gap-0.5" aria-label={`Phase ${bossPhase ?? 1} of 3`}>
+                  {[1, 2, 3].map((n) => (
+                    <span key={n} className={`inline-block w-2 h-2 rounded-full border ${n <= (bossPhase ?? 1) ? 'bg-red-500 border-red-300' : 'bg-stone-800 border-stone-600'}`} />
+                  ))}
+                </span>
               </div>
               <div className="w-full h-3 bg-stone-900 rounded-full border border-stone-700 overflow-hidden relative">
                 <div
