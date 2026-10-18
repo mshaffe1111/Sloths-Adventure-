@@ -86,7 +86,7 @@ export default function App() {
   // Music and ambience follow the screen. Cutscenes pick their own music panel by panel (see StoryPlayer).
   useEffect(() => {
     const w = activeLevel.worldIndex;
-    sound.screen(screen, w, activeLevel.objectiveType === 'boss_lair');
+    sound.screen(screen, w, activeLevel.objectiveType === 'boss_lair', activeLevel.id, activeLevel.miniIndex);
     const worldAmbient = (WORLDS_DATA[w - 1] || WORLDS_DATA[0]).ambientType;
     if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
     else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');

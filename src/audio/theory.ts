@@ -99,6 +99,13 @@ export function parseChord(s: string): Chord {
 }
 
 /** pitch classes of a chord, reduced to one octave */
+/** the same chord moved up `semis` semitones (modulation); the original is left alone */
+export function shiftChord(c: Chord, semis: number): Chord {
+  if (!semis) return c;
+  const m = (x: number) => (((x + semis) % 12) + 12) % 12;
+  return { ...c, rootPc: m(c.rootPc), bassPc: m(c.bassPc) };
+}
+
 export const chordPcs = (c: Chord) => c.tones.map((t) => (c.rootPc + t) % 12);
 
 /** the chord's tones as MIDI notes with the root at the lowest `root >= base` */

@@ -7,6 +7,7 @@
  * user gesture; scene changes asked for before that are remembered and start the moment audio is allowed.
  */
 import { Ambience, type AmbientType } from './ambience.ts';
+import { COMBO_WINDOW, nextVariant } from './combat.ts';
 import { AudioCore } from './core.ts';
 import { Playback, type KeyInfo } from './music.ts';
 import { SFX, runFx } from './sfx.ts';
@@ -46,6 +47,10 @@ export interface SceneOptions {
   intensity?: number;
   /** restart the piece even if it is already playing */
   restart?: boolean;
+  /** per-stage number: a different seed starts the same piece at a different point and develops it differently */
+  seed?: number;
+  /** playing speed, 1 = as written */
+  tempo?: number;
 }
 
 /** minimum seconds between two plays of the same effect, so a held button or a coin spray never machine-guns */
@@ -59,6 +64,7 @@ export class Conductor {
   private timer: ReturnType<typeof setInterval> | null = null;
 
   private wantTheme: string | null = null;
+  private wantKey: string | null = null;
   private wantOpts: SceneOptions = {};
   private wantAmbient: AmbientType | null = null;
   private intensity = 0.4;
@@ -68,6 +74,9 @@ export class Conductor {
   private lastFx = new Map<string, number>();
   private recentFx: number[] = [];
   private lite = false;
+  private lastVariant = new Map<string, number>();
+  private streak = 0;
+  private lastHitAt = -10;
 
   musicVol = readNum(KEY_MUSIC, 1);
   sfxVol = readNum(KEY_SFX, 1);
@@ -117,10 +126,12 @@ export class Conductor {
 
   /** play the piece for a scene (an id in THEMES), or null for silence */
   setScene(id: string | null, opts: SceneOptions = {}) {
-    if (id === this.wantTheme && !opts.restart) {
+    const key = id ? `${id}#${opts.seed ?? 0}` : null;
+    if (key === this.wantKey && !opts.restart) {
       if (opts.intensity !== undefined) this.setIntensity(opts.intensity);
       return;
     }
+    this.wantKey = key;
     this.wantTheme = id;
     this.wantOpts = opts;
     if (opts.intensity !== undefined) this.intensity = opts.intensity;
@@ -141,7 +152,7 @@ export class Conductor {
     if (!id) return;
     const theme = THEMES[id];
     if (!theme) return;
-    const pb = new Playback(core, theme, core.ctx.currentTime + 0.08, undefined, !first || !!old);
+    const pb = new Playback(core, theme, core.ctx.currentTime + 0.08, undefined, !first || !!old, { seed: opts.seed, tempo: opts.tempo });
     pb.liteMode = this.lite;
     pb.setIntensity(opts.intensity ?? this.intensity, true);
     this.playback = pb;
@@ -155,6 +166,11 @@ export class Conductor {
   setIntensity(v: number) {
     this.intensity = Math.max(0, Math.min(1, v));
     this.playback?.setIntensity(this.intensity);
+  }
+
+  /** speed the music up or down (1 = as written); eases in over a few bars. Used when a boss enrages. */
+  setTempo(scale: number) {
+    this.playback?.setTempo(scale);
   }
 
   /** the key of the music right now (sound effects play in it) */
@@ -197,7 +213,16 @@ export class Conductor {
     const trivial = name === 'step' || name === 'leaf' || name === 'climb' || name === 'land';
     if (this.recentFx.length > (trivial ? 5 : 12)) return;
     this.recentFx.push(now);
-    runFx(name, core, this.key(), arg);
+    // a different version each time (never the same twice in a row), and a combo counter for landed hits
+    const variant = nextVariant(this.lastVariant.get(name) ?? -1, 4, Math.random());
+    this.lastVariant.set(name, variant);
+    if (name === 'hit') {
+      this.streak = now - this.lastHitAt < COMBO_WINDOW ? this.streak + 1 : 1;
+      this.lastHitAt = now;
+    } else if (name === 'defeat' && now - this.lastHitAt >= COMBO_WINDOW) {
+      this.streak = 0;
+    }
+    runFx(name, core, this.key(), arg, { variant, streak: this.streak });
   }
 
   /** a piece of written music over the top; the music underneath ducks */
@@ -290,6 +315,8 @@ export class Conductor {
       time: this.ctx?.currentTime ?? 0,
       scene: this.wantTheme,
       playing: this.playback?.theme.id ?? null,
+      seed: this.playback?.seed ?? null,
+      tempo: this.playback?.tempo ?? null,
       ambient: this.amb?.type ?? null,
       intensity: this.intensity,
       muted: this.muted,

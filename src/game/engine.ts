@@ -34,6 +34,7 @@ import {
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
+import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { isPredator, stepPredator } from './predatorAI.ts';
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
 
@@ -306,7 +307,7 @@ export class GameEngine {
           e.hp = 0;
           e.defeated = true;
           p.enemiesDefeated++;
-          sound.playEnemyDefeated();
+          sound.playEnemyDefeated(e.type);
           this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.2);
           this.spawnDebrisBurst(e.x, e.y, '#facc15');
           this.addFloatingText('STAR K.O.! +300', e.x, e.y - 30, '#facc15');
@@ -1015,12 +1016,14 @@ export class GameEngine {
       const hpRatio = b.hp / b.maxHp;
       if (hpRatio <= 0.35 && b.phase < 3) {
         b.phase = 3; // Enrage Phase 3!
-        sound.playBossRoar();
+        sound.playBossRoar(this.currentStage.config.worldIndex);
+        sound.setTempo(1.08);
         this.camera.trauma = 0.8;
         this.addFloatingText('PHASE 3: ENRAGED!', b.x, b.y - 60, '#ef4444');
       } else if (hpRatio <= 0.7 && b.phase < 2) {
         b.phase = 2; // Phase 2
-        sound.playBossRoar();
+        sound.playBossRoar(this.currentStage.config.worldIndex);
+        sound.setTempo(1.04);
         this.camera.trauma = 0.5;
         this.addFloatingText('PHASE 2: SPEED UP!', b.x, b.y - 60, '#f97316');
       }
@@ -1034,7 +1037,7 @@ export class GameEngine {
       if (b.specialAttackTimer <= 0) {
         b.specialAttackTimer = b.phase === 3 ? 2.5 : 4.0;
         b.telegraphTimer = 0.75;
-        sound.playBossRoar();
+        sound.playBossRoar(this.currentStage.config.worldIndex);
       }
 
       if (b.telegraphTimer > 0) {
@@ -1359,7 +1362,7 @@ export class GameEngine {
         e.hp -= isMega ? 3 : 1;
         e.hitFlashTimer = 0.18;
         this.hitstopTimer = isMega ? 0.08 : 0.04; // Juice hitstop!
-        sound.playHitImpact(isMega);
+        sound.playHitImpact(isMega, materialFor(e.type));
         this.camera.trauma = Math.min(1.0, this.camera.trauma + (isMega ? 0.35 : 0.15));
 
         this.comboCount++;
@@ -1378,7 +1381,7 @@ export class GameEngine {
         if (e.hp <= 0) {
           e.defeated = true;
           p.enemiesDefeated++;
-          sound.playEnemyDefeated();
+          sound.playEnemyDefeated(e.type);
           this.addFloatingText(`+${pts}`, e.x, e.y - 25, '#86efac');
           this.spawnDebrisBurst(e.x, e.y, e.type === 'eagle' ? '#f59e0b' : '#22c55e');
         } else {
@@ -1398,7 +1401,7 @@ export class GameEngine {
         b.hitFlashTimer = 0.15;
         this.hitstopTimer = 0.08;
         this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.4);
-        sound.playHitImpact(true);
+        sound.playHitImpact(true, bossMaterial(this.currentStage.config.worldIndex));
         this.spawnClawHitSparks(b.x, b.y, true);
 
         const pts = calculateHitScore('boss', isMega, this.comboCount);
@@ -1422,7 +1425,7 @@ export class GameEngine {
         const dist = distance2D(punchX, punchY, c.x, c.y);
         if (dist < punchRadius + 25) {
           c.cageHp = (c.cageHp ?? 2) - (isMega ? 2 : 1);
-          sound.playHitImpact(true);
+          sound.playHitImpact(true, 'chitin');
           this.spawnDebrisBurst(c.x, c.y, '#ca8a04');
 
           if (c.cageHp <= 0) {
@@ -1457,7 +1460,7 @@ export class GameEngine {
         e.hp -= 2; // Kick does 2 damage (heavy impact!)
         e.hitFlashTimer = 0.2;
         this.hitstopTimer = 0.06;
-        sound.playHitImpact(true);
+        sound.playHitImpact(true, materialFor(e.type));
         this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.25);
 
         this.comboCount++;
@@ -1476,7 +1479,7 @@ export class GameEngine {
         if (e.hp <= 0) {
           e.defeated = true;
           p.enemiesDefeated++;
-          sound.playEnemyDefeated();
+          sound.playEnemyDefeated(e.type);
           this.addFloatingText(`K.O.! +${pts}`, e.x, e.y - 25, '#fb923c');
           this.spawnDebrisBurst(e.x, e.y, e.type === 'eagle' ? '#f59e0b' : '#f97316');
         } else {
@@ -1496,7 +1499,7 @@ export class GameEngine {
         b.hitFlashTimer = 0.2;
         this.hitstopTimer = 0.08;
         this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.35);
-        sound.playHitImpact(true);
+        sound.playHitImpact(true, bossMaterial(this.currentStage.config.worldIndex));
         this.spawnKickHitBurst(b.x, b.y);
 
         const pts = calculateHitScore('boss', false, this.comboCount) * 2;
@@ -1520,7 +1523,7 @@ export class GameEngine {
         const dist = distance2D(kickX, kickY, c.x, c.y);
         if (dist < kickRadius + 25) {
           c.cageHp = (c.cageHp ?? 2) - 2;
-          sound.playHitImpact(true);
+          sound.playHitImpact(true, 'chitin');
           this.spawnDebrisBurst(c.x, c.y, '#f97316');
 
           if (c.cageHp <= 0) {

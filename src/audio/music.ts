@@ -23,6 +23,7 @@ import {
   parsePattern,
   rng,
   SCALES,
+  shiftChord,
   toneAt,
   voiceLead,
   type Chord,
@@ -138,6 +139,20 @@ interface BarChord {
   left: number;
 }
 
+export interface PlaybackOpts {
+  /** per-stage number: the same world theme then differs from stage to stage */
+  seed?: number;
+  /** playing speed, 1 = as written */
+  tempo?: number;
+  /** begin at this pass through the loop (for testing a particular arrangement) */
+  startLoop?: number;
+}
+
+const clampTempo = (x: number) => Math.max(0.8, Math.min(1.25, x));
+
+/** instruments that carry the low end: they drop out in a breakdown */
+const LOW_INSTS = new Set<string>(['bass', 'subBass', 'synthBass']);
+
 export interface KeyInfo {
   tonic: number;
   scale: number[];
@@ -150,8 +165,16 @@ export class Playback {
   private readonly core: AudioCore;
   private readonly c: BaseAudioContext;
   private readonly spb: number;
-  readonly stepDur: number;
   private readonly tonic: number;
+  /** which stage this is: shifts where in the arrangement the piece starts and which generated bars it gets */
+  readonly seed: number;
+  /** playing speed (1 = as written); eases toward `tempoTarget` one bar at a time */
+  private tempoScale = 1;
+  private tempoTarget = 1;
+  /** semitones the piece is currently lifted by (the final-pass key change) */
+  private sh = 0;
+  /** riser and crash for the breakdown bars */
+  private readonly accent: GainNode;
   private readonly scale: number[];
   private readonly barChords: BarChord[];
   private tracks: RuntimeTrack[] = [];
@@ -168,18 +191,22 @@ export class Playback {
   /** scheduling stopped: the notes already queued ring out while the piece fades away */
   retired = false;
 
-  constructor(core: AudioCore, theme: Theme, startAt: number, out?: GainNode, fadeIn = false) {
+  constructor(core: AudioCore, theme: Theme, startAt: number, out?: GainNode, fadeIn = false, opts: PlaybackOpts = {}) {
     this.core = core;
     this.c = core.ctx;
     this.theme = theme;
     this.spb = theme.stepsPerBar ?? 16;
-    this.stepDur = 60 / theme.bpm / 4;
+    this.seed = Math.abs(Math.floor(opts.seed ?? 0));
+    this.tempoScale = this.tempoTarget = clampTempo(opts.tempo ?? 1);
     this.tonic = noteMidi(theme.tonic);
     this.scale = SCALES[theme.scale];
     this.nextTime = startAt;
     this.out = out ?? core.ctx.createGain();
     this.out.gain.value = fadeIn ? 0 : theme.level ?? 1;
     this.out.connect(core.music);
+    this.accent = this.c.createGain();
+    this.accent.gain.value = 0.8;
+    this.accent.connect(core.withReverb(this.out, 0.25));
 
     const chords = theme.chords.map(parseChord);
     this.barChords = [];
@@ -216,7 +243,28 @@ export class Playback {
       }
       this.tracks.push(rt);
     }
-    core.setDelayTime((60 / theme.bpm) * (theme.delay ?? 0.75));
+    core.setDelayTime(this.stepDur * 4 * (theme.delay ?? 0.75));
+    this.bar = Math.max(0, Math.floor(opts.startLoop ?? 0)) * this.barChords.length;
+  }
+
+  /** current playing speed (1 = as written) */
+  get tempo() {
+    return this.tempoScale;
+  }
+
+  /** seconds per 16th note at the current tempo */
+  get stepDur() {
+    return 60 / (this.theme.bpm * this.tempoScale) / 4;
+  }
+
+  /** ask for a different playing speed (1 = as written); it eases in over a few bars */
+  setTempo(scale: number) {
+    this.tempoTarget = clampTempo(scale);
+  }
+
+  /** which pass of the 4-pass arrangement a loop is: 0 statement, 1 answer, 2 breakdown, 3 lift */
+  static phaseOf(loop: number, seed: number) {
+    return (loop + (seed % 2)) % 4;
   }
 
   get loopBars() {
@@ -224,7 +272,7 @@ export class Playback {
   }
 
   key(): KeyInfo {
-    return { tonic: this.tonic, scale: this.scale };
+    return { tonic: this.tonic + this.sh, scale: this.scale };
   }
 
   setIntensity(v: number, snap = false) {
@@ -272,6 +320,11 @@ export class Playback {
   }
 
   private beginBar() {
+    // tempo glides toward its target, half the remaining distance each bar
+    if (Math.abs(this.tempoTarget - this.tempoScale) > 0.0005) {
+      this.tempoScale += (this.tempoTarget - this.tempoScale) * 0.5;
+      this.core.setDelayTime(this.stepDur * 4 * (this.theme.delay ?? 0.75));
+    }
     const barDur = this.stepDur * this.spb;
     // intensity glides toward its target: quicker up than down
     const tau = this.targetIntensity > this.intensity ? 1.2 : 4;
@@ -282,7 +335,21 @@ export class Playback {
     const L = this.barChords.length;
     const barInLoop = this.bar % L;
     const loop = Math.floor(this.bar / L);
-    const bc = this.barChords[barInLoop];
+    // the arrangement: every pass through the loop is dressed differently, and each stage starts at a different pass
+    const phase = Playback.phaseOf(loop, this.seed);
+    const lp = loop + (this.seed % 2);
+    const sh = phase === 3 ? 2 : 0;
+    this.sh = sh;
+    const calm = this.targetIntensity < 0.3;
+    /** the breakdown: first bars of the pass lose drums and bass, then a riser and a crash bring them back */
+    const win = Math.min(4, Math.floor(L / 2));
+    const inBreak = phase === 2 && !calm && barInLoop < win;
+    const riserBar = phase === 2 && !calm && barInLoop === win - 1;
+    const crashBar = phase === 2 && !calm && barInLoop === win;
+    /** two-pattern tracks swap their order on the answer pass and on alternating stages */
+    const swap = (phase === 1 ? 1 : 0) + ((this.seed >> 3) & 1);
+    const bc0 = this.barChords[barInLoop];
+    const bc: BarChord = sh ? { ...bc0, chord: shiftChord(bc0.chord, sh) } : bc0;
     this.bucket = [];
     const push = (step: number, fn: (t: number) => void) => {
       (this.bucket[step] ??= []).push(fn);
@@ -290,21 +357,37 @@ export class Playback {
     const stepDur = this.stepDur;
     const now = this.c.currentTime;
 
+    if (riserBar) {
+      push(Math.max(0, this.spb - 12), (t) => DRUM_VOICES.riser(this.core, this.accent, t, 0.9));
+      for (let i = 0; i < 8; i++) push(this.spb - 8 + i, (t) => DRUM_VOICES.tom(this.core, this.accent, t, 0.25 + 0.075 * i));
+    }
+    if (crashBar) {
+      push(0, (t) => {
+        DRUM_VOICES.crash(this.core, this.accent, t, 0.9);
+        DRUM_VOICES.taiko(this.core, this.accent, t, 0.8);
+      });
+    }
+    // the first melody track is the lead: on the lift pass a bell answers it an octave up
+    const lead = this.tracks.find((r) => r.spec.kind === 'melody');
+
     for (const rt of this.tracks) {
       const spec = rt.spec;
       const g = this.gateFor(spec) * spec.gain;
       rt.gate.gain.setTargetAtTime(g, Math.max(now, this.nextTime - 0.02), 0.3);
       if (g < 0.02 || (this.liteMode && spec.lite)) continue;
       if (spec.mask && spec.mask[barInLoop % spec.mask.length] === '.') continue;
+      if (inBreak && (spec.kind === 'drums' || (spec.kind === 'pattern' && LOW_INSTS.has(spec.inst)))) continue;
       const vel = (v: number) => v * (0.9 + this.rand() * 0.2);
 
       if (spec.kind === 'drums') {
         const isFill = spec.fill && barInLoop % 4 === 3;
-        const cells = isFill ? rt.fill! : rt.drums![barInLoop % rt.drums!.length];
+        const n = rt.drums!.length;
+        const cells = isFill ? rt.fill! : rt.drums![(barInLoop + (n === 2 ? swap : 0)) % n];
         const voice = DRUM_VOICES[spec.voice];
         for (const h of cells) push(h.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.006, vel(h.v)));
       } else if (spec.kind === 'pattern') {
-        const cells = rt.pats![barInLoop % rt.pats!.length];
+        const n2 = rt.pats!.length;
+        const cells = rt.pats![(barInLoop + (n2 === 2 ? swap : 0)) % n2];
         const voice = NOTE_VOICES[spec.inst];
         const n = bc.chord.tones.length;
         for (const cell of cells) {
@@ -321,27 +404,29 @@ export class Playback {
         const mel = rt.melody!;
         let bar = mel[barInLoop % mel.length];
         if (bar === null) {
-          const r = rng(hashStr(this.theme.id + spec.name) + barInLoop * 131 + (loop % 2) * 7919);
+          const r = rng(hashStr(this.theme.id + spec.name) + barInLoop * 131 + (lp % 4) * 7919 + this.seed * 17);
           bar = generateMelodyBar({
-            scalePcs: this.scale.map((s) => (this.tonic + s) % 12),
+            scalePcs: this.scale.map((x) => (this.tonic + sh + x) % 12),
             chordPcs: chordPcs(bc.chord),
             prev: rt.lastPitch,
-            lo: spec.gen?.lo ?? this.tonic,
-            hi: spec.gen?.hi ?? this.tonic + 17,
+            lo: (spec.gen?.lo ?? this.tonic) + sh,
+            hi: (spec.gen?.hi ?? this.tonic + 17) + sh,
             rand: r,
             steps: this.spb,
             phraseBar: barInLoop % 4,
             density: spec.gen?.density,
           });
         }
-        const inst = spec.altInst && loop % 2 === 1 ? spec.altInst : spec.inst;
+        const inst = spec.altInst && lp % 2 === 1 ? spec.altInst : spec.inst;
         const voice = NOTE_VOICES[inst];
+        const echo = phase === 3 && rt === lead && !this.liteMode ? NOTE_VOICES.bell : null;
         for (const nt of bar) {
           if (nt.midi === null) continue;
-          rt.lastPitch = nt.midi;
-          const m = nt.midi;
+          const m = nt.midi + (mel[barInLoop % mel.length] === null ? 0 : sh);
+          rt.lastPitch = m;
           const dur = nt.len * stepDur * (spec.legato ?? 0.95);
           push(nt.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.004, midiHz(m), dur, vel(0.85)));
+          if (echo && nt.len >= 2) push(nt.step, (t) => echo(this.core, rt.gate, t + stepDur * 1.5, midiHz(m + 12), Math.min(dur, stepDur * 4), 0.3));
         }
       } else if (spec.kind === 'chords') {
         const voice = CHORD_VOICES[spec.inst];

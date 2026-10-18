@@ -1,12 +1,23 @@
 /**
  * Which music plays where. Pure functions, so the mapping can be tested without any audio.
  */
+import { hashStr } from './theory.ts';
 import { BOSS_THEME, WORLD_THEME } from './themes.ts';
 
 export interface SceneChoice {
   id: string;
   /** starting intensity 0..1 */
   intensity: number;
+  /** per-stage number that makes the same world theme start and develop differently (0 = the plain version) */
+  seed?: number;
+  /** playing speed, 1 = as written */
+  tempo?: number;
+}
+
+/** how fast a stage plays: later stages of a world are a touch quicker, and each stage gets its own small nudge; bosses are as written */
+export function stageTempo(seed: number, mini: number): number {
+  const base = 0.97 + 0.009 * (Math.max(1, Math.min(10, mini)) - 1);
+  return Math.round((base + ((seed % 7) - 3) * 0.004) * 10000) / 10000;
 }
 
 /** the minimum a story panel needs to say about itself */
@@ -47,7 +58,7 @@ export function sceneForPanel(p: PanelInfo): SceneChoice {
 export type GameplayScreen = 'title' | 'world_map' | 'playing' | 'paused' | 'victory' | 'game_over' | 'story_ending';
 
 /** music for the non-cutscene screens; null means "leave it to the cutscene player" */
-export function sceneForScreen(screen: string, world: number, isBoss: boolean): SceneChoice | null {
+export function sceneForScreen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1): SceneChoice | null {
   switch (screen) {
     case 'title':
       return { id: 'title', intensity: 0.6 };
@@ -55,7 +66,12 @@ export function sceneForScreen(screen: string, world: number, isBoss: boolean): 
       return { id: 'map', intensity: 0.55 };
     case 'playing':
     case 'paused':
-      return { id: isBoss ? BOSS_THEME(world) : WORLD_THEME(world), intensity: isBoss ? 0.6 : 0.35 };
+    {
+      const seed = levelId ? hashStr(levelId) : 0;
+      return isBoss
+        ? { id: BOSS_THEME(world), intensity: 0.6, seed, tempo: 1 }
+        : { id: WORLD_THEME(world), intensity: 0.35, seed, tempo: levelId ? stageTempo(seed, mini) : 1 };
+    }
     case 'victory':
       return { id: 'results', intensity: 0.6 };
     case 'game_over':

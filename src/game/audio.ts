@@ -11,6 +11,7 @@
  */
 import { Conductor, type SceneOptions } from '../audio/conductor.ts';
 import type { AmbientType } from '../audio/ambience.ts';
+import { enemyIndex, hitArg, type Material } from '../audio/combat.ts';
 import { sceneForPanel, sceneForScreen, type PanelInfo } from '../audio/scenes.ts';
 
 type PredatorKind = 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
@@ -60,9 +61,9 @@ class SoundEngine {
     this.c.setScene(id, opts);
   }
   /** music for a non-cutscene screen (cutscenes choose their own, panel by panel) */
-  screen(screen: string, world: number, isBoss: boolean) {
-    const s = sceneForScreen(screen, world, isBoss);
-    if (s) this.c.setScene(s.id, { intensity: s.intensity });
+  screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1) {
+    const s = sceneForScreen(screen, world, isBoss, levelId, mini);
+    if (s) this.c.setScene(s.id, { intensity: s.intensity, seed: s.seed, tempo: s.tempo });
     this.c.setPaused(screen === 'paused');
   }
   storyPanel(panel: PanelInfo) {
@@ -72,6 +73,10 @@ class SoundEngine {
   }
   setIntensity(v: number) {
     this.c.setIntensity(v);
+  }
+  /** the music's speed, 1 = as written (a boss enraging runs it faster) */
+  setTempo(scale: number) {
+    this.c.setTempo(scale);
   }
   setLowHealth(on: boolean) {
     this.c.setLowHealth(on);
@@ -90,7 +95,8 @@ class SoundEngine {
   playMegaPunch() { this.c.fx('megaPunch'); }
   playKick() { this.c.fx('kick'); }
   playWhoosh() { this.c.fx('whoosh'); }
-  playHitImpact(isHeavy = false) { this.c.fx('hit', isHeavy ? 1 : 0); }
+  /** `material`: what was hit (see combat.ts) so a fur hit and a shell hit sound different */
+  playHitImpact(isHeavy = false, material: Material = 'generic') { this.c.fx('hit', hitArg(isHeavy, material)); }
   playFlowerPickup(comboCount = 0) { this.c.fx('flower', comboCount); }
   playLeafPickup() { this.c.fx('leaf'); }
   playFruitPickup() { this.c.fx('fruit'); }
@@ -102,10 +108,12 @@ class SoundEngine {
   playShrineUnlocked() { this.c.fx('shrine'); }
   playRelicFound() { this.c.fx('relic'); }
   playCritterRescued() { this.c.fx('critter'); }
-  playEnemyDefeated() { this.c.fx('defeat'); }
+  /** `type`: which animal fell, so each has its own last sound */
+  playEnemyDefeated(type?: string) { this.c.fx('defeat', type ? enemyIndex(type) : undefined); }
   playPlayerHurt() { this.c.fx('hurt'); }
   playEagleScreech() { this.c.fx('eagle'); }
-  playBossRoar() { this.c.fx('roar'); }
+  /** `world` 1..10: each world's boss has its own voice */
+  playBossRoar(world = 0) { this.c.fx('roar', world); }
   playVictory() { this.c.sting('victory'); }
   playDefeat() { this.c.sting('defeat'); }
   /** the old engine started and stopped one global ambience; the world now picks its own (see setAmbient) */
