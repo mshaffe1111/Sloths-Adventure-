@@ -13,7 +13,7 @@ import { Playback, type KeyInfo } from './music.ts';
 import { SFX, runFx } from './sfx.ts';
 import { speechBlip } from './speech.ts';
 import { playSting } from './stingers.ts';
-import { THEMES } from './themes.ts';
+import { themeById } from './themes.ts';
 
 const LOOKAHEAD = 0.3;
 const TICK_MS = 25;
@@ -150,7 +150,7 @@ export class Conductor {
       setTimeout(() => old.dispose(), (fade + 4) * 1000);
     }
     if (!id) return;
-    const theme = THEMES[id];
+    const theme = themeById(id);
     if (!theme) return;
     const pb = new Playback(core, theme, core.ctx.currentTime + 0.08, undefined, !first || !!old, { seed: opts.seed, tempo: opts.tempo });
     pb.liteMode = this.lite;

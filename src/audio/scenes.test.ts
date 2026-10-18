@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { sceneForPanel, sceneForScreen } from './scenes.ts';
 import { STINGS, stingLength } from './stingers.ts';
-import { THEMES } from './themes.ts';
+import { THEMES, themeById } from './themes.ts';
 import { AMBIENT_TYPES } from './ambience.ts';
 import { WORLDS_DATA } from '../game/worldsData.ts';
 import { INTRO_PANELS, WORLD_STORIES, ENDING_PANELS, bossPanels } from '../game/story.ts';
@@ -13,7 +13,7 @@ test('every screen that should have music maps to a real piece', () => {
     for (let w = 1; w <= 10; w++) {
       for (const boss of [false, true]) {
         const s = sceneForScreen(screen, w, boss);
-        assert.ok(s && THEMES[s.id], `${screen} world ${w} boss ${boss}`);
+        assert.ok(s && themeById(s.id), `${screen} world ${w} boss ${boss}`);
         assert.ok(s.intensity >= 0 && s.intensity <= 1);
       }
     }
@@ -32,7 +32,7 @@ test('every cutscene panel in the game has music', () => {
   assert.ok(all.length > 40);
   for (const p of all) {
     const s = sceneForPanel(p);
-    assert.ok(THEMES[s.id], `${p.chapter}: ${s.id}`);
+    assert.ok(themeById(s.id), `${p.chapter}: ${s.id}`);
   }
 });
 

@@ -61,8 +61,8 @@ class SoundEngine {
     this.c.setScene(id, opts);
   }
   /** music for a non-cutscene screen (cutscenes choose their own, panel by panel) */
-  screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1) {
-    const s = sceneForScreen(screen, world, isBoss, levelId, mini);
+  screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0) {
+    const s = sceneForScreen(screen, world, isBoss, levelId, mini, salt);
     if (s) this.c.setScene(s.id, { intensity: s.intensity, seed: s.seed, tempo: s.tempo });
     this.c.setPaused(screen === 'paused');
   }

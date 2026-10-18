@@ -90,6 +90,12 @@ export default function App() {
   const [bossInfo, setBossInfo] = useState<{ name: string; hp: number; maxHp: number; phase: number } | null>(null);
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
+  // Picks the tune for a stage. A new number each time a stage is entered gives a new composition; retrying keeps it.
+  // ?music=1234 pins the number (handy for hearing a particular tune again).
+  const [musicSalt, setMusicSalt] = useState<number>(() => {
+    const pinned = Number(new URLSearchParams(window.location.search).get('music'));
+    return Number.isFinite(pinned) && pinned > 0 ? pinned >>> 0 : (Math.random() * 0x7fffffff) | 0;
+  });
 
   // Victory / Defeat snapshot states
   const [starsEarned, setStarsEarned] = useState<number>(1);
@@ -121,14 +127,14 @@ export default function App() {
   // Music and ambience follow the screen. Cutscenes pick their own music panel by panel (see StoryPlayer).
   useEffect(() => {
     const w = activeLevel.worldIndex;
-    sound.screen(screen, w, activeLevel.objectiveType === 'boss_lair', activeLevel.id, activeLevel.miniIndex);
+    sound.screen(screen, w, activeLevel.objectiveType === 'boss_lair', activeLevel.id, activeLevel.miniIndex, musicSalt);
     const worldAmbient = (WORLDS_DATA[w - 1] || WORLDS_DATA[0]).ambientType;
     if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
     else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');
     else if (screen === 'world_story' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
     else if (screen === 'story_cutscene') sound.setAmbient('gentle_breeze');
     else sound.setAmbient(null);
-  }, [screen, activeLevel]);
+  }, [screen, activeLevel, musicSalt]);
 
   // Check URL parameters (?autostart=1)
   useEffect(() => {
@@ -178,6 +184,7 @@ export default function App() {
 
   // Start a specific level
   const startLevel = useCallback((lvl: LevelConfig) => {
+    if (!new URLSearchParams(window.location.search).get('music')) setMusicSalt((Math.random() * 0x7fffffff) | 0);
     setActiveLevel(lvl);
     setSelectedWorldId(lvl.worldIndex);
 

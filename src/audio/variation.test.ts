@@ -4,7 +4,7 @@ import { bossMaterial, ENEMY_ORDER, enemyIndex, hitArg, MATERIALS, materialFor, 
 import { Playback } from './music.ts';
 import { sceneForScreen, stageTempo } from './scenes.ts';
 import { parseChord, shiftChord } from './theory.ts';
-import { THEMES } from './themes.ts';
+import { THEMES, themeById } from './themes.ts';
 
 test('shiftChord moves the root and bass up and wraps around the octave', () => {
   const c = parseChord('Am/G');
@@ -35,7 +35,7 @@ test('every stage gets its own seed and a gentle tempo', () => {
     for (let m = 1; m <= 10; m++) {
       const id = `${w}-${m}`;
       const s = sceneForScreen('playing', w, false, id, m)!;
-      assert.ok(THEMES[s.id]);
+      assert.ok(themeById(s.id));
       assert.ok(s.tempo! >= 0.95 && s.tempo! <= 1.07, `${id} tempo ${s.tempo}`);
       assert.equal(s.seed, sceneForScreen('paused', w, false, id, m)!.seed, 'pausing keeps the same arrangement');
       seeds.add(s.seed!);

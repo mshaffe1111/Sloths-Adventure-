@@ -11,30 +11,14 @@
  * A `null` bar is composed on the fly by the melody generator (in key, on the chord, repeatable).
  */
 import type { DrumName, DrumTrack, Theme, Track } from './music.ts';
+import { composeStory, themeFromId } from './composer.ts';
 
 // ---------------------------------------------------------------------------------------------
 // Shared tunes
 // ---------------------------------------------------------------------------------------------
 
-/** Slomatt's theme: 8 bars of scale degrees (works in major for joy, minor for longing) */
-export const SLOMATT_A = [
-  '5:3 5:1 6:2 5:2 3:4 r:4',
-  '2:3 3:1 2:2 1:2 7,:4 r:4',
-  "3:3 3:1 5:2 3:2 1':4 r:4",
-  '6:3 5:1 4:2 3:2 4:4 r:4',
-  "5:3 5:1 6:2 5:2 3:2 5:2 1':4",
-  "2':2 1':2 7:2 5:2 2:8",
-  '6:4 5:2 4:2 3:2 2:2 r:4',
-  "5:4 7:2 2':2 1':8",
-];
-
-/** Iron-Claw's motif (C minor): a slow creeping figure that leans on the flat second */
-export const IRON_CLAW = [
-  '1:3 b2:1 1:2 7,:2 1:4 r:4',
-  '1:3 b2:1 1:2 7,:2 5,:4 r:4',
-  '6,:4 1:4 3:4 1:4',
-  '5,:4 #7,:4 2:4 4:4',
-];
+export { SLOMATT_A, IRON_CLAW } from './tunes.ts';
+import { SLOMATT_A, IRON_CLAW } from './tunes.ts';
 
 const nulls = (n: number) => Array.from({ length: n }, () => null);
 /** an 8-bar tune followed by 8 composed bars (a 16-bar loop) */
@@ -603,94 +587,16 @@ THEMES.gameover = {
 // STORY
 // ---------------------------------------------------------------------------------------------
 
-// Jennifur's waltz: F major in 3/4, tender (the warm story scenes)
-THEMES.jennifur = {
-  id: 'jennifur',
-  bpm: 96,
-  tonic: 'F4',
-  scale: 'major',
-  stepsPerBar: 12,
-  delay: 0.75,
-  chords: ['F', 'Dm', 'Bb', 'C', 'F', 'Am', 'Bb', 'C', 'F', 'Dm', 'Gm', 'C', 'F/A', 'Bb', 'C', 'F'],
-  tracks: [
-    { kind: 'chords', name: 'strings', inst: 'strings', lo: 53, hi: 72, voices: 4, gain: 0.3, rev: 0.5 },
-    { kind: 'pattern', name: 'harp', inst: 'harp', oct: 53, pats: ['r.. t.. f.. t..'], gain: 0.5, rev: 0.4, dly: 0.15, pan: -0.2 },
-    { kind: 'pattern', name: 'bass', inst: 'bass', oct: 36, pats: ['R.. ..f ..f ...'], gain: 0.4, rev: 0.05, gate: [0.2, 0.5] },
-    {
-      kind: 'melody', name: 'lead', inst: 'softLead', altInst: 'flute', gen: { lo: 65, hi: 84, density: 0.3 }, gain: 0.55, rev: 0.45, dly: 0.2,
-      bars: [
-        "3:4 5:4 1':4",
-        '6:6 5:2 3:4',
-        '4:4 6:4 1\':4',
-        '7:6 5:2 2:4',
-        '3:4 5:2 6:2 1\':4',
-        "3':6 1':2 7:4",
-        "1':4 6:4 4:4",
-        '7:4 5:4 2:4',
-        ...nulls(8),
-      ],
-    },
-    { kind: 'pattern', name: 'bell', lite: true, inst: 'bell', oct: 77, pats: ['.... .... ..r.', '..t. .... ....'], gain: 0.3, rev: 0.6, dly: 0.3, pan: 0.3, gate: [0.3, 0.7] },
-    drum('brush', 'brush', ['x.. ..o ..o ..o'], 0.4, [0.5, 0.9]),
-  ],
-};
+// The story scores are composed (see composer.ts): each one is a long form (32 to 44 bars at a slow tempo, a
+// minute and a half or more before it turns over) that starts almost bare, builds layer by layer to a climax and
+// settles again, so a cutscene never loops while you are still reading it.
+THEMES.jennifur = composeStory('jennifur');
+THEMES.storyDusk = composeStory('dusk');
+THEMES.storyStorm = composeStory('storm');
+THEMES.ending = composeStory('ending');
 
-// Dusk: Slomatt's theme in A minor, slow, tender and a little sad (the vow)
-THEMES.storyDusk = {
-  id: 'storyDusk',
-  bpm: 72,
-  tonic: 'A4',
-  scale: 'minor',
-  delay: 0.75,
-  chords: ['Am', 'Em', 'F', 'Dm', 'Am', 'Em', 'Dm', 'E'],
-  tracks: [
-    { kind: 'chords', name: 'strings', inst: 'strings', lo: 45, hi: 67, voices: 4, gain: 0.34, rev: 0.55 },
-    { kind: 'pattern', name: 'harp', inst: 'harp', oct: 52, pats: ['r.t.f.t. r.t.f.t.'], gain: 0.45, rev: 0.45, dly: 0.2, pan: -0.2, gate: [0, 0.6] },
-    { kind: 'pattern', name: 'sub', inst: 'subBass', oct: 33, pats: ['R--- ---- ---- ----'], gain: 0.45, rev: 0.05 },
-    { kind: 'melody', name: 'lead', inst: 'softLead', altInst: 'flute', bars: SLOMATT_A, gain: 0.55, rev: 0.5, dly: 0.25 },
-    { kind: 'chords', name: 'choir', inst: 'choir', lo: 55, hi: 72, voices: 3, gain: 0.24, rev: 0.6, gate: [0.5, 1] },
-    drum('heart', 'tom', ['x... .... .... ....'], 0.4, [0.4, 0.7]),
-  ],
-};
-
-// Storm: Iron-Claw's motif low and slow, tremolo strings, distant timpani
-THEMES.storyStorm = {
-  id: 'storyStorm',
-  bpm: 76,
-  tonic: 'C3',
-  scale: 'minor',
-  delay: 0.75,
-  chords: ['Cm*2', 'Ab', 'G'],
-  tracks: [
-    { kind: 'chords', name: 'strings', inst: 'strings', lo: 36, hi: 60, voices: 4, gain: 0.4, rev: 0.5 },
-    { kind: 'chords', name: 'choir', inst: 'choir', lo: 48, hi: 67, voices: 3, gain: 0.3, rev: 0.7, gate: [0.3, 0.8] },
-    { kind: 'pattern', name: 'sub', inst: 'subBass', oct: 24, pats: ['R--- ---- ---- ----'], gain: 0.6, rev: 0.05 },
-    { kind: 'melody', name: 'lead', inst: 'brass', bars: IRON_CLAW, gain: 0.5, rev: 0.5, dly: 0.2 },
-    drum('timp', 'timpani', ['X... .... .... ....', 'X... .... ..o. ....'], 0.6),
-    drum('taiko', 'taiko', ['.... .... X... ....'], 0.6, [0.4, 0.8]),
-  ],
-};
-
-// Ending: Slomatt's theme in F, hopeful and full (strings, choir, harp)
-THEMES.ending = {
-  id: 'ending',
-  bpm: 90,
-  tonic: 'F4',
-  scale: 'major',
-  delay: 0.75,
-  chords: ['F', 'C', 'Dm', 'Bb', 'F', 'C', 'Bb', 'C', 'Dm', 'Bb', 'F', 'C', 'Dm', 'Gm', 'C', 'C7'],
-  tracks: [
-    { kind: 'chords', name: 'strings', inst: 'strings', lo: 53, hi: 72, voices: 4, gain: 0.34, rev: 0.5 },
-    { kind: 'chords', name: 'choir', inst: 'choir', lo: 55, hi: 74, voices: 3, gain: 0.28, rev: 0.6, gate: [0.3, 0.8] },
-    { kind: 'pattern', name: 'harp', inst: 'harp', oct: 53, pats: ['r.t.f.t.o.f.t.f.', 'r.t.f.o.f.t.f.t.'], gain: 0.5, rev: 0.4, dly: 0.12, pan: -0.25 },
-    { kind: 'pattern', name: 'bass', inst: 'subBass', oct: 36, pats: ['R--- ---. ..r. ....'], gain: 0.5, rev: 0.05 },
-    { kind: 'melody', name: 'lead', inst: 'softLead', altInst: 'flute', bars: loop16(SLOMATT_A), gen: { lo: 65, hi: 86, density: 0.4 }, gain: 0.62, rev: 0.45, dly: 0.2 },
-    { kind: 'pattern', name: 'sparkle', lite: true, inst: 'bell', oct: 77, pats: ['.... .... t... ....', '..r. .... .... f...'], gain: 0.35, rev: 0.6, dly: 0.3, pan: 0.3, gate: [0.2, 0.7] },
-    drum('timp', 'timpani', ['X... .... .... ....'], 0.45, [0.5, 0.9]),
-    drum('kick', 'softKick', ['x... .... x... ....'], 0.5, [0.4, 0.7]),
-    drum('shaker', 'shaker', ['.x.x .x.x .x.x .x.x'], 0.45, [0.3, 0.6]),
-  ],
-};
+/** a piece by id: written (THEMES) or composed on demand ('gen-<world>-<seed>') */
+export const themeById = (id: string): Theme | null => THEMES[id] ?? themeFromId(id);
 
 /** which theme plays for each world (1..10) and for its boss */
 export const WORLD_THEME = (world: number) => `world${Math.max(1, Math.min(10, world))}`;

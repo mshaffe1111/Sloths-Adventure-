@@ -38,7 +38,7 @@ for (const id of ids) {
     assert.ok(scale, 'scale exists');
     const chords = th.chords.map(parseChord);
     const loopBars = chords.reduce((n, c) => n + c.bars, 0);
-    assert.ok(loopBars >= 4 && loopBars <= 16, `loop of ${loopBars} bars`);
+    assert.ok(loopBars >= 4 && loopBars <= 48, `loop of ${loopBars} bars`);
     assert.ok(th.bpm >= 56 && th.bpm <= 170);
     const names = new Set<string>();
     for (const tr of th.tracks) {

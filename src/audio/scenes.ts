@@ -3,6 +3,7 @@
  */
 import { hashStr } from './theory.ts';
 import { BOSS_THEME, WORLD_THEME } from './themes.ts';
+import { stageThemeId } from './composer.ts';
 
 export interface SceneChoice {
   id: string;
@@ -57,8 +58,20 @@ export function sceneForPanel(p: PanelInfo): SceneChoice {
 
 export type GameplayScreen = 'title' | 'world_map' | 'playing' | 'paused' | 'victory' | 'game_over' | 'story_ending';
 
+/**
+ * Which piece a stage plays. Most stages get a tune composed for them (see composer.ts): the same stage and the same
+ * `salt` always give the same tune, and a new salt (the app picks one each time a stage is entered) gives a new one.
+ * About one in five picks the world's written theme instead, so the signature tunes still turn up.
+ */
+export function stageMusic(world: number, levelId: string, mini: number, salt = 0): SceneChoice {
+  const seed = (levelId ? hashStr(levelId) ^ (salt >>> 0) : 0) >>> 0;
+  const tempo = levelId ? stageTempo(seed, mini) : 1;
+  if (!levelId || (seed >>> 5) % 5 === 0) return { id: WORLD_THEME(world), intensity: 0.35, seed, tempo };
+  return { id: stageThemeId(world, seed), intensity: 0.35, seed, tempo };
+}
+
 /** music for the non-cutscene screens; null means "leave it to the cutscene player" */
-export function sceneForScreen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1): SceneChoice | null {
+export function sceneForScreen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0): SceneChoice | null {
   switch (screen) {
     case 'title':
       return { id: 'title', intensity: 0.6 };
@@ -67,10 +80,8 @@ export function sceneForScreen(screen: string, world: number, isBoss: boolean, l
     case 'playing':
     case 'paused':
     {
-      const seed = levelId ? hashStr(levelId) : 0;
-      return isBoss
-        ? { id: BOSS_THEME(world), intensity: 0.6, seed, tempo: 1 }
-        : { id: WORLD_THEME(world), intensity: 0.35, seed, tempo: levelId ? stageTempo(seed, mini) : 1 };
+      if (isBoss) return { id: BOSS_THEME(world), intensity: 0.6, seed: levelId ? hashStr(levelId) : 0, tempo: 1 };
+      return stageMusic(world, levelId, mini, salt);
     }
     case 'victory':
       return { id: 'results', intensity: 0.6 };
