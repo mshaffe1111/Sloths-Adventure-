@@ -1,6 +1,7 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
 import type { LevelConfig } from '../game/types.ts';
+import { ControlPicker } from './ControlPicker.tsx';
 
 interface StatusModalsProps {
   screen: 'paused' | 'victory' | 'game_over' | 'boss_intro' | 'story_ending';
@@ -97,7 +98,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   if (screen === 'paused') {
     return (
       <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4 select-none font-game">
-        <div className="w-full max-w-sm bg-gradient-to-b from-emerald-950 to-stone-950 border-2 border-emerald-500/60 rounded-3xl p-6 text-center shadow-2xl shadow-emerald-950/60 text-white">
+        <div className="w-full max-w-sm max-h-full overflow-y-auto bg-gradient-to-b from-emerald-950 to-stone-950 border-2 border-emerald-500/60 rounded-3xl p-6 text-center shadow-2xl shadow-emerald-950/60 text-white">
           <div className="inline-block px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase mb-2">
             Game Paused
           </div>
@@ -106,6 +107,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
           </h2>
 
           <AudioSliders />
+          <ControlPicker className="mb-4" />
 
           <div className="flex flex-col gap-2.5">
             <button

@@ -168,3 +168,5 @@
   .ts-sway, .ts-hang, .ts-blink, .ts-fly, .ts-drift { animation: none; }
   .title-btn { transition: none; }
 }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

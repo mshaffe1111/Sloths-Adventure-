@@ -13,6 +13,7 @@ import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
+import { enterWideMode, getControlMode, leaveWideMode, subscribeControls } from './game/controls.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -55,6 +56,8 @@ export default function App() {
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
+  const [controlMode, setControlModeState] = useState(getControlMode);
+  useEffect(() => subscribeControls(() => setControlModeState(getControlMode())), []);
 
   // Victory / Defeat snapshot states
   const [starsEarned, setStarsEarned] = useState<number>(1);
@@ -169,6 +172,9 @@ export default function App() {
       engineRef.current = null;
     }
 
+    // wide mode: the browser bars go away so the game gets the whole screen (works from the tap that started play)
+    enterWideMode();
+
     setHp(5);
     setLives(3);
     setScore(0);
@@ -251,6 +257,11 @@ export default function App() {
       });
     } catch {}
   };
+
+  // back at the title the browser bars come back
+  useEffect(() => {
+    if (screen === 'title') leaveWideMode();
+  }, [screen]);
 
   const pauseGame = () => {
     engineRef.current?.pause();
@@ -403,7 +414,7 @@ export default function App() {
             lives={lives}
           />
           {inputEngineRef.current && (
-            <TouchController inputEngine={inputEngineRef.current} />
+            <TouchController inputEngine={inputEngineRef.current} mode={controlMode} />
           )}
         </>
       )}

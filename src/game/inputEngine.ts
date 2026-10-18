@@ -202,6 +202,15 @@ export class InputEngine {
     this.kickBufferTimer = 0.14;
   }
 
+  /**
+   * Touch Gesture:
+   * - Hold to mega punch
+   */
+  public triggerTouchMega() {
+    this.state.megaPunchPressed = true;
+    this.megaBufferTimer = 0.14;
+  }
+
   public triggerTouchLayerSwitch() {
     this.state.layerSwitchPressed = true;
   }

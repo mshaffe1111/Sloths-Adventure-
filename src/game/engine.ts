@@ -45,6 +45,11 @@ import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
 
 /** How many world units tall the screen shows. */
 const WORLD_VIEW_H = 540;
+/** world units across a portrait screen */
+const PORTRAIT_VIEW_W = 360;
+/** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
+const INTRO_ZOOM_FROM = 0.78;
+const INTRO_ZOOM_SECS = 1.3;
 
 export interface GameEngineCallbacks {
   onProgressUpdate: (
@@ -79,6 +84,10 @@ export class GameEngine {
   private camera: Camera;
   /** screen pixels per world unit */
   private zoom = 1;
+  /** css size of the canvas, and the seconds since play began (drives the zoom-in) */
+  private viewCssW = 0;
+  private viewCssH = 0;
+  private introT = 0;
   private particles: Particle[] = [];
   private floatingTexts: FloatingText[] = [];
 
@@ -228,9 +237,31 @@ export class GameEngine {
 
     this.canvas.width = Math.floor(w * dpr);
     this.canvas.height = Math.floor(h * dpr);
-    // The world is always about WORLD_VIEW_H tall on screen, so characters keep the same share of the
-    // screen on a phone, a tablet and a desktop (a hero is ~10% of the screen height, like a store platformer).
-    this.zoom = Math.max(0.5, Math.min(1.8, h / WORLD_VIEW_H));
+    this.viewCssW = w;
+    this.viewCssH = h;
+    this.applyZoom();
+  }
+
+  /**
+   * How much of the world fits on screen.
+   *  landscape: the world is always about WORLD_VIEW_H tall, so a hero is the same share of the screen on a phone,
+   *             a tablet and a desktop (like a store platformer).
+   *  portrait:  the screen is narrow, so fit a fixed width of world instead (never taller than the level itself).
+   * When play begins the camera dollies in from a wider shot to this framing.
+   */
+  private applyZoom() {
+    const w = this.viewCssW;
+    const h = this.viewCssH;
+    if (!w || !h) return;
+    const levelH = this.currentStage?.config.levelHeight ?? 900;
+    const portrait = h > w;
+    let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
+    base = Math.max(0.5, Math.min(1.8, base));
+    const t = Math.min(1, this.introT / INTRO_ZOOM_SECS);
+    const ease = 1 - Math.pow(1 - t, 3);
+    const dolly = INTRO_ZOOM_FROM + (1 - INTRO_ZOOM_FROM) * ease;
+    // never show more height than the level has
+    this.zoom = Math.max(base * dolly, h / levelH);
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -295,6 +326,10 @@ export class GameEngine {
    */
   private update(dt: number) {
     this.gameTime += dt;
+    if (this.introT < INTRO_ZOOM_SECS) {
+      this.introT += dt;
+      this.applyZoom();
+    }
     this.input.update(dt);
 
     const p = this.player;

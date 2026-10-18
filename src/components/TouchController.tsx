@@ -1,416 +1,318 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
+import { TiltSensor, setControlMode } from '../game/controls.ts';
+import type { ControlMode } from '../game/controls.ts';
+
+/**
+ * The whole screen is the controller. There are no buttons.
+ *
+ *  gestures   LEFT half  (floating stick)  drag left/right = run, drag down = duck, drag up = jump
+ *             RIGHT half (action pad)      tap = punch, flick up = jump, flick down = duck,
+ *                                          flick sideways = kick, hold = mega
+ *  tilt       lean the phone to run; the whole screen is the action pad
+ *
+ * Both thumbs work at once, so you can run with one and jump or punch with the other.
+ */
 
 interface TouchControllerProps {
   inputEngine: InputEngine;
+  mode: ControlMode;
 }
 
-export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+type Role = 'move' | 'action';
 
-  // Active touch tracking
-  const activeTouchIdRef = useRef<number | null>(null);
-  const touchStartPosRef = useRef<{ x: number; y: number; time: number } | null>(null);
-  const hasTriggeredUpInSwipeRef = useRef<boolean>(false);
-  const lastTouchTapTimeRef = useRef<number>(0);
-  const lastUpTapTimeRef = useRef<number>(0);
-  const tapTimeoutRef = useRef<number | null>(null);
+interface Track {
+  role: Role;
+  startX: number;
+  startY: number;
+  anchorX: number;
+  time: number;
+  /** a flick, hold or mega already happened, so lifting the finger must not also punch */
+  consumed: boolean;
+  jumped: boolean;
+  ducked: boolean;
+  holdTimer: number | null;
+}
 
-  const [activeGesture, setActiveGesture] = useState<string | null>(null);
-  const [touchIndicator, setTouchIndicator] = useState<{ x: number; y: number; visible: boolean }>({
-    x: 0,
-    y: 0,
-    visible: false,
-  });
+const MOVE_DEAD = 14; // px of drag before the hero starts running
+const MOVE_REANCHOR = 64; // the stick follows the finger past this, so turning around is quick
+const FLICK = 28; // px for a flick
+const KICK_FLICK = 36;
+const TAP_MAX_MS = 280;
+const TAP_MAX_PX = 20;
+const HOLD_MS = 380;
 
-  const clearGesture = useCallback(() => {
-    setActiveGesture(null);
-    setTouchIndicator({ x: 0, y: 0, visible: false });
+const HINT_KEY = 'sloth_hint_v2';
+function hintSeen(): boolean {
+  try {
+    return localStorage.getItem(HINT_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+function markHintSeen() {
+  try {
+    localStorage.setItem(HINT_KEY, '1');
+  } catch {
+    /* ignore */
+  }
+}
+
+export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, mode }) => {
+  const tracks = useRef(new Map<number, Track>());
+  const [pill, setPill] = useState<string | null>(null);
+  const pillTimer = useRef<number | null>(null);
+  const [hint, setHint] = useState<boolean>(() => !hintSeen());
+  const [tiltNote, setTiltNote] = useState<string | null>(null);
+
+  const flash = useCallback((text: string) => {
+    setPill(text);
+    if (pillTimer.current !== null) window.clearTimeout(pillTimer.current);
+    pillTimer.current = window.setTimeout(() => setPill(null), 380);
+  }, []);
+
+  const releaseAll = useCallback(() => {
+    tracks.current.forEach((t) => {
+      if (t.holdTimer !== null) window.clearTimeout(t.holdTimer);
+    });
+    tracks.current.clear();
     inputEngine.triggerTouchMove('none');
     inputEngine.triggerTouchDuck(false);
     inputEngine.releaseTouchUp();
-    hasTriggeredUpInSwipeRef.current = false;
   }, [inputEngine]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    // Only capture first touch for fullscreen gesture pad
-    if (activeTouchIdRef.current !== null) return;
-    const touch = e.changedTouches[0];
-    activeTouchIdRef.current = touch.identifier;
-
-    const now = performance.now();
-    touchStartPosRef.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      time: now,
+  // ---- tilt sensor (only in tilt mode)
+  useEffect(() => {
+    if (mode !== 'tilt') return;
+    const sensor = new TiltSensor(
+      (d) => inputEngine.triggerTouchMove(d),
+      () => {
+        setControlMode('gestures');
+        setTiltNote('No tilt sensor found on this device, so gestures are back on.');
+        window.setTimeout(() => setTiltNote(null), 4000);
+      },
+    );
+    sensor.start();
+    return () => {
+      sensor.stop();
+      inputEngine.triggerTouchMove('none');
     };
-    hasTriggeredUpInSwipeRef.current = false;
+  }, [mode, inputEngine]);
 
-    setTouchIndicator({
-      x: touch.clientX,
-      y: touch.clientY,
-      visible: true,
-    });
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!touchStartPosRef.current) return;
-
-    for (let i = 0; i < e.changedTouches.length; i++) {
-      const touch = e.changedTouches[i];
-      if (touch.identifier === activeTouchIdRef.current) {
-        const dx = touch.clientX - touchStartPosRef.current.x;
-        const dy = touch.clientY - touchStartPosRef.current.y;
-        const absX = Math.abs(dx);
-        const absY = Math.abs(dy);
-
-        setTouchIndicator({
-          x: touch.clientX,
-          y: touch.clientY,
-          visible: true,
-        });
-
-        // 1. Horizontal Slide: Slide finger right to move right, slide left to move left
-        const horizontalThreshold = 14;
-        if (absX > horizontalThreshold && absX >= absY * 0.7) {
-          if (dx > 0) {
-            inputEngine.triggerTouchMove('right');
-            inputEngine.triggerTouchDuck(false);
-            setActiveGesture('SLIDE RIGHT');
-          } else {
-            inputEngine.triggerTouchMove('left');
-            inputEngine.triggerTouchDuck(false);
-            setActiveGesture('SLIDE LEFT');
-          }
-        } else if (absX <= 10) {
-          inputEngine.triggerTouchMove('none');
-        }
-
-        // 2. Vertical Slide: Slide Up (Jump / Double Jump) or Down (Duck)
-        const verticalThreshold = 18;
-        if (absY > verticalThreshold) {
-          if (dy < 0) {
-            // Slide up -> Jump!
-            if (!hasTriggeredUpInSwipeRef.current) {
-              hasTriggeredUpInSwipeRef.current = true;
-              const now = performance.now();
-              const isDouble = now - lastUpTapTimeRef.current < 420;
-              lastUpTapTimeRef.current = now;
-
-              inputEngine.triggerTouchUp();
-              setActiveGesture(isDouble ? 'DOUBLE JUMP!' : 'JUMP!');
-            }
-          } else {
-            // Slide down -> Duck!
-            inputEngine.triggerTouchDuck(true);
-            setActiveGesture('DUCK');
-          }
-        }
-        break;
-      }
-    }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    for (let i = 0; i < e.changedTouches.length; i++) {
-      const touch = e.changedTouches[i];
-      if (touch.identifier === activeTouchIdRef.current) {
-        activeTouchIdRef.current = null;
-        const now = performance.now();
-
-        if (touchStartPosRef.current) {
-          const dx = touch.clientX - touchStartPosRef.current.x;
-          const dy = touch.clientY - touchStartPosRef.current.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const duration = now - touchStartPosRef.current.time;
-
-          // If movement was minimal (< 22px) and quick (< 300ms), it's a TAP or DOUBLE TAP!
-          if (dist < 22 && duration < 320) {
-            const timeSinceLastTap = now - lastTouchTapTimeRef.current;
-
-            if (timeSinceLastTap > 40 && timeSinceLastTap < 340) {
-              // DOUBLE TAP -> KICK!
-              if (tapTimeoutRef.current) {
-                clearTimeout(tapTimeoutRef.current);
-                tapTimeoutRef.current = null;
-              }
-              lastTouchTapTimeRef.current = 0; // reset
-              inputEngine.triggerTouchKick();
-              setActiveGesture('DOUBLE TAP: KICK!');
-              setTimeout(() => setActiveGesture(null), 300);
-            } else {
-              // SINGLE TAP -> PUNCH!
-              lastTouchTapTimeRef.current = now;
-              tapTimeoutRef.current = window.setTimeout(() => {
-                inputEngine.triggerTouchPunch();
-                setActiveGesture('TAP: PUNCH!');
-                setTimeout(() => setActiveGesture(null), 250);
-              }, 170);
-            }
-          }
-        }
-
-        touchStartPosRef.current = null;
-        clearGesture();
-        break;
-      }
-    }
-  };
-
-  // Direct Button Handlers for Up / Jump / Double Jump, Down / Duck, Punch, Kick
-  const handleUpPress = (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    inputEngine.triggerHaptic(15);
-    const now = performance.now();
-    const isUpTwice = now - lastUpTapTimeRef.current < 420;
-    lastUpTapTimeRef.current = now;
-
-    inputEngine.triggerTouchUp();
-    setActiveGesture(isUpTwice ? 'DOUBLE JUMP!' : 'JUMP!');
-    setTimeout(() => setActiveGesture(null), 300);
-  };
-
-  const handleDownPress = (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    inputEngine.triggerHaptic(12);
-    inputEngine.triggerTouchDuck(true);
-    setActiveGesture('DUCK');
-  };
-
-  const handleDownRelease = (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    inputEngine.triggerTouchDuck(false);
-    setActiveGesture(null);
-  };
-
-  const handlePunchPress = (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    inputEngine.triggerHaptic(20);
-    inputEngine.triggerTouchPunch();
-    setActiveGesture('TAP: PUNCH!');
-    setTimeout(() => setActiveGesture(null), 250);
-  };
-
-  const handleKickPress = (e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    inputEngine.triggerHaptic(25);
-    inputEngine.triggerTouchKick();
-    setActiveGesture('DOUBLE TAP: KICK!');
-    setTimeout(() => setActiveGesture(null), 300);
-  };
+  // the hint fades by itself
+  useEffect(() => {
+    if (!hint) return;
+    const id = window.setTimeout(() => {
+      setHint(false);
+      markHintSeen();
+    }, 7000);
+    return () => window.clearTimeout(id);
+  }, [hint]);
 
   // If the pad unmounts mid-touch (level cleared, pause), release everything so nothing stays held into the next stage.
-  useEffect(() => () => {
-    inputEngine.triggerTouchMove('none');
-    inputEngine.triggerTouchDuck(false);
-    inputEngine.releaseTouchUp();
-  }, [inputEngine]);
+  useEffect(
+    () => () => {
+      tracks.current.forEach((t) => {
+        if (t.holdTimer !== null) window.clearTimeout(t.holdTimer);
+      });
+      tracks.current.clear();
+      inputEngine.triggerTouchMove('none');
+      inputEngine.triggerTouchDuck(false);
+      inputEngine.releaseTouchUp();
+    },
+    [inputEngine],
+  );
 
+  // safety net: when every finger is up, nothing may stay held
   useEffect(() => {
-    const handleReset = () => clearGesture();
-    window.addEventListener('touchend', handleReset);
-    window.addEventListener('touchcancel', handleReset);
-    return () => {
-      window.removeEventListener('touchend', handleReset);
-      window.removeEventListener('touchcancel', handleReset);
+    const onEnd = (e: TouchEvent) => {
+      if (e.touches.length === 0) releaseAll();
     };
-  }, [clearGesture]);
+    window.addEventListener('touchend', onEnd);
+    window.addEventListener('touchcancel', onEnd);
+    return () => {
+      window.removeEventListener('touchend', onEnd);
+      window.removeEventListener('touchcancel', onEnd);
+    };
+  }, [releaseAll]);
+
+  const hasRole = (role: Role) => {
+    for (const t of tracks.current.values()) if (t.role === role) return true;
+    return false;
+  };
+
+  const onStart = (e: React.TouchEvent) => {
+    if (hint) {
+      setHint(false);
+      markHintSeen();
+    }
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const touch = e.changedTouches[i];
+      const role: Role = mode === 'gestures' && touch.clientX < window.innerWidth / 2 ? 'move' : 'action';
+      if (hasRole(role)) continue;
+      const tr: Track = {
+        role,
+        startX: touch.clientX,
+        startY: touch.clientY,
+        anchorX: touch.clientX,
+        time: performance.now(),
+        consumed: false,
+        jumped: false,
+        ducked: false,
+        holdTimer: null,
+      };
+      if (role === 'action') {
+        const id = touch.identifier;
+        tr.holdTimer = window.setTimeout(() => {
+          const t = tracks.current.get(id);
+          if (!t || t.consumed) return;
+          t.consumed = true;
+          t.holdTimer = null;
+          inputEngine.triggerHaptic(35);
+          inputEngine.triggerTouchMega();
+          flash('MEGA!');
+        }, HOLD_MS);
+      }
+      tracks.current.set(touch.identifier, tr);
+    }
+  };
+
+  const onMove = (e: React.TouchEvent) => {
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const touch = e.changedTouches[i];
+      const t = tracks.current.get(touch.identifier);
+      if (!t) continue;
+      if (t.role === 'move') {
+        let dx = touch.clientX - t.anchorX;
+        if (dx > MOVE_REANCHOR) {
+          t.anchorX = touch.clientX - MOVE_REANCHOR;
+          dx = MOVE_REANCHOR;
+        } else if (dx < -MOVE_REANCHOR) {
+          t.anchorX = touch.clientX + MOVE_REANCHOR;
+          dx = -MOVE_REANCHOR;
+        }
+        inputEngine.triggerTouchMove(dx > MOVE_DEAD ? 'right' : dx < -MOVE_DEAD ? 'left' : 'none');
+
+        const dy = touch.clientY - t.startY;
+        inputEngine.triggerTouchDuck(dy > 30);
+        if (dy < -30 && !t.jumped) {
+          t.jumped = true;
+          inputEngine.triggerHaptic(15);
+          inputEngine.triggerTouchUp();
+          flash('JUMP!');
+        } else if (dy > -12 && t.jumped) {
+          t.jumped = false;
+          inputEngine.releaseTouchUp();
+        }
+        continue;
+      }
+
+      // action pad
+      const dx = touch.clientX - t.startX;
+      const dy = touch.clientY - t.startY;
+      if (t.holdTimer !== null && Math.hypot(dx, dy) > 14) {
+        window.clearTimeout(t.holdTimer);
+        t.holdTimer = null;
+      }
+      if (t.consumed) continue;
+      if (dy < -FLICK && Math.abs(dy) > Math.abs(dx) * 0.8) {
+        t.consumed = true;
+        t.jumped = true;
+        inputEngine.triggerHaptic(15);
+        inputEngine.triggerTouchUp();
+        flash('JUMP!');
+      } else if (dy > FLICK && Math.abs(dy) > Math.abs(dx)) {
+        t.consumed = true;
+        t.ducked = true;
+        inputEngine.triggerTouchDuck(true);
+        flash('DUCK');
+      } else if (Math.abs(dx) > KICK_FLICK && Math.abs(dx) > Math.abs(dy)) {
+        t.consumed = true;
+        inputEngine.triggerHaptic(25);
+        inputEngine.triggerTouchKick();
+        flash('KICK!');
+      }
+    }
+  };
+
+  const finish = (touch: React.Touch) => {
+    const t = tracks.current.get(touch.identifier);
+    if (!t) return;
+    if (t.holdTimer !== null) window.clearTimeout(t.holdTimer);
+    tracks.current.delete(touch.identifier);
+
+    if (t.role === 'move') {
+      inputEngine.triggerTouchMove('none');
+      inputEngine.triggerTouchDuck(false);
+      if (t.jumped) inputEngine.releaseTouchUp();
+      return;
+    }
+    if (t.jumped) inputEngine.releaseTouchUp();
+    if (t.ducked) inputEngine.triggerTouchDuck(false);
+    if (!t.consumed) {
+      const dist = Math.hypot(touch.clientX - t.startX, touch.clientY - t.startY);
+      if (dist < TAP_MAX_PX && performance.now() - t.time < TAP_MAX_MS) {
+        inputEngine.triggerHaptic(20);
+        inputEngine.triggerTouchPunch();
+        flash('PUNCH!');
+      }
+    }
+  };
+
+  const onEnd = (e: React.TouchEvent) => {
+    for (let i = 0; i < e.changedTouches.length; i++) finish(e.changedTouches[i]);
+  };
 
   return (
     <div
-      ref={containerRef}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
+      onTouchStart={onStart}
+      onTouchMove={onMove}
+      onTouchEnd={onEnd}
+      onTouchCancel={onEnd}
       className="fixed inset-0 pointer-events-auto z-30 select-none touch-none"
-      style={{ touchAction: 'none' }}
+      style={{ touchAction: 'none', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
+      data-controls={mode}
     >
-      {/* Floating Gesture Ripple Indicator */}
-      {touchIndicator.visible && (
-        <div
-          className="fixed pointer-events-none w-16 h-16 rounded-full border-2 border-emerald-400/70 bg-emerald-500/20 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-75"
-          style={{ left: `${touchIndicator.x}px`, top: `${touchIndicator.y}px` }}
-        />
-      )}
-
-      {/* Center Gesture Feedback Pill */}
-      {activeGesture && (
-        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 pointer-events-none z-40 bg-emerald-950/90 border border-amber-400/90 px-4 py-1.5 rounded-full text-amber-300 font-black text-xs uppercase tracking-wider shadow-xl animate-bounce">
-          {activeGesture}
+      {/* what the last gesture was */}
+      {pill && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 pointer-events-none z-40 bg-emerald-950/85 border border-amber-400/80 px-3.5 py-1 rounded-full text-amber-300 font-black text-[11px] uppercase tracking-wider shadow-xl">
+          {pill}
         </div>
       )}
 
-      {/* Bottom Controls Cluster (Tactile touch buttons tailored for mobile) */}
-      <div className="absolute bottom-4 inset-x-4 flex items-end justify-between pointer-events-none">
-        {/* Left Side: Slide direction pad (Slide Left / Slide Right / Duck) */}
-        <div className="pointer-events-auto flex items-center gap-2">
-          {/* Slide Left */}
-          <button
-            type="button"
-            onTouchStart={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('left');
-              setActiveGesture('SLIDE LEFT');
-            }}
-            onTouchEnd={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('none');
-              setActiveGesture(null);
-            }}
-            onTouchCancel={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('none');
-              setActiveGesture(null);
-            }}
-            onMouseDown={(e) => {
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('left');
-            }}
-            onMouseUp={(e) => {
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('none');
-            }}
-            className="w-14 h-14 rounded-2xl bg-emerald-950/80 active:bg-emerald-700/90 border-2 border-emerald-400/60 shadow-xl flex flex-col items-center justify-center text-emerald-200 active:scale-95 transition-transform"
-            aria-label="Slide Left"
-          >
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-            <span className="text-[8px] font-black tracking-wider text-emerald-300">LEFT</span>
-          </button>
-
-          {/* Slide Right */}
-          <button
-            type="button"
-            onTouchStart={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('right');
-              setActiveGesture('SLIDE RIGHT');
-            }}
-            onTouchEnd={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('none');
-              setActiveGesture(null);
-            }}
-            onTouchCancel={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('none');
-              setActiveGesture(null);
-            }}
-            onMouseDown={(e) => {
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('right');
-            }}
-            onMouseUp={(e) => {
-              e.stopPropagation();
-              inputEngine.triggerTouchMove('none');
-            }}
-            className="w-14 h-14 rounded-2xl bg-emerald-950/80 active:bg-emerald-700/90 border-2 border-emerald-400/60 shadow-xl flex flex-col items-center justify-center text-emerald-200 active:scale-95 transition-transform"
-            aria-label="Slide Right"
-          >
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-            <span className="text-[8px] font-black tracking-wider text-emerald-300">RIGHT</span>
-          </button>
-
-          {/* Press Down to Duck */}
-          <button
-            type="button"
-            onTouchStart={handleDownPress}
-            onTouchEnd={handleDownRelease}
-            onTouchCancel={handleDownRelease}
-            onMouseDown={handleDownPress}
-            onMouseUp={handleDownRelease}
-            className="w-14 h-14 rounded-2xl bg-emerald-950/80 active:bg-amber-700/90 border-2 border-amber-400/60 shadow-xl flex flex-col items-center justify-center text-amber-200 active:scale-95 transition-transform"
-            aria-label="Press Down Duck"
-          >
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-            <span className="text-[8px] font-black tracking-wider text-amber-300">DUCK</span>
-          </button>
+      {tiltNote && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 pointer-events-none z-40 bg-black/80 border border-amber-400/60 px-4 py-2 rounded-xl text-amber-200 text-xs font-bold max-w-[80vw] text-center">
+          {tiltNote}
         </div>
+      )}
 
-        {/* Right Side: Jump (press up / double jump), Punch (tap), Kick (double tap) */}
-        <div className="pointer-events-auto flex items-end gap-2.5">
-          {/* Tap to Punch */}
-          <button
-            type="button"
-            onTouchStart={handlePunchPress}
-            onMouseDown={handlePunchPress}
-            className="w-16 h-16 rounded-full bg-amber-600/90 active:bg-amber-500 border-2 border-amber-300 shadow-xl flex flex-col items-center justify-center text-white active:scale-90 transition-transform"
-            aria-label="Tap to Punch"
-          >
-            <svg className="w-7 h-7 text-amber-100" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M7 4c1 4 0 9-3 13 4-2 6-7 5-13zm5 0c1 4 0 10-3 14 4-2 6-8 5-14zm5 0c1 4 0 10-3 14 4-2 6-8 5-14z"/>
-            </svg>
-            <span className="text-[8px] font-black tracking-wider text-amber-200">PUNCH</span>
-          </button>
-
-          {/* Double Tap to Kick */}
-          <button
-            type="button"
-            onTouchStart={handleKickPress}
-            onMouseDown={handleKickPress}
-            className="w-16 h-16 rounded-full bg-orange-600/90 active:bg-orange-500 border-2 border-orange-300 shadow-xl flex flex-col items-center justify-center text-white active:scale-90 transition-transform"
-            aria-label="Double Tap to Kick"
-          >
-            <svg className="w-7 h-7 text-orange-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 17l6-6 4 4 6-8" />
-              <circle cx="20" cy="7" r="2" fill="currentColor" />
-            </svg>
-            <span className="text-[8px] font-black tracking-wider text-orange-200">KICK</span>
-          </button>
-
-          {/* Press Up to Jump / Double Jump (Press Up Twice!) */}
-          <button
-            type="button"
-            onTouchStart={handleUpPress}
-            onTouchEnd={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              inputEngine.releaseTouchUp();
-            }}
-            onTouchCancel={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              inputEngine.releaseTouchUp();
-            }}
-            onMouseDown={handleUpPress}
-            onMouseUp={(e) => {
-              e.stopPropagation();
-              inputEngine.releaseTouchUp();
-            }}
-            className="w-18 h-18 rounded-full bg-emerald-600/95 active:bg-emerald-500 border-2 border-emerald-200 shadow-2xl flex flex-col items-center justify-center text-white active:scale-90 transition-transform"
-            aria-label="Jump (Press Up Twice for Double Jump)"
-          >
-            <svg className="w-8 h-8 text-emerald-100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="18 15 12 9 6 15" />
-            </svg>
-            <span className="text-[9px] font-black tracking-widest text-emerald-100">UP: JUMP 2x</span>
-          </button>
+      {/* shown once, so nobody has to guess that there are no buttons */}
+      {hint && (
+        <div className="fixed inset-x-0 bottom-0 h-[24%] min-h-[96px] pointer-events-none flex items-stretch gap-3 px-4 pb-4 animate-[fadeIn_.4s_ease]">
+          {mode === 'gestures' ? (
+            <>
+              <HintCard title="LEFT THUMB" lines={['Drag ← → to run', 'Drag ↓ to duck', 'Drag ↑ to jump']} />
+              <HintCard title="RIGHT THUMB" lines={['Tap to punch', 'Flick ↑ to jump', 'Flick ← → to kick', 'Hold for mega']} />
+            </>
+          ) : (
+            <>
+              <HintCard title="TILT" lines={['Lean the phone to run', 'Hold it how you like;', 'it re-centres each stage']} />
+              <HintCard title="TAP ANYWHERE" lines={['Tap to punch', 'Flick ↑ jump · ↓ duck', 'Flick ← → to kick', 'Hold for mega']} />
+            </>
+          )}
         </div>
-      </div>
-
-      {/* Subtle On-screen touch gesture instructions at top */}
-      <div className="absolute top-16 inset-x-0 flex justify-center pointer-events-none">
-        <div className="bg-black/75 border border-emerald-400/40 px-3.5 py-1 rounded-full text-[10px] text-emerald-200 font-sans tracking-wide shadow-lg">
-          Slide L/R Move · Press Up Jump (2x Double Jump) · Down Duck · Tap Punch · Double Tap Kick
-        </div>
-      </div>
+      )}
     </div>
   );
 };
+
+const HintCard: React.FC<{ title: string; lines: string[] }> = ({ title, lines }) => (
+  <div className="flex-1 min-w-0 rounded-2xl border-2 border-dashed border-white/35 bg-black/35 flex flex-col items-center justify-center text-center px-2 py-2">
+    <div className="text-[10px] font-black tracking-[0.2em] text-amber-300 mb-1">{title}</div>
+    {lines.map((l) => (
+      <div key={l} className="text-[12px] font-bold leading-snug text-white [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">
+        {l}
+      </div>
+    ))}
+  </div>
+);

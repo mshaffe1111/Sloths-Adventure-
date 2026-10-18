@@ -1,3 +1,4 @@
+import { ControlPicker } from './ControlPicker.tsx';
 import React from 'react';
 import {
   TitleDefs,
@@ -106,9 +107,14 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           </div>
         </div>
 
+        {/* touch devices pick how they play: slide fingers or tilt */}
+        <div className="hidden [@media(pointer:coarse)]:block w-full max-w-xs mb-2">
+          <ControlPicker />
+        </div>
+
         {/* Control hints */}
         <p className="title-hint w-full text-center font-sans text-[11px] sm:text-xs tracking-wide text-amber-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.6)]">
-          WASD / Arrows Move · Space Jump · J / Z Punch (Double-Tap Mega) · W Climb · S Duck · Esc Pause
+          WASD / Arrows Move · Space Jump · J / Z Punch · K / X Kick · L / Shift Mega · S Duck · Esc Pause
         </p>
       </div>
     </div>
