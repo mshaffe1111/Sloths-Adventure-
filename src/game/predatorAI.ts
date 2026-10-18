@@ -70,6 +70,22 @@ function keepOnGround(e: Enemy, dt: number) {
   else if (e.x > hi) e.x -= Math.min(e.x - hi, 140 * dt);
 }
 
+/**
+ * A hit that interrupts: the animal comes down from whatever it was doing and stands in its open "recover" pose.
+ * The game keeps it there (not calling stepPredator) until the stagger runs out.
+ */
+export function staggerPredator(e: Enemy): void {
+  e.y = e.groundY ?? e.y;
+  e.vx = 0;
+  enter(e, 'recover');
+}
+
+/** the stagger is over: back to walking (or lying coiled), with a breather before it attacks again */
+export function endStagger(e: Enemy): void {
+  enter(e, e.type === 'boa' ? 'coil' : 'patrol');
+  e.attackCooldown = Math.max(e.attackCooldown, 1.0);
+}
+
 export interface PlayerRef {
   x: number;
   /** feet */

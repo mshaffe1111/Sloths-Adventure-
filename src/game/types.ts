@@ -104,6 +104,9 @@ export interface PlayerState {
   kicking: boolean;
   kickTimer: number;
   attackType: 'none' | 'punch' | 'kick' | 'mega';
+  /** fight: how far the claw or foot is pulled back (0..1) and thrust out (0..1) right now, for the drawing */
+  swingCock?: number;
+  swingReach?: number;
   punchType: 'normal' | 'mega';
   jumpsLeft: number; // 2 for double jump capability
   isDoubleJumping: boolean;
@@ -148,6 +151,23 @@ export interface Enemy {
   defeated: boolean;
   koTimer: number;
   behaviorTimer: number;
+  /** fight: seconds left staggered (it does nothing while staggered) and how long the stagger was */
+  stagger?: number;
+  staggerMax?: number;
+  /** fight: sideways shove in px/s that wears off quickly */
+  knockVx?: number;
+  /** fight: 1 right after a hit, fading to 0; the drawing leans and squashes with it */
+  recoil?: number;
+  recoilDir?: 1 | -1;
+  koLanded?: boolean;
+  /** fight: how a defeated animal leaves (launch velocity, spin and how long it stays on screen) */
+  koVx?: number;
+  koVy?: number;
+  koSpin?: number;
+  koLife?: number;
+  koAngle?: number;
+  /** fight: the swing that last hit it, so one swing never hits twice */
+  lastSwing?: number;
   diveAngle?: number;
   swoopPhase?: 'patrol' | 'telegraph' | 'swoop' | 'hover' | 'ascend';
   hoverTimer?: number;

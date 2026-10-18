@@ -20,6 +20,7 @@ export class InputEngine {
   private jumpBufferTimer = 0;
   private punchBufferTimer = 0;
   private kickBufferTimer = 0;
+  private megaBufferTimer = 0;
   private lastPunchTapTime = 0;
   private lastUpPressTime = 0;
   private isDestroyed = false;
@@ -95,6 +96,7 @@ export class InputEngine {
     // Mega punch / dash (KeyL, Shift)
     if (key === 'KeyL' || key === 'ShiftLeft' || key === 'ShiftRight') {
       this.state.megaPunchPressed = true;
+      this.megaBufferTimer = 0.14;
       this.state.layerSwitchPressed = true;
     }
   };
@@ -136,6 +138,7 @@ export class InputEngine {
     this.jumpBufferTimer = 0;
     this.punchBufferTimer = 0;
     this.kickBufferTimer = 0;
+    this.megaBufferTimer = 0;
   }
 
   /**
@@ -262,6 +265,7 @@ export class InputEngine {
           // Mega punch / dash: Bumpers / Triggers (index 4, 5, 6, 7)
           if (gp.buttons[4]?.pressed || gp.buttons[5]?.pressed || gp.buttons[6]?.pressed || gp.buttons[7]?.pressed) {
             this.state.megaPunchPressed = true;
+            this.megaBufferTimer = 0.14;
             this.state.layerSwitchPressed = true;
           }
         }
@@ -295,7 +299,13 @@ export class InputEngine {
       this.state.kickPressed = false;
     }
 
-    this.state.megaPunchPressed = false;
+    // a mega press survives a short buffer so the attack code (which runs after this) can read it
+    if (this.megaBufferTimer > 0) {
+      this.megaBufferTimer -= dt;
+      if (this.megaBufferTimer <= 0) this.state.megaPunchPressed = false;
+    } else {
+      this.state.megaPunchPressed = false;
+    }
     this.state.layerSwitchPressed = false;
   }
 

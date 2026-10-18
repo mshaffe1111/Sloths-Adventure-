@@ -35,7 +35,12 @@ import {
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
-import { isPredator, stepPredator } from './predatorAI.ts';
+import { endStagger, isPredator, staggerPredator, stepPredator } from './predatorAI.ts';
+import {
+  applyHit, bodyRect, canCancel, chooseMove, contactPoint, headRect, hurtRect, isCommitted, koLaunch, moveBox, moveLength, MOVES, phaseAt,
+  playerHurtRect, rectsOverlap, resolveMelee, stompSpec, stompTest, swingPose, sweptBox, TRAITS,
+  type AttackWant, type MoveId, type MoveSpec, type Rect,
+} from './fight.ts';
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
 
 /** How many world units tall the screen shows. */
@@ -102,6 +107,23 @@ export class GameEngine {
   /** Seconds at the start of a stage / after a respawn where run input is ignored, so Slomatt is dropped in standing still. */
   private inputGrace = 0.5;
 
+  // --- fight system (see fight.ts) ---
+  /** the attack being played: which move, how far into it, which animals it has already hit */
+  private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean } | null = null;
+  private atkQueue: { want: AttackWant; ttl: number } | null = null;
+  private lastPunch: MoveId | null = null;
+  private chainTimer = 0;
+  private swingId = 0;
+  private megaCooldown = 0;
+  /** after a stomp, a short breather where nothing can hurt Slomatt (the thing he landed on is not a threat any more) */
+  private stompGrace = 0;
+  /** stomps in a row without touching the ground */
+  private stompChain = 0;
+  /** ?hitboxes=1 draws every hit and hurt box, so you can see exactly what the game is judging */
+  private debugBoxes = false;
+  private dbgHurt: Rect[] = [];
+  private dbgStrike: Rect | null = null;
+
   private exitTotemReached: boolean = false;
   private daisyRescued: boolean = false;
   private isGameOver: boolean = false;
@@ -124,6 +146,11 @@ export class GameEngine {
     this.ctx = ctx;
     this.input = input;
     this.callbacks = callbacks;
+    try {
+      this.debugBoxes = new URLSearchParams(window.location.search).get('hitboxes') === '1';
+    } catch {
+      /* no window.location in some test setups */
+    }
 
     // Generate Stage data
     this.currentStage = generateStage(config);
@@ -305,12 +332,9 @@ export class GameEngine {
         if (e.defeated) continue;
         if (distance2D(p.x, p.y - 20, e.x, e.y) < 54) {
           e.hp = 0;
-          e.defeated = true;
-          p.enemiesDefeated++;
-          sound.playEnemyDefeated(e.type);
           this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.2);
+          this.knockOut(e, e.x >= p.x ? 1 : -1, 'STAR K.O.! +300');
           this.spawnDebrisBurst(e.x, e.y, '#facc15');
-          this.addFloatingText('STAR K.O.! +300', e.x, e.y - 30, '#facc15');
         }
       }
     }
@@ -590,10 +614,10 @@ export class GameEngine {
           p.ducking = false;
 
           const speedMult = p.activePowerUp === 'speed' ? 1.4 : 1.0;
-          const maxSpeed = PHYS.maxRun * speedMult;
+          const maxSpeed = PHYS.maxRun * speedMult * this.attackMoveMul();
           const dir = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
           if (dir !== 0) {
-            p.facing = dir as 1 | -1;
+            if (!this.facingLocked()) p.facing = dir as 1 | -1;
             const turning = p.grounded && Math.sign(p.vx) === -dir && Math.abs(p.vx) > 20;
             const acc = (p.grounded ? PHYS.groundAcc : PHYS.airAcc) * speedMult + (turning ? PHYS.turnBonus : 0);
             if (dir * p.vx < maxSpeed) {
@@ -601,7 +625,7 @@ export class GameEngine {
               if (dir * p.vx > maxSpeed) p.vx = dir * maxSpeed;
             } else {
               // launched faster than run speed (vine release, bounce): bleed off gently
-              p.vx -= dir * PHYS.airDec * dt;
+              p.vx -= dir * (this.atk && p.grounded ? PHYS.groundDec : PHYS.airDec) * dt;
             }
           } else {
             const dec = p.grounded ? PHYS.groundDec : PHYS.airDec;
@@ -807,64 +831,20 @@ export class GameEngine {
       }
     }
 
-    // --- Claw Punch & Mega Punch Execution (Tap to Punch!) ---
-    if ((this.input.state.punchPressed || this.input.state.megaPunchPressed) && !p.punching && !p.kicking) {
-      const isMega = this.input.state.megaPunchPressed;
-      p.punching = true;
-      p.attackType = isMega ? 'mega' : 'punch';
-      p.punchType = isMega ? 'mega' : 'normal';
-      p.punchTimer = isMega ? 0.35 : 0.22;
-      this.input.state.punchPressed = false;
-      this.input.state.megaPunchPressed = false;
-
-      if (isMega) {
-        sound.playMegaPunch();
-        this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.4);
-        this.addFloatingText('MEGA PUNCH!', p.x, p.y - 50, '#fde047');
-      } else {
-        sound.playPunch();
-      }
-
-      this.executePunchHitbox(isMega);
-    }
-
-    if (p.punching) {
-      p.punchTimer -= dt;
-      if (p.punchTimer <= 0) {
-        p.punching = false;
-        if (p.attackType === 'punch' || p.attackType === 'mega') p.attackType = 'none';
-      }
-    }
-
-    // --- Kung-Fu Dropkick Execution (Double Tap to Kick!) ---
-    if (this.input.state.kickPressed && !p.kicking && !p.punching) {
-      p.kicking = true;
-      p.attackType = 'kick';
-      p.kickTimer = 0.28;
-      this.input.state.kickPressed = false;
-
-      sound.playKick();
-      this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.25);
-      this.addFloatingText('KICK!', p.x, p.y - 48, '#fb923c');
-      this.executeKickHitbox();
-    }
-
-    if (p.kicking) {
-      p.kickTimer -= dt;
-      if (p.kickTimer <= 0) {
-        p.kicking = false;
-        if (p.attackType === 'kick') p.attackType = 'none';
-      }
-    }
+    // --- Attacks: wind-up, strike, follow-through (see fight.ts) ---
+    this.updateAttack(dt);
+    this.resolveStomps(dt);
 
     // --- Enemy Behavior & AI ---
     for (const e of this.enemies) {
       if (e.defeated) {
-        e.koTimer += dt;
+        this.updateKo(e, dt);
         continue;
       }
 
       if (e.hitFlashTimer > 0) e.hitFlashTimer -= dt;
+      // a hit animal flinches, slides back and may stand dazed (no moves, no damage) for a moment
+      if (this.reactToHits(e, dt)) continue;
 
       // Distinct enemy movement & attack policies:
       if (e.type === 'snake') {
@@ -886,7 +866,7 @@ export class GameEngine {
 
         // Contact damage with player
         if (!isObjectiveComplete(this.currentStage.config.objectiveType, 0, 0, false, false)) {
-          if (checkAABBCollision(p.x - 18, p.y - 40, 36, 40, e.x - 18, e.y - 12, 36, 22)) {
+          if (checkAABBCollision(...this.pBox(), e.x - 18, e.y - 12, 36, 22)) {
             this.damagePlayer(1);
           }
         }
@@ -932,7 +912,7 @@ export class GameEngine {
           }
 
           // Check collision with player
-          if (checkAABBCollision(p.x - 18, p.y - 40, 36, 40, e.x - 24, e.y - 18, 48, 36)) {
+          if (checkAABBCollision(...this.pBox(), e.x - 24, e.y - 18, 48, 36)) {
             if (p.ducking) {
               // Successfully ducked under swoop!
               this.addFloatingText('DUCKED! SLICK!', p.x, p.y - 40, '#86efac');
@@ -940,7 +920,7 @@ export class GameEngine {
               e.swoopPhase = 'hover';
               e.hoverTimer = 1.4;
               e.isAttacking = false;
-            } else if (!p.punching && !p.kicking) {
+            } else {
               this.damagePlayer(1);
               e.swoopPhase = 'hover';
               e.hoverTimer = 1.0;
@@ -989,8 +969,9 @@ export class GameEngine {
           }
           if (e.type === 'jaguar' || e.type === 'tayra') this.spawnDebrisBurst(e.x, e.y + 22, '#a16207');
         }
+        if (this.debugBoxes) this.dbgHurt.push(...step.hurt);
         for (const h of step.hurt) {
-          if (checkAABBCollision(p.x - 18, p.y - 40, 36, 40, h.x, h.y, h.w, h.h)) {
+          if (checkAABBCollision(...this.pBox(), h.x, h.y, h.w, h.h)) {
             this.damagePlayer(1);
             break;
           }
@@ -998,7 +979,7 @@ export class GameEngine {
       } else if (e.type === 'frog') {
         // Poison frog hopping
         e.animTimer += dt;
-        if (checkAABBCollision(p.x - 18, p.y - 40, 36, 40, e.x - 12, e.y - 10, 24, 20)) {
+        if (checkAABBCollision(...this.pBox(), e.x - 12, e.y - 10, 24, 20)) {
           this.damagePlayer(1);
         }
       }
@@ -1057,7 +1038,7 @@ export class GameEngine {
       }
 
       // Contact damage
-      if (checkAABBCollision(p.x - 18, p.y - 40, 36, 40, b.x - 30, b.y - 35, 60, 70)) {
+      if (checkAABBCollision(...this.pBox(), b.x - 30, b.y - 35, 60, 70)) {
         this.damagePlayer(1);
       }
     }
@@ -1344,206 +1325,442 @@ export class GameEngine {
     sound.setLowHealth(this.lives <= 1 && p.hp <= 1);
   }
 
-  /**
-   * Execute Sloth's Claw Punch Hitbox
-   */
-  private executePunchHitbox(isMega: boolean) {
+  // ===========================================================================================
+  // The fight system (rules live in fight.ts; this is the part that touches the world)
+  // ===========================================================================================
+
+  /** world rect of Slomatt's hurt box, as the four numbers checkAABBCollision wants */
+  private pBox(): [number, number, number, number] {
+    const r = playerHurtRect(this.player);
+    return [r.x, r.y, r.w, r.h];
+  }
+
+  /** while winding up or striking he cannot turn around; the follow-through can */
+  private facingLocked(): boolean {
+    const a = this.atk;
+    return !!a && phaseAt(a.move, a.t) !== 'recovery' && phaseAt(a.move, a.t) !== 'done';
+  }
+
+  /** the share of his running speed he keeps while a move plays on the ground (1 in the air) */
+  private attackMoveMul(): number {
+    const a = this.atk;
+    if (!a || !this.player.grounded) return 1;
+    const m = a.move;
+    const t = a.t;
+    if (t < m.startup + m.active) return m.moveMul;
+    const u = Math.min(1, (t - m.startup - m.active) / m.recovery);
+    return m.moveMul + (1 - m.moveMul) * u;
+  }
+
+  /** read the attack buttons, advance the current move, start or chain the next one */
+  private updateAttack(dt: number) {
     const p = this.player;
-    // Generous punch radius with vertical coverage to easily strike aerial predators!
-    const punchRadius = isMega ? 98 : 68;
-    const punchX = isMega ? p.x : p.x + p.facing * 38;
-    const punchY = p.y - 28;
+    const inp = this.input.state;
+    if (this.megaCooldown > 0) this.megaCooldown -= dt;
+    if (this.chainTimer > 0) this.chainTimer -= dt;
+    if (p.grounded) this.stompChain = 0;
 
-    // Check hit on enemies
+    let want: AttackWant | null = null;
+    if (inp.megaPunchPressed) want = 'mega';
+    else if (inp.kickPressed) want = 'kick';
+    else if (inp.punchPressed) want = 'punch';
+    inp.megaPunchPressed = false;
+    inp.kickPressed = false;
+    inp.punchPressed = false;
+    if (want) this.atkQueue = { want, ttl: 0.2 };
+    else if (this.atkQueue) {
+      this.atkQueue.ttl -= dt;
+      if (this.atkQueue.ttl <= 0) this.atkQueue = null;
+    }
+
+    const a0 = this.atk;
+    if (a0) {
+      const t0 = a0.t;
+      a0.t += dt;
+      if (!a0.sounded && a0.t >= a0.move.startup) {
+        a0.sounded = true;
+        this.onStrikeBegin(a0.move);
+      }
+      this.strike(a0, t0, a0.t);
+      if (a0.t >= moveLength(a0.move)) this.endAttack();
+    }
+
+    if (this.atkQueue) {
+      const q = this.atkQueue;
+      const a = this.atk;
+      if (q.want === 'mega' && this.megaCooldown > 0) {
+        this.atkQueue = null;
+      } else if (!a || canCancel(a.move, a.t, a.connected)) {
+        this.atkQueue = null;
+        if (a) this.endAttack();
+        this.startAttack(q.want);
+      }
+    }
+    this.syncAttackPose();
+  }
+
+  private startAttack(want: AttackWant) {
+    const p = this.player;
+    const inp = this.input.state;
+    const id = chooseMove(want, !p.grounded, this.lastPunch, this.chainTimer > 0);
+    const move = MOVES[id];
+    if (inp.left && !inp.right) p.facing = -1;
+    else if (inp.right && !inp.left) p.facing = 1;
+    if (id === 'mega') this.megaCooldown = 1.0;
+    this.chainTimer = 0;
+    this.atk = { move, t: 0, id: ++this.swingId, connected: false, lunged: false, hits: new Set(), sounded: false };
+  }
+
+  private endAttack() {
+    const a = this.atk;
+    if (!a) return;
+    const id = a.move.id;
+    this.lastPunch = id === 'jab' || id === 'cross' ? id : null;
+    this.chainTimer = this.lastPunch ? 0.35 : 0;
+    this.atk = null;
+  }
+
+  /** the strike starts: the swoosh, the step forward, the shake of a mega punch */
+  private onStrikeBegin(m: MoveSpec) {
+    const p = this.player;
+    if (m.kind === 'punch') sound.playPunch();
+    else if (m.kind === 'kick') sound.playKick();
+    else {
+      sound.playMegaPunch();
+      this.camera.trauma = Math.min(1, this.camera.trauma + 0.4);
+      this.addFloatingText('MEGA PUNCH!', p.x, p.y - 50, '#fde047');
+    }
+    if (m.lunge && p.grounded) p.vx = Math.max(-380, Math.min(380, p.vx + p.facing * m.lunge));
+  }
+
+  /** copy the move's progress into the player state the drawing reads */
+  private syncAttackPose() {
+    const p = this.player;
+    const a = this.atk;
+    if (!a) {
+      p.punching = false;
+      p.kicking = false;
+      p.attackType = 'none';
+      p.swingCock = 0;
+      p.swingReach = 0;
+      return;
+    }
+    const m = a.move;
+    p.punching = m.kind !== 'kick';
+    p.kicking = m.kind === 'kick';
+    p.attackType = m.kind;
+    p.punchType = m.kind === 'mega' ? 'mega' : 'normal';
+    const left = Math.max(0.001, moveLength(m) - a.t);
+    p.punchTimer = left;
+    p.kickTimer = left;
+    const sp = swingPose(m, a.t);
+    p.swingCock = sp.cock;
+    p.swingReach = sp.reach;
+  }
+
+  /** test everything the strike zone covered since the last tick against animals, the boss and cages (each once per swing) */
+  private strike(a: NonNullable<GameEngine['atk']>, t0: number, t1: number) {
+    const p = this.player;
+    const m = a.move;
+    const box = sweptBox(m, t0, t1, { x: p.x, y: p.y, facing: p.facing });
+    if (box) this.dbgStrike = box;
+    if (!box) return;
+
     for (const e of this.enemies) {
-      if (e.defeated) continue;
-      const dist = distance2D(punchX, punchY, e.x, e.y);
-      if (dist < punchRadius + e.width * 0.5) {
-        e.hp -= isMega ? 3 : 1;
-        e.hitFlashTimer = 0.18;
-        this.hitstopTimer = isMega ? 0.08 : 0.04; // Juice hitstop!
-        sound.playHitImpact(isMega, materialFor(e.type));
-        this.camera.trauma = Math.min(1.0, this.camera.trauma + (isMega ? 0.35 : 0.15));
+      if (e.defeated || a.hits.has(e.id)) continue;
+      const hr = hurtRect(e);
+      if (!rectsOverlap(box, hr)) continue;
+      a.hits.add(e.id);
+      this.hitEnemy(e, m, box, hr, a);
+    }
 
-        this.comboCount++;
-        this.comboResetTimer = 2.0;
-        const pts = calculateHitScore(e.type, isMega, this.comboCount);
-        this.runScore += pts;
-
-        this.spawnClawHitSparks(e.x, e.y, isMega);
-
-        if (e.type === 'eagle') {
-          this.spawnEagleFeatherBurst(e.x, e.y);
-          e.swoopPhase = 'hover';
-          e.hoverTimer = 0.9;
-        }
-
-        if (e.hp <= 0) {
-          e.defeated = true;
-          p.enemiesDefeated++;
-          sound.playEnemyDefeated(e.type);
-          this.addFloatingText(`+${pts}`, e.x, e.y - 25, '#86efac');
-          this.spawnDebrisBurst(e.x, e.y, e.type === 'eagle' ? '#f59e0b' : '#22c55e');
-        } else {
-          // Knockback
-          e.x += p.facing * (isMega ? 55 : 30);
-          this.addFloatingText('HIT!', e.x, e.y - 20, '#fef08a');
-        }
+    const b = this.boss;
+    if (b && !b.defeated && !a.hits.has(-1)) {
+      const hr = hurtRect(b);
+      if (rectsOverlap(box, hr)) {
+        a.hits.add(-1);
+        a.connected = true;
+        this.hitBoss(b, m, box, hr);
       }
     }
 
-    // Check hit on Boss
-    if (this.boss && !this.boss.defeated) {
-      const b = this.boss;
-      const dist = distance2D(punchX, punchY, b.x, b.y);
-      if (dist < punchRadius + 35) {
-        b.hp -= isMega ? 2 : 1;
-        b.hitFlashTimer = 0.15;
-        this.hitstopTimer = 0.08;
-        this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.4);
-        sound.playHitImpact(true, bossMaterial(this.currentStage.config.worldIndex));
-        this.spawnClawHitSparks(b.x, b.y, true);
-
-        const pts = calculateHitScore('boss', isMega, this.comboCount);
-        this.runScore += pts;
-        this.addFloatingText(`BOSS HIT! +${pts}`, b.x, b.y - 45, '#facc15');
-
-        if (b.hp <= 0) {
-          b.defeated = true;
-          this.daisyRescued = true;
-          sound.playBossVictory();
-          this.camera.trauma = 0.9;
-          this.addFloatingText('VICTORY! DAISY SAVED!', b.x, b.y - 70, '#ec4899');
-          this.spawnDebrisBurst(b.x, b.y, '#dc2626');
-        }
-      }
-    }
-
-    // Check hit on trapped Bamboo Cages
     for (const c of this.collectibles) {
-      if (c.type === 'cage' && !c.collected) {
-        const dist = distance2D(punchX, punchY, c.x, c.y);
-        if (dist < punchRadius + 25) {
-          c.cageHp = (c.cageHp ?? 2) - (isMega ? 2 : 1);
-          sound.playHitImpact(true, 'chitin');
-          this.spawnDebrisBurst(c.x, c.y, '#ca8a04');
-
-          if (c.cageHp <= 0) {
-            c.collected = true;
-            p.crittersRescued++;
-            this.runScore += 400;
-            sound.playCritterRescued();
-            this.addFloatingText('RESCUED! +400', c.x, c.y - 30, '#c084fc');
-          } else {
-            this.addFloatingText('CRACK!', c.x, c.y - 20, '#fef08a');
-          }
-        }
+      if (c.type !== 'cage' || c.collected || a.hits.has(1_000_000 + c.id)) continue;
+      const cr: Rect = { x: c.x - 24, y: c.y - 26, w: 48, h: 52 };
+      if (!rectsOverlap(box, cr)) continue;
+      a.hits.add(1_000_000 + c.id);
+      a.connected = true;
+      c.cageHp = (c.cageHp ?? 2) - m.damage;
+      this.hitstopTimer = Math.max(this.hitstopTimer, 0.04);
+      sound.playHitImpact(true, 'chitin');
+      this.spawnDebrisBurst(c.x, c.y, '#ca8a04');
+      if (c.cageHp <= 0) {
+        c.collected = true;
+        p.crittersRescued++;
+        this.runScore += 400;
+        sound.playCritterRescued();
+        this.addFloatingText('RESCUED! +400', c.x, c.y - 30, '#c084fc');
+      } else {
+        this.addFloatingText('CRACK!', c.x, c.y - 20, '#fef08a');
       }
     }
   }
 
-  /**
-   * Execute Sloth's Kung-Fu Kick Hitbox (Double tap to kick!)
-   */
-  private executeKickHitbox() {
+  private hitEnemy(e: Enemy, m: MoveSpec, box: Rect, hr: Rect, a: NonNullable<GameEngine['atk']>) {
     const p = this.player;
-    // Generous kick radius with sweeping forward and vertical arc
-    const kickRadius = 82;
-    const kickX = p.x + p.facing * 48;
-    const kickY = p.y - 22;
+    const dir: 1 | -1 = m.kind === 'mega' ? (e.x >= p.x ? 1 : -1) : p.facing;
+    const wasCommitted = isCommitted(e);
+    const res = resolveMelee(e, m, dir);
+    applyHit(e, res);
+    a.connected = true;
+    const cp = contactPoint(box, hr);
+    const kick = m.kind === 'kick';
 
-    // Check hit on enemies
-    for (const e of this.enemies) {
-      if (e.defeated) continue;
-      const dist = distance2D(kickX, kickY, e.x, e.y);
-      if (dist < kickRadius + e.width * 0.5) {
-        e.hp -= 2; // Kick does 2 damage (heavy impact!)
-        e.hitFlashTimer = 0.2;
-        this.hitstopTimer = 0.06;
-        sound.playHitImpact(true, materialFor(e.type));
-        this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.25);
+    // weight: the game freezes a moment, the screen shakes, and the blow sounds like what it hit
+    this.hitstopTimer = Math.max(this.hitstopTimer, res.killed ? m.hitstop * 1.5 : m.hitstop);
+    this.camera.trauma = Math.min(1, this.camera.trauma + m.shake * (res.armored ? 0.5 : 1));
+    sound.playHitImpact(m.heavy || res.killed, materialFor(e.type));
+    if (kick) this.spawnKickHitBurst(cp.x, cp.y);
+    else this.spawnClawHitSparks(cp.x, cp.y, m.heavy);
+    if (m.heavy) p.vx -= p.facing * 45; // a heavy blow pushes back on him a little too
 
-        this.comboCount++;
-        this.comboResetTimer = 2.0;
-        const pts = calculateHitScore(e.type, false, this.comboCount) * 2;
-        this.runScore += pts;
+    this.comboCount++;
+    this.comboResetTimer = 2.0;
+    const pts = calculateHitScore(e.type, m.kind === 'mega', this.comboCount) * (kick ? 2 : 1);
+    this.runScore += pts;
 
-        this.spawnKickHitBurst(e.x, e.y);
+    // a kick from the air bounces him off the animal, ready to go again
+    if (m.id === 'airKick') {
+      p.vy = -420;
+      p.jumpsLeft = Math.max(p.jumpsLeft, 1);
+      p.isDoubleJumping = false;
+      this.launched = true;
+    }
 
-        if (e.type === 'eagle') {
-          this.spawnEagleFeatherBurst(e.x, e.y);
-          e.swoopPhase = 'hover';
-          e.hoverTimer = 0.9;
-        }
-
-        if (e.hp <= 0) {
-          e.defeated = true;
-          p.enemiesDefeated++;
-          sound.playEnemyDefeated(e.type);
-          this.addFloatingText(`K.O.! +${pts}`, e.x, e.y - 25, '#fb923c');
-          this.spawnDebrisBurst(e.x, e.y, e.type === 'eagle' ? '#f59e0b' : '#f97316');
-        } else {
-          // Heavy knockback from kick
-          e.x += p.facing * 65;
-          this.addFloatingText('KICK HIT! -2', e.x, e.y - 20, '#fdba74');
-        }
+    if (e.type === 'eagle') {
+      this.spawnEagleFeatherBurst(e.x, e.y);
+      if (!res.killed && res.interrupt) {
+        e.swoopPhase = 'hover';
+        e.hoverTimer = 0.9;
+        e.isAttacking = false;
       }
     }
 
-    // Check hit on Boss
-    if (this.boss && !this.boss.defeated) {
-      const b = this.boss;
-      const dist = distance2D(kickX, kickY, b.x, b.y);
-      if (dist < kickRadius + 35) {
-        b.hp -= 2;
-        b.hitFlashTimer = 0.2;
-        this.hitstopTimer = 0.08;
-        this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.35);
-        sound.playHitImpact(true, bossMaterial(this.currentStage.config.worldIndex));
-        this.spawnKickHitBurst(b.x, b.y);
-
-        const pts = calculateHitScore('boss', false, this.comboCount) * 2;
-        this.runScore += pts;
-        this.addFloatingText(`BOSS KICK! -2`, b.x, b.y - 45, '#fb923c');
-
-        if (b.hp <= 0) {
-          b.defeated = true;
-          this.daisyRescued = true;
-          sound.playBossVictory();
-          this.camera.trauma = 0.9;
-          this.addFloatingText('VICTORY! DAISY SAVED!', b.x, b.y - 70, '#ec4899');
-          this.spawnDebrisBurst(b.x, b.y, '#dc2626');
-        }
-      }
+    if (res.killed) {
+      this.knockOut(e, dir, `+${pts}`);
+      return;
     }
+    if (res.interrupt && isPredator(e.type)) staggerPredator(e);
+    const label = res.armored ? 'TOUGH!' : wasCommitted ? 'STOPPED!' : this.comboCount >= 3 ? `${this.comboCount} HITS!` : 'HIT!';
+    this.addFloatingText(label, e.x, e.y - 24, res.armored ? '#cbd5e1' : '#fef08a');
+  }
 
-    // Check hit on trapped Bamboo Cages (Kick instantly frees critters!)
-    for (const c of this.collectibles) {
-      if (c.type === 'cage' && !c.collected) {
-        const dist = distance2D(kickX, kickY, c.x, c.y);
-        if (dist < kickRadius + 25) {
-          c.cageHp = (c.cageHp ?? 2) - 2;
-          sound.playHitImpact(true, 'chitin');
-          this.spawnDebrisBurst(c.x, c.y, '#f97316');
+  private hitBoss(b: BossEntity, m: MoveSpec, box: Rect, hr: Rect) {
+    const world = this.currentStage.config.worldIndex;
+    const cp = contactPoint(box, hr);
+    b.hp -= m.bossDamage;
+    b.hitFlashTimer = 0.15;
+    this.hitstopTimer = Math.max(this.hitstopTimer, m.hitstop + 0.02);
+    this.camera.trauma = Math.min(1, this.camera.trauma + 0.4);
+    sound.playHitImpact(true, bossMaterial(world));
+    if (m.kind === 'kick') this.spawnKickHitBurst(cp.x, cp.y);
+    else this.spawnClawHitSparks(cp.x, cp.y, true);
+    const pts = calculateHitScore('boss', m.kind === 'mega', this.comboCount) * (m.kind === 'kick' ? 2 : 1);
+    this.runScore += pts;
+    this.addFloatingText(`BOSS HIT! +${pts}`, b.x, b.y - 45, '#facc15');
+    if (b.hp <= 0) {
+      b.defeated = true;
+      this.daisyRescued = true;
+      sound.playBossVictory();
+      this.camera.trauma = 0.9;
+      this.addFloatingText('VICTORY! DAISY SAVED!', b.x, b.y - 70, '#ec4899');
+      this.spawnDebrisBurst(b.x, b.y, '#dc2626');
+    }
+  }
 
-          if (c.cageHp <= 0) {
-            c.collected = true;
-            p.crittersRescued++;
-            this.runScore += 500;
-            sound.playCritterRescued();
-            this.addFloatingText('FREED! +500', c.x, c.y - 30, '#c084fc');
-          }
-        }
+  /** an animal is beaten: it is launched away in its own style instead of vanishing */
+  private knockOut(e: Enemy, dir: 1 | -1, label: string) {
+    const p = this.player;
+    e.defeated = true;
+    e.koTimer = 0;
+    e.koAngle = 0;
+    e.koLanded = false;
+    p.enemiesDefeated++;
+    if (e.groundY === undefined) e.groundY = e.y;
+    if (isPredator(e.type)) staggerPredator(e); // open crouch pose, then the hop and flop
+    const ko = koLaunch(e, dir);
+    e.koVx = ko.vx;
+    e.koVy = ko.vy;
+    e.koSpin = ko.spin;
+    e.koLife = ko.life;
+    sound.playEnemyDefeated(e.type);
+    this.hitstopTimer = Math.max(this.hitstopTimer, 0.1);
+    this.addFloatingText(label, e.x, e.y - 25, '#86efac');
+    this.spawnDebrisBurst(e.x, e.y, e.type === 'eagle' ? '#f59e0b' : '#22c55e');
+  }
+
+  /** a knocked-out animal tumbles (small), drops (flyers) or hops and flops belly-up (big), then fades */
+  private updateKo(e: Enemy, dt: number) {
+    e.koTimer += dt;
+    const style = TRAITS[e.type].ko;
+    e.koVy = (e.koVy ?? 0) + 1500 * dt;
+    e.x += (e.koVx ?? 0) * dt;
+    e.y += e.koVy * dt;
+    const spin = e.koSpin ?? 0;
+    e.koAngle = style === 'flop' ? Math.max(-Math.PI, Math.min(Math.PI, spin * e.koTimer)) : spin * e.koTimer;
+    if (style === 'flop' && e.groundY !== undefined && e.y >= e.groundY && (e.koVy ?? 0) > 0) {
+      e.y = e.groundY;
+      e.koVy = 0;
+      e.koVx = (e.koVx ?? 0) * 0.3;
+      if (!e.koLanded) {
+        e.koLanded = true;
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.15);
+        this.spawnDebrisBurst(e.x, e.y + 20, '#a16207');
       }
     }
   }
 
-  /**
-   * Apply damage to Player
-   */
+  /** an animal that is hit flinches, slides back, and (if the hit was strong enough) stands dazed; returns true while dazed */
+  private reactToHits(e: Enemy, dt: number): boolean {
+    if (e.recoil) e.recoil = Math.max(0, e.recoil - dt / 0.24);
+    if (e.knockVx) {
+      e.x += e.knockVx * dt;
+      e.knockVx *= Math.exp(-dt * 9);
+      if (Math.abs(e.knockVx) < 8) e.knockVx = 0;
+      if (e.type !== 'eagle') e.x = Math.max(e.patrolMinX - 14, Math.min(e.patrolMaxX + 14, e.x));
+    }
+    if ((e.stagger ?? 0) > 0) {
+      e.stagger = (e.stagger ?? 0) - dt;
+      if (isPredator(e.type)) {
+        e.stateT = (e.stateT ?? 0) + dt;
+        if ((e.stagger ?? 0) <= 0) endStagger(e);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  /** landing on an animal's back from above: it takes damage and Slomatt bounces; armored backs just bounce him */
+  private resolveStomps(dt: number) {
+    const p = this.player;
+    if (this.stompGrace > 0) this.stompGrace -= dt;
+    if (p.climbing || p.isVineSwinging || p.grounded) return;
+    const prevFeet = p.y - p.vy * dt;
+    const diving = this.input.state.down;
+    for (const e of this.enemies) {
+      if (e.defeated) continue;
+      const r = stompTest({ x: p.x, y: p.y, vy: p.vy }, prevFeet, e, diving);
+      if (!r) continue;
+      this.stompGrace = 0.3;
+      p.jumpsLeft = Math.max(p.jumpsLeft, 1);
+      p.isDoubleJumping = false;
+      this.launched = true;
+      p.squashX = 1.3;
+      p.squashY = 0.7;
+      const head = headRect(e);
+      if (r.kind === 'bounce') {
+        p.vy = -430;
+        sound.playHitImpact(false, 'armor');
+        this.spawnSparkBurst(p.x, head.y, '#cbd5e1');
+        this.addFloatingText('ARMORED!', e.x, head.y - 14, '#cbd5e1');
+        return;
+      }
+      const dir: 1 | -1 = p.vx >= 0 ? 1 : -1;
+      const hs = stompSpec(r.damage);
+      const wasCommitted = isCommitted(e);
+      const res = resolveMelee(e, hs, dir);
+      applyHit(e, res);
+      p.vy = r.damage >= 2 ? -700 : this.input.state.jumpHeld ? -620 : -460;
+      this.stompChain++;
+      this.hitstopTimer = Math.max(this.hitstopTimer, res.killed ? 0.1 : 0.06);
+      this.camera.trauma = Math.min(1, this.camera.trauma + (r.damage >= 2 ? 0.35 : 0.18));
+      sound.playHitImpact(r.damage >= 2 || res.killed, materialFor(e.type));
+      this.spawnDebrisBurst(p.x, head.y, '#fde68a');
+      this.comboCount++;
+      this.comboResetTimer = 2.0;
+      const pts = calculateHitScore(e.type, false, this.comboCount) * (1 + Math.min(3, this.stompChain - 1));
+      this.runScore += pts;
+      if (e.type === 'eagle') this.spawnEagleFeatherBurst(e.x, e.y);
+      if (res.killed) {
+        this.knockOut(e, dir, `STOMP${this.stompChain > 1 ? ` x${this.stompChain}` : ''}! +${pts}`);
+      } else {
+        if (res.interrupt && isPredator(e.type)) staggerPredator(e);
+        if (e.type === 'eagle' && res.interrupt) {
+          e.swoopPhase = 'hover';
+          e.hoverTimer = 0.9;
+          e.isAttacking = false;
+        }
+        this.addFloatingText(wasCommitted && res.interrupt ? 'STOMPED!' : 'STOMP!', e.x, head.y - 14, '#fde68a');
+      }
+      return;
+    }
+  }
+
+  /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten */
+  private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, draw: () => void) {
+    const recoil = e.recoil ?? 0;
+    if (!e.defeated && recoil < 0.02) {
+      draw();
+      return;
+    }
+    const b = bodyRect(e);
+    const cx = b.x + b.w / 2;
+    const feet = b.y + b.h;
+    ctx.save();
+    if (e.defeated) {
+      const cy = b.y + b.h / 2;
+      const life = e.koLife ?? 0.8;
+      ctx.globalAlpha = 1 - Math.max(0, Math.min(1, (e.koTimer - (life - 0.3)) / 0.3));
+      ctx.translate(cx, cy);
+      ctx.rotate(e.koAngle ?? 0);
+      ctx.translate(-cx, -cy);
+    } else {
+      ctx.translate(cx, feet);
+      ctx.rotate((e.recoilDir ?? 1) * 0.24 * recoil);
+      ctx.scale(1 + 0.12 * recoil, 1 - 0.16 * recoil);
+      ctx.translate(-cx, -feet);
+    }
+    draw();
+    ctx.restore();
+  }
+
+  /** ?hitboxes=1: draw what the game judges, so a hit that looks wrong can be seen */
+  private drawHitboxes(ctx: CanvasRenderingContext2D) {
+    const p = this.player;
+    const stroke = (r: Rect, color: string, fill?: string) => {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      if (fill) {
+        ctx.fillStyle = fill;
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+      }
+      ctx.strokeRect(r.x, r.y, r.w, r.h);
+    };
+    ctx.save();
+    stroke(playerHurtRect(p), '#22d3ee');
+    if (this.atk) {
+      const a = this.atk;
+      const now = moveBox(a.move, a.t, { x: p.x, y: p.y, facing: p.facing });
+      if (now) stroke(now, '#ef4444', 'rgba(239,68,68,0.28)');
+      else if (this.dbgStrike) stroke(this.dbgStrike, 'rgba(239,68,68,0.35)');
+    } else if (this.dbgStrike) {
+      stroke(this.dbgStrike, 'rgba(239,68,68,0.25)');
+    }
+    for (const e of this.enemies) {
+      if (e.defeated) continue;
+      stroke(hurtRect(e), '#4ade80');
+      stroke(headRect(e), '#60a5fa');
+    }
+    if (this.boss && !this.boss.defeated) stroke(hurtRect(this.boss), '#4ade80');
+    ctx.setLineDash([4, 3]);
+    for (const r of this.dbgHurt) stroke(r, '#fb923c');
+    ctx.restore();
+    this.dbgHurt = [];
+  }
+
   private damagePlayer(amount: number) {
     const p = this.player;
-    if (p.invincibleTimer > 0) return;
+    if (p.invincibleTimer > 0 || this.stompGrace > 0) return;
 
     p.hp = Math.max(0, p.hp - amount);
     p.invincibleTimer = 1.2; // 1.2s invulnerability
@@ -1747,24 +1964,27 @@ export class GameEngine {
 
     // Render Enemies
     this.enemies.forEach((enemy) => {
-      if (enemy.defeated) return;
-      if (enemy.type === 'snake') {
-        drawTreeSnake(ctx, enemy, this.gameTime);
-      } else if (enemy.type === 'eagle') {
-        drawHarpyEagle(ctx, enemy, this.gameTime);
-      } else if (enemy.type === 'ocelot') {
-        drawOcelot(ctx, enemy, this.gameTime);
-      } else if (enemy.type === 'jaguar') {
-        drawJaguar(ctx, enemy, this.gameTime);
-      } else if (enemy.type === 'boa') {
-        drawBoa(ctx, enemy, this.gameTime);
-      } else if (enemy.type === 'caiman') {
-        drawCaiman(ctx, enemy, this.gameTime);
-      } else if (enemy.type === 'tayra') {
-        drawTayra(ctx, enemy, this.gameTime);
-      } else {
-        drawHazardEntity(ctx, enemy, this.gameTime);
-      }
+      if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
+      const draw = () => {
+        if (enemy.type === 'snake') {
+          drawTreeSnake(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'eagle') {
+          drawHarpyEagle(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'ocelot') {
+          drawOcelot(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'jaguar') {
+          drawJaguar(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'boa') {
+          drawBoa(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'caiman') {
+          drawCaiman(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'tayra') {
+          drawTayra(ctx, enemy, this.gameTime);
+        } else {
+          drawHazardEntity(ctx, enemy, this.gameTime);
+        }
+      };
+      this.drawWithReaction(ctx, enemy, draw);
     });
 
     // Render Boss
@@ -1774,6 +1994,7 @@ export class GameEngine {
 
     // Render Hero Sloth
     drawHeroSloth(ctx, this.player, this.gameTime);
+    if (this.debugBoxes) this.drawHitboxes(ctx);
 
     // Contextual Action Badges (Climb Tree / Swing Liana / Jump Off)
     const p = this.player;

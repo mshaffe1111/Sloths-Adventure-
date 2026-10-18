@@ -225,15 +225,17 @@ function solve(L: Look, p: PlayerState, time: number): Rig {
     r.lean = clamp(p.vx / 320, -1, 1) * 0.1;
     r.headTilt = rising ? -0.06 : 0.05;
     if (p.kicking) {
-      const k = Math.sin(clamp(p.kickTimer / 0.28, 0, 1) * Math.PI);
+      const k = p.swingReach ?? Math.sin(clamp(p.kickTimer / 0.28, 0, 1) * Math.PI);
+      const c = p.swingCock ?? 0;
       r.mode = 'kick'; r.reach = k;
-      r.footF = { x: hx + 8 + k * 18, y: -12 - k * 8 };
+      r.footF = { x: hx + 8 + k * 18 - c * 7, y: -12 - k * 8 - c * 9 };
       r.fierce = true;
     }
     if (p.punching) {
-      const pr = Math.sin(clamp(p.punchTimer / (p.punchType === 'mega' ? 0.35 : 0.22), 0, 1) * Math.PI);
+      const pr = p.swingReach ?? Math.sin(clamp(p.punchTimer / (p.punchType === 'mega' ? 0.35 : 0.22), 0, 1) * Math.PI);
+      const c = p.swingCock ?? 0;
       r.mode = 'punch'; r.reach = pr;
-      r.armF = { x: L.shoulder.x + L.armLen * 0.7 + pr * 16, y: L.shoulder.y + 2 };
+      r.armF = { x: L.shoulder.x + L.armLen * (0.28 - c * 0.38 + pr * 0.42) + pr * (p.punchType === 'mega' ? 24 : 16), y: L.shoulder.y + 2 + c * 3 };
       r.fierce = true;
     }
     return r;
@@ -260,17 +262,19 @@ function solve(L: Look, p: PlayerState, time: number): Rig {
     r.look = { x: 0.6 + Math.sin(time * 0.7) * 0.3, y: Math.sin(time * 0.9) * 0.15 };
   }
   if (p.kicking) {
-    const k = Math.sin(clamp(p.kickTimer / 0.28, 0, 1) * Math.PI);
+    const k = p.swingReach ?? Math.sin(clamp(p.kickTimer / 0.28, 0, 1) * Math.PI);
+    const c = p.swingCock ?? 0;
     r.mode = 'kick'; r.reach = k;
-    r.footF = { x: hx + 8 + k * 18, y: -12 - k * 8 };
-    r.lean = -0.06; r.fierce = true;
+    r.footF = { x: hx + 8 + k * 18 - c * 7, y: -12 - k * 8 - c * 9 };
+    r.lean = -0.06 - c * 0.08 + k * 0.04; r.fierce = true;
   }
   if (p.punching) {
-    const pr = Math.sin(clamp(p.punchTimer / (p.punchType === 'mega' ? 0.35 : 0.22), 0, 1) * Math.PI);
+    const pr = p.swingReach ?? Math.sin(clamp(p.punchTimer / (p.punchType === 'mega' ? 0.35 : 0.22), 0, 1) * Math.PI);
+    const c = p.swingCock ?? 0;
     r.mode = 'punch'; r.reach = pr;
-    r.armF = { x: L.shoulder.x + L.armLen * 0.7 + pr * 16, y: L.shoulder.y + 2 };
+    r.armF = { x: L.shoulder.x + L.armLen * (0.28 - c * 0.38 + pr * 0.42) + pr * (p.punchType === 'mega' ? 24 : 16), y: L.shoulder.y + 2 + c * 3 };
     r.armB = armAt(L, -1, -0.9);
-    r.lean = 0.1; r.fierce = true;
+    r.lean = 0.1 + pr * 0.08 - c * 0.14; r.fierce = true;
   }
   return r;
 }
