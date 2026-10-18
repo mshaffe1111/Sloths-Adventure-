@@ -1,0 +1,6 @@
+{
+  "name": "Sloths Rainforest Adventures",
+  "description": "High-DPI side-scrolling action and adventure game where Sloth navigates 10 lush rainforest stages and 100 mission levels to save his kidnapped girlfriend.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
