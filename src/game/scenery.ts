@@ -1105,7 +1105,7 @@ function ensure(world: number): LayerSet {
   }
   // gameplay keeps one full-resolution set; low-resolution vistas keep a handful
   const sameKind = [...sets.entries()].filter(([k]) => k.endsWith(`:${bakeScale}`));
-  const limit = bakeScale >= 1 ? 1 : 6;
+  const limit = bakeScale >= 1 ? 1 : bakeScale > 0.45 ? 2 : 6;
   while (sameKind.length >= limit) {
     const [old] = sameKind.shift()!;
     sets.delete(old);

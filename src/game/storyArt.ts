@@ -1,6 +1,5 @@
-import type { BossEntity, Camera, PlayerState } from './types.ts';
-import { WORLDS_DATA } from './worldsData.ts';
-import { backgroundEngine } from './backgroundEngine.ts';
+import type { BossEntity, PlayerState } from './types.ts';
+import { renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
 import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.ts';
 import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor } from './story.ts';
@@ -684,19 +683,29 @@ function getGrain(): HTMLCanvasElement | null {
   return grainCanvas;
 }
 
+/** the frame, shrunk, for a cheap soft glow (a blurred copy without paying for ctx.filter every frame) */
+let glowCanvas: HTMLCanvasElement | null = null;
+
 /** Storybook "painted" finish: soft bloom, warm grade, paper grain and vignette. */
 function paintFinish(ctx: CanvasRenderingContext2D, w: number, h: number, mood: StoryScene['mood']) {
   const cv = ctx.canvas;
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  // bloom: blurred copy of the frame screened back over itself
-  try {
-    ctx.filter = 'blur(7px) saturate(1.25) brightness(1.08)';
+  if (typeof document !== 'undefined') {
+    if (!glowCanvas) glowCanvas = document.createElement('canvas');
+    const gw = Math.max(8, Math.round(cv.width / 6));
+    const gh = Math.max(8, Math.round(cv.height / 6));
+    if (glowCanvas.width !== gw || glowCanvas.height !== gh) {
+      glowCanvas.width = gw;
+      glowCanvas.height = gh;
+    }
+    const g = glowCanvas.getContext('2d')!;
+    g.globalCompositeOperation = 'copy';
+    g.drawImage(cv, 0, 0, gw, gh);
     ctx.globalCompositeOperation = 'screen';
-    ctx.globalAlpha = mood === 'storm' || mood === 'night' ? 0.2 : 0.3;
-    ctx.drawImage(cv, 0, 0);
-  } catch {
-    /* ignore */
+    ctx.globalAlpha = mood === 'storm' || mood === 'night' ? 0.22 : 0.34;
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(glowCanvas, 0, 0, cv.width, cv.height);
   }
   ctx.restore();
   ctx.save();
@@ -721,16 +730,18 @@ function paintFinish(ctx: CanvasRenderingContext2D, w: number, h: number, mood: 
   ctx.restore();
 }
 
-export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene, t: number) {
-  const w = SCENE_W;
-  const h = SCENE_H;
-  const world = WORLDS_DATA[scene.world - 1] || WORLDS_DATA[0];
-  const cam = {
-    x: scene.camX ?? 400, y: 0, targetX: 0, targetY: 0, zoom: 1, targetZoom: 1, trauma: 0,
-    viewportWidth: w, viewportHeight: h,
-  } as Camera;
+/** the backdrops are the stages' own scenery, baked at a lower resolution than play (it is only ever seen through a soft finish) */
+const STORY_BAKE = 0.55;
+
+/**
+ * Draw one story picture into a w x h scene space (the canvas is expected to be scaled to it). `lift` raises the
+ * whole picture by that fraction of the height, so a dialogue bar over the bottom of the screen hides scenery
+ * instead of the characters' feet.
+ */
+export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene, t: number, w = SCENE_W, h = SCENE_H, lift = 0) {
   ctx.save();
   ctx.clearRect(0, 0, w, h);
+  ctx.translate(0, -lift * h);
   // camera: close-up zoom with a slow push-in
   const z = (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1));
   const fx = Math.min(w - w / (2 * z), Math.max(w / (2 * z), (scene.focusX ?? 0.5) * w));
@@ -738,10 +749,9 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   ctx.translate(w / 2, h / 2);
   ctx.scale(z, z);
   ctx.translate(-fx, -fy);
-  // draw a little beyond the frame so zoomed-out edges never show
-  ctx.save();
-  backgroundEngine.renderBackground(ctx, world, cam, t);
-  ctx.restore();
+  // the sky and hills drift slowly behind the actors
+  const camX = (scene.camX ?? 400) + t * 9;
+  withBakeScale(STORY_BAKE, () => renderScenery(ctx, scene.world, camX, 0, w, h * (1 + lift) + 4, t, true));
   drawSetPiece(ctx, scene.world, scene.mood, w, h, t);
 
   if (scene.lineup) {
@@ -765,7 +775,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
 
   drawParticles(ctx, scene.particles, w, h, t);
   drawMood(ctx, scene.mood, w, h, t);
-  backgroundEngine.renderForeground(ctx, world, cam, t);
+  withBakeScale(STORY_BAKE, () => renderOverlay(ctx, scene.world, camX, w, h * (1 + lift) + 4, t, true));
   ctx.restore();
   ctx.save();
   paintFinish(ctx, w, h, scene.mood);

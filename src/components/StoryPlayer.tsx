@@ -10,29 +10,46 @@ interface StoryPlayerProps {
   skipLabel?: string;
 }
 
-const SPEAKER_COLORS: Record<string, string> = {
-  Slomatt: 'bg-amber-500 text-amber-950',
-  Jennifur: 'bg-pink-400 text-pink-950',
-  Narrator: 'bg-sky-300 text-sky-950',
+const SPEAKERS: Record<string, { dot: string; icon: string }> = {
+  Slomatt: { dot: '#ffb02e', icon: '🦥' },
+  Jennifur: { dot: '#f58ab4', icon: '🌸' },
+  Narrator: { dot: '#8fd3f0', icon: '📖' },
 };
 
-/** Full-screen cinematic: canvas scene on top, storybook dialogue box below. */
-export const StoryPlayer: React.FC<StoryPlayerProps> = ({
-  panels,
-  onFinish,
-  finishLabel = 'Continue',
-  skipLabel = 'Skip',
-}) => {
+/** "WORLD 3 · MOSSY GROTTO" -> the small line and the big line of the title card */
+function splitChapter(chapter: string): { kicker: string; title: string } {
+  const i = chapter.indexOf(' · ');
+  if (i > 0) return { kicker: chapter.slice(0, i), title: chapter.slice(i + 3) };
+  return { kicker: 'CHAPTER', title: chapter };
+}
+const titleCase = (s: string) => s.toLowerCase().replace(/(^|[\s'’-])([a-z])/g, (_, a: string, b: string) => a + b.toUpperCase());
+
+const CARD_MS = 2600;
+const FPS = 30;
+
+/** Full-screen cinematic: the stage scenery behind the actors, a title card for each chapter, and a dialogue panel. */
+export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, finishLabel = 'Continue', skipLabel = 'Skip' }) => {
   const [idx, setIdx] = useState(0);
   const [shown, setShown] = useState(0);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const panel = panels[idx];
+  const prevChapter = idx > 0 ? panels[idx - 1].chapter : null;
+  const wantsCard = panel.chapter !== prevChapter;
+  const [cardUp, setCardUp] = useState(wantsCard);
   const done = shown >= panel.text.length;
   const last = idx === panels.length - 1;
 
-  // typewriter (time-based so a slow frame never stalls the text)
+  // a new chapter opens with its title card
+  useEffect(() => {
+    setCardUp(wantsCard);
+    if (!wantsCard) return;
+    const id = window.setTimeout(() => setCardUp(false), CARD_MS);
+    return () => clearTimeout(id);
+  }, [idx, wantsCard]);
+
+  // typewriter (time-based so a slow frame never stalls the text); waits for the title card
   useEffect(() => {
     setShown(0);
+    if (cardUp) return;
     const start = performance.now();
     let raf = 0;
     const tick = (now: number) => {
@@ -42,7 +59,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [idx, panel.text]);
+  }, [idx, panel.text, cardUp]);
 
   // the music follows the story: each panel's chapter and mood choose the piece (same piece = no restart)
   useEffect(() => {
@@ -61,52 +78,73 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({
     for (let i = from; i < shown; i++) sound.speak(panel.speaker, panel.text[i] ?? ' ', i);
   }, [shown, panel]);
 
-  // fit the 16:9 scene inside the available space
-  const boxRef = useRef<HTMLDivElement | null>(null);
-  const [size, setSize] = useState({ w: 640, h: 360 });
+  // ── the picture: full screen on landscape, a 16:9 window above the text on tall screens
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [view, setView] = useState({ w: 844, h: 390 });
   useEffect(() => {
-    const el = boxRef.current;
+    const el = rootRef.current;
     if (!el) return;
-    const fit = () => {
-      const bw = el.clientWidth;
-      const bh = el.clientHeight;
-      const w = Math.max(200, Math.min(bw, bh * (SCENE_W / SCENE_H)));
-      setSize({ w, h: w * (SCENE_H / SCENE_W) });
-    };
+    const fit = () => setView({ w: el.clientWidth, h: el.clientHeight });
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+  const wide = view.w / view.h >= 1.3;
 
-  // scene animation
+  const startRef = useRef(performance.now());
+  useEffect(() => {
+    startRef.current = performance.now();
+  }, [idx]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = SCENE_W * dpr;
-    canvas.height = SCENE_H * dpr;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
-    let raf = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, wide ? 1.25 : 1.5);
+    const cssW = wide ? view.w : view.w;
+    const cssH = wide ? view.h : view.w * (SCENE_H / SCENE_W);
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    // scene space: 540 tall; as wide as the screen needs
+    const sh = SCENE_H;
+    const sw = wide ? Math.max(720, Math.min(1500, sh * (cssW / cssH))) : SCENE_W;
+    const sc = canvas.height / sh;
+    const lift = wide ? 0.09 : 0;
     const t0 = performance.now();
+    let raf = 0;
+    let last = 0;
     const loop = (now: number) => {
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      drawStoryScene(ctx, panel.scene, (now - t0) / 1000);
       raf = requestAnimationFrame(loop);
+      if (now - last < 1000 / FPS) return;
+      last = now;
+      ctx.setTransform(sc, 0, 0, sc, 0, 0);
+      drawStoryScene(ctx, panel.scene, (now - t0) / 1000, sw, sh, lift);
+      // dip in from dark at every new picture
+      const k = Math.max(0, 1 - (now - startRef.current) / 520);
+      if (k > 0) {
+        ctx.fillStyle = `rgba(6,10,8,${k * 0.9})`;
+        ctx.fillRect(0, 0, sw, sh);
+      }
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [panel.scene]);
+  }, [panel.scene, wide, view.w, view.h]);
 
   const next = useCallback(() => {
+    if (cardUp) {
+      setCardUp(false);
+      return;
+    }
     if (!done) {
       setShown(panel.text.length);
       return;
     }
     if (last) onFinish();
     else setIdx((i) => i + 1);
-  }, [done, last, onFinish, panel.text.length]);
+  }, [cardUp, done, last, onFinish, panel.text.length]);
 
   const back = useCallback(() => setIdx((i) => Math.max(0, i - 1)), []);
 
@@ -126,74 +164,76 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({
     return () => window.removeEventListener('keydown', onKey, true);
   }, [next, back, onFinish]);
 
-  const chip = SPEAKER_COLORS[panel.speaker] ?? 'bg-red-400 text-red-950';
+  const who = SPEAKERS[panel.speaker] ?? { dot: '#ff7a6a', icon: '⚔' };
+  const narrator = panel.speaker === 'Narrator';
+  const card = splitChapter(panel.chapter);
+
+  const box = (
+    <div className={`sp-box ${wide ? 'sp-box-over' : ''}`} onClick={next}>
+      {!narrator && (
+        <span className="sp-name" style={{ ['--dot' as string]: who.dot }}>
+          <i>{who.icon}</i>
+          {panel.speaker}
+        </span>
+      )}
+      <p className={`sp-text ${narrator ? 'narr' : ''}`}>
+        {panel.text.slice(0, shown)}
+        <span className="opacity-0">{panel.text.slice(shown)}</span>
+      </p>
+      {panel.tip && done && <p className="sp-tip">💡 {panel.tip}</p>}
+      <div className="sp-foot">
+        <div className="flex gap-1.5 items-center">
+          {panels.map((_, i) => (
+            <span key={i} className={`sp-dot ${i === idx ? 'on' : i < idx ? 'past' : ''}`} />
+          ))}
+        </div>
+        <div className="flex gap-2">
+          {idx > 0 && (
+            <button type="button" className="sp-back" onClick={(e) => { e.stopPropagation(); back(); }}>
+              ◀ Back
+            </button>
+          )}
+          <button type="button" className="sp-next" onClick={(e) => { e.stopPropagation(); next(); }}>
+            {last && done ? finishLabel : 'Next ▶'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center bg-stone-950 text-white select-none font-game">
-      <div className="w-full max-w-5xl flex items-center justify-between px-4 pt-3 pb-2">
-        <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-xl text-[11px] sm:text-xs font-black tracking-widest uppercase">
-          {panel.chapter}
-        </span>
-        <button
-          type="button"
-          onClick={onFinish}
-          className="bg-black/40 hover:bg-black/60 active:scale-95 border border-stone-600/50 hover:border-emerald-400 text-stone-300 hover:text-white px-4 py-1.5 rounded-xl text-xs font-bold transition-all"
-        >
+    <div ref={rootRef} className="fixed inset-0 z-50 bg-[#070d09] text-white select-none font-game overflow-hidden flex flex-col">
+      {wide ? (
+        <canvas ref={canvasRef} onClick={next} className="absolute inset-0 w-full h-full cursor-pointer" />
+      ) : (
+        <div className="flex-1 min-h-0 flex items-center pt-12" style={{ background: 'radial-gradient(ellipse at 50% 45%, rgba(40,70,48,.55), rgba(7,13,9,1) 70%)' }}>
+          <canvas ref={canvasRef} onClick={next} className="w-full cursor-pointer shadow-2xl" style={{ height: view.w * (SCENE_H / SCENE_W) }} />
+        </div>
+      )}
+      {wide && <div className="absolute inset-x-0 bottom-0 h-[44%] pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(6,12,8,.82), rgba(6,12,8,0))' }} />}
+
+      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
+        <span className={`ui-chip transition-opacity duration-300 ${cardUp ? 'opacity-0' : 'opacity-100'}`}>{panel.chapter}</span>
+        <button type="button" onClick={onFinish} className="ui-chip ui-chip-btn">
           {skipLabel} ➔
         </button>
       </div>
 
-      <div ref={boxRef} className="w-full max-w-5xl px-3 flex-1 min-h-0 flex items-center justify-center">
-        <canvas
-          ref={canvasRef}
-          onClick={next}
-          className="rounded-2xl border-2 border-emerald-500/40 shadow-2xl cursor-pointer"
-          style={{ width: size.w, height: size.h }}
-        />
-      </div>
-
-      <div className="w-full max-w-5xl px-3 pb-4 pt-3">
-        <div
-          onClick={next}
-          className="relative bg-gradient-to-b from-stone-900/95 to-black/95 border-2 border-amber-400/50 rounded-2xl p-4 sm:p-5 cursor-pointer shadow-2xl"
-        >
-          <span className={`absolute -top-3.5 left-4 px-3 py-0.5 rounded-lg text-xs sm:text-sm font-black tracking-wide ${chip}`}>
-            {panel.speaker}
-          </span>
-          <p className="text-base sm:text-xl leading-relaxed text-stone-50 min-h-[3.5rem] sm:min-h-[4.5rem] pt-1">
-            {panel.text.slice(0, shown)}
-            <span className="opacity-0">{panel.text.slice(shown)}</span>
-          </p>
-          {panel.tip && done && (
-            <p className="mt-2 text-xs sm:text-sm text-emerald-300 font-sans">💡 {panel.tip}</p>
-          )}
-          <div className="flex items-center justify-between mt-3">
-            <div className="flex gap-1.5">
-              {panels.map((_, i) => (
-                <span key={i} className={`h-1.5 rounded-full transition-all ${i === idx ? 'w-6 bg-amber-400' : 'w-1.5 bg-stone-600'}`} />
-              ))}
-            </div>
-            <div className="flex gap-2">
-              {idx > 0 && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); back(); }}
-                  className="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold"
-                >
-                  ◀ Back
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); next(); }}
-                className="px-5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-sm font-black shadow-lg"
-              >
-                {last && done ? finishLabel : 'Next ▶'}
-              </button>
-            </div>
-          </div>
+      {!wide && <div className="shrink-0 px-3 pb-3 pt-3" style={{ minHeight: 190 }}>{!cardUp && box}</div>}
+      {wide && !cardUp && (
+        <div className="absolute inset-x-0 bottom-0 z-10 px-3 sm:px-6" style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom, 0px))' }}>
+          {box}
         </div>
-      </div>
+      )}
+
+      {cardUp && (
+        <div className="sp-card" onClick={next} key={`card-${idx}`}>
+          <div className="sp-card-k">{card.kicker}</div>
+          <div className="sp-card-t">{titleCase(card.title)}</div>
+          <div className="sp-card-rule" />
+          <div className="sp-card-hint">tap to continue</div>
+        </div>
+      )}
     </div>
   );
 };
