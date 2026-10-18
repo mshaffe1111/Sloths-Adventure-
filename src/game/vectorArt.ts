@@ -69,6 +69,362 @@ function drawGlossyEye(
   ctx.fill();
 }
 
+// ---------------------------------------------------------------
+// Hero sloth design kit (storybook style: soft outline, big face)
+// ---------------------------------------------------------------
+const SLOTH = {
+  base: '#c19460',
+  light: '#e6c795',
+  dark: '#9a6c3e',
+  deep: '#6a4426',
+  line: '#4a2e18',
+  cream: '#f4e3c8',
+  creamShade: '#e3c79b',
+  claw: '#fff3dc',
+  blush: 'rgba(255, 138, 128, 0.5)',
+  patch: '#d9a35c',
+  ribbon: '#e23a3f',
+  ribbonDark: '#a9242b',
+};
+
+/** Filled ellipse with the soft dark-brown outline used by every body part. */
+function furBlob(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  rx: number,
+  ry: number,
+  rot: number,
+  fill: string | CanvasGradient,
+  lineW: number = 1.8
+) {
+  ctx.beginPath();
+  ctx.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2);
+  ctx.fillStyle = fill;
+  ctx.fill();
+  ctx.lineWidth = lineW;
+  ctx.strokeStyle = SLOTH.line;
+  ctx.stroke();
+}
+
+/** Round-ended arm/leg: outline pass first, fur pass on top. */
+function furLimb(
+  ctx: CanvasRenderingContext2D,
+  x1: number,
+  y1: number,
+  cx: number,
+  cy: number,
+  x2: number,
+  y2: number,
+  w: number,
+  fill: string
+) {
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.quadraticCurveTo(cx, cy, x2, y2);
+  ctx.strokeStyle = SLOTH.line;
+  ctx.lineWidth = w + 3.6;
+  ctx.stroke();
+  ctx.strokeStyle = fill;
+  ctx.lineWidth = w;
+  ctx.stroke();
+}
+
+/** Three curved ivory claws fanning out from (x, y) along direction `dir` (radians). */
+function slothClaws(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  dir: number,
+  len: number,
+  glow: boolean = false
+) {
+  ctx.lineCap = 'round';
+  for (let i = -1; i <= 1; i++) {
+    const a = dir + i * 0.4;
+    const tipX = x + Math.cos(a) * len;
+    const tipY = y + Math.sin(a) * len;
+    const cxp = x + Math.cos(a + 0.28) * len * 0.62;
+    const cyp = y + Math.sin(a + 0.28) * len * 0.62;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.quadraticCurveTo(cxp, cyp, tipX, tipY);
+    ctx.strokeStyle = glow ? '#b45309' : SLOTH.line;
+    ctx.lineWidth = 3.8;
+    ctx.stroke();
+    ctx.strokeStyle = glow ? '#fef08a' : SLOTH.claw;
+    ctx.lineWidth = 2.2;
+    ctx.stroke();
+  }
+}
+
+/** Little fur points poking out along part of an ellipse outline (drawn before the shape so the outline overlaps their base). */
+function furSpikes(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  rx: number,
+  ry: number,
+  fromDeg: number,
+  toDeg: number,
+  n: number,
+  len: number,
+  fill: string
+) {
+  ctx.fillStyle = fill;
+  ctx.strokeStyle = SLOTH.line;
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+  for (let i = 0; i < n; i++) {
+    const a = ((fromDeg + ((toDeg - fromDeg) * i) / Math.max(1, n - 1)) * Math.PI) / 180;
+    const px = cx + Math.cos(a) * rx;
+    const py = cy + Math.sin(a) * ry;
+    const nx = Math.cos(a);
+    const ny = Math.sin(a);
+    const tx = -ny;
+    const ty = nx;
+    const w = len * 0.95;
+    // soft curved tuft whose tip flicks downward
+    const tipX = px + nx * len + 0.0;
+    const tipY = py + ny * len + len * 0.6;
+    ctx.beginPath();
+    ctx.moveTo(px - tx * w - nx * 2, py - ty * w - ny * 2);
+    ctx.quadraticCurveTo(px + nx * len * 0.9 - tx * w * 0.3, py + ny * len * 0.9 - ty * w * 0.3, tipX, tipY);
+    ctx.quadraticCurveTo(px + nx * len * 0.5 + tx * w * 0.9, py + ny * len * 0.5 + ty * w * 0.9, px + tx * w - nx * 2, py + ty * w - ny * 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+}
+
+/** Big glossy chibi eye: dark iris, large catchlight, small lower catchlight. */
+function drawChibiEye(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  rx: number,
+  ry: number,
+  lookX: number,
+  lookY: number,
+  blink: boolean,
+  hurt: boolean
+) {
+  if (hurt) {
+    ctx.strokeStyle = SLOTH.line;
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x - rx * 0.6, y - ry * 0.7);
+    ctx.lineTo(x + rx * 0.5, y);
+    ctx.lineTo(x - rx * 0.6, y + ry * 0.7);
+    ctx.stroke();
+    return;
+  }
+  if (blink) {
+    ctx.strokeStyle = '#2a170b';
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(x, y - ry * 0.1, rx * 0.8, 0.15 * Math.PI, 0.85 * Math.PI);
+    ctx.stroke();
+    return;
+  }
+  const ex = x + lookX * rx * 0.18;
+  const ey = y + lookY * ry * 0.18;
+  const g = ctx.createRadialGradient(ex, ey, rx * 0.15, ex, ey, rx);
+  g.addColorStop(0, '#4a2c14');
+  g.addColorStop(0.6, '#24130a');
+  g.addColorStop(1, '#0e0703');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.ellipse(ex, ey, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(ex - rx * 0.32, ey - ry * 0.34, rx * 0.36, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(ex + rx * 0.38, ey + ry * 0.4, rx * 0.17, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+/**
+ * The sloth's face. Origin = centre of the head (about 20px radius).
+ * 'side' is a three-quarter view looking toward +x; 'front' looks at the camera.
+ */
+function drawSlothHead(
+  ctx: CanvasRenderingContext2D,
+  mode: 'side' | 'front',
+  o: { blink: boolean; hurt: boolean; lookX: number; lookY: number; fierce: boolean; time: number }
+) {
+  const { blink, hurt, lookX, lookY, fierce } = o;
+
+  // (sloth ears are hidden in the fur)
+
+  // head fur (front view is a wide, round sloth head)
+  const hrx = mode === 'front' ? 24 : 21.5;
+  const hry = mode === 'front' ? 20.5 : 19.5;
+  if (mode === 'front') {
+    furSpikes(ctx, 0, 0, hrx, hry, 150, 195, 3, 4.5, SLOTH.base); // left cheek fluff
+    furSpikes(ctx, 0, 0, hrx, hry, -15, 30, 3, 4.5, SLOTH.base); // right cheek fluff
+  }
+  const hg = ctx.createRadialGradient(-5, -8, 3, 0, 0, 25);
+  hg.addColorStop(0, SLOTH.light);
+  hg.addColorStop(0.7, SLOTH.base);
+  hg.addColorStop(1, SLOTH.dark);
+  furBlob(ctx, 0, 0, hrx, hry, 0, hg, 2);
+
+  // fluffy tufts
+  ctx.fillStyle = SLOTH.base;
+  ctx.strokeStyle = SLOTH.line;
+  ctx.lineWidth = 1.4;
+  const tufts: Array<[number, number, number]> =
+    mode === 'side'
+      ? [[-14, -15, 4.6], [-6, -19, 5], [3, -20, 5], [12, -17, 4.4], [-20, -5, 4], [-19, 6, 4.4]]
+      : [];
+  tufts.forEach(([tx, ty, tr]) => {
+    ctx.beginPath();
+    ctx.arc(tx, ty, tr, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  // re-cover the inner half of the tufts so only the fluffy rim shows
+  ctx.fillStyle = hg;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, hrx - 1.7, hry - 1.7, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // lower-face shading + crown highlight
+  ctx.fillStyle = 'rgba(80, 45, 20, 0.22)';
+  ctx.beginPath();
+  ctx.ellipse(0, 12, 17, 6, 0, 0, Math.PI);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 232, 170, 0.45)';
+  ctx.beginPath();
+  ctx.ellipse(-2, -14, 11, 3.6, -0.1, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (mode === 'side') {
+    // cream face mask pushed toward the facing side
+    ctx.fillStyle = SLOTH.cream;
+    ctx.beginPath();
+    ctx.ellipse(6.5, 2.5, 15, 13, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // eye patches
+    ctx.fillStyle = SLOTH.patch;
+    ctx.beginPath();
+    ctx.ellipse(3, -1, 7.6, 7.4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(15.5, -1, 5.6, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // eyes (near eye bigger than far eye)
+    drawChibiEye(ctx, 3, -1, 4.5, 5, lookX, lookY, blink, hurt);
+    drawChibiEye(ctx, 15.6, -1, 3.6, 4.2, lookX, lookY, blink, hurt);
+    if (fierce && !hurt) {
+      ctx.strokeStyle = SLOTH.line;
+      ctx.lineWidth = 2.2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-3, -9.5);
+      ctx.lineTo(8, -6.8);
+      ctx.moveTo(20.5, -9);
+      ctx.lineTo(11.5, -6.6);
+      ctx.stroke();
+    }
+    // muzzle + nose
+    ctx.fillStyle = '#1e1008';
+    ctx.beginPath();
+    ctx.ellipse(18.6, 5.4, 3.8, 3.1, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.beginPath();
+    ctx.arc(17.6, 4.3, 1.1, 0, Math.PI * 2);
+    ctx.fill();
+    // smile
+    ctx.strokeStyle = '#5a3a22';
+    ctx.lineWidth = 1.9;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    if (fierce) {
+      ctx.ellipse(18.4, 11.2, 3.4, 2.4, 0, 0, Math.PI);
+      ctx.fillStyle = '#7a2a2a';
+      ctx.fill();
+    } else {
+      ctx.moveTo(13, 10.6);
+      ctx.quadraticCurveTo(18.6, 15, 23.2, 10);
+    }
+    ctx.stroke();
+    // blush
+    ctx.fillStyle = SLOTH.blush;
+    ctx.beginPath();
+    ctx.ellipse(8, 9.6, 3.8, 2.4, 0, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    ctx.save();
+    ctx.translate(lookX * 2.2, 0);
+    // big cream mask
+    const mg = ctx.createRadialGradient(0, 0, 3, 0, 3, 21);
+    mg.addColorStop(0, '#fff6df');
+    mg.addColorStop(1, SLOTH.cream);
+    ctx.fillStyle = mg;
+    ctx.beginPath();
+    ctx.ellipse(0, 2.5, 20.5, 15.8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // soft slanted eye patches
+    ctx.fillStyle = SLOTH.patch;
+    [-1, 1].forEach((d) => {
+      ctx.beginPath();
+      ctx.ellipse(d * 9.6, -0.5, 7.4, 8.4, d * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    drawChibiEye(ctx, -9.6, -1.2, 3.7, 4.3, lookX, lookY, blink, hurt);
+    drawChibiEye(ctx, 9.6, -1.2, 3.7, 4.3, lookX, lookY, blink, hurt);
+    if (fierce && !hurt) {
+      ctx.strokeStyle = SLOTH.line;
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-14, -8.5);
+      ctx.lineTo(-6, -6);
+      ctx.moveTo(14, -8.5);
+      ctx.lineTo(6, -6);
+      ctx.stroke();
+    }
+    // nose
+    ctx.fillStyle = '#1e1008';
+    ctx.beginPath();
+    ctx.ellipse(0, 6.4, 4.8, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.beginPath();
+    ctx.arc(-1.6, 5.3, 1.1, 0, Math.PI * 2);
+    ctx.fill();
+    // smile
+    ctx.strokeStyle = '#5a3a22';
+    ctx.lineWidth = 1.9;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    if (fierce) {
+      ctx.ellipse(0, 11.5, 3.6, 2.4, 0, 0, Math.PI);
+      ctx.fillStyle = '#7a2a2a';
+      ctx.fill();
+    } else {
+      ctx.moveTo(-6.5, 10.6);
+      ctx.quadraticCurveTo(0, 15.4, 6.5, 10.6);
+    }
+    ctx.stroke();
+    ctx.fillStyle = SLOTH.blush;
+    ctx.beginPath();
+    ctx.ellipse(-14.5, 9, 3.2, 2, 0, 0, Math.PI * 2);
+    ctx.ellipse(14.5, 9, 3.2, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
 /**
  * Procedural Vector Renderer for Upgraded Hero Sloth
  * Full of charm, energy, and personality:
@@ -218,456 +574,294 @@ export function drawHeroSloth(
     ctx.restore();
   }
 
+
+  const speedLean = Math.max(-1, Math.min(1, Math.abs(p.vx) / 320));
+  const fierce = p.punching || p.kicking;
+  const faceOpts = {
+    blink: isBlinking,
+    hurt: isHurt,
+    lookX: 0.6,
+    lookY: p.grounded ? 0 : p.vy < 0 ? -0.5 : 0.4,
+    fierce,
+    time,
+  };
+
   // ==========================================
-  // --- 1. DUCKING STANCE (Adorable Furry Ball) ---
+  // --- 1. DUCKING STANCE (cosy fur ball) ---
   // ==========================================
   if (p.ducking) {
-    // Round cuddly fur ball
-    const duckGrad = ctx.createRadialGradient(0, -14, 4, 0, -14, 26);
-    duckGrad.addColorStop(0, '#be8753');
-    duckGrad.addColorStop(0.7, '#925c2b');
-    duckGrad.addColorStop(1, '#653813');
-    ctx.fillStyle = duckGrad;
-    ctx.beginPath();
-    ctx.ellipse(0, -14, 28, 18, 0, 0, Math.PI * 2);
-    ctx.fill();
+    const bg = ctx.createLinearGradient(0, -30, 0, 0);
+    bg.addColorStop(0, SLOTH.light);
+    bg.addColorStop(1, SLOTH.base);
+    furBlob(ctx, -2, -14, 25, 15, 0, bg, 2);
+    furBlob(ctx, 2, -11, 15, 9.5, 0, SLOTH.cream, 0.01);
 
-    // Soft Cream Tummy Patch underneath
-    ctx.fillStyle = '#fed7aa';
-    ctx.beginPath();
-    ctx.ellipse(2, -10, 16, 11, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // little feet peeking out behind
+    furBlob(ctx, -17, -3.5, 7, 4.6, 0, SLOTH.dark, 1.6);
+    slothClaws(ctx, -22, -3, Math.PI * 1.02, 4.4);
 
-    // Head curled down cutely
-    ctx.fillStyle = '#be8753';
-    ctx.beginPath();
-    ctx.arc(10, -18, 16, 0, Math.PI * 2);
-    ctx.fill();
+    // head tucked forward
+    ctx.save();
+    ctx.translate(13, -20);
+    ctx.scale(0.86, 0.86);
+    drawSlothHead(ctx, 'front', { ...faceOpts, fierce: false, lookX: 0.8 });
+    ctx.restore();
 
-    // Dark-brown teardrop eye mask
-    ctx.fillStyle = '#3c2010';
-    ctx.beginPath();
-    ctx.ellipse(14, -18, 9, 6.5, 0.15, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Peeking glossy eye
-    drawGlossyEye(ctx, 15, -18, 5.0, 0.5, -0.1, false);
-
-    // Cute cream snout & nose
-    ctx.fillStyle = '#fff0dd';
-    ctx.beginPath();
-    ctx.ellipse(20, -14, 6.5, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#1c1917';
-    ctx.beginPath();
-    ctx.arc(22, -15, 2.6, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 3 Curled pearly paws
-    ctx.fillStyle = '#fef3c7';
-    ctx.strokeStyle = '#573315';
-    ctx.lineWidth = 0.8;
-    for (let c = -1; c <= 1; c++) {
-      ctx.beginPath();
-      ctx.arc(18 + c * 3.8, -4, 2.6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-    }
+    // hugging arm with claws
+    furLimb(ctx, 6, -12, 14, -7, 21, -3.5, 7.5, SLOTH.base);
+    slothClaws(ctx, 23, -3.5, -0.1, 5.4);
 
     ctx.restore();
     return;
   }
 
   // ==========================================
-  // --- 2. CLIMBING STANCE (Hugging Tree Vine) ---
+  // --- 2. CLIMBING STANCE (hugging the trunk) ---
   // ==========================================
   if (p.climbing) {
     const climbSwing = Math.sin(time * 8.0);
 
-    // Chubby cuddly body hugging the tree
-    const bodyGrad = ctx.createRadialGradient(0, -26, 4, 0, -26, 28);
-    bodyGrad.addColorStop(0, '#c7925e');
-    bodyGrad.addColorStop(0.7, '#966030');
-    bodyGrad.addColorStop(1, '#653813');
-    ctx.fillStyle = bodyGrad;
-    ctx.beginPath();
-    ctx.ellipse(0, -26, 22, 28, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // feet
+    furBlob(ctx, -8, -4 + climbSwing * 2.5, 6.4, 4.8, 0, SLOTH.dark, 1.6);
+    furBlob(ctx, 8, -4 - climbSwing * 2.5, 6.4, 4.8, 0, SLOTH.dark, 1.6);
 
-    // Soft Cream Tummy Patch
-    ctx.fillStyle = '#fed7aa';
-    ctx.beginPath();
-    ctx.ellipse(0, -24, 14, 18, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // body
+    const cg = ctx.createLinearGradient(0, -42, 0, -6);
+    cg.addColorStop(0, SLOTH.light);
+    cg.addColorStop(1, SLOTH.base);
+    furBlob(ctx, 0, -22, 16.5, 20, 0, cg, 2);
+    furBlob(ctx, 0, -20, 10, 13, 0, SLOTH.cream, 0.01);
 
-    // Alternating Climbing Arms hugging tree trunk
-    const leftArmY = -42 + climbSwing * 10;
-    const rightArmY = -42 - climbSwing * 10;
+    // arms reaching up alternately
+    const leftArmY = -54 + climbSwing * 8;
+    const rightArmY = -54 - climbSwing * 8;
+    furLimb(ctx, -12, -30, -24, (-30 + leftArmY) / 2, -22, leftArmY, 8, SLOTH.base);
+    furLimb(ctx, 12, -30, 24, (-30 + rightArmY) / 2, 22, rightArmY, 8, SLOTH.base);
+    slothClaws(ctx, -22, leftArmY - 2, -Math.PI / 2, 7);
+    slothClaws(ctx, 22, rightArmY - 2, -Math.PI / 2, 7);
 
-    ctx.strokeStyle = '#966030';
-    ctx.lineWidth = 11;
-    ctx.lineCap = 'round';
-
-    // Left Arm
-    ctx.beginPath();
-    ctx.moveTo(-6, -32);
-    ctx.quadraticCurveTo(-18, leftArmY + 6, -12, leftArmY);
-    ctx.stroke();
-
-    // Right Arm
-    ctx.beginPath();
-    ctx.moveTo(6, -32);
-    ctx.quadraticCurveTo(18, rightArmY + 6, 12, rightArmY);
-    ctx.stroke();
-
-    // 3 Curved Ivory Claws gripping vine on hands
-    [-12, 12].forEach((handX, i) => {
-      const handY = i === 0 ? leftArmY : rightArmY;
-      ctx.fillStyle = '#fef3c7';
-      ctx.strokeStyle = '#573315';
-      ctx.lineWidth = 0.8;
-      for (let c = -1; c <= 1; c++) {
-        ctx.beginPath();
-        ctx.ellipse(handX + c * 3.2, handY - 2, 2.2, 4.2, 0.1, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-      }
-    });
-
-    // Cute Round Head looking up
-    ctx.fillStyle = '#be8753';
-    ctx.beginPath();
-    ctx.arc(0, -45, 18, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Soft round ears
-    ctx.fillStyle = '#8c5a32';
-    ctx.beginPath();
-    ctx.arc(-15, -46, 5, 0, Math.PI * 2);
-    ctx.arc(15, -46, 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#fbcfe8';
-    ctx.beginPath();
-    ctx.arc(-15, -46, 2.5, 0, Math.PI * 2);
-    ctx.arc(15, -46, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Two distinct teardrop dark-brown eye masks angled cutely
-    ctx.fillStyle = '#3c2010';
-    ctx.beginPath();
-    ctx.ellipse(-7, -46, 7, 5, -0.2, 0, Math.PI * 2);
-    ctx.ellipse(7, -46, 7, 5, 0.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    drawGlossyEye(ctx, -7, -46, 4.6, 0, -0.8, isBlinking);
-    drawGlossyEye(ctx, 7, -46, 4.6, 0, -0.8, isBlinking);
-
-    // Cute smiling peach muzzle
-    ctx.fillStyle = '#fff0dd';
-    ctx.beginPath();
-    ctx.ellipse(0, -39, 9, 6.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#1c1917';
-    ctx.beginPath();
-    ctx.ellipse(0, -41, 4.0, 2.8, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // head looking up
+    ctx.save();
+    ctx.translate(0, -43);
+    drawSlothHead(ctx, 'front', { ...faceOpts, lookX: 0, lookY: -0.8 });
+    ctx.restore();
 
     ctx.restore();
     return;
   }
 
   // ==========================================
-  // --- 3. NORMAL RUN / JUMP / PUNCH STANCE ---
+  // --- 3. NORMAL RUN / JUMP / PUNCH / KICK STANCE ---
   // ==========================================
-  const legAngle = p.grounded ? Math.sin(p.walkCycle) * 0.45 : 0.30;
+  // Upright, chubby, front-facing sloth (head turns toward the direction of travel)
+  const swing = p.grounded ? Math.sin(p.walkCycle) : 0;
+  const bodyBob = bob * 0.6;
+  const lift = (ph: number) => (p.grounded ? Math.max(0, ph) * 4.5 : 3.5);
 
-  // Back Leg
+  // Feet
+  const foot = (fx: number, up: number) => {
+    furBlob(ctx, fx, -4.5 - up, 8, 5.2, 0, SLOTH.dark, 1.7);
+    slothClaws(ctx, fx - 0.5, -3.2 - up, Math.PI / 2, 4.6);
+  };
+  foot(-9, lift(swing));
+  if (!p.kicking) foot(9, lift(-swing));
+
+  // Body
   ctx.save();
-  ctx.translate(-7, -14);
-  ctx.rotate(-legAngle);
-  ctx.fillStyle = '#78461b';
+  ctx.translate(0, bodyBob);
+  ctx.rotate(speedLean * 0.1 * p.facing * p.facing);
+  const bg = ctx.createLinearGradient(-17, 0, 17, 0);
+  bg.addColorStop(0, SLOTH.base);
+  bg.addColorStop(0.5, SLOTH.light);
+  bg.addColorStop(1, SLOTH.base);
+  furBlob(ctx, 0, -21, 18.5, 20, 0, bg, 2);
+  // big cream belly patch with fur "V" like the reference
+  const tg = ctx.createRadialGradient(0, -19, 2, 0, -19, 14);
+  tg.addColorStop(0, '#f8dca6');
+  tg.addColorStop(1, '#e9bf7d');
+  ctx.fillStyle = tg;
   ctx.beginPath();
-  ctx.ellipse(0, 10, 8, 14, 0.1, 0, Math.PI * 2);
+  ctx.moveTo(-6.5, -34);
+  ctx.lineTo(0, -28);
+  ctx.lineTo(6.5, -34);
+  ctx.bezierCurveTo(13, -28, 13, -9, 0, -5);
+  ctx.bezierCurveTo(-13, -9, -13, -28, -6.5, -34);
+  ctx.closePath();
   ctx.fill();
-  // 3 Curved Back Claws
-  ctx.fillStyle = '#fef3c7';
-  ctx.strokeStyle = '#573315';
-  ctx.lineWidth = 0.8;
-  for (let c = -1; c <= 1; c++) {
-    ctx.beginPath();
-    ctx.ellipse(c * 3.4, 20, 2.0, 3.8, 0.1, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  // Back Arm
-  ctx.save();
-  ctx.translate(-5, -28 + bob);
-  const backArmAngle = p.grounded ? -Math.sin(p.walkCycle) * 0.50 : -0.35;
-  ctx.rotate(backArmAngle);
-  ctx.fillStyle = '#78461b';
-  ctx.beginPath();
-  ctx.ellipse(0, 12, 7, 13, -0.15, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-
-  // Hero Blossom or Red Quest Ribbon behind ear
-  ctx.save();
-  const ribbonWind = Math.sin(time * 8) * 3;
-  ctx.fillStyle = '#ef4444';
-  ctx.beginPath();
-  ctx.arc(-11, -50 + bob, 4.5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#facc15';
-  ctx.beginPath();
-  ctx.arc(-11, -50 + bob, 2.0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Cute fluttering quest ribbon tail
-  ctx.strokeStyle = '#ef4444';
-  ctx.lineWidth = 2.4;
+  ctx.strokeStyle = 'rgba(138, 98, 56, 0.55)';
+  ctx.lineWidth = 1.6;
   ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(-11, -50 + bob);
-  ctx.quadraticCurveTo(-19, -48 + bob + ribbonWind, -26, -44 + bob);
-  ctx.stroke();
+  [[-3, -26, -6, -21], [3, -26, 6, -21], [0, -23, 0, -17]].forEach(([x1, y1, x2, y2]) => {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  });
   ctx.restore();
 
-  // Plush, Huggable Rounded Body
-  const bodyGrad = ctx.createRadialGradient(2, -26 + bob, 4, 2, -26 + bob, 27);
-  bodyGrad.addColorStop(0, '#dcb285');
-  bodyGrad.addColorStop(0.65, '#a57342');
-  bodyGrad.addColorStop(1, '#653813');
-  ctx.fillStyle = bodyGrad;
-  ctx.beginPath();
-  ctx.ellipse(0, -26 + bob, 22, 26, 0.08, 0, Math.PI * 2);
-  ctx.fill();
+  // Arms hang at the sides (front arm = the one on the facing side, +x)
+  const armHang = (dir: number, phase: number, fill: string) => {
+    const sx = dir * 15;
+    const sy = -30 + bodyBob;
+    const hx = dir * (22 + (p.grounded ? 0 : 3)) + phase * 5;
+    const hy = -11 + bodyBob - (p.grounded ? 0 : 6) - Math.abs(phase) * 2;
+    furLimb(ctx, sx, sy, dir * 25, sy + 10, hx, hy, 10.4, fill);
+    slothClaws(ctx, hx, hy + 1, Math.PI / 2, 6);
+  };
+  armHang(-1, -swing, SLOTH.dark);
+  if (!p.punching) armHang(1, swing, SLOTH.base);
 
-  // Soft Cream Chest & Tummy Patch
-  const chestGrad = ctx.createRadialGradient(5, -24 + bob, 2, 5, -24 + bob, 15);
-  chestGrad.addColorStop(0, '#fff6ec');
-  chestGrad.addColorStop(0.75, '#fed7aa');
-  chestGrad.addColorStop(1, 'rgba(254, 215, 170, 0)');
-  ctx.fillStyle = chestGrad;
-  ctx.beginPath();
-  ctx.ellipse(5, -23 + bob, 14, 16, 0.08, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Front Leg / Kick
-  ctx.save();
-  ctx.translate(7, -14);
+  // Kick: front leg swings out forward
   if (p.kicking) {
-    // Flying Kung-Fu Dropkick extension!
     const kickProgress = p.kickTimer / 0.28;
-    const kickReach = Math.sin(kickProgress * Math.PI) * 26;
-    ctx.rotate(0.82);
-    ctx.translate(kickReach, 0);
-
-    ctx.fillStyle = '#a57342';
-    ctx.beginPath();
-    ctx.ellipse(9, 0, 11, 22, -0.25, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 3 Sharp Curved Sloth Kick Claws!
-    ctx.fillStyle = '#fef08a';
-    ctx.strokeStyle = '#ea580c';
-    ctx.lineWidth = 1.5;
-    for (let c = -1; c <= 1; c++) {
-      ctx.beginPath();
-      ctx.moveTo(18, c * 6.0);
-      ctx.quadraticCurveTo(32, c * 7.0 + 1, 36, c * 5.0);
-      ctx.quadraticCurveTo(25, c * 2.8, 18, c * 2.8);
-      ctx.fill();
-      ctx.stroke();
-    }
-
-    // Fiery Kick Speed Flame Arc
+    const kickReach = Math.sin(kickProgress * Math.PI);
+    const kx = 12 + kickReach * 16;
+    const ky = -10 - kickReach * 8;
+    furLimb(ctx, 7, -8, 11, -9, kx, ky, 10.5, SLOTH.base);
+    slothClaws(ctx, kx + 3, ky, -0.1, 9, true);
     ctx.strokeStyle = 'rgba(249, 115, 22, 0.9)';
     ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.arc(20, 0, 20, -0.45 * Math.PI, 0.45 * Math.PI);
+    ctx.arc(kx + 4, ky, 17, -0.45 * Math.PI, 0.45 * Math.PI);
     ctx.stroke();
-  } else {
-    ctx.rotate(legAngle);
-    ctx.fillStyle = '#966030';
-    ctx.beginPath();
-    ctx.ellipse(0, 10, 8, 14, -0.1, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 3 Curved Front Foot Claws
-    ctx.fillStyle = '#fef3c7';
-    ctx.strokeStyle = '#573315';
-    ctx.lineWidth = 0.8;
-    for (let c = -1; c <= 1; c++) {
-      ctx.beginPath();
-      ctx.ellipse(c * 3.4, 20, 2.0, 3.8, 0.1, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-    }
-  }
-  ctx.restore();
-
-  // Cute Rounded Head
-  ctx.save();
-  ctx.translate(8, -45 + bob);
-
-  // Soft Head Fur
-  const headGrad = ctx.createRadialGradient(0, 0, 4, 0, 0, 22);
-  headGrad.addColorStop(0, '#dcb285');
-  headGrad.addColorStop(0.7, '#a57342');
-  headGrad.addColorStop(1, '#6f421a');
-  ctx.fillStyle = headGrad;
-  ctx.beginPath();
-  ctx.arc(0, 0, 20, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Fluffy Cheek Tufts
-  ctx.fillStyle = '#a57342';
-  ctx.beginPath();
-  ctx.ellipse(-14, 4, 5.5, 7.5, -0.3, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Soft Round Ears with Pink Inside
-  ctx.fillStyle = '#8c5a32';
-  ctx.beginPath();
-  ctx.arc(-14, -13, 5.2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#fbcfe8';
-  ctx.beginPath();
-  ctx.arc(-14, -13, 2.6, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Two Signature Sloth Teardrop Eye Masks
-  ctx.fillStyle = '#3c2010';
-  ctx.beginPath();
-  ctx.ellipse(4, -1, 10, 7.5, 0.1, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Soft Cream Muzzle
-  const muzzleGrad = ctx.createRadialGradient(9, 4, 2, 9, 4, 12);
-  muzzleGrad.addColorStop(0, '#fffdfa');
-  muzzleGrad.addColorStop(0.85, '#fff0dd');
-  muzzleGrad.addColorStop(1, '#fed7aa');
-  ctx.fillStyle = muzzleGrad;
-  ctx.beginPath();
-  ctx.ellipse(8, 5, 11, 8.0, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Shiny Button Nose
-  ctx.fillStyle = '#18181b';
-  ctx.beginPath();
-  ctx.ellipse(12, 3.5, 4.5, 3.2, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#ffffff';
-  ctx.beginPath();
-  ctx.arc(11, 2.8, 1.2, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Joyful Hero Smile
-  ctx.strokeStyle = '#2b1608';
-  ctx.lineWidth = 2.0;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.arc(8, 6.2, 5.0, 0.15 * Math.PI, 0.82 * Math.PI);
-  ctx.stroke();
-
-  // Sweet Rosy Cheeks
-  ctx.fillStyle = 'rgba(244, 114, 182, 0.35)';
-  ctx.beginPath();
-  ctx.arc(3, 7, 3.5, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Soulful Glossy Eye with Dual Catchlights
-  if (isHurt) {
-    ctx.strokeStyle = '#2b1608';
-    ctx.lineWidth = 2.2;
-    ctx.beginPath();
-    ctx.moveTo(1, -3);
-    ctx.lineTo(6, 0);
-    ctx.lineTo(1, 3);
-    ctx.stroke();
-  } else {
-    drawGlossyEye(ctx, 4, -1, 6.4, p.facing * 0.45, 0, isBlinking);
   }
 
+  // Head (big, expressive, turned toward facing)
+  ctx.save();
+  ctx.translate(1.5, -45 + bob);
+  ctx.scale(0.92, 0.92);
+  ctx.rotate(speedLean * 0.08 + (p.grounded ? 0 : -0.05));
+  drawSlothHead(ctx, 'front', { ...faceOpts, lookX: 0.85 });
   ctx.restore();
 
-  // Front Arm / Claw Punch
-  ctx.save();
-  ctx.translate(7, -28 + bob);
-
+  // Punch arm (drawn on top, from the front shoulder)
   if (p.punching) {
     const punchProgress = p.punchTimer / (p.punchType === 'mega' ? 0.35 : 0.22);
-    const punchExtension = Math.sin(punchProgress * Math.PI) * 28;
-
-    ctx.translate(punchExtension, 0);
-
-    // Punch Arm
-    ctx.fillStyle = '#a57342';
-    ctx.beginPath();
-    ctx.ellipse(9, 0, 17, 8.0, 0.1, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 3 Sharp Curved Sloth Claws Striking!
-    ctx.fillStyle = p.punchType === 'mega' ? '#fef08a' : '#fef3c7';
-    ctx.strokeStyle = p.punchType === 'mega' ? '#ca8a04' : '#78350f';
-    ctx.lineWidth = 1.5;
-
-    for (let c = -1; c <= 1; c++) {
-      ctx.beginPath();
-      ctx.moveTo(23, c * 5.2);
-      ctx.quadraticCurveTo(36, c * 6.2 + 1, 40, c * 4.2);
-      ctx.quadraticCurveTo(30, c * 2.8, 23, c * 2.8);
-      ctx.fill();
-      ctx.stroke();
-    }
-
-    // Glowing Slash Speed Arc
+    const ext = Math.sin(punchProgress * Math.PI) * 28;
     ctx.save();
-    ctx.strokeStyle = p.punchType === 'mega'
-      ? 'rgba(250, 204, 21, 0.95)'
-      : 'rgba(52, 211, 153, 0.92)';
+    ctx.translate(14, -30 + bodyBob);
+    furLimb(ctx, 0, 0, (16 + ext) / 2, 0, 16 + ext, 0, 9.5, SLOTH.base);
+    slothClaws(ctx, 19 + ext, 0, 0, p.punchType === 'mega' ? 12 : 10, p.punchType === 'mega');
+    ctx.strokeStyle = p.punchType === 'mega' ? 'rgba(250, 204, 21, 0.95)' : 'rgba(52, 211, 153, 0.92)';
     ctx.lineWidth = p.punchType === 'mega' ? 6.5 : 4.0;
     ctx.beginPath();
-    ctx.arc(28, 0, 22, -0.45 * Math.PI, 0.45 * Math.PI);
+    ctx.arc(28 + ext, 0, 22, -0.45 * Math.PI, 0.45 * Math.PI);
     ctx.stroke();
-
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 1.6;
     ctx.beginPath();
-    ctx.arc(30, 0, 18, -0.3 * Math.PI, 0.3 * Math.PI);
+    ctx.arc(30 + ext, 0, 18, -0.3 * Math.PI, 0.3 * Math.PI);
     ctx.stroke();
     ctx.restore();
-  } else {
-    // Idle / Running Arm
-    const frontArmAngle = p.grounded ? Math.sin(p.walkCycle) * 0.50 : 0.35;
-    ctx.rotate(frontArmAngle);
-    ctx.fillStyle = '#a57342';
-    ctx.beginPath();
-    ctx.ellipse(3, 12, 7.0, 14, 0.1, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Relaxed Claws
-    ctx.fillStyle = '#fef3c7';
-    ctx.strokeStyle = '#573315';
-    ctx.lineWidth = 0.8;
-    for (let c = -1; c <= 1; c++) {
-      ctx.beginPath();
-      ctx.ellipse(c * 3.4, 23, 2.0, 4.0, 0.1, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-    }
   }
 
   ctx.restore();
+}
+
+// ---------------------------------------------------------------
+// Soft-shaded storybook creature kit (glossy eyes, no heavy outlines)
+// ---------------------------------------------------------------
+const hexRgb = (h: string): [number, number, number] => {
+  if (h.startsWith('rgb')) {
+    const m = h.match(/\d+/g) || ['0', '0', '0'];
+    return [Number(m[0]), Number(m[1]), Number(m[2])];
+  }
+  const f = h.replace('#', '');
+  const v = f.length === 3 ? f.split('').map((c) => c + c).join('') : f;
+  return [parseInt(v.slice(0, 2), 16), parseInt(v.slice(2, 4), 16), parseInt(v.slice(4, 6), 16)];
+};
+/** Mix two #hex colours (t=0 -> a, t=1 -> b). */
+const mixc = (a: string, b: string, t: number): string => {
+  const A = hexRgb(a);
+  const B = hexRgb(b);
+  return `rgb(${Math.round(A[0] + (B[0] - A[0]) * t)}, ${Math.round(A[1] + (B[1] - A[1]) * t)}, ${Math.round(A[2] + (B[2] - A[2]) * t)})`;
+};
+
+/** Soft volumetric blob: lit from the upper-left, rimmed with a thin darker edge. */
+function softBlob(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  rx: number,
+  ry: number,
+  rot: number,
+  base: string,
+  rim: number = 0.42
+) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  const g = ctx.createRadialGradient(-rx * 0.35, -ry * 0.4, Math.min(rx, ry) * 0.1, 0, 0, Math.max(rx, ry) * 1.05);
+  g.addColorStop(0, mixc(base, '#ffffff', 0.4));
+  g.addColorStop(0.45, base);
+  g.addColorStop(1, mixc(base, '#2a1408', 0.38));
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (rim > 0) {
+    ctx.strokeStyle = mixc(base, '#2a1408', rim);
+    ctx.globalAlpha = 0.55;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
   ctx.restore();
 }
 
+/** Big glassy eye: coloured iris ring, dark pupil, large catchlight, tiny bounce light. */
+function glossEye(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  iris: string,
+  o: { sclera?: boolean; ring?: string; lookX?: number; lookY?: number; lash?: boolean } = {}
+) {
+  const lx = (o.lookX ?? 0.4) * r * 0.2;
+  const ly = (o.lookY ?? 0) * r * 0.2;
+  if (o.sclera) {
+    ctx.fillStyle = '#fbfbf4';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(60, 40, 20, 0.35)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  const ir = o.sclera ? r * 0.72 : r;
+  const g = ctx.createRadialGradient(x + lx, y + ly, ir * 0.15, x + lx, y + ly, ir);
+  g.addColorStop(0, mixc(iris, '#000000', 0.55));
+  g.addColorStop(0.6, iris);
+  g.addColorStop(1, o.ring ?? mixc(iris, '#ffffff', 0.35));
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(x + lx, y + ly, ir, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#120a06';
+  ctx.beginPath();
+  ctx.arc(x + lx, y + ly, ir * 0.58, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(x + lx - ir * 0.3, y + ly - ir * 0.32, ir * 0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(x + lx + ir * 0.32, y + ly + ir * 0.34, ir * 0.14, 0, Math.PI * 2);
+  ctx.fill();
+  if (o.lash) {
+    ctx.strokeStyle = '#1a0e08';
+    ctx.lineWidth = 1.8;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(x, y, r + 0.6, Math.PI * 1.1, Math.PI * 1.9);
+    ctx.stroke();
+  }
+}
+
 /**
- * Procedural Vector Renderer for Emerald Tree Snake / Golden Boa
- * Dynamic diamond scales, golden belly plates, big expressive glossy eyes,
- * pink forked flickering tongue, and spring-loaded coiled strike posture!
+ * Emerald Tree Snake - glossy toy-like green snake: huge round head, big eyes,
+ * pale belly, long pink tongue. Rears up from a coil to strike.
  */
 export function drawTreeSnake(
   ctx: CanvasRenderingContext2D,
@@ -677,103 +871,141 @@ export function drawTreeSnake(
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(enemy.facing, 1);
-
-  if (enemy.hitFlashTimer > 0) {
-    ctx.filter = 'brightness(2.2)';
-  }
+  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
 
   const isCoiled = enemy.isAttacking;
-  const undulate = Math.sin(time * 6 + enemy.id) * 3;
+  const ph = time * 5 + enemy.id;
+  const C = { dark: '#2f9a2c', base: '#52c53f', light: '#9be873', belly: '#e4f7a6' };
 
-  // Snake Drop Shadow on branch
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
   ctx.beginPath();
-  ctx.ellipse(0, 10, 24, 5, 0, 0, Math.PI * 2);
+  ctx.ellipse(0, 11, 26, 5, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Snake Body: Lush Emerald Green with Gold Belly Underlayer
-  ctx.strokeStyle = '#15803d'; // Emerald Green
-  ctx.lineWidth = 14;
+  const pts: Array<[number, number]> = [];
+  let hx: number;
+  let hy: number;
+  if (isCoiled) {
+    const N = 30;
+    for (let i = 0; i <= N; i++) {
+      const a = Math.PI * 0.8 + (i / N) * Math.PI * 3.2;
+      const k = i / N;
+      pts.push([-3 + Math.cos(a) * (19 - k * 7), 4 + Math.sin(a) * (8.5 - k * 2.5)]);
+    }
+    const [lx, ly] = pts[pts.length - 1];
+    for (let j = 1; j <= 10; j++) {
+      const t = j / 10;
+      pts.push([lx + Math.sin(t * Math.PI) * -5 + 7 * t + Math.sin(ph + t * 3) * 1.5, ly - t * 28]);
+    }
+    [hx, hy] = pts[pts.length - 1];
+  } else {
+    const N = 24;
+    for (let i = 0; i <= N; i++) {
+      const t = i / N;
+      pts.push([-26 + 50 * t, -2 + Math.sin(t * Math.PI * 2.2 + ph) * 4.5 * (0.35 + t * 0.65) - t * 4]);
+    }
+    [hx, hy] = pts[pts.length - 1];
+  }
+  const wAt = (i: number) => 17 * (0.38 + 0.62 * Math.min(1, (i / pts.length) * 1.7));
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
+  const pass = (scale: number, color: string, shift: number, alpha: number = 1) => {
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = alpha;
+    for (let i = 1; i < pts.length; i++) {
+      ctx.lineWidth = wAt(i) * scale;
+      ctx.beginPath();
+      ctx.moveTo(pts[i - 1][0], pts[i - 1][1] + shift);
+      ctx.lineTo(pts[i][0], pts[i][1] + shift);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  };
+  pass(1.06, C.dark, 0.6);
+  pass(0.9, C.base, -0.4);
+  pass(0.42, C.belly, 3.2, 0.95);
+  pass(0.26, C.light, -4.2, 0.85);
+  // soft scale blotches
+  ctx.fillStyle = 'rgba(30, 120, 40, 0.28)';
+  for (let i = 3; i < pts.length - 3; i += 3) {
+    ctx.beginPath();
+    ctx.ellipse(pts[i][0], pts[i][1] - 2, wAt(i) * 0.22, wAt(i) * 0.14, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
+  // head: big and round
+  const hg = ctx.createRadialGradient(hx - 3, hy - 7, 2, hx + 2, hy, 19);
+  hg.addColorStop(0, C.light);
+  hg.addColorStop(0.5, C.base);
+  hg.addColorStop(1, C.dark);
+  ctx.fillStyle = hg;
+  ctx.beginPath();
+  ctx.ellipse(hx + 4, hy, 15.5, 13, 0.05, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = C.belly;
+  ctx.globalAlpha = 0.9;
+  ctx.beginPath();
+  ctx.ellipse(hx + 11, hy + 5.5, 8, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  glossEye(ctx, hx - 0.5, hy - 4.5, 5.6, '#1a1008', { sclera: true, lookX: 0.8 });
+  glossEye(ctx, hx + 10.5, hy - 5, 6.1, '#1a1008', { sclera: true, lookX: 0.9 });
+  ctx.fillStyle = '#237a22';
+  ctx.beginPath();
+  ctx.arc(hx + 17, hy + 0.5, 1.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 140, 140, 0.45)';
+  ctx.beginPath();
+  ctx.ellipse(hx - 3.5, hy + 4.5, 3.2, 2.1, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#1f6a22';
+  ctx.lineWidth = 1.7;
+  ctx.lineCap = 'round';
   ctx.beginPath();
   if (isCoiled) {
-    ctx.moveTo(-18, 0);
-    ctx.bezierCurveTo(-10, -18, 10, -18, 14, 0);
-    ctx.bezierCurveTo(18, 12, 0, 16, -6, 8);
-  } else {
-    ctx.moveTo(-22, undulate * 0.5);
-    ctx.quadraticCurveTo(-10, -8 + undulate, 4, undulate * 0.7);
-    ctx.quadraticCurveTo(16, 6 - undulate, 22, -2);
-  }
-  ctx.stroke();
-
-  // Yellow-Gold Belly Under-Scales
-  ctx.strokeStyle = '#fde047';
-  ctx.lineWidth = 4.2;
-  ctx.stroke();
-
-  // Diamond Pattern on Spine
-  ctx.fillStyle = '#166534';
-  [-12, -4, 4, 12].forEach(dx => {
-    ctx.beginPath();
-    ctx.moveTo(dx, -2 + undulate * 0.4);
-    ctx.lineTo(dx + 3, -5 + undulate * 0.4);
-    ctx.lineTo(dx + 6, -2 + undulate * 0.4);
-    ctx.lineTo(dx + 3, 1 + undulate * 0.4);
-    ctx.closePath();
+    ctx.fillStyle = '#e4506a';
+    ctx.ellipse(hx + 13, hy + 6, 6, 3.8, 0, 0, Math.PI * 2);
     ctx.fill();
-  });
-
-  // Expressive Snake Head
-  const headX = 22;
-  const headY = -2 + (isCoiled ? -8 : undulate * 0.5);
-
-  ctx.fillStyle = '#16a34a';
-  ctx.beginPath();
-  ctx.ellipse(headX, headY, 12, 9, 0.15, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Cheek scale spots
-  ctx.fillStyle = '#15803d';
-  ctx.beginPath();
-  ctx.arc(headX - 4, headY - 3, 2.5, 0, Math.PI * 2);
-  ctx.arc(headX - 6, headY + 3, 2, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Big Glossy Anime Eyes
-  drawGlossyEye(ctx, headX + 2, headY - 3, 4.8, 0.6, 0, false);
-
-  // Forked pink tongue flicking out
-  if (Math.sin(time * 8 + enemy.id) > 0.4) {
-    ctx.strokeStyle = '#f43f5e';
-    ctx.lineWidth = 1.8;
+    ctx.fillStyle = '#fff';
     ctx.beginPath();
-    ctx.moveTo(headX + 11, headY);
-    ctx.lineTo(headX + 18, headY);
-    ctx.lineTo(headX + 21, headY - 3);
-    ctx.moveTo(headX + 18, headY);
-    ctx.lineTo(headX + 21, headY + 3);
+    ctx.moveTo(hx + 9.5, hy + 3.6);
+    ctx.lineTo(hx + 11, hy + 7);
+    ctx.lineTo(hx + 12.5, hy + 3.6);
+    ctx.fill();
+  } else {
+    ctx.moveTo(hx + 6, hy + 5.5);
+    ctx.quadraticCurveTo(hx + 12.5, hy + 9.5, hx + 18, hy + 5);
     ctx.stroke();
   }
+  // long flicking tongue
+  const tl = 9 + Math.max(0, Math.sin(time * 7 + enemy.id)) * 9;
+  ctx.strokeStyle = '#ff5c86';
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  ctx.moveTo(hx + 18, hy + 5.5);
+  ctx.quadraticCurveTo(hx + 18 + tl * 0.6, hy + 9, hx + 18 + tl, hy + 7.5);
+  ctx.stroke();
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.moveTo(hx + 18 + tl, hy + 7.5);
+  ctx.lineTo(hx + 21 + tl, hy + 5);
+  ctx.moveTo(hx + 18 + tl, hy + 7.5);
+  ctx.lineTo(hx + 21 + tl, hy + 10);
+  ctx.stroke();
 
-  // Attack Telegraph Warning
   if (enemy.telegraphTimer > 0) {
     ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
-    ctx.arc(headX, headY, 22, 0, Math.PI * 2);
+    ctx.arc(hx + 4, hy, 26, 0, Math.PI * 2);
     ctx.stroke();
   }
-
   ctx.restore();
 }
 
 /**
- * Procedural Vector Renderer for Harpy Eagle / Sky Predator
- * Overhauled with majestic presence, royal feather crest, articulated layered wings,
- * fierce raptor beak, and distinct visual phases for swoop & vulnerable hover!
+ * Harpy Eagle - fluffy baby-eagle look: scalloped brown feathers, cream bib,
+ * spiky cream crest, huge blue-ringed eyes, blue-grey wings, orange feet.
  */
 export function drawHarpyEagle(
   ctx: CanvasRenderingContext2D,
@@ -783,191 +1015,173 @@ export function drawHarpyEagle(
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(enemy.facing, 1);
-
-  if (enemy.hitFlashTimer > 0) {
-    ctx.filter = 'brightness(2.4)';
-  }
+  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.4)';
 
   const wingFlap = Math.sin(time * 10 + enemy.id);
   const isSwooping = enemy.swoopPhase === 'swoop' || enemy.isAttacking;
   const isHovering = enemy.swoopPhase === 'hover';
   const isTelegraphing = enemy.swoopPhase === 'telegraph' || enemy.telegraphTimer > 0;
+  if (isSwooping) ctx.rotate(0.38);
+  else if (isHovering) ctx.rotate(Math.sin(time * 6) * 0.1);
 
-  if (isSwooping) {
-    ctx.rotate(0.38); // pitched aerodynamic dive angle
-  } else if (isHovering) {
-    ctx.rotate(Math.sin(time * 6) * 0.1); // gentle flutter tilt
-  }
+  const BR = '#8d5b2b';
+  const TAN = '#d4a05a';
+  const CREAM = '#f7e8c4';
+  const BLUE = '#6f89ac';
 
-  // Vulnerable Hover Glow Indicator
   if (isHovering) {
     ctx.save();
     ctx.strokeStyle = 'rgba(250, 204, 21, 0.85)';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(0, -6, 38, 0, Math.PI * 2);
+    ctx.arc(0, -6, 40, 0, Math.PI * 2);
     ctx.stroke();
-
-    // Floating little stun stars around head
     for (let s = 0; s < 3; s++) {
-      const starAngle = time * 5 + (s * Math.PI * 2) / 3;
-      const sx = 16 + Math.cos(starAngle) * 22;
-      const sy = -14 + Math.sin(starAngle) * 12;
-      ctx.fillStyle = '#fde047';
+      const a = time * 5 + (s * Math.PI * 2) / 3;
       ctx.font = 'bold 12px sans-serif';
-      ctx.fillText('✨', sx, sy);
+      ctx.fillText('✨', 16 + Math.cos(a) * 22, -16 + Math.sin(a) * 12);
     }
     ctx.restore();
   }
 
-  // Rear Layered Wings (Midnight Slate with Silver Barbs)
-  const wingYOffset = isHovering
-    ? Math.sin(time * 14) * 8
-    : isSwooping
-    ? 6
-    : wingFlap * 14;
+  const flapY = isHovering ? Math.sin(time * 14) * 8 : isSwooping ? 6 : wingFlap * 14;
+  const wing = (sx: number, sy: number, base: number, scale: number, tone: number) => {
+    // long blue-grey primaries fanning out behind the shoulder
+    for (let k = 0; k < 5; k++) {
+      const a = base - k * 0.2 + wingFlap * 0.1;
+      const len = (22 - k * 1.5) * scale;
+      softBlob(ctx, sx + Math.cos(a) * len * 0.8, sy + Math.sin(a) * len * 0.8 + flapY * 0.3, len, 6.4 * scale, a, mixc(BLUE, '#2e4466', tone + k * 0.07));
+    }
+    // tan covert feathers on the shoulder
+    for (let k = 0; k < 3; k++) {
+      softBlob(ctx, sx - 1 + k * 4, sy + 1 - k * 2.5 + flapY * 0.25, 8, 5.4, base + 0.3, mixc(TAN, '#8d5b2b', 0.1 + k * 0.1));
+    }
+  };
 
-  ctx.fillStyle = '#334155'; // Deep Slate
-  ctx.beginPath();
-  ctx.ellipse(-6, -14 + wingYOffset, 32, 14, -0.25 + wingFlap * 0.35, 0, Math.PI * 2);
-  ctx.fill();
+  wing(-4, -8 + flapY * 0.2, -2.6, 1, 0.25);
+  // tail feathers
+  softBlob(ctx, -22, 14, 14, 5.6, 0.55, '#6b4423');
+  softBlob(ctx, -26, 20, 12, 4.8, 0.8, '#7a5128');
 
-  // Silver Wing Feather Tips
-  ctx.fillStyle = '#64748b';
-  ctx.beginPath();
-  ctx.ellipse(-8, -16 + wingYOffset, 24, 9, -0.2 + wingFlap * 0.35, 0, Math.PI * 2);
-  ctx.fill();
-
-  // White Feathered Breast Mantle (Layered Chevron Plumage)
-  ctx.fillStyle = '#f8fafc';
-  ctx.beginPath();
-  ctx.ellipse(3, 0, 19, 23, 0.15, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Subtle gray chevron feather marks on chest
-  ctx.strokeStyle = '#cbd5e1';
-  ctx.lineWidth = 1.8;
-  [-6, 0, 6].forEach(cy => {
+  // body with scalloped feather rows
+  softBlob(ctx, 2, 3, 19, 22, 0.12, BR);
+  const scallop = (x: number, y: number, r: number, c: string) => {
+    const g = ctx.createLinearGradient(0, y - r, 0, y + r);
+    g.addColorStop(0, mixc(c, '#ffffff', 0.22));
+    g.addColorStop(1, mixc(c, '#2a1408', 0.3));
+    ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.moveTo(-4, cy);
-    ctx.lineTo(2, cy + 4);
-    ctx.lineTo(8, cy);
+    ctx.arc(x, y, r, 0, Math.PI);
+    ctx.quadraticCurveTo(x, y - r * 1.1, x + r, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = mixc(c, '#2a1408', 0.5);
+    ctx.globalAlpha = 0.55;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0.1, Math.PI - 0.1);
     ctx.stroke();
+    ctx.globalAlpha = 1;
+  };
+  for (let row = 0; row < 4; row++) {
+    for (let col = 0; col < 3; col++) {
+      scallop(-7 + col * 9 + (row % 2) * 4.5, 4 + row * 5.5, 5.4, mixc(TAN, BR, 0.3 + row * 0.12));
+    }
+  }
+  // cream bib
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3 - (row === 2 ? 1 : 0); col++) {
+      scallop(4 + col * 8 + (row % 2) * 4 - 2, -3 + row * 6, 5.6, mixc(CREAM, '#cdb48a', 0.1 + row * 0.1));
+    }
+  }
+  // feet
+  [-4, 9].forEach((tx) => {
+    const ty = isSwooping ? 24 : 21;
+    softBlob(ctx, tx, ty, 5, 4, 0, '#f39a2a');
+    for (let t = -1; t <= 1; t++) softBlob(ctx, tx + t * 4.4 + 1, ty + 5.5, 2.3, 4, t * 0.3, '#f7b448', 0.2);
   });
 
-  // Tail Feathers
-  ctx.fillStyle = '#1e293b';
-  ctx.beginPath();
-  ctx.moveTo(-16, 8);
-  ctx.lineTo(-34, 18);
-  ctx.lineTo(-28, 25);
-  ctx.lineTo(-12, 17);
-  ctx.closePath();
-  ctx.fill();
+  // front wing, slightly raised
+  wing(4, -5 + flapY * 0.15, -1.8, 0.9, 0.05);
 
-  // Eagle Head with Majestic Crowned Crest
-  ctx.fillStyle = '#f1f5f9';
-  ctx.beginPath();
-  ctx.arc(16, -13, 15, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Royal Double Spiky Feather Crest Tipped with Gold!
-  ctx.fillStyle = '#475569';
-  ctx.beginPath();
-  ctx.moveTo(9, -23);
-  ctx.lineTo(2, -36);
-  ctx.lineTo(12, -28);
-  ctx.lineTo(8, -40);
-  ctx.lineTo(18, -26);
-  ctx.closePath();
-  ctx.fill();
-
-  // Gold Crest Feather Tips
-  ctx.fillStyle = '#f59e0b';
-  ctx.beginPath();
-  ctx.arc(2, -36, 2.5, 0, Math.PI * 2);
-  ctx.arc(8, -40, 2.5, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Piercing Golden Raptor Eye
-  ctx.fillStyle = '#f59e0b';
-  ctx.beginPath();
-  ctx.arc(18, -14, 4.5, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Slit Pupil
-  ctx.fillStyle = '#0f172a';
-  ctx.beginPath();
-  ctx.ellipse(19, -14, 1.8, 3.2, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Specular Eye Highlight
-  ctx.fillStyle = '#ffffff';
-  ctx.beginPath();
-  ctx.arc(17.5, -15.5, 1.4, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Powerful Hooked Raptor Beak
-  ctx.fillStyle = '#eab308';
-  ctx.strokeStyle = '#ca8a04';
-  ctx.lineWidth = 1.4;
-  ctx.beginPath();
-  ctx.moveTo(25, -16);
-  ctx.quadraticCurveTo(39, -13, 36, -2);
-  ctx.quadraticCurveTo(28, -6, 25, -8);
-  ctx.closePath();
-  ctx.fill();
-  ctx.stroke();
-
-  // Nostril slit
-  ctx.fillStyle = '#78350f';
-  ctx.beginPath();
-  ctx.arc(28, -13, 1.2, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Sharp Golden Talons
-  ctx.fillStyle = '#ca8a04';
-  const talonY = isSwooping ? 20 : 14;
-  for (let t = -1; t <= 1; t++) {
+  // spiky cream crest
+  const blade = (bx: number, by: number, tx: number, ty: number, w: number, c: string) => {
+    ctx.fillStyle = c;
     ctx.beginPath();
-    ctx.arc(8 + t * 6, talonY, 3.5, 0, Math.PI * 2);
+    ctx.moveTo(bx - w, by);
+    ctx.quadraticCurveTo((bx + tx) / 2 - w * 0.6, (by + ty) / 2, tx, ty);
+    ctx.quadraticCurveTo((bx + tx) / 2 + w * 0.8, (by + ty) / 2 + 2, bx + w, by);
+    ctx.closePath();
     ctx.fill();
-    // Curved claw tips
-    ctx.strokeStyle = '#78350f';
-    ctx.lineWidth = 1.5;
+  };
+  blade(6, -24, -10, -46, 4, '#f1d28f');
+  blade(10, -27, 0, -50, 4.5, CREAM);
+  blade(15, -28, 12, -52, 4.5, '#f1d28f');
+  blade(20, -26, 24, -48, 4, CREAM);
+  blade(2, -20, -14, -38, 3.5, TAN);
+
+  // head
+  softBlob(ctx, 15, -15, 17, 15.5, 0, '#c99556');
+  softBlob(ctx, 13, -7, 12, 7.5, 0, CREAM, 0.15);
+  glossEye(ctx, 20.5, -16, 8.2, '#3a2412', { ring: '#8ec9ee', lookX: 0.9, lash: true });
+  if (isSwooping || isTelegraphing) {
+    ctx.strokeStyle = '#3a2412';
+    ctx.lineWidth = 2.6;
+    ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.moveTo(8 + t * 6, talonY + 2);
-    ctx.lineTo(8 + t * 6 + 3, talonY + 7);
+    ctx.moveTo(11, -27);
+    ctx.lineTo(27, -21);
     ctx.stroke();
   }
+  // beak
+  const bg = ctx.createLinearGradient(26, -18, 36, -2);
+  bg.addColorStop(0, '#ffd84a');
+  bg.addColorStop(1, '#e8a61a');
+  ctx.fillStyle = bg;
+  ctx.beginPath();
+  ctx.moveTo(28, -17);
+  ctx.quadraticCurveTo(43, -14, 38, -2);
+  ctx.quadraticCurveTo(33, -7, 27, -8);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(120, 70, 10, 0.5)';
+  ctx.lineWidth = 1.2;
+  ctx.stroke();
+  ctx.fillStyle = '#7a4a12';
+  ctx.beginPath();
+  ctx.arc(31, -13, 1.1, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  ctx.beginPath();
+  ctx.ellipse(34, -13, 3.5, 1.3, 0.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 140, 140, 0.45)';
+  ctx.beginPath();
+  ctx.ellipse(10, -6, 3.4, 2.2, 0, 0, Math.PI * 2);
+  ctx.fill();
 
-  // Telegraph Warning Ring & Alert Badge
   if (isTelegraphing) {
     ctx.strokeStyle = 'rgba(245, 158, 11, 0.95)';
     ctx.lineWidth = 3.2;
     ctx.beginPath();
-    ctx.arc(0, 0, 38, 0, Math.PI * 2);
+    ctx.arc(0, 0, 42, 0, Math.PI * 2);
     ctx.stroke();
-
-    // Golden exclamation badge above eagle
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
-    ctx.arc(16, -46, 9, 0, Math.PI * 2);
+    ctx.arc(16, -56, 9, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 12px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('!', 16, -46);
+    ctx.fillText('!', 16, -56);
   }
-
   ctx.restore();
 }
 
 /**
- * Procedural Vector Renderer for Jaguar / Ocelot
- * Athletic bounding predator with true leopard rosettes, emerald feline eyes,
- * white ear spots (ocelli), and animated bounding paws!
+ * Ocelot - fluffy kitten look: huge brown eyes, striped forehead and cheeks,
+ * pink-lined ears, white muzzle and paws, ringed tail with a black tip.
  */
 export function drawOcelot(
   ctx: CanvasRenderingContext2D,
@@ -977,126 +1191,127 @@ export function drawOcelot(
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
   ctx.scale(enemy.facing, 1);
+  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
 
-  if (enemy.hitFlashTimer > 0) {
-    ctx.filter = 'brightness(2.2)';
+  const run = Math.sin(time * 12 + enemy.id);
+  const tail = Math.sin(time * 5 + enemy.id) * 0.3;
+  const bounce = Math.abs(run) * -1.6;
+  const GOLD = '#dba444';
+  const CREAM = '#fff3d4';
+  const DARK = '#2b1a10';
+
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
+  ctx.beginPath();
+  ctx.ellipse(0, 13, 28, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // tail: golden with dark rings and black tip
+  const T = { x0: -20, y0: -6, cx: -42, cy: -6 + tail * 8, x1: -38, y1: -32 + tail * 14 };
+  const tp = (t: number): [number, number] => {
+    const u = 1 - t;
+    return [u * u * T.x0 + 2 * u * t * T.cx + t * t * T.x1, u * u * T.y0 + 2 * u * t * T.cy + t * t * T.y1];
+  };
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 16; i++) {
+    const [ax, ay] = tp(i / 16);
+    const [bx, by] = tp((i + 1) / 16);
+    ctx.strokeStyle = i >= 13 ? DARK : i % 4 === 2 ? '#5a3418' : GOLD;
+    ctx.lineWidth = 9.5;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
   }
 
-  const runCycle = Math.sin(time * 12 + enemy.id);
-  const tailSwish = Math.sin(time * 5 + enemy.id) * 0.3;
+  // back legs + white paws
+  softBlob(ctx, -15 + run * 5, 8 + Math.max(0, run) * -3, 7, 8.5, 0, '#c98f2f');
+  softBlob(ctx, -15 + run * 5, 14.5 + Math.max(0, run) * -3, 7.6, 3.8, 0, '#ffffff', 0.25);
 
-  // Drop shadow on platform
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
-  ctx.beginPath();
-  ctx.ellipse(0, 12, 28, 6.5, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Spotted Muscular Tail
-  ctx.strokeStyle = '#d97706';
-  ctx.lineWidth = 7;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(-18, -4);
-  ctx.quadraticCurveTo(-34, -18 + tailSwish * 10, -30, -30 + tailSwish * 12);
-  ctx.stroke();
-
-  // Tail white tip
-  ctx.strokeStyle = '#ffffff';
-  ctx.lineWidth = 6;
-  ctx.beginPath();
-  ctx.moveTo(-32, -27 + tailSwish * 12);
-  ctx.lineTo(-30, -30 + tailSwish * 12);
-  ctx.stroke();
-
-  // Body: Warm Honey Amber
-  ctx.fillStyle = '#f59e0b';
-  ctx.beginPath();
-  ctx.ellipse(0, -6, 24, 16, 0.05, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Cream belly undercoat
-  ctx.fillStyle = '#fef3c7';
-  ctx.beginPath();
-  ctx.ellipse(2, -2, 16, 9, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Jaguar Rosettes (dark chocolate rings with warm center)
-  ctx.fillStyle = '#78350f';
-  [
-    [-11, -11], [-4, -13], [5, -9], [-8, -4], [7, -4], [-13, -2]
-  ].forEach(([sx, sy]) => {
+  ctx.save();
+  ctx.translate(0, bounce);
+  // body
+  softBlob(ctx, 0, -6, 25, 17, 0.04, GOLD);
+  softBlob(ctx, 3, -1, 16, 9.5, 0, CREAM, 0.12);
+  // dark rosettes and stripes
+  ctx.fillStyle = DARK;
+  [[-14, -12], [-5, -15], [6, -13], [-10, -4], [-19, -4]].forEach(([sx, sy]) => {
     ctx.beginPath();
-    ctx.ellipse(sx, sy, 3.5, 2.6, 0.2, 0, Math.PI * 2);
+    ctx.ellipse(sx, sy, 4.4, 2.8, 0.35, 0, Math.PI * 2);
     ctx.fill();
+    ctx.fillStyle = '#b97a22';
+    ctx.beginPath();
+    ctx.ellipse(sx, sy, 1.8, 1.1, 0.35, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = DARK;
   });
+  // front legs + paws
+  softBlob(ctx, 13 - run * 5, 9 + Math.max(0, -run) * -3, 7, 9, 0, GOLD);
+  softBlob(ctx, 13 - run * 5, 15.5 + Math.max(0, -run) * -3, 7.8, 3.9, 0, '#ffffff', 0.25);
 
-  // Legs with running gait
-  ctx.strokeStyle = '#d97706';
-  ctx.lineWidth = 7.5;
+  // ears: dark back, white fur tuft, pink inside
+  [[10, -30], [30, -30]].forEach(([ex, ey], i) => {
+    softBlob(ctx, ex, ey, 7.5, 8.6, i ? 0.25 : -0.25, DARK, 0.1);
+    softBlob(ctx, ex + (i ? -0.5 : 0.5), ey + 1, 4.6, 5.8, i ? 0.25 : -0.25, '#f4a3b4', 0.1);
+    softBlob(ctx, ex + (i ? -2 : 2), ey + 0.5, 2.4, 4.6, 0, '#ffffff', 0.1);
+  });
+  // head (big, round)
+  softBlob(ctx, 20, -17, 19, 16, 0, GOLD);
+  softBlob(ctx, 20, -10, 14.5, 8.4, 0, CREAM, 0.1);
+  // forehead + cheek stripes
+  ctx.strokeStyle = DARK;
   ctx.lineCap = 'round';
-
+  ctx.lineWidth = 2.4;
   ctx.beginPath();
-  ctx.moveTo(-14, 0);
-  ctx.lineTo(-18 + runCycle * 7, 14);
+  [[15, -31, 16, -26], [20, -32, 20, -25], [25, -31, 24, -26]].forEach(([x1, y1, x2, y2]) => {
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+  });
   ctx.stroke();
-
+  ctx.lineWidth = 2.6;
   ctx.beginPath();
-  ctx.moveTo(12, 0);
-  ctx.lineTo(16 - runCycle * 7, 14);
+  ctx.moveTo(3, -14);
+  ctx.quadraticCurveTo(9, -11, 11, -7);
+  ctx.moveTo(3, -9);
+  ctx.quadraticCurveTo(8, -7, 10, -3);
+  ctx.moveTo(38, -14);
+  ctx.quadraticCurveTo(33, -11, 31, -7);
   ctx.stroke();
-
-  // Cute Feline Head
-  ctx.fillStyle = '#f59e0b';
+  // huge eyes
+  glossEye(ctx, 13.5, -19, 7.4, '#6b3f1c', { ring: '#b07a3a', lookX: 0.6 });
+  glossEye(ctx, 28.5, -19, 6.8, '#6b3f1c', { ring: '#b07a3a', lookX: 0.8 });
+  // eyeliner
+  ctx.strokeStyle = DARK;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.arc(20, -15, 14, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Pricked Ears with black back and white spot (Ocelli)
-  ctx.fillStyle = '#d97706';
+  ctx.arc(13.5, -19, 8, Math.PI * 1.05, Math.PI * 1.85);
+  ctx.arc(28.5, -19, 7.4, Math.PI * 1.15, Math.PI * 1.95);
+  ctx.stroke();
+  // nose + W mouth + whisker dots
+  ctx.fillStyle = '#ff7a98';
   ctx.beginPath();
-  ctx.moveTo(14, -25);
-  ctx.lineTo(18, -35);
-  ctx.lineTo(23, -25);
-  ctx.closePath();
+  ctx.ellipse(21.5, -11.4, 3.6, 2.6, 0, 0, Math.PI * 2);
   ctx.fill();
-
-  ctx.fillStyle = '#fbcfe8';
+  ctx.strokeStyle = '#6b3f1c';
+  ctx.lineWidth = 1.6;
   ctx.beginPath();
-  ctx.moveTo(16, -25);
-  ctx.lineTo(18, -31);
-  ctx.lineTo(21, -25);
-  ctx.closePath();
-  ctx.fill();
-
-  // Cream Muzzle & Pink Nose
-  ctx.fillStyle = '#fef3c7';
+  ctx.moveTo(21.5, -9);
+  ctx.lineTo(21.5, -7);
+  ctx.moveTo(15, -6.5);
+  ctx.quadraticCurveTo(18.5, -3, 21.5, -7);
+  ctx.quadraticCurveTo(24.5, -3, 28, -6.5);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255, 150, 150, 0.5)';
   ctx.beginPath();
-  ctx.ellipse(26, -11, 7, 5.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(8, -8, 3, 2, 0, 0, Math.PI * 2);
+  ctx.ellipse(34, -8, 3, 2, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillStyle = '#f43f5e';
-  ctx.beginPath();
-  ctx.arc(28, -12, 2.4, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Sparkling Emerald Feline Eye
-  ctx.fillStyle = '#10b981';
-  ctx.beginPath();
-  ctx.arc(21, -16, 4.5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#064e3b';
-  ctx.beginPath();
-  ctx.ellipse(21.5, -16, 1.8, 3.2, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#ffffff';
-  ctx.beginPath();
-  ctx.arc(20, -17.5, 1.4, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.restore();
 
   ctx.restore();
 }
 
 /**
- * Procedural Vector Renderer for Hazards (Frog, Spider)
+ * Hazards: poison-dart frog (glossy cobalt with black spots) and a cute fuzzy canopy spider.
  */
 export function drawHazardEntity(
   ctx: CanvasRenderingContext2D,
@@ -1108,182 +1323,524 @@ export function drawHazardEntity(
   ctx.scale(enemy.facing, 1);
 
   if (enemy.type === 'frog') {
-    // Poison Dart Frog (Electric Jewel Cobalt & Neon Cyan)
-    const hopY = Math.sin(time * 8 + enemy.id) * 4;
-    ctx.translate(0, hopY);
-
-    ctx.fillStyle = '#0284c7';
+    const hop = Math.sin(time * 8 + enemy.id);
+    ctx.translate(0, hop * 3);
+    const B = '#2a8cf0';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.25)';
     ctx.beginPath();
-    ctx.ellipse(0, 0, 16, 12, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 14 - hop * 3, 18, 4, 0, 0, Math.PI * 2);
     ctx.fill();
-
-    // Neon Yellow/Gold Warning Spots
-    ctx.fillStyle = '#facc15';
+    // back legs
+    softBlob(ctx, -12, 8, 9, 6, -0.3, mixc(B, '#0a3a8a', 0.25));
+    softBlob(ctx, -17, 12.5, 6.5, 2.8, 0, '#5db6ff', 0.2);
+    // body
+    softBlob(ctx, 0, 0, 18, 14, 0, B);
+    softBlob(ctx, 3, 5, 12, 7, 0, '#a8dcff', 0.1);
+    ctx.fillStyle = '#10243e';
+    [[-6, -5, 3.3], [3, -7, 2.8], [-10, 2, 2.6], [8, -1, 2.2]].forEach(([sx, sy, sr]) => {
+      ctx.beginPath();
+      ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    // throat sac pulse
+    const pulse = (Math.sin(time * 6) + 1) * 1.2;
+    softBlob(ctx, 14, 5, 5 + pulse, 4 + pulse, 0, '#c9e8ff', 0.1);
+    // bulging eyes
+    softBlob(ctx, 5, -11, 7.4, 7, 0, B);
+    softBlob(ctx, 15, -10, 6.6, 6.4, 0, B);
+    glossEye(ctx, 6, -11.5, 5.2, '#e9a31a', { ring: '#ffd04a', lookX: 0.9, sclera: false });
+    glossEye(ctx, 15.5, -10.5, 4.8, '#e9a31a', { ring: '#ffd04a', lookX: 0.9 });
+    ctx.strokeStyle = '#10243e';
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.arc(-4, -3, 3.5, 0, Math.PI * 2);
-    ctx.arc(4, -2, 3.0, 0, Math.PI * 2);
-    ctx.arc(-8, 3, 2.4, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Throat sac pulse
-    const throatPulse = (Math.sin(time * 6) + 1) * 2;
-    ctx.fillStyle = '#38bdf8';
-    ctx.beginPath();
-    ctx.arc(10, 2, 4 + throatPulse, 0, Math.PI * 2);
-    ctx.fill();
-
-    drawGlossyEye(ctx, 9, -6, 4.2, 0.2, 0, false);
-  } else if (enemy.type === 'spider') {
-    // Canopy Spider
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.moveTo(0, -70);
-    ctx.lineTo(0, 0);
+    ctx.moveTo(8, 1);
+    ctx.quadraticCurveTo(16, 6, 22, 1);
     ctx.stroke();
-
-    // Fuzzy Abdomen
-    ctx.fillStyle = '#f97316';
-    ctx.beginPath();
-    ctx.ellipse(0, -2, 15, 13, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#ea580c';
-    ctx.beginPath();
-    ctx.arc(-4, -4, 3.5, 0, Math.PI * 2);
-    ctx.arc(4, -4, 3.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 8 Legs
-    ctx.strokeStyle = '#c2410c';
-    ctx.lineWidth = 2.8;
-    [-1, 1].forEach(side => {
+    // front foot
+    softBlob(ctx, 12, 12, 5.4, 3.2, 0, '#5db6ff', 0.2);
+  } else if (enemy.type === 'spider') {
+    const bob = Math.sin(time * 3 + enemy.id) * 1.5;
+    if (!(enemy as unknown as { noThread?: boolean }).noThread) {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(0, -70);
+      ctx.lineTo(0, -12 + bob);
+      ctx.stroke();
+    }
+    const O = '#f2812a';
+    // eight curvy legs
+    ctx.strokeStyle = '#6b3a1a';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    [-1, 1].forEach((side) => {
       for (let leg = 0; leg < 4; leg++) {
-        const legWave = Math.sin(time * 6 + leg) * 2;
+        const wave = Math.sin(time * 6 + leg + (side > 0 ? 1.5 : 0)) * 2.5;
+        const oy = -4 + leg * 3.2;
         ctx.beginPath();
-        ctx.moveTo(side * 6, -2);
-        ctx.lineTo(side * 19, -4 + leg * 4 + legWave);
-        ctx.lineTo(side * 25, 7 + leg * 3);
+        ctx.moveTo(side * 6, oy + bob);
+        ctx.quadraticCurveTo(side * (17 + leg * 1.2), oy - 9 + wave + bob, side * (24 + leg * 1.5), oy + 8 + leg * 2 + wave + bob);
         ctx.stroke();
       }
     });
-
-    drawGlossyEye(ctx, -3.5, 2, 3.2, 0, 0, false);
-    drawGlossyEye(ctx, 3.5, 2, 3.2, 0, 0, false);
+    // fuzzy abdomen with cute spots
+    softBlob(ctx, 0, 4 + bob, 15, 13.5, 0, O);
+    ctx.fillStyle = '#ffd7a8';
+    [[-5, 0], [5, 0], [0, 6], [-8, 7], [8, 7]].forEach(([sx, sy]) => {
+      ctx.beginPath();
+      ctx.arc(sx, sy + bob, 2.4, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    // head
+    softBlob(ctx, 0, -7 + bob, 11, 9, 0, '#8a4a22');
+    glossEye(ctx, -4.4, -8 + bob, 4.6, '#1a1008', { sclera: true, lookX: 0 });
+    glossEye(ctx, 4.4, -8 + bob, 4.6, '#1a1008', { sclera: true, lookX: 0 });
+    ctx.strokeStyle = '#3a1a0a';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-3, -1 + bob);
+    ctx.quadraticCurveTo(0, 2 + bob, 3, -1 + bob);
+    ctx.stroke();
+    ctx.fillStyle = '#ffd7a8';
+    ctx.beginPath();
+    ctx.moveTo(-2.6, -0.4 + bob);
+    ctx.lineTo(-1.6, 3 + bob);
+    ctx.lineTo(-0.6, -0.2 + bob);
+    ctx.moveTo(2.6, -0.4 + bob);
+    ctx.lineTo(1.6, 3 + bob);
+    ctx.lineTo(0.6, -0.2 + bob);
+    ctx.fill();
   }
 
   ctx.restore();
 }
 
+/** Little golden crown marking a boss / royal creature. */
+function drawCrown(ctx: CanvasRenderingContext2D, x: number, y: number, s: number) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(s, s);
+  const g = ctx.createLinearGradient(0, -12, 0, 4);
+  g.addColorStop(0, '#fff2a0');
+  g.addColorStop(1, '#e8a31a');
+  ctx.fillStyle = g;
+  ctx.strokeStyle = 'rgba(120, 70, 10, 0.6)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(-10, 4);
+  ctx.lineTo(-11, -9);
+  ctx.lineTo(-5, -3);
+  ctx.lineTo(0, -12);
+  ctx.lineTo(5, -3);
+  ctx.lineTo(11, -9);
+  ctx.lineTo(10, 4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#ef4466';
+  ctx.beginPath();
+  ctx.arc(0, -1, 2.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#4aa8ff';
+  ctx.beginPath();
+  ctx.arc(-6, 0, 1.5, 0, Math.PI * 2);
+  ctx.arc(6, 0, 1.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
 /**
- * Procedural Vector Renderer for Stage Bosses
+ * Stage bosses: each of the 10 worlds gets its own soft-shaded villain.
+ * Several reuse the animal rigs (recoloured, crowned, scaled up); the croc, golem and gorilla are bespoke.
  */
 export function drawBossEntity(
   ctx: CanvasRenderingContext2D,
   boss: BossEntity,
-  time: number
+  time: number,
+  worldId: number = 1
 ) {
   ctx.save();
   ctx.translate(boss.x, boss.y);
   ctx.scale(boss.facing * 1.5, 1.5);
+  const hit = boss.hitFlashTimer > 0;
+  const breath = Math.sin(time * 3) * 2;
+  const angry = boss.telegraphTimer > 0 || boss.isAttacking;
+  const fake: Enemy = { ...boss, x: 0, y: 0, facing: 1, isAttacking: angry };
 
-  if (boss.hitFlashTimer > 0) {
-    ctx.filter = 'brightness(2.5)';
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+  ctx.beginPath();
+  ctx.ellipse(0, 17, 38, 9, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  const tint = (f: string) => {
+    ctx.save();
+    ctx.filter = f;
+  };
+  const untint = () => ctx.restore();
+
+  switch (worldId) {
+    case 1: {
+      // Venom Fang: emerald boa monarch
+      ctx.save();
+      ctx.translate(0, 2);
+      ctx.scale(1.35, 1.35);
+      drawTreeSnake(ctx, { ...fake, isAttacking: true }, time);
+      drawCrown(ctx, 21, -43, 0.9);
+      ctx.restore();
+      break;
+    }
+    case 2: {
+      // Crocus Rex: river crocodile king
+      if (hit) ctx.filter = 'brightness(2.4)';
+      ctx.save();
+      ctx.scale(0.78, 0.78);
+      ctx.translate(0, 8);
+      const G = '#5e9d3c';
+      const tail: Array<[number, number]> = [];
+      for (let i = 0; i <= 14; i++) {
+        const t = i / 14;
+        tail.push([-26 - t * 40, 4 - Math.sin(t * Math.PI * 1.4 + time * 3) * 7 * t - t * 2]);
+      }
+      ctx.lineCap = 'round';
+      for (let i = 1; i < tail.length; i++) {
+        ctx.strokeStyle = mixc(G, '#2c5a1c', 0.2);
+        ctx.lineWidth = 22 * (1 - i / 17);
+        ctx.beginPath();
+        ctx.moveTo(tail[i - 1][0], tail[i - 1][1]);
+        ctx.lineTo(tail[i][0], tail[i][1]);
+        ctx.stroke();
+      }
+      softBlob(ctx, 0, -2, 38, 19, 0, G);
+      softBlob(ctx, 2, 6, 30, 9, 0, '#eee8a8', 0.1);
+      // dorsal ridges
+      ctx.fillStyle = '#3f7a28';
+      for (let i = -4; i <= 4; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * 8 - 4, -15);
+        ctx.lineTo(i * 8, -23);
+        ctx.lineTo(i * 8 + 4, -15);
+        ctx.fill();
+      }
+      // legs
+      softBlob(ctx, -20, 13, 10, 7, 0, mixc(G, '#2c5a1c', 0.2));
+      softBlob(ctx, 20, 13, 10, 7, 0, G);
+      ctx.fillStyle = '#fff6dc';
+      [-24, -20, -16, 16, 20, 24].forEach((cx) => {
+        ctx.beginPath();
+        ctx.arc(cx, 19, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      // big head with open jaws when attacking
+      const jaw = angry ? 9 : 3;
+      softBlob(ctx, 40, 6 + jaw * 0.6, 22, 7, 0.05, mixc(G, '#2c5a1c', 0.1));
+      softBlob(ctx, 40, -5 - jaw * 0.3, 24, 11, -0.04, G);
+      if (angry) {
+        ctx.fillStyle = '#d94a5a';
+        ctx.beginPath();
+        ctx.ellipse(46, 1, 15, 4.5 + jaw * 0.3, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#fffdf2';
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath();
+        ctx.moveTo(34 + i * 5.4, -1 - jaw * 0.2);
+        ctx.lineTo(36.6 + i * 5.4, 4 + jaw * 0.1);
+        ctx.lineTo(39.2 + i * 5.4, -1 - jaw * 0.2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(35 + i * 5.4, 3 + jaw * 0.5);
+        ctx.lineTo(37.6 + i * 5.4, -2 + jaw * 0.3);
+        ctx.lineTo(40.2 + i * 5.4, 3 + jaw * 0.5);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#2c5a1c';
+      ctx.beginPath();
+      ctx.arc(60, -8, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+      softBlob(ctx, 30, -17, 8, 7, 0, G);
+      softBlob(ctx, 44, -16, 7, 6.4, 0, G);
+      glossEye(ctx, 30.5, -17, 5.8, '#e8c020', { ring: '#fff09a', lookX: 0.9 });
+      glossEye(ctx, 44.5, -16, 5.2, '#e8c020', { ring: '#fff09a', lookX: 0.9 });
+      drawCrown(ctx, 34, -28, 1.0);
+      ctx.restore();
+      break;
+    }
+    case 3: {
+      // Shadow Prowler: night jaguar
+      tint('brightness(0.5) saturate(1.3) hue-rotate(250deg)');
+      ctx.save();
+      ctx.scale(1.35, 1.35);
+      ctx.translate(-4, 2);
+      drawOcelot(ctx, fake, time);
+      ctx.restore();
+      untint();
+      // glowing eyes overlay
+      ctx.fillStyle = 'rgba(255, 90, 255, 0.9)';
+      ctx.beginPath();
+      ctx.arc(14, -36, 2.6, 0, Math.PI * 2);
+      ctx.arc(34, -36, 2.4, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case 4: {
+      // Sky Sovereign: harpy eagle matriarch
+      ctx.save();
+      ctx.scale(1.4, 1.4);
+      ctx.translate(-2, 8);
+      drawHarpyEagle(ctx, { ...fake, swoopPhase: angry ? 'swoop' : 'patrol' }, time);
+      drawCrown(ctx, 10, -46, 0.9);
+      ctx.restore();
+      break;
+    }
+    case 5: {
+      // Tarantula Queen
+      ctx.save();
+      ctx.scale(2.0, 2.0);
+      ctx.translate(0, -2);
+      drawHazardEntity(ctx, { ...fake, type: 'spider', noThread: true } as Enemy, time);
+      drawCrown(ctx, 0, -22, 0.8);
+      ctx.restore();
+      break;
+    }
+    case 6: {
+      // Bog Behemoth: swamp toad
+      tint('hue-rotate(-95deg) saturate(0.85) brightness(0.85)');
+      ctx.save();
+      ctx.scale(2.3, 2.3);
+      ctx.translate(-2, 0);
+      drawHazardEntity(ctx, { ...fake, type: 'frog' }, time);
+      ctx.restore();
+      untint();
+      drawCrown(ctx, 8, -38, 1.0);
+      break;
+    }
+    case 7: {
+      // Stone Idol Golem
+      if (hit) ctx.filter = 'brightness(2.2)';
+      const ST = '#8c929c';
+      softBlob(ctx, -12, 12, 11, 9, 0, mixc(ST, '#444', 0.2));
+      softBlob(ctx, 12, 12, 11, 9, 0, mixc(ST, '#444', 0.2));
+      softBlob(ctx, 0, -12 + breath, 25, 26, 0, ST);
+      softBlob(ctx, 0, -20 + breath, 14, 12, 0, mixc(ST, '#ffffff', 0.15), 0.2);
+      // glowing rune
+      const pulse = 0.6 + Math.sin(time * 4) * 0.3;
+      ctx.fillStyle = `rgba(255, 150, 40, ${pulse})`;
+      ctx.beginPath();
+      ctx.arc(0, -16 + breath, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffd98a';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.arc(0, -16 + breath, 7, 0, Math.PI * 2);
+      ctx.moveTo(-4, -16 + breath);
+      ctx.lineTo(4, -16 + breath);
+      ctx.moveTo(0, -20 + breath);
+      ctx.lineTo(0, -12 + breath);
+      ctx.stroke();
+      // cracks and moss
+      ctx.strokeStyle = 'rgba(40, 40, 50, 0.55)';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(-14, -4);
+      ctx.lineTo(-8, 2);
+      ctx.lineTo(-11, 8);
+      ctx.moveTo(14, -30);
+      ctx.lineTo(9, -24);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(110, 190, 80, 0.85)';
+      [[-16, -34, 7], [-6, -38, 5], [14, -35, 6]].forEach(([mx, my, mr]) => {
+        ctx.beginPath();
+        ctx.ellipse(mx, my + breath, mr, mr * 0.6, 0, Math.PI, 0);
+        ctx.fill();
+      });
+      // head
+      softBlob(ctx, 4, -46 + breath, 16, 14, 0, mixc(ST, '#ffffff', 0.08));
+      ctx.fillStyle = '#5a5f68';
+      ctx.beginPath();
+      ctx.roundRect(-8, -54 + breath, 26, 6, 3);
+      ctx.fill();
+      ctx.fillStyle = angry ? '#ff5a2a' : '#ffb23a';
+      ctx.shadowColor = '#ff8a2a';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.ellipse(0, -44 + breath, 3.6, 4.4, 0, 0, Math.PI * 2);
+      ctx.ellipse(12, -44 + breath, 3.6, 4.4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = '#3a3e46';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-1, -36 + breath);
+      ctx.lineTo(13, -36 + breath);
+      ctx.stroke();
+      // gold headdress
+      ctx.fillStyle = '#e8a31a';
+      ctx.beginPath();
+      ctx.moveTo(-6, -58 + breath);
+      ctx.lineTo(4, -70 + breath);
+      ctx.lineTo(14, -58 + breath);
+      ctx.fill();
+      // fists
+      softBlob(ctx, -30, -6 + breath, 12, 14, 0.1, ST);
+      softBlob(ctx, 30, -4 + breath + (angry ? -8 : 0), 14, 15, -0.1, ST);
+      ctx.fillStyle = '#e8a31a';
+      ctx.fillRect(22, -12 + breath + (angry ? -8 : 0), 16, 4);
+      break;
+    }
+    case 8: {
+      // Night-Wing Monarch
+      tint('brightness(0.6) saturate(1.5) hue-rotate(235deg)');
+      ctx.save();
+      ctx.scale(1.4, 1.4);
+      ctx.translate(-2, 8);
+      drawHarpyEagle(ctx, { ...fake, swoopPhase: angry ? 'swoop' : 'patrol' }, time);
+      ctx.restore();
+      untint();
+      ctx.fillStyle = 'rgba(190, 120, 255, 0.95)';
+      ctx.shadowColor = '#c080ff';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(30, -26, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      drawCrown(ctx, 12, -48, 0.9);
+      break;
+    }
+    case 9: {
+      // Magma Drake: fiery wyrm with horns and little wings
+      tint('hue-rotate(-105deg) saturate(1.3) brightness(1.05)');
+      ctx.save();
+      ctx.translate(0, 2);
+      ctx.scale(1.35, 1.35);
+      drawTreeSnake(ctx, { ...fake, isAttacking: true }, time);
+      ctx.restore();
+      untint();
+      // horns and wings
+      ctx.fillStyle = '#ffe9b0';
+      [[22, -48, 16, -60], [34, -48, 38, -60]].forEach(([x1, y1, x2, y2]) => {
+        ctx.beginPath();
+        ctx.moveTo(x1 - 3, y1);
+        ctx.quadraticCurveTo(x1, y1 - 6, x2, y2);
+        ctx.quadraticCurveTo(x1 + 4, y1 - 4, x1 + 3, y1);
+        ctx.fill();
+      });
+      const wf = Math.sin(time * 6) * 6;
+      ctx.fillStyle = '#b8381a';
+      ctx.beginPath();
+      ctx.moveTo(6, -22);
+      ctx.quadraticCurveTo(-18, -44 - wf, -26, -20);
+      ctx.quadraticCurveTo(-10, -26, -2, -14);
+      ctx.fill();
+      if (angry) {
+        const f = ctx.createRadialGradient(54, -28, 2, 54, -28, 22);
+        f.addColorStop(0, 'rgba(255, 240, 150, 0.95)');
+        f.addColorStop(1, 'rgba(255, 90, 20, 0)');
+        ctx.fillStyle = f;
+        ctx.beginPath();
+        ctx.arc(54, -28, 22, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      break;
+    }
+    default: {
+      // Fortress General Iron-Claw: armoured gorilla
+      if (hit) ctx.filter = 'brightness(2.2)';
+      const FUR = '#566073';
+      // cape
+      ctx.fillStyle = '#b3262e';
+      ctx.beginPath();
+      ctx.moveTo(-16, -30);
+      ctx.quadraticCurveTo(-42, 0, -34, 22);
+      ctx.lineTo(10, 24);
+      ctx.lineTo(14, -30);
+      ctx.fill();
+      softBlob(ctx, -11, 12, 11, 9, 0, mixc(FUR, '#000', 0.2));
+      softBlob(ctx, 11, 12, 11, 9, 0, mixc(FUR, '#000', 0.2));
+      softBlob(ctx, -22, -8 + breath, 11, 22, 0.25, FUR);
+      softBlob(ctx, 0, -12 + breath, 26, 27, 0, FUR);
+      softBlob(ctx, 2, -8 + breath, 17, 17, 0, '#9d9484', 0.15);
+      // gold breastplate
+      const gp = ctx.createLinearGradient(0, -26, 0, -2);
+      gp.addColorStop(0, '#ffe58a');
+      gp.addColorStop(1, '#d99a1a');
+      ctx.fillStyle = gp;
+      ctx.strokeStyle = 'rgba(120, 70, 10, 0.7)';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.roundRect(-13, -26 + breath, 28, 22, 6);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#b3262e';
+      ctx.beginPath();
+      ctx.arc(1, -15 + breath, 4, 0, Math.PI * 2);
+      ctx.fill();
+      // head with steel helmet
+      softBlob(ctx, 5, -43 + breath, 17, 15, 0, FUR);
+      softBlob(ctx, 8, -39 + breath, 12, 9.5, 0, '#cdb89c', 0.12);
+      const hg = ctx.createLinearGradient(0, -62, 0, -46);
+      hg.addColorStop(0, '#e6ecf3');
+      hg.addColorStop(1, '#7b8794');
+      ctx.fillStyle = hg;
+      ctx.beginPath();
+      ctx.arc(5, -48 + breath, 16.5, Math.PI, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#b3262e';
+      ctx.beginPath();
+      ctx.moveTo(5, -64 + breath);
+      ctx.quadraticCurveTo(-4, -76 + breath, -12, -66 + breath);
+      ctx.quadraticCurveTo(-2, -66 + breath, 5, -60 + breath);
+      ctx.fill();
+      glossEye(ctx, 6, -41 + breath, 4.4, '#ff8a2a', { ring: '#ffd27a', lookX: 0.9 });
+      glossEye(ctx, 15, -41 + breath, 4.0, '#ff8a2a', { ring: '#ffd27a', lookX: 0.9 });
+      ctx.strokeStyle = '#2a2f3a';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(0, -47 + breath);
+      ctx.lineTo(10, -44 + breath);
+      ctx.moveTo(21, -47 + breath);
+      ctx.lineTo(14, -44 + breath);
+      ctx.stroke();
+      ctx.fillStyle = '#1c1c24';
+      ctx.beginPath();
+      ctx.ellipse(11, -35 + breath, 5, 3.4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // iron claw fist
+      const fx = 26 + (angry ? 6 : 0);
+      softBlob(ctx, fx - 6, -14 + breath, 9, 14, 0.4, FUR);
+      softBlob(ctx, fx, -6 + breath, 14, 13, 0, '#8b97a6');
+      ctx.fillStyle = '#e6ecf3';
+      ctx.strokeStyle = '#3b4452';
+      ctx.lineWidth = 1.2;
+      [-6, 0, 6].forEach((o) => {
+        ctx.beginPath();
+        ctx.moveTo(fx + 10, -8 + breath + o);
+        ctx.lineTo(fx + 25, -9 + breath + o * 1.4);
+        ctx.lineTo(fx + 10, -4 + breath + o);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      });
+      break;
+    }
   }
 
-  const breath = Math.sin(time * 3) * 2.5;
-
-  // Boss Shadow
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
-  ctx.beginPath();
-  ctx.ellipse(0, 16, 36, 9, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Cape
-  ctx.fillStyle = '#991b1b';
-  ctx.beginPath();
-  ctx.moveTo(-18, -32);
-  ctx.lineTo(-35, 22);
-  ctx.lineTo(12, 26);
-  ctx.lineTo(18, -32);
-  ctx.closePath();
-  ctx.fill();
-
-  // Body
-  ctx.fillStyle = '#1e293b';
-  ctx.beginPath();
-  ctx.ellipse(0, -10 + breath, 26, 28, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Armored Gold Chestplate
-  ctx.fillStyle = '#ca8a04';
-  ctx.beginPath();
-  ctx.roundRect(-14, -22 + breath, 28, 20, 4);
-  ctx.fill();
-  ctx.strokeStyle = '#facc15';
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-
-  // Face
-  ctx.fillStyle = '#0f172a';
-  ctx.beginPath();
-  ctx.arc(7, -34, 19, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Mandrill Facial Ridges
-  ctx.fillStyle = '#ef4444';
-  ctx.beginPath();
-  ctx.ellipse(13, -30, 7, 11, 0.2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#3b82f6';
-  ctx.beginPath();
-  ctx.arc(9, -30, 4.5, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Glowing fierce eyes
-  ctx.fillStyle = '#fbbf24';
-  ctx.beginPath();
-  ctx.arc(5, -38, 4.5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#dc2626';
-  ctx.beginPath();
-  ctx.arc(6, -38, 2.5, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Spiked Iron Gauntlet
-  ctx.fillStyle = '#475569';
-  ctx.strokeStyle = '#e2e8f0';
-  ctx.lineWidth = 1.8;
-  ctx.beginPath();
-  ctx.ellipse(24, -10, 15, 13, 0.3, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-
-  // Spikes
-  ctx.fillStyle = '#94a3b8';
-  [16, 24, 32].forEach(sx => {
-    ctx.beginPath();
-    ctx.moveTo(sx - 3, -19);
-    ctx.lineTo(sx, -28);
-    ctx.lineTo(sx + 3, -19);
-    ctx.closePath();
-    ctx.fill();
-  });
-
-  // Attack Telegraph
   if (boss.telegraphTimer > 0) {
     ctx.strokeStyle = 'rgba(239, 68, 68, 0.95)';
     ctx.lineWidth = 3.5;
     ctx.beginPath();
-    ctx.arc(0, -10, 58, 0, Math.PI * 2);
+    ctx.arc(0, -14, 62, 0, Math.PI * 2);
     ctx.stroke();
   }
-
   ctx.restore();
 }
 
 /**
- * Procedural Vector Renderer for Sloth's Girlfriend Daisy
+ * Daisy - the sloth's girlfriend: same soft storybook sloth style, rosier fur,
+ * long lashes and her signature pink hibiscus.
  */
 export function drawGirlfriendDaisy(
   ctx: CanvasRenderingContext2D,
@@ -1294,74 +1851,101 @@ export function drawGirlfriendDaisy(
 ) {
   ctx.save();
   ctx.translate(x, y);
+  const bob = Math.sin(time * 4) * 1.6;
 
-  const bob = Math.sin(time * 4) * 2;
-
-  // Furry Body
-  const bodyGrad = ctx.createRadialGradient(0, -20 + bob, 4, 0, -20 + bob, 24);
-  bodyGrad.addColorStop(0, '#ebd0b5');
-  bodyGrad.addColorStop(0.8, '#ba8a5d');
-  bodyGrad.addColorStop(1, '#865128');
-  ctx.fillStyle = bodyGrad;
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.3)';
   ctx.beginPath();
-  ctx.ellipse(0, -20 + bob, 19, 23, 0, 0, Math.PI * 2);
+  ctx.ellipse(0, 0, 22, 5, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Head
-  ctx.fillStyle = '#ebd0b5';
+  ctx.save();
+  ctx.filter = 'saturate(1.15) brightness(1.14) hue-rotate(-12deg)';
+  // feet
+  [-9, 9].forEach((fx) => {
+    furBlob(ctx, fx, -4.5, 8, 5.2, 0, SLOTH.dark, 1.7);
+    slothClaws(ctx, fx - 0.5, -3.2, Math.PI / 2, 4.6);
+  });
+  // body
+  const bg = ctx.createLinearGradient(-17, 0, 17, 0);
+  bg.addColorStop(0, SLOTH.base);
+  bg.addColorStop(0.5, SLOTH.light);
+  bg.addColorStop(1, SLOTH.base);
+  furBlob(ctx, 0, -21 + bob * 0.5, 18.5, 20, 0, bg, 2);
+  const tg = ctx.createRadialGradient(0, -19, 2, 0, -19, 14);
+  tg.addColorStop(0, '#fbe3b0');
+  tg.addColorStop(1, '#efc78a');
+  ctx.fillStyle = tg;
   ctx.beginPath();
-  ctx.arc(0, -39 + bob, 17, 0, Math.PI * 2);
+  ctx.ellipse(0, -19 + bob * 0.5, 10.5, 14, 0, 0, Math.PI * 2);
   ctx.fill();
-
-  // Eye mask
-  ctx.fillStyle = '#4c260f';
-  ctx.beginPath();
-  ctx.ellipse(-5, -39 + bob, 6.5, 5, -0.15, 0, Math.PI * 2);
-  ctx.ellipse(5, -39 + bob, 6.5, 5, 0.15, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Big Shiny Eyes with pretty eyelashes
-  drawGlossyEye(ctx, -5, -39 + bob, 4.5, 0, 0, false);
-  drawGlossyEye(ctx, 5, -39 + bob, 4.5, 0, 0, false);
-
-  // Eyelashes
-  ctx.strokeStyle = '#2b1608';
-  ctx.lineWidth = 1.3;
-  ctx.beginPath();
-  ctx.moveTo(-10, -43 + bob);
-  ctx.lineTo(-13, -46 + bob);
-  ctx.moveTo(10, -43 + bob);
-  ctx.lineTo(13, -46 + bob);
-  ctx.stroke();
-
-  // Signature Pink Hibiscus Flower behind ear
-  ctx.fillStyle = '#f43f5e';
-  for (let p = 0; p < 5; p++) {
-    const pAngle = (p * 0.4) * Math.PI;
-    ctx.beginPath();
-    ctx.ellipse(13 + Math.cos(pAngle) * 5.5, -48 + bob + Math.sin(pAngle) * 5.5, 4.5, 3.2, pAngle, 0, Math.PI * 2);
-    ctx.fill();
+  // leafy grass skirt
+  for (let k = -3; k <= 3; k++) {
+    ctx.save();
+    ctx.translate(k * 4.6, -10);
+    ctx.rotate(k * 0.12);
+    softBlob(ctx, 0, 4, 3.6, 8, 0, k % 2 ? '#5cc65a' : '#86dd5e', 0.3);
+    ctx.restore();
   }
-  ctx.fillStyle = '#fde047';
+  // arms
+  const waveArm = isRescued ? Math.sin(time * 10) * 0.5 : 0;
+  furLimb(ctx, -15, -30, -25, -20, -22, -11, 10.4, SLOTH.dark);
+  slothClaws(ctx, -22, -10, Math.PI / 2, 6);
+  if (isRescued) {
+    furLimb(ctx, 15, -30, 28, -42 + waveArm * 14, 24, -54 + waveArm * 18, 10.4, SLOTH.base);
+    slothClaws(ctx, 24, -56 + waveArm * 18, -Math.PI / 2, 6);
+  } else {
+    furLimb(ctx, 15, -30, 25, -20, 22, -11, 10.4, SLOTH.base);
+    slothClaws(ctx, 22, -10, Math.PI / 2, 6);
+  }
+  // head
+  ctx.save();
+  ctx.translate(0, -45 + bob);
+  ctx.scale(0.92, 0.92);
+  drawSlothHead(ctx, 'front', { blink: false, hurt: false, lookX: 0, lookY: 0, fierce: false, time });
+  // lashes
+  ctx.strokeStyle = '#2b1608';
+  ctx.lineWidth = 1.8;
+  ctx.lineCap = 'round';
   ctx.beginPath();
-  ctx.arc(13, -48 + bob, 2.8, 0, Math.PI * 2);
+  ctx.lineWidth = 2.2;
+  ctx.moveTo(-14, -6);
+  ctx.lineTo(-19, -13);
+  ctx.moveTo(-15.5, -3.5);
+  ctx.lineTo(-21.5, -8);
+  ctx.moveTo(-16, -1);
+  ctx.lineTo(-22, -2.5);
+  ctx.moveTo(14, -6);
+  ctx.lineTo(19, -13);
+  ctx.moveTo(15.5, -3.5);
+  ctx.lineTo(21.5, -8);
+  ctx.moveTo(16, -1);
+  ctx.lineTo(22, -2.5);
+  ctx.stroke();
+  // rosy cheeks
+  ctx.fillStyle = 'rgba(255, 100, 140, 0.5)';
+  ctx.beginPath();
+  ctx.ellipse(-14, 7, 4.6, 3, 0, 0, Math.PI * 2);
+  ctx.ellipse(14, 7, 4.6, 3, 0, 0, Math.PI * 2);
   ctx.fill();
+  // pink hibiscus
+  ctx.translate(14, -19);
+  ctx.scale(1.35, 1.35);
+  for (let p = 0; p < 5; p++) {
+    const a = (p / 5) * Math.PI * 2 - Math.PI / 2;
+    softBlob(ctx, Math.cos(a) * 5.4, Math.sin(a) * 5.4, 5, 4, a, '#f4456a', 0.3);
+  }
+  ctx.fillStyle = '#ffe36a';
+  ctx.beginPath();
+  ctx.arc(0, 0, 2.8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+  ctx.restore();
 
   if (isRescued) {
-    const waveArm = Math.sin(time * 10) * 13;
-    ctx.strokeStyle = '#ba8a5d';
-    ctx.lineWidth = 7.5;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(13, -27 + bob);
-    ctx.lineTo(25, -42 + bob + waveArm);
-    ctx.stroke();
-
     ctx.fillStyle = '#ec4899';
     ctx.font = '18px sans-serif';
-    ctx.fillText('❤️', -9, -60 + Math.sin(time * 5) * 4);
+    ctx.fillText('❤️', -9, -72 + Math.sin(time * 5) * 4);
   }
-
   ctx.restore();
 }
 
@@ -1379,333 +1963,329 @@ export function drawCollectible(
   ctx.translate(item.x, item.y);
   const bobY = Math.sin(time * 4 + item.bobPhase) * 4;
   ctx.translate(0, bobY);
+  if (item.type !== 'exit_totem' && item.type !== 'cage') {
+    const big = item.type === 'relic' ? 1.25 : 1.4;
+    ctx.scale(big, big);
+    // soft sparkle ring so pickups pop against the foliage
+    const ring = ctx.createRadialGradient(0, 0, 8, 0, 0, 26);
+    ring.addColorStop(0, 'rgba(255, 255, 235, 0.0)');
+    ring.addColorStop(0.7, 'rgba(255, 255, 235, 0.28)');
+    ring.addColorStop(1, 'rgba(255, 255, 235, 0)');
+    ctx.fillStyle = ring;
+    ctx.beginPath();
+    ctx.arc(0, 0, 26, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
   switch (item.type) {
     case 'flower':
     case 'fruit': {
-      // Blooming Tropical Rainforest Orchid & Hibiscus
       const isHibiscus = item.botanicalVariant === 'hibiscus';
-      const pColor1 = isHibiscus ? '#ef4444' : '#ec4899';
-      const pColor2 = isHibiscus ? '#be123c' : '#a855f7';
-
-      // 5 Blooming Petals with radial glow
-      const numPetals = 5;
-      for (let i = 0; i < numPetals; i++) {
-        const pAngle = (i * Math.PI * 2) / numPetals + time * 1.5;
-        const px = Math.cos(pAngle) * 9;
-        const py = Math.sin(pAngle) * 9;
-
-        const petalGrad = ctx.createRadialGradient(px * 0.4, py * 0.4, 1, px, py, 11);
-        petalGrad.addColorStop(0, '#fef08a');
-        petalGrad.addColorStop(0.35, pColor1);
-        petalGrad.addColorStop(1, pColor2);
-        ctx.fillStyle = petalGrad;
-
-        ctx.beginPath();
-        ctx.ellipse(px, py, 7.5, 4.5, pAngle, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Golden Pollen Stamen Core
-      ctx.fillStyle = '#fde047';
+      const c1 = isHibiscus ? '#f2455e' : '#e85cc0';
+      const spin = Math.sin(time * 2) * 0.12;
+      const glow = ctx.createRadialGradient(0, 0, 2, 0, 0, 22);
+      glow.addColorStop(0, 'rgba(255, 230, 150, 0.55)');
+      glow.addColorStop(1, 'rgba(255, 230, 150, 0)');
+      ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(0, 0, 4.5, 0, Math.PI * 2);
+      ctx.arc(0, 0, 22, 0, Math.PI * 2);
       ctx.fill();
-
-      // Nectar Sparkle
+      for (let i = 0; i < 5; i++) {
+        const a = (i / 5) * Math.PI * 2 - Math.PI / 2 + spin;
+        softBlob(ctx, Math.cos(a) * 8, Math.sin(a) * 8, 8.4, 6.6, a, c1, 0.3);
+      }
+      softBlob(ctx, 0, 0, 5.4, 5.4, 0, '#ffd23a', 0.2);
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(-1.5, -1.5, 1.8, 0, Math.PI * 2);
+      ctx.arc(-1.6, -1.8, 1.7, 0, Math.PI * 2);
       ctx.fill();
       break;
     }
 
     case 'leaf': {
-      // Golden Rainforest Monstera Frond / Split-Leaf
       ctx.save();
-      ctx.rotate(0.2);
-
-      // Deep emerald to golden green leaf gradient
-      const leafGrad = ctx.createLinearGradient(0, -18, 0, 18);
-      leafGrad.addColorStop(0, '#86efac');
-      leafGrad.addColorStop(0.5, '#22c55e');
-      leafGrad.addColorStop(1, '#15803d');
-      ctx.fillStyle = leafGrad;
-      ctx.strokeStyle = '#14532d';
-      ctx.lineWidth = 1.2;
-
-      // Broad heart-shaped Monstera leaf silhouette
+      ctx.rotate(0.2 + Math.sin(time * 2) * 0.06);
+      const lg = ctx.createLinearGradient(-14, -18, 14, 18);
+      lg.addColorStop(0, '#b6f07a');
+      lg.addColorStop(0.5, '#4cc04a');
+      lg.addColorStop(1, '#238a3c');
+      ctx.fillStyle = lg;
       ctx.beginPath();
-      ctx.moveTo(0, -18);
-      ctx.bezierCurveTo(16, -14, 18, 6, 0, 18);
-      ctx.bezierCurveTo(-18, 6, -16, -14, 0, -18);
-      ctx.closePath();
+      ctx.moveTo(0, -20);
+      ctx.bezierCurveTo(18, -14, 18, 8, 0, 20);
+      ctx.bezierCurveTo(-18, 8, -18, -14, 0, -20);
       ctx.fill();
-      ctx.stroke();
-
-      // Central Golden Vein
-      ctx.strokeStyle = '#fef08a';
-      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = 'rgba(255, 255, 210, 0.8)';
+      ctx.lineWidth = 1.8;
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(0, -16);
-      ctx.lineTo(0, 16);
+      ctx.moveTo(0, -17);
+      ctx.lineTo(0, 17);
+      for (let k = -10; k <= 8; k += 6) {
+        ctx.moveTo(0, k);
+        ctx.lineTo(8, k - 5);
+        ctx.moveTo(0, k);
+        ctx.lineTo(-8, k - 5);
+      }
       ctx.stroke();
-
-      // Cut-leaf fenestrations / perforations
-      ctx.fillStyle = '#064e3b';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
       ctx.beginPath();
-      ctx.ellipse(-6, -4, 3.5, 1.2, 0.4, 0, Math.PI * 2);
-      ctx.ellipse(6, -4, 3.5, 1.2, -0.4, 0, Math.PI * 2);
-      ctx.ellipse(-5, 4, 3, 1.1, 0.3, 0, Math.PI * 2);
-      ctx.ellipse(5, 4, 3, 1.1, -0.3, 0, Math.PI * 2);
+      ctx.ellipse(-6, -8, 3, 6, 0.5, 0, Math.PI * 2);
       ctx.fill();
-
       ctx.restore();
       break;
     }
 
     case 'relic': {
-      // Ancient Golden Jungle Idol with Rotating Gleam
-      ctx.fillStyle = '#f59e0b';
-      ctx.strokeStyle = '#78350f';
+      const glow = ctx.createRadialGradient(0, -2, 4, 0, -2, 30);
+      glow.addColorStop(0, 'rgba(255, 220, 110, 0.6)');
+      glow.addColorStop(1, 'rgba(255, 220, 110, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(0, -2, 30, 0, Math.PI * 2);
+      ctx.fill();
+      // stone base
+      softBlob(ctx, 0, 14, 14, 5, 0, '#9a9fa8', 0.3);
+      // golden idol body + head
+      softBlob(ctx, 0, 4, 11, 13, 0, '#e8a31a', 0.4);
+      softBlob(ctx, 0, -10, 13, 11.5, 0, '#f6c442', 0.4);
+      // headdress spikes
+      ctx.fillStyle = '#ffdf6a';
+      [-9, -3, 3, 9].forEach((hx, k) => {
+        ctx.beginPath();
+        ctx.moveTo(hx - 3, -18);
+        ctx.lineTo(hx + (k - 1.5) * 1.2, -27 + Math.abs(k - 1.5) * 2);
+        ctx.lineTo(hx + 3, -18);
+        ctx.fill();
+      });
+      // arms + belly gem
+      softBlob(ctx, -11, 4, 3.6, 8, 0.2, '#d8920f', 0.3);
+      softBlob(ctx, 11, 4, 3.6, 8, -0.2, '#d8920f', 0.3);
+      ctx.fillStyle = '#4fd3e8';
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(4, 5);
+      ctx.lineTo(0, 10);
+      ctx.lineTo(-4, 5);
+      ctx.closePath();
+      ctx.fill();
+      glossEye(ctx, -5, -10, 4.2, '#e8344a', { sclera: true, ring: '#ffe9b0', lookY: 0.2 });
+      glossEye(ctx, 5, -10, 4.2, '#e8344a', { sclera: true, ring: '#ffe9b0', lookY: 0.2 });
+      ctx.fillStyle = '#7a4a10';
+      ctx.beginPath();
+      ctx.roundRect(-5, -3.5, 10, 3.4, 1.7);
+      ctx.fill();
+      const ga = time * 2.5;
+      ctx.strokeStyle = 'rgba(255, 250, 200, 0.85)';
       ctx.lineWidth = 1.8;
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.roundRect(-13, -20, 26, 38, 5);
-      ctx.fill();
-      ctx.stroke();
-
-      // Glowing Ruby Eyes
-      ctx.fillStyle = '#ef4444';
-      ctx.beginPath();
-      ctx.arc(-5.5, -7, 2.8, 0, Math.PI * 2);
-      ctx.arc(5.5, -7, 2.8, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#fef08a';
-      ctx.fillRect(-7, 5, 14, 4);
-
-      // Rotating sparkle gleam
-      const gleamAngle = time * 2.5;
-      ctx.strokeStyle = 'rgba(254, 240, 138, 0.6)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(Math.cos(gleamAngle) * 16, -6 + Math.sin(gleamAngle) * 16);
-      ctx.lineTo(-Math.cos(gleamAngle) * 16, -6 - Math.sin(gleamAngle) * 16);
+      ctx.moveTo(Math.cos(ga) * 18, -2 + Math.sin(ga) * 18);
+      ctx.lineTo(-Math.cos(ga) * 18, -2 - Math.sin(ga) * 18);
       ctx.stroke();
       break;
     }
 
     case 'cage': {
-      // Bamboo Critter Cage with Cute Animated Furry Critter Inside
-      ctx.fillStyle = '#a855f7';
+      const wob = Math.sin(time * 6) * 1.2;
+      // cute caged fuzzball
+      softBlob(ctx, 0, 6, 12, 11, 0, '#b985f0', 0.4);
+      softBlob(ctx, -8, -6, 4.5, 5, 0, '#b985f0', 0.4);
+      softBlob(ctx, 8, -6, 4.5, 5, 0, '#b985f0', 0.4);
+      glossEye(ctx, -4.4, 4 + wob * 0.2, 4.2, '#4a2a1a', { lookY: 0.2 });
+      glossEye(ctx, 4.4, 4 + wob * 0.2, 4.2, '#4a2a1a', { lookY: 0.2 });
+      ctx.fillStyle = '#f4a0b8';
       ctx.beginPath();
-      ctx.arc(0, 0, 12, 0, Math.PI * 2);
+      ctx.ellipse(0, 9, 1.8, 1.2, 0, 0, Math.PI * 2);
       ctx.fill();
-      drawGlossyEye(ctx, -3.5, -2, 3.2, 0, 0, false);
-      drawGlossyEye(ctx, 3.5, -2, 3.2, 0, 0, false);
-
-      ctx.strokeStyle = '#ca8a04';
-      ctx.lineWidth = 4.2;
+      // bamboo bars
       ctx.lineCap = 'round';
-      ctx.strokeRect(-19, -21, 38, 42);
-
-      [-10, 0, 10].forEach(bx => {
+      const bar = (x1: number, y1: number, x2: number, y2: number) => {
+        ctx.strokeStyle = '#7a8a2a';
+        ctx.lineWidth = 6;
         ctx.beginPath();
-        ctx.moveTo(bx, -21);
-        ctx.lineTo(bx, 21);
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
         ctx.stroke();
-      });
-
+        ctx.strokeStyle = '#d4d870';
+        ctx.lineWidth = 3.4;
+        ctx.beginPath();
+        ctx.moveTo(x1 - 0.6, y1);
+        ctx.lineTo(x2 - 0.6, y2);
+        ctx.stroke();
+      };
+      [-19, -9.5, 0, 9.5, 19].forEach((bx) => bar(bx, -21, bx, 21));
+      bar(-21, -20, 21, -20);
+      bar(-21, 20, 21, 20);
       if ((item.cageHp ?? 2) > 0) {
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(`HP: ${item.cageHp}`, -15, -26);
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#c0284a';
+        ctx.lineWidth = 3;
+        ctx.font = 'bold 12px sans-serif';
+        ctx.strokeText(`HP: ${item.cageHp}`, -16, -27);
+        ctx.fillText(`HP: ${item.cageHp}`, -16, -27);
       }
       break;
     }
 
     case 'heart': {
-      // Sacred Healing Lotus & Ruby Heart Crystal
-      const pulse = Math.sin(time * 5 + item.bobPhase) * 0.12 + 0.88;
+      const pulse = Math.sin(time * 5 + item.bobPhase) * 0.1 + 0.92;
       ctx.save();
       ctx.scale(pulse, pulse);
-
-      // Soft pink lotus petals framing heart
-      ctx.fillStyle = '#f472b6';
-      [-0.4, 0, 0.4].forEach((rot) => {
-        ctx.save();
-        ctx.rotate(rot);
-        ctx.beginPath();
-        ctx.ellipse(0, 10, 5, 8, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      });
-
-      // Ruby Heart Crystal
-      ctx.fillStyle = '#ef4444';
+      const glow = ctx.createRadialGradient(0, 0, 3, 0, 0, 22);
+      glow.addColorStop(0, 'rgba(255, 140, 170, 0.5)');
+      glow.addColorStop(1, 'rgba(255, 140, 170, 0)');
+      ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(-5.5, -4, 6.8, Math.PI, 0, false);
-      ctx.arc(5.5, -4, 6.8, Math.PI, 0, false);
-      ctx.lineTo(0, 12);
-      ctx.closePath();
+      ctx.arc(0, 0, 22, 0, Math.PI * 2);
       ctx.fill();
-
-      // White glassy shine
-      ctx.fillStyle = '#ffffff';
+      const hg = ctx.createRadialGradient(-4, -6, 2, 0, 0, 16);
+      hg.addColorStop(0, '#ff8aa0');
+      hg.addColorStop(0.55, '#ee3358');
+      hg.addColorStop(1, '#b8183c');
+      ctx.fillStyle = hg;
       ctx.beginPath();
-      ctx.arc(-5, -6, 2.2, 0, Math.PI * 2);
+      ctx.moveTo(0, 13);
+      ctx.bezierCurveTo(-18, 2, -15, -13, -6.5, -12);
+      ctx.bezierCurveTo(-2, -11.5, 0, -8, 0, -6);
+      ctx.bezierCurveTo(0, -8, 2, -11.5, 6.5, -12);
+      ctx.bezierCurveTo(15, -13, 18, 2, 0, 13);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+      ctx.beginPath();
+      ctx.ellipse(-7, -7, 3.4, 2, -0.6, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
       break;
     }
 
     case 'super_heart': {
-      // Golden Dragonfruit / Sacred Max Vitality Lotus
-      const pulse = Math.sin(time * 6 + item.bobPhase) * 0.18 + 0.85;
+      const pulse = Math.sin(time * 6 + item.bobPhase) * 0.12 + 0.92;
       ctx.save();
       ctx.scale(pulse, pulse);
-
-      // Golden Halo Flare
-      const haloGrad = ctx.createRadialGradient(0, 0, 4, 0, 0, 24);
-      haloGrad.addColorStop(0, 'rgba(250, 204, 21, 0.6)');
-      haloGrad.addColorStop(1, 'rgba(234, 179, 8, 0)');
-      ctx.fillStyle = haloGrad;
+      const halo = ctx.createRadialGradient(0, 0, 4, 0, 0, 30);
+      halo.addColorStop(0, 'rgba(255, 220, 90, 0.7)');
+      halo.addColorStop(1, 'rgba(255, 200, 40, 0)');
+      ctx.fillStyle = halo;
       ctx.beginPath();
-      ctx.arc(0, 0, 24, 0, Math.PI * 2);
+      ctx.arc(0, 0, 30, 0, Math.PI * 2);
       ctx.fill();
-
-      // Golden Lotus Petals
-      ctx.fillStyle = '#facc15';
       for (let i = 0; i < 6; i++) {
-        const pa = (i * Math.PI) / 3 + time * 2;
-        ctx.beginPath();
-        ctx.ellipse(Math.cos(pa) * 11, Math.sin(pa) * 11, 4.5, 8, pa, 0, Math.PI * 2);
-        ctx.fill();
+        const pa = (i * Math.PI) / 3 + time * 1.5;
+        softBlob(ctx, Math.cos(pa) * 13, Math.sin(pa) * 13, 6, 9, pa + Math.PI / 2, '#ffd23a', 0.35);
       }
-
-      // Large Ruby Jewel Heart
-      ctx.fillStyle = '#dc2626';
+      const hg = ctx.createRadialGradient(-4, -6, 2, 0, 0, 18);
+      hg.addColorStop(0, '#ff7a92');
+      hg.addColorStop(0.55, '#e0183e');
+      hg.addColorStop(1, '#9c0f30');
+      ctx.fillStyle = hg;
       ctx.beginPath();
-      ctx.arc(-6.5, -5, 8, Math.PI, 0, false);
-      ctx.arc(6.5, -5, 8, Math.PI, 0, false);
-      ctx.lineTo(0, 14);
-      ctx.closePath();
+      ctx.moveTo(0, 15);
+      ctx.bezierCurveTo(-20, 3, -17, -14, -7, -13);
+      ctx.bezierCurveTo(-2, -12.5, 0, -9, 0, -7);
+      ctx.bezierCurveTo(0, -9, 2, -12.5, 7, -13);
+      ctx.bezierCurveTo(17, -14, 20, 3, 0, 15);
       ctx.fill();
-
-      // Golden Heart Crown
-      ctx.fillStyle = '#fef08a';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
       ctx.beginPath();
-      ctx.moveTo(-6, -11);
-      ctx.lineTo(0, -16);
-      ctx.lineTo(6, -11);
-      ctx.lineTo(3, -8);
-      ctx.lineTo(-3, -8);
-      ctx.closePath();
+      ctx.ellipse(-8, -8, 3.8, 2.2, -0.6, 0, Math.PI * 2);
       ctx.fill();
-
+      drawCrown(ctx, 0, -17, 0.7);
       ctx.restore();
       break;
     }
 
     case 'powerup_speed': {
-      // Cheetah Speed Orchid: Neon Emerald Flower + Wind Vortex
-      const pulse = Math.sin(time * 8 + item.bobPhase) * 0.12 + 0.9;
+      const pulse = Math.sin(time * 8 + item.bobPhase) * 0.08 + 0.95;
       ctx.save();
       ctx.scale(pulse, pulse);
-
-      // Spinning wind trails
-      ctx.strokeStyle = 'rgba(52, 211, 153, 0.85)';
-      ctx.lineWidth = 2.2;
+      const gl = ctx.createRadialGradient(0, 0, 4, 0, 0, 26);
+      gl.addColorStop(0, 'rgba(80, 240, 180, 0.6)');
+      gl.addColorStop(1, 'rgba(80, 240, 180, 0)');
+      ctx.fillStyle = gl;
       ctx.beginPath();
-      ctx.arc(0, 0, 18, time * 8, time * 8 + Math.PI);
+      ctx.arc(0, 0, 26, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(170, 255, 220, 0.9)';
+      ctx.lineWidth = 2.6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(0, 0, 19, time * 8, time * 8 + Math.PI * 0.8);
       ctx.stroke();
-
-      // 4 Emerald Arrow Petals
-      ctx.fillStyle = '#10b981';
       for (let i = 0; i < 4; i++) {
-        const pa = (i * Math.PI) / 2 + time * 3;
-        ctx.beginPath();
-        ctx.ellipse(Math.cos(pa) * 9, Math.sin(pa) * 9, 4.5, 9, pa, 0, Math.PI * 2);
-        ctx.fill();
+        const pa = (i * Math.PI) / 2 + time * 2;
+        softBlob(ctx, Math.cos(pa) * 8.5, Math.sin(pa) * 8.5, 9, 5, pa, '#22c993', 0.35);
       }
-
-      // Electric Lightning Stamen
-      ctx.fillStyle = '#fef08a';
+      softBlob(ctx, 0, 0, 7, 7, 0, '#fff6a8', 0.25);
+      ctx.fillStyle = '#f59e0b';
       ctx.beginPath();
-      ctx.moveTo(-3, -8);
-      ctx.lineTo(2, -1);
-      ctx.lineTo(-1, 0);
-      ctx.lineTo(3, 8);
-      ctx.lineTo(-2, 1);
-      ctx.lineTo(1, 0);
+      ctx.moveTo(-2, -6);
+      ctx.lineTo(3, -0.5);
+      ctx.lineTo(0, 0);
+      ctx.lineTo(2, 6);
+      ctx.lineTo(-3, 0.5);
+      ctx.lineTo(0, 0);
       ctx.closePath();
       ctx.fill();
-
       ctx.restore();
       break;
     }
 
     case 'powerup_invincible': {
-      // Golden Sun Radiance Star Flower
-      const pulse = Math.sin(time * 10 + item.bobPhase) * 0.15 + 0.9;
+      const pulse = Math.sin(time * 9 + item.bobPhase) * 0.1 + 0.95;
       ctx.save();
       ctx.scale(pulse, pulse);
-
-      // Rotating Solar Beams
-      const rot = time * 2.5;
-      ctx.fillStyle = 'rgba(250, 204, 21, 0.75)';
+      const gl = ctx.createRadialGradient(0, 0, 4, 0, 0, 28);
+      gl.addColorStop(0, 'rgba(255, 220, 80, 0.7)');
+      gl.addColorStop(1, 'rgba(255, 200, 40, 0)');
+      ctx.fillStyle = gl;
+      ctx.beginPath();
+      ctx.arc(0, 0, 28, 0, Math.PI * 2);
+      ctx.fill();
+      const rot = time * 1.6;
       for (let i = 0; i < 8; i++) {
         const pa = (i * Math.PI) / 4 + rot;
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(Math.cos(pa - 0.2) * 19, Math.sin(pa - 0.2) * 19);
-        ctx.lineTo(Math.cos(pa + 0.2) * 19, Math.sin(pa + 0.2) * 19);
-        ctx.closePath();
-        ctx.fill();
+        softBlob(ctx, Math.cos(pa) * 11, Math.sin(pa) * 11, 7, 3.4, pa, i % 2 ? '#ffb02e' : '#ffd84a', 0.35);
       }
-
-      // Golden Star Core
-      ctx.fillStyle = '#ffffff';
+      softBlob(ctx, 0, 0, 8.5, 8.5, 0, '#fff3b0', 0.3);
+      ctx.fillStyle = '#f59e0b';
       ctx.beginPath();
-      ctx.arc(0, 0, 7, 0, Math.PI * 2);
+      for (let k = 0; k < 10; k++) {
+        const r = k % 2 ? 2.8 : 6.2;
+        const a = (k / 10) * Math.PI * 2 - Math.PI / 2;
+        ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+      }
+      ctx.closePath();
       ctx.fill();
-      ctx.fillStyle = '#eab308';
-      ctx.beginPath();
-      ctx.arc(0, 0, 5, 0, Math.PI * 2);
-      ctx.fill();
-
       ctx.restore();
       break;
     }
 
     case 'powerup_magnet': {
-      // Nectar Magnet Spore Bloom
-      const pulse = Math.sin(time * 6 + item.bobPhase) * 0.12 + 0.9;
+      const pulse = Math.sin(time * 6 + item.bobPhase) * 0.08 + 0.95;
       ctx.save();
       ctx.scale(pulse, pulse);
-
-      // Magnetic Orbit Rings
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 1.8;
+      const gl = ctx.createRadialGradient(0, 0, 4, 0, 0, 26);
+      gl.addColorStop(0, 'rgba(110, 190, 255, 0.6)');
+      gl.addColorStop(1, 'rgba(110, 190, 255, 0)');
+      ctx.fillStyle = gl;
       ctx.beginPath();
-      ctx.ellipse(0, 0, 18, 9, time * 3, 0, Math.PI * 2);
+      ctx.arc(0, 0, 26, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(160, 220, 255, 0.9)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 20, 9, time * 3, 0, Math.PI * 2);
       ctx.stroke();
-
-      // Deep Violet & Cyan Flower Petals
-      ctx.fillStyle = '#818cf8';
       for (let i = 0; i < 5; i++) {
         const pa = (i * Math.PI * 2) / 5 + time * 1.5;
-        ctx.beginPath();
-        ctx.ellipse(Math.cos(pa) * 8, Math.sin(pa) * 8, 4.5, 7, pa, 0, Math.PI * 2);
-        ctx.fill();
+        softBlob(ctx, Math.cos(pa) * 8, Math.sin(pa) * 8, 8, 5, pa, '#8a7cf0', 0.35);
       }
-
-      // Glowing Cyan Stamen
-      ctx.fillStyle = '#06b6d4';
+      softBlob(ctx, 0, 0, 6, 6, 0, '#38d8f0', 0.3);
+      ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(0, 0, 5, 0, Math.PI * 2);
+      ctx.arc(-1.8, -2, 1.6, 0, Math.PI * 2);
       ctx.fill();
-
       ctx.restore();
       break;
     }

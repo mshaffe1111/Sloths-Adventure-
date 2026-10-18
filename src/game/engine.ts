@@ -1522,7 +1522,7 @@ export class GameEngine {
 
     // Render Boss
     if (this.boss && !this.boss.defeated) {
-      drawBossEntity(ctx, this.boss, this.gameTime);
+      drawBossEntity(ctx, this.boss, this.gameTime, this.currentStage.config.worldIndex);
     }
 
     // Render Hero Sloth
