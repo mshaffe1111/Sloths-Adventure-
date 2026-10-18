@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
+import { TouchGestures } from '../game/touchGestures.ts';
 
 /**
  * The whole screen is the controller. There are no buttons.
  *
- *  gestures   LEFT half  (floating stick)  drag left/right = run, drag down = duck, drag up = jump
- *             RIGHT half (action pad)      tap = punch, flick up = jump, flick down = duck,
- *                                          flick sideways = kick, hold = mega
+ *  A slow slide steers from anywhere; a quick flick is a kick or a jump; a tap punches; a hold is a mega.
+ *  The rules (and the forgiveness) live in game/touchGestures.ts.
  *
  * Both thumbs work at once, so you can run with one and jump or punch with the other.
  */
@@ -15,30 +15,7 @@ interface TouchControllerProps {
   inputEngine: InputEngine;
 }
 
-type Role = 'move' | 'action';
-
-interface Track {
-  role: Role;
-  startX: number;
-  startY: number;
-  anchorX: number;
-  time: number;
-  /** a flick, hold or mega already happened, so lifting the finger must not also punch */
-  consumed: boolean;
-  jumped: boolean;
-  ducked: boolean;
-  holdTimer: number | null;
-}
-
-const MOVE_DEAD = 14; // px of drag before the hero starts running
-const MOVE_REANCHOR = 64; // the stick follows the finger past this, so turning around is quick
-const FLICK = 28; // px for a flick
-const KICK_FLICK = 36;
-const TAP_MAX_MS = 280;
-const TAP_MAX_PX = 20;
-const HOLD_MS = 380;
-
-const HINT_KEY = 'sloth_hint_v2';
+const HINT_KEY = 'sloth_hint_v3';
 function hintSeen(): boolean {
   try {
     return localStorage.getItem(HINT_KEY) === '1';
@@ -55,7 +32,6 @@ function markHintSeen() {
 }
 
 export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine }) => {
-  const tracks = useRef(new Map<number, Track>());
   const [pill, setPill] = useState<string | null>(null);
   const pillTimer = useRef<number | null>(null);
   const [hint, setHint] = useState<boolean>(() => !hintSeen());
@@ -66,15 +42,28 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     pillTimer.current = window.setTimeout(() => setPill(null), 380);
   }, []);
 
-  const releaseAll = useCallback(() => {
-    tracks.current.forEach((t) => {
-      if (t.holdTimer !== null) window.clearTimeout(t.holdTimer);
-    });
-    tracks.current.clear();
-    inputEngine.triggerTouchMove('none');
-    inputEngine.triggerTouchDuck(false);
-    inputEngine.releaseTouchUp();
-  }, [inputEngine]);
+  // the recogniser holds all the rules (see touchGestures.ts); this component only feeds it fingers
+  const gestures = useRef<TouchGestures | null>(null);
+  if (!gestures.current) {
+    gestures.current = new TouchGestures(
+      {
+        move: (d) => inputEngine.triggerTouchMove(d),
+        duck: (on) => inputEngine.triggerTouchDuck(on),
+        jumpPress: () => inputEngine.triggerTouchUp(),
+        jumpRelease: () => inputEngine.releaseTouchUp(),
+        punch: () => inputEngine.triggerTouchPunch(),
+        kick: () => inputEngine.triggerTouchKick(),
+        mega: () => inputEngine.triggerTouchMega(),
+        feedback: (kind) => {
+          const haptic = { jump: 15, duck: 0, punch: 20, kick: 25, mega: 35 }[kind];
+          if (haptic) inputEngine.triggerHaptic(haptic);
+          flash({ jump: 'JUMP!', duck: 'DUCK', punch: 'PUNCH!', kick: 'KICK!', mega: 'MEGA!' }[kind]);
+        },
+      },
+      () => window.innerWidth,
+    );
+  }
+  const G = gestures.current;
 
   // the hint fades by itself
   useEffect(() => {
@@ -86,24 +75,26 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     return () => window.clearTimeout(id);
   }, [hint]);
 
+  // holds and undecided fingers need a clock even when the finger is perfectly still
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      if (G.active) G.tick(performance.now());
+    }, 30);
+    return () => window.clearInterval(id);
+  }, [G]);
+
   // If the pad unmounts mid-touch (level cleared, pause), release everything so nothing stays held into the next stage.
   useEffect(
     () => () => {
-      tracks.current.forEach((t) => {
-        if (t.holdTimer !== null) window.clearTimeout(t.holdTimer);
-      });
-      tracks.current.clear();
-      inputEngine.triggerTouchMove('none');
-      inputEngine.triggerTouchDuck(false);
-      inputEngine.releaseTouchUp();
+      G.cancelAll();
     },
-    [inputEngine],
+    [G],
   );
 
   // safety net: when every finger is up, nothing may stay held
   useEffect(() => {
     const onEnd = (e: TouchEvent) => {
-      if (e.touches.length === 0) releaseAll();
+      if (e.touches.length === 0) G.cancelAll();
     };
     window.addEventListener('touchend', onEnd);
     window.addEventListener('touchcancel', onEnd);
@@ -111,133 +102,32 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       window.removeEventListener('touchend', onEnd);
       window.removeEventListener('touchcancel', onEnd);
     };
-  }, [releaseAll]);
-
-  const hasRole = (role: Role) => {
-    for (const t of tracks.current.values()) if (t.role === role) return true;
-    return false;
-  };
+  }, [G]);
 
   const onStart = (e: React.TouchEvent) => {
     if (hint) {
       setHint(false);
       markHintSeen();
     }
+    const now = performance.now();
     for (let i = 0; i < e.changedTouches.length; i++) {
-      const touch = e.changedTouches[i];
-      const role: Role = touch.clientX < window.innerWidth / 2 ? 'move' : 'action';
-      if (hasRole(role)) continue;
-      const tr: Track = {
-        role,
-        startX: touch.clientX,
-        startY: touch.clientY,
-        anchorX: touch.clientX,
-        time: performance.now(),
-        consumed: false,
-        jumped: false,
-        ducked: false,
-        holdTimer: null,
-      };
-      if (role === 'action') {
-        const id = touch.identifier;
-        tr.holdTimer = window.setTimeout(() => {
-          const t = tracks.current.get(id);
-          if (!t || t.consumed) return;
-          t.consumed = true;
-          t.holdTimer = null;
-          inputEngine.triggerHaptic(35);
-          inputEngine.triggerTouchMega();
-          flash('MEGA!');
-        }, HOLD_MS);
-      }
-      tracks.current.set(touch.identifier, tr);
+      const t = e.changedTouches[i];
+      G.down(t.identifier, t.clientX, t.clientY, now);
     }
   };
-
   const onMove = (e: React.TouchEvent) => {
+    const now = performance.now();
     for (let i = 0; i < e.changedTouches.length; i++) {
-      const touch = e.changedTouches[i];
-      const t = tracks.current.get(touch.identifier);
-      if (!t) continue;
-      if (t.role === 'move') {
-        let dx = touch.clientX - t.anchorX;
-        if (dx > MOVE_REANCHOR) {
-          t.anchorX = touch.clientX - MOVE_REANCHOR;
-          dx = MOVE_REANCHOR;
-        } else if (dx < -MOVE_REANCHOR) {
-          t.anchorX = touch.clientX + MOVE_REANCHOR;
-          dx = -MOVE_REANCHOR;
-        }
-        inputEngine.triggerTouchMove(dx > MOVE_DEAD ? 'right' : dx < -MOVE_DEAD ? 'left' : 'none');
-
-        const dy = touch.clientY - t.startY;
-        inputEngine.triggerTouchDuck(dy > 30);
-        if (dy < -30 && !t.jumped) {
-          t.jumped = true;
-          inputEngine.triggerHaptic(15);
-          inputEngine.triggerTouchUp();
-          flash('JUMP!');
-        } else if (dy > -12 && t.jumped) {
-          t.jumped = false;
-          inputEngine.releaseTouchUp();
-        }
-        continue;
-      }
-
-      // action pad
-      const dx = touch.clientX - t.startX;
-      const dy = touch.clientY - t.startY;
-      if (t.holdTimer !== null && Math.hypot(dx, dy) > 14) {
-        window.clearTimeout(t.holdTimer);
-        t.holdTimer = null;
-      }
-      if (t.consumed) continue;
-      if (dy < -FLICK && Math.abs(dy) > Math.abs(dx) * 0.8) {
-        t.consumed = true;
-        t.jumped = true;
-        inputEngine.triggerHaptic(15);
-        inputEngine.triggerTouchUp();
-        flash('JUMP!');
-      } else if (dy > FLICK && Math.abs(dy) > Math.abs(dx)) {
-        t.consumed = true;
-        t.ducked = true;
-        inputEngine.triggerTouchDuck(true);
-        flash('DUCK');
-      } else if (Math.abs(dx) > KICK_FLICK && Math.abs(dx) > Math.abs(dy)) {
-        t.consumed = true;
-        inputEngine.triggerHaptic(25);
-        inputEngine.triggerTouchKick();
-        flash('KICK!');
-      }
+      const t = e.changedTouches[i];
+      G.move(t.identifier, t.clientX, t.clientY, now);
     }
   };
-
-  const finish = (touch: React.Touch) => {
-    const t = tracks.current.get(touch.identifier);
-    if (!t) return;
-    if (t.holdTimer !== null) window.clearTimeout(t.holdTimer);
-    tracks.current.delete(touch.identifier);
-
-    if (t.role === 'move') {
-      inputEngine.triggerTouchMove('none');
-      inputEngine.triggerTouchDuck(false);
-      if (t.jumped) inputEngine.releaseTouchUp();
-      return;
-    }
-    if (t.jumped) inputEngine.releaseTouchUp();
-    if (t.ducked) inputEngine.triggerTouchDuck(false);
-    if (!t.consumed) {
-      const dist = Math.hypot(touch.clientX - t.startX, touch.clientY - t.startY);
-      if (dist < TAP_MAX_PX && performance.now() - t.time < TAP_MAX_MS) {
-        inputEngine.triggerHaptic(20);
-        inputEngine.triggerTouchPunch();
-        flash('PUNCH!');
-      }
-    }
-  };
-
   const onEnd = (e: React.TouchEvent) => {
-    for (let i = 0; i < e.changedTouches.length; i++) finish(e.changedTouches[i]);
+    const now = performance.now();
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      const t = e.changedTouches[i];
+      G.up(t.identifier, t.clientX, t.clientY, now);
+    }
   };
 
   return (
@@ -259,8 +149,8 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       {/* shown once, so nobody has to guess that there are no buttons */}
       {hint && (
         <div className="fixed inset-x-0 bottom-0 h-[24%] min-h-[96px] pointer-events-none flex items-stretch gap-3 px-4 pb-4 animate-[fadeIn_.4s_ease]">
-          <HintCard title="LEFT THUMB" lines={['Drag ← → to run', 'Drag ↓ to duck', 'Drag ↑ to jump']} />
-          <HintCard title="RIGHT THUMB" lines={['Tap to punch', 'Flick ↑ to jump', 'Flick ← → to kick', 'Hold for mega']} />
+          <HintCard title="STEER" lines={['Slide a thumb ← → to run', 'Slide ↓ to duck, ↑ to jump']} />
+          <HintCard title="ACT" lines={['Tap to punch', 'Quick flick ← → to kick', 'Quick flick ↑ to jump', 'Hold for mega']} />
         </div>
       )}
     </div>
