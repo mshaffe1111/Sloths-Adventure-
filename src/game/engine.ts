@@ -96,6 +96,8 @@ export class GameEngine {
   private readonly maxLives: number = 3;
   private checkpoint = { x: 0, y: 0 };
   private respawnFlash = 0;
+  /** Seconds at the start of a stage / after a respawn where run input is ignored, so Slomatt is dropped in standing still. */
+  private inputGrace = 0.5;
 
   private exitTotemReached: boolean = false;
   private daisyRescued: boolean = false;
@@ -328,6 +330,7 @@ export class GameEngine {
     }
 
     this.respawnFlash = Math.max(0, this.respawnFlash - dt);
+    this.inputGrace = Math.max(0, this.inputGrace - dt);
 
     // --- Camera Trauma Shake Decay ---
     this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.2);
@@ -583,7 +586,7 @@ export class GameEngine {
 
           const speedMult = p.activePowerUp === 'speed' ? 1.4 : 1.0;
           const maxSpeed = PHYS.maxRun * speedMult;
-          const dir = this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
+          const dir = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
           if (dir !== 0) {
             p.facing = dir as 1 | -1;
             const turning = p.grounded && Math.sign(p.vx) === -dir && Math.abs(p.vx) > 20;
@@ -1542,6 +1545,7 @@ export class GameEngine {
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
     this.respawnFlash = 0.6;
+    this.inputGrace = 0.35;
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * 0.45);
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * 0.55);
     this.camera.targetX = this.camera.x;

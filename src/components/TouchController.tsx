@@ -204,6 +204,13 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     setTimeout(() => setActiveGesture(null), 300);
   };
 
+  // If the pad unmounts mid-touch (level cleared, pause), release everything so nothing stays held into the next stage.
+  useEffect(() => () => {
+    inputEngine.triggerTouchMove('none');
+    inputEngine.triggerTouchDuck(false);
+    inputEngine.releaseTouchUp();
+  }, [inputEngine]);
+
   useEffect(() => {
     const handleReset = () => clearGesture();
     window.addEventListener('touchend', handleReset);

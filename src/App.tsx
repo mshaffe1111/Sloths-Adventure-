@@ -168,6 +168,8 @@ export default function App() {
     // Slight delay to allow canvas element mounting
     setTimeout(() => {
       if (!canvasRef.current || !inputEngineRef.current) return;
+      // The input engine outlives each stage, so drop any direction left over from the last one.
+      inputEngineRef.current.clearAll();
 
       const engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
         onProgressUpdate: (current, target, curScore, curHp, distRatio, curPowerUp, curPowerTimer) => {
