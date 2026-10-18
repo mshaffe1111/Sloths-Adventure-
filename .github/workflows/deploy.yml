@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install --no-audit --no-fund
+      - run: npm install --no-audit --no-fund --legacy-peer-deps
       - run: npx tsc --noEmit
       - run: npx tsx --test src/audio/*.test.ts src/game/*.test.ts
       - run: npm run build
