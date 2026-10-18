@@ -149,6 +149,15 @@ export interface Enemy {
   hoverTimer?: number;
   /** cruising altitude for fliers (eagles return here after a swoop) */
   homeY?: number;
+  /** drawing only: true world position when the draw call is made in a translated frame (boss props) */
+  wx?: number;
+  wy?: number;
+  /** drawing only: separates a boss's rig from a regular enemy with the same id */
+  rigKey?: string;
+  /** drawing only: the draw call is scaled up by this much (bosses), so the rig can keep feet planted on screen */
+  rigScale?: number;
+  /** drawing only: extra art drawn in the head's own frame (crowns, horns) so it follows the head */
+  headDeco?: (ctx: CanvasRenderingContext2D) => void;
 }
 
 export interface BossEntity extends Enemy {

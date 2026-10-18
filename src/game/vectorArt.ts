@@ -1,5 +1,9 @@
 import type { PlayerState, Enemy, BossEntity, Collectible } from './types.ts';
+import { hexRgb, mixc, softBlob, glossEye } from './drawKit';
 import { drawMilo } from './miloVariants.ts';
+import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './creatures.ts';
+
+export { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity };
 
 /**
  * Ultra-Upgraded Procedural Vector Character & Entity Renderer
@@ -434,662 +438,6 @@ export function drawHeroSloth(ctx: CanvasRenderingContext2D, p: PlayerState, tim
 // ---------------------------------------------------------------
 // Soft-shaded storybook creature kit (glossy eyes, no heavy outlines)
 // ---------------------------------------------------------------
-const hexRgb = (h: string): [number, number, number] => {
-  if (h.startsWith('rgb')) {
-    const m = h.match(/\d+/g) || ['0', '0', '0'];
-    return [Number(m[0]), Number(m[1]), Number(m[2])];
-  }
-  const f = h.replace('#', '');
-  const v = f.length === 3 ? f.split('').map((c) => c + c).join('') : f;
-  return [parseInt(v.slice(0, 2), 16), parseInt(v.slice(2, 4), 16), parseInt(v.slice(4, 6), 16)];
-};
-/** Mix two #hex colours (t=0 -> a, t=1 -> b). */
-const mixc = (a: string, b: string, t: number): string => {
-  const A = hexRgb(a);
-  const B = hexRgb(b);
-  return `rgb(${Math.round(A[0] + (B[0] - A[0]) * t)}, ${Math.round(A[1] + (B[1] - A[1]) * t)}, ${Math.round(A[2] + (B[2] - A[2]) * t)})`;
-};
-
-/** Soft volumetric blob: lit from the upper-left, rimmed with a thin darker edge. */
-function softBlob(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  rx: number,
-  ry: number,
-  rot: number,
-  base: string,
-  rim: number = 0.42
-) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(rot);
-  const g = ctx.createRadialGradient(-rx * 0.35, -ry * 0.4, Math.min(rx, ry) * 0.1, 0, 0, Math.max(rx, ry) * 1.05);
-  g.addColorStop(0, mixc(base, '#ffffff', 0.4));
-  g.addColorStop(0.45, base);
-  g.addColorStop(1, mixc(base, '#2a1408', 0.38));
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
-  ctx.fill();
-  if (rim > 0) {
-    ctx.strokeStyle = mixc(base, '#2a1408', rim);
-    ctx.globalAlpha = 0.55;
-    ctx.lineWidth = 1.2;
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-  }
-  ctx.restore();
-}
-
-/** Big glassy eye: coloured iris ring, dark pupil, large catchlight, tiny bounce light. */
-function glossEye(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  r: number,
-  iris: string,
-  o: { sclera?: boolean; ring?: string; lookX?: number; lookY?: number; lash?: boolean } = {}
-) {
-  const lx = (o.lookX ?? 0.4) * r * 0.2;
-  const ly = (o.lookY ?? 0) * r * 0.2;
-  if (o.sclera) {
-    ctx.fillStyle = '#fbfbf4';
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(60, 40, 20, 0.35)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-  }
-  const ir = o.sclera ? r * 0.72 : r;
-  const g = ctx.createRadialGradient(x + lx, y + ly, ir * 0.15, x + lx, y + ly, ir);
-  g.addColorStop(0, mixc(iris, '#000000', 0.55));
-  g.addColorStop(0.6, iris);
-  g.addColorStop(1, o.ring ?? mixc(iris, '#ffffff', 0.35));
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.arc(x + lx, y + ly, ir, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#120a06';
-  ctx.beginPath();
-  ctx.arc(x + lx, y + ly, ir * 0.58, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#ffffff';
-  ctx.beginPath();
-  ctx.arc(x + lx - ir * 0.3, y + ly - ir * 0.32, ir * 0.3, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(x + lx + ir * 0.32, y + ly + ir * 0.34, ir * 0.14, 0, Math.PI * 2);
-  ctx.fill();
-  if (o.lash) {
-    ctx.strokeStyle = '#1a0e08';
-    ctx.lineWidth = 1.8;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.arc(x, y, r + 0.6, Math.PI * 1.1, Math.PI * 1.9);
-    ctx.stroke();
-  }
-}
-
-/**
- * Emerald Tree Snake - glossy toy-like green snake: huge round head, big eyes,
- * pale belly, long pink tongue. Rears up from a coil to strike.
- */
-export function drawTreeSnake(
-  ctx: CanvasRenderingContext2D,
-  enemy: Enemy,
-  time: number
-) {
-  ctx.save();
-  ctx.translate(enemy.x, enemy.y);
-  ctx.scale(enemy.facing, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
-
-  const isCoiled = enemy.isAttacking;
-  const ph = time * 5 + enemy.id;
-  const C = { dark: '#2f9a2c', base: '#52c53f', light: '#9be873', belly: '#e4f7a6' };
-
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
-  ctx.beginPath();
-  ctx.ellipse(0, 11, 26, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  const pts: Array<[number, number]> = [];
-  let hx: number;
-  let hy: number;
-  if (isCoiled) {
-    const N = 30;
-    for (let i = 0; i <= N; i++) {
-      const a = Math.PI * 0.8 + (i / N) * Math.PI * 3.2;
-      const k = i / N;
-      pts.push([-3 + Math.cos(a) * (19 - k * 7), 4 + Math.sin(a) * (8.5 - k * 2.5)]);
-    }
-    const [lx, ly] = pts[pts.length - 1];
-    for (let j = 1; j <= 10; j++) {
-      const t = j / 10;
-      pts.push([lx + Math.sin(t * Math.PI) * -5 + 7 * t + Math.sin(ph + t * 3) * 1.5, ly - t * 28]);
-    }
-    [hx, hy] = pts[pts.length - 1];
-  } else {
-    const N = 24;
-    for (let i = 0; i <= N; i++) {
-      const t = i / N;
-      pts.push([-26 + 50 * t, -2 + Math.sin(t * Math.PI * 2.2 + ph) * 4.5 * (0.35 + t * 0.65) - t * 4]);
-    }
-    [hx, hy] = pts[pts.length - 1];
-  }
-  const wAt = (i: number) => 17 * (0.38 + 0.62 * Math.min(1, (i / pts.length) * 1.7));
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  const pass = (scale: number, color: string, shift: number, alpha: number = 1) => {
-    ctx.strokeStyle = color;
-    ctx.globalAlpha = alpha;
-    for (let i = 1; i < pts.length; i++) {
-      ctx.lineWidth = wAt(i) * scale;
-      ctx.beginPath();
-      ctx.moveTo(pts[i - 1][0], pts[i - 1][1] + shift);
-      ctx.lineTo(pts[i][0], pts[i][1] + shift);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-  };
-  pass(1.06, C.dark, 0.6);
-  pass(0.9, C.base, -0.4);
-  pass(0.42, C.belly, 3.2, 0.95);
-  pass(0.26, C.light, -4.2, 0.85);
-  // soft scale blotches
-  ctx.fillStyle = 'rgba(30, 120, 40, 0.28)';
-  for (let i = 3; i < pts.length - 3; i += 3) {
-    ctx.beginPath();
-    ctx.ellipse(pts[i][0], pts[i][1] - 2, wAt(i) * 0.22, wAt(i) * 0.14, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // head: big and round
-  const hg = ctx.createRadialGradient(hx - 3, hy - 7, 2, hx + 2, hy, 19);
-  hg.addColorStop(0, C.light);
-  hg.addColorStop(0.5, C.base);
-  hg.addColorStop(1, C.dark);
-  ctx.fillStyle = hg;
-  ctx.beginPath();
-  ctx.ellipse(hx + 4, hy, 15.5, 13, 0.05, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = C.belly;
-  ctx.globalAlpha = 0.9;
-  ctx.beginPath();
-  ctx.ellipse(hx + 11, hy + 5.5, 8, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-  glossEye(ctx, hx - 0.5, hy - 4.5, 5.6, '#1a1008', { sclera: true, lookX: 0.8 });
-  glossEye(ctx, hx + 10.5, hy - 5, 6.1, '#1a1008', { sclera: true, lookX: 0.9 });
-  ctx.fillStyle = '#237a22';
-  ctx.beginPath();
-  ctx.arc(hx + 17, hy + 0.5, 1.2, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = 'rgba(255, 140, 140, 0.45)';
-  ctx.beginPath();
-  ctx.ellipse(hx - 3.5, hy + 4.5, 3.2, 2.1, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = '#1f6a22';
-  ctx.lineWidth = 1.7;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  if (isCoiled) {
-    ctx.fillStyle = '#e4506a';
-    ctx.ellipse(hx + 13, hy + 6, 6, 3.8, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.moveTo(hx + 9.5, hy + 3.6);
-    ctx.lineTo(hx + 11, hy + 7);
-    ctx.lineTo(hx + 12.5, hy + 3.6);
-    ctx.fill();
-  } else {
-    ctx.moveTo(hx + 6, hy + 5.5);
-    ctx.quadraticCurveTo(hx + 12.5, hy + 9.5, hx + 18, hy + 5);
-    ctx.stroke();
-  }
-  // long flicking tongue
-  const tl = 9 + Math.max(0, Math.sin(time * 7 + enemy.id)) * 9;
-  ctx.strokeStyle = '#ff5c86';
-  ctx.lineWidth = 2.6;
-  ctx.beginPath();
-  ctx.moveTo(hx + 18, hy + 5.5);
-  ctx.quadraticCurveTo(hx + 18 + tl * 0.6, hy + 9, hx + 18 + tl, hy + 7.5);
-  ctx.stroke();
-  ctx.lineWidth = 1.8;
-  ctx.beginPath();
-  ctx.moveTo(hx + 18 + tl, hy + 7.5);
-  ctx.lineTo(hx + 21 + tl, hy + 5);
-  ctx.moveTo(hx + 18 + tl, hy + 7.5);
-  ctx.lineTo(hx + 21 + tl, hy + 10);
-  ctx.stroke();
-
-  if (enemy.telegraphTimer > 0) {
-    ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(hx + 4, hy, 26, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-  ctx.restore();
-}
-
-/**
- * Harpy Eagle - fluffy baby-eagle look: scalloped brown feathers, cream bib,
- * spiky cream crest, huge blue-ringed eyes, blue-grey wings, orange feet.
- */
-export function drawHarpyEagle(
-  ctx: CanvasRenderingContext2D,
-  enemy: Enemy,
-  time: number
-) {
-  ctx.save();
-  ctx.translate(enemy.x, enemy.y);
-  ctx.scale(enemy.facing, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.4)';
-
-  const wingFlap = Math.sin(time * 10 + enemy.id);
-  const isSwooping = enemy.swoopPhase === 'swoop' || enemy.isAttacking;
-  const isHovering = enemy.swoopPhase === 'hover';
-  const isTelegraphing = enemy.swoopPhase === 'telegraph' || enemy.telegraphTimer > 0;
-  if (isSwooping) ctx.rotate(0.38);
-  else if (isHovering) ctx.rotate(Math.sin(time * 6) * 0.1);
-
-  const BR = '#8d5b2b';
-  const TAN = '#d4a05a';
-  const CREAM = '#f7e8c4';
-  const BLUE = '#6f89ac';
-
-  if (isHovering) {
-    ctx.save();
-    ctx.strokeStyle = 'rgba(250, 204, 21, 0.85)';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(0, -6, 40, 0, Math.PI * 2);
-    ctx.stroke();
-    for (let s = 0; s < 3; s++) {
-      const a = time * 5 + (s * Math.PI * 2) / 3;
-      ctx.font = 'bold 12px sans-serif';
-      ctx.fillText('✨', 16 + Math.cos(a) * 22, -16 + Math.sin(a) * 12);
-    }
-    ctx.restore();
-  }
-
-  const flapY = isHovering ? Math.sin(time * 14) * 8 : isSwooping ? 6 : wingFlap * 14;
-  const wing = (sx: number, sy: number, base: number, scale: number, tone: number) => {
-    // long blue-grey primaries fanning out behind the shoulder
-    for (let k = 0; k < 5; k++) {
-      const a = base - k * 0.2 + wingFlap * 0.1;
-      const len = (22 - k * 1.5) * scale;
-      softBlob(ctx, sx + Math.cos(a) * len * 0.8, sy + Math.sin(a) * len * 0.8 + flapY * 0.3, len, 6.4 * scale, a, mixc(BLUE, '#2e4466', tone + k * 0.07));
-    }
-    // tan covert feathers on the shoulder
-    for (let k = 0; k < 3; k++) {
-      softBlob(ctx, sx - 1 + k * 4, sy + 1 - k * 2.5 + flapY * 0.25, 8, 5.4, base + 0.3, mixc(TAN, '#8d5b2b', 0.1 + k * 0.1));
-    }
-  };
-
-  wing(-4, -8 + flapY * 0.2, -2.6, 1, 0.25);
-  // tail feathers
-  softBlob(ctx, -22, 14, 14, 5.6, 0.55, '#6b4423');
-  softBlob(ctx, -26, 20, 12, 4.8, 0.8, '#7a5128');
-
-  // body with scalloped feather rows
-  softBlob(ctx, 2, 3, 19, 22, 0.12, BR);
-  const scallop = (x: number, y: number, r: number, c: string) => {
-    const g = ctx.createLinearGradient(0, y - r, 0, y + r);
-    g.addColorStop(0, mixc(c, '#ffffff', 0.22));
-    g.addColorStop(1, mixc(c, '#2a1408', 0.3));
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI);
-    ctx.quadraticCurveTo(x, y - r * 1.1, x + r, y);
-    ctx.closePath();
-    ctx.fill();
-    ctx.strokeStyle = mixc(c, '#2a1408', 0.5);
-    ctx.globalAlpha = 0.55;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0.1, Math.PI - 0.1);
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-  };
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 3; col++) {
-      scallop(-7 + col * 9 + (row % 2) * 4.5, 4 + row * 5.5, 5.4, mixc(TAN, BR, 0.3 + row * 0.12));
-    }
-  }
-  // cream bib
-  for (let row = 0; row < 3; row++) {
-    for (let col = 0; col < 3 - (row === 2 ? 1 : 0); col++) {
-      scallop(4 + col * 8 + (row % 2) * 4 - 2, -3 + row * 6, 5.6, mixc(CREAM, '#cdb48a', 0.1 + row * 0.1));
-    }
-  }
-  // feet
-  [-4, 9].forEach((tx) => {
-    const ty = isSwooping ? 24 : 21;
-    softBlob(ctx, tx, ty, 5, 4, 0, '#f39a2a');
-    for (let t = -1; t <= 1; t++) softBlob(ctx, tx + t * 4.4 + 1, ty + 5.5, 2.3, 4, t * 0.3, '#f7b448', 0.2);
-  });
-
-  // front wing, slightly raised
-  wing(4, -5 + flapY * 0.15, -1.8, 0.9, 0.05);
-
-  // spiky cream crest
-  const blade = (bx: number, by: number, tx: number, ty: number, w: number, c: string) => {
-    ctx.fillStyle = c;
-    ctx.beginPath();
-    ctx.moveTo(bx - w, by);
-    ctx.quadraticCurveTo((bx + tx) / 2 - w * 0.6, (by + ty) / 2, tx, ty);
-    ctx.quadraticCurveTo((bx + tx) / 2 + w * 0.8, (by + ty) / 2 + 2, bx + w, by);
-    ctx.closePath();
-    ctx.fill();
-  };
-  blade(6, -24, -10, -46, 4, '#f1d28f');
-  blade(10, -27, 0, -50, 4.5, CREAM);
-  blade(15, -28, 12, -52, 4.5, '#f1d28f');
-  blade(20, -26, 24, -48, 4, CREAM);
-  blade(2, -20, -14, -38, 3.5, TAN);
-
-  // head
-  softBlob(ctx, 15, -15, 17, 15.5, 0, '#c99556');
-  softBlob(ctx, 13, -7, 12, 7.5, 0, CREAM, 0.15);
-  glossEye(ctx, 20.5, -16, 8.2, '#3a2412', { ring: '#8ec9ee', lookX: 0.9, lash: true });
-  if (isSwooping || isTelegraphing) {
-    ctx.strokeStyle = '#3a2412';
-    ctx.lineWidth = 2.6;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(11, -27);
-    ctx.lineTo(27, -21);
-    ctx.stroke();
-  }
-  // beak
-  const bg = ctx.createLinearGradient(26, -18, 36, -2);
-  bg.addColorStop(0, '#ffd84a');
-  bg.addColorStop(1, '#e8a61a');
-  ctx.fillStyle = bg;
-  ctx.beginPath();
-  ctx.moveTo(28, -17);
-  ctx.quadraticCurveTo(43, -14, 38, -2);
-  ctx.quadraticCurveTo(33, -7, 27, -8);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(120, 70, 10, 0.5)';
-  ctx.lineWidth = 1.2;
-  ctx.stroke();
-  ctx.fillStyle = '#7a4a12';
-  ctx.beginPath();
-  ctx.arc(31, -13, 1.1, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-  ctx.beginPath();
-  ctx.ellipse(34, -13, 3.5, 1.3, 0.5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = 'rgba(255, 140, 140, 0.45)';
-  ctx.beginPath();
-  ctx.ellipse(10, -6, 3.4, 2.2, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  if (isTelegraphing) {
-    ctx.strokeStyle = 'rgba(245, 158, 11, 0.95)';
-    ctx.lineWidth = 3.2;
-    ctx.beginPath();
-    ctx.arc(0, 0, 42, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.fillStyle = '#ef4444';
-    ctx.beginPath();
-    ctx.arc(16, -56, 9, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 12px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('!', 16, -56);
-  }
-  ctx.restore();
-}
-
-/**
- * Ocelot - fluffy kitten look: huge brown eyes, striped forehead and cheeks,
- * pink-lined ears, white muzzle and paws, ringed tail with a black tip.
- */
-export function drawOcelot(
-  ctx: CanvasRenderingContext2D,
-  enemy: Enemy,
-  time: number
-) {
-  ctx.save();
-  ctx.translate(enemy.x, enemy.y);
-  ctx.scale(enemy.facing, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
-
-  const run = Math.sin(time * 12 + enemy.id);
-  const tail = Math.sin(time * 5 + enemy.id) * 0.3;
-  const bounce = Math.abs(run) * -1.6;
-  const GOLD = '#dba444';
-  const CREAM = '#fff3d4';
-  const DARK = '#2b1a10';
-
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.28)';
-  ctx.beginPath();
-  ctx.ellipse(0, 13, 28, 6, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // tail: golden with dark rings and black tip
-  const T = { x0: -20, y0: -6, cx: -42, cy: -6 + tail * 8, x1: -38, y1: -32 + tail * 14 };
-  const tp = (t: number): [number, number] => {
-    const u = 1 - t;
-    return [u * u * T.x0 + 2 * u * t * T.cx + t * t * T.x1, u * u * T.y0 + 2 * u * t * T.cy + t * t * T.y1];
-  };
-  ctx.lineCap = 'round';
-  for (let i = 0; i < 16; i++) {
-    const [ax, ay] = tp(i / 16);
-    const [bx, by] = tp((i + 1) / 16);
-    ctx.strokeStyle = i >= 13 ? DARK : i % 4 === 2 ? '#5a3418' : GOLD;
-    ctx.lineWidth = 9.5;
-    ctx.beginPath();
-    ctx.moveTo(ax, ay);
-    ctx.lineTo(bx, by);
-    ctx.stroke();
-  }
-
-  // back legs + white paws
-  softBlob(ctx, -15 + run * 5, 8 + Math.max(0, run) * -3, 7, 8.5, 0, '#c98f2f');
-  softBlob(ctx, -15 + run * 5, 14.5 + Math.max(0, run) * -3, 7.6, 3.8, 0, '#ffffff', 0.25);
-
-  ctx.save();
-  ctx.translate(0, bounce);
-  // body
-  softBlob(ctx, 0, -6, 25, 17, 0.04, GOLD);
-  softBlob(ctx, 3, -1, 16, 9.5, 0, CREAM, 0.12);
-  // dark rosettes and stripes
-  ctx.fillStyle = DARK;
-  [[-14, -12], [-5, -15], [6, -13], [-10, -4], [-19, -4]].forEach(([sx, sy]) => {
-    ctx.beginPath();
-    ctx.ellipse(sx, sy, 4.4, 2.8, 0.35, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#b97a22';
-    ctx.beginPath();
-    ctx.ellipse(sx, sy, 1.8, 1.1, 0.35, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = DARK;
-  });
-  // front legs + paws
-  softBlob(ctx, 13 - run * 5, 9 + Math.max(0, -run) * -3, 7, 9, 0, GOLD);
-  softBlob(ctx, 13 - run * 5, 15.5 + Math.max(0, -run) * -3, 7.8, 3.9, 0, '#ffffff', 0.25);
-
-  // ears: dark back, white fur tuft, pink inside
-  [[10, -30], [30, -30]].forEach(([ex, ey], i) => {
-    softBlob(ctx, ex, ey, 7.5, 8.6, i ? 0.25 : -0.25, DARK, 0.1);
-    softBlob(ctx, ex + (i ? -0.5 : 0.5), ey + 1, 4.6, 5.8, i ? 0.25 : -0.25, '#f4a3b4', 0.1);
-    softBlob(ctx, ex + (i ? -2 : 2), ey + 0.5, 2.4, 4.6, 0, '#ffffff', 0.1);
-  });
-  // head (big, round)
-  softBlob(ctx, 20, -17, 19, 16, 0, GOLD);
-  softBlob(ctx, 20, -10, 14.5, 8.4, 0, CREAM, 0.1);
-  // forehead + cheek stripes
-  ctx.strokeStyle = DARK;
-  ctx.lineCap = 'round';
-  ctx.lineWidth = 2.4;
-  ctx.beginPath();
-  [[15, -31, 16, -26], [20, -32, 20, -25], [25, -31, 24, -26]].forEach(([x1, y1, x2, y2]) => {
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-  });
-  ctx.stroke();
-  ctx.lineWidth = 2.6;
-  ctx.beginPath();
-  ctx.moveTo(3, -14);
-  ctx.quadraticCurveTo(9, -11, 11, -7);
-  ctx.moveTo(3, -9);
-  ctx.quadraticCurveTo(8, -7, 10, -3);
-  ctx.moveTo(38, -14);
-  ctx.quadraticCurveTo(33, -11, 31, -7);
-  ctx.stroke();
-  // huge eyes
-  glossEye(ctx, 13.5, -19, 7.4, '#6b3f1c', { ring: '#b07a3a', lookX: 0.6 });
-  glossEye(ctx, 28.5, -19, 6.8, '#6b3f1c', { ring: '#b07a3a', lookX: 0.8 });
-  // eyeliner
-  ctx.strokeStyle = DARK;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(13.5, -19, 8, Math.PI * 1.05, Math.PI * 1.85);
-  ctx.arc(28.5, -19, 7.4, Math.PI * 1.15, Math.PI * 1.95);
-  ctx.stroke();
-  // nose + W mouth + whisker dots
-  ctx.fillStyle = '#ff7a98';
-  ctx.beginPath();
-  ctx.ellipse(21.5, -11.4, 3.6, 2.6, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = '#6b3f1c';
-  ctx.lineWidth = 1.6;
-  ctx.beginPath();
-  ctx.moveTo(21.5, -9);
-  ctx.lineTo(21.5, -7);
-  ctx.moveTo(15, -6.5);
-  ctx.quadraticCurveTo(18.5, -3, 21.5, -7);
-  ctx.quadraticCurveTo(24.5, -3, 28, -6.5);
-  ctx.stroke();
-  ctx.fillStyle = 'rgba(255, 150, 150, 0.5)';
-  ctx.beginPath();
-  ctx.ellipse(8, -8, 3, 2, 0, 0, Math.PI * 2);
-  ctx.ellipse(34, -8, 3, 2, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-
-  ctx.restore();
-}
-
-/**
- * Hazards: poison-dart frog (glossy cobalt with black spots) and a cute fuzzy canopy spider.
- */
-export function drawHazardEntity(
-  ctx: CanvasRenderingContext2D,
-  enemy: Enemy,
-  time: number
-) {
-  ctx.save();
-  ctx.translate(enemy.x, enemy.y);
-  ctx.scale(enemy.facing, 1);
-
-  if (enemy.type === 'frog') {
-    const hop = Math.sin(time * 8 + enemy.id);
-    ctx.translate(0, hop * 3);
-    const B = '#2a8cf0';
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.25)';
-    ctx.beginPath();
-    ctx.ellipse(0, 14 - hop * 3, 18, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
-    // back legs
-    softBlob(ctx, -12, 8, 9, 6, -0.3, mixc(B, '#0a3a8a', 0.25));
-    softBlob(ctx, -17, 12.5, 6.5, 2.8, 0, '#5db6ff', 0.2);
-    // body
-    softBlob(ctx, 0, 0, 18, 14, 0, B);
-    softBlob(ctx, 3, 5, 12, 7, 0, '#a8dcff', 0.1);
-    ctx.fillStyle = '#10243e';
-    [[-6, -5, 3.3], [3, -7, 2.8], [-10, 2, 2.6], [8, -1, 2.2]].forEach(([sx, sy, sr]) => {
-      ctx.beginPath();
-      ctx.arc(sx, sy, sr, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    // throat sac pulse
-    const pulse = (Math.sin(time * 6) + 1) * 1.2;
-    softBlob(ctx, 14, 5, 5 + pulse, 4 + pulse, 0, '#c9e8ff', 0.1);
-    // bulging eyes
-    softBlob(ctx, 5, -11, 7.4, 7, 0, B);
-    softBlob(ctx, 15, -10, 6.6, 6.4, 0, B);
-    glossEye(ctx, 6, -11.5, 5.2, '#e9a31a', { ring: '#ffd04a', lookX: 0.9, sclera: false });
-    glossEye(ctx, 15.5, -10.5, 4.8, '#e9a31a', { ring: '#ffd04a', lookX: 0.9 });
-    ctx.strokeStyle = '#10243e';
-    ctx.lineWidth = 1.6;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(8, 1);
-    ctx.quadraticCurveTo(16, 6, 22, 1);
-    ctx.stroke();
-    // front foot
-    softBlob(ctx, 12, 12, 5.4, 3.2, 0, '#5db6ff', 0.2);
-  } else if (enemy.type === 'spider') {
-    const bob = Math.sin(time * 3 + enemy.id) * 1.5;
-    if (!(enemy as unknown as { noThread?: boolean }).noThread) {
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.moveTo(0, -70);
-      ctx.lineTo(0, -12 + bob);
-      ctx.stroke();
-    }
-    const O = '#f2812a';
-    // eight curvy legs
-    ctx.strokeStyle = '#6b3a1a';
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    [-1, 1].forEach((side) => {
-      for (let leg = 0; leg < 4; leg++) {
-        const wave = Math.sin(time * 6 + leg + (side > 0 ? 1.5 : 0)) * 2.5;
-        const oy = -4 + leg * 3.2;
-        ctx.beginPath();
-        ctx.moveTo(side * 6, oy + bob);
-        ctx.quadraticCurveTo(side * (17 + leg * 1.2), oy - 9 + wave + bob, side * (24 + leg * 1.5), oy + 8 + leg * 2 + wave + bob);
-        ctx.stroke();
-      }
-    });
-    // fuzzy abdomen with cute spots
-    softBlob(ctx, 0, 4 + bob, 15, 13.5, 0, O);
-    ctx.fillStyle = '#ffd7a8';
-    [[-5, 0], [5, 0], [0, 6], [-8, 7], [8, 7]].forEach(([sx, sy]) => {
-      ctx.beginPath();
-      ctx.arc(sx, sy + bob, 2.4, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    // head
-    softBlob(ctx, 0, -7 + bob, 11, 9, 0, '#8a4a22');
-    glossEye(ctx, -4.4, -8 + bob, 4.6, '#1a1008', { sclera: true, lookX: 0 });
-    glossEye(ctx, 4.4, -8 + bob, 4.6, '#1a1008', { sclera: true, lookX: 0 });
-    ctx.strokeStyle = '#3a1a0a';
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    ctx.moveTo(-3, -1 + bob);
-    ctx.quadraticCurveTo(0, 2 + bob, 3, -1 + bob);
-    ctx.stroke();
-    ctx.fillStyle = '#ffd7a8';
-    ctx.beginPath();
-    ctx.moveTo(-2.6, -0.4 + bob);
-    ctx.lineTo(-1.6, 3 + bob);
-    ctx.lineTo(-0.6, -0.2 + bob);
-    ctx.moveTo(2.6, -0.4 + bob);
-    ctx.lineTo(1.6, 3 + bob);
-    ctx.lineTo(0.6, -0.2 + bob);
-    ctx.fill();
-  }
-
-  ctx.restore();
-}
-
 /** Little golden crown marking a boss / royal creature. */
 function drawCrown(ctx: CanvasRenderingContext2D, x: number, y: number, s: number) {
   ctx.save();
@@ -1140,7 +488,14 @@ export function drawBossEntity(
   const hit = boss.hitFlashTimer > 0;
   const breath = Math.sin(time * 3) * 2;
   const angry = boss.telegraphTimer > 0 || boss.isAttacking;
-  const fake: Enemy = { ...boss, x: 0, y: 0, facing: 1, isAttacking: angry };
+  // The animal rigs measure motion from position, so tell them where the boss really is (mirrored when it faces left).
+  const fake: Enemy = { ...boss, x: 0, y: 0, facing: 1, isAttacking: angry, wx: boss.x * boss.facing, wy: boss.y, rigKey: 'b' };
+  const crownOf = (x: number, y: number, sz: number) => (c: CanvasRenderingContext2D) => {
+    c.save();
+    c.filter = 'none';
+    drawCrown(c, x, y, sz);
+    c.restore();
+  };
 
   ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
   ctx.beginPath();
@@ -1159,8 +514,7 @@ export function drawBossEntity(
       ctx.save();
       ctx.translate(0, 2);
       ctx.scale(1.35, 1.35);
-      drawTreeSnake(ctx, { ...fake, isAttacking: true }, time);
-      drawCrown(ctx, 21, -43, 0.9);
+      drawTreeSnake(ctx, { ...fake, rigScale: 2.025, headDeco: crownOf(1, -14, 0.9) }, time);
       ctx.restore();
       break;
     }
@@ -1246,7 +600,7 @@ export function drawBossEntity(
       ctx.save();
       ctx.scale(1.35, 1.35);
       ctx.translate(-4, 2);
-      drawOcelot(ctx, fake, time);
+      drawOcelot(ctx, { ...fake, rigScale: 2.025 }, time);
       ctx.restore();
       untint();
       // glowing eyes overlay
@@ -1262,8 +616,7 @@ export function drawBossEntity(
       ctx.save();
       ctx.scale(1.4, 1.4);
       ctx.translate(-2, 8);
-      drawHarpyEagle(ctx, { ...fake, swoopPhase: angry ? 'swoop' : 'patrol' }, time);
-      drawCrown(ctx, 10, -46, 0.9);
+      drawHarpyEagle(ctx, { ...fake, rigScale: 2.1, swoopPhase: angry ? 'swoop' : 'patrol', headDeco: crownOf(10, -46, 0.9) }, time);
       ctx.restore();
       break;
     }
@@ -1272,7 +625,7 @@ export function drawBossEntity(
       ctx.save();
       ctx.scale(2.0, 2.0);
       ctx.translate(0, -2);
-      drawHazardEntity(ctx, { ...fake, type: 'spider', noThread: true } as Enemy, time);
+      drawHazardEntity(ctx, { ...fake, rigScale: 3, type: 'spider', noThread: true } as Enemy, time);
       drawCrown(ctx, 0, -22, 0.8);
       ctx.restore();
       break;
@@ -1283,10 +636,9 @@ export function drawBossEntity(
       ctx.save();
       ctx.scale(2.3, 2.3);
       ctx.translate(-2, 0);
-      drawHazardEntity(ctx, { ...fake, type: 'frog' }, time);
+      drawHazardEntity(ctx, { ...fake, rigScale: 3.45, type: 'frog', headDeco: crownOf(9, -19, 0.5) }, time);
       ctx.restore();
       untint();
-      drawCrown(ctx, 8, -38, 1.0);
       break;
     }
     case 7: {
@@ -1368,7 +720,7 @@ export function drawBossEntity(
       ctx.save();
       ctx.scale(1.4, 1.4);
       ctx.translate(-2, 8);
-      drawHarpyEagle(ctx, { ...fake, swoopPhase: angry ? 'swoop' : 'patrol' }, time);
+      drawHarpyEagle(ctx, { ...fake, rigScale: 2.1, swoopPhase: angry ? 'swoop' : 'patrol', headDeco: crownOf(12, -48, 0.9) }, time);
       ctx.restore();
       untint();
       ctx.fillStyle = 'rgba(190, 120, 255, 0.95)';
@@ -1378,27 +730,31 @@ export function drawBossEntity(
       ctx.arc(30, -26, 3, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
-      drawCrown(ctx, 12, -48, 0.9);
       break;
     }
     case 9: {
       // Magma Drake: fiery wyrm with horns and little wings
+      const hornsDeco = (c: CanvasRenderingContext2D) => {
+        c.save();
+        c.filter = 'none';
+        c.fillStyle = '#ffe9b0';
+        [[-2, -11, -8, -25], [8, -12, 12, -26]].forEach(([x1, y1, x2, y2]) => {
+          c.beginPath();
+          c.moveTo(x1 - 3, y1);
+          c.quadraticCurveTo(x1, y1 - 6, x2, y2);
+          c.quadraticCurveTo(x1 + 4, y1 - 4, x1 + 3, y1);
+          c.fill();
+        });
+        c.restore();
+      };
       tint('hue-rotate(-105deg) saturate(1.3) brightness(1.05)');
       ctx.save();
       ctx.translate(0, 2);
       ctx.scale(1.35, 1.35);
-      drawTreeSnake(ctx, { ...fake, isAttacking: true }, time);
+      drawTreeSnake(ctx, { ...fake, rigScale: 2.025, headDeco: hornsDeco }, time);
       ctx.restore();
       untint();
-      // horns and wings
-      ctx.fillStyle = '#ffe9b0';
-      [[22, -48, 16, -60], [34, -48, 38, -60]].forEach(([x1, y1, x2, y2]) => {
-        ctx.beginPath();
-        ctx.moveTo(x1 - 3, y1);
-        ctx.quadraticCurveTo(x1, y1 - 6, x2, y2);
-        ctx.quadraticCurveTo(x1 + 4, y1 - 4, x1 + 3, y1);
-        ctx.fill();
-      });
+      // wings
       const wf = Math.sin(time * 6) * 6;
       ctx.fillStyle = '#b8381a';
       ctx.beginPath();
