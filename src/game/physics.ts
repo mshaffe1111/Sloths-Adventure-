@@ -57,7 +57,7 @@ export const SAFE = {
 // so a level that validates is a level the real game lets you finish.
 // ---------------------------------------------------------------------------
 
-/** The game ticks at 30 fps today; 60 is checked too so a later upgrade cannot break levels. */
+/** The game now simulates at a fixed 60 Hz; 30 is still checked so levels stay passable at either step. */
 export const SIM_DTS = [1 / 30, 1 / 60] as const;
 
 /** Player half-width used for landing on platforms (0.48 * 44). */

@@ -96,8 +96,19 @@ export class GameEngine {
   private animFrameId: number | null = null;
   private lastTime: number = 0;
   private lastRenderTime: number = 0;
-  private readonly targetFps: number = 30;
-  private readonly frameIntervalMs: number = 1000 / 30; // 33.33ms fixed 30 FPS
+  /** the simulation always advances in these fixed steps (60 per second), however fast the screen refreshes */
+  private readonly STEP = 1 / 60;
+  /** seconds of real time not yet simulated */
+  private acc = 0;
+  private lastPausedRender = 0;
+  /**
+   * Automatic quality: 0 = full, 1 = lighter resolution, 2 = lightest. Only ever steps down, and only when the
+   * screen genuinely cannot keep up (the simulation itself never changes).
+   */
+  private quality = 0;
+  private perfFrames = 0;
+  private warmupMs = 1000;
+  private perfMs = 0;
 
   private hitstopTimer: number = 0;
   private gameTime: number = 0;
@@ -229,8 +240,36 @@ export class GameEngine {
     this.resizeCanvas();
   };
 
+  /** device pixels per css pixel to draw at: sharp by default, lighter when the screen is struggling */
+  private renderDpr(): number {
+    const native = window.devicePixelRatio || 1;
+    const cap = [2, 1.5, 1][this.quality] ?? 1;
+    return Math.max(1, Math.min(native, cap));
+  }
+
+  /** watch real frame times; if the screen cannot hold ~50 fps for a moment, step quality down one notch */
+  private watchPerformance(elapsedMs: number) {
+    if (this.quality >= 2) return;
+    // the first moments of a stage build caches and warm up the JIT; do not judge them
+    if (this.warmupMs > 0) {
+      this.warmupMs -= elapsedMs;
+      return;
+    }
+    this.perfFrames++;
+    this.perfMs += elapsedMs;
+    if (this.perfMs < 1200) return;
+    const avg = this.perfMs / this.perfFrames;
+    this.perfFrames = 0;
+    this.perfMs = 0;
+    // a 60 Hz screen averages ~16.7 ms, 120 Hz ~8.3 ms. Slower than ~20 ms means it is dropping frames.
+    if (avg > 20) {
+      this.quality++;
+      this.resizeCanvas();
+    }
+  }
+
   public resizeCanvas() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const dpr = this.renderDpr();
     const rect = this.canvas.getBoundingClientRect();
     const w = rect.width || window.innerWidth;
     const h = rect.height || window.innerHeight;
@@ -270,6 +309,7 @@ export class GameEngine {
     if (this.isRunning) return;
     this.isRunning = true;
     this.lastTime = performance.now();
+    this.lastRenderTime = this.lastTime;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     sound.playLevelStart();
     this.loop(this.lastTime);
@@ -282,6 +322,8 @@ export class GameEngine {
   public resume() {
     this.isPaused = false;
     this.lastTime = performance.now();
+    this.lastRenderTime = this.lastTime;
+    this.acc = 0;
   }
 
   public stop() {
@@ -298,31 +340,49 @@ export class GameEngine {
     if (!this.isRunning) return;
     this.animFrameId = requestAnimationFrame(this.loop);
 
-    // 30 FPS Cap: Throttle loop to 30 frames per second to eliminate flicker
-    const elapsed = now - this.lastRenderTime;
-    if (elapsed < this.frameIntervalMs) {
+    // Real time since the last frame. A long stall (tab in the background, a slow frame) is capped so the
+    // game never lurches ahead.
+    const elapsed = Math.min(now - this.lastRenderTime, 100);
+    this.lastRenderTime = now;
+
+    if (this.isPaused) {
+      this.acc = 0;
+      // nothing moves while paused, so a slow refresh is plenty (it also repaints after a resize)
+      if (now - this.lastPausedRender > 100) {
+        this.lastPausedRender = now;
+        this.render();
+      }
       return;
     }
-    this.lastRenderTime = now - (elapsed % this.frameIntervalMs);
 
-    const dt = Math.min(elapsed / 1000, 0.05); // reliable fixed dt
+    this.watchPerformance(elapsed);
 
-    if (!this.isPaused) {
-      // Hitstop freeze handling
+    // Fixed 60 Hz simulation: the same physics on a 60, 90, 120 or 144 Hz screen, and the same jump heights
+    // the level validator checked. A little slack (2 ms) makes a 60 Hz screen step exactly once per frame
+    // instead of occasionally skipping or doubling when frame times wobble.
+    this.acc += elapsed / 1000;
+    const SLACK = 0.002;
+    let steps = 0;
+    while (this.acc >= this.STEP - SLACK && steps < 5) {
+      this.acc -= this.STEP;
+      steps++;
       if (this.hitstopTimer > 0) {
-        this.hitstopTimer -= dt;
-        // Keep camera trauma shake ticking
-        this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
+        // Hitstop freeze: the world holds for a few ticks; keep the camera shake settling
+        this.hitstopTimer -= this.STEP;
+        this.camera.trauma = Math.max(0, this.camera.trauma - this.STEP * 2.5);
       } else {
-        this.update(dt);
+        this.update(this.STEP);
       }
     }
+    // a device that cannot keep up drops the backlog instead of spiralling
+    if (steps >= 5) this.acc = 0;
 
-    this.render();
+    // only draw when something changed (on a 120 Hz screen that is every other frame)
+    if (steps > 0) this.render();
   };
 
   /**
-   * Main Physics & Simulation Tick (30 FPS)
+   * Main Physics & Simulation Tick (fixed 60 Hz step)
    */
   private update(dt: number) {
     this.gameTime += dt;
@@ -1947,7 +2007,7 @@ export class GameEngine {
    */
   public render() {
     const ctx = this.ctx;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const dpr = this.renderDpr();
     const world = WORLDS_DATA[this.currentStage.config.worldIndex - 1] || WORLDS_DATA[0];
 
     ctx.save();
@@ -1962,7 +2022,7 @@ export class GameEngine {
     const shakeY = (Math.random() - 0.5) * shakeMag;
 
     // 1. Render Multi-Layer Parallax Background
-    renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
+    renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
 
     // 2. Render In-World Game Elements with Camera Transform
     ctx.save();
@@ -2105,7 +2165,7 @@ export class GameEngine {
     ctx.restore(); // end world transform
 
     // 3. Render Foreground Foliage (Framing screen edges)
-    renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
+    renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     if (this.respawnFlash > 0) {
       ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
       ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);

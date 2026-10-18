@@ -1076,18 +1076,18 @@ export function renderSky(ctx: CanvasRenderingContext2D, world: number, vw: numb
 }
 
 /** Everything behind the playfield. */
-export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX: number, camY: number, vw: number, vh: number, time: number) {
+export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX: number, camY: number, vw: number, vh: number, time: number, lite = false) {
   const look = lookFor(world);
   const set = ensure(world);
   const s = vh / H;
   renderSky(ctx, world, vw, vh, time, camX);
   const yo = -Math.min(60, Math.max(-30, camY * 0.03)) * s;
   drawTile(ctx, set.far, 0.05, camX, vw, vh, s, yo * 0.3);
-  veil(ctx, look.haze, 0.09, vw, vh);
+  if (!lite) veil(ctx, look.haze, 0.09, vw, vh);
   drawTile(ctx, set.hills, 0.12, camX, vw, vh, s, yo * 0.5);
-  veil(ctx, look.haze, 0.07, vw, vh);
+  if (!lite) veil(ctx, look.haze, 0.07, vw, vh);
   drawTile(ctx, set.mid, 0.26, camX, vw, vh, s, yo * 0.8);
-  veil(ctx, look.haze, 0.05, vw, vh);
+  if (!lite) veil(ctx, look.haze, 0.05, vw, vh);
   drawTile(ctx, set.near, 0.5, camX, vw, vh, s, yo);
   // colour grade pulls every layer into one mood
   // plain alpha tint (blend modes force a full-canvas flush on software/mobile GPUs)
@@ -1096,16 +1096,18 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
 }
 
 /** Frame leaves + vignette + weather — drawn over the playfield. */
-export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number) {
+export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, lite = false) {
   const look = lookFor(world);
   const set = ensure(world);
   const s = vh / H;
   drawTile(ctx, set.front, 1.25, camX, vw, vh, s, 0, 0.96);
-  const vg = ctx.createRadialGradient(vw / 2, vh / 2, vh * 0.55, vw / 2, vh / 2, vw * 0.78);
-  vg.addColorStop(0, 'rgba(0,0,0,0)');
-  vg.addColorStop(1, rgba(darken(look.sky[0], 0.6), 0.3));
-  ctx.fillStyle = vg;
-  ctx.fillRect(0, 0, vw, vh);
+  if (!lite) {
+    const vg = ctx.createRadialGradient(vw / 2, vh / 2, vh * 0.55, vw / 2, vh / 2, vw * 0.78);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, rgba(darken(look.sky[0], 0.6), 0.3));
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, vw, vh);
+  }
   renderWeather(ctx, look, world, camX, vw, vh, time);
 }
 
