@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import type { WorldInfo, LevelConfig } from '../game/types.ts';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { LevelConfig } from '../game/types.ts';
 import { WORLDS_DATA } from '../game/worldsData.ts';
+import { VistaCanvas, WorldThumb, requestThumbs } from './VistaCanvas.tsx';
+import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 
 interface WorldMapProps {
   levels: LevelConfig[];
@@ -8,11 +10,33 @@ interface WorldMapProps {
   onSelectWorld: (worldId: number) => void;
   onSelectLevel: (level: LevelConfig) => void;
   onBackToTitle: () => void;
-  onSaveProgressToDesktop?: () => void;
   /** the hidden Thorn Gate has been found, so the Hollow can be replayed from here */
   secretFound?: boolean;
   onPlaySecret?: () => void;
   thornHeart?: boolean;
+  /** the stage Continue would start; the map opens on it */
+  resumeId?: string;
+  onSaveLoaded: () => void;
+}
+
+const fmtTime = (s: number) => (s > 0 ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '—');
+
+/** smooth curve through points (Catmull-Rom as cubic beziers) */
+function curve(pts: { x: number; y: number }[]): string {
+  if (pts.length < 2) return '';
+  let d = `M${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] || p2;
+    const c1x = p1.x + (p2.x - p0.x) / 6;
+    const c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6;
+    const c2y = p2.y - (p3.y - p1.y) / 6;
+    d += `C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+  }
+  return d;
 }
 
 export const WorldMap: React.FC<WorldMapProps> = ({
@@ -21,229 +45,242 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   onSelectWorld,
   onSelectLevel,
   onBackToTitle,
-  onSaveProgressToDesktop,
   secretFound,
   onPlaySecret,
   thornHeart,
+  resumeId,
+  onSaveLoaded,
 }) => {
   const [activeWorldId, setActiveWorldId] = useState<number>(selectedWorldId);
+  const [saveOpen, setSaveOpen] = useState(false);
   const curWorld = WORLDS_DATA.find((w) => w.id === activeWorldId) || WORLDS_DATA[0];
-  const worldLevels = levels.filter((lvl) => lvl.worldIndex === activeWorldId);
+  const worldLevels = useMemo(() => levels.filter((l) => l.worldIndex === activeWorldId), [levels, activeWorldId]);
+  const totalStars = levels.reduce((a, l) => a + (l.stars || 0), 0);
 
-  // Total stars gathered
-  const totalStars = levels.reduce((acc, l) => acc + (l.stars || 0), 0);
+  const worldUnlocked = (id: number) => id === 1 || levels.some((l) => l.worldIndex === id - 1 && l.miniIndex === 10 && l.completed);
+
+  // which stage the card is showing: the one to play next in this world, else the last one reached
+  const defaultPick = () => {
+    const r = worldLevels.find((l) => l.id === resumeId);
+    if (r) return r.id;
+    const next = worldLevels.find((l) => (l.unlocked || l.miniIndex === 1) && !l.completed);
+    return (next ?? worldLevels[worldLevels.length - 1])?.id;
+  };
+  const [pickId, setPickId] = useState<string | undefined>(defaultPick);
+  useEffect(() => {
+    setPickId(defaultPick());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeWorldId]);
+  const picked = worldLevels.find((l) => l.id === pickId) ?? worldLevels[0];
+
+  // paint the little world pictures one by one, this world first
+  useEffect(() => {
+    requestThumbs([activeWorldId, ...WORLDS_DATA.map((w) => w.id).filter((id) => id !== activeWorldId)]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // trail geometry follows the space it is given
+  const trailRef = useRef<HTMLDivElement | null>(null);
+  const [box, setBox] = useState({ w: 800, h: 200 });
+  useLayoutEffect(() => {
+    const el = trailRef.current;
+    if (!el) return;
+    const measure = () => setBox({ w: el.clientWidth, h: el.clientHeight });
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const nodes = useMemo(() => {
+    const n = worldLevels.length || 10;
+    const { w, h } = box;
+    const wide = w >= 640 && w > h * 1.25;
+    const padX = Math.max(34, Math.min(60, w * 0.06));
+    const pts: { x: number; y: number }[] = [];
+    if (wide) {
+      for (let i = 0; i < n; i++) {
+        const t = i / (n - 1);
+        pts.push({ x: padX + t * (w - padX * 2), y: h * 0.52 + Math.sin(i * 0.95 + 0.5) * h * 0.2 });
+      }
+    } else {
+      const perRow = Math.ceil(n / 2);
+      const rows = 2;
+      for (let i = 0; i < n; i++) {
+        const row = Math.floor(i / perRow);
+        const col = i % perRow;
+        const x = padX + ((row % 2 === 0 ? col : perRow - 1 - col) / (perRow - 1)) * (w - padX * 2);
+        const y = h * (rows === 2 ? (row === 0 ? 0.3 : 0.74) : 0.5) + Math.sin(col * 1.4 + row) * h * 0.05;
+        pts.push({ x, y });
+      }
+    }
+    return { pts, wide };
+  }, [box, worldLevels.length]);
+
+  const pathD = useMemo(() => curve(nodes.pts), [nodes]);
+  const nodeSize = Math.max(34, Math.min(46, box.w / 17));
+
+  const hereIdx = worldLevels.findIndex((l) => l.id === resumeId);
 
   return (
-    <div className="fixed inset-0 z-40 bg-gradient-to-b from-[#091811] via-[#0d281e] to-[#04120b] flex flex-col p-4 sm:p-8 overflow-y-auto select-none font-game text-white">
-      {/* Top Header: Title, Total Stars, Back Button */}
-      <div className="flex items-center justify-between w-full max-w-5xl mx-auto mb-6">
-        <button
-          type="button"
-          onClick={onBackToTitle}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-900/60 hover:bg-emerald-800/80 border border-emerald-400/40 text-emerald-200 text-sm font-bold active:scale-95 transition-transform"
-        >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <div className="fixed inset-0 z-40 bg-[#10241a] flex flex-col select-none font-game text-white overflow-hidden">
+      <div key={activeWorldId} className="absolute inset-0 map-fade">
+        <VistaCanvas worlds={[activeWorldId]} pan={6} front={false} />
+      </div>
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(8,20,13,.78) 0%, rgba(8,20,13,.12) 24%, rgba(8,20,13,.1) 52%, rgba(8,20,13,.82) 100%)' }} />
+
+      {/* header */}
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 px-3 sm:px-6 pt-2.5 sm:pt-4">
+        <button type="button" onClick={onBackToTitle} className="ui-chip ui-chip-btn" aria-label="Back to the main menu">
+          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
             <polyline points="15 18 9 12 15 6" />
           </svg>
-          Main Menu
+          Menu
         </button>
-
-        <div className="text-center">
-          <h1 className="text-xl sm:text-2xl font-black text-amber-400 tracking-wide text-stroke">
-            RAINFOREST EXPEDITION MAP
-          </h1>
-          <p className="text-xs text-emerald-200/70 font-sans">
-            Choose a Jungle World and conquer its 10 Mission Stages
-          </p>
+        <div className="text-center min-w-0 order-3 basis-full sm:order-none sm:basis-auto">
+          <div className="ui-kicker">World {curWorld.id} of 10</div>
+          <h1 className="map-title truncate">{curWorld.name}</h1>
         </div>
-
-        <div className="flex items-center gap-3">
-          {onSaveProgressToDesktop && (
-            <button
-              type="button"
-              onClick={onSaveProgressToDesktop}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 text-xs font-bold active:scale-95 transition-transform"
-              title="Save game backup to desktop"
-            >
-              <svg className="w-4 h-4 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              <span>Backup</span>
-            </button>
-          )}
-
-          <div className="flex items-center gap-1.5 bg-black/50 border border-amber-400/40 px-3.5 py-1.5 rounded-2xl">
-            <svg className="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            </svg>
-            <span className="text-amber-300 font-black text-sm tabular-nums">{totalStars} / 300</span>
-          </div>
+        <div className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
           {thornHeart && (
-            <div className="flex items-center gap-1 bg-black/50 border border-violet-400/50 px-2.5 py-1.5 rounded-2xl" title="Thorn Heart: +1 max heart">
-              <span className="text-sm">💜</span>
-              <span className="text-violet-200 font-black text-xs">+1</span>
-            </div>
+            <span className="ui-chip" title="Thorn Heart: +1 max heart">
+              💜 +1
+            </span>
           )}
+          <span className="ui-chip" aria-label={`${totalStars} of 300 stars`}>
+            <span className="text-amber-300">★</span>
+            <span className="tabular-nums">{totalStars}/300</span>
+          </span>
+          <button type="button" onClick={() => setSaveOpen(true)} className="ui-chip ui-chip-btn">
+            Save / Load
+          </button>
         </div>
       </div>
+      <p className="relative z-10 text-center font-sans text-[11px] sm:text-xs text-emerald-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.7)] px-4 truncate">{curWorld.subtitle}</p>
 
-      {/* World Selector Tabs (1 to 10) */}
-      <div className="w-full max-w-5xl mx-auto mb-6">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-          {WORLDS_DATA.map((world) => {
-            const isSelected = world.id === activeWorldId;
-            const isUnlocked = world.id === 1 || levels.some(l => l.worldIndex === world.id - 1 && l.miniIndex === 10 && l.completed);
-
-            return (
-              <button
-                key={world.id}
-                type="button"
-                disabled={!isUnlocked}
-                onClick={() => {
-                  setActiveWorldId(world.id);
-                  onSelectWorld(world.id);
-                }}
-                className={`flex-shrink-0 px-4 py-2.5 rounded-2xl border transition-all text-left flex items-center gap-2.5 ${
-                  isSelected
-                    ? 'bg-emerald-600 border-amber-300 text-white shadow-lg shadow-emerald-700/50 scale-105'
-                    : isUnlocked
-                    ? 'bg-emerald-950/60 border-emerald-600/40 text-emerald-200 hover:bg-emerald-900/60'
-                    : 'bg-stone-900/50 border-stone-800 text-stone-500 cursor-not-allowed opacity-50'
-                }`}
-              >
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs ${
-                  isSelected ? 'bg-amber-400 text-emerald-950' : 'bg-emerald-900 text-emerald-200'
-                }`}>
-                  {world.id}
-                </div>
-                <div className="flex flex-col pr-1">
-                  <span className="text-xs font-bold whitespace-nowrap">{world.name}</span>
-                  <span className="text-[10px] opacity-70 whitespace-nowrap">{world.bossName}</span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Active World Hero Card */}
-      <div className="w-full max-w-5xl mx-auto mb-8 bg-gradient-to-r from-emerald-950/80 to-stone-950/80 border border-emerald-500/30 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-block px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
-              World {curWorld.id}
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-amber-300 mb-1">
-              {curWorld.name}
-            </h2>
-            <p className="text-sm text-stone-300 font-sans max-w-xl">
-              {curWorld.subtitle}
-            </p>
-          </div>
-
-          <div className="bg-black/50 border border-amber-500/30 p-3.5 rounded-2xl flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-red-950 border border-red-500/40 flex items-center justify-center text-red-300 font-black text-xs">
-              BOSS
-            </div>
-            <div>
-              <div className="text-xs font-bold text-amber-200">{curWorld.bossName}</div>
-              <div className="text-[11px] text-stone-400">{curWorld.bossTitle}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 10 Mini-Stage Node Grid */}
-      <div className="w-full max-w-5xl mx-auto flex-1">
-        <h3 className="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-4 flex items-center gap-2">
-          <span>Mission Stages (1 - 10)</span>
-          <span className="text-stone-400 text-xs font-normal">Stage 10 contains the Apex Boss Lair!</span>
-        </h3>
+      {/* the trail */}
+      <div ref={trailRef} className="relative z-10 flex-1 min-h-0">
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${box.w} ${box.h}`} aria-hidden="true">
+          <path d={pathD} fill="none" stroke="rgba(10,18,12,.55)" strokeWidth={nodeSize * 0.62} strokeLinecap="round" strokeLinejoin="round" />
+          <path d={pathD} fill="none" stroke="#e9c987" strokeWidth={nodeSize * 0.4} strokeLinecap="round" strokeLinejoin="round" opacity=".9" />
+          <path d={pathD} fill="none" stroke="#8a6030" strokeWidth="2" strokeDasharray="2 9" strokeLinecap="round" opacity=".8" />
+        </svg>
 
         {secretFound && activeWorldId === 7 && onPlaySecret && (
-          <button
-            type="button"
-            onClick={onPlaySecret}
-            className="mb-4 w-full p-3.5 rounded-2xl border border-violet-400/60 bg-gradient-to-r from-violet-950/80 to-emerald-950/70 hover:border-violet-300 text-left flex items-center gap-3 active:scale-[0.99] transition-transform"
-          >
-            <span className="text-2xl">🌿</span>
-            <span className="flex flex-col">
-              <span className="text-violet-200 font-black text-sm">Thornbark's Hollow</span>
-              <span className="text-stone-300 text-[11px] font-sans">Secret boss. {thornHeart ? 'Thorn Heart earned — fight him again?' : 'Free the Jungle Guardian from the thorns.'}</span>
-            </span>
+          <button type="button" onClick={onPlaySecret} className="ui-chip ui-chip-btn absolute right-3 top-1 z-20" style={{ borderColor: 'rgba(196,160,255,.7)' }}>
+            🌿 Thornbark's Hollow
           </button>
         )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5 sm:gap-4">
-          {worldLevels.map((lvl) => {
-            const isBoss = lvl.miniIndex === 10;
-            const isUnlocked = lvl.unlocked || lvl.miniIndex === 1;
+        {worldLevels.map((lvl, i) => {
+          const p = nodes.pts[i];
+          if (!p) return null;
+          const isBoss = lvl.miniIndex === 10;
+          const open = lvl.unlocked || lvl.miniIndex === 1;
+          const size = isBoss ? nodeSize * 1.3 : nodeSize;
+          const sel = lvl.id === picked?.id;
+          return (
+            <React.Fragment key={lvl.id}>
+              <button
+                type="button"
+                onClick={() => {
+                  // a second tap on the picked stage plays it
+                  if (sel && open) onSelectLevel(lvl);
+                  else setPickId(lvl.id);
+                }}
+                className={`map-node ${open ? (lvl.completed ? 'done' : 'ready') : 'locked'} ${isBoss ? 'boss' : ''} ${sel ? 'sel' : ''}`}
+                style={{ left: p.x - size / 2, top: p.y - size / 2, width: size, height: size }}
+                aria-label={`Stage ${lvl.id}: ${lvl.name}${lvl.completed ? `, ${lvl.stars} stars` : open ? '' : ', locked'}`}
+              >
+                {!open ? <LockIcon /> : isBoss ? <span className="map-boss-glyph">☠</span> : <span>{lvl.miniIndex}</span>}
+              </button>
+              {open && lvl.completed && (
+                <div className="map-stars" style={{ left: p.x - 20, top: p.y + size / 2 + 1 }} aria-hidden="true">
+                  {[1, 2, 3].map((n) => (
+                    <i key={n} className={n <= lvl.stars ? 'on' : ''}>
+                      ★
+                    </i>
+                  ))}
+                </div>
+              )}
+              {i === hereIdx && !lvl.completed && (
+                <div className="map-here" style={{ left: p.x - 15, top: p.y - size / 2 - 33 }} aria-hidden="true">
+                  🦥
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
 
+      {/* footer: world medallions + the card for the picked stage */}
+      <div className="relative z-10 flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-4 px-3 sm:px-6 pb-2.5 sm:pb-4">
+        <div className="map-meds flex-1 min-w-0" role="tablist" aria-label="Worlds">
+          {WORLDS_DATA.map((w) => {
+            const open = worldUnlocked(w.id);
+            const on = w.id === activeWorldId;
+            const cleared = levels.filter((l) => l.worldIndex === w.id && l.completed).length;
             return (
               <button
-                key={lvl.id}
+                key={w.id}
                 type="button"
-                disabled={!isUnlocked}
-                onClick={() => onSelectLevel(lvl)}
-                className={`relative group p-4 rounded-2xl border text-left flex flex-col justify-between transition-all duration-150 ${
-                  isUnlocked
-                    ? isBoss
-                      ? 'bg-gradient-to-b from-red-950/70 to-stone-950/80 border-red-500/60 hover:border-red-400 hover:scale-105 shadow-lg shadow-red-950/40'
-                      : 'bg-emerald-950/50 border-emerald-500/40 hover:border-emerald-300 hover:scale-105 hover:bg-emerald-900/60 shadow-lg shadow-black/40'
-                    : 'bg-stone-950/40 border-stone-800 text-stone-600 opacity-45 cursor-not-allowed'
-                }`}
+                role="tab"
+                aria-selected={on}
+                disabled={!open}
+                onClick={() => {
+                  setActiveWorldId(w.id);
+                  onSelectWorld(w.id);
+                }}
+                className={`map-med ${on ? 'on' : ''} ${open ? '' : 'locked'}`}
+                title={open ? `${w.name} · ${cleared}/10` : 'Clear the previous world to open'}
               >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className={`text-xs font-black px-2 py-0.5 rounded-lg ${
-                      isBoss ? 'bg-red-500/30 text-red-300 border border-red-400/40' : 'bg-emerald-800/40 text-emerald-300'
-                    }`}>
-                      Stage {lvl.id}
-                    </span>
-
-                    {/* Stars */}
-                    <div className="flex items-center gap-0.5">
-                      {[1, 2, 3].map((starNum) => (
-                        <svg
-                          key={starNum}
-                          className={`w-3.5 h-3.5 ${
-                            starNum <= lvl.stars ? 'text-amber-400 fill-amber-400' : 'text-stone-700'
-                          }`}
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                      ))}
-                    </div>
-                  </div>
-
-                  <h4 className="font-extrabold text-sm text-stone-100 mb-1 group-hover:text-amber-300 transition-colors">
-                    {lvl.name}
-                  </h4>
-                  <p className="text-[11px] text-stone-400 line-clamp-2 font-sans mb-3">
-                    {lvl.description}
-                  </p>
-                </div>
-
-                {/* Card Bottom CTA */}
-                <div className="pt-2 border-t border-emerald-900/40 flex items-center justify-between">
-                  <span className="text-[10px] text-emerald-400/80 font-bold uppercase">
-                    {lvl.completed ? 'COMPLETED' : isUnlocked ? 'READY' : 'LOCKED'}
-                  </span>
-                  {isUnlocked && (
-                    <span className="text-xs text-amber-300 font-black group-hover:translate-x-0.5 transition-transform">
-                      PLAY →
-                    </span>
-                  )}
-                </div>
+                <WorldThumb world={w.id} size={on ? 52 : 42} className="map-med-pic" />
+                <span className="map-med-n">{open ? w.id : '🔒'}</span>
+                {open && cleared > 0 && <span className="map-med-bar" style={{ ['--p' as string]: `${cleared * 10}%` }} />}
               </button>
             );
           })}
         </div>
+
+        {picked && (
+          <div className="map-card">
+            <div className="min-w-0 flex-1">
+              <div className="ui-kicker">
+                Stage {picked.id}
+                {picked.miniIndex === 10 ? ' · Boss' : ''}
+              </div>
+              <div className="map-card-name truncate">{picked.name}</div>
+              <div className="map-card-desc">{picked.description}</div>
+              <div className="map-card-meta">
+                <span>
+                  {[1, 2, 3].map((n) => (
+                    <i key={n} className={`map-cs ${n <= picked.stars ? 'on' : ''}`}>
+                      ★
+                    </i>
+                  ))}
+                </span>
+                {picked.completed && <span>Best {fmtTime(picked.bestTime)}</span>}
+                {picked.completed && picked.highScore > 0 && <span>{picked.highScore.toLocaleString()} pts</span>}
+              </div>
+            </div>
+            {picked.unlocked || picked.miniIndex === 1 ? (
+              <button type="button" className="title-btn title-btn-start map-play" onClick={() => onSelectLevel(picked)} data-start="true">
+                {picked.completed ? 'REPLAY' : 'PLAY'}
+              </button>
+            ) : (
+              <div className="map-locked">Clear the stage before it to open this one</div>
+            )}
+          </div>
+        )}
       </div>
+
+      {saveOpen && <SaveLoadDialog onClose={() => setSaveOpen(false)} onLoaded={onSaveLoaded} />}
     </div>
   );
 };
+
+const LockIcon: React.FC = () => (
+  <svg viewBox="0 0 24 24" width="55%" height="55%" fill="currentColor" aria-hidden="true">
+    <path d="M17 9V7a5 5 0 0 0-10 0v2H5v12h14V9h-2zm-8-2a3 3 0 0 1 6 0v2H9V7z" />
+  </svg>
+);

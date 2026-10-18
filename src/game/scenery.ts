@@ -287,15 +287,33 @@ interface LayerSet {
   front: HTMLCanvasElement;
   clouds: HTMLCanvasElement[];
 }
-let cache: LayerSet | null = null;
-onSceneSeedChange(() => { cache = null; });
+/**
+ * Baked layer sets, keyed by world, seed and bake scale. Gameplay always bakes at full resolution and keeps one set;
+ * menus, cutscenes and the map bake at a fraction of it (a world vista in ~1/10 of the time and memory) and may
+ * keep several, so flipping between worlds is instant.
+ */
+const sets = new Map<string, LayerSet>();
+let bakeScale = 1;
+onSceneSeedChange(() => sets.clear());
+
+/** run fn with every layer baked (and drawn) at `scale` of full resolution */
+export function withBakeScale<T>(scale: number, fn: () => T): T {
+  const prev = bakeScale;
+  bakeScale = scale;
+  try {
+    return fn();
+  } finally {
+    bakeScale = prev;
+  }
+}
 
 function makeLayer(res: number): [HTMLCanvasElement, CanvasRenderingContext2D] {
+  const r = res * bakeScale;
   const cv = document.createElement('canvas');
-  cv.width = Math.round(TW * res);
-  cv.height = Math.round(H * res);
+  cv.width = Math.round(TW * r);
+  cv.height = Math.round(H * r);
   const c = cv.getContext('2d')!;
-  c.scale(res, res);
+  c.scale(r, r);
   return [cv, c];
 }
 
@@ -948,7 +966,7 @@ function buildMidRich(look: Look, world: number): HTMLCanvasElement {
   const res = 1.2;
   const [cv, ctx] = makeLayer(res);
   const r = rng(world * 307 + 11 + getSceneSeed() * 1013);
-  paintBiomeMid(ctx, world, look, r, TW, res, (y0, y1, col, a) => hazeBand(ctx, y0, y1, col, a));
+  paintBiomeMid(ctx, world, look, r, TW, res * bakeScale, (y0, y1, col, a) => hazeBand(ctx, y0, y1, col, a));
   drawRays(ctx, TW, H, look.rays, look.rayA, r, 12, 0.3);
   hazeBand(ctx, 430, 720, look.haze, 0.3);
   return cv;
@@ -1077,9 +1095,23 @@ function buildClouds(look: Look, world: number): HTMLCanvasElement[] {
 }
 
 function ensure(world: number): LayerSet {
-  if (cache && cache.world === world && cache.seed === getSceneSeed()) return cache;
+  const key = `${world}:${getSceneSeed()}:${bakeScale}`;
+  const hit = sets.get(key);
+  if (hit) {
+    // keep recently used sets at the end so the oldest is the one to evict
+    sets.delete(key);
+    sets.set(key, hit);
+    return hit;
+  }
+  // gameplay keeps one full-resolution set; low-resolution vistas keep a handful
+  const sameKind = [...sets.entries()].filter(([k]) => k.endsWith(`:${bakeScale}`));
+  const limit = bakeScale >= 1 ? 1 : 6;
+  while (sameKind.length >= limit) {
+    const [old] = sameKind.shift()!;
+    sets.delete(old);
+  }
   const look = lookFor(world);
-  cache = {
+  const cache: LayerSet = {
     world,
     seed: getSceneSeed(),
     far: buildFar(look, world),
@@ -1089,11 +1121,12 @@ function ensure(world: number): LayerSet {
     front: buildFront(look, world),
     clouds: buildClouds(look, world),
   };
+  sets.set(key, cache);
   return cache;
 }
 
 export function disposeScenery() {
-  cache = null;
+  sets.clear();
 }
 
 // ───────────────────────────── compositing ─────────────────────────────
@@ -1208,6 +1241,32 @@ export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX
     ctx.fillRect(0, 0, vw, vh);
   }
   renderWeather(ctx, look, world, camX, vw, vh, time);
+}
+
+/**
+ * A world's scenery at menu quality: baked at a fraction of gameplay resolution (so a world appears in a few frames,
+ * not a few hundred ms) and cached, so flipping between worlds is instant. `front` adds the foreground leaves + weather.
+ */
+export const VISTA_SCALE = 0.4;
+export function renderVista(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, front = true, scale = VISTA_SCALE) {
+  withBakeScale(scale, () => {
+    renderScenery(ctx, world, camX, 0, vw, vh, time, true);
+    if (front) renderOverlay(ctx, world, camX, vw, vh, time, true);
+  });
+}
+
+/** bake a world's vista ahead of time (call from idle callbacks); returns true when it had to bake */
+export function warmVista(world: number, scale = VISTA_SCALE): boolean {
+  return withBakeScale(scale, () => {
+    const had = sets.has(`${world}:${getSceneSeed()}:${bakeScale}`);
+    if (!had) ensure(world);
+    return !had;
+  });
+}
+
+/** forget a baked vista (used after a tiny one-shot bake such as a map thumbnail) */
+export function dropVista(world: number, scale = VISTA_SCALE) {
+  sets.delete(`${world}:${getSceneSeed()}:${scale}`);
 }
 
 // ───────────────────────────── weather ─────────────────────────────

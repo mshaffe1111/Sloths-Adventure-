@@ -1,11 +1,19 @@
-import React from 'react';
-import {
-  TitleDefs,
-  TitleBackdrop,
-  TitleFrame,
-  TitleHero,
-  TitleFireflies,
-} from './TitleScene.tsx';
+import React, { useState } from 'react';
+import { TitleDefs, TitleFrame, TitleHero, TitleFireflies } from './TitleScene.tsx';
+import { VistaCanvas } from './VistaCanvas.tsx';
+import { SaveLoadDialog } from './SaveLoadDialog.tsx';
+
+/** every biome takes a turn behind the logo */
+const SHOWCASE = [1, 2, 4, 6, 3, 8, 5, 7, 9, 10];
+
+export interface ResumeInfo {
+  /** "World 2 · Sunlit Riverbank" */
+  where: string;
+  /** "Stage 2-4 · Mossy Crossing" */
+  stage: string;
+  stars: number;
+  cleared: number;
+}
 
 interface TitleScreenProps {
   onStartGame: () => void;
@@ -15,6 +23,9 @@ interface TitleScreenProps {
   onToggleMute: () => void;
   onInstallDesktop?: () => void;
   isInstalled?: boolean;
+  /** null on a fresh game */
+  resume: ResumeInfo | null;
+  onSaveLoaded: () => void;
 }
 
 export const TitleScreen: React.FC<TitleScreenProps> = ({
@@ -25,92 +36,73 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   onToggleMute,
   onInstallDesktop,
   isInstalled,
+  resume,
+  onSaveLoaded,
 }) => {
+  const [saveOpen, setSaveOpen] = useState(false);
   return (
-    <div className="fixed inset-0 z-40 bg-[#ffcb73] select-none font-game text-white overflow-hidden">
-      {/* Painted scenery layers */}
+    <div className="fixed inset-0 z-40 bg-[#1a2a1c] select-none font-game text-white overflow-hidden">
+      <VistaCanvas worlds={SHOWCASE} hold={14} pan={14} />
       <TitleDefs />
-      <TitleBackdrop />
       <TitleFrame />
       <TitleFireflies />
-      {/* Soft edge vignette to pull the eye to the centre */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at center, transparent 60%, rgba(26,10,5,.5) 100%)' }}
-      />
+      {/* warm light from above, deep edges, and a floor so the buttons always read */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 18%, rgba(255,226,150,.28), transparent 55%), radial-gradient(ellipse at center, transparent 55%, rgba(14,8,4,.55) 100%)' }} />
+      <div className="absolute inset-x-0 bottom-0 h-[42%] pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,22,14,.72), rgba(10,22,14,0))' }} />
 
-      {/* Content column */}
-      <div className="relative z-10 flex h-full flex-col items-center px-4 py-4 sm:px-8 sm:py-6">
-        {/* Top Bar: Worlds indicator, Desktop Save button, Mute toggle */}
-        <div className="w-full max-w-5xl flex items-center justify-between">
-          <div className="title-pill flex items-center gap-2 px-3.5 py-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-300 animate-pulse" />
-            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider">
-              10 Worlds · 100 Missions
-            </span>
+      <div className="relative z-10 flex h-full flex-col items-center px-4 py-3 sm:px-8 sm:py-5">
+        <div className="w-full max-w-5xl flex items-center justify-between gap-2">
+          <div className="ui-chip">
+            <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse" />
+            <span>10 Worlds · 100 Missions</span>
           </div>
-
           <div className="flex items-center gap-2">
             {!isInstalled && onInstallDesktop && (
-              <button
-                type="button"
-                onClick={onInstallDesktop}
-                className="title-pill flex items-center gap-1.5 px-3 py-1.5 text-xs font-black active:scale-95 transition-transform"
-                title="Install app shortcut directly to your desktop"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <rect x="2" y="3" width="20" height="14" rx="2" />
-                  <line x1="8" y1="21" x2="16" y2="21" />
-                  <line x1="12" y1="17" x2="12" y2="21" />
-                  <polyline points="9 8 12 11 15 8" />
-                </svg>
-                <span>Save to Desktop</span>
+              <button type="button" onClick={onInstallDesktop} className="ui-chip ui-chip-btn" title="Install the game as an app">
+                Install app
               </button>
             )}
-
-            <button
-              type="button"
-              onClick={onToggleMute}
-              className="title-pill px-3 py-1.5 text-xs font-bold uppercase tracking-wider active:scale-95 transition-transform"
-            >
-              {isMuted ? 'Audio: Muted' : 'Audio: On'}
+            <button type="button" onClick={onToggleMute} className="ui-chip ui-chip-btn">
+              {isMuted ? 'Sound off' : 'Sound on'}
             </button>
           </div>
         </div>
 
-        {/* Hero, logo and actions */}
         <div className="flex w-full flex-1 min-h-0 flex-col items-center justify-center text-center">
-          {/* Sloth hanging from the branch */}
-          <TitleHero className="w-full max-w-[1280px] shrink-0 h-[clamp(160px,min(44vh,58.3vw),440px)]" />
+          <TitleHero className="w-full max-w-[1280px] shrink-0 h-[clamp(100px,min(32vh,58.3vw),400px)]" />
 
-          <h1 className="title-logo mt-1 sm:mt-2">SLOTHS</h1>
+          <h1 className="title-logo mt-0">SLOTHS</h1>
           <div className="title-ribbon">RAINFOREST ADVENTURES</div>
 
-          <div className="mt-5 sm:mt-6 flex w-full max-w-xl flex-col items-stretch gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center sm:gap-4">
-            <button
-              type="button"
-              data-start="true"
-              onClick={onStartGame}
-              className="title-btn title-btn-start"
-            >
-              START GAME <span className="hidden sm:inline text-[0.7em] opacity-70">[Space]</span>
+          <div className="mt-2 sm:mt-4 flex flex-col items-center gap-2 w-full">
+            <button type="button" data-start="true" onClick={onStartGame} className="title-btn title-btn-start ui-main">
+              <span className="ui-main-t">{resume ? 'CONTINUE' : 'START ADVENTURE'}</span>
+              {resume && (
+                <span className="ui-main-s">
+                  {resume.stage} <i>·</i> {resume.stars}★
+                </span>
+              )}
             </button>
-
-            <button type="button" onClick={onViewStory} className="title-btn title-btn-story">
-              <span aria-hidden="true">📖</span> STORY INTRO
-            </button>
-
-            <button type="button" onClick={onOpenMap} className="title-btn title-btn-map">
-              WORLD MAP
-            </button>
+            <div className="flex items-center justify-center gap-2 sm:gap-3">
+              <button type="button" onClick={onViewStory} className="ui-pill ui-pill-rose">
+                Story
+              </button>
+              <button type="button" onClick={onOpenMap} className="ui-pill ui-pill-green">
+                World Map
+              </button>
+              <button type="button" onClick={() => setSaveOpen(true)} className="ui-pill ui-pill-wood">
+                Save / Load
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Control hints */}
         <p className="title-hint w-full text-center font-sans text-[11px] sm:text-xs tracking-wide text-amber-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.6)]">
-          WASD / Arrows Move · Space Jump · J / Z Punch · K / X Kick · L / Shift Mega · S Duck · Esc Pause
+          Slide to run · flick up to jump · flick across to kick · tap to punch · hold for a mega · keys: WASD, Space, J K L
         </p>
       </div>
+
+      {saveOpen && <SaveLoadDialog onClose={() => setSaveOpen(false)} onLoaded={onSaveLoaded} />}
     </div>
   );
 };

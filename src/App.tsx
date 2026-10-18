@@ -37,6 +37,35 @@ export default function App() {
   const [selectedWorldId, setSelectedWorldId] = useState<number>(1);
   const [showInstallGuide, setShowInstallGuide] = useState<boolean>(false);
 
+  // where "Continue" goes: the first unlocked stage that has not been cleared yet (the last stage once all are)
+  const resumeLevel = React.useMemo(
+    () => allLevels.find((l) => (l.unlocked || l.miniIndex === 1 && l.worldIndex === 1) && !l.completed) ?? allLevels[allLevels.length - 1],
+    [allLevels],
+  );
+  const resumeInfo = React.useMemo(() => {
+    const cleared = allLevels.filter((l) => l.completed).length;
+    if (cleared === 0) return null;
+    const w = WORLDS_DATA[resumeLevel.worldIndex - 1] || WORLDS_DATA[0];
+    return {
+      where: `World ${w.id} · ${w.name}`,
+      stage: `Stage ${resumeLevel.id}`,
+      stars: allLevels.reduce((a, l) => a + (l.stars || 0), 0),
+      cleared,
+    };
+  }, [allLevels, resumeLevel]);
+
+  // a save file was just loaded: re-read everything the game keeps in storage
+  const onSaveLoaded = useCallback(() => {
+    const fresh = generateAllLevels();
+    setAllLevels(fresh);
+    setActiveLevel(fresh[0]);
+    setSelectedWorldId(1);
+    setSecretFound(gateFound());
+    setThornHeart(hasThornHeart());
+    setHp(maxHearts());
+    setMaxHp(maxHearts());
+  }, []);
+
   // Desktop PWA and saving utilities
   const {
     isInstallable,
@@ -115,7 +144,7 @@ export default function App() {
       if (screen === 'title') {
         if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault();
-          startLevel(activeLevel);
+          startLevel(resumeLevel);
         }
       } else if (screen === 'playing') {
         if (e.code === 'Escape' || e.code === 'KeyP') {
@@ -145,7 +174,7 @@ export default function App() {
 
     window.addEventListener('keydown', handleGlobalKey);
     return () => window.removeEventListener('keydown', handleGlobalKey);
-  }, [screen, activeLevel, allLevels]);
+  }, [screen, activeLevel, allLevels, resumeLevel]);
 
   // Start a specific level
   const startLevel = useCallback((lvl: LevelConfig) => {
@@ -342,8 +371,13 @@ export default function App() {
       {/* Title Screen View */}
       {screen === 'title' && (
         <TitleScreen
-          onStartGame={() => startLevel(activeLevel)}
-          onOpenMap={() => setScreen('world_map')}
+          onStartGame={() => startLevel(resumeLevel)}
+          resume={resumeInfo}
+          onSaveLoaded={onSaveLoaded}
+          onOpenMap={() => {
+            setSelectedWorldId(resumeLevel.worldIndex);
+            setScreen('world_map');
+          }}
           onViewStory={() => setScreen('story_cutscene')}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
@@ -421,6 +455,8 @@ export default function App() {
           secretFound={secretFound}
           thornHeart={thornHeart}
           onPlaySecret={() => startLevel(THORNBARK_LEVEL)}
+          resumeId={resumeLevel.id}
+          onSaveLoaded={onSaveLoaded}
         />
       )}
 
