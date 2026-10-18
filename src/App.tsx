@@ -13,7 +13,7 @@ import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
-import { enterWideMode, getControlMode, leaveWideMode, subscribeControls } from './game/controls.ts';
+import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -56,8 +56,6 @@ export default function App() {
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
-  const [controlMode, setControlModeState] = useState(getControlMode);
-  useEffect(() => subscribeControls(() => setControlModeState(getControlMode())), []);
 
   // Victory / Defeat snapshot states
   const [starsEarned, setStarsEarned] = useState<number>(1);
@@ -414,7 +412,7 @@ export default function App() {
             lives={lives}
           />
           {inputEngineRef.current && (
-            <TouchController inputEngine={inputEngineRef.current} mode={controlMode} />
+            <TouchController inputEngine={inputEngineRef.current} />
           )}
         </>
       )}

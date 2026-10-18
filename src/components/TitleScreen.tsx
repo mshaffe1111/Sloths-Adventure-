@@ -1,4 +1,3 @@
-import { ControlPicker } from './ControlPicker.tsx';
 import React from 'react';
 import {
   TitleDefs,
@@ -105,11 +104,6 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               WORLD MAP
             </button>
           </div>
-        </div>
-
-        {/* touch devices pick how they play: slide fingers or tilt */}
-        <div className="hidden [@media(pointer:coarse)]:block w-full max-w-xs mb-2">
-          <ControlPicker />
         </div>
 
         {/* Control hints */}

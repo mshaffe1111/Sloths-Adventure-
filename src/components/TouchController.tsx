@@ -1,7 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
-import { TiltSensor, setControlMode } from '../game/controls.ts';
-import type { ControlMode } from '../game/controls.ts';
 
 /**
  * The whole screen is the controller. There are no buttons.
@@ -9,14 +7,12 @@ import type { ControlMode } from '../game/controls.ts';
  *  gestures   LEFT half  (floating stick)  drag left/right = run, drag down = duck, drag up = jump
  *             RIGHT half (action pad)      tap = punch, flick up = jump, flick down = duck,
  *                                          flick sideways = kick, hold = mega
- *  tilt       lean the phone to run; the whole screen is the action pad
  *
  * Both thumbs work at once, so you can run with one and jump or punch with the other.
  */
 
 interface TouchControllerProps {
   inputEngine: InputEngine;
-  mode: ControlMode;
 }
 
 type Role = 'move' | 'action';
@@ -58,12 +54,11 @@ function markHintSeen() {
   }
 }
 
-export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, mode }) => {
+export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine }) => {
   const tracks = useRef(new Map<number, Track>());
   const [pill, setPill] = useState<string | null>(null);
   const pillTimer = useRef<number | null>(null);
   const [hint, setHint] = useState<boolean>(() => !hintSeen());
-  const [tiltNote, setTiltNote] = useState<string | null>(null);
 
   const flash = useCallback((text: string) => {
     setPill(text);
@@ -80,24 +75,6 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, m
     inputEngine.triggerTouchDuck(false);
     inputEngine.releaseTouchUp();
   }, [inputEngine]);
-
-  // ---- tilt sensor (only in tilt mode)
-  useEffect(() => {
-    if (mode !== 'tilt') return;
-    const sensor = new TiltSensor(
-      (d) => inputEngine.triggerTouchMove(d),
-      () => {
-        setControlMode('gestures');
-        setTiltNote('No tilt sensor found on this device, so gestures are back on.');
-        window.setTimeout(() => setTiltNote(null), 4000);
-      },
-    );
-    sensor.start();
-    return () => {
-      sensor.stop();
-      inputEngine.triggerTouchMove('none');
-    };
-  }, [mode, inputEngine]);
 
   // the hint fades by itself
   useEffect(() => {
@@ -148,7 +125,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, m
     }
     for (let i = 0; i < e.changedTouches.length; i++) {
       const touch = e.changedTouches[i];
-      const role: Role = mode === 'gestures' && touch.clientX < window.innerWidth / 2 ? 'move' : 'action';
+      const role: Role = touch.clientX < window.innerWidth / 2 ? 'move' : 'action';
       if (hasRole(role)) continue;
       const tr: Track = {
         role,
@@ -271,7 +248,6 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, m
       onTouchCancel={onEnd}
       className="fixed inset-0 pointer-events-auto z-30 select-none touch-none"
       style={{ touchAction: 'none', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
-      data-controls={mode}
     >
       {/* what the last gesture was */}
       {pill && (
@@ -280,26 +256,11 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine, m
         </div>
       )}
 
-      {tiltNote && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 pointer-events-none z-40 bg-black/80 border border-amber-400/60 px-4 py-2 rounded-xl text-amber-200 text-xs font-bold max-w-[80vw] text-center">
-          {tiltNote}
-        </div>
-      )}
-
       {/* shown once, so nobody has to guess that there are no buttons */}
       {hint && (
         <div className="fixed inset-x-0 bottom-0 h-[24%] min-h-[96px] pointer-events-none flex items-stretch gap-3 px-4 pb-4 animate-[fadeIn_.4s_ease]">
-          {mode === 'gestures' ? (
-            <>
-              <HintCard title="LEFT THUMB" lines={['Drag ← → to run', 'Drag ↓ to duck', 'Drag ↑ to jump']} />
-              <HintCard title="RIGHT THUMB" lines={['Tap to punch', 'Flick ↑ to jump', 'Flick ← → to kick', 'Hold for mega']} />
-            </>
-          ) : (
-            <>
-              <HintCard title="TILT" lines={['Lean the phone to run', 'Hold it how you like;', 'it re-centres each stage']} />
-              <HintCard title="TAP ANYWHERE" lines={['Tap to punch', 'Flick ↑ jump · ↓ duck', 'Flick ← → to kick', 'Hold for mega']} />
-            </>
-          )}
+          <HintCard title="LEFT THUMB" lines={['Drag ← → to run', 'Drag ↓ to duck', 'Drag ↑ to jump']} />
+          <HintCard title="RIGHT THUMB" lines={['Tap to punch', 'Flick ↑ to jump', 'Flick ← → to kick', 'Hold for mega']} />
         </div>
       )}
     </div>

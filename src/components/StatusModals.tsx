@@ -1,7 +1,6 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
 import type { LevelConfig } from '../game/types.ts';
-import { ControlPicker } from './ControlPicker.tsx';
 
 interface StatusModalsProps {
   screen: 'paused' | 'victory' | 'game_over' | 'boss_intro' | 'story_ending';
@@ -107,7 +106,6 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
           </h2>
 
           <AudioSliders />
-          <ControlPicker className="mb-4" />
 
           <div className="flex flex-col gap-2.5">
             <button
