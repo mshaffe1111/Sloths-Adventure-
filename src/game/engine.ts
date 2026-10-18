@@ -114,7 +114,7 @@ export class GameEngine {
   private animFrameId: number | null = null;
   private lastTime: number = 0;
   private lastRenderTime: number = 0;
-  /** the simulation always advances in these fixed steps (60 per second), however fast the screen refreshes */
+  /** the longest slice the simulation takes in one go (frames longer than this are cut into equal parts) */
   private readonly STEP = 1 / 60;
   /** seconds of real time not yet simulated */
   private acc = 0;
@@ -376,32 +376,26 @@ export class GameEngine {
 
     this.watchPerformance(elapsed);
 
-    // Fixed 60 Hz simulation: the same physics on a 60, 90, 120 or 144 Hz screen, and the same jump heights
-    // the level validator checked. A little slack (2 ms) makes a 60 Hz screen step exactly once per frame
-    // instead of occasionally skipping or doubling when frame times wobble.
-    this.acc += elapsed / 1000;
-    const SLACK = 0.002;
-    let steps = 0;
-    while (this.acc >= this.STEP - SLACK && steps < 5) {
-      this.acc -= this.STEP;
-      steps++;
+    // Every frame advances the game by exactly the time that really passed, so motion stays smooth on any
+    // screen (60, 90, 120 or 144 Hz, even when frame times wobble). A long frame is cut into equal slices of
+    // at most 1/60 s, so physics never takes a step bigger than the one the level validator checked.
+    const dt = Math.min(elapsed / 1000, 0.05);
+    const slices = Math.max(1, Math.ceil(dt / this.STEP - 1e-6));
+    const h = dt / slices;
+    for (let i = 0; i < slices; i++) {
       if (this.hitstopTimer > 0) {
         // Hitstop freeze: the world holds for a few ticks; keep the camera shake settling
-        this.hitstopTimer -= this.STEP;
-        this.camera.trauma = Math.max(0, this.camera.trauma - this.STEP * 2.5);
+        this.hitstopTimer -= h;
+        this.camera.trauma = Math.max(0, this.camera.trauma - h * 2.5);
       } else {
-        this.update(this.STEP);
+        this.update(h);
       }
     }
-    // a device that cannot keep up drops the backlog instead of spiralling
-    if (steps >= 5) this.acc = 0;
-
-    // only draw when something changed (on a 120 Hz screen that is every other frame)
-    if (steps > 0) this.render();
+    this.render();
   };
 
   /**
-   * Main Physics & Simulation Tick (fixed 60 Hz step)
+   * Main Physics & Simulation Tick (one slice of at most 1/60 s)
    */
   private update(dt: number) {
     this.gameTime += dt;
@@ -2268,7 +2262,9 @@ export class GameEngine {
 
     // 2. Render In-World Game Elements with Camera Transform
     ctx.save();
-    ctx.translate(-Math.round(this.camera.x) + shakeX, -Math.round(this.camera.y) + shakeY);
+    // snap the camera to whole device pixels (not whole world units), so it never beats against the hero's motion
+    const snap = dpr * this.zoom;
+    ctx.translate(-Math.round(this.camera.x * snap) / snap + shakeX, -Math.round(this.camera.y * snap) / snap + shakeY);
 
     this.drawWaterAndFlags(ctx, world);
 
