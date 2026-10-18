@@ -117,6 +117,7 @@ export class GameEngine {
   private animFrameId: number | null = null;
   private lastTime: number = 0;
   private lastRenderTime: number = 0;
+  private readonly frameIntervalMs: number = 1000 / 30; // 33.33ms fixed 30 FPS
   /** the longest slice the simulation takes in one go (frames longer than this are cut into equal parts) */
   private readonly STEP = 1 / 60;
   /** seconds of real time not yet simulated */
@@ -362,43 +363,31 @@ export class GameEngine {
     if (!this.isRunning) return;
     this.animFrameId = requestAnimationFrame(this.loop);
 
-    // Real time since the last frame. A long stall (tab in the background, a slow frame) is capped so the
-    // game never lurches ahead.
-    const elapsed = Math.min(now - this.lastRenderTime, 100);
-    this.lastRenderTime = now;
-
-    if (this.isPaused) {
-      this.acc = 0;
-      // nothing moves while paused, so a slow refresh is plenty (it also repaints after a resize)
-      if (now - this.lastPausedRender > 100) {
-        this.lastPausedRender = now;
-        this.render();
-      }
+    // 30 FPS cap: one steady 30 fps rhythm (every other frame on a 60 Hz screen) looks smoother than a
+    // frame rate that wobbles between 30 and 60.
+    const elapsed = now - this.lastRenderTime;
+    if (elapsed < this.frameIntervalMs) {
       return;
     }
+    this.lastRenderTime = now - (elapsed % this.frameIntervalMs);
 
-    this.watchPerformance(elapsed);
-
-    // Every frame advances the game by exactly the time that really passed, so motion stays smooth on any
-    // screen (60, 90, 120 or 144 Hz, even when frame times wobble). A long frame is cut into equal slices of
-    // at most 1/60 s, so physics never takes a step bigger than the one the level validator checked.
     const dt = Math.min(elapsed / 1000, 0.05);
-    const slices = Math.max(1, Math.ceil(dt / this.STEP - 1e-6));
-    const h = dt / slices;
-    for (let i = 0; i < slices; i++) {
+
+    if (!this.isPaused) {
       if (this.hitstopTimer > 0) {
         // Hitstop freeze: the world holds for a few ticks; keep the camera shake settling
-        this.hitstopTimer -= h;
-        this.camera.trauma = Math.max(0, this.camera.trauma - h * 2.5);
+        this.hitstopTimer -= dt;
+        this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
       } else {
-        this.update(h);
+        this.update(dt);
       }
     }
+
     this.render();
   };
 
   /**
-   * Main Physics & Simulation Tick (one slice of at most 1/60 s)
+   * Main Physics & Simulation Tick (30 FPS)
    */
   private update(dt: number) {
     this.gameTime += dt;
@@ -2285,9 +2274,7 @@ export class GameEngine {
 
     // 2. Render In-World Game Elements with Camera Transform
     ctx.save();
-    // snap the camera to whole device pixels (not whole world units), so it never beats against the hero's motion
-    const snap = dpr * this.zoom;
-    ctx.translate(-Math.round(this.camera.x * snap) / snap + shakeX, -Math.round(this.camera.y * snap) / snap + shakeY);
+    ctx.translate(-Math.round(this.camera.x) + shakeX, -Math.round(this.camera.y) + shakeY);
 
     this.drawWaterAndFlags(ctx, world);
 
