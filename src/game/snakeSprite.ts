@@ -7,19 +7,20 @@
  *
  * It follows the same prowl -> rear -> strike -> recover cycle the vector snake uses, driven by the game's isAttacking flag,
  * so the lunge looks the same to the player and the hit box and timing are untouched.
- * Poses so far: a prowl loop, the rear-up, the strike and the recover. Hurt, dazed and defeated poses come with the next sheets.
+ * Poses: a slither loop, the rear-up, the strike, the recover, a hurt flinch, a dazed wobble and the defeat.
  */
 import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { SNAKE_ATLAS_HEAD, SNAKE_FRAMES } from './snakeAtlasData.ts';
 
 export const DEFAULT_SPRITE_SNAKE = false;
-/** world units per atlas pixel: the head is drawn about 22 units across */
-const K = 22 / SNAKE_ATLAS_HEAD;
+/** world units per atlas pixel: the head is drawn about 18 units across */
+const K = 18 / SNAKE_ATLAS_HEAD;
 /** where the belly line sits below the enemy's centre, so the snake rests on its branch */
 const GROUND = 12;
-const PROWL = ['prowl_b', 'prowl_c', 'prowl_a'];
-const PROWL_FPS = 3.5;
+/** the slither: one wave travelling down the body, looped */
+const PROWL = ['slither_0', 'slither_1', 'slither_2', 'slither_3', 'slither_4'];
+const PROWL_FPS = 7;
 
 let enabled: boolean | null = null;
 export function snakeSpriteEnabled(): boolean {
@@ -90,7 +91,14 @@ export function drawSnakeSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
     }
   }
 
-  const name = r.mode === 'rear' ? 'rear' : r.mode === 'strike' ? 'strike' : r.mode === 'recover' ? 'prowl_b' : PROWL[Math.floor(r.clock) % PROWL.length];
+  let name: string;
+  if (enemy.defeated) name = 'defeat';
+  else if ((enemy.stagger ?? 0) > 0) name = 'dazed';
+  else if ((enemy.recoil ?? 0) > 0.35) name = 'hurt';
+  else if (r.mode === 'rear') name = 'rear';
+  else if (r.mode === 'strike') name = 'strike';
+  else if (r.mode === 'recover') name = 'recover';
+  else name = PROWL[Math.floor(r.clock) % PROWL.length];
   const f = SNAKE_FRAMES[name];
   if (!f) return false;
 
