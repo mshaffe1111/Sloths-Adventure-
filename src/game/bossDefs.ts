@@ -888,7 +888,7 @@ const GENERAL: BossDef = {
         b.ai!.hurt = [frontBox(b, c, 130, 120, 0)];
       },
     },
-    // hurls spears: one low, one high in the later phases
+    // hurls his spiked clubs: one low, one high in the later phases
     spearThrow: {
       tell: 0.65,
       act: 0.5,
@@ -897,14 +897,14 @@ const GENERAL: BossDef = {
       pose: 'spit',
       onAct: (b, c) => {
         const x = b.x + b.facing * 50;
-        bolt(c, x, c.arena.floor - 22, b.facing, 540, '#e5e7eb', '#6b7280', 18).look = 'spear';
+        bolt(c, x, c.arena.floor - 22, b.facing, 540, '#e5e7eb', '#6b7280', 18).look = 'club';
         b.ai!.d.second = b.phase >= 2 ? 1 : 0;
       },
       tick: (b, c) => {
         const br = b.ai!;
         if (br.d.second && br.t > 0.28 && !br.d.fired2) {
           br.d.fired2 = 1;
-          bolt(c, b.x + b.facing * 50, c.arena.floor - 62, b.facing, 540, '#e5e7eb', '#6b7280', 18).look = 'spear';
+          bolt(c, b.x + b.facing * 50, c.arena.floor - 62, b.facing, 540, '#e5e7eb', '#6b7280', 18).look = 'club';
         }
       },
     },

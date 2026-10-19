@@ -33,7 +33,7 @@ const CARD_POSES: Record<number, [string, string, string]> = {
   7: ['march1', 'roar', 'defeat2'],
   8: ['fl_1', 'screech', 'deadcollapse'],
   9: ['idle', 'enrage', 'petrified'],
-  10: ['idle', 'roar', 'defeat2'],
+  10: ['idle', 'roar', 'fallen'],
 };
 
 /** draws the painted version of a boss for a story card (feet at the origin, facing right); false if this world has none or it is still loading */
@@ -913,7 +913,32 @@ function drawBolt(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   ctx.translate(h.x, h.y);
   const ang = Math.atan2(h.vy, h.vx);
   ctx.rotate(ang);
-  if (h.look === 'spear') {
+  if (h.look === 'club') {
+    // the general's spiked club, tumbling end over end
+    ctx.rotate(-ang + time * 16 * (h.vx >= 0 ? 1 : -1));
+    ctx.fillStyle = '#6b4a2f';
+    ctx.beginPath();
+    ctx.moveTo(-22, -3);
+    ctx.lineTo(8, -3);
+    ctx.lineTo(24, -9);
+    ctx.lineTo(24, 9);
+    ctx.lineTo(8, 3);
+    ctx.lineTo(-22, 3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#2b1b10';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = h.color;
+    for (const [sx, sy] of [[12, -9], [18, -11], [18, 11], [12, 9], [22, 0]]) {
+      ctx.beginPath();
+      ctx.moveTo(sx - 2.5, sy > 0 ? sy - 2 : sy + 2);
+      ctx.lineTo(sx, sy + (sy > 0 ? 4 : sy < 0 ? -4 : 0));
+      ctx.lineTo(sx + 2.5, sy > 0 ? sy - 2 : sy + 2);
+      ctx.closePath();
+      ctx.fill();
+    }
+  } else if (h.look === 'spear') {
     ctx.strokeStyle = '#78350f';
     ctx.lineWidth = 4;
     ctx.beginPath();

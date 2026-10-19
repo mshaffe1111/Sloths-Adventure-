@@ -67,7 +67,7 @@ export interface BossHazard {
   growRate?: number;
   /** drawing seed so two of the same thing do not look identical */
   seed: number;
-  /** what it looks like: 'web' | 'lava' | 'rock' | 'spike' | 'fire' | 'feather' | 'spear' | 'mud' | 'venom' | '' */
+  /** what it looks like: 'web' | 'lava' | 'rock' | 'spike' | 'fire' | 'feather' | 'spear' | 'club' | 'mud' | 'venom' | '' */
   look: string;
 }
 
