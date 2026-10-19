@@ -52,7 +52,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
         jumpPress: () => inputEngine.triggerTouchUp(),
         jumpRelease: () => inputEngine.releaseTouchUp(),
         punch: () => inputEngine.triggerTouchPunch(),
-        kick: () => inputEngine.triggerTouchKick(),
+        kick: (dir) => inputEngine.triggerTouchKick(dir ?? 0),
         mega: () => inputEngine.triggerTouchMega(),
         feedback: (kind) => {
           const haptic = { jump: 15, duck: 0, punch: 20, kick: 25, mega: 35 }[kind];
@@ -91,6 +91,14 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     [G],
   );
 
+  // switching away mid-touch: the recogniser forgets its fingers too
+  useEffect(() => {
+    inputEngine.onFocusLost = () => G.cancelAll();
+    return () => {
+      inputEngine.onFocusLost = null;
+    };
+  }, [G, inputEngine]);
+
   // safety net: when every finger is up, nothing may stay held
   useEffect(() => {
     const onEnd = (e: TouchEvent) => {
@@ -122,6 +130,11 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       G.move(t.identifier, t.clientX, t.clientY, now);
     }
   };
+  // a cancelled touch (a system gesture took it) is not a lift: it must not punch, kick or jump
+  const onCancel = (e: React.TouchEvent) => {
+    const now = performance.now();
+    for (let i = 0; i < e.changedTouches.length; i++) G.cancelFinger(e.changedTouches[i].identifier, now);
+  };
   const onEnd = (e: React.TouchEvent) => {
     const now = performance.now();
     for (let i = 0; i < e.changedTouches.length; i++) {
@@ -135,7 +148,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       onTouchStart={onStart}
       onTouchMove={onMove}
       onTouchEnd={onEnd}
-      onTouchCancel={onEnd}
+      onTouchCancel={onCancel}
       className="fixed inset-0 pointer-events-auto z-30 select-none touch-none"
       style={{ touchAction: 'none', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
     >

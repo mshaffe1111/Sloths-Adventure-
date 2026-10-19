@@ -10,6 +10,8 @@ export const PHYS = {
   turnBonus: 2200,
   airAcc: 1700,
   airDec: 520,
+  airStop: 1300, // letting go of the steer in mid-air: stop within a body's width, not 70 px later
+  airTurn: 900,  // extra push when reversing in mid-air
 
   jumpV: 640,      // ground jump launch speed
   doubleV: 540,    // second jump launch speed

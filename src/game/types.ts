@@ -302,6 +302,8 @@ export interface InputState {
   jumpHeld: boolean;
   punchPressed: boolean;
   kickPressed: boolean;
+  /** which way a touch kick was flicked (-1 left, 1 right, 0 = no preference) */
+  kickDir: number;
   megaPunchPressed: boolean;
   layerSwitchPressed: boolean;
   touchJoystickAngle: number | null; // 0..360 deg or null

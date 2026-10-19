@@ -22,7 +22,7 @@ export interface GestureSink {
   jumpPress(): void;
   jumpRelease(): void;
   punch(): void;
-  kick(): void;
+  kick(dir?: -1 | 1): void;
   mega(): void;
   /** a label for the little pill on screen, plus haptics */
   feedback(kind: 'jump' | 'duck' | 'punch' | 'kick' | 'mega'): void;
@@ -32,7 +32,7 @@ export const TUNING = {
   /** px of drag from the anchor before the hero runs */
   moveDead: 16,
   /** the steering anchor follows the finger beyond this, so reversing direction is instant */
-  reanchor: 60,
+  reanchor: 30,
   /** px up / down from the vertical anchor for jump / duck while steering */
   jumpDy: 34,
   duckDy: 42,
@@ -49,10 +49,10 @@ export const TUNING = {
   decideMs: 210,
   /** movement needed for that */
   dragPx: 18,
-  tapMs: 230,
-  tapPx: 14,
+  tapMs: 420,
+  tapPx: 22,
   holdMs: 460,
-  holdPx: 12,
+  holdPx: 20,
   /** a tap that begins this soon after the steering finger lifted is a re-plant, not a punch */
   replantMs: 190,
   /** a second finger this close to the steering finger is probably the same hand */
@@ -78,11 +78,16 @@ interface Finger {
   consumed: boolean;
   jumped: boolean;
   ducked: boolean;
+  /** recent (t,y) samples for the vertical-speed gate */
+  hist: { t: number; y: number }[];
+  tapT0: number;
 }
 
 export class TouchGestures {
   private fingers = new Map<number, Finger>();
   private lastMoverUp = -1e9;
+  private lastMoverUpX = 0;
+  private lastMoverUpY = 0;
   private heldDir: 'left' | 'right' | 'none' = 'none';
 
   private sink: GestureSink;
@@ -104,7 +109,7 @@ export class TouchGestures {
 
   down(id: number, x: number, y: number, t: number) {
     if (this.fingers.has(id)) return;
-    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false };
+    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y }], tapT0: t };
     const m = this.mover();
     if (m) {
       // a second finger: ignore it if it is practically on top of the steering thumb
@@ -126,6 +131,8 @@ export class TouchGestures {
     if (!f) return;
     f.x = x;
     f.y = y;
+    f.hist.push({ t, y });
+    while (f.hist.length > 2 && t - f.hist[0].t > 150) f.hist.shift();
     if (f.role === 'mover') this.steer(f);
     else if (f.role === 'pending' || f.role === 'action') this.judge(f, t, false);
   }
@@ -137,11 +144,16 @@ export class TouchGestures {
     f.y = y;
     this.fingers.delete(id);
     if (f.role === 'mover') {
+      const stillTap = !f.jumped && !f.ducked && this.heldDir === 'none' && Math.hypot(f.x - f.x0, f.y - f.y0) <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs;
+      const wasReplant = f.tapT0 - this.lastMoverUp < TUNING.replantMs;
       this.setDir('none');
       this.duckOn = false;
       this.sink.duck(false);
       if (f.jumped) this.sink.jumpRelease();
+      if (stillTap && !wasReplant) { this.sink.feedback('punch'); this.sink.punch(); }
       this.lastMoverUp = t;
+      this.lastMoverUpX = f.x;
+      this.lastMoverUpY = f.y;
       // a finger that was waiting becomes undecided afresh so it can take over steering
       const a = this.actor();
       if (a && !a.consumed) {
@@ -153,17 +165,42 @@ export class TouchGestures {
       return;
     }
     if (f.role === 'ignored') return;
+    const was = f.consumed;
+    // a last look: a flick that ended before it was judged (BEFORE releasing, so what it presses is released too)
+    const acted = !was && this.judge(f, t, true);
     if (f.jumped) this.sink.jumpRelease();
     if (f.ducked) this.sink.duck(false);
-    if (f.consumed) return;
-    // a last look: a flick that ended before it was judged
-    if (this.judge(f, t, true)) return;
+    if (was || acted) return;
     const dist = Math.hypot(f.x - f.x0, f.y - f.y0);
-    if (dist <= TUNING.tapPx && t - f.t0 <= TUNING.tapMs) {
-      // re-planting the thumb right after steering is not a punch
-      if (f.t0 - this.lastMoverUp < TUNING.replantMs) return;
+    if (dist <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) {
+      // re-planting the thumb right after steering is not a punch: only if it began after the lift AND near it
+      const replant = f.tapT0 >= this.lastMoverUp && f.tapT0 - this.lastMoverUp < TUNING.replantMs &&
+        Math.hypot(f.x0 - this.lastMoverUpX, f.y0 - this.lastMoverUpY) < 100;
+      if (replant) return;
       this.sink.feedback('punch');
       this.sink.punch();
+    }
+  }
+
+  /** a finger that was cancelled (not lifted): let go of what it held, and judge nothing */
+  cancelFinger(id: number, t: number) {
+    const f = this.fingers.get(id);
+    if (!f) return;
+    this.fingers.delete(id);
+    if (f.jumped) this.sink.jumpRelease();
+    if (f.ducked) this.sink.duck(false);
+    if (f.role === 'mover') {
+      this.setDir('none');
+      this.duckOn = false;
+      this.sink.duck(false);
+      const a = this.actor();
+      if (a && !a.consumed) {
+        a.role = 'pending';
+        a.x0 = a.x;
+        a.y0 = a.y;
+        a.t0 = t;
+        a.tapT0 = t;
+      }
     }
   }
 
@@ -233,7 +270,12 @@ export class TouchGestures {
       this.duckOn = wantDuck;
       this.sink.duck(wantDuck);
     }
-    if (dy < -TUNING.jumpDy && !f.jumped) {
+    // a jump needs an upward SPEED (or a really long push): a thumb that slowly creeps up while running, or comes back
+    // from a deep duck, is not a jump
+    const h0 = f.hist[0];
+    const vUp = f.hist.length > 1 ? (h0.y - f.y) / Math.max(1, f.hist[f.hist.length - 1].t - h0.t) : 0;
+    const dyJ = f.y - Math.min(f.ay, f.y0); // after a deep duck the anchor sits low: coming back to where the thumb landed is not a jump
+    if (dyJ < -TUNING.jumpDy && !f.jumped && (vUp >= 0.15 || dyJ < -TUNING.jumpDy * 2)) {
       f.jumped = true;
       this.sink.feedback('jump');
       this.sink.jumpPress();
@@ -259,7 +301,8 @@ export class TouchGestures {
     const window = lifting ? TUNING.flickLiftMs : TUNING.decideMs + 40;
     if (el <= window) {
       const sp = lifting ? TUNING.flickLiftSpeed : TUNING.flickSpeed;
-      if (ay >= TUNING.flickPx * 0.9 && ay > ax * TUNING.flickAxis && ay / el >= sp * 0.75) {
+      const upish = dy < 0 && ay >= ax * 0.85;
+      if (ay >= TUNING.flickPx * 0.9 && (upish || (dy > 0 && ay >= ax)) && ay / el >= sp * 0.75) {
         f.consumed = true;
         if (dy < 0) {
           f.jumped = true;
@@ -272,10 +315,10 @@ export class TouchGestures {
         }
         return true;
       }
-      if (ax >= TUNING.flickPx && ax > ay * TUNING.flickAxis && ax / el >= sp) {
+      if (ax >= TUNING.flickPx && !upish && ax >= ay && ax / el >= sp) {
         f.consumed = true;
         this.sink.feedback('kick');
-        this.sink.kick();
+        this.sink.kick(dx < 0 ? -1 : 1);
         return true;
       }
     }

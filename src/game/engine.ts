@@ -150,6 +150,7 @@ export class GameEngine {
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
   private runScore: number = 0;
+  private barrierMsgCooldown = 0;
   private comboCount: number = 0;
   private comboResetTimer: number = 0;
   private coyoteTimer: number = 0;
@@ -164,7 +165,7 @@ export class GameEngine {
   // --- fight system (see fight.ts) ---
   /** the attack being played: which move, how far into it, which animals it has already hit */
   private atk: { move: MoveSpec; t: number; id: number; connected: boolean; lunged: boolean; hits: Set<number>; sounded: boolean } | null = null;
-  private atkQueue: { want: AttackWant; ttl: number } | null = null;
+  private atkQueue: { want: AttackWant; ttl: number; face: number } | null = null;
   private lastPunch: MoveId | null = null;
   private chainTimer = 0;
   private swingId = 0;
@@ -471,6 +472,7 @@ export class GameEngine {
         if (distance2D(p.x, p.y - 20, e.x, e.y) < 54) {
           e.hp = 0;
           this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.2);
+          this.runScore += 300;
           this.knockOut(e, e.x >= p.x ? 1 : -1, 'STAR K.O.! +300');
           this.spawnDebrisBurst(e.x, e.y, '#facc15');
         }
@@ -781,8 +783,8 @@ export class GameEngine {
           const dir = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
           if (dir !== 0) {
             if (!this.facingLocked()) p.facing = dir as 1 | -1;
-            const turning = p.grounded && Math.sign(p.vx) === -dir && Math.abs(p.vx) > 20;
-            const acc = (p.grounded ? PHYS.groundAcc : PHYS.airAcc) * speedMult + (turning ? PHYS.turnBonus : 0);
+            const reversing = Math.sign(p.vx) === -dir && Math.abs(p.vx) > 20;
+            const acc = (p.grounded ? PHYS.groundAcc : PHYS.airAcc) * speedMult + (reversing ? (p.grounded ? PHYS.turnBonus : PHYS.airTurn) : 0);
             if (dir * p.vx < maxSpeed) {
               p.vx += dir * acc * dt;
               if (dir * p.vx > maxSpeed) p.vx = dir * maxSpeed;
@@ -791,7 +793,7 @@ export class GameEngine {
               p.vx -= dir * (this.atk && p.grounded ? PHYS.groundDec : PHYS.airDec) * dt;
             }
           } else {
-            const dec = p.grounded ? PHYS.groundDec : PHYS.airDec;
+            const dec = p.grounded ? PHYS.groundDec : PHYS.airStop;
             if (Math.abs(p.vx) <= dec * dt) p.vx = 0;
             else p.vx -= Math.sign(p.vx) * dec * dt;
           }
@@ -977,7 +979,9 @@ export class GameEngine {
       for (const cp of this.currentStage.checkpoints ?? []) {
         if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40) {
           cp.reached = true;
-          this.checkpoint = { x: cp.x, y: cp.y };
+          // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right)
+          const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : cp.x > this.checkpoint.x;
+          if (further) this.checkpoint = { x: cp.x, y: cp.y };
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
           sound.playCheckpoint();
@@ -1324,9 +1328,11 @@ export class GameEngine {
       exitItem.isLocked = !isExitUnlocked;
     }
 
+    if (this.barrierMsgCooldown > 0) this.barrierMsgCooldown -= dt;
     // Interactive Exit Totem / Sacred Portal Encounter
     if (!this.exitTotemReached && this.currentStage.exitTotemX > 0) {
-      if (p.x >= this.currentStage.exitTotemX - 25) {
+      // the shrine only counts when you are up at it: on a tall climb, running along the floor to its x does not win
+      if (p.x >= this.currentStage.exitTotemX - 25 && Math.abs(p.y - this.currentStage.exitTotemY) < 220) {
         if (isExitUnlocked) {
           this.exitTotemReached = true;
           sound.playVictory();
@@ -1336,6 +1342,8 @@ export class GameEngine {
           // Push player back gently from sealed barrier and show clear reminder
           p.x = this.currentStage.exitTotemX - 35;
           p.vx = -140;
+          if (this.barrierMsgCooldown <= 0) {
+          this.barrierMsgCooldown = 1.2;
           const remaining = this.currentStage.config.targetCount - currentProgress;
           const msg =
             objType === 'harvest'
@@ -1348,6 +1356,7 @@ export class GameEngine {
               ? `🔒 Find ${remaining} more Idols!`
               : `🔒 Finish the goal to open the shrine!`;
           this.addFloatingText(msg, this.currentStage.exitTotemX - 40, p.y - 45, '#f87171');
+          }
         }
       }
     }
@@ -1367,7 +1376,7 @@ export class GameEngine {
         this.gameTime,
         this.currentStage.config.timeLimit,
         p.hp / p.maxHp,
-        currentProgress / Math.max(1, this.currentStage.config.targetCount)
+        objType === 'boss_lair' ? (bossDefeated ? 1 : 0) : currentProgress / Math.max(1, this.currentStage.config.targetCount)
       );
 
       this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
@@ -1717,10 +1726,12 @@ export class GameEngine {
     if (inp.megaPunchPressed) want = 'mega';
     else if (inp.kickPressed) want = 'kick';
     else if (inp.punchPressed) want = 'punch';
+    const face = inp.kickPressed ? inp.kickDir : 0;
     inp.megaPunchPressed = false;
     inp.kickPressed = false;
+    inp.kickDir = 0;
     inp.punchPressed = false;
-    if (want) this.atkQueue = { want, ttl: 0.2 };
+    if (want) this.atkQueue = { want, ttl: 0.2, face };
     else if (this.atkQueue) {
       this.atkQueue.ttl -= dt;
       if (this.atkQueue.ttl <= 0) this.atkQueue = null;
@@ -1746,19 +1757,20 @@ export class GameEngine {
       } else if (!a || canCancel(a.move, a.t, a.connected)) {
         this.atkQueue = null;
         if (a) this.endAttack();
-        this.startAttack(q.want);
+        this.startAttack(q.want, q.face);
       }
     }
     this.syncAttackPose();
   }
 
-  private startAttack(want: AttackWant) {
+  private startAttack(want: AttackWant, face = 0) {
     const p = this.player;
     const inp = this.input.state;
     const id = chooseMove(want, !p.grounded, this.lastPunch, this.chainTimer > 0);
     const move = MOVES[id];
     if (inp.left && !inp.right) p.facing = -1;
     else if (inp.right && !inp.left) p.facing = 1;
+    else if (face) p.facing = face > 0 ? 1 : -1; // a flicked kick goes the way the thumb flicked
     if (id === 'mega') this.megaCooldown = 1.0;
     this.chainTimer = 0;
     this.atk = { move, t: 0, id: ++this.swingId, connected: false, lunged: false, hits: new Set(), sounded: false };
@@ -2158,7 +2170,7 @@ export class GameEngine {
 
   private damagePlayer(amount: number) {
     const p = this.player;
-    if (p.invincibleTimer > 0 || this.stompGrace > 0) return;
+    if (this.isGameOver || p.invincibleTimer > 0 || this.stompGrace > 0) return;
 
     p.hp = Math.max(0, p.hp - amount);
     p.invincibleTimer = 1.2; // 1.2s invulnerability
@@ -2202,6 +2214,17 @@ export class GameEngine {
     }
     this.hazards.length = 0;
     this.slowTimer = 0;
+    // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
+    for (const pl of this.platforms) {
+      if (pl.type === 'fragile') {
+        pl.broken = false;
+        pl.fragileTimer = undefined;
+      }
+    }
+    // a liana that was mid-swing stops swinging
+    for (const v of this.vines) {
+      if (v.isSwingingVine) v.isSwingingVine = false;
+    }
     p.hp = p.maxHp;
     p.x = this.checkpoint.x;
     p.y = this.checkpoint.y;

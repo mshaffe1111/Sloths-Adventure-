@@ -1,6 +1,9 @@
 import type { InputState } from './types.ts';
 import { parseTouchVector } from './rules.ts';
 
+/** a touch jump is held at least this long, so a flick gives a proper jump and not a hop */
+const MIN_TOUCH_JUMP_HOLD_MS = 130;
+
 export class InputEngine {
   public state: InputState = {
     left: false,
@@ -11,6 +14,7 @@ export class InputEngine {
     jumpHeld: false,
     punchPressed: false,
     kickPressed: false,
+    kickDir: 0,
     megaPunchPressed: false,
     layerSwitchPressed: false,
     touchJoystickAngle: null,
@@ -24,6 +28,11 @@ export class InputEngine {
   private lastPunchTapTime = 0;
   private lastUpPressTime = 0;
   private isDestroyed = false;
+  /** the touch recogniser registers here so a blur or a hidden page also cancels its fingers */
+  public onFocusLost: (() => void) | null = null;
+  private padPrev = { left: false, right: false, up: false, down: false, punch: false, kick: false, mega: false };
+  private touchUpAt = 0;
+  private upReleaseTimer: number | undefined;
 
   constructor() {
     this.bindKeyboardEvents();
@@ -43,6 +52,8 @@ export class InputEngine {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(key)) {
       e.preventDefault();
     }
+    // holding a key makes the browser repeat it: only the first press counts (or a held jump would double-jump and bunny-hop)
+    if (e.repeat) return;
 
     if (key === 'ArrowLeft' || key === 'KeyA') {
       this.state.left = true;
@@ -114,11 +125,13 @@ export class InputEngine {
 
   private handleBlur = () => {
     this.clearAll();
+    this.onFocusLost?.();
   };
 
   private handleVisibilityChange = () => {
     if (document.hidden) {
       this.clearAll();
+      this.onFocusLost?.();
     }
   };
 
@@ -131,10 +144,13 @@ export class InputEngine {
     this.state.jumpHeld = false;
     this.state.punchPressed = false;
     this.state.kickPressed = false;
+    this.state.kickDir = 0;
     this.state.megaPunchPressed = false;
     this.state.layerSwitchPressed = false;
     this.state.touchJoystickAngle = null;
     this.state.touchJoystickMagnitude = 0;
+    if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
+    this.upReleaseTimer = undefined;
     this.jumpBufferTimer = 0;
     this.punchBufferTimer = 0;
     this.kickBufferTimer = 0;
@@ -165,6 +181,9 @@ export class InputEngine {
    * - Double jump pressing up twice
    */
   public triggerTouchUp() {
+    if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
+    this.upReleaseTimer = undefined;
+    this.touchUpAt = performance.now();
     this.state.up = true;
     this.state.jumpPressed = true;
     this.state.jumpHeld = true;
@@ -172,6 +191,18 @@ export class InputEngine {
   }
 
   public releaseTouchUp() {
+    // a quick flick lifts the finger almost at once, and an instant release would cut the jump to a hop:
+    // the press counts for at least this long
+    const wait = MIN_TOUCH_JUMP_HOLD_MS - (performance.now() - this.touchUpAt);
+    if (wait > 4) {
+      if (this.upReleaseTimer === undefined) {
+        this.upReleaseTimer = window.setTimeout(() => {
+          this.upReleaseTimer = undefined;
+          this.releaseTouchUp();
+        }, wait);
+      }
+      return;
+    }
     this.state.up = false;
     this.state.jumpHeld = false;
   }
@@ -197,7 +228,8 @@ export class InputEngine {
    * Touch Gesture:
    * - Double tap to kick
    */
-  public triggerTouchKick() {
+  public triggerTouchKick(dir: number = 0) {
+    this.state.kickDir = dir;
     this.state.kickPressed = true;
     this.kickBufferTimer = 0.14;
   }
@@ -223,61 +255,58 @@ export class InputEngine {
     try {
       if (typeof navigator !== 'undefined' && typeof navigator.getGamepads === 'function') {
         const gamepads = navigator.getGamepads();
+        // what the pads hold right now, all pads together
+        const now = { left: false, right: false, up: false, down: false, punch: false, kick: false, mega: false };
         for (let i = 0; i < gamepads.length; i++) {
           const gp = gamepads[i];
           if (!gp) continue;
-
-          // Analog stick axes
           const axisX = gp.axes[0] ?? 0;
           const axisY = gp.axes[1] ?? 0;
-
           // D-Pad buttons (standard mapping: 12=up, 13=down, 14=left, 15=right)
-          const dpadUp = gp.buttons[12]?.pressed;
-          const dpadDown = gp.buttons[13]?.pressed;
-          const dpadLeft = gp.buttons[14]?.pressed;
-          const dpadRight = gp.buttons[15]?.pressed;
-
-          if (axisX < -0.35 || dpadLeft) {
-            this.state.left = true;
-          }
-          if (axisX > 0.35 || dpadRight) {
-            this.state.right = true;
-          }
-
+          if (axisX < -0.35 || gp.buttons[14]?.pressed) now.left = true;
+          if (axisX > 0.35 || gp.buttons[15]?.pressed) now.right = true;
           // Up / Climb / Jump (D-pad up or A button - index 0)
-          const btnA = gp.buttons[0]?.pressed;
-          if (axisY < -0.4 || dpadUp || btnA) {
-            this.state.up = true;
-            if (!this.state.jumpHeld) {
-              this.state.jumpPressed = true;
-              this.jumpBufferTimer = 0.16;
-            }
-            this.state.jumpHeld = true;
-          }
-
-          if (axisY > 0.4 || dpadDown) {
-            this.state.down = true;
-          }
-
-          // Punch button: X (index 2) or Y (index 3)
-          if (gp.buttons[2]?.pressed || gp.buttons[3]?.pressed) {
-            this.state.punchPressed = true;
-            this.punchBufferTimer = 0.12;
-          }
-
-          // Kick button: B (index 1)
-          if (gp.buttons[1]?.pressed) {
-            this.state.kickPressed = true;
-            this.kickBufferTimer = 0.14;
-          }
-
-          // Mega punch / dash: Bumpers / Triggers (index 4, 5, 6, 7)
-          if (gp.buttons[4]?.pressed || gp.buttons[5]?.pressed || gp.buttons[6]?.pressed || gp.buttons[7]?.pressed) {
-            this.state.megaPunchPressed = true;
-            this.megaBufferTimer = 0.14;
-            this.state.layerSwitchPressed = true;
-          }
+          if (axisY < -0.4 || gp.buttons[12]?.pressed || gp.buttons[0]?.pressed) now.up = true;
+          if (axisY > 0.4 || gp.buttons[13]?.pressed) now.down = true;
+          // Punch: X (2) or Y (3). Kick: B (1). Mega: bumpers / triggers (4-7)
+          if (gp.buttons[2]?.pressed || gp.buttons[3]?.pressed) now.punch = true;
+          if (gp.buttons[1]?.pressed) now.kick = true;
+          if (gp.buttons[4]?.pressed || gp.buttons[5]?.pressed || gp.buttons[6]?.pressed || gp.buttons[7]?.pressed) now.mega = true;
         }
+        const prev = this.padPrev;
+        // directions follow the pad both ways: letting go of the stick lets go of the direction
+        if (now.left) this.state.left = true;
+        else if (prev.left) this.state.left = false;
+        if (now.right) this.state.right = true;
+        else if (prev.right) this.state.right = false;
+        if (now.down) this.state.down = true;
+        else if (prev.down) this.state.down = false;
+        if (now.up) {
+          this.state.up = true;
+          if (!prev.up) {
+            this.state.jumpPressed = true;
+            this.jumpBufferTimer = 0.16;
+          }
+          this.state.jumpHeld = true;
+        } else if (prev.up) {
+          this.state.up = false;
+          this.state.jumpHeld = false;
+        }
+        // buttons act once per press, not on every poll while held
+        if (now.punch && !prev.punch) {
+          this.state.punchPressed = true;
+          this.punchBufferTimer = 0.12;
+        }
+        if (now.kick && !prev.kick) {
+          this.state.kickPressed = true;
+          this.kickBufferTimer = 0.14;
+        }
+        if (now.mega && !prev.mega) {
+          this.state.megaPunchPressed = true;
+          this.megaBufferTimer = 0.14;
+          this.state.layerSwitchPressed = true;
+        }
+        this.padPrev = now;
       }
     } catch {}
 
