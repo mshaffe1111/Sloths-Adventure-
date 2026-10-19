@@ -33,7 +33,7 @@ const VOICES: Record<string, Voice> = {
   'Shadow Prowler': { base: 50, hop: MINOR, type: 'triangle', dec: 0.08, peak: 0.08, lp: 1000, breath: 1.2, glide: 0.97 },
   'Sky Sovereign': { base: 66, hop: PENT, type: 'sawtooth', dec: 0.07, peak: 0.08, lp: 2600, glide: 1.03 },
   'Tarantula Queen': { base: 58, hop: MINOR, type: 'square', dec: 0.06, peak: 0.07, lp: 1800, breath: 0.4, glide: 0.99 },
-  'Bog Behemoth': { base: 31, hop: [0, 3, 5], type: 'sine', dec: 0.16, peak: 0.26, lp: 400, glide: 0.93 },
+  'Marsh Reaver': { base: 44, hop: MINOR, type: 'sawtooth', dec: 0.09, peak: 0.1, lp: 900, breath: 0.6, glide: 0.95 },
   'Stone Idol Golem': { base: 36, hop: [0, 7, 12], type: 'triangle', dec: 0.12, peak: 0.22, lp: 450, glide: 0.98 },
   'Night-Wing Monarch': { base: 60, hop: MINOR, type: 'triangle', dec: 0.09, peak: 0.1, lp: 1500, breath: 0.5, glide: 0.98 },
   'Magma Drake': { base: 36, hop: MINOR, type: 'sawtooth', dec: 0.1, peak: 0.12, lp: 650, glide: 0.95 },

@@ -126,9 +126,9 @@ export const WORLDS_DATA: WorldInfo[] = [
     name: 'Deep Mangrove',
     subtitle: 'Tangled stilt root mazes rising above brackish swamps',
     theme: 'deep_mangrove',
-    bossName: 'Bog Behemoth',
-    bossTitle: 'Ancient Mire Titan',
-    bossQuote: 'The swamp will swallow your footsteps, slow traveler!',
+    bossName: 'Marsh Reaver',
+    bossTitle: 'Reaver of the Blackwater',
+    bossQuote: 'The blackwater keeps what I take, slow traveler! Your footsteps are already mine!',
     ambientType: 'swamp_croaks',
     palette: {
       skyTop: '#1e293b',

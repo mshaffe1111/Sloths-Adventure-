@@ -80,7 +80,7 @@ export const GUARDIANS = [
   'Shadow Prowler',
   'Sky Sovereign',
   'Tarantula Queen',
-  'Bog Behemoth',
+  'Marsh Reaver',
   'Stone Idol Golem',
   'Night-Wing Monarch',
   'Magma Drake',

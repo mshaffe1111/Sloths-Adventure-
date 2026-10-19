@@ -13,16 +13,24 @@ import { venomSprite } from './venomSprite.ts';
 import { crocSprite } from './crocSprite.ts';
 import { prowlerSprite } from './prowlerSprite.ts';
 import { monarchSprite } from './monarchSprite.ts';
+import { reaverSprite } from './reaverSprite.ts';
+import { sovereignSprite } from './sovereignSprite.ts';
+import { drakeSprite } from './drakeSprite.ts';
+import { ironclawSprite } from './ironclawSprite.ts';
 
 /** the bosses that have a painted version besides the queen */
-const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3: prowlerSprite, 8: monarchSprite };
+const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 6: reaverSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
 
 /** the poses the painted bosses strike on the story cards: calm, angry (while it speaks its threat) and beaten */
 const CARD_POSES: Record<number, [string, string, string]> = {
   1: ['idle', 'threat', 'dead'],
   2: ['idle', 'threat', 'dead'],
   3: ['idle', 'alert', 'dead'],
+  4: ['glide', 'alert', 'dead'],
+  6: ['idle', 'roar', 'deadheap'],
   8: ['fl_1', 'screech', 'deadcollapse'],
+  9: ['idle', 'enrage', 'petrified'],
+  10: ['idle', 'roar', 'defeat2'],
 };
 
 /** draws the painted version of a boss for a story card (feet at the origin, facing right); false if this world has none or it is still loading */
@@ -844,6 +852,19 @@ function drawBeam(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
       ctx.closePath();
       ctx.fill();
     }
+  } else if (h.look === 'jab') {
+    // the painted spear is already in the picture: just a pale streak so the reach of the thrust reads
+    const g = ctx.createLinearGradient(0, 0, len, 0);
+    g.addColorStop(0, 'rgba(200, 240, 255, 0)');
+    g.addColorStop(0.7, 'rgba(200, 240, 255, 0.5)');
+    g.addColorStop(1, 'rgba(255, 255, 255, 0.85)');
+    ctx.strokeStyle = g;
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(len, 0);
+    ctx.stroke();
   } else if (h.look === 'tongue') {
     ctx.strokeStyle = h.color2;
     ctx.lineWidth = 12;

@@ -311,21 +311,21 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Slomatt', text: 'That is very polite, and also very sticky. No thank you.' },
     ],
     defeat: [
-      { speaker: 'Tarantula Queen', text: 'My webs, my beautiful webs! Hmph. The mangrove swamp is next. Mind the Behemoth. He is not polite.' },
+      { speaker: 'Tarantula Queen', text: 'My webs, my beautiful webs! Hmph. The mangrove swamp is next. Mind the Reaver. He is not polite.' },
       { speaker: 'Slomatt', text: 'I will remember that. Thank you for the warning, Your Majesty.' },
     ],
     tip: 'The Queen shoots webs in a spread. Jump between them and punch her when she drops down.',
   },
   6: {
     intro: [
-      { speaker: 'Bog Behemoth', text: 'GRRROOOOAK. Who wakes the Bog Behemoth? Nobody wakes the Bog Behemoth!' },
-      { speaker: 'Slomatt', text: 'Sorry! I was only passing through. Very, very slowly.' },
+      { speaker: 'Marsh Reaver', text: 'Hssst. Who wades into the Reaver\'s blackwater? Nobody wades into the Reaver\'s blackwater!' },
+      { speaker: 'Slomatt', text: 'Sorry! I was only passing through. Very, very slowly. Is that a real spear?' },
     ],
     defeat: [
-      { speaker: 'Bog Behemoth', text: 'Gloop… fine. I will go back to sleep. The ruins are past the reeds. Nobody tells the General I was napping.' },
-      { speaker: 'Slomatt', text: 'My lips are sealed. Sweet dreams.' },
+      { speaker: 'Marsh Reaver', text: 'Hrmph… fine. Keep your feet. The ruins are past the reeds. Nobody tells the General a sloth got past my spear.' },
+      { speaker: 'Slomatt', text: 'My lips are sealed. Mind the mud, and keep that spear pointed somewhere else.' },
     ],
-    tip: 'The Behemoth slams the ground to send out shockwaves. Jump on the beat, then punch his belly.',
+    tip: 'The Reaver smashes the ground to send out mud waves. Jump on the beat, duck the spear thrust, then punch him while he recovers.',
   },
   7: {
     intro: [

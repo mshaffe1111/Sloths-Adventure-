@@ -77,7 +77,7 @@ export const RECIPES: Record<number, Recipe> = {
     floor: 'fern',
     hang: 'liana',
   },
-  // the Bog Behemoth: blackwater peat swamp, tall buttressed trees standing in tea-dark water
+  // the Marsh Reaver (a giant otter, the apex predator of blackwater): blackwater peat swamp, tall buttressed trees standing in tea-dark water
   6: {
     far: FAR([['peat', 2], ['mangrove', 1]], { top: [200, 300], baseY: 480 }),
     mid: MID([['peat', 2], ['mangrove', 1]], { top: [150, 270], baseY: 470 }),

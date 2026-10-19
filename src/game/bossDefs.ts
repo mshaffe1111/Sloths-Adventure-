@@ -523,45 +523,45 @@ const QUEEN: BossDef = {
   },
 };
 
-// ───────────────────────────── 6. Bog Behemoth ─────────────────────────────
+// ───────────────────────────── 6. Marsh Reaver: the spear-wielding giant otter ─────────────────────────────
 
-const BEHEMOTH: BossDef = {
+const REAVER: BossDef = {
   world: 6,
-  name: 'Bog Behemoth',
-  w: 150,
-  h: 100,
+  name: 'Marsh Reaver',
+  w: 110,
+  h: 112,
   artDy: 0,
-  speed: [32, 46, 66],
-  prefer: 300,
-  gap: [1.6, 1.2, 0.9],
-  color: '#65a30d',
-  color2: '#1a2e05',
+  speed: [46, 64, 90],
+  prefer: 280,
+  gap: [1.5, 1.1, 0.8],
+  color: '#7dd3fc',
+  color2: '#0c4a6e',
   moves: {
-    // a huge leap and a belly flop: waves of mud both ways. Long recovery
-    bellyFlop: leapMove({
-      tell: 0.9,
-      act: 0.95,
-      rec: 1.7,
-      height: 240,
+    // a vault and an overhead smash: waves of mud both ways. Long recovery
+    vaultSmash: leapMove({
+      tell: 0.85,
+      act: 0.9,
+      rec: 1.6,
+      height: 230,
       onLand: (b, c) => {
-        impact(b, c, 0.85, '#365314');
+        impact(b, c, 0.8, '#365314');
         for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2), d, 330, '#4d7c0f', '#1a2e05', true).look = 'mud';
       },
     }),
-    // a long tongue at chest height: duck under it or jump it
-    tongueLash: {
+    // a long spear thrust at chest height: duck under it or jump it
+    spearThrust: {
       tell: 0.6,
       act: 0.4,
       rec: 1.0,
       max: 400,
       pose: 'lunge',
       onAct: (b, c) => {
-        const h = beam(c, b, 430, 50, 40, 0, 0.32, '#fb7185', '#9f1239');
-        h.look = 'tongue';
+        const h = beam(c, b, 440, 44, 36, 0, 0.32, '#e0f2fe', '#0c4a6e');
+        h.look = 'jab';
       },
     },
-    // three lobs of swamp that land as slowing puddles
-    mudSpit: {
+    // three slung clods of swamp that land as slowing puddles
+    mudSling: {
       tell: 0.7,
       act: 0.3,
       rec: 1.3,
@@ -569,13 +569,13 @@ const BEHEMOTH: BossDef = {
       pose: 'spit',
       onAct: (b, c) => {
         for (const off of [-160, 0, 160]) {
-          const h = lob(c, b.x + b.facing * 40, c.arena.floor - 80, c.px + off, 0.85, { kind: 'glob', onLand: 'puddle', color: '#65a30d', color2: '#1a2e05', w: 32, h: 32 });
+          const h = lob(c, b.x + b.facing * 40, c.arena.floor - 70, c.px + off, 0.85, { kind: 'glob', onLand: 'puddle', color: '#65a30d', color2: '#1a2e05', w: 32, h: 32 });
           h.look = 'mud';
         }
       },
     },
-    // a bellowing croak: ripples at head height both ways
-    croakWave: {
+    // a war cry: ripples at head height both ways
+    warCry: {
       tell: 0.8,
       act: 0.12,
       rec: 1.3,
@@ -583,7 +583,7 @@ const BEHEMOTH: BossDef = {
       pose: 'roar',
       onAct: (b, c) => {
         c.shake(0.4);
-        for (const d of [-1, 1] as const) headWave(c, b.x + d * (b.width / 2), d, 300, '#bef264', '#4d7c0f');
+        for (const d of [-1, 1] as const) headWave(c, b.x + d * (b.width / 2), d, 300, '#bae6fd', '#0369a1');
       },
     },
   },
@@ -1063,7 +1063,7 @@ export const BOSS_DEFS: Record<number, BossDef> = {
   3: PROWLER,
   4: SOVEREIGN,
   5: QUEEN,
-  6: BEHEMOTH,
+  6: REAVER,
   7: GOLEM,
   8: MONARCH,
   9: DRAKE,
@@ -1079,7 +1079,7 @@ export const BOSS_TIPS: Record<number, string> = {
   3: 'The Shadow Prowler vanishes and reappears behind you. Watch for the fade, then turn and strike.',
   4: 'The Sky Sovereign dives on the red mark. Step aside, and she is stuck on the ground for a moment.',
   5: 'The Tarantula Queen webs you to slow you down and calls her brood. Clear the spiderlings, then hit her.',
-  6: 'The Bog Behemoth belly-flops and sends mud waves along the ground. Jump them, duck under the tongue.',
+  6: 'The Marsh Reaver vaults and smashes the ground, sending mud waves both ways. Jump them, then duck under the spear thrust.',
   7: 'The Idol Golem’s fists get stuck after a slam. That is your chance. Stay clear of the falling rocks.',
   8: 'The Night-Wing Monarch screeches rings at head height. Duck or jump, then hit her when she swoops low.',
   9: 'The Magma Drake breathes fire at chest height: duck or jump. Keep off the lava geysers.',
