@@ -2938,7 +2938,7 @@ export class GameEngine {
 
     // Render Collectibles
     this.collectibles.forEach((item) => {
-      drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex);
+      drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
     // Render Jennifur if present in level

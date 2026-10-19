@@ -6,6 +6,7 @@
  * draw live, which is what gives the scenes their depth and richness.
  */
 import { getSceneSeed, onSceneSeedChange } from './sceneSeed.ts';
+import { drawPaintedLeaf } from './leafSprites.ts';
 import { renderLifeBack, renderLifeFront } from './life.ts';
 import { isRich } from './rainforest.ts';
 import { paintBiomeMid } from './biomes.ts';
@@ -1481,6 +1482,8 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
       for (const m of list) {
         const x = wrap01(m.x + Math.sin(time * 0.6 * m.s + m.p) * 0.05 + time * 0.02 - camX * 0.0003) * (vw + 60) - 30;
         const y = wrap01(m.y + time * 0.05 * m.s) * (vh + 40) - 20;
+        // painted leaves for the leaf worlds (the petals of Worlds 2 and 5 stay petals)
+        if (look.weather === 'leaves' && drawPaintedLeaf(ctx, world, m, x, y, time, vh / 720, clearOf(x, y))) continue;
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(time * m.s * 1.2 + m.p);

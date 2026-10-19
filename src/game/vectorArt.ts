@@ -1029,7 +1029,8 @@ export function drawCollectible(
   ctx: CanvasRenderingContext2D,
   item: Collectible,
   time: number,
-  world = 1
+  world = 1,
+  mini = 1
 ) {
   if (item.collected) return;
 
@@ -1067,7 +1068,7 @@ export function drawCollectible(
       ctx.arc(0, 0, 24, 0, Math.PI * 2);
       ctx.fill();
       // the painted flower when it is on and loaded (the vector bloom below is the fallback and the classic look)
-      if (item.type === 'flower' && drawFlowerSprite(ctx, world, item.id, Math.sin(time * 2 + item.bobPhase) * 0.07)) break;
+      if (item.type === 'flower' && drawFlowerSprite(ctx, world, mini, item.id, Math.sin(time * 2 + item.bobPhase) * 0.07)) break;
       const species: Array<[Bloom, string, string]> = [
         ['hibiscus', '#f2455e', '#ffd23a'],
         ['orchid', '#f07ad8', '#ffe26a'],
