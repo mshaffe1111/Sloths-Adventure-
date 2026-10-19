@@ -10,11 +10,15 @@
  * The drawing side (predators.ts / creatures.ts) reads `state` and `stateT` and poses the body to match.
  */
 import type { Enemy } from './types.ts';
+import { PERSONALITY, SPIDER, roam, speedScale, walkBounds, type BrainEvents, type PlayerRef } from './enemyBrain.ts';
 
-export type PredatorType = 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
+export type { PlayerRef } from './enemyBrain.ts';
+
+/** every ground animal with a brain (see enemyBrain.ts): the tree snake counts, it just is not a hunter of sloths by trade */
+export type PredatorType = 'snake' | 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
 
 export const isPredator = (t: string): t is PredatorType =>
-  t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra';
+  t === 'snake' || t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra';
 
 export interface Box {
   x: number;
@@ -23,7 +27,7 @@ export interface Box {
   h: number;
 }
 
-export interface PredatorEvents {
+export interface PredatorEvents extends BrainEvents {
   /** the telegraph just started (play a warning sound, show "!") */
   telegraph?: boolean;
   /** the attack just launched */
@@ -39,7 +43,7 @@ export interface PredatorStep {
 }
 
 /** distance from an enemy's origin down to its feet, per kind (matches the drawing's ground line) */
-export const FEET: Record<PredatorType, number> = { ocelot: 19, jaguar: 24, boa: 16, caiman: 15, tayra: 15 };
+export const FEET: Record<PredatorType, number> = { snake: 14, ocelot: 19, jaguar: 24, boa: 16, caiman: 15, tayra: 15 };
 
 /** where each kind sits relative to the walking surface, so spawners and drawings agree */
 export const SURFACE_OFFSET = FEET;
@@ -54,18 +58,11 @@ const enter = (e: Enemy, s: string) => {
 /** a simple readable arc: u 0..1 -> height multiplier 0..1..0 */
 const arc = (u: number) => 4 * u * (1 - u);
 
-function patrol(e: Enemy, dt: number, speed: number) {
-  const f = e.facing;
-  e.x += f * speed * dt;
-  if (e.x < e.patrolMinX) e.facing = 1;
-  else if (e.x > e.patrolMaxX) e.facing = -1;
-  e.vx = e.facing * speed;
-}
-
-/** a knocked-back animal walks back onto its own stretch of ground instead of popping there */
+/** a knocked-back animal walks back onto its own ground instead of popping there */
 function keepOnGround(e: Enemy, dt: number) {
-  const lo = e.patrolMinX - 14;
-  const hi = e.patrolMaxX + 14;
+  const [a, b] = walkBounds(e);
+  const lo = a - 14;
+  const hi = b + 14;
   if (e.x < lo) e.x += Math.min(lo - e.x, 140 * dt);
   else if (e.x > hi) e.x -= Math.min(e.x - hi, 140 * dt);
 }
@@ -86,12 +83,6 @@ export function endStagger(e: Enemy): void {
   e.attackCooldown = Math.max(e.attackCooldown, 1.0);
 }
 
-export interface PlayerRef {
-  x: number;
-  /** feet */
-  y: number;
-}
-
 export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
   const type = e.type as PredatorType;
   const ev: PredatorEvents = {};
@@ -107,10 +98,11 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
       // a coil stays where it lay
       e.patrolMinX = e.x - 12;
       e.patrolMaxX = e.x + 12;
+      e.huntMinX = e.patrolMinX;
+      e.huntMaxX = e.patrolMaxX;
     }
   }
   const feet = (e.groundY ?? e.y) + FEET[type];
-  const level = Math.abs(p.y - feet) < 70;
   const dx = p.x - e.x;
   const dist = Math.abs(dx);
   const toward = dx >= 0 ? 1 : -1;
@@ -121,11 +113,54 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
   const speed = e.speed ?? 40;
 
   switch (type) {
-    // ---------------------------------------------------------------- ocelot: a quick short pounce
+    // ---------------------------------------------------------------- snake: shy, then a quick aimed strike
+    case 'snake': {
+      if (e.state === 'patrol') {
+        if (roam(e, p, dt, feet, PERSONALITY.snake, ready, speed, ev)) {
+          enter(e, 'rear');
+          e.vx = 0;
+          ev.telegraph = true;
+        }
+      } else if (e.state === 'rear') {
+        // it rears up and sways, still tracking him; the aim locks just before the strike
+        e.vx = 0;
+        if (t < 0.3) e.facing = toward;
+        if (t >= 0.38) {
+          enter(e, 'strike');
+          e.fromX = e.x;
+          e.toX = clamp(e.x + e.facing * clamp(dist - 40, 20, 80), ...walkBounds(e));
+          ev.launch = true;
+        }
+      } else if (e.state === 'strike') {
+        const T = 0.18;
+        const u = clamp(t / T, 0, 1);
+        e.x = (e.fromX ?? e.x) + ((e.toX ?? e.x) - (e.fromX ?? e.x)) * (1 - (1 - u) * (1 - u));
+        e.vx = e.facing * speed;
+        if (u >= 1) {
+          enter(e, 'recover');
+          e.vx = 0;
+          ev.impact = true;
+        }
+      } else if (e.state === 'recover') {
+        e.vx = 0;
+        if (t >= 0.55) {
+          enter(e, 'patrol');
+          e.attackCooldown = 1.3;
+        }
+      }
+      keepOnGround(e, dt);
+      hurt.push({ x: e.x - 18, y: e.y - 12, w: 36, h: 22 });
+      if (e.state === 'strike') {
+        // the head thrown out in front
+        hurt.push({ x: e.facing > 0 ? e.x + 8 : e.x - 50, y: e.y - 10, w: 42, h: 20 });
+      }
+      break;
+    }
+
+    // ---------------------------------------------------------------- ocelot: a stalker, then a quick short pounce
     case 'ocelot': {
       if (e.state === 'patrol') {
-        patrol(e, dt, speed);
-        if (ready && dist < 180 && level) {
+        if (roam(e, p, dt, feet, PERSONALITY.ocelot, ready, speed, ev)) {
           e.facing = toward;
           enter(e, 'windup');
           e.vx = 0;
@@ -138,7 +173,7 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
         if (t >= 0.38) {
           enter(e, 'leap');
           e.fromX = e.x;
-          e.toX = clamp(e.x + toward * clamp(dist + 24, 90, 170), e.patrolMinX, e.patrolMaxX);
+          e.toX = clamp(e.x + toward * clamp(dist + 24, 90, 170), ...walkBounds(e));
           ev.launch = true;
         }
       } else if (e.state === 'leap') {
@@ -167,8 +202,7 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
     // ---------------------------------------------------------------- jaguar: crouch, big leap, land heavy
     case 'jaguar': {
       if (e.state === 'patrol') {
-        patrol(e, dt, speed);
-        if (ready && dist < 250 && level) {
+        if (roam(e, p, dt, feet, PERSONALITY.jaguar, ready, speed, ev)) {
           e.facing = toward;
           enter(e, 'windup');
           e.vx = 0;
@@ -177,11 +211,11 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
       } else if (e.state === 'windup') {
         e.vx = 0;
         e.facing = toward; // keeps its eyes on you while it coils
-        if (t >= 0.7) {
+        if (t >= 0.65) {
           enter(e, 'leap');
           e.fromX = e.x;
-          const want = Math.max(80, dist);
-          e.toX = clamp(e.x + e.facing * want, e.patrolMinX, e.patrolMaxX);
+          const want = Math.max(80, dist + 20);
+          e.toX = clamp(e.x + e.facing * want, ...walkBounds(e));
           ev.launch = true;
         }
       } else if (e.state === 'leap') {
@@ -212,12 +246,14 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
     case 'boa': {
       e.vx = 0;
       if (e.state === 'coil') {
-        if (ready && dist < 175 && level) {
+        // it never moves, but it watches: its head follows him once it has noticed
+        if (roam(e, p, dt, feet, PERSONALITY.boa, ready, 0, ev)) {
           e.facing = toward;
           enter(e, 'rear');
           ev.telegraph = true;
         }
       } else if (e.state === 'rear') {
+        if (t < 0.45) e.facing = toward; // keeps tracking him, then the aim locks
         if (t >= 0.6) {
           enter(e, 'strike');
           ev.launch = true;
@@ -239,7 +275,8 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
       hurt.push({ x: e.x - 26, y: e.y - 8, w: 52, h: 24 });
       if (e.state === 'strike' || e.state === 'bite') {
         const reach = e.state === 'strike' ? 28 + 100 * clamp(t / 0.2, 0, 1) : 128;
-        const x0 = e.facing > 0 ? e.x + 10 : e.x - reach;
+        // the same reach both ways (the left side used to be 20px shorter)
+        const x0 = e.facing > 0 ? e.x + 10 : e.x - reach - 20;
         hurt.push({ x: x0, y: e.y - 14, w: reach - 10 + 20, h: 26 });
       }
       break;
@@ -248,8 +285,7 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
     // ---------------------------------------------------------------- caiman: slow, then a big lunge and a snap
     case 'caiman': {
       if (e.state === 'patrol') {
-        patrol(e, dt, speed);
-        if (ready && dist < 150 && level) {
+        if (roam(e, p, dt, feet, PERSONALITY.caiman, ready, speed, ev)) {
           e.facing = toward;
           enter(e, 'windup');
           e.vx = 0;
@@ -257,10 +293,11 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
         }
       } else if (e.state === 'windup') {
         e.vx = 0;
+        if (t < 0.4) e.facing = toward;
         if (t >= 0.55) {
           enter(e, 'lunge');
           e.fromX = e.x;
-          e.toX = clamp(e.x + e.facing * 70, e.patrolMinX, e.patrolMaxX);
+          e.toX = clamp(e.x + e.facing * clamp(dist + 15, 60, 100), ...walkBounds(e));
           ev.launch = true;
         }
       } else if (e.state === 'lunge') {
@@ -296,8 +333,7 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
     // ---------------------------------------------------------------- tayra: stands up to sniff, then a fast low dash
     case 'tayra': {
       if (e.state === 'patrol') {
-        patrol(e, dt, speed);
-        if (ready && dist < 240 && level) {
+        if (roam(e, p, dt, feet, PERSONALITY.tayra, ready, speed, ev)) {
           e.facing = toward;
           enter(e, 'alert');
           e.vx = 0;
@@ -311,10 +347,11 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
           ev.launch = true;
         }
       } else if (e.state === 'dash') {
-        const v = 235;
+        const v = 235 * speedScale(e, PERSONALITY.tayra.nominal);
         e.x += e.facing * v * dt;
         e.vx = e.facing * v;
-        const atEdge = (e.facing > 0 && e.x >= e.patrolMaxX) || (e.facing < 0 && e.x <= e.patrolMinX);
+        const [wlo, whi] = walkBounds(e);
+        const atEdge = (e.facing > 0 && e.x >= whi) || (e.facing < 0 && e.x <= wlo);
         if (t >= 0.55 || atEdge) {
           enter(e, 'recover');
           ev.impact = true;
@@ -334,4 +371,54 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
     }
   }
   return { ev, hurt };
+}
+
+/**
+ * The canopy tarantula (a boss's summoned spiderling): it waits perfectly still, then rushes in short bursts with a pause
+ * between each. The pause is the moment to stomp it. It never leaves the floor it was dropped on.
+ */
+export function stepSpider(e: Enemy, p: PlayerRef, dt: number): { hurt: Box[]; ev: BrainEvents } {
+  const ev: BrainEvents = {};
+  if (e.state !== 'wait' && e.state !== 'run' && e.state !== 'pause') {
+    e.state = 'wait';
+    e.stateT = 0;
+  }
+  e.stateT = (e.stateT ?? 0) + dt;
+  const t = e.stateT;
+  const dx = p.x - e.x;
+  const toward: 1 | -1 = dx >= 0 ? 1 : -1;
+  const sees = Math.abs(dx) < SPIDER.sense && Math.abs(p.y - (e.y + 12)) < 170;
+  const hunting = (e.alertT ?? 0) > 0;
+  if (sees) {
+    if (!hunting) ev.notice = true;
+    e.alertT = 4;
+  } else {
+    e.alertT = Math.max(0, (e.alertT ?? 0) - dt);
+  }
+  if (e.state === 'wait') {
+    e.vx = 0;
+    if ((e.alertT ?? 0) > 0) {
+      e.state = 'run';
+      e.stateT = 0;
+      e.facing = toward;
+    }
+  } else if (e.state === 'run') {
+    e.facing = toward;
+    const v = SPIDER.speed * speedScale(e, SPIDER.nominal);
+    const nx = Math.max(e.patrolMinX, Math.min(e.patrolMaxX, e.x + toward * v * dt));
+    e.vx = nx === e.x ? 0 : toward * v;
+    e.x = nx;
+    if (t >= SPIDER.burst) {
+      e.state = 'pause';
+      e.stateT = 0;
+      e.vx = 0;
+    }
+  } else {
+    e.vx = 0;
+    if (t >= SPIDER.pause) {
+      e.state = (e.alertT ?? 0) > 0 ? 'run' : 'wait';
+      e.stateT = 0;
+    }
+  }
+  return { hurt: [{ x: e.x - 16, y: e.y - 10, w: 32, h: 20 }], ev };
 }

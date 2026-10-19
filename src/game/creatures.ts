@@ -116,9 +116,15 @@ export function drawTreeSnake(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
   if (dt > 0) {
     if (b.turned) mirrorAbout(b.wx, r.chain.pts);
     r.dist += b.fv * dt;
-    // --- strike cycle, driven by the game's isAttacking flag ---
+    // --- strike cycle: the brain's own state when it has one (predatorAI.ts), else the isAttacking flag ---
     r.modeT += dt;
-    if (enemy.isAttacking) {
+    if (enemy.state !== undefined) {
+      const m: SnakeRig['mode'] = enemy.state === 'rear' ? 'rear' : enemy.state === 'strike' ? 'strike' : enemy.state === 'recover' ? 'recover' : 'prowl';
+      if (m !== r.mode) {
+        r.mode = m;
+        r.modeT = 0;
+      }
+    } else if (enemy.isAttacking) {
       if (r.mode === 'prowl') {
         r.mode = 'rear';
         r.modeT = 0;

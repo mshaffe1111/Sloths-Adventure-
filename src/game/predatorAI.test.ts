@@ -83,7 +83,7 @@ test('caiman lunges forward a short way and snaps; the jaws only hurt during the
 });
 
 test('tayra stands up, dashes fast, skids to a stop and stays on its ground', () => {
-  const r = run('tayra', 6, 200);
+  const r = run('tayra', 6, 150);
   for (const s of ['patrol', 'alert', 'dash', 'recover']) assert.ok(r.states.has(s), `tayra never reached ${s}`);
   assert.ok(r.maxX <= 600 + 15 && r.minX >= 300 - 15);
 });

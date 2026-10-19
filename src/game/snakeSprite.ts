@@ -67,8 +67,14 @@ export function drawSnakeSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   if (b.dt > 0) {
     r.clock += PROWL_FPS * b.dt;
     r.modeT += b.dt;
-    // the same cycle as the vector snake: rear up, strike, recover, and again while the sloth stays close
-    if (enemy.isAttacking) {
+    // the brain's own state when it has one (predatorAI.ts); otherwise the same isAttacking cycle as the vector snake
+    if (enemy.state !== undefined) {
+      const m: Mode = enemy.state === 'rear' ? 'rear' : enemy.state === 'strike' ? 'strike' : enemy.state === 'recover' ? 'recover' : 'prowl';
+      if (m !== r.mode) {
+        r.mode = m;
+        r.modeT = 0;
+      }
+    } else if (enemy.isAttacking) {
       if (r.mode === 'prowl') {
         r.mode = 'rear';
         r.modeT = 0;

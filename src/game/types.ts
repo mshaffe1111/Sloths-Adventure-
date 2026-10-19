@@ -188,6 +188,14 @@ export interface Enemy {
   toX?: number;
   /** predator AI: normal patrol speed (px/s), so a dash or leap can end by restoring it */
   speed?: number;
+  /** enemy brain: seconds it stays locked on to the player (> 0 = it has noticed him and is hunting) */
+  alertT?: number;
+  /** enemy brain: how far it may run while hunting (a hunter can chase past its patrol patch, but never off the ground) */
+  huntMinX?: number;
+  huntMaxX?: number;
+  /** enemy brain: the hard edges of the ground it stands on; it can never be placed past them */
+  edgeMinX?: number;
+  edgeMaxX?: number;
   /** drawing only: true world position when the draw call is made in a translated frame (boss props) */
   wx?: number;
   wy?: number;

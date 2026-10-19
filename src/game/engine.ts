@@ -50,7 +50,8 @@ import {
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
-import { endStagger, isPredator, staggerPredator, stepPredator } from './predatorAI.ts';
+import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider } from './predatorAI.ts';
+import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
 import {
   applyHit, bodyRect, canCancel, chooseMove, contactPoint, headRect, hurtRect, isCommitted, koLaunch, moveBox, moveLength, MOVES, phaseAt,
   playerHurtRect, rectsOverlap, resolveMelee, stompSpec, stompTest, swingPose, sweptBox, TRAITS,
@@ -250,6 +251,8 @@ export class GameEngine {
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
     this.enemies = this.currentStage.enemies;
+    // hunters may chase past their own patch, but only along ground that is really there
+    assignTerritories(this.enemies, this.platforms, (e) => e.y + (isPredator(e.type) ? FEET[e.type] : 0));
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
@@ -1107,31 +1110,7 @@ export class GameEngine {
       if (this.reactToHits(e, dt)) continue;
 
       // Distinct enemy movement & attack policies:
-      if (e.type === 'snake') {
-        // Snake patrols branch, lunges when Sloth is near
-        e.x += e.vx * dt;
-        // out of range (knocked past an end): head back in, not "flip every frame" (which left a live, edge-on sliver)
-        if (e.x < e.patrolMinX || e.x > e.patrolMaxX) {
-          e.vx = Math.abs(e.vx) * (e.x < e.patrolMinX ? 1 : -1);
-          e.facing = e.vx > 0 ? 1 : -1;
-        }
-
-        const distToPlayer = distance2D(e.x, e.y, p.x, p.y);
-        if (distToPlayer < 120 && Math.abs(e.y - p.y) < 30) {
-          e.telegraphTimer = 0.4;
-          e.isAttacking = true;
-        } else {
-          e.isAttacking = false;
-          e.telegraphTimer = 0;
-        }
-
-        // Contact damage with player
-        if (!isObjectiveComplete(this.currentStage.config.objectiveType, 0, 0, false, false)) {
-          if (checkAABBCollision(...this.pBox(), e.x - 18, e.y - 12, 36, 22)) {
-            this.damagePlayer(1);
-          }
-        }
-      } else if (e.type === 'eagle') {
+      if (e.type === 'eagle') {
         // Harpy Eagle aerial trajectory & swoop attack cycle (fair, telegraphed, and easy to hit!)
         e.behaviorTimer += dt;
         if (!e.swoopPhase) e.swoopPhase = 'patrol';
@@ -1222,15 +1201,24 @@ export class GameEngine {
           }
         }
       } else if (isPredator(e.type)) {
-        // Ground predators (ocelot, jaguar, boa, caiman, tayra): telegraph -> committed attack -> vulnerable recovery
-        const step = stepPredator(e, { x: p.x, y: p.y }, dt);
+        // Ground animals (snake, ocelot, jaguar, boa, caiman, tayra) each hunt in their own way (enemyBrain.ts), then
+        // attack: telegraph -> committed attack -> vulnerable recovery
+        const step = stepPredator(e, { x: p.x, y: p.y, facing: p.facing, ducking: p.ducking }, dt);
+        // the tree snake has no call of its own: it hisses like the boa
+        const call = e.type === 'snake' ? 'boa' : e.type;
+        if (e.type === 'snake') {
+          // the painted/vector snake reads these two flags for its red warning ring and its strike cycle
+          e.isAttacking = e.state === 'rear' || e.state === 'strike';
+          e.telegraphTimer = e.state === 'rear' ? Math.max(0, 0.38 - (e.stateT ?? 0)) : 0;
+        }
+        if (step.ev.notice) this.addFloatingText('?', e.x, e.y - (e.type === 'boa' ? 46 : 34), '#fde047');
         if (step.ev.telegraph) {
-          sound.playPredator(e.type, 0);
+          sound.playPredator(call, 0);
           this.addFloatingText('!', e.x, e.y - (e.type === 'boa' ? 46 : 34), '#f97316');
         }
-        if (step.ev.launch) sound.playPredator(e.type, 1);
+        if (step.ev.launch) sound.playPredator(call, 1);
         if (step.ev.impact) {
-          sound.playPredator(e.type, 2);
+          sound.playPredator(call, 2);
           if (e.type === 'jaguar' || e.type === 'caiman') {
             this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.22);
           }
@@ -1244,12 +1232,16 @@ export class GameEngine {
           }
         }
       } else if (e.type === 'spider') {
-        // a spiderling scuttles straight at Slomatt
+        // a spiderling waits, then rushes in short bursts with a pause between (the pause is the moment to stomp it)
         e.animTimer += dt;
-        const dir = p.x < e.x ? -1 : 1;
-        e.facing = dir;
-        e.x = Math.max(e.patrolMinX, Math.min(e.patrolMaxX, e.x + dir * 80 * dt));
-        if (checkAABBCollision(...this.pBox(), e.x - 16, e.y - 10, 32, 20)) this.damagePlayer(1);
+        const step = stepSpider(e, { x: p.x, y: p.y }, dt);
+        if (step.ev.notice) this.addFloatingText('?', e.x, e.y - 30, '#fde047');
+        for (const h of step.hurt) {
+          if (checkAABBCollision(...this.pBox(), h.x, h.y, h.w, h.h)) {
+            this.damagePlayer(1);
+            break;
+          }
+        }
       } else if (e.type === 'frog') {
         // Poison frog hopping
         e.animTimer += dt;
@@ -1258,6 +1250,9 @@ export class GameEngine {
         }
       }
     }
+
+    separateHunters(this.enemies, dt);
+    for (const e of this.enemies) if (!e.defeated && isPredator(e.type)) keepOnLedge(e);
 
     // --- Boss fight ---
     if (this.boss && this.bossDef && !this.boss.defeated) this.updateBoss(dt);
@@ -2183,7 +2178,10 @@ export class GameEngine {
       e.x += e.knockVx * dt;
       e.knockVx *= Math.exp(-dt * 9);
       if (Math.abs(e.knockVx) < 8) e.knockVx = 0;
-      if (e.type !== 'eagle') e.x = Math.max(e.patrolMinX - 14, Math.min(e.patrolMaxX + 14, e.x));
+      if (e.type !== 'eagle') {
+        const [lo, hi] = walkBounds(e);
+        e.x = Math.max(lo - 14, Math.min(hi + 14, e.x));
+      }
     }
     if ((e.stagger ?? 0) > 0) {
       e.stagger = (e.stagger ?? 0) - dt;
@@ -2376,6 +2374,8 @@ export class GameEngine {
     for (const v of this.vines) {
       if (v.isSwingingVine) v.isSwingingVine = false;
     }
+    // every animal loses its lock on him: whatever got him goes back to its business (it re-notices if he is still in range)
+    for (const e of this.enemies) e.alertT = 0;
     p.hp = p.maxHp;
     p.x = this.checkpoint.x;
     p.y = this.checkpoint.y;
