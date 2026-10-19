@@ -1,6 +1,6 @@
 /** Generated from the Gemini pose sheet (see art notes). Frame rects, and feet anchors, in atlas pixels. */
 export interface HeroFrame { x: number; y: number; w: number; h: number; ax: number; ay: number }
-export const HERO_ATLAS_SIZE = { w: 2048, h: 1210 };
+export const HERO_ATLAS_SIZE = { w: 2048, h: 1528 };
 /** height of the standing side-view frame, in atlas pixels (used to scale every frame the same) */
 export const HERO_STAND_H = 290.5;
 export const HERO_FRAMES: Record<string, HeroFrame> = {
@@ -219,5 +219,69 @@ export const HERO_FRAMES: Record<string, HeroFrame> = {
   "ay": 281.7,
   "x": 0,
   "y": 923
+ },
+ "guard": {
+  "w": 206,
+  "h": 259,
+  "ax": 99.0,
+  "ay": 254.2,
+  "x": 258,
+  "y": 923
+ },
+ "punch_1": {
+  "w": 225,
+  "h": 259,
+  "ax": 95.7,
+  "ay": 254.2,
+  "x": 466,
+  "y": 923
+ },
+ "punch_2": {
+  "w": 246,
+  "h": 259,
+  "ax": 97.1,
+  "ay": 254.2,
+  "x": 693,
+  "y": 923
+ },
+ "punch_3": {
+  "w": 251,
+  "h": 259,
+  "ax": 97.2,
+  "ay": 254.2,
+  "x": 941,
+  "y": 923
+ },
+ "punch_4": {
+  "w": 240,
+  "h": 259,
+  "ax": 98.7,
+  "ay": 254.2,
+  "x": 1194,
+  "y": 923
+ },
+ "punch_5": {
+  "w": 242,
+  "h": 256,
+  "ax": 96.8,
+  "ay": 251.1,
+  "x": 1436,
+  "y": 923
+ },
+ "jump_up": {
+  "w": 166,
+  "h": 308,
+  "ax": 85.1,
+  "ay": 303.8,
+  "x": 1680,
+  "y": 923
+ },
+ "punch_rec": {
+  "w": 231,
+  "h": 293,
+  "ax": 110.0,
+  "ay": 288.9,
+  "x": 0,
+  "y": 1233
  }
 };

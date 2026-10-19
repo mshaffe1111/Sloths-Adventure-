@@ -63,10 +63,15 @@ function pick(p: PlayerState, time: number): { name: string; bob: number } | nul
   if (p.ducking) return { name: 'duck', bob: 0 };
   const reachNow = (v: number | undefined) => v === undefined || v > 0.25;
   if (p.kicking && reachNow(p.swingReach)) return { name: 'kick', bob: 0 };
-  if (p.punching && reachNow(p.swingReach)) return { name: 'punch', bob: 0 };
+  if (p.punching) {
+    // the swing's reach runs 0 (wind-up) -> up to 1 (arm out) -> back down (recoil); one painted frame per band
+    const r = p.swingReach ?? 1;
+    const name = r <= 0 ? 'guard' : r < 0.3 ? 'punch_rec' : r < 0.55 ? 'punch_2' : r < 0.8 ? 'punch_3' : r < 0.95 ? 'punch_4' : 'punch_5';
+    return { name, bob: 0 };
+  }
   if (!p.grounded) {
-    if (p.isDoubleJumping) return { name: 'jump', bob: 0 };
-    return { name: p.vy < 0 ? 'jump' : 'fall', bob: 0 };
+    if (p.isDoubleJumping || p.vy < 0) return { name: 'jump_up', bob: 0 };
+    return { name: 'fall', bob: 0 };
   }
   if (Math.abs(p.vx) > 10) {
     // one stride = one turn of walkCycle; the frames come from the run sheet, in the order the stride unfolds
