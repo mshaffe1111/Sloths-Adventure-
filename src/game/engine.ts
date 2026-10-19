@@ -17,6 +17,7 @@ import { renderScenery, renderOverlay } from './scenery.ts';
 import { setSceneSeed, rollSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
+import { drawTayraSprite } from './tayraSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import {
   drawHeroSloth,
@@ -2328,7 +2329,7 @@ export class GameEngine {
         } else if (enemy.type === 'caiman') {
           drawCaiman(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'tayra') {
-          drawTayra(ctx, enemy, this.gameTime);
+          if (!drawTayraSprite(ctx, enemy, this.gameTime)) drawTayra(ctx, enemy, this.gameTime);
         } else {
           drawHazardEntity(ctx, enemy, this.gameTime);
         }
