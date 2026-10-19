@@ -7,7 +7,7 @@
  * and the caller then draws the classic hero, so the game never shows nothing.
  */
 import type { PlayerState } from './types.ts';
-import { HERO_FRAMES, HERO_STAND_H, type HeroFrame } from './heroAtlasData.ts';
+import { HERO_CLIMB, HERO_FRAMES, HERO_RUN, HERO_STAND_H, type HeroFrame } from './heroAtlasData.ts';
 import { drawAuras } from './miloVariants.ts';
 
 export const DEFAULT_SPRITE_HERO = false;
@@ -53,16 +53,41 @@ export function heroFace(ctx: CanvasRenderingContext2D, name: string, x: number,
   return true;
 }
 
-/** the nine run frames, ordered so neighbouring poses are as alike as possible (found by pack3.py), starting from the passing pose */
-const RUN_CYCLE = ['run_b', 'run_i', 'run_c', 'run_e', 'run_d', 'run_a', 'run_h', 'run_g', 'run_f'];
+/** the run frames, ordered by the packing script so neighbouring poses are as alike as possible */
+const RUN_CYCLE = HERO_RUN;
 /** painted strides per walkCycle turn: 9 frames at the full walkCycle rate would outrun the 30 fps loop */
 const STRIDE_RATE = 0.6;
 
-function pick(p: PlayerState, time: number): { name: string; bob: number } | null {
-  if (p.climbing || p.isVineSwinging) return null;
+// short-lived poses that are triggered by a change of state rather than a flag on the player
+let lastHp = -1;
+let wasGrounded = true;
+let hurtUntil = 0;
+let landUntil = 0;
+const HURT_TIME = 0.3;
+const LAND_TIME = 0.12;
+function trackEvents(p: PlayerState, time: number) {
+  if (lastHp >= 0 && p.hp < lastHp) hurtUntil = time + HURT_TIME;
+  lastHp = p.hp;
+  if (p.grounded && !wasGrounded && p.vy >= 0) landUntil = time + LAND_TIME;
+  wasGrounded = p.grounded;
+}
+
+/** the painted climb is one step per few pixels of height gained, so it follows the climbing speed */
+const CLIMB_STEP_PX = 22;
+
+function pick(p: PlayerState, time: number): { name: string; bob: number; byHand?: boolean } | null {
+  if (p.isVineSwinging) return null;
+  if (p.climbing) {
+    if (!HERO_CLIMB.every((n) => HERO_FRAMES[n])) return null;
+    const n = HERO_CLIMB.length;
+    const i = (((Math.floor(-p.y / CLIMB_STEP_PX) % n) + n) % n);
+    return { name: HERO_CLIMB[i], bob: 0, byHand: true };
+  }
+  if (time < hurtUntil && HERO_FRAMES.hurt) return { name: 'hurt', bob: 0 };
   if (p.ducking) return { name: 'duck', bob: 0 };
   const reachNow = (v: number | undefined) => v === undefined || v > 0.25;
   if (p.kicking && reachNow(p.swingReach)) return { name: 'kick', bob: 0 };
+  if (p.punching && p.attackType === 'mega' && HERO_FRAMES.mega && reachNow(p.swingReach)) return { name: 'mega', bob: 0 };
   if (p.punching) {
     // the swing's reach runs 0 (wind-up) -> up to 1 (arm out) -> back down (recoil); one painted frame per band
     const r = p.swingReach ?? 1;
@@ -73,6 +98,7 @@ function pick(p: PlayerState, time: number): { name: string; bob: number } | nul
     if (p.isDoubleJumping || p.vy < 0) return { name: 'jump_up', bob: 0 };
     return { name: 'fall', bob: 0 };
   }
+  if (time < landUntil && HERO_FRAMES.land) return { name: 'land', bob: 0 };
   if (Math.abs(p.vx) > 10) {
     // one stride = one turn of walkCycle; the frames come from the run sheet, in the order the stride unfolds
     const u = ((((p.walkCycle * STRIDE_RATE) / (Math.PI * 2)) % 1) + 1) % 1;
@@ -89,6 +115,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   if (!heroSpriteEnabled()) return false;
   load();
   if (!ready || !atlas) return false;
+  trackEvents(p, time);
   const choice = pick(p, time);
   if (!choice) return false;
   const f: HeroFrame | undefined = HERO_FRAMES[choice.name];
@@ -115,7 +142,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   drawAuras(ctx, p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k + choice.bob, f.w * k, f.h * k);
+  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -(choice.byHand && f.hx !== undefined ? f.hx : f.ax) * k, -f.ay * k + choice.bob, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }
