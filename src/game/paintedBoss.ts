@@ -121,7 +121,8 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
         ctx.shadowColor = spec.glow;
         ctx.shadowBlur = 9;
       }
-      ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
+      const k = spec.k * (def.scale ?? 1);
+      ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
       ctx.restore();
       return true;
     },

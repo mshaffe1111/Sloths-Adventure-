@@ -64,7 +64,7 @@ import {
   type AttackWant, type MoveId, type MoveSpec, type Rect,
 } from './fight.ts';
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
-import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability } from './bossAI.ts';
+import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
@@ -99,7 +99,7 @@ export interface GameEngineCallbacks {
   /** Slomatt stepped through the hidden Thorn Gate */
   onSecret?: () => void;
   /** the boss bar: sent only when something on it changes */
-  onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number } | null) => void;
+  onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string } | null) => void;
 }
 
 export class GameEngine {
@@ -1765,7 +1765,7 @@ export class GameEngine {
     const sig = `${b.hp}|${b.phase}|${b.defeated ? 1 : 0}`;
     if (sig === this.bossSig) return;
     this.bossSig = sig;
-    this.callbacks.onBossUpdate(b.defeated ? null : { name: def.name, hp: b.hp, maxHp: b.maxHp, phase: b.phase });
+    this.callbacks.onBossUpdate(b.defeated ? null : { name: def.name, hp: b.hp, maxHp: b.maxHp, phase: b.phase, hits: def.hits, color: def.color });
   }
 
   /** while the boss lives the fight is fenced in, and the camera follows both fighters */
@@ -1798,7 +1798,7 @@ export class GameEngine {
     let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
     base = Math.max(0.5, Math.min(1.8, base));
     const baseViewW = w / base;
-    const need = Math.abs(p.x - b.x) + 440;
+    const need = Math.abs(p.x - b.x) + 440 + Math.max(0, b.width - 140) * 0.6;
     const want = Math.max(baseViewW, Math.min(need, arena.right - arena.left + 200));
     const target = Math.max(0.4, baseViewW / want);
     const prev = this.bossZoom;
@@ -1962,7 +1962,8 @@ export class GameEngine {
     const b = this.boss;
     if (b && !b.defeated && !a.hits.has(-1)) {
       const hr = hurtRect(b);
-      if (rectsOverlap(box, hr)) {
+      const wr = this.bossDef ? weakRect(b, this.bossDef, this.currentStage.arena?.floor ?? 560) : null;
+      if (rectsOverlap(box, hr) || (wr && rectsOverlap(box, wr))) {
         a.hits.add(-1);
         a.connected = true;
         this.hitBoss(b, m, box, hr);
@@ -2045,13 +2046,33 @@ export class GameEngine {
     const def = this.bossDef;
     const c = this.bossContext();
     const cp = contactPoint(box, hr);
-    const vul = vulnerability(b);
+    let vul = vulnerability(b);
 
     // roaring or dying: nothing gets through
     if (vul === 'closed') {
       this.hitstopTimer = Math.max(this.hitstopTimer, 0.03);
       sound.playHitImpact(false, 'armor');
       return;
+    }
+
+    // a giant has one weak point, up high: the body only clangs, and even the weak point is guarded unless it is glowing
+    const wr = def ? weakRect(b, def, this.currentStage.arena?.floor ?? 560) : null;
+    if (wr) {
+      const onWeak = rectsOverlap(box, wr);
+      if (!onWeak) {
+        this.hitstopTimer = Math.max(this.hitstopTimer, 0.04);
+        sound.playHitImpact(false, 'armor');
+        this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
+        if (this.clangCd <= 0) {
+          this.clangCd = 0.6;
+          this.addFloatingText('TOO TOUGH! AIM HIGH', cp.x, cp.y - 30, '#cbd5e1');
+        }
+        return;
+      }
+      if (!weakOpen(b)) {
+        // the head is covered while it is moving or attacking: a heavy blow can still rattle it, a light one clangs
+        if (vul === 'open') vul = 'armored';
+      }
     }
 
     if (vul === 'armored') {
@@ -2070,7 +2091,8 @@ export class GameEngine {
       const broke = def ? interruptBoss(b, def, c) : false;
       if (!broke) {
         // it shrugged it off (poise held): the blow still counts, but for half
-        const chip = Math.max(1, Math.ceil(m.bossDamage / 2));
+        // (a covered weak point takes nothing: the glow is the only time it hurts)
+        const chip = def?.weak ? 0 : Math.max(1, Math.ceil(m.bossDamage / 2));
         b.hp = Math.max(0, b.hp - chip);
         b.hitFlashTimer = 0.1;
         this.hitstopTimer = Math.max(this.hitstopTimer, 0.05);

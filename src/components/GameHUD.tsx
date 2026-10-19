@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LevelConfig } from '../game/types.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
+import { BossHud } from './BossHud.tsx';
 
 interface GameHUDProps {
   levelConfig: LevelConfig;
@@ -16,6 +17,10 @@ interface GameHUDProps {
   bossMaxHp?: number;
   bossName?: string;
   bossPhase?: number;
+  /** how many hits the boss takes (one bar segment each), when it says */
+  bossHits?: number;
+  /** the world colour for the boss bar */
+  bossAccent?: string;
   activePowerUp?: 'speed' | 'invincible' | 'magnet' | null;
   powerUpTimer?: number;
   lives?: number;
@@ -64,6 +69,8 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   bossMaxHp,
   bossName,
   bossPhase,
+  bossHits,
+  bossAccent,
   activePowerUp,
   powerUpTimer,
   lives = 3,
@@ -79,9 +86,10 @@ export const GameHUD: React.FC<GameHUDProps> = ({
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[35] select-none font-game pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pt-[max(1rem,env(safe-area-inset-top))] sm:pl-[max(1.25rem,env(safe-area-inset-left))] sm:pr-[max(1.25rem,env(safe-area-inset-right))]">
-      <div className="grid grid-cols-[1fr_auto_1fr] max-[520px]:grid-cols-[auto_minmax(0,1fr)] items-start gap-2 sm:gap-4">
+      <div className={isBoss ? 'flex items-start justify-between gap-2 sm:gap-4' : 'grid grid-cols-[1fr_auto_1fr] max-[520px]:grid-cols-[auto_minmax(0,1fr)] items-start gap-2 sm:gap-4'}>
         {/* LEFT: hearts and lives */}
         <div className="flex flex-col items-start gap-1.5 max-[520px]:row-span-2">
+          {!isBoss && (
           <div className="hud-glass flex gap-[3px] sm:gap-1 rounded-2xl px-2 py-1.5 sm:px-3 sm:py-2" role="img" aria-label={`Health: ${hp} of ${maxHp} hearts`}>
             {Array.from({ length: maxHp }).map((_, i) => {
               const full = i < hp;
@@ -92,6 +100,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
               );
             })}
           </div>
+          )}
           <div className="hud-glass flex items-center gap-1.5 rounded-full py-[3px] pl-[3px] pr-3" role="img" aria-label={`Lives: ${lives}`}>
             <span className="rounded-full overflow-hidden bg-amber-200 w-[26px] h-[26px] sm:w-[30px] sm:h-[30px] flex items-center justify-center">
               <HeroFaceIcon size={26} face="face_happy" />
@@ -122,7 +131,8 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           </div>
         </div>
 
-        {/* RIGHT: stage name and distance, one card */}
+        {/* RIGHT: stage name and distance, one card (a boss fight keeps the screen for the boss) */}
+        {!isBoss && (
         <div className="flex justify-end">
           <div className="hud-glass flex flex-col gap-1 sm:gap-[7px] rounded-[18px] px-2.5 pt-1.5 pb-2 sm:px-3.5 sm:pt-2.5 sm:pb-3 w-[168px] sm:w-[250px] max-[520px]:w-full max-[520px]:max-w-[240px]">
             <div className="flex items-baseline justify-between gap-2">
@@ -167,24 +177,13 @@ export const GameHUD: React.FC<GameHUDProps> = ({
             )}
           </div>
         </div>
+        )}
       </div>
 
       {/* boss health: a strip under the top row */}
       {isBoss && (
-        <div className="mt-2 flex justify-center">
-          <div className="hud-glass w-[min(26rem,70vw)] rounded-2xl px-3 py-1.5" style={{ borderColor: 'rgba(248,113,113,.6)' }}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-red-300 font-bold text-[11px] sm:text-sm uppercase tracking-wider truncate">{bossName || 'Stage boss'}</span>
-              <span className="flex items-center gap-1" aria-label={`Phase ${bossPhase ?? 1} of 3`}>
-                {[1, 2, 3].map((n) => (
-                  <span key={n} className={`inline-block w-2.5 h-2.5 rounded-full border ${n <= (bossPhase ?? 1) ? 'bg-red-500 border-red-200' : 'bg-stone-800 border-stone-500'}`} />
-                ))}
-              </span>
-            </div>
-            <div className="h-3 rounded-full bg-stone-900 border border-stone-600 overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-orange-500 to-red-600 transition-[width] duration-150" style={{ width: `${Math.max(0, Math.min(100, (bossHp! / bossMaxHp!) * 100))}%` }} />
-            </div>
-          </div>
+        <div className="mt-2 sm:-mt-9 flex justify-center">
+          <BossHud name={bossName || 'Stage boss'} hp={bossHp!} maxHp={bossMaxHp!} phase={bossPhase ?? 1} hits={bossHits} heroHp={hp} heroMaxHp={maxHp} accent={bossAccent} />
         </div>
       )}
 

@@ -222,6 +222,14 @@ export interface BossDef {
   color2: string;
   /** hit points, when it is not the usual world formula */
   hp?: number;
+  /** how many hits it takes (one bar segment each); the bar falls back to a length from its hit points */
+  hits?: number;
+  /** a giant boss: how many times bigger than its painted frames are drawn (its hurt box is set to match in w / h) */
+  scale?: number;
+  /** a boss that can only be hurt at one place, high up: the box (centre `dy` above the floor, `dx` in front of the body) */
+  weak?: { dx: number; dy: number; w: number; h: number };
+  /** the fenced arena is this wide (the usual 1,080 is too small for a giant) */
+  arenaW?: number;
   /** drawn as a fighter (the evil sloth) instead of one of the animal rigs */
   puppet?: 'thornbark';
 }
@@ -250,6 +258,21 @@ export function vulnerability(b: BossEntity): 'closed' | 'armored' | 'open' | 's
     default:
       return 'open';
   }
+}
+
+/** the world box of a giant's weak point (null for a boss that can be hit anywhere) */
+export function weakRect(b: BossEntity, def: BossDef, floor: number): { x: number; y: number; w: number; h: number } | null {
+  const k = def.weak;
+  if (!k) return null;
+  const cx = b.x + b.facing * k.dx;
+  const cy = floor - (b.ai?.air ?? 0) - k.dy;
+  return { x: cx - k.w / 2, y: cy - k.h / 2, w: k.w, h: k.h };
+}
+
+/** the weak point can be hurt only in the opening after a move, or while the boss is stunned */
+export function weakOpen(b: BossEntity): boolean {
+  const st = b.ai?.state;
+  return st === 'rec' || st === 'stun';
 }
 
 /** the body only hurts while the boss is winding up or attacking, so walking up to hit it in its opening is safe */

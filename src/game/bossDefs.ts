@@ -760,66 +760,74 @@ const MONARCH: BossDef = {
 const DRAKE: BossDef = {
   world: 9,
   name: 'Magma Drake',
-  w: 140,
-  h: 96,
+  // a giant: the painted frames are drawn 3.2 times their old size, so Slomatt is a small figure under it
+  scale: 3.2,
+  w: 430,
+  h: 220,
   artDy: 0,
-  speed: [52, 72, 98],
-  prefer: 300,
+  speed: [60, 84, 114],
+  prefer: 520,
   gap: [1.3, 0.95, 0.7],
   chain: 0.4,
   color: '#fb923c',
   color2: '#7c2d12',
+  // two hit points per hit: a hook or a kick is one segment of the bar, a jab half of one
+  hp: 48,
+  hits: 24,
+  // the head is its one weak point: high up, and open only in the moment after it attacks (or when it is stunned)
+  weak: { dx: 150, dy: 175, w: 120, h: 100 },
+  arenaW: 1400,
   moves: {
     // a long gout of flame at chest height: duck under it or jump it
     fireBreath: {
-      tell: 0.8,
-      act: 1.1,
-      rec: 1.3,
-      max: 560,
+      tell: 0.9,
+      act: 1.2,
+      rec: 1.5,
+      max: 900,
       pose: 'spit',
       onAct: (b, c) => {
-        const h = beam(c, b, 540, 52, 44, 0, 1.0, '#fdba74', '#dc2626');
+        const h = beam(c, b, 700, 60, 46, 0, 1.1, '#fdba74', '#dc2626');
         h.look = 'fire';
       },
     },
     // lava geysers burst up on marked spots
     eruption: {
-      tell: 0.9,
+      tell: 0.95,
       act: 0.3,
-      rec: 1.1,
+      rec: 1.3,
       pose: 'roar',
       onTell: (b, c) => {
-        const xs = b.phase >= 2 ? [0, -190, 190, 380] : [0, -200, 200];
+        const xs = b.phase >= 2 ? [0, -250, 250, 500] : [0, -260, 260];
         xs.forEach((off, i) => {
           const x = Math.max(c.arena.left + 40, Math.min(c.arena.right - 40, c.px + off));
-          const h = column(c, x, 1.0 + i * 0.08, 190, '#fb923c', '#b91c1c', 0.6);
+          const h = column(c, x, 1.0 + i * 0.08, 240, '#fb923c', '#b91c1c', 0.6);
           h.look = 'lava';
         });
       },
     },
-    // a wing sweep at head height on both sides: duck or back off
+    // a tail spin at head height on both sides: duck under it or back off
     wingSweep: {
-      tell: 0.5,
-      act: 0.32,
-      rec: 0.9,
-      max: 260,
+      tell: 0.6,
+      act: 0.36,
+      rec: 1.2,
+      max: 460,
       pose: 'whip',
       tick: (b, c) => {
-        b.ai!.hurt = [...bothSides(b, c, 110, 80, 36), bodyBox(b)];
+        b.ai!.hurt = [...bothSides(b, c, 180, 80, 36), bodyBox(b)];
       },
     },
     // a huge leap: the landing makes lava waves and leaves a burning patch
     leapCrush: leapMove({
-      tell: 0.8,
-      act: 0.85,
-      rec: 1.3,
-      height: 210,
+      tell: 0.9,
+      act: 0.95,
+      rec: 1.5,
+      height: 300,
       phase: 2,
-      min: 200,
+      min: 320,
       onLand: (b, c) => {
-        impact(b, c, 0.8, '#ea580c');
-        for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2), d, 330, '#fb923c', '#b91c1c', true).look = 'lava';
-        const p = makeHazard({ kind: 'puddle', x: b.x, y: c.arena.floor - 7, floorY: c.arena.floor, w: 120, h: 14, life: 3.2, maxLife: 3.2, eff: 'none', dmg: 1, color: '#fb923c', color2: '#b91c1c', look: 'lava' });
+        impact(b, c, 1.0, '#ea580c');
+        for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2), d, 380, '#fb923c', '#b91c1c', true).look = 'lava';
+        const p = makeHazard({ kind: 'puddle', x: b.x, y: c.arena.floor - 7, floorY: c.arena.floor, w: 220, h: 14, life: 3.4, maxLife: 3.4, eff: 'none', dmg: 1, color: '#fb923c', color2: '#b91c1c', look: 'lava' });
         c.hazards.push(p);
       },
     }),

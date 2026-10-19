@@ -1615,7 +1615,7 @@ function buildBoss(gen: Gen): GeneratedStage {
   const floor = 560;
   // the fenced arena: wide enough to dodge in, small enough that a phone screen can show the whole fight
   const left = 760;
-  const right = 1840;
+  const right = left + (def.arenaW ?? 1080);
   gen.plat({ x: 0, y: floor, width: cfg.levelWidth, height: 80, type: 'solid', style: 'log' });
 
   // two great trunks are the walls
@@ -1632,7 +1632,7 @@ function buildBoss(gen: Gen): GeneratedStage {
 
   const maxHp = def.hp ?? bossMaxHp(cfg.worldIndex);
   const boss: BossEntity = {
-    id: 1, type: 'boss', x: right - 160, y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
+    id: 1, type: 'boss', x: right - Math.max(160, def.w / 2 + 40), y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
     facing: -1, patrolMinX: left, patrolMaxX: right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
     specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote, dialogueDefeat: 'Nooo! Defeated by a sloth...!',

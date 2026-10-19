@@ -453,6 +453,27 @@
   color: #f0fdf4;
 }
 
+/* ---------- Boss plate: name, hit segments, phase notches and Slomatt's hearts ---------- */
+.boss-hud { --boss-accent: #fb923c; width: min(30rem, 94vw); display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin-inline: auto; font-family: var(--font-heading); color: #fff7ed; }
+.boss-hud-name { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 0 4px; text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.6); }
+.boss-hud-title { font-size: clamp(18px, 4.6vw, 28px); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.boss-hud-count { font-family: var(--font-ui); font-size: clamp(11px, 2.8vw, 14px); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fde68a; white-space: nowrap; }
+.boss-hud-bar { position: relative; padding: 4px; border-radius: 10px; background: rgba(10, 4, 2, 0.82); border: 2px solid var(--boss-accent); box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.55), 0 4px 18px rgba(0, 0, 0, 0.55); }
+.boss-hud-segs { display: flex; gap: 2px; height: clamp(14px, 3.4vw, 20px); }
+.boss-seg { flex: 1 1 0; min-width: 0; border-radius: 2px; background: rgba(255, 255, 255, 0.07); transition: background 0.12s; }
+.boss-seg.on { background: linear-gradient(180deg, color-mix(in srgb, var(--boss-accent) 70%, #fff), var(--boss-accent) 55%, color-mix(in srgb, var(--boss-accent) 70%, #000)); box-shadow: 0 0 6px color-mix(in srgb, var(--boss-accent) 60%, transparent); }
+.boss-seg.ghost { background: #fff; box-shadow: 0 0 8px rgba(255, 255, 255, 0.8); animation: boss-seg-ghost 0.65s ease-out forwards; }
+@keyframes boss-seg-ghost { 0% { opacity: 1; } 60% { opacity: 0.85; } 100% { opacity: 0; } }
+.boss-notch { position: absolute; top: -5px; bottom: -5px; width: 8px; margin-left: -4px; background: #fbbf24; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); opacity: 0.65; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.7)); }
+.boss-notch.passed { opacity: 0.25; filter: grayscale(0.7); }
+.boss-hud-hearts { align-self: center; display: flex; gap: clamp(3px, 1vw, 6px); padding: 6px clamp(8px, 2.4vw, 14px); border-radius: 999px; background: rgba(10, 4, 2, 0.78); border: 2px solid rgba(254, 205, 211, 0.55); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
+.boss-heart { width: clamp(24px, 6.4vw, 34px); height: clamp(24px, 6.4vw, 34px); transition: transform 0.2s; }
+.boss-heart.lost { animation: boss-heart-lost 0.7s ease-out forwards; }
+@keyframes boss-heart-lost { 0% { transform: scale(1.35); } 100% { transform: scale(0.9); } }
+.boss-hud-hearts.danger { animation: boss-danger 0.9s ease-in-out infinite; border-color: #ef4444; }
+@keyframes boss-danger { 0%, 100% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 0 rgba(239, 68, 68, 0); } 50% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 18px rgba(239, 68, 68, 0.85); } }
+@media (prefers-reduced-motion: reduce) { .boss-hud-hearts.danger { animation: none; } .boss-seg.ghost { animation-duration: 0.2s; } }
+
 .pm-scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 12px; background: rgba(2, 20, 14, 0.78); font-family: var(--font-heading); color: #f0fdf4; }
 .pm-card { width: 100%; max-width: 540px; max-height: 100%; overflow-y: auto; box-sizing: border-box; padding: 20px 24px 18px; border-radius: 26px; background: linear-gradient(180deg, #0b3a2c, #06261d); border: 3px solid #6ee7b7; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55); display: flex; flex-direction: column; gap: 14px; }
 .pm-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

@@ -5,6 +5,7 @@
 import type { BossEntity } from './types.ts';
 import type { BossHazard } from './bossAI.ts';
 import type { BossDef, MoveDef } from './bossAI.ts';
+import { weakOpen, weakRect } from './bossAI.ts';
 import { drawBossEntity } from './vectorArt.ts';
 import { demoPlayer, drawMilo } from './miloVariants.ts';
 import { drawQueenSprite, queenSpriteActive } from './queenSprite.ts';
@@ -269,6 +270,8 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
     drawBossEntity(ctx, art, time, world);
   }
   ctx.restore();
+
+  drawWeakPoint(ctx, b, def, time, floor);
 
   // dizzy stars
   if (br.state === 'stun') {
@@ -967,4 +970,54 @@ function drawBolt(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     ctx.ellipse(1, 0, h.w * 0.36, h.h * 0.32, Math.sin(time * 20) * 0.1, 0, Math.PI * 2);
     ctx.fill();
   }
+}
+
+/**
+ * A giant's weak point. While the head is covered it is only a faint ember, so you learn where it is; in the opening after an attack
+ * (and while the boss is stunned) it blazes: a pulsing ring with a cross-hair, the signal to jump up and strike.
+ */
+function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, time: number, floor: number) {
+  const r = weakRect(b, def, floor);
+  const br = b.ai;
+  if (!r || !br || br.state === 'dying' || b.defeated) return;
+  const open = weakOpen(b);
+  const cx = r.x + r.w / 2;
+  const cy = r.y + r.h / 2;
+  const rad = Math.min(r.w, r.h) * 0.5;
+  ctx.save();
+  if (!open) {
+    ctx.globalAlpha = 0.28 + 0.1 * Math.sin(time * 3);
+    ctx.fillStyle = def.color;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rad * 0.22, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return;
+  }
+  const pulse = 0.5 + 0.5 * Math.sin(time * 14);
+  const g = ctx.createRadialGradient(cx, cy, 2, cx, cy, rad * 1.5);
+  g.addColorStop(0, 'rgba(255,255,255,0.95)');
+  g.addColorStop(0.35, 'rgba(253,224,71,0.7)');
+  g.addColorStop(1, 'rgba(251,146,60,0)');
+  ctx.globalAlpha = 0.75 + 0.25 * pulse;
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(cx, cy, rad * 1.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = '#fff7ed';
+  ctx.lineWidth = 4;
+  ctx.shadowColor = '#fde047';
+  ctx.shadowBlur = 14;
+  ctx.beginPath();
+  ctx.arc(cx, cy, rad * (0.8 + 0.12 * pulse), 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    ctx.moveTo(cx + dx * rad * 0.45, cy + dy * rad * 0.45);
+    ctx.lineTo(cx + dx * rad * 1.15, cy + dy * rad * 1.15);
+  }
+  ctx.stroke();
+  ctx.restore();
 }
