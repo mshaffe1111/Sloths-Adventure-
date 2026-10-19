@@ -9,6 +9,7 @@ import { getSceneSeed } from './sceneSeed.ts';
 import type { Look } from './scenery.ts';
 import { paintSwayCluster } from './envKit.ts';
 import { drawPaintedButterfly } from './butterflySprites.ts';
+import { drawPaintedBird, renderPaintedFlocks } from './birdSprites.ts';
 
 const fract = (v: number) => v - Math.floor(v);
 
@@ -136,7 +137,7 @@ function swift(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, f
   ctx.fill();
 }
 
-function renderRaptors(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, n: number) {
+function renderRaptors(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, n: number, eagles = true) {
   const col = rgba(darken(look.farCols[0], 0.62), 0.82);
   const sc = vh / 720;
   const r = rng(world * 97 + 5 + getSceneSeed() * 1013);
@@ -147,13 +148,16 @@ function renderRaptors(ctx: CanvasRenderingContext2D, look: Look, world: number,
     const dir = i % 2 ? 1 : -1;
     const x = dir > 0 ? -140 + u * (vw + 280) - camX * 0.02 : vw + 140 - u * (vw + 280) - camX * 0.02;
     const y = vh * (0.09 + r() * 0.18) + Math.sin(u * Math.PI * 3 + i) * 22 * sc;
+    const size = 17 * sc * (0.85 + r() * 0.4);
+    // (the painted harpy eagles replace these when they are loaded; the rng is still stepped so the swifts fly the same lines)
+    if (!eagles) continue;
     ctx.save();
     if (dir < 0) {
       ctx.translate(x, 0);
       ctx.scale(-1, 1);
       ctx.translate(-x, 0);
     }
-    eagle(ctx, x, y, 17 * sc * (0.85 + r() * 0.4), Math.cos(u * Math.PI * 3 + i), col);
+    eagle(ctx, x, y, size, Math.cos(u * Math.PI * 3 + i), col);
     ctx.restore();
   }
   // swifts stitch fast, low arcs across the spray
@@ -254,7 +258,10 @@ function renderHummers(ctx: CanvasRenderingContext2D, look: Look, world: number,
     const py = jump(hop + 7) + (jump(hop + 8) - jump(hop + 7)) * ease;
     const x = ((sx * span + px * 140 - camX * par) % span + span) % span - 100;
     const y = vh * sy + py * 70 * sc + Math.sin(time * 9 + i) * 1.6;
-    hummer(ctx, x, y, 5.5 * sc, time * 55 + i, i % 2 ? 1 : -1, i % 2 ? '#2fb89a' : '#3a8ad0', i % 2 ? '#e0408a' : '#f0a030');
+    // the painted hummingbird hovers with its own wing beat; the vector one is the fallback
+    if (!drawPaintedBird(ctx, 'hummer', x, y, time, sc, 1, i % 2 ? 1 : -1, i * 0.4)) {
+      hummer(ctx, x, y, 5.5 * sc, time * 55 + i, i % 2 ? 1 : -1, i % 2 ? '#2fb89a' : '#3a8ad0', i % 2 ? '#e0408a' : '#f0a030');
+    }
   }
 }
 
@@ -722,10 +729,14 @@ function renderSwayLeaves(ctx: CanvasRenderingContext2D, look: Look, world: numb
 /** creatures, mist and dust: drawn behind the playfield so they never hide what the player must read */
 export function renderLifeBack(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, lite: boolean) {
   const k = LIFE[world] ?? LIFE[1];
+  // painted birds (toucans, macaws, quetzals, harpy eagles, songbirds) take over the kinds they cover once their atlas has loaded;
+  // herons and crows have no painted species and stay as they were
+  const painted = renderPaintedFlocks(ctx, world, camX, vw, vh, time);
   if (k.birds > 0) {
-    if (k.birdKind === 'raptor') renderRaptors(ctx, look, world, camX, vw, vh, time, k.birds);
-    else if (k.birdKind) renderColorBirds(ctx, look, world, camX, vw, vh, time, k.birds, k.birdKind);
-    else renderBirds(ctx, look, world, camX, vw, vh, time, k.birds);
+    if (k.birdKind === 'raptor') renderRaptors(ctx, look, world, camX, vw, vh, time, k.birds, !painted);
+    else if (k.birdKind) {
+      if (!(painted && (k.birdKind === 'toucan' || k.birdKind === 'parrot'))) renderColorBirds(ctx, look, world, camX, vw, vh, time, k.birds, k.birdKind);
+    } else renderBirds(ctx, look, world, camX, vw, vh, time, k.birds);
   }
   if (k.mist && !lite) renderMist(ctx, look, camX, vw, vh, time);
   renderMotes(ctx, look, world, camX, vw, vh, time, k.motes);
