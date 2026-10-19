@@ -802,7 +802,7 @@ function paintBlocks(look: Look, world: number): HTMLCanvasElement {
   return cv;
 }
 
-/** layered rock: stacked slabs with joints, cracks, wet sheen and, for caves, glowing crystal clusters */
+/** layered rock: stacked slabs with joints, cracks, wet sheen and, for caves, glowing bracket fungus */
 function paintSlab(look: Look, world: number, cave: boolean): HTMLCanvasElement {
   const [cv, ctx] = canvas(SOIL_W, SOIL_H);
   const r = rng(world * 7919 + 505 + getSceneSeed() * 1013);
@@ -915,45 +915,31 @@ function paintSlab(look: Look, world: number, cave: boolean): HTMLCanvasElement 
         crackLine(ctx, xx, yy, r() * 6.28, 70 + r() * 70, r, rgba(gl, 0.75), 1.5);
       });
     }
-    // crystal clusters
-    for (let i = 0; i < 22; i++) {
+    // foxfire: bracket fungus shelves growing out of the damp rock, each rim lit with a cold glow (real: Mycena and friends)
+    for (let i = 0; i < 20; i++) {
       wrap2(r() * SOIL_W, r() * SOIL_H, 40, (xx, yy) => {
-        const n = 3 + ((r() * 3) | 0);
-        const hue = i % 3 === 0 ? look.flora[1 % look.flora.length] : gl;
+        const n = 2 + ((r() * 3) | 0);
+        const hue = i % 4 === 0 ? look.flora[1 % look.flora.length] : gl;
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
-        const halo = ctx.createRadialGradient(xx, yy, 0, xx, yy, 34);
-        halo.addColorStop(0, rgba(hue, 0.35));
+        const halo = ctx.createRadialGradient(xx, yy, 0, xx, yy, 26);
+        halo.addColorStop(0, rgba(hue, 0.22));
         halo.addColorStop(1, rgba(hue, 0));
         ctx.fillStyle = halo;
-        ctx.fillRect(xx - 34, yy - 34, 68, 68);
+        ctx.fillRect(xx - 26, yy - 26, 52, 52);
         ctx.restore();
         for (let k = 0; k < n; k++) {
-          const a = -Math.PI / 2 + (k - (n - 1) / 2) * 0.55 + (r() - 0.5) * 0.25;
-          const l = 12 + r() * 16;
-          const wd = 3.6 + r() * 2.4;
-          ctx.save();
-          ctx.translate(xx, yy);
-          ctx.rotate(a + Math.PI / 2);
+          const w = 11 - k * 2 + r() * 4;
+          const sy = yy - k * 7;
+          const sx = xx + (k % 2 ? 4 : -3);
+          ctx.fillStyle = rgba(mix('#c8b890', g.dirt, 0.4), 0.95);
+          ctx.strokeStyle = rgba(hue, 0.85);
+          ctx.lineWidth = 1.4;
           ctx.beginPath();
-          ctx.moveTo(-wd, 0);
-          ctx.lineTo(-wd, -l * 0.7);
-          ctx.lineTo(0, -l);
-          ctx.lineTo(wd, -l * 0.7);
-          ctx.lineTo(wd, 0);
+          ctx.ellipse(sx, sy, w, w * 0.36, 0, Math.PI, 0);
           ctx.closePath();
-          const cg = ctx.createLinearGradient(-wd, 0, wd, 0);
-          cg.addColorStop(0, lighten(hue, 0.5));
-          cg.addColorStop(0.5, hue);
-          cg.addColorStop(1, darken(hue, 0.45));
-          ctx.fillStyle = cg;
           ctx.fill();
-          ctx.strokeStyle = rgba(darken(hue, 0.7), 0.85);
-          ctx.lineWidth = 1;
           ctx.stroke();
-          ctx.fillStyle = 'rgba(255,255,255,0.7)';
-          ctx.fillRect(-wd * 0.55, -l * 0.62, wd * 0.4, l * 0.4);
-          ctx.restore();
         }
       });
     }

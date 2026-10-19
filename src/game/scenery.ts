@@ -17,7 +17,7 @@ import {
 } from './artKit.ts';
 
 export type Weather = 'leaves' | 'petals' | 'fireflies' | 'rain' | 'embers' | 'mist' | 'storm' | 'spores' | 'ash';
-export type FarKind = 'peaks' | 'cliffs' | 'ruins' | 'volcano' | 'fortress' | 'shrooms' | 'orchid' | 'mangrove' | 'dusk' | 'palms';
+export type FarKind = 'peaks' | 'cliffs' | 'karst' | 'ruins' | 'volcano' | 'fortress' | 'shrooms' | 'orchid' | 'mangrove' | 'dusk' | 'palms';
 export type TreeKind = 'jungle' | 'palm' | 'umbrella' | 'willow' | 'shroom' | 'dead';
 
 export interface Look {
@@ -124,18 +124,19 @@ export const LOOKS: Record<number, Look> = {
   },
   // 6 — Deep Mangrove: chartreuse swamp haze, fireflies
   6: {
-    sky: ['#7a9a3a', '#b4cf52', '#dbe87a', '#f4f6b0'],
-    sun: { x: 0.35, y: 0.3, r: 52, core: '#fffbd0', glow: '#e8f08a' },
-    clouds: { top: '#f4f6c0', bottom: '#a8c458', n: 3 },
-    far: 'mangrove', farCols: ['#7a9a52', '#4f7a42', '#e8f4a0'], haze: '#d8e888',
-    hills: ['#6faa3a', '#4a8a3a', '#2f6a3a'],
-    trunk: ['#8a6a3a', '#3a2a1a'], crowns: ['#7ab83a', '#a4d048', '#4f9a3a', '#c4e050'],
+    // a blackwater peat swamp: heavy overcast mist, tall dark trees standing in tea-brown water, fireflies after dusk
+    sky: ['#24342a', '#3e5442', '#6e8462', '#b4ba90'],
+    sun: { x: 0.35, y: 0.3, r: 46, core: '#f4f0d0', glow: '#c8d49a' },
+    clouds: { top: '#8a9c7c', bottom: '#34463a', n: 4 },
+    far: 'mangrove', farCols: ['#4a5c46', '#2e4034', '#a8b88a'], haze: '#8a9c7a',
+    hills: ['#40593a', '#2f4a36', '#1f3a2e'],
+    trunk: ['#5a4a34', '#1a120a'], crowns: ['#4a7a3a', '#6a9a44', '#34603a', '#8ab048'],
     trees: ['willow', 'jungle', 'willow', 'umbrella'],
-    leaves: ['#5fb03a', '#3a8a3a', '#a8d84a', '#2a7a4a'], flora: ['#ffd23a', '#ff8a3a', '#fff06a', '#ff5a7a'],
-    rays: '#f6f8a0', rayA: 0.16, weather: 'fireflies', glow: '#e8ff7a', grade: ['#9ab83a', 0.07],
-    ground: { cap: '#8ac03a', capHi: '#cef06a', capDark: '#4a7a2a', dirt: '#7a5a34', dirtDark: '#3a2a18', stone: '#a8a080', outline: '#2a1c0c', kind: 'moss' },
-    water: { top: '#9ad04a', bottom: '#3a7a3a', foam: '#eef8b0' },
-    vine: { main: '#5a8a2a', leaf: '#b4e050', flower: '#ffd23a' },
+    leaves: ['#3f7a34', '#2a6030', '#6a9a3a', '#1f4a30'], flora: ['#ffd23a', '#ff8a3a', '#e8e08a', '#c85a7a'],
+    rays: '#d8e0a0', rayA: 0.12, weather: 'fireflies', glow: '#d8ff7a', grade: ['#3a5a2a', 0.12],
+    ground: { cap: '#5a8a34', capHi: '#9ac45a', capDark: '#2a4a1a', dirt: '#4a3a26', dirtDark: '#1a1208', stone: '#8a8a70', outline: '#14100a', kind: 'moss' },
+    water: { top: '#5a4026', bottom: '#140e06', foam: '#a89878' },
+    vine: { main: '#4a6a2a', leaf: '#9ac04a', flower: '#e8e08a' },
   },
   // 7 — Ancient Ruins: amber stone, golden light
   7: {
@@ -158,7 +159,7 @@ export const LOOKS: Record<number, Look> = {
     sky: ['#0b1238', '#1d3470', '#74559a', '#f0a088'],
     sun: { x: 0.72, y: 0.22, r: 44, core: '#fffaf0', glow: '#cfe0ff' },
     stars: true, clouds: { top: '#6a78b0', bottom: '#232d5c', n: 4 },
-    far: 'cliffs', farCols: ['#5a6a8a', '#3a4868', '#f0b0a0'], haze: '#8a80b8',
+    far: 'karst', farCols: ['#5a6a8a', '#3a4868', '#f0b0a0'], haze: '#8a80b8',
     hills: ['#4a6a7a', '#34526a', '#223a50'],
     trunk: ['#7a6a5a', '#2a2018'], crowns: ['#2f7a6a', '#3f9a78', '#245a5a', '#6aaa6a'],
     trees: ['umbrella', 'willow', 'jungle', 'palm'],
@@ -175,9 +176,9 @@ export const LOOKS: Record<number, Look> = {
     clouds: { top: '#c85a3a', bottom: '#4a1418', n: 4 },
     far: 'volcano', farCols: ['#5a1a22', '#3a1218', '#ff9a3a'], haze: '#ff8a3a',
     hills: ['#6a2a22', '#4a1a1a', '#2a0f12'],
-    trunk: ['#6a3a2a', '#1f1210'], crowns: ['#d84a1a', '#ff8a1a', '#a83a2a', '#e8c02a'],
+    trunk: ['#5a3a2a', '#1a1010'], crowns: ['#4a2a22', '#6a3a2a', '#2a1a18', '#c8601a'],
     trees: ['dead', 'palm', 'dead', 'jungle'],
-    leaves: ['#d84a1a', '#ff9a1a', '#7a2a1a', '#c8c02a'], flora: ['#ff6a1a', '#ffd23a', '#ff3a3a', '#fff0a0'],
+    leaves: ['#5a3a2a', '#8a4a22', '#2a1a14', '#7a8a2a'], flora: ['#ff6a1a', '#ffd23a', '#ff3a3a', '#fff0a0'],
     rays: '#ff9a4a', rayA: 0.2, weather: 'embers', glow: '#ff7a1a', grade: ['#ff4a10', 0.1],
     ground: { cap: '#4a3a3a', capHi: '#8a7a74', capDark: '#241818', dirt: '#3a2a2a', dirtDark: '#160e0e', stone: '#7a6a66', outline: '#0a0505', kind: 'ash' },
     water: { top: '#ffd23a', bottom: '#e8400a', foam: '#fff4b0' },
@@ -536,6 +537,50 @@ function buildFar(look: Look, world: number): HTMLCanvasElement {
       hazeBand(ctx, 330, 600, look.haze, 0.6);
       break;
     }
+    case 'karst': {
+      // limestone tower karst: sheer grey spires with a forest cap and a cave mouth at the foot, no waterfalls
+      ranges(530, 7, 190, 300, back, false);
+      for (let i = 0; i < 6; i++) {
+        const x = (i / 6) * TW + 120 + r() * 120;
+        const w = 150 + r() * 90;
+        const top = 120 + r() * 120;
+        wrap(x, w, (xx) => {
+          const g = ctx.createLinearGradient(xx - w / 2, top, xx + w / 2, 620);
+          g.addColorStop(0, front.light);
+          g.addColorStop(1, front.dark);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.moveTo(xx - w * 0.52, 640);
+          ctx.lineTo(xx - w * 0.44, top + 50);
+          ctx.quadraticCurveTo(xx - w * 0.38, top - 6, xx - w * 0.1, top);
+          ctx.lineTo(xx + w * 0.2, top - 4);
+          ctx.quadraticCurveTo(xx + w * 0.44, top + 6, xx + w * 0.42, top + 56);
+          ctx.lineTo(xx + w * 0.52, 640);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = 'rgba(20,30,50,0.22)';
+          ctx.fillRect(xx + w * 0.12, top, w * 0.3, 640 - top);
+          ctx.strokeStyle = 'rgba(20,30,50,0.2)';
+          ctx.lineWidth = 3;
+          for (let k = 0; k < 5; k++) {
+            const gx = xx - w * 0.36 + k * w * 0.18;
+            ctx.beginPath();
+            ctx.moveTo(gx, top + 30);
+            ctx.lineTo(gx + (r() - 0.5) * 6, 620);
+            ctx.stroke();
+          }
+          ctx.fillStyle = '#06060e';
+          ctx.beginPath();
+          ctx.moveTo(xx - w * 0.2, 640);
+          ctx.quadraticCurveTo(xx - w * 0.2, 560, xx, 556);
+          ctx.quadraticCurveTo(xx + w * 0.2, 560, xx + w * 0.2, 640);
+          ctx.fill();
+          drawCrown(ctx, xx - w * 0.04, top + 6, w * 0.5, 38, tone('#2f7a6a'), r, 8, false);
+        });
+      }
+      hazeBand(ctx, 330, 600, look.haze, 0.55);
+      break;
+    }
     case 'ruins': {
       ranges(520, 8, 130, 240, back, false);
       hazeBand(ctx, 300, 540, look.haze, 0.5);
@@ -658,13 +703,36 @@ function buildFar(look: Look, world: number): HTMLCanvasElement {
     case 'shrooms': {
       ranges(560, 8, 120, 240, back, false);
       hazeBand(ctx, 300, 560, look.haze, 0.5);
-      for (let i = 0; i < 9; i++) {
-        const x = (i / 9) * TW + r() * 100;
-        const s = 70 + r() * 90;
-        wrap(x, s * 2, (xx) => {
-          const cols = ['#3ad8c0', '#b05ad8', '#58b8ff'];
-          drawMushroom(ctx, xx, 600, s * 1.3, cols[i % 3], '#ffffff', true);
-        });
+      if (world === 3) {
+        // a real cave glows with glowworm silk, not giant mushrooms: threads hung from the roof, each strung with cold light
+        for (let i = 0; i < 44; i++) {
+          const x = r() * TW;
+          const len = 70 + r() * 230;
+          wrap(x, 20, (xx) => {
+            ctx.strokeStyle = 'rgba(190,240,230,0.35)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(xx, 0);
+            ctx.lineTo(xx + (r() - 0.5) * 4, len);
+            ctx.stroke();
+            for (let y = 14; y < len; y += 11 + r() * 9) {
+              const gg = ctx.createRadialGradient(xx, y, 0, xx, y, 7);
+              gg.addColorStop(0, rgba(look.glow ?? '#7dffe0', 0.6));
+              gg.addColorStop(1, rgba(look.glow ?? '#7dffe0', 0));
+              ctx.fillStyle = gg;
+              ctx.fillRect(xx - 7, y - 7, 14, 14);
+            }
+          });
+        }
+      } else {
+        for (let i = 0; i < 9; i++) {
+          const x = (i / 9) * TW + r() * 100;
+          const s = 70 + r() * 90;
+          wrap(x, s * 2, (xx) => {
+            const cols = ['#3ad8c0', '#b05ad8', '#58b8ff'];
+            drawMushroom(ctx, xx, 600, s * 1.3, cols[i % 3], '#ffffff', true);
+          });
+        }
       }
       // hanging stalactites
       for (let i = 0; i < 14; i++) {

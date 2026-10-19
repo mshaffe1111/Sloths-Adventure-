@@ -61,6 +61,8 @@ function butterfly(ctx: CanvasRenderingContext2D, x: number, y: number, s: numbe
 
 // ───────────────────────────── distant birds ─────────────────────────────
 
+const TAU = Math.PI * 2;
+
 function bird(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, flap: number, col: string) {
   const w = Math.sin(flap) * s * 0.55;
   ctx.strokeStyle = col;
@@ -255,6 +257,112 @@ function renderHummers(ctx: CanvasRenderingContext2D, look: Look, world: number,
   }
 }
 
+/** a larger coloured bird in level flight: body, two broad wings, a tail and a bill */
+function colorBird(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, flap: number, body: string, accent: string, kind: 'heron' | 'parrot' | 'toucan' | 'crow', face: number) {
+  const w = Math.sin(flap) * s * 0.7;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(face, 1);
+  ctx.fillStyle = body;
+  ctx.strokeStyle = body;
+  ctx.lineCap = 'round';
+  // wings
+  for (const side of [-1, 1]) {
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 0.1);
+    ctx.quadraticCurveTo(side * s * 0.8, -s * 0.5 - w, side * s * (kind === 'heron' ? 2.0 : 1.5), -s * 0.1 - w * 0.8);
+    ctx.quadraticCurveTo(side * s * 0.8, s * 0.1 - w * 0.2, 0, s * 0.25);
+    ctx.fill();
+  }
+  ctx.beginPath();
+  ctx.ellipse(0, 0, s * 0.62, s * 0.26, 0, 0, TAU);
+  ctx.fill();
+  if (kind === 'heron') {
+    // an S-curved neck, a long bill and legs trailing behind
+    ctx.lineWidth = s * 0.16;
+    ctx.beginPath();
+    ctx.moveTo(s * 0.5, -s * 0.05);
+    ctx.quadraticCurveTo(s * 0.9, -s * 0.5, s * 1.1, -s * 0.15);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.beginPath();
+    ctx.moveTo(s * 1.1, -s * 0.22);
+    ctx.lineTo(s * 1.75, -s * 0.12);
+    ctx.lineTo(s * 1.1, -s * 0.06);
+    ctx.fill();
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = Math.max(1, s * 0.07);
+    ctx.beginPath();
+    ctx.moveTo(-s * 0.5, s * 0.1);
+    ctx.lineTo(-s * 1.7, s * 0.3);
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.arc(s * 0.62, -s * 0.08, s * 0.2, 0, TAU);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    if (kind === 'toucan') {
+      ctx.beginPath();
+      ctx.moveTo(s * 0.72, -s * 0.2);
+      ctx.lineTo(s * 1.5, -s * 0.08);
+      ctx.lineTo(s * 0.72, s * 0.04);
+      ctx.fill();
+    } else if (kind === 'parrot') {
+      ctx.beginPath();
+      ctx.moveTo(s * 0.74, -s * 0.18);
+      ctx.quadraticCurveTo(s * 1.05, -s * 0.12, s * 0.9, s * 0.08);
+      ctx.fill();
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = s * 0.2;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.5, 0);
+      ctx.lineTo(-s * 1.9, s * 0.3);
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(s * 0.74, -s * 0.14);
+      ctx.lineTo(s * 1.15, -s * 0.06);
+      ctx.lineTo(s * 0.74, 0);
+      ctx.fill();
+    }
+    if (kind === 'crow') {
+      ctx.fillStyle = body;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.5, -s * 0.05);
+      ctx.lineTo(-s * 1.1, s * 0.25);
+      ctx.lineTo(-s * 0.9, -s * 0.12);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function renderColorBirds(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, flocks: number, kind: 'heron' | 'parrot' | 'toucan' | 'crow') {
+  const sc = vh / 720;
+  const pal: Record<string, [string, string]> = {
+    heron: ['#e8eef0', '#d8a838'],
+    parrot: ['#d8301f', '#2f6ad8'],
+    toucan: ['#1c1c24', '#f08a1a'],
+    crow: [rgba(darken(look.farCols[0], 0.8), 0.95), '#222'],
+  };
+  const [body, accent] = pal[kind];
+  const r = rng(world * 131 + 17 + getSceneSeed() * 1013);
+  for (let f = 0; f < flocks; f++) {
+    const period = (kind === 'heron' ? 60 : 34) + r() * 30;
+    const dir = f % 2 ? 1 : -1;
+    const u = fract((time + r() * 80) / period);
+    const n = kind === 'crow' ? 4 : kind === 'heron' ? 1 : 2;
+    const baseX = dir > 0 ? -90 + u * (vw + 220) : vw + 90 - u * (vw + 220);
+    const baseY = vh * (0.12 + r() * 0.24) + Math.sin(u * 8 + f) * 12 * sc;
+    for (let i = 0; i < n; i++) {
+      const bx = baseX - dir * i * 34 * sc;
+      const by = baseY + i * 10 * sc + Math.sin(time * 1.3 + i) * 3;
+      const slow = kind === 'heron' ? 3.2 : kind === 'crow' ? 7 : 8;
+      colorBird(ctx, bx, by, (kind === 'crow' ? 8 : kind === 'heron' ? 9 : 7) * sc, time * slow + i * 1.3 + f, body, accent, kind, dir);
+    }
+  }
+}
+
 // ───────────────────────────── dragonflies, moths, bats, fireflies, embers ─────────────────────────────
 
 function dragonfly(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, buzz: number, ang: number, col: string) {
@@ -337,23 +445,23 @@ export interface LifeKit {
   mist: boolean;
   motes: number;
   /** 'raptor': a few big soaring eagles and darting swifts instead of V-flocks of small birds */
-  birdKind?: 'raptor';
+  birdKind?: 'raptor' | 'heron' | 'parrot' | 'toucan' | 'crow';
   /** drifting feathers (an eagle's territory) */
   feathers?: number;
   /** hovering hummingbirds (cloud forest) */
   hummers?: number;
 }
 export const LIFE: Record<number, LifeKit> = {
-  1: { birds: 2, fauna: 'butterfly', nFauna: 7, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 34 },
-  2: { birds: 2, fauna: 'dragonfly', nFauna: 6, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 24 },
-  3: { birds: 0, fauna: 'moth', nFauna: 6, bats: 4, fireflies: 16, embers: 0, ash: 0, gusts: 0, mist: true, motes: 40 },
+  1: { birds: 2, birdKind: 'toucan', fauna: 'butterfly', nFauna: 7, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 34 },
+  2: { birds: 2, birdKind: 'heron', fauna: 'dragonfly', nFauna: 6, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 24 },
+  3: { birds: 0, fauna: 'moth', nFauna: 5, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 40 },
   4: { birds: 2, birdKind: 'raptor', feathers: 5, hummers: 4, fauna: 'dragonfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 20 },
-  5: { birds: 1, fauna: 'butterfly', nFauna: 11, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 5, mist: true, motes: 30 },
-  6: { birds: 0, fauna: 'dragonfly', nFauna: 4, bats: 2, fireflies: 22, embers: 0, ash: 0, gusts: 0, mist: true, motes: 18 },
-  7: { birds: 2, fauna: 'butterfly', nFauna: 4, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 44 },
+  5: { birds: 0, hummers: 3, fauna: 'butterfly', nFauna: 11, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 3, mist: true, motes: 30 },
+  6: { birds: 1, birdKind: 'heron', fauna: 'dragonfly', nFauna: 2, bats: 0, fireflies: 22, embers: 0, ash: 0, gusts: 0, mist: true, motes: 18 },
+  7: { birds: 2, birdKind: 'parrot', fauna: 'butterfly', nFauna: 3, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 44 },
   8: { birds: 0, fauna: 'moth', nFauna: 7, bats: 11, fireflies: 8, embers: 0, ash: 0, gusts: 0, mist: true, motes: 36 },
-  9: { birds: 1, fauna: 'moth', nFauna: 0, bats: 4, fireflies: 0, embers: 34, ash: 20, gusts: 0, mist: false, motes: 10 },
-  10: { birds: 0, fauna: 'butterfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 9, mist: true, motes: 8 },
+  9: { birds: 0, fauna: 'moth', nFauna: 0, bats: 0, fireflies: 0, embers: 34, ash: 20, gusts: 0, mist: false, motes: 10 },
+  10: { birds: 3, birdKind: 'crow', fauna: 'butterfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 9, mist: true, motes: 8 },
 };
 
 function renderFauna(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, kind: Fauna, n: number) {
@@ -610,6 +718,7 @@ export function renderLifeBack(ctx: CanvasRenderingContext2D, look: Look, world:
   const k = LIFE[world] ?? LIFE[1];
   if (k.birds > 0) {
     if (k.birdKind === 'raptor') renderRaptors(ctx, look, world, camX, vw, vh, time, k.birds);
+    else if (k.birdKind) renderColorBirds(ctx, look, world, camX, vw, vh, time, k.birds, k.birdKind);
     else renderBirds(ctx, look, world, camX, vw, vh, time, k.birds);
   }
   if (k.mist && !lite) renderMist(ctx, look, camX, vw, vh, time);

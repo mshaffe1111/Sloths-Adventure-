@@ -12,7 +12,7 @@ import {
 import { lookFor, type Look } from './scenery.ts';
 import { getSoil, capTransform } from './soil.ts';
 import { isRich } from './rainforest.ts';
-import { paintTopDecor } from './envKit.ts';
+import { paintDecorAt } from './envKit.ts';
 
 /** worlds painted with the new baked ground (grown world by world) */
 let curWorld = 1;
@@ -307,12 +307,12 @@ function drawCap(ctx: CanvasRenderingContext2D, p: Platform, look: Look, time: n
 }
 
 function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG) {
-  if (paintTopDecor(ctx, curWorld, look, p, r)) return;
   const capT = tone(look.ground.cap);
   const isGround = p.height >= 50;
   const step = isGround ? 54 : 46;
   for (let x = p.x + 14; x < p.x + p.width - 12; x += step) {
     const px = x + (r() - 0.5) * 18;
+    if (paintDecorAt(ctx, curWorld, look, px, p.y, r)) continue;
     const roll = r();
     if (roll < 0.5) drawGrass(ctx, px, p.y - 2, 13 + r() * 11, capT, r, 5);
     else if (roll < 0.72) {
@@ -1287,5 +1287,52 @@ export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: nu
     ctx.fill();
   }
   ctx.globalAlpha = 1;
+  waterLife(ctx, worldId, x0, x1, waterY, time);
   void darken;
+}
+
+const waveY = (x: number, waterY: number, time: number) => waterY + Math.sin(x * 0.03 + time * 2.2) * 4 + Math.sin(x * 0.07 - time * 1.5) * 2;
+
+/** what lives in this world's water: the crocodile's eyes in the estuary, rising marsh gas in the peat swamp */
+function waterLife(ctx: CanvasRenderingContext2D, worldId: number, x0: number, x1: number, waterY: number, time: number) {
+  if (worldId === 2) {
+    for (let x = Math.floor(x0 / 640) * 640; x < x1 + 640; x += 640) {
+      const ex = x + 240 + (((x / 640) | 0) * 97 % 180);
+      if (ex < x0 + 30 || ex > x1 - 30) continue;
+      // it goes under now and then
+      if (Math.sin(time * 0.35 + x * 0.013) > 0.5) continue;
+      const y = waveY(ex, waterY, time);
+      ctx.strokeStyle = 'rgba(235,245,225,0.5)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.ellipse(ex, y + 3, 24 + Math.sin(time * 1.4) * 3, 4.5, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      for (const dx of [-8, 8]) {
+        ctx.fillStyle = '#3a4a28';
+        ctx.beginPath();
+        ctx.ellipse(ex + dx, y, 6, 4.2, 0, Math.PI, 0);
+        ctx.fill();
+        ctx.fillStyle = '#e8b02a';
+        ctx.beginPath();
+        ctx.arc(ex + dx, y - 1.8, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#10100a';
+        ctx.fillRect(ex + dx - 0.5, y - 3.6, 1, 3.6);
+      }
+    }
+  } else if (worldId === 6) {
+    for (let x = Math.floor(x0 / 150) * 150; x < x1 + 150; x += 150) {
+      const bx = x + ((x / 150) | 0) % 5 * 23;
+      if (bx < x0 || bx > x1) continue;
+      const u = (((time * 0.35 + x * 0.0071) % 1) + 1) % 1;
+      const y = waterY + 46 - u * 46;
+      ctx.fillStyle = `rgba(190,210,170,${0.5 * (1 - u * 0.4)})`;
+      ctx.strokeStyle = 'rgba(230,245,215,0.7)';
+      ctx.lineWidth = 0.9;
+      ctx.beginPath();
+      ctx.arc(bx + Math.sin(u * 9 + x) * 4, y, 3 + (1 - u) * 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
 }

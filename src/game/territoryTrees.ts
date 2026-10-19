@@ -11,6 +11,7 @@
 import { tone, mix, lighten, darken, rgba, type RNG } from './artKit.ts';
 import { fernFrond } from './flora.ts';
 import { leafSpray, canopyMass } from './rainforest.ts';
+import { orb } from './envPlants.ts';
 import type { StampOpts } from './trees.ts';
 import type { Look } from './scenery.ts';
 
@@ -302,8 +303,8 @@ export function roost(ctx: CanvasRenderingContext2D, x: number, baseY: number, t
 
 // ───────────────────────────── W8: limestone karst tower ─────────────────────────────
 
-export function karst(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
-  const rock = tone(mix(look.ground.stone, '#8a8f9a', 0.35), '#1a2030');
+export function karst(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts, eyes = false) {
+  const rock = eyes ? tone(mix(look.ground.stone, '#2a3040', 0.55), '#06080e') : tone(mix(look.ground.stone, '#8a8f9a', 0.35), '#1a2030');
   const leafT = tone(mix(look.leaves[0], look.haze, 0.1), '#06201a');
   const H = Math.max(160, baseY - topY);
   const hw = Math.max(30, o.w * 1.2);
@@ -359,8 +360,8 @@ export function karst(ctx: CanvasRenderingContext2D, x: number, baseY: number, t
   }
   // the cave mouth at the foot: a dark arch with stalactites, where the bats come out
   const cx0 = x + jitter(r, hw * 0.3);
-  const ch = Math.min(H * 0.26, 90);
-  const cw = hw * 0.55;
+  const ch = Math.min(H * (eyes ? 0.34 : 0.26), eyes ? 120 : 90);
+  const cw = hw * (eyes ? 0.7 : 0.55);
   ctx.fillStyle = '#05050c';
   ctx.beginPath();
   ctx.moveTo(cx0 - cw, baseY + 10);
@@ -368,6 +369,24 @@ export function karst(ctx: CanvasRenderingContext2D, x: number, baseY: number, t
   ctx.quadraticCurveTo(cx0 + cw, baseY - ch, cx0 + cw, baseY + 10);
   ctx.closePath();
   ctx.fill();
+  if (eyes) {
+    // two eyes watching from the dark: the Shadow Prowler's lair
+    const ey = baseY - ch * 0.42;
+    for (const dx of [-0.2, 0.2]) {
+      const ex = cx0 + cw * dx;
+      const g = ctx.createRadialGradient(ex, ey, 0, ex, ey, 16);
+      g.addColorStop(0, 'rgba(210,255,90,0.6)');
+      g.addColorStop(1, 'rgba(210,255,90,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(ex - 16, ey - 16, 32, 32);
+      ctx.fillStyle = '#d8ff58';
+      ctx.beginPath();
+      ctx.ellipse(ex, ey, 6.5, 3.8, dx > 0 ? -0.2 : 0.2, 0, TAU);
+      ctx.fill();
+      ctx.fillStyle = '#05050c';
+      ctx.fillRect(ex - 0.9, ey - 3.4, 1.8, 6.8);
+    }
+  }
   ctx.fillStyle = rock.mid;
   for (let k = 0; k < 7; k++) {
     const sx = cx0 - cw * 0.8 + (k / 6) * cw * 1.6;
@@ -401,5 +420,387 @@ export function karst(ctx: CanvasRenderingContext2D, x: number, baseY: number, t
     ctx.moveTo(sx, tl[1] - 2);
     ctx.quadraticCurveTo(sx + jitter(r, 8), tl[1] + 40, sx + jitter(r, 5), tl[1] + 60 + r() * 60);
     ctx.stroke();
+  }
+}
+
+export const cavemouth = (ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) => karst(ctx, x, baseY, topY, look, r, o, true);
+
+// ───────────────────────────── W6: peat swamp giant ─────────────────────────────
+
+export function peat(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
+  const bark = tone(mix('#4a4034', look.trunk[0], 0.3), '#0a0a06');
+  const moss = tone(mix(look.leaves[2] ?? look.leaves[0], '#9aa88a', 0.5));
+  const top = Math.max(topY, baseY - 380);
+  const g = ctx.createLinearGradient(x - o.w, 0, x + o.w, 0);
+  g.addColorStop(0, bark.light);
+  g.addColorStop(0.55, bark.mid);
+  g.addColorStop(1, bark.dark);
+  // a tall, straight trunk that flares into buttresses at the waterline
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(x - o.w * 2.4, baseY + 8);
+  ctx.bezierCurveTo(x - o.w * 1.1, baseY - 24, x - o.w * 0.9, baseY - 90, x - o.w * 0.6 + o.lean * 0.1, baseY - 150);
+  ctx.lineTo(x - o.w * 0.5 + o.lean * 0.2, top);
+  ctx.lineTo(x + o.w * 0.5 + o.lean * 0.2, top);
+  ctx.lineTo(x + o.w * 0.6 + o.lean * 0.1, baseY - 150);
+  ctx.bezierCurveTo(x + o.w * 0.9, baseY - 90, x + o.w * 1.1, baseY - 24, x + o.w * 2.4, baseY + 8);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = rgba(bark.deep, 0.5);
+  ctx.lineWidth = 1.4;
+  for (let k = 0; k < 7; k++) {
+    const fx = x + jitter(r, o.w * 0.4);
+    ctx.beginPath();
+    ctx.moveTo(fx, top + r() * 60);
+    ctx.lineTo(fx + jitter(r, 6), baseY - 20);
+    ctx.stroke();
+  }
+  // stilt roots bracing it in the soft peat
+  ctx.lineCap = 'round';
+  for (let k = 0; k < 5; k++) {
+    const side = (k / 4 - 0.5) * 2;
+    const sx = x + side * o.w * 0.5;
+    ctx.strokeStyle = bark.dark;
+    ctx.lineWidth = 6 - Math.abs(side) * 2;
+    ctx.beginPath();
+    ctx.moveTo(sx, baseY - 70 - r() * 30);
+    ctx.quadraticCurveTo(x + side * o.w * 2.2, baseY - 30, x + side * o.w * (2.6 + r() * 0.8), baseY + 8);
+    ctx.stroke();
+  }
+  // pegs poking up around it
+  ctx.fillStyle = bark.mid;
+  for (let k = 0; k < 7; k++) {
+    const px = x + jitter(r, o.w * 3.4);
+    const h = 8 + r() * 16;
+    ctx.beginPath();
+    ctx.moveTo(px - 3, baseY + 8);
+    ctx.lineTo(px - 1.6, baseY + 8 - h);
+    ctx.quadraticCurveTo(px, baseY + 6 - h, px + 1.6, baseY + 8 - h);
+    ctx.lineTo(px + 3, baseY + 8);
+    ctx.fill();
+  }
+  // hanging moss from the trunk
+  for (let k = 0; k < 9; k++) {
+    const sx = x + jitter(r, o.w * 0.5);
+    const sy = top + 40 + r() * (baseY - top - 160);
+    const len = 40 + r() * 90;
+    ctx.strokeStyle = rgba(k % 2 ? moss.mid : moss.light, 0.85);
+    ctx.lineWidth = 3 + r() * 2;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.bezierCurveTo(sx + jitter(r, 8), sy + len * 0.35, sx + jitter(r, 10), sy + len * 0.7, sx + jitter(r, 8), sy + len);
+    ctx.stroke();
+  }
+  canopyMass(ctx, x + o.lean * 0.2, top - 10, o.w * 3.2, 46, [tone(mix(look.leaves[0], look.haze, 0.1)), tone(look.crowns[1] ?? look.crowns[0])], r, 18, 36);
+}
+
+// ───────────────────────────── W5: golden orb web ─────────────────────────────
+
+export function web(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
+  const H = Math.max(180, baseY - topY);
+  const R = Math.min(190, H * 0.46);
+  const cy = baseY - H * 0.55;
+  const bark = tone(mix(look.trunk[0], '#2a2018', 0.3), '#0a0604');
+  // two slim trunks hold it between them
+  for (const dx of [-1, 1]) {
+    const tx = x + dx * R * 1.08;
+    const g = ctx.createLinearGradient(tx - 10, 0, tx + 10, 0);
+    g.addColorStop(0, bark.light);
+    g.addColorStop(1, bark.dark);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(tx - 12, baseY + 8);
+    ctx.lineTo(tx - 6, topY);
+    ctx.lineTo(tx + 6, topY);
+    ctx.lineTo(tx + 12, baseY + 8);
+    ctx.closePath();
+    ctx.fill();
+    leafSpray(ctx, tx, topY, 46, tone(mix(look.leaves[0], look.haze, 0.1)), r, 9, -Math.PI / 2, 2.4);
+  }
+  // guy lines out to the trunks and ground
+  ctx.strokeStyle = 'rgba(250,236,180,0.55)';
+  ctx.lineWidth = 1.2;
+  for (const [ax, ay] of [[-1, -0.6], [1, -0.7], [-1, 0.4], [1, 0.5]]) {
+    ctx.beginPath();
+    ctx.moveTo(x + ax * R * 0.6, cy + ay * R * 0.6);
+    ctx.lineTo(x + ax * R * 1.08, cy + ay * R * 1.2);
+    ctx.stroke();
+  }
+  orb(ctx, x, cy, R, r, true);
+  // things she has caught: a wrapped bundle or two, and a butterfly
+  ctx.fillStyle = '#e8e0cc';
+  for (let k = 0; k < 2; k++) {
+    const a = r() * 6.28;
+    const rr = R * (0.35 + r() * 0.35);
+    ctx.beginPath();
+    ctx.ellipse(x + Math.cos(a) * rr, cy + Math.sin(a) * rr, 5, 10, a, 0, 6.28);
+    ctx.fill();
+  }
+  ctx.fillStyle = 'rgba(60,140,230,0.9)';
+  const bx = x + R * 0.4;
+  const by = cy - R * 0.25;
+  ctx.beginPath();
+  ctx.ellipse(bx - 6, by, 7, 9, 0.4, 0, TAU);
+  ctx.ellipse(bx + 6, by, 7, 9, -0.4, 0, TAU);
+  ctx.fill();
+}
+
+// ───────────────────────────── W7: face tower ─────────────────────────────
+
+function carvedFace(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, st: ReturnType<typeof tone>) {
+  ctx.fillStyle = st.mid;
+  ctx.strokeStyle = rgba(st.deep, 0.95);
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.roundRect(x - w / 2, y - h, w, h, w * 0.14);
+  ctx.fill();
+  ctx.stroke();
+  // serene closed eyes, a broad nose and a faint smile
+  ctx.strokeStyle = rgba(st.deep, 0.95);
+  ctx.lineWidth = 2;
+  for (const dx of [-0.24, 0.24]) {
+    ctx.beginPath();
+    ctx.arc(x + w * dx, y - h * 0.58, w * 0.1, 0.15 * Math.PI, 0.85 * Math.PI);
+    ctx.stroke();
+  }
+  ctx.fillStyle = st.dark;
+  ctx.beginPath();
+  ctx.moveTo(x - w * 0.07, y - h * 0.55);
+  ctx.lineTo(x + w * 0.07, y - h * 0.55);
+  ctx.lineTo(x + w * 0.13, y - h * 0.36);
+  ctx.lineTo(x - w * 0.13, y - h * 0.36);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(x - w * 0.22, y - h * 0.22);
+  ctx.quadraticCurveTo(x, y - h * 0.12, x + w * 0.22, y - h * 0.22);
+  ctx.stroke();
+  ctx.fillStyle = st.light;
+  ctx.fillRect(x - w / 2 + 2, y - h + 2, w - 4, 3);
+}
+
+export function bayon(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
+  const st = tone(mix(look.ground.stone, '#8a8a74', 0.35), '#201a10');
+  const root = tone('#8a7a64', '#120c06');
+  const moss = tone(look.leaves[1] ?? look.leaves[0]);
+  const w0 = Math.max(70, o.w * 2.2);
+  const top = Math.max(topY, baseY - 320) + 30;
+  // stepped base
+  let y = baseY + 6;
+  const steps = 4;
+  const hStep = Math.min(40, (baseY - top) * 0.1);
+  for (let k = 0; k < steps; k++) {
+    const w = w0 * (1.5 - k * 0.14);
+    ctx.fillStyle = k % 2 ? st.mid : st.dark;
+    ctx.strokeStyle = rgba(st.deep, 0.9);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.rect(x - w / 2, y - hStep, w, hStep);
+    ctx.fill();
+    ctx.stroke();
+    y -= hStep;
+  }
+  // the tower: two tiers of faces, narrowing
+  const faceH = Math.min(90, (y - top) / 2.2);
+  for (let tier = 0; tier < 2; tier++) {
+    const w = w0 * (1 - tier * 0.26);
+    carvedFace(ctx, x, y, w, faceH, st);
+    y -= faceH;
+    ctx.fillStyle = st.dark;
+    ctx.fillRect(x - w * 0.55, y - 8, w * 1.1, 8);
+    y -= 8;
+  }
+  // a lotus-bud crown
+  ctx.fillStyle = st.mid;
+  ctx.strokeStyle = rgba(st.deep, 0.9);
+  ctx.beginPath();
+  ctx.moveTo(x - w0 * 0.3, y);
+  ctx.quadraticCurveTo(x - w0 * 0.34, y - 36, x, y - 66);
+  ctx.quadraticCurveTo(x + w0 * 0.34, y - 36, x + w0 * 0.3, y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // roots and moss, taking it back
+  ctx.lineCap = 'round';
+  for (let k = 0; k < 6; k++) {
+    const sx = x + jitter(r, w0 * 0.55);
+    ctx.strokeStyle = root.deep;
+    ctx.lineWidth = 5 + r() * 4;
+    ctx.beginPath();
+    ctx.moveTo(sx, top + r() * 40);
+    ctx.bezierCurveTo(sx + 14, top + (baseY - top) * 0.35, sx - 14, top + (baseY - top) * 0.7, sx + jitter(r, 20), baseY + 4);
+    ctx.stroke();
+    ctx.strokeStyle = root.mid;
+    ctx.lineWidth = 2.6;
+    ctx.stroke();
+  }
+  for (let k = 0; k < 14; k++) {
+    ctx.fillStyle = rgba(moss.mid, 0.65);
+    ctx.beginPath();
+    ctx.ellipse(x + jitter(r, w0 * 0.7), top + r() * (baseY - top), 6 + r() * 10, 3 + r() * 4, 0, 0, TAU);
+    ctx.fill();
+  }
+}
+
+// ───────────────────────────── W10: the General's camp ─────────────────────────────
+
+export function watchtower(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
+  const wood = tone('#5a4630', '#0a0604');
+  const H = Math.min(baseY - topY, 300);
+  const top = baseY - H;
+  const spread = Math.max(30, o.w * 0.9);
+  ctx.lineCap = 'round';
+  // four lashed legs, splayed at the foot, and cross-braces
+  for (const dx of [-1, 1]) {
+    ctx.strokeStyle = wood.deep;
+    ctx.lineWidth = 10;
+    ctx.beginPath();
+    ctx.moveTo(x + dx * spread * 1.5, baseY + 8);
+    ctx.lineTo(x + dx * spread * 0.8, top + 24);
+    ctx.stroke();
+    ctx.strokeStyle = wood.mid;
+    ctx.lineWidth = 6;
+    ctx.stroke();
+  }
+  ctx.strokeStyle = wood.dark;
+  ctx.lineWidth = 4;
+  for (let k = 1; k < 4; k++) {
+    const yy = top + 24 + ((baseY - top - 24) * k) / 4;
+    const w = spread * (0.8 + 0.7 * (k / 4));
+    ctx.beginPath();
+    ctx.moveTo(x - w, yy);
+    ctx.lineTo(x + w, yy + 12);
+    ctx.moveTo(x + w, yy);
+    ctx.lineTo(x - w, yy + 12);
+    ctx.stroke();
+  }
+  // platform, rail and a hut roof
+  ctx.fillStyle = wood.mid;
+  ctx.strokeStyle = wood.deep;
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.rect(x - spread * 1.1, top + 18, spread * 2.2, 10);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = wood.dark;
+  ctx.fillRect(x - spread, top - 22, spread * 2, 40);
+  ctx.fillStyle = '#2a2230';
+  ctx.beginPath();
+  ctx.moveTo(x - spread * 1.35, top - 18);
+  ctx.lineTo(x, top - 62);
+  ctx.lineTo(x + spread * 1.35, top - 18);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // a torch, and the General's banner
+  const tx = x + spread * 1.15;
+  const g = ctx.createRadialGradient(tx, top + 6, 0, tx, top + 6, 40);
+  g.addColorStop(0, 'rgba(255,150,60,0.6)');
+  g.addColorStop(1, 'rgba(255,150,60,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(tx - 40, top - 34, 80, 80);
+  ctx.fillStyle = '#ff9a2a';
+  ctx.beginPath();
+  ctx.moveTo(tx - 4, top + 14);
+  ctx.quadraticCurveTo(tx - 6, top - 6, tx, top - 14);
+  ctx.quadraticCurveTo(tx + 6, top - 4, tx + 4, top + 14);
+  ctx.fill();
+  ctx.strokeStyle = '#3a3040';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(x - spread * 0.5, top - 54);
+  ctx.lineTo(x - spread * 0.5, top - 110);
+  ctx.stroke();
+  ctx.fillStyle = '#b02a3a';
+  ctx.beginPath();
+  ctx.moveTo(x - spread * 0.5, top - 108);
+  ctx.lineTo(x + spread * 0.3, top - 100);
+  ctx.lineTo(x + spread * 0.15, top - 88);
+  ctx.lineTo(x + spread * 0.3, top - 76);
+  ctx.lineTo(x - spread * 0.5, top - 82);
+  ctx.closePath();
+  ctx.fill();
+  void look;
+  void r;
+}
+
+export function stumps(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
+  const bark = tone('#4a3a2c', '#0a0604');
+  const n = 3;
+  for (let k = 0; k < n; k++) {
+    const sx = x + (k - 1) * o.w * 1.9 + jitter(r, 10);
+    const w = o.w * (0.7 + r() * 0.5);
+    const h = Math.min(130, (baseY - topY) * (0.25 + r() * 0.25));
+    ctx.fillStyle = bark.mid;
+    ctx.strokeStyle = rgba(look.ground.outline, 0.9);
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(sx - w * 1.3, baseY + 8);
+    ctx.quadraticCurveTo(sx - w * 0.85, baseY - h * 0.3, sx - w, baseY - h);
+    ctx.lineTo(sx + w * 0.8, baseY - h + jitter(r, 6));
+    ctx.quadraticCurveTo(sx + w * 0.85, baseY - h * 0.3, sx + w * 1.3, baseY + 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#c8aa7c';
+    ctx.beginPath();
+    ctx.ellipse(sx - w * 0.1, baseY - h, w * 0.9, w * 0.26, 0, 0, TAU);
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(30,20,12,0.7)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(sx - w * 0.1, baseY - h, w * 0.88, w * 0.25, 0, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+  }
+  // a felled log across the front, still bearing a few scorched branch stubs
+  ctx.fillStyle = bark.dark;
+  ctx.strokeStyle = rgba(look.ground.outline, 0.9);
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.roundRect(x - o.w * 2.6, baseY - 16, o.w * 5.2, 22, 10);
+  ctx.fill();
+  ctx.stroke();
+}
+
+// ───────────────────────────── W9: ohia ─────────────────────────────
+
+export function ohiatree(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
+  const bark = tone('#3a2a26', '#0a0505');
+  const ember = '#e8281a';
+  const top = Math.max(topY, baseY - 240);
+  ctx.strokeStyle = bark.dark;
+  ctx.lineCap = 'round';
+  ctx.lineWidth = o.w * 0.7;
+  ctx.beginPath();
+  ctx.moveTo(x, baseY + 8);
+  ctx.bezierCurveTo(x - 24, baseY - (baseY - top) * 0.35, x + 26, baseY - (baseY - top) * 0.65, x + o.lean * 0.2, top);
+  ctx.stroke();
+  const tips: Array<[number, number]> = [[x + o.lean * 0.2, top]];
+  for (const dx of [-1, 1]) {
+    ctx.lineWidth = o.w * 0.3;
+    const bx = x + dx * 2;
+    const by = top + (baseY - top) * 0.32;
+    ctx.beginPath();
+    ctx.moveTo(bx, by);
+    ctx.quadraticCurveTo(bx + dx * 40, by - 20, bx + dx * 66, by - 52);
+    ctx.stroke();
+    tips.push([bx + dx * 66, by - 52]);
+  }
+  for (const [tx, ty] of tips) {
+    leafSpray(ctx, tx, ty, 26, tone(look.leaves[1] ?? '#c8c02a'), r, 6, -Math.PI / 2, 2.4);
+    const g = ctx.createRadialGradient(tx, ty, 0, tx, ty, 34);
+    g.addColorStop(0, 'rgba(232,40,26,0.45)');
+    g.addColorStop(1, 'rgba(232,40,26,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(tx - 34, ty - 34, 68, 68);
+    for (let k = 0; k < 28; k++) {
+      const a = (k / 28) * TAU;
+      ctx.strokeStyle = k % 3 ? ember : '#ff6a4a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(tx + Math.cos(a) * 13, ty + Math.sin(a) * 13);
+      ctx.stroke();
+    }
   }
 }

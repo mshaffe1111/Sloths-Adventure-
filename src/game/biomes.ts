@@ -10,10 +10,10 @@ import { tone, mix, rgba, darken, type RNG, type Tone } from './artKit.ts';
 import { paintTree, canopyMass, rootCurtain, leafSpray } from './rainforest.ts';
 import { palmTree, bambooClump, giantMushroom, mangrove, cloudTree, treeFern, figRuin, charredTree } from './trees.ts';
 import { bananaLeaf, fernFrond } from './flora.ts';
-import { crag, roost, karst } from './territoryTrees.ts';
+import { crag, roost, karst, cavemouth, peat, web, bayon, watchtower, stumps, ohiatree } from './territoryTrees.ts';
 import type { Look } from './scenery.ts';
 
-export type Species = 'giant' | 'palm' | 'bamboo' | 'mushroom' | 'mangrove' | 'cloud' | 'fern' | 'fig' | 'charred' | 'storm' | 'bloom' | 'crag' | 'roost' | 'karst';
+export type Species = 'giant' | 'palm' | 'bamboo' | 'mushroom' | 'mangrove' | 'cloud' | 'fern' | 'fig' | 'charred' | 'storm' | 'bloom' | 'crag' | 'roost' | 'karst' | 'cavemouth' | 'peat' | 'web' | 'bayon' | 'watchtower' | 'stumps' | 'ohiatree';
 type Floor = 'fern' | 'reed' | 'glow' | 'rock' | 'ash' | 'ruin';
 type Hang = 'liana' | 'root' | 'stalactite' | 'moss' | 'embers' | 'none';
 
@@ -45,17 +45,19 @@ const BIG = (mixes: Row['mix'], extra: Partial<Row> = {}): Row => ({ n: [2, 3], 
 
 export const RECIPES: Record<number, Recipe> = {
   1: { far: FAR([['giant', 1]]), mid: MID([['giant', 1]]), giants: BIG([['giant', 1]]), floor: 'fern', hang: 'liana' },
+  // Crocus Rex: a tidal river mouth. Palms and bamboo on the banks, mangroves standing in the water
   2: {
-    far: FAR([['palm', 3], ['bamboo', 1]], { top: [190, 300] }),
-    mid: MID([['palm', 3], ['bamboo', 2]], { top: [150, 250], w: [20, 28] }),
-    giants: BIG([['palm', 3], ['bamboo', 2]], { n: [3, 4], top: [120, 220], w: [26, 34], crown: true, haze: 0.14 }),
+    far: FAR([['palm', 3], ['mangrove', 2], ['bamboo', 1]], { top: [190, 300] }),
+    mid: MID([['palm', 3], ['mangrove', 2], ['bamboo', 2]], { top: [150, 250], w: [20, 28] }),
+    giants: BIG([['palm', 3], ['mangrove', 2], ['bamboo', 2]], { n: [3, 4], top: [120, 220], w: [26, 34], crown: true, haze: 0.14 }),
     floor: 'reed',
     hang: 'liana',
   },
+  // the Shadow Prowler: dark primary forest under buttress giants, and the limestone cave mouth where it lairs
   3: {
-    far: FAR([['mushroom', 3], ['giant', 1]], { top: [240, 330] }),
-    mid: MID([['mushroom', 3], ['giant', 1]], { top: [200, 300] }),
-    giants: BIG([['mushroom', 2], ['giant', 2]], { n: [3, 4] }),
+    far: FAR([['giant', 3], ['cavemouth', 1]], { top: [240, 330] }),
+    mid: MID([['giant', 2], ['cavemouth', 2]], { top: [200, 300] }),
+    giants: BIG([['giant', 3], ['cavemouth', 1]], { n: [3, 4] }),
     floor: 'glow',
     hang: 'stalactite',
   },
@@ -67,24 +69,27 @@ export const RECIPES: Record<number, Recipe> = {
     floor: 'rock',
     hang: 'moss',
   },
+  // the Tarantula Queen: a damp understory of orchids and bromeliads, with golden orb webs slung between the trunks
   5: {
-    far: FAR([['giant', 1]]),
-    mid: MID([['bloom', 1]]),
-    giants: BIG([['bloom', 1]]),
+    far: FAR([['bloom', 2], ['web', 1]]),
+    mid: MID([['bloom', 2], ['web', 2]]),
+    giants: BIG([['bloom', 2], ['web', 1]]),
     floor: 'fern',
     hang: 'liana',
   },
+  // the Bog Behemoth: blackwater peat swamp, tall buttressed trees standing in tea-dark water
   6: {
-    far: FAR([['mangrove', 1]], { top: [270, 340], baseY: 480 }),
-    mid: MID([['mangrove', 1]], { top: [230, 320], baseY: 470 }),
-    giants: BIG([['mangrove', 1]], { top: [150, 250], w: [34, 46], crown: true, baseY: 460 }),
+    far: FAR([['peat', 2], ['mangrove', 1]], { top: [200, 300], baseY: 480 }),
+    mid: MID([['peat', 2], ['mangrove', 1]], { top: [150, 270], baseY: 470 }),
+    giants: BIG([['peat', 3], ['mangrove', 1]], { top: [-40, 150], w: [34, 46], crown: true, baseY: 460 }),
     floor: 'reed',
     hang: 'moss',
   },
+  // the Stone Idol Golem: an Angkor-like temple city being taken back by fig and silk-cotton roots
   7: {
-    far: FAR([['fig', 2], ['giant', 1]], { n: [4, 5], top: [240, 320] }),
-    mid: MID([['fig', 2], ['giant', 1]], { n: [3, 4], top: [180, 280] }),
-    giants: BIG([['fig', 2], ['giant', 2]], { n: [3, 4], top: [-60, 140], w: [60, 84] }),
+    far: FAR([['fig', 2], ['bayon', 1]], { n: [4, 5], top: [240, 320] }),
+    mid: MID([['bayon', 2], ['fig', 2]], { n: [3, 4], top: [150, 260] }),
+    giants: BIG([['fig', 2], ['bayon', 1], ['giant', 1]], { n: [3, 4], top: [-60, 140], w: [60, 84] }),
     floor: 'ruin',
     hang: 'liana',
   },
@@ -93,20 +98,22 @@ export const RECIPES: Record<number, Recipe> = {
     far: FAR([['karst', 3], ['roost', 1]], { top: [120, 240], haze: 0.45 }),
     mid: MID([['karst', 2], ['roost', 2]], { top: [100, 220], haze: 0.26 }),
     giants: BIG([['roost', 2], ['karst', 1]], { n: [3, 4], top: [20, 140], w: [40, 56] }),
-    floor: 'glow',
+    floor: 'rock',
     hang: 'moss',
   },
+  // the Magma Drake: young lava with the first ohia trees coming back, and everything else scorched
   9: {
-    far: FAR([['charred', 3], ['palm', 1]], { top: [230, 320] }),
-    mid: MID([['charred', 3]], { top: [180, 290], w: [34, 46] }),
-    giants: BIG([['charred', 3]], { n: [3, 4], top: [90, 230], w: [48, 62], crown: true }),
+    far: FAR([['charred', 3], ['ohiatree', 1]], { top: [230, 320] }),
+    mid: MID([['charred', 2], ['ohiatree', 2]], { top: [180, 290], w: [34, 46] }),
+    giants: BIG([['charred', 2], ['ohiatree', 2]], { n: [3, 4], top: [90, 230], w: [48, 62], crown: true }),
     floor: 'ash',
     hang: 'embers',
   },
+  // General Iron-Claw: a jungle felled for his war camp — stumps, watchtowers, and what the fires left
   10: {
-    far: FAR([['storm', 2], ['charred', 1]], { top: [200, 300] }),
-    mid: MID([['storm', 2], ['cloud', 1]], { top: [150, 260] }),
-    giants: BIG([['storm', 1], ['giant', 1]], { n: [3, 4] }),
+    far: FAR([['stumps', 2], ['watchtower', 1], ['charred', 1]], { top: [200, 300] }),
+    mid: MID([['stumps', 2], ['watchtower', 1]], { top: [150, 260] }),
+    giants: BIG([['stumps', 2], ['charred', 1]], { n: [3, 4], top: [90, 230] }),
     floor: 'rock',
     hang: 'moss',
   },
@@ -138,7 +145,7 @@ function stamp(
     }, TW, res);
     return;
   }
-  const size = species === 'palm' ? 150 + r() * 60 : species === 'mushroom' ? 80 + r() * 90 + (haze < 0.2 ? 60 : 0) : species === 'fig' ? 190 : species === 'mangrove' ? 150 + r() * 70 : species === 'fern' ? 150 + r() * 40 : species === 'roost' ? 200 + r() * 40 : species === 'crag' ? 170 : species === 'karst' ? 170 : 130;
+  const size = species === 'palm' ? 150 + r() * 60 : species === 'mushroom' ? 80 + r() * 90 + (haze < 0.2 ? 60 : 0) : species === 'fig' ? 190 : species === 'mangrove' ? 150 + r() * 70 : species === 'fern' ? 150 + r() * 40 : species === 'roost' ? 200 + r() * 40 : species === 'crag' ? 170 : species === 'karst' || species === 'cavemouth' ? 170 : species === 'peat' ? 200 : species === 'web' ? 230 : species === 'bayon' ? 170 : species === 'watchtower' ? 160 : species === 'stumps' ? 150 : species === 'ohiatree' ? 140 : 130;
   const reach = Math.max(260, size * 1.5 + w * 4);
   const top = Math.min(topY, 0) - 160;
   const pad = 40;
@@ -161,6 +168,13 @@ function stamp(
     case 'charred': charredTree(c, x, baseY, topY, look, r, o); break;
     case 'crag': crag(c, x, baseY, topY, look, r, { ...o, w: Math.max(26, w * 0.9) }); break;
     case 'roost': roost(c, x, baseY, topY, look, r, { ...o, w: Math.max(18, w * 0.45) }); break;
+    case 'cavemouth': cavemouth(c, x, baseY, topY, look, r, { ...o, w: Math.max(30, w * 0.8) }); break;
+    case 'peat': peat(c, x, baseY, topY, look, r, { ...o, w: Math.max(14, w * 0.4) }); break;
+    case 'web': web(c, x, baseY, topY, look, r, o); break;
+    case 'bayon': bayon(c, x, baseY, topY, look, r, { ...o, w: Math.max(30, w * 0.8) }); break;
+    case 'watchtower': watchtower(c, x, baseY, topY, look, r, { ...o, w: Math.max(30, w * 0.8) }); break;
+    case 'stumps': stumps(c, x, baseY, topY, look, r, { ...o, w: Math.max(24, w * 0.6) }); break;
+    case 'ohiatree': ohiatree(c, x, baseY, topY, look, r, { ...o, w: Math.max(14, w * 0.4) }); break;
     case 'karst': karst(c, x, baseY, topY, look, r, { ...o, w: Math.max(30, w * 0.8) }); break;
   }
   if (haze > 0) {

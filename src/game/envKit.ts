@@ -12,26 +12,26 @@ import { tone, mix, rgba, lighten, darken, type RNG, type Tone } from './artKit.
 import { fernFrond } from './flora.ts';
 import { leaf } from './rainforest.ts';
 import { hangingBat } from './territoryTrees.ts';
+import { EXTRA_PLANTS, SWAYS, type PlantDef, type SwayFn } from './envPlants.ts';
 import type { Look } from './scenery.ts';
 
 const TAU = Math.PI * 2;
 
-export type NearKind = 'gunnera' | 'treefern' | 'dripmoss' | 'jadevine' | 'parkia' | 'moonflower' | 'foxfire';
-export type SwayKind = 'drip-fern' | 'jade-vine';
-
-interface Kit {
-  /** [plant, weight] at the hero's feet */
-  near: Array<[NearKind, number]>;
-  /** the big hanging things at the top of the screen */
-  sway: SwayKind;
+export interface Kit {
+  /** [plant, weight] painted into the near layer (visible in gaps and pits); empty = keep the shared jungle undergrowth */
+  near: Array<[string, number]>;
+  /** [plant, weight] stood along the top of the ground; empty = the shared grass/flowers/mushrooms */
+  decor: Array<[string, number]>;
+  /** probability that a ground-edge slot is taken by the kit (the rest keep the shared decoration) */
+  decorChance?: number;
+  /** the hanging cluster in front of the camera; none = shared leaves */
+  sway?: string;
+  /** what sits low along the bottom edge of the frame */
+  front?: 'fern' | 'reed' | 'rock';
 }
 
-export const ENV: Partial<Record<number, Kit>> = {
-  4: { near: [['gunnera', 3], ['treefern', 3], ['dripmoss', 2]], sway: 'drip-fern' },
-  8: { near: [['jadevine', 3], ['parkia', 2], ['moonflower', 3], ['foxfire', 2]], sway: 'jade-vine' },
-};
-
-export const hasKit = (world: number) => !!ENV[world];
+export const ENV: Partial<Record<number, Kit>> = {};
+export const hasKit = (world: number) => (ENV[world]?.near.length ?? 0) > 0;
 
 function pickWeighted<T>(r: RNG, items: Array<[T, number]>): T {
   const total = items.reduce((s, [, w]) => s + w, 0);
@@ -402,99 +402,74 @@ function foxfireLog(ctx: CanvasRenderingContext2D, x: number, y: number, s: numb
 
 // ───────────────────────────── public ─────────────────────────────
 
-/** paint one plant of a world's kit; false if the world has no kit */
+/** paint one plant of a world's kit into the near layer; false if the world has none (keep the shared undergrowth) */
 export function paintNearPlant(ctx: CanvasRenderingContext2D, world: number, look: Look, x: number, y: number, size: number, r: RNG): boolean {
   const kit = ENV[world];
-  if (!kit) return false;
-  const kind = pickWeighted(r, kit.near);
-  const leafT = tone(mix(look.leaves[(r() * look.leaves.length) | 0], look.haze, 0.1));
-  switch (kind) {
-    case 'gunnera': gunnera(ctx, x, y, size * 1.5, leafT, r); break;
-    case 'treefern': treeFernNear(ctx, x, y, size * 1.7, leafT, r); break;
-    case 'dripmoss': dripMoss(ctx, x, y, size * 1.4, tone(mix(look.leaves[2] ?? '#7fe0b0', '#2a7a5a', 0.3)), r); break;
-    case 'jadevine': jadeVine(ctx, x, y, size * 1.5, look, r); break;
-    case 'parkia': parkia(ctx, x, y, size * 1.6, look, r); break;
-    case 'moonflower': moonflower(ctx, x, y, size * 1.5, look, r); break;
-    case 'foxfire': foxfireLog(ctx, x, y, size * 1.4, look, r); break;
-  }
+  if (!kit || kit.near.length === 0) return false;
+  const def = PLANTS[pickWeighted(r, kit.near)];
+  if (!def) return false;
+  def.draw(ctx, x, y, size * def.near, look, r);
   return true;
 }
 
 /** the hanging cluster in front of the camera (a 360px sprite, hung from its top centre) */
 export function paintSwayCluster(c: CanvasRenderingContext2D, world: number, look: Look, variant: number, r: RNG): boolean {
   const kit = ENV[world];
-  if (!kit) return false;
-  if (kit.sway === 'drip-fern') {
-    const dark = tone(darken(look.leaves[0], 0.3), '#04201a');
-    const n = 4 + (variant % 2);
-    for (let k = 0; k < n; k++) {
-      const a = Math.PI / 2 + (k - (n - 1) / 2) * 0.5 + (r() - 0.5) * 0.15;
-      fernFrond(c, 180, 8, 190 + r() * 60, a, dark, r, 1.1);
-    }
-    // beads of water along the lowest frond tips
-    c.fillStyle = 'rgba(215,245,255,0.8)';
-    for (let k = 0; k < 6; k++) {
-      c.beginPath();
-      c.ellipse(80 + r() * 200, 150 + r() * 160, 2, 3.2, 0, 0, TAU);
-      c.fill();
-    }
-    return true;
-  }
-  // jade vine: dark stems hang from the canopy, each carrying a chain of claw-shaped flowers
-  const glow = look.glow ?? '#8aff9a';
-  const n = 3 + (variant % 2);
-  for (let k = 0; k < n; k++) {
-    const sx = 180 + (k - (n - 1) / 2) * 70 + (r() - 0.5) * 20;
-    const len = 150 + r() * 130;
-    const sway = (r() - 0.5) * 40;
-    c.strokeStyle = '#1a3a2e';
-    c.lineWidth = 3.4;
-    c.lineCap = 'round';
-    c.beginPath();
-    c.moveTo(sx, 4);
-    c.bezierCurveTo(sx + sway, len * 0.2, sx - sway, len * 0.45, sx + sway * 0.3, len * 0.55);
-    c.stroke();
-    const lt = tone(mix(look.leaves[1] ?? '#3f9a78', '#04160f', 0.4));
-    for (let m = 1; m <= 2; m++) leaf(c, sx + (m % 2 ? sway * 0.2 : -sway * 0.2), (len * m) / 5, 38 + r() * 18, 11, m % 2 ? 0.4 : Math.PI - 0.4, lt, 0.2);
-    raceme(c, sx + sway * 0.3, len * 0.55, len * 0.5, r);
-  }
-  void glow;
-  // the Monarch's subjects asleep on the vines: a couple of bats hanging between the bells
-  const batN = 1 + (variant % 2);
-  for (let k = 0; k < batN; k++) {
-    const bx = 70 + r() * 220;
-    c.strokeStyle = '#1c1040';
-    c.lineWidth = 2.4;
-    c.beginPath();
-    c.moveTo(bx - 26, 3);
-    c.quadraticCurveTo(bx, 14 + r() * 10, bx + 26, 3);
-    c.stroke();
-    hangingBat(c, bx, 10, 15 + r() * 6, '#1b1033', r() > 0.5 ? glow : undefined);
-  }
+  const fn = kit?.sway ? SWAY_ALL[kit.sway] : undefined;
+  if (!fn) return false;
+  fn(c, look, variant, r);
   return true;
 }
 
 /** the low, dark clump at the very bottom edge of the frame */
 export function paintFrontClump(ctx: CanvasRenderingContext2D, world: number, look: Look, x: number, y: number, r: RNG): boolean {
-  if (!ENV[world]) return false;
+  const kit = ENV[world];
+  if (!kit || !kit.front) return false;
   const dark = tone(mix(look.leaves[0], '#04120c', 0.62));
-  const n = 7;
-  for (let k = 0; k < n; k++) {
-    const a = -Math.PI / 2 + ((k / (n - 1)) - 0.5) * 2.3 + (r() - 0.5) * 0.15;
-    fernFrond(ctx, x, y, 150 + r() * 60, a, dark, r, 0.65);
+  if (kit.front === 'fern') {
+    for (let k = 0; k < 7; k++) {
+      const a = -Math.PI / 2 + ((k / 6) - 0.5) * 2.3 + (r() - 0.5) * 0.15;
+      fernFrond(ctx, x, y, 150 + r() * 60, a, dark, r, 0.65);
+    }
+  } else if (kit.front === 'reed') {
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = dark.mid;
+    for (let k = 0; k < 26; k++) {
+      const bx = x + (k - 13) * 9 + (r() - 0.5) * 6;
+      const h = 90 + r() * 110;
+      ctx.lineWidth = 3 + r() * 2;
+      ctx.beginPath();
+      ctx.moveTo(bx, y + 10);
+      ctx.quadraticCurveTo(bx + (r() - 0.5) * 20, y - h * 0.6, bx + (r() - 0.5) * 70, y - h);
+      ctx.stroke();
+    }
+  } else {
+    const rock = tone(mix(look.ground.stone, '#04060c', 0.7));
+    ctx.fillStyle = rock.mid;
+    for (let k = 0; k < 4; k++) {
+      const bx = x + (k - 1.5) * 90 + (r() - 0.5) * 30;
+      const w = 50 + r() * 50;
+      ctx.beginPath();
+      ctx.moveTo(bx - w, y + 12);
+      ctx.lineTo(bx - w * 0.6, y - 30 - r() * 30);
+      ctx.lineTo(bx + w * 0.1, y - 44 - r() * 34);
+      ctx.lineTo(bx + w * 0.7, y - 18 - r() * 24);
+      ctx.lineTo(bx + w, y + 12);
+      ctx.closePath();
+      ctx.fill();
+    }
   }
   if (look.glow && world === 8) {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    for (let k = 0; k < 6; k++) {
-      const a = -Math.PI / 2 + ((k / 5) - 0.5) * 2.2;
-      const gx = x + Math.cos(a) * 150;
-      const gy = y + Math.sin(a) * 150 + 40;
-      const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, 14);
-      g.addColorStop(0, rgba(look.glow, 0.55));
+    for (let k = 0; k < 4; k++) {
+      const gx = x + (k - 1.5) * 80;
+      const gy = y - 20 - r() * 30;
+      const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, 12);
+      g.addColorStop(0, rgba(look.glow, 0.5));
       g.addColorStop(1, rgba(look.glow, 0));
       ctx.fillStyle = g;
-      ctx.fillRect(gx - 14, gy - 14, 28, 28);
+      ctx.fillRect(gx - 12, gy - 12, 24, 24);
     }
     ctx.restore();
   }
@@ -503,7 +478,7 @@ export function paintFrontClump(ctx: CanvasRenderingContext2D, world: number, lo
 
 /** the hanging cluster at the top corners of the frame, reusing the sway sprite at a smaller scale */
 export function paintFrontHang(ctx: CanvasRenderingContext2D, world: number, look: Look, x: number, variant: number, r: RNG): boolean {
-  if (!ENV[world]) return false;
+  if (!ENV[world]?.sway) return false;
   ctx.save();
   ctx.translate(x - 144, -26);
   ctx.scale(0.8, 0.8);
@@ -602,55 +577,160 @@ function stalagmite(ctx: CanvasRenderingContext2D, x: number, y: number, s: numb
   }
 }
 
-/** replace the shared grass/flower/mushroom ground decoration with what belongs in this world; false = use the shared one */
-export function paintTopDecor(ctx: CanvasRenderingContext2D, world: number, look: Look, p: Strip, r: RNG): boolean {
+/** one ground-edge slot: draw this world's plant here and return true, or return false to keep the shared decoration */
+export function paintDecorAt(ctx: CanvasRenderingContext2D, world: number, look: Look, px: number, py: number, r: RNG): boolean {
   const kit = ENV[world];
-  if (!kit) return false;
-  const isGround = p.height >= 50;
-  const step = isGround ? 50 : 42;
-  const leafT = tone(mix(look.leaves[(r() * look.leaves.length) | 0], look.haze, 0.1));
-  const mossT = tone(mix(look.leaves[2] ?? look.leaves[0], '#2a7a5a', 0.3));
-  for (let x = p.x + 14; x < p.x + p.width - 12; x += step) {
-    const px = x + (r() - 0.5) * 18;
-    const roll = r();
-    if (world === 4) {
-      if (roll < 0.3) {
-        // a small tree-fern crown, fronds weighed down with spray
-        for (let f = 0; f < 5; f++) fernFrond(ctx, px, p.y - 2, 24 + r() * 14, -Math.PI / 2 + (f - 2) * 0.5, leafT, r, 0.9);
-      } else if (roll < 0.5) mossCushion(ctx, px, p.y, 12 + r() * 8, mossT, r);
-      else if (roll < 0.66) pebbleStack(ctx, px, p.y, 9 + r() * 6, tone(mix(look.ground.stone, '#566a7c', 0.4), '#0a1826'), look.ground.outline);
-      else if (roll < 0.78) featherOnGround(ctx, px, p.y, 8 + r() * 4, r);
-      else if (roll < 0.9) gunnera(ctx, px, p.y, 34 + r() * 10, leafT, r);
-      else {
-        // horsetail: jointed, upright, and always found where it is wet
-        ctx.strokeStyle = mossT.mid;
-        ctx.lineWidth = 2;
-        for (let k = 0; k < 4; k++) {
-          const hx = px + (k - 1.5) * 4;
-          const hh = 12 + r() * 12;
-          ctx.beginPath();
-          ctx.moveTo(hx, p.y - 1);
-          ctx.lineTo(hx, p.y - hh);
-          ctx.stroke();
-          ctx.strokeStyle = mossT.dark;
-          for (let j = 1; j < 4; j++) {
-            ctx.beginPath();
-            ctx.moveTo(hx - 3, p.y - (hh * j) / 4);
-            ctx.lineTo(hx + 3, p.y - (hh * j) / 4);
-            ctx.stroke();
-          }
-          ctx.strokeStyle = mossT.mid;
-        }
-      }
-    } else {
-      if (roll < 0.3) foxfireLog(ctx, px, p.y, 22 + r() * 10, look, r);
-      else if (roll < 0.5) moonflower(ctx, px, p.y, 22 + r() * 8, look, r);
-      else if (roll < 0.68) {
-        for (let f = 0; f < 5; f++) fernFrond(ctx, px, p.y - 2, 24 + r() * 14, -Math.PI / 2 + (f - 2) * 0.5, leafT, r, 0.5);
-      } else if (roll < 0.82) stalagmite(ctx, px, p.y, 14 + r() * 8, look, r);
-      else if (roll < 0.92) parkia(ctx, px, p.y, 30 + r() * 8, look, r);
-      else pebbleStack(ctx, px, p.y, 9 + r() * 6, tone(mix(look.ground.stone, '#8a8f9a', 0.3), '#1a2030'), look.ground.outline);
-    }
-  }
+  if (!kit || kit.decor.length === 0) return false;
+  if (kit.decorChance !== undefined && r() > kit.decorChance) return false;
+  const def = PLANTS[pickWeighted(r, kit.decor)];
+  if (!def) return false;
+  def.draw(ctx, px, py, def.decor[0] + r() * (def.decor[1] - def.decor[0]), look, r);
   return true;
 }
+
+// ───────────────────────────── the registry ─────────────────────────────
+
+const tn = (look: Look, r: RNG, i?: number) => tone(mix(look.leaves[i ?? ((r() * look.leaves.length) | 0)], look.haze, 0.1));
+
+const swayDripFern: SwayFn = (c, look, variant, r) => {
+  const dark = tone(darken(look.leaves[0], 0.3), '#04201a');
+  const n = 4 + (variant % 2);
+  for (let k = 0; k < n; k++) {
+    const a = Math.PI / 2 + (k - (n - 1) / 2) * 0.5 + (r() - 0.5) * 0.15;
+    fernFrond(c, 180, 8, 190 + r() * 60, a, dark, r, 1.1);
+  }
+  c.fillStyle = 'rgba(215,245,255,0.8)';
+  for (let k = 0; k < 6; k++) {
+    c.beginPath();
+    c.ellipse(80 + r() * 200, 150 + r() * 160, 2, 3.2, 0, 0, TAU);
+    c.fill();
+  }
+};
+
+const swayJadeVine: SwayFn = (c, look, variant, r) => {
+  const n = 3 + (variant % 2);
+  for (let k = 0; k < n; k++) {
+    const sx = 180 + (k - (n - 1) / 2) * 70 + (r() - 0.5) * 20;
+    const len = 150 + r() * 130;
+    const sway = (r() - 0.5) * 40;
+    c.strokeStyle = '#1a3a2e';
+    c.lineWidth = 3.4;
+    c.lineCap = 'round';
+    c.beginPath();
+    c.moveTo(sx, 4);
+    c.bezierCurveTo(sx + sway, len * 0.2, sx - sway, len * 0.45, sx + sway * 0.3, len * 0.55);
+    c.stroke();
+    const lt = tone(mix(look.leaves[1] ?? '#3f9a78', '#04160f', 0.4));
+    for (let m = 1; m <= 2; m++) leaf(c, sx + (m % 2 ? sway * 0.2 : -sway * 0.2), (len * m) / 5, 38 + r() * 18, 11, m % 2 ? 0.4 : Math.PI - 0.4, lt, 0.2);
+    raceme(c, sx + sway * 0.3, len * 0.55, len * 0.5, r);
+  }
+  // the Monarch's subjects asleep on the vines
+  const batN = 1 + (variant % 2);
+  for (let k = 0; k < batN; k++) {
+    const bx = 70 + r() * 220;
+    c.strokeStyle = '#1a3a2e';
+    c.lineWidth = 2.4;
+    c.beginPath();
+    c.moveTo(bx - 26, 3);
+    c.quadraticCurveTo(bx, 14 + r() * 10, bx + 26, 3);
+    c.stroke();
+    hangingBat(c, bx, 10, 15 + r() * 6, '#2a1c18', undefined, '#c98a3a');
+  }
+};
+
+const SWAY_ALL: Record<string, SwayFn> = { ...SWAYS, dripfern: swayDripFern, jadevine: swayJadeVine };
+
+const PLANTS: Record<string, PlantDef> = {
+  ...EXTRA_PLANTS,
+  // W4 cloud forest
+  gunnera: { draw: (c, x, y, s, l, r) => gunnera(c, x, y, s, tn(l, r), r), near: 1.5, decor: [34, 44] },
+  treefern: { draw: (c, x, y, s, l, r) => treeFernNear(c, x, y, s, tn(l, r), r), near: 1.7, decor: [26, 34] },
+  dripmoss: { draw: (c, x, y, s, l, r) => dripMoss(c, x, y, s, tone(mix(l.leaves[2] ?? '#7fe0b0', '#2a7a5a', 0.3)), r), near: 1.4, decor: [14, 22] },
+  ferncrown: {
+    draw: (c, x, y, s, l, r) => {
+      const t = tn(l, r);
+      for (let f = 0; f < 5; f++) fernFrond(c, x, y - 2, s * (0.7 + r() * 0.4), -Math.PI / 2 + (f - 2) * 0.5, t, r, 0.9);
+    },
+    near: 1, decor: [30, 40],
+  },
+  mosscushion: { draw: (c, x, y, s, l, r) => mossCushion(c, x, y, s, tone(mix(l.leaves[2] ?? l.leaves[0], '#2a7a5a', 0.3)), r), near: 1, decor: [12, 20] },
+  pebbles: { draw: (c, x, y, s, l) => pebbleStack(c, x, y, s, tone(mix(l.ground.stone, '#566a7c', 0.4), '#0a1826'), l.ground.outline), near: 1, decor: [9, 15] },
+  feather: { draw: (c, x, y, s, _l, r) => featherOnGround(c, x, y, s, r), near: 1, decor: [8, 12] },
+  horsetail: {
+    draw: (c, x, y, _s, l, r) => {
+      const t = tone(mix(l.leaves[2] ?? l.leaves[0], '#2a7a5a', 0.3));
+      c.lineWidth = 2;
+      for (let k = 0; k < 4; k++) {
+        const hx = x + (k - 1.5) * 4;
+        const hh = 12 + r() * 12;
+        c.strokeStyle = t.mid;
+        c.beginPath();
+        c.moveTo(hx, y - 1);
+        c.lineTo(hx, y - hh);
+        c.stroke();
+        c.strokeStyle = t.dark;
+        for (let j = 1; j < 4; j++) {
+          c.beginPath();
+          c.moveTo(hx - 3, y - (hh * j) / 4);
+          c.lineTo(hx + 3, y - (hh * j) / 4);
+          c.stroke();
+        }
+      }
+    },
+    near: 1, decor: [10, 14],
+  },
+  // W8 limestone karst at night
+  jadevine: { draw: jadeVine, near: 1.5, decor: [26, 34] },
+  parkia: { draw: parkia, near: 1.6, decor: [30, 38] },
+  moonflower: { draw: moonflower, near: 1.5, decor: [22, 30] },
+  foxfire: { draw: foxfireLog, near: 1.4, decor: [22, 32] },
+  stalagmite: { draw: stalagmite, near: 1, decor: [14, 22] },
+  karstpebbles: { draw: (c, x, y, s, l) => pebbleStack(c, x, y, s, tone(mix(l.ground.stone, '#8a8f9a', 0.3), '#1a2030'), l.ground.outline), near: 1, decor: [9, 15] },
+};
+
+ENV[1] = { near: [], decor: [['snakeskin', 2], ['hollowlog', 2], ['heliconia', 3]], decorChance: 0.3 };
+ENV[2] = {
+  near: [['reedclump', 3], ['nipa', 2], ['hyacinth', 2], ['proproot', 3]],
+  decor: [['reedclump', 4], ['nipa', 2], ['hyacinth', 2], ['proproot', 2], ['driftwood', 1.5], ['crocnest', 1]],
+  sway: 'droop', front: 'reed',
+};
+ENV[3] = {
+  near: [['birdnest', 3], ['bracket', 2], ['clawrock', 2], ['kneeroot', 2]],
+  decor: [['birdnest', 3], ['bracket', 2], ['clawrock', 2], ['bones', 1.2], ['kneeroot', 2], ['fernclump', 2]],
+  sway: 'glowworm', front: 'fern',
+};
+ENV[4] = {
+  near: [['gunnera', 3], ['treefern', 3], ['dripmoss', 2]],
+  decor: [['ferncrown', 30], ['mosscushion', 20], ['pebbles', 16], ['feather', 12], ['gunnera', 12], ['horsetail', 10]],
+  sway: 'dripfern', front: 'fern',
+};
+ENV[5] = {
+  near: [['heliconia', 3], ['orchidclump', 3], ['bromrosette', 2], ['orbweb', 2]],
+  decor: [['heliconia', 3], ['orchidclump', 3], ['bromrosette', 2], ['orbweb', 2.5], ['cocoon', 1.2]],
+  sway: 'silk', front: 'fern',
+};
+ENV[6] = {
+  near: [['pitcher', 2], ['pegs', 3], ['bogfern', 2], ['kneeroot', 2]],
+  decor: [['pegs', 3], ['pitcher', 2], ['bogfern', 2], ['kneeroot', 2], ['mudbubble', 2]],
+  sway: 'bogmoss', front: 'reed',
+};
+ENV[7] = {
+  near: [['idolhead', 1], ['blockpile', 3], ['figroot', 3], ['fernclump', 2]],
+  decor: [['blockpile', 3], ['figroot', 2], ['idolhead', 1.2], ['fernclump', 3]],
+  sway: 'aerial', front: 'rock',
+};
+ENV[8] = {
+  near: [['jadevine', 3], ['parkia', 2], ['moonflower', 3], ['foxfire', 2]],
+  decor: [['foxfire', 30], ['moonflower', 20], ['ferncrown', 18], ['stalagmite', 14], ['parkia', 10], ['karstpebbles', 8]],
+  sway: 'jadevine', front: 'fern',
+};
+ENV[9] = {
+  near: [['ohia', 2], ['steamvent', 2], ['lavafern', 2], ['obsidian', 2]],
+  decor: [['ohia', 2], ['steamvent', 2], ['lavafern', 3], ['lichenrock', 2], ['obsidian', 2]],
+  sway: 'charvine', front: 'rock',
+};
+ENV[10] = {
+  near: [['stump', 3], ['stakes', 3], ['logpile', 2], ['banner', 1]],
+  decor: [['stump', 3], ['stakes', 2], ['logpile', 2], ['banner', 1], ['campfire', 0.7]],
+  sway: 'chains', front: 'rock',
+};
