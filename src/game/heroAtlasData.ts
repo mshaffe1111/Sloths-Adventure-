@@ -1,6 +1,6 @@
 /** Generated from the Gemini pose sheet (see art notes). Frame rects, and feet anchors, in atlas pixels. */
 export interface HeroFrame { x: number; y: number; w: number; h: number; ax: number; ay: number }
-export const HERO_ATLAS_SIZE = { w: 2048, h: 489 };
+export const HERO_ATLAS_SIZE = { w: 2048, h: 921 };
 /** height of the standing side-view frame, in atlas pixels (used to scale every frame the same) */
 export const HERO_STAND_H = 290.5;
 export const HERO_FRAMES: Record<string, HeroFrame> = {
@@ -123,5 +123,69 @@ export const HERO_FRAMES: Record<string, HeroFrame> = {
   "ay": 160,
   "x": 810,
   "y": 327
+ },
+ "idle_a": {
+  "w": 201,
+  "h": 293,
+  "ax": 104.9,
+  "ay": 289.7,
+  "x": 972,
+  "y": 327
+ },
+ "idle_blink": {
+  "w": 201,
+  "h": 292,
+  "ax": 104.9,
+  "ay": 289.2,
+  "x": 1175,
+  "y": 327
+ },
+ "run_a": {
+  "w": 271,
+  "h": 295,
+  "ax": 128.0,
+  "ay": 292.2,
+  "x": 1378,
+  "y": 327
+ },
+ "run_b": {
+  "w": 254,
+  "h": 283,
+  "ax": 117.0,
+  "ay": 279.8,
+  "x": 1651,
+  "y": 327
+ },
+ "walk_34": {
+  "w": 225,
+  "h": 291,
+  "ax": 116.3,
+  "ay": 287.7,
+  "x": 0,
+  "y": 624
+ },
+ "run_c": {
+  "w": 280,
+  "h": 290,
+  "ax": 131.6,
+  "ay": 286.8,
+  "x": 227,
+  "y": 624
+ },
+ "run_d": {
+  "w": 254,
+  "h": 295,
+  "ax": 115.0,
+  "ay": 292.2,
+  "x": 509,
+  "y": 624
+ },
+ "run_e": {
+  "w": 238,
+  "h": 292,
+  "ax": 114.1,
+  "ay": 289.2,
+  "x": 765,
+  "y": 624
  }
 };

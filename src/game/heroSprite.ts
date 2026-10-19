@@ -53,6 +53,9 @@ export function heroFace(ctx: CanvasRenderingContext2D, name: string, x: number,
   return true;
 }
 
+/** the run frames, in stride order (both feet down, front knee up, stretching, widest, trailing leg, back to both feet down) */
+const RUN_CYCLE = ['run_b', 'run_c', 'run_d', 'run_e', 'run_a'];
+
 function pick(p: PlayerState, time: number): { name: string; bob: number } | null {
   if (p.climbing || p.isVineSwinging) return null;
   if (p.ducking) return { name: 'duck', bob: 0 };
@@ -64,9 +67,14 @@ function pick(p: PlayerState, time: number): { name: string; bob: number } | nul
     return { name: p.vy < 0 ? 'jump' : 'fall', bob: 0 };
   }
   if (Math.abs(p.vx) > 10) {
-    return { name: Math.sin(p.walkCycle) > 0 ? 'run_contact' : 'run_passing', bob: -Math.abs(Math.sin(p.walkCycle)) * 2.6 };
+    // one stride = one turn of walkCycle; the frames come from the run sheet, in the order the stride unfolds
+    const u = (((p.walkCycle / (Math.PI * 2)) % 1) + 1) % 1;
+    const name = RUN_CYCLE[Math.min(RUN_CYCLE.length - 1, Math.floor(u * RUN_CYCLE.length))];
+    return { name, bob: -Math.abs(Math.sin(p.walkCycle)) * 2.4 };
   }
-  return { name: 'idle_side', bob: Math.sin(time * 3.2) * 0.5 };
+  // standing: a slow breath, and a blink every few seconds
+  const blink = time % 3.6 > 3.45;
+  return { name: blink ? 'idle_blink' : 'idle_a', bob: Math.sin(time * 3.2) * 0.5 };
 }
 
 /** returns true if it drew the hero */
