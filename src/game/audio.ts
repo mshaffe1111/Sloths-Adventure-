@@ -69,7 +69,8 @@ class SoundEngine {
   storyPanel(panel: PanelInfo) {
     const s = sceneForPanel(panel);
     this.c.setScene(s.id, { intensity: s.intensity });
-    if (panel.chapter.toUpperCase().startsWith('THE STORM')) this.c.setAmbient('thunderstorm');
+    // the storm belongs to the storm panels only: the quiet scenes after it must not keep the thunder
+    this.c.setAmbient(panel.chapter.toUpperCase().startsWith('THE STORM') ? 'thunderstorm' : 'gentle_breeze');
   }
   setIntensity(v: number) {
     this.c.setIntensity(v);

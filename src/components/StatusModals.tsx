@@ -94,6 +94,14 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   onSaveProgressToDesktop,
   onSaveSnapshotToDesktop,
 }) => {
+  // the stars ring in one after another as the victory card appears
+  React.useEffect(() => {
+    if (screen !== 'victory' || levelConfig.secret) return;
+    const ids: number[] = [];
+    for (let i = 1; i <= starsEarned; i++) ids.push(window.setTimeout(() => sound.playStar(i), 350 + (i - 1) * 260));
+    return () => ids.forEach((id) => window.clearTimeout(id));
+  }, [screen, starsEarned, levelConfig.secret]);
+
   // --- 1. PAUSE MODAL ---
   if (screen === 'paused') {
     return (

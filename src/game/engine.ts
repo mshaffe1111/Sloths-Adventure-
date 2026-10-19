@@ -357,6 +357,7 @@ export class GameEngine {
     this.lastTime = performance.now();
     this.lastRenderTime = this.lastTime;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
+    sound.setTempo(1); // a boss fight that was enraged must not restart at the enraged speed
     sound.playLevelStart();
     this.loop(this.lastTime);
   }
@@ -949,10 +950,12 @@ export class GameEngine {
       const waterY = this.currentStage.waterY;
       if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY);
+        sound.playWhoosh();
         sound.playHitImpact(true);
         this.addFloatingText('SPLASH!', p.x, waterY - 40, '#7dd3fc');
         this.loseLife('water');
       } else if (p.y > this.currentStage.config.levelHeight + 120 && !this.isGameOver) {
+        sound.playPlayerHurt();
         this.loseLife('pit');
       }
 
@@ -1408,6 +1411,11 @@ export class GameEngine {
   private stepDist = 0;
   private updateSound(dt: number, groundedBefore: boolean, vyBefore: number, progress: number) {
     const p = this.player;
+    // the stage is over (game over / victory screen up): no heartbeat, and the screen's own music intensity stands
+    if (this.isGameOver) {
+      sound.setLowHealth(false);
+      return;
+    }
     if (p.grounded && !groundedBefore && vyBefore > 140 && !p.climbing && !p.isVineSwinging) {
       sound.playLand(Math.min(1, vyBefore / 700));
     }
@@ -1533,6 +1541,7 @@ export class GameEngine {
     stepBoss(b, def, c, dt);
 
     if (b.phase !== prevPhase) {
+      sound.playBossRoar(this.currentStage.config.worldIndex);
       if (b.phase === 3) {
         sound.setTempo(1.08);
         this.addFloatingText('PHASE 3: ENRAGED!', b.x, b.y - b.height, '#ef4444');

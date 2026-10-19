@@ -203,11 +203,13 @@ function pickRhythm(c: MelCtx): number[] {
 }
 
 /** one bar: a rhythm, a first note, then either a fresh random walk or the contour (`deltas`) of an earlier bar */
-function buildBar(c: MelCtx, root: number, rhythm: number[], start: number, deltas: number[] | null): BarN {
+function buildBar(c: MelCtx, root: number, rhythm: number[], start: number, deltas: number[] | null, dom = false): BarN {
+  // over a raised-third dominant the lowered seventh would grind against the chord's leading tone (as in cadenceBar)
+  const tones = dom ? ctOf(root).filter((d) => d !== 6) : undefined;
   const notes: NoteN[] = [];
   const out: number[] = [];
   let step = 0;
-  let n = snap(c, clamp(start, c.lo, c.hi), root);
+  let n = snap(c, clamp(start, c.lo, c.hi), root, tones);
   let first = true;
   let di = 0;
   for (const raw of rhythm) {
@@ -224,7 +226,7 @@ function buildBar(c: MelCtx, root: number, rhythm: number[], start: number, delt
       let d = deltas && di < deltas.length ? deltas[di] : randDelta(c, n);
       di++;
       let m = clamp(n + d, c.lo, c.hi);
-      if (strong(c, step)) m = snap(c, m, root);
+      if (strong(c, step) || (tones && len >= 3)) m = snap(c, m, root, tones);
       // no leap wider than a fifth between neighbours
       if (Math.abs(m - n) > 4) m = n + Math.sign(m - n) * 4;
       d = m - n;
@@ -253,7 +255,10 @@ function cadenceBar(c: MelCtx, root: number, kind: 'half' | 'auth' | 'open', pre
     const toward = Math.sign(prevEnd - ns[i + 1]) || pick(c.r, [-1, 1]);
     ns[i] = clamp(ns[i + 1] + toward * pick(c.r, [1, 1, 2]), c.lo, c.hi);
   }
-  const first = snap(c, ns[0], root);
+  const tones = dom ? ctOf(root).filter((d) => d !== 6) : undefined;
+  // a held note over the raised-third dominant must not be the lowered seventh either
+  if (tones) for (let i = 0; i < k - 1; i++) if (rhythm[i] >= 3) ns[i] = snap(c, ns[i], root, tones);
+  const first = snap(c, ns[0], root, tones);
   if (Math.abs(first - (ns[1] ?? first)) <= 4) ns[0] = first;
   const notes: NoteN[] = rhythm.map((len, i) => ({ n: ns[i], len }));
   const out: number[] = [];
@@ -326,7 +331,7 @@ function sectionA(c: MelCtx, roots: number[], start: number, doms?: boolean[]): 
   const b3 = cadenceBar(c, roots[3], 'half', b2.end, doms?.[3]);
   const b4 = buildBar(c, roots[4], rA, clamp(start + pick(c.r, [0, 0, 1, 2]), b3.end - 4, b3.end + 4), b0.deltas);
   const b5 = buildBar(c, roots[5], rA, b4.end + pick(c.r, [-1, 1, 2]), b0.deltas);
-  const b6 = buildBar(c, roots[6], pickRhythm(c), b5.end + pick(c.r, [-1, 1]), null);
+  const b6 = buildBar(c, roots[6], pickRhythm(c), b5.end + pick(c.r, [-1, 1]), null, doms?.[6]);
   const b7 = cadenceBar(c, roots[7], 'auth', b6.end, doms?.[7]);
   const bars = [b0, b1, b2, b3, b4, b5, b6, b7];
   return { bars, motif: b0, top: Math.max(...bars.flatMap((b) => b.notes.map((x) => x.n ?? -99))) };
@@ -343,7 +348,7 @@ function sectionB(c: MelCtx, roots: number[], motif: BarN, startMid: number, dom
   const b3 = fallBar(c, roots[3], b2.end);
   const b4 = buildBar(c, roots[4], pickRhythm(c), clamp(startMid, b3.end - 4, b3.end + 4), motif.deltas);
   const b5 = buildBar(c, roots[5], pickRhythm(c), b4.end + pick(c.r, [-1, 1]), motif.deltas);
-  const b6 = buildBar(c, roots[6], pickRhythm(c), b5.end + pick(c.r, [-2, -1, 1]), null);
+  const b6 = buildBar(c, roots[6], pickRhythm(c), b5.end + pick(c.r, [-2, -1, 1]), null, doms?.[6]);
   // the last bar leans back toward where the tune begins, so the loop turns over without a jump
   const b7 = cadenceBar(c, roots[7], 'open', Math.round((b6.end + startMid) / 2), doms?.[7]);
   return [b0, b1, b2, b3, b4, b5, b6, b7];

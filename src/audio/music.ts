@@ -287,12 +287,16 @@ export class Playback {
 
   /** schedule everything that falls before `until` (seconds on the audio clock) */
   update(until: number) {
+    // far behind the clock (the page was frozen for a while): carry on from now rather than replaying the gap
+    if (this.nextTime < this.c.currentTime - 1.5) this.nextTime = this.c.currentTime;
     while (!this.disposed && !this.retired && this.nextTime < until) {
       if (this.step === 0) this.beginBar();
       const list = this.bucket[this.step];
       if (list) {
         const t = this.stepTime(this.nextTime, this.step);
-        for (const fire of list) fire(Math.max(t, this.c.currentTime));
+        const now = this.c.currentTime;
+        // a note that is already well in the past is dropped: firing a pile of them at once is a burst, not music
+        if (t >= now - 0.1) for (const fire of list) fire(Math.max(t, now));
       }
       this.step++;
       this.nextTime += this.stepDur;

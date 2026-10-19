@@ -15,7 +15,9 @@ import { speechBlip } from './speech.ts';
 import { playSting } from './stingers.ts';
 import { themeById } from './themes.ts';
 
-const LOOKAHEAD = 0.3;
+// how far ahead of the audio clock the music is scheduled: long enough to ride out a stalled main thread
+// (a level loading, a garbage collection) without the music dropping out and then firing in one burst
+const LOOKAHEAD = 0.6;
 const TICK_MS = 25;
 const DEFAULT_KEY: KeyInfo = { tonic: 60, scale: [0, 2, 4, 5, 7, 9, 11] };
 
@@ -97,12 +99,18 @@ export class Conductor {
     if (!this.ctx) {
       const AC = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!AC) return;
+      let ctx: AudioContext;
       try {
-        this.ctx = new AC({ latencyHint: 'interactive' });
+        ctx = new AC({ latencyHint: 'interactive' });
+        // iPhones follow the ringer switch for Web Audio unless the page says this is playback, not a notification
+        const session = (navigator as unknown as { audioSession?: { type: string } }).audioSession;
+        if (session) session.type = 'playback';
+        this.core = new AudioCore(ctx);
       } catch {
+        this.core = null;
         return;
       }
-      this.core = new AudioCore(this.ctx);
+      this.ctx = ctx;
       this.amb = new Ambience(this.core);
       this.lite = typeof navigator !== 'undefined' && /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) && (navigator.hardwareConcurrency ?? 8) <= 4;
       this.amb.lite = this.lite;
