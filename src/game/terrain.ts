@@ -12,6 +12,7 @@ import {
 import { lookFor, type Look } from './scenery.ts';
 import { getSoil, capTransform } from './soil.ts';
 import { isRich } from './rainforest.ts';
+import { paintTopDecor } from './envKit.ts';
 
 /** worlds painted with the new baked ground (grown world by world) */
 let curWorld = 1;
@@ -306,6 +307,7 @@ function drawCap(ctx: CanvasRenderingContext2D, p: Platform, look: Look, time: n
 }
 
 function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG) {
+  if (paintTopDecor(ctx, curWorld, look, p, r)) return;
   const capT = tone(look.ground.cap);
   const isGround = p.height >= 50;
   const step = isGround ? 54 : 46;

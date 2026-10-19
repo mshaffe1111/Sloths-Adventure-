@@ -7,6 +7,7 @@ import { rng, tone, rgba, lighten, darken } from './artKit.ts';
 import { leaf } from './rainforest.ts';
 import { getSceneSeed } from './sceneSeed.ts';
 import type { Look } from './scenery.ts';
+import { paintSwayCluster } from './envKit.ts';
 
 const fract = (v: number) => v - Math.floor(v);
 
@@ -85,6 +86,113 @@ function renderBirds(ctx: CanvasRenderingContext2D, look: Look, world: number, c
       const dy = Math.abs(i - (n - 1) / 2) * 7 * (vh / 720) + (i % 2) * 4;
       bird(ctx, x + dx, baseY + dy, 7 * (vh / 720) + 2, time * 5.2 + i * 0.9 + flock * 2, col);
     }
+  }
+}
+
+/** an eagle seen from below with its wings held flat in a glide: broad, fingered wingtips and a fanned tail */
+function eagle(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, bank: number, col: string) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(bank * 0.12);
+  ctx.fillStyle = col;
+  for (const side of [-1, 1]) {
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 0.1);
+    ctx.bezierCurveTo(side * s * 0.8, -s * 0.5, side * s * 1.6, -s * 0.42, side * s * 2.2, -s * 0.1);
+    // splayed primaries
+    for (let k = 0; k < 4; k++) ctx.lineTo(side * (s * 2.25 - k * s * 0.17), s * (0.02 + k * 0.1 + 0.07));
+    ctx.bezierCurveTo(side * s * 1.5, s * 0.22, side * s * 0.8, s * 0.22, 0, s * 0.22);
+    ctx.closePath();
+    ctx.fill();
+  }
+  // body, head and fanned tail
+  ctx.beginPath();
+  ctx.ellipse(0, s * 0.05, s * 0.2, s * 0.42, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(0, -s * 0.46, s * 0.14, s * 0.15, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-s * 0.2, s * 0.35);
+  ctx.lineTo(-s * 0.36, s * 0.85);
+  ctx.lineTo(s * 0.36, s * 0.85);
+  ctx.lineTo(s * 0.2, s * 0.35);
+  ctx.fill();
+  ctx.restore();
+}
+
+function swift(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, flap: number, col: string) {
+  const w = Math.sin(flap) * s * 0.35;
+  ctx.fillStyle = col;
+  ctx.beginPath();
+  ctx.moveTo(x - s * 1.5, y + s * 0.1 - w);
+  ctx.quadraticCurveTo(x - s * 0.6, y - s * 0.5 - w, x, y);
+  ctx.quadraticCurveTo(x + s * 0.6, y - s * 0.5 - w, x + s * 1.5, y + s * 0.1 - w);
+  ctx.quadraticCurveTo(x + s * 0.6, y - s * 0.05, x, y + s * 0.3);
+  ctx.quadraticCurveTo(x - s * 0.6, y - s * 0.05, x - s * 1.5, y + s * 0.1 - w);
+  ctx.fill();
+}
+
+function renderRaptors(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, n: number) {
+  const col = rgba(darken(look.farCols[0], 0.62), 0.82);
+  const sc = vh / 720;
+  const r = rng(world * 97 + 5 + getSceneSeed() * 1013);
+  // eagles ride the updraft in slow, wide arcs
+  for (let i = 0; i < n; i++) {
+    const period = 70 + r() * 40;
+    const u = fract((time + r() * 90) / period);
+    const dir = i % 2 ? 1 : -1;
+    const x = dir > 0 ? -140 + u * (vw + 280) - camX * 0.02 : vw + 140 - u * (vw + 280) - camX * 0.02;
+    const y = vh * (0.09 + r() * 0.18) + Math.sin(u * Math.PI * 3 + i) * 22 * sc;
+    ctx.save();
+    if (dir < 0) {
+      ctx.translate(x, 0);
+      ctx.scale(-1, 1);
+      ctx.translate(-x, 0);
+    }
+    eagle(ctx, x, y, 17 * sc * (0.85 + r() * 0.4), Math.cos(u * Math.PI * 3 + i), col);
+    ctx.restore();
+  }
+  // swifts stitch fast, low arcs across the spray
+  const sw = rgba(darken(look.farCols[0], 0.7), 0.75);
+  for (let i = 0; i < n * 3; i++) {
+    const period = 11 + r() * 8;
+    const u = fract((time + r() * 30) / period);
+    const dir = i % 2 ? 1 : -1;
+    const x = dir > 0 ? -50 + u * (vw + 100) : vw + 50 - u * (vw + 100);
+    const y = vh * (0.28 + r() * 0.3) + Math.sin(u * 20 + i * 3) * 14 * sc;
+    swift(ctx, x, y, 5 * sc, time * 14 + i * 2, sw);
+  }
+}
+
+/** a drifting feather: a quill, a vane that bends over it and a few barbs */
+function renderFeathers(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, n: number) {
+  const r = rng(world * 41 + 7 + getSceneSeed() * 1013);
+  const sc = vh / 720;
+  for (let i = 0; i < n; i++) {
+    const sp = 14 + r() * 14;
+    const x0 = r() * (vw + 200);
+    const x = ((x0 + Math.sin(time * 0.7 + i * 2) * 40 - camX * 0.35 + time * 5) % (vw + 200) + (vw + 200)) % (vw + 200) - 100;
+    const y = (((r() * vh + time * sp) % (vh + 60)) + (vh + 60)) % (vh + 60) - 30;
+    const len = (14 + r() * 8) * sc;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(Math.sin(time * 1.1 + i * 1.7) * 0.9 + 0.6);
+    ctx.fillStyle = i % 3 === 0 ? 'rgba(240,232,214,0.85)' : 'rgba(130,100,70,0.8)';
+    ctx.beginPath();
+    ctx.moveTo(0, -len);
+    ctx.quadraticCurveTo(len * 0.34, -len * 0.3, len * 0.12, len * 0.7);
+    ctx.lineTo(0, len);
+    ctx.lineTo(-len * 0.08, len * 0.6);
+    ctx.quadraticCurveTo(-len * 0.3, -len * 0.3, 0, -len);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(60,45,30,0.7)';
+    ctx.lineWidth = 0.9;
+    ctx.beginPath();
+    ctx.moveTo(0, -len);
+    ctx.lineTo(0, len * 1.15);
+    ctx.stroke();
+    ctx.restore();
   }
 }
 
@@ -169,16 +277,20 @@ export interface LifeKit {
   gusts: number; // wind-blown leaves
   mist: boolean;
   motes: number;
+  /** 'raptor': a few big soaring eagles and darting swifts instead of V-flocks of small birds */
+  birdKind?: 'raptor';
+  /** drifting feathers (an eagle's territory) */
+  feathers?: number;
 }
 export const LIFE: Record<number, LifeKit> = {
   1: { birds: 2, fauna: 'butterfly', nFauna: 7, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 34 },
   2: { birds: 2, fauna: 'dragonfly', nFauna: 6, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 24 },
   3: { birds: 0, fauna: 'moth', nFauna: 6, bats: 4, fireflies: 16, embers: 0, ash: 0, gusts: 0, mist: true, motes: 40 },
-  4: { birds: 1, fauna: 'dragonfly', nFauna: 5, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 20 },
+  4: { birds: 2, birdKind: 'raptor', feathers: 7, fauna: 'dragonfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 20 },
   5: { birds: 1, fauna: 'butterfly', nFauna: 11, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 5, mist: true, motes: 30 },
   6: { birds: 0, fauna: 'dragonfly', nFauna: 4, bats: 2, fireflies: 22, embers: 0, ash: 0, gusts: 0, mist: true, motes: 18 },
   7: { birds: 2, fauna: 'butterfly', nFauna: 4, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 44 },
-  8: { birds: 0, fauna: 'moth', nFauna: 7, bats: 3, fireflies: 20, embers: 0, ash: 0, gusts: 0, mist: true, motes: 36 },
+  8: { birds: 0, fauna: 'moth', nFauna: 7, bats: 11, fireflies: 8, embers: 0, ash: 0, gusts: 0, mist: true, motes: 36 },
   9: { birds: 1, fauna: 'moth', nFauna: 0, bats: 4, fireflies: 0, embers: 34, ash: 20, gusts: 0, mist: false, motes: 10 },
   10: { birds: 0, fauna: 'butterfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 9, mist: true, motes: 8 },
 };
@@ -395,6 +507,11 @@ function getLeafSprites(look: Look, world: number): HTMLCanvasElement[] {
     cv.width = 360;
     cv.height = 360;
     const c = cv.getContext('2d')!;
+    // a world with its own plants hangs its own things in front of the camera
+    if (paintSwayCluster(c, world, look, i, r)) {
+      s.push(cv);
+      continue;
+    }
     // a cluster of big drooping leaves hanging from the top-centre of the sprite
     const n = 3 + (i % 2);
     for (let k = 0; k < n; k++) {
@@ -430,7 +547,10 @@ function renderSwayLeaves(ctx: CanvasRenderingContext2D, look: Look, world: numb
 /** creatures, mist and dust: drawn behind the playfield so they never hide what the player must read */
 export function renderLifeBack(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, lite: boolean) {
   const k = LIFE[world] ?? LIFE[1];
-  if (k.birds > 0) renderBirds(ctx, look, world, camX, vw, vh, time, k.birds);
+  if (k.birds > 0) {
+    if (k.birdKind === 'raptor') renderRaptors(ctx, look, world, camX, vw, vh, time, k.birds);
+    else renderBirds(ctx, look, world, camX, vw, vh, time, k.birds);
+  }
   if (k.mist && !lite) renderMist(ctx, look, camX, vw, vh, time);
   renderMotes(ctx, look, world, camX, vw, vh, time, k.motes);
   if (k.nFauna > 0) renderFauna(ctx, look, world, camX, vw, vh, time, k.fauna, lite ? Math.ceil(k.nFauna / 2) : k.nFauna);
@@ -438,6 +558,7 @@ export function renderLifeBack(ctx: CanvasRenderingContext2D, look: Look, world:
   if (k.fireflies > 0) renderFireflies(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.fireflies / 2) : k.fireflies);
   if (k.embers > 0) renderEmbers(ctx, world, camX, vw, vh, time, lite ? Math.ceil(k.embers / 2) : k.embers, lite ? 6 : k.ash);
   if (k.gusts > 0) renderGusts(ctx, look, world, camX, vw, vh, time, k.gusts);
+  if (k.feathers) renderFeathers(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.feathers / 2) : k.feathers);
 }
 
 /** big leaves swaying in front of the camera at the top edge */

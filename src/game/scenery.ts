@@ -9,6 +9,7 @@ import { getSceneSeed, onSceneSeedChange } from './sceneSeed.ts';
 import { renderLifeBack, renderLifeFront } from './life.ts';
 import { isRich } from './rainforest.ts';
 import { paintBiomeMid } from './biomes.ts';
+import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
 import {
   rng, tone, mix, mixToHex, lighten, darken, rgba, drawCrown, drawFrond, drawMonstera, drawBananaLeaf,
   drawGrass, drawFlower, drawMushroom, drawRock, drawCloud, drawRays, drawLiana,
@@ -1004,6 +1005,23 @@ function buildNear(look: Look, world: number): HTMLCanvasElement {
   const [cv, ctx] = makeLayer(1.35);
   const r = rng(world * 419 + 5 + getSceneSeed() * 1013);
   const L = look.leaves.map((c) => tone(c));
+  // a world with its own plant kit (see envKit.ts) grows what belongs there instead of the shared jungle undergrowth
+  if (hasKit(world)) {
+    for (let x = 0; x < TW; x += 110) {
+      wrap(x, 170, (xx) => {
+        paintNearPlant(ctx, world, look, xx + (r() - 0.5) * 60, 694 + r() * 26, 56 + r() * 40, r);
+      });
+    }
+    for (let i = 0; i < 10; i++) {
+      const x = r() * TW;
+      wrap(x, 70, (xx) => drawRock(ctx, xx, 712, 56 + r() * 44, 24 + r() * 16, tone(look.ground.stone)));
+    }
+    for (let x = 0; x < TW; x += 300) {
+      if (r() < 0.3) continue;
+      wrap(x, 100, (xx) => drawLiana(ctx, xx + r() * 80, 4, 100 + r() * 120, tone(look.vine.main), r, undefined));
+    }
+    return cv;
+  }
   // low undergrowth: ferns, grass, monstera and the odd banana leaf — kept short so play stays readable
   for (let x = 0; x < TW; x += 56) {
     wrap(x, 130, (xx) => {
@@ -1061,6 +1079,7 @@ function buildFront(look: Look, world: number): HTMLCanvasElement {
   // low clumps at the bottom edge: just the tips peek in
   for (let x = 60; x < TW; x += 800) {
     wrap(x, 220, (xx) => {
+      if (paintFrontClump(ctx, world, look, xx, 800, r)) return;
       for (let k = 0; k < 3; k++) {
         const t = k % 2 ? rim[(r() * rim.length) | 0] : dark[(r() * dark.length) | 0];
         drawBananaLeaf(ctx, xx + (k - 1) * 46, 790, 170 + r() * 50, 52 + r() * 16, (k - 1) * 0.55 + (r() - 0.5) * 0.2, t);
@@ -1070,6 +1089,7 @@ function buildFront(look: Look, world: number): HTMLCanvasElement {
   // a few big leaves hanging into the top corners
   for (let x = 240; x < TW; x += 760) {
     wrap(x, 220, (xx) => {
+      if (paintFrontHang(ctx, world, look, xx, (xx / 760) | 0, r)) return;
       drawMonstera(ctx, xx, -50, 110 + r() * 30, Math.PI + (r() - 0.5) * 0.5, dark[(r() * dark.length) | 0]);
       drawBananaLeaf(ctx, xx + 80, -40, 110, 36, Math.PI + 0.4, rim[(r() * rim.length) | 0]);
     });
