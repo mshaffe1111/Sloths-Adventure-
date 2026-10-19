@@ -16,6 +16,7 @@ import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { renderScenery, renderOverlay } from './scenery.ts';
 import { setSceneSeed, rollSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
+import { drawSnakeSprite } from './snakeSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import {
   drawHeroSloth,
@@ -2315,7 +2316,7 @@ export class GameEngine {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
       const draw = () => {
         if (enemy.type === 'snake') {
-          drawTreeSnake(ctx, enemy, this.gameTime);
+          if (!drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
