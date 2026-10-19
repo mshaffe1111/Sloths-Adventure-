@@ -13,6 +13,10 @@ export const SAVE_FORMAT = 'sloths-rainforest-adventures-save';
 export const SAVE_VERSION = 1;
 /** a real save is a few KB; anything much bigger is not one of ours */
 export const MAX_SAVE_BYTES = 200_000;
+/** one stage result or flag is tiny; the Trophy Room record grows with every trophy (about 30 characters each), so it gets more room */
+const MAX_ENTRY_CHARS = 400;
+const MAX_BADGE_ENTRY_CHARS = 12_000;
+const entryLimit = (k: string) => (k === 'sloth_badges' ? MAX_BADGE_ENTRY_CHARS : MAX_ENTRY_CHARS);
 
 /** the entries that make up a game */
 const ALLOWED: RegExp[] = [
@@ -129,7 +133,7 @@ export function parseSave(text: string): ParseResult {
   const data: Record<string, string> = {};
   for (const [k, v] of Object.entries(o.data)) {
     if (!isSaveKey(k)) continue; // silently drop anything that is not ours
-    if (typeof v !== 'string' || v.length > 400) return { ok: false, reason: 'The save contains damaged entries.' };
+    if (typeof v !== 'string' || v.length > entryLimit(k)) return { ok: false, reason: 'The save contains damaged entries.' };
     data[k] = v;
   }
   // the checksum covers what was written, so compare against the original data only if nothing was dropped

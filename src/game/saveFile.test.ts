@@ -97,3 +97,19 @@ test('a new game can skip the story: every world story beat is marked seen', () 
   for (let w = 1; w <= 10; w++) assert.equal(st.m.get(`sloth_story_w${w}`), '1');
   assert.equal(st.m.has('sloth_lvl_1-1'), false);
 });
+
+test('a save with every trophy earned still loads (the Trophy Room record is far longer than a stage result)', () => {
+  const earned: Record<string, number> = {};
+  for (let i = 0; i < 60; i++) earned[`badge_number_${i}`] = 1760000000000 + i;
+  const record = JSON.stringify({ v: 1, earned, kills: { snake: 80, eagle: 55 }, seen: ['snake', 'eagle'], counters: { stomps: 812, bestCombo: 17 } });
+  assert.ok(record.length > 400);
+  const s = memStore({ ...sample, sloth_badges: record });
+  const r = parseSave(JSON.stringify(buildSave(s)));
+  assert.ok(r.ok, r.ok ? '' : r.reason);
+  if (r.ok) assert.equal(r.save.data['sloth_badges'], record);
+  // a stage result is still held to the small limit
+  const bad = buildSave(s);
+  bad.data['sloth_lvl_1-1'] = JSON.stringify({ completed: true, junk: 'x'.repeat(500) });
+  bad.checksum = checksum(bad.data);
+  assert.equal(parseSave(JSON.stringify(bad)).ok, false);
+});
