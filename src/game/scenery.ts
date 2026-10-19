@@ -80,18 +80,18 @@ export const LOOKS: Record<number, Look> = {
   },
   // 3 — Mossy Grotto: bioluminescent cave forest
   3: {
-    sky: ['#06222f', '#0b4a52', '#12807a', '#5fd1a0'],
-    sun: { x: 0.55, y: 0.38, r: 38, core: '#f4ffd0', glow: '#9dffb0' },
+    sky: ['#030f17', '#06222b', '#0b3d42', '#1c6b60'],
+    sun: { x: 0.55, y: 0.38, r: 30, core: '#e8ffe0', glow: '#6affc0' },
     clouds: null,
-    far: 'shrooms', farCols: ['#0f6a6c', '#0a4a55', '#7fffd0'], haze: '#2fb5a0',
-    hills: ['#17897c', '#0f6e6a', '#0a4f5c'],
-    trunk: ['#7a5a46', '#2f2230'], crowns: ['#1fb59a', '#2ed0a0', '#139080', '#6ae6a0'],
+    far: 'shrooms', farCols: ['#0a3c44', '#062a34', '#4fd8b0'], haze: '#12605a',
+    hills: ['#0e5a52', '#0a4244', '#062e3a'],
+    trunk: ['#5a4636', '#1d1522'], crowns: ['#127a68', '#1a9478', '#0c5a52', '#3fb886'],
     trees: ['jungle', 'willow', 'jungle', 'willow'],
-    leaves: ['#19c7a0', '#0f9a9a', '#7bf0b0', '#1a7fa0'], flora: ['#ff5ad0', '#5ae6ff', '#ffb02e', '#b06aff'],
-    rays: '#9dffd0', rayA: 0.2, weather: 'spores', glow: '#7dffe0', grade: ['#00263a', 0.14],
-    ground: { cap: '#27d4a0', capHi: '#8affd0', capDark: '#0f7a6a', dirt: '#2d5a62', dirtDark: '#122a3a', stone: '#8ab8b0', outline: '#06161f', kind: 'moss' },
-    water: { top: '#5ae6ff', bottom: '#0a6a9a', foam: '#d8ffff' },
-    vine: { main: '#14a58a', leaf: '#6af0c0', flower: '#ff5ad0' },
+    leaves: ['#10907a', '#0a6a70', '#4fc890', '#12607a'], flora: ['#ff5ad0', '#5ae6ff', '#ffb02e', '#b06aff'],
+    rays: '#7affc8', rayA: 0.12, weather: 'spores', glow: '#7dffe0', grade: ['#00121e', 0.32],
+    ground: { cap: '#1fa27c', capHi: '#6ae6b8', capDark: '#0a5a4c', dirt: '#223f46', dirtDark: '#0a1a26', stone: '#6a8e8a', outline: '#040f16', kind: 'moss' },
+    water: { top: '#3ab8d8', bottom: '#064a6a', foam: '#b8f0f0' },
+    vine: { main: '#0e8a70', leaf: '#4fd8a8', flower: '#ff5ad0' },
   },
   // 4 — Mist Cascades: waterfalls, rain, rainbow
   4: {
