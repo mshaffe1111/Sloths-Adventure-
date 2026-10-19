@@ -20,6 +20,7 @@ import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawTayraSprite } from './tayraSprite.ts';
 import { drawOcelotSprite } from './ocelotSprite.ts';
 import { drawBoaSprite } from './boaSprite.ts';
+import { drawSpiderSprite } from './spiderSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import {
@@ -2333,6 +2334,8 @@ export class GameEngine {
           drawCaiman(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'tayra') {
           if (!drawTayraSprite(ctx, enemy, this.gameTime)) drawTayra(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'spider') {
+          if (!drawSpiderSprite(ctx, enemy, this.gameTime, this.player.x)) drawHazardEntity(ctx, enemy, this.gameTime);
         } else {
           drawHazardEntity(ctx, enemy, this.gameTime);
         }
