@@ -267,15 +267,15 @@ function leafImprint(ctx: CanvasRenderingContext2D, x: number, y: number, s: num
 }
 
 /** which ground a world is built from */
-export type GroundStyle = 'earth' | 'sand' | 'peat' | 'fungus' | 'slate' | 'cave' | 'blocks' | 'basalt';
+export type GroundStyle = 'earth' | 'sand' | 'peat' | 'fungus' | 'slate' | 'cave' | 'blocks' | 'basalt' | 'wetslate' | 'rooted' | 'crystal' | 'iron';
 /** which edge sits on top of it */
 export type CapStyle = 'grass' | 'moss' | 'glow' | 'blossom' | 'reed' | 'ash' | 'ruin';
 
 export const GROUND_STYLE: Record<number, GroundStyle> = {
-  1: 'earth', 2: 'sand', 3: 'cave', 4: 'slate', 5: 'earth', 6: 'peat', 7: 'blocks', 8: 'fungus', 9: 'basalt', 10: 'slate',
+  1: 'earth', 2: 'sand', 3: 'cave', 4: 'wetslate', 5: 'rooted', 6: 'peat', 7: 'blocks', 8: 'crystal', 9: 'basalt', 10: 'iron',
 };
 export const CAP_STYLE: Record<number, CapStyle> = {
-  1: 'grass', 2: 'grass', 3: 'glow', 4: 'moss', 5: 'blossom', 6: 'reed', 7: 'ruin', 8: 'glow', 9: 'ash', 10: 'moss',
+  1: 'grass', 2: 'grass', 3: 'glow', 4: 'moss', 5: 'blossom', 6: 'reed', 7: 'ruin', 8: 'glow', 9: 'ash', 10: 'ruin',
 };
 
 function paintStrata(look: Look, world: number, style: GroundStyle): HTMLCanvasElement {
@@ -1087,12 +1087,348 @@ function paintBasalt(look: Look, world: number): HTMLCanvasElement {
   return cv;
 }
 
+
+// ───────────────────────────── world 4: wet slate, with runnels of water ─────────────────────────────
+
+function paintWetSlate(look: Look, world: number): HTMLCanvasElement {
+  const cv = paintSlab(look, world, false);
+  const ctx = cv.getContext('2d')!;
+  const r = rng(world * 7919 + 411 + getSceneSeed() * 1013);
+  // a cool sheen over everything, as if the rock had just been rained on
+  const sheen = ctx.createLinearGradient(0, 0, SOIL_W, SOIL_H);
+  sheen.addColorStop(0, 'rgba(170,215,235,0.16)');
+  sheen.addColorStop(0.5, 'rgba(170,215,235,0.03)');
+  sheen.addColorStop(1, 'rgba(170,215,235,0.16)');
+  ctx.fillStyle = sheen;
+  ctx.fillRect(0, 0, SOIL_W, SOIL_H);
+  // runnels: thin streams that wander down the face and end in a drip
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 46; i++) {
+    const x = r() * SOIL_W;
+    const y = r() * SOIL_H;
+    const len = 90 + r() * 200;
+    wrap2(x, y, 14, (xx, yy) => {
+      const pts: Array<[number, number]> = [];
+      let px = xx;
+      for (let k = 0; k <= 10; k++) {
+        px += (r() - 0.5) * 5;
+        pts.push([px, yy + (k / 10) * len]);
+      }
+      const path = () => {
+        ctx.beginPath();
+        pts.forEach(([a, b], k) => (k === 0 ? ctx.moveTo(a, b) : ctx.lineTo(a, b)));
+      };
+      ctx.strokeStyle = 'rgba(20,60,85,0.34)';
+      ctx.lineWidth = 9 + r() * 4;
+      path();
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(130,215,245,0.5)';
+      ctx.lineWidth = 4;
+      path();
+      ctx.stroke();
+      ctx.strokeStyle = 'rgba(240,252,255,0.8)';
+      ctx.lineWidth = 1.5;
+      path();
+      ctx.stroke();
+      const [ex, ey] = pts[pts.length - 1];
+      ctx.fillStyle = 'rgba(190,235,250,0.7)';
+      ctx.beginPath();
+      ctx.ellipse(ex, ey + 3, 3.4, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+  // dark wet patches and a few seeping pools
+  for (let i = 0; i < 26; i++) {
+    const x = r() * SOIL_W;
+    const y = r() * SOIL_H;
+    const rad = 16 + r() * 30;
+    wrap2(x, y, rad, (xx, yy) => {
+      const gg = ctx.createRadialGradient(xx, yy, 0, xx, yy, rad);
+      gg.addColorStop(0, 'rgba(10,40,60,0.3)');
+      gg.addColorStop(1, 'rgba(10,40,60,0)');
+      ctx.fillStyle = gg;
+      ctx.beginPath();
+      ctx.ellipse(xx, yy, rad, rad * 0.55, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+  return cv;
+}
+
+// ───────────────────────────── world 5: a rooted, petal-strewn floor ─────────────────────────────
+
+function paintRooted(look: Look, world: number): HTMLCanvasElement {
+  const cv = paintStrata(look, world, 'earth');
+  const ctx = cv.getContext('2d')!;
+  const r = rng(world * 7919 + 515 + getSceneSeed() * 1013);
+  const g = look.ground;
+  // great knotted roots through the soil: thick, pale and branching
+  const rootCols = [mix('#e8c8d8', g.dirtDark, 0.35), mix('#d8a8c0', g.dirtDark, 0.45), mix('#c89ab4', g.dirtDark, 0.3)];
+  for (let i = 0; i < 16; i++) {
+    const x = r() * SOIL_W;
+    const y = r() * SOIL_H * 0.8;
+    wrap2(x, y, 200, (xx, yy) => rootSystem(ctx, xx, yy, Math.PI / 2 + (r() - 0.5) * 1.9, 150 + r() * 130, 9 + r() * 8, r, rootCols[(r() * 3) | 0], 2));
+  }
+  // fallen petals worked into the soil
+  const cols = look.flora.concat(['#ffd0ec']);
+  for (let i = 0; i < 190; i++) {
+    const x = r() * SOIL_W;
+    const y = r() * SOIL_H;
+    const sz = 4 + r() * 5;
+    const rot = r() * 6.28;
+    const col = cols[(r() * cols.length) | 0];
+    wrap2(x, y, sz * 2, (xx, yy) => {
+      ctx.save();
+      ctx.translate(xx, yy);
+      ctx.rotate(rot);
+      ctx.globalAlpha = 0.55 + r() * 0.35;
+      ctx.beginPath();
+      ctx.moveTo(-sz, 0);
+      ctx.quadraticCurveTo(0, -sz * 0.75, sz, 0);
+      ctx.quadraticCurveTo(0, sz * 0.75, -sz, 0);
+      ctx.fillStyle = col;
+      ctx.fill();
+      ctx.strokeStyle = rgba(darken(col, 0.5), 0.6);
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+      ctx.restore();
+    });
+  }
+  return cv;
+}
+
+// ───────────────────────────── world 8: crystal-laden rock ─────────────────────────────
+
+/** a fan of faceted crystals growing from (x, y) */
+function crystalCluster(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, up: number, r: RNG, cols: string[], outline: string) {
+  const n = 3 + ((r() * 3) | 0);
+  // glow under the cluster
+  const gl = ctx.createRadialGradient(x, y - size * 0.5, 0, x, y - size * 0.5, size * 1.4);
+  gl.addColorStop(0, rgba(cols[0], 0.35));
+  gl.addColorStop(1, rgba(cols[0], 0));
+  ctx.fillStyle = gl;
+  ctx.fillRect(x - size * 1.4, y - size * 1.9, size * 2.8, size * 2.4);
+  for (let i = 0; i < n; i++) {
+    const a = up + (i - (n - 1) / 2) * 0.38 + (r() - 0.5) * 0.25;
+    const L = size * (0.55 + r() * 0.75);
+    const wd = size * (0.13 + r() * 0.09);
+    const col = cols[(r() * cols.length) | 0];
+    const t = tone(col, outline);
+    ctx.save();
+    ctx.translate(x + (i - (n - 1) / 2) * size * 0.14, y);
+    ctx.rotate(a - up);
+    ctx.rotate(up + Math.PI / 2);
+    // prism: base, shoulders, pointed tip
+    ctx.beginPath();
+    ctx.moveTo(-wd, 0);
+    ctx.lineTo(-wd, -L * 0.72);
+    ctx.lineTo(0, -L);
+    ctx.lineTo(wd, -L * 0.72);
+    ctx.lineTo(wd, 0);
+    ctx.closePath();
+    const gg = ctx.createLinearGradient(-wd, 0, wd, 0);
+    gg.addColorStop(0, t.light);
+    gg.addColorStop(0.55, t.mid);
+    gg.addColorStop(1, t.dark);
+    ctx.fillStyle = gg;
+    ctx.fill();
+    ctx.strokeStyle = rgba(outline, 0.85);
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+    // lit facet and a glint
+    ctx.beginPath();
+    ctx.moveTo(-wd, -L * 0.1);
+    ctx.lineTo(-wd, -L * 0.72);
+    ctx.lineTo(0, -L);
+    ctx.lineTo(-wd * 0.1, -L * 0.7);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,255,255,0.32)';
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fillRect(-wd * 0.55, -L * 0.62, wd * 0.3, L * 0.22);
+    ctx.restore();
+  }
+}
+
+function paintCrystal(look: Look, world: number): HTMLCanvasElement {
+  const cv = paintStrata(look, world, 'fungus');
+  const ctx = cv.getContext('2d')!;
+  const r = rng(world * 7919 + 808 + getSceneSeed() * 1013);
+  const g = look.ground;
+  const cols = ['#c9a2ff', '#8fd0ff', '#f39af0', '#a58aff'];
+  // geodes: a dark hollow lined with crystals, in rings of the soil
+  for (let i = 0; i < 7; i++) {
+    const x = (i + 0.2 + r() * 0.6) * (SOIL_W / 7);
+    const y = 70 + r() * (SOIL_H - 140);
+    const rw = 30 + r() * 20;
+    const rh = rw * (0.62 + r() * 0.18);
+    wrap2(x, y, rw + 6, (xx, yy) => {
+      ctx.beginPath();
+      ctx.ellipse(xx, yy, rw + 5, rh + 5, 0, 0, Math.PI * 2);
+      ctx.fillStyle = mix(g.stone, g.dirtDark, 0.4);
+      ctx.fill();
+      ctx.strokeStyle = rgba(g.outline, 0.8);
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(xx, yy, rw, rh, 0, 0, Math.PI * 2);
+      const gg = ctx.createRadialGradient(xx, yy + rh * 0.3, 2, xx, yy, rw);
+      gg.addColorStop(0, '#d9c0ff');
+      gg.addColorStop(0.5, '#7a4fd0');
+      gg.addColorStop(1, '#2a1560');
+      ctx.fillStyle = gg;
+      ctx.fill();
+      // teeth of crystal around the rim
+      for (let k = 0; k < 11; k++) {
+        const a = (k / 11) * Math.PI * 2 + r() * 0.3;
+        const bx = xx + Math.cos(a) * rw * 0.92;
+        const by = yy + Math.sin(a) * rh * 0.92;
+        ctx.beginPath();
+        ctx.moveTo(bx + Math.cos(a + 1.57) * 3.5, by + Math.sin(a + 1.57) * 3.5);
+        ctx.lineTo(bx - Math.cos(a) * (8 + r() * 7), by - Math.sin(a) * (8 + r() * 7));
+        ctx.lineTo(bx - Math.cos(a + 1.57) * 3.5, by - Math.sin(a + 1.57) * 3.5);
+        ctx.closePath();
+        ctx.fillStyle = k % 3 === 0 ? '#f3e6ff' : '#b090f0';
+        ctx.fill();
+        ctx.strokeStyle = rgba('#1a0a40', 0.7);
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    });
+  }
+  // veins and clusters of crystals pushing out of the rock
+  for (let i = 0; i < 40; i++) {
+    const x = r() * SOIL_W;
+    const y = 30 + r() * (SOIL_H - 30);
+    const size = 26 + r() * 30;
+    wrap2(x, y, size * 1.6, (xx, yy) => crystalCluster(ctx, xx, yy, size, -Math.PI / 2 + (r() - 0.5) * 1.6, r, cols, '#120626'));
+  }
+  // sparkle dust
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 90; i++) {
+    wrap2(r() * SOIL_W, r() * SOIL_H, 6, (xx, yy) => {
+      ctx.fillStyle = rgba(cols[(r() * cols.length) | 0], 0.7);
+      ctx.fillRect(xx - 0.8, yy - 3, 1.6, 6);
+      ctx.fillRect(xx - 3, yy - 0.8, 6, 1.6);
+    });
+  }
+  ctx.restore();
+  return cv;
+}
+
+// ───────────────────────────── world 10: riveted iron plate, lit from the seams ─────────────────────────────
+
+function paintIron(look: Look, world: number): HTMLCanvasElement {
+  const [cv, ctx] = canvas(SOIL_W, SOIL_H);
+  const r = rng(world * 7919 + 1010 + getSceneSeed() * 1013);
+  const g = look.ground;
+  ctx.fillStyle = '#07040a';
+  ctx.fillRect(0, 0, SOIL_W, SOIL_H);
+  const rowsN = 8;
+  const rh = SOIL_H / rowsN;
+  const metals = [mix(g.dirt, g.stone, 0.28), mix(g.dirt, g.stone, 0.42), mix(g.dirt, g.stone, 0.18), mix(g.dirt, '#5a3a52', 0.3)];
+  const seamCol = '#ff4a62';
+  const glowSeams: Array<{ x: number; y: number; w: number }> = [];
+  for (let row = 0; row < rowsN; row++) {
+    const y = row * rh;
+    const plates = cuts(SOIL_W, 120, 210, r);
+    let x = 0;
+    for (const w of plates) {
+      const bx = x + 2;
+      const by = y + 2;
+      const bw = w - 4;
+      const bh = rh - 4;
+      const t = tone(metals[(r() * metals.length) | 0], '#06030a');
+      const gg = ctx.createLinearGradient(bx, by, bx + bw * 0.5, by + bh);
+      gg.addColorStop(0, t.light);
+      gg.addColorStop(0.5, t.mid);
+      gg.addColorStop(1, t.dark);
+      ctx.fillStyle = gg;
+      ctx.fillRect(bx, by, bw, bh);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(bx, by, bw, bh);
+      ctx.clip();
+      // brushed grain
+      for (let k = 0; k < bh / 2.2; k++) {
+        ctx.fillStyle = r() > 0.5 ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.12)';
+        ctx.fillRect(bx, by + k * 2.2, bw, 1);
+      }
+      // scorch and rust bloom
+      for (let k = 0; k < 2; k++) {
+        const sx = bx + r() * bw;
+        const sy = by + r() * bh;
+        const rad = 14 + r() * 22;
+        const sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, rad);
+        sg.addColorStop(0, r() > 0.5 ? 'rgba(120,40,30,0.28)' : 'rgba(0,0,0,0.3)');
+        sg.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = sg;
+        ctx.fillRect(sx - rad, sy - rad, rad * 2, rad * 2);
+      }
+      // a few scratches
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.lineWidth = 0.8;
+      for (let k = 0; k < 3; k++) {
+        const sx = bx + r() * bw;
+        const sy = by + r() * bh;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(sx + (r() - 0.3) * 30, sy + (r() - 0.5) * 8);
+        ctx.stroke();
+      }
+      ctx.restore();
+      // bevel
+      ctx.fillStyle = rgba(t.hi, 0.5);
+      ctx.fillRect(bx, by, bw, 2.2);
+      ctx.fillRect(bx, by, 2, bh);
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillRect(bx, by + bh - 3, bw, 3);
+      ctx.fillRect(bx + bw - 2.4, by, 2.4, bh);
+      // rivets
+      for (const [rx, ry] of [[bx + 7, by + 7], [bx + bw - 7, by + 7], [bx + 7, by + bh - 8], [bx + bw - 7, by + bh - 8]]) {
+        ctx.beginPath();
+        ctx.arc(rx, ry, 3.1, 0, Math.PI * 2);
+        ctx.fillStyle = t.mid;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.fillRect(rx - 1.4, ry - 1.5, 1.4, 1.4);
+      }
+      if (r() < 0.2) glowSeams.push({ x: bx, y: by + bh - 1, w: bw });
+      x += w;
+    }
+  }
+  // seams that glow crimson where the keep's forge heat leaks through
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (const s2 of glowSeams) {
+    const sg = ctx.createLinearGradient(0, s2.y - 7, 0, s2.y + 7);
+    sg.addColorStop(0, 'rgba(255,60,80,0)');
+    sg.addColorStop(0.5, 'rgba(255,60,80,0.55)');
+    sg.addColorStop(1, 'rgba(255,60,80,0)');
+    ctx.fillStyle = sg;
+    ctx.fillRect(s2.x, s2.y - 7, s2.w, 14);
+    ctx.fillStyle = 'rgba(255,170,150,0.8)';
+    ctx.fillRect(s2.x + 4, s2.y - 0.6, s2.w - 8, 1.2);
+  }
+  ctx.restore();
+  void seamCol;
+  return cv;
+}
+
 function paintSoil(look: Look, world: number): HTMLCanvasElement {
   const style = GROUND_STYLE[world] ?? 'earth';
   if (style === 'blocks') return paintBlocks(look, world);
   if (style === 'slate') return paintSlab(look, world, false);
   if (style === 'cave') return paintSlab(look, world, true);
   if (style === 'basalt') return paintBasalt(look, world);
+  if (style === 'wetslate') return paintWetSlate(look, world);
+  if (style === 'iron') return paintIron(look, world);
+  if (style === 'crystal') return paintCrystal(look, world);
+  if (style === 'rooted') return paintRooted(look, world);
   return paintStrata(look, world, style);
 }
 
