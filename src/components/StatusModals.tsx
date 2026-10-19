@@ -3,6 +3,10 @@ import { sound } from '../game/audio.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { BOSS_TIPS } from '../game/bossDefs.ts';
 
+/** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
+const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
+const keyHint = (k: string) => (COARSE ? '' : ` [${k}]`);
+
 interface StatusModalsProps {
   screen: 'paused' | 'victory' | 'game_over' | 'boss_intro' | 'story_ending';
   levelConfig: LevelConfig;
@@ -122,14 +126,14 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
               onClick={onResume}
               className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base shadow-lg shadow-emerald-900/50 active:scale-95 transition-transform"
             >
-              RESUME PLAY [Esc]
+              RESUME PLAY{keyHint('Esc')}
             </button>
             <button
               type="button"
               onClick={onRestart}
               className="w-full py-2.5 rounded-2xl bg-emerald-900/50 hover:bg-emerald-900/80 border border-emerald-600/40 text-emerald-200 font-bold text-sm active:scale-95 transition-transform"
             >
-              RESTART STAGE [R]
+              RESTART STAGE{keyHint('R')}
             </button>
 
             {/* Desktop Save Options */}
@@ -267,7 +271,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
               onClick={onNextStage}
               className="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-emerald-950 font-black text-base shadow-lg shadow-amber-600/50 active:scale-95 transition-transform"
             >
-              {levelConfig.secret ? 'BACK TO THE MAP [Space / Enter]' : 'NEXT STAGE [Space / Enter]'}
+              {levelConfig.secret ? `BACK TO THE MAP${keyHint('Space / Enter')}` : `NEXT STAGE${keyHint('Space / Enter')}`}
             </button>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -319,7 +323,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
               onClick={onRestart}
               className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base shadow-lg shadow-emerald-900/50 active:scale-95 transition-transform"
             >
-              TRY AGAIN [Space / Enter]
+              TRY AGAIN{keyHint('Space / Enter')}
             </button>
             <button
               type="button"
@@ -368,7 +372,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             onClick={onStartBossFight || onResume}
             className="w-full py-3.5 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-black text-lg shadow-xl shadow-red-900/50 active:scale-95 transition-transform"
           >
-            COMMENCE BATTLE! [Enter]
+            COMMENCE BATTLE!{keyHint('Enter')}
           </button>
         </div>
       </div>

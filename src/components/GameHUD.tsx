@@ -60,7 +60,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   return (
     <div className="fixed inset-0 pointer-events-none z-20 flex flex-col justify-between p-4 sm:p-6 select-none font-game">
       {/* Top Bar: Left Vitality & Stage info, Center Objective, Right Score & Controls */}
-      <div className="flex items-start justify-between w-full">
+      <div className="flex flex-wrap items-start justify-between w-full gap-y-1.5">
         {/* Left Cluster: HP Hearts & Level Title */}
         <div className="flex flex-col gap-1.5 pointer-events-auto">
           {/* Hearts Vitality Sockets */}
@@ -88,24 +88,26 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           </div>
 
           {/* Lives */}
-          <div className="flex items-center gap-1.5 bg-black/60 px-3 py-1 rounded-2xl border border-amber-400/30 shadow-md w-fit">
-            <span className="text-amber-300 text-[11px] font-black tracking-wider">LIVES</span>
-            {Array.from({ length: maxLives }).map((_, i) => (
-              <HeroFaceIcon key={i} size={22} face={i < lives ? 'face_happy' : 'face_hurt'} className={i < lives ? '' : 'opacity-35 grayscale'} />
-            ))}
-          </div>
+          <div className="flex flex-row max-sm:items-center gap-1.5 sm:flex-col">
+            <div className="flex items-center gap-1.5 bg-black/60 px-3 py-1 rounded-2xl border border-amber-400/30 shadow-md w-fit">
+              <span className="text-amber-300 text-[11px] font-black tracking-wider max-sm:hidden">LIVES</span>
+              {Array.from({ length: maxLives }).map((_, i) => (
+                <HeroFaceIcon key={i} size={22} face={i < lives ? 'face_happy' : 'face_hurt'} className={i < lives ? '' : 'opacity-35 grayscale'} />
+              ))}
+            </div>
 
-          {/* Current Level Badge */}
-          <div className="bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow-sm">
-            <span className="text-amber-400 font-bold text-[11px] sm:text-xs">Stage {levelConfig.id}</span>
-            <span className="text-white text-[11px] sm:text-xs font-medium truncate max-w-[110px] sm:max-w-none">
-              {levelConfig.name}
-            </span>
+            {/* Current Level Badge */}
+            <div className="bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow-sm">
+              <span className="text-amber-400 font-bold text-[11px] sm:text-xs">Stage {levelConfig.id}</span>
+              <span className="text-white text-[11px] sm:text-xs font-medium truncate max-w-[110px] max-sm:hidden sm:max-w-none">
+                {levelConfig.name}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Center: Mission Objective or Boss Health Bar */}
-        <div className="flex flex-col items-center pointer-events-auto">
+        <div className="flex flex-col items-center pointer-events-auto max-sm:order-last max-sm:w-full">
           {bossHp !== undefined && bossMaxHp !== undefined ? (
             <div className="flex flex-col items-center w-48 sm:w-80 bg-black/70 border border-red-500/50 px-3 py-1.5 rounded-2xl shadow-xl">
               <div className="flex items-center justify-between w-full mb-1">
