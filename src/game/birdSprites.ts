@@ -37,6 +37,19 @@ export const BIRD_SPECIES: Record<string, BirdSpecies> = {
   bellbird: { size: 42, beat: 2.6 },
 };
 
+/**
+ * where a bird flying along its own line shows on screen. Its flight is in the world, not on the screen: when the camera scrolls the
+ * sky slides past it (slowly, it is far away) instead of it following the camera. The loop is longer than the view, so a bird spends
+ * part of its time off screen and the sky is not crowded; the wrap-around always happens out of sight.
+ */
+export function skyX(flightX: number, camX: number, vw: number): number {
+  const L = (vw + 280) * 1.7;
+  return ((((flightX + 140 - camX * 0.5) % L) + L) % L) - 140;
+}
+
+/** every painted bird is drawn a little smaller than its sheet size, so the backdrop stays calm */
+const BIRD_TRIM = 0.78;
+
 /** the flap loop: up, mid-up, mid-down, down, then back up through mid-down and mid-up */
 const LOOP = [0, 1, 2, 3, 2, 1];
 
@@ -102,7 +115,7 @@ export function drawPaintedBird(
   if (!info) return false;
   const f = BIRD_FRAMES[`${species}_${birdFrame(time * info.beat + offset)}`];
   if (!f) return false;
-  const k = (info.size * sc * size) / biggestSide(species);
+  const k = (info.size * BIRD_TRIM * sc * size) / biggestSide(species);
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(tilt * face);
@@ -135,19 +148,19 @@ interface Flock {
 export const PAINTED_FLOCKS: Record<number, Flock[]> = {
   // the canopy: toucans and macaws crossing high, a loose flock of small tanagers lower down
   1: [
-    { pool: ['toco', 'macaw', 'keel'], flocks: 2, n: 2, period: [34, 62], y: [0.12, 0.34], size: 1 },
-    { pool: ['tanager', 'banana', 'warbler'], flocks: 2, n: 3, period: [26, 44], y: [0.3, 0.5], size: 0.9 },
+    { pool: ['toco', 'macaw', 'keel'], flocks: 1, n: 2, period: [34, 62], y: [0.12, 0.34], size: 1 },
+    { pool: ['tanager', 'banana', 'warbler'], flocks: 1, n: 3, period: [26, 44], y: [0.3, 0.5], size: 0.9 },
   ],
   // the river keeps its herons; small birds along the bank
-  2: [{ pool: ['banana', 'bellbird', 'warbler'], flocks: 2, n: 3, period: [28, 48], y: [0.28, 0.5], size: 0.9 }],
+  2: [{ pool: ['banana', 'bellbird', 'warbler'], flocks: 1, n: 3, period: [28, 48], y: [0.28, 0.5], size: 0.9 }],
   // the cliffs: harpy eagles on the updraft and a pair of quetzals
   4: [
-    { pool: ['harpy'], flocks: 2, n: 1, period: [70, 110], y: [0.09, 0.27], size: 1, beat: 0.6 },
+    { pool: ['harpy'], flocks: 1, n: 1, period: [70, 110], y: [0.09, 0.27], size: 1, beat: 0.6 },
     { pool: ['quetzal'], flocks: 1, n: 2, period: [40, 60], y: [0.2, 0.4], size: 1 },
   ],
   // the ruins: macaws and cock-of-the-rock
   7: [
-    { pool: ['macaw'], flocks: 2, n: 2, period: [34, 62], y: [0.12, 0.32], size: 1 },
+    { pool: ['macaw'], flocks: 1, n: 2, period: [34, 62], y: [0.12, 0.32], size: 1 },
     { pool: ['andean', 'rock'], flocks: 1, n: 2, period: [36, 56], y: [0.3, 0.46], size: 1 },
   ],
 };
@@ -165,11 +178,11 @@ export function renderPaintedFlocks(ctx: CanvasRenderingContext2D, world: number
       const period = fl.period[0] + r() * (fl.period[1] - fl.period[0]);
       const dir = flockNo % 2 ? 1 : -1;
       const u = (((time + r() * 80) / period) % 1 + 1) % 1;
-      const baseX = (dir > 0 ? -110 + u * (vw + 260) : vw + 110 - u * (vw + 260)) - camX * 0.02;
+      const baseX = skyX(dir > 0 ? -110 + u * (vw + 260) : vw + 110 - u * (vw + 260), camX, vw);
       const baseY = vh * (fl.y[0] + r() * (fl.y[1] - fl.y[0])) + Math.sin(u * 8 + f) * 12 * sc;
       for (let i = 0; i < fl.n; i++) {
         const info = BIRD_SPECIES[species];
-        const gap = (info ? info.size : 40) * 0.9 * sc * fl.size;
+        const gap = (info ? info.size : 40) * BIRD_TRIM * 0.9 * sc * fl.size;
         const x = baseX - dir * i * gap;
         const y = baseY + i * 9 * sc + Math.sin(time * 1.3 + i + f) * 3;
         // lean into the bob of the flight line

@@ -103,7 +103,7 @@ export function drawPaintedButterfly(
   const frame = Math.floor((phase - Math.floor(phase)) * FRAMES_PER_CYCLE) % FRAMES_PER_CYCLE;
   const f = BUTTERFLY_FRAMES[`${sp}_${frame}`];
   if (!info || !f) return false;
-  const k = ((info.size * sc * variation) / biggestSide(sp));
+  const k = ((info.size * 0.8 * sc * variation) / biggestSide(sp));
   const squash = info.folded ? 0.8 + 0.2 * Math.abs(Math.cos(phase * Math.PI)) : 1;
   ctx.save();
   ctx.translate(x, y);

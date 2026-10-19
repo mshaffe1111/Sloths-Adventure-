@@ -9,7 +9,7 @@ import { getSceneSeed } from './sceneSeed.ts';
 import type { Look } from './scenery.ts';
 import { paintSwayCluster } from './envKit.ts';
 import { drawPaintedButterfly } from './butterflySprites.ts';
-import { drawPaintedBird, renderPaintedFlocks } from './birdSprites.ts';
+import { drawPaintedBird, renderPaintedFlocks, skyX } from './birdSprites.ts';
 
 const fract = (v: number) => v - Math.floor(v);
 
@@ -82,7 +82,7 @@ function renderBirds(ctx: CanvasRenderingContext2D, look: Look, world: number, c
   for (let flock = 0; flock < flocks; flock++) {
     const period = 38 + flock * 17;
     const u = fract((time + flock * 13) / period);
-    const x = vw + 80 - u * (vw + 260) - camX * 0.02;
+    const x = skyX(vw + 80 - u * (vw + 260), camX, vw);
     const baseY = vh * (0.1 + flock * 0.1) + Math.sin(u * 6.28) * 10;
     const n = 3 + flock * 2;
     for (let i = 0; i < n; i++) {
@@ -146,7 +146,7 @@ function renderRaptors(ctx: CanvasRenderingContext2D, look: Look, world: number,
     const period = 70 + r() * 40;
     const u = fract((time + r() * 90) / period);
     const dir = i % 2 ? 1 : -1;
-    const x = dir > 0 ? -140 + u * (vw + 280) - camX * 0.02 : vw + 140 - u * (vw + 280) - camX * 0.02;
+    const x = skyX(dir > 0 ? -140 + u * (vw + 280) : vw + 140 - u * (vw + 280), camX, vw);
     const y = vh * (0.09 + r() * 0.18) + Math.sin(u * Math.PI * 3 + i) * 22 * sc;
     const size = 17 * sc * (0.85 + r() * 0.4);
     // (the painted harpy eagles replace these when they are loaded; the rng is still stepped so the swifts fly the same lines)
@@ -360,7 +360,7 @@ function renderColorBirds(ctx: CanvasRenderingContext2D, look: Look, world: numb
     const dir = f % 2 ? 1 : -1;
     const u = fract((time + r() * 80) / period);
     const n = kind === 'crow' ? 4 : kind === 'heron' ? 1 : 2;
-    const baseX = dir > 0 ? -90 + u * (vw + 220) : vw + 90 - u * (vw + 220);
+    const baseX = skyX(dir > 0 ? -90 + u * (vw + 220) : vw + 90 - u * (vw + 220), camX, vw);
     const baseY = vh * (0.12 + r() * 0.24) + Math.sin(u * 8 + f) * 12 * sc;
     for (let i = 0; i < n; i++) {
       const bx = baseX - dir * i * 34 * sc;
@@ -460,13 +460,13 @@ export interface LifeKit {
   hummers?: number;
 }
 export const LIFE: Record<number, LifeKit> = {
-  1: { birds: 2, birdKind: 'toucan', fauna: 'butterfly', nFauna: 7, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 34 },
+  1: { birds: 2, birdKind: 'toucan', fauna: 'butterfly', nFauna: 4, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 34 },
   2: { birds: 2, birdKind: 'heron', fauna: 'dragonfly', nFauna: 6, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 24 },
   3: { birds: 0, fauna: 'moth', nFauna: 5, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 40 },
   4: { birds: 2, birdKind: 'raptor', feathers: 5, hummers: 4, fauna: 'dragonfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 20 },
-  5: { birds: 0, hummers: 3, fauna: 'butterfly', nFauna: 11, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 3, mist: true, motes: 30 },
+  5: { birds: 0, hummers: 3, fauna: 'butterfly', nFauna: 6, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 3, mist: true, motes: 30 },
   6: { birds: 1, birdKind: 'heron', fauna: 'dragonfly', nFauna: 2, bats: 0, fireflies: 22, embers: 0, ash: 0, gusts: 0, mist: true, motes: 18 },
-  7: { birds: 2, birdKind: 'parrot', fauna: 'butterfly', nFauna: 3, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 44 },
+  7: { birds: 2, birdKind: 'parrot', fauna: 'butterfly', nFauna: 2, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 44 },
   8: { birds: 0, fauna: 'moth', nFauna: 7, bats: 11, fireflies: 8, embers: 0, ash: 0, gusts: 0, mist: true, motes: 36 },
   9: { birds: 0, fauna: 'moth', nFauna: 0, bats: 0, fireflies: 0, embers: 34, ash: 20, gusts: 0, mist: false, motes: 10 },
   10: { birds: 3, birdKind: 'crow', fauna: 'butterfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 9, mist: true, motes: 8 },
@@ -710,12 +710,12 @@ function renderSwayLeaves(ctx: CanvasRenderingContext2D, look: Look, world: numb
   const sprites = getLeafSprites(look, world);
   const s = vh / 720;
   const span = 760 * s;
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 3; i++) {
     const sprite = sprites[i % sprites.length];
     const px = (((i * 0.43 + 0.11) * span * 3 - camX * 1.15 * s * 0.9) % (span * 3) + span * 3) % (span * 3) - span * 0.7;
     if (px > vw + 200 * s) continue;
     const sway = Math.sin(time * (0.7 + (i % 3) * 0.17) + i * 1.9) * 0.1 + Math.sin(time * 2.1 + i) * 0.02;
-    const k = (0.5 + (i % 3) * 0.08) * s * 1.2;
+    const k = (0.5 + (i % 3) * 0.08) * s * 0.95;
     ctx.save();
     ctx.translate(px, -6 * s);
     ctx.rotate(sway);

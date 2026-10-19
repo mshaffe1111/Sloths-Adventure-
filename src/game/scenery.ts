@@ -1477,7 +1477,8 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
     }
     case 'petals':
     case 'leaves': {
-      const list = getMotes(world, 30);
+      // a calm drift: sixteen leaves, not thirty
+      const list = getMotes(world, 30).slice(0, 16);
       const cols = look.weather === 'petals' ? look.flora : look.leaves.map((c) => lighten(c, 0.2));
       for (const m of list) {
         const x = wrap01(m.x + Math.sin(time * 0.6 * m.s + m.p) * 0.05 + time * 0.02 - camX * 0.0003) * (vw + 60) - 30;

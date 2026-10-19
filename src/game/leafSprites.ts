@@ -15,8 +15,8 @@ for (const [k, f] of Object.entries(LEAF_FRAMES)) BY_SET[f.set].push(k);
 
 /** how the falling leaves of a world are mixed (shares add up to 1), and how many of the 30 motes are big drifters */
 const MIX: Record<number, { green: number; warm: number; big: number }> = {
-  1: { green: 0.62, warm: 0.1, big: 0.28 },
-  7: { green: 0.18, warm: 0.6, big: 0.22 },
+  1: { green: 0.8, warm: 0.1, big: 0.1 },
+  7: { green: 0.26, warm: 0.66, big: 0.08 },
 };
 
 let enabled: boolean | null = null;
@@ -66,7 +66,7 @@ export function drawPaintedLeaf(
   const { key, big } = leafFor(world, m.c);
   const f: LeafFrame | undefined = LEAF_FRAMES[key];
   if (!f) return false;
-  const size = (big ? 40 + m.s * 26 : 17 + m.s * 14) * vs;
+  const size = (big ? 24 + m.s * 14 : 10 + m.s * 8) * vs;
   const k = size / Math.max(f.w, f.h);
   const flip = 0.4 + 0.6 * Math.abs(Math.cos(time * (big ? 0.5 : 0.9) * m.s + m.p));
   ctx.save();
