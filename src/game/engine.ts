@@ -46,6 +46,8 @@ import {
   isObjectiveComplete,
   calculateLevelStars,
   calculateHitScore,
+  atExitDoor,
+  atSealedDoor,
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
@@ -1424,8 +1426,11 @@ export class GameEngine {
     if (this.barrierMsgCooldown > 0) this.barrierMsgCooldown -= dt;
     // Interactive Exit Totem / Sacred Portal Encounter
     if (!this.exitTotemReached && this.currentStage.exitTotemX > 0) {
-      // the shrine only counts when you are up at it: on a tall climb, running along the floor to its x does not win
-      if (p.x >= this.currentStage.exitTotemX - 25 && Math.abs(p.y - this.currentStage.exitTotemY) < 220) {
+      // the door only counts when his body is really at it (rules.atExitDoor): level with it on the screen, past it, or
+      // on another floor does not win. A sealed door stops him at its near side.
+      const doorX = this.currentStage.exitTotemX;
+      const doorY = this.currentStage.exitTotemY;
+      if (isExitUnlocked ? atExitDoor(p, doorX, doorY) : atSealedDoor(p, doorX, doorY)) {
         if (isExitUnlocked) {
           this.exitTotemReached = true;
           sound.playVictory();

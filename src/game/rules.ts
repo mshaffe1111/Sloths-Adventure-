@@ -201,3 +201,18 @@ export function calculateHitScore(
 
   return Math.round(baseScore * megaMultiplier * comboMultiplier);
 }
+
+/**
+ * Is Slomatt actually at the sanctuary door? The door stands on the ground at (x, y): about 92px wide and 134px tall.
+ * His body has to overlap it. Being level with it somewhere else on the screen, past it, or on another floor does not count.
+ */
+export function atExitDoor(p: { x: number; y: number }, doorX: number, doorGroundY: number): boolean {
+  const feet = p.y;
+  const head = p.y - 38;
+  return Math.abs(p.x - doorX) <= 40 && feet > doorGroundY - 142 && head < doorGroundY - 8;
+}
+
+/** is he on the door's own floor and at or past the door's near side (a sealed door stops him there)? */
+export function atSealedDoor(p: { x: number; y: number }, doorX: number, doorGroundY: number): boolean {
+  return p.x >= doorX - 25 && p.x <= doorX + 120 && p.y > doorGroundY - 142 && p.y - 38 < doorGroundY + 4;
+}

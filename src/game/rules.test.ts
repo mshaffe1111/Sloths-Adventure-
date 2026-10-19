@@ -111,3 +111,26 @@ test('calculateHitScore awards bonus for mega punch and combo', () => {
   assert.equal(megaHit, 300);
   assert.ok(comboHit > normalHit);
 });
+
+import { atExitDoor, atSealedDoor } from './rules.ts';
+
+test('the sanctuary door only counts when his body is really at it', () => {
+  const X = 2000;
+  const Y = 800; // the ground the door stands on
+  assert.ok(atExitDoor({ x: X, y: Y }, X, Y), 'standing in the doorway');
+  assert.ok(atExitDoor({ x: X - 38, y: Y }, X, Y), 'at the door frame');
+  assert.ok(!atExitDoor({ x: X - 80, y: Y }, X, Y), 'a little short of it');
+  assert.ok(!atExitDoor({ x: X + 80, y: Y }, X, Y), 'already past it');
+  assert.ok(!atExitDoor({ x: X, y: Y - 200 }, X, Y), 'on a ledge above the door (it used to count within 220px)');
+  assert.ok(!atExitDoor({ x: X, y: Y + 120 }, X, Y), 'on a floor below it');
+  assert.ok(!atExitDoor({ x: X + 300, y: Y - 150 }, X, Y), 'beyond it and above');
+  assert.ok(atExitDoor({ x: X, y: Y - 100 }, X, Y), 'jumping up in the doorway');
+});
+
+test('a sealed door stops him on its own floor only', () => {
+  const X = 2000;
+  const Y = 800;
+  assert.ok(atSealedDoor({ x: X - 20, y: Y }, X, Y));
+  assert.ok(!atSealedDoor({ x: X - 60, y: Y }, X, Y));
+  assert.ok(!atSealedDoor({ x: X, y: Y - 250 }, X, Y), 'a player on a high ledge is not stopped by the door below');
+});
