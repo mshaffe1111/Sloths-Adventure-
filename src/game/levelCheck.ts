@@ -11,7 +11,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform, Vine } from './types.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { skillGuaranteedAt } from './skills.ts';
-import { idleTime, isDamaging } from './zones.ts';
+import { idleTime, isDamaging, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
   PHYS,
   SAFE,
@@ -358,8 +358,37 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   for (const z of stage.zones ?? []) {
     const at = `${z.kind} zone at x=${Math.round(z.x0)}`;
     const idle = idleTime(z);
-    if (idle < 2.0) errors.push(`${at}: only ${idle.toFixed(1)}s quiet between bursts (needs 2s to be waitable)`);
-    if (z.warn < 0.9) errors.push(`${at}: warning of ${z.warn}s is too short`);
+    if (!isStatic(z) && idle < 2.0) errors.push(`${at}: only ${idle.toFixed(1)}s quiet between bursts (needs 2s to be waitable)`);
+    if (!isStatic(z) && z.warn < 0.9) errors.push(`${at}: warning of ${z.warn}s is too short`);
+    if (z.kind === 'tide') {
+      const need = tideCrossTime(z.x1 - z.x0);
+      if (idle + z.warn < need) errors.push(`${at}: low tide of ${(idle + z.warn).toFixed(1)}s is shorter than the ${need.toFixed(1)}s the crossing takes`);
+      const wall = plats.filter((p) => p.type === 'solid' && Math.abs(p.x + p.width - z.x0) < 4 || Math.abs(p.x - z.x1) < 4).length;
+      if (wall < 2) errors.push(`${at}: no bank at one end of the mudflat`);
+    }
+    if (z.kind === 'dark') {
+      // every gap in the dark must have fireflies close enough to light it
+      const solids = plats.filter((p) => p.type === 'solid' && p.x < z.x1 && p.x + p.width > z.x0).sort((a, b) => a.x - b.x);
+      for (let i = 1; i < solids.length; i++) {
+        const gap = solids[i].x - (solids[i - 1].x + solids[i - 1].width);
+        if (gap <= 24) continue;
+        const mid = solids[i - 1].x + solids[i - 1].width + gap / 2;
+        if (!(z.lights ?? []).some((l) => Math.abs(l.x - mid) <= 120 && l.r >= 150)) errors.push(`${at}: a ${Math.round(gap)}px gap at x=${Math.round(mid)} has no light on it`);
+      }
+    }
+    if (z.kind === 'crumble') {
+      const tiles = plats.filter((p) => p.type === 'fragile' && p.crumbleAfter !== undefined && p.x >= z.x0 - 2 && p.x < z.x1).sort((a, b) => a.x - b.x);
+      let run = 0;
+      for (let i = 0; i < tiles.length; i++) {
+        const t = tiles[i];
+        const crossing = t.width / (PHYS.maxRun * 0.9);
+        if (crossing > (t.crumbleAfter ?? 0) * 0.75) errors.push(`${at}: a tile holds ${t.crumbleAfter}s but takes ${crossing.toFixed(2)}s to cross`);
+        run = i > 0 && Math.abs(t.x - (tiles[i - 1].x + tiles[i - 1].width)) < 2 ? run + 1 : 1;
+        if (run > CRUMBLE_RUN_MAX) errors.push(`${at}: ${run} crumbling tiles in a row with no slab to rest on`);
+        if (i > 0 && Math.abs(t.y - tiles[i - 1].y) > CRUMBLE_STEP + 1) errors.push(`${at}: tiles step by ${Math.abs(t.y - tiles[i - 1].y)}px`);
+        if (t.width !== CRUMBLE_TILE_W) errors.push(`${at}: tile of unexpected width ${t.width}`);
+      }
+    }
     if (isDamaging(z)) {
       if (z.warn < 1.1) errors.push(`${at}: a damaging zone needs at least 1.1s of warning`);
       if (z.active > 1.2) errors.push(`${at}: a damaging zone fires for ${z.active}s, too long to dodge`);
@@ -382,7 +411,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     const under = plats
       .filter((p) => p.type === 'solid' && p.x < z.x1 && p.x + p.width > z.x0 && p.y > z.top && p.y < z.bottom + 20)
       .sort((a, b) => a.x - b.x);
-    for (let i = 1; i < under.length; i++) {
+    for (let i = 1; i < under.length && z.kind !== 'crumble' && z.kind !== 'dark'; i++) {
       const gap = under[i].x - (under[i - 1].x + under[i - 1].width);
       if (gap <= 24) continue;
       if (gap > SAFE.gap1) errors.push(`${at}: a ${Math.round(gap)}px gap is wider than a plain jump`);

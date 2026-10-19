@@ -35,8 +35,8 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
-import { zoneEffect, windPush, columnHit, DROWSY_SPEED, DROWSY_JUMP, DROWSY_LINGER } from './zones.ts';
-import { drawZoneBases, drawZoneEffects, drawDrowsyVeil } from './zoneArt.ts';
+import { zoneEffect, windPush, zoneDrag, columnHit, inZone, DROWSY_SPEED, DROWSY_JUMP, DROWSY_LINGER } from './zones.ts';
+import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
   drawTreeSnake,
@@ -184,6 +184,11 @@ export class GameEngine {
   private zzzTimer = 0;
   /** World 4: the push the wind adds to the hero this frame, px/s */
   private windV = 0;
+  /** Worlds 5 and 6: what webs and the mudflat do to run speed and jump this frame (1 = nothing) */
+  private dragSpeed = 1;
+  private dragJump = 1;
+  /** World 8: how dark it is on screen, 0..1 */
+  private darkShow = 0;
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
@@ -556,6 +561,13 @@ export class GameEngine {
         this.drowsy -= dt;
       }
       this.windV = windPush(zones, p.x, bodyY, this.gameTime, p.grounded);
+      const drag = zoneDrag(zones, p.x, bodyY, this.gameTime);
+      this.dragSpeed = drag.speed;
+      this.dragJump = drag.jump;
+      if (drag.speed < 0.5 && !this.zoneHinted.stuck && zones.some((z) => z.kind === 'web' && inZone(z, p.x, bodyY))) {
+        this.zoneHinted.stuck = true;
+        this.addFloatingText('STUCK IN THE WEB!', p.x, p.y - 80, '#e2e8f0');
+      }
       // lava geysers and lightning (Worlds 9 and 10): a firing column burns whoever stands in it
       const hot = columnHit(zones, p.x - 14, p.y - 64, 28, 64, this.gameTime);
       if (hot && p.invincibleTimer <= 0) {
@@ -567,6 +579,10 @@ export class GameEngine {
         if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
         this.zoneHinted[z.kind] = true;
         const hint: Record<string, [string, string]> = {
+          web: ['STICKY WEBS SLOW YOU. GO ABOVE THEM OR PUSH THROUGH', '#e2e8f0'],
+          tide: ['THE TIDE RISES ON A BEAT. CROSS WHILE IT IS LOW', '#7dd3fc'],
+          dark: ['IT IS DARK. FOLLOW THE FIREFLIES', '#fde68a'],
+          crumble: ['THESE TILES CRUMBLE. KEEP MOVING', '#fdba74'],
           spore: ['SPORES PUFF ON A BEAT. WAIT FOR THEM TO CLEAR', '#c4b5fd'],
           wind: ['GUSTS BLOW ON A BEAT. WATCH THE LEAVES', '#99f6e4'],
           geyser: ['VENTS ERUPT ON A BEAT. STAND BETWEEN THEM', '#fdba74'],
@@ -576,7 +592,19 @@ export class GameEngine {
       }
     } else {
       this.windV = 0;
+      this.dragSpeed = 1;
+      this.dragJump = 1;
       if (this.drowsy > 0) this.drowsy -= dt;
+    }
+    {
+      // World 8: the dark fades in as you reach a dark stretch and out as you leave it
+      let want = 0;
+      for (const z of zones ?? []) {
+        if (z.kind !== 'dark') continue;
+        const out = Math.max(z.x0 - p.x, p.x - z.x1, 0);
+        want = Math.max(want, Math.max(0, 1 - out / 220));
+      }
+      this.darkShow += (want - this.darkShow) * Math.min(1, dt * 3);
     }
     this.drowsyShow += ((this.drowsy > 0 ? 1 : 0) - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -948,7 +976,7 @@ export class GameEngine {
         } else {
           p.ducking = false;
 
-          const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1) * (this.drowsy > 0 ? DROWSY_SPEED : 1);
+          const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1) * (this.drowsy > 0 ? DROWSY_SPEED : 1) * this.dragSpeed;
           const maxSpeed = PHYS.maxRun * speedMult * this.attackMoveMul();
           const dir = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
           if (dir !== 0) {
@@ -981,7 +1009,7 @@ export class GameEngine {
 
         if (this.input.state.jumpPressed) {
           if (p.grounded || this.coyoteTimer > 0) {
-            p.vy = -PHYS.jumpV * (this.drowsy > 0 ? DROWSY_JUMP : 1);
+            p.vy = -PHYS.jumpV * (this.drowsy > 0 ? DROWSY_JUMP : 1) * this.dragJump;
             p.grounded = false;
             p.jumpsLeft = 1;
             p.isDoubleJumping = false;
@@ -994,7 +1022,7 @@ export class GameEngine {
             sound.playJump();
             this.spawnJumpDust(p.x, p.y);
           } else if (p.jumpsLeft > 0 && !p.climbing) {
-            p.vy = -PHYS.doubleV * (this.drowsy > 0 ? DROWSY_JUMP : 1);
+            p.vy = -PHYS.doubleV * (this.drowsy > 0 ? DROWSY_JUMP : 1) * this.dragJump;
             p.jumpsLeft = 0;
             p.isDoubleJumping = true;
             p.somersaultAngle = 0;
@@ -1130,7 +1158,11 @@ export class GameEngine {
             // Fragile branch interaction
             if (plat.type === 'fragile') {
               if (plat.fragileTimer === undefined) {
-                plat.fragileTimer = 1.1; // generous 1.1s before breaking
+                plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+                if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
+                  this.zoneHinted.crumble = true;
+                  this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
+                }
               }
             }
             break;
@@ -2643,6 +2675,8 @@ export class GameEngine {
     this.drowsy = 0;
     this.drowsyShow = 0;
     this.windV = 0;
+    this.dragSpeed = 1;
+    this.dragJump = 1;
     // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
     for (const pl of this.platforms) {
       if (pl.type === 'fragile') {
@@ -2887,6 +2921,7 @@ export class GameEngine {
     );
 
     this.drawRivers(ctx, world, true);
+    drawCrumbleTiles(ctx, this.platforms, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     drawZoneBases(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     if (lair && this.currentStage.arena) drawLairWorld(ctx, lair, this.currentStage.arena, lairView, this.gameTime);
 
@@ -3062,6 +3097,22 @@ export class GameEngine {
     if (lair) drawLairFront(ctx, lair, lairView, this.gameTime);
     else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.drowsyShow, this.gameTime);
+    if (this.darkShow > 0.01) {
+      const cx0 = this.camera.x;
+      const cy0 = this.camera.y;
+      const lights: Array<{ x: number; y: number; r: number }> = [];
+      for (const z of this.currentStage.zones ?? []) {
+        if (z.kind !== 'dark' || !z.lights || z.x1 < cx0 - 300 || z.x0 > cx0 + this.camera.viewportWidth + 300) continue;
+        for (const l of z.lights) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
+      }
+      // every flower and leaf glows a little, so a reward is never lost in the dark
+      for (const c of this.collectibles) {
+        if (c.collected || (c.type !== 'flower' && c.type !== 'leaf')) continue;
+        if (c.x < cx0 - 80 || c.x > cx0 + this.camera.viewportWidth + 80) continue;
+        lights.push({ x: c.x - cx0, y: c.y - cy0, r: 62 });
+      }
+      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime);
+    }
     if (this.respawnFlash > 0) {
       ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
       ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);

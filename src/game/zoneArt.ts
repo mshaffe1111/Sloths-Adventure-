@@ -5,7 +5,8 @@
  *   warn   - the mushrooms swell and glow / leaves start to stream and chevrons pulse: "it is about to start"
  *   active - the cloud fills the box / the gust streams hard
  */
-import { zoneState, type Zone, type ZoneState } from './zones.ts';
+import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
+import type { Platform } from './types.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -82,7 +83,9 @@ export function drawZoneEffects(ctx: CanvasRenderingContext2D, zones: readonly Z
     if (z.kind === 'spore') drawCloud(ctx, z, st, t);
     else if (z.kind === 'wind') drawGust(ctx, z, st, t);
     else if (z.kind === 'geyser') drawEruption(ctx, z, st, t);
-    else drawBolt(ctx, z, st, t);
+    else if (z.kind === 'bolt') drawBolt(ctx, z, st, t);
+    else if (z.kind === 'web') drawWeb(ctx, z, t);
+    else if (z.kind === 'tide') drawTide(ctx, z, st, t);
   }
 }
 
@@ -422,5 +425,266 @@ function drawBolt(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
   ctx.beginPath();
   ctx.arc(cx, z.baseY - 6, 90, 0, Math.PI * 2);
   ctx.fill();
+  ctx.restore();
+}
+
+// ---------------------------------------------------------------------------
+// Webs (World 5)
+// ---------------------------------------------------------------------------
+
+function drawWeb(ctx: CanvasRenderingContext2D, z: Zone, t: number) {
+  const w = z.x1 - z.x0;
+  const n = Math.max(4, Math.round(w / 34));
+  ctx.save();
+  // the sticky film on the ground
+  const film = ctx.createLinearGradient(0, z.baseY - 18, 0, z.baseY + 4);
+  film.addColorStop(0, 'rgba(255, 255, 255, 0)');
+  film.addColorStop(1, 'rgba(240, 240, 255, 0.55)');
+  ctx.fillStyle = film;
+  ctx.fillRect(z.x0, z.baseY - 18, w, 22);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.78)';
+  ctx.lineWidth = 1.5;
+  ctx.lineCap = 'round';
+  const tops: Array<[number, number]> = [];
+  for (let i = 0; i <= n; i++) {
+    const x = z.x0 + (w * i) / n;
+    const h = 38 + hash(i * 3.7 + z.x0 * 0.01) * 44;
+    const sway = Math.sin(t * 1.3 + i * 0.9) * 2.5;
+    const tx = x + (hash(i * 1.9 + z.x1 * 0.01) - 0.5) * 22 + sway;
+    tops.push([tx, z.baseY - h]);
+    ctx.beginPath();
+    ctx.moveTo(x, z.baseY);
+    ctx.quadraticCurveTo(x + sway * 0.4, z.baseY - h * 0.55, tx, z.baseY - h);
+    ctx.stroke();
+  }
+  // threads between the strands, sagging like a real web
+  for (let ring = 0; ring < 3; ring++) {
+    ctx.beginPath();
+    tops.forEach(([x, y], i) => {
+      const ry = z.baseY - (z.baseY - y) * (0.35 + ring * 0.3);
+      if (i === 0) ctx.moveTo(x, ry);
+      else {
+        const [px, py] = tops[i - 1];
+        const pry = z.baseY - (z.baseY - py) * (0.35 + ring * 0.3);
+        ctx.quadraticCurveTo((px + x) / 2, Math.max(pry, ry) + 6, x, ry);
+      }
+    });
+    ctx.stroke();
+  }
+  // dew
+  ctx.fillStyle = 'rgba(200, 240, 255, 0.9)';
+  for (let i = 0; i < Math.round(n * 0.8); i++) {
+    const sd = hash(i * 6.1 + z.x0 * 0.02);
+    ctx.beginPath();
+    ctx.arc(z.x0 + sd * w, z.baseY - 6 - hash(i * 2.3 + z.x1 * 0.02) * 60, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+// ---------------------------------------------------------------------------
+// The tide (World 6)
+// ---------------------------------------------------------------------------
+
+/** how high the water stands in the mudflat: 0 low tide .. 1 full */
+export function tideLevel(z: Zone, st: ZoneState): number {
+  const idle = idleTime(z);
+  if (st.phase === 'warn') return 0.5 * st.u * st.u;
+  if (st.phase === 'active') return 0.5 + 0.5 * Math.min(1, st.strength * 1.6);
+  const since = st.u * idle;
+  // the water drains away over the first moments of low tide
+  return Math.max(0, 1 - since / 1.6) * 0.5;
+}
+
+function drawTide(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  const w = z.x1 - z.x0;
+  const level = tideLevel(z, st);
+  const bottom = z.baseY + 14;
+  const surface = bottom - level * 106;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(z.x0, z.top, w, bottom - z.top);
+  ctx.clip();
+  // wet mud shine at low tide
+  if (level < 0.1) {
+    ctx.fillStyle = 'rgba(80, 54, 34, 0.35)';
+    ctx.fillRect(z.x0, z.baseY - 2, w, 14);
+    ctx.fillStyle = 'rgba(190, 230, 240, 0.5)';
+    for (let i = 0; i < Math.round(w / 70); i++) {
+      const sd = hash(i * 4.4 + z.x0 * 0.02);
+      ctx.beginPath();
+      ctx.ellipse(z.x0 + 20 + sd * (w - 40), z.baseY + 2, 14 + sd * 12, 2.4, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  if (level > 0.01) {
+    const wave = (x: number) => surface + Math.sin(x * 0.045 + t * 2.4) * 3 + Math.sin(x * 0.11 - t * 1.7) * 1.6;
+    const g = ctx.createLinearGradient(0, surface, 0, bottom);
+    g.addColorStop(0, 'rgba(70, 170, 190, 0.62)');
+    g.addColorStop(1, 'rgba(24, 100, 125, 0.86)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(z.x0, bottom);
+    for (let x = z.x0; x <= z.x1 + 10; x += 10) ctx.lineTo(x, wave(x));
+    ctx.lineTo(z.x1, bottom);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let x = z.x0; x <= z.x1 + 10; x += 10) (x === z.x0 ? ctx.moveTo(x, wave(x)) : ctx.lineTo(x, wave(x)));
+    ctx.stroke();
+    // while it is up, streaks run toward the bank it sweeps you to
+    if (st.phase === 'active') {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < Math.round(w / 40); i++) {
+        const sd = hash(i * 2.9 + z.x0 * 0.01);
+        const x = z.x0 + ((sd * w + t * 160 * -z.dir * (0.7 + sd)) % w + w) % w;
+        const y = surface + 14 + sd * (bottom - surface - 24);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + z.dir * 28, y);
+        ctx.stroke();
+      }
+    }
+  }
+  ctx.restore();
+  // the warning: arrows that say the water is coming up
+  if (st.phase === 'warn' || (st.phase === 'active' && st.u < 0.25)) {
+    const a = st.phase === 'warn' ? 0.3 + 0.6 * Math.abs(Math.sin(st.u * Math.PI * 5)) : 0.8;
+    const cx = (z.x0 + z.x1) / 2;
+    ctx.save();
+    ctx.strokeStyle = `rgba(255, 255, 255, ${a})`;
+    ctx.shadowColor = 'rgba(15, 23, 42, 0.8)';
+    ctx.shadowBlur = 4;
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    for (let k = -1; k <= 1; k++) {
+      const x = cx + k * 34;
+      const y = z.baseY - 130 - (st.phase === 'warn' ? st.u * 14 : 0);
+      ctx.beginPath();
+      ctx.moveTo(x - 13, y + 9);
+      ctx.lineTo(x, y - 9);
+      ctx.lineTo(x + 13, y + 9);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Crumbling ruin tiles (World 7)
+// ---------------------------------------------------------------------------
+
+/** cracks on every ruin tile, and dust and a shudder on the ones that have started to go */
+export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly Platform[], cam: View, t: number) {
+  for (const p of plats) {
+    if (p.crumbleAfter === undefined || p.broken) continue;
+    if (p.x + p.width < cam.x - 40 || p.x > cam.x + cam.w + 40) continue;
+    const timer = p.fragileTimer;
+    const prog = timer === undefined ? 0 : Math.max(0, Math.min(1, 1 - timer / p.crumbleAfter));
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    if (prog > 0) ctx.translate(Math.sin(t * 70) * 2.2 * prog, Math.sin(t * 83) * 1.2 * prog);
+    ctx.strokeStyle = `rgba(28, 20, 12, ${0.55 + 0.4 * prog})`;
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    const seed = p.x * 0.017;
+    for (let k = 0; k < 2; k++) {
+      const x0 = p.width * (0.2 + 0.4 * k) + (hash(seed + k) - 0.5) * 10;
+      ctx.beginPath();
+      ctx.moveTo(x0, 2);
+      ctx.lineTo(x0 + (hash(seed + k * 3) - 0.5) * 16, 11);
+      ctx.lineTo(x0 + (hash(seed + k * 5) - 0.5) * 18, 20);
+      ctx.lineTo(x0 + (hash(seed + k * 7) - 0.5) * 12, p.height - 2);
+      ctx.stroke();
+    }
+    if (prog > 0) {
+      ctx.fillStyle = `rgba(220, 120, 60, ${0.28 * prog})`;
+      ctx.fillRect(0, 0, p.width, p.height);
+      ctx.fillStyle = `rgba(214, 196, 160, ${0.8 * (1 - prog * 0.4)})`;
+      for (let i = 0; i < 6; i++) {
+        const sd = hash(i * 5.3 + seed);
+        const fall = (t * (40 + sd * 50) + sd * 30) % 40;
+        ctx.fillRect(sd * p.width, p.height + fall, 3, 3);
+      }
+    }
+    ctx.restore();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Darkness (World 8)
+// ---------------------------------------------------------------------------
+
+let darkCanvas: HTMLCanvasElement | null = null;
+
+/**
+ * The dark itself, drawn over the finished scene in screen space: a near-black veil with soft holes cut out for Slomatt's lantern
+ * and every firefly. `level` fades it in and out at the edges of a dark stretch.
+ */
+export function drawDarkness(
+  ctx: CanvasRenderingContext2D, vw: number, vh: number, level: number,
+  hero: { x: number; y: number }, lights: ReadonlyArray<{ x: number; y: number; r: number }>, t: number,
+) {
+  if (level <= 0.01 || typeof document === 'undefined') return;
+  if (!darkCanvas) darkCanvas = document.createElement('canvas');
+  const dpr = (ctx.getTransform?.().a ?? 1) || 1;
+  const cw = Math.max(1, Math.round(vw * dpr));
+  const ch = Math.max(1, Math.round(vh * dpr));
+  if (darkCanvas.width !== cw || darkCanvas.height !== ch) { darkCanvas.width = cw; darkCanvas.height = ch; }
+  const d = darkCanvas.getContext('2d');
+  if (!d) return;
+  d.setTransform(dpr, 0, 0, dpr, 0, 0);
+  d.globalCompositeOperation = 'source-over';
+  d.clearRect(0, 0, vw, vh);
+  d.fillStyle = 'rgb(3, 6, 22)';
+  d.fillRect(0, 0, vw, vh);
+  d.globalCompositeOperation = 'destination-out';
+  const hole = (x: number, y: number, r: number, a: number) => {
+    const g = d.createRadialGradient(x, y, r * 0.1, x, y, r);
+    g.addColorStop(0, `rgba(0,0,0,${a})`);
+    g.addColorStop(0.55, `rgba(0,0,0,${a * 0.75})`);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    d.fillStyle = g;
+    d.beginPath();
+    d.arc(x, y, r, 0, Math.PI * 2);
+    d.fill();
+  };
+  // Slomatt's lantern
+  hole(hero.x, hero.y, 210 + Math.sin(t * 3) * 6, 1);
+  for (let i = 0; i < lights.length; i++) {
+    const l = lights[i];
+    const bob = Math.sin(t * 1.7 + i * 2.1);
+    hole(l.x + Math.cos(t * 0.9 + i) * 8, l.y + bob * 6, l.r * (0.94 + 0.06 * Math.sin(t * 4 + i)), 0.97);
+  }
+  d.globalCompositeOperation = 'source-over';
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 0.9 * level;
+  ctx.drawImage(darkCanvas, 0, 0);
+  ctx.restore();
+  // the fireflies themselves: small warm points in each light
+  ctx.save();
+  ctx.globalAlpha = level;
+  for (let i = 0; i < lights.length; i++) {
+    const l = lights[i];
+    if (l.r < 150) continue;
+    for (let k = 0; k < 6; k++) {
+      const a = t * (0.6 + k * 0.13) + i * 3 + k * 1.7;
+      const fx = l.x + Math.cos(a) * (l.r * 0.42) * (0.5 + 0.5 * Math.sin(a * 0.7 + k));
+      const fy = l.y + Math.sin(a * 1.3) * 34;
+      const glow = ctx.createRadialGradient(fx, fy, 0, fx, fy, 9);
+      glow.addColorStop(0, 'rgba(254, 249, 195, 1)');
+      glow.addColorStop(0.4, 'rgba(253, 224, 71, 0.65)');
+      glow.addColorStop(1, 'rgba(253, 224, 71, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(fx, fy, 9, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
   ctx.restore();
 }

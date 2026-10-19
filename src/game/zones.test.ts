@@ -4,7 +4,8 @@ import { generateAllLevels } from './worldsData.ts';
 import { generateStage } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
 import {
-  zoneState, idleTime, windPush, zoneEffect, columnHit, isDamaging, sporeRecipes, windRecipes, zoneRecipes, pieceWidth, ZONE_RAMP, type Zone,
+  zoneState, idleTime, windPush, zoneEffect, columnHit, isDamaging, sporeRecipes, windRecipes, zoneRecipes, pieceWidth, ZONE_RAMP, zoneDrag, tideCrossTime,
+  tideRecipes, ruinRecipes, darkRecipes, webRecipes, crumbleTime, isStatic, WEB_SPEED, TIDE_SPEED, CRUMBLE_RUN_MAX, type Zone,
 } from './zones.ts';
 
 const levels = generateAllLevels();
@@ -71,13 +72,13 @@ test('stages teach in order: first a harmless zone on open ground, then gaps, th
   assert.ok(windRecipes(4).some((p) => p.dir === -1), 'headwinds arrive by stage 4');
 });
 
-test('every ordinary World 3, 4, 9 and 10 stage has its zones, and no other world has any', () => {
+test('every ordinary World 3 to 10 stage has its zones, and Worlds 1 and 2 have none', () => {
   for (const l of levels) {
     const s = generateStage(l);
-    const want = [3, 4, 9, 10].includes(l.worldIndex) && !['ascent', 'boss_lair'].includes(l.objectiveType) && !l.secret;
+    const want = l.worldIndex >= 3 && !['ascent', 'boss_lair'].includes(l.objectiveType) && !l.secret;
     if (want) {
       assert.ok((s.zones?.length ?? 0) >= zoneRecipes(l.worldIndex, l.miniIndex).length, `${l.id} is missing its zones`);
-      const kind = { 3: 'spore', 4: 'wind', 9: 'geyser', 10: 'bolt' }[l.worldIndex as 3 | 4 | 9 | 10];
+      const kind = ({ 3: 'spore', 4: 'wind', 5: 'web', 6: 'tide', 7: 'crumble', 8: 'dark', 9: 'geyser', 10: 'bolt' } as Record<number, string>)[l.worldIndex];
       assert.ok(s.zones!.every((z) => z.kind === kind), `${l.id}: wrong kind of zone for its world`);
     } else {
       assert.equal(s.zones?.length ?? 0, 0, `${l.id} should have no zones`);
@@ -87,7 +88,7 @@ test('every ordinary World 3, 4, 9 and 10 stage has its zones, and no other worl
 
 test('every zone stage passes the validator (waitable, jumpable, nothing hostile inside)', () => {
   for (const l of levels) {
-    if (![3, 4, 9, 10].includes(l.worldIndex)) continue;
+    if (l.worldIndex < 3) continue;
     const s = generateStage(l);
     const r = validateStage(s);
     assert.ok(r.ok, `${l.id}: ${r.errors.slice(0, 3).join('; ')}`);
@@ -127,4 +128,58 @@ test('a bolt is quick but always has a long warning, and every column has a pock
       assert.ok(gap >= 110 || Math.abs(cols[i].baseY - cols[i - 1].baseY) > 40, `${l.id}: ${gap}px between columns`);
     }
   }
+});
+
+test('webs slow you and the mud slows you more once the tide is up', () => {
+  const web = mk({ kind: 'web', x0: 1000, x1: 1300, period: 1, warn: 0, active: 1 });
+  assert.equal(zoneDrag([web], 1100, 500, 0).speed, WEB_SPEED);
+  assert.equal(zoneDrag([web], 900, 500, 0).speed, 1, 'outside the web nothing changes');
+  const tide = mk({ kind: 'tide', x0: 1000, x1: 1300, period: 10, warn: 2, active: 2 });
+  const low = zoneDrag([tide], 1100, 500, 1).speed;
+  const high = zoneDrag([tide], 1100, 500, 9).speed;
+  assert.equal(low, TIDE_SPEED.low);
+  assert.equal(high, TIDE_SPEED.high);
+  assert.ok(high < low);
+});
+
+test('the tide stays low long enough to cross, and every mudflat has dry banks', () => {
+  for (let m = 1; m <= 9; m++) for (const p of tideRecipes(m)) {
+    assert.ok(idleTime(p) >= tideCrossTime(p.len), `stage ${m}: ${idleTime(p)}s low tide for ${p.len}px of mud`);
+    assert.ok(p.warn >= 1.5, 'the rise is always seen coming');
+  }
+});
+
+test('crumbling ruins: short runs with a slab to rest on, and a hold longer than a step takes', () => {
+  for (let m = 1; m <= 9; m++) {
+    for (const p of ruinRecipes(m)) assert.ok(p.count <= 8 && p.count >= 3);
+    assert.ok(crumbleTime(m) >= 0.6, 'every tile holds long enough to run across');
+    if (m > 1) assert.ok(crumbleTime(m) <= crumbleTime(m - 1), 'it never gets more generous');
+  }
+  assert.ok(CRUMBLE_RUN_MAX >= 4);
+  for (const l of levels.filter((x) => x.worldIndex === 7)) {
+    const s = generateStage(l);
+    const tiles = s.platforms.filter((p) => p.crumbleAfter !== undefined);
+    if (!(s.zones ?? []).length) continue;
+    assert.ok(tiles.length > 0, `${l.id}: ruins zone with no crumbling tiles`);
+    assert.ok(tiles.every((p) => p.crumbleAfter === crumbleTime(l.miniIndex)), `${l.id}: hold time`);
+  }
+});
+
+test('every dark stretch has a firefly swarm on each of its gaps, and the dark never costs a hit', () => {
+  for (let m = 1; m <= 9; m++) for (const p of darkRecipes(m)) assert.ok(p.count <= 3);
+  for (const l of levels.filter((x) => x.worldIndex === 8)) {
+    const s = generateStage(l);
+    const gaps = darkRecipes(l.miniIndex).reduce((n, p) => n + p.count, 0);
+    const zs = s.zones ?? [];
+    for (const z of zs) assert.ok(isStatic(z) && !isDamaging(z));
+    if (zs.length) assert.ok(zs.reduce((n, z) => n + (z.lights ?? []).length, 0) >= gaps, `${l.id}: fewer swarms than gaps`);
+  }
+});
+
+test('Worlds 5 to 8 teach gently: the first stage is the mildest', () => {
+  assert.equal(webRecipes(1)[0].shape, 'patch');
+  assert.equal(darkRecipes(1)[0].count, 0, 'the first dark stretch has no gap in it');
+  assert.ok(tideRecipes(1).length === 1);
+  assert.ok(ruinRecipes(1).length === 1);
+  for (const w of [5, 6, 7, 8]) assert.ok(zoneRecipes(w, 9).length >= 3 || w === 5 || w === 7);
 });

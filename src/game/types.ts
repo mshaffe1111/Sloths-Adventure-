@@ -228,6 +228,8 @@ export interface Platform {
   height: number;
   type: 'solid' | 'fragile' | 'bouncy' | 'moving' | 'drift';
   fragileTimer?: number;
+  /** World 7 ruin tiles: seconds the tile holds once stepped on (instead of the usual 1.1) */
+  crumbleAfter?: number;
   broken?: boolean;
   moveRange?: number;
   moveSpeed?: number;

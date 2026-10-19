@@ -19,7 +19,7 @@ import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { SECRET_GATE_LEVEL } from './secret.ts';
-import { pieceWidth, zoneRecipes, type Zone, type ZonePiece } from './zones.ts';
+import { pieceWidth, zoneRecipes, crumbleTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP, type Zone, type ZonePiece } from './zones.ts';
 import { driftX, logLayout, riverRecipes, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverRecipe, type RiverZone } from './river.ts';
 
 export interface GeneratedStage {
@@ -370,6 +370,8 @@ class Gen {
   /** can an eagle patrol here: clear of solid ground (its patch of sky is x ± 240) and well away from every flag? */
   skyClear(x: number, homeY: number) {
     const x0 = x - 270, x1 = x + 270, y0 = homeY - 40, y1 = homeY + 40;
+    // a zone (cloud, gust, column, web, tide, ruins, darkness) keeps its patch of sky clear of fliers
+    if ((this.zones ?? []).some((z) => z.x1 > x0 && z.x0 < x1)) return false;
     if (this.P.some((p) => p.type !== 'bouncy' && p.x < x1 && p.x + p.width > x0 && p.y < y1 && p.y + p.height > y0)) return false;
     return this.CP.every((c) => Math.abs(c.x - x) > 480 || Math.abs(c.y - homeY) > 520);
   }
@@ -1003,6 +1005,111 @@ class Gen {
       this.log.push(`${p.kind}Meadow`);
       return;
     }
+    // ---- Worlds 5 to 8 ----
+    if (p.kind === 'web') {
+      const len = p.len;
+      if (p.shape === 'patch') {
+        // sticky ground with a branch over it: slog through for the flowers, or hop up and run along the top
+        const run = this.flat(260, { safe: true });
+        const s = this.flat(len, { safe: true });
+        const land = this.flat(260, { safe: true });
+        zones.push({ ...base, x0: s.x0, x1: s.x1, top: g0 - 130, bottom: g0 + 16, baseY: g0, offset: 0 });
+        this.plat({ x: s.x0 - 44, y: g0 - 78, width: len + 88, height: 26, type: 'solid', style: 'branch' });
+        this.row(s.x0 + 30, s.x1 - 30, g0 - 40, Math.max(2, Math.round(len / 70)));
+        this.row(s.x0 + 20, s.x1 - 20, g0 - 120, Math.max(2, Math.round(len / 90)));
+        void run; void land;
+        this.log.push(`webPatch${len}`);
+        return;
+      }
+      // a web bridge over a gap too wide to jump: it holds, but it is sticky
+      this.closeBank();
+      const x0 = this.cx;
+      this.plat({ x: x0, y: g0, width: len, height: 26, type: 'solid', style: 'canopy_bridge' });
+      zones.push({ ...base, x0, x1: x0 + len, top: g0 - 130, bottom: g0 + 18, baseY: g0, offset: 0 });
+      this.row(x0 + 50, x0 + len - 50, g0 - 40, Math.max(3, Math.round(len / 80)));
+      this.cx = x0 + len;
+      this.openBank();
+      this.flat(220, { safe: true });
+      this.log.push(`webBridge${len}`);
+      return;
+    }
+    if (p.kind === 'tide') {
+      // a mudflat the tide floods: cross while it is low
+      if (!(this.g + 70 <= this.G + 96)) { this.flat(300, { safe: true }); this.log.push('tideSkipped'); return; }
+      this.flat(240, { safe: true });
+      this.down(70);
+      const mud = this.flat(p.len, { safe: true });
+      const mudY = this.g;
+      zones.push({ ...base, x0: mud.x0, x1: mud.x1, top: mudY - 210, bottom: mudY + 14, baseY: mudY, offset: this.rr(0, p.period) });
+      this.row(mud.x0 + 50, mud.x1 - 50, mudY - 36, Math.max(3, Math.round(p.len / 70)));
+      this.up(70);
+      this.flat(240, { safe: true });
+      this.log.push(`tide${p.len}`);
+      return;
+    }
+    if (p.kind === 'crumble') {
+      // runs of crumbling ruin tiles over a drop, a solid slab to rest on after every few
+      const hold = crumbleTime(this.cfg.miniIndex);
+      const stepped = p.count >= 5;
+      // a flag first, so a fall off the ruins never costs the whole stretch before them
+      if (this.cx - this.lastCp > 500) this.checkpoint();
+      this.flat(180, { safe: true });
+      this.closeBank();
+      let x = this.cx;
+      const startX = x;
+      let inRun = 0;
+      for (let i = 0; i < p.count; i++) {
+        if (inRun >= CRUMBLE_RUN_MAX) {
+          this.plat({ x, y: g0, width: 160, height: 26, type: 'solid', style: 'moss_stone' });
+          this.flower(x + 80, g0 - 42);
+          x += 160;
+          inRun = 0;
+        }
+        const up = stepped && i % 2 === 1 ? CRUMBLE_STEP : 0;
+        this.plat({ x, y: g0 - up, width: CRUMBLE_TILE_W, height: 26, type: 'fragile', style: 'moss_stone', crumbleAfter: hold });
+        this.flower(x + CRUMBLE_TILE_W / 2, g0 - up - 42);
+        x += CRUMBLE_TILE_W;
+        inRun++;
+      }
+      // a last slab, flush with the ground on the far side
+      this.plat({ x, y: g0, width: 160, height: 26, type: 'solid', style: 'moss_stone' });
+      x += 160;
+      zones.push({ ...base, x0: startX, x1: x, top: g0 - 200, bottom: g0 + 40, baseY: g0, offset: 0 });
+      this.cx = x;
+      this.openBank();
+      this.flat(220, { safe: true });
+      if (this.cx - this.lastCp > 1100) this.checkpoint();
+      this.log.push(`ruins${p.count}`);
+      return;
+    }
+    if (p.kind === 'dark') {
+      // a stretch in the dark: a firefly swarm hangs over every gap, and every flower glows a little
+      const lights: Array<{ x: number; y: number; r: number }> = [];
+      // a flag before the dark, so a slip in it never costs the whole way here
+      if (this.cx - this.lastCp > 500) this.checkpoint();
+      const first = this.flat(260, { safe: true });
+      const zx0 = first.x0 + 80;
+      const segLen = Math.max(180, (p.len - 520) / Math.max(1, p.count + 1));
+      for (let i = 0; i < p.count; i++) {
+        this.flat(segLen, { safe: true });
+        this.closeBank();
+        const w = this.pitW();
+        const px = this.cx;
+        this.arc(this.cx - 30, this.cx + w + 30, g0 - 36, 80, 4);
+        this.cx += w;
+        this.openBank();
+        lights.push({ x: px + w / 2, y: g0 - 90, r: 190 });
+        this.flat(160, { safe: true });
+      }
+      const rest = this.flat(Math.max(220, segLen), { safe: true });
+      this.row(first.x0 + 120, rest.x1 - 60, g0 - 40, Math.max(4, Math.round(p.len / 130)));
+      // a lantern now and then so the dark is never total even where there is no gap
+      for (let x = first.x0 + 300; x < rest.x1 - 200; x += 420) lights.push({ x, y: g0 - 70, r: 130 });
+      zones.push({ ...base, x0: zx0, x1: rest.x1 - 40, top: g0 - 800, bottom: g0 + 400, baseY: g0, offset: 0, lights });
+      if (this.cx - this.lastCp > 1100) this.checkpoint();
+      this.log.push(`dark${p.len}g${p.count}`);
+      return;
+    }
     if (p.kind === 'geyser' || p.kind === 'bolt') {
       // vents / rods in a row (or either side of a gap), each on its own beat, with a safe pocket between every two
       const colW = p.kind === 'geyser' ? 72 : 56;
@@ -1227,7 +1334,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   const obj = cfg.objectiveType;
   // World 2's rivers take up room that the stage's fights and pickups also need, so the stage is as much longer as its rivers are wide
   const hasRivers = cfg.worldIndex === 2 && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret;
-  const zonePieces = [3, 4, 9, 10].includes(cfg.worldIndex) && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret ? zoneRecipes(cfg.worldIndex, cfg.miniIndex) : [];
+  const zonePieces = [3, 4, 5, 6, 7, 8, 9, 10].includes(cfg.worldIndex) && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret ? zoneRecipes(cfg.worldIndex, cfg.miniIndex) : [];
   // each stage is a little longer or shorter than its siblings, and opens differently
   const widthJitter = cfg.secret ? 1 : gen.rr(0.94, 1.14);
   const targetW = Math.round(cfg.levelWidth * widthJitter) + (hasRivers ? riverRecipes(cfg.miniIndex).reduce((a, r) => a + r.width, 0) : 0) + zonePieces.reduce((a, z) => a + pieceWidth(z), 0);
