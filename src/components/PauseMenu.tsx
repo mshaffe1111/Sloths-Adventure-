@@ -30,31 +30,98 @@ export const Icon: React.FC<{ color: string; children: React.ReactNode; size?: n
 );
 
 /** music and effects volume (saved on the device) */
+/**
+ * A volume bar the thumb can really drag. The browser's own range input sits inside a card that scrolls up and down, and on a phone a
+ * thumb that drifts a little off level hands the gesture to the scroll, so the bar seems dead. This one keeps the touch for itself
+ * (touch-action: none, pointer capture), has a tall hit area, jumps to wherever the track is tapped, and answers the arrow keys.
+ */
+const VolumeBar: React.FC<{ id: string; label: string; value: number; onChange: (v: number) => void }> = ({ id, label, value, onChange }) => {
+  const track = React.useRef<HTMLDivElement>(null);
+  const drag = React.useRef(false);
+  const pct = Math.round(value * 100);
+  const fromX = (clientX: number) => {
+    const r = track.current?.getBoundingClientRect();
+    if (!r || r.width <= 0) return;
+    onChange(Math.max(0, Math.min(1, (clientX - r.left) / r.width)));
+  };
+  return (
+    <div className="pm-row">
+      <span id={`${id}-l`}>{label}</span>
+      <div
+        ref={track}
+        id={id}
+        className="pm-vol"
+        role="slider"
+        tabIndex={0}
+        aria-labelledby={`${id}-l`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={pct}
+        onPointerDown={(e) => {
+          drag.current = true;
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch {
+            /* a pointer that cannot be captured still drags while it is over the bar */
+          }
+          fromX(e.clientX);
+        }}
+        onPointerMove={(e) => {
+          if (drag.current) fromX(e.clientX);
+        }}
+        onPointerUp={() => {
+          drag.current = false;
+        }}
+        onPointerCancel={() => {
+          drag.current = false;
+        }}
+        onKeyDown={(e) => {
+          const step = e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -0.05 : e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 0.05 : 0;
+          if (!step) return;
+          e.preventDefault();
+          onChange(Math.max(0, Math.min(1, value + step)));
+        }}
+      >
+        <div className="pm-vol-track">
+          <div className="pm-vol-fill" style={{ width: `${pct}%` }} />
+        </div>
+        <div className="pm-vol-thumb" style={{ left: `${pct}%` }} />
+      </div>
+      <output htmlFor={id}>{pct}</output>
+    </div>
+  );
+};
+
 export const Sliders: React.FC = () => {
   const [music, setMusic] = React.useState(() => sound.musicVolume);
   const [sfx, setSfx] = React.useState(() => sound.sfxVolume);
-  const row = (id: string, label: string, value: number, set: (v: number) => void, apply: (v: number) => void) => (
-    <div className="pm-row">
-      <label htmlFor={id}>{label}</label>
-      <input
-        id={id}
-        type="range"
-        min={0}
-        max={100}
-        value={Math.round(value * 100)}
-        onChange={(e) => {
-          const v = Number(e.target.value) / 100;
-          set(v);
-          apply(v);
-        }}
-      />
-      <output htmlFor={id}>{Math.round(value * 100)}</output>
-    </div>
-  );
+  const lastBeep = React.useRef(0);
   return (
     <>
-      {row('pm-music', 'Music', music, setMusic, (v) => sound.setMusicVolume(v))}
-      {row('pm-sfx', 'Effects', sfx, setSfx, (v) => sound.setSfxVolume(v))}
+      <VolumeBar
+        id="pm-music"
+        label="Music"
+        value={music}
+        onChange={(v) => {
+          setMusic(v);
+          sound.setMusicVolume(v);
+        }}
+      />
+      <VolumeBar
+        id="pm-sfx"
+        label="Effects"
+        value={sfx}
+        onChange={(v) => {
+          setSfx(v);
+          sound.setSfxVolume(v);
+          // a little sample so the bar is heard working
+          const now = performance.now();
+          if (v > 0 && now - lastBeep.current > 220) {
+            lastBeep.current = now;
+            sound.playJump();
+          }
+        }}
+      />
     </>
   );
 };

@@ -493,7 +493,11 @@
 .pm-mute { min-height: 36px; padding: 0 14px; border-radius: 99px; border: 2px solid rgba(167, 243, 208, 0.45); background: transparent; color: #f0fdf4; font-family: var(--font-ui); font-size: 14px; font-weight: 500; cursor: pointer; }
 .pm-mute[aria-pressed="true"] { background: rgba(244, 63, 94, 0.25); border-color: rgba(251, 113, 133, 0.7); }
 .pm-row { display: grid; grid-template-columns: 62px 1fr 34px; align-items: center; gap: 10px; font-family: var(--font-ui); font-size: 14px; color: #a7f3d0; }
-.pm-row input[type="range"] { width: 100%; accent-color: #34d399; height: 24px; }
+.pm-vol { position: relative; height: 44px; margin: 0 14px 0 10px; touch-action: none; cursor: pointer; outline: none; -webkit-tap-highlight-color: transparent; user-select: none; }
+.pm-vol-track { position: absolute; left: 0; right: 0; top: 50%; height: 10px; margin-top: -5px; border-radius: 99px; background: rgba(255, 255, 255, 0.18); overflow: hidden; }
+.pm-vol-fill { height: 100%; background: linear-gradient(90deg, #34d399, #6ee7b7); }
+.pm-vol-thumb { position: absolute; top: 50%; width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; background: #34d399; border: 3px solid #ecfdf5; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); pointer-events: none; }
+.pm-vol:focus-visible .pm-vol-thumb { box-shadow: 0 0 0 4px rgba(253, 230, 138, 0.8); }
 .pm-row output { text-align: right; color: #fde68a; font-variant-numeric: tabular-nums; }
 @media (max-height: 480px) {
   .pm-card { padding: 12px 18px 12px; gap: 9px; max-width: 760px; border-radius: 20px; }
