@@ -35,6 +35,8 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { zoneEffect, windPush, DROWSY_SPEED, DROWSY_JUMP, DROWSY_LINGER } from './zones.ts';
+import { drawSporeMushrooms, drawZoneEffects, drawDrowsyVeil } from './zoneArt.ts';
 import {
   drawHeroSloth,
   drawTreeSnake,
@@ -176,6 +178,13 @@ export class GameEngine {
   private gameTime: number = 0;
   private standingOnId: number = -1;
   private riverHinted = false;
+  /** World 3: seconds of drowsiness left (spore clouds), and how strongly the screen shows it */
+  private drowsy = 0;
+  private drowsyShow = 0;
+  private zzzTimer = 0;
+  /** World 4: the push the wind adds to the hero this frame, px/s */
+  private windV = 0;
+  private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
   private runScore: number = 0;
@@ -529,6 +538,41 @@ export class GameEngine {
       if (p.x > r0.x0 - 380 && p.x < r0.x1) {
         this.riverHinted = true;
         this.addFloatingText('LOGS DRIFT! HOP ON AND RIDE', p.x, p.y - 90, '#7dd3fc');
+      }
+    }
+
+    // --- Spore clouds and wind gusts (Worlds 3 and 4, see zones.ts) ---
+    const zones = this.currentStage.zones;
+    if (zones?.length) {
+      const bodyY = p.y - 30;
+      if (zoneEffect(zones, 'spore', p.x, bodyY, this.gameTime).strength > 0.2) {
+        if (this.drowsy <= 0) {
+          if (!this.zoneHinted.sleepy) this.addFloatingText('SLEEPY SPORES...', p.x, p.y - 80, '#c4b5fd');
+          this.zoneHinted.sleepy = true;
+          this.zzzTimer = 0.3;
+        }
+        this.drowsy = DROWSY_LINGER;
+      } else if (this.drowsy > 0) {
+        this.drowsy -= dt;
+      }
+      this.windV = windPush(zones, p.x, bodyY, this.gameTime, p.grounded);
+      // the first time a zone of each kind is close, say what it is (once a session)
+      for (const z of zones) {
+        if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
+        this.zoneHinted[z.kind] = true;
+        this.addFloatingText(z.kind === 'spore' ? 'SPORES PUFF ON A BEAT. WAIT FOR THEM TO CLEAR' : 'GUSTS BLOW ON A BEAT. WATCH THE LEAVES', p.x, p.y - 100, z.kind === 'spore' ? '#c4b5fd' : '#99f6e4');
+      }
+    } else {
+      this.windV = 0;
+      if (this.drowsy > 0) this.drowsy -= dt;
+    }
+    this.drowsyShow += ((this.drowsy > 0 ? 1 : 0) - this.drowsyShow) * Math.min(1, dt * 4);
+    if (this.drowsy > 0) {
+      this.zzzTimer -= dt;
+      if (this.zzzTimer <= 0) {
+        this.zzzTimer = 0.9;
+        this.particles.push({ x: p.x + p.facing * 14, y: p.y - 62, vx: p.facing * 12, vy: -30, color: '#ddd6fe', size: 3, life: 0.9, maxLife: 0.9, type: 'star' });
+        this.addFloatingText('z', p.x + p.facing * 16, p.y - 66, '#ddd6fe');
       }
     }
 
@@ -892,7 +936,7 @@ export class GameEngine {
         } else {
           p.ducking = false;
 
-          const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1);
+          const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1) * (this.drowsy > 0 ? DROWSY_SPEED : 1);
           const maxSpeed = PHYS.maxRun * speedMult * this.attackMoveMul();
           const dir = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
           if (dir !== 0) {
@@ -925,7 +969,7 @@ export class GameEngine {
 
         if (this.input.state.jumpPressed) {
           if (p.grounded || this.coyoteTimer > 0) {
-            p.vy = -PHYS.jumpV;
+            p.vy = -PHYS.jumpV * (this.drowsy > 0 ? DROWSY_JUMP : 1);
             p.grounded = false;
             p.jumpsLeft = 1;
             p.isDoubleJumping = false;
@@ -938,7 +982,7 @@ export class GameEngine {
             sound.playJump();
             this.spawnJumpDust(p.x, p.y);
           } else if (p.jumpsLeft > 0 && !p.climbing) {
-            p.vy = -PHYS.doubleV;
+            p.vy = -PHYS.doubleV * (this.drowsy > 0 ? DROWSY_JUMP : 1);
             p.jumpsLeft = 0;
             p.isDoubleJumping = true;
             p.somersaultAngle = 0;
@@ -971,7 +1015,7 @@ export class GameEngine {
         p.vy += gravity * dt;
         if (p.vy > PHYS.maxFall) p.vy = PHYS.maxFall;
 
-        p.x += p.vx * dt;
+        p.x += (p.vx + this.windV) * dt;
         p.y += p.vy * dt;
       }
     }
@@ -2584,6 +2628,9 @@ export class GameEngine {
     }
     this.hazards.length = 0;
     this.slowTimer = 0;
+    this.drowsy = 0;
+    this.drowsyShow = 0;
+    this.windV = 0;
     // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
     for (const pl of this.platforms) {
       if (pl.type === 'fragile') {
@@ -2828,6 +2875,7 @@ export class GameEngine {
     );
 
     this.drawRivers(ctx, world, true);
+    drawSporeMushrooms(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     if (lair && this.currentStage.arena) drawLairWorld(ctx, lair, this.currentStage.arena, lairView, this.gameTime);
 
     // Shimmy ropes (behind the hero)
@@ -2985,6 +3033,8 @@ export class GameEngine {
       ctx.fill();
     });
 
+    drawZoneEffects(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
+
     // Render Floating Combat Texts
     ctx.textAlign = 'center';
     ctx.font = 'bold 15px Fredoka, sans-serif';
@@ -2999,6 +3049,7 @@ export class GameEngine {
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
     if (lair) drawLairFront(ctx, lair, lairView, this.gameTime);
     else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.drowsyShow, this.gameTime);
     if (this.respawnFlash > 0) {
       ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
       ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);

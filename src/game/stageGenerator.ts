@@ -19,6 +19,7 @@ import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { SECRET_GATE_LEVEL } from './secret.ts';
+import { pieceWidth, zoneRecipes, type Zone, type ZonePiece } from './zones.ts';
 import { driftX, logLayout, riverRecipes, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverRecipe, type RiverZone } from './river.ts';
 
 export interface GeneratedStage {
@@ -45,6 +46,8 @@ export interface GeneratedStage {
   waterY?: number;
   /** World 2: rivers with drifting logs (their water, and the surface that is fatal) */
   rivers?: import('./river.ts').RiverZone[];
+  /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */
+  zones?: import('./zones.ts').Zone[];
   /** what the generator built (for tests and debugging) */
   meta?: { attempt: number; chunks: string[]; width: number; recipe?: { core: string; partner: string | null; fork: string } };
 }
@@ -60,7 +63,7 @@ const WATER_FROM_BOTTOM = 170;
 
 type Kind =
   | 'flat' | 'pit' | 'hill' | 'bridge' | 'stones' | 'cliff' | 'bounce'
-  | 'ladder' | 'swing' | 'moving' | 'fragile' | 'yard' | 'tower' | 'river'
+  | 'ladder' | 'swing' | 'moving' | 'fragile' | 'yard' | 'tower' | 'river' | 'zone'
   | 'valley' | 'rolling' | 'hurdles' | 'terrace' | 'gapbridge' | 'skyhop' | 'islands' | 'canopy'
   | 'ropegap' | 'ropebonus'
   | 'pillars' | 'slope' | 'stumps' | 'zigzag' | 'trampoline' | 'causeway' | 'pegs' | 'meadow' | 'ditch' | 'twin';
@@ -68,7 +71,7 @@ type Kind =
 /** first mission number (1..100) a piece may appear in: teaches one idea at a time */
 const UNLOCK: Record<Kind, number> = {
   flat: 1, pit: 1, hill: 1, yard: 1, bridge: 1, stones: 1, cliff: 2, ladder: 1,
-  bounce: 3, swing: 4, moving: 8, fragile: 11, tower: 14, river: 1,
+  bounce: 3, swing: 4, moving: 8, fragile: 11, tower: 14, river: 1, zone: 1,
   valley: 1, rolling: 1, hurdles: 1, terrace: 2, gapbridge: 1, skyhop: 1, islands: 1, canopy: 1,
   ropegap: 4, ropebonus: 1,
   pillars: 3, slope: 1, stumps: 1, zigzag: 2, trampoline: 3, causeway: 1, pegs: 3, meadow: 1, ditch: 1, twin: 2,
@@ -78,6 +81,7 @@ const BASE_WEIGHT: Record<Kind, number> = {
   flat: 1.4, pit: 3, hill: 2, bridge: 1.2, stones: 2.2, cliff: 1.6, bounce: 1.4,
   ladder: 1.3, swing: 1.8, moving: 1.4, fragile: 1.2, yard: 1, tower: 0.8,
   river: 0, // never picked at random: World 2 places its rivers on purpose (see river.ts)
+  zone: 0, // likewise Worlds 3 and 4 place their cloud and gust pieces on purpose (see zones.ts)
   valley: 1.6, rolling: 1.6, hurdles: 1.5, terrace: 1.5, gapbridge: 1.4, skyhop: 1.6, islands: 1.6, canopy: 1.6,
   ropegap: 1.5, ropebonus: 1.3,
   pillars: 1.5, slope: 1.5, stumps: 1.5, zigzag: 1.5, trampoline: 1.4, causeway: 1.5, pegs: 1.4, meadow: 1.5, ditch: 1.5, twin: 1.5,
@@ -97,7 +101,7 @@ const OBJ_WEIGHT: Partial<Record<ObjectiveType, Partial<Record<Kind, number>>>> 
 /** how taxing a piece is; a spacer of flat ground follows the hard ones */
 const INTENSITY: Record<Kind, number> = {
   flat: 0, hill: 0, bridge: 0, ladder: 0, pit: 1, stones: 1, cliff: 1, bounce: 1,
-  yard: 1, swing: 2, moving: 2, fragile: 2, tower: 2, river: 1,
+  yard: 1, swing: 2, moving: 2, fragile: 2, tower: 2, river: 1, zone: 1,
   valley: 0, rolling: 0, hurdles: 1, terrace: 1, gapbridge: 1, skyhop: 1, islands: 1, canopy: 0,
   ropegap: 1, ropebonus: 0,
   pillars: 1, slope: 0, stumps: 0, zigzag: 1, trampoline: 1, causeway: 0, pegs: 1, meadow: 0, ditch: 0, twin: 0,
@@ -170,6 +174,9 @@ class Gen {
   rivers?: RiverZone[];
   /** World 2: the rivers still to place, in order */
   riverQueue: RiverRecipe[] = [];
+  zones?: Zone[];
+  /** Worlds 3 and 4: the cloud / gust pieces still to place, in order */
+  zoneQueue: ZonePiece[] = [];
 
   pid = 1;
   vid = 1;
@@ -979,6 +986,64 @@ class Gen {
     this.log.push(`river${rec.dir === 1 ? 'W' : 'A'}${rec.speed}`);
   }
 
+
+  /**
+   * Worlds 3 and 4: a piece with a zone on it (see zones.ts). The ground the zone covers is kept clear of animals (`safe`), and
+   * every gap in it is one a plain jump crosses, so waiting out the zone is always a way through.
+   */
+  chunkZone(p: ZonePiece) {
+    const zones = (this.zones ??= []);
+    const base = { kind: p.kind, dir: p.dir, period: p.period, warn: p.warn, active: p.active, force: p.force } as const;
+    const phase = () => this.rr(0, p.period);
+    const g0 = this.g;
+    if (p.shape === 'meadow') {
+      const s = this.flat(520, { safe: true });
+      zones.push({ ...base, x0: s.x0 + 80, x1: s.x1 - 80, top: g0 - 210, bottom: g0 + 12, baseY: g0, offset: phase(), emit: p.kind === 'spore' ? [s.x0 + 150, s.x0 + 260, s.x0 + 370] : undefined });
+      this.row(s.x0 + 130, s.x1 - 130, g0 - 40, 5);
+      this.log.push(`${p.kind}Meadow`);
+      return;
+    }
+    if (p.shape === 'gap') {
+      const run = this.flat(260, { safe: true });
+      this.closeBank();
+      // a tailwind carries a longer hop; a headwind gets a short one, so the double jump is a way through when the gust is on
+      const w = p.kind === 'wind' && p.dir === 1 ? this.rr(0.78, 0.9) * 140 : this.pitW();
+      this.arc(this.cx - 30, this.cx + w + 30, g0 - 36, 80, 4);
+      this.cx += w;
+      this.openBank();
+      const land = this.flat(260, { safe: true });
+      const pad = p.kind === 'wind' ? 190 : 150;
+      zones.push({
+        ...base, x0: run.x1 - pad, x1: land.x0 + pad, top: g0 - 230, bottom: g0 + 70, baseY: g0, offset: phase(),
+        emit: p.kind === 'spore' ? [run.x1 - 110, land.x0 + 100] : undefined,
+      });
+      this.log.push(`${p.kind}Gap${Math.round(w)}`);
+      return;
+    }
+    // stepping stones, each with a cloud of its own on a different beat
+    this.flat(220, { safe: true });
+    this.closeBank();
+    let x = this.cx;
+    let prevY = g0;
+    const y = g0 + 28;
+    const first = phase();
+    for (let i = 0; i < p.count; i++) {
+      const hop = this.hopLen(prevY - y, 0.5);
+      const w = 112;
+      x += hop;
+      this.plat({ x, y, width: w, height: 28, type: 'solid', style: 'moss_stone' });
+      this.flower(x + w / 2, y - 46);
+      zones.push({ ...base, x0: x - 20, x1: x + w + 20, top: y - 210, bottom: y + 30, baseY: y, offset: first + i * p.period * 0.37, emit: [x + w / 2] });
+      x += w;
+      prevY = y;
+    }
+    x += this.hopLen(prevY - g0, 0.5);
+    this.cx = x;
+    this.openBank();
+    this.flat(220, { safe: true });
+    this.log.push(`${p.kind}Stones${p.count}`);
+  }
+
   chunkYard(count = this.ri(2, 1 + Math.ceil(1 + this.d * 3))) {
     const len = 330 + count * 110;
     const s = this.flat(len, { yard: true });
@@ -997,7 +1062,7 @@ class Gen {
   }
 
   chunk(kind: Kind) {
-    const runup: Partial<Record<Kind, number>> = { pit: 130, stones: 140, swing: 220, moving: 180, fragile: 170, river: 160, skyhop: 150, islands: 150, gapbridge: 130, pillars: 150, zigzag: 150, pegs: 150 };
+    const runup: Partial<Record<Kind, number>> = { pit: 130, stones: 140, swing: 220, moving: 180, fragile: 170, river: 160, zone: 200, skyhop: 150, islands: 150, gapbridge: 130, pillars: 150, zigzag: 150, pegs: 150 };
     if (runup[kind]) this.ensure(runup[kind]!);
     switch (kind) {
       case 'flat': { const s = this.flat(this.rr(200, 420)); this.row(s.x0 + 50, s.x1 - 50, this.g - 32, this.ri(2, 4)); this.log.push('flat'); break; }
@@ -1033,6 +1098,7 @@ class Gen {
       case 'meadow': this.chunkMeadow(); break;
       case 'ditch': this.chunkDitch(); break;
       case 'twin': this.chunkTwin(); break;
+      case 'zone': this.chunkZone(this.zoneQueue.shift() ?? zoneRecipes(this.world, this.cfg.miniIndex)[0]); break;
       case 'river': this.chunkRiver(this.riverQueue.shift() ?? riverRecipes(this.cfg.miniIndex)[0]); break;
     }
   }
@@ -1049,7 +1115,7 @@ class Gen {
   fav = new Set<Kind>();
   recipe?: { core: string; partner: string | null; fork: string };
   pickFavourites() {
-    const pool = (Object.keys(UNLOCK) as Kind[]).filter((k) => UNLOCK[k] <= this.m && k !== 'flat' && k !== 'river' && (k !== 'tower' || this.G >= 560));
+    const pool = (Object.keys(UNLOCK) as Kind[]).filter((k) => UNLOCK[k] <= this.m && k !== 'flat' && k !== 'river' && k !== 'zone' && (k !== 'tower' || this.G >= 560));
     for (let i = 0; i < 4 && pool.length; i++) this.fav.add(pool.splice(Math.floor(this.rnd() * pool.length), 1)[0]);
   }
 
@@ -1057,7 +1123,7 @@ class Gen {
   // ---- stage recipes: every ordinary stage is about one idea ----
   /** the pieces a recipe may be built on: they demand something of the player, and need no skill the player may lack */
   private recipeOk(k: Kind) {
-    return UNLOCK[k] <= this.m && INTENSITY[k] >= 1 && k !== 'river' && k !== 'ropegap' && k !== 'ropebonus' && k !== 'yard' && (k !== 'tower' || this.G >= 560);
+    return UNLOCK[k] <= this.m && INTENSITY[k] >= 1 && k !== 'river' && k !== 'zone' && k !== 'ropegap' && k !== 'ropebonus' && k !== 'yard' && (k !== 'tower' || this.G >= 560);
   }
 
   private weightedFrom(kinds: Kind[]): Kind {
@@ -1129,9 +1195,10 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   const obj = cfg.objectiveType;
   // World 2's rivers take up room that the stage's fights and pickups also need, so the stage is as much longer as its rivers are wide
   const hasRivers = cfg.worldIndex === 2 && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret;
+  const zonePieces = (cfg.worldIndex === 3 || cfg.worldIndex === 4) && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret ? zoneRecipes(cfg.worldIndex, cfg.miniIndex) : [];
   // each stage is a little longer or shorter than its siblings, and opens differently
   const widthJitter = cfg.secret ? 1 : gen.rr(0.94, 1.14);
-  const targetW = Math.round(cfg.levelWidth * widthJitter) + (hasRivers ? riverRecipes(cfg.miniIndex).reduce((a, r) => a + r.width, 0) : 0);
+  const targetW = Math.round(cfg.levelWidth * widthJitter) + (hasRivers ? riverRecipes(cfg.miniIndex).reduce((a, r) => a + r.width, 0) : 0) + zonePieces.reduce((a, z) => a + pieceWidth(z), 0);
 
   gen.pickFavourites();
   // ---- the recipe: one idea, introduced safely, developed, twisted, paid off ----
@@ -1167,6 +1234,11 @@ function buildHorizontal(gen: Gen): GeneratedStage {
     const recs = riverRecipes(cfg.miniIndex);
     gen.riverQueue = recs.slice();
     recs.forEach((_, i) => forced.push({ at: targetW * ((i + 0.55) / (recs.length + 0.25)) * 0.9, kind: 'river' }));
+  }
+  // Worlds 3 and 4 have a rule of their own too: spore clouds and wind gusts, taught in order (zones.ts)
+  if (zonePieces.length) {
+    gen.zoneQueue = zonePieces.slice();
+    zonePieces.forEach((_, i) => forced.push({ at: targetW * ((i + 0.55) / (zonePieces.length + 0.25)) * 0.9, kind: 'zone' }));
   }
   forced.sort((a, b) => a.at - b.at);
 
@@ -1212,7 +1284,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   let pieces = 0;
   let payoffDone = false;
   // (at least four pieces, so even a short stage is a little journey and not one hill)
-  while (gen.cx < targetW - endZone || pieces < (gen.m <= 2 ? 3 : 4)) {
+  while (gen.cx < targetW - endZone || pieces < (gen.m <= 2 ? 3 : 4) || forced.some((f) => f.kind === 'zone')) {
     // checkpoint cadence
     if (gen.cx - gen.lastCp > 1000) { gen.checkpoint(); continue; }
 
@@ -1329,6 +1401,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
     checkpoints: gen.CP,
     waterY: gen.waterY,
     ...(gen.rivers ? { rivers: gen.rivers } : {}),
+    ...(gen.zones ? { zones: gen.zones } : {}),
   };
 }
 

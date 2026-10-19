@@ -11,8 +11,10 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform, Vine } from './types.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { skillGuaranteedAt } from './skills.ts';
+import { idleTime } from './zones.ts';
 import {
   PHYS,
+  SAFE,
   SIM_DTS,
   LAND_HALF,
   TAKEOFF_SLACK,
@@ -349,6 +351,33 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     const near = plats.some((p) => p.type === 'solid' && p.x + p.width >= r.x0 - 2 && p.x + p.width <= r.x0 + 2);
     const far = plats.some((p) => p.type === 'solid' && p.x >= r.x1 - 2 && p.x <= r.x1 + 2);
     if (!near || !far) errors.push(`river at x=${Math.round(r.x0)} has no bank at one end`);
+  }
+
+  // zones (Worlds 3 and 4): a rhythm that can always be waited out, a hop that is possible in either state, nothing hostile or
+  // risky standing inside one
+  for (const z of stage.zones ?? []) {
+    const at = `${z.kind} zone at x=${Math.round(z.x0)}`;
+    const idle = idleTime(z);
+    if (idle < 2.0) errors.push(`${at}: only ${idle.toFixed(1)}s quiet between bursts (needs 2s to be waitable)`);
+    if (z.warn < 0.9) errors.push(`${at}: warning of ${z.warn}s is too short`);
+    if (z.active > 3.0) errors.push(`${at}: stays active ${z.active}s, longer than a player should have to wait`);
+    if (z.kind === 'wind' && z.force > 160) errors.push(`${at}: gust of ${z.force} px/s is too strong`);
+    for (const e of stage.enemies) {
+      if (e.x > z.x0 - 30 && e.x < z.x1 + 30 && e.y > z.top && e.y < z.bottom + 60) errors.push(`enemy #${e.id} stands inside the ${at}`);
+    }
+    for (const c of stage.checkpoints ?? []) {
+      if (c.x > z.x0 && c.x < z.x1 && c.y > z.top && c.y < z.bottom) errors.push(`a checkpoint flag stands inside the ${at}`);
+    }
+    // every gap the zone covers: a plain jump must cross it, and a headwind must still leave the double jump a way over
+    const under = plats
+      .filter((p) => p.type === 'solid' && p.x < z.x1 && p.x + p.width > z.x0 && p.y > z.top && p.y < z.bottom + 20)
+      .sort((a, b) => a.x - b.x);
+    for (let i = 1; i < under.length; i++) {
+      const gap = under[i].x - (under[i - 1].x + under[i - 1].width);
+      if (gap <= 24) continue;
+      if (gap > SAFE.gap1) errors.push(`${at}: a ${Math.round(gap)}px gap is wider than a plain jump`);
+      if (z.kind === 'wind' && z.dir === -1 && gap + z.force * 0.7 > SAFE.gap2) errors.push(`${at}: a headwind of ${z.force} makes the ${Math.round(gap)}px gap too far even for a double jump`);
+    }
   }
 
   // nothing floats below the water
