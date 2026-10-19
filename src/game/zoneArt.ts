@@ -5,7 +5,7 @@
  *   warn   - the mushrooms swell and glow / leaves start to stream and chevrons pulse: "it is about to start"
  *   active - the cloud fills the box / the gust streams hard
  */
-import { zoneState, type Zone } from './zones.ts';
+import { zoneState, type Zone, type ZoneState } from './zones.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -16,11 +16,14 @@ interface View { x: number; y: number; w: number; h: number }
 
 const visible = (z: Zone, cam: View) => z.x1 > cam.x - 80 && z.x0 < cam.x + cam.w + 80 && z.bottom > cam.y - 80 && z.top < cam.y + cam.h + 80;
 
-/** the mushrooms that puff the clouds: drawn before the player, on top of the ground */
-export function drawSporeMushrooms(ctx: CanvasRenderingContext2D, zones: readonly Zone[] | undefined, cam: View, t: number) {
+/** the things the zones come out of (mushrooms, vents, rods): drawn before the player, on top of the ground */
+export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zone[] | undefined, cam: View, t: number) {
   if (!zones) return;
   for (const z of zones) {
-    if (z.kind !== 'spore' || !z.emit || !visible(z, cam)) continue;
+    if (!visible(z, cam)) continue;
+    if (z.kind === 'geyser') { drawVent(ctx, z, zoneState(z, t), t); continue; }
+    if (z.kind === 'bolt') { drawRod(ctx, z, zoneState(z, t), t); continue; }
+    if (z.kind !== 'spore' || !z.emit) continue;
     const st = zoneState(z, t);
     const swell = st.phase === 'warn' ? 1 + 0.32 * Math.sin(st.u * Math.PI * (0.5 + st.u * 2.5)) ** 2 + 0.1 * st.u : st.phase === 'active' ? 1.12 - 0.12 * st.u + 0.06 * Math.sin(t * 18) * st.strength : 1;
     const glow = st.phase === 'warn' ? 0.3 + 0.7 * st.u : st.phase === 'active' ? 0.6 * st.strength : 0;
@@ -77,7 +80,9 @@ export function drawZoneEffects(ctx: CanvasRenderingContext2D, zones: readonly Z
     if (!visible(z, cam)) continue;
     const st = zoneState(z, t);
     if (z.kind === 'spore') drawCloud(ctx, z, st, t);
-    else drawGust(ctx, z, st, t);
+    else if (z.kind === 'wind') drawGust(ctx, z, st, t);
+    else if (z.kind === 'geyser') drawEruption(ctx, z, st, t);
+    else drawBolt(ctx, z, st, t);
   }
 }
 
@@ -215,4 +220,207 @@ export function drawDrowsyVeil(ctx: CanvasRenderingContext2D, vw: number, vh: nu
   g.addColorStop(1, `rgba(88, 28, 135, ${0.5 * level * breath})`);
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, vw, vh);
+}
+
+// ---------------------------------------------------------------------------
+// Lava geysers (World 9)
+// ---------------------------------------------------------------------------
+
+/** a crack in the ground that glows hotter as the eruption nears */
+function drawVent(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  const cx = (z.x0 + z.x1) / 2;
+  const w = z.x1 - z.x0;
+  const heat = st.phase === 'warn' ? 0.35 + 0.65 * st.u : st.phase === 'active' ? 1 : 0.12 + 0.08 * Math.sin(t * 2 + cx);
+  ctx.save();
+  ctx.translate(cx, z.baseY);
+  // the warning's rumble: the whole vent shivers
+  if (st.phase === 'warn') ctx.translate(Math.sin(t * 60) * 2.2 * st.u, 0);
+  const g = ctx.createRadialGradient(0, -2, 2, 0, -2, w * 1.1);
+  g.addColorStop(0, `rgba(255, 190, 70, ${0.8 * heat})`);
+  g.addColorStop(1, 'rgba(255, 90, 20, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.ellipse(0, -2, w * 1.1, 20, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // the mouth
+  ctx.fillStyle = '#2a1410';
+  ctx.beginPath();
+  ctx.ellipse(0, -2, w * 0.5, 9, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = `rgba(255, ${120 + 100 * heat}, 40, ${0.5 + 0.5 * heat})`;
+  ctx.beginPath();
+  ctx.ellipse(0, -1, w * 0.36, 5.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // cracks that run out of it
+  ctx.strokeStyle = `rgba(255, 150, 50, ${0.35 + 0.6 * heat})`;
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  for (const s of [-1, 1]) {
+    ctx.beginPath();
+    ctx.moveTo(s * w * 0.4, -2);
+    ctx.lineTo(s * (w * 0.7 + 8), 1);
+    ctx.lineTo(s * (w * 0.95 + 16), -3);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawEruption(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  const cx = (z.x0 + z.x1) / 2;
+  const w = z.x1 - z.x0;
+  const full = z.baseY - z.top;
+  if (st.phase === 'warn') {
+    // steam and spitting sparks that build up
+    const n = 4 + Math.round(st.u * 8);
+    for (let i = 0; i < n; i++) {
+      const sd = hash(i * 3.1 + cx * 0.01);
+      const ph = ((t * (0.9 + sd) + sd * 5) % 1);
+      const x = cx + (sd - 0.5) * w * 0.9;
+      const y = z.baseY - 8 - ph * (30 + st.u * 70);
+      ctx.fillStyle = `rgba(255, 215, 170, ${0.5 * (1 - ph) * (0.4 + st.u)})`;
+      ctx.beginPath();
+      ctx.arc(x, y, 3 + ph * 8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    return;
+  }
+  if (st.phase !== 'active') return;
+  const rise = Math.min(1, st.strength * 1.25);
+  const h = full * rise;
+  const sway = Math.sin(t * 22) * 3;
+  ctx.save();
+  const g = ctx.createLinearGradient(0, z.baseY, 0, z.baseY - h);
+  g.addColorStop(0, 'rgba(255, 250, 200, 0.98)');
+  g.addColorStop(0.35, 'rgba(255, 170, 40, 0.92)');
+  g.addColorStop(1, 'rgba(220, 60, 10, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(cx - w * 0.5, z.baseY);
+  ctx.quadraticCurveTo(cx - w * 0.42 + sway, z.baseY - h * 0.5, cx - w * 0.22 + sway, z.baseY - h);
+  ctx.lineTo(cx + w * 0.22 + sway, z.baseY - h);
+  ctx.quadraticCurveTo(cx + w * 0.42 + sway, z.baseY - h * 0.5, cx + w * 0.5, z.baseY);
+  ctx.closePath();
+  ctx.fill();
+  // glow around it
+  const gl = ctx.createRadialGradient(cx, z.baseY - h * 0.4, 4, cx, z.baseY - h * 0.4, w * 2.2);
+  gl.addColorStop(0, `rgba(255, 160, 50, ${0.35 * st.strength})`);
+  gl.addColorStop(1, 'rgba(255, 90, 20, 0)');
+  ctx.fillStyle = gl;
+  ctx.fillRect(cx - w * 2.4, z.baseY - h - 20, w * 4.8, h + 40);
+  // embers thrown up and out
+  for (let i = 0; i < 14; i++) {
+    const sd = hash(i * 7.7 + Math.floor(t / z.period) * 3.3 + cx * 0.01);
+    const ph = (st.u * 1.3 + sd) % 1;
+    const x = cx + (sd - 0.5) * w * 2.2 * ph;
+    const y = z.baseY - h * (0.2 + 0.85 * ph) + 60 * ph * ph;
+    ctx.fillStyle = `rgba(255, ${170 + 60 * sd}, 60, ${1 - ph})`;
+    ctx.fillRect(x, y, 4, 4);
+  }
+  ctx.restore();
+}
+
+// ---------------------------------------------------------------------------
+// Lightning (World 10)
+// ---------------------------------------------------------------------------
+
+/** a short metal rod with an orb that charges up */
+function drawRod(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  const cx = (z.x0 + z.x1) / 2;
+  const charge = st.phase === 'warn' ? 0.25 + 0.75 * st.u : st.phase === 'active' ? 1 : 0.1;
+  ctx.save();
+  ctx.translate(cx, z.baseY);
+  // scorched ring on the ground where it strikes
+  ctx.fillStyle = `rgba(20, 24, 40, 0.55)`;
+  ctx.beginPath();
+  ctx.ellipse(0, -2, (z.x1 - z.x0) * 0.75, 8, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = `rgba(186, 230, 253, ${0.25 + 0.6 * charge})`;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.ellipse(0, -2, (z.x1 - z.x0) * (0.55 + 0.25 * charge), 6, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  // the rod
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(-4, -46, 8, 44);
+  ctx.fillStyle = '#334155';
+  ctx.fillRect(-9, -6, 18, 6);
+  // the orb
+  const flick = st.phase === 'warn' ? 0.7 + 0.3 * Math.sin(t * 40) : 1;
+  const g = ctx.createRadialGradient(0, -52, 1, 0, -52, 20 + 14 * charge);
+  g.addColorStop(0, `rgba(255, 255, 255, ${charge * flick})`);
+  g.addColorStop(0.4, `rgba(125, 211, 252, ${0.8 * charge})`);
+  g.addColorStop(1, 'rgba(56, 189, 248, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(0, -52, 20 + 14 * charge, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = charge > 0.5 ? '#e0f2fe' : '#64748b';
+  ctx.beginPath();
+  ctx.arc(0, -52, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawBolt(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: number) {
+  const cx = (z.x0 + z.x1) / 2;
+  const top = z.top;
+  if (st.phase === 'warn') {
+    // a faint column of crackle building where the bolt will land, so the whole lane reads as dangerous
+    const a = 0.12 + 0.5 * st.u * (0.6 + 0.4 * Math.sin(t * 38));
+    ctx.save();
+    ctx.setLineDash([10, 14]);
+    ctx.lineDashOffset = -t * 120;
+    ctx.strokeStyle = `rgba(186, 230, 253, ${a})`;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx, z.baseY - 50);
+    ctx.lineTo(cx, top);
+    ctx.stroke();
+    ctx.restore();
+    // sparks jumping off the orb
+    ctx.fillStyle = `rgba(224, 242, 254, ${0.4 + 0.6 * st.u})`;
+    for (let i = 0; i < 3 + Math.round(st.u * 5); i++) {
+      const sd = hash(i * 5.9 + Math.floor(t * 18) * 1.3 + cx * 0.01);
+      const ang = sd * Math.PI * 2;
+      ctx.fillRect(cx + Math.cos(ang) * (14 + sd * 22), z.baseY - 52 + Math.sin(ang) * (14 + sd * 22), 3, 3);
+    }
+    return;
+  }
+  if (st.phase !== 'active') return;
+  // the strike: a jagged bolt from the sky, different each time
+  const seed = Math.floor((t + z.offset) / z.period) * 17.3 + cx * 0.013;
+  const segs = 14;
+  const pts: Array<[number, number]> = [];
+  for (let i = 0; i <= segs; i++) {
+    const u = i / segs;
+    const jx = i === 0 || i === segs ? 0 : (hash(seed + i * 2.3) - 0.5) * 46;
+    pts.push([cx + jx, top + (z.baseY - 50 - top) * u]);
+  }
+  ctx.save();
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  const path = () => {
+    ctx.beginPath();
+    pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+  };
+  ctx.shadowColor = '#7dd3fc';
+  ctx.shadowBlur = 28;
+  ctx.strokeStyle = `rgba(125, 211, 252, ${0.9 * st.strength})`;
+  ctx.lineWidth = 16;
+  path();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = `rgba(255, 255, 255, ${st.strength})`;
+  ctx.lineWidth = 5;
+  path();
+  ctx.stroke();
+  // the burst where it lands
+  const g = ctx.createRadialGradient(cx, z.baseY - 6, 2, cx, z.baseY - 6, 90);
+  g.addColorStop(0, `rgba(255, 255, 255, ${0.9 * st.strength})`);
+  g.addColorStop(1, 'rgba(125, 211, 252, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(cx, z.baseY - 6, 90, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }

@@ -6,11 +6,14 @@
  *   - World 3, the Mossy Grotto: SPORE clouds. Mushrooms puff out a sleepy cloud; inside it Slomatt goes drowsy (slow, a shorter jump).
  *   - World 4, the Mist Cascades: WIND gusts. A gust pushes everything in the lane to one side, helping or hindering a jump.
  *
+ *   - World 9, the Volcanic Jungle: lava GEYSERS. Vents rumble, then erupt in a column that burns anything standing in it.
+ *   - World 10, the Stormy Highlands: LIGHTNING. Rods charge, then a bolt strikes down the same column.
+ *
  * Everything here is pure (no canvas, no engine) so the generator, the validator, the engine, the drawing and the tests agree on what
  * a zone is doing at any moment.
  */
 
-export type ZoneKind = 'spore' | 'wind';
+export type ZoneKind = 'spore' | 'wind' | 'geyser' | 'bolt';
 
 export interface Zone {
   kind: ZoneKind;
@@ -60,7 +63,8 @@ export function zoneState(z: Zone, t: number): ZoneState {
   if (s < idle) return { phase: 'idle', u: s / idle, strength: 0, untilActive: z.period - z.active - s };
   if (s < idle + z.warn) return { phase: 'warn', u: (s - idle) / z.warn, strength: 0, untilActive: idle + z.warn - s };
   const a = s - idle - z.warn;
-  const ramp = Math.min(1, a / ZONE_RAMP, (z.active - a) / ZONE_RAMP);
+  const r = Math.min(ZONE_RAMP, z.active / 3);
+  const ramp = Math.min(1, a / r, (z.active - a) / r);
   return { phase: 'active', u: a / z.active, strength: Math.max(0, ramp), untilActive: 0 };
 }
 
@@ -84,6 +88,26 @@ export function zoneEffect(zones: readonly Zone[] | undefined, kind: ZoneKind, x
     if (s > best) { best = s; zone = z; }
   }
   return { strength: best, zone };
+}
+
+// ---------------------------------------------------------------------------
+// Columns (Worlds 9 and 10)
+// ---------------------------------------------------------------------------
+
+/** geysers and bolts hurt: a zone of these kinds burns whoever is inside it while it is firing */
+export const isDamaging = (z: Pick<Zone, 'kind'>) => z.kind === 'geyser' || z.kind === 'bolt';
+
+/** a column is dangerous once it is at least this far into its burst (so the first instant of the ramp is a grace) */
+export const COLUMN_HOT = 0.5;
+
+/** the firing damaging zone that overlaps the box, if any */
+export function columnHit(zones: readonly Zone[] | undefined, x: number, y: number, w: number, h: number, t: number): Zone | null {
+  if (!zones) return null;
+  for (const z of zones) {
+    if (!isDamaging(z) || x + w < z.x0 || x > z.x1 || y + h < z.top || y > z.bottom) continue;
+    if (zoneState(z, t).strength >= COLUMN_HOT) return z;
+  }
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -116,12 +140,12 @@ export function windPush(zones: readonly Zone[] | undefined, x: number, y: numbe
 // ---------------------------------------------------------------------------
 
 /** the shape of one piece of a zone stage */
-export type ZoneShape = 'meadow' | 'gap' | 'stones';
+export type ZoneShape = 'meadow' | 'gap' | 'stones' | 'columns';
 
 export interface ZonePiece {
   kind: ZoneKind;
   shape: ZoneShape;
-  /** stones: how many */
+  /** stones / columns: how many */
   count: number;
   /** wind only: +1 pushes the way you run (helps a jump), -1 against you (shortens it) */
   dir: 1 | -1;
@@ -137,6 +161,10 @@ const spore = (shape: ZoneShape, count = 0, period = 6.4, active = 2.2): ZonePie
 /** `idle` is the quiet spell between gusts: later stages shorten it a little, but never below two seconds */
 const gust = (shape: ZoneShape, dir: 1 | -1, force = 120, idle = 2.8, active = 2.2): ZonePiece => ({
   kind: 'wind', shape, count: 0, dir, period: idle + 1.1 + active, warn: 1.1, active, force,
+});
+
+const column = (kind: 'geyser' | 'bolt', shape: ZoneShape, count: number, idle: number, active: number, warn = 1.2): ZonePiece => ({
+  kind, shape, count, dir: 1, period: idle + warn + active, warn, active, force: 0,
 });
 
 /**
@@ -177,16 +205,56 @@ export function windRecipes(mini: number): ZonePiece[] {
   return table[Math.max(0, Math.min(table.length - 1, mini - 1))].map((p) => ({ ...p }));
 }
 
+/**
+ * World 9: vents on open ground. One vent you can watch, then rows of them on staggered beats with a safe pocket between each, then vents
+ * on both sides of a gap. The quiet spell shrinks a little as the world goes on but never below two seconds.
+ */
+export function geyserRecipes(mini: number): ZonePiece[] {
+  const g = (shape: ZoneShape, n: number, idle: number, active = 0.9) => column('geyser', shape, n, idle, active, 1.3);
+  const table: ZonePiece[][] = [
+    [g('columns', 1, 3.0)],
+    [g('columns', 2, 3.0)],
+    [g('columns', 2, 2.8), g('gap', 2, 2.8)],
+    [g('columns', 3, 2.6)],
+    [g('gap', 2, 2.6), g('columns', 3, 2.5)],
+    [g('columns', 3, 2.4), g('gap', 2, 2.4)],
+    [g('columns', 3, 2.3), g('gap', 2, 2.3), g('columns', 2, 2.3)],
+    [g('columns', 4, 2.2, 1.0), g('gap', 2, 2.2, 1.0), g('columns', 3, 2.2, 1.0)],
+    [g('columns', 4, 2.1, 1.0), g('gap', 2, 2.1, 1.0), g('columns', 4, 2.1, 1.0)],
+  ];
+  return table[Math.max(0, Math.min(table.length - 1, mini - 1))].map((p) => ({ ...p }));
+}
+
+/** World 10: the same idea, but the strike is fast: a longer warning and a very short bolt */
+export function boltRecipes(mini: number): ZonePiece[] {
+  const b = (shape: ZoneShape, n: number, idle: number) => column('bolt', shape, n, idle, 0.4, 1.2);
+  const table: ZonePiece[][] = [
+    [b('columns', 1, 3.0)],
+    [b('columns', 2, 3.0)],
+    [b('columns', 2, 2.8), b('gap', 2, 2.8)],
+    [b('columns', 3, 2.6)],
+    [b('gap', 2, 2.6), b('columns', 3, 2.5)],
+    [b('columns', 3, 2.4), b('gap', 2, 2.4)],
+    [b('columns', 3, 2.3), b('gap', 2, 2.3), b('columns', 2, 2.3)],
+    [b('columns', 4, 2.2), b('gap', 2, 2.2), b('columns', 3, 2.2)],
+    [b('columns', 4, 2.1), b('gap', 2, 2.1), b('columns', 4, 2.1)],
+  ];
+  return table[Math.max(0, Math.min(table.length - 1, mini - 1))].map((p) => ({ ...p }));
+}
+
 /** the pieces of a zone world stage (empty for other worlds) */
 export function zoneRecipes(world: number, mini: number): ZonePiece[] {
   if (world === 3) return sporeRecipes(mini);
   if (world === 4) return windRecipes(mini);
+  if (world === 9) return geyserRecipes(mini);
+  if (world === 10) return boltRecipes(mini);
   return [];
 }
 
 /** how much extra ground a piece needs (px), so the stage can be made as much longer */
 export function pieceWidth(p: ZonePiece): number {
   if (p.shape === 'meadow') return 520;
-  if (p.shape === 'gap') return 700;
+  if (p.shape === 'gap') return p.kind === 'geyser' || p.kind === 'bolt' ? 900 : 700;
+  if (p.shape === 'columns') return 330 + p.count * 210;
   return 220 + p.count * 230;
 }

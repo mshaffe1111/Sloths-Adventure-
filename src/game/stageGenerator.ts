@@ -1003,6 +1003,38 @@ class Gen {
       this.log.push(`${p.kind}Meadow`);
       return;
     }
+    if (p.kind === 'geyser' || p.kind === 'bolt') {
+      // vents / rods in a row (or either side of a gap), each on its own beat, with a safe pocket between every two
+      const colW = p.kind === 'geyser' ? 72 : 56;
+      const height = p.kind === 'geyser' ? 250 : 560;
+      const first = phase();
+      const place = (cxm: number, i: number) => {
+        zones.push({ ...base, x0: cxm - colW / 2, x1: cxm + colW / 2, top: g0 - height, bottom: g0 + 14, baseY: g0, offset: first + i * p.period * 0.31 });
+      };
+      if (p.shape === 'gap') {
+        const run = this.flat(320, { safe: true });
+        this.closeBank();
+        const w = this.pitW();
+        this.arc(this.cx - 30, this.cx + w + 30, g0 - 36, 80, 4);
+        this.cx += w;
+        this.openBank();
+        const land = this.flat(320, { safe: true });
+        place(run.x1 - 120, 0);
+        place(land.x0 + 120, 1);
+        this.flower(run.x0 + 90, g0 - 40);
+        this.flower(land.x1 - 90, g0 - 40);
+        this.log.push(`${p.kind}Gap${Math.round(w)}`);
+        return;
+      }
+      const spacing = 210;
+      const s = this.flat(330 + p.count * spacing - spacing, { safe: true });
+      const startX = s.x0 + 165;
+      for (let i = 0; i < p.count; i++) place(startX + i * spacing, i);
+      // a flower in each pocket: the reward for waiting in the right place
+      for (let i = 0; i <= p.count; i++) this.flower(startX - spacing / 2 + i * spacing, g0 - 40);
+      this.log.push(`${p.kind}Row${p.count}`);
+      return;
+    }
     if (p.shape === 'gap') {
       const run = this.flat(260, { safe: true });
       this.closeBank();
@@ -1195,7 +1227,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   const obj = cfg.objectiveType;
   // World 2's rivers take up room that the stage's fights and pickups also need, so the stage is as much longer as its rivers are wide
   const hasRivers = cfg.worldIndex === 2 && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret;
-  const zonePieces = (cfg.worldIndex === 3 || cfg.worldIndex === 4) && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret ? zoneRecipes(cfg.worldIndex, cfg.miniIndex) : [];
+  const zonePieces = [3, 4, 9, 10].includes(cfg.worldIndex) && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret ? zoneRecipes(cfg.worldIndex, cfg.miniIndex) : [];
   // each stage is a little longer or shorter than its siblings, and opens differently
   const widthJitter = cfg.secret ? 1 : gen.rr(0.94, 1.14);
   const targetW = Math.round(cfg.levelWidth * widthJitter) + (hasRivers ? riverRecipes(cfg.miniIndex).reduce((a, r) => a + r.width, 0) : 0) + zonePieces.reduce((a, z) => a + pieceWidth(z), 0);

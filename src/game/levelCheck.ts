@@ -11,7 +11,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform, Vine } from './types.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { skillGuaranteedAt } from './skills.ts';
-import { idleTime } from './zones.ts';
+import { idleTime, isDamaging } from './zones.ts';
 import {
   PHYS,
   SAFE,
@@ -360,10 +360,20 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     const idle = idleTime(z);
     if (idle < 2.0) errors.push(`${at}: only ${idle.toFixed(1)}s quiet between bursts (needs 2s to be waitable)`);
     if (z.warn < 0.9) errors.push(`${at}: warning of ${z.warn}s is too short`);
+    if (isDamaging(z)) {
+      if (z.warn < 1.1) errors.push(`${at}: a damaging zone needs at least 1.1s of warning`);
+      if (z.active > 1.2) errors.push(`${at}: a damaging zone fires for ${z.active}s, too long to dodge`);
+      // a safe pocket between neighbours: room to stand between two columns while one of them fires
+      for (const o of stage.zones ?? []) {
+        if (o === z || !isDamaging(o) || o.x0 < z.x0 || Math.abs(o.baseY - z.baseY) > 40) continue;
+        const gapPx = o.x0 - z.x1;
+        if (gapPx < 110) errors.push(`${at}: only ${Math.round(gapPx)}px to the next column, no room to stand between them`);
+      }
+    }
     if (z.active > 3.0) errors.push(`${at}: stays active ${z.active}s, longer than a player should have to wait`);
     if (z.kind === 'wind' && z.force > 160) errors.push(`${at}: gust of ${z.force} px/s is too strong`);
     for (const e of stage.enemies) {
-      if (e.x > z.x0 - 30 && e.x < z.x1 + 30 && e.y > z.top && e.y < z.bottom + 60) errors.push(`enemy #${e.id} stands inside the ${at}`);
+      if (e.x > z.x0 - 30 && e.x < z.x1 + 30 && e.y > (isDamaging(z) ? z.baseY - 150 : z.top) && e.y < z.bottom + 60) errors.push(`enemy #${e.id} stands inside the ${at}`);
     }
     for (const c of stage.checkpoints ?? []) {
       if (c.x > z.x0 && c.x < z.x1 && c.y > z.top && c.y < z.bottom) errors.push(`a checkpoint flag stands inside the ${at}`);

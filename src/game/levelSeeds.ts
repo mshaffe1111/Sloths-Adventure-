@@ -102,6 +102,6 @@ export const LEVEL_ATTEMPTS: Record<string, number> = {
   '10-6': 0,
   '10-7': 0,
   '10-8': 0,
-  '10-9': 1,
+  '10-9': 0,
   '10-10': 0,
 };

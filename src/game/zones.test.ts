@@ -4,7 +4,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { generateStage } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
 import {
-  zoneState, idleTime, windPush, zoneEffect, sporeRecipes, windRecipes, zoneRecipes, pieceWidth, ZONE_RAMP, type Zone,
+  zoneState, idleTime, windPush, zoneEffect, columnHit, isDamaging, sporeRecipes, windRecipes, zoneRecipes, pieceWidth, ZONE_RAMP, type Zone,
 } from './zones.ts';
 
 const levels = generateAllLevels();
@@ -53,10 +53,11 @@ test('wind pushes by direction and force, less on the ground, and only inside th
 });
 
 test('stages teach in order: first a harmless zone on open ground, then gaps, then more of them', () => {
-  for (const world of [3, 4]) {
+  for (const world of [3, 4, 9, 10]) {
     const first = zoneRecipes(world, 1);
     assert.equal(first.length, 1);
-    assert.equal(first[0].shape, 'meadow', 'the first one has nothing to fall into');
+    assert.equal(first[0].shape, world >= 9 ? 'columns' : 'meadow', 'the first one has nothing to fall into');
+    if (world >= 9) assert.equal(first[0].count, 1, 'a single vent or rod to watch first');
     if (world === 4) assert.equal(first[0].dir, 1, 'and the first gust helps');
     assert.ok(zoneRecipes(world, 9).length >= 3);
     for (let m = 1; m <= 9; m++) for (const p of zoneRecipes(world, m)) {
@@ -70,13 +71,13 @@ test('stages teach in order: first a harmless zone on open ground, then gaps, th
   assert.ok(windRecipes(4).some((p) => p.dir === -1), 'headwinds arrive by stage 4');
 });
 
-test('every ordinary World 3 and 4 stage has its zones, and no other world has any', () => {
+test('every ordinary World 3, 4, 9 and 10 stage has its zones, and no other world has any', () => {
   for (const l of levels) {
     const s = generateStage(l);
-    const want = (l.worldIndex === 3 || l.worldIndex === 4) && !['ascent', 'boss_lair'].includes(l.objectiveType) && !l.secret;
+    const want = [3, 4, 9, 10].includes(l.worldIndex) && !['ascent', 'boss_lair'].includes(l.objectiveType) && !l.secret;
     if (want) {
       assert.ok((s.zones?.length ?? 0) >= zoneRecipes(l.worldIndex, l.miniIndex).length, `${l.id} is missing its zones`);
-      const kind = l.worldIndex === 3 ? 'spore' : 'wind';
+      const kind = { 3: 'spore', 4: 'wind', 9: 'geyser', 10: 'bolt' }[l.worldIndex as 3 | 4 | 9 | 10];
       assert.ok(s.zones!.every((z) => z.kind === kind), `${l.id}: wrong kind of zone for its world`);
     } else {
       assert.equal(s.zones?.length ?? 0, 0, `${l.id} should have no zones`);
@@ -86,7 +87,7 @@ test('every ordinary World 3 and 4 stage has its zones, and no other world has a
 
 test('every zone stage passes the validator (waitable, jumpable, nothing hostile inside)', () => {
   for (const l of levels) {
-    if (l.worldIndex !== 3 && l.worldIndex !== 4) continue;
+    if (![3, 4, 9, 10].includes(l.worldIndex)) continue;
     const s = generateStage(l);
     const r = validateStage(s);
     assert.ok(r.ok, `${l.id}: ${r.errors.slice(0, 3).join('; ')}`);
@@ -98,4 +99,32 @@ test('the validator rejects a zone that cannot be waited out', () => {
   const s = generateStage(l);
   s.zones![0] = { ...s.zones![0], period: s.zones![0].warn + s.zones![0].active + 1.0 };
   assert.ok(validateStage(s).errors.some((e) => /quiet between bursts/.test(e)));
+});
+
+test('a firing column burns what stands in it, and only while it is firing', () => {
+  const z = mk({ kind: 'geyser', x0: 1000, x1: 1072, top: 300, bottom: 600, period: 5, warn: 1.2, active: 0.9 });
+  assert.ok(isDamaging(z));
+  assert.ok(!isDamaging(mk()), 'wind does not burn');
+  const idle = idleTime(z);
+  assert.equal(columnHit([z], 1020, 520, 28, 64, idle * 0.5), null, 'quiet');
+  assert.equal(columnHit([z], 1020, 520, 28, 64, idle + 0.6), null, 'during the warning it is still safe');
+  assert.equal(columnHit([z], 1020, 520, 28, 64, idle + z.warn + 0.45), z, 'firing');
+  assert.equal(columnHit([z], 1200, 520, 28, 64, idle + z.warn + 0.45), null, 'a step to the side is safe');
+  assert.equal(columnHit([z], 1020, 100, 28, 64, idle + z.warn + 0.45), null, 'above the column');
+});
+
+test('a bolt is quick but always has a long warning, and every column has a pocket beside it', () => {
+  for (const l of levels) {
+    if (l.worldIndex !== 9 && l.worldIndex !== 10) continue;
+    const s = generateStage(l);
+    const cols = (s.zones ?? []).filter(isDamaging).sort((a, b) => a.x0 - b.x0);
+    for (const z of cols) {
+      assert.ok(z.warn >= 1.1, `${l.id}: warning`);
+      assert.ok(idleTime(z) >= 2, `${l.id}: quiet spell`);
+    }
+    for (let i = 1; i < cols.length; i++) {
+      const gap = cols[i].x0 - cols[i - 1].x1;
+      assert.ok(gap >= 110 || Math.abs(cols[i].baseY - cols[i - 1].baseY) > 40, `${l.id}: ${gap}px between columns`);
+    }
+  }
 });

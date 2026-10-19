@@ -35,8 +35,8 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
-import { zoneEffect, windPush, DROWSY_SPEED, DROWSY_JUMP, DROWSY_LINGER } from './zones.ts';
-import { drawSporeMushrooms, drawZoneEffects, drawDrowsyVeil } from './zoneArt.ts';
+import { zoneEffect, windPush, columnHit, DROWSY_SPEED, DROWSY_JUMP, DROWSY_LINGER } from './zones.ts';
+import { drawZoneBases, drawZoneEffects, drawDrowsyVeil } from './zoneArt.ts';
 import {
   drawHeroSloth,
   drawTreeSnake,
@@ -556,11 +556,23 @@ export class GameEngine {
         this.drowsy -= dt;
       }
       this.windV = windPush(zones, p.x, bodyY, this.gameTime, p.grounded);
+      // lava geysers and lightning (Worlds 9 and 10): a firing column burns whoever stands in it
+      const hot = columnHit(zones, p.x - 14, p.y - 64, 28, 64, this.gameTime);
+      if (hot && p.invincibleTimer <= 0) {
+        this.damagePlayer(1);
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+      }
       // the first time a zone of each kind is close, say what it is (once a session)
       for (const z of zones) {
         if (this.zoneHinted[z.kind] || p.x < z.x0 - 420 || p.x > z.x1) continue;
         this.zoneHinted[z.kind] = true;
-        this.addFloatingText(z.kind === 'spore' ? 'SPORES PUFF ON A BEAT. WAIT FOR THEM TO CLEAR' : 'GUSTS BLOW ON A BEAT. WATCH THE LEAVES', p.x, p.y - 100, z.kind === 'spore' ? '#c4b5fd' : '#99f6e4');
+        const hint: Record<string, [string, string]> = {
+          spore: ['SPORES PUFF ON A BEAT. WAIT FOR THEM TO CLEAR', '#c4b5fd'],
+          wind: ['GUSTS BLOW ON A BEAT. WATCH THE LEAVES', '#99f6e4'],
+          geyser: ['VENTS ERUPT ON A BEAT. STAND BETWEEN THEM', '#fdba74'],
+          bolt: ['LIGHTNING STRIKES WHERE THE RODS CHARGE', '#bae6fd'],
+        };
+        this.addFloatingText(hint[z.kind][0], p.x, p.y - 100, hint[z.kind][1]);
       }
     } else {
       this.windV = 0;
@@ -2875,7 +2887,7 @@ export class GameEngine {
     );
 
     this.drawRivers(ctx, world, true);
-    drawSporeMushrooms(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
+    drawZoneBases(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     if (lair && this.currentStage.arena) drawLairWorld(ctx, lair, this.currentStage.arena, lairView, this.gameTime);
 
     // Shimmy ropes (behind the hero)
