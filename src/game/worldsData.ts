@@ -52,7 +52,7 @@ export const WORLDS_DATA: WorldInfo[] = [
   {
     id: 3,
     name: 'Mossy Grotto',
-    subtitle: 'A cavernous emerald forest with giant glowing mushrooms',
+    subtitle: 'A cavernous emerald forest above a limestone sinkhole, lit by glowworm threads',
     theme: 'mossy_grotto',
     bossName: 'Shadow Prowler',
     bossTitle: 'The Night Jaguar',

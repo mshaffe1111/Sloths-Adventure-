@@ -173,7 +173,7 @@ export const WORLD_STORIES: Record<number, WorldStory> = {
     ],
   },
   3: {
-    teaser: 'Glowing mushrooms light the way, and something watches.',
+    teaser: 'Glowworm threads light the way, and something watches.',
     panels: [
       {
         chapter: 'WORLD 3 · MOSSY GROTTO', speaker: 'Slomatt',
@@ -285,7 +285,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   },
   3: {
     intro: [
-      { speaker: 'Shadow Prowler', text: 'You cannot punch what you cannot catch, little sloth. I am the dark between the mushrooms.' },
+      { speaker: 'Shadow Prowler', text: 'You cannot punch what you cannot catch, little sloth. I am the dark between the glowworm threads.' },
       { speaker: 'Slomatt', text: 'I have all day. Literally. I am a sloth.' },
     ],
     defeat: [

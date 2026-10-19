@@ -11,9 +11,27 @@ import { drawQueenSprite, queenSpriteActive } from './queenSprite.ts';
 import type { PaintedBoss } from './paintedBoss.ts';
 import { venomSprite } from './venomSprite.ts';
 import { crocSprite } from './crocSprite.ts';
+import { prowlerSprite } from './prowlerSprite.ts';
+import { monarchSprite } from './monarchSprite.ts';
 
 /** the bosses that have a painted version besides the queen */
-const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite };
+const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3: prowlerSprite, 8: monarchSprite };
+
+/** the poses the painted bosses strike on the story cards: calm, angry (while it speaks its threat) and beaten */
+const CARD_POSES: Record<number, [string, string, string]> = {
+  1: ['idle', 'threat', 'dead'],
+  2: ['idle', 'threat', 'dead'],
+  3: ['idle', 'alert', 'dead'],
+  8: ['fl_1', 'screech', 'deadcollapse'],
+};
+
+/** draws the painted version of a boss for a story card (feet at the origin, facing right); false if this world has none or it is still loading */
+export function drawPaintedCardBoss(ctx: CanvasRenderingContext2D, world: number, angry: boolean, beaten: boolean): boolean {
+  const painted = PAINTED[world];
+  const poses = CARD_POSES[world];
+  if (!painted || !poses) return false;
+  return painted.still(ctx, beaten ? poses[2] : angry ? poses[1] : poses[0]);
+}
 
 /** distance from the picture's origin down to the shadow ellipse the boss drawings carry */
 const ART_FEET = 25.5;

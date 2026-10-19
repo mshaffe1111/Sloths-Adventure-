@@ -1,4 +1,5 @@
 import type { BossEntity, PlayerState } from './types.ts';
+import { drawPaintedCardBoss } from './bossArt.ts';
 import { renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
 import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.ts';
 import { drawMilo } from './miloVariants.ts';
@@ -285,10 +286,24 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
         ctx.rotate(-0.1);
         ctx.globalAlpha = 0.92;
       }
+      // a painted boss shows its painted self on the card (feet on the ground line, drawn at the same size as the vector one)
+      const paintedCard = (c: CanvasRenderingContext2D) => {
+        c.translate(0, 24);
+        c.scale(1.3, 1.3);
+        return drawPaintedCardBoss(c, a.world ?? 1, !!a.angry, !!a.beaten);
+      };
       if (a.silhouette) {
-        drawSilhouette(ctx, (c) => drawBossEntity(c, b, t, a.world ?? 1));
+        drawSilhouette(ctx, (c) => {
+          c.save();
+          const ok = paintedCard(c);
+          c.restore();
+          if (!ok) drawBossEntity(c, b, t, a.world ?? 1);
+        });
       } else {
-        drawBossEntity(ctx, b, t, a.world ?? 1);
+        ctx.save();
+        const ok = paintedCard(ctx);
+        ctx.restore();
+        if (!ok) drawBossEntity(ctx, b, t, a.world ?? 1);
       }
       if (a.beaten) {
         ctx.globalAlpha = 1;

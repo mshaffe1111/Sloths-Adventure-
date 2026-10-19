@@ -39,12 +39,16 @@ export interface PaintedBossSpec {
   frames: Record<string, BossFrameRect>;
   /** world units per atlas pixel */
   k: number;
+  /** a soft rim of light around a boss that is dark against its arena (shadowBlur colour); none by default */
+  glow?: string;
   pick: (c: PickContext) => string;
 }
 
 export interface PaintedBoss {
   active(): boolean;
   draw(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, time: number, feetY: number): boolean;
+  /** one named frame, anchored at the origin (the middle of the body on the ground line), for the story cards */
+  still(ctx: CanvasRenderingContext2D, name: string): boolean;
 }
 
 export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
@@ -80,6 +84,17 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
 
   return {
     active,
+    still(ctx, name) {
+      if (!active() || !atlas) return false;
+      const f = spec.frames[name];
+      if (!f) return false;
+      if (spec.glow) {
+        ctx.shadowColor = spec.glow;
+        ctx.shadowBlur = 12;
+      }
+      ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
+      return true;
+    },
     draw(ctx, b, def, time, feetY) {
       if (!active() || !atlas) return false;
       const br = b.ai;
@@ -102,6 +117,10 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
       ctx.translate(b.x, feetY);
       ctx.scale(b.facing < 0 ? -1 : 1, 1);
       if (b.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
+      if (spec.glow) {
+        ctx.shadowColor = spec.glow;
+        ctx.shadowBlur = 9;
+      }
       ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
       ctx.restore();
       return true;
