@@ -400,7 +400,8 @@ class Gen {
 
   chunkPit() {
     const wide = !this.safeMode && this.m >= 6 && this.chance(0.35 * this.d + 0.1);
-    const w = wide ? this.rr(0.6, 0.74) * reachJump(0, true) : this.pitW();
+    // a double-jump pit: about half of the double jump's reach, so it is a clear double jump but not a hairline one (it was 60-74%, which a thumb on a phone cannot hit)
+    const w = wide ? this.rr(0.42, 0.55) * reachJump(0, true) : this.pitW();
     this.closeBank();
     this.arc(this.cx - 30, this.cx + w + 30, this.g - 36, wide ? 120 : 76, wide ? 5 : 4);
     this.cx += w;
