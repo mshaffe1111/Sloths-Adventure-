@@ -5,6 +5,7 @@ import { drawMilo } from './miloVariants.ts';
 import { drawHeroSprite } from './heroSprite.ts';
 import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './creatures.ts';
 import { drawBloom, type Bloom } from './flora.ts';
+import { drawFlowerSprite } from './flowerSprites.ts';
 import { rng, tone } from './artKit.ts';
 import { leaf } from './rainforest.ts';
 import { drawGiantBat } from './bossBat.ts';
@@ -1027,7 +1028,8 @@ function drawThornGate(ctx: CanvasRenderingContext2D, time: number) {
 export function drawCollectible(
   ctx: CanvasRenderingContext2D,
   item: Collectible,
-  time: number
+  time: number,
+  world = 1
 ) {
   if (item.collected) return;
 
@@ -1064,6 +1066,8 @@ export function drawCollectible(
       ctx.beginPath();
       ctx.arc(0, 0, 24, 0, Math.PI * 2);
       ctx.fill();
+      // the painted flower when it is on and loaded (the vector bloom below is the fallback and the classic look)
+      if (item.type === 'flower' && drawFlowerSprite(ctx, world, item.id, Math.sin(time * 2 + item.bobPhase) * 0.07)) break;
       const species: Array<[Bloom, string, string]> = [
         ['hibiscus', '#f2455e', '#ffd23a'],
         ['orchid', '#f07ad8', '#ffe26a'],
