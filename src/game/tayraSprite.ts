@@ -93,7 +93,8 @@ export function drawTayraSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
 
   ctx.save();
   ctx.translate(enemy.x, enemy.y + GROUND);
-  ctx.scale(b.fs, 1);
+  // turning round squashes the body, but never to a razor-thin sliver
+  ctx.scale(b.fs < 0 ? -Math.max(0.6, -b.fs) : Math.max(0.6, b.fs), 1);
   // a soft shadow on the ground, so the animal sits on it
   if (name !== 'tumble') {
     ctx.fillStyle = 'rgba(0,0,0,0.22)';
