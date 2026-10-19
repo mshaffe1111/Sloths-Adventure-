@@ -6,6 +6,7 @@ import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './c
 import { drawBloom, type Bloom } from './flora.ts';
 import { rng, tone } from './artKit.ts';
 import { leaf } from './rainforest.ts';
+import { drawGiantBat } from './bossBat.ts';
 
 export { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity };
 
@@ -720,21 +721,13 @@ export function drawBossEntity(
       break;
     }
     case 8: {
-      // Night-Wing Monarch
-      tint('brightness(0.6) saturate(1.5) hue-rotate(235deg)');
+      // Night-Wing Monarch: a giant fruit bat with a crown
+      if (hit) ctx.filter = 'brightness(2.2)';
       ctx.save();
-      ctx.scale(1.4, 1.4);
-      ctx.translate(-2, 8);
-      drawHarpyEagle(ctx, { ...fake, rigScale: 2.1, swoopPhase: angry ? 'swoop' : 'patrol', headDeco: crownOf(12, -48, 0.9) }, time);
+      ctx.scale(1.25, 1.25);
+      drawGiantBat(ctx, time, angry);
       ctx.restore();
-      untint();
-      ctx.fillStyle = 'rgba(190, 120, 255, 0.95)';
-      ctx.shadowColor = '#c080ff';
-      ctx.shadowBlur = 8;
-      ctx.beginPath();
-      ctx.arc(30, -26, 3, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowBlur = 0;
+      if (hit) ctx.filter = 'none';
       break;
     }
     case 9: {
