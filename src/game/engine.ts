@@ -15,6 +15,7 @@ import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { renderScenery, renderOverlay } from './scenery.ts';
 import { setSceneSeed, rollSceneSeed } from './sceneSeed.ts';
+import { drawEagleSprite } from './eagleSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import {
   drawHeroSloth,
@@ -2316,7 +2317,7 @@ export class GameEngine {
         if (enemy.type === 'snake') {
           drawTreeSnake(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'eagle') {
-          drawHarpyEagle(ctx, enemy, this.gameTime);
+          if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
           drawOcelot(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'jaguar') {
