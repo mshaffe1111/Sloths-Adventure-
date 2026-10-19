@@ -18,9 +18,10 @@ import { reaverSprite } from './reaverSprite.ts';
 import { sovereignSprite } from './sovereignSprite.ts';
 import { drakeSprite } from './drakeSprite.ts';
 import { ironclawSprite } from './ironclawSprite.ts';
+import { golemSprite } from './golemSprite.ts';
 
 /** the bosses that have a painted version besides the queen */
-const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 6: reaverSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
+const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 6: reaverSprite, 7: golemSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
 
 /** the poses the painted bosses strike on the story cards: calm, angry (while it speaks its threat) and beaten */
 const CARD_POSES: Record<number, [string, string, string]> = {
@@ -29,6 +30,7 @@ const CARD_POSES: Record<number, [string, string, string]> = {
   3: ['idle', 'alert', 'dead'],
   4: ['glide', 'alert', 'dead'],
   6: ['idle', 'roar', 'deadheap'],
+  7: ['march1', 'roar', 'defeat2'],
   8: ['fl_1', 'screech', 'deadcollapse'],
   9: ['idle', 'enrage', 'petrified'],
   10: ['idle', 'roar', 'defeat2'],
