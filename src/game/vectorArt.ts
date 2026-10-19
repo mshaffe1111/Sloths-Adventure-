@@ -6,6 +6,7 @@ import { drawHeroSprite } from './heroSprite.ts';
 import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './creatures.ts';
 import { drawBloom, type Bloom } from './flora.ts';
 import { drawFlowerSprite } from './flowerSprites.ts';
+import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
 import { rng, tone } from './artKit.ts';
 import { leaf } from './rainforest.ts';
 import { drawGiantBat } from './bossBat.ts';
@@ -1083,6 +1084,19 @@ export function drawCollectible(
     }
 
     case 'leaf': {
+      // the painted foliage plant when it is on and loaded (the vector leaf below is the fallback and the classic look)
+      if (plantsPainted()) {
+        const pg = ctx.createRadialGradient(0, 0, 2, 0, 0, 24);
+        pg.addColorStop(0, 'rgba(210, 255, 160, 0.5)');
+        pg.addColorStop(1, 'rgba(210, 255, 160, 0)');
+        ctx.save();
+        ctx.fillStyle = pg;
+        ctx.beginPath();
+        ctx.arc(0, 0, 24, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      if (drawPlantSprite(ctx, world, mini, item.id, Math.sin(time * 2 + item.bobPhase) * 0.06)) break;
       // a lit, pointed leaf with golden veins and a gentle sway
       ctx.save();
       ctx.rotate(-0.9 + Math.sin(time * 2) * 0.06);
