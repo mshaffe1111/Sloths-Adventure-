@@ -173,7 +173,7 @@ function solve(L: Look, p: PlayerState, time: number): Rig {
     r.look = { x: 0.8, y: 0.1 };
     return r;
   }
-  if (p.climbing) {
+  if (p.climbing || p.hanging) {
     const cs = Math.sin(time * 8);
     r.mode = 'climb'; r.frontal = true;
     const top = L.shoulder.y - L.armLen * 0.86;

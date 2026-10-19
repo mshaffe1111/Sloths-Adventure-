@@ -84,8 +84,10 @@ const events = new HeroEvents();
 /** the painted climb is one step per few pixels of height gained, so it follows the climbing speed */
 const CLIMB_STEP_PX = 22;
 
-function pick(p: PlayerState, time: number): { name: string; bob: number; byHand?: boolean } | null {
+function pick(p: PlayerState, time: number): { name: string; bob: number; byHand?: boolean; hang?: boolean } | null {
   if (p.isVineSwinging) return null;
+  // hanging from a rope: the arms-up pose (until there is a painted hanging pose), gripping with both hands
+  if (p.hanging && HERO_FRAMES.jump_up) return { name: 'jump_up', bob: 0, hang: true };
   if (p.climbing) {
     if (!HERO_CLIMB.every((n) => HERO_FRAMES[n])) return null;
     const n = HERO_CLIMB.length;
@@ -133,7 +135,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
 
   ctx.save();
   ctx.translate(p.x, p.y);
-  if (p.grounded && !p.climbing && !p.isVineSwinging) {
+  if (p.grounded && !p.climbing && !p.isVineSwinging && !p.hanging) {
     const sc = (1 / p.squashY) * (p.ducking ? 1.3 : 1.05) * HERO_SPRITE_SCALE;
     ctx.fillStyle = 'rgba(15,23,42,0.36)';
     ctx.beginPath();
@@ -141,6 +143,14 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
     ctx.fill();
   }
   ctx.scale(p.facing * p.squashX, p.squashY);
+  if (choice.hang) {
+    // swing gently from the hands; a quicker rocking while he creeps hand over hand
+    const moving = Math.abs(p.vx) > 10;
+    const top = -f.h * k;
+    ctx.translate(0, top);
+    ctx.rotate(Math.sin(time * (moving ? 7 : 2.2)) * (moving ? 0.1 : 0.045));
+    ctx.translate(0, -top);
+  }
   if (p.isDoubleJumping) {
     const cy = -HERO_UNITS * HERO_SPRITE_SCALE * 0.42;
     ctx.translate(0, cy);

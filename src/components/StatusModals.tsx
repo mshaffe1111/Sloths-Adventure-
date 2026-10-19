@@ -2,6 +2,7 @@ import React from 'react';
 import type { LevelConfig } from '../game/types.ts';
 import { BOSS_TIPS } from '../game/bossDefs.ts';
 import { PauseMenu } from './PauseMenu.tsx';
+import type { SkillId } from '../game/skills.ts';
 import { StageCleared } from './StageCleared.tsx';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
@@ -21,6 +22,7 @@ interface StatusModalsProps {
   isMuted: boolean;
   trophyCount: number;
   trophyTotal: number;
+  skills: Set<SkillId>;
   onToggleMute: () => void;
   onResume: () => void;
   onRestart: () => void;
@@ -47,6 +49,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   isMuted,
   trophyCount,
   trophyTotal,
+  skills,
   onToggleMute,
   onResume,
   onRestart,
@@ -72,6 +75,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
         onOpenMap={onOpenMap}
         trophyCount={trophyCount}
         trophyTotal={trophyTotal}
+        skills={skills}
       />
     );
   }

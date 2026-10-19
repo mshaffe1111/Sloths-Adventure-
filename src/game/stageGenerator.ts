@@ -2,6 +2,7 @@ import type {
   LevelConfig,
   Platform,
   Vine,
+  Rope,
   Enemy,
   BossEntity,
   Collectible,
@@ -11,6 +12,8 @@ import type {
 import { calculateDifficultyScaling } from './rules.ts';
 import { WORLDS_DATA } from './worldsData.ts';
 import { reachBounce, reachJump, TAKEOFF_SLACK } from './physics.ts';
+import { HANG_DROP, ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE, ropeYAt } from './rope.ts';
+import { skillGuaranteedAt } from './skills.ts';
 import { swingLandings, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
@@ -23,6 +26,8 @@ export interface GeneratedStage {
   trees: TreeStructure[];
   platforms: Platform[];
   vines: Vine[];
+  /** shimmy ropes across gaps (the engine only lets Slomatt use them once he has the skill) */
+  ropes?: Rope[];
   enemies: Enemy[];
   boss: BossEntity | null;
   collectibles: Collectible[];
@@ -57,6 +62,7 @@ type Kind =
   | 'flat' | 'pit' | 'hill' | 'bridge' | 'stones' | 'cliff' | 'bounce'
   | 'ladder' | 'swing' | 'moving' | 'fragile' | 'yard' | 'tower' | 'river'
   | 'valley' | 'rolling' | 'hurdles' | 'terrace' | 'gapbridge' | 'skyhop' | 'islands' | 'canopy'
+  | 'ropegap' | 'ropebonus'
   | 'pillars' | 'slope' | 'stumps' | 'zigzag' | 'trampoline' | 'causeway' | 'pegs' | 'meadow' | 'ditch' | 'twin';
 
 /** first mission number (1..100) a piece may appear in: teaches one idea at a time */
@@ -64,6 +70,7 @@ const UNLOCK: Record<Kind, number> = {
   flat: 1, pit: 1, hill: 1, yard: 1, bridge: 1, stones: 1, cliff: 2, ladder: 1,
   bounce: 3, swing: 4, moving: 8, fragile: 11, tower: 14, river: 1,
   valley: 1, rolling: 1, hurdles: 1, terrace: 2, gapbridge: 1, skyhop: 1, islands: 1, canopy: 1,
+  ropegap: 4, ropebonus: 1,
   pillars: 3, slope: 1, stumps: 1, zigzag: 2, trampoline: 3, causeway: 1, pegs: 3, meadow: 1, ditch: 1, twin: 2,
 };
 
@@ -72,6 +79,7 @@ const BASE_WEIGHT: Record<Kind, number> = {
   ladder: 1.3, swing: 1.8, moving: 1.4, fragile: 1.2, yard: 1, tower: 0.8,
   river: 0, // never picked at random: World 2 places its rivers on purpose (see river.ts)
   valley: 1.6, rolling: 1.6, hurdles: 1.5, terrace: 1.5, gapbridge: 1.4, skyhop: 1.6, islands: 1.6, canopy: 1.6,
+  ropegap: 1.5, ropebonus: 1.3,
   pillars: 1.5, slope: 1.5, stumps: 1.5, zigzag: 1.5, trampoline: 1.4, causeway: 1.5, pegs: 1.4, meadow: 1.5, ditch: 1.5, twin: 1.5,
 };
 
@@ -91,6 +99,7 @@ const INTENSITY: Record<Kind, number> = {
   flat: 0, hill: 0, bridge: 0, ladder: 0, pit: 1, stones: 1, cliff: 1, bounce: 1,
   yard: 1, swing: 2, moving: 2, fragile: 2, tower: 2, river: 1,
   valley: 0, rolling: 0, hurdles: 1, terrace: 1, gapbridge: 1, skyhop: 1, islands: 1, canopy: 0,
+  ropegap: 1, ropebonus: 0,
   pillars: 1, slope: 0, stumps: 0, zigzag: 1, trampoline: 1, causeway: 0, pegs: 1, meadow: 0, ditch: 0, twin: 0,
 };
 
@@ -151,6 +160,7 @@ class Gen {
 
   P: Platform[] = [];
   V: Vine[] = [];
+  R: Rope[] = [];
   T: TreeStructure[] = [];
   E: Enemy[] = [];
   C: Collectible[] = [];
@@ -768,6 +778,44 @@ class Gen {
   }
 
   /** a ramp of small steps, up or down (the ground wanders, but stays between the treetops and the water) */
+  /** a rope across a gap too wide to jump: the only way over is to shimmy (needs the skill; only built where everyone has it) */
+  chunkRopeGap() {
+    if (this.g - ROPE_RISE < 140 || !skillGuaranteedAt('shimmy', this.m) || this.cfg.secret) { this.chunkPit(); return; }
+    this.flat(this.rr(150, 220));
+    this.closeBank();
+    const gapW = this.rr(ROPE_MIN_GAP, ROPE_MIN_GAP + 150);
+    this.addRope(this.cx, gapW, true);
+    this.cx += gapW;
+    this.openBank();
+    this.flat(this.rr(150, 220));
+    this.log.push('ropegap');
+  }
+
+  /** a gap that can be jumped as usual, with a rope above it and fruit hanging along it for anyone who has learned to shimmy */
+  chunkRopeBonus() {
+    if (this.g - ROPE_RISE < 140 || this.cfg.secret) { this.chunkPit(); return; }
+    this.flat(this.rr(140, 200));
+    this.closeBank();
+    const w = this.pitW();
+    this.arc(this.cx - 30, this.cx + w + 30, this.g - 36, 76, 4);
+    this.addRope(this.cx, w, false);
+    this.cx += w;
+    this.openBank();
+    this.flat(this.rr(140, 200));
+    this.log.push('ropebonus');
+  }
+
+  /** hang a rope over the gap that starts at `gapStart` and is `gapW` wide, with fruit hanging along it */
+  addRope(gapStart: number, gapW: number, required: boolean) {
+    const r: Rope = { id: this.R.length + 1, x0: gapStart - ROPE_OVERLAP, x1: gapStart + gapW + ROPE_OVERLAP, y: this.g - ROPE_RISE, g0: this.g, g1: this.g, required };
+    this.R.push(r);
+    const n = Math.max(3, Math.round(gapW / 110));
+    for (let i = 0; i < n; i++) {
+      const x = gapStart + 30 + ((gapW - 60) * (i + 0.5)) / n;
+      this.item('fruit', x, ropeYAt(r, x) + HANG_DROP - 34);
+    }
+  }
+
   chunkSlope() {
     const n = this.ri(3, 5);
     const dh = this.rr(18, 26);
@@ -973,6 +1021,8 @@ class Gen {
       case 'skyhop': this.chunkSkyhop(); break;
       case 'islands': this.chunkIslands(); break;
       case 'canopy': this.chunkCanopy(); break;
+      case 'ropegap': this.chunkRopeGap(); break;
+      case 'ropebonus': this.chunkRopeBonus(); break;
       case 'pillars': this.chunkPillars(); break;
       case 'slope': this.chunkSlope(); break;
       case 'stumps': this.chunkStumps(); break;
@@ -1119,6 +1169,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
     trees: gen.T,
     platforms: gen.P,
     vines: gen.V,
+    ropes: gen.R,
     enemies: gen.E,
     boss: null,
     collectibles: gen.C,

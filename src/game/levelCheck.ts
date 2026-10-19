@@ -9,6 +9,8 @@
  */
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform, Vine } from './types.ts';
+import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
+import { skillGuaranteedAt } from './skills.ts';
 import {
   PHYS,
   SIM_DTS,
@@ -234,6 +236,27 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     }
   }
 
+  // 3b. shimmy ropes: a rope joins the two ledges it hangs over, but only counts where EVERY player has the skill (a stage
+  // entered before that may have ropes as extras, and must be finishable without them)
+  const mission = (cfg.worldIndex - 1) * 10 + cfg.miniIndex;
+  const ropesCount = skillGuaranteedAt('shimmy', mission);
+  for (const r of stage.ropes ?? []) {
+    if (r.required && !ropesCount) errors.push(`rope #${r.id} is needed here, but the player may not have learned the skill yet`);
+    if (!ropesCount) continue;
+    const gapStart = r.x0 + ROPE_OVERLAP;
+    const gapEnd = r.x1 - ROPE_OVERLAP;
+    const left = plats.filter((p) => Math.abs(p.y - r.g0) < 3 && Math.abs(ext(p)[1] - gapStart) < 8);
+    const right = plats.filter((p) => Math.abs(p.y - r.g1) < 3 && Math.abs(ext(p)[0] - gapEnd) < 8);
+    if (!left.length || !right.length) {
+      errors.push(`rope #${r.id} does not join two ledges`);
+      continue;
+    }
+    for (const a of left) for (const b of right) {
+      link(pid(a), pid(b));
+      link(pid(b), pid(a));
+    }
+  }
+
   // 4. walk the graph
   const start = plats.find((p) => stage.spawnX >= ext(p)[0] - 4 && stage.spawnX <= ext(p)[1] + 4 && Math.abs(p.y - stage.spawnY) < 6);
   if (!start) {
@@ -277,6 +300,10 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     for (const v of stage.vines) {
       if (seen.has(vid(v)) && Math.abs(x - v.x) < 70 && y >= v.topY - 40 && y <= v.bottomY) return true;
       if (usedSwing.has(v.id) && Math.abs(x - v.x) < 190 && y >= v.topY - 40 && y <= v.bottomY + 20) return true;
+    }
+    // pickups hanging under a rope (reached by shimmying along it)
+    for (const r of stage.ropes ?? []) {
+      if (x >= r.x0 && x <= r.x1 && y >= ropeYAt(r, x) + 10 && y <= ropeYAt(r, x) + HANG_DROP + 4) return true;
     }
     return false;
   };

@@ -5,6 +5,8 @@ import { InputEngine } from './game/inputEngine.ts';
 import { GameEngine } from './game/engine.ts';
 import { setLayoutVariant } from './game/stageGenerator.ts';
 import { layoutForEntry } from './game/layoutMemory.ts';
+import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game/skills.ts';
+import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { TouchController } from './game/../components/TouchController.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
@@ -73,6 +75,8 @@ export default function App() {
     setMaxHp(maxHearts());
     setBadgeStore(loadBadgeStore());
     setCosmetic(loadCosmetic());
+    setSkills(learnedSkills());
+    setNewSkills([]);
   }, []);
 
   // where the opening story was started from: the title's Story button returns to the title, a new game goes on to 1-1
@@ -90,6 +94,8 @@ export default function App() {
     setMaxHp(maxHearts());
     setBadgeStore(loadBadgeStore());
     setCosmetic(loadCosmetic());
+    setSkills(learnedSkills());
+    setNewSkills([]);
     if (skipStory) {
       startLevel(fresh[0]);
     } else {
@@ -135,6 +141,9 @@ export default function App() {
   const [clearTime, setClearTime] = useState<number>(0);
   /** this clear beat the stored best score (or was the first), and the best score now */
   const [newBest, setNewBest] = useState<boolean>(false);
+  // skills Slomatt has, and any this stage just taught him (shown on the new-skill card before the stage-cleared card)
+  const [skills, setSkills] = useState<Set<SkillId>>(() => learnedSkills());
+  const [newSkills, setNewSkills] = useState<SkillDef[]>([]);
   const [bestScore, setBestScore] = useState<number>(0);
 
   // Canvas and Engine refs
@@ -286,7 +295,9 @@ export default function App() {
       } else if (screen === 'victory') {
         if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault();
-          handleNextStage();
+          // a new-skill card is showing: the key dismisses it first
+          if (newSkills.length > 0) setNewSkills((q) => q.slice(1));
+          else handleNextStage();
         }
       } else if (screen === 'game_over') {
         if (e.code === 'Space' || e.code === 'Enter') {
@@ -298,7 +309,7 @@ export default function App() {
 
     window.addEventListener('keydown', handleGlobalKey);
     return () => window.removeEventListener('keydown', handleGlobalKey);
-  }, [screen, activeLevel, allLevels, resumeLevel]);
+  }, [screen, activeLevel, allLevels, resumeLevel, newSkills]);
 
   // Start a specific level
   const startLevel = useCallback((lvl: LevelConfig) => {
@@ -434,6 +445,7 @@ export default function App() {
       } catch {
         /* unreadable record: treat as none */
       }
+      const skillsBefore = learnedSkills();
       const prevScore = typeof prevStored.highScore === 'number' ? prevStored.highScore : 0;
       setNewBest(lvlScore > prevScore);
       setBestScore(Math.max(prevScore, lvlScore));
@@ -445,6 +457,8 @@ export default function App() {
         bestTime: prevTime === 0 ? bestTime : bestTime > 0 ? Math.min(prevTime, bestTime) : prevTime,
       };
       localStorage.setItem(`sloth_lvl_${id}`, JSON.stringify(saved));
+      setNewSkills(newlyLearned(id, skillsBefore));
+      setSkills(learnedSkills());
     } catch {
       /* storage full or blocked: the stage still counts for this session */
     }
@@ -662,7 +676,8 @@ export default function App() {
         />
       )}
 
-      {freshBadges.length > 0 && <BadgeToast badges={freshBadges} onDone={() => setFreshBadges([])} />}
+      {/* held back while the stage-cleared and new-skill cards are up: it covered their title ribbons and buttons */}
+      {freshBadges.length > 0 && screen !== 'victory' && <BadgeToast badges={freshBadges} onDone={() => setFreshBadges([])} />}
 
       {/* Active Game HUD (Only in playing or paused) */}
       {(screen === 'playing' || screen === 'paused') && (
@@ -692,7 +707,7 @@ export default function App() {
 
       {/* Status Modals: Paused, Victory, Game Over, Boss Intro, Story Ending */}
       {(screen === 'paused' ||
-        screen === 'victory' ||
+        (screen === 'victory' && newSkills.length === 0) ||
         screen === 'game_over' ||
         screen === 'story_ending') && (
         <StatusModals
@@ -708,6 +723,7 @@ export default function App() {
           isMuted={isMuted}
           trophyCount={badgeCount}
           trophyTotal={BADGES.length}
+          skills={skills}
           onToggleMute={handleToggleMute}
           onResume={resumeGame}
           onRestart={restartLevel}
@@ -738,6 +754,10 @@ export default function App() {
           onStartBossFight={() => launchEngine(activeLevel)}
         />
       )}
+
+      {/* A skill this stage just taught him: shown before the stage-cleared card */}
+      {screen === 'victory' && newSkills.length > 0 && <SkillLearned skill={newSkills[0]} onContinue={() => setNewSkills((q) => q.slice(1))} />}
+
     </div>
   );
 }

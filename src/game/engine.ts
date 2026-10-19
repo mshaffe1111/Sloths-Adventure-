@@ -6,6 +6,7 @@ import type {
   Collectible,
   Platform,
   Vine,
+  Rope,
   Camera,
   Particle,
   FloatingText,
@@ -16,6 +17,9 @@ import { loadCosmetic } from './badgeStore.ts';
 import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
+import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
+import { drawRopes } from './ropeArt.ts';
+import { learnedSkills, type SkillId } from './skills.ts';
 import { renderScenery, renderOverlay, setWeatherAvoid } from './scenery.ts';
 import { setSceneSeed, rollSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
@@ -108,6 +112,12 @@ export class GameEngine {
   private player: PlayerState;
   private platforms: Platform[];
   private vines: Vine[];
+  private ropes: Rope[];
+  /** the skills Slomatt has (worked out from the stages he has cleared) */
+  private skills: Set<SkillId>;
+  private ropeCooldown = 0;
+  private ropeGrace = 0;
+  private ropeId = -1;
   private enemies: Enemy[];
   private boss: BossEntity | null;
   private collectibles: Collectible[];
@@ -252,6 +262,8 @@ export class GameEngine {
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
+    this.ropes = this.currentStage.ropes ?? [];
+    this.skills = learnedSkills(config.id);
     this.enemies = this.currentStage.enemies;
     // hunters may chase past their own patch, but only along ground that is really there
     assignTerritories(this.enemies, this.platforms, (e) => e.y + (isPredator(e.type) ? FEET[e.type] : 0));
@@ -629,7 +641,10 @@ export class GameEngine {
     if (this.input.state.jumpPressed) this.upIntent = 0.35;
     else this.upIntent = Math.max(0, this.upIntent - dt);
     const wantGrab = this.input.state.up || this.upIntent > 0 || (!p.grounded && this.input.state.down);
-    if (nearTreeVine && (p.climbing || wantGrab)) {
+    const onRope = this.updateRope(dt);
+    if (onRope) {
+      // hanging from a rope: updateRope has done all the moving
+    } else if (nearTreeVine && (p.climbing || wantGrab)) {
       if (!p.climbing) {
         sound.playVineGrab();
         // the press that grabbed the trunk must not also leap off it or hop away with a drifting thumb
@@ -959,7 +974,7 @@ export class GameEngine {
       p.x = Math.max(20, Math.min(maxX, p.x));
 
       // --- Solid ground blocks: walls you cannot walk through (Mario-style) ---
-      if (!p.climbing && !p.isVineSwinging) {
+      if (!p.climbing && !p.isVineSwinging && !p.hanging) {
         const half = 19;
         const prevX = p.x - p.vx * dt;
         for (const plat of this.platforms) {
@@ -982,7 +997,7 @@ export class GameEngine {
       }
 
       // Mushrooms spring you up when you run into them, not only when you land on them
-      if (!p.climbing && !p.isVineSwinging) {
+      if (!p.climbing && !p.isVineSwinging && !p.hanging) {
         for (const plat of this.platforms) {
           if (plat.type !== 'bouncy' || plat.broken) continue;
           if (p.x + 12 > plat.x && p.x - 12 < plat.x + plat.width && p.y > plat.y && p.y <= plat.y + plat.height + 8 && p.vy >= -100) {
@@ -999,7 +1014,7 @@ export class GameEngine {
       const playerFeet = p.y;
       const playerPrevFeet = p.y - p.vy * dt;
 
-      for (const plat of this.platforms) {
+      for (const plat of p.hanging ? [] : this.platforms) {
         if (plat.broken) continue;
         // a log is only there between its banks; the part hidden under a bank is not standable
         if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) continue;
@@ -2321,6 +2336,114 @@ export class GameEngine {
     this.dbgHurt = [];
   }
 
+  /** let go of a rope (hurt, respawn, or a deliberate drop); `cooldown` is how long before it can be grabbed again */
+  private letGoOfRope(cooldown: number) {
+    const p = this.player;
+    if (!p.hanging) return;
+    p.hanging = false;
+    this.ropeCooldown = cooldown;
+  }
+
+  /**
+   * Shimmy ropes. Returns true while Slomatt is hanging from one (and this has done all his moving for the frame).
+   * Grab: jump up so his hands reach the rope (or press Up under it). Move: Left/Right at a deliberate creep.
+   * Let go: Down drops him, Jump hops off, and walking off either end lets go onto the ledge there.
+   */
+  private updateRope(dt: number): boolean {
+    const p = this.player;
+    this.ropeCooldown = Math.max(0, this.ropeCooldown - dt);
+    if (!this.ropes.length || !this.skills.has('shimmy')) {
+      if (p.hanging) p.hanging = false;
+      return false;
+    }
+    const inp = this.input.state;
+    let rope: Rope | undefined = p.hanging ? this.ropes.find((r) => r.id === this.ropeId) : undefined;
+
+    if (!rope) {
+      p.hanging = false;
+      if (this.ropeCooldown > 0 || p.grounded || p.climbing || p.isVineSwinging || this.isGameOver) return false;
+      const handY = p.y - HAND_REACH;
+      for (const r of this.ropes) {
+        if (p.x < r.x0 - 8 || p.x > r.x1 + 8) continue;
+        const ry = ropeYAt(r, p.x);
+        // his hands are on the rope: rising through it, or falling past it with Up held
+        if (handY > ry - 12 && handY < ry + 30 && (p.vy < 40 || inp.up || this.upIntent > 0)) {
+          rope = r;
+          break;
+        }
+      }
+      if (!rope) return false;
+      // grab
+      this.ropeId = rope.id;
+      p.hanging = true;
+      p.climbing = false;
+      p.isVineSwinging = false;
+      p.ducking = false;
+      p.vx = 0;
+      p.vy = 0;
+      p.jumpsLeft = 1;
+      p.isDoubleJumping = false;
+      p.somersaultAngle = 0;
+      this.ropeGrace = 0.25; // the press that got him up there must not also let go
+      this.inputGrace = 0;
+      inp.jumpPressed = false;
+      this.jumpBufferTimer = 0;
+      this.upIntent = 0;
+      p.squashX = 1.12;
+      p.squashY = 0.9;
+      sound.playVineGrab();
+      this.spawnSparkBurst(p.x, p.y - HAND_REACH, '#fde68a');
+    }
+
+    // hanging
+    this.ropeGrace = Math.max(0, this.ropeGrace - dt);
+    if (this.ropeGrace > 0) inp.jumpPressed = false;
+    const dir = (inp.right ? 1 : 0) - (inp.left ? 1 : 0);
+    p.grounded = false;
+    p.vy = 0;
+    p.vx = dir * ROPE_SPEED;
+    if (dir !== 0) p.facing = dir as 1 | -1;
+    p.x += p.vx * dt;
+    p.walkCycle += Math.abs(p.vx) * dt * 0.08;
+    const atEnd = p.x <= rope.x0 || p.x >= rope.x1;
+    p.x = Math.max(rope.x0, Math.min(rope.x1, p.x));
+    p.y = ropeYAt(rope, p.x) + HANG_DROP;
+
+    // let go
+    const off = (vx: number, vy: number, cool: number) => {
+      p.hanging = false;
+      this.ropeCooldown = cool;
+      p.vx = vx;
+      p.vy = vy;
+    };
+    if (inp.jumpPressed && this.ropeGrace <= 0) {
+      inp.jumpPressed = false;
+      const jd = dir !== 0 ? dir : p.facing;
+      p.facing = jd as 1 | -1;
+      off(jd * 230, -PHYS.jumpV * 0.82, 0.35);
+      p.jumpsLeft = 1;
+      this.launched = true;
+      p.squashX = 0.8;
+      p.squashY = 1.25;
+      sound.playJump();
+      this.spawnJumpDust(p.x, p.y);
+      return false;
+    }
+    if (inp.down && this.ropeGrace <= 0) {
+      off(0, 60, 0.4);
+      p.jumpsLeft = 1;
+      this.addFloatingText('DROP', p.x, p.y - 30, '#94a3b8');
+      return false;
+    }
+    if (atEnd && dir !== 0 && ((dir < 0 && p.x <= rope.x0) || (dir > 0 && p.x >= rope.x1))) {
+      // walked off the end: he lets go over the ledge and lands on it
+      off(dir * 90, 0, 0.3);
+      p.jumpsLeft = 2;
+      return false;
+    }
+    return true;
+  }
+
   private damagePlayer(amount: number) {
     const p = this.player;
     if (this.isGameOver || p.invincibleTimer > 0 || this.stompGrace > 0) return;
@@ -2330,6 +2453,7 @@ export class GameEngine {
     p.invincibleTimer = 1.2; // 1.2s invulnerability
     p.squashX = 1.3;
     p.squashY = 0.7; // hurt flinch
+    this.letGoOfRope(0.6);
     p.vy = -PHYS.hurtKnockV;     // small knockup
     p.vx = -p.facing * 180;
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
@@ -2391,6 +2515,7 @@ export class GameEngine {
     p.grounded = false;
     p.climbing = false;
     p.isVineSwinging = false;
+    this.letGoOfRope(0.5);
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
     this.respawnFlash = 0.6;
@@ -2608,6 +2733,17 @@ export class GameEngine {
     );
 
     this.drawRivers(ctx, world, true);
+
+    // Shimmy ropes (behind the hero)
+    if (this.ropes.length) {
+      drawRopes(ctx, this.ropes, this.gameTime, {
+        hangingId: this.player.hanging ? this.ropeId : undefined,
+        canGrab: this.skills.has('shimmy'),
+        px: this.player.x,
+        py: this.player.y,
+        pGrounded: this.player.grounded,
+      });
+    }
 
     // Render Collectibles
     this.collectibles.forEach((item) => {

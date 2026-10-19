@@ -2,6 +2,8 @@ import React from 'react';
 import { sound } from '../game/audio.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
+import { SKILLS, type SkillId } from '../game/skills.ts';
+import { SkillIcon } from './SkillIcon.tsx';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -17,6 +19,8 @@ interface PauseMenuProps {
   onOpenMap: () => void;
   trophyCount: number;
   trophyTotal: number;
+  /** the skills Slomatt has learned so far */
+  skills: Set<SkillId>;
 }
 
 const Icon: React.FC<{ color: string; children: React.ReactNode; size?: number }> = ({ color, children, size = 30 }) => (
@@ -56,9 +60,9 @@ const Sliders: React.FC = () => {
 };
 
 /** The pause menu: opens when the player taps Menu (the game is paused behind it). */
-export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenMap, trophyCount, trophyTotal }) => (
+export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenMap, trophyCount, trophyTotal, skills }) => (
   <div className="pm-scrim select-none">
-    <div className="pm-card modal-card" role="dialog" aria-label="Menu">
+    <div className="pm-card" role="dialog" aria-label="Menu">
       <div className="pm-head">
         <div>
           <h2 className="pm-title">Paused</h2>
@@ -121,6 +125,21 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
             <small>Leave this stage</small>
           </span>
         </button>
+      </div>
+
+      <div className="pm-skills" aria-label="Skills">
+        {SKILLS.map((sk) => {
+          const has = skills.has(sk.id);
+          return (
+            <div key={sk.id} className={`pm-skill ${has ? '' : 'off'}`}>
+              <SkillIcon skill={sk.id} size={44} locked={!has} />
+              <span>
+                <b>{sk.name}</b>
+                <small>{has ? 'Learned' : `Clear stage ${sk.unlockedBy}`}</small>
+              </span>
+            </div>
+          );
+        })}
       </div>
 
       <div className="pm-sound">

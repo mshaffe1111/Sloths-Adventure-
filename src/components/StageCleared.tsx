@@ -66,7 +66,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
         </g>
       </svg>
 
-      <div className="clr-card modal-card" role="dialog" aria-label="Stage cleared">
+      <div className="clr-card" role="dialog" aria-label="Stage cleared">
         <div className="clr-ribbon">
           <svg viewBox="0 0 420 68" preserveAspectRatio="none" aria-hidden="true">
             <path d="M0 14h40v46H0l16-23z" fill="#b45309" />

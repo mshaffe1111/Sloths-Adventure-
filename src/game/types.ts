@@ -97,6 +97,8 @@ export interface PlayerState {
   climbing: boolean;
   climbingVineId?: number;
   isVineSwinging?: boolean;
+  /** hanging from a rope (shimmy) */
+  hanging?: boolean;
   swingVineId?: number;
   swingAngle?: number;          // in radians (-1.2 to 1.2)
   swingAngularVelocity?: number; // rad/s
@@ -257,6 +259,20 @@ export interface Vine {
   treeId?: number;
   isSwingingVine?: boolean;
   swingAngle?: number;
+}
+
+/** A rope stretched across a gap. Slomatt can hang from it and shimmy along it once he has learned the skill (see rope.ts). */
+export interface Rope {
+  id: number;
+  /** the two ends (x), and the rope's height (y) at its ends */
+  x0: number;
+  x1: number;
+  y: number;
+  /** the ground height under each end (the ledges the rope joins) */
+  g0: number;
+  g1: number;
+  /** true when the stage cannot be finished without it (only ever in stages where everyone has the skill) */
+  required: boolean;
 }
 
 export interface Collectible {
