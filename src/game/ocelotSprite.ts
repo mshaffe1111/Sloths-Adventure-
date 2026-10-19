@@ -17,12 +17,12 @@ import { trackAtlas } from './atlasLoader.ts';
 
 export const DEFAULT_SPRITE_OCELOT = true;
 /** world units per atlas pixel */
-const K = 0.33;
+const K = 0.40;
 /** distance from the enemy's origin down to its feet, the same ground line the vector ocelot uses */
 const GROUND = 19;
 const WALK = ['walk_0', 'walk_1', 'walk_2', 'walk_3'];
 /** world units travelled for one full walk cycle, so the feet do not skate */
-const STRIDE = 30;
+const STRIDE = 36;
 /** the AI's pounce lasts this long (predatorAI.ts) */
 const LEAP_T = 0.36;
 const AIR = ['air_a', 'air_b', 'air_c'];
@@ -99,7 +99,7 @@ export function drawOcelotSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   if (name !== 'tumble') {
     ctx.fillStyle = `rgba(0,0,0,${0.22 * (1 - Math.min(1, lift / 40))})`;
     ctx.beginPath();
-    ctx.ellipse(-2, 1 + lift, 22 * (1 - Math.min(0.4, lift / 80)), 3.4, 0, 0, Math.PI * 2);
+    ctx.ellipse(-2, 1 + lift, 27 * (1 - Math.min(0.4, lift / 80)), 4, 0, 0, Math.PI * 2);
     ctx.fill();
   }
   if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';

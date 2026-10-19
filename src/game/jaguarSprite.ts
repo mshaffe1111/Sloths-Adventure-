@@ -17,12 +17,12 @@ import { trackAtlas } from './atlasLoader.ts';
 
 export const DEFAULT_SPRITE_JAGUAR = true;
 /** world units per atlas pixel */
-const K = 0.38;
+const K = 0.48;
 /** distance from the enemy's origin down to its feet, the same ground line the vector jaguar uses */
 const GROUND = 24;
 const WALK = ['walk_0', 'walk_1', 'walk_2', 'walk_3', 'walk_4', 'walk_5', 'walk_6', 'walk_7'];
 /** world units travelled for one full walk cycle, so the paws do not skate */
-const STRIDE = 52;
+const STRIDE = 66;
 /** the AI's pounce lasts this long (predatorAI.ts) */
 const LEAP_T = 0.58;
 
@@ -111,7 +111,7 @@ export function drawJaguarSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   if (!enemy.defeated) {
     ctx.fillStyle = `rgba(0,0,0,${0.24 * (1 - Math.min(1, lift / 50))})`;
     ctx.beginPath();
-    ctx.ellipse(-2, 1 + lift, 28 * (1 - Math.min(0.4, lift / 100)), 4, 0, 0, Math.PI * 2);
+    ctx.ellipse(-2, 1 + lift, 36 * (1 - Math.min(0.4, lift / 100)), 5, 0, 0, Math.PI * 2);
     ctx.fill();
   }
   if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
