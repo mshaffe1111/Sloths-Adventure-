@@ -1,6 +1,7 @@
 import type { PlayerState, Enemy, BossEntity, Collectible } from './types.ts';
 import { hexRgb, mixc, softBlob, glossEye } from './drawKit';
 import { drawMilo } from './miloVariants.ts';
+import { drawHeroSprite } from './heroSprite.ts';
 import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './creatures.ts';
 import { drawBloom, type Bloom } from './flora.ts';
 import { rng, tone } from './artKit.ts';
@@ -435,6 +436,7 @@ function drawSlothHead(
 
 /** Slomatt. The design lives in miloVariants.ts (variant 4, the Explorer). */
 export function drawHeroSloth(ctx: CanvasRenderingContext2D, p: PlayerState, time: number) {
+  if (drawHeroSprite(ctx, p, time)) return;
   drawMilo(ctx, 4, p, time);
 }
 

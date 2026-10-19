@@ -976,7 +976,7 @@ function drawLeg(ctx: CanvasRenderingContext2D, L: Look, rig: Rig, side: 1 | -1,
 
 
 /** Power-up halos and the mega-punch whirlwind, drawn behind the sprite in the already-flipped space. */
-function drawAuras(ctx: CanvasRenderingContext2D, p: PlayerState, time: number) {
+export function drawAuras(ctx: CanvasRenderingContext2D, p: PlayerState, time: number) {
   // --- ACTIVE POWER-UP AURAS ---
   if (p.activePowerUp === 'speed') {
     // Neon Emerald Cheetah Speed Wind Stream
