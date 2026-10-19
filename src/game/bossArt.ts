@@ -24,7 +24,7 @@ const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3:
 /** the poses the painted bosses strike on the story cards: calm, angry (while it speaks its threat) and beaten */
 const CARD_POSES: Record<number, [string, string, string]> = {
   1: ['idle', 'threat', 'dead'],
-  2: ['idle', 'threat', 'dead'],
+  2: ['idle', 'roar', 'defeated'],
   3: ['idle', 'alert', 'dead'],
   4: ['glide', 'alert', 'dead'],
   6: ['idle', 'roar', 'deadheap'],
