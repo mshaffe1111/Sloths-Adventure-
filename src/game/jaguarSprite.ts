@@ -14,7 +14,7 @@ import { bodyFor } from './creatureRig.ts';
 import { bodyRect } from './fight.ts';
 import { JAGUAR_FRAMES } from './jaguarAtlasData.ts';
 
-export const DEFAULT_SPRITE_JAGUAR = false;
+export const DEFAULT_SPRITE_JAGUAR = true;
 /** world units per atlas pixel */
 const K = 0.38;
 /** distance from the enemy's origin down to its feet, the same ground line the vector jaguar uses */

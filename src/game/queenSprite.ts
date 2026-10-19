@@ -12,7 +12,7 @@ import type { BossEntity } from './types.ts';
 import type { BossDef } from './bossAI.ts';
 import { QUEEN_FRAMES } from './queenAtlasData.ts';
 
-export const DEFAULT_SPRITE_QUEEN = false;
+export const DEFAULT_SPRITE_QUEEN = true;
 /** world units per atlas pixel (the painted idle is 196 px: drawn about 1.4 times the 132-wide hurt box, like the vector queen was) */
 const K = 0.9;
 const STRIDE = 60;

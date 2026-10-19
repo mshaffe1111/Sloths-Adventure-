@@ -8,7 +8,7 @@
 import { createPaintedBoss } from './paintedBoss.ts';
 import { CROC_FRAMES } from './crocAtlasData.ts';
 
-export const DEFAULT_SPRITE_CROC = false;
+export const DEFAULT_SPRITE_CROC = true;
 const WALK = ['w_0', 'w_1', 'w_2', 'w_3'];
 const STRIDE = 64;
 

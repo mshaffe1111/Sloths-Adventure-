@@ -14,7 +14,7 @@ import { bodyFor } from './creatureRig.ts';
 import { bodyRect } from './fight.ts';
 import { BOA_FRAMES } from './boaAtlasData.ts';
 
-export const DEFAULT_SPRITE_BOA = false;
+export const DEFAULT_SPRITE_BOA = true;
 /** world units per atlas pixel */
 const K = 0.4;
 /** distance from the enemy's origin down to its belly, the same ground line the vector boa uses */

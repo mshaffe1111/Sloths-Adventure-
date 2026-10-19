@@ -13,7 +13,7 @@ import type { Enemy } from './types.ts';
 import { bodyFor, clamp, damp, Spring } from './creatureRig.ts';
 import { EAGLE_FLAP, EAGLE_FRAMES } from './eagleAtlasData.ts';
 
-export const DEFAULT_SPRITE_EAGLE = false;
+export const DEFAULT_SPRITE_EAGLE = true;
 /** world units per atlas pixel: the eye is about 27 px across in the atlas, so this makes the eye about 12 units */
 const K = 0.44;
 /** where the eye sits relative to the enemy's centre (x is forward), so the body fills the hit box */

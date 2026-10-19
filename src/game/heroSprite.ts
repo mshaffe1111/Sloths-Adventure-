@@ -11,7 +11,7 @@ import { HERO_CLIMB, HERO_FRAMES, HERO_RUN, HERO_STAND_H, type HeroFrame } from 
 import { drawAuras } from './miloVariants.ts';
 import { HeroEvents } from './heroEvents.ts';
 
-export const DEFAULT_SPRITE_HERO = false;
+export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
 export const HERO_UNITS = 66;
 /** how much bigger than the classic hero the painted one is drawn (the painted hero has smaller proportions of head) */

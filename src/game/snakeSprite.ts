@@ -13,7 +13,7 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { SNAKE_ATLAS_HEAD, SNAKE_FRAMES } from './snakeAtlasData.ts';
 
-export const DEFAULT_SPRITE_SNAKE = false;
+export const DEFAULT_SPRITE_SNAKE = true;
 /** world units per atlas pixel: the head is drawn about 18 units across */
 const K = 18 / SNAKE_ATLAS_HEAD;
 /** where the belly line sits below the enemy's centre, so the snake rests on its branch */

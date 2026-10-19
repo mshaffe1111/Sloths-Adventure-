@@ -13,7 +13,7 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { SPIDER_FRAMES } from './spiderAtlasData.ts';
 
-export const DEFAULT_SPRITE_SPIDER = false;
+export const DEFAULT_SPRITE_SPIDER = true;
 /** world units per atlas pixel */
 const K = 0.46;
 /** distance from the enemy's origin down to its feet (the floor sits 12 below the hurt box centre) */

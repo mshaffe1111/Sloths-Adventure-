@@ -8,7 +8,7 @@
 import { createPaintedBoss } from './paintedBoss.ts';
 import { VENOM_FRAMES } from './venomAtlasData.ts';
 
-export const DEFAULT_SPRITE_VENOM = false;
+export const DEFAULT_SPRITE_VENOM = true;
 const SLITHER = ['sl_0', 'sl_1', 'sl_2', 'sr_0', 'sr_1', 'sr_2'];
 /** world units travelled per full slither cycle */
 const STRIDE = 150;

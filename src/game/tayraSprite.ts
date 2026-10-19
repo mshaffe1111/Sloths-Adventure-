@@ -14,7 +14,7 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { TAYRA_FRAMES } from './tayraAtlasData.ts';
 
-export const DEFAULT_SPRITE_TAYRA = false;
+export const DEFAULT_SPRITE_TAYRA = true;
 /** world units per atlas pixel (a walking tayra is about 85 units from nose to tail tip) */
 const K = 0.33;
 /** distance from the enemy's origin down to its feet, the same ground line the vector tayra uses */

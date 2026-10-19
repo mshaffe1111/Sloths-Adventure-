@@ -13,7 +13,7 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { FROG_FRAMES } from './frogAtlasData.ts';
 
-export const DEFAULT_SPRITE_FROG = false;
+export const DEFAULT_SPRITE_FROG = true;
 /** world units per atlas pixel */
 const K = 0.38;
 /** distance from the enemy's origin down to its feet (the vector frog's ground) */

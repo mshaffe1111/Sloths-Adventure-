@@ -14,7 +14,7 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { OCELOT_FRAMES } from './ocelotAtlasData.ts';
 
-export const DEFAULT_SPRITE_OCELOT = false;
+export const DEFAULT_SPRITE_OCELOT = true;
 /** world units per atlas pixel */
 const K = 0.33;
 /** distance from the enemy's origin down to its feet, the same ground line the vector ocelot uses */

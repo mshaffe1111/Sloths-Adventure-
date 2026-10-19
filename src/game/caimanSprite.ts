@@ -14,7 +14,7 @@ import { bodyFor } from './creatureRig.ts';
 import { bodyRect } from './fight.ts';
 import { CAIMAN_FRAMES } from './caimanAtlasData.ts';
 
-export const DEFAULT_SPRITE_CAIMAN = false;
+export const DEFAULT_SPRITE_CAIMAN = true;
 /** world units per atlas pixel */
 const K = 0.58;
 /** distance from the enemy's origin down to its belly, the same ground line the vector caiman uses */
