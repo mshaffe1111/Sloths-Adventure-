@@ -64,6 +64,7 @@ import {
   type AttackWant, type MoveId, type MoveSpec, type Rect,
 } from './fight.ts';
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
+import { drawEntrance, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
 import { drawLairBack, drawLairFront, drawLairWorld } from './lairArt.ts';
 import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
@@ -100,7 +101,7 @@ export interface GameEngineCallbacks {
   /** Slomatt stepped through the hidden Thorn Gate */
   onSecret?: () => void;
   /** the boss bar: sent only when something on it changes */
-  onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string } | null) => void;
+  onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null) => void;
 }
 
 export class GameEngine {
@@ -128,6 +129,11 @@ export class GameEngine {
   private bossDef: BossDef | null = null;
   private bossCtx: BossCtx | null = null;
   private bossIntro = false;
+  /** a giant's entrance while it plays (the fight and the player wait) */
+  private entrance: { t: number; total: number; roared: boolean; named: boolean } | null = null;
+  private entranceDone = false;
+  /** real seconds of slow motion still to play (the last hit on a giant) */
+  private slowMoLeft = 0;
   private bossSig = '';
   private clangCd = 0;
   /** seconds the player is stuck in web or goo (he runs slower) */
@@ -452,7 +458,13 @@ export class GameEngine {
           this.hitstopTimer -= dt;
           this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
         } else {
-          this.update(dt);
+          // the killing blow of a giant plays in slow motion (real time runs the clock down)
+          let sdt = dt;
+          if (this.slowMoLeft > 0) {
+            this.slowMoLeft -= dt;
+            sdt = dt * 0.3;
+          }
+          this.update(sdt);
         }
       }
 
@@ -478,6 +490,7 @@ export class GameEngine {
       this.introT += dt;
       this.applyZoom();
     }
+    if (this.stepEntrance(dt)) return;
     this.input.update(dt);
 
     const p = this.player;
@@ -1655,6 +1668,54 @@ export class GameEngine {
     this.spawnDebrisBurst(e.x, f - 10, '#e5e7eb');
   }
 
+  /**
+   * A boss with its own lair makes an entrance (see bossEntrance.ts): everything else holds still while the screen goes dark,
+   * the eyes open, the boss is revealed, roars and its name lands. Returns true while it plays.
+   */
+  private stepEntrance(dt: number): boolean {
+    const b = this.boss;
+    const def = this.bossDef;
+    if (!b || !def?.lair || b.defeated || !b.ai) return false;
+    if (!this.entrance) {
+      if (this.entranceDone) return false;
+      this.entrance = { t: 0, total: takeEntranceLength(this.currentStage.config.id), roared: false, named: false };
+      this.bossIntro = true; // the usual first roar is part of the entrance instead
+      b.ai.alpha = 0;
+      this.reportBoss();
+    }
+    const en = this.entrance;
+    en.t += dt;
+    const beat = entranceBeat(en.t, en.total);
+    b.ai.alpha = beat.reveal;
+    const world = this.currentStage.config.worldIndex;
+    if (beat.roaring && !en.roared) {
+      en.roared = true;
+      sound.playBossRoar(world);
+      this.camera.trauma = Math.max(this.camera.trauma, 0.85);
+    }
+    if (beat.nameAlpha > 0.5 && beat.nameIn < 0.06 && !en.named) {
+      en.named = true;
+      sound.playHitImpact(true, bossMaterial(world));
+      this.camera.trauma = Math.max(this.camera.trauma, 0.5);
+    }
+    // a low rumble while it is revealed
+    if (beat.reveal > 0.02 && beat.reveal < 0.98) this.camera.trauma = Math.max(this.camera.trauma, 0.22);
+    this.camera.trauma = Math.max(0, this.camera.trauma - dt * 1.6);
+    this.bossFrame(dt);
+    this.updateCamera(dt);
+    if (en.t >= en.total) {
+      this.entrance = null;
+      this.entranceDone = true;
+      b.ai.alpha = 1;
+      b.ai.state = 'roar';
+      b.ai.t = 0;
+      b.ai.hold = 0.35;
+      b.ai.roarReason = 'enter';
+      this.reportBoss();
+    }
+    return true;
+  }
+
   private updateBoss(dt: number) {
     const b = this.boss!;
     const def = this.bossDef!;
@@ -1764,10 +1825,11 @@ export class GameEngine {
     const b = this.boss;
     const def = this.bossDef;
     if (!b || !def || !this.callbacks.onBossUpdate) return;
-    const sig = `${b.hp}|${b.phase}|${b.defeated ? 1 : 0}`;
+    const entering = !!this.entrance;
+    const sig = `${b.hp}|${b.phase}|${b.defeated ? 1 : 0}|${entering ? 1 : 0}`;
     if (sig === this.bossSig) return;
     this.bossSig = sig;
-    this.callbacks.onBossUpdate(b.defeated ? null : { name: def.name, hp: b.hp, maxHp: b.maxHp, phase: b.phase, hits: def.hits, color: def.color });
+    this.callbacks.onBossUpdate(b.defeated ? null : { name: def.name, hp: b.hp, maxHp: b.maxHp, phase: b.phase, hits: def.hits, color: def.color, entering });
   }
 
   /** while the boss lives the fight is fenced in, and the camera follows both fighters */
@@ -1801,8 +1863,11 @@ export class GameEngine {
     base = Math.max(0.5, Math.min(1.8, base));
     const baseViewW = w / base;
     const need = Math.abs(p.x - b.x) + 440 + Math.max(0, b.width - 140) * 0.6;
-    const want = Math.max(baseViewW, Math.min(need, arena.right - arena.left + 200));
-    const target = Math.max(0.4, baseViewW / want);
+    // upright, the hero stays a readable size: the view never opens wider than ~720 units (the boss's head, the part you hit, is on the hero's side)
+    const widest = portrait ? Math.max(baseViewW, 720) : arena.right - arena.left + 200;
+    const want = Math.max(baseViewW, Math.min(need, widest));
+    // the killing blow pushes the camera in
+    const target = Math.max(0.4, (baseViewW / want) * (this.slowMoLeft > 0 ? 1.3 : 1));
     const prev = this.bossZoom;
     this.bossZoom += (target - this.bossZoom) * Math.min(1, dt * 2.2);
     if (Math.abs(this.bossZoom - prev) > 0.001) this.applyZoom();
@@ -2142,6 +2207,7 @@ export class GameEngine {
     this.hazards.length = 0;
     for (const e of this.enemies) if (!e.defeated && e.id >= 9000) this.knockOut(e, e.x >= b.x ? 1 : -1, 'FREE!');
     this.hitstopTimer = Math.max(this.hitstopTimer, 0.3);
+    if (this.bossDef?.lair) this.slowMoLeft = 1.2; // a giant's last hit plays in slow motion, the camera pushing in
     this.camera.trauma = 1;
     this.addFloatingText('K.O.!', b.x, b.y - b.height, '#fde047');
     this.spawnDebrisBurst(b.x, b.y, '#fde047');
@@ -2936,6 +3002,23 @@ export class GameEngine {
     if (this.respawnFlash > 0) {
       ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
       ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
+    }
+
+    if (this.entrance && this.boss && this.bossDef && this.currentStage.arena) {
+      const head = weakRect(this.boss, this.bossDef, this.currentStage.arena.floor);
+      drawEntrance(
+        ctx,
+        {
+          vw: this.camera.viewportWidth,
+          vh: this.camera.viewportHeight,
+          eyeX: head ? head.x + head.w / 2 - this.camera.x : this.camera.viewportWidth / 2,
+          eyeY: head ? head.y + head.h / 2 - this.camera.y : this.camera.viewportHeight / 2,
+          name: this.bossDef.name,
+          color: this.bossDef.color,
+        },
+        entranceBeat(this.entrance.t, this.entrance.total),
+        this.gameTime
+      );
     }
 
     ctx.restore(); // end DPR transform

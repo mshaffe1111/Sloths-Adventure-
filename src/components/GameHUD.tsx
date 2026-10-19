@@ -21,6 +21,8 @@ interface GameHUDProps {
   bossHits?: number;
   /** the world colour for the boss bar */
   bossAccent?: string;
+  /** the boss is making its entrance: the HUD stays out of the way until it is over */
+  bossEntering?: boolean;
   activePowerUp?: 'speed' | 'invincible' | 'magnet' | null;
   powerUpTimer?: number;
   lives?: number;
@@ -71,6 +73,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   bossPhase,
   bossHits,
   bossAccent,
+  bossEntering,
   activePowerUp,
   powerUpTimer,
   lives = 3,
@@ -85,7 +88,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   const power = activePowerUp ? POWER_UPS[activePowerUp] : null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[35] select-none font-game pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pt-[max(1rem,env(safe-area-inset-top))] sm:pl-[max(1.25rem,env(safe-area-inset-left))] sm:pr-[max(1.25rem,env(safe-area-inset-right))]">
+    <div className={`fixed inset-0 pointer-events-none z-[35] select-none font-game transition-opacity duration-500 ${bossEntering ? 'opacity-0' : 'opacity-100'}  pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pt-[max(1rem,env(safe-area-inset-top))] sm:pl-[max(1.25rem,env(safe-area-inset-left))] sm:pr-[max(1.25rem,env(safe-area-inset-right))]`}>
       <div className={isBoss ? 'flex items-start justify-between gap-2 sm:gap-4' : 'grid grid-cols-[1fr_auto_1fr] max-[520px]:grid-cols-[auto_minmax(0,1fr)] items-start gap-2 sm:gap-4'}>
         {/* LEFT: hearts and lives */}
         <div className="flex flex-col items-start gap-1.5 max-[520px]:row-span-2">

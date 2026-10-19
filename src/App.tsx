@@ -126,7 +126,7 @@ export default function App() {
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
-  const [bossInfo, setBossInfo] = useState<{ name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string } | null>(null);
+  const [bossInfo, setBossInfo] = useState<{ name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null>(null);
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
   // Picks the tune for a stage. A new number each time a stage is entered gives a new composition; retrying keeps it.
@@ -697,6 +697,7 @@ export default function App() {
             bossPhase={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.phase : undefined}
             bossHits={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hits : undefined}
             bossAccent={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.color : undefined}
+            bossEntering={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.entering : undefined}
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
             lives={lives}

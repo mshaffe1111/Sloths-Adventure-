@@ -100,3 +100,25 @@ test('a lava strip waits for its warning, then grows from the fence and stays', 
   assert.equal(list[0].x, 760 + 95, 'it grows from the fence towards the middle');
   assert.equal(list.length, 1, 'and it stays');
 });
+
+import { ENTRANCE_LONG, ENTRANCE_SHORT, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
+
+test('the entrance goes dark, opens eyes, reveals, roars once, then names the boss', () => {
+  const at = (u: number) => entranceBeat(u * ENTRANCE_LONG, ENTRANCE_LONG);
+  assert.ok(at(0.15).dark > 0.5 && at(0.15).bars > 0.9 && at(0.15).reveal === 0);
+  assert.ok(at(0.3).eyes > 0.9 && at(0.3).reveal === 0, 'eyes before the boss');
+  assert.ok(at(0.55).reveal > 0 && at(0.55).reveal < 1);
+  assert.equal(at(0.66).roaring, true);
+  assert.equal(at(0.5).roaring, false);
+  assert.ok(at(0.7).dark < at(0.2).dark, 'the dark lifts after the roar');
+  assert.ok(at(0.79).nameIn > 0.5 && at(0.9).nameIn === 0 && at(0.9).nameAlpha > 0.9, 'the name slams down and settles');
+  const end = entranceBeat(ENTRANCE_LONG, ENTRANCE_LONG);
+  assert.equal(end.bars, 0);
+  assert.equal(end.dark, 0);
+});
+
+test('the first meeting is long, a retry is short', () => {
+  assert.equal(takeEntranceLength('t-9-10'), ENTRANCE_LONG);
+  assert.equal(takeEntranceLength('t-9-10'), ENTRANCE_SHORT);
+  assert.ok(ENTRANCE_LONG >= 4.5 && ENTRANCE_SHORT <= 2);
+});
