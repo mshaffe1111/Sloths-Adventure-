@@ -1005,7 +1005,9 @@ export class GameEngine {
         if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) continue;
 
         // Check if player is horizontally within platform (generous width tolerance)
-        const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.48;
+        // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
+        // Slomatt standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14;
         if (p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width) {
           // Check landing from above

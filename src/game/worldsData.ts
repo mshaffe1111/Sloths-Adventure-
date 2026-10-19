@@ -355,6 +355,12 @@ export function generateAllLevels(): LevelConfig[] {
           break;
       }
 
+      // the very first stage is a full-size adventure (5,000+ px), not a short warm-up: more pieces, more places to explore
+      if (world.id === 1 && miniIndex === 1) {
+        levelWidth = 5400;
+        timeLimit = Math.round(levelWidth / 35);
+      }
+
       // Check persisted progress
       let unlocked = world.id === 1 && miniIndex === 1;
       let completed = false;

@@ -79,9 +79,9 @@ export const GameHUD: React.FC<GameHUDProps> = ({
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[35] select-none font-game pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pt-[max(1rem,env(safe-area-inset-top))] sm:pl-[max(1.25rem,env(safe-area-inset-left))] sm:pr-[max(1.25rem,env(safe-area-inset-right))]">
-      <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-2 sm:gap-4">
+      <div className="grid grid-cols-[1fr_auto_1fr] max-[520px]:grid-cols-[auto_minmax(0,1fr)] items-start gap-2 sm:gap-4">
         {/* LEFT: hearts and lives */}
-        <div className="flex flex-col items-start gap-1.5">
+        <div className="flex flex-col items-start gap-1.5 max-[520px]:row-span-2">
           <div className="hud-glass flex gap-[3px] sm:gap-1 rounded-2xl px-2 py-1.5 sm:px-3 sm:py-2" role="img" aria-label={`Health: ${hp} of ${maxHp} hearts`}>
             {Array.from({ length: maxHp }).map((_, i) => {
               const full = i < hp;
@@ -101,7 +101,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
         </div>
 
         {/* MIDDLE: menu and score */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5 max-[520px]:justify-end">
           <button
             type="button"
             onClick={onMenu}
@@ -124,7 +124,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
 
         {/* RIGHT: stage name and distance, one card */}
         <div className="flex justify-end">
-          <div className="hud-glass flex flex-col gap-1 sm:gap-[7px] rounded-[18px] px-2.5 pt-1.5 pb-2 sm:px-3.5 sm:pt-2.5 sm:pb-3 w-[168px] sm:w-[250px]">
+          <div className="hud-glass flex flex-col gap-1 sm:gap-[7px] rounded-[18px] px-2.5 pt-1.5 pb-2 sm:px-3.5 sm:pt-2.5 sm:pb-3 w-[168px] sm:w-[250px] max-[520px]:w-full max-[520px]:max-w-[240px]">
             <div className="flex items-baseline justify-between gap-2">
               <span className="text-base sm:text-xl font-bold text-amber-400 leading-none">{stageNo}</span>
               <span className="text-[12px] sm:text-[15px] font-medium text-emerald-50 text-right leading-tight truncate">{levelConfig.name}</span>
