@@ -141,7 +141,9 @@ export default function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('autostart') === '1') {
-      startLevel(allLevels[0]);
+      // ?level=5-10 jumps straight to that stage (handy for checking a boss)
+      const wanted = params.get('level');
+      startLevel(allLevels.find((l) => l.id === wanted) ?? allLevels[0]);
     }
   }, []);
 
