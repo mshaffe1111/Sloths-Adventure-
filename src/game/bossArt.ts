@@ -19,6 +19,7 @@ import { sovereignSprite } from './sovereignSprite.ts';
 import { drakeSprite } from './drakeSprite.ts';
 import { ironclawSprite } from './ironclawSprite.ts';
 import { golemSprite } from './golemSprite.ts';
+import { thornbarkSprite } from './thornbarkSprite.ts';
 
 /** the bosses that have a painted version besides the queen */
 const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 6: reaverSprite, 7: golemSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
@@ -264,7 +265,8 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   ctx.scale(xf.sx, xf.sy);
   ctx.translate(-b.x, -feetY);
   if (def.puppet) {
-    drawPuppet(ctx, b, def, m, time, feetY);
+    // the painted guardian when his atlas is loaded; the Slomatt-rig puppet until then
+    if (!thornbarkSprite.draw(ctx, b, def, time, feetY)) drawPuppet(ctx, b, def, m, time, feetY);
   } else if ((world === 5 && drawQueenSprite(ctx, b, def, time, feetY)) || painted?.draw(ctx, b, def, time, feetY)) {
     // painted boss
   } else {

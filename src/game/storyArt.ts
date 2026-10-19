@@ -3,6 +3,7 @@ import { drawPaintedCardBoss } from './bossArt.ts';
 import { renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
 import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.ts';
 import { drawJennifurSprite } from './jennifurSprite.ts';
+import { thornbarkSprite } from './thornbarkSprite.ts';
 import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor } from './story.ts';
 import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
@@ -267,10 +268,17 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
     }
     case 'thornbark': {
       // the corrupted guardian; once freed he is the gentle Jungle Guardian again
-      ctx.scale(s * 1.3, s * 1.3);
       if (a.facing === -1) ctx.scale(-1, 1);
-      const p = makePlayer(a.angry ? 'punch' : 'idle', 1);
-      drawMilo(ctx, a.beaten ? 5 : 7, p, t);
+      ctx.save();
+      ctx.scale(s * 0.62, s * 0.62);
+      // the painted sloth warlord: roaring while the thorns have him, resting on his club once he is free
+      const shown = thornbarkSprite.still(ctx, a.beaten ? 'rest' : a.angry ? 'roar' : 'march1');
+      ctx.restore();
+      if (!shown) {
+        ctx.scale(s * 1.3, s * 1.3);
+        const p = makePlayer(a.angry ? 'punch' : 'idle', 1);
+        drawMilo(ctx, a.beaten ? 5 : 7, p, t);
+      }
       break;
     }
     case 'daisy':

@@ -948,8 +948,8 @@ const GENERAL: BossDef = {
 const THORNBARK: BossDef = {
   world: 7,
   name: 'Thornbark',
-  w: 70,
-  h: 92,
+  w: 84,
+  h: 112,
   artDy: 0,
   speed: [84, 112, 150],
   prefer: 230,
