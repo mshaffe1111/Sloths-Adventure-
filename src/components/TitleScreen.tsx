@@ -29,6 +29,9 @@ interface TitleScreenProps {
   onSaveLoaded: () => void;
   /** progress has just been cleared; begin again (skipStory: go straight to play) */
   onNewGame: (skipStory: boolean) => void;
+  onOpenTrophies: () => void;
+  /** badges earned, shown on the Trophies button */
+  badgeCount?: number;
 }
 
 export const TitleScreen: React.FC<TitleScreenProps> = ({
@@ -42,6 +45,8 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   resume,
   onSaveLoaded,
   onNewGame,
+  onOpenTrophies,
+  badgeCount,
 }) => {
   const [saveOpen, setSaveOpen] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
@@ -97,6 +102,9 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               </button>
               <button type="button" onClick={onOpenMap} className="ui-pill ui-pill-green justify-center">
                 World Map
+              </button>
+              <button type="button" onClick={onOpenTrophies} className="ui-pill ui-pill-gold justify-center col-span-2 sm:col-span-1">
+                🏆 Trophies{badgeCount ? ` · ${badgeCount}` : ''}
               </button>
               <button type="button" onClick={() => setNewOpen(true)} className="ui-pill ui-pill-wood justify-center">
                 New Game

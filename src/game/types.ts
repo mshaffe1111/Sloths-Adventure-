@@ -1,6 +1,7 @@
 export type GameScreen =
   | 'title'
   | 'world_map'
+  | 'trophy'
   | 'story_cutscene'
   | 'playing'
   | 'paused'

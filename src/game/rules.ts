@@ -158,7 +158,8 @@ export function calculateLevelStars(
   timeTakenSec: number,
   timeTargetSec: number,
   remainingHpRatio: number, // 0..1
-  collectedBonusItemRatio: number // 0..1
+  collectedBonusItemRatio: number, // 0..1
+  livesLost = 0
 ): number {
   let stars = 1; // 1 star for simply completing the level
 
@@ -167,8 +168,10 @@ export function calculateLevelStars(
     stars = 2;
   }
 
-  // Third star for high mastery: remaining healthy and beating time or gathering all bonuses
-  if (remainingHpRatio >= 0.75 && (collectedBonusItemRatio >= 0.85 || (timeTargetSec > 0 && timeTakenSec <= timeTargetSec * 0.85))) {
+  // Third star is earned, not given: no life lost, most hearts kept, and on a timed stage a quick run
+  // (on the others, nearly everything collected)
+  const quick = timeTargetSec > 0 ? timeTakenSec <= timeTargetSec * 0.6 : collectedBonusItemRatio >= 0.85;
+  if (livesLost === 0 && remainingHpRatio >= 0.75 && quick) {
     stars = 3;
   }
 

@@ -93,7 +93,13 @@ test('calculateLevelStars awards 1 to 3 stars based on performance', () => {
   // Decent health remaining
   assert.equal(calculateLevelStars(80, 60, 0.6, 0.3), 2);
   // High mastery: full health & fast/high collectibles
-  assert.equal(calculateLevelStars(45, 60, 0.9, 0.9), 3);
+  assert.equal(calculateLevelStars(30, 60, 0.9, 0.9), 3);
+  // a life lost, or a slow timed run, keeps the third star away
+  assert.equal(calculateLevelStars(30, 60, 0.9, 0.9, 1), 2);
+  assert.equal(calculateLevelStars(50, 60, 0.9, 0.9), 2);
+  // stages without a time limit: nearly everything collected, no life lost
+  assert.equal(calculateLevelStars(500, 0, 0.9, 1), 3);
+  assert.equal(calculateLevelStars(500, 0, 0.9, 0.5), 2);
 });
 
 test('calculateHitScore awards bonus for mega punch and combo', () => {

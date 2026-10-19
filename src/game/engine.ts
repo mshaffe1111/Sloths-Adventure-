@@ -11,6 +11,9 @@ import type {
   FloatingText,
 } from './types.ts';
 import { WORLDS_DATA } from './worldsData.ts';
+import type { StageStats } from './badges.ts';
+import { loadCosmetic } from './badgeStore.ts';
+import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { renderScenery, renderOverlay } from './scenery.ts';
@@ -77,6 +80,8 @@ export interface GameEngineCallbacks {
   ) => void;
   onVictory: (stars: number, timeSec: number, score: number) => void;
   onDefeat: (score: number) => void;
+  /** the stage ended (won or lost): what happened, for the Trophy Room. Sent just before onVictory / onDefeat. */
+  onStageStats?: (stats: StageStats) => void;
   onLivesChange?: (lives: number, maxLives: number) => void;
   /** the game loop failed over and over: the app should leave the stage */
   onFatal?: () => void;
@@ -150,6 +155,18 @@ export class GameEngine {
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
   private runScore: number = 0;
+  // what happened this stage, for badges
+  private statLivesLost = 0;
+  private statHeartsLost = 0;
+  private statStomps = 0;
+  private statMaxStompChain = 0;
+  private statMaxCombo = 0;
+  private statKills: Record<string, number> = {};
+  private statSeen = new Set<string>();
+  private seenCheck = 0;
+  // the reward Slomatt wears
+  private trailOn = false;
+  private trailT = 0;
   private barrierMsgCooldown = 0;
   private comboCount: number = 0;
   private comboResetTimer: number = 0;
@@ -211,6 +228,9 @@ export class GameEngine {
     this.ctx = ctx;
     this.input = input;
     this.callbacks = callbacks;
+    const cosmetic = loadCosmetic();
+    setHeroCoat(cosmetic.coat);
+    this.trailOn = cosmetic.trail;
     try {
       this.debugBoxes = new URLSearchParams(window.location.search).get('hitboxes') === '1';
     } catch {
@@ -476,6 +496,34 @@ export class GameEngine {
           this.knockOut(e, e.x >= p.x ? 1 : -1, 'STAR K.O.! +300');
           this.spawnDebrisBurst(e.x, e.y, '#facc15');
         }
+      }
+    }
+
+    if (this.comboCount > this.statMaxCombo) this.statMaxCombo = this.comboCount;
+    // the sparkle trail reward: stardust drifting off Slomatt as he moves
+    if (this.trailOn && Math.abs(this.player.vx) > 40 && (this.trailT += dt) > 0.04) {
+      this.trailT = 0;
+      const pl = this.player;
+      const hues = ['#fbbf24', '#f9a8d4', '#6ee7b7', '#fde047'];
+      this.particles.push({
+        x: pl.x - pl.facing * (6 + Math.random() * 10),
+        y: pl.y - 8 - Math.random() * 38,
+        vx: -pl.facing * (10 + Math.random() * 30),
+        vy: -10 - Math.random() * 40,
+        color: hues[Math.floor(Math.random() * hues.length)],
+        size: 4.2 + Math.random() * 3.6,
+        life: 0.8 + Math.random() * 0.4,
+        maxLife: 1.2,
+        type: 'star',
+      });
+    }
+    // creatures that came on screen (the journal's "met" list)
+    if ((this.seenCheck += dt) > 0.4) {
+      this.seenCheck = 0;
+      const cam = this.camera;
+      for (const e of this.enemies) {
+        if (e.defeated || e.type === 'boss' || e.type === 'ant_hazard' || this.statSeen.has(e.type)) continue;
+        if (e.x > cam.x - 60 && e.x < cam.x + cam.viewportWidth + 60 && e.y > cam.y - 60 && e.y < cam.y + cam.viewportHeight + 60) this.statSeen.add(e.type);
       }
     }
 
@@ -1376,9 +1424,11 @@ export class GameEngine {
         this.gameTime,
         this.currentStage.config.timeLimit,
         p.hp / p.maxHp,
-        objType === 'boss_lair' ? (bossDefeated ? 1 : 0) : currentProgress / Math.max(1, this.currentStage.config.targetCount)
+        objType === 'boss_lair' ? (bossDefeated ? 1 : 0) : currentProgress / Math.max(1, this.currentStage.config.targetCount),
+        this.statLivesLost
       );
 
+      this.callbacks.onStageStats?.(this.buildStats(true, stars));
       this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
     }
 
@@ -1989,9 +2039,37 @@ export class GameEngine {
   }
 
   /** an animal is beaten: it is launched away in its own style instead of vanishing */
+  /** what happened this stage, for the Trophy Room */
+  private buildStats(win: boolean, stars: number): StageStats {
+    let floraTotal = 0;
+    let floraCollected = 0;
+    for (const c of this.collectibles) {
+      if (c.type === 'flower' || c.type === 'leaf' || c.type === 'fruit') {
+        floraTotal++;
+        if (c.collected) floraCollected++;
+      }
+    }
+    return {
+      win,
+      stars,
+      livesLost: this.statLivesLost,
+      heartsLost: this.statHeartsLost,
+      floraTotal,
+      floraCollected,
+      timeSec: this.gameTime,
+      timeLimit: this.currentStage.config.timeLimit,
+      maxStompChain: this.statMaxStompChain,
+      maxCombo: this.statMaxCombo,
+      stomps: this.statStomps,
+      kills: { ...this.statKills },
+      seen: Array.from(this.statSeen),
+    };
+  }
+
   private knockOut(e: Enemy, dir: 1 | -1, label: string) {
     const p = this.player;
     e.defeated = true;
+    if (e.id < 9000 && e.type !== 'boss' && e.type !== 'ant_hazard') this.statKills[e.type] = (this.statKills[e.type] ?? 0) + 1;
     e.koTimer = 0;
     e.koAngle = 0;
     e.koLanded = false;
@@ -2082,6 +2160,8 @@ export class GameEngine {
       applyHit(e, res);
       p.vy = r.damage >= 2 ? -700 : this.input.state.jumpHeld ? -620 : -460;
       this.stompChain++;
+      this.statStomps++;
+      this.statMaxStompChain = Math.max(this.statMaxStompChain, this.stompChain);
       this.hitstopTimer = Math.max(this.hitstopTimer, res.killed ? 0.1 : 0.06);
       this.camera.trauma = Math.min(1, this.camera.trauma + (r.damage >= 2 ? 0.35 : 0.18));
       sound.playHitImpact(r.damage >= 2 || res.killed, materialFor(e.type));
@@ -2172,6 +2252,7 @@ export class GameEngine {
     const p = this.player;
     if (this.isGameOver || p.invincibleTimer > 0 || this.stompGrace > 0) return;
 
+    this.statHeartsLost += amount;
     p.hp = Math.max(0, p.hp - amount);
     p.invincibleTimer = 1.2; // 1.2s invulnerability
     p.squashX = 1.3;
@@ -2205,10 +2286,12 @@ export class GameEngine {
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
     const p = this.player;
     this.lives -= 1;
+    this.statLivesLost++;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     if (this.lives <= 0) {
       this.isGameOver = true;
       sound.playDefeat();
+      this.callbacks.onStageStats?.(this.buildStats(false, 0));
       this.callbacks.onDefeat(this.runScore);
       return;
     }
@@ -2498,7 +2581,18 @@ export class GameEngine {
     this.particles.forEach((pt) => {
       ctx.fillStyle = pt.color;
       ctx.beginPath();
-      ctx.arc(pt.x, pt.y, pt.size * (pt.life / pt.maxLife), 0, Math.PI * 2);
+      const r = pt.size * (pt.life / pt.maxLife);
+      if (pt.type === 'star') {
+        // a four-pointed sparkle
+        const k = r * 1.7;
+        ctx.moveTo(pt.x, pt.y - k);
+        ctx.quadraticCurveTo(pt.x, pt.y, pt.x + k, pt.y);
+        ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y + k);
+        ctx.quadraticCurveTo(pt.x, pt.y, pt.x - k, pt.y);
+        ctx.quadraticCurveTo(pt.x, pt.y, pt.x, pt.y - k);
+      } else {
+        ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+      }
       ctx.fill();
     });
 

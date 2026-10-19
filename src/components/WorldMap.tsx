@@ -17,6 +17,7 @@ interface WorldMapProps {
   /** the stage Continue would start; the map opens on it */
   resumeId?: string;
   onSaveLoaded: () => void;
+  onOpenTrophies?: () => void;
 }
 
 const fmtTime = (s: number) => (s > 0 ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '—');
@@ -50,6 +51,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   thornHeart,
   resumeId,
   onSaveLoaded,
+  onOpenTrophies,
 }) => {
   const [activeWorldId, setActiveWorldId] = useState<number>(selectedWorldId);
   const [saveOpen, setSaveOpen] = useState(false);
@@ -157,6 +159,11 @@ export const WorldMap: React.FC<WorldMapProps> = ({
             <span className="ui-chip" title="Thorn Heart: +1 max heart">
               💜 +1
             </span>
+          )}
+          {onOpenTrophies && (
+            <button type="button" className="ui-chip ui-chip-btn" onClick={onOpenTrophies} aria-label="Trophy Room">
+              🏆
+            </button>
           )}
           <span className="ui-chip" aria-label={`${totalStars} of 300 stars`}>
             <span className="text-amber-300">★</span>

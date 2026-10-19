@@ -211,7 +211,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
 
           {!levelConfig.secret && (
             <p className="text-[11px] text-emerald-200/70 font-sans leading-snug -mt-1">
-              ★★ keep half your hearts · ★★★ keep ¾ of your hearts and find nearly everything
+              ★★ keep half your hearts · ★★★ lose no lives and keep ¾ of your hearts (timed stages: finish quickly)
             </p>
           )}
 

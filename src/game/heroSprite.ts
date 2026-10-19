@@ -10,6 +10,7 @@ import type { PlayerState } from './types.ts';
 import { HERO_CLIMB, HERO_FRAMES, HERO_RUN, HERO_STAND_H, type HeroFrame } from './heroAtlasData.ts';
 import { drawAuras } from './miloVariants.ts';
 import { HeroEvents } from './heroEvents.ts';
+import { makeTintedCanvas, type Coat } from './heroTint.ts';
 import { trackAtlas } from './atlasLoader.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
@@ -36,6 +37,20 @@ export function heroSpriteEnabled(): boolean {
 
 let atlas: HTMLImageElement | null = null;
 let ready = false;
+
+// the reward coat Slomatt wears (made once from the painted sheet, then reused)
+let coat: Coat = 'none';
+const tinted: Partial<Record<Coat, HTMLCanvasElement | null>> = {};
+export function setHeroCoat(c: Coat) {
+  coat = c;
+}
+function sheet(): CanvasImageSource | null {
+  if (!atlas) return null;
+  if (coat === 'none') return atlas;
+  if (ready && tinted[coat] === undefined) tinted[coat] = makeTintedCanvas(atlas, coat);
+  return tinted[coat] ?? atlas;
+}
+
 function load() {
   if (atlas || typeof Image === 'undefined') return;
   const img = new Image();
@@ -136,7 +151,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   drawAuras(ctx, p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -(choice.byHand && f.hx !== undefined ? f.hx : f.ax) * k, -f.ay * k + choice.bob, f.w * k, f.h * k);
+  ctx.drawImage(sheet() ?? atlas, f.x, f.y, f.w, f.h, -(choice.byHand && f.hx !== undefined ? f.hx : f.ax) * k, -f.ay * k + choice.bob, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

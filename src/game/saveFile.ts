@@ -23,6 +23,8 @@ const ALLOWED: RegExp[] = [
   /^sloth_music_vol$/,
   /^sloth_sfx_vol$/,
   /^sloth_game_muted$/,
+  /^sloth_badges$/, // the Trophy Room
+  /^sloth_cosmetic$/, // which reward Slomatt wears
 ];
 
 export const isSaveKey = (k: string) => ALLOWED.some((re) => re.test(k));

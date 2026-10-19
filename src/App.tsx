@@ -17,6 +17,10 @@ import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
 import { THORNBARK_LEVEL, gateFound, hasThornHeart, markGateFound, markThornHeart, maxHearts } from './game/secret.ts';
 import { warmHeroAtlas } from './game/heroSprite.ts';
+import { award, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
+import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
+import { TrophyRoom } from './components/TrophyRoom.tsx';
+import { BadgeToast } from './components/BadgeToast.tsx';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -66,6 +70,8 @@ export default function App() {
     setThornHeart(hasThornHeart());
     setHp(maxHearts());
     setMaxHp(maxHearts());
+    setBadgeStore(loadBadgeStore());
+    setCosmetic(loadCosmetic());
   }, []);
 
   // where the opening story was started from: the title's Story button returns to the title, a new game goes on to 1-1
@@ -81,6 +87,8 @@ export default function App() {
     setThornHeart(hasThornHeart());
     setHp(maxHearts());
     setMaxHp(maxHearts());
+    setBadgeStore(loadBadgeStore());
+    setCosmetic(loadCosmetic());
     if (skipStory) {
       startLevel(fresh[0]);
     } else {
@@ -137,6 +145,40 @@ export default function App() {
       inputEngineRef.current?.destroy();
     };
   }, []);
+
+  // ---- the Trophy Room: badges earned, and the rewards Slomatt wears ----
+  const [badgeStore, setBadgeStore] = useState<BadgeStore>(() => loadBadgeStore());
+  const [cosmetic, setCosmetic] = useState<CosmeticChoice>(() => loadCosmetic());
+  const [freshBadges, setFreshBadges] = useState<BadgeDef[]>([]);
+  const [trophyFrom, setTrophyFrom] = useState<'title' | 'world_map'>('title');
+  /** what the last stage reported; folded in once its result has been saved (see the effect below) */
+  const pendingStats = useRef<StageStats | null>(null);
+  const badgeCount = React.useMemo(
+    () => evaluate({ store: badgeStore, levels: allLevels, gateFound: secretFound, thornHeart }).length,
+    [badgeStore, allLevels, secretFound, thornHeart],
+  );
+  useEffect(() => {
+    // after a stage ends (the result is saved by now), or when the saved game changes: hand out whatever is newly earned
+    const stats = pendingStats.current;
+    if (stats && screen !== 'victory' && screen !== 'game_over' && screen !== 'boss_defeat') return;
+    pendingStats.current = null;
+    const base = stats ? recordStage(badgeStore, stats) : badgeStore;
+    const r = award(base, { levels: allLevels, gateFound: secretFound, thornHeart, stage: stats ?? undefined }, Date.now());
+    const changed = !!stats || r.fresh.length > 0;
+    if (!changed) return;
+    setBadgeStore(r.store);
+    saveBadgeStore(r.store);
+    // a stage just ended: celebrate. Badges found when a save loads or the game opens are filed quietly.
+    if (stats && r.fresh.length) {
+      setFreshBadges(r.fresh);
+      sound.playShrineUnlocked();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen, allLevels, secretFound, thornHeart]);
+  const changeCosmetic = (c: CosmeticChoice) => {
+    setCosmetic(c);
+    saveCosmetic(c);
+  };
 
   // a new build was installed in the background: swap to it at a calm moment, never in the middle of a stage
   const [updateReady, setUpdateReady] = useState(false);
@@ -313,6 +355,9 @@ export default function App() {
       try {
       engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
         onFatal: () => setScreen('world_map'),
+        onStageStats: (s) => {
+          pendingStats.current = s;
+        },
         onProgressUpdate: (current, target, curScore, curHp, distRatio, curPowerUp, curPowerTimer) => {
           setCurrentCount(current);
           setTargetCount(target);
@@ -490,6 +535,11 @@ export default function App() {
             setSelectedWorldId(resumeLevel.worldIndex);
             setScreen('world_map');
           }}
+          onOpenTrophies={() => {
+            setTrophyFrom('title');
+            setScreen('trophy');
+          }}
+          badgeCount={badgeCount}
           onViewStory={() => {
             setStoryFrom('title');
             setScreen('story_cutscene');
@@ -576,8 +626,26 @@ export default function App() {
           onPlaySecret={() => startLevel(THORNBARK_LEVEL)}
           resumeId={resumeLevel.id}
           onSaveLoaded={onSaveLoaded}
+          onOpenTrophies={() => {
+            setTrophyFrom('world_map');
+            setScreen('trophy');
+          }}
         />
       )}
+
+      {screen === 'trophy' && (
+        <TrophyRoom
+          store={badgeStore}
+          levels={allLevels}
+          gateFound={secretFound}
+          thornHeart={thornHeart}
+          choice={cosmetic}
+          onChoice={changeCosmetic}
+          onBack={() => setScreen(trophyFrom)}
+        />
+      )}
+
+      {freshBadges.length > 0 && <BadgeToast badges={freshBadges} onDone={() => setFreshBadges([])} />}
 
       {/* Active Game HUD (Only in playing or paused) */}
       {(screen === 'playing' || screen === 'paused') && (
