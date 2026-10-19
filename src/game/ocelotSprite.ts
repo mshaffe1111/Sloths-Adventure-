@@ -73,6 +73,7 @@ export function drawOcelotSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   if (enemy.defeated) name = 'tumble';
   else if ((enemy.recoil ?? 0) > 0.35) name = 'hurt';
   else if ((enemy.stagger ?? 0) > 0) name = Math.abs(enemy.knockVx ?? 0) > 70 ? 'knock' : 'dazed';
+  else if (st === 'windup') name = 'gather';
   else if (st === 'leap') {
     const u = Math.min(1, t / LEAP_T);
     if (u < 0.12) name = 'gather';

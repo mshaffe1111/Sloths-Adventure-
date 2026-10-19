@@ -127,10 +127,16 @@ export interface BossBrain {
   roarReason: 'enter' | 'phase';
   /** moves left in a chained combo */
   chain: number;
+  /** heavy hits taken mid-attack; two in a short time break the attack */
+  poise: number;
+  /** seconds until the poise count is forgotten */
+  poiseT: number;
+  /** seconds before another attack can be broken (a stun is not a loop) */
+  breakCd: number;
 }
 
 export function newBrain(): BossBrain {
-  return { state: 'roar', move: null, t: 0, idle: 1, hold: 1.4, recent: [], d: {}, hurt: [], air: 0, alpha: 1, roarReason: 'enter', chain: 0 };
+  return { state: 'roar', move: null, t: 0, idle: 1, hold: 1.4, recent: [], d: {}, hurt: [], air: 0, alpha: 1, roarReason: 'enter', chain: 0, poise: 0, poiseT: 0, breakCd: 0 };
 }
 
 export interface Arena {
@@ -248,8 +254,10 @@ export function vulnerability(b: BossEntity): 'closed' | 'armored' | 'open' | 's
 
 /** the body only hurts while the boss is winding up or attacking, so walking up to hit it in its opening is safe */
 export function bodyHurts(b: BossEntity): boolean {
-  const s = b.ai?.state;
-  return s === 'tell' || s === 'act';
+  const br = b.ai;
+  if (!br) return false;
+  // the first moment of a wind-up is grace, so a hero standing in the boss when it begins can step out (or be pushed out) first
+  return br.state === 'act' || (br.state === 'tell' && br.t > 0.3);
 }
 
 function face(b: BossEntity, c: BossCtx) {
@@ -272,6 +280,12 @@ function pickMove(b: BossEntity, def: BossDef, c: BossCtx, phase: number): strin
   const last = br.recent[br.recent.length - 1];
   const fresh = pool.filter((n) => n !== last);
   if (fresh.length) pool = fresh;
+  else if (last && br.recent.length >= 2 && br.recent[br.recent.length - 2] === last) {
+    // only one move suits this distance and it has already run twice (a hero hugging the boss): make it use another one
+    // anyway, whatever the range, so no boss can be locked to a single move
+    const other = names.filter((n) => n !== last && (def.moves[n].phase ?? 1) <= phase);
+    if (other.length) pool = other;
+  }
   const total = pool.reduce((s, n) => s + (def.moves[n].weight ?? 1), 0);
   let r = c.rnd() * total;
   for (const n of pool) {
@@ -306,6 +320,8 @@ function clampToArena(b: BossEntity, c: BossCtx) {
 export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): void {
   const br = b.ai!;
   br.t += dt;
+  if (br.breakCd > 0) br.breakCd -= dt;
+  if (br.poiseT > 0 && (br.poiseT -= dt) <= 0) br.poise = 0;
   const phase = phaseFor(b.hp, b.maxHp);
   const m = br.move ? def.moves[br.move] : null;
   br.hurt = [];
@@ -433,15 +449,24 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
   b.y = c.arena.floor - b.height / 2 - br.air;
 }
 
-/** a heavy hit during a move breaks it; returns true if the boss was knocked out of its attack */
+/**
+ * A heavy hit during a move. One only chips the boss's poise; a second within a few seconds breaks the attack,
+ * and after a break it holds firm for a while (so a kick can't be spammed to cancel every move).
+ * Returns true if the boss was knocked out of its attack.
+ */
 export function interruptBoss(b: BossEntity, def: BossDef, c: BossCtx): boolean {
   const br = b.ai;
   if (!br || (br.state !== 'tell' && br.state !== 'act')) return false;
   const m = br.move ? def.moves[br.move] : null;
   if (m && m.interruptible === false) return false;
+  br.poise += 1;
+  br.poiseT = 3.5;
+  if (br.poise < 2 || br.breakCd > 0) return false;
+  br.poise = 0;
+  br.breakCd = 5;
   br.state = 'stun';
   br.t = 0;
-  br.hold = 1.5;
+  br.hold = 1.1;
   br.hurt = [];
   b.telegraphTimer = 0;
   b.isAttacking = false;

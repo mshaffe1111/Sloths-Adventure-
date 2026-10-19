@@ -127,6 +127,15 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
         patrol(e, dt, speed);
         if (ready && dist < 180 && level) {
           e.facing = toward;
+          enter(e, 'windup');
+          e.vx = 0;
+          ev.telegraph = true;
+        }
+      } else if (e.state === 'windup') {
+        // a short, readable crouch before the pounce (the pounce itself is only 0.36 s)
+        e.vx = 0;
+        e.facing = toward;
+        if (t >= 0.38) {
           enter(e, 'leap');
           e.fromX = e.x;
           e.toX = clamp(e.x + toward * clamp(dist + 24, 90, 170), e.patrolMinX, e.patrolMaxX);

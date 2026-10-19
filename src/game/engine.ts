@@ -1067,8 +1067,9 @@ export class GameEngine {
       if (e.type === 'snake') {
         // Snake patrols branch, lunges when Sloth is near
         e.x += e.vx * dt;
+        // out of range (knocked past an end): head back in, not "flip every frame" (which left a live, edge-on sliver)
         if (e.x < e.patrolMinX || e.x > e.patrolMaxX) {
-          e.vx = -e.vx;
+          e.vx = Math.abs(e.vx) * (e.x < e.patrolMinX ? 1 : -1);
           e.facing = e.vx > 0 ? 1 : -1;
         }
 
@@ -1096,12 +1097,14 @@ export class GameEngine {
           // Aerial patrol
           e.x += e.vx * dt;
           if (e.x < e.patrolMinX || e.x > e.patrolMaxX) {
-            e.vx = -e.vx;
+            e.vx = Math.abs(e.vx) * (e.x < e.patrolMinX ? 1 : -1);
             e.facing = e.vx > 0 ? 1 : -1;
           }
+          if (e.attackCooldown > 0) e.attackCooldown -= dt;
 
-          // Spot player and initiate telegraphed swoop warning
-          if (Math.abs(e.x - p.x) < 260) {
+          // Spot player and initiate telegraphed swoop warning (never beyond its own patch of sky, never straight after a swoop)
+          const home = (e.patrolMinX + e.patrolMaxX) / 2;
+          if (e.attackCooldown <= 0 && Math.abs(e.x - p.x) < 260 && Math.abs(p.x - home) < (e.patrolMaxX - e.patrolMinX) / 2 + 300) {
             e.swoopPhase = 'telegraph';
             e.telegraphTimer = 0.8; // 0.8s clear visual/sound telegraph!
             sound.playEagleScreech();
@@ -1119,7 +1122,7 @@ export class GameEngine {
           // Swoop down at gentle readable speed (165 px/s)
           const diveSpeed = 165;
           const targetY = Math.min((e.homeY ?? 310) + 190, p.y - 10);
-          const dx = p.x - e.x;
+          const dx = Math.max(e.patrolMinX - 120, Math.min(e.patrolMaxX + 120, p.x)) - e.x;
           const dy = targetY - e.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
@@ -1156,6 +1159,7 @@ export class GameEngine {
           // VULNERABLE LOW HOVER / GLIDE: Easy to hit!
           e.hoverTimer = (e.hoverTimer ?? 1.4) - dt;
           e.x += e.facing * 50 * dt;
+          if (e.x < e.patrolMinX - 120 || e.x > e.patrolMaxX + 120) e.facing = e.x < e.patrolMinX ? 1 : -1;
           e.y += Math.sin(this.gameTime * 5) * 8 * dt;
 
           if (e.hoverTimer <= 0) {
@@ -1164,11 +1168,16 @@ export class GameEngine {
         } else if (e.swoopPhase === 'ascend') {
           // Gently ascend back to sky patrol
           e.y -= 110 * dt;
-          e.x += e.facing * 40 * dt;
+          // glide back toward its post while climbing
+          const post = (e.patrolMinX + e.patrolMaxX) / 2;
+          const toward = post > e.x ? 1 : -1;
+          e.x += toward * Math.min(70, Math.abs(post - e.x)) * dt * 2;
+          e.facing = toward;
           if (e.y <= (e.homeY ?? 310)) {
             e.y = e.homeY ?? 310;
             e.swoopPhase = 'patrol';
             e.attackCooldown = 4.0;
+            e.facing = e.vx > 0 ? 1 : -1;
           }
         }
       } else if (isPredator(e.type)) {
@@ -1996,8 +2005,23 @@ export class GameEngine {
         }
         return;
       }
-      // a heavy blow breaks the attack
-      if (def) interruptBoss(b, def, c);
+      // a heavy blow rattles the boss; a second one in quick succession breaks the attack
+      const broke = def ? interruptBoss(b, def, c) : false;
+      if (!broke) {
+        // it shrugged it off (poise held): the blow still counts, but for half
+        const chip = Math.max(1, Math.ceil(m.bossDamage / 2));
+        b.hp = Math.max(0, b.hp - chip);
+        b.hitFlashTimer = 0.1;
+        this.hitstopTimer = Math.max(this.hitstopTimer, 0.05);
+        sound.playHitImpact(false, 'armor');
+        this.spawnSparkBurst(cp.x, cp.y, '#fde68a');
+        if (this.clangCd <= 0) {
+          this.clangCd = 0.45;
+          this.addFloatingText('RATTLED!', b.x, b.y - b.height * 0.7, '#fde68a');
+        }
+        if (b.hp <= 0) this.startBossDeath(b);
+        return;
+      }
     }
 
     let dmg = m.bossDamage;

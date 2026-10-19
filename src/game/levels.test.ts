@@ -117,3 +117,16 @@ test('different variants give different layouts, but boss lairs stay as designed
   assert.equal(JSON.stringify(generateStage(boss).platforms), b1);
   setLayoutVariant(null);
 });
+
+test('random layouts are not stuck in "safe mode": vine-swing stages really have swing vines', () => {
+  const vineLevels = levels.filter((l) => l.objectiveType === 'vine_runner' && l.worldIndex * 10 + l.miniIndex > 40);
+  assert.ok(vineLevels.length > 5);
+  let withSwing = 0;
+  for (const l of vineLevels.slice(0, 12)) {
+    setLayoutVariant(777);
+    const stage = generateStage(l);
+    if ((stage.meta?.chunks ?? []).some((c) => c.startsWith('swing'))) withSwing++;
+  }
+  setLayoutVariant(null);
+  assert.equal(withSwing, Math.min(12, vineLevels.length), 'a Vine Swing stage came out without a single swing');
+});

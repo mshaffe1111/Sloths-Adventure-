@@ -118,6 +118,8 @@ interface Spot {
   yard?: boolean;
   /** elevated reward spot: plateaus and ladder tops */
   perch?: boolean;
+  /** a side structure the player may skip (ladder tops): nothing required is ever put here */
+  optional?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -166,7 +168,10 @@ class Gen {
     this.waterY = cfg.levelHeight - WATER_FROM_BOTTOM;
     this.g = this.G;
     // later attempts fall back to a gentler layout if a roll was unlucky
-    this.safeMode = attempt >= 5;
+    // (a random layout's attempt numbers start at 1000 + variant*31, so its retry index is the remainder: judging by the
+    // raw number made every random layout "safe" and left out all swing vines, moving platforms and fragile planks)
+    const retry = attempt >= 1000 ? (attempt - 1000) % 31 : attempt;
+    this.safeMode = retry >= 5;
   }
 
   // ---- helpers ----
@@ -328,6 +333,13 @@ class Gen {
     else if (kind === 'caiman') this.caiman(x, surface, pMin, pMax);
     else if (kind === 'tayra') this.tayra(x, surface, pMin, pMax);
     else this.ocelot(x, surface, pMin, pMax);
+  }
+
+  /** can an eagle patrol here: clear of solid ground (its patch of sky is x ± 240) and well away from every flag? */
+  skyClear(x: number, homeY: number) {
+    const x0 = x - 270, x1 = x + 270, y0 = homeY - 40, y1 = homeY + 40;
+    if (this.P.some((p) => p.type !== 'bouncy' && p.x < x1 && p.x + p.width > x0 && p.y < y1 && p.y + p.height > y0)) return false;
+    return this.CP.every((c) => Math.abs(c.x - x) > 480 || Math.abs(c.y - homeY) > 520);
   }
 
   eagle(x: number, homeY: number) {
@@ -496,7 +508,7 @@ class Gen {
       if (!last) this.flower(cx, y - 36);
     }
     if (topLedge) {
-      this.spots.push({ x0: topLedge.x, x1: topLedge.x + topLedge.width, y: topLedge.y, perch: true, safe: true });
+      this.spots.push({ x0: topLedge.x, x1: topLedge.x + topLedge.width, y: topLedge.y, perch: true, optional: true, safe: true });
     }
     this.row(base.x0 + 40, base.x1 - 40, this.g - 32, 3);
     this.log.push('ladder');
@@ -653,8 +665,11 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   const spread = (n: number, kinds: Kind[]) => {
     for (let i = 0; i < n; i++) forced.push({ at: targetW * ((i + 0.6) / (n + 0.4)) * 0.92, kind: kinds[i % kinds.length] });
   };
-  if (obj === 'relic_hunt') spread(gen.cfg.targetCount, gen.G >= 700 ? ['tower', 'ladder', 'cliff'] : ['ladder', 'cliff']);
-  if (obj === 'rescue') spread(gen.cfg.targetCount, ['ladder', 'cliff', 'bounce']);
+  // (only pieces the route runs over: a ladder is a side trip, and an idol left on a skipped ladder could never be fetched back)
+  if (obj === 'relic_hunt') spread(gen.cfg.targetCount, gen.G >= 700 ? ['tower', 'cliff', 'bounce'] : ['cliff', 'bounce']);
+  if (obj === 'rescue') spread(gen.cfg.targetCount, ['cliff', 'bounce']);
+  // the Vine Swing mission is about swinging: three vines are always in it (once vines are unlocked)
+  if (obj === 'vine_runner') spread(3, ['swing']);
   if (obj === 'purge' || obj === 'gauntlet') {
     const yards = Math.ceil((gen.cfg.targetCount + 2) / 2.6);
     for (let i = 0; i < yards; i++) forced.push({ at: targetW * ((i + 0.5) / (yards + 0.2)) * 0.95, kind: 'yard' });
@@ -694,7 +709,8 @@ function buildHorizontal(gen: Gen): GeneratedStage {
 
   // ---- finish: flat run-up, flag, then the goal staircase ----
   gen.flat(gen.rr(220, 300));
-  gen.checkpoint();
+  // (no second flag right after the last one: they were sometimes under 500 px apart)
+  if (gen.cx - gen.lastCp > 900) gen.checkpoint();
   const steps = 5;
   for (let i = 0; i < steps; i++) { gen.up(34); gen.flat(72); }
   const goal = gen.flat(520, { safe: true });
@@ -758,14 +774,21 @@ function decorate(gen: Gen, spawnX: number) {
     while (gen.E.length < cfg.targetCount + 2 && guard++ < 400) {
       const s = order[guard % Math.max(1, order.length)];
       if (!s) break;
-      const mid = (s.x0 + s.x1) / 2 + gen.rr(-40, 40);
+      let mid = (s.x0 + s.x1) / 2 + gen.rr(-40, 40);
+      // animals never stand in a heap: slide along the flat to a spot 130 px clear of the others
+      for (let k = 0; k < 6 && gen.E.some((o) => o.type !== 'eagle' && Math.abs(o.x - mid) < 130); k++) {
+        mid += (k % 2 ? -1 : 1) * 70 * (1 + Math.floor(k / 2));
+      }
+      if (mid < s.x0 + 40 || mid > s.x1 - 40) continue;
+      if (gen.E.some((o) => o.type !== 'eagle' && Math.abs(o.x - mid) < 130)) continue;
       if (!awayFromSafe(mid)) continue;
       gen.ground(mid, s.y, s.x0 + 40, s.x1 - 40);
     }
   }
 
   if (obj === 'rescue') {
-    const pool = perches.length >= cfg.targetCount ? perches : [...perches, ...flats];
+    const route = perches.filter((s) => !s.optional);
+    const pool = route.length >= cfg.targetCount ? route : [...route, ...flats];
     pool.sort((a, b) => a.x0 - b.x0);
     const step = pool.length / cfg.targetCount;
     for (let i = 0; i < cfg.targetCount; i++) {
@@ -775,7 +798,8 @@ function decorate(gen: Gen, spawnX: number) {
   }
 
   if (obj === 'relic_hunt') {
-    const pool = perches.length >= cfg.targetCount ? perches : [...perches, ...flats];
+    const route = perches.filter((s) => !s.optional);
+    const pool = route.length >= cfg.targetCount ? route : [...route, ...flats];
     pool.sort((a, b) => a.x0 - b.x0);
     const step = pool.length / cfg.targetCount;
     for (let i = 0; i < cfg.targetCount; i++) {
@@ -811,8 +835,9 @@ function decorate(gen: Gen, spawnX: number) {
   for (let i = 0; i < nEagles; i++) {
     for (let tries = 0; tries < 20; tries++) {
       const x = gen.rr(1100, wide - 1100);
-      if (gen.CP.every((c) => Math.abs(c.x - x) > 480)) {
-        gen.eagle(x, gen.G - gen.rr(230, 270));
+      const homeY = gen.G - gen.rr(230, 270);
+      if (gen.CP.every((c) => Math.abs(c.x - x) > 480) && gen.skyClear(x, homeY)) {
+        gen.eagle(x, homeY);
         break;
       }
     }
@@ -948,7 +973,16 @@ function buildAscent(gen: Gen): GeneratedStage {
     else if (gen.chance(0.12) && gen.m >= 3) gen.item(gen.chance(0.5) ? 'heart' : 'powerup_magnet', l.x + l.width / 2, l.y - 34);
   });
   const nE = gen.world >= 2 ? Math.floor(gen.world * 0.35) : 0;
-  for (let i = 0; i < nE; i++) gen.eagle(gen.rr(W * 0.25, W * 0.75), floorY - gen.rr(600, Math.max(700, H - 700)));
+  for (let i = 0; i < nE; i++) {
+    for (let tries = 0; tries < 24; tries++) {
+      const x = gen.rr(W * 0.25, W * 0.75);
+      const homeY = floorY - gen.rr(600, Math.max(700, H - 700));
+      if (gen.skyClear(x, homeY)) {
+        gen.eagle(x, homeY);
+        break;
+      }
+    }
+  }
 
   return {
     config: cfg,

@@ -291,10 +291,12 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   }
 
   // fairness: nothing hostile right on top of the player when they spawn or respawn
-  const safeSpots = [{ x: stage.spawnX }, ...(stage.checkpoints ?? [])];
+  // (each flag is compared at its own height: in a climb the flags are far above the spawn, so judging every enemy against
+  // the spawn's height let an eagle sit right over a flag)
+  const safeSpots = [{ x: stage.spawnX, y: stage.spawnY }, ...(stage.checkpoints ?? [])];
   for (const e of stage.enemies) {
     for (const s of safeSpots) {
-      if (Math.abs(e.x - s.x) < 170 && Math.abs(e.y - stage.spawnY) < 400) {
+      if (Math.abs(e.x - s.x) < 170 && Math.abs(e.y - s.y) < 400) {
         errors.push(`enemy #${e.id} stands too close to a safe spot at x=${Math.round(s.x)}`);
       }
     }

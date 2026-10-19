@@ -303,14 +303,18 @@ const PROWLER: BossDef = {
         const br = b.ai!;
         const half = b.width / 2;
         // behind the player, on the side away from where it was
-        const side = c.px >= b.x ? 1 : -1;
-        b.x = Math.max(c.arena.left + half, Math.min(c.arena.right - half, c.px + side * 120));
-        b.facing = side > 0 ? -1 : 1;
+        let side = c.px >= b.x ? 1 : -1;
+        const spot = (sd: number) => Math.max(c.arena.left + half, Math.min(c.arena.right - half, c.px + sd * 120));
+        // against a wall the clamp would drop it right on the hero: use the open side instead
+        if (Math.abs(spot(side) - c.px) < 90) side = -side;
+        b.x = spot(side);
+        b.facing = b.x > c.px ? -1 : 1;
         br.alpha = 1;
         c.debris(b.x, c.arena.floor - 20, '#7c3aed');
       },
       tick: (b, c) => {
-        if (b.ai!.t < 0.22) b.ai!.hurt = [frontBox(b, c, 100, 56, 6)];
+        // the slash lands a beat after it appears (0.14 s), so there is time to react to where it came out
+        if (b.ai!.t >= 0.14 && b.ai!.t < 0.3) b.ai!.hurt = [frontBox(b, c, 100, 56, 6)];
       },
     },
     // three quick slashes while stepping forward
@@ -474,9 +478,14 @@ const QUEEN: BossDef = {
           lob(c, b.x, c.arena.floor - 60, c.px, 0.7, { kind: 'web', eff: 'slow', dmg: 0, color: '#f8fafc', color2: '#94a3b8', w: 34, h: 34 }).look = 'web';
           return;
         }
-        for (const off of [-150, 0, 150]) {
+        // never on top of the hero: they drop in front of and behind, a clear 150 px off (a spawn on the hero was an unavoidable hit)
+        let room = 3 - c.minionsAlive;
+        for (const off of [-150, 150, -300, 300]) {
+          if (room <= 0) break;
           const x = Math.max(c.arena.left + 40, Math.min(c.arena.right - 40, c.px + off));
+          if (Math.abs(x - c.px) < 110) continue;
           c.spawnMinion('spider', x, c.arena.floor - 20);
+          room--;
         }
         c.shake(0.3);
       },
@@ -494,7 +503,7 @@ const QUEEN: BossDef = {
         b.ai!.d.bite = 1;
       },
     }),
-    // three strands of web rise across the arena and stay a while
+    // strands of web rise (marked first) either side of where you stand: a gap in the middle stays open
     webCurtain: {
       tell: 1.0,
       act: 0.3,
@@ -502,9 +511,9 @@ const QUEEN: BossDef = {
       phase: 3,
       pose: 'roar',
       onAct: (b, c) => {
-        for (const off of [-230, 0, 230]) {
+        for (const off of [-300, -140, 140, 300]) {
           const x = Math.max(c.arena.left + 60, Math.min(c.arena.right - 60, c.px + off));
-          const h = column(c, x, 0.0001, 190, '#f8fafc', '#94a3b8', 4.5);
+          const h = column(c, x, 0.8, 190, '#f8fafc', '#94a3b8', 1.8);
           h.w = 34;
           h.look = 'web';
         }
@@ -636,7 +645,8 @@ const GOLEM: BossDef = {
       phase: 2,
       pose: 'fly',
       onAct: (b, c) => {
-        beam(c, b, 640, 20, 40, 0, 1.0, '#fde047', '#b45309').look = 'laser';
+        // low and short: a jump (or a well-timed double jump) clears it
+        beam(c, b, 640, 16, 32, 0, 0.55, '#fde047', '#b45309').look = 'laser';
       },
     },
     // stomps so hard the whole arena ripples and rocks fall

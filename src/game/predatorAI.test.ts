@@ -47,6 +47,19 @@ test('ocelot pounce is a real arc and its speed goes back to normal (it used to 
   assert.ok(Math.abs(r.e.vx) <= 55 * 2.6, 'ocelot kept a pounce speed');
 });
 
+test('ocelot warns before it pounces: a "!" and a crouch of at least a third of a second', () => {
+  const e = mk('ocelot', { vx: -55, facing: -1 });
+  let warnedAt = -1;
+  let leapAt = -1;
+  for (let i = 0; i < 300 && leapAt < 0; i++) {
+    const { ev } = stepPredator(e, { x: e.x + 120, y: 1000 }, 1 / 30);
+    if (ev.telegraph && warnedAt < 0) warnedAt = i;
+    if (e.state === 'leap') leapAt = i;
+  }
+  assert.ok(warnedAt >= 0 && leapAt > warnedAt, 'no warning before the leap');
+  assert.ok((leapAt - warnedAt) / 30 >= 0.33, `only ${(leapAt - warnedAt) / 30}s of warning`);
+});
+
 test('a ground predator that is far from the player just patrols and never leaves its patch', () => {
   for (const t of ['ocelot', 'jaguar', 'caiman', 'tayra'] as PredatorType[]) {
     const r = run(t, 20, 900);

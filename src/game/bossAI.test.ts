@@ -101,11 +101,19 @@ test('light hits bounce off an attacking boss; heavy ones break the attack; open
   b.ai!.state = 'tell';
   b.ai!.move = 'spit';
   assert.equal(vulnerability(b), 'armored');
+  assert.equal(bodyHurts(b), false, 'the first moment of a wind-up is grace');
+  b.ai!.t = 0.5;
   assert.equal(bodyHurts(b), true);
-  assert.equal(interruptBoss(b, def, ctx), true);
+  assert.equal(interruptBoss(b, def, ctx), false, 'one heavy hit only rattles it');
+  assert.equal(b.ai!.state, 'tell');
+  assert.equal(interruptBoss(b, def, ctx), true, 'a second one breaks the attack');
   assert.equal(b.ai!.state, 'stun');
   assert.equal(vulnerability(b), 'stunned');
   assert.equal(interruptBoss(b, def, ctx), false, 'cannot interrupt a boss that is already down');
+  // after a break it holds firm for a few seconds: no stun loop
+  b.ai!.state = 'tell';
+  interruptBoss(b, def, ctx);
+  assert.equal(interruptBoss(b, def, ctx), false, 'poise holds right after a break');
   b.ai!.state = 'rec';
   assert.equal(vulnerability(b), 'open');
   assert.equal(bodyHurts(b), false, 'walking up to hit it in its opening is safe');
