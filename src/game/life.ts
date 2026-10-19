@@ -8,6 +8,7 @@ import { leaf } from './rainforest.ts';
 import { getSceneSeed } from './sceneSeed.ts';
 import type { Look } from './scenery.ts';
 import { paintSwayCluster } from './envKit.ts';
+import { drawPaintedButterfly } from './butterflySprites.ts';
 
 const fract = (v: number) => v - Math.floor(v);
 
@@ -503,7 +504,12 @@ function renderFauna(ctx: CanvasRenderingContext2D, look: Look, world: number, c
       ctx.restore();
       butterfly(ctx, x, y, s * 0.75, time * (15 + i) + i, ang, lighten(wings[i % wings.length], 0.35), wings[(i + 1) % wings.length]);
     } else {
-      butterfly(ctx, x, y, s, time * (13 + i) + i, ang, wings[i % wings.length], lighten(wings[(i + 1) % wings.length], 0.2));
+      // the painted butterflies (frames face left, so they mirror when flying right and lean into the climb); the vector ones are the fallback
+      const variation = 0.85 + ((s / (sc * 1.6) - 5.5) / 3.5) * 0.35;
+      const tilt = Math.cos(wob * 1.7 + i) * 0.25 * (dx > 0 ? 1 : -1);
+      if (!drawPaintedButterfly(ctx, world, i, x, y, time, sc, variation, dx, tilt)) {
+        butterfly(ctx, x, y, s, time * (13 + i) + i, ang, wings[i % wings.length], lighten(wings[(i + 1) % wings.length], 0.2));
+      }
     }
   }
 }
