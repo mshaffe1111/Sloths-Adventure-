@@ -1249,6 +1249,7 @@ export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX
  */
 export const VISTA_SCALE = 0.4;
 export function renderVista(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, front = true, scale = VISTA_SCALE) {
+  avoid = null; // menus have no hero
   withBakeScale(scale, () => {
     renderScenery(ctx, world, camX, 0, vw, vh, time, true);
     if (front) renderOverlay(ctx, world, camX, vw, vh, time, true);
@@ -1279,6 +1280,18 @@ function getMotes(world: number, n: number): Mote[] {
     motes[world] = Array.from({ length: n }, () => ({ x: r(), y: r(), s: 0.4 + r() * 0.9, p: r() * 6.28, c: (r() * 1000) | 0 }));
   }
   return motes[world];
+}
+
+/** where the hero is on screen (view units): big soft motes thin out around him so he never gets a petal or an orb over his face */
+let avoid: { x: number; y: number } | null = null;
+export function setWeatherAvoid(x: number, y: number) {
+  avoid = { x, y };
+}
+/** 1 far from the hero, down to 0.12 right on him */
+function clearOf(x: number, y: number): number {
+  if (!avoid) return 1;
+  const d = Math.hypot(x - avoid.x, (y - avoid.y) * 0.8);
+  return Math.max(0.12, Math.min(1, (d - 30) / 70));
 }
 
 function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number) {
@@ -1348,7 +1361,7 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
         const pulse = 0.45 + 0.55 * Math.sin(time * 2 * m.s + m.p);
         const R = (3.5 + m.s * 3.5) * (0.7 + pulse * 0.5);
         const gl = ctx.createRadialGradient(x, y, 0, x, y, R * 2.2);
-        gl.addColorStop(0, rgba(look.glow ?? '#fff6a0', 0.9 * pulse));
+        gl.addColorStop(0, rgba(look.glow ?? '#fff6a0', 0.9 * pulse * clearOf(x, y)));
         gl.addColorStop(1, rgba(look.glow ?? '#fff6a0', 0));
         ctx.fillStyle = gl;
         ctx.fillRect(x - R * 2.2, y - R * 2.2, R * 4.4, R * 4.4);
@@ -1384,7 +1397,7 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
         ctx.translate(x, y);
         ctx.rotate(time * m.s * 1.2 + m.p);
         ctx.fillStyle = cols[m.c % cols.length];
-        ctx.globalAlpha = 0.9;
+        ctx.globalAlpha = 0.9 * clearOf(x, y);
         ctx.beginPath();
         ctx.ellipse(0, 0, 8 * m.s + 3, (3.5 + m.s * 2) * Math.abs(Math.cos(time * m.s + m.p)) + 1, 0, 0, Math.PI * 2);
         ctx.fill();

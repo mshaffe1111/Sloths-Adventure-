@@ -16,7 +16,7 @@ import { loadCosmetic } from './badgeStore.ts';
 import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
-import { renderScenery, renderOverlay } from './scenery.ts';
+import { renderScenery, renderOverlay, setWeatherAvoid } from './scenery.ts';
 import { setSceneSeed, rollSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
@@ -63,7 +63,7 @@ import { drawBossFighter, drawHazards } from './bossArt.ts';
 /** How many world units tall the screen shows. */
 const WORLD_VIEW_H = 540;
 /** world units across a portrait screen */
-const PORTRAIT_VIEW_W = 360;
+const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 const INTRO_ZOOM_FROM = 0.78;
 const INTRO_ZOOM_SECS = 1.3;
@@ -369,7 +369,9 @@ export class GameEngine {
     const ease = 1 - Math.pow(1 - t, 3);
     const dolly = INTRO_ZOOM_FROM + (1 - INTRO_ZOOM_FROM) * ease;
     // never show more height than the level has
-    this.zoom = Math.max(base * dolly * this.bossZoom, h / levelH);
+    // (a boss fight in a tall, narrow window may show some sky above the arena rather than crop the fight to the level's height)
+    const bossFight = !!this.currentStage?.arena && portrait;
+    this.zoom = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -1735,6 +1737,8 @@ export class GameEngine {
     if (!w || !h) return;
     const levelH = this.currentStage.config.levelHeight;
     const portrait = h > w;
+    // in a tall narrow window the arena is wider than the screen: the boss makes its entrance close enough to be seen
+    if (portrait && b.ai?.state === 'roar' && b.ai.roarReason === 'enter') b.x = Math.min(b.x, p.x + 540);
     let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
     base = Math.max(0.5, Math.min(1.8, base));
     const baseViewW = w / base;
@@ -2442,7 +2446,9 @@ export class GameEngine {
 
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));
-    this.camera.y = Math.max(0, Math.min(this.currentStage.config.levelHeight - vh, this.camera.y));
+    const maxY = this.currentStage.config.levelHeight - vh;
+    // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues)
+    this.camera.y = Math.max(this.currentStage.arena ? Math.min(0, maxY) : 0, Math.min(maxY, this.camera.y));
   }
 
   /**
@@ -2631,6 +2637,7 @@ export class GameEngine {
     ctx.restore(); // end world transform
 
     // 3. Render Foreground Foliage (Framing screen edges)
+    setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
     renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     if (this.respawnFlash > 0) {
       ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;

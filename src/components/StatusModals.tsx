@@ -110,7 +110,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   if (screen === 'paused') {
     return (
       <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4 select-none font-game">
-        <div className="w-full max-w-sm max-h-full overflow-y-auto bg-gradient-to-b from-emerald-950 to-stone-950 border-2 border-emerald-500/60 rounded-3xl p-6 text-center shadow-2xl shadow-emerald-950/60 text-white">
+        <div className="modal-card w-full max-w-sm max-h-full overflow-y-auto bg-gradient-to-b from-emerald-950 to-stone-950 border-2 border-emerald-500/60 rounded-3xl p-6 text-center shadow-2xl shadow-emerald-950/60 text-white">
           <div className="inline-block px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase mb-2">
             Game Paused
           </div>
@@ -120,7 +120,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
 
           <AudioSliders />
 
-          <div className="flex flex-col gap-2.5">
+          <div className="modal-actions flex flex-col gap-2.5">
             <button
               type="button"
               onClick={onResume}
@@ -184,7 +184,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   if (screen === 'victory') {
     return (
       <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 select-none font-game">
-        <div className="w-full max-w-md bg-gradient-to-b from-emerald-900 via-emerald-950 to-stone-950 border-2 border-amber-400/80 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl shadow-emerald-900/60 text-white">
+        <div className="modal-card w-full max-w-md bg-gradient-to-b from-emerald-900 via-emerald-950 to-stone-950 border-2 border-amber-400/80 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl shadow-emerald-900/60 text-white">
           <div className="inline-block px-4 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
             {levelConfig.secret ? 'SECRET BOSS DEFEATED!' : 'STAGE CLEARED!'}
           </div>
@@ -194,7 +194,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
           </h2>
 
           {/* 3 Animated Stars */}
-          <div className={`flex items-center justify-center gap-3 my-4 ${levelConfig.secret ? 'hidden' : ''}`}>
+          <div className={`modal-stars flex items-center justify-center gap-3 my-4 ${levelConfig.secret ? 'hidden' : ''}`}>
             {[1, 2, 3].map((s) => (
               <div
                 key={s}
@@ -210,13 +210,13 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
           </div>
 
           {!levelConfig.secret && (
-            <p className="text-[11px] text-emerald-200/70 font-sans leading-snug -mt-1">
+            <p className="modal-legend text-[11px] text-emerald-200/70 font-sans leading-snug -mt-1">
               ★★ keep half your hearts · ★★★ lose no lives and keep ¾ of your hearts (timed stages: finish quickly)
             </p>
           )}
 
           {/* Metrics Tiles */}
-          <div className="grid grid-cols-2 gap-3 my-5">
+          <div className="modal-tiles grid grid-cols-2 gap-3 my-5">
             <div className="bg-black/50 border border-emerald-500/30 p-3 rounded-2xl">
               <span className="text-[11px] text-emerald-300/80 block uppercase font-sans">Clear Time</span>
               <span className="text-xl font-black text-white tabular-nums">{Math.floor(Math.round(timeSec) / 60)}:{String(Math.round(timeSec) % 60).padStart(2, '0')}</span>
@@ -261,7 +261,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
           )}
 
           {/* Action Buttons */}
-          <div className="flex flex-col gap-2.5 mt-6">
+          <div className="modal-actions flex flex-col gap-2.5">
             <button
               type="button"
               data-start="true"
@@ -296,7 +296,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   if (screen === 'game_over') {
     return (
       <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 select-none font-game">
-        <div className="w-full max-w-md bg-gradient-to-b from-stone-900 via-stone-950 to-black border-2 border-red-600/70 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl shadow-red-950/60 text-white">
+        <div className="modal-card w-full max-w-md bg-gradient-to-b from-stone-900 via-stone-950 to-black border-2 border-red-600/70 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl shadow-red-950/60 text-white">
           <div className="inline-block px-3 py-1 rounded-full bg-red-950 border border-red-500/40 text-red-400 text-xs font-bold uppercase mb-2">
             Sloth Fainted!
           </div>
@@ -313,7 +313,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             <span className="text-2xl font-black text-amber-300 tabular-nums">{score.toLocaleString()}</span>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="modal-actions flex flex-col gap-3">
             <button
               type="button"
               data-start="true"
