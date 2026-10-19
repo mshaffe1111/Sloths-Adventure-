@@ -530,6 +530,7 @@ export default function App() {
           }}
           resume={resumeInfo}
           onSaveLoaded={onSaveLoaded}
+          onUnlockToggled={() => setAllLevels(generateAllLevels())}
           onNewGame={onNewGame}
           onOpenMap={() => {
             setSelectedWorldId(resumeLevel.worldIndex);

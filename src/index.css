@@ -152,6 +152,9 @@
 .title-btn-map:active { box-shadow: 0 2px 0 #0f4b2b, 0 12px 22px rgba(0, 0, 0, 0.3); }
 
 /* Keyboard hints only where there is room for them (not on short or narrow screens) */
+.title-credit { margin-top: 2px; line-height: 1; }
+/* a generous tap target without changing how the line looks */
+.title-credit-btn { display: inline-block; padding: 10px 6px; margin: -10px -6px; font: inherit; color: inherit; font-weight: 600; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .title-hint { display: none; }
 @media (min-width: 640px) and (min-height: 540px) { .title-hint { display: block; } }
 

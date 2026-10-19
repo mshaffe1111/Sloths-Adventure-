@@ -1,4 +1,5 @@
 import type { WorldInfo, LevelConfig, ObjectiveType } from './types.ts';
+import { testUnlockOn } from './testUnlock.ts';
 
 export const WORLDS_DATA: WorldInfo[] = [
   {
@@ -396,8 +397,9 @@ export function generateAllLevels(): LevelConfig[] {
   });
 
   // a stage is open once the one before it has been cleared (this has to be rebuilt on every load: only results are saved)
+  const openAll = testUnlockOn(); // the tester's switch (see testUnlock.ts)
   for (let i = 1; i < levels.length; i++) {
-    if (levels[i - 1].completed) levels[i].unlocked = true;
+    if (openAll || levels[i - 1].completed) levels[i].unlocked = true;
   }
 
   return levels;

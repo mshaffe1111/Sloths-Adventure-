@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { testUnlockOn } from '../game/testUnlock.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { WORLDS_DATA } from '../game/worldsData.ts';
 import { VistaCanvas, WorldThumb, requestThumbs } from './VistaCanvas.tsx';
@@ -70,7 +71,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   const worldLevels = useMemo(() => levels.filter((l) => l.worldIndex === activeWorldId), [levels, activeWorldId]);
   const totalStars = levels.reduce((a, l) => a + (l.stars || 0), 0);
 
-  const worldUnlocked = (id: number) => id === 1 || levels.some((l) => l.worldIndex === id - 1 && l.miniIndex === 10 && l.completed);
+  const worldUnlocked = (id: number) => id === 1 || testUnlockOn() || levels.some((l) => l.worldIndex === id - 1 && l.miniIndex === 10 && l.completed);
 
   // which stage the card is showing: the one to play next in this world, else the last one reached
   const defaultPick = () => {

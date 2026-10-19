@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { TitleDefs, TitleFrame, TitleHero, TitleFireflies, TitleSlomatt } from './TitleScene.tsx';
 import { VistaCanvas } from './VistaCanvas.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
+import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
 
 /** every biome takes a turn behind the logo */
 const SHOWCASE = [1, 2, 4, 6, 3, 8, 5, 7, 9, 10];
@@ -30,6 +31,8 @@ interface TitleScreenProps {
   /** progress has just been cleared; begin again (skipStory: go straight to play) */
   onNewGame: (skipStory: boolean) => void;
   onOpenTrophies: () => void;
+  /** the tester's switch was flipped (stages and worlds open or close): rebuild the stage list */
+  onUnlockToggled?: () => void;
   /** badges earned, shown on the Trophies button */
   badgeCount?: number;
 }
@@ -46,10 +49,33 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   onSaveLoaded,
   onNewGame,
   onOpenTrophies,
+  onUnlockToggled,
   badgeCount,
 }) => {
   const [saveOpen, setSaveOpen] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
+
+  // the credit's secret: ten taps in a row on "Shaffer" open (or close again) every stage and world, for testing
+  const tapRun = useRef({ n: 0, at: 0 });
+  const [creditMsg, setCreditMsg] = useState<string | null>(null);
+  useEffect(() => {
+    if (!creditMsg) return;
+    const t = window.setTimeout(() => setCreditMsg(null), 2200);
+    return () => window.clearTimeout(t);
+  }, [creditMsg]);
+  const tapShaffer = () => {
+    const now = Date.now();
+    const n = nextTapRun(tapRun.current.n, now - tapRun.current.at);
+    tapRun.current = { n: n >= UNLOCK_TAPS ? 0 : n, at: now };
+    if (n >= UNLOCK_TAPS) {
+      const on = !testUnlockOn();
+      setTestUnlock(on);
+      onUnlockToggled?.();
+      setCreditMsg(on ? 'All stages and worlds unlocked' : 'Stage unlock off');
+    } else if (n >= 5) {
+      setCreditMsg(`${UNLOCK_TAPS - n} more…`);
+    }
+  };
   return (
     <div className="fixed inset-0 z-40 bg-[#1a2a1c] select-none font-game text-white overflow-hidden">
       <VistaCanvas worlds={SHOWCASE} hold={14} pan={14} />
@@ -79,7 +105,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
         </div>
 
         <div className="flex w-full flex-1 min-h-0 flex-col items-center justify-center text-center">
-          <TitleHero className="w-full max-w-[1280px] shrink-0 h-[clamp(100px,min(32vh,58.3vw),400px)]" />
+          <TitleHero className="w-full max-w-[1280px] shrink-0 h-[clamp(100px,min(28.5vh,58.3vw),400px)]" />
 
           <div className="title-logo-wrap">
             <TitleSlomatt />
@@ -118,6 +144,17 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
         <p className="title-hint w-full text-center font-sans text-[11px] sm:text-xs tracking-wide text-amber-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.6)]">
           Slide to run · flick up to jump · flick across to kick · tap to punch · hold for a mega · keys: WASD, Space, J K L
+        </p>
+        <p className="title-credit relative w-full text-center font-sans text-[11px] sm:text-xs tracking-wide text-amber-50/70 [text-shadow:0_1px_3px_rgba(0,0,0,.6)]">
+          Created and made by Matt{' '}
+          <button type="button" onClick={tapShaffer} className="title-credit-btn" aria-label="Shaffer">
+            Shaffer
+          </button>
+          {creditMsg && (
+            <span className="fixed left-1/2 top-14 z-50 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/70 px-4 py-1.5 text-sm text-amber-200" role="status">
+              {creditMsg}
+            </span>
+          )}
         </p>
       </div>
 
