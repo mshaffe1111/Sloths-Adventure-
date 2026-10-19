@@ -214,13 +214,15 @@ export interface Platform {
   y: number;
   width: number;
   height: number;
-  type: 'solid' | 'fragile' | 'bouncy' | 'moving';
+  type: 'solid' | 'fragile' | 'bouncy' | 'moving' | 'drift';
   fragileTimer?: number;
   broken?: boolean;
   moveRange?: number;
   moveSpeed?: number;
   baseX?: number;
   swayOffset?: number;
+  /** 'drift' platforms: a log carried across a river (see river.ts) */
+  drift?: import('./river.ts').DriftInfo;
   style?: 'branch' | 'log' | 'moss_stone' | 'ruin' | 'canopy_bridge';
 }
 

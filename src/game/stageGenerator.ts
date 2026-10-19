@@ -16,6 +16,7 @@ import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { SECRET_GATE_LEVEL } from './secret.ts';
+import { driftX, logLayout, riverRecipes, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverRecipe, type RiverZone } from './river.ts';
 
 export interface GeneratedStage {
   config: LevelConfig;
@@ -37,6 +38,8 @@ export interface GeneratedStage {
   checkpoints?: Array<{ x: number; y: number; reached: boolean }>;
   /** y of the water/pit surface; falling below it costs a life */
   waterY?: number;
+  /** World 2: rivers with drifting logs (their water, and the surface that is fatal) */
+  rivers?: import('./river.ts').RiverZone[];
   /** what the generator built (for tests and debugging) */
   meta?: { attempt: number; chunks: string[]; width: number };
 }
@@ -52,17 +55,18 @@ const WATER_FROM_BOTTOM = 170;
 
 type Kind =
   | 'flat' | 'pit' | 'hill' | 'bridge' | 'stones' | 'cliff' | 'bounce'
-  | 'ladder' | 'swing' | 'moving' | 'fragile' | 'yard' | 'tower';
+  | 'ladder' | 'swing' | 'moving' | 'fragile' | 'yard' | 'tower' | 'river';
 
 /** first mission number (1..100) a piece may appear in: teaches one idea at a time */
 const UNLOCK: Record<Kind, number> = {
   flat: 1, pit: 1, hill: 1, yard: 1, bridge: 2, stones: 2, cliff: 2, ladder: 2,
-  bounce: 3, swing: 4, moving: 8, fragile: 11, tower: 14,
+  bounce: 3, swing: 4, moving: 8, fragile: 11, tower: 14, river: 1,
 };
 
 const BASE_WEIGHT: Record<Kind, number> = {
   flat: 1.4, pit: 3, hill: 2, bridge: 1.2, stones: 2.2, cliff: 1.6, bounce: 1.4,
   ladder: 1.3, swing: 1.8, moving: 1.4, fragile: 1.2, yard: 1, tower: 0.8,
+  river: 0, // never picked at random: World 2 places its rivers on purpose (see river.ts)
 };
 
 const OBJ_WEIGHT: Partial<Record<ObjectiveType, Partial<Record<Kind, number>>>> = {
@@ -79,7 +83,7 @@ const OBJ_WEIGHT: Partial<Record<ObjectiveType, Partial<Record<Kind, number>>>> 
 /** how taxing a piece is; a spacer of flat ground follows the hard ones */
 const INTENSITY: Record<Kind, number> = {
   flat: 0, hill: 0, bridge: 0, ladder: 0, pit: 1, stones: 1, cliff: 1, bounce: 1,
-  yard: 1, swing: 2, moving: 2, fragile: 2, tower: 2,
+  yard: 1, swing: 2, moving: 2, fragile: 2, tower: 2, river: 1,
 };
 
 const FLOWER_VARIANTS = ['orchid', 'hibiscus', 'fern', 'monstera'] as const;
@@ -145,6 +149,9 @@ class Gen {
   CP: Array<{ x: number; y: number; reached: boolean }> = [];
   spots: Spot[] = [];
   log: string[] = [];
+  rivers?: RiverZone[];
+  /** World 2: the rivers still to place, in order */
+  riverQueue: RiverRecipe[] = [];
 
   pid = 1;
   vid = 1;
@@ -582,6 +589,29 @@ class Gen {
     this.log.push('fragile');
   }
 
+  /** World 2: a river between two banks, with logs drifting across it (see river.ts). `rec` says how fast, which way, how wide. */
+  chunkRiver(rec: RiverRecipe) {
+    this.closeBank();
+    const x0 = this.cx;
+    const x1 = x0 + rec.width;
+    const { count, period } = logLayout(rec);
+    const y = this.g + LOG_DROP;
+    for (let i = 0; i < count; i++) {
+      this.plat({
+        x: x0, y, width: rec.logW, height: LOG_HEIGHT, type: 'drift', style: 'log',
+        drift: { x0, x1, dir: rec.dir, speed: rec.speed, width: rec.logW, offset: (i * period) / count, baseY: y },
+      });
+    }
+    // fix each log's starting x for game time 0
+    for (const p of this.P) if (p.type === 'drift' && p.drift && p.drift.x0 === x0) p.x = driftX(p.drift, 0);
+    (this.rivers ??= []).push({ x0, x1, surfaceY: this.g + surfaceBelowBank, dir: rec.dir, speed: rec.speed });
+    // flowers float over the water, easy to take from a log
+    this.arc(x0 + 40, x1 - 40, this.g - 30, 80, 5);
+    this.cx = x1;
+    this.openBank();
+    this.log.push(`river${rec.dir === 1 ? 'W' : 'A'}${rec.speed}`);
+  }
+
   chunkYard(count = this.ri(2, 1 + Math.ceil(1 + this.d * 3))) {
     const len = 330 + count * 110;
     const s = this.flat(len, { yard: true });
@@ -600,7 +630,7 @@ class Gen {
   }
 
   chunk(kind: Kind) {
-    const runup: Partial<Record<Kind, number>> = { pit: 130, stones: 140, swing: 220, moving: 180, fragile: 170 };
+    const runup: Partial<Record<Kind, number>> = { pit: 130, stones: 140, swing: 220, moving: 180, fragile: 170, river: 160 };
     if (runup[kind]) this.ensure(runup[kind]!);
     switch (kind) {
       case 'flat': { const s = this.flat(this.rr(200, 420)); this.row(s.x0 + 50, s.x1 - 50, this.g - 32, this.ri(2, 4)); this.log.push('flat'); break; }
@@ -616,6 +646,7 @@ class Gen {
       case 'fragile': this.chunkFragile(); break;
       case 'yard': this.chunkYard(); break;
       case 'tower': this.chunkTower(); break;
+      case 'river': this.chunkRiver(this.riverQueue.shift() ?? riverRecipes(this.cfg.miniIndex)[0]); break;
     }
   }
 
@@ -673,6 +704,12 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   if (obj === 'purge' || obj === 'gauntlet') {
     const yards = Math.ceil((gen.cfg.targetCount + 2) / 2.6);
     for (let i = 0; i < yards; i++) forced.push({ at: targetW * ((i + 0.5) / (yards + 0.2)) * 0.95, kind: 'yard' });
+  }
+  // World 2 is the river world: every ordinary stage has the rivers its place in the world calls for (river.ts)
+  if (cfg.worldIndex === 2 && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret) {
+    const recs = riverRecipes(cfg.miniIndex);
+    gen.riverQueue = recs.slice();
+    recs.forEach((_, i) => forced.push({ at: targetW * ((i + 0.55) / (recs.length + 0.25)) * 0.9, kind: 'river' }));
   }
   forced.sort((a, b) => a.at - b.at);
 
@@ -736,6 +773,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
     exitTotemY,
     checkpoints: gen.CP,
     waterY: gen.waterY,
+    ...(gen.rivers ? { rivers: gen.rivers } : {}),
   };
 }
 

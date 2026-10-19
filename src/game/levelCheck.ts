@@ -43,7 +43,9 @@ const MARGIN = 0.97;
 const ext = (p: Platform): [number, number] =>
   p.type === 'moving'
     ? [(p.baseX ?? p.x) - (p.moveRange ?? 0), (p.baseX ?? p.x) + (p.moveRange ?? 0) + p.width]
-    : [p.x, p.x + p.width];
+    : p.type === 'drift' && p.drift
+      ? [p.drift.x0, p.drift.x1] // a log is somewhere across its river; the generator keeps them evenly spaced (checked below)
+      : [p.x, p.x + p.width];
 
 const dxTo = (x0: number, x1: number, x: number) => (x < x0 ? x0 - x : x > x1 ? x - x1 : 0);
 
@@ -75,7 +77,7 @@ export function swingLandings(
   const out = new Map<number, number>();
   const dt = SIM_DTS[0];
   const edge = dir === 1 ? a.x + a.width : a.x;
-  const solids = platforms.filter((p) => !p.broken && p.type !== 'moving');
+  const solids = platforms.filter((p) => !p.broken && p.type !== 'moving' && p.type !== 'drift');
 
   for (let s = 0; s <= 90; s += 15) {
     const b: AirBody = { x: edge - dir * s, y: a.y, vx: dir * PHYS.maxRun, vy: -PHYS.jumpV };
@@ -212,7 +214,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   for (const v of stage.vines) {
     if (v.vineType !== 'swing_liana') continue;
     for (const a of plats) {
-      if (a.type === 'moving' || a.type === 'bouncy') continue;
+      if (a.type === 'moving' || a.type === 'drift' || a.type === 'bouncy') continue;
       const dirs: Array<1 | -1> = [];
       if (a.x + a.width <= v.x + 40 && v.x - (a.x + a.width) < 520) dirs.push(1);
       if (a.x >= v.x - 40 && a.x - v.x < 520) dirs.push(-1);
@@ -300,6 +302,23 @@ export function validateStage(stage: GeneratedStage): CheckResult {
         errors.push(`enemy #${e.id} stands too close to a safe spot at x=${Math.round(s.x)}`);
       }
     }
+  }
+
+  // rivers: the logs must be spaced so a hop between neighbours is easy, and a bank must stand at each end of the water
+  for (const r of stage.rivers ?? []) {
+    const logs = plats.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+    if (logs.length < 2) errors.push(`river at x=${Math.round(r.x0)} has fewer than two logs`);
+    else {
+      const d = logs[0].drift!;
+      const spacing = ((d.x1 - d.x0 + d.width) / logs.length);
+      const gap = spacing - d.width;
+      const limit = d.dir === 1 ? 76 : 100;
+      if (gap < 30) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
+      if (gap > limit) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
+    }
+    const near = plats.some((p) => p.type === 'solid' && p.x + p.width >= r.x0 - 2 && p.x + p.width <= r.x0 + 2);
+    const far = plats.some((p) => p.type === 'solid' && p.x >= r.x1 - 2 && p.x <= r.x1 + 2);
+    if (!near || !far) errors.push(`river at x=${Math.round(r.x0)} has no bank at one end`);
   }
 
   // nothing floats below the water

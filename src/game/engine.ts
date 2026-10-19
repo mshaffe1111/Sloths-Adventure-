@@ -29,6 +29,7 @@ import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
+import { driftX, LOG_DROP } from './river.ts';
 import {
   drawHeroSloth,
   drawTreeSnake,
@@ -153,6 +154,7 @@ export class GameEngine {
   private hitstopTimer: number = 0;
   private gameTime: number = 0;
   private standingOnId: number = -1;
+  private riverHinted = false;
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
   private runScore: number = 0;
@@ -470,6 +472,32 @@ export class GameEngine {
       const dx = nx - plat.x;
       plat.x = nx;
       if (p.grounded && this.standingOnId === plat.id) p.x += dx;
+    }
+
+    // --- Drifting logs (World 2 rivers): slide with the current, carry whoever rides them, hand a rider over to the bank ---
+    for (const plat of this.platforms) {
+      if (plat.type !== 'drift' || !plat.drift || plat.broken) continue;
+      const d = plat.drift;
+      const nx = driftX(d, this.gameTime);
+      // a log that wraps from one end of the river to the other must not drag its rider across the whole window
+      const dx = Math.abs(nx - plat.x) > d.width * 2 ? 0 : nx - plat.x;
+      plat.x = nx;
+      if (p.grounded && this.standingOnId === plat.id) {
+        p.x += dx;
+        // carried under a bank: step up onto it instead of riding into the wall
+        if (p.x > d.x1 || p.x < d.x0) {
+          p.x = p.x > d.x1 ? d.x1 + 6 : d.x0 - 6;
+          p.y = d.baseY - LOG_DROP;
+          p.vy = 0;
+        }
+      }
+    }
+    if (!this.riverHinted && this.currentStage.rivers?.length) {
+      const r0 = this.currentStage.rivers[0];
+      if (p.x > r0.x0 - 380 && p.x < r0.x1) {
+        this.riverHinted = true;
+        this.addFloatingText('LOGS DRIFT! HOP ON AND RIDE', p.x, p.y - 90, '#7dd3fc');
+      }
     }
 
     // --- Invincibility Timer ---
@@ -967,6 +995,8 @@ export class GameEngine {
 
       for (const plat of this.platforms) {
         if (plat.broken) continue;
+        // a log is only there between its banks; the part hidden under a bank is not standable
+        if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) continue;
 
         // Check if player is horizontally within platform (generous width tolerance)
         if (p.x + p.width * 0.48 > plat.x && p.x - p.width * 0.48 < plat.x + plat.width) {
@@ -1015,7 +1045,14 @@ export class GameEngine {
 
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
-      if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
+      const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
+      if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
+        this.spawnWaterSplash(p.x, river.surfaceY);
+        sound.playWhoosh();
+        sound.playHitImpact(true);
+        this.addFloatingText('SPLASH!', p.x, river.surfaceY - 40, '#7dd3fc');
+        this.loseLife('water');
+      } else if (waterY !== undefined && p.y > waterY + 20 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, waterY);
         sound.playWhoosh();
         sound.playHitImpact(true);
@@ -2362,6 +2399,69 @@ export class GameEngine {
     if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 84, '#fde68a');
   }
 
+  /**
+   * World 2 rivers. Before the platforms: the water body between the banks, with streaks that show the flow.
+   * After them (`over`): a translucent sheet across the lower half of every log, so the logs sit in the water, not on it.
+   */
+  private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean) {
+    const rivers = this.currentStage.rivers;
+    if (!rivers?.length) return;
+    const cam = this.camera;
+    const t = this.gameTime;
+    const bottom = cam.y + cam.viewportHeight + 40;
+    for (const r of rivers) {
+      if (r.x1 < cam.x - 40 || r.x0 > cam.x + cam.viewportWidth + 40) continue;
+      const a = Math.max(r.x0, cam.x - 20);
+      const b = Math.min(r.x1, cam.x + cam.viewportWidth + 20);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(r.x0, r.surfaceY - 30, r.x1 - r.x0, bottom - r.surfaceY + 30);
+      ctx.clip();
+      const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
+      if (!over) {
+        drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
+        // the current: pale streaks sliding along the surface the way the logs go
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineWidth = 2.4;
+        ctx.lineCap = 'round';
+        const span = 140;
+        for (let k = Math.floor(a / span) - 1; k < b / span + 1; k++) {
+          for (let row = 0; row < 3; row++) {
+            const sx = (((k * span + row * 47 + t * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
+            const x = r.x0 + sx - span * 0.5;
+            const y = wave(x) + 7 + row * 9;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + r.dir * 26, y);
+            ctx.stroke();
+          }
+        }
+      } else {
+        const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
+        g.addColorStop(0, 'rgba(56, 148, 168, 0.55)');
+        g.addColorStop(1, 'rgba(24, 90, 120, 0.8)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(a, bottom);
+        ctx.lineTo(a, wave(a));
+        for (let x = a; x <= b + 12; x += 12) ctx.lineTo(x, wave(x));
+        ctx.lineTo(b, bottom);
+        ctx.closePath();
+        ctx.fill();
+        // foam where the logs cut the surface
+        ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let x = a; x <= b + 12; x += 12) {
+          if (x === a) ctx.moveTo(x, wave(x));
+          else ctx.lineTo(x, wave(x));
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
   /** Pit water (behind the ground banks) and checkpoint flags. */
   private drawWaterAndFlags(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number]) {
     const waterY = this.currentStage.waterY;
@@ -2485,6 +2585,7 @@ export class GameEngine {
     ctx.translate(-Math.round(this.camera.x) + shakeX, -Math.round(this.camera.y) + shakeY);
 
     this.drawWaterAndFlags(ctx, world);
+    this.drawRivers(ctx, world, false);
 
     // Render In-World Trees, Vines and Platforms
     renderWorldObjects(
@@ -2496,6 +2597,8 @@ export class GameEngine {
       this.camera,
       this.gameTime
     );
+
+    this.drawRivers(ctx, world, true);
 
     // Render Collectibles
     this.collectibles.forEach((item) => {

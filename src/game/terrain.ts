@@ -1230,6 +1230,13 @@ export function renderWorldObjects(
       drawBouncer(ctx, p, look, time, cam);
     } else if (p.type === 'fragile') {
       drawPlanks(ctx, p, look, r);
+    } else if (p.type === 'drift' && p.drift) {
+      // a log rides between its banks, bobbing; clipped to the river so it slides out from under one bank and under the other
+      ctx.beginPath();
+      ctx.rect(p.drift.x0, p.y - 80, p.drift.x1 - p.drift.x0, 220);
+      ctx.clip();
+      const bob = Math.sin(time * 2.1 + p.id * 1.7) * 1.6;
+      drawLog(ctx, { ...p, y: p.y + bob }, look, r);
     } else if (p.type === 'moving') {
       drawRaft(ctx, p, look, time, r);
     } else if (p.style === 'canopy_bridge') {
