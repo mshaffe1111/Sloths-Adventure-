@@ -1,0 +1,111 @@
+/**
+ * Shared plumbing for the painted bosses (Venom Fang, Crocus Rex, ...): load an atlas, keep a little motion memory per boss
+ * (speed and distance walked, for the walk cycle), pick a frame from what the boss brain is doing and draw it on the floor.
+ *
+ * Each boss supplies its own atlas, scale and `pick` function (which frame goes with which state / move). Like every painted
+ * creature it is a switch, not a replacement: `?<param>=sprite|classic`, `localStorage.sloth_<param>`, and a per-boss default.
+ * It draws nothing while the atlas loads or when switched off, and bossArt.ts then draws the vector boss.
+ */
+import type { BossEntity } from './types.ts';
+import type { BossBrain, BossDef, MoveDef } from './bossAI.ts';
+
+export interface BossFrameRect {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  ax: number;
+  ay: number;
+}
+
+export interface PickContext {
+  b: BossEntity;
+  def: BossDef;
+  br: BossBrain;
+  /** the move being wound up / performed (null while idle) */
+  m: MoveDef | null;
+  moving: boolean;
+  /** world units walked so far */
+  dist: number;
+  time: number;
+}
+
+export interface PaintedBossSpec {
+  /** the query parameter and localStorage suffix: `?venom=sprite` / `sloth_venom` */
+  param: string;
+  defaultOn: boolean;
+  url: string;
+  frames: Record<string, BossFrameRect>;
+  /** world units per atlas pixel */
+  k: number;
+  pick: (c: PickContext) => string;
+}
+
+export interface PaintedBoss {
+  active(): boolean;
+  draw(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, time: number, feetY: number): boolean;
+}
+
+export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
+  let enabled: boolean | null = null;
+  const isEnabled = () => {
+    if (enabled !== null) return enabled;
+    let v = spec.defaultOn;
+    try {
+      const q = new URLSearchParams(location.search).get(spec.param);
+      if (q === 'sprite') v = true;
+      else if (q === 'classic') v = false;
+      else if (localStorage.getItem('sloth_' + spec.param) === 'sprite') v = true;
+    } catch {
+      /* no window or storage: keep the default */
+    }
+    enabled = v;
+    return v;
+  };
+  let atlas: HTMLImageElement | null = null;
+  let ready = false;
+  const load = () => {
+    if (atlas || typeof Image === 'undefined') return;
+    atlas = new Image();
+    atlas.onload = () => {
+      ready = true;
+    };
+    atlas.src = spec.url;
+  };
+  const active = () => {
+    if (!isEnabled()) return false;
+    load();
+    return ready;
+  };
+  const memory = new WeakMap<BossEntity, { x: number; t: number; vx: number; dist: number }>();
+
+  return {
+    active,
+    draw(ctx, b, def, time, feetY) {
+      if (!active() || !atlas) return false;
+      const br = b.ai;
+      if (!br) return false;
+      let mem = memory.get(b);
+      if (!mem) {
+        mem = { x: b.x, t: time, vx: 0, dist: 0 };
+        memory.set(b, mem);
+      }
+      const dt = Math.max(0.001, Math.min(0.1, time - mem.t));
+      mem.vx += ((b.x - mem.x) / dt - mem.vx) * Math.min(1, dt * 12);
+      mem.dist += Math.abs(mem.vx) * dt;
+      mem.x = b.x;
+      mem.t = time;
+      const m = br.move ? def.moves[br.move] ?? null : null;
+      const name = spec.pick({ b, def, br, m, moving: Math.abs(mem.vx) > 12, dist: mem.dist, time });
+      const f = spec.frames[name];
+      if (!f) return false;
+      ctx.save();
+      ctx.translate(b.x, feetY);
+      ctx.scale(b.facing < 0 ? -1 : 1, 1);
+      if (b.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
+      ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * spec.k, -f.ay * spec.k, f.w * spec.k, f.h * spec.k);
+      ctx.restore();
+      return true;
+    },
+  };
+}

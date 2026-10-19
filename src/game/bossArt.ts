@@ -8,6 +8,12 @@ import type { BossDef, MoveDef } from './bossAI.ts';
 import { drawBossEntity } from './vectorArt.ts';
 import { demoPlayer, drawMilo } from './miloVariants.ts';
 import { drawQueenSprite, queenSpriteActive } from './queenSprite.ts';
+import type { PaintedBoss } from './paintedBoss.ts';
+import { venomSprite } from './venomSprite.ts';
+import { crocSprite } from './crocSprite.ts';
+
+/** the bosses that have a painted version besides the queen */
+const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite };
 
 /** distance from the picture's origin down to the shadow ellipse the boss drawings carry */
 const ART_FEET = 25.5;
@@ -183,8 +189,9 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   const air = br.air;
   const feetY = floor - air;
   const xf = poseFor(b, m, time);
-  if (world === 5 && queenSpriteActive()) {
-    // the painted queen is already posed for each part of a move: keep only a little of the squash, lean and shake
+  const painted = PAINTED[world];
+  if ((world === 5 && queenSpriteActive()) || painted?.active()) {
+    // the painted boss is already posed for each part of a move: keep only a little of the squash, lean and shake
     xf.sx = 1 + (xf.sx - 1) * 0.35;
     xf.sy = 1 + (xf.sy - 1) * 0.35;
     xf.lean *= 0.3;
@@ -229,8 +236,8 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   ctx.translate(-b.x, -feetY);
   if (def.puppet) {
     drawPuppet(ctx, b, def, m, time, feetY);
-  } else if (world === 5 && drawQueenSprite(ctx, b, def, time, feetY)) {
-    // painted Tarantula Queen
+  } else if ((world === 5 && drawQueenSprite(ctx, b, def, time, feetY)) || painted?.draw(ctx, b, def, time, feetY)) {
+    // painted boss
   } else {
     const art: BossEntity = { ...b, y: feetY - ART_FEET + def.artDy };
     drawBossEntity(ctx, art, time, world);
