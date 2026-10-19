@@ -182,6 +182,16 @@ export class GameEngine {
   private nearTreeVine: Vine | null = null;
   private nearSwingVine: Vine | null = null;
   private vineCooldownTimer: number = 0;
+  /** after grabbing a trunk, the press that grabbed it is not also a leap or a hop off */
+  private climbGrace = 0;
+  /** how long a sideways push has been held, with no up or down, while on a trunk */
+  private climbSideTimer = 0;
+  /** a jump / up press a moment ago: touching a trunk in the next instant still grabs it */
+  private upIntent = 0;
+  /** a quick flick that grabbed a trunk keeps the climb going for a moment, so one flick is enough to get on */
+  private climbAssist = 0;
+  /** same for a liana: the jump press that caught it is not also the leap off it */
+  private swingGrace = 0;
   private lastReleasedVineId: number = -1;
   private wasQuotaMet: boolean = false;
   private treeClimbAudioTimer: number = 0;
@@ -497,7 +507,7 @@ export class GameEngine {
       }
 
       if (v.vineType === 'tree_climb') {
-        if (Math.abs(p.x - v.x) < 42 && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
+        if (Math.abs(p.x - v.x) < (p.climbing ? 60 : 54) && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
           nearTreeVine = v;
           break;
         }
@@ -512,10 +522,30 @@ export class GameEngine {
     this.nearSwingVine = nearSwingVine;
 
     // 1. TREE CLIMBING LOGIC (Vertical vines on tree trunks)
-    if (nearTreeVine && (p.climbing || this.input.state.up || (!p.grounded && this.input.state.down))) {
+    // a flick up is a jump press and an up press at once, and a thumb lifts again quickly: remember it for a moment
+    // so a jump that touches a trunk grabs it even if the thumb has already left the glass
+    if (this.input.state.jumpPressed) this.upIntent = 0.35;
+    else this.upIntent = Math.max(0, this.upIntent - dt);
+    const wantGrab = this.input.state.up || this.upIntent > 0 || (!p.grounded && this.input.state.down);
+    if (nearTreeVine && (p.climbing || wantGrab)) {
       if (!p.climbing) {
         sound.playVineGrab();
+        // the press that grabbed the trunk must not also leap off it or hop away with a drifting thumb
+        this.climbGrace = 0.3;
+        this.climbSideTimer = 0;
+        this.upIntent = 0;
+        this.jumpBufferTimer = 0;
+        this.climbAssist = 0.45;
       }
+      if (this.input.state.down) this.climbAssist = 0;
+      else if (this.input.state.up) this.climbAssist = Math.max(this.climbAssist, 0.25);
+      else this.climbAssist = Math.max(0, this.climbAssist - dt);
+      this.climbGrace = Math.max(0, this.climbGrace - dt);
+      if (this.climbGrace > 0) this.input.state.jumpPressed = false;
+      // a sideways push only lets go once it is clearly deliberate: held, and not while climbing up or down
+      const sideHeld = this.input.state.left || this.input.state.right;
+      const vertHeld = this.input.state.up || this.input.state.down || this.climbAssist > 0;
+      this.climbSideTimer = sideHeld && !vertHeld && this.climbGrace <= 0 ? this.climbSideTimer + dt : 0;
       p.climbing = true;
       p.isVineSwinging = false;
       p.grounded = false;
@@ -524,7 +554,7 @@ export class GameEngine {
       p.x = nearTreeVine.x; // snap smoothly to tree trunk vine
 
       // Climb Up / Down
-      if (this.input.state.up) {
+      if (this.input.state.up || this.climbAssist > 0) {
         p.y = Math.max(nearTreeVine.topY - 4, p.y - 220 * dt);
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
@@ -539,7 +569,7 @@ export class GameEngine {
       }
 
       // Natural Exit A: Reached the Top of the Tree -> Vault onto Branch Platform!
-      if (p.y <= nearTreeVine.topY + 12 && (this.input.state.up || this.input.state.jumpPressed || this.input.state.left || this.input.state.right)) {
+      if (p.y <= nearTreeVine.topY + 12 && (this.input.state.up || this.climbAssist > 0 || this.input.state.jumpPressed || this.input.state.left || this.input.state.right)) {
         p.climbing = false;
         this.vineCooldownTimer = 0.35;
         this.lastReleasedVineId = nearTreeVine.id;
@@ -583,8 +613,8 @@ export class GameEngine {
         this.spawnSparkBurst(p.x, p.y, '#34d399');
         this.addFloatingText('TREE LEAP!', p.x, p.y - 45, '#4ade80');
       }
-      // Natural Exit D: Steer away with Left / Right -> Natural graceful hop off trunk!
-      else if (this.input.state.left || this.input.state.right) {
+      // Natural Exit D: Steer away with Left / Right (held on purpose) -> Natural graceful hop off trunk!
+      else if (this.climbSideTimer >= 0.2) {
         const steerDir = this.input.state.left ? -1 : 1;
         p.climbing = false;
         this.vineCooldownTimer = 0.35;
@@ -621,10 +651,15 @@ export class GameEngine {
         p.jumpsLeft = 2;
         p.isDoubleJumping = false;
         p.somersaultAngle = 0;
+        this.swingGrace = 0.25;
+        this.input.state.jumpPressed = false;
+        this.jumpBufferTimer = 0;
         sound.playVineGrab();
       }
 
       if (p.isVineSwinging && nearSwingVine) {
+        this.swingGrace = Math.max(0, this.swingGrace - dt);
+        if (this.swingGrace > 0) this.input.state.jumpPressed = false;
         p.grounded = false;
         p.somersaultAngle = 0;
         p.jumpsLeft = 2;

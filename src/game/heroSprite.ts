@@ -9,6 +9,7 @@
 import type { PlayerState } from './types.ts';
 import { HERO_CLIMB, HERO_FRAMES, HERO_RUN, HERO_STAND_H, type HeroFrame } from './heroAtlasData.ts';
 import { drawAuras } from './miloVariants.ts';
+import { HeroEvents } from './heroEvents.ts';
 
 export const DEFAULT_SPRITE_HERO = false;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -58,19 +59,8 @@ const RUN_CYCLE = HERO_RUN;
 /** painted strides per walkCycle turn: 9 frames at the full walkCycle rate would outrun the 30 fps loop */
 const STRIDE_RATE = 0.6;
 
-// short-lived poses that are triggered by a change of state rather than a flag on the player
-let lastHp = -1;
-let wasGrounded = true;
-let hurtUntil = 0;
-let landUntil = 0;
-const HURT_TIME = 0.3;
-const LAND_TIME = 0.12;
-function trackEvents(p: PlayerState, time: number) {
-  if (lastHp >= 0 && p.hp < lastHp) hurtUntil = time + HURT_TIME;
-  lastHp = p.hp;
-  if (p.grounded && !wasGrounded && p.vy >= 0) landUntil = time + LAND_TIME;
-  wasGrounded = p.grounded;
-}
+// short-lived poses that are triggered by a change of state rather than a flag on the player (see heroEvents.ts)
+const events = new HeroEvents();
 
 /** the painted climb is one step per few pixels of height gained, so it follows the climbing speed */
 const CLIMB_STEP_PX = 22;
@@ -83,7 +73,7 @@ function pick(p: PlayerState, time: number): { name: string; bob: number; byHand
     const i = (((Math.floor(-p.y / CLIMB_STEP_PX) % n) + n) % n);
     return { name: HERO_CLIMB[i], bob: 0, byHand: true };
   }
-  if (time < hurtUntil && HERO_FRAMES.hurt) return { name: 'hurt', bob: 0 };
+  if (events.isHurt(time) && HERO_FRAMES.hurt) return { name: 'hurt', bob: 0 };
   if (p.ducking) return { name: 'duck', bob: 0 };
   const reachNow = (v: number | undefined) => v === undefined || v > 0.25;
   if (p.kicking && reachNow(p.swingReach)) return { name: 'kick', bob: 0 };
@@ -98,7 +88,7 @@ function pick(p: PlayerState, time: number): { name: string; bob: number; byHand
     if (p.isDoubleJumping || p.vy < 0) return { name: 'jump_up', bob: 0 };
     return { name: 'fall', bob: 0 };
   }
-  if (time < landUntil && HERO_FRAMES.land) return { name: 'land', bob: 0 };
+  if (events.isLanding(time) && HERO_FRAMES.land) return { name: 'land', bob: 0 };
   if (Math.abs(p.vx) > 10) {
     // one stride = one turn of walkCycle; the frames come from the run sheet, in the order the stride unfolds
     const u = ((((p.walkCycle * STRIDE_RATE) / (Math.PI * 2)) % 1) + 1) % 1;
@@ -115,7 +105,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   if (!heroSpriteEnabled()) return false;
   load();
   if (!ready || !atlas) return false;
-  trackEvents(p, time);
+  events.track(p, time);
   const choice = pick(p, time);
   if (!choice) return false;
   const f: HeroFrame | undefined = HERO_FRAMES[choice.name];

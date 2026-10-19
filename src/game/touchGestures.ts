@@ -85,10 +85,13 @@ export class TouchGestures {
   private lastMoverUp = -1e9;
   private heldDir: 'left' | 'right' | 'none' = 'none';
 
-  constructor(
-    private sink: GestureSink,
-    private width: () => number,
-  ) {}
+  private sink: GestureSink;
+  private width: () => number;
+
+  constructor(sink: GestureSink, width: () => number) {
+    this.sink = sink;
+    this.width = width;
+  }
 
   private mover(): Finger | undefined {
     for (const f of this.fingers.values()) if (f.role === 'mover') return f;
@@ -218,8 +221,14 @@ export class TouchGestures {
       f.ay = f.y + 70;
       dy = -70;
     }
-    // sideways drift while steering hard should not duck: it needs to be clearly downward
-    const wantDuck = dy > TUNING.duckDy && dy > Math.abs(dx) * 0.6;
+    // sideways drift while steering hard should not duck: it needs to be clearly downward. A thumb that is running
+    // tends to roll downward on the glass, and a duck stops the hero dead, so while running it takes a bigger, more
+    // downward push to duck, and once ducking, easing the thumb back up or out sideways lets the hero run again.
+    const running = this.heldDir !== 'none';
+    const startDy = running ? TUNING.duckDy * 1.45 : TUNING.duckDy;
+    const wantDuck = this.duckOn
+      ? dy > TUNING.duckDy * 0.6 && !(running && Math.abs(dx) > dy)
+      : dy > startDy && dy > Math.abs(dx) * (running ? 1 : 0.6);
     if (wantDuck !== this.duckOn) {
       this.duckOn = wantDuck;
       this.sink.duck(wantDuck);

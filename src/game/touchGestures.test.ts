@@ -229,3 +229,23 @@ test('cancelling releases everything', () => {
   assert.equal(t.log[t.log.length - 1], 'jumpUp');
   assert.ok(t.has('move:none') && t.has('duck:false'));
 });
+
+test('a running thumb that rolls down the glass keeps running instead of ducking to a halt', () => {
+  const t = rig();
+  t.down(1, 150, 220);
+  t.drag(1, 150, 220, 240, 220, 300); // running right
+  t.drag(1, 240, 220, 250, 275, 400); // the thumb rolls ~55 px down while still pushed right
+  assert.ok(t.has('move:right'));
+  assert.ok(!t.has('duck:true'));
+  t.up(1, 250, 275);
+});
+
+test('a thumb that slides straight down from standstill ducks, and easing back up lets go', () => {
+  const t = rig();
+  t.down(1, 150, 220);
+  t.drag(1, 150, 220, 150, 275, 400);
+  assert.ok(t.has('duck:true'));
+  t.drag(1, 150, 275, 150, 240, 300); // eased back up
+  assert.equal(t.log[t.log.length - 1], 'duck:false');
+  t.up(1, 150, 240);
+});
