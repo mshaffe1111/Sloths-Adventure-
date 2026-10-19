@@ -146,14 +146,19 @@ export class TouchGestures {
     if (f.role === 'mover') {
       const stillTap = !f.jumped && !f.ducked && this.heldDir === 'none' && Math.hypot(f.x - f.x0, f.y - f.y0) <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs;
       const wasReplant = f.tapT0 - this.lastMoverUp < TUNING.replantMs;
+      // only a finger that really steered or jumped counts as a "thumb that was just lifted". A finger that merely tapped must not:
+      // otherwise every tap in a quick run of taps on the left half would look like a re-plant of the one before, and be eaten
+      const wasTap = !f.jumped && !f.ducked && Math.hypot(f.x - f.x0, f.y - f.y0) <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs && this.heldDir === 'none';
       this.setDir('none');
       this.duckOn = false;
       this.sink.duck(false);
       if (f.jumped) this.sink.jumpRelease();
       if (stillTap && !wasReplant) { this.sink.feedback('punch'); this.sink.punch(); }
-      this.lastMoverUp = t;
-      this.lastMoverUpX = f.x;
-      this.lastMoverUpY = f.y;
+      if (!wasTap) {
+        this.lastMoverUp = t;
+        this.lastMoverUpX = f.x;
+        this.lastMoverUpY = f.y;
+      }
       // a finger that was waiting becomes undecided afresh so it can take over steering
       const a = this.actor();
       if (a && !a.consumed) {

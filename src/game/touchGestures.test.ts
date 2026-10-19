@@ -249,3 +249,28 @@ test('a thumb that slides straight down from standstill ducks, and easing back u
   assert.equal(t.log[t.log.length - 1], 'duck:false');
   t.up(1, 150, 240);
 });
+
+test('mashing taps on the left half punches every time (a tap is never a "re-plant" of the tap before it)', () => {
+  for (const gap of [60, 120, 180, 250]) {
+    const t = rig();
+    for (let i = 0; i < 8; i++) {
+      t.down(i + 1, 200, 250);
+      t.wait(70);
+      t.up(i + 1, 200, 250);
+      t.wait(gap);
+    }
+    assert.equal(t.count('punch'), 8, `gap ${gap}ms`);
+  }
+});
+
+test('a tap right after really steering is still treated as the thumb landing again, not a punch', () => {
+  const t = rig();
+  t.down(1, 200, 250);
+  t.drag(1, 200, 250, 290, 250, 150);
+  t.up(1, 290, 250);
+  t.wait(60);
+  t.down(2, 290, 250);
+  t.wait(60);
+  t.up(2, 290, 250);
+  assert.equal(t.count('punch'), 0);
+});

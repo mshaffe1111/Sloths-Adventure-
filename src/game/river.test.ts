@@ -42,7 +42,8 @@ test('rivers teach in order: slow and with the flow first, narrower logs and rap
     const { count } = logLayout(r);
     assert.ok(count >= 3);
     // a hop between neighbours must be doable: gap vs. a jump's reach
-    assert.ok(r.gap <= (r.dir === 1 ? 76 : 100));
+    assert.ok(r.gap >= 70, 'wide enough that running across is impossible');
+    assert.ok(r.gap <= (r.dir === 1 ? 80 : 130));
     assert.equal(r.gap, Math.round(gapFor(r.dir, r.speed)));
   }
 });
@@ -67,5 +68,27 @@ test('logs are evenly spaced, hang below the bank lip', () => {
       // the bank lip is higher than the log tops: a small, even hop on and off
       for (const p of logs) assert.ok(p.y > 0 && p.drift!.baseY === p.y);
     }
+  }
+});
+
+test('random layouts (a fresh one every time a stage is entered) still have their rivers, pass the validator and differ from each other', async () => {
+  const { buildStage, setLayoutVariant, variantAttemptFor } = await import('./stageGenerator.ts');
+  const { validateStage } = await import('./levelCheck.ts');
+  const world2 = levels.filter((l) => l.worldIndex === 2 && !['ascent', 'boss_lair'].includes(l.objectiveType) && l.miniIndex <= 9);
+  try {
+    for (const l of world2) {
+      const seen = new Set<string>();
+      for (let v = 1; v <= 8; v++) {
+        const a = variantAttemptFor(l, v * 977);
+        assert.ok(a >= 0, `${l.id} variant ${v}: no valid layout found`);
+        const s = buildStage(l, a);
+        assert.equal(validateStage(s).ok, true, `${l.id} variant ${v}`);
+        assert.ok((s.rivers?.length ?? 0) >= 1, `${l.id} variant ${v} has no river`);
+        seen.add(s.rivers!.map((r) => Math.round(r.x0)).join(','));
+      }
+      assert.ok(seen.size >= 5, `${l.id}: the river positions barely change between plays (${seen.size} different out of 8)`);
+    }
+  } finally {
+    setLayoutVariant(null);
   }
 });

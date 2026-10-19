@@ -93,6 +93,7 @@ test('punches chain jab, cross, hook; a swing that missed must be played out in 
   assert.equal(chooseMove('punch', false, 'jab', false), 'jab');
   assert.equal(chooseMove('kick', false, 'jab', true), 'kick');
   assert.equal(chooseMove('kick', true, null, false), 'airKick');
+  assert.equal(chooseMove('punch', true, null, false), 'airKick', 'a tap in the air is a jump kick');
   assert.equal(chooseMove('mega', true, null, false), 'mega');
   const m = MOVES.jab;
   const early = m.startup + m.active + m.recovery * 0.1;

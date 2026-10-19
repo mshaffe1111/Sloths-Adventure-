@@ -70,13 +70,17 @@ export interface RiverRecipe {
 }
 
 /**
- * The logs' spacing keeps every hop easy: logs that flow the way you are running pull away while you are in the air, so they sit
- * closer together; logs that flow toward you close the gap, so they can sit a little further apart.
+ * The logs' spacing. Logs that flow the way you are running pull away while you are in the air, so the next one is further than
+ * it looks: with the flow the gap stays moderate (a hop already has to reach the log's far end). Logs that flow toward you close
+ * the gap while you jump, so they can sit much further apart. Either way the gap is wide enough that RUNNING across is never
+ * possible: the player has to jump (the engine is strict about catching a falling player on a log, see `DRIFT_CATCH`).
  */
 export function gapFor(dir: 1 | -1, speed: number): number {
-  const airtime = 0.63; // a full jump, see physics.ts
-  return dir === 1 ? Math.max(40, Math.min(72, 98 - speed * airtime)) : Math.min(96, 70 + speed * 0.2);
+  return dir === 1 ? 72 : Math.round(96 + speed * 0.2);
 }
+
+/** how forgiving a log is to a player who runs off the end of one: much less than ground, so a gap has to be jumped */
+export const DRIFT_CATCH = { side: 0.3, drop: 8 } as const;
 
 /**
  * The rivers of a World 2 stage, in order. Stage 1: one slow river with the flow. Stages 2-3: two, one of them against the flow.

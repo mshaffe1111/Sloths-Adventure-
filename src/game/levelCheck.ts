@@ -312,8 +312,8 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       const d = logs[0].drift!;
       const spacing = ((d.x1 - d.x0 + d.width) / logs.length);
       const gap = spacing - d.width;
-      const limit = d.dir === 1 ? 76 : 100;
-      if (gap < 30) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
+      const limit = d.dir === 1 ? 80 : 130;
+      if (gap < 60) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
       if (gap > limit) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
     }
     const near = plats.some((p) => p.type === 'solid' && p.x + p.width >= r.x0 - 2 && p.x + p.width <= r.x0 + 2);

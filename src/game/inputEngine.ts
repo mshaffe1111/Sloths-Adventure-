@@ -25,7 +25,6 @@ export class InputEngine {
   private punchBufferTimer = 0;
   private kickBufferTimer = 0;
   private megaBufferTimer = 0;
-  private lastPunchTapTime = 0;
   private lastUpPressTime = 0;
   private isDestroyed = false;
   /** the touch recogniser registers here so a blur or a hidden page also cancels its fingers */
@@ -81,21 +80,10 @@ export class InputEngine {
       this.state.down = true;
     }
 
-    // Tap to punch (J, Z), double tap or X/K to kick
+    // Tap to punch (J, Z). Every press is a punch: mashing the key must never turn into slower kicks (K and X kick)
     if (key === 'KeyJ' || key === 'KeyZ') {
-      const now = performance.now();
-      const isDoubleTap = now - this.lastPunchTapTime < 300;
-      this.lastPunchTapTime = now;
-
-      if (isDoubleTap) {
-        // Double tap kicks!
-        this.state.kickPressed = true;
-        this.kickBufferTimer = 0.14;
-      } else {
-        // Tap punches!
-        this.state.punchPressed = true;
-        this.punchBufferTimer = 0.12;
-      }
+      this.state.punchPressed = true;
+      this.punchBufferTimer = 0.12;
     }
 
     // Dedicated Kick key (KeyK, KeyX)

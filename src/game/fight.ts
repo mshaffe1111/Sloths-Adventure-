@@ -112,7 +112,7 @@ export const MOVES: Record<MoveId, MoveSpec> = {
   airKick: {
     id: 'airKick', kind: 'kick', startup: 0.05, active: 0.22, recovery: 0.1,
     damage: 2, bossDamage: 2,
-    from: { x: 6, y: -34, w: 44, h: 54 }, to: { x: 6, y: -34, w: 66, h: 60 },
+    from: { x: 4, y: -54, w: 46, h: 72 }, to: { x: 4, y: -56, w: 74, h: 78 },
     knock: 260, stun: 0.4, hitstop: 0.07, shake: 0.25, lunge: 0, moveMul: 1, heavy: true,
   },
 };
@@ -178,6 +178,8 @@ export function swingPose(m: MoveSpec, t: number): { cock: number; reach: number
 export function chooseMove(want: AttackWant, airborne: boolean, prev: MoveId | null, chainOpen: boolean): MoveId {
   if (want === 'mega') return 'mega';
   if (want === 'kick') return airborne ? 'airKick' : 'kick';
+  // in the air a tap is a jump kick too: a thumb can tap far more easily than flick while jumping, and the kick reaches flyers
+  if (want === 'punch' && airborne) return 'airKick';
   if (chainOpen && prev === 'jab') return 'cross';
   if (chainOpen && prev === 'cross') return 'hook';
   return 'jab';

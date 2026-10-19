@@ -19,6 +19,7 @@ import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { renderScenery, renderOverlay, setWeatherAvoid } from './scenery.ts';
 import { setSceneSeed, rollSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
+import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawTayraSprite } from './tayraSprite.ts';
@@ -29,7 +30,7 @@ import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
-import { driftX, LOG_DROP } from './river.ts';
+import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import {
   drawHeroSloth,
   drawTreeSnake,
@@ -999,9 +1000,11 @@ export class GameEngine {
         if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) continue;
 
         // Check if player is horizontally within platform (generous width tolerance)
-        if (p.x + p.width * 0.48 > plat.x && p.x - p.width * 0.48 < plat.x + plat.width) {
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.48;
+        const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14;
+        if (p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width) {
           // Check landing from above
-          if (p.vy >= 0 && playerPrevFeet <= plat.y + 14 && playerFeet >= plat.y) {
+          if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) {
             p.y = plat.y;
             p.vy = 0;
             p.grounded = true;
@@ -1157,21 +1160,16 @@ export class GameEngine {
           if (e.telegraphTimer <= 0) {
             e.swoopPhase = 'swoop';
             e.isAttacking = true;
+            e.dive = undefined;
           }
         } else if (e.swoopPhase === 'swoop') {
-          // Swoop down at gentle readable speed (165 px/s)
-          const diveSpeed = 165;
-          const targetY = Math.min((e.homeY ?? 310) + 190, p.y - 10);
-          const dx = Math.max(e.patrolMinX - 120, Math.min(e.patrolMaxX + 120, p.x)) - e.x;
-          const dy = targetY - e.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+          // A homing strafing run (harpyDive.ts): it follows the player's body, locks its line a beat before contact, then glides low
+          if (!e.dive) e.dive = startDive(e, p);
+          const prevX = e.x;
+          const step = stepDive(e, e.dive, p, dt);
+          e.facing = e.dive.vx >= 0 ? 1 : -1;
+          void prevX;
 
-          if (dist > 15) {
-            e.x += (dx / dist) * diveSpeed * dt;
-            e.y += (dy / dist) * diveSpeed * dt;
-          }
-
-          // Check collision with player
           if (checkAABBCollision(...this.pBox(), e.x - 24, e.y - 18, 48, 36)) {
             if (p.ducking) {
               // Successfully ducked under swoop!
@@ -1180,28 +1178,31 @@ export class GameEngine {
               e.swoopPhase = 'hover';
               e.hoverTimer = 1.4;
               e.isAttacking = false;
+              e.dive = undefined;
             } else {
               this.damagePlayer(1);
               e.swoopPhase = 'hover';
               e.hoverTimer = 1.0;
               e.isAttacking = false;
+              e.dive = undefined;
             }
-          }
-
-          // Reached swoop low point: enter vulnerable low hover glide!
-          if (e.y >= targetY - 15 || dist <= 20) {
+          } else if (step.done === 'passed') {
+            // flew past: it settles into a low glide where it can be hit
             e.swoopPhase = 'hover';
-            e.hoverTimer = 1.4; // 1.4s of vulnerable low glide!
+            e.hoverTimer = 1.4;
             e.isAttacking = false;
+            e.dive = undefined;
             this.addFloatingText('VULNERABLE!', e.x, e.y - 25, '#fde047');
+          } else if (step.done === 'timeout') {
+            // the player ran off: it gives up and climbs away
+            e.swoopPhase = 'ascend';
+            e.isAttacking = false;
+            e.dive = undefined;
           }
         } else if (e.swoopPhase === 'hover') {
-          // VULNERABLE LOW HOVER / GLIDE: Easy to hit!
+          // VULNERABLE LOW GLIDE: it faces Slomatt and settles at his height, within reach of a punch or kick
           e.hoverTimer = (e.hoverTimer ?? 1.4) - dt;
-          e.x += e.facing * 50 * dt;
-          if (e.x < e.patrolMinX - 120 || e.x > e.patrolMaxX + 120) e.facing = e.x < e.patrolMinX ? 1 : -1;
-          e.y += Math.sin(this.gameTime * 5) * 8 * dt;
-
+          e.facing = stepGlide(e, p, dt);
           if (e.hoverTimer <= 0) {
             e.swoopPhase = 'ascend';
           }
@@ -1832,7 +1833,8 @@ export class GameEngine {
     inp.kickPressed = false;
     inp.kickDir = 0;
     inp.punchPressed = false;
-    if (want) this.atkQueue = { want, ttl: 0.2, face };
+    // a press is remembered for most of a swing, so mashing during a miss still throws the next one the moment the last ends
+    if (want) this.atkQueue = { want, ttl: 0.32, face };
     else if (this.atkQueue) {
       this.atkQueue.ttl -= dt;
       if (this.atkQueue.ttl <= 0) this.atkQueue = null;

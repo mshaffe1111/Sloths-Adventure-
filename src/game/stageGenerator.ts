@@ -682,8 +682,10 @@ class Gen {
 
 function buildHorizontal(gen: Gen): GeneratedStage {
   const cfg = gen.cfg;
-  const targetW = cfg.levelWidth;
   const obj = cfg.objectiveType;
+  // World 2's rivers take up room that the stage's fights and pickups also need, so the stage is as much longer as its rivers are wide
+  const hasRivers = cfg.worldIndex === 2 && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret;
+  const targetW = cfg.levelWidth + (hasRivers ? riverRecipes(cfg.miniIndex).reduce((a, r) => a + r.width, 0) : 0);
 
   // ---- opening: safe ground to find your feet ----
   gen.flat(620, { safe: true });
@@ -706,7 +708,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
     for (let i = 0; i < yards; i++) forced.push({ at: targetW * ((i + 0.5) / (yards + 0.2)) * 0.95, kind: 'yard' });
   }
   // World 2 is the river world: every ordinary stage has the rivers its place in the world calls for (river.ts)
-  if (cfg.worldIndex === 2 && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret) {
+  if (hasRivers) {
     const recs = riverRecipes(cfg.miniIndex);
     gen.riverQueue = recs.slice();
     recs.forEach((_, i) => forced.push({ at: targetW * ((i + 0.55) / (recs.length + 0.25)) * 0.9, kind: 'river' }));

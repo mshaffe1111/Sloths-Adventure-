@@ -174,6 +174,8 @@ export interface Enemy {
   diveAngle?: number;
   swoopPhase?: 'patrol' | 'telegraph' | 'swoop' | 'hover' | 'ascend';
   hoverTimer?: number;
+  /** the harpy's dive in progress (see harpyDive.ts) */
+  dive?: import('./harpyDive.ts').DiveState;
   /** cruising altitude for fliers (eagles return here after a swoop) */
   homeY?: number;
   /** predator AI: current move (patrol, alert, windup, leap, strike, bite, recover) and seconds spent in it */
