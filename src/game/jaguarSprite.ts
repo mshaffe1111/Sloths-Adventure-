@@ -13,6 +13,7 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { bodyRect } from './fight.ts';
 import { JAGUAR_FRAMES } from './jaguarAtlasData.ts';
+import { trackAtlas } from './atlasLoader.ts';
 
 export const DEFAULT_SPRITE_JAGUAR = true;
 /** world units per atlas pixel */
@@ -45,11 +46,9 @@ let atlas: HTMLImageElement | null = null;
 let ready = false;
 function load() {
   if (atlas || typeof Image === 'undefined') return;
-  atlas = new Image();
-  atlas.onload = () => {
-    ready = true;
-  };
-  atlas.src = new URL('../assets/enemies/jaguar-atlas.webp', import.meta.url).href;
+  const img = new Image();
+  atlas = img;
+  trackAtlas(img, new URL('../assets/enemies/jaguar-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
 }
 
 interface SpriteRig {

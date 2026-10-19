@@ -16,6 +16,7 @@ import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
 import { THORNBARK_LEVEL, gateFound, hasThornHeart, markGateFound, markThornHeart, maxHearts } from './game/secret.ts';
+import { warmHeroAtlas } from './game/heroSprite.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -67,8 +68,11 @@ export default function App() {
     setMaxHp(maxHearts());
   }, []);
 
+  // where the opening story was started from: the title's Story button returns to the title, a new game goes on to 1-1
+  const [storyFrom, setStoryFrom] = useState<'title' | 'new'>('title');
+
   // New Game: progress has just been cleared from storage; rebuild everything from it and begin at stage 1-1
-  const onNewGame = useCallback(() => {
+  const onNewGame = useCallback((skipStory: boolean) => {
     const fresh = generateAllLevels();
     setAllLevels(fresh);
     setActiveLevel(fresh[0]);
@@ -77,7 +81,13 @@ export default function App() {
     setThornHeart(hasThornHeart());
     setHp(maxHearts());
     setMaxHp(maxHearts());
-    startLevel(fresh[0]);
+    if (skipStory) {
+      startLevel(fresh[0]);
+    } else {
+      // the prologue first: who Slomatt and Jennifur are, then stage 1-1
+      setStoryFrom('new');
+      setScreen('story_cutscene');
+    }
   }, []);
 
   // Desktop PWA and saving utilities
@@ -128,6 +138,44 @@ export default function App() {
     };
   }, []);
 
+  // a new build was installed in the background: swap to it at a calm moment, never in the middle of a stage
+  const [updateReady, setUpdateReady] = useState(false);
+  useEffect(() => {
+    const onUpdate = () => setUpdateReady(true);
+    window.addEventListener('sloth-update-ready', onUpdate);
+    return () => window.removeEventListener('sloth-update-ready', onUpdate);
+  }, []);
+  useEffect(() => {
+    if (updateReady && (screen === 'title' || screen === 'world_map')) window.location.reload();
+  }, [updateReady, screen]);
+
+  // nothing needs the game loop on the menu and story screens
+  useEffect(() => {
+    if (['title', 'world_map', 'story_cutscene', 'world_story', 'boss_intro', 'boss_defeat', 'ending_story'].includes(screen)) {
+      engineRef.current?.stop();
+    }
+  }, [screen]);
+
+  // switching apps or locking the phone mid-jump must not drop the player back into live play
+  useEffect(() => {
+    if (screen !== 'playing') return;
+    const onHide = () => {
+      if (document.hidden) pauseGame();
+    };
+    document.addEventListener('visibilitychange', onHide);
+    window.addEventListener('pagehide', pauseGame);
+    return () => {
+      document.removeEventListener('visibilitychange', onHide);
+      window.removeEventListener('pagehide', pauseGame);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen]);
+
+  // fetch the painted hero while the title is showing
+  useEffect(() => {
+    warmHeroAtlas();
+  }, []);
+
   // Update body dataset state for CSS and accessibility hooks
   useEffect(() => {
     let bodyState = 'title';
@@ -163,6 +211,10 @@ export default function App() {
   // Global Key listeners for Pause (Esc / P) and Title start (Space / Enter)
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
+      if (e.code === 'KeyM' && !e.repeat && !document.querySelector('.ui-scrim') && (screen === 'playing' || screen === 'paused' || screen === 'title')) {
+        handleToggleMute();
+        return;
+      }
       if (screen === 'title') {
         // a dialog (Save & Load, New Game) owns the keyboard while it is open
         if (document.querySelector('.ui-scrim')) return;
@@ -257,7 +309,10 @@ export default function App() {
       // The input engine outlives each stage, so drop any direction left over from the last one.
       inputEngineRef.current.clearAll();
 
-      const engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
+      let engine: GameEngine;
+      try {
+      engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
+        onFatal: () => setScreen('world_map'),
         onProgressUpdate: (current, target, curScore, curHp, distRatio, curPowerUp, curPowerTimer) => {
           setCurrentCount(current);
           setTargetCount(target);
@@ -306,6 +361,11 @@ export default function App() {
           setScreen('game_over');
         },
       });
+      } catch (err) {
+        console.error('could not start the stage', err);
+        setScreen('world_map');
+        return;
+      }
 
       engineRef.current = engine;
       engine.start();
@@ -314,9 +374,27 @@ export default function App() {
 
   const saveLevelProgress = (id: string, stars: number, lvlScore: number, bestTime: number) => {
     try {
-      const saved = { completed: true, stars, highScore: lvlScore, bestTime };
+      // keep the player's best: a worse replay must never overwrite a better stored result
+      let prevStored: { stars?: number; highScore?: number; bestTime?: number } = {};
+      try {
+        const raw = localStorage.getItem(`sloth_lvl_${id}`);
+        const parsed = raw ? JSON.parse(raw) : null;
+        if (parsed && typeof parsed === 'object') prevStored = parsed;
+      } catch {
+        /* unreadable record: treat as none */
+      }
+      const prevTime = typeof prevStored.bestTime === 'number' && prevStored.bestTime > 0 ? prevStored.bestTime : 0;
+      const saved = {
+        completed: true,
+        stars: Math.max(prevStored.stars ?? 0, stars),
+        highScore: Math.max(prevStored.highScore ?? 0, lvlScore),
+        bestTime: prevTime === 0 ? bestTime : bestTime > 0 ? Math.min(prevTime, bestTime) : prevTime,
+      };
       localStorage.setItem(`sloth_lvl_${id}`, JSON.stringify(saved));
-
+    } catch {
+      /* storage full or blocked: the stage still counts for this session */
+    }
+    try {
       // Update state and unlock next level
       setAllLevels((prev) => {
         const next = [...prev];
@@ -398,7 +476,13 @@ export default function App() {
       {/* Title Screen View */}
       {screen === 'title' && (
         <TitleScreen
-          onStartGame={() => startLevel(resumeLevel)}
+          onStartGame={() => {
+            // a brand-new player meets the story first
+            if (!resumeInfo && !hasSeenWorldStory(1)) {
+              setStoryFrom('new');
+              setScreen('story_cutscene');
+            } else startLevel(resumeLevel);
+          }}
           resume={resumeInfo}
           onSaveLoaded={onSaveLoaded}
           onNewGame={onNewGame}
@@ -406,7 +490,10 @@ export default function App() {
             setSelectedWorldId(resumeLevel.worldIndex);
             setScreen('world_map');
           }}
-          onViewStory={() => setScreen('story_cutscene')}
+          onViewStory={() => {
+            setStoryFrom('title');
+            setScreen('story_cutscene');
+          }}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
         />
@@ -419,6 +506,10 @@ export default function App() {
           finishLabel="Begin the journey ▶"
           skipLabel="Skip intro"
           onFinish={() => {
+            if (storyFrom === 'title') {
+              setScreen('title');
+              return;
+            }
             markWorldStorySeen(1);
             startLevel(allLevels[0]);
           }}

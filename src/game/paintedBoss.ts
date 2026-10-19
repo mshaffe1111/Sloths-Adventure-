@@ -8,6 +8,7 @@
  */
 import type { BossEntity } from './types.ts';
 import type { BossBrain, BossDef, MoveDef } from './bossAI.ts';
+import { trackAtlas } from './atlasLoader.ts';
 
 export interface BossFrameRect {
   x: number;
@@ -66,11 +67,9 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
   let ready = false;
   const load = () => {
     if (atlas || typeof Image === 'undefined') return;
-    atlas = new Image();
-    atlas.onload = () => {
-      ready = true;
-    };
-    atlas.src = spec.url;
+    const img = new Image();
+    atlas = img;
+    trackAtlas(img, spec.url, () => { ready = true; }, () => { atlas = null; });
   };
   const active = () => {
     if (!isEnabled()) return false;

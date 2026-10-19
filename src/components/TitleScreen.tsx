@@ -59,7 +59,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
         <div className="w-full max-w-5xl flex items-center justify-between gap-2">
           <div className="ui-chip">
             <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse" />
-            <span>10 Worlds · 100 Missions</span>
+            <span>10 Worlds · 100 Stages</span>
           </div>
           <div className="flex items-center gap-2">
             {!isInstalled && onInstallDesktop && (
@@ -87,7 +87,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               <span className="ui-main-t">{resume ? 'CONTINUE' : 'START ADVENTURE'}</span>
               {resume && (
                 <span className="ui-main-s">
-                  {resume.stage} <i>·</i> {resume.stars}★
+                  {resume.stage} <i>·</i> {resume.stars}★ earned
                 </span>
               )}
             </button>

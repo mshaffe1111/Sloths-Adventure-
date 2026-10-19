@@ -58,11 +58,11 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   const distPercent = Math.min(100, Math.max(0, Math.round(distanceRatio * 100)));
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-20 flex flex-col justify-between p-4 sm:p-6 select-none font-game">
+    <div className="fixed inset-0 pointer-events-none z-[35] flex flex-col justify-between select-none font-game pt-[max(1rem,env(safe-area-inset-top))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pb-4 sm:pt-[max(1.5rem,env(safe-area-inset-top))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))] sm:pb-6">
       {/* Top Bar: Left Vitality & Stage info, Center Objective, Right Score & Controls */}
       <div className="flex flex-wrap items-start justify-between w-full gap-y-1.5">
         {/* Left Cluster: HP Hearts & Level Title */}
-        <div className="flex flex-col gap-1.5 pointer-events-auto">
+        <div className="flex flex-col gap-1.5">
           {/* Hearts Vitality Sockets */}
           <div className="flex items-center gap-1.5 bg-black/60 px-3 py-1.5 rounded-2xl border border-emerald-400/30 shadow-md">
             {Array.from({ length: maxHp }).map((_, idx) => {
@@ -98,7 +98,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
 
             {/* Current Level Badge */}
             <div className="bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow-sm">
-              <span className="text-amber-400 font-bold text-[11px] sm:text-xs">Stage {levelConfig.id}</span>
+              <span className="text-amber-400 font-bold text-[11px] sm:text-xs">{levelConfig.secret ? "Secret" : `Stage ${levelConfig.id}`}</span>
               <span className="text-white text-[11px] sm:text-xs font-medium truncate max-w-[110px] max-sm:hidden sm:max-w-none">
                 {levelConfig.name}
               </span>
@@ -107,7 +107,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
         </div>
 
         {/* Center: Mission Objective or Boss Health Bar */}
-        <div className="flex flex-col items-center pointer-events-auto max-sm:order-last max-sm:w-full">
+        <div className="flex flex-col items-center max-sm:order-last max-sm:w-full">
           {bossHp !== undefined && bossMaxHp !== undefined ? (
             <div className="flex flex-col items-center w-48 sm:w-80 bg-black/70 border border-red-500/50 px-3 py-1.5 rounded-2xl shadow-xl">
               <div className="flex items-center justify-between w-full mb-1">
@@ -130,7 +130,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
             <div className="flex flex-col items-center bg-black/75 border border-emerald-400/50 px-3 sm:px-4 py-1.5 rounded-2xl shadow-lg backdrop-blur-sm min-w-[160px] sm:min-w-[220px]">
               <div className="flex items-center justify-between w-full text-[10px] sm:text-xs font-black tracking-wide mb-1">
                 <span className="text-emerald-300 flex items-center gap-1">
-                  <span>🏁</span> RUN TO GOAL
+                  <span>🏁</span> {({ ascent: 'CLIMB TO THE TOP', stealth: 'SNEAK TO THE END', vine_runner: 'SWING TO THE END' } as Record<string, string>)[levelConfig.objectiveType] ?? 'RUN TO THE SHRINE'}
                 </span>
                 <span className="text-amber-300 font-extrabold tabular-nums">
                   {distPercent}%
@@ -154,7 +154,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
             <div className="flex flex-col items-center bg-emerald-950/95 border border-emerald-400/60 px-3.5 py-1.5 rounded-2xl shadow-lg shadow-black/50 min-w-[160px]">
               <div className="flex items-center gap-1.5">
                 <span className="text-amber-400 font-black text-[10px] sm:text-xs uppercase tracking-wider flex items-center gap-1">
-                  {levelConfig.objectiveType === 'harvest' ? '🌸 FLORA:' : `${levelConfig.objectiveType.replace('_', ' ')}:`}
+                  {({ harvest: '🌸 FLOWERS:', purge: '🐾 PREDATORS:', gauntlet: '🐾 PREDATORS:', relic_hunt: '🗿 IDOLS:', rescue: '🐒 ANIMALS FREED:' } as Record<string, string>)[levelConfig.objectiveType] ?? `${levelConfig.objectiveType.replace('_', ' ').toUpperCase()}:`}
                 </span>
                 <span className="text-white font-extrabold text-xs sm:text-sm tabular-nums">
                   {currentObjectiveCount} / {targetObjectiveCount}
@@ -174,7 +174,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                 </span>
               ) : (
                 <span className="text-[8px] sm:text-[9px] text-emerald-300/70 font-semibold mt-0.5">
-                  🔒 Altar Sealed Until Finished
+                  🔒 Shrine locked until you finish
                 </span>
               )}
             </div>
@@ -237,7 +237,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
             <button
               type="button"
               onClick={onSaveSnapshot}
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-black/60 hover:bg-black/80 border border-amber-400/50 flex items-center justify-center text-amber-300 active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-xl bg-black/60 hover:bg-black/80 border border-amber-400/50 flex items-center justify-center text-amber-300 active:scale-95 transition-transform"
               aria-label="Save Photo to Desktop"
               title="Save Snapshot to Desktop"
             >
@@ -252,7 +252,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           <button
             type="button"
             onClick={onToggleMute}
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-black/60 hover:bg-black/80 border border-stone-500/50 flex items-center justify-center text-white active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-xl bg-black/60 hover:bg-black/80 border border-stone-500/50 flex items-center justify-center text-white active:scale-95 transition-transform"
             aria-label={isMuted ? 'Unmute Audio' : 'Mute Audio'}
             title="Mute [M]"
           >
@@ -274,7 +274,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           <button
             type="button"
             onClick={onPause}
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-black/60 hover:bg-black/80 border border-stone-500/50 flex items-center justify-center text-white active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-xl bg-black/60 hover:bg-black/80 border border-stone-500/50 flex items-center justify-center text-white active:scale-95 transition-transform"
             aria-label="Pause Game"
             title="Pause [Esc / P]"
           >

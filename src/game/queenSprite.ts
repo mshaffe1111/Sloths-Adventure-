@@ -11,6 +11,7 @@
 import type { BossEntity } from './types.ts';
 import type { BossDef } from './bossAI.ts';
 import { QUEEN_FRAMES } from './queenAtlasData.ts';
+import { trackAtlas } from './atlasLoader.ts';
 
 export const DEFAULT_SPRITE_QUEEN = true;
 /** world units per atlas pixel (the painted idle is 196 px: drawn about 1.4 times the 132-wide hurt box, like the vector queen was) */
@@ -38,11 +39,9 @@ let atlas: HTMLImageElement | null = null;
 let ready = false;
 function load() {
   if (atlas || typeof Image === 'undefined') return;
-  atlas = new Image();
-  atlas.onload = () => {
-    ready = true;
-  };
-  atlas.src = new URL('../assets/enemies/queen-atlas.webp', import.meta.url).href;
+  const img = new Image();
+  atlas = img;
+  trackAtlas(img, new URL('../assets/enemies/queen-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
 }
 
 /** true when the painted queen will be drawn (bossArt then tones down its squash-and-lean, the pictures are already posed) */

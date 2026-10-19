@@ -12,6 +12,7 @@
 import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { FROG_FRAMES } from './frogAtlasData.ts';
+import { trackAtlas } from './atlasLoader.ts';
 
 export const DEFAULT_SPRITE_FROG = true;
 /** world units per atlas pixel */
@@ -44,11 +45,9 @@ let atlas: HTMLImageElement | null = null;
 let ready = false;
 function load() {
   if (atlas || typeof Image === 'undefined') return;
-  atlas = new Image();
-  atlas.onload = () => {
-    ready = true;
-  };
-  atlas.src = new URL('../assets/enemies/frog-atlas.webp', import.meta.url).href;
+  const img = new Image();
+  atlas = img;
+  trackAtlas(img, new URL('../assets/enemies/frog-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
 }
 
 type Phase = 'idle' | 'crouch' | 'air' | 'land';

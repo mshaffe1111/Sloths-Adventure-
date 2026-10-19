@@ -60,25 +60,25 @@ function getStageStoryClue(levelId: string): string {
   const stage = parts[1] || 1;
   switch (stage) {
     case 1:
-      return "🌸 Jennifur's Petal: You spotted a fresh pink petal from Jennifur's flower fluttering downstream! Slomatt knows she was carried into the highland canopy!";
+      return "🌸 Jennifur's Petal: A fresh pink petal from Jennifur's flower drifts by. She passed this way!";
     case 2:
-      return "🌿 Woven Ribbon: Jennifur's hand-woven vine ribbon was found caught on a branch! She left it as a trail for Slomatt to follow!";
+      return "🌿 Woven Ribbon: Jennifur's hand-woven vine ribbon is caught on a branch. She left it as a trail for Slomatt!";
     case 3:
-      return "🐾 Rescued Critters: A chirping jungle marmoset points upward: 'The lady with the flower was taken toward the sacred temple!'";
+      return "🐾 A Helpful Friend: A chirping marmoset points onward: 'The lady with the flower went that way!'";
     case 4:
-      return "🦅 Talon Gouges: Fresh Harpy Eagle claw marks on ancient banyan bark confirm General Iron-Claw flew towards the summit!";
+      return "🦅 Talon Gouges: Fresh harpy-eagle claw marks on the bark show which way General Iron-Claw's patrol flew!";
     case 5:
-      return "✨ Secret Carving: Hidden under thick leaves, Jennifur carved a sweet note on the trunk: 'Slomatt, I know you will save me!'";
+      return "✨ Secret Carving: Hidden under thick leaves, Jennifur carved a note on the trunk: 'Slomatt, I know you will save me!'";
     case 6:
-      return "💨 Feathers in the Wind: Golden Harpy feathers litter the canyon rim, proof that you are closing in on Jennifur!";
+      return "💨 Feathers in the Wind: Golden feathers litter the trail, proof that you are closing in on Jennifur!";
     case 7:
-      return "🗿 Ancient Inscription: The stone idol reveals: 'True courage and sharp claws shall shatter the tyrant's cage.'";
+      return "🗿 Ancient Inscription: The stone idol reads: 'True courage and sharp claws shall shatter the tyrant's cage.'";
     case 8:
-      return "💕 Echoing Voice: In the quiet jungle mist, you hear Jennifur calling your name from the mountain fortress ahead!";
+      return "💕 Echoing Voice: Through the mist you hear Jennifur calling your name from somewhere ahead!";
     case 9:
-      return "⚡ Fortress Gate: The summit gates are within reach! Jennifur's cage hangs from the highest bough of the Boss Lair!";
+      return "⚡ Heavy Air: The air feels heavier. This realm's guardian is close. Get ready!";
     default:
-      return "🎉 Jennifur Rescued: Slomatt shatters the golden cage with a thunderous Mega Claw strike! Jennifur leaps into your arms!";
+      return "🌸 Another Petal: Jennifur's trail leads on to the next realm!";
   }
 }
 
@@ -184,7 +184,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   if (screen === 'victory') {
     return (
       <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 select-none font-game">
-        <div className="w-full max-w-md bg-gradient-to-b from-emerald-900 via-emerald-950 to-stone-950 border-2 border-amber-400/80 rounded-3xl p-6 sm:p-8 text-center shadow-2xl shadow-emerald-900/60 text-white">
+        <div className="w-full max-w-md bg-gradient-to-b from-emerald-900 via-emerald-950 to-stone-950 border-2 border-amber-400/80 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl shadow-emerald-900/60 text-white">
           <div className="inline-block px-4 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
             {levelConfig.secret ? 'SECRET BOSS DEFEATED!' : 'STAGE CLEARED!'}
           </div>
@@ -209,11 +209,17 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             ))}
           </div>
 
+          {!levelConfig.secret && (
+            <p className="text-[11px] text-emerald-200/70 font-sans leading-snug -mt-1">
+              ★★ keep half your hearts · ★★★ keep ¾ of your hearts and find nearly everything
+            </p>
+          )}
+
           {/* Metrics Tiles */}
           <div className="grid grid-cols-2 gap-3 my-5">
             <div className="bg-black/50 border border-emerald-500/30 p-3 rounded-2xl">
               <span className="text-[11px] text-emerald-300/80 block uppercase font-sans">Clear Time</span>
-              <span className="text-xl font-black text-white tabular-nums">{timeSec}s</span>
+              <span className="text-xl font-black text-white tabular-nums">{Math.floor(Math.round(timeSec) / 60)}:{String(Math.round(timeSec) % 60).padStart(2, '0')}</span>
             </div>
             <div className="bg-black/50 border border-emerald-500/30 p-3 rounded-2xl">
               <span className="text-[11px] text-emerald-300/80 block uppercase font-sans">Stage Score</span>
@@ -246,15 +252,6 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
                 <span className="text-amber-300 font-black text-[11px] uppercase tracking-wider">
                   Jennifur's Trail: Clue Found!
                 </span>
-                {onViewStory && (
-                  <button
-                    type="button"
-                    onClick={onViewStory}
-                    className="text-[10px] text-emerald-300 hover:text-white underline font-bold"
-                  >
-                    Cinema ➔
-                  </button>
-                )}
               </div>
               <p className="text-stone-200 text-xs mt-1 leading-snug">
                 {getStageStoryClue(levelConfig.id)}
@@ -299,7 +296,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   if (screen === 'game_over') {
     return (
       <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 select-none font-game">
-        <div className="w-full max-w-md bg-gradient-to-b from-stone-900 via-stone-950 to-black border-2 border-red-600/70 rounded-3xl p-6 sm:p-8 text-center shadow-2xl shadow-red-950/60 text-white">
+        <div className="w-full max-w-md bg-gradient-to-b from-stone-900 via-stone-950 to-black border-2 border-red-600/70 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl shadow-red-950/60 text-white">
           <div className="inline-block px-3 py-1 rounded-full bg-red-950 border border-red-500/40 text-red-400 text-xs font-bold uppercase mb-2">
             Sloth Fainted!
           </div>
@@ -308,7 +305,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             DEFEATED IN BATTLE
           </h2>
           <p className="text-xs text-stone-300 font-sans max-w-sm mx-auto mb-6">
-            The jungle predators were too fierce! Dust yourself off and try again—Jennifur is counting on you!
+            Out of lives! Dust yourself off and try again. Jennifur is counting on you!
           </p>
 
           <div className="bg-black/50 border border-stone-800 p-3.5 rounded-2xl mb-6">
@@ -342,7 +339,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   if (screen === 'boss_intro') {
     return (
       <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 select-none font-game">
-        <div className="w-full max-w-lg bg-gradient-to-b from-red-950 via-stone-950 to-black border-2 border-red-500 rounded-3xl p-6 sm:p-8 text-center shadow-2xl text-white">
+        <div className="w-full max-w-lg bg-gradient-to-b from-red-950 via-stone-950 to-black border-2 border-red-500 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl text-white">
           <div className="inline-block px-4 py-1 rounded-full bg-red-600/30 border border-red-500 text-red-300 text-xs font-black uppercase tracking-wider mb-2">
             {levelConfig.secret ? 'SECRET BOSS' : 'STAGE BOSS LAIR'}
           </div>
@@ -383,7 +380,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   if (screen === 'story_ending') {
     return (
       <div className="fixed inset-0 z-50 bg-gradient-to-b from-purple-950 via-pink-950 to-black flex items-center justify-center p-4 select-none font-game text-white">
-        <div className="w-full max-w-lg bg-stone-950/90 border-2 border-pink-400 rounded-3xl p-6 sm:p-8 text-center shadow-2xl">
+        <div className="w-full max-w-lg bg-stone-950/90 border-2 border-pink-400 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl">
           <div className="text-5xl mb-3">❤️</div>
           <h2 className="text-3xl sm:text-4xl font-black text-pink-300 text-stroke mb-2">
             JENNIFUR IS SAVED!

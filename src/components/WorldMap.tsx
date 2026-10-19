@@ -53,6 +53,17 @@ export const WorldMap: React.FC<WorldMapProps> = ({
 }) => {
   const [activeWorldId, setActiveWorldId] = useState<number>(selectedWorldId);
   const [saveOpen, setSaveOpen] = useState(false);
+  // a locked world says why when tapped (a disabled button gives no feedback on a phone)
+  const [lockedMsg, setLockedMsg] = useState<string | null>(null);
+  useEffect(() => {
+    if (!lockedMsg) return;
+    const t = window.setTimeout(() => setLockedMsg(null), 2200);
+    return () => window.clearTimeout(t);
+  }, [lockedMsg]);
+  // the medallion strip scrolls sideways: bring the current world into view when the map opens or the world changes
+  useEffect(() => {
+    document.querySelector('.map-med.on')?.scrollIntoView?.({ inline: 'center', block: 'nearest' });
+  }, [activeWorldId]);
   const curWorld = WORLDS_DATA.find((w) => w.id === activeWorldId) || WORLDS_DATA[0];
   const worldLevels = useMemo(() => levels.filter((l) => l.worldIndex === activeWorldId), [levels, activeWorldId]);
   const totalStars = levels.reduce((a, l) => a + (l.stars || 0), 0);
@@ -215,6 +226,11 @@ export const WorldMap: React.FC<WorldMapProps> = ({
 
       {/* footer: world medallions + the card for the picked stage */}
       <div className="relative z-10 flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-4 px-3 sm:px-6 pb-2.5 sm:pb-4">
+        {lockedMsg && (
+          <div className="fixed inset-x-0 bottom-6 z-50 flex justify-center pointer-events-none">
+            <span className="ui-chip">🔒 {lockedMsg}</span>
+          </div>
+        )}
         <div className="map-meds flex-1 min-w-0" role="tablist" aria-label="Worlds">
           {WORLDS_DATA.map((w) => {
             const open = worldUnlocked(w.id);
@@ -226,8 +242,12 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 type="button"
                 role="tab"
                 aria-selected={on}
-                disabled={!open}
+                aria-disabled={!open}
                 onClick={() => {
+                  if (!open) {
+                    setLockedMsg(`Beat World ${w.id - 1}'s boss to open this world`);
+                    return;
+                  }
                   setActiveWorldId(w.id);
                   onSelectWorld(w.id);
                 }}

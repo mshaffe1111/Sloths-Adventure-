@@ -78,6 +78,8 @@ export interface GameEngineCallbacks {
   onVictory: (stars: number, timeSec: number, score: number) => void;
   onDefeat: (score: number) => void;
   onLivesChange?: (lives: number, maxLives: number) => void;
+  /** the game loop failed over and over: the app should leave the stage */
+  onFatal?: () => void;
   onBossEncounter?: (boss: BossEntity) => void;
   /** Slomatt stepped through the hidden Thorn Gate */
   onSecret?: () => void;
@@ -390,25 +392,37 @@ export class GameEngine {
     // 30 FPS cap: one steady 30 fps rhythm (every other frame on a 60 Hz screen) looks smoother than a
     // frame rate that wobbles between 30 and 60.
     const elapsed = now - this.lastRenderTime;
-    if (elapsed < this.frameIntervalMs) {
+    // a vsync that lands a hair early (33.2 ms) still counts, or every fourth frame would be skipped and run at 50 ms
+    if (elapsed < this.frameIntervalMs - 2) {
       return;
     }
-    this.lastRenderTime = now - (elapsed % this.frameIntervalMs);
+    this.lastRenderTime = elapsed < this.frameIntervalMs + 2 ? now : now - (elapsed % this.frameIntervalMs);
 
     const dt = Math.min(elapsed / 1000, 0.05);
 
-    if (!this.isPaused) {
-      if (this.hitstopTimer > 0) {
-        // Hitstop freeze: the world holds for a few ticks; keep the camera shake settling
-        this.hitstopTimer -= dt;
-        this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
-      } else {
-        this.update(dt);
+    try {
+      if (!this.isPaused) {
+        if (this.hitstopTimer > 0) {
+          // Hitstop freeze: the world holds for a few ticks; keep the camera shake settling
+          this.hitstopTimer -= dt;
+          this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
+        } else {
+          this.update(dt);
+        }
+      }
+
+      this.render();
+      this.failStreak = 0;
+    } catch (err) {
+      // one bad frame must not freeze the game; a frame that fails over and over ends the stage cleanly
+      console.error('frame error', err);
+      if (++this.failStreak >= 20) {
+        this.stop();
+        this.callbacks.onFatal?.();
       }
     }
-
-    this.render();
   };
+  private failStreak = 0;
 
   /**
    * Main Physics & Simulation Tick (30 FPS)
@@ -1332,7 +1346,7 @@ export class GameEngine {
               ? `🔒 Free ${remaining} more Critters!`
               : objType === 'relic_hunt'
               ? `🔒 Find ${remaining} more Idols!`
-              : `🔒 Complete Mission Quota!`;
+              : `🔒 Finish the goal to open the shrine!`;
           this.addFloatingText(msg, this.currentStage.exitTotemX - 40, p.y - 45, '#f87171');
         }
       }

@@ -10,6 +10,7 @@ import type { PlayerState } from './types.ts';
 import { HERO_CLIMB, HERO_FRAMES, HERO_RUN, HERO_STAND_H, type HeroFrame } from './heroAtlasData.ts';
 import { drawAuras } from './miloVariants.ts';
 import { HeroEvents } from './heroEvents.ts';
+import { trackAtlas } from './atlasLoader.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -37,11 +38,14 @@ let atlas: HTMLImageElement | null = null;
 let ready = false;
 function load() {
   if (atlas || typeof Image === 'undefined') return;
-  atlas = new Image();
-  atlas.onload = () => {
-    ready = true;
-  };
-  atlas.src = new URL('../assets/hero/hero-atlas.webp', import.meta.url).href;
+  const img = new Image();
+  atlas = img;
+  trackAtlas(img, new URL('../assets/hero/hero-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
+}
+
+/** start fetching the painted hero early (title screen), so the first stage never begins in vector art */
+export function warmHeroAtlas() {
+  if (heroSpriteEnabled()) load();
 }
 
 /** the face portraits, for the HUD and dialogue (null until the atlas has loaded) */
