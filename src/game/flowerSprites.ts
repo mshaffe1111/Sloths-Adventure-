@@ -80,7 +80,7 @@ export function flowerFor(world: number, mini: number, id: number): number {
 }
 
 /** the painted flower box: how many world units on its longest side */
-export const FLOWER_SIZE = 46;
+export const FLOWER_SIZE = 25;
 
 /** draws the flower centred on the origin; false when the sprite is off or not loaded yet */
 export function drawFlowerSprite(ctx: CanvasRenderingContext2D, world: number, mini: number, id: number, sway: number): boolean {
