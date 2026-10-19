@@ -19,6 +19,7 @@ import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { renderScenery, renderOverlay, setWeatherAvoid } from './scenery.ts';
 import { setSceneSeed, rollSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
+import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawTayraSprite } from './tayraSprite.ts';
 import { drawOcelotSprite } from './ocelotSprite.ts';
@@ -2503,13 +2504,27 @@ export class GameEngine {
 
     // Render Jennifur if present in level
     if (this.currentStage.daisyX !== undefined && this.currentStage.daisyY !== undefined) {
-      drawGirlfriendDaisy(
-        ctx,
-        this.currentStage.daisyX,
-        this.currentStage.daisyY,
-        this.gameTime,
-        this.daisyRescued
-      );
+      // the painted Jennifur (scared while she is held, cheering once rescued), else the vector one
+      let paintedJen = false;
+      if (jennifurSpriteReady()) {
+        ctx.save();
+        ctx.translate(this.currentStage.daisyX, this.currentStage.daisyY);
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.3)';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 22, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        paintedJen = drawJennifurSprite(ctx, this.daisyRescued ? 'cheer' : 'scared', this.gameTime, 0.8);
+        ctx.restore();
+      }
+      if (!paintedJen) {
+        drawGirlfriendDaisy(
+          ctx,
+          this.currentStage.daisyX,
+          this.currentStage.daisyY,
+          this.gameTime,
+          this.daisyRescued
+        );
+      }
     }
 
     // Render Enemies

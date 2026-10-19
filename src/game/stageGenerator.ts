@@ -1049,7 +1049,7 @@ function buildBoss(gen: Gen): GeneratedStage {
     spawnY: floor,
     exitTotemX: cfg.levelWidth - 220,
     exitTotemY: floor,
-    ...(cfg.secret ? {} : { daisyX: right + 150, daisyY: floor - 70 }),
+    ...(cfg.secret ? {} : { daisyX: right + 150, daisyY: floor }),
     arena: { left, right, floor },
   };
 }

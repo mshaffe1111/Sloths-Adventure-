@@ -5,7 +5,7 @@
  *
  * He marches in the four-frame warlord march and gallops in the two charge frames. Poses follow the boss brain: the raised blade
  * and the smash for the staff slam, the hurled blade for the spear throw, the horn call for the war cry, the stomp and double fist
- * for the ground pound, the glowing rage pose between phases, the groggy stagger and the fallen tyrant.
+ * for the ground pound, the roar between phases, the groggy stagger and the fallen tyrant.
  */
 import { createPaintedBoss } from './paintedBoss.ts';
 import { IRONCLAW_FRAMES } from './ironclawAtlasData.ts';
@@ -26,7 +26,7 @@ export const ironclawSprite = createPaintedBoss({
     const mv = br.move;
     if (br.state === 'dying') name = br.t < 0.5 ? 'hurt2' : br.t < 1.1 ? 'staggered' : br.t < 1.7 ? 'defeat1' : 'defeat2';
     else if (br.state === 'stun') name = 'stunned';
-    else if (br.state === 'roar') name = 'buff';
+    else if (br.state === 'roar') name = 'roar';
     else if (br.state === 'tell') {
       if (mv === 'staffSlam') name = 'cataprep';
       else if (mv === 'spearThrow') name = 'knuckle';

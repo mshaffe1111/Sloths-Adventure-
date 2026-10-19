@@ -4,6 +4,8 @@
  * rendered by StoryPlayer with scenes drawn from the in-game art.
  */
 
+import type { JennifurMood } from './jennifurSprite.ts';
+
 export type ActorKind =
   | 'milo'
   | 'daisy'
@@ -28,6 +30,8 @@ export interface SceneActor {
   angry?: boolean;
   /** boss only: defeated and dizzy */
   beaten?: boolean;
+  /** daisy (Jennifur) only: which animation she plays */
+  mood?: JennifurMood;
   /** milo only: pose */
   pose?: 'idle' | 'punch' | 'duck' | 'happy';
 }
@@ -107,7 +111,7 @@ export const INTRO_PANELS: StoryPanel[] = [
       world: 1, mood: 'storm', particles: 'rain', zoom: 1.08, focusX: 0.5,
       actors: [
         { kind: 'milo', x: 0.22, scale: 0.95 },
-        { kind: 'daisy', x: 0.46, scale: 0.95 },
+        { kind: 'daisy', x: 0.46, scale: 0.95, mood: 'scared' },
         { kind: 'boss', world: 10, x: 0.74, scale: 1.25, facing: -1, angry: true },
       ],
     },
@@ -120,7 +124,7 @@ export const INTRO_PANELS: StoryPanel[] = [
       world: 1, mood: 'storm', particles: 'petals', zoom: 1.12, focusX: 0.45,
       actors: [
         { kind: 'milo', x: 0.22, scale: 1.0 },
-        { kind: 'daisy_wave', x: 0.64, y: 0.6, scale: 0.9 },
+        { kind: 'daisy_wave', x: 0.64, y: 0.6, scale: 0.9, mood: 'scaredwave' },
       ],
     },
   },
@@ -381,7 +385,7 @@ export const ENDING_PANELS: StoryPanel[] = [
       world: 10, mood: 'glow', particles: 'sparkles', zoom: 1.4, focusX: 0.5,
       actors: [
         { kind: 'milo', x: 0.3, scale: 1.1, pose: 'happy' },
-        { kind: 'daisy_wave', x: 0.68, scale: 1.1 },
+        { kind: 'daisy_wave', x: 0.68, scale: 1.1, mood: 'cheer' },
       ],
     },
   },

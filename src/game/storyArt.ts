@@ -2,6 +2,7 @@ import type { BossEntity, PlayerState } from './types.ts';
 import { drawPaintedCardBoss } from './bossArt.ts';
 import { renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
 import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.ts';
+import { drawJennifurSprite } from './jennifurSprite.ts';
 import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor } from './story.ts';
 
@@ -275,7 +276,7 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
     case 'daisy_wave': {
       ctx.scale(s, s);
       if (a.facing === -1) ctx.scale(-1, 1);
-      drawGirlfriendDaisy(ctx, 0, 0, t, a.kind === 'daisy_wave');
+      if (!drawJennifurSprite(ctx, a.mood ?? (a.kind === 'daisy_wave' ? 'cheer' : 'happy'), t)) drawGirlfriendDaisy(ctx, 0, 0, t, a.kind === 'daisy_wave');
       break;
     }
     case 'boss': {
