@@ -6,7 +6,7 @@ import { SKILLS, type SkillId } from '../game/skills.ts';
 import { SkillIcon } from './SkillIcon.tsx';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
-const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
+export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
 
 interface PauseMenuProps {
   levelConfig: LevelConfig;
@@ -23,14 +23,14 @@ interface PauseMenuProps {
   skills: Set<SkillId>;
 }
 
-const Icon: React.FC<{ color: string; children: React.ReactNode; size?: number }> = ({ color, children, size = 30 }) => (
+export const Icon: React.FC<{ color: string; children: React.ReactNode; size?: number }> = ({ color, children, size = 30 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
     {children}
   </svg>
 );
 
 /** music and effects volume (saved on the device) */
-const Sliders: React.FC = () => {
+export const Sliders: React.FC = () => {
   const [music, setMusic] = React.useState(() => sound.musicVolume);
   const [sfx, setSfx] = React.useState(() => sound.sfxVolume);
   const row = (id: string, label: string, value: number, set: (v: number) => void, apply: (v: number) => void) => (

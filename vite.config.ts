@@ -3,6 +3,20 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 import {defineConfig} from 'vite';
+import { execSync } from 'node:child_process';
+
+// the time of the latest commit, shown on the start screen so you can tell which version a device has. The deploy checks out the commit,
+// so git has it; GAME_BUILD_TIME overrides it (the preview build has no git folder); the build time is the last resort.
+function lastUpdate(): string {
+  if (process.env.GAME_BUILD_TIME) return process.env.GAME_BUILD_TIME;
+  try {
+    const t = execSync('git log -1 --format=%cI', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+    if (t) return t;
+  } catch {
+    /* no git: fall through */
+  }
+  return new Date().toISOString();
+}
 
 // GitHub Pages serves the game from /<repo-name>/, so the deploy build sets BASE_PATH. Locally it stays '/'.
 const base = process.env.BASE_PATH || '/';
@@ -10,6 +24,7 @@ const base = process.env.BASE_PATH || '/';
 export default defineConfig(() => {
   return {
     base,
+    define: { __BUILD_TIME__: JSON.stringify(lastUpdate()) },
     plugins: [
       react(),
       tailwindcss(),

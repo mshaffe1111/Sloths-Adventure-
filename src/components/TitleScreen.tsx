@@ -3,6 +3,9 @@ import { TitleDefs, TitleFrame, TitleHero, TitleFireflies, TitleSlomatt } from '
 import { VistaCanvas } from './VistaCanvas.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
+import { StartMenu } from './StartMenu.tsx';
+import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
+import type { SkillId } from '../game/skills.ts';
 import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
 
 /** every biome takes a turn behind the logo */
@@ -31,6 +34,10 @@ interface TitleScreenProps {
   /** progress has just been cleared; begin again (skipStory: go straight to play) */
   onNewGame: (skipStory: boolean) => void;
   onOpenTrophies: () => void;
+  onOpenCards: () => void;
+  /** how many trophies there are in all, and the skills learned (the menu shows both) */
+  trophyTotal: number;
+  skills: Set<SkillId>;
   /** the tester's switch was flipped (stages and worlds open or close): rebuild the stage list */
   onUnlockToggled?: () => void;
   /** badges earned, shown on the Trophies button */
@@ -49,11 +56,16 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   onSaveLoaded,
   onNewGame,
   onOpenTrophies,
+  onOpenCards,
+  trophyTotal,
+  skills,
   onUnlockToggled,
   badgeCount,
 }) => {
   const [saveOpen, setSaveOpen] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const updated = formatBuildTime(BUILD_TIME);
 
   // the credit's secret: ten taps in a row on "Shaffer" open (or close again) every stage and world, for testing
   const tapRun = useRef({ n: 0, at: 0 });
@@ -100,6 +112,12 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             )}
             <button type="button" onClick={onToggleMute} className="ui-chip ui-chip-btn">
               {isMuted ? 'Sound off' : 'Sound on'}
+            </button>
+            <button type="button" onClick={() => setMenuOpen(true)} className="ui-chip ui-chip-btn" aria-label="Menu" data-menu="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
+              Menu
             </button>
           </div>
         </div>
@@ -150,6 +168,12 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           <button type="button" onClick={tapShaffer} className="title-credit-btn" aria-label="Shaffer">
             Shaffer
           </button>
+          {updated && (
+            <>
+              {' '}
+              <i>·</i> <span className="whitespace-nowrap">Updated {updated}</span>
+            </>
+          )}
           {creditMsg && (
             <span className="fixed left-1/2 top-14 z-50 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/70 px-4 py-1.5 text-sm text-amber-200" role="status">
               {creditMsg}
@@ -158,6 +182,20 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
         </p>
       </div>
 
+      {menuOpen && (
+        <StartMenu
+          isMuted={isMuted}
+          onToggleMute={onToggleMute}
+          onClose={() => setMenuOpen(false)}
+          onOpenTrophies={onOpenTrophies}
+          onOpenCards={onOpenCards}
+          onOpenMap={onOpenMap}
+          onViewStory={onViewStory}
+          trophyCount={badgeCount ?? 0}
+          trophyTotal={trophyTotal}
+          skills={skills}
+        />
+      )}
       {saveOpen && <SaveLoadDialog onClose={() => setSaveOpen(false)} onLoaded={onSaveLoaded} />}
       {newOpen && (
         <NewGameDialog

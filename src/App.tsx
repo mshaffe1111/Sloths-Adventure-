@@ -273,8 +273,8 @@ export default function App() {
         return;
       }
       if (screen === 'title') {
-        // a dialog (Save & Load, New Game) owns the keyboard while it is open
-        if (document.querySelector('.ui-scrim')) return;
+        // a dialog (Save & Load, New Game, the Menu) owns the keyboard while it is open
+        if (document.querySelector('.ui-scrim, .pm-scrim')) return;
         if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault();
           startLevel(resumeLevel);
@@ -569,6 +569,13 @@ export default function App() {
             setScreen('trophy');
           }}
           badgeCount={badgeCount}
+          trophyTotal={BADGES.length}
+          skills={skills}
+          onOpenCards={() => {
+            setTrophyFrom('title');
+            setTrophyTab('journal');
+            setScreen('trophy');
+          }}
           onViewStory={() => {
             setStoryFrom('title');
             setScreen('story_cutscene');
