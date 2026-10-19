@@ -1,6 +1,7 @@
 import React from 'react';
 import type { LevelConfig } from '../game/types.ts';
 import { sound } from '../game/audio.ts';
+import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 
 interface GameHUDProps {
   levelConfig: LevelConfig;
@@ -90,7 +91,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           <div className="flex items-center gap-1.5 bg-black/60 px-3 py-1 rounded-2xl border border-amber-400/30 shadow-md w-fit">
             <span className="text-amber-300 text-[11px] font-black tracking-wider">LIVES</span>
             {Array.from({ length: maxLives }).map((_, i) => (
-              <span key={i} className={`text-base leading-none ${i < lives ? '' : 'opacity-25 grayscale'}`}>🦥</span>
+              <HeroFaceIcon key={i} size={22} face={i < lives ? 'face_happy' : 'face_hurt'} className={i < lives ? '' : 'opacity-35 grayscale'} />
             ))}
           </div>
 
