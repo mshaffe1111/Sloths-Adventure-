@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
-import { buildStage, generateStage } from './stageGenerator.ts';
+import { buildStage, generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
@@ -85,4 +85,35 @@ test('validator rejects a wide swing gap with no liana', () => {
 test('validator rejects an exit hanging in mid air', () => {
   const r = broken('1-3', (s) => { s.exitTotemY -= 300; });
   assert.equal(r.ok, false);
+});
+
+test('random layout variants are always beatable, and the same variant gives the same layout', () => {
+  setLayoutVariant(null);
+  const sample = levels.filter((l) => l.objectiveType !== 'boss_lair' && !l.secret);
+  for (const variant of [1, 2, 777, 424242]) {
+    setLayoutVariant(variant);
+    for (const l of sample.filter((_, i) => i % 3 === variant % 3)) {
+      const a = JSON.stringify(generateStage(l).platforms);
+      const stage = generateStage(l);
+      assert.equal(JSON.stringify(stage.platforms), a, `${l.id} variant ${variant} not repeatable`);
+      const res = validateStage(stage);
+      assert.equal(res.ok, true, `${l.id} variant ${variant}: ${res.errors.slice(0, 3).join('; ')}`);
+    }
+  }
+  setLayoutVariant(null);
+});
+
+test('different variants give different layouts, but boss lairs stay as designed', () => {
+  const l = levels.find((x) => x.id === '2-2')!;
+  setLayoutVariant(1);
+  const a = JSON.stringify(generateStage(l).platforms);
+  setLayoutVariant(2);
+  const b = JSON.stringify(generateStage(l).platforms);
+  assert.notEqual(a, b);
+  const boss = levels.find((x) => x.objectiveType === 'boss_lair')!;
+  setLayoutVariant(1);
+  const b1 = JSON.stringify(generateStage(boss).platforms);
+  setLayoutVariant(2);
+  assert.equal(JSON.stringify(generateStage(boss).platforms), b1);
+  setLayoutVariant(null);
 });

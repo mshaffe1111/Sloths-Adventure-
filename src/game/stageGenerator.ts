@@ -1047,6 +1047,53 @@ export function findValidAttempt(config: LevelConfig, maxAttempts = 14): { attem
 
 const known = new Map<string, number>();
 
+/**
+ * Layout variant. null = the designed layout shipped in levelSeeds. A number = a fresh layout for every stage, found by
+ * trying attempts from that number until the validator passes, so a random stage is always beatable. Boss lairs and the
+ * secret stage always keep their designed layout. The same number gives the same layout, so retrying a stage after a fall
+ * replays what you just saw.
+ */
+let layoutVariant: number | null = null;
+const variantAttempt = new Map<string, number>();
+
+export function setLayoutVariant(v: number | null) {
+  layoutVariant = v;
+}
+export function getLayoutVariant() {
+  return layoutVariant;
+}
+
+/** a fresh variant for entering a stage: ?layout=fixed keeps the designed layouts, ?layout=123 replays one, otherwise random */
+export function rollLayoutVariant(): number | null {
+  try {
+    const q = new URLSearchParams(window.location.search).get('layout');
+    if (q === 'fixed') return null;
+    if (q && Number.isFinite(Number(q))) return Math.abs(Number(q) | 0) + 1;
+  } catch {
+    /* no window in some test setups */
+  }
+  return Math.floor(Math.random() * 1_000_000) + 1;
+}
+
+const VARIANT_BASE = 1000; // attempts below this are the designed ones
+
+/** the attempt number for a random layout of this stage: the first one from this variant's range that passes the validator */
+export function variantAttemptFor(config: LevelConfig, variant: number, maxAttempts = 14): number {
+  const key = `${config.id}#${variant}`;
+  const hit = variantAttempt.get(key);
+  if (hit !== undefined) return hit;
+  let found = -1;
+  for (let k = 0; k < maxAttempts; k++) {
+    const a = VARIANT_BASE + variant * 31 + k;
+    if (validateStage(buildStage(config, a)).ok) {
+      found = a;
+      break;
+    }
+  }
+  variantAttempt.set(key, found);
+  return found;
+}
+
 export function generateStage(config: LevelConfig): GeneratedStage {
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {
@@ -1054,6 +1101,10 @@ export function generateStage(config: LevelConfig): GeneratedStage {
     attempt = known.get(config.id) ?? findValidAttempt(config).attempt;
     if (attempt < 0) attempt = 0;
     known.set(config.id, attempt);
+  }
+  if (layoutVariant !== null && config.objectiveType !== 'boss_lair' && !config.secret && config.id !== SECRET_GATE_LEVEL) {
+    const a = variantAttemptFor(config, layoutVariant);
+    if (a >= 0) attempt = a; // if no fresh layout passes (never seen in testing), fall back to the designed one
   }
   const stage = buildStage(config, attempt);
   addSecrets(stage);

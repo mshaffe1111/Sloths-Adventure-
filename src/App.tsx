@@ -3,6 +3,7 @@ import type { GameScreen, LevelConfig, BossEntity } from './game/types.ts';
 import { generateAllLevels } from './game/worldsData.ts';
 import { InputEngine } from './game/inputEngine.ts';
 import { GameEngine } from './game/engine.ts';
+import { setLayoutVariant, rollLayoutVariant } from './game/stageGenerator.ts';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { TouchController } from './game/../components/TouchController.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
@@ -185,6 +186,8 @@ export default function App() {
   // Start a specific level
   const startLevel = useCallback((lvl: LevelConfig) => {
     if (!new URLSearchParams(window.location.search).get('music')) setMusicSalt((Math.random() * 0x7fffffff) | 0);
+    // a fresh layout each time a stage is entered; a retry (restartLevel) keeps it
+    setLayoutVariant(rollLayoutVariant());
     setActiveLevel(lvl);
     setSelectedWorldId(lvl.worldIndex);
 
