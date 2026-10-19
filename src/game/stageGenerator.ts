@@ -46,7 +46,7 @@ export interface GeneratedStage {
   /** World 2: rivers with drifting logs (their water, and the surface that is fatal) */
   rivers?: import('./river.ts').RiverZone[];
   /** what the generator built (for tests and debugging) */
-  meta?: { attempt: number; chunks: string[]; width: number };
+  meta?: { attempt: number; chunks: string[]; width: number; recipe?: { core: string; partner: string | null; fork: string } };
 }
 
 // ---------------------------------------------------------------------------
@@ -1047,9 +1047,58 @@ class Gen {
 
   /** this stage's favourite pieces: a few kinds it uses more than the others, so every stage has its own flavour */
   fav = new Set<Kind>();
+  recipe?: { core: string; partner: string | null; fork: string };
   pickFavourites() {
     const pool = (Object.keys(UNLOCK) as Kind[]).filter((k) => UNLOCK[k] <= this.m && k !== 'flat' && k !== 'river' && (k !== 'tower' || this.G >= 560));
     for (let i = 0; i < 4 && pool.length; i++) this.fav.add(pool.splice(Math.floor(this.rnd() * pool.length), 1)[0]);
+  }
+
+
+  // ---- stage recipes: every ordinary stage is about one idea ----
+  /** the pieces a recipe may be built on: they demand something of the player, and need no skill the player may lack */
+  private recipeOk(k: Kind) {
+    return UNLOCK[k] <= this.m && INTENSITY[k] >= 1 && k !== 'river' && k !== 'ropegap' && k !== 'ropebonus' && k !== 'yard' && (k !== 'tower' || this.G >= 560);
+  }
+
+  private weightedFrom(kinds: Kind[]): Kind {
+    const w = kinds.map((k) => Math.max(0.05, BASE_WEIGHT[k] * (OBJ_WEIGHT[this.cfg.objectiveType]?.[k] ?? 1) * (this.fav.has(k) ? 2.2 : 1)));
+    let r = this.rnd() * w.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < kinds.length; i++) { r -= w[i]; if (r <= 0) return kinds[i]; }
+    return kinds[kinds.length - 1];
+  }
+
+  /** the idea this stage is built around */
+  pickCore(): Kind {
+    const obj = this.cfg.objectiveType;
+    const all = (Object.keys(UNLOCK) as Kind[]).filter((k) => this.recipeOk(k));
+    if (obj === 'purge' || obj === 'gauntlet') return 'yard';
+    if (obj === 'vine_runner' && UNLOCK.swing <= this.m) return 'swing';
+    if (obj === 'relic_hunt' || obj === 'rescue') {
+      const route = (['cliff', 'bounce', 'tower'] as Kind[]).filter((k) => all.includes(k));
+      if (route.length) return route[Math.floor(this.rnd() * route.length)];
+    }
+    // a piece that has only just been unlocked is what its first stages are for
+    const fresh = all.filter((k) => UNLOCK[k] >= this.m - 2 && UNLOCK[k] >= 2);
+    if (fresh.length && this.chance(0.8)) return fresh[Math.floor(this.rnd() * fresh.length)];
+    return all.length ? this.weightedFrom(all) : 'pit';
+  }
+
+  /** the second idea the twist folds in: never as hard as the first one */
+  pickPartner(core: Kind): Kind | null {
+    const cap = core === 'yard' || INTENSITY[core] < 2 ? 2 : 1;
+    const pool = (Object.keys(UNLOCK) as Kind[]).filter((k) => this.recipeOk(k) && k !== core && INTENSITY[k] <= cap);
+    return pool.length ? this.weightedFrom(pool) : null;
+  }
+
+  /** an easy, pleasant piece for a breather */
+  calmKind(): Kind {
+    const pool = (['meadow', 'canopy', 'slope', 'valley', 'rolling', 'causeway', 'hill', 'bridge'] as Kind[]).filter((k) => UNLOCK[k] <= this.m);
+    return pool[Math.floor(this.rnd() * pool.length)] ?? 'hill';
+  }
+
+  /** the side route every stage offers: a ladder to a perch, or (once the rope is known) fruit along a rope */
+  pickFork(): Kind {
+    return skillGuaranteedAt('shimmy', this.m) && this.chance(0.4) ? 'ropebonus' : 'ladder';
   }
 
   pickKind(last: Kind[], forbid: Kind[] = []): Kind {
@@ -1085,6 +1134,13 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   const targetW = Math.round(cfg.levelWidth * widthJitter) + (hasRivers ? riverRecipes(cfg.miniIndex).reduce((a, r) => a + r.width, 0) : 0);
 
   gen.pickFavourites();
+  // ---- the recipe: one idea, introduced safely, developed, twisted, paid off ----
+  const core = gen.pickCore();
+  const partner = gen.pickPartner(core);
+  const fork = gen.pickFork();
+  gen.fav.add(core);
+  gen.recipe = { core, partner, fork };
+  const recipeOn = obj !== 'ascent' && !cfg.secret;
 
   // ---- opening: safe ground to find your feet ----
   gen.flat(Math.round(gen.rr(480, 720)), { safe: true });
@@ -1114,30 +1170,116 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   }
   forced.sort((a, b) => a.at - b.at);
 
+  // the beats, placed along the stage. Early stages get a gentler arc (no twist, one test), so the first hours stay friendly.
+  type Role = 'intro' | 'develop' | 'fork' | 'twist' | 'breather' | 'payoff';
+  const endZone = 1500;
+  const span = Math.max(2200, targetW - endZone - 700);
+  const at = (f: number) => 700 + span * f;
+  const script: Array<{ at: number; role: Role }> = [];
+  if (recipeOn) {
+    script.push({ at: 0, role: 'intro' });
+    if (core !== 'yard') script.push({ at: at(0.3), role: 'develop' });
+    script.push({ at: at(0.4), role: 'fork' });
+    if (gen.m >= 3) {
+      if (core !== 'yard') script.push({ at: at(0.52), role: 'develop' });
+      if (partner) script.push({ at: at(0.63), role: 'twist' });
+      script.push({ at: at(0.73), role: 'breather' });
+      script.push({ at: at(0.84), role: 'payoff' });
+    } else {
+      script.push({ at: at(0.72), role: 'breather' });
+    }
+  }
+  // a stage only has room for so many pieces (about 1,250 px each, forced ones included): drop the least important beats
+  // first, so the ones that remain are really placed and the stage does not grow to fit them
+  {
+    const weight = (r: Role) => (r === 'twist' ? 2 : 1);
+    let room = Math.max(2, Math.round((targetW - endZone - 600) / 1250) + 2 - forced.length);
+    const drop: Role[] = ['develop', 'develop', 'breather', 'fork', 'twist'];
+    const total = () => script.reduce((a, b) => a + weight(b.role), 0);
+    for (const r of drop) {
+      if (total() <= room) break;
+      const i = script.map((b) => b.role).lastIndexOf(r);
+      if (i >= 0) script.splice(i, 1);
+    }
+    room = 0;
+  }
+  const calmRow = (len: number) => { const s = gen.flat(len); gen.row(s.x0 + 30, s.x1 - 30, gen.g - 32, 3); return s; };
+  /** a flag after something hard, so a slip costs one section and not the whole stretch */
+  const flagAfterHard = () => { if (gen.cx - gen.lastCp > 650 && gen.cx < targetW - endZone) gen.checkpoint(); };
+
   const last: Kind[] = [];
   let hardJustNow = 0;
-  const endZone = 1500;
   let pieces = 0;
+  let payoffDone = false;
   // (at least four pieces, so even a short stage is a little journey and not one hill)
   while (gen.cx < targetW - endZone || pieces < (gen.m <= 2 ? 3 : 4)) {
     // checkpoint cadence
     if (gen.cx - gen.lastCp > 1000) { gen.checkpoint(); continue; }
 
     let kind: Kind;
+    let beat: Role | null = null;
     if (forced.length && gen.cx >= forced[0].at) {
       const f = forced.shift()!;
       kind = UNLOCK[f.kind] <= gen.m ? f.kind : gen.pickKind(last);
+    } else if (script.length && gen.cx >= script[0].at) {
+      beat = script.shift()!.role;
+      kind = beat === 'fork' ? fork : beat === 'breather' ? gen.calmKind() : core;
     } else {
       kind = gen.pickKind(last);
     }
-    // never two hard pieces back to back
-    if (hardJustNow > 0 && INTENSITY[kind] >= 2) { kind = gen.chance(0.5) ? 'hill' : 'bridge'; if (UNLOCK[kind] > gen.m) kind = 'hill'; }
+    // yards are never back to back: terrain separates them, so a fight stage still asks you to jump
+    if (recipeOn && kind === 'yard' && last[last.length - 1] === 'yard' && !beat) {
+      const between = gen.pickPartner('yard');
+      if (between) {
+        if (gen.cx - gen.lastCp > 700) gen.checkpoint();
+        gen.chunk(between);
+        gen.log.push('beat:between');
+        pieces++;
+        last.push(between);
+        if (last.length > 3) last.shift();
+        gen.flat(gen.rr(110, 200));
+        if (gen.cx - gen.lastCp > 700) gen.checkpoint();
+      }
+    }
+    // never two hard pieces back to back (the recipe's own twist is the one planned exception)
+    if (!beat && hardJustNow > 0 && INTENSITY[kind] >= 2) { kind = gen.chance(0.5) ? 'hill' : 'bridge'; if (UNLOCK[kind] > gen.m) kind = 'hill'; }
 
-    gen.chunk(kind);
+    if (beat === 'intro') {
+      // the first look at the idea: a flag just behind it, and no animals on it
+      if (gen.cx - gen.lastCp > 700) gen.checkpoint();
+      const from = gen.spots.length;
+      if (kind === 'yard') gen.chunkYard(1); else gen.chunk(kind);
+      for (const sp of gen.spots.slice(from)) if (!sp.perch) sp.safe = true;
+      calmRow(gen.rr(160, 240));
+      gen.log.push('beat:intro');
+    } else if (beat === 'twist') {
+      if (gen.cx - gen.lastCp > 500) gen.checkpoint();
+      gen.chunk(core);
+      gen.flat(gen.rr(110, 150));
+      if (gen.cx - gen.lastCp > 1000) gen.checkpoint();
+      gen.chunk(partner!);
+      gen.log.push('beat:twist');
+      flagAfterHard();
+    } else if (beat === 'payoff') {
+      if (gen.cx - gen.lastCp > 700) gen.checkpoint();
+      gen.chunk(core);
+      payoffDone = true;
+      gen.log.push('beat:payoff');
+      if (gen.cx - gen.lastCp > 400 && gen.cx < targetW - 700) gen.checkpoint();
+    } else if (beat === 'breather') {
+      gen.chunk(kind);
+      calmRow(gen.rr(220, 320));
+      gen.log.push('beat:breather');
+      flagAfterHard();
+    } else {
+      gen.chunk(kind);
+      if (beat) gen.log.push('beat:' + beat);
+      else if (INTENSITY[kind] >= 2) flagAfterHard();
+    }
     pieces++;
     last.push(kind);
     if (last.length > 3) last.shift();
-    hardJustNow = INTENSITY[kind] >= 2 ? 1 : 0;
+    hardJustNow = beat === 'twist' || INTENSITY[kind] >= 2 ? 1 : 0;
 
     // spacer: ground to breathe on
     const spacerP = INTENSITY[kind] >= 1 ? 0.9 : 0.55;
@@ -1146,6 +1288,13 @@ function buildHorizontal(gen: Gen): GeneratedStage {
       if (gen.chance(0.6)) gen.row(s.x0 + 30, s.x1 - 30, gen.g - 32, 3);
       hardJustNow = 0;
     }
+  }
+
+  // a short stage can end before its payoff came due: it still gets one
+  if (recipeOn && gen.m >= 3 && !payoffDone) {
+    if (gen.cx - gen.lastCp > 600) gen.checkpoint();
+    gen.chunk(core);
+    gen.log.push('beat:payoff');
   }
 
   // ---- finish: flat run-up, flag, then the goal staircase ----
@@ -1519,7 +1668,7 @@ export function buildStage(config: LevelConfig, attempt = 0): GeneratedStage {
   if (config.objectiveType === 'boss_lair') stage = buildBoss(gen);
   else if (config.objectiveType === 'ascent') stage = buildAscent(gen);
   else stage = buildHorizontal(gen);
-  stage.meta = { attempt, chunks: gen.log, width: Math.round(stage.config.levelWidth) };
+  stage.meta = { attempt, chunks: gen.log, width: Math.round(stage.config.levelWidth), ...(gen.recipe ? { recipe: gen.recipe } : {}) };
   return stage;
 }
 
