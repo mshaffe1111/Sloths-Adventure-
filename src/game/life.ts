@@ -196,6 +196,65 @@ function renderFeathers(ctx: CanvasRenderingContext2D, look: Look, world: number
   }
 }
 
+/** a hummingbird hovering: wings a blur, long bill, a flash of throat colour */
+function hummer(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, buzz: number, face: number, body: string, throat: string) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(face, 1);
+  ctx.fillStyle = 'rgba(235,250,255,0.5)';
+  const w = 0.5 + 0.5 * Math.abs(Math.sin(buzz));
+  for (const k of [-1, 1]) {
+    ctx.beginPath();
+    ctx.ellipse(-s * 0.2, -s * 0.5 * w, s * 0.28, s * 0.85, k * 0.5 - 0.3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = body;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, s * 0.8, s * 0.42, -0.45, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-s * 0.6, s * 0.3);
+  ctx.lineTo(-s * 1.15, s * 0.75);
+  ctx.lineTo(-s * 0.85, s * 0.2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(s * 0.75, -s * 0.35, s * 0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = throat;
+  ctx.beginPath();
+  ctx.ellipse(s * 0.62, -s * 0.12, s * 0.2, s * 0.14, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#2a2a2a';
+  ctx.lineWidth = Math.max(1, s * 0.1);
+  ctx.beginPath();
+  ctx.moveTo(s * 1.0, -s * 0.38);
+  ctx.lineTo(s * 1.9, -s * 0.2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function renderHummers(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, n: number) {
+  const r = rng(world * 109 + 11 + getSceneSeed() * 1013);
+  const sc = vh / 720;
+  for (let i = 0; i < n; i++) {
+    const sx = r();
+    const sy = 0.3 + r() * 0.35;
+    const par = 0.25 + r() * 0.25;
+    const span = vw + 200;
+    // hover near one spot, then dart to the next
+    const phase = time * 0.35 + i * 1.7;
+    const hop = Math.floor(phase);
+    const f = phase - hop;
+    const ease = f < 0.8 ? 0 : (f - 0.8) / 0.2;
+    const jump = (k: number) => ((Math.sin(k * 12.9898 + i * 78.233) * 43758.5453) % 1 + 1) % 1;
+    const px = jump(hop) + (jump(hop + 1) - jump(hop)) * ease;
+    const py = jump(hop + 7) + (jump(hop + 8) - jump(hop + 7)) * ease;
+    const x = ((sx * span + px * 140 - camX * par) % span + span) % span - 100;
+    const y = vh * sy + py * 70 * sc + Math.sin(time * 9 + i) * 1.6;
+    hummer(ctx, x, y, 5.5 * sc, time * 55 + i, i % 2 ? 1 : -1, i % 2 ? '#2fb89a' : '#3a8ad0', i % 2 ? '#e0408a' : '#f0a030');
+  }
+}
+
 // ───────────────────────────── dragonflies, moths, bats, fireflies, embers ─────────────────────────────
 
 function dragonfly(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, buzz: number, ang: number, col: string) {
@@ -281,12 +340,14 @@ export interface LifeKit {
   birdKind?: 'raptor';
   /** drifting feathers (an eagle's territory) */
   feathers?: number;
+  /** hovering hummingbirds (cloud forest) */
+  hummers?: number;
 }
 export const LIFE: Record<number, LifeKit> = {
   1: { birds: 2, fauna: 'butterfly', nFauna: 7, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 34 },
   2: { birds: 2, fauna: 'dragonfly', nFauna: 6, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 24 },
   3: { birds: 0, fauna: 'moth', nFauna: 6, bats: 4, fireflies: 16, embers: 0, ash: 0, gusts: 0, mist: true, motes: 40 },
-  4: { birds: 2, birdKind: 'raptor', feathers: 7, fauna: 'dragonfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 20 },
+  4: { birds: 2, birdKind: 'raptor', feathers: 5, hummers: 4, fauna: 'dragonfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 20 },
   5: { birds: 1, fauna: 'butterfly', nFauna: 11, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 5, mist: true, motes: 30 },
   6: { birds: 0, fauna: 'dragonfly', nFauna: 4, bats: 2, fireflies: 22, embers: 0, ash: 0, gusts: 0, mist: true, motes: 18 },
   7: { birds: 2, fauna: 'butterfly', nFauna: 4, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 44 },
@@ -558,6 +619,7 @@ export function renderLifeBack(ctx: CanvasRenderingContext2D, look: Look, world:
   if (k.fireflies > 0) renderFireflies(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.fireflies / 2) : k.fireflies);
   if (k.embers > 0) renderEmbers(ctx, world, camX, vw, vh, time, lite ? Math.ceil(k.embers / 2) : k.embers, lite ? 6 : k.ash);
   if (k.gusts > 0) renderGusts(ctx, look, world, camX, vw, vh, time, k.gusts);
+  if (k.hummers) renderHummers(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.hummers / 2) : k.hummers);
   if (k.feathers) renderFeathers(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.feathers / 2) : k.feathers);
 }
 

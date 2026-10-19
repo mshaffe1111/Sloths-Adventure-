@@ -350,12 +350,45 @@ export function cloudTree(ctx: CanvasRenderingContext2D, x: number, baseY: numbe
     ctx.bezierCurveTo(px + jitter(r, 10), cy + len * 0.35, px + jitter(r, 14), cy + len * 0.7, px + jitter(r, 12), cy + len);
     ctx.stroke();
   }
-  // bromeliads on the shoulders
+  // epiphytes: in a cloud forest they outweigh the tree's own leaves — bromeliads, orchids and ferns all over the limbs
   const L = look.leaves.map((c) => tone(c));
-  for (let i = 0; i < 3; i++) {
-    const k = 4 + ((r() * (C.length - 10)) | 0);
+  const shoulder = () => {
+    const k = 3 + ((r() * (C.length - 8)) | 0);
     const [cx, cy, hw] = C[k];
-    bromeliad(ctx, cx + (r() > 0.5 ? 1 : -1) * hw * 0.7, cy, 28 + r() * 16, L[(r() * L.length) | 0], look.flora[(r() * look.flora.length) | 0], r);
+    return { x: cx + (r() > 0.5 ? 1 : -1) * hw * (0.55 + r() * 0.4), y: cy };
+  };
+  for (let i = 0; i < 6; i++) {
+    const p = shoulder();
+    bromeliad(ctx, p.x, p.y, 26 + r() * 18, L[(r() * L.length) | 0], look.flora[(r() * look.flora.length) | 0], r);
+  }
+  for (let i = 0; i < 4; i++) {
+    const p = shoulder();
+    // an orchid spray: an arching stalk of small flowers
+    ctx.strokeStyle = '#3a4a2a';
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = 'round';
+    const dir = p.x > x ? 1 : -1;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.quadraticCurveTo(p.x + dir * 14, p.y - 30, p.x + dir * 34, p.y - 14);
+    ctx.stroke();
+    for (let f = 0; f < 6; f++) {
+      const u = (f + 1) / 7;
+      const fx = (1 - u) * (1 - u) * p.x + 2 * (1 - u) * u * (p.x + dir * 14) + u * u * (p.x + dir * 34);
+      const fy = (1 - u) * (1 - u) * p.y + 2 * (1 - u) * u * (p.y - 30) + u * u * (p.y - 14);
+      ctx.fillStyle = look.flora[(i + f) % look.flora.length];
+      ctx.beginPath();
+      ctx.ellipse(fx, fy + 2, 3.4, 2.6, 0.4, 0, TAU);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath();
+      ctx.arc(fx - 0.8, fy + 1.4, 0.9, 0, TAU);
+      ctx.fill();
+    }
+  }
+  for (let i = 0; i < 3; i++) {
+    const p = shoulder();
+    for (let f = 0; f < 4; f++) fernFrond(ctx, p.x, p.y, 22 + r() * 12, -Math.PI / 2 + (f - 1.5) * 0.6, L[(r() * L.length) | 0], r, 0.7);
   }
 }
 

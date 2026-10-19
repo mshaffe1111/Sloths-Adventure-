@@ -154,18 +154,19 @@ export const LOOKS: Record<number, Look> = {
   },
   // 8 — Twilight Treetops: purple dusk, moon, glow flowers
   8: {
-    sky: ['#1a1360', '#4a2a96', '#b04aa0', '#ff9ab0'],
-    sun: { x: 0.72, y: 0.22, r: 46, core: '#fdf8ff', glow: '#c8b8ff' },
-    stars: true, clouds: { top: '#9a7ad0', bottom: '#3a2a78', n: 4 },
-    far: 'dusk', farCols: ['#5a3aa0', '#3a2a7a', '#ff9ad0'], haze: '#c07ad0',
-    hills: ['#6a3fb0', '#4a2a90', '#2f1f6a'],
-    trunk: ['#7a4a8a', '#2a1a40'], crowns: ['#7a4fd8', '#b05ad8', '#4a7ae0', '#d85ab0'],
+    // a limestone karst forest at dusk: violet-to-rose sky and a moon, night-green foliage, pale night-blooming flowers
+    sky: ['#0b1238', '#1d3470', '#74559a', '#f0a088'],
+    sun: { x: 0.72, y: 0.22, r: 44, core: '#fffaf0', glow: '#cfe0ff' },
+    stars: true, clouds: { top: '#6a78b0', bottom: '#232d5c', n: 4 },
+    far: 'cliffs', farCols: ['#5a6a8a', '#3a4868', '#f0b0a0'], haze: '#8a80b8',
+    hills: ['#4a6a7a', '#34526a', '#223a50'],
+    trunk: ['#7a6a5a', '#2a2018'], crowns: ['#2f7a6a', '#3f9a78', '#245a5a', '#6aaa6a'],
     trees: ['umbrella', 'willow', 'jungle', 'palm'],
-    leaves: ['#7a4fd8', '#3a9ad8', '#d85ab0', '#4a2a90'], flora: ['#5ae6ff', '#ff6ad8', '#ffe66a', '#8a7aff'],
-    rays: '#c8b0ff', rayA: 0.16, weather: 'fireflies', glow: '#7ae6ff', grade: ['#4a2aa0', 0.12],
-    ground: { cap: '#7a5ae0', capHi: '#b8a0ff', capDark: '#3a2a90', dirt: '#5a3a8a', dirtDark: '#241540', stone: '#a090d0', outline: '#140a28', kind: 'grass' },
-    water: { top: '#8a7aff', bottom: '#2a1a78', foam: '#e8e0ff' },
-    vine: { main: '#5a3ab0', leaf: '#5ae6ff', flower: '#ff6ad8' },
+    leaves: ['#2f7a6a', '#3f9a78', '#245a6a', '#1c4a52'], flora: ['#f4ecd4', '#5ae0c0', '#ffb25a', '#e8c0e0'],
+    rays: '#d8e0ff', rayA: 0.14, weather: 'fireflies', glow: '#8aff9a', grade: ['#2a3a8a', 0.12],
+    ground: { cap: '#2f8a68', capHi: '#7ad0a0', capDark: '#1a4a3a', dirt: '#a39c90', dirtDark: '#403c38', stone: '#cfc8b8', outline: '#0e1418', kind: 'moss' },
+    water: { top: '#4a8aa8', bottom: '#14304a', foam: '#e0f0f4' },
+    vine: { main: '#2a6a5a', leaf: '#5ae0c0', flower: '#f4ecd4' },
   },
   // 9 — Volcanic Jungle: lava glow, embers
   9: {

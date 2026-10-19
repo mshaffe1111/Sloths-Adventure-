@@ -10,10 +10,10 @@ import { tone, mix, rgba, darken, type RNG, type Tone } from './artKit.ts';
 import { paintTree, canopyMass, rootCurtain, leafSpray } from './rainforest.ts';
 import { palmTree, bambooClump, giantMushroom, mangrove, cloudTree, treeFern, figRuin, charredTree } from './trees.ts';
 import { bananaLeaf, fernFrond } from './flora.ts';
-import { crag, roost, crystalspire } from './territoryTrees.ts';
+import { crag, roost, karst } from './territoryTrees.ts';
 import type { Look } from './scenery.ts';
 
-export type Species = 'giant' | 'palm' | 'bamboo' | 'mushroom' | 'mangrove' | 'cloud' | 'fern' | 'fig' | 'charred' | 'storm' | 'bloom' | 'crag' | 'roost' | 'crystalspire';
+export type Species = 'giant' | 'palm' | 'bamboo' | 'mushroom' | 'mangrove' | 'cloud' | 'fern' | 'fig' | 'charred' | 'storm' | 'bloom' | 'crag' | 'roost' | 'karst';
 type Floor = 'fern' | 'reed' | 'glow' | 'rock' | 'ash' | 'ruin';
 type Hang = 'liana' | 'root' | 'stalactite' | 'moss' | 'embers' | 'none';
 
@@ -61,9 +61,9 @@ export const RECIPES: Record<number, Recipe> = {
   },
   // the Sky Sovereign is an eagle: this is cliff country, wet slate stacks with waterfalls and aeries on top
   4: {
-    far: FAR([['crag', 3], ['cloud', 1]], { top: [90, 200], w: [26, 36], haze: 0.42 }),
-    mid: MID([['crag', 3], ['fern', 1], ['cloud', 1]], { top: [70, 190], w: [28, 40], haze: 0.2 }),
-    giants: BIG([['crag', 2], ['fern', 2], ['cloud', 1]], { n: [3, 4], top: [-60, 90], w: [34, 46] }),
+    far: FAR([['crag', 2], ['cloud', 2]], { top: [90, 200], w: [26, 36], haze: 0.42 }),
+    mid: MID([['crag', 2], ['cloud', 3], ['fern', 1]], { top: [70, 190], w: [28, 40], haze: 0.2 }),
+    giants: BIG([['cloud', 3], ['fern', 2], ['crag', 1]], { n: [3, 4], top: [-60, 90], w: [34, 46] }),
     floor: 'rock',
     hang: 'moss',
   },
@@ -88,11 +88,11 @@ export const RECIPES: Record<number, Recipe> = {
     floor: 'ruin',
     hang: 'liana',
   },
-  // the Night-Wing Monarch is a bat: pale roost trees hung with sleepers, and crystal rock that glows to call the moths
+  // the Night-Wing Monarch is a bat: limestone tower karst with caves, and big figs where the flying foxes roost
   8: {
-    far: FAR([['roost', 2], ['crystalspire', 2]], { top: [200, 290] }),
-    mid: MID([['roost', 2], ['crystalspire', 2], ['mushroom', 1]], { top: [150, 250] }),
-    giants: BIG([['roost', 2], ['crystalspire', 1]], { n: [3, 4], top: [20, 140], w: [40, 56] }),
+    far: FAR([['karst', 3], ['roost', 1]], { top: [120, 240], haze: 0.45 }),
+    mid: MID([['karst', 2], ['roost', 2]], { top: [100, 220], haze: 0.26 }),
+    giants: BIG([['roost', 2], ['karst', 1]], { n: [3, 4], top: [20, 140], w: [40, 56] }),
     floor: 'glow',
     hang: 'moss',
   },
@@ -138,7 +138,7 @@ function stamp(
     }, TW, res);
     return;
   }
-  const size = species === 'palm' ? 150 + r() * 60 : species === 'mushroom' ? 80 + r() * 90 + (haze < 0.2 ? 60 : 0) : species === 'fig' ? 190 : species === 'mangrove' ? 150 + r() * 70 : species === 'fern' ? 150 + r() * 40 : species === 'roost' ? 200 + r() * 40 : species === 'crag' ? 170 : species === 'crystalspire' ? 150 : 130;
+  const size = species === 'palm' ? 150 + r() * 60 : species === 'mushroom' ? 80 + r() * 90 + (haze < 0.2 ? 60 : 0) : species === 'fig' ? 190 : species === 'mangrove' ? 150 + r() * 70 : species === 'fern' ? 150 + r() * 40 : species === 'roost' ? 200 + r() * 40 : species === 'crag' ? 170 : species === 'karst' ? 170 : 130;
   const reach = Math.max(260, size * 1.5 + w * 4);
   const top = Math.min(topY, 0) - 160;
   const pad = 40;
@@ -161,7 +161,7 @@ function stamp(
     case 'charred': charredTree(c, x, baseY, topY, look, r, o); break;
     case 'crag': crag(c, x, baseY, topY, look, r, { ...o, w: Math.max(26, w * 0.9) }); break;
     case 'roost': roost(c, x, baseY, topY, look, r, { ...o, w: Math.max(18, w * 0.45) }); break;
-    case 'crystalspire': crystalspire(c, x, baseY, topY, look, r, { ...o, w: Math.max(30, w * 0.7) }); break;
+    case 'karst': karst(c, x, baseY, topY, look, r, { ...o, w: Math.max(30, w * 0.8) }); break;
   }
   if (haze > 0) {
     c.setTransform(1, 0, 0, 1, 0, 0);

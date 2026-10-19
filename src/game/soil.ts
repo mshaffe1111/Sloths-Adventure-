@@ -267,12 +267,12 @@ function leafImprint(ctx: CanvasRenderingContext2D, x: number, y: number, s: num
 }
 
 /** which ground a world is built from */
-export type GroundStyle = 'earth' | 'sand' | 'peat' | 'fungus' | 'slate' | 'cave' | 'blocks' | 'basalt' | 'wetslate' | 'rooted' | 'crystal' | 'iron';
+export type GroundStyle = 'earth' | 'sand' | 'peat' | 'fungus' | 'slate' | 'cave' | 'blocks' | 'basalt' | 'wetslate' | 'rooted' | 'karst' | 'iron';
 /** which edge sits on top of it */
 export type CapStyle = 'grass' | 'moss' | 'glow' | 'blossom' | 'reed' | 'ash' | 'ruin';
 
 export const GROUND_STYLE: Record<number, GroundStyle> = {
-  1: 'earth', 2: 'sand', 3: 'cave', 4: 'wetslate', 5: 'rooted', 6: 'peat', 7: 'blocks', 8: 'crystal', 9: 'basalt', 10: 'iron',
+  1: 'earth', 2: 'sand', 3: 'cave', 4: 'wetslate', 5: 'rooted', 6: 'peat', 7: 'blocks', 8: 'karst', 9: 'basalt', 10: 'iron',
 };
 export const CAP_STYLE: Record<number, CapStyle> = {
   1: 'grass', 2: 'grass', 3: 'glow', 4: 'moss', 5: 'blossom', 6: 'reed', 7: 'ruin', 8: 'glow', 9: 'ash', 10: 'ruin',
@@ -1197,120 +1197,105 @@ function paintRooted(look: Look, world: number): HTMLCanvasElement {
   return cv;
 }
 
-// ───────────────────────────── world 8: crystal-laden rock ─────────────────────────────
+// ───────────────────────────── world 8: limestone karst ─────────────────────────────
 
-/** a fan of faceted crystals growing from (x, y) */
-function crystalCluster(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, up: number, r: RNG, cols: string[], outline: string) {
-  const n = 3 + ((r() * 3) | 0);
-  // glow under the cluster
-  const gl = ctx.createRadialGradient(x, y - size * 0.5, 0, x, y - size * 0.5, size * 1.4);
-  gl.addColorStop(0, rgba(cols[0], 0.35));
-  gl.addColorStop(1, rgba(cols[0], 0));
-  ctx.fillStyle = gl;
-  ctx.fillRect(x - size * 1.4, y - size * 1.9, size * 2.8, size * 2.4);
-  for (let i = 0; i < n; i++) {
-    const a = up + (i - (n - 1) / 2) * 0.38 + (r() - 0.5) * 0.25;
-    const L = size * (0.55 + r() * 0.75);
-    const wd = size * (0.13 + r() * 0.09);
-    const col = cols[(r() * cols.length) | 0];
-    const t = tone(col, outline);
-    ctx.save();
-    ctx.translate(x + (i - (n - 1) / 2) * size * 0.14, y);
-    ctx.rotate(a - up);
-    ctx.rotate(up + Math.PI / 2);
-    // prism: base, shoulders, pointed tip
-    ctx.beginPath();
-    ctx.moveTo(-wd, 0);
-    ctx.lineTo(-wd, -L * 0.72);
-    ctx.lineTo(0, -L);
-    ctx.lineTo(wd, -L * 0.72);
-    ctx.lineTo(wd, 0);
-    ctx.closePath();
-    const gg = ctx.createLinearGradient(-wd, 0, wd, 0);
-    gg.addColorStop(0, t.light);
-    gg.addColorStop(0.55, t.mid);
-    gg.addColorStop(1, t.dark);
-    ctx.fillStyle = gg;
-    ctx.fill();
-    ctx.strokeStyle = rgba(outline, 0.85);
-    ctx.lineWidth = 1.4;
-    ctx.stroke();
-    // lit facet and a glint
-    ctx.beginPath();
-    ctx.moveTo(-wd, -L * 0.1);
-    ctx.lineTo(-wd, -L * 0.72);
-    ctx.lineTo(0, -L);
-    ctx.lineTo(-wd * 0.1, -L * 0.7);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(255,255,255,0.32)';
-    ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.fillRect(-wd * 0.55, -L * 0.62, wd * 0.3, L * 0.22);
-    ctx.restore();
-  }
-}
-
-function paintCrystal(look: Look, world: number): HTMLCanvasElement {
-  const cv = paintStrata(look, world, 'fungus');
+/**
+ * Tropical tower karst is pale limestone that rain has eaten into pits and fluted channels, with calcite
+ * flowstone drips, dark guano where the bats have been and, in the damp crevices, the neon-green glow of foxfire fungus.
+ */
+function paintKarst(look: Look, world: number): HTMLCanvasElement {
+  const cv = paintStrata(look, world, 'earth');
   const ctx = cv.getContext('2d')!;
   const r = rng(world * 7919 + 808 + getSceneSeed() * 1013);
   const g = look.ground;
-  const cols = ['#c9a2ff', '#8fd0ff', '#f39af0', '#a58aff'];
-  // geodes: a dark hollow lined with crystals, in rings of the soil
-  for (let i = 0; i < 7; i++) {
-    const x = (i + 0.2 + r() * 0.6) * (SOIL_W / 7);
-    const y = 70 + r() * (SOIL_H - 140);
-    const rw = 30 + r() * 20;
-    const rh = rw * (0.62 + r() * 0.18);
-    wrap2(x, y, rw + 6, (xx, yy) => {
-      ctx.beginPath();
-      ctx.ellipse(xx, yy, rw + 5, rh + 5, 0, 0, Math.PI * 2);
-      ctx.fillStyle = mix(g.stone, g.dirtDark, 0.4);
-      ctx.fill();
-      ctx.strokeStyle = rgba(g.outline, 0.8);
-      ctx.lineWidth = 1.6;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.ellipse(xx, yy, rw, rh, 0, 0, Math.PI * 2);
-      const gg = ctx.createRadialGradient(xx, yy + rh * 0.3, 2, xx, yy, rw);
-      gg.addColorStop(0, '#d9c0ff');
-      gg.addColorStop(0.5, '#7a4fd0');
-      gg.addColorStop(1, '#2a1560');
+  const cream = '#efe6cf';
+  const fox = look.glow ?? '#8aff9a';
+  // dark seepage and guano staining
+  for (let i = 0; i < 14; i++) {
+    wrap2(r() * SOIL_W, 20 + r() * (SOIL_H - 40), 60, (xx, yy) => {
+      const w = 34 + r() * 40;
+      const gg = ctx.createRadialGradient(xx, yy, 2, xx, yy, w);
+      gg.addColorStop(0, rgba(g.dirtDark, 0.55));
+      gg.addColorStop(1, rgba(g.dirtDark, 0));
       ctx.fillStyle = gg;
+      ctx.beginPath();
+      ctx.ellipse(xx, yy, w, w * 0.5, 0, 0, Math.PI * 2);
       ctx.fill();
-      // teeth of crystal around the rim
-      for (let k = 0; k < 11; k++) {
-        const a = (k / 11) * Math.PI * 2 + r() * 0.3;
-        const bx = xx + Math.cos(a) * rw * 0.92;
-        const by = yy + Math.sin(a) * rh * 0.92;
-        ctx.beginPath();
-        ctx.moveTo(bx + Math.cos(a + 1.57) * 3.5, by + Math.sin(a + 1.57) * 3.5);
-        ctx.lineTo(bx - Math.cos(a) * (8 + r() * 7), by - Math.sin(a) * (8 + r() * 7));
-        ctx.lineTo(bx - Math.cos(a + 1.57) * 3.5, by - Math.sin(a + 1.57) * 3.5);
-        ctx.closePath();
-        ctx.fillStyle = k % 3 === 0 ? '#f3e6ff' : '#b090f0';
-        ctx.fill();
-        ctx.strokeStyle = rgba('#1a0a40', 0.7);
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-      }
     });
   }
-  // veins and clusters of crystals pushing out of the rock
-  for (let i = 0; i < 40; i++) {
-    const x = r() * SOIL_W;
-    const y = 30 + r() * (SOIL_H - 30);
-    const size = 26 + r() * 30;
-    wrap2(x, y, size * 1.6, (xx, yy) => crystalCluster(ctx, xx, yy, size, -Math.PI / 2 + (r() - 0.5) * 1.6, r, cols, '#120626'));
+  // solution pits (rain-eaten hollows) with a pale lip
+  for (let i = 0; i < 24; i++) {
+    wrap2(r() * SOIL_W, 24 + r() * (SOIL_H - 48), 40, (xx, yy) => {
+      const rw = 9 + r() * 18;
+      const rh = rw * (0.5 + r() * 0.25);
+      ctx.beginPath();
+      ctx.ellipse(xx, yy, rw + 2.5, rh + 2.5, 0, 0, Math.PI * 2);
+      ctx.fillStyle = rgba(cream, 0.5);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(xx, yy + 1, rw, rh, 0, 0, Math.PI * 2);
+      const hg = ctx.createLinearGradient(0, yy - rh, 0, yy + rh);
+      hg.addColorStop(0, rgba(g.outline, 0.85));
+      hg.addColorStop(1, rgba(g.dirtDark, 0.7));
+      ctx.fillStyle = hg;
+      ctx.fill();
+      ctx.strokeStyle = rgba(g.outline, 0.6);
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    });
   }
-  // sparkle dust
+  // calcite flowstone: cream drips that have run down the face and hardened
+  for (let i = 0; i < 12; i++) {
+    wrap2(r() * SOIL_W, r() * (SOIL_H - 70), 20, (xx, yy) => {
+      const len = 22 + r() * 30;
+      const w = 6 + r() * 7;
+      ctx.beginPath();
+      ctx.moveTo(xx - w, yy);
+      ctx.quadraticCurveTo(xx - w * 1.1, yy + len * 0.8, xx, yy + len);
+      ctx.quadraticCurveTo(xx + w * 1.1, yy + len * 0.8, xx + w, yy);
+      ctx.closePath();
+      const fg = ctx.createLinearGradient(xx - w, 0, xx + w, 0);
+      fg.addColorStop(0, rgba('#fff8e6', 0.9));
+      fg.addColorStop(1, rgba(mix(cream, g.dirt, 0.5), 0.9));
+      ctx.fillStyle = fg;
+      ctx.fill();
+      ctx.strokeStyle = rgba(g.outline, 0.55);
+      ctx.lineWidth = 1.1;
+      ctx.stroke();
+    }, false);
+  }
+  // foxfire: tiny neon-green mushrooms in the damp crevices
+  for (let i = 0; i < 18; i++) {
+    wrap2(r() * SOIL_W, 30 + r() * (SOIL_H - 60), 24, (xx, yy) => {
+      const s = 4 + r() * 5;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const gl = ctx.createRadialGradient(xx, yy - s, 0, xx, yy - s, s * 2.6);
+      gl.addColorStop(0, rgba(fox, 0.28));
+      gl.addColorStop(1, rgba(fox, 0));
+      ctx.fillStyle = gl;
+      ctx.fillRect(xx - s * 4, yy - s * 5, s * 8, s * 8);
+      ctx.restore();
+      ctx.strokeStyle = rgba(fox, 0.9);
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(xx, yy);
+      ctx.lineTo(xx, yy - s);
+      ctx.stroke();
+      ctx.fillStyle = lighten(fox, 0.3);
+      ctx.beginPath();
+      ctx.ellipse(xx, yy - s, s * 0.7, s * 0.45, 0, Math.PI, 0);
+      ctx.fill();
+    });
+  }
+  // calcite sparkle
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 70; i++) {
     wrap2(r() * SOIL_W, r() * SOIL_H, 6, (xx, yy) => {
-      ctx.fillStyle = rgba(cols[(r() * cols.length) | 0], 0.7);
-      ctx.fillRect(xx - 0.8, yy - 3, 1.6, 6);
-      ctx.fillRect(xx - 3, yy - 0.8, 6, 1.6);
+      ctx.fillStyle = rgba('#fff6dc', 0.55);
+      ctx.fillRect(xx - 0.7, yy - 2.4, 1.4, 4.8);
+      ctx.fillRect(xx - 2.4, yy - 0.7, 4.8, 1.4);
     });
   }
   ctx.restore();
@@ -1427,7 +1412,7 @@ function paintSoil(look: Look, world: number): HTMLCanvasElement {
   if (style === 'basalt') return paintBasalt(look, world);
   if (style === 'wetslate') return paintWetSlate(look, world);
   if (style === 'iron') return paintIron(look, world);
-  if (style === 'crystal') return paintCrystal(look, world);
+  if (style === 'karst') return paintKarst(look, world);
   if (style === 'rooted') return paintRooted(look, world);
   return paintStrata(look, world, style);
 }

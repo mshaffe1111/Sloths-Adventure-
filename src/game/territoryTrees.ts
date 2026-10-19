@@ -3,13 +3,14 @@
  *
  *   crag (W4): the Sky Sovereign is an eagle, and eagles own cliffs. A wet slate sea-stack with a waterfall down one
  *      face, ferns clinging to its ledges and a heap of sticks — the aerie — on the very top.
- *   roost (W8): the Night-Wing Monarch is a bat. A pale, bare, gnarled giant whose limbs are hung with sleeping bats
- *      and glowing figs: the roost the whole world is built around.
- *   crystalspire (W8): the rock of that world is crystal, so the skyline has clusters of lit columns, not only trees.
+ *   roost (W8): the Night-Wing Monarch is a bat. A gnarled giant whose limbs are hung with sleeping flying foxes and
+ *      ripe figs: the roost the whole world is built around (real flying foxes roost by the hundreds in big trees).
+ *   karst (W8): the world is limestone tower karst — sheer grey towers with a cave mouth at the foot, forest clinging
+ *      to the ledges and a forest cap on top, and bats streaming out of the cave at dusk.
  */
 import { tone, mix, lighten, darken, rgba, type RNG } from './artKit.ts';
 import { fernFrond } from './flora.ts';
-import { leafSpray } from './rainforest.ts';
+import { leafSpray, canopyMass } from './rainforest.ts';
 import type { StampOpts } from './trees.ts';
 import type { Look } from './scenery.ts';
 
@@ -162,7 +163,7 @@ export function crag(ctx: CanvasRenderingContext2D, x: number, baseY: number, to
 // ───────────────────────────── W8: the bat roost ─────────────────────────────
 
 /** a sleeping bat hanging head-down with its wings folded round it */
-export function hangingBat(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, col: string, eye?: string) {
+export function hangingBat(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, col: string, eye?: string, mantle?: string) {
   ctx.strokeStyle = darken(col, 0.3);
   ctx.lineWidth = Math.max(1, s * 0.1);
   ctx.beginPath();
@@ -185,6 +186,13 @@ export function hangingBat(ctx: CanvasRenderingContext2D, x: number, y: number, 
   ctx.beginPath();
   ctx.ellipse(x, y + s * 1.38, s * 0.26, s * 0.22, 0, 0, TAU);
   ctx.fill();
+  if (mantle) {
+    // flying foxes wear a golden cape of fur at the neck
+    ctx.fillStyle = mantle;
+    ctx.beginPath();
+    ctx.ellipse(x, y + s * 1.18, s * 0.34, s * 0.16, 0, 0, TAU);
+    ctx.fill();
+  }
   ctx.beginPath();
   ctx.moveTo(x - s * 0.24, y + s * 1.46);
   ctx.lineTo(x - s * 0.3, y + s * 1.8);
@@ -201,11 +209,12 @@ export function hangingBat(ctx: CanvasRenderingContext2D, x: number, y: number, 
 }
 
 export function roost(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
-  // ghost-pale bark: this tree has been dead long enough to bleach, and the bats do not mind
-  const bark = tone(mix('#b9a9d0', look.trunk[0], 0.3), '#1a0a30');
+  // an old fig-like giant: grey-brown bark, and a crown of night-green leaves among the sleepers
+  const bark = tone(mix('#8a7a68', look.trunk[0], 0.35), '#1a1008');
   const glow = look.glow ?? '#7ae6ff';
   const fruit = look.flora[0];
-  const batCol = '#241640';
+  const batCol = '#2a1c18';
+  const crownT = tone(mix(look.leaves[0], look.haze, 0.15), '#06201a');
   const g = ctx.createLinearGradient(x - o.w, 0, x + o.w, 0);
   g.addColorStop(0, bark.light);
   g.addColorStop(0.55, bark.mid);
@@ -256,7 +265,7 @@ export function roost(ctx: CanvasRenderingContext2D, x: number, baseY: number, t
         const u = 0.3 + r() * 0.6;
         const hx = (1 - u) * (1 - u) * bx + 2 * (1 - u) * u * mx + u * u * ex;
         const hy = (1 - u) * (1 - u) * by + 2 * (1 - u) * u * my + u * u * ey;
-        if (r() > 0.28) hangingBat(ctx, hx, hy + w * 0.4, 9 + r() * 5, batCol, r() > 0.6 ? glow : undefined);
+        if (r() > 0.28) hangingBat(ctx, hx, hy + w * 0.4, 10 + r() * 6, batCol, undefined, r() > 0.4 ? '#c98a3a' : undefined);
         else {
           ctx.strokeStyle = bark.dark;
           ctx.lineWidth = 1.2;
@@ -280,7 +289,7 @@ export function roost(ctx: CanvasRenderingContext2D, x: number, baseY: number, t
       limb(ex, ey, ang - 0.45 - r() * 0.4, len * 0.72, w * 0.66, depth - 1);
       limb(ex, ey, ang + 0.45 + r() * 0.4, len * 0.72, w * 0.66, depth - 1);
     } else {
-      leafSpray(ctx, ex, ey, 16, tone(mix('#3a2a7a', look.haze, 0.2), '#0a0420'), r, 4, ang, 1.2);
+      leafSpray(ctx, ex, ey, 30 + r() * 12, crownT, r, 7, ang, 1.6);
     }
   };
   const reach = Math.max(90, (baseY - topY) * 0.4);
@@ -291,77 +300,106 @@ export function roost(ctx: CanvasRenderingContext2D, x: number, baseY: number, t
   limb(x + o.w * 0.4, (baseY + top) / 2 + 10, -0.35, reach * 0.8, o.w * 0.4, 2);
 }
 
-// ───────────────────────────── W8: crystal spires ─────────────────────────────
+// ───────────────────────────── W8: limestone karst tower ─────────────────────────────
 
-export function crystalspire(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
-  const glow = look.glow ?? '#7ae6ff';
-  const cols = [look.flora[0], look.flora[1] ?? '#c9a2ff', '#8fd0ff', '#b48cff'];
-  const H = Math.max(120, baseY - topY);
-  const n = 5;
-  // glow on the ground around the base
+export function karst(ctx: CanvasRenderingContext2D, x: number, baseY: number, topY: number, look: Look, r: RNG, o: StampOpts) {
+  const rock = tone(mix(look.ground.stone, '#8a8f9a', 0.35), '#1a2030');
+  const leafT = tone(mix(look.leaves[0], look.haze, 0.1), '#06201a');
+  const H = Math.max(160, baseY - topY);
+  const hw = Math.max(30, o.w * 1.2);
+  const steps = 18;
+  const Ls: Array<[number, number]> = [];
+  const Rs: Array<[number, number]> = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const yy = baseY + 10 - H * t;
+    // a karst tower is barely narrower at the top than at the foot, and bellies out where the rain undercuts it
+    const bulge = Math.sin(t * Math.PI * 1.6 + o.w) * hw * 0.14;
+    const w = hw * (1.0 - 0.18 * t) + bulge + jitter(r, hw * 0.05);
+    const cx = x + o.lean * 0.15 * t;
+    Ls.push([cx - w, yy]);
+    Rs.push([cx + w * (0.9 + r() * 0.1), yy]);
+  }
+  ctx.beginPath();
+  ctx.moveTo(Ls[0][0] - 10, Ls[0][1]);
+  for (const p of Ls) ctx.lineTo(p[0], p[1]);
+  const tl = Ls[steps];
+  const tr = Rs[steps];
+  ctx.lineTo(tl[0] + (tr[0] - tl[0]) * 0.3, tl[1] - 8);
+  ctx.lineTo(tr[0], tr[1]);
+  for (let i = Rs.length - 1; i >= 0; i--) ctx.lineTo(Rs[i][0], Rs[i][1]);
+  ctx.lineTo(Rs[0][0] + 12, Rs[0][1]);
+  ctx.closePath();
+  const g = ctx.createLinearGradient(x - hw, 0, x + hw, 0);
+  g.addColorStop(0, rock.light);
+  g.addColorStop(0.55, rock.mid);
+  g.addColorStop(1, rock.dark);
+  ctx.fillStyle = g;
+  ctx.fill();
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
-  const bg = ctx.createRadialGradient(x, baseY, 0, x, baseY, H * 0.55);
-  bg.addColorStop(0, rgba(glow, 0.35));
-  bg.addColorStop(1, rgba(glow, 0));
-  ctx.fillStyle = bg;
-  ctx.fillRect(x - H * 0.6, baseY - H * 0.6, H * 1.2, H * 1.2);
-  ctx.restore();
-  const items = Array.from({ length: n }, (_, i) => ({
-    ox: (i - (n - 1) / 2) * o.w * 0.75 + jitter(r, 8),
-    h: H * (i === 2 ? 1 : 0.45 + r() * 0.4),
-    w: o.w * (0.42 + r() * 0.2),
-    tilt: (i - (n - 1) / 2) * 0.1 + jitter(r, 0.05),
-    c: cols[i % cols.length],
-  }));
-  items.sort((a, b) => b.h - a.h);
-  for (const c of items.slice().reverse()) {
-    const t = tone(c.c, '#120626');
-    ctx.save();
-    ctx.translate(x + c.ox, baseY + 6);
-    ctx.rotate(c.tilt);
-    const w = c.w;
-    // hexagonal column: a left face, a right face, a pointed cap
-    const tipY = -c.h;
-    const shoulder = -c.h * 0.84;
-    const faces: Array<[number, number, string]> = [
-      [-w, -w * 0.15, t.light],
-      [-w * 0.15, w * 0.45, t.mid],
-      [w * 0.45, w, t.dark],
-    ];
-    for (const [a, b, col] of faces) {
-      ctx.fillStyle = col;
-      ctx.beginPath();
-      ctx.moveTo(a, 0);
-      ctx.lineTo(a, shoulder);
-      ctx.lineTo(((a + b) / 2) * 0.5, tipY + (a + b === 0 ? 0 : 0));
-      ctx.lineTo(b, shoulder);
-      ctx.lineTo(b, 0);
-      ctx.closePath();
-      ctx.fill();
-    }
-    ctx.strokeStyle = rgba('#120626', 0.7);
-    ctx.lineWidth = 1.4;
+  ctx.clip();
+  // rain-fluted channels running down the face, and dark staining where the water goes
+  for (let k = 0; k < 18; k++) {
+    const sx = x + jitter(r, hw * 0.95);
+    ctx.strokeStyle = rgba(rock.deep, 0.18 + r() * 0.22);
+    ctx.lineWidth = 2 + r() * 4;
     ctx.beginPath();
-    ctx.moveTo(-w, 0);
-    ctx.lineTo(-w, shoulder);
-    ctx.lineTo(-w * 0.1, tipY);
-    ctx.lineTo(w, shoulder);
-    ctx.lineTo(w, 0);
-    ctx.moveTo(-w * 0.15, 0);
-    ctx.lineTo(-w * 0.15, shoulder);
-    ctx.lineTo(-w * 0.1, tipY);
-    ctx.moveTo(w * 0.45, 0);
-    ctx.lineTo(w * 0.45, shoulder);
+    ctx.moveTo(sx, topY + r() * 40);
+    ctx.quadraticCurveTo(sx + jitter(r, 6), (topY + baseY) / 2, sx + jitter(r, 8), baseY);
     ctx.stroke();
-    // inner light
-    ctx.fillStyle = 'rgba(255,255,255,0.28)';
+  }
+  for (let k = 0; k < 10; k++) {
+    ctx.strokeStyle = rgba(rock.hi, 0.18 + r() * 0.12);
+    ctx.lineWidth = 1.4;
+    const sx = x + jitter(r, hw * 0.9);
     ctx.beginPath();
-    ctx.moveTo(-w * 0.7, -c.h * 0.1);
-    ctx.lineTo(-w * 0.5, -c.h * 0.7);
-    ctx.lineTo(-w * 0.35, -c.h * 0.1);
-    ctx.closePath();
+    ctx.moveTo(sx, topY + r() * 60);
+    ctx.lineTo(sx + jitter(r, 4), baseY - r() * 50);
+    ctx.stroke();
+  }
+  // the cave mouth at the foot: a dark arch with stalactites, where the bats come out
+  const cx0 = x + jitter(r, hw * 0.3);
+  const ch = Math.min(H * 0.26, 90);
+  const cw = hw * 0.55;
+  ctx.fillStyle = '#05050c';
+  ctx.beginPath();
+  ctx.moveTo(cx0 - cw, baseY + 10);
+  ctx.quadraticCurveTo(cx0 - cw, baseY - ch, cx0, baseY - ch);
+  ctx.quadraticCurveTo(cx0 + cw, baseY - ch, cx0 + cw, baseY + 10);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = rock.mid;
+  for (let k = 0; k < 7; k++) {
+    const sx = cx0 - cw * 0.8 + (k / 6) * cw * 1.6;
+    const sy = baseY - ch * (0.94 - Math.abs(k - 3) * 0.1);
+    ctx.beginPath();
+    ctx.moveTo(sx - 4, sy);
+    ctx.lineTo(sx + 4, sy);
+    ctx.lineTo(sx, sy + 8 + r() * 14);
     ctx.fill();
-    ctx.restore();
+  }
+  ctx.restore();
+  // forest clinging to ledges
+  for (let k = 0; k < 9; k++) {
+    const yy = topY + 30 + r() * (H - 90);
+    const side = r() > 0.5 ? 1 : -1;
+    const lx = x + side * hw * (0.55 + r() * 0.35);
+    ctx.fillStyle = rgba(leafT.dark, 0.95);
+    ctx.beginPath();
+    ctx.ellipse(lx, yy, 14 + r() * 12, 7, 0, 0, TAU);
+    ctx.fill();
+    leafSpray(ctx, lx, yy, 20 + r() * 12, leafT, r, 6, -Math.PI / 2 + side * 0.5, 1.8);
+  }
+  // a roots-and-leaves cap of forest on top, with a few lianas draped over the edge
+  canopyMass(ctx, (tl[0] + tr[0]) / 2, tl[1] - 6, hw * 1.05, 40, [leafT, tone(look.crowns[1] ?? look.crowns[0])], r, 18, 30);
+  ctx.lineCap = 'round';
+  for (let k = 0; k < 4; k++) {
+    const sx = tl[0] + (tr[0] - tl[0]) * (0.1 + r() * 0.8);
+    ctx.strokeStyle = leafT.dark;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(sx, tl[1] - 2);
+    ctx.quadraticCurveTo(sx + jitter(r, 8), tl[1] + 40, sx + jitter(r, 5), tl[1] + 60 + r() * 60);
+    ctx.stroke();
   }
 }
