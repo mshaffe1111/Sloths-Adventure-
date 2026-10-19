@@ -10,7 +10,7 @@ import type {
 } from './types.ts';
 import { calculateDifficultyScaling } from './rules.ts';
 import { WORLDS_DATA } from './worldsData.ts';
-import { reachJump } from './physics.ts';
+import { reachBounce, reachJump, TAKEOFF_SLACK } from './physics.ts';
 import { swingLandings, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
@@ -55,35 +55,43 @@ const WATER_FROM_BOTTOM = 170;
 
 type Kind =
   | 'flat' | 'pit' | 'hill' | 'bridge' | 'stones' | 'cliff' | 'bounce'
-  | 'ladder' | 'swing' | 'moving' | 'fragile' | 'yard' | 'tower' | 'river';
+  | 'ladder' | 'swing' | 'moving' | 'fragile' | 'yard' | 'tower' | 'river'
+  | 'valley' | 'rolling' | 'hurdles' | 'terrace' | 'gapbridge' | 'skyhop' | 'islands' | 'canopy'
+  | 'pillars' | 'slope' | 'stumps' | 'zigzag' | 'trampoline' | 'causeway' | 'pegs' | 'meadow' | 'ditch' | 'twin';
 
 /** first mission number (1..100) a piece may appear in: teaches one idea at a time */
 const UNLOCK: Record<Kind, number> = {
-  flat: 1, pit: 1, hill: 1, yard: 1, bridge: 2, stones: 2, cliff: 2, ladder: 2,
+  flat: 1, pit: 1, hill: 1, yard: 1, bridge: 1, stones: 1, cliff: 2, ladder: 1,
   bounce: 3, swing: 4, moving: 8, fragile: 11, tower: 14, river: 1,
+  valley: 1, rolling: 1, hurdles: 1, terrace: 2, gapbridge: 1, skyhop: 1, islands: 1, canopy: 1,
+  pillars: 3, slope: 1, stumps: 1, zigzag: 2, trampoline: 3, causeway: 1, pegs: 3, meadow: 1, ditch: 1, twin: 2,
 };
 
 const BASE_WEIGHT: Record<Kind, number> = {
   flat: 1.4, pit: 3, hill: 2, bridge: 1.2, stones: 2.2, cliff: 1.6, bounce: 1.4,
   ladder: 1.3, swing: 1.8, moving: 1.4, fragile: 1.2, yard: 1, tower: 0.8,
   river: 0, // never picked at random: World 2 places its rivers on purpose (see river.ts)
+  valley: 1.6, rolling: 1.6, hurdles: 1.5, terrace: 1.5, gapbridge: 1.4, skyhop: 1.6, islands: 1.6, canopy: 1.6,
+  pillars: 1.5, slope: 1.5, stumps: 1.5, zigzag: 1.5, trampoline: 1.4, causeway: 1.5, pegs: 1.4, meadow: 1.5, ditch: 1.5, twin: 1.5,
 };
 
 const OBJ_WEIGHT: Partial<Record<ObjectiveType, Partial<Record<Kind, number>>>> = {
-  sprint: { pit: 1.4, bounce: 1.3, moving: 1.3, yard: 0.5 },
-  harvest: { ladder: 1.6, stones: 1.3, yard: 0.6 },
-  purge: { yard: 3, flat: 0.8, swing: 0.6 },
-  stealth: { bridge: 1.8, cliff: 1.5, yard: 0.7 },
+  sprint: { pit: 1.4, bounce: 1.3, moving: 1.3, yard: 0.5, zigzag: 1.3, trampoline: 1.3 },
+  harvest: { ladder: 1.6, stones: 1.3, yard: 0.6, canopy: 1.8, skyhop: 1.3, meadow: 2 },
+  purge: { yard: 3, flat: 0.8, swing: 0.6, meadow: 1.8, rolling: 1.4, valley: 1.3, twin: 1.3, slope: 1.3, pegs: 0.6, pillars: 0.6, zigzag: 0.6 },
+  stealth: { bridge: 1.8, cliff: 1.5, yard: 0.7, valley: 1.4, hurdles: 1.3 },
   vine_runner: { swing: 3.2, stones: 1.5, yard: 0.2, pit: 0.7 },
   relic_hunt: { ladder: 2, cliff: 2, tower: 3, bounce: 1.4 },
-  rescue: { ladder: 1.5, yard: 1.5, cliff: 1.3 },
-  gauntlet: { yard: 3.2, moving: 1.3, fragile: 1.3 },
+  rescue: { ladder: 1.5, yard: 1.5, cliff: 1.3, terrace: 1.4, twin: 1.3 },
+  gauntlet: { yard: 3.2, moving: 1.3, fragile: 1.3, meadow: 1.5, twin: 1.3, pegs: 0.6, pillars: 0.6 },
 };
 
 /** how taxing a piece is; a spacer of flat ground follows the hard ones */
 const INTENSITY: Record<Kind, number> = {
   flat: 0, hill: 0, bridge: 0, ladder: 0, pit: 1, stones: 1, cliff: 1, bounce: 1,
   yard: 1, swing: 2, moving: 2, fragile: 2, tower: 2, river: 1,
+  valley: 0, rolling: 0, hurdles: 1, terrace: 1, gapbridge: 1, skyhop: 1, islands: 1, canopy: 0,
+  pillars: 1, slope: 0, stumps: 0, zigzag: 1, trampoline: 1, causeway: 0, pegs: 1, meadow: 0, ditch: 0, twin: 0,
 };
 
 const FLOWER_VARIANTS = ['orchid', 'hibiscus', 'fern', 'monstera'] as const;
@@ -359,14 +367,21 @@ class Gen {
 
   /** pit width: shorter early, never beyond a comfortable single jump */
   pitW() {
-    const r = reachJump(0, false);
-    const hi = Math.min(0.8 * r, this.lerp(100, 0.8 * r));
-    return this.rr(Math.max(72, hi - 34), hi);
+    // never wider than a jump that can start TAKEOFF_SLACK px before the edge
+    const r = reachJump(0, false) * 0.95 - TAKEOFF_SLACK;
+    const hi = Math.min(r, this.lerp(84, r));
+    return this.rr(Math.max(64, hi - 34), Math.max(72, hi));
+  }
+
+  /** a horizontal hop between two ledges: a fraction of the jump's reach, but always leaving TAKEOFF_SLACK px of room to take off */
+  hopLen(dy: number, fraction: number) {
+    const r = reachJump(dy, false);
+    return Math.max(36, Math.min(r * fraction, r * 0.95 - TAKEOFF_SLACK));
   }
 
   chunkPit() {
     const wide = !this.safeMode && this.m >= 6 && this.chance(0.35 * this.d + 0.1);
-    const w = wide ? this.rr(0.62, 0.78) * reachJump(0, true) : this.pitW();
+    const w = wide ? this.rr(0.6, 0.74) * reachJump(0, true) : this.pitW();
     this.closeBank();
     this.arc(this.cx - 30, this.cx + w + 30, this.g - 36, wide ? 120 : 76, wide ? 5 : 4);
     this.cx += w;
@@ -402,8 +417,8 @@ class Gen {
     let prevY = this.g;
     const frac = () => this.rr(0.45, 0.6 + 0.2 * this.d);
     for (let i = 0; i < n; i++) {
-      const y = Math.max(this.g + 30, Math.min(this.g + 80, prevY + this.rr(-35, 35)));
-      const hop = Math.max(60, reachJump(prevY - y, false) * frac());
+      const y = Math.max(this.g + 24, Math.min(this.g + 60, prevY + this.rr(-30, 30)));
+      const hop = this.hopLen(prevY - y, frac());
       const w = this.rr(92, 130);
       x += hop;
       const fragile = !this.safeMode && this.world >= 2 && i > 0 && i < n - 1 && this.chance(0.3 * this.d + 0.08);
@@ -412,7 +427,7 @@ class Gen {
       x += w;
       prevY = y;
     }
-    x += Math.max(60, reachJump(prevY - this.g, false) * frac());
+    x += this.hopLen(prevY - this.g, frac());
     this.cx = x;
     this.openBank();
     this.log.push('stones');
@@ -536,7 +551,7 @@ class Gen {
         swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true,
       };
       const res = swingLandings(A, v, 1, [A, B], this.waterY);
-      if ((res.get(-2) ?? 0) >= 3) {
+      if ((res.get(-2) ?? 0) >= 8) {
         this.closeBank();
         this.V.push({ ...v, id: this.vid++, swayPhase: this.rnd() * 6 });
         this.arc(this.cx + 20, this.cx + w - 20, this.g - 90, 60, 4);
@@ -589,6 +604,310 @@ class Gen {
     this.log.push('fragile');
   }
 
+
+  // ---- more shapes, so no two stages read the same ----
+
+  /** can the ground step down `total` px here without running into the water? */
+  private roomBelow(total: number) { return this.g + total <= this.G + 96; }
+
+  /** a dip in the ground: steps down, a low flat with flowers, and steps back up */
+  chunkValley() {
+    const n = this.ri(1, 3);
+    const dh = this.rr(30, 44);
+    if (!this.roomBelow(n * dh)) { this.chunkHill(); return; }
+    this.flat(this.rr(100, 170));
+    for (let i = 0; i < n; i++) { this.down(dh); this.flat(this.rr(84, 130)); }
+    const bottom = this.flat(this.rr(180, 340));
+    this.row(bottom.x0 + 40, bottom.x1 - 40, this.g - 32, 4);
+    for (let i = 0; i < n; i++) { this.up(dh); this.flat(this.rr(84, 130)); }
+    this.log.push('valley');
+  }
+
+  /** gentle rolling ground: little rises and dips, one after the other */
+  chunkRolling() {
+    const n = this.ri(2, 4);
+    this.flat(this.rr(90, 150));
+    for (let i = 0; i < n; i++) {
+      const dh = this.rr(18, 30);
+      const upFirst = this.chance(0.5) || !this.roomBelow(dh);
+      const wide = this.rr(80, 150);
+      if (upFirst) { this.up(dh); this.flat(wide); this.down(dh); } else { this.down(dh); this.flat(wide); this.up(dh); }
+      this.flat(this.rr(60, 120));
+    }
+    this.log.push('rolling');
+  }
+
+  /** low stumps and logs to hop over (never taller than an easy jump) */
+  chunkHurdles() {
+    const n = this.ri(2, 3);
+    this.flat(this.rr(150, 220), { safe: true });
+    for (let i = 0; i < n; i++) {
+      const h = this.rr(40, 58);
+      const w = this.rr(58, 92);
+      this.flat(w, { safe: true });
+      this.plat({ x: this.cx - w, y: this.g - h, width: w, height: h + 12, type: 'solid', style: this.chance(0.5) ? 'log' : 'moss_stone' });
+      if (this.chance(0.7)) this.flower(this.cx - w / 2, this.g - h - 42);
+      this.flat(this.rr(150, 240), { safe: true });
+    }
+    this.log.push('hurdles');
+  }
+
+  /** a stepped plateau: climb two broad steps, walk the top, then a big drop back to the ground */
+  chunkTerrace() {
+    const steps = this.ri(1, 2);
+    const dh = this.rr(54, 72);
+    const g1 = this.g;
+    if (this.g - steps * dh < 260) { this.chunkHill(); return; }
+    this.flat(this.rr(130, 200));
+    for (let i = 0; i < steps; i++) { this.up(dh); this.flat(this.rr(130, 190)); }
+    const top = this.flat(this.rr(240, 380), { perch: true });
+    this.row(top.x0 + 50, top.x1 - 50, this.g - 32, 4);
+    this.closeBank();
+    this.g = g1;
+    this.bank = this.cx;
+    this.flat(this.rr(120, 200));
+    this.log.push('terrace');
+  }
+
+  /** a bridge laid in short sections with hops between them */
+  chunkGapBridge() {
+    const n = this.ri(2, 3);
+    this.closeBank();
+    for (let i = 0; i < n; i++) {
+      const len = this.rr(150, 260);
+      this.plat({ x: this.cx, y: this.g, width: len, height: 26, type: 'solid', style: 'canopy_bridge' });
+      this.row(this.cx + 40, this.cx + len - 40, this.g - 32, 2);
+      this.cx += len;
+      if (i < n - 1) this.cx += this.hopLen(0, this.rr(0.4, 0.6));
+    }
+    this.openBank();
+    this.log.push('gapBridge');
+  }
+
+  /** over a pit: platforms that climb like stairs, then come back down */
+  chunkSkyhop() {
+    const n = this.ri(3, 5);
+    this.closeBank();
+    let x = this.cx;
+    let prevY = this.g;
+    const peak = Math.ceil(n / 2);
+    for (let i = 0; i < n; i++) {
+      const target = i < peak ? this.g - 42 * (i + 1) : this.g - 42 * (n - i);
+      const y = Math.max(this.g - 150, Math.min(this.g - 30, target + this.rr(-8, 8)));
+      x += this.hopLen(prevY - y, this.rr(0.5, 0.8));
+      const w = this.rr(96, 134);
+      this.plat({ x, y, width: w, height: 28, type: 'solid', style: this.chance(0.5) ? 'log' : 'branch' });
+      this.flower(x + w / 2, y - 42);
+      x += w;
+      prevY = y;
+    }
+    x += this.hopLen(prevY - this.g, this.rr(0.5, 0.8));
+    this.cx = x;
+    this.openBank();
+    this.log.push('skyhop');
+  }
+
+  /** a wide pit with one or two small islands in it */
+  chunkIslands() {
+    const n = this.ri(1, 2);
+    this.closeBank();
+    let x = this.cx;
+    let prevY = this.g;
+    for (let i = 0; i < n; i++) {
+      const w = this.rr(84, 150);
+      const y = this.g + this.rr(0, 22);
+      x += this.hopLen(prevY - y, this.rr(0.55, 0.85));
+      this.plat({ x, y, width: w, height: 28, type: 'solid', style: this.chance(0.5) ? 'moss_stone' : 'log' });
+      this.flower(x + w / 2, y - 42);
+      x += w;
+      prevY = y;
+    }
+    x += this.hopLen(prevY - this.g, this.rr(0.55, 0.85));
+    this.cx = x;
+    this.openBank();
+    this.log.push('islands');
+  }
+
+  /** ordinary ground with a trail of branches above it: an optional high route with flowers */
+  chunkCanopy() {
+    const base = this.flat(this.rr(340, 480));
+    const n = this.ri(2, 3);
+    let x = base.x0 + this.rr(40, 90);
+    let prev: Platform | null = null;
+    for (let i = 0; i < n; i++) {
+      const w = this.rr(110, 160);
+      const y = this.g - this.rr(66, 80) - (i % 2) * this.rr(0, 8);
+      if (prev) x = prev.x + prev.width + this.hopLen(prev.y - y, this.rr(0.4, 0.6));
+      if (x + w > base.x1 - 20) break;
+      prev = this.plat({ x, y, width: w, height: 24, type: 'solid', style: 'branch' });
+      this.row(x + 30, x + w - 30, y - 36, 2);
+      this.spots.push({ x0: x, x1: x + w, y, perch: true, optional: true, safe: true });
+    }
+    this.log.push('canopy');
+  }
+
+  /** stone columns standing in a pit, at uneven heights */
+  chunkPillars() {
+    const n = this.ri(3, 5);
+    this.closeBank();
+    let x = this.cx;
+    let prevY = this.g;
+    for (let i = 0; i < n; i++) {
+      const y = this.g - Math.round(this.rr(0, 64));
+      const w = this.rr(64, 96);
+      x += this.hopLen(prevY - y, this.rr(0.5, 0.8));
+      this.plat({ x, y, width: w, height: 170, type: 'solid', style: 'ruin' });
+      if (this.chance(0.7)) this.flower(x + w / 2, y - 42);
+      x += w;
+      prevY = y;
+    }
+    x += this.hopLen(prevY - this.g, this.rr(0.5, 0.8));
+    this.cx = x;
+    this.openBank();
+    this.log.push('pillars');
+  }
+
+  /** a ramp of small steps, up or down (the ground wanders, but stays between the treetops and the water) */
+  chunkSlope() {
+    const n = this.ri(3, 5);
+    const dh = this.rr(18, 26);
+    const canDown = this.roomBelow(n * dh);
+    const canUp = this.g - n * dh >= this.G - 150;
+    const dirUp = canUp && (!canDown || this.chance(0.5));
+    if (!canUp && !canDown) { this.chunkHill(); return; }
+    this.flat(this.rr(90, 150));
+    for (let i = 0; i < n; i++) {
+      if (dirUp) this.up(dh); else this.down(dh);
+      this.flat(this.rr(70, 110));
+    }
+    this.flat(this.rr(60, 140));
+    this.log.push(dirUp ? 'slopeUp' : 'slopeDown');
+  }
+
+  /** a field of low stumps to step and hop over */
+  chunkStumps() {
+    const n = this.ri(3, 5);
+    this.flat(this.rr(110, 160), { safe: true });
+    for (let i = 0; i < n; i++) {
+      const h = this.rr(24, 36);
+      const w = this.rr(50, 76);
+      this.flat(w, { safe: true });
+      this.plat({ x: this.cx - w, y: this.g - h, width: w, height: h + 12, type: 'solid', style: 'log' });
+      this.flat(this.rr(80, 140), { safe: true });
+    }
+    this.log.push('stumps');
+  }
+
+  /** platforms over a pit that alternate high and low */
+  chunkZigzag() {
+    const n = this.ri(4, 6);
+    this.closeBank();
+    let x = this.cx;
+    let prevY = this.g;
+    for (let i = 0; i < n; i++) {
+      const y = this.g - (i % 2 === 0 ? this.rr(10, 26) : this.rr(52, 70));
+      const w = this.rr(90, 130);
+      x += this.hopLen(prevY - y, this.rr(0.5, 0.8));
+      this.plat({ x, y, width: w, height: 28, type: 'solid', style: this.chance(0.5) ? 'branch' : 'log' });
+      this.flower(x + w / 2, y - 42);
+      x += w;
+      prevY = y;
+    }
+    x += this.hopLen(prevY - this.g, this.rr(0.5, 0.8));
+    this.cx = x;
+    this.openBank();
+    this.log.push('zigzag');
+  }
+
+  /** a wide pit crossed with a mushroom: stand on it, bounce, and fly over */
+  chunkTrampoline() {
+    this.flat(this.rr(150, 220));
+    const r = reachBounce(0, false) * 0.9 - TAKEOFF_SLACK;
+    const w = Math.max(150, Math.min(r * this.rr(0.62, 0.9), 330));
+    this.plat({ x: this.cx - 70, y: this.g - 30, width: 70, height: 30, type: 'bouncy' });
+    this.closeBank();
+    this.arc(this.cx - 20, this.cx + w + 20, this.g - 110, 110, 5);
+    this.cx += w;
+    this.openBank();
+    this.flat(this.rr(160, 240));
+    this.log.push('trampoline');
+  }
+
+  /** a raised stone walkway on the ground, with a step up at each end */
+  chunkCauseway() {
+    const L = this.rr(300, 460);
+    const s = this.flat(60 + L + 60, { safe: true });
+    this.plat({ x: s.x0, y: this.g - 30, width: 60, height: 42, type: 'solid', style: 'ruin' });
+    this.plat({ x: s.x0 + 60, y: this.g - 62, width: L, height: 74, type: 'solid', style: 'ruin' });
+    this.plat({ x: s.x0 + 60 + L, y: this.g - 30, width: 60, height: 42, type: 'solid', style: 'ruin' });
+    this.row(s.x0 + 100, s.x0 + 60 + L - 40, this.g - 62 - 34, Math.max(3, Math.round(L / 90)));
+    this.log.push('causeway');
+  }
+
+  /** narrow stone pegs over a pit (small landings, short hops) */
+  chunkPegs() {
+    const n = this.ri(3, 5);
+    this.closeBank();
+    let x = this.cx;
+    let prevY = this.g;
+    for (let i = 0; i < n; i++) {
+      const y = this.g + this.rr(6, 44);
+      const w = this.rr(56, 72);
+      x += this.hopLen(prevY - y, this.rr(0.45, 0.7));
+      this.plat({ x, y, width: w, height: 28, type: 'solid', style: 'moss_stone' });
+      this.flower(x + w / 2, y - 42);
+      x += w;
+      prevY = y;
+    }
+    x += this.hopLen(prevY - this.g, this.rr(0.45, 0.7));
+    this.cx = x;
+    this.openBank();
+    this.log.push('pegs');
+  }
+
+  /** an open meadow with arcs of flowers to run through */
+  chunkMeadow() {
+    const s = this.flat(this.rr(380, 620));
+    const arcs = this.ri(1, 2);
+    const seg = (s.x1 - s.x0 - 100) / arcs;
+    for (let i = 0; i < arcs; i++) this.arc(s.x0 + 50 + i * seg, s.x0 + 50 + (i + 1) * seg, this.g - 36, this.rr(40, 64), this.ri(5, 7));
+    this.log.push('meadow');
+  }
+
+  /** a ditch with a rope bridge over it: cross on top, or drop in for the flowers at the bottom */
+  chunkDitch() {
+    const depth = this.rr(54, 70);
+    if (!this.roomBelow(depth)) { this.chunkGapBridge(); return; }
+    this.flat(this.rr(100, 160));
+    this.closeBank();
+    const L = this.rr(300, 460);
+    this.plat({ x: this.cx, y: this.g, width: L, height: 26, type: 'solid', style: 'canopy_bridge' });
+    this.plat({ x: this.cx, y: this.g + depth, width: L, height: GROUND_H, type: 'solid', style: 'log' });
+    this.row(this.cx + 50, this.cx + L - 50, this.g + depth - 34, Math.round(L / 100));
+    this.cx += L;
+    this.openBank();
+    this.log.push('ditch');
+  }
+
+  /** two plateaus of different heights with a dip between them */
+  chunkTwin() {
+    const a = this.rr(44, 66);
+    const b = this.rr(44, 66);
+    if (this.g - Math.max(a, b) < 280) { this.chunkHill(); return; }
+    this.flat(this.rr(120, 180));
+    this.up(a);
+    const t1 = this.flat(this.rr(150, 240), { perch: true });
+    this.row(t1.x0 + 40, t1.x1 - 40, this.g - 32, 3);
+    this.down(a);
+    this.flat(this.rr(120, 220));
+    this.up(b);
+    const t2 = this.flat(this.rr(150, 240), { perch: true });
+    this.row(t2.x0 + 40, t2.x1 - 40, this.g - 32, 3);
+    this.down(b);
+    this.flat(this.rr(90, 150));
+    this.log.push('twin');
+  }
+
   /** World 2: a river between two banks, with logs drifting across it (see river.ts). `rec` says how fast, which way, how wide. */
   chunkRiver(rec: RiverRecipe) {
     this.closeBank();
@@ -630,7 +949,7 @@ class Gen {
   }
 
   chunk(kind: Kind) {
-    const runup: Partial<Record<Kind, number>> = { pit: 130, stones: 140, swing: 220, moving: 180, fragile: 170, river: 160 };
+    const runup: Partial<Record<Kind, number>> = { pit: 130, stones: 140, swing: 220, moving: 180, fragile: 170, river: 160, skyhop: 150, islands: 150, gapbridge: 130, pillars: 150, zigzag: 150, pegs: 150 };
     if (runup[kind]) this.ensure(runup[kind]!);
     switch (kind) {
       case 'flat': { const s = this.flat(this.rr(200, 420)); this.row(s.x0 + 50, s.x1 - 50, this.g - 32, this.ri(2, 4)); this.log.push('flat'); break; }
@@ -646,6 +965,24 @@ class Gen {
       case 'fragile': this.chunkFragile(); break;
       case 'yard': this.chunkYard(); break;
       case 'tower': this.chunkTower(); break;
+      case 'valley': this.chunkValley(); break;
+      case 'rolling': this.chunkRolling(); break;
+      case 'hurdles': this.chunkHurdles(); break;
+      case 'terrace': this.chunkTerrace(); break;
+      case 'gapbridge': this.chunkGapBridge(); break;
+      case 'skyhop': this.chunkSkyhop(); break;
+      case 'islands': this.chunkIslands(); break;
+      case 'canopy': this.chunkCanopy(); break;
+      case 'pillars': this.chunkPillars(); break;
+      case 'slope': this.chunkSlope(); break;
+      case 'stumps': this.chunkStumps(); break;
+      case 'zigzag': this.chunkZigzag(); break;
+      case 'trampoline': this.chunkTrampoline(); break;
+      case 'causeway': this.chunkCauseway(); break;
+      case 'pegs': this.chunkPegs(); break;
+      case 'meadow': this.chunkMeadow(); break;
+      case 'ditch': this.chunkDitch(); break;
+      case 'twin': this.chunkTwin(); break;
       case 'river': this.chunkRiver(this.riverQueue.shift() ?? riverRecipes(this.cfg.miniIndex)[0]); break;
     }
   }
@@ -658,6 +995,13 @@ class Gen {
     this.log.push('checkpoint');
   }
 
+  /** this stage's favourite pieces: a few kinds it uses more than the others, so every stage has its own flavour */
+  fav = new Set<Kind>();
+  pickFavourites() {
+    const pool = (Object.keys(UNLOCK) as Kind[]).filter((k) => UNLOCK[k] <= this.m && k !== 'flat' && k !== 'river' && (k !== 'tower' || this.G >= 560));
+    for (let i = 0; i < 4 && pool.length; i++) this.fav.add(pool.splice(Math.floor(this.rnd() * pool.length), 1)[0]);
+  }
+
   pickKind(last: Kind[], forbid: Kind[] = []): Kind {
     const w: Array<[Kind, number]> = [];
     for (const k of Object.keys(UNLOCK) as Kind[]) {
@@ -665,6 +1009,7 @@ class Gen {
       if (k === 'flat') continue; // flats come from spacers
       if (k === 'tower' && this.G < 560) continue;
       let wt = BASE_WEIGHT[k] * (OBJ_WEIGHT[this.cfg.objectiveType]?.[k] ?? 1);
+      if (this.fav.has(k)) wt *= 2.2;
       if (last.includes(k)) wt *= 0.25;
       if (this.safeMode && INTENSITY[k] > 1) wt *= 0.2;
       w.push([k, wt]);
@@ -685,10 +1030,14 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   const obj = cfg.objectiveType;
   // World 2's rivers take up room that the stage's fights and pickups also need, so the stage is as much longer as its rivers are wide
   const hasRivers = cfg.worldIndex === 2 && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret;
-  const targetW = cfg.levelWidth + (hasRivers ? riverRecipes(cfg.miniIndex).reduce((a, r) => a + r.width, 0) : 0);
+  // each stage is a little longer or shorter than its siblings, and opens differently
+  const widthJitter = cfg.secret ? 1 : gen.rr(0.94, 1.14);
+  const targetW = Math.round(cfg.levelWidth * widthJitter) + (hasRivers ? riverRecipes(cfg.miniIndex).reduce((a, r) => a + r.width, 0) : 0);
+
+  gen.pickFavourites();
 
   // ---- opening: safe ground to find your feet ----
-  gen.flat(620, { safe: true });
+  gen.flat(Math.round(gen.rr(480, 720)), { safe: true });
   const spawnX = 140;
   const spawnY = gen.g;
   gen.log.push('intro');
@@ -718,9 +1067,11 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   const last: Kind[] = [];
   let hardJustNow = 0;
   const endZone = 1500;
-  while (gen.cx < targetW - endZone) {
+  let pieces = 0;
+  // (at least four pieces, so even a short stage is a little journey and not one hill)
+  while (gen.cx < targetW - endZone || pieces < (gen.m <= 2 ? 3 : 4)) {
     // checkpoint cadence
-    if (gen.cx - gen.lastCp > 1200) { gen.checkpoint(); continue; }
+    if (gen.cx - gen.lastCp > 1000) { gen.checkpoint(); continue; }
 
     let kind: Kind;
     if (forced.length && gen.cx >= forced[0].at) {
@@ -733,6 +1084,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
     if (hardJustNow > 0 && INTENSITY[kind] >= 2) { kind = gen.chance(0.5) ? 'hill' : 'bridge'; if (UNLOCK[kind] > gen.m) kind = 'hill'; }
 
     gen.chunk(kind);
+    pieces++;
     last.push(kind);
     if (last.length > 3) last.shift();
     hardJustNow = INTENSITY[kind] >= 2 ? 1 : 0;
@@ -750,8 +1102,9 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   gen.flat(gen.rr(220, 300));
   // (no second flag right after the last one: they were sometimes under 500 px apart)
   if (gen.cx - gen.lastCp > 900) gen.checkpoint();
-  const steps = 5;
-  for (let i = 0; i < steps; i++) { gen.up(34); gen.flat(72); }
+  const steps = gen.ri(3, 6);
+  const stepH = gen.rr(28, 40);
+  for (let i = 0; i < steps; i++) { gen.up(stepH); gen.flat(gen.rr(64, 90)); }
   const goal = gen.flat(520, { safe: true });
   const exitTotemX = goal.x0 + 260;
   const exitTotemY = gen.g;
@@ -810,7 +1163,9 @@ function decorate(gen: Gen, spawnX: number) {
 
   if (obj === 'purge' || obj === 'gauntlet') {
     let guard = 0;
-    const order = [...flats].sort((a, b) => (b.x1 - b.x0) - (a.x1 - a.x0));
+    // wide flats first; if the layout has too few, any open ground of 140 px or more will do
+    const wideSpots = gen.spots.filter((s) => !s.yard && !s.perch && !s.safe && s.x1 - s.x0 >= 140);
+    const order = [...flats, ...wideSpots.filter((s) => !flats.includes(s))].sort((a, b) => (b.x1 - b.x0) - (a.x1 - a.x0));
     while (gen.E.length < cfg.targetCount + 2 && guard++ < 400) {
       const s = order[guard % Math.max(1, order.length)];
       if (!s) break;
@@ -822,6 +1177,13 @@ function decorate(gen: Gen, spawnX: number) {
       if (mid < s.x0 + 40 || mid > s.x1 - 40) continue;
       if (gen.E.some((o) => o.type !== 'eagle' && Math.abs(o.x - mid) < 130)) continue;
       if (!awayFromSafe(mid)) continue;
+      gen.ground(mid, s.y, s.x0 + 40, s.x1 - 40);
+    }
+    // still short on a crowded layout: pack the animals a little closer (never closer than 95 px)
+    for (let pass = 0; pass < 200 && gen.E.length < cfg.targetCount + 1 && order.length; pass++) {
+      const s = order[pass % order.length];
+      const mid = s.x0 + 40 + gen.rnd() * Math.max(0, s.x1 - s.x0 - 80);
+      if (gen.E.some((o) => o.type !== 'eagle' && Math.abs(o.x - mid) < 95) || !awayFromSafe(mid)) continue;
       gen.ground(mid, s.y, s.x0 + 40, s.x1 - 40);
     }
   }
@@ -924,8 +1286,9 @@ function buildAscent(gen: Gen): GeneratedStage {
       const steps = gen.ri(3, 5);
       for (let i = 0; i < steps && cur.y > summitY + 80; i++) {
         const w = gen.rr(150, 200);
-        const gap = gen.rr(50, 96);
-        const y = cur.y - gen.rr(58, 72);
+        const rise = gen.rr(58, 72);
+        const gap = gen.rr(36, Math.max(40, gen.hopLen(rise, 1)));
+        const y = cur.y - rise;
         const x = dir === 1 ? cur.x + cur.width + gap : cur.x - gap - w;
         cur = gen.plat({ x, y, width: w, height: 28, type: gen.chance(0.1 * gen.d) && !gen.safeMode && i > 0 ? 'fragile' : 'solid', style: 'branch' });
         gen.flower(x + w / 2, y - 36);
@@ -966,7 +1329,7 @@ function buildAscent(gen: Gen): GeneratedStage {
         const vx = dir === 1 ? cur.x + cur.width + wgap / 2 : cur.x - wgap / 2;
         const v: Vine = { id: 999, x: vx, topY: cur.y - 310, bottomY: cur.y + 30, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true };
         const res = swingLandings(A, v, dir, [A, B], H + 400);
-        if ((res.get(-2) ?? 0) >= 3) {
+        if ((res.get(-2) ?? 0) >= 8) {
           gen.V.push({ ...v, id: gen.vid++, swayPhase: gen.rnd() * 6 });
           cur = gen.plat({ x: bx, y: B.y, width: bw, height: 28, type: 'solid', style: 'branch' });
           gen.log.push('swing');
@@ -975,7 +1338,7 @@ function buildAscent(gen: Gen): GeneratedStage {
       }
       if (!done) {
         const w = 200;
-        const x = dir === 1 ? cur.x + cur.width + 70 : cur.x - 70 - w;
+        const x = dir === 1 ? cur.x + cur.width + 40 : cur.x - 40 - w;
         cur = gen.plat({ x, y: cur.y - 66, width: w, height: 28, type: 'solid', style: 'branch' });
       }
     }
@@ -984,9 +1347,10 @@ function buildAscent(gen: Gen): GeneratedStage {
     // a wide resting ledge now and then, with a checkpoint
     if (n % 3 === 0 && cur.y > summitY + 140) {
       const w = 300;
-      const gap = gen.rr(50, 90);
+      const rise = gen.rr(40, 64);
+      const gap = gen.rr(36, Math.max(40, gen.hopLen(rise, 1)));
       const x = dir === 1 ? cur.x + cur.width + gap : cur.x - gap - w;
-      cur = gen.plat({ x, y: cur.y - gen.rr(40, 64), width: w, height: 28, type: 'solid', style: 'branch' });
+      cur = gen.plat({ x, y: cur.y - rise, width: w, height: 28, type: 'solid', style: 'branch' });
       gen.CP.push({ x: cur.x + w / 2, y: cur.y, reached: false });
       gen.spots.push({ x0: cur.x, x1: cur.x + w, y: cur.y, safe: true });
       landings.push(cur);
@@ -996,7 +1360,7 @@ function buildAscent(gen: Gen): GeneratedStage {
   // summit
   flip(cur);
   const sw = 520;
-  const gap = 70;
+  const gap = Math.max(40, gen.hopLen(60, 1));
   const sx = Math.max(60, Math.min(W - sw - 60, dir === 1 ? cur.x + cur.width + gap : cur.x - gap - sw));
   const summit = gen.plat({ x: sx, y: cur.y - 60, width: sw, height: 40, type: 'solid', style: 'log' });
   gen.spots.push({ x0: summit.x, x1: summit.x + sw, y: summit.y, safe: true });

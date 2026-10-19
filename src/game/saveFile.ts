@@ -21,6 +21,7 @@ const entryLimit = (k: string) => (k === 'sloth_badges' ? MAX_BADGE_ENTRY_CHARS 
 /** the entries that make up a game */
 const ALLOWED: RegExp[] = [
   /^sloth_lvl_(\d{1,2}|S)-\d{1,2}$/, // per-stage result
+  /^sloth_layout_(\d{1,2}|S)-\d{1,2}$/, // the layout a stage was first played with (it stays the same)
   /^sloth_story_w\d{1,2}$/, // world intro seen
   /^sloth_secret_gate$/,
   /^sloth_thorn_heart$/,

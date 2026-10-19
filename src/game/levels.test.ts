@@ -71,7 +71,9 @@ test('validator rejects a pit that is too wide to jump', () => {
 });
 
 test('validator rejects a cliff whose climbing vine is removed', () => {
-  const r = broken('1-2', (s) => { s.vines = s.vines.filter((v) => v.vineType === 'swing_liana'); });
+  const cliffy = levels.find((l) => l.objectiveType !== 'ascent' && buildStage(l, LEVEL_ATTEMPTS[l.id] ?? 0).meta!.chunks.some((c) => /^cliff/.test(c)));
+  assert.ok(cliffy, 'some level has a cliff');
+  const r = broken(cliffy!.id, (s) => { s.vines = s.vines.filter((v) => v.vineType === 'swing_liana'); });
   assert.equal(r.ok, false);
 });
 

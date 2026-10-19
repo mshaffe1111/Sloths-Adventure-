@@ -13,6 +13,7 @@ import {
   PHYS,
   SIM_DTS,
   LAND_HALF,
+  TAKEOFF_SLACK,
   airStep,
   canGrabSwing,
   reachBounce,
@@ -50,14 +51,14 @@ const ext = (p: Platform): [number, number] =>
 const dxTo = (x0: number, x1: number, x: number) => (x < x0 ? x0 - x : x > x1 ? x - x1 : 0);
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
-export function jumpOK(a: Platform, b: Platform): { ok: boolean; gap: number } {
+export function jumpOK(a: Platform, b: Platform, allowDouble = true): { ok: boolean; gap: number } {
   const [ax0, ax1] = ext(a);
   const [bx0, bx1] = ext(b);
   const gap = Math.max(0, bx0 - ax1, ax0 - bx1);
   const dy = a.y - b.y;
   const f = a.type === 'bouncy' ? reachBounce : reachJump;
-  const r = Math.max(f(dy, false), f(dy, true));
-  return { ok: r >= 0 && gap <= r * MARGIN, gap };
+  const r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
+  return { ok: r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK, gap };
 }
 
 // ---- Swinging --------------------------------------------------------------
@@ -151,6 +152,8 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   const pid = (p: Platform) => `p${p.id}`;
   const vid = (v: Vine) => `v${v.id}`;
 
+  // a double jump is a tool the player may need from mission 6 on; before that every gap is a plain jump
+  const allowDouble = (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6;
   const byX = [...plats].sort((a, b) => ext(a)[0] - ext(b)[0]);
 
   // 1. jumps between platforms (only compare neighbours within a plausible horizontal window)
@@ -165,7 +168,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
         if (j > i) break;
         continue;
       }
-      const r = jumpOK(a, b);
+      const r = jumpOK(a, b, allowDouble);
       if (r.ok) {
         link(pid(a), pid(b));
         if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, r.gap);
@@ -221,7 +224,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       for (const dir of dirs) {
         const res = swingLandings(a, v, dir, plats, waterY);
         for (const [id, lines] of res) {
-          if (lines >= 2 && id !== a.id) {
+          if (lines >= 6 && id !== a.id) {
             link(`p${a.id}`, `p${id}`);
             usedSwing.add(v.id);
             swingEdges++;

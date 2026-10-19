@@ -15,6 +15,8 @@ interface Props {
   choice: CosmeticChoice;
   onChoice: (c: CosmeticChoice) => void;
   onBack: () => void;
+  /** which tab to open on (default: the badges) */
+  initialTab?: 'badges' | 'journal';
 }
 
 const SECTIONS: Array<{ title: string; match: (b: BadgeDef) => boolean }> = [
@@ -25,8 +27,8 @@ const SECTIONS: Array<{ title: string; match: (b: BadgeDef) => boolean }> = [
   { title: 'Secrets and story', match: (b) => ['naturalist', 'thorn_finder', 'thorn_heart', 'jungle_hero'].includes(b.id) },
 ];
 
-export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack }) => {
-  const [tab, setTab] = useState<'badges' | 'journal'>('badges');
+export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges' }) => {
+  const [tab, setTab] = useState<'badges' | 'journal'>(initialTab);
   const ctx = useMemo(() => ({ store, levels, gateFound, thornHeart }), [store, levels, gateFound, thornHeart]);
   const earnedIds = useMemo(() => new Set(evaluate(ctx)), [ctx]);
   const earnedCount = earnedIds.size;

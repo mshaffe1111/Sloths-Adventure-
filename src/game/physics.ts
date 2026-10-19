@@ -62,6 +62,13 @@ export const SAFE = {
 /** The game now simulates at a fixed 60 Hz; 30 is still checked so levels stay passable at either step. */
 export const SIM_DTS = [1 / 30, 1 / 60] as const;
 
+/**
+ * How far BEFORE the edge a player may have to take off for any required jump, at the very least (px). A gap that needs the
+ * jump to start within a few pixels of the edge is a gap players fall into; every gap the generator builds or the validator
+ * accepts leaves at least this much room.
+ */
+export const TAKEOFF_SLACK = 70;
+
 /** Player half-width used for landing on platforms (0.48 * 44). */
 export const LAND_HALF = 21;
 

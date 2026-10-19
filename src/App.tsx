@@ -3,7 +3,8 @@ import type { GameScreen, LevelConfig, BossEntity } from './game/types.ts';
 import { generateAllLevels } from './game/worldsData.ts';
 import { InputEngine } from './game/inputEngine.ts';
 import { GameEngine } from './game/engine.ts';
-import { setLayoutVariant, rollLayoutVariant } from './game/stageGenerator.ts';
+import { setLayoutVariant } from './game/stageGenerator.ts';
+import { layoutForEntry } from './game/layoutMemory.ts';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { TouchController } from './game/../components/TouchController.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
@@ -17,7 +18,7 @@ import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
 import { THORNBARK_LEVEL, gateFound, hasThornHeart, markGateFound, markThornHeart, maxHearts } from './game/secret.ts';
 import { warmHeroAtlas } from './game/heroSprite.ts';
-import { award, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
+import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
 import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
 import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { BadgeToast } from './components/BadgeToast.tsx';
@@ -132,6 +133,9 @@ export default function App() {
   // Victory / Defeat snapshot states
   const [starsEarned, setStarsEarned] = useState<number>(1);
   const [clearTime, setClearTime] = useState<number>(0);
+  /** this clear beat the stored best score (or was the first), and the best score now */
+  const [newBest, setNewBest] = useState<boolean>(false);
+  const [bestScore, setBestScore] = useState<number>(0);
 
   // Canvas and Engine refs
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -150,7 +154,9 @@ export default function App() {
   const [badgeStore, setBadgeStore] = useState<BadgeStore>(() => loadBadgeStore());
   const [cosmetic, setCosmetic] = useState<CosmeticChoice>(() => loadCosmetic());
   const [freshBadges, setFreshBadges] = useState<BadgeDef[]>([]);
-  const [trophyFrom, setTrophyFrom] = useState<'title' | 'world_map'>('title');
+  const [trophyFrom, setTrophyFrom] = useState<'title' | 'world_map' | 'paused'>('title');
+  /** which tab the Trophy Room opens on (the pause menu's Jungle Cards go straight to the creature journal) */
+  const [trophyTab, setTrophyTab] = useState<'badges' | 'journal'>('badges');
   /** what the last stage reported; folded in once its result has been saved (see the effect below) */
   const pendingStats = useRef<StageStats | null>(null);
   const badgeCount = React.useMemo(
@@ -297,8 +303,8 @@ export default function App() {
   // Start a specific level
   const startLevel = useCallback((lvl: LevelConfig) => {
     if (!new URLSearchParams(window.location.search).get('music')) setMusicSalt((Math.random() * 0x7fffffff) | 0);
-    // a fresh layout each time a stage is entered; a retry (restartLevel) keeps it
-    setLayoutVariant(rollLayoutVariant());
+    // a stage rolls its layout the first time it is entered and keeps it from then on (a retry keeps it too)
+    setLayoutVariant(layoutForEntry(lvl));
     setActiveLevel(lvl);
     setSelectedWorldId(lvl.worldIndex);
 
@@ -428,6 +434,9 @@ export default function App() {
       } catch {
         /* unreadable record: treat as none */
       }
+      const prevScore = typeof prevStored.highScore === 'number' ? prevStored.highScore : 0;
+      setNewBest(lvlScore > prevScore);
+      setBestScore(Math.max(prevScore, lvlScore));
       const prevTime = typeof prevStored.bestTime === 'number' && prevStored.bestTime > 0 ? prevStored.bestTime : 0;
       const saved = {
         completed: true,
@@ -486,14 +495,18 @@ export default function App() {
     launchEngine(activeLevel);
   };
 
+  // the stages either side of this one (none for the secret stage, the first stage or the last)
+  const curStageIdx = allLevels.findIndex((l) => l.id === activeLevel.id);
+  const nextStage = curStageIdx !== -1 && curStageIdx + 1 < allLevels.length ? allLevels[curStageIdx + 1] : null;
+  const prevStage = curStageIdx > 0 ? allLevels[curStageIdx - 1] : null;
+
   const handleNextStage = () => {
-    const curIdx = allLevels.findIndex((l) => l.id === activeLevel.id);
-    if (curIdx !== -1 && curIdx + 1 < allLevels.length) {
-      const nextLvl = allLevels[curIdx + 1];
-      startLevel(nextLvl);
-    } else {
-      setScreen('world_map');
-    }
+    if (nextStage) startLevel(nextStage);
+    else setScreen('world_map');
+  };
+
+  const handlePrevStage = () => {
+    if (prevStage) startLevel(prevStage);
   };
 
   const handleToggleMute = () => {
@@ -538,6 +551,7 @@ export default function App() {
           }}
           onOpenTrophies={() => {
             setTrophyFrom('title');
+            setTrophyTab('badges');
             setScreen('trophy');
           }}
           badgeCount={badgeCount}
@@ -629,6 +643,7 @@ export default function App() {
           onSaveLoaded={onSaveLoaded}
           onOpenTrophies={() => {
             setTrophyFrom('world_map');
+            setTrophyTab('badges');
             setScreen('trophy');
           }}
         />
@@ -642,6 +657,7 @@ export default function App() {
           thornHeart={thornHeart}
           choice={cosmetic}
           onChoice={changeCosmetic}
+          initialTab={trophyTab}
           onBack={() => setScreen(trophyFrom)}
         />
       )}
@@ -659,9 +675,7 @@ export default function App() {
             targetObjectiveCount={targetCount}
             distanceRatio={distanceRatio}
             score={score}
-            isMuted={isMuted}
-            onToggleMute={handleToggleMute}
-            onPause={pauseGame}
+            onMenu={pauseGame}
             bossHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hp ?? 1 : undefined}
             bossMaxHp={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.maxHp ?? 1 : undefined}
             bossName={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.name : undefined}
@@ -687,9 +701,28 @@ export default function App() {
           starsEarned={starsEarned}
           timeSec={clearTime}
           score={score}
+          newBest={newBest}
+          bestScore={bestScore}
+          prevId={activeLevel.secret ? null : prevStage?.id ?? null}
+          nextId={activeLevel.secret ? null : nextStage?.id ?? null}
+          isMuted={isMuted}
+          trophyCount={badgeCount}
+          trophyTotal={BADGES.length}
+          onToggleMute={handleToggleMute}
           onResume={resumeGame}
           onRestart={restartLevel}
           onNextStage={handleNextStage}
+          onPrevStage={handlePrevStage}
+          onOpenTrophies={() => {
+            setTrophyFrom('paused');
+            setTrophyTab('badges');
+            setScreen('trophy');
+          }}
+          onOpenCards={() => {
+            setTrophyFrom('paused');
+            setTrophyTab('journal');
+            setScreen('trophy');
+          }}
           onOpenMap={() => {
             engineRef.current?.stop();
             setScreen('world_map');
