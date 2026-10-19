@@ -5,6 +5,7 @@ import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.
 import { drawJennifurSprite } from './jennifurSprite.ts';
 import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor } from './story.ts';
+import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
@@ -392,10 +393,22 @@ function drawFortress(ctx: CanvasRenderingContext2D, w: number, h: number, t: nu
   ctx.fill();
 }
 
-function drawSetPiece(ctx: CanvasRenderingContext2D, world: number, mood: StoryScene['mood'], w: number, h: number, t: number) {
+function drawSetPiece(ctx: CanvasRenderingContext2D, world: number, mood: StoryScene['mood'], w: number, h: number, t: number, castle?: number) {
   ctx.save();
   switch (world) {
     case 10: {
+      // the painted castle fills the picture when it is loaded; the drawn storm clouds and fortress are the fallback and the classic look
+      if (drawCastleBackdrop(ctx, castle ?? FORTRESS_CASTLE, w, h, t)) {
+        if (mood === 'storm') {
+          const ph = (t % 5) / 5;
+          if (ph < 0.1) {
+            ctx.strokeStyle = `rgba(235, 240, 255, ${1 - ph * 10})`;
+            ctx.lineWidth = 4;
+            bolt(ctx, w * 0.62, 0, h * 0.55, Math.floor(t / 5));
+          }
+        }
+        break;
+      }
       // storm clouds + fortress + lightning
       const cg = ctx.createLinearGradient(0, 0, 0, h * 0.5);
       cg.addColorStop(0, mood === 'glow' ? 'rgba(255, 190, 150, 0.7)' : 'rgba(25, 20, 50, 0.9)');
@@ -778,7 +791,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   // the sky and hills drift slowly behind the actors
   const camX = (scene.camX ?? 400) + t * 9;
   withBakeScale(STORY_BAKE, () => renderScenery(ctx, scene.world, camX, 0, w, h * (1 + lift) + 4, t, true));
-  drawSetPiece(ctx, scene.world, scene.mood, w, h, t);
+  drawSetPiece(ctx, scene.world, scene.mood, w, h, t, scene.castle);
 
   if (scene.lineup) {
     for (let i = 0; i < 10; i++) {

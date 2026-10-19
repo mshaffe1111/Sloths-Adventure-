@@ -53,6 +53,8 @@ export interface StoryScene {
   zoom?: number;
   focusX?: number;
   focusY?: number;
+  /** which painted castle stands behind a world-10 picture (5-7); the Highland Fortress when unset */
+  castle?: number;
 }
 
 export interface StoryPanel {
@@ -383,6 +385,7 @@ export const ENDING_PANELS: StoryPanel[] = [
     text: 'Slomatt! You followed every petal! I knew you would!',
     scene: {
       world: 10, mood: 'glow', particles: 'sparkles', zoom: 1.4, focusX: 0.5,
+      castle: 7,
       actors: [
         { kind: 'milo', x: 0.3, scale: 1.1, pose: 'happy' },
         { kind: 'daisy_wave', x: 0.68, scale: 1.1, mood: 'cheer' },
@@ -394,6 +397,7 @@ export const ENDING_PANELS: StoryPanel[] = [
     text: 'It took me ten realms, one hundred trials, and a very long nap in the middle. Worth every slow step.',
     scene: {
       world: 10, mood: 'glow', particles: 'sparkles', zoom: 1.35, focusX: 0.46,
+      castle: 7,
       actors: [
         { kind: 'milo', x: 0.3, scale: 1.1 },
         { kind: 'daisy', x: 0.68, scale: 1.1, facing: -1 },
