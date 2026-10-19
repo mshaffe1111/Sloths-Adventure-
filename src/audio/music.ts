@@ -206,7 +206,7 @@ export class Playback {
     this.out.connect(core.music);
     this.accent = this.c.createGain();
     this.accent.gain.value = 0.8;
-    this.accent.connect(core.withReverb(this.out, 0.25));
+    this.accent.connect(core.withReverb(this.out, 0.25, 'music'));
 
     const chords = theme.chords.map(parseChord);
     this.barChords = [];
@@ -222,13 +222,13 @@ export class Playback {
         gate.connect(p);
         node = p;
       }
-      const wet = core.withReverb(this.out, spec.rev ?? 0.15);
+      const wet = core.withReverb(this.out, spec.rev ?? 0.15, 'music');
       node.connect(wet);
       if (spec.dly) {
         const d = this.c.createGain();
         d.gain.value = spec.dly;
         node.connect(d);
-        d.connect(core.delayIn);
+        d.connect(core.musicEchoSend);
       }
       const rt: RuntimeTrack = { spec, gate, lastPitch: this.tonic + 12, lastVoicing: null };
       if (spec.kind === 'melody') {

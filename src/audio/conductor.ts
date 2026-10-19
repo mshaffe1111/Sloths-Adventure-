@@ -301,6 +301,11 @@ export class Conductor {
     set(core.music.gain, 0.32 * this.musicVol);
     set(core.sfx.gain, 0.9 * this.sfxVol);
     set(core.amb.gain, (this.paused ? 0.18 : 0.6) * this.sfxVol);
+    // the reverb and echo tails follow the same volumes as the dry sound
+    set(core.sends.music.gain, this.musicVol);
+    set(core.musicEchoSend.gain, this.musicVol);
+    set(core.sends.sfx.gain, this.sfxVol);
+    set(core.sends.amb.gain, (this.paused ? 0.3 : 1) * this.sfxVol);
   }
 
   /** what is happening right now: used by tests and the debug overlay */

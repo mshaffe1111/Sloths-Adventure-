@@ -370,7 +370,7 @@ export class Ambience {
     mix.gain.setValueAtTime(0, now);
     mix.gain.linearRampToValueAtTime(def.level, now + fade);
     mix.connect(this.core.amb);
-    const events = this.core.withReverb(mix, def.rev);
+    const events = this.core.withReverb(mix, def.rev, 'amb');
     const run: Running = { type, def, mix, events, sources: [], nodes: [mix, events], nextAt: def.events.map((e) => now + rnd(0.5, e.gap[1])) };
 
     for (const b of def.beds) {

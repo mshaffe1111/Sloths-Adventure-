@@ -25,6 +25,9 @@ export class AudioCore {
   readonly musicFilter: BiquadFilterNode;
   readonly reverbIn: GainNode;
   readonly delayIn: GainNode;
+  /** the reverb and echo sends of each bus pass through these, so the Music and Effects volume also turns down the tails (they used to bypass it) */
+  readonly sends: Record<'music' | 'sfx' | 'amb', GainNode>;
+  readonly musicEchoSend: GainNode;
   private readonly delayL: DelayNode;
   private readonly delayR: DelayNode;
   readonly noise: AudioBuffer;
@@ -122,6 +125,11 @@ export class AudioCore {
     dOut.connect(this.master);
     dOut.connect(this.reverbIn);
 
+    this.sends = { music: c.createGain(), sfx: c.createGain(), amb: c.createGain() };
+    for (const g of Object.values(this.sends)) g.connect(this.reverbIn);
+    this.musicEchoSend = c.createGain();
+    this.musicEchoSend.connect(this.delayIn);
+
     this.noise = makeNoise(c, 2.5, false);
     this.pinkNoise = makeNoise(c, 3.5, true);
   }
@@ -145,14 +153,14 @@ export class AudioCore {
   }
 
   /** a gain node that feeds the reverb at `level` and goes straight to `dst` at 1 */
-  withReverb(dst: AudioNode, level: number): GainNode {
+  withReverb(dst: AudioNode, level: number, bus: 'music' | 'sfx' | 'amb' = 'sfx'): GainNode {
     const g = this.ctx.createGain();
     g.connect(dst);
     if (level > 0) {
       const s = this.ctx.createGain();
       s.gain.value = level;
       g.connect(s);
-      s.connect(this.reverbIn);
+      s.connect(this.sends[bus]);
     }
     return g;
   }
