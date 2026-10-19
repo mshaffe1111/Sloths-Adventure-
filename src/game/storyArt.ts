@@ -591,30 +591,40 @@ function drawSetPiece(ctx: CanvasRenderingContext2D, world: number, mood: StoryS
       break;
     }
     case 3: {
-      // giant glowing mushrooms
-      [[0.14, 150, '#37e0c2'], [0.9, 190, '#9a7cff'], [0.52, 90, '#5aa8ff']].forEach(([px, ph, col]) => {
+      // limestone sinkhole cave: stalagmites rising from the floor and glowworm threads hanging from the roof
+      const floorY = h * 0.8;
+      [[0.06, 120, 46], [0.16, 70, 30], [0.84, 150, 52], [0.95, 90, 34], [0.58, 46, 22]].forEach(([px, ph, pw]) => {
         const x = (px as number) * w;
         const hh = ph as number;
-        const gl = ctx.createRadialGradient(x, h * 0.8 - hh, 6, x, h * 0.8 - hh, hh * 1.3);
-        gl.addColorStop(0, (col as string) + 'aa');
-        gl.addColorStop(1, (col as string) + '00');
-        ctx.fillStyle = gl;
+        const ww = pw as number;
+        const g = ctx.createLinearGradient(x - ww, 0, x + ww, 0);
+        g.addColorStop(0, '#6f8c8a');
+        g.addColorStop(1, '#1d3a40');
+        ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.arc(x, h * 0.8 - hh, hh * 1.3, 0, Math.PI * 2);
+        ctx.moveTo(x - ww, floorY + 8);
+        ctx.quadraticCurveTo(x - ww * 0.35, floorY - hh * 0.6, x, floorY - hh);
+        ctx.quadraticCurveTo(x + ww * 0.35, floorY - hh * 0.6, x + ww, floorY + 8);
         ctx.fill();
-        ctx.fillStyle = '#e8f6ee';
-        ctx.fillRect(x - hh * 0.09, h * 0.8 - hh, hh * 0.18, hh);
-        ctx.fillStyle = col as string;
-        ctx.beginPath();
-        ctx.ellipse(x, h * 0.8 - hh, hh * 0.55, hh * 0.36, 0, Math.PI, 0);
-        ctx.fill();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-        [[-0.2, -0.12], [0.15, -0.2], [0.02, -0.06]].forEach(([dx, dy]) => {
-          ctx.beginPath();
-          ctx.arc(x + hh * dx, h * 0.8 - hh + hh * dy, hh * 0.05, 0, Math.PI * 2);
-          ctx.fill();
-        });
       });
+      for (let i = 0; i < 30; i++) {
+        const x = ((i * 0.6180339) % 1) * w;
+        const len = 40 + ((i * 67) % 150);
+        ctx.strokeStyle = 'rgba(190, 240, 230, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, len);
+        ctx.stroke();
+        for (let y = 12 + (i % 5); y < len; y += 10 + (i % 4) * 3) {
+          const tw = 0.5 + 0.5 * Math.sin(t * 1.4 + i * 1.7 + y * 0.2);
+          const gg = ctx.createRadialGradient(x, y, 0, x, y, 7);
+          gg.addColorStop(0, `rgba(125, 255, 224, ${0.35 + 0.4 * tw})`);
+          gg.addColorStop(1, 'rgba(125, 255, 224, 0)');
+          ctx.fillStyle = gg;
+          ctx.fillRect(x - 7, y - 7, 14, 14);
+        }
+      }
       break;
     }
     case 2: {

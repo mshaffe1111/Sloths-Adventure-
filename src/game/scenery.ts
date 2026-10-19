@@ -86,7 +86,7 @@ export const LOOKS: Record<number, Look> = {
     far: 'shrooms', farCols: ['#0f6a6c', '#0a4a55', '#7fffd0'], haze: '#2fb5a0',
     hills: ['#17897c', '#0f6e6a', '#0a4f5c'],
     trunk: ['#7a5a46', '#2f2230'], crowns: ['#1fb59a', '#2ed0a0', '#139080', '#6ae6a0'],
-    trees: ['shroom', 'jungle', 'shroom', 'willow'],
+    trees: ['jungle', 'willow', 'jungle', 'willow'],
     leaves: ['#19c7a0', '#0f9a9a', '#7bf0b0', '#1a7fa0'], flora: ['#ff5ad0', '#5ae6ff', '#ffb02e', '#b06aff'],
     rays: '#9dffd0', rayA: 0.2, weather: 'spores', glow: '#7dffe0', grade: ['#00263a', 0.14],
     ground: { cap: '#27d4a0', capHi: '#8affd0', capDark: '#0f7a6a', dirt: '#2d5a62', dirtDark: '#122a3a', stone: '#8ab8b0', outline: '#06161f', kind: 'moss' },
@@ -1119,8 +1119,7 @@ function buildNear(look: Look, world: number): HTMLCanvasElement {
   for (let i = 0; i < 9; i++) {
     const x = r() * TW;
     wrap(x, 60, (xx) => {
-      if (look.glow && (look.ground.kind === 'moss' || look.ground.kind === 'fungus')) drawMushroom(ctx, xx, 700, 30 + r() * 20, look.flora[i % look.flora.length], '#fff', true);
-      else if (r() > 0.5) drawMushroom(ctx, xx, 706, 22 + r() * 14, look.flora[(i + 1) % look.flora.length], '#fff', false);
+      if (world !== 3 && r() > 0.5) drawMushroom(ctx, xx, 706, 22 + r() * 14, look.flora[(i + 1) % look.flora.length], '#fff', false);
       else drawRock(ctx, xx, 710, 54 + r() * 40, 24 + r() * 16, tone(look.ground.stone));
     });
   }
