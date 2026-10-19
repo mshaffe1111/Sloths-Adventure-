@@ -1,6 +1,6 @@
 /** Generated from the Gemini pose sheet (see art notes). Frame rects, and feet anchors, in atlas pixels. */
 export interface HeroFrame { x: number; y: number; w: number; h: number; ax: number; ay: number }
-export const HERO_ATLAS_SIZE = { w: 2048, h: 921 };
+export const HERO_ATLAS_SIZE = { w: 2048, h: 1210 };
 /** height of the standing side-view frame, in atlas pixels (used to scale every frame the same) */
 export const HERO_STAND_H = 290.5;
 export const HERO_FRAMES: Record<string, HeroFrame> = {
@@ -187,5 +187,37 @@ export const HERO_FRAMES: Record<string, HeroFrame> = {
   "ay": 289.2,
   "x": 765,
   "y": 624
+ },
+ "run_f": {
+  "w": 240,
+  "h": 294,
+  "ax": 119.3,
+  "ay": 290.1,
+  "x": 1005,
+  "y": 624
+ },
+ "run_g": {
+  "w": 272,
+  "h": 293,
+  "ax": 125.2,
+  "ay": 288.9,
+  "x": 1247,
+  "y": 624
+ },
+ "run_h": {
+  "w": 270,
+  "h": 297,
+  "ax": 122.9,
+  "ay": 293.8,
+  "x": 1521,
+  "y": 624
+ },
+ "run_i": {
+  "w": 256,
+  "h": 285,
+  "ax": 115.5,
+  "ay": 281.7,
+  "x": 0,
+  "y": 923
  }
 };

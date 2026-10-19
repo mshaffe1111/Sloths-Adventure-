@@ -53,8 +53,10 @@ export function heroFace(ctx: CanvasRenderingContext2D, name: string, x: number,
   return true;
 }
 
-/** the run frames, in stride order (both feet down, front knee up, stretching, widest, trailing leg, back to both feet down) */
-const RUN_CYCLE = ['run_b', 'run_c', 'run_d', 'run_e', 'run_a'];
+/** the nine run frames, ordered so neighbouring poses are as alike as possible (found by pack3.py), starting from the passing pose */
+const RUN_CYCLE = ['run_b', 'run_i', 'run_c', 'run_e', 'run_d', 'run_a', 'run_h', 'run_g', 'run_f'];
+/** painted strides per walkCycle turn: 9 frames at the full walkCycle rate would outrun the 30 fps loop */
+const STRIDE_RATE = 0.6;
 
 function pick(p: PlayerState, time: number): { name: string; bob: number } | null {
   if (p.climbing || p.isVineSwinging) return null;
@@ -68,9 +70,9 @@ function pick(p: PlayerState, time: number): { name: string; bob: number } | nul
   }
   if (Math.abs(p.vx) > 10) {
     // one stride = one turn of walkCycle; the frames come from the run sheet, in the order the stride unfolds
-    const u = (((p.walkCycle / (Math.PI * 2)) % 1) + 1) % 1;
+    const u = ((((p.walkCycle * STRIDE_RATE) / (Math.PI * 2)) % 1) + 1) % 1;
     const name = RUN_CYCLE[Math.min(RUN_CYCLE.length - 1, Math.floor(u * RUN_CYCLE.length))];
-    return { name, bob: -Math.abs(Math.sin(p.walkCycle)) * 2.4 };
+    return { name, bob: -Math.abs(Math.sin(u * Math.PI * 2)) * 2.4 };
   }
   // standing: a slow breath, and a blink every few seconds
   const blink = time % 3.6 > 3.45;
