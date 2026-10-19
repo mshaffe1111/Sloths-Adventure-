@@ -20,6 +20,7 @@ import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawTayraSprite } from './tayraSprite.ts';
 import { drawOcelotSprite } from './ocelotSprite.ts';
 import { drawBoaSprite } from './boaSprite.ts';
+import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import {
   drawHeroSloth,
@@ -2325,7 +2326,7 @@ export class GameEngine {
         } else if (enemy.type === 'ocelot') {
           if (!drawOcelotSprite(ctx, enemy, this.gameTime)) drawOcelot(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'jaguar') {
-          drawJaguar(ctx, enemy, this.gameTime);
+          if (!drawJaguarSprite(ctx, enemy, this.gameTime)) drawJaguar(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'boa') {
           if (!drawBoaSprite(ctx, enemy, this.gameTime)) drawBoa(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'caiman') {
