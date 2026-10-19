@@ -27,6 +27,7 @@ export type HazardKind =
   | 'beam' // a long straight blast
   | 'bolt' // a fast straight projectile
   | 'web' // projectile that sticks you (slows, no damage)
+  | 'strip' // a lair hazard along the floor that grows from an arena edge (rising lava) and stays
   | 'mark'; // a warning marker only (nothing hurts)
 
 export interface BossHazard {
@@ -61,6 +62,9 @@ export interface BossHazard {
   /** where a beam starts / which way it points */
   ox?: number;
   oy?: number;
+  /** a 'strip' grows from `ox` (the arena edge) towards the middle, `dir` says which way, up to `growTo` wide */
+  growTo?: number;
+  growRate?: number;
   /** drawing seed so two of the same thing do not look identical */
   seed: number;
   /** what it looks like: 'web' | 'lava' | 'rock' | 'spike' | 'fire' | 'feather' | 'spear' | 'mud' | 'venom' | '' */
@@ -230,6 +234,12 @@ export interface BossDef {
   weak?: { dx: number; dy: number; w: number; h: number };
   /** the fenced arena is this wide (the usual 1,080 is too small for a giant) */
   arenaW?: number;
+  /** this boss's own ledges (the usual three branches are the same everywhere): x from the left fence, height above the floor */
+  perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number } }>;
+  /** this boss has its own lair look (see lairArt.ts) */
+  lair?: 'drake';
+  /** a change in the lair when the boss enters a new phase (rising lava, a flood, ...) */
+  onPhase?: (phase: number, b: BossEntity, c: BossCtx) => void;
   /** drawn as a fighter (the evil sloth) instead of one of the animal rigs */
   puppet?: 'thornbark';
 }
@@ -568,6 +578,11 @@ export function stepHazards(list: BossHazard[], arena: Arena, dt: number, ev: Ha
       h.y += h.vy * dt;
       if (h.x < arena.left - 80 || h.x > arena.right + 80) h.life = 0;
       if (h.kind === 'bolt' && h.y > arena.floor) h.life = 0;
+    }
+
+    if (h.kind === 'strip' && h.growTo !== undefined) {
+      h.w = Math.min(h.growTo, h.w + (h.growRate ?? 60) * dt);
+      h.x = (h.ox ?? h.x) + h.dir * (h.w / 2);
     }
 
     if (h.life <= 0) list.splice(i, 1);

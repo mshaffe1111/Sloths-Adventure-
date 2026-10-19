@@ -53,3 +53,50 @@ test('the Drake bar: one segment per hit, two hit points a hit, and it fits its 
   assert.ok(stage.boss!.x + drake.w / 2 <= a.right, 'it starts inside the fence');
   assert.equal(validateStage(stage).ok, true);
 });
+
+import { SAFE } from './physics.ts';
+
+test('every ledge of the Drake lair can be reached from the floor or from a ledge before it', () => {
+  const spans = (drake.perches ?? []).map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  assert.ok(spans.length >= 4, 'several ledges, not one perch');
+  const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
+  for (const s of spans) {
+    const ok = reached.some((r) => {
+      const rise = s.up - r.up;
+      const gap = Math.max(0, s.x0 - r.x1, r.x0 - s.x1);
+      return (rise <= SAFE.rise1 && gap <= SAFE.gap1) || (rise <= SAFE.rise2 && gap <= SAFE.gap2 * 0.7);
+    });
+    assert.ok(ok, `ledge at ${s.x0}-${s.x1}, ${s.up} up, cannot be reached`);
+    reached.push(s);
+  }
+  // the highest ledge puts a hero's feet near the head, so the weak point is reachable from it with one jump to spare
+  const top = Math.max(...spans.map((s) => s.up));
+  const head = drake.weak!;
+  assert.ok(top >= head.dy - head.h / 2, 'the high perch reaches the head');
+});
+
+test('the lair floods at 35%: two warned lava strips that grow from the fences', () => {
+  const b = mk('idle');
+  const hazards: import('./bossAI.ts').BossHazard[] = [];
+  const texts: string[] = [];
+  const ctx = { arena: { left: 760, right: 2160, floor: 560 }, hazards, text: (m: string) => texts.push(m), shake: () => {} } as unknown as import('./bossAI.ts').BossCtx;
+  drake.onPhase!(2, b, ctx);
+  assert.equal(hazards.length, 0, 'nothing happens at 70%');
+  drake.onPhase!(3, b, ctx);
+  assert.equal(hazards.length, 2);
+  assert.ok(hazards.every((h) => h.kind === 'strip' && h.warn > 1 && (h.growTo ?? 0) >= 150));
+  assert.deepEqual(hazards.map((h) => h.dir).sort(), [-1, 1]);
+});
+
+import { makeHazard, stepHazards } from './bossAI.ts';
+
+test('a lava strip waits for its warning, then grows from the fence and stays', () => {
+  const arena = { left: 760, right: 2160, floor: 560 };
+  const list = [makeHazard({ kind: 'strip', x: 760, y: 551, floorY: 560, w: 6, h: 18, warn: 1, warnMax: 1, life: 1e9, maxLife: 1e9, dir: 1, ox: 760, growTo: 190, growRate: 60 })];
+  stepHazards(list, arena, 0.5, { land: () => {} });
+  assert.equal(list[0].w, 6, 'still warning');
+  for (let i = 0; i < 60; i++) stepHazards(list, arena, 0.1, { land: () => {} });
+  assert.equal(list[0].w, 190);
+  assert.equal(list[0].x, 760 + 95, 'it grows from the fence towards the middle');
+  assert.equal(list.length, 1, 'and it stays');
+});

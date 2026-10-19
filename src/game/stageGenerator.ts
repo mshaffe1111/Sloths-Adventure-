@@ -1626,8 +1626,20 @@ function buildBoss(gen: Gen): GeneratedStage {
   }
 
   // a high perch in the middle and a low branch on each side: somewhere to jump to, never a place to hide
-  for (const b of [{ x: left + 70, y: 440, w: 200 }, { x: right - 270, y: 440, w: 200 }, { x: (left + right) / 2 - 130, y: 340, w: 260 }]) {
-    gen.plat({ x: b.x, y: b.y, width: b.w, height: 26, type: 'solid', style: 'branch' });
+  // (a boss with its own lair lists its own ledges instead)
+  const perchList = def.perches ?? [];
+  if (perchList.length) {
+    for (const pc of perchList) {
+      const y = floor - pc.up;
+      if (pc.moving) {
+        const base = left + pc.dx;
+        gen.plat({ x: base, y, width: pc.w, height: 26, type: 'moving', moveRange: pc.moving.range, moveSpeed: pc.moving.speed, baseX: base, swayOffset: 0, style: 'branch' });
+      } else gen.plat({ x: left + pc.dx, y, width: pc.w, height: 26, type: 'solid', style: 'branch' });
+    }
+  } else {
+    for (const b of [{ x: left + 70, y: 440, w: 200 }, { x: right - 270, y: 440, w: 200 }, { x: (left + right) / 2 - 130, y: 340, w: 260 }]) {
+      gen.plat({ x: b.x, y: b.y, width: b.w, height: 26, type: 'solid', style: 'branch' });
+    }
   }
 
   const maxHp = def.hp ?? bossMaxHp(cfg.worldIndex);
@@ -1638,8 +1650,13 @@ function buildBoss(gen: Gen): GeneratedStage {
     specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote, dialogueDefeat: 'Nooo! Defeated by a sloth...!',
     ai: newBrain(),
   };
-  gen.item('heart', left + 170, 400);
-  gen.item('heart', right - 170, 400);
+  if (perchList.length) {
+    // a heart on the first ledge and one on the last, where a hero who has been hurt can reach them
+    for (const pc of [perchList[0], perchList[perchList.length - 1]]) gen.item('heart', left + pc.dx + pc.w / 2, floor - pc.up - 44);
+  } else {
+    gen.item('heart', left + 170, 400);
+    gen.item('heart', right - 170, 400);
+  }
 
   return {
     config: cfg,

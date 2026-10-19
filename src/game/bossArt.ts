@@ -399,6 +399,9 @@ export function drawHazards(ctx: CanvasRenderingContext2D, list: BossHazard[], t
       case 'puddle':
         drawPuddle(ctx, h, time);
         break;
+      case 'strip':
+        drawStrip(ctx, h, time);
+        break;
       case 'glob':
         drawGlob(ctx, h, time);
         break;
@@ -1020,4 +1023,49 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
   }
   ctx.stroke();
   ctx.restore();
+}
+
+/** lava (or anything else) that rises along the floor from the arena edge: a glowing crack first, then a bubbling pool that grows */
+function drawStrip(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
+  const fl = h.floorY;
+  const dir = h.dir || 1;
+  const edge = h.ox ?? h.x;
+  const full = h.growTo ?? h.w;
+  if (h.warn > 0) {
+    // the warning: the floor glows red along where the lava is going to reach
+    const u = 1 - h.warn / Math.max(0.01, h.warnMax);
+    const pulse = 0.55 + 0.45 * Math.sin(time * (10 + u * 18));
+    ctx.globalAlpha = (0.25 + 0.4 * u) * pulse;
+    const g = ctx.createLinearGradient(edge, 0, edge + dir * full, 0);
+    g.addColorStop(0, h.color);
+    g.addColorStop(1, 'rgba(239,68,68,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(Math.min(edge, edge + dir * full), fl - 12, full, 12);
+    return;
+  }
+  const x0 = Math.min(edge, edge + dir * h.w);
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = h.color2;
+  ctx.fillRect(x0, fl - 16, h.w, 16);
+  const g = ctx.createLinearGradient(0, fl - 16, 0, fl);
+  g.addColorStop(0, '#fde68a');
+  g.addColorStop(0.45, h.color);
+  g.addColorStop(1, h.color2);
+  ctx.fillStyle = g;
+  ctx.fillRect(x0, fl - 15, h.w, 15);
+  // a heat glow above it and bubbles that pop
+  ctx.globalAlpha = 0.35 + 0.1 * Math.sin(time * 5);
+  const glow = ctx.createLinearGradient(0, fl - 70, 0, fl - 15);
+  glow.addColorStop(0, 'rgba(251,146,60,0)');
+  glow.addColorStop(1, 'rgba(251,146,60,0.8)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(x0, fl - 70, h.w, 55);
+  ctx.fillStyle = '#fef3c7';
+  for (let i = 0; i < Math.max(2, Math.floor(h.w / 38)); i++) {
+    const ph = (time * 1.3 + i * 0.41 + h.seed) % 1;
+    ctx.globalAlpha = 0.8 * (1 - ph);
+    ctx.beginPath();
+    ctx.arc(x0 + ((i + 0.5) * h.w) / Math.max(2, Math.floor(h.w / 38)), fl - 8 - ph * 22, 2.5 + (i % 3), 0, Math.PI * 2);
+    ctx.fill();
+  }
 }

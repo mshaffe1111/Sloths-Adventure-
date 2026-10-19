@@ -777,6 +777,29 @@ const DRAKE: BossDef = {
   // the head is its one weak point: high up, and open only in the moment after it attacks (or when it is stunned)
   weak: { dx: 150, dy: 175, w: 120, h: 100 },
   arenaW: 1400,
+  lair: 'drake',
+  // five ledges, a stair up the left to a high centre perch and a moving one on the right: somewhere to go round the boss
+  perches: [
+    { dx: 70, up: 70, w: 190 },
+    { dx: 330, up: 140, w: 170 },
+    { dx: 640, up: 215, w: 240 },
+    { dx: 990, up: 150, w: 130, moving: { range: 110, speed: 1.0 } },
+    { dx: 1140, up: 90, w: 190 },
+  ],
+  // at 35% the floor by each fence floods with lava, so the ledges and the open middle are the safe ground
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    for (const dir of [1, -1] as const) {
+      const edge = dir > 0 ? c.arena.left : c.arena.right;
+      const h = makeHazard({
+        kind: 'strip', x: edge, y: c.arena.floor - 9, floorY: c.arena.floor, w: 6, h: 18, warn: 1.8, warnMax: 1.8,
+        life: 1e9, maxLife: 1e9, dmg: 1, dir, ox: edge, growTo: 190, growRate: 55, color: '#fb923c', color2: '#b91c1c', look: 'lava',
+      });
+      c.hazards.push(h);
+    }
+    c.text('THE FLOOR IS LAVA!', c.arena.left + 300, c.arena.floor - 280, '#fb923c');
+    c.shake(0.6);
+  },
   moves: {
     // a long gout of flame at chest height: duck under it or jump it
     fireBreath: {

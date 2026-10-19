@@ -64,6 +64,7 @@ import {
   type AttackWant, type MoveId, type MoveSpec, type Rect,
 } from './fight.ts';
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
+import { drawLairBack, drawLairFront, drawLairWorld } from './lairArt.ts';
 import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
@@ -1681,6 +1682,7 @@ export class GameEngine {
     stepBoss(b, def, c, dt);
 
     if (b.phase !== prevPhase) {
+      def.onPhase?.(b.phase, b, c);
       sound.playBossRoar(this.currentStage.config.worldIndex);
       if (b.phase === 3) {
         sound.setTempo(1.08);
@@ -2730,6 +2732,11 @@ export class GameEngine {
     // 1. Render Multi-Layer Parallax Background
     renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
 
+    // a boss with its own lair: the backdrop is darkened and re-lit, with the creature's own shape behind the fight
+    const lair = this.currentStage.arena && this.bossDef?.lair ? this.bossDef.lair : null;
+    const lairView = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
+    if (lair && this.currentStage.arena) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right);
+
     // the secret Hollow is a dusk of purple thorn-light
     if (this.currentStage.config.secret) {
       ctx.fillStyle = 'rgba(46, 16, 101, 0.5)';
@@ -2755,6 +2762,7 @@ export class GameEngine {
     );
 
     this.drawRivers(ctx, world, true);
+    if (lair && this.currentStage.arena) drawLairWorld(ctx, lair, this.currentStage.arena, lairView, this.gameTime);
 
     // Shimmy ropes (behind the hero)
     if (this.ropes.length) {
@@ -2923,7 +2931,8 @@ export class GameEngine {
 
     // 3. Render Foreground Foliage (Framing screen edges)
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
-    renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    if (lair) drawLairFront(ctx, lair, lairView, this.gameTime);
+    else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     if (this.respawnFlash > 0) {
       ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
       ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
