@@ -67,6 +67,19 @@ export default function App() {
     setMaxHp(maxHearts());
   }, []);
 
+  // New Game: progress has just been cleared from storage; rebuild everything from it and begin at stage 1-1
+  const onNewGame = useCallback(() => {
+    const fresh = generateAllLevels();
+    setAllLevels(fresh);
+    setActiveLevel(fresh[0]);
+    setSelectedWorldId(1);
+    setSecretFound(gateFound());
+    setThornHeart(hasThornHeart());
+    setHp(maxHearts());
+    setMaxHp(maxHearts());
+    startLevel(fresh[0]);
+  }, []);
+
   // Desktop PWA and saving utilities
   const {
     isInstallable,
@@ -151,6 +164,8 @@ export default function App() {
   useEffect(() => {
     const handleGlobalKey = (e: KeyboardEvent) => {
       if (screen === 'title') {
+        // a dialog (Save & Load, New Game) owns the keyboard while it is open
+        if (document.querySelector('.ui-scrim')) return;
         if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault();
           startLevel(resumeLevel);
@@ -386,6 +401,7 @@ export default function App() {
           onStartGame={() => startLevel(resumeLevel)}
           resume={resumeInfo}
           onSaveLoaded={onSaveLoaded}
+          onNewGame={onNewGame}
           onOpenMap={() => {
             setSelectedWorldId(resumeLevel.worldIndex);
             setScreen('world_map');

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TitleDefs, TitleFrame, TitleHero, TitleFireflies } from './TitleScene.tsx';
+import { TitleDefs, TitleFrame, TitleHero, TitleFireflies, TitleSlomatt } from './TitleScene.tsx';
 import { VistaCanvas } from './VistaCanvas.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
+import { NewGameDialog } from './NewGameDialog.tsx';
 
 /** every biome takes a turn behind the logo */
 const SHOWCASE = [1, 2, 4, 6, 3, 8, 5, 7, 9, 10];
@@ -26,6 +27,8 @@ interface TitleScreenProps {
   /** null on a fresh game */
   resume: ResumeInfo | null;
   onSaveLoaded: () => void;
+  /** progress has just been cleared; begin again (skipStory: go straight to play) */
+  onNewGame: (skipStory: boolean) => void;
 }
 
 export const TitleScreen: React.FC<TitleScreenProps> = ({
@@ -38,8 +41,10 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   isInstalled,
   resume,
   onSaveLoaded,
+  onNewGame,
 }) => {
   const [saveOpen, setSaveOpen] = useState(false);
+  const [newOpen, setNewOpen] = useState(false);
   return (
     <div className="fixed inset-0 z-40 bg-[#1a2a1c] select-none font-game text-white overflow-hidden">
       <VistaCanvas worlds={SHOWCASE} hold={14} pan={14} />
@@ -71,7 +76,10 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
         <div className="flex w-full flex-1 min-h-0 flex-col items-center justify-center text-center">
           <TitleHero className="w-full max-w-[1280px] shrink-0 h-[clamp(100px,min(32vh,58.3vw),400px)]" />
 
-          <h1 className="title-logo mt-0">SLOTHS</h1>
+          <div className="title-logo-wrap">
+            <TitleSlomatt />
+            <h1 className="title-logo mt-0">SLOTHS</h1>
+          </div>
           <div className="title-ribbon">RAINFOREST ADVENTURES</div>
 
           <div className="mt-2 sm:mt-4 flex flex-col items-center gap-2 w-full">
@@ -83,14 +91,17 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
                 </span>
               )}
             </button>
-            <div className="flex items-center justify-center gap-2 sm:gap-3">
-              <button type="button" onClick={onViewStory} className="ui-pill ui-pill-rose">
+            <div className="grid grid-cols-2 gap-2 w-full max-w-[340px] sm:flex sm:max-w-none sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
+              <button type="button" onClick={onViewStory} className="ui-pill ui-pill-rose justify-center">
                 Story
               </button>
-              <button type="button" onClick={onOpenMap} className="ui-pill ui-pill-green">
+              <button type="button" onClick={onOpenMap} className="ui-pill ui-pill-green justify-center">
                 World Map
               </button>
-              <button type="button" onClick={() => setSaveOpen(true)} className="ui-pill ui-pill-wood">
+              <button type="button" onClick={() => setNewOpen(true)} className="ui-pill ui-pill-wood justify-center">
+                New Game
+              </button>
+              <button type="button" onClick={() => setSaveOpen(true)} className="ui-pill ui-pill-wood justify-center">
                 Save / Load
               </button>
             </div>
@@ -103,6 +114,19 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
       </div>
 
       {saveOpen && <SaveLoadDialog onClose={() => setSaveOpen(false)} onLoaded={onSaveLoaded} />}
+      {newOpen && (
+        <NewGameDialog
+          onClose={() => setNewOpen(false)}
+          onBackup={() => {
+            setNewOpen(false);
+            setSaveOpen(true);
+          }}
+          onStarted={(skip) => {
+            setNewOpen(false);
+            onNewGame(skip);
+          }}
+        />
+      )}
     </div>
   );
 };

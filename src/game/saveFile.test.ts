@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildSave, parseSave, applySave, isSaveKey, checksum, saveFileName, SAVE_FORMAT, type Store } from './saveFile.ts';
+import { buildSave, parseSave, applySave, resetProgress, isSaveKey, checksum, saveFileName, SAVE_FORMAT, type Store } from './saveFile.ts';
 
 function memStore(init: Record<string, string> = {}): Store & { m: Map<string, string> } {
   const m = new Map(Object.entries(init));
@@ -75,4 +75,25 @@ test('only game entries count as save keys', () => {
 
 test('file name carries the date', () => {
   assert.equal(saveFileName(new Date(2026, 9, 18)), 'sloths-save-2026-10-18.json');
+});
+
+test('a new game forgets progress and the secret but keeps sound settings and unrelated keys', () => {
+  const st = memStore({ ...sample, sloth_secret_gate: '1', sloth_sfx_vol: '0.4', sloth_game_muted: '1' });
+  resetProgress(st);
+  assert.equal(st.m.has('sloth_lvl_1-1'), false);
+  assert.equal(st.m.has('sloth_story_w1'), false);
+  assert.equal(st.m.has('sloth_thorn_heart'), false);
+  assert.equal(st.m.has('sloth_secret_gate'), false);
+  assert.equal(st.m.get('sloth_music_vol'), '0.6');
+  assert.equal(st.m.get('sloth_sfx_vol'), '0.4');
+  assert.equal(st.m.get('sloth_game_muted'), '1');
+  assert.equal(st.m.get('sloth_hint_v3'), '1');
+  assert.equal(st.m.get('some_other_site_key'), 'nope');
+});
+
+test('a new game can skip the story: every world story beat is marked seen', () => {
+  const st = memStore(sample);
+  resetProgress(st, { skipStory: true });
+  for (let w = 1; w <= 10; w++) assert.equal(st.m.get(`sloth_story_w${w}`), '1');
+  assert.equal(st.m.has('sloth_lvl_1-1'), false);
 });

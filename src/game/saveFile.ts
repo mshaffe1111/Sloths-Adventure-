@@ -162,3 +162,15 @@ export function saveFileName(now = new Date()): string {
   const p = (n: number) => String(n).padStart(2, '0');
   return `sloths-save-${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}.json`;
 }
+
+/** the settings that belong to the device, not to an adventure: a new game keeps them */
+const KEEP_ON_NEW_GAME = /^sloth_(music_vol|sfx_vol|game_muted)$/;
+
+/**
+ * Start over: forget every stage result, the stories seen and the secret, but keep the sound settings.
+ * With `skipStory` every world's story beat is marked as seen, so the game goes straight to play.
+ */
+export function resetProgress(store: Store, opts: { skipStory?: boolean } = {}) {
+  for (const k of store.keys()) if (isSaveKey(k) && !KEEP_ON_NEW_GAME.test(k)) store.removeItem(k);
+  if (opts.skipStory) for (let w = 1; w <= 10; w++) store.setItem(`sloth_story_w${w}`, '1');
+}

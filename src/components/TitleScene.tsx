@@ -1,4 +1,8 @@
 import React from 'react';
+import { heroSpriteEnabled } from '../game/heroSprite.ts';
+
+const TITLE_IDLE = new URL('../assets/hero/title-idle.webp', import.meta.url).href;
+const TITLE_BLINK = new URL('../assets/hero/title-blink.webp', import.meta.url).href;
 
 /**
  * Title-screen scenery: a warm sunset-jungle scene drawn entirely as SVG.
@@ -213,7 +217,9 @@ export const TitleFrame: React.FC = () => (
 );
 
 /** Branch, swaying vines and the hanging sloth. Width-fluid, height-capped by the parent. */
-export const TitleHero: React.FC<{ className?: string }> = ({ className }) => (
+export const TitleHero: React.FC<{ className?: string }> = ({ className }) => {
+  const paint = heroSpriteEnabled();
+  return (
   <svg
     className={className}
     viewBox="340 50 600 350"
@@ -232,78 +238,83 @@ export const TitleHero: React.FC<{ className?: string }> = ({ className }) => (
     <g className="ts-sway ts-c"><use href="#ts-vine" transform="translate(860 112) scale(.9)" /></g>
     <g className="ts-sway"><use href="#ts-vine" transform="translate(1010 110)" /></g>
 
-    {/* hero sloth */}
-    <g className="ts-hang">
-      <g transform="translate(640 80) scale(.86) translate(0 153)">
-        {/* arms */}
-        <path d="M-52 40C-70 -20-60 -80-40 -124" stroke="#9a6d41" strokeWidth="30" strokeLinecap="round" fill="none" />
-        <path d="M52 40C70 -20 60 -80 40 -124" stroke="#9a6d41" strokeWidth="30" strokeLinecap="round" fill="none" />
-        <path d="M-52 40C-70 -20-60 -80-40 -124" stroke="#c79a68" strokeWidth="22" strokeLinecap="round" fill="none" />
-        <path d="M52 40C70 -20 60 -80 40 -124" stroke="#c79a68" strokeWidth="22" strokeLinecap="round" fill="none" />
-        {/* claws gripping the branch */}
-        <g stroke="#fff3dc" strokeWidth="5.5" strokeLinecap="round" fill="none">
-          <path d="M-52 -126C-56 -140-52 -148-46 -152" />
-          <path d="M-42 -128C-42 -142-38 -150-32 -153" />
-          <path d="M-32 -126C-30 -138-24 -146-18 -148" />
-          <path d="M52 -126C56 -140 52 -148 46 -152" />
-          <path d="M42 -128C42 -142 38 -150 32 -153" />
-          <path d="M32 -126C30 -138 24 -146 18 -148" />
-        </g>
+    {!paint && (
+      <>
+      {/* hero sloth */}
+      <g className="ts-hang">
+        <g transform="translate(640 80) scale(.86) translate(0 153)">
+          {/* arms */}
+          <path d="M-52 40C-70 -20-60 -80-40 -124" stroke="#9a6d41" strokeWidth="30" strokeLinecap="round" fill="none" />
+          <path d="M52 40C70 -20 60 -80 40 -124" stroke="#9a6d41" strokeWidth="30" strokeLinecap="round" fill="none" />
+          <path d="M-52 40C-70 -20-60 -80-40 -124" stroke="#c79a68" strokeWidth="22" strokeLinecap="round" fill="none" />
+          <path d="M52 40C70 -20 60 -80 40 -124" stroke="#c79a68" strokeWidth="22" strokeLinecap="round" fill="none" />
+          {/* claws gripping the branch */}
+          <g stroke="#fff3dc" strokeWidth="5.5" strokeLinecap="round" fill="none">
+            <path d="M-52 -126C-56 -140-52 -148-46 -152" />
+            <path d="M-42 -128C-42 -142-38 -150-32 -153" />
+            <path d="M-32 -126C-30 -138-24 -146-18 -148" />
+            <path d="M52 -126C56 -140 52 -148 46 -152" />
+            <path d="M42 -128C42 -142 38 -150 32 -153" />
+            <path d="M32 -126C30 -138 24 -146 18 -148" />
+          </g>
 
-        {/* body */}
-        <ellipse cx="0" cy="104" rx="72" ry="84" fill="url(#ts-fur)" />
-        <ellipse cx="0" cy="118" rx="44" ry="56" fill="#f1dcc0" />
-        {/* fur strokes + warm rim light */}
-        <g stroke="#b88a58" strokeWidth="3.2" strokeLinecap="round" fill="none" opacity=".75">
-          <path d="M-58 70q-6 10 0 20" /><path d="M-62 110q-6 10 0 20" /><path d="M-54 148q-4 9 2 16" />
-          <path d="M58 70q6 10 0 20" /><path d="M62 110q6 10 0 20" /><path d="M54 148q4 9 -2 16" />
-        </g>
-        <path d="M-70 96C-72 60-56 36-40 28" fill="none" stroke="#ffe3a8" strokeWidth="4" strokeLinecap="round" opacity=".55" />
-        <path d="M70 96C72 60 56 36 40 28" fill="none" stroke="#ffe3a8" strokeWidth="4" strokeLinecap="round" opacity=".55" />
-        <g stroke="#d9bc94" strokeWidth="3" strokeLinecap="round">
-          <path d="M-14 100l4 8" /><path d="M8 112l4 8" /><path d="M-6 136l4 8" /><path d="M16 144l3 7" /><path d="M-22 122l4 8" />
-        </g>
+          {/* body */}
+          <ellipse cx="0" cy="104" rx="72" ry="84" fill="url(#ts-fur)" />
+          <ellipse cx="0" cy="118" rx="44" ry="56" fill="#f1dcc0" />
+          {/* fur strokes + warm rim light */}
+          <g stroke="#b88a58" strokeWidth="3.2" strokeLinecap="round" fill="none" opacity=".75">
+            <path d="M-58 70q-6 10 0 20" /><path d="M-62 110q-6 10 0 20" /><path d="M-54 148q-4 9 2 16" />
+            <path d="M58 70q6 10 0 20" /><path d="M62 110q6 10 0 20" /><path d="M54 148q4 9 -2 16" />
+          </g>
+          <path d="M-70 96C-72 60-56 36-40 28" fill="none" stroke="#ffe3a8" strokeWidth="4" strokeLinecap="round" opacity=".55" />
+          <path d="M70 96C72 60 56 36 40 28" fill="none" stroke="#ffe3a8" strokeWidth="4" strokeLinecap="round" opacity=".55" />
+          <g stroke="#d9bc94" strokeWidth="3" strokeLinecap="round">
+            <path d="M-14 100l4 8" /><path d="M8 112l4 8" /><path d="M-6 136l4 8" /><path d="M16 144l3 7" /><path d="M-22 122l4 8" />
+          </g>
 
-        {/* feet */}
-        <ellipse cx="-34" cy="184" rx="26" ry="14" fill="#9a6d41" />
-        <ellipse cx="34" cy="184" rx="26" ry="14" fill="#9a6d41" />
-        <g stroke="#fff3dc" strokeWidth="4.5" strokeLinecap="round">
-          <path d="M-48 192l-4 8" /><path d="M-36 194l-2 9" /><path d="M-24 192l0 8" />
-          <path d="M48 192l4 8" /><path d="M36 194l2 9" /><path d="M24 192l0 8" />
-        </g>
+          {/* feet */}
+          <ellipse cx="-34" cy="184" rx="26" ry="14" fill="#9a6d41" />
+          <ellipse cx="34" cy="184" rx="26" ry="14" fill="#9a6d41" />
+          <g stroke="#fff3dc" strokeWidth="4.5" strokeLinecap="round">
+            <path d="M-48 192l-4 8" /><path d="M-36 194l-2 9" /><path d="M-24 192l0 8" />
+            <path d="M48 192l4 8" /><path d="M36 194l2 9" /><path d="M24 192l0 8" />
+          </g>
 
-        {/* head */}
-        <path d="M-70 -6C-74 -52-40 -80 0 -80C40 -80 74 -52 70 -6C68 38 36 62 0 62C-36 62 -68 38 -70 -6Z" fill="url(#ts-fur)" />
-        <g fill="#c79a68">
-          <circle cx="-36" cy="-74" r="9" /><circle cx="-14" cy="-80" r="10" /><circle cx="10" cy="-81" r="10" /><circle cx="32" cy="-76" r="9" />
-          <circle cx="-56" cy="-56" r="8" /><circle cx="56" cy="-56" r="8" /><circle cx="-69" cy="-30" r="7" /><circle cx="69" cy="-30" r="7" />
-        </g>
-        <path d="M-68 8C-64 44-36 62 0 62C36 62 64 44 68 8C50 40 28 50 0 50C-28 50-50 40-68 8Z" fill="#8d6238" opacity=".35" />
-        <path d="M-50 -58C-30 -76 30 -76 50 -58C30 -68-30 -68-50 -58Z" fill="#ffe3a8" opacity=".55" />
+          {/* head */}
+          <path d="M-70 -6C-74 -52-40 -80 0 -80C40 -80 74 -52 70 -6C68 38 36 62 0 62C-36 62 -68 38 -70 -6Z" fill="url(#ts-fur)" />
+          <g fill="#c79a68">
+            <circle cx="-36" cy="-74" r="9" /><circle cx="-14" cy="-80" r="10" /><circle cx="10" cy="-81" r="10" /><circle cx="32" cy="-76" r="9" />
+            <circle cx="-56" cy="-56" r="8" /><circle cx="56" cy="-56" r="8" /><circle cx="-69" cy="-30" r="7" /><circle cx="69" cy="-30" r="7" />
+          </g>
+          <path d="M-68 8C-64 44-36 62 0 62C36 62 64 44 68 8C50 40 28 50 0 50C-28 50-50 40-68 8Z" fill="#8d6238" opacity=".35" />
+          <path d="M-50 -58C-30 -76 30 -76 50 -58C30 -68-30 -68-50 -58Z" fill="#ffe3a8" opacity=".55" />
 
-        {/* face */}
-        <path d="M-56 -8C-58 -40-34 -58 0 -58C34 -58 58 -40 56 -8C54 28 32 50 0 50C-32 50 -54 28 -56 -8Z" fill="#f4e3c8" />
-        <ellipse cx="-27" cy="-6" rx="19" ry="16" transform="rotate(24 -27 -6)" fill="#6a4426" />
-        <ellipse cx="27" cy="-6" rx="19" ry="16" transform="rotate(-24 27 -6)" fill="#6a4426" />
-        <g className="ts-blink">
-          <ellipse cx="-27" cy="-6" rx="13" ry="14.5" fill="url(#ts-iris)" />
-          <circle cx="-32" cy="-13" r="5.2" fill="#fff" />
-          <circle cx="-22" cy="0" r="2.4" fill="#fff" opacity=".85" />
+          {/* face */}
+          <path d="M-56 -8C-58 -40-34 -58 0 -58C34 -58 58 -40 56 -8C54 28 32 50 0 50C-32 50 -54 28 -56 -8Z" fill="#f4e3c8" />
+          <ellipse cx="-27" cy="-6" rx="19" ry="16" transform="rotate(24 -27 -6)" fill="#6a4426" />
+          <ellipse cx="27" cy="-6" rx="19" ry="16" transform="rotate(-24 27 -6)" fill="#6a4426" />
+          <g className="ts-blink">
+            <ellipse cx="-27" cy="-6" rx="13" ry="14.5" fill="url(#ts-iris)" />
+            <circle cx="-32" cy="-13" r="5.2" fill="#fff" />
+            <circle cx="-22" cy="0" r="2.4" fill="#fff" opacity=".85" />
+          </g>
+          <g className="ts-blink">
+            <ellipse cx="27" cy="-6" rx="13" ry="14.5" fill="url(#ts-iris)" />
+            <circle cx="22" cy="-13" r="5.2" fill="#fff" />
+            <circle cx="32" cy="0" r="2.4" fill="#fff" opacity=".85" />
+          </g>
+          <ellipse cx="-38" cy="22" rx="10" ry="6" fill="#ff9a8a" opacity=".38" />
+          <ellipse cx="38" cy="22" rx="10" ry="6" fill="#ff9a8a" opacity=".38" />
+          <ellipse cx="0" cy="14" rx="10" ry="7" fill="#3a2414" />
+          <ellipse cx="-3" cy="11.5" rx="3.4" ry="1.8" fill="#fff" opacity=".6" />
+          <path d="M0 21V28M-15 30Q0 44 15 30" fill="none" stroke="#6a4426" strokeWidth="3.4" strokeLinecap="round" />
         </g>
-        <g className="ts-blink">
-          <ellipse cx="27" cy="-6" rx="13" ry="14.5" fill="url(#ts-iris)" />
-          <circle cx="22" cy="-13" r="5.2" fill="#fff" />
-          <circle cx="32" cy="0" r="2.4" fill="#fff" opacity=".85" />
-        </g>
-        <ellipse cx="-38" cy="22" rx="10" ry="6" fill="#ff9a8a" opacity=".38" />
-        <ellipse cx="38" cy="22" rx="10" ry="6" fill="#ff9a8a" opacity=".38" />
-        <ellipse cx="0" cy="14" rx="10" ry="7" fill="#3a2414" />
-        <ellipse cx="-3" cy="11.5" rx="3.4" ry="1.8" fill="#fff" opacity=".6" />
-        <path d="M0 21V28M-15 30Q0 44 15 30" fill="none" stroke="#6a4426" strokeWidth="3.4" strokeLinecap="round" />
       </g>
-    </g>
+      </>
+    )}
   </svg>
-);
+  );
+};
 
 const FIREFLIES: Array<{ cx: number; cy: number; r: number; delay: number }> = [
   { cx: 210, cy: 330, r: 4, delay: 0 },
@@ -332,3 +343,20 @@ export const TitleFireflies: React.FC = () => (
     </g>
   </svg>
 );
+
+/**
+ * The painted Slomatt standing on top of the logo, looking out at the sunrise. A plain element placed from the
+ * logo's own font size, so his feet stay on the letters at every screen size. Renders nothing when the classic
+ * hero is selected (the hanging vector sloth in TitleHero takes over).
+ */
+export const TitleSlomatt: React.FC = () => {
+  if (!heroSpriteEnabled()) return null;
+  return (
+    <div className="title-slomatt" aria-hidden="true">
+      <div className="title-slomatt-breathe">
+        <img src={TITLE_IDLE} alt="" draggable={false} />
+        <img className="title-slomatt-blink" src={TITLE_BLINK} alt="" draggable={false} />
+      </div>
+    </div>
+  );
+};

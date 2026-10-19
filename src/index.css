@@ -74,6 +74,14 @@
   text-shadow: 0 8px 0 #2a3b12, 0 18px 30px rgba(60, 20, 0, 0.45);
 }
 
+.title-logo-wrap { position: relative; font-size: clamp(44px, min(12vh, 21vw), 112px); }
+.title-logo-wrap .title-logo { font-size: 1em; }
+/* the painted hero stands on the letters: feet a little below the top of the lettering */
+.title-slomatt { position: absolute; left: 50%; bottom: calc(100% - 0.2em); height: 2.35em; aspect-ratio: 180 / 303; transform: translateX(-50%); pointer-events: none; z-index: 1; }
+.title-slomatt-breathe { position: relative; width: 100%; height: 100%; transform-origin: 50% 100%; animation: ts-breathe 3.2s ease-in-out infinite; }
+.title-slomatt img { position: absolute; inset: 0; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; filter: drop-shadow(0 4px 6px rgba(20, 10, 0, .35)); }
+.title-slomatt-blink { opacity: 0; animation: ts-blinkimg 3.6s steps(1, end) infinite; }
+
 .title-ribbon {
   position: relative;
   z-index: 0;
@@ -154,6 +162,9 @@
 @keyframes ts-sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
 
 .ts-hang { transform-origin: 640px 98px; animation: ts-hang 6s ease-in-out infinite; }
+/* the painted hero: a slow breath, and a blink every few seconds */
+@keyframes ts-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.012, 1.018); } }
+@keyframes ts-blinkimg { 0%, 93% { opacity: 0; } 94%, 98% { opacity: 1; } 99%, 100% { opacity: 0; } }
 @keyframes ts-hang { 0%, 100% { transform: rotate(-1.4deg); } 50% { transform: rotate(1.4deg); } }
 
 .ts-blink { transform-box: fill-box; transform-origin: center; animation: ts-blink 5s infinite; }
@@ -165,7 +176,7 @@
 @keyframes ts-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(14px, -18px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .ts-sway, .ts-hang, .ts-blink, .ts-fly, .ts-drift { animation: none; }
+  .ts-sway, .ts-hang, .title-slomatt-breathe, .title-slomatt-blink, .ts-blink, .ts-fly, .ts-drift { animation: none; }
   .title-btn { transition: none; }
 }
 
@@ -242,6 +253,8 @@
 .ui-copy { margin: 0; font-size: 13px; line-height: 1.45; color: #d9e6d6; }
 .ui-copy b { color: #fff3c4; }
 .ui-warn { color: #ffb4a0 !important; }
+.ui-link { padding: 0; border: 0; background: none; color: #ffd86b; font: inherit; text-decoration: underline; cursor: pointer; }
+.ui-link:focus-visible { outline: 2px solid #fff6c8; outline-offset: 2px; border-radius: 3px; }
 .ui-row { display: flex; flex-wrap: wrap; gap: 10px; }
 .ui-btn { padding: 10px 18px; border: 0; border-radius: 14px; font-family: var(--font-heading); font-weight: 700; font-size: 15px; cursor: pointer; color: #fff; transition: transform .08s ease, filter .15s ease; }
 .ui-btn:active { transform: translateY(2px); }
