@@ -10,6 +10,7 @@ Every pose and animation sheet Matt supplies lives here, so nothing he draws is 
 
 **Folders**
 - `slomatt/` the six action-study sheets (rope, sliding, squat/flip/fall/kick, punch/climb/kick, run/jump/punch, slow movement) and `early-hero-sheets/`, the sheets the in-game hero atlas was cut from.
+- `slomatt/standard-set/` the nine-sheet standard set (4x4 on flat grey, 144 frames at ~240 px, one category per sheet), the format new sheets follow.
 - `jennifur/` her emotion sheets.
 - `slomatt-and-jennifur/` the shared sheets, including one with walk, jump, punch, kick, hurt and defeat drawn for both.
 
@@ -30,3 +31,24 @@ Every pose and animation sheet Matt supplies lives here, so nothing he draws is 
 - **Size.** Each sheet is about 1024 px wide, so Slomatt is roughly 100-150 px tall in a panel. The in-game atlas frames are 270-320 px tall. At that size these would look soft next to the existing hero. They work as pose references and for small cutscene uses; for the game itself they should be redrawn larger (same layout, magenta background, larger sheet).
 - **Look.** The sheets show the satchel and wrist wraps but no green backpack and bedroll, which the in-game run frames have. Mixing them would make the hero change outfit mid-jump.
 - **Background.** They are drawn on parchment, not a keyed colour, so cutting frames out needs a careful outline-based cut.
+
+## The standard set (what every character gets going forward)
+
+Each character is drawn as the same twelve 4x4 sheets: 1024x1024, flat grey, no borders or numbers, one subject per sheet. The cutter (`scripts/cutStandard.py`) expects 16 figures per sheet in reading order.
+
+| Sheet | Subject |
+|---|---|
+| 1 | Turnaround, idle breathing, eye blinks, head tilts |
+| 2 | Walk cycle, run cycle |
+| 3 | Jump, fall, ground landing, vertical climb |
+| 4 | Horizontal vine crossing, inverted branch crawl, vine swing arc |
+| 5 | Light attack, heavy finisher, kick/throw, object interactions (pickup, carry, pull, push) |
+| 6 | Hit recoil, knockback, ground tumble, defeat collapse |
+| 7 | Ground slide, dodge roll, ledge hang, ledge pull-up |
+| 8 | Victory celebration, anger tantrum, happiness/relief, stun/dizzy |
+| 9 | Behind-the-back: rear walk/run, directional banking/leans, hill butt-slide, rear jump/vault |
+| 10 | Cutscene acting: sneaking/discovery, urgency/warning, sadness/exhaustion, determination/resolve |
+| 11 | Dialogue faces: mouth talking visemes, reactions, intense emotions, comedic emotes |
+| 12 | Cinematic vignettes: level entry drop, level exit wave, menu/title idle, cutscene trap transitions |
+
+Slomatt has sheets 1-9 so far (`slomatt/standard-set/`). The in-game "New hero set (test)" is built from sheets 1-8 and uses the first frames of each; sheet 9 is kept for a downhill-slide stage.

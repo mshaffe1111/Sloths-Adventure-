@@ -1,6 +1,7 @@
 import React from 'react';
 import { polishEnabled, setPolishPref } from '../game/polish.ts';
 import { studiesEnabled, setStudiesPref } from '../game/heroStudies.ts';
+import { standardEnabled, setStandardPref, warmStandardAtlas } from '../game/heroStandard.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
@@ -133,6 +134,38 @@ export const ControlsSetting: React.FC = () => {
         </div>
       )}
       <small className="pm-polish-note">{style === 'pad' ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.' : 'No buttons: slide, flick and tap anywhere on the screen.'}</small>
+    </div>
+  );
+};
+
+/** the standard-hero switch (saved on the device): Slomatt drawn entirely from the new standard-set sheets, satchel look, every state */
+export const StandardToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => standardEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#fcd34d" size={22}>
+            <circle cx="12" cy="5" r="2.2" />
+            <path d="M12 7.5v6M12 13.5l-3.5 5M12 13.5l3.5 5M7 10.5h10" />
+          </Icon>
+          New hero set (test)
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setStandardPref(v);
+            if (v) warmStandardAtlas();
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">Slomatt redrawn from the new standard sheets: one look for every move, with the satchel instead of the backpack. Try it and tell us.</small>
     </div>
   );
 };

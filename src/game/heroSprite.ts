@@ -7,6 +7,8 @@
  * and the caller then draws the classic hero, so the game never shows nothing.
  */
 import { studiesEnabled, studyAtlas, studyFrame, studyPick } from './heroStudies.ts';
+import { standardAtlas, stdFrame, stdPick, stdStill, warmStandardAtlas, type StdChoice } from './heroStandard.ts';
+import { STD_STAND_H, type StdFrame } from './heroStandardData.ts';
 import { polishEnabled } from './polish.ts';
 import type { PlayerState } from './types.ts';
 import { HERO_CLIMB, HERO_FRAMES, HERO_RUN, HERO_STAND_H, type HeroFrame } from './heroAtlasData.ts';
@@ -62,13 +64,32 @@ function load() {
 
 /** start fetching the painted hero early (title screen), so the first stage never begins in vector art */
 export function warmHeroAtlas() {
-  if (heroSpriteEnabled()) load();
+  if (heroSpriteEnabled()) {
+    load();
+    warmStandardAtlas();
+  }
 }
+
+// the standard hero's atlas in the reward coat (made once per coat, like the main one)
+const stdTinted: Partial<Record<Coat, HTMLCanvasElement | null>> = {};
+function stdSheet(img: HTMLImageElement): CanvasImageSource {
+  if (coat === 'none') return img;
+  if (stdTinted[coat] === undefined) stdTinted[coat] = makeTintedCanvas(img, coat);
+  return stdTinted[coat] ?? img;
+}
+/** world units per pixel of the standard hero's frames: its standing frame is as tall as the main hero's */
+const STD_K = (HERO_UNITS * HERO_SPRITE_SCALE) / STD_STAND_H;
 
 /** the face portraits, for the HUD and dialogue (null until the atlas has loaded) */
 export function heroFace(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, size: number): boolean {
   if (!heroSpriteEnabled()) return false;
   load();
+  const st = stdStill(name);
+  if (st) {
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(stdSheet(st.img), st.f.x, st.f.y, st.f.w, st.f.h, x, y, size, size);
+    return true;
+  }
   const f = HERO_FRAMES[name];
   if (!ready || !atlas || !f) return false;
   ctx.drawImage(atlas, f.x, f.y, f.w, f.h, x, y, size, size);
@@ -82,9 +103,10 @@ export function heroFace(ctx: CanvasRenderingContext2D, name: string, x: number,
 export function heroStill(ctx: CanvasRenderingContext2D, name: string, shadow = true): boolean {
   if (!heroSpriteEnabled()) return false;
   load();
-  const f: HeroFrame | undefined = HERO_FRAMES[name];
-  if (!ready || !atlas || !f) return false;
-  const k = (HERO_UNITS * HERO_SPRITE_SCALE) / HERO_STAND_H;
+  const st = stdStill(name);
+  const f: HeroFrame | StdFrame | undefined = st ? st.f : HERO_FRAMES[name];
+  if (!f || (!st && (!ready || !atlas))) return false;
+  const k = st ? STD_K : (HERO_UNITS * HERO_SPRITE_SCALE) / HERO_STAND_H;
   if (shadow) {
     ctx.fillStyle = 'rgba(15,23,42,0.36)';
     ctx.beginPath();
@@ -93,12 +115,14 @@ export function heroStill(ctx: CanvasRenderingContext2D, name: string, shadow = 
   }
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(sheet() ?? atlas, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
+  ctx.drawImage(st ? stdSheet(st.img) : sheet() ?? atlas!, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
   return true;
 }
 
 /** the shape of a painted pose, for a cutscene that wants to place something against it: [width, height] in world units */
 export function heroStillSize(name: string): [number, number] | null {
+  const st = stdStill(name);
+  if (st) return [st.f.w * STD_K, st.f.h * STD_K];
   const f: HeroFrame | undefined = HERO_FRAMES[name];
   if (!f) return null;
   const k = (HERO_UNITS * HERO_SPRITE_SCALE) / HERO_STAND_H;
@@ -206,6 +230,12 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   load();
   if (!ready || !atlas) return false;
   events.track(p, time);
+  // the standard hero (heroStandard.ts), when switched on and loaded, draws every pose it has a frame for
+  const stdImg = standardAtlas();
+  if (stdImg) {
+    const ch = stdPick(p, time, events);
+    if (ch && drawStandard(ctx, p, time, ch, stdImg)) return true;
+  }
   // the opt-in action studies (heroStudies.ts), when switched on and loaded, take the poses they cover; everything else is the main atlas
   const study = studiesEnabled() ? studyPick(p, time, events) : null;
   const sAtlas = study ? studyAtlas() : null;
@@ -277,6 +307,62 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   const dx = choice.centred ? -(f.w * fk) / 2 : -(choice.byHand && f.hx !== undefined ? f.hx : f.ax) * fk;
   const dy = choice.centred ? -pivot - (f.h * fk) / 2 : -f.ay * fk + choice.bob;
   ctx.drawImage(src, f.x, f.y, f.w, f.h, dx, dy, f.w * fk, f.h * fk);
+  ctx.restore();
+  return true;
+}
+
+/** draws one frame of the standard hero. It turns and squashes the way the main hero does, so every effect (the flip, the hang, the vine) behaves the same */
+function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, ch: StdChoice, img: HTMLImageElement): boolean {
+  const f = stdFrame(ch.name);
+  if (!f) return false;
+  const k = STD_K;
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  if (!polishEnabled() && p.grounded && !p.climbing && !p.isVineSwinging && !p.hanging) {
+    const sc = (1 / p.squashY) * (p.ducking ? 1.3 : 1.05) * HERO_SPRITE_SCALE;
+    ctx.fillStyle = 'rgba(15,23,42,0.36)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 22 * sc, 5.5 * sc, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // the rope ends at his feet, so a vine swing turns the whole body about them
+  if (ch.swing !== undefined) ctx.rotate(ch.swing);
+  ctx.scale(p.facing * p.squashX, p.squashY);
+  if (ch.hang) {
+    // swing gently from the hands; a quicker rocking while he creeps hand over hand
+    const moving = Math.abs(p.vx) > 10;
+    const top = -f.h * k;
+    ctx.translate(0, top);
+    ctx.rotate(Math.sin(time * (moving ? 7 : 2.2)) * (moving ? 0.1 : 0.045));
+    ctx.translate(0, -top);
+  }
+  // turn about the middle of the body
+  const pivot = HERO_UNITS * HERO_SPRITE_SCALE * 0.5;
+  let rot = ch.rot ?? 0;
+  if (ch.centred) {
+    const r = toUpright(rot);
+    flipLeft = Math.abs(r) < 1e-3 ? 0 : r;
+    flipLeftAt = time;
+  } else if (flipLeft !== 0) {
+    if (time < flipLeftAt) flipLeft = 0;
+    else {
+      const left = 1 - (time - flipLeftAt) / FLIP_EASE_OUT;
+      if (left <= 0) flipLeft = 0;
+      else rot += flipLeft * left;
+    }
+  }
+  if (rot !== 0) {
+    ctx.translate(0, -pivot);
+    ctx.rotate(rot);
+    ctx.translate(0, pivot);
+  }
+  if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha = 0.55;
+  drawAuras(ctx, p, time);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  const dx = ch.centred ? -(f.w * k) / 2 : -(ch.byHand ? f.hx : f.ax) * k;
+  const dy = ch.centred ? -pivot - (f.h * k) / 2 : -f.ay * k + ch.bob;
+  ctx.drawImage(stdSheet(img), f.x, f.y, f.w, f.h, dx, dy, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

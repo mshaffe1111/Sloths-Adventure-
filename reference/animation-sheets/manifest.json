@@ -3,7 +3,8 @@
  "groups": {
   "slomatt/early-hero-sheets": "Slomatt pose and character sheets from the original hero build (magenta-keyed KlingAI / Gemini sheets, including the run, kick, punch, climb, rope and expression sheets the in-game hero atlas was cut from)",
   "jennifur": "Jennifur emotion sheets: sad / crying / dejected walk / celebration / jubilant, and scared / panic (pink headband, #07 vest)",
-  "slomatt-and-jennifur": "Slomatt and Jennifur together: hugging, hand-in-hand, conversational gestures, 16 Slomatt expressions, and the core movement and combat sheet (walk, jump, land, punch, kick, crouch, hurt, stunned, knockback, defeated) drawn for both"
+  "slomatt-and-jennifur": "Slomatt and Jennifur together: hugging, hand-in-hand, conversational gestures, 16 Slomatt expressions, and the core movement and combat sheet (walk, jump, land, punch, kick, crouch, hurt, stunned, knockback, defeated) drawn for both",
+  "slomatt/standard-set": "Slomatt standard set (2026-10-20): nine 4x4 sheets on flat grey, no borders or numbers, one subject per sheet, see README for the 12-sheet standard. 144 frames, ~240 px tall; satchel and wrist wraps, no green backpack"
  },
  "files": [
   {
@@ -575,6 +576,96 @@
     898
    ],
    "bytes": 174925
+  },
+  {
+   "file": "slomatt/standard-set/01_turnaround-idle-blinks-tilts.jpg",
+   "uploadId": "3d758680",
+   "uploaded": "2026-10-20 15:36",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 220947
+  },
+  {
+   "file": "slomatt/standard-set/02_walk-and-run.jpg",
+   "uploadId": "93f63780",
+   "uploaded": "2026-10-20 15:36",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 234467
+  },
+  {
+   "file": "slomatt/standard-set/03_jump-fall-land-climb.jpg",
+   "uploadId": "d641ef43",
+   "uploaded": "2026-10-20 15:36",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 190067
+  },
+  {
+   "file": "slomatt/standard-set/04_vine-crossing-branch-crawl-swing.jpg",
+   "uploadId": "1a8bf296",
+   "uploaded": "2026-10-20 15:36",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 184939
+  },
+  {
+   "file": "slomatt/standard-set/05_attacks-and-object-interactions.jpg",
+   "uploadId": "e8ffa137",
+   "uploaded": "2026-10-20 15:36",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 211026
+  },
+  {
+   "file": "slomatt/standard-set/06_hit-knockback-tumble-defeat.jpg",
+   "uploadId": "936d3ba0",
+   "uploaded": "2026-10-20 15:36",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 196803
+  },
+  {
+   "file": "slomatt/standard-set/07_slide-roll-ledge.jpg",
+   "uploadId": "dbcf4245",
+   "uploaded": "2026-10-20 15:36",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 202480
+  },
+  {
+   "file": "slomatt/standard-set/08_victory-anger-relief-stun.jpg",
+   "uploadId": "1ecf5b86",
+   "uploaded": "2026-10-20 15:36",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 225007
+  },
+  {
+   "file": "slomatt/standard-set/09_back-views.jpg",
+   "uploadId": "7ac2ff18",
+   "uploaded": "2026-10-20 15:50",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 181717
   }
  ],
  "frames": "slomatt/frames.json"
