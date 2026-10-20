@@ -1,8 +1,8 @@
 import type { InputState } from './types.ts';
 import { parseTouchVector } from './rules.ts';
 
-/** a touch jump is held at least this long, so a flick gives a proper jump and not a hop */
-const MIN_TOUCH_JUMP_HOLD_MS = 130;
+/** a touch jump is held at least this long: a jump stops rising the moment the press is let go, and the level builder assumes a full jump (about 216 ms of rising), so a flick must give a full one, not the three-quarters a 130 ms press gave */
+export const MIN_TOUCH_JUMP_HOLD_MS = 220;
 
 export class InputEngine {
   public state: InputState = {

@@ -32,6 +32,7 @@ const ALLOWED: RegExp[] = [
   /^sloth_finds$/, // the notes, books and keepsakes found
   /^sloth_memories$/, // the flashbacks seen
   /^sloth_cosmetic$/, // which reward Slomatt wears
+  /^sloth_coach_done$/, // the first-stage lesson has been given (a New Game gives it again)
 ];
 
 export const isSaveKey = (k: string) => ALLOWED.some((re) => re.test(k));

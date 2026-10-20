@@ -1,9 +1,9 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
-import { COARSE, Icon, PolishToggle, ControlsSetting } from './menuParts.tsx';
+import { COARSE, Icon, PolishToggle, StudiesToggle, ControlsSetting } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 
-export { COARSE, Icon, PolishToggle };
+export { COARSE, Icon, PolishToggle, StudiesToggle };
 import type { LevelConfig } from '../game/types.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { SKILLS, type SkillId } from '../game/skills.ts';
@@ -223,6 +223,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
       </div>
       <ControlsSetting />
       <PolishToggle />
+      <StudiesToggle />
     </div>
   </div>
 );

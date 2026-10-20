@@ -1,5 +1,6 @@
 import React from 'react';
 import { polishEnabled, setPolishPref } from '../game/polish.ts';
+import { studiesEnabled, setStudiesPref } from '../game/heroStudies.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
@@ -38,6 +39,37 @@ export const PolishToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Wind, glow, soft shadows and richer ground. Turn it off if the game feels slow.</small>
+    </div>
+  );
+};
+
+/** the action-studies switch (saved on the device): the extra painted poses for the vine swing, flip, kick, mega punch and knock-back */
+export const StudiesToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => studiesEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#a7f3d0" size={22}>
+            <circle cx="12" cy="5" r="2.2" />
+            <path d="M12 7.5v6M12 13.5l-3.5 5M12 13.5l3.5 5M6 10l6-1 6 1" />
+          </Icon>
+          Action poses (test)
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setStudiesPref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">New painted poses for vine swings, flips, kicks and mega punches. Smaller and without the backpack, so try them and tell us.</small>
     </div>
   );
 };

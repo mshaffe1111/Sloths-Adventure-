@@ -16,7 +16,9 @@ import type { StageStats } from './badges.ts';
 import { loadCosmetic } from './badgeStore.ts';
 import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
-import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
+import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
+import { controlStyle } from './controlPrefs.ts';
+import { ASSIST, PHYS, easeAssist, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
@@ -110,6 +112,8 @@ export interface GameEngineCallbacks {
   /** Slomatt picked up a note, book or keepsake (see finds.ts); the app shows it */
   onFind?: (findId: string) => void;
   /** the boss bar: sent only when something on it changes */
+  /** the first-stage lesson moved to a new step (or ended): the app shows or clears the hint */
+  onCoach?: (step: CoachStep) => void;
   onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null) => void;
 }
 
@@ -215,6 +219,9 @@ export class GameEngine {
   private barrierMsgCooldown = 0;
   private comboCount: number = 0;
   private comboResetTimer: number = 0;
+  /** the first-stage lesson for a new touch player (see touchCoach.ts), when there is one */
+  private coach: TouchCoach | null = null;
+  private coachWasGrounded = true;
   private coyoteTimer: number = 0;
   private jumpBufferTimer: number = 0;
   private lives: number = 3;
@@ -435,6 +442,11 @@ export class GameEngine {
     this.lastTime = performance.now();
     this.lastRenderTime = this.lastTime;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
+    const cfg = this.currentStage.config;
+    if (coachWanted(cfg.id, cfg.secret)) {
+      this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), markCoachDone);
+      this.coach.setCourse(this.player.x, firstJumpSpot(this.platforms, this.player.x, this.player.y));
+    }
     sound.setTempo(1); // a boss fight that was enraged must not restart at the enraged speed
     sound.playLevelStart();
     this.loop(this.lastTime);
@@ -531,6 +543,11 @@ export class GameEngine {
     const p = this.player;
     const groundedBefore = p.grounded;
     const vyBefore = p.vy;
+
+    if (this.coach && !this.coach.done) {
+      this.coach.update(dt, p.x, this.coachWasGrounded && !p.grounded && p.vy < -200);
+      this.coachWasGrounded = p.grounded;
+    }
 
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
     for (const plat of this.platforms) {
@@ -1018,8 +1035,9 @@ export class GameEngine {
           }
         }
 
+        const assist = this.assistNow();
         if (p.grounded) {
-          this.coyoteTimer = PHYS.coyote;
+          this.coyoteTimer = PHYS.coyote + ASSIST.coyote * assist;
         } else {
           this.coyoteTimer = Math.max(0, this.coyoteTimer - dt);
         }
@@ -1043,7 +1061,7 @@ export class GameEngine {
             sound.playJump();
             this.spawnJumpDust(p.x, p.y);
           } else if (p.jumpsLeft > 0 && !p.climbing) {
-            p.vy = -PHYS.doubleV * (this.drowsy > 0 ? DROWSY_JUMP : 1) * this.dragJump;
+            p.vy = -PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * (this.drowsy > 0 ? DROWSY_JUMP : 1) * this.dragJump;
             p.jumpsLeft = 0;
             p.isDoubleJumping = true;
             p.somersaultAngle = 0;
@@ -1055,7 +1073,7 @@ export class GameEngine {
             this.addFloatingText('DOUBLE JUMP!', p.x, p.y - 40, '#4ade80');
             this.spawnDoubleJumpBurst(p.x, p.y);
           } else {
-            this.jumpBufferTimer = PHYS.buffer;
+            this.jumpBufferTimer = PHYS.buffer + ASSIST.buffer * assist;
             this.input.state.jumpPressed = false;
           }
         }
@@ -1130,6 +1148,7 @@ export class GameEngine {
       // --- Platform Collisions (with generous edge forgiveness) ---
       p.grounded = false;
       this.standingOnId = -1;
+      const assist = this.assistNow();
       const playerFeet = p.y;
       const playerPrevFeet = p.y - p.vy * dt;
 
@@ -1141,12 +1160,13 @@ export class GameEngine {
         // Check if player is horizontally within platform (generous width tolerance)
         // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
         // Slomatt standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
-        const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26;
-        const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14;
+        const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26 + ASSIST.landSide * assist;
+        const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
         if (p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width) {
           // Check landing from above
           if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) {
             p.y = plat.y;
+            const landV = p.vy; // how hard he came down: the squash below follows it
             p.vy = 0;
             p.grounded = true;
             this.standingOnId = plat.id;
@@ -1167,10 +1187,11 @@ export class GameEngine {
               break;
             }
 
-            // Squash on landing
+            // Squash on landing: a hop settles lightly, a long drop flattens him more
             if (p.squashY > 0.9) {
-              p.squashX = 1.18;
-              p.squashY = 0.82;
+              const hard = Math.max(0, Math.min(1, landV / PHYS.maxFall));
+              p.squashX = 1.1 + 0.15 * hard;
+              p.squashY = 0.9 - 0.17 * hard;
             }
 
             // Bouncy mushroom interaction
@@ -2903,6 +2924,12 @@ export class GameEngine {
     const maxY = this.currentStage.config.levelHeight - vh;
     // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues)
     this.camera.y = Math.max(this.currentStage.arena ? Math.min(0, maxY) : 0, Math.min(maxY, this.camera.y));
+  }
+
+  /** how much early-stage help is in force on this stage (1 on stage 1-1, fading to 0 by stage 25) */
+  private assistNow(): number {
+    const c = this.currentStage.config;
+    return easeAssist((c.worldIndex - 1) * 10 + c.miniIndex);
   }
 
   /**

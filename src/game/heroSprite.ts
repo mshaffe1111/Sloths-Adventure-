@@ -6,6 +6,7 @@
  * It returns false whenever it has no frame for the pose (climbing, vine swinging) or the atlas is still loading,
  * and the caller then draws the classic hero, so the game never shows nothing.
  */
+import { studiesEnabled, studyAtlas, studyFrame, studyPick } from './heroStudies.ts';
 import { polishEnabled } from './polish.ts';
 import type { PlayerState } from './types.ts';
 import { HERO_CLIMB, HERO_FRAMES, HERO_RUN, HERO_STAND_H, type HeroFrame } from './heroAtlasData.ts';
@@ -115,7 +116,39 @@ const events = new HeroEvents();
 /** the painted climb is one step per few pixels of height gained, so it follows the climbing speed */
 const CLIMB_STEP_PX = 22;
 
-function pick(p: PlayerState, time: number): { name: string; bob: number; byHand?: boolean; hang?: boolean } | null {
+/** what pick() chooses: the painted frame, and how to turn it */
+interface Choice {
+  name: string;
+  bob: number;
+  byHand?: boolean;
+  hang?: boolean;
+  /** lean or flip angle in radians, about the middle of the body (positive tips him forward) */
+  rot?: number;
+  /** draw the frame centred on the middle of the body, so frames of different shapes turn about the same point (the flip) */
+  centred?: boolean;
+}
+
+const TAU = Math.PI * 2;
+/** the fall lean: a little back while rising with his arms up, tipping forward into the fall */
+export function airLean(vy: number): number {
+  return Math.max(-0.1, Math.min(0.22, vy / 1500));
+}
+/**
+ * the double jump as ONE clean flip: launch, tuck, unfurl. The engine spins `somersaultAngle` on for as long as he is airborne
+ * (a second turn, then a snap to upright on landing); the painted hero turns once, eased, and is upright for the rest of the fall.
+ * Returns how far through the flip he is (0..1) and the angle to draw.
+ */
+export function flipPose(somersaultAngle: number): { u: number; angle: number } {
+  const u = Math.min(1, Math.abs(somersaultAngle) / TAU);
+  const eased = u * u * (3 - 2 * u);
+  return { u, angle: Math.sign(somersaultAngle || 1) * TAU * eased };
+}
+/** the frame for each part of the flip: stretched at launch, curled in the middle, arms out as he opens up */
+export function flipFrame(u: number): string {
+  return u < 0.2 ? 'jump_up' : u < 0.78 ? 'duck' : 'fall';
+}
+
+function pick(p: PlayerState, time: number): Choice | null {
   if (p.isVineSwinging) return null;
   // hanging from a rope: the arms-up pose (until there is a painted hanging pose), gripping with both hands
   if (p.hanging && HERO_FRAMES.jump_up) return { name: 'jump_up', bob: 0, hang: true };
@@ -137,8 +170,13 @@ function pick(p: PlayerState, time: number): { name: string; bob: number; byHand
     return { name, bob: 0 };
   }
   if (!p.grounded) {
-    if (p.isDoubleJumping || p.vy < 0) return { name: 'jump_up', bob: 0 };
-    return { name: 'fall', bob: 0 };
+    if (p.isDoubleJumping && HERO_FRAMES.duck && HERO_FRAMES.fall) {
+      const f = flipPose(p.somersaultAngle);
+      return { name: flipFrame(f.u), bob: 0, rot: f.angle, centred: true };
+    }
+    const rot = airLean(p.vy);
+    if (p.isDoubleJumping || p.vy < 0) return { name: 'jump_up', bob: 0, rot };
+    return { name: 'fall', bob: 0, rot };
   }
   if (events.isLanding(time) && HERO_FRAMES.land) return { name: 'land', bob: 0 };
   if (Math.abs(p.vx) > 10) {
@@ -152,17 +190,37 @@ function pick(p: PlayerState, time: number): { name: string; bob: number; byHand
   return { name: blink ? 'idle_blink' : 'idle_a', bob: Math.sin(time * 3.2) * 0.5 };
 }
 
+// a flip cut short by touching down is not snapped upright: what is left of the turn eases out over a moment
+const FLIP_EASE_OUT = 0.12;
+let flipLeft = 0;
+let flipLeftAt = 0;
+/** the shortest way back to upright from an angle */
+function toUpright(a: number): number {
+  const m = ((a % TAU) + TAU) % TAU;
+  return m > Math.PI ? m - TAU : m;
+}
+
 /** returns true if it drew the hero */
 export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, time: number): boolean {
   if (!heroSpriteEnabled()) return false;
   load();
   if (!ready || !atlas) return false;
   events.track(p, time);
-  const choice = pick(p, time);
+  // the opt-in action studies (heroStudies.ts), when switched on and loaded, take the poses they cover; everything else is the main atlas
+  const study = studiesEnabled() ? studyPick(p, time, events) : null;
+  const sAtlas = study ? studyAtlas() : null;
+  const sf = study && sAtlas ? studyFrame(study.name) : undefined;
+  const choice: Choice | null =
+    study && sf
+      ? { name: study.name, bob: 0, hang: study.mode === 'hang', centred: study.mode === 'centre' }
+      : pick(p, time);
   if (!choice) return false;
-  const f: HeroFrame | undefined = HERO_FRAMES[choice.name];
+  const f: HeroFrame | undefined = study && sf ? { x: sf.x, y: sf.y, w: sf.w, h: sf.h, ax: sf.ax, ay: sf.ay } : HERO_FRAMES[choice.name];
   if (!f) return false;
   const k = (HERO_UNITS * HERO_SPRITE_SCALE) / HERO_STAND_H;
+  /** hero-atlas scale of the picture being drawn: a study pixel is worth `sc` of them */
+  const fk = study && sf ? k * sf.sc : k;
+  const src: CanvasImageSource = study && sf && sAtlas ? sAtlas : sheet() ?? atlas;
 
   ctx.save();
   ctx.translate(p.x, p.y);
@@ -173,8 +231,15 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
     ctx.ellipse(0, 0, 22 * sc, 5.5 * sc, 0, 0, Math.PI * 2);
     ctx.fill();
   }
+  if (study && sf && study.mode === 'swing') ctx.rotate(study.tilt ?? 0);
   ctx.scale(p.facing * p.squashX, p.squashY);
-  if (choice.hang) {
+  if (choice.hang && study && sf) {
+    // a rope hang from the study: tilt about the hands at the top of the picture
+    const top = -f.h * fk;
+    ctx.translate(0, top);
+    ctx.rotate(study.tilt ?? 0);
+    ctx.translate(0, -top);
+  } else if (choice.hang) {
     // swing gently from the hands; a quicker rocking while he creeps hand over hand
     const moving = Math.abs(p.vx) > 10;
     const top = -f.h * k;
@@ -182,17 +247,36 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
     ctx.rotate(Math.sin(time * (moving ? 7 : 2.2)) * (moving ? 0.1 : 0.045));
     ctx.translate(0, -top);
   }
-  if (p.isDoubleJumping) {
-    const cy = -HERO_UNITS * HERO_SPRITE_SCALE * 0.42;
-    ctx.translate(0, cy);
-    ctx.rotate(p.somersaultAngle);
-    ctx.translate(0, -cy);
+  // turn about the middle of the body (the height of the standing hero's raised-arms pose, halved)
+  const jf = HERO_FRAMES.jump_up;
+  const pivot = jf ? (jf.h * k) / 2 : HERO_UNITS * HERO_SPRITE_SCALE * 0.5;
+  let rot = choice.rot ?? 0;
+  if (study && sf) {
+    flipLeft = 0; // the study's own picture is already turned
+  } else if (choice.centred) {
+    const r = toUpright(rot);
+    flipLeft = Math.abs(r) < 1e-3 ? 0 : r;
+    flipLeftAt = time;
+  } else if (flipLeft !== 0) {
+    if (time < flipLeftAt) flipLeft = 0;
+    else {
+      const left = 1 - (time - flipLeftAt) / FLIP_EASE_OUT;
+      if (left <= 0) flipLeft = 0;
+      else rot += flipLeft * left;
+    }
+  }
+  if (rot !== 0) {
+    ctx.translate(0, -pivot);
+    ctx.rotate(rot);
+    ctx.translate(0, pivot);
   }
   if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha = 0.55;
   drawAuras(ctx, p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  ctx.drawImage(sheet() ?? atlas, f.x, f.y, f.w, f.h, -(choice.byHand && f.hx !== undefined ? f.hx : f.ax) * k, -f.ay * k + choice.bob, f.w * k, f.h * k);
+  const dx = choice.centred ? -(f.w * fk) / 2 : -(choice.byHand && f.hx !== undefined ? f.hx : f.ax) * fk;
+  const dy = choice.centred ? -pivot - (f.h * fk) / 2 : -f.ay * fk + choice.bob;
+  ctx.drawImage(src, f.x, f.y, f.w, f.h, dx, dy, f.w * fk, f.h * fk);
   ctx.restore();
   return true;
 }

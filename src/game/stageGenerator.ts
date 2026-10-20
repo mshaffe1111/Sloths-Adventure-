@@ -11,7 +11,7 @@ import type {
 } from './types.ts';
 import { calculateDifficultyScaling } from './rules.ts';
 import { WORLDS_DATA } from './worldsData.ts';
-import { reachBounce, reachJump, TAKEOFF_SLACK } from './physics.ts';
+import { ASSIST, easeAssist, reachBounce, reachJump, TAKEOFF_SLACK } from './physics.ts';
 import { HANG_DROP, ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE, ropeYAt } from './rope.ts';
 import { skillGuaranteedAt } from './skills.ts';
 import { swingLandings, validateStage } from './levelCheck.ts';
@@ -385,18 +385,23 @@ class Gen {
 
   // ---- pieces ----
 
+  /** the early stages' shorter gaps: 1 later on, a fifth less on stage 1-1, easing back to 1 by stage 25 (see easeAssist) */
+  gapEase() {
+    return 1 - ASSIST.gaps * easeAssist(this.m);
+  }
+
   /** pit width: shorter early, never beyond a comfortable single jump */
   pitW() {
     // never wider than a jump that can start TAKEOFF_SLACK px before the edge
     const r = reachJump(0, false) * 0.95 - TAKEOFF_SLACK;
-    const hi = Math.min(r, this.lerp(84, r));
+    const hi = Math.min(r, this.lerp(84, r)) * this.gapEase();
     return this.rr(Math.max(64, hi - 34), Math.max(72, hi));
   }
 
   /** a horizontal hop between two ledges: a fraction of the jump's reach, but always leaving TAKEOFF_SLACK px of room to take off */
   hopLen(dy: number, fraction: number) {
     const r = reachJump(dy, false);
-    return Math.max(36, Math.min(r * fraction, r * 0.95 - TAKEOFF_SLACK));
+    return Math.max(36, Math.min(r * fraction, r * 0.95 - TAKEOFF_SLACK) * this.gapEase());
   }
 
   chunkPit() {

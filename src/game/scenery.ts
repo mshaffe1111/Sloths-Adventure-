@@ -1237,7 +1237,11 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: num
   if (x0 > 0) x0 -= pitch;
   const prev = ctx.globalAlpha;
   ctx.globalAlpha = alpha;
-  const y0 = yOff + (lv ? lv.dy * s : 0);
+  const shiftY = yOff + (lv ? lv.dy * s : 0);
+  // a layer that has slid up or down with the camera would leave its bare edge showing (a band of the layer behind, or of sky), so it is
+  // stretched by the distance it slid and pinned to the side it slid toward: it always covers the whole view, and has nothing to show at the edge
+  const dh = H * s + 2 * Math.abs(shiftY);
+  const y0 = shiftY > 0 ? 0 : 2 * shiftY;
   const amp = o && o.sway && !pskip('sway') ? swayAmount(o.rig, o.layer) * s : 0;
   if (amp > 0 && o) {
     // wind: draw the tile in horizontal rows, each slid a little, more toward the loose tips than the roots
@@ -1245,7 +1249,7 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: num
     const gust = gustAt(o.rig, o.time) * amp;
     const sp = o.rig.wind.spd;
     const rowH = cv.height / N;
-    const dH = (H * s) / N;
+    const dH = dh / N;
     for (let x = x0 - pitch; x < vw; x += pitch) {
       if (x + pitch < -amp - 4) continue;
       const flip = !!(lv && lv.flip);
@@ -1270,9 +1274,9 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: num
         ctx.save();
         ctx.translate(Math.floor(x) + Math.ceil(pitch) + 1, 0);
         ctx.scale(-1, 1);
-        ctx.drawImage(cv, 0, y0, Math.ceil(pitch) + 1, H * s);
+        ctx.drawImage(cv, 0, y0, Math.ceil(pitch) + 1, dh);
         ctx.restore();
-      } else ctx.drawImage(cv, Math.floor(x), y0, Math.ceil(pitch) + 1, H * s);
+      } else ctx.drawImage(cv, Math.floor(x), y0, Math.ceil(pitch) + 1, dh);
     }
   }
   ctx.globalAlpha = prev;
@@ -1348,7 +1352,8 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   const set = ensure(world);
   const s = vh / H;
   renderSky(ctx, world, vw, vh, time, camX);
-  const yo = -Math.min(60, Math.max(-30, camY * 0.03)) * s;
+  // how far the layers slide with the climb: gentle, so the stretch that keeps their edges covered stays unnoticeable
+  const yo = -Math.min(30, Math.max(-30, camY * 0.03)) * s;
   // the polish pass (prototype, off by default): per-stage layer shifts/flips, wind, mist and light shafts
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
   const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);

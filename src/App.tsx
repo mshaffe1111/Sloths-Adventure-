@@ -8,6 +8,9 @@ import { layoutForEntry } from './game/layoutMemory.ts';
 import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game/skills.ts';
 import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
+import { CoachOverlay } from './components/CoachOverlay.tsx';
+import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
+import type { CoachStep } from './game/touchCoach.ts';
 import { ControlSwitch } from './components/ControlSwitch.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
@@ -155,6 +158,10 @@ export default function App() {
   // Canvas and Engine refs
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<GameEngine | null>(null);
+  // the first-stage lesson (see game/touchCoach.ts): which step is showing, and for which kind of touch controls
+  const [coachStep, setCoachStep] = useState<CoachStep>(null);
+  const [coachStyle, setCoachStyle] = useState<ControlStyle>(() => controlStyle());
+  useEffect(() => subscribeControls(() => setCoachStyle(controlStyle())), []);
   const inputEngineRef = useRef<InputEngine | null>(null);
 
   // Initialize Input Engine once
@@ -277,7 +284,7 @@ export default function App() {
   // Music and ambience follow the screen. Cutscenes pick their own music panel by panel (see StoryPlayer).
   useEffect(() => {
     const w = activeLevel.worldIndex;
-    sound.screen(screen, w, activeLevel.objectiveType === 'boss_lair', activeLevel.id, activeLevel.miniIndex, musicSalt);
+    sound.screen(screen, w, activeLevel.objectiveType === 'boss_lair', activeLevel.id, activeLevel.miniIndex, musicSalt, activeLevel.objectiveType);
     const worldAmbient = (WORLDS_DATA[w - 1] || WORLDS_DATA[0]).ambientType;
     if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
     else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');
@@ -408,6 +415,7 @@ export default function App() {
     // wide mode: the browser bars go away so the game gets the whole screen (works from the tap that started play)
     enterWideMode();
 
+    setCoachStep(null);
     setHp(maxHearts());
     setMaxHp(maxHearts());
     setLives(3);
@@ -442,6 +450,7 @@ export default function App() {
           setPowerUpTimer(curPowerTimer ?? 0);
         },
         onBossUpdate: (info) => setBossInfo(info),
+        onCoach: (st) => setCoachStep(st),
         onFind: (id) => {
           // a new note, book or keepsake: keep it, pause the stage and show it. One already in the Library just gives its line of text.
           const known = loadFinds();
@@ -815,6 +824,7 @@ export default function App() {
             powerUpTimer={powerUpTimer}
             lives={lives}
           />
+          {screen === 'playing' && <CoachOverlay step={coachStep} style={coachStyle} />}
           {inputEngineRef.current && (
             <ControlSwitch inputEngine={inputEngineRef.current} />
           )}

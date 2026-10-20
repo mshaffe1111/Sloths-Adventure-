@@ -28,6 +28,24 @@ export const PHYS = {
   hurtKnockV: 420,
 } as const;
 
+/**
+ * How much extra help the early stages give, 0..1: full on stage 1-1, easing away to nothing by stage 25 (world 3-5). It is a ramp, not a switch,
+ * so the game gets harder only as fast as people get better at it. `m` is the stage's number in the whole game, 1..100.
+ */
+export function easeAssist(m: number): number {
+  return Math.max(0, Math.min(1, 1 - (m - 1) / 24));
+}
+/** the early-stage help, as the numbers it changes: longer to still jump after leaving a ledge, a longer memory for a jump pressed just early, a stronger second jump, and a wider landing */
+export const ASSIST = {
+  coyote: 0.08,
+  buffer: 0.1,
+  doubleJump: 0.12,
+  landSide: 0.1,
+  catchDrop: 6,
+  /** level pieces (gaps between ledges, pits) are this much shorter on stage 1-1 */
+  gaps: 0.2,
+} as const;
+
 const apex = (v: number, g: number) => (v * v) / (2 * g);
 
 /** Maximum rise of a single full jump (px). */

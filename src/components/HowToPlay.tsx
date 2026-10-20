@@ -1,6 +1,7 @@
 import React from 'react';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { COARSE, PolishToggle } from './menuParts.tsx';
+import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
 
 /**
  * How to play: controls, what the stage is asking for, saving, the menu and the Polished visuals switch.
@@ -37,6 +38,18 @@ const Row: React.FC<{ how: React.ReactNode; what: string; sub?: string }> = ({ h
   </div>
 );
 
+/** a touch gesture: its picture, how you do it, what it does */
+const Gesture: React.FC<{ kind: GlyphKind; how: string; what: string; sub?: string }> = ({ kind, how, what, sub }) => (
+  <div className="htp-g">
+    <GestureGlyph kind={kind} size={76} />
+    <span className="htp-what">
+      <span className="htp-how">{how}</span>
+      <b>{what}</b>
+      {sub && <small>{sub}</small>}
+    </span>
+  </div>
+);
+
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
   <section className="htp-sec">
     <h3 className="ui-label">{title}</h3>
@@ -49,14 +62,22 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
     {(!short || COARSE) && (
     <Section title="On a phone or tablet">
       <p className="ui-copy">
-        There are no buttons. <b>The whole screen is the controller</b>, and both thumbs work at the same time: run with one, jump or punch with the other.
+        There are no buttons: <b>your thumb is the controller</b>. Touch the <b>left side of the screen</b> and slide. It does not matter where you start, and you never have to find a button. Keep your
+        thumb down to keep going, and lift it to stop.
       </p>
-      <Row how="Slide ← →" what="Run" sub="a slow slide steers from anywhere on the screen" />
-      <Row how="Flick ↑" what="Jump" sub="jump again in the air for a double jump" />
-      <Row how="Slide ↓" what="Duck" sub="hold it to stay low" />
-      <Row how="Tap" what="Punch" />
-      <Row how="Quick flick ← →" what="Kick" sub="the way you flick is the way he kicks" />
-      <Row how="Press and hold" what="Mega punch" sub="slower, but it hits hard" />
+      <Gesture kind="run" how="Slide sideways" what="Run" sub="slide right to run right, left to run left. Slide the other way to turn around" />
+      <Gesture kind="jump" how="Slide up and across" what="Run and jump" sub="while you run, keep sliding up and forward in one quick motion. This is how you cross gaps" />
+      <Gesture kind="up" how="Flick up" what="Jump" sub="a quick flick, standing or running. In the air, flick up again (the other thumb is easiest) for a double jump" />
+      <Gesture kind="down" how="Slide down" what="Duck" sub="hold it to stay low" />
+      <div className="htp-tip">
+        <span aria-hidden="true">💡</span>
+        <span>
+          <b>Two thumbs:</b> run and jump with your left thumb, and use your right thumb for the attacks below. A jump wants a <b>quick</b> flick, not a long slide.
+        </span>
+      </div>
+      <Gesture kind="tap" how="Tap" what="Punch" />
+      <Gesture kind="flick" how="Quick flick ← →" what="Kick" sub="the way you flick is the way he kicks" />
+      <Gesture kind="hold" how="Press and hold" what="Mega punch" sub="slower, but it hits hard" />
     </Section>
     )}
     {!short && (
