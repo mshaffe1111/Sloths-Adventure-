@@ -113,7 +113,7 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
     {!short && (
       <Section title="Good to know">
         <p className="ui-copy">
-          A game controller works too. <b>Tree trunks can be climbed</b>: jump into one and hold up. Once you clear stage 1-3 you learn the <b>Shimmy Rope</b>: jump up into a rope to grab it, run
+          <b>The first time</b> you meet something new (a foe, a trunk to climb, a swinging vine, a bouncy mushroom and more), the game pauses and Slomatt explains it once. A New Game shows them again. A game controller works too. <b>Tree trunks can be climbed</b>: jump into one and hold up. Once you clear stage 1-3 you learn the <b>Shimmy Rope</b>: jump up into a rope to grab it, run
           along it with ← →, and press down and jump to let go.
         </p>
       </Section>

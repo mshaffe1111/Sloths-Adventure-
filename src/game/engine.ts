@@ -18,6 +18,7 @@ import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
+import { lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { ASSIST, PHYS, easeAssist, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -114,6 +115,8 @@ export interface GameEngineCallbacks {
   /** the boss bar: sent only when something on it changes */
   /** the first-stage lesson moved to a new step (or ended): the app shows or clears the hint */
   onCoach?: (step: CoachStep) => void;
+  /** a first-time lesson is due: the stage has paused itself, and the app shows the card (then calls lessonClosed) */
+  onLesson?: (id: LessonId) => void;
   onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null) => void;
 }
 
@@ -222,6 +225,11 @@ export class GameEngine {
   /** the first-stage lesson for a new touch player (see touchCoach.ts), when there is one */
   private coach: TouchCoach | null = null;
   private coachWasGrounded = true;
+  /** first-time lessons: one open at a time, and a breather after each */
+  private lessonOpen = false;
+  private lessonQuietUntil = 0;
+  private lessonFrame = 0;
+  private lessonSeen: Set<LessonId> | null = null;
   private coyoteTimer: number = 0;
   private jumpBufferTimer: number = 0;
   private lives: number = 3;
@@ -446,6 +454,9 @@ export class GameEngine {
     if (coachWanted(cfg.id, cfg.secret)) {
       this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), markCoachDone);
       this.coach.setCourse(this.player.x, firstJumpSpot(this.platforms, this.player.x, this.player.y));
+      // the coach is already teaching the jump over the first gap, so the gap card would only say it twice
+      markLessonSeen('gap');
+      this.lessonSeen = lessonsSeen();
     }
     sound.setTempo(1); // a boss fight that was enraged must not restart at the enraged speed
     sound.playLevelStart();
@@ -543,6 +554,8 @@ export class GameEngine {
     const p = this.player;
     const groundedBefore = p.grounded;
     const vyBefore = p.vy;
+
+    this.lessonTick();
 
     if (this.coach && !this.coach.done) {
       this.coach.update(dt, p.x, this.coachWasGrounded && !p.grounded && p.vy < -200);
@@ -2924,6 +2937,48 @@ export class GameEngine {
     const maxY = this.currentStage.config.levelHeight - vh;
     // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues)
     this.camera.y = Math.max(this.currentStage.arena ? Math.min(0, maxY) : 0, Math.min(maxY, this.camera.y));
+  }
+
+  /** look for the first of something new ahead of the hero a few times a second; when one is there, stop and let the app explain it */
+  private lessonTick() {
+    if (this.lessonOpen || this.isGameOver || this.gameTime < 2.5 || this.gameTime < this.lessonQuietUntil) return;
+    if ((this.lessonFrame = (this.lessonFrame + 1) % 6) !== 0) return;
+    const st = this.currentStage;
+    // not in a boss arena or the secret stage, and not mid-fight, mid-hurt or in the middle of something
+    if (st.arena || st.config.secret || this.boss || this.entrance) return;
+    const p = this.player;
+    if (p.invincibleTimer > 0 || p.isVineSwinging || p.hanging) return;
+    if (!lessonsOn()) return;
+    const seen = (this.lessonSeen ??= lessonsSeen());
+    const cam = this.camera;
+    const id = pickLesson(
+      {
+        px: p.x,
+        py: p.y,
+        view: { x0: cam.x, x1: cam.x + cam.viewportWidth, y0: cam.y, y1: cam.y + cam.viewportHeight },
+        enemies: this.enemies,
+        collectibles: this.collectibles,
+        vines: this.vines,
+        platforms: this.platforms,
+        checkpoints: st.checkpoints ?? [],
+        rivers: st.rivers ?? [],
+      },
+      seen,
+    );
+    if (!id) return;
+    seen.add(id);
+    markLessonSeen(id);
+    this.lessonOpen = true;
+    this.pause();
+    this.callbacks.onLesson?.(id);
+  }
+
+  /** the app has closed a lesson card: carry on, and leave a few seconds before the next one */
+  public lessonClosed() {
+    if (!this.lessonOpen) return;
+    this.lessonOpen = false;
+    this.lessonQuietUntil = this.gameTime + 4;
+    this.resume();
   }
 
   /** how much early-stage help is in force on this stage (1 on stage 1-1, fading to 0 by stage 25) */

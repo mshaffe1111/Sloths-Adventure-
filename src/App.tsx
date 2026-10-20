@@ -9,6 +9,8 @@ import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game
 import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { CoachOverlay } from './components/CoachOverlay.tsx';
+import { LessonCard } from './components/LessonCard.tsx';
+import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
 import type { CoachStep } from './game/touchCoach.ts';
 import { ControlSwitch } from './components/ControlSwitch.tsx';
@@ -160,6 +162,8 @@ export default function App() {
   const engineRef = useRef<GameEngine | null>(null);
   // the first-stage lesson (see game/touchCoach.ts): which step is showing, and for which kind of touch controls
   const [coachStep, setCoachStep] = useState<CoachStep>(null);
+  // a first-time lesson card (the stage has paused itself; see game/lessons.ts)
+  const [lessonId, setLessonId] = useState<LessonId | null>(null);
   const [coachStyle, setCoachStyle] = useState<ControlStyle>(() => controlStyle());
   useEffect(() => subscribeControls(() => setCoachStyle(controlStyle())), []);
   const inputEngineRef = useRef<InputEngine | null>(null);
@@ -416,6 +420,7 @@ export default function App() {
     enterWideMode();
 
     setCoachStep(null);
+    setLessonId(null);
     setHp(maxHearts());
     setMaxHp(maxHearts());
     setLives(3);
@@ -451,6 +456,7 @@ export default function App() {
         },
         onBossUpdate: (info) => setBossInfo(info),
         onCoach: (st) => setCoachStep(st),
+        onLesson: (id) => setLessonId(id),
         onFind: (id) => {
           // a new note, book or keepsake: keep it, pause the stage and show it. One already in the Library just gives its line of text.
           const known = loadFinds();
@@ -825,6 +831,17 @@ export default function App() {
             lives={lives}
           />
           {screen === 'playing' && <CoachOverlay step={coachStep} style={coachStyle} />}
+          {screen === 'playing' && lessonId && (
+            <LessonCard
+              id={lessonId}
+              onClose={() => {
+                setLessonId(null);
+                // fingers that were down while the card opened must not keep running him once play carries on
+                inputEngineRef.current?.clearAll();
+                engineRef.current?.lessonClosed();
+              }}
+            />
+          )}
           {inputEngineRef.current && (
             <ControlSwitch inputEngine={inputEngineRef.current} />
           )}

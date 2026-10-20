@@ -760,3 +760,20 @@
 .coach-nice .coach-card { border-color: rgba(134,239,172,.8); }
 .coach-nice .coach-text b { color: #bbf7d0; }
 @keyframes coach-in { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%); } }
+
+/* a first-time lesson card (the game is paused behind it) */
+.lc-scrim { z-index: 60; }
+.lc { width: min(100%, 460px); display: flex; flex-direction: column; gap: 10px; max-height: 94%; overflow: hidden; }
+.lc-head { display: flex; align-items: center; gap: 12px; }
+.lc-face { display: inline-flex; flex: none; }
+.lc-intro { margin: 0; }
+.lc-lines { display: flex; flex-direction: column; gap: 7px; overflow-y: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+.lc-noglyph { grid-template-columns: 1fr; }
+.lc-foot { justify-content: flex-end; flex: none; }
+.lc-foot .ui-btn:disabled { opacity: .5; }
+@media (max-height: 430px) {
+  .lc { padding: 8px 12px; gap: 6px; }
+  .lc-face { display: none; }
+  .lc .ui-kicker { display: none; }
+  .lc .ui-h2 { font-size: 19px; }
+}
