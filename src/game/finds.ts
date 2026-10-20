@@ -9,7 +9,7 @@
 
 export type FindKind = 'note' | 'book' | 'keepsake';
 export type PaperKind = 'leaf' | 'journal' | 'letter';
-export type KeepsakeIcon = 'key' | 'locket' | 'medal' | 'ribbon' | 'petal' | 'rattle' | 'teddy' | 'seeds' | 'stopwatch' | 'bell';
+export type KeepsakeIcon = 'key' | 'locket' | 'medal' | 'ribbon' | 'petal' | 'rattle' | 'teddy' | 'seeds' | 'stopwatch' | 'bell' | 'token';
 
 export interface FindPage {
   /** the words on the page */
@@ -282,6 +282,22 @@ export const FINDS: FindDef[] = [
 
 export const FIND_BY_ID: Record<string, FindDef> = Object.fromEntries(FINDS.map((f) => [f.id, f]));
 
+/** the reward for finding all of them: it is never hidden in a stage, it opens in the Library when every other find is there */
+export const BONUS_FIND: FindDef = {
+  id: 'bonus_token', world: 0, kind: 'keepsake', icon: 'token',
+  title: 'A secret token',
+  hint: 'Find every note, album and keepsake to open it.',
+  pages: [{ text: 'A small leather pouch tied with cord. Inside: one Heartbloom seed, and a folded note in the same hand as the petal.\n\n"To whoever was patient enough to find this. He will tell you he is not sorry. He is only afraid. Be slow with him. He has been fast for far too long."' }],
+};
+FIND_BY_ID[BONUS_FIND.id] = BONUS_FIND;
+
+const REAL_IDS = new Set(FINDS.map((f) => f.id));
+
+/** true once every note, album and keepsake in the stages has been found */
+export function allFound(found: string[]): boolean {
+  return FINDS.every((f) => found.includes(f.id));
+}
+
 /** the find that hides in this stage, if there is one */
 export function findForStage(world: number, mini: number): FindDef | null {
   for (const kind of Object.keys(FIND_STAGE) as FindKind[]) {
@@ -301,7 +317,7 @@ export function parseFinds(raw: string | null): string[] {
     const o = JSON.parse(raw);
     if (!o || typeof o !== 'object' || o.v !== 1 || !Array.isArray(o.found)) return [];
     const seen = new Set<string>();
-    for (const x of o.found) if (typeof x === 'string' && FIND_BY_ID[x]) seen.add(x);
+    for (const x of o.found) if (typeof x === 'string' && REAL_IDS.has(x)) seen.add(x);
     return [...seen];
   } catch {
     return [];
@@ -318,7 +334,7 @@ export function loadFinds(): string[] {
 
 /** the list with this find added (the same list when it was already there) */
 export function withFind(found: string[], id: string): string[] {
-  return found.includes(id) || !FIND_BY_ID[id] ? found : [...found, id];
+  return found.includes(id) || !REAL_IDS.has(id) ? found : [...found, id];
 }
 
 export function saveFinds(found: string[]) {

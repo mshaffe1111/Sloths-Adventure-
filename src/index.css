@@ -671,3 +671,4 @@
 .tr-find .tr-cpic { height: 104px; }
 .tr-find .tr-item { object-fit: contain; background: #efd5a0; }
 @media (max-height: 480px) { .fr-item { width: 100px !important; height: 85px !important; } }
+@media (max-height: 480px) { .fr-saved.done { display: block; } }

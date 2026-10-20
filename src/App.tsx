@@ -20,7 +20,7 @@ import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
 import { FindReader } from './components/FindReader.tsx';
-import { FIND_BY_ID, loadFinds, saveFinds, withFind } from './game/finds.ts';
+import { FIND_BY_ID, allFound, loadFinds, saveFinds, withFind } from './game/finds.ts';
 import { THORNBARK_LEVEL, gateFound, hasThornHeart, markGateFound, markThornHeart, maxHearts } from './game/secret.ts';
 import { warmHeroAtlas } from './game/heroSprite.ts';
 import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
@@ -174,10 +174,13 @@ export default function App() {
   // ---- story finds: the notes, books and keepsakes picked up, and the one being read ----
   const [foundIds, setFoundIds] = useState<string[]>(() => loadFinds());
   const [reading, setReading] = useState<string | null>(null);
+  /** the find on screen was the last of the 30 */
+  const [readingCompletes, setReadingCompletes] = useState(false);
   /** true while a stage is paused because a find was just picked up (so closing the reader resumes it) */
   const pausedForFind = useRef(false);
   const closeReader = () => {
     setReading(null);
+    setReadingCompletes(false);
     if (pausedForFind.current) {
       pausedForFind.current = false;
       engineRef.current?.resume();
@@ -423,6 +426,7 @@ export default function App() {
           setFoundIds(next);
           engineRef.current?.pause();
           pausedForFind.current = true;
+          setReadingCompletes(allFound(next));
           setReading(id);
         },
         onSecret: () => {
@@ -719,12 +723,12 @@ export default function App() {
           onChoice={changeCosmetic}
           initialTab={trophyTab}
           finds={foundIds}
-          onOpenFind={(id) => setReading(id)}
+          onOpenFind={(id) => { setReadingCompletes(false); setReading(id); }}
           onBack={() => setScreen(trophyFrom)}
         />
       )}
 
-      {reading && FIND_BY_ID[reading] && <FindReader find={FIND_BY_ID[reading]} onClose={closeReader} />}
+      {reading && FIND_BY_ID[reading] && <FindReader find={FIND_BY_ID[reading]} onClose={closeReader} completes={readingCompletes} />}
 
       {/* held back while the stage-cleared and new-skill cards are up: it covered their title ribbons and buttons */}
       {freshBadges.length > 0 && screen !== 'victory' && <BadgeToast badges={freshBadges} onDone={() => setFreshBadges([])} />}

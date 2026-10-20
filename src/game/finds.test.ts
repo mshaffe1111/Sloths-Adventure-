@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { FINDS, FIND_BY_ID, FIND_STAGE, findForStage, parseFinds, withFind } from './finds.ts';
+import { BONUS_FIND, FINDS, FIND_BY_ID, FIND_STAGE, allFound, findForStage, parseFinds, withFind } from './finds.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { validateStage } from './levelCheck.ts';
@@ -75,4 +75,16 @@ test('what has been found is read back safely', () => {
   assert.deepEqual(withFind(['w1_book'], 'w1_book'), ['w1_book']);
   assert.deepEqual(withFind([], 'nope'), []);
   assert.ok(FIND_BY_ID['w2_keepsake']);
+});
+
+test('the bonus token opens only when all 30 are found, and is never stored or hidden in a stage', () => {
+  assert.equal(FINDS.length, 30);
+  assert.equal(allFound([]), false);
+  assert.equal(allFound(FINDS.slice(1).map((f) => f.id)), false);
+  assert.equal(allFound(FINDS.map((f) => f.id)), true);
+  assert.equal(FIND_BY_ID[BONUS_FIND.id], BONUS_FIND, 'the reader can look it up');
+  assert.equal(FINDS.some((f) => f.id === BONUS_FIND.id), false, 'it is not one of the hidden finds');
+  assert.deepEqual(withFind([], BONUS_FIND.id), [], 'it is never added to the found list');
+  assert.deepEqual(parseFinds(JSON.stringify({ v: 1, found: [BONUS_FIND.id, 'w1_note'] })), ['w1_note']);
+  for (let w = 1; w <= 10; w++) for (let m = 1; m <= 10; m++) assert.notEqual(findForStage(w, m)?.id, BONUS_FIND.id);
 });

@@ -6,6 +6,8 @@ import { itemUrl } from '../game/items.ts';
 interface Props {
   find: FindDef;
   onClose: () => void;
+  /** this find was the last one: tell the player the bonus is waiting */
+  completes?: boolean;
 }
 
 /** the painted picture of a keepsake (see items.ts) */
@@ -23,7 +25,7 @@ const PaperText: React.FC<{ text?: string }> = ({ text }) => (
   </>
 );
 
-export const FindReader: React.FC<Props> = ({ find, onClose }) => {
+export const FindReader: React.FC<Props> = ({ find, onClose, completes }) => {
   const [page, setPage] = useState(0);
   const last = find.pages.length - 1;
   const pg = find.pages[Math.min(page, last)];
@@ -51,7 +53,7 @@ export const FindReader: React.FC<Props> = ({ find, onClose }) => {
   return (
     <div className="ui-scrim fr-scrim" role="dialog" aria-modal="true" aria-label={find.title} onClick={onClose}>
       <div className={`fr-card fr-${find.kind} ${find.kind === 'note' ? `fr-paper-${find.paper ?? 'leaf'}` : ''}`} onClick={(e) => e.stopPropagation()}>
-        <div className="fr-label">{label} · World {find.world}</div>
+        <div className="fr-label">{label} · {find.world > 0 ? `World ${find.world}` : 'Quest bonus'}</div>
         <h2 className="fr-title">{find.title}</h2>
 
         {find.kind === 'note' && (
@@ -101,7 +103,7 @@ export const FindReader: React.FC<Props> = ({ find, onClose }) => {
             Close
           </button>
         </div>
-        <div className="fr-saved">Saved to the Library in the Trophy Room</div>
+        <div className={`fr-saved${completes ? " done" : ""}`}>{completes ? "That is all 30! Something new is waiting in the Library." : "Saved to the Library in the Trophy Room"}</div>
       </div>
     </div>
   );

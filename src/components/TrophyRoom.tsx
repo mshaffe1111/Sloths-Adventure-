@@ -6,7 +6,7 @@ import type { Coat } from '../game/heroTint.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
 import { CoatPreview } from './CoatPreview.tsx';
 import { CreaturePic } from './CreaturePic.tsx';
-import { FINDS, type FindDef } from '../game/finds.ts';
+import { BONUS_FIND, FINDS, allFound, type FindDef } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
 
@@ -206,6 +206,25 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 </div>
               </React.Fragment>
             ))}
+            <div className="tr-sec">Quest bonus</div>
+            <div className="tr-grid tr-grid-j">
+              {(() => {
+                const open = allFound(finds);
+                return (
+                  <div
+                    className={`tr-card tr-find ${open ? 'open' : 'lock'}`}
+                    role={open ? 'button' : undefined}
+                    tabIndex={open ? 0 : undefined}
+                    onClick={open ? () => onOpenFind(BONUS_FIND.id) : undefined}
+                    onKeyDown={open ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenFind(BONUS_FIND.id); } } : undefined}
+                  >
+                    <div className="tr-cpic">{open ? findPic(BONUS_FIND) : '🔒'}</div>
+                    <div className="tr-cn">{open ? BONUS_FIND.title : '???'}</div>
+                    <div className="tr-ct">{open ? 'Quest bonus' : BONUS_FIND.hint}</div>
+                  </div>
+                );
+              })()}
+            </div>
           </>
         )}
       </div>
