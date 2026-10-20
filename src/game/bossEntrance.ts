@@ -53,24 +53,29 @@ export interface EntranceView {
   eyeY: number;
   name: string;
   color: string;
+  /** the eyes' glow (default a hot orange) and the colour of the dark that falls over the arena */
+  eyeRgb?: [number, number, number];
+  darkRgb?: [number, number, number];
 }
 
 /** over everything, once the frame is drawn */
 export function drawEntrance(ctx: CanvasRenderingContext2D, v: EntranceView, b: Beat, time: number) {
   ctx.save();
   if (b.dark > 0) {
-    ctx.fillStyle = `rgba(4, 1, 1, ${b.dark})`;
+    const dk = v.darkRgb ?? [4, 1, 1];
+    ctx.fillStyle = `rgba(${dk[0]}, ${dk[1]}, ${dk[2]}, ${b.dark})`;
     ctx.fillRect(0, 0, v.vw, v.vh);
   }
   // the eyes: two slits that open one after the other, and flicker like embers
   if (b.eyes > 0) {
     const flick = 0.8 + 0.2 * Math.sin(time * 23);
+    const er = v.eyeRgb ?? [255, 140, 30];
     for (const dx of [-30, 30]) {
       const ex = v.eyeX + dx;
       const g = ctx.createRadialGradient(ex, v.eyeY, 1, ex, v.eyeY, 38);
       g.addColorStop(0, `rgba(255, 235, 150, ${b.eyes * flick})`);
-      g.addColorStop(0.3, `rgba(255, 140, 30, ${0.7 * b.eyes})`);
-      g.addColorStop(1, 'rgba(255, 90, 20, 0)');
+      g.addColorStop(0.3, `rgba(${er[0]}, ${er[1]}, ${er[2]}, ${0.7 * b.eyes})`);
+      g.addColorStop(1, `rgba(${er[0]}, ${er[1]}, ${er[2]}, 0)`);
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.arc(ex, v.eyeY, 38, 0, Math.PI * 2);

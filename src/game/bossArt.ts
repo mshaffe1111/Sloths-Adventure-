@@ -1073,7 +1073,7 @@ function drawStrip(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     ctx.globalAlpha = (0.25 + 0.4 * u) * pulse;
     const g = ctx.createLinearGradient(edge, 0, edge + dir * full, 0);
     g.addColorStop(0, h.color);
-    g.addColorStop(1, 'rgba(239,68,68,0)');
+    g.addColorStop(1, h.look === 'venom' ? 'rgba(163,230,53,0)' : 'rgba(239,68,68,0)');
     ctx.fillStyle = g;
     ctx.fillRect(Math.min(edge, edge + dir * full), fl - 12, full, 12);
     return;
@@ -1083,7 +1083,7 @@ function drawStrip(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   ctx.fillStyle = h.color2;
   ctx.fillRect(x0, fl - 16, h.w, 16);
   const g = ctx.createLinearGradient(0, fl - 16, 0, fl);
-  g.addColorStop(0, '#fde68a');
+  g.addColorStop(0, h.look === 'venom' ? '#ecfccb' : '#fde68a');
   g.addColorStop(0.45, h.color);
   g.addColorStop(1, h.color2);
   ctx.fillStyle = g;
@@ -1091,8 +1091,9 @@ function drawStrip(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   // a heat glow above it and bubbles that pop
   ctx.globalAlpha = 0.35 + 0.1 * Math.sin(time * 5);
   const glow = ctx.createLinearGradient(0, fl - 70, 0, fl - 15);
-  glow.addColorStop(0, 'rgba(251,146,60,0)');
-  glow.addColorStop(1, 'rgba(251,146,60,0.8)');
+  const gl = h.look === 'venom' ? '163,230,53' : '251,146,60';
+  glow.addColorStop(0, `rgba(${gl},0)`);
+  glow.addColorStop(1, `rgba(${gl},0.8)`);
   ctx.fillStyle = glow;
   ctx.fillRect(x0, fl - 70, h.w, 55);
   ctx.fillStyle = '#fef3c7';

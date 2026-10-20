@@ -148,14 +148,50 @@ const impact = (b: BossEntity, c: BossCtx, shake: number, color: string) => {
 const VENOM: BossDef = {
   world: 1,
   name: 'Venom Fang',
-  w: 120,
-  h: 78,
+  // a giant: the painted boa is drawn 2.6 times its old size, so Slomatt is a small figure under its crown
+  scale: 2.6,
+  w: 340,
+  h: 230,
   artDy: 0,
-  speed: [46, 62, 84],
-  prefer: 290,
-  gap: [1.5, 1.1, 0.8],
+  speed: [56, 74, 98],
+  prefer: 430,
+  gap: [1.6, 1.2, 0.9],
   color: '#84cc16',
   color2: '#365314',
+  // the first boss is the gentlest giant: ten hits, two hit points a hit (a hook or a kick is one segment of the bar, a jab half of one)
+  hp: 20,
+  hits: 10,
+  // the crowned head is the one weak point: high up, and open only in the moment after it attacks (or when it is stunned)
+  // (measured from the painted frames: the crown sits at 26 / 175 in the open pose and at 144 / 206 when it is stunned)
+  weak: { dx: 26, dy: 175, w: 130, h: 110 },
+  weakStun: { dx: 144, dy: 206, w: 130, h: 110 },
+  arenaW: 1300,
+  lair: 'venom',
+  entrance: { eye: [190, 242, 100], dark: [1, 6, 3] },
+  // the Mushroom Hollow: a stump at each end, a bounce mushroom either side of the middle to spring up to the crown, one wide
+  // branch across the middle (head height) and a swinging liana hanging below it. No stair: the way up is the mushrooms
+  perches: [
+    { dx: 30, up: 75, w: 130 },
+    { dx: 330, up: 30, w: 70, kind: 'bouncy' },
+    { dx: 500, up: 195, w: 290 },
+    { dx: 880, up: 30, w: 70, kind: 'bouncy' },
+    { dx: 1140, up: 75, w: 130 },
+  ],
+  vines: [{ dx: 645, top: 330, bottom: 60 }],
+  // at 35% the bog rises along the floor by each fence (warned first): the ledges and the open middle stay safe
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    for (const dir of [1, -1] as const) {
+      const edge = dir > 0 ? c.arena.left : c.arena.right;
+      const h = makeHazard({
+        kind: 'strip', x: edge, y: c.arena.floor - 9, floorY: c.arena.floor, w: 6, h: 18, warn: 1.8, warnMax: 1.8,
+        life: 1e9, maxLife: 1e9, dmg: 1, dir, ox: edge, growTo: 170, growRate: 50, color: '#a3e635', color2: '#365314', look: 'venom',
+      });
+      c.hazards.push(h);
+    }
+    c.text('THE BOG RISES!', c.arena.left + 300, c.arena.floor - 260, '#a3e635');
+    c.shake(0.55);
+  },
   moves: {
     // lobs a glob of venom that lands as a lingering, slowing puddle
     spit: {
@@ -166,8 +202,8 @@ const VENOM: BossDef = {
       pose: 'spit',
       onAct: (b, c) => {
         const phase = b.phase;
-        const mouth = { x: b.x + b.facing * (b.width / 2), y: c.arena.floor - 70 };
-        const shots = phase >= 3 ? [-170, 0, 170] : phase === 2 ? [-120, 120] : [0];
+        const mouth = { x: b.x + b.facing * (b.width / 2 - 20), y: c.arena.floor - 190 };
+        const shots = phase >= 3 ? [-210, 0, 210] : phase === 2 ? [-150, 150] : [0];
         for (const off of shots) {
           const h = lob(c, mouth.x, mouth.y, c.px + off, 0.85 + Math.abs(off) * 0.0008, { kind: 'glob', onLand: 'puddle', color: '#a3e635', color2: '#3f6212', dmg: 1, look: 'venom' });
           h.dir = b.facing;
@@ -176,10 +212,10 @@ const VENOM: BossDef = {
     },
     // the head strikes a long way forward: duck-proof, so back away or jump it
     lunge: {
-      tell: 0.65,
-      act: 0.38,
-      rec: 1.1,
-      max: 330,
+      tell: 0.8,
+      act: 0.42,
+      rec: 1.2,
+      max: 520,
       pose: 'lunge',
       onAct: (b) => {
         b.ai!.d.dir = b.facing;
@@ -187,8 +223,8 @@ const VENOM: BossDef = {
       tick: (b, c, dt) => {
         const br = b.ai!;
         const dir = br.d.dir;
-        b.x += dir * 520 * dt;
-        br.hurt = [frontBox(b, c, 90, 66, 20), bodyBox(b)];
+        b.x += dir * 640 * dt;
+        br.hurt = [frontBox(b, c, 170, 150, 15), bodyBox(b)];
       },
     },
     // the tail bursts up from the floor under where you were standing
@@ -198,13 +234,13 @@ const VENOM: BossDef = {
       rec: 1.0,
       pose: 'whip',
       onTell: (b, c) => {
-        const h = column(c, c.px, 0.95, 150, '#65a30d', '#365314', 0.55);
+        const h = column(c, c.px, 1.05, 230, '#65a30d', '#365314', 0.55);
         h.look = 'tail';
         addMark(c, b, h, 0);
         if (b.phase >= 2) {
-          for (const [slot, off] of [[1, -200], [2, 200]] as const) {
+          for (const [slot, off] of [[1, -260], [2, 260]] as const) {
             if (slot === 2 && b.phase < 3) continue;
-            const e = column(c, c.px + off, 0.95, 150, '#65a30d', '#365314', 0.55);
+            const e = column(c, c.px + off, 1.05, 230, '#65a30d', '#365314', 0.55);
             e.look = 'tail';
             addMark(c, b, e, slot);
           }
@@ -212,8 +248,8 @@ const VENOM: BossDef = {
       },
       tellTick: (b, c, dt) => {
         trackMark(b, c, b.ai!.d.h0, dt, 0.55);
-        if (b.ai!.d.h1) trackMark(b, c, b.ai!.d.h1, dt, 0.55, 260, -200);
-        if (b.ai!.d.h2) trackMark(b, c, b.ai!.d.h2, dt, 0.55, 260, 200);
+        if (b.ai!.d.h1) trackMark(b, c, b.ai!.d.h1, dt, 0.55, 260, -260);
+        if (b.ai!.d.h2) trackMark(b, c, b.ai!.d.h2, dt, 0.55, 260, 260);
       },
     },
   },

@@ -10,7 +10,25 @@
  *   front  screen space, last (vignette and the cave ceiling)
  */
 
-export type LairKind = 'drake';
+import { drawVenomBack, drawVenomFront, drawVenomWorld } from './lairVenom.ts';
+import { drawVenomObjects } from './lairVenomObjects.ts';
+import type { Platform, TreeStructure, Vine } from './types.ts';
+
+export type LairKind = 'drake' | 'venom';
+
+/**
+ * A lair that owns its scene paints the entire backdrop itself (no world parallax underneath) and draws the trees, vines and ledges
+ * in its own style (drawLairObjects), so nothing in the room looks like the stage before it. The Drake still re-lights the world's
+ * backdrop; every new lair should own its scene.
+ */
+export function lairOwnsScene(kind: LairKind): boolean {
+  return kind === 'venom';
+}
+
+/** the trees, vines and ledges of a lair that owns its scene, in its own style */
+export function drawLairObjects(ctx: CanvasRenderingContext2D, kind: LairKind, platforms: Platform[], vines: Vine[], trees: TreeStructure[], cam: { x: number; y: number; viewportWidth: number; viewportHeight: number }, time: number) {
+  if (kind === 'venom') drawVenomObjects(ctx, platforms, vines, trees, cam, time);
+}
 
 export interface LairView {
   /** camera top-left in the world, and the size of the view in world units */
@@ -36,7 +54,7 @@ interface Kit {
   ember: string;
 }
 
-const KITS: Record<LairKind, Kit> = {
+const KITS: Record<'drake', Kit> = {
   drake: {
     dim: 'rgba(14, 5, 2, 0.58)',
     glow: [255, 110, 30],
@@ -55,6 +73,7 @@ function rand(i: number): number {
 
 /** 1. over the world backdrop: it is darkened and re-lit so the fight happens in front of the creature's own volcano */
 export function drawLairBack(ctx: CanvasRenderingContext2D, kind: LairKind, v: LairView, a: LairArena, time: number, bossX: number) {
+  if (kind === 'venom') return drawVenomBack(ctx, v, a, time, bossX);
   const k = KITS[kind];
   const [r, g, b] = k.glow;
   ctx.save();
@@ -138,6 +157,7 @@ export function drawLairBack(ctx: CanvasRenderingContext2D, kind: LairKind, v: L
 
 /** 2. in the world: the dais, runes, the things the creature lives among, and carved pillars outside the fence */
 export function drawLairWorld(ctx: CanvasRenderingContext2D, kind: LairKind, a: LairArena, view: LairView, time: number) {
+  if (kind === 'venom') return drawVenomWorld(ctx, a, view, time);
   const k = KITS[kind];
   const f = a.floor;
   const x0 = Math.max(view.x - 40, a.left - 360);
@@ -259,6 +279,7 @@ export function drawLairWorld(ctx: CanvasRenderingContext2D, kind: LairKind, a: 
 
 /** 3. over everything: a dark vignette and the cave's own ceiling, so the eye goes to the fight */
 export function drawLairFront(ctx: CanvasRenderingContext2D, kind: LairKind, v: LairView, time: number) {
+  if (kind === 'venom') return drawVenomFront(ctx, v, time);
   const k = KITS[kind];
   const [r, g, b] = k.glow;
   ctx.save();

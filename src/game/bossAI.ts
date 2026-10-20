@@ -14,6 +14,7 @@
  */
 import type { BossEntity } from './types.ts';
 import type { Rect } from './fight.ts';
+import type { LairKind } from './lairArt.ts';
 
 // ───────────────────────────── hazards ─────────────────────────────
 
@@ -232,12 +233,18 @@ export interface BossDef {
   scale?: number;
   /** a boss that can only be hurt at one place, high up: the box (centre `dy` above the floor, `dx` in front of the body) */
   weak?: { dx: number; dy: number; w: number; h: number };
+  /** where the weak point is while the boss is stunned, when its pose then puts the head somewhere else */
+  weakStun?: { dx: number; dy: number; w: number; h: number };
   /** the fenced arena is this wide (the usual 1,080 is too small for a giant) */
   arenaW?: number;
   /** this boss's own ledges (the usual three branches are the same everywhere): x from the left fence, height above the floor */
-  perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number } }>;
+  perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number }; /** a bounce mushroom (70 wide; `up` is its top) */ kind?: 'bouncy' }>;
+  /** swinging lianas of its own: x from the left fence, and the height of the top and the bottom above the floor */
+  vines?: Array<{ dx: number; top: number; bottom: number }>;
   /** this boss has its own lair look (see lairArt.ts) */
-  lair?: 'drake';
+  lair?: LairKind;
+  /** the entrance's eye glow and the colour of its dark (the Drake's are orange and near-black red) */
+  entrance?: { eye: [number, number, number]; dark: [number, number, number] };
   /** a change in the lair when the boss enters a new phase (rising lava, a flood, ...) */
   onPhase?: (phase: number, b: BossEntity, c: BossCtx) => void;
   /** drawn as a fighter (the evil sloth) instead of one of the animal rigs */
@@ -272,7 +279,7 @@ export function vulnerability(b: BossEntity): 'closed' | 'armored' | 'open' | 's
 
 /** the world box of a giant's weak point (null for a boss that can be hit anywhere) */
 export function weakRect(b: BossEntity, def: BossDef, floor: number): { x: number; y: number; w: number; h: number } | null {
-  const k = def.weak;
+  const k = b.ai?.state === 'stun' && def.weakStun ? def.weakStun : def.weak;
   if (!k) return null;
   const cx = b.x + b.facing * k.dx;
   const cy = floor - (b.ai?.air ?? 0) - k.dy;

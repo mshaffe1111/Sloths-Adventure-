@@ -30,7 +30,7 @@ test('the weak point sits on the head side and follows the way the boss faces', 
   const r = weakRect(mk('rec', 1), drake, floor)!;
   const l = weakRect(mk('rec', -1), drake, floor)!;
   assert.ok(r.x + r.w / 2 > 1500 && l.x + l.w / 2 < 1500);
-  assert.equal(weakRect(mk('rec'), bossDefFor(1), floor), null, 'a boss without a weak point can be hit anywhere');
+  assert.equal(weakRect(mk('rec'), bossDefFor(2), floor), null, 'a boss without a weak point can be hit anywhere');
 });
 
 test('the Drake is a giant whose head can be reached with a double jump from the floor', () => {
@@ -121,4 +121,71 @@ test('the first meeting is long, a retry is short', () => {
   assert.equal(takeEntranceLength('t-9-10'), ENTRANCE_LONG);
   assert.equal(takeEntranceLength('t-9-10'), ENTRANCE_SHORT);
   assert.ok(ENTRANCE_LONG >= 4.5 && ENTRANCE_SHORT <= 2);
+});
+
+// ───────────── Venom Fang (world 1): the second giant ─────────────
+const venom = bossDefFor(1);
+
+test('Venom Fang is a giant with one weak point a double jump from the floor, and a ten-hit bar', () => {
+  assert.ok((venom.scale ?? 1) >= 2.5 && venom.w >= 300);
+  assert.equal(venom.hp, (venom.hits ?? 0) * 2);
+  assert.equal(venom.hits, 10);
+  const r = weakRect({ ...mk('rec'), x: 1500, width: venom.w, height: venom.h } as BossEntity, venom, floor)!;
+  assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, 'reachable with a double jump');
+  assert.ok(venom.lair === 'venom' && venom.entrance);
+  const stage = generateStage(generateAllLevels().find((l) => l.id === '1-10')!);
+  const a = stage.arena!;
+  assert.ok(a.right - a.left >= venom.w + 700, 'room to run around a giant');
+  assert.equal(stage.boss!.maxHp, venom.hp);
+  assert.equal(validateStage(stage).ok, true);
+});
+
+import { PHYS, reachBounce } from './physics.ts';
+
+test('every ledge of the Venom Fang lair can be reached (mushrooms count), and the crown is within a bounce', () => {
+  const ps = venom.perches ?? [];
+  const bouncy = ps.filter((p) => p.kind === 'bouncy');
+  assert.ok(bouncy.length >= 2, 'bounce mushrooms are how you get up');
+  for (const p of ps) {
+    if (p.kind === 'bouncy') {
+      assert.ok(p.up <= SAFE.rise1, 'a mushroom is reached from the floor');
+      continue;
+    }
+    if (p.up <= SAFE.rise1) continue;
+    // otherwise some mushroom has to launch you onto it
+    const ok = bouncy.some((m) => {
+      const gap = Math.max(0, p.dx - (m.dx + m.w), m.dx - (p.dx + p.w));
+      return reachBounce(p.up - m.up, false) >= gap;
+    });
+    assert.ok(ok, `ledge at ${p.dx}, ${p.up} up, has no mushroom that reaches it`);
+  }
+  // a bounce from a mushroom puts a hero's feet above the bottom of the crown
+  const bounceRise = (PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.gravUp);
+  const m = bouncy[0];
+  assert.ok(m.up + bounceRise >= venom.weak!.dy - venom.weak!.h / 2, 'a bounce reaches the crown');
+  assert.ok((venom.vines ?? []).length >= 1);
+});
+
+// no two lairs share a layout: the ledges of every giant differ from the others'
+test('every giant boss has its own layout', () => {
+  const sig = (w: number) => JSON.stringify((bossDefFor(w).perches ?? []).map((p) => [Math.round(p.dx / 100), Math.round(p.up / 50), p.kind ?? (p.moving ? 'm' : 's')]));
+  const giants = [1, 9].filter((w) => bossDefFor(w).perches?.length);
+  assert.equal(new Set(giants.map(sig)).size, giants.length);
+});
+
+test('the bog rises at 35%: two warned strips with the venom look', () => {
+  const hazards: import('./bossAI.ts').BossHazard[] = [];
+  const ctx = { arena: { left: 760, right: 2060, floor: 560 }, hazards, text: () => {}, shake: () => {} } as unknown as import('./bossAI.ts').BossCtx;
+  venom.onPhase!(2, mk('idle'), ctx);
+  assert.equal(hazards.length, 0);
+  venom.onPhase!(3, mk('idle'), ctx);
+  assert.equal(hazards.length, 2);
+  assert.ok(hazards.every((h) => h.kind === 'strip' && h.look === 'venom' && h.warn > 1));
+});
+
+import { lairOwnsScene } from './lairArt.ts';
+
+test('a lair that owns its scene is never drawn on top of the world backdrop', () => {
+  assert.equal(lairOwnsScene('venom'), true);
+  assert.equal(venom.lair && lairOwnsScene(venom.lair), true);
 });

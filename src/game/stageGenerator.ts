@@ -1852,10 +1852,15 @@ function buildBoss(gen: Gen): GeneratedStage {
   if (perchList.length) {
     for (const pc of perchList) {
       const y = floor - pc.up;
-      if (pc.moving) {
+      if (pc.kind === 'bouncy') {
+        gen.plat({ x: left + pc.dx, y, width: 70, height: 30, type: 'bouncy' });
+      } else if (pc.moving) {
         const base = left + pc.dx;
         gen.plat({ x: base, y, width: pc.w, height: 26, type: 'moving', moveRange: pc.moving.range, moveSpeed: pc.moving.speed, baseX: base, swayOffset: 0, style: 'branch' });
       } else gen.plat({ x: left + pc.dx, y, width: pc.w, height: 26, type: 'solid', style: 'branch' });
+    }
+    for (const v of def.vines ?? []) {
+      gen.V.push({ id: gen.vid++, x: left + v.dx, topY: floor - v.top, bottomY: floor - v.bottom, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true });
     }
   } else {
     for (const b of [{ x: left + 70, y: 440, w: 200 }, { x: right - 270, y: 440, w: 200 }, { x: (left + right) / 2 - 130, y: 340, w: 260 }]) {

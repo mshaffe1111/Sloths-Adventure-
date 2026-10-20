@@ -68,7 +68,7 @@ import {
 } from './fight.ts';
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
 import { drawEntrance, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
-import { drawLairBack, drawLairFront, drawLairWorld } from './lairArt.ts';
+import { drawLairBack, drawLairFront, drawLairObjects, drawLairWorld, lairOwnsScene } from './lairArt.ts';
 import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
@@ -2920,10 +2920,10 @@ export class GameEngine {
     const shakeY = (Math.random() - 0.5) * shakeMag;
 
     // 1. Render Multi-Layer Parallax Background
-    renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
-
-    // a boss with its own lair: the backdrop is darkened and re-lit, with the creature's own shape behind the fight
+    // a boss with its own lair: either the backdrop is darkened and re-lit, or (lairOwnsScene) the lair paints all of it itself
     const lair = this.currentStage.arena && this.bossDef?.lair ? this.bossDef.lair : null;
+    const ownScene = !!lair && lairOwnsScene(lair);
+    if (!ownScene) renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     const lairView = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
     if (lair && this.currentStage.arena) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right);
 
@@ -2941,7 +2941,8 @@ export class GameEngine {
     this.drawRivers(ctx, world, false);
 
     // Render In-World Trees, Vines and Platforms
-    renderWorldObjects(
+    if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
+    else renderWorldObjects(
       ctx,
       world.id,
       this.platforms,
@@ -3160,6 +3161,8 @@ export class GameEngine {
           eyeY: head ? head.y + head.h / 2 - this.camera.y : this.camera.viewportHeight / 2,
           name: this.bossDef.name,
           color: this.bossDef.color,
+          eyeRgb: this.bossDef.entrance?.eye,
+          darkRgb: this.bossDef.entrance?.dark,
         },
         entranceBeat(this.entrance.t, this.entrance.total),
         this.gameTime

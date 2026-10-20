@@ -175,7 +175,7 @@ test('warnings come first: a column or a drop cannot hurt until its warning is o
   const col = ctx.hazards[0];
   assert.ok(col.warn >= 0.9, 'long warning');
   assert.equal(hazardBox(col), null);
-  for (let i = 0; i < 60; i++) stepHazards(ctx.hazards, ARENA, 1 / 60, noEv);
+  for (let i = 0; i < 80; i++) stepHazards(ctx.hazards, ARENA, 1 / 60, noEv);
   assert.ok(hazardBox(col), 'now it is live');
   assert.ok(hazardBox(col)!.h >= 100);
 });
