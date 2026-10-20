@@ -13,6 +13,7 @@ import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
 import { StoryPlayer } from './game/../components/StoryPlayer.tsx';
 import { INTRO_PANELS, WORLD_STORIES, ENDING_PANELS, bossPanels, thornbarkPanels } from './game/story.ts';
+import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
 import { sound } from './game/audio.ts';
@@ -338,6 +339,16 @@ export default function App() {
     };
   }
 
+  // dev only: open a story screen for a level (boss_intro, boss_defeat, world_story) for screenshots
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __story?: (id: string, screen: string) => void }).__story = (id: string, scr: string) => {
+      const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
+      if (!lvl) return;
+      setActiveLevel(lvl);
+      setScreen(scr as never);
+    };
+  }
+
   const continueAfterWorldStory = (lvl: LevelConfig) => {
     markWorldStorySeen(lvl.worldIndex);
     if (lvl.objectiveType === 'boss_lair') setScreen('boss_intro');
@@ -631,7 +642,8 @@ export default function App() {
           panels={
             activeLevel.secret
               ? thornbarkPanels('defeat')
-              : bossPanels(activeLevel.worldIndex, 'defeat', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
+              : victoryPanels(activeLevel.worldIndex, (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName) ??
+                bossPanels(activeLevel.worldIndex, 'defeat', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
           }
           finishLabel="Onward ▶"
           onFinish={() =>

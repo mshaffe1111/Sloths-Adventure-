@@ -5,6 +5,7 @@
  */
 
 import type { JennifurMood } from './jennifurSprite.ts';
+import type { CameraMove, PoseKey, SceneFx } from './storyShots.ts';
 
 export type ActorKind =
   | 'milo'
@@ -34,6 +35,13 @@ export interface SceneActor {
   mood?: JennifurMood;
   /** milo only: pose */
   pose?: 'idle' | 'punch' | 'duck' | 'happy';
+  /**
+   * a performance in painted poses (milo and the painted bosses): which frame to show when, and where the actor moves between them.
+   * When set it replaces `pose` / `angry` / `beaten`, and the actor falls back to those if the painted art is not loaded.
+   */
+  seq?: PoseKey[];
+  /** milo only: a big face portrait instead of the body ('face_calm', 'face_wink'...; `seq` can change the expression), drawn `scale` times the usual size */
+  portrait?: boolean;
 }
 
 export type SceneMood = 'day' | 'storm' | 'dusk' | 'night' | 'glow';
@@ -55,6 +63,10 @@ export interface StoryScene {
   focusY?: number;
   /** which painted castle stands behind a world-10 picture (5-7); the Highland Fortress when unset */
   castle?: number;
+  /** a camera move over the picture (replaces the slow default push-in) */
+  camera?: CameraMove;
+  /** effects at moments of the picture: flash, shake, impact burst, dust, dizzy stars, glints */
+  fx?: SceneFx[];
 }
 
 export interface StoryPanel {

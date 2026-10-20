@@ -94,9 +94,10 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
   const wide = view.w / view.h >= 1.3;
 
   const startRef = useRef(performance.now());
+  // (a picture's own timeline starts when the title card has gone, so an action beat is never played out behind the card)
   useEffect(() => {
     startRef.current = performance.now();
-  }, [idx]);
+  }, [idx, cardUp]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -131,7 +132,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [panel.scene, wide, view.w, view.h]);
+  }, [panel.scene, wide, view.w, view.h, cardUp]);
 
   const next = useCallback(() => {
     if (cardUp) {

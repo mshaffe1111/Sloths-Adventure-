@@ -73,6 +73,36 @@ export function heroFace(ctx: CanvasRenderingContext2D, name: string, x: number,
   return true;
 }
 
+/**
+ * one named painted pose with its feet at the origin, facing right, for the story scenes (the player's own state machine picks
+ * poses in the game; a cutscene names the pose it wants). `shadow` draws the soft ground shadow. False until the atlas has loaded.
+ */
+export function heroStill(ctx: CanvasRenderingContext2D, name: string, shadow = true): boolean {
+  if (!heroSpriteEnabled()) return false;
+  load();
+  const f: HeroFrame | undefined = HERO_FRAMES[name];
+  if (!ready || !atlas || !f) return false;
+  const k = (HERO_UNITS * HERO_SPRITE_SCALE) / HERO_STAND_H;
+  if (shadow) {
+    ctx.fillStyle = 'rgba(15,23,42,0.36)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 22 * HERO_SPRITE_SCALE * 1.05, 5.5 * HERO_SPRITE_SCALE * 1.05, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(sheet() ?? atlas, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
+  return true;
+}
+
+/** the shape of a painted pose, for a cutscene that wants to place something against it: [width, height] in world units */
+export function heroStillSize(name: string): [number, number] | null {
+  const f: HeroFrame | undefined = HERO_FRAMES[name];
+  if (!f) return null;
+  const k = (HERO_UNITS * HERO_SPRITE_SCALE) / HERO_STAND_H;
+  return [f.w * k, f.h * k];
+}
+
 /** the run frames, ordered by the packing script so neighbouring poses are as alike as possible */
 const RUN_CYCLE = HERO_RUN;
 /** painted strides per walkCycle turn: 9 frames at the full walkCycle rate would outrun the 30 fps loop */

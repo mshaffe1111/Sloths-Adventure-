@@ -45,6 +45,12 @@ export function drawPaintedCardBoss(ctx: CanvasRenderingContext2D, world: number
   return painted.still(ctx, beaten ? poses[2] : angry ? poses[1] : poses[0]);
 }
 
+/** one named painted frame of a world's boss, feet at the origin, facing right (for the cutscenes' own poses); false when there is none or it is loading */
+export function drawPaintedBossFrame(ctx: CanvasRenderingContext2D, world: number, frame: string): boolean {
+  const painted = PAINTED[world];
+  return painted ? painted.still(ctx, frame) : false;
+}
+
 /** distance from the picture's origin down to the shadow ellipse the boss drawings carry */
 const ART_FEET = 25.5;
 

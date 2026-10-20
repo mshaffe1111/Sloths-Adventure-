@@ -1,5 +1,7 @@
 import type { BossEntity, PlayerState } from './types.ts';
-import { drawPaintedCardBoss } from './bossArt.ts';
+import { drawPaintedCardBoss, drawPaintedBossFrame } from './bossArt.ts';
+import { heroStill, heroFace } from './heroSprite.ts';
+import { cameraAt, drawFx, flashAt, poseAt, shakeAt } from './storyShots.ts';
 import { renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
 import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.ts';
 import { drawJennifurSprite } from './jennifurSprite.ts';
@@ -249,7 +251,44 @@ function drawMood(ctx: CanvasRenderingContext2D, mood: StoryScene['mood'], w: nu
   }
 }
 
+/**
+ * an actor that performs a timeline of painted poses (see storyShots.ts). False when the painted art is not there (still loading, or
+ * switched off), and the caller then draws the plain still pose instead.
+ */
+function drawPerformer(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number): boolean {
+  if (!a.seq || !a.seq.length) return false;
+  const pose = poseAt(a.seq, t);
+  const feetY = ((a.y ?? 0.8) + pose.dy) * h;
+  const x = (a.x + pose.dx) * w;
+  const s = (a.scale ?? 1) * 3.0 * pose.sc;
+  const face = (a.facing === -1 ? -1 : 1) * (pose.flip ? -1 : 1);
+  ctx.save();
+  ctx.translate(x, feetY);
+  ctx.rotate(pose.rot * face);
+  if (face === -1) ctx.scale(-1, 1);
+  let drawn = false;
+  if (a.kind === 'milo') {
+    if (a.portrait) {
+      // a big face, its chin on the ground line (the whole body is out of frame), breathing a little
+      const size = 330 * (a.scale ?? 1) * pose.sc;
+      ctx.translate(0, Math.sin(t * 2.4) * 2);
+      drawn = heroFace(ctx, pose.frame, -size / 2, -size, size);
+    } else {
+      ctx.scale(s, s);
+      drawn = heroStill(ctx, pose.frame);
+    }
+  } else if (a.kind === 'boss') {
+    ctx.scale(s * 0.62, s * 0.62);
+    ctx.translate(0, 24);
+    ctx.scale(1.3, 1.3);
+    drawn = drawPaintedBossFrame(ctx, a.world ?? 1, pose.frame);
+  }
+  ctx.restore();
+  return drawn;
+}
+
 function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number) {
+  if (a.seq && drawPerformer(ctx, a, w, h, t)) return;
   const feetY = (a.y ?? 0.8) * h;
   const x = a.x * w;
   const s = (a.scale ?? 1) * 3.0;
@@ -790,9 +829,12 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   ctx.clearRect(0, 0, w, h);
   ctx.translate(0, -lift * h);
   // camera: close-up zoom with a slow push-in
-  const z = (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1));
-  const fx = Math.min(w - w / (2 * z), Math.max(w / (2 * z), (scene.focusX ?? 0.5) * w));
-  const fy = Math.min(h - h / (2 * z), Math.max(h / (2 * z), (scene.focusY ?? 0.62) * h));
+  const cam = scene.camera ? cameraAt(scene.camera, t) : null;
+  const z = cam ? cam.zoom : (scene.zoom ?? 1) * (1 + 0.04 * Math.min(t / 9, 1));
+  const fx = Math.min(w - w / (2 * z), Math.max(w / (2 * z), (cam ? cam.fx : scene.focusX ?? 0.5) * w));
+  const fy = Math.min(h - h / (2 * z), Math.max(h / (2 * z), (cam ? cam.fy : scene.focusY ?? 0.62) * h));
+  const [shx, shy] = shakeAt(scene.fx, t);
+  ctx.translate(shx, shy);
   ctx.translate(w / 2, h / 2);
   ctx.scale(z, z);
   ctx.translate(-fx, -fy);
@@ -820,6 +862,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
     scene.actors.forEach((a) => drawActor(ctx, a, w, h, t));
   }
 
+  drawFx(ctx, scene.fx, t, w, h);
   drawParticles(ctx, scene.particles, w, h, t);
   drawMood(ctx, scene.mood, w, h, t);
   withBakeScale(STORY_BAKE, () => renderOverlay(ctx, scene.world, camX, w, h * (1 + lift) + 4, t, true));
@@ -832,5 +875,10 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   vg.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
   ctx.fillStyle = vg;
   ctx.fillRect(0, 0, w, h);
+  const fl = flashAt(scene.fx, t);
+  if (fl > 0) {
+    ctx.fillStyle = `rgba(255,250,235,${fl})`;
+    ctx.fillRect(0, 0, w, h);
+  }
   ctx.restore();
 }
