@@ -20,10 +20,10 @@ export const crocSprite = createPaintedBoss({
   url: new URL('../assets/enemies/croc-atlas.webp', import.meta.url).href,
   frames: CROC_FRAMES,
   k: 0.8,
-  pick: ({ b, br, m, moving, dist, time }) => {
+  pick: ({ b, br, m, moving, dist, time, def }) => {
     let name: string;
     if (br.state === 'dying') name = br.t < 0.5 ? 'knockback' : br.t < 1.3 ? 'beaten' : 'defeated';
-    else if (br.state === 'stun') name = Math.floor(time * 2.2) % 2 === 0 ? 'stagger' : 'recoil';
+    else if (br.state === 'stun') name = def.scale || Math.floor(time * 2.2) % 2 === 0 ? 'stagger' : 'recoil'; // the giant stays in the pose its weak point was measured in
     else if (br.state === 'roar') name = 'roar';
     else if (br.state === 'tell') name = m?.pose === 'slam' ? 'bellyslam' : m?.pose === 'whip' ? 'tailbite' : 'roar';
     else if (br.state === 'act') {

@@ -235,6 +235,8 @@ export interface BossDef {
   weak?: { dx: number; dy: number; w: number; h: number };
   /** where the weak point is while the boss is stunned, when its pose then puts the head somewhere else */
   weakStun?: { dx: number; dy: number; w: number; h: number };
+  /** what the clang says when a blow lands anywhere but the weak point (the default sends you up, which is wrong for a low head) */
+  aimText?: string;
   /** the fenced arena is this wide (the usual 1,080 is too small for a giant) */
   arenaW?: number;
   /** this boss's own ledges (the usual three branches are the same everywhere): x from the left fence, height above the floor */

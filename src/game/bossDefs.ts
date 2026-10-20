@@ -260,42 +260,96 @@ const VENOM: BossDef = {
 const CROC: BossDef = {
   world: 2,
   name: 'Crocus Rex',
-  w: 150,
-  h: 58,
+  // a giant: the painted croc is drawn 2.4 times its old size, a wall of armour along the whole bank
+  scale: 2.4,
+  w: 400,
+  h: 160,
   artDy: 0,
-  speed: [38, 52, 70],
-  prefer: 230,
-  gap: [1.4, 1.0, 0.7],
+  speed: [40, 56, 78],
+  prefer: 420,
+  gap: [1.5, 1.1, 0.8],
   chain: 0.4,
   color: '#7a5c2e',
   color2: '#3b2a12',
+  // twelve hits, two hit points a hit
+  hp: 24,
+  hits: 12,
+  // his one weak point is the head. It is low, so the trick is not reaching it but being there in the opening: right after a move
+  // (the jaws hang open on recovery) or while he is dizzy. Measured from the painted frames: the head sits at 55 / 80 in the
+  // recovery pose and at 165 / 55 in the stagger
+  weak: { dx: 55, dy: 80, w: 170, h: 110 },
+  weakStun: { dx: 165, dy: 55, w: 170, h: 100 },
+  aimText: 'TOO TOUGH! HIT THE JAWS',
+  arenaW: 1400,
+  lair: 'croc',
+  entrance: { eye: [251, 191, 36], dark: [2, 5, 12] },
+  // the Moonlit Mire: stilt boardwalks over the mud, up one side and down the other, with a log swinging on ropes through the middle
+  // and a rope swing to get from the first boardwalk to the second. A stair down, not up: nothing here looks like the other lairs
+  perches: [
+    { dx: 40, up: 85, w: 150 },
+    { dx: 285, up: 170, w: 125 },
+    { dx: 590, up: 120, w: 170, moving: { range: 150, speed: 1.1 } },
+    { dx: 990, up: 170, w: 125 },
+    { dx: 1210, up: 85, w: 150 },
+  ],
+  vines: [{ dx: 205, top: 330, bottom: 110 }],
+  // at 35% the river floods in by each fence, warned first, and it is full of piranhas: the boardwalks and the middle stay dry
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    for (const dir of [1, -1] as const) {
+      const edge = dir > 0 ? c.arena.left : c.arena.right;
+      const h = makeHazard({
+        kind: 'strip', x: edge, y: c.arena.floor - 9, floorY: c.arena.floor, w: 6, h: 18, warn: 1.8, warnMax: 1.8,
+        life: 1e9, maxLife: 1e9, dmg: 1, dir, ox: edge, growTo: 210, growRate: 55, color: '#3f8f86', color2: '#10302f', look: 'flood',
+      });
+      c.hazards.push(h);
+    }
+    c.text('THE RIVER FLOODS!', c.arena.left + 300, c.arena.floor - 270, '#5eead4');
+    c.shake(0.6);
+  },
   moves: {
-    // rears back with the jaws wide, then rolls across the whole arena. Crashing into the wall leaves it dizzy
-    deathRoll: chargeMove({ tell: 1.0, maxT: 1.9, rec: 0.9, speed: 520, stun: 1.9, text: 'DIZZY!', min: 160 }),
+    // rears back with the jaws wide, then rolls across the whole arena. Crashing into the wall leaves him dizzy
+    deathRoll: chargeMove({ tell: 1.2, maxT: 2.3, rec: 1.0, speed: 560, stun: 2.1, text: 'DIZZY!', min: 220 }),
     // a low spinning sweep of the tail on both sides: jump it
     tailWhip: {
-      tell: 0.55,
-      act: 0.32,
-      rec: 0.9,
-      max: 250,
+      tell: 0.7,
+      act: 0.4,
+      rec: 1.1,
+      max: 340,
       pose: 'whip',
       tick: (b, c) => {
-        b.ai!.hurt = [...bothSides(b, c, 95, 34, 0), bodyBox(b)];
+        b.ai!.hurt = [...bothSides(b, c, 210, 62, 0), bodyBox(b)];
       },
     },
     // slams the floor and sends mud waves both ways
     mudSurge: {
-      tell: 0.85,
+      tell: 0.95,
       act: 0.15,
-      rec: 1.2,
+      rec: 1.3,
       phase: 2,
       pose: 'slam',
       onAct: (b, c) => {
-        impact(b, c, 0.55, '#7a5c2e');
+        impact(b, c, 0.7, '#7a5c2e');
         for (const d of [-1, 1] as const) {
-          const w = floorWave(c, b.x + d * (b.width / 2 + 10), d, 300, '#8b6b3a', '#4a3416');
+          const w = floorWave(c, b.x + d * (b.width / 2 + 10), d, 330, '#8b6b3a', '#4a3416', true);
           w.look = 'mud';
         }
+      },
+    },
+    // mud geysers burst up on marked spots along the bank
+    geysers: {
+      tell: 1.0,
+      act: 0.3,
+      rec: 1.3,
+      phase: 2,
+      pose: 'roar',
+      onTell: (b, c) => {
+        const xs = b.phase >= 3 ? [0, -280, 280, 560] : [0, -300, 300];
+        xs.forEach((off, i) => {
+          const x = Math.max(c.arena.left + 40, Math.min(c.arena.right - 40, c.px + off));
+          const h = column(c, x, 1.05 + i * 0.08, 230, '#8b6b3a', '#4a3416', 0.6);
+          h.look = 'mud';
+        });
       },
     },
   },

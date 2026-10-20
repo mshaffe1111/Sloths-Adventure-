@@ -30,7 +30,7 @@ test('the weak point sits on the head side and follows the way the boss faces', 
   const r = weakRect(mk('rec', 1), drake, floor)!;
   const l = weakRect(mk('rec', -1), drake, floor)!;
   assert.ok(r.x + r.w / 2 > 1500 && l.x + l.w / 2 < 1500);
-  assert.equal(weakRect(mk('rec'), bossDefFor(2), floor), null, 'a boss without a weak point can be hit anywhere');
+  assert.equal(weakRect(mk('rec'), bossDefFor(3), floor), null, 'a boss without a weak point can be hit anywhere');
 });
 
 test('the Drake is a giant whose head can be reached with a double jump from the floor', () => {
@@ -169,7 +169,7 @@ test('every ledge of the Venom Fang lair can be reached (mushrooms count), and t
 // no two lairs share a layout: the ledges of every giant differ from the others'
 test('every giant boss has its own layout', () => {
   const sig = (w: number) => JSON.stringify((bossDefFor(w).perches ?? []).map((p) => [Math.round(p.dx / 100), Math.round(p.up / 50), p.kind ?? (p.moving ? 'm' : 's')]));
-  const giants = [1, 9].filter((w) => bossDefFor(w).perches?.length);
+  const giants = [1, 2, 9].filter((w) => bossDefFor(w).perches?.length);
   assert.equal(new Set(giants.map(sig)).size, giants.length);
 });
 
@@ -188,4 +188,55 @@ import { lairOwnsScene } from './lairArt.ts';
 test('a lair that owns its scene is never drawn on top of the world backdrop', () => {
   assert.equal(lairOwnsScene('venom'), true);
   assert.equal(venom.lair && lairOwnsScene(venom.lair), true);
+});
+
+// ───────────────────────────── Crocus Rex (world 2): the third giant ─────────────────────────────
+const croc = bossDefFor(2);
+
+test('Crocus Rex is a giant with a twelve-hit bar, a low weak point and his own lair', () => {
+  assert.ok((croc.scale ?? 1) >= 2.4 && croc.w >= 380);
+  assert.equal(croc.hits, 12);
+  assert.equal(croc.hp, 24);
+  assert.ok(croc.lair === 'croc' && croc.entrance && croc.aimText);
+  const r = weakRect({ ...mk('rec'), x: 1500, width: croc.w, height: croc.h } as BossEntity, croc, floor)!;
+  assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, 'the head can be reached from the floor');
+  // the stunned pose has its own weak point, further forward (the head is down and out in the stagger)
+  const s = weakRect({ ...mk('stun'), x: 1500, width: croc.w, height: croc.h } as BossEntity, croc, floor)!;
+  assert.ok(s.x + s.w / 2 > r.x + r.w / 2 + 40);
+  const stage = generateStage(generateAllLevels().find((l) => l.id === '2-10')!);
+  const a = stage.arena!;
+  assert.ok(a.right - a.left >= croc.w + 700, 'room to run around a giant');
+  assert.equal(stage.boss!.maxHp, croc.hp);
+  assert.equal(validateStage(stage).ok, true);
+});
+
+test('every ledge of the Mire can be reached, from the floor or from one before it, and one of them moves', () => {
+  const ps = croc.perches ?? [];
+  assert.ok(ps.some((p) => p.moving), 'a log swings through the middle');
+  const spans = ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
+  for (const s of spans) {
+    const ok = reached.some((r) => {
+      const rise = s.up - r.up;
+      const gap = Math.max(0, s.x0 - r.x1, r.x0 - s.x1);
+      return (rise <= SAFE.rise1 && gap <= SAFE.gap1) || (rise <= SAFE.rise2 && gap <= SAFE.gap2 * 0.7);
+    });
+    assert.ok(ok, `ledge at ${s.x0}-${s.x1}, ${s.up} up, cannot be reached`);
+    reached.push(s);
+  }
+  assert.ok((croc.vines ?? []).length >= 1, 'a rope swing');
+});
+
+test('the river floods at 35%: two warned strips with the flood look', () => {
+  const hazards: import('./bossAI.ts').BossHazard[] = [];
+  const ctx = { arena: { left: 760, right: 2160, floor: 560 }, hazards, text: () => {}, shake: () => {} } as unknown as import('./bossAI.ts').BossCtx;
+  croc.onPhase!(2, mk('idle'), ctx);
+  assert.equal(hazards.length, 0);
+  croc.onPhase!(3, mk('idle'), ctx);
+  assert.equal(hazards.length, 2);
+  assert.ok(hazards.every((h) => h.kind === 'strip' && h.look === 'flood' && h.warn > 1));
+});
+
+test('every giant lair owns its scene', () => {
+  for (const w of [1, 2]) assert.equal(lairOwnsScene(bossDefFor(w).lair!), true);
 });

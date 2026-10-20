@@ -1060,8 +1060,137 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
   ctx.restore();
 }
 
+/** a piranha caught in a leap: grey back, red belly, a mouth of teeth. Drawn at the origin facing right */
+function drawPiranha(ctx: CanvasRenderingContext2D) {
+  ctx.fillStyle = '#475569';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 11, 5.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#f87171';
+  ctx.beginPath();
+  ctx.ellipse(1, 2.2, 9, 3, 0, 0, Math.PI);
+  ctx.fill();
+  ctx.fillStyle = '#334155';
+  ctx.beginPath();
+  ctx.moveTo(-9, 0);
+  ctx.lineTo(-17, -6);
+  ctx.lineTo(-17, 6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-3, -5);
+  ctx.lineTo(2, -9);
+  ctx.lineTo(4, -5);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#fef9c3';
+  ctx.beginPath();
+  ctx.arc(6, -1.6, 2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.arc(6.6, -1.6, 0.9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  for (let i = 0; i < 3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(8 + i * 1.6, 2);
+    ctx.lineTo(9.2 + i * 1.6, 5);
+    ctx.lineTo(10.4 + i * 1.6, 2);
+    ctx.fill();
+  }
+}
+
+/** the river flooding in along the floor from the arena edge: a rippling warning first, then dark water full of leaping piranhas */
+function drawFlood(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
+  const fl = h.floorY;
+  const dir = h.dir || 1;
+  const edge = h.ox ?? h.x;
+  const full = h.growTo ?? h.w;
+  if (h.warn > 0) {
+    // the warning: rings spread and the mud darkens along where the water is going to reach
+    const u = 1 - h.warn / Math.max(0.01, h.warnMax);
+    const pulse = 0.55 + 0.45 * Math.sin(time * (8 + u * 16));
+    const g = ctx.createLinearGradient(edge, 0, edge + dir * full, 0);
+    g.addColorStop(0, h.color);
+    g.addColorStop(1, 'rgba(63,143,134,0)');
+    ctx.globalAlpha = (0.3 + 0.4 * u) * pulse;
+    ctx.fillStyle = g;
+    ctx.fillRect(Math.min(edge, edge + dir * full), fl - 10, full, 10);
+    ctx.globalAlpha = 0.6 * u;
+    ctx.strokeStyle = '#99f6e4';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 4; i++) {
+      const px = edge + dir * (full * ((i + 0.5) / 4));
+      const r = ((time * 1.4 + i * 0.3) % 1) * 22;
+      ctx.beginPath();
+      ctx.ellipse(px, fl - 3, r, r * 0.22, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    return;
+  }
+  const x0 = Math.min(edge, edge + dir * h.w);
+  ctx.globalAlpha = 1;
+  const g = ctx.createLinearGradient(0, fl - 18, 0, fl);
+  g.addColorStop(0, '#5fb5a8');
+  g.addColorStop(0.35, h.color);
+  g.addColorStop(1, h.color2);
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(x0, fl);
+  for (let x = x0; x <= x0 + h.w + 8; x += 8) ctx.lineTo(Math.min(x, x0 + h.w), fl - 16 + Math.sin(x * 0.09 + time * 3) * 2.2 + Math.sin(x * 0.04 - time * 2) * 1.6);
+  ctx.lineTo(x0 + h.w, fl);
+  ctx.closePath();
+  ctx.fill();
+  // foam crest and moonlit glints
+  ctx.strokeStyle = 'rgba(209, 250, 229, 0.85)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let x = x0; x <= x0 + h.w; x += 8) {
+    const y = fl - 16 + Math.sin(x * 0.09 + time * 3) * 2.2 + Math.sin(x * 0.04 - time * 2) * 1.6;
+    if (x === x0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(241, 245, 249, 0.7)';
+  for (let x = x0 + 10; x < x0 + h.w - 6; x += 26) {
+    const tw = 0.5 + 0.5 * Math.sin(time * 4 + x);
+    ctx.globalAlpha = 0.5 * tw;
+    ctx.fillRect(x, fl - 11 + ((x * 7) % 5), 8, 2);
+  }
+  ctx.globalAlpha = 1;
+  // the piranhas, each leaping in turn
+  const n = Math.max(1, Math.floor(h.w / 70));
+  for (let i = 0; i < n; i++) {
+    const per = 1.5 + ((i * 37 + Math.floor(h.seed * 10)) % 7) * 0.12;
+    const ph = (time / per + i * 0.37 + h.seed) % 1;
+    if (ph > 0.38) continue;
+    const u = ph / 0.38;
+    const px = x0 + (h.w * (i + 0.5 + Math.sin(h.seed * 9 + i) * 0.25)) / n;
+    const py = fl - 14 - Math.sin(u * Math.PI) * (36 + (i % 3) * 10);
+    const ang = -Math.cos(u * Math.PI) * 0.9 * -dir;
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.scale(dir, 1);
+    ctx.rotate(ang * dir * -1);
+    drawPiranha(ctx);
+    ctx.restore();
+    // the splash where it goes in and comes out
+    if (u < 0.12 || u > 0.88) {
+      ctx.fillStyle = 'rgba(209, 250, 229, 0.8)';
+      for (let d = -1; d <= 1; d += 2) {
+        ctx.beginPath();
+        ctx.arc(px + d * 6, fl - 18, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+}
+
 /** lava (or anything else) that rises along the floor from the arena edge: a glowing crack first, then a bubbling pool that grows */
 function drawStrip(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
+  if (h.look === 'flood') return drawFlood(ctx, h, time);
   const fl = h.floorY;
   const dir = h.dir || 1;
   const edge = h.ox ?? h.x;

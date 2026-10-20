@@ -2251,7 +2251,7 @@ export class GameEngine {
         this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
         if (this.clangCd <= 0) {
           this.clangCd = 0.6;
-          this.addFloatingText('TOO TOUGH! AIM HIGH', cp.x, cp.y - 30, '#cbd5e1');
+          this.addFloatingText(def?.aimText ?? 'TOO TOUGH! AIM HIGH', cp.x, cp.y - 30, '#cbd5e1');
         }
         return;
       }
