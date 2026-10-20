@@ -32,6 +32,8 @@ export class AudioCore {
   private readonly delayR: DelayNode;
   readonly noise: AudioBuffer;
   readonly pinkNoise: AudioBuffer;
+  /** the recorded sounds, by group ("punchM" -> its versions); empty until sampleLoader has run, and the effects work without them */
+  readonly samples = new Map<string, AudioBuffer[]>();
   /** a side tap on the final output, read by tests and the volume meter */
   readonly meter: AnalyserNode;
 

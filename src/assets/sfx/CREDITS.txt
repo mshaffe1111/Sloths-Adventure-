@@ -1,0 +1,4 @@
+The recorded sound effects in this folder come from free packs by Kenney (www.kenney.nl), released under
+Creative Commons Zero (CC0, public domain): Impact Sounds, RPG Audio, Interface Sounds and Digital Audio.
+They were trimmed, normalized and converted to mono mp3. Crediting Kenney is not required, but he deserves it.
+https://creativecommons.org/publicdomain/zero/1.0/

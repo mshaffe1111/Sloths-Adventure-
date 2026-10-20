@@ -111,6 +111,8 @@ export class Conductor {
         return;
       }
       this.ctx = ctx;
+      // the recorded sounds load in the background; until they are ready the effects use their synthesized layers
+      void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
       this.amb = new Ambience(this.core);
       this.lite = typeof navigator !== 'undefined' && /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) && (navigator.hardwareConcurrency ?? 8) <= 4;
       this.amb.lite = this.lite;

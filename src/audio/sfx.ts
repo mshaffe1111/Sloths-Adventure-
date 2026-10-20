@@ -98,6 +98,83 @@ function noise(core: AudioCore, o: NoiseOpts) {
   g.connect(o.dst);
 }
 
+interface SampleOpts {
+  gain?: number;
+  /** playback speed: also raises the pitch (1 = as recorded). Light hits play faster so phone speakers can reproduce them */
+  rate?: number;
+  lp?: number;
+  hp?: number;
+  /** saturation: adds harmonics to the low thump so it can be heard on small speakers (0 = none) */
+  sat?: number;
+  pan?: number;
+}
+
+const satCurves = new Map<number, Float32Array<ArrayBuffer>>();
+function satCurve(k: number): Float32Array<ArrayBuffer> {
+  let c = satCurves.get(k);
+  if (!c) {
+    c = new Float32Array(new ArrayBuffer(1024 * 4));
+    for (let i = 0; i < 1024; i++) {
+      const x = (i / 1023) * 2 - 1;
+      c[i] = Math.tanh(x * k) / Math.tanh(k);
+    }
+    satCurves.set(k, c);
+  }
+  return c;
+}
+
+const lastPick = new Map<string, number>();
+/**
+ * Play one recording from a group ("punchM" has five versions; it never plays the same one twice in a row).
+ * Returns false when the group is not loaded yet, and the effect then relies on its synthesized layers.
+ */
+function smp(core: AudioCore, dst: AudioNode, t: number, group: string, o: SampleOpts = {}): boolean {
+  const list = core.samples.get(group);
+  if (!list || list.length === 0) return false;
+  let i = Math.floor(Math.random() * list.length);
+  const last = lastPick.get(group);
+  if (list.length > 1 && i === last) i = (i + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
+  lastPick.set(group, i);
+  const c = core.ctx;
+  const src = c.createBufferSource();
+  src.buffer = list[i];
+  src.playbackRate.value = (o.rate ?? 1) * jit(0.04);
+  let node: AudioNode = src;
+  const chain = (n: AudioNode) => {
+    node.connect(n);
+    node = n;
+  };
+  if (o.hp) {
+    const f = c.createBiquadFilter();
+    f.type = 'highpass';
+    f.frequency.value = o.hp;
+    chain(f);
+  }
+  if (o.sat) {
+    const w = c.createWaveShaper();
+    w.curve = satCurve(o.sat);
+    w.oversample = '2x';
+    chain(w);
+  }
+  if (o.lp) {
+    const f = c.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = o.lp;
+    chain(f);
+  }
+  const g = c.createGain();
+  g.gain.value = o.gain ?? 1;
+  chain(g);
+  if (o.pan && 'createStereoPanner' in c) {
+    const p = c.createStereoPanner();
+    p.pan.value = o.pan;
+    chain(p);
+  }
+  node.connect(dst);
+  src.start(t);
+  return true;
+}
+
 /** a sound made of a quick chain of short chirps (birds, critters, tayra chatter) */
 function chirps(core: AudioCore, dst: AudioNode, t: number, o: { n: number; gap: number; f0: number; f1: number; dec: number; peak: number; type?: OscillatorType }) {
   for (let i = 0; i < o.n; i++) {
@@ -203,7 +280,7 @@ const out = (core: AudioCore, rev = 0) => {
 };
 
 export const SFX: Record<string, Fx> = {
-  /** a soft springy hop: the pitch lifts, a breath of air under it. Four versions, and sometimes a small "hup" */
+  /** a soft springy hop: the pitch lifts, a push off the ground and a rustle of leaves. Four versions, and sometimes a small "hup" */
   jump(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.08);
@@ -214,9 +291,11 @@ export const SFX: Record<string, Fx> = {
       [182, 340, 0.13, 0.16],
       [320, 520, 0.1, 0.05],
     ]);
-    tone(core, { t, f0: f0 * j, f1: f1 * j, sweep: sw, dec: 0.15, peak: 0.34, dst: d });
-    tone(core, { t, type: 'triangle', f0: f0 * 2 * j, f1: f1 * 2 * j, sweep: sw, dec: 0.09, peak: 0.09, dst: d });
-    noise(core, { t, type: 'bandpass', f0: 700 + VAR * 150, f1: 1500 + VAR * 250, q: 0.9, peak: nz, dec: 0.12, dst: d, pink: true });
+    tone(core, { t, f0: f0 * j, f1: f1 * j, sweep: sw, dec: 0.15, peak: 0.28, dst: d });
+    tone(core, { t, type: 'triangle', f0: f0 * 2 * j, f1: f1 * 2 * j, sweep: sw, dec: 0.09, peak: 0.07, dst: d });
+    noise(core, { t, type: 'bandpass', f0: 700 + VAR * 150, f1: 1500 + VAR * 250, q: 0.9, peak: nz * 0.7, dec: 0.12, dst: d, pink: true });
+    smp(core, d, t, 'stepGrass', { gain: 0.55, rate: 1.25, sat: 2 });
+    smp(core, d, t + 0.01, 'cloth', { gain: 0.2, rate: 1.4 + VAR * 0.08, hp: 500, lp: 5000 });
     if (VAR === 3) woodblock(core, d, t, 0.35);
     if (Math.random() < 0.3) grunt(core, d, t + 0.01, 'hup', 1, 0.6);
   },
@@ -226,63 +305,82 @@ export const SFX: Record<string, Fx> = {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
     const [n1, n2] = byVar([[2, 3], [3, 4], [1, 3], [2, 5]]);
-    noise(core, { t, type: 'bandpass', f0: 1200, f1: 4200, q: 1.2, peak: 0.14, dec: 0.2, dst: d });
-    tone(core, { t, type: 'triangle', f0: 330 * jit(), f1: 700, dec: 0.13, peak: 0.2, dst: d });
+    smp(core, d, t, 'swishK', { gain: 0.5, rate: 1.4 + VAR * 0.06, hp: 700, lp: 5000 });
+    smp(core, d, t, 'cloth', { gain: 0.3, rate: 1.7, hp: 900, lp: 5200 });
+    tone(core, { t, type: 'triangle', f0: 330 * jit(), f1: 700, dec: 0.13, peak: 0.14, dst: d });
     note(core, kalimba, t + 0.02, ladder(key, n1), 0.5, d);
     note(core, kalimba, t + 0.09, ladder(key, n2), 0.45, d);
     if (Math.random() < 0.45) grunt(core, d, t, 'hup', 1.15, 0.6);
   },
 
-  /** a quick claw jab: whoosh into a knuckle thump with a bright snap. Four versions, and sometimes a "hah" */
+  /** a quick claw jab: a swish of air, a solid thump with a crack on top. Four versions, and sometimes a "hah" */
   punch(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.06);
     const [body, air, snap] = byVar([[190, 1600, 3200], [235, 2100, 4000], [158, 1300, 2800], [210, 1800, 3600]]);
-    noise(core, { t, type: 'bandpass', f0: air, f1: air / 3.8, q: 0.8, peak: 0.28, dec: 0.1, dst: d, pink: true });
-    tone(core, { t: t + 0.035, f0: body * jit(), f1: 70, dec: 0.12, peak: 0.5, dst: d });
-    noise(core, { t: t + 0.035, type: 'highpass', f0: snap, peak: 0.16, dec: 0.025, dst: d });
+    noise(core, { t, type: 'bandpass', f0: air, f1: air / 3.8, q: 0.8, peak: 0.16, dec: 0.1, dst: d, pink: true });
+    smp(core, d, t, 'cloth', { gain: 0.4, rate: 1.5 + VAR * 0.07, hp: 450, lp: 4200 });
+    const at = t + 0.035;
+    smp(core, d, at, 'punchM', { gain: 1.0, rate: 1.55 + VAR * 0.06, sat: 3 });
+    smp(core, d, at, 'genL', { gain: 0.45, rate: 1.9, sat: 2 });
+    tone(core, { t: at, f0: body * jit(), f1: 70, dec: 0.12, peak: 0.32, dst: d });
+    noise(core, { t: at, type: 'highpass', f0: snap, peak: 0.1, dec: 0.025, dst: d });
     // the fourth version is a quick double tap
-    if (VAR === 3) tone(core, { t: t + 0.085, f0: body * 0.8, f1: 60, dec: 0.08, peak: 0.28, dst: d });
+    if (VAR === 3) {
+      tone(core, { t: t + 0.085, f0: body * 0.8, f1: 60, dec: 0.08, peak: 0.2, dst: d });
+      smp(core, d, t + 0.085, 'softM', { gain: 0.5, rate: 1.8, sat: 2 });
+    }
     if (Math.random() < 0.5) grunt(core, d, t, VAR % 2 ? 'hyah' : 'hah', 1, 0.7);
   },
 
-  /** a heavy swing: deeper, slower, with a boom that rolls into the reverb. Always with a big shout */
+  /** a heavy swing: deeper and slower, a stone-crushing thud and a boom that rolls into the reverb. Always with a big shout */
   megaPunch(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.22);
     const k = byVar([1, 1.12, 0.9, 1.05]);
-    noise(core, { t, type: 'bandpass', f0: 900 * k, f1: 220, q: 0.7, peak: 0.34, dec: 0.2, dst: d, pink: true });
-    tone(core, { t: t + 0.06, f0: 140 * k, f1: 38, dec: 0.4, peak: 0.85, dst: d });
-    noise(core, { t: t + 0.06, type: 'lowpass', f0: 3000, f1: 300, peak: 0.4, dec: 0.28, dst: d });
-    noise(core, { t: t + 0.06, type: 'highpass', f0: 2500, peak: 0.2, dec: 0.04, dst: d });
-    tone(core, { t: t + 0.06, type: 'triangle', f0: 880 * k, f1: 600, dec: 0.5, peak: 0.07, dst: d });
+    noise(core, { t, type: 'bandpass', f0: 900 * k, f1: 220, q: 0.7, peak: 0.24, dec: 0.2, dst: d, pink: true });
+    smp(core, d, t, 'cloth', { gain: 0.6, rate: 0.85 * k, hp: 250, lp: 3500 });
+    const at = t + 0.06;
+    smp(core, d, at, 'punchH', { gain: 1.0, rate: 1.1 * k, sat: 3.5 });
+    smp(core, d, at, 'mining', { gain: 0.55, rate: 1.5 * k, sat: 2.5 });
+    smp(core, d, at, 'woodH', { gain: 0.4, rate: 1.6, sat: 2 });
+    tone(core, { t: at, f0: 140 * k, f1: 38, dec: 0.4, peak: 0.7, dst: d });
+    noise(core, { t: at, type: 'lowpass', f0: 3000, f1: 300, peak: 0.3, dec: 0.28, dst: d });
+    noise(core, { t: at, type: 'highpass', f0: 2500, peak: 0.12, dec: 0.04, dst: d });
+    tone(core, { t: at, type: 'triangle', f0: 880 * k, f1: 600, dec: 0.5, peak: 0.05, dst: d });
     grunt(core, d, t, 'hyah', 0.85 * (VAR === 2 ? 0.92 : 1), 0.95);
   },
 
-  /** a kick: like the punch but lower and rounder. Four versions, often with a "hup" */
+  /** a kick: like the punch but lower and rounder, with a thud of the foot. Four versions, often with a "hup" */
   kick(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.08);
     const [body, air] = byVar([[150, 900], [180, 1200], [126, 760], [160, 1000]]);
-    noise(core, { t, type: 'bandpass', f0: air, f1: air / 3.5, q: 0.8, peak: 0.26, dec: 0.12, dst: d, pink: true });
-    tone(core, { t: t + 0.04, f0: body * jit(), f1: 52, dec: 0.16, peak: 0.6, dst: d });
-    noise(core, { t: t + 0.04, type: 'highpass', f0: 2600 + VAR * 300, peak: 0.12, dec: 0.03, dst: d });
-    if (VAR === 2) tone(core, { t: t + 0.04, type: 'triangle', f0: 90, f1: 40, dec: 0.3, peak: 0.25, dst: d });
+    noise(core, { t, type: 'bandpass', f0: air, f1: air / 3.5, q: 0.8, peak: 0.16, dec: 0.12, dst: d, pink: true });
+    smp(core, d, t, 'cloth', { gain: 0.4, rate: 1.1 + VAR * 0.06, hp: 300, lp: 3800 });
+    const at = t + 0.04;
+    smp(core, d, at, 'softH', { gain: 0.9, rate: 1.35 + VAR * 0.05, sat: 3 });
+    smp(core, d, at, 'woodL', { gain: 0.5, rate: 1.7, sat: 2 });
+    tone(core, { t: at, f0: body * jit(), f1: 52, dec: 0.16, peak: 0.4, dst: d });
+    noise(core, { t: at, type: 'highpass', f0: 2600 + VAR * 300, peak: 0.08, dec: 0.03, dst: d });
+    if (VAR === 2) tone(core, { t: at, type: 'triangle', f0: 90, f1: 40, dec: 0.3, peak: 0.2, dst: d });
     if (Math.random() < 0.6) grunt(core, d, t, VAR % 2 ? 'hyah' : 'hup', 0.95, 0.7);
   },
 
-  /** air only: a swish through leaves (rising, falling, airy or low) */
+  /** air only: a swish through leaves (rising, falling, airy or low), now made from a recorded swoosh */
   whoosh(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.1);
-    const [a0, a1, b0, b1] = byVar([[500, 2400, 2400, 700], [2600, 600, 700, 2200], [1400, 4200, 4200, 1800], [300, 1200, 1200, 380]]);
-    noise(core, { t, type: 'bandpass', f0: a0, f1: a1, q: 0.8, peak: 0.2, dec: 0.12, attack: 0.05, dst: d, pink: true });
-    noise(core, { t: t + 0.1, type: 'bandpass', f0: b0, f1: b1, q: 0.8, peak: 0.16, dec: 0.14, attack: 0.02, dst: d, pink: true });
+    const [a0, a1, b0, b1] = byVar([[500, 2400, 2400, 700], [2600, 600, 700, 2200], [1200, 3000, 3000, 1500], [300, 1200, 1200, 380]]);
+    smp(core, d, t, 'cloth', { gain: 0.8, rate: byVar([1.2, 0.95, 1.5, 0.75]), hp: 250, lp: byVar([4500, 3600, 5000, 2800]) });
+    noise(core, { t, type: 'bandpass', f0: a0, f1: a1, q: 0.8, peak: 0.1, dec: 0.12, attack: 0.05, dst: d, pink: true });
+    noise(core, { t: t + 0.1, type: 'bandpass', f0: b0, f1: b1, q: 0.8, peak: 0.08, dec: 0.14, attack: 0.02, dst: d, pink: true });
   },
 
   /**
    * A hit. `a` packs how hard (bit 0) and what it landed on (a >> 1: fur, scale, chitin, feather, armor; 0 = generic).
-   * Each material has its own sound, four versions each, and a long combo lifts the pitch and adds sparkle.
+   * Each material is built from real recordings (soft thump, wood, glass, cloth, metal, stone) with a small synthesized body under them;
+   * a long combo lifts the pitch and adds sparkle.
    */
   hit(core, key, a = 0) {
     const t = core.ctx.currentTime;
@@ -290,79 +388,94 @@ export const SFX: Record<string, Fx> = {
     const d = out(core, heavy ? 0.25 : 0.1);
     const vj = byVar([1, 1.08, 0.93, 1.15]) * jit(0.03) * streakLift();
     const H = heavy ? 1.35 : 1;
-    const boom = () => heavy && tone(core, { t, type: 'triangle', f0: 90, f1: 45, dec: 0.5, peak: 0.3, dst: d });
+    const boom = () => heavy && tone(core, { t, type: 'triangle', f0: 90, f1: 45, dec: 0.5, peak: 0.25, dst: d });
     const m: Material = material;
     // the materials are written for shape; this evens out how loud each one is
-    d.gain.value *= { generic: 1, fur: 1, scale: 1.35, chitin: 1.8, feather: 1.45, armor: 1.15 }[m];
+    d.gain.value *= { generic: 1, fur: 1, scale: 1, chitin: 1, feather: 1, armor: 1 }[m];
     if (m === 'fur') {
       // a dull thump into fur: soft, no crack
-      tone(core, { t, f0: (heavy ? 115 : 155) * vj, f1: 45, dec: heavy ? 0.3 : 0.15, peak: 0.6 * H, dst: d });
-      noise(core, { t, type: 'lowpass', f0: 1300, f1: 300, peak: 0.34 * H, dec: 0.14, dst: d, pink: true });
-      noise(core, { t, type: 'highpass', f0: 3200, peak: 0.07, dec: 0.02, dst: d });
+      smp(core, d, t, heavy ? 'softH' : 'softM', { gain: 1.0, rate: (heavy ? 1.15 : 1.5) * vj, sat: 3 });
+      smp(core, d, t, 'cloth', { gain: heavy ? 0.45 : 0.3, rate: 1.1 * vj, hp: 300, lp: 3200 });
+      tone(core, { t, f0: (heavy ? 115 : 155) * vj, f1: 45, dec: heavy ? 0.3 : 0.15, peak: 0.4 * H, dst: d });
+      noise(core, { t, type: 'lowpass', f0: 1300, f1: 300, peak: 0.2 * H, dec: 0.14, dst: d, pink: true });
       boom();
     } else if (m === 'scale') {
       // a dry slap on scales
-      tone(core, { t, f0: 250 * vj, f1: 90, dec: 0.1, peak: 0.45 * H, dst: d });
-      noise(core, { t, type: 'bandpass', f0: 2800 * vj, q: 2.5, peak: 0.36, dec: 0.05, dst: d });
-      noise(core, { t, type: 'highpass', f0: 4200, peak: 0.14, dec: 0.02, dst: d });
-      if (heavy) tone(core, { t, f0: 100, f1: 40, dec: 0.3, peak: 0.45, dst: d });
+      smp(core, d, t, 'woodL', { gain: 1.0, rate: 1.5 * vj, sat: 2.5 });
+      smp(core, d, t, heavy ? 'punchH' : 'punchM', { gain: 0.6, rate: 1.7 * vj, sat: 3 });
+      smp(core, d, t, 'tinM', { gain: 0.22, rate: 1.6 * vj, lp: 3200 });
+      tone(core, { t, f0: 250 * vj, f1: 90, dec: 0.1, peak: 0.32 * H, dst: d });
+      noise(core, { t, type: 'bandpass', f0: 2400 * vj, q: 2, peak: 0.16, dec: 0.05, dst: d });
+      if (heavy) tone(core, { t, f0: 100, f1: 40, dec: 0.3, peak: 0.4, dst: d });
     } else if (m === 'chitin') {
-      // a crunchy shell
-      tone(core, { t, f0: 270 * vj, f1: 110, dec: 0.06, peak: 0.3 * H, dst: d });
-      const n = heavy ? 6 : 4;
-      for (let i = 0; i < n; i++) noise(core, { t: t + i * 0.017 + Math.random() * 0.006, type: 'bandpass', f0: 1500 + Math.random() * 3000, q: 3, peak: 0.2, dec: 0.02, dst: d });
-      woodblock(core, d, t, 0.5);
+      // a crunchy shell: wood cracking with a glassy fleck
+      smp(core, d, t, 'woodL', { gain: 0.9, rate: 1.9 * vj, sat: 2.5 });
+      smp(core, d, t + 0.005, 'plank', { gain: 0.5, rate: 1.8 * vj, sat: 2 });
+      smp(core, d, t + 0.012, 'glassL', { gain: 0.32, rate: 1.4 * vj, lp: 3600 });
+      const n = heavy ? 5 : 3;
+      for (let i = 0; i < n; i++) noise(core, { t: t + i * 0.017 + Math.random() * 0.006, type: 'bandpass', f0: 1400 + Math.random() * 1800, q: 3, peak: 0.1, dec: 0.02, dst: d });
+      tone(core, { t, f0: 270 * vj, f1: 110, dec: 0.06, peak: 0.25 * H, dst: d });
       boom();
     } else if (m === 'feather') {
-      // a puff of feathers
-      noise(core, { t, type: 'bandpass', f0: 3200, f1: 1500, q: 0.8, peak: 0.3 * H, dec: 0.18, dst: d, pink: true });
-      tone(core, { t, f0: 205 * vj, f1: 90, dec: 0.1, peak: 0.28 * H, dst: d });
-      noise(core, { t: t + 0.03, type: 'highpass', f0: 5000, peak: 0.08, dec: 0.15, attack: 0.03, dst: d });
+      // a puff of feathers: cloth and a soft thump, nothing sharp
+      smp(core, d, t, 'cloth', { gain: 0.95, rate: 1.15 * vj, hp: 250, lp: 4200 });
+      smp(core, d, t, 'softM', { gain: 0.65, rate: 1.5 * vj, sat: 2.5 });
+      noise(core, { t, type: 'bandpass', f0: 2200, f1: 1100, q: 0.8, peak: 0.12 * H, dec: 0.18, dst: d, pink: true });
+      tone(core, { t, f0: 205 * vj, f1: 90, dec: 0.1, peak: 0.22 * H, dst: d });
       boom();
     } else if (m === 'armor') {
       // stone or iron: a clank with a ring
-      tone(core, { t, f0: 185 * vj, f1: 60, dec: 0.2, peak: 0.55 * H, dst: d });
-      [1, 2.76, 5.4, 8.93].forEach((r, i) => tone(core, { t, f0: 520 * r * vj, dec: 0.3 - i * 0.04, peak: 0.1 / (i + 1), dst: d }));
-      noise(core, { t, type: 'highpass', f0: 3500, peak: 0.2, dec: 0.03, dst: d });
+      smp(core, d, t, heavy ? 'metalH' : 'metalM', { gain: 0.9, rate: 1.25 * vj, sat: 2 });
+      smp(core, d, t, heavy ? 'plateH' : 'plateM', { gain: 0.8, rate: 1.7 * vj, sat: 3 });
+      if (heavy) smp(core, d, t, 'mining', { gain: 0.6, rate: 1.4 * vj, sat: 2.5 });
+      tone(core, { t, f0: 185 * vj, f1: 60, dec: 0.2, peak: 0.4 * H, dst: d });
+      [1, 2.76, 5.4].forEach((r, i) => tone(core, { t, f0: 480 * r * vj, dec: 0.3 - i * 0.05, peak: 0.07 / (i + 1), dst: d }));
       boom();
     } else {
-      tone(core, { t, f0: (heavy ? 130 : 180) * vj, f1: heavy ? 40 : 60, dec: heavy ? 0.32 : 0.16, peak: heavy ? 0.8 : 0.55, dst: d });
-      noise(core, { t, type: 'highpass', f0: 2400, peak: heavy ? 0.28 : 0.2, dec: 0.035, dst: d });
-      noise(core, { t, type: 'bandpass', f0: heavy ? 1100 : 1700, f1: 400, q: 0.9, peak: heavy ? 0.35 : 0.22, dec: heavy ? 0.22 : 0.12, dst: d });
+      smp(core, d, t, 'genL', { gain: 0.8, rate: 1.7 * vj, sat: 2.5 });
+      smp(core, d, t, heavy ? 'punchH' : 'punchM', { gain: heavy ? 1.0 : 0.85, rate: (heavy ? 1.2 : 1.55) * vj, sat: 3 });
+      tone(core, { t, f0: (heavy ? 130 : 180) * vj, f1: heavy ? 40 : 60, dec: heavy ? 0.32 : 0.16, peak: heavy ? 0.6 : 0.4, dst: d });
+      noise(core, { t, type: 'highpass', f0: 2400, peak: heavy ? 0.16 : 0.1, dec: 0.035, dst: d });
+      noise(core, { t, type: 'bandpass', f0: heavy ? 1100 : 1700, f1: 400, q: 0.9, peak: heavy ? 0.25 : 0.14, dec: heavy ? 0.22 : 0.12, dst: d });
       if (heavy) {
-        for (let i = 0; i < 4; i++) noise(core, { t: t + 0.02 + i * 0.03, type: 'bandpass', f0: 600 + Math.random() * 1500, q: 2, peak: 0.12, dec: 0.05, dst: d });
+        smp(core, d, t, 'mining', { gain: 0.45, rate: 1.5 * vj, sat: 2.5 });
         boom();
       }
     }
     streakSparkle(core, key, t, d);
   },
 
-  /** pickup chime for flowers; the note climbs the key's triad ladder with the combo */
+  /** pickup chime for flowers; the note climbs the key's triad ladder with the combo, but stays in a friendly range (it used to climb into a shriek) */
   flower(core, key, a = 0) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.3);
-    const m = ladder(key, Math.min(7, Math.max(0, a)));
-    note(core, marimba, t, m, 0.9, d);
-    note(core, bell, t + 0.012, m + 12, 0.38, d);
-    noise(core, { t, type: 'highpass', f0: 6000, peak: 0.05, dec: 0.04, dst: d });
+    const n = Math.min(5, Math.max(0, a));
+    const m = ladder(key, n, 64);
+    note(core, marimba, t, m, 0.8, d);
+    note(core, bell, t + 0.012, m + 12, 0.22 - n * 0.015, d);
+    // a real glass "tink" gives the front of the note some sparkle, and a soft pluck rounds it off
+    smp(core, d, t, 'uiGlass', { gain: 0.3, rate: 1 + n * 0.04, hp: 700, lp: 4800 });
+    smp(core, d, t, 'uiPluck', { gain: 0.45, rate: 1 + n * 0.05, lp: 4000 });
+    noise(core, { t, type: 'highpass', f0: 6000, peak: 0.03, dec: 0.04, dst: d });
   },
 
-  /** a leaf: a small, dry pluck */
+  /** a leaf: a small, dry pluck and a rustle */
   leaf(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.15);
-    note(core, kalimba, t, ladder(key, 1 + Math.floor(Math.random() * 3)) + 12, 0.7, d);
-    noise(core, { t, type: 'bandpass', f0: 3500, q: 1.5, peak: 0.04, dec: 0.05, dst: d });
+    note(core, kalimba, t, ladder(key, 1 + Math.floor(Math.random() * 3), 66) + 12, 0.7, d);
+    smp(core, d, t, 'cloth', { gain: 0.22, rate: 1.7, hp: 900, lp: 5000 });
+    noise(core, { t, type: 'bandpass', f0: 3500, q: 1.5, peak: 0.03, dec: 0.05, dst: d });
   },
 
   /** fruit: a juicy pop and a happy two-note */
   fruit(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
-    tone(core, { t, f0: 700, f1: 220, dec: 0.07, peak: 0.3, dst: d });
-    noise(core, { t, type: 'bandpass', f0: 2200, q: 1.2, peak: 0.12, dec: 0.05, dst: d });
-    note(core, steelpan, t + 0.04, ladder(key, 2), 0.6, d);
-    note(core, steelpan, t + 0.1, ladder(key, 3), 0.6, d);
+    smp(core, d, t, 'uiDrop', { gain: 0.8, rate: 1.15, sat: 2 });
+    tone(core, { t, f0: 700, f1: 220, dec: 0.07, peak: 0.2, dst: d });
+    note(core, steelpan, t + 0.04, ladder(key, 2, 66), 0.6, d);
+    note(core, steelpan, t + 0.1, ladder(key, 3, 66), 0.6, d);
   },
 
   /** a heart: warm and rising, with a soft heartbeat under it */
@@ -390,8 +503,9 @@ export const SFX: Record<string, Fx> = {
   power(core, key, a = 0) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.3);
+    smp(core, d, t, 'powerUp', { gain: 0.4, rate: 1, lp: 3600 });
     if (a === 0) {
-      noise(core, { t, type: 'bandpass', f0: 400, f1: 6000, q: 1, peak: 0.22, dec: 0.3, attack: 0.1, dst: d });
+      noise(core, { t, type: 'bandpass', f0: 400, f1: 5000, q: 1, peak: 0.16, dec: 0.3, attack: 0.1, dst: d });
       for (let i = 0; i < 5; i++) note(core, pluck, t + i * 0.045, ladder(key, i % 5) + 12, 0.55, d);
     } else if (a === 1) {
       for (const [i, n] of [0, 2, 3, 5].entries()) {
@@ -410,19 +524,23 @@ export const SFX: Record<string, Fx> = {
   vine(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.12);
-    noise(core, { t, type: 'bandpass', f0: 350, f1: 900, q: 3, peak: 0.16, dec: 0.12, dst: d });
-    tone(core, { t, type: 'sawtooth', f0: 190 * jit(), f1: 240, dec: 0.1, peak: 0.07, dst: d, lp: 700 });
-    woodblock(core, d, t + 0.02, 0.6);
-    noise(core, { t: t + 0.04, type: 'bandpass', f0: 4200, q: 1, peak: 0.08, dec: 0.15, dst: d, pink: true });
+    smp(core, d, t, 'creak', { gain: 0.75, rate: 1.25, hp: 200, lp: 3200 });
+    smp(core, d, t, 'leather', { gain: 0.5, rate: 1.0, lp: 3500 });
+    smp(core, d, t + 0.02, 'woodL', { gain: 0.45, rate: 1.4, sat: 2 });
+    noise(core, { t, type: 'bandpass', f0: 350, f1: 900, q: 3, peak: 0.1, dec: 0.12, dst: d });
+    tone(core, { t, type: 'sawtooth', f0: 190 * jit(), f1: 240, dec: 0.1, peak: 0.05, dst: d, lp: 700 });
+    noise(core, { t: t + 0.04, type: 'bandpass', f0: 3000, q: 1, peak: 0.04, dec: 0.15, dst: d, pink: true });
   },
 
   /** bark under claws */
   climb(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.05);
-    noise(core, { t, type: 'bandpass', f0: pick([700, 900, 1100]), q: 1.6, peak: 0.2, dec: 0.06, dst: d });
-    tone(core, { t, f0: pick([130, 150, 170]), f1: 80, dec: 0.07, peak: 0.25, dst: d });
-    noise(core, { t: t + 0.07, type: 'bandpass', f0: pick([800, 1000]), q: 1.6, peak: 0.12, dec: 0.05, dst: d });
+    smp(core, d, t, 'woodL', { gain: 0.6, rate: 1.5 + Math.random() * 0.4, sat: 2 });
+    smp(core, d, t + 0.01, 'leather', { gain: 0.3, rate: 1.3, lp: 3000 });
+    noise(core, { t, type: 'bandpass', f0: pick([700, 900, 1100]), q: 1.6, peak: 0.12, dec: 0.06, dst: d });
+    tone(core, { t, f0: pick([130, 150, 170]), f1: 80, dec: 0.07, peak: 0.15, dst: d });
+    noise(core, { t: t + 0.07, type: 'bandpass', f0: pick([800, 1000]), q: 1.6, peak: 0.08, dec: 0.05, dst: d });
   },
 
   /** a shrine wakes: a big open chord of bells, a deep drum and a long shimmer */
@@ -431,8 +549,10 @@ export const SFX: Record<string, Fx> = {
     const d = out(core, 0.6);
     for (const [i, n] of [0, 2, 3, 4, 5].entries()) note(core, bell, t + i * 0.08, ladder(key, n) - 12, 0.7, d);
     note(core, bell, t + 0.5, ladder(key, 6), 0.45, d);
-    tone(core, { t, f0: 100, f1: 42, dec: 0.9, peak: 0.7, dst: d });
-    noise(core, { t, type: 'lowpass', f0: 800, f1: 150, peak: 0.28, dec: 0.5, dst: d });
+    smp(core, d, t, 'bellH', { gain: 0.5, rate: 0.9, lp: 6000 });
+    smp(core, d, t, 'punchH', { gain: 0.7, rate: 1.0, sat: 3 });
+    tone(core, { t, f0: 100, f1: 42, dec: 0.9, peak: 0.55, dst: d });
+    noise(core, { t, type: 'lowpass', f0: 800, f1: 150, peak: 0.22, dec: 0.5, dst: d });
     noise(core, { t: t + 0.1, type: 'highpass', f0: 6000, peak: 0.1, dec: 1.4, attack: 0.5, dst: d });
     for (const [i, r] of [1, 1.5, 2, 3].entries()) tone(core, { t: t + 0.1, type: 'triangle', f0: midiHz(ladder(key, 0) - 12) * r * (1 + i * 0.0015), dec: 1.6, attack: 0.45, peak: 0.09, dst: d });
   },
@@ -441,7 +561,8 @@ export const SFX: Record<string, Fx> = {
   relic(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.7);
-    tone(core, { t, f0: 70, f1: 35, dec: 1.1, peak: 0.55, dst: d });
+    smp(core, d, t, 'mining', { gain: 0.6, rate: 1.0, sat: 3 });
+    tone(core, { t, f0: 70, f1: 35, dec: 1.1, peak: 0.45, dst: d });
     [4, 2, 0, 2, 4, 5, 7].forEach((n, i) => note(core, bell, t + 0.1 + i * 0.12, ladder(key, n), 0.5, d));
     noise(core, { t, type: 'bandpass', f0: 500, f1: 3500, q: 1, peak: 0.1, dec: 1, attack: 0.4, dst: d, pink: true });
   },
@@ -450,14 +571,16 @@ export const SFX: Record<string, Fx> = {
   critter(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.25);
-    chirps(core, d, t, { n: 3, gap: 0.075, f0: 1500, f1: 2300, dec: 0.07, peak: 0.16 });
+    chirps(core, d, t, { n: 3, gap: 0.075, f0: 1200, f1: 1800, dec: 0.07, peak: 0.12, type: 'triangle' });
+    smp(core, d, t, 'uiPluck', { gain: 0.3, rate: 1.4, lp: 4500 });
     note(core, harp, t + 0.22, ladder(key, 3), 0.5, d);
     note(core, harp, t + 0.3, ladder(key, 4), 0.5, d);
   },
 
   /**
    * An enemy falls. `a` is the enemy type's number (see ENEMY_ORDER): each animal has its own last sound
-   * (hiss, screech, yowl, croak, skitter-crunch, pops). With no number it is a generic comic pop.
+   * (hiss, cry, yowl, croak, skitter-crunch, pops). They share a recorded body (a thump or a crunch) so they land with weight,
+   * and the animal voices are kept soft: no more thin, high shrieks. With no number it is a generic comic pop.
    */
   defeat(core, key, a = -1) {
     const t = core.ctx.currentTime;
@@ -467,69 +590,80 @@ export const SFX: Record<string, Fx> = {
       note(core, bell, t + at, ladder(key, n1), 0.4 * vel, d);
       note(core, bell, t + at + 0.07, ladder(key, n2), 0.35 * vel, d);
     };
+    const vj = jit(0.05);
     switch (Math.round(a)) {
-      case 0: // snake: a hiss that pops
-        noise(core, { t, type: 'highpass', f0: 7000, f1: 2500, peak: 0.3, dec: 0.22, dst: d });
-        tone(core, { t, f0: 620 * jit(0.08), f1: 120, dec: 0.12, peak: 0.38, dst: d });
-        noise(core, { t, type: 'bandpass', f0: 1500, q: 1, peak: 0.15, dec: 0.08, dst: d });
+      case 0: // snake: a short, soft hiss that pops
+        smp(core, d, t, 'softM', { gain: 0.8, rate: 1.6 * vj, sat: 3 });
+        smp(core, d, t, 'swishD', { gain: 0.45, rate: 1.3, hp: 1500, lp: 5200 });
+        noise(core, { t, type: 'bandpass', f0: 4200, f1: 2200, q: 0.7, peak: 0.1, dec: 0.2, dst: d });
+        tone(core, { t, f0: 480 * jit(0.08), f1: 120, dec: 0.12, peak: 0.3, dst: d });
         chime();
         break;
-      case 1: // eagle: a burst of feathers and a broken screech
-        noise(core, { t, type: 'bandpass', f0: 3200, f1: 1400, q: 0.8, peak: 0.3, dec: 0.25, dst: d, pink: true });
-        tone(core, { t, type: 'sawtooth', f0: 2600 * jit(0.06), f1: 900, dec: 0.2, peak: 0.14, dst: d, lp: 3200, attack: 0.01 });
-        noise(core, { t: t + 0.05, type: 'highpass', f0: 6000, peak: 0.08, dec: 0.3, dst: d });
+      case 1: // eagle: a burst of feathers and a short, round cry
+        smp(core, d, t, 'cloth', { gain: 0.9, rate: 1.2 * vj, hp: 250, lp: 4200 });
+        smp(core, d, t, 'softM', { gain: 0.6, rate: 1.4 * vj, sat: 2.5 });
+        tone(core, { t, type: 'sawtooth', f0: 1500 * jit(0.06), f1: 600, dec: 0.2, peak: 0.1, dst: d, lp: 2400, attack: 0.012 });
+        noise(core, { t: t + 0.03, type: 'bandpass', f0: 2200, f1: 1100, q: 0.8, peak: 0.12, dec: 0.25, dst: d, pink: true });
         chime(0.8);
         break;
       case 2:
       case 3: {
         // the cats: a yowl that falls away (the jaguar's is deeper)
         const big = Math.round(a) === 3;
-        const f = (big ? 300 : 480) * jit(0.07);
-        tone(core, { t, type: 'sawtooth', f0: f, f1: f * 0.45, dec: 0.32, peak: 0.2, dst: d, lp: 1500, attack: 0.02 });
-        tone(core, { t, type: 'triangle', f0: f * 2, f1: f, dec: 0.25, peak: 0.08, dst: d });
-        noise(core, { t, type: 'bandpass', f0: big ? 500 : 900, f1: 300, q: 1.2, peak: 0.22, dec: 0.25, dst: d });
-        tone(core, { t, f0: 140, f1: 55, dec: 0.15, peak: 0.3, dst: d });
+        const f = (big ? 280 : 400) * jit(0.07);
+        smp(core, d, t, big ? 'punchH' : 'punchM', { gain: 0.75, rate: (big ? 1.2 : 1.5) * vj, sat: 3 });
+        tone(core, { t, type: 'sawtooth', f0: f, f1: f * 0.45, dec: 0.32, peak: 0.16, dst: d, lp: 1200, attack: 0.02 });
+        tone(core, { t, type: 'triangle', f0: f * 2, f1: f, dec: 0.25, peak: 0.06, dst: d });
+        noise(core, { t, type: 'bandpass', f0: big ? 500 : 800, f1: 300, q: 1.2, peak: 0.16, dec: 0.25, dst: d });
+        tone(core, { t, f0: 140, f1: 55, dec: 0.15, peak: 0.28, dst: d });
         chime(0.8);
         break;
       }
-      case 4: // boa: a long deflating hiss and a soft thud
-        noise(core, { t, type: 'highpass', f0: 3000, f1: 1200, peak: 0.26, dec: 0.35, attack: 0.02, dst: d });
-        tone(core, { t, f0: 150, f1: 55, dec: 0.22, peak: 0.5, dst: d });
+      case 4: // boa: a long, low deflating breath and a soft thud
+        smp(core, d, t, 'softH', { gain: 0.9, rate: 1.3, sat: 3 });
+        noise(core, { t, type: 'bandpass', f0: 2600, f1: 1000, q: 0.6, peak: 0.12, dec: 0.38, attack: 0.03, dst: d, pink: true });
+        tone(core, { t, f0: 150, f1: 55, dec: 0.22, peak: 0.45, dst: d });
         noise(core, { t, type: 'lowpass', f0: 900, peak: 0.15, dec: 0.2, dst: d });
         chime(0.7);
         break;
       case 5: // caiman: a low bellow and a splash
-        tone(core, { t, type: 'sawtooth', f0: 95, f1: 48, dec: 0.45, peak: 0.3, dst: d, lp: 420, attack: 0.03 });
-        noise(core, { t, type: 'lowpass', f0: 1500, f1: 200, peak: 0.3, dec: 0.35, dst: d, pink: true });
-        tone(core, { t, f0: 80, f1: 38, dec: 0.4, peak: 0.55, dst: d });
+        smp(core, d, t, 'punchH', { gain: 0.8, rate: 1.1, sat: 3 });
+        smp(core, d, t + 0.02, 'swishD', { gain: 0.35, rate: 0.9, hp: 300, lp: 3000 });
+        tone(core, { t, type: 'sawtooth', f0: 95, f1: 48, dec: 0.45, peak: 0.26, dst: d, lp: 420, attack: 0.03 });
+        noise(core, { t, type: 'lowpass', f0: 1500, f1: 200, peak: 0.26, dec: 0.35, dst: d, pink: true });
+        tone(core, { t, f0: 80, f1: 38, dec: 0.4, peak: 0.45, dst: d });
         chime(0.6);
         break;
       case 6: // tayra: chatter and a squeak
-        chirps(core, d, t, { n: 5, gap: 0.035, f0: 2400, f1: 1500, dec: 0.04, peak: 0.13, type: 'square' });
-        tone(core, { t: t + 0.04, f0: 600, f1: 150, dec: 0.1, peak: 0.25, dst: d });
+        smp(core, d, t, 'punchM', { gain: 0.65, rate: 1.7 * vj, sat: 3 });
+        chirps(core, d, t, { n: 4, gap: 0.04, f0: 1700, f1: 1100, dec: 0.04, peak: 0.07, type: 'triangle' });
+        tone(core, { t: t + 0.04, f0: 520, f1: 150, dec: 0.1, peak: 0.22, dst: d });
         chime(0.9);
         break;
       case 7: // frog: a croak, a squelch and a bloop
-        for (const o of [0, 0.075]) tone(core, { t: t + o, type: 'sawtooth', f0: 210 * jit(0.06), f1: 150, dec: 0.07, peak: 0.2, dst: d, lp: 700 });
-        noise(core, { t: t + 0.06, type: 'bandpass', f0: 900, f1: 300, q: 1.5, peak: 0.22, dec: 0.14, dst: d });
-        tone(core, { t: t + 0.12, f0: 500, f1: 180, dec: 0.08, peak: 0.2, dst: d });
+        smp(core, d, t, 'uiDrop', { gain: 0.7, rate: 0.9, sat: 2 });
+        smp(core, d, t, 'softM', { gain: 0.6, rate: 1.5, sat: 3 });
+        for (const o of [0, 0.075]) tone(core, { t: t + o, type: 'sawtooth', f0: 210 * jit(0.06), f1: 150, dec: 0.07, peak: 0.16, dst: d, lp: 700 });
+        noise(core, { t: t + 0.06, type: 'bandpass', f0: 900, f1: 300, q: 1.5, peak: 0.18, dec: 0.14, dst: d });
         chime();
         break;
       case 8: // spider: a skitter, then a crunch
-        for (let i = 0; i < 7; i++) noise(core, { t: t + i * 0.022 + Math.random() * 0.01, type: 'bandpass', f0: 4000 + Math.random() * 1500, q: 4, peak: 0.1, dec: 0.018, dst: d });
-        noise(core, { t: t + 0.16, type: 'bandpass', f0: 1400, q: 2, peak: 0.3, dec: 0.07, dst: d });
-        woodblock(core, d, t + 0.16, 0.7);
-        tone(core, { t: t + 0.16, f0: 220, f1: 90, dec: 0.1, peak: 0.3, dst: d });
+        for (let i = 0; i < 6; i++) noise(core, { t: t + i * 0.022 + Math.random() * 0.01, type: 'bandpass', f0: 3200 + Math.random() * 1200, q: 3, peak: 0.07, dec: 0.018, dst: d });
+        smp(core, d, t + 0.16, 'woodL', { gain: 0.9, rate: 1.8, sat: 2.5 });
+        smp(core, d, t + 0.16, 'plank', { gain: 0.5, rate: 1.9, sat: 2 });
+        noise(core, { t: t + 0.16, type: 'bandpass', f0: 1400, q: 2, peak: 0.2, dec: 0.07, dst: d });
+        tone(core, { t: t + 0.16, f0: 220, f1: 90, dec: 0.1, peak: 0.26, dst: d });
         chime(0.7, 0.2);
         break;
       case 9: // ants: a little cluster of pops
-        for (let i = 0; i < 6; i++) tone(core, { t: t + i * 0.02 + Math.random() * 0.015, f0: 700 + Math.random() * 600, f1: 250, dec: 0.035, peak: 0.22, dst: d });
-        noise(core, { t, type: 'bandpass', f0: 3000, q: 1, peak: 0.06, dec: 0.15, dst: d });
+        for (let i = 0; i < 6; i++) smp(core, d, t + i * 0.02 + Math.random() * 0.015, 'uiTick', { gain: 0.3, rate: 0.9 + Math.random() * 0.6, hp: 400, lp: 4500 });
+        for (let i = 0; i < 4; i++) tone(core, { t: t + i * 0.02 + Math.random() * 0.015, f0: 650 + Math.random() * 450, f1: 250, dec: 0.035, peak: 0.16, dst: d });
         chime(0.7);
         break;
       default:
-        tone(core, { t, f0: 720 * jit(), f1: 130, dec: 0.13, peak: 0.4, dst: d });
-        noise(core, { t, type: 'bandpass', f0: 1800, f1: 500, q: 1, peak: 0.25, dec: 0.14, dst: d });
+        smp(core, d, t, 'punchM', { gain: 0.8, rate: 1.55 * vj, sat: 3 });
+        tone(core, { t, f0: 650 * jit(), f1: 130, dec: 0.13, peak: 0.3, dst: d });
+        noise(core, { t, type: 'bandpass', f0: 1500, f1: 500, q: 1, peak: 0.18, dec: 0.14, dst: d });
         chime();
     }
     streakSparkle(core, key, t + 0.1, d);
@@ -540,11 +674,13 @@ export const SFX: Record<string, Fx> = {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
     const k = byVar([1, 1.1, 0.9, 1.18]);
-    tone(core, { t, f0: 120 * k, f1: 45, dec: 0.25, peak: 0.7, dst: d });
-    tone(core, { t, type: 'sawtooth', f0: 380 * k, f1: 170, dec: 0.28, peak: 0.12, dst: d, lp: 1500 });
-    tone(core, { t, type: 'triangle', f0: 255 * k, f1: 120, dec: 0.3, peak: 0.16, dst: d });
-    noise(core, { t, type: 'highpass', f0: 2500, peak: 0.25, dec: 0.05, dst: d });
-    noise(core, { t, type: 'bandpass', f0: 1200, f1: 300, peak: 0.25, dec: 0.2, dst: d });
+    smp(core, d, t, 'softH', { gain: 0.9, rate: 1.2 * k, sat: 3 });
+    smp(core, d, t, 'genL', { gain: 0.4, rate: 1.4 * k, sat: 2 });
+    tone(core, { t, f0: 120 * k, f1: 45, dec: 0.25, peak: 0.5, dst: d });
+    tone(core, { t, type: 'sawtooth', f0: 380 * k, f1: 170, dec: 0.28, peak: 0.1, dst: d, lp: 1500 });
+    tone(core, { t, type: 'triangle', f0: 255 * k, f1: 120, dec: 0.3, peak: 0.14, dst: d });
+    noise(core, { t, type: 'highpass', f0: 2500, peak: 0.12, dec: 0.05, dst: d });
+    noise(core, { t, type: 'bandpass', f0: 1200, f1: 300, peak: 0.18, dec: 0.2, dst: d });
     grunt(core, d, t + 0.02, 'oof', k, 1);
   },
 
@@ -567,12 +703,17 @@ export const SFX: Record<string, Fx> = {
       vg.connect(os.frequency);
       const bp = core.ctx.createBiquadFilter();
       bp.type = 'bandpass';
-      bp.frequency.value = 2600;
-      bp.Q.value = 2.5;
+      bp.frequency.value = 1900;
+      bp.Q.value = 1.4;
+      const lpf = core.ctx.createBiquadFilter();
+      lpf.type = 'lowpass';
+      lpf.frequency.value = 3200;
+      lpf.Q.value = 0.5;
       const g = core.ctx.createGain();
-      envelope(g.gain, at, { a: 0.02, peak: 0.26, d: dur * 0.35, sustain: 0.1, hold: Math.max(0.01, dur - 0.2), r: 0.2 });
+      envelope(g.gain, at, { a: 0.03, peak: 0.2, d: dur * 0.35, sustain: 0.1, hold: Math.max(0.01, dur - 0.2), r: 0.25 });
       os.connect(bp);
-      bp.connect(g);
+      bp.connect(lpf);
+      lpf.connect(g);
       g.connect(d);
       os.start(at);
       vo.start(at);
@@ -653,16 +794,19 @@ export const SFX: Record<string, Fx> = {
     const t = core.ctx.currentTime;
     const d = out(core, 0.05);
     const s = Math.max(0.15, Math.min(1, a));
-    tone(core, { t, f0: 110 * jit(), f1: 55, dec: 0.1 + 0.08 * s, peak: 0.18 + 0.4 * s, dst: d });
-    noise(core, { t, type: 'lowpass', f0: 1800, f1: 400, peak: 0.1 + 0.2 * s, dec: 0.08 + 0.08 * s, dst: d, pink: true });
+    smp(core, d, t, 'stepGrass', { gain: 0.5 + 0.7 * s, rate: 0.95 - 0.15 * s, sat: 2.5 });
+    if (s > 0.45) smp(core, d, t, 'softH', { gain: 0.65 * s, rate: 1.3, sat: 3 });
+    tone(core, { t, f0: 110 * jit(), f1: 55, dec: 0.1 + 0.08 * s, peak: 0.12 + 0.3 * s, dst: d });
+    noise(core, { t, type: 'lowpass', f0: 1800, f1: 400, peak: 0.06 + 0.14 * s, dec: 0.08 + 0.08 * s, dst: d, pink: true });
   },
 
-  /** a soft step: one leaf-crunch */
+  /** a soft step: one footfall in grass and leaves */
   step(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.03);
-    noise(core, { t, type: 'bandpass', f0: pick([1200, 1500, 1800]), q: 0.9, peak: 0.06, dec: 0.05, dst: d, pink: true });
-    tone(core, { t, f0: 95 * jit(), f1: 60, dec: 0.05, peak: 0.07, dst: d });
+    smp(core, d, t, 'stepGrass', { gain: 0.7, rate: 1.1 + Math.random() * 0.15, sat: 1.8 });
+    noise(core, { t, type: 'bandpass', f0: pick([1200, 1500, 1800]), q: 0.9, peak: 0.03, dec: 0.05, dst: d, pink: true });
+    tone(core, { t, f0: 95 * jit(), f1: 60, dec: 0.05, peak: 0.04, dst: d });
   },
 
   /** checkpoint reached: a bright three-note flourish */
@@ -671,7 +815,7 @@ export const SFX: Record<string, Fx> = {
     const d = out(core, 0.4);
     [0, 2, 3].forEach((n, i) => note(core, bell, t + i * 0.09, ladder(key, n), 0.7, d));
     note(core, marimba, t, ladder(key, 0) - 12, 0.7, d);
-    noise(core, { t: t + 0.1, type: 'highpass', f0: 6500, peak: 0.07, dec: 0.4, dst: d });
+    smp(core, d, t + 0.05, 'coins', { gain: 0.35, rate: 1.0, lp: 6000 });
   },
 
   /** an extra life: a quick fanfare */
@@ -680,6 +824,7 @@ export const SFX: Record<string, Fx> = {
     const d = out(core, 0.35);
     [0, 2, 4, 3, 4, 5, 7].forEach((n, i) => note(core, steelpan, t + i * 0.065, ladder(key, n), 0.7, d));
     note(core, bell, t + 0.5, ladder(key, 7), 0.5, d);
+    smp(core, d, t, 'pep', { gain: 0.4, rate: 1.0, lp: 6000 });
   },
 
   /** low health: two soft heartbeats */
@@ -696,14 +841,15 @@ export const SFX: Record<string, Fx> = {
     const d = out(core, 0.15);
     const pj = jit(0.1);
     if (a === 0) {
-      noise(core, { t, type: 'bandpass', f0: 4200 * pj, f1: 2600, q: 1.5, peak: 0.16, dec: byVar([0.3, 0.4, 0.24, 0.34]), attack: 0.04, dst: d });
+      noise(core, { t, type: 'bandpass', f0: 2900 * pj, f1: 1800, q: 1.1, peak: 0.2, dec: byVar([0.3, 0.4, 0.24, 0.34]), attack: 0.04, dst: d });
       tone(core, { t, type: 'sawtooth', f0: 560 * pj, f1: byVar([380, 300, 440, 340]), dec: 0.28, peak: 0.07, dst: d, lp: 1500 });
     } else if (a === 1) {
       noise(core, { t, type: 'bandpass', f0: 700, f1: 2000, q: 0.9, peak: 0.2, dec: 0.15, dst: d, pink: true });
       tone(core, { t, type: 'sawtooth', f0: 420, f1: 300, dec: 0.18, peak: 0.12, dst: d, lp: 1400 });
     } else {
-      tone(core, { t, f0: 120, f1: 55, dec: 0.15, peak: 0.45, dst: d });
-      noise(core, { t, type: 'lowpass', f0: 1500, f1: 300, peak: 0.2, dec: 0.1, dst: d, pink: true });
+      smp(core, d, t, 'softH', { gain: 0.9, rate: 1.4, sat: 3 });
+      tone(core, { t, f0: 120, f1: 55, dec: 0.15, peak: 0.35, dst: d });
+      noise(core, { t, type: 'lowpass', f0: 1500, f1: 300, peak: 0.15, dec: 0.1, dst: d, pink: true });
     }
   },
 
@@ -742,9 +888,10 @@ export const SFX: Record<string, Fx> = {
       noise(core, { t, type: 'bandpass', f0: 300, f1: 1500, q: 0.8, peak: 0.3, dec: 0.28, dst: d, pink: true });
       tone(core, { t, type: 'sawtooth', f0: 220, f1: 110, dec: 0.3, peak: 0.2, dst: d, lp: 900 });
     } else {
-      tone(core, { t, f0: 100, f1: 38, dec: 0.4, peak: 0.85, dst: d });
-      noise(core, { t, type: 'lowpass', f0: 2200, f1: 250, peak: 0.4, dec: 0.25, dst: d });
-      noise(core, { t, type: 'highpass', f0: 2500, peak: 0.18, dec: 0.04, dst: d });
+      smp(core, d, t, 'punchH', { gain: 1.0, rate: 1.1, sat: 3 });
+      smp(core, d, t, 'mining', { gain: 0.5, rate: 1.4, sat: 2.5 });
+      tone(core, { t, f0: 100, f1: 38, dec: 0.4, peak: 0.6, dst: d });
+      noise(core, { t, type: 'lowpass', f0: 2200, f1: 250, peak: 0.3, dec: 0.25, dst: d });
     }
   },
 
@@ -754,14 +901,15 @@ export const SFX: Record<string, Fx> = {
     if (a === 0) {
       // a long hiss with a rattle at the end
       const hd = byVar([0.5, 0.65, 0.4, 0.55]);
-      noise(core, { t, type: 'highpass', f0: byVar([4800, 4200, 5400, 4600]), q: 0.7, peak: 0.24, dec: hd, attack: 0.08, dst: d });
-      noise(core, { t, type: 'bandpass', f0: 7000, q: 1, peak: 0.1, dec: hd, attack: 0.1, dst: d });
+      noise(core, { t, type: 'bandpass', f0: byVar([3000, 2600, 3400, 2800]), q: 0.55, peak: 0.8, dec: hd, attack: 0.08, dst: d, pink: true });
+      noise(core, { t, type: 'bandpass', f0: 1300, q: 0.7, peak: 0.4, dec: hd, attack: 0.1, dst: d, pink: true });
     } else if (a === 1) {
-      noise(core, { t, type: 'highpass', f0: 2500, f1: 7000, peak: 0.34, dec: 0.18, dst: d });
+      noise(core, { t, type: 'bandpass', f0: 1800, f1: 4200, q: 0.6, peak: 2.2, dec: 0.18, dst: d, pink: true });
       tone(core, { t, f0: 400, f1: 150, dec: 0.12, peak: 0.12, dst: d });
     } else {
-      tone(core, { t, f0: 140, f1: 70, dec: 0.12, peak: 0.4, dst: d });
-      noise(core, { t, type: 'bandpass', f0: 1800, q: 2, peak: 0.2, dec: 0.05, dst: d });
+      smp(core, d, t, 'softH', { gain: 1.0, rate: 1.25, sat: 3 });
+      tone(core, { t, f0: 140, f1: 70, dec: 0.12, peak: 0.3, dst: d });
+      noise(core, { t, type: 'bandpass', f0: 1500, q: 1.4, peak: 0.1, dec: 0.05, dst: d });
     }
   },
 
@@ -777,8 +925,9 @@ export const SFX: Record<string, Fx> = {
       noise(core, { t, type: 'lowpass', f0: 1000, f1: 3000, peak: 0.22, dec: 0.2, dst: d, pink: true });
     } else {
       // jaws slam: a wooden clack and a thud
-      noise(core, { t, type: 'bandpass', f0: 2300, q: 2.2, peak: 0.55, dec: 0.045, dst: d });
-      woodblock(core, d, t, 0.8);
+      smp(core, d, t, 'woodH', { gain: 1.0, rate: 1.3, sat: 2 });
+      smp(core, d, t, 'punchH', { gain: 0.8, rate: 1.1, sat: 3 });
+      noise(core, { t, type: 'bandpass', f0: 2000, q: 1.6, peak: 0.3, dec: 0.045, dst: d });
       tone(core, { t, f0: 95, f1: 50, dec: 0.2, peak: 0.6, dst: d });
       noise(core, { t: t + 0.05, type: 'bandpass', f0: 1800, q: 2.2, peak: 0.25, dec: 0.04, dst: d });
     }
@@ -788,30 +937,35 @@ export const SFX: Record<string, Fx> = {
     const t = core.ctx.currentTime;
     const d = out(core, 0.15);
     if (a === 0) {
-      chirps(core, d, t, { n: byVar([5, 4, 6, 5]), gap: byVar([0.07, 0.085, 0.06, 0.075]), f0: 1700 * jit(0.1), f1: 2400, dec: 0.05, peak: 0.12, type: 'square' });
+      chirps(core, d, t, { n: byVar([5, 4, 6, 5]), gap: byVar([0.07, 0.085, 0.06, 0.075]), f0: 1700 * jit(0.1), f1: 2400, dec: 0.05, peak: 0.22, type: 'triangle' });
     } else if (a === 1) {
       noise(core, { t, type: 'bandpass', f0: 1200, f1: 3500, q: 1, peak: 0.28, dec: 0.2, dst: d, pink: true });
       chirps(core, d, t, { n: 2, gap: 0.05, f0: 2000, f1: 2800, dec: 0.05, peak: 0.1, type: 'square' });
     } else {
-      tone(core, { t, f0: 150, f1: 70, dec: 0.1, peak: 0.35, dst: d });
-      noise(core, { t, type: 'highpass', f0: 2600, peak: 0.16, dec: 0.04, dst: d });
+      smp(core, d, t, 'punchM', { gain: 0.9, rate: 1.6, sat: 3 });
+      tone(core, { t, f0: 150, f1: 70, dec: 0.1, peak: 0.3, dst: d });
+      noise(core, { t, type: 'highpass', f0: 2600, peak: 0.08, dec: 0.04, dst: d });
     }
   },
 
   // ----------------------------------------------------------------- interface
   uiTap(core) {
     const t = core.ctx.currentTime;
-    rim(core, out(core, 0.1), t, 0.9);
+    const d = out(core, 0.1);
+    smp(core, d, t, 'uiClick', { gain: 0.9, rate: 1.0 });
+    rim(core, d, t, 0.35);
   },
   uiConfirm(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.25);
+    smp(core, d, t, 'uiSelect', { gain: 0.5, rate: 1.0, lp: 6000 });
     note(core, marimba, t, ladder(key, 2), 0.8, d);
     note(core, marimba, t + 0.07, ladder(key, 3), 0.8, d);
   },
   uiBack(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
+    smp(core, d, t, 'uiBack', { gain: 0.45, rate: 1.0, lp: 6000 });
     note(core, marimba, t, ladder(key, 3), 0.7, d);
     note(core, marimba, t + 0.07, ladder(key, 1), 0.7, d);
   },
@@ -826,18 +980,19 @@ export const SFX: Record<string, Fx> = {
     tone(core, { t, f0: 100, f1: 60, dec: 0.3, peak: 0.35, dst: d });
     noise(core, { t, type: 'highpass', f0: 6000, peak: 0.08, dec: 0.5, dst: d });
   },
-  /** pause: the world dips under a soft descending sweep */
   pauseIn(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
-    noise(core, { t, type: 'lowpass', f0: 5000, f1: 300, q: 0.7, peak: 0.2, dec: 0.3, attack: 0.02, dst: d, pink: true });
-    tone(core, { t, f0: 520, f1: 260, dec: 0.18, peak: 0.12, dst: d });
+    smp(core, d, t, 'uiClose', { gain: 0.7, rate: 1.0, lp: 6000 });
+    noise(core, { t, type: 'lowpass', f0: 4000, f1: 300, q: 0.7, peak: 0.12, dec: 0.3, attack: 0.02, dst: d, pink: true });
+    tone(core, { t, f0: 520, f1: 260, dec: 0.18, peak: 0.08, dst: d });
   },
   pauseOut(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
-    noise(core, { t, type: 'lowpass', f0: 300, f1: 5000, q: 0.7, peak: 0.2, dec: 0.28, attack: 0.1, dst: d, pink: true });
-    tone(core, { t, f0: 260, f1: 520, dec: 0.18, peak: 0.12, dst: d });
+    smp(core, d, t, 'uiOpen', { gain: 0.7, rate: 1.0, lp: 6000 });
+    noise(core, { t, type: 'lowpass', f0: 300, f1: 4000, q: 0.7, peak: 0.12, dec: 0.28, attack: 0.1, dst: d, pink: true });
+    tone(core, { t, f0: 260, f1: 520, dec: 0.18, peak: 0.08, dst: d });
   },
   /** the first beat of a level */
   levelStart(core, key) {
@@ -852,8 +1007,8 @@ export type SfxName = keyof typeof SFX;
 
 /** loudness trims measured offline so that frequent sounds sit low and big moments sit high without clipping */
 const TRIMS: Record<string, number> = {
-  jump: 1.45, doubleJump: 0.8, punch: 1.1, megaPunch: 0.6, kick: 1.1, whoosh: 3, fruit: 0.75, heart: 0.75, superHeart: 0.5,
-  power: 0.55, vine: 2.5, climb: 2.2, shrine: 0.45, relic: 0.45, hurt: 1.1, eagle: 1.6, roar: 0.75, land: 1.6, step: 2.2, checkpoint: 0.55, oneUp: 0.55,
+  jump: 1.45, doubleJump: 0.67, punch: 0.32, megaPunch: 0.42, kick: 0.35, whoosh: 0.41, hit: 0.85, flower: 1.45, fruit: 0.75, heart: 0.75, superHeart: 0.5,
+  power: 0.55, vine: 0.58, climb: 1.23, shrine: 0.45, relic: 0.45, hurt: 0.76, eagle: 2.0, roar: 0.75, land: 0.83, step: 0.88, checkpoint: 0.55, oneUp: 0.55,
 };
 
 
