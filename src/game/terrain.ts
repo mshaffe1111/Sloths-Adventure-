@@ -13,9 +13,16 @@ import { lookFor, type Look } from './scenery.ts';
 import { getSoil, capTransform } from './soil.ts';
 import { isRich } from './rainforest.ts';
 import { paintDecorAt } from './envKit.ts';
+import { polishEnabled, polishTier, rigFor, type Rig } from './polish.ts';
+import { getSceneSeed } from './sceneSeed.ts';
+import { fillCapWindy, windShear, lightBody, dapples, surfaceRoots, restShadow, liveBlades, soilGlints } from './terrainPolish.ts';
 
 /** worlds painted with the new baked ground (grown world by world) */
 let curWorld = 1;
+/** the polish rig for this frame's world (null when the prototype switch is off), and the x range being drawn */
+let curRig: Rig | null = null;
+let curL = 0;
+let curR = 0;
 const RICH_GROUND = (_look: Look) => isRich(curWorld);
 
 interface Cam {
@@ -93,6 +100,20 @@ function stone(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h
   ctx.beginPath();
   ctx.ellipse(-w * 0.17, -h * 0.2, w * 0.17, h * 0.1, -0.4, 0, Math.PI * 2);
   ctx.fill();
+  if (curRig) {
+    // the sun-side edge catches the world's light; the far side sinks into shade
+    const sgn = curRig.lx > 0 ? 1 : -1;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = rgba(curRig.rim, 0.75);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, w / 2 - 1.5, h / 2 - 1.5, 0, sgn > 0 ? -1.9 : Math.PI - 0.1, sgn > 0 ? -0.2 : Math.PI + 1.7);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(6,4,16,0.22)';
+    ctx.beginPath();
+    ctx.ellipse(-sgn * w * 0.12, h * 0.18, w * 0.36, h * 0.28, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
   ctx.restore();
 }
 
@@ -267,6 +288,10 @@ function drawCap(ctx: CanvasRenderingContext2D, p: Platform, look: Look, time: n
     // baked strip of layered blades, drips and moss, anchored in world space so neighbours join up
     const cap = getSoil(ctx, look, curWorld).cap;
     cap.setTransform(capTransform(y - 30));
+    if (curRig && polishTier() < 1) {
+      fillCapWindy(ctx, cap, capTransform(y - 30), x, y, w, curL, curR, time, curRig);
+      return;
+    }
     ctx.fillStyle = cap;
     ctx.fillRect(x, y - 30, w, 72);
     return;
@@ -306,13 +331,28 @@ function drawCap(ctx: CanvasRenderingContext2D, p: Platform, look: Look, time: n
   }
 }
 
-function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG) {
+function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG, time = 0) {
   const capT = tone(look.ground.cap);
   const isGround = p.height >= 50;
   const step = isGround ? 54 : 46;
   for (let x = p.x + 14; x < p.x + p.width - 12; x += step) {
     const px = x + (r() - 0.5) * 18;
-    if (paintDecorAt(ctx, curWorld, look, px, p.y, r)) continue;
+    // polish: everything growing here leans with the wind, about its base
+    const sway = curRig && polishTier() < 1 && px > curL - 80 && px < curR + 80;
+    if (sway) {
+      ctx.save();
+      ctx.translate(px, p.y);
+      ctx.transform(1, 0, windShear(curRig!, time, px), 1, 0, 0);
+      ctx.translate(-px, -p.y);
+    }
+    topItem(ctx, p, look, r, px, capT);
+    if (sway) ctx.restore();
+  }
+}
+
+function topItem(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG, px: number, capT: Tone) {
+  {
+    if (paintDecorAt(ctx, curWorld, look, px, p.y, r)) return;
     const roll = r();
     if (roll < 0.5) drawGrass(ctx, px, p.y - 2, 13 + r() * 11, capT, r, 5);
     else if (roll < 0.72) {
@@ -326,7 +366,9 @@ function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG
     } else if (roll < 0.86) {
       drawMushroom(ctx, px, p.y - 1, 11 + r() * 6, look.flora[(r() * look.flora.length) | 0], '#ffffff', !!look.glow);
     } else {
-      stone(ctx, px, p.y - 6, 14 + r() * 8, 9 + r() * 4, tone(look.ground.stone), look.ground.outline);
+      const sw = 14 + r() * 8;
+      if (curRig) restShadow(ctx, curRig, px, p.y - 1, sw * 0.6);
+      stone(ctx, px, p.y - 6, sw, 9 + r() * 4, tone(look.ground.stone), look.ground.outline);
     }
   }
 }
@@ -1188,6 +1230,16 @@ function drawGameVine(ctx: CanvasRenderingContext2D, v: Vine, look: Look, time: 
   ctx.restore();
 }
 
+/** the outline of a full-height ground block */
+function groundClip(ctx: CanvasRenderingContext2D, p: Platform, depth: number) {
+  ctx.beginPath();
+  ctx.moveTo(p.x + 4, p.y + 8);
+  ctx.lineTo(p.x + 2, p.y + depth);
+  ctx.lineTo(p.x + p.width - 2, p.y + depth);
+  ctx.lineTo(p.x + p.width - 4, p.y + 8);
+  ctx.closePath();
+}
+
 function i3(id: number) {
   return Math.abs(id) % 2 === 0;
 }
@@ -1207,6 +1259,9 @@ export function renderWorldObjects(
   curWorld = worldId;
   const left = cam.x - 160;
   const right = cam.x + cam.viewportWidth + 160;
+  curRig = polishEnabled() && polishTier() < 2 ? rigFor(look, worldId, getSceneSeed()) : null;
+  curL = left;
+  curR = right;
   const bottom = cam.y + cam.viewportHeight + 60;
 
   for (const t of trees) {
@@ -1243,17 +1298,30 @@ export function renderWorldObjects(
       drawBridge(ctx, p, look, time, r);
     } else if (p.height >= 50) {
       const depth = earthBody(ctx, p, look, time, bottom, r);
+      if (curRig) lightBody(ctx, curRig, look, p, depth, () => groundClip(ctx, p, depth), left, right, time);
+      if (curRig) surfaceRoots(ctx, curRig, look, p, left, right);
       drawCap(ctx, p, look, time, r, 18);
-      topDecor(ctx, p, look, r);
-      void depth;
+      if (curRig) {
+        liveBlades(ctx, curRig, look, p, left, right, time, polishTier() < 1);
+        soilGlints(ctx, curRig, p, depth, left, right, time);
+      }
+      topDecor(ctx, p, look, r, time);
+      if (curRig) dapples(ctx, curRig, p, left, right, time);
     } else {
       const v = Math.abs(p.id * 7 + Math.floor(p.width / 40)) % 6;
       if (v === 3) drawLog(ctx, p, look, r);
       else if (v === 4 || (v === 5 && look.ground.kind === 'stone')) drawSlab(ctx, p, look, time, r);
       else {
         const depth = earthBody(ctx, p, look, time, bottom, r);
+        if (curRig) lightBody(ctx, curRig, look, p, depth, () => islandPath(ctx, p.x, p.y, p.width, depth, Math.max(1, Math.min(4, Math.round(p.width / 140))), p.id), left, right, time);
+        if (curRig) surfaceRoots(ctx, curRig, look, p, left, right);
         drawCap(ctx, p, look, time, r, 16);
-        topDecor(ctx, p, look, r);
+        if (curRig) {
+          liveBlades(ctx, curRig, look, p, left, right, time, polishTier() < 1);
+          soilGlints(ctx, curRig, p, depth, left, right, time);
+        }
+        topDecor(ctx, p, look, r, time);
+        if (curRig) dapples(ctx, curRig, p, left, right, time);
         underHang(ctx, p, look, r, depth);
       }
     }

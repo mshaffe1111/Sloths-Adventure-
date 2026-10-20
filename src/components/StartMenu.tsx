@@ -2,7 +2,8 @@ import React from 'react';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { SKILLS, type SkillId } from '../game/skills.ts';
 import { SkillIcon } from './SkillIcon.tsx';
-import { Icon, Sliders, COARSE } from './PauseMenu.tsx';
+import { Icon, Sliders, COARSE, PolishToggle } from './PauseMenu.tsx';
+import { HowToTile } from './HowToTile.tsx';
 
 interface StartMenuProps {
   isMuted: boolean;
@@ -96,6 +97,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({ isMuted, onToggleMute, onC
             <small>Watch it again</small>
           </span>
         </button>
+        <HowToTile />
       </div>
 
       <div className="pm-skills" aria-label="Skills">
@@ -128,6 +130,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({ isMuted, onToggleMute, onC
         </div>
         <Sliders />
       </div>
+      <PolishToggle />
     </div>
   </div>
   );

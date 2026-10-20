@@ -6,6 +6,7 @@
  * It returns false whenever it has no frame for the pose (climbing, vine swinging) or the atlas is still loading,
  * and the caller then draws the classic hero, so the game never shows nothing.
  */
+import { polishEnabled } from './polish.ts';
 import type { PlayerState } from './types.ts';
 import { HERO_CLIMB, HERO_FRAMES, HERO_RUN, HERO_STAND_H, type HeroFrame } from './heroAtlasData.ts';
 import { drawAuras } from './miloVariants.ts';
@@ -165,7 +166,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
 
   ctx.save();
   ctx.translate(p.x, p.y);
-  if (p.grounded && !p.climbing && !p.isVineSwinging && !p.hanging) {
+  if (!polishEnabled() && p.grounded && !p.climbing && !p.isVineSwinging && !p.hanging) {
     const sc = (1 / p.squashY) * (p.ducking ? 1.3 : 1.05) * HERO_SPRITE_SCALE;
     ctx.fillStyle = 'rgba(15,23,42,0.36)';
     ctx.beginPath();

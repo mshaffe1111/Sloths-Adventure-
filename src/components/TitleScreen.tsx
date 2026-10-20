@@ -4,6 +4,7 @@ import { VistaCanvas } from './VistaCanvas.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
 import { StartMenu } from './StartMenu.tsx';
+import { HowToPlay, howToSeen, markHowToSeen } from './HowToPlay.tsx';
 import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
 import type { SkillId } from '../game/skills.ts';
 import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
@@ -65,6 +66,9 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   const [saveOpen, setSaveOpen] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [howOpen, setHowOpen] = useState(false);
+  /** a brand-new player gets the short how-to once, right before the first stage */
+  const [intro, setIntro] = useState(false);
   const updated = formatBuildTime(BUILD_TIME);
 
   // the credit's secret: ten taps in a row on "Shaffer" open (or close again) every stage and world, for testing
@@ -132,7 +136,13 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           <div className="title-ribbon">RAINFOREST ADVENTURES</div>
 
           <div className="mt-2 sm:mt-4 flex flex-col items-center gap-2 w-full">
-            <button type="button" data-start="true" onClick={onStartGame} className="title-btn title-btn-start ui-main">
+            <button type="button" data-start="true" onClick={() => {
+                if (!resume && !howToSeen()) {
+                  markHowToSeen();
+                  setIntro(true);
+                } else onStartGame();
+              }}
+              className="title-btn title-btn-start ui-main">
               <span className="ui-main-t">{resume ? 'CONTINUE' : 'START ADVENTURE'}</span>
               {resume && (
                 <span className="ui-main-s">
@@ -150,10 +160,13 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               <button type="button" onClick={onOpenTrophies} className="ui-pill ui-pill-gold justify-center col-span-2 sm:col-span-1">
                 🏆 Trophies{badgeCount ? ` · ${badgeCount}` : ''}
               </button>
+              <button type="button" onClick={() => setHowOpen(true)} className="ui-pill ui-pill-gold justify-center">
+                How to Play
+              </button>
               <button type="button" onClick={() => setNewOpen(true)} className="ui-pill ui-pill-wood justify-center">
                 New Game
               </button>
-              <button type="button" onClick={() => setSaveOpen(true)} className="ui-pill ui-pill-wood justify-center">
+              <button type="button" onClick={() => setSaveOpen(true)} className="ui-pill ui-pill-wood justify-center col-span-2 sm:col-span-1">
                 Save / Load
               </button>
             </div>
@@ -194,6 +207,16 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           trophyCount={badgeCount ?? 0}
           trophyTotal={trophyTotal}
           skills={skills}
+        />
+      )}
+      {howOpen && <HowToPlay onClose={() => setHowOpen(false)} />}
+      {intro && (
+        <HowToPlay
+          intro
+          onClose={() => {
+            setIntro(false);
+            onStartGame();
+          }}
         />
       )}
       {saveOpen && <SaveLoadDialog onClose={() => setSaveOpen(false)} onLoaded={onSaveLoaded} />}

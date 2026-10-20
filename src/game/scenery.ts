@@ -11,6 +11,7 @@ import { renderLifeBack, renderLifeFront } from './life.ts';
 import { isRich } from './rainforest.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
+import { polishEnabled, polishTier, pskip, rigFor, polishBack, polishFront, swayWeight, swayAmount, gustAt, type LayerName, type Rig } from './polish.ts';
 import {
   rng, tone, mix, mixToHex, lighten, darken, rgba, drawCrown, drawFrond, drawMonstera, drawBananaLeaf,
   drawGrass, drawFlower, drawMushroom, drawRock, drawCloud, drawRays, drawLiana,
@@ -1220,13 +1221,60 @@ export function disposeScenery() {
 
 // ───────────────────────────── compositing ─────────────────────────────
 
-function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, alpha = 1) {
+interface TileOpt {
+  layer: LayerName;
+  rig: Rig;
+  time: number;
+  /** sway the foliage (off in menus and on slow screens) */
+  sway: boolean;
+}
+
+function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, alpha = 1, o?: TileOpt) {
   const pitch = TW * s;
-  let x0 = -((camX * par) % pitch);
+  const lv = o ? o.rig.layers[o.layer] : null;
+  const shift = lv ? lv.shift * pitch : 0;
+  let x0 = -((camX * par + shift) % pitch);
   if (x0 > 0) x0 -= pitch;
   const prev = ctx.globalAlpha;
   ctx.globalAlpha = alpha;
-  for (let x = x0; x < vw; x += pitch) ctx.drawImage(cv, Math.floor(x), yOff, Math.ceil(pitch) + 1, H * s);
+  const y0 = yOff + (lv ? lv.dy * s : 0);
+  const amp = o && o.sway && !pskip('sway') ? swayAmount(o.rig, o.layer) * s : 0;
+  if (amp > 0 && o) {
+    // wind: draw the tile in horizontal rows, each slid a little, more toward the loose tips than the roots
+    const N = 16;
+    const gust = gustAt(o.rig, o.time) * amp;
+    const sp = o.rig.wind.spd;
+    const rowH = cv.height / N;
+    const dH = (H * s) / N;
+    for (let x = x0 - pitch; x < vw; x += pitch) {
+      if (x + pitch < -amp - 4) continue;
+      const flip = !!(lv && lv.flip);
+      if (flip) {
+        ctx.save();
+        ctx.translate(Math.floor(x) + Math.ceil(pitch) + 1, 0);
+        ctx.scale(-1, 1);
+      }
+      for (let i = 0; i < N; i++) {
+        const w = swayWeight(o.layer, (i + 0.5) / N);
+        if (w <= 0.001) continue;
+        const dx = Math.sin(o.time * sp + i * 0.42 + (camX * par) * 0.0016 + o.rig.wind.phase) * gust * w;
+        const sy = Math.floor(i * rowH);
+        const sh = Math.min(cv.height - sy, Math.floor((i + 1) * rowH) - sy + 1);
+        ctx.drawImage(cv, 0, sy, cv.width, sh, flip ? -dx : Math.floor(x + dx), y0 + i * dH, Math.ceil(pitch) + 1, dH + 1);
+      }
+      if (flip) ctx.restore();
+    }
+  } else {
+    for (let x = x0; x < vw; x += pitch) {
+      if (lv && lv.flip) {
+        ctx.save();
+        ctx.translate(Math.floor(x) + Math.ceil(pitch) + 1, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(cv, 0, y0, Math.ceil(pitch) + 1, H * s);
+        ctx.restore();
+      } else ctx.drawImage(cv, Math.floor(x), y0, Math.ceil(pitch) + 1, H * s);
+    }
+  }
   ctx.globalAlpha = prev;
 }
 
@@ -1301,13 +1349,17 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   const s = vh / H;
   renderSky(ctx, world, vw, vh, time, camX);
   const yo = -Math.min(60, Math.max(-30, camY * 0.03)) * s;
-  drawTile(ctx, set.far, 0.05, camX, vw, vh, s, yo * 0.3);
+  // the polish pass (prototype, off by default): per-stage layer shifts/flips, wind, mist and light shafts
+  const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
+  const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);
+  drawTile(ctx, set.far, 0.05, camX, vw, vh, s, yo * 0.3, 1, to('far'));
   if (!lite) veil(ctx, look.haze, 0.09, vw, vh);
-  drawTile(ctx, set.hills, 0.12, camX, vw, vh, s, yo * 0.5);
+  drawTile(ctx, set.hills, 0.12, camX, vw, vh, s, yo * 0.5, 1, to('hills'));
   if (!lite) veil(ctx, look.haze, 0.07, vw, vh);
-  drawTile(ctx, set.mid, 0.26, camX, vw, vh, s, yo * 0.8);
+  drawTile(ctx, set.mid, 0.26, camX, vw, vh, s, yo * 0.8, 1, to('mid'));
   if (!lite) veil(ctx, look.haze, 0.05, vw, vh);
-  drawTile(ctx, set.near, 0.5, camX, vw, vh, s, yo);
+  drawTile(ctx, set.near, 0.5, camX, vw, vh, s, yo, 1, to('near'));
+  if (rig && !lite) polishBack(ctx, look, rig, world, camX, vw, vh, time);
   if (RICH_MID(look, world)) renderLifeBack(ctx, look, world, camX, vw, vh, time, lite);
   // colour grade pulls every layer into one mood
   // plain alpha tint (blend modes force a full-canvas flush on software/mobile GPUs)
@@ -1320,8 +1372,10 @@ export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX
   const look = lookFor(world);
   const set = ensure(world);
   const s = vh / H;
-  drawTile(ctx, set.front, 1.25, camX, vw, vh, s, 0, 0.96);
+  const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
+  drawTile(ctx, set.front, 1.25, camX, vw, vh, s, 0, 0.96, rig ? { layer: 'front', rig, time, sway: !lite && polishTier() < 1 } : undefined);
   if (RICH_MID(look, world)) renderLifeFront(ctx, look, world, camX, vw, vh, time);
+  if (rig && !lite) polishFront(ctx, rig, world, camX, vw, vh, time);
   if (!lite) {
     const vg = ctx.createRadialGradient(vw / 2, vh / 2, vh * 0.55, vw / 2, vh / 2, vw * 0.78);
     vg.addColorStop(0, 'rgba(0,0,0,0)');

@@ -1,12 +1,13 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
+import { COARSE, Icon, PolishToggle } from './menuParts.tsx';
+import { HowToTile } from './HowToTile.tsx';
+
+export { COARSE, Icon, PolishToggle };
 import type { LevelConfig } from '../game/types.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { SKILLS, type SkillId } from '../game/skills.ts';
 import { SkillIcon } from './SkillIcon.tsx';
-
-/** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
-export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
 
 interface PauseMenuProps {
   levelConfig: LevelConfig;
@@ -23,11 +24,6 @@ interface PauseMenuProps {
   skills: Set<SkillId>;
 }
 
-export const Icon: React.FC<{ color: string; children: React.ReactNode; size?: number }> = ({ color, children, size = 30 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
-    {children}
-  </svg>
-);
 
 /** music and effects volume (saved on the device) */
 /**
@@ -192,6 +188,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
             <small>Leave this stage</small>
           </span>
         </button>
+        <HowToTile />
       </div>
 
       <div className="pm-skills" aria-label="Skills">
@@ -224,6 +221,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
         </div>
         <Sliders />
       </div>
+      <PolishToggle />
     </div>
   </div>
 );

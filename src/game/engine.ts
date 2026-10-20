@@ -20,8 +20,9 @@ import { PHYS, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
-import { renderScenery, renderOverlay, setWeatherAvoid } from './scenery.ts';
-import { setSceneSeed, rollSceneSeed } from './sceneSeed.ts';
+import { renderScenery, renderOverlay, setWeatherAvoid, lookFor } from './scenery.ts';
+import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
+import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
@@ -366,7 +367,7 @@ export class GameEngine {
 
   /** watch real frame times; if the screen cannot hold ~50 fps for a moment, step quality down one notch */
   private watchPerformance(elapsedMs: number) {
-    if (this.quality >= 2) return;
+    if (this.quality >= 2 || pskip('gov')) return;
     // the first moments of a stage build caches and warm up the JIT; do not judge them
     if (this.warmupMs > 0) {
       this.warmupMs -= elapsedMs;
@@ -380,8 +381,12 @@ export class GameEngine {
     this.perfMs = 0;
     // a 60 Hz screen averages ~16.7 ms, 120 Hz ~8.3 ms. Slower than ~20 ms means it is dropping frames.
     if (avg > 20) {
-      this.quality++;
-      this.resizeCanvas();
+      // the sparkle goes first (bloom, rim light, wind, then all of the polish), and only then the resolution
+      if (polishEnabled() && polishTier() < 2) setPolishTier(polishTier() + 1);
+      else {
+        this.quality++;
+        this.resizeCanvas();
+      }
     }
   }
 
@@ -2998,6 +3003,16 @@ export class GameEngine {
       }
     }
 
+    // polish prototype: this stage's lighting rig (null when the switch is off)
+    const rig: Rig | null = polishEnabled() && polishTier() < 2 ? rigFor(lookFor(world.id), world.id, getSceneSeed()) : null;
+    if (rig) {
+      // fliers throw a shadow on the ground below them (walkers already carry their own)
+      for (const e of this.enemies) {
+        if (e.defeated || e.type !== 'eagle') continue;
+        drawGroundShadow(ctx, rig, this.platforms, e.x, e.y + e.height * 0.5, e.width * 0.45, 0.8);
+      }
+    }
+
     // Render Enemies
     this.enemies.forEach((enemy) => {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
@@ -3033,7 +3048,13 @@ export class GameEngine {
     }
 
     // Render Hero Sloth
-    drawHeroSloth(ctx, this.player, this.gameTime);
+    if (rig) {
+      const hp = this.player;
+      drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));
+      drawBackGlow(ctx, rig, hp.x, hp.y - 38, 78, 0.13);
+      if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
+      else drawHeroSloth(ctx, hp, this.gameTime);
+    } else drawHeroSloth(ctx, this.player, this.gameTime);
     // the boss's attacks go over him, so a warning is never hidden behind Slomatt
     if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);
     if (this.debugBoxes) this.drawHitboxes(ctx);
@@ -3128,6 +3149,7 @@ export class GameEngine {
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
     if (lair) drawLairFront(ctx, lair, lairView, this.gameTime);
     else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    if (rig && this.quality === 0 && polishTier() === 0) drawBloom(ctx, rig, this.camera.viewportWidth, this.camera.viewportHeight);
     drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.drowsyShow, this.gameTime);
     if (this.darkShow > 0.01) {
       const cx0 = this.camera.x;
