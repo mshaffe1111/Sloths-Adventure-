@@ -4,7 +4,7 @@ import { GestureGlyph } from './GestureGlyph.tsx';
 import { LESSONS, lessonInputMode, type LessonId } from '../game/lessons.ts';
 
 /**
- * A first-time lesson: the game has paused itself, Slomatt tells you what you are looking at, and you press the button when ready.
+ * A first-time lesson: the game has paused itself, Pokey tells you what you are looking at, and you press the button when ready.
  * The button wakes a moment after the card appears, so a thumb that is still mashing the screen does not close it unread.
  */
 export const LessonCard: React.FC<{ id: LessonId; onClose: () => void }> = ({ id, onClose }) => {
@@ -36,7 +36,7 @@ export const LessonCard: React.FC<{ id: LessonId; onClose: () => void }> = ({ id
             <HeroFaceIcon size={58} face={lesson.face} />
           </span>
           <div>
-            <div className="ui-kicker">Slomatt says</div>
+            <div className="ui-kicker">Pokey says</div>
             <h2 className="ui-h2">{lesson.title}</h2>
           </div>
         </div>

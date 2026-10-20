@@ -203,7 +203,7 @@ export function calculateHitScore(
 }
 
 /**
- * Is Slomatt actually at the sanctuary door? The door stands on the ground at (x, y): about 92px wide and 134px tall.
+ * Is Pokey actually at the sanctuary door? The door stands on the ground at (x, y): about 92px wide and 134px tall.
  * His body has to overlap it. Being level with it somewhere else on the screen, past it, or on another floor does not count.
  */
 export function atExitDoor(p: { x: number; y: number }, doorX: number, doorGroundY: number): boolean {

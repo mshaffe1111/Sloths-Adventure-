@@ -6,7 +6,7 @@ import { STD_ATLAS_SIZE, STD_ATLAS_URL, stdUi } from '../game/heroStandard.ts';
 const ATLAS_URL = new URL('../assets/hero/hero-atlas.webp', import.meta.url).href;
 
 /**
- * One of the painted Slomatt face portraits as a small icon (the lives counter). Falls back to the sloth emoji
+ * One of the painted Pokey face portraits as a small icon (the lives counter). Falls back to the sloth emoji
  * when the classic hero is selected, so the classic look stays whole.
  */
 export const HeroFaceIcon: React.FC<{ size?: number; face?: string; className?: string }> = ({ size = 20, face = 'face_happy', className }) => {

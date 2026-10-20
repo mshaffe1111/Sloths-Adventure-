@@ -11,8 +11,8 @@ interface StoryPlayerProps {
 }
 
 const SPEAKERS: Record<string, { dot: string; icon: string }> = {
-  Slomatt: { dot: '#ffb02e', icon: '🦥' },
-  Jennifur: { dot: '#f58ab4', icon: '🌸' },
+  Pokey: { dot: '#ffb02e', icon: '🦥' },
+  Meeca: { dot: '#f58ab4', icon: '🌸' },
   Narrator: { dot: '#8fd3f0', icon: '📖' },
   Dot: { dot: '#4fd18b', icon: '🐦' },
   Grandma: { dot: '#c9a8e8', icon: '🌿' },

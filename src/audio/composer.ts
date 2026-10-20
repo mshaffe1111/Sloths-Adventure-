@@ -408,7 +408,7 @@ interface WorldCard {
   dens: MelCtx['dens'];
   /** chance of a seventh on any chord */
   seventh: number;
-  /** chance the A section is Slomatt's theme */
+  /** chance the A section is Pokey's theme */
   hero: number;
   /** longer chords (two bars each) */
   slow: number;
@@ -634,7 +634,7 @@ interface StorySpec {
 const rep = <T>(a: T[], n: number): T[] => Array.from({ length: n }, (_, i) => a[i % a.length]);
 
 const STORY: Record<StoryKind, () => StorySpec> = {
-  // Jennifur's waltz: tender, then swelling, then the whole forest singing; 3/4, F major
+  // Meeca's waltz: tender, then swelling, then the whole forest singing; 3/4, F major
   jennifur: () => ({
     id: 'jennifur', seed: 4417, tonic: 'F', mode: 'major', bpm: 62, steps: 12, delay: 0.75, leadA: 'flute', leadB: 'violins', counter: 'bell',
     stringsLo: [53, 72], lead: [65, 86], seventh: 0.3,
@@ -648,7 +648,7 @@ const STORY: Record<StoryKind, () => StorySpec> = {
       { name: 'rest', bars: 4, roots: [3, 0, 3, 4], layers: ['pad', 'harp'], melody: 'none' },
     ],
   }),
-  // the vow: Slomatt's own theme in A minor, slow and aching, growing into a prayer
+  // the vow: Pokey's own theme in A minor, slow and aching, growing into a prayer
   dusk: () => ({
     id: 'storyDusk', seed: 2093, tonic: 'A', mode: 'minor', bpm: 66, steps: 16, delay: 0.75, leadA: 'cello', leadB: 'flute', counter: 'bell',
     stringsLo: [45, 67], lead: [62, 84], seventh: 0.25,
@@ -673,7 +673,7 @@ const STORY: Record<StoryKind, () => StorySpec> = {
       { name: 'after', bars: 4, roots: [0, 5, 6, 0], layers: ['strings', 'bass', 'timp'], melody: 'none' },
     ],
   }),
-  // the ending: the hero's theme comes home, then Jennifur's, and everything sings
+  // the ending: the hero's theme comes home, then Meeca's, and everything sings
   ending: () => ({
     id: 'ending', seed: 1268, tonic: 'F', mode: 'major', bpm: 84, steps: 16, delay: 0.75, leadA: 'flute', leadB: 'violins', counter: 'bell',
     stringsLo: [53, 72], lead: [65, 88], seventh: 0.25,

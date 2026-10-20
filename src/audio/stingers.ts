@@ -80,7 +80,7 @@ export const STINGS: Record<string, Sting> = {
     ],
   },
 
-  /** defeat: Slomatt's theme falls apart in A minor */
+  /** defeat: Pokey's theme falls apart in A minor */
   defeat: {
     bpm: 66,
     tonic: 'A4',

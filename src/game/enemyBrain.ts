@@ -1,5 +1,5 @@
 /**
- * Enemy personalities: how each animal notices Slomatt and goes after him.
+ * Enemy personalities: how each animal notices Pokey and goes after him.
  *
  * Pure numbers and small functions (no engine, no canvas), so the game, the dev harness and the unit tests all run the
  * same rules. predatorAI.ts holds the attack moves; this file decides what an animal does BEFORE it attacks:
@@ -28,7 +28,7 @@ export interface PlayerRef {
 export interface Personality {
   /** one line for the Jungle Journal: how this animal behaves */
   trait: string;
-  /** how far it notices Slomatt in front of it, and behind it (px) */
+  /** how far it notices Pokey in front of it, and behind it (px) */
   sense: number;
   senseBack: number;
   /** it starts its attack from this far away (px) */
@@ -45,7 +45,7 @@ export interface Personality {
   shy?: number;
   /** how far past its patrol patch it will chase you, if there is ground (px each side) */
   reach: number;
-  /** a stalker moves at this fraction of its speed while Slomatt is facing it (it creeps up when his back is turned) */
+  /** a stalker moves at this fraction of its speed while Pokey is facing it (it creeps up when his back is turned) */
   watched?: number;
 }
 
@@ -181,7 +181,7 @@ export function separateHunters(enemies: Enemy[], dt: number): void {
 }
 
 export interface BrainEvents {
-  /** it has just noticed Slomatt (show a "?") */
+  /** it has just noticed Pokey (show a "?") */
   notice?: boolean;
 }
 

@@ -439,7 +439,7 @@ function drawSlothHead(
   }
 }
 
-/** Slomatt. The design lives in miloVariants.ts (variant 4, the Explorer). */
+/** Pokey. The design lives in miloVariants.ts (variant 4, the Explorer). */
 export function drawHeroSloth(ctx: CanvasRenderingContext2D, p: PlayerState, time: number) {
   if (drawHeroSprite(ctx, p, time)) return;
   drawMilo(ctx, 4, p, time);
@@ -870,7 +870,7 @@ export function drawBossEntity(
 }
 
 /**
- * Jennifur - the sloth's girlfriend: same soft storybook sloth style, rosier fur,
+ * Meeca - the sloth's girlfriend: same soft storybook sloth style, rosier fur,
  * long lashes and her signature pink hibiscus.
  */
 export function drawGirlfriendDaisy(

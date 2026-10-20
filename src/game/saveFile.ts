@@ -31,7 +31,7 @@ const ALLOWED: RegExp[] = [
   /^sloth_badges$/, // the Trophy Room
   /^sloth_finds$/, // the notes, books and keepsakes found
   /^sloth_memories$/, // the flashbacks seen
-  /^sloth_cosmetic$/, // which reward Slomatt wears
+  /^sloth_cosmetic$/, // which reward Pokey wears
   /^sloth_lessons$/, // which first-time lessons have been shown (a New Game shows them again)
   /^sloth_coach_done$/, // the first-stage lesson has been given (a New Game gives it again)
 ];

@@ -1,7 +1,7 @@
 /**
  * The two things that carry the story finds, drawn in code (placeholders for painted art):
  *  - the Hush Fern: a clump of fronds that hides a book or a keepsake. Crouch beside it and a ring fills over it.
- *  - the Keeper's Bell: Jennifur's pink bell flower, which carries her notes and is just touched.
+ *  - the Keeper's Bell: Meeca's pink bell flower, which carries her notes and is just touched.
  * Both are drawn with the origin at the item's centre, 26 px above the ground it stands on.
  */
 import type { Collectible } from './types.ts';

@@ -1,5 +1,5 @@
 /**
- * Movement tuning for Slomatt, shared by the engine and the level generator so every
+ * Movement tuning for Pokey, shared by the engine and the level generator so every
  * generated jump is guaranteed reachable. Units: px, px/s, px/s^2, seconds.
  * Feel target: snappy and precise (quick start/stop, variable jump height).
  */

@@ -51,5 +51,5 @@ export const markGateFound = () => write(KEY_FOUND);
 export const hasThornHeart = () => read(KEY_HEART);
 export const markThornHeart = () => write(KEY_HEART);
 
-/** hearts Slomatt starts every stage with */
+/** hearts Pokey starts every stage with */
 export const maxHearts = () => 5 + (hasThornHeart() ? 1 : 0);

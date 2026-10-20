@@ -5,7 +5,7 @@ import { STD_ATLAS_SIZE, STD_ATLAS_URL, stdUi } from '../game/heroStandard.ts';
 
 const ATLAS_URL = new URL('../assets/hero/hero-atlas.webp', import.meta.url).href;
 
-/** one full painted Slomatt pose (jump_up, idle_a, land...) at a chosen height in px; the classic hero shows the sloth emoji */
+/** one full painted Pokey pose (jump_up, idle_a, land...) at a chosen height in px; the classic hero shows the sloth emoji */
 export const HeroPose: React.FC<{ frame: string; height: number; className?: string; label?: string }> = ({ frame, height, className, label }) => {
   const sf = stdUi(frame);
   const f = sf ?? HERO_FRAMES[frame];

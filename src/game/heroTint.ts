@@ -1,5 +1,5 @@
 /**
- * Slomatt's reward coats. The painted hero is one picture sheet, so a coat is made by recolouring the warm fur
+ * Pokey's reward coats. The painted hero is one picture sheet, so a coat is made by recolouring the warm fur
  * pixels once (browns and tans) and leaving everything else (backpack, eyes, claws, outlines) as painted.
  */
 export type Coat = 'none' | 'berry' | 'golden' | 'moonlight';

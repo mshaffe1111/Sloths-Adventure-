@@ -3,7 +3,7 @@
  *
  * A zone is a box of air that wakes up on a fixed rhythm: it sits idle, shows a warning, then is active for a while, and starts
  * over. Because the rhythm never changes and the warning is long, a zone can always be waited out, which is what keeps it fair.
- *   - World 3, the Mossy Grotto: SPORE clouds. Mushrooms puff out a sleepy cloud; inside it Slomatt goes drowsy (slow, a shorter jump).
+ *   - World 3, the Mossy Grotto: SPORE clouds. Mushrooms puff out a sleepy cloud; inside it Pokey goes drowsy (slow, a shorter jump).
  *   - World 4, the Mist Cascades: WIND gusts. A gust pushes everything in the lane to one side, helping or hindering a jump.
  *
  *   - World 9, the Volcanic Jungle: lava GEYSERS. Vents rumble, then erupt in a column that burns anything standing in it.
@@ -11,7 +11,7 @@
  *   - World 5, the Orchid Sanctuary: sticky WEBS. Patches and web bridges that slow you to a crawl (always on).
  *   - World 6, the Deep Mangrove: the TIDE. A mudflat you can cross at low tide; when it rises it sweeps you back.
  *   - World 7, the Ancient Ruins: CRUMBLING tiles (see `crumble*` below and the platform's `crumbleAfter`).
- *   - World 8, the Twilight Treetops: DARKNESS. The screen goes dark; Slomatt's lantern and the fireflies are the only light (always on).
+ *   - World 8, the Twilight Treetops: DARKNESS. The screen goes dark; Pokey's lantern and the fireflies are the only light (always on).
  *
  * Everything here is pure (no canvas, no engine) so the generator, the validator, the engine, the drawing and the tests agree on what
  * a zone is doing at any moment.

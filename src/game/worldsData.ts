@@ -221,11 +221,11 @@ export const WORLDS_DATA: WorldInfo[] = [
   {
     id: 10,
     name: 'Stormy Highlands Fortress',
-    subtitle: 'The treacherous summit stronghold where Jennifur is held captive!',
+    subtitle: 'The treacherous summit stronghold where Meeca is held captive!',
     theme: 'stormy_highlands',
     bossName: 'General Iron-Claw',
     bossTitle: 'The Warlord Sloth General',
-    bossQuote: 'Gwahaha! You made it this far, Sloth? Jennifur will never leave my tower!',
+    bossQuote: 'Gwahaha! You made it this far, Sloth? Meeca will never leave my tower!',
     ambientType: 'thunderstorm',
     palette: {
       skyTop: '#090d16',
@@ -267,7 +267,7 @@ const OBJECTIVE_DESCRIPTIONS: Record<ObjectiveType, (target: number) => string> 
   relic_hunt: (target) => `Search ancient moss-covered tree hollows to uncover ${target} hidden Jungle Idols!`,
   rescue: (target) => `Smash bamboo cages to free ${target} trapped baby animals!`,
   gauntlet: (target) => `Fight through intense enemy ambushes, defeat ${target} predators, and reach the exit!`,
-  boss_lair: () => 'Confront the Stage Boss! Watch telegraphs, dodge devastating attacks, and rescue Jennifur!',
+  boss_lair: () => 'Confront the Stage Boss! Watch telegraphs, dodge devastating attacks, and rescue Meeca!',
 };
 
 /** how long each kind of stage is, relative to a typical stage of its world (a sprint is the short one, a gauntlet the long one) */

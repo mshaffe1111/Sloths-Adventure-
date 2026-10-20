@@ -20,7 +20,7 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
         style={{ background: '#0b1a13', color: '#fde68a' }}
       >
         <div style={{ fontSize: 44 }}>🦥</div>
-        <div style={{ fontSize: 22, fontWeight: 800 }}>Slomatt tripped over a root!</div>
+        <div style={{ fontSize: 22, fontWeight: 800 }}>Pokey tripped over a root!</div>
         <div style={{ color: '#a7f3d0', maxWidth: 320 }}>Your progress is safe. Tap below to get back to the jungle.</div>
         <button
           onClick={() => window.location.reload()}

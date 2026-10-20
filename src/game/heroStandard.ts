@@ -1,5 +1,5 @@
 /**
- * The standard hero: Slomatt drawn entirely from the standard-set sheets (reference/animation-sheets/slomatt/standard-set), packed by
+ * The standard hero: Pokey drawn entirely from the standard-set sheets (reference/animation-sheets/slomatt/standard-set), packed by
  * scripts/cutStandard.py. One consistent look (the satchel and wrist wraps, no backpack) for every state: idle, walk, run, jump, fall, land,
  * flip, climb, hang, vine swing, punch, kick, mega, hurt, duck, and the portraits.
  *

@@ -458,7 +458,7 @@
   color: #f0fdf4;
 }
 
-/* ---------- Boss plate: name, hit segments, phase notches and Slomatt's hearts ---------- */
+/* ---------- Boss plate: name, hit segments, phase notches and Pokey's hearts ---------- */
 .boss-hud { --boss-accent: #fb923c; width: min(30rem, 94vw); display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin-inline: auto; font-family: var(--font-heading); color: #fff7ed; }
 .boss-hud-name { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 0 4px; text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.6); }
 .boss-hud-title { font-size: clamp(18px, 4.6vw, 28px); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

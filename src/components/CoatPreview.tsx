@@ -28,7 +28,7 @@ function withAtlas(std: boolean, cb: (img: HTMLImageElement) => void) {
   else img.addEventListener('load', () => cb(img), { once: true });
 }
 
-/** Slomatt standing, in the given coat (for the reward cards) */
+/** Pokey standing, in the given coat (for the reward cards) */
 export const CoatPreview: React.FC<{ coat: Coat; size?: number }> = ({ coat, size = 64 }) => {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {

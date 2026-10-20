@@ -21,7 +21,7 @@ interface PauseMenuProps {
   onOpenMap: () => void;
   trophyCount: number;
   trophyTotal: number;
-  /** the skills Slomatt has learned so far */
+  /** the skills Pokey has learned so far */
   skills: Set<SkillId>;
 }
 

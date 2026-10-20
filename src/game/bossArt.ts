@@ -271,7 +271,7 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   ctx.scale(xf.sx, xf.sy);
   ctx.translate(-b.x, -feetY);
   if (def.puppet) {
-    // the painted guardian when his atlas is loaded; the Slomatt-rig puppet until then
+    // the painted guardian when his atlas is loaded; the Pokey-rig puppet until then
     if (!thornbarkSprite.draw(ctx, b, def, time, feetY)) drawPuppet(ctx, b, def, m, time, feetY);
   } else if ((world === 5 && drawQueenSprite(ctx, b, def, time, feetY)) || painted?.draw(ctx, b, def, time, feetY)) {
     // painted boss
@@ -296,7 +296,7 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   }
 }
 
-/** Thornbark is drawn with the same sloth rig as Slomatt (the evil variant), posed from what the brain is doing */
+/** Thornbark is drawn with the same sloth rig as Pokey (the evil variant), posed from what the brain is doing */
 const puppetMemory = new WeakMap<BossEntity, { x: number; t: number; vx: number; walk: number }>();
 
 function drawPuppet(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, m: MoveDef | null, time: number, feetY: number) {

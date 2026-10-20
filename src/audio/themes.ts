@@ -2,8 +2,8 @@
  * The score. Every piece of music in the game is written here as notation (see theory.ts / music.ts).
  *
  * Recurring melodies:
- *   Slomatt's theme   - the lazy, bouncy hero tune (world 1, title, map, ending, and a minor version at dusk)
- *   Jennifur's theme  - a tender waltz (the story's warm scenes)
+ *   Pokey's theme   - the lazy, bouncy hero tune (world 1, title, map, ending, and a minor version at dusk)
+ *   Meeca's theme  - a tender waltz (the story's warm scenes)
  *   Iron-Claw's theme - a low, creeping minor motif (world 10, the final boss, storm scenes)
  *
  * Melody notation: scale degrees, "5:3 5:1 6:2" = degree 5 for 3 sixteenths, degree 5 for 1, degree 6 for 2.
@@ -35,7 +35,7 @@ export const THEMES: Record<string, Theme> = {};
 // WORLDS
 // ---------------------------------------------------------------------------------------------
 
-// 1  Emerald Canopy - C major, easy and sunny: Slomatt's theme on flute
+// 1  Emerald Canopy - C major, easy and sunny: Pokey's theme on flute
 THEMES.world1 = {
   id: 'world1',
   bpm: 108,
@@ -486,7 +486,7 @@ THEMES.bossFinal = bossTheme({
 // MENUS, MAP AND RESULTS
 // ---------------------------------------------------------------------------------------------
 
-// Title: Slomatt's theme made grand, warm and unhurried
+// Title: Pokey's theme made grand, warm and unhurried
 THEMES.title = {
   id: 'title',
   bpm: 100,
@@ -569,7 +569,7 @@ THEMES.results = {
   ],
 };
 
-// Game over: slow, sad and short; Slomatt's theme in minor, barely there
+// Game over: slow, sad and short; Pokey's theme in minor, barely there
 THEMES.gameover = {
   id: 'gameover',
   bpm: 60,

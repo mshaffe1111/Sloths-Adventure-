@@ -622,7 +622,7 @@ export function drawCrumbleTiles(ctx: CanvasRenderingContext2D, plats: readonly 
 let darkCanvas: HTMLCanvasElement | null = null;
 
 /**
- * The dark itself, drawn over the finished scene in screen space: a near-black veil with soft holes cut out for Slomatt's lantern
+ * The dark itself, drawn over the finished scene in screen space: a near-black veil with soft holes cut out for Pokey's lantern
  * and every firefly. `level` fades it in and out at the edges of a dark stretch.
  */
 export function drawDarkness(
@@ -653,7 +653,7 @@ export function drawDarkness(
     d.arc(x, y, r, 0, Math.PI * 2);
     d.fill();
   };
-  // Slomatt's lantern
+  // Pokey's lantern
   hole(hero.x, hero.y, 210 + Math.sin(t * 3) * 6, 1);
   for (let i = 0; i < lights.length; i++) {
     const l = lights[i];

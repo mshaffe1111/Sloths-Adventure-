@@ -1,7 +1,7 @@
 /**
- * Painted Jennifur, Slomatt's girlfriend (the Heartbloom keeper in the pink "07" running kit), from the Gemini pose sheets. Used wherever
+ * Painted Meeca, Pokey's girlfriend (the Heartbloom keeper in the pink "07" running kit), from the Gemini pose sheets. Used wherever
  * she appears: the captive in the final stage, the rescue, and every story card and cutscene. Like the other painted creatures it is a
- * switch: `?jennifur=sprite|classic`, `localStorage.sloth_jennifur = 'sprite'`; the vector Jennifur draws while the atlas loads or when off.
+ * switch: `?jennifur=sprite|classic`, `localStorage.sloth_jennifur = 'sprite'`; the vector Meeca draws while the atlas loads or when off.
  *
  * She is a little animation player: each mood is a timed loop over the sheet's frames, so she is never a still picture.
  *   scared      captive: shivers, looks about, laments, waves her arms, hops in panic
@@ -16,7 +16,7 @@ import { JENNIFUR_FRAMES } from './jennifurAtlasData.ts';
 export type JennifurMood = 'scared' | 'scaredwave' | 'sad' | 'happy' | 'cheer';
 
 export const DEFAULT_SPRITE_JENNIFUR = true;
-/** world units per atlas pixel: she stands about as tall as the vector Jennifur did */
+/** world units per atlas pixel: she stands about as tall as the vector Meeca did */
 const K = 0.46;
 
 /** [frame, seconds] loops */
@@ -58,7 +58,7 @@ function active() {
   return ready;
 }
 
-/** true once the painted Jennifur can draw (so a caller can lay a shadow under her only then) */
+/** true once the painted Meeca can draw (so a caller can lay a shadow under her only then) */
 export function jennifurSpriteReady(): boolean {
   return active();
 }
@@ -75,7 +75,7 @@ export function jennifurFrame(mood: JennifurMood, time: number): string {
 }
 
 /**
- * Draws Jennifur with her feet at the origin, facing right (the caller mirrors her); `scale` multiplies her usual size.
+ * Draws Meeca with her feet at the origin, facing right (the caller mirrors her); `scale` multiplies her usual size.
  * Returns false (drawing nothing) while the atlas loads or when the painted version is switched off.
  */
 export function drawJennifurSprite(ctx: CanvasRenderingContext2D, mood: JennifurMood, time: number, scale = 1): boolean {

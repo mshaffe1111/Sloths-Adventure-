@@ -16,7 +16,7 @@ interface BossHudProps {
   phase: number;
   /** one segment per hit, when the boss says how many hits it takes */
   hits?: number;
-  /** Slomatt's hearts, drawn right under the bar so one glance covers both fighters */
+  /** Pokey's hearts, drawn right under the bar so one glance covers both fighters */
   heroHp: number;
   heroMaxHp: number;
   /** the world's accent colour for the bar */
@@ -24,7 +24,7 @@ interface BossHudProps {
 }
 
 /**
- * The boss's plate: name, a bar cut into one segment per hit with a gold notch at each phase change, and Slomatt's hearts
+ * The boss's plate: name, a bar cut into one segment per hit with a gold notch at each phase change, and Pokey's hearts
  * under it. The segments that were just lost flash white and drain away a moment later, so a hit is felt on the bar.
  */
 export const BossHud: React.FC<BossHudProps> = ({ name, hp, maxHp, phase, hits, heroHp, heroMaxHp, accent = '#fb923c' }) => {
@@ -47,7 +47,7 @@ export const BossHud: React.FC<BossHudProps> = ({ name, hp, maxHp, phase, hits, 
     return undefined;
   }, [left]);
 
-  // the same for Slomatt's hearts: a heart just lost shows as a flash before it empties
+  // the same for Pokey's hearts: a heart just lost shows as a flash before it empties
   const [heroGhost, setHeroGhost] = useState(heroHp);
   const lastHero = useRef(heroHp);
   useEffect(() => {

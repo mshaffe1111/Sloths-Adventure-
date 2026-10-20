@@ -1,7 +1,7 @@
 /**
  * lessons — the first time each new thing shows up, the game stops and explains it, once.
  *
- * A lesson is a card with Slomatt's face, a title, and a few "do this, get that" lines for the way this player is controlling the game (touch
+ * A lesson is a card with Pokey's face, a title, and a few "do this, get that" lines for the way this player is controlling the game (touch
  * screen, thumb pad, or keyboard). The engine spots the first foe, the first climbable trunk, the first swinging vine and so on ahead of the hero
  * (`pickLesson`), pauses, and the app shows the card (components/LessonCard.tsx). What has been shown is kept on the device, in the save, so a
  * New Game teaches it all again. `?lessons=off` skips them, `?lessons=all` shows every one again (for trying them out).
@@ -26,7 +26,7 @@ export interface LessonLine {
 export interface Lesson {
   id: LessonId;
   title: string;
-  /** which of Slomatt's faces fits the news */
+  /** which of Pokey's faces fits the news */
   face: 'face_surprised' | 'face_cheer' | 'face_happy' | 'face_calm' | 'face_wink';
   /** one or two sentences, the same for every kind of controls */
   intro: string;
@@ -107,7 +107,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
     id: 'climb',
     title: 'A tree to climb!',
     face: 'face_cheer',
-    intro: 'Slomatt can scale a trunk with a vine on it. Grab on, climb to the top, and he vaults onto the branch.',
+    intro: 'Pokey can scale a trunk with a vine on it. Grab on, climb to the top, and he vaults onto the branch.',
     lines: {
       screen: [
         { glyph: 'up', how: 'Jump into the trunk', what: 'Grab on', sub: 'a flick up beside it, then keep your thumb up' },

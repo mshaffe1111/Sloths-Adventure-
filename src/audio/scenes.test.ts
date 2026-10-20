@@ -36,7 +36,7 @@ test('every cutscene panel in the game has music', () => {
   }
 });
 
-test('story music tells the story: Jennifur, the storm, dusk, the boss, the ending', () => {
+test('story music tells the story: Meeca, the storm, dusk, the boss, the ending', () => {
   const mk = (chapter: string, world = 1, mood = 'day') => ({ chapter, scene: { world, mood } });
   assert.equal(sceneForPanel(mk('PROLOGUE')).id, 'jennifur');
   assert.equal(sceneForPanel(mk('THE STORM', 10, 'storm')).id, 'storyStorm');

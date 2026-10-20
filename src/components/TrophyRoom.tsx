@@ -83,7 +83,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
 
         {tab === 'badges' && (
           <>
-            <div className="tr-sec">Rewards for Slomatt</div>
+            <div className="tr-sec">Rewards for Pokey</div>
             <div className="tr-rewards">
               {REWARDS.map((r) => {
                 const got = unlockedIds.has(r.id);
@@ -186,7 +186,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
             <div className="tr-sub tr-jsub">
               {FINDS.filter((f) => finds.includes(f.id)).length} of {FINDS.length} found · tap a found one to read it again
             </div>
-            {([['note', 'Notes from Jennifur'], ['book', 'Photo albums'], ['keepsake', 'Keepsakes']] as const).map(([kind, title]) => (
+            {([['note', 'Notes from Meeca'], ['book', 'Photo albums'], ['keepsake', 'Keepsakes']] as const).map(([kind, title]) => (
               <React.Fragment key={kind}>
                 <div className="tr-sec">{title}</div>
                 <div className="tr-grid tr-grid-j">

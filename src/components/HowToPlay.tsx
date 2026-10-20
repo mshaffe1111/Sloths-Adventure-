@@ -64,7 +64,7 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
       <div className="htp-tip htp-first">
         <span aria-hidden="true">👆</span>
         <span>
-          <b>Touch anywhere on the screen to move.</b> You do not have to touch Slomatt, and there is nothing to aim at. Put your thumb down <b>anywhere</b> and slide.
+          <b>Touch anywhere on the screen to move.</b> You do not have to touch Pokey, and there is nothing to aim at. Put your thumb down <b>anywhere</b> and slide.
         </span>
       </div>
       <p className="ui-copy">
@@ -118,7 +118,7 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
     {!short && (
       <Section title="Good to know">
         <p className="ui-copy">
-          <b>The first time</b> you meet something new (a foe, a trunk to climb, a swinging vine, a bouncy mushroom and more), the game pauses and Slomatt explains it once. A New Game shows them again. A game controller works too. <b>Tree trunks can be climbed</b>: jump into one and hold up. Once you clear stage 1-3 you learn the <b>Shimmy Rope</b>: jump up into a rope to grab it, run
+          <b>The first time</b> you meet something new (a foe, a trunk to climb, a swinging vine, a bouncy mushroom and more), the game pauses and Pokey explains it once. A New Game shows them again. A game controller works too. <b>Tree trunks can be climbed</b>: jump into one and hold up. Once you clear stage 1-3 you learn the <b>Shimmy Rope</b>: jump up into a rope to grab it, run
           along it with ← →, and press down and jump to let go.
         </p>
       </Section>
@@ -185,7 +185,7 @@ const Visuals: React.FC = () => (
   <>
     <Section title="Polished visuals">
       <p className="ui-copy">
-        An extra layer of finish: <b>trees and grass sway in the wind</b>, Slomatt gets a <b>rim of sunlight and a soft shadow</b>, light shafts and drifting pollen move through the jungle, and the
+        An extra layer of finish: <b>trees and grass sway in the wind</b>, Pokey gets a <b>rim of sunlight and a soft shadow</b>, light shafts and drifting pollen move through the jungle, and the
         ground gets roots, dappled light and richer soil.
       </p>
       <p className="ui-copy">
@@ -221,7 +221,7 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
               <HeroFaceIcon size={44} face="face_happy" />
             </span>
             <div>
-              <div className="ui-kicker">{short ? 'Before you start' : 'Slomatt says'}</div>
+              <div className="ui-kicker">{short ? 'Before you start' : 'Pokey says'}</div>
               <h2 className="ui-h2">How to Play</h2>
             </div>
           </div>

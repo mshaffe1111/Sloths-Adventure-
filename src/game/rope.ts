@@ -4,7 +4,7 @@ import type { Rope } from './types.ts';
 
 /** how far the rope sags in the middle (px) */
 export const ROPE_SAG = 12;
-/** how fast Slomatt creeps along a rope (px/s): well under his running speed, so a crossing feels deliberate */
+/** how fast Pokey creeps along a rope (px/s): well under his running speed, so a crossing feels deliberate */
 export const ROPE_SPEED = 120;
 /** from the rope down to his feet while hanging (his arms are raised: the painted jump_up pose is 94 px tall) */
 export const HANG_DROP = 86;

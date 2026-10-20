@@ -113,7 +113,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             DEFEATED IN BATTLE
           </h2>
           <p className="text-xs text-stone-300 font-sans max-w-sm mx-auto mb-6">
-            Out of lives! Dust yourself off and try again. Jennifur is counting on you!
+            Out of lives! Dust yourself off and try again. Meeca is counting on you!
           </p>
 
           <div className="bg-black/50 border border-stone-800 p-3.5 rounded-2xl mb-6">
@@ -191,10 +191,10 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
         <div className="w-full max-w-lg bg-stone-950/90 border-2 border-pink-400 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl">
           <div className="text-5xl mb-3">❤️</div>
           <h2 className="text-3xl sm:text-4xl font-black text-pink-300 text-stroke mb-2">
-            JENNIFUR IS SAVED!
+            MEECA IS SAVED!
           </h2>
           <p className="text-sm text-pink-100 font-sans max-w-md mx-auto mb-6">
-            Slomatt trekked through ten perilous realms, passed one hundred trials, and faced down General Iron-Claw himself. Jennifur is home, the Heartbloom is glowing, and the canopy is at peace again.
+            Pokey trekked through ten perilous realms, passed one hundred trials, and faced down General Iron-Claw himself. Meeca is home, the Heartbloom is glowing, and the canopy is at peace again.
           </p>
 
           <div className="bg-black/50 border border-amber-400/40 p-4 rounded-2xl mb-6">

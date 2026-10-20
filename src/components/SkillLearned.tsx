@@ -30,7 +30,7 @@ export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }>
             <path d="M-6 16 Q115 30 236 16" fill="none" stroke="#fde68a" strokeWidth="9" strokeLinecap="round" />
             <path d="M-6 16 Q115 30 236 16" fill="none" stroke="#b45309" strokeWidth="3" strokeDasharray="5 8" strokeLinecap="round" />
           </svg>
-          <HeroPose frame="jump_up" height={heroH} label="Slomatt hangs from a rope" className="sk-hang" />
+          <HeroPose frame="jump_up" height={heroH} label="Pokey hangs from a rope" className="sk-hang" />
         </div>
 
         <div className="clr-main">

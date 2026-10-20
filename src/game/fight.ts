@@ -1,5 +1,5 @@
 /**
- * The fight system: how Slomatt's attacks are timed, where they hit, and how each animal reacts.
+ * The fight system: how Pokey's attacks are timed, where they hit, and how each animal reacts.
  *
  * Pure data in / data out (no canvas, no engine, no audio), so the game, the debug overlay and the unit tests
  * all run the very same rules.
@@ -43,7 +43,7 @@ const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const lerp = (a: number, b: number, u: number) => a + (b - a) * u;
 
 // ---------------------------------------------------------------------------------------------------
-// Slomatt's moves
+// Pokey's moves
 // ---------------------------------------------------------------------------------------------------
 
 export type MoveId = 'jab' | 'cross' | 'hook' | 'mega' | 'kick' | 'airKick';
@@ -60,7 +60,7 @@ export interface MoveSpec {
   damage: number;
   bossDamage: number;
   /**
-   * The strike zone relative to Slomatt's feet, facing right (x forward, y up is negative).
+   * The strike zone relative to Pokey's feet, facing right (x forward, y up is negative).
    * It grows from `from` at the start of the active frames to `to` at the end.
    */
   from: Rect;
@@ -70,7 +70,7 @@ export interface MoveSpec {
   stun: number;
   hitstop: number;
   shake: number;
-  /** a forward step Slomatt takes as the strike starts (px/s) */
+  /** a forward step Pokey takes as the strike starts (px/s) */
   lunge: number;
   /** how much of his running speed he keeps while this move plays on the ground */
   moveMul: number;
@@ -245,13 +245,13 @@ export function hurtRect(e: Enemy): Rect {
   return { x: b.x - g, y: b.y - g, w: b.w + g * 2, h: b.h + g * 2 };
 }
 
-/** the top of its back or head: where a falling Slomatt counts as landing on it */
+/** the top of its back or head: where a falling Pokey counts as landing on it */
 export function headRect(e: Enemy): Rect {
   const b = bodyRect(e);
   return { x: b.x - 6, y: b.y - 8, w: b.w + 12, h: b.h * 0.5 + 8 };
 }
 
-/** Slomatt's own hurt box: a little smaller than the picture, and lower when ducking (so ducking under a swoop is real) */
+/** Pokey's own hurt box: a little smaller than the picture, and lower when ducking (so ducking under a swoop is real) */
 export function playerHurtRect(p: { x: number; y: number; ducking?: boolean }): Rect {
   const h = p.ducking ? 24 : 38;
   return { x: p.x - 13, y: p.y - h, w: 26, h };
@@ -278,7 +278,7 @@ export interface HitResult {
   armored: boolean;
 }
 
-/** what a melee move does to an enemy, given which way Slomatt faces (does not change the enemy) */
+/** what a melee move does to an enemy, given which way Pokey faces (does not change the enemy) */
 export type HitSpec = Pick<MoveSpec, 'damage' | 'knock' | 'stun' | 'heavy'>;
 
 /** a stomp as a hit: a dive (holding down) does double damage and counts as heavy */
@@ -303,7 +303,7 @@ export function resolveMelee(e: Enemy, m: HitSpec, dir: 1 | -1): HitResult {
 export type StompResult = null | { kind: 'stomp'; damage: number } | { kind: 'bounce' };
 
 /**
- * Is Slomatt landing on this animal? He has to be falling, his feet have to cross its head zone this frame
+ * Is Pokey landing on this animal? He has to be falling, his feet have to cross its head zone this frame
  * (from above), and he has to be over it. Holding down while falling is a dive: double damage.
  */
 export function stompTest(p: { x: number; y: number; vy: number }, prevFeet: number, e: Enemy, diving = false): StompResult {

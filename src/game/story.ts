@@ -39,7 +39,7 @@ export interface SceneActor {
   beaten?: boolean;
   /** bloom only: which painted stage of the Heartbloom (the open bloom when unset) */
   stage?: BloomStage;
-  /** daisy (Jennifur) only: which animation she plays */
+  /** daisy (Meeca) only: which animation she plays */
   mood?: JennifurMood;
   /** milo only: pose */
   pose?: 'idle' | 'punch' | 'duck' | 'happy';
@@ -107,7 +107,7 @@ export const INTRO_PANELS: StoryPanel[] = [
   {
     chapter: 'PROLOGUE',
     speaker: 'Narrator',
-    text: 'High above the forest floor, where sunlight spills like honey through the leaves, a very slow sloth named Slomatt had fallen asleep in the Heartbloom garden. Again.',
+    text: 'High above the forest floor, where sunlight spills like honey through the leaves, a very slow sloth named Pokey, short for Pocono, had fallen asleep in the Heartbloom garden. Again.',
     scene: {
       world: 1, mood: 'day', particles: 'sparkles', zoom: 1.2,
       camera: { from: { zoom: 1.05, fx: 0.5, fy: 0.3 }, to: { zoom: 1.3, fx: 0.5, fy: 0.62 }, dur: 6 },
@@ -116,7 +116,7 @@ export const INTRO_PANELS: StoryPanel[] = [
   },
   {
     chapter: 'PROLOGUE',
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'Eleven minutes. That is a personal best.',
     scene: {
       world: 1, mood: 'day', particles: 'petals', zoom: 1.25, focusX: 0.4,
@@ -125,8 +125,8 @@ export const INTRO_PANELS: StoryPanel[] = [
   },
   {
     chapter: 'PROLOGUE',
-    speaker: 'Jennifur',
-    text: 'Slomatt, look! The Heartbloom opened overnight! Grandma says it only blossoms when the whole forest is happy.',
+    speaker: 'Meeca',
+    text: 'Pokey, look! The Heartbloom opened overnight! Grandma says it only blossoms when the whole forest is happy.',
     scene: {
       world: 1, mood: 'day', particles: 'petals', zoom: 1.45, focusX: 0.5,
       actors: [
@@ -138,7 +138,7 @@ export const INTRO_PANELS: StoryPanel[] = [
   },
   {
     chapter: 'PROLOGUE',
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'Then the forest must be very happy. …Or you have been singing to it again.',
     scene: {
       world: 1, mood: 'day', particles: 'petals', zoom: 1.5, focusX: 0.44,
@@ -151,7 +151,7 @@ export const INTRO_PANELS: StoryPanel[] = [
   },
   {
     chapter: 'PROLOGUE',
-    speaker: 'Jennifur',
+    speaker: 'Meeca',
     text: 'Both. Mostly the second. Every realm leans on this flower, you know. It keeps the rain gentle, and the rivers kind, and the thorns asleep.',
     scene: {
       world: 4, mood: 'day', particles: 'petals', zoom: 1.0,
@@ -182,7 +182,7 @@ export const INTRO_PANELS: StoryPanel[] = [
   {
     chapter: 'THE STORM',
     speaker: 'Narrator',
-    text: 'Slomatt ran. It was the fastest he had ever run. It was not fast enough.',
+    text: 'Pokey ran. It was the fastest he had ever run. It was not fast enough.',
     scene: {
       world: 1, mood: 'storm', particles: 'rain', zoom: 1.12, focusX: 0.4,
       actors: [{ kind: 'milo', x: 0.2, scale: 1.0, seq: [{ at: 0, frame: ['run_a', 'run_b', 'run_c', 'run_d', 'run_e', 'run_f', 'run_g', 'run_h', 'run_i', 'run_j'], fps: 12, dx: 0.4, dur: 4, ease: 'linear' }] }],
@@ -190,8 +190,8 @@ export const INTRO_PANELS: StoryPanel[] = [
   },
   {
     chapter: 'THE STORM',
-    speaker: 'Jennifur',
-    text: 'Slomatt! Follow the petals! I will leave you a trail, I promise!',
+    speaker: 'Meeca',
+    text: 'Pokey! Follow the petals! I will leave you a trail, I promise!',
     scene: {
       world: 1, mood: 'storm', particles: 'petals', zoom: 1.12, focusX: 0.45,
       actors: [
@@ -202,8 +202,8 @@ export const INTRO_PANELS: StoryPanel[] = [
   },
   {
     chapter: 'THE VOW',
-    speaker: 'Slomatt',
-    text: 'I am not fast. I am not fierce. But I have never once let go of someone I love. Hang on, Jennifur.',
+    speaker: 'Pokey',
+    text: 'I am not fast. I am not fierce. But I have never once let go of someone I love. Hang on, Meeca.',
     scene: {
       world: 1, mood: 'dusk', particles: 'petals', zoom: 1.5, focusX: 0.5, focusY: 0.55,
       actors: [{ kind: 'milo', x: 0.5, scale: 1.5 }],
@@ -212,7 +212,7 @@ export const INTRO_PANELS: StoryPanel[] = [
   {
     chapter: 'THE EXPEDITION',
     speaker: 'Narrator',
-    text: 'Ten realms lay between Slomatt and the Highland Fortress, each ruled by one of the General\'s guardians. One hundred trials. One very determined sloth.',
+    text: 'Ten realms lay between Pokey and the Highland Fortress, each ruled by one of the General\'s guardians. One hundred trials. One very determined sloth.',
     scene: { world: 4, mood: 'dusk', actors: [], lineup: true, particles: 'sparkles' },
   },
 ];
@@ -227,15 +227,15 @@ const W = (world: number, mood: SceneMood = 'day'): StoryScene => ({
   world, mood, actors: [], particles: 'sparkles', zoom: 1.2, focusX: 0.5,
 });
 
-/** Slomatt looks around, and the guardian of the world waits in silhouette */
+/** Pokey looks around, and the guardian of the world waits in silhouette */
 function look(world: number, chapter: string, text: string, mood: SceneMood = 'day', extra: Partial<StoryScene> = {}): StoryPanel {
   return {
-    chapter, speaker: 'Slomatt', text,
+    chapter, speaker: 'Pokey', text,
     scene: { ...W(world, mood), ...extra, actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
   };
 }
 
-/** Dot the hummingbird courier hovers beside Slomatt and reads out Jennifur's latest note */
+/** Dot the hummingbird courier hovers beside Pokey and reads out Meeca's latest note */
 function dotNote(world: number, chapter: string, text: string, mood: SceneMood = 'day', extra: Partial<StoryScene> = {}): StoryPanel {
   return {
     chapter, speaker: 'Dot', text,
@@ -256,16 +256,16 @@ const C10 = 'WORLD 10 · STORMY HIGHLANDS';
 
 export const WORLD_STORIES: Record<number, WorldStory> = {
   1: {
-    teaser: 'Jennifur\'s trail begins in the treetops.',
+    teaser: 'Meeca\'s trail begins in the treetops.',
     panels: [
-      look(1, C1, 'A pink petal! Jennifur was here. The trail leads up through the Emerald Canopy, and something large has been slithering through these branches.'),
-      dotNote(1, C1, 'Dot. Courier. I carry notes for a keeper who is, please do not ask, currently locked in a tower. This one says: "Slomatt, if you are reading this you have found a petal. Congratulations. Do not stop to smell it. Smell it later."'),
+      look(1, C1, 'A pink petal! Meeca was here. The trail leads up through the Emerald Canopy, and something large has been slithering through these branches.'),
+      dotNote(1, C1, 'Dot. Courier. I carry notes for a keeper who is, please do not ask, currently locked in a tower. This one says: "Pokey, if you are reading this you have found a petal. Congratulations. Do not stop to smell it. Smell it later."'),
     ],
   },
   2: {
     teaser: 'The river hides a very hungry king.',
     panels: [
-      look(2, C2, 'More petals, floating downstream. Jennifur is making sure I do not get lost. Those river stones look slippery, and those logs look suspiciously like teeth.'),
+      look(2, C2, 'More petals, floating downstream. Meeca is making sure I do not get lost. Those river stones look slippery, and those logs look suspiciously like teeth.'),
       dotNote(2, C2, 'Note from the tower: "The river guard shouts his warnings very, very late. He means well. The warning will arrive after the danger. Please take it in the spirit it was meant."'),
     ],
   },
@@ -286,7 +286,7 @@ export const WORLD_STORIES: Record<number, WorldStory> = {
   5: {
     teaser: 'Orchids bloom, and so do cobwebs.',
     panels: [
-      look(5, C5, 'A carving in the bark: "Slomatt, I know you will save me." Jennifur! But the silk threads between these orchids are thicker than vines…'),
+      look(5, C5, 'A carving in the bark: "Pokey, I know you will save me." Meeca! But the silk threads between these orchids are thicker than vines…'),
       dotNote(5, C5, 'Note: "The Tarantula Queen invites everyone to tea. I accepted once. The tea was lovely. Leaving was the problem."'),
     ],
   },
@@ -300,21 +300,21 @@ export const WORLD_STORIES: Record<number, WorldStory> = {
   7: {
     teaser: 'Crumbling temples guard a stony secret.',
     panels: [
-      look(7, C7, 'Moss-covered statues, golden idols, and a temple door that is slightly open. Jennifur came through here. So did something very heavy.'),
+      look(7, C7, 'Moss-covered statues, golden idols, and a temple door that is slightly open. Meeca came through here. So did something very heavy.'),
       dotNote(7, C7, 'Note: "The Golem is the slowest talker in the forest. You will get on wonderfully. Do not finish his sentences. He hates that. It took him a week to tell me so."'),
     ],
   },
   8: {
     teaser: 'Fireflies, moonlight, and a monarch of the night.',
     panels: [
-      look(8, C8, 'The sun has gone to bed and the fireflies are awake. I would sleep too, but Jennifur is out there somewhere, and so is something with very large wings.', 'night'),
+      look(8, C8, 'The sun has gone to bed and the fireflies are awake. I would sleep too, but Meeca is out there somewhere, and so is something with very large wings.', 'night'),
       {
         chapter: C8, speaker: 'Narrator',
-        text: 'Slomatt sat down on a branch to rest his eyes. His eyes had other plans.',
+        text: 'Pokey sat down on a branch to rest his eyes. His eyes had other plans.',
         scene: { ...W(8, 'night'), zoom: 1.3, focusX: 0.4, actors: [{ kind: 'milo', x: 0.4, y: 1.04, scale: 1.25, portrait: true, seq: [{ at: 0, frame: 'face_calm' }, { at: 2.4, frame: 'face_calm_closed' }] }] },
       },
       ...PROMISE_PANELS,
-      dotNote(8, C8, 'Wake up. You were mumbling. Mostly about a petal. Here, a note: "Slomatt, I am quite sure you are asleep right now. It is fine. I would be too. Keep going."', 'night'),
+      dotNote(8, C8, 'Wake up. You were mumbling. Mostly about a petal. Here, a note: "Pokey, I am quite sure you are asleep right now. It is fine. I would be too. Keep going."', 'night'),
     ],
   },
   9: {
@@ -325,10 +325,10 @@ export const WORLD_STORIES: Record<number, WorldStory> = {
     ],
   },
   10: {
-    teaser: 'The Highland Fortress. Jennifur is close.',
+    teaser: 'The Highland Fortress. Meeca is close.',
     panels: [
-      look(10, C10, 'There it is: the Highland Fortress, and the lightning above it. Every guardian is behind me now. Jennifur, I can see the tower. One last climb.', 'storm', { particles: 'rain' }),
-      dotNote(10, C10, 'Last note: "I am not scared anymore. He sits with me. He does not talk much. I think he is waiting for something. Come soon, Slomatt. And be kind when you come."', 'storm', { particles: 'rain' }),
+      look(10, C10, 'There it is: the Highland Fortress, and the lightning above it. Every guardian is behind me now. Meeca, I can see the tower. One last climb.', 'storm', { particles: 'rain' }),
+      dotNote(10, C10, 'Last note: "I am not scared anymore. He sits with me. He does not talk much. I think he is waiting for something. Come soon, Pokey. And be kind when you come."', 'storm', { particles: 'rain' }),
     ],
   },
 };
@@ -343,34 +343,34 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   1: {
     intro: [
       { speaker: 'Venom Fang', text: 'Sssilly sloth. Do you know how long it takes you to climb one tree? Long enough for me to eat you twice.' },
-      { speaker: 'Slomatt', text: 'Then I will have to be quick about it. Where is Jennifur?' },
+      { speaker: 'Pokey', text: 'Then I will have to be quick about it. Where is Meeca?' },
     ],
     defeat: [
       { speaker: 'Venom Fang', text: 'Impossssible… a sloth, tied me in a knot… The General\'sss fortress is north. Go on, sssnack.' },
-      { speaker: 'Slomatt', text: 'Thank you. And I am sorry about the knot. Mostly.' },
+      { speaker: 'Pokey', text: 'Thank you. And I am sorry about the knot. Mostly.' },
     ],
     tip: 'Venom Fang strikes after a red ring flashes. Jump over the lunge, then punch his head.',
   },
   2: {
     intro: [
       { speaker: 'Crocus Rex', text: 'These waters belong to me! Nobody crosses my river without paying a toll. Today\'s toll is you.' },
-      { speaker: 'Slomatt', text: 'I only have a petal and a very polite request. Please let me through.' },
+      { speaker: 'Pokey', text: 'I only have a petal and a very polite request. Please let me through.' },
       { speaker: 'Crocus Rex', text: 'A petal? The little keeper came by wearing a crown of them. Made me wear one too. I looked magnificent. Do NOT tell the General.' },
     ],
     defeat: [
       { speaker: 'Crocus Rex', text: 'Blub… my crown… my dignity… Fine! The river is open. The General is not as forgiving as I am.' },
-      { speaker: 'Slomatt', text: 'Noted. Please keep the crown. It suits you.' },
+      { speaker: 'Pokey', text: 'Noted. Please keep the crown. It suits you.' },
     ],
     tip: 'Crocus Rex opens his jaws wide before he snaps. Hit his head when the jaws close.',
   },
   3: {
     intro: [
       { speaker: 'Shadow Prowler', text: 'You cannot punch what you cannot catch, little sloth. I am the dark between the glowworm threads.' },
-      { speaker: 'Slomatt', text: 'I have all day. Literally. I am a sloth.' },
+      { speaker: 'Pokey', text: 'I have all day. Literally. I am a sloth.' },
     ],
     defeat: [
-      { speaker: 'Shadow Prowler', text: 'You… waited. You just waited, and I got tired. Nobody ever does that. Jennifur passed north, toward the clouds.' },
-      { speaker: 'Slomatt', text: 'Patience is my best move. It is also my only move.' },
+      { speaker: 'Shadow Prowler', text: 'You… waited. You just waited, and I got tired. Nobody ever does that. Meeca passed north, toward the clouds.' },
+      { speaker: 'Pokey', text: 'Patience is my best move. It is also my only move.' },
       { speaker: 'Shadow Prowler', text: 'The thorns on our necks are called the Iron Pact. None of us chose it. Find out who did.' },
     ],
     tip: 'Shadow Prowler vanishes, then pounces. Watch the glowing eyes and strike as he lands.',
@@ -378,22 +378,22 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   4: {
     intro: [
       { speaker: 'Sky Sovereign', text: 'No creature climbs past my cliffs. Behold the Harpy Matriarch, queen of the winds!' },
-      { speaker: 'Slomatt', text: 'Your Majesty, I only need to get past. Jennifur needs me.' },
+      { speaker: 'Pokey', text: 'Your Majesty, I only need to get past. Meeca needs me.' },
     ],
     defeat: [
       { speaker: 'Sky Sovereign', text: 'A sloth, outflying a queen… Ha! And I am relieved, honestly. Your courage is worth a feather. Take the wind lane, it leads to the orchids.' },
-      { speaker: 'Slomatt', text: 'You are kinder than your talons suggest.' },
+      { speaker: 'Pokey', text: 'You are kinder than your talons suggest.' },
     ],
     tip: 'Sky Sovereign dives from above. Dodge sideways, then punch her as she pulls out of the dive.',
   },
   5: {
     intro: [
       { speaker: 'Tarantula Queen', text: 'Welcome to my sanctuary, dear. Do stay awhile. Everyone does. Eventually.' },
-      { speaker: 'Slomatt', text: 'That is very polite, and also very sticky. No thank you.' },
+      { speaker: 'Pokey', text: 'That is very polite, and also very sticky. No thank you.' },
     ],
     defeat: [
       { speaker: 'Tarantula Queen', text: 'My webs, my beautiful webs! Hmph. The mangrove swamp is next. Mind the Reaver. He is not polite.' },
-      { speaker: 'Slomatt', text: 'I will remember that. Thank you for the warning, Your Majesty.' },
+      { speaker: 'Pokey', text: 'I will remember that. Thank you for the warning, Your Majesty.' },
       { speaker: 'Tarantula Queen', text: 'And, dear: the General is not afraid of you. He is afraid of being late. Remember that when you meet him.' },
     ],
     tip: 'The Queen shoots webs in a spread. Jump between them and punch her when she drops down.',
@@ -401,24 +401,24 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   6: {
     intro: [
       { speaker: 'Marsh Reaver', text: 'Hssst. Who wades into the Reaver\'s blackwater? Nobody wades into the Reaver\'s blackwater!' },
-      { speaker: 'Slomatt', text: 'Sorry! I was only passing through. Very, very slowly. Is that a real spear?' },
+      { speaker: 'Pokey', text: 'Sorry! I was only passing through. Very, very slowly. Is that a real spear?' },
       { speaker: 'Marsh Reaver', text: '…Wait. You are the sloth. The General talks about you at every meal. "The sloth is coming. The sloth is slow. The sloth is somehow still coming." I thought you would be taller.' },
-      { speaker: 'Slomatt', text: 'I get that a lot.' },
+      { speaker: 'Pokey', text: 'I get that a lot.' },
     ],
     defeat: [
       { speaker: 'Marsh Reaver', text: 'Hrmph… fine. Keep your feet. The ruins are past the reeds. Nobody tells the General a sloth got past my spear.' },
-      { speaker: 'Slomatt', text: 'My lips are sealed. Mind the mud, and keep that spear pointed somewhere else.' },
+      { speaker: 'Pokey', text: 'My lips are sealed. Mind the mud, and keep that spear pointed somewhere else.' },
     ],
     tip: 'The Reaver smashes the ground to send out mud waves. Jump on the beat, duck the spear thrust, then punch him while he recovers.',
   },
   7: {
     intro: [
       { speaker: 'Stone Idol Golem', text: 'I… am… the guardian… of the… ancient… temple. None… may… pass.' },
-      { speaker: 'Slomatt', text: 'Finally, somebody who talks as slowly as I do.' },
+      { speaker: 'Pokey', text: 'Finally, somebody who talks as slowly as I do.' },
     ],
     defeat: [
-      { speaker: 'Stone Idol Golem', text: 'Crumble… the rune… is broken. The way up… is open. Jennifur… went… that way.' },
-      { speaker: 'Slomatt', text: 'Thank you. Rest well, old friend.' },
+      { speaker: 'Stone Idol Golem', text: 'Crumble… the rune… is broken. The way up… is open. Meeca… went… that way.' },
+      { speaker: 'Pokey', text: 'Thank you. Rest well, old friend.' },
       { speaker: 'Stone Idol Golem', text: 'Behind… the rune… there is… a photograph. He… asked me… to keep it… from you. I… am… sorry.' },
     ],
     tip: 'The Golem\'s rune glows before a smash. Dodge it, then punch the glowing rune on his chest.',
@@ -426,35 +426,35 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   8: {
     intro: [
       { speaker: 'Night-Wing Monarch', text: 'The night belongs to me, little climber. Every star above this canopy answers to my wings.' },
-      { speaker: 'Slomatt', text: 'I do not want your stars. I want my friend back.' },
+      { speaker: 'Pokey', text: 'I do not want your stars. I want my friend back.' },
     ],
     defeat: [
       { speaker: 'Night-Wing Monarch', text: 'Hm. Even the night bows to loyalty. Take the lava road. The Drake awaits, and he has not had company in a century.' },
-      { speaker: 'Slomatt', text: 'I will try to be good company.' },
+      { speaker: 'Pokey', text: 'I will try to be good company.' },
     ],
     tip: 'The Monarch swoops in the dark. Listen for the screech, dodge, then punch as he turns.',
   },
   9: {
     intro: [
       { speaker: 'Magma Drake', text: 'Another visitor! You will make a fine snack. Or a fine hat. I have not decided.' },
-      { speaker: 'Slomatt', text: 'I would prefer neither. May I pass? Please? I brought a petal.' },
+      { speaker: 'Pokey', text: 'I would prefer neither. May I pass? Please? I brought a petal.' },
       { speaker: 'Magma Drake', text: 'Hm. Most visitors are the General\'s soldiers, and they never bring petals. Very well. Let us see what a petal can do.' },
     ],
     defeat: [
       { speaker: 'Magma Drake', text: 'Cough! You put out my fire with your sheer… stubbornness. Go. The General\'s fortress is just beyond the clouds.' },
-      { speaker: 'Slomatt', text: 'Thank you. Drink some water. You sound terrible.' },
+      { speaker: 'Pokey', text: 'Thank you. Drink some water. You sound terrible.' },
     ],
     tip: 'The Drake breathes fire along the ground. Jump the flame, then punch when he rears back.',
   },
   10: {
     intro: [
       { speaker: 'General Iron-Claw', text: 'You crossed ten realms for a flower-keeper? Foolish sloth. I rule the Highlands, and soon, everything below it.' },
-      { speaker: 'Slomatt', text: 'She is not just a flower-keeper. She is my best friend. Give her back, General.' },
+      { speaker: 'Pokey', text: 'She is not just a flower-keeper. She is my best friend. Give her back, General.' },
       { speaker: 'General Iron-Claw', text: 'Slow gets people killed, sloth. I have buried what slow costs. I will not bury another.' },
     ],
     defeat: [
       { speaker: 'General Iron-Claw', text: 'Impossible… I was the strongest in the whole forest. Why did you not give up?' },
-      { speaker: 'Slomatt', text: 'Because I was never fighting for the forest. I was fighting for her.' },
+      { speaker: 'Pokey', text: 'Because I was never fighting for the forest. I was fighting for her.' },
     ],
     tip: 'Iron-Claw lunges with his steel claw and stomps. Dodge both, then punch his helmet.',
   },
@@ -469,13 +469,13 @@ const BOSS_MOODS: Record<number, SceneMood> = { 3: 'night', 6: 'dusk', 8: 'night
 export function thornbarkPanels(kind: 'intro' | 'defeat'): StoryPanel[] {
   const intro = [
     { speaker: 'Thornbark', text: 'Grrr… the thorns… they whisper… Leave this hollow, little sloth…' },
-    { speaker: 'Slomatt', text: 'You were the Jungle Guardian. Grandma told me about you. The thorns did this to you, didn\'t they?' },
+    { speaker: 'Pokey', text: 'You were the Jungle Guardian. Grandma told me about you. The thorns did this to you, didn\'t they?' },
     { speaker: 'Thornbark', text: 'I cannot stop them… they want you gone. RUN… or FIGHT.' },
   ];
   const defeat = [
     { speaker: 'Thornbark', text: 'The thorns… they are gone. I can think again. Thank you, small sloth.' },
-    { speaker: 'Slomatt', text: 'Slow and steady. That is the whole trick.' },
-    { speaker: 'Thornbark', text: 'Take this Thorn Heart. The forest gives strength to the kind. Go and find your Jennifur.' },
+    { speaker: 'Pokey', text: 'Slow and steady. That is the whole trick.' },
+    { speaker: 'Thornbark', text: 'Take this Thorn Heart. The forest gives strength to the kind. Go and find your Meeca.' },
   ];
   const lines = kind === 'intro' ? intro : defeat;
   return lines.map((line, i) => ({
@@ -487,12 +487,12 @@ export function thornbarkPanels(kind: 'intro' | 'defeat'): StoryPanel[] {
       world: 7,
       mood: 'night' as SceneMood,
       zoom: 1.5,
-      focusX: line.speaker === 'Slomatt' ? 0.28 : 0.7,
+      focusX: line.speaker === 'Pokey' ? 0.28 : 0.7,
       focusY: 0.58,
       particles: 'sparkles' as const,
       actors: [
-        { kind: 'milo' as const, x: 0.24, scale: 1.0, pose: kind === 'defeat' && line.speaker === 'Slomatt' ? ('happy' as const) : ('idle' as const) },
-        { kind: 'thornbark' as const, x: 0.72, scale: 1.0, facing: -1 as const, angry: kind === 'intro' && line.speaker !== 'Slomatt', beaten: kind === 'defeat' },
+        { kind: 'milo' as const, x: 0.24, scale: 1.0, pose: kind === 'defeat' && line.speaker === 'Pokey' ? ('happy' as const) : ('idle' as const) },
+        { kind: 'thornbark' as const, x: 0.72, scale: 1.0, facing: -1 as const, angry: kind === 'intro' && line.speaker !== 'Pokey', beaten: kind === 'defeat' },
       ],
     },
   }));
@@ -512,14 +512,14 @@ export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: st
       world,
       mood,
       zoom: 1.5,
-      focusX: line.speaker === 'Slomatt' ? 0.28 : 0.7,
+      focusX: line.speaker === 'Pokey' ? 0.28 : 0.7,
       focusY: 0.58,
       particles: world === 9 ? 'embers' : world === 10 ? 'rain' : 'sparkles',
       actors: [
-        { kind: 'milo', x: 0.24, scale: 1.0, pose: kind === 'defeat' && line.speaker === 'Slomatt' ? 'happy' : 'idle' },
+        { kind: 'milo', x: 0.24, scale: 1.0, pose: kind === 'defeat' && line.speaker === 'Pokey' ? 'happy' : 'idle' },
         {
           kind: 'boss', world, x: 0.72, scale: 1.0, facing: -1,
-          angry: kind === 'intro' && line.speaker !== 'Slomatt',
+          angry: kind === 'intro' && line.speaker !== 'Pokey',
           beaten: kind === 'defeat',
         },
       ],

@@ -1,6 +1,6 @@
 /** The two recurring melodies, kept apart from the score so the composer can use them too. */
 
-/** Slomatt's theme: 8 bars of scale degrees (works in major for joy, minor for longing) */
+/** Pokey's theme: 8 bars of scale degrees (works in major for joy, minor for longing) */
 export const SLOMATT_A = [
   '5:3 5:1 6:2 5:2 3:4 r:4',
   '2:3 3:1 2:2 1:2 7,:4 r:4',

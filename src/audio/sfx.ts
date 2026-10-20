@@ -227,7 +227,7 @@ const GRUNTS: Record<GruntKind, { f0: number; f1: number; dur: number; a: [numbe
 };
 
 /**
- * Slomatt's voice: a buzzing throat tone pushed through two vowel-shaped filters (formants), plus a breath of noise.
+ * Pokey's voice: a buzzing throat tone pushed through two vowel-shaped filters (formants), plus a breath of noise.
  * It is a short, friendly effort sound, not a word.
  */
 export function grunt(core: AudioCore, dst: AudioNode, t: number, kind: GruntKind, pitch = 1, level = 1) {
@@ -691,7 +691,7 @@ export const SFX: Record<string, Fx> = {
     streakSparkle(core, key, t + 0.1, d);
   },
 
-  /** Slomatt is hurt: a thud, a falling "oof" in his voice and a sting (four pitches) */
+  /** Pokey is hurt: a thud, a falling "oof" in his voice and a sting (four pitches) */
   hurt(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.2);
@@ -975,8 +975,12 @@ export const SFX: Record<string, Fx> = {
   uiTap(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.1);
-    smp(core, d, t, 'uiClick', { gain: 0.9, rate: 1.0 });
-    rim(core, d, t, 0.35);
+    // the orchestral set takes the edge off the click: a lower, rounder tick and no rim shot
+    if (ORCH) smp(core, d, t, 'uiClick', { gain: 0.9, rate: 0.8, lp: 3200 });
+    else {
+      smp(core, d, t, 'uiClick', { gain: 0.9, rate: 1.0 });
+      rim(core, d, t, 0.35);
+    }
   },
   uiConfirm(core, key) {
     const t = core.ctx.currentTime;

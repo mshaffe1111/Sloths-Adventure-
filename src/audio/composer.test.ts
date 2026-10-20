@@ -89,7 +89,7 @@ test('the lead melody is in key, singable, and mostly stepwise', () => {
           prev = n.midi;
         }
       }
-      // Slomatt's own tune (when it is used) has its characteristic leaps; the composed ones should mostly move by step
+      // Pokey's own tune (when it is used) has its characteristic leaps; the composed ones should mostly move by step
       if (!info.hero) {
         ratios.push(leaps / moves);
         assert.ok(leaps / moves < 0.4, `${th.id}: ${leaps}/${moves} leaps`);
@@ -272,8 +272,8 @@ for (const [kind, id] of KINDS) {
 
 test('the story scores use the recurring tunes', () => {
   const lead = (th: Theme) => th.tracks.filter((t) => t.kind === 'melody' && t.name.startsWith('lead')).flatMap((t) => (t.kind === 'melody' ? t.bars : []));
-  assert.ok(lead(composeStory('dusk')).includes("5:3 5:1 6:2 5:2 3:4 r:4"), "Slomatt's theme in the vow");
-  assert.ok(lead(composeStory('ending')).includes("5:3 5:1 6:2 5:2 3:4 r:4"), "Slomatt's theme in the ending");
+  assert.ok(lead(composeStory('dusk')).includes("5:3 5:1 6:2 5:2 3:4 r:4"), "Pokey's theme in the vow");
+  assert.ok(lead(composeStory('ending')).includes("5:3 5:1 6:2 5:2 3:4 r:4"), "Pokey's theme in the ending");
   assert.ok(lead(composeStory('storm')).includes('1:3 b2:1 1:2 7,:2 1:4 r:4'), "Iron-Claw's motif in the storm");
 });
 

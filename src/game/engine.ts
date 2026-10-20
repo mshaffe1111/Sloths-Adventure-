@@ -80,7 +80,7 @@ import { maxHearts } from './secret.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 
 /** How many world units tall the screen shows. */
-/** how long Slomatt crouches beside a Hush Fern before it gives up what it hides */
+/** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
 const FIND_SEARCH_SECONDS = 0.9;
 
 const WORLD_VIEW_H = 540;
@@ -108,9 +108,9 @@ export interface GameEngineCallbacks {
   /** the game loop failed over and over: the app should leave the stage */
   onFatal?: () => void;
   onBossEncounter?: (boss: BossEntity) => void;
-  /** Slomatt stepped through the hidden Thorn Gate */
+  /** Pokey stepped through the hidden Thorn Gate */
   onSecret?: () => void;
-  /** Slomatt picked up a note, book or keepsake (see finds.ts); the app shows it */
+  /** Pokey picked up a note, book or keepsake (see finds.ts); the app shows it */
   onFind?: (findId: string) => void;
   /** the boss bar: sent only when something on it changes */
   /** the first-stage lesson moved to a new step (or ended): the app shows or clears the hint */
@@ -131,7 +131,7 @@ export class GameEngine {
   private platforms: Platform[];
   private vines: Vine[];
   private ropes: Rope[];
-  /** the skills Slomatt has (worked out from the stages he has cleared) */
+  /** the skills Pokey has (worked out from the stages he has cleared) */
   private skills: Set<SkillId>;
   private ropeCooldown = 0;
   private ropeGrace = 0;
@@ -155,7 +155,7 @@ export class GameEngine {
   /** seconds the player is stuck in web or goo (he runs slower) */
   private slowTimer = 0;
   private minionSeq = 0;
-  /** 1 = normal; below 1 pulls the camera back so the boss and Slomatt both stay in view */
+  /** 1 = normal; below 1 pulls the camera back so the boss and Pokey both stay in view */
   private bossZoom = 1;
 
   private camera: Camera;
@@ -216,7 +216,7 @@ export class GameEngine {
   private statKills: Record<string, number> = {};
   private statSeen = new Set<string>();
   private seenCheck = 0;
-  // the reward Slomatt wears
+  // the reward Pokey wears
   private trailOn = false;
   private trailT = 0;
   private barrierMsgCooldown = 0;
@@ -236,7 +236,7 @@ export class GameEngine {
   private readonly maxLives: number = 3;
   private checkpoint = { x: 0, y: 0 };
   private respawnFlash = 0;
-  /** Seconds at the start of a stage / after a respawn where run input is ignored, so Slomatt is dropped in standing still. */
+  /** Seconds at the start of a stage / after a respawn where run input is ignored, so Pokey is dropped in standing still. */
   private inputGrace = 0.5;
 
   // --- fight system (see fight.ts) ---
@@ -247,7 +247,7 @@ export class GameEngine {
   private chainTimer = 0;
   private swingId = 0;
   private megaCooldown = 0;
-  /** after a stomp, a short breather where nothing can hurt Slomatt (the thing he landed on is not a threat any more) */
+  /** after a stomp, a short breather where nothing can hurt Pokey (the thing he landed on is not a threat any more) */
   private stompGrace = 0;
   /** stomps in a row without touching the ground */
   private stompChain = 0;
@@ -698,7 +698,7 @@ export class GameEngine {
     }
 
     if (this.comboCount > this.statMaxCombo) this.statMaxCombo = this.comboCount;
-    // the sparkle trail reward: stardust drifting off Slomatt as he moves
+    // the sparkle trail reward: stardust drifting off Pokey as he moves
     if (this.trailOn && Math.abs(this.player.vx) > 40 && (this.trailT += dt) > 0.04) {
       this.trailT = 0;
       const pl = this.player;
@@ -1179,7 +1179,7 @@ export class GameEngine {
 
         // Check if player is horizontally within platform (generous width tolerance)
         // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
-        // Slomatt standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
+        // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
         const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26 + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
         if (p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width) {
@@ -1362,7 +1362,7 @@ export class GameEngine {
             e.dive = undefined;
           }
         } else if (e.swoopPhase === 'hover') {
-          // VULNERABLE LOW GLIDE: it faces Slomatt and settles at his height, within reach of a punch or kick
+          // VULNERABLE LOW GLIDE: it faces Pokey and settles at his height, within reach of a punch or kick
           e.hoverTimer = (e.hoverTimer ?? 1.4) - dt;
           e.facing = stepGlide(e, p, dt);
           if (e.hoverTimer <= 0) {
@@ -1930,7 +1930,7 @@ export class GameEngine {
       },
     });
 
-    // ---- what hurts Slomatt ----
+    // ---- what hurts Pokey ----
     const boxes: Rect[] = [];
     if (bodyHurts(b)) boxes.push({ x: b.x - b.width / 2, y: b.y - b.height / 2, w: b.width, h: b.height });
     for (const r of br.hurt) boxes.push(r);
@@ -1979,7 +1979,7 @@ export class GameEngine {
       this.daisyRescued = true;
       sound.playBossVictory();
       this.camera.trauma = 0.9;
-      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : 'VICTORY! JENNIFUR IS SAVED!', b.x, b.y - 70, '#ec4899');
+      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : 'VICTORY! MEECA IS SAVED!', b.x, b.y - 70, '#ec4899');
       this.spawnDebrisBurst(b.x, b.y, '#dc2626');
     }
     this.reportBoss();
@@ -2042,7 +2042,7 @@ export class GameEngine {
   // The fight system (rules live in fight.ts; this is the part that touches the world)
   // ===========================================================================================
 
-  /** world rect of Slomatt's hurt box, as the four numbers checkAABBCollision wants */
+  /** world rect of Pokey's hurt box, as the four numbers checkAABBCollision wants */
   private pBox(): [number, number, number, number] {
     const r = playerHurtRect(this.player);
     return [r.x, r.y, r.w, r.h];
@@ -2471,7 +2471,7 @@ export class GameEngine {
     return false;
   }
 
-  /** landing on an animal's back from above: it takes damage and Slomatt bounces; armored backs just bounce him */
+  /** landing on an animal's back from above: it takes damage and Pokey bounces; armored backs just bounce him */
   private resolveStomps(dt: number) {
     const p = this.player;
     if (this.stompGrace > 0) this.stompGrace -= dt;
@@ -2601,7 +2601,7 @@ export class GameEngine {
   }
 
   /**
-   * Shimmy ropes. Returns true while Slomatt is hanging from one (and this has done all his moving for the frame).
+   * Shimmy ropes. Returns true while Pokey is hanging from one (and this has done all his moving for the frame).
    * Grab: jump up so his hands reach the rope (or press Up under it). Move: Left/Right at a deliberate creep.
    * Let go: Down drops him, Jump hops off, and walking off either end lets go onto the ledge there.
    */
@@ -2929,7 +2929,7 @@ export class GameEngine {
     this.camera.targetY = p.y - vh * 0.55;
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
-      // frame both fighters, but never let Slomatt slip off the edge
+      // frame both fighters, but never let Pokey slip off the edge
       let tx = (p.x + bs.x) / 2 - vw / 2;
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
@@ -3069,9 +3069,9 @@ export class GameEngine {
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
-    // Render Jennifur if present in level
+    // Render Meeca if present in level
     if (this.currentStage.daisyX !== undefined && this.currentStage.daisyY !== undefined) {
-      // the painted Jennifur (scared while she is held, cheering once rescued), else the vector one
+      // the painted Meeca (scared while she is held, cheering once rescued), else the vector one
       let paintedJen = false;
       if (jennifurSpriteReady()) {
         ctx.save();
@@ -3146,7 +3146,7 @@ export class GameEngine {
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else drawHeroSloth(ctx, this.player, this.gameTime);
-    // the boss's attacks go over him, so a warning is never hidden behind Slomatt
+    // the boss's attacks go over him, so a warning is never hidden behind Pokey
     if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);
     if (this.debugBoxes) this.drawHitboxes(ctx);
 

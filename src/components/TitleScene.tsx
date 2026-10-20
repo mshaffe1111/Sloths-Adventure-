@@ -345,7 +345,7 @@ export const TitleFireflies: React.FC = () => (
 );
 
 /**
- * The painted Slomatt standing on top of the logo, looking out at the sunrise. A plain element placed from the
+ * The painted Pokey standing on top of the logo, looking out at the sunrise. A plain element placed from the
  * logo's own font size, so his feet stay on the letters at every screen size. Renders nothing when the classic
  * hero is selected (the hanging vector sloth in TitleHero takes over).
  */

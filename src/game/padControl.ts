@@ -1,7 +1,7 @@
 /**
  * padControl — the maths of the floating thumb pad. Pure, so it can be tested without a screen.
  *
- * The pad appears under the thumb (the anchor). The thumb's offset from the anchor says what Slomatt does:
+ * The pad appears under the thumb (the anchor). The thumb's offset from the anchor says what Pokey does:
  * sideways runs, down ducks, up jumps (and holds up, which is how trunks are climbed and ropes grabbed).
  */
 export const PAD = {

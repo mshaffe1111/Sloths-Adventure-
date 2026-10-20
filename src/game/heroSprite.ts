@@ -1,5 +1,5 @@
 /**
- * Painted hero. Draws Slomatt from the pose atlas (made from the Gemini pose sheet) instead of the code-drawn rig.
+ * Painted hero. Draws Pokey from the pose atlas (made from the Gemini pose sheet) instead of the code-drawn rig.
  *
  * It is a switch, not a replacement: `?hero=sprite` or `?hero=classic` in the address picks one for that session,
  * and `localStorage.sloth_hero = 'sprite'` keeps it. With nothing set, DEFAULT_SPRITE_HERO decides.
@@ -42,7 +42,7 @@ export function heroSpriteEnabled(): boolean {
 let atlas: HTMLImageElement | null = null;
 let ready = false;
 
-// the reward coat Slomatt wears (made once from the painted sheet, then reused)
+// the reward coat Pokey wears (made once from the painted sheet, then reused)
 let coat: Coat = 'none';
 const tinted: Partial<Record<Coat, HTMLCanvasElement | null>> = {};
 export function setHeroCoat(c: Coat) {

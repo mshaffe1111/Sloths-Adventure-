@@ -1,6 +1,6 @@
 /**
  * Painted Thornbark (the secret boss of Thornbark's Hollow, reached from stage 7-7): the corrupted guardian, a hulking dark sloth
- * with burning red eyes, a spiked rusted pauldron, a torn purple cape and a bone club. He replaces the old Slomatt-rig puppet.
+ * with burning red eyes, a spiked rusted pauldron, a torn purple cape and a bone club. He replaces the old Pokey-rig puppet.
  * A switch like the other painted creatures: `?thornbark=sprite` / `?thornbark=classic`, `localStorage.sloth_thornbark = 'sprite'`,
  * DEFAULT_SPRITE_THORNBARK otherwise (the puppet draws while the atlas loads or when it is off).
  *

@@ -1,5 +1,5 @@
 /**
- * skills — abilities Slomatt learns by clearing particular stages, and uses for the rest of the game.
+ * skills — abilities Pokey learns by clearing particular stages, and uses for the rest of the game.
  *
  * A skill is never stored on its own: it is worked out from which stages have been cleared, so old saves, backups and
  * New Game all stay right with no extra bookkeeping. The level builder and the beatability check use the same table:

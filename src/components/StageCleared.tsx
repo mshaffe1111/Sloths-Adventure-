@@ -78,7 +78,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
         </div>
 
         <div className="clr-hero">
-          <HeroPose frame="jump_up" height={heroH} label="Slomatt leaps for joy" />
+          <HeroPose frame="jump_up" height={heroH} label="Pokey leaps for joy" />
         </div>
 
         <div className="clr-main">
@@ -130,7 +130,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
                 <path d="M12 21C3 14 1 9 1 6a5.5 5.5 0 0 1 11-1.5A5.5 5.5 0 0 1 23 6c0 3-2 8-11 15z" />
               </svg>
               <div>
-                <h3>Jennifur's trail: {clue.title}</h3>
+                <h3>Meeca's trail: {clue.title}</h3>
                 <p>{clue.text}</p>
               </div>
             </div>

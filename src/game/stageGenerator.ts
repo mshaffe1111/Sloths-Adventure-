@@ -28,7 +28,7 @@ export interface GeneratedStage {
   trees: TreeStructure[];
   platforms: Platform[];
   vines: Vine[];
-  /** shimmy ropes across gaps (the engine only lets Slomatt use them once he has the skill) */
+  /** shimmy ropes across gaps (the engine only lets Pokey use them once he has the skill) */
   ropes?: Rope[];
   enemies: Enemy[];
   boss: BossEntity | null;

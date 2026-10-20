@@ -148,7 +148,7 @@ const impact = (b: BossEntity, c: BossCtx, shake: number, color: string) => {
 const VENOM: BossDef = {
   world: 1,
   name: 'Venom Fang',
-  // a giant: the painted boa is drawn 2.6 times its old size, so Slomatt is a small figure under its crown
+  // a giant: the painted boa is drawn 2.6 times its old size, so Pokey is a small figure under its crown
   scale: 2.6,
   w: 340,
   h: 230,
@@ -850,7 +850,7 @@ const MONARCH: BossDef = {
 const DRAKE: BossDef = {
   world: 9,
   name: 'Magma Drake',
-  // a giant: the painted frames are drawn 3.2 times their old size, so Slomatt is a small figure under it
+  // a giant: the painted frames are drawn 3.2 times their old size, so Pokey is a small figure under it
   scale: 3.2,
   w: 430,
   h: 220,

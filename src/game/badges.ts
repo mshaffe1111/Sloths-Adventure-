@@ -171,7 +171,7 @@ export const BADGES: BadgeDef[] = [
 
 export const BADGE_BY_ID: Record<string, BadgeDef> = Object.fromEntries(BADGES.map((b) => [b.id, b]));
 
-/** the rewards for Slomatt, unlocked by how many badges are earned */
+/** the rewards for Pokey, unlocked by how many badges are earned */
 export interface RewardDef {
   id: 'berry' | 'sparkle' | 'golden' | 'moonlight';
   name: string;
@@ -180,10 +180,10 @@ export interface RewardDef {
   blurb: string;
 }
 export const REWARDS: RewardDef[] = [
-  { id: 'berry', name: 'Berry Slomatt', need: 5, kind: 'color', blurb: 'A rosy berry coat' },
+  { id: 'berry', name: 'Berry Pokey', need: 5, kind: 'color', blurb: 'A rosy berry coat' },
   { id: 'sparkle', name: 'Sparkle Trail', need: 10, kind: 'trail', blurb: 'Stardust follows every step' },
-  { id: 'golden', name: 'Golden Slomatt', need: 20, kind: 'color', blurb: 'Shines like jungle gold' },
-  { id: 'moonlight', name: 'Moonlight Slomatt', need: 30, kind: 'color', blurb: 'A silvery night coat' },
+  { id: 'golden', name: 'Golden Pokey', need: 20, kind: 'color', blurb: 'Shines like jungle gold' },
+  { id: 'moonlight', name: 'Moonlight Pokey', need: 30, kind: 'color', blurb: 'A silvery night coat' },
 ];
 
 /** every badge the player has right now (earned before, or satisfied now) */

@@ -6,7 +6,7 @@
  * session, `localStorage.sloth_spider = 'sprite'` keeps it, and DEFAULT_SPRITE_SPIDER decides when nothing is set. It returns false
  * while the atlas loads (or when switched off, or for a spider hanging on a thread) and the caller then draws the vector spider.
  *
- * The spiderling just scuttles at Slomatt, so the poses are: a squash when it lands from the canopy, the walk cycle (driven by
+ * The spiderling just scuttles at Pokey, so the poses are: a squash when it lands from the canopy, the walk cycle (driven by
  * distance walked), fangs out when it is on top of him, an idle when it stands, and the usual hit reactions.
  */
 import type { Enemy } from './types.ts';
@@ -22,7 +22,7 @@ const GROUND = 12;
 /** world units walked per full 8-frame walk cycle */
 const STRIDE = 44;
 const WALK = ['walk_0', 'walk_1', 'walk_2', 'walk_3', 'walk_4', 'walk_5', 'walk_6', 'walk_7'];
-/** it is on top of Slomatt when the horizontal gap is this small */
+/** it is on top of Pokey when the horizontal gap is this small */
 const BITE_RANGE = 46;
 const LAND_T = 0.22;
 

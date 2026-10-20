@@ -111,7 +111,7 @@ export default function App() {
     if (skipStory) {
       startLevel(fresh[0]);
     } else {
-      // the prologue first: who Slomatt and Jennifur are, then stage 1-1
+      // the prologue first: who Pokey and Meeca are, then stage 1-1
       setStoryFrom('new');
       setScreen('story_cutscene');
     }
@@ -153,7 +153,7 @@ export default function App() {
   const [clearTime, setClearTime] = useState<number>(0);
   /** this clear beat the stored best score (or was the first), and the best score now */
   const [newBest, setNewBest] = useState<boolean>(false);
-  // skills Slomatt has, and any this stage just taught him (shown on the new-skill card before the stage-cleared card)
+  // skills Pokey has, and any this stage just taught him (shown on the new-skill card before the stage-cleared card)
   const [skills, setSkills] = useState<Set<SkillId>>(() => learnedSkills());
   const [newSkills, setNewSkills] = useState<SkillDef[]>([]);
   const [bestScore, setBestScore] = useState<number>(0);
@@ -177,7 +177,7 @@ export default function App() {
     };
   }, []);
 
-  // ---- the Trophy Room: badges earned, and the rewards Slomatt wears ----
+  // ---- the Trophy Room: badges earned, and the rewards Pokey wears ----
   const [badgeStore, setBadgeStore] = useState<BadgeStore>(() => loadBadgeStore());
   const [cosmetic, setCosmetic] = useState<CosmeticChoice>(() => loadCosmetic());
   const [freshBadges, setFreshBadges] = useState<BadgeDef[]>([]);

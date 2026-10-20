@@ -269,7 +269,7 @@ export interface Vine {
   swingAngle?: number;
 }
 
-/** A rope stretched across a gap. Slomatt can hang from it and shimmy along it once he has learned the skill (see rope.ts). */
+/** A rope stretched across a gap. Pokey can hang from it and shimmy along it once he has learned the skill (see rope.ts). */
 export interface Rope {
   id: number;
   /** the two ends (x), and the rope's height (y) at its ends */
@@ -299,7 +299,7 @@ export interface Collectible {
   hidden?: boolean;
   /** how far the search has got, 0..1 (hidden finds) */
   search?: number;
-  /** Slomatt stands close but is not crouching: draws the hint */
+  /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
 }
 

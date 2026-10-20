@@ -1,7 +1,7 @@
 /**
  * The story chapters that sit between the stages, besides the opening, the world cards and the boss scenes in story.ts:
- *  - five MEMORIES (warm, faded flashbacks) that explain why Slomatt keeps going,
- *  - the photograph in the ruins of World 7, where Slomatt learns who General Iron-Claw is,
+ *  - five MEMORIES (warm, faded flashbacks) that explain why Pokey keeps going,
+ *  - the photograph in the ruins of World 7, where Pokey learns who General Iron-Claw is,
  *  - the FINALE: the song, the ten guardians coming back, the armor cracking, the blessing, the way home.
  * Where the story needs somebody the game has no painted pose for (Grandma, the young General), it shows an old photograph from the
  * albums instead, so the finds and the cutscenes tell one story.
@@ -36,27 +36,27 @@ export interface MemoryDef {
   panels: StoryPanel[];
 }
 
-// a little Slomatt and a little Jennifur: the same painted pair, drawn smaller
+// a little Pokey and a little Meeca: the same painted pair, drawn smaller
 const KID = 0.78;
 
 const WAITING = chapter('MEMORY · THE WAITING', 1, 'day', [
   {
     speaker: 'Narrator',
-    text: 'Slomatt remembered the day they met. He had been crossing one single vine for two days.',
+    text: 'Pokey remembered the day they met. He had been crossing one single vine for two days.',
     scene: { zoom: 1.3, actors: [hero(0.5, { scale: KID, pose: 'idle' })] },
   },
   {
-    speaker: 'Jennifur',
+    speaker: 'Meeca',
     text: 'You have been on this vine since Tuesday. Is it a good vine?',
     scene: { zoom: 1.45, focusX: 0.52, actors: [hero(0.36, { scale: KID }), jen(0.66, { scale: KID, mood: 'happy' })] },
   },
   {
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'It is a very good vine. I am nearly halfway.',
     scene: { zoom: 1.5, focusX: 0.4, actors: [hero(0.36, { scale: KID, pose: 'happy' }), jen(0.66, { scale: KID, mood: 'happy' })] },
   },
   {
-    speaker: 'Jennifur',
+    speaker: 'Meeca',
     text: 'Then I will wait. I brought breakfast. The view is better when you go slowly.',
     scene: { zoom: 1.5, focusX: 0.6, particles: 'petals', actors: [hero(0.36, { scale: KID }), jen(0.66, { scale: KID, mood: 'cheer' })] },
   },
@@ -70,7 +70,7 @@ const WAITING = chapter('MEMORY · THE WAITING', 1, 'day', [
 const GARDEN = chapter('MEMORY · GRANDMA\'S GARDEN', 5, 'glow', [
   {
     speaker: 'Narrator',
-    text: 'The Heartbloom garden, years ago. Grandma was teaching Jennifur how to keep it.',
+    text: 'The Heartbloom garden, years ago. Grandma was teaching Meeca how to keep it.',
     scene: { zoom: 1.25, actors: [jen(0.62, { scale: KID }), { kind: 'bloom', x: 0.42, y: 0.8, scale: 1.2, stage: 'bud' }] },
   },
   {
@@ -80,16 +80,16 @@ const GARDEN = chapter('MEMORY · GRANDMA\'S GARDEN', 5, 'glow', [
   },
   {
     speaker: 'Narrator',
-    text: 'Young, clumsy Slomatt watered the wrong plant. Somebody else was always close by, quietly setting things right.',
+    text: 'Young, clumsy Pokey watered the wrong plant. Somebody else was always close by, quietly setting things right.',
     scene: { photo: { key: 's4_07', caption: 'Somebody was always nearby', size: 0.5, tilt: 0.02 } },
   },
   {
     speaker: 'Grandma',
-    text: 'Thank you for watering it anyway, Slomatt. And remember, dear: slow is not stopped.',
+    text: 'Thank you for watering it anyway, Pokey. And remember, dear: slow is not stopped.',
     scene: { photo: { key: 's3_02', caption: 'Grandma', size: 0.5, tilt: -0.02 } },
   },
   {
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'Slow is not stopped. I have said it a hundred times since.',
     scene: { zoom: 1.5, focusX: 0.4, actors: [hero(0.34, { scale: KID, pose: 'happy' }), jen(0.62, { scale: KID, mood: 'happy' }), { kind: 'bloom', x: 0.48, y: 0.8, scale: 1.0, stage: 'bloom' }] },
   },
@@ -98,16 +98,16 @@ const GARDEN = chapter('MEMORY · GRANDMA\'S GARDEN', 5, 'glow', [
 const STORM = chapter('MEMORY · THE SINGING STORM', 1, 'storm', [
   {
     speaker: 'Narrator',
-    text: 'A thunderstorm in the old nest. Slomatt did not like thunder. He had never told anyone.',
+    text: 'A thunderstorm in the old nest. Pokey did not like thunder. He had never told anyone.',
     scene: { zoom: 1.25, particles: 'rain', actors: [hero(0.5, { scale: KID, pose: 'duck' })] },
   },
   {
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'It is only weather. Weather is very loud, but it is only weather.',
     scene: { zoom: 1.5, focusX: 0.38, particles: 'rain', actors: [hero(0.36, { scale: KID, pose: 'duck' }), jen(0.66, { scale: KID, mood: 'happy' })] },
   },
   {
-    speaker: 'Jennifur',
+    speaker: 'Meeca',
     text: 'Close your eyes. I will sing it quiet.',
     scene: { zoom: 1.5, focusX: 0.6, particles: 'rain', actors: [hero(0.36, { scale: KID }), jen(0.66, { scale: KID, mood: 'happy' })] },
   },
@@ -117,13 +117,13 @@ const STORM = chapter('MEMORY · THE SINGING STORM', 1, 'storm', [
     scene: { zoom: 1.3, particles: 'petals', mood: 'dusk', actors: [hero(0.4, { scale: KID }), jen(0.6, { scale: KID, mood: 'happy' })] },
   },
   {
-    speaker: 'Jennifur',
+    speaker: 'Meeca',
     text: 'See? Everything slows down when it listens.',
     scene: { zoom: 1.55, focusX: 0.62, particles: 'petals', mood: 'dusk', actors: [hero(0.36, { scale: KID, pose: 'happy' }), jen(0.66, { scale: KID, mood: 'cheer' })] },
   },
   {
     speaker: 'Narrator',
-    text: 'That was when Slomatt understood that her gift was never magic. It was attention.',
+    text: 'That was when Pokey understood that her gift was never magic. It was attention.',
     scene: { zoom: 1.2, particles: 'sparkles', mood: 'dusk', actors: [jen(0.52, { scale: KID * 1.1, mood: 'happy' })] },
   },
 ], { memory: true });
@@ -132,26 +132,26 @@ const STORM = chapter('MEMORY · THE SINGING STORM', 1, 'storm', [
 export const PROMISE_PANELS = chapter('MEMORY · THE PROMISE', 8, 'night', [
   {
     speaker: 'Narrator',
-    text: 'In the dark of the Treetops Slomatt slept, and he dreamed of the stars over the old nest.',
+    text: 'In the dark of the Treetops Pokey slept, and he dreamed of the stars over the old nest.',
     scene: { zoom: 1.3, actors: [hero(0.36, { scale: KID }), jen(0.64, { scale: KID, mood: 'happy' })] },
   },
   {
-    speaker: 'Jennifur',
+    speaker: 'Meeca',
     text: 'Hold out your wrist. I am tying a petal to it, so you will always know the way back.',
     scene: { zoom: 1.55, focusX: 0.5, particles: 'petals', actors: [hero(0.38, { scale: KID }), jen(0.62, { scale: KID, mood: 'happy' })] },
   },
   {
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'I promise never to let go.',
     scene: { zoom: 1.6, focusX: 0.4, particles: 'petals', actors: [hero(0.38, { scale: KID, pose: 'happy' }), jen(0.62, { scale: KID, mood: 'happy' })] },
   },
   {
-    speaker: 'Jennifur',
+    speaker: 'Meeca',
     text: 'Not even if I go somewhere you cannot follow?',
     scene: { zoom: 1.6, focusX: 0.62, particles: 'petals', actors: [hero(0.38, { scale: KID }), jen(0.62, { scale: KID, mood: 'sad' })] },
   },
   {
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'Especially then.',
     scene: { zoom: 1.7, focusX: 0.4, particles: 'sparkles', actors: [hero(0.38, { scale: KID }), jen(0.62, { scale: KID, mood: 'happy' })] },
   },
@@ -165,12 +165,12 @@ export const PROMISE_PANELS = chapter('MEMORY · THE PROMISE', 8, 'night', [
 const BLESSING = chapter('MEMORY · THE BLESSING', 1, 'dusk', [
   {
     speaker: 'Narrator',
-    text: 'Years ago, a few weeks before everything changed, Slomatt did the bravest thing of his life. He knocked on a door.',
+    text: 'Years ago, a few weeks before everything changed, Pokey did the bravest thing of his life. He knocked on a door.',
     scene: { zoom: 1.3, actors: [hero(0.34, { scale: KID }), general(0.72, { silhouette: true, scale: 0.9 })] },
   },
   {
-    speaker: 'Slomatt',
-    text: 'Sir, I would like your blessing. I would like to walk beside Jennifur for as long as she will have me.',
+    speaker: 'Pokey',
+    text: 'Sir, I would like your blessing. I would like to walk beside Meeca for as long as she will have me.',
     scene: { zoom: 1.5, focusX: 0.34, actors: [hero(0.34, { scale: KID }), general(0.72, { silhouette: true, scale: 0.9 })] },
   },
   {
@@ -179,7 +179,7 @@ const BLESSING = chapter('MEMORY · THE BLESSING', 1, 'dusk', [
     scene: { zoom: 1.5, focusX: 0.72, actors: [hero(0.34, { scale: KID }), general(0.72, { silhouette: true, scale: 0.9 })] },
   },
   {
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'Yes, sir. But I have never once left anyone behind.',
     scene: { zoom: 1.55, focusX: 0.34, actors: [hero(0.34, { scale: KID, pose: 'happy' }), general(0.72, { silhouette: true, scale: 0.9 })] },
   },
@@ -189,7 +189,7 @@ const BLESSING = chapter('MEMORY · THE BLESSING', 1, 'dusk', [
     scene: { zoom: 1.5, focusX: 0.72, actors: [hero(0.34, { scale: KID }), general(0.72, { silhouette: true, scale: 0.9 })] },
   },
   {
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'I will. Slowly.',
     scene: { zoom: 1.55, focusX: 0.34, actors: [hero(0.34, { scale: KID, pose: 'happy' }), general(0.72, { silhouette: true, scale: 0.9 })] },
   },
@@ -212,17 +212,17 @@ const PHOTOGRAPH = chapter('THE REVEAL · THE PHOTOGRAPH', 7, 'dusk', [
     },
   },
   {
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'A baby. And the one holding her… I know that face. Not the armor. The eyes.',
-    scene: { photo: { key: 's4_01', caption: 'Jennifur, three weeks old', size: 0.5 }, actors: [hero(0.2, { pose: 'idle' })] },
+    scene: { photo: { key: 's4_01', caption: 'Meeca, three weeks old', size: 0.5 }, actors: [hero(0.2, { pose: 'idle' })] },
   },
   {
-    speaker: 'Slomatt',
-    text: 'It is him. General Iron-Claw is Jennifur\'s grandfather.',
+    speaker: 'Pokey',
+    text: 'It is him. General Iron-Claw is Meeca\'s grandfather.',
     scene: { photo: { key: 's4_04', caption: 'Grandpa has not put her down since', size: 0.5, tilt: 0.02 }, actors: [hero(0.2, { pose: 'idle' })] },
   },
   {
-    speaker: 'Slomatt',
+    speaker: 'Pokey',
     text: 'And she cannot know. She would never recognize him under all that iron. And I have no way to tell her.',
     scene: { zoom: 1.5, focusX: 0.3, actors: [hero(0.3, { pose: 'idle' })] },
   },
@@ -308,7 +308,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
       scene: { zoom: 1.2, particles: 'rain', actors: [hero(0.18, { scale: 0.9 }), general(0.54, { beaten: true, scale: 0.9 }), jen(0.86, { scale: 0.8, mood: 'happy' })] },
     },
     {
-      speaker: 'Jennifur',
+      speaker: 'Meeca',
       text: 'Slow the rain, slow the thunder. Slow the thorn that holds you under.',
       scene: { zoom: 1.35, focusX: 0.7, particles: 'rain', actors: [general(0.36, { beaten: true, scale: 0.8 }), jen(0.74, { scale: 0.95, mood: 'happy' })] },
     },
@@ -348,14 +348,14 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
       },
     },
     {
-      speaker: 'Jennifur',
+      speaker: 'Meeca',
       text: 'I have seen that face. In a photograph in a drawer, holding a baby exactly like that. …Grandpa?',
       scene: { photo: { key: 's4_01', caption: 'Grandpa', size: 0.5 }, particles: 'sparkles', actors: [jen(0.78, { y: 0.74, scale: 0.8, mood: 'sad' })] },
     },
     ...(has('w2_keepsake')
       ? chapter('THE MERCY', 10, 'glow', [
           {
-            speaker: 'Jennifur',
+            speaker: 'Meeca',
             text: 'And my locket. I have never known where it came from. You fastened it on me yourself, the day I started school. Didn\'t you?',
             scene: { zoom: 1.5, focusX: 0.66, particles: 'sparkles', actors: [general(0.38, { scale: 0.8, seq: [{ at: 0, frame: 'crouch' }] }), jen(0.68, { scale: 1.0, mood: 'sad' })] },
           },
@@ -368,7 +368,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
         scene: { zoom: 1.5, focusX: 0.4, particles: 'sparkles', actors: [general(0.4, { scale: 0.8, seq: [{ at: 0, frame: 'crouch' }] }), jen(0.68, { mood: 'sad' })] },
       },
       {
-        speaker: 'Slomatt',
+        speaker: 'Pokey',
         text: 'I was late, sir. I will always be late. But I came, and I did not let go.',
         scene: { zoom: 1.5, focusX: 0.3, particles: 'sparkles', actors: [hero(0.3, { pose: 'happy' }), general(0.62, { scale: 0.8, seq: [{ at: 0, frame: 'crouch' }] })] },
       },
@@ -379,7 +379,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
       },
       {
         speaker: 'Narrator',
-        text: 'Jennifur put a Heartbloom bud into his hands. He held it, and for the first time in years, the General waited.',
+        text: 'Meeca put a Heartbloom bud into his hands. He held it, and for the first time in years, the General waited.',
         scene: {
           zoom: 1.3, particles: 'petals',
           camera: { from: { zoom: 1.5, fx: 0.55, fy: 0.66 }, to: { zoom: 1.0, fx: 0.5, fy: 0.12 }, dur: 9 },
@@ -399,8 +399,8 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     ...(all
       ? chapter('THE MERCY', 10, 'glow', [
           {
-            speaker: 'Jennifur',
-            text: 'Grandma left a note in her pouch. It said, "Be slow with him." So we will, Grandpa. All of us. Won\'t we, Slomatt?',
+            speaker: 'Meeca',
+            text: 'Grandma left a note in her pouch. It said, "Be slow with him." So we will, Grandpa. All of us. Won\'t we, Pokey?',
             scene: { zoom: 1.5, focusX: 0.55, particles: 'petals', actors: [hero(0.3, { pose: 'happy' }), general(0.58, { scale: 0.8, seq: [{ at: 0, frame: 'crouch' }] }), jen(0.8, { mood: 'happy' })] },
           },
         ])
@@ -413,7 +413,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
       },
       {
         speaker: 'Narrator',
-        text: 'It took forty-five seconds. Slomatt fell asleep halfway through. Everyone let him.',
+        text: 'It took forty-five seconds. Pokey fell asleep halfway through. Everyone let him.',
         scene: { zoom: 1.2, particles: 'sparkles', actors: [hero(0.5, { y: 1.04, scale: 1.25, portrait: true, seq: [{ at: 0, frame: 'face_calm' }, { at: 2.2, frame: 'face_calm_closed' }] })] },
       },
     ]),
@@ -421,12 +421,12 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
 
   const epilogue = chapter('EPILOGUE', 10, 'glow', [
     {
-      speaker: 'Jennifur',
-      text: 'Slomatt! You followed every petal! I knew you would!',
+      speaker: 'Meeca',
+      text: 'Pokey! You followed every petal! I knew you would!',
       scene: { castle: 7, zoom: 1.4, actors: [hero(0.3, { scale: 1.1, pose: 'happy' }), jen(0.68, { scale: 1.1, mood: 'cheer', kind: 'daisy_wave' })] },
     },
     {
-      speaker: 'Slomatt',
+      speaker: 'Pokey',
       text: 'It took me ten realms, one hundred trials, and a very long nap in the middle. Worth every slow step.',
       scene: { castle: 7, zoom: 1.35, focusX: 0.46, actors: [hero(0.3, { scale: 1.1 }), jen(0.68, { scale: 1.1 })] },
     },
@@ -439,7 +439,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
       ? chapter('EPILOGUE', 10, 'glow', [
           {
             speaker: 'Narrator',
-            text: 'On the hill, in the first quiet the Highlands had known in years, Jennifur planted the packet of seeds. "For the hill," she read from the label. "Plant when it is quiet." It was.',
+            text: 'On the hill, in the first quiet the Highlands had known in years, Meeca planted the packet of seeds. "For the hill," she read from the label. "Plant when it is quiet." It was.',
             scene: { castle: 7, zoom: 1.35, particles: 'petals', actors: [hero(0.34, { pose: 'happy' }), jen(0.62, { mood: 'happy' }), general(0.84, { scale: 0.75, seq: [{ at: 0, frame: 'crouch' }] })] },
           },
         ])
@@ -453,13 +453,13 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
 
   const end = chapter('THE END', 1, 'dusk', [
     {
-      speaker: 'Jennifur',
-      text: 'Come on, Slomatt. Let us go home and watch it bloom. Slowly, of course.',
+      speaker: 'Meeca',
+      text: 'Come on, Pokey. Let us go home and watch it bloom. Slowly, of course.',
       scene: { particles: 'petals', zoom: 1.35, actors: [hero(0.36, { scale: 1.2, pose: 'happy' }), { kind: 'bloom', x: 0.52, y: 0.8, scale: 1.0, stage: 'epic' }, jen(0.68, { scale: 1.2 })] },
     },
     {
       speaker: 'Narrator',
-      text: 'And far away, the petal tied to Slomatt\'s wrist glowed once, and pointed somewhere new.',
+      text: 'And far away, the petal tied to Pokey\'s wrist glowed once, and pointed somewhere new.',
       scene: {
         world: 1, mood: 'night', particles: 'sparkles', zoom: 1.2,
         fx: [{ at: 1.2, kind: 'glints', x: 0.55, y: 0.78 }],

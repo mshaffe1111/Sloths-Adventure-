@@ -1,6 +1,6 @@
 /**
  * Directed victory scenes: what plays after a boss goes down. Instead of one standing picture for every boss, each victory is a short
- * sequence of beats (the last blow lands, the boss slumps and speaks, Slomatt answers, the way ahead opens), each with its own camera,
+ * sequence of beats (the last blow lands, the boss slumps and speaks, Pokey answers, the way ahead opens), each with its own camera,
  * painted poses and effects. A world without a scene here keeps the plain card (story.ts bossPanels).
  */
 import type { SceneMood, StoryPanel, StoryScene, SceneActor } from './story.ts';
@@ -28,7 +28,7 @@ const GROUND = 0.75;
 const hero = (extra: Partial<SceneActor>): SceneActor => ({ kind: 'milo', x: 0.2, y: GROUND, scale: 1.0, ...extra });
 const boss = (world: number, extra: Partial<SceneActor>): SceneActor => ({ kind: 'boss', world, x: 0.62, y: GROUND, scale: 1.0, facing: -1, ...extra });
 
-/** World 1: Venom Fang goes down in his own coils, then slithers aside and Slomatt walks on */
+/** World 1: Venom Fang goes down in his own coils, then slithers aside and Pokey walks on */
 function venomFang(bossName: string): StoryPanel[] {
   const w = 1;
   const lines = BOSS_STORIES[1].defeat;

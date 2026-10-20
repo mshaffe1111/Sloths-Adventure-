@@ -3,7 +3,7 @@
  *
  * Three passes, one switch (`?polish=1`, or localStorage sloth_polish = 'on'; `?polish=0` turns it off again):
  *   1. character lighting — soft cast + contact shadows that follow the ground (so you can judge a jump), a back-glow and a rim
- *      light on Slomatt, both tinted by the world's own sun and mood
+ *      light on Pokey, both tinted by the world's own sun and mood
  *   2. living scenery — foliage sways in the wind, light shafts breathe, ground mist drifts, pollen / dust / spores float by
  *   3. glow and depth — a soft bloom over the finished frame
  * Plus a per-stage variation "rig": every stage seed rolls its own wind, light direction, haze, mote type, and shifts/flips

@@ -178,7 +178,7 @@ export const OrchSfxToggle: React.FC = () => {
   );
 };
 
-/** the standard-hero switch (saved on the device): Slomatt drawn entirely from the new standard-set sheets, satchel look, every state */
+/** the standard-hero switch (saved on the device): Pokey drawn entirely from the new standard-set sheets, satchel look, every state */
 export const StandardToggle: React.FC = () => {
   const [on, setOn] = React.useState(() => standardEnabled());
   return (
@@ -205,7 +205,7 @@ export const StandardToggle: React.FC = () => {
           {on ? 'On' : 'Off'}
         </button>
       </div>
-      <small className="pm-polish-note">Slomatt redrawn from the new standard sheets: one look for every move, with the satchel instead of the backpack. Try it and tell us.</small>
+      <small className="pm-polish-note">Pokey redrawn from the new standard sheets: one look for every move, with the satchel instead of the backpack. Try it and tell us.</small>
     </div>
   );
 };
