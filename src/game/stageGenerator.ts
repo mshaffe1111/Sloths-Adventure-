@@ -1036,6 +1036,11 @@ class Gen {
     }
     if (p.kind === 'tide') {
       // a mudflat the tide floods: cross while it is low
+      // the ground has sunk too low for a mudflat below it: climb back up in easy steps first, so the tide section is never dropped
+      for (let k = 0; k < 8 && this.g + 70 > this.G + 96; k++) {
+        this.flat(170, { safe: true });
+        this.up(Math.min(60, this.g + 70 - (this.G + 96)));
+      }
       if (!(this.g + 70 <= this.G + 96)) { this.flat(300, { safe: true }); this.log.push('tideSkipped'); return; }
       this.flat(240, { safe: true });
       this.down(70);
@@ -1231,7 +1236,8 @@ class Gen {
       case 'pillars': this.chunkPillars(); break;
       case 'slope': this.chunkSlope(); break;
       case 'stumps': this.chunkStumps(); break;
-      case 'zigzag': this.chunkZigzag(); break;
+      // (a zigzag is a long hop over a pit that cannot hold a flag, so one is planted just before it)
+      case 'zigzag': if (this.cx - this.lastCp > 400) this.checkpoint(); this.chunkZigzag(); break;
       case 'trampoline': this.chunkTrampoline(); break;
       case 'causeway': this.chunkCauseway(); break;
       case 'pegs': this.chunkPegs(); break;
@@ -1557,7 +1563,8 @@ function decorate(gen: Gen, spawnX: number) {
     sprint: 0.16, harvest: 0.2, purge: 0.5, ascent: 0.3, stealth: 0.1, vine_runner: 0.07,
     relic_hunt: 0.2, rescue: 0.28, gauntlet: 0.6,
   };
-  const pEnemy = (p0[obj] ?? 0.2) * (gen.m === 1 ? 0.4 : 0.7 + gen.d * 0.8);
+  // stages are longer now, so they also fight harder: about a quarter more ground enemies than before, climbing with the mission
+  const pEnemy = (p0[obj] ?? 0.2) * (gen.m === 1 ? 0.4 : 0.9 + gen.d * 0.9);
   let first = gen.m > 1;
   for (const s of gen.spots) {
     const len = s.x1 - s.x0;
@@ -1646,7 +1653,7 @@ function decorate(gen: Gen, spawnX: number) {
     obj === 'stealth' ? 2 + Math.floor(gen.world * 0.4)
     : obj === 'purge' || obj === 'gauntlet' ? 1 + Math.floor(gen.world * 0.3)
     : gen.m < 3 ? 0
-    : Math.floor(wide / 2200);
+    : Math.floor(wide / 2000);
   for (let i = 0; i < nEagles; i++) {
     for (let tries = 0; tries < 20; tries++) {
       const x = gen.rr(1100, wide - 1100);

@@ -270,6 +270,20 @@ const OBJECTIVE_DESCRIPTIONS: Record<ObjectiveType, (target: number) => string> 
   boss_lair: () => 'Confront the Stage Boss! Watch telegraphs, dodge devastating attacks, and rescue Jennifur!',
 };
 
+/** how long each kind of stage is, relative to a typical stage of its world (a sprint is the short one, a gauntlet the long one) */
+const STAGE_MINUTES: Record<string, number> = { sprint: 0.75, harvest: 1.0, purge: 1.0, stealth: 1.0, vine_runner: 0.95, relic_hunt: 1.1, rescue: 1.15, gauntlet: 1.15 };
+/** px per second a player really covers on each kind of stage (flat out for a sprint, slowly where there is fighting and looking) */
+const STAGE_PACE: Record<string, number> = { sprint: 170, harvest: 105, purge: 95, stealth: 125, vine_runner: 150, relic_hunt: 100, rescue: 100, gauntlet: 90 };
+/** the generator builds a stage a little wider than asked (it finishes the piece it is on, then adds the goal run): ask for that much less */
+const STAGE_OVERSHOOT: Record<string, number> = { sprint: 1.05, harvest: 1.1, purge: 1.26, stealth: 1.17, vine_runner: 1.17, relic_hunt: 1.22, rescue: 1.21, gauntlet: 1.55 };
+/** a stage is never shorter than this nor longer than that, so it neither flashes by nor outgrows a phone's memory */
+export const STAGE_MIN_W = 6000;
+export const STAGE_MAX_W = 24000;
+const stageWidth = (minutes: number, pace: number) => Math.min(STAGE_MAX_W, Math.max(STAGE_MIN_W, Math.round((minutes * 60 * pace) / 100) * 100));
+/** vertical stages: how tall they are (the climb is slower than a run, so they are tall) */
+const ASCENT_BASE = 2600;
+const ASCENT_PER_WORLD = 380;
+
 /**
  * Generates the 100 level configs (10 worlds x 10 mini-stages).
  * Mini-stages 1..9 correspond to the 9 distinct mission archetypes.
@@ -299,66 +313,70 @@ export function generateAllLevels(): LevelConfig[] {
       let levelWidth = 3200;
       let levelHeight = 900;
 
-      // Level lengths run from short sprints to huge expeditions. The pattern differs per
-      // world so no two worlds feel like the same ten stages; world 1 stays gentle.
+      // Stage length is set from how long a stage should TAKE, then turned into pixels with the pace that kind of stage is played at
+      // (a sprint is run flat out, a fight stage is mostly stopping, ducking and fighting). A typical stage is about a minute and a half in
+      // World 1 and about four minutes in World 10; a stage type is longer or shorter than that by its own factor, each stage drifts a
+      // little from the pattern so no two worlds feel like the same ten stages, and the first stages of World 1 ease in.
       const pattern = [0.7, 1.0, 1.2, 1.0, 0.8, 1.3, 1.5, 0.9, 1.1];
-      const variety = pattern[(miniIndex + world.id * 3) % pattern.length];
-      const grow = 1 + 0.03 * (world.id - 1);
-      const sized = (base: number) => Math.round((base * Math.min(world.id === 1 ? 1.1 : 2, variety) * grow) / 100) * 100;
+      const variety = 1 + (pattern[(miniIndex + world.id * 3) % pattern.length] - 1) * 0.5;
+      const minutes = 1.5 + 0.28 * (world.id - 1);
+      const easeIn = world.id === 1 ? 0.9 + 0.1 * ((miniIndex - 1) / 8) : 1;
+      /** a timed stage allows twice the time it is meant to take, in whole 5 s steps */
+      const timedLimit = (type: 'sprint' | 'stealth' | 'vine_runner') => Math.max(120, Math.round((2 * minutes * easeIn * variety * STAGE_MINUTES[type] * 60) / 5) * 5);
+      const lengthOf = (type: Exclude<ObjectiveType, 'ascent' | 'boss_lair'>) => stageWidth(minutes * easeIn * variety * STAGE_MINUTES[type], STAGE_PACE[type] / STAGE_OVERSHOOT[type]);
+      // how many of the old-size items a stage of this width holds: the quota grows with the stage but a little slower than it
+      const grownQuota = (base: number, oldWidth: number, width: number, cap: number) => Math.min(cap, Math.round(base * Math.pow(width / oldWidth, 0.6)));
+      const oldSized = (base: number) => Math.round((base * Math.min(world.id === 1 ? 1.1 : 2, 1 + (pattern[(miniIndex + world.id * 3) % pattern.length] - 1)) * (1 + 0.03 * (world.id - 1))) / 100) * 100;
 
       switch (objType) {
         case 'sprint':
           targetCount = 1;
-          levelWidth = sized(4200);
-          timeLimit = Math.round(levelWidth / 35);
+          levelWidth = lengthOf('sprint');
+          timeLimit = timedLimit(objType);
           break;
         case 'harvest':
-          targetCount = 8 + (world.id - 1) * 2;
-          levelWidth = sized(4800);
+          levelWidth = lengthOf('harvest');
+          targetCount = grownQuota(8 + (world.id - 1) * 2, oldSized(4800), levelWidth, 45);
           break;
         case 'purge':
-          targetCount = 5 + (world.id - 1);
-          levelWidth = sized(4600);
+          levelWidth = lengthOf('purge');
+          targetCount = grownQuota(5 + (world.id - 1), oldSized(4600), levelWidth, 22);
           break;
         case 'ascent':
           targetCount = 1;
-          levelWidth = Math.round(3200 * grow / 100) * 100;
-          levelHeight = 1600 + world.id * 100;
+          levelWidth = Math.round(3200 * (1 + 0.03 * (world.id - 1)) / 100) * 100;
+          levelHeight = ASCENT_BASE + ASCENT_PER_WORLD * world.id;
           break;
         case 'stealth':
           targetCount = 1;
-          levelWidth = sized(5200);
-          timeLimit = Math.round(levelWidth / 35);
+          levelWidth = lengthOf('stealth');
+          timeLimit = timedLimit(objType);
           break;
         case 'vine_runner':
           targetCount = 1;
-          levelWidth = sized(5600);
-          timeLimit = Math.round(levelWidth / 35);
+          levelWidth = lengthOf('vine_runner');
+          timeLimit = timedLimit(objType);
           break;
         case 'relic_hunt':
-          targetCount = 3;
-          levelWidth = sized(5600);
+          targetCount = 3 + (world.id > 6 ? 1 : 0);
+          levelWidth = lengthOf('relic_hunt');
           levelHeight = 1100;
           break;
         case 'rescue':
-          targetCount = 3 + (world.id > 5 ? 1 : 0);
-          levelWidth = sized(5000);
+          targetCount = 3 + (world.id > 3 ? 1 : 0) + (world.id > 7 ? 1 : 0);
+          levelWidth = lengthOf('rescue');
           break;
-        case 'gauntlet':
-          targetCount = 7 + (world.id - 1) * 2;
-          levelWidth = Math.min(9500, Math.max(sized(5600), 4800 + targetCount * 130));
+        case 'gauntlet': {
+          levelWidth = lengthOf('gauntlet');
+          const oldW = Math.min(9500, Math.max(oldSized(5600), 4800 + (7 + (world.id - 1) * 2) * 130));
+          targetCount = grownQuota(7 + (world.id - 1) * 2, oldW, levelWidth, 28);
           break;
+        }
         case 'boss_lair':
           targetCount = 1;
           levelWidth = 2600; // expansive boss arena with multi-tiered boughs
           levelHeight = 900;
           break;
-      }
-
-      // the very first stage is a full-size adventure (5,000+ px), not a short warm-up: more pieces, more places to explore
-      if (world.id === 1 && miniIndex === 1) {
-        levelWidth = 5400;
-        timeLimit = Math.round(levelWidth / 35);
       }
 
       // Check persisted progress
