@@ -7,6 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { composeStage, composeStageFull, composeStory, chordName, themeFromId, stageThemeId, type StoryKind } from './composer.ts';
 import { THEMES, themeById } from './themes.ts';
+import { orchestrate, PACES, paceFor, PACE_CODE } from './orchestrate.ts';
 import { CHORD_VOICES, DRUM_VOICES, NOTE_VOICES } from './instruments.ts';
 import { chordPcs, noteMidi, parseChord, parseDrums, parseMelodyBar, parsePattern, SCALES } from './theory.ts';
 import type { Theme } from './music.ts';
@@ -278,4 +279,84 @@ test('the story scores use the recurring tunes', () => {
 
 test('the story scores are the same every time', () => {
   for (const [k] of KINDS) assert.deepEqual(composeStory(k), composeStory(k));
+});
+
+// ---- orchestration (orchestrate.ts)
+
+function checkTheme(t: import('./music.ts').Theme, label: string) {
+  const spb = t.stepsPerBar ?? 16;
+  const names = new Set<string>();
+  for (const tr of t.tracks) {
+    assert.ok(!names.has(tr.name), `${label}: duplicate track ${tr.name}`);
+    names.add(tr.name);
+    if (tr.kind === 'pattern') {
+      assert.ok(NOTE_VOICES[tr.inst], `${label}: ${tr.name} voice ${tr.inst}`);
+      for (const p of tr.pats) parsePattern(p, spb);
+    } else if (tr.kind === 'melody') {
+      assert.ok(NOTE_VOICES[tr.inst], `${label}: ${tr.name} voice ${tr.inst}`);
+      if (tr.altInst) assert.ok(NOTE_VOICES[tr.altInst]);
+    } else if (tr.kind === 'chords') {
+      assert.ok(CHORD_VOICES[tr.inst], `${label}: ${tr.name} voice ${tr.inst}`);
+      for (const p of tr.stabs ?? []) parseDrums(p, spb);
+    } else {
+      assert.ok(DRUM_VOICES[tr.voice], `${label}: ${tr.name} voice ${tr.voice}`);
+      for (const p of [...tr.pats, ...(tr.fill ? [tr.fill] : [])]) parseDrums(p, spb);
+    }
+    if (tr.gate) assert.ok(tr.gate[0] >= 0 && tr.gate[1] <= 1 && tr.gate[0] <= tr.gate[1], `${label}: ${tr.name} gate`);
+  }
+}
+
+test('every world and pace is orchestrated into valid notation, with the tune and the low end intact', () => {
+  for (let w = 1; w <= 10; w++) {
+    for (const pace of PACES) {
+      for (const seed of [1, 77, 4242]) {
+        const t = themeById(`gen-${w}-${seed}-${PACE_CODE[pace]}`)!;
+        assert.ok(t, `gen-${w}-${seed}-${PACE_CODE[pace]}`);
+        checkTheme(t, `world ${w} ${pace} ${seed}`);
+        // the notes of the tune do not depend on the pace
+        const plain = themeById(`gen-${w}-${seed}`)!;
+        const lead = (x: import('./music.ts').Theme) => (x.tracks.find((k) => k.kind === 'melody') as import('./music.ts').MelodyTrack).bars;
+        assert.deepEqual(lead(t), lead(plain));
+        assert.deepEqual(t.chords, plain.chords);
+        // something always carries the bass
+        assert.ok(t.tracks.some((k) => k.name === 'orchBass'));
+        // the foundation is on from the first bar: no gate on the pad, the bass, the ostinato or the timpani
+        for (const n of ['orchPad', 'orchBass', 'ost', 'timpR']) assert.equal(t.tracks.find((k) => k.name === n)!.gate, undefined, n);
+      }
+    }
+  }
+});
+
+test('written pieces (worlds, bosses, title, map, results, game over) can all be dressed in the orchestra', () => {
+  for (const id of ['world1', 'world5', 'world10', 'bossA', 'bossB', 'bossC', 'bossFinal', 'title', 'map', 'results', 'gameover']) {
+    for (const pace of PACES) {
+      const t = themeById(`${id}~${PACE_CODE[pace]}`);
+      assert.ok(t, `${id}~${PACE_CODE[pace]}`);
+      checkTheme(t, `${id} ${pace}`);
+      assert.equal(t.chords.length, THEMES[id].chords.length);
+    }
+  }
+  assert.equal(themeById('world3~z'), null);
+  assert.equal(themeById('nonsense~r'), null);
+});
+
+test('the objective sets the pace', () => {
+  assert.equal(paceFor('ascent'), 'climb');
+  assert.equal(paceFor('stealth'), 'sneak');
+  assert.equal(paceFor('purge'), 'fight');
+  assert.equal(paceFor('gauntlet'), 'fight');
+  assert.equal(paceFor('boss_lair'), 'boss');
+  for (const o of ['sprint', 'vine_runner', 'harvest', 'rescue', 'relic_hunt', undefined]) assert.equal(paceFor(o), 'run');
+});
+
+test('stages of one world are dressed differently from each other', () => {
+  const sig = (w: number, seed: number) => {
+    const t = orchestrate(composeStage(w, seed), { world: w, pace: 'run', seed });
+    return t.tracks.map((k) => `${k.name}:${'inst' in k ? k.inst : k.voice}`).join('|');
+  };
+  for (const w of [1, 5, 9]) {
+    const set = new Set<string>();
+    for (let s = 1; s <= 30; s++) set.add(sig(w, s * 977));
+    assert.ok(set.size >= 4, `world ${w} has ${set.size} different line-ups over 30 stages`);
+  }
 });

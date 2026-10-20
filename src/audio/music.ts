@@ -74,6 +74,8 @@ export interface MelodyTrack extends TrackBase {
   legato?: number;
   /** on every second pass through the loop, play this instead (variety) */
   altInst?: NoteInstName;
+  /** what the composed (null) bars are seeded by, instead of the track's name: a track that doubles another one uses the other's, so both play the same notes */
+  genKey?: string;
 }
 
 /** held chords (pads, strings, choir) or re-struck chord stabs */
@@ -151,7 +153,7 @@ export interface PlaybackOpts {
 const clampTempo = (x: number) => Math.max(0.8, Math.min(1.25, x));
 
 /** instruments that carry the low end: they drop out in a breakdown */
-const LOW_INSTS = new Set<string>(['bass', 'subBass', 'synthBass']);
+const LOW_INSTS = new Set<string>(['bass', 'subBass', 'synthBass', 'cello', 'contra', 'contraPizz', 'tuba', 'celloStac', 'bassoon']);
 
 export interface KeyInfo {
   tonic: number;
@@ -408,7 +410,7 @@ export class Playback {
         const mel = rt.melody!;
         let bar = mel[barInLoop % mel.length];
         if (bar === null) {
-          const r = rng(hashStr(this.theme.id + spec.name) + barInLoop * 131 + (lp % 4) * 7919 + this.seed * 17);
+          const r = rng(hashStr(this.theme.id + (spec.genKey ?? spec.name)) + barInLoop * 131 + (lp % 4) * 7919 + this.seed * 17);
           bar = generateMelodyBar({
             scalePcs: this.scale.map((x) => (this.tonic + sh + x) % 12),
             chordPcs: chordPcs(bc.chord),
@@ -426,8 +428,10 @@ export class Playback {
         const echo = phase === 3 && rt === lead && !this.liteMode ? NOTE_VOICES.bell : null;
         for (const nt of bar) {
           if (nt.midi === null) continue;
-          const m = nt.midi + (mel[barInLoop % mel.length] === null ? 0 : sh);
-          rt.lastPitch = m;
+          const composed = mel[barInLoop % mel.length] === null;
+          // written bars carry the track's transposition from the notation; composed ones get it here, after they are made, so a track that doubles another a few octaves away plays the same notes
+          const m = nt.midi + (composed ? spec.shift ?? 0 : sh);
+          rt.lastPitch = composed ? m - (spec.shift ?? 0) : m;
           const dur = nt.len * stepDur * (spec.legato ?? 0.95);
           push(nt.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.004, midiHz(m), dur, vel(0.85)));
           if (echo && nt.len >= 2) push(nt.step, (t) => echo(this.core, rt.gate, t + stepDur * 1.5, midiHz(m + 12), Math.min(dur, stepDur * 4), 0.3));

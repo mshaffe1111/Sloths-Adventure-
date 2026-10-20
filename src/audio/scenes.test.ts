@@ -41,8 +41,8 @@ test('story music tells the story: Jennifur, the storm, dusk, the boss, the endi
   assert.equal(sceneForPanel(mk('PROLOGUE')).id, 'jennifur');
   assert.equal(sceneForPanel(mk('THE STORM', 10, 'storm')).id, 'storyStorm');
   assert.equal(sceneForPanel(mk('THE VOW', 1, 'dusk')).id, 'storyDusk');
-  assert.equal(sceneForPanel(mk('WORLD 5 · ORCHID SANCTUARY', 5)).id, 'world5');
-  assert.equal(sceneForPanel(mk('BOSS · GENERAL IRON-CLAW', 10, 'storm')).id, 'bossFinal');
+  assert.equal(sceneForPanel(mk('WORLD 5 · ORCHID SANCTUARY', 5)).id, 'world5~c');
+  assert.equal(sceneForPanel(mk('BOSS · GENERAL IRON-CLAW', 10, 'storm')).id, 'bossFinal~b');
   assert.equal(sceneForPanel(mk('EPILOGUE', 10, 'glow')).id, 'ending');
 });
 

@@ -1,0 +1,6 @@
+The recorded orchestra in this folder comes from VSCO 2 Community Edition, by Versilian Studios (Sam Gossner),
+released under CC0 (public domain): https://github.com/sgossner/VSCO-2-CE
+The snare, triangle, gong, cymbal and bass drum come from the same library's VSCO 1 percussion (also CC0).
+
+The files were cut, levelled, looped and compressed by scripts/prepOrch.py. The note a file is named for was checked
+against a measurement of its pitch. See the header of that script for the naming: <instrument>_<midi note>_<loop start ms>.mp3

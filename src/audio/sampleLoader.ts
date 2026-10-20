@@ -14,7 +14,7 @@ function parseName(path: string): { group: string; i: number } | null {
 }
 
 /** the bytes behind a url; a data: url (the single-file preview build) is decoded directly, since a page may not be allowed to fetch it */
-async function bytesOf(url: string): Promise<ArrayBuffer> {
+export async function bytesOf(url: string): Promise<ArrayBuffer> {
   if (url.startsWith('data:')) {
     const bin = atob(url.slice(url.indexOf(',') + 1));
     const out = new Uint8Array(bin.length);

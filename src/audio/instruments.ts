@@ -7,6 +7,7 @@
  *   DrumVoice   one hit:           (core, dst, time, velocity)
  */
 import { AudioCore, envelope } from './core.ts';
+import { brassSection, drum as sampledDrum, plucked, stringSection, sustained } from './orchVoices.ts';
 
 export type NoteVoice = (core: AudioCore, dst: AudioNode, t: number, hz: number, dur: number, vel: number) => void;
 export type ChordVoice = (core: AudioCore, dst: AudioNode, t: number, hz: number[], dur: number, vel: number) => void;
@@ -102,7 +103,7 @@ export const pluck: NoteVoice = (core, dst, t, hz, _d, vel) => {
 };
 
 /** harp: pure and bright */
-export const harp: NoteVoice = (core, dst, t, hz, _d, vel) => {
+const harpSynth: NoteVoice = (core, dst, t, hz, _d, vel) => {
   const c = core.ctx;
   const dec = 0.9 + 0.8 * clamp((500 - hz) / 450, 0, 1);
   const stop = t + dec * 1.6;
@@ -123,7 +124,7 @@ export const harp: NoteVoice = (core, dst, t, hz, _d, vel) => {
 // ---------------------------------------------------------------------------------------------
 
 /** breathy wooden flute with a late vibrato */
-export const flute: NoteVoice = (core, dst, t, hz, dur, vel) => {
+const fluteSynth: NoteVoice = (core, dst, t, hz, dur, vel) => {
   const c = core.ctx;
   const hold = Math.max(0.12, dur);
   const stop = t + hold + 0.25;
@@ -208,26 +209,31 @@ export const brass: NoteVoice = (core, dst, t, hz, dur, vel) => {
   g.connect(dst);
 };
 
-/** plucky sine+saw bass */
+/** plucky sine+saw bass. The filter stays open enough, and an octave-up layer is added, so the note is still heard on a phone speaker, which gives almost nothing below 150 Hz */
 export const bass: NoteVoice = (core, dst, t, hz, dur, vel) => {
   const c = core.ctx;
   const hold = Math.max(0.08, dur * 0.92);
   const stop = t + hold + 0.15;
   const g = c.createGain();
-  envelope(g.gain, t, { a: 0.008, peak: 0.55 * vel, d: 0.3, sustain: 0.36 * vel, hold, r: 0.09 });
+  envelope(g.gain, t, { a: 0.008, peak: 0.55 * vel, d: 0.3, sustain: 0.38 * vel, hold, r: 0.09 });
   const lp = c.createBiquadFilter();
   lp.type = 'lowpass';
-  lp.Q.value = 2.2;
-  lp.frequency.setValueAtTime(clamp(hz * 9, 400, 1800), t);
-  lp.frequency.setTargetAtTime(clamp(hz * 2.2, 140, 520), t, 0.07);
+  lp.Q.value = 1.6;
+  lp.frequency.setValueAtTime(clamp(hz * 14, 900, 2600), t);
+  lp.frequency.setTargetAtTime(clamp(hz * 6, 420, 1100), t, 0.08);
   const o1 = osc(c, 'sawtooth', hz, t, stop);
   const o2 = osc(c, 'sine', hz, t, stop);
+  const o3 = osc(c, 'triangle', hz * 2, t, stop);
   const g1 = c.createGain();
-  g1.gain.value = 0.55;
+  g1.gain.value = 0.6;
+  const g3 = c.createGain();
+  g3.gain.value = 0.42;
   o1.connect(lp);
   lp.connect(g1);
   g1.connect(g);
   o2.connect(g);
+  o3.connect(g3);
+  g3.connect(g);
   g.connect(dst);
 };
 
@@ -241,10 +247,16 @@ export const subBass: NoteVoice = (core, dst, t, hz, dur, vel) => {
   const o1 = osc(c, 'sine', hz, t, stop);
   const o2 = osc(c, 'triangle', hz * 2, t, stop);
   const g2 = c.createGain();
-  g2.gain.value = 0.2;
+  g2.gain.value = 0.5;
+  // a third partial a fifth above that: the low note is then heard as a pitch even where the speaker cannot reproduce it
+  const o3 = osc(c, 'sine', hz * 3, t, stop);
+  const g3 = c.createGain();
+  g3.gain.value = 0.22;
   o1.connect(g);
   o2.connect(g2);
   g2.connect(g);
+  o3.connect(g3);
+  g3.connect(g);
   g.connect(dst);
 };
 
@@ -258,8 +270,8 @@ export const synthBass: NoteVoice = (core, dst, t, hz, dur, vel) => {
   const lp = c.createBiquadFilter();
   lp.type = 'lowpass';
   lp.Q.value = 5;
-  lp.frequency.setValueAtTime(clamp(hz * 14, 600, 2600), t);
-  lp.frequency.setTargetAtTime(clamp(hz * 2.5, 160, 600), t, 0.09);
+  lp.frequency.setValueAtTime(clamp(hz * 14, 900, 3000), t);
+  lp.frequency.setTargetAtTime(clamp(hz * 5, 340, 1200), t, 0.09);
   const o1 = osc(c, 'sawtooth', hz, t, stop);
   const o2 = osc(c, 'square', hz * 0.5, t, stop);
   const g2 = c.createGain();
@@ -401,7 +413,7 @@ export const kick: DrumVoice = (core, dst, t, vel) => {
 export const softKick: DrumVoice = (core, dst, t, vel) => {
   dropTone(core, dst, t, { from: 110, to: 52, sweep: 0.1, peak: 0.75 * vel, decay: 0.26 });
 };
-export const snare: DrumVoice = (core, dst, t, vel) => {
+const snareSynth: DrumVoice = (core, dst, t, vel) => {
   noiseHit(core, dst, t, { type: 'bandpass', f: 1900, q: 0.7, peak: 1.1 * vel, decay: 0.17 });
   dropTone(core, dst, t, { from: 220, to: 150, sweep: 0.07, peak: 0.4 * vel, decay: 0.11, type: 'triangle' });
 };
@@ -438,15 +450,15 @@ export const woodblock: DrumVoice = (core, dst, t, vel) => {
 export const tom: DrumVoice = (core, dst, t, vel) => {
   dropTone(core, dst, t, { from: 190, to: 105, sweep: 0.14, peak: 0.6 * vel, decay: 0.4 });
 };
-export const taiko: DrumVoice = (core, dst, t, vel) => {
+const taikoSynth: DrumVoice = (core, dst, t, vel) => {
   dropTone(core, dst, t, { from: 105, to: 50, sweep: 0.2, peak: 0.95 * vel, decay: 0.8 });
   noiseHit(core, dst, t, { type: 'lowpass', f: 900, q: 0.7, peak: 0.35 * vel, decay: 0.1 });
 };
-export const timpani: DrumVoice = (core, dst, t, vel) => {
+const timpaniSynth: DrumVoice = (core, dst, t, vel) => {
   dropTone(core, dst, t, { from: 118, to: 98, sweep: 0.25, peak: 0.8 * vel, decay: 1.4 });
   dropTone(core, dst, t, { from: 180, to: 150, sweep: 0.2, peak: 0.25 * vel, decay: 0.8 });
 };
-export const crash: DrumVoice = (core, dst, t, vel) => {
+const crashSynth: DrumVoice = (core, dst, t, vel) => {
   noiseHit(core, dst, t, { type: 'highpass', f: 3400, q: 0.5, peak: 0.85 * vel, decay: 1.6 });
 };
 /** reversed-cymbal style rise into a downbeat */
@@ -466,10 +478,47 @@ export const riser: DrumVoice = (core, dst, t, vel) => {
   g.connect(dst);
 };
 
+
+// ---------------------------------------------------------------------------------------------
+// The recorded orchestra (see orchVoices.ts and orchLoader.ts). Each has a synthesized stand-in until it has loaded.
+// ---------------------------------------------------------------------------------------------
+
+export const cello: NoteVoice = sustained('cello', { copies: 2, a: 0.13, r: 0.4, gain: 0.85, bright: [2400, 9000] }, bass);
+export const contra: NoteVoice = sustained('contra', { a: 0.1, r: 0.32, gain: 0.95, bright: [1400, 5500] }, subBass);
+export const violins: NoteVoice = sustained('violins', { copies: 3, a: 0.17, r: 0.45, gain: 0.55, bright: [2600, 9500] }, softLead);
+export const violas: NoteVoice = sustained('violas', { copies: 2, a: 0.15, r: 0.42, gain: 0.65, bright: [2400, 8500] }, softLead);
+export const horn: NoteVoice = sustained('horn', { copies: 2, a: 0.07, r: 0.32, gain: 0.8, bright: [1500, 6500] }, brass);
+export const trombone: NoteVoice = sustained('trombone', { copies: 2, a: 0.07, r: 0.3, gain: 0.75, bright: [1300, 5500] }, brass);
+export const tuba: NoteVoice = sustained('tuba', { a: 0.09, r: 0.3, gain: 0.9, bright: [1000, 3800] }, bass);
+export const celloStac: NoteVoice = plucked('celloStac', { gain: 0.95, ring: 0.3, damp: 0.14, bright: [3000, 10000] }, pluck);
+export const violinStac: NoteVoice = plucked('violinStac', { gain: 0.8, ring: 0.2, damp: 0.1, bright: [3500, 11000] }, pluck);
+export const hornStac: NoteVoice = plucked('hornStac', { gain: 0.85, ring: 0.36, damp: 0.16, bright: [1800, 7000] }, brass);
+export const contraPizz: NoteVoice = plucked('contraPizz', { gain: 1.1, ring: 0.8, damp: 0.25, bright: [1600, 6000] }, bass);
+
+export const harp: NoteVoice = plucked('harp', { gain: 0.95, ring: 1.8, damp: 0.5, bright: [3500, 10000] }, harpSynth);
+export const flute: NoteVoice = sustained('flute', { a: 0.07, r: 0.25, gain: 0.85, bright: [2800, 9500] }, fluteSynth);
+export const oboe: NoteVoice = sustained('oboe', { a: 0.06, r: 0.25, gain: 0.8, bright: [2400, 8000] }, softLead);
+export const clarinet: NoteVoice = sustained('clarinet', { a: 0.06, r: 0.25, gain: 0.85, bright: [2200, 7500] }, softLead);
+export const bassoon: NoteVoice = sustained('bassoon', { a: 0.07, r: 0.28, gain: 0.9, bright: [1800, 6000] }, bass);
+export const snare: DrumVoice = sampledDrum('snare', { gain: 0.9, by: 'vel', jitter: 0.02 }, snareSynth);
+export const triangle: DrumVoice = sampledDrum('triangle', { gain: 0.55, by: 'random', jitter: 0.01, ring: 1.6 }, rim);
+
+export const orchStrings: ChordVoice = stringSection(strings, { cello, violas, violins });
+export const orchBrass: ChordVoice = brassSection(pad, { horn, trombone });
+
+export const taiko: DrumVoice = sampledDrum('bdrum', { gain: 1.0, by: 'vel', jitter: 0.015 }, taikoSynth, (core, dst, t, vel) =>
+  dropTone(core, dst, t, { from: 90, to: 46, sweep: 0.14, peak: 0.28 * vel, decay: 0.5 })
+);
+export const bassDrum: DrumVoice = sampledDrum('bdrum', { gain: 1.0, by: 'vel', jitter: 0.01 }, taikoSynth);
+export const timpani: DrumVoice = sampledDrum('timp', { gain: 1.0, by: 'random', jitter: 0.03, only: [1, 2, 3, 4] }, timpaniSynth);
+export const crash: DrumVoice = sampledDrum('cymbal', { gain: 0.8, by: 'random', jitter: 0.02, ring: 2.4 }, crashSynth);
+export const gong: DrumVoice = sampledDrum('gong', { gain: 0.9, by: 'vel', jitter: 0.01 }, crashSynth);
+
 export const NOTE_VOICES: Record<string, NoteVoice> = {
   marimba, kalimba, bell, steelpan, pluck, harp, flute, softLead, brass, bass, subBass, synthBass,
+  cello, contra, violins, violas, horn, trombone, tuba, celloStac, violinStac, hornStac, contraPizz, oboe, clarinet, bassoon,
 };
-export const CHORD_VOICES: Record<string, ChordVoice> = { pad, strings, choir };
+export const CHORD_VOICES: Record<string, ChordVoice> = { pad, strings, choir, orchStrings, orchBrass };
 export const DRUM_VOICES: Record<string, DrumVoice> = {
-  kick, softKick, snare, rim, brush, hat, ohat, shaker, congaHi, congaLo, clave, woodblock, tom, taiko, timpani, crash, riser,
+  kick, softKick, snare, rim, brush, hat, ohat, shaker, congaHi, congaLo, clave, woodblock, tom, taiko, timpani, crash, riser, bassDrum, gong, triangle,
 };

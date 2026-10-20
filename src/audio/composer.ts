@@ -22,6 +22,7 @@
 import { SCALES, hashStr, rng } from './theory.ts';
 import type { ChordTrack, DrumName, DrumTrack, MelodyTrack, PatternTrack, Theme, Track } from './music.ts';
 import { IRON_CLAW, SLOMATT_A } from './tunes.ts';
+import { orchestrate, PACE_CODE, paceFromCode, type Pace } from './orchestrate.ts';
 
 type R = () => number;
 type Mode = keyof typeof SCALES;
@@ -509,7 +510,7 @@ export interface Composed {
   info: { key: string; mode: string; bpm: number; lead: string; groove: Groove; hero: boolean; progression: string[] };
 }
 
-export function composeStageFull(world: number, seed: number): Composed {
+export function composeStageFull(world: number, seed: number, pace?: Pace): Composed {
   const w = clamp(Math.floor(world) || 1, 1, 10);
   const card = CARDS[w];
   const r = rng((hashStr(`stage${w}`) ^ Math.imul(seed >>> 0, 2654435761)) >>> 0);
@@ -567,8 +568,8 @@ export function composeStageFull(world: number, seed: number): Composed {
   } as MelodyTrack);
   tracks.push(...drumTracks(r, groove));
 
-  const theme: Theme = {
-    id: `gen-${w}-${seed >>> 0}`,
+  let theme: Theme = {
+    id: `gen-${w}-${seed >>> 0}${pace ? '-' + PACE_CODE[pace] : ''}`,
     bpm,
     tonic: tonicStr,
     scale: mode,
@@ -578,17 +579,23 @@ export function composeStageFull(world: number, seed: number): Composed {
     chords: mergeChords(h.names),
     tracks,
   };
+  // the same tune, dressed in the orchestra for what the player is doing (the notes do not change with the pace)
+  if (pace) theme = orchestrate(theme, { world: w, pace, seed });
   return { theme, info: { key: `${noteName(tonicPc, flats)} ${mode}`, mode, bpm, lead, groove, hero, progression: h.names } };
 }
 
-export const composeStage = (world: number, seed: number): Theme => composeStageFull(world, seed).theme;
+export const composeStage = (world: number, seed: number, pace?: Pace): Theme => composeStageFull(world, seed, pace).theme;
 
-/** 'gen-7-12345' -> a composed stage; anything else is not ours */
+/** 'gen-7-12345' or 'gen-7-12345-r' (with a pace) -> a composed stage; anything else is not ours */
 export function themeFromId(id: string): Theme | null {
-  const m = /^gen-(\d{1,2})-(\d{1,10})$/.exec(id);
-  return m ? composeStage(Number(m[1]), Number(m[2])) : null;
+  const m = /^gen-(\d{1,2})-(\d{1,10})(?:-([a-z]))?$/.exec(id);
+  if (!m) return null;
+  const pace = m[3] ? paceFromCode(m[3]) : undefined;
+  if (m[3] && !pace) return null;
+  return composeStage(Number(m[1]), Number(m[2]), pace ?? undefined);
 }
-export const stageThemeId = (world: number, seed: number) => `gen-${clamp(Math.floor(world) || 1, 1, 10)}-${seed >>> 0}`;
+export const stageThemeId = (world: number, seed: number, pace?: Pace) =>
+  `gen-${clamp(Math.floor(world) || 1, 1, 10)}-${seed >>> 0}${pace ? '-' + PACE_CODE[pace] : ''}`;
 
 // ───────────────────────────────────────────── the story scores ─────────────────────────────────────────────
 
@@ -629,7 +636,7 @@ const rep = <T>(a: T[], n: number): T[] => Array.from({ length: n }, (_, i) => a
 const STORY: Record<StoryKind, () => StorySpec> = {
   // Jennifur's waltz: tender, then swelling, then the whole forest singing; 3/4, F major
   jennifur: () => ({
-    id: 'jennifur', seed: 4417, tonic: 'F', mode: 'major', bpm: 62, steps: 12, delay: 0.75, leadA: 'flute', leadB: 'softLead', counter: 'bell',
+    id: 'jennifur', seed: 4417, tonic: 'F', mode: 'major', bpm: 62, steps: 12, delay: 0.75, leadA: 'flute', leadB: 'violins', counter: 'bell',
     stringsLo: [53, 72], lead: [65, 86], seventh: 0.3,
     sections: [
       { name: 'dawn', bars: 4, roots: [0, 5, 3, 4], layers: ['harp', 'pad'], melody: 'none' },
@@ -643,7 +650,7 @@ const STORY: Record<StoryKind, () => StorySpec> = {
   }),
   // the vow: Slomatt's own theme in A minor, slow and aching, growing into a prayer
   dusk: () => ({
-    id: 'storyDusk', seed: 2093, tonic: 'A', mode: 'minor', bpm: 66, steps: 16, delay: 0.75, leadA: 'softLead', leadB: 'flute', counter: 'bell',
+    id: 'storyDusk', seed: 2093, tonic: 'A', mode: 'minor', bpm: 66, steps: 16, delay: 0.75, leadA: 'cello', leadB: 'flute', counter: 'bell',
     stringsLo: [45, 67], lead: [62, 84], seventh: 0.25,
     sections: [
       { name: 'hush', bars: 4, roots: [0, 0, 5, 4], layers: ['pad', 'harp', 'bass'], melody: 'none' },
@@ -668,7 +675,7 @@ const STORY: Record<StoryKind, () => StorySpec> = {
   }),
   // the ending: the hero's theme comes home, then Jennifur's, and everything sings
   ending: () => ({
-    id: 'ending', seed: 1268, tonic: 'F', mode: 'major', bpm: 84, steps: 16, delay: 0.75, leadA: 'flute', leadB: 'softLead', counter: 'bell',
+    id: 'ending', seed: 1268, tonic: 'F', mode: 'major', bpm: 84, steps: 16, delay: 0.75, leadA: 'flute', leadB: 'violins', counter: 'bell',
     stringsLo: [53, 72], lead: [65, 88], seventh: 0.25,
     sections: [
       { name: 'dawn', bars: 4, roots: [0, 4, 5, 3], layers: ['harp', 'strings'], melody: 'none' },
@@ -747,15 +754,16 @@ export function composeStory(kind: StoryKind): Theme {
   const mask = (l: Layer) => masks.get(l)!.join('');
   const storm = spec.id === 'storyStorm';
   const tracks: Track[] = [];
-  tracks.push({ kind: 'chords', name: 'strings', inst: 'strings', lo: spec.stringsLo[0], hi: spec.stringsLo[1], voices: 4, gain: 0.34, rev: 0.55, mask: mask('strings') } as ChordTrack);
-  tracks.push({ kind: 'chords', name: 'pad', inst: 'pad', lo: 48, hi: 68, voices: 3, gain: 0.26, rev: 0.5, mask: mask('pad') } as ChordTrack);
+  tracks.push({ kind: 'chords', name: 'strings', inst: 'orchStrings', lo: spec.stringsLo[0], hi: spec.stringsLo[1], voices: 4, gain: 0.42, rev: 0.62, mask: mask('strings') } as ChordTrack);
+  tracks.push({ kind: 'chords', name: 'pad', inst: 'orchBrass', lo: 41, hi: 64, voices: 3, gain: 0.3, rev: 0.6, mask: mask('pad') } as ChordTrack);
   tracks.push({ kind: 'chords', name: 'choir', inst: 'choir', lo: 55, hi: 74, voices: 3, gain: 0.28, rev: 0.65, mask: mask('choir'), gate: [0.25, 0.6] } as ChordTrack);
+  tracks.push({ kind: 'chords', name: 'hornsBig', inst: 'orchBrass', lo: 43, hi: 64, voices: 3, gain: 0.34, rev: 0.6, mask: mask('choir') } as ChordTrack);
   tracks.push({
     kind: 'pattern', name: 'harp', inst: 'harp', oct: 53, gain: 0.46, rev: 0.42, dly: 0.15, pan: -0.2, mask: mask('harp'),
     pats: waltz ? ['r.. t.. f.. t..', 'r.. t.. o.. f..'] : ['r.t.f.t. r.t.f.t.', 'r.t.f.o.f.t.f.t.'],
   } as PatternTrack);
   tracks.push({
-    kind: 'pattern', name: 'bass', inst: 'subBass', oct: storm ? 24 : 33, gain: storm ? 0.6 : 0.45, rev: 0.05, mask: mask('bass'),
+    kind: 'pattern', name: 'bass', inst: 'contra', oct: storm ? 30 : 33, gain: storm ? 0.75 : 0.6, rev: 0.05, mask: mask('bass'),
     pats: waltz ? ['R.. ... f.. ...', 'R-- --- --- ---'] : storm ? ['R--- ---- ---- ----', 'R--- ---- r--- ----'] : ['R--- ---- ---- ----', 'R--- ---. ..f. ....'],
   } as PatternTrack);
   tracks.push({ kind: 'melody', name: 'leadA', inst: spec.leadA, bars: leadBars.leadA, gain: spec.leadA === 'brass' ? 0.5 : 0.6, rev: 0.45, dly: 0.2 } as MelodyTrack);

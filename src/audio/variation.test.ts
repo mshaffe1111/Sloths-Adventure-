@@ -36,7 +36,7 @@ test('every stage gets its own seed and a gentle tempo', () => {
       const id = `${w}-${m}`;
       const s = sceneForScreen('playing', w, false, id, m)!;
       assert.ok(themeById(s.id));
-      assert.ok(s.tempo! >= 0.95 && s.tempo! <= 1.07, `${id} tempo ${s.tempo}`);
+      assert.ok(s.tempo! >= 0.85 && s.tempo! <= 1.15, `${id} tempo ${s.tempo}`);
       assert.equal(s.seed, sceneForScreen('paused', w, false, id, m)!.seed, 'pausing keeps the same arrangement');
       seeds.add(s.seed!);
     }

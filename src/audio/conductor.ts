@@ -116,6 +116,7 @@ export class Conductor {
       this.amb = new Ambience(this.core);
       this.lite = typeof navigator !== 'undefined' && /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) && (navigator.hardwareConcurrency ?? 8) <= 4;
       this.amb.lite = this.lite;
+      this.core.lite = this.lite;
       this.applyVolumes(true);
       document.addEventListener('visibilitychange', this.onVisibility);
       this.timer = setInterval(this.tick, TICK_MS);
@@ -162,11 +163,25 @@ export class Conductor {
     if (!id) return;
     const theme = themeById(id);
     if (!theme) return;
-    const pb = new Playback(core, theme, core.ctx.currentTime + 0.08, undefined, !first || !!old, { seed: opts.seed, tempo: opts.tempo });
-    pb.liteMode = this.lite;
-    pb.setIntensity(opts.intensity ?? this.intensity, true);
-    this.playback = pb;
-    pb.update(core.ctx.currentTime + LOOKAHEAD);
+    const begin = () => {
+      const pb = new Playback(core, theme, core.ctx.currentTime + 0.08, undefined, !first || !!old, { seed: opts.seed, tempo: opts.tempo });
+      pb.liteMode = this.lite;
+      pb.setIntensity(opts.intensity ?? this.intensity, true);
+      this.playback = pb;
+      pb.update(core.ctx.currentTime + LOOKAHEAD);
+    };
+    // the recorded orchestra is fetched the first time a piece needs it: the piece starts once it is in (or after a moment, with the
+    // synthesized stand-ins covering anything that is late), so it never opens with the wrong instruments
+    const key = this.wantKey;
+    void import('./orchLoader.ts')
+      .then(async (m) => {
+        const need = m.groupsFor(theme).filter((g) => !core.orch.has(g));
+        if (need.length) await Promise.race([m.loadOrch(core, need), new Promise((r) => setTimeout(r, 2500))]);
+      })
+      .catch(() => {})
+      .then(() => {
+        if (this.wantKey === key && !this.playback) begin();
+      });
   }
 
   get scene() {

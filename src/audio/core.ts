@@ -8,6 +8,14 @@
  * (OfflineAudioContext renders a track to samples so it can be measured without speakers).
  */
 
+/** one recording of the orchestra: the note it was played at, and where its steady stretch begins (seconds; 0 = a one-shot with no loop) */
+export interface OrchSample {
+  buf: AudioBuffer;
+  midi: number;
+  loopStart: number;
+  loopEnd: number;
+}
+
 export interface AudioCoreOptions {
   /** quality of the reverb tail in seconds */
   reverbSeconds?: number;
@@ -34,6 +42,12 @@ export class AudioCore {
   readonly pinkNoise: AudioBuffer;
   /** the recorded sounds, by group ("punchM" -> its versions); empty until sampleLoader has run, and the effects work without them */
   readonly samples = new Map<string, AudioBuffer[]>();
+  /** the recorded orchestra, by instrument ("cello" -> its notes, lowest first); filled on demand by orchLoader, and every voice falls back to a synthesized one without it */
+  readonly orch = new Map<string, OrchSample[]>();
+  /** adds weight to the music only: small phone speakers give nothing below ~150 Hz, so the body of the low instruments has to live above it */
+  readonly musicBody: BiquadFilterNode;
+  /** a slow phone: voices use fewer players per note (set by the conductor) */
+  lite = false;
   /** a side tap on the final output, read by tests and the volume meter */
   readonly meter: AnalyserNode;
 
@@ -82,6 +96,11 @@ export class AudioCore {
     this.musicFilter.type = 'lowpass';
     this.musicFilter.frequency.value = Math.min(20000, c.sampleRate / 2 - 100);
     this.musicFilter.Q.value = 0.5;
+    this.musicBody = c.createBiquadFilter();
+    this.musicBody.type = 'peaking';
+    this.musicBody.frequency.value = 260;
+    this.musicBody.Q.value = 0.7;
+    this.musicBody.gain.value = 4.5;
     // levels: music sits under the effects so pickups and hits stay readable
     this.music.gain.value = 0.32;
     this.sfx.gain.value = 0.9;
@@ -89,7 +108,14 @@ export class AudioCore {
     this.sfx.connect(this.master);
     this.music.connect(this.musicDuck);
     this.musicDuck.connect(this.musicFilter);
-    this.musicFilter.connect(this.master);
+    // nothing below ~40 Hz can be heard on any speaker, but it uses up the compressor's headroom and makes the whole mix pump
+    const musicHp = c.createBiquadFilter();
+    musicHp.type = 'highpass';
+    musicHp.frequency.value = 40;
+    musicHp.Q.value = 0.5;
+    this.musicFilter.connect(musicHp);
+    musicHp.connect(this.musicBody);
+    this.musicBody.connect(this.master);
     this.amb.connect(this.master);
 
     // ---- reverb
