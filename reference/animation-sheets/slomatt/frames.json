@@ -1,0 +1,434 @@
+[
+ {
+  "file": "slomatt/01_rope-crossing-swinging-leaping.jpg",
+  "title": "Slomatt Action Studies: Rope Movements, Side View (No Props)",
+  "layout": "4x4",
+  "frames": [
+   {
+    "n": 1,
+    "label": "Sideways Grip Start"
+   },
+   {
+    "n": 2,
+    "label": "Cautious Shift"
+   },
+   {
+    "n": 3,
+    "label": "Mid-Cross Balance"
+   },
+   {
+    "n": 4,
+    "label": "Crossing Progress"
+   },
+   {
+    "n": 5,
+    "label": "Swing Grip Start"
+   },
+   {
+    "n": 6,
+    "label": "Backward Arc Lean"
+   },
+   {
+    "n": 7,
+    "label": "Forward Momentum"
+   },
+   {
+    "n": 8,
+    "label": "High Forward Reach"
+   },
+   {
+    "n": 9,
+    "label": "Right Launch Prep"
+   },
+   {
+    "n": 10,
+    "label": "Release & Jump Right"
+   },
+   {
+    "n": 11,
+    "label": "Airborne Right"
+   },
+   {
+    "n": 12,
+    "label": "Descent & Land Prep"
+   },
+   {
+    "n": 13,
+    "label": "Left Launch Prep"
+   },
+   {
+    "n": 14,
+    "label": "Release & Jump Left"
+   },
+   {
+    "n": 15,
+    "label": "Airborne Left"
+   },
+   {
+    "n": 16,
+    "label": "Land Prep Left"
+   }
+  ],
+  "notes": "Frames 1-4 are balanced ON a rope (the game's rope is hung from). Frames 5-8 are a swing on a vertical rope/vine. Frames 9-16 are the release, leap and landing, to the right then to the left."
+ },
+ {
+  "file": "slomatt/02_sliding-from-behind-seated-jump.jpg",
+  "title": "Slomatt Action Studies: Sliding From Behind & Seated Jumping",
+  "layout": "4x4",
+  "frames": [
+   {
+    "n": 1,
+    "label": "Start Descent"
+   },
+   {
+    "n": 2,
+    "label": "Sliding Speed"
+   },
+   {
+    "n": 3,
+    "label": "Bumpy Slide"
+   },
+   {
+    "n": 4,
+    "label": "Full Slide"
+   },
+   {
+    "n": 5,
+    "label": "Prepare Right Turn"
+   },
+   {
+    "n": 6,
+    "label": "Lean & Dig Right"
+   },
+   {
+    "n": 7,
+    "label": "Slideout Right"
+   },
+   {
+    "n": 8,
+    "label": "Exit Right Turn"
+   },
+   {
+    "n": 9,
+    "label": "Prepare Left Turn"
+   },
+   {
+    "n": 10,
+    "label": "Lean & Dig Left"
+   },
+   {
+    "n": 11,
+    "label": "Slideout Left"
+   },
+   {
+    "n": 12,
+    "label": "Exit Left Turn"
+   },
+   {
+    "n": 13,
+    "label": "Seated Launch"
+   },
+   {
+    "n": 14,
+    "label": "Mid-Air Seated Jump"
+   },
+   {
+    "n": 15,
+    "label": "Preparing Landing"
+   },
+   {
+    "n": 16,
+    "label": "Seated Impact"
+   }
+  ],
+  "notes": "Back view, seated, on a slope. For the planned secret sliding stages; nothing in the game slides yet."
+ },
+ {
+  "file": "slomatt/03_squat-air-flip-falling-mega-kick.jpg",
+  "title": "Slomatt Action Studies: Squatting, Air Flip, Falling & Mega Kick",
+  "layout": "4x4",
+  "frames": [
+   {
+    "n": 1,
+    "label": "Start Downward"
+   },
+   {
+    "n": 2,
+    "label": "Mid-Descent"
+   },
+   {
+    "n": 3,
+    "label": "Deep Squat"
+   },
+   {
+    "n": 4,
+    "label": "Squat Hold"
+   },
+   {
+    "n": 5,
+    "label": "Launch & Tuck"
+   },
+   {
+    "n": 6,
+    "label": "Mid-Flip"
+   },
+   {
+    "n": 7,
+    "label": "Unfurling"
+   },
+   {
+    "n": 8,
+    "label": "Landing Prep"
+   },
+   {
+    "n": 9,
+    "label": "Lose Balance"
+   },
+   {
+    "n": 10,
+    "label": "In-Flight"
+   },
+   {
+    "n": 11,
+    "label": "Impact"
+   },
+   {
+    "n": 12,
+    "label": "On the Ground"
+   },
+   {
+    "n": 13,
+    "label": "Wind-up"
+   },
+   {
+    "n": 14,
+    "label": "The Launch"
+   },
+   {
+    "n": 15,
+    "label": "The Impact"
+   },
+   {
+    "n": 16,
+    "label": "Follow-through"
+   }
+  ],
+  "notes": "Frames 1-4 duck. 5-8 air flip (double jump). 9-12 knocked off balance, thrown and lying dazed. 13-16 the mega kick."
+ },
+ {
+  "file": "slomatt/04_mega-punch-climbing-kicking.jpg",
+  "title": "Slomatt Action Studies: Mega Punch, Climbing & Kicking",
+  "layout": "5-5-6",
+  "frames": [
+   {
+    "n": 1,
+    "label": "Wind-up / Charging"
+   },
+   {
+    "n": 2,
+    "label": "The Forward Lunge"
+   },
+   {
+    "n": 3,
+    "label": "The Impact"
+   },
+   {
+    "n": 4,
+    "label": "The Follow-Through"
+   },
+   {
+    "n": 5,
+    "label": "Upward Reach"
+   },
+   {
+    "n": 6,
+    "label": "Upward Reach (second)"
+   },
+   {
+    "n": 7,
+    "label": "The Pull-Up"
+   },
+   {
+    "n": 8,
+    "label": "Grip Shift"
+   },
+   {
+    "n": 9,
+    "label": "Hanging / Reach Out"
+   },
+   {
+    "n": 10,
+    "label": "Pull & Shift"
+   },
+   {
+    "n": 11,
+    "label": "Legs Swing"
+   },
+   {
+    "n": 12,
+    "label": "The Shimmy"
+   },
+   {
+    "n": 13,
+    "label": "Kick Preparation"
+   },
+   {
+    "n": 14,
+    "label": "The Forward Kick"
+   },
+   {
+    "n": 15,
+    "label": "The Retract"
+   },
+   {
+    "n": 16,
+    "label": "The Landing"
+   }
+  ],
+  "notes": "The sheet numbers its panels 1-5, 5-7, 9-16 (there is no 8); here they are listed in reading order. Rows: mega punch + first climb frame; climb and hang; shimmy and kick."
+ },
+ {
+  "file": "slomatt/05_running-jumping-punching.jpg",
+  "title": "Slomatt Action Studies: Running, Jumping & Punching",
+  "layout": "4x4",
+  "frames": [
+   {
+    "n": 1,
+    "label": "Lean Forward"
+   },
+   {
+    "n": 2,
+    "label": "Stride Right"
+   },
+   {
+    "n": 3,
+    "label": "In-Flight"
+   },
+   {
+    "n": 4,
+    "label": "Foot Contact"
+   },
+   {
+    "n": 5,
+    "label": "Lean Forward (left-facing)"
+   },
+   {
+    "n": 6,
+    "label": "Stride Left"
+   },
+   {
+    "n": 7,
+    "label": "In-Flight (left-facing)"
+   },
+   {
+    "n": 8,
+    "label": "Foot Contact (left-facing)"
+   },
+   {
+    "n": 9,
+    "label": "Wind-up"
+   },
+   {
+    "n": 10,
+    "label": "Lunge"
+   },
+   {
+    "n": 11,
+    "label": "Impact"
+   },
+   {
+    "n": 12,
+    "label": "Return"
+   },
+   {
+    "n": 13,
+    "label": "Crouch"
+   },
+   {
+    "n": 14,
+    "label": "Ascent"
+   },
+   {
+    "n": 15,
+    "label": "Apex"
+   },
+   {
+    "n": 16,
+    "label": "Landing"
+   }
+  ],
+  "notes": "Two 4-frame strides (the second faces left), a 4-frame punch, and a jump from crouch to landing."
+ },
+ {
+  "file": "slomatt/06_slow-movement-granular-analysis.jpg",
+  "title": "Slomatt Movement & Pose Studies: A Granular Analysis",
+  "layout": "4x4",
+  "frames": [
+   {
+    "n": 1,
+    "label": "Slow Step Forward (Left Leg)"
+   },
+   {
+    "n": 2,
+    "label": "Slow Step Forward (Right Leg)"
+   },
+   {
+    "n": 3,
+    "label": "Foot Plant & Shift Weight"
+   },
+   {
+    "n": 4,
+    "label": "Mid-Stride Balance Check"
+   },
+   {
+    "n": 5,
+    "label": "45-Degree Turn Right"
+   },
+   {
+    "n": 6,
+    "label": "90-Degree Turn Left"
+   },
+   {
+    "n": 7,
+    "label": "Walking Backwards (First Step)"
+   },
+   {
+    "n": 8,
+    "label": "Pivot Turn Around (180)"
+   },
+   {
+    "n": 9,
+    "label": "Satchel Adjustment"
+   },
+   {
+    "n": 10,
+    "label": "Finger Examination (close-up)"
+   },
+   {
+    "n": 11,
+    "label": "Gentle Patting Motion (close-up)"
+   },
+   {
+    "n": 12,
+    "label": "Waving Hello (Slow & Deliberate)"
+   },
+   {
+    "n": 13,
+    "label": "Crouching Low to Ground"
+   },
+   {
+    "n": 14,
+    "label": "Leaning on Staff (Prop Study)"
+   },
+   {
+    "n": 15,
+    "label": "Looking Up (Awe Study, close-up)"
+   },
+   {
+    "n": 16,
+    "label": "Falling Gently (Control Study)"
+   }
+  ],
+  "notes": "Front and three-quarter views, for cutscenes and idle variety. Frames 1-7 are near copies of one another; 10, 11 and 15 are close-ups."
+ }
+]

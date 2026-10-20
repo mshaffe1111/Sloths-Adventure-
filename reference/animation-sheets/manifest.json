@@ -1,0 +1,581 @@
+{
+ "note": "Originals are kept byte for byte (JPG) or as lossless WebP (PNG converted without any change to pixels). Never delete or replace a sheet; add new ones.",
+ "groups": {
+  "slomatt/early-hero-sheets": "Slomatt pose and character sheets from the original hero build (magenta-keyed KlingAI / Gemini sheets, including the run, kick, punch, climb, rope and expression sheets the in-game hero atlas was cut from)",
+  "jennifur": "Jennifur emotion sheets: sad / crying / dejected walk / celebration / jubilant, and scared / panic (pink headband, #07 vest)",
+  "slomatt-and-jennifur": "Slomatt and Jennifur together: hugging, hand-in-hand, conversational gestures, 16 Slomatt expressions, and the core movement and combat sheet (walk, jump, land, punch, kick, crouch, hurt, stunned, knockback, defeated) drawn for both"
+ },
+ "files": [
+  {
+   "file": "slomatt/early-hero-sheets/01_531dd27c.jpg",
+   "uploadId": "531dd27c",
+   "uploaded": "2026-10-18 21:08",
+   "size": [
+    2576,
+    1438
+   ],
+   "bytes": 422672
+  },
+  {
+   "file": "slomatt/early-hero-sheets/02_3ee902eb.jpg",
+   "uploadId": "3ee902eb",
+   "uploaded": "2026-10-18 21:16",
+   "size": [
+    2576,
+    1438
+   ],
+   "bytes": 436663
+  },
+  {
+   "file": "slomatt/early-hero-sheets/03_ea020788.jpg",
+   "uploadId": "ea020788",
+   "uploaded": "2026-10-18 21:27",
+   "size": [
+    2576,
+    1438
+   ],
+   "bytes": 384451
+  },
+  {
+   "file": "slomatt/early-hero-sheets/04_f60f8207.jpg",
+   "uploadId": "f60f8207",
+   "uploaded": "2026-10-18 21:40",
+   "size": [
+    2576,
+    1438
+   ],
+   "bytes": 343814
+  },
+  {
+   "file": "slomatt/early-hero-sheets/05_f3882225.jpg",
+   "uploadId": "f3882225",
+   "uploaded": "2026-10-18 21:51",
+   "size": [
+    1024,
+    254
+   ],
+   "bytes": 60126
+  },
+  {
+   "file": "slomatt/early-hero-sheets/06_dcf4f81b.jpg",
+   "uploadId": "dcf4f81b",
+   "uploaded": "2026-10-18 21:58",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 116452
+  },
+  {
+   "file": "slomatt/early-hero-sheets/07_299bda80.jpg",
+   "uploadId": "299bda80",
+   "uploaded": "2026-10-18 21:58",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 128871
+  },
+  {
+   "file": "slomatt/early-hero-sheets/08_9c408909.jpg",
+   "uploadId": "9c408909",
+   "uploaded": "2026-10-18 22:00",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 116422
+  },
+  {
+   "file": "slomatt/early-hero-sheets/09_e25a2ceb.jpg",
+   "uploadId": "e25a2ceb",
+   "uploaded": "2026-10-18 22:03",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 126121
+  },
+  {
+   "file": "slomatt/early-hero-sheets/10_07c4ac39.webp",
+   "uploadId": "07c4ac39",
+   "uploaded": "2026-10-18 22:22",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2511128
+  },
+  {
+   "file": "slomatt/early-hero-sheets/11_fdb4f0dc.webp",
+   "uploadId": "fdb4f0dc",
+   "uploaded": "2026-10-18 22:22",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2069988
+  },
+  {
+   "file": "slomatt/early-hero-sheets/12_05054772.webp",
+   "uploadId": "05054772",
+   "uploaded": "2026-10-18 22:28",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2427060
+  },
+  {
+   "file": "slomatt/early-hero-sheets/13_3edc7fe1.webp",
+   "uploadId": "3edc7fe1",
+   "uploaded": "2026-10-18 22:28",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2273428
+  },
+  {
+   "file": "slomatt/early-hero-sheets/14_e0108ffd.webp",
+   "uploadId": "e0108ffd",
+   "uploaded": "2026-10-18 22:37",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2373558
+  },
+  {
+   "file": "slomatt/early-hero-sheets/15_f8557e05.webp",
+   "uploadId": "f8557e05",
+   "uploaded": "2026-10-18 22:37",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2150062
+  },
+  {
+   "file": "slomatt/early-hero-sheets/16_261d2401.webp",
+   "uploadId": "261d2401",
+   "uploaded": "2026-10-18 22:37",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2069988
+  },
+  {
+   "file": "slomatt/early-hero-sheets/17_5ab8e2b7.webp",
+   "uploadId": "5ab8e2b7",
+   "uploaded": "2026-10-18 22:37",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2323986
+  },
+  {
+   "file": "slomatt/early-hero-sheets/18_c3843300.webp",
+   "uploadId": "c3843300",
+   "uploaded": "2026-10-18 22:37",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2512362
+  },
+  {
+   "file": "slomatt/early-hero-sheets/19_bff7383b.webp",
+   "uploadId": "bff7383b",
+   "uploaded": "2026-10-18 22:37",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2388006
+  },
+  {
+   "file": "slomatt/early-hero-sheets/20_f395b6a3.webp",
+   "uploadId": "f395b6a3",
+   "uploaded": "2026-10-18 22:37",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2352244
+  },
+  {
+   "file": "slomatt/early-hero-sheets/21_56842793.webp",
+   "uploadId": "56842793",
+   "uploaded": "2026-10-18 22:37",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2325708
+  },
+  {
+   "file": "slomatt/early-hero-sheets/22_6f10e553.webp",
+   "uploadId": "6f10e553",
+   "uploaded": "2026-10-18 22:37",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2465314
+  },
+  {
+   "file": "slomatt/early-hero-sheets/23_579d8a1e.webp",
+   "uploadId": "579d8a1e",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2489386
+  },
+  {
+   "file": "slomatt/early-hero-sheets/24_8864d2ed.webp",
+   "uploadId": "8864d2ed",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2228100
+  },
+  {
+   "file": "slomatt/early-hero-sheets/25_28f61671.webp",
+   "uploadId": "28f61671",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2315946
+  },
+  {
+   "file": "slomatt/early-hero-sheets/26_f468025b.webp",
+   "uploadId": "f468025b",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2444770
+  },
+  {
+   "file": "slomatt/early-hero-sheets/27_0800e592.webp",
+   "uploadId": "0800e592",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2644592
+  },
+  {
+   "file": "slomatt/early-hero-sheets/28_fe11be5e.webp",
+   "uploadId": "fe11be5e",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2249626
+  },
+  {
+   "file": "slomatt/early-hero-sheets/29_e12b592b.webp",
+   "uploadId": "e12b592b",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2444584
+  },
+  {
+   "file": "slomatt/early-hero-sheets/30_b311e63d.webp",
+   "uploadId": "b311e63d",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2283454
+  },
+  {
+   "file": "slomatt/early-hero-sheets/31_2dc11176.webp",
+   "uploadId": "2dc11176",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2336430
+  },
+  {
+   "file": "slomatt/early-hero-sheets/32_b6a7f59c.webp",
+   "uploadId": "b6a7f59c",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2284226
+  },
+  {
+   "file": "slomatt/early-hero-sheets/33_59ef830c.webp",
+   "uploadId": "59ef830c",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2286762
+  },
+  {
+   "file": "slomatt/early-hero-sheets/34_2f2139e7.webp",
+   "uploadId": "2f2139e7",
+   "uploaded": "2026-10-18 22:49",
+   "size": [
+    2720,
+    1536
+   ],
+   "bytes": 2173744
+  },
+  {
+   "file": "slomatt/early-hero-sheets/35_07f901e4.webp",
+   "uploadId": "07f901e4",
+   "uploaded": "2026-10-18 22:57",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 1790474
+  },
+  {
+   "file": "slomatt/early-hero-sheets/36_cce50f4e.webp",
+   "uploadId": "cce50f4e",
+   "uploaded": "2026-10-18 22:57",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2223698
+  },
+  {
+   "file": "slomatt/early-hero-sheets/37_baa68e4e.webp",
+   "uploadId": "baa68e4e",
+   "uploaded": "2026-10-18 22:57",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 1823978
+  },
+  {
+   "file": "slomatt/early-hero-sheets/38_3a12ad33.webp",
+   "uploadId": "3a12ad33",
+   "uploaded": "2026-10-18 22:57",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2469766
+  },
+  {
+   "file": "slomatt/early-hero-sheets/39_281dfcd8.webp",
+   "uploadId": "281dfcd8",
+   "uploaded": "2026-10-18 22:57",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2206554
+  },
+  {
+   "file": "slomatt/early-hero-sheets/40_63be9b24.webp",
+   "uploadId": "63be9b24",
+   "uploaded": "2026-10-18 22:57",
+   "size": [
+    3104,
+    1312
+   ],
+   "bytes": 2086888
+  },
+  {
+   "file": "jennifur/01_41dbfb3f.jpg",
+   "uploadId": "41dbfb3f",
+   "uploaded": "2026-10-19 11:41",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 351475
+  },
+  {
+   "file": "jennifur/02_515d96ee.jpg",
+   "uploadId": "515d96ee",
+   "uploaded": "2026-10-19 11:41",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 358450
+  },
+  {
+   "file": "slomatt-and-jennifur/01_3f2aba5c.jpg",
+   "uploadId": "3f2aba5c",
+   "uploaded": "2026-10-19 18:11",
+   "size": [
+    1024,
+    805
+   ],
+   "bytes": 169166
+  },
+  {
+   "file": "slomatt-and-jennifur/02_847a8b16.jpg",
+   "uploadId": "847a8b16",
+   "uploaded": "2026-10-19 18:11",
+   "size": [
+    1024,
+    800
+   ],
+   "bytes": 143831
+  },
+  {
+   "file": "slomatt-and-jennifur/03_12604632.jpg",
+   "uploadId": "12604632",
+   "uploaded": "2026-10-19 18:11",
+   "size": [
+    1024,
+    805
+   ],
+   "bytes": 163816
+  },
+  {
+   "file": "slomatt-and-jennifur/04_3345ca99.jpg",
+   "uploadId": "3345ca99",
+   "uploaded": "2026-10-19 18:11",
+   "size": [
+    1024,
+    805
+   ],
+   "bytes": 167238
+  },
+  {
+   "file": "slomatt-and-jennifur/05_fbc3e8af.jpg",
+   "uploadId": "fbc3e8af",
+   "uploaded": "2026-10-19 18:18",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 197185
+  },
+  {
+   "file": "slomatt-and-jennifur/06_1faefadb.jpg",
+   "uploadId": "1faefadb",
+   "uploaded": "2026-10-19 18:18",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 190886
+  },
+  {
+   "file": "slomatt-and-jennifur/07_ff81a9b7.jpg",
+   "uploadId": "ff81a9b7",
+   "uploaded": "2026-10-19 18:23",
+   "size": [
+    1024,
+    765
+   ],
+   "bytes": 270748
+  },
+  {
+   "file": "slomatt-and-jennifur/08_5089ceba.jpg",
+   "uploadId": "5089ceba",
+   "uploaded": "2026-10-19 18:23",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 398166
+  },
+  {
+   "file": "slomatt-and-jennifur/09_6184eede.jpg",
+   "uploadId": "6184eede",
+   "uploaded": "2026-10-19 18:58",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 221240
+  },
+  {
+   "file": "slomatt/01_rope-crossing-swinging-leaping.jpg",
+   "uploadId": "bf1a76a0",
+   "uploaded": "2026-10-20 13:13",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 157064
+  },
+  {
+   "file": "slomatt/02_sliding-from-behind-seated-jump.jpg",
+   "uploadId": "b48cf56d",
+   "uploaded": "2026-10-20 13:13",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 180503
+  },
+  {
+   "file": "slomatt/03_squat-air-flip-falling-mega-kick.jpg",
+   "uploadId": "1eb75f80",
+   "uploaded": "2026-10-20 13:13",
+   "size": [
+    1024,
+    765
+   ],
+   "bytes": 210758
+  },
+  {
+   "file": "slomatt/04_mega-punch-climbing-kicking.jpg",
+   "uploadId": "eb868e37",
+   "uploaded": "2026-10-20 13:13",
+   "size": [
+    1024,
+    572
+   ],
+   "bytes": 183278
+  },
+  {
+   "file": "slomatt/05_running-jumping-punching.jpg",
+   "uploadId": "63a4a1d2",
+   "uploaded": "2026-10-20 13:13",
+   "size": [
+    1024,
+    765
+   ],
+   "bytes": 200521
+  },
+  {
+   "file": "slomatt/06_slow-movement-granular-analysis.jpg",
+   "uploadId": "8aa45299",
+   "uploaded": "2026-10-20 13:13",
+   "size": [
+    1024,
+    898
+   ],
+   "bytes": 174925
+  }
+ ],
+ "frames": "slomatt/frames.json"
+}
