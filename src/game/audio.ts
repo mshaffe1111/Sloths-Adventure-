@@ -23,8 +23,10 @@ class SoundEngine {
     // Browsers only allow sound after a tap or key press: the first one wakes the audio up.
     // (We keep listening: phones suspend audio when another app takes over, and the next tap revives it.)
     if (typeof window !== 'undefined') {
-      const wake = () => this.c.unlock();
-      for (const ev of ['pointerdown', 'touchend', 'keydown', 'click'] as const) window.addEventListener(ev, wake, { capture: true, passive: true });
+      // get the audio ready now, so the first tap only has to switch it on (and so it just plays where the browser allows sound without a tap)
+      window.setTimeout(() => this.c.unlock(), 0);
+      // a key press wakes the sound too, but it is not a press on the "Sound" chip, so only touches and clicks count as `fromTap`
+      for (const ev of ['pointerdown', 'touchend', 'keydown', 'click'] as const) window.addEventListener(ev, () => this.c.unlock(ev !== 'keydown'), { capture: true, passive: true });
     }
   }
 
@@ -33,8 +35,14 @@ class SoundEngine {
     return this.c.muted;
   }
   toggleMute(): boolean {
+    // a tap that only woke the sound up is not also a press on "Sound": otherwise the first tap on it would mute the game
+    if (performance.now() - this.c.wokeAt < 700) return this.c.muted;
     this.c.setMuted(!this.c.muted);
     return this.c.muted;
+  }
+  /** sound is wanted but still waiting for a first tap */
+  get locked() {
+    return this.c.locked;
   }
   get musicVolume() {
     return this.c.musicVol;
@@ -49,7 +57,7 @@ class SoundEngine {
     this.c.setSfxVolume(v);
   }
   unlock() {
-    this.c.unlock();
+    this.c.unlock(true);
   }
   /** a snapshot of what the audio is doing (used by tests) */
   debug() {

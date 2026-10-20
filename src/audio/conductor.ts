@@ -94,8 +94,25 @@ export class Conductor {
     return this.core !== null;
   }
 
-  /** call from any tap / key / click: creates (or wakes) the audio context */
-  unlock() {
+  /** true while sound is wanted but the browser has not let it start yet (no tap so far, or the phone suspended it) */
+  get locked(): boolean {
+    return !this.muted && (!this.ctx || this.ctx.state !== 'running') && !(this.ctx && document.hidden);
+  }
+  /** when (performance.now) a tap last woke locked audio: the same tap must not also count as a press on a mute button */
+  wokeAt = -1e9;
+  private announce = () => {
+    try {
+      window.dispatchEvent(new Event('sloth-audio-state'));
+    } catch {
+      /* no window */
+    }
+  };
+
+  /**
+   * creates (or wakes) the audio context. Call it from any tap / key / click (`fromTap`); calling it with no tap, as the page does at load, only
+   * prepares the audio (and plays if this browser allows sound without a tap, as an installed app often does).
+   */
+  unlock(fromTap = false) {
     if (!this.ctx) {
       const AC = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!AC) return;
@@ -111,6 +128,7 @@ export class Conductor {
         return;
       }
       this.ctx = ctx;
+      ctx.onstatechange = this.announce;
       // the recorded sounds load in the background; until they are ready the effects use their synthesized layers
       void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
       this.amb = new Ambience(this.core);
@@ -121,7 +139,11 @@ export class Conductor {
       document.addEventListener('visibilitychange', this.onVisibility);
       this.timer = setInterval(this.tick, TICK_MS);
     }
-    if (this.ctx.state !== 'running' && !this.muted && !document.hidden) this.ctx.resume().catch(() => {});
+    if (this.ctx.state !== 'running' && !this.muted && !document.hidden) {
+      if (fromTap) this.wokeAt = performance.now();
+      this.ctx.resume().then(this.announce, () => {});
+    }
+    this.announce();
     // anything asked for before audio was allowed
     if (this.core && !this.playback && this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
     if (this.core && this.wantAmbient && this.amb && !this.amb.type) this.amb.start(this.wantAmbient);

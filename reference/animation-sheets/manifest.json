@@ -4,7 +4,8 @@
   "slomatt/early-hero-sheets": "Slomatt pose and character sheets from the original hero build (magenta-keyed KlingAI / Gemini sheets, including the run, kick, punch, climb, rope and expression sheets the in-game hero atlas was cut from)",
   "jennifur": "Jennifur emotion sheets: sad / crying / dejected walk / celebration / jubilant, and scared / panic (pink headband, #07 vest)",
   "slomatt-and-jennifur": "Slomatt and Jennifur together: hugging, hand-in-hand, conversational gestures, 16 Slomatt expressions, and the core movement and combat sheet (walk, jump, land, punch, kick, crouch, hurt, stunned, knockback, defeated) drawn for both",
-  "slomatt/standard-set": "Slomatt standard set (2026-10-20): nine 4x4 sheets on flat grey, no borders or numbers, one subject per sheet, see README for the 12-sheet standard. 144 frames, ~240 px tall; satchel and wrist wraps, no green backpack"
+  "slomatt/standard-set": "Slomatt standard set (2026-10-20): nine 4x4 sheets on flat grey, no borders or numbers, one subject per sheet, see README for the 12-sheet standard. 144 frames, ~240 px tall; satchel and wrist wraps, no green backpack",
+  "slomatt/standard-set-v2": "Slomatt standard set, second round (2026-10-20 evening): nine sheets drawn after a fix to the sheet generation. Heads in profile for side-on frames, white background, character 173-202 px tall (varies by sheet). 02a and 02b are two takes of the walk and run; 13 (swim, dive, glide), 14 (aim, items, wall, air moves) and 15 (air punch and kick, stomp, bounce, mushroom spring; captioned) are extra sheets. Built into the test hero with `cutStandard.py --set v2`. See the Slomatt Animation Sheets audit doc."
  },
  "files": [
   {
@@ -666,6 +667,156 @@
     1024
    ],
    "bytes": 181717
+  },
+  {
+   "file": "slomatt/standard-set/09_behind-the-back.jpg",
+   "uploadId": "fd417f3d",
+   "uploaded": "2026-10-20 16:30",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 141209
+  },
+  {
+   "file": "slomatt/standard-set/10_cutscene-acting.jpg",
+   "uploadId": "379af929",
+   "uploaded": "2026-10-20 16:30",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 194465
+  },
+  {
+   "file": "slomatt/standard-set/11_dialogue-faces.jpg",
+   "uploadId": "3b4aee46",
+   "uploaded": "2026-10-20 16:30",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 222167
+  },
+  {
+   "file": "slomatt/standard-set/12_cinematic-vignettes.jpg",
+   "uploadId": "52874b58",
+   "uploaded": "2026-10-20 16:30",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 191289
+  },
+  {
+   "file": "slomatt/standard-set/12b_gestures-and-reactions.jpg",
+   "uploadId": "f4d7736e",
+   "uploaded": "2026-10-20 16:30",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 219892
+  },
+  {
+   "file": "slomatt/standard-set-v2/01_turnaround-idle-blinks-tilts.jpg",
+   "uploadId": "49a84765",
+   "uploaded": "2026-10-20 18:00",
+   "size": [
+    1024,
+    898
+   ],
+   "bytes": 116409
+  },
+  {
+   "file": "slomatt/standard-set-v2/02a_walk-and-run.jpg",
+   "uploadId": "698ee92f",
+   "uploaded": "2026-10-20 18:00",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 166281
+  },
+  {
+   "file": "slomatt/standard-set-v2/02b_walk-and-run-second-take.jpg",
+   "uploadId": "ad2829cb",
+   "uploaded": "2026-10-20 18:00",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 184212
+  },
+  {
+   "file": "slomatt/standard-set-v2/03_jump-fall-land-climb.jpg",
+   "uploadId": "fd4c089c",
+   "uploaded": "2026-10-20 18:00",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 155446
+  },
+  {
+   "file": "slomatt/standard-set-v2/04_vine-crossing-branch-crawl-swing.jpg",
+   "uploadId": "cf3e56b5",
+   "uploaded": "2026-10-20 18:00",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 152009
+  },
+  {
+   "file": "slomatt/standard-set-v2/05_attacks-and-object-interactions.jpg",
+   "uploadId": "d65cf6ac",
+   "uploaded": "2026-10-20 18:00",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 175426
+  },
+  {
+   "file": "slomatt/standard-set-v2/06_hit-knockback-tumble-defeat.jpg",
+   "uploadId": "da5c9cf3",
+   "uploaded": "2026-10-20 18:00",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 156808
+  },
+  {
+   "file": "slomatt/standard-set-v2/13_swim-dive-glide.jpg",
+   "uploadId": "b65f09ce",
+   "uploaded": "2026-10-20 18:00",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 149371
+  },
+  {
+   "file": "slomatt/standard-set-v2/14_aim-items-wall-and-air-moves.jpg",
+   "uploadId": "2b3e069f",
+   "uploaded": "2026-10-20 18:00",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 209011
+  },
+  {
+   "file": "slomatt/standard-set-v2/15_air-attacks-stomp-bounce-spring.jpg",
+   "uploadId": "afb06028",
+   "uploaded": "2026-10-20 18:22",
+   "size": [
+    1024,
+    1024
+   ],
+   "bytes": 169266
   }
  ],
  "frames": "slomatt/frames.json"

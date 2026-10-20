@@ -10,6 +10,7 @@ Every pose and animation sheet Matt supplies lives here, so nothing he draws is 
 
 **Folders**
 - `slomatt/` the six action-study sheets (rope, sliding, squat/flip/fall/kick, punch/climb/kick, run/jump/punch, slow movement) and `early-hero-sheets/`, the sheets the in-game hero atlas was cut from.
+- `slomatt/standard-set-v2/` the second round of standard-set sheets (2026-10-20 evening): walk and run (two takes), jump, vine, attacks, hit, plus swim/dive/glide, aim/items/wall/air moves and air attacks/stomp/bounce/spring. See `standard-set/NOTES.md`.
 - `slomatt/standard-set/` the nine-sheet standard set (4x4 on flat grey, 144 frames at ~240 px, one category per sheet), the format new sheets follow.
 - `jennifur/` her emotion sheets.
 - `slomatt-and-jennifur/` the shared sheets, including one with walk, jump, punch, kick, hurt and defeat drawn for both.
@@ -51,4 +52,4 @@ Each character is drawn as the same twelve 4x4 sheets: 1024x1024, flat grey, no 
 | 11 | Dialogue faces: mouth talking visemes, reactions, intense emotions, comedic emotes |
 | 12 | Cinematic vignettes: level entry drop, level exit wave, menu/title idle, cutscene trap transitions |
 
-Slomatt has sheets 1-9 so far (`slomatt/standard-set/`). The in-game "New hero set (test)" is built from sheets 1-8 and uses the first frames of each; sheet 9 is kept for a downhill-slide stage.
+Slomatt has all twelve (`slomatt/standard-set/`). Two extras: `09_back-views.jpg` is the first draft of the behind-the-back sheet (kept; its strap is mostly right, see NOTES.md) and `12b_gestures-and-reactions.jpg` is a sheet of standing gestures (wave, points, hands on hips, shock, scratching his head) that fits none of the twelve subjects. The in-game "New hero set (test)" is built from sheets 1-8; sheet 9 is kept for a downhill-slide stage and 10-12 for cutscenes and dialogue.

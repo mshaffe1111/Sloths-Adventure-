@@ -8,6 +8,7 @@ import type { LevelConfig } from '../game/types.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { SKILLS, type SkillId } from '../game/skills.ts';
 import { SkillIcon } from './SkillIcon.tsx';
+import { UpdateRow } from './UpdateControls.tsx';
 
 interface PauseMenuProps {
   levelConfig: LevelConfig;
@@ -136,6 +137,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
         </span>
       </div>
 
+      <UpdateRow />
       <button type="button" className="pm-go" onClick={onResume} data-start="true" title={COARSE ? undefined : 'Esc'}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="#022c22" aria-hidden="true">
           <path d="M7 4.5v15l13-7.5z" />

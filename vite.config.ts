@@ -22,11 +22,20 @@ function lastUpdate(): string {
 const base = process.env.BASE_PATH || '/';
 
 export default defineConfig(() => {
+  const buildTime = lastUpdate();
   return {
     base,
-    define: { __BUILD_TIME__: JSON.stringify(lastUpdate()) },
+    define: { __BUILD_TIME__: JSON.stringify(buildTime) },
     plugins: [
       react(),
+      // the published stamp an open copy of the game compares itself with (src/game/updates.ts)
+      {
+        name: 'sloth-version-file',
+        apply: 'build' as const,
+        generateBundle(this: { emitFile: (f: { type: 'asset'; fileName: string; source: string }) => void }) {
+          this.emitFile({ type: 'asset', fileName: 'version.json', source: JSON.stringify({ build: buildTime }) });
+        },
+      },
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',

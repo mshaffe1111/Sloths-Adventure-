@@ -754,6 +754,13 @@ export class GameEngine {
     p.squashX += (p.targetScaleX - p.squashX) * Math.min(1, dt * 14);
     p.squashY += (p.targetScaleY - p.squashY) * Math.min(1, dt * 14);
 
+    // --- for the drawing: is he diving onto something, and how long since a bounce ---
+    p.diving = !p.grounded && !p.climbing && !p.isVineSwinging && !p.hanging && this.input.state.down && p.vy > 0;
+    if (p.bounce) {
+      p.bounce.t += dt;
+      if (p.grounded || p.climbing || p.isVineSwinging || p.hanging || p.bounce.t > 1.6) p.bounce = undefined;
+    }
+
     // --- Dynamic Rainforest Tree Climbing & Vine Swinging Mechanics ---
     let nearTreeVine: Vine | null = null;
     let nearSwingVine: Vine | null = null;
@@ -2481,6 +2488,7 @@ export class GameEngine {
       this.launched = true;
       p.squashX = 1.3;
       p.squashY = 0.7;
+      p.bounce = { kind: r.kind === 'stomp' && r.damage >= 2 ? 'big' : 'stomp', t: 0 };
       const head = headRect(e);
       if (r.kind === 'bounce') {
         p.vy = -430;
@@ -2723,6 +2731,7 @@ export class GameEngine {
     p.isDoubleJumping = false;
     p.squashX = 0.78;
     p.squashY = 1.38;
+    p.bounce = { kind: 'spring', t: 0 };
     sound.playJump();
     this.addFloatingText('BOING!', p.x, p.y - 40, '#facc15');
     this.spawnSparkBurst(p.x, p.y, '#facc15');

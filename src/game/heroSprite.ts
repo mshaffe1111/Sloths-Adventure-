@@ -327,7 +327,8 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
   }
   // the rope ends at his feet, so a vine swing turns the whole body about them
   if (ch.swing !== undefined) ctx.rotate(ch.swing);
-  ctx.scale(p.facing * p.squashX, p.squashY);
+  const q = ch.squash ?? 1;
+  ctx.scale(p.facing * (1 + (p.squashX - 1) * q), 1 + (p.squashY - 1) * q);
   if (ch.hang) {
     // swing gently from the hands; a quicker rocking while he creeps hand over hand
     const moving = Math.abs(p.vx) > 10;

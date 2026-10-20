@@ -114,6 +114,10 @@ export interface PlayerState {
   /** fight: how far the claw or foot is pulled back (0..1) and thrust out (0..1) right now, for the drawing */
   swingCock?: number;
   swingReach?: number;
+  /** falling with down held: a stomp dive (for the drawing only) */
+  diving?: boolean;
+  /** a bounce off an animal's head or a mushroom: which kind, and seconds since (for the drawing only) */
+  bounce?: { kind: 'stomp' | 'big' | 'spring'; t: number };
   punchType: 'normal' | 'mega';
   jumpsLeft: number; // 2 for double jump capability
   isDoubleJumping: boolean;

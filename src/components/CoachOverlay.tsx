@@ -9,7 +9,7 @@ import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
  */
 const TEXT: Record<ControlStyle, Record<Exclude<CoachStep, null>, { title: string; sub: string; glyph: GlyphKind }>> = {
   screen: {
-    run: { title: 'Slide your thumb to run', sub: 'Touch the left side of the screen and slide sideways. Slide the other way to turn around.', glyph: 'run' },
+    run: { title: 'Touch anywhere and slide to run', sub: 'You do not have to touch Slomatt. Put your thumb down anywhere on the screen and slide sideways. Slide the other way to turn around.', glyph: 'run' },
     jump: { title: 'Slide up and across to jump', sub: 'Keep running and slide your thumb up and forward in one quick move.', glyph: 'jump' },
     nice: { title: 'Nice jump!', sub: 'In the air, flick up with your other thumb for a double jump.', glyph: 'up' },
   },

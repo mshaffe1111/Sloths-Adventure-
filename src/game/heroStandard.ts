@@ -80,6 +80,8 @@ export interface StdChoice {
   centred?: boolean;
   /** vine swing: the angle the whole body turns about its feet */
   swing?: number;
+  /** how much of the code's squash and stretch to add (default 1): the painted squash frames already carry it */
+  squash?: number;
 }
 
 /** the walk and the run, in the order the stride unfolds (index = frame of the loop) */
@@ -96,6 +98,29 @@ export const KICK_STAGES = ['kick_0', 'kick_1', 'kick_2', 'kick_3'];
 /** wind-up, launch, impact (the two-handed push), follow-through */
 export const MEGA_STAGES = ['mega_0', 'mega_1', 'mega_3', 'mega_2'];
 export const PUNCH_STAGES = ['punch_0', 'punch_1', 'punch_2', 'punch_3', 'punch_4'];
+/** the same four stages of an attack, drawn in the air: wind-up, launch, impact, follow-through (the two middle ones share the hit pose) */
+export const AIR_PUNCH_STAGES = ['air_punch_0', 'air_punch_1', 'air_punch_1', 'air_punch_2'];
+export const AIR_KICK_STAGES = ['air_kick_0', 'air_kick_1', 'air_kick_1', 'air_kick_2'];
+
+/** falling with down held: curled over at first, then feet first as he picks up speed */
+export function stdDiveFrame(vy: number): string {
+  return vy < 300 ? 'stomp_start' : 'stomp_plunge';
+}
+/**
+ * the pose just after a bounce, by how long ago it was (t, seconds) and how fast he is going up (negative). null once the bounce is spent, so the
+ * ordinary jump frames take over for the fall.
+ * stomp: landing on an animal's head. big: the same from a dive (the harder rebound). spring: a mushroom.
+ */
+export function stdBounceFrame(kind: 'stomp' | 'big' | 'spring', t: number, vy: number): string | null {
+  if (kind === 'spring') {
+    if (t < 0.05) return 'spring_squash';
+    if (vy < -300) return 'spring_launch';
+    return vy < -120 ? 'spring_rise' : null;
+  }
+  if (t < (kind === 'big' ? 0.1 : 0.08)) return kind === 'big' ? 'stomp_impact' : 'bounce_squash';
+  if (vy < -120) return kind === 'big' ? 'stomp_rebound' : 'bounce_rise';
+  return vy <= 140 ? 'bounce_top' : null;
+}
 
 /** the vine swing: where in the swing he is picks the pose */
 export function stdSwingFrame(angle: number, omega: number, facing: 1 | -1): string {
@@ -141,7 +166,7 @@ export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHu
   const out = (c: StdChoice): StdChoice | null => (has(c.name) ? c : null);
 
   if (p.isVineSwinging) {
-    return out({ name: stdSwingFrame(p.swingAngle ?? 0, p.swingAngularVelocity ?? 0, p.facing), bob: 0, swing: -(p.swingAngle ?? 0) * 0.55 });
+    return out({ name: stdSwingFrame(p.swingAngle ?? 0, p.swingAngularVelocity ?? 0, p.facing), bob: 0, swing: -(p.swingAngle ?? 0) * 0.35 });
   }
   if (p.hanging) return out({ name: stdHangFrame(Math.abs(p.vx) > 10, time), bob: 0, hang: true });
   if (p.climbing) {
@@ -154,10 +179,21 @@ export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHu
     return out({ name: !p.grounded ? 'hurt_c' : into < 0.5 ? 'hurt_a' : 'hurt_b', bob: 0 });
   }
   if (p.ducking) return out({ name: 'duck', bob: 0 });
-  if (p.kicking) return out({ name: KICK_STAGES[attackStage(p.swingCock ?? 0, p.swingReach ?? 0)], bob: 0 });
+  if (p.kicking) {
+    const st = attackStage(p.swingCock ?? 0, p.swingReach ?? 0);
+    return out({ name: (p.grounded ? KICK_STAGES : AIR_KICK_STAGES)[st], bob: 0 });
+  }
   if (p.punching && p.attackType === 'mega') return out({ name: MEGA_STAGES[attackStage(p.swingCock ?? 0, p.swingReach ?? 0)], bob: 0 });
-  if (p.punching) return out({ name: stdPunchFrame(p.swingReach ?? 1), bob: 0 });
+  if (p.punching) {
+    if (!p.grounded) return out({ name: AIR_PUNCH_STAGES[attackStage(p.swingCock ?? 0, p.swingReach ?? 0)], bob: 0 });
+    return out({ name: stdPunchFrame(p.swingReach ?? 1), bob: 0 });
+  }
   if (!p.grounded) {
+    if (p.diving) return out({ name: stdDiveFrame(p.vy), bob: 0, squash: 0.3 });
+    if (p.bounce) {
+      const b = stdBounceFrame(p.bounce.kind, p.bounce.t, p.vy);
+      if (b) return out({ name: b, bob: 0, squash: 0.3 });
+    }
     if (p.isDoubleJumping) {
       const f = flipPose(p.somersaultAngle);
       return out({ name: stdFlipFrame(f.u), bob: 0, rot: f.angle, centred: true });
@@ -179,7 +215,7 @@ export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHu
 
 /** the names the old atlas used (and the story scenes still ask for) -> the standard frame that stands in for them */
 const ALIAS: Record<string, string> = {
-  idle_a: 'idle', idle_blink: 'blink', jump_up: 'rise_fast', fall: 'fall_a', hurt: 'hurt_a', land: 'land', duck: 'duck', crouch: 'duck',
+  idle_a: 'idle', idle_blink: 'blink', jump_up: 'launch', fall: 'fall_a', hurt: 'hurt_a', land: 'land', duck: 'duck', crouch: 'duck',
   guard: 'punch_0', punch_rec: 'punch_1', punch_2: 'punch_2', punch_3: 'punch_3', punch_4: 'punch_4', punch_5: 'punch_4', punch: 'punch_3',
   kick: 'kick_2', mega: 'mega_3', dead: 'ko',
   climb_a: 'climb_0', climb_b: 'climb_2', climb_c: 'climb_4', climb_d: 'climb_6',

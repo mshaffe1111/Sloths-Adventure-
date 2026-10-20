@@ -61,9 +61,14 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
   <>
     {(!short || COARSE) && (
     <Section title="On a phone or tablet">
+      <div className="htp-tip htp-first">
+        <span aria-hidden="true">👆</span>
+        <span>
+          <b>Touch anywhere on the screen to move.</b> You do not have to touch Slomatt, and there is nothing to aim at. Put your thumb down <b>anywhere</b> and slide.
+        </span>
+      </div>
       <p className="ui-copy">
-        There are no buttons: <b>your thumb is the controller</b>. Touch the <b>left side of the screen</b> and slide. It does not matter where you start, and you never have to find a button. Keep your
-        thumb down to keep going, and lift it to stop.
+        There are no buttons: <b>your thumb is the controller</b>. It does not matter where you start, and you never have to find a button. Keep your thumb down to keep going, and lift it to stop.
       </p>
       <Gesture kind="run" how="Slide sideways" what="Run" sub="slide right to run right, left to run left. Slide the other way to turn around" />
       <Gesture kind="jump" how="Slide up and across" what="Run and jump" sub="while you run, keep sliding up and forward in one quick motion. This is how you cross gaps" />

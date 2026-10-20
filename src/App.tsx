@@ -33,6 +33,7 @@ import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStat
 import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
 import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { BadgeToast } from './components/BadgeToast.tsx';
+import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -245,8 +246,20 @@ export default function App() {
     return () => window.removeEventListener('sloth-update-ready', onUpdate);
   }, []);
   useEffect(() => {
-    if (updateReady && (screen === 'title' || screen === 'world_map')) window.location.reload();
+    if (updateReady && (screen === 'title' || screen === 'world_map') && autoUpdateAllowed()) {
+      // wait while a pop-up is open (a pasted save code, the guide): the page comes back as it was, minus what was typed
+      const go = () => {
+        if (!document.querySelector('[role="dialog"]')) void applyUpdate();
+      };
+      go();
+      const id = window.setInterval(go, 2000);
+      return () => window.clearInterval(id);
+    }
   }, [updateReady, screen]);
+  // every time the title shows, look for a newer build (see main.tsx)
+  useEffect(() => {
+    if (screen === 'title') window.dispatchEvent(new Event('sloth-check-update'));
+  }, [screen]);
 
   // nothing needs the game loop on the menu and story screens
   useEffect(() => {

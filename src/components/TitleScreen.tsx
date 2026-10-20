@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { TitleDefs, TitleFrame, TitleHero, TitleFireflies, TitleSlomatt } from './TitleScene.tsx';
 import { VistaCanvas } from './VistaCanvas.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
@@ -6,6 +6,8 @@ import { NewGameDialog } from './NewGameDialog.tsx';
 import { StartMenu } from './StartMenu.tsx';
 import { HowToPlay, howToSeen, markHowToSeen } from './HowToPlay.tsx';
 import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
+import { sound } from '../game/audio.ts';
+import { UpdateLink } from './UpdateControls.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
 
@@ -92,6 +94,16 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
       setCreditMsg(`${UNLOCK_TAPS - n} more…`);
     }
   };
+  // the browser keeps the game silent until the first touch: say so, instead of claiming "Sound on" over silence
+  const waiting = useSyncExternalStore(
+    (cb) => {
+      window.addEventListener('sloth-audio-state', cb);
+      return () => window.removeEventListener('sloth-audio-state', cb);
+    },
+    () => sound.locked,
+    () => false,
+  );
+
   return (
     <div className="fixed inset-0 z-40 bg-[#1a2a1c] select-none font-game text-white overflow-hidden">
       <VistaCanvas worlds={SHOWCASE} hold={14} pan={14} />
@@ -114,8 +126,8 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
                 Install app
               </button>
             )}
-            <button type="button" onClick={onToggleMute} className="ui-chip ui-chip-btn">
-              {isMuted ? 'Sound off' : 'Sound on'}
+            <button type="button" onClick={onToggleMute} className={`ui-chip ui-chip-btn${waiting ? ' ui-chip-wait' : ''}`}>
+              {isMuted ? 'Sound off' : waiting ? 'Tap for sound' : 'Sound on'}
             </button>
           </div>
         </div>
@@ -186,6 +198,12 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             <>
               {' '}
               <i>·</i> <span className="whitespace-nowrap">Updated {updated}</span>
+            </>
+          )}
+          {updated && (
+            <>
+              {' '}
+              <i>·</i> <UpdateLink />
             </>
           )}
           {creditMsg && (
