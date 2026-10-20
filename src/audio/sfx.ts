@@ -11,7 +11,8 @@
  */
 import { runFx as runClassic } from './sfxClassic.ts';
 import { AudioCore, envelope } from './core.ts';
-import { bell, congaHi, harp, kalimba, marimba, pluck, rim, steelpan, woodblock } from './instruments.ts';
+import { bell, congaHi, harp, kalimba, marimba, pluck, rim, steelpan, woodblock, type NoteVoice } from './instruments.ts';
+import { CLASSIC_WITH_BELLS, hopNote, isPingySample, landNote, orchSfxEnabled, PING_FLOOR_HZ, playFigure, soften, swapMallet, type MalletKind } from './sfxOrch.ts';
 import type { KeyInfo } from './music.ts';
 import { unpackHit, roarPitch, streakStage, type Material } from './combat.ts';
 import { midiHz } from './theory.ts';
@@ -81,6 +82,7 @@ interface NoiseOpts {
 }
 
 function noise(core: AudioCore, o: NoiseOpts) {
+  if (ORCH && o.type === 'highpass' && o.f0 >= PING_FLOOR_HZ) return; // the glitter on top: air, not body
   const c = core.ctx;
   const a = o.attack ?? 0.002;
   const end = o.t + a + o.dec;
@@ -130,6 +132,7 @@ const lastPick = new Map<string, number>();
  * Returns false when the group is not loaded yet, and the effect then relies on its synthesized layers.
  */
 function smp(core: AudioCore, dst: AudioNode, t: number, group: string, o: SampleOpts = {}): boolean {
+  if (ORCH && isPingySample(group)) return false;
   const list = core.samples.get(group);
   if (!list || list.length === 0) return false;
   let i = Math.floor(Math.random() * list.length);
@@ -191,7 +194,19 @@ export function ladder(key: KeyInfo, n: number, low = 72): number {
   return base + key.scale[idx % 7] + 12 * Math.floor(idx / 7);
 }
 
-const note = (core: AudioCore, voice: typeof bell, t: number, midi: number, vel: number, dst: AudioNode) => voice(core, dst, t, midiHz(midi), 0.3, vel);
+/** the orchestral set (sfxOrch.ts) is on for the effect being played: set by runFx for the duration of a call */
+let ORCH = false;
+const MALLETS = new Map<NoteVoice, MalletKind>([[bell, 'bell'], [kalimba, 'kalimba'], [steelpan, 'steelpan'], [marimba, 'marimba'], [pluck, 'kalimba']]);
+const note = (core: AudioCore, voice: NoteVoice, t: number, midi: number, vel: number, dst: AudioNode) => {
+  const kind = ORCH ? MALLETS.get(voice) : undefined;
+  if (kind) {
+    // a bell or a marimba is played by one of the music's own instruments instead (a different one on each version of the effect)
+    const sw = swapMallet(kind, VAR, midi);
+    sw.voice(core, soften(core, dst), t, midiHz(sw.midi), 0.3, vel * sw.gain);
+    return;
+  }
+  voice(core, dst, t, midiHz(midi), 0.3, vel);
+};
 
 // ---------------------------------------------------------------------------------------------
 // Variation: which version of an effect plays and how long the combo is (set by runFx for the duration of a call)
@@ -282,7 +297,7 @@ const out = (core: AudioCore, rev = 0) => {
 
 export const SFX: Record<string, Fx> = {
   /** a soft springy hop: the pitch lifts, a push off the ground and a rustle of leaves. Four versions, and sometimes a small "hup" */
-  jump(core) {
+  jump(core, key) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.08);
     const j = jit(0.07);
@@ -297,7 +312,8 @@ export const SFX: Record<string, Fx> = {
     noise(core, { t, type: 'bandpass', f0: 700 + VAR * 150, f1: 1500 + VAR * 250, q: 0.9, peak: nz * 0.7, dec: 0.12, dst: d, pink: true });
     smp(core, d, t, 'stepGrass', { gain: 0.55, rate: 1.25, sat: 2 });
     smp(core, d, t + 0.01, 'cloth', { gain: 0.2, rate: 1.4 + VAR * 0.08, hp: 500, lp: 5000 });
-    if (VAR === 3) woodblock(core, d, t, 0.35);
+    if (ORCH) hopNote(core, d, t + 0.01, key, VAR, 0.4);
+    else if (VAR === 3) woodblock(core, d, t, 0.35);
     if (Math.random() < 0.3) grunt(core, d, t + 0.01, 'hup', 1, 0.6);
   },
 
@@ -588,6 +604,11 @@ export const SFX: Record<string, Fx> = {
     const d = out(core, 0.2);
     const [n1, n2] = byVar([[3, 5], [2, 4], [3, 6], [4, 5]]);
     const chime = (vel = 1, at = 0.07) => {
+      if (ORCH) {
+        // the animal's own figure on its own instrument, in the key of the music
+        playFigure(core, d, t + at, key, a, vel);
+        return;
+      }
       note(core, bell, t + at, ladder(key, n1), 0.4 * vel, d);
       note(core, bell, t + at + 0.07, ladder(key, n2), 0.35 * vel, d);
     };
@@ -791,7 +812,7 @@ export const SFX: Record<string, Fx> = {
   },
 
   /** footfall on the ground. `a` is 0..1 how hard (a landing) */
-  land(core, _k, a = 0.3) {
+  land(core, key, a = 0.3) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.05);
     const s = Math.max(0.15, Math.min(1, a));
@@ -799,6 +820,7 @@ export const SFX: Record<string, Fx> = {
     if (s > 0.45) smp(core, d, t, 'softH', { gain: 0.65 * s, rate: 1.3, sat: 3 });
     tone(core, { t, f0: 110 * jit(), f1: 55, dec: 0.1 + 0.08 * s, peak: 0.12 + 0.3 * s, dst: d });
     noise(core, { t, type: 'lowpass', f0: 1800, f1: 400, peak: 0.06 + 0.14 * s, dec: 0.08 + 0.08 * s, dst: d, pink: true });
+    if (ORCH && s > 0.45) landNote(core, d, t, key, s);
   },
 
   /** a soft step: one footfall in grass and leaves */
@@ -1058,11 +1080,13 @@ export function classicFor(name: string, arg: number | undefined, streak: number
 export function runFx(name: string, core: AudioCore, key: KeyInfo, arg?: number, v: FxVariation = {}) {
   const fn = SFX[name];
   if (!fn) return;
-  if (classicFor(name, arg, Math.max(0, Math.floor(v.streak ?? 0)))) {
+  const orch = orchSfxEnabled();
+  if (!(orch && CLASSIC_WITH_BELLS.has(name)) && classicFor(name, arg, Math.max(0, Math.floor(v.streak ?? 0)))) {
     runClassic(name, core, key, arg, v);
     return;
   }
   TRIM = TRIMS[name] ?? 1;
+  ORCH = orch;
   VAR = Math.max(0, Math.floor(v.variant ?? 0));
   STREAK = Math.max(0, Math.floor(v.streak ?? 0));
   try {
@@ -1071,5 +1095,6 @@ export function runFx(name: string, core: AudioCore, key: KeyInfo, arg?: number,
     TRIM = 1;
     VAR = 0;
     STREAK = 0;
+    ORCH = false;
   }
 }

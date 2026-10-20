@@ -131,6 +131,7 @@ export class Conductor {
       ctx.onstatechange = this.announce;
       // the recorded sounds load in the background; until they are ready the effects use their synthesized layers
       void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
+      this.warmOrchSfx();
       this.amb = new Ambience(this.core);
       this.lite = typeof navigator !== 'undefined' && /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) && (navigator.hardwareConcurrency ?? 8) <= 4;
       this.amb.lite = this.lite;
@@ -147,6 +148,15 @@ export class Conductor {
     // anything asked for before audio was allowed
     if (this.core && !this.playback && this.wantTheme) this.startTheme(this.wantTheme, this.wantOpts, true);
     if (this.core && this.wantAmbient && this.amb && !this.amb.type) this.amb.start(this.wantAmbient);
+  }
+
+  /** the orchestral effects (sfxOrch.ts) play the music's own recordings: fetch them when that set is on (until they arrive the synthesized stand-ins play) */
+  warmOrchSfx() {
+    const core = this.core;
+    if (!core) return;
+    void Promise.all([import('./orchLoader.ts'), import('./sfxOrch.ts')])
+      .then(([m, o]) => (o.orchSfxEnabled() ? m.loadOrch(core, o.ORCH_SFX_GROUPS) : undefined))
+      .catch(() => {});
   }
 
   private onVisibility = () => {
