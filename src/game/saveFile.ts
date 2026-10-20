@@ -30,6 +30,7 @@ const ALLOWED: RegExp[] = [
   /^sloth_game_muted$/,
   /^sloth_badges$/, // the Trophy Room
   /^sloth_finds$/, // the notes, books and keepsakes found
+  /^sloth_memories$/, // the flashbacks seen
   /^sloth_cosmetic$/, // which reward Slomatt wears
 ];
 

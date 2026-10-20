@@ -7,8 +7,10 @@ import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.
 import { drawJennifurSprite } from './jennifurSprite.ts';
 import { thornbarkSprite } from './thornbarkSprite.ts';
 import { drawMilo } from './miloVariants.ts';
-import type { StoryScene, SceneActor } from './story.ts';
+import type { StoryScene, SceneActor, ScenePhoto, BloomStage } from './story.ts';
 import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
+import { drawPaintedBird } from './birdSprites.ts';
+import { photoUrl } from './photos.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
@@ -113,9 +115,68 @@ function drawBranch(ctx: CanvasRenderingContext2D, y: number, w: number, h: numb
   });
 }
 
-function drawBloom(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number) {
+/** the painted Heartbloom, in the four stages of its life (the sheet's bud, bloom, epic bloom and ultimate state) */
+const BLOOM_URLS: Record<BloomStage, string> = {
+  bud: new URL('../assets/flora/heartbloom-bud.webp', import.meta.url).href,
+  bloom: new URL('../assets/flora/heartbloom-bloom.webp', import.meta.url).href,
+  epic: new URL('../assets/flora/heartbloom-epic.webp', import.meta.url).href,
+  ultimate: new URL('../assets/flora/heartbloom-ultimate.webp', import.meta.url).href,
+};
+const bloomImgs = new Map<BloomStage, HTMLImageElement>();
+function bloomImage(stage: BloomStage): HTMLImageElement | null {
+  let im = bloomImgs.get(stage);
+  if (!im) {
+    if (typeof Image === 'undefined') return null;
+    im = new Image();
+    im.src = BLOOM_URLS[stage];
+    bloomImgs.set(stage, im);
+  }
+  return im.complete && im.naturalWidth > 0 ? im : null;
+}
+if (typeof Image !== 'undefined') (Object.keys(BLOOM_URLS) as BloomStage[]).forEach((k) => bloomImage(k));
+
+/** the Heartbloom painted from the concept sheet: it glows, breathes a little, and stands in a tuft of leaves */
+function drawPaintedBloom(ctx: CanvasRenderingContext2D, im: HTMLImageElement, stage: BloomStage, s: number, t: number) {
+  const pulse = 0.85 + Math.sin(t * 2.2) * 0.15;
+  const wid = 120 * s * (stage === 'epic' ? 1.15 : 1);
+  const hei = wid * (im.naturalHeight / im.naturalWidth);
+  const glow = stage === 'bud' ? 0.35 : stage === 'bloom' ? 0.6 : 0.9;
+  const gl = ctx.createRadialGradient(0, -hei * 0.5, 4, 0, -hei * 0.5, wid * 0.95 * pulse);
+  gl.addColorStop(0, `rgba(255, 225, 140, ${glow})`);
+  gl.addColorStop(1, 'rgba(255, 225, 140, 0)');
+  ctx.fillStyle = gl;
+  ctx.beginPath();
+  ctx.arc(0, -hei * 0.5, wid * 0.95 * pulse, 0, Math.PI * 2);
+  ctx.fill();
+  // a tuft of leaves hides the flat base of the cutout
+  ctx.fillStyle = '#3f9a45';
+  ctx.strokeStyle = '#256b30';
+  ctx.lineWidth = 2;
+  [-1, 1].forEach((d) => {
+    ctx.beginPath();
+    ctx.moveTo(d * wid * 0.08, 2);
+    ctx.quadraticCurveTo(d * wid * 0.38, -hei * 0.2, d * wid * 0.52, -hei * 0.03);
+    ctx.quadraticCurveTo(d * wid * 0.3, hei * 0.04, d * wid * 0.08, 2);
+    ctx.fill();
+    ctx.stroke();
+  });
+  const breathe = 1 + Math.sin(t * 1.6) * 0.012;
+  ctx.save();
+  ctx.translate(0, hei * 0.06);
+  ctx.scale(breathe, breathe);
+  ctx.drawImage(im, -wid / 2, -hei, wid, hei);
+  ctx.restore();
+}
+
+function drawBloom(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, t: number, stage: BloomStage = 'bloom') {
   ctx.save();
   ctx.translate(x, y);
+  const painted = bloomImage(stage);
+  if (painted) {
+    drawPaintedBloom(ctx, painted, stage, s, t);
+    ctx.restore();
+    return;
+  }
   ctx.scale(s, s);
   const pulse = 0.85 + Math.sin(t * 2.2) * 0.15;
   const gl = ctx.createRadialGradient(0, -34, 4, 0, -34, 90 * pulse);
@@ -287,7 +348,116 @@ function drawPerformer(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, 
   return drawn;
 }
 
+// ───────────── remembered scenes and photographs ─────────────
+
+const photoImgs = new Map<string, HTMLImageElement>();
+function photoImage(key: string): HTMLImageElement | null {
+  let im = photoImgs.get(key);
+  if (!im) {
+    const url = photoUrl(key);
+    if (!url || typeof Image === 'undefined') return null;
+    im = new Image();
+    im.src = url;
+    photoImgs.set(key, im);
+  }
+  return im.complete && im.naturalWidth > 0 ? im : null;
+}
+
+/** start loading the photographs a cutscene will show, so the first one is not late */
+export function preloadScenePhotos(keys: Array<string | undefined>) {
+  for (const k of keys) if (k) photoImage(k);
+}
+
+/** the look of a memory: colour drained and warmed, the edges melting into old paper, a faint projector flicker */
+function drawMemoryWash(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'saturation';
+  ctx.fillStyle = 'hsl(32, 36%, 50%)';
+  ctx.fillRect(0, 0, w, h);
+  ctx.globalCompositeOperation = 'soft-light';
+  ctx.globalAlpha = 0.55;
+  ctx.fillStyle = '#ffcf7a';
+  ctx.fillRect(0, 0, w, h);
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.globalAlpha = 1;
+  const g = ctx.createRadialGradient(w / 2, h / 2, h * 0.36, w / 2, h / 2, w * 0.6);
+  g.addColorStop(0, 'rgba(250, 232, 190, 0)');
+  g.addColorStop(0.68, 'rgba(250, 232, 190, 0.34)');
+  g.addColorStop(1, 'rgba(238, 210, 156, 0.92)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  ctx.globalAlpha = 0.035 + 0.03 * Math.sin(t * 7.3);
+  ctx.fillStyle = '#fff3d0';
+  ctx.fillRect(0, 0, w, h);
+  ctx.restore();
+}
+
+/** an old photograph held up in front of the picture: the scene dims, the card settles in and drifts closer */
+function drawPhotoCard(ctx: CanvasRenderingContext2D, ph: ScenePhoto, w: number, h: number, t: number) {
+  const fade = Math.min(1, t / 0.6);
+  ctx.save();
+  ctx.fillStyle = `rgba(10, 7, 4, ${0.66 * fade})`;
+  ctx.fillRect(0, 0, w, h);
+  const im = photoImage(ph.key);
+  const pw = w * (ph.size ?? 0.46);
+  const ph_ = im ? pw * (im.naturalHeight / im.naturalWidth) : pw / 2.1;
+  const padX = 16;
+  const padTop = 16;
+  const padBot = ph.caption ? 54 : 22;
+  const cw = pw + padX * 2;
+  const chh = ph_ + padTop + padBot;
+  const settle = 1 - Math.pow(1 - fade, 3);
+  const drift = 1 + 0.05 * Math.min(t / 9, 1);
+  ctx.translate(w / 2, h * 0.4 + (1 - settle) * 26);
+  ctx.rotate(ph.tilt ?? -0.025);
+  ctx.scale(drift * (0.96 + 0.04 * settle), drift * (0.96 + 0.04 * settle));
+  ctx.globalAlpha = fade;
+  // the card, with a soft shadow
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+  ctx.shadowBlur = 26;
+  ctx.shadowOffsetY = 10;
+  ctx.fillStyle = '#f2ead6';
+  ctx.fillRect(-cw / 2, -chh / 2, cw, chh);
+  ctx.shadowColor = 'transparent';
+  if (im) {
+    ctx.drawImage(im, -pw / 2, -chh / 2 + padTop, pw, ph_);
+  } else {
+    ctx.fillStyle = '#bcb5a3';
+    ctx.fillRect(-pw / 2, -chh / 2 + padTop, pw, ph_);
+  }
+  // a faint edge where the print has yellowed, then the caption in ink
+  ctx.strokeStyle = 'rgba(90, 64, 30, 0.35)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(-pw / 2, -chh / 2 + padTop, pw, ph_);
+  if (ph.caption) {
+    ctx.fillStyle = '#3b2f22';
+    ctx.font = 'italic 24px Georgia, "Times New Roman", serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ph.caption, 0, chh / 2 - padBot / 2 + 2);
+  }
+  ctx.restore();
+}
+
+/** Dot: a painted hummingbird hovering in place, with a little bob and a figure-of-eight drift */
+function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number) {
+  const x = a.x * w + Math.sin(t * 1.7) * 7;
+  const y = (a.y ?? 0.45) * h + Math.sin(t * 3.1) * 6;
+  const size = (a.scale ?? 1) * 4.2;
+  const face = a.facing === -1 ? -1 : 1;
+  if (!drawPaintedBird(ctx, 'hummer', x, y, t, 1, size, face, 0, -0.12)) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = '#2f9d6a';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 16 * (a.scale ?? 1), 9 * (a.scale ?? 1), 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
 function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number) {
+  if (a.kind === 'dot') { drawDot(ctx, a, w, h, t); return; }
   if (a.seq && drawPerformer(ctx, a, w, h, t)) return;
   const feetY = (a.y ?? 0.8) * h;
   const x = a.x * w;
@@ -364,7 +534,7 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
       break;
     }
     case 'bloom':
-      drawBloom(ctx, 0, 0, (a.scale ?? 1) * 1.6, t);
+      drawBloom(ctx, 0, 0, (a.scale ?? 1) * 1.6, t, a.stage);
       break;
   }
   ctx.restore();
@@ -868,6 +1038,8 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   withBakeScale(STORY_BAKE, () => renderOverlay(ctx, scene.world, camX, w, h * (1 + lift) + 4, t, true));
   ctx.restore();
   ctx.save();
+  if (scene.memory) drawMemoryWash(ctx, w, h, t);
+  if (scene.photo) drawPhotoCard(ctx, scene.photo, w, h, t);
   paintFinish(ctx, w, h, scene.mood);
   // cinematic vignette
   const vg = ctx.createRadialGradient(w / 2, h / 2, h * 0.45, w / 2, h / 2, w * 0.7);

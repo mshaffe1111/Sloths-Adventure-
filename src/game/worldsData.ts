@@ -224,7 +224,7 @@ export const WORLDS_DATA: WorldInfo[] = [
     subtitle: 'The treacherous summit stronghold where Jennifur is held captive!',
     theme: 'stormy_highlands',
     bossName: 'General Iron-Claw',
-    bossTitle: 'The Warlord Baboon Overlord',
+    bossTitle: 'The Warlord Sloth General',
     bossQuote: 'Gwahaha! You made it this far, Sloth? Jennifur will never leave my tower!',
     ambientType: 'thunderstorm',
     palette: {

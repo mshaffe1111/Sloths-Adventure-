@@ -11,7 +11,9 @@ export type GameScreen =
   | 'story_ending'
   | 'world_story'
   | 'boss_defeat'
-  | 'ending_story';
+  | 'ending_story'
+  /** a remembered scene (a flashback between worlds, or one replayed from the Library) */
+  | 'memory';
 
 export type ObjectiveType =
   | 'sprint'       // Canopy Sprint (Reach exit totem)

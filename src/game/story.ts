@@ -6,6 +6,7 @@
 
 import type { JennifurMood } from './jennifurSprite.ts';
 import type { CameraMove, PoseKey, SceneFx } from './storyShots.ts';
+import { finalePanels, PROMISE_PANELS } from './storyChapters.ts';
 
 export type ActorKind =
   | 'milo'
@@ -13,7 +14,12 @@ export type ActorKind =
   | 'daisy_wave'
   | 'boss'
   | 'thornbark'
-  | 'bloom';
+  | 'bloom'
+  /** Dot, the hummingbird courier: hovers, scale is its size */
+  | 'dot';
+
+/** the Heartbloom's life: a closed bud, the open bloom, the epic glowing bloom, and its ultimate state */
+export type BloomStage = 'bud' | 'bloom' | 'epic' | 'ultimate';
 
 export interface SceneActor {
   kind: ActorKind;
@@ -31,6 +37,8 @@ export interface SceneActor {
   angry?: boolean;
   /** boss only: defeated and dizzy */
   beaten?: boolean;
+  /** bloom only: which painted stage of the Heartbloom (the open bloom when unset) */
+  stage?: BloomStage;
   /** daisy (Jennifur) only: which animation she plays */
   mood?: JennifurMood;
   /** milo only: pose */
@@ -42,6 +50,17 @@ export interface SceneActor {
   seq?: PoseKey[];
   /** milo only: a big face portrait instead of the body ('face_calm', 'face_wink'...; `seq` can change the expression), drawn `scale` times the usual size */
   portrait?: boolean;
+}
+
+/** a photograph shown on a card over the picture (a keepsake from the albums: the key is its photo in src/assets/photos) */
+export interface ScenePhoto {
+  key: string;
+  /** printed under the picture */
+  caption?: string;
+  /** how wide the card is, as a share of the scene width */
+  size?: number;
+  /** lean in radians */
+  tilt?: number;
 }
 
 export type SceneMood = 'day' | 'storm' | 'dusk' | 'night' | 'glow';
@@ -67,6 +86,10 @@ export interface StoryScene {
   camera?: CameraMove;
   /** effects at moments of the picture: flash, shake, impact burst, dust, dizzy stars, glints */
   fx?: SceneFx[];
+  /** a remembered moment: faded warm colour, soft old-paper edges */
+  memory?: boolean;
+  /** a photograph held up over the picture */
+  photo?: ScenePhoto;
 }
 
 export interface StoryPanel {
@@ -78,12 +101,27 @@ export interface StoryPanel {
   tip?: string;
 }
 
+const HERO_FACE = { y: 1.04, scale: 1.25, portrait: true } as const;
+
 export const INTRO_PANELS: StoryPanel[] = [
   {
     chapter: 'PROLOGUE',
     speaker: 'Narrator',
-    text: 'High above the forest floor, where sunlight spills like honey through the leaves, there lived a very slow sloth named Slomatt… and the kindest keeper in all the canopy, Jennifur.',
-    scene: { world: 1, mood: 'day', actors: [{ kind: 'bloom', x: 0.5, y: 0.8, scale: 1.4 }], particles: 'sparkles', zoom: 1.25, focusX: 0.5 },
+    text: 'High above the forest floor, where sunlight spills like honey through the leaves, a very slow sloth named Slomatt had fallen asleep in the Heartbloom garden. Again.',
+    scene: {
+      world: 1, mood: 'day', particles: 'sparkles', zoom: 1.2,
+      camera: { from: { zoom: 1.05, fx: 0.5, fy: 0.3 }, to: { zoom: 1.3, fx: 0.5, fy: 0.62 }, dur: 6 },
+      actors: [{ kind: 'bloom', x: 0.72, y: 0.82, scale: 1.0, stage: 'bloom' }, { kind: 'milo', x: 0.34, ...HERO_FACE, seq: [{ at: 0, frame: 'face_calm_closed' }, { at: 4.5, frame: 'face_surprised' }] }],
+    },
+  },
+  {
+    chapter: 'PROLOGUE',
+    speaker: 'Slomatt',
+    text: 'Eleven minutes. That is a personal best.',
+    scene: {
+      world: 1, mood: 'day', particles: 'petals', zoom: 1.25, focusX: 0.4,
+      actors: [{ kind: 'bloom', x: 0.72, y: 0.82, scale: 1.0, stage: 'bloom' }, { kind: 'milo', x: 0.34, ...HERO_FACE, seq: [{ at: 0, frame: 'face_surprised' }, { at: 1.6, frame: 'face_happy' }] }],
+    },
   },
   {
     chapter: 'PROLOGUE',
@@ -93,7 +131,7 @@ export const INTRO_PANELS: StoryPanel[] = [
       world: 1, mood: 'day', particles: 'petals', zoom: 1.45, focusX: 0.5,
       actors: [
         { kind: 'daisy', x: 0.66, scale: 1.0, facing: -1 },
-        { kind: 'bloom', x: 0.5, y: 0.8, scale: 1.0 },
+        { kind: 'bloom', x: 0.5, y: 0.8, scale: 1.0, stage: 'bloom' },
         { kind: 'milo', x: 0.34, scale: 1.0 },
       ],
     },
@@ -106,28 +144,48 @@ export const INTRO_PANELS: StoryPanel[] = [
       world: 1, mood: 'day', particles: 'petals', zoom: 1.5, focusX: 0.44,
       actors: [
         { kind: 'daisy', x: 0.66, scale: 1.0, facing: -1 },
-        { kind: 'bloom', x: 0.5, y: 0.8, scale: 1.0 },
+        { kind: 'bloom', x: 0.5, y: 0.8, scale: 1.0, stage: 'bloom' },
         { kind: 'milo', x: 0.34, scale: 1.0, pose: 'happy' },
       ],
+    },
+  },
+  {
+    chapter: 'PROLOGUE',
+    speaker: 'Jennifur',
+    text: 'Both. Mostly the second. Every realm leans on this flower, you know. It keeps the rain gentle, and the rivers kind, and the thorns asleep.',
+    scene: {
+      world: 4, mood: 'day', particles: 'petals', zoom: 1.0,
+      camera: { from: { zoom: 1.1, fx: 0.2, fy: 0.55 }, to: { zoom: 1.1, fx: 0.8, fy: 0.55 }, dur: 9 },
+      actors: [{ kind: 'bloom', x: 0.5, y: 0.8, scale: 1.4, stage: 'epic' }],
     },
   },
   {
     chapter: 'THE STORM',
     speaker: 'Narrator',
     text: 'Then the sky turned the color of a bruise. Thunder rolled down from the Stormy Highlands, and the birds fell silent all at once.',
-    scene: { world: 10, mood: 'storm', actors: [], particles: 'rain', zoom: 1.15, focusX: 0.6, focusY: 0.5 },
+    scene: { world: 10, mood: 'storm', actors: [], particles: 'rain', zoom: 1.15, focusX: 0.6, focusY: 0.5, fx: [{ at: 1.5, kind: 'flash', dur: 0.35 }, { at: 1.5, kind: 'shake', amount: 6, dur: 0.4 }] },
   },
   {
     chapter: 'THE STORM',
     speaker: 'General Iron-Claw',
-    text: 'Seize the keeper of the Heartbloom! Without her, the canopy will wither, and every realm will bow to the Highland Fortress!',
+    text: 'Seize the keeper of the Heartbloom! Whoever holds her holds every realm. And I have waited long enough!',
     scene: {
       world: 1, mood: 'storm', particles: 'rain', zoom: 1.08, focusX: 0.5,
+      fx: [{ at: 0.3, kind: 'flash', dur: 0.3 }, { at: 0.3, kind: 'shake', amount: 7, dur: 0.4 }],
       actors: [
-        { kind: 'milo', x: 0.22, scale: 0.95 },
-        { kind: 'daisy', x: 0.46, scale: 0.95, mood: 'scared' },
-        { kind: 'boss', world: 10, x: 0.74, scale: 1.25, facing: -1, angry: true },
+        { kind: 'milo', x: 0.2, scale: 0.95 },
+        { kind: 'daisy', x: 0.42, scale: 0.95, mood: 'scared' },
+        { kind: 'boss', world: 10, x: 0.84, scale: 1.0, facing: -1, silhouette: true },
       ],
+    },
+  },
+  {
+    chapter: 'THE STORM',
+    speaker: 'Narrator',
+    text: 'Slomatt ran. It was the fastest he had ever run. It was not fast enough.',
+    scene: {
+      world: 1, mood: 'storm', particles: 'rain', zoom: 1.12, focusX: 0.4,
+      actors: [{ kind: 'milo', x: 0.2, scale: 1.0, seq: [{ at: 0, frame: ['run_a', 'run_b', 'run_c', 'run_d', 'run_e', 'run_f', 'run_g', 'run_h', 'run_i', 'run_j'], fps: 12, dx: 0.4, dur: 4, ease: 'linear' }] }],
     },
   },
   {
@@ -154,7 +212,7 @@ export const INTRO_PANELS: StoryPanel[] = [
   {
     chapter: 'THE EXPEDITION',
     speaker: 'Narrator',
-    text: 'Ten realms lay between Slomatt and the Highland Fortress, each ruled by one of the General\'s fearsome guardians. One hundred trials. One very determined sloth.',
+    text: 'Ten realms lay between Slomatt and the Highland Fortress, each ruled by one of the General\'s guardians. One hundred trials. One very determined sloth.',
     scene: { world: 4, mood: 'dusk', actors: [], lineup: true, particles: 'sparkles' },
   },
 ];
@@ -169,105 +227,108 @@ const W = (world: number, mood: SceneMood = 'day'): StoryScene => ({
   world, mood, actors: [], particles: 'sparkles', zoom: 1.2, focusX: 0.5,
 });
 
+/** Slomatt looks around, and the guardian of the world waits in silhouette */
+function look(world: number, chapter: string, text: string, mood: SceneMood = 'day', extra: Partial<StoryScene> = {}): StoryPanel {
+  return {
+    chapter, speaker: 'Slomatt', text,
+    scene: { ...W(world, mood), ...extra, actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
+  };
+}
+
+/** Dot the hummingbird courier hovers beside Slomatt and reads out Jennifur's latest note */
+function dotNote(world: number, chapter: string, text: string, mood: SceneMood = 'day', extra: Partial<StoryScene> = {}): StoryPanel {
+  return {
+    chapter, speaker: 'Dot', text,
+    scene: { ...W(world, mood), zoom: 1.45, focusX: 0.5, particles: 'petals', ...extra, actors: [{ kind: 'milo', x: 0.32 }, { kind: 'dot', x: 0.62, y: 0.46, scale: 1.0 }] },
+  };
+}
+
+const C1 = 'WORLD 1 · EMERALD CANOPY';
+const C2 = 'WORLD 2 · SUNLIT RIVERBANK';
+const C3 = 'WORLD 3 · MOSSY GROTTO';
+const C4 = 'WORLD 4 · MIST CASCADES';
+const C5 = 'WORLD 5 · ORCHID SANCTUARY';
+const C6 = 'WORLD 6 · DEEP MANGROVE';
+const C7 = 'WORLD 7 · ANCIENT RUINS';
+const C8 = 'WORLD 8 · TWILIGHT TREETOPS';
+const C9 = 'WORLD 9 · VOLCANIC JUNGLE';
+const C10 = 'WORLD 10 · STORMY HIGHLANDS';
+
 export const WORLD_STORIES: Record<number, WorldStory> = {
   1: {
     teaser: 'Jennifur\'s trail begins in the treetops.',
     panels: [
-      {
-        chapter: 'WORLD 1 · EMERALD CANOPY', speaker: 'Slomatt',
-        text: 'A pink petal! Jennifur was here. The trail leads up through the Emerald Canopy, and something large has been slithering through these branches.',
-        scene: { ...W(1), actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world: 1, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
-      },
+      look(1, C1, 'A pink petal! Jennifur was here. The trail leads up through the Emerald Canopy, and something large has been slithering through these branches.'),
+      dotNote(1, C1, 'Dot. Courier. I carry notes for a keeper who is, please do not ask, currently locked in a tower. This one says: "Slomatt, if you are reading this you have found a petal. Congratulations. Do not stop to smell it. Smell it later."'),
     ],
   },
   2: {
     teaser: 'The river hides a very hungry king.',
     panels: [
-      {
-        chapter: 'WORLD 2 · SUNLIT RIVERBANK', speaker: 'Slomatt',
-        text: 'More petals, floating downstream. Jennifur is making sure I do not get lost. Those river stones look slippery, and those logs look suspiciously like teeth.',
-        scene: { ...W(2), actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world: 2, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
-      },
+      look(2, C2, 'More petals, floating downstream. Jennifur is making sure I do not get lost. Those river stones look slippery, and those logs look suspiciously like teeth.'),
+      dotNote(2, C2, 'Note from the tower: "The river guard shouts his warnings very, very late. He means well. The warning will arrive after the danger. Please take it in the spirit it was meant."'),
     ],
   },
   3: {
     teaser: 'Glowworm threads light the way, and something watches.',
     panels: [
-      {
-        chapter: 'WORLD 3 · MOSSY GROTTO', speaker: 'Slomatt',
-        text: 'The Grotto glows like a thousand lanterns. Beautiful, but I have the feeling I am being watched by two bright, patient eyes.',
-        scene: { ...W(3, 'night'), actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world: 3, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
-      },
+      look(3, C3, 'The Grotto glows like a thousand lanterns. Beautiful, but I have the feeling I am being watched by two bright, patient eyes.', 'night'),
+      dotNote(3, C3, 'Note: "The glowworms look friendly. They are not friendly. They are ENTHUSIASTIC. Whatever you do, do not let them in on the plan."', 'night'),
     ],
   },
   4: {
     teaser: 'Mist, thunder falls, and wings above the clouds.',
     panels: [
-      {
-        chapter: 'WORLD 4 · MIST CASCADES', speaker: 'Slomatt',
-        text: 'Waterfalls as tall as the sky! A feather drifts down from above. It is the size of my whole arm. I should not look up. I am looking up.',
-        scene: { ...W(4), actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world: 4, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
-      },
+      look(4, C4, 'Waterfalls as tall as the sky! A feather drifts down from above. It is the size of my whole arm. I should not look up. I am looking up.'),
+      dotNote(4, C4, 'Note: "The Sky Sovereign is the one with the wings. You will know her by the wings. Please be polite. She hates being interrupted in the middle of a dive."'),
     ],
   },
   5: {
     teaser: 'Orchids bloom, and so do cobwebs.',
     panels: [
-      {
-        chapter: 'WORLD 5 · ORCHID SANCTUARY', speaker: 'Slomatt',
-        text: 'A carving in the bark: "Slomatt, I know you will save me." Jennifur! But the silk threads between these orchids are thicker than vines…',
-        scene: { ...W(5), actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world: 5, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
-      },
+      look(5, C5, 'A carving in the bark: "Slomatt, I know you will save me." Jennifur! But the silk threads between these orchids are thicker than vines…'),
+      dotNote(5, C5, 'Note: "The Tarantula Queen invites everyone to tea. I accepted once. The tea was lovely. Leaving was the problem."'),
     ],
   },
   6: {
     teaser: 'The mangrove swamp swallows the sun.',
     panels: [
-      {
-        chapter: 'WORLD 6 · DEEP MANGROVE', speaker: 'Slomatt',
-        text: 'The roots twist like a maze and the water is perfectly still. In my experience, perfectly still water means something enormous is holding its breath.',
-        scene: { ...W(6, 'dusk'), actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world: 6, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
-      },
+      look(6, C6, 'The roots twist like a maze and the water is perfectly still. In my experience, perfectly still water means something enormous is holding its breath.', 'dusk'),
+      dotNote(6, C6, 'Note: "The Reaver eats lunch at noon. Do NOT meet him at noon. I have learned this the hard way and I will not elaborate."', 'dusk'),
     ],
   },
   7: {
     teaser: 'Crumbling temples guard a stony secret.',
     panels: [
-      {
-        chapter: 'WORLD 7 · ANCIENT RUINS', speaker: 'Slomatt',
-        text: 'Moss-covered statues, golden idols, and a temple door that is slightly open. Jennifur came through here. So did something very heavy.',
-        scene: { ...W(7), actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world: 7, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
-      },
+      look(7, C7, 'Moss-covered statues, golden idols, and a temple door that is slightly open. Jennifur came through here. So did something very heavy.'),
+      dotNote(7, C7, 'Note: "The Golem is the slowest talker in the forest. You will get on wonderfully. Do not finish his sentences. He hates that. It took him a week to tell me so."'),
     ],
   },
   8: {
     teaser: 'Fireflies, moonlight, and a monarch of the night.',
     panels: [
+      look(8, C8, 'The sun has gone to bed and the fireflies are awake. I would sleep too, but Jennifur is out there somewhere, and so is something with very large wings.', 'night'),
       {
-        chapter: 'WORLD 8 · TWILIGHT TREETOPS', speaker: 'Slomatt',
-        text: 'The sun has gone to bed and the fireflies are awake. I would sleep too, but Jennifur is out there somewhere, and so is something with very large wings.',
-        scene: { ...W(8, 'night'), actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world: 8, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
+        chapter: C8, speaker: 'Narrator',
+        text: 'Slomatt sat down on a branch to rest his eyes. His eyes had other plans.',
+        scene: { ...W(8, 'night'), zoom: 1.3, focusX: 0.4, actors: [{ kind: 'milo', x: 0.4, y: 1.04, scale: 1.25, portrait: true, seq: [{ at: 0, frame: 'face_calm' }, { at: 2.4, frame: 'face_calm_closed' }] }] },
       },
+      ...PROMISE_PANELS,
+      dotNote(8, C8, 'Wake up. You were mumbling. Mostly about a petal. Here, a note: "Slomatt, I am quite sure you are asleep right now. It is fine. I would be too. Keep going."', 'night'),
     ],
   },
   9: {
     teaser: 'Lava rivers and a dragon who hates visitors.',
     panels: [
-      {
-        chapter: 'WORLD 9 · VOLCANIC JUNGLE', speaker: 'Slomatt',
-        text: 'The jungle is on fire! Well, glowing. The rocks are warm, the air tastes like pepper, and the biggest lizard I have ever seen is clearing his throat.',
-        scene: { ...W(9, 'dusk'), particles: 'embers', actors: [{ kind: 'milo', x: 0.35 }, { kind: 'boss', world: 9, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
-      },
+      look(9, C9, 'The jungle is on fire! Well, glowing. The rocks are warm, the air tastes like pepper, and the biggest lizard I have ever seen is clearing his throat.', 'dusk', { particles: 'embers' }),
+      dotNote(9, C9, 'Note: "It is hot. I am fine. The tower has a window now, and a chair, and the General brought me a blanket. Please do not tell him I said thank you."', 'dusk', { particles: 'embers' }),
     ],
   },
   10: {
     teaser: 'The Highland Fortress. Jennifur is close.',
     panels: [
-      {
-        chapter: 'WORLD 10 · STORMY HIGHLANDS', speaker: 'Slomatt',
-        text: 'There it is: the Highland Fortress, and the lightning above it. Every guardian is behind me now. Jennifur, I can see the tower. One last climb.',
-        scene: { ...W(10, 'storm'), particles: 'rain', actors: [{ kind: 'milo', x: 0.3 }, { kind: 'boss', world: 10, x: 0.7, scale: 1.0, silhouette: true, facing: -1 }] },
-      },
+      look(10, C10, 'There it is: the Highland Fortress, and the lightning above it. Every guardian is behind me now. Jennifur, I can see the tower. One last climb.', 'storm', { particles: 'rain' }),
+      dotNote(10, C10, 'Last note: "I am not scared anymore. He sits with me. He does not talk much. I think he is waiting for something. Come soon, Slomatt. And be kind when you come."', 'storm', { particles: 'rain' }),
     ],
   },
 };
@@ -294,6 +355,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
     intro: [
       { speaker: 'Crocus Rex', text: 'These waters belong to me! Nobody crosses my river without paying a toll. Today\'s toll is you.' },
       { speaker: 'Slomatt', text: 'I only have a petal and a very polite request. Please let me through.' },
+      { speaker: 'Crocus Rex', text: 'A petal? The little keeper came by wearing a crown of them. Made me wear one too. I looked magnificent. Do NOT tell the General.' },
     ],
     defeat: [
       { speaker: 'Crocus Rex', text: 'Blub… my crown… my dignity… Fine! The river is open. The General is not as forgiving as I am.' },
@@ -309,6 +371,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
     defeat: [
       { speaker: 'Shadow Prowler', text: 'You… waited. You just waited, and I got tired. Nobody ever does that. Jennifur passed north, toward the clouds.' },
       { speaker: 'Slomatt', text: 'Patience is my best move. It is also my only move.' },
+      { speaker: 'Shadow Prowler', text: 'The thorns on our necks are called the Iron Pact. None of us chose it. Find out who did.' },
     ],
     tip: 'Shadow Prowler vanishes, then pounces. Watch the glowing eyes and strike as he lands.',
   },
@@ -318,7 +381,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Slomatt', text: 'Your Majesty, I only need to get past. Jennifur needs me.' },
     ],
     defeat: [
-      { speaker: 'Sky Sovereign', text: 'A sloth, outflying a queen… Ha! Your courage is worth a feather. Take the wind lane, it leads to the orchids.' },
+      { speaker: 'Sky Sovereign', text: 'A sloth, outflying a queen… Ha! And I am relieved, honestly. Your courage is worth a feather. Take the wind lane, it leads to the orchids.' },
       { speaker: 'Slomatt', text: 'You are kinder than your talons suggest.' },
     ],
     tip: 'Sky Sovereign dives from above. Dodge sideways, then punch her as she pulls out of the dive.',
@@ -331,6 +394,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
     defeat: [
       { speaker: 'Tarantula Queen', text: 'My webs, my beautiful webs! Hmph. The mangrove swamp is next. Mind the Reaver. He is not polite.' },
       { speaker: 'Slomatt', text: 'I will remember that. Thank you for the warning, Your Majesty.' },
+      { speaker: 'Tarantula Queen', text: 'And, dear: the General is not afraid of you. He is afraid of being late. Remember that when you meet him.' },
     ],
     tip: 'The Queen shoots webs in a spread. Jump between them and punch her when she drops down.',
   },
@@ -338,6 +402,8 @@ export const BOSS_STORIES: Record<number, BossStory> = {
     intro: [
       { speaker: 'Marsh Reaver', text: 'Hssst. Who wades into the Reaver\'s blackwater? Nobody wades into the Reaver\'s blackwater!' },
       { speaker: 'Slomatt', text: 'Sorry! I was only passing through. Very, very slowly. Is that a real spear?' },
+      { speaker: 'Marsh Reaver', text: '…Wait. You are the sloth. The General talks about you at every meal. "The sloth is coming. The sloth is slow. The sloth is somehow still coming." I thought you would be taller.' },
+      { speaker: 'Slomatt', text: 'I get that a lot.' },
     ],
     defeat: [
       { speaker: 'Marsh Reaver', text: 'Hrmph… fine. Keep your feet. The ruins are past the reeds. Nobody tells the General a sloth got past my spear.' },
@@ -353,6 +419,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
     defeat: [
       { speaker: 'Stone Idol Golem', text: 'Crumble… the rune… is broken. The way up… is open. Jennifur… went… that way.' },
       { speaker: 'Slomatt', text: 'Thank you. Rest well, old friend.' },
+      { speaker: 'Stone Idol Golem', text: 'Behind… the rune… there is… a photograph. He… asked me… to keep it… from you. I… am… sorry.' },
     ],
     tip: 'The Golem\'s rune glows before a smash. Dodge it, then punch the glowing rune on his chest.',
   },
@@ -371,6 +438,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
     intro: [
       { speaker: 'Magma Drake', text: 'Another visitor! You will make a fine snack. Or a fine hat. I have not decided.' },
       { speaker: 'Slomatt', text: 'I would prefer neither. May I pass? Please? I brought a petal.' },
+      { speaker: 'Magma Drake', text: 'Hm. Most visitors are the General\'s soldiers, and they never bring petals. Very well. Let us see what a petal can do.' },
     ],
     defeat: [
       { speaker: 'Magma Drake', text: 'Cough! You put out my fire with your sheer… stubbornness. Go. The General\'s fortress is just beyond the clouds.' },
@@ -382,6 +450,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
     intro: [
       { speaker: 'General Iron-Claw', text: 'You crossed ten realms for a flower-keeper? Foolish sloth. I rule the Highlands, and soon, everything below it.' },
       { speaker: 'Slomatt', text: 'She is not just a flower-keeper. She is my best friend. Give her back, General.' },
+      { speaker: 'General Iron-Claw', text: 'Slow gets people killed, sloth. I have buried what slow costs. I will not bury another.' },
     ],
     defeat: [
       { speaker: 'General Iron-Claw', text: 'Impossible… I was the strongest in the whole forest. Why did you not give up?' },
@@ -391,49 +460,8 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   },
 };
 
-export const ENDING_PANELS: StoryPanel[] = [
-  {
-    chapter: 'EPILOGUE', speaker: 'Jennifur',
-    text: 'Slomatt! You followed every petal! I knew you would!',
-    scene: {
-      world: 10, mood: 'glow', particles: 'sparkles', zoom: 1.4, focusX: 0.5,
-      castle: 7,
-      actors: [
-        { kind: 'milo', x: 0.3, scale: 1.1, pose: 'happy' },
-        { kind: 'daisy_wave', x: 0.68, scale: 1.1, mood: 'cheer' },
-      ],
-    },
-  },
-  {
-    chapter: 'EPILOGUE', speaker: 'Slomatt',
-    text: 'It took me ten realms, one hundred trials, and a very long nap in the middle. Worth every slow step.',
-    scene: {
-      world: 10, mood: 'glow', particles: 'sparkles', zoom: 1.35, focusX: 0.46,
-      castle: 7,
-      actors: [
-        { kind: 'milo', x: 0.3, scale: 1.1 },
-        { kind: 'daisy', x: 0.68, scale: 1.1, facing: -1 },
-      ],
-    },
-  },
-  {
-    chapter: 'EPILOGUE', speaker: 'Narrator',
-    text: 'With the General gone, the storm broke and the sun poured over the Highlands. Far away, back in the Emerald Canopy, the Heartbloom began to glow.',
-    scene: { world: 1, mood: 'glow', actors: [{ kind: 'bloom', x: 0.5, y: 0.8, scale: 1.5 }], particles: 'petals' },
-  },
-  {
-    chapter: 'THE END', speaker: 'Jennifur',
-    text: 'Come on, Slomatt. Let us go home and watch it bloom. Slowly, of course.',
-    scene: {
-      world: 1, mood: 'dusk', particles: 'petals', zoom: 1.35, focusX: 0.5,
-      actors: [
-        { kind: 'milo', x: 0.36, scale: 1.2, pose: 'happy' },
-        { kind: 'bloom', x: 0.52, y: 0.8, scale: 1.0 },
-        { kind: 'daisy', x: 0.68, scale: 1.2, facing: -1 },
-      ],
-    },
-  },
-];
+/** the ending as it plays when nothing has been found in the Library (the game builds it with the player's finds, see storyChapters.ts) */
+export const ENDING_PANELS: StoryPanel[] = finalePanels([]);
 
 const BOSS_MOODS: Record<number, SceneMood> = { 3: 'night', 6: 'dusk', 8: 'night', 9: 'dusk', 10: 'storm' };
 

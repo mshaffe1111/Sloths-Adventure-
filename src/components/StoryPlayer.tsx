@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { StoryPanel } from '../game/story.ts';
-import { drawStoryScene, SCENE_W, SCENE_H } from '../game/storyArt.ts';
+import { drawStoryScene, preloadScenePhotos, SCENE_W, SCENE_H } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 
 interface StoryPlayerProps {
@@ -14,6 +14,10 @@ const SPEAKERS: Record<string, { dot: string; icon: string }> = {
   Slomatt: { dot: '#ffb02e', icon: '🦥' },
   Jennifur: { dot: '#f58ab4', icon: '🌸' },
   Narrator: { dot: '#8fd3f0', icon: '📖' },
+  Dot: { dot: '#4fd18b', icon: '🐦' },
+  Grandma: { dot: '#c9a8e8', icon: '🌿' },
+  Officer: { dot: '#9aa3ad', icon: '🎖' },
+  'General Iron-Claw': { dot: '#e0524a', icon: '⚔' },
 };
 
 /** "WORLD 3 · MOSSY GROTTO" -> the small line and the big line of the title card */
@@ -30,6 +34,10 @@ const FPS = 30;
 /** Full-screen cinematic: the stage scenery behind the actors, a title card for each chapter, and a dialogue panel. */
 export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, finishLabel = 'Continue', skipLabel = 'Skip' }) => {
   const [idx, setIdx] = useState(0);
+  // photographs the story holds up: start loading them now
+  useEffect(() => {
+    preloadScenePhotos(panels.map((p) => p.scene.photo?.key));
+  }, [panels]);
   const [shown, setShown] = useState(0);
   const panel = panels[idx];
   const prevChapter = idx > 0 ? panels[idx - 1].chapter : null;

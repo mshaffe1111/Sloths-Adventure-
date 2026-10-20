@@ -32,6 +32,10 @@ export function sceneForPanel(p: PanelInfo): SceneChoice {
   const ch = p.chapter.toUpperCase();
   const world = Math.max(1, Math.min(10, p.scene.world || 1));
   if (ch.startsWith('PROLOGUE')) return { id: 'jennifur', intensity: 0.5 };
+  if (ch.startsWith('MEMORY')) return { id: 'jennifur', intensity: 0.3 };
+  if (ch.startsWith('THE SONG')) return { id: 'jennifur', intensity: 0.7 };
+  if (ch.startsWith('THE REVEAL')) return { id: 'storyDusk', intensity: 0.4 };
+  if (ch.startsWith('THE MERCY')) return { id: 'ending', intensity: 0.45 };
   if (ch.startsWith('THE STORM')) return { id: 'storyStorm', intensity: 0.6 };
   if (ch.startsWith('THE VOW') || ch.startsWith('THE EXPEDITION')) return { id: 'storyDusk', intensity: 0.5 };
   if (ch.startsWith('WORLD')) {

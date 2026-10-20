@@ -9,6 +9,7 @@ import { CreaturePic } from './CreaturePic.tsx';
 import { BONUS_FIND, FINDS, allFound, type FindDef } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
+import { MEMORIES, MEMORY_ORDER, type MemoryId } from '../game/storyChapters.ts';
 
 interface Props {
   store: BadgeStore;
@@ -24,6 +25,9 @@ interface Props {
   finds: string[];
   /** open one of them to read it again */
   onOpenFind: (id: string) => void;
+  /** the flashbacks seen so far, and a way to watch one again */
+  memories?: MemoryId[];
+  onReplayMemory?: (id: MemoryId) => void;
 }
 
 const SECTIONS: Array<{ title: string; match: (b: BadgeDef) => boolean }> = [
@@ -34,7 +38,7 @@ const SECTIONS: Array<{ title: string; match: (b: BadgeDef) => boolean }> = [
   { title: 'Secrets and story', match: (b) => ['naturalist', 'thorn_finder', 'thorn_heart', 'jungle_hero'].includes(b.id) },
 ];
 
-export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, onOpenFind }) => {
+export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, onOpenFind, memories = [], onReplayMemory }) => {
   const [tab, setTab] = useState<'badges' | 'journal' | 'library'>(initialTab);
   const ctx = useMemo(() => ({ store, levels, gateFound, thornHeart }), [store, levels, gateFound, thornHeart]);
   const earnedIds = useMemo(() => new Set(evaluate(ctx)), [ctx]);
@@ -206,6 +210,30 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 </div>
               </React.Fragment>
             ))}
+            {onReplayMemory && (
+              <>
+                <div className="tr-sec">Memories</div>
+                <div className="tr-grid tr-grid-j">
+                  {MEMORY_ORDER.map((id) => {
+                    const got = memories.includes(id);
+                    return (
+                      <div
+                        key={id}
+                        className={`tr-card tr-find tr-memory ${got ? 'open' : 'lock'}`}
+                        role={got ? 'button' : undefined}
+                        tabIndex={got ? 0 : undefined}
+                        onClick={got ? () => onReplayMemory(id) : undefined}
+                        onKeyDown={got ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onReplayMemory(id); } } : undefined}
+                      >
+                        <div className="tr-cpic">{got ? '🎞️' : '🔒'}</div>
+                        <div className="tr-cn">{got ? MEMORIES[id].title : '???'}</div>
+                        <div className="tr-ct">{got ? 'Tap to watch again' : MEMORIES[id].hint}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            )}
             <div className="tr-sec">Quest bonus</div>
             <div className="tr-grid tr-grid-j">
               {(() => {

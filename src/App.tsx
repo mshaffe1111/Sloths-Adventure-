@@ -12,7 +12,8 @@ import { TouchController } from './game/../components/TouchController.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
 import { StoryPlayer } from './game/../components/StoryPlayer.tsx';
-import { INTRO_PANELS, WORLD_STORIES, ENDING_PANELS, bossPanels, thornbarkPanels } from './game/story.ts';
+import { INTRO_PANELS, WORLD_STORIES, bossPanels, thornbarkPanels } from './game/story.ts';
+import { MEMORIES, MEMORY_AFTER_BOSS, finalePanels, loadMemories, saveMemories, withMemory, type MemoryId } from './game/storyChapters.ts';
 import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
@@ -173,6 +174,16 @@ export default function App() {
   const [trophyTab, setTrophyTab] = useState<'badges' | 'journal' | 'library'>('badges');
   // ---- story finds: the notes, books and keepsakes picked up, and the one being read ----
   const [foundIds, setFoundIds] = useState<string[]>(() => loadFinds());
+  // ---- flashbacks: the ones seen so far, and the one playing ----
+  const [memoriesSeen, setMemoriesSeen] = useState<MemoryId[]>(() => loadMemories());
+  const [memoryPlay, setMemoryPlay] = useState<{ id: MemoryId; back: 'victory' | 'trophy' } | null>(null);
+  const markMemorySeen = (id: MemoryId) => {
+    setMemoriesSeen((cur) => {
+      const next = withMemory(cur, id);
+      if (next !== cur) saveMemories(next);
+      return next;
+    });
+  };
   const [reading, setReading] = useState<string | null>(null);
   /** the find on screen was the last of the 30 */
   const [readingCompletes, setReadingCompletes] = useState(false);
@@ -228,7 +239,7 @@ export default function App() {
 
   // nothing needs the game loop on the menu and story screens
   useEffect(() => {
-    if (['title', 'world_map', 'story_cutscene', 'world_story', 'boss_intro', 'boss_defeat', 'ending_story'].includes(screen)) {
+    if (['title', 'world_map', 'story_cutscene', 'world_story', 'boss_intro', 'boss_defeat', 'ending_story', 'memory'].includes(screen)) {
       engineRef.current?.stop();
     }
   }, [screen]);
@@ -365,6 +376,20 @@ export default function App() {
       if (!lvl) return;
       setActiveLevel(lvl);
       setScreen(scr as never);
+    };
+  }
+
+  // World 8's flashback (the promise) plays inside its world card: it counts as seen once that card opens
+  useEffect(() => {
+    if (screen === 'world_story' && activeLevel.worldIndex === 8) markMemorySeen('promise');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen, activeLevel.worldIndex]);
+
+  // dev only: play a flashback
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __memory?: (id: MemoryId) => void }).__memory = (id: MemoryId) => {
+      setMemoryPlay({ id, back: 'trophy' });
+      setScreen('memory');
     };
   }
 
@@ -677,16 +702,45 @@ export default function App() {
                 bossPanels(activeLevel.worldIndex, 'defeat', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
           }
           finishLabel="Onward ▶"
-          onFinish={() =>
-            setScreen(activeLevel.worldIndex === 10 && activeLevel.miniIndex === 10 ? 'ending_story' : 'victory')
-          }
+          onFinish={() => {
+            if (activeLevel.worldIndex === 10 && activeLevel.miniIndex === 10) {
+              setScreen('ending_story');
+              return;
+            }
+            // the first time this guardian goes down, a flashback plays before the stage-cleared card
+            const mem = activeLevel.secret ? undefined : MEMORY_AFTER_BOSS[activeLevel.worldIndex];
+            if (mem && !memoriesSeen.includes(mem)) {
+              setMemoryPlay({ id: mem, back: 'victory' });
+              setScreen('memory');
+              return;
+            }
+            setScreen('victory');
+          }}
         />
       )}
 
-      {/* The ending */}
+      {/* A flashback (after a guardian falls, or replayed from the Library) */}
+      {screen === 'memory' && memoryPlay && (
+        <StoryPlayer
+          panels={MEMORIES[memoryPlay.id].panels}
+          finishLabel="Back ▶"
+          skipLabel="Skip memory"
+          onFinish={() => {
+            markMemorySeen(memoryPlay.id);
+            const back = memoryPlay.back;
+            setMemoryPlay(null);
+            if (back === 'trophy') {
+              setTrophyTab('library');
+              setScreen('trophy');
+            } else setScreen('victory');
+          }}
+        />
+      )}
+
+      {/* The ending: it carries a line for every keepsake the player found */}
       {screen === 'ending_story' && (
         <StoryPlayer
-          panels={ENDING_PANELS}
+          panels={finalePanels(foundIds)}
           finishLabel="The End ❤"
           onFinish={() => setScreen('story_ending')}
         />
@@ -723,6 +777,11 @@ export default function App() {
           onChoice={changeCosmetic}
           initialTab={trophyTab}
           finds={foundIds}
+          memories={memoriesSeen}
+          onReplayMemory={(id) => {
+            setMemoryPlay({ id, back: 'trophy' });
+            setScreen('memory');
+          }}
           onOpenFind={(id) => { setReadingCompletes(false); setReading(id); }}
           onBack={() => setScreen(trophyFrom)}
         />
