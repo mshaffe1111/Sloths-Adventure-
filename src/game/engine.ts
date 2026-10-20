@@ -57,6 +57,7 @@ import {
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
+import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider } from './predatorAI.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
@@ -75,6 +76,9 @@ import { maxHearts } from './secret.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 
 /** How many world units tall the screen shows. */
+/** how long Slomatt crouches beside a Hush Fern before it gives up what it hides */
+const FIND_SEARCH_SECONDS = 0.9;
+
 const WORLD_VIEW_H = 540;
 /** world units across a portrait screen */
 const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
@@ -102,6 +106,8 @@ export interface GameEngineCallbacks {
   onBossEncounter?: (boss: BossEntity) => void;
   /** Slomatt stepped through the hidden Thorn Gate */
   onSecret?: () => void;
+  /** Slomatt picked up a note, book or keepsake (see finds.ts); the app shows it */
+  onFind?: (findId: string) => void;
   /** the boss bar: sent only when something on it changes */
   onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null) => void;
 }
@@ -427,6 +433,16 @@ export class GameEngine {
     sound.setTempo(1); // a boss fight that was enraged must not restart at the enraged speed
     sound.playLevelStart();
     this.loop(this.lastTime);
+  }
+
+  /** a note, book or keepsake is picked up: a burst, a line of text, and the app opens it */
+  private collectFind(c: Collectible) {
+    c.collected = true;
+    this.runScore += 300;
+    sound.playRelicFound();
+    this.spawnSparkBurst(c.x, c.y, '#fde68a');
+    this.addFloatingText(`FOUND: ${FIND_BY_ID[c.findId ?? '']?.title ?? 'a find'}`, c.x, c.y - 34, '#fde68a');
+    if (c.findId) this.callbacks.onFind?.(c.findId);
   }
 
   public pause() {
@@ -1383,7 +1399,7 @@ export class GameEngine {
     // --- Collectibles Magnet Attraction (when Nectar Magnet power-up is active) ---
     if (p.activePowerUp === 'magnet') {
       for (const c of this.collectibles) {
-        if (c.collected || c.type === 'cage' || c.type === 'exit_totem' || c.type === 'thorn_gate') continue;
+        if (c.collected || c.type === 'cage' || c.type === 'exit_totem' || c.type === 'thorn_gate' || c.type === 'find') continue;
         const dist = distance2D(p.x, p.y - 20, c.x, c.y);
         if (dist < 260 && dist > 10) {
           const pullSpeed = 460 * dt;
@@ -1418,6 +1434,21 @@ export class GameEngine {
           sound.playBossRoar(this.currentStage.config.worldIndex);
           this.callbacks.onSecret?.();
         }
+        continue;
+      }
+
+      if (c.type === 'find') {
+        if (!c.hidden) {
+          // a Keeper's Bell: just touch it
+          if (distance2D(p.x, p.y - 20, c.x, c.y) < 40) this.collectFind(c);
+          continue;
+        }
+        // a Hush Fern: crouch beside it for a moment and it gives something up; stand up and the search slowly fades
+        const close = Math.abs(p.x - c.x) < 54 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
+        c.near = close && !p.ducking;
+        if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
+        else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
+        if ((c.search ?? 0) >= 1) this.collectFind(c);
         continue;
       }
 

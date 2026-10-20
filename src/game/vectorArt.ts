@@ -8,6 +8,7 @@ import { drawBloom, type Bloom } from './flora.ts';
 import { drawFlowerSprite } from './flowerSprites.ts';
 import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
 import { rng, tone } from './artKit.ts';
+import { drawHushFern, drawKeepersBell } from './findArt.ts';
 import { leaf } from './rainforest.ts';
 import { drawGiantBat } from './bossBat.ts';
 
@@ -1039,7 +1040,7 @@ export function drawCollectible(
   ctx.translate(item.x, item.y);
   const bobY = Math.sin(time * 4 + item.bobPhase) * 4;
   ctx.translate(0, bobY);
-  if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate') {
+  if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate' && item.type !== 'find') {
     const big = item.type === 'relic' ? 1.25 : 1.4;
     ctx.scale(big, big);
     // soft sparkle ring so pickups pop against the foliage
@@ -1056,6 +1057,13 @@ export function drawCollectible(
   switch (item.type) {
     case 'thorn_gate': {
       drawThornGate(ctx, time);
+      break;
+    }
+    case 'find': {
+      // they stand on the ground: no bobbing
+      ctx.translate(0, -bobY);
+      if (item.hidden) drawHushFern(ctx, item, time);
+      else drawKeepersBell(ctx, item, time);
       break;
     }
     case 'flower':

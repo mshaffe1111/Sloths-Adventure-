@@ -279,7 +279,7 @@ export interface Rope {
 
 export interface Collectible {
   id: number;
-  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate';
+  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate' | 'find';
   botanicalVariant?: 'orchid' | 'hibiscus' | 'monstera' | 'fern' | 'lotus' | 'cheetah_flower' | 'solar_bloom' | 'nectar_spore';
   x: number;
   y: number;
@@ -287,6 +287,14 @@ export interface Collectible {
   bobPhase: number;
   cageHp?: number;
   isLocked?: boolean;
+  /** a story find (note, book or keepsake): which one (see finds.ts) */
+  findId?: string;
+  /** a hidden find sits in a Hush Fern and is found by crouching beside it; otherwise it is a Keeper's Bell flower you just touch */
+  hidden?: boolean;
+  /** how far the search has got, 0..1 (hidden finds) */
+  search?: number;
+  /** Slomatt stands close but is not crouching: draws the hint */
+  near?: boolean;
 }
 
 export interface Particle {

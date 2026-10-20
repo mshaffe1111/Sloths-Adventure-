@@ -40,6 +40,8 @@ export interface CheckResult {
     swingEdges: number;
     climbEdges: number;
   };
+  /** the ids of the platforms the player can get to (for placing things that must be reachable) */
+  reachableIds: number[];
 }
 
 /** Fraction of the simulated maximum reach the validator still accepts. */
@@ -147,6 +149,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   let swingEdges = 0;
   let climbEdges = 0;
   const usedSwing = new Set<number>();
+  let reachedIds: number[] = [];
 
   const adj = new Map<string, Set<string>>();
   const link = (a: string, b: string) => {
@@ -276,6 +279,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       }
     }
   }
+  reachedIds = [...seen].filter((k) => k.startsWith('p')).map((k) => Number(k.slice(1)));
   const reach = (p: Platform) => seen.has(pid(p));
   const reachPlats = plats.filter(reach);
 
@@ -434,12 +438,13 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       errors,
       stats: {
         platforms: plats.length,
-        reachablePlatforms: seen.size,
+        reachablePlatforms: reachedIds.length,
         vines: stage.vines.length,
         maxGapUsed: Math.round(maxGapUsed),
         swingEdges,
         climbEdges,
       },
+      reachableIds: reachedIds,
     };
   }
 }

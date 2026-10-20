@@ -6,6 +6,9 @@ import type { Coat } from '../game/heroTint.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
 import { CoatPreview } from './CoatPreview.tsx';
 import { CreaturePic } from './CreaturePic.tsx';
+import { FINDS, type FindDef } from '../game/finds.ts';
+import { photoUrl } from '../game/photos.ts';
+import { KeepsakePic } from './FindReader.tsx';
 
 interface Props {
   store: BadgeStore;
@@ -16,7 +19,11 @@ interface Props {
   onChoice: (c: CosmeticChoice) => void;
   onBack: () => void;
   /** which tab to open on (default: the badges) */
-  initialTab?: 'badges' | 'journal';
+  initialTab?: 'badges' | 'journal' | 'library';
+  /** the ids of the notes, books and keepsakes found so far */
+  finds: string[];
+  /** open one of them to read it again */
+  onOpenFind: (id: string) => void;
 }
 
 const SECTIONS: Array<{ title: string; match: (b: BadgeDef) => boolean }> = [
@@ -27,8 +34,8 @@ const SECTIONS: Array<{ title: string; match: (b: BadgeDef) => boolean }> = [
   { title: 'Secrets and story', match: (b) => ['naturalist', 'thorn_finder', 'thorn_heart', 'jungle_hero'].includes(b.id) },
 ];
 
-export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges' }) => {
-  const [tab, setTab] = useState<'badges' | 'journal'>(initialTab);
+export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, onOpenFind }) => {
+  const [tab, setTab] = useState<'badges' | 'journal' | 'library'>(initialTab);
   const ctx = useMemo(() => ({ store, levels, gateFound, thornHeart }), [store, levels, gateFound, thornHeart]);
   const earnedIds = useMemo(() => new Set(evaluate(ctx)), [ctx]);
   const earnedCount = earnedIds.size;
@@ -64,6 +71,9 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
           </button>
           <button type="button" role="tab" aria-selected={tab === 'journal'} className={tab === 'journal' ? 'on' : ''} onClick={() => setTab('journal')}>
             Jungle Journal
+          </button>
+          <button type="button" role="tab" aria-selected={tab === 'library'} className={tab === 'library' ? 'on' : ''} onClick={() => setTab('library')}>
+            Library
           </button>
         </div>
 
@@ -167,7 +177,47 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
             </div>
           </>
         )}
+        {tab === 'library' && (
+          <>
+            <div className="tr-sub tr-jsub">
+              {FINDS.filter((f) => finds.includes(f.id)).length} of {FINDS.length} found · tap a found one to read it again
+            </div>
+            {([['note', 'Notes from Jennifur'], ['book', 'Photo albums'], ['keepsake', 'Keepsakes']] as const).map(([kind, title]) => (
+              <React.Fragment key={kind}>
+                <div className="tr-sec">{title}</div>
+                <div className="tr-grid tr-grid-j">
+                  {FINDS.filter((f) => f.kind === kind).map((f) => {
+                    const got = finds.includes(f.id);
+                    return (
+                      <div
+                        key={f.id}
+                        className={`tr-card tr-find ${got ? 'open' : 'lock'}`}
+                        role={got ? 'button' : undefined}
+                        tabIndex={got ? 0 : undefined}
+                        onClick={got ? () => onOpenFind(f.id) : undefined}
+                        onKeyDown={got ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenFind(f.id); } } : undefined}
+                      >
+                        <div className="tr-cpic">{got ? findPic(f) : '🔒'}</div>
+                        <div className="tr-cn">{got ? f.title : '???'}</div>
+                        <div className="tr-ct">{got ? `World ${f.world}` : f.hint}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </React.Fragment>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );
 };
+
+function findPic(f: FindDef): React.ReactNode {
+  if (f.kind === 'keepsake') return <KeepsakePic icon={f.icon ?? 'petal'} size={56} />;
+  if (f.kind === 'book') {
+    const url = photoUrl(f.pages[0]?.photo);
+    return url ? <img className="tr-thumb" src={url} alt="" /> : '📖';
+  }
+  return '📜';
+}

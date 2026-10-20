@@ -19,6 +19,8 @@ import { StatusModals } from './game/../components/StatusModals.tsx';
 import { sound } from './game/audio.ts';
 import { usePWAInstall } from './utils/usePWAInstall.ts';
 import { enterWideMode, leaveWideMode } from './game/wideMode.ts';
+import { FindReader } from './components/FindReader.tsx';
+import { FIND_BY_ID, loadFinds, saveFinds, withFind } from './game/finds.ts';
 import { THORNBARK_LEVEL, gateFound, hasThornHeart, markGateFound, markThornHeart, maxHearts } from './game/secret.ts';
 import { warmHeroAtlas } from './game/heroSprite.ts';
 import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
@@ -76,6 +78,7 @@ export default function App() {
     setMaxHp(maxHearts());
     setBadgeStore(loadBadgeStore());
     setCosmetic(loadCosmetic());
+    setFoundIds(loadFinds());
     setSkills(learnedSkills());
     setNewSkills([]);
   }, []);
@@ -95,6 +98,7 @@ export default function App() {
     setMaxHp(maxHearts());
     setBadgeStore(loadBadgeStore());
     setCosmetic(loadCosmetic());
+    setFoundIds(loadFinds());
     setSkills(learnedSkills());
     setNewSkills([]);
     if (skipStory) {
@@ -166,7 +170,19 @@ export default function App() {
   const [freshBadges, setFreshBadges] = useState<BadgeDef[]>([]);
   const [trophyFrom, setTrophyFrom] = useState<'title' | 'world_map' | 'paused'>('title');
   /** which tab the Trophy Room opens on (the pause menu's Jungle Cards go straight to the creature journal) */
-  const [trophyTab, setTrophyTab] = useState<'badges' | 'journal'>('badges');
+  const [trophyTab, setTrophyTab] = useState<'badges' | 'journal' | 'library'>('badges');
+  // ---- story finds: the notes, books and keepsakes picked up, and the one being read ----
+  const [foundIds, setFoundIds] = useState<string[]>(() => loadFinds());
+  const [reading, setReading] = useState<string | null>(null);
+  /** true while a stage is paused because a find was just picked up (so closing the reader resumes it) */
+  const pausedForFind = useRef(false);
+  const closeReader = () => {
+    setReading(null);
+    if (pausedForFind.current) {
+      pausedForFind.current = false;
+      engineRef.current?.resume();
+    }
+  };
   /** what the last stage reported; folded in once its result has been saved (see the effect below) */
   const pendingStats = useRef<StageStats | null>(null);
   const badgeCount = React.useMemo(
@@ -398,6 +414,17 @@ export default function App() {
           setPowerUpTimer(curPowerTimer ?? 0);
         },
         onBossUpdate: (info) => setBossInfo(info),
+        onFind: (id) => {
+          // a new note, book or keepsake: keep it, pause the stage and show it. One already in the Library just gives its line of text.
+          const known = loadFinds();
+          if (known.includes(id) || !FIND_BY_ID[id]) return;
+          const next = withFind(known, id);
+          saveFinds(next);
+          setFoundIds(next);
+          engineRef.current?.pause();
+          pausedForFind.current = true;
+          setReading(id);
+        },
         onSecret: () => {
           // the Thorn Gate: a moment to see it open, then the Hollow
           markGateFound();
@@ -691,9 +718,13 @@ export default function App() {
           choice={cosmetic}
           onChoice={changeCosmetic}
           initialTab={trophyTab}
+          finds={foundIds}
+          onOpenFind={(id) => setReading(id)}
           onBack={() => setScreen(trophyFrom)}
         />
       )}
+
+      {reading && FIND_BY_ID[reading] && <FindReader find={FIND_BY_ID[reading]} onClose={closeReader} />}
 
       {/* held back while the stage-cleared and new-skill cards are up: it covered their title ribbons and buttons */}
       {freshBadges.length > 0 && screen !== 'victory' && <BadgeToast badges={freshBadges} onDone={() => setFreshBadges([])} />}

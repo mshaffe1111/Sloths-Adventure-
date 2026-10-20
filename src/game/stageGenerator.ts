@@ -19,6 +19,7 @@ import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { SECRET_GATE_LEVEL } from './secret.ts';
+import { findForStage } from './finds.ts';
 import { pieceWidth, zoneRecipes, crumbleTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP, type Zone, type ZonePiece } from './zones.ts';
 import { driftX, logLayout, riverRecipes, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverRecipe, type RiverZone } from './river.ts';
 
@@ -1983,6 +1984,7 @@ export function generateStage(config: LevelConfig): GeneratedStage {
   }
   const stage = buildStage(config, attempt);
   addSecrets(stage);
+  addFinds(stage);
   return stage;
 }
 
@@ -2001,4 +2003,58 @@ function addSecrets(stage: GeneratedStage) {
   stage.platforms.push(shroom, ledge);
   const cids = stage.collectibles.map((c) => c.id);
   stage.collectibles.push({ id: (cids.length ? Math.max(...cids) : 0) + 1, type: 'thorn_gate', x: ledge.x + ledge.width / 2, y: ledge.y - 40, collected: false, bobPhase: 0 });
+}
+
+function hash32(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return h >>> 0;
+}
+
+/**
+ * The story finds (notes, books, keepsakes, see finds.ts): one per world in the stages that hold them. Like the secrets they are put
+ * in after the layout has been checked, on a platform the player can reach, well away from the start, the flags, the exit and every
+ * animal. A hidden find (a book or keepsake) takes one of the higher platforms so it feels like a detour; a note takes a lower one,
+ * on the way. The stage's own random numbers are never used, so adding finds does not change any layout.
+ */
+export function addFinds(stage: GeneratedStage) {
+  const cfg = stage.config;
+  if (cfg.secret || cfg.objectiveType === 'boss_lair') return;
+  const find = findForStage(cfg.worldIndex, cfg.miniIndex);
+  if (!find) return;
+  const hidden = find.kind !== 'note';
+  const reach = new Set(validateStage(stage).reachableIds);
+  const cps = (stage.checkpoints ?? []).map((c) => c.x);
+  type P = GeneratedStage['platforms'][number];
+  const clearOf = (x: number, p: P) =>
+    Math.abs(x - stage.spawnX) > 320 &&
+    Math.abs(x - stage.exitTotemX) > 320 &&
+    cps.every((c) => Math.abs(c - x) > 220) &&
+    stage.enemies.every((e) => Math.abs(e.x - x) > 190 || Math.abs(e.y - p.y) > 220) &&
+    stage.collectibles.every((c) => c.type === 'exit_totem' || Math.hypot(c.x - x, c.y - (p.y - 26)) > 110);
+  const cands: Array<{ p: P; x: number }> = [];
+  for (const p of stage.platforms) {
+    if (p.broken || p.type !== 'solid' || p.width < 140 || !reach.has(p.id)) continue;
+    // every spot along the platform that is clear (a long ground has many; a small ledge has one or two)
+    for (let x = p.x + 70; x <= p.x + p.width - 70; x += 80) if (clearOf(x, p)) cands.push({ p, x });
+  }
+  if (!cands.length) return;
+  const ys = cands.map((c) => c.p.y).sort((m, n) => m - n);
+  // hidden: from the higher third of the spots; a note: from the lower half
+  const pool = hidden
+    ? cands.filter((c) => c.p.y <= ys[Math.floor((ys.length - 1) / 3)])
+    : cands.filter((c) => c.p.y >= ys[Math.floor(ys.length / 2)]);
+  pool.sort((m, n) => m.p.id - n.p.id || m.x - n.x);
+  const pick = pool[hash32(`${cfg.id}:${find.id}`) % pool.length];
+  const cids = stage.collectibles.map((c) => c.id);
+  stage.collectibles.push({
+    id: (cids.length ? Math.max(...cids) : 0) + 1,
+    type: 'find',
+    x: pick.x,
+    y: pick.p.y - 26,
+    collected: false,
+    bobPhase: 0,
+    findId: find.id,
+    hidden,
+  });
 }
