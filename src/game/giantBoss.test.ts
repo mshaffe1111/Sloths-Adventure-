@@ -200,9 +200,9 @@ test('Crocus Rex is a giant with a twelve-hit bar, a low weak point and his own 
   assert.ok(croc.lair === 'croc' && croc.entrance && croc.aimText);
   const r = weakRect({ ...mk('rec'), x: 1500, width: croc.w, height: croc.h } as BossEntity, croc, floor)!;
   assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, 'the head can be reached from the floor');
-  // the stunned pose has its own weak point, further forward (the head is down and out in the stagger)
+  // the stunned pose has its own weak point, lower (the head hangs almost to the mud in the stagger)
   const s = weakRect({ ...mk('stun'), x: 1500, width: croc.w, height: croc.h } as BossEntity, croc, floor)!;
-  assert.ok(s.x + s.w / 2 > r.x + r.w / 2 + 40);
+  assert.ok(s.y > r.y + 60);
   const stage = generateStage(generateAllLevels().find((l) => l.id === '2-10')!);
   const a = stage.arena!;
   assert.ok(a.right - a.left >= croc.w + 700, 'room to run around a giant');

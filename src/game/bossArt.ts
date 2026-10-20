@@ -1168,7 +1168,7 @@ function drawFlood(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     if (ph > 0.38) continue;
     const u = ph / 0.38;
     const px = x0 + (h.w * (i + 0.5 + Math.sin(h.seed * 9 + i) * 0.25)) / n;
-    const py = fl - 14 - Math.sin(u * Math.PI) * (36 + (i % 3) * 10);
+    const py = fl - 14 - Math.sin(u * Math.PI) * (13 + (i % 3) * 5);
     const ang = -Math.cos(u * Math.PI) * 0.9 * -dir;
     ctx.save();
     ctx.translate(px, py);

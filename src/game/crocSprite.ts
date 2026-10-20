@@ -30,10 +30,12 @@ export const crocSprite = createPaintedBoss({
       if (m?.pose === 'charge') name = ROLL[Math.floor(time * 11) % ROLL.length];
       else if (m?.pose === 'whip') name = 'tailwhip';
       else name = 'eruptslam';
-    } else if (br.state === 'rec') name = 'jawbite';
+    } // the giant's recovery shows the jaws held open (hurt): the jawbite frame is cut off at the rump when it is drawn this big
+    else if (br.state === 'rec') name = def.scale ? 'hurt' : 'jawbite';
     else if (moving) {
-      if (b.phase >= 2) name = Math.floor((dist / 44) * 2) % 2 === 0 ? 'run0' : 'run1';
-      else name = WALK[Math.floor((dist / STRIDE) * WALK.length) % WALK.length];
+      // the run frames have no tail at all (the rump ends in a straight cut), which shows at giant size: the giant always crawls
+      if (b.phase >= 2 && !def.scale) name = Math.floor((dist / 44) * 2) % 2 === 0 ? 'run0' : 'run1';
+      else name = WALK[Math.floor((dist / (def.scale && b.phase >= 2 ? 56 : STRIDE)) * WALK.length) % WALK.length];
     } else name = b.phase >= 3 ? 'enrage1' : 'idle';
     if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) name = 'hurt';
     return name;

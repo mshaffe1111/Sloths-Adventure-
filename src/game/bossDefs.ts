@@ -275,10 +275,10 @@ const CROC: BossDef = {
   hp: 24,
   hits: 12,
   // his one weak point is the head. It is low, so the trick is not reaching it but being there in the opening: right after a move
-  // (the jaws hang open on recovery) or while he is dizzy. Measured from the painted frames: the head sits at 55 / 80 in the
-  // recovery pose and at 165 / 55 in the stagger
-  weak: { dx: 55, dy: 80, w: 170, h: 110 },
-  weakStun: { dx: 165, dy: 55, w: 170, h: 100 },
+  // (the jaws are held open on recovery) or while he is dizzy. Measured from the painted frames: the head sits at 160 / 150 in the
+  // recovery pose (hurt) and at 150 / 45 in the stagger, where it hangs almost to the mud
+  weak: { dx: 160, dy: 150, w: 160, h: 110 },
+  weakStun: { dx: 150, dy: 45, w: 170, h: 90 },
   aimText: 'TOO TOUGH! HIT THE JAWS',
   arenaW: 1400,
   lair: 'croc',
