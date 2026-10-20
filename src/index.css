@@ -664,3 +664,10 @@
   .fr-saved { display: none; }
 }
 .tr-find .tr-thumb { width: 100%; height: 100%; object-fit: cover; }
+
+/* painted keepsakes */
+.fr-item { display: block; flex: 0 0 auto; object-fit: cover; border-radius: 10px; border: 2px solid #5b3a1e; box-shadow: 0 3px 8px rgba(0, 0, 0, .35); }
+.fr-noart { display: block; flex: 0 0 auto; }
+.tr-find .tr-cpic { height: 104px; }
+.tr-find .tr-item { object-fit: contain; background: #efd5a0; }
+@media (max-height: 480px) { .fr-item { width: 100px !important; height: 85px !important; } }

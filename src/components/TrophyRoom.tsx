@@ -8,7 +8,7 @@ import { CoatPreview } from './CoatPreview.tsx';
 import { CreaturePic } from './CreaturePic.tsx';
 import { FINDS, type FindDef } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
-import { KeepsakePic } from './FindReader.tsx';
+import { itemUrl } from '../game/items.ts';
 
 interface Props {
   store: BadgeStore;
@@ -214,10 +214,10 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
 };
 
 function findPic(f: FindDef): React.ReactNode {
-  if (f.kind === 'keepsake') return <KeepsakePic icon={f.icon ?? 'petal'} size={56} />;
   if (f.kind === 'book') {
     const url = photoUrl(f.pages[0]?.photo);
     return url ? <img className="tr-thumb" src={url} alt="" /> : '📖';
   }
-  return '📜';
+  const url = itemUrl(f.kind === 'keepsake' ? f.icon ?? 'petal' : 'scroll');
+  return url ? <img className="tr-thumb tr-item" src={url} alt="" /> : f.kind === 'keepsake' ? '🔑' : '📜';
 }
