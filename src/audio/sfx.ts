@@ -9,6 +9,7 @@
  * Pitches are randomised a few percent each time, so ten jumps in a row never sound like one sample repeated.
  * Pickups are locked to the key of the music that is playing, so collecting things plays along with the song.
  */
+import { runFx as runClassic } from './sfxClassic.ts';
 import { AudioCore, envelope } from './core.ts';
 import { bell, congaHi, harp, kalimba, marimba, pluck, rim, steelpan, woodblock } from './instruments.ts';
 import type { KeyInfo } from './music.ts';
@@ -1021,9 +1022,46 @@ export interface FxVariation {
 }
 
 /** play an effect with its loudness trim */
+/**
+ * Sounds that stayed in their original, fully synthesized version after the old-versus-new listening test.
+ * (Everything else uses the new recipes with the recorded layers.)
+ */
+export function classicFor(name: string, arg: number | undefined, streak: number): boolean {
+  const a = arg ?? 0;
+  switch (name) {
+    case 'checkpoint':
+    case 'vine':
+    case 'uiConfirm':
+    case 'uiBack':
+      return true;
+    case 'flower':
+      return Math.round(a) === 3;
+    case 'power':
+      return Math.round(a) === 1;
+    case 'land':
+      return (arg ?? 0.3) < 0.6;
+    case 'hit': {
+      const { heavy, material } = unpackHit(a);
+      if (heavy) return false;
+      if (material === 'generic') return streak < 3;
+      return material === 'fur' || material === 'armor';
+    }
+    case 'defeat':
+      return ![0, 1, 2, 4, 7, 9].includes(Math.round(arg ?? -1));
+    case 'tayraCall':
+      return Math.round(a) >= 1;
+    default:
+      return false;
+  }
+}
+
 export function runFx(name: string, core: AudioCore, key: KeyInfo, arg?: number, v: FxVariation = {}) {
   const fn = SFX[name];
   if (!fn) return;
+  if (classicFor(name, arg, Math.max(0, Math.floor(v.streak ?? 0)))) {
+    runClassic(name, core, key, arg, v);
+    return;
+  }
   TRIM = TRIMS[name] ?? 1;
   VAR = Math.max(0, Math.floor(v.variant ?? 0));
   STREAK = Math.max(0, Math.floor(v.streak ?? 0));
