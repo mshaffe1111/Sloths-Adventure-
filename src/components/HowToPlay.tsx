@@ -59,6 +59,19 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
       <Row how="Press and hold" what="Mega punch" sub="slower, but it hits hard" />
     </Section>
     )}
+    {!short && (
+    <Section title="Prefer buttons? Use the pad">
+      <p className="ui-copy">
+        In the <b>Menu</b>, set <b>Touch controls</b> to <b>Pad</b>. A thumb pad appears wherever you press on one side of the screen, and <b>Jump</b>, <b>Punch</b> and <b>Kick</b> buttons sit on the
+        other. Left-handed? Flip the pad's side right there.
+      </p>
+      <Row how="Pad ← →" what="Run" />
+      <Row how="Pad ↓ / ↑" what="Duck / jump" sub="hold up to climb a trunk or grab a rope" />
+      <Row how="Jump" what="Jump" sub="hold for height, press again in the air for a double jump" />
+      <Row how="Punch" what="Punch" sub="tap to punch, hold for a mega punch" />
+      <Row how="Kick" what="Kick" />
+    </Section>
+    )}
     {(!short || !COARSE) && (
     <Section title="With a keyboard">
       <Row how={<><K>A</K> <K>D</K> or <K>←</K> <K>→</K></>} what="Run" />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { polishEnabled, setPolishPref } from '../game/polish.ts';
+import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -37,6 +38,69 @@ export const PolishToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Wind, glow, soft shadows and richer ground. Turn it off if the game feels slow.</small>
+    </div>
+  );
+};
+
+/** a row of exclusive choices, drawn as a segmented button */
+function Seg<T extends string>({ value, options, onPick }: { value: T; options: { id: T; label: string }[]; onPick: (v: T) => void }) {
+  return (
+    <div className="pm-seg" role="group">
+      {options.map((o) => (
+        <button key={o.id} type="button" aria-pressed={value === o.id} className={value === o.id ? 'on' : ''} onClick={() => onPick(o.id)}>
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** how a touch screen controls the game: the whole screen, or a drawn thumb pad with Jump / Punch / Kick buttons (flippable for left-handers) */
+export const ControlsSetting: React.FC = () => {
+  const [style, setStyle] = React.useState<ControlStyle>(() => controlStyle());
+  const [side, setSide] = React.useState<PadSide>(() => padSide());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#93c5fd" size={22}>
+            <circle cx="8" cy="12" r="4" />
+            <circle cx="17" cy="8" r="2.5" />
+            <circle cx="17" cy="16" r="2.5" />
+          </Icon>
+          Touch controls
+        </span>
+        <Seg
+          value={style}
+          options={[
+            { id: 'screen', label: 'Screen' },
+            { id: 'pad', label: 'Pad' },
+          ]}
+          onPick={(v) => {
+            setControlStyle(v);
+            setStyle(v);
+          }}
+        />
+      </div>
+      {style === 'pad' && (
+        <div className="pm-sound-h" style={{ marginTop: 8 }}>
+          <span className="pm-polish-note" style={{ margin: 0 }}>
+            Thumb pad on the
+          </span>
+          <Seg
+            value={side}
+            options={[
+              { id: 'right', label: 'Right' },
+              { id: 'left', label: 'Left' },
+            ]}
+            onPick={(v) => {
+              setPadSide(v);
+              setSide(v);
+            }}
+          />
+        </div>
+      )}
+      <small className="pm-polish-note">{style === 'pad' ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.' : 'No buttons: slide, flick and tap anywhere on the screen.'}</small>
     </div>
   );
 };

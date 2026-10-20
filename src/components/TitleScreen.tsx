@@ -117,17 +117,11 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             <button type="button" onClick={onToggleMute} className="ui-chip ui-chip-btn">
               {isMuted ? 'Sound off' : 'Sound on'}
             </button>
-            <button type="button" onClick={() => setMenuOpen(true)} className="ui-chip ui-chip-btn" aria-label="Menu" data-menu="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
-                <path d="M4 7h16M4 12h16M4 17h16" />
-              </svg>
-              Menu
-            </button>
           </div>
         </div>
 
         <div className="flex w-full flex-1 min-h-0 flex-col items-center justify-center text-center">
-          <TitleHero className="w-full max-w-[1280px] shrink-0 h-[clamp(100px,min(28.5vh,58.3vw),400px)]" />
+          <TitleHero className="title-hero w-full max-w-[1280px] shrink-0 h-[clamp(100px,min(28.5vh,58.3vw),400px)]" />
 
           <div className="title-logo-wrap">
             <TitleSlomatt />
@@ -150,32 +144,39 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
                 </span>
               )}
             </button>
+            {/* the way into everything else: the Menu (settings, trophies, cards, skills) first, then the three places to go */}
             <div className="grid grid-cols-2 gap-2 w-full max-w-[340px] sm:flex sm:max-w-none sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
+              <button type="button" onClick={() => setMenuOpen(true)} className="ui-pill ui-pill-cream justify-center inline-flex items-center gap-2" aria-label="Menu" data-menu="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
+                  <path d="M4 7h16M4 12h16M4 17h16" />
+                </svg>
+                Menu
+              </button>
+              <button type="button" onClick={onOpenMap} className="ui-pill ui-pill-sky justify-center">
+                World Map
+              </button>
+              <button type="button" onClick={() => setHowOpen(true)} className="ui-pill ui-pill-green justify-center">
+                How to Play
+              </button>
               <button type="button" onClick={onViewStory} className="ui-pill ui-pill-rose justify-center">
                 Story
               </button>
-              <button type="button" onClick={onOpenMap} className="ui-pill ui-pill-green justify-center">
-                World Map
-              </button>
-              <button type="button" onClick={onOpenTrophies} className="ui-pill ui-pill-gold justify-center col-span-2 sm:col-span-1">
+            </div>
+            {/* your game: smaller, because they are used less often */}
+            <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+              <button type="button" onClick={onOpenTrophies} className="ui-chip ui-chip-btn ui-chip-lg">
                 🏆 Trophies{badgeCount ? ` · ${badgeCount}` : ''}
               </button>
-              <button type="button" onClick={() => setHowOpen(true)} className="ui-pill ui-pill-gold justify-center">
-                How to Play
-              </button>
-              <button type="button" onClick={() => setNewOpen(true)} className="ui-pill ui-pill-wood justify-center">
-                New Game
-              </button>
-              <button type="button" onClick={() => setSaveOpen(true)} className="ui-pill ui-pill-wood justify-center col-span-2 sm:col-span-1">
+              <button type="button" onClick={() => setSaveOpen(true)} className="ui-chip ui-chip-btn ui-chip-lg">
                 Save / Load
+              </button>
+              <button type="button" onClick={() => setNewOpen(true)} className="ui-chip ui-chip-btn ui-chip-lg">
+                New Game
               </button>
             </div>
           </div>
         </div>
 
-        <p className="title-hint w-full text-center font-sans text-[11px] sm:text-xs tracking-wide text-amber-50/80 [text-shadow:0_1px_3px_rgba(0,0,0,.6)]">
-          Slide to run · flick up to jump · flick across to kick · tap to punch · hold for a mega · keys: WASD, Space, J K L
-        </p>
         <p className="title-credit relative w-full text-center font-sans text-[11px] sm:text-xs tracking-wide text-amber-50/70 [text-shadow:0_1px_3px_rgba(0,0,0,.6)]">
           Created and made by Matt{' '}
           <button type="button" onClick={tapShaffer} className="title-credit-btn" aria-label="Shaffer">

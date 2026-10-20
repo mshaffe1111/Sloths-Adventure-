@@ -229,6 +229,8 @@
 .ui-pill:focus-visible { outline: 3px solid #fff6c8; outline-offset: 2px; }
 .ui-pill-rose { background: linear-gradient(#f0508a, #d12a68); box-shadow: 0 4px 0 #8f1a47, 0 8px 14px rgba(0,0,0,.3); }
 .ui-pill-green { background: linear-gradient(#2f9a63, #1d7447); box-shadow: 0 4px 0 #0f4b2b, 0 8px 14px rgba(0,0,0,.3); }
+.ui-pill-cream { color: #4a2e08; background: linear-gradient(#fffaf0, #f3d98f); box-shadow: 0 4px 0 #b08a3c, 0 8px 14px rgba(0,0,0,.3); text-shadow: none; }
+.ui-pill-sky { background: linear-gradient(#4aa8e6, #2a78bf); box-shadow: 0 4px 0 #17507f, 0 8px 14px rgba(0,0,0,.3); }
 .ui-pill-wood { background: linear-gradient(#b98a52, #8f6532); box-shadow: 0 4px 0 #5d3f1b, 0 8px 14px rgba(0,0,0,.3); }
 
 /* dialogs */
@@ -700,4 +702,18 @@
   .htp-body { margin-top: 8px; }
   .htp-foot { margin-top: 8px; padding-top: 7px; }
   .htp-foot .ui-btn { padding: 7px 16px; font-size: 14px; }
+}
+
+.pm-seg { display: inline-flex; padding: 3px; gap: 3px; border-radius: 12px; background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.16); }
+.pm-seg button { padding: 6px 14px; border: 0; border-radius: 9px; font-family: var(--font-heading); font-weight: 600; font-size: 14px; color: #cfe3d2; background: transparent; cursor: pointer; }
+.pm-seg button.on { color: #022c22; background: linear-gradient(#6ee7b7, #34d399); }
+
+.ui-chip-lg { padding: 8px 14px; font-size: 12px; background: rgba(10, 26, 18, 0.72); border-color: rgba(255, 226, 150, 0.55); color: #fff3c4; }
+/* the start screen on a phone held sideways: tighter, so the buttons, the secondary row and the credit all fit */
+@media (max-height: 430px) {
+  .title-hero { height: 56px !important; }
+  .ui-chip-lg { padding: 5px 12px; }
+}
+@media (max-width: 420px) {
+  .ui-chip-lg { padding: 7px 10px; font-size: 11px; letter-spacing: 0.05em; }
 }

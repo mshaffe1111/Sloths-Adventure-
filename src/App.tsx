@@ -8,7 +8,7 @@ import { layoutForEntry } from './game/layoutMemory.ts';
 import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game/skills.ts';
 import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
-import { TouchController } from './game/../components/TouchController.tsx';
+import { ControlSwitch } from './components/ControlSwitch.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
 import { StoryPlayer } from './game/../components/StoryPlayer.tsx';
@@ -816,7 +816,7 @@ export default function App() {
             lives={lives}
           />
           {inputEngineRef.current && (
-            <TouchController inputEngine={inputEngineRef.current} />
+            <ControlSwitch inputEngine={inputEngineRef.current} />
           )}
         </>
       )}
