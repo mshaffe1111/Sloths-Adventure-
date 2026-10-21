@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { LevelConfig } from '../game/types.ts';
+import { SpeakerMark } from './SpeakerMark.tsx';
 import { GAP_MS, HURT_WINDOW_MS, dueLine, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayLine } from '../game/wayside.ts';
 
 interface Props {
@@ -11,10 +12,10 @@ interface Props {
   hp: number;
 }
 
-const WHO: Record<WayLine['who'], { icon: string; color: string; name: string }> = {
-  Dot: { icon: '🐦', color: '#4fd18b', name: 'Dot' },
-  Pokey: { icon: '🦥', color: '#ffb02e', name: 'Pokey' },
-  Petal: { icon: '🌸', color: '#f58ab4', name: '' },
+const WHO: Record<WayLine['who'], { color: string; name: string }> = {
+  Dot: { color: '#4fd18b', name: 'Dot' },
+  Pokey: { color: '#ffb02e', name: 'Pokey' },
+  Petal: { color: '#f58ab4', name: '' },
 };
 
 const TICK_MS = 200;
@@ -114,7 +115,9 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp }) => {
       style={{ ['--dot' as string]: w.color, ['--way-ms' as string]: `${Math.max(1200, run.cur.left)}ms` }}
     >
       <span className={`way-chip ${w.name ? '' : 'way-bare'}`}>
-        <i aria-hidden="true">{w.icon}</i>
+        <i aria-hidden="true">
+          <SpeakerMark name={line.who} size={20} />
+        </i>
         {w.name}
       </span>
       <p className="way-text">{line.text}</p>

@@ -4,34 +4,45 @@ import { drawStoryScene, preloadScenePhotos, SCENE_W, SCENE_H } from '../game/st
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
+import { Icon, type IconName } from './icons/index.tsx';
+import { SpeakerMark } from './SpeakerMark.tsx';
 
 interface StoryPlayerProps {
   panels: StoryPanel[];
   onFinish: () => void;
   finishLabel?: string;
+  /** the glyph after the finish label (default an arrow) */
+  finishIcon?: IconName;
   skipLabel?: string;
 }
 
-const SPEAKERS: Record<string, { dot: string; icon: string }> = {
-  Pokey: { dot: '#ffb02e', icon: '🦥' },
-  Meeca: { dot: '#f58ab4', icon: '🌸' },
-  Narrator: { dot: '#8fd3f0', icon: '📖' },
-  Dot: { dot: '#4fd18b', icon: '🐦' },
-  Grandma: { dot: '#c9a8e8', icon: '🌿' },
-  Officer: { dot: '#9aa3ad', icon: '🎖' },
-  'General Iron-Claw': { dot: '#e0524a', icon: '⚔' },
-  Grandfather: { dot: '#b9a37a', icon: '🛡' },
-  Thornbark: { dot: '#7a9a3c', icon: '🌳' },
-  'Venom Fang': { dot: '#7bd34f', icon: '🐍' },
-  'Crocus Rex': { dot: '#4aa87a', icon: '🐊' },
-  'Shadow Prowler': { dot: '#8a7bd6', icon: '🐆' },
-  'Sky Sovereign': { dot: '#f0c04a', icon: '🦅' },
-  'Tarantula Queen': { dot: '#b05ad6', icon: '🕷' },
-  'Marsh Reaver': { dot: '#5f9a8a', icon: '🦎' },
-  'Stone Idol Golem': { dot: '#a8a090', icon: '🗿' },
-  'Night-Wing Monarch': { dot: '#6a6ad8', icon: '🦇' },
-  'Magma Drake': { dot: '#ff7a3a', icon: '🐉' },
+/** each speaker's colour (their picture comes from SpeakerMark) */
+const SPEAKERS: Record<string, { dot: string }> = {
+  Pokey: { dot: '#ffb02e' },
+  Meeca: { dot: '#f58ab4' },
+  Narrator: { dot: '#8fd3f0' },
+  Dot: { dot: '#4fd18b' },
+  Grandma: { dot: '#c9a8e8' },
+  Officer: { dot: '#9aa3ad' },
+  'General Iron-Claw': { dot: '#e0524a' },
+  Grandfather: { dot: '#b9a37a' },
+  Thornbark: { dot: '#7a9a3c' },
+  'Venom Fang': { dot: '#7bd34f' },
+  'Crocus Rex': { dot: '#4aa87a' },
+  'Shadow Prowler': { dot: '#8a7bd6' },
+  'Sky Sovereign': { dot: '#f0c04a' },
+  'Tarantula Queen': { dot: '#b05ad6' },
+  'Marsh Reaver': { dot: '#5f9a8a' },
+  'Stone Idol Golem': { dot: '#a8a090' },
+  'Night-Wing Monarch': { dot: '#6a6ad8' },
+  'Magma Drake': { dot: '#ff7a3a' },
 };
+
+/** a lullaby line is marked with music notes in the script: show them as the game's own note icon instead of a font glyph */
+function lyrics(text: string): React.ReactNode {
+  if (!text.includes('♪')) return text;
+  return text.split('♪').flatMap((part, i, all) => (i < all.length - 1 ? [part, <Icon key={i} name="note" size="0.95em" className="sp-note" />] : [part]));
+}
 
 /** "WORLD 3 · MOSSY GROTTO" -> the small line and the big line of the title card */
 function splitChapter(chapter: string): { kicker: string; title: string } {
@@ -45,7 +56,7 @@ const CARD_MS = 2600;
 const FPS = 30;
 
 /** Full-screen cinematic: the stage scenery behind the actors, a title card for each chapter, and a dialogue panel. */
-export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, finishLabel = 'Continue', skipLabel = 'Skip' }) => {
+export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
   const [idx, setIdx] = useState(0);
   // photographs the story holds up: start loading them now
   useEffect(() => {
@@ -203,7 +214,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
     return () => window.removeEventListener('keydown', onKey, true);
   }, [next, back, onFinish]);
 
-  const who = SPEAKERS[panel.speaker] ?? { dot: '#ff7a6a', icon: '⚔' };
+  const who = SPEAKERS[panel.speaker] ?? { dot: '#ff7a6a' };
   const narrator = panel.speaker === 'Narrator';
   const card = splitChapter(panel.chapter);
 
@@ -211,15 +222,19 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
     <div className={`sp-box ${wide ? 'sp-box-over' : ''}`} onClick={next}>
       {!narrator && (
         <span className="sp-name" style={{ ['--dot' as string]: who.dot }}>
-          <i>{who.icon}</i>
+          <SpeakerMark name={panel.speaker} size={22} />
           {panel.speaker}
         </span>
       )}
       <p className={`sp-text ${narrator ? 'narr' : ''}`}>
-        {panel.text.slice(0, shown)}
-        <span className="opacity-0">{panel.text.slice(shown)}</span>
+        {lyrics(panel.text.slice(0, shown))}
+        <span className="opacity-0">{lyrics(panel.text.slice(shown))}</span>
       </p>
-      {panel.tip && done && <p className="sp-tip">💡 {panel.tip}</p>}
+      {panel.tip && done && (
+        <p className="sp-tip">
+          <Icon name="bulb" size={16} /> {panel.tip}
+        </p>
+      )}
       <div className="sp-foot">
         {panels.length <= 12 ? (
           <div className="flex gap-1.5 items-center">
@@ -236,11 +251,19 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
         <div className="flex gap-2">
           {idx > 0 && (
             <button type="button" className="sp-back" onClick={(e) => { e.stopPropagation(); back(); }}>
-              ◀ Back
+              <Icon name="arrow" size={13} rotate={180} /> Back
             </button>
           )}
           <button type="button" className="sp-next" onClick={(e) => { e.stopPropagation(); next(); }}>
-            {last && done ? finishLabel : 'Next ▶'}
+            {last && done ? (
+              <>
+                {finishLabel} <Icon name={finishIcon} size={15} />
+              </>
+            ) : (
+              <>
+                Next <Icon name="arrow" size={15} />
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -261,7 +284,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
       <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-2 px-3 sm:px-5 pt-2.5">
         <span className={`ui-chip transition-opacity duration-300 ${cardUp ? 'opacity-0' : 'opacity-100'}`}>{panel.chapter}</span>
         <button type="button" onClick={onFinish} className="ui-chip ui-chip-btn">
-          {skipLabel} ➔
+          {skipLabel} <Icon name="arrow" size={13} />
         </button>
       </div>
 

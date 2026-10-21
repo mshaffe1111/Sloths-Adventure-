@@ -358,18 +358,20 @@
 .sp-box { position: relative; width: 100%; max-width: 940px; margin: 0 auto; padding: 14px 16px 10px; border-radius: 20px; cursor: pointer; background: linear-gradient(180deg, rgba(22, 44, 30, .9), rgba(9, 20, 14, .94)); border: 1.5px solid rgba(255, 226, 150, .5); box-shadow: 0 12px 34px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: sp-rise .35s ease both; }
 @keyframes sp-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 .sp-name { position: absolute; left: 14px; top: -14px; display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px 3px 8px; border-radius: 999px; font-size: 14px; font-weight: 700; letter-spacing: .03em; color: #fff6dc; background: linear-gradient(#2a4a35, #183022); border: 1.5px solid var(--dot); box-shadow: 0 3px 8px rgba(0,0,0,.4), 0 0 0 2px rgba(0,0,0,.25); }
-.sp-name i { font-style: normal; font-size: 15px; }
+.sp-ava { display: inline-flex; align-items: center; justify-content: center; flex: none; overflow: hidden; border-radius: 50%; background: #fde68a; border: 1.5px solid #fff3c4; box-sizing: border-box; }
+.sp-name .ic, .sp-name .crest { margin-left: -2px; }
+.sp-note { vertical-align: -0.12em; margin: 0 .08em; }
 .sp-text { margin: 0; padding-top: 4px; min-height: 2.9em; font-size: clamp(15px, 2.3vh + 7px, 22px); line-height: 1.38; color: #fbf4de; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
 .sp-text.narr { font-style: italic; color: #e9f2dd; }
-.sp-tip { margin: 6px 0 0; font-family: var(--font-ui); font-size: 12.5px; color: #9ff0bf; }
+.sp-tip { display: flex; align-items: flex-start; gap: 6px; margin: 6px 0 0; font-family: var(--font-ui); font-size: 12.5px; color: #9ff0bf; }
 .sp-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
 .sp-dot { height: 6px; width: 6px; border-radius: 3px; background: rgba(255,255,255,.22); transition: width .2s ease, background .2s ease; }
 .sp-dot.past { background: rgba(255, 210, 90, .5); }
 .sp-dot.on { width: 22px; background: #ffd23a; }
 .sp-bar { position: relative; height: 6px; width: min(46vw, 260px); border-radius: 3px; background: rgba(255,255,255,.22); overflow: hidden; }
 .sp-bar > i { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: #ffd23a; transition: width .25s ease; }
-.sp-back { padding: 6px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); color: #f0ead6; font-size: 12px; font-weight: 700; cursor: pointer; }
-.sp-next { padding: 7px 20px; border: 0; border-radius: 14px; font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: #3b2200; background: linear-gradient(#ffc247, #ff9a14); box-shadow: 0 3px 0 #a85c00; cursor: pointer; }
+.sp-back { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); color: #f0ead6; font-size: 12px; font-weight: 700; cursor: pointer; }
+.sp-next { display: inline-flex; align-items: center; gap: 7px; padding: 7px 20px; border: 0; border-radius: 14px; font-family: var(--font-heading); font-weight: 700; font-size: 15px; color: #3b2200; background: linear-gradient(#ffc247, #ff9a14); box-shadow: 0 3px 0 #a85c00; cursor: pointer; }
 .sp-next:active { transform: translateY(2px); box-shadow: 0 1px 0 #a85c00; }
 @media (max-height: 430px) {
   .sp-box { padding: 11px 14px 8px; border-radius: 16px; }
