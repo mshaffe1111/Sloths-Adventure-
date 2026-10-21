@@ -813,7 +813,7 @@ function buildFar(look: Look, world: number): HTMLCanvasElement {
  * it reads as a bloom in the meadow and not as a pickup. When the painted art is not ready the vector bloom stands in.
  */
 function meadowPatches(ctx: CanvasRenderingContext2D, look: Look, world: number, r: RNG, y0: number, ySpan: number, patches: number, painted: number, stems = false) {
-  const spots = composeClusters(r, { width: TW, wrap: true, clusters: patches, members: [3, 5], gap: 340, spread: [64, 14], minDist: 24, size: [9, 17], y: [y0, y0 + ySpan], calm: 640 });
+  const spots = composeClusters(r, { width: TW, wrap: true, clusters: patches, members: [3, 4], gap: 340, spread: [64, 14], minDist: 24, size: [9, 17], y: [y0, y0 + ySpan], calm: 640 });
   const species = sceneryFlowers(world);
   const dark = tone(look.leaves[0]).dark;
   for (const s of spots) {
@@ -859,7 +859,7 @@ function buildHills(look: Look, world: number): HTMLCanvasElement {
       });
     }
     // flowers on the nearest row, in a few patches (one colour to a patch, the biggest in the middle) with grass between, not sprinkled
-    if (ri === 2) meadowPatches(ctx, look, world, r, base - 10, 70, 5, 0.34);
+    if (ri === 2) meadowPatches(ctx, look, world, r, base - 10, 70, 4, 0.34);
     hazeBand(ctx, base - 120, base + 90, look.haze, 0.22 - ri * 0.06);
   });
   return cv;
@@ -1136,8 +1136,8 @@ function buildNear(look: Look, world: number): HTMLCanvasElement {
       else drawGrass(ctx, xx, y + 8, 48 + r() * 38, t, r, 8);
     });
   }
-  meadowPatches(ctx, look, world, r, 646, 56, 6, 0.34, true);
-  for (let i = 0; i < 6; i++) {
+  meadowPatches(ctx, look, world, r, 646, 56, 5, 0.34, true);
+  for (let i = 0; i < 4; i++) {
     const x = r() * TW;
     wrap(x, 60, (xx) => {
       if (world !== 3 && r() > 0.5) drawMushroom(ctx, xx, 706, 22 + r() * 14, look.flora[(i + 1) % look.flora.length], '#fff', false);
