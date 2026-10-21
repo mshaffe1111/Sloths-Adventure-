@@ -10,6 +10,9 @@ import type { Look } from './scenery.ts';
 import { paintSwayCluster } from './envKit.ts';
 import { drawPaintedButterfly } from './butterflySprites.ts';
 import { drawPaintedBird, renderPaintedFlocks, skyX } from './birdSprites.ts';
+import { laneClear } from './heroLane.ts';
+import { glowPic } from './glow.ts';
+import { flyerGroups } from './placement.ts';
 
 const fract = (v: number) => v - Math.floor(v);
 
@@ -167,7 +170,7 @@ function renderRaptors(ctx: CanvasRenderingContext2D, look: Look, world: number,
     const u = fract((time + r() * 30) / period);
     const dir = i % 2 ? 1 : -1;
     const x = dir > 0 ? -50 + u * (vw + 100) : vw + 50 - u * (vw + 100);
-    const y = vh * (0.28 + r() * 0.3) + Math.sin(u * 20 + i * 3) * 14 * sc;
+    const y = vh * (0.14 + r() * 0.2) + Math.sin(u * 20 + i * 3) * 14 * sc;
     swift(ctx, x, y, 5 * sc, time * 14 + i * 2, sw);
   }
 }
@@ -182,8 +185,11 @@ function renderFeathers(ctx: CanvasRenderingContext2D, look: Look, world: number
     const x = ((x0 + Math.sin(time * 0.7 + i * 2) * 40 - camX * 0.35 + time * 5) % (vw + 200) + (vw + 200)) % (vw + 200) - 100;
     const y = (((r() * vh + time * sp) % (vh + 60)) + (vh + 60)) % (vh + 60) - 30;
     const len = (14 + r() * 8) * sc;
+    const fade = laneClear(x, y, 0.2, 90);
+    if (fade <= 0.03) continue;
     ctx.save();
     ctx.translate(x, y);
+    ctx.globalAlpha = fade;
     ctx.rotate(Math.sin(time * 1.1 + i * 1.7) * 0.9 + 0.6);
     ctx.fillStyle = i % 3 === 0 ? 'rgba(240,232,214,0.85)' : 'rgba(130,100,70,0.8)';
     ctx.beginPath();
@@ -245,7 +251,7 @@ function renderHummers(ctx: CanvasRenderingContext2D, look: Look, world: number,
   const sc = vh / 720;
   for (let i = 0; i < n; i++) {
     const sx = r();
-    const sy = 0.3 + r() * 0.35;
+    const sy = 0.14 + r() * 0.2;
     const par = 0.25 + r() * 0.25;
     const span = vw + 200;
     // hover near one spot, then dart to the next
@@ -259,9 +265,13 @@ function renderHummers(ctx: CanvasRenderingContext2D, look: Look, world: number,
     const x = ((sx * span + px * 140 - camX * par) % span + span) % span - 100;
     const y = vh * sy + py * 70 * sc + Math.sin(time * 9 + i) * 1.6;
     // the painted hummingbird hovers with its own wing beat; the vector one is the fallback
+    const fade = laneClear(x, y, 0.25, 90);
+    if (fade <= 0.03) continue;
+    if (fade < 1) ctx.globalAlpha = fade;
     if (!drawPaintedBird(ctx, 'hummer', x, y, time, sc, 1, i % 2 ? 1 : -1, i * 0.4)) {
       hummer(ctx, x, y, 5.5 * sc, time * 55 + i, i % 2 ? 1 : -1, i % 2 ? '#2fb89a' : '#3a8ad0', i % 2 ? '#e0408a' : '#f0a030');
     }
+    ctx.globalAlpha = 1;
   }
 }
 
@@ -406,13 +416,13 @@ function dragonfly(ctx: CanvasRenderingContext2D, x: number, y: number, s: numbe
 }
 
 function glowFly(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, pulse: number, col: string) {
-  const a = 0.25 + 0.75 * pulse;
-  const g = ctx.createRadialGradient(x, y, 0, x, y, s * 4.5);
-  g.addColorStop(0, rgba(col, 0.9 * a));
-  g.addColorStop(0.25, rgba(col, 0.35 * a));
-  g.addColorStop(1, rgba(col, 0));
-  ctx.fillStyle = g;
-  ctx.fillRect(x - s * 4.5, y - s * 4.5, s * 9, s * 9);
+  const a = (0.25 + 0.75 * pulse) * laneClear(x, y, 0.15, 90);
+  if (a < 0.02) return;
+  // one cached soft glow per colour, drawn at a size and an opacity (it used to build a gradient for every glow, every frame)
+  const prev = ctx.globalAlpha;
+  ctx.globalAlpha = prev * a;
+  ctx.drawImage(glowPic(col, 'fly'), x - s * 4.5, y - s * 4.5, s * 9, s * 9);
+  ctx.globalAlpha = prev;
 }
 
 function bat(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, flap: number, col: string) {
@@ -459,31 +469,45 @@ export interface LifeKit {
   /** hovering hummingbirds (cloud forest) */
   hummers?: number;
 }
+/**
+ * What lives in each world's backdrop. The numbers are deliberately modest: the backdrop is a stage, and what drifts across it must
+ * never out-shout the hero. (Before, World 3 carried 40 dust motes, 5 moths and 46 glow orbs at once; World 5 six butterflies, three
+ * hummingbirds and three tumbling leaves on top of its petals.) Fliers travel in small groups above the hero's lane (see renderFauna).
+ */
 export const LIFE: Record<number, LifeKit> = {
-  1: { birds: 2, birdKind: 'toucan', fauna: 'butterfly', nFauna: 4, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 34 },
-  2: { birds: 2, birdKind: 'heron', fauna: 'dragonfly', nFauna: 6, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 24 },
-  3: { birds: 0, fauna: 'moth', nFauna: 5, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 40 },
-  4: { birds: 2, birdKind: 'raptor', feathers: 5, hummers: 4, fauna: 'dragonfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 20 },
-  5: { birds: 0, hummers: 3, fauna: 'butterfly', nFauna: 6, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 3, mist: true, motes: 30 },
-  6: { birds: 1, birdKind: 'heron', fauna: 'dragonfly', nFauna: 2, bats: 0, fireflies: 22, embers: 0, ash: 0, gusts: 0, mist: true, motes: 18 },
-  7: { birds: 2, birdKind: 'parrot', fauna: 'butterfly', nFauna: 2, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 2, mist: true, motes: 44 },
-  8: { birds: 0, fauna: 'moth', nFauna: 7, bats: 11, fireflies: 8, embers: 0, ash: 0, gusts: 0, mist: true, motes: 36 },
-  9: { birds: 0, fauna: 'moth', nFauna: 0, bats: 0, fireflies: 0, embers: 34, ash: 20, gusts: 0, mist: false, motes: 10 },
-  10: { birds: 3, birdKind: 'crow', fauna: 'butterfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 9, mist: true, motes: 8 },
+  1: { birds: 2, birdKind: 'toucan', fauna: 'butterfly', nFauna: 3, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 12 },
+  2: { birds: 1, birdKind: 'heron', fauna: 'dragonfly', nFauna: 4, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 1, mist: true, motes: 10 },
+  // the grotto's glow comes from its mushrooms and its few orbs: the painted glasswing and owl butterflies replace the vector moths
+  3: { birds: 0, fauna: 'butterfly', nFauna: 3, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 10 },
+  4: { birds: 2, birdKind: 'raptor', feathers: 3, hummers: 3, fauna: 'dragonfly', nFauna: 0, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 0, mist: true, motes: 10 },
+  5: { birds: 0, hummers: 2, fauna: 'butterfly', nFauna: 4, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 1, mist: true, motes: 10 },
+  6: { birds: 1, birdKind: 'heron', fauna: 'dragonfly', nFauna: 2, bats: 0, fireflies: 12, embers: 0, ash: 0, gusts: 0, mist: true, motes: 8 },
+  7: { birds: 2, birdKind: 'parrot', fauna: 'butterfly', nFauna: 2, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 1, mist: true, motes: 14 },
+  8: { birds: 0, fauna: 'butterfly', nFauna: 3, bats: 5, fireflies: 6, embers: 0, ash: 0, gusts: 0, mist: true, motes: 10 },
+  9: { birds: 0, fauna: 'moth', nFauna: 0, bats: 0, fireflies: 0, embers: 22, ash: 12, gusts: 0, mist: false, motes: 6 },
+  // the storm keep gets a pair of pale glasswings in the lightning-lit gloom
+  10: { birds: 2, birdKind: 'crow', fauna: 'butterfly', nFauna: 2, bats: 0, fireflies: 0, embers: 0, ash: 0, gusts: 4, mist: true, motes: 6 },
 };
 
 function renderFauna(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, kind: Fauna, n: number) {
   const r = rng(world * 41 + 5 + getSceneSeed() * 1013);
   const wings = look.flora.slice(0, 4);
   const sc = vh / 720;
+  // fliers go about in pairs and trios, and the groups are spread along the sky (not an even sprinkle); they keep to the upper part of
+  // the view, above the lane the hero plays in, and fade if one drifts through it
+  const crew = flyerGroups(r, n);
+  const nG = crew.length ? crew[crew.length - 1].group + 1 : 0;
+  const anchors: Array<{ at: number; speed: number; par: number; y: number }> = [];
+  for (let g = 0; g < nG; g++) anchors.push({ at: (g + 0.15 + r() * 0.7) / nG, speed: 6 + r() * 7, par: 0.55 + r() * 0.3, y: 0.12 + r() * 0.22 });
   for (let i = 0; i < n; i++) {
+    const mate = crew[i];
+    const a = anchors[mate.group];
     const seed = r();
-    const speed = 7 + r() * 9;
-    const par = 0.55 + r() * 0.35;
+    const speed = a.speed + r() * 3;
     const span = vw + 260;
-    const bx = ((seed * span + time * speed - camX * par) % span + span) % span - 130;
+    const bx = ((a.at * span + time * speed - camX * a.par) % span + span) % span - 130 + mate.ox;
     const wob = time * (0.7 + r() * 0.6) + seed * 20;
-    const yBase = vh * (0.22 + r() * 0.34);
+    const yBase = vh * a.y + mate.oy * sc;
     if (kind === 'dragonfly') {
       // hover, then dart: position eased between hover points
       const t = time * (0.35 + r() * 0.25) + seed * 30;
@@ -492,18 +516,26 @@ function renderFauna(ctx: CanvasRenderingContext2D, look: Look, world: number, c
       const e = f < 0.7 ? 0 : (f - 0.7) / 0.3;
       const ease = e * e * (3 - 2 * e);
       const h = (n2: number) => fract(Math.sin((k + n2) * 127.1 + i * 311.7) * 43758.5453);
-      const px = (h(0) - 0.5) * 160 + ((h(1) - 0.5) * 160 - (h(0) - 0.5) * 160) * ease;
-      const py = (h(2) - 0.5) * 50 + ((h(3) - 0.5) * 50 - (h(2) - 0.5) * 50) * ease;
+      const px = (h(0) - 0.5) * 120 + ((h(1) - 0.5) * 120 - (h(0) - 0.5) * 120) * ease;
+      const py = (h(2) - 0.5) * 40 + ((h(3) - 0.5) * 40 - (h(2) - 0.5) * 40) * ease;
       const x = bx + px;
       const y = yBase + py + Math.sin(time * 40 + i) * 0.7;
-      dragonfly(ctx, x, y, 4.2 * sc * 1.5, time * 55 + i, ease > 0 ? Math.atan2(py, px) * 0.2 : Math.sin(wob) * 0.1, i % 2 ? '#2ec4d6' : wings[i % wings.length]);
+      const fade = laneClear(x, y, 0.25, 90);
+      if (fade > 0.03) {
+        if (fade < 1) ctx.globalAlpha = fade;
+        dragonfly(ctx, x, y, 4.2 * sc * 1.5, time * 55 + i, ease > 0 ? Math.atan2(py, px) * 0.2 : Math.sin(wob) * 0.1, i % 2 ? '#2ec4d6' : wings[i % wings.length]);
+        ctx.globalAlpha = 1;
+      }
       continue;
     }
-    const x = bx + Math.sin(wob) * 40;
-    const y = yBase + Math.sin(wob * 1.7 + i) * vh * 0.04 + Math.sin(time * 9 + i) * 2;
+    const x = bx + Math.sin(wob) * 34;
+    const y = yBase + Math.sin(wob * 1.7 + i) * vh * 0.03 + Math.sin(time * 9 + i) * 2;
     const dx = Math.cos(wob) * 40 + speed;
     const s = (5.5 + r() * 3.5) * sc * 1.6;
     const ang = Math.atan2(Math.sin(wob * 1.7) * 6, dx) * 0.5;
+    const fade = laneClear(x, y, 0.25, 90);
+    if (fade <= 0.03) continue;
+    if (fade < 1) ctx.globalAlpha = fade;
     if (kind === 'moth') {
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
@@ -518,6 +550,7 @@ function renderFauna(ctx: CanvasRenderingContext2D, look: Look, world: number, c
         butterfly(ctx, x, y, s, time * (13 + i) + i, ang, wings[i % wings.length], lighten(wings[(i + 1) % wings.length], 0.2));
       }
     }
+    ctx.globalAlpha = 1;
   }
 }
 
@@ -530,7 +563,7 @@ function renderBats(ctx: CanvasRenderingContext2D, look: Look, world: number, ca
     const u = fract((time + r() * 40) / period);
     const dir = i % 2 ? 1 : -1;
     const x = dir > 0 ? -60 + u * (vw + 140) - camX * 0.04 : vw + 60 - u * (vw + 140) - camX * 0.04;
-    const y = vh * (0.12 + r() * 0.3) + Math.sin(u * 14 + i) * 18 * sc;
+    const y = vh * (0.1 + r() * 0.2) + Math.sin(u * 14 + i) * 18 * sc;
     bat(ctx, x, y, 11 * sc * (0.8 + r() * 0.5), time * 11 + i * 2, col);
   }
 }
@@ -554,6 +587,8 @@ function renderFireflies(ctx: CanvasRenderingContext2D, look: Look, world: numbe
   ctx.restore();
 }
 
+const EMBER_HUES = ['#ffaa46', '#ffbe46', '#ffd246', '#ffe446'];
+
 function renderEmbers(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, n: number, ash: number) {
   const r = rng(world * 97 + 21 + getSceneSeed() * 1013);
   const sc = vh / 720;
@@ -566,13 +601,12 @@ function renderEmbers(ctx: CanvasRenderingContext2D, world: number, camX: number
     const span = vw + 200;
     const x = ((sx * span - camX * (0.4 + sp * 0.2) + Math.sin(time * sp + i) * 26 * life) % span + span) % span - 100;
     const y = vh * (1.02 - life * 1.0);
-    const a = Math.sin(life * Math.PI);
+    const a = Math.sin(life * Math.PI) * laneClear(x, y, 0.3, 80);
     const sz = (1.4 + sp * 1.6) * sc * 1.4;
-    const g = ctx.createRadialGradient(x, y, 0, x, y, sz * 3);
-    g.addColorStop(0, `rgba(255,${170 + ((i * 17) % 60)},70,${0.95 * a})`);
-    g.addColorStop(1, 'rgba(255,80,20,0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(x - sz * 3, y - sz * 3, sz * 6, sz * 6);
+    if (a < 0.02) continue;
+    // a cached glow picture per hue, drawn at a size and an opacity, instead of a gradient built for every ember
+    ctx.globalAlpha = 0.95 * a;
+    ctx.drawImage(glowPic(EMBER_HUES[(i * 17) % 4], 'orb'), x - sz * 3, y - sz * 3, sz * 6, sz * 6);
   }
   ctx.restore();
   // ash flakes drift down and sideways, dark against the glow
@@ -606,12 +640,16 @@ function renderGusts(ctx: CanvasRenderingContext2D, look: Look, world: number, c
     const sp = 70 + r() * 90;
     const span = vw + 300;
     const x = ((r() * span + time * sp - camX * 0.5) % span + span) % span - 150;
-    const y = vh * (0.15 + r() * 0.6) + Math.sin(time * 1.6 + i * 2) * 26 * sc;
+    const y = vh * (0.08 + r() * 0.3) + Math.sin(time * 1.6 + i * 2) * 26 * sc;
     const c = look.leaves[i % look.leaves.length];
+    const size = 12 * sc * (0.8 + r() * 0.6);
+    const fade = laneClear(x, y, 0.2, 90);
+    if (fade <= 0.03) continue;
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(time * (2 + (i % 3)) + i);
-    leaf(ctx, 0, 0, 12 * sc * (0.8 + r() * 0.6), 5 * sc, 0, gustTone(c), 0.1, false);
+    if (fade < 1) ctx.globalAlpha = fade;
+    leaf(ctx, 0, 0, size, 5 * sc, 0, gustTone(c), 0.1, false);
     ctx.restore();
   }
 }
@@ -661,16 +699,18 @@ function renderMist(ctx: CanvasRenderingContext2D, look: Look, camX: number, vw:
 
 function renderMotes(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, count: number) {
   const r = rng(world * 313 + 9 + getSceneSeed() * 1013);
+  const sc = (vh / 720) * 1.3;
   for (let i = 0; i < count; i++) {
     const sx = r();
     const sy = r();
     const sp = 0.4 + r();
     const x = ((sx * (vw + 200) + time * 6 * sp - camX * (0.3 + sp * 0.2)) % (vw + 200) + (vw + 200)) % (vw + 200) - 100;
     const y = ((sy * vh + Math.sin(time * 0.6 * sp + i) * 22 - time * 3 * sp) % vh + vh) % vh;
-    const tw = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(time * (1.2 + sp) + i * 2));
+    const tw = (0.35 + 0.65 * (0.5 + 0.5 * Math.sin(time * (1.2 + sp) + i * 2))) * laneClear(x, y, 0.2, 60);
+    if (tw < 0.03) continue;
     ctx.fillStyle = rgba(look.rays, 0.55 * tw);
     ctx.beginPath();
-    ctx.arc(x, y, (1 + sp * 1.2) * (vh / 720) * 1.3, 0, Math.PI * 2);
+    ctx.arc(x, y, (1 + sp * 1.2) * sc, 0, Math.PI * 2);
     ctx.fill();
   }
 }
@@ -739,12 +779,12 @@ export function renderLifeBack(ctx: CanvasRenderingContext2D, look: Look, world:
     } else renderBirds(ctx, look, world, camX, vw, vh, time, k.birds);
   }
   if (k.mist && !lite) renderMist(ctx, look, camX, vw, vh, time);
-  renderMotes(ctx, look, world, camX, vw, vh, time, k.motes);
+  renderMotes(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.motes / 2) : k.motes);
   if (k.nFauna > 0) renderFauna(ctx, look, world, camX, vw, vh, time, k.fauna, lite ? Math.ceil(k.nFauna / 2) : k.nFauna);
-  if (k.bats > 0) renderBats(ctx, look, world, camX, vw, vh, time, k.bats);
+  if (k.bats > 0) renderBats(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.bats / 2) : k.bats);
   if (k.fireflies > 0) renderFireflies(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.fireflies / 2) : k.fireflies);
   if (k.embers > 0) renderEmbers(ctx, world, camX, vw, vh, time, lite ? Math.ceil(k.embers / 2) : k.embers, lite ? 6 : k.ash);
-  if (k.gusts > 0) renderGusts(ctx, look, world, camX, vw, vh, time, k.gusts);
+  if (k.gusts > 0) renderGusts(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.gusts / 2) : k.gusts);
   if (k.hummers) renderHummers(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.hummers / 2) : k.hummers);
   if (k.feathers) renderFeathers(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.feathers / 2) : k.feathers);
 }

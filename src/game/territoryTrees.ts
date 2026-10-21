@@ -240,7 +240,9 @@ export function roost(ctx: CanvasRenderingContext2D, x: number, baseY: number, t
     ctx.quadraticCurveTo(fx + jitter(r, 8), (baseY + top) / 2, fx + jitter(r, 12), baseY - 10);
     ctx.stroke();
   }
-  // bare limbs reaching out, each hung with bats and the occasional glowing fig
+  // bare limbs reaching out. Only some of them are hung, and a hung limb carries a COLONY: three to five sleepers close together along it
+  // (or one glowing fig), with the limbs between left bare. (Every limb used to be hung with one to three of them: about a hundred bats a tree.)
+  let limbNo = 0;
   const limb = (bx: number, by: number, ang: number, len: number, w: number, depth: number) => {
     const ex = bx + Math.cos(ang) * len;
     const ey = by + Math.sin(ang) * len;
@@ -260,13 +262,15 @@ export function roost(ctx: CanvasRenderingContext2D, x: number, baseY: number, t
     ctx.quadraticCurveTo(mx, my - w * 0.25, ex, ey - w * 0.25);
     ctx.stroke();
     // things that hang from this limb
-    if (len > 40 && depth < 3) {
-      const n = 1 + ((r() * 3) | 0);
+    const colony = limbNo++ % 6 === 2;
+    if (colony && len > 40 && depth < 3) {
+      const fig = r() < 0.25;
+      const n = fig ? 1 : 3 + ((r() * 3) | 0);
       for (let k = 0; k < n; k++) {
-        const u = 0.3 + r() * 0.6;
+        const u = fig ? 0.5 + r() * 0.2 : 0.3 + (k + r() * 0.5) * (0.55 / n);
         const hx = (1 - u) * (1 - u) * bx + 2 * (1 - u) * u * mx + u * u * ex;
         const hy = (1 - u) * (1 - u) * by + 2 * (1 - u) * u * my + u * u * ey;
-        if (r() > 0.28) hangingBat(ctx, hx, hy + w * 0.4, 10 + r() * 6, batCol, undefined, r() > 0.4 ? '#c98a3a' : undefined);
+        if (!fig) hangingBat(ctx, hx, hy + w * 0.4, 10 + r() * 6, batCol, undefined, r() > 0.4 ? '#c98a3a' : undefined);
         else {
           ctx.strokeStyle = bark.dark;
           ctx.lineWidth = 1.2;

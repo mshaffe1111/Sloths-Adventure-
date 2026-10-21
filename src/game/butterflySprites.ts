@@ -29,11 +29,16 @@ export const BUTTERFLY_SPECIES: Record<string, Species> = {
   glass: { size: 28, folded: true },
 };
 
-/** which species fly in which world (the backdrop fauna of W1, W5 and W7 are butterflies) */
+/**
+ * which species fly in which world (the backdrop fauna of W1, W3, W5, W7, W8 and W10 are butterflies). The two night caves (W3, W8)
+ * fly the pale glasswing and the dusky owl butterfly where vector moths used to flutter, and the storm keep (W10) a pair of glasswings.
+ */
 const WORLD_SPECIES: Record<number, string[]> = {
   1: ['morpho', 'monarch', 'swallow', 'julia'],
+  3: ['glass', 'owl', 'glass'],
   5: ['glass', 'emerald', 'glider', 'owl'],
   7: ['monarch', 'julia', 'swallow', 'owl'],
+  8: ['owl', 'glass', 'glass'],
   10: ['glass', 'morpho'],
 };
 const DEFAULT_SPECIES = ['monarch', 'morpho', 'swallow', 'julia'];

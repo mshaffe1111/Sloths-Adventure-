@@ -102,3 +102,23 @@ export function drawPlantSprite(ctx: CanvasRenderingContext2D, world: number, mi
   ctx.restore();
   return true;
 }
+
+/**
+ * draws sheet plant `num` standing on (x, y) (bottom centre), `size` world units on its longest side. For scenery: the pickups
+ * draw their plant centred at 28 units, so a backdrop shrub is drawn two or three times that and hazed, never at pickup size.
+ * False when the sprite is off or not loaded yet.
+ */
+export function drawPlantAt(ctx: CanvasRenderingContext2D, num: number, x: number, y: number, size: number, flip = false): boolean {
+  if (!plantsPainted() || !atlas) return false;
+  const f = PLANT_FRAMES['p' + num];
+  if (!f) return false;
+  const k = size / Math.max(f.w, f.h);
+  ctx.save();
+  ctx.translate(x, y);
+  if (flip) ctx.scale(-1, 1);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, -f.h * k, f.w * k, f.h * k);
+  ctx.restore();
+  return true;
+}

@@ -10,7 +10,7 @@ test('every species has all five wing frames in the atlas', () => {
 });
 
 test('each world picks species that exist, and neighbours differ', () => {
-  for (const w of [1, 2, 5, 7, 10]) {
+  for (const w of [1, 2, 3, 5, 7, 8, 10]) {
     for (let i = 0; i < 8; i++) assert.ok(BUTTERFLY_SPECIES[butterflySpecies(w, i)], `world ${w} butterfly ${i}`);
     assert.notEqual(butterflySpecies(w, 0), butterflySpecies(w, 1));
   }
