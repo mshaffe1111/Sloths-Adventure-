@@ -5,6 +5,9 @@ import { PauseMenu } from './PauseMenu.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { StageCleared } from './StageCleared.tsx';
 import { Icon } from './icons/index.tsx';
+import { Crest } from './icons/Crest.tsx';
+import { crestName } from './icons/crests.ts';
+import { HeroPose } from './HeroPose.tsx';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -146,11 +149,17 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
 
   // --- 4. BOSS INTRO MODAL ---
   if (screen === 'boss_intro') {
+    const bossKey = levelConfig.secret ? 'thornbark' : levelConfig.worldIndex;
+    const bossCrestSize = typeof window !== 'undefined' && window.innerHeight < 520 ? 72 : 112;
     return (
       <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 select-none font-game">
         <div className="w-full max-w-lg bg-gradient-to-b from-red-950 via-stone-950 to-black border-2 border-red-500 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl text-white">
           <div className="inline-block px-4 py-1 rounded-full bg-red-600/30 border border-red-500 text-red-300 text-xs font-black uppercase tracking-wider mb-2">
             {levelConfig.secret ? 'SECRET BOSS' : 'STAGE BOSS LAIR'}
+          </div>
+
+          <div className="boss-intro-crest" style={{ display: 'flex', justifyContent: 'center', margin: '4px 0 6px' }}>
+            <Crest world={bossKey} size={bossCrestSize} label={crestName(bossKey)} className="boss-intro-medal" />
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-black text-amber-400 text-stroke mb-2">
@@ -187,11 +196,14 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
 
   // --- 5. STORY ENDING REUNION CUTSCENE ---
   if (screen === 'story_ending') {
+    const endingH = typeof window !== 'undefined' && window.innerHeight < 520 ? 76 : 120;
     return (
       <div className="fixed inset-0 z-50 bg-gradient-to-b from-purple-950 via-pink-950 to-black flex items-center justify-center p-4 select-none font-game text-white">
         <div className="w-full max-w-lg bg-stone-950/90 border-2 border-pink-400 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl">
-          <div className="mb-3 flex justify-center">
-            <Icon name="heart" size={60} />
+          <div className="ending-pair" aria-hidden="true">
+            <HeroPose frame="idle_a" height={endingH} className="ending-pokey" />
+            <Icon name="heart" size={endingH * 0.3} className="ending-heart" />
+            <Crest world="meeca" size={endingH * 0.82} className="ending-meeca" />
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-pink-300 text-stroke mb-2">
             MEECA IS SAVED!

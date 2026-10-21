@@ -638,10 +638,23 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
       }
       if (a.beaten) {
         ctx.globalAlpha = 1;
-        ctx.font = '26px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('💫', -10, -105 + Math.sin(t * 3) * 3);
-        ctx.fillText('⭐', 24, -92 + Math.cos(t * 3) * 3);
+        // two dizzy sparkles over the beaten guardian: drawn four-point stars, gold with a darker rim
+        for (const [sx, sy, sr] of [[-10, -105 + Math.sin(t * 3) * 3, 11], [24, -92 + Math.cos(t * 3) * 3, 9]] as const) {
+          ctx.beginPath();
+          for (let k = 0; k < 8; k++) {
+            const rr = k % 2 === 0 ? sr : sr * 0.38;
+            const ang = (k * Math.PI) / 4 - Math.PI / 2;
+            if (k === 0) ctx.moveTo(sx + Math.cos(ang) * rr, sy + Math.sin(ang) * rr);
+            else ctx.lineTo(sx + Math.cos(ang) * rr, sy + Math.sin(ang) * rr);
+          }
+          ctx.closePath();
+          ctx.fillStyle = '#fde047';
+          ctx.strokeStyle = '#b45309';
+          ctx.lineWidth = 2;
+          ctx.lineJoin = 'round';
+          ctx.fill();
+          ctx.stroke();
+        }
       }
       break;
     }
