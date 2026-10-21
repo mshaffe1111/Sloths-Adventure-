@@ -16,6 +16,7 @@ import { drawAuras } from './miloVariants.ts';
 import { HeroEvents } from './heroEvents.ts';
 import { makeTintedCanvas, type Coat } from './heroTint.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { rimFor, rimOn } from './heroRim.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -88,6 +89,8 @@ export function heroCoatSheet(img: HTMLImageElement): CanvasImageSource {
 }
 /** world units per pixel of the standard hero's frames: its standing frame is as tall as the main hero's */
 const STD_K = (HERO_UNITS * HERO_SPRITE_SCALE) / STD_STAND_H;
+/** the rim of light is about 2.4 world units wide, in sheet pixels */
+const STD_RIM_R = Math.max(4, Math.round(2.4 / STD_K));
 
 /** the face portraits, for the HUD and dialogue (null until the atlas has loaded) */
 export function heroFace(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, size: number): boolean {
@@ -372,7 +375,12 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
   ctx.imageSmoothingQuality = 'high';
   const dx = ch.centred ? -(f.w * k) / 2 : -(ch.byHand ? f.hx : f.ax) * k;
   const dy = ch.centred ? -pivot - (f.h * k) / 2 : -f.ay * k + ch.bob;
-  ctx.drawImage(stdSheet(img), f.x, f.y, f.w, f.h, dx, dy, f.w * k, f.h * k);
+  const sheetImg = stdSheet(img);
+  if (rimOn()) {
+    const rim = rimFor(`${ch.name}|${coat}`, sheetImg, f, STD_RIM_R);
+    if (rim) ctx.drawImage(rim.img, dx - rim.pad * k, dy - rim.pad * k, rim.img.width * k, rim.img.height * k);
+  }
+  ctx.drawImage(sheetImg, f.x, f.y, f.w, f.h, dx, dy, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }
