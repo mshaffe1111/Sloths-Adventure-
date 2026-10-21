@@ -8,7 +8,7 @@ import type { BossDef, MoveDef } from './bossAI.ts';
 import { weakOpen, weakRect } from './bossAI.ts';
 import { drawBossEntity } from './vectorArt.ts';
 import { demoPlayer, drawMilo } from './miloVariants.ts';
-import { drawQueenSprite, queenSpriteActive } from './queenSprite.ts';
+import { queenSprite } from './queenSprite.ts';
 import type { PaintedBoss } from './paintedBoss.ts';
 import { venomSprite } from './venomSprite.ts';
 import { crocSprite } from './crocSprite.ts';
@@ -21,8 +21,8 @@ import { ironclawSprite } from './ironclawSprite.ts';
 import { golemSprite } from './golemSprite.ts';
 import { thornbarkSprite } from './thornbarkSprite.ts';
 
-/** the bosses that have a painted version besides the queen */
-const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 6: reaverSprite, 7: golemSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
+/** the bosses that have a painted version */
+const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 5: queenSprite, 6: reaverSprite, 7: golemSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
 
 /** the poses the painted bosses strike on the story cards: calm, angry (while it speaks its threat) and beaten */
 const CARD_POSES: Record<number, [string, string, string]> = {
@@ -30,6 +30,7 @@ const CARD_POSES: Record<number, [string, string, string]> = {
   2: ['idle', 'roar', 'defeated'],
   3: ['idle', 'alert', 'dead'],
   4: ['glide', 'alert', 'dead'],
+  5: ['idle', 'screech', 'dead'],
   6: ['idle', 'roar', 'deadheap'],
   7: ['march1', 'roar', 'defeat2'],
   8: ['fl_1', 'screech', 'deadcollapse'],
@@ -226,7 +227,7 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   const feetY = floor - air;
   const xf = poseFor(b, m, time);
   const painted = PAINTED[world];
-  if ((world === 5 && queenSpriteActive()) || painted?.active()) {
+  if (painted?.active()) {
     // the painted boss is already posed for each part of a move: keep only a little of the squash, lean and shake
     xf.sx = 1 + (xf.sx - 1) * 0.35;
     xf.sy = 1 + (xf.sy - 1) * 0.35;
@@ -273,7 +274,7 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   if (def.puppet) {
     // the painted guardian when his atlas is loaded; the Pokey-rig puppet until then
     if (!thornbarkSprite.draw(ctx, b, def, time, feetY)) drawPuppet(ctx, b, def, m, time, feetY);
-  } else if ((world === 5 && drawQueenSprite(ctx, b, def, time, feetY)) || painted?.draw(ctx, b, def, time, feetY)) {
+  } else if (painted?.draw(ctx, b, def, time, feetY)) {
     // painted boss
   } else {
     const art: BossEntity = { ...b, y: feetY - ART_FEET + def.artDy };
@@ -617,6 +618,72 @@ function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) 
       ctx.fill();
       break;
     }
+    case 'lightning': {
+      // a bolt out of the roof that forks as it comes down, a hot white core in a violet glow, and a flash where it lands
+      const top = fl - 560;
+      const path = (jit: number) => {
+        ctx.beginPath();
+        ctx.moveTo(x + jit * 0.3, top);
+        const n = 9;
+        for (let i = 1; i <= n; i++) {
+          const yy = top + ((fl - top) * i) / n;
+          const wob = i === n ? 0 : Math.sin(h.seed * 11 + i * 2.3 + Math.floor(time * 18) * 1.7) * (14 + jit);
+          ctx.lineTo(x + wob, yy);
+        }
+      };
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = h.color2;
+      ctx.globalAlpha = fade * 0.45;
+      ctx.lineWidth = 30;
+      path(4);
+      ctx.stroke();
+      ctx.globalAlpha = fade;
+      ctx.strokeStyle = h.color;
+      ctx.lineWidth = 11;
+      path(4);
+      ctx.stroke();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 4.2;
+      path(4);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(233, 213, 255, 0.6)';
+      ctx.beginPath();
+      ctx.ellipse(x, fl - 4, 56 * rise, 11, 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case 'crystal': {
+      // a cluster of glowing blue crystals thrusting out of the floor: a tall middle spire and shorter ones to each side
+      const spire = (cx: number, hh: number, half: number, lean: number) => {
+        const g = ctx.createLinearGradient(cx - half, 0, cx + half, 0);
+        g.addColorStop(0, h.color2);
+        g.addColorStop(0.55, h.color);
+        g.addColorStop(1, '#e0f7ff');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(cx - half, fl);
+        ctx.lineTo(cx - half * 0.7 + lean, fl - hh * 0.78);
+        ctx.lineTo(cx + lean, fl - hh);
+        ctx.lineTo(cx + half * 0.72 + lean, fl - hh * 0.74);
+        ctx.lineTo(cx + half, fl);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(224, 247, 255, 0.85)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(cx - half * 0.2, fl);
+        ctx.lineTo(cx + lean * 0.8, fl - hh * 0.92);
+        ctx.stroke();
+      };
+      spire(x - 20, H * 0.62, 13, -6);
+      spire(x + 21, H * 0.7, 13, 7);
+      spire(x, H, 17, 2);
+      ctx.fillStyle = 'rgba(147, 220, 255, 0.35)';
+      ctx.beginPath();
+      ctx.ellipse(x, fl - 4, 40, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
     default: {
       const g = ctx.createLinearGradient(x - 24, 0, x + 24, 0);
       g.addColorStop(0, h.color2);
@@ -631,6 +698,61 @@ function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) 
       ctx.fill();
     }
   }
+}
+
+/**
+ * A small roost bat, seen from the side and facing +x: a furred body, a pointed head with ears and a hot red eye, and a scalloped wing
+ * (with a second, darker one behind it) that beats with `flap` (-1..1). `s` is its size (the length of the body).
+ */
+function drawMiniBat(ctx: CanvasRenderingContext2D, flap: number, s: number, c1: string, c2: string) {
+  const wing = (alpha: number, len: number, fill: string) => {
+    const sx = -s * 0.02;
+    const sy = -s * 0.1;
+    const tx = sx + Math.cos(alpha) * len;
+    const ty = sy + Math.sin(alpha) * len;
+    const rx = -s * 0.36;
+    const ry = s * 0.06;
+    // two scallops on the trailing edge between the tip and the hip
+    const m1x = tx * 0.55 + rx * 0.45 + Math.cos(alpha + 0.5) * len * 0.12;
+    const m1y = ty * 0.55 + ry * 0.45 + Math.sin(alpha + 0.5) * len * 0.12;
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = '#05030c';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.quadraticCurveTo((sx + tx) / 2 + Math.cos(alpha - 1.4) * len * 0.1, (sy + ty) / 2 + Math.sin(alpha - 1.4) * len * 0.1, tx, ty);
+    ctx.quadraticCurveTo(tx * 0.8 + rx * 0.2, ty * 0.8 + ry * 0.2 + len * 0.08, m1x, m1y);
+    ctx.quadraticCurveTo(m1x * 0.6 + rx * 0.4, m1y * 0.6 + ry * 0.4 + len * 0.08, rx, ry);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  };
+  const alpha = Math.PI + 0.95 * flap;
+  wing(alpha + 0.35, s * 0.8, '#1c0f3a');
+  ctx.fillStyle = c1;
+  ctx.strokeStyle = '#05030c';
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, s * 0.4, s * 0.2, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(s * 0.38, -s * 0.05, s * 0.17, s * 0.15, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(s * 0.32, -s * 0.16);
+  ctx.lineTo(s * 0.35, -s * 0.36);
+  ctx.lineTo(s * 0.43, -s * 0.17);
+  ctx.moveTo(s * 0.42, -s * 0.16);
+  ctx.lineTo(s * 0.49, -s * 0.33);
+  ctx.lineTo(s * 0.52, -s * 0.13);
+  ctx.fill();
+  ctx.fillStyle = '#ff4d5e';
+  ctx.beginPath();
+  ctx.arc(s * 0.45, -s * 0.08, s * 0.04, 0, Math.PI * 2);
+  ctx.fill();
+  wing(alpha, s * 0.95, c2);
 }
 
 function drawDrop(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
@@ -659,6 +781,40 @@ function drawDrop(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     ctx.lineTo(s * 0.05, -s * 0.5);
     ctx.lineTo(-s * 0.02, s * 0.55);
     ctx.closePath();
+    ctx.fill();
+  } else if (h.look === 'bat') {
+    // a roost bat folding its wings and dropping head first
+    ctx.rotate(Math.PI * 0.5);
+    drawMiniBat(ctx, Math.sin(time * 26 + h.seed) * 0.35 - 0.45, s * 1.6, h.color2, h.color);
+  } else if (h.look === 'cocoon') {
+    // a silk-wrapped cocoon falling on its thread, bands of silk round it and something dark inside
+    ctx.strokeStyle = 'rgba(226, 232, 248, 0.7)';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(0, -s * 0.9);
+    ctx.lineTo(0, -s * 9);
+    ctx.stroke();
+    const g = ctx.createLinearGradient(-s * 0.5, 0, s * 0.5, 0);
+    g.addColorStop(0, '#6b7280');
+    g.addColorStop(0.45, '#e5e7eb');
+    g.addColorStop(1, '#4b5563');
+    ctx.fillStyle = g;
+    ctx.strokeStyle = '#111827';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, s * 0.5, s * 0.82, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(17, 24, 39, 0.5)';
+    ctx.lineWidth = 1.4;
+    for (let i = -2; i <= 2; i++) {
+      ctx.beginPath();
+      ctx.ellipse(0, i * s * 0.28, s * 0.5 * Math.sqrt(1 - (i * 0.34) ** 2), 3, 0, 0, Math.PI);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(30, 20, 28, 0.35)';
+    ctx.beginPath();
+    ctx.ellipse(s * 0.05, s * 0.1, s * 0.22, s * 0.34, 0.2, 0, Math.PI * 2);
     ctx.fill();
   } else {
     ctx.rotate(time * 3 + h.seed);
@@ -983,6 +1139,10 @@ function drawBolt(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
     ctx.beginPath();
     ctx.arc(13, 0, 1.8, 0, Math.PI * 2);
     ctx.fill();
+  } else if (h.look === 'bat') {
+    // a roost bat in a flock, beating its wings; it flies sideways, so it is never drawn upside down
+    if (Math.abs(ang) > Math.PI / 2) ctx.scale(1, -1);
+    drawMiniBat(ctx, Math.sin(time * 22 + h.id * 1.7), 58, '#3b1a78', h.color);
   } else if (h.look === 'feather') {
     ctx.fillStyle = h.color2;
     ctx.beginPath();
@@ -1188,9 +1348,131 @@ function drawFlood(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   }
 }
 
+/** a thunderhead rolling in along the floor from the arena edge: gathering and flickering first, then a dark bank of cloud that crackles */
+function drawStorm(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
+  const fl = h.floorY;
+  const dir = h.dir || 1;
+  const edge = h.ox ?? h.x;
+  const full = h.growTo ?? h.w;
+  const cloud = (cx: number, cy: number, r: number, a: number) => {
+    ctx.fillStyle = `rgba(46, 34, 84, ${a})`;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.arc(cx - r * 0.9, cy + r * 0.25, r * 0.78, 0, Math.PI * 2);
+    ctx.arc(cx + r * 0.9, cy + r * 0.25, r * 0.78, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = `rgba(110, 92, 170, ${a * 0.5})`;
+    ctx.beginPath();
+    ctx.arc(cx - r * 0.15, cy - r * 0.3, r * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+  };
+  if (h.warn > 0) {
+    // the warning: a violet haze thickens along where the storm is going to reach, with now and then a flicker
+    const u = 1 - h.warn / Math.max(0.01, h.warnMax);
+    const pulse = 0.55 + 0.45 * Math.sin(time * (8 + u * 16));
+    const g = ctx.createLinearGradient(edge, 0, edge + dir * full, 0);
+    g.addColorStop(0, h.color);
+    g.addColorStop(1, 'rgba(70,50,130,0)');
+    ctx.globalAlpha = (0.3 + 0.4 * u) * pulse;
+    ctx.fillStyle = g;
+    ctx.fillRect(Math.min(edge, edge + dir * full), fl - 12, full, 12);
+    ctx.globalAlpha = 1;
+    for (let i = 0; i < 3; i++) cloud(edge + dir * (full * (0.2 + i * 0.3)), fl - 14, 16 + 8 * u, 0.4 * u);
+    return;
+  }
+  const x0 = Math.min(edge, edge + dir * h.w);
+  ctx.globalAlpha = 1;
+  const n = Math.max(2, Math.floor(h.w / 34));
+  for (let i = 0; i < n; i++) {
+    const cx = x0 + (h.w * (i + 0.5)) / n;
+    cloud(cx, fl - 14 + Math.sin(time * 2 + i * 1.7 + h.seed * 7) * 2.4, 17 + (i % 3) * 3, 0.95);
+  }
+  // lightning forking down from the bank, flickering at a different rate along its length
+  ctx.strokeStyle = '#efe9ff';
+  ctx.lineWidth = 2.2;
+  ctx.lineJoin = 'round';
+  for (let i = 0; i < Math.max(1, Math.floor(h.w / 90)); i++) {
+    const ph = (time * (1.7 + (i % 3) * 0.4) + i * 0.37 + h.seed) % 1;
+    if (ph > 0.22) continue;
+    const bx = x0 + (h.w * (i + 0.5 + Math.sin(h.seed * 9 + i) * 0.25)) / Math.max(1, Math.floor(h.w / 90));
+    ctx.globalAlpha = 1 - ph / 0.22;
+    ctx.beginPath();
+    ctx.moveTo(bx, fl - 26);
+    ctx.lineTo(bx - 5, fl - 17);
+    ctx.lineTo(bx + 4, fl - 11);
+    ctx.lineTo(bx - 3, fl - 3);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+
+/** a burning palisade creeping in from the arena edge: a haze of heat first, then a row of charred stakes with flames licking up them */
+function drawBlaze(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
+  const fl = h.floorY;
+  const dir = h.dir || 1;
+  const edge = h.ox ?? h.x;
+  const full = h.growTo ?? h.w;
+  if (h.warn > 0) {
+    const u = 1 - h.warn / Math.max(0.01, h.warnMax);
+    const pulse = 0.55 + 0.45 * Math.sin(time * (8 + u * 16));
+    const g = ctx.createLinearGradient(edge, 0, edge + dir * full, 0);
+    g.addColorStop(0, h.color);
+    g.addColorStop(1, 'rgba(127,29,29,0)');
+    ctx.globalAlpha = (0.3 + 0.4 * u) * pulse;
+    ctx.fillStyle = g;
+    ctx.fillRect(Math.min(edge, edge + dir * full), fl - 14, full, 14);
+    ctx.globalAlpha = 1;
+    return;
+  }
+  const x0 = Math.min(edge, edge + dir * h.w);
+  // the glow on the floor under it
+  const gl = ctx.createLinearGradient(0, fl - 70, 0, fl);
+  gl.addColorStop(0, 'rgba(251,146,60,0)');
+  gl.addColorStop(1, 'rgba(251,146,60,0.45)');
+  ctx.fillStyle = gl;
+  ctx.fillRect(x0, fl - 70, h.w, 70);
+  // charred stakes
+  const n = Math.max(2, Math.floor(h.w / 24));
+  for (let i = 0; i < n; i++) {
+    const cx = x0 + (h.w * (i + 0.5)) / n;
+    const hh = 34 + ((i * 37 + Math.floor(h.seed * 10)) % 5) * 5;
+    ctx.fillStyle = '#1c0c08';
+    ctx.beginPath();
+    ctx.moveTo(cx - 5, fl);
+    ctx.lineTo(cx - 5, fl - hh);
+    ctx.lineTo(cx, fl - hh - 9);
+    ctx.lineTo(cx + 5, fl - hh);
+    ctx.lineTo(cx + 5, fl);
+    ctx.closePath();
+    ctx.fill();
+  }
+  // flames, three tongues to a stake, flickering at their own rates
+  for (let i = 0; i < n; i++) {
+    const cx = x0 + (h.w * (i + 0.5)) / n;
+    for (let j = 0; j < 2; j++) {
+      const f = 0.75 + 0.25 * Math.sin(time * (9 + j * 4) + i * 1.9 + j);
+      const fh = (30 + ((i + j) % 3) * 10) * f;
+      const fx = cx + (j - 0.5) * 9;
+      ctx.fillStyle = j ? '#f97316' : '#dc2626';
+      ctx.beginPath();
+      ctx.moveTo(fx - 7, fl - 6);
+      ctx.quadraticCurveTo(fx - 8, fl - fh * 0.6, fx + Math.sin(time * 7 + i) * 2, fl - fh - 18);
+      ctx.quadraticCurveTo(fx + 8, fl - fh * 0.6, fx + 7, fl - 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#fde68a';
+      ctx.beginPath();
+      ctx.ellipse(fx, fl - 12, 3, fh * 0.28, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
 /** lava (or anything else) that rises along the floor from the arena edge: a glowing crack first, then a bubbling pool that grows */
 function drawStrip(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   if (h.look === 'flood') return drawFlood(ctx, h, time);
+  if (h.look === 'storm') return drawStorm(ctx, h, time);
+  if (h.look === 'blaze') return drawBlaze(ctx, h, time);
   const fl = h.floorY;
   const dir = h.dir || 1;
   const edge = h.ox ?? h.x;

@@ -18,17 +18,28 @@ export const monarchSprite = createPaintedBoss({
   url: new URL('../assets/enemies/monarch-atlas.webp', import.meta.url).href,
   frames: MONARCH_FRAMES,
   k: 0.8,
-  pick: ({ b, br, m, moving, time }) => {
+  pick: ({ b, br, moving, time }) => {
     let name: string;
+    const mv = br.move;
     if (br.state === 'dying') name = br.t < 0.8 ? 'deadfall' : 'deadcollapse';
-    else if (br.state === 'stun') name = 'hurt';
+    // grounded and winded after the buffet landing
+    else if (br.state === 'stun') name = 'landing';
     else if (br.state === 'roar') name = 'screech';
-    else if (br.state === 'tell') name = m?.pose === 'fly' ? 'diveprep' : 'screech';
-    else if (br.state === 'act') {
-      if (m?.pose === 'fly') name = br.t < (m.act ?? 1) * 0.45 ? 'descent' : 'glide';
+    else if (br.state === 'tell') {
+      if (mv === 'swoop' || mv === 'sonicDive') name = 'diveprep';
+      else if (mv === 'wingBuffet') name = 'stall';
+      else if (mv === 'batFlock') name = 'takeoff';
       else name = 'screech';
-    } else if (br.state === 'rec') name = 'hover';
-    else name = FLY[Math.floor(time * (moving ? 11 : 7)) % FLY.length];
+    } else if (br.state === 'act') {
+      if (mv === 'swoop' || mv === 'sonicDive') name = br.t < (mv === 'swoop' ? 1.3 : 1.1) * 0.45 ? 'descent' : 'glide';
+      else if (mv === 'wingBuffet') name = 'landing';
+      else if (mv === 'echoRings' || mv === 'batFlock') name = 'flutter';
+      else name = 'screech';
+    } else if (br.state === 'rec') {
+      const rec: Record<string, string> = { screech: 'screech', swoop: 'glide', sonicDive: 'stall', echoRings: 'flutter' };
+      if (mv === 'wingBuffet') name = br.t < 0.2 ? 'landing' : 'takeoff';
+      else name = (mv && rec[mv]) || 'hover';
+    } else name = FLY[Math.floor(time * (moving ? 11 : 7)) % FLY.length];
     if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) name = 'hurt';
     return name;
   },

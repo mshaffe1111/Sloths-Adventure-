@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { StoryPanel } from '../game/story.ts';
 import { drawStoryScene, preloadScenePhotos, SCENE_W, SCENE_H } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
+import { stingDue } from '../audio/scenes.ts';
+import { typeSchedule } from '../game/storyTyping.ts';
 
 interface StoryPlayerProps {
   panels: StoryPanel[];
@@ -18,6 +20,17 @@ const SPEAKERS: Record<string, { dot: string; icon: string }> = {
   Grandma: { dot: '#c9a8e8', icon: '🌿' },
   Officer: { dot: '#9aa3ad', icon: '🎖' },
   'General Iron-Claw': { dot: '#e0524a', icon: '⚔' },
+  Grandfather: { dot: '#b9a37a', icon: '🛡' },
+  Thornbark: { dot: '#7a9a3c', icon: '🌳' },
+  'Venom Fang': { dot: '#7bd34f', icon: '🐍' },
+  'Crocus Rex': { dot: '#4aa87a', icon: '🐊' },
+  'Shadow Prowler': { dot: '#8a7bd6', icon: '🐆' },
+  'Sky Sovereign': { dot: '#f0c04a', icon: '🦅' },
+  'Tarantula Queen': { dot: '#b05ad6', icon: '🕷' },
+  'Marsh Reaver': { dot: '#5f9a8a', icon: '🦎' },
+  'Stone Idol Golem': { dot: '#a8a090', icon: '🗿' },
+  'Night-Wing Monarch': { dot: '#6a6ad8', icon: '🦇' },
+  'Magma Drake': { dot: '#ff7a3a', icon: '🐉' },
 };
 
 /** "WORLD 3 · MOSSY GROTTO" -> the small line and the big line of the title card */
@@ -59,9 +72,12 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
     setShown(0);
     if (cardUp) return;
     const start = performance.now();
+    const when = typeSchedule(panel.text);
+    let k = 0;
     let raf = 0;
     const tick = (now: number) => {
-      const n = Math.min(panel.text.length, Math.floor((now - start) / 26));
+      while (k < when.length && when[k] <= now - start) k++;
+      const n = k;
       setShown((prev) => (prev === n ? prev : Math.max(prev, n)));
       if (n < panel.text.length) raf = requestAnimationFrame(tick);
     };
@@ -73,6 +89,20 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
   useEffect(() => {
     sound.storyPanel(panel);
   }, [panel]);
+
+  // a panel's own sting plays once, as its picture appears: after the title card has gone and the first letter is typed (at once for a picture
+  // with no words). Going Back and forward again does not play it a second time. (The first pass for a new panel still holds the last panel's
+  // card and typing state, so it never counts.)
+  const stung = useRef(new Set<number>());
+  const lastIdx = useRef(-1);
+  useEffect(() => {
+    const fresh = lastIdx.current !== idx;
+    lastIdx.current = idx;
+    if (!panel.sting || stung.current.has(idx)) return;
+    if (!stingDue({ fresh, wantsCard, cardUp, shown, textLength: panel.text.length })) return;
+    stung.current.add(idx);
+    sound.storySting(panel.sting);
+  }, [idx, panel, wantsCard, cardUp, shown]);
 
   // a soft voice blip for each letter as it is typed (not when the whole line is skipped to)
   const spoken = useRef(0);
@@ -191,11 +221,18 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
       </p>
       {panel.tip && done && <p className="sp-tip">💡 {panel.tip}</p>}
       <div className="sp-foot">
-        <div className="flex gap-1.5 items-center">
-          {panels.map((_, i) => (
-            <span key={i} className={`sp-dot ${i === idx ? 'on' : i < idx ? 'past' : ''}`} />
-          ))}
-        </div>
+        {panels.length <= 12 ? (
+          <div className="flex gap-1.5 items-center">
+            {panels.map((_, i) => (
+              <span key={i} className={`sp-dot ${i === idx ? 'on' : i < idx ? 'past' : ''}`} />
+            ))}
+          </div>
+        ) : (
+          // a long scene: a dot for every picture would run off the screen, so it is a bar
+          <div className="sp-bar" role="progressbar" aria-valuemin={1} aria-valuemax={panels.length} aria-valuenow={idx + 1}>
+            <i style={{ width: `${((idx + 1) / panels.length) * 100}%` }} />
+          </div>
+        )}
         <div className="flex gap-2">
           {idx > 0 && (
             <button type="button" className="sp-back" onClick={(e) => { e.stopPropagation(); back(); }}>

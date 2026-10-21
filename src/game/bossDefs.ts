@@ -495,37 +495,87 @@ const PROWLER: BossDef = {
 
 // ───────────────────────────── 4. Sky Sovereign: harpy eagle ─────────────────────────────
 
+/**
+ * The painted eagle drawn 2.3 times its old size is 1.96 world units to a painted pixel (wings spread she is nearly 500 wide). Weak spots
+ * are measured off the frames of the pose she holds in each opening: dx is forward of the body's middle and dy the height above her feet
+ * (her feet hang `air` above the floor, which weakRect adds).
+ */
 const SOVEREIGN: BossDef = {
   world: 4,
   name: 'Sky Sovereign',
-  w: 92,
-  h: 92,
+  // a giant of the air: she hangs above the arena, so the fight is about where you stand under her and when you climb up to her
+  scale: 2.3,
+  w: 250,
+  h: 190,
   artDy: 0,
-  speed: [78, 105, 140],
-  prefer: 260,
-  hover: 100,
+  speed: [70, 95, 125],
+  prefer: 330,
+  hover: 150,
   gap: [1.3, 0.95, 0.7],
   chain: 0.35,
   color: '#f59e0b',
   color2: '#78350f',
+  // sixteen hits, two hit points a hit
+  hp: 32,
+  hits: 16,
+  // She has no one weak point. It opens where her last move left her open, and the glow shows where: the head after a crash, the white
+  // chest after the feather volley (her wings are flung wide), the talons after the low sweep, the back between her wings after the snatch
+  // (jump onto it from a ledge) and the head, low, after the beak lunge. The ember while she is covered sits on the head
+  weak: { dx: 40, dy: 150, w: 120, h: 110 },
+  weakByMove: {
+    featherVolley: { dx: 16, dy: 102, w: 120, h: 120 },
+    skySweep: { dx: 68, dy: 24, w: 150, h: 100 },
+    snatch: { dx: -20, dy: 140, w: 160, h: 100 },
+    talonRake: { dx: 133, dy: 102, w: 130, h: 120 },
+  },
+  weakStun: { dx: 94, dy: 102, w: 130, h: 120 },
+  aimText: 'TOO TOUGH! HIT THE GLOW',
+  arenaW: 1500,
+  lair: 'sovereign',
+  entrance: { eye: [255, 196, 80], dark: [8, 6, 26] },
+  // the Cloud Aerie: a low shelf at each side, a high ledge hung in the middle (it drifts) and a rope between the middle and the right
+  perches: [
+    { dx: 170, up: 115, w: 250 },
+    { dx: 520, up: 195, w: 230, moving: { range: 90, speed: 0.9 } },
+    { dx: 1100, up: 115, w: 230 },
+  ],
+  vines: [{ dx: 900, top: 340, bottom: 110 }],
+  // at 35% the storm breaks: thunderheads roll in over each cliff edge (warned first). The ledges and the open middle stay clear
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    for (const dir of [1, -1] as const) {
+      const edge = dir > 0 ? c.arena.left : c.arena.right;
+      const h = makeHazard({
+        kind: 'strip', x: edge, y: c.arena.floor - 9, floorY: c.arena.floor, w: 6, h: 18, warn: 1.8, warnMax: 1.8,
+        life: 1e9, maxLife: 1e9, dmg: 1, dir, ox: edge, growTo: 170, growRate: 50, color: '#8b7bd8', color2: '#2e2254', look: 'storm',
+      });
+      c.hazards.push(h);
+    }
+    c.text('THE STORM BREAKS!', c.arena.left + 330, c.arena.floor - 330, '#c4b5fd');
+    c.shake(0.55);
+  },
   moves: {
     // climbs out of reach, then falls on the marked spot. The crash leaves her stunned on the floor
     diveBomb: {
-      tell: 0.9,
-      act: 1.3,
+      tell: 0.95,
+      act: 1.1,
       rec: 0.8,
       pose: 'fly',
-      stunAfter: () => 1.7,
+      stunAfter: () => 1.9,
       crashText: 'GROUNDED!',
       onTell: (b, c) => {
-        const h = makeHazard({ kind: 'mark', x: c.px, y: c.arena.floor - 3, floorY: c.arena.floor, w: 70, h: 6, warn: 0.9, warnMax: 0.9, life: 0.95, maxLife: 0.95, color: '#ef4444', color2: '#7f1d1d' });
+        const h = makeHazard({ kind: 'mark', x: c.px, y: c.arena.floor - 3, floorY: c.arena.floor, w: 150, h: 6, warn: 0.95, warnMax: 0.95, life: 1.0, maxLife: 1.0, color: '#ef4444', color2: '#7f1d1d' });
         c.hazards.push(h);
         addMark(c, b, h, 0);
       },
       tellTick: (b, c, dt) => {
         const br = b.ai!;
-        br.air += (300 - br.air) * Math.min(1, dt * 4);
+        br.air += (400 - br.air) * Math.min(1, dt * 4);
         trackMark(b, c, br.d.h0, dt, 0.55, 320);
+        // she flies over the mark as she climbs
+        const h = c.hazards.find((x) => x.id === br.d.h0);
+        if (h) b.x += Math.max(-540 * dt, Math.min(540 * dt, h.x - b.x));
+        b.facing = (h ? h.x : c.px) >= b.x ? 1 : -1;
       },
       onAct: (b, c) => {
         const h = c.hazards.find((x) => x.id === b.ai!.d.h0);
@@ -534,23 +584,26 @@ const SOVEREIGN: BossDef = {
       tick: (b, c, dt) => {
         const br = b.ai!;
         const dx = br.d.tx - b.x;
-        b.x += Math.max(-760 * dt, Math.min(760 * dt, dx));
-        br.air -= 1150 * dt;
+        // she is over the mark by the time she lands, however far off she started
+        const need = Math.abs(dx) / Math.max(0.05, br.air / 1300);
+        const sp = Math.max(760, need) * dt;
+        b.x += Math.max(-sp, Math.min(sp, dx));
+        br.air -= 1300 * dt;
         b.facing = dx >= 0 ? 1 : -1;
         br.hurt = [bodyBox(b)];
         if (br.air <= 0 && !br.d.crashed) {
           br.air = 0;
           br.d.crashed = 1;
-          impact(b, c, 0.8, '#a16207');
-          for (const d of [-1, 1] as const) floorWave(c, b.x + d * 40, d, 280, '#fbbf24', '#92400e').look = 'feather';
+          impact(b, c, 1.0, '#a16207');
+          for (const d of [-1, 1] as const) floorWave(c, b.x + d * 120, d, b.phase >= 3 ? 340 : 290, '#fbbf24', '#92400e').look = 'feather';
         }
       },
     },
-    // a fan of razor feathers
+    // a fan of razor feathers. She flings her wings wide to throw them, and that leaves her chest open
     featherVolley: {
-      tell: 0.6,
+      tell: 0.65,
       act: 0.7,
-      rec: 1.1,
+      rec: 1.2,
       min: 180,
       pose: 'spit',
       onAct: (b, c) => {
@@ -558,7 +611,7 @@ const SOVEREIGN: BossDef = {
           const ang = Math.atan2(c.py - 30 - b.y, c.px - b.x);
           const half = (n - 1) / 2;
           for (let i = 0; i < n; i++) {
-            const h = aimed(c, b.x + b.facing * 30, b.y, ang + (i - half) * 0.2, 330, '#fde68a', '#92400e');
+            const h = aimed(c, b.x + b.facing * 50, b.y, ang + (i - half) * 0.2, 330, '#fde68a', '#92400e');
             h.look = 'feather';
           }
         };
@@ -574,10 +627,44 @@ const SOVEREIGN: BossDef = {
         }
       },
     },
-    // a low pass across the whole arena: jump it or stomp-dive under her
-    strafe: {
-      tell: 0.7,
-      act: 1.2,
+    // she drops to the floor beside you and lunges with her beak. The head is low and open when it is over
+    talonRake: {
+      tell: 0.75,
+      act: 0.55,
+      rec: 1.3,
+      min: 230,
+      max: 600,
+      pose: 'lunge',
+      tellTick: (b, c, dt) => {
+        const br = b.ai!;
+        br.air += (0 - br.air) * Math.min(1, dt * 5);
+        if (br.air < 1) br.air = 0;
+      },
+      onAct: (b, c) => {
+        const br = b.ai!;
+        br.d.dir = b.facing;
+        // how far she goes: to a beak's reach from you, never through the fence
+        br.d.go = Math.max(60, Math.min(330, Math.abs(c.px - b.x) - 150));
+        br.d.x0 = b.x;
+      },
+      tick: (b, c, dt, t) => {
+        const br = b.ai!;
+        const u = Math.min(1, t / 0.36);
+        b.x = br.d.x0 + br.d.dir * br.d.go * (1 - (1 - u) * (1 - u));
+        br.air = 0;
+        br.hurt = [bodyBox(b), frontBox(b, c, 150, 170, 6)];
+        if (u >= 1 && !br.d.slammed) {
+          br.d.slammed = 1;
+          c.shake(0.45);
+          c.thud(false);
+          c.debris(b.x + br.d.dir * (b.width / 2 + 60), c.arena.floor - 10, '#a16207');
+        }
+      },
+    },
+    // a long, high pass across the whole arena, her talons raking the height of the ledges. Stay on the floor and keep your head down
+    skySweep: {
+      tell: 0.8,
+      act: 1.5,
       rec: 1.0,
       phase: 2,
       pose: 'fly',
@@ -588,11 +675,48 @@ const SOVEREIGN: BossDef = {
       },
       tick: (b, c, dt) => {
         const br = b.ai!;
-        br.air += (36 - br.air) * Math.min(1, dt * 8);
-        b.x += br.d.dir * 720 * dt;
+        // she skims at the height where her feet clear a hero standing on the floor, but not one in the air or on a ledge
+        br.air += (118 - br.air) * Math.min(1, dt * 8);
+        b.x += br.d.dir * 640 * dt;
         br.hurt = [bodyBox(b)];
         const half = b.width / 2;
-        if (b.x <= c.arena.left + half + 2 || b.x >= c.arena.right - half - 2) br.t = 1.2;
+        if (b.x <= c.arena.left + half + 2 || b.x >= c.arena.right - half - 2) br.t = 1.5;
+      },
+    },
+    // a swoop onto the marked spot with her talons out, which ends with her pulling up again: no crash, so her back is what is open
+    snatch: {
+      tell: 0.85,
+      act: 0.7,
+      rec: 1.2,
+      phase: 2,
+      min: 200,
+      pose: 'fly',
+      onTell: (b, c) => {
+        const h = makeHazard({ kind: 'mark', x: c.px, y: c.arena.floor - 3, floorY: c.arena.floor, w: 130, h: 6, warn: 0.85, warnMax: 0.85, life: 0.9, maxLife: 0.9, color: '#ef4444', color2: '#7f1d1d' });
+        c.hazards.push(h);
+        addMark(c, b, h, 0);
+      },
+      tellTick: (b, c, dt) => {
+        const br = b.ai!;
+        br.air += (230 - br.air) * Math.min(1, dt * 3);
+        trackMark(b, c, br.d.h0, dt, 0.5, 300);
+      },
+      onAct: (b, c) => {
+        const br = b.ai!;
+        const h = c.hazards.find((x) => x.id === br.d.h0);
+        br.d.tx = h ? h.x : c.px;
+        br.d.x0 = b.x;
+        br.d.a0 = br.air;
+        b.facing = br.d.tx >= b.x ? 1 : -1;
+      },
+      tick: (b, c, dt, t) => {
+        const br = b.ai!;
+        const u = Math.min(1, t / 0.7);
+        // down fast, a beat at the bottom, and up again
+        const reach = Math.min(1, u / 0.5);
+        b.x = br.d.x0 + (br.d.tx - br.d.x0) * (reach * reach * (3 - 2 * reach));
+        br.air = u < 0.5 ? br.d.a0 + (6 - br.d.a0) * (u / 0.5) : 6 + (150 - 6) * ((u - 0.5) / 0.5);
+        br.hurt = [bodyBox(b)];
       },
     },
   },
@@ -600,39 +724,84 @@ const SOVEREIGN: BossDef = {
 
 // ───────────────────────────── 5. Tarantula Queen ─────────────────────────────
 
+/**
+ * The painted queen drawn 2.2 times her old size is 1.98 world units to a painted pixel, so her idle is nearly 400 wide. Weak spots are
+ * measured off the frame she holds in each opening: dx is forward of the body's middle (negative is behind her) and dy the height above
+ * her feet at the middle of the spot.
+ */
 const QUEEN: BossDef = {
   world: 5,
   name: 'Tarantula Queen',
-  w: 132,
-  h: 74,
+  // a giant of the hollow: low and wide, so the fight is about where her legs and her silk reach
+  scale: 2.2,
+  w: 330,
+  h: 170,
   artDy: 0,
-  speed: [46, 62, 88],
-  prefer: 300,
+  speed: [58, 78, 108],
+  prefer: 340,
   gap: [1.3, 1.0, 0.75],
+  chain: 0.3,
   color: '#e5e7eb',
   color2: '#4b5563',
+  // eighteen hits, two hit points a hit
+  hp: 36,
+  hits: 18,
+  // A different part of her opens after each move, and the glow shows which: the swollen abdomen after a web shot, the egg sac under her
+  // after she calls the brood, the fangs after a pounce, the tip of the abdomen after a stomp, the eyes after the venom blast, the
+  // raised chest after the web curtain and the back of the carapace after the cocoons. The ember while she is covered sits on the back
+  weak: { dx: 10, dy: 112, w: 150, h: 100 },
+  weakByMove: {
+    webShot: { dx: -48, dy: 96, w: 150, h: 110 },
+    callBrood: { dx: 0, dy: 36, w: 180, h: 72 },
+    pounceBite: { dx: 135, dy: 50, w: 130, h: 90 },
+    legStomp: { dx: -85, dy: 76, w: 140, h: 100 },
+    venomBlast: { dx: 56, dy: 78, w: 120, h: 100 },
+    webCurtain: { dx: 72, dy: 126, w: 140, h: 110 },
+    cocoonDrop: { dx: -20, dy: 132, w: 150, h: 100 },
+  },
+  weakStun: { dx: 108, dy: 64, w: 130, h: 100 },
+  aimText: 'TOO TOUGH! HIT THE GLOW',
+  arenaW: 1600,
+  lair: 'queen',
+  entrance: { eye: [255, 90, 80], dark: [3, 8, 6] },
+  // the Silk Hollow: a low branch at each end, a sling that drifts across the middle and a silk rope hanging from the roof
+  perches: [
+    { dx: 190, up: 105, w: 250 },
+    { dx: 600, up: 195, w: 230, moving: { range: 100, speed: 0.8 } },
+    { dx: 1150, up: 105, w: 250 },
+  ],
+  vines: [{ dx: 880, top: 350, bottom: 110 }],
+  // at 35% the brood hatches: spiderlings pour out of the egg sacs at both ends
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    const lo = c.arena.left + 60;
+    const hi = c.arena.right - 60;
+    for (const x of [lo + 90, hi - 90]) c.spawnMinion('spider', x, c.arena.floor - 20);
+    c.text('THE BROOD HATCHES!', c.arena.left + 330, c.arena.floor - 300, '#fca5a5');
+    c.shake(0.55);
+  },
   moves: {
     // a sticky shot that slows you for a few seconds
     webShot: {
       tell: 0.6,
       act: 0.25,
       rec: 1.1,
-      min: 140,
+      min: 150,
       pose: 'spit',
       onAct: (b, c) => {
-        const h = lob(c, b.x + b.facing * 50, c.arena.floor - 60, c.px, 0.7, { kind: 'web', eff: 'slow', dmg: 0, color: '#f8fafc', color2: '#94a3b8', w: 34, h: 34 });
+        const h = lob(c, b.x + b.facing * 150, c.arena.floor - 100, c.px, 0.7, { kind: 'web', eff: 'slow', dmg: 0, color: '#f8fafc', color2: '#94a3b8', w: 44, h: 44 });
         h.look = 'web';
       },
     },
-    // calls spiderlings down from the canopy (or spits if the nest is already full)
+    // calls spiderlings down from the roof of the hollow (or spits if the nest is already full)
     callBrood: {
       tell: 0.9,
       act: 0.2,
-      rec: 1.3,
+      rec: 1.4,
       pose: 'roar',
       onAct: (b, c) => {
         if (c.minionsAlive >= 3) {
-          lob(c, b.x, c.arena.floor - 60, c.px, 0.7, { kind: 'web', eff: 'slow', dmg: 0, color: '#f8fafc', color2: '#94a3b8', w: 34, h: 34 }).look = 'web';
+          lob(c, b.x + b.facing * 150, c.arena.floor - 100, c.px, 0.7, { kind: 'web', eff: 'slow', dmg: 0, color: '#f8fafc', color2: '#94a3b8', w: 44, h: 44 }).look = 'web';
           return;
         }
         // never on top of the hero: they drop in front of and behind, a clear 150 px off (a spawn on the hero was an unavoidable hit)
@@ -650,31 +819,79 @@ const QUEEN: BossDef = {
     // springs across the floor and bites where it lands
     pounceBite: leapMove({
       tell: 0.55,
-      act: 0.55,
-      rec: 1.0,
-      height: 120,
-      min: 120,
-      max: 480,
+      act: 0.6,
+      rec: 1.1,
+      height: 150,
+      min: 160,
+      max: 560,
       onLand: (b, c) => {
-        impact(b, c, 0.4, '#9ca3af');
+        impact(b, c, 0.5, '#9ca3af');
         b.ai!.d.bite = 1;
       },
     }),
+    // rears up and stamps her front legs: a short, low sweep of legs both sides and a wave along the floor each way
+    legStomp: {
+      tell: 0.7,
+      act: 0.5,
+      rec: 1.3,
+      max: 330,
+      pose: 'slam',
+      onAct: (b, c) => {
+        impact(b, c, 0.55, '#9ca3af');
+        for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2 - 20), d, 300, '#d1d5db', '#4b5563');
+      },
+      tick: (b, c, dt, t) => {
+        // the legs are only a danger as they come down
+        b.ai!.hurt = t < 0.28 ? [bodyBox(b), ...bothSides(b, c, 130, 80, 0)] : [bodyBox(b)];
+      },
+    },
+    // a jet of venom straight out of her mouth along the floor: a warning band first, then the blast. Jump it
+    venomBlast: {
+      tell: 0.75,
+      act: 0.7,
+      rec: 1.3,
+      phase: 2,
+      min: 120,
+      pose: 'spit',
+      onTell: (b, c) => {
+        const h = beam(c, b, 640, 40, 50, 0.75, 0.7, '#a3e635', '#3f6212');
+        h.look = 'venom';
+        b.ai!.d.h0 = h.id;
+      },
+    },
     // strands of web rise (marked first) either side of where you stand: a gap in the middle stays open
     webCurtain: {
       tell: 1.0,
       act: 0.3,
       rec: 1.4,
-      phase: 3,
+      phase: 2,
       pose: 'roar',
       onAct: (b, c) => {
-        for (const off of [-300, -140, 140, 300]) {
+        const offs = b.phase >= 3 ? [-380, -230, -90, 90, 230, 380] : [-300, -140, 140, 300];
+        for (const off of offs) {
           const x = Math.max(c.arena.left + 60, Math.min(c.arena.right - 60, c.px + off));
-          const h = column(c, x, 0.8, 190, '#f8fafc', '#94a3b8', 1.8);
-          h.w = 34;
+          const h = column(c, x, 0.8, 200, '#f8fafc', '#94a3b8', 1.8);
+          h.w = 38;
           h.look = 'web';
         }
         c.shake(0.35);
+      },
+    },
+    // cocoons fall from the roof of the hollow on marked spots, leaving a clear lane around where you stand
+    cocoonDrop: {
+      tell: 0.9,
+      act: 0.4,
+      rec: 1.3,
+      phase: 3,
+      pose: 'roar',
+      onAct: (b, c) => {
+        const offs = [-330, -180, 190, 340, 520, -520];
+        for (let i = 0; i < offs.length; i++) {
+          const x = Math.max(c.arena.left + 40, Math.min(c.arena.right - 40, c.px + offs[i]));
+          if (Math.abs(x - c.px) < 120) continue;
+          dropAt(c, x, 0.9 + (i % 3) * 0.18, 46, '#e5e7eb', '#6b7280').look = 'cocoon';
+        }
+        c.shake(0.3);
       },
     },
   },
@@ -682,38 +899,80 @@ const QUEEN: BossDef = {
 
 // ───────────────────────────── 6. Marsh Reaver: the spear-wielding giant otter ─────────────────────────────
 
+/**
+ * The painted otter drawn 1.9 times his old size is 2.28 world units to a painted pixel, so he stands about 240 tall. Weak spots are
+ * measured off the frame he holds in each opening: dx is forward of the body's middle (negative is behind him) and dy the height above
+ * his feet at the middle of the spot.
+ */
 const REAVER: BossDef = {
   world: 6,
   name: 'Marsh Reaver',
-  w: 110,
-  h: 112,
+  // a giant of the blackwater: he stands head and shoulders over the dock, with a spear as long as a boat
+  scale: 1.9,
+  w: 200,
+  h: 236,
   artDy: 0,
-  speed: [46, 64, 90],
-  prefer: 280,
-  gap: [1.5, 1.1, 0.8],
+  speed: [52, 72, 100],
+  prefer: 330,
+  gap: [1.4, 1.05, 0.8],
+  chain: 0.3,
   color: '#7dd3fc',
   color2: '#0c4a6e',
+  // twenty hits, two hit points a hit
+  hp: 40,
+  hits: 20,
+  // A different part of him opens after each move, and the glow shows which: the hump of his back after the vault, the neck after the
+  // thrust, the head down by the mud after the sling, the head thrown back after the war cry, the flank after the low sweep and the face
+  // after the high swipe. The ember while he is covered sits on the chest
+  weak: { dx: 0, dy: 150, w: 130, h: 120 },
+  weakByMove: {
+    vaultSmash: { dx: -64, dy: 93, w: 140, h: 110 },
+    spearThrust: { dx: -34, dy: 119, w: 120, h: 110 },
+    mudSling: { dx: -30, dy: 89, w: 120, h: 100 },
+    warCry: { dx: -36, dy: 172, w: 120, h: 110 },
+    spearSweep: { dx: -82, dy: 64, w: 140, h: 100 },
+    spearSwipe: { dx: 40, dy: 152, w: 120, h: 110 },
+  },
+  weakStun: { dx: 17, dy: 178, w: 120, h: 110 },
+  aimText: 'TOO TOUGH! HIT THE GLOW',
+  arenaW: 1600,
+  lair: 'reaver',
+  entrance: { eye: [255, 196, 96], dark: [4, 8, 8] },
+  // the Blackwater Roost: a low raft at each end, a crate that swings across the middle, a higher raft between it and the right, and a rope
+  perches: [
+    { dx: 150, up: 100, w: 240 },
+    { dx: 560, up: 190, w: 230, moving: { range: 90, speed: 0.85 } },
+    { dx: 960, up: 130, w: 220 },
+  ],
+  vines: [{ dx: 1260, top: 360, bottom: 110 }],
+  // at 35% the war-horns sound: two of his raiders swim in from either end of the dock
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    for (const x of [c.arena.left + 150, c.arena.right - 150]) c.spawnMinion('tayra', x, c.arena.floor - 20);
+    c.text('THE WAR-HORNS SOUND!', c.arena.left + 330, c.arena.floor - 330, '#fdba74');
+    c.shake(0.55);
+  },
   moves: {
     // a vault and an overhead smash: waves of mud both ways. Long recovery
     vaultSmash: leapMove({
-      tell: 0.85,
-      act: 0.9,
+      tell: 0.9,
+      act: 0.95,
       rec: 1.6,
-      height: 230,
+      height: 260,
       onLand: (b, c) => {
-        impact(b, c, 0.8, '#365314');
+        impact(b, c, 0.85, '#365314');
         for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2), d, 330, '#4d7c0f', '#1a2e05', true).look = 'mud';
       },
     }),
     // a long spear thrust at chest height: duck under it or jump it
     spearThrust: {
-      tell: 0.6,
+      tell: 0.65,
       act: 0.4,
-      rec: 1.0,
-      max: 400,
+      rec: 1.1,
+      max: 440,
       pose: 'lunge',
       onAct: (b, c) => {
-        const h = beam(c, b, 440, 44, 36, 0, 0.32, '#e0f2fe', '#0c4a6e');
+        const h = beam(c, b, 340, 80, 56, 0, 0.32, '#e0f2fe', '#0c4a6e');
         h.look = 'jab';
       },
     },
@@ -722,13 +981,47 @@ const REAVER: BossDef = {
       tell: 0.7,
       act: 0.3,
       rec: 1.3,
-      min: 160,
+      min: 180,
       pose: 'spit',
       onAct: (b, c) => {
-        for (const off of [-160, 0, 160]) {
-          const h = lob(c, b.x + b.facing * 40, c.arena.floor - 70, c.px + off, 0.85, { kind: 'glob', onLand: 'puddle', color: '#65a30d', color2: '#1a2e05', w: 32, h: 32 });
+        for (const off of [-170, 0, 170]) {
+          const h = lob(c, b.x + b.facing * 70, c.arena.floor - 120, c.px + off, 0.85, { kind: 'glob', onLand: 'puddle', color: '#65a30d', color2: '#1a2e05', w: 40, h: 40 });
           h.look = 'mud';
         }
+      },
+    },
+    // the spear along the planks: a low sweep forward, then he spins and sweeps back. Jump both
+    spearSweep: {
+      tell: 0.7,
+      act: 1.0,
+      rec: 1.4,
+      max: 420,
+      pose: 'lunge',
+      onAct: (b, c) => {
+        beam(c, b, 300, 22, 36, 0, 0.35, '#e0f2fe', '#0c4a6e').look = 'jab';
+      },
+      tick: (b, c, _dt, t) => {
+        const br = b.ai!;
+        if (t > 0.5 && !br.d.back) {
+          br.d.back = 1;
+          b.facing = b.facing > 0 ? -1 : 1;
+          c.shake(0.2);
+          beam(c, b, 300, 22, 36, 0, 0.35, '#e0f2fe', '#0c4a6e').look = 'jab';
+        }
+      },
+    },
+    // a high slash across the shoulders: stay low and keep off the rafts
+    spearSwipe: {
+      tell: 0.75,
+      act: 0.45,
+      rec: 1.2,
+      phase: 2,
+      max: 380,
+      pose: 'lunge',
+      onAct: (b, c) => {
+        const h = beam(c, b, 300, 175, 110, 0, 0.35, '#e0f2fe', '#0c4a6e');
+        h.look = 'jab';
+        c.shake(0.25);
       },
     },
     // a war cry: ripples at head height both ways
@@ -739,7 +1032,7 @@ const REAVER: BossDef = {
       phase: 3,
       pose: 'roar',
       onAct: (b, c) => {
-        c.shake(0.4);
+        c.shake(0.45);
         for (const d of [-1, 1] as const) headWave(c, b.x + d * (b.width / 2), d, 300, '#bae6fd', '#0369a1');
       },
     },
@@ -748,17 +1041,63 @@ const REAVER: BossDef = {
 
 // ───────────────────────────── 7. Stone Idol Golem ─────────────────────────────
 
+/**
+ * The painted golem drawn 1.8 times his old size is 2.07 world units to a painted pixel, so he stands about 215 tall with his hammer.
+ * Weak spots are measured off the frame he holds in each opening: dx is forward of the body's middle (negative is behind him) and dy
+ * the height above his feet at the middle of the spot.
+ */
 const GOLEM: BossDef = {
   world: 7,
   name: 'Stone Idol Golem',
-  w: 112,
-  h: 140,
+  // a giant of the ruins: a slow mountain of carved stone that hits very hard and very rarely
+  scale: 1.8,
+  w: 180,
+  h: 215,
   artDy: 0,
-  speed: [30, 40, 56],
-  prefer: 280,
+  speed: [40, 52, 72],
+  prefer: 320,
   gap: [1.5, 1.1, 0.85],
+  chain: 0.25,
   color: '#a8a29e',
   color2: '#44403c',
+  // twenty-two hits, two hit points a hit
+  hp: 44,
+  hits: 22,
+  // His rune core shows in a different place after each move, and the glow shows where: the chest after the rockfall roar, the head after
+  // the eye beam, the back-rune after the quake, the belt-rune after the hammer smash, the belly after the spin and the shoulder after
+  // the crystal rift. While he is stuck (the fist slam) the head hangs low. The ember while he is closed up sits on the chest
+  weak: { dx: 20, dy: 120, w: 130, h: 120 },
+  weakByMove: {
+    rockfall: { dx: 23, dy: 116, w: 130, h: 120 },
+    eyeBeam: { dx: -18, dy: 140, w: 120, h: 110 },
+    quake: { dx: -31, dy: 110, w: 130, h: 110 },
+    hammerSmash: { dx: -62, dy: 72, w: 130, h: 100 },
+    hammerSpin: { dx: 0, dy: 90, w: 140, h: 110 },
+    crystalRift: { dx: -30, dy: 122, w: 120, h: 110 },
+  },
+  weakStun: { dx: 30, dy: 130, w: 130, h: 110 },
+  aimText: 'TOO TOUGH! HIT THE GLOW',
+  arenaW: 1700,
+  lair: 'golem',
+  entrance: { eye: [96, 200, 255], dark: [2, 6, 10] },
+  // the Idol Sanctum: a broken block at each end, a rune slab that drifts across the middle and a liana on the right
+  perches: [
+    { dx: 190, up: 105, w: 250 },
+    { dx: 640, up: 195, w: 230, moving: { range: 100, speed: 0.75 } },
+    { dx: 1200, up: 105, w: 250 },
+  ],
+  vines: [{ dx: 930, top: 360, bottom: 110 }],
+  // at 35% the idol on the far wall wakes and the ceiling begins to give: a spread of marked rocks, one for each stretch of the hall
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    const span = c.arena.right - c.arena.left - 400;
+    for (let i = 0; i < 5; i++) {
+      const x = c.arena.left + 200 + (span * i) / 4;
+      dropAt(c, x, 1.4 + i * 0.1, 44, '#a8a29e', '#57534e').look = 'rock';
+    }
+    c.text('THE CEILING CRACKS!', c.arena.left + 330, c.arena.floor - 330, '#93c5fd');
+    c.shake(0.6);
+  },
   moves: {
     // both fists come down. They stick in the floor: free hits while it pulls them out
     fistSlam: {
@@ -766,15 +1105,15 @@ const GOLEM: BossDef = {
       act: 0.3,
       rec: 0.3,
       min: 0,
-      max: 340,
+      max: 360,
       pose: 'slam',
       crashText: 'FISTS STUCK!',
       stunAfter: () => 2.4,
       interruptible: false,
       onAct: (b, c) => {
         impact(b, c, 0.8, '#a8a29e');
-        const x = b.x + b.facing * (b.width / 2 + 40);
-        const h = column(c, x, 0.0001, 120, '#a8a29e', '#44403c', 0.3);
+        const x = b.x + b.facing * (b.width / 2 + 50);
+        const h = column(c, x, 0.0001, 140, '#a8a29e', '#44403c', 0.3);
         h.look = 'rock';
         for (const d of [-1, 1] as const) floorWave(c, x, d, 250, '#a8a29e', '#44403c').look = 'rock';
         b.ai!.d.crashed = 1;
@@ -790,7 +1129,7 @@ const GOLEM: BossDef = {
         const xs = [c.px, c.px - 170, c.px + 170, c.px + (c.rnd() - 0.5) * 520];
         for (const x of xs) {
           const cx = Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, x));
-          dropAt(c, cx, 0.9, 38, '#a8a29e', '#57534e').look = 'rock';
+          dropAt(c, cx, 0.9, 42, '#a8a29e', '#57534e').look = 'rock';
         }
       },
     },
@@ -803,7 +1142,7 @@ const GOLEM: BossDef = {
       pose: 'fly',
       onAct: (b, c) => {
         // low and short: a jump (or a well-timed double jump) clears it
-        beam(c, b, 640, 16, 32, 0, 0.55, '#fde047', '#b45309').look = 'laser';
+        beam(c, b, 720, 16, 32, 0, 0.55, '#fde047', '#b45309').look = 'laser';
       },
     },
     // stomps so hard the whole arena ripples and rocks fall
@@ -816,7 +1155,66 @@ const GOLEM: BossDef = {
       onAct: (b, c) => {
         impact(b, c, 0.9, '#a8a29e');
         for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2), d, 360, '#a8a29e', '#44403c', true).look = 'rock';
-        for (const off of [-120, 140]) dropAt(c, Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, c.px + off)), 0.9, 34, '#a8a29e', '#57534e').look = 'rock';
+        for (const off of [-120, 140]) dropAt(c, Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, c.px + off)), 0.9, 36, '#a8a29e', '#57534e').look = 'rock';
+      },
+    },
+    // the hammer comes down on the marked spot in front of him and a cluster of crystals bursts up; a wave of shards runs on along the floor
+    hammerSmash: {
+      tell: 0.95,
+      act: 0.4,
+      rec: 1.5,
+      max: 430,
+      pose: 'slam',
+      onTell: (b, c) => {
+        const x = Math.max(c.arena.left + 60, Math.min(c.arena.right - 60, b.x + b.facing * Math.min(380, Math.max(160, Math.abs(c.px - b.x)))));
+        const h = makeHazard({ kind: 'mark', x, y: c.arena.floor - 3, floorY: c.arena.floor, w: 150, h: 6, warn: 0.95, warnMax: 0.95, life: 1.0, maxLife: 1.0, color: '#ef4444', color2: '#7f1d1d' });
+        c.hazards.push(h);
+        addMark(c, b, h, 0);
+      },
+      tellTick: (b, c, dt) => trackMark(b, c, b.ai!.d.h0, dt, 0.5, 280),
+      onAct: (b, c) => {
+        const h = c.hazards.find((x) => x.id === b.ai!.d.h0);
+        const x = h ? h.x : b.x + b.facing * 260;
+        impact(b, c, 0.7, '#60a5fa');
+        const col = column(c, x, 0.0001, 170, '#60a5fa', '#1e3a8a', 0.45);
+        col.look = 'crystal';
+        col.w = 70;
+        floorWave(c, x + b.facing * 40, b.facing, 300, '#93c5fd', '#1e3a8a').look = 'rock';
+      },
+    },
+    // a spin with the hammer held out low, going after you as it turns. The hammer is knee high: jump it
+    hammerSpin: {
+      tell: 0.8,
+      act: 1.3,
+      rec: 1.3,
+      phase: 2,
+      max: 420,
+      pose: 'slam',
+      tick: (b, c, dt) => {
+        const br = b.ai!;
+        const dx = c.px - b.x;
+        b.facing = dx >= 0 ? 1 : -1;
+        const half = b.width / 2;
+        b.x = Math.max(c.arena.left + half, Math.min(c.arena.right - half, b.x + Math.max(-150 * dt, Math.min(150 * dt, dx))));
+        br.hurt = [bodyBox(b), ...bothSides(b, c, 190, 72, 0)];
+      },
+    },
+    // crystals burst up one after another along the floor in front of him, each marked first. They stand knee high: a ledge or a double jump
+    crystalRift: {
+      tell: 0.9,
+      act: 0.9,
+      rec: 1.4,
+      phase: 3,
+      pose: 'slam',
+      onAct: (b, c) => {
+        impact(b, c, 0.5, '#60a5fa');
+        for (let i = 0; i < 6; i++) {
+          const x = b.x + b.facing * (b.width / 2 + 70 + i * 150);
+          if (x < c.arena.left + 40 || x > c.arena.right - 40) break;
+          const h = column(c, x, 0.5 + i * 0.13, 90, '#60a5fa', '#1e3a8a', 0.7);
+          h.look = 'crystal';
+          h.w = 60;
+        }
       },
     },
   },
@@ -824,21 +1222,67 @@ const GOLEM: BossDef = {
 
 // ───────────────────────────── 8. Night-Wing Monarch ─────────────────────────────
 
+/**
+ * The painted Monarch drawn 2.4 times her old size is 1.92 world units to a painted pixel: her hover is over 300 wide, the screech frame
+ * nearly 460. Weak spots are measured off the frame she holds in each opening: dx is forward of her middle (negative is behind) and dy
+ * the height above her feet at the middle of the spot.
+ */
 const MONARCH: BossDef = {
   world: 8,
   name: 'Night-Wing Monarch',
-  w: 104,
-  h: 72,
+  // a giant of the dark: she hangs over the arena, so the fight is about her rings, her flock and when she comes down
+  scale: 2.4,
+  w: 260,
+  h: 170,
   artDy: 0,
-  speed: [80, 108, 146],
-  prefer: 250,
-  hover: 150,
-  gap: [1.2, 0.9, 0.65],
-  chain: 0.4,
+  speed: [76, 102, 138],
+  prefer: 300,
+  hover: 140,
+  gap: [1.25, 0.95, 0.7],
+  chain: 0.35,
   color: '#a78bfa',
   color2: '#2e1065',
+  // twenty-three hits, two hit points a hit
+  hp: 46,
+  hits: 23,
+  // She has no one weak point. It opens on whatever her last move left bare, and the glow shows where: the open mouth after a screech,
+  // the wing joint after a swoop, the talons after she calls the stalactites, the chest after the sonic dive, the head after the echo
+  // rings, the back after the flock. The ember while she is covered sits on the chest
+  weak: { dx: 20, dy: 70, w: 120, h: 100 },
+  weakByMove: {
+    screech: { dx: 8, dy: 124, w: 120, h: 100 },
+    swoop: { dx: -94, dy: 142, w: 130, h: 90 },
+    stalactites: { dx: -4, dy: 26, w: 140, h: 70 },
+    sonicDive: { dx: 6, dy: 100, w: 100, h: 110 },
+    wingBuffet: { dx: 40, dy: 52, w: 120, h: 90 },
+    echoRings: { dx: 56, dy: 92, w: 110, h: 100 },
+    batFlock: { dx: -60, dy: 100, w: 120, h: 100 },
+  },
+  weakStun: { dx: 44, dy: 52, w: 130, h: 90 },
+  aimText: 'TOO TOUGH! HIT THE GLOW',
+  arenaW: 1600,
+  lair: 'monarch',
+  entrance: { eye: [255, 80, 96], dark: [6, 3, 20] },
+  // the Karst Roost: a low shelf at each side, a high slab hung in the middle (it drifts) and a root rope between the middle and the right
+  perches: [
+    { dx: 180, up: 110, w: 240 },
+    { dx: 620, up: 200, w: 230, moving: { range: 100, speed: 0.85 } },
+    { dx: 1180, up: 110, w: 240 },
+  ],
+  vines: [{ dx: 920, top: 350, bottom: 110 }],
+  // at 35% the lights go out. The roost wakes and sheds four bats on marked spots, and from then on she has the flock to call
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    const span = c.arena.right - c.arena.left - 500;
+    for (let i = 0; i < 4; i++) {
+      const x = c.arena.left + 250 + (span * i) / 3;
+      dropAt(c, x, 1.3 + i * 0.12, 34, '#6d28d9', '#2e1065').look = 'bat';
+    }
+    c.text('THE CAVE GOES DARK!', c.arena.left + 330, c.arena.floor - 330, '#c4b5fd');
+    c.shake(0.5);
+  },
   moves: {
-    // a piercing shriek: rings at head height race away in both directions
+    // a piercing shriek: rings at head height race away in both directions. Her open mouth is bare afterwards
     screech: {
       tell: 0.75,
       act: 0.15,
@@ -847,7 +1291,7 @@ const MONARCH: BossDef = {
       onAct: (b, c) => {
         c.roar();
         c.shake(0.3);
-        for (const d of [-1, 1] as const) headWave(c, b.x + d * 40, d, 330, '#c4b5fd', '#5b21b6');
+        for (const d of [-1, 1] as const) headWave(c, b.x + d * 60, d, 330, '#c4b5fd', '#5b21b6');
       },
     },
     // swoops down low across the arena and back up
@@ -859,7 +1303,7 @@ const MONARCH: BossDef = {
       onAct: (b, c) => {
         const br = b.ai!;
         br.d.x0 = b.x;
-        br.d.x1 = b.x < c.px ? Math.min(c.arena.right - 70, c.px + 330) : Math.max(c.arena.left + 70, c.px - 330);
+        br.d.x1 = b.x < c.px ? Math.min(c.arena.right - 130, c.px + 330) : Math.max(c.arena.left + 130, c.px - 330);
         br.d.a0 = br.air;
         b.facing = br.d.x1 >= b.x ? 1 : -1;
       },
@@ -872,7 +1316,7 @@ const MONARCH: BossDef = {
         br.hurt = [bodyBox(b)];
       },
     },
-    // stalactites crack loose and drop on marked spots
+    // stalactites crack loose and drop on marked spots. In the dark there are more of them
     stalactites: {
       tell: 0.8,
       act: 0.2,
@@ -880,9 +1324,11 @@ const MONARCH: BossDef = {
       phase: 2,
       pose: 'roar',
       onAct: (b, c) => {
-        for (let i = 0; i < 5; i++) {
-          const x = Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, c.px + (i - 2) * 150 + (c.rnd() - 0.5) * 60));
-          dropAt(c, x, 0.8 + i * 0.12, 30, '#c4b5fd', '#4c1d95').look = 'spike';
+        const n = b.phase >= 3 ? 7 : 5;
+        const half = (n - 1) / 2;
+        for (let i = 0; i < n; i++) {
+          const x = Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, c.px + (i - half) * 150 + (c.rnd() - 0.5) * 60));
+          dropAt(c, x, 0.8 + i * 0.1, 32, '#c4b5fd', '#4c1d95').look = 'spike';
         }
       },
     },
@@ -895,9 +1341,9 @@ const MONARCH: BossDef = {
       pose: 'fly',
       onAct: (b, c) => {
         const br = b.ai!;
-        for (const d of [-1, 1] as const) headWave(c, b.x + d * 40, d, 360, '#c4b5fd', '#5b21b6');
+        for (const d of [-1, 1] as const) headWave(c, b.x + d * 60, d, 360, '#c4b5fd', '#5b21b6');
         br.d.x0 = b.x;
-        br.d.x1 = b.x < c.px ? Math.min(c.arena.right - 70, c.px + 260) : Math.max(c.arena.left + 70, c.px - 260);
+        br.d.x1 = b.x < c.px ? Math.min(c.arena.right - 130, c.px + 260) : Math.max(c.arena.left + 130, c.px - 260);
         br.d.a0 = br.air;
       },
       tick: (b, c, dt, t) => {
@@ -907,6 +1353,104 @@ const MONARCH: BossDef = {
         br.air = br.d.a0 * (1 - arc(u)) + 22 * arc(u);
         b.facing = br.d.x1 >= br.d.x0 ? 1 : -1;
         br.hurt = [bodyBox(b)];
+      },
+    },
+    // she folds and drops straight down onto the mark under her, lands hard, and beats her wings: two gusts along the floor, the second
+    // faster. The landing leaves her grounded and winded
+    wingBuffet: {
+      tell: 0.9,
+      act: 1.0,
+      rec: 0.4,
+      min: 0,
+      max: 700,
+      pose: 'slam',
+      stunAfter: () => 1.8,
+      crashText: 'GROUNDED!',
+      interruptible: false,
+      onTell: (b, c) => {
+        const h = makeHazard({ kind: 'mark', x: b.x, y: c.arena.floor - 3, floorY: c.arena.floor, w: 280, h: 6, warn: 0.9, warnMax: 0.9, life: 1.0, maxLife: 1.0, color: '#ef4444', color2: '#7f1d1d' });
+        c.hazards.push(h);
+      },
+      tellTick: (b, c, dt) => {
+        const br = b.ai!;
+        br.air += (0 - br.air) * Math.min(1, dt * 3.4);
+        if (br.air < 2) br.air = 0;
+      },
+      onAct: (b, c) => {
+        const br = b.ai!;
+        br.air = 0;
+        impact(b, c, 0.8, '#7c3aed');
+        for (const d of [-1, 1] as const) floorWave(c, b.x + d * 150, d, 280, '#c4b5fd', '#4c1d95', true);
+      },
+      tick: (b, c, dt, t) => {
+        const br = b.ai!;
+        br.air = 0;
+        br.hurt = [bodyBox(b)];
+        if (t >= 0.5 && !br.d.beat2) {
+          br.d.beat2 = 1;
+          c.shake(0.3);
+          for (const d of [-1, 1] as const) floorWave(c, b.x + d * 150, d, 380, '#c4b5fd', '#4c1d95', true);
+        }
+        // when the second beat is over she is winded where she stands
+        if (t >= 0.95) br.d.crashed = 1;
+      },
+    },
+    // rings with a rhythm: a low ring along the floor, then a ring at head height, then a low one again, out to both sides. Jump, then stay down, then jump
+    echoRings: {
+      tell: 0.75,
+      act: 1.3,
+      rec: 1.2,
+      phase: 2,
+      pose: 'roar',
+      onAct: (b, c) => {
+        b.ai!.d.n = 0;
+      },
+      tick: (b, c, dt, t) => {
+        const br = b.ai!;
+        const at = [0, 0.5, 1.0];
+        while (br.d.n < at.length && t >= at[br.d.n]) {
+          const low = br.d.n % 2 === 0;
+          c.shake(0.15);
+          for (const d of [-1, 1] as const) {
+            if (low) floorWave(c, b.x + d * 80, d, 330, '#c4b5fd', '#5b21b6');
+            else headWave(c, b.x + d * 80, d, 360, '#c4b5fd', '#5b21b6');
+          }
+          br.d.n++;
+        }
+      },
+    },
+    // the roost wakes and the flock comes through from one side: a run of bats along the floor, then a run high over it. Jump the low
+    // ones, then stay down for the high ones
+    batFlock: {
+      tell: 0.9,
+      act: 1.8,
+      rec: 1.2,
+      phase: 3,
+      pose: 'fly',
+      onTell: (b, c) => {
+        const br = b.ai!;
+        br.d.dir = b.x < (c.arena.left + c.arena.right) / 2 ? 1 : -1;
+        const edge = br.d.dir > 0 ? c.arena.left + 50 : c.arena.right - 50;
+        c.hazards.push(makeHazard({ kind: 'mark', x: edge, y: c.arena.floor - 3, floorY: c.arena.floor, w: 110, h: 6, warn: 0.9, warnMax: 0.9, life: 1.0, maxLife: 1.0, color: '#ef4444', color2: '#7f1d1d' }));
+      },
+      onAct: (b, c) => {
+        b.ai!.d.n = 0;
+      },
+      tick: (b, c, dt, t) => {
+        const br = b.ai!;
+        // three low bats 0.3 apart, a beat, three high ones
+        const at = [0, 0.3, 0.6, 1.2, 1.5, 1.8];
+        while (br.d.n < at.length && t >= at[br.d.n]) {
+          const high = br.d.n >= 3;
+          const dir = br.d.dir as 1 | -1;
+          const x = dir > 0 ? c.arena.left + 20 : c.arena.right - 20;
+          const h = aimed(c, x, c.arena.floor - (high ? 150 : 28), dir > 0 ? 0 : Math.PI, 430, '#a78bfa', '#2e1065');
+          h.look = 'bat';
+          h.w = 50;
+          h.h = 30;
+          h.life = h.maxLife = 4.4;
+          br.d.n++;
+        }
       },
     },
   },
@@ -1016,56 +1560,113 @@ const DRAKE: BossDef = {
 
 // ───────────────────────────── 10. General Iron-Claw ─────────────────────────────
 
+/**
+ * The painted General drawn twice his old size is 1.44 world units to a painted pixel: his idle is over 370 wide and 280 tall. Weak
+ * spots are measured off the frame he holds in each opening: dx is forward of his middle (negative is behind him) and dy the height
+ * above his feet at the middle of the spot.
+ */
 const GENERAL: BossDef = {
   world: 10,
   name: 'General Iron-Claw',
-  w: 104,
-  h: 132,
+  // the last giant: a sloth warlord twice the hero's size and then some, so the fight is about his reach, his soldiers and the fire at the walls
+  scale: 2.0,
+  w: 190,
+  h: 240,
   artDy: 0,
-  speed: [58, 82, 112],
-  prefer: 260,
-  gap: [1.1, 0.85, 0.6],
-  chain: 0.5,
+  speed: [52, 72, 100],
+  prefer: 300,
+  gap: [1.2, 0.9, 0.65],
+  chain: 0.45,
   color: '#fca5a5',
   color2: '#450a0a',
+  // twenty-six hits, two hit points a hit
+  hp: 52,
+  hits: 26,
+  // He has no one weak point. It opens on whatever his last move left bare, and the glow shows where: the head after the staff slam, the
+  // pauldron after the club throw, the open mouth after the war cry, the foot after the ground pound, the knuckles after the claw combo,
+  // the cape after the quake stride and the belly after the warlord's slam. The ember while he is covered sits on the chest. After a
+  // wall crash he is dazed and his head is bare
+  weak: { dx: 24, dy: 150, w: 130, h: 110 },
+  weakByMove: {
+    staffSlam: { dx: 40, dy: 178, w: 130, h: 110 },
+    spearThrow: { dx: -10, dy: 170, w: 120, h: 100 },
+    warCry: { dx: -14, dy: 175, w: 130, h: 110 },
+    groundPound: { dx: 60, dy: 40, w: 150, h: 80 },
+    clawCombo: { dx: 150, dy: 160, w: 110, h: 100 },
+    quakeStride: { dx: -90, dy: 150, w: 130, h: 110 },
+    warlordSlam: { dx: 20, dy: 120, w: 140, h: 110 },
+  },
+  weakStun: { dx: 14, dy: 170, w: 130, h: 110 },
+  aimText: 'TOO TOUGH! HIT THE GLOW',
+  arenaW: 1800,
+  lair: 'warcamp',
+  entrance: { eye: [255, 70, 56], dark: [16, 3, 5] },
+  // the War Camp: a low scaffold at each end, a high platform hung in the middle-left (it drifts), a second high one on the right and a chain
+  perches: [
+    { dx: 180, up: 105, w: 240 },
+    { dx: 640, up: 195, w: 230, moving: { range: 110, speed: 0.8 } },
+    { dx: 1110, up: 195, w: 230 },
+    { dx: 1440, up: 105, w: 240 },
+  ],
+  vines: [{ dx: 930, top: 380, bottom: 110 }],
+  // at 35% the palisade catches: a wall of fire creeps in from each end of the arena (warned first). The ledges and the middle stay clear
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    for (const dir of [1, -1] as const) {
+      const edge = dir > 0 ? c.arena.left : c.arena.right;
+      const h = makeHazard({
+        kind: 'strip', x: edge, y: c.arena.floor - 9, floorY: c.arena.floor, w: 6, h: 18, warn: 1.8, warnMax: 1.8,
+        life: 1e9, maxLife: 1e9, dmg: 1, dir, ox: edge, growTo: 200, growRate: 45, color: '#fb923c', color2: '#7f1d1d', look: 'blaze',
+      });
+      c.hazards.push(h);
+    }
+    c.text('THE PALISADE BURNS!', c.arena.left + 330, c.arena.floor - 330, '#fdba74');
+    c.shake(0.55);
+  },
   moves: {
-    // brings the iron staff down in front of him, with a shock along the ground
+    // brings the iron club down in front of him, with a shock along the ground. His head is bare while he pulls it up
     staffSlam: {
-      tell: 0.75,
+      tell: 0.8,
       act: 0.28,
       rec: 1.1,
-      max: 300,
+      max: 340,
       pose: 'slam',
       onAct: (b, c) => {
-        impact(b, c, 0.6, '#9ca3af');
-        const x = b.x + b.facing * (b.width / 2 + 60);
-        floorWave(c, x, b.facing, 320, '#d1d5db', '#4b5563').look = 'rock';
+        impact(b, c, 0.7, '#9ca3af');
+        const x = b.x + b.facing * (b.width / 2 + 80);
+        floorWave(c, x, b.facing, 330, '#d1d5db', '#4b5563').look = 'rock';
+        if (b.phase >= 3) floorWave(c, x, b.facing === 1 ? -1 : 1, 330, '#d1d5db', '#4b5563').look = 'rock';
       },
       tick: (b, c) => {
-        b.ai!.hurt = [frontBox(b, c, 130, 120, 0)];
+        b.ai!.hurt = [frontBox(b, c, 200, 150, 0)];
       },
     },
-    // hurls his spiked clubs: one low, one high in the later phases
+    // hurls his spiked clubs: one low, one high in the later phases, and a third in the last
     spearThrow: {
       tell: 0.65,
-      act: 0.5,
+      act: 0.6,
       rec: 1.0,
-      min: 200,
+      min: 220,
       pose: 'spit',
       onAct: (b, c) => {
-        const x = b.x + b.facing * 50;
-        bolt(c, x, c.arena.floor - 22, b.facing, 540, '#e5e7eb', '#6b7280', 18).look = 'club';
+        const x = b.x + b.facing * 110;
+        bolt(c, x, c.arena.floor - 22, b.facing, 560, '#e5e7eb', '#6b7280', 20).look = 'club';
         b.ai!.d.second = b.phase >= 2 ? 1 : 0;
+        b.ai!.d.third = b.phase >= 3 ? 1 : 0;
       },
       tick: (b, c) => {
         const br = b.ai!;
-        if (br.d.second && br.t > 0.28 && !br.d.fired2) {
+        if (br.d.second && br.t > 0.26 && !br.d.fired2) {
           br.d.fired2 = 1;
-          bolt(c, b.x + b.facing * 50, c.arena.floor - 62, b.facing, 540, '#e5e7eb', '#6b7280', 18).look = 'club';
+          bolt(c, b.x + b.facing * 110, c.arena.floor - 70, b.facing, 560, '#e5e7eb', '#6b7280', 20).look = 'club';
+        }
+        if (br.d.third && br.t > 0.5 && !br.d.fired3) {
+          br.d.fired3 = 1;
+          bolt(c, b.x + b.facing * 110, c.arena.floor - 22, b.facing, 600, '#e5e7eb', '#6b7280', 20).look = 'club';
         }
       },
     },
-    // calls his soldiers (or pounds the ground when they are already out)
+    // calls his soldiers (or bellows a shock along the floor when they are already out)
     warCry: {
       tell: 1.0,
       act: 0.2,
@@ -1074,7 +1675,7 @@ const GENERAL: BossDef = {
       onAct: (b, c) => {
         c.roar();
         if (c.minionsAlive >= 2) {
-          for (const d of [-1, 1] as const) floorWave(c, b.x + d * 60, d, 320, '#d1d5db', '#4b5563').look = 'rock';
+          for (const d of [-1, 1] as const) floorWave(c, b.x + d * 100, d, 330, '#d1d5db', '#4b5563').look = 'rock';
           return;
         }
         c.spawnMinion('ocelot', c.arena.left + 60, c.arena.floor - 20);
@@ -1083,7 +1684,7 @@ const GENERAL: BossDef = {
       },
     },
     // a thunderous charge: crashing into the wall dazes him
-    ironCharge: chargeMove({ tell: 0.9, maxT: 1.8, rec: 0.9, speed: 560, stun: 1.8, text: 'DAZED!', min: 200, phase: 2 }),
+    ironCharge: chargeMove({ tell: 0.9, maxT: 1.9, rec: 0.9, speed: 520, stun: 1.8, text: 'DAZED!', min: 220, phase: 2 }),
     // leaps and pounds: waves both ways and rocks from the roof
     groundPound: {
       tell: 0.9,
@@ -1093,8 +1694,82 @@ const GENERAL: BossDef = {
       pose: 'slam',
       onAct: (b, c) => {
         impact(b, c, 0.9, '#9ca3af');
-        for (const d of [-1, 1] as const) floorWave(c, b.x + d * 50, d, 340, '#d1d5db', '#4b5563', true).look = 'rock';
-        for (const off of [-150, 0, 150]) dropAt(c, Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, c.px + off)), 0.9, 34, '#a8a29e', '#57534e').look = 'rock';
+        for (const d of [-1, 1] as const) floorWave(c, b.x + d * 90, d, 350, '#d1d5db', '#4b5563', true).look = 'rock';
+        for (const off of [-220, -80, 80, 220]) dropAt(c, Math.max(c.arena.left + 30, Math.min(c.arena.right - 30, c.px + off)), 0.9, 38, '#a8a29e', '#57534e').look = 'rock';
+      },
+    },
+    // up close: a claw, another claw and a punch, each a step closer, the last throwing a slash along the floor. The knuckles are bare after
+    clawCombo: {
+      tell: 0.55,
+      act: 1.25,
+      rec: 1.2,
+      max: 300,
+      pose: 'bite',
+      tick: (b, c, dt, t) => {
+        const br = b.ai!;
+        b.x += b.facing * 85 * dt;
+        const windows: Array<[number, number]> = [[0.15, 0.35], [0.55, 0.75], [0.95, 1.15]];
+        if (windows.some(([a, z]) => t >= a && t <= z)) br.hurt = [frontBox(b, c, 210, 150, 0)];
+        if (t >= 0.95 && !br.d.slash) {
+          br.d.slash = 1;
+          c.shake(0.3);
+          floorWave(c, b.x + b.facing * (b.width / 2 + 90), b.facing, 380, '#fca5a5', '#7f1d1d').look = 'rock';
+        }
+      },
+    },
+    // stamps forward four times, a shock racing ahead along the floor from every stamp. Hop each one
+    quakeStride: {
+      tell: 0.7,
+      act: 1.7,
+      rec: 1.2,
+      phase: 2,
+      min: 200,
+      pose: 'slam',
+      onAct: (b) => {
+        b.ai!.d.n = 0;
+      },
+      tick: (b, c, dt, t) => {
+        const br = b.ai!;
+        b.x += b.facing * 95 * dt;
+        const at = [0.2, 0.7, 1.2, 1.7 - 0.05];
+        while (br.d.n < at.length && t >= at[br.d.n]) {
+          br.d.n++;
+          impact(b, c, 0.4, '#9ca3af');
+          floorWave(c, b.x + b.facing * (b.width / 2 + 20), b.facing, 340, '#fca5a5', '#7f1d1d').look = 'rock';
+        }
+      },
+    },
+    // the warlord's own blow: he holds the club up while lightning finds the spot under you, then brings it down. A column of lightning at
+    // the mark and four more either side of it, and a shock along the floor
+    warlordSlam: {
+      tell: 1.3,
+      act: 0.5,
+      rec: 1.5,
+      phase: 3,
+      pose: 'slam',
+      interruptible: false,
+      onTell: (b, c) => {
+        const h = makeHazard({ kind: 'mark', x: c.px, y: c.arena.floor - 3, floorY: c.arena.floor, w: 150, h: 6, warn: 1.3, warnMax: 1.3, life: 1.4, maxLife: 1.4, color: '#c084fc', color2: '#581c87' });
+        c.hazards.push(h);
+        addMark(c, b, h, 0);
+      },
+      tellTick: (b, c, dt) => {
+        trackMark(b, c, b.ai!.d.h0, dt, 0.6, 300);
+      },
+      onAct: (b, c) => {
+        const br = b.ai!;
+        const m = c.hazards.find((x) => x.id === br.d.h0);
+        const x0 = m ? m.x : c.px;
+        impact(b, c, 1.0, '#a855f7');
+        c.roar();
+        const place = (x: number, warn: number) => {
+          if (x < c.arena.left + 30 || x > c.arena.right - 30) return;
+          const h = column(c, x, warn, 260, '#c084fc', '#581c87', 0.5);
+          h.look = 'lightning';
+        };
+        place(x0, 0.0001);
+        for (const off of [-190, 190, -380, 380]) place(x0 + off, 0.55);
+        for (const d of [-1, 1] as const) floorWave(c, b.x + d * 100, d, 330, '#c084fc', '#581c87', true);
       },
     },
   },
@@ -1265,13 +1940,13 @@ export const BOSS_TIPS: Record<number, string> = {
   1: 'Venom Fang spits goo that slows you and slams up from the floor where you stood. Stay moving, then punish the recovery.',
   2: 'Crocus Rex rolls the length of the arena and crashes into the wall. Jump the tail sweep and hit him while he is dizzy.',
   3: 'The Shadow Prowler vanishes and reappears behind you. Watch for the fade, then turn and strike.',
-  4: 'The Sky Sovereign dives on the red mark. Step aside, and she is stuck on the ground for a moment.',
-  5: 'The Tarantula Queen webs you to slow you down and calls her brood. Clear the spiderlings, then hit her.',
-  6: 'The Marsh Reaver vaults and smashes the ground, sending mud waves both ways. Jump them, then duck under the spear thrust.',
-  7: 'The Idol Golem’s fists get stuck after a slam. That is your chance. Stay clear of the falling rocks.',
-  8: 'The Night-Wing Monarch screeches rings at head height. Duck or jump, then hit her when she swoops low.',
+  4: 'The Sky Sovereign is a giant of the air. Step off the red mark and she crashes; then hit whatever glows: her head, her chest, her talons or her back.',
+  5: 'The Tarantula Queen is a giant of the hollow. Jump her venom jet, step out of the web and cocoon marks, then hit whatever glows: abdomen, fangs, eyes or chest.',
+  6: 'The Marsh Reaver is a giant of the blackwater. Jump his low spear sweep and the mud waves, duck the high swipe, then hit whatever glows: back, neck, head or flank.',
+  7: 'The Stone Idol Golem is a giant of the ruins. Jump his spinning hammer, slip the crystal rift, then hit whatever glows: chest, head, back or belly.',
+  8: 'The Night-Wing Monarch is a giant bat. Jump her low rings and stay down for the high ones, then hit whatever glows: mouth, wing joint, talons, chest, head or back.',
   9: 'The Magma Drake breathes fire at chest height: duck or jump. Keep off the lava geysers.',
-  10: 'General Iron-Claw charges and crashes into the wall. Keep an eye on his soldiers and spears.',
+  10: 'General Iron-Claw is the last giant. Jump his shocks and clubs, dodge the lightning columns, let him crash into a wall, then hit whatever glows: head, pauldron, mouth, foot, knuckles, cape or belly.',
 };
 
 /** the secret boss lives outside the ten worlds */

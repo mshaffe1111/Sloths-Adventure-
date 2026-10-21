@@ -28,20 +28,22 @@ export const ironclawSprite = createPaintedBoss({
     else if (br.state === 'stun') name = 'stunned';
     else if (br.state === 'roar') name = br.roarReason === 'enter' ? 'roar' : b.phase >= 3 ? 'enrage3' : 'rageblast';
     else if (br.state === 'tell') {
-      if (mv === 'staffSlam') name = 'overhead1';
-      else if (mv === 'spearThrow') name = 'armed';
-      else if (mv === 'warCry') name = 'roar';
-      else if (mv === 'ironCharge') name = 'block';
-      else if (mv === 'groundPound') name = 'stomp1';
-      else name = 'armed';
+      const tell: Record<string, string> = { staffSlam: 'overhead1', spearThrow: 'armed', warCry: 'roar', ironCharge: 'block', groundPound: 'stomp1', clawCombo: 'claw1', quakeStride: 'crouch', warlordSlam: 'ultslam' };
+      name = (mv && tell[mv]) || 'armed';
     } else if (br.state === 'act') {
-      if (mv === 'staffSlam') name = 'overhead2';
-      else if (mv === 'spearThrow') name = 'slash';
-      else if (mv === 'warCry') name = 'roar';
-      else if (mv === 'ironCharge') name = Math.floor(time * 9) % 2 === 0 ? 'charge' : 'run';
-      else if (mv === 'groundPound') name = 'stomp2';
-      else name = m?.pose === 'slam' ? 'overhead2' : 'roar';
-    } else if (br.state === 'rec') name = mv === 'staffSlam' ? 'overhead2' : mv === 'groundPound' ? 'stomp2' : mv === 'spearThrow' ? 'slash' : 'idle';
+      if (mv === 'ironCharge') name = Math.floor(time * 9) % 2 === 0 ? 'charge' : 'run';
+      // a claw, another claw and a punch, a step closer each time
+      else if (mv === 'clawCombo') name = br.t < 0.45 ? 'claw1' : br.t < 0.85 ? 'claw2' : 'punch2';
+      // four stamps: the quake foot down on each, a stride between
+      else if (mv === 'quakeStride') name = Math.floor(Math.max(0, br.t - 0.2) / 0.25) % 2 === 0 ? 'quakewalk' : 'march0';
+      else {
+        const act: Record<string, string> = { staffSlam: 'overhead2', spearThrow: 'slash', warCry: 'roar', groundPound: 'stomp2', warlordSlam: 'ultslam' };
+        name = (mv && act[mv]) || (m?.pose === 'slam' ? 'overhead2' : 'roar');
+      }
+    } else if (br.state === 'rec') {
+      const rec: Record<string, string> = { staffSlam: 'overhead2', groundPound: 'stomp2', spearThrow: 'slash', clawCombo: 'punch2', quakeStride: 'quakewalk', warlordSlam: 'ultslam', warCry: 'roar' };
+      name = (mv && rec[mv]) || 'idle';
+    }
     else if (moving) name = MARCH[Math.floor((dist / STRIDE) * MARCH.length) % MARCH.length];
     else name = 'idle';
     if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) name = 'hurt';

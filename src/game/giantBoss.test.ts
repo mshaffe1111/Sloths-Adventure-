@@ -30,7 +30,7 @@ test('the weak point sits on the head side and follows the way the boss faces', 
   const r = weakRect(mk('rec', 1), drake, floor)!;
   const l = weakRect(mk('rec', -1), drake, floor)!;
   assert.ok(r.x + r.w / 2 > 1500 && l.x + l.w / 2 < 1500);
-  assert.equal(weakRect(mk('rec'), bossDefFor(4), floor), null, 'a boss without a weak point can be hit anywhere');
+  assert.equal(weakRect(mk('rec'), { ...drake, weak: undefined, weakByMove: undefined, weakStun: undefined }, floor), null, 'a boss without a weak point can be hit anywhere');
 });
 
 test('the Drake is a giant whose head can be reached with a double jump from the floor', () => {
@@ -344,4 +344,571 @@ test('the glowcaps go dark at 35%, and only then', () => {
   assert.equal(texts.length, 0);
   prowler.onPhase!(3, mk('idle'), ctx);
   assert.equal(texts.length, 1);
+});
+
+// ───────────────────────────── Sky Sovereign (world 4): the fifth giant ─────────────────────────────
+const sov = bossDefFor(4);
+const sb = (state: 'idle' | 'rec' | 'stun' | 'act', move?: string, facing: 1 | -1 = 1): BossEntity => {
+  const b = { ...mk(state, facing), x: 1500, width: sov.w, height: sov.h } as BossEntity;
+  if (move) b.ai!.move = move;
+  // in the opening she hangs a little above the floor
+  b.ai!.air = state === 'stun' ? 0 : (sov.hover ?? 0) * 0.35;
+  return b;
+};
+
+test('the Sky Sovereign is a giant with a sixteen-hit bar, her own lair and room to fly', () => {
+  assert.ok((sov.scale ?? 1) >= 2.2 && sov.w >= 240);
+  assert.equal(sov.hits, 16);
+  assert.equal(sov.hp, (sov.hits ?? 0) * 2);
+  assert.ok(sov.lair === 'sovereign' && sov.entrance && sov.aimText);
+  assert.equal(lairOwnsScene('sovereign'), true);
+  const stage = generateStage(generateAllLevels().find((l) => l.id === '4-10')!);
+  const a = stage.arena!;
+  assert.ok(a.right - a.left >= sov.w + 700);
+  assert.equal(stage.boss!.maxHp, sov.hp);
+  assert.ok(stage.boss!.x + sov.w / 2 <= a.right, 'she starts inside the fence');
+  assert.equal(validateStage(stage).ok, true);
+});
+
+test('the Sovereign is weak somewhere different after each move, and each spot can be reached', () => {
+  const spots: Record<string, { x: number; y: number; w: number; h: number }> = {};
+  for (const m of ['featherVolley', 'skySweep', 'snatch', 'talonRake']) {
+    const r = weakRect(sb('rec', m), sov, floor)!;
+    assert.ok(r, m);
+    spots[m] = r;
+    assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, `${m}: bottom of the spot is within a double jump of the floor`);
+    assert.ok(floor - r.y > 0, `${m}: the spot is above the floor`);
+  }
+  const keys = Object.keys(spots).map((m) => `${Math.round(spots[m].x)}/${Math.round(spots[m].y)}`);
+  assert.equal(new Set(keys).size, keys.length, 'no two moves open the same spot');
+  // the back (after the snatch) is behind her middle, the head (after the beak lunge) is in front
+  assert.ok(spots.snatch.x + spots.snatch.w / 2 < 1500 && spots.talonRake.x + spots.talonRake.w / 2 > 1500);
+  // after a crash she is on the floor with her head within reach; a move with no entry falls back to the default
+  const stun = weakRect(sb('stun', 'diveBomb'), sov, floor)!;
+  assert.equal(Math.round(stun.x + stun.w / 2), 1500 + sov.weakStun!.dx);
+  const def = weakRect(sb('rec', undefined), sov, floor)!;
+  assert.equal(Math.round(def.x + def.w / 2), 1500 + sov.weak!.dx);
+  const left = weakRect(sb('rec', 'talonRake', -1), sov, floor)!;
+  assert.ok(left.x + left.w / 2 < 1500);
+});
+
+test('the Aerie: every ledge can be reached, there is a rope, and the storm breaks at the last phase only', () => {
+  const ps = sov.perches ?? [];
+  assert.ok(ps.length >= 3);
+  const spans = ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
+  for (const sp of spans) {
+    const ok = reached.some((r) => {
+      const rise = sp.up - r.up;
+      const gap = Math.max(0, sp.x0 - r.x1, r.x0 - sp.x1);
+      return (rise <= SAFE.rise1 && gap <= SAFE.gap1) || (rise <= SAFE.rise2 && gap <= SAFE.gap2 * 0.7);
+    });
+    assert.ok(ok, `ledge at ${sp.x0}-${sp.x1}, ${sp.up} up, cannot be reached`);
+    reached.push(sp);
+  }
+  assert.ok((sov.vines ?? []).length >= 1);
+  const made: { look?: string }[] = [];
+  const ctx = { arena: { left: 1000, right: 2500, floor }, hazards: made, text: () => {}, shake: () => {} } as unknown as import('./bossAI.ts').BossCtx;
+  sov.onPhase!(2, sb('idle'), ctx);
+  assert.equal(made.length, 0);
+  sov.onPhase!(3, sb('idle'), ctx);
+  assert.equal(made.length, 2);
+  assert.ok(made.every((h) => h.look === 'storm'));
+});
+
+// ───────────────────────────── Tarantula Queen (world 5): the sixth giant ─────────────────────────────
+const queen = bossDefFor(5);
+const qb = (state: 'idle' | 'rec' | 'stun' | 'act', move?: string, facing: 1 | -1 = 1): BossEntity => {
+  const b = { ...mk(state, facing), x: 1500, width: queen.w, height: queen.h } as BossEntity;
+  if (move) b.ai!.move = move;
+  b.ai!.air = 0;
+  return b;
+};
+
+test('the Tarantula Queen is a giant with an eighteen-hit bar, her own lair and room to move', () => {
+  assert.ok((queen.scale ?? 1) >= 2.1 && queen.w >= 300);
+  assert.equal(queen.hits, 18);
+  assert.equal(queen.hp, (queen.hits ?? 0) * 2);
+  assert.ok(queen.lair === 'queen' && queen.entrance && queen.aimText);
+  assert.equal(lairOwnsScene('queen'), true);
+  const stage = generateStage(generateAllLevels().find((l) => l.id === '5-10')!);
+  const a = stage.arena!;
+  assert.ok(a.right - a.left >= queen.w + 700);
+  assert.equal(stage.boss!.maxHp, queen.hp);
+  assert.ok(stage.boss!.x + queen.w / 2 <= a.right, 'she starts inside the fence');
+  assert.equal(validateStage(stage).ok, true);
+});
+
+test('the Queen is weak somewhere different after each move, and every spot can be reached', () => {
+  const moves = ['webShot', 'callBrood', 'pounceBite', 'legStomp', 'venomBlast', 'webCurtain', 'cocoonDrop'];
+  const spots: Record<string, { x: number; y: number; w: number; h: number }> = {};
+  for (const m of moves) {
+    assert.ok(queen.moves[m], `${m} is a move`);
+    const r = weakRect(qb('rec', m), queen, floor)!;
+    assert.ok(r, m);
+    spots[m] = r;
+    assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, `${m}: bottom of the spot is within a double jump of the floor`);
+    assert.ok(floor - r.y > 0, `${m}: the spot is above the floor`);
+  }
+  const keys = Object.keys(spots).map((m) => `${Math.round(spots[m].x)}/${Math.round(spots[m].y)}`);
+  assert.equal(new Set(keys).size, keys.length, 'no two moves open the same spot');
+  // the rear (after the stomp and the web shot) is behind her middle; the fangs and eyes are in front
+  assert.ok(spots.legStomp.x + spots.legStomp.w / 2 < 1500 && spots.webShot.x + spots.webShot.w / 2 < 1500);
+  assert.ok(spots.pounceBite.x + spots.pounceBite.w / 2 > 1500 && spots.venomBlast.x + spots.venomBlast.w / 2 > 1500);
+  const stun = weakRect(qb('stun', 'pounceBite'), queen, floor)!;
+  assert.equal(Math.round(stun.x + stun.w / 2), 1500 + queen.weakStun!.dx);
+  const def = weakRect(qb('rec', undefined), queen, floor)!;
+  assert.equal(Math.round(def.x + def.w / 2), 1500 + queen.weak!.dx);
+  const left = weakRect(qb('rec', 'pounceBite', -1), queen, floor)!;
+  assert.ok(left.x + left.w / 2 < 1500);
+});
+
+test('the Silk Hollow: every ledge can be reached, there is a rope, and the brood hatches at the last phase only', () => {
+  const ps = queen.perches ?? [];
+  assert.ok(ps.length >= 3);
+  const spans = ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
+  for (const sp of spans) {
+    const ok = reached.some((r) => {
+      const rise = sp.up - r.up;
+      const gap = Math.max(0, sp.x0 - r.x1, r.x0 - sp.x1);
+      return (rise <= SAFE.rise1 && gap <= SAFE.gap1) || (rise <= SAFE.rise2 && gap <= SAFE.gap2 * 0.7);
+    });
+    assert.ok(ok, `ledge at ${sp.x0}-${sp.x1}, ${sp.up} up, cannot be reached`);
+    reached.push(sp);
+  }
+  assert.ok((queen.vines ?? []).length >= 1);
+  const spawned: [string, number][] = [];
+  const ctx = {
+    arena: { left: 1000, right: 2600, floor }, hazards: [], text: () => {}, shake: () => {},
+    spawnMinion: (k: string, x: number) => spawned.push([k, x]),
+  } as unknown as import('./bossAI.ts').BossCtx;
+  queen.onPhase!(2, qb('idle'), ctx);
+  assert.equal(spawned.length, 0);
+  queen.onPhase!(3, qb('idle'), ctx);
+  assert.equal(spawned.length, 2);
+  assert.ok(spawned.every(([k, x]) => k === 'spider' && x > 1000 && x < 2600));
+});
+
+test('the Queen only starts her phase-gated moves when she has the health for them', () => {
+  assert.equal(queen.moves.venomBlast.phase, 2);
+  assert.equal(queen.moves.webCurtain.phase, 2);
+  assert.equal(queen.moves.cocoonDrop.phase, 3);
+  assert.ok(!queen.moves.webShot.phase && !queen.moves.legStomp.phase);
+});
+
+// ───────────────────────────── Marsh Reaver (world 6): the seventh giant ─────────────────────────────
+const reaver = bossDefFor(6);
+const rb = (state: 'idle' | 'rec' | 'stun' | 'act', move?: string, facing: 1 | -1 = 1): BossEntity => {
+  const b = { ...mk(state, facing), x: 1500, width: reaver.w, height: reaver.h } as BossEntity;
+  if (move) b.ai!.move = move;
+  b.ai!.air = 0;
+  return b;
+};
+
+test('the Marsh Reaver is a giant with a twenty-hit bar, his own lair and room to move', () => {
+  assert.ok((reaver.scale ?? 1) >= 1.8 && reaver.w >= 190);
+  assert.equal(reaver.hits, 20);
+  assert.equal(reaver.hp, (reaver.hits ?? 0) * 2);
+  assert.ok(reaver.lair === 'reaver' && reaver.entrance && reaver.aimText);
+  assert.equal(lairOwnsScene('reaver'), true);
+  const stage = generateStage(generateAllLevels().find((l) => l.id === '6-10')!);
+  const a = stage.arena!;
+  assert.ok(a.right - a.left >= reaver.w + 700);
+  assert.equal(stage.boss!.maxHp, reaver.hp);
+  assert.ok(stage.boss!.x + reaver.w / 2 <= a.right, 'he starts inside the fence');
+  assert.equal(validateStage(stage).ok, true);
+});
+
+test('the Reaver is weak somewhere different after each move, and every spot can be reached', () => {
+  const moves = ['vaultSmash', 'spearThrust', 'mudSling', 'warCry', 'spearSweep', 'spearSwipe'];
+  const spots: Record<string, { x: number; y: number; w: number; h: number }> = {};
+  for (const m of moves) {
+    assert.ok(reaver.moves[m], `${m} is a move`);
+    const r = weakRect(rb('rec', m), reaver, floor)!;
+    assert.ok(r, m);
+    spots[m] = r;
+    assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, `${m}: bottom of the spot is within a double jump of the floor`);
+    assert.ok(floor - r.y > 0, `${m}: the spot is above the floor`);
+  }
+  const keys = Object.keys(spots).map((m) => `${Math.round(spots[m].x)}/${Math.round(spots[m].y)}`);
+  assert.equal(new Set(keys).size, keys.length, 'no two moves open the same spot');
+  // the back is behind his middle, the face after the swipe is in front of it
+  assert.ok(spots.vaultSmash.x + spots.vaultSmash.w / 2 < 1500 && spots.spearSweep.x + spots.spearSweep.w / 2 < 1500);
+  assert.ok(spots.spearSwipe.x + spots.spearSwipe.w / 2 > 1500);
+  const stun = weakRect(rb('stun', 'vaultSmash'), reaver, floor)!;
+  assert.equal(Math.round(stun.x + stun.w / 2), 1500 + reaver.weakStun!.dx);
+  const def = weakRect(rb('rec', undefined), reaver, floor)!;
+  assert.equal(Math.round(def.x + def.w / 2), 1500 + reaver.weak!.dx);
+  const left = weakRect(rb('rec', 'spearSwipe', -1), reaver, floor)!;
+  assert.ok(left.x + left.w / 2 < 1500);
+});
+
+test('the Blackwater Roost: every ledge can be reached, there is a rope, and the raiders come at the last phase only', () => {
+  const ps = reaver.perches ?? [];
+  assert.ok(ps.length >= 3);
+  const spans = ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
+  for (const sp of spans) {
+    const ok = reached.some((r) => {
+      const rise = sp.up - r.up;
+      const gap = Math.max(0, sp.x0 - r.x1, r.x0 - sp.x1);
+      return (rise <= SAFE.rise1 && gap <= SAFE.gap1) || (rise <= SAFE.rise2 && gap <= SAFE.gap2 * 0.7);
+    });
+    assert.ok(ok, `ledge at ${sp.x0}-${sp.x1}, ${sp.up} up, cannot be reached`);
+    reached.push(sp);
+  }
+  assert.ok((reaver.vines ?? []).length >= 1);
+  const spawned: [string, number][] = [];
+  const ctx = {
+    arena: { left: 1000, right: 2600, floor }, hazards: [], text: () => {}, shake: () => {},
+    spawnMinion: (k: string, x: number) => spawned.push([k, x]),
+  } as unknown as import('./bossAI.ts').BossCtx;
+  reaver.onPhase!(2, rb('idle'), ctx);
+  assert.equal(spawned.length, 0);
+  reaver.onPhase!(3, rb('idle'), ctx);
+  assert.equal(spawned.length, 2);
+  assert.ok(spawned.every(([k, x]) => k === 'tayra' && x > 1000 && x < 2600));
+});
+
+test('the Reaver sweeps low, swipes high and only uses the phase-gated moves when he has the health for them', () => {
+  assert.equal(reaver.moves.spearSwipe.phase, 2);
+  assert.equal(reaver.moves.warCry.phase, 3);
+  assert.ok(!reaver.moves.spearSweep.phase);
+  // the sweep is a low band a hero can jump (it ends under 60 above the floor) and the swipe a high band a hero on the floor stands below
+  const made: { y: number; h: number }[] = [];
+  const ctx = { arena: { left: 1000, right: 2600, floor }, hazards: made, shake: () => {}, px: 1100, py: floor } as unknown as import('./bossAI.ts').BossCtx;
+  const b = rb('act', 'spearSweep');
+  reaver.moves.spearSweep.onAct!(b, ctx);
+  const low = made[0];
+  assert.ok(floor - (low.y - low.h / 2) <= 60, 'the sweep band stays under 60 above the floor');
+  made.length = 0;
+  reaver.moves.spearSwipe.onAct!(rb('act', 'spearSwipe'), ctx);
+  const high = made[0];
+  assert.ok(floor - (high.y + high.h / 2) >= 100, 'the swipe band starts over 100 above the floor');
+  // and the sweep comes back the other way
+  b.ai!.d = {};
+  const facing = b.facing;
+  reaver.moves.spearSweep.tick!(b, ctx, 1 / 60, 0.6);
+  assert.equal(b.facing, -facing);
+  assert.equal(made.length, 2);
+});
+
+// ───────────────────────────── Stone Idol Golem (world 7): the eighth giant ─────────────────────────────
+const golem = bossDefFor(7);
+const gb = (state: 'idle' | 'rec' | 'stun' | 'act', move?: string, facing: 1 | -1 = 1): BossEntity => {
+  const b = { ...mk(state, facing), x: 1500, width: golem.w, height: golem.h } as BossEntity;
+  if (move) b.ai!.move = move;
+  b.ai!.air = 0;
+  return b;
+};
+
+test('the Stone Idol Golem is a giant with a twenty-two-hit bar, his own lair and room to move', () => {
+  assert.ok((golem.scale ?? 1) >= 1.8 && golem.w >= 180);
+  assert.equal(golem.hits, 22);
+  assert.equal(golem.hp, (golem.hits ?? 0) * 2);
+  assert.ok(golem.lair === 'golem' && golem.entrance && golem.aimText);
+  assert.equal(lairOwnsScene('golem'), true);
+  const stage = generateStage(generateAllLevels().find((l) => l.id === '7-10')!);
+  const a = stage.arena!;
+  assert.ok(a.right - a.left >= golem.w + 700);
+  assert.equal(stage.boss!.maxHp, golem.hp);
+  assert.ok(stage.boss!.x + golem.w / 2 <= a.right, 'he starts inside the fence');
+  assert.equal(validateStage(stage).ok, true);
+});
+
+test('the Golem is weak somewhere different after each move, and every spot can be reached', () => {
+  const moves = ['rockfall', 'eyeBeam', 'quake', 'hammerSmash', 'hammerSpin', 'crystalRift'];
+  const spots: Record<string, { x: number; y: number; w: number; h: number }> = {};
+  for (const m of moves) {
+    assert.ok(golem.moves[m], `${m} is a move`);
+    const r = weakRect(gb('rec', m), golem, floor)!;
+    assert.ok(r, m);
+    spots[m] = r;
+    assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, `${m}: bottom of the spot is within a double jump of the floor`);
+    assert.ok(floor - r.y > 0, `${m}: the spot is above the floor`);
+  }
+  const keys = Object.keys(spots).map((m) => `${Math.round(spots[m].x)}/${Math.round(spots[m].y)}`);
+  assert.equal(new Set(keys).size, keys.length, 'no two moves open the same spot');
+  const stun = weakRect(gb('stun', 'fistSlam'), golem, floor)!;
+  assert.equal(Math.round(stun.x + stun.w / 2), 1500 + golem.weakStun!.dx);
+  const def = weakRect(gb('rec', undefined), golem, floor)!;
+  assert.equal(Math.round(def.x + def.w / 2), 1500 + golem.weak!.dx);
+  // facing the other way mirrors a spot that is ahead of him
+  const right = weakRect(gb('rec', 'eyeBeam', 1), golem, floor)!;
+  const left = weakRect(gb('rec', 'eyeBeam', -1), golem, floor)!;
+  assert.equal(Math.round(left.x + left.w / 2 - 1500), -Math.round(right.x + right.w / 2 - 1500));
+});
+
+test('the Idol Sanctum: every ledge can be reached, there is a vine, and the ceiling cracks only at the last phase', () => {
+  const ps = golem.perches ?? [];
+  assert.ok(ps.length >= 3);
+  const spans = ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
+  for (const sp of spans) {
+    const ok = reached.some((r) => {
+      const rise = sp.up - r.up;
+      const gap = Math.max(0, sp.x0 - r.x1, r.x0 - sp.x1);
+      return (rise <= SAFE.rise1 && gap <= SAFE.gap1) || (rise <= SAFE.rise2 && gap <= SAFE.gap2 * 0.7);
+    });
+    assert.ok(ok, `ledge at ${sp.x0}-${sp.x1}, ${sp.up} up, cannot be reached`);
+    reached.push(sp);
+  }
+  assert.ok((golem.vines ?? []).length >= 1);
+  const made: unknown[] = [];
+  const ctx = {
+    arena: { left: 1000, right: 2600, floor }, hazards: made, text: () => {}, shake: () => {}, px: 1800, py: floor,
+  } as unknown as import('./bossAI.ts').BossCtx;
+  golem.onPhase!(2, gb('idle'), ctx);
+  assert.equal(made.length, 0);
+  golem.onPhase!(3, gb('idle'), ctx);
+  assert.equal(made.length, 5);
+});
+
+test('the Golem hammers ahead of himself, spins low and only uses the phase-gated moves when he has the health for them', () => {
+  assert.equal(golem.moves.eyeBeam.phase, 2);
+  assert.equal(golem.moves.hammerSpin.phase, 2);
+  assert.equal(golem.moves.quake.phase, 3);
+  assert.equal(golem.moves.crystalRift.phase, 3);
+  assert.ok(!golem.moves.fistSlam.phase && !golem.moves.rockfall.phase && !golem.moves.hammerSmash.phase);
+  // the smash and the rift put crystal columns on the floor; the rift is six of them
+  const made: { x: number }[] = [];
+  const ctx = { arena: { left: 1000, right: 2600, floor }, hazards: made, shake: () => {}, thud: () => {}, debris: () => {}, burst: () => {}, flash: () => {}, text: () => {}, px: 1900, py: floor } as unknown as import('./bossAI.ts').BossCtx;
+  golem.moves.crystalRift.onAct!(gb('act', 'crystalRift'), ctx);
+  assert.ok(made.length >= 6, 'six crystals in the rift');
+  assert.ok(made.every((h) => h.x > 1000 && h.x < 2600));
+});
+
+// ───────────────────────────── Night-Wing Monarch (world 8): the ninth giant ─────────────────────────────
+const monarch = bossDefFor(8);
+const mb = (state: 'idle' | 'rec' | 'stun' | 'act', move?: string, facing: 1 | -1 = 1): BossEntity => {
+  const b = { ...mk(state, facing), x: 1500, width: monarch.w, height: monarch.h } as BossEntity;
+  if (move) b.ai!.move = move;
+  b.ai!.air = 0;
+  return b;
+};
+
+test('the Night-Wing Monarch is a giant with a twenty-three-hit bar, her own lair and room to move', () => {
+  assert.ok((monarch.scale ?? 1) >= 2.2 && monarch.w >= 240);
+  assert.equal(monarch.hits, 23);
+  assert.equal(monarch.hp, (monarch.hits ?? 0) * 2);
+  assert.ok(monarch.lair === 'monarch' && monarch.entrance && monarch.aimText);
+  assert.equal(lairOwnsScene('monarch'), true);
+  const stage = generateStage(generateAllLevels().find((l) => l.id === '8-10')!);
+  const a = stage.arena!;
+  assert.ok(a.right - a.left >= monarch.w + 700);
+  assert.equal(stage.boss!.maxHp, monarch.hp);
+  assert.ok(stage.boss!.x + monarch.w / 2 <= a.right, 'she starts inside the fence');
+  assert.equal(validateStage(stage).ok, true);
+});
+
+test('the Monarch is weak somewhere different after each move, and every spot can be reached', () => {
+  const moves = ['screech', 'swoop', 'stalactites', 'sonicDive', 'wingBuffet', 'echoRings', 'batFlock'];
+  const spots: Record<string, { x: number; y: number; w: number; h: number }> = {};
+  for (const m of moves) {
+    assert.ok(monarch.moves[m], `${m} is a move`);
+    const r = weakRect(mb('rec', m), monarch, floor)!;
+    assert.ok(r, m);
+    spots[m] = r;
+    assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, `${m}: bottom of the spot is within a double jump of the floor`);
+    assert.ok(floor - r.y > 0, `${m}: the spot is above the floor`);
+  }
+  const keys = Object.keys(spots).map((m) => `${Math.round(spots[m].x)}/${Math.round(spots[m].y)}`);
+  assert.equal(new Set(keys).size, keys.length, 'no two moves open the same spot');
+  // the wing joint after the swoop is behind her, the mouth after the screech in front
+  assert.ok(spots.swoop.x + spots.swoop.w / 2 < 1500 && spots.screech.x + spots.screech.w / 2 > 1500);
+  const stun = weakRect(mb('stun', 'wingBuffet'), monarch, floor)!;
+  assert.equal(Math.round(stun.x + stun.w / 2), 1500 + monarch.weakStun!.dx);
+  const def = weakRect(mb('rec', undefined), monarch, floor)!;
+  assert.equal(Math.round(def.x + def.w / 2), 1500 + monarch.weak!.dx);
+  const left = weakRect(mb('rec', 'swoop', -1), monarch, floor)!;
+  assert.ok(left.x + left.w / 2 > 1500, 'facing left, the joint behind her is on the right');
+});
+
+test('the Karst Roost: every ledge can be reached, there is a root rope, and the roost sheds four bats at the last phase only', () => {
+  const ps = monarch.perches ?? [];
+  assert.ok(ps.length >= 3);
+  const spans = ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
+  for (const sp of spans) {
+    const ok = reached.some((r) => {
+      const rise = sp.up - r.up;
+      const gap = Math.max(0, sp.x0 - r.x1, r.x0 - sp.x1);
+      return (rise <= SAFE.rise1 && gap <= SAFE.gap1) || (rise <= SAFE.rise2 && gap <= SAFE.gap2 * 0.7);
+    });
+    assert.ok(ok, `ledge at ${sp.x0}-${sp.x1}, ${sp.up} up, cannot be reached`);
+    reached.push(sp);
+  }
+  assert.ok((monarch.vines ?? []).length >= 1);
+  const made: { look?: string }[] = [];
+  const ctx = { arena: { left: 1000, right: 2600, floor }, hazards: made, text: () => {}, shake: () => {} } as unknown as import('./bossAI.ts').BossCtx;
+  monarch.onPhase!(2, mb('idle'), ctx);
+  assert.equal(made.length, 0);
+  monarch.onPhase!(3, mb('idle'), ctx);
+  assert.equal(made.length, 4);
+  assert.ok(made.every((h) => h.look === 'bat'));
+});
+
+test('the Monarch gates her moves by phase, and the wing buffet grounds her', () => {
+  assert.equal(monarch.moves.stalactites.phase, 2);
+  assert.equal(monarch.moves.echoRings.phase, 2);
+  assert.equal(monarch.moves.sonicDive.phase, 3);
+  assert.equal(monarch.moves.batFlock.phase, 3);
+  assert.ok(!monarch.moves.screech.phase && !monarch.moves.swoop.phase && !monarch.moves.wingBuffet.phase);
+  // the buffet ends on the floor with her winded
+  assert.equal(monarch.moves.wingBuffet.stunAfter!(mb('rec', 'wingBuffet')), 1.8);
+  const made: { x: number; vx: number; kind: string }[] = [];
+  const ctx = { arena: { left: 1000, right: 2600, floor }, hazards: made, shake: () => {}, thud: () => {}, debris: () => {}, px: 1900, py: floor, roar: () => {} } as unknown as import('./bossAI.ts').BossCtx;
+  const b = mb('act', 'wingBuffet');
+  b.ai!.air = 140;
+  monarch.moves.wingBuffet.onAct!(b, ctx);
+  assert.equal(b.ai!.air, 0);
+  assert.equal(made.filter((h) => h.kind === 'shock').length, 2, 'a gust each way');
+  assert.ok(!b.ai!.d.crashed, 'she is not winded yet: there is a second beat to come');
+  monarch.moves.wingBuffet.tick!(b, ctx, 1 / 60, 0.55);
+  assert.equal(made.filter((h) => h.kind === 'shock').length, 4, 'the second, faster beat');
+  monarch.moves.wingBuffet.tick!(b, ctx, 1 / 60, 0.96);
+  assert.equal(b.ai!.d.crashed, 1);
+});
+
+test('the echo rings alternate low and high, and the bat flock is three low bats then three high', () => {
+  const made: { kind: string; y: number; vx: number; look?: string }[] = [];
+  const ctx = { arena: { left: 1000, right: 2600, floor }, hazards: made, shake: () => {}, px: 1900, py: floor } as unknown as import('./bossAI.ts').BossCtx;
+  const e = mb('act', 'echoRings');
+  monarch.moves.echoRings.onAct!(e, ctx);
+  for (const t of [0.05, 0.55, 1.05]) monarch.moves.echoRings.tick!(e, ctx, 1 / 60, t);
+  assert.deepEqual(made.map((h) => h.kind), ['shock', 'shock', 'wave', 'wave', 'shock', 'shock']);
+  made.length = 0;
+  const f = mb('act', 'batFlock');
+  f.ai!.d.dir = 1;
+  monarch.moves.batFlock.onAct!(f, ctx);
+  for (const t of [0.05, 0.35, 0.65, 1.25, 1.55, 1.85]) monarch.moves.batFlock.tick!(f, ctx, 1 / 60, t);
+  assert.equal(made.length, 6);
+  assert.ok(made.every((h) => h.look === 'bat' && h.vx > 0));
+  const heights = made.map((h) => floor - h.y);
+  assert.ok(heights.slice(0, 3).every((y) => y < 60) && heights.slice(3).every((y) => y > 100), 'low run, then high run');
+});
+
+// ───────────────────────────── General Iron-Claw (world 10): the tenth and last giant ─────────────────────────────
+const general = bossDefFor(10);
+const ib = (state: 'idle' | 'tell' | 'rec' | 'stun' | 'act', move?: string, facing: 1 | -1 = 1): BossEntity => {
+  const b = { ...mk(state, facing), x: 1500, width: general.w, height: general.h } as BossEntity;
+  if (move) b.ai!.move = move;
+  b.ai!.air = 0;
+  return b;
+};
+
+test('General Iron-Claw is a giant with a twenty-six-hit bar, his own lair and room to move', () => {
+  assert.ok((general.scale ?? 1) >= 1.9 && general.w >= 180);
+  assert.equal(general.hits, 26);
+  assert.equal(general.hp, (general.hits ?? 0) * 2);
+  assert.ok(general.lair === 'warcamp' && general.entrance && general.aimText);
+  assert.equal(lairOwnsScene('warcamp'), true);
+  const stage = generateStage(generateAllLevels().find((l) => l.id === '10-10')!);
+  const a = stage.arena!;
+  assert.ok(a.right - a.left >= general.w + 700);
+  assert.equal(stage.boss!.maxHp, general.hp);
+  assert.ok(stage.boss!.x + general.w / 2 <= a.right, 'he starts inside the fence');
+  assert.equal(validateStage(stage).ok, true);
+});
+
+test('the General is weak somewhere different after each move, and every spot can be reached', () => {
+  const moves = ['staffSlam', 'spearThrow', 'warCry', 'groundPound', 'clawCombo', 'quakeStride', 'warlordSlam'];
+  const spots: Record<string, { x: number; y: number; w: number; h: number }> = {};
+  for (const m of moves) {
+    assert.ok(general.moves[m], `${m} is a move`);
+    const r = weakRect(ib('rec', m), general, floor)!;
+    assert.ok(r, m);
+    spots[m] = r;
+    assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, `${m}: bottom of the spot is within a double jump of the floor`);
+    assert.ok(floor - r.y > 0, `${m}: the spot is above the floor`);
+  }
+  const keys = Object.keys(spots).map((m) => `${Math.round(spots[m].x)}/${Math.round(spots[m].y)}`);
+  assert.equal(new Set(keys).size, keys.length, 'no two moves open the same spot');
+  // the cape after the stride is behind him, the knuckles after the combo in front of him
+  assert.ok(spots.quakeStride.x + spots.quakeStride.w / 2 < 1500 && spots.clawCombo.x + spots.clawCombo.w / 2 > 1500);
+  // and a low spot (the foot) as well as high ones
+  assert.ok(floor - (spots.groundPound.y + spots.groundPound.h / 2) < 80 && floor - (spots.staffSlam.y + spots.staffSlam.h / 2) > 150);
+  const stun = weakRect(ib('stun', 'ironCharge'), general, floor)!;
+  assert.equal(Math.round(stun.x + stun.w / 2), 1500 + general.weakStun!.dx);
+  const def = weakRect(ib('rec', undefined), general, floor)!;
+  assert.equal(Math.round(def.x + def.w / 2), 1500 + general.weak!.dx);
+  const left = weakRect(ib('rec', 'clawCombo', -1), general, floor)!;
+  assert.ok(left.x + left.w / 2 < 1500, 'facing left, the knuckles in front of him are on the left');
+});
+
+test('the War Camp: every ledge can be reached, there is a chain, and the palisade burns at the last phase only', () => {
+  const ps = general.perches ?? [];
+  assert.ok(ps.length >= 3);
+  const spans = ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
+  for (const sp of spans) {
+    const ok = reached.some((r) => {
+      const rise = sp.up - r.up;
+      const gap = Math.max(0, sp.x0 - r.x1, r.x0 - sp.x1);
+      return (rise <= SAFE.rise1 && gap <= SAFE.gap1) || (rise <= SAFE.rise2 && gap <= SAFE.gap2 * 0.7);
+    });
+    assert.ok(ok, `ledge at ${sp.x0}-${sp.x1}, ${sp.up} up, cannot be reached`);
+    reached.push(sp);
+  }
+  assert.ok((general.vines ?? []).length >= 1);
+  const made: { kind: string; look?: string; dir?: number }[] = [];
+  const ctx = { arena: { left: 1000, right: 2800, floor }, hazards: made, text: () => {}, shake: () => {} } as unknown as import('./bossAI.ts').BossCtx;
+  general.onPhase!(2, ib('idle'), ctx);
+  assert.equal(made.length, 0);
+  general.onPhase!(3, ib('idle'), ctx);
+  assert.equal(made.length, 2);
+  assert.ok(made.every((h) => h.kind === 'strip' && h.look === 'blaze'));
+  assert.deepEqual(made.map((h) => h.dir).sort(), [-1, 1], 'one from each end');
+});
+
+test('the General gates his moves by phase, and the quake stride and the claw combo have their beats', () => {
+  assert.equal(general.moves.ironCharge.phase, 2);
+  assert.equal(general.moves.quakeStride.phase, 2);
+  assert.equal(general.moves.groundPound.phase, 3);
+  assert.equal(general.moves.warlordSlam.phase, 3);
+  assert.ok(!general.moves.staffSlam.phase && !general.moves.spearThrow.phase && !general.moves.warCry.phase && !general.moves.clawCombo.phase);
+  const made: { kind: string; look?: string; vx?: number }[] = [];
+  const ctx = {
+    arena: { left: 1000, right: 2800, floor }, hazards: made, shake: () => {}, thud: () => {}, debris: () => {}, text: () => {}, roar: () => {}, px: 1900, py: floor,
+  } as unknown as import('./bossAI.ts').BossCtx;
+  // four stamps, a shock each, all going the way he faces
+  const q = ib('act', 'quakeStride');
+  general.moves.quakeStride.onAct!(q, ctx);
+  for (const t of [0.25, 0.75, 1.25, 1.7]) general.moves.quakeStride.tick!(q, ctx, 1 / 60, t);
+  assert.equal(made.filter((h) => h.kind === 'shock').length, 4);
+  assert.ok(made.every((h) => (h.vx ?? 0) > 0));
+  // the combo's third swing throws a slash along the floor, once
+  made.length = 0;
+  const c = ib('act', 'clawCombo');
+  general.moves.clawCombo.tick!(c, ctx, 1 / 60, 0.2);
+  assert.equal(made.length, 0);
+  general.moves.clawCombo.tick!(c, ctx, 1 / 60, 1.0);
+  general.moves.clawCombo.tick!(c, ctx, 1 / 60, 1.05);
+  assert.equal(made.length, 1);
+});
+
+test('the warlord slam: a column at the mark and four more either side of it, and a shock each way', () => {
+  const made: { id: number; kind: string; x: number; look?: string }[] = [];
+  const ctx = {
+    arena: { left: 1000, right: 2800, floor }, hazards: made, shake: () => {}, thud: () => {}, debris: () => {}, text: () => {}, roar: () => {}, px: 1900, py: floor,
+  } as unknown as import('./bossAI.ts').BossCtx;
+  const b = ib('tell', 'warlordSlam');
+  general.moves.warlordSlam.onTell!(b, ctx);
+  assert.equal(made.length, 1);
+  assert.equal(made[0].kind, 'mark');
+  b.ai!.t = 0.3;
+  ctx.px = 2000;
+  general.moves.warlordSlam.tellTick!(b, ctx, 0.2);
+  assert.ok(made[0].x > 1900, 'the mark follows the hero for the first part of the wind-up');
+  b.ai!.t = 1.2;
+  const lock = made[0].x;
+  ctx.px = 1200;
+  general.moves.warlordSlam.tellTick!(b, ctx, 0.2);
+  assert.equal(made[0].x, lock, 'and then it stays where it is');
+  general.moves.warlordSlam.onAct!(b, ctx);
+  const cols = made.filter((h) => h.kind === 'column');
+  assert.equal(cols.length, 5);
+  assert.ok(cols.every((h) => h.look === 'lightning'));
+  assert.equal(made.filter((h) => h.kind === 'shock').length, 2);
 });

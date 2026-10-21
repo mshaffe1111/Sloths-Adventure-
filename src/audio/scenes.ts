@@ -5,6 +5,8 @@ import { hashStr } from './theory.ts';
 import { BOSS_THEME, WORLD_THEME } from './themes.ts';
 import { stageThemeId } from './composer.ts';
 import { PACE_CODE, PACE_TEMPO, paceFor } from './orchestrate.ts';
+import { cueId } from './score.ts';
+import type { StoryCue } from '../game/story.ts';
 
 export interface SceneChoice {
   id: string;
@@ -26,10 +28,25 @@ export function stageTempo(seed: number, mini: number): number {
 export interface PanelInfo {
   chapter: string;
   scene: { world: number; mood: string };
+  /** the piece the story script asks for (see score.ts); unset = the old chapter-and-mood rule */
+  cue?: StoryCue;
+  /** how full that piece is, 0..1; unset = the cue's own default (CUE_INTENSITY) */
+  intensity?: number;
 }
 
-/** music for one panel of a cutscene, chosen from its chapter title (and mood as a fallback) */
+/** how full each cue's piece plays when the script does not say: the quiet ones low, the fights and the finish high */
+export const CUE_INTENSITY: Record<StoryCue, number> = {
+  pokey: 0.5, meeca: 0.6, bloom: 0.5, grandma: 0.5, journey: 0.6, comedy: 0.5, tender: 0.4, sorrow: 0.4, dread: 0.35,
+  war: 0.6, chase: 0.7, reveal: 0.35, resolve: 0.5, triumph: 0.7, mercy: 0.6, finale: 0.7, hush: 0.2,
+};
+
+/** music for one panel of a cutscene: the piece its script asks for (cue), or else one chosen from its chapter title (and mood as a fallback) */
 export function sceneForPanel(p: PanelInfo): SceneChoice {
+  if (p.cue) {
+    const given = p.intensity;
+    const k = given !== undefined && Number.isFinite(given) ? given : CUE_INTENSITY[p.cue] ?? 0.5;
+    return { id: cueId(p.cue), intensity: Math.max(0, Math.min(1, k)) };
+  }
   const ch = p.chapter.toUpperCase();
   const world = Math.max(1, Math.min(10, p.scene.world || 1));
   if (ch.startsWith('PROLOGUE')) return { id: 'jennifur', intensity: 0.5 };
@@ -59,6 +76,16 @@ export function sceneForPanel(p: PanelInfo): SceneChoice {
     default:
       return { id: 'jennifur', intensity: 0.5 };
   }
+}
+
+/**
+ * Whether a panel's one-off sting should sound now: not while the chapter's title card is up, and not before the picture has begun to
+ * show its words (at once for a picture with none). `fresh` is the first pass after the panel changed, when the card and typing state
+ * on hand are still the last panel's, so it never counts unless the panel has neither a card nor words.
+ */
+export function stingDue(s: { fresh: boolean; wantsCard: boolean; cardUp: boolean; shown: number; textLength: number }): boolean {
+  if (s.fresh) return !s.wantsCard && s.textLength === 0;
+  return !s.cardUp && (s.textLength === 0 || s.shown > 0);
 }
 
 export type GameplayScreen = 'title' | 'world_map' | 'playing' | 'paused' | 'victory' | 'game_over' | 'story_ending';

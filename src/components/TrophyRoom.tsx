@@ -212,7 +212,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
             ))}
             {onReplayMemory && (
               <>
-                <div className="tr-sec">Memories</div>
+                <div className="tr-sec">Story scenes</div>
                 <div className="tr-grid tr-grid-j">
                   {MEMORY_ORDER.map((id) => {
                     const got = memories.includes(id);
@@ -225,7 +225,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                         onClick={got ? () => onReplayMemory(id) : undefined}
                         onKeyDown={got ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onReplayMemory(id); } } : undefined}
                       >
-                        <div className="tr-cpic">{got ? '🎞️' : '🔒'}</div>
+                        <div className="tr-cpic">{got ? (MEMORIES[id].kind === 'memory' ? '🎞️' : '📜') : '🔒'}</div>
                         <div className="tr-cn">{got ? MEMORIES[id].title : '???'}</div>
                         <div className="tr-ct">{got ? 'Tap to watch again' : MEMORIES[id].hint}</div>
                       </div>

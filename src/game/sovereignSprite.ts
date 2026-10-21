@@ -23,13 +23,25 @@ export const sovereignSprite = createPaintedBoss({
     if (br.state === 'dying') name = br.t < 0.6 ? 'hurt' : 'dead';
     else if (br.state === 'stun') name = 'stunned';
     else if (br.state === 'roar') name = 'alert';
-    else if (br.state === 'tell') name = m?.pose === 'spit' ? 'alert' : br.move === 'diveBomb' ? 'up' : 'prep';
-    else if (br.state === 'act') {
+    else if (br.state === 'tell') {
+      if (m?.pose === 'spit') name = 'alert';
+      else if (br.move === 'diveBomb') name = 'up';
+      else if (br.move === 'snatch') name = 'divestart';
+      else name = 'prep';
+    } else if (br.state === 'act') {
       if (br.move === 'diveBomb') name = br.air > 30 ? 'diveplunge' : 'impact';
-      else if (m?.pose === 'spit') name = 'shards';
+      else if (br.move === 'featherVolley') name = 'shards';
+      else if (br.move === 'snatch') name = 'talon';
+      else if (br.move === 'talonRake') name = 'beak';
       else name = 'bank';
-    } else if (br.state === 'rec') name = br.move === 'diveBomb' ? 'impact' : FLAP[Math.floor(time * 6) % FLAP.length];
-    else name = FLAP[Math.floor(time * (moving ? 10 : 6.5)) % FLAP.length];
+    } else if (br.state === 'rec') {
+      if (br.move === 'diveBomb') name = 'impact';
+      else if (br.move === 'featherVolley') name = 'alert';
+      else if (br.move === 'skySweep') name = 'evasive';
+      else if (br.move === 'snatch') name = 'snatch';
+      else if (br.move === 'talonRake') name = 'beak';
+      else name = FLAP[Math.floor(time * 6) % FLAP.length];
+    } else name = FLAP[Math.floor(time * (moving ? 10 : 6.5)) % FLAP.length];
     if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) name = 'hurt';
     return name;
   },

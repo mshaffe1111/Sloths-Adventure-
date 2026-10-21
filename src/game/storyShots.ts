@@ -28,8 +28,10 @@ export type Ease = 'inOut' | 'in' | 'out' | 'linear';
 /** one beat of an actor's performance: from `at` it shows `frame` and moves toward the offsets given here over `dur` seconds */
 export interface PoseKey {
   at: number;
-  /** a painted frame name, or several that play as a loop (a walk) at `fps` */
-  frame: string | string[];
+  /** a painted frame name, or several that play as a loop at `fps`. A list of walk or run frames that travels (`dx` with `dur`) is a gait: the frames follow the ground, not the clock. */
+  frame?: string | string[];
+  /** instead of a frame: a mood of the actor (storyActors.ts), played from the moment this beat starts */
+  mood?: string;
   fps?: number;
   /** offset from the actor's place, as a share of the scene width / height; stays until a later key changes it */
   dx?: number;
@@ -82,7 +84,13 @@ export function cameraAt(m: CameraMove, t: number): Cam {
 }
 
 export interface PoseNow {
+  /** the painted frame ('' when the beat is a mood) */
   frame: string;
+  /** the mood the beat plays, and how long it has been playing (seconds) */
+  mood?: string;
+  since: number;
+  /** a list of walk or run frames that travels: how far it has gone in this beat and how far it goes, as shares of the scene width, and how long it takes */
+  travel?: { done: number; total: number; dur: number; frames: string[]; arrived: boolean };
   dx: number;
   dy: number;
   rot: number;
@@ -114,15 +122,23 @@ export function poseAt(keys: PoseKey[], t: number): PoseNow {
   const k = keys[active];
   const u = (k.dur ?? 0) <= 0 ? 1 : clamp01((t - k.at) / (k.dur as number));
   const e = easeFn(u, k.ease);
-  let frame: string;
+  let frame = '';
+  let travel: PoseNow['travel'];
   if (Array.isArray(k.frame)) {
     const n = k.frame.length;
     frame = k.frame[Math.floor(Math.max(0, t - k.at) * (k.fps ?? 8)) % n];
-  } else {
+    const total = Math.abs(to.dx - from.dx);
+    if (total > 1e-4 && (k.dur ?? 0) > 0) {
+      travel = { done: Math.abs(from.dx + (to.dx - from.dx) * e - from.dx), total, dur: k.dur as number, frames: k.frame, arrived: u >= 1 };
+    }
+  } else if (k.frame !== undefined) {
     frame = k.frame;
   }
   return {
     frame,
+    mood: k.mood,
+    since: Math.max(0, t - k.at),
+    travel,
     dx: from.dx + (to.dx - from.dx) * e,
     dy: from.dy + (to.dy - from.dy) * e,
     rot: from.rot + (to.rot - from.rot) * e,

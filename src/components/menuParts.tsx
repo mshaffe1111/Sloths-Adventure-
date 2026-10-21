@@ -2,6 +2,7 @@ import React from 'react';
 import { polishEnabled, setPolishPref } from '../game/polish.ts';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
+import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
@@ -40,6 +41,37 @@ export const PolishToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Wind, glow, soft shadows and richer ground. Turn it off if the game feels slow.</small>
+    </div>
+  );
+};
+
+/** the story-lines-while-you-play switch (saved on the device; on unless turned off) */
+export const WaysideToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => waysideEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#f9a8d4" size={22}>
+            <path d="M4 5h16v10H9l-5 4z" />
+            <path d="M8 9h8M8 12h5" />
+          </Icon>
+          Story lines in stages
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setWaysidePref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">Now and then Dot, Pokey or the petal says a short line while you play. They never pause the game. Turn them off if you would rather just play.</small>
     </div>
   );
 };

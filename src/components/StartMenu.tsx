@@ -3,7 +3,7 @@ import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { SKILLS, type SkillId } from '../game/skills.ts';
 import { SkillIcon } from './SkillIcon.tsx';
 import { Icon, Sliders, COARSE, PolishToggle, OrchSfxToggle } from './PauseMenu.tsx';
-import { ControlsSetting } from './menuParts.tsx';
+import { ControlsSetting, WaysideToggle } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 
 interface StartMenuProps {
@@ -133,6 +133,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({ isMuted, onToggleMute, onC
       </div>
       <ControlsSetting />
       <PolishToggle />
+      <WaysideToggle />
       <OrchSfxToggle />
     </div>
   </div>

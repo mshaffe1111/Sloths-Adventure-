@@ -7,6 +7,7 @@ import { IRONCLAW_FRAMES } from './ironclawAtlasData.ts';
 const USED = [
   'idle', 'march0', 'march1', 'march2', 'hurt', 'stunned', 'knockback', 'groundhit', 'defeat1', 'defeat2', 'defeat3', 'fallen',
   'roar', 'enrage3', 'rageblast', 'overhead1', 'overhead2', 'armed', 'slash', 'block', 'stomp1', 'stomp2', 'charge', 'run',
+  'claw1', 'claw2', 'punch2', 'crouch', 'ultslam', 'quakewalk',
 ];
 
 test('every pose the Iron-Claw pick asks for is in the atlas', () => {
@@ -16,7 +17,7 @@ test('every pose the Iron-Claw pick asks for is in the atlas', () => {
 test('every frame name in the pick source exists', () => {
   const src = readFileSync(new URL('./ironclawSprite.ts', import.meta.url), 'utf8');
   const names = new Set([...src.matchAll(/'([a-z0-9]+)'/g)].map((m) => m[1]));
-  for (const n of names) if (/^(march\d|idle|hurt|stunned|knockback|groundhit|defeat\d|fallen|roar|enrage3|rageblast|overhead\d|armed|slash|block|stomp\d|charge|run)$/.test(n)) assert.ok(IRONCLAW_FRAMES[n], `frame ${n}`);
+  for (const n of names) if (/^(march\d|idle|hurt|stunned|knockback|groundhit|defeat\d|fallen|roar|enrage3|rageblast|overhead\d|armed|slash|block|stomp\d|charge|run|claw\d|punch\d|crouch|ultslam|quakewalk)$/.test(n)) assert.ok(IRONCLAW_FRAMES[n], `frame ${n}`);
 });
 
 test('each frame has a size and a body anchor', () => {

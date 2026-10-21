@@ -10,6 +10,8 @@ export type GameScreen =
   | 'boss_intro'
   | 'story_ending'
   | 'world_story'
+  /** the scene halfway through a world: Dot and a note from Meeca (once) */
+  | 'world_mid'
   | 'boss_defeat'
   | 'ending_story'
   /** a remembered scene (a flashback between worlds, or one replayed from the Library) */

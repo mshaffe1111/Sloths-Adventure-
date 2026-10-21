@@ -32,14 +32,22 @@ export const golemSprite = createPaintedBoss({
       else if (mv === 'rockfall') name = 'roar';
       else if (mv === 'eyeBeam') name = 'enrage';
       else if (mv === 'quake') name = 'tremor';
+      else if (mv === 'hammerSmash' || mv === 'crystalRift') name = 'charge1';
+      else if (mv === 'hammerSpin') name = 'charge2';
       else name = 'roar';
     } else if (br.state === 'act') {
       if (mv === 'fistSlam') name = 'doublefist';
       else if (mv === 'rockfall') name = 'roar';
       else if (mv === 'eyeBeam') name = 'shards';
       else if (mv === 'quake') name = 'quake';
+      else if (mv === 'hammerSmash') name = 'overhead';
+      else if (mv === 'hammerSpin') name = 'spin';
+      else if (mv === 'crystalRift') name = 'rift';
       else name = 'roar';
-    } else if (br.state === 'rec') name = mv === 'fistSlam' ? 'doublefist' : mv === 'quake' ? 'quake' : mv === 'eyeBeam' ? 'shards' : 'march1';
+    } else if (br.state === 'rec') {
+      const rec: Record<string, string> = { fistSlam: 'doublefist', quake: 'quake', eyeBeam: 'shards', hammerSmash: 'overhead', hammerSpin: 'hurt', crystalRift: 'rift' };
+      name = (mv && rec[mv]) || 'march1';
+    }
     else if (moving) name = MARCH[Math.floor((dist / STRIDE) * MARCH.length) % MARCH.length];
     else name = b.phase >= 2 ? 'enrage' : 'march1';
     if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) name = 'hurt';

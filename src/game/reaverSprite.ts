@@ -20,19 +20,29 @@ export const reaverSprite = createPaintedBoss({
   url: new URL('../assets/enemies/reaver-atlas.webp', import.meta.url).href,
   frames: REAVER_FRAMES,
   k: 1.2,
-  pick: ({ b, br, m, moving, dist }) => {
+  pick: ({ b, br, moving, dist }) => {
     let name: string;
+    const mv = br.move;
     if (br.state === 'dying') name = br.t < 0.6 ? 'hurt' : br.t < 1.3 ? 'deadback' : 'deadheap';
     else if (br.state === 'stun') name = 'stunned';
     else if (br.state === 'roar') name = 'roar';
-    else if (br.state === 'tell') name = m?.pose === 'leap' ? 'sweep' : m?.pose === 'lunge' ? 'guard' : m?.pose === 'spit' ? 'sweep' : 'roar';
+    else if (br.state === 'tell') name = mv === 'vaultSmash' || mv === 'mudSling' ? 'sweep' : mv === 'warCry' ? 'roar' : 'guard';
     else if (br.state === 'act') {
-      if (m?.pose === 'leap') name = br.air > 14 ? 'vault' : 'smash';
-      else if (m?.pose === 'lunge') name = 'thrust';
-      else if (m?.pose === 'spit') name = 'mudsling';
+      if (mv === 'vaultSmash') name = br.air > 14 ? 'vault' : 'smash';
+      else if (mv === 'spearThrust') name = 'thrust';
+      else if (mv === 'spearSweep') name = 'sweep';
+      else if (mv === 'spearSwipe') name = 'swipe';
+      else if (mv === 'mudSling') name = 'mudsling';
       else name = 'roar';
-    } else if (br.state === 'rec') name = m?.pose === 'leap' ? 'smash' : m?.pose === 'lunge' ? 'thrust' : 'idle';
-    else if (moving) name = ADVANCE[Math.floor((dist / STRIDE) * ADVANCE.length) % ADVANCE.length];
+    } else if (br.state === 'rec') {
+      if (mv === 'vaultSmash') name = 'smash';
+      else if (mv === 'spearThrust') name = 'thrust';
+      else if (mv === 'spearSweep') name = 'sweep';
+      else if (mv === 'spearSwipe') name = 'swipe';
+      else if (mv === 'mudSling') name = 'mudsling';
+      else if (mv === 'warCry') name = 'roar';
+      else name = 'idle';
+    } else if (moving) name = ADVANCE[Math.floor((dist / STRIDE) * ADVANCE.length) % ADVANCE.length];
     else name = 'idle';
     if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) name = 'hurt';
     return name;

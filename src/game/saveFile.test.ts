@@ -94,7 +94,10 @@ test('a new game forgets progress and the secret but keeps sound settings and un
 test('a new game can skip the story: every world story beat is marked seen', () => {
   const st = memStore(sample);
   resetProgress(st, { skipStory: true });
-  for (let w = 1; w <= 10; w++) assert.equal(st.m.get(`sloth_story_w${w}`), '1');
+  for (let w = 1; w <= 10; w++) {
+    assert.equal(st.m.get(`sloth_story_w${w}`), '1');
+    assert.equal(st.m.get(`sloth_story_m${w}`), '1');
+  }
   assert.equal(st.m.has('sloth_lvl_1-1'), false);
 });
 

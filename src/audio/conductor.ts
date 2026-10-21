@@ -12,7 +12,7 @@ import { AudioCore } from './core.ts';
 import { Playback, type KeyInfo } from './music.ts';
 import { SFX, runFx } from './sfx.ts';
 import { speechBlip } from './speech.ts';
-import { playSting } from './stingers.ts';
+import { playSting, STORY_STING_NAMES, stingDuck, stingVoices } from './stingers.ts';
 import { themeById } from './themes.ts';
 
 // how far ahead of the audio clock the music is scheduled: long enough to ride out a stalled main thread
@@ -159,6 +159,21 @@ export class Conductor {
       .catch(() => {});
   }
 
+  private stingsWarm = false;
+  /** fetch, once, the recordings the story's stings play, so the first one is not played by the stand-in voices (the cue pieces have usually loaded most of them) */
+  warmStoryStings() {
+    const core = this.core;
+    if (!core || this.stingsWarm) return;
+    this.stingsWarm = true;
+    void import('./orchLoader.ts')
+      .then((m) => {
+        const need = new Set<string>();
+        for (const n of STORY_STING_NAMES) for (const v of stingVoices(n)) for (const g of m.VOICE_GROUPS[v] ?? []) if (!core.orch.has(g)) need.add(g);
+        return need.size ? m.loadOrch(core, need) : undefined;
+      })
+      .catch(() => {});
+  }
+
   private onVisibility = () => {
     if (!this.ctx) return;
     if (document.hidden) this.ctx.suspend().catch(() => {});
@@ -288,6 +303,15 @@ export class Conductor {
     if (!core || this.muted || core.ctx.state !== 'running') return 0;
     const dur = playSting(core, name, core.ctx.currentTime + 0.05);
     this.duck(0.12, Math.max(0.2, dur - 1.6), 1.4);
+    return dur;
+  }
+
+  /** one of the story's short stings (see STORY_STINGS) as a picture appears: the music dips under it only a little, then comes back */
+  storySting(name: string) {
+    const core = this.core;
+    if (!core || this.muted || core.ctx.state !== 'running') return 0;
+    const dur = playSting(core, name, core.ctx.currentTime + 0.05);
+    if (dur > 0) this.duck(stingDuck(name), Math.max(0.2, dur - 1.4), 1.2);
     return dur;
   }
 

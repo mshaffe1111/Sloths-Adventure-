@@ -1,10 +1,11 @@
 import type { BossEntity, PlayerState } from './types.ts';
 import { drawPaintedCardBoss, drawPaintedBossFrame } from './bossArt.ts';
-import { heroStill, heroFace } from './heroSprite.ts';
+import { POKEY, drawPokeyFace, VISEMES, warmStoryHero } from './heroStory.ts';
 import { cameraAt, drawFx, flashAt, poseAt, shakeAt } from './storyShots.ts';
 import { renderScenery, renderOverlay, withBakeScale } from './scenery.ts';
 import { drawHeroSloth, drawGirlfriendDaisy, drawBossEntity } from './vectorArt.ts';
-import { drawJennifurSprite } from './jennifurSprite.ts';
+import { MEECA } from './jennifurSprite.ts';
+import { actorDx, footing, followScroll, GROUNDED, groundOf, shadowFor, showActor, type StoryCharacter } from './storyActors.ts';
 import { thornbarkSprite } from './thornbarkSprite.ts';
 import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor, ScenePhoto, BloomStage } from './story.ts';
@@ -14,6 +15,9 @@ import { photoUrl } from './photos.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
+
+// the painted Pokey (the standard hero and the cutscene poses) starts loading as soon as a story can be shown, so the first picture never opens in vector art
+warmStoryHero();
 
 function makePlayer(pose: SceneActor['pose'], facing: 1 | -1): PlayerState {
   return {
@@ -66,7 +70,8 @@ function drawSilhouette(
   ctx.restore();
 }
 
-function drawBranch(ctx: CanvasRenderingContext2D, y: number, w: number, h: number) {
+/** the mossy branch every picture stands on; `scroll` (px) is how far the camera has travelled along it (the grooves, the moss and the flowers go by at that speed) */
+function drawBranch(ctx: CanvasRenderingContext2D, y: number, w: number, h: number, scroll = 0) {
   const bark = ctx.createLinearGradient(0, y, 0, h);
   bark.addColorStop(0, '#8a5a2b');
   bark.addColorStop(0.5, '#5e3a1a');
@@ -82,8 +87,10 @@ function drawBranch(ctx: CanvasRenderingContext2D, y: number, w: number, h: numb
   // bark grooves
   ctx.strokeStyle = 'rgba(30, 16, 6, 0.45)';
   ctx.lineWidth = 3;
-  for (let i = 0; i < 9; i++) {
-    const x = (i / 9) * w + 20;
+  const gp = w / 9;
+  const go = ((scroll % gp) + gp) % gp;
+  for (let i = -1; i < 11; i++) {
+    const x = i * gp + 20 - go;
     ctx.beginPath();
     ctx.moveTo(x, y + 22);
     ctx.quadraticCurveTo(x + 18, y + 50, x - 6, y + 90);
@@ -97,22 +104,29 @@ function drawBranch(ctx: CanvasRenderingContext2D, y: number, w: number, h: numb
   ctx.beginPath();
   ctx.moveTo(-20, y + 8);
   ctx.quadraticCurveTo(w * 0.5, y - 10, w + 20, y + 6);
-  for (let x = w + 20; x >= -20; x -= 26) {
-    ctx.quadraticCurveTo(x - 13, y + 30 + ((x / 26) % 2) * 8, x - 26, y + 14);
+  const mo = ((scroll % 26) + 26) % 26;
+  for (let x = w + 20 - mo; x >= -46; x -= 26) {
+    const wx = x + scroll;
+    ctx.quadraticCurveTo(x - 13, y + 30 + (((wx / 26) % 2 + 2) % 2) * 8, x - 26, y + 14);
   }
   ctx.closePath();
   ctx.fill();
   // tiny flowers
-  [[0.12, 1], [0.34, 0], [0.62, 1], [0.86, 0]].forEach(([fx, k]) => {
-    ctx.fillStyle = k ? '#ff9a3c' : '#ff6b8e';
-    ctx.beginPath();
-    ctx.arc(fx * w, y - 2 + Math.sin(fx * 9) * 3, 4.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#ffe36a';
-    ctx.beginPath();
-    ctx.arc(fx * w, y - 2 + Math.sin(fx * 9) * 3, 1.6, 0, Math.PI * 2);
-    ctx.fill();
-  });
+  const fo = ((scroll % w) + w) % w;
+  for (let rep = -1; rep < 2; rep++) {
+    [[0.12, 1], [0.34, 0], [0.62, 1], [0.86, 0]].forEach(([fx, k]) => {
+      const x = fx * w + rep * w - fo;
+      if (x < -10 || x > w + 10) return;
+      ctx.fillStyle = k ? '#ff9a3c' : '#ff6b8e';
+      ctx.beginPath();
+      ctx.arc(x, y - 2 + Math.sin(fx * 9) * 3, 4.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffe36a';
+      ctx.beginPath();
+      ctx.arc(x, y - 2 + Math.sin(fx * 9) * 3, 1.6, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
 }
 
 /** the painted Heartbloom, in the four stages of its life (the sheet's bud, bloom, epic bloom and ultimate state) */
@@ -312,38 +326,128 @@ function drawMood(ctx: CanvasRenderingContext2D, mood: StoryScene['mood'], w: nu
   }
 }
 
+// ───────────── the ground and the people on it ─────────────
+
+/** feet stand this many px down into the moss of the branch (its top edge is the ground line), so they read as standing in it, not on its lip */
+const SINK = 5;
+
+/** a soft contact shadow on the ground line under something `bodyW` wide and `bodyH` tall (px) that is `lift` px off the ground */
+function drawContactShadow(ctx: CanvasRenderingContext2D, x: number, y: number, bodyW: number, bodyH: number, lift: number) {
+  const sh = shadowFor(bodyW, bodyH, lift);
+  ctx.save();
+  ctx.translate(x, y + sh.ry * 0.3);
+  ctx.scale(1, sh.ry / sh.rx);
+  const g = ctx.createRadialGradient(0, 0, 0, 0, 0, sh.rx);
+  g.addColorStop(0, `rgba(14, 20, 30, ${sh.alpha})`);
+  g.addColorStop(0.6, `rgba(14, 20, 30, ${sh.alpha * 0.75})`);
+  g.addColorStop(1, 'rgba(14, 20, 30, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(0, 0, sh.rx, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+/** a few soft puffs of dust where a runner's foot has just come down (drawn behind the legs): `age` is seconds since the footfall, `size` about a foot's length in px */
+function drawDust(ctx: CanvasRenderingContext2D, x: number, y: number, age: number, dir: number, size: number, seed: number) {
+  const u = age / 0.55;
+  if (u < 0 || u > 1) return;
+  ctx.save();
+  for (let i = 0; i < 3; i++) {
+    const r = size * (0.32 + 0.16 * i) * (0.55 + u * 0.95);
+    const px = x - dir * size * (0.15 + 0.5 * i) * (0.4 + u) + Math.sin(seed * 7.3 + i * 2.1) * size * 0.1;
+    const py = y - r * 0.35 - u * size * (0.25 + 0.2 * i);
+    const g = ctx.createRadialGradient(px, py, 0, px, py, r);
+    const a = 0.44 * (1 - u) * (1 - i * 0.15);
+    g.addColorStop(0, `rgba(222, 205, 170, ${a})`);
+    g.addColorStop(0.6, `rgba(222, 205, 170, ${a * 0.55})`);
+    g.addColorStop(1, 'rgba(222, 205, 170, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(px, py, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+/** the moods a face portrait can speak with: the mouth shapes of the dialogue sheet, a few a second, in no regular order */
+const MOUTH = [0, 1, 2, 1, 0, 2, 0, 1, 2, 2, 1, 0];
+
 /**
- * an actor that performs a timeline of painted poses (see storyShots.ts). False when the painted art is not there (still loading, or
- * switched off), and the caller then draws the plain still pose instead.
+ * Pokey or Meeca in a story picture, standing on the picture's ground line (or hovering above it, with the shadow on it), doing what their mood, their moves and their pose
+ * timeline say (storyActors.ts showActor). False when the painted art is not there (still loading, or switched off): the caller then draws the plain vector figure.
  */
-function drawPerformer(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number): boolean {
+function drawCharacter(ctx: CanvasRenderingContext2D, a: SceneActor, ch: StoryCharacter, w: number, h: number, t: number, ground: number, scroll: number, defaultMood: string): boolean {
+  if (!ch.ready()) return false;
+  const foot = footing(a, ground);
+  const pose = a.seq && a.seq.length ? poseAt(a.seq, t) : null;
+  const sc = (a.scale ?? 1) * (pose?.sc ?? 1);
+  const s = sc * 3;
+  const show = showActor(ch, a, t, w, defaultMood);
+  const x = (a.x + show.dx) * w - scroll;
+  const feetY = (foot.y + (pose?.dy ?? 0)) * h + (foot.hover ? 0 : SINK);
+  const groundY = ground * h + SINK;
+  const bodyH = ch.units * s;
+  const liftPx = Math.max(0, groundY - feetY) + show.lift * bodyH;
+  drawContactShadow(ctx, x, groundY, bodyH * 0.5, bodyH, liftPx);
+  // a footfall on a run raises a little dust, left where the foot came down
+  const gspec = show.gait ? ch.gaits[show.gait.name] : undefined;
+  if (show.gait && gspec?.dust && show.gait.step > 0) {
+    const top = gspec.frames.reduce((m, f) => Math.max(m, f.fx ?? 0), -1e9);
+    const px = ch.k * s;
+    const fall = x + show.facing * (top - show.gait.phase * show.gait.stride) * px;
+    drawDust(ctx, fall, groundY, show.gait.phase * show.gait.seconds, show.facing, bodyH * 0.17, show.gait.step);
+  }
+  ctx.save();
+  ctx.translate(x, feetY);
+  ctx.rotate((pose?.rot ?? 0) * show.facing);
+  if (show.facing === -1) ctx.scale(-1, 1);
+  ctx.scale(s, s);
+  ctx.translate(show.gait ? show.gait.shift * ch.k : 0, -show.lift * ch.units);
+  if (show.rot) ctx.rotate(show.rot);
+  if (show.sy !== 1) ctx.scale(1, show.sy);
+  const ok = ch.draw(ctx, show.frame, show.anchor, show.facing === -1);
+  ctx.restore();
+  return ok;
+}
+
+/** Pokey's face, big, its chin on the ground line (the body is out of the picture), breathing a little; the mouth moves when he is talking */
+function drawPortrait(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number): boolean {
+  const pose = a.seq && a.seq.length ? poseAt(a.seq, t) : null;
+  const foot = footing(a, ground);
+  const x = (a.x + (pose?.dx ?? 0)) * w - scroll;
+  const feetY = (foot.y + (pose?.dy ?? 0)) * h;
+  const face = a.facing === -1 ? -1 : 1;
+  let name = pose?.frame || 'face_calm';
+  if (a.mood === 'talk' && (name === 'face_calm' || name === 'face_neutral')) name = VISEMES[MOUTH[Math.floor(t * 8.5) % MOUTH.length]];
+  const size = 330 * (a.scale ?? 1) * (pose?.sc ?? 1);
+  ctx.save();
+  ctx.translate(x, feetY);
+  ctx.rotate((pose?.rot ?? 0) * face);
+  if (face === -1) ctx.scale(-1, 1);
+  ctx.translate(0, Math.sin(t * 2.4) * 2);
+  const ok = drawPokeyFace(ctx, name, -size / 2, -size, size);
+  ctx.restore();
+  return ok;
+}
+
+/** a painted boss on a timeline of its own frames (storyShots.ts); false when the painted art is not there */
+function drawBossPerformer(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number): boolean {
   if (!a.seq || !a.seq.length) return false;
   const pose = poseAt(a.seq, t);
-  const feetY = ((a.y ?? 0.8) + pose.dy) * h;
-  const x = (a.x + pose.dx) * w;
+  const foot = footing(a, ground);
+  const feetY = (foot.y + pose.dy) * h + (foot.hover ? 0 : SINK);
+  const x = (a.x + pose.dx) * w - scroll;
   const s = (a.scale ?? 1) * 3.0 * pose.sc;
   const face = (a.facing === -1 ? -1 : 1) * (pose.flip ? -1 : 1);
   ctx.save();
   ctx.translate(x, feetY);
   ctx.rotate(pose.rot * face);
   if (face === -1) ctx.scale(-1, 1);
-  let drawn = false;
-  if (a.kind === 'milo') {
-    if (a.portrait) {
-      // a big face, its chin on the ground line (the whole body is out of frame), breathing a little
-      const size = 330 * (a.scale ?? 1) * pose.sc;
-      ctx.translate(0, Math.sin(t * 2.4) * 2);
-      drawn = heroFace(ctx, pose.frame, -size / 2, -size, size);
-    } else {
-      ctx.scale(s, s);
-      drawn = heroStill(ctx, pose.frame);
-    }
-  } else if (a.kind === 'boss') {
-    ctx.scale(s * 0.62, s * 0.62);
-    ctx.translate(0, 24);
-    ctx.scale(1.3, 1.3);
-    drawn = drawPaintedBossFrame(ctx, a.world ?? 1, pose.frame);
-  }
+  ctx.scale(s * 0.62, s * 0.62);
+  ctx.translate(0, 24);
+  ctx.scale(1.3, 1.3);
+  const drawn = drawPaintedBossFrame(ctx, a.world ?? 1, pose.frame);
   ctx.restore();
   return drawn;
 }
@@ -440,8 +544,8 @@ function drawPhotoCard(ctx: CanvasRenderingContext2D, ph: ScenePhoto, w: number,
 }
 
 /** Dot: a painted hummingbird hovering in place, with a little bob and a figure-of-eight drift */
-function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number) {
-  const x = a.x * w + Math.sin(t * 1.7) * 7;
+function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, scroll = 0) {
+  const x = a.x * w + Math.sin(t * 1.7) * 7 - scroll;
   const y = (a.y ?? 0.45) * h + Math.sin(t * 3.1) * 6;
   const size = (a.scale ?? 1) * 4.2;
   const face = a.facing === -1 ? -1 : 1;
@@ -456,18 +560,26 @@ function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: num
   }
 }
 
-function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number) {
-  if (a.kind === 'dot') { drawDot(ctx, a, w, h, t); return; }
-  if (a.seq && drawPerformer(ctx, a, w, h, t)) return;
-  const feetY = (a.y ?? 0.8) * h;
-  const x = a.x * w;
+function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
+  if (a.kind === 'dot') { drawDot(ctx, a, w, h, t, scroll); return; }
+  // Pokey and Meeca: the painted characters, one engine (moods, moves, ground, shadow)
+  if (a.kind === 'milo' && a.portrait) { drawPortrait(ctx, a, w, h, t, ground, scroll); return; }
+  if (a.kind === 'milo' && drawCharacter(ctx, a, POKEY, w, h, t, ground, scroll, 'idle')) return;
+  else if ((a.kind === 'daisy' || a.kind === 'daisy_wave') && drawCharacter(ctx, a, MEECA, w, h, t, ground, scroll, a.kind === 'daisy_wave' ? 'scaredwave' : 'happy')) return;
+  if (a.kind === 'boss' && a.seq && drawBossPerformer(ctx, a, w, h, t, ground, scroll)) return;
+  const foot = footing(a, ground);
+  const dx = actorDx(a, t, w);
+  const feetY = foot.y * h + (foot.hover || !GROUNDED.has(a.kind) ? 0 : SINK);
+  const x = (a.x + dx) * w - scroll;
   const s = (a.scale ?? 1) * 3.0;
+  const face = a.facing === -1 ? -1 : 1;
   ctx.save();
   ctx.translate(x, feetY);
   switch (a.kind) {
     case 'milo': {
+      // the vector fallback, while the painted art loads (or with it switched off)
       ctx.scale(s, s);
-      if (a.facing === -1) ctx.scale(-1, 1);
+      if (face === -1) ctx.scale(-1, 1);
       const p = makePlayer(a.pose, 1);
       if (a.pose === 'happy') {
         p.y = -Math.abs(Math.sin(t * 5)) * 5;
@@ -477,7 +589,7 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
     }
     case 'thornbark': {
       // the corrupted guardian; once freed he is the gentle Jungle Guardian again
-      if (a.facing === -1) ctx.scale(-1, 1);
+      if (face === -1) ctx.scale(-1, 1);
       ctx.save();
       ctx.scale(s * 0.62, s * 0.62);
       // the painted sloth warlord: roaring while the thorns have him, resting on his club once he is free
@@ -493,13 +605,13 @@ function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: n
     case 'daisy':
     case 'daisy_wave': {
       ctx.scale(s, s);
-      if (a.facing === -1) ctx.scale(-1, 1);
-      if (!drawJennifurSprite(ctx, a.mood ?? (a.kind === 'daisy_wave' ? 'cheer' : 'happy'), t)) drawGirlfriendDaisy(ctx, 0, 0, t, a.kind === 'daisy_wave');
+      if (face === -1) ctx.scale(-1, 1);
+      drawGirlfriendDaisy(ctx, 0, 0, t, a.kind === 'daisy_wave');
       break;
     }
     case 'boss': {
       ctx.scale(s * 0.62, s * 0.62);
-      if (a.facing === -1) ctx.scale(-1, 1);
+      if (face === -1) ctx.scale(-1, 1);
       const b = makeBoss(!!a.angry, !!a.beaten);
       if (a.beaten) {
         ctx.rotate(-0.1);
@@ -986,6 +1098,55 @@ function paintFinish(ctx: CanvasRenderingContext2D, w: number, h: number, mood: 
   ctx.restore();
 }
 
+/** the set piece (the trees, the castle) goes by at a slower speed than the branch; tiles are laid side by side, every other one turned over so the seams match */
+function drawSetPieceScrolled(ctx: CanvasRenderingContext2D, world: number, mood: StoryScene['mood'], w: number, h: number, t: number, castle: number | undefined, scroll: number) {
+  if (Math.abs(scroll) < 0.5) {
+    drawSetPiece(ctx, world, mood, w, h, t, castle);
+    return;
+  }
+  const shift = scroll * 0.4;
+  const i0 = Math.floor(shift / w);
+  for (let i = i0; i <= i0 + 1; i++) {
+    ctx.save();
+    ctx.translate(i * w - shift, 0);
+    if (i & 1) {
+      ctx.translate(w, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.beginPath();
+    ctx.rect(0, 0, w, h);
+    ctx.clip();
+    drawSetPiece(ctx, world, mood, w, h, t, castle);
+    ctx.restore();
+  }
+}
+
+/** the ten guardians as silhouettes: the front row on the branch, the back row on a misty ledge behind it, each with its shadow */
+function drawLineup(ctx: CanvasRenderingContext2D, w: number, h: number, t: number, ground: number) {
+  const back = h * (ground - 0.28);
+  // the far ledge the back row stands on: a band of mist that fades into the picture above and below
+  const mist = ctx.createLinearGradient(0, back - h * 0.06, 0, back + h * 0.1);
+  mist.addColorStop(0, 'rgba(40, 48, 72, 0)');
+  mist.addColorStop(0.4, 'rgba(40, 48, 72, 0.38)');
+  mist.addColorStop(1, 'rgba(40, 48, 72, 0)');
+  ctx.fillStyle = mist;
+  ctx.fillRect(0, back - h * 0.06, w, h * 0.16);
+  for (let i = 0; i < 10; i++) {
+    const row = i < 5 ? 0 : 1;
+    const col = i % 5;
+    const bx = (0.14 + col * 0.18 + (row ? 0.09 : 0)) * w;
+    const by = row ? h * ground - h * 0.02 : back;
+    const ls = row ? 1.0 : 0.8;
+    drawContactShadow(ctx, bx, by, 150 * ls, 150 * ls, 0);
+    ctx.save();
+    ctx.translate(bx, by);
+    ctx.scale(ls, ls);
+    if (i % 5 > 1) ctx.scale(-1, 1);
+    drawSilhouette(ctx, (c) => drawBossEntity(c, makeBoss(false, false), t, i + 1), 0.9, i === 9 ? '#2a0a14' : '#0b1024');
+    ctx.restore();
+  }
+}
+
 /** the backdrops are the stages' own scenery, baked at a lower resolution than play (it is only ever seen through a soft finish) */
 const STORY_BAKE = 0.55;
 
@@ -1008,28 +1169,20 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   ctx.translate(w / 2, h / 2);
   ctx.scale(z, z);
   ctx.translate(-fx, -fy);
+  // the camera follows an actor that travels: the world goes by at the speed it walks (sky and hills at their own, slower, speeds)
+  const ground = groundOf(scene);
+  const scroll = followScroll(scene.follow, scene.actors, t, w);
   // the sky and hills drift slowly behind the actors
-  const camX = (scene.camX ?? 400) + t * 9;
+  const camX = (scene.camX ?? 400) + t * 9 + scroll;
   withBakeScale(STORY_BAKE, () => renderScenery(ctx, scene.world, camX, 0, w, h * (1 + lift) + 4, t, true));
-  drawSetPiece(ctx, scene.world, scene.mood, w, h, t, scene.castle);
+  drawSetPieceScrolled(ctx, scene.world, scene.mood, w, h, t, scene.castle, scroll);
 
   if (scene.lineup) {
-    for (let i = 0; i < 10; i++) {
-      const row = i < 5 ? 0 : 1;
-      const col = i % 5;
-      const bx = (0.14 + col * 0.18 + (row ? 0.09 : 0)) * w;
-      const by = (row ? 0.78 : 0.52) * h;
-      ctx.save();
-      ctx.translate(bx, by);
-      const ls = row ? 1.0 : 0.8;
-      ctx.scale(ls, ls);
-      if (i % 5 > 1) ctx.scale(-1, 1);
-      drawSilhouette(ctx, (c) => drawBossEntity(c, makeBoss(false, false), t, i + 1), 0.9, i === 9 ? '#2a0a14' : '#0b1024');
-      ctx.restore();
-    }
+    drawBranch(ctx, h * ground, w, h, scroll);
+    drawLineup(ctx, w, h, t, ground);
   } else {
-    drawBranch(ctx, h * 0.8, w, h);
-    scene.actors.forEach((a) => drawActor(ctx, a, w, h, t));
+    drawBranch(ctx, h * ground, w, h, scroll);
+    scene.actors.forEach((a) => drawActor(ctx, a, w, h, t, ground, scroll));
   }
 
   drawFx(ctx, scene.fx, t, w, h);

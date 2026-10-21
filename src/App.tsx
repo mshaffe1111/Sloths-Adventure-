@@ -10,6 +10,7 @@ import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { CoachOverlay } from './components/CoachOverlay.tsx';
 import { LessonCard } from './components/LessonCard.tsx';
+import { Wayside } from './components/Wayside.tsx';
 import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
 import type { CoachStep } from './game/touchCoach.ts';
@@ -17,8 +18,8 @@ import { ControlSwitch } from './components/ControlSwitch.tsx';
 import { WorldMap } from './game/../components/WorldMap.tsx';
 import { TitleScreen } from './game/../components/TitleScreen.tsx';
 import { StoryPlayer } from './game/../components/StoryPlayer.tsx';
-import { INTRO_PANELS, WORLD_STORIES, bossPanels, thornbarkPanels } from './game/story.ts';
-import { MEMORIES, MEMORY_AFTER_BOSS, finalePanels, loadMemories, saveMemories, withMemory, type MemoryId } from './game/storyChapters.ts';
+import { INTRO_PANELS, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels } from './game/story.ts';
+import { MEMORIES, finalePanels, loadMemories, nextAfterBoss, saveMemories, withMemory, type MemoryId } from './game/storyChapters.ts';
 import { victoryPanels } from './game/victoryScenes.ts';
 import { WORLDS_DATA } from './game/worldsData.ts';
 import { StatusModals } from './game/../components/StatusModals.tsx';
@@ -46,6 +47,20 @@ function hasSeenWorldStory(w: number): boolean {
 function markWorldStorySeen(w: number) {
   try {
     localStorage.setItem(worldStoryKey(w), '1');
+  } catch {}
+}
+/** the scene halfway through a world (after its 5th stage) plays once */
+const midStoryKey = (w: number) => `sloth_story_m${w}`;
+function hasSeenMidStory(w: number): boolean {
+  try {
+    return localStorage.getItem(midStoryKey(w)) === '1';
+  } catch {
+    return false;
+  }
+}
+function markMidStorySeen(w: number) {
+  try {
+    localStorage.setItem(midStoryKey(w), '1');
   } catch {}
 }
 
@@ -165,6 +180,8 @@ export default function App() {
   const [coachStep, setCoachStep] = useState<CoachStep>(null);
   // a first-time lesson card (the stage has paused itself; see game/lessons.ts)
   const [lessonId, setLessonId] = useState<LessonId | null>(null);
+  // counts every start of a stage, so the in-stage story lines begin fresh on a retry
+  const [runId, setRunId] = useState(0);
   const [coachStyle, setCoachStyle] = useState<ControlStyle>(() => controlStyle());
   useEffect(() => subscribeControls(() => setCoachStyle(controlStyle())), []);
   const inputEngineRef = useRef<InputEngine | null>(null);
@@ -263,7 +280,7 @@ export default function App() {
 
   // nothing needs the game loop on the menu and story screens
   useEffect(() => {
-    if (['title', 'world_map', 'story_cutscene', 'world_story', 'boss_intro', 'boss_defeat', 'ending_story', 'memory'].includes(screen)) {
+    if (['title', 'world_map', 'story_cutscene', 'world_story', 'world_mid', 'boss_intro', 'boss_defeat', 'ending_story', 'memory'].includes(screen)) {
       engineRef.current?.stop();
     }
   }, [screen]);
@@ -305,7 +322,7 @@ export default function App() {
     const worldAmbient = (WORLDS_DATA[w - 1] || WORLDS_DATA[0]).ambientType;
     if (screen === 'playing' || screen === 'paused') sound.setAmbient(worldAmbient);
     else if (screen === 'title' || screen === 'world_map') sound.setAmbient('gentle_breeze');
-    else if (screen === 'world_story' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
+    else if (screen === 'world_story' || screen === 'world_mid' || screen === 'boss_intro' || screen === 'boss_defeat') sound.setAmbient(worldAmbient);
     else if (screen === 'story_cutscene') sound.setAmbient('gentle_breeze');
     else sound.setAmbient(null);
   }, [screen, activeLevel, musicSalt]);
@@ -434,6 +451,7 @@ export default function App() {
 
     setCoachStep(null);
     setLessonId(null);
+    setRunId((n) => n + 1);
     setHp(maxHearts());
     setMaxHp(maxHearts());
     setLives(3);
@@ -508,6 +526,9 @@ export default function App() {
           if (lvl.objectiveType === 'boss_lair') {
             // Boss defeated: play the defeat scene first
             setScreen('boss_defeat');
+          } else if (lvl.miniIndex === 5 && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
+            // halfway through a world, Dot catches up with a note from Meeca
+            setScreen('world_mid');
           } else {
             setScreen('victory');
           }
@@ -706,6 +727,20 @@ export default function App() {
         />
       )}
 
+      {/* Halfway through a world (first time only) */}
+      {screen === 'world_mid' && WORLD_MID[activeLevel.worldIndex] && (
+        <StoryPlayer
+          key={`mid${activeLevel.worldIndex}`}
+          panels={WORLD_MID[activeLevel.worldIndex]}
+          finishLabel="Onward ▶"
+          skipLabel="Skip scene"
+          onFinish={() => {
+            markMidStorySeen(activeLevel.worldIndex);
+            setScreen('victory');
+          }}
+        />
+      )}
+
       {/* Boss showdown */}
       {screen === 'boss_intro' && (
         <StoryPlayer
@@ -736,8 +771,8 @@ export default function App() {
               return;
             }
             // the first time this guardian goes down, a flashback plays before the stage-cleared card
-            const mem = activeLevel.secret ? undefined : MEMORY_AFTER_BOSS[activeLevel.worldIndex];
-            if (mem && !memoriesSeen.includes(mem)) {
+            const mem = activeLevel.secret ? undefined : nextAfterBoss(activeLevel.worldIndex, memoriesSeen);
+            if (mem) {
               setMemoryPlay({ id: mem, back: 'victory' });
               setScreen('memory');
               return;
@@ -750,12 +785,21 @@ export default function App() {
       {/* A flashback (after a guardian falls, or replayed from the Library) */}
       {screen === 'memory' && memoryPlay && (
         <StoryPlayer
+          key={memoryPlay.id}
           panels={MEMORIES[memoryPlay.id].panels}
           finishLabel="Back ▶"
-          skipLabel="Skip memory"
+          skipLabel={MEMORIES[memoryPlay.id].kind === 'memory' ? 'Skip memory' : 'Skip scene'}
           onFinish={() => {
             markMemorySeen(memoryPlay.id);
             const back = memoryPlay.back;
+            if (back === 'victory') {
+              // a guardian can leave several scenes behind: play the next one before the stage-cleared card
+              const next = nextAfterBoss(activeLevel.worldIndex, withMemory(memoriesSeen, memoryPlay.id), memoryPlay.id);
+              if (next) {
+                setMemoryPlay({ id: next, back });
+                return;
+              }
+            }
             setMemoryPlay(null);
             if (back === 'trophy') {
               setTrophyTab('library');
@@ -844,6 +888,7 @@ export default function App() {
             lives={lives}
           />
           {screen === 'playing' && <CoachOverlay step={coachStep} style={coachStyle} />}
+          <Wayside key={`${activeLevel.id}-${runId}`} level={activeLevel} active={screen === 'playing' && !coachStep && !lessonId && !reading} ratio={distanceRatio} hp={hp} />
           {screen === 'playing' && lessonId && (
             <LessonCard
               id={lessonId}

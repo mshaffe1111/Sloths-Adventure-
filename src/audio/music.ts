@@ -118,6 +118,13 @@ export interface Theme {
   delay?: number;
   /** master level of the whole piece */
   level?: number;
+  /**
+   * a piece that keeps its shape however long it plays: no breakdown, no key lift and no bell echo on the later passes
+   * (the stage music is dressed differently on every pass through its loop; the story's cue pieces are not)
+   */
+  still?: boolean;
+  /** the speed of each bar of the loop as a share of the written tempo (cycled): a slowing down, a held bar, a broadening. 1 = as written */
+  tempoMap?: number[];
   tracks: Track[];
 }
 
@@ -173,6 +180,8 @@ export class Playback {
   /** playing speed (1 = as written); eases toward `tempoTarget` one bar at a time */
   private tempoScale = 1;
   private tempoTarget = 1;
+  /** the current bar's share of the written tempo (the theme's tempoMap) */
+  private barTempo = 1;
   /** semitones the piece is currently lifted by (the final-pass key change) */
   private sh = 0;
   /** riser and crash for the breakdown bars */
@@ -256,7 +265,7 @@ export class Playback {
 
   /** seconds per 16th note at the current tempo */
   get stepDur() {
-    return 60 / (this.theme.bpm * this.tempoScale) / 4;
+    return 60 / (this.theme.bpm * this.tempoScale * this.barTempo) / 4;
   }
 
   /** ask for a different playing speed (1 = as written); it eases in over a few bars */
@@ -327,10 +336,19 @@ export class Playback {
 
   private beginBar() {
     // tempo glides toward its target, half the remaining distance each bar
+    let retime = false;
     if (Math.abs(this.tempoTarget - this.tempoScale) > 0.0005) {
       this.tempoScale += (this.tempoTarget - this.tempoScale) * 0.5;
-      this.core.setDelayTime(this.stepDur * 4 * (this.theme.delay ?? 0.75));
+      retime = true;
     }
+    // a piece may slow or broaden bar by bar (its tempoMap)
+    const map = this.theme.tempoMap;
+    const bt = map?.length ? map[this.bar % this.barChords.length % map.length] ?? 1 : 1;
+    if (bt !== this.barTempo) {
+      this.barTempo = bt;
+      retime = true;
+    }
+    if (retime) this.core.setDelayTime(this.stepDur * 4 * (this.theme.delay ?? 0.75));
     const barDur = this.stepDur * this.spb;
     // intensity glides toward its target: quicker up than down
     const tau = this.targetIntensity > this.intensity ? 1.2 : 4;
@@ -342,7 +360,7 @@ export class Playback {
     const barInLoop = this.bar % L;
     const loop = Math.floor(this.bar / L);
     // the arrangement: every pass through the loop is dressed differently, and each stage starts at a different pass
-    const phase = Playback.phaseOf(loop, this.seed);
+    const phase = this.theme.still ? 0 : Playback.phaseOf(loop, this.seed);
     const lp = loop + (this.seed % 2);
     const sh = phase === 3 ? 2 : 0;
     this.sh = sh;
@@ -433,7 +451,7 @@ export class Playback {
           const m = nt.midi + (composed ? spec.shift ?? 0 : sh);
           rt.lastPitch = composed ? m - (spec.shift ?? 0) : m;
           const dur = nt.len * stepDur * (spec.legato ?? 0.95);
-          push(nt.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.004, midiHz(m), dur, vel(0.85)));
+          push(nt.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.004, midiHz(m), dur, vel(nt.vel ?? 0.85)));
           if (echo && nt.len >= 2) push(nt.step, (t) => echo(this.core, rt.gate, t + stepDur * 1.5, midiHz(m + 12), Math.min(dur, stepDur * 4), 0.3));
         }
       } else if (spec.kind === 'chords') {

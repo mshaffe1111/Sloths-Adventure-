@@ -224,18 +224,24 @@ export interface MelNote {
   len: number;
   /** MIDI note, or null for a rest */
   midi: number | null;
+  /** how hard the note is played when the notation marks it (`@1`..`@9`, see parseMelodyBar); unset = the track's own strength */
+  vel?: number;
 }
+
+/** playing strength of a dynamics mark: @1 is a whisper (0.25), @7 is the usual strength (0.85), @9 is full (1.05) */
+export const markVel = (n: number) => Math.round((0.15 + 0.1 * n) * 100) / 100;
 
 /**
  * One bar of melody in scale degrees, e.g. "5:3 5:1 6:2 5:2 3:4 r:4".
  *   1..7 = scale degree (1 = tonic at the theme's key octave)   ' = octave up, , = octave down
  *   b / # in front lowers / raises by a semitone   r = rest   :n = length in steps (default 2)
+ *   @n after the length (n = 1..9) is a dynamics mark for that note: "3:6@4" is a soft F#, "2':8@9" is a ringing high E
  */
 export function parseMelodyBar(src: string, tonic: number, scale: number[], steps = 16): MelNote[] {
   const out: MelNote[] = [];
   let step = 0;
   for (const tok of src.trim().split(/\s+/)) {
-    const m = /^(?:(r)|([b#]?)([1-7])('*|,*))(?::(\d+))?$/.exec(tok);
+    const m = /^(?:(r)|([b#]?)([1-7])('*|,*))(?::(\d+))?(?:@([1-9]))?$/.exec(tok);
     if (!m) throw new Error(`bad melody token '${tok}' in "${src}"`);
     const len = m[5] ? Number(m[5]) : 2;
     if (m[1]) out.push({ step, len, midi: null });
@@ -246,7 +252,7 @@ export function parseMelodyBar(src: string, tonic: number, scale: number[], step
       else if (m[2] === '#') midi += 1;
       const oct = m[4] ?? '';
       midi += oct.startsWith("'") ? 12 * oct.length : oct.startsWith(',') ? -12 * oct.length : 0;
-      out.push({ step, len, midi });
+      out.push(m[6] ? { step, len, midi, vel: markVel(Number(m[6])) } : { step, len, midi });
     }
     step += len;
   }

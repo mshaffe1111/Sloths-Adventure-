@@ -31,6 +31,9 @@ const VOICES: Record<string, Voice> = {
   Grandma: { base: 57, hop: [0, 2, 4, 7, 9, 12], type: 'triangle', dec: 0.1, peak: 0.12, lp: 1500, glide: 0.99 },
   Officer: { base: 45, hop: PENT, type: 'square', dec: 0.08, peak: 0.07, lp: 800, glide: 0.96 },
   'General Iron-Claw': { base: 38, hop: MINOR, type: 'sawtooth', dec: 0.09, peak: 0.13, lp: 700, glide: 0.95 },
+  // Meeca's grandfather before the iron: the General's voice, softened
+  Grandfather: { base: 41, hop: PENT, type: 'triangle', dec: 0.1, peak: 0.13, lp: 900, glide: 0.97 },
+  Thornbark: { base: 40, hop: [0, 3, 7, 10], type: 'sawtooth', dec: 0.11, peak: 0.1, lp: 600, breath: 0.5, glide: 0.96 },
   'Venom Fang': { base: 62, hop: MINOR, type: 'sawtooth', dec: 0.06, peak: 0.07, lp: 1500, breath: 0.9, glide: 0.98 },
   'Crocus Rex': { base: 41, hop: PENT, type: 'square', dec: 0.1, peak: 0.1, lp: 600, glide: 0.96 },
   'Shadow Prowler': { base: 50, hop: MINOR, type: 'triangle', dec: 0.08, peak: 0.08, lp: 1000, breath: 1.2, glide: 0.97 },

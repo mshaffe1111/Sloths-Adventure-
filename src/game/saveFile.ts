@@ -22,7 +22,8 @@ const entryLimit = (k: string) => (k === 'sloth_badges' ? MAX_BADGE_ENTRY_CHARS 
 const ALLOWED: RegExp[] = [
   /^sloth_lvl_(\d{1,2}|S)-\d{1,2}$/, // per-stage result
   /^sloth_layout_(\d{1,2}|S)-\d{1,2}$/, // the layout a stage was first played with (it stays the same)
-  /^sloth_story_w\d{1,2}$/, // world intro seen
+  /^sloth_story_[wm]\d{1,2}$/, // world intro seen (w) and the scene halfway through the world (m)
+  /^sloth_way_\d{1,2}-\d{1,2}$/, // which in-stage asides have been heard (so a new game hears them again; the on/off switch is a device setting, not here)
   /^sloth_secret_gate$/,
   /^sloth_thorn_heart$/,
   /^sloth_music_vol$/,
@@ -183,5 +184,10 @@ const KEEP_ON_NEW_GAME = /^sloth_(music_vol|sfx_vol|game_muted)$/;
  */
 export function resetProgress(store: Store, opts: { skipStory?: boolean } = {}) {
   for (const k of store.keys()) if (isSaveKey(k) && !KEEP_ON_NEW_GAME.test(k)) store.removeItem(k);
-  if (opts.skipStory) for (let w = 1; w <= 10; w++) store.setItem(`sloth_story_w${w}`, '1');
+  if (opts.skipStory) {
+    for (let w = 1; w <= 10; w++) {
+      store.setItem(`sloth_story_w${w}`, '1');
+      store.setItem(`sloth_story_m${w}`, '1');
+    }
+  }
 }

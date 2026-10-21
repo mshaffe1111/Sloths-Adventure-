@@ -72,10 +72,19 @@ export function warmHeroAtlas() {
 
 // the standard hero's atlas in the reward coat (made once per coat, like the main one)
 const stdTinted: Partial<Record<Coat, HTMLCanvasElement | null>> = {};
-function stdSheet(img: HTMLImageElement): CanvasImageSource {
+export function stdSheet(img: HTMLImageElement): CanvasImageSource {
   if (coat === 'none') return img;
   if (stdTinted[coat] === undefined) stdTinted[coat] = makeTintedCanvas(img, coat);
   return stdTinted[coat] ?? img;
+}
+const otherTinted = new WeakMap<HTMLImageElement, Partial<Record<Coat, HTMLCanvasElement | null>>>();
+/** any other sheet of the hero's art (the cutscene poses, heroStory.ts) in the reward coat he is wearing, made once per coat */
+export function heroCoatSheet(img: HTMLImageElement): CanvasImageSource {
+  if (coat === 'none') return img;
+  let per = otherTinted.get(img);
+  if (!per) otherTinted.set(img, (per = {}));
+  if (per[coat] === undefined) per[coat] = makeTintedCanvas(img, coat);
+  return per[coat] ?? img;
 }
 /** world units per pixel of the standard hero's frames: its standing frame is as tall as the main hero's */
 const STD_K = (HERO_UNITS * HERO_SPRITE_SCALE) / STD_STAND_H;
