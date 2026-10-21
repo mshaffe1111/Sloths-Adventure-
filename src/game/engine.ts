@@ -867,7 +867,6 @@ export class GameEngine {
         p.jumpsLeft = 2;
         sound.playJump();
         this.spawnSparkBurst(p.x, p.y, '#34d399');
-        this.addFloatingText('CANOPY REACHED!', p.x, p.y - 40, '#4ade80');
       }
       // Natural Exit B: Reached the Ground -> Step off smoothly!
       else if (p.y >= nearTreeVine.bottomY - 8 && this.input.state.down) {
@@ -897,7 +896,6 @@ export class GameEngine {
 
         sound.playJump();
         this.spawnSparkBurst(p.x, p.y, '#34d399');
-        this.addFloatingText('TREE LEAP!', p.x, p.y - 45, '#4ade80');
       }
       // Natural Exit D: Steer away with Left / Right (held on purpose) -> Natural graceful hop off trunk!
       else if (this.climbSideTimer >= 0.2) {
@@ -981,7 +979,6 @@ export class GameEngine {
           p.vx = dropDir * 140;
           p.vy = 80;
           p.jumpsLeft = 2;
-          this.addFloatingText('DROP', p.x, p.y - 30, '#94a3b8');
         }
         // --- NATURAL SWING EXIT 2: HEROIC TARZAN LEAP (Jump button Pressed) ---
         else if (this.input.state.jumpPressed) {
@@ -1014,7 +1011,6 @@ export class GameEngine {
 
           sound.playJump();
           this.spawnSparkBurst(p.x, p.y, '#34d399');
-          this.addFloatingText('TARZAN LEAP!', p.x, p.y - 45, '#34d399');
         }
         // --- NATURAL SWING EXIT 3: AUTOMATIC PLATFORM LANDING ---
         else {
@@ -1120,7 +1116,6 @@ export class GameEngine {
             p.squashY = 1.32;
             this.takeOff(true);
             sound.playDoubleJump();
-            this.addFloatingText('DOUBLE JUMP!', p.x, p.y - 40, '#4ade80');
             this.spawnDoubleJumpBurst(p.x, p.y);
           } else {
             this.jumpBufferTimer = PHYS.buffer + ASSIST.buffer * assist;
@@ -1366,7 +1361,6 @@ export class GameEngine {
           if (checkAABBCollision(...this.pBox(), e.x - 24, e.y - 18, 48, 36)) {
             if (p.ducking) {
               // Successfully ducked under swoop!
-              this.addFloatingText('DUCKED! SLICK!', p.x, p.y - 40, '#86efac');
               sound.playWhoosh();
               e.swoopPhase = 'hover';
               e.hoverTimer = 1.4;
@@ -1527,13 +1521,6 @@ export class GameEngine {
           continue;
         }
         // a Hush Fern: crouch beside it for a moment and it gives something up; stand up and the search slowly fades
-        // a few steps away the fern shows a small bubble (it eases in and out), and says so once in words
-        const nearby = Math.abs(p.x - c.x) < 280 && Math.abs(p.y - (c.y + 26)) < 200;
-        c.cue = Math.max(0, Math.min(1, (c.cue ?? 0) + (nearby ? dt * 2.5 : -dt * 2)));
-        if (!c.cueTold && c.cue >= 0.6 && !this.isGameOver) {
-          c.cueTold = true;
-          this.addFloatingText('SOMETHING RUSTLES...', c.x, c.y - 66, '#fde68a');
-        }
         const close = Math.abs(p.x - c.x) < 54 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
         c.near = close && !p.ducking;
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
@@ -2733,7 +2720,6 @@ export class GameEngine {
     if (inp.down && this.ropeGrace <= 0) {
       off(0, 60, 0.4);
       p.jumpsLeft = 1;
-      this.addFloatingText('DROP', p.x, p.y - 30, '#94a3b8');
       return false;
     }
     if (atEnd && dir !== 0 && ((dir < 0 && p.x <= rope.x0) || (dir > 0 && p.x >= rope.x1))) {
@@ -2779,7 +2765,6 @@ export class GameEngine {
     p.squashY = 1.38;
     p.bounce = { kind: 'spring', t: 0 };
     sound.playJump();
-    this.addFloatingText('BOING!', p.x, p.y - 40, '#facc15');
     this.spawnSparkBurst(p.x, p.y, '#facc15');
   }
 
@@ -3234,61 +3219,6 @@ export class GameEngine {
     // the boss's attacks go over him, so a warning is never hidden behind Pokey
     if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);
     if (this.debugBoxes) this.drawHitboxes(ctx);
-
-    // Contextual Action Badges (Climb Tree / Swing Liana / Jump Off)
-    const p = this.player;
-    if (this.nearTreeVine && !p.climbing && p.grounded) {
-      const bob = Math.sin(this.gameTime * 6) * 4;
-      ctx.save();
-      ctx.translate(p.x, p.y - 75 + bob);
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-      ctx.strokeStyle = '#4ade80';
-      ctx.lineWidth = 2.0;
-      ctx.beginPath();
-      ctx.roundRect(-64, -14, 128, 26, 8);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = '#4ade80';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('[W / UP] CLIMB TREE', 0, 0);
-      ctx.restore();
-    } else if (p.climbing) {
-      const bob = Math.sin(this.gameTime * 6) * 3;
-      ctx.save();
-      ctx.translate(p.x, p.y - 72 + bob);
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-      ctx.strokeStyle = '#facc15';
-      ctx.lineWidth = 2.0;
-      ctx.beginPath();
-      ctx.roundRect(-66, -14, 132, 26, 8);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = '#fef08a';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('LEAP: [SPACE / RIGHT]', 0, 0);
-      ctx.restore();
-    } else if (p.isVineSwinging) {
-      const bob = Math.sin(this.gameTime * 8) * 3;
-      ctx.save();
-      ctx.translate(p.x, p.y - 65 + bob);
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 2.0;
-      ctx.beginPath();
-      ctx.roundRect(-68, -14, 136, 26, 8);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('TARZAN: [SPACE] JUMP', 0, 0);
-      ctx.restore();
-    }
 
     // Render Particles
     this.particles.forEach((pt) => {

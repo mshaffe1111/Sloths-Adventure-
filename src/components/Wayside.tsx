@@ -3,7 +3,8 @@ import type { LevelConfig } from '../game/types.ts';
 import { DotFace } from './DotFace.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
 import { restFace } from '../game/dotSprite.ts';
-import { GAP_MS, HURT_WINDOW_MS, dueLine, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayLine } from '../game/wayside.ts';
+import { GAP_MS, HURT_WINDOW_MS, dueLine, hidesFern, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayFlag, type WayLine } from '../game/wayside.ts';
+import { findForStage, loadFinds } from '../game/finds.ts';
 
 interface Props {
   level: LevelConfig;
@@ -41,7 +42,8 @@ interface Run {
   gapUntil: number;
   L: boolean;
   H: boolean;
-  cur: null | { flag: 'L' | 'H'; left: number; seen: number; marked: boolean };
+  F: boolean;
+  cur: null | { flag: WayFlag; left: number; seen: number; marked: boolean };
   n: number;
 }
 
@@ -61,6 +63,7 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp }) => {
     gapUntil: 0,
     L: wasShown(world, mini, 'L'),
     H: wasShown(world, mini, 'H'),
+    F: wasShown(world, mini, 'F'),
     cur: null,
     n: 0,
   }));
@@ -105,6 +108,9 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp }) => {
         hurtAgoMs: run.hurtAt >= 0 ? run.played - run.hurtAt : undefined,
         shownL: run.L,
         shownH: run.H,
+        // a stage that hides a fern says so once at the start, unless the fern's find is already in the Library
+        fernOpen: hidesFern(world, mini) && !loadFinds().includes(findForStage(world, mini)?.id ?? ''),
+        shownF: run.F,
       });
       if (!due) return;
       if (due.flag === 'H') run.hurtAt = -1;

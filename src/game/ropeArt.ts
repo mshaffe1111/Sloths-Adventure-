@@ -75,25 +75,6 @@ export function drawRopes(
     ctx.setLineDash([5, 8]);
     ctx.stroke();
     ctx.setLineDash([]);
-
-    // the prompt: shown when he can grab it and is standing near an end
-    if (opts.canGrab && opts.hangingId !== r.id && opts.pGrounded) {
-      const nearX = Math.abs(opts.px - r.x0) < 150 ? r.x0 : Math.abs(opts.px - r.x1) < 150 ? r.x1 : null;
-      if (nearX !== null && Math.abs(opts.py - Math.max(r.g0, r.g1)) < 80) {
-        const y = r.y - 34 + Math.sin(time * 5) * 4;
-        ctx.save();
-        ctx.font = 'bold 15px Fredoka, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.lineWidth = 4;
-        ctx.lineJoin = 'round';
-        ctx.strokeStyle = 'rgba(6,30,22,.85)';
-        ctx.strokeText('Jump up to grab!', nearX + (nearX === r.x0 ? 50 : -50), y);
-        ctx.fillStyle = '#fde047';
-        ctx.fillText('Jump up to grab!', nearX + (nearX === r.x0 ? 50 : -50), y);
-        ctx.restore();
-      }
-    }
   }
   void ROPE_SAG;
 }

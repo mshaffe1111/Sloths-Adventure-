@@ -412,7 +412,10 @@ export default function App() {
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __play?: (id: string) => void }).__play = (id: string) => {
       const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
-      if (lvl) launchEngine(lvl);
+      if (lvl) {
+        setActiveLevel(lvl);
+        launchEngine(lvl);
+      }
     };
   }
 

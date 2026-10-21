@@ -25,16 +25,15 @@ function frond(ctx: CanvasRenderingContext2D, lean: number, len: number, wid: nu
 
 export function drawHushFern(ctx: CanvasRenderingContext2D, item: Collectible, time: number) {
   const search = item.search ?? 0;
-  const cue = item.cue ?? 0;
 
-  // a soft golden glow that breathes, so the clump reads as special against the foliage behind it (it is never bright enough to be a flag)
+  // a faint golden glow that breathes: the clump reads as different from the foliage behind it, but it is never a beacon
   ctx.save();
   ctx.translate(0, GROUND - 30);
   const breathe = 0.5 + 0.5 * Math.sin(time * 2.4 + item.id);
-  const R = 52 + breathe * 8;
+  const R = 44 + breathe * 6;
   const glow = ctx.createRadialGradient(0, 0, 4, 0, 0, R);
-  glow.addColorStop(0, `rgba(255, 236, 150, ${0.34 + 0.2 * breathe + 0.25 * search})`);
-  glow.addColorStop(0.55, `rgba(255, 220, 120, ${0.12 + 0.08 * breathe})`);
+  glow.addColorStop(0, `rgba(255, 236, 150, ${0.16 + 0.1 * breathe + 0.3 * search})`);
+  glow.addColorStop(0.55, `rgba(255, 220, 120, ${0.05 + 0.04 * breathe})`);
   glow.addColorStop(1, 'rgba(255, 220, 120, 0)');
   ctx.fillStyle = glow;
   ctx.beginPath();
@@ -93,32 +92,6 @@ export function drawHushFern(ctx: CanvasRenderingContext2D, item: Collectible, t
   ctx.fill();
   ctx.globalAlpha = 1;
   ctx.restore();
-
-  // a few steps away: a little bubble with a down arrow bobbing over it (the crouch is the thing to do here)
-  if (cue > 0 && search <= 0 && !item.near) {
-    ctx.save();
-    ctx.translate(0, -GROUND - 58 + Math.sin(time * 4) * 3);
-    ctx.globalAlpha = cue * 0.95;
-    ctx.fillStyle = 'rgba(20,34,24,0.82)';
-    ctx.strokeStyle = '#e8c46a';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(0, 0, 15, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath(); // the bubble's little tail
-    ctx.moveTo(-5, 13); ctx.lineTo(0, 21); ctx.lineTo(5, 13);
-    ctx.fillStyle = 'rgba(20,34,24,0.82)';
-    ctx.fill();
-    ctx.strokeStyle = '#fde68a';
-    ctx.lineWidth = 3.2;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath(); // a down chevron
-    ctx.moveTo(-6.5, -4); ctx.lineTo(0, 3); ctx.lineTo(6.5, -4);
-    ctx.stroke();
-    ctx.restore();
-  }
 
   // the search ring over the fern
   if (search > 0) {
