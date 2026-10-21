@@ -9,6 +9,7 @@
 import type { BossEntity } from './types.ts';
 import type { BossBrain, BossDef, MoveDef } from './bossAI.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { bossMotion } from './bossMotion.ts';
 
 export interface BossFrameRect {
   x: number;
@@ -113,9 +114,15 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
       const name = spec.pick({ b, def, br, m, moving: Math.abs(mem.vx) > 12, dist: mem.dist, time });
       const f = spec.frames[name];
       if (!f) return false;
+      const mo = bossMotion({
+        state: br.state, t: br.t, tell: m?.tell ?? 0, act: m?.act ?? 0, pose: m?.pose ?? null,
+        phase: b.phase, time, moving: Math.abs(mem.vx) > 12, hit: b.hitFlashTimer,
+      });
+      const dir = b.facing < 0 ? -1 : 1;
       ctx.save();
-      ctx.translate(b.x, feetY);
-      ctx.scale(b.facing < 0 ? -1 : 1, 1);
+      ctx.translate(b.x + mo.dx * dir, feetY + mo.dy);
+      ctx.rotate(-mo.rot * dir);
+      ctx.scale(dir * mo.sx, mo.sy);
       if (b.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
       if (spec.glow) {
         ctx.shadowColor = spec.glow;

@@ -20,15 +20,21 @@ export const venomSprite = createPaintedBoss({
   frames: VENOM_FRAMES,
   k: 0.95,
   pick: ({ b, br, m, moving, dist }) => {
+    // n_* frames are from the redrawn sheets (set 1), the rest from the first sheets; the dark ones are the angrier second phase
+    const p1 = b.phase < 2;
+    const half = m ? br.t < (br.state === 'act' ? m.act : m.tell) * 0.4 : false;
     let name: string;
     if (br.state === 'dying') name = br.t < 0.6 ? 'deathroar' : 'dead';
     else if (br.state === 'stun') name = 'stunned';
-    else if (br.state === 'roar') name = 'enrage';
-    else if (br.state === 'tell') name = m?.pose === 'spit' ? 'threat' : 'coil';
-    else if (br.state === 'act') name = m?.pose === 'spit' ? 'spit' : m?.pose === 'lunge' ? 'lunge' : 'tailslam';
-    else if (br.state === 'rec') name = 'block';
+    else if (br.state === 'roar') name = br.roarReason === 'enter' ? 'n_roar' : 'enrage';
+    else if (br.state === 'tell') name = m?.pose === 'spit' ? 'n_rear' : m?.pose === 'lunge' ? 'n_coil' : 'n_tail';
+    else if (br.state === 'act') {
+      if (m?.pose === 'spit') name = half ? 'n_hiss' : 'spit';
+      else if (m?.pose === 'lunge') name = half ? 'n_lunge2' : 'lunge';
+      else name = 'tailslam';
+    } else if (br.state === 'rec') name = p1 ? 'n_ring' : 'block';
     else if (moving) name = SLITHER[Math.floor((dist / STRIDE) * SLITHER.length) % SLITHER.length];
-    else name = b.phase >= 2 ? 'enrageidle' : 'idle';
+    else name = p1 ? 'n_idle' : 'enrageidle';
     if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) name = 'hurt';
     return name;
   },
