@@ -124,12 +124,24 @@ export function columnHit(zones: readonly Zone[] | undefined, x: number, y: numb
 // Drowsiness (World 3)
 // ---------------------------------------------------------------------------
 
-/** a drowsy player runs at this fraction of full speed... */
+/** a player in the thick of a cloud runs at this fraction of full speed... */
 export const DROWSY_SPEED = 0.5;
-/** ...and jumps this fraction as hard */
-export const DROWSY_JUMP = 0.84;
-/** the drowsiness lingers this long after leaving the cloud */
-export const DROWSY_LINGER = 0.7;
+/**
+ * ...and launches at this fraction of a jump's speed. Height goes with the square of that (0.95 gives 90% of the rise), so a jump inside a
+ * cloud still reaches every platform the generator calls safe (SAFE.rise1 is 82% of a full jump); it is the cloud's slowing that costs time.
+ */
+export const DROWSY_JUMP = 0.95;
+/** the drowsiness ends the moment the cloud does: nothing lingers, so a cloud that has cleared is a cloud that is gone */
+export const DROWSY_LINGER = 0;
+/** below this much cloud there is no effect at all (the thin edge of a puff is just a sight, not a spell) */
+export const DROWSY_MIN = 0.15;
+
+/** how drowsy a point in the cloud is, 0..1: follows the cloud's own thickness, so it comes on and goes off with what you see */
+export const drowsyLevel = (strength: number) => (strength > DROWSY_MIN ? Math.min(1, strength) : 0);
+/** the run speed share at this drowsiness (1 when awake) */
+export const drowsySpeed = (level: number) => 1 - (1 - DROWSY_SPEED) * level;
+/** the jump speed share at this drowsiness (1 when awake) */
+export const drowsyJump = (level: number) => 1 - (1 - DROWSY_JUMP) * level;
 /**
  * The spell a spore cloud is clear and he is fully awake again, counted from the moment the cloud has gone and the lingering sleep has
  * worn off to the moment the next one wakes. A crossing starts and ends inside it, and a jump that starts awake stays full strength

@@ -5,18 +5,22 @@ import { crestForSpeaker, type CrestKey } from './crests.ts';
 export type SpeakerMarkSpec =
   | { kind: 'crest'; key: CrestKey }
   | { kind: 'pokey' }
+  | { kind: 'dot' }
+  | { kind: 'head' }
   | { kind: 'icon'; icon: IconName };
 
 const ICONS: Record<string, IconName> = {
   Narrator: 'book',
-  Grandma: 'leaf',
-  Officer: 'medal',
-  Grandfather: 'shield',
   Petal: 'flower',
 };
 
+/** the speakers painted on the story sheets: their face sits beside the name (CelHead.tsx) */
+export const HEAD_SPEAKERS = new Set(['Grandma', 'Officer', 'Grandfather']);
+
 export function speakerMark(name: string): SpeakerMarkSpec {
+  if (HEAD_SPEAKERS.has(name)) return { kind: 'head' };
   if (name === 'Pokey') return { kind: 'pokey' };
+  if (name === 'Dot') return { kind: 'dot' };
   const key = crestForSpeaker(name);
   if (key !== undefined) return { kind: 'crest', key };
   return { kind: 'icon', icon: ICONS[name] ?? 'swords' };

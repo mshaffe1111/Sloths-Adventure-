@@ -5,6 +5,7 @@
  */
 
 import type { JennifurMood } from './jennifurSprite.ts';
+import type { DotPose } from './dotSprite.ts';
 import type { PokeyMood } from './heroStory.ts';
 import type { ActorMove, CameraFollow } from './storyActors.ts';
 import type { CameraMove, PoseKey, SceneFx } from './storyShots.ts';
@@ -18,7 +19,9 @@ export type ActorKind =
   | 'thornbark'
   | 'bloom'
   /** Dot, the hummingbird courier: hovers, scale is its size */
-  | 'dot';
+  | 'dot'
+  /** a painted figure from Matt's story sheets (Grandma, Lieutenant Pell, the General's forms, the pairs...): its frames come from `seq`; see storyCels.ts */
+  | 'cel';
 
 /** the Heartbloom's life: a closed bud, the open bloom, the epic glowing bloom, and its ultimate state */
 export type BloomStage = 'bud' | 'bloom' | 'epic' | 'ultimate';
@@ -52,6 +55,10 @@ export interface SceneActor {
    * When set it replaces `pose` / `angry` / `beaten`, and the actor falls back to those if the painted art is not loaded.
    */
   seq?: PoseKey[];
+  /** dot only: what he is doing (hovering when unset); see DotPose in dotSprite.ts */
+  dotPose?: DotPose;
+  /** cel only: the cast code ('GR' is Grandma); the names it answers to when it is the one speaking are in storyCels.ts */
+  cel?: string;
   /** milo only: a big face portrait instead of the body ('face_calm', 'face_wink'...; `seq` can change the expression), drawn `scale` times the usual size */
   portrait?: boolean;
 }

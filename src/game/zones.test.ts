@@ -193,3 +193,33 @@ test('every spore cloud of every World 3 stage leaves a clear, awake spell long 
     }
   }
 });
+
+// ───────────── the fog follows the cloud (nothing lingers, nothing faint counts) ─────────────
+import { drowsyLevel, drowsySpeed, drowsyJump, DROWSY_LINGER, DROWSY_MIN, DROWSY_JUMP } from './zones.ts';
+import { JUMP_RISE, SAFE } from './physics.ts';
+
+test('the spell ends with the cloud: no lingering sleep, and a thin edge of a puff does nothing', () => {
+  assert.equal(DROWSY_LINGER, 0);
+  assert.equal(drowsyLevel(0), 0);
+  assert.equal(drowsyLevel(DROWSY_MIN), 0);
+  assert.equal(drowsySpeed(0), 1);
+  assert.equal(drowsyJump(0), 1);
+});
+
+test('drowsiness grows with the cloud and never more than the full spell', () => {
+  let prevSpeed = 1;
+  let prevJump = 1;
+  for (let s = 0.2; s <= 1.0001; s += 0.1) {
+    const l = drowsyLevel(s);
+    assert.ok(l > 0 && l <= 1);
+    assert.ok(drowsySpeed(l) <= prevSpeed + 1e-9 && drowsyJump(l) <= prevJump + 1e-9, 'a thicker cloud never helps');
+    prevSpeed = drowsySpeed(l);
+    prevJump = drowsyJump(l);
+  }
+  assert.ok(Math.abs(drowsyJump(1) - DROWSY_JUMP) < 1e-9);
+});
+
+test('a jump made in the thick of a cloud still reaches every platform the generator calls safe', () => {
+  const rise = JUMP_RISE * drowsyJump(1) ** 2;
+  assert.ok(rise >= SAFE.rise1, `a drowsy jump rises ${rise.toFixed(0)} px; safe platforms are at most ${SAFE.rise1} px up`);
+});

@@ -12,6 +12,7 @@ Every pose and animation sheet Matt supplies lives here, so nothing he draws is 
 - `slomatt/` the six action-study sheets (rope, sliding, squat/flip/fall/kick, punch/climb/kick, run/jump/punch, slow movement) and `early-hero-sheets/`, the sheets the in-game hero atlas was cut from.
 - `slomatt/standard-set-v2/` the second round of standard-set sheets (2026-10-20 evening): walk and run (two takes), jump, vine, attacks, hit, plus swim/dive/glide, aim/items/wall/air moves and air attacks/stomp/bounce/spring. See `standard-set/NOTES.md`.
 - `slomatt/standard-set/` the nine-sheet standard set (4x4 on flat grey, 144 frames at ~240 px, one category per sheet), the format new sheets follow.
+- `story/` the eighteen story sheets (2026-10-21) the cutscenes are built from; the game's `src/assets/characters/cels-*.webp` atlases are cut from them (cell by cell, keyed from the grey), see below.
 - `jennifur/` her emotion sheets.
 - `slomatt-and-jennifur/` the shared sheets, including one with walk, jump, punch, kick, hurt and defeat drawn for both.
 
@@ -53,3 +54,24 @@ Each character is drawn as the same twelve 4x4 sheets: 1024x1024, flat grey, no 
 | 12 | Cinematic vignettes: level entry drop, level exit wave, menu/title idle, cutscene trap transitions |
 
 Slomatt has all twelve (`slomatt/standard-set/`). Two extras: `09_back-views.jpg` is the first draft of the behind-the-back sheet (kept; its strap is mostly right, see NOTES.md) and `12b_gestures-and-reactions.jpg` is a sheet of standing gestures (wave, points, hands on hips, shock, scratching his head) that fits none of the twelve subjects. The in-game "New hero set (test)" is built from sheets 1-8; sheet 9 is kept for a downhill-slide stage and 10-12 for cutscenes and dialogue.
+
+
+## The story sheets (2026-10-21)
+
+Eighteen 4x4 sheets on flat grey, each a different cast member or mood; the originals are in `story/` (byte for byte). The game uses 278 of the 288 cells, cut and keyed by script into three atlases (`src/assets/characters/cels-pokey.webp`, `cels-pair.webp`, `cels-folk.webp`; frame table in `src/game/storyCelData.ts`, runtime and the cast codes in `src/game/storyCels.ts`). In a cast string they are `GR` Grandma, `LP` Lieutenant Pell, `TC` the town crier, `PO` the mail carrier, `GN` the General (armor cracking to a grey tunic), `GV` the General in a paler grey tunic, `GY` the General younger, `PC` Pokey's extra poses (and the music box), `MC`/`MB`/`MX` Meeca without the bow, with it, and bandaged, `PA`/`PB` Pokey and Meeca together, `PH` the two hugging, and `PF:grin` and the other new face busts.
+
+| Sheet | What it is | Used for |
+|---|---|---|
+| 1 | Pokey, sixteen face busts | `PF:` portraits (grin, beam, aghast, smug, sulk, fret, snarl, giggle, weary, plead, glare, delight, drowsy, doubt, shock, sly) |
+| 2, 3, 4 | Pokey emotion, action and music-box/lullaby poses | `PC:` |
+| 13, 14 | Pokey shut in a room (chair, window, pacing, keyhole, carving the wall, writing) | `PC:` (not staged in a scene yet) |
+| 10, 11, 12 | Meeca: no bow, with the bow, bandaged and in her story outfit | `MC:`, `MB:`, `MX:` (not staged in a scene yet: the story still uses the in-game Meeca) |
+| 7, 8, 9 | Pokey and Meeca together (two passes), and hugging | `PA:`, `PB:`, `PH:` (the promise, the end) |
+| 6 | the General, armor cracking, off, to a tunic | `GN:crack`, `GN:sorrow`, `GN:tunic_stand` (the mercy, the blessing) |
+| 5 | the General in a paler tunic, grief, the letter | `GV:` (the letter) |
+| 16 | the General younger, in a tan shirt (salute, baby, music box) | `GY:` (the blessing flashback) |
+| 15 | Grandma | `GR:` (the garden, the blessing, the music box) |
+| 17 | Lieutenant Pell | `LP:` (both lieutenant scenes, the epilogue tailor shop) |
+| 18 | the town crier, the mail carrier | `TC:`, `PO:` (the Riverbank, the epilogue) |
+
+Known mismatches (Matt: fine for flashbacks and "not all the same day"): the General is a mandrill here, but a sloth warlord in the in-game boss art and in some of the story text; Meeca wears a satchel and no pink kit; sheet 5's General is paler than 6 and 16; sheets 13 and 14 overlap, the best of each is kept.

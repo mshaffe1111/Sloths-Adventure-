@@ -1293,8 +1293,9 @@ const POOL: Record<number, { light: boolean; a: number }> = {
   9: { light: false, a: 0.44 },
   10: { light: false, a: 0.32 },
 };
-const poolCache = new Map<Look, { col: string; a: number }>();
-function poolFor(look: Look, world: number): { col: string; a: number } {
+/** keyed weakly: every run rolls a fresh Look, and a strong Map here kept each old one (and its palette) alive for the whole session */
+const poolCache = new WeakMap<Look, { col: string; a: number }>();
+export function poolFor(look: Look, world: number): { col: string; a: number } {
   let p = poolCache.get(look);
   if (p) return p;
   const cfg = POOL[world] ?? POOL[1];

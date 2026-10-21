@@ -222,7 +222,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
     <div className={`sp-box ${wide ? 'sp-box-over' : ''}`} onClick={next}>
       {!narrator && (
         <span className="sp-name" style={{ ['--dot' as string]: who.dot }}>
-          <SpeakerMark name={panel.speaker} size={22} />
+          <SpeakerMark name={panel.speaker} size={22} talking={!done} />
           {panel.speaker}
         </span>
       )}

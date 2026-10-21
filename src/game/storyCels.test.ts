@@ -1,0 +1,59 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { CELS, CEL_ACTS, CEL_ATLAS_SIZES, CEL_CAST, celFaceKey, celPoses, celTrack, isCelCode, HEADS } from './storyCels.ts';
+import { chapter, N } from './storyDsl.ts';
+
+test('every frame sits inside its atlas and no two frames overlap', () => {
+  const by: Record<number, Array<[string, (typeof CELS)[string]]>> = { 0: [], 1: [], 2: [] };
+  for (const [k, c] of Object.entries(CELS)) {
+    const size = CEL_ATLAS_SIZES[c.a];
+    assert.ok(c.x >= 0 && c.y >= 0 && c.x + c.w <= size.w && c.y + c.h <= size.h, `${k} is inside atlas ${c.a}`);
+    by[c.a].push([k, c]);
+  }
+  for (const list of Object.values(by)) {
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        const [ka, a] = list[i];
+        const [kb, b] = list[j];
+        const apart = a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y;
+        assert.ok(apart, `${ka} and ${kb} do not overlap`);
+      }
+    }
+  }
+});
+
+test('every cast code has frames, a resting pose that exists and acts made of real frames', () => {
+  for (const code of Object.keys(CEL_CAST)) {
+    assert.ok(celPoses(code).length > 0, `${code} has poses`);
+    assert.doesNotThrow(() => celTrack(code, undefined), `${code} rests`);
+  }
+  for (const [name, act] of Object.entries(CEL_ACTS)) {
+    assert.ok(isCelCode(name.split(':')[0]), `${name} belongs to a code`);
+    for (const k of act) for (const fr of Array.isArray(k.frame) ? k.frame : [k.frame]) assert.ok(fr && CELS[fr], `${name} uses ${fr}`);
+    for (let i = 1; i < act.length; i++) assert.ok(act[i].at > act[i - 1].at, `${name} is in time order`);
+  }
+});
+
+test('a pose that does not exist is an error naming the choices', () => {
+  assert.throws(() => celTrack('GR', 'dance'), /not a pose of Grandma/);
+  assert.throws(() => celTrack('ZZ', 'x'), /not a story-sheet figure/);
+});
+
+test('the cast string reaches the painted figures and the speaker frames them', () => {
+  const [p] = chapter({ name: 't', w: 1, m: 'day' }, [N('Hello.', 'PC:chair_wait@.3 GR:water@.7*.9 PH:hug_a@.5')]);
+  const kinds = (p.scene.actors ?? []).map((a) => a.kind);
+  assert.deepEqual(kinds, ['cel', 'cel', 'cel']);
+  assert.equal(p.scene.actors![1].cel, 'GR');
+  assert.equal(p.scene.actors![1].facing, -1);
+  assert.throws(() => chapter({ name: 't', w: 1, m: 'day' }, [N('x', 'GR:nope')]), /not a pose of Grandma/);
+});
+
+test('face busts answer to the face_ names and the bare ones', () => {
+  assert.equal(celFaceKey('face_grin'), 'face.grin');
+  assert.equal(celFaceKey('snarl'), 'face.snarl');
+  assert.equal(celFaceKey('face_calm'), null);
+});
+
+test('the painted speaker heads point at frames that exist', () => {
+  for (const [who, h] of Object.entries(HEADS)) assert.ok(CELS[h.key], `${who} head frame`);
+});

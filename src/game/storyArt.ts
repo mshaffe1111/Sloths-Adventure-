@@ -11,13 +11,18 @@ import { drawMilo } from './miloVariants.ts';
 import type { StoryScene, SceneActor, ScenePhoto, BloomStage } from './story.ts';
 import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
 import { drawPaintedBird } from './birdSprites.ts';
+import { drawDotFrame, poseFrame, warmDot } from './dotSprite.ts';
 import { photoUrl } from './photos.ts';
+import { CEL_K, CELS, celFaceKey, drawCel, warmCels } from './storyCels.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
 
 // the painted Pokey (the standard hero and the cutscene poses) starts loading as soon as a story can be shown, so the first picture never opens in vector art
 warmStoryHero();
+warmDot();
+// the story-sheet figures are 1.8 MB: fetched a moment later so they never compete with the first screen
+if (typeof window !== 'undefined') setTimeout(() => warmCels(), 1500);
 
 function makePlayer(pose: SceneActor['pose'], facing: 1 | -1): PlayerState {
   return {
@@ -426,6 +431,16 @@ function drawPortrait(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
   ctx.rotate((pose?.rot ?? 0) * face);
   if (face === -1) ctx.scale(-1, 1);
   ctx.translate(0, Math.sin(t * 2.4) * 2);
+  // the busts from the story sheets (grin, sulk, snarl...): the painting is cut off at the chest and melts into the ground; a talking one nods a little
+  const bust = celFaceKey(name);
+  if (bust) {
+    const c = CELS[bust];
+    const nod = a.mood === 'talk' ? Math.abs(Math.sin(t * 8.5)) * 3 : 0;
+    const k = size / Math.max(c.w, c.h);
+    const ok = drawCel(ctx, bust, 0, nod + size * 0.04, k, 1);
+    ctx.restore();
+    return ok;
+  }
   const ok = drawPokeyFace(ctx, name, -size / 2, -size, size);
   ctx.restore();
   return ok;
@@ -543,25 +558,88 @@ function drawPhotoCard(ctx: CanvasRenderingContext2D, ph: ScenePhoto, w: number,
   ctx.restore();
 }
 
-/** Dot: a painted hummingbird hovering in place, with a little bob and a figure-of-eight drift */
+/** a little four-point glint (Dot's cheer, the stars round his head when he is dizzy) */
+function glint(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, alpha: number) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = '#fff3b0';
+  ctx.beginPath();
+  for (let i = 0; i < 8; i++) {
+    const rad = i % 2 ? r * 0.28 : r;
+    const ang = (i * Math.PI) / 4;
+    ctx.lineTo(Math.cos(ang) * rad, Math.sin(ang) * rad);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+/**
+ * Dot, painted from the redone sheets: he hovers (a four-frame flap, a bob and a slow figure-of-eight drift) or holds one of the reaction poses
+ * (`D:yelp`, `D:cheer`... see DotPose). The old backdrop hummingbird stands in while the picture loads.
+ */
 function drawDot(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, scroll = 0) {
-  const x = a.x * w + Math.sin(t * 1.7) * 7 - scroll;
-  const y = (a.y ?? 0.45) * h + Math.sin(t * 3.1) * 6;
-  const size = (a.scale ?? 1) * 4.2;
+  const pose = a.dotPose ?? 'hover';
+  const hover = pose === 'hover';
+  const drift = hover ? 7 : 3;
+  const x = a.x * w + Math.sin(t * 1.7) * drift - scroll;
+  const y = (a.y ?? 0.45) * h + Math.sin(t * 3.1) * (hover ? 6 : 3);
+  const sc = a.scale ?? 1;
   const face = a.facing === -1 ? -1 : 1;
+  if (drawDotFrame(ctx, poseFrame(pose, t), x, y, 0.95 * sc, face, hover ? 0.05 + Math.sin(t * 1.3) * 0.04 : 0)) {
+    if (pose === 'dizzy') {
+      for (let i = 0; i < 3; i++) {
+        const ang = t * 3 + (i * Math.PI * 2) / 3;
+        glint(ctx, x + Math.cos(ang) * 46 * sc, y - 52 * sc + Math.sin(ang) * 11 * sc, 9 * sc, 0.9);
+      }
+    } else if (pose === 'cheer') {
+      for (let i = 0; i < 3; i++) {
+        const ph = (t * 1.6 + i / 3) % 1;
+        glint(ctx, x + (i - 1) * 52 * sc, y - (46 + ph * 26) * sc, (7 + 5 * Math.sin(ph * Math.PI)) * sc, Math.sin(ph * Math.PI));
+      }
+    }
+    return;
+  }
+  const size = sc * 4.2;
   if (!drawPaintedBird(ctx, 'hummer', x, y, t, 1, size, face, 0, -0.12)) {
     ctx.save();
     ctx.translate(x, y);
     ctx.fillStyle = '#2f9d6a';
     ctx.beginPath();
-    ctx.ellipse(0, 0, 16 * (a.scale ?? 1), 9 * (a.scale ?? 1), 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, 16 * sc, 9 * sc, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
 }
 
+/**
+ * A figure painted on Matt's story sheets (storyCels.ts): the frame the pose timeline names, its feet on the ground line (hovering when placed above it), a contact shadow,
+ * a slow breath. Nothing is drawn while its atlas is still loading, which the draw itself starts.
+ */
+function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
+  if (!a.seq || !a.seq.length) return;
+  const pose = poseAt(a.seq, t);
+  const c = CELS[pose.frame];
+  if (!c) return;
+  const foot = footing(a, ground);
+  const x = (a.x + pose.dx) * w - scroll;
+  const feetY = (foot.y + pose.dy) * h + (foot.hover ? 0 : SINK);
+  const groundY = ground * h + SINK;
+  const k = CEL_K * (a.scale ?? 1) * pose.sc;
+  const face = (a.facing === -1 ? -1 : 1) * (pose.flip ? -1 : 1) as 1 | -1;
+  if (c.c !== 'raw') drawContactShadow(ctx, x, groundY, c.w * k * 0.6, c.h * k, Math.max(0, groundY - feetY));
+  ctx.save();
+  ctx.translate(x, feetY);
+  ctx.rotate(pose.rot * face);
+  if (c.c !== 'raw') ctx.scale(1, 1 + Math.sin(t * 1.9 + (a.x * 7)) * 0.006);
+  drawCel(ctx, pose.frame, 0, 0, k, face);
+  ctx.restore();
+}
+
 function drawActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h: number, t: number, ground: number, scroll: number) {
   if (a.kind === 'dot') { drawDot(ctx, a, w, h, t, scroll); return; }
+  if (a.kind === 'cel') { drawCelActor(ctx, a, w, h, t, ground, scroll); return; }
   // Pokey and Meeca: the painted characters, one engine (moods, moves, ground, shadow)
   if (a.kind === 'milo' && a.portrait) { drawPortrait(ctx, a, w, h, t, ground, scroll); return; }
   if (a.kind === 'milo' && drawCharacter(ctx, a, POKEY, w, h, t, ground, scroll, 'idle')) return;

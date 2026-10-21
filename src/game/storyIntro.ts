@@ -36,7 +36,7 @@ const MORNING = chapter({ name: 'PROLOGUE · THE SLOWEST MORNING', w: 1, m: 'day
     'P:happy@.34 M:happy@.62< H:epic@.5', { p: pan(1.3, 0.5, 0.6, 1.0, 0.5, 0.5, 6) }),
   N('Then the birds stopped singing. All of them. All at once.', 'P:worried@.3 M:surprised@.62< H:bloom@.5',
     { m: 'dusk', cue: 'dread', i: 0.35, sting: 'darkness', p: { particles: 'none', fx: [{ at: 0.2, kind: 'flash', dur: 0.25, amount: 0.35 }] } }),
-  D('ALERT! ALERT! Storm from the Highlands! Soldiers! Armor! Many, many boots! Heading directly for--', 'P:worried@.3 M:surprised@.58< D@.84^.34', { m: 'storm', i: 0.45, p: { particles: 'rain' } }),
+  D('ALERT! ALERT! Storm from the Highlands! Soldiers! Armor! Many, many boots! Heading directly for--', 'P:worried@.3 M:surprised@.58< D:yelp@.84^.34', { m: 'storm', i: 0.45, p: { particles: 'rain' } }),
   D('--this exact spot. I am, uh. Slightly late.', 'P:worried@.3 M:surprised@.58< D@.84^.34', { sting: 'laugh' }),
   N('The sky turned the color of a bruise. Thunder rolled down the Highlands, and the Heartbloom closed itself like a hand.',
     'P:worried@.3 M:scared@.6< H:bud@.5', { i: 0.55, p: { particles: 'rain', fx: [{ at: 1.2, kind: 'flash', dur: 0.35 }, { at: 1.2, kind: 'shake', amount: 7, dur: 0.45 }] } }),

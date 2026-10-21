@@ -16,11 +16,16 @@
  *   M  Meeca (kind 'daisy').  :mood is her mood (idle, talk, happy, laugh, sing, think, surprised, sad, sob, scared, scaredwave, cheer,
  *      walk, run, hurt, ko)
  *   G  General Iron-Claw (the world-10 painted boss).   B<n>  the guardian of world n (B3 = Shadow Prowler)
- *   D  Dot the hummingbird.   T  Thornbark.   H  the Heartbloom, :bud|bloom|epic|ultimate
+ *   D  Dot the hummingbird, :pose is what he does (hover, perch, yelp, flinch, dizzy, cheer, puzzled, sad, gasp, sleep).   T  Thornbark.   H  the Heartbloom, :bud|bloom|epic|ultimate
+ *   The story sheets (storyCels.ts has every pose; a bad pose name throws, so the tests catch it):
+ *   GR Grandma   LP Lieutenant Pell   TC the town crier   PO the mail carrier   GN the General, armor to tunic (GN:crack, GN:rise)   GV the General in grey   GY the grandfather
+ *   PC Pokey's extra poses   MC Meeca   MB Meeca with the bow   MX Meeca bandaged   PA PB Pokey and Meeca together   PH Pokey and Meeca hugging   e.g.  GR:water@.4  PH:hug_a@.5
  *   @x across the picture 0..1, ^y feet down the picture, *scale, < faces left, > faces right, ~ a dark silhouette, ! angry (boss), # beaten (boss)
  * An unset x, y and facing take the kind's usual place (Pokey on the left looking right, everyone else on the right looking left).
  * A cast of "=" means the same picture as the beat before.
  */
+import { DOT_POSES, isDotPose, type DotPose } from './dotSprite.ts';
+import { CEL_CAST, celPoses, celTrack, isCelCode } from './storyCels.ts';
 import type { SceneActor, SceneMood, ScenePhoto, StoryCue, StoryPanel, StoryScene, StorySting } from './story.ts';
 
 export interface Beat {
@@ -166,15 +171,30 @@ function actor(tok: string): SceneActor {
       if (m.beaten) a.beaten = true;
       return a;
     }
-    case 'D':
-      return { kind: 'dot', x: m.x ?? 0.62, y: m.y ?? 0.46, scale, facing: m.face ?? -1 };
+    case 'D': {
+      if (m.mood !== undefined && !isDotPose(m.mood)) throw new Error(`cast "${tok}": ${m.mood} is not a Dot pose (${DOT_POSES.join(', ')})`);
+      const a: SceneActor = { kind: 'dot', x: m.x ?? 0.62, y: m.y ?? 0.46, scale, facing: m.face ?? -1 };
+      if (m.mood && m.mood !== 'hover') a.dotPose = m.mood as DotPose;
+      return a;
+    }
     case 'H': {
       const stage = m.mood ?? 'bloom';
       if (!BLOOM_STAGES.has(stage)) throw new Error(`cast "${tok}": ${stage} is not a Heartbloom stage`);
       return { ...base, kind: 'bloom', x: m.x ?? 0.5, y: m.y ?? 0.8, scale, stage: stage as never };
     }
-    default:
-      throw new Error(`cast "${tok}": unknown actor "${kind}"`);
+    default: {
+      if (!isCelCode(kind)) throw new Error(`cast "${tok}": unknown actor "${kind}"`);
+      const c = CEL_CAST[kind];
+      let seq;
+      try {
+        seq = celTrack(kind, m.mood);
+      } catch (e) {
+        throw new Error(`cast "${tok}": ${(e as Error).message}`);
+      }
+      const a: SceneActor = { kind: 'cel', cel: kind, x: m.x ?? c.x, scale, facing: m.face ?? c.face, seq };
+      if (m.y !== undefined) a.y = m.y;
+      return a;
+    }
   }
 }
 
@@ -186,6 +206,7 @@ export function cast(spec: string | undefined): SceneActor[] {
 
 /** does this actor speak this beat's line (used to aim the camera) */
 function speaks(a: SceneActor, speaker: string): boolean {
+  if (a.kind === 'cel') return !!a.cel && CEL_CAST[a.cel].who.includes(speaker);
   switch (speaker) {
     case 'Pokey': return a.kind === 'milo';
     case 'Meeca': return a.kind === 'daisy' || a.kind === 'daisy_wave';
