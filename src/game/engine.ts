@@ -41,7 +41,7 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
-import { zoneEffect, windPush, zoneDrag, columnHit, inZone, DROWSY_SPEED, DROWSY_JUMP, DROWSY_LINGER } from './zones.ts';
+import { zoneEffect, windPush, zoneDrag, columnHit, inZone, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
@@ -194,7 +194,7 @@ export class GameEngine {
   private gameTime: number = 0;
   private standingOnId: number = -1;
   private riverHinted = false;
-  /** World 3: seconds of drowsiness left (spore clouds), and how strongly the screen shows it */
+  /** World 3: how drowsy the spore cloud makes him right now, 0 (awake) to 1 (in the thick of it); it follows the cloud and ends with it. And how strongly the screen shows it */
   private drowsy = 0;
   /** a jump that left the ground while Pokey was awake stays full strength to the landing, even if a spore cloud wakes under him mid-air */
   private flightClear = false;
@@ -612,16 +612,13 @@ export class GameEngine {
     const zones = this.currentStage.zones;
     if (zones?.length) {
       const bodyY = p.y - 30;
-      if (zoneEffect(zones, 'spore', p.x, bodyY, this.gameTime).strength > 0.2) {
-        if (this.drowsy <= 0) {
-          if (!this.zoneHinted.sleepy) this.addFloatingText('SLEEPY SPORES...', p.x, p.y - 80, '#c4b5fd');
-          this.zoneHinted.sleepy = true;
-          this.zzzTimer = 0.3;
-        }
-        this.drowsy = DROWSY_LINGER;
-      } else if (this.drowsy > 0) {
-        this.drowsy -= dt;
+      const level = drowsyLevel(zoneEffect(zones, 'spore', p.x, bodyY, this.gameTime).strength);
+      if (level > 0 && this.drowsy <= 0) {
+        if (!this.zoneHinted.sleepy) this.addFloatingText('SLEEPY SPORES...', p.x, p.y - 80, '#c4b5fd');
+        this.zoneHinted.sleepy = true;
+        this.zzzTimer = 0.3;
       }
+      this.drowsy = level;
       this.windV = windPush(zones, p.x, bodyY, this.gameTime, p.grounded);
       const drag = zoneDrag(zones, p.x, bodyY, this.gameTime);
       this.dragSpeed = drag.speed;
@@ -656,7 +653,7 @@ export class GameEngine {
       this.windV = 0;
       this.dragSpeed = 1;
       this.dragJump = 1;
-      if (this.drowsy > 0) this.drowsy -= dt;
+      this.drowsy = 0;
     }
     {
       // World 8: the dark fades in as you reach a dark stretch and out as you leave it
@@ -668,7 +665,7 @@ export class GameEngine {
       }
       this.darkShow += (want - this.darkShow) * Math.min(1, dt * 3);
     }
-    this.drowsyShow += ((this.drowsy > 0 ? 1 : 0) - this.drowsyShow) * Math.min(1, dt * 4);
+    this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
       this.zzzTimer -= dt;
       if (this.zzzTimer <= 0) {
@@ -1049,7 +1046,7 @@ export class GameEngine {
           // mid-jump can never drop him into the gap; it only weighs on jumps that start inside it)
           if (p.grounded) this.flightClear = this.drowsy <= 0;
           const sleepy = this.drowsy > 0 && !(this.flightClear && !p.grounded);
-          const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1) * (sleepy ? DROWSY_SPEED : 1) * this.dragSpeed;
+          const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1) * (sleepy ? drowsySpeed(this.drowsy) : 1) * this.dragSpeed;
           let maxSpeed = PHYS.maxRun * speedMult * this.attackMoveMul();
           const steer = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
           // touch jump help: a second jump taken with nothing steering pushes him forward until he lands or the thumb takes over
@@ -1094,7 +1091,7 @@ export class GameEngine {
 
         if (this.input.state.jumpPressed) {
           if (p.grounded || this.coyoteTimer > 0) {
-            p.vy = -PHYS.jumpV * (this.drowsy > 0 ? DROWSY_JUMP : 1) * this.dragJump;
+            p.vy = -PHYS.jumpV * drowsyJump(this.drowsy) * this.dragJump;
             p.grounded = false;
             p.jumpsLeft = 1;
             p.isDoubleJumping = false;
@@ -1108,7 +1105,7 @@ export class GameEngine {
             sound.playJump();
             this.spawnJumpDust(p.x, p.y);
           } else if (p.jumpsLeft > 0 && !p.climbing) {
-            p.vy = -PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * (this.drowsy > 0 && !this.flightClear ? DROWSY_JUMP : 1) * this.dragJump;
+            p.vy = -PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * (this.flightClear ? 1 : drowsyJump(this.drowsy)) * this.dragJump;
             p.jumpsLeft = 0;
             p.isDoubleJumping = true;
             p.somersaultAngle = 0;

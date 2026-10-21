@@ -92,9 +92,8 @@ export function drawZoneEffects(ctx: CanvasRenderingContext2D, zones: readonly Z
 function drawCloud(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof zoneState>, t: number) {
   const w = z.x1 - z.x0;
   const h = z.baseY - z.top;
-  // a few wisps always, so an idle cloud is still a place you can see
-  const idleWisps = st.phase === 'idle' ? 0.25 : 0;
-  const level = st.phase === 'active' ? st.strength : st.phase === 'warn' ? 0.18 + 0.3 * st.u : idleWisps;
+  // when it has cleared it is gone: no wisps left behind (only the mushrooms say where the next puff will come)
+  const level = st.phase === 'active' ? st.strength : st.phase === 'warn' ? 0.18 + 0.3 * st.u : 0;
   if (level <= 0) return;
   const n = Math.max(10, Math.round(w / 18));
   ctx.save();
