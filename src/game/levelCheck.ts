@@ -570,6 +570,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     }
   }
 
+  if (stage.lanes?.length) errors.push(...checkLanes(stage));
   return finish();
 
   function finish(): CheckResult {
@@ -587,4 +588,48 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       reachableIds: reachedIds,
     };
   }
+}
+
+
+/**
+ * Each lane of every two-lane fork is checked on its own: with the other lane taken away, the player must still get from the shared split
+ * platform to the shared join platform. (The whole-stage check above only proves that SOME route exists; a fork's lanes are both real
+ * routes, and a lane that cannot be crossed is a trap for whoever picks it.) The check runs on the stretch around the fork only, so it is cheap.
+ */
+export function checkLanes(stage: GeneratedStage): string[] {
+  const errors: string[] = [];
+  const mid = (p: Platform) => p.x + p.width / 2;
+  for (const f of stage.lanes ?? []) {
+    const split = stage.platforms.find((p) => !p.broken && p.x <= f.x0 - 40 && p.x + p.width >= f.x0 - 10 && Math.abs(p.y - f.splitY) < 4);
+    const join = stage.platforms.find((p) => !p.broken && p.x <= f.x1 + 10 && p.x + p.width >= f.x1 + 60 && Math.abs(p.y - f.joinY) < 4);
+    if (!split || !join) { errors.push(`fork #${f.id} has no shared split or join platform`); continue; }
+    for (const side of ['high', 'low'] as const) {
+      const other = side === 'high' ? f.low : f.high;
+      const dropP = new Set(other.platforms);
+      const dropV = new Set(other.vines);
+      const dropR = new Set(other.ropes);
+      const x0 = split.x - 40;
+      const x1 = join.x + join.width + 40;
+      const mini: GeneratedStage = {
+        ...stage,
+        platforms: stage.platforms.filter((p) => p.x + p.width >= x0 && p.x <= x1 && !dropP.has(p.id)),
+        vines: stage.vines.filter((v) => v.x >= x0 && v.x <= x1 && !dropV.has(v.id)),
+        ropes: (stage.ropes ?? []).filter((r) => r.x0 >= x0 && r.x1 <= x1 && !dropR.has(r.id)),
+        enemies: [],
+        collectibles: [],
+        checkpoints: [],
+        rivers: undefined,
+        zones: undefined,
+        lanes: undefined,
+        spawnX: mid(split),
+        spawnY: split.y,
+        exitTotemX: mid(join),
+        exitTotemY: join.y,
+      };
+      const res = validateStage(mini);
+      const bad = res.errors.filter((e) => /exit|spawn|rope/.test(e));
+      if (bad.length) errors.push(`fork #${f.id} ${side} lane cannot be crossed (${bad[0]})`);
+    }
+  }
+  return errors;
 }

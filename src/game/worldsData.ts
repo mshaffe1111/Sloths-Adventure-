@@ -1,5 +1,6 @@
 import type { WorldInfo, LevelConfig, ObjectiveType } from './types.ts';
 import { testUnlockOn } from './testUnlock.ts';
+import { targetSeconds } from './stageTime.ts';
 
 export const WORLDS_DATA: WorldInfo[] = [
   {
@@ -270,19 +271,19 @@ const OBJECTIVE_DESCRIPTIONS: Record<ObjectiveType, (target: number) => string> 
   boss_lair: () => 'Confront the Stage Boss! Watch telegraphs, dodge devastating attacks, and rescue Meeca!',
 };
 
-/** how long each kind of stage is, relative to a typical stage of its world (a sprint is the short one, a gauntlet the long one) */
-const STAGE_MINUTES: Record<string, number> = { sprint: 0.75, harvest: 1.0, purge: 1.0, stealth: 1.0, vine_runner: 0.95, relic_hunt: 1.1, rescue: 1.15, gauntlet: 1.15 };
-/** px per second a player really covers on each kind of stage (flat out for a sprint, slowly where there is fighting and looking) */
-const STAGE_PACE: Record<string, number> = { sprint: 170, harvest: 105, purge: 95, stealth: 125, vine_runner: 150, relic_hunt: 100, rescue: 100, gauntlet: 90 };
-/** the generator builds a stage a little wider than asked (it finishes the piece it is on, then adds the goal run): ask for that much less */
-const STAGE_OVERSHOOT: Record<string, number> = { sprint: 1.05, harvest: 1.1, purge: 1.26, stealth: 1.17, vine_runner: 1.17, relic_hunt: 1.22, rescue: 1.21, gauntlet: 1.55 };
+/**
+ * Stage length is set in SECONDS (stageTime.ts: targetSeconds, a typical first-time player, about 2:15 in World 1 and 4:00 in World 10) and turned into pixels with
+ * the stage's own pace: this many px of stage width per second of modelled play. The generator measures what it built with the same model and
+ * rebuilds a stage that came out short, so these are the first guess and the numbers only have to be close.
+ */
+export const PX_PER_SEC = 120;
 /** a stage is never shorter than this nor longer than that, so it neither flashes by nor outgrows a phone's memory */
 export const STAGE_MIN_W = 6000;
-export const STAGE_MAX_W = 24000;
-const stageWidth = (minutes: number, pace: number) => Math.min(STAGE_MAX_W, Math.max(STAGE_MIN_W, Math.round((minutes * 60 * pace) / 100) * 100));
-/** vertical stages: how tall they are (the climb is slower than a run, so they are tall) */
-const ASCENT_BASE = 2600;
-const ASCENT_PER_WORLD = 380;
+export const STAGE_MAX_W = 30000;
+const widthForSeconds = (sec: number) => Math.min(STAGE_MAX_W, Math.max(STAGE_MIN_W, Math.round((sec * PX_PER_SEC) / 100) * 100));
+/** vertical stages: modelled seconds of a climb per px of height (a climb is slow: about 25 px of height a second) */
+export const ASCENT_PX_PER_SEC = 24;
+const ASCENT_MIN_H = 2600;
 
 /**
  * Generates the 100 level configs (10 worlds x 10 mini-stages).
@@ -313,17 +314,12 @@ export function generateAllLevels(): LevelConfig[] {
       let levelWidth = 3200;
       let levelHeight = 900;
 
-      // Stage length is set from how long a stage should TAKE, then turned into pixels with the pace that kind of stage is played at
-      // (a sprint is run flat out, a fight stage is mostly stopping, ducking and fighting). A typical stage is about a minute and a half in
-      // World 1 and about four minutes in World 10; a stage type is longer or shorter than that by its own factor, each stage drifts a
-      // little from the pattern so no two worlds feel like the same ten stages, and the first stages of World 1 ease in.
-      const pattern = [0.7, 1.0, 1.2, 1.0, 0.8, 1.3, 1.5, 0.9, 1.1];
-      const variety = 1 + (pattern[(miniIndex + world.id * 3) % pattern.length] - 1) * 0.5;
-      const minutes = 1.5 + 0.28 * (world.id - 1);
-      const easeIn = world.id === 1 ? 0.9 + 0.1 * ((miniIndex - 1) / 8) : 1;
+      // Stage length is set from how long a stage should TAKE (stageTime.ts): about 2:15 for a typical stage of World 1 and about 4:00 in World 10.
+      const seconds = (type: ObjectiveType) => targetSeconds(world.id, miniIndex, type);
       /** a timed stage allows twice the time it is meant to take, in whole 5 s steps */
-      const timedLimit = (type: 'sprint' | 'stealth' | 'vine_runner') => Math.max(120, Math.round((2 * minutes * easeIn * variety * STAGE_MINUTES[type] * 60) / 5) * 5);
-      const lengthOf = (type: Exclude<ObjectiveType, 'ascent' | 'boss_lair'>) => stageWidth(minutes * easeIn * variety * STAGE_MINUTES[type], STAGE_PACE[type] / STAGE_OVERSHOOT[type]);
+      const timedLimit = (type: 'sprint' | 'stealth' | 'vine_runner') => Math.max(120, Math.round((2 * seconds(type)) / 5) * 5);
+      const lengthOf = (type: Exclude<ObjectiveType, 'ascent' | 'boss_lair'>) => widthForSeconds(seconds(type));
+      const pattern = [0.7, 1.0, 1.2, 1.0, 0.8, 1.3, 1.5, 0.9, 1.1];
       // how many of the old-size items a stage of this width holds: the quota grows with the stage but a little slower than it
       const grownQuota = (base: number, oldWidth: number, width: number, cap: number) => Math.min(cap, Math.round(base * Math.pow(width / oldWidth, 0.6)));
       const oldSized = (base: number) => Math.round((base * Math.min(world.id === 1 ? 1.1 : 2, 1 + (pattern[(miniIndex + world.id * 3) % pattern.length] - 1)) * (1 + 0.03 * (world.id - 1))) / 100) * 100;
@@ -345,7 +341,7 @@ export function generateAllLevels(): LevelConfig[] {
         case 'ascent':
           targetCount = 1;
           levelWidth = Math.round(3200 * (1 + 0.03 * (world.id - 1)) / 100) * 100;
-          levelHeight = ASCENT_BASE + ASCENT_PER_WORLD * world.id;
+          levelHeight = Math.max(ASCENT_MIN_H, Math.round((seconds('ascent') * ASCENT_PX_PER_SEC) / 100) * 100);
           break;
         case 'stealth':
           targetCount = 1;

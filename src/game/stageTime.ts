@@ -82,7 +82,7 @@ export const FLOOR_FAST = 95;
 
 /** a typical stage of World 1 is about 2:15 and of World 10 about 4:00 */
 const TYPICAL_W1 = 135;
-const TYPICAL_W10 = 235;
+const TYPICAL_W10 = 218;
 /** relative length of each kind of stage (the sprint is the short one, the gauntlet the long one) */
 const TYPE_FACTOR: Record<string, number> = {
   sprint: 0.97, harvest: 1.0, purge: 1.0, ascent: 1.0, stealth: 1.0, vine_runner: 1.0, relic_hunt: 1.04, rescue: 1.04, gauntlet: 1.1,
@@ -101,7 +101,7 @@ export function targetSeconds(world: number, mini: number, type: ObjectiveType |
 
 /** the quickest player's floor for the same stage: the fast model must still need this long */
 export function fastFloor(world: number, mini: number, type: ObjectiveType | string): number {
-  return Math.round(Math.max(FLOOR_FAST + 6, targetSeconds(world, mini, type) * 0.76));
+  return Math.round(Math.max(FLOOR_FAST + 3, targetSeconds(world, mini, type) * 0.68));
 }
 
 // ---------------------------------------------------------------------------

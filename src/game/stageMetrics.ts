@@ -41,12 +41,17 @@ export interface JumpEdge {
  * Every direct hop between two platforms: the next platform that starts beyond the edge of this one, within a jump's reach. Only ordinary
  * footing counts (not river logs, moving platforms or mushrooms: their hops are not a take-off from a fixed edge).
  */
-export function jumpEdges(stage: GeneratedStage): JumpEdge[] {
-  const plats = stage.platforms.filter((p) => !p.broken && p.type !== 'drift' && p.type !== 'moving' && p.type !== 'bouncy');
+export function jumpEdges(src: GeneratedStage | Platform[]): JumpEdge[] {
+  const all = Array.isArray(src) ? src : src.platforms;
+  const plats = all.filter((p) => !p.broken && p.type !== 'drift' && p.type !== 'moving' && p.type !== 'bouncy');
   const sorted = [...plats].sort((a, b) => a.x - b.x);
   const out: JumpEdge[] = [];
   for (const a of sorted) {
     const a1 = a.x + a.width;
+    // a branch over a stretch of ground is not an edge to jump from: the ground is below it and carries on
+    if (a.height < 50 && all.some((c) => c.height >= 50 && !c.broken && c.x <= a.x + 2 && c.x + c.width >= a1 - 2 && c.y > a.y + 30)) continue;
+    // a step: ground that carries on right beside this platform (up or down) is not an edge to jump from
+    if (sorted.some((c) => c !== a && c.x >= a1 - 6 && c.x <= a1 + 8 && Math.abs(c.y - a.y) <= 130)) continue;
     let best: Platform | null = null;
     for (const b of sorted) {
       if (b === a || b.x < a1 + 24) {
@@ -56,7 +61,9 @@ export function jumpEdges(stage: GeneratedStage): JumpEdge[] {
       if (b.x > a1 + 330) break;
       if (Math.abs(a.y - b.y) > 180) continue;
       // something already standing in the gap means this is not a bare hop
-      const covered = sorted.some((c) => c !== a && c !== b && c.x < b.x && c.x + c.width > a1 && Math.abs(c.y - a.y) < 40);
+      const covered = sorted.some((c) => c !== a && c !== b && c.x < b.x && c.x + c.width > a1 && Math.abs(c.y - a.y) < 40)
+        // (or the ground runs on under the whole gap: a hop over solid ground is a step, not a leap over a pit)
+        || sorted.some((c) => c !== a && c !== b && c.height >= 50 && c.x <= a1 + 6 && c.x + c.width >= b.x - 6 && c.y >= Math.min(a.y, b.y) - 6);
       if (covered) continue;
       if (!best || b.x < best.x) best = b;
     }
@@ -166,7 +173,7 @@ export function measureStage(stage: GeneratedStage): StageMetrics {
 
   // ---- hazard-free stretches ----
   const blocks = hazardBlocks(stage);
-  const breathers = pieces.filter((p) => p.k === 'breather');
+  const breathers = [...pieces.filter((p) => p.k === 'breather'), ...(stage.meta?.breathers ?? []).map(([x0, x1]) => ({ x0, x1 }))];
   const inBreather = (x0: number, x1: number) => breathers.some((b) => x0 >= b.x0 - 10 && x1 <= b.x1 + 10);
   const sx = stage.spawnX;
   const ex = stage.exitTotemX;
