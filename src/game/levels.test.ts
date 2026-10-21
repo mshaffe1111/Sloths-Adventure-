@@ -28,13 +28,13 @@ test('generation is deterministic', () => {
   }
 });
 
-test('stages are long and grow by world (about a minute and a half in World 1 to about four in World 10)', () => {
+test('stages are long and grow by world (about two and a quarter minutes in World 1 to about four in World 10)', () => {
   const ord = levels.filter((l) => l.objectiveType !== 'boss_lair' && l.objectiveType !== 'ascent');
   assert.ok(Math.min(...ord.map((l) => l.levelWidth)) >= 6000, 'no ordinary stage can be cranked through in half a minute');
-  assert.ok(Math.max(...ord.map((l) => l.levelWidth)) <= 24000, 'and none outgrows the cap');
+  assert.ok(Math.max(...ord.map((l) => l.levelWidth)) <= 30000, 'and none outgrows the cap');
   const avg = (w: number) => { const xs = ord.filter((l) => l.worldIndex === w).map((l) => l.levelWidth); return xs.reduce((a, b) => a + b, 0) / xs.length; };
   for (let w = 2; w <= 10; w++) assert.ok(avg(w) > avg(w - 1) * 0.98, `world ${w} is not shorter than world ${w - 1}`);
-  assert.ok(avg(10) > avg(1) * 2, 'World 10 stages are more than twice the length of World 1 stages');
+  assert.ok(avg(10) > avg(1) * 1.4, 'World 10 stages are well over a third longer than World 1 stages');
   // timed stages give enough time to finish them at a steady run
   for (const l of ord) if (l.timeLimit) assert.ok(l.timeLimit >= 120, `${l.id} time limit is too tight`);
 });
@@ -44,14 +44,14 @@ test('ascent stages get taller by world', () => {
   assert.ok(h(10) > h(1));
 });
 
-test('every level has a flag every ~2000px and a lives-safe spawn', () => {
+test('every level has a flag every ~1500px (never more than 2300 apart) and a lives-safe spawn', () => {
   for (const l of levels) {
     if (l.objectiveType === 'boss_lair' || l.objectiveType === 'ascent') continue;
     const s = generateStage(l);
     const cps = s.checkpoints ?? [];
     let prev = 0;
-    for (const c of cps) { assert.ok(c.x - prev < 2800, `${l.id} flag gap ${c.x - prev}`); prev = c.x; }
-    assert.ok(s.exitTotemX - prev < 2600, `${l.id} last flag too far from goal`);
+    for (const c of cps) { assert.ok(c.x - prev < 2300, `${l.id} flag gap ${c.x - prev}`); prev = c.x; }
+    assert.ok(s.exitTotemX - prev < 2000, `${l.id} last flag too far from goal`);
     assert.ok(s.waterY !== undefined && s.waterY > s.spawnY, `${l.id} has water below the spawn`);
   }
 });
