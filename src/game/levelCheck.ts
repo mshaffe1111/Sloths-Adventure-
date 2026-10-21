@@ -20,9 +20,11 @@ import {
   TAKEOFF_SLACK,
   airStep,
   canGrabSwing,
+  maxDropReach,
   reachBounce,
   reachJump,
   reachMin,
+  SWING,
   swingGrab,
   swingStep,
   tarzanLaunch,
@@ -46,6 +48,14 @@ export interface CheckResult {
 
 /** Fraction of the simulated maximum reach the validator still accepts. */
 const MARGIN = 0.97;
+
+/** the engine keeps the hero this far inside the world's left and right edges (engine.ts), and a ledge narrower than STAND_MIN is not somewhere to stand */
+const STRIP_MARGIN = 20;
+const STAND_MIN = 24;
+/** two pickups closer than this overlap on the screen */
+export const PICKUP_APART = 36;
+/** the clear approach kept around the start, every flag and the exit: no animal's patch comes closer than this */
+export const SAFE_APPROACH = 200;
 
 const ext = (p: Platform): [number, number] =>
   p.type === 'moving'
@@ -81,13 +91,68 @@ export function swingLandings(
   platforms: Platform[],
   waterY: number
 ): Map<number, number> {
+  return swingLandingsIn(a, v, dir, landingPack(v, platforms), waterY);
+}
+
+/**
+ * The platforms a flight from one liana can come down on, as flat number arrays sorted by height, so a falling body only looks at
+ * the platforms inside the band it fell through (it used to be compared with every platform on every step).
+ */
+interface LandingPack {
+  n: number;
+  /** sorted by top (y), ascending */
+  y: Float64Array;
+  lx: Float64Array;
+  rx: Float64Array;
+  /** the platform's place in the original list: of two platforms hit in the same step the earlier one wins, as before */
+  order: Int32Array;
+  id: Int32Array;
+  maxTop: number;
+}
+
+/**
+ * Only platforms a flight from this liana can possibly come down on are packed (a speed-up that changes no result): a release
+ * is at most 0.93 * the rope's length to the side of the vine and a leap covers at most 120 steps * 520 px/s, and it never rises
+ * more than 152 px above a release point that hangs below the vine's top.
+ */
+function landingPack(v: Vine, platforms: Platform[]): LandingPack {
+  const dt = SIM_DTS[0];
+  const reachX = 0.93 * Math.max(SWING.minLen, v.bottomY - v.topY) + 120 * dt * SWING.leapMax + LAND_HALF + 8;
+  const list: Array<{ p: Platform; order: number }> = [];
+  for (let i = 0; i < platforms.length; i++) {
+    const p = platforms[i];
+    if (p.broken || p.type === 'moving' || p.type === 'drift') continue;
+    if (p.x + p.width >= v.x - reachX && p.x <= v.x + reachX && p.y >= v.topY - 200) list.push({ p, order: i });
+  }
+  list.sort((m, q) => m.p.y - q.p.y || m.order - q.order);
+  const n = list.length;
+  const pack: LandingPack = { n, y: new Float64Array(n), lx: new Float64Array(n), rx: new Float64Array(n), order: new Int32Array(n), id: new Int32Array(n), maxTop: -Infinity };
+  for (let i = 0; i < n; i++) {
+    const p = list[i].p;
+    pack.y[i] = p.y;
+    pack.lx[i] = p.x - LAND_HALF;
+    pack.rx[i] = p.x + p.width + LAND_HALF;
+    pack.order[i] = list[i].order;
+    pack.id[i] = p.id;
+    if (p.y > pack.maxTop) pack.maxTop = p.y;
+  }
+  return pack;
+}
+
+/** "no platform" in the flight results (platform ids can be negative: the generator tests a swing with two stand-in platforms, -1 and -2) */
+const NO_LANDING = -2147483647;
+const hitBuf = new Int32Array(100);
+
+function swingLandingsIn(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number): Map<number, number> {
   const out = new Map<number, number>();
   const dt = SIM_DTS[0];
   const edge = dir === 1 ? a.x + a.width : a.x;
-  const solids = platforms.filter((p) => !p.broken && p.type !== 'moving' && p.type !== 'drift');
+  const { n, y: py, lx, rx, order, id: pids, maxTop } = pack;
+  const b: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
+  const fb: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
 
   for (let s = 0; s <= 90; s += 15) {
-    const b: AirBody = { x: edge - dir * s, y: a.y, vx: dir * PHYS.maxRun, vy: -PHYS.jumpV };
+    b.x = edge - dir * s; b.y = a.y; b.vx = dir * PHYS.maxRun; b.vy = -PHYS.jumpV;
     let grabbed = false;
     for (let i = 0; i < 90 && !grabbed; i++) {
       airStep(b, dt, dir, false);
@@ -98,38 +163,47 @@ export function swingLandings(
 
     for (const steer of [0, dir] as const) {
       const sw = swingGrab(b, v);
-      const hits: Array<number | null> = [];
       for (let f = 0; f < 100; f++) {
         const pos = swingStep(sw, v, dt, steer);
         // release now: Tarzan leap toward the far side
         const l = tarzanLaunch(pos.vx, pos.vy, dir);
-        const fb: AirBody = { x: pos.x, y: pos.y, vx: l.vx, vy: l.vy };
-        let landed: number | null = null;
-        for (let k = 0; k < 120 && landed === null; k++) {
+        fb.x = pos.x; fb.y = pos.y; fb.vx = l.vx; fb.vy = l.vy;
+        let landed = NO_LANDING;
+        // the first platform (by height) that can still be hit: that band only moves down while the body falls
+        let ptr = -1;
+        for (let k = 0; k < 120 && landed === NO_LANDING; k++) {
           const prev = fb.y;
           airStep(fb, dt, dir, false);
           if (fb.y > waterY + 20) break;
           if (fb.vy >= 0) {
-            for (const p of solids) {
-              if (fb.x >= p.x - LAND_HALF && fb.x <= p.x + p.width + LAND_HALF && prev <= p.y + 14 && fb.y >= p.y) {
-                landed = p.id;
-                break;
-              }
+            if (ptr < 0) {
+              let lo = 0, hi = n;
+              while (lo < hi) { const mid = (lo + hi) >> 1; if (py[mid] < prev - 14) lo = mid + 1; else hi = mid; }
+              ptr = lo;
+            } else {
+              while (ptr < n && py[ptr] < prev - 14) ptr++;
             }
+            let bestOrder = 0x7fffffff;
+            for (let q = ptr; q < n && py[q] <= fb.y; q++) {
+              if (fb.x >= lx[q] && fb.x <= rx[q] && order[q] < bestOrder) { bestOrder = order[q]; landed = pids[q]; }
+            }
+            // falling below the lowest top there is: nothing is left to land on
+            if (landed === NO_LANDING && fb.y > maxTop + 14) break;
           }
         }
-        hits.push(landed);
+        hitBuf[f] = landed;
       }
       // longest run of consecutive frames landing on the same platform
-      let runId: number | null = null;
+      let runId = NO_LANDING;
       let run = 0;
       const best = new Map<number, number>();
-      for (const h of [...hits, null]) {
-        if (h !== null && h === runId) run++;
+      for (let f = 0; f <= 100; f++) {
+        const h = f < 100 ? hitBuf[f] : NO_LANDING;
+        if (h !== NO_LANDING && h === runId) run++;
         else {
-          if (runId !== null) best.set(runId, Math.max(best.get(runId) ?? 0, run));
+          if (runId !== NO_LANDING) best.set(runId, Math.max(best.get(runId) ?? 0, run));
           runId = h;
-          run = h === null ? 0 : 1;
+          run = h === NO_LANDING ? 0 : 1;
         }
       }
       for (const [id, r] of best) if (r >= 6) out.set(id, (out.get(id) ?? 0) + 1);
@@ -143,7 +217,19 @@ export function swingLandings(
 export function validateStage(stage: GeneratedStage): CheckResult {
   const errors: string[] = [];
   const cfg = stage.config;
-  const plats = stage.platforms.filter((p) => !p.broken);
+  // The engine keeps the hero inside [20, W - 20]: ground beyond that cannot be stood on, a vine out there cannot be grabbed, and a
+  // platform that sticks out only counts for the part that is inside. (A platform that leaves less than STAND_MIN px does not count.)
+  const stripLo = STRIP_MARGIN;
+  const stripHi = cfg.levelWidth - STRIP_MARGIN;
+  const plats: Platform[] = [];
+  for (const p of stage.platforms) {
+    if (p.broken) continue;
+    if (p.type === 'moving' || p.type === 'drift' || (p.x >= stripLo && p.x + p.width <= stripHi)) { plats.push(p); continue; }
+    const x0 = Math.max(p.x, stripLo);
+    const x1 = Math.min(p.x + p.width, stripHi);
+    if (x1 - x0 >= STAND_MIN) plats.push({ ...p, x: x0, width: x1 - x0 });
+  }
+  const vines = stage.vines.filter((v) => v.x >= stripLo && v.x <= stripHi);
   const waterY = stage.waterY ?? cfg.levelHeight + 100;
   let maxGapUsed = 0;
   let swingEdges = 0;
@@ -164,27 +250,54 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   const byX = [...plats].sort((a, b) => ext(a)[0] - ext(b)[0]);
 
   // 1. jumps between platforms (only compare neighbours within a plausible horizontal window)
-  for (let i = 0; i < byX.length; i++) {
+  // To the right the window is 460 px. To the left a platform can only be reached if the gap is within the furthest any jump
+  // in THIS stage could cover (its biggest drop sets that), so everything further left is skipped: the same links as comparing
+  // every pair, found without visiting them.
+  const nP = byX.length;
+  const px0 = new Float64Array(nP), px1 = new Float64Array(nP), prefMax1 = new Float64Array(nP);
+  let minY = Infinity, maxY = -Infinity;
+  for (let i = 0; i < nP; i++) {
+    const [x0, x1] = ext(byX[i]);
+    px0[i] = x0;
+    px1[i] = x1;
+    prefMax1[i] = i > 0 ? Math.max(prefMax1[i - 1], x1) : x1;
+    if (byX[i].y < minY) minY = byX[i].y;
+    if (byX[i].y > maxY) maxY = byX[i].y;
+  }
+  const maxDrop = nP ? maxY - minY : 0;
+  const leftReach = maxDropReach(maxDrop) * MARGIN - TAKEOFF_SLACK;
+  for (let i = 0; i < nP; i++) {
     const a = byX[i];
-    const [, ax1] = ext(a);
-    for (let j = 0; j < byX.length; j++) {
+    const ax0 = px0[i], ax1 = px1[i];
+    // first platform whose right edge (or any earlier one's) is within reach of a's left edge
+    let lo = 0, hi = i;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (prefMax1[mid] < ax0 - leftReach) lo = mid + 1; else hi = mid;
+    }
+    for (let j = lo; j < nP; j++) {
       if (i === j) continue;
-      const b = byX[j];
-      const [bx0] = ext(b);
+      const bx0 = px0[j];
       if (bx0 > ax1 + 460) {
         if (j > i) break;
         continue;
       }
-      const r = jumpOK(a, b, allowDouble);
-      if (r.ok) {
+      const b = byX[j];
+      const bx1 = px1[j];
+      const gap = Math.max(0, bx0 - ax1, ax0 - bx1);
+      if (gap > leftReach) continue;
+      const dy = a.y - b.y;
+      const f = a.type === 'bouncy' ? reachBounce : reachJump;
+      const r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
+      if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) {
         link(pid(a), pid(b));
-        if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, r.gap);
+        if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
       }
     }
   }
 
   // 2. climbing vines
-  for (const v of stage.vines) {
+  for (const v of vines) {
     if (v.vineType === 'swing_liana') continue;
     const n = vid(v);
     // entering: stand next to the trunk and press up
@@ -221,15 +334,16 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   }
 
   // 3. swinging lianas
-  for (const v of stage.vines) {
+  for (const v of vines) {
     if (v.vineType !== 'swing_liana') continue;
+    const pack = landingPack(v, plats);
     for (const a of plats) {
       if (a.type === 'moving' || a.type === 'drift' || a.type === 'bouncy') continue;
       const dirs: Array<1 | -1> = [];
       if (a.x + a.width <= v.x + 40 && v.x - (a.x + a.width) < 520) dirs.push(1);
       if (a.x >= v.x - 40 && a.x - v.x < 520) dirs.push(-1);
       for (const dir of dirs) {
-        const res = swingLandings(a, v, dir, plats, waterY);
+        const res = swingLandingsIn(a, v, dir, pack, waterY);
         for (const [id, lines] of res) {
           if (lines >= 6 && id !== a.id) {
             link(`p${a.id}`, `p${id}`);
@@ -303,7 +417,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       const [x0, x1] = ext(p);
       if (dxTo(x0, x1, x) <= 150 && p.y - y >= -14 && p.y - y <= 190) return true;
     }
-    for (const v of stage.vines) {
+    for (const v of vines) {
       if (seen.has(vid(v)) && Math.abs(x - v.x) < 70 && y >= v.topY - 40 && y <= v.bottomY) return true;
       if (usedSwing.has(v.id) && Math.abs(x - v.x) < 190 && y >= v.topY - 40 && y <= v.bottomY + 20) return true;
     }
@@ -316,6 +430,30 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   for (const c of stage.collectibles) {
     if (c.type === 'exit_totem') continue;
     if (!nearReachable(c.x, c.y)) errors.push(`${c.type} #${c.id} at (${Math.round(c.x)}, ${Math.round(c.y)}) is out of reach`);
+  }
+  // a pickup must be in the open: not inside a platform (a flower on a ditch floor once sat in the bridge deck over it, a few in a mushroom),
+  // not outside the strip the hero can walk, and not on top of another pickup
+  for (const c of stage.collectibles) {
+    if (c.type === 'exit_totem') continue;
+    if (c.x < stripLo || c.x > stripHi) errors.push(`${c.type} #${c.id} is outside the walkable strip`);
+    for (const p of stage.platforms) {
+      if (p.broken || p.type === 'drift' || p.type === 'moving') continue;
+      if (c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2) {
+        errors.push(`${c.type} #${c.id} at (${Math.round(c.x)}, ${Math.round(c.y)}) is inside platform ${p.id}`);
+        break;
+      }
+    }
+  }
+  {
+    const live = stage.collectibles.filter((c) => c.type !== 'exit_totem').sort((a, b) => a.x - b.x);
+    for (let i = 0; i < live.length; i++) {
+      for (let j = i + 1; j < live.length && live[j].x - live[i].x < PICKUP_APART; j++) {
+        if (Math.hypot(live[j].x - live[i].x, live[j].y - live[i].y) < PICKUP_APART) {
+          errors.push(`${live[i].type} #${live[i].id} and ${live[j].type} #${live[j].id} overlap`);
+          break;
+        }
+      }
+    }
   }
 
   // quota
@@ -331,12 +469,13 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   // fairness: nothing hostile right on top of the player when they spawn or respawn
   // (each flag is compared at its own height: in a climb the flags are far above the spawn, so judging every enemy against
   // the spawn's height let an eagle sit right over a flag)
-  const safeSpots = [{ x: stage.spawnX, y: stage.spawnY }, ...(stage.checkpoints ?? [])];
+  const safeSpots = [{ x: stage.spawnX, y: stage.spawnY }, ...(stage.checkpoints ?? []), { x: stage.exitTotemX, y: stage.exitTotemY }];
   for (const e of stage.enemies) {
     for (const s of safeSpots) {
-      if (Math.abs(e.x - s.x) < 170 && Math.abs(e.y - s.y) < 400) {
-        errors.push(`enemy #${e.id} stands too close to a safe spot at x=${Math.round(s.x)}`);
-      }
+      if (Math.abs(e.y - s.y) >= 400) continue;
+      // (a flier is judged by where it hangs, a walker by how close its patch of ground comes)
+      const d = e.type === 'eagle' ? Math.abs(e.x - s.x) : Math.min(Math.abs(e.x - s.x), dxTo(e.patrolMinX, e.patrolMaxX, s.x));
+      if (d < (e.type === 'eagle' ? 300 : SAFE_APPROACH)) errors.push(`enemy #${e.id} stands too close to a safe spot at x=${Math.round(s.x)}`);
     }
   }
 
@@ -431,6 +570,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     }
   }
 
+  if (stage.lanes?.length) errors.push(...checkLanes(stage));
   return finish();
 
   function finish(): CheckResult {
@@ -448,4 +588,48 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       reachableIds: reachedIds,
     };
   }
+}
+
+
+/**
+ * Each lane of every two-lane fork is checked on its own: with the other lane taken away, the player must still get from the shared split
+ * platform to the shared join platform. (The whole-stage check above only proves that SOME route exists; a fork's lanes are both real
+ * routes, and a lane that cannot be crossed is a trap for whoever picks it.) The check runs on the stretch around the fork only, so it is cheap.
+ */
+export function checkLanes(stage: GeneratedStage): string[] {
+  const errors: string[] = [];
+  const mid = (p: Platform) => p.x + p.width / 2;
+  for (const f of stage.lanes ?? []) {
+    const split = stage.platforms.find((p) => !p.broken && p.x <= f.x0 - 40 && p.x + p.width >= f.x0 - 10 && Math.abs(p.y - f.splitY) < 4);
+    const join = stage.platforms.find((p) => !p.broken && p.x <= f.x1 + 10 && p.x + p.width >= f.x1 + 60 && Math.abs(p.y - f.joinY) < 4);
+    if (!split || !join) { errors.push(`fork #${f.id} has no shared split or join platform`); continue; }
+    for (const side of ['high', 'low'] as const) {
+      const other = side === 'high' ? f.low : f.high;
+      const dropP = new Set(other.platforms);
+      const dropV = new Set(other.vines);
+      const dropR = new Set(other.ropes);
+      const x0 = split.x - 40;
+      const x1 = join.x + join.width + 40;
+      const mini: GeneratedStage = {
+        ...stage,
+        platforms: stage.platforms.filter((p) => p.x + p.width >= x0 && p.x <= x1 && !dropP.has(p.id)),
+        vines: stage.vines.filter((v) => v.x >= x0 && v.x <= x1 && !dropV.has(v.id)),
+        ropes: (stage.ropes ?? []).filter((r) => r.x0 >= x0 && r.x1 <= x1 && !dropR.has(r.id)),
+        enemies: [],
+        collectibles: [],
+        checkpoints: [],
+        rivers: undefined,
+        zones: undefined,
+        lanes: undefined,
+        spawnX: mid(split),
+        spawnY: split.y,
+        exitTotemX: mid(join),
+        exitTotemY: join.y,
+      };
+      const res = validateStage(mini);
+      const bad = res.errors.filter((e) => /exit|spawn|rope/.test(e));
+      if (bad.length) errors.push(`fork #${f.id} ${side} lane cannot be crossed (${bad[0]})`);
+    }
+  }
+  return errors;
 }

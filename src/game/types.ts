@@ -249,6 +249,45 @@ export interface Platform {
   style?: 'branch' | 'log' | 'moss_stone' | 'ruin' | 'canopy_bridge';
 }
 
+/**
+ * One of the two routes through a two-lane fork (see `chunkFork` in stageGenerator.ts). A fork has a shared platform where it splits, a HIGH lane
+ * (branches, pillars, a swing: quick, risky, few flowers and one special reward) and a LOW lane (ground, trench, a hollow: safe, usually longer, animals
+ * on patrol, many flowers), and a shared platform where the two meet again. Reversed forks swap the roles: the low lane is a quick hollow and the high lane the long way round.
+ */
+export interface LaneRoute {
+  /** what the lane is made of; it sets how fast it can be travelled and how the lane looks */
+  terrain: 'canopy' | 'swing' | 'pillars' | 'trench' | 'hollow';
+  /** everything that belongs to this lane and no other: the platforms, vines and ropes of it, and the animals that patrol it */
+  platforms: number[];
+  vines: number[];
+  ropes: number[];
+  enemies: number[];
+  /** pickups that lie on this lane (flowers and leaves) */
+  flowers: number[];
+  /** jumps between the lane's own platforms, stair steps on it, and the path walked beyond the straight span (a trench is walked down and back up) */
+  hops: number;
+  steps: number;
+  extraPx: number;
+  /** the height of the lane's walking surface where it leaves the shared split platform (px above the split platform's top; negative = below) */
+  entryRise: number;
+}
+
+export interface LaneFork {
+  id: number;
+  /** where the lanes part (the right end of the shared split platform) and where they meet (the left end of the shared join platform) */
+  x0: number;
+  x1: number;
+  /** the tops of the shared platforms at each end */
+  splitY: number;
+  joinY: number;
+  /** false: the high lane is the quick one. true: the low lane is a hollow shortcut and the high lane the scenic long way */
+  reversed: boolean;
+  high: LaneRoute;
+  low: LaneRoute;
+  /** the one special reward on the high lane (a heart or a power-up) and the bigger cluster of flowers that goes with it */
+  reward: { x: number; y: number } | null;
+}
+
 export interface TreeStructure {
   id: number;
   x: number;

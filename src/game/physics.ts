@@ -129,7 +129,45 @@ export interface FlightOpts {
   dt: number;
 }
 
-const reachCache = new Map<string, number>();
+/**
+ * Memo of flight reaches. One table per (launch speed, run speed, double jump, tick): a typed array indexed by the height difference
+ * in 2 px steps (a plain number lookup: the validator asks tens of thousands of times per stage, and string keys were its biggest
+ * cost). Every height is simulated at the middle of its 2 px step, so the same height always gets the same reach whatever was asked
+ * before it (the old memo let the first height that fell in a step decide, which made a layout depend on what had been generated
+ * earlier in the session).
+ */
+const REACH_OFFSET = 4096;
+const REACH_SIZE = REACH_OFFSET * 2 + 1;
+interface ReachTable { v0: number; vx: number; dbl: boolean; dt: number; vals: Float64Array; far: Map<number, number> }
+const reachTables: ReachTable[] = [];
+
+function reachTable(v0: number, vx: number, dbl: boolean, dt: number): ReachTable {
+  for (let i = 0; i < reachTables.length; i++) {
+    const t = reachTables[i];
+    if (t.v0 === v0 && t.vx === vx && t.dbl === dbl && t.dt === dt) return t;
+  }
+  const t: ReachTable = { v0, vx, dbl, dt, vals: new Float64Array(REACH_SIZE).fill(NaN), far: new Map() };
+  reachTables.push(t);
+  return t;
+}
+
+/** the value for this height difference, simulating it the first time a 2 px step is asked for */
+function reachAt(t: ReachTable, dy: number): number {
+  const step = Math.round(dy / 2);
+  const i = step + REACH_OFFSET;
+  if (i >= 0 && i < REACH_SIZE) {
+    const hit = t.vals[i];
+    if (hit === hit) return hit;
+    const v = simulateReach(step * 2, t.v0, t.vx, t.dbl, t.dt);
+    t.vals[i] = v;
+    return v;
+  }
+  const hit = t.far.get(step);
+  if (hit !== undefined) return hit;
+  const v = simulateReach(step * 2, t.v0, t.vx, t.dbl, t.dt);
+  t.far.set(step, v);
+  return v;
+}
 
 /**
  * Furthest horizontal distance covered by the time the feet come down through a
@@ -137,9 +175,11 @@ const reachCache = new Map<string, number>();
  * surface is never reached. Pure number crunching, memoised.
  */
 export function flightReach(dy: number, o: FlightOpts): number {
-  const key = `${Math.round(dy / 2)}|${o.v0}|${o.vx}|${o.dbl}|${o.dt}`;
-  const hit = reachCache.get(key);
-  if (hit !== undefined) return hit;
+  return reachAt(reachTable(o.v0, o.vx, o.dbl, o.dt), dy);
+}
+
+function simulateReach(dy: number, v0: number, vx: number, dbl: boolean, dt: number): number {
+  const o: FlightOpts = { v0, vx, dbl, dt };
   const target = -dy;
   const tries = o.dbl ? Array.from({ length: 36 }, (_, i) => i * o.dt * (1 / 30 / o.dt)) : [-1];
   let best = -1;
@@ -162,14 +202,38 @@ export function flightReach(dy: number, o: FlightOpts): number {
       if (b.y > target + 400) break;
     }
   }
-  reachCache.set(key, best);
+  return best;
+}
+
+const dropReachCache = new Map<number, number>();
+
+/**
+ * An upper bound on how far any jump, double jump or mushroom bounce can carry the player horizontally when it lands up to `maxDrop`
+ * px below the take-off (or anywhere higher). The validator uses it to skip platform pairs that are too far apart to ever join. It
+ * simulates on its own and never touches the memo above, so asking for it changes no other result.
+ */
+export function maxDropReach(maxDrop: number): number {
+  const key = Math.ceil(Math.max(0, maxDrop) / 80);
+  const hit = dropReachCache.get(key);
+  if (hit !== undefined) return hit;
+  let best = 0;
+  // (reach grows with the drop by well under 0.35 px per px, so sampling every 80 px and adding 32 px of margin covers the gaps between samples)
+  for (let d = 0; d <= key + 1; d++) {
+    for (const dt of SIM_DTS) {
+      for (const dbl of [false, true]) {
+        best = Math.max(best, simulateReach(-d * 80, PHYS.jumpV, PHYS.maxRun, dbl, dt), simulateReach(-d * 80, PHYS.bounceV, PHYS.maxRun, dbl, dt));
+      }
+    }
+  }
+  best += 32;
+  dropReachCache.set(key, best);
   return best;
 }
 
 /** Worst case over both tick rates. */
 export function reachMin(dy: number, v0: number, vx: number, dbl: boolean): number {
   let m = Infinity;
-  for (const dt of SIM_DTS) m = Math.min(m, flightReach(dy, { v0, vx, dbl, dt }));
+  for (let i = 0; i < SIM_DTS.length; i++) m = Math.min(m, reachAt(reachTable(v0, vx, dbl, SIM_DTS[i]), dy));
   return m;
 }
 

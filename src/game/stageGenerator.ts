@@ -8,19 +8,25 @@ import type {
   Collectible,
   TreeStructure,
   ObjectiveType,
+  LaneFork,
 } from './types.ts';
 import { calculateDifficultyScaling } from './rules.ts';
 import { WORLDS_DATA } from './worldsData.ts';
 import { ASSIST, easeAssist, reachBounce, reachJump, TAKEOFF_SLACK } from './physics.ts';
 import { HANG_DROP, ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE, ropeYAt } from './rope.ts';
 import { skillGuaranteedAt } from './skills.ts';
-import { swingLandings, validateStage } from './levelCheck.ts';
+import { PICKUP_APART, swingLandings, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { SECRET_GATE_LEVEL } from './secret.ts';
 import { findForStage } from './finds.ts';
 import { pieceWidth, zoneRecipes, crumbleTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP, type Zone, type ZonePiece } from './zones.ts';
+import { balanceStyles, styleFor, type PlatformKind } from './platformStyles.ts';
+import { buildYard, type YardVariant } from './stageYards.ts';
+import { buildFork, forkDelta, planFork, FORK_MIN_DELTA } from './stageForks.ts';
+import { hazardBlocks, jumpEdges } from './stageMetrics.ts';
+import { MODEL_FAST, MODEL_TYPICAL, fastFloor, modelStage, targetSeconds } from './stageTime.ts';
 import { driftX, logLayout, riverRecipes, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverRecipe, type RiverZone } from './river.ts';
 
 export interface GeneratedStage {
@@ -49,8 +55,25 @@ export interface GeneratedStage {
   rivers?: import('./river.ts').RiverZone[];
   /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */
   zones?: import('./zones.ts').Zone[];
+  /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
+  lanes?: LaneFork[];
   /** what the generator built (for tests and debugging) */
-  meta?: { attempt: number; chunks: string[]; width: number; recipe?: { core: string; partner: string | null; fork: string } };
+  meta?: {
+    attempt: number;
+    chunks: string[];
+    width: number;
+    recipe?: { core: string; partner: string | null; fork: string };
+    /** the pieces in order, with the stretch of the stage each one covers (spacers and flags are not pieces) */
+    pieces?: Array<{ k: string; x0: number; x1: number; beat?: string }>;
+    /** the stretches built as rests */
+    breathers?: Array<[number, number]>;
+    /** how the build was timed: the seconds of the layout alone, of what the animals and pickups added, and the route in px */
+    timing?: { layoutSeconds: number; decorSeconds: number; route: number };
+    /** how many two-lane forks the stage was meant to have (a layout that laid fewer is passed over when another passes too) */
+    forksWanted?: number;
+    /** a vertical stage: the steps of the climb, in order (the time model adds them up) */
+    ascentChain?: Array<{ kind: 'hop' | 'hop2' | 'bounce' | 'swing' | 'climb' | 'cross'; w: number; rise: number }>;
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -60,6 +83,8 @@ export interface GeneratedStage {
 /** a night harpy only spawns where its patrol patch is at least this wide (it slides and then leaps) */
 const HARPY_MIN_GROUND = 140;
 const GROUND_H = 90;
+/** an arena's animals walk no closer than this to either end of it: a flag, a pit's take-off or a landing may follow right there */
+const YARD_PAD = 200;
 /** ground baseline and water surface, relative to the level height */
 const GROUND_FROM_BOTTOM = 320;
 const WATER_FROM_BOTTOM = 170;
@@ -69,7 +94,8 @@ type Kind =
   | 'ladder' | 'swing' | 'moving' | 'fragile' | 'yard' | 'tower' | 'river' | 'zone'
   | 'valley' | 'rolling' | 'hurdles' | 'terrace' | 'gapbridge' | 'skyhop' | 'islands' | 'canopy'
   | 'ropegap' | 'ropebonus'
-  | 'pillars' | 'slope' | 'stumps' | 'zigzag' | 'trampoline' | 'causeway' | 'pegs' | 'meadow' | 'ditch' | 'twin';
+  | 'pillars' | 'slope' | 'stumps' | 'zigzag' | 'trampoline' | 'causeway' | 'pegs' | 'meadow' | 'ditch' | 'twin'
+  | 'yardMound' | 'yardSunken' | 'yardBridge' | 'yardTiers' | 'yardLedges';
 
 /** first mission number (1..100) a piece may appear in: teaches one idea at a time */
 const UNLOCK: Record<Kind, number> = {
@@ -78,6 +104,7 @@ const UNLOCK: Record<Kind, number> = {
   valley: 1, rolling: 1, hurdles: 1, terrace: 2, gapbridge: 1, skyhop: 1, islands: 1, canopy: 1,
   ropegap: 4, ropebonus: 1,
   pillars: 3, slope: 1, stumps: 1, zigzag: 2, trampoline: 3, causeway: 1, pegs: 3, meadow: 1, ditch: 1, twin: 2,
+  yardMound: 1, yardSunken: 1, yardBridge: 2, yardTiers: 2, yardLedges: 1,
 };
 
 const BASE_WEIGHT: Record<Kind, number> = {
@@ -88,17 +115,18 @@ const BASE_WEIGHT: Record<Kind, number> = {
   valley: 1.6, rolling: 1.6, hurdles: 1.5, terrace: 1.5, gapbridge: 1.4, skyhop: 1.6, islands: 1.6, canopy: 1.6,
   ropegap: 1.5, ropebonus: 1.3,
   pillars: 1.5, slope: 1.5, stumps: 1.5, zigzag: 1.5, trampoline: 1.4, causeway: 1.5, pegs: 1.4, meadow: 1.5, ditch: 1.5, twin: 1.5,
+  yardMound: 0.5, yardSunken: 0.5, yardBridge: 0.5, yardTiers: 0.5, yardLedges: 0.5,
 };
 
 const OBJ_WEIGHT: Partial<Record<ObjectiveType, Partial<Record<Kind, number>>>> = {
   sprint: { pit: 1.4, bounce: 1.3, moving: 1.3, yard: 0.5, zigzag: 1.3, trampoline: 1.3 },
   harvest: { ladder: 1.6, stones: 1.3, yard: 0.6, canopy: 1.8, skyhop: 1.3, meadow: 2 },
-  purge: { yard: 3, flat: 0.8, swing: 0.6, meadow: 1.8, rolling: 1.4, valley: 1.3, twin: 1.3, slope: 1.3, pegs: 0.6, pillars: 0.6, zigzag: 0.6 },
+  purge: { yard: 3, yardMound: 5, yardSunken: 4, yardBridge: 4, yardTiers: 4, yardLedges: 4, flat: 0.8, swing: 0.6, meadow: 1.8, rolling: 1.4, valley: 1.3, twin: 1.3, slope: 1.3, pegs: 0.6, pillars: 0.6, zigzag: 0.6 },
   stealth: { bridge: 1.8, cliff: 1.5, yard: 0.7, valley: 1.4, hurdles: 1.3 },
   vine_runner: { swing: 3.2, stones: 1.5, yard: 0.2, pit: 0.7 },
   relic_hunt: { ladder: 2, cliff: 2, tower: 3, bounce: 1.4 },
   rescue: { ladder: 1.5, yard: 1.5, cliff: 1.3, terrace: 1.4, twin: 1.3 },
-  gauntlet: { yard: 3.2, moving: 1.3, fragile: 1.3, meadow: 1.5, twin: 1.3, pegs: 0.6, pillars: 0.6 },
+  gauntlet: { yard: 3.2, yardMound: 5, yardSunken: 4, yardBridge: 4, yardTiers: 4, yardLedges: 4, moving: 1.3, fragile: 1.3, meadow: 1.5, twin: 1.3, pegs: 0.6, pillars: 0.6 },
 };
 
 /** how taxing a piece is; a spacer of flat ground follows the hard ones */
@@ -108,7 +136,16 @@ const INTENSITY: Record<Kind, number> = {
   valley: 0, rolling: 0, hurdles: 1, terrace: 1, gapbridge: 1, skyhop: 1, islands: 1, canopy: 0,
   ropegap: 1, ropebonus: 0,
   pillars: 1, slope: 0, stumps: 0, zigzag: 1, trampoline: 1, causeway: 0, pegs: 1, meadow: 0, ditch: 0, twin: 0,
+  yardMound: 1, yardSunken: 1, yardBridge: 1, yardTiers: 1, yardLedges: 1,
 };
+
+/** the pieces that put something in the way: a pit to jump, an animal, a zone, a river, a platform that moves or breaks (a stretch without one is an empty corridor) */
+const HAZARD_KIND = new Set<Kind>([
+  'pit', 'stones', 'swing', 'moving', 'fragile', 'river', 'zone', 'skyhop', 'islands', 'pillars', 'zigzag', 'trampoline', 'pegs', 'ropegap', 'gapbridge',
+  'yard', 'yardMound', 'yardSunken', 'yardBridge', 'yardTiers', 'yardLedges',
+]);
+const YARD_KINDS: Kind[] = ['yardMound', 'yardSunken', 'yardBridge', 'yardTiers', 'yardLedges', 'yard'];
+const isYardKind = (k: Kind) => k === 'yard' || k.startsWith('yard');
 
 const FLOWER_VARIANTS = ['orchid', 'hibiscus', 'fern', 'monstera'] as const;
 
@@ -154,12 +191,15 @@ interface Spot {
 // The builder
 // ---------------------------------------------------------------------------
 
-class Gen {
+export class Gen {
   readonly cfg: LevelConfig;
   readonly m: number;
   readonly d: number;
   readonly world: number;
-  readonly rnd: () => number;
+  /** the layout's random stream (mulberry32); its state is `rs`, so a piece can be tried and taken back (see mark / rewind) */
+  rs: number;
+  /** two more streams that never touch the layout's: platform styles and flower species */
+  ss: number;
   readonly G: number;
   readonly waterY: number;
   readonly safeMode: boolean;
@@ -172,6 +212,8 @@ class Gen {
   E: Enemy[] = [];
   C: Collectible[] = [];
   CP: Array<{ x: number; y: number; reached: boolean }> = [];
+  /** where the exit totem stands (set once the goal is built): no flier patrols near it */
+  exitAt: { x: number; y: number } | null = null;
   spots: Spot[] = [];
   log: string[] = [];
   rivers?: RiverZone[];
@@ -190,7 +232,10 @@ class Gen {
   cx = 0;
   g: number;
   bank: number | null = null;
-  lastCp = 0;
+  /** where the last flag stands (the start counts as one) */
+  lastFlagX = 140;
+  /** the hero starts here */
+  readonly spawnX = 140;
 
   constructor(cfg: LevelConfig, attempt: number) {
     this.cfg = cfg;
@@ -198,7 +243,8 @@ class Gen {
     this.m = (cfg.worldIndex - 1) * 10 + cfg.miniIndex;
     this.d = (this.m - 1) / 99;
     this.diff = calculateDifficultyScaling(cfg.worldIndex, cfg.miniIndex);
-    this.rnd = mulberry32(hashStr(cfg.id) + attempt * 7919);
+    this.rs = (hashStr(cfg.id) + attempt * 7919) >>> 0;
+    this.ss = (hashStr(cfg.id + '#style') + attempt * 104729) >>> 0;
     this.G = cfg.levelHeight - GROUND_FROM_BOTTOM;
     this.waterY = cfg.levelHeight - WATER_FROM_BOTTOM;
     this.g = this.G;
@@ -210,13 +256,32 @@ class Gen {
   }
 
   // ---- helpers ----
+  rnd(): number {
+    this.rs = (this.rs + 0x6d2b79f5) >>> 0;
+    let t = this.rs;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  /** the style stream */
+  srnd = (): number => {
+    this.ss = (this.ss + 0x6d2b79f5) >>> 0;
+    let t = this.ss;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
   rr(a: number, b: number) { return a + this.rnd() * (b - a); }
   ri(a: number, b: number) { return Math.floor(this.rr(a, b + 1)); }
   chance(p: number) { return this.rnd() < p; }
   lerp(a: number, b: number, t = this.d) { return a + (b - a) * t; }
 
-  plat(p: Omit<Platform, 'id'>): Platform {
-    const full = { id: this.pid++, ...p } as Platform;
+  /** what each platform is made of, by id (platformStyles.ts balances the styles of the whole stage when it is finished) */
+  kindOf = new Map<number, PlatformKind>();
+
+  plat(p: Omit<Platform, 'id' | 'style'> & { style?: Platform['style'] }, kind: PlatformKind = 'ledge'): Platform {
+    const full = { id: this.pid++, ...p, style: p.style ?? styleFor(kind, this.world, this.srnd) } as Platform;
+    this.kindOf.set(full.id, kind);
     this.P.push(full);
     return full;
   }
@@ -225,7 +290,7 @@ class Gen {
 
   closeBank() {
     if (this.bank !== null && this.cx > this.bank + 1) {
-      this.plat({ x: this.bank, y: this.g, width: this.cx - this.bank, height: GROUND_H, type: 'solid', style: 'log' });
+      this.plat({ x: this.bank, y: this.g, width: this.cx - this.bank, height: GROUND_H, type: 'solid'}, 'ground');
     }
     this.bank = null;
   }
@@ -248,23 +313,43 @@ class Gen {
   up(dh: number) { this.closeBank(); this.g -= dh; this.bank = this.cx; }
   down(dh: number) { this.closeBank(); this.g += dh; this.bank = this.cx; }
 
+  unlocked(k: string): boolean { return (UNLOCK as Record<string, number>)[k] <= this.m; }
+
   // ---- pickups ----
-  flower(x: number, y: number) {
-    const v = FLOWER_VARIANTS[Math.floor(this.rnd() * FLOWER_VARIANTS.length)];
+  /** which flower a row or an arc is made of: one species for the whole row (rolled from the style stream, so the layout's own rolls are not touched) */
+  species(): (typeof FLOWER_VARIANTS)[number] {
+    return FLOWER_VARIANTS[Math.floor(this.srnd() * FLOWER_VARIANTS.length)];
+  }
+
+  flower(x: number, y: number, variant: (typeof FLOWER_VARIANTS)[number] = this.species()) {
+    const v = variant;
     this.C.push({
       id: this.cid++, type: v === 'fern' || v === 'monstera' ? 'leaf' : 'flower',
       botanicalVariant: v, x, y, collected: false, bobPhase: this.rnd() * Math.PI * 2,
     });
   }
 
+  /** a low branch over the middle of a stretch of ground with a few flowers on it: a place to hop up to, and ground that is no longer bare */
+  overLedge(s: { x0: number; x1: number }, flowers = 3) {
+    const len = s.x1 - s.x0;
+    if (len < 170 || this.safeMode) return;
+    const w = Math.min(this.rr(110, 150), len - 50);
+    const rise = this.rr(76, 86);
+    const x = (s.x0 + s.x1) / 2 + this.rr(-len * 0.12, len * 0.12);
+    this.plat({ x: x - w / 2, y: this.g - rise, width: w, height: 26, type: 'solid' }, 'tier');
+    this.row(x - w / 2 + 22, x + w / 2 - 22, this.g - rise - 34, flowers);
+  }
+
   row(x0: number, x1: number, y: number, n: number) {
-    for (let i = 0; i < n; i++) this.flower(n === 1 ? (x0 + x1) / 2 : x0 + ((x1 - x0) * i) / (n - 1), y);
+    const sp = this.species();
+    for (let i = 0; i < n; i++) this.flower(n === 1 ? (x0 + x1) / 2 : x0 + ((x1 - x0) * i) / (n - 1), y, sp);
   }
 
   arc(x0: number, x1: number, y: number, peak: number, n: number) {
+    const sp = this.species();
     for (let i = 0; i < n; i++) {
       const u = (i + 0.5) / n;
-      this.flower(x0 + (x1 - x0) * u, y - peak * 4 * u * (1 - u));
+      this.flower(x0 + (x1 - x0) * u, y - peak * 4 * u * (1 - u), sp);
     }
   }
 
@@ -272,6 +357,55 @@ class Gen {
     const c: Collectible = { id: this.cid++, type, x, y, collected: false, bobPhase: this.rnd() * Math.PI * 2 };
     if (type === 'cage') c.cageHp = 2;
     this.C.push(c);
+  }
+
+  /**
+   * The last word on pickups, run when a stage is finished: nothing sits inside a platform (it is lifted out, or a flower that cannot be
+   * lifted is dropped) and no two pickups overlap (a flower that lands on another pickup is nudged up once, then dropped). Hearts,
+   * power-ups, cages and relics never move or vanish; flowers and leaves give way to them.
+   */
+  settlePickups(): number {
+    const solids = this.P.filter((p) => p.type !== 'drift' && p.type !== 'moving');
+    const inside = (x: number, y: number) => solids.find((p) => x >= p.x && x <= p.x + p.width && y > p.y + 2 && y < p.y + p.height - 2);
+    const yielding = (c: Collectible) => c.type === 'flower' || c.type === 'leaf';
+    const before = this.C.length;
+    const lifted: Collectible[] = [];
+    for (const c of this.C) {
+      if (c.type !== 'exit_totem') {
+        for (let t = 0; t < 3; t++) {
+          const p = inside(c.x, c.y);
+          if (!p) break;
+          c.y = p.y - 30;
+        }
+        if (inside(c.x, c.y) && yielding(c)) continue;
+      }
+      lifted.push(c);
+    }
+    const placed: Collectible[] = [];
+    const cell = new Map<number, Collectible[]>();
+    const near = (c: Collectible) => {
+      const k = Math.floor(c.x / PICKUP_APART);
+      for (let d = -1; d <= 1; d++) for (const o of cell.get(k + d) ?? []) if (Math.hypot(o.x - c.x, o.y - c.y) < PICKUP_APART) return true;
+      return false;
+    };
+    const put = (c: Collectible) => {
+      const k = Math.floor(c.x / PICKUP_APART);
+      (cell.get(k) ?? cell.set(k, []).get(k)!).push(c);
+      placed.push(c);
+    };
+    for (const c of lifted) if (c.type === 'exit_totem' || !yielding(c)) put(c);
+    const keep = new Set(placed);
+    for (const c of lifted) {
+      if (keep.has(c)) continue;
+      let ok = !near(c);
+      for (let t = 0; t < 2 && !ok; t++) {
+        c.y -= PICKUP_APART;
+        ok = !near(c) && !inside(c.x, c.y);
+      }
+      if (ok) { put(c); keep.add(c); }
+    }
+    this.C = this.C.filter((c) => keep.has(c));
+    return before - this.C.length;
   }
 
   // ---- enemies ----
@@ -321,6 +455,13 @@ class Gen {
     this.E.push(e);
   }
 
+  /** the poison dart frog: sits still on the ground and hurts if touched; a stomp is its answer */
+  frog(x: number, surface: number, pMin: number, pMax: number) {
+    const e = this.baseEnemy('frog', x, surface - 14, 36, 24, 1, 0);
+    e.patrolMinX = pMin; e.patrolMaxX = pMax; e.attackCooldown = 1.4;
+    this.E.push(e);
+  }
+
   /** the night harpy: a ground bruiser that crouches, slides, then leaps and stomps. It needs a long run of ground to slide on. */
   harpy(x: number, surface: number, pMin: number, pMax: number) {
     const e = this.baseEnemy('harpy', x, surface - 16, 48, 36, 2, (this.hash01(x, 13) < 0.5 ? -1 : 1) * 48 * this.diff.enemySpeedMultiplier);
@@ -338,13 +479,13 @@ class Gen {
   }
 
   /** which sloth predator fills a "hard" ground slot in this world: the cast grows as the player moves on */
-  private hardKind(h: number): 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' {
-    const table: Record<number, Array<['ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra', number]>> = {
-      2: [['ocelot', 0.6], ['caiman', 0.4]],
-      3: [['ocelot', 0.55], ['boa', 0.45]],
+  private hardKind(h: number): 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' | 'frog' {
+    const table: Record<number, Array<['ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' | 'frog', number]>> = {
+      2: [['ocelot', 0.45], ['caiman', 0.35], ['frog', 0.2]],
+      3: [['ocelot', 0.4], ['boa', 0.35], ['frog', 0.25]],
       4: [['ocelot', 0.5], ['tayra', 0.5]],
       5: [['tayra', 0.4], ['boa', 0.3], ['ocelot', 0.3]],
-      6: [['caiman', 0.35], ['boa', 0.3], ['ocelot', 0.2], ['jaguar', 0.15]],
+      6: [['caiman', 0.3], ['boa', 0.25], ['ocelot', 0.15], ['jaguar', 0.15], ['frog', 0.15]],
       7: [['jaguar', 0.35], ['ocelot', 0.25], ['boa', 0.2], ['caiman', 0.2]],
       8: [['jaguar', 0.35], ['tayra', 0.3], ['ocelot', 0.2], ['boa', 0.15]],
       9: [['jaguar', 0.3], ['boa', 0.25], ['tayra', 0.2], ['caiman', 0.15], ['ocelot', 0.1]],
@@ -359,8 +500,9 @@ class Gen {
     return row[row.length - 1][0];
   }
 
-  ground(x: number, surface: number, pMin: number, pMax: number) {
-    const hard = this.world >= 2 && this.chance(0.35 + this.d * 0.3);
+  /** a ground animal; `prog` (0..1, how far along the stage) makes the hard ones likelier towards the end */
+  ground(x: number, surface: number, pMin: number, pMax: number, prog = 0.5) {
+    const hard = this.world >= 2 && this.chance(0.3 + this.d * 0.3 + (prog - 0.5) * 0.4);
     if (!hard) {
       // from world 4 a fast tayra sometimes scurries where a snake would have been
       if (this.world >= 4 && this.hash01(x, 11) < 0.22) this.tayra(x, surface, pMin, pMax);
@@ -375,7 +517,8 @@ class Gen {
     let kind = this.hardKind(this.hash01(x));
     // big leapers / lungers need room to run; on a short ledge send a lighter animal
     if ((kind === 'jaguar' || kind === 'caiman') && pMax - pMin < 80) kind = 'ocelot';
-    if (kind === 'jaguar') this.jaguar(x, surface, pMin, pMax);
+    if (kind === 'frog') this.frog(x, surface, pMin, pMax);
+    else if (kind === 'jaguar') this.jaguar(x, surface, pMin, pMax);
     else if (kind === 'boa') this.boa(x, surface, pMin, pMax);
     else if (kind === 'caiman') this.caiman(x, surface, pMin, pMax);
     else if (kind === 'tayra') this.tayra(x, surface, pMin, pMax);
@@ -388,6 +531,7 @@ class Gen {
     // a zone (cloud, gust, column, web, tide, ruins, darkness) keeps its patch of sky clear of fliers
     if ((this.zones ?? []).some((z) => z.x1 > x0 && z.x0 < x1)) return false;
     if (this.P.some((p) => p.type !== 'bouncy' && p.x < x1 && p.x + p.width > x0 && p.y < y1 && p.y + p.height > y0)) return false;
+    if (this.exitAt && Math.abs(this.exitAt.x - x) <= 560 && Math.abs(this.exitAt.y - homeY) <= 560) return false;
     return this.CP.every((c) => Math.abs(c.x - x) > 480 || Math.abs(c.y - homeY) > 520);
   }
 
@@ -423,9 +567,17 @@ class Gen {
     // a double-jump pit: about half of the double jump's reach, so it is a clear double jump but not a hairline one (it was 60-74%, which a thumb on a phone cannot hit)
     const w = wide ? this.rr(0.42, 0.55) * reachJump(0, true) : this.pitW();
     this.closeBank();
-    this.arc(this.cx - 30, this.cx + w + 30, this.g - 36, wide ? 120 : 76, wide ? 5 : 4);
+    // the rhythm of a jump: a row to run along, the arc over the gap, a small cluster on the far side
+    const px = this.cx;
+    this.row(px - 210, px - 100, this.g - 32, 3);
+    this.arc(px - 30, px + w + 30, this.g - 36, wide ? 120 : 76, wide ? 5 : 4);
     this.cx += w;
     this.openBank();
+    this.flower(px + w + 70, this.g - 34);
+    this.flower(px + w + 108, this.g - 52);
+    this.flower(px + w + 146, this.g - 34);
+    // a landing of its own: the next piece may begin with a step, and a pit is never landed on a sliver
+    this.flat(this.rr(110, 150));
     this.log.push(wide ? 'widePit' : 'pit');
   }
 
@@ -434,8 +586,8 @@ class Gen {
     const dh = this.rr(32, 44);
     this.flat(this.rr(120, 200));
     for (let i = 0; i < n; i++) { this.up(dh); this.flat(this.rr(84, 120)); }
-    const top = this.flat(this.rr(160, 300));
-    this.row(top.x0 + 40, top.x1 - 40, this.g - 32, 4);
+    const top = this.flat(this.rr(200, 320));
+    if (this.chance(0.6)) { this.row(top.x0 + 40, top.x1 - 40, this.g - 32, 4); } else { this.overLedge(top, 3); }
     for (let i = 0; i < n; i++) { this.down(dh); this.flat(this.rr(84, 120)); }
     this.log.push('hill');
   }
@@ -443,7 +595,7 @@ class Gen {
   chunkBridge() {
     const len = this.rr(280, 560);
     this.closeBank();
-    this.plat({ x: this.cx, y: this.g, width: len, height: 26, type: 'solid', style: 'canopy_bridge' });
+    this.plat({ x: this.cx, y: this.g, width: len, height: 26, type: 'solid'}, 'bridge');
     this.row(this.cx + 50, this.cx + len - 50, this.g - 32, Math.round(len / 90));
     this.cx += len;
     this.openBank();
@@ -462,7 +614,7 @@ class Gen {
       const w = this.rr(92, 130);
       x += hop;
       const fragile = !this.safeMode && this.world >= 2 && i > 0 && i < n - 1 && this.chance(0.3 * this.d + 0.08);
-      this.plat({ x, y, width: w, height: 28, type: fragile ? 'fragile' : 'solid', style: this.chance(0.5) ? 'log' : 'moss_stone' });
+      this.plat({ x, y, width: w, height: 28, type: fragile ? 'fragile' : 'solid'}, 'ledge');
       this.flower(x + w / 2, y - 42);
       x += w;
       prevY = y;
@@ -483,7 +635,7 @@ class Gen {
     const g2 = g1 - H;
     this.g = g2;
     this.bank = cliffX;
-    this.plat({ x: treeX - 110, y: g2, width: 160, height: 26, type: 'solid', style: 'branch' });
+    this.plat({ x: treeX - 110, y: g2, width: 160, height: 26, type: 'solid'}, 'ledge');
     const tree: TreeStructure = {
       id: this.tid++, x: treeX, groundY: g1, topY: g2 - 170, trunkWidth: 76, hasClimbVine: true, canopyRadius: 150,
     };
@@ -538,7 +690,7 @@ class Gen {
     const g3 = g2 - h2;
     this.g = g3;
     this.bank = this.cx;
-    this.plat({ x: treeX - 110, y: g3, width: 160, height: 26, type: 'solid', style: 'branch' });
+    this.plat({ x: treeX - 110, y: g3, width: 160, height: 26, type: 'solid'}, 'ledge');
     const tree: TreeStructure = { id: this.tid++, x: treeX, groundY: g2, topY: g3 - 170, trunkWidth: 76, hasClimbVine: true, canopyRadius: 150 };
     this.T.push(tree);
     this.V.push({ id: this.vid++, x: treeX, topY: g3 - 2, bottomY: g2 - 6, swaySpeed: 0.9, swayPhase: this.rnd() * 6, vineType: 'tree_climb', treeId: tree.id });
@@ -566,7 +718,7 @@ class Gen {
       const cx = x0 + 100 + (i % 2) * 130;
       const y = this.g - 68 * (i + 1);
       const fragile = !this.safeMode && i === 1 && this.world >= 2 && this.chance(0.25 * this.d);
-      topLedge = this.plat({ x: cx - w / 2, y, width: w, height: 28, type: fragile ? 'fragile' : 'solid', style: 'branch' });
+      topLedge = this.plat({ x: cx - w / 2, y, width: w, height: 28, type: fragile ? 'fragile' : 'solid'}, 'rung');
       if (!last) this.flower(cx, y - 36);
     }
     if (topLedge) {
@@ -618,8 +770,8 @@ class Gen {
     const off = this.rr(0, Math.PI * 2);
     this.plat({
       x: base + Math.sin(off) * range, y: this.g, width: pw, height: 28, type: 'moving',
-      moveRange: range, moveSpeed: this.rr(0.8, 1.25), baseX: base, swayOffset: off, style: 'branch',
-    });
+      moveRange: range, moveSpeed: this.rr(0.8, 1.25), baseX: base, swayOffset: off,
+    }, 'ledge');
     this.arc(this.cx + 30, this.cx + W - 30, this.g - 40, 70, 5);
     this.cx += W;
     this.openBank();
@@ -635,7 +787,7 @@ class Gen {
     let x = this.cx;
     for (let i = 0; i < planks; i++) {
       x += this.rr(74, 90);
-      this.plat({ x, y: this.g, width: w, height: 26, type: 'fragile', style: 'branch' });
+      this.plat({ x, y: this.g, width: w, height: 26, type: 'fragile'}, 'plank');
       this.flower(x + w / 2, this.g - 38);
       x += w;
     }
@@ -648,7 +800,7 @@ class Gen {
   // ---- more shapes, so no two stages read the same ----
 
   /** can the ground step down `total` px here without running into the water? */
-  private roomBelow(total: number) { return this.g + total <= this.G + 96; }
+  roomBelow(total: number) { return this.g + total <= this.G + 96; }
 
   /** a dip in the ground: steps down, a low flat with flowers, and steps back up */
   chunkValley() {
@@ -685,7 +837,7 @@ class Gen {
       const h = this.rr(40, 58);
       const w = this.rr(58, 92);
       this.flat(w, { safe: true });
-      this.plat({ x: this.cx - w, y: this.g - h, width: w, height: h + 12, type: 'solid', style: this.chance(0.5) ? 'log' : 'moss_stone' });
+      this.plat({ x: this.cx - w, y: this.g - h, width: w, height: h + 12, type: 'solid'}, 'stump');
       if (this.chance(0.7)) this.flower(this.cx - w / 2, this.g - h - 42);
       this.flat(this.rr(150, 240), { safe: true });
     }
@@ -715,7 +867,7 @@ class Gen {
     this.closeBank();
     for (let i = 0; i < n; i++) {
       const len = this.rr(150, 260);
-      this.plat({ x: this.cx, y: this.g, width: len, height: 26, type: 'solid', style: 'canopy_bridge' });
+      this.plat({ x: this.cx, y: this.g, width: len, height: 26, type: 'solid'}, 'bridge');
       this.row(this.cx + 40, this.cx + len - 40, this.g - 32, 2);
       this.cx += len;
       if (i < n - 1) this.cx += this.hopLen(0, this.rr(0.4, 0.6));
@@ -736,7 +888,7 @@ class Gen {
       const y = Math.max(this.g - 150, Math.min(this.g - 30, target + this.rr(-8, 8)));
       x += this.hopLen(prevY - y, this.rr(0.5, 0.8));
       const w = this.rr(96, 134);
-      this.plat({ x, y, width: w, height: 28, type: 'solid', style: this.chance(0.5) ? 'log' : 'branch' });
+      this.plat({ x, y, width: w, height: 28, type: 'solid'}, 'step');
       this.flower(x + w / 2, y - 42);
       x += w;
       prevY = y;
@@ -757,7 +909,7 @@ class Gen {
       const w = this.rr(84, 150);
       const y = this.g + this.rr(0, 22);
       x += this.hopLen(prevY - y, this.rr(0.55, 0.85));
-      this.plat({ x, y, width: w, height: 28, type: 'solid', style: this.chance(0.5) ? 'moss_stone' : 'log' });
+      this.plat({ x, y, width: w, height: 28, type: 'solid'}, 'island');
       this.flower(x + w / 2, y - 42);
       x += w;
       prevY = y;
@@ -779,7 +931,7 @@ class Gen {
       const y = this.g - this.rr(66, 80) - (i % 2) * this.rr(0, 8);
       if (prev) x = prev.x + prev.width + this.hopLen(prev.y - y, this.rr(0.4, 0.6));
       if (x + w > base.x1 - 20) break;
-      prev = this.plat({ x, y, width: w, height: 24, type: 'solid', style: 'branch' });
+      prev = this.plat({ x, y, width: w, height: 24, type: 'solid'}, 'canopy');
       this.row(x + 30, x + w - 30, y - 36, 2);
       this.spots.push({ x0: x, x1: x + w, y, perch: true, optional: true, safe: true });
     }
@@ -796,7 +948,7 @@ class Gen {
       const y = this.g - Math.round(this.rr(0, 64));
       const w = this.rr(64, 96);
       x += this.hopLen(prevY - y, this.rr(0.5, 0.8));
-      this.plat({ x, y, width: w, height: 170, type: 'solid', style: 'ruin' });
+      this.plat({ x, y, width: w, height: 170, type: 'solid'}, 'pillar');
       if (this.chance(0.7)) this.flower(x + w / 2, y - 42);
       x += w;
       prevY = y;
@@ -827,7 +979,6 @@ class Gen {
     this.flat(this.rr(140, 200));
     this.closeBank();
     const w = this.pitW();
-    this.arc(this.cx - 30, this.cx + w + 30, this.g - 36, 76, 4);
     this.addRope(this.cx, w, false);
     this.cx += w;
     this.openBank();
@@ -839,9 +990,10 @@ class Gen {
   addRope(gapStart: number, gapW: number, required: boolean) {
     const r: Rope = { id: this.R.length + 1, x0: gapStart - ROPE_OVERLAP, x1: gapStart + gapW + ROPE_OVERLAP, y: this.g - ROPE_RISE, g0: this.g, g1: this.g, required };
     this.R.push(r);
-    const n = Math.max(3, Math.round(gapW / 110));
+    // fruit hangs along the rope, never closer than a pickup's width to its neighbour (a narrow gap holds fewer)
+    const n = Math.max(2, Math.floor((gapW + 60) / (PICKUP_APART + 10)));
     for (let i = 0; i < n; i++) {
-      const x = gapStart + 30 + ((gapW - 60) * (i + 0.5)) / n;
+      const x = gapStart - 30 + ((gapW + 60) * (i + 0.5)) / n;
       this.item('fruit', x, ropeYAt(r, x) + HANG_DROP - 34);
     }
   }
@@ -870,7 +1022,7 @@ class Gen {
       const h = this.rr(24, 36);
       const w = this.rr(50, 76);
       this.flat(w, { safe: true });
-      this.plat({ x: this.cx - w, y: this.g - h, width: w, height: h + 12, type: 'solid', style: 'log' });
+      this.plat({ x: this.cx - w, y: this.g - h, width: w, height: h + 12, type: 'solid'}, 'stump');
       this.flat(this.rr(80, 140), { safe: true });
     }
     this.log.push('stumps');
@@ -886,7 +1038,7 @@ class Gen {
       const y = this.g - (i % 2 === 0 ? this.rr(10, 26) : this.rr(52, 70));
       const w = this.rr(90, 130);
       x += this.hopLen(prevY - y, this.rr(0.5, 0.8));
-      this.plat({ x, y, width: w, height: 28, type: 'solid', style: this.chance(0.5) ? 'branch' : 'log' });
+      this.plat({ x, y, width: w, height: 28, type: 'solid'}, 'step');
       this.flower(x + w / 2, y - 42);
       x += w;
       prevY = y;
@@ -915,9 +1067,9 @@ class Gen {
   chunkCauseway() {
     const L = this.rr(300, 460);
     const s = this.flat(60 + L + 60, { safe: true });
-    this.plat({ x: s.x0, y: this.g - 30, width: 60, height: 42, type: 'solid', style: 'ruin' });
-    this.plat({ x: s.x0 + 60, y: this.g - 62, width: L, height: 74, type: 'solid', style: 'ruin' });
-    this.plat({ x: s.x0 + 60 + L, y: this.g - 30, width: 60, height: 42, type: 'solid', style: 'ruin' });
+    this.plat({ x: s.x0, y: this.g - 30, width: 60, height: 42, type: 'solid'}, 'causeway');
+    this.plat({ x: s.x0 + 60, y: this.g - 62, width: L, height: 74, type: 'solid'}, 'causeway');
+    this.plat({ x: s.x0 + 60 + L, y: this.g - 30, width: 60, height: 42, type: 'solid'}, 'causeway');
     this.row(s.x0 + 100, s.x0 + 60 + L - 40, this.g - 62 - 34, Math.max(3, Math.round(L / 90)));
     this.log.push('causeway');
   }
@@ -930,9 +1082,12 @@ class Gen {
     let prevY = this.g;
     for (let i = 0; i < n; i++) {
       const y = this.g + this.rr(6, 44);
-      const w = this.rr(56, 72);
+      // a peg is at least 64 px wide; from World 5 a precision beat may use a narrower one (two such landings at most in a stage)
+      const narrow = this.narrowLeft > 0 && i > 0 && i < n - 1 && this.chance(0.5);
+      if (narrow) this.narrowLeft--;
+      const w = narrow ? this.rr(50, 60) : this.rr(66, 84);
       x += this.hopLen(prevY - y, this.rr(0.45, 0.7));
-      this.plat({ x, y, width: w, height: 28, type: 'solid', style: 'moss_stone' });
+      this.plat({ x, y, width: w, height: 28, type: 'solid'}, 'peg');
       this.flower(x + w / 2, y - 42);
       x += w;
       prevY = y;
@@ -954,14 +1109,15 @@ class Gen {
 
   /** a ditch with a rope bridge over it: cross on top, or drop in for the flowers at the bottom */
   chunkDitch() {
-    const depth = this.rr(54, 70);
+    // (deep enough that the flowers on the floor hang clear under the 26 px deck of the bridge: they used to sit inside it)
+    const depth = this.rr(76, 86);
     if (!this.roomBelow(depth)) { this.chunkGapBridge(); return; }
     this.flat(this.rr(100, 160));
     this.closeBank();
     const L = this.rr(300, 460);
-    this.plat({ x: this.cx, y: this.g, width: L, height: 26, type: 'solid', style: 'canopy_bridge' });
-    this.plat({ x: this.cx, y: this.g + depth, width: L, height: GROUND_H, type: 'solid', style: 'log' });
-    this.row(this.cx + 50, this.cx + L - 50, this.g + depth - 34, Math.round(L / 100));
+    this.plat({ x: this.cx, y: this.g, width: L, height: 26, type: 'solid'}, 'bridge');
+    this.plat({ x: this.cx, y: this.g + depth, width: L, height: GROUND_H, type: 'solid'}, 'ground');
+    this.row(this.cx + 50, this.cx + L - 50, this.g + depth - 32, Math.round(L / 100));
     this.cx += L;
     this.openBank();
     this.log.push('ditch');
@@ -1035,7 +1191,7 @@ class Gen {
         const s = this.flat(len, { safe: true });
         const land = this.flat(260, { safe: true });
         zones.push({ ...base, x0: s.x0, x1: s.x1, top: g0 - 130, bottom: g0 + 16, baseY: g0, offset: 0 });
-        this.plat({ x: s.x0 - 44, y: g0 - 78, width: len + 88, height: 26, type: 'solid', style: 'branch' });
+        this.plat({ x: s.x0 - 44, y: g0 - 78, width: len + 88, height: 26, type: 'solid'}, 'canopy');
         this.row(s.x0 + 30, s.x1 - 30, g0 - 40, Math.max(2, Math.round(len / 70)));
         this.row(s.x0 + 20, s.x1 - 20, g0 - 120, Math.max(2, Math.round(len / 90)));
         void run; void land;
@@ -1045,7 +1201,7 @@ class Gen {
       // a web bridge over a gap too wide to jump: it holds, but it is sticky
       this.closeBank();
       const x0 = this.cx;
-      this.plat({ x: x0, y: g0, width: len, height: 26, type: 'solid', style: 'canopy_bridge' });
+      this.plat({ x: x0, y: g0, width: len, height: 26, type: 'solid'}, 'bridge');
       zones.push({ ...base, x0, x1: x0 + len, top: g0 - 130, bottom: g0 + 18, baseY: g0, offset: 0 });
       this.row(x0 + 50, x0 + len - 50, g0 - 40, Math.max(3, Math.round(len / 80)));
       this.cx = x0 + len;
@@ -1078,41 +1234,58 @@ class Gen {
       const hold = crumbleTime(this.cfg.miniIndex);
       const stepped = p.count >= 5;
       // a flag first, so a fall off the ruins never costs the whole stretch before them
-      if (this.cx - this.lastCp > 500) this.checkpoint();
+      this.checkpoint();
       this.flat(180, { safe: true });
       this.closeBank();
       let x = this.cx;
       const startX = x;
       let inRun = 0;
+      // (a long ruin has a flag on one of its slabs, and the ruin is two zones around it: a flag never stands inside a zone)
+      const segs: Array<[number, number]> = [];
+      let segStart = startX;
+      let flagged = false;
       for (let i = 0; i < p.count; i++) {
         if (inRun >= CRUMBLE_RUN_MAX) {
-          this.plat({ x, y: g0, width: 160, height: 26, type: 'solid', style: 'moss_stone' });
-          this.flower(x + 80, g0 - 42);
-          x += 160;
+          if (!flagged && p.count >= 6 && x - startX >= 400 && x + 160 - this.lastFlagX >= this.flagMin()) {
+            this.plat({ x, y: g0, width: 330, height: 26, type: 'solid'}, 'crumble');
+            this.CP.push({ x: x + 165, y: g0, reached: false });
+            this.lastFlagX = x + 165;
+            this.log.push('checkpoint');
+            segs.push([segStart, x]);
+            x += 330;
+            segStart = x;
+            flagged = true;
+          } else {
+            this.plat({ x, y: g0, width: 160, height: 26, type: 'solid'}, 'crumble');
+            this.flower(x + 80, g0 - 42);
+            x += 160;
+          }
           inRun = 0;
         }
         const up = stepped && i % 2 === 1 ? CRUMBLE_STEP : 0;
-        this.plat({ x, y: g0 - up, width: CRUMBLE_TILE_W, height: 26, type: 'fragile', style: 'moss_stone', crumbleAfter: hold });
+        this.plat({ x, y: g0 - up, width: CRUMBLE_TILE_W, height: 26, type: 'fragile', crumbleAfter: hold}, 'crumble');
         this.flower(x + CRUMBLE_TILE_W / 2, g0 - up - 42);
         x += CRUMBLE_TILE_W;
         inRun++;
       }
       // a last slab, flush with the ground on the far side
-      this.plat({ x, y: g0, width: 160, height: 26, type: 'solid', style: 'moss_stone' });
+      this.plat({ x, y: g0, width: 160, height: 26, type: 'solid'}, 'crumble');
       x += 160;
-      zones.push({ ...base, x0: startX, x1: x, top: g0 - 200, bottom: g0 + 40, baseY: g0, offset: 0 });
+      segs.push([segStart, x]);
+      for (const [a0, a1] of segs) zones.push({ ...base, x0: a0, x1: a1, top: g0 - 200, bottom: g0 + 40, baseY: g0, offset: 0 });
       this.cx = x;
       this.openBank();
       this.flat(220, { safe: true });
-      if (this.cx - this.lastCp > 1100) this.checkpoint();
+      this.checkpoint();
       this.log.push(`ruins${p.count}`);
       return;
     }
     if (p.kind === 'dark') {
       // a stretch in the dark: a firefly swarm hangs over every gap, and every flower glows a little
       const lights: Array<{ x: number; y: number; r: number }> = [];
+      let cut: [number, number] | null = null;
       // a flag before the dark, so a slip in it never costs the whole way here
-      if (this.cx - this.lastCp > 500) this.checkpoint();
+      this.checkpoint();
       const first = this.flat(260, { safe: true });
       const zx0 = first.x0 + 80;
       const segLen = Math.max(180, (p.len - 520) / Math.max(1, p.count + 1));
@@ -1126,13 +1299,22 @@ class Gen {
         this.openBank();
         lights.push({ x: px + w / 2, y: g0 - 90, r: 190 });
         this.flat(160, { safe: true });
+        // a long dark is not one stretch between two flags: a flag, and a lantern over it, after the middle gap
+        if (i === Math.floor((p.count - 1) / 2) && p.count >= 2 && this.sinceFlag() > 800 && this.canFlag()) {
+          const c0 = this.cx;
+          this.checkpoint();
+          cut = [c0, this.cx];
+          lights.push({ x: c0 + 90, y: g0 - 70, r: 150 });
+        }
       }
       const rest = this.flat(Math.max(220, segLen), { safe: true });
       this.row(first.x0 + 120, rest.x1 - 60, g0 - 40, Math.max(4, Math.round(p.len / 130)));
       // a lantern now and then so the dark is never total even where there is no gap
       for (let x = first.x0 + 300; x < rest.x1 - 200; x += 420) lights.push({ x, y: g0 - 70, r: 130 });
-      zones.push({ ...base, x0: zx0, x1: rest.x1 - 40, top: g0 - 800, bottom: g0 + 400, baseY: g0, offset: 0, lights });
-      if (this.cx - this.lastCp > 1100) this.checkpoint();
+      // (a flag never stands in the dark: a flag halfway splits the dark into two stretches that are each one zone)
+      const spans: Array<[number, number]> = cut ? [[zx0, cut[0] - 30], [cut[1] + 30, rest.x1 - 40]] : [[zx0, rest.x1 - 40]];
+      for (const [a0, a1] of spans) zones.push({ ...base, x0: a0, x1: a1, top: g0 - 800, bottom: g0 + 400, baseY: g0, offset: 0, lights: lights.filter((l) => l.x >= a0 - 200 && l.x <= a1 + 200) });
+      this.checkpoint();
       this.log.push(`dark${p.len}g${p.count}`);
       return;
     }
@@ -1196,7 +1378,7 @@ class Gen {
       const hop = this.hopLen(prevY - y, 0.5);
       const w = 112;
       x += hop;
-      this.plat({ x, y, width: w, height: 28, type: 'solid', style: 'moss_stone' });
+      this.plat({ x, y, width: w, height: 28, type: 'solid'}, 'island');
       this.flower(x + w / 2, y - 46);
       zones.push({ ...base, x0: x - 20, x1: x + w + 20, top: y - 210, bottom: y + 30, baseY: y, offset: first + i * p.period * 0.37, emit: [x + w / 2] });
       x += w;
@@ -1209,26 +1391,35 @@ class Gen {
     this.log.push(`${p.kind}Stones${p.count}`);
   }
 
-  chunkYard(count = this.ri(2, 1 + Math.ceil(1 + this.d * 3))) {
-    const len = 330 + count * 110;
-    const s = this.flat(len, { yard: true });
-    const inner = len - 150;
-    const seg = inner / count;
-    for (let i = 0; i < count; i++) {
-      const a = s.x0 + 75 + i * seg + 8;
-      const b = s.x0 + 75 + (i + 1) * seg - 8;
-      this.ground((a + b) / 2, this.g, a, b);
-    }
-    if (this.chance(0.5)) {
-      this.plat({ x: s.x0 + len / 2 - 70, y: this.g - 92, width: 140, height: 26, type: 'solid', style: 'branch' });
-      this.flower(s.x0 + len / 2, this.g - 128);
-    }
-    this.log.push(`yard${count}`);
+  /** an enemy yard: open ground, a mound, a sunken pit, a log bridge, tiers or a floor with ledges (see stageYards.ts) */
+  chunkYard(count = this.ri(2, 1 + Math.ceil(1 + this.d * 3)), variant: YardVariant = 'plain'): string {
+    const v = buildYard(this, variant, count);
+    this.log.push(`yard${count}${v === 'plain' ? '' : v}`);
+    return v === 'plain' ? 'yard' : 'yard' + v[0].toUpperCase() + v.slice(1);
+  }
+
+  /** the two-lane forks laid down so far */
+  lanes: LaneFork[] = [];
+  /** narrow landings (under 64 px) still allowed in this stage: only a deliberate precision beat in World 5 or later may use them */
+  narrowLeft = 0;
+
+  /** the pieces laid down so far, in order, each with the stretch of the stage it covers (kept in meta.pieces) */
+  pieces: Array<{ k: string; x0: number; x1: number; beat?: string }> = [];
+
+  /** run a piece builder and record the stretch it covers */
+  piece(label: string, build: () => string | void) {
+    const x0 = this.cx;
+    const named = build();
+    this.pieces.push({ k: named || label, x0, x1: this.cx });
   }
 
   chunk(kind: Kind) {
     const runup: Partial<Record<Kind, number>> = { pit: 130, stones: 140, swing: 220, moving: 180, fragile: 170, river: 160, zone: 200, skyhop: 150, islands: 150, gapbridge: 130, pillars: 150, zigzag: 150, pegs: 150 };
     if (runup[kind]) this.ensure(runup[kind]!);
+    this.piece(kind, () => this.chunkBody(kind));
+  }
+
+  private chunkBody(kind: Kind): string | void {
     switch (kind) {
       case 'flat': { const s = this.flat(this.rr(200, 420)); this.row(s.x0 + 50, s.x1 - 50, this.g - 32, this.ri(2, 4)); this.log.push('flat'); break; }
       case 'pit': this.chunkPit(); break;
@@ -1241,7 +1432,12 @@ class Gen {
       case 'swing': this.chunkSwing(); break;
       case 'moving': this.chunkMoving(); break;
       case 'fragile': this.chunkFragile(); break;
-      case 'yard': this.chunkYard(); break;
+      case 'yard': return this.chunkYard();
+      case 'yardMound': return this.chunkYard(undefined, 'mound');
+      case 'yardSunken': return this.chunkYard(undefined, 'sunken');
+      case 'yardBridge': return this.chunkYard(undefined, 'bridge');
+      case 'yardTiers': return this.chunkYard(undefined, 'tiers');
+      case 'yardLedges': return this.chunkYard(undefined, 'ledges');
       case 'tower': this.chunkTower(); break;
       case 'valley': this.chunkValley(); break;
       case 'rolling': this.chunkRolling(); break;
@@ -1257,7 +1453,7 @@ class Gen {
       case 'slope': this.chunkSlope(); break;
       case 'stumps': this.chunkStumps(); break;
       // (a zigzag is a long hop over a pit that cannot hold a flag, so one is planted just before it)
-      case 'zigzag': if (this.cx - this.lastCp > 400) this.checkpoint(); this.chunkZigzag(); break;
+      case 'zigzag': this.checkpoint(); this.chunkZigzag(); break;
       case 'trampoline': this.chunkTrampoline(); break;
       case 'causeway': this.chunkCauseway(); break;
       case 'pegs': this.chunkPegs(); break;
@@ -1269,12 +1465,61 @@ class Gen {
     }
   }
 
-  /** a short breather with a checkpoint flag on it */
-  checkpoint() {
-    const s = this.flat(260, { safe: true });
+  /** the nearest the next flag may stand to the last one (the first flag stands at least 700 px from the start, the others 900 px apart) */
+  flagMin() { return this.CP.length ? 900 : 720; }
+  /** distance from the last flag (or the start) to the cursor */
+  sinceFlag() { return this.cx - this.lastFlagX; }
+  canFlag() { return this.cx + 90 - this.lastFlagX >= this.flagMin(); }
+
+  /** a short breather with a checkpoint flag on it (nothing is built if a flag here would stand too close to the last one) */
+  checkpoint(): boolean {
+    if (!this.canFlag()) return false;
+    const s = this.flat(this.safeMode ? 260 : 310, { safe: true });
     this.CP.push({ x: s.x0 + 90, y: this.g, reached: false });
-    this.lastCp = this.cx;
+    this.lastFlagX = s.x0 + 90;
     this.log.push('checkpoint');
+    // a low branch beside the flag with a couple of flowers on it: the rest stop is a place, not a strip of ground
+    if (!this.safeMode && this.chance(0.9)) {
+      this.plat({ x: s.x0 + 168, y: this.g - this.rr(74, 84), width: 112, height: 26, type: 'solid' }, 'tier');
+      this.row(s.x0 + 188, s.x0 + 260, this.g - 118, 2);
+    }
+    return true;
+  }
+
+  /** a flag now, with a stretch of ground first if the last flag is too near for one (the flag stands at least `flagMin` px from the last) */
+  checkpointNow(): boolean {
+    const short = this.flagMin() - (this.cx + 90 - this.lastFlagX);
+    if (short > 0) this.flat(short + 12);
+    return this.checkpoint();
+  }
+
+  /** a flag at x on the ground that stands there now (used by pieces that carry their own flag on a shared platform) */
+  flagAt(x: number, y: number) {
+    this.CP.push({ x, y, reached: false });
+    this.lastFlagX = x;
+    this.log.push('checkpoint');
+  }
+
+  // ---- trying a piece and taking it back ----
+  mark() {
+    return {
+      P: this.P.length, V: this.V.length, R: this.R.length, T: this.T.length, E: this.E.length, C: this.C.length, CP: this.CP.length,
+      spots: this.spots.length, log: this.log.length, pieces: this.pieces.length, lanes: this.lanes.length,
+      rivers: this.rivers ? this.rivers.length : -1, zones: this.zones ? this.zones.length : -1,
+      riverQueue: this.riverQueue.slice(), zoneQueue: this.zoneQueue.slice(),
+      pid: this.pid, vid: this.vid, eid: this.eid, cid: this.cid, tid: this.tid,
+      cx: this.cx, g: this.g, bank: this.bank, lastFlagX: this.lastFlagX, rs: this.rs, ss: this.ss, narrowLeft: this.narrowLeft,
+    };
+  }
+
+  rewind(m: ReturnType<Gen['mark']>) {
+    this.P.length = m.P; this.V.length = m.V; this.R.length = m.R; this.T.length = m.T; this.E.length = m.E; this.C.length = m.C; this.CP.length = m.CP;
+    this.spots.length = m.spots; this.log.length = m.log; this.pieces.length = m.pieces; this.lanes.length = m.lanes;
+    if (m.rivers < 0) this.rivers = undefined; else if (this.rivers) this.rivers.length = m.rivers;
+    if (m.zones < 0) this.zones = undefined; else if (this.zones) this.zones.length = m.zones;
+    this.riverQueue = m.riverQueue.slice(); this.zoneQueue = m.zoneQueue.slice();
+    this.pid = m.pid; this.vid = m.vid; this.eid = m.eid; this.cid = m.cid; this.tid = m.tid;
+    this.cx = m.cx; this.g = m.g; this.bank = m.bank; this.lastFlagX = m.lastFlagX; this.rs = m.rs; this.ss = m.ss; this.narrowLeft = m.narrowLeft;
   }
 
   /** this stage's favourite pieces: a few kinds it uses more than the others, so every stage has its own flavour */
@@ -1286,10 +1531,10 @@ class Gen {
   }
 
 
-  // ---- stage recipes: every ordinary stage is about one idea ----
+  // ---- stage recipes: every ordinary stage is about one idea (and a long one is a few acts, each about its own idea) ----
   /** the pieces a recipe may be built on: they demand something of the player, and need no skill the player may lack */
   private recipeOk(k: Kind) {
-    return UNLOCK[k] <= this.m && INTENSITY[k] >= 1 && k !== 'river' && k !== 'zone' && k !== 'ropegap' && k !== 'ropebonus' && k !== 'yard' && (k !== 'tower' || this.G >= 560);
+    return UNLOCK[k] <= this.m && INTENSITY[k] >= 1 && k !== 'river' && k !== 'zone' && k !== 'ropegap' && k !== 'ropebonus' && !isYardKind(k) && (k !== 'tower' || this.G >= 560);
   }
 
   private weightedFrom(kinds: Kind[]): Kind {
@@ -1299,12 +1544,16 @@ class Gen {
     return kinds[kinds.length - 1];
   }
 
-  /** the idea this stage is built around */
-  pickCore(): Kind {
+  /** the idea this stage (or this act of it) is built around; `exclude` are the ideas the earlier acts used */
+  pickCore(exclude: Kind[] = []): Kind {
     const obj = this.cfg.objectiveType;
-    const all = (Object.keys(UNLOCK) as Kind[]).filter((k) => this.recipeOk(k));
-    if (obj === 'purge' || obj === 'gauntlet') return 'yard';
-    if (obj === 'vine_runner' && UNLOCK.swing <= this.m) return 'swing';
+    const all = (Object.keys(UNLOCK) as Kind[]).filter((k) => this.recipeOk(k) && !exclude.includes(k));
+    if (obj === 'purge' || obj === 'gauntlet') {
+      const ys = YARD_KINDS.filter((k) => UNLOCK[k] <= this.m && !exclude.includes(k));
+      const pool = ys.length ? ys : YARD_KINDS.filter((k) => UNLOCK[k] <= this.m);
+      return pool[Math.floor(this.rnd() * pool.length)];
+    }
+    if (obj === 'vine_runner' && UNLOCK.swing <= this.m && !exclude.includes('swing')) return 'swing';
     if (obj === 'relic_hunt' || obj === 'rescue') {
       const route = (['cliff', 'bounce', 'tower'] as Kind[]).filter((k) => all.includes(k));
       if (route.length) return route[Math.floor(this.rnd() * route.length)];
@@ -1317,14 +1566,14 @@ class Gen {
 
   /** the second idea the twist folds in: never as hard as the first one */
   pickPartner(core: Kind): Kind | null {
-    const cap = core === 'yard' || INTENSITY[core] < 2 ? 2 : 1;
+    const cap = isYardKind(core) || INTENSITY[core] < 2 ? 2 : 1;
     const pool = (Object.keys(UNLOCK) as Kind[]).filter((k) => this.recipeOk(k) && k !== core && INTENSITY[k] <= cap);
     return pool.length ? this.weightedFrom(pool) : null;
   }
 
   /** an easy, pleasant piece for a breather */
-  calmKind(): Kind {
-    const pool = (['meadow', 'canopy', 'slope', 'valley', 'rolling', 'causeway', 'hill', 'bridge'] as Kind[]).filter((k) => UNLOCK[k] <= this.m);
+  calmKind(avoid: string = ''): Kind {
+    const pool = (['meadow', 'canopy', 'slope', 'valley', 'rolling', 'causeway', 'hill', 'bridge', 'twin', 'ditch'] as Kind[]).filter((k) => UNLOCK[k] <= this.m && k !== avoid && this.pieces[this.pieces.length - 1]?.k !== k);
     return pool[Math.floor(this.rnd() * pool.length)] ?? 'hill';
   }
 
@@ -1333,8 +1582,26 @@ class Gen {
     return skillGuaranteedAt('shimmy', this.m) && this.chance(0.4) ? 'ropebonus' : 'ladder';
   }
 
+  /** the yard shape this stage has used least so far */
+  pickYardKind(): Kind {
+    const pool = YARD_KINDS.filter((k) => UNLOCK[k] <= this.m);
+    let best = Infinity;
+    for (const k of pool) best = Math.min(best, this.used.get(k) ?? 0);
+    const least = pool.filter((k) => (this.used.get(k) ?? 0) === best && this.pieces[this.pieces.length - 1]?.k !== k);
+    const from = least.length ? least : pool;
+    return from[Math.floor(this.rnd() * from.length)];
+  }
+
+  /** the width this stage is being built to, how often each kind of piece has been laid and how much of the stage it covers, and whether the stage is overdue a hazard */
+  /** how far along the stage is, by the clock of the time model (0..1) */
+  progress = 0;
+  used = new Map<string, number>();
+  lenOf = new Map<string, number>();
+  needHazard = false;
+
   pickKind(last: Kind[], forbid: Kind[] = []): Kind {
     const w: Array<[Kind, number]> = [];
+    const prog = this.progress;
     for (const k of Object.keys(UNLOCK) as Kind[]) {
       if (UNLOCK[k] > this.m || forbid.includes(k)) continue;
       if (k === 'flat') continue; // flats come from spacers
@@ -1342,6 +1609,18 @@ class Gen {
       let wt = BASE_WEIGHT[k] * (OBJ_WEIGHT[this.cfg.objectiveType]?.[k] ?? 1);
       if (this.fav.has(k)) wt *= 2.2;
       if (last.includes(k)) wt *= 0.25;
+      // variety: the more often a kind has been used, and the more of the stage it already covers, the less likely it is
+      wt *= Math.pow(0.55, this.used.get(k) ?? 0);
+      // something this stage has not shown yet is welcome: a stage shows at least nine kinds of piece
+      if (!this.used.get(k) && this.used.size < 12) wt *= 2.6 + 3 * Math.max(0, 10 * Math.min(1, prog * 1.25) - this.used.size);
+      if (this.used.get(k) && this.used.size < 9 && prog > 0.5) wt *= 0.4;
+      if ((this.lenOf.get(k) ?? 0) > 0.2 * Math.max(this.cx, 8000)) wt *= 0.1;
+      // a stage that has gone a long way without anything in the way gets something in the way
+      if (this.needHazard && !HAZARD_KIND.has(k)) wt *= 0.04;
+      // the arc of difficulty: easy to begin with, the last third asks the most
+      if (prog < 0.22 && INTENSITY[k] >= 2) wt *= 0.4;
+      if (prog > 0.62 && INTENSITY[k] >= 1) wt *= 1.6;
+      if (prog > 0.62 && INTENSITY[k] === 0) wt *= 0.6;
       if (this.safeMode && INTENSITY[k] > 1) wt *= 0.2;
       w.push([k, wt]);
     }
@@ -1350,133 +1629,267 @@ class Gen {
     for (const [k, x] of w) { r -= x; if (r <= 0) return k; }
     return 'pit';
   }
+
+  /** a light, short piece to fill the ground between the big ideas: never one the stage has just shown, kinds not yet shown first */
+  pickLight(last: Kind[]): Kind | null {
+    const LIGHT: Kind[] = ['pit', 'hill', 'stones', 'valley', 'rolling', 'hurdles', 'terrace', 'gapbridge', 'skyhop', 'islands', 'canopy', 'slope', 'stumps', 'zigzag', 'trampoline', 'causeway', 'pegs', 'meadow', 'ditch', 'twin', 'pillars', 'bridge', 'cliff'];
+    const lastLabel = this.pieces.length ? this.pieces[this.pieces.length - 1].k : '';
+    const w: Array<[Kind, number]> = [];
+    for (const k of LIGHT) {
+      if (UNLOCK[k] > this.m || last.includes(k) || k === lastLabel) continue;
+      if (k === 'tower' && this.G < 560) continue;
+      let wt = BASE_WEIGHT[k] * (OBJ_WEIGHT[this.cfg.objectiveType]?.[k] ?? 1);
+      if (this.used.get(k)) wt *= Math.pow(0.4, this.used.get(k) ?? 0); else wt *= 4;
+      if ((this.lenOf.get(k) ?? 0) > 0.2 * Math.max(this.cx, 8000)) wt *= 0.1;
+      if (this.safeMode && INTENSITY[k] > 1) wt *= 0.2;
+      w.push([k, wt]);
+    }
+    const sum = w.reduce((a, [, x]) => a + x, 0);
+    if (sum <= 0) return null;
+    let r = this.rnd() * sum;
+    for (const [k, x] of w) { r -= x; if (r <= 0) return k; }
+    return w[0][0];
+  }
+
+  /** the stretches the stage means as rests (the loop records them; the metrics leave them out of the empty-corridor count) */
+  breathers: Array<[number, number]> = [];
 }
 
 // ---------------------------------------------------------------------------
 // Horizontal levels
 // ---------------------------------------------------------------------------
 
-function buildHorizontal(gen: Gen): GeneratedStage {
+type Role = 'intro' | 'shift' | 'develop' | 'side' | 'twist' | 'climax' | 'payoff' | 'breather';
+
+/** how a stage is timed while it is built: the seconds it should take, and the seconds per px the animals, relics and cages added afterwards are expected to cost */
+interface Timing { target: number; rho: number; /** the seconds the level list asks for: what decides how many acts and forks the stage has, whatever the clock is aimed at */ nominal?: number }
+
+function buildHorizontal(gen: Gen, timing: Timing): GeneratedStage {
   const cfg = gen.cfg;
   const obj = cfg.objectiveType;
   // World 2's rivers take up room that the stage's fights and pickups also need, so the stage is as much longer as its rivers are wide
   const hasRivers = cfg.worldIndex === 2 && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret;
   const zonePieces = [3, 4, 5, 6, 7, 8, 9, 10].includes(cfg.worldIndex) && obj !== 'ascent' && obj !== 'boss_lair' && !cfg.secret ? zoneRecipes(cfg.worldIndex, cfg.miniIndex) : [];
-  // each stage is a little longer or shorter than its siblings, and opens differently
-  const widthJitter = cfg.secret ? 1 : gen.rr(0.94, 1.14);
-  const targetW = Math.round(cfg.levelWidth * widthJitter) + (hasRivers ? riverRecipes(cfg.miniIndex).reduce((a, r) => a + r.width, 0) : 0) + zonePieces.reduce((a, z) => a + pieceWidth(z), 0);
+  const T = timing.target;
+  gen.narrowLeft = gen.world >= 5 && !gen.safeMode ? 2 : 0;
+  const seconds = timing.nominal ?? T;
+  // the clock the stage is built by: the time model on what is laid so far, plus what the animals and pickups still to come will cost
+  const view = { config: cfg, platforms: gen.P, vines: gen.V, ropes: gen.R, enemies: gen.E, collectibles: gen.C, spawnX: gen.spawnX, exitTotemX: 0, lanes: gen.lanes } as unknown as GeneratedStage & { rivers?: unknown; zones?: unknown };
+  const clock = () => {
+    view.rivers = gen.rivers;
+    view.zones = gen.zones;
+    view.exitTotemX = gen.cx;
+    return modelStage(view, MODEL_TYPICAL).total + timing.rho * (gen.cx - gen.spawnX);
+  };
+  /** the goal run (flat, stairs, shrine) at the end costs about this */
+  const TAIL = 7;
 
   gen.pickFavourites();
-  // ---- the recipe: one idea, introduced safely, developed, twisted, paid off ----
-  const core = gen.pickCore();
-  const partner = gen.pickPartner(core);
-  const fork = gen.pickFork();
-  gen.fav.add(core);
-  gen.recipe = { core, partner, fork };
+  // ---- the recipe: one idea per act, introduced safely, developed, twisted, paid off ----
   const recipeOn = obj !== 'ascent' && !cfg.secret;
+  const nActs = !recipeOn ? 1 : seconds >= 175 ? 3 : 2;
+  const cores: Kind[] = [];
+  for (let a = 0; a < nActs; a++) cores.push(gen.pickCore(cores));
+  const partners = cores.map((c) => gen.pickPartner(c));
+  const side = gen.pickFork();
+  for (const c of cores) gen.fav.add(c);
+  gen.recipe = { core: cores[0], partner: partners[0], fork: side };
 
   // ---- opening: safe ground to find your feet ----
-  gen.flat(Math.round(gen.rr(480, 720)), { safe: true });
-  const spawnX = 140;
+  gen.flat(Math.round(gen.rr(520, 700)), { safe: true });
+  const spawnX = gen.spawnX;
   const spawnY = gen.g;
   gen.log.push('intro');
 
   // pieces the objective insists on, spread across the level
-  const forced: Array<{ at: number; kind: Kind; count?: number }> = [];
+  const forced: Array<{ at: number; kind: Kind | 'fork'; fork?: number }> = [];
   const spread = (n: number, kinds: Kind[]) => {
-    for (let i = 0; i < n; i++) forced.push({ at: targetW * ((i + 0.6) / (n + 0.4)) * 0.92, kind: kinds[i % kinds.length] });
+    for (let i = 0; i < n; i++) forced.push({ at: T * ((i + 0.6) / (n + 0.4)) * 0.92, kind: kinds[i % kinds.length] });
   };
   // (only pieces the route runs over: a ladder is a side trip, and an idol left on a skipped ladder could never be fetched back)
-  if (obj === 'relic_hunt') spread(gen.cfg.targetCount, gen.G >= 700 ? ['tower', 'cliff', 'bounce'] : ['cliff', 'bounce']);
-  if (obj === 'rescue') spread(gen.cfg.targetCount, ['cliff', 'bounce']);
-  // the Vine Swing mission is about swinging: three vines are always in it (once vines are unlocked)
-  if (obj === 'vine_runner') spread(3, ['swing']);
+  if (obj === 'relic_hunt') spread(gen.cfg.targetCount, gen.G >= 700 ? ['tower', 'cliff', 'terrace', 'bounce'] : ['cliff', 'terrace', 'bounce']);
+  if (obj === 'rescue') spread(gen.cfg.targetCount, gen.m >= 2 ? ['cliff', 'terrace', 'bounce'] : ['cliff', 'bounce']);
+  // the Vine Swing mission is about swinging: vines are always in it (once vines are unlocked)
+  if (obj === 'vine_runner') spread(3 + (seconds >= 175 ? 1 : 0), ['swing']);
   if (obj === 'purge' || obj === 'gauntlet') {
-    const yards = Math.ceil((gen.cfg.targetCount + 2) / 2.6);
-    for (let i = 0; i < yards; i++) forced.push({ at: targetW * ((i + 0.5) / (yards + 0.2)) * 0.95, kind: 'yard' });
+    const yards = Math.ceil((gen.cfg.targetCount + 2) / 3.2);
+    for (let i = 0; i < yards; i++) forced.push({ at: T * ((i + 0.5) / (yards + 0.2)) * 0.95, kind: 'yard' });
   }
   // World 2 is the river world: every ordinary stage has the rivers its place in the world calls for (river.ts)
   if (hasRivers) {
     const recs = riverRecipes(cfg.miniIndex);
     gen.riverQueue = recs.slice();
-    recs.forEach((_, i) => forced.push({ at: targetW * ((i + 0.55) / (recs.length + 0.25)) * 0.9, kind: 'river' }));
+    recs.forEach((_, i) => forced.push({ at: T * ((i + 0.55) / (recs.length + 0.25)) * 0.9, kind: 'river' }));
   }
   // Worlds 3 and 4 have a rule of their own too: spore clouds and wind gusts, taught in order (zones.ts)
   if (zonePieces.length) {
     gen.zoneQueue = zonePieces.slice();
-    zonePieces.forEach((_, i) => forced.push({ at: targetW * ((i + 0.55) / (zonePieces.length + 0.25)) * 0.9, kind: 'zone' }));
+    zonePieces.forEach((_, i) => forced.push({ at: T * ((i + 0.55) / (zonePieces.length + 0.25)) * 0.9, kind: 'zone' }));
   }
+  // two-lane forks: one to three by length, in different acts, never side by side
+  const nForks = recipeOn ? (seconds < 160 ? 1 : seconds < 205 ? 2 : 3) : 0;
+  const forkAt = nForks === 1 ? [0.4] : nForks === 2 ? [0.25, 0.62] : [0.17, 0.46, 0.73];
+  const at = (f: number) => T * f;
+  forkAt.forEach((f, i) => forced.push({ at: at(f), kind: 'fork', fork: i }));
   forced.sort((a, b) => a.at - b.at);
 
   // the beats, placed along the stage. Early stages get a gentler arc (no twist, one test), so the first hours stay friendly.
-  type Role = 'intro' | 'develop' | 'fork' | 'twist' | 'breather' | 'payoff';
-  const endZone = 1500;
-  const span = Math.max(2200, targetW - endZone - 700);
-  const at = (f: number) => 700 + span * f;
-  const script: Array<{ at: number; role: Role }> = [];
+  const script: Array<{ at: number; role: Role; act: number }> = [];
   if (recipeOn) {
-    script.push({ at: 0, role: 'intro' });
-    if (core !== 'yard') script.push({ at: at(0.3), role: 'develop' });
-    script.push({ at: at(0.4), role: 'fork' });
-    if (gen.m >= 3) {
-      if (core !== 'yard') script.push({ at: at(0.52), role: 'develop' });
-      if (partner) script.push({ at: at(0.63), role: 'twist' });
-      script.push({ at: at(0.73), role: 'breather' });
-      script.push({ at: at(0.84), role: 'payoff' });
-    } else {
-      script.push({ at: at(0.72), role: 'breather' });
-    }
+    const acts: Array<[number, number]> = nActs === 3 ? [[0, 0.3], [0.33, 0.64], [0.67, 0.94]] : [[0, 0.46], [0.5, 0.94]];
+    acts.forEach(([a0, a1], a) => {
+      const w = a1 - a0;
+      const lastAct = a === nActs - 1;
+      script.push({ at: at(a0), role: a === 0 ? 'intro' : 'shift', act: a });
+      if (!isYardKind(cores[a])) script.push({ at: at(a0 + (lastAct ? 0.2 : 0.24) * w), role: 'develop', act: a });
+      if (a === 0 || (a === 2 && nActs === 3)) script.push({ at: at(a0 + 0.4 * w), role: 'side', act: a });
+      if (gen.m >= 3) {
+        script.push({ at: at(a0 + (lastAct ? 0.46 : 0.62) * w), role: 'twist', act: a });
+        if (lastAct) script.push({ at: at(a0 + 0.66 * w), role: 'climax', act: a });
+      }
+      script.push({ at: at(a0 + (lastAct ? 0.84 : 0.88) * w), role: lastAct && gen.m >= 3 ? 'payoff' : 'breather', act: a });
+    });
+    // the breather before the final approach: the rest after the hardest stretch
+    script.push({ at: at(0.96), role: 'breather', act: nActs - 1 });
   }
-  // a stage only has room for so many pieces (about 1,250 px each, forced ones included): drop the least important beats
-  // first, so the ones that remain are really placed and the stage does not grow to fit them
-  {
-    const weight = (r: Role) => (r === 'twist' ? 2 : 1);
-    let room = Math.max(2, Math.round((targetW - endZone - 600) / 1250) + 2 - forced.length);
-    const drop: Role[] = ['develop', 'develop', 'breather', 'fork', 'twist'];
-    const total = () => script.reduce((a, b) => a + weight(b.role), 0);
-    for (const r of drop) {
-      if (total() <= room) break;
-      const i = script.map((b) => b.role).lastIndexOf(r);
-      if (i >= 0) script.splice(i, 1);
-    }
-    room = 0;
-  }
-  const calmRow = (len: number) => { const s = gen.flat(len); gen.row(s.x0 + 30, s.x1 - 30, gen.g - 32, 3); return s; };
+  script.sort((a, b) => a.at - b.at);
+
+  const calmRow = (len: number) => { const s = gen.flat(len); gen.row(s.x0 + 30, s.x1 - 30, gen.g - 32, 3); if (len >= 220 && gen.chance(0.75)) gen.overLedge(s, 2); return s; };
   /** a flag after something hard, so a slip costs one section and not the whole stretch */
-  const flagAfterHard = () => { if (gen.cx - gen.lastCp > 650 && gen.cx < targetW - endZone) gen.checkpoint(); };
+  const flagAfterHard = () => { if (gen.sinceFlag() > (finishing() ? 1150 : 750)) gen.checkpoint(); };
 
   const last: Kind[] = [];
   let hardJustNow = 0;
   let pieces = 0;
+  let lastHazardX = spawnX;
+  const lastLabel = () => (gen.pieces.length ? gen.pieces[gen.pieces.length - 1].k : '');
+
+  /** lay one piece. Too far from the last flag afterwards (past 1700 px)? Take it back, put a flag first and lay it again: a piece is never left to span two flags' worth of ground */
+  const run = (fn: () => void) => {
+    const m = gen.mark();
+    fn();
+    if (gen.sinceFlag() > 1450) {
+      gen.rewind(m);
+      gen.checkpointNow();
+      fn();
+    }
+  };
+  const lay = (kind: Kind, post?: () => void) => {
+    // two pieces of one kind never meet
+    if (lastLabel() === kind) {
+      const f = gen.pickKind(last, [kind, lastLabel() as Kind]);
+      run(() => gen.chunk(f));
+      account(f);
+    }
+    const m0 = gen.mark();
+    run(() => { gen.chunk(kind); post?.(); });
+    // (a yard that fell back to plain ground, or any piece that turned out to be what the one before it was: laid again as something else)
+    const n = gen.pieces.length;
+    if (n >= 2 && gen.pieces[n - 1].k === gen.pieces[n - 2].k && kind !== 'river' && kind !== 'zone') {
+      const dup = gen.pieces[n - 1].k as Kind;
+      gen.rewind(m0);
+      const f = isYardKind(kind) ? gen.pickYardKind() : gen.pickKind(last, [kind, dup]);
+      run(() => gen.chunk(f));
+      account(gen.pieces[gen.pieces.length - 1].k === dup ? kind : f);
+      return;
+    }
+    account(kind);
+  };
+  const account = (k: Kind) => {
+    const piece = gen.pieces[gen.pieces.length - 1];
+    gen.used.set(piece?.k ?? k, (gen.used.get(piece?.k ?? k) ?? 0) + 1);
+    if (piece) gen.lenOf.set(piece.k, (gen.lenOf.get(piece.k) ?? 0) + (piece.x1 - piece.x0));
+    if (HAZARD_KIND.has(k) || (piece && piece.k.startsWith('fork'))) lastHazardX = gen.cx;
+    pieces++;
+    last.push(k);
+    if (last.length > 3) last.shift();
+  };
+  /** a two-lane fork, tried with different shapes until its lanes are far enough apart in time */
+  const layFork = (index: number): boolean => {
+    for (let tries = 0; tries < 6; tries++) {
+      const m = gen.mark();
+      // (a retry rolls different numbers: taking a piece back also takes back the stream)
+      for (let k = 0; k < tries * 3; k++) gen.rnd();
+      const plan = planFork(gen, index + tries, nForks);
+      let ok = false;
+      run(() => { ok = buildFork(gen, plan, index, tries); });
+      if (ok) {
+        const f = gen.lanes[gen.lanes.length - 1];
+        if (f && forkDelta(gen, f) >= FORK_MIN_DELTA) {
+          const piece = gen.pieces[gen.pieces.length - 1];
+          if (piece) { piece.beat = `act${Math.min(nActs, 1 + Math.floor((index * nActs) / Math.max(1, nForks)))}`; }
+          account('fork' as Kind);
+          lastHazardX = gen.cx;
+          return true;
+        }
+      }
+      gen.rewind(m);
+    }
+    return false;
+  };
+
   let payoffDone = false;
-  // (at least four pieces, so even a short stage is a little journey and not one hill)
-  while (gen.cx < targetW - endZone || pieces < (gen.m <= 2 ? 3 : 4) || forced.some((f) => f.kind === 'zone')) {
+  let beatAct = 0;
+  let trimmed = false;
+  let swingsKept = 0;
+  const pending = () => forced.length > 0 || script.length > 0;
+  const minPieces = gen.m <= 2 ? 3 : 4;
+  const finishing = () => clock() + TAIL >= T * 1.0;
+  let now = 0;
+  while ((now = clock()) + TAIL < T * 1.02 || pieces < minPieces || pending()) {
+    gen.progress = Math.min(1, now / T);
+    if (gen.cx > 52000) break;
     // checkpoint cadence
-    if (gen.cx - gen.lastCp > 1000) { gen.checkpoint(); continue; }
+    if (gen.sinceFlag() >= 1000 && gen.canFlag() && now + TAIL < T * 0.97) { gen.checkpoint(); continue; }
+    gen.needHazard = gen.cx - lastHazardX > 1250;
+    const late = now >= T * 0.9;
+    if (late && !trimmed) {
+      // out of room: what is still to come but not needed is dropped (a stage is as long as its time calls for, not as long as its list of ideas)
+      trimmed = true;
+      const lastBreather = script.length ? script.map((sc) => sc.role).lastIndexOf('breather') : -1;
+      const keep = script.filter((sc, i) => sc.role === 'payoff' || (i === lastBreather && i === script.length - 1));
+      script.length = 0;
+      script.push(...keep);
+      for (let i = forced.length - 1; i >= 0; i--) {
+        const f = forced[i];
+        const essential = f.kind === 'river' || f.kind === 'zone' || f.kind === 'fork' || (f.kind === 'swing' && swingsKept++ < 2) || obj === 'relic_hunt' || obj === 'rescue';
+        if (!essential) forced.splice(i, 1);
+      }
+    }
 
     let kind: Kind;
     let beat: Role | null = null;
-    if (forced.length && gen.cx >= forced[0].at) {
+    if (forced.length && (now >= forced[0].at || late)) {
       const f = forced.shift()!;
-      kind = UNLOCK[f.kind] <= gen.m ? f.kind : gen.pickKind(last);
-    } else if (script.length && gen.cx >= script[0].at) {
-      beat = script.shift()!.role;
-      kind = beat === 'fork' ? fork : beat === 'breather' ? gen.calmKind() : core;
+      if (f.kind === 'fork') {
+        if (!layFork(f.fork ?? 0)) gen.log.push('forkSkipped');
+        else gen.flat(gen.rr(90, 170));
+        pieces++;
+        continue;
+      }
+      kind = f.kind === 'yard' ? gen.pickYardKind() : UNLOCK[f.kind] <= gen.m ? f.kind : gen.pickKind(last);
+    } else if (script.length && (now >= script[0].at || finishing())) {
+      const sc = script.shift()!;
+      beat = sc.role;
+      const a = Math.min(sc.act, cores.length - 1);
+      kind = beat === 'side' ? side : beat === 'breather' ? gen.calmKind() : cores[a];
+      if (beat === 'side' && UNLOCK[side] > gen.m) continue;
+      // (a yard core is a different yard each time it comes up)
+      if (isYardKind(kind) && (gen.used.get(kind) ?? 0) > 0) kind = gen.pickYardKind();
+      beatAct = a;
     } else {
       kind = gen.pickKind(last);
     }
+    const a = beatAct;
+
     // yards are never back to back: terrain separates them, so a fight stage still asks you to jump
-    if (recipeOn && kind === 'yard' && last[last.length - 1] === 'yard' && !beat) {
-      const between = gen.pickPartner('yard');
+    if (recipeOn && isYardKind(kind) && isYardKind((last[last.length - 1] ?? 'flat') as Kind) && !beat) {
+      const between = gen.pickPartner(kind);
       if (between) {
-        if (gen.cx - gen.lastCp > 700) gen.checkpoint();
-        gen.chunk(between);
+        gen.checkpoint();
+        lay(between);
         gen.log.push('beat:between');
-        pieces++;
-        last.push(between);
-        if (last.length > 3) last.shift();
         gen.flat(gen.rr(110, 200));
-        if (gen.cx - gen.lastCp > 700) gen.checkpoint();
       }
     }
     // never two hard pieces back to back (the recipe's own twist is the one planned exception)
@@ -1484,61 +1897,80 @@ function buildHorizontal(gen: Gen): GeneratedStage {
 
     if (beat === 'intro') {
       // the first look at the idea: a flag just behind it, and no animals on it
-      if (gen.cx - gen.lastCp > 700) gen.checkpoint();
+      gen.checkpoint();
       const from = gen.spots.length;
-      if (kind === 'yard') gen.chunkYard(1); else gen.chunk(kind);
-      for (const sp of gen.spots.slice(from)) if (!sp.perch) sp.safe = true;
-      calmRow(gen.rr(160, 240));
+      lay(kind, () => { for (const sp of gen.spots.slice(from)) if (!sp.perch) sp.safe = true; calmRow(gen.rr(160, 240)); });
       gen.log.push('beat:intro');
+    } else if (beat === 'shift') {
+      // a new act: a flag, then a new idea
+      gen.checkpoint();
+      const from = gen.spots.length;
+      lay(kind, () => { for (const sp of gen.spots.slice(from)) if (!sp.perch) sp.safe = true; calmRow(gen.rr(140, 200)); });
+      gen.log.push('beat:shift');
     } else if (beat === 'twist') {
-      if (gen.cx - gen.lastCp > 500) gen.checkpoint();
-      gen.chunk(core);
+      gen.checkpoint();
+      lay(cores[a]);
       gen.flat(gen.rr(110, 150));
-      if (gen.cx - gen.lastCp > 1000) gen.checkpoint();
-      gen.chunk(partner!);
+      gen.checkpoint();
+      lay(partners[a] ?? gen.pickKind(last));
       gen.log.push('beat:twist');
       flagAfterHard();
+    } else if (beat === 'climax') {
+      // the hardest stretch: the act's partner idea, then its own idea again, close together
+      gen.checkpoint();
+      lay(partners[a] ?? gen.pickKind(last));
+      gen.flat(gen.rr(100, 140));
+      lay(isYardKind(cores[a]) ? gen.pickYardKind() : cores[a]);
+      gen.log.push('beat:climax');
+      flagAfterHard();
     } else if (beat === 'payoff') {
-      if (gen.cx - gen.lastCp > 700) gen.checkpoint();
-      gen.chunk(core);
+      gen.checkpoint();
+      lay(isYardKind(cores[a]) ? gen.pickYardKind() : cores[a]);
       payoffDone = true;
       gen.log.push('beat:payoff');
-      if (gen.cx - gen.lastCp > 400 && gen.cx < targetW - 700) gen.checkpoint();
+      if (!finishing()) gen.checkpoint();
     } else if (beat === 'breather') {
-      gen.chunk(kind);
+      const b0 = gen.cx;
+      lay(kind);
       calmRow(gen.rr(220, 320));
+      gen.breathers.push([b0, gen.cx]);
       gen.log.push('beat:breather');
       flagAfterHard();
     } else {
-      gen.chunk(kind);
+      lay(kind);
       if (beat) gen.log.push('beat:' + beat);
       else if (INTENSITY[kind] >= 2) flagAfterHard();
     }
-    pieces++;
-    last.push(kind);
-    if (last.length > 3) last.shift();
-    hardJustNow = beat === 'twist' || INTENSITY[kind] >= 2 ? 1 : 0;
+    hardJustNow = beat === 'twist' || beat === 'climax' || INTENSITY[kind] >= 2 ? 1 : 0;
 
+    // a short, light piece between the big ones: the stage keeps showing something new (nine kinds at least) and the ground between ideas is not just flat
+    if (!finishing() && beat !== 'breather' && (gen.used.size < 10 + Math.floor(gen.progress * 2) || (INTENSITY[kind] < 2 && gen.chance(0.3)))) {
+      const lk = gen.pickLight(last);
+      if (lk) { lay(lk); gen.flat(gen.rr(70, 130)); hardJustNow = 0; }
+    }
     // spacer: ground to breathe on
-    const spacerP = INTENSITY[kind] >= 1 ? 0.9 : 0.55;
+    const spacerP = INTENSITY[kind] >= 1 ? 0.8 : 0.45;
     if (gen.chance(spacerP)) {
-      const s = gen.flat(gen.rr(110, INTENSITY[kind] >= 2 ? 360 : 260));
-      if (gen.chance(0.6)) gen.row(s.x0 + 30, s.x1 - 30, gen.g - 32, 3);
+      const s = gen.flat(gen.rr(100, INTENSITY[kind] >= 2 ? 300 : 220));
+      if (s.x1 - s.x0 >= 170 && gen.chance(0.85)) gen.overLedge(s);
+      else if (gen.chance(0.6)) gen.row(s.x0 + 30, s.x1 - 30, gen.g - 32, 3);
       hardJustNow = 0;
     }
   }
-
-  // a short stage can end before its payoff came due: it still gets one
-  if (recipeOn && gen.m >= 3 && !payoffDone) {
-    if (gen.cx - gen.lastCp > 600) gen.checkpoint();
-    gen.chunk(core);
-    gen.log.push('beat:payoff');
+  void payoffDone;
+  // a stage that still shows fewer than nine kinds of piece gets a short light one or two more before the goal run
+  for (let extra = 0; recipeOn && extra < 3 && gen.used.size < 9; extra++) {
+    const lk = gen.pickLight(last);
+    if (!lk) break;
+    lay(lk);
+    gen.flat(gen.rr(70, 130));
   }
 
   // ---- finish: flat run-up, flag, then the goal staircase ----
+  if (gen.sinceFlag() > 1050) gen.checkpoint();
   gen.flat(gen.rr(220, 300));
-  // (no second flag right after the last one: they were sometimes under 500 px apart)
-  if (gen.cx - gen.lastCp > 900) gen.checkpoint();
+  // (no flag right after the last one: they must stand 900 px apart)
+  if (gen.sinceFlag() > 800) gen.checkpoint();
   const steps = gen.ri(3, 6);
   const stepH = gen.rr(28, 40);
   for (let i = 0; i < steps; i++) { gen.up(stepH); gen.flat(gen.rr(64, 90)); }
@@ -1547,11 +1979,20 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   const exitTotemY = gen.g;
   gen.closeBank();
   gen.item('exit_totem', exitTotemX, exitTotemY - 30);
+  gen.exitAt = { x: exitTotemX, y: exitTotemY };
   gen.log.push('goal');
 
+  view.exitTotemX = exitTotemX;
+  view.rivers = gen.rivers;
+  view.zones = gen.zones;
+  const layoutSeconds = modelStage(view, MODEL_TYPICAL).total;
   decorate(gen, spawnX);
+  balanceStyles(gen.P, gen.kindOf, gen.world);
+  // pickups the settling dropped are no longer on their lane
+  const alive = new Set(gen.C.map((c) => c.id));
+  for (const f of gen.lanes) { f.high.flowers = f.high.flowers.filter((i) => alive.has(i)); f.low.flowers = f.low.flowers.filter((i) => alive.has(i)); }
 
-  return {
+  const out: GeneratedStage = {
     config: { ...cfg, levelWidth: Math.round(gen.cx) },
     trees: gen.T,
     platforms: gen.P,
@@ -1568,45 +2009,80 @@ function buildHorizontal(gen: Gen): GeneratedStage {
     waterY: gen.waterY,
     ...(gen.rivers ? { rivers: gen.rivers } : {}),
     ...(gen.zones ? { zones: gen.zones } : {}),
+    ...(gen.lanes.length ? { lanes: gen.lanes } : {}),
+    meta: { attempt: 0, chunks: [], width: 0, breathers: gen.breathers },
   };
+  out.meta!.forksWanted = nForks;
+  out.meta!.timing = { layoutSeconds, decorSeconds: modelStage(out, MODEL_TYPICAL).total - layoutSeconds, route: exitTotemX - spawnX };
+  return out;
 }
 
 /** Everything that depends on the finished layout: enemies, fliers, rewards, quotas. */
 function decorate(gen: Gen, spawnX: number) {
   const cfg = gen.cfg;
   const obj = cfg.objectiveType;
+  const exitX = gen.exitAt ? gen.exitAt.x : gen.cx;
+  const prog = (x: number) => Math.max(0, Math.min(1, (x - spawnX) / Math.max(1, exitX - spawnX)));
+  /** what belongs to one lane of a fork and no other: it cannot count towards a quota (a player may take the other lane) */
+  const laneEnemy = new Set<number>();
+  const laneFlower = new Set<number>();
+  for (const f of gen.lanes) for (const r of [f.high, f.low]) { r.enemies.forEach((i) => laneEnemy.add(i)); r.flowers.forEach((i) => laneFlower.add(i)); }
   const awayFromSafe = (x: number) =>
-    Math.abs(x - spawnX) > 360 && gen.CP.every((c) => Math.abs(c.x - x) > 260);
-
-  // ---- ordinary ground enemies on suitable flats ----
-  const p0: Record<string, number> = {
-    sprint: 0.16, harvest: 0.2, purge: 0.5, ascent: 0.3, stealth: 0.1, vine_runner: 0.07,
-    relic_hunt: 0.2, rescue: 0.28, gauntlet: 0.6,
+    Math.abs(x - spawnX) > 360 && gen.CP.every((c) => Math.abs(c.x - x) > 260) && (!gen.exitAt || Math.abs(gen.exitAt.x - x) > 420);
+  // every hop in the stage: an animal's patch stays 120 px clear of a take-off and of a landing
+  const edges = jumpEdges(gen.P);
+  const EDGE_CLEAR = 124;
+  /** a patrol patch cut back so it stays 230 px from the start, every flag and the exit, and clear of every take-off and landing on its own ground (null if too little is left to patrol) */
+  const clearPatch = (mid: number, pMin: number, pMax: number, y: number): [number, number] | null => {
+    const spots = [spawnX, ...gen.CP.map((c) => c.x), ...(gen.exitAt ? [gen.exitAt.x] : [])];
+    for (const x of spots) {
+      if (x > pMin - 230 && x < pMax + 230) {
+        if (x <= mid) pMin = Math.max(pMin, x + 230); else pMax = Math.min(pMax, x - 230);
+      }
+    }
+    for (const e of edges) {
+      if (Math.abs(e.from.y - y) < 5 && e.takeoffX >= pMin && e.from.x <= mid && e.takeoffX - EDGE_CLEAR < pMax) pMax = Math.min(pMax, e.takeoffX - EDGE_CLEAR);
+      if (Math.abs(e.to.y - y) < 5 && e.landX <= pMax && e.to.x + e.to.width >= mid && e.landX + EDGE_CLEAR > pMin) pMin = Math.max(pMin, e.landX + EDGE_CLEAR);
+    }
+    return pMax - pMin >= 70 && mid >= pMin && mid <= pMax ? [pMin, pMax] : null;
   };
-  // stages are longer now, so they also fight harder: about a quarter more ground enemies than before, climbing with the mission
-  const pEnemy = (p0[obj] ?? 0.2) * (gen.m === 1 ? 0.4 : 0.9 + gen.d * 0.9);
+
+  // ---- ordinary ground enemies on suitable flats: sparse at the start, thicker and harder as the stage goes on ----
+  const p0: Record<string, number> = {
+    sprint: 0.2, harvest: 0.24, purge: 0.55, ascent: 0.3, stealth: 0.12, vine_runner: 0.1,
+    relic_hunt: 0.24, rescue: 0.3, gauntlet: 0.62,
+  };
+  const base = (p0[obj] ?? 0.2) * (gen.m === 1 ? 0.4 : 0.9 + gen.d * 0.9);
   let first = gen.m > 1;
+  let pairNext = false;
   for (const s of gen.spots) {
     const len = s.x1 - s.x0;
-    if (s.safe || s.yard || s.perch || len < 260) continue;
+    if (s.safe || s.yard || s.perch || len < 230) continue;
     const mid = (s.x0 + s.x1) / 2;
     if (!awayFromSafe(mid)) continue;
-    if (!first && gen.rnd() > pEnemy) continue;
+    const pr = prog(mid);
+    // a pair at a set-piece moment: after one animal the next flat often has a partner (more so late on), then a calm stretch
+    const pEnemy = pairNext ? 0.85 : base * (0.62 + 0.95 * Math.pow(pr, 1.4));
+    if (!first && gen.rnd() > pEnemy) { pairNext = false; continue; }
+    const patch = clearPatch(mid, s.x0 + 50, s.x1 - 50, s.y);
+    if (!patch) continue;
     first = true;
-    gen.ground(mid, s.y, s.x0 + 50, s.x1 - 50);
+    gen.ground(mid, s.y, patch[0], patch[1], pr);
+    pairNext = !pairNext && pr > 0.45 && gen.chance(0.28 + 0.3 * pr);
   }
 
   // ---- quota top-ups ----
   const have = (f: (t: string) => boolean) => gen.C.filter((c) => f(c.type)).length;
   const perches = gen.spots.filter((s) => s.perch).sort((a, b) => a.x0 - b.x0);
   const flats = gen.spots.filter((s) => !s.safe && !s.perch && !s.yard && s.x1 - s.x0 >= 180);
+  const shared = () => gen.E.filter((e) => !laneEnemy.has(e.id)).length;
 
   if (obj === 'purge' || obj === 'gauntlet') {
     let guard = 0;
     // wide flats first; if the layout has too few, any open ground of 140 px or more will do
     const wideSpots = gen.spots.filter((s) => !s.yard && !s.perch && !s.safe && s.x1 - s.x0 >= 140);
     const order = [...flats, ...wideSpots.filter((s) => !flats.includes(s))].sort((a, b) => (b.x1 - b.x0) - (a.x1 - a.x0));
-    while (gen.E.length < cfg.targetCount + 2 && guard++ < 400) {
+    while (shared() < cfg.targetCount + 2 && guard++ < 400) {
       const s = order[guard % Math.max(1, order.length)];
       if (!s) break;
       let mid = (s.x0 + s.x1) / 2 + gen.rr(-40, 40);
@@ -1617,14 +2093,18 @@ function decorate(gen: Gen, spawnX: number) {
       if (mid < s.x0 + 40 || mid > s.x1 - 40) continue;
       if (gen.E.some((o) => o.type !== 'eagle' && Math.abs(o.x - mid) < 130)) continue;
       if (!awayFromSafe(mid)) continue;
-      gen.ground(mid, s.y, s.x0 + 40, s.x1 - 40);
+      const patch = clearPatch(mid, s.x0 + 40, s.x1 - 40, s.y);
+      if (!patch) continue;
+      gen.ground(mid, s.y, patch[0], patch[1], prog(mid));
     }
     // still short on a crowded layout: pack the animals a little closer (never closer than 95 px)
-    for (let pass = 0; pass < 200 && gen.E.length < cfg.targetCount + 1 && order.length; pass++) {
+    for (let pass = 0; pass < 200 && shared() < cfg.targetCount + 1 && order.length; pass++) {
       const s = order[pass % order.length];
       const mid = s.x0 + 40 + gen.rnd() * Math.max(0, s.x1 - s.x0 - 80);
       if (gen.E.some((o) => o.type !== 'eagle' && Math.abs(o.x - mid) < 95) || !awayFromSafe(mid)) continue;
-      gen.ground(mid, s.y, s.x0 + 40, s.x1 - 40);
+      const patch = clearPatch(mid, s.x0 + 40, s.x1 - 40, s.y);
+      if (!patch) continue;
+      gen.ground(mid, s.y, patch[0], patch[1], prog(mid));
     }
   }
 
@@ -1650,10 +2130,14 @@ function decorate(gen: Gen, spawnX: number) {
     }
   }
 
+  // ---- harvest: the quota can be met on the shared ground whichever lane is taken, and the stage holds about 1.6 times the quota: the surplus is
+  // the reward on the longer lanes (the high lane of an ordinary fork, the scenic lane of a reversed one) ----
+  const flora = (t: string) => t === 'flower' || t === 'leaf';
+  const sharedFlora = () => gen.C.filter((c) => flora(c.type) && !laneFlower.has(c.id)).length;
   if (obj === 'harvest') {
     let guard = 0;
     const pool = [...flats, ...perches];
-    while (have((t) => t === 'flower' || t === 'leaf') < cfg.targetCount + 4 && guard++ < 200 && pool.length) {
+    while (sharedFlora() < cfg.targetCount + 4 && guard++ < 200 && pool.length) {
       const s = pool[guard % pool.length];
       gen.row(s.x0 + 30, s.x1 - 30, s.y - 32, 4);
     }
@@ -1670,7 +2154,7 @@ function decorate(gen: Gen, spawnX: number) {
   // ---- fliers ----
   const wide = cfg.levelWidth;
   const nEagles =
-    obj === 'stealth' ? 2 + Math.floor(gen.world * 0.4)
+    obj === 'stealth' ? 3 + Math.floor(gen.world * 0.45)
     : obj === 'purge' || obj === 'gauntlet' ? 1 + Math.floor(gen.world * 0.3)
     : gen.m < 3 ? 0
     : Math.floor(wide / 2000);
@@ -1682,6 +2166,75 @@ function decorate(gen: Gen, spawnX: number) {
         gen.eagle(x, homeY);
         break;
       }
+    }
+  }
+
+  // ---- no stretch of ground without anything on it for long: an animal (or a flier) goes in the middle of the longest ones ----
+  if (obj !== 'ascent') {
+    const view = { platforms: gen.P, enemies: gen.E, zones: gen.zones, rivers: gen.rivers, vines: gen.V, ropes: gen.R, lanes: gen.lanes } as unknown as GeneratedStage;
+    const inRest = (a: number, b: number) => gen.breathers.some(([x0, x1]) => a >= x0 - 10 && b <= x1 + 10);
+    for (let round = 0; round < 8; round++) {
+      const blocks = hazardBlocks(view);
+      let worst: [number, number] | null = null;
+      const pts: Array<[number, number]> = [];
+      for (let i = 0; i < blocks.length; i++) pts.push([i === 0 ? spawnX : blocks[i - 1][1], blocks[i][0]]);
+      for (const [a, b] of pts) if (b - a > 1900 && !inRest(a, b) && (!worst || b - a > worst[1] - worst[0])) worst = [a, b];
+      if (!worst) break;
+      const [a, b] = worst;
+      const mid0 = (a + b) / 2;
+      const cand = gen.spots
+        .filter((s) => !s.safe && !s.perch && s.x1 - s.x0 >= 150 && s.x0 + 60 > a + 250 && s.x1 - 60 < b - 250 && !gen.breathers.some(([r0, r1]) => s.x1 > r0 - 50 && s.x0 < r1 + 50))
+        .sort((m, n) => Math.abs((m.x0 + m.x1) / 2 - mid0) - Math.abs((n.x0 + n.x1) / 2 - mid0));
+      let done = false;
+      for (const s of cand) {
+        const mid = (s.x0 + s.x1) / 2;
+        if (!awayFromSafe(mid) || gen.E.some((o) => o.type !== 'eagle' && Math.abs(o.x - mid) < 130)) continue;
+        const patch = clearPatch(mid, s.x0 + 40, s.x1 - 40, s.y);
+        if (!patch) continue;
+        gen.ground(mid, s.y, patch[0], patch[1], prog(mid));
+        done = true;
+        break;
+      }
+      if (!done) {
+        // no flat to stand an animal on: a flier over the stretch
+        for (let k = 0; k < 40 && !done; k++) {
+          const x = mid0 + (k % 2 ? 1 : -1) * 90 * Math.ceil(k / 2);
+          for (const dy of [250, 170, 330, 120]) {
+            const homeY = gen.G - dy + gen.rr(-20, 20);
+            if (x > a + 380 && x < b - 380 && gen.CP.every((c) => Math.abs(c.x - x) > 480) && gen.skyClear(x, homeY)) { gen.eagle(x, homeY); done = true; break; }
+          }
+        }
+      }
+      if (!done) break;
+    }
+  }
+
+  // ---- no pickup in a solid or on top of another; a harvest stage then still holds its quota, and the surplus on the lanes ----
+  gen.settlePickups();
+  if (obj === 'harvest') {
+    const pool = [...flats, ...perches];
+    const total = () => have(flora);
+    // the surplus: rows on the lanes (the longer lane first), up to about 1.6 times the quota
+    const goal = Math.ceil(cfg.targetCount * 1.6);
+    const longer = gen.lanes.flatMap((f) => {
+      const hi = gen.P.filter((p) => f.high.platforms.includes(p.id) && p.width >= 90);
+      const lo = gen.spots.filter((s) => s.yard && s.x0 >= f.x0 && s.x1 <= f.x1 && s.x1 - s.x0 >= 200);
+      return f.reversed ? [...hi.map((p) => ({ x0: p.x, x1: p.x + p.width, y: p.y })), ...lo] : [...lo, ...hi.map((p) => ({ x0: p.x, x1: p.x + p.width, y: p.y }))];
+    });
+    for (let guard = 0; guard < 80 && longer.length && total() < goal; guard++) {
+      const sp = longer[guard % longer.length];
+      gen.row(sp.x0 + 24, sp.x1 - 24, sp.y - 32, 3);
+      gen.settlePickups();
+    }
+    for (let guard = 0; guard < 60 && pool.length && (total() < cfg.targetCount + 4 || sharedFlora() < cfg.targetCount + 2); guard++) {
+      const sp = pool[guard % pool.length];
+      gen.row(sp.x0 + 30, sp.x1 - 30, sp.y - 32, 4);
+      gen.settlePickups();
+    }
+    for (let guard = 0; guard < 60 && pool.length && total() < goal; guard++) {
+      const sp = pool[guard % pool.length];
+      gen.row(sp.x0 + 30, sp.x1 - 30, sp.y - 32, 4);
+      gen.settlePickups();
     }
   }
 }
@@ -1699,23 +2252,27 @@ function buildAscent(gen: Gen): GeneratedStage {
   gen.g = floorY;
 
   // wide ground floor so a fall is never fatal
-  gen.plat({ x: 0, y: floorY, width: W, height: GROUND_H, type: 'solid', style: 'log' });
+  gen.plat({ x: 0, y: floorY, width: W, height: GROUND_H, type: 'solid'}, 'ground');
   gen.spots.push({ x0: 0, x1: 520, y: floorY, safe: true });
   const spawnX = 200;
   const spawnY = floorY;
 
   // the first landing sits above the floor; later pieces start from the previous landing
-  let cur: Platform = gen.plat({ x: 260, y: floorY - 70, width: 260, height: 28, type: 'solid', style: 'branch' });
+  let cur: Platform = gen.plat({ x: 260, y: floorY - 70, width: 260, height: 28, type: 'solid'}, 'ledge');
   let dir: 1 | -1 = 1;
-  const flip = (p: Platform) => {
-    if (dir === 1 && p.x + p.width > W - 420) dir = -1;
-    else if (dir === -1 && p.x < 420) dir = 1;
+  // The engine keeps the hero inside [20, W-20], so nothing is built where he cannot stand: every piece first checks there is room on
+  // the side it is about to grow towards, and if not, grows the other way (a swing needs the most room, a plain stair the least).
+  const MARG = 70;
+  const face = (p: Platform, need: number) => {
+    const room = dir === 1 ? W - MARG - (p.x + p.width) : p.x - MARG;
+    if (room < need) dir = dir === 1 ? -1 : 1;
   };
+  const NEED = { stairs: 380, tree: 240, mush: 380, swing: 660, rest: 480, summit: 740 };
 
   const landings: Platform[] = [cur];
+  const chain: NonNullable<NonNullable<GeneratedStage['meta']>['ascentChain']> = [];
   let n = 0;
   while (cur.y > summitY + 80) {
-    flip(cur);
     const roll = gen.rnd();
     const canSwing = !gen.safeMode && gen.m >= 4;
     const room = cur.y - summitY;
@@ -1725,17 +2282,19 @@ function buildAscent(gen: Gen): GeneratedStage {
     if (kind === 'stairs') {
       const steps = gen.ri(3, 5);
       for (let i = 0; i < steps && cur.y > summitY + 80; i++) {
+        face(cur, NEED.stairs);
         const w = gen.rr(150, 200);
         const rise = gen.rr(58, 72);
         const gap = gen.rr(36, Math.max(40, gen.hopLen(rise, 1)));
         const y = cur.y - rise;
         const x = dir === 1 ? cur.x + cur.width + gap : cur.x - gap - w;
-        cur = gen.plat({ x, y, width: w, height: 28, type: gen.chance(0.1 * gen.d) && !gen.safeMode && i > 0 ? 'fragile' : 'solid', style: 'branch' });
+        cur = gen.plat({ x, y, width: w, height: 28, type: gen.chance(0.1 * gen.d) && !gen.safeMode && i > 0 ? 'fragile' : 'solid'}, 'ledge');
         gen.flower(x + w / 2, y - 36);
-        flip(cur);
+        chain.push({ kind: 'hop', w, rise });
       }
       gen.log.push('stairs');
     } else if (kind === 'tree') {
+      face(cur, NEED.tree);
       const h = Math.min(gen.rr(220, 320), room - 40);
       const vx = dir === 1 ? cur.x + cur.width - 40 : cur.x + 40;
       const topY = cur.y - h;
@@ -1744,21 +2303,25 @@ function buildAscent(gen: Gen): GeneratedStage {
       const tree: TreeStructure = { id: gen.tid++, x: vx, groundY: cur.y, topY: topY - 170, trunkWidth: 70, hasClimbVine: true, canopyRadius: 150 };
       gen.T.push(tree);
       gen.V.push({ id: gen.vid++, x: vx, topY: topY - 2, bottomY: cur.y - 6, swaySpeed: 0.9, swayPhase: gen.rnd() * 6, vineType: 'tree_climb', treeId: tree.id });
-      cur = gen.plat({ x: bx, y: topY, width: w, height: 28, type: 'solid', style: 'branch' });
+      cur = gen.plat({ x: bx, y: topY, width: w, height: 28, type: 'solid'}, 'ledge');
       gen.flower(bx + w / 2, topY - 36);
+      chain.push({ kind: 'climb', w, rise: h });
       gen.log.push('tree');
     } else if (kind === 'mush') {
+      face(cur, NEED.mush);
       const h = gen.rr(135, 160);
       const mx = dir === 1 ? cur.x + cur.width - 90 : cur.x + 20;
       gen.plat({ x: mx, y: cur.y - 30, width: 70, height: 30, type: 'bouncy' });
       const w = gen.rr(220, 280);
       const gap = gen.rr(30, 70);
       const x = dir === 1 ? mx + 70 + gap : mx - gap - w;
-      cur = gen.plat({ x, y: cur.y - h, width: w, height: 28, type: 'solid', style: 'branch' });
+      cur = gen.plat({ x, y: cur.y - h, width: w, height: 28, type: 'solid'}, 'ledge');
       gen.flower(x + w / 2, cur.y - 36);
+      chain.push({ kind: 'bounce', w, rise: h });
       gen.log.push('mush');
     } else {
       // swing across a shaft
+      face(cur, NEED.swing);
       let done = false;
       for (let wgap = gen.lerp(260, 380); wgap >= 240 && !done; wgap -= 20) {
         const A: Platform = { ...cur, id: -1 };
@@ -1771,48 +2334,59 @@ function buildAscent(gen: Gen): GeneratedStage {
         const res = swingLandings(A, v, dir, [A, B], H + 400);
         if ((res.get(-2) ?? 0) >= 8) {
           gen.V.push({ ...v, id: gen.vid++, swayPhase: gen.rnd() * 6 });
-          cur = gen.plat({ x: bx, y: B.y, width: bw, height: 28, type: 'solid', style: 'branch' });
+          cur = gen.plat({ x: bx, y: B.y, width: bw, height: 28, type: 'solid'}, 'ledge');
+          chain.push({ kind: 'swing', w: bw, rise: dyUp });
           gen.log.push('swing');
           done = true;
         }
       }
       if (!done) {
+        face(cur, NEED.stairs);
         const w = 200;
         const x = dir === 1 ? cur.x + cur.width + 40 : cur.x - 40 - w;
-        cur = gen.plat({ x, y: cur.y - 66, width: w, height: 28, type: 'solid', style: 'branch' });
+        cur = gen.plat({ x, y: cur.y - 66, width: w, height: 28, type: 'solid'}, 'ledge');
+        chain.push({ kind: 'hop', w, rise: 66 });
       }
     }
     landings.push(cur);
     n++;
     // a wide resting ledge now and then, with a checkpoint
     if (n % 3 === 0 && cur.y > summitY + 140) {
+      face(cur, NEED.rest);
       const w = 300;
       const rise = gen.rr(40, 64);
       const gap = gen.rr(36, Math.max(40, gen.hopLen(rise, 1)));
       const x = dir === 1 ? cur.x + cur.width + gap : cur.x - gap - w;
-      cur = gen.plat({ x, y: cur.y - rise, width: w, height: 28, type: 'solid', style: 'branch' });
+      cur = gen.plat({ x, y: cur.y - rise, width: w, height: 28, type: 'solid'}, 'ledge');
       gen.CP.push({ x: cur.x + w / 2, y: cur.y, reached: false });
       gen.spots.push({ x0: cur.x, x1: cur.x + w, y: cur.y, safe: true });
+      chain.push({ kind: 'hop', w, rise });
       landings.push(cur);
     }
   }
 
   // summit
-  flip(cur);
+  face(cur, NEED.summit);
   const sw = 520;
   const gap = Math.max(40, gen.hopLen(60, 1));
-  const sx = Math.max(60, Math.min(W - sw - 60, dir === 1 ? cur.x + cur.width + gap : cur.x - gap - sw));
-  const summit = gen.plat({ x: sx, y: cur.y - 60, width: sw, height: 40, type: 'solid', style: 'log' });
+  const sx = dir === 1 ? cur.x + cur.width + gap : cur.x - gap - sw;
+  const summit = gen.plat({ x: sx, y: cur.y - 60, width: sw, height: 40, type: 'solid'}, 'summit');
+  chain.push({ kind: 'hop', w: sw, rise: 60 });
   gen.spots.push({ x0: summit.x, x1: summit.x + sw, y: summit.y, safe: true });
   const exitTotemX = summit.x + sw / 2;
   const exitTotemY = summit.y;
   gen.item('exit_totem', exitTotemX, exitTotemY - 30);
+  gen.exitAt = { x: exitTotemX, y: exitTotemY };
 
   // enemies on some landings, power-ups on a couple
   const pE = 0.25 + gen.d * 0.35;
   landings.forEach((l, i) => {
     if (i < 2 || l.width < 190) return;
-    if (gen.CP.some((c) => Math.abs(c.x - (l.x + l.width / 2)) < 240)) return;
+    // (a flag, and the exit, keep a clear approach of 330 px on either side at every height within reach)
+    const mid = l.x + l.width / 2;
+    if (gen.CP.some((c) => Math.abs(c.x - mid) < 330 && Math.abs(c.y - l.y) < 440)) return;
+    if (Math.abs(exitTotemX - mid) < 330 && Math.abs(exitTotemY - l.y) < 440) return;
+    if (Math.abs(spawnX - mid) < 330 && Math.abs(spawnY - l.y) < 440) return;
     if (gen.chance(pE)) gen.ground(l.x + l.width / 2, l.y, l.x + 24, l.x + l.width - 24);
     else if (gen.chance(0.12) && gen.m >= 3) gen.item(gen.chance(0.5) ? 'heart' : 'powerup_magnet', l.x + l.width / 2, l.y - 34);
   });
@@ -1828,6 +2402,8 @@ function buildAscent(gen: Gen): GeneratedStage {
     }
   }
 
+  gen.settlePickups();
+  balanceStyles(gen.P, gen.kindOf, gen.world);
   return {
     config: cfg,
     trees: gen.T,
@@ -1841,6 +2417,7 @@ function buildAscent(gen: Gen): GeneratedStage {
     exitTotemX,
     exitTotemY,
     checkpoints: gen.CP.sort((a, b) => a.y - b.y).reverse(),
+    meta: { attempt: 0, chunks: [], width: 0, ascentChain: chain },
   };
 }
 
@@ -1856,7 +2433,7 @@ function buildBoss(gen: Gen): GeneratedStage {
   // the fenced arena: wide enough to dodge in, small enough that a phone screen can show the whole fight
   const left = 760;
   const right = left + (def.arenaW ?? 1080);
-  gen.plat({ x: 0, y: floor, width: cfg.levelWidth, height: 80, type: 'solid', style: 'log' });
+  gen.plat({ x: 0, y: floor, width: cfg.levelWidth, height: 80, type: 'solid'}, 'ground');
 
   // two great trunks are the walls
   for (const tx of [left - 40, right + 40]) {
@@ -1875,15 +2452,15 @@ function buildBoss(gen: Gen): GeneratedStage {
         gen.plat({ x: left + pc.dx, y, width: 70, height: 30, type: 'bouncy' });
       } else if (pc.moving) {
         const base = left + pc.dx;
-        gen.plat({ x: base, y, width: pc.w, height: 26, type: 'moving', moveRange: pc.moving.range, moveSpeed: pc.moving.speed, baseX: base, swayOffset: 0, style: 'branch' });
-      } else gen.plat({ x: left + pc.dx, y, width: pc.w, height: 26, type: 'solid', style: 'branch' });
+        gen.plat({ x: base, y, width: pc.w, height: 26, type: 'moving', moveRange: pc.moving.range, moveSpeed: pc.moving.speed, baseX: base, swayOffset: 0}, 'ledge');
+      } else gen.plat({ x: left + pc.dx, y, width: pc.w, height: 26, type: 'solid'}, 'ledge');
     }
     for (const v of def.vines ?? []) {
       gen.V.push({ id: gen.vid++, x: left + v.dx, topY: floor - v.top, bottomY: floor - v.bottom, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true });
     }
   } else {
     for (const b of [{ x: left + 70, y: 440, w: 200 }, { x: right - 270, y: 440, w: 200 }, { x: (left + right) / 2 - 130, y: 340, w: 260 }]) {
-      gen.plat({ x: b.x, y: b.y, width: b.w, height: 26, type: 'solid', style: 'branch' });
+      gen.plat({ x: b.x, y: b.y, width: b.w, height: 26, type: 'solid'}, 'ledge');
     }
   }
 
@@ -1924,25 +2501,78 @@ function buildBoss(gen: Gen): GeneratedStage {
 // Public API
 // ---------------------------------------------------------------------------
 
-export function buildStage(config: LevelConfig, attempt = 0): GeneratedStage {
+function buildOnce(config: LevelConfig, attempt: number, timing: Timing): GeneratedStage {
   const gen = new Gen(config, attempt);
   let stage: GeneratedStage;
   if (config.objectiveType === 'boss_lair') stage = buildBoss(gen);
   else if (config.objectiveType === 'ascent') stage = buildAscent(gen);
-  else stage = buildHorizontal(gen);
-  stage.meta = { attempt, chunks: gen.log, width: Math.round(stage.config.levelWidth), ...(gen.recipe ? { recipe: gen.recipe } : {}) };
+  else stage = buildHorizontal(gen, timing);
+  stage.meta = { ...stage.meta, attempt, chunks: gen.log, width: Math.round(stage.config.levelWidth), pieces: gen.pieces, ...(gen.recipe ? { recipe: gen.recipe } : {}) };
   return stage;
+}
+
+/** the seconds per px of route that the animals, relics and cages (placed after the layout) are expected to add, to begin with */
+const RHO0: Record<string, number> = { purge: 0.0034, gauntlet: 0.0042, rescue: 0.0024, relic_hunt: 0.0024 };
+
+/**
+ * Builds a stage. An ordinary stage has to take a first-time player long enough (stageTime.ts: its target seconds for the typical player, a floor
+ * for the quick one). The generator builds it by the clock of the time model: it keeps laying pieces until the model says the stage takes as long
+ * as asked. What the animals will add is not known until they are placed, so the stage is timed afterwards and, if it came out off, built again
+ * with the cost the animals really had. A climb is taller or shorter instead. The same attempt always gives the same stage.
+ */
+export function buildStage(config: LevelConfig, attempt = 0): GeneratedStage {
+  if (config.objectiveType === 'boss_lair' || config.secret) return buildOnce(config, attempt, { target: 0, rho: 0 });
+  const tgt = targetSeconds(config.worldIndex, config.miniIndex, config.objectiveType);
+  const floorFast = fastFloor(config.worldIndex, config.miniIndex, config.objectiveType);
+  const maxT = Math.min(tgt * 1.1, 295);
+  const climb = config.objectiveType === 'ascent';
+  let best: GeneratedStage | null = null;
+  let bestScore = -Infinity;
+  let aim = tgt * 1.01;
+  let rho = RHO0[config.objectiveType] ?? 0.0018;
+  let mult = 1;
+  for (let it = 0; it < 5; it++) {
+    const cfg = climb ? { ...config, levelHeight: Math.round((config.levelHeight * mult) / 20) * 20 } : config;
+    const st = buildOnce(cfg, attempt, { target: aim, rho, nominal: tgt });
+    const t = modelStage(st, MODEL_TYPICAL).total;
+    const f = modelStage(st, MODEL_FAST).total;
+    const ratio = Math.min(t / tgt, f / floorFast);
+    const over = t / maxT;
+    if (ratio >= 1 && over <= 1) return st;
+    // a stage that meets both floors beats one that does not, and among those the one nearest the target wins
+    const score = ratio >= 1 ? 10 - over : ratio;
+    if (score > bestScore) { best = st; bestScore = score; }
+    if (climb) {
+      mult *= ratio < 1 ? Math.min(2, Math.max(1.03, (1 / ratio) * 1.05)) : Math.max(0.6, Math.min(0.97, 1.06 / over));
+    } else {
+      const tm = st.meta?.timing;
+      if (tm && tm.route > 0) rho = Math.max(0, Math.min(0.012, tm.decorSeconds / tm.route));
+      // the stage ended (t - what the clock said) away from the aim: move the aim by the miss
+      aim *= Math.max(0.7, Math.min(1.4, (tgt * 1.03) / t));
+    }
+  }
+  return best!;
 }
 
 /** First attempt whose layout passes the validator. Used by the seed script and tests. */
 export function findValidAttempt(config: LevelConfig, maxAttempts = 14): { attempt: number; errors: string[] } {
   let errors: string[] = [];
+  let fallback = -1;
   for (let a = 0; a < maxAttempts; a++) {
-    const res = validateStage(buildStage(config, a));
-    if (res.ok) return { attempt: a, errors: [] };
+    const st = buildStage(config, a);
+    const res = validateStage(st);
+    if (res.ok) {
+      if (hasItsForks(st)) return { attempt: a, errors: [] };
+      if (fallback < 0) fallback = a;
+    }
     errors = res.errors;
   }
-  return { attempt: -1, errors };
+  return fallback >= 0 ? { attempt: fallback, errors: [] } : { attempt: -1, errors };
+}
+
+/** a stage meant to have two-lane forks that has them all (a layout that had to skip one is passed over for another that passes too) */
+function hasItsForks(st: GeneratedStage): boolean {
+  return (st.lanes?.length ?? 0) >= (st.meta?.forksWanted ?? 0);
 }
 
 const known = new Map<string, number>();
@@ -1977,18 +2607,32 @@ export function rollLayoutVariant(): number | null {
 
 const VARIANT_BASE = 1000; // attempts below this are the designed ones
 
+/** the reachable platforms of the layout the variant search last accepted: generateStage reuses them instead of validating the same layout again */
+let lastAccepted: { key: string; ids: number[] } | null = null;
+
 /** the attempt number for a random layout of this stage: the first one from this variant's range that passes the validator */
 export function variantAttemptFor(config: LevelConfig, variant: number, maxAttempts = 14): number {
   const key = `${config.id}#${variant}`;
   const hit = variantAttempt.get(key);
   if (hit !== undefined) return hit;
   let found = -1;
+  let fallback: { a: number; ids: number[] } | null = null;
   for (let k = 0; k < maxAttempts; k++) {
     const a = VARIANT_BASE + variant * 31 + k;
-    if (validateStage(buildStage(config, a)).ok) {
-      found = a;
-      break;
+    const st = buildStage(config, a);
+    const res = validateStage(st);
+    if (res.ok) {
+      if (hasItsForks(st)) {
+        found = a;
+        lastAccepted = { key: `${config.id}@${a}`, ids: res.reachableIds };
+        break;
+      }
+      if (!fallback) fallback = { a, ids: res.reachableIds };
     }
+  }
+  if (found < 0 && fallback) {
+    found = fallback.a;
+    lastAccepted = { key: `${config.id}@${fallback.a}`, ids: fallback.ids };
   }
   variantAttempt.set(key, found);
   return found;
@@ -2007,8 +2651,11 @@ export function generateStage(config: LevelConfig): GeneratedStage {
     if (a >= 0) attempt = a; // if no fresh layout passes (never seen in testing), fall back to the designed one
   }
   const stage = buildStage(config, attempt);
+  // (the secret gate's stage gets two more platforms from addSecrets, which the stored answer does not know about: it is checked afresh)
+  const acceptedIds = lastAccepted && lastAccepted.key === `${config.id}@${attempt}` && config.id !== SECRET_GATE_LEVEL ? lastAccepted.ids : undefined;
+  lastAccepted = null;
   addSecrets(stage);
-  addFinds(stage);
+  addFinds(stage, acceptedIds);
   return stage;
 }
 
@@ -2041,13 +2688,13 @@ function hash32(s: string): number {
  * animal. A hidden find (a book or keepsake) takes one of the higher platforms so it feels like a detour; a note takes a lower one,
  * on the way. The stage's own random numbers are never used, so adding finds does not change any layout.
  */
-export function addFinds(stage: GeneratedStage) {
+export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   const cfg = stage.config;
   if (cfg.secret || cfg.objectiveType === 'boss_lair') return;
   const find = findForStage(cfg.worldIndex, cfg.miniIndex);
   if (!find) return;
   const hidden = find.kind !== 'note';
-  const reach = new Set(validateStage(stage).reachableIds);
+  const reach = new Set(reachableIds ?? validateStage(stage).reachableIds);
   const cps = (stage.checkpoints ?? []).map((c) => c.x);
   type P = GeneratedStage['platforms'][number];
   const clearOf = (x: number, p: P) =>
@@ -2060,7 +2707,9 @@ export function addFinds(stage: GeneratedStage) {
   for (const p of stage.platforms) {
     if (p.broken || p.type !== 'solid' || p.width < 140 || !reach.has(p.id)) continue;
     // every spot along the platform that is clear (a long ground has many; a small ledge has one or two)
-    for (let x = p.x + 70; x <= p.x + p.width - 70; x += 80) if (clearOf(x, p)) cands.push({ p, x });
+    // (never where another block stands in the way: a stump or a hurdle on the same ground is taller than the find hangs)
+    const open = (x: number) => !stage.platforms.some((q) => !q.broken && q !== p && q.type !== 'drift' && q.type !== 'moving' && x >= q.x - 16 && x <= q.x + q.width + 16 && q.y < p.y - 26 + 16 && q.y + q.height > p.y - 26 - 16);
+    for (let x = p.x + 70; x <= p.x + p.width - 70; x += 80) if (open(x) && clearOf(x, p)) cands.push({ p, x });
   }
   if (!cands.length) return;
   const ys = cands.map((c) => c.p.y).sort((m, n) => m - n);
