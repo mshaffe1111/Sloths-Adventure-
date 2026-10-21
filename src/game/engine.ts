@@ -81,6 +81,7 @@ import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
+import { drawAura } from './readable.ts';
 
 /** How many world units tall the screen shows. */
 /** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
@@ -2925,6 +2926,12 @@ export class GameEngine {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
       ctx.save();
       ctx.translate(cp.x, cp.y);
+      if (!cp.reached) {
+        ctx.save();
+        ctx.translate(20, -52);
+        drawAura(ctx, 'take', world.id, 30, 40, t, cp.x * 0.01);
+        ctx.restore();
+      }
       ctx.strokeStyle = '#6b4423';
       ctx.lineWidth = 6;
       ctx.lineCap = 'round';
@@ -3104,6 +3111,16 @@ export class GameEngine {
     this.drawWaterAndFlags(ctx, world);
     this.drawRivers(ctx, world, false);
 
+    // the bounce mushrooms wear the gold rim too (they sit in the scenery's colours)
+    for (const pl of this.platforms) {
+      if (pl.type !== 'bouncy' || pl.broken) continue;
+      if (pl.x + pl.width < this.camera.x - 60 || pl.x > this.camera.x + this.camera.viewportWidth + 60) continue;
+      ctx.save();
+      ctx.translate(pl.x + pl.width / 2, pl.y + 2);
+      drawAura(ctx, 'take', world.id, pl.width * 0.55, 30, this.gameTime, pl.x * 0.013);
+      ctx.restore();
+    }
+
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
     else renderWorldObjects(
@@ -3175,6 +3192,13 @@ export class GameEngine {
     // Render Enemies
     this.enemies.forEach((enemy) => {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
+      if (!enemy.defeated) {
+        // the ember rim (see readable.ts): everything that can hurt you wears it
+        ctx.save();
+        ctx.translate(enemy.x, enemy.y);
+        drawAura(ctx, 'danger', world.id, enemy.width * 0.8, enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
+        ctx.restore();
+      }
       const draw = () => {
         if (enemy.type === 'snake') {
           if (!drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
