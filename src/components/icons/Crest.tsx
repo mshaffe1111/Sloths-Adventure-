@@ -12,6 +12,8 @@ interface CrestProps {
   className?: string;
   /** spoken name; by default the medallion is decorative */
   label?: string;
+  /** no gold ring: just the round painted window (for sitting inside a badge medal that has its own rim) */
+  bare?: boolean;
 }
 
 /**
@@ -19,9 +21,9 @@ interface CrestProps {
  * lock on it. If a guardian ever has no painted frame it falls back to the plain heraldic `boss` glyph.
  * The ring and field are styled in index.css (.crest-*).
  */
-export const Crest: React.FC<CrestProps> = ({ world, size = 48, locked = false, className, label }) => {
+export const Crest: React.FC<CrestProps> = ({ world, size = 48, locked = false, className, label, bare = false }) => {
   const a = crestFor(world);
-  const rw = Math.max(2, Math.round(size * 0.075));
+  const rw = bare ? 0 : Math.max(2, Math.round(size * 0.075));
   const inner = size - rw * 2;
   const k = a ? inner / a.s : 1;
   return (
@@ -51,7 +53,7 @@ export const Crest: React.FC<CrestProps> = ({ world, size = 48, locked = false, 
           <Icon name="boss" size={inner * 0.82} />
         )}
       </span>
-      <span className="crest-ring" />
+      {!bare && <span className="crest-ring" />}
       {locked && (
         <span className="crest-lock">
           <Icon name="lock" size={Math.max(12, Math.round(size * 0.42))} />

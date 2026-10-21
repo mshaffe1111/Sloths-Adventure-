@@ -16,6 +16,8 @@ import { REAVER_ATLAS_SIZE, REAVER_FRAMES } from '../../game/reaverAtlasData.ts'
 import { SOVEREIGN_ATLAS_SIZE, SOVEREIGN_FRAMES } from '../../game/sovereignAtlasData.ts';
 import { THORNBARK_ATLAS_SIZE, THORNBARK_FRAMES } from '../../game/thornbarkAtlasData.ts';
 import { VENOM_ATLAS_SIZE, VENOM_FRAMES } from '../../game/venomAtlasData.ts';
+import { MEECA_ATLAS_SIZE, MEECA_FRAMES } from '../../game/meecaStandardData.ts';
+import { BIRD_ATLAS_SIZE, BIRD_FRAMES } from '../../game/birdAtlasData.ts';
 
 export interface CrestFrame {
   x: number;
@@ -36,8 +38,8 @@ export interface CrestSpec {
   s: number;
 }
 
-/** the world number of a boss, or the secret one */
-export type CrestKey = number | 'thornbark';
+/** the world number of a boss, the secret guardian, or one of the two friends who speak in the story (their portraits use the same round window) */
+export type CrestKey = number | 'thornbark' | 'meeca' | 'dot';
 
 const u = {
   venom: new URL('../../assets/enemies/venom-atlas.webp', import.meta.url).href,
@@ -51,6 +53,8 @@ const u = {
   drake: new URL('../../assets/enemies/drake-atlas.webp', import.meta.url).href,
   ironclaw: new URL('../../assets/enemies/ironclaw-atlas.webp', import.meta.url).href,
   thornbark: new URL('../../assets/enemies/thornbark-atlas.webp', import.meta.url).href,
+  meeca: new URL('../../assets/characters/meeca-standard.webp', import.meta.url).href,
+  birds: new URL('../../assets/flora/birds-atlas.webp', import.meta.url).href,
 };
 
 type Frames = Record<string, CrestFrame>;
@@ -78,9 +82,12 @@ export const CRESTS: Record<string, CrestSpec> = {
   '9': spec(GUARDIANS[8], u.drake, DRAKE_ATLAS_SIZE, DRAKE_FRAMES, 'enrage', 0.82, 0.45, 100),
   '10': spec(GUARDIANS[9], u.ironclaw, IRONCLAW_ATLAS_SIZE, IRONCLAW_FRAMES, 'idle', 0.62, 0.3, 150),
   thornbark: spec('Thornbark', u.thornbark, THORNBARK_ATLAS_SIZE, THORNBARK_FRAMES, 'idle', 0.74, 0.62, 175),
+  // the friends: Meeca's face from her standing frame, Dot the painted hummingbird
+  meeca: spec('Meeca', u.meeca, MEECA_ATLAS_SIZE, MEECA_FRAMES, 'idle', 0.5, 0.24, 104),
+  dot: spec('Dot', u.birds, BIRD_ATLAS_SIZE, BIRD_FRAMES, 'hummer_0', 0.52, 0.5, 100),
 };
 
-/** the painted crest for a world's boss (1 to 10) or the secret guardian; undefined for anything else, which draws the plain heraldic crest instead */
+/** the painted crest for a world's boss (1 to 10) or the secret guardian (or a friend's portrait); undefined for anything else, which draws the plain heraldic crest instead */
 export function crestFor(key: CrestKey): CrestSpec | undefined {
   return CRESTS[String(key)];
 }
@@ -93,6 +100,8 @@ export function crestName(key: CrestKey): string {
 /** a speaker's name in the story to the crest that wears their face, when they are one of the guardians */
 export function crestForSpeaker(name: string): CrestKey | undefined {
   if (name === 'Thornbark') return 'thornbark';
+  if (name === 'Meeca') return 'meeca';
+  if (name === 'Dot') return 'dot';
   const i = (GUARDIANS as readonly string[]).indexOf(name);
   return i >= 0 ? i + 1 : undefined;
 }
