@@ -25,7 +25,7 @@ export const crocSprite = createPaintedBoss({
     if (br.state === 'dying') name = br.t < 0.5 ? 'knockback' : br.t < 1.3 ? 'beaten' : 'defeated';
     else if (br.state === 'stun') name = def.scale || Math.floor(time * 2.2) % 2 === 0 ? 'stagger' : 'recoil'; // the giant stays in the pose its weak point was measured in
     else if (br.state === 'roar') name = 'roar';
-    else if (br.state === 'tell') name = m?.pose === 'slam' ? 'bellyslam' : m?.pose === 'whip' ? 'tailbite' : 'roar';
+    else if (br.state === 'tell') name = m?.pose === 'slam' ? 'bellyslam' : m?.pose === 'whip' ? 'tailbite' : b.phase >= 3 && m?.pose === 'charge' ? 'jawsnap' : b.phase >= 3 && m?.pose === 'roar' ? 'clawswipe' : 'roar'; // phase 3: jaws snapping before the death roll, a claw raking the bank before the geysers
     else if (br.state === 'act') {
       if (m?.pose === 'charge') name = ROLL[Math.floor(time * 11) % ROLL.length];
       else if (m?.pose === 'whip') name = 'tailwhip';
