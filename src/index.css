@@ -800,3 +800,16 @@
 @media (max-width: 520px) { .way { top: calc(env(safe-area-inset-top, 0px) + 132px); } }
 @media (max-height: 430px) and (min-width: 521px) { .way { top: calc(env(safe-area-inset-top, 0px) + 110px); padding: 6px 12px 6px 7px; } .way-text { font-size: 13.5px; } }
 @media (prefers-reduced-motion: reduce) { .way { animation-name: way-fade; } @keyframes way-fade { 0% { opacity: 0; } 7% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } } }
+
+/* ---------- Icons and guardian crests (components/icons) ---------- */
+.ic { display: inline-block; flex: none; vertical-align: -0.18em; overflow: visible; }
+.crest { position: relative; display: inline-block; flex: none; border-radius: 50%; isolation: isolate; }
+.crest-field { position: absolute; overflow: hidden; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 34%, #3f9a68, #0f4a33 68%, #06261d); box-shadow: inset 0 -5px 9px rgba(0, 0, 0, .3); }
+.crest-art { position: absolute; background-repeat: no-repeat; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .45)); }
+.crest-ring { position: absolute; inset: 0; border-radius: 50%; border: var(--rw, 3px) solid #fbbf24; box-shadow: 0 0 0 1.5px #92400e, inset 0 0 0 1.5px #92400e, 0 3px 7px rgba(0, 0, 0, .45); pointer-events: none; }
+.crest-ring::after { content: ""; position: absolute; inset: 0; border-radius: 50%; box-shadow: inset 0 1px 0 rgba(255, 247, 214, .85); }
+.crest.locked .crest-field { background: radial-gradient(circle at 50% 34%, #2c3a32, #1a2620 70%, #121b16); }
+.crest.locked .crest-art { filter: brightness(0) opacity(.5); }
+.crest.locked .crest-ring { border-color: #8d9a91; box-shadow: 0 0 0 1.5px #3b463f, inset 0 0 0 1.5px #3b463f, 0 3px 7px rgba(0, 0, 0, .4); }
+.crest.locked .crest-ring::after { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35); }
+.crest-lock { position: absolute; left: 50%; top: 50%; display: flex; transform: translate(-50%, -50%); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .55)); }
