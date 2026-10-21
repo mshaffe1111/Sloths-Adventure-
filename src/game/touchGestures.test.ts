@@ -266,11 +266,109 @@ test('mashing taps on the left half punches every time (a tap is never a "re-pla
 test('a tap right after really steering is still treated as the thumb landing again, not a punch', () => {
   const t = rig();
   t.down(1, 200, 250);
-  t.drag(1, 200, 250, 290, 250, 150);
+  t.drag(1, 200, 250, 290, 250, 450);
   t.up(1, 290, 250);
   t.wait(60);
   t.down(2, 290, 250);
   t.wait(60);
   t.up(2, 290, 250);
   assert.equal(t.count('punch'), 0);
+});
+
+// ---- the touch-input fixes (feel-01, 03, 05) ----
+
+function rigEnv(env: { megaReady?: () => boolean } = {}) {
+  const log: string[] = [];
+  const sink: GestureSink = {
+    move: (d) => log.push(`move:${d}`),
+    duck: (on) => log.push(`duck:${on}`),
+    jumpPress: () => log.push('jump'),
+    jumpRelease: () => log.push('jumpUp'),
+    punch: () => log.push('punch'),
+    kick: () => log.push('kick'),
+    mega: () => log.push('mega'),
+    feedback: (k) => log.push(`fb:${k}`),
+  };
+  const g = new TouchGestures(sink, () => 844, { assist: () => false, air: () => false, ...env });
+  let now = 1000;
+  return {
+    log,
+    wait(ms: number) {
+      now += ms;
+      g.tick(now);
+    },
+    down(id: number, x: number, y: number) {
+      g.down(id, x, y, now);
+    },
+    drag(id: number, x0: number, y0: number, x1: number, y1: number, ms: number, steps = 8) {
+      for (let i = 1; i <= steps; i++) {
+        now += ms / steps;
+        g.move(id, x0 + ((x1 - x0) * i) / steps, y0 + ((y1 - y0) * i) / steps, now);
+        g.tick(now);
+      }
+    },
+    up(id: number, x: number, y: number) {
+      g.up(id, x, y, now);
+    },
+  };
+}
+
+test('a thumb that rests on the right half (mega) can still steer afterwards', () => {
+  const t = rigEnv();
+  t.down(1, 600, 250);
+  t.wait(700);
+  assert.ok(t.log.includes('mega'));
+  t.drag(1, 600, 250, 720, 250, 400);
+  assert.ok(t.log.includes('move:right'), 'the thumb that threw the mega should steer once it slides');
+  t.up(1, 720, 250);
+  assert.equal(t.log.filter((l) => l === 'mega').length, 1, 'only one mega');
+  assert.ok(!t.log.includes('punch'), 'lifting after a hold is not a punch');
+});
+
+test('a resting thumb throws one mega, not one every tick', () => {
+  const t = rigEnv();
+  t.down(1, 600, 250);
+  t.wait(2000);
+  t.up(1, 600, 250);
+  assert.equal(t.log.filter((l) => l === 'mega').length, 1);
+});
+
+test('a quick flick on the LEFT half is a kick, not a stutter', () => {
+  for (const [x1, dir] of [[390, 'right'], [210, 'left']] as const) {
+    const t = rigEnv();
+    t.down(1, 300, 250);
+    t.drag(1, 300, 250, x1, 250, 90);
+    t.up(1, x1, 250);
+    assert.ok(t.log.includes('kick'), `left-half flick ${dir} kicks`);
+    assert.equal(t.log.at(-1) === 'kick' || t.log.includes('move:none'), true);
+  }
+});
+
+test('a nudge on the left half (a short, brisk slide, not a flick) still just steers', () => {
+  const t = rigEnv();
+  t.down(1, 300, 250);
+  t.drag(1, 300, 250, 350, 250, 200);
+  t.up(1, 350, 250);
+  assert.ok(!t.log.includes('kick'));
+  assert.ok(t.log.includes('move:right'));
+});
+
+test('slow steering on the left half never kicks', () => {
+  const t = rigEnv();
+  t.down(1, 300, 250);
+  t.drag(1, 300, 250, 420, 250, 900);
+  t.up(1, 420, 250);
+  assert.ok(!t.log.includes('kick'));
+});
+
+test('while mega is cooling down a held thumb waits, then goes off the moment it is ready', () => {
+  let ready = false;
+  const t = rigEnv({ megaReady: () => ready });
+  t.down(1, 600, 250);
+  t.wait(700);
+  assert.ok(!t.log.includes('mega') && !t.log.includes('fb:mega'), 'nothing announced while cooling down');
+  ready = true;
+  t.wait(40);
+  assert.equal(t.log.filter((l) => l === 'mega').length, 1);
+  t.up(1, 600, 250);
 });

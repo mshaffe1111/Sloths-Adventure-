@@ -343,6 +343,10 @@ export interface Collectible {
   search?: number;
   /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
+  /** Pokey is within a few steps (0..1, eased): the fern shows a small bubble that says crouch here */
+  cue?: number;
+  /** the first time the fern is approached it says so once (a floating line) */
+  cueTold?: boolean;
 }
 
 export interface Particle {

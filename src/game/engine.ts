@@ -1527,6 +1527,13 @@ export class GameEngine {
           continue;
         }
         // a Hush Fern: crouch beside it for a moment and it gives something up; stand up and the search slowly fades
+        // a few steps away the fern shows a small bubble (it eases in and out), and says so once in words
+        const nearby = Math.abs(p.x - c.x) < 280 && Math.abs(p.y - (c.y + 26)) < 200;
+        c.cue = Math.max(0, Math.min(1, (c.cue ?? 0) + (nearby ? dt * 2.5 : -dt * 2)));
+        if (!c.cueTold && c.cue >= 0.6 && !this.isGameOver) {
+          c.cueTold = true;
+          this.addFloatingText('SOMETHING RUSTLES...', c.x, c.y - 66, '#fde68a');
+        }
         const close = Math.abs(p.x - c.x) < 54 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
         c.near = close && !p.ducking;
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
@@ -2107,6 +2114,7 @@ export class GameEngine {
     const p = this.player;
     const inp = this.input.state;
     if (this.megaCooldown > 0) this.megaCooldown -= dt;
+    this.input.megaReady = this.megaCooldown <= 0;
     if (this.chainTimer > 0) this.chainTimer -= dt;
     if (p.grounded) this.stompChain = 0;
 

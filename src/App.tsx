@@ -416,6 +416,11 @@ export default function App() {
     };
   }
 
+  // dev only: the running engine, for screenshots and tests
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __engine?: () => unknown }).__engine = () => engineRef.current;
+  }
+
   // dev only: lose every life at once (to test Game Over and Continue)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     (window as unknown as { __kill?: () => void }).__kill = () => {

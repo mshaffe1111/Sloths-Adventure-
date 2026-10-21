@@ -64,7 +64,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady },
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady },
     );
   }
   const G = gestures.current;
@@ -117,20 +117,28 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     };
   }, [G]);
 
+  // the moment the touch really happened (the browser's own stamp), not the moment this code got to run: a janky frame used to make a
+  // quick flick look slow. Falls back to the clock if the stamp is missing or from a different clock (some old browsers use the date).
+  const stamp = (e: React.TouchEvent): number => {
+    const now = performance.now();
+    const ts = e.timeStamp;
+    return ts > 0 && ts <= now + 5 && now - ts < 2000 ? ts : now;
+  };
+
   const onStart = (e: React.TouchEvent) => {
     inputEngine.source = 'gesture';
     if (hint) {
       setHint(false);
       markHintSeen();
     }
-    const now = performance.now();
+    const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       G.down(t.identifier, t.clientX, t.clientY, now);
     }
   };
   const onMove = (e: React.TouchEvent) => {
-    const now = performance.now();
+    const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       G.move(t.identifier, t.clientX, t.clientY, now);
@@ -138,11 +146,11 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   };
   // a cancelled touch (a system gesture took it) is not a lift: it must not punch, kick or jump
   const onCancel = (e: React.TouchEvent) => {
-    const now = performance.now();
+    const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) G.cancelFinger(e.changedTouches[i].identifier, now);
   };
   const onEnd = (e: React.TouchEvent) => {
-    const now = performance.now();
+    const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       G.up(t.identifier, t.clientX, t.clientY, now);

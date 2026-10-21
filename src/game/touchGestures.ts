@@ -48,6 +48,8 @@ export const TUNING = {
   /** … or this speed if the finger then lifts within `flickLiftMs` (the usual thumb flick: quick out, quick off) */
   flickLiftSpeed: 0.25,
   flickLiftMs: 250,
+  /** a thumb that started steering at once (left half) and lifts like a flick must be clearly faster than a nudge to count as a kick */
+  steerFlickSpeed: 0.5,
   /** … and be mostly along one axis */
   flickAxis: 1.4,
   /** an undecided finger resolves as a drag (steering) after this long if it has moved */
@@ -91,6 +93,8 @@ export const TUNING = {
 export interface GestureEnv {
   assist(): boolean;
   air(): boolean;
+  /** false while a mega punch is still cooling down: a held thumb then waits instead of announcing a punch that cannot happen */
+  megaReady?(): boolean;
 }
 
 type Role = 'mover' | 'pending' | 'action' | 'ignored';
@@ -118,6 +122,8 @@ interface Finger {
   tr: number;
   /** began as an undecided finger and took over the steering early: a flick on lifting is still a kick */
   early: boolean;
+  /** this finger already threw its mega punch while resting; it may still go on to steer */
+  megaDone: boolean;
 }
 
 export class TouchGestures {
@@ -175,7 +181,7 @@ export class TouchGestures {
   down(id: number, x: number, y: number, t: number) {
     this.now = t;
     if (this.fingers.has(id)) return;
-    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y }], tapT0: t, pk: y, tr: y, early: false };
+    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y }], tapT0: t, pk: y, tr: y, early: false, megaDone: false };
     const m = this.mover();
     if (m) {
       // a second finger: ignore it if it is practically on top of the steering thumb
@@ -221,10 +227,11 @@ export class TouchGestures {
       this.duckOn = false;
       this.sink.duck(false);
       if (f.jumped) this.sink.jumpRelease();
-      // a finger that started the run early and lifts like a flick was a kick all along (the same quick, long, sideways sweep as ever)
+      // a finger that started the run and lifts like a flick was a kick all along: quick, long, sideways, then off the glass. This holds
+      // on the left half too, where the run starts at once and a flick used to leave only a stutter (speed decides, not the side)
       const edx = f.x - f.x0;
       const eel = Math.max(1, t - f.t0);
-      const flicked = f.early && !f.jumped && !f.ducked && eel <= TUNING.flickLiftMs && Math.abs(edx) >= TUNING.flickPx && Math.abs(edx) >= Math.abs(f.y - f.y0) && Math.abs(edx) / eel >= TUNING.flickLiftSpeed;
+      const flicked = !f.jumped && !f.ducked && eel <= TUNING.flickLiftMs && Math.abs(edx) >= TUNING.flickPx && Math.abs(edx) >= Math.abs(f.y - f.y0) && Math.abs(edx) / eel >= (f.early ? TUNING.flickLiftSpeed : TUNING.steerFlickSpeed);
       if (flicked) {
         this.sink.feedback('kick');
         this.sink.kick(edx < 0 ? -1 : 1);
@@ -471,9 +478,12 @@ export class TouchGestures {
       return true;
     }
     // a long drag by an action finger while steering is going on elsewhere is just a wobble: let it be
-    // a still finger held down: mega
-    if (el >= TUNING.holdMs && Math.hypot(dx, dy) <= TUNING.holdPx) {
-      f.consumed = true;
+    // a still finger held down: mega (but not while the last one is still cooling down: the thumb waits, and it goes off the moment it can)
+    if (!f.megaDone && el >= TUNING.holdMs && Math.hypot(dx, dy) <= TUNING.holdPx) {
+      if (this.env?.megaReady && !this.env.megaReady()) return false;
+      f.megaDone = true;
+      // a lone thumb that was only resting is not used up: if it then slides, it steers (it used to be stuck, unable to steer until lifted)
+      if (f.role !== 'pending') f.consumed = true;
       this.sink.feedback('mega');
       this.sink.mega();
       return true;
