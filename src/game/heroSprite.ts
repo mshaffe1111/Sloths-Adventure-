@@ -233,18 +233,30 @@ function toUpright(a: number): number {
   return m > Math.PI ? m - TAU : m;
 }
 
+/**
+ * Which sheet draws the hero this frame. The standard hero (heroStandard.ts) is Pokey: when its atlas has loaded and has a frame for the pose it
+ * draws, and it never waits on the older main atlas (hero-atlas.webp), so a failed or slow load of the old one cannot hide the new hero. The main
+ * atlas only matters for a pose the standard set lacks, or while the standard sheet loads, or when the standard hero is switched off.
+ */
+export type HeroSource = 'standard' | 'main' | 'none';
+export function heroSource(standardCanDraw: boolean, mainLoaded: boolean): HeroSource {
+  if (standardCanDraw) return 'standard';
+  return mainLoaded ? 'main' : 'none';
+}
+
 /** returns true if it drew the hero */
 export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, time: number): boolean {
   if (!heroSpriteEnabled()) return false;
   load();
-  if (!ready || !atlas) return false;
   events.track(p, time);
   // the standard hero (heroStandard.ts), when switched on and loaded, draws every pose it has a frame for
   const stdImg = standardAtlas();
-  if (stdImg) {
-    const ch = stdPick(p, time, events);
-    if (ch && drawStandard(ctx, p, time, ch, stdImg)) return true;
-  }
+  const ch = stdImg ? stdPick(p, time, events) : null;
+  const mainLoaded = ready && !!atlas;
+  const source = heroSource(!!(stdImg && ch && stdFrame(ch.name)), mainLoaded);
+  if (source === 'none') return false;
+  if (source === 'standard' && drawStandard(ctx, p, time, ch!, stdImg!)) return true;
+  if (!mainLoaded || !atlas) return false;
   // the opt-in action studies (heroStudies.ts), when switched on and loaded, take the poses they cover; everything else is the main atlas
   const study = studiesEnabled() ? studyPick(p, time, events) : null;
   const sAtlas = study ? studyAtlas() : null;
