@@ -79,7 +79,7 @@ export const GROUND = 0.8;
 export const SNAP_ABOVE = 0.22;
 export const SNAP_BELOW = 0.12;
 /** the kinds that stand on the ground */
-export const GROUNDED = new Set(['milo', 'daisy', 'daisy_wave', 'thornbark', 'boss']);
+export const GROUNDED = new Set(['milo', 'daisy', 'daisy_wave', 'thornbark', 'boss', 'cel']);
 
 /** the ground line of a picture, as a share of its height */
 export function groundOf(scene: { ground?: number }): number {

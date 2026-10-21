@@ -99,9 +99,10 @@ test('guardian badges find their world, other badges do not', () => {
 test('who stands beside a name in a story: Pokey a face, guardians a crest, the rest an icon', () => {
   assert.deepEqual(speakerMark('Pokey'), { kind: 'pokey' });
   assert.deepEqual(speakerMark('Venom Fang'), { kind: 'crest', key: 1 });
-  assert.deepEqual(speakerMark('Dot'), { kind: 'crest', key: 'dot' });
+  assert.deepEqual(speakerMark('Dot'), { kind: 'dot' });
   assert.deepEqual(speakerMark('Narrator'), { kind: 'icon', icon: 'book' });
   assert.deepEqual(speakerMark('Petal'), { kind: 'icon', icon: 'flower' });
+  for (const who of ['Grandma', 'Officer', 'Grandfather']) assert.deepEqual(speakerMark(who), { kind: 'head' });
   const other = speakerMark('Somebody New');
   assert.equal(other.kind, 'icon');
   if (other.kind === 'icon') assert.ok((ICON_NAMES as string[]).includes(other.icon));

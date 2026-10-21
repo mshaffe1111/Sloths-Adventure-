@@ -861,6 +861,7 @@
 .way-chip { display: inline-flex; align-items: center; gap: 5px; flex: none; padding: 3px 9px 3px 6px; border-radius: 999px; font-size: 13px; font-weight: 700; letter-spacing: .02em; color: #fff6dc; background: rgba(0, 0, 0, .3); border: 1.5px solid var(--dot, #8fd3f0); }
 .way-chip i { font-style: normal; font-size: 15px; line-height: 1; }
 .way-chip.way-bare { padding: 3px 6px; }
+.way-dot { margin: -6px 0 -6px -3px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); }
 .way-text { margin: 0; min-width: 0; font-size: 14.5px; line-height: 1.28; text-wrap: pretty; }
 .way-narr .way-text { font-style: italic; color: #fde7f0; }
 @keyframes way-life { 0% { opacity: 0; transform: translateY(-8px); } 7% { opacity: 1; transform: none; } 90% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-4px); } }

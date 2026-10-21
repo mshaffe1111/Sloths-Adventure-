@@ -1,0 +1,31 @@
+/** Generated from Matt's Dot sheets (scratchpad dot/pack.py + gen.py). Every frame is cut from a flat grey sheet; `f` is the way its beak points in the sheet (-1 left, 1 right). */
+export interface DotFrame { x: number; y: number; w: number; h: number; f: -1 | 1 }
+export const DOT_ATLAS_SIZE = { w: 512, h: 511 };
+export const DOT_FRAMES: Record<string, DotFrame> = {
+  fly0: { x: 0, y: 227, w: 131, h: 92, f: -1 },
+  fly1: { x: 366, y: 0, w: 130, h: 106, f: -1 },
+  fly2: { x: 232, y: 0, w: 132, h: 107, f: -1 },
+  fly3: { x: 0, y: 122, w: 121, h: 103, f: -1 },
+  perch: { x: 379, y: 122, w: 124, h: 94, f: -1 },
+  yelp: { x: 322, y: 227, w: 112, h: 85, f: -1 },
+  dizzy: { x: 252, y: 122, w: 125, h: 96, f: -1 },
+  flinch: { x: 123, y: 122, w: 127, h: 97, f: -1 },
+  cheer: { x: 0, y: 0, w: 111, h: 120, f: -1 },
+  puzzled: { x: 113, y: 0, w: 117, h: 113, f: -1 },
+  sad: { x: 133, y: 227, w: 72, h: 87, f: -1 },
+  gasp: { x: 207, y: 227, w: 113, h: 87, f: 1 },
+  sleep: { x: 0, y: 452, w: 111, h: 59, f: -1 },
+  closed: { x: 313, y: 321, w: 74, h: 62, f: -1 },
+  small: { x: 389, y: 321, w: 75, h: 62, f: -1 },
+  ee: { x: 395, y: 388, w: 80, h: 60, f: -1 },
+  ah: { x: 146, y: 388, w: 80, h: 61, f: -1 },
+  oh: { x: 0, y: 388, w: 78, h: 62, f: -1 },
+  surprise: { x: 80, y: 388, w: 64, h: 62, f: -1 },
+  wink: { x: 228, y: 388, w: 81, h: 61, f: -1 },
+  grit: { x: 311, y: 388, w: 82, h: 61, f: -1 },
+  starry: { x: 76, y: 321, w: 81, h: 63, f: -1 },
+  yell: { x: 0, y: 321, w: 74, h: 65, f: -1 },
+  angry: { x: 159, y: 321, w: 77, h: 63, f: -1 },
+  sleepy: { x: 238, y: 321, w: 73, h: 63, f: -1 },
+  side: { x: 436, y: 227, w: 68, h: 69, f: -1 },
+};

@@ -1,12 +1,16 @@
 import React from 'react';
+import { CelHead } from './CelHead.tsx';
+import { DotFace } from './DotFace.tsx';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { Icon } from './icons/index.tsx';
 import { Crest } from './icons/Crest.tsx';
 import { speakerMark } from './icons/speakers.ts';
 
 /** the little picture beside a speaker's name: painted face or crest, or an icon for those who have no painted portrait */
-export const SpeakerMark: React.FC<{ name: string; size?: number }> = ({ name, size = 22 }) => {
+export const SpeakerMark: React.FC<{ name: string; size?: number; talking?: boolean }> = ({ name, size = 22, talking }) => {
   const m = speakerMark(name);
+  if (m.kind === 'head') return <CelHead name={name} size={size} />;
+  if (m.kind === 'dot') return <DotFace size={Math.round(size * 1.25)} talking={talking} />;
   if (m.kind === 'crest') return <Crest world={m.key} size={size} />;
   if (m.kind === 'pokey') {
     return (

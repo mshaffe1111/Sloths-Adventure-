@@ -52,7 +52,7 @@ const W1 = chapter({ name: C1, w: 1, m: 'day', cue: 'journey', i: 0.4, base: { p
   D('Here. "Pokey: if you\'re reading this, you have found a petal. Congratulations. Don\'t stop to smell it. Smell it later. P.S. Dot will talk. Let him. He gets anxious when he cannot."', 'P:happy@.3 D@.64^.4', { cue: 'tender', i: 0.4 }),
   D('...I don\'t get anxious. I get ENERGETIC.', '=', { cue: 'comedy', i: 0.45 }),
   P('Can you carry a message back? Just tell her I\'m coming.', 'P:talk@.3 D@.64^.4', { cue: 'journey', i: 0.4 }),
-  D('Ah. About that.', 'P:idle@.3 D@.64^.4', { cue: 'dread', i: 0.3 }),
+  D('Ah. About that.', 'P:idle@.3 D:puzzled@.64^.4', { cue: 'dread', i: 0.3 }),
   D('The fortress is wrapped in thorn netting now. Iron thorns, floor to cloud. There\'s one gap, one, just big enough for a note going OUT. Nothing goes in. I know. I tried. Twice. Into the same thorn.', 'P:worried@.3 D@.64^.4'),
   P('Then I\'ll just have to arrive.', 'P:determined@.3 D@.64^.4', { cue: 'resolve', i: 0.4 }),
   D('She said you would say that. She also said you would say it slowly. She\'s good.', 'P:happy@.3 D@.64^.4', { cue: 'journey', i: 0.5 }),
@@ -68,7 +68,7 @@ const W1_MID = chapter({ name: MID[1], w: 1, m: 'day', cue: 'comedy', i: 0.4, ba
     'P:happy@.3 D@.62^.4', { cue: 'tender', i: 0.4 }),
   P('She\'s fine.', 'P:talk@.3 D@.62^.4'),
   D('She\'s fine!', '=', { cue: 'comedy', i: 0.45 }),
-  P('She\'s sitting in a tower, held hostage by a sloth warlord, and she\'s fine.', 'P:talk@.3 D@.62^.4'),
+  P('She\'s sitting in a tower, held hostage by a warlord, and she\'s fine.', 'P:talk@.3 D@.62^.4'),
   D('Look at the handwriting. Not one wobble.', '=', { cue: 'tender', i: 0.35 }),
   P('...Her handwriting always wobbles.', 'P:worried@.34 D@.62^.4', { cue: 'sorrow', i: 0.3 }),
   N('Pokey let go of the branch he had been gripping. It kept the shape of his hand.', 'P:tired@.34 D@.62^.4', { cue: 'tender', i: 0.45 }),
@@ -79,9 +79,9 @@ const W2 = chapter({ name: C2, w: 2, m: 'day', cue: 'comedy', i: 0.4, base: { pa
     'P:idle@.3', { cue: 'journey', i: 0.4, p: pan(1.1, 0.2, 0.55, 1.2, 0.6, 0.55, 9) }),
   N('Pokey liked them immediately.', 'P:happy@.3'),
   N('At the top of the bank, Gruntlewick the village crier was halfway through a flood warning. He had begun it on Tuesday. The flood had come and gone since, and he was still only on the word FLOOD.',
-    'P:idle@.3 D@.64^.4', { cue: 'comedy', i: 0.5 }),
-  P('It sounds like a lovely warning. I\'d have wanted to hear all of it.', 'P:talk@.3 D@.64^.4'),
-  D('Everybody here talks like that. The mailman has been delivering one parcel since spring. I have been a little rude to him about it.', '=', { sting: 'laugh' }),
+    'P:idle@.24 D@.5^.4 TC:hat_shout@.8*.9', { cue: 'comedy', i: 0.5 }),
+  P('It sounds like a lovely warning. I\'d have wanted to hear all of it.', 'P:talk@.24 D@.5^.4 TC:announce@.8*.9'),
+  D('Everybody here talks like that. The mailman has been delivering one parcel since spring. I have been a little rude to him about it.', 'P:talk@.24 D@.5^.4 PO:walk_parcel@.62*.9 TC:scroll@.86*.9', { sting: 'laugh' }),
   D('Fresh note, hot off the General\'s mail slot! "Pokey: the villagers will want you to stay for dinner. Don\'t stay for dinner. (Stay for pudding.) The river king is a diva. Admire something. Anything."',
     'P:idle@.3 D@.64^.4', { cue: 'journey', i: 0.4 }),
   P('Admire something?', 'P:surprised@.3 D@.64^.4'),
@@ -107,7 +107,7 @@ const W2_MID = chapter({ name: MID[2], w: 2, m: 'day', cue: 'comedy', i: 0.4, ba
 const W3 = chapter({ name: C3, w: 3, m: 'night', cue: 'dread', i: 0.25, base: { particles: 'sparkles' } }, [
   N('The Mossy Grotto glowed like a thousand lanterns that somebody had forgotten to turn off. Glowworms hung from the ceiling in long shimmering threads, each humming its own small, off-key tune.',
     'P:idle@.3', { p: pan(1.05, 0.5, 0.35, 1.3, 0.5, 0.6, 8) }),
-  D('I don\'t do the dark, Pokey. I do daylight. I do a little dusk, if there are snacks.', 'P:idle@.3 D@.62^.4', { cue: 'comedy', i: 0.4 }),
+  D('I don\'t do the dark, Pokey. I do daylight. I do a little dusk, if there are snacks.', 'P:idle@.3 D:flinch@.62^.4', { cue: 'comedy', i: 0.4 }),
   P('Then stay close. I\'m very dim, but I\'m extremely steady.', 'P:happy@.3 D@.62^.4'),
   D('Dim and steady. I\'ve been hired on less.', '=', { sting: 'laugh' }),
   N('Pokey stopped to listen to the glowworms, and the glowworms noticed. One by one, they brightened. The light followed him.', 'P:happy@.3 D@.62^.4', { cue: 'bloom', i: 0.4 }),
@@ -219,7 +219,7 @@ const W6 = chapter({ name: C6, w: 6, m: 'dusk', cue: 'dread', i: 0.3, base: { pa
 ]);
 
 const W6_MID = chapter({ name: MID[6], w: 6, m: 'dusk', cue: 'sorrow', i: 0.3, base: { particles: 'petals' } }, [
-  D('Pokey. I need to tell you something and I cannot make it funny. I tried.', 'P:tired@.3 D@.62^.4', { cue: 'sorrow', i: 0.3 }),
+  D('Pokey. I need to tell you something and I cannot make it funny. I tried.', 'P:tired@.3 D:sad@.62^.4', { cue: 'sorrow', i: 0.3 }),
   P('Go on.', 'P:talk@.3 D@.62^.4'),
   D('This is the last note I can get out. The net is sealed past here. There\'s no gap anymore. I checked every inch. I checked it with my face.', '=', { cue: 'dread', i: 0.35 }),
   D('She wrote two. One is silly. The other one she wrote on her very bad day, and made me swear to give you only when you needed it.', 'P:worried@.3 D@.62^.4'),
@@ -318,13 +318,13 @@ const W9 = chapter({ name: C9, w: 9, m: 'dusk', cue: 'comedy', i: 0.4, base: { p
 ]);
 
 const W9_MID = chapter({ name: MID[9], w: 9, m: 'dusk', cue: 'comedy', i: 0.35, base: { particles: 'embers' } }, [
-  N('A lantern was bobbing along the ridge at ground level, very much trying not to be seen.', 'P:idle@.3 D@.62^.4', { sting: 'laugh' }),
-  OFF('Please do not look at me. I have come to report that I have been ordered to sew the seam shut. I have done eleven stitches. Nine are in the wrong place.', '='),
-  D('PELL! I forgive the scratches! All nine of them!', '=', { cue: 'comedy', i: 0.45 }),
+  N('A lantern was bobbing along the ridge at ground level, very much trying not to be seen.', 'P:idle@.26 D@.56^.4 LP:lantern@.88*.9', { sting: 'laugh' }),
+  OFF('Please do not look at me. I have come to report that I have been ordered to sew the seam shut. I have done eleven stitches. Nine are in the wrong place.', 'P:idle@.26 D@.56^.4 LP:mend_coat@.86*.9'),
+  D('PELL! I forgive the scratches! All nine of them!', 'P:idle@.26 D:cheer@.56^.4 LP:cap_in_hand@.86*.9', { cue: 'comedy', i: 0.45 }),
   OFF('Miss Meeca asked me to tell you one thing. She says: "Tell the slow one I am knitting him a scarf. It is going to be very long. He will have time to arrive."',
-    '=', { cue: 'tender', i: 0.45 }),
-  P('Tell her I\'m on my way.', 'P:happy@.3 D@.62^.4'),
-  OFF('I shall. ...Sir. I mean, everyone. I should go.', '=', { sting: 'laugh' }),
+    'P:idle@.26 D@.56^.4 LP:hopeful@.86*.9', { cue: 'tender', i: 0.45 }),
+  P('Tell her I\'m on my way.', 'P:happy@.26 D@.56^.4 LP:hopeful@.86*.9'),
+  OFF('I shall. ...Sir. I mean, everyone. I should go.', 'P:happy@.26 D@.56^.4 LP:salute_nervous@.86*.9', { sting: 'laugh' }),
   D('Pokey, you\'ve been quiet for two hours. You\'re worrying.', 'P:tired@.3 D@.62^.4', { cue: 'comedy', i: 0.35 }),
   P('I\'m not worrying. I\'m thinking about Meeca\'s grandfather.', 'P:talk@.3 D@.62^.4', { cue: 'sorrow', i: 0.35 }),
   D('...What about him?', 'P:worried@.3 D@.62^.4'),
