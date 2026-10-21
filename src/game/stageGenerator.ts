@@ -1977,6 +1977,9 @@ export function rollLayoutVariant(): number | null {
 
 const VARIANT_BASE = 1000; // attempts below this are the designed ones
 
+/** the reachable platforms of the layout the variant search last accepted: generateStage reuses them instead of validating the same layout again */
+let lastAccepted: { key: string; ids: number[] } | null = null;
+
 /** the attempt number for a random layout of this stage: the first one from this variant's range that passes the validator */
 export function variantAttemptFor(config: LevelConfig, variant: number, maxAttempts = 14): number {
   const key = `${config.id}#${variant}`;
@@ -1985,8 +1988,10 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
   let found = -1;
   for (let k = 0; k < maxAttempts; k++) {
     const a = VARIANT_BASE + variant * 31 + k;
-    if (validateStage(buildStage(config, a)).ok) {
+    const res = validateStage(buildStage(config, a));
+    if (res.ok) {
       found = a;
+      lastAccepted = { key: `${config.id}@${a}`, ids: res.reachableIds };
       break;
     }
   }
@@ -2007,8 +2012,11 @@ export function generateStage(config: LevelConfig): GeneratedStage {
     if (a >= 0) attempt = a; // if no fresh layout passes (never seen in testing), fall back to the designed one
   }
   const stage = buildStage(config, attempt);
+  // (the secret gate's stage gets two more platforms from addSecrets, which the stored answer does not know about: it is checked afresh)
+  const acceptedIds = lastAccepted && lastAccepted.key === `${config.id}@${attempt}` && config.id !== SECRET_GATE_LEVEL ? lastAccepted.ids : undefined;
+  lastAccepted = null;
   addSecrets(stage);
-  addFinds(stage);
+  addFinds(stage, acceptedIds);
   return stage;
 }
 
@@ -2041,13 +2049,13 @@ function hash32(s: string): number {
  * animal. A hidden find (a book or keepsake) takes one of the higher platforms so it feels like a detour; a note takes a lower one,
  * on the way. The stage's own random numbers are never used, so adding finds does not change any layout.
  */
-export function addFinds(stage: GeneratedStage) {
+export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   const cfg = stage.config;
   if (cfg.secret || cfg.objectiveType === 'boss_lair') return;
   const find = findForStage(cfg.worldIndex, cfg.miniIndex);
   if (!find) return;
   const hidden = find.kind !== 'note';
-  const reach = new Set(validateStage(stage).reachableIds);
+  const reach = new Set(reachableIds ?? validateStage(stage).reachableIds);
   const cps = (stage.checkpoints ?? []).map((c) => c.x);
   type P = GeneratedStage['platforms'][number];
   const clearOf = (x: number, p: P) =>

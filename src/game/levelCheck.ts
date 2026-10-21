@@ -20,9 +20,11 @@ import {
   TAKEOFF_SLACK,
   airStep,
   canGrabSwing,
+  maxDropReach,
   reachBounce,
   reachJump,
   reachMin,
+  SWING,
   swingGrab,
   swingStep,
   tarzanLaunch,
@@ -81,13 +83,68 @@ export function swingLandings(
   platforms: Platform[],
   waterY: number
 ): Map<number, number> {
+  return swingLandingsIn(a, v, dir, landingPack(v, platforms), waterY);
+}
+
+/**
+ * The platforms a flight from one liana can come down on, as flat number arrays sorted by height, so a falling body only looks at
+ * the platforms inside the band it fell through (it used to be compared with every platform on every step).
+ */
+interface LandingPack {
+  n: number;
+  /** sorted by top (y), ascending */
+  y: Float64Array;
+  lx: Float64Array;
+  rx: Float64Array;
+  /** the platform's place in the original list: of two platforms hit in the same step the earlier one wins, as before */
+  order: Int32Array;
+  id: Int32Array;
+  maxTop: number;
+}
+
+/**
+ * Only platforms a flight from this liana can possibly come down on are packed (a speed-up that changes no result): a release
+ * is at most 0.93 * the rope's length to the side of the vine and a leap covers at most 120 steps * 520 px/s, and it never rises
+ * more than 152 px above a release point that hangs below the vine's top.
+ */
+function landingPack(v: Vine, platforms: Platform[]): LandingPack {
+  const dt = SIM_DTS[0];
+  const reachX = 0.93 * Math.max(SWING.minLen, v.bottomY - v.topY) + 120 * dt * SWING.leapMax + LAND_HALF + 8;
+  const list: Array<{ p: Platform; order: number }> = [];
+  for (let i = 0; i < platforms.length; i++) {
+    const p = platforms[i];
+    if (p.broken || p.type === 'moving' || p.type === 'drift') continue;
+    if (p.x + p.width >= v.x - reachX && p.x <= v.x + reachX && p.y >= v.topY - 200) list.push({ p, order: i });
+  }
+  list.sort((m, q) => m.p.y - q.p.y || m.order - q.order);
+  const n = list.length;
+  const pack: LandingPack = { n, y: new Float64Array(n), lx: new Float64Array(n), rx: new Float64Array(n), order: new Int32Array(n), id: new Int32Array(n), maxTop: -Infinity };
+  for (let i = 0; i < n; i++) {
+    const p = list[i].p;
+    pack.y[i] = p.y;
+    pack.lx[i] = p.x - LAND_HALF;
+    pack.rx[i] = p.x + p.width + LAND_HALF;
+    pack.order[i] = list[i].order;
+    pack.id[i] = p.id;
+    if (p.y > pack.maxTop) pack.maxTop = p.y;
+  }
+  return pack;
+}
+
+/** "no platform" in the flight results (platform ids can be negative: the generator tests a swing with two stand-in platforms, -1 and -2) */
+const NO_LANDING = -2147483647;
+const hitBuf = new Int32Array(100);
+
+function swingLandingsIn(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, waterY: number): Map<number, number> {
   const out = new Map<number, number>();
   const dt = SIM_DTS[0];
   const edge = dir === 1 ? a.x + a.width : a.x;
-  const solids = platforms.filter((p) => !p.broken && p.type !== 'moving' && p.type !== 'drift');
+  const { n, y: py, lx, rx, order, id: pids, maxTop } = pack;
+  const b: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
+  const fb: AirBody = { x: 0, y: 0, vx: 0, vy: 0 };
 
   for (let s = 0; s <= 90; s += 15) {
-    const b: AirBody = { x: edge - dir * s, y: a.y, vx: dir * PHYS.maxRun, vy: -PHYS.jumpV };
+    b.x = edge - dir * s; b.y = a.y; b.vx = dir * PHYS.maxRun; b.vy = -PHYS.jumpV;
     let grabbed = false;
     for (let i = 0; i < 90 && !grabbed; i++) {
       airStep(b, dt, dir, false);
@@ -98,38 +155,47 @@ export function swingLandings(
 
     for (const steer of [0, dir] as const) {
       const sw = swingGrab(b, v);
-      const hits: Array<number | null> = [];
       for (let f = 0; f < 100; f++) {
         const pos = swingStep(sw, v, dt, steer);
         // release now: Tarzan leap toward the far side
         const l = tarzanLaunch(pos.vx, pos.vy, dir);
-        const fb: AirBody = { x: pos.x, y: pos.y, vx: l.vx, vy: l.vy };
-        let landed: number | null = null;
-        for (let k = 0; k < 120 && landed === null; k++) {
+        fb.x = pos.x; fb.y = pos.y; fb.vx = l.vx; fb.vy = l.vy;
+        let landed = NO_LANDING;
+        // the first platform (by height) that can still be hit: that band only moves down while the body falls
+        let ptr = -1;
+        for (let k = 0; k < 120 && landed === NO_LANDING; k++) {
           const prev = fb.y;
           airStep(fb, dt, dir, false);
           if (fb.y > waterY + 20) break;
           if (fb.vy >= 0) {
-            for (const p of solids) {
-              if (fb.x >= p.x - LAND_HALF && fb.x <= p.x + p.width + LAND_HALF && prev <= p.y + 14 && fb.y >= p.y) {
-                landed = p.id;
-                break;
-              }
+            if (ptr < 0) {
+              let lo = 0, hi = n;
+              while (lo < hi) { const mid = (lo + hi) >> 1; if (py[mid] < prev - 14) lo = mid + 1; else hi = mid; }
+              ptr = lo;
+            } else {
+              while (ptr < n && py[ptr] < prev - 14) ptr++;
             }
+            let bestOrder = 0x7fffffff;
+            for (let q = ptr; q < n && py[q] <= fb.y; q++) {
+              if (fb.x >= lx[q] && fb.x <= rx[q] && order[q] < bestOrder) { bestOrder = order[q]; landed = pids[q]; }
+            }
+            // falling below the lowest top there is: nothing is left to land on
+            if (landed === NO_LANDING && fb.y > maxTop + 14) break;
           }
         }
-        hits.push(landed);
+        hitBuf[f] = landed;
       }
       // longest run of consecutive frames landing on the same platform
-      let runId: number | null = null;
+      let runId = NO_LANDING;
       let run = 0;
       const best = new Map<number, number>();
-      for (const h of [...hits, null]) {
-        if (h !== null && h === runId) run++;
+      for (let f = 0; f <= 100; f++) {
+        const h = f < 100 ? hitBuf[f] : NO_LANDING;
+        if (h !== NO_LANDING && h === runId) run++;
         else {
-          if (runId !== null) best.set(runId, Math.max(best.get(runId) ?? 0, run));
+          if (runId !== NO_LANDING) best.set(runId, Math.max(best.get(runId) ?? 0, run));
           runId = h;
-          run = h === null ? 0 : 1;
+          run = h === NO_LANDING ? 0 : 1;
         }
       }
       for (const [id, r] of best) if (r >= 6) out.set(id, (out.get(id) ?? 0) + 1);
@@ -164,21 +230,48 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   const byX = [...plats].sort((a, b) => ext(a)[0] - ext(b)[0]);
 
   // 1. jumps between platforms (only compare neighbours within a plausible horizontal window)
-  for (let i = 0; i < byX.length; i++) {
+  // To the right the window is 460 px. To the left a platform can only be reached if the gap is within the furthest any jump
+  // in THIS stage could cover (its biggest drop sets that), so everything further left is skipped: the same links as comparing
+  // every pair, found without visiting them.
+  const nP = byX.length;
+  const px0 = new Float64Array(nP), px1 = new Float64Array(nP), prefMax1 = new Float64Array(nP);
+  let minY = Infinity, maxY = -Infinity;
+  for (let i = 0; i < nP; i++) {
+    const [x0, x1] = ext(byX[i]);
+    px0[i] = x0;
+    px1[i] = x1;
+    prefMax1[i] = i > 0 ? Math.max(prefMax1[i - 1], x1) : x1;
+    if (byX[i].y < minY) minY = byX[i].y;
+    if (byX[i].y > maxY) maxY = byX[i].y;
+  }
+  const maxDrop = nP ? maxY - minY : 0;
+  const leftReach = maxDropReach(maxDrop) * MARGIN - TAKEOFF_SLACK;
+  for (let i = 0; i < nP; i++) {
     const a = byX[i];
-    const [, ax1] = ext(a);
-    for (let j = 0; j < byX.length; j++) {
+    const ax0 = px0[i], ax1 = px1[i];
+    // first platform whose right edge (or any earlier one's) is within reach of a's left edge
+    let lo = 0, hi = i;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (prefMax1[mid] < ax0 - leftReach) lo = mid + 1; else hi = mid;
+    }
+    for (let j = lo; j < nP; j++) {
       if (i === j) continue;
-      const b = byX[j];
-      const [bx0] = ext(b);
+      const bx0 = px0[j];
       if (bx0 > ax1 + 460) {
         if (j > i) break;
         continue;
       }
-      const r = jumpOK(a, b, allowDouble);
-      if (r.ok) {
+      const b = byX[j];
+      const bx1 = px1[j];
+      const gap = Math.max(0, bx0 - ax1, ax0 - bx1);
+      if (gap > leftReach) continue;
+      const dy = a.y - b.y;
+      const f = a.type === 'bouncy' ? reachBounce : reachJump;
+      const r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
+      if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) {
         link(pid(a), pid(b));
-        if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, r.gap);
+        if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
       }
     }
   }
@@ -223,13 +316,14 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   // 3. swinging lianas
   for (const v of stage.vines) {
     if (v.vineType !== 'swing_liana') continue;
+    const pack = landingPack(v, plats);
     for (const a of plats) {
       if (a.type === 'moving' || a.type === 'drift' || a.type === 'bouncy') continue;
       const dirs: Array<1 | -1> = [];
       if (a.x + a.width <= v.x + 40 && v.x - (a.x + a.width) < 520) dirs.push(1);
       if (a.x >= v.x - 40 && a.x - v.x < 520) dirs.push(-1);
       for (const dir of dirs) {
-        const res = swingLandings(a, v, dir, plats, waterY);
+        const res = swingLandingsIn(a, v, dir, pack, waterY);
         for (const [id, lines] of res) {
           if (lines >= 6 && id !== a.id) {
             link(`p${a.id}`, `p${id}`);
