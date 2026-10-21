@@ -8,6 +8,11 @@
 import { getSceneSeed, onSceneSeedChange } from './sceneSeed.ts';
 import { drawPaintedLeaf } from './leafSprites.ts';
 import { renderLifeBack, renderLifeFront } from './life.ts';
+import { setHeroScreen, clearHeroScreen, heroScreen, laneClear } from './heroLane.ts';
+import { glowPic } from './glow.ts';
+import { getScratch } from './scratch.ts';
+import { composeClusters } from './placement.ts';
+import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
@@ -802,6 +807,35 @@ function buildFar(look: Look, world: number): HTMLCanvasElement {
 
 // ───────────────────────────── hills layer ─────────────────────────────
 
+/**
+ * Flowers as a gardener would plant them: a few patches of three to five (one colour to a patch, the lead biggest, no two touching, a
+ * long bare stretch left between them). Every third patch is led by one of the world's painted flowers, drawn large and in the haze so
+ * it reads as a bloom in the meadow and not as a pickup. When the painted art is not ready the vector bloom stands in.
+ */
+function meadowPatches(ctx: CanvasRenderingContext2D, look: Look, world: number, r: RNG, y0: number, ySpan: number, patches: number, painted: number, stems = false) {
+  const spots = composeClusters(r, { width: TW, wrap: true, clusters: patches, members: [3, 5], gap: 340, spread: [64, 14], minDist: 24, size: [9, 17], y: [y0, y0 + ySpan], calm: 640 });
+  const species = sceneryFlowers(world);
+  const dark = tone(look.leaves[0]).dark;
+  for (const s of spots) {
+    const col = look.flora[((s.tint * 977) | 0) % look.flora.length];
+    wrap(s.x, 80, (xx) => {
+      if (s.k === 0 && s.tint < painted) {
+        const num = species[((s.tint / painted) * species.length) | 0];
+        if (paintShrub(ctx, 'flower', num, xx, s.y + 30, 54 + s.size * 1.6, look.haze, 0.2, r() > 0.5)) return;
+      }
+      if (stems) {
+        ctx.strokeStyle = dark;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(xx, s.y + 30);
+        ctx.quadraticCurveTo(xx + (r() - 0.5) * 16, s.y + 12, xx, s.y);
+        ctx.stroke();
+        drawFlower(ctx, xx, s.y, s.size * 1.3, col, '#fff0a0', r() * 3, 5 + (s.k % 2));
+      } else drawFlower(ctx, xx, s.y, s.size * 0.7, col, '#fff0a0', r() * 3);
+    });
+  }
+}
+
 function buildHills(look: Look, world: number): HTMLCanvasElement {
   const [cv, ctx] = makeLayer(1);
   const r = rng(world * 211 + 3 + getSceneSeed() * 1013);
@@ -824,13 +858,8 @@ function buildHills(look: Look, world: number): HTMLCanvasElement {
         drawCrown(ctx, xx, base + bump, size * (0.95 + r() * 0.3), size * (0.62 + r() * 0.2), t, r, 9, true);
       });
     }
-    // flowers sprinkled on the nearest row
-    if (ri === 2) {
-      for (let i = 0; i < 40; i++) {
-        const x = r() * TW;
-        wrap(x, 20, (xx) => drawFlower(ctx, xx, base - 20 + r() * 80, 7 + r() * 5, look.flora[i % look.flora.length], '#fff0a0', r() * 3));
-      }
-    }
+    // flowers on the nearest row, in a few patches (one colour to a patch, the biggest in the middle) with grass between, not sprinkled
+    if (ri === 2) meadowPatches(ctx, look, world, r, base - 10, 70, 5, 0.34);
     hazeBand(ctx, base - 120, base + 90, look.haze, 0.22 - ri * 0.06);
   });
   return cv;
@@ -1096,7 +1125,7 @@ function buildNear(look: Look, world: number): HTMLCanvasElement {
     return cv;
   }
   // low undergrowth: ferns, grass, monstera and the odd banana leaf — kept short so play stays readable
-  for (let x = 0; x < TW; x += 56) {
+  for (let x = 0; x < TW; x += 72) {
     wrap(x, 130, (xx) => {
       const y = 690 + r() * 30;
       const pick = r();
@@ -1107,20 +1136,8 @@ function buildNear(look: Look, world: number): HTMLCanvasElement {
       else drawGrass(ctx, xx, y + 8, 48 + r() * 38, t, r, 8);
     });
   }
-  for (let i = 0; i < 30; i++) {
-    const x = r() * TW;
-    wrap(x, 30, (xx) => {
-      const y = 640 + r() * 70;
-      ctx.strokeStyle = L[0].dark;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(xx, y + 30);
-      ctx.quadraticCurveTo(xx + (r() - 0.5) * 16, y + 12, xx, y);
-      ctx.stroke();
-      drawFlower(ctx, xx, y, 13 + r() * 9, look.flora[i % look.flora.length], '#fff0a0', r() * 3, 5 + (i % 2));
-    });
-  }
-  for (let i = 0; i < 9; i++) {
+  meadowPatches(ctx, look, world, r, 646, 56, 6, 0.34, true);
+  for (let i = 0; i < 6; i++) {
     const x = r() * TW;
     wrap(x, 60, (xx) => {
       if (world !== 3 && r() > 0.5) drawMushroom(ctx, xx, 706, 22 + r() * 14, look.flora[(i + 1) % look.flora.length], '#fff', false);
@@ -1148,13 +1165,14 @@ function buildFront(look: Look, world: number): HTMLCanvasElement {
   const r = rng(world * 523 + 9 + getSceneSeed() * 1013);
   const dark = look.leaves.map((c) => tone(mix(c, '#04120c', 0.6)));
   const rim = look.leaves.map((c) => tone(mix(c, '#04120c', 0.38)));
-  // low clumps at the bottom edge: just the tips peek in
+  // low clumps at the bottom edge: just the tips peek in. They sit a little lower than they used to, so they stay in the ground
+  // band of the frame and never reach up over the platform lips, the pickups or the hero (this layer is drawn over everything)
   for (let x = 60; x < TW; x += 800) {
     wrap(x, 220, (xx) => {
-      if (paintFrontClump(ctx, world, look, xx, 800, r)) return;
+      if (paintFrontClump(ctx, world, look, xx, 832, r)) return;
       for (let k = 0; k < 3; k++) {
         const t = k % 2 ? rim[(r() * rim.length) | 0] : dark[(r() * dark.length) | 0];
-        drawBananaLeaf(ctx, xx + (k - 1) * 46, 790, 170 + r() * 50, 52 + r() * 16, (k - 1) * 0.55 + (r() - 0.5) * 0.2, t);
+        drawBananaLeaf(ctx, xx + (k - 1) * 46, 826, 160 + r() * 40, 52 + r() * 16, (k - 1) * 0.55 + (r() - 0.5) * 0.2, t);
       }
     });
   }
@@ -1186,6 +1204,135 @@ function buildClouds(look: Look, world: number): HTMLCanvasElement[] {
   return out;
 }
 
+// ───────────────────────────── receding layers and the calm lane ─────────────────────────────
+
+/**
+ * How far each distant layer is pushed back into the air, per world: `far`, `hills` and `mid` are extra haze (a share of the world's own
+ * haze colour laid over what is already painted, never over the sky), and `sat` is how much colour the far and hill layers lose.
+ * Far layers losing contrast, saturation and sharpness while the middle ground stays clear is what lets the eye rest behind the hero.
+ */
+interface Recede { far: number; hills: number; mid: number; sat: number }
+const RECEDE_DEFAULT: Recede = { far: 0.2, hills: 0.1, mid: 0.04, sat: 0.2 };
+const RECEDE: Record<number, Partial<Recede>> = {
+  1: { far: 0.22, hills: 0.12, mid: 0.05, sat: 0.22 },
+  2: { far: 0.2, hills: 0.12, mid: 0.05, sat: 0.28 },
+  3: { far: 0.12, hills: 0.08, mid: 0.02, sat: 0.18 },
+  5: { far: 0.24, hills: 0.14, mid: 0.06, sat: 0.28 },
+  7: { far: 0.2, hills: 0.12, mid: 0.05, sat: 0.3 },
+};
+
+/** take colour out of a baked layer (grey in 'saturation' mode, then the layer's own shape put back), at bake time only */
+function desaturate(cv: HTMLCanvasElement, amount: number) {
+  if (amount < 0.02) return;
+  const c = cv.getContext('2d');
+  if (!c) return;
+  const w = cv.width;
+  const h = cv.height;
+  const [tmp, t] = getScratch(w, h);
+  t.drawImage(cv, 0, 0);
+  t.globalCompositeOperation = 'saturation';
+  t.globalAlpha = Math.min(1, amount);
+  t.fillStyle = '#808080';
+  t.fillRect(0, 0, w, h);
+  t.globalAlpha = 1;
+  t.globalCompositeOperation = 'destination-in';
+  t.drawImage(cv, 0, 0);
+  t.globalCompositeOperation = 'source-over';
+  c.save();
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.globalCompositeOperation = 'copy';
+  c.drawImage(tmp, 0, 0, w, h, 0, 0, w, h);
+  c.restore();
+}
+
+/** lay a haze veil over what a layer has painted, leaving its transparent parts (the sky showing through) alone: stronger toward the horizon */
+function veilAtop(cv: HTMLCanvasElement, col: string, a: number) {
+  if (a < 0.005) return;
+  const c = cv.getContext('2d');
+  if (!c) return;
+  c.save();
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.globalCompositeOperation = 'source-atop';
+  const g = c.createLinearGradient(0, 0, 0, cv.height);
+  g.addColorStop(0, rgba(col, a * 0.55));
+  g.addColorStop(1, rgba(col, a));
+  c.fillStyle = g;
+  c.fillRect(0, 0, cv.width, cv.height);
+  c.restore();
+}
+
+function recede(cache: { far: HTMLCanvasElement; hills: HTMLCanvasElement; mid: HTMLCanvasElement }, look: Look, world: number) {
+  const R = { ...RECEDE_DEFAULT, ...(RECEDE[world] ?? {}) };
+  desaturate(cache.far, R.sat);
+  veilAtop(cache.far, look.haze, R.far);
+  desaturate(cache.hills, R.sat * 0.6);
+  veilAtop(cache.hills, look.haze, R.hills);
+  veilAtop(cache.mid, look.haze, R.mid);
+}
+
+/**
+ * A very soft pool of calm behind the lane the hero plays in. Light worlds get a pale wash of their own haze (his brown fur sits dark
+ * against it), dark worlds a deeper one (the glow and the detail fall back, he stays the brightest thing there). It is a smooth
+ * oval fall-off, never an edge, and it follows him, so the busiest backdrop is always at its quietest right where he is.
+ */
+/**
+ * Which way each world's pool leans, chosen from where the hero's fur (a mid-light brown, lightness about 55) sits against the world's
+ * own backdrop: a bright world (sunny canopy, golden hour, mist, orchid dawn, amber ruins) gets a pale pool the fur reads dark against;
+ * a dark or smouldering one (grotto, blackwater swamp, dusk karst, lava, storm keep) gets a deep smoky one he reads light against. The
+ * swamp, the dusk and the lava have backdrops whose lightness is already close to his, so theirs are the strongest.
+ */
+const POOL: Record<number, { light: boolean; a: number }> = {
+  1: { light: true, a: 0.34 },
+  2: { light: true, a: 0.34 },
+  3: { light: false, a: 0.3 },
+  4: { light: true, a: 0.34 },
+  5: { light: true, a: 0.3 },
+  6: { light: false, a: 0.42 },
+  7: { light: true, a: 0.36 },
+  8: { light: false, a: 0.42 },
+  9: { light: false, a: 0.44 },
+  10: { light: false, a: 0.32 },
+};
+const poolCache = new Map<Look, { col: string; a: number }>();
+function poolFor(look: Look, world: number): { col: string; a: number } {
+  let p = poolCache.get(look);
+  if (p) return p;
+  const cfg = POOL[world] ?? POOL[1];
+  p = cfg.light ? { col: mixToHex(look.haze, '#fff8ec', 0.55), a: cfg.a } : { col: mixToHex(look.hills[2], '#000000', 0.55), a: cfg.a };
+  poolCache.set(look, p);
+  return p;
+}
+
+/** the pool's soft fall-off, painted once per colour and opacity (a gradient built and filled for every frame was the dearest part of it) */
+const poolSprites = new Map<string, HTMLCanvasElement>();
+function poolSprite(col: string, a: number): HTMLCanvasElement {
+  const key = col + '|' + a;
+  let cv = poolSprites.get(key);
+  if (cv) return cv;
+  const N = 160;
+  cv = document.createElement('canvas');
+  cv.width = N;
+  cv.height = N;
+  const c = cv.getContext('2d')!;
+  const g = c.createRadialGradient(N / 2, N / 2, 0, N / 2, N / 2, N / 2);
+  g.addColorStop(0, rgba(col, a));
+  g.addColorStop(0.5, rgba(col, a * 0.62));
+  g.addColorStop(1, rgba(col, 0));
+  c.fillStyle = g;
+  c.fillRect(0, 0, N, N);
+  poolSprites.set(key, cv);
+  return cv;
+}
+
+function lanePool(ctx: CanvasRenderingContext2D, look: Look, world: number, vw: number, vh: number) {
+  const hs = heroScreen();
+  if (!hs) return;
+  const { col, a } = poolFor(look, world);
+  const rx = Math.min(vw * 0.42, 360);
+  const ry = Math.min(vh * 0.36, 190);
+  ctx.drawImage(poolSprite(col, a), hs.x - rx, hs.y - 36 - ry, rx * 2, ry * 2);
+}
+
 function ensure(world: number): LayerSet {
   const key = `${world}:${getSceneSeed()}:${bakeScale}`;
   const hit = sets.get(key);
@@ -1202,6 +1349,8 @@ function ensure(world: number): LayerSet {
     const [old] = sameKind.shift()!;
     sets.delete(old);
   }
+  // the painted plants and flowers stand in the scenery too: start loading them now (a bake that finds them not ready keeps the vector foliage)
+  warmFloraArt();
   const look = lookFor(world);
   const cache: LayerSet = {
     world,
@@ -1214,6 +1363,8 @@ function ensure(world: number): LayerSet {
     clouds: buildClouds(look, world),
     hazed: false,
   };
+  // the far layers are pushed back into the air (less contrast, less colour) so the middle ground, and the hero in it, stay the clearest
+  recede(cache, look, world);
   // Gameplay paints a haze veil over each of the three distant layers, every frame: three more full-screen blends on a phone. A veil laid
   // over a layer and then over what is behind it is the same picture as the veil baked into that layer ("over" is associative), so it is
   // baked once here. Menu vistas (small bake scale) keep drawing theirs live, because they skip the veils on purpose.
@@ -1394,6 +1545,7 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   // plain alpha tint (blend modes force a full-canvas flush on software/mobile GPUs)
   ctx.fillStyle = rgba(look.grade[0], look.grade[1]);
   ctx.fillRect(0, 0, vw, vh);
+  lanePool(ctx, look, world, vw, vh);
 }
 
 /** Frame leaves + vignette + weather — drawn over the playfield. */
@@ -1412,7 +1564,7 @@ export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX
     ctx.fillStyle = vg;
     ctx.fillRect(0, 0, vw, vh);
   }
-  renderWeather(ctx, look, world, camX, vw, vh, time);
+  renderWeather(ctx, look, world, camX, vw, vh, time, lite);
 }
 
 /**
@@ -1421,7 +1573,7 @@ export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX
  */
 export const VISTA_SCALE = 0.4;
 export function renderVista(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, front = true, scale = VISTA_SCALE) {
-  avoid = null; // menus have no hero
+  clearHeroScreen(); // menus have no hero
   withBakeScale(scale, () => {
     renderScenery(ctx, world, camX, 0, vw, vh, time, true);
     if (front) renderOverlay(ctx, world, camX, vw, vh, time, true);
@@ -1446,45 +1598,62 @@ export function dropVista(world: number, scale = VISTA_SCALE) {
 
 interface Mote { x: number; y: number; s: number; p: number; c: number }
 const motes: Record<number, Mote[]> = {};
+/** every world's motes are made once, at the most any weather asks for, and a world that wants fewer takes the first n of them */
+const MOTES_MADE = 260;
 function getMotes(world: number, n: number): Mote[] {
   if (!motes[world]) {
     const r = rng(world * 977);
-    motes[world] = Array.from({ length: n }, () => ({ x: r(), y: r(), s: 0.4 + r() * 0.9, p: r() * 6.28, c: (r() * 1000) | 0 }));
+    motes[world] = Array.from({ length: MOTES_MADE }, () => ({ x: r(), y: r(), s: 0.4 + r() * 0.9, p: r() * 6.28, c: (r() * 1000) | 0 }));
   }
-  return motes[world];
+  return motes[world].slice(0, n);
 }
 
-/** where the hero is on screen (view units): big soft motes thin out around him so he never gets a petal or an orb over his face */
-let avoid: { x: number; y: number } | null = null;
+/**
+ * How many drifting things each world's weather has. Worlds that stacked a lot of them on top of a busy backdrop (the glow orbs of
+ * World 3, the petals of World 5, the leaves of World 1) carry fewer, bigger, calmer ones now; the quality governor halves them again.
+ */
+const WEATHER_COUNT: Record<number, number> = { 1: 8, 2: 7, 3: 14, 4: 0, 5: 7, 6: 14, 7: 9, 8: 12, 9: 38, 10: 150 };
+
+/** where the hero is on screen (view units): the drifting things thin out around him so he never gets a petal or an orb over his face */
 export function setWeatherAvoid(x: number, y: number) {
-  avoid = { x, y };
-}
-/** 1 far from the hero, down to 0.12 right on him */
-function clearOf(x: number, y: number): number {
-  if (!avoid) return 1;
-  const d = Math.hypot(x - avoid.x, (y - avoid.y) * 0.8);
-  return Math.max(0.12, Math.min(1, (d - 30) / 70));
+  setHeroScreen(x, y);
 }
 
-function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number) {
+function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, lite = false) {
   const wrap01 = (v: number) => ((v % 1) + 1) % 1;
+  const count = Math.max(0, Math.round((WEATHER_COUNT[world] ?? 10) * (lite ? 0.5 : 1)));
+  if (count === 0) {
+    // (a world with no drifting things still gets its mist and storms below)
+    if (look.weather !== 'mist' && look.weather !== 'storm' && look.weather !== 'rain') return;
+  }
   switch (look.weather) {
     case 'rain':
     case 'storm': {
       const heavy = look.weather === 'storm';
-      const drops = getMotes(world, heavy ? 260 : 150);
+      const drops = getMotes(world, heavy ? count : Math.round(count * 0.6));
       ctx.save();
       ctx.lineCap = 'round';
-      for (const d of drops) {
-        const sp = (heavy ? 1.7 : 1.1) * (0.7 + d.s * 0.7);
-        const x = wrap01(d.x - time * 0.12 * sp + camX * 0.0001) * (vw + 80);
-        const y = wrap01(d.y + time * sp * 0.9) * (vh + 40) - 20;
-        const len = (heavy ? 26 : 18) * d.s;
-        ctx.strokeStyle = `rgba(${heavy ? '200,214,255' : '230,244,255'},${0.18 + d.s * 0.3})`;
-        ctx.lineWidth = 1 + d.s * 0.9;
+      // three strengths of drop, each stroked as ONE path (a stroke per drop was the costliest thing in the storm)
+      for (let b = 0; b < 3; b++) {
+        const lo = b / 3;
+        const hi = (b + 1) / 3;
         ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x - len * 0.28, y + len);
+        let any = false;
+        for (const d of drops) {
+          const u = (d.s - 0.4) / 0.9;
+          if (u < lo || u >= hi + (b === 2 ? 1 : 0)) continue;
+          const sp = (heavy ? 1.7 : 1.1) * (0.7 + d.s * 0.7);
+          const x = wrap01(d.x - time * 0.12 * sp + camX * 0.0001) * (vw + 80);
+          const y = wrap01(d.y + time * sp * 0.9) * (vh + 40) - 20;
+          const len = (heavy ? 26 : 18) * d.s;
+          ctx.moveTo(x, y);
+          ctx.lineTo(x - len * 0.28, y + len);
+          any = true;
+        }
+        if (!any) continue;
+        const mid = 0.4 + (lo + hi) * 0.5 * 0.9;
+        ctx.strokeStyle = `rgba(${heavy ? '200,214,255' : '230,244,255'},${0.18 + mid * 0.3})`;
+        ctx.lineWidth = 1 + mid * 0.9;
         ctx.stroke();
       }
       ctx.restore();
@@ -1523,7 +1692,8 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
     }
     case 'fireflies':
     case 'spores': {
-      const list = getMotes(world, 46);
+      const list = getMotes(world, count);
+      const pic = glowPic(look.glow ?? '#fff6a0');
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       for (const m of list) {
@@ -1532,24 +1702,23 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
         const y = yy * vh;
         const pulse = 0.45 + 0.55 * Math.sin(time * 2 * m.s + m.p);
         const R = (3.5 + m.s * 3.5) * (0.7 + pulse * 0.5);
-        const gl = ctx.createRadialGradient(x, y, 0, x, y, R * 2.2);
-        gl.addColorStop(0, rgba(look.glow ?? '#fff6a0', 0.9 * pulse * clearOf(x, y)));
-        gl.addColorStop(1, rgba(look.glow ?? '#fff6a0', 0));
-        ctx.fillStyle = gl;
-        ctx.fillRect(x - R * 2.2, y - R * 2.2, R * 4.4, R * 4.4);
+        const a = 0.9 * pulse * laneClear(x, y, 0.1, 90);
+        if (a < 0.02) continue;
+        ctx.globalAlpha = a;
+        ctx.drawImage(pic, x - R * 2.2, y - R * 2.2, R * 4.4, R * 4.4);
       }
       ctx.restore();
       break;
     }
     case 'embers':
     case 'ash': {
-      const list = getMotes(world, 70);
+      const list = getMotes(world, count);
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       for (const m of list) {
         const x = wrap01(m.x + Math.sin(time * 0.8 + m.p) * 0.03 + time * 0.012 - camX * 0.0002) * vw;
         const y = (1 - wrap01(m.y + time * 0.07 * m.s)) * vh;
-        const a = Math.min(1, (1 - y / vh) * 1.6) * (0.4 + 0.6 * Math.abs(Math.sin(time * 3 + m.p)));
+        const a = Math.min(1, (1 - y / vh) * 1.6) * (0.4 + 0.6 * Math.abs(Math.sin(time * 3 + m.p))) * laneClear(x, y, 0.35, 70);
         ctx.fillStyle = `rgba(255,${150 + (m.c % 90)},40,${a})`;
         ctx.beginPath();
         ctx.arc(x, y, 1.4 + m.s * 2.2, 0, Math.PI * 2);
@@ -1560,19 +1729,21 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
     }
     case 'petals':
     case 'leaves': {
-      // a calm drift: sixteen leaves, not thirty
-      const list = getMotes(world, 30).slice(0, 16);
+      // a calm drift: a handful of leaves or petals, never a snowstorm of them
+      const list = getMotes(world, count);
       const cols = look.weather === 'petals' ? look.flora : look.leaves.map((c) => lighten(c, 0.2));
       for (const m of list) {
         const x = wrap01(m.x + Math.sin(time * 0.6 * m.s + m.p) * 0.05 + time * 0.02 - camX * 0.0003) * (vw + 60) - 30;
         const y = wrap01(m.y + time * 0.05 * m.s) * (vh + 40) - 20;
+        const clear = laneClear(x, y, 0.18, 90);
+        if (clear < 0.03) continue;
         // painted leaves for the leaf worlds (the petals of Worlds 2 and 5 stay petals)
-        if (look.weather === 'leaves' && drawPaintedLeaf(ctx, world, m, x, y, time, vh / 720, clearOf(x, y))) continue;
+        if (look.weather === 'leaves' && drawPaintedLeaf(ctx, world, m, x, y, time, vh / 720, clear)) continue;
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(time * m.s * 1.2 + m.p);
         ctx.fillStyle = cols[m.c % cols.length];
-        ctx.globalAlpha = 0.9 * clearOf(x, y);
+        ctx.globalAlpha = 0.9 * clear;
         ctx.beginPath();
         ctx.ellipse(0, 0, 8 * m.s + 3, (3.5 + m.s * 2) * Math.abs(Math.cos(time * m.s + m.p)) + 1, 0, 0, Math.PI * 2);
         ctx.fill();
