@@ -280,6 +280,8 @@ export const PX_PER_SEC = 120;
 /** a stage is never shorter than this nor longer than that, so it neither flashes by nor outgrows a phone's memory */
 export const STAGE_MIN_W = 6000;
 export const STAGE_MAX_W = 30000;
+/** flowers asked for per 1000 px of a harvest stage: the stage holds about 5.7 per 1000 px, so a quota of about 4.1 per 1000 px of the nominal width makes it about 1.6 times the quota */
+const HARVEST_QUOTA_PER_KPX = 4.1;
 const widthForSeconds = (sec: number) => Math.min(STAGE_MAX_W, Math.max(STAGE_MIN_W, Math.round((sec * PX_PER_SEC) / 100) * 100));
 /** vertical stages: modelled seconds of a climb per px of height (a climb is slow: about 25 px of height a second) */
 export const ASCENT_PX_PER_SEC = 24;
@@ -332,7 +334,9 @@ export function generateAllLevels(): LevelConfig[] {
           break;
         case 'harvest':
           levelWidth = lengthOf('harvest');
-          targetCount = grownQuota(8 + (world.id - 1) * 2, oldSized(4800), levelWidth, 45);
+          // a harvest stage places about 1.6 times its quota (the rest is the reward on the longer lane of a fork): its generated flowers run about
+          // HARVEST_FLOWERS_PER_KPX per 1000 px, so the quota is the share of them that makes the ratio come out near 1.6 (it used to be met in the first third)
+          targetCount = Math.max(grownQuota(8 + (world.id - 1) * 2, oldSized(4800), levelWidth, 45), Math.round((levelWidth / 1000) * HARVEST_QUOTA_PER_KPX));
           break;
         case 'purge':
           levelWidth = lengthOf('purge');

@@ -217,6 +217,41 @@ test('platforms come in at least four styles per stage and no style is over 40% 
   }
 });
 
+test('a harvest stage holds about 1.6 times its quota in flowers: the quota is on the shared ground, the surplus on the lanes', () => {
+  for (const l of horizontal.filter((x) => x.objectiveType === 'harvest')) {
+    for (const v of VARIANTS) {
+      const s = stage(l, v);
+      const lane = new Set<number>();
+      for (const f of s.lanes ?? []) for (const r of [f.high, f.low]) r.flowers.forEach((i) => lane.add(i));
+      const flora = s.collectibles.filter((c) => c.type === 'flower' || c.type === 'leaf');
+      const shared = flora.filter((c) => !lane.has(c.id)).length;
+      const ratio = flora.length / l.targetCount;
+      assert.ok(ratio >= 1.4 && ratio <= 2.4, `${l.id}@${v}: ${flora.length} flowers for a quota of ${l.targetCount} (${ratio.toFixed(2)}x)`);
+      assert.ok(shared >= l.targetCount + 4, `${l.id}@${v}: the quota cannot be met without a lane`);
+      assert.ok(flora.length - shared >= 6, `${l.id}@${v}: no surplus on the lanes`);
+    }
+  }
+});
+
+test('a row or an arc of flowers is one species', () => {
+  // flowers laid in one go share a y-line within a row; here: neighbours closer than 80 px on nearly the same height are one species
+  let pairs = 0;
+  let mixed = 0;
+  for (const l of horizontal.filter((x) => x.miniIndex <= 3)) {
+    const s = stage(l, null);
+    const fl = s.collectibles.filter((c) => c.type === 'flower' || c.type === 'leaf').sort((a, b) => a.x - b.x);
+    for (let i = 1; i < fl.length; i++) {
+      if (fl[i].x - fl[i - 1].x < 80 && Math.abs(fl[i].y - fl[i - 1].y) < 6) {
+        pairs++;
+        const species = (c: (typeof fl)[number]) => c.botanicalVariant;
+        if (species(fl[i]) !== species(fl[i - 1])) mixed++;
+      }
+    }
+  }
+  assert.ok(pairs > 200, `${pairs} neighbouring flowers in rows`);
+  assert.ok(mixed / pairs < 0.03, `${mixed} of ${pairs} neighbours in a row differ in species`);
+});
+
 test('every kind of animal the game defines turns up in the stages (the frog too: the Naturalist badge needs it)', () => {
   const seen = new Set<string>();
   for (const l of horizontal) for (const e of stage(l, null).enemies) seen.add(e.type);
