@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CELS, CEL_ACTS, CEL_ATLAS_SIZES, CEL_CAST, celFaceKey, celPoses, celTrack, isCelCode, HEADS } from './storyCels.ts';
+import { CELS, CEL_ACTS, CEL_ATLAS_SIZES, CEL_CAST, CEL_FACES, celPoses, celTrack, isCelCode, HEADS } from './storyCels.ts';
 import { chapter, N } from './storyDsl.ts';
 
 test('every frame sits inside its atlas and no two frames overlap', () => {
@@ -40,7 +40,7 @@ test('a pose that does not exist is an error naming the choices', () => {
 });
 
 test('the cast string reaches the painted figures and the speaker frames them', () => {
-  const [p] = chapter({ name: 't', w: 1, m: 'day' }, [N('Hello.', 'PC:chair_wait@.3 GR:water@.7*.9 PH:hug_a@.5')]);
+  const [p] = chapter({ name: 't', w: 1, m: 'day' }, [N('Hello.', 'MS:chair_wait@.3 GR:water@.7*.9 PH:hug_a@.5')]);
   const kinds = (p.scene.actors ?? []).map((a) => a.kind);
   assert.deepEqual(kinds, ['cel', 'cel', 'cel']);
   assert.equal(p.scene.actors![1].cel, 'GR');
@@ -48,10 +48,21 @@ test('the cast string reaches the painted figures and the speaker frames them', 
   assert.throws(() => chapter({ name: 't', w: 1, m: 'day' }, [N('x', 'GR:nope')]), /not a pose of Grandma/);
 });
 
-test('face busts answer to the face_ names and the bare ones', () => {
-  assert.equal(celFaceKey('face_grin'), 'face.grin');
-  assert.equal(celFaceKey('snarl'), 'face.snarl');
-  assert.equal(celFaceKey('face_calm'), null);
+test("Meeca's face busts are a portrait, change expression in a run, and speak as Meeca", () => {
+  assert.ok(CEL_FACES.includes('grin') && CEL_FACES.length === 16);
+  const [p] = chapter({ name: 't', w: 1, m: 'day' }, [N('Hm.', 'MF:fret+weary@.4')]);
+  const [a] = p.scene.actors!;
+  assert.equal(a.kind, 'cel');
+  assert.equal(a.portrait, true);
+  assert.deepEqual(a.seq!.map((k) => k.frame), ['face.fret', 'face.weary']);
+  assert.ok(CEL_CAST.MF.who.includes('Meeca'));
+  assert.throws(() => chapter({ name: 't', w: 1, m: 'day' }, [N('x', 'MF:nope')]), /not a pose of Meeca, face/);
+});
+
+test('the pink #07 sheets are Meeca and the satchel sheets are Pokey', () => {
+  assert.deepEqual(CEL_CAST.MS.who, ['Meeca']);
+  for (const code of ['PN', 'PV', 'PX']) assert.deepEqual(CEL_CAST[code].who, ['Pokey'], code);
+  assert.ok(!isCelCode('PC') && !isCelCode('MC') && !isCelCode('MB') && !isCelCode('MX'), 'the old, swapped codes are gone');
 });
 
 test('the painted speaker heads point at frames that exist', () => {

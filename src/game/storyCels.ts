@@ -1,5 +1,6 @@
 /**
- * The painted cast of Matt's story sheets: Pokey's and Meeca's extra performances, the two of them together, the General in three states, Grandma, Lieutenant Pell, the
+ * The painted cast of Matt's story sheets: Pokey's and Meeca's extra performances (Matt: the pink headband and #07 vest are MEECA's, the satchel is POKEY's, whatever the sheet
+ * file names say), the two of them together, the General in three states, Grandma, Lieutenant Pell, the
  * town crier and the mail carrier. Three atlases (src/assets/characters/cels-*.webp, cut by scratchpad story/cut.py + pack.py) hold 278 frames, each stored the way the sheet
  * drew it; `f` says which way the figure looks there, so a frame is mirrored only when its actor has to face the other way.
  *
@@ -36,13 +37,22 @@ export interface CelCast {
   rest: string;
   /** the story speakers this figure is (the camera closes on it while they talk) */
   who: string[];
+  /** a feet position and scale when the cast string gives none (a bust sits low and big) */
+  y?: number;
+  scale?: number;
+  /** a face bust: drawn like a portrait (no ground shadow), bottom edge fading away */
+  bust?: boolean;
 }
 
 export const CEL_CAST: Record<string, CelCast> = {
-  PC: { prefix: 'pk', name: 'Pokey (the story sheets)', x: 0.3, face: 1, rest: 'stand_wait', who: ['Pokey'] },
-  MC: { prefix: 'mc', name: 'Meeca', x: 0.68, face: -1, rest: 'idle', who: ['Meeca'] },
-  MB: { prefix: 'mb', name: 'Meeca with the bow', x: 0.68, face: -1, rest: 'idle', who: ['Meeca'] },
-  MX: { prefix: 'mx', name: 'Meeca, bandaged', x: 0.68, face: -1, rest: 'stand', who: ['Meeca'] },
+  // the pink-headband #07 sloth of sheets 1-4, 13 and 14 is Meeca: her faces, emotion, action, music-box and shut-in-the-tower poses
+  MS: { prefix: 'pk', name: 'Meeca (story sheets, pink #07)', x: 0.68, face: -1, rest: 'stand_wait', who: ['Meeca'] },
+  /** Meeca's face bust: a close-up like `PF`, chin on the ground line (the painting melts away at the chest) */
+  MF: { prefix: 'face', name: 'Meeca, face', x: 0.34, face: 1, rest: 'beam', who: ['Meeca'], y: 1.04, scale: 1.5, bust: true },
+  // the satchel sloth of sheets 10-12 is Pokey: plain, with the bow, bandaged with the petal
+  PN: { prefix: 'mc', name: 'Pokey (story sheets, satchel)', x: 0.3, face: 1, rest: 'idle', who: ['Pokey'] },
+  PV: { prefix: 'mb', name: 'Pokey with the bow', x: 0.3, face: 1, rest: 'idle', who: ['Pokey'] },
+  PX: { prefix: 'mx', name: 'Pokey, wrists wrapped, with the petal', x: 0.3, face: 1, rest: 'stand', who: ['Pokey'] },
   PA: { prefix: 'da', name: 'Pokey and Meeca together (first pass)', x: 0.5, face: 1, rest: 'side_by_side', who: ['Pokey', 'Meeca'] },
   PB: { prefix: 'db', name: 'Pokey and Meeca together (second pass)', x: 0.5, face: 1, rest: 'side_by_side', who: ['Pokey', 'Meeca'] },
   PH: { prefix: 'hug', name: 'Pokey and Meeca hugging', x: 0.5, face: 1, rest: 'stand_close', who: ['Pokey', 'Meeca'] },
@@ -81,15 +91,15 @@ export const CEL_ACTS: Record<string, Act> = {
   'GN:sorrow': run('gn', [['tunic_sad_a', 2.4], ['tunic_sad_b', 2.2], ['tunic_sad_c', 2.4], ['tunic_sad_a', 1]]),
   'GN:club': loop('gn', ['tunic_club_a', 'tunic_club_b', 'tunic_club_c', 'tunic_club_d'], 1.1),
   'GV:read': run('gv', [['sit_read', 2.5], ['kneel_read', 2.5], ['kneel_fold', 1]]),
-  'MC:walk': loop('mc', ['walk_a', 'walk_b'], 3),
-  'MC:run': loop('mc', ['run_a', 'run_b'], 6),
-  'MB:walk': loop('mb', ['walk_a', 'walk_b'], 3),
-  'MB:run': loop('mb', ['run_a', 'run_b'], 6),
-  'PC:pace': loop('pk', ['pace_a', 'pace_b'], 2.2),
-  'PC:write': loop('pk', ['desk_write_a', 'desk_write_b'], 1.4),
-  'PC:wait': run('pk', [['chair_wait', 3], ['chair_chin', 3.5], ['chair_window', 3]]),
-  'PC:box': run('pk', [['box_sit_smile', 2.4], ['box_sit_wind', 2.4], ['box_sit_dream', 3]]),
-  'PC:song': run('pk', [['hum', 2], ['sing_heart', 2.2], ['sing_wide', 2.2], ['sing_joy', 2.2], ['open_calm', 1]]),
+  'PN:walk': loop('mc', ['walk_a', 'walk_b'], 3),
+  'PN:run': loop('mc', ['run_a', 'run_b'], 6),
+  'PV:walk': loop('mb', ['walk_a', 'walk_b'], 3),
+  'PV:run': loop('mb', ['run_a', 'run_b'], 6),
+  'MS:pace': loop('pk', ['pace_a', 'pace_b'], 2.2),
+  'MS:write': loop('pk', ['desk_write_a', 'desk_write_b'], 1.4),
+  'MS:wait': run('pk', [['chair_wait', 3], ['chair_chin', 3.5], ['chair_window', 3]]),
+  'MS:box': run('pk', [['box_sit_smile', 2.4], ['box_sit_wind', 2.4], ['box_sit_dream', 3]]),
+  'MS:song': run('pk', [['hum', 2], ['sing_heart', 2.2], ['sing_wide', 2.2], ['sing_joy', 2.2], ['open_calm', 1]]),
   'PH:sway': loop('hug', ['hug_a', 'hug_b', 'hug_c', 'hug_b'], 0.7),
   'LP:lantern': loop('lp', ['lantern_walk', 'lantern_look'], 0.7),
   'LP:salute': loop('lp', ['salute_a', 'salute_nervous'], 0.6),
@@ -111,6 +121,14 @@ export function celTrack(code: string, pose: string | undefined): PoseKey[] {
   const c = CEL_CAST[code];
   if (!c) throw new Error(`"${code}" is not a story-sheet figure`);
   const name = pose ?? c.rest;
+  if (name.includes('+')) {
+    // a run of single frames, one after the other (face busts changing expression)
+    return name.split('+').map((n, i) => {
+      const key = f(c.prefix, n);
+      if (!CELS[key]) throw new Error(`${code}:${n} is not a pose of ${c.name} (${celPoses(code).join(', ')})`);
+      return { at: i * FACE_SECONDS, frame: key };
+    });
+  }
   const act = CEL_ACTS[`${code}:${name}`];
   if (act) return act.map((k) => ({ ...k }));
   const key = f(c.prefix, name);
@@ -118,12 +136,10 @@ export function celTrack(code: string, pose: string | undefined): PoseKey[] {
   return [{ at: 0, frame: key }];
 }
 
-/** the new Pokey face busts ("PF:grin"); the bare names, so they never clash with the older face_* frames */
+/** Meeca's face busts ("MF:grin", or "MF:fret+weary" to change expression), the bare names of the frames `face.*` */
 export const CEL_FACES: string[] = FRAME_KEYS.filter((k) => k.startsWith('face.')).map((k) => k.slice(5));
-export function celFaceKey(name: string): string | null {
-  const bare = name.replace(/^face_/, '');
-  return CELS[`face.${bare}`] ? `face.${bare}` : null;
-}
+/** how long each face of an "MF:a+b+c" cast stays up */
+export const FACE_SECONDS = 1.8;
 
 // ───────────── the painted speaker faces next to a name ─────────────
 

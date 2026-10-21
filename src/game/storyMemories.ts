@@ -122,7 +122,7 @@ export const SEALED = chapter({ name: 'WORLD 6 · THE SEALED NOTE', w: 6, m: 'du
   M('I\'m not going to tell you to hurry. I\'m going to tell you what I sing to the Heartbloom on its worst days.', 'P:sad@.4 M:think@.64'),
   M(LULLABY, 'P:sad@.4 M:sing@.64', { cue: 'meeca', i: 0.7, sting: 'bloom' }),
   M('That\'s the whole spell. You were always going to get there, Pokey. I only wanted you to know I\'m not counting.', 'P:tired@.4 M:happy@.64', { cue: 'tender', i: 0.5 }),
-  N('Pokey read it three times. Then he folded it very small, and put it where his heart would feel it, and remembered the night in the old nest when she first sang it to him.', 'PC:box@.5', { m: 'dusk', cue: 'resolve', i: 0.4, p: { memory: false, particles: 'petals' } }),
+  N('Pokey read it three times. Then he folded it very small, and put it where his heart would feel it, and remembered the night in the old nest when she first sang it to him.', 'PX:read_cry@.5', { m: 'dusk', cue: 'resolve', i: 0.4, p: { memory: false, particles: 'petals' } }),
 ]);
 
 export const STORM = chapter({ name: 'MEMORY · THE SINGING STORM', w: 1, m: 'storm', cue: 'tender', i: 0.3, base: { memory: true, particles: 'rain' } }, [
@@ -147,7 +147,7 @@ export const PHOTOGRAPH = chapter({ name: 'THE REVEAL · THE PHOTOGRAPH', w: 7, 
   N('He turned it over. There was pencil on the back, in a hand he knew from a hundred birthday cards.', 'P:surprised@.2', { ph: ['s4_04', 'Grandpa has not put her down since', 0.5, 0.02] }),
   P('"Grandpa hasn\'t put her down since."', 'PF:surprised+worried@.4', { cue: 'sorrow', i: 0.4, sting: 'reveal' }),
   P('It\'s him. General Iron-Claw is Meeca\'s grandfather.', 'PF:worried@.4', { cue: 'reveal', i: 0.5 }),
-  N('Pokey sat down very slowly, as though the truth were a thing that could be spilled.', 'PC:sit_stunned@.4', { cue: 'sorrow', i: 0.3, p: { zoom: 1.35, focusX: 0.4 } }),
+  N('Pokey sat down very slowly, as though the truth were a thing that could be spilled.', 'PX:kneel_sad@.4', { cue: 'sorrow', i: 0.3, p: { zoom: 1.35, focusX: 0.4 } }),
   P('I stood on his doorstep once. I asked him for his blessing. He told me to come back when I could protect her. And I thought... I thought he was only a stern old soldier who had gone away to the Highlands when Grandma died.',
     'PF:worried@.4', { i: 0.3 }),
   P('She can\'t know. She would never recognize him under all that iron. And she\'s up there in his tower, being kept safe, by the one person who loves her more than anyone.', 'PF:worried+tired@.4', { cue: 'hush', i: 0.2 }),

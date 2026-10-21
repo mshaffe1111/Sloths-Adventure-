@@ -58,20 +58,22 @@ Slomatt has all twelve (`slomatt/standard-set/`). Two extras: `09_back-views.jpg
 
 ## The story sheets (2026-10-21)
 
-Eighteen 4x4 sheets on flat grey, each a different cast member or mood; the originals are in `story/` (byte for byte). The game uses 278 of the 288 cells, cut and keyed by script into three atlases (`src/assets/characters/cels-pokey.webp`, `cels-pair.webp`, `cels-folk.webp`; frame table in `src/game/storyCelData.ts`, runtime and the cast codes in `src/game/storyCels.ts`). In a cast string they are `GR` Grandma, `LP` Lieutenant Pell, `TC` the town crier, `PO` the mail carrier, `GN` the General (armor cracking to a grey tunic), `GV` the General in a paler grey tunic, `GY` the General younger, `PC` Pokey's extra poses (and the music box), `MC`/`MB`/`MX` Meeca without the bow, with it, and bandaged, `PA`/`PB` Pokey and Meeca together, `PH` the two hugging, and `PF:grin` and the other new face busts.
+Eighteen 4x4 sheets on flat grey, each a different cast member or mood; the originals are in `story/` (byte for byte, never renamed). The game uses 278 of the 288 cells, cut and keyed by script into three atlases (`src/assets/characters/cels-pokey.webp`, `cels-pair.webp`, `cels-folk.webp`; frame table in `src/game/storyCelData.ts`, runtime and the cast codes in `src/game/storyCels.ts`).
 
-| Sheet | What it is | Used for |
-|---|---|---|
-| 1 | Pokey, sixteen face busts | `PF:` portraits (grin, beam, aghast, smug, sulk, fret, snarl, giggle, weary, plead, glare, delight, drowsy, doubt, shock, sly) |
-| 2, 3, 4 | Pokey emotion, action and music-box/lullaby poses | `PC:` |
-| 13, 14 | Pokey shut in a room (chair, window, pacing, keyhole, carving the wall, writing) | `PC:` (not staged in a scene yet) |
-| 10, 11, 12 | Meeca: no bow, with the bow, bandaged and in her story outfit | `MC:`, `MB:`, `MX:` (not staged in a scene yet: the story still uses the in-game Meeca) |
-| 7, 8, 9 | Pokey and Meeca together (two passes), and hugging | `PA:`, `PB:`, `PH:` (the promise, the end) |
-| 6 | the General, armor cracking, off, to a tunic | `GN:crack`, `GN:sorrow`, `GN:tunic_stand` (the mercy, the blessing) |
-| 5 | the General in a paler tunic, grief, the letter | `GV:` (the letter) |
-| 16 | the General younger, in a tan shirt (salute, baby, music box) | `GY:` (the blessing flashback) |
-| 15 | Grandma | `GR:` (the garden, the blessing, the music box) |
-| 17 | Lieutenant Pell | `LP:` (both lieutenant scenes, the epilogue tailor shop) |
-| 18 | the town crier, the mail carrier | `TC:`, `PO:` (the Riverbank, the epilogue) |
+**Who is who (Matt, 2026-10-21): the pink headband and #07 vest is MEECA, the satchel and wrist wraps are POKEY.** Six sheet files are named the other way round: `01`-`04`, `13`, `14` say "pokey" but are Meeca, and `10`-`12` say "meeca" but are Pokey. The files keep their names; the cast codes follow the truth: `MS` Meeca's story poses (faces sheet excluded), `MF` Meeca's face busts (`MF:grin`, `MF:fret+weary` to change expression), `PN` Pokey (satchel), `PV` Pokey with the bow, `PX` Pokey with his wrist wraps and the petal; `GR` Grandma, `LP` Lieutenant Pell, `TC` the town crier, `PO` the mail carrier, `GN` the General (armor cracking to a grey tunic), `GV` the General in a paler grey tunic, `GY` the General younger, `PA`/`PB` the two together (two passes), `PH` the two hugging.
 
-Known mismatches (Matt: fine for flashbacks and "not all the same day"): the General is a mandrill here, but a sloth warlord in the in-game boss art and in some of the story text; Meeca wears a satchel and no pink kit; sheet 5's General is paler than 6 and 16; sheets 13 and 14 overlap, the best of each is kept.
+| Sheet | What it is | Code | Used for |
+|---|---|---|---|
+| 1 | sixteen face busts (pink headband: Meeca) | `MF:` | the tower singing (World 10 midpoint) |
+| 2, 3, 4 | emotion, action and music-box/lullaby poses (Meeca) | `MS:` | the tower and the letter's window and chair (World 1 midpoint) |
+| 13, 14 | shut in a room: chair, window, pacing, keyhole, carving the wall, writing (Meeca, in the tower) | `MS:` | not all staged yet |
+| 10, 11, 12 | the satchel sloth: plain, with the bow, wrist-wrapped with the petal (Pokey) | `PN:` `PV:` `PX:` | reading Meeca's note, the photograph, the petal's glow |
+| 7, 8, 9 | the two together (two passes), and hugging | `PA:` `PB:` `PH:` | the promise, the end |
+| 6 | the General, armor cracking, off, to a tunic | `GN:` | the mercy, the blessing |
+| 5 | the General in a paler tunic, grief, the letter | `GV:` | the letter |
+| 16 | the General younger, in a tan shirt | `GY:` | the blessing flashback |
+| 15 | Grandma | `GR:` | the garden, the blessing, the music box |
+| 17 | Lieutenant Pell | `LP:` | both lieutenant scenes, the epilogue |
+| 18 | the town crier, the mail carrier | `TC:` `PO:` | the Riverbank, the epilogue |
+
+Known mismatches (Matt: fine for flashbacks and "not all the same day"): the General is a mandrill here, but a sloth warlord in the in-game boss art and in some of the story text; sheet 5's General is paler than 6 and 16; sheets 13 and 14 overlap, the best of each is kept.

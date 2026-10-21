@@ -13,7 +13,7 @@ import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
 import { drawPaintedBird } from './birdSprites.ts';
 import { drawDotFrame, poseFrame, warmDot } from './dotSprite.ts';
 import { photoUrl } from './photos.ts';
-import { CEL_K, CELS, celFaceKey, drawCel, warmCels } from './storyCels.ts';
+import { CEL_K, CELS, drawCel, warmCels } from './storyCels.ts';
 
 export const SCENE_W = 960;
 export const SCENE_H = 540;
@@ -431,16 +431,6 @@ function drawPortrait(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
   ctx.rotate((pose?.rot ?? 0) * face);
   if (face === -1) ctx.scale(-1, 1);
   ctx.translate(0, Math.sin(t * 2.4) * 2);
-  // the busts from the story sheets (grin, sulk, snarl...): the painting is cut off at the chest and melts into the ground; a talking one nods a little
-  const bust = celFaceKey(name);
-  if (bust) {
-    const c = CELS[bust];
-    const nod = a.mood === 'talk' ? Math.abs(Math.sin(t * 8.5)) * 3 : 0;
-    const k = size / Math.max(c.w, c.h);
-    const ok = drawCel(ctx, bust, 0, nod + size * 0.04, k, 1);
-    ctx.restore();
-    return ok;
-  }
   const ok = drawPokeyFace(ctx, name, -size / 2, -size, size);
   ctx.restore();
   return ok;
@@ -628,11 +618,14 @@ function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
   const groundY = ground * h + SINK;
   const k = CEL_K * (a.scale ?? 1) * pose.sc;
   const face = (a.facing === -1 ? -1 : 1) * (pose.flip ? -1 : 1) as 1 | -1;
-  if (c.c !== 'raw') drawContactShadow(ctx, x, groundY, c.w * k * 0.6, c.h * k, Math.max(0, groundY - feetY));
+  const bust = c.c === 'b';
+  if (c.c !== 'raw' && !bust) drawContactShadow(ctx, x, groundY, c.w * k * 0.6, c.h * k, Math.max(0, groundY - feetY));
   ctx.save();
   ctx.translate(x, feetY);
   ctx.rotate(pose.rot * face);
-  if (c.c !== 'raw') ctx.scale(1, 1 + Math.sin(t * 1.9 + (a.x * 7)) * 0.006);
+  // a face bust breathes a little
+  if (bust) ctx.translate(0, Math.sin(t * 2.4) * 2);
+  else if (c.c !== 'raw') ctx.scale(1, 1 + Math.sin(t * 1.9 + (a.x * 7)) * 0.006);
   drawCel(ctx, pose.frame, 0, 0, k, face);
   ctx.restore();
 }

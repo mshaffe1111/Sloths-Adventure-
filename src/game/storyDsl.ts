@@ -19,7 +19,7 @@
  *   D  Dot the hummingbird, :pose is what he does (hover, perch, yelp, flinch, dizzy, cheer, puzzled, sad, gasp, sleep).   T  Thornbark.   H  the Heartbloom, :bud|bloom|epic|ultimate
  *   The story sheets (storyCels.ts has every pose; a bad pose name throws, so the tests catch it):
  *   GR Grandma   LP Lieutenant Pell   TC the town crier   PO the mail carrier   GN the General, armor to tunic (GN:crack, GN:rise)   GV the General in grey   GY the grandfather
- *   PC Pokey's extra poses   MC Meeca   MB Meeca with the bow   MX Meeca bandaged   PA PB Pokey and Meeca together   PH Pokey and Meeca hugging   e.g.  GR:water@.4  PH:hug_a@.5
+ *   MS Meeca's story poses (pink #07: faces, emotion, music box, the tower)   MF Meeca's face bust, :a+b+c changes expression   PN Pokey (satchel)   PV Pokey with the bow   PX Pokey bandaged   PA PB Pokey and Meeca together   PH Pokey and Meeca hugging   e.g.  GR:water@.4  PH:hug_a@.5
  *   @x across the picture 0..1, ^y feet down the picture, *scale, < faces left, > faces right, ~ a dark silhouette, ! angry (boss), # beaten (boss)
  * An unset x, y and facing take the kind's usual place (Pokey on the left looking right, everyone else on the right looking left).
  * A cast of "=" means the same picture as the beat before.
@@ -191,8 +191,10 @@ function actor(tok: string): SceneActor {
       } catch (e) {
         throw new Error(`cast "${tok}": ${(e as Error).message}`);
       }
-      const a: SceneActor = { kind: 'cel', cel: kind, x: m.x ?? c.x, scale, facing: m.face ?? c.face, seq };
+      const a: SceneActor = { kind: 'cel', cel: kind, x: m.x ?? c.x, scale: m.scale ?? c.scale ?? 1, facing: m.face ?? c.face, seq };
       if (m.y !== undefined) a.y = m.y;
+      else if (c.y !== undefined) a.y = c.y;
+      if (c.bust) a.portrait = true;
       return a;
     }
   }
