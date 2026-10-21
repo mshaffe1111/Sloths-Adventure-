@@ -82,6 +82,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
+import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 
 /** How many world units tall the screen shows. */
 /** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
@@ -325,6 +326,11 @@ export class GameEngine {
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
+    if (perfEnabled()) {
+      // a fresh frame-time log for each stage, so a slowdown that grows through the stage shows on the timeline
+      perfLog.reset(performance.now());
+      perfNote(`stage ${config.id} started`);
+    }
     this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
 
     // Initialize Hero Sloth
@@ -521,6 +527,9 @@ export class GameEngine {
     this.lastRenderTime = elapsed < this.frameIntervalMs + 2 ? now : now - (elapsed % this.frameIntervalMs);
 
     const dt = Math.min(elapsed / 1000, 0.05);
+    // the frame-time check (menu switch, off by default): how long this frame's update and draw took on their own
+    const pl = perfEnabled() ? perfLog : null;
+    let tUpd = 0;
 
     try {
       if (!this.isPaused) {
@@ -535,11 +544,15 @@ export class GameEngine {
             this.slowMoLeft -= dt;
             sdt = dt * 0.3 * this.speedScale;
           }
+          const u0 = pl ? performance.now() : 0;
           this.update(sdt);
+          if (pl) tUpd = performance.now() - u0;
         }
       }
 
+      const r0 = pl ? performance.now() : 0;
       this.render();
+      if (pl) pl.record(elapsed, tUpd, performance.now() - r0, now, () => this.perfInfo());
       this.failStreak = 0;
     } catch (err) {
       // one bad frame must not freeze the game; a frame that fails over and over ends the stage cleanly
@@ -551,6 +564,16 @@ export class GameEngine {
     }
   };
   private failStreak = 0;
+
+  /** what the game was doing, for the frame-time check (only built when a freeze is logged or a timeline line is due) */
+  private perfInfo() {
+    const p = this.player;
+    const alive = this.enemies.filter((e) => !e.defeated).length;
+    return {
+      what: `${p.grounded ? 'ground' : 'air'} vy=${Math.round(p.vy)} x=${Math.round(p.x)} enemies=${alive}/${this.enemies.length} particles=${this.particles.length} quality=${this.quality} polish=${polishEnabled() ? polishTier() : 'off'}`,
+      parts: this.particles.length,
+    };
+  }
 
   /**
    * Main Physics & Simulation Tick (30 FPS)
