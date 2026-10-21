@@ -24,6 +24,8 @@ export class HeroEvents {
   private lastTime = 0;
   hurtUntil = 0;
   landUntil = 0;
+  /** set only by a drop at (nearly) the hardest speed: the painted roll-out `tumble` frame plays for this landing */
+  hardLandUntil = 0;
   /** the fastest downward speed of the current fall (the engine zeroes vy on touchdown, so it has to be remembered) */
   private fallSpeed = 0;
 
@@ -32,6 +34,7 @@ export class HeroEvents {
     this.wasGrounded = true;
     this.hurtUntil = 0;
     this.landUntil = 0;
+    this.hardLandUntil = 0;
     this.fallSpeed = 0;
   }
 
@@ -46,16 +49,21 @@ export class HeroEvents {
       // a short hop lands lightly; a long drop holds the crouch a little longer
       const hard = Math.max(0, Math.min(1, (this.fallSpeed - SOFT_FALL) / (HARD_FALL - SOFT_FALL)));
       this.landUntil = time + LAND_TIME + hard * (LAND_TIME_HARD - LAND_TIME);
+      this.hardLandUntil = hard >= 0.9 ? this.landUntil : 0;
     }
     if (p.grounded) this.fallSpeed = 0;
     this.wasGrounded = p.grounded;
     // belt and braces: a timer can never be further ahead than it was ever set to
     if (this.hurtUntil - time > HURT_TIME + 0.01) this.hurtUntil = time;
     if (this.landUntil - time > LAND_TIME_HARD + 0.01) this.landUntil = time;
+    if (this.hardLandUntil > this.landUntil) this.hardLandUntil = this.landUntil;
   }
 
   isHurt(time: number) {
     return time < this.hurtUntil;
+  }
+  isHardLanding(time: number) {
+    return time < this.hardLandUntil;
   }
   isLanding(time: number) {
     return time < this.landUntil;

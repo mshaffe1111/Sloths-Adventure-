@@ -56,3 +56,15 @@ test('the fall speed of one drop is not carried into the next landing', () => {
   e.track({ hp: 5, grounded: true, vy: 0 }, 2.03);
   assert.ok(Math.abs(e.landUntil - 2.03 - LAND_TIME) < 1e-9);
 });
+
+test('only a drop at nearly the hardest speed marks a hard landing (the tumble roll-out)', () => {
+  const hard = new HeroEvents();
+  hard.track({ hp: 5, grounded: false, vy: 940 }, 1);
+  hard.track({ hp: 5, grounded: true, vy: 0 }, 1.05);
+  assert.equal(hard.isHardLanding(1.1), true);
+  assert.equal(hard.isHardLanding(1.5), false);
+  const soft = new HeroEvents();
+  soft.track({ hp: 5, grounded: false, vy: 600 }, 1);
+  soft.track({ hp: 5, grounded: true, vy: 0 }, 1.05);
+  assert.equal(soft.isHardLanding(1.1), false);
+});

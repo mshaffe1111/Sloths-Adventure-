@@ -36,16 +36,16 @@ export const golemSprite = createPaintedBoss({
       else if (mv === 'hammerSpin') name = 'charge2';
       else name = 'roar';
     } else if (br.state === 'act') {
-      if (mv === 'fistSlam') name = 'doublefist';
+      if (mv === 'fistSlam') name = 'fistslam'; // the fists driving down; `doublefist` below is the same fists stuck in the floor
       else if (mv === 'rockfall') name = 'roar';
       else if (mv === 'eyeBeam') name = 'shards';
       else if (mv === 'quake') name = 'quake';
-      else if (mv === 'hammerSmash') name = 'overhead';
-      else if (mv === 'hammerSpin') name = 'spin';
+      else if (mv === 'hammerSmash') name = br.t < 0.22 ? 'overhead' : 'crash'; // the swing, then the hammer buried in a burst of crystal
+      else if (mv === 'hammerSpin') name = br.t < 0.35 ? 'rush' : 'spin'; // the low hammer sweeping in, then the turn
       else if (mv === 'crystalRift') name = 'rift';
       else name = 'roar';
     } else if (br.state === 'rec') {
-      const rec: Record<string, string> = { fistSlam: 'doublefist', quake: 'quake', eyeBeam: 'shards', hammerSmash: 'overhead', hammerSpin: 'hurt', crystalRift: 'rift' };
+      const rec: Record<string, string> = { fistSlam: 'doublefist', quake: 'quake', eyeBeam: 'shards', hammerSmash: 'crash', hammerSpin: 'hurt', crystalRift: 'rift' };
       name = (mv && rec[mv]) || 'march1';
     }
     else if (moving) name = MARCH[Math.floor((dist / STRIDE) * MARCH.length) % MARCH.length];

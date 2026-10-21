@@ -56,6 +56,8 @@ test('every state the hero can be in draws a frame that exists', () => {
   assert.ok(hurt && STD_FRAMES[hurt.name]);
   const land = stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, hurtUntil: 0 });
   assert.equal(land?.name, 'land');
+  const roll = stdPick(player(), 1, { isHurt: () => false, isLanding: () => true, isHardLanding: () => true, hurtUntil: 0 });
+  assert.equal(roll?.name, 'tumble');
 });
 
 test('he walks slowly and runs fast, and stands still with a blink', () => {

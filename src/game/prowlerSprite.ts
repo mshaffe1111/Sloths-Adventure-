@@ -30,9 +30,9 @@ export const prowlerSprite = createPaintedBoss({
     else if (br.state === 'act') {
       if (m?.pose === 'leap') name = br.air > 8 ? 'leap' : 'land';
       else if (m?.pose === 'fade') name = 'swipe';
-      else if (m?.pose === 'bite') name = Math.floor(br.t / 0.22) % 2 === 0 ? 'swipe' : 'bite';
+      else if (m?.pose === 'bite') name = b.phase >= 3 ? ['swipe', 'bite', 'frenzy'][Math.floor(br.t / 0.22) % 3] : Math.floor(br.t / 0.22) % 2 === 0 ? 'swipe' : 'bite';
       else name = Math.floor(time * 12) % 2 === 0 ? 'run_0' : 'run_1';
-    } else if (br.state === 'rec') name = m?.pose === 'leap' ? 'land' : 'idle';
+    } else if (br.state === 'rec') name = m?.pose === 'leap' ? (b.phase >= 2 && br.t < 0.3 ? 'pound' : 'land') : 'idle'; // from phase 2 the landing sends a wave along the floor: the fists-down pound first
     else if (moving) {
       if (b.phase >= 2) name = Math.floor((dist / 46) * 2) % 2 === 0 ? 'run_0' : 'run_1';
       else name = WALK[Math.floor((dist / STRIDE) * WALK.length) % WALK.length];
