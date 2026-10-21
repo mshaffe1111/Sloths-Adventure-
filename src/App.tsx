@@ -3,6 +3,7 @@ import type { GameScreen, LevelConfig, BossEntity } from './game/types.ts';
 import { generateAllLevels } from './game/worldsData.ts';
 import { InputEngine } from './game/inputEngine.ts';
 import { GameEngine } from './game/engine.ts';
+import { setExtraLives, startingLives } from './game/assist.ts';
 import { setLayoutVariant } from './game/stageGenerator.ts';
 import { layoutForEntry } from './game/layoutMemory.ts';
 import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game/skills.ts';
@@ -230,6 +231,9 @@ export default function App() {
   const pendingStats = useRef<StageStats | null>(null);
   /** the same report, kept for the result card (stage cleared / out of lives) to show */
   const [lastStats, setLastStats] = useState<StageStats | null>(null);
+  /** Game Overs per stage this visit (for the extra-lives offer); cleared when the stage is cleared */
+  const failsRef = useRef<Record<string, number>>({});
+  const [, bumpFails] = useState(0);
   const badgeCount = React.useMemo(
     () => evaluate({ store: badgeStore, levels: allLevels, gateFound: secretFound, thornHeart }).length,
     [badgeStore, allLevels, secretFound, thornHeart],
@@ -376,7 +380,7 @@ export default function App() {
       } else if (screen === 'game_over') {
         if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault();
-          restartLevel();
+          continueRun();
         }
       }
     };
@@ -409,6 +413,14 @@ export default function App() {
     (window as unknown as { __play?: (id: string) => void }).__play = (id: string) => {
       const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
       if (lvl) launchEngine(lvl);
+    };
+  }
+
+  // dev only: lose every life at once (to test Game Over and Continue)
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __kill?: () => void }).__kill = () => {
+      const eng = engineRef.current as unknown as { loseLife: (r: string) => void; lives: number } | null;
+      if (eng) for (let i = 0; i < 12 && eng.lives > 0; i++) eng.loseLife('pit');
     };
   }
 
@@ -456,7 +468,7 @@ export default function App() {
     setRunId((n) => n + 1);
     setHp(maxHearts());
     setMaxHp(maxHearts());
-    setLives(3);
+    setLives(startingLives());
     setScore(0);
     setCurrentCount(0);
     setTargetCount(lvl.targetCount);
@@ -510,6 +522,7 @@ export default function App() {
           window.setTimeout(() => startLevel(THORNBARK_LEVEL), 1100);
         },
         onVictory: (stars, timeSec, finalScore) => {
+          delete failsRef.current[lvl.id];
           setStarsEarned(stars);
           setClearTime(timeSec);
           setScore(finalScore);
@@ -538,6 +551,8 @@ export default function App() {
         },
         onLivesChange: (l) => setLives(l),
         onDefeat: (finalScore) => {
+          failsRef.current[lvl.id] = (failsRef.current[lvl.id] ?? 0) + 1;
+          bumpFails((n) => n + 1);
           setScore(finalScore);
           setScreen('game_over');
         },
@@ -626,6 +641,16 @@ export default function App() {
 
   const restartLevel = () => {
     launchEngine(activeLevel);
+  };
+
+  // Game Over -> back in at the last checkpoint with every life; if the engine cannot (it was stopped), start the stage over
+  const continueRun = () => {
+    const engine = engineRef.current;
+    if (engine?.continueFromCheckpoint()) {
+      setScreen('playing');
+      return;
+    }
+    restartLevel();
   };
 
   // the stages either side of this one (none for the secret stage, the first stage or the last)
@@ -932,6 +957,12 @@ export default function App() {
           onToggleMute={handleToggleMute}
           onResume={resumeGame}
           onRestart={restartLevel}
+          onContinue={continueRun}
+          fails={failsRef.current[activeLevel.id] ?? 0}
+          onTakeHelp={() => {
+            setExtraLives(2);
+            continueRun();
+          }}
           onNextStage={handleNextStage}
           onPrevStage={handlePrevStage}
           onOpenTrophies={() => {

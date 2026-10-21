@@ -19,6 +19,7 @@ import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
 import { lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
+import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, easeAssist, newAirDrive, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
@@ -238,8 +239,12 @@ export class GameEngine {
   private jumpBufferTimer: number = 0;
   /** what carries him through the air on a touch screen (see jumpHelp.ts): the way he was going when he left the ground, until he lands or pushes back */
   private airDrive = newAirDrive();
-  private lives: number = 3;
-  private readonly maxLives: number = 3;
+  private maxLives: number = startingLives();
+  private lives: number = this.maxLives;
+  /** the run ended because the lives ran out (not a win): the one case a Continue can pick up from the checkpoint */
+  private outOfLives = false;
+  /** the assist speed for this stage (1 = normal), read once so a menu change mid-stage waits for the next entry */
+  private readonly speedScale: number = gameSpeed();
   private checkpoint = { x: 0, y: 0 };
   private respawnFlash = 0;
   /** Seconds at the start of a stage / after a respawn where run input is ignored, so Pokey is dropped in standing still. */
@@ -524,10 +529,10 @@ export class GameEngine {
           this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
         } else {
           // the killing blow of a giant plays in slow motion (real time runs the clock down)
-          let sdt = dt;
+          let sdt = dt * this.speedScale;
           if (this.slowMoLeft > 0) {
             this.slowMoLeft -= dt;
-            sdt = dt * 0.3;
+            sdt = dt * 0.3 * this.speedScale;
           }
           this.update(sdt);
         }
@@ -2771,17 +2776,37 @@ export class GameEngine {
   }
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
-    const p = this.player;
     this.lives -= 1;
     this.statLivesLost++;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     if (this.lives <= 0) {
       this.isGameOver = true;
+      this.outOfLives = true;
       sound.playDefeat();
       this.callbacks.onStageStats?.(this.buildStats(false, 0));
       this.callbacks.onDefeat(this.runScore);
       return;
     }
+    this.respawnAtCheckpoint(reason);
+  }
+
+  /**
+   * After Game Over: stand Pokey up at the last checkpoint with every life back. Stage progress (flowers, defeated animals, the boss's
+   * hurt) is kept, which is the point. Only valid when the lives ran out; returns false otherwise so the app can start over instead.
+   */
+  public continueFromCheckpoint(): boolean {
+    if (!this.isRunning || !this.isGameOver || !this.outOfLives) return false;
+    this.isGameOver = false;
+    this.outOfLives = false;
+    this.maxLives = startingLives(); // picks up extra lives switched on from the Game Over card
+    this.lives = this.maxLives;
+    this.callbacks.onLivesChange?.(this.lives, this.maxLives);
+    this.respawnAtCheckpoint('hurt');
+    return true;
+  }
+
+  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt') {
+    const p = this.player;
     this.hazards.length = 0;
     this.slowTimer = 0;
     this.drowsy = 0;

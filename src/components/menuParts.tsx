@@ -5,6 +5,7 @@ import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
+import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, type GameSpeed } from '../game/assist.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -164,6 +165,56 @@ export const ControlsSetting: React.FC = () => {
               ? 'No buttons: slide, flick and tap anywhere. In the air a tap (or a wiggle of your thumb) is the second jump. A tap in the air no longer punches until the second jump is used.'
               : 'Like Tap, and the second jump also pushes Pokey forward the way he faces, so one thumb can jump, tap and cross a gap. Push the other way to brake. A first jump is always just a jump.'}
       </small>
+    </div>
+  );
+};
+
+/** optional help: more lives before Game Over, and a slower game. Never changes the stars; applies from the next stage entry or retry */
+export const AssistSetting: React.FC = () => {
+  const [lives, setLives] = React.useState<ExtraLives>(() => extraLives());
+  const [speed, setSpeed] = React.useState<GameSpeed>(() => gameSpeed());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#fda4af" size={22}>
+            <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />
+          </Icon>
+          Extra lives
+        </span>
+        <Seg
+          value={String(lives)}
+          options={[
+            { id: '0', label: 'None' },
+            { id: '2', label: '+2' },
+            { id: '4', label: '+4' },
+          ]}
+          onPick={(v) => {
+            const n = Number(v) as ExtraLives;
+            setExtraLives(n);
+            setLives(n);
+          }}
+        />
+      </div>
+      <div className="pm-sound-h" style={{ marginTop: 8 }}>
+        <span className="pm-polish-note" style={{ margin: 0 }}>
+          Game speed
+        </span>
+        <Seg
+          value={String(speed)}
+          options={[
+            { id: '1', label: '100%' },
+            { id: '0.9', label: '90%' },
+            { id: '0.8', label: '80%' },
+          ]}
+          onPick={(v) => {
+            const n = Number(v) as GameSpeed;
+            setGameSpeed(n);
+            setSpeed(n);
+          }}
+        />
+      </div>
+      <small className="pm-polish-note">Help for a tough stage: more lives before Game Over, and a slower game (animals, hazards and Pokey all slow together). Stars are earned the same way. It starts from the next stage or retry.</small>
     </div>
   );
 };

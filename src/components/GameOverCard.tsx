@@ -4,6 +4,7 @@ import type { StageStats } from '../game/badges.ts';
 import { HeroPose } from './HeroPose.tsx';
 import { ClrChips, ClrRibbon, type ChipSpec } from './ClrParts.tsx';
 import { totalKills, tuckeredLine } from './stageSummary.ts';
+import { shouldOfferHelp } from '../game/assist.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -14,18 +15,27 @@ interface GameOverCardProps {
   levelConfig: LevelConfig;
   score: number;
   stats?: StageStats | null;
+  /** start the stage over */
   onRetry: () => void;
+  /** pick up from the last checkpoint with every life back */
+  onContinue: () => void;
   onOpenMap: () => void;
+  /** Game Overs on this stage so far this visit */
+  fails?: number;
+  /** turn on the extra-lives help (offered after a few Game Overs) */
+  onTakeHelp?: () => void;
 }
 
 /** Out of lives: the same card family as Stage Cleared, in dusk colours, with Pokey having a lie-down and a kind word. */
-export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, stats, onRetry, onOpenMap }) => {
+export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, stats, onRetry, onContinue, onOpenMap, fails = 0, onTakeHelp }) => {
   const heroW = typeof window === 'undefined' ? 240 : window.innerHeight <= 520 ? 130 : Math.min(240, window.innerWidth - 120);
   const heroH = Math.round(Math.max(90, Math.min(170, (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.24)));
   const chips: ChipSpec[] = [{ label: 'Score', value: score.toLocaleString(), colour: '#fde68a' }];
   if (stats && stats.timeSec > 0) chips.push({ label: 'Time', value: fmtTime(stats.timeSec) });
   if (stats && stats.floraTotal > 0) chips.push({ label: 'Flowers', value: `${stats.floraCollected}/${stats.floraTotal}` });
   if (stats && totalKills(stats) > 0) chips.push({ label: 'Foes', value: String(totalKills(stats)) });
+
+  const offerHelp = !!onTakeHelp && shouldOfferHelp(fails);
 
   return (
     <div className="clr-scrim lost select-none">
@@ -48,16 +58,32 @@ export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, 
 
           <p className="clr-safe">Your stars and finished stages are safe.</p>
 
-          <button type="button" className="pm-go" data-start="true" onClick={onRetry}>
-            Try again
+          {offerHelp && (
+            <div className="clr-help" role="note">
+              <span>This one is a tough stretch. Want a little help? Pokey gets 2 extra lives on every stage.</span>
+              <button type="button" className="clr-btn2" onClick={onTakeHelp}>
+                Yes, add 2 lives
+              </button>
+            </div>
+          )}
+
+          <button type="button" className="pm-go" data-start="true" onClick={onContinue}>
+            Continue from checkpoint
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#022c22" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
-              <path d="M3 3v5h5" />
+              <path d="M5 4v16" />
+              <path d="M5 5h12l-3 4 3 4H5" />
             </svg>
           </button>
-          {!COARSE && <p className="clr-note">Space or Enter to try again</p>}
+          {!COARSE && <p className="clr-note">Space or Enter to continue &middot; everything you collected stays</p>}
 
-          <div className="clr-sec one">
+          <div className="clr-sec two">
+            <button type="button" className="clr-btn2" onClick={onRetry}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fdba74" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              Start over
+            </button>
             <button type="button" className="clr-btn2" onClick={onOpenMap}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z" />
