@@ -1,7 +1,6 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
 import { TouchGestures } from '../game/touchGestures.ts';
-import { arrowText } from './icons/arrowText.tsx';
 import { jumpHelp } from '../game/jumpHelp.ts';
 
 /**
@@ -17,33 +16,7 @@ interface TouchControllerProps {
   inputEngine: InputEngine;
 }
 
-const HINT_KEY = 'sloth_hint_v3';
-function hintSeen(): boolean {
-  try {
-    return localStorage.getItem(HINT_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-function markHintSeen() {
-  try {
-    localStorage.setItem(HINT_KEY, '1');
-  } catch {
-    /* ignore */
-  }
-}
-
 export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine }) => {
-  const [pill, setPill] = useState<string | null>(null);
-  const pillTimer = useRef<number | null>(null);
-  const [hint, setHint] = useState<boolean>(() => !hintSeen());
-
-  const flash = useCallback((text: string) => {
-    setPill(text);
-    if (pillTimer.current !== null) window.clearTimeout(pillTimer.current);
-    pillTimer.current = window.setTimeout(() => setPill(null), 380);
-  }, []);
-
   // the recogniser holds all the rules (see touchGestures.ts); this component only feeds it fingers
   const gestures = useRef<TouchGestures | null>(null);
   if (!gestures.current) {
@@ -59,26 +32,14 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
         feedback: (kind) => {
           const haptic = { jump: 15, duck: 0, punch: 20, kick: 25, mega: 35 }[kind];
           if (haptic) inputEngine.triggerHaptic(haptic);
-          flash({ jump: 'JUMP!', duck: 'DUCK', punch: 'PUNCH!', kick: 'KICK!', mega: 'MEGA!' }[kind]);
         },
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady },
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady },
     );
   }
   const G = gestures.current;
-
-  // the hint fades by itself, and is never shown again once it has been up
-  useEffect(() => {
-    if (!hint) return;
-    markHintSeen();
-    const id = window.setTimeout(() => {
-      setHint(false);
-      markHintSeen();
-    }, 7000);
-    return () => window.clearTimeout(id);
-  }, [hint]);
 
   // holds and undecided fingers need a clock even when the finger is perfectly still
   useEffect(() => {
@@ -117,20 +78,24 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     };
   }, [G]);
 
+  // the moment the touch really happened (the browser's own stamp), not the moment this code got to run: a janky frame used to make a
+  // quick flick look slow. Falls back to the clock if the stamp is missing or from a different clock (some old browsers use the date).
+  const stamp = (e: React.TouchEvent): number => {
+    const now = performance.now();
+    const ts = e.timeStamp;
+    return ts > 0 && ts <= now + 5 && now - ts < 2000 ? ts : now;
+  };
+
   const onStart = (e: React.TouchEvent) => {
     inputEngine.source = 'gesture';
-    if (hint) {
-      setHint(false);
-      markHintSeen();
-    }
-    const now = performance.now();
+    const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       G.down(t.identifier, t.clientX, t.clientY, now);
     }
   };
   const onMove = (e: React.TouchEvent) => {
-    const now = performance.now();
+    const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       G.move(t.identifier, t.clientX, t.clientY, now);
@@ -138,11 +103,11 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   };
   // a cancelled touch (a system gesture took it) is not a lift: it must not punch, kick or jump
   const onCancel = (e: React.TouchEvent) => {
-    const now = performance.now();
+    const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) G.cancelFinger(e.changedTouches[i].identifier, now);
   };
   const onEnd = (e: React.TouchEvent) => {
-    const now = performance.now();
+    const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       G.up(t.identifier, t.clientX, t.clientY, now);
@@ -158,31 +123,6 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       className="fixed inset-0 pointer-events-auto z-30 select-none touch-none"
       style={{ touchAction: 'none', WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
     >
-      {/* what the last gesture was */}
-      {pill && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 pointer-events-none z-40 bg-emerald-950/85 border border-amber-400/80 px-3.5 py-1 rounded-full text-amber-300 font-black text-[11px] uppercase tracking-wider shadow-xl">
-          {pill}
-        </div>
-      )}
-
-      {/* shown once, so nobody has to guess that there are no buttons */}
-      {hint && (
-        <div className="fixed inset-x-0 bottom-0 h-[24%] min-h-[112px] pointer-events-none flex items-stretch gap-3 px-4 pb-4 animate-[fadeIn_.4s_ease]">
-          <HintCard title="STEER" lines={['Slide a thumb ← → to run', 'Slide ↓ to duck, ↑ to jump']} />
-          <HintCard title="ACT" lines={['Tap to punch, hold for mega', 'Flick ← → to kick', 'Flick ↑ to jump', 'Tap in the air: jump again']} />
-        </div>
-      )}
     </div>
   );
 };
-
-const HintCard: React.FC<{ title: string; lines: string[] }> = ({ title, lines }) => (
-  <div className="flex-1 min-w-0 rounded-2xl border-2 border-dashed border-white/35 bg-black/35 flex flex-col items-center justify-center text-center px-2 py-2">
-    <div className="text-[10px] font-black leading-none tracking-[0.2em] text-amber-300 mb-1.5">{title}</div>
-    {lines.map((l) => (
-      <div key={l} className="text-[11.5px] font-bold leading-tight text-white [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">
-        {arrowText(l)}
-      </div>
-    ))}
-  </div>
-);

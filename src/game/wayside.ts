@@ -19,7 +19,11 @@
  *   - each line shows once ever (per stage), so a replay is quiet
  */
 
+import { findForStage } from './finds.ts';
+
 export type WayAt = 'start' | 'half' | 'near';
+/** which line of a stage: L its scripted line, H the aside after the first fall, F the hint that a Hush Fern is hiding something here */
+export type WayFlag = 'L' | 'H' | 'F';
 export type WayWho = 'Dot' | 'Pokey' | 'Petal';
 export interface WayLine {
   who: WayWho;
@@ -226,6 +230,28 @@ export function hurtLine(world: number, mini: number): WayLine | undefined {
   return { who: h.who, text: h.text };
 }
 
+/** is Dot with Pokey at this point of the story? He is away from the second half of world 6 (after the Last Note), all of world 7, and in the net in world 10 */
+export function dotPresent(world: number, mini: number): boolean {
+  return !(world === 6 && mini >= 6) && world !== 7 && world !== 10;
+}
+
+/** does this stage hide a find in a Hush Fern (a keepsake in stage 5, a book in stage 8)? */
+export function hidesFern(world: number, mini: number): boolean {
+  const f = findForStage(world, mini);
+  return !!f && f.kind !== 'note';
+}
+
+/**
+ * The hint at the very start of a stage that hides a fern: it does not say where, or what to do, only that one plant is not like the
+ * others. Whoever is with Pokey says it (Dot, or Pokey's own thought when Dot is away).
+ */
+export function fernLine(world: number, mini: number): WayLine | undefined {
+  if (!hidesFern(world, mini)) return undefined;
+  return dotPresent(world, mini)
+    ? { who: 'Dot', text: 'One of these plants looks different from the rest. I wonder what it means.' }
+    : { who: 'Pokey', text: 'One of the plants here looks different from the rest. I wonder what it means.' };
+}
+
 /** how long a line stays up: long enough to read it twice at a glance */
 export function showMs(text: string): number {
   return Math.min(7600, 2800 + text.length * 50);
@@ -253,10 +279,18 @@ export interface WayProbe {
   hurtAgoMs?: number;
   shownL: boolean;
   shownH: boolean;
+  /** this stage hides a fern that has not been found yet, and its hint has not been given */
+  fernOpen?: boolean;
+  shownF?: boolean;
 }
 
 /** which line (if any) is due right now. A fall is answered first; the scripted line waits its turn. */
-export function dueLine(p: WayProbe): { flag: 'L' | 'H'; line: WayLine } | null {
+export function dueLine(p: WayProbe): { flag: WayFlag; line: WayLine } | null {
+  // the fern's hint comes first, at the very start, and only while the fern is still waiting to be found
+  if (p.fernOpen && !p.shownF && p.playedMs >= START_AFTER_MS) {
+    const line = fernLine(p.world, p.mini);
+    if (line) return { flag: 'F', line };
+  }
   if (p.hurtAgoMs !== undefined && p.hurtAgoMs >= HURT_DELAY_MS && p.hurtAgoMs <= HURT_WINDOW_MS && !p.shownH) {
     const line = hurtLine(p.world, p.mini);
     if (line) return { flag: 'H', line };
@@ -281,7 +315,7 @@ const browserStore = (): PrefMem | null => {
   }
 };
 
-export function wasShown(world: number, mini: number, flag: 'L' | 'H', store: Mem | null = browserStore()): boolean {
+export function wasShown(world: number, mini: number, flag: WayFlag, store: Mem | null = browserStore()): boolean {
   try {
     return !!store?.getItem(keyFor(world, mini))?.includes(flag);
   } catch {
@@ -289,7 +323,7 @@ export function wasShown(world: number, mini: number, flag: 'L' | 'H', store: Me
   }
 }
 
-export function markShown(world: number, mini: number, flag: 'L' | 'H', store: Mem | null = browserStore()): void {
+export function markShown(world: number, mini: number, flag: WayFlag, store: Mem | null = browserStore()): void {
   try {
     if (!store) return;
     const cur = store.getItem(keyFor(world, mini)) ?? '';

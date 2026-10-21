@@ -24,29 +24,70 @@ function frond(ctx: CanvasRenderingContext2D, lean: number, len: number, wid: nu
 }
 
 export function drawHushFern(ctx: CanvasRenderingContext2D, item: Collectible, time: number) {
+  const search = item.search ?? 0;
+
+  // a faint golden glow that breathes: the clump reads as different from the foliage behind it, but it is never a beacon
+  ctx.save();
+  ctx.translate(0, GROUND - 30);
+  const breathe = 0.5 + 0.5 * Math.sin(time * 2.4 + item.id);
+  const R = 44 + breathe * 6;
+  const glow = ctx.createRadialGradient(0, 0, 4, 0, 0, R);
+  glow.addColorStop(0, `rgba(255, 236, 150, ${0.16 + 0.1 * breathe + 0.3 * search})`);
+  glow.addColorStop(0.55, `rgba(255, 220, 120, ${0.05 + 0.04 * breathe})`);
+  glow.addColorStop(1, 'rgba(255, 220, 120, 0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(0, 0, R, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
   ctx.save();
   ctx.translate(0, GROUND);
+  // every few seconds the whole clump gives a quick shiver on its own: movement is what the eye finds first
+  const rustle = Math.max(0, Math.sin(time * 1.1 + item.id * 2.3) - 0.78) / 0.22;
   const sway = Math.sin(time * 1.6 + item.id) * 0.03;
-  const search = item.search ?? 0;
-  // while searched the fronds shiver
-  const shake = search > 0 ? Math.sin(time * 38) * 0.035 * search : 0;
+  // while searched the fronds shiver harder
+  const shake = (search > 0 ? Math.sin(time * 38) * 0.035 * search : 0) + Math.sin(time * 31) * 0.028 * rustle;
   ctx.fillStyle = 'rgba(0,0,0,0.22)';
   ctx.beginPath();
   ctx.ellipse(0, 1, 34, 6, 0, 0, Math.PI * 2);
   ctx.fill();
+  // minty, silvery fronds with pale tips: a different green from the jungle, so it does not melt into it
   const blades: Array<[number, number, number, string]> = [
-    [-0.95, 38, 13, '#3f8a3c'], [0.95, 38, 13, '#3f8a3c'], [-0.5, 50, 14, '#4f9a48'], [0.5, 50, 14, '#4f9a48'], [0, 58, 15, '#5fae56'],
+    [-0.95, 38, 13, '#62c3a0'], [0.95, 38, 13, '#62c3a0'], [-0.5, 50, 14, '#78d6b2'], [0.5, 50, 14, '#78d6b2'], [0, 60, 15, '#9be9c6'],
   ];
   for (const [lean, len, wid, fill] of blades) frond(ctx, lean, len, wid, fill, sway + shake);
-  // a faint wink of light so a careful player notices it
+  // golden tips on the three tallest fronds
+  ctx.fillStyle = '#ffe9a0';
+  for (const [lean, len] of [[-0.5, 50], [0.5, 50], [0, 60]] as Array<[number, number]>) {
+    ctx.save();
+    ctx.rotate(lean + sway + shake);
+    ctx.beginPath();
+    ctx.arc(0, -len + 3, 3.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+  // motes of light drifting up out of it
+  for (let k = 0; k < 4; k++) {
+    const ph = (time * 0.35 + k * 0.25 + item.id * 0.13) % 1;
+    const mx = Math.sin(k * 2.4 + item.id) * 22 + Math.sin(ph * 6 + k) * 5;
+    const my = -20 - ph * 62;
+    ctx.globalAlpha = Math.sin(ph * Math.PI) * 0.85;
+    ctx.fillStyle = '#fff3b0';
+    ctx.beginPath();
+    ctx.arc(mx, my, 2.1 - ph * 0.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  // a bright wink of light so a careful player notices it
   const wink = Math.max(0, Math.sin(time * 2.4 + item.id * 1.7));
-  ctx.globalAlpha = 0.25 + 0.6 * wink * wink;
-  ctx.fillStyle = '#fff6c8';
+  ctx.globalAlpha = 0.35 + 0.65 * wink * wink;
+  ctx.fillStyle = '#fffbe0';
   const sx = -10 + Math.sin(item.id) * 8;
   const sy = -34 - wink * 6;
   ctx.beginPath();
-  ctx.moveTo(sx, sy - 6); ctx.lineTo(sx + 1.8, sy - 1.8); ctx.lineTo(sx + 6, sy); ctx.lineTo(sx + 1.8, sy + 1.8);
-  ctx.lineTo(sx, sy + 6); ctx.lineTo(sx - 1.8, sy + 1.8); ctx.lineTo(sx - 6, sy); ctx.lineTo(sx - 1.8, sy - 1.8);
+  ctx.moveTo(sx, sy - 7.5); ctx.lineTo(sx + 2.2, sy - 2.2); ctx.lineTo(sx + 7.5, sy); ctx.lineTo(sx + 2.2, sy + 2.2);
+  ctx.lineTo(sx, sy + 7.5); ctx.lineTo(sx - 2.2, sy + 2.2); ctx.lineTo(sx - 7.5, sy); ctx.lineTo(sx - 2.2, sy - 2.2);
   ctx.closePath();
   ctx.fill();
   ctx.globalAlpha = 1;

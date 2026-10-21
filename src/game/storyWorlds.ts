@@ -66,7 +66,8 @@ const W1_MID = chapter({ name: MID[1], w: 1, m: 'day', cue: 'comedy', i: 0.4, ba
   D('I\'m going to read the next part aloud.', '=', { sting: 'laugh' }),
   D('"The next part is: I\'m fine. I have a window and a chair, and a lieutenant who apologizes every time he brings my breakfast. Tell Pokey I\'m fine."',
     'P:happy@.3 D@.62^.4', { cue: 'tender', i: 0.4 }),
-  P('She\'s fine.', 'P:talk@.3 D@.62^.4'),
+  N('Far away, in a tower, the sloth who wrote it sat on a chair by a window, with a very straight back, being fine.', 'MS:wait@.5', { w: 10, m: 'dusk', cue: 'tender', i: 0.35, p: { particles: 'none', zoom: 1.35, focusX: 0.5 } }),
+  P('She\'s fine.', 'P:talk@.3 D@.62^.4', { w: 1, m: 'day', p: { particles: 'petals' } }),
   D('She\'s fine!', '=', { cue: 'comedy', i: 0.45 }),
   P('She\'s sitting in a tower, held hostage by a warlord, and she\'s fine.', 'P:talk@.3 D@.62^.4'),
   D('Look at the handwriting. Not one wobble.', '=', { cue: 'tender', i: 0.35 }),
@@ -358,6 +359,7 @@ const W10 = chapter({ name: C10, w: 10, m: 'storm', cue: 'dread', i: 0.4, base: 
 const W10_MID = chapter({ name: MID[10], w: 10, m: 'storm', cue: 'sorrow', i: 0.3, base: { particles: 'rain' } }, [
   N('Halfway up the mountain, the thunder paused to take a breath. And in the gap, from very far above, Pokey heard something that was not thunder.', 'P:tired@.3', { cue: 'hush', i: 0.15, p: pan(1.1, 0.3, 0.6, 1.3, 0.5, 0.3, 8) }),
   N('It was a voice, singing. It was singing very softly, the way you sing to something that is afraid of the dark.', 'PF:surprised@.4', { cue: 'meeca', i: 0.4, sting: 'bloom' }),
+  N('Far above, at a barred window, someone was singing with her eyes closed to a forest that did not know she was there.', 'MF:drowsy+weary@.5', { cue: 'meeca', i: 0.5 }),
   P('Meeca.', 'PF:happy@.4', { cue: 'meeca', i: 0.5 }),
   N('He could not make out the words from this far away. He did not need them. He took the next step, and the next, and found that he was humming.', 'P:determined@.3', { cue: 'resolve', i: 0.6, p: { particles: 'petals' } }),
 ]);

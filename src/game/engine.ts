@@ -19,6 +19,7 @@ import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
 import { lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
+import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, easeAssist, newAirDrive, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
@@ -238,8 +239,12 @@ export class GameEngine {
   private jumpBufferTimer: number = 0;
   /** what carries him through the air on a touch screen (see jumpHelp.ts): the way he was going when he left the ground, until he lands or pushes back */
   private airDrive = newAirDrive();
-  private lives: number = 3;
-  private readonly maxLives: number = 3;
+  private maxLives: number = startingLives();
+  private lives: number = this.maxLives;
+  /** the run ended because the lives ran out (not a win): the one case a Continue can pick up from the checkpoint */
+  private outOfLives = false;
+  /** the assist speed for this stage (1 = normal), read once so a menu change mid-stage waits for the next entry */
+  private readonly speedScale: number = gameSpeed();
   private checkpoint = { x: 0, y: 0 };
   private respawnFlash = 0;
   /** Seconds at the start of a stage / after a respawn where run input is ignored, so Pokey is dropped in standing still. */
@@ -524,10 +529,10 @@ export class GameEngine {
           this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
         } else {
           // the killing blow of a giant plays in slow motion (real time runs the clock down)
-          let sdt = dt;
+          let sdt = dt * this.speedScale;
           if (this.slowMoLeft > 0) {
             this.slowMoLeft -= dt;
-            sdt = dt * 0.3;
+            sdt = dt * 0.3 * this.speedScale;
           }
           this.update(sdt);
         }
@@ -862,7 +867,6 @@ export class GameEngine {
         p.jumpsLeft = 2;
         sound.playJump();
         this.spawnSparkBurst(p.x, p.y, '#34d399');
-        this.addFloatingText('CANOPY REACHED!', p.x, p.y - 40, '#4ade80');
       }
       // Natural Exit B: Reached the Ground -> Step off smoothly!
       else if (p.y >= nearTreeVine.bottomY - 8 && this.input.state.down) {
@@ -892,7 +896,6 @@ export class GameEngine {
 
         sound.playJump();
         this.spawnSparkBurst(p.x, p.y, '#34d399');
-        this.addFloatingText('TREE LEAP!', p.x, p.y - 45, '#4ade80');
       }
       // Natural Exit D: Steer away with Left / Right (held on purpose) -> Natural graceful hop off trunk!
       else if (this.climbSideTimer >= 0.2) {
@@ -976,7 +979,6 @@ export class GameEngine {
           p.vx = dropDir * 140;
           p.vy = 80;
           p.jumpsLeft = 2;
-          this.addFloatingText('DROP', p.x, p.y - 30, '#94a3b8');
         }
         // --- NATURAL SWING EXIT 2: HEROIC TARZAN LEAP (Jump button Pressed) ---
         else if (this.input.state.jumpPressed) {
@@ -1009,7 +1011,6 @@ export class GameEngine {
 
           sound.playJump();
           this.spawnSparkBurst(p.x, p.y, '#34d399');
-          this.addFloatingText('TARZAN LEAP!', p.x, p.y - 45, '#34d399');
         }
         // --- NATURAL SWING EXIT 3: AUTOMATIC PLATFORM LANDING ---
         else {
@@ -1115,7 +1116,6 @@ export class GameEngine {
             p.squashY = 1.32;
             this.takeOff(true);
             sound.playDoubleJump();
-            this.addFloatingText('DOUBLE JUMP!', p.x, p.y - 40, '#4ade80');
             this.spawnDoubleJumpBurst(p.x, p.y);
           } else {
             this.jumpBufferTimer = PHYS.buffer + ASSIST.buffer * assist;
@@ -1361,7 +1361,6 @@ export class GameEngine {
           if (checkAABBCollision(...this.pBox(), e.x - 24, e.y - 18, 48, 36)) {
             if (p.ducking) {
               // Successfully ducked under swoop!
-              this.addFloatingText('DUCKED! SLICK!', p.x, p.y - 40, '#86efac');
               sound.playWhoosh();
               e.swoopPhase = 'hover';
               e.hoverTimer = 1.4;
@@ -2102,6 +2101,7 @@ export class GameEngine {
     const p = this.player;
     const inp = this.input.state;
     if (this.megaCooldown > 0) this.megaCooldown -= dt;
+    this.input.megaReady = this.megaCooldown <= 0;
     if (this.chainTimer > 0) this.chainTimer -= dt;
     if (p.grounded) this.stompChain = 0;
 
@@ -2720,7 +2720,6 @@ export class GameEngine {
     if (inp.down && this.ropeGrace <= 0) {
       off(0, 60, 0.4);
       p.jumpsLeft = 1;
-      this.addFloatingText('DROP', p.x, p.y - 30, '#94a3b8');
       return false;
     }
     if (atEnd && dir !== 0 && ((dir < 0 && p.x <= rope.x0) || (dir > 0 && p.x >= rope.x1))) {
@@ -2766,22 +2765,41 @@ export class GameEngine {
     p.squashY = 1.38;
     p.bounce = { kind: 'spring', t: 0 };
     sound.playJump();
-    this.addFloatingText('BOING!', p.x, p.y - 40, '#facc15');
     this.spawnSparkBurst(p.x, p.y, '#facc15');
   }
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
-    const p = this.player;
     this.lives -= 1;
     this.statLivesLost++;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
     if (this.lives <= 0) {
       this.isGameOver = true;
+      this.outOfLives = true;
       sound.playDefeat();
       this.callbacks.onStageStats?.(this.buildStats(false, 0));
       this.callbacks.onDefeat(this.runScore);
       return;
     }
+    this.respawnAtCheckpoint(reason);
+  }
+
+  /**
+   * After Game Over: stand Pokey up at the last checkpoint with every life back. Stage progress (flowers, defeated animals, the boss's
+   * hurt) is kept, which is the point. Only valid when the lives ran out; returns false otherwise so the app can start over instead.
+   */
+  public continueFromCheckpoint(): boolean {
+    if (!this.isRunning || !this.isGameOver || !this.outOfLives) return false;
+    this.isGameOver = false;
+    this.outOfLives = false;
+    this.maxLives = startingLives(); // picks up extra lives switched on from the Game Over card
+    this.lives = this.maxLives;
+    this.callbacks.onLivesChange?.(this.lives, this.maxLives);
+    this.respawnAtCheckpoint('hurt');
+    return true;
+  }
+
+  private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt') {
+    const p = this.player;
     this.hazards.length = 0;
     this.slowTimer = 0;
     this.drowsy = 0;
@@ -3201,61 +3219,6 @@ export class GameEngine {
     // the boss's attacks go over him, so a warning is never hidden behind Pokey
     if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);
     if (this.debugBoxes) this.drawHitboxes(ctx);
-
-    // Contextual Action Badges (Climb Tree / Swing Liana / Jump Off)
-    const p = this.player;
-    if (this.nearTreeVine && !p.climbing && p.grounded) {
-      const bob = Math.sin(this.gameTime * 6) * 4;
-      ctx.save();
-      ctx.translate(p.x, p.y - 75 + bob);
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-      ctx.strokeStyle = '#4ade80';
-      ctx.lineWidth = 2.0;
-      ctx.beginPath();
-      ctx.roundRect(-64, -14, 128, 26, 8);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = '#4ade80';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('[W / UP] CLIMB TREE', 0, 0);
-      ctx.restore();
-    } else if (p.climbing) {
-      const bob = Math.sin(this.gameTime * 6) * 3;
-      ctx.save();
-      ctx.translate(p.x, p.y - 72 + bob);
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-      ctx.strokeStyle = '#facc15';
-      ctx.lineWidth = 2.0;
-      ctx.beginPath();
-      ctx.roundRect(-66, -14, 132, 26, 8);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = '#fef08a';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('LEAP: [SPACE / RIGHT]', 0, 0);
-      ctx.restore();
-    } else if (p.isVineSwinging) {
-      const bob = Math.sin(this.gameTime * 8) * 3;
-      ctx.save();
-      ctx.translate(p.x, p.y - 65 + bob);
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 2.0;
-      ctx.beginPath();
-      ctx.roundRect(-68, -14, 136, 26, 8);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('TARZAN: [SPACE] JUMP', 0, 0);
-      ctx.restore();
-    }
 
     // Render Particles
     this.particles.forEach((pt) => {

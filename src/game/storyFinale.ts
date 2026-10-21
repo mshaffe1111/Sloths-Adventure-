@@ -190,7 +190,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     M('Come on, Pokey. Let\'s go home and watch it bloom. Slowly, of course.', 'PH:stand_smile@.34*1.1 H:epic@.68^.8', { p: { zoom: 1.35 } }),
     N('Home was exactly as they had left it, except the Heartbloom was open, and a snail who had set off across the garden path on the morning of the storm was one centimetre from the finish line.', 'PH:arm_around@.34*1.1 H:epic@.68^.8', { cue: 'tender', i: 0.5, p: { zoom: 1.2 } }),
     P('He deserves it. He trained.', 'PH:cheek_glad@.34*1.1 H:epic@.68^.8', { sting: 'laugh' }),
-    N('And far away, the petal tied to Pokey\'s wrist glowed once, and pointed back at the tallest tower.', 'PF:calm+wink@.4', { m: 'night', cue: 'bloom', i: 0.5, sting: 'cliffhanger', p: { fx: [{ at: 1.2, kind: 'glints', x: 0.55, y: 0.78 }] } }),
+    N('And far away, the petal tied to Pokey\'s wrist glowed once, and pointed back at the tallest tower.', 'PX:petal_glow@.4', { m: 'night', cue: 'bloom', i: 0.5, sting: 'cliffhanger', p: { fx: [{ at: 1.2, kind: 'glints', x: 0.55, y: 0.78 }] } }),
   ]);
 
   return [...song, ...mercy, ...letter, ...blessing, ...epilogue, ...end];

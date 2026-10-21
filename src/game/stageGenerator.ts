@@ -20,6 +20,7 @@ import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { SECRET_GATE_LEVEL } from './secret.ts';
+import { addJumpTrails } from './jumpTrails.ts';
 import { findForStage } from './finds.ts';
 import { pieceWidth, zoneRecipes, crumbleTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP, type Zone, type ZonePiece } from './zones.ts';
 import { balanceStyles, styleFor, type PlatformKind } from './platformStyles.ts';
@@ -2655,7 +2656,10 @@ export function generateStage(config: LevelConfig): GeneratedStage {
   const acceptedIds = lastAccepted && lastAccepted.key === `${config.id}@${attempt}` && config.id !== SECRET_GATE_LEVEL ? lastAccepted.ids : undefined;
   lastAccepted = null;
   addSecrets(stage);
-  addFinds(stage, acceptedIds);
+  // flower arcs over the gaps the route crosses that have none, then the finds: a fern is never put beside a trail (and no trail leads to one)
+  const reachableIds = acceptedIds ?? validateStage(stage).reachableIds;
+  addJumpTrails(stage, reachableIds);
+  addFinds(stage, reachableIds);
   return stage;
 }
 

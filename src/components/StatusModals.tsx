@@ -34,6 +34,11 @@ interface StatusModalsProps {
   onToggleMute: () => void;
   onResume: () => void;
   onRestart: () => void;
+  /** Game Over: pick up from the last checkpoint */
+  onContinue?: () => void;
+  /** Game Overs on this stage this visit, and the switch for the extra-lives offer */
+  fails?: number;
+  onTakeHelp?: () => void;
   onNextStage: () => void;
   onPrevStage: () => void;
   onOpenMap: () => void;
@@ -62,6 +67,9 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   onToggleMute,
   onResume,
   onRestart,
+  onContinue,
+  fails,
+  onTakeHelp,
   onNextStage,
   onPrevStage,
   onOpenMap,
@@ -112,7 +120,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
 
   // --- 3. GAME OVER ---
   if (screen === 'game_over') {
-    return <GameOverCard levelConfig={levelConfig} score={score} stats={stats} onRetry={onRestart} onOpenMap={onOpenMap} />;
+    return <GameOverCard levelConfig={levelConfig} score={score} stats={stats} onRetry={onRestart} onContinue={onContinue ?? onRestart} onOpenMap={onOpenMap} fails={fails} onTakeHelp={onTakeHelp} />;
   }
 
   // --- 4. BOSS INTRO MODAL ---
