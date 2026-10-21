@@ -24,9 +24,9 @@ export const ironclawSprite = createPaintedBoss({
   pick: ({ b, br, m, moving, dist, time }) => {
     let name: string;
     const mv = br.move;
-    if (br.state === 'dying') name = br.t < 0.5 ? 'knockback' : br.t < 0.9 ? 'groundhit' : br.t < 1.4 ? 'defeat1' : br.t < 2.0 ? 'defeat2' : 'defeat3';
+    if (br.state === 'dying') name = br.t < 0.5 ? 'knockback' : br.t < 0.9 ? 'groundhit' : br.t < 1.2 ? 'crippled' : br.t < 1.6 ? 'defeat1' : br.t < 2.0 ? 'defeat2' : 'defeat3';
     else if (br.state === 'stun') name = 'stunned';
-    else if (br.state === 'roar') name = br.roarReason === 'enter' ? 'roar' : b.phase >= 3 ? 'enrage3' : 'rageblast';
+    else if (br.state === 'roar') name = br.roarReason === 'enter' ? 'roar' : b.phase >= 3 ? (br.t > br.hold * 0.5 ? 'chaos' : 'enrage3') : 'rageblast'; // the last enrage: the flame aura, then the club whirling
     else if (br.state === 'tell') {
       const tell: Record<string, string> = { staffSlam: 'overhead1', spearThrow: 'armed', warCry: 'roar', ironCharge: 'block', groundPound: 'stomp1', clawCombo: 'claw1', quakeStride: 'crouch', warlordSlam: 'ultslam' };
       name = (mv && tell[mv]) || 'armed';
