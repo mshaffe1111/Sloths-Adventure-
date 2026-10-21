@@ -11,6 +11,8 @@ import { paintTree, canopyMass, rootCurtain, leafSpray } from './rainforest.ts';
 import { palmTree, bambooClump, giantMushroom, mangrove, cloudTree, treeFern, figRuin, charredTree } from './trees.ts';
 import { bananaLeaf, fernFrond } from './flora.ts';
 import { crag, roost, karst, cavemouth, peat, web, bayon, watchtower, stumps, ohiatree } from './territoryTrees.ts';
+import { composeClusters, clusterCentres } from './placement.ts';
+import { sceneryPlants, paintShrub } from './paintedScenery.ts';
 import type { Look } from './scenery.ts';
 
 export type Species = 'giant' | 'palm' | 'bamboo' | 'mushroom' | 'mangrove' | 'cloud' | 'fern' | 'fig' | 'charred' | 'storm' | 'bloom' | 'crag' | 'roost' | 'karst' | 'cavemouth' | 'peat' | 'web' | 'bayon' | 'watchtower' | 'stumps' | 'ohiatree';
@@ -72,7 +74,8 @@ export const RECIPES: Record<number, Recipe> = {
   // the Tarantula Queen: a damp understory of orchids and bromeliads, with golden orb webs slung between the trunks
   5: {
     far: FAR([['bloom', 2], ['web', 1]]),
-    mid: MID([['bloom', 2], ['web', 2]]),
+    // (the webs are the sanctuary's signature, but two in the middle row stretched strands right across the hero's lane: one is plenty)
+    mid: MID([['bloom', 3], ['web', 1]]),
     giants: BIG([['bloom', 2], ['web', 1]]),
     floor: 'fern',
     hang: 'liana',
@@ -230,100 +233,145 @@ function reeds(ctx: CanvasRenderingContext2D, x: number, y: number, h: number, t
   }
 }
 
-function floor(target: CanvasRenderingContext2D, kind: Floor, look: Look, r: RNG, TW: number) {
+/**
+ * How a world's forest floor is composed. The floor used to be one element every 46 units along the whole tile (about twenty things
+ * in every screen, all the size of the hero), which is what made the ground behind him read as a hedge of clutter. Now it is two
+ * quiet passes: a LOW carpet that only grounds the trunks (short, dim, widely spaced), and a handful of feature clusters (three to
+ * five members each, the biggest in the middle, one species per cluster) with real gaps between them and one long stretch left bare.
+ * `plant` is the share of clusters whose lead is one of the world's painted plants, standing in the haze at 2-3 times pickup size.
+ */
+interface FloorPlan { clusters: number; members: [number, number]; gap: number; spread: [number, number]; calm: number; carpet: number; plant: number }
+const FLOOR_PLAN: Record<Floor, FloorPlan> = {
+  fern: { clusters: 7, members: [3, 5], gap: 230, spread: [96, 16], calm: 520, carpet: 96, plant: 0.5 },
+  reed: { clusters: 6, members: [3, 5], gap: 260, spread: [88, 12], calm: 560, carpet: 120, plant: 0.3 },
+  glow: { clusters: 6, members: [3, 5], gap: 270, spread: [92, 14], calm: 560, carpet: 110, plant: 0.3 },
+  rock: { clusters: 6, members: [3, 5], gap: 270, spread: [92, 14], calm: 560, carpet: 110, plant: 0.3 },
+  ash: { clusters: 5, members: [3, 5], gap: 300, spread: [92, 12], calm: 600, carpet: 130, plant: 0.25 },
+  ruin: { clusters: 5, members: [3, 4], gap: 300, spread: [90, 12], calm: 600, carpet: 130, plant: 0.3 },
+};
+
+function floor(target: CanvasRenderingContext2D, kind: Floor, look: Look, r: RNG, TW: number, world: number) {
   const wrap = (x: number, rad: number, fn: (x: number) => void) => {
     fn(x);
     if (x < rad) fn(x + TW);
     if (x > TW - rad) fn(x - TW);
   };
-  const under = look.leaves.map((c) => tone(mix(c, look.haze, 0.25)));
+  // the understory sits a little back in the air: the same leaf colours, drawn toward the world's haze
+  const under = look.leaves.map((c) => tone(mix(c, look.haze, 0.3)));
   const glow = look.glow ?? look.rays;
-  for (let x = 0; x < TW; x += kind === 'ruin' ? 70 : 46) {
-    wrap(x, 130, (xx) => {
-      const y = 448 + r() * 70;
-      const t = under[(r() * under.length) | 0];
+  const plan = FLOOR_PLAN[kind];
+
+  // 1. the carpet: low, dim, widely spaced, just enough to plant the trunks in something
+  const carpetCol = (t: Tone): Tone => tone(mix(t.mid, look.haze, 0.12));
+  for (let x = r() * plan.carpet; x < TW; x += plan.carpet * (0.8 + r() * 0.4)) {
+    wrap(x, 90, (xx) => {
+      const y = 470 + r() * 50;
+      const t = carpetCol(under[(r() * under.length) | 0]);
+      if (kind === 'reed' && r() < 0.5) reeds(target, xx, y + 20, 38 + r() * 24, t, r);
+      else leafSpray(target, xx, y, 30 + r() * 20, t, r, 8, -Math.PI / 2, 2.4);
+    });
+  }
+
+  // 2. the feature clusters
+  const spots = composeClusters(r, { width: TW, wrap: true, clusters: plan.clusters, members: plan.members, gap: plan.gap, spread: plan.spread, minDist: 34, size: [34, 68], y: [452, 500], calm: plan.calm });
+  const plants = sceneryPlants(world);
+  for (const s of spots) {
+    wrap(s.x, 130, (xx) => {
+      const y = s.y;
+      const lead = s.k === 0;
+      const t = under[((s.tint * 977) | 0) % under.length];
       const roll = r();
+      // a painted plant leads some clusters (one species for the whole cluster), standing back in the haze
+      if (lead && s.tint < plan.plant) {
+        const num = plants[((s.tint / plan.plant) * plants.length) | 0];
+        if (paintShrub(target, 'plant', num, xx, y + 24, 78 + s.size * 0.55, look.haze, 0.22, r() > 0.5)) return;
+      }
+      const small = s.size * 0.62;
       switch (kind) {
         case 'fern':
-          if (roll < 0.55) leafSpray(target, xx, y, 58 + r() * 40, t, r, 9, -Math.PI / 2, 2.8);
-          else bananaLeaf(target, xx, y + 14, 80 + r() * 50, 30 + r() * 12, -Math.PI / 2 + (r() - 0.5) * 1.2, t, r);
+          if (lead || roll < 0.55) leafSpray(target, xx, y, s.size * 1.25, t, r, 9, -Math.PI / 2, 2.8);
+          else bananaLeaf(target, xx, y + 14, s.size * 1.5, 26 + r() * 8, -Math.PI / 2 + (r() - 0.5) * 1.2, t, r);
           break;
         case 'reed':
-          if (roll < 0.6) reeds(target, xx, y + 20, 90 + r() * 60, t, r);
-          else leafSpray(target, xx, y, 50 + r() * 30, t, r, 8, -Math.PI / 2, 2.6);
+          if (lead || roll < 0.7) reeds(target, xx, y + 20, lead ? s.size * 2.1 : s.size * 1.4, t, r);
+          else leafSpray(target, xx, y, small * 1.4, t, r, 8, -Math.PI / 2, 2.6);
           break;
         case 'glow': {
-          if (roll < 0.35) {
-            const s = 20 + r() * 26;
+          if (lead || roll < 0.45) {
+            // a glowing mushroom: the cluster's lead stands tallest, its kin crowd round it small
+            const m = lead ? s.size * 0.62 : s.size * 0.4;
             target.fillStyle = '#e8d6b0';
-            target.fillRect(xx - s * 0.1, y - s * 0.7, s * 0.2, s * 0.7);
-            const ct = tone(look.crowns[(r() * look.crowns.length) | 0], '#2a0a40');
-            const hg = target.createRadialGradient(xx, y - s * 0.8, 0, xx, y - s * 0.8, s * 2.2);
-            hg.addColorStop(0, rgba(glow, 0.4));
+            target.fillRect(xx - m * 0.1, y - m * 0.7, m * 0.2, m * 0.7);
+            const ct = tone(look.crowns[((s.tint * 31) | 0) % look.crowns.length], '#2a0a40');
+            const hg = target.createRadialGradient(xx, y - m * 0.8, 0, xx, y - m * 0.8, m * 2.2);
+            hg.addColorStop(0, rgba(glow, lead ? 0.34 : 0.22));
             hg.addColorStop(1, rgba(glow, 0));
             target.fillStyle = hg;
-            target.fillRect(xx - s * 2.2, y - s * 3, s * 4.4, s * 4.4);
+            target.fillRect(xx - m * 2.2, y - m * 3, m * 4.4, m * 4.4);
             target.fillStyle = ct.mid;
             target.beginPath();
-            target.ellipse(xx, y - s * 0.7, s * 0.6, s * 0.38, 0, Math.PI, 0);
+            target.ellipse(xx, y - m * 0.7, m * 0.6, m * 0.38, 0, Math.PI, 0);
             target.fill();
-          } else if (roll < 0.7) fernFrond(target, xx, y + 16, 70 + r() * 40, -Math.PI / 2 + (r() - 0.5) * 1.2, t, r, 0.5);
-          else leafSpray(target, xx, y, 46 + r() * 30, t, r, 8, -Math.PI / 2, 2.6);
+          } else if (roll < 0.75) fernFrond(target, xx, y + 16, small * 1.6, -Math.PI / 2 + (r() - 0.5) * 1.2, t, r, 0.5);
+          else leafSpray(target, xx, y, small * 1.3, t, r, 8, -Math.PI / 2, 2.6);
           break;
         }
         case 'rock': {
-          if (roll < 0.3) {
-            const s = 36 + r() * 46;
+          if (lead || roll < 0.3) {
+            const s2 = lead ? s.size * 1.15 : s.size * 0.75;
             const rt = tone(mix(look.ground.stone, look.haze, 0.3));
             target.fillStyle = rt.mid;
             target.beginPath();
-            target.ellipse(xx, y + 10, s, s * 0.5, 0, Math.PI, 0);
+            target.ellipse(xx, y + 10, s2, s2 * 0.5, 0, Math.PI, 0);
             target.fill();
             target.fillStyle = rgba(under[0].mid, 0.7);
             target.beginPath();
-            target.ellipse(xx - s * 0.1, y - s * 0.32 + 10, s * 0.7, s * 0.18, 0, Math.PI, 0);
+            target.ellipse(xx - s2 * 0.1, y - s2 * 0.32 + 10, s2 * 0.7, s2 * 0.18, 0, Math.PI, 0);
             target.fill();
-          } else if (roll < 0.65) fernFrond(target, xx, y + 16, 80 + r() * 40, -Math.PI / 2 + (r() - 0.5) * 1.3, t, r, 0.5);
-          else leafSpray(target, xx, y, 52 + r() * 30, t, r, 8, -Math.PI / 2, 2.6);
+          } else if (roll < 0.65) fernFrond(target, xx, y + 16, small * 1.7, -Math.PI / 2 + (r() - 0.5) * 1.3, t, r, 0.5);
+          else leafSpray(target, xx, y, small * 1.4, t, r, 8, -Math.PI / 2, 2.6);
           break;
         }
         case 'ash': {
-          if (roll < 0.45) {
-            const s = 30 + r() * 40;
+          if (lead || roll < 0.45) {
+            const s2 = lead ? s.size * 0.9 : s.size * 0.55;
             const rt = tone('#3a2a2a');
             target.fillStyle = rt.mid;
             target.beginPath();
-            target.moveTo(xx - s, y + 12);
-            target.lineTo(xx - s * 0.5, y - s * 0.5);
-            target.lineTo(xx + s * 0.1, y - s * 0.7);
-            target.lineTo(xx + s * 0.8, y - s * 0.2);
-            target.lineTo(xx + s, y + 12);
+            target.moveTo(xx - s2, y + 12);
+            target.lineTo(xx - s2 * 0.5, y - s2 * 0.5);
+            target.lineTo(xx + s2 * 0.1, y - s2 * 0.7);
+            target.lineTo(xx + s2 * 0.8, y - s2 * 0.2);
+            target.lineTo(xx + s2, y + 12);
             target.fill();
-            target.strokeStyle = rgba(glow, 0.55);
-            target.lineWidth = 2;
-            target.beginPath();
-            target.moveTo(xx - s * 0.2, y + 8);
-            target.lineTo(xx, y - s * 0.3);
-            target.lineTo(xx + s * 0.3, y - s * 0.1);
-            target.stroke();
-          } else leafSpray(target, xx, y, 44 + r() * 30, tone(mix(look.leaves[1], '#3a1a10', 0.35)), r, 8, -Math.PI / 2, 2.4);
+            // the glow in the crack belongs to the lead only; its kin are plain cooled rock
+            if (lead) {
+              target.strokeStyle = rgba(glow, 0.5);
+              target.lineWidth = 2;
+              target.beginPath();
+              target.moveTo(xx - s2 * 0.2, y + 8);
+              target.lineTo(xx, y - s2 * 0.3);
+              target.lineTo(xx + s2 * 0.3, y - s2 * 0.1);
+              target.stroke();
+            }
+          } else leafSpray(target, xx, y, small * 1.3, tone(mix(look.leaves[1], '#3a1a10', 0.35)), r, 8, -Math.PI / 2, 2.4);
           break;
         }
         case 'ruin': {
-          if (roll < 0.4) {
-            const s = 34 + r() * 40;
+          if (lead || roll < 0.5) {
+            const s2 = lead ? s.size * 1.05 : s.size * 0.7;
             const st = tone(mix(look.ground.stone, look.haze, 0.3), '#201a10');
             target.save();
             target.translate(xx, y + 8);
             target.rotate((r() - 0.5) * 0.4);
             target.fillStyle = st.mid;
-            target.fillRect(-s * 0.5, -s * 0.4, s, s * 0.5);
+            target.fillRect(-s2 * 0.5, -s2 * 0.4, s2, s2 * 0.5);
             target.fillStyle = st.light;
-            target.fillRect(-s * 0.5, -s * 0.4, s, 4);
+            target.fillRect(-s2 * 0.5, -s2 * 0.4, s2, 4);
             target.strokeStyle = rgba(st.deep, 0.6);
-            target.strokeRect(-s * 0.5, -s * 0.4, s, s * 0.5);
+            target.strokeRect(-s2 * 0.5, -s2 * 0.4, s2, s2 * 0.5);
             target.restore();
-          } else leafSpray(target, xx, y, 50 + r() * 30, t, r, 8, -Math.PI / 2, 2.6);
+          } else leafSpray(target, xx, y, small * 1.4, t, r, 8, -Math.PI / 2, 2.6);
           break;
         }
       }
@@ -340,13 +388,15 @@ function hanging(target: CanvasRenderingContext2D, kind: Hang, look: Look, r: RN
   };
   // dense foliage across the top edge in every world (cave worlds get it dark and sparse)
   const sparse = kind === 'stalactite';
-  for (let x = 0; x < TW; x += sparse ? 280 : 170) {
-    if (r() < (sparse ? 0.4 : 0.2)) continue;
+  for (let x = 0; x < TW; x += sparse ? 280 : 190) {
+    if (r() < (sparse ? 0.4 : 0.28)) continue;
     wrap(x, 200, (xx) => canopyMass(target, xx + r() * 90, -10 + r() * 40, 120 + r() * 60, 46 + r() * 20, L, r, 14, 44, true));
   }
-  for (let x = 60; x < TW; x += 330) {
+  // what hangs from the canopy is placed, not strewn: five curtains a good way apart, so there are long stretches of clear sky between them
+  const hangAt = clusterCentres(r, TW, sparse ? 7 : 5, 330, true);
+  for (const x of hangAt) {
     wrap(x, 150, (xx) => {
-      const px = xx + r() * 120;
+      const px = xx + r() * 40;
       switch (kind) {
         case 'liana':
         case 'root':
@@ -420,7 +470,7 @@ export function paintBiomeMid(ctx: CanvasRenderingContext2D, world: number, look
   fl.addColorStop(1, rgba(darken(look.hills[2], 0.6), 1));
   ctx.fillStyle = fl;
   ctx.fillRect(0, 430, TW, 290);
-  floor(ctx, rec.floor, look, r, TW);
+  floor(ctx, rec.floor, look, r, TW, world);
   hanging(ctx, rec.hang, look, r, TW);
 }
 

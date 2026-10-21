@@ -9,6 +9,7 @@
 import { getScratch } from './scratch.ts';
 import { tone, mix, lighten, darken, rgba, type RNG, type Tone } from './artKit.ts';
 import { drawBloom } from './flora.ts';
+import { clusterAround } from './placement.ts';
 import type { Look } from './scenery.ts';
 
 /** the worlds that use the new hand-built art (being grown world by world) */
@@ -415,28 +416,42 @@ export function giantTree(ctx: CanvasRenderingContext2D, x: number, baseY: numbe
     }
   }
 
-  // ── perched plants on the trunk and its roots
-  const epiphytes = Math.round(2 + o.detail * 5);
-  for (let i = 0; i < epiphytes; i++) {
-    const t = 0.1 + r() * 0.5;
-    const c = cxAt(t);
-    const ex = c + jitter(r, hwAt(t) * 0.9);
-    const ey = baseY - t * H;
-    const roll = r();
-    const size = 26 + r() * 22 + o.w * 0.12;
-    // a small mossy pad for it to sit on
-    ctx.fillStyle = rgba(moss.dark, 0.85);
-    ctx.beginPath();
-    ctx.ellipse(ex, ey + 3, size * 0.5, size * 0.17, 0, 0, Math.PI * 2);
-    ctx.fill();
-    if (o.bloom) {
-      // a heavy drape of blooms on a green tuft
-      leafSpray(ctx, ex, ey + 4, size * 0.7, L[(r() * L.length) | 0], r, 8, -Math.PI / 2, 2.8);
-      const kinds = ['hibiscus', 'orchid', 'plumeria', 'passion'] as const;
-      for (let k = 0; k < 3; k++) drawBloom(ctx, kinds[(r() * kinds.length) | 0], ex + jitter(r, size * 0.5), ey - size * 0.3 + jitter(r, size * 0.3), size * (0.35 + r() * 0.25), look.flora[(r() * look.flora.length) | 0], '#ffd23a', jitter(r, 1), r);
-    } else if (roll < 0.45) bromeliad(ctx, ex, ey, size, L[(r() * L.length) | 0], look.flora[(r() * look.flora.length) | 0], r);
-    else if (roll < 0.75) orchid(ctx, ex, ey, size * 1.1, look.flora[(r() * look.flora.length) | 0], r, r() > 0.5 ? 1 : -1);
-    else leafSpray(ctx, ex, ey, size * 0.9, L[(r() * L.length) | 0], r, 9, -Math.PI / 2, 2.6);
+  // ── perched plants on the trunk and its roots: composed, not strewn. A cluster of three to five plants (the biggest in the middle, a
+  // minimum gap between neighbours, one flower colour for the whole cluster) sits at one height on one side of the trunk; a big near
+  // trunk may get a second, smaller one a good way up or down, and the bark between them stays bare. (They used to be up to seven
+  // plants at random heights and sides on every tree, which read as flowers thrown at the wall.)
+  const clusters: Array<{ tc: number; n: number; side: number }> = [];
+  const tc0 = 0.14 + r() * 0.3;
+  clusters.push({ tc: tc0, n: o.detail < 0.3 ? 3 : o.detail < 0.8 ? 3 + ((r() * 2) | 0) : 4 + ((r() * 2) | 0), side: r() > 0.5 ? 1 : -1 });
+  if (o.detail >= 0.8 && r() < 0.55) clusters.push({ tc: tc0 + (tc0 > 0.36 ? -0.24 : 0.26) + r() * 0.04, n: 3, side: -clusters[0].side });
+  // a far, hazy tree is a quiet silhouette: only some of them carry a cluster at all
+  const skipFar = o.detail < 0.3 && r() < 0.4;
+  for (const cl of skipFar ? [] : clusters) {
+    const tcx = cxAt(cl.tc);
+    const hot = look.flora[(r() * look.flora.length) | 0];
+    const base = 34 + o.w * 0.12 + r() * 8;
+    const mem = clusterAround(r, cl.n, tcx + cl.side * hwAt(cl.tc) * 0.35, baseY - cl.tc * H, hwAt(cl.tc) * 0.75, H * 0.07, base * 0.95);
+    for (const m of mem) {
+      const ex = m.x;
+      const ey = m.y;
+      const roll = r();
+      // the lead is the biggest; the ones toward the edge of the cluster taper off
+      const size = base * (1 - m.edge * 0.38) * (0.9 + r() * 0.2);
+      // a small mossy pad for it to sit on
+      ctx.fillStyle = rgba(moss.dark, 0.85);
+      ctx.beginPath();
+      ctx.ellipse(ex, ey + 3, size * 0.5, size * 0.17, 0, 0, Math.PI * 2);
+      ctx.fill();
+      if (o.bloom) {
+        // a drape of blooms on a green tuft
+        leafSpray(ctx, ex, ey + 4, size * 0.7, L[(r() * L.length) | 0], r, 8, -Math.PI / 2, 2.8);
+        const kinds = ['hibiscus', 'orchid', 'plumeria', 'passion'] as const;
+        const nb = m.k === 0 ? 3 : 2;
+        for (let k = 0; k < nb; k++) drawBloom(ctx, kinds[(r() * kinds.length) | 0], ex + jitter(r, size * 0.5), ey - size * 0.3 + jitter(r, size * 0.3), size * (0.35 + r() * 0.25), k === 0 ? hot : look.flora[(r() * look.flora.length) | 0], '#ffd23a', jitter(r, 1), r);
+      } else if (roll < 0.45) bromeliad(ctx, ex, ey, size, L[(r() * L.length) | 0], hot, r);
+      else if (roll < 0.75) orchid(ctx, ex, ey, size * 1.1, hot, r, m.k % 2 ? 1 : -1);
+      else leafSpray(ctx, ex, ey, size * 0.9, L[(r() * L.length) | 0], r, 9, -Math.PI / 2, 2.6);
+    }
   }
 
   if (!o.crown) {

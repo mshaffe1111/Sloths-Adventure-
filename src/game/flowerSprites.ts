@@ -98,3 +98,26 @@ export function drawFlowerSprite(ctx: CanvasRenderingContext2D, world: number, m
   ctx.restore();
   return true;
 }
+
+/** true when the painted flowers are on and loaded (starts the load the first time it is asked) */
+export function flowersPainted(): boolean {
+  if (!isEnabled()) return false;
+  load();
+  return ready && !!atlas;
+}
+
+/** draws sheet flower `num` standing on (x, y) (bottom centre), `size` world units on its longest side, for scenery. False when off or not loaded. */
+export function drawFlowerAt(ctx: CanvasRenderingContext2D, num: number, x: number, y: number, size: number, flip = false): boolean {
+  if (!flowersPainted() || !atlas) return false;
+  const f = FLOWER_FRAMES['f' + num];
+  if (!f) return false;
+  const k = size / Math.max(f.w, f.h);
+  ctx.save();
+  ctx.translate(x, y);
+  if (flip) ctx.scale(-1, 1);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, -f.h * k, f.w * k, f.h * k);
+  ctx.restore();
+  return true;
+}
