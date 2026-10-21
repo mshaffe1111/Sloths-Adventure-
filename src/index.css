@@ -542,7 +542,7 @@
 .clr-stars { display: flex; justify-content: center; align-items: flex-end; gap: 10px; }
 .clr-star { filter: drop-shadow(0 3px 0 rgba(0, 0, 0, 0.3)); }
 .clr-star.on { animation: clr-star 0.55s cubic-bezier(0.2, 1.6, 0.4, 1) both; }
-.clr-chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.clr-chips { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 10px; }
 .clr-chip { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px; border-radius: 15px; background: rgba(0, 0, 0, 0.28); border: 2px solid rgba(167, 243, 208, 0.22); }
 .clr-chip span { font-family: var(--font-ui); font-size: 12px; letter-spacing: 1px; color: #a7f3d0; text-transform: uppercase; }
 .clr-chip b { font-size: 23px; font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -559,6 +559,32 @@
 @keyframes clr-pop { from { transform: translateY(26px) scale(0.94); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes clr-star { from { transform: scale(0.2) rotate(-40deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .clr-card, .clr-star.on { animation: none; } }
+.clr-chips.sm { gap: 8px; margin-top: -4px; }
+.clr-chips.sm .clr-chip { padding: 5px 6px; border-radius: 12px; background: rgba(0, 0, 0, 0.18); border-width: 1.5px; }
+.clr-chips.sm .clr-chip span { font-size: 10.5px; letter-spacing: 0.8px; }
+.clr-chips.sm .clr-chip b { font-size: 17px; }
+.clr-praise { display: flex; flex-direction: column; align-items: center; gap: 1px; text-align: center; margin-top: -2px; }
+.clr-praise b { font-size: 27px; font-weight: 700; letter-spacing: 0.5px; color: #fde68a; text-shadow: 0 2px 0 rgba(0, 0, 0, 0.35); line-height: 1.1; }
+.clr-praise span { font-family: var(--font-ui); font-size: 14px; color: #d1fae5; line-height: 1.3; max-width: 36ch; text-wrap: balance; }
+.clr-praise.lost b { color: #fdba74; }
+.clr-safe { margin: -2px 0 0; text-align: center; font-family: var(--font-ui); font-size: 12.5px; color: rgba(187, 247, 208, 0.75); }
+.clr-sec.one { grid-template-columns: minmax(0, 1fr); }
+.clr-ribbon.dusk h2 { color: #431407; text-shadow: 0 1px 0 #ffedd5; }
+.clr-scrim.lost { background: radial-gradient(ellipse at 50% 40%, rgba(40, 24, 52, 0.78), rgba(8, 10, 24, 0.9)); }
+.clr-card.lost { background: linear-gradient(180deg, #243a44, #131f2c); border-color: #fdba74; box-shadow: 0 20px 56px rgba(0, 0, 0, 0.65), 0 0 0 6px rgba(253, 186, 116, 0.08); }
+.clr-card.lost .clr-hero::before { background: radial-gradient(circle, rgba(253, 186, 116, 0.32), rgba(253, 186, 116, 0) 68%); bottom: 22%; }
+.clr-card.lost .clr-hero { align-items: center; }
+.clr-hero { align-items: center; }
+.clr-card.lost .clr-stage { color: #bfdbfe; }
+.clr-card.lost .clr-chip { border-color: rgba(253, 186, 116, 0.28); }
+.clr-card.lost .clr-chip span { color: #fed7aa; }
+.clr-card.lost .clr-btn2 { border-color: rgba(253, 186, 116, 0.5); }
+.clr-pose.s3 { animation: clr-cheer 0.9s ease-in-out 0.3s infinite alternate; transform-origin: 50% 100%; }
+.clr-pose.ko { animation: clr-breathe 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes clr-cheer { from { transform: translateY(0) scale(1, 1); } to { transform: translateY(-10px) scale(0.99, 1.02); } }
+@keyframes clr-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.015, 1.035); } }
+@media (prefers-reduced-motion: reduce) { .clr-pose.s3, .clr-pose.ko { animation: none; } }
+
 @media (max-width: 640px) and (min-height: 521px) {
   .clr-card { grid-template-columns: 1fr; }
   .clr-hero { display: none; }
@@ -576,11 +602,27 @@
   .clr-clue p { font-size: 12.5px; }
   .clr-btn2 { min-height: 38px; font-size: 14px; }
   .clr-note { display: none; }
+  .clr-praise b { font-size: 20px; }
+  .clr-praise span { font-size: 12px; }
+  .clr-chips.sm .clr-chip { padding: 2px 4px; }
+  .clr-chips.sm .clr-chip b { font-size: 14px; }
+  .clr-chips.sm .clr-chip span { font-size: 9.5px; }
+  .clr-safe { font-size: 11px; }
   .clr-stars svg { width: 38px; height: 38px; }
   .clr-stars svg:nth-child(2) { width: 48px; height: 48px; }
   .clr-clue h3 { font-size: 14px; margin-bottom: 0; }
   .clr-main .pm-go { min-height: 46px; font-size: 20px; }
   .clr-card { grid-template-columns: 130px minmax(0, 1fr); gap: 12px; padding: 36px 16px 12px; }
+}
+@media (max-height: 440px) {
+  .clr-praise span, .clr-safe { display: none; }
+}
+@media (max-height: 380px) {
+  .clr-stage { display: none; }
+  .clr-praise b { font-size: 18px; }
+  .clr-card { padding-top: 32px; padding-bottom: 8px; }
+  .clr-stars svg { width: 26px; height: 26px; }
+  .clr-stars svg:nth-child(2) { width: 32px; height: 32px; }
 }
 @media (max-height: 400px) {
   .clr-main { gap: 5px; }
@@ -593,6 +635,11 @@
   .clr-stars svg { width: 30px; height: 30px; }
   .clr-stars svg:nth-child(2) { width: 38px; height: 38px; }
 }
+
+/* the Game Over card keeps a wider hero column (Pokey lies down, so the pose is wide), then follows the same breakpoints */
+.clr-card.lost { grid-template-columns: 256px minmax(0, 1fr); }
+@media (max-width: 640px) and (min-height: 521px) { .clr-card.lost { grid-template-columns: 1fr; gap: 8px; } .clr-card.lost .clr-hero { display: flex; margin-top: -4px; } .clr-sec:not(.one) .clr-btn2 { flex-direction: column; gap: 2px; font-size: 13px; line-height: 1.1; padding: 6px 4px; } }
+@media (max-height: 520px) { .clr-card.lost { grid-template-columns: 150px minmax(0, 1fr); } }
 
 /* ---------- Skills: the new-skill card and the pause menu's Skills row (approved mockups 5 and 6) ---------- */
 .sk-card { max-width: 780px; }

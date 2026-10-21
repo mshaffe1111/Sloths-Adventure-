@@ -228,6 +228,8 @@ export default function App() {
   };
   /** what the last stage reported; folded in once its result has been saved (see the effect below) */
   const pendingStats = useRef<StageStats | null>(null);
+  /** the same report, kept for the result card (stage cleared / out of lives) to show */
+  const [lastStats, setLastStats] = useState<StageStats | null>(null);
   const badgeCount = React.useMemo(
     () => evaluate({ store: badgeStore, levels: allLevels, gateFound: secretFound, thornHeart }).length,
     [badgeStore, allLevels, secretFound, thornHeart],
@@ -473,6 +475,7 @@ export default function App() {
         onFatal: () => setScreen('world_map'),
         onStageStats: (s) => {
           pendingStats.current = s;
+          setLastStats(s);
         },
         onProgressUpdate: (current, target, curScore, curHp, distRatio, curPowerUp, curPowerTimer) => {
           setCurrentCount(current);
@@ -919,6 +922,7 @@ export default function App() {
           score={score}
           newBest={newBest}
           bestScore={bestScore}
+          stats={lastStats}
           prevId={activeLevel.secret ? null : prevStage?.id ?? null}
           nextId={activeLevel.secret ? null : nextStage?.id ?? null}
           isMuted={isMuted}

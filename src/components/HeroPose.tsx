@@ -6,9 +6,10 @@ import { STD_ATLAS_SIZE, STD_ATLAS_URL, stdUi } from '../game/heroStandard.ts';
 const ATLAS_URL = new URL('../assets/hero/hero-atlas.webp', import.meta.url).href;
 
 /** one full painted Pokey pose (jump_up, idle_a, land...) at a chosen height in px; the classic hero shows the sloth emoji */
-export const HeroPose: React.FC<{ frame: string; height: number; className?: string; label?: string }> = ({ frame, height, className, label }) => {
+export const HeroPose: React.FC<{ frame: string; height: number; className?: string; label?: string; /** shrink the pose, keeping its shape, so it is never wider than this many px */ maxWidth?: number }> = ({ frame, height: wantH, className, label, maxWidth }) => {
   const sf = stdUi(frame);
   const f = sf ?? HERO_FRAMES[frame];
+  const height = f && maxWidth ? Math.min(wantH, Math.floor((maxWidth * f.h) / f.w)) : wantH;
   const url = sf ? STD_ATLAS_URL : ATLAS_URL;
   const atlasW = sf ? STD_ATLAS_SIZE.w : HERO_ATLAS_SIZE.w;
   const atlasH = sf ? STD_ATLAS_SIZE.h : HERO_ATLAS_SIZE.h;

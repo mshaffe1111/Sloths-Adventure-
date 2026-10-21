@@ -3,6 +3,9 @@ import { sound } from '../game/audio.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { HeroPose } from './HeroPose.tsx';
 import { getStageClue } from './stageClue.ts';
+import type { StageStats } from '../game/badges.ts';
+import { ClrChips, ClrRibbon, useShortScreen, type ChipSpec } from './ClrParts.tsx';
+import { praiseFor, totalKills } from './stageSummary.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -15,6 +18,8 @@ interface StageClearedProps {
   /** this run beat the stored best score (or it is the first clear) */
   newBest: boolean;
   bestScore: number;
+  /** what happened in the stage (flowers, foes, hits); absent when nothing was reported */
+  stats?: StageStats | null;
   /** ids of the stages either side of this one, or null when there is none (first stage, last stage, secret stage) */
   prevId: string | null;
   nextId: string | null;
@@ -29,8 +34,9 @@ const STAR_PATH = 'M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.
 const fmtTime = (s: number) => `${Math.floor(Math.round(s) / 60)}:${String(Math.round(s) % 60).padStart(2, '0')}`;
 
 /** The stage-cleared card: celebrate, show the result, the next clue, then where to go (next, previous, again, map). */
-export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEarned, timeSec, score, newBest, bestScore, prevId, nextId, onNext, onPrev, onReplay, onOpenMap }) => {
+export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEarned, timeSec, score, newBest, bestScore, stats, prevId, nextId, onNext, onPrev, onReplay, onOpenMap }) => {
   const secret = !!levelConfig.secret;
+  const short = useShortScreen();
 
   // the stars ring in one after another as the card appears
   React.useEffect(() => {
@@ -41,6 +47,16 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
   }, [secret, starsEarned]);
 
   const clue = getStageClue(levelConfig.id);
+  // Pokey's pose follows the result: arms up for three stars, a fist pump for two, a content smile for one
+  const pose = starsEarned >= 3 ? 'cheer_b' : starsEarned === 2 ? 'cheer_a' : 'idle';
+  const poseLabel = starsEarned >= 3 ? 'Pokey cheers with both arms up' : starsEarned === 2 ? 'Pokey pumps a fist' : 'Pokey smiles, pleased with himself';
+  const praise = praiseFor(stats, starsEarned);
+  const extra: ChipSpec[] = [];
+  if (stats && stats.floraTotal > 0) extra.push({ label: 'Flowers', value: `${stats.floraCollected}/${stats.floraTotal}`, colour: stats.floraCollected >= stats.floraTotal ? '#f9a8d4' : undefined });
+  if (stats) extra.push({ label: 'Foes', value: String(totalKills(stats)) });
+  if (stats) extra.push({ label: 'Hits taken', value: String(stats.heartsLost), colour: stats.heartsLost === 0 ? '#6ee7b7' : undefined });
+  if (stats && stats.maxCombo >= 2) extra.push({ label: 'Best combo', value: `x${stats.maxCombo}` });
+  const heroW = typeof window !== 'undefined' && window.innerHeight <= 520 ? 120 : 196;
   const heroH = Math.round(Math.max(130, Math.min(300, (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.42)));
 
   return (
@@ -67,18 +83,10 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
       </svg>
 
       <div className="clr-card" role="dialog" aria-label="Stage cleared">
-        <div className="clr-ribbon">
-          <svg viewBox="0 0 420 68" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0 14h40v46H0l16-23z" fill="#b45309" />
-            <path d="M420 14h-40v46h40l-16-23z" fill="#b45309" />
-            <path d="M30 4h360v56H30z" fill="#fbbf24" stroke="#92400e" strokeWidth="3" strokeLinejoin="round" />
-            <path d="M30 14h360" stroke="#fde68a" strokeWidth="3" opacity=".8" />
-          </svg>
-          <h2>{secret ? 'THORNBARK IS FREE!' : 'STAGE CLEARED!'}</h2>
-        </div>
+        <ClrRibbon title={secret ? 'THORNBARK IS FREE!' : 'STAGE CLEARED!'} />
 
         <div className="clr-hero">
-          <HeroPose frame="jump_up" height={heroH} label="Pokey leaps for joy" />
+          <HeroPose frame={pose} height={heroH} maxWidth={heroW} className={`clr-pose s${starsEarned}`} label={poseLabel} />
         </div>
 
         <div className="clr-main">
@@ -99,20 +107,27 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
             )}
           </div>
 
-          <div className="clr-chips">
-            <div className="clr-chip">
-              <span>Time</span>
-              <b>{fmtTime(timeSec)}</b>
+          {!secret && (
+            <div className="clr-praise">
+              <b>{praise.title}</b>
+              <span>{praise.sub}</span>
             </div>
-            <div className="clr-chip">
-              <span>Score</span>
-              <b style={{ color: '#fde68a' }}>{score.toLocaleString()}</b>
-            </div>
-            <div className="clr-chip">
-              <span>{newBest ? 'Best' : 'Your best'}</span>
-              <b style={{ color: '#6ee7b7' }}>{newBest ? 'New!' : bestScore.toLocaleString()}</b>
-            </div>
-          </div>
+          )}
+
+          {(() => {
+            const main: ChipSpec[] = [
+              { label: 'Time', value: fmtTime(timeSec) },
+              { label: 'Score', value: score.toLocaleString(), colour: '#fde68a' },
+              { label: newBest ? 'Best' : 'Your best', value: newBest ? 'New!' : bestScore.toLocaleString(), colour: '#6ee7b7' },
+            ];
+            // on a phone held sideways everything goes in one row to save height
+            return short ? <ClrChips chips={[...main, ...extra]} small /> : (
+              <>
+                <ClrChips chips={main} />
+                {extra.length > 0 && <ClrChips chips={extra} small />}
+              </>
+            );
+          })()}
 
           {secret ? (
             <div className="clr-clue" style={{ background: '#ede9fe', borderColor: '#7c3aed', color: '#2e1065' }}>

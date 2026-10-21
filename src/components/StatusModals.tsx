@@ -4,6 +4,8 @@ import { BOSS_TIPS } from '../game/bossDefs.ts';
 import { PauseMenu } from './PauseMenu.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { StageCleared } from './StageCleared.tsx';
+import { GameOverCard } from './GameOverCard.tsx';
+import type { StageStats } from '../game/badges.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -17,6 +19,8 @@ interface StatusModalsProps {
   score: number;
   newBest: boolean;
   bestScore: number;
+  /** what happened in the stage that just ended */
+  stats?: StageStats | null;
   prevId: string | null;
   nextId: string | null;
   isMuted: boolean;
@@ -44,6 +48,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   score,
   newBest,
   bestScore,
+  stats,
   prevId,
   nextId,
   isMuted,
@@ -90,6 +95,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
         score={score}
         newBest={newBest}
         bestScore={bestScore}
+        stats={stats}
         prevId={prevId}
         nextId={nextId}
         onNext={onNextStage}
@@ -100,47 +106,9 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
     );
   }
 
-  // --- 3. GAME OVER MODAL ---
+  // --- 3. GAME OVER ---
   if (screen === 'game_over') {
-    return (
-      <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 select-none font-game">
-        <div className="modal-card w-full max-w-md bg-gradient-to-b from-stone-900 via-stone-950 to-black border-2 border-red-600/70 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl shadow-red-950/60 text-white">
-          <div className="inline-block px-3 py-1 rounded-full bg-red-950 border border-red-500/40 text-red-400 text-xs font-bold uppercase mb-2">
-            Sloth Fainted!
-          </div>
-
-          <h2 className="text-3xl sm:text-4xl font-black text-red-500 text-stroke mb-3">
-            DEFEATED IN BATTLE
-          </h2>
-          <p className="text-xs text-stone-300 font-sans max-w-sm mx-auto mb-6">
-            Out of lives! Dust yourself off and try again. Meeca is counting on you!
-          </p>
-
-          <div className="bg-black/50 border border-stone-800 p-3.5 rounded-2xl mb-6">
-            <span className="text-[11px] text-stone-400 block uppercase font-sans">Final Score</span>
-            <span className="text-2xl font-black text-amber-300 tabular-nums">{score.toLocaleString()}</span>
-          </div>
-
-          <div className="modal-actions flex flex-col gap-3">
-            <button
-              type="button"
-              data-start="true"
-              onClick={onRestart}
-              className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-base shadow-lg shadow-emerald-900/50 active:scale-95 transition-transform"
-            >
-              TRY AGAIN{keyHint('Space / Enter')}
-            </button>
-            <button
-              type="button"
-              onClick={onOpenMap}
-              className="w-full py-3 rounded-2xl bg-stone-900 hover:bg-stone-800 border border-stone-700 text-stone-300 font-bold text-sm active:scale-95 transition-transform"
-            >
-              BACK TO WORLD MAP
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+    return <GameOverCard levelConfig={levelConfig} score={score} stats={stats} onRetry={onRestart} onOpenMap={onOpenMap} />;
   }
 
   // --- 4. BOSS INTRO MODAL ---
