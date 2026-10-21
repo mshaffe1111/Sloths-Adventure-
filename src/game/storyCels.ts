@@ -51,7 +51,7 @@ export const CEL_CAST: Record<string, CelCast> = {
   MF: { prefix: 'face', name: 'Meeca, face', x: 0.34, face: 1, rest: 'beam', who: ['Meeca'], y: 1.04, scale: 1.5, bust: true },
   // the satchel sloth of sheets 10-12 is Pokey: plain, with the bow, bandaged with the petal
   PN: { prefix: 'mc', name: 'Pokey (story sheets, satchel)', x: 0.3, face: 1, rest: 'idle', who: ['Pokey'] },
-  PV: { prefix: 'mb', name: 'Pokey with the bow', x: 0.3, face: 1, rest: 'idle', who: ['Pokey'] },
+  PV: { prefix: 'mb', name: 'the cub (pink bow, satchel strap)', x: 0.3, face: 1, rest: 'idle', who: ['Pokey'] },
   PX: { prefix: 'mx', name: 'Pokey, wrists wrapped, with the petal', x: 0.3, face: 1, rest: 'stand', who: ['Pokey'] },
   PA: { prefix: 'da', name: 'Pokey and Meeca together (first pass)', x: 0.5, face: 1, rest: 'side_by_side', who: ['Pokey', 'Meeca'] },
   PB: { prefix: 'db', name: 'Pokey and Meeca together (second pass)', x: 0.5, face: 1, rest: 'side_by_side', who: ['Pokey', 'Meeca'] },
