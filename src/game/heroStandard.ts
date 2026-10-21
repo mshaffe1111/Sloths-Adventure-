@@ -149,7 +149,7 @@ function cycle(list: string[], p: PlayerState): string {
  * the pose for this moment from the standard set, or null when a frame is missing (the main hero then draws). Every state has a frame, so with the
  * whole atlas present this never returns null.
  */
-export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHurt' | 'isLanding' | 'hurtUntil'>): StdChoice | null {
+export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHurt' | 'isLanding' | 'hurtUntil'> & Partial<Pick<HeroEvents, 'isHardLanding'>>): StdChoice | null {
   const has = (n: string) => !!STD_FRAMES[n];
   const out = (c: StdChoice): StdChoice | null => (has(c.name) ? c : null);
 
@@ -189,6 +189,7 @@ export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHu
     // the painted frames already lean into the jump, so the code's lean is only a hint
     return out({ name: stdAirFrame(p.vy), bob: 0, rot: airLean(p.vy) * 0.5 });
   }
+  if (ev.isHardLanding?.(time) && has('tumble')) return out({ name: 'tumble', bob: 0 }); // a drop at the hardest speed rolls out of the landing
   if (ev.isLanding(time)) return out({ name: 'land', bob: 0 });
   const speed = Math.abs(p.vx);
   if (speed > 10) {
