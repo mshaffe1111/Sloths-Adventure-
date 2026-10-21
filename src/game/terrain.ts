@@ -16,6 +16,12 @@ import { paintDecorAt } from './envKit.ts';
 import { polishEnabled, polishTier, rigFor, type Rig } from './polish.ts';
 import { getSceneSeed } from './sceneSeed.ts';
 import { fillCapWindy, windShear, lightBody, dapples, surfaceRoots, restShadow, liveBlades, soilGlints } from './terrainPolish.ts';
+import { planStage, baseLook, VARIANTS, type StagePlan, type ThinPlan } from './platformPlan.ts';
+import { drawThin } from './platformArt.ts';
+import { drawBounce, drawRaftLive, shakeOffset } from './spanArt.ts';
+import './shelfArt.ts';
+import { drawGroundBody, drawGroundCap } from './groundArt.ts';
+import { drawStep, drawPillar } from './columnArt.ts';
 
 /** worlds painted with the new baked ground (grown world by world) */
 let curWorld = 1;
@@ -1275,6 +1281,10 @@ export function renderWorldObjects(
     drawGameVine(ctx, v, look, time);
   }
 
+  // what every platform is drawn as is planned once per stage (platformPlan): looks and variants, ground treatments, steps, pillars
+  const plan = stagePlan(platforms, worldId);
+  const bounceBottom = cam.y + cam.viewportHeight + 60;
+
   // mushrooms first so the ground can cover their stalks
   const ordered = [...platforms].sort((a, b) => (a.type === 'bouncy' ? 0 : 1) - (b.type === 'bouncy' ? 0 : 1));
   for (const p of ordered) {
@@ -1282,51 +1292,90 @@ export function renderWorldObjects(
     const r = rng(Math.abs(p.id) * 97 + 13);
     ctx.save();
     if (p.type === 'bouncy') {
-      drawBouncer(ctx, p, look, time, cam);
+      const tp = thinPlanFor(plan, p);
+      drawBounce(ctx, p, look, worldId, tp.look === 'parasol' || tp.look === 'bloom' ? tp.look : 'toadstool', tp.variant, time, bounceBottom);
     } else if (p.type === 'fragile') {
-      drawPlanks(ctx, p, look, r);
+      const tp = thinPlanFor(plan, p);
+      const [dx, dy] = shakeOffset(p, time);
+      if (!drawThin(ctx, p, look, worldId, tp, dy, dx)) drawPlanks(ctx, p, look, r);
     } else if (p.type === 'drift' && p.drift) {
       // a log rides between its banks, bobbing; clipped to the river so it slides out from under one bank and under the other
       ctx.beginPath();
       ctx.rect(p.drift.x0, p.y - 80, p.drift.x1 - p.drift.x0, 220);
       ctx.clip();
       const bob = Math.sin(time * 2.1 + p.id * 1.7) * 1.6;
-      drawLog(ctx, { ...p, y: p.y + bob }, look, r);
+      if (!drawThin(ctx, p, look, worldId, thinPlanFor(plan, p), bob)) drawLog(ctx, { ...p, y: p.y + bob }, look, r);
     } else if (p.type === 'moving') {
-      drawRaft(ctx, p, look, time, r);
+      if (drawThin(ctx, p, look, worldId, thinPlanFor(plan, p))) drawRaftLive(ctx, p, look, worldId, time);
+      else drawRaft(ctx, p, look, time, r);
     } else if (p.style === 'canopy_bridge') {
-      drawBridge(ctx, p, look, time, r);
+      if (!drawThin(ctx, p, look, worldId, thinPlanFor(plan, p))) drawBridge(ctx, p, look, time, r);
     } else if (p.height >= 50) {
-      const depth = earthBody(ctx, p, look, time, bottom, r);
-      if (curRig) lightBody(ctx, curRig, look, p, depth, () => groundClip(ctx, p, depth), left, right, time);
-      if (curRig) surfaceRoots(ctx, curRig, look, p, left, right);
-      drawCap(ctx, p, look, time, r, 18);
-      if (curRig) {
-        liveBlades(ctx, curRig, look, p, left, right, time, polishTier() < 1);
-        soilGlints(ctx, curRig, p, depth, left, right, time);
-      }
-      topDecor(ctx, p, look, r, time);
-      if (curRig) dapples(ctx, curRig, p, left, right, time);
-    } else {
-      const v = Math.abs(p.id * 7 + Math.floor(p.width / 40)) % 6;
-      if (v === 3) drawLog(ctx, p, look, r);
-      else if (v === 4 || (v === 5 && look.ground.kind === 'stone')) drawSlab(ctx, p, look, time, r);
-      else {
+      const gp = curRig ? undefined : plan.ground.get(p);
+      if (gp && gp.role === 'ground') {
+        drawGroundBody(ctx, p, gp, look, worldId, bottom, left, right);
+        drawGroundCap(ctx, p, gp, look, worldId, left, right);
+        topDecor(ctx, p, look, r, time);
+      } else if (gp && gp.role === 'step') {
+        drawStep(ctx, p, gp, look, worldId, bottom);
+      } else if (gp && gp.role === 'pillar') {
+        drawPillar(ctx, p, gp, look, worldId, bottom);
+      } else {
         const depth = earthBody(ctx, p, look, time, bottom, r);
-        if (curRig) lightBody(ctx, curRig, look, p, depth, () => islandPath(ctx, p.x, p.y, p.width, depth, Math.max(1, Math.min(4, Math.round(p.width / 140))), p.id), left, right, time);
+        if (curRig) lightBody(ctx, curRig, look, p, depth, () => groundClip(ctx, p, depth), left, right, time);
         if (curRig) surfaceRoots(ctx, curRig, look, p, left, right);
-        drawCap(ctx, p, look, time, r, 16);
+        drawCap(ctx, p, look, time, r, 18);
         if (curRig) {
           liveBlades(ctx, curRig, look, p, left, right, time, polishTier() < 1);
           soilGlints(ctx, curRig, p, depth, left, right, time);
         }
         topDecor(ctx, p, look, r, time);
         if (curRig) dapples(ctx, curRig, p, left, right, time);
-        underHang(ctx, p, look, r, depth);
+      }
+    } else {
+      const tp = thinPlanFor(plan, p);
+      if (tp.look === 'island' || !drawThin(ctx, p, look, worldId, tp)) {
+        // the floating island: the original live-drawn earth platform
+        const v = Math.abs(p.id * 7 + Math.floor(p.width / 40)) % 6;
+        if (v === 3) drawLog(ctx, p, look, r);
+        else if (v === 4 || (v === 5 && look.ground.kind === 'stone')) drawSlab(ctx, p, look, time, r);
+        else {
+          const depth = earthBody(ctx, p, look, time, bottom, r);
+          if (curRig) lightBody(ctx, curRig, look, p, depth, () => islandPath(ctx, p.x, p.y, p.width, depth, Math.max(1, Math.min(4, Math.round(p.width / 140))), p.id), left, right, time);
+          if (curRig) surfaceRoots(ctx, curRig, look, p, left, right);
+          drawCap(ctx, p, look, time, r, 16);
+          if (curRig) {
+            liveBlades(ctx, curRig, look, p, left, right, time, polishTier() < 1);
+            soilGlints(ctx, curRig, p, depth, left, right, time);
+          }
+          topDecor(ctx, p, look, r, time);
+          if (curRig) dapples(ctx, curRig, p, left, right, time);
+          underHang(ctx, p, look, r, depth);
+        }
       }
     }
     ctx.restore();
   }
+}
+
+const planCache = new WeakMap<object, { n: number; world: number; seed: number; plan: StagePlan }>();
+
+/** the plan for this stage's platforms (rebuilt when the stage, the world or the scene seed changes) */
+function stagePlan(platforms: Platform[], world: number): StagePlan {
+  const seed = getSceneSeed();
+  const hit = planCache.get(platforms);
+  if (hit && hit.n === platforms.length && hit.world === world && hit.seed === seed) return hit.plan;
+  const plan = planStage(platforms, world, seed);
+  planCache.set(platforms, { n: platforms.length, world, seed, plan });
+  return plan;
+}
+
+/** a thin platform's plan, with a deterministic fallback for any platform the plan did not see */
+function thinPlanFor(plan: StagePlan, p: Platform): ThinPlan {
+  const hit = plan.thin.get(p);
+  if (hit) return hit;
+  const look = baseLook(p);
+  return { look, variant: Math.abs(p.id) % VARIANTS[look] };
 }
 
 export function drawWater(ctx: CanvasRenderingContext2D, worldId: number, x0: number, x1: number, waterY: number, bottom: number, time: number) {
