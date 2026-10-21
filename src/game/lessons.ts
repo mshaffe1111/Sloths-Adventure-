@@ -97,7 +97,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
     lines: {
       screen: [
         { glyph: 'jump', how: 'Slide up and across', what: 'Run and jump', sub: 'keep your thumb moving forward in the air' },
-        { glyph: 'up', how: 'Flick up again in the air', what: 'Double jump', sub: 'for a gap that is a little too wide' },
+        { glyph: 'tap', how: 'Tap in the air', what: 'Double jump', sub: 'for a gap that is a little too wide. It pushes you forward' },
       ],
       pad: [{ how: 'Pad → then Jump', what: 'Run and jump' }, { how: 'Jump again in the air', what: 'Double jump', sub: 'for a gap that is a little too wide' }],
       keys: [{ how: 'D or → then Space', what: 'Run and jump' }, { how: 'Space again in the air', what: 'Double jump', sub: 'for a gap that is a little too wide' }],

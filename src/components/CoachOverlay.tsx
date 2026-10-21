@@ -11,7 +11,7 @@ const TEXT: Record<ControlStyle, Record<Exclude<CoachStep, null>, { title: strin
   screen: {
     run: { title: 'Touch anywhere and slide to run', sub: 'You do not have to touch Pokey. Put your thumb down anywhere on the screen and slide sideways. Slide the other way to turn around.', glyph: 'run' },
     jump: { title: 'Slide up and across to jump', sub: 'Keep running and slide your thumb up and forward in one quick move.', glyph: 'jump' },
-    nice: { title: 'Nice jump!', sub: 'In the air, flick up with your other thumb for a double jump.', glyph: 'up' },
+    nice: { title: 'Nice jump!', sub: 'In the air, tap anywhere for a double jump.', glyph: 'tap' },
   },
   pad: {
     run: { title: 'Push the pad to run', sub: 'Press anywhere on the pad side of the screen and push sideways.', glyph: 'run' },

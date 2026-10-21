@@ -4,6 +4,7 @@ import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
+import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -93,6 +94,7 @@ function Seg<T extends string>({ value, options, onPick }: { value: T; options: 
 export const ControlsSetting: React.FC = () => {
   const [style, setStyle] = React.useState<ControlStyle>(() => controlStyle());
   const [side, setSide] = React.useState<PadSide>(() => padSide());
+  const [help, setHelp] = React.useState<JumpHelp>(() => jumpHelp());
   return (
     <div className="pm-sound">
       <div className="pm-sound-h">
@@ -134,7 +136,34 @@ export const ControlsSetting: React.FC = () => {
           />
         </div>
       )}
-      <small className="pm-polish-note">{style === 'pad' ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.' : 'No buttons: slide, flick and tap anywhere on the screen.'}</small>
+      {style === 'screen' && (
+        <div className="pm-sound-h" style={{ marginTop: 8 }}>
+          <span className="pm-polish-note" style={{ margin: 0 }}>
+            Jump help
+          </span>
+          <Seg
+            value={help}
+            options={[
+              { id: 'off', label: 'Off' },
+              { id: 'keep', label: 'Tap' },
+              { id: 'forward', label: 'Tap + forward' },
+            ]}
+            onPick={(v) => {
+              setJumpHelp(v);
+              setHelp(v);
+            }}
+          />
+        </div>
+      )}
+      <small className="pm-polish-note">
+        {style === 'pad'
+          ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.'
+          : help === 'off'
+            ? 'No buttons: slide, flick and tap anywhere on the screen. The second jump needs a quick flick up.'
+            : help === 'keep'
+              ? 'No buttons: slide, flick and tap anywhere. In the air a tap (or a wiggle of your thumb) is the second jump. A tap in the air no longer punches until the second jump is used.'
+              : 'Like Tap, and the second jump also pushes Pokey forward the way he faces, so one thumb can jump, tap and cross a gap. Push the other way to brake. A first jump is always just a jump.'}
+      </small>
     </div>
   );
 };

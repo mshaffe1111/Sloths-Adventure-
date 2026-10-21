@@ -46,6 +46,46 @@ export const ASSIST = {
   gaps: 0.2,
 } as const;
 
+/**
+ * Keeping going in the air (touch only, see jumpHelp.ts). A thumb that lifts to tap for the second jump must not stop Pokey in mid-air, and a
+ * jump from a standstill may lean the way he faces. `drive` is the way he is being carried (0 = none); pushing back brakes him, and
+ * after that the old stop-when-you-let-go is back until the next take-off.
+ */
+export interface AirDrive {
+  /** the way a forward push from the second jump carries him (0: nothing does, and letting go of the thumb stops him as it always did) */
+  drive: -1 | 0 | 1;
+  /** carried by that push rather than by the thumb: held to a gentler speed until the thumb steers */
+  lean: boolean;
+}
+/** the forward push of a second jump is this share of his run speed */
+export const LEAN_SPEED = 0.75;
+export const newAirDrive = (): AirDrive => ({ drive: 0, lean: false });
+
+/**
+ * At a jump or double jump. A plain jump is exactly what it always was (nothing carries him: lift the thumb and he stops, so he can land
+ * on a small platform). Only a second jump taken with nothing steering him pushes forward, the way he faces, when `lean` is allowed.
+ */
+export function airTakeOff(st: AirDrive, steer: -1 | 0 | 1, facing: -1 | 1, second: boolean, lean: boolean) {
+  if (second && lean && steer === 0) {
+    st.drive = facing;
+    st.lean = true;
+  } else {
+    st.drive = 0;
+    st.lean = false;
+  }
+}
+
+/** each frame in the air: the direction to steer him this frame, given the thumb's own push (0 when it is off the glass). A thumb that steers, or ducks, takes over from the push at once. */
+export function airCarry(st: AirDrive, steer: -1 | 0 | 1, down: boolean): -1 | 0 | 1 {
+  if (st.drive === 0) return steer;
+  if (down || steer !== 0) {
+    st.drive = 0;
+    st.lean = false;
+    return steer;
+  }
+  return st.drive;
+}
+
 const apex = (v: number, g: number) => (v * v) / (2 * g);
 
 /** Maximum rise of a single full jump (px). */

@@ -82,11 +82,12 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
         </span>
       </div>
       <p className="ui-copy">
-        There are no buttons: <b>your thumb is the controller</b>. It does not matter where you start, and you never have to find a button. Keep your thumb down to keep going, and lift it to stop.
+        There are no buttons: <b>your thumb is the controller</b>. It does not matter where you start, and you never have to find a button. Keep your thumb down to keep going, and lift it to stop. Do not like the tap in the air? The Menu has a Jump help switch.
       </p>
       <Gesture kind="run" how="Slide sideways" what="Run" sub="slide right to run right, left to run left. Slide the other way to turn around" />
       <Gesture kind="jump" how="Slide up and across" what="Run and jump" sub="while you run, keep sliding up and forward in one quick motion. This is how you cross gaps" />
-      <Gesture kind="up" how="Flick up" what="Jump" sub="a quick flick, standing or running. In the air, flick up again (the other thumb is easiest) for a double jump" />
+      <Gesture kind="up" how="Flick up" what="Jump" sub="a quick flick, standing or running" />
+      <Gesture kind="tap" how="Tap in the air" what="Double jump" sub="tap anywhere while you are in the air. It pushes you forward the way you face; slide the other way to brake. Or flick up again, or wiggle the thumb you are still steering with: down a little, then up" />
       <Gesture kind="down" how="Slide down" what="Duck" sub="hold it to stay low" />
       <div className="htp-tip">
         <span className="htp-tipicon" aria-hidden="true">

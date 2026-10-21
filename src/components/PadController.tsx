@@ -182,7 +182,13 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
   const pos = (rx: string, by: string): React.CSSProperties => ({ ...edge(`calc(${rx} + max(10px, env(safe-area-inset-${btnSide})))`), bottom: `calc(${by} + max(10px, env(safe-area-inset-bottom)))` });
 
   return (
-    <div className="fixed inset-0 z-30 pointer-events-none select-none touch-none" style={{ ['--b' as string]: 'clamp(54px, 15vh, 80px)' }}>
+    <div
+      className="fixed inset-0 z-30 pointer-events-none select-none touch-none"
+      style={{ ['--b' as string]: 'clamp(54px, 15vh, 80px)' }}
+      onTouchStartCapture={() => {
+        inputEngine.source = 'pad';
+      }}
+    >
       {/* the pad's half of the screen */}
       <div
         className="absolute top-[16%] bottom-0 w-1/2 pointer-events-auto"

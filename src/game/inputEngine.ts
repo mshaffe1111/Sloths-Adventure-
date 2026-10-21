@@ -21,6 +21,13 @@ export class InputEngine {
     touchJoystickMagnitude: 0,
   };
 
+  /**
+   * Who is playing: the keyboard, a game pad / the on-screen Pad, or the Screen gestures (whole screen is the controller). The jump help in
+   * jumpHelp.ts only touches the last.
+   */
+  public source: 'keys' | 'pad' | 'gesture' = 'keys';
+  /** the engine says, every frame: he is in the air and still has a second jump (the gesture recogniser reads it to accept a tap as that jump) */
+  public airJumpReady = false;
   private jumpBufferTimer = 0;
   private punchBufferTimer = 0;
   private kickBufferTimer = 0;
@@ -53,6 +60,7 @@ export class InputEngine {
     }
     // holding a key makes the browser repeat it: only the first press counts (or a held jump would double-jump and bunny-hop)
     if (e.repeat) return;
+    this.source = 'keys';
 
     if (key === 'ArrowLeft' || key === 'KeyA') {
       this.state.left = true;
@@ -262,6 +270,7 @@ export class InputEngine {
           if (gp.buttons[4]?.pressed || gp.buttons[5]?.pressed || gp.buttons[6]?.pressed || gp.buttons[7]?.pressed) now.mega = true;
         }
         const prev = this.padPrev;
+        if (now.left || now.right || now.up || now.down || now.punch || now.kick || now.mega) this.source = 'pad';
         // directions follow the pad both ways: letting go of the stick lets go of the direction
         if (now.left) this.state.left = true;
         else if (prev.left) this.state.left = false;

@@ -19,7 +19,8 @@ import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
 import { lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
-import { ASSIST, PHYS, easeAssist, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, easeAssist, newAirDrive, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
+import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
@@ -235,6 +236,8 @@ export class GameEngine {
   private lessonSeen: Set<LessonId> | null = null;
   private coyoteTimer: number = 0;
   private jumpBufferTimer: number = 0;
+  /** what carries him through the air on a touch screen (see jumpHelp.ts): the way he was going when he left the ground, until he lands or pushes back */
+  private airDrive = newAirDrive();
   private lives: number = 3;
   private readonly maxLives: number = 3;
   private checkpoint = { x: 0, y: 0 };
@@ -558,6 +561,10 @@ export class GameEngine {
     const p = this.player;
     const groundedBefore = p.grounded;
     const vyBefore = p.vy;
+    // the touch recogniser reads this: in the air with a second jump to spare, a tap is that jump
+    this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
+    // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
+    if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
 
     this.lessonTick();
 
@@ -1043,8 +1050,19 @@ export class GameEngine {
           if (p.grounded) this.flightClear = this.drowsy <= 0;
           const sleepy = this.drowsy > 0 && !(this.flightClear && !p.grounded);
           const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1) * (sleepy ? DROWSY_SPEED : 1) * this.dragSpeed;
-          const maxSpeed = PHYS.maxRun * speedMult * this.attackMoveMul();
-          const dir = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
+          let maxSpeed = PHYS.maxRun * speedMult * this.attackMoveMul();
+          const steer = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
+          // touch jump help: a second jump taken with nothing steering pushes him forward until he lands or the thumb takes over
+          let dir: -1 | 0 | 1 = steer;
+          let leaning = false;
+          if (this.touchHelp() === 'off' || p.grounded) {
+            if (p.grounded) this.airDrive = newAirDrive();
+          } else if (this.inputGrace <= 0) {
+            dir = airCarry(this.airDrive, steer, this.input.state.down);
+            leaning = this.airDrive.lean && steer === 0;
+          }
+          // that push is gentler than a run, so a double jump does not fly off a small platform
+          if (leaning) maxSpeed *= LEAN_SPEED;
           if (dir !== 0) {
             if (!this.facingLocked()) p.facing = dir as 1 | -1;
             const reversing = Math.sign(p.vx) === -dir && Math.abs(p.vx) > 20;
@@ -1086,6 +1104,7 @@ export class GameEngine {
             this.input.state.jumpPressed = false;
             p.squashX = 0.82;
             p.squashY = 1.28;
+            this.takeOff(false);
             sound.playJump();
             this.spawnJumpDust(p.x, p.y);
           } else if (p.jumpsLeft > 0 && !p.climbing) {
@@ -1097,6 +1116,7 @@ export class GameEngine {
             this.input.state.jumpPressed = false;
             p.squashX = 0.80;
             p.squashY = 1.32;
+            this.takeOff(true);
             sound.playDoubleJump();
             this.addFloatingText('DOUBLE JUMP!', p.x, p.y - 40, '#4ade80');
             this.spawnDoubleJumpBurst(p.x, p.y);
@@ -1210,6 +1230,7 @@ export class GameEngine {
               p.jumpsLeft = 1;
               p.squashX = 0.82;
               p.squashY = 1.28;
+              this.takeOff(false);
               sound.playJump();
               this.spawnJumpDust(p.x, p.y);
               break;
@@ -2726,6 +2747,7 @@ export class GameEngine {
     this.letGoOfRope(0.6);
     p.vy = -PHYS.hurtKnockV;     // small knockup
     p.vx = -p.facing * 180;
+    this.airDrive = newAirDrive();
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
     this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
@@ -2789,6 +2811,7 @@ export class GameEngine {
     p.y = this.checkpoint.y;
     p.vx = 0;
     p.vy = 0;
+    this.airDrive = newAirDrive();
     p.grounded = false;
     p.climbing = false;
     p.isVineSwinging = false;
@@ -3003,6 +3026,21 @@ export class GameEngine {
     this.lessonOpen = false;
     this.lessonQuietUntil = this.gameTime + 4;
     this.resume();
+  }
+
+  /** the touch jump help in force: only for the Screen gestures (the keyboard, a pad and the on-screen Pad keep their own exact feel) */
+  private touchHelp(): 'off' | 'keep' | 'forward' {
+    return this.input.source === 'gesture' ? jumpHelp() : 'off';
+  }
+
+  /** he has just jumped (`second`: double jumped). A plain jump is as it always was; a second jump taken with nothing steering pushes forward the way he faces, except where a drift would hurt (the climbing and boss stages) */
+  private takeOff(second: boolean) {
+    const help = this.touchHelp();
+    if (help === 'off') return;
+    const inp = this.input.state;
+    const steer = this.inputGrace > 0 ? 0 : inp.left ? -1 : inp.right ? 1 : 0;
+    const kind = this.currentStage.config.objectiveType;
+    airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
   }
 
   /** how much early-stage help is in force on this stage (1 on stage 1-1, fading to 0 by stage 25) */

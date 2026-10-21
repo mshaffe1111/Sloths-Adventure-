@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
 import { TouchGestures } from '../game/touchGestures.ts';
 import { arrowText } from './icons/arrowText.tsx';
+import { jumpHelp } from '../game/jumpHelp.ts';
 
 /**
  * The whole screen is the controller. There are no buttons.
@@ -62,6 +63,8 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
         },
       },
       () => window.innerWidth,
+      // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady },
     );
   }
   const G = gestures.current;
@@ -115,6 +118,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   }, [G]);
 
   const onStart = (e: React.TouchEvent) => {
+    inputEngine.source = 'gesture';
     if (hint) {
       setHint(false);
       markHintSeen();
@@ -163,9 +167,9 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
 
       {/* shown once, so nobody has to guess that there are no buttons */}
       {hint && (
-        <div className="fixed inset-x-0 bottom-0 h-[24%] min-h-[96px] pointer-events-none flex items-stretch gap-3 px-4 pb-4 animate-[fadeIn_.4s_ease]">
+        <div className="fixed inset-x-0 bottom-0 h-[24%] min-h-[112px] pointer-events-none flex items-stretch gap-3 px-4 pb-4 animate-[fadeIn_.4s_ease]">
           <HintCard title="STEER" lines={['Slide a thumb ← → to run', 'Slide ↓ to duck, ↑ to jump']} />
-          <HintCard title="ACT" lines={['Tap to punch', 'Quick flick ← → to kick', 'Quick flick ↑ to jump', 'Hold for mega']} />
+          <HintCard title="ACT" lines={['Tap to punch, hold for mega', 'Flick ← → to kick', 'Flick ↑ to jump', 'Tap in the air: jump again']} />
         </div>
       )}
     </div>
@@ -174,9 +178,9 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
 
 const HintCard: React.FC<{ title: string; lines: string[] }> = ({ title, lines }) => (
   <div className="flex-1 min-w-0 rounded-2xl border-2 border-dashed border-white/35 bg-black/35 flex flex-col items-center justify-center text-center px-2 py-2">
-    <div className="text-[10px] font-black tracking-[0.2em] text-amber-300 mb-1">{title}</div>
+    <div className="text-[10px] font-black leading-none tracking-[0.2em] text-amber-300 mb-1.5">{title}</div>
     {lines.map((l) => (
-      <div key={l} className="text-[12px] font-bold leading-snug text-white [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">
+      <div key={l} className="text-[11.5px] font-bold leading-tight text-white [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">
         {arrowText(l)}
       </div>
     ))}
