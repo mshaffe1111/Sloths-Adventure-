@@ -24,11 +24,16 @@ export const drakeSprite = createPaintedBoss({
     if (br.state === 'dying') name = br.t < 0.5 ? 'knockback' : br.t < 1.4 ? 'deathspasm' : 'petrified';
     else if (br.state === 'stun') name = 'stunned';
     else if (br.state === 'roar') name = 'enrage';
-    else if (br.state === 'tell') name = m?.pose === 'spit' ? 'jawbite' : m?.pose === 'whip' ? 'tailcrush' : m?.pose === 'leap' ? 'leapprep' : 'enrage';
+    else if (br.state === 'tell') name = m?.pose === 'spit' ? 'jawbite' : m?.pose === 'whip' ? 'tailcrush' : m?.pose === 'leap' ? 'leapprep' : b.phase >= 2 && m?.pose === 'roar' && br.t > 0.45 ? 'clawfrenzy' : 'enrage'; // the claws raking the ground before the eruption
     else if (br.state === 'act') {
       if (m?.pose === 'spit') name = 'jawbite';
       else if (m?.pose === 'whip') name = 'tailspin';
-      else if (m?.pose === 'leap') name = br.air > 14 ? 'airglide' : 'jumpslam';
+      else if (m?.pose === 'leap') {
+        // launch off the ground, climb, glide over the top, then the slam; the same single arc the leap already runs
+        const half = m.act / 2;
+        if (br.air > 14) name = br.t < half * 0.6 ? 'ascent' : 'airglide';
+        else name = br.t < half ? 'launch' : 'jumpslam';
+      }
       else name = 'stomp';
     } else if (br.state === 'rec') name = m?.pose === 'leap' ? 'jumpslam' : 'idle';
     else if (moving) name = Math.floor((dist / STRIDE) * 2) % 2 === 0 ? 'idle' : 'stomp';
