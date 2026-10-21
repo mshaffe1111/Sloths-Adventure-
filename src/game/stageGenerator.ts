@@ -2183,7 +2183,7 @@ function decorate(gen: Gen, spawnX: number) {
       const [a, b] = worst;
       const mid0 = (a + b) / 2;
       const cand = gen.spots
-        .filter((s) => !s.safe && !s.perch && s.x1 - s.x0 >= 200 && s.x0 + 100 > a + 350 && s.x1 - 100 < b - 350)
+        .filter((s) => !s.safe && !s.perch && s.x1 - s.x0 >= 150 && s.x0 + 60 > a + 250 && s.x1 - 60 < b - 250 && !gen.breathers.some(([r0, r1]) => s.x1 > r0 - 50 && s.x0 < r1 + 50))
         .sort((m, n) => Math.abs((m.x0 + m.x1) / 2 - mid0) - Math.abs((n.x0 + n.x1) / 2 - mid0));
       let done = false;
       for (const s of cand) {
