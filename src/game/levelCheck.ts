@@ -49,6 +49,14 @@ export interface CheckResult {
 /** Fraction of the simulated maximum reach the validator still accepts. */
 const MARGIN = 0.97;
 
+/** the engine keeps the hero this far inside the world's left and right edges (engine.ts), and a ledge narrower than STAND_MIN is not somewhere to stand */
+const STRIP_MARGIN = 20;
+const STAND_MIN = 24;
+/** two pickups closer than this overlap on the screen */
+export const PICKUP_APART = 36;
+/** the clear approach kept around the start, every flag and the exit: no animal's patch comes closer than this */
+export const SAFE_APPROACH = 200;
+
 const ext = (p: Platform): [number, number] =>
   p.type === 'moving'
     ? [(p.baseX ?? p.x) - (p.moveRange ?? 0), (p.baseX ?? p.x) + (p.moveRange ?? 0) + p.width]
@@ -209,7 +217,19 @@ function swingLandingsIn(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, w
 export function validateStage(stage: GeneratedStage): CheckResult {
   const errors: string[] = [];
   const cfg = stage.config;
-  const plats = stage.platforms.filter((p) => !p.broken);
+  // The engine keeps the hero inside [20, W - 20]: ground beyond that cannot be stood on, a vine out there cannot be grabbed, and a
+  // platform that sticks out only counts for the part that is inside. (A platform that leaves less than STAND_MIN px does not count.)
+  const stripLo = STRIP_MARGIN;
+  const stripHi = cfg.levelWidth - STRIP_MARGIN;
+  const plats: Platform[] = [];
+  for (const p of stage.platforms) {
+    if (p.broken) continue;
+    if (p.type === 'moving' || p.type === 'drift' || (p.x >= stripLo && p.x + p.width <= stripHi)) { plats.push(p); continue; }
+    const x0 = Math.max(p.x, stripLo);
+    const x1 = Math.min(p.x + p.width, stripHi);
+    if (x1 - x0 >= STAND_MIN) plats.push({ ...p, x: x0, width: x1 - x0 });
+  }
+  const vines = stage.vines.filter((v) => v.x >= stripLo && v.x <= stripHi);
   const waterY = stage.waterY ?? cfg.levelHeight + 100;
   let maxGapUsed = 0;
   let swingEdges = 0;
@@ -277,7 +297,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   }
 
   // 2. climbing vines
-  for (const v of stage.vines) {
+  for (const v of vines) {
     if (v.vineType === 'swing_liana') continue;
     const n = vid(v);
     // entering: stand next to the trunk and press up
@@ -314,7 +334,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   }
 
   // 3. swinging lianas
-  for (const v of stage.vines) {
+  for (const v of vines) {
     if (v.vineType !== 'swing_liana') continue;
     const pack = landingPack(v, plats);
     for (const a of plats) {
@@ -397,7 +417,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       const [x0, x1] = ext(p);
       if (dxTo(x0, x1, x) <= 150 && p.y - y >= -14 && p.y - y <= 190) return true;
     }
-    for (const v of stage.vines) {
+    for (const v of vines) {
       if (seen.has(vid(v)) && Math.abs(x - v.x) < 70 && y >= v.topY - 40 && y <= v.bottomY) return true;
       if (usedSwing.has(v.id) && Math.abs(x - v.x) < 190 && y >= v.topY - 40 && y <= v.bottomY + 20) return true;
     }
@@ -410,6 +430,30 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   for (const c of stage.collectibles) {
     if (c.type === 'exit_totem') continue;
     if (!nearReachable(c.x, c.y)) errors.push(`${c.type} #${c.id} at (${Math.round(c.x)}, ${Math.round(c.y)}) is out of reach`);
+  }
+  // a pickup must be in the open: not inside a platform (a flower on a ditch floor once sat in the bridge deck over it, a few in a mushroom),
+  // not outside the strip the hero can walk, and not on top of another pickup
+  for (const c of stage.collectibles) {
+    if (c.type === 'exit_totem') continue;
+    if (c.x < stripLo || c.x > stripHi) errors.push(`${c.type} #${c.id} is outside the walkable strip`);
+    for (const p of stage.platforms) {
+      if (p.broken || p.type === 'drift' || p.type === 'moving') continue;
+      if (c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2) {
+        errors.push(`${c.type} #${c.id} at (${Math.round(c.x)}, ${Math.round(c.y)}) is inside platform ${p.id}`);
+        break;
+      }
+    }
+  }
+  {
+    const live = stage.collectibles.filter((c) => c.type !== 'exit_totem').sort((a, b) => a.x - b.x);
+    for (let i = 0; i < live.length; i++) {
+      for (let j = i + 1; j < live.length && live[j].x - live[i].x < PICKUP_APART; j++) {
+        if (Math.hypot(live[j].x - live[i].x, live[j].y - live[i].y) < PICKUP_APART) {
+          errors.push(`${live[i].type} #${live[i].id} and ${live[j].type} #${live[j].id} overlap`);
+          break;
+        }
+      }
+    }
   }
 
   // quota
@@ -425,12 +469,13 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   // fairness: nothing hostile right on top of the player when they spawn or respawn
   // (each flag is compared at its own height: in a climb the flags are far above the spawn, so judging every enemy against
   // the spawn's height let an eagle sit right over a flag)
-  const safeSpots = [{ x: stage.spawnX, y: stage.spawnY }, ...(stage.checkpoints ?? [])];
+  const safeSpots = [{ x: stage.spawnX, y: stage.spawnY }, ...(stage.checkpoints ?? []), { x: stage.exitTotemX, y: stage.exitTotemY }];
   for (const e of stage.enemies) {
     for (const s of safeSpots) {
-      if (Math.abs(e.x - s.x) < 170 && Math.abs(e.y - s.y) < 400) {
-        errors.push(`enemy #${e.id} stands too close to a safe spot at x=${Math.round(s.x)}`);
-      }
+      if (Math.abs(e.y - s.y) >= 400) continue;
+      // (a flier is judged by where it hangs, a walker by how close its patch of ground comes)
+      const d = e.type === 'eagle' ? Math.abs(e.x - s.x) : Math.min(Math.abs(e.x - s.x), dxTo(e.patrolMinX, e.patrolMaxX, s.x));
+      if (d < (e.type === 'eagle' ? 300 : SAFE_APPROACH)) errors.push(`enemy #${e.id} stands too close to a safe spot at x=${Math.round(s.x)}`);
     }
   }
 

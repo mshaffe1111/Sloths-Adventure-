@@ -8,13 +8,14 @@ import type {
   Collectible,
   TreeStructure,
   ObjectiveType,
+  LaneFork,
 } from './types.ts';
 import { calculateDifficultyScaling } from './rules.ts';
 import { WORLDS_DATA } from './worldsData.ts';
 import { ASSIST, easeAssist, reachBounce, reachJump, TAKEOFF_SLACK } from './physics.ts';
 import { HANG_DROP, ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE, ropeYAt } from './rope.ts';
 import { skillGuaranteedAt } from './skills.ts';
-import { swingLandings, validateStage } from './levelCheck.ts';
+import { PICKUP_APART, swingLandings, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
@@ -49,8 +50,19 @@ export interface GeneratedStage {
   rivers?: import('./river.ts').RiverZone[];
   /** Worlds 3 and 4: spore clouds and wind gusts that wake on a rhythm (see zones.ts) */
   zones?: import('./zones.ts').Zone[];
+  /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
+  lanes?: LaneFork[];
   /** what the generator built (for tests and debugging) */
-  meta?: { attempt: number; chunks: string[]; width: number; recipe?: { core: string; partner: string | null; fork: string } };
+  meta?: {
+    attempt: number;
+    chunks: string[];
+    width: number;
+    recipe?: { core: string; partner: string | null; fork: string };
+    /** the pieces in order, with the stretch of the stage each one covers (spacers and flags are not pieces) */
+    pieces?: Array<{ k: string; x0: number; x1: number }>;
+    /** a vertical stage: the steps of the climb, in order (the time model adds them up) */
+    ascentChain?: Array<{ kind: 'hop' | 'hop2' | 'bounce' | 'swing' | 'climb' | 'cross'; w: number; rise: number }>;
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -60,6 +72,8 @@ export interface GeneratedStage {
 /** a night harpy only spawns where its patrol patch is at least this wide (it slides and then leaps) */
 const HARPY_MIN_GROUND = 140;
 const GROUND_H = 90;
+/** an arena's animals walk no closer than this to either end of it: a flag, a pit's take-off or a landing may follow right there */
+const YARD_PAD = 200;
 /** ground baseline and water surface, relative to the level height */
 const GROUND_FROM_BOTTOM = 320;
 const WATER_FROM_BOTTOM = 170;
@@ -172,6 +186,8 @@ class Gen {
   E: Enemy[] = [];
   C: Collectible[] = [];
   CP: Array<{ x: number; y: number; reached: boolean }> = [];
+  /** where the exit totem stands (set once the goal is built): no flier patrols near it */
+  exitAt: { x: number; y: number } | null = null;
   spots: Spot[] = [];
   log: string[] = [];
   rivers?: RiverZone[];
@@ -272,6 +288,55 @@ class Gen {
     const c: Collectible = { id: this.cid++, type, x, y, collected: false, bobPhase: this.rnd() * Math.PI * 2 };
     if (type === 'cage') c.cageHp = 2;
     this.C.push(c);
+  }
+
+  /**
+   * The last word on pickups, run when a stage is finished: nothing sits inside a platform (it is lifted out, or a flower that cannot be
+   * lifted is dropped) and no two pickups overlap (a flower that lands on another pickup is nudged up once, then dropped). Hearts,
+   * power-ups, cages and relics never move or vanish; flowers and leaves give way to them.
+   */
+  settlePickups(): number {
+    const solids = this.P.filter((p) => p.type !== 'drift' && p.type !== 'moving');
+    const inside = (x: number, y: number) => solids.find((p) => x >= p.x && x <= p.x + p.width && y > p.y + 2 && y < p.y + p.height - 2);
+    const yielding = (c: Collectible) => c.type === 'flower' || c.type === 'leaf';
+    const before = this.C.length;
+    const lifted: Collectible[] = [];
+    for (const c of this.C) {
+      if (c.type !== 'exit_totem') {
+        for (let t = 0; t < 3; t++) {
+          const p = inside(c.x, c.y);
+          if (!p) break;
+          c.y = p.y - 30;
+        }
+        if (inside(c.x, c.y) && yielding(c)) continue;
+      }
+      lifted.push(c);
+    }
+    const placed: Collectible[] = [];
+    const cell = new Map<number, Collectible[]>();
+    const near = (c: Collectible) => {
+      const k = Math.floor(c.x / PICKUP_APART);
+      for (let d = -1; d <= 1; d++) for (const o of cell.get(k + d) ?? []) if (Math.hypot(o.x - c.x, o.y - c.y) < PICKUP_APART) return true;
+      return false;
+    };
+    const put = (c: Collectible) => {
+      const k = Math.floor(c.x / PICKUP_APART);
+      (cell.get(k) ?? cell.set(k, []).get(k)!).push(c);
+      placed.push(c);
+    };
+    for (const c of lifted) if (c.type === 'exit_totem' || !yielding(c)) put(c);
+    const keep = new Set(placed);
+    for (const c of lifted) {
+      if (keep.has(c)) continue;
+      let ok = !near(c);
+      for (let t = 0; t < 2 && !ok; t++) {
+        c.y -= PICKUP_APART;
+        ok = !near(c) && !inside(c.x, c.y);
+      }
+      if (ok) { put(c); keep.add(c); }
+    }
+    this.C = this.C.filter((c) => keep.has(c));
+    return before - this.C.length;
   }
 
   // ---- enemies ----
@@ -388,6 +453,7 @@ class Gen {
     // a zone (cloud, gust, column, web, tide, ruins, darkness) keeps its patch of sky clear of fliers
     if ((this.zones ?? []).some((z) => z.x1 > x0 && z.x0 < x1)) return false;
     if (this.P.some((p) => p.type !== 'bouncy' && p.x < x1 && p.x + p.width > x0 && p.y < y1 && p.y + p.height > y0)) return false;
+    if (this.exitAt && Math.abs(this.exitAt.x - x) <= 560 && Math.abs(this.exitAt.y - homeY) <= 560) return false;
     return this.CP.every((c) => Math.abs(c.x - x) > 480 || Math.abs(c.y - homeY) > 520);
   }
 
@@ -827,7 +893,6 @@ class Gen {
     this.flat(this.rr(140, 200));
     this.closeBank();
     const w = this.pitW();
-    this.arc(this.cx - 30, this.cx + w + 30, this.g - 36, 76, 4);
     this.addRope(this.cx, w, false);
     this.cx += w;
     this.openBank();
@@ -839,9 +904,10 @@ class Gen {
   addRope(gapStart: number, gapW: number, required: boolean) {
     const r: Rope = { id: this.R.length + 1, x0: gapStart - ROPE_OVERLAP, x1: gapStart + gapW + ROPE_OVERLAP, y: this.g - ROPE_RISE, g0: this.g, g1: this.g, required };
     this.R.push(r);
-    const n = Math.max(3, Math.round(gapW / 110));
+    // fruit hangs along the rope, never closer than a pickup's width to its neighbour (a narrow gap holds fewer)
+    const n = Math.max(2, Math.floor((gapW + 60) / (PICKUP_APART + 10)));
     for (let i = 0; i < n; i++) {
-      const x = gapStart + 30 + ((gapW - 60) * (i + 0.5)) / n;
+      const x = gapStart - 30 + ((gapW + 60) * (i + 0.5)) / n;
       this.item('fruit', x, ropeYAt(r, x) + HANG_DROP - 34);
     }
   }
@@ -954,14 +1020,15 @@ class Gen {
 
   /** a ditch with a rope bridge over it: cross on top, or drop in for the flowers at the bottom */
   chunkDitch() {
-    const depth = this.rr(54, 70);
+    // (deep enough that the flowers on the floor hang clear under the 26 px deck of the bridge: they used to sit inside it)
+    const depth = this.rr(76, 86);
     if (!this.roomBelow(depth)) { this.chunkGapBridge(); return; }
     this.flat(this.rr(100, 160));
     this.closeBank();
     const L = this.rr(300, 460);
     this.plat({ x: this.cx, y: this.g, width: L, height: 26, type: 'solid', style: 'canopy_bridge' });
     this.plat({ x: this.cx, y: this.g + depth, width: L, height: GROUND_H, type: 'solid', style: 'log' });
-    this.row(this.cx + 50, this.cx + L - 50, this.g + depth - 34, Math.round(L / 100));
+    this.row(this.cx + 50, this.cx + L - 50, this.g + depth - 32, Math.round(L / 100));
     this.cx += L;
     this.openBank();
     this.log.push('ditch');
@@ -1210,13 +1277,13 @@ class Gen {
   }
 
   chunkYard(count = this.ri(2, 1 + Math.ceil(1 + this.d * 3))) {
-    const len = 330 + count * 110;
+    const pad = YARD_PAD;
+    const seg = 130;
+    const len = 2 * pad + count * seg;
     const s = this.flat(len, { yard: true });
-    const inner = len - 150;
-    const seg = inner / count;
     for (let i = 0; i < count; i++) {
-      const a = s.x0 + 75 + i * seg + 8;
-      const b = s.x0 + 75 + (i + 1) * seg - 8;
+      const a = s.x0 + pad + i * seg + 8;
+      const b = s.x0 + pad + (i + 1) * seg - 8;
       this.ground((a + b) / 2, this.g, a, b);
     }
     if (this.chance(0.5)) {
@@ -1547,6 +1614,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
   const exitTotemY = gen.g;
   gen.closeBank();
   gen.item('exit_totem', exitTotemX, exitTotemY - 30);
+  gen.exitAt = { x: exitTotemX, y: exitTotemY };
   gen.log.push('goal');
 
   decorate(gen, spawnX);
@@ -1576,7 +1644,17 @@ function decorate(gen: Gen, spawnX: number) {
   const cfg = gen.cfg;
   const obj = cfg.objectiveType;
   const awayFromSafe = (x: number) =>
-    Math.abs(x - spawnX) > 360 && gen.CP.every((c) => Math.abs(c.x - x) > 260);
+    Math.abs(x - spawnX) > 360 && gen.CP.every((c) => Math.abs(c.x - x) > 260) && (!gen.exitAt || Math.abs(gen.exitAt.x - x) > 420);
+  /** a patrol patch cut back so it stays 230 px from the start, every flag and the exit (null if too little is left to patrol) */
+  const clearPatch = (mid: number, pMin: number, pMax: number): [number, number] | null => {
+    const spots = [spawnX, ...gen.CP.map((c) => c.x), ...(gen.exitAt ? [gen.exitAt.x] : [])];
+    for (const x of spots) {
+      if (x > pMin - 230 && x < pMax + 230) {
+        if (x <= mid) pMin = Math.max(pMin, x + 230); else pMax = Math.min(pMax, x - 230);
+      }
+    }
+    return pMax - pMin >= 70 && mid >= pMin && mid <= pMax ? [pMin, pMax] : null;
+  };
 
   // ---- ordinary ground enemies on suitable flats ----
   const p0: Record<string, number> = {
@@ -1592,8 +1670,10 @@ function decorate(gen: Gen, spawnX: number) {
     const mid = (s.x0 + s.x1) / 2;
     if (!awayFromSafe(mid)) continue;
     if (!first && gen.rnd() > pEnemy) continue;
+    const patch = clearPatch(mid, s.x0 + 50, s.x1 - 50);
+    if (!patch) continue;
     first = true;
-    gen.ground(mid, s.y, s.x0 + 50, s.x1 - 50);
+    gen.ground(mid, s.y, patch[0], patch[1]);
   }
 
   // ---- quota top-ups ----
@@ -1617,14 +1697,18 @@ function decorate(gen: Gen, spawnX: number) {
       if (mid < s.x0 + 40 || mid > s.x1 - 40) continue;
       if (gen.E.some((o) => o.type !== 'eagle' && Math.abs(o.x - mid) < 130)) continue;
       if (!awayFromSafe(mid)) continue;
-      gen.ground(mid, s.y, s.x0 + 40, s.x1 - 40);
+      const patch = clearPatch(mid, s.x0 + 40, s.x1 - 40);
+      if (!patch) continue;
+      gen.ground(mid, s.y, patch[0], patch[1]);
     }
     // still short on a crowded layout: pack the animals a little closer (never closer than 95 px)
     for (let pass = 0; pass < 200 && gen.E.length < cfg.targetCount + 1 && order.length; pass++) {
       const s = order[pass % order.length];
       const mid = s.x0 + 40 + gen.rnd() * Math.max(0, s.x1 - s.x0 - 80);
       if (gen.E.some((o) => o.type !== 'eagle' && Math.abs(o.x - mid) < 95) || !awayFromSafe(mid)) continue;
-      gen.ground(mid, s.y, s.x0 + 40, s.x1 - 40);
+      const patch = clearPatch(mid, s.x0 + 40, s.x1 - 40);
+      if (!patch) continue;
+      gen.ground(mid, s.y, patch[0], patch[1]);
     }
   }
 
@@ -1684,6 +1768,17 @@ function decorate(gen: Gen, spawnX: number) {
       }
     }
   }
+
+  // ---- no pickup in a solid or on top of another; a harvest stage then still holds its quota ----
+  gen.settlePickups();
+  if (obj === 'harvest') {
+    const pool = [...flats, ...perches];
+    for (let guard = 0; guard < 60 && pool.length && have((t) => t === 'flower' || t === 'leaf') < cfg.targetCount + 4; guard++) {
+      const sp = pool[guard % pool.length];
+      gen.row(sp.x0 + 30, sp.x1 - 30, sp.y - 32, 4);
+      gen.settlePickups();
+    }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1707,15 +1802,18 @@ function buildAscent(gen: Gen): GeneratedStage {
   // the first landing sits above the floor; later pieces start from the previous landing
   let cur: Platform = gen.plat({ x: 260, y: floorY - 70, width: 260, height: 28, type: 'solid', style: 'branch' });
   let dir: 1 | -1 = 1;
-  const flip = (p: Platform) => {
-    if (dir === 1 && p.x + p.width > W - 420) dir = -1;
-    else if (dir === -1 && p.x < 420) dir = 1;
+  // The engine keeps the hero inside [20, W-20], so nothing is built where he cannot stand: every piece first checks there is room on
+  // the side it is about to grow towards, and if not, grows the other way (a swing needs the most room, a plain stair the least).
+  const MARG = 70;
+  const face = (p: Platform, need: number) => {
+    const room = dir === 1 ? W - MARG - (p.x + p.width) : p.x - MARG;
+    if (room < need) dir = dir === 1 ? -1 : 1;
   };
+  const NEED = { stairs: 380, tree: 240, mush: 380, swing: 660, rest: 480, summit: 740 };
 
   const landings: Platform[] = [cur];
   let n = 0;
   while (cur.y > summitY + 80) {
-    flip(cur);
     const roll = gen.rnd();
     const canSwing = !gen.safeMode && gen.m >= 4;
     const room = cur.y - summitY;
@@ -1725,6 +1823,7 @@ function buildAscent(gen: Gen): GeneratedStage {
     if (kind === 'stairs') {
       const steps = gen.ri(3, 5);
       for (let i = 0; i < steps && cur.y > summitY + 80; i++) {
+        face(cur, NEED.stairs);
         const w = gen.rr(150, 200);
         const rise = gen.rr(58, 72);
         const gap = gen.rr(36, Math.max(40, gen.hopLen(rise, 1)));
@@ -1732,10 +1831,10 @@ function buildAscent(gen: Gen): GeneratedStage {
         const x = dir === 1 ? cur.x + cur.width + gap : cur.x - gap - w;
         cur = gen.plat({ x, y, width: w, height: 28, type: gen.chance(0.1 * gen.d) && !gen.safeMode && i > 0 ? 'fragile' : 'solid', style: 'branch' });
         gen.flower(x + w / 2, y - 36);
-        flip(cur);
       }
       gen.log.push('stairs');
     } else if (kind === 'tree') {
+      face(cur, NEED.tree);
       const h = Math.min(gen.rr(220, 320), room - 40);
       const vx = dir === 1 ? cur.x + cur.width - 40 : cur.x + 40;
       const topY = cur.y - h;
@@ -1748,6 +1847,7 @@ function buildAscent(gen: Gen): GeneratedStage {
       gen.flower(bx + w / 2, topY - 36);
       gen.log.push('tree');
     } else if (kind === 'mush') {
+      face(cur, NEED.mush);
       const h = gen.rr(135, 160);
       const mx = dir === 1 ? cur.x + cur.width - 90 : cur.x + 20;
       gen.plat({ x: mx, y: cur.y - 30, width: 70, height: 30, type: 'bouncy' });
@@ -1759,6 +1859,7 @@ function buildAscent(gen: Gen): GeneratedStage {
       gen.log.push('mush');
     } else {
       // swing across a shaft
+      face(cur, NEED.swing);
       let done = false;
       for (let wgap = gen.lerp(260, 380); wgap >= 240 && !done; wgap -= 20) {
         const A: Platform = { ...cur, id: -1 };
@@ -1777,6 +1878,7 @@ function buildAscent(gen: Gen): GeneratedStage {
         }
       }
       if (!done) {
+        face(cur, NEED.stairs);
         const w = 200;
         const x = dir === 1 ? cur.x + cur.width + 40 : cur.x - 40 - w;
         cur = gen.plat({ x, y: cur.y - 66, width: w, height: 28, type: 'solid', style: 'branch' });
@@ -1786,6 +1888,7 @@ function buildAscent(gen: Gen): GeneratedStage {
     n++;
     // a wide resting ledge now and then, with a checkpoint
     if (n % 3 === 0 && cur.y > summitY + 140) {
+      face(cur, NEED.rest);
       const w = 300;
       const rise = gen.rr(40, 64);
       const gap = gen.rr(36, Math.max(40, gen.hopLen(rise, 1)));
@@ -1798,21 +1901,26 @@ function buildAscent(gen: Gen): GeneratedStage {
   }
 
   // summit
-  flip(cur);
+  face(cur, NEED.summit);
   const sw = 520;
   const gap = Math.max(40, gen.hopLen(60, 1));
-  const sx = Math.max(60, Math.min(W - sw - 60, dir === 1 ? cur.x + cur.width + gap : cur.x - gap - sw));
+  const sx = dir === 1 ? cur.x + cur.width + gap : cur.x - gap - sw;
   const summit = gen.plat({ x: sx, y: cur.y - 60, width: sw, height: 40, type: 'solid', style: 'log' });
   gen.spots.push({ x0: summit.x, x1: summit.x + sw, y: summit.y, safe: true });
   const exitTotemX = summit.x + sw / 2;
   const exitTotemY = summit.y;
   gen.item('exit_totem', exitTotemX, exitTotemY - 30);
+  gen.exitAt = { x: exitTotemX, y: exitTotemY };
 
   // enemies on some landings, power-ups on a couple
   const pE = 0.25 + gen.d * 0.35;
   landings.forEach((l, i) => {
     if (i < 2 || l.width < 190) return;
-    if (gen.CP.some((c) => Math.abs(c.x - (l.x + l.width / 2)) < 240)) return;
+    // (a flag, and the exit, keep a clear approach of 330 px on either side at every height within reach)
+    const mid = l.x + l.width / 2;
+    if (gen.CP.some((c) => Math.abs(c.x - mid) < 330 && Math.abs(c.y - l.y) < 440)) return;
+    if (Math.abs(exitTotemX - mid) < 330 && Math.abs(exitTotemY - l.y) < 440) return;
+    if (Math.abs(spawnX - mid) < 330 && Math.abs(spawnY - l.y) < 440) return;
     if (gen.chance(pE)) gen.ground(l.x + l.width / 2, l.y, l.x + 24, l.x + l.width - 24);
     else if (gen.chance(0.12) && gen.m >= 3) gen.item(gen.chance(0.5) ? 'heart' : 'powerup_magnet', l.x + l.width / 2, l.y - 34);
   });
@@ -1828,6 +1936,7 @@ function buildAscent(gen: Gen): GeneratedStage {
     }
   }
 
+  gen.settlePickups();
   return {
     config: cfg,
     trees: gen.T,
@@ -2068,7 +2177,9 @@ export function addFinds(stage: GeneratedStage, reachableIds?: number[]) {
   for (const p of stage.platforms) {
     if (p.broken || p.type !== 'solid' || p.width < 140 || !reach.has(p.id)) continue;
     // every spot along the platform that is clear (a long ground has many; a small ledge has one or two)
-    for (let x = p.x + 70; x <= p.x + p.width - 70; x += 80) if (clearOf(x, p)) cands.push({ p, x });
+    // (never where another block stands in the way: a stump or a hurdle on the same ground is taller than the find hangs)
+    const open = (x: number) => !stage.platforms.some((q) => !q.broken && q !== p && q.type !== 'drift' && q.type !== 'moving' && x >= q.x - 16 && x <= q.x + q.width + 16 && q.y < p.y - 26 + 16 && q.y + q.height > p.y - 26 - 16);
+    for (let x = p.x + 70; x <= p.x + p.width - 70; x += 80) if (open(x) && clearOf(x, p)) cands.push({ p, x });
   }
   if (!cands.length) return;
   const ys = cands.map((c) => c.p.y).sort((m, n) => m - n);
