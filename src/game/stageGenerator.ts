@@ -1293,9 +1293,23 @@ class Gen {
     this.log.push(`yard${count}`);
   }
 
+  /** the pieces laid down so far, in order, each with the stretch of the stage it covers (kept in meta.pieces) */
+  pieces: Array<{ k: string; x0: number; x1: number }> = [];
+
+  /** run a piece builder and record the stretch it covers */
+  piece(label: string, build: () => void) {
+    const x0 = this.cx;
+    build();
+    this.pieces.push({ k: label, x0, x1: this.cx });
+  }
+
   chunk(kind: Kind) {
     const runup: Partial<Record<Kind, number>> = { pit: 130, stones: 140, swing: 220, moving: 180, fragile: 170, river: 160, zone: 200, skyhop: 150, islands: 150, gapbridge: 130, pillars: 150, zigzag: 150, pegs: 150 };
     if (runup[kind]) this.ensure(runup[kind]!);
+    this.piece(kind, () => this.chunkBody(kind));
+  }
+
+  private chunkBody(kind: Kind) {
     switch (kind) {
       case 'flat': { const s = this.flat(this.rr(200, 420)); this.row(s.x0 + 50, s.x1 - 50, this.g - 32, this.ri(2, 4)); this.log.push('flat'); break; }
       case 'pit': this.chunkPit(); break;
@@ -1553,7 +1567,7 @@ function buildHorizontal(gen: Gen): GeneratedStage {
       // the first look at the idea: a flag just behind it, and no animals on it
       if (gen.cx - gen.lastCp > 700) gen.checkpoint();
       const from = gen.spots.length;
-      if (kind === 'yard') gen.chunkYard(1); else gen.chunk(kind);
+      if (kind === 'yard') gen.piece('yard', () => gen.chunkYard(1)); else gen.chunk(kind);
       for (const sp of gen.spots.slice(from)) if (!sp.perch) sp.safe = true;
       calmRow(gen.rr(160, 240));
       gen.log.push('beat:intro');
@@ -1812,6 +1826,7 @@ function buildAscent(gen: Gen): GeneratedStage {
   const NEED = { stairs: 380, tree: 240, mush: 380, swing: 660, rest: 480, summit: 740 };
 
   const landings: Platform[] = [cur];
+  const chain: NonNullable<NonNullable<GeneratedStage['meta']>['ascentChain']> = [];
   let n = 0;
   while (cur.y > summitY + 80) {
     const roll = gen.rnd();
@@ -1831,6 +1846,7 @@ function buildAscent(gen: Gen): GeneratedStage {
         const x = dir === 1 ? cur.x + cur.width + gap : cur.x - gap - w;
         cur = gen.plat({ x, y, width: w, height: 28, type: gen.chance(0.1 * gen.d) && !gen.safeMode && i > 0 ? 'fragile' : 'solid', style: 'branch' });
         gen.flower(x + w / 2, y - 36);
+        chain.push({ kind: 'hop', w, rise });
       }
       gen.log.push('stairs');
     } else if (kind === 'tree') {
@@ -1845,6 +1861,7 @@ function buildAscent(gen: Gen): GeneratedStage {
       gen.V.push({ id: gen.vid++, x: vx, topY: topY - 2, bottomY: cur.y - 6, swaySpeed: 0.9, swayPhase: gen.rnd() * 6, vineType: 'tree_climb', treeId: tree.id });
       cur = gen.plat({ x: bx, y: topY, width: w, height: 28, type: 'solid', style: 'branch' });
       gen.flower(bx + w / 2, topY - 36);
+      chain.push({ kind: 'climb', w, rise: h });
       gen.log.push('tree');
     } else if (kind === 'mush') {
       face(cur, NEED.mush);
@@ -1856,6 +1873,7 @@ function buildAscent(gen: Gen): GeneratedStage {
       const x = dir === 1 ? mx + 70 + gap : mx - gap - w;
       cur = gen.plat({ x, y: cur.y - h, width: w, height: 28, type: 'solid', style: 'branch' });
       gen.flower(x + w / 2, cur.y - 36);
+      chain.push({ kind: 'bounce', w, rise: h });
       gen.log.push('mush');
     } else {
       // swing across a shaft
@@ -1873,6 +1891,7 @@ function buildAscent(gen: Gen): GeneratedStage {
         if ((res.get(-2) ?? 0) >= 8) {
           gen.V.push({ ...v, id: gen.vid++, swayPhase: gen.rnd() * 6 });
           cur = gen.plat({ x: bx, y: B.y, width: bw, height: 28, type: 'solid', style: 'branch' });
+          chain.push({ kind: 'swing', w: bw, rise: dyUp });
           gen.log.push('swing');
           done = true;
         }
@@ -1882,6 +1901,7 @@ function buildAscent(gen: Gen): GeneratedStage {
         const w = 200;
         const x = dir === 1 ? cur.x + cur.width + 40 : cur.x - 40 - w;
         cur = gen.plat({ x, y: cur.y - 66, width: w, height: 28, type: 'solid', style: 'branch' });
+        chain.push({ kind: 'hop', w, rise: 66 });
       }
     }
     landings.push(cur);
@@ -1896,6 +1916,7 @@ function buildAscent(gen: Gen): GeneratedStage {
       cur = gen.plat({ x, y: cur.y - rise, width: w, height: 28, type: 'solid', style: 'branch' });
       gen.CP.push({ x: cur.x + w / 2, y: cur.y, reached: false });
       gen.spots.push({ x0: cur.x, x1: cur.x + w, y: cur.y, safe: true });
+      chain.push({ kind: 'hop', w, rise });
       landings.push(cur);
     }
   }
@@ -1906,6 +1927,7 @@ function buildAscent(gen: Gen): GeneratedStage {
   const gap = Math.max(40, gen.hopLen(60, 1));
   const sx = dir === 1 ? cur.x + cur.width + gap : cur.x - gap - sw;
   const summit = gen.plat({ x: sx, y: cur.y - 60, width: sw, height: 40, type: 'solid', style: 'log' });
+  chain.push({ kind: 'hop', w: sw, rise: 60 });
   gen.spots.push({ x0: summit.x, x1: summit.x + sw, y: summit.y, safe: true });
   const exitTotemX = summit.x + sw / 2;
   const exitTotemY = summit.y;
@@ -1950,6 +1972,7 @@ function buildAscent(gen: Gen): GeneratedStage {
     exitTotemX,
     exitTotemY,
     checkpoints: gen.CP.sort((a, b) => a.y - b.y).reverse(),
+    meta: { attempt: 0, chunks: [], width: 0, ascentChain: chain },
   };
 }
 
@@ -2039,7 +2062,7 @@ export function buildStage(config: LevelConfig, attempt = 0): GeneratedStage {
   if (config.objectiveType === 'boss_lair') stage = buildBoss(gen);
   else if (config.objectiveType === 'ascent') stage = buildAscent(gen);
   else stage = buildHorizontal(gen);
-  stage.meta = { attempt, chunks: gen.log, width: Math.round(stage.config.levelWidth), ...(gen.recipe ? { recipe: gen.recipe } : {}) };
+  stage.meta = { ...stage.meta, attempt, chunks: gen.log, width: Math.round(stage.config.levelWidth), pieces: gen.pieces, ...(gen.recipe ? { recipe: gen.recipe } : {}) };
   return stage;
 }
 
