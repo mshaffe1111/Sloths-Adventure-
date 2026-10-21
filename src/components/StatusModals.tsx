@@ -199,7 +199,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
     const endingH = typeof window !== 'undefined' && window.innerHeight < 520 ? 76 : 120;
     return (
       <div className="fixed inset-0 z-50 bg-gradient-to-b from-purple-950 via-pink-950 to-black flex items-center justify-center p-4 select-none font-game text-white">
-        <div className="w-full max-w-lg bg-stone-950/90 border-2 border-pink-400 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl">
+        <div className="ending-card w-full max-w-lg bg-stone-950/90 border-2 border-pink-400 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl">
           <div className="ending-pair" aria-hidden="true">
             <HeroPose frame="idle_a" height={endingH} className="ending-pokey" />
             <Icon name="heart" size={endingH * 0.3} className="ending-heart" />
@@ -212,7 +212,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
             Pokey trekked through ten perilous realms, passed one hundred trials, and faced down General Iron-Claw himself. Meeca is home, the Heartbloom is glowing, and the canopy is at peace again.
           </p>
 
-          <div className="bg-black/50 border border-amber-400/40 p-4 rounded-2xl mb-6">
+          <div className="ending-score bg-black/50 border border-amber-400/40 p-4 rounded-2xl mb-6">
             <span className="text-xs text-amber-300 uppercase font-sans">Grand Expedition Score</span>
             <div className="text-3xl font-black text-amber-400 tabular-nums">{score.toLocaleString()}</div>
           </div>

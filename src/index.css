@@ -843,3 +843,13 @@
 .ending-meeca { filter: drop-shadow(0 0 12px rgba(251, 191, 36, .5)); margin-bottom: 4px; }
 .ending-heart { margin-bottom: 18%; animation: map-bob 2.4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .boss-intro-medal, .ending-heart { animation: none; } }
+/* a phone on its side: the ending card shrinks so the buttons stay on screen without scrolling */
+@media (max-height: 520px) {
+  .ending-card { padding: 10px 16px !important; }
+  .ending-card h2 { font-size: 1.5rem !important; margin-bottom: 4px !important; }
+  .ending-card p { font-size: 12px !important; margin-bottom: 8px !important; }
+  .ending-card .ending-pair { margin-bottom: 4px; }
+  .ending-card .ending-score { padding: 6px 10px !important; margin-bottom: 8px !important; display: flex; align-items: baseline; justify-content: center; gap: 10px; }
+  .ending-card .ending-score div { font-size: 1.5rem !important; }
+  .ending-card button { padding-top: 8px !important; padding-bottom: 8px !important; }
+}
