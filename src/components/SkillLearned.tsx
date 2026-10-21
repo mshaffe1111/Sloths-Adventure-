@@ -3,6 +3,7 @@ import { sound } from '../game/audio.ts';
 import type { SkillDef } from '../game/skills.ts';
 import { HeroPose } from './HeroPose.tsx';
 import { SkillIcon } from './SkillIcon.tsx';
+import { arrowText } from './icons/arrowText.tsx';
 
 /** The "NEW SKILL!" card, shown right after the stage that teaches a skill is cleared (before the stage-cleared card). */
 export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }> = ({ skill, onContinue }) => {
@@ -48,7 +49,7 @@ export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }>
                 {keys.map((k, i) => (
                   <React.Fragment key={k}>
                     {i > 0 && <span className="sk-or">{keys[0] === '\u2190' ? '' : 'or'}</span>}
-                    <span className="sk-key">{k}</span>
+                    <span className="sk-key">{arrowText(k, '1em')}</span>
                   </React.Fragment>
                 ))}
                 <span>{what}</span>

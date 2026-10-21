@@ -407,9 +407,9 @@
 .tr-badge { background: linear-gradient(#143d29, #0c2418); border: 2px solid rgba(255,255,255,.12); border-radius: 16px; padding: 8px 6px; text-align: center; opacity: .78; }
 .tr-badge.got { border-color: rgba(246,211,106,.55); opacity: 1; }
 .tr-medal { margin: 0 auto 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid rgba(255,255,255,.55); box-shadow: 0 3px 6px rgba(0,0,0,.4); }
+.tr-inlay { width: 76%; height: 76%; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(circle at 50% 34%, #2f7a4f, #0b3a2c 75%); box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.4), inset 0 -3px 6px rgba(0,0,0,.3); }
 .tr-gold { background: radial-gradient(circle at 35% 30%, #ffe9a8, #d19a1e); }
 .tr-silver { background: radial-gradient(circle at 35% 30%, #fff, #9fb0b8); }
-.tr-inlay { width: 76%; height: 76%; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(circle at 50% 34%, #2f7a4f, #0b3a2c 75%); box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.4), inset 0 -3px 6px rgba(0,0,0,.3); }
 .tr-bronze { background: radial-gradient(circle at 35% 30%, #ffd2a1, #b2672a); }
 .tr-off { background: #1b2e24 !important; border-color: rgba(255,255,255,.12); box-shadow: none; filter: grayscale(1) brightness(.7); }
 .tr-bn { font-family: var(--font-heading, 'Fredoka', system-ui); font-weight: 700; font-size: 12.5px; color: #fde68a; line-height: 1.2; }
@@ -776,6 +776,9 @@
 .htp-g .htp-what b { font-size: 15px; }
 .htp-g .htp-how { font-size: 13px; }
 .htp-tip { display: flex; gap: 10px; align-items: flex-start; padding: 9px 12px; border-radius: 12px; background: rgba(255,214,110,.12); border: 1px solid rgba(255,214,110,.3); font-size: 13px; line-height: 1.35; color: #fff3c4; }
+.htp-tipicon { display: inline-flex; align-items: center; justify-content: center; flex: none; min-width: 26px; }
+.htp-many { display: inline-flex; gap: 2px; align-items: center; }
+.htp-key .ic { vertical-align: -2px; }
 .htp-tip.htp-first { font-size: 15px; padding: 11px 14px; }
 
 /* the first-stage lesson */
@@ -820,6 +823,8 @@
 
 /* ---------- Icons and guardian crests (components/icons) ---------- */
 .ic { display: inline-block; flex: none; vertical-align: -0.18em; overflow: visible; }
+.ic-arrow { vertical-align: -0.16em; margin: 0 1px; }
+.ui-main-s .ic { filter: brightness(.42) saturate(1.5); vertical-align: -2px; }
 .crest { position: relative; display: inline-block; flex: none; border-radius: 50%; isolation: isolate; }
 .crest-field { position: absolute; overflow: hidden; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 34%, #3f9a68, #0f4a33 68%, #06261d); box-shadow: inset 0 -5px 9px rgba(0, 0, 0, .3); }
 .crest-art { position: absolute; background-repeat: no-repeat; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .45)); }

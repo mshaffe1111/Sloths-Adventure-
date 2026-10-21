@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
 import { PAD, padIntent, followAnchor, clampKnob } from '../game/padControl.ts';
 import type { PadSide } from '../game/controlPrefs.ts';
+import { Icon } from './icons/index.tsx';
 
 /**
  * The drawn controller. A floating thumb pad fills one half of the screen (it appears wherever the thumb lands), and
@@ -196,7 +197,10 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
           className="absolute left-1/2 bottom-[18%] -translate-x-1/2 grid place-items-center rounded-full border-2 border-white/30 bg-white/10 text-white/50 font-black pointer-events-none transition-opacity"
           style={{ width: PAD.radius * 2 + 28, height: PAD.radius * 2 + 28, opacity: pad ? 0 : 1 }}
         >
-          <span className="text-[13px] tracking-[0.35em]">◀ ▶</span>
+          <span className="inline-flex items-center gap-3" aria-hidden="true">
+            <Icon name="arrow" size={18} rotate={180} />
+            <Icon name="arrow" size={18} />
+          </span>
         </div>
       </div>
       {pad && (

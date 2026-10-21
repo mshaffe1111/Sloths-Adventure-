@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { browserStore, buildSave, parseSave, applySave, saveFileName, type SaveFile } from '../game/saveFile.ts';
+import { Icon } from './icons/index.tsx';
 
 /**
  * Save and load a whole game as a file. Only ever mounted by the title screen and the world map, so it cannot be
@@ -106,7 +107,7 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
             <h2 className="ui-h2">Save &amp; Load</h2>
           </div>
           <button type="button" className="ui-x" onClick={onClose} aria-label="Close">
-            ✕
+            <Icon name="cross" size={14} />
           </button>
         </div>
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { browserStore, buildSave, resetProgress } from '../game/saveFile.ts';
+import { Icon } from './icons/index.tsx';
 
 /**
  * Start a new adventure. With progress on this device it says what will be erased (and points at the backup
@@ -41,7 +42,7 @@ export const NewGameDialog: React.FC<Props> = ({ onClose, onStarted, onBackup })
             <h2 className="ui-h2">New Game</h2>
           </div>
           <button type="button" className="ui-x" onClick={onClose} aria-label="Close">
-            ✕
+            <Icon name="cross" size={14} />
           </button>
         </div>
         <div className="ui-body">

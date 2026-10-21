@@ -4,6 +4,7 @@ import { BOSS_TIPS } from '../game/bossDefs.ts';
 import { PauseMenu } from './PauseMenu.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { StageCleared } from './StageCleared.tsx';
+import { Icon } from './icons/index.tsx';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -167,7 +168,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
               A red glow means an attack is coming: light hits bounce off, but a hook or a Mega Punch breaks it. When it tires out, hit it with everything.
             </p>
             {typeof window !== 'undefined' && window.innerHeight > window.innerWidth && (
-              <p className="text-xs text-sky-300 font-sans mt-2 font-bold">↻ Turn your phone sideways to see the whole fight.</p>
+              <p className="text-xs text-sky-300 font-sans mt-2 font-bold">Turn your phone sideways to see the whole fight.</p>
             )}
           </div>
 
@@ -189,7 +190,9 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
     return (
       <div className="fixed inset-0 z-50 bg-gradient-to-b from-purple-950 via-pink-950 to-black flex items-center justify-center p-4 select-none font-game text-white">
         <div className="w-full max-w-lg bg-stone-950/90 border-2 border-pink-400 rounded-3xl p-6 sm:p-8 max-h-full overflow-y-auto text-center shadow-2xl">
-          <div className="text-5xl mb-3">❤️</div>
+          <div className="mb-3 flex justify-center">
+            <Icon name="heart" size={60} />
+          </div>
           <h2 className="text-3xl sm:text-4xl font-black text-pink-300 text-stroke mb-2">
             MEECA IS SAVED!
           </h2>

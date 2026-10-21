@@ -8,6 +8,7 @@ import { HowToPlay, howToSeen, markHowToSeen } from './HowToPlay.tsx';
 import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
 import { sound } from '../game/audio.ts';
 import { UpdateLink } from './UpdateControls.tsx';
+import { Icon } from './icons/index.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
 
@@ -152,7 +153,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               <span className="ui-main-t">{resume ? 'CONTINUE' : 'START ADVENTURE'}</span>
               {resume && (
                 <span className="ui-main-s">
-                  {resume.stage} <i>·</i> {resume.stars}★ earned
+                  {resume.stage} <i>·</i> {resume.stars} <Icon name="star" size={13} style={{ verticalAlign: '-2px' }} /> earned
                 </span>
               )}
             </button>
@@ -177,7 +178,8 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             {/* your game: smaller, because they are used less often */}
             <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
               <button type="button" onClick={onOpenTrophies} className="ui-chip ui-chip-btn ui-chip-lg">
-                🏆 Trophies{badgeCount ? ` · ${badgeCount}` : ''}
+                <Icon name="trophy" size={16} />
+                Trophies{badgeCount ? ` · ${badgeCount}` : ''}
               </button>
               <button type="button" onClick={() => setSaveOpen(true)} className="ui-chip ui-chip-btn ui-chip-lg">
                 Save / Load
