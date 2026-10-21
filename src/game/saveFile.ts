@@ -32,8 +32,8 @@ const ALLOWED: RegExp[] = [
   /^sloth_finds$/, // the notes, books and keepsakes found
   /^sloth_memories$/, // the flashbacks seen
   /^sloth_cosmetic$/, // which reward Pokey wears
-  /^sloth_lessons$/, // which first-time lessons have been shown (a New Game shows them again)
-  /^sloth_coach_done$/, // the first-stage lesson has been given (a New Game gives it again)
+  // sloth_lessons, sloth_coach_done, sloth_hint_v3 and sloth_howto_seen are NOT here on purpose: a help message is shown once per device,
+  // and starting a new game (or loading a save) must not bring them back for someone who already knows how to play
 ];
 
 export const isSaveKey = (k: string) => ALLOWED.some((re) => re.test(k));

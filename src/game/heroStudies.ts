@@ -3,9 +3,8 @@
  * hero atlas has only one frame or none: the vine swing (which used to fall back to the code-drawn hero), the double-jump flip, a knock-back,
  * the mega punch, the kick, hanging from a rope and the top of a jump.
  *
- * It is a switch, not a replacement, and it is OFF until switched on (`?studies=1`, or the menu): `localStorage.sloth_studies = 'on'` keeps it.
- * The studies are drawn smaller and without the green backpack of the main atlas, so they are for trying out, not yet the default.
- * With the switch off, or while the atlas loads, or for any pose with no study, nothing here applies and the main atlas draws as before.
+ * It is always on (Matt tried the poses and kept them); `?studies=0` turns it off for a session.
+ * While the atlas loads, or for any pose with no study, nothing here applies and the main atlas draws as before.
  */
 import type { PlayerState } from './types.ts';
 import { STUDY_FRAMES, type StudyFrame } from './heroStudiesData.ts';
@@ -14,32 +13,21 @@ import type { HeroEvents } from './heroEvents.ts';
 import { HURT_TIME } from './heroEvents.ts';
 import { trackAtlas } from './atlasLoader.ts';
 
-export const DEFAULT_STUDIES = false;
+export const DEFAULT_STUDIES = true;
 
+/** always on (there is no menu switch any more); `?studies=0` turns it off for one session, for comparing */
 let enabled: boolean | null = null;
 export function studiesEnabled(): boolean {
   if (enabled !== null) return enabled;
   let v = DEFAULT_STUDIES;
   try {
     const q = new URLSearchParams(location.search).get('studies');
-    if (q === '1' || q === 'on') v = true;
-    else if (q === '0' || q === 'off') v = false;
-    else if (localStorage.getItem('sloth_studies') === 'on') v = true;
-    else if (localStorage.getItem('sloth_studies') === 'off') v = false;
+    if (q === '0' || q === 'off') v = false;
   } catch {
-    /* no window or storage: stay off */
+    /* no window: stay on */
   }
   enabled = v;
   return v;
-}
-/** the menu switch: applies at once and is remembered on the device */
-export function setStudiesPref(on: boolean) {
-  enabled = on;
-  try {
-    localStorage.setItem('sloth_studies', on ? 'on' : 'off');
-  } catch {
-    /* storage blocked: it just will not be remembered */
-  }
 }
 
 let atlas: HTMLImageElement | null = null;

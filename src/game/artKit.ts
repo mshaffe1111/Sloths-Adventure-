@@ -244,8 +244,43 @@ export function drawFlower(
   _petals = 5
 ) {
   const key = Math.round(x * 0.37 + y * 0.91);
-  drawBloom(ctx, pickBloom(rad, key), x, y, rad, petal, core, rot, rng(key | 0));
+  const kind = pickBloom(rad, key);
+  // a flower head is drawn petal by petal, each petal clipped and shaded, and the same ones stand on the same ledges for the whole stage.
+  // So each is painted once into a small picture, at the density it is shown at, and drawn as a picture from then on
+  if (ctx.globalAlpha === 1) {
+    const t = ctx.getTransform();
+    const dens = Math.max(1, Math.min(3, Math.ceil(Math.hypot(t.a, t.b) - 0.05)));
+    const id = `${key}|${rad}|${petal}|${core}|${rot}|${dens}`;
+    let pic = flowerPics.get(id);
+    if (pic) {
+      flowerPics.delete(id); // most recently used goes last
+      flowerPics.set(id, pic);
+    } else {
+      const pad = rad * FLOWER_PAD;
+      const n = Math.ceil(2 * pad * dens);
+      const cv = document.createElement('canvas');
+      cv.width = cv.height = n;
+      const g = cv.getContext('2d');
+      if (g) {
+        g.scale(dens, dens);
+        g.translate(pad, pad);
+        drawBloom(g, kind, 0, 0, rad, petal, core, rot, rng(key | 0));
+      }
+      pic = { cv, pad, size: n / dens };
+      flowerPics.set(id, pic);
+      if (flowerPics.size > FLOWER_PICS_MAX) flowerPics.delete(flowerPics.keys().next().value as string);
+    }
+    ctx.drawImage(pic.cv, x - pic.pad, y - pic.pad, pic.size, pic.size);
+    return;
+  }
+  drawBloom(ctx, kind, x, y, rad, petal, core, rot, rng(key | 0));
 }
+
+/** the painted flower heads kept so far (see drawFlower): enough for everything on screen, the least recently used go first */
+const flowerPics = new Map<string, { cv: HTMLCanvasElement; pad: number; size: number }>();
+const FLOWER_PICS_MAX = 110;
+/** how far a head reaches from its middle, in its own radius: measured at 1.2 for every species the ledges use, so this leaves a margin */
+const FLOWER_PAD = 1.6;
 
 /** Toadstool, optionally glowing. */
 export function drawMushroom(ctx: CanvasRenderingContext2D, x: number, y: number, s: number, cap: string, spot: string, glow = false) {

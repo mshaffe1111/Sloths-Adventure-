@@ -74,10 +74,12 @@ test('pick-ups and the exit: one lesson each, the cage before the fruit beside i
   assert.equal(pickLesson(scene({ checkpoints: [{ x: 1200, y: 500 }] }), none), 'checkpoint');
 });
 
-test('every lesson has words for all three kinds of controls, and what has been shown is part of the save', () => {
+test('every lesson has words for all three kinds of controls, and what has been shown stays on the device', () => {
   for (const l of Object.values(LESSONS)) {
     assert.ok(l.title && l.intro, l.id);
     for (const m of ['screen', 'pad', 'keys'] as const) assert.ok(l.lines[m].length > 0, `${l.id} ${m}`);
   }
-  assert.ok(isSaveKey('sloth_lessons'), 'a New Game clears it, a save file carries it');
+  assert.ok(!isSaveKey('sloth_lessons'), 'a New Game must not bring the lessons back');
+  assert.ok(!isSaveKey('sloth_coach_done'));
+  assert.ok(!isSaveKey('sloth_hint_v3'));
 });

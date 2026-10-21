@@ -65,9 +65,10 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   }
   const G = gestures.current;
 
-  // the hint fades by itself
+  // the hint fades by itself, and is never shown again once it has been up
   useEffect(() => {
     if (!hint) return;
+    markHintSeen();
     const id = window.setTimeout(() => {
       setHint(false);
       markHintSeen();

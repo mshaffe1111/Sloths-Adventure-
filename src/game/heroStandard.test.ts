@@ -11,10 +11,10 @@ const calm = { isHurt: () => false, isLanding: () => false, hurtUntil: 0 };
 const player = (o: Record<string, unknown> = {}) =>
   ({ x: 0, y: 0, vx: 0, vy: 0, facing: 1, grounded: true, somersaultAngle: 0, attackType: 'none', walkCycle: 0, ...o }) as never;
 
-test('the standard hero is off unless switched on', () => {
-  assert.equal(DEFAULT_STANDARD, false);
-  assert.equal(standardEnabled(), false);
-  assert.equal(stdUi('idle_a'), null, 'the menus keep the main hero while it is off');
+test('the standard hero is the hero unless a debugging session turns it off', () => {
+  assert.equal(DEFAULT_STANDARD, true);
+  assert.equal(standardEnabled(), true);
+  assert.ok(stdUi('idle_a'), 'the menus draw the standard frames');
 });
 
 test('every frame the loops and stages name is in the atlas', () => {

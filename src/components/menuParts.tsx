@@ -1,7 +1,5 @@
 import React from 'react';
 import { polishEnabled, setPolishPref } from '../game/polish.ts';
-import { studiesEnabled, setStudiesPref } from '../game/heroStudies.ts';
-import { standardEnabled, setStandardPref, warmStandardAtlas } from '../game/heroStandard.ts';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
@@ -42,37 +40,6 @@ export const PolishToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Wind, glow, soft shadows and richer ground. Turn it off if the game feels slow.</small>
-    </div>
-  );
-};
-
-/** the action-studies switch (saved on the device): the extra painted poses for the vine swing, flip, kick, mega punch and knock-back */
-export const StudiesToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => studiesEnabled());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <Icon color="#a7f3d0" size={22}>
-            <circle cx="12" cy="5" r="2.2" />
-            <path d="M12 7.5v6M12 13.5l-3.5 5M12 13.5l3.5 5M6 10l6-1 6 1" />
-          </Icon>
-          Action poses (test)
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setStudiesPref(v);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">New painted poses for vine swings, flips, kicks and mega punches. Smaller and without the backpack, so try them and tell us.</small>
     </div>
   );
 };
@@ -152,7 +119,7 @@ export const OrchSfxToggle: React.FC = () => {
             <circle cx="7" cy="18" r="2.2" />
             <circle cx="17" cy="16" r="2.2" />
           </Icon>
-          Orchestra sound effects (test)
+          Orchestra sound effects
         </span>
         <button
           type="button"
@@ -173,39 +140,8 @@ export const OrchSfxToggle: React.FC = () => {
           {on ? 'On' : 'Off'}
         </button>
       </div>
-      <small className="pm-polish-note">Pickups, hits and each animal's sounds played by the same instruments as the music: no bells or glass, and a different instrument each time. Try it and tell us.</small>
+      <small className="pm-polish-note">Pickups, hits and each animal's sounds played by the same instruments as the music: no bells or glass, and a different instrument each time. Off by default; switch it on if you like it.</small>
     </div>
   );
 };
 
-/** the standard-hero switch (saved on the device): Pokey drawn entirely from the new standard-set sheets, satchel look, every state */
-export const StandardToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => standardEnabled());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <Icon color="#fcd34d" size={22}>
-            <circle cx="12" cy="5" r="2.2" />
-            <path d="M12 7.5v6M12 13.5l-3.5 5M12 13.5l3.5 5M7 10.5h10" />
-          </Icon>
-          New hero set (test)
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setStandardPref(v);
-            if (v) warmStandardAtlas();
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">Pokey redrawn from the new standard sheets: one look for every move, with the satchel instead of the backpack. Try it and tell us.</small>
-    </div>
-  );
-};

@@ -291,6 +291,8 @@ interface LayerSet {
   near: HTMLCanvasElement;
   front: HTMLCanvasElement;
   clouds: HTMLCanvasElement[];
+  /** the three haze veils are already painted into far, hills and mid (gameplay sets only), so they are not drawn again every frame */
+  hazed: boolean;
 }
 /**
  * Baked layer sets, keyed by world, seed and bake scale. Gameplay always bakes at full resolution and keeps one set;
@@ -1210,7 +1212,17 @@ function ensure(world: number): LayerSet {
     near: buildNear(look, world),
     front: buildFront(look, world),
     clouds: buildClouds(look, world),
+    hazed: false,
   };
+  // Gameplay paints a haze veil over each of the three distant layers, every frame: three more full-screen blends on a phone. A veil laid
+  // over a layer and then over what is behind it is the same picture as the veil baked into that layer ("over" is associative), so it is
+  // baked once here. Menu vistas (small bake scale) keep drawing theirs live, because they skip the veils on purpose.
+  if (bakeScale >= 1) {
+    bakeHaze(cache.far, look.haze, HAZE_FAR);
+    bakeHaze(cache.hills, look.haze, HAZE_HILLS);
+    bakeHaze(cache.mid, look.haze, HAZE_MID);
+    cache.hazed = true;
+  }
   sets.set(key, cache);
   return cache;
 }
@@ -1282,12 +1294,23 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: num
   ctx.globalAlpha = prev;
 }
 
+/** how strong the haze is over the far, hill and mid layers (top of the veil is a fifth of this) */
+const HAZE_FAR = 0.09;
+const HAZE_HILLS = 0.07;
+const HAZE_MID = 0.05;
+
 function veil(ctx: CanvasRenderingContext2D, col: string, a: number, vw: number, vh: number) {
   const g = ctx.createLinearGradient(0, 0, 0, vh);
   g.addColorStop(0, rgba(col, a * 0.2));
   g.addColorStop(1, rgba(col, a));
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, vw, vh);
+}
+
+/** the same veil, painted once over a whole layer tile (the tile spans exactly the view height when it is drawn) */
+function bakeHaze(cv: HTMLCanvasElement, col: string, a: number) {
+  const c = cv.getContext('2d');
+  if (c) veil(c, col, a, cv.width, cv.height);
 }
 
 export function renderSky(ctx: CanvasRenderingContext2D, world: number, vw: number, vh: number, time: number, camX: number) {
@@ -1357,12 +1380,13 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   // the polish pass (prototype, off by default): per-stage layer shifts/flips, wind, mist and light shafts
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
   const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);
+  const live = !lite && !set.hazed;
   drawTile(ctx, set.far, 0.05, camX, vw, vh, s, yo * 0.3, 1, to('far'));
-  if (!lite) veil(ctx, look.haze, 0.09, vw, vh);
+  if (live) veil(ctx, look.haze, HAZE_FAR, vw, vh);
   drawTile(ctx, set.hills, 0.12, camX, vw, vh, s, yo * 0.5, 1, to('hills'));
-  if (!lite) veil(ctx, look.haze, 0.07, vw, vh);
+  if (live) veil(ctx, look.haze, HAZE_HILLS, vw, vh);
   drawTile(ctx, set.mid, 0.26, camX, vw, vh, s, yo * 0.8, 1, to('mid'));
-  if (!lite) veil(ctx, look.haze, 0.05, vw, vh);
+  if (live) veil(ctx, look.haze, HAZE_MID, vw, vh);
   drawTile(ctx, set.near, 0.5, camX, vw, vh, s, yo, 1, to('near'));
   if (rig && !lite) polishBack(ctx, look, rig, world, camX, vw, vh, time);
   if (RICH_MID(look, world)) renderLifeBack(ctx, look, world, camX, vw, vh, time, lite);

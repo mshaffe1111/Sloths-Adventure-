@@ -7,9 +7,9 @@ const idle = { isHurt: () => false, hurtUntil: 0 };
 const player = (o: Record<string, unknown> = {}) =>
   ({ x: 0, y: 0, vx: 0, vy: 0, facing: 1, grounded: true, somersaultAngle: 0, attackType: 'none', ...o }) as never;
 
-test('the action studies are off unless switched on', () => {
-  assert.equal(DEFAULT_STUDIES, false);
-  assert.equal(studiesEnabled(), false);
+test('the action studies are always on', () => {
+  assert.equal(DEFAULT_STUDIES, true);
+  assert.equal(studiesEnabled(), true);
 });
 
 test('every study pose the game can ask for exists in the atlas', () => {

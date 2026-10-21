@@ -1027,6 +1027,32 @@ function drawThornGate(ctx: CanvasRenderingContext2D, time: number) {
   }
 }
 
+/**
+ * A soft round glow, painted once and drawn as a picture. Every pickup on screen used to build one or two fresh radial gradients on every
+ * frame (over a hundred a second-and-a-half of play); the picture is the same gradient, kept, and the screen batches the draws of one picture.
+ */
+const glowPics = new Map<string, HTMLCanvasElement>();
+const GLOW_RES = 2;
+function fillGlow(ctx: CanvasRenderingContext2D, key: string, cx: number, cy: number, r0: number, r1: number, stops: [number, string][]) {
+  let cv = glowPics.get(key);
+  if (!cv) {
+    const n = Math.ceil(2 * r1 * GLOW_RES);
+    cv = document.createElement('canvas');
+    cv.width = cv.height = n;
+    const g = cv.getContext('2d');
+    if (g) {
+      const gr = g.createRadialGradient(n / 2, n / 2, r0 * GLOW_RES, n / 2, n / 2, r1 * GLOW_RES);
+      for (const [at, col] of stops) gr.addColorStop(at, col);
+      g.fillStyle = gr;
+      g.beginPath();
+      g.arc(n / 2, n / 2, r1 * GLOW_RES, 0, Math.PI * 2);
+      g.fill();
+    }
+    glowPics.set(key, cv);
+  }
+  ctx.drawImage(cv, cx - r1, cy - r1, 2 * r1, 2 * r1);
+}
+
 export function drawCollectible(
   ctx: CanvasRenderingContext2D,
   item: Collectible,
@@ -1044,14 +1070,7 @@ export function drawCollectible(
     const big = item.type === 'relic' ? 1.25 : 1.4;
     ctx.scale(big, big);
     // soft sparkle ring so pickups pop against the foliage
-    const ring = ctx.createRadialGradient(0, 0, 8, 0, 0, 26);
-    ring.addColorStop(0, 'rgba(255, 255, 235, 0.0)');
-    ring.addColorStop(0.7, 'rgba(255, 255, 235, 0.28)');
-    ring.addColorStop(1, 'rgba(255, 255, 235, 0)');
-    ctx.fillStyle = ring;
-    ctx.beginPath();
-    ctx.arc(0, 0, 26, 0, Math.PI * 2);
-    ctx.fill();
+    fillGlow(ctx, 'ring', 0, 0, 8, 26, [[0, 'rgba(255, 255, 235, 0.0)'], [0.7, 'rgba(255, 255, 235, 0.28)'], [1, 'rgba(255, 255, 235, 0)']]);
   }
 
   switch (item.type) {
@@ -1069,13 +1088,7 @@ export function drawCollectible(
     case 'flower':
     case 'fruit': {
       // a glowing bloom; the species rotates through the collection so no two pickups in a row look alike
-      const glow = ctx.createRadialGradient(0, 0, 2, 0, 0, 24);
-      glow.addColorStop(0, 'rgba(255, 236, 170, 0.6)');
-      glow.addColorStop(1, 'rgba(255, 236, 170, 0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(0, 0, 24, 0, Math.PI * 2);
-      ctx.fill();
+      fillGlow(ctx, 'bloom', 0, 0, 2, 24, [[0, 'rgba(255, 236, 170, 0.6)'], [1, 'rgba(255, 236, 170, 0)']]);
       // the painted flower when it is on and loaded (the vector bloom below is the fallback and the classic look)
       if (item.type === 'flower' && drawFlowerSprite(ctx, world, mini, item.id, Math.sin(time * 2 + item.bobPhase) * 0.07)) break;
       const species: Array<[Bloom, string, string]> = [
@@ -1094,15 +1107,7 @@ export function drawCollectible(
     case 'leaf': {
       // the painted foliage plant when it is on and loaded (the vector leaf below is the fallback and the classic look)
       if (plantsPainted()) {
-        const pg = ctx.createRadialGradient(0, 0, 2, 0, 0, 24);
-        pg.addColorStop(0, 'rgba(210, 255, 160, 0.5)');
-        pg.addColorStop(1, 'rgba(210, 255, 160, 0)');
-        ctx.save();
-        ctx.fillStyle = pg;
-        ctx.beginPath();
-        ctx.arc(0, 0, 24, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+        fillGlow(ctx, 'plant', 0, 0, 2, 24, [[0, 'rgba(210, 255, 160, 0.5)'], [1, 'rgba(210, 255, 160, 0)']]);
       }
       if (drawPlantSprite(ctx, world, mini, item.id, Math.sin(time * 2 + item.bobPhase) * 0.06)) break;
       // a lit, pointed leaf with golden veins and a gentle sway
@@ -1130,13 +1135,7 @@ export function drawCollectible(
     }
 
     case 'relic': {
-      const glow = ctx.createRadialGradient(0, -2, 4, 0, -2, 30);
-      glow.addColorStop(0, 'rgba(255, 220, 110, 0.6)');
-      glow.addColorStop(1, 'rgba(255, 220, 110, 0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(0, -2, 30, 0, Math.PI * 2);
-      ctx.fill();
+      fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
       // stone base
       softBlob(ctx, 0, 14, 14, 5, 0, '#9a9fa8', 0.3);
       // golden idol body + head

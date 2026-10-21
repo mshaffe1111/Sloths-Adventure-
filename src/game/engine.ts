@@ -453,6 +453,7 @@ export class GameEngine {
     const cfg = this.currentStage.config;
     if (coachWanted(cfg.id, cfg.secret)) {
       this.coach = new TouchCoach(controlStyle(), (st) => this.callbacks.onCoach?.(st), markCoachDone);
+      markCoachDone(); // once per device: leaving halfway does not bring it back
       this.coach.setCourse(this.player.x, firstJumpSpot(this.platforms, this.player.x, this.player.y));
       // the coach is already teaching the jump over the first gap, so the gap card would only say it twice
       markLessonSeen('gap');

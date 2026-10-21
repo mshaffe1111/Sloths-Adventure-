@@ -3,8 +3,8 @@
  * scripts/cutStandard.py. One consistent look (the satchel and wrist wraps, no backpack) for every state: idle, walk, run, jump, fall, land,
  * flip, climb, hang, vine swing, punch, kick, mega, hurt, duck, and the portraits.
  *
- * It is a switch, not a replacement, and it is OFF until switched on (`?std=1`, or the menu): `localStorage.sloth_std = 'on'` keeps it. With the switch
- * off, or while the atlas loads, or for any pose with no frame here, nothing in this file applies and the main hero draws as before.
+ * This is Pokey now: it draws every pose it has a frame for. While the atlas loads, or for a pose with no frame here, the older hero (heroSprite.ts)
+ * draws as before. `?std=0` turns it off for a debugging session (it is not remembered).
  */
 import type { PlayerState } from './types.ts';
 import { STD_ATLAS_SIZE, STD_FRAMES, type StdFrame } from './heroStandardData.ts';
@@ -13,7 +13,7 @@ import { attackStage } from './heroStudies.ts';
 import { airLean, flipPose } from './heroSprite.ts';
 import { trackAtlas } from './atlasLoader.ts';
 
-export const DEFAULT_STANDARD = false;
+export const DEFAULT_STANDARD = true;
 export const STD_ATLAS_URL = new URL('../assets/hero/hero-standard.webp', import.meta.url).href;
 export { STD_ATLAS_SIZE };
 
@@ -23,24 +23,12 @@ export function standardEnabled(): boolean {
   let v = DEFAULT_STANDARD;
   try {
     const q = new URLSearchParams(location.search).get('std');
-    if (q === '1' || q === 'on') v = true;
-    else if (q === '0' || q === 'off') v = false;
-    else if (localStorage.getItem('sloth_std') === 'on') v = true;
-    else if (localStorage.getItem('sloth_std') === 'off') v = false;
+    if (q === '0' || q === 'off') v = false;
   } catch {
-    /* no window or storage: stay off */
+    /* no window: stay on */
   }
   enabled = v;
   return v;
-}
-/** the menu switch: applies at once and is remembered on the device */
-export function setStandardPref(on: boolean) {
-  enabled = on;
-  try {
-    localStorage.setItem('sloth_std', on ? 'on' : 'off');
-  } catch {
-    /* storage blocked: it just will not be remembered */
-  }
 }
 
 let atlas: HTMLImageElement | null = null;

@@ -45,3 +45,7 @@ What was found (full frame-by-frame reference and the redraw requests are in the
 Near-duplicates (silhouette overlap): frames 9 and 11 are 84% the same squat; 1 and 3, and 8 and 10, about 70%. Frames 15 and 16 face the camera rather than showing a profile. Character height is not measurable from a plain standing frame (none on this sheet); head size matches sheet 14, so the cutter should reuse sheet 14's scale (1.159) when this sheet is wired in.
 
 Wired in (2026-10-20, 18:50, test hero only, uncommitted): `cutStandard.py --set v2` now packs 16 frames from sheet 15 (`air_punch_0-2`, `air_kick_0-2`, `stomp_start`, `stomp_plunge`, `stomp_impact`, `stomp_rebound`, `bounce_squash`, `bounce_rise`, `bounce_top`, `spring_squash`, `spring_launch`, `spring_rise`), at sheet 14's scale. The player has two display-only fields, `diving` (down held while falling) and `bounce` (kind and seconds since), set by the engine and read only by `heroStandard.ts`. Atlas 1536x1831, 503 KB (was 409 KB); the playable page builds to 15,927,587 bytes.
+
+## In production (2026-10-20, 19:50)
+
+The standard hero is no longer a test: it is Pokey in the game, the menu switch is gone, and `cutStandard.py` now builds the second-round set (`--set v2`) by default (`--set old` still rebuilds the first-round atlas). `?std=0` turns it off for a debugging session. The older hero (heroSprite.ts) still draws while the atlas loads and for any pose with no standard frame. The orchestra sound effects (`sfxOrch.ts`) stay opt-in, off by default, in the menu.

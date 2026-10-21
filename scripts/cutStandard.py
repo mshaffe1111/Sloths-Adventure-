@@ -2,7 +2,7 @@
 """
 Cuts Slomatt out of the eight standard-set sheets (reference/animation-sheets/slomatt/standard-set/0N_*.jpg) and packs the frames the game uses.
 
-  python3 scripts/cutStandard.py            # packs src/assets/hero/hero-standard.webp and src/game/heroStandardData.ts
+  python3 scripts/cutStandard.py            # (the v2 set) packs src/assets/hero/hero-standard.webp and src/game/heroStandardData.ts
   python3 scripts/cutStandard.py --library  # also writes every one of the 128 figures as a transparent PNG to the folder given by --out
 
 The standard set is the format new sheets follow: 1024x1024, a 4x4 grid on one flat grey, no borders and no numbers. That is what makes this
@@ -284,7 +284,7 @@ def pack(items):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--set', choices=['old', 'v2'], default='old', help="old: the first-round sheets 1-8 (what the game uses today); v2: the second round, each state from its best sheet")
+    ap.add_argument('--set', choices=['old', 'v2'], default='v2', help="v2 (the default, what the game uses): the second round of sheets, each state from its best sheet; old: the first-round sheets 1-8")
     ap.add_argument('--library', action='store_true', help='also write all the figures as transparent PNGs')
     ap.add_argument('--out', default=None, help='folder for --library output; with --preview, where the atlas and data go instead of src/')
     ap.add_argument('--preview', action='store_true', help='write the atlas and data into --out instead of over the game files')
