@@ -1,4 +1,5 @@
 import React, { useState, useSyncExternalStore } from 'react';
+import { Icon } from './icons/index.tsx';
 import { applyUpdate, checkForUpdate, subscribeUpdate, updateAvailable } from '../game/updates.ts';
 
 /** true once a newer build of the game has been found (the page that is open is an old one) */
@@ -28,7 +29,11 @@ export const UpdateLink: React.FC = () => {
   };
   return (
     <button type="button" className="title-credit-btn" onClick={() => void run()} disabled={state === 'checking'}>
-      {state === 'checking' ? 'Checking…' : state === 'same' ? 'You have the latest ✓' : state === 'unknown' ? 'Could not check (offline?)' : 'Check for updates'}
+      {state === 'checking' ? 'Checking…' : state === 'same' ? (
+          <>
+            You have the latest <Icon name="check" size={12} />
+          </>
+        ) : state === 'unknown' ? 'Could not check (offline?)' : 'Check for updates'}
     </button>
   );
 };

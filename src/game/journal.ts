@@ -27,18 +27,14 @@ export const PREDATOR_ORDER = PREDATORS;
 export interface GuardianEntry {
   world: number;
   name: string;
-  /** art key in creatureArt.ts when the guardian has painted art */
+  /** art key in creatureArt.ts when the guardian has a full-body painted picture there (the round crest in components/icons/crests.ts covers all ten) */
   art?: string;
-  /** stand-in picture until it has painted art */
-  crest: string;
 }
 
-const CRESTS = ['🐍', '🐊', '🐆', '🦅', '🕷️', '🐸', '🗿', '🦇', '🐉', '🦍'];
 const ART: Record<number, string> = { 1: 'guardian_1', 2: 'guardian_2', 5: 'guardian_5' };
 
 export const GUARDIAN_ENTRIES: GuardianEntry[] = GUARDIANS.map((name, i) => ({
   world: i + 1,
   name,
   art: ART[i + 1],
-  crest: CRESTS[i],
 }));

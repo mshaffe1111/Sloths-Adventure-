@@ -708,7 +708,7 @@ export default function App() {
       {screen === 'story_cutscene' && (
         <StoryPlayer
           panels={INTRO_PANELS}
-          finishLabel="Begin the journey ▶"
+          finishLabel="Begin the journey"
           skipLabel="Skip intro"
           onFinish={() => {
             if (storyFrom === 'title') {
@@ -725,7 +725,7 @@ export default function App() {
       {screen === 'world_story' && WORLD_STORIES[activeLevel.worldIndex] && (
         <StoryPlayer
           panels={WORLD_STORIES[activeLevel.worldIndex].panels}
-          finishLabel="Let's go ▶"
+          finishLabel="Let's go"
           onFinish={() => continueAfterWorldStory(activeLevel)}
         />
       )}
@@ -735,7 +735,7 @@ export default function App() {
         <StoryPlayer
           key={`mid${activeLevel.worldIndex}`}
           panels={WORLD_MID[activeLevel.worldIndex]}
-          finishLabel="Onward ▶"
+          finishLabel="Onward"
           skipLabel="Skip scene"
           onFinish={() => {
             markMidStorySeen(activeLevel.worldIndex);
@@ -752,7 +752,7 @@ export default function App() {
               ? thornbarkPanels('intro')
               : bossPanels(activeLevel.worldIndex, 'intro', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
           }
-          finishLabel="FIGHT! ⚔"
+          finishLabel="FIGHT!" finishIcon="swords"
           skipLabel="Skip to fight"
           onFinish={() => launchEngine(activeLevel)}
         />
@@ -767,7 +767,7 @@ export default function App() {
               : victoryPanels(activeLevel.worldIndex, (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName) ??
                 bossPanels(activeLevel.worldIndex, 'defeat', (WORLDS_DATA[activeLevel.worldIndex - 1] || WORLDS_DATA[0]).bossName)
           }
-          finishLabel="Onward ▶"
+          finishLabel="Onward"
           onFinish={() => {
             if (activeLevel.worldIndex === 10 && activeLevel.miniIndex === 10) {
               setScreen('ending_story');
@@ -790,7 +790,7 @@ export default function App() {
         <StoryPlayer
           key={memoryPlay.id}
           panels={MEMORIES[memoryPlay.id].panels}
-          finishLabel="Back ▶"
+          finishLabel="Back"
           skipLabel={MEMORIES[memoryPlay.id].kind === 'memory' ? 'Skip memory' : 'Skip scene'}
           onFinish={() => {
             markMemorySeen(memoryPlay.id);
@@ -816,7 +816,7 @@ export default function App() {
       {screen === 'ending_story' && (
         <StoryPlayer
           panels={finalePanels(foundIds)}
-          finishLabel="The End ❤"
+          finishLabel="The End" finishIcon="heart"
           onFinish={() => setScreen('story_ending')}
         />
       )}

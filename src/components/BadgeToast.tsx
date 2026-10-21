@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import type { BadgeDef } from '../game/badges.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
+import { guardianWorld } from './icons/badgeIcons.ts';
 
 /**
  * "New badge!" slides in over whatever screen is showing, then goes away by itself.
@@ -30,7 +31,7 @@ export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = 
       <div className="tr-toast tr-toast-group" key="group" role="status" aria-live="polite">
         <div className="tr-toast-medals">
           {badges.slice(0, 6).map((b) => (
-            <BadgeMedal key={b.id} icon={b.icon} tier={b.tier} earned size={36} />
+            <BadgeMedal key={b.id} icon={b.icon} tier={b.tier} earned size={36} world={guardianWorld(b.id)} />
           ))}
         </div>
         <div className="tr-toast-k">{badges.length} new badges!</div>
@@ -45,7 +46,7 @@ export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = 
   if (!b) return null;
   return (
     <div className="tr-toast" key={b.id} role="status" aria-live="polite">
-      <BadgeMedal icon={b.icon} tier={b.tier} earned size={44} />
+      <BadgeMedal icon={b.icon} tier={b.tier} earned size={44} world={guardianWorld(b.id)} />
       <div>
         <div className="tr-toast-k">New badge!</div>
         <div className="tr-toast-n">{b.name}</div>

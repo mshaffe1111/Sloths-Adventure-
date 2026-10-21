@@ -4,6 +4,10 @@ import type { LevelConfig } from '../game/types.ts';
 import { WORLDS_DATA } from '../game/worldsData.ts';
 import { VistaCanvas, WorldThumb, requestThumbs } from './VistaCanvas.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
+import { HeroPose } from './HeroPose.tsx';
+import { Icon } from './icons/index.tsx';
+import { Crest } from './icons/Crest.tsx';
+import { stageTypeInfo } from './icons/stageTypes.ts';
 
 interface WorldMapProps {
   levels: LevelConfig[];
@@ -39,6 +43,33 @@ function curve(pts: { x: number; y: number }[]): string {
     d += `C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
   }
   return d;
+}
+
+/** each stretch of the trail between two stages on its own, with the point and direction at its middle (for the claw prints) */
+function segments(pts: { x: number; y: number }[]): { d: string; mx: number; my: number; angle: number }[] {
+  const out: { d: string; mx: number; my: number; angle: number }[] = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] || p2;
+    const c1x = p1.x + (p2.x - p0.x) / 6;
+    const c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6;
+    const c2y = p2.y - (p3.y - p1.y) / 6;
+    // a cubic at t = .5: the point, and its slope
+    const mx = (p1.x + 3 * c1x + 3 * c2x + p2.x) / 8;
+    const my = (p1.y + 3 * c1y + 3 * c2y + p2.y) / 8;
+    const dx = 0.75 * (p2.x + c2x - c1x - p1.x);
+    const dy = 0.75 * (p2.y + c2y - c1y - p1.y);
+    out.push({
+      d: `M${p1.x.toFixed(1)} ${p1.y.toFixed(1)}C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`,
+      mx,
+      my,
+      angle: (Math.atan2(dy, dx) * 180) / Math.PI,
+    });
+  }
+  return out;
 }
 
 export const WorldMap: React.FC<WorldMapProps> = ({
@@ -110,7 +141,8 @@ export const WorldMap: React.FC<WorldMapProps> = ({
     const n = worldLevels.length || 10;
     const { w, h } = box;
     const wide = w >= 640 && w > h * 1.25;
-    const padX = Math.max(34, Math.min(60, w * 0.06));
+    // room at the ends for the big boss crest (and its picked outline) so it never touches the screen edge
+    const padX = wide ? Math.max(40, Math.min(60, w * 0.06)) : 46;
     const pts: { x: number; y: number }[] = [];
     if (wide) {
       for (let i = 0; i < n; i++) {
@@ -132,9 +164,16 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   }, [box, worldLevels.length]);
 
   const pathD = useMemo(() => curve(nodes.pts), [nodes]);
-  const nodeSize = Math.max(34, Math.min(46, box.w / 17));
+  const segs = useMemo(() => segments(nodes.pts), [nodes]);
+  // the stages are drawn bigger when there is room between them (a portrait phone has two rows of five)
+  const gap = nodes.pts.length > 1 ? Math.min(...nodes.pts.slice(1).map((p, i) => Math.hypot(p.x - nodes.pts[i].x, p.y - nodes.pts[i].y))) : 80;
+  const nodeSize = nodes.wide ? Math.max(34, Math.min(46, box.w / 17)) : Math.max(36, Math.min(46, gap * 0.56));
+  const bossSize = Math.round(nodeSize * 1.5);
+  const badgePx = Math.max(18, Math.round(nodeSize * 0.42));
 
   const hereIdx = worldLevels.findIndex((l) => l.id === resumeId);
+  // the next stage to play in this world: it gets the pulse ring (and the boss a glow)
+  const nextIdx = worldLevels.findIndex((l) => (l.unlocked || l.miniIndex === 1) && !l.completed);
 
   return (
     <div className="fixed inset-0 z-40 bg-[#10241a] flex flex-col select-none font-game text-white overflow-hidden">
@@ -146,9 +185,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
       {/* header */}
       <div className="relative z-10 flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 px-3 sm:px-6 pt-2.5 sm:pt-4">
         <button type="button" onClick={onBackToTitle} className="ui-chip ui-chip-btn" aria-label="Back to the main menu">
-          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
+          <Icon name="arrow" size={13} rotate={180} />
           Menu
         </button>
         <div className="text-center min-w-0 order-3 basis-full sm:order-none sm:basis-auto">
@@ -158,16 +195,17 @@ export const WorldMap: React.FC<WorldMapProps> = ({
         <div className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
           {thornHeart && (
             <span className="ui-chip" title="Thorn Heart: +1 max heart">
-              💜 +1
+              <Icon name="thornHeart" size={15} />
+              +1
             </span>
           )}
           {onOpenTrophies && (
             <button type="button" className="ui-chip ui-chip-btn" onClick={onOpenTrophies} aria-label="Trophy Room">
-              🏆
+              <Icon name="trophy" size={17} />
             </button>
           )}
           <span className="ui-chip" aria-label={`${totalStars} of 300 stars`}>
-            <span className="text-amber-300">★</span>
+            <Icon name="star" size={15} />
             <span className="tabular-nums">{totalStars}/300</span>
           </span>
           <button type="button" onClick={() => setSaveOpen(true)} className="ui-chip ui-chip-btn">
@@ -180,14 +218,32 @@ export const WorldMap: React.FC<WorldMapProps> = ({
       {/* the trail */}
       <div ref={trailRef} className="relative z-10 flex-1 min-h-0">
         <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${box.w} ${box.h}`} aria-hidden="true">
+          {/* the road: dark edge, then every stretch in its own colour. Warm gold where Pokey has been, muted sand for what is still ahead */}
           <path d={pathD} fill="none" stroke="rgba(10,18,12,.55)" strokeWidth={nodeSize * 0.62} strokeLinecap="round" strokeLinejoin="round" />
-          <path d={pathD} fill="none" stroke="#e9c987" strokeWidth={nodeSize * 0.4} strokeLinecap="round" strokeLinejoin="round" opacity=".9" />
-          <path d={pathD} fill="none" stroke="#8a6030" strokeWidth="2" strokeDasharray="2 9" strokeLinecap="round" opacity=".8" />
+          {segs.map((s, i) => {
+            const cleared = !!worldLevels[i]?.completed;
+            return (
+              <g key={i}>
+                <path d={s.d} fill="none" stroke={cleared ? '#f6c244' : '#bfae86'} strokeWidth={nodeSize * 0.4} strokeLinecap="round" opacity={cleared ? 1 : 0.55} />
+                {cleared && <path d={s.d} fill="none" stroke="#fde9a3" strokeWidth={nodeSize * 0.13} strokeLinecap="round" opacity=".55" />}
+                <path d={s.d} fill="none" stroke={cleared ? '#9a5a14' : '#6d5a3a'} strokeWidth="2" strokeDasharray="2 9" strokeLinecap="round" opacity={cleared ? 0.75 : 0.5} />
+              </g>
+            );
+          })}
+          {/* a few tiny claw prints, only where Pokey has already walked */}
+          {segs.map((s, i) =>
+            worldLevels[i]?.completed && i % 2 === 0 ? (
+              <g key={`c${i}`} transform={`translate(${s.mx.toFixed(1)} ${s.my.toFixed(1)}) rotate(${s.angle.toFixed(1)}) translate(0 ${i % 4 === 0 ? -1 : 1})`} opacity=".6">
+                <path d="M-3.4-3.3q3.4-1.2 6.8 0M-3.9 0q3.9-1.2 7.8 0M-3.4 3.3q3.4-1.2 6.8 0" fill="none" stroke="#6b3d0c" strokeWidth="1.25" strokeLinecap="round" />
+              </g>
+            ) : null,
+          )}
         </svg>
 
         {secretFound && activeWorldId === 7 && onPlaySecret && (
           <button type="button" onClick={onPlaySecret} className="ui-chip ui-chip-btn absolute right-3 top-1 z-20" style={{ borderColor: 'rgba(196,160,255,.7)' }}>
-            🌿 Thornbark's Hollow
+            <Icon name="leaf" size={15} />
+            Thornbark's Hollow
           </button>
         )}
 
@@ -196,10 +252,15 @@ export const WorldMap: React.FC<WorldMapProps> = ({
           if (!p) return null;
           const isBoss = lvl.miniIndex === 10;
           const open = lvl.unlocked || lvl.miniIndex === 1;
-          const size = isBoss ? nodeSize * 1.3 : nodeSize;
+          const size = isBoss ? bossSize : nodeSize;
           const sel = lvl.id === picked?.id;
+          const type = stageTypeInfo(lvl.objectiveType);
+          const isNext = i === nextIdx;
+          // Pokey stands on the node's top edge; near the top of the trail he is drawn a little smaller so he never rides up under the title
+          const pokeyH = Math.round(Math.max(44, Math.min(70, p.y - size / 2 + 6)));
           return (
             <React.Fragment key={lvl.id}>
+              {isNext && <span className={`map-ring ${isBoss ? 'boss' : ''}`} style={{ left: p.x - size / 2, top: p.y - size / 2, width: size, height: size }} aria-hidden="true" />}
               <button
                 type="button"
                 onClick={() => {
@@ -207,24 +268,32 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                   if (sel && open) onSelectLevel(lvl);
                   else setPickId(lvl.id);
                 }}
-                className={`map-node ${open ? (lvl.completed ? 'done' : 'ready') : 'locked'} ${isBoss ? 'boss' : ''} ${sel ? 'sel' : ''}`}
+                className={`map-node ${open ? (lvl.completed ? 'done' : 'ready') : 'locked'} ${isBoss ? 'boss' : ''} ${sel ? 'sel' : ''} ${isNext ? 'next' : ''}`}
+                data-type={lvl.objectiveType}
                 style={{ left: p.x - size / 2, top: p.y - size / 2, width: size, height: size }}
-                aria-label={`Stage ${lvl.id}: ${lvl.name}${lvl.completed ? `, ${lvl.stars} stars` : open ? '' : ', locked'}`}
+                aria-label={`Stage ${lvl.id}: ${lvl.name}, ${type.label}${lvl.completed ? `, ${lvl.stars} stars` : open ? '' : ', locked'}`}
               >
-                {!open ? <LockIcon /> : isBoss ? <span className="map-boss-glyph">☠</span> : <span>{lvl.miniIndex}</span>}
+                {isBoss ? (
+                  <Crest world={lvl.worldIndex} size={size} locked={!open} className="map-crest" />
+                ) : (
+                  <>
+                    {!open ? <Icon name="lock" size={Math.round(size * 0.5)} /> : <span>{lvl.miniIndex}</span>}
+                    <span className="map-tbadge" style={{ width: badgePx, height: badgePx }} title={type.label}>
+                      <Icon name={type.icon} size={Math.round(badgePx * 0.78)} />
+                    </span>
+                  </>
+                )}
               </button>
               {open && lvl.completed && (
-                <div className="map-stars" style={{ left: p.x - 20, top: p.y + size / 2 + 1 }} aria-hidden="true">
+                <div className="map-stars" style={{ left: p.x - 20, top: p.y + size / 2 + (sel ? 6 : 2) }} aria-hidden="true">
                   {[1, 2, 3].map((n) => (
-                    <i key={n} className={n <= lvl.stars ? 'on' : ''}>
-                      ★
-                    </i>
+                    <Icon key={n} name="star" size={11} className={n <= lvl.stars ? 'on' : ''} />
                   ))}
                 </div>
               )}
               {i === hereIdx && !lvl.completed && (
-                <div className="map-here" style={{ left: p.x - 15, top: p.y - size / 2 - 33 }} aria-hidden="true">
-                  🦥
+                <div className="map-here" style={{ left: p.x, top: p.y - size / 2 - pokeyH + 7, height: pokeyH }} aria-hidden="true">
+                  <HeroPose frame="idle_a" height={pokeyH} className="map-here-bob" />
                 </div>
               )}
             </React.Fragment>
@@ -236,7 +305,10 @@ export const WorldMap: React.FC<WorldMapProps> = ({
       <div className="relative z-10 flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-4 px-3 sm:px-6 pb-2.5 sm:pb-4">
         {lockedMsg && (
           <div className="fixed inset-x-0 bottom-6 z-50 flex justify-center pointer-events-none">
-            <span className="ui-chip">🔒 {lockedMsg}</span>
+            <span className="ui-chip">
+              <Icon name="lock" size={15} />
+              {lockedMsg}
+            </span>
           </div>
         )}
         <div className="map-meds flex-1 min-w-0" role="tablist" aria-label="Worlds">
@@ -244,6 +316,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
             const open = worldUnlocked(w.id);
             const on = w.id === activeWorldId;
             const cleared = levels.filter((l) => l.worldIndex === w.id && l.completed).length;
+            const mastered = cleared >= 10;
             return (
               <button
                 key={w.id}
@@ -259,11 +332,11 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                   setActiveWorldId(w.id);
                   onSelectWorld(w.id);
                 }}
-                className={`map-med ${on ? 'on' : ''} ${open ? '' : 'locked'}`}
-                title={open ? `${w.name} · ${cleared}/10` : 'Clear the previous world to open'}
+                className={`map-med ${on ? 'on' : ''} ${open ? '' : 'locked'} ${mastered ? 'mastered' : ''}`}
+                title={open ? `${w.name} · ${cleared}/10${mastered ? ' · all cleared' : ''}` : 'Clear the previous world to open'}
               >
                 <WorldThumb world={w.id} size={on ? 52 : 42} className="map-med-pic" />
-                <span className="map-med-n">{open ? w.id : '🔒'}</span>
+                <span className="map-med-n">{open ? w.id : <Icon name="lock" size={11} />}</span>
                 {open && cleared > 0 && <span className="map-med-bar" style={{ ['--p' as string]: `${cleared * 10}%` }} />}
               </button>
             );
@@ -272,19 +345,22 @@ export const WorldMap: React.FC<WorldMapProps> = ({
 
         {picked && (
           <div className="map-card">
+            {picked.miniIndex === 10 ? (
+              <Crest world={picked.worldIndex} size={44} locked={!picked.unlocked} className="map-card-crest" />
+            ) : null}
             <div className="min-w-0 flex-1">
-              <div className="ui-kicker">
-                Stage {picked.id}
-                {picked.miniIndex === 10 ? ' · Boss' : ''}
+              <div className="ui-kicker map-kicker">
+                {picked.miniIndex !== 10 && <Icon name={stageTypeInfo(picked.objectiveType).icon} size={16} />}
+                <span>
+                  Stage {picked.id} &middot; {stageTypeInfo(picked.objectiveType).label}
+                </span>
               </div>
-              <div className="map-card-name truncate">{picked.name}</div>
+              <div className="map-card-name">{picked.name}</div>
               <div className="map-card-desc">{picked.description}</div>
               <div className="map-card-meta">
-                <span>
+                <span className="map-cstars" role="img" aria-label={`${picked.stars} of 3 stars`}>
                   {[1, 2, 3].map((n) => (
-                    <i key={n} className={`map-cs ${n <= picked.stars ? 'on' : ''}`}>
-                      ★
-                    </i>
+                    <Icon key={n} name="star" size={14} className={n <= picked.stars ? 'on' : ''} />
                   ))}
                 </span>
                 {picked.completed && <span>Best {fmtTime(picked.bestTime)}</span>}
@@ -306,9 +382,3 @@ export const WorldMap: React.FC<WorldMapProps> = ({
     </div>
   );
 };
-
-const LockIcon: React.FC = () => (
-  <svg viewBox="0 0 24 24" width="55%" height="55%" fill="currentColor" aria-hidden="true">
-    <path d="M17 9V7a5 5 0 0 0-10 0v2H5v12h14V9h-2zm-8-2a3 3 0 0 1 6 0v2H9V7z" />
-  </svg>
-);

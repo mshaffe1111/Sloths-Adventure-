@@ -2,6 +2,7 @@ import React from 'react';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { GestureGlyph } from './GestureGlyph.tsx';
 import { LESSONS, lessonInputMode, type LessonId } from '../game/lessons.ts';
+import { arrowText } from './icons/arrowText.tsx';
 
 /**
  * A first-time lesson: the game has paused itself, Pokey tells you what you are looking at, and you press the button when ready.
@@ -46,7 +47,7 @@ export const LessonCard: React.FC<{ id: LessonId; onClose: () => void }> = ({ id
             <div key={i} className={`htp-g lc-line${l.glyph && mode === 'screen' ? '' : ' lc-noglyph'}`}>
               {l.glyph && mode === 'screen' && <GestureGlyph kind={l.glyph} size={76} />}
               <span className="htp-what">
-                <span className="htp-how">{l.how}</span>
+                <span className="htp-how">{arrowText(l.how)}</span>
                 <b>{l.what}</b>
                 {l.sub && <small>{l.sub}</small>}
               </span>

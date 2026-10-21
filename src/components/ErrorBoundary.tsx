@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from './icons/index.tsx';
 
 /** If a screen ever throws, show a way out instead of a blank dark page. Progress is already saved in storage. */
 export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
@@ -19,7 +20,7 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
         className="fixed inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center font-game"
         style={{ background: '#0b1a13', color: '#fde68a' }}
       >
-        <div style={{ fontSize: 44 }}>🦥</div>
+        <Icon name="sloth" size={56} />
         <div style={{ fontSize: 22, fontWeight: 800 }}>Pokey tripped over a root!</div>
         <div style={{ color: '#a7f3d0', maxWidth: 320 }}>Your progress is safe. Tap below to get back to the jungle.</div>
         <button

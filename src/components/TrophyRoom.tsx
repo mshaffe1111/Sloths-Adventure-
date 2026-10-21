@@ -6,6 +6,9 @@ import type { Coat } from '../game/heroTint.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
 import { CoatPreview } from './CoatPreview.tsx';
 import { CreaturePic } from './CreaturePic.tsx';
+import { Icon } from './icons/index.tsx';
+import { Crest } from './icons/Crest.tsx';
+import { guardianWorld } from './icons/badgeIcons.ts';
 import { BONUS_FIND, FINDS, allFound, type FindDef } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
@@ -56,7 +59,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
       <div className="tr-inner">
         <div className="tr-head">
           <button type="button" className="ui-x" onClick={onBack} aria-label="Back">
-            ←
+            <Icon name="arrow" size={16} rotate={180} />
           </button>
           <div className="tr-titles">
             <h1 className="tr-h1">Trophy Room</h1>
@@ -98,8 +101,8 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                     aria-pressed={worn}
                   >
                     <div className="tr-reward-pic">
-                      {r.kind === 'color' ? <CoatPreview coat={r.id as Coat} size={58} /> : <span className="tr-sparkle">✨</span>}
-                      {!got && <span className="tr-lockmark">🔒</span>}
+                      {r.kind === 'color' ? <CoatPreview coat={r.id as Coat} size={58} /> : <span className="tr-sparkle"><Icon name="sparkle" size={40} /></span>}
+                      {!got && <span className="tr-lockmark"><Icon name="lock" size={18} /></span>}
                     </div>
                     <b>{r.name}</b>
                     <small>{got ? (worn ? 'Wearing' : 'Tap to wear') : `${r.need} badges`}</small>
@@ -117,7 +120,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                     const p = !got ? b.progress?.(ctx) : undefined;
                     return (
                       <div key={b.id} className={`tr-badge ${got ? 'got' : ''}`}>
-                        <BadgeMedal icon={b.icon} tier={b.tier} earned={got} />
+                        <BadgeMedal icon={b.icon} tier={b.tier} earned={got} world={guardianWorld(b.id)} />
                         <div className="tr-bn">{b.name}</div>
                         <div className="tr-bd">{b.desc}</div>
                         {p && p.have > 0 && (
@@ -154,7 +157,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                     <div className="tr-ct">{met ? e.tip : 'Not met yet. Keep exploring.'}</div>
                     <div className="tr-cf">
                       <span>{e.first ? `From World ${e.first}` : ''}</span>
-                      <b>{met ? `Defeated ×${n}` : '🔒'}</b>
+                      <b>{met ? `Defeated ×${n}` : <Icon name="lock" size={13} label="Not met yet" />}</b>
                     </div>
                   </div>
                 );
@@ -167,13 +170,13 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 return (
                   <div key={g.world} className={`tr-card ${done ? '' : 'lock'}`}>
                     <div className="tr-cpic">
-                      {g.art ? <CreaturePic id={g.art} w={120} h={74} locked={!done} /> : <span className={`tr-crest ${done ? '' : 'off'}`}>{g.crest}</span>}
+                      <Crest world={g.world} size={72} locked={!done} />
                     </div>
                     <div className="tr-cn">{done ? g.name : '???'}</div>
                     <div className="tr-ct">{done ? `Guardian of World ${g.world}. Defeated.` : `Guardian of World ${g.world}. Beat the 10th stage to meet it.`}</div>
                     <div className="tr-cf">
                       <span>World {g.world}</span>
-                      <b>{done ? '✔' : '🔒'}</b>
+                      <b>{done ? <Icon name="check" size={14} label="Defeated" /> : <Icon name="lock" size={13} label="Locked" />}</b>
                     </div>
                   </div>
                 );
@@ -201,7 +204,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                         onClick={got ? () => onOpenFind(f.id) : undefined}
                         onKeyDown={got ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenFind(f.id); } } : undefined}
                       >
-                        <div className="tr-cpic">{got ? findPic(f) : '🔒'}</div>
+                        <div className="tr-cpic">{got ? findPic(f) : <Icon name="lock" size={34} />}</div>
                         <div className="tr-cn">{got ? f.title : '???'}</div>
                         <div className="tr-ct">{got ? `World ${f.world}` : f.hint}</div>
                       </div>
@@ -225,7 +228,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                         onClick={got ? () => onReplayMemory(id) : undefined}
                         onKeyDown={got ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onReplayMemory(id); } } : undefined}
                       >
-                        <div className="tr-cpic">{got ? (MEMORIES[id].kind === 'memory' ? '🎞️' : '📜') : '🔒'}</div>
+                        <div className="tr-cpic">{got ? <Icon name={MEMORIES[id].kind === 'memory' ? 'heart' : 'scroll'} size={42} /> : <Icon name="lock" size={34} />}</div>
                         <div className="tr-cn">{got ? MEMORIES[id].title : '???'}</div>
                         <div className="tr-ct">{got ? 'Tap to watch again' : MEMORIES[id].hint}</div>
                       </div>
@@ -246,7 +249,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                     onClick={open ? () => onOpenFind(BONUS_FIND.id) : undefined}
                     onKeyDown={open ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenFind(BONUS_FIND.id); } } : undefined}
                   >
-                    <div className="tr-cpic">{open ? findPic(BONUS_FIND) : '🔒'}</div>
+                    <div className="tr-cpic">{open ? findPic(BONUS_FIND) : <Icon name="lock" size={34} />}</div>
                     <div className="tr-cn">{open ? BONUS_FIND.title : '???'}</div>
                     <div className="tr-ct">{open ? 'Quest bonus' : BONUS_FIND.hint}</div>
                   </div>
@@ -263,8 +266,8 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
 function findPic(f: FindDef): React.ReactNode {
   if (f.kind === 'book') {
     const url = photoUrl(f.pages[0]?.photo);
-    return url ? <img className="tr-thumb" src={url} alt="" /> : '📖';
+    return url ? <img className="tr-thumb" src={url} alt="" /> : <Icon name="book" size={42} />;
   }
   const url = itemUrl(f.kind === 'keepsake' ? f.icon ?? 'petal' : 'scroll');
-  return url ? <img className="tr-thumb tr-item" src={url} alt="" /> : f.kind === 'keepsake' ? '🔑' : '📜';
+  return url ? <img className="tr-thumb tr-item" src={url} alt="" /> : <Icon name={f.kind === 'keepsake' ? 'key' : 'scroll'} size={42} />;
 }

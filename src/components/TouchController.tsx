@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
 import { TouchGestures } from '../game/touchGestures.ts';
+import { arrowText } from './icons/arrowText.tsx';
 
 /**
  * The whole screen is the controller. There are no buttons.
@@ -176,7 +177,7 @@ const HintCard: React.FC<{ title: string; lines: string[] }> = ({ title, lines }
     <div className="text-[10px] font-black tracking-[0.2em] text-amber-300 mb-1">{title}</div>
     {lines.map((l) => (
       <div key={l} className="text-[12px] font-bold leading-snug text-white [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">
-        {l}
+        {arrowText(l)}
       </div>
     ))}
   </div>
