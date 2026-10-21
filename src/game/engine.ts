@@ -31,6 +31,7 @@ import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawTayraSprite } from './tayraSprite.ts';
+import { drawHarpyFallback, drawHarpySprite } from './harpySprite.ts';
 import { drawOcelotSprite } from './ocelotSprite.ts';
 import { drawBoaSprite } from './boaSprite.ts';
 import { drawSpiderSprite } from './spiderSprite.ts';
@@ -194,6 +195,8 @@ export class GameEngine {
   private riverHinted = false;
   /** World 3: seconds of drowsiness left (spore clouds), and how strongly the screen shows it */
   private drowsy = 0;
+  /** a jump that left the ground while Pokey was awake stays full strength to the landing, even if a spore cloud wakes under him mid-air */
+  private flightClear = false;
   private drowsyShow = 0;
   private zzzTimer = 0;
   /** World 4: the push the wind adds to the hero this frame, px/s */
@@ -1035,7 +1038,11 @@ export class GameEngine {
         } else {
           p.ducking = false;
 
-          const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1) * (this.drowsy > 0 ? DROWSY_SPEED : 1) * this.dragSpeed;
+          // the fog only decides the take-off: awake when he leaves the ground means the whole flight is awake (so a cloud that wakes
+          // mid-jump can never drop him into the gap; it only weighs on jumps that start inside it)
+          if (p.grounded) this.flightClear = this.drowsy <= 0;
+          const sleepy = this.drowsy > 0 && !(this.flightClear && !p.grounded);
+          const speedMult = (p.activePowerUp === 'speed' ? 1.4 : 1.0) * (this.slowTimer > 0 ? 0.45 : 1) * (sleepy ? DROWSY_SPEED : 1) * this.dragSpeed;
           const maxSpeed = PHYS.maxRun * speedMult * this.attackMoveMul();
           const dir = this.inputGrace > 0 ? 0 : this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
           if (dir !== 0) {
@@ -1082,7 +1089,7 @@ export class GameEngine {
             sound.playJump();
             this.spawnJumpDust(p.x, p.y);
           } else if (p.jumpsLeft > 0 && !p.climbing) {
-            p.vy = -PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * (this.drowsy > 0 ? DROWSY_JUMP : 1) * this.dragJump;
+            p.vy = -PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * (this.drowsy > 0 && !this.flightClear ? DROWSY_JUMP : 1) * this.dragJump;
             p.jumpsLeft = 0;
             p.isDoubleJumping = true;
             p.somersaultAngle = 0;
@@ -1385,11 +1392,12 @@ export class GameEngine {
           }
         }
       } else if (isPredator(e.type)) {
-        // Ground animals (snake, ocelot, jaguar, boa, caiman, tayra) each hunt in their own way (enemyBrain.ts), then
+        // Ground animals (snake, ocelot, jaguar, boa, caiman, tayra, night harpy) each hunt in their own way (enemyBrain.ts), then
         // attack: telegraph -> committed attack -> vulnerable recovery
         const step = stepPredator(e, { x: p.x, y: p.y, facing: p.facing, ducking: p.ducking }, dt);
         // the tree snake has no call of its own: it hisses like the boa
-        const call = e.type === 'snake' ? 'boa' : e.type;
+        // (the night harpy chitters and thumps like the tayra)
+        const call = e.type === 'snake' ? 'boa' : e.type === 'harpy' ? 'tayra' : e.type;
         if (e.type === 'snake') {
           // the painted/vector snake reads these two flags for its red warning ring and its strike cycle
           e.isAttacking = e.state === 'rear' || e.state === 'strike';
@@ -1405,6 +1413,11 @@ export class GameEngine {
           sound.playPredator(call, 2);
           if (e.type === 'jaguar' || e.type === 'caiman') {
             this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.22);
+          }
+          // the harpy's stomp shakes the ground, and kicks up the cave dust
+          if (e.type === 'harpy') {
+            this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.3);
+            this.spawnDebrisBurst(e.x, e.y + 22, '#8b7fb0');
           }
           if (e.type === 'jaguar' || e.type === 'tayra') this.spawnDebrisBurst(e.x, e.y + 22, '#a16207');
         }
@@ -2753,6 +2766,7 @@ export class GameEngine {
     this.hazards.length = 0;
     this.slowTimer = 0;
     this.drowsy = 0;
+    this.flightClear = false;
     this.drowsyShow = 0;
     this.windV = 0;
     this.dragSpeed = 1;
@@ -3022,7 +3036,7 @@ export class GameEngine {
     const ownScene = !!lair && lairOwnsScene(lair);
     if (!ownScene) renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     const lairView = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
-    if (lair && this.currentStage.arena) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right);
+    if (lair && this.currentStage.arena) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right, this.boss?.phase ?? 1);
 
     // the secret Hollow is a dusk of purple thorn-light
     if (this.currentStage.config.secret) {
@@ -3123,6 +3137,8 @@ export class GameEngine {
           if (!drawCaimanSprite(ctx, enemy, this.gameTime)) drawCaiman(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'tayra') {
           if (!drawTayraSprite(ctx, enemy, this.gameTime)) drawTayra(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'harpy') {
+          if (!drawHarpySprite(ctx, enemy, this.gameTime)) drawHarpyFallback(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'frog') {
           if (!drawFrogSprite(ctx, enemy, this.gameTime)) drawHazardEntity(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'spider') {

@@ -30,7 +30,7 @@ test('the weak point sits on the head side and follows the way the boss faces', 
   const r = weakRect(mk('rec', 1), drake, floor)!;
   const l = weakRect(mk('rec', -1), drake, floor)!;
   assert.ok(r.x + r.w / 2 > 1500 && l.x + l.w / 2 < 1500);
-  assert.equal(weakRect(mk('rec'), bossDefFor(3), floor), null, 'a boss without a weak point can be hit anywhere');
+  assert.equal(weakRect(mk('rec'), bossDefFor(4), floor), null, 'a boss without a weak point can be hit anywhere');
 });
 
 test('the Drake is a giant whose head can be reached with a double jump from the floor', () => {
@@ -169,7 +169,7 @@ test('every ledge of the Venom Fang lair can be reached (mushrooms count), and t
 // no two lairs share a layout: the ledges of every giant differ from the others'
 test('every giant boss has its own layout', () => {
   const sig = (w: number) => JSON.stringify((bossDefFor(w).perches ?? []).map((p) => [Math.round(p.dx / 100), Math.round(p.up / 50), p.kind ?? (p.moving ? 'm' : 's')]));
-  const giants = [1, 2, 9].filter((w) => bossDefFor(w).perches?.length);
+  const giants = [1, 2, 3, 9].filter((w) => bossDefFor(w).perches?.length);
   assert.equal(new Set(giants.map(sig)).size, giants.length);
 });
 
@@ -239,4 +239,109 @@ test('the river floods at 35%: two warned strips with the flood look', () => {
 
 test('every giant lair owns its scene', () => {
   for (const w of [1, 2]) assert.equal(lairOwnsScene(bossDefFor(w).lair!), true);
+});
+
+// ───────────────────────────── Shadow Prowler (world 3): the fourth giant ─────────────────────────────
+import { inMoonPool, PROWLER_POOLS, POOL_HALF } from './prowlerPools.ts';
+
+const prowler = bossDefFor(3);
+const pb = (state: 'idle' | 'rec' | 'stun' | 'act', move?: string, facing: 1 | -1 = 1): BossEntity => {
+  const b = { ...mk(state, facing), x: 1500, width: prowler.w, height: prowler.h } as BossEntity;
+  if (move) b.ai!.move = move;
+  return b;
+};
+
+test('the Shadow Prowler is a giant with a fourteen-hit bar, his own lair and room to run', () => {
+  assert.ok((prowler.scale ?? 1) >= 2.4 && prowler.w >= 380);
+  assert.equal(prowler.hits, 14);
+  assert.equal(prowler.hp, (prowler.hits ?? 0) * 2);
+  assert.ok(prowler.lair === 'prowler' && prowler.entrance && prowler.aimText);
+  assert.equal(lairOwnsScene('prowler'), true);
+  const stage = generateStage(generateAllLevels().find((l) => l.id === '3-10')!);
+  const a = stage.arena!;
+  assert.ok(a.right - a.left >= prowler.w + 700);
+  assert.equal(stage.boss!.maxHp, prowler.hp);
+  assert.ok(stage.boss!.x + prowler.w / 2 <= a.right, 'it starts inside the fence');
+  assert.equal(validateStage(stage).ok, true);
+});
+
+test('the Prowler is weak in a different place after each move, and every one can be reached', () => {
+  const spots: Record<string, { x: number; y: number; w: number; h: number }> = {};
+  for (const m of ['shadowStep', 'clawCombo', 'pounce', 'streak']) {
+    const r = weakRect(pb('rec', m), prowler, floor)!;
+    assert.ok(r, m);
+    spots[m] = r;
+    assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, `${m}: bottom of the spot is within a double jump of the floor`);
+    assert.ok(floor - r.y > 0, `${m}: the spot is above the floor`);
+  }
+  const keys = Object.keys(spots).map((m) => `${Math.round(spots[m].x)}/${Math.round(spots[m].y)}`);
+  assert.equal(new Set(keys).size, keys.length, 'no two moves open the same spot');
+  // the dash leaves the tail toward you: the spot is behind his middle; the others are forward
+  assert.ok(spots.streak.x + spots.streak.w / 2 < 1500 && spots.shadowStep.x + spots.shadowStep.w / 2 > 1500);
+  // stunned he shows his belly, and a move that has no entry falls back to the default
+  const st = weakRect(pb('rec', undefined), prowler, floor)!;
+  const def = prowler.weak!;
+  assert.equal(Math.round(st.x + st.w / 2), 1500 + def.dx);
+  const stun = weakRect({ ...pb('stun', 'pounce') } as BossEntity, prowler, floor)!;
+  assert.equal(Math.round(stun.x + stun.w / 2), 1500 + prowler.weakStun!.dx);
+  // it follows the way he faces
+  const left = weakRect(pb('rec', 'clawCombo', -1), prowler, floor)!;
+  assert.ok(left.x + left.w / 2 < 1500);
+});
+
+test('the Prowler lair: every ledge can be reached, from the floor or one before it, and there is a rope', () => {
+  const ps = prowler.perches ?? [];
+  assert.ok(ps.length >= 3);
+  const spans = ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
+  for (const sp of spans) {
+    const ok = reached.some((r) => {
+      const rise = sp.up - r.up;
+      const gap = Math.max(0, sp.x0 - r.x1, r.x0 - sp.x1);
+      return (rise <= SAFE.rise1 && gap <= SAFE.gap1) || (rise <= SAFE.rise2 && gap <= SAFE.gap2 * 0.7);
+    });
+    assert.ok(ok, `ledge at ${sp.x0}-${sp.x1}, ${sp.up} up, cannot be reached`);
+    reached.push(sp);
+  }
+  assert.ok((prowler.vines ?? []).length >= 1);
+});
+
+test('the moon pools sit inside the arena and are wide enough to stand in', () => {
+  for (const dx of PROWLER_POOLS) {
+    assert.ok(dx - POOL_HALF > 0 && dx + POOL_HALF < (prowler.arenaW ?? 0));
+    assert.equal(inMoonPool(1000 + dx, 1000), true);
+    assert.equal(inMoonPool(1000 + dx + POOL_HALF + 1, 1000) && inMoonPool(1000 + dx - POOL_HALF - 1, 1000), false);
+  }
+  assert.equal(inMoonPool(1000 + 750, 1000), false, 'the middle of the arena is in shadow');
+});
+
+test('a shadow step that comes out in a moon pool is caught and stunned; one in the dark is not', () => {
+  const left = 1000;
+  const half = prowler.w / 2;
+  const run = (px: number) => {
+    const b = pb('act', 'shadowStep');
+    b.ai!.d = {};
+    const ctx = { px, arena: { left, right: left + (prowler.arenaW ?? 1500), floor }, debris: () => {}, shake: () => {}, text: () => {}, hazards: [] } as unknown as import('./bossAI.ts').BossCtx;
+    prowler.moves.shadowStep.onAct!(b, ctx);
+    return b;
+  };
+  // he comes out one stride behind the hero, so with the far pool at the hero's back he is put right in the light
+  const caught = run(left + PROWLER_POOLS[1] - (half + 20));
+  assert.ok(inMoonPool(caught.x, left));
+  assert.ok(caught.ai!.d.crashed, 'caught by the light');
+  assert.equal(prowler.moves.shadowStep.stunAfter!(caught), 2.1);
+  assert.ok(half > 0);
+  // the hero in the shadows in the middle: he comes out in the dark and is not caught
+  const free = run(left + 750);
+  assert.equal(inMoonPool(free.x, left), false);
+  assert.ok(!free.ai!.d.crashed);
+});
+
+test('the glowcaps go dark at 35%, and only then', () => {
+  const texts: string[] = [];
+  const ctx = { arena: { left: 760, right: 2260, floor: 560 }, text: (t: string) => texts.push(t), shake: () => {} } as unknown as import('./bossAI.ts').BossCtx;
+  prowler.onPhase!(2, mk('idle'), ctx);
+  assert.equal(texts.length, 0);
+  prowler.onPhase!(3, mk('idle'), ctx);
+  assert.equal(texts.length, 1);
 });

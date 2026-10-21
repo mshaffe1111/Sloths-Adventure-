@@ -191,6 +191,7 @@ export function calculateHitScore(
   if (enemyType === 'eagle') baseScore = 200;
   if (enemyType === 'ocelot') baseScore = 250;
   if (enemyType === 'tayra') baseScore = 200;
+  if (enemyType === 'harpy') baseScore = 350;
   if (enemyType === 'boa') baseScore = 300;
   if (enemyType === 'caiman') baseScore = 300;
   if (enemyType === 'jaguar') baseScore = 350;

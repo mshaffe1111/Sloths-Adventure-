@@ -222,6 +222,7 @@ export const TRAITS: Record<EnemyType, Traits> = {
   boa: { stomp: true, armor: true, knockResist: 0.7, stunResist: 0.2, ko: 'flop', grow: 3 },
   caiman: { stomp: 'armored', armor: true, knockResist: 0.8, stunResist: 0.25, ko: 'flop', grow: 3 },
   tayra: { stomp: true, armor: false, knockResist: 0, stunResist: 0, ko: 'launch', grow: 5 },
+  harpy: { stomp: true, armor: true, knockResist: 0.4, stunResist: 0.1, ko: 'flop', grow: 4 },
   frog: { stomp: true, armor: false, knockResist: 0, stunResist: 0, ko: 'launch', grow: 5 },
   spider: { stomp: false, armor: false, knockResist: 0, stunResist: 0, ko: 'launch', grow: 5 },
   ant_hazard: { stomp: false, armor: false, knockResist: 0, stunResist: 0, ko: 'launch', grow: 5 },
@@ -229,7 +230,7 @@ export const TRAITS: Record<EnemyType, Traits> = {
 };
 
 /** distance from an animal's origin down to its feet (the same ground line the drawings use) */
-const FEET: Partial<Record<EnemyType, number>> = { ocelot: 19, jaguar: 24, boa: 16, caiman: 15, tayra: 15 };
+const FEET: Partial<Record<EnemyType, number>> = { ocelot: 19, jaguar: 24, boa: 16, caiman: 15, tayra: 15, harpy: 16 };
 
 /** the drawn body, as a rect (no generosity) */
 export function bodyRect(e: Enemy): Rect {

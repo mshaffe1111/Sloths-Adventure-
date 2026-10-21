@@ -235,6 +235,12 @@ export interface BossDef {
   weak?: { dx: number; dy: number; w: number; h: number };
   /** where the weak point is while the boss is stunned, when its pose then puts the head somewhere else */
   weakStun?: { dx: number; dy: number; w: number; h: number };
+  /**
+   * Where the weak point opens after each move, when it is not the head every time: keyed by the move that has just ended (the recovery
+   * that follows it). The glow shows where, so the fight is about reading what he just did. Stunned bosses use `weakStun`, and any move not
+   * listed here uses `weak`.
+   */
+  weakByMove?: Record<string, { dx: number; dy: number; w: number; h: number }>;
   /** what the clang says when a blow lands anywhere but the weak point (the default sends you up, which is wrong for a low head) */
   aimText?: string;
   /** the fenced arena is this wide (the usual 1,080 is too small for a giant) */
@@ -281,7 +287,9 @@ export function vulnerability(b: BossEntity): 'closed' | 'armored' | 'open' | 's
 
 /** the world box of a giant's weak point (null for a boss that can be hit anywhere) */
 export function weakRect(b: BossEntity, def: BossDef, floor: number): { x: number; y: number; w: number; h: number } | null {
-  const k = b.ai?.state === 'stun' && def.weakStun ? def.weakStun : def.weak;
+  const st = b.ai?.state;
+  const byMove = st === 'rec' && b.ai?.move ? def.weakByMove?.[b.ai.move] : undefined;
+  const k = st === 'stun' && def.weakStun ? def.weakStun : byMove ?? def.weak;
   if (!k) return null;
   const cx = b.x + b.facing * k.dx;
   const cy = floor - (b.ai?.air ?? 0) - k.dy;

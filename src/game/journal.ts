@@ -18,6 +18,7 @@ export const PREDATOR_ENTRIES: Record<PredatorId, PredatorEntry> = {
   eagle: { id: 'eagle', name: 'Harpy Eagle', tip: 'Dives from above. Strike it while it hovers.', first: 1 },
   spider: { id: 'spider', name: 'Canopy Tarantula', tip: 'Patrols its web. Stomp it from above.' },
   caiman: { id: 'caiman', name: 'Spectacled Caiman', tip: 'Slow and armoured, but it lunges. Heavy hits work best.', first: 2 },
+  harpy: { id: 'harpy', name: 'Night Harpy', tip: 'Crouches, slides low, then leaps and stomps. Jump the slide, jump the shockwave, then strike while it is dizzy.', first: 6 },
   frog: { id: 'frog', name: 'Poison Dart Frog', tip: 'Tiny and bold. Never touch it. Time your jump past.' },
 };
 

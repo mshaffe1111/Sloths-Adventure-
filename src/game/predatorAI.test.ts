@@ -61,7 +61,7 @@ test('ocelot warns before it pounces: a "!" and a crouch of at least a third of 
 });
 
 test('a ground predator that is far from the player just patrols and never leaves its patch', () => {
-  for (const t of ['ocelot', 'jaguar', 'caiman', 'tayra'] as PredatorType[]) {
+  for (const t of ['ocelot', 'jaguar', 'caiman', 'tayra', 'harpy'] as PredatorType[]) {
     const r = run(t, 20, 900);
     assert.deepEqual([...r.states], ['patrol']);
     assert.ok(r.minX >= 300 - 3 && r.maxX <= 600 + 3, `${t} wandered off its ground`);

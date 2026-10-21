@@ -14,9 +14,11 @@ import { drawVenomBack, drawVenomFront, drawVenomWorld } from './lairVenom.ts';
 import { drawVenomObjects } from './lairVenomObjects.ts';
 import { drawCrocBack, drawCrocFront, drawCrocWorld } from './lairCroc.ts';
 import { drawCrocObjects } from './lairCrocObjects.ts';
+import { drawProwlerBack, drawProwlerFront, drawProwlerWorld } from './lairProwler.ts';
+import { drawProwlerObjects } from './lairProwlerObjects.ts';
 import type { Platform, TreeStructure, Vine } from './types.ts';
 
-export type LairKind = 'drake' | 'venom' | 'croc';
+export type LairKind = 'drake' | 'venom' | 'croc' | 'prowler';
 
 /**
  * A lair that owns its scene paints the entire backdrop itself (no world parallax underneath) and draws the trees, vines and ledges
@@ -24,13 +26,14 @@ export type LairKind = 'drake' | 'venom' | 'croc';
  * backdrop; every new lair should own its scene.
  */
 export function lairOwnsScene(kind: LairKind): boolean {
-  return kind === 'venom' || kind === 'croc';
+  return kind === 'venom' || kind === 'croc' || kind === 'prowler';
 }
 
 /** the trees, vines and ledges of a lair that owns its scene, in its own style */
 export function drawLairObjects(ctx: CanvasRenderingContext2D, kind: LairKind, platforms: Platform[], vines: Vine[], trees: TreeStructure[], cam: { x: number; y: number; viewportWidth: number; viewportHeight: number }, time: number) {
   if (kind === 'venom') drawVenomObjects(ctx, platforms, vines, trees, cam, time);
   else if (kind === 'croc') drawCrocObjects(ctx, platforms, vines, trees, cam, time);
+  else if (kind === 'prowler') drawProwlerObjects(ctx, platforms, vines, trees, cam, time);
 }
 
 export interface LairView {
@@ -75,7 +78,8 @@ function rand(i: number): number {
 }
 
 /** 1. over the world backdrop: it is darkened and re-lit so the fight happens in front of the creature's own volcano */
-export function drawLairBack(ctx: CanvasRenderingContext2D, kind: LairKind, v: LairView, a: LairArena, time: number, bossX: number) {
+export function drawLairBack(ctx: CanvasRenderingContext2D, kind: LairKind, v: LairView, a: LairArena, time: number, bossX: number, phase = 1) {
+  if (kind === 'prowler') return drawProwlerBack(ctx, v, a, time, bossX, phase);
   if (kind === 'venom') return drawVenomBack(ctx, v, a, time, bossX);
   if (kind === 'croc') return drawCrocBack(ctx, v, a, time, bossX);
   const k = KITS[kind];
@@ -161,6 +165,7 @@ export function drawLairBack(ctx: CanvasRenderingContext2D, kind: LairKind, v: L
 
 /** 2. in the world: the dais, runes, the things the creature lives among, and carved pillars outside the fence */
 export function drawLairWorld(ctx: CanvasRenderingContext2D, kind: LairKind, a: LairArena, view: LairView, time: number) {
+  if (kind === 'prowler') return drawProwlerWorld(ctx, a, view, time);
   if (kind === 'venom') return drawVenomWorld(ctx, a, view, time);
   if (kind === 'croc') return drawCrocWorld(ctx, a, view, time);
   const k = KITS[kind];
@@ -284,6 +289,7 @@ export function drawLairWorld(ctx: CanvasRenderingContext2D, kind: LairKind, a: 
 
 /** 3. over everything: a dark vignette and the cave's own ceiling, so the eye goes to the fight */
 export function drawLairFront(ctx: CanvasRenderingContext2D, kind: LairKind, v: LairView, time: number) {
+  if (kind === 'prowler') return drawProwlerFront(ctx, v, time);
   if (kind === 'venom') return drawVenomFront(ctx, v, time);
   if (kind === 'croc') return drawCrocFront(ctx, v, time);
   const k = KITS[kind];

@@ -63,6 +63,8 @@ test('naturalist needs every predator seen', () => {
   s = recordStage(s, stage({ seen: ['snake', 'tayra', 'ocelot', 'jaguar', 'boa', 'eagle', 'spider', 'caiman'] }));
   assert.ok(!evaluate({ store: s, levels: none, gateFound: false, thornHeart: false }).includes('naturalist'));
   s = recordStage(s, stage({ seen: ['frog'] }));
+  assert.ok(!evaluate({ store: s, levels: none, gateFound: false, thornHeart: false }).includes('naturalist'), 'the night harpy counts too');
+  s = recordStage(s, stage({ seen: ['harpy'] }));
   assert.ok(evaluate({ store: s, levels: none, gateFound: false, thornHeart: false }).includes('naturalist'));
 });
 

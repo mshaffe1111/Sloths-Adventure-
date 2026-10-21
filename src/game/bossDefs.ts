@@ -23,6 +23,7 @@ import {
   makeHazard,
 } from './bossAI.ts';
 import type { BossCtx, BossDef, MoveDef } from './bossAI.ts';
+import { inMoonPool } from './prowlerPools.ts';
 
 // ───────────────────────────── shared move builders ─────────────────────────────
 
@@ -357,34 +358,87 @@ const CROC: BossDef = {
 
 // ───────────────────────────── 3. Shadow Prowler: night jaguar ─────────────────────────────
 
+/**
+ * The painted jaguar drawn 2.8 times its old size is 2.18 world units to a painted pixel, so every box below was measured off the frames:
+ * dx is forward of the body's middle (negative = behind it) and dy is the height above the floor.
+ */
+/** the fights in which the moonlight hint has been said (once a fight; a retry makes a new boss) */
+const prowlerHinted = new WeakSet<object>();
+
 const PROWLER: BossDef = {
   world: 3,
   name: 'Shadow Prowler',
-  w: 86,
-  h: 64,
+  // a giant: long and low, so he is not reached by climbing but by being in the right place when a spot lights up
+  scale: 2.8,
+  w: 390,
+  h: 170,
   artDy: 0,
-  speed: [92, 130, 172],
-  prefer: 210,
-  gap: [1.1, 0.8, 0.55],
+  speed: [70, 100, 138],
+  prefer: 420,
+  gap: [1.3, 0.95, 0.7],
   chain: 0.45,
   color: '#c084fc',
   color2: '#3b0764',
+  // fourteen hits, two hit points a hit
+  hp: 28,
+  hits: 14,
+  // He has no one weak point. Where it opens depends on what he has just done, and the glow shows where: the glowing eyes after a shadow
+  // step (he is right at you), the throat after the claw combo, the arched back after a pounce (jump onto it), the tail after the dash
+  // (it swings round toward you), and the belly when he is stunned. The ember while he is covered sits on the head
+  weak: { dx: 133, dy: 92, w: 130, h: 100 },
+  weakByMove: {
+    shadowStep: { dx: 133, dy: 92, w: 130, h: 100 },
+    clawCombo: { dx: 45, dy: 50, w: 140, h: 100 },
+    pounce: { dx: -9, dy: 148, w: 170, h: 90 },
+    streak: { dx: -190, dy: 52, w: 130, h: 100 },
+  },
+  weakStun: { dx: 46, dy: 70, w: 190, h: 130 },
+  aimText: 'TOO TOUGH! HIT THE GLOW',
+  arenaW: 1500,
+  lair: 'prowler',
+  entrance: { eye: [150, 255, 225], dark: [1, 8, 10] },
+  // the Glowcap Sinkhole: low stone shelves at each side and a high one in the middle, and a hanging liana between the middle and the right
+  perches: [
+    { dx: 170, up: 115, w: 250 },
+    { dx: 520, up: 195, w: 230 },
+    { dx: 1100, up: 115, w: 230 },
+  ],
+  vines: [{ dx: 900, top: 340, bottom: 110 }],
+  // at 35% the glowcaps go dark: only the moon pools still shine
+  onPhase: (phase, _b, c) => {
+    if (phase !== 3) return;
+    c.text('THE GLOWCAPS GO DARK!', c.arena.left + 330, c.arena.floor - 270, '#7dffe0');
+    c.shake(0.5);
+  },
   moves: {
-    // a quick crouch, then a long pounce to where you were standing
+    // a quick crouch, then a long pounce to where you were standing. From the second phase the landing sends a wave along the floor
     pounce: leapMove({
-      tell: 0.45,
-      act: 0.62,
-      rec: 0.7,
-      height: 150,
-      min: 150,
-      onLand: (b, c) => impact(b, c, 0.3, '#7c3aed'),
+      tell: 0.55,
+      act: 0.7,
+      rec: 0.85,
+      height: 230,
+      min: 260,
+      onLand: (b, c) => {
+        impact(b, c, 0.55, '#7c3aed');
+        if (b.phase < 2) return;
+        for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2 + 10), d, b.phase >= 3 ? 360 : 280, '#a78bfa', '#3b0764', true);
+      },
     }),
-    // vanishes, reappears behind you and slashes
+    // vanishes and comes out right behind you for a slash. He comes out behind you, so with a moon pool at your back the light will
+    // not let him appear: he is caught, stunned and wide open
     shadowStep: {
       tell: 0.55,
       act: 0.3,
-      rec: 0.8,
+      rec: 0.9,
       pose: 'fade',
+      crashText: 'CAUGHT IN THE MOON!',
+      stunAfter: () => 2.1,
+      // the first time, say what the light is for
+      onTell: (b, c) => {
+        if (prowlerHinted.has(b)) return;
+        prowlerHinted.add(b);
+        c.text('MOONLIGHT BLOCKS HIS STEP!', c.px, c.arena.floor - 250, '#bfeaff');
+      },
       tellTick: (b) => {
         const br = b.ai!;
         br.alpha = Math.max(0.08, 1 - (br.t / 0.55) * 0.95);
@@ -392,37 +446,50 @@ const PROWLER: BossDef = {
       onAct: (b, c) => {
         const br = b.ai!;
         const half = b.width / 2;
-        // behind the player, on the side away from where it was
+        // behind the player, on the side away from where it was, close enough that the slash reaches
         let side = c.px >= b.x ? 1 : -1;
-        const spot = (sd: number) => Math.max(c.arena.left + half, Math.min(c.arena.right - half, c.px + sd * 120));
-        // against a wall the clamp would drop it right on the hero: use the open side instead
-        if (Math.abs(spot(side) - c.px) < 90) side = -side;
+        const spot = (sd: number) => Math.max(c.arena.left + half, Math.min(c.arena.right - half, c.px + sd * (half + 20)));
+        // against a wall the clamp would drop him on the hero: use the open side instead
+        if (Math.abs(spot(side) - c.px) < half) side = -side;
         b.x = spot(side);
         b.facing = b.x > c.px ? -1 : 1;
         br.alpha = 1;
         c.debris(b.x, c.arena.floor - 20, '#7c3aed');
+        if (inMoonPool(b.x, c.arena.left)) {
+          br.d.crashed = 1;
+          c.shake(0.6);
+        }
       },
       tick: (b, c) => {
-        // the slash lands a beat after it appears (0.14 s), so there is time to react to where it came out
-        if (b.ai!.t >= 0.14 && b.ai!.t < 0.3) b.ai!.hurt = [frontBox(b, c, 100, 56, 6)];
+        // the slash lands a beat after he appears (0.14 s), so there is time to react to where he came out
+        if (!b.ai!.d.crashed && b.ai!.t >= 0.14 && b.ai!.t < 0.3) b.ai!.hurt = [frontBox(b, c, 190, 150, 6)];
       },
     },
-    // three quick slashes while stepping forward
+    // three slashes while stepping forward (four in the last phase)
     clawCombo: {
-      tell: 0.45,
-      act: 0.95,
-      rec: 1.0,
-      max: 200,
+      tell: 0.5,
+      act: 1.0,
+      rec: 1.05,
+      max: 330,
       pose: 'bite',
       tick: (b, c, dt, t) => {
         const br = b.ai!;
-        b.x += b.facing * 70 * dt;
-        const windows: Array<[number, number]> = [[0.1, 0.28], [0.4, 0.58], [0.7, 0.88]];
-        if (windows.some(([a, z]) => t >= a && t <= z)) br.hurt = [frontBox(b, c, 96, 58, 6)];
+        b.x += b.facing * 80 * dt;
+        const windows: Array<[number, number]> = b.phase >= 3 ? [[0.08, 0.22], [0.3, 0.44], [0.52, 0.66], [0.74, 0.9]] : [[0.1, 0.28], [0.4, 0.58], [0.7, 0.88]];
+        if (windows.some(([a, z]) => t >= a && t <= z)) br.hurt = [frontBox(b, c, 190, 150, 6)];
       },
     },
-    // a lightning dash from one end of the arena to the other
-    streak: chargeMove({ tell: 0.6, maxT: 1.0, rec: 0.9, speed: 780, phase: 2, min: 250 }),
+    // a lightning dash from one end of the arena to the other, low enough to jump
+    streak: (() => {
+      const m = chargeMove({ tell: 0.65, maxT: 1.2, rec: 1.0, speed: 800, phase: 2, min: 300 });
+      const base = m.tick!;
+      m.tick = (b, c, dt, t) => {
+        base(b, c, dt, t);
+        // he is flat out, so the box that hurts is lower than his resting height
+        b.ai!.hurt = [{ x: b.x - b.width / 2, y: c.arena.floor - 140, w: b.width, h: 140 }];
+      };
+      return m;
+    })(),
   },
 };
 

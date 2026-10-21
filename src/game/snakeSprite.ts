@@ -12,11 +12,14 @@
 import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { SNAKE_ATLAS_HEAD, SNAKE_FRAMES } from './snakeAtlasData.ts';
+import { SNAKE2_FRAMES } from './snake2AtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
 
 export const DEFAULT_SPRITE_SNAKE = true;
 /** world units per atlas pixel: the head is drawn about 18 units across */
 const K = 18 / SNAKE_ATLAS_HEAD;
+/** the second sheet (the attack poses) is drawn at its own, larger pixel size: its head is about 51 px across where the first sheet's is 75 */
+const K2 = K * (78 / 51);
 /** where the belly line sits below the enemy's centre, so the snake rests on its branch */
 const GROUND = 12;
 /** the slither: one wave travelling down the body, looped */
@@ -41,11 +44,38 @@ export function snakeSpriteEnabled(): boolean {
 
 let atlas: HTMLImageElement | null = null;
 let ready = false;
+let atlas2: HTMLImageElement | null = null;
+let ready2 = false;
 function load() {
-  if (atlas || typeof Image === 'undefined') return;
-  const img = new Image();
-  atlas = img;
-  trackAtlas(img, new URL('../assets/enemies/snake-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
+  if (typeof Image === 'undefined') return;
+  if (!atlas) {
+    const img = new Image();
+    atlas = img;
+    trackAtlas(img, new URL('../assets/enemies/snake-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
+  }
+  if (!atlas2) {
+    const img = new Image();
+    atlas2 = img;
+    trackAtlas(img, new URL('../assets/enemies/snake2-atlas.webp', import.meta.url).href, () => { ready2 = true; }, () => { atlas2 = null; });
+  }
+}
+
+/**
+ * Three kinds of tree snake, told apart by their id, so a stage of snakes does not all rear and lunge the same way. They move and hit
+ * identically (predatorAI.ts); only the poses differ:
+ *   0  the first sheet's rear-up, strike and recover
+ *   1  the cobra: spreads its hood to warn, strikes with a fierce low head and snaps its tail as it recovers
+ *   2  the coiler: winds up into a spiral, unwinds into a tall S, then strikes the same low way and sweeps its tail over
+ */
+export type SnakeKind = 'tree' | 'cobra' | 'coiler';
+export const snakeKind = (id: number): SnakeKind => (['tree', 'cobra', 'coiler'] as const)[((id % 3) + 3) % 3];
+
+/** the pose of a kind in a mode: which sheet, which frame. Pure, so a test can check every kind has every pose */
+export function snakePose(kind: SnakeKind, mode: 'rear' | 'strike' | 'recover', t: number): { sheet: 1 | 2; name: string } {
+  if (kind === 'tree') return { sheet: 1, name: mode };
+  if (mode === 'rear') return kind === 'cobra' ? { sheet: 2, name: 'cobra' } : { sheet: 2, name: t < 0.19 ? 'coilup' : 'reared' };
+  if (mode === 'strike') return { sheet: 2, name: 'crouch' };
+  return { sheet: 2, name: kind === 'cobra' ? 'whip' : 'sweep' };
 }
 
 type Mode = 'prowl' | 'rear' | 'strike' | 'recover';
@@ -59,6 +89,7 @@ export function drawSnakeSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   if (!snakeSpriteEnabled()) return false;
   load();
   if (!ready || !atlas) return false;
+  const kind = ready2 ? snakeKind(enemy.id) : 'tree';
 
   const b = bodyFor('snakespr', enemy, time);
   if (!b.rig) b.rig = { mode: 'prowl', modeT: 0, clock: enemy.id * 1.7 } as SpriteRig;
@@ -97,15 +128,19 @@ export function drawSnakeSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   }
 
   let name: string;
+  let sheet: 1 | 2 = 1;
   if (enemy.defeated) name = 'defeat';
   else if ((enemy.stagger ?? 0) > 0) name = 'dazed';
   else if ((enemy.recoil ?? 0) > 0.35) name = 'hurt';
-  else if (r.mode === 'rear') name = 'rear';
-  else if (r.mode === 'strike') name = 'strike';
-  else if (r.mode === 'recover') name = 'recover';
-  else name = PROWL[Math.floor(r.clock) % PROWL.length];
-  const f = SNAKE_FRAMES[name];
+  else if (r.mode === 'rear' || r.mode === 'strike' || r.mode === 'recover') {
+    const pose = snakePose(kind, r.mode, r.modeT);
+    name = pose.name;
+    sheet = pose.sheet;
+  } else name = PROWL[Math.floor(r.clock) % PROWL.length];
+  const f = (sheet === 2 ? SNAKE2_FRAMES : SNAKE_FRAMES)[name];
   if (!f) return false;
+  const img = sheet === 2 && atlas2 ? atlas2 : atlas;
+  const k = sheet === 2 ? K2 : K;
 
   if (enemy.telegraphTimer > 0) {
     // the same red warning ring the code-drawn snake shows before it strikes
@@ -125,7 +160,7 @@ export function drawSnakeSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   // a slow breath, so a snake that is waiting is never a still picture
   const breathe = r.mode === 'prowl' ? Math.sin(time * 5 + enemy.id) * 0.025 : 0;
   ctx.scale(1 - breathe, 1 + breathe);
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
+  ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
   ctx.restore();
   return true;
 }

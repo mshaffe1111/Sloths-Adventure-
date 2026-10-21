@@ -9,6 +9,7 @@ import { QUEEN_ATLAS_SIZE, QUEEN_FRAMES } from './queenAtlasData.ts';
 import { SNAKE_ATLAS_SIZE, SNAKE_FRAMES } from './snakeAtlasData.ts';
 import { SPIDER_ATLAS_SIZE, SPIDER_FRAMES } from './spiderAtlasData.ts';
 import { TAYRA_ATLAS_SIZE, TAYRA_FRAMES } from './tayraAtlasData.ts';
+import { HARPY_ATLAS_SIZE, HARPY_FRAMES } from './harpyAtlasData.ts';
 import { VENOM_ATLAS_SIZE, VENOM_FRAMES } from './venomAtlasData.ts';
 import { CROC_ATLAS_SIZE, CROC_FRAMES } from './crocAtlasData.ts';
 
@@ -30,6 +31,7 @@ const u = (name: string) => new URL(`../assets/enemies/${name}-atlas.webp`, impo
 export const CREATURE_ART: Record<string, CreaturePicSpec> = {
   jaguar: { url: u('jaguar'), atlas: JAGUAR_ATLAS_SIZE, frame: JAGUAR_FRAMES.walk_0 },
   snake: { url: u('snake'), atlas: SNAKE_ATLAS_SIZE, frame: SNAKE_FRAMES.slither_0 },
+  harpy: { url: u('harpy'), atlas: HARPY_ATLAS_SIZE, frame: HARPY_FRAMES.walkB },
   tayra: { url: u('tayra'), atlas: TAYRA_ATLAS_SIZE, frame: TAYRA_FRAMES.walk_1 },
   ocelot: { url: u('ocelot'), atlas: OCELOT_ATLAS_SIZE, frame: OCELOT_FRAMES.walk_0 },
   boa: { url: u('boa'), atlas: BOA_ATLAS_SIZE, frame: BOA_FRAMES.alert },

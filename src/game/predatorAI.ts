@@ -1,5 +1,5 @@
 /**
- * Ground predator behaviour: ocelot, jaguar, boa, caiman, tayra.
+ * Ground predator behaviour: ocelot, jaguar, boa, caiman, tayra, night harpy.
  *
  * One small state machine per animal, pure data in / data out (no engine, no canvas), so the game, the
  * dev harness and the unit tests all run exactly the same logic.
@@ -15,10 +15,10 @@ import { PERSONALITY, SPIDER, roam, speedScale, walkBounds, type BrainEvents, ty
 export type { PlayerRef } from './enemyBrain.ts';
 
 /** every ground animal with a brain (see enemyBrain.ts): the tree snake counts, it just is not a hunter of sloths by trade */
-export type PredatorType = 'snake' | 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
+export type PredatorType = 'snake' | 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' | 'harpy';
 
 export const isPredator = (t: string): t is PredatorType =>
-  t === 'snake' || t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra';
+  t === 'snake' || t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra' || t === 'harpy';
 
 export interface Box {
   x: number;
@@ -43,7 +43,7 @@ export interface PredatorStep {
 }
 
 /** distance from an enemy's origin down to its feet, per kind (matches the drawing's ground line) */
-export const FEET: Record<PredatorType, number> = { snake: 14, ocelot: 19, jaguar: 24, boa: 16, caiman: 15, tayra: 15 };
+export const FEET: Record<PredatorType, number> = { snake: 14, ocelot: 19, jaguar: 24, boa: 16, caiman: 15, tayra: 15, harpy: 16 };
 
 /** where each kind sits relative to the walking surface, so spawners and drawings agree */
 export const SURFACE_OFFSET = FEET;
@@ -54,6 +54,12 @@ const enter = (e: Enemy, s: string) => {
   e.state = s;
   e.stateT = 0;
 };
+
+/** the night harpy's attack, in seconds and pixels (exported so the drawing and the tests read the same numbers) */
+export const HARPY = { crouch: 0.6, slide: 0.42, slideSpeed: 270, air: 0.36, hop: 52, reachMax: 130, quake: 0.38, dizzy: 1.0, shockFrom: 26, shockTo: 125 };
+
+/** how far the stomp's shockwave has travelled (px each way from the harpy) `t` seconds after it lands */
+export const harpyShockReach = (t: number) => HARPY.shockFrom + (HARPY.shockTo - HARPY.shockFrom) * clamp(t / HARPY.quake, 0, 1);
 
 /** a simple readable arc: u 0..1 -> height multiplier 0..1..0 */
 const arc = (u: number) => 4 * u * (1 - u);
@@ -367,6 +373,74 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
       }
       keepOnGround(e, dt);
       hurt.push({ x: e.x - 24, y: e.y - 8, w: 48, h: 22 });
+      break;
+    }
+
+    // ---------------------------------------------------------------- night harpy: crouch, low slide, leap, stomp and a shockwave
+    case 'harpy': {
+      if (e.state === 'patrol') {
+        if (roam(e, p, dt, feet, PERSONALITY.harpy, ready, speed, ev)) {
+          e.facing = toward;
+          enter(e, 'crouch');
+          e.vx = 0;
+          ev.telegraph = true;
+        }
+      } else if (e.state === 'crouch') {
+        // a long, readable crouch: it keeps its eyes on you, then the aim locks for the slide
+        e.vx = 0;
+        if (t < HARPY.crouch - 0.15) e.facing = toward;
+        if (t >= HARPY.crouch) {
+          enter(e, 'slide');
+          ev.launch = true;
+        }
+      } else if (e.state === 'slide') {
+        const v = HARPY.slideSpeed * speedScale(e, PERSONALITY.harpy.nominal) * (1 - 0.45 * clamp(t / HARPY.slide, 0, 1));
+        e.x += e.facing * v * dt;
+        e.vx = e.facing * v;
+        const [wlo, whi] = walkBounds(e);
+        const atEdge = (e.facing > 0 && e.x >= whi) || (e.facing < 0 && e.x <= wlo);
+        if (t >= HARPY.slide || atEdge) {
+          // it pops up and turns on you for the stomp
+          enter(e, 'stomp');
+          e.facing = toward;
+          e.fromX = e.x;
+          e.toX = clamp(e.x + toward * clamp(dist, 30, HARPY.reachMax), ...walkBounds(e));
+          e.vx = 0;
+        }
+      } else if (e.state === 'stomp') {
+        // airborne: the wings-up pose is the warning that the shockwave is coming
+        const u = clamp(t / HARPY.air, 0, 1);
+        e.x = (e.fromX ?? e.x) + ((e.toX ?? e.x) - (e.fromX ?? e.x)) * u;
+        e.y = (e.groundY ?? e.y) - HARPY.hop * arc(u);
+        e.vx = ((e.toX ?? e.x) - (e.fromX ?? e.x)) / HARPY.air;
+        if (u >= 1) {
+          e.y = e.groundY ?? e.y;
+          e.vx = 0;
+          enter(e, 'quake');
+          ev.impact = true;
+        }
+      } else if (e.state === 'quake') {
+        e.vx = 0;
+        if (t >= HARPY.quake) enter(e, 'recover');
+      } else if (e.state === 'recover') {
+        // winded from its own stomp: dizzy, and the moment to strike
+        e.vx = 0;
+        if (t >= HARPY.dizzy) {
+          enter(e, 'patrol');
+          e.attackCooldown = 1.9;
+        }
+      }
+      keepOnGround(e, dt);
+      hurt.push({ x: e.x - 20, y: e.y - 14, w: 40, h: 30 });
+      if (e.state === 'slide') {
+        // the long low body, out in front
+        hurt.push({ x: e.facing > 0 ? e.x - 14 : e.x - 70, y: e.y - 6, w: 84, h: 24 });
+      }
+      if (e.state === 'quake') {
+        const reach = harpyShockReach(t);
+        // the shockwave runs along the ground both ways; a jump clears it
+        hurt.push({ x: e.x - reach, y: (e.groundY ?? e.y) + FEET.harpy - 15, w: reach * 2, h: 15 });
+      }
       break;
     }
   }

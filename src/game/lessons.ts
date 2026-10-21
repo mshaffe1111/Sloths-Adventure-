@@ -294,7 +294,7 @@ export interface LessonScene {
 export const NEAR = { foe: 400, thing: 340, climb: 170, dy: 230 } as const;
 
 const NO_STOMP = new Set(['spider', 'ant_hazard']);
-const TOUGH = new Set(['jaguar', 'boa', 'caiman']);
+const TOUGH = new Set(['jaguar', 'boa', 'caiman', 'harpy']);
 
 /** the lesson to show now, if something new is close ahead; the foe lesson first, then the rest by how soon they matter */
 export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonId | null {

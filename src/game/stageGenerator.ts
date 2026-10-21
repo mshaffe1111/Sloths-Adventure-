@@ -57,6 +57,8 @@ export interface GeneratedStage {
 // Tuning
 // ---------------------------------------------------------------------------
 
+/** a night harpy only spawns where its patrol patch is at least this wide (it slides and then leaps) */
+const HARPY_MIN_GROUND = 140;
 const GROUND_H = 90;
 /** ground baseline and water surface, relative to the level height */
 const GROUND_FROM_BOTTOM = 320;
@@ -319,6 +321,13 @@ class Gen {
     this.E.push(e);
   }
 
+  /** the night harpy: a ground bruiser that crouches, slides, then leaps and stomps. It needs a long run of ground to slide on. */
+  harpy(x: number, surface: number, pMin: number, pMax: number) {
+    const e = this.baseEnemy('harpy', x, surface - 16, 48, 36, 2, (this.hash01(x, 13) < 0.5 ? -1 : 1) * 48 * this.diff.enemySpeedMultiplier);
+    e.patrolMinX = pMin; e.patrolMaxX = pMax; e.attackCooldown = 1.6;
+    this.E.push(e);
+  }
+
   /**
    * Cheap deterministic 0..1 value from a position. Enemy *choice* uses this instead of the level's random
    * stream, so adding new animals never reshuffles the layout of a stage the player already knows.
@@ -356,6 +365,11 @@ class Gen {
       // from world 4 a fast tayra sometimes scurries where a snake would have been
       if (this.world >= 4 && this.hash01(x, 11) < 0.22) this.tayra(x, surface, pMin, pMax);
       else this.snake(x, surface, pMin, pMax);
+      return;
+    }
+    // from world 6 a night harpy takes some of the hard slots, on ground long enough to slide and land a stomp on
+    if (this.world >= 6 && pMax - pMin >= HARPY_MIN_GROUND && this.hash01(x, 17) < (this.world >= 8 ? 0.3 : 0.2)) {
+      this.harpy(x, surface, pMin, pMax);
       return;
     }
     let kind = this.hardKind(this.hash01(x));

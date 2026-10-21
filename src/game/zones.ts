@@ -130,6 +130,13 @@ export const DROWSY_SPEED = 0.5;
 export const DROWSY_JUMP = 0.84;
 /** the drowsiness lingers this long after leaving the cloud */
 export const DROWSY_LINGER = 0.7;
+/**
+ * The spell a spore cloud is clear and he is fully awake again, counted from the moment the cloud has gone and the lingering sleep has
+ * worn off to the moment the next one wakes. A crossing starts and ends inside it, and a jump that starts awake stays full strength
+ * to the landing (engine: flightClear), so every cloud can be crossed on its beat. No cloud may leave less than this.
+ */
+export const SPORE_CLEAR_MIN = 3.0;
+export const sporeClearTime = (z: Pick<Zone, 'period' | 'active'>) => z.period - z.active - DROWSY_LINGER;
 
 // ---------------------------------------------------------------------------
 // Wind (World 4)
@@ -234,8 +241,8 @@ export function sporeRecipes(mini: number): ZonePiece[] {
     [spore('stones', 3, 7.0, 2.2), spore('gap', 0, 6.4, 2.4)],
     [spore('gap', 0, 6.4, 2.4), spore('stones', 3, 6.8, 2.4)],
     [spore('stones', 3, 6.6, 2.4), spore('gap', 0, 6.2, 2.5), spore('stones', 4, 6.6, 2.4)],
-    [spore('gap', 0, 6.2, 2.5), spore('stones', 4, 6.4, 2.5), spore('gap', 0, 6.0, 2.6)],
-    [spore('stones', 4, 6.4, 2.5), spore('gap', 0, 6.0, 2.6), spore('stones', 4, 6.2, 2.6)],
+    [spore('gap', 0, 6.2, 2.5), spore('stones', 4, 6.4, 2.5), spore('gap', 0, 6.4, 2.6)],
+    [spore('stones', 4, 6.4, 2.5), spore('gap', 0, 6.4, 2.6), spore('stones', 4, 6.4, 2.6)],
   ];
   return table[Math.max(0, Math.min(table.length - 1, mini - 1))].map((p) => ({ ...p }));
 }

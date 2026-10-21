@@ -8,7 +8,7 @@ export const MATERIALS = ['generic', 'fur', 'scale', 'chitin', 'feather', 'armor
 export type Material = (typeof MATERIALS)[number];
 
 /** the order enemy types are numbered in when they are passed to sound effects */
-export const ENEMY_ORDER = ['snake', 'eagle', 'ocelot', 'jaguar', 'boa', 'caiman', 'tayra', 'frog', 'spider', 'ant_hazard', 'boss'] as const;
+export const ENEMY_ORDER = ['snake', 'eagle', 'ocelot', 'jaguar', 'boa', 'caiman', 'tayra', 'frog', 'spider', 'ant_hazard', 'boss', 'harpy'] as const;
 
 export function enemyIndex(type: string): number {
   return ENEMY_ORDER.indexOf(type as (typeof ENEMY_ORDER)[number]);
@@ -22,6 +22,7 @@ export function materialFor(type: string): Material {
     case 'caiman':
       return 'scale';
     case 'eagle':
+    case 'harpy':
       return 'feather';
     case 'ocelot':
     case 'jaguar':

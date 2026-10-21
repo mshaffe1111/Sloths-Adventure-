@@ -35,6 +35,7 @@ export type EnemyType =
   | 'boa'          // Boa constrictor: coiled ambusher with a long strike
   | 'caiman'       // Spectacled caiman: slow armoured lunger
   | 'tayra'        // Tayra: fast low dasher
+  | 'harpy'        // Night Harpy: crouches, slides, then leaps and stomps (the ground shakes)
   | 'frog'         // Poison Dart Frog
   | 'spider'       // Canopy Tarantula
   | 'ant_hazard'   // Marching Army Ants

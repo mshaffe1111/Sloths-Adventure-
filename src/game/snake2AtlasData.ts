@@ -1,0 +1,4 @@
+/** Generated from the Gemini snake sheets (sheet F, the attack poses). Frames face RIGHT; ax/ay is the middle of the belly line, the point the snake is drawn around. Native resolution: draw with SNAKE2_K. */
+import type { SnakeFrame } from './snakeAtlasData.ts';
+export const SNAKE2_ATLAS_SIZE = { w: 2048, h: 179 };
+export const SNAKE2_FRAMES: Record<string, SnakeFrame> = {"cobra": {"x": 0, "y": 0, "w": 160, "h": 179, "ax": 76.6, "ay": 177}, "crouch": {"x": 162, "y": 0, "w": 168, "h": 90, "ax": 121.0, "ay": 88}, "coilup": {"x": 332, "y": 0, "w": 136, "h": 177, "ax": 65.6, "ay": 175}, "reared": {"x": 470, "y": 0, "w": 138, "h": 179, "ax": 68.2, "ay": 177}, "whip": {"x": 610, "y": 0, "w": 191, "h": 170, "ax": 97.7, "ay": 168}, "sweep": {"x": 803, "y": 0, "w": 209, "h": 120, "ax": 109.9, "ay": 118}};

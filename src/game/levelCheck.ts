@@ -11,7 +11,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform, Vine } from './types.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { skillGuaranteedAt } from './skills.ts';
-import { idleTime, isDamaging, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
+import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
   PHYS,
   SAFE,
@@ -364,6 +364,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     const idle = idleTime(z);
     if (!isStatic(z) && idle < 2.0) errors.push(`${at}: only ${idle.toFixed(1)}s quiet between bursts (needs 2s to be waitable)`);
     if (!isStatic(z) && z.warn < 0.9) errors.push(`${at}: warning of ${z.warn}s is too short`);
+    if (z.kind === 'spore' && sporeClearTime(z) < SPORE_CLEAR_MIN - 0.001) errors.push(`${at}: only ${sporeClearTime(z).toFixed(1)}s awake between clouds (needs ${SPORE_CLEAR_MIN}s to cross)`);
     if (z.kind === 'tide') {
       const need = tideCrossTime(z.x1 - z.x0);
       if (idle + z.warn < need) errors.push(`${at}: low tide of ${(idle + z.warn).toFixed(1)}s is shorter than the ${need.toFixed(1)}s the crossing takes`);

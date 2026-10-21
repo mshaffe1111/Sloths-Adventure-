@@ -11,10 +11,10 @@
  */
 import type { Enemy, Platform } from './types.ts';
 
-export type BrainType = 'snake' | 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
+export type BrainType = 'snake' | 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' | 'harpy';
 
 export const isBrainType = (t: string): t is BrainType =>
-  t === 'snake' || t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra';
+  t === 'snake' || t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra' || t === 'harpy';
 
 export interface PlayerRef {
   x: number;
@@ -73,6 +73,10 @@ export const PERSONALITY: Record<BrainType, Personality> = {
   tayra: {
     trait: 'Relentless. Fast and agile, it runs you down and does not give up the chase.',
     sense: 340, senseBack: 240, engage: 160, chase: 135, keep: 110, giveUp: 6, nominal: 70, reach: 220,
+  },
+  harpy: {
+    trait: 'A ground bruiser. It crouches, slides at you low, then leaps and stomps so the ground shakes. Jump the slide, then jump the shockwave.',
+    sense: 320, senseBack: 200, engage: 200, chase: 85, keep: 150, giveUp: 4, nominal: 48, reach: 170,
   },
 };
 

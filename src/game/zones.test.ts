@@ -183,3 +183,13 @@ test('Worlds 5 to 8 teach gently: the first stage is the mildest', () => {
   assert.ok(ruinRecipes(1).length === 1);
   for (const w of [5, 6, 7, 8]) assert.ok(zoneRecipes(w, 9).length >= 3 || w === 5 || w === 7);
 });
+
+import { sporeClearTime, SPORE_CLEAR_MIN } from './zones.ts';
+
+test('every spore cloud of every World 3 stage leaves a clear, awake spell long enough to cross', () => {
+  for (let mini = 1; mini <= 9; mini++) {
+    for (const p of sporeRecipes(mini)) {
+      assert.ok(sporeClearTime(p) >= SPORE_CLEAR_MIN - 0.001, `stage ${mini}: ${sporeClearTime(p).toFixed(2)}s clear`);
+    }
+  }
+});

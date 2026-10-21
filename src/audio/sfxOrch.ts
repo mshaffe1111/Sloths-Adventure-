@@ -167,7 +167,7 @@ interface Figure {
 
 /**
  * What each animal's defeat ends on, indexed like ENEMY_ORDER in combat.ts (snake, eagle, ocelot, jaguar, boa, caiman, tayra, frog, spider,
- * ant, boss). Every figure ends lower than it starts (the animal is beaten); the instrument and the speed are the animal's.
+ * ant, boss, night harpy). Every figure ends lower than it starts (the animal is beaten); the instrument and the speed are the animal's.
  */
 export const ANIMAL_FIGURES: Figure[] = [
   /* snake */ { voice: clarinet, low: 55, steps: [4, 2, 0], gap: 0.075, len: 0.16, vel: 0.55 },
@@ -181,6 +181,7 @@ export const ANIMAL_FIGURES: Figure[] = [
   /* spider */ { voice: violinStac, low: 55, steps: [5, 4, 2, 0], gap: 0.05, len: 0.08, vel: 0.7 },
   /* ant */ { voice: celloStac, low: 52, steps: [2, 0], gap: 0.06, len: 0.08, vel: 0.6 },
   /* boss */ { voice: horn, low: 41, steps: [4, 2, 0], gap: 0.22, len: 0.4, vel: 0.65, under: { voice: timpani, vel: 0.6 } },
+  /* night harpy */ { voice: oboe, low: 55, steps: [5, 3, 0], gap: 0.11, len: 0.2, vel: 0.55, under: { voice: timpani, vel: 0.35 } },
 ];
 /** an animal we have not met: the plucked violin figure */
 const FALLBACK: Figure = { voice: violinStac, low: 60, steps: [4, 2, 0], gap: 0.07, len: 0.1, vel: 0.65 };
