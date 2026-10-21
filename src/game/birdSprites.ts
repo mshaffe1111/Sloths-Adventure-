@@ -144,26 +144,41 @@ interface Flock {
   beat?: number;
 }
 
-/** what flies in each world; null worlds keep their old birds (herons in 2 and 6, crows in 10, nothing in the caves and the volcano) */
+/**
+ * what flies in each world; null worlds keep their old birds (herons in 2 and 6, crows in 10, nothing in the caves and the volcano).
+ * A flock is ONE species picked from its pool by the stage's scene seed, so over a few runs every species in a pool shows (before, the
+ * pick was the flock number alone and five of the twelve species never flew). The flight lines stay in the upper third of the view,
+ * above the lane the hero plays in, so a flock never crosses behind him.
+ */
 export const PAINTED_FLOCKS: Record<number, Flock[]> = {
   // the canopy: toucans and macaws crossing high, a loose flock of small tanagers lower down
   1: [
-    { pool: ['toco', 'macaw', 'keel'], flocks: 1, n: 2, period: [34, 62], y: [0.12, 0.34], size: 1 },
-    { pool: ['tanager', 'banana', 'warbler'], flocks: 1, n: 3, period: [26, 44], y: [0.3, 0.5], size: 0.9 },
+    { pool: ['toco', 'macaw', 'keel'], flocks: 1, n: 2, period: [34, 62], y: [0.1, 0.26], size: 1 },
+    { pool: ['tanager', 'banana', 'warbler'], flocks: 1, n: 3, period: [26, 44], y: [0.2, 0.34], size: 0.9 },
   ],
   // the river keeps its herons; small birds along the bank
-  2: [{ pool: ['banana', 'bellbird', 'warbler'], flocks: 1, n: 3, period: [28, 48], y: [0.28, 0.5], size: 0.9 }],
+  2: [{ pool: ['banana', 'bellbird', 'warbler'], flocks: 1, n: 3, period: [28, 48], y: [0.2, 0.34], size: 0.9 }],
   // the cliffs: harpy eagles on the updraft and a pair of quetzals
   4: [
     { pool: ['harpy'], flocks: 1, n: 1, period: [70, 110], y: [0.09, 0.27], size: 1, beat: 0.6 },
-    { pool: ['quetzal'], flocks: 1, n: 2, period: [40, 60], y: [0.2, 0.4], size: 1 },
+    { pool: ['quetzal'], flocks: 1, n: 2, period: [40, 60], y: [0.18, 0.34], size: 1 },
   ],
+  // the orchid sanctuary: a few small songbirds drift through the flowers (the hummingbirds stay)
+  5: [{ pool: ['tanager', 'warbler', 'banana'], flocks: 1, n: 2, period: [34, 58], y: [0.14, 0.32], size: 0.9 }],
+  // the blackwater swamp: a keel-billed toucan pair or a bellbird over the herons
+  6: [{ pool: ['keel', 'bellbird'], flocks: 1, n: 2, period: [40, 70], y: [0.12, 0.3], size: 0.95 }],
   // the ruins: macaws and cock-of-the-rock
   7: [
-    { pool: ['macaw'], flocks: 1, n: 2, period: [34, 62], y: [0.12, 0.32], size: 1 },
-    { pool: ['andean', 'rock'], flocks: 1, n: 2, period: [36, 56], y: [0.3, 0.46], size: 1 },
+    { pool: ['macaw'], flocks: 1, n: 2, period: [34, 62], y: [0.1, 0.28], size: 1 },
+    { pool: ['andean', 'rock'], flocks: 1, n: 2, period: [36, 56], y: [0.2, 0.34], size: 1 },
   ],
 };
+
+/** which member of a pool a flock is on this stage: the scene seed (and the world and flock) walk the pool, so every species gets its turn */
+export function flockSpecies(pool: string[], world: number, flockNo: number, f: number, seed: number): string {
+  const h = Math.imul(seed | 0, 2654435761) ^ Math.imul(world + 1, 40503) ^ Math.imul(flockNo + 1, 9973);
+  return pool[(((h >>> 7) + f) % pool.length + pool.length) % pool.length];
+}
 
 /** draws a world's painted flocks (nothing for the worlds that keep their old birds); false when off or not loaded, so the vector birds draw */
 export function renderPaintedFlocks(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number): boolean {
@@ -174,7 +189,7 @@ export function renderPaintedFlocks(ctx: CanvasRenderingContext2D, world: number
   let flockNo = 0;
   for (const fl of spec) {
     for (let f = 0; f < fl.flocks; f++, flockNo++) {
-      const species = fl.pool[(f + flockNo) % fl.pool.length];
+      const species = flockSpecies(fl.pool, world, flockNo, f, getSceneSeed());
       const period = fl.period[0] + r() * (fl.period[1] - fl.period[0]);
       const dir = flockNo % 2 ? 1 : -1;
       const u = (((time + r() * 80) / period) % 1 + 1) % 1;
