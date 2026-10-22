@@ -2586,6 +2586,12 @@ export class GameEngine {
     }
   }
 
+  /** is a point within `pad` world units of what the camera shows? Things that are not are not drawn (a stage holds 100+ pickups and up to 40 animals) */
+  private onScreen(x: number, y: number, pad: number): boolean {
+    const c = this.camera;
+    return x > c.x - pad && x < c.x + c.viewportWidth + pad && y > c.y - pad && y < c.y + c.viewportHeight + pad;
+  }
+
   /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten */
   private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, draw: () => void) {
     const recoil = e.recoil ?? 0;
@@ -3174,6 +3180,7 @@ export class GameEngine {
 
     // Render Collectibles
     this.collectibles.forEach((item) => {
+      if (!this.onScreen(item.x, item.y, 260)) return;
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
@@ -3207,7 +3214,7 @@ export class GameEngine {
     if (rig) {
       // fliers throw a shadow on the ground below them (walkers already carry their own)
       for (const e of this.enemies) {
-        if (e.defeated || e.type !== 'eagle') continue;
+        if (e.defeated || e.type !== 'eagle' || !this.onScreen(e.x, e.y, 300)) continue;
         drawGroundShadow(ctx, rig, this.platforms, e.x, e.y + e.height * 0.5, e.width * 0.45, 0.8);
       }
     }
@@ -3215,6 +3222,7 @@ export class GameEngine {
     // Render Enemies
     this.enemies.forEach((enemy) => {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
+      if (!this.onScreen(enemy.x, enemy.y, 400)) return;
       if (!enemy.defeated) {
         // the ember rim (see readable.ts): everything that can hurt you wears it
         ctx.save();

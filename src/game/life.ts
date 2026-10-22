@@ -684,17 +684,62 @@ function getMist(col: string): HTMLCanvasElement {
   return cv;
 }
 
-function renderMist(ctx: CanvasRenderingContext2D, look: Look, camX: number, vw: number, vh: number, time: number) {
+/**
+ * The ground fog. It is soft, slow and spans the whole screen twice (two drifting layers), which made it the costliest single thing in
+ * the backdrop on a phone. So both layers are painted into a small buffer (0.4 px per screen px, a few times a second is plenty for
+ * something this slow) and the buffer is stamped on the stage once per frame.
+ */
+const MIST_SCALE = 0.4;
+const MIST_EVERY = 1 / 20;
+let mistBuf: HTMLCanvasElement | null = null;
+let mistBufKey = '';
+let mistAt = -1;
+let mistCam = 0;
+
+function paintMist(g: CanvasRenderingContext2D, look: Look, camX: number, vw: number, vh: number, time: number) {
   const sp = getMist(look.haze);
   const h = vh * 0.34;
   const w = h * (1024 / 192) * 1.25;
+  const top = vh * 0.5;
+  g.setTransform(MIST_SCALE, 0, 0, MIST_SCALE, 0, -top * MIST_SCALE);
   for (let layer = 0; layer < 2; layer++) {
     const drift = time * (6 + layer * 4) + camX * (0.18 + layer * 0.12);
-    let x0 = -(drift % w);
-    ctx.globalAlpha = 0.7 - layer * 0.25;
-    for (let x = x0 - (layer ? w * 0.4 : 0); x < vw; x += w) ctx.drawImage(sp, Math.floor(x), vh * (0.5 + layer * 0.07), Math.ceil(w) + 1, h);
+    const x0 = -(drift % w);
+    g.globalAlpha = 0.7 - layer * 0.25;
+    for (let x = x0 - (layer ? w * 0.4 : 0); x < vw; x += w) g.drawImage(sp, Math.floor(x), vh * (0.5 + layer * 0.07), Math.ceil(w) + 1, h);
   }
-  ctx.globalAlpha = 1;
+  g.globalAlpha = 1;
+}
+
+function renderMist(ctx: CanvasRenderingContext2D, look: Look, camX: number, vw: number, vh: number, time: number) {
+  const top = vh * 0.5;
+  const rh = vh * 0.41; // the fog spans 50% to 91% of the screen height
+  const bw = Math.max(1, Math.ceil(vw * MIST_SCALE));
+  const bh = Math.max(1, Math.ceil(rh * MIST_SCALE));
+  const key = `${look.haze}|${bw}x${bh}`;
+  if (!mistBuf) mistBuf = document.createElement('canvas');
+  const fresh = key !== mistBufKey || time < mistAt || Math.abs(camX - mistCam) > 80;
+  if (fresh || time - mistAt >= MIST_EVERY) {
+    if (mistBuf.width !== bw || mistBuf.height !== bh) {
+      mistBuf.width = bw;
+      mistBuf.height = bh;
+    }
+    const g = mistBuf.getContext('2d');
+    if (g) {
+      g.setTransform(1, 0, 0, 1, 0, 0);
+      g.clearRect(0, 0, bw, bh);
+      paintMist(g, look, camX, vw, vh, time);
+      mistBufKey = key;
+      mistAt = time;
+      mistCam = camX;
+    }
+  }
+  if (mistBufKey === key) {
+    const prev = ctx.imageSmoothingEnabled;
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(mistBuf, 0, 0, bw, bh, 0, top, bw / MIST_SCALE, bh / MIST_SCALE);
+    ctx.imageSmoothingEnabled = prev;
+  }
 }
 
 function renderMotes(ctx: CanvasRenderingContext2D, look: Look, world: number, camX: number, vw: number, vh: number, time: number, count: number) {
