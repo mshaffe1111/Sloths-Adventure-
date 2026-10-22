@@ -79,3 +79,26 @@ export function drawPaintedLeaf(
   ctx.restore();
   return true;
 }
+
+/**
+ * The painted leaf Pokey floats on for Leaf Glide (a broad leaf from the leaf sheet, lying flat under his feet).
+ * (x, y) is where his feet are; `open` is 0 (gone) .. 1 (spread). Returns false until the sheet has loaded, so the caller can draw a plain leaf instead.
+ */
+export function drawGlideSprite(ctx: CanvasRenderingContext2D, x: number, y: number, open: number, time: number, lean: number, alpha: number): boolean {
+  load();
+  if (!ready || !atlas) return false;
+  const f = LEAF_FRAMES.big_C09_0;
+  if (!f) return false;
+  const w = 58;
+  const k = w / f.w;
+  ctx.save();
+  ctx.translate(x, y + 1);
+  // the painted leaf runs a little downhill; tip it level so he stands on it
+  ctx.rotate(-0.42 + Math.sin(time * 6) * 0.05 + lean * 0.1);
+  ctx.scale(open, 0.55 + 0.45 * open);
+  ctx.globalAlpha = alpha * Math.min(1, open * 1.6);
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, (-f.h * k) / 2, f.w * k, f.h * k);
+  ctx.restore();
+  return true;
+}

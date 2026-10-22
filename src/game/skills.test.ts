@@ -62,3 +62,10 @@ test('the validator refuses a required rope in a stage entered before the skill 
   assert.equal(res.ok, false);
   assert.ok(res.errors.some((e) => /rope #999/.test(e)), res.errors.join('; '));
 });
+
+test('Leaf Glide is taught by 1-5 and no stage ever needs it', () => {
+  assert.ok(skillsFrom((id) => id === '1-5').has('glide'));
+  assert.ok(!skillsFrom((id) => id === '1-4').has('glide'));
+  assert.equal(newlyLearned('1-5', new Set(['shimmy'])).map((s) => s.id).join(), 'glide');
+  assert.equal(skillGuaranteedAt('glide', 99), false);
+});

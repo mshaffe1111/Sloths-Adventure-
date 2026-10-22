@@ -21,7 +21,15 @@ export function parseBadgeStore(raw: string | null): BadgeStore {
       earned: rec(o.earned),
       kills: rec(o.kills),
       seen: Array.isArray(o.seen) ? o.seen.filter((s: unknown) => typeof s === 'string' && /^[a-z0-9_]{1,40}$/.test(s)).slice(0, 40) : [],
-      counters: { stomps: num(o.counters?.stomps), bestCombo: num(o.counters?.bestCombo) },
+      counters: {
+        stomps: num(o.counters?.stomps),
+        bestCombo: num(o.counters?.bestCombo),
+        glide: num(o.counters?.glide),
+        shimmy: num(o.counters?.shimmy),
+        flora: num(o.counters?.flora),
+        streak: num(o.counters?.streak),
+        bestStreak: num(o.counters?.bestStreak),
+      },
     };
   } catch {
     return emptyStore();

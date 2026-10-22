@@ -13,6 +13,15 @@ const GLYPH: Record<SkillId, React.ReactNode> = {
       <path d="M36 54 C34 44 36 40 40 38M48 52 C48 42 48 38 48 36M60 54 C62 44 60 40 56 38" fill="none" stroke="#fef3c7" strokeWidth="4.5" strokeLinecap="round" />
     </>
   ),
+  glide: (
+    <>
+      <path d="M14 46 C22 14 74 14 82 46 C66 56 30 56 14 46Z" fill="#86efac" stroke="#14532d" strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M16 46 Q48 36 80 46" fill="none" stroke="#15803d" strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M30 42 C32 32 36 26 40 24M48 40 L48 22M66 42 C64 32 60 26 56 24" fill="none" stroke="#15803d" strokeWidth="2" strokeLinecap="round" />
+      <path d="M48 50 L48 62" stroke="#365314" strokeWidth="3" strokeLinecap="round" />
+      <path d="M36 80 C32 70 36 62 48 62 C60 62 64 70 60 80Z" fill="#a16207" stroke="#451a03" strokeWidth="2.5" strokeLinejoin="round" />
+    </>
+  ),
 };
 
 /** A round gold-ringed skill badge. `locked` greys it out for a skill that has not been learned yet. */

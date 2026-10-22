@@ -35,7 +35,8 @@ interface Props {
 
 const SECTIONS: Array<{ title: string; match: (b: BadgeDef) => boolean }> = [
   { title: 'In a stage', match: (b) => ['first_steps', 'perfect_stage', 'flawless', 'untouchable', 'green_thumb', 'speedy_sloth', 'stomp_chain', 'combo_10'].includes(b.id) },
-  { title: 'The long game', match: (b) => /^(predators|stomps|stars|cleared)_/.test(b.id) },
+  { title: 'Hard feats', match: (b) => ['untouched_guardian', 'pest_control', 'sky_stomper', 'lightning_round', 'garden_keeper', 'combo_20'].includes(b.id) },
+  { title: 'The long game', match: (b) => /^(predators|stomps|stars|cleared|glide|shimmy|flora|perfect|streak)_/.test(b.id) },
   { title: 'Guardians', match: (b) => b.id.startsWith('guardian_') },
   { title: 'World masters', match: (b) => b.id.startsWith('world_master_') },
   { title: 'Secrets and story', match: (b) => ['naturalist', 'thorn_finder', 'thorn_heart', 'jungle_hero'].includes(b.id) },

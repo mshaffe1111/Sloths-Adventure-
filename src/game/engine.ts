@@ -25,6 +25,8 @@ import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
+import { newGlide, glideStep, glideBrake, drawGlideLeaf } from './glide.ts';
+import { drawGlideSprite } from './leafSprites.ts';
 import { renderScenery, renderOverlay, setWeatherAvoid, lookFor } from './scenery.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
@@ -139,6 +141,9 @@ export class GameEngine {
   private ropes: Rope[];
   /** the skills Pokey has (worked out from the stages he has cleared) */
   private skills: Set<SkillId>;
+  /** Leaf Glide: the rules' state, and how far the leaf is spread (0 folded .. 1 open) */
+  private glide = newGlide();
+  private glideOpen = 0;
   private ropeCooldown = 0;
   private ropeGrace = 0;
   private ropeId = -1;
@@ -219,6 +224,8 @@ export class GameEngine {
   private statStomps = 0;
   private statMaxStompChain = 0;
   private statMaxCombo = 0;
+  private statGlideSec = 0;
+  private statShimmySec = 0;
   private statKills: Record<string, number> = {};
   private statSeen = new Set<string>();
   private seenCheck = 0;
@@ -581,6 +588,11 @@ export class GameEngine {
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
+    // the glide leaf is gone the moment he lands or grabs anything
+    if (p.grounded || p.climbing || p.isVineSwinging || p.hanging) {
+      this.glideOpen = 0;
+      this.glide.on = false;
+    }
 
     this.lessonTick();
 
@@ -1149,6 +1161,12 @@ export class GameEngine {
         if (Math.abs(p.vy) < 90 && this.input.state.jumpHeld) gravity *= 0.72;
         p.vy += gravity * dt;
         if (p.vy > PHYS.maxFall) p.vy = PHYS.maxFall;
+        // Leaf Glide: holding Jump while falling opens the leaf and slows the fall
+        const glideCap = glideStep(this.glide, { has: this.skills.has('glide'), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy }, dt);
+        p.vy = glideBrake(p.vy, glideCap, dt);
+        this.glideOpen += ((this.glide.on ? 1 : 0) - this.glideOpen) * Math.min(1, dt * 16);
+        if (this.glide.on) this.statGlideSec += dt;
+        if (p.grounded) this.glideOpen = 0;
 
         p.x += (p.vx + this.windV) * dt;
         p.y += p.vy * dt;
@@ -2444,6 +2462,9 @@ export class GameEngine {
       maxStompChain: this.statMaxStompChain,
       maxCombo: this.statMaxCombo,
       stomps: this.statStomps,
+      id: this.currentStage.config.id,
+      glideSec: this.statGlideSec,
+      shimmySec: this.statShimmySec,
       kills: { ...this.statKills },
       seen: Array.from(this.statSeen),
     };
@@ -2709,6 +2730,7 @@ export class GameEngine {
     p.vx = dir * ROPE_SPEED;
     if (dir !== 0) p.facing = dir as 1 | -1;
     p.x += p.vx * dt;
+    if (dir !== 0) this.statShimmySec += dt;
     p.walkCycle += Math.abs(p.vx) * dt * 0.08;
     const atEnd = p.x <= rope.x0 || p.x >= rope.x1;
     p.x = Math.max(rope.x0, Math.min(rope.x1, p.x));
@@ -3250,6 +3272,13 @@ export class GameEngine {
       drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560);
     }
 
+    // Leaf Glide: he floats on a small leaf under his feet (it spreads when the glide starts and is gone after he lands)
+    if (this.glideOpen > 0.02) {
+      const gp = this.player;
+      const lean = Math.max(-1, Math.min(1, gp.vx / 285));
+      const fade = this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1;
+      if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
+    }
     // Render Hero Sloth
     if (rig) {
       const hp = this.player;

@@ -14,9 +14,9 @@ const stage = (o: Partial<StageStats> = {}): StageStats => ({
   maxStompChain: 0, maxCombo: 0, stomps: 0, kills: {}, seen: [], ...o,
 });
 
-test('badge ids are unique and there are about forty', () => {
+test('badge ids are unique and there are about sixty', () => {
   assert.equal(new Set(BADGES.map((b) => b.id)).size, BADGES.length);
-  assert.ok(BADGES.length >= 38 && BADGES.length <= 50, `got ${BADGES.length}`);
+  assert.ok(BADGES.length >= 55 && BADGES.length <= 70, `got ${BADGES.length}`);
 });
 
 test('a fresh game has no badges', () => {
@@ -114,4 +114,69 @@ test('the stored record is validated', () => {
   assert.deepEqual(ok.seen, ['snake']);
   assert.equal(ok.counters.stomps, 7);
   assert.equal(ok.counters.bestCombo, 0);
+});
+
+const base = { levels: none, gateFound: false, thornHeart: false };
+const earnedNow = (st: Partial<StageStats>, store = emptyStore()) => award(store, { ...base, stage: stage(st) }, 1).fresh.map((b) => b.id);
+
+test('hard single-stage feats need the right stage and a win', () => {
+  assert.ok(earnedNow({ id: '3-10', heartsLost: 0 }).includes('untouched_guardian'));
+  assert.ok(!earnedNow({ id: '3-10', heartsLost: 1 }).includes('untouched_guardian'));
+  assert.ok(!earnedNow({ id: '3-9', heartsLost: 0 }).includes('untouched_guardian'), 'only a guardian stage counts');
+  assert.ok(!earnedNow({ id: '3-10', heartsLost: 0, win: false }).includes('untouched_guardian'));
+  assert.ok(earnedNow({ kills: { snake: 6, frog: 4 } }).includes('pest_control'));
+  assert.ok(!earnedNow({ kills: { snake: 9 } }).includes('pest_control'));
+  assert.ok(earnedNow({ maxStompChain: 6 }).includes('sky_stomper'));
+  assert.ok(!earnedNow({ maxStompChain: 5 }).includes('sky_stomper'));
+  assert.ok(earnedNow({ timeLimit: 120, timeSec: 40 }).includes('lightning_round'));
+  assert.ok(!earnedNow({ timeLimit: 120, timeSec: 41 }).includes('lightning_round'));
+  assert.ok(!earnedNow({ timeLimit: 0, timeSec: 1 }).includes('lightning_round'), 'untimed stages have no clock to beat');
+  assert.ok(earnedNow({ floraTotal: 20, floraCollected: 20, heartsLost: 0 }).includes('garden_keeper'));
+  assert.ok(!earnedNow({ floraTotal: 20, floraCollected: 20, heartsLost: 1 }).includes('garden_keeper'));
+  assert.ok(!earnedNow({ floraTotal: 20, floraCollected: 19, heartsLost: 0 }).includes('garden_keeper'));
+});
+
+test('glide, rope and fruit totals add up across stages', () => {
+  let store = emptyStore();
+  store = recordStage(store, stage({ glideSec: 20, shimmySec: 12, floraCollected: 150 }));
+  store = recordStage(store, stage({ glideSec: 12.6, shimmySec: 20, floraCollected: 60 }));
+  assert.equal(store.counters.glide, 32.6);
+  assert.equal(store.counters.shimmy, 32);
+  assert.equal(store.counters.flora, 210);
+  const got = evaluate({ ...base, store });
+  assert.ok(got.includes('glide_30') && !got.includes('glide_120'));
+  assert.ok(got.includes('shimmy_30') && !got.includes('shimmy_120'));
+  assert.ok(got.includes('flora_200') && !got.includes('flora_1000'));
+  assert.deepEqual(BADGE_BY_ID.glide_120.progress!({ ...base, store }), { have: 32, need: 120 }, 'progress shows whole seconds');
+});
+
+test('Hot Streak counts clean clears in a row; a lost life, or a lost stage, starts it over', () => {
+  let store = emptyStore();
+  for (let i = 0; i < 3; i++) store = recordStage(store, stage({ livesLost: 0 }));
+  assert.equal(store.counters.streak, 3);
+  assert.ok(evaluate({ ...base, store }).includes('streak_3'));
+  store = recordStage(store, stage({ livesLost: 1 }));
+  assert.equal(store.counters.streak, 0);
+  assert.equal(store.counters.bestStreak, 3, 'the best streak is kept');
+  store = recordStage(store, stage({ livesLost: 0 }));
+  store = recordStage(store, stage({ win: false, livesLost: 0 }));
+  assert.equal(store.counters.streak, 0, 'a lost stage ends it too');
+  for (let i = 0; i < 10; i++) store = recordStage(store, stage({ livesLost: 0 }));
+  assert.ok(evaluate({ ...base, store }).includes('streak_10'));
+});
+
+test('Combo Legend and Perfect Collector come from the long record', () => {
+  const store = { ...emptyStore(), counters: { ...emptyStore().counters, bestCombo: 20 } };
+  assert.ok(evaluate({ ...base, store }).includes('combo_20'));
+  const lv = levels((w, m) => (w === 1 && m <= 5 ? 3 : 1));
+  const got = evaluate({ store: emptyStore(), levels: lv, gateFound: false, thornHeart: false });
+  assert.ok(got.includes('perfect_5') && !got.includes('perfect_25'));
+});
+
+test('an older saved record (no new counters) loads with zeros and keeps what it had', () => {
+  const old = parseBadgeStore(JSON.stringify({ v: 1, earned: { flawless: 3 }, kills: {}, seen: [], counters: { stomps: 812, bestCombo: 17 } }));
+  assert.equal(old.counters.stomps, 812);
+  assert.equal(old.counters.bestCombo, 17);
+  assert.deepEqual([old.counters.glide, old.counters.shimmy, old.counters.flora, old.counters.streak, old.counters.bestStreak], [0, 0, 0, 0, 0]);
+  assert.equal(old.earned.flawless, 3);
 });

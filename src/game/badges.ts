@@ -32,6 +32,11 @@ export interface StageStats {
   kills: Record<string, number>;
   /** creature types that came on screen */
   seen: string[];
+  /** which stage this was, like "3-10" (a world's tenth stage is its guardian) */
+  id?: string;
+  /** seconds spent gliding on the leaf and creeping along ropes this stage */
+  glideSec?: number;
+  shimmySec?: number;
 }
 
 export interface BadgeStore {
@@ -39,10 +44,20 @@ export interface BadgeStore {
   earned: Record<string, number>;
   kills: Record<string, number>;
   seen: string[];
-  counters: { stomps: number; bestCombo: number };
+  counters: {
+    stomps: number;
+    bestCombo: number;
+    /** lifetime: seconds on the leaf, seconds on ropes, flowers/leaves/fruit picked */
+    glide: number;
+    shimmy: number;
+    flora: number;
+    /** stages in a row cleared without losing a life, right now and at best */
+    streak: number;
+    bestStreak: number;
+  };
 }
 
-export const emptyStore = (): BadgeStore => ({ v: 1, earned: {}, kills: {}, seen: [], counters: { stomps: 0, bestCombo: 0 } });
+export const emptyStore = (): BadgeStore => ({ v: 1, earned: {}, kills: {}, seen: [], counters: { stomps: 0, bestCombo: 0, glide: 0, shimmy: 0, flora: 0, streak: 0, bestStreak: 0 } });
 
 /** the slice of a stage record the rules need */
 export interface LevelRecord {
@@ -92,7 +107,9 @@ const totalStars = (l: LevelRecord[]) => l.reduce((a, x) => a + (x.stars || 0), 
 const cleared = (l: LevelRecord[]) => l.filter((x) => x.completed).length;
 const worldLevels = (l: LevelRecord[], w: number) => l.filter((x) => x.worldIndex === w && x.miniIndex <= 10);
 const bossDone = (l: LevelRecord[], w: number) => l.some((x) => x.worldIndex === w && x.miniIndex === 10 && x.completed);
-const count = (n: number, need: number) => ({ have: Math.min(n, need), need });
+const count = (n: number, need: number) => ({ have: Math.min(Math.floor(n), need), need });
+const perfectStages = (l: LevelRecord[]) => l.filter((x) => x.stars >= 3).length;
+const isGuardianStage = (id?: string) => !!id && /^\d{1,2}-10$/.test(id);
 
 function tiered(id: string, name: string, icon: string, tiers: Array<[Tier, number, string]>, have: (c: EvalContext) => number): BadgeDef[] {
   return tiers.map(([tier, need, desc]) => ({
@@ -137,6 +154,39 @@ export const BADGES: BadgeDef[] = [
     ['silver', 50, 'Clear 50 stages'],
     ['gold', 100, 'Clear all 100 stages'],
   ], (c) => cleared(c.levels)),
+
+  // harder single-stage feats
+  { id: 'untouched_guardian', name: 'Untouched Guardian', desc: 'Beat a world guardian without taking a hit', tier: 'gold', icon: 'boss', test: (c) => !!c.stage?.win && isGuardianStage(c.stage.id) && c.stage.heartsLost === 0 },
+  { id: 'pest_control', name: 'Pest Control', desc: 'Defeat 10 predators in a single stage', tier: 'silver', icon: 'purge', test: (c) => !!c.stage?.win && Object.values(c.stage.kills).reduce((a, b) => a + b, 0) >= 10 },
+  { id: 'sky_stomper', name: 'Sky Stomper', desc: 'Stomp 6 enemies without touching the ground', tier: 'gold', icon: 'boot', test: (c) => (c.stage?.maxStompChain ?? 0) >= 6 },
+  { id: 'lightning_round', name: 'Lightning Round', desc: 'Clear a timed stage in a third of the time', tier: 'gold', icon: 'sprint', test: (c) => !!c.stage?.win && c.stage.timeLimit > 0 && c.stage.timeSec <= c.stage.timeLimit / 3 },
+  { id: 'garden_keeper', name: 'Garden Keeper', desc: 'Pick every flower, leaf and fruit in a stage without being hit', tier: 'gold', icon: 'flower', test: (c) => !!c.stage?.win && c.stage.floraTotal >= 5 && c.stage.floraCollected >= c.stage.floraTotal && c.stage.heartsLost === 0 },
+  { id: 'combo_20', name: 'Combo Legend', desc: 'Reach a 20-hit combo', tier: 'gold', icon: 'burst', test: (c) => c.store.counters.bestCombo >= 20, progress: (c) => count(c.store.counters.bestCombo, 20) },
+
+  // new skills, new habits
+  ...tiered('glide', 'Leaf Surfer', 'leaf', [
+    ['bronze', 30, 'Glide on the leaf for 30 seconds in total'],
+    ['silver', 120, 'Glide on the leaf for 2 minutes in total'],
+    ['gold', 400, 'Glide on the leaf for over 6 minutes in total'],
+  ], (c) => c.store.counters.glide),
+  ...tiered('shimmy', 'Rope Master', 'vine', [
+    ['bronze', 30, 'Shimmy along ropes for 30 seconds in total'],
+    ['silver', 120, 'Shimmy along ropes for 2 minutes in total'],
+  ], (c) => c.store.counters.shimmy),
+  ...tiered('flora', 'Fruit Basket', 'harvest', [
+    ['bronze', 200, 'Pick 200 flowers, leaves and fruit'],
+    ['silver', 1000, 'Pick 1,000 flowers, leaves and fruit'],
+    ['gold', 3000, 'Pick 3,000 flowers, leaves and fruit'],
+  ], (c) => c.store.counters.flora),
+  ...tiered('perfect', 'Perfect Collector', 'sparkle', [
+    ['bronze', 5, 'Earn 3 stars on 5 stages'],
+    ['silver', 25, 'Earn 3 stars on 25 stages'],
+    ['gold', 60, 'Earn 3 stars on 60 stages'],
+  ], (c) => perfectStages(c.levels)),
+  ...tiered('streak', 'Hot Streak', 'gauntlet', [
+    ['bronze', 3, 'Clear 3 stages in a row without losing a life'],
+    ['silver', 10, 'Clear 10 stages in a row without losing a life'],
+  ], (c) => c.store.counters.bestStreak),
 
   // the guardians, one per world
   ...GUARDIANS.map((name, i): BadgeDef => ({
@@ -198,11 +248,22 @@ export function recordStage(store: BadgeStore, s: StageStats): BadgeStore {
   const kills = { ...store.kills };
   for (const [k, n] of Object.entries(s.kills)) kills[k] = (kills[k] ?? 0) + n;
   const seen = Array.from(new Set([...store.seen, ...s.seen]));
+  const c = store.counters;
+  // a clean clear (won, no life lost) extends the streak; anything else ends it
+  const streak = s.win && s.livesLost === 0 ? c.streak + 1 : 0;
   return {
     ...store,
     kills,
     seen,
-    counters: { stomps: store.counters.stomps + s.stomps, bestCombo: Math.max(store.counters.bestCombo, s.maxCombo) },
+    counters: {
+      stomps: c.stomps + s.stomps,
+      bestCombo: Math.max(c.bestCombo, s.maxCombo),
+      glide: c.glide + (s.glideSec ?? 0),
+      shimmy: c.shimmy + (s.shimmySec ?? 0),
+      flora: c.flora + s.floraCollected,
+      streak,
+      bestStreak: Math.max(c.bestStreak, streak),
+    },
   };
 }
 
