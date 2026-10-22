@@ -135,14 +135,19 @@ export class PerfLog {
 
 export const perfLog = new PerfLog();
 
+declare const __PERF_DEFAULT__: boolean | undefined;
+
 let on: boolean | null = null;
 export function perfEnabled(): boolean {
   if (on !== null) return on;
-  let v = false;
+  // off, except in the test (artifact) build, where it starts on so a screen recording shows the numbers; the menu switch overrides it either way
+  let v = typeof __PERF_DEFAULT__ !== 'undefined' && __PERF_DEFAULT__ === true;
   try {
-    v = localStorage.getItem('sloth_perf') === 'on';
+    const s = localStorage.getItem('sloth_perf');
+    if (s === 'on') v = true;
+    else if (s === 'off') v = false;
   } catch {
-    /* no storage: stay off */
+    /* no storage: keep the default */
   }
   on = v;
   return v;
