@@ -25,6 +25,7 @@ import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
+import { newGlide, glideStep, glideBrake, drawGlideLeaf } from './glide.ts';
 import { renderScenery, renderOverlay, setWeatherAvoid, lookFor } from './scenery.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
@@ -139,6 +140,9 @@ export class GameEngine {
   private ropes: Rope[];
   /** the skills Pokey has (worked out from the stages he has cleared) */
   private skills: Set<SkillId>;
+  /** Leaf Glide: the rules' state, and how far the leaf is spread (0 folded .. 1 open) */
+  private glide = newGlide();
+  private glideOpen = 0;
   private ropeCooldown = 0;
   private ropeGrace = 0;
   private ropeId = -1;
@@ -1149,6 +1153,10 @@ export class GameEngine {
         if (Math.abs(p.vy) < 90 && this.input.state.jumpHeld) gravity *= 0.72;
         p.vy += gravity * dt;
         if (p.vy > PHYS.maxFall) p.vy = PHYS.maxFall;
+        // Leaf Glide: holding Jump while falling opens the leaf and slows the fall
+        const glideCap = glideStep(this.glide, { has: this.skills.has('glide'), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy }, dt);
+        p.vy = glideBrake(p.vy, glideCap, dt);
+        this.glideOpen += ((this.glide.on ? 1 : 0) - this.glideOpen) * Math.min(1, dt * 16);
 
         p.x += (p.vx + this.windV) * dt;
         p.y += p.vy * dt;
@@ -3258,6 +3266,11 @@ export class GameEngine {
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else drawHeroSloth(ctx, this.player, this.gameTime);
+    // Leaf Glide: the leaf over his head (it spreads when the glide starts and folds away after)
+    if (this.glideOpen > 0.02) {
+      const hp = this.player;
+      drawGlideLeaf(ctx, hp.x, hp.y - 80, this.glideOpen, this.gameTime, Math.max(-1, Math.min(1, hp.vx / 285)), this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1);
+    }
     // the boss's attacks go over him, so a warning is never hidden behind Pokey
     if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);
     if (this.debugBoxes) this.drawHitboxes(ctx);

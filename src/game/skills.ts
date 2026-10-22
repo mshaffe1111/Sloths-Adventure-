@@ -9,7 +9,7 @@
  *  - before that, a skill can only add OPTIONAL extras (bonus routes), and the stage must be finishable without them.
  */
 
-export type SkillId = 'shimmy';
+export type SkillId = 'shimmy' | 'glide';
 
 export interface SkillDef {
   id: SkillId;
@@ -36,6 +36,19 @@ export const SKILLS: SkillDef[] = [
     ],
     unlockedBy: '1-3',
     requiredFromStage: '1-4',
+  },
+  {
+    id: 'glide',
+    name: 'Leaf Glide',
+    blurb: 'Hold Jump while falling to open a big leaf and drift down slowly. It only slows the fall, so it is a help, never a must.',
+    controls: [
+      [['Jump'], 'then hold Jump as you start to fall'],
+      [['←', '→'], 'steer while you drift'],
+      [['Let go'], 'to drop normally'],
+    ],
+    unlockedBy: '1-5',
+    // no stage ever needs it: this is past the last stage, so the level builder never relies on it
+    requiredFromStage: '10-10',
   },
 ];
 
