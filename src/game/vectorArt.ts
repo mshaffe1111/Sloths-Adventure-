@@ -8,6 +8,7 @@ import { drawBloom, type Bloom } from './flora.ts';
 import { drawFlowerSprite } from './flowerSprites.ts';
 import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
 import { rng, tone } from './artKit.ts';
+import { drawAura } from './readable.ts';
 import { drawHushFern, drawKeepersBell } from './findArt.ts';
 import { leaf } from './rainforest.ts';
 import { drawGiantBat } from './bossBat.ts';
@@ -1069,8 +1070,15 @@ export function drawCollectible(
   if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate' && item.type !== 'find') {
     const big = item.type === 'relic' ? 1.25 : 1.4;
     ctx.scale(big, big);
-    // soft sparkle ring so pickups pop against the foliage
-    fillGlow(ctx, 'ring', 0, 0, 8, 26, [[0, 'rgba(255, 255, 235, 0.0)'], [0.7, 'rgba(255, 255, 235, 0.28)'], [1, 'rgba(255, 255, 235, 0)']]);
+    // the gold rim on a soft dark pool (see readable.ts): everything you can take wears it, so it reads on any backdrop
+    drawAura(ctx, 'take', world, 15, 15, time, item.bobPhase);
+  } else if (item.type === 'cage') {
+    drawAura(ctx, 'take', world, 25, 25, time, item.bobPhase);
+  } else if (item.type === 'exit_totem') {
+    ctx.save();
+    ctx.translate(0, -bobY - 86);
+    drawAura(ctx, 'take', world, 64, 84, time, 0, item.isLocked ? 0.45 : 1);
+    ctx.restore();
   }
 
   switch (item.type) {

@@ -8,6 +8,7 @@
  *
  * Nothing here changes a box: every shape sits on the platform's own rectangle (top edge = p.y), so what you see is what you land on.
  */
+import { glowPic } from './glow.ts';
 import type { Platform, TreeStructure, Vine } from './types.ts';
 
 interface Cam {
@@ -18,6 +19,18 @@ interface Cam {
 }
 
 const LIME = '#bef264';
+
+/**
+ * The lime glow behind a lit thing, as one cached picture. A canvas shadow blur costs a separate blur pass every time it is used, and the lair
+ * used it dozens of times a frame (the floor's fungus veins, every bead and cap), which a phone cannot keep up with.
+ */
+function halo(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, a: number) {
+  if (a <= 0.01 || r <= 0.5) return;
+  const prev = ctx.globalAlpha;
+  ctx.globalAlpha = prev * Math.min(1, a);
+  ctx.drawImage(glowPic(LIME), x - r, y - r, r * 2, r * 2);
+  ctx.globalAlpha = prev;
+}
 
 function rand(i: number): number {
   const s = Math.sin(i * 127.1 + 311.7) * 43758.5453;
@@ -46,14 +59,11 @@ function glowShroom(ctx: CanvasRenderingContext2D, x: number, y: number, s: numb
     const glow = 0.6 + 0.4 * Math.sin(time * 2 + seed + i);
     ctx.fillStyle = '#e7f5c4';
     ctx.fillRect(mx - 1.5 * s, y - mh, 3 * s, mh);
-    ctx.save();
-    ctx.shadowColor = LIME;
-    ctx.shadowBlur = 10 * glow;
+    halo(ctx, mx, y - mh, (11 + 9 * glow) * s, 0.55 * glow + 0.1);
     ctx.fillStyle = `rgba(190, 242, 100, ${0.6 + glow * 0.35})`;
     ctx.beginPath();
     ctx.ellipse(mx, y - mh, (6 + rand(seed + i + 9) * 3) * s, 4.5 * s, 0, Math.PI, 0);
     ctx.fill();
-    ctx.restore();
   }
 }
 
@@ -110,17 +120,18 @@ function drawRootBed(ctx: CanvasRenderingContext2D, p: Platform, cam: Cam, time:
     ctx.ellipse(cx * cell + rand(sd) * cell, top + 40 + rand(sd + 1) * 90, 5 + rand(sd + 2) * 6, 3.5 + rand(sd + 3) * 3, rand(sd + 4), 0, Math.PI * 2);
     ctx.fill();
     const pulse = 0.28 + 0.2 * Math.sin(time * 1.3 + cx);
-    ctx.strokeStyle = `rgba(190, 242, 100, ${pulse})`;
-    ctx.lineWidth = 2;
-    ctx.shadowColor = LIME;
-    ctx.shadowBlur = 6;
     const vx = cx * cell + rand(sd + 5) * cell;
     const vy = top + 70 + rand(sd + 6) * 120;
     ctx.beginPath();
     ctx.moveTo(vx, vy);
     ctx.bezierCurveTo(vx + 14, vy + 10, vx + 26, vy - 8, vx + 44, vy + 6);
+    // the glow is a wider, fainter line under the bright one (no blur pass)
+    ctx.strokeStyle = `rgba(190, 242, 100, ${pulse * 0.32})`;
+    ctx.lineWidth = 7;
     ctx.stroke();
-    ctx.shadowBlur = 0;
+    ctx.strokeStyle = `rgba(190, 242, 100, ${pulse})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
   }
 
   // the lip: thick moss, scalloped underneath, bright at its edge
@@ -260,14 +271,11 @@ function drawCradle(ctx: CanvasRenderingContext2D, p: Platform, cam: Cam, time: 
     ctx.stroke();
     if (rand(p.id + i * 9) < 0.5) {
       const glow = 0.5 + 0.5 * Math.sin(time * 2.2 + i * 1.7);
-      ctx.save();
-      ctx.shadowColor = LIME;
-      ctx.shadowBlur = 10;
+      halo(ctx, bx + s2 * 1.4, by + len + 2, 11, 0.45 + glow * 0.3);
       ctx.fillStyle = `rgba(190, 242, 100, ${0.5 + glow * 0.5})`;
       ctx.beginPath();
       ctx.arc(bx + s2 * 1.4, by + len + 2, 3.2, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
     }
   }
 }
@@ -354,13 +362,14 @@ function drawBounceCap(ctx: CanvasRenderingContext2D, p: Platform, cam: Cam, tim
   }
   // a pulsing lime rim, so it reads as "bounce here" in the dark
   const glow = 0.55 + 0.45 * Math.sin(time * 2.6 + p.id);
-  ctx.strokeStyle = `rgba(190, 242, 100, ${0.5 + glow * 0.4})`;
-  ctx.lineWidth = 2.6;
-  ctx.shadowColor = LIME;
-  ctx.shadowBlur = 14 * glow;
   ctx.beginPath();
   ctx.moveTo(-rad + 2, 1);
   ctx.quadraticCurveTo(0, -45, rad - 2, 1);
+  ctx.strokeStyle = `rgba(190, 242, 100, ${(0.5 + glow * 0.4) * 0.3 * glow})`;
+  ctx.lineWidth = 3 + 9 * glow;
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(190, 242, 100, ${0.5 + glow * 0.4})`;
+  ctx.lineWidth = 2.6;
   ctx.stroke();
   ctx.restore();
 }
@@ -428,8 +437,7 @@ function drawBraidedTrunk(ctx: CanvasRenderingContext2D, t: TreeStructure, cam: 
       const side = rand(sd + 4) < 0.5 ? -1 : 1;
       const bx = t.x + side * (half * 0.95);
       ctx.save();
-      ctx.shadowColor = LIME;
-      ctx.shadowBlur = 8;
+      halo(ctx, bx, y + 30, 22, 0.38);
       ctx.fillStyle = '#9bbf3a';
       ctx.beginPath();
       ctx.ellipse(bx, y + 30, 20, 7, 0, side < 0 ? Math.PI : 0, side < 0 ? 0 : Math.PI, side < 0);
@@ -538,14 +546,11 @@ function drawClimbLiana(ctx: CanvasRenderingContext2D, v: Vine, time: number) {
     ctx.restore();
     if (i % 9 === 1) {
       const glow = 0.5 + 0.5 * Math.sin(time * 2.2 + i);
-      ctx.save();
-      ctx.shadowColor = LIME;
-      ctx.shadowBlur = 12 * glow;
+      halo(ctx, p.x + s * 7, p.y + 4, 8 + 9 * glow, 0.5 * glow + 0.15);
       ctx.fillStyle = `rgba(236, 252, 160, ${0.6 + glow * 0.4})`;
       ctx.beginPath();
       ctx.arc(p.x + s * 7, p.y + 4, 3.6, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
     }
   }
   ctx.restore();
@@ -621,8 +626,7 @@ function drawSwingLiana(ctx: CanvasRenderingContext2D, v: Vine, cam: Cam, time: 
     ctx.quadraticCurveTo(s * 14, -2, 0, -6);
     ctx.fill();
   }
-  ctx.shadowColor = LIME;
-  ctx.shadowBlur = 16 * glow;
+  halo(ctx, 0, 10, 20 + 16 * glow, 0.5 * glow + 0.12);
   const pg = ctx.createRadialGradient(-3, 6, 2, 0, 10, 15);
   pg.addColorStop(0, '#f7fee7');
   pg.addColorStop(0.5, `rgba(190, 242, 100, ${0.65 + glow * 0.3})`);
@@ -633,7 +637,6 @@ function drawSwingLiana(ctx: CanvasRenderingContext2D, v: Vine, cam: Cam, time: 
   ctx.bezierCurveTo(13, 4, 11, 22, 0, 26);
   ctx.bezierCurveTo(-11, 22, -13, 4, 0, -6);
   ctx.fill();
-  ctx.shadowBlur = 0;
   ctx.strokeStyle = 'rgba(6, 16, 8, .7)';
   ctx.lineWidth = 2;
   ctx.stroke();

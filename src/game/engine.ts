@@ -81,6 +81,9 @@ import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
+import { drawAura } from './readable.ts';
+import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
+import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 
 /** How many world units tall the screen shows. */
 /** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
@@ -186,10 +189,8 @@ export class GameEngine {
    * Automatic quality: 0 = full, 1 = lighter resolution, 2 = lightest. Only ever steps down, and only when the
    * screen genuinely cannot keep up (the simulation itself never changes).
    */
-  private quality = 0;
-  private perfFrames = 0;
-  private warmupMs = 1000;
-  private perfMs = 0;
+  private quality = startQuality(typeof performance !== 'undefined' ? performance.now() : 0);
+  private gov = new FrameGovernor();
 
   private hitstopTimer: number = 0;
   private gameTime: number = 0;
@@ -324,6 +325,11 @@ export class GameEngine {
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
+    if (perfEnabled()) {
+      // a fresh frame-time log for each stage, so a slowdown that grows through the stage shows on the timeline
+      perfLog.reset(performance.now());
+      perfNote(`stage ${config.id} started`);
+    }
     this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
 
     // Initialize Hero Sloth
@@ -391,29 +397,15 @@ export class GameEngine {
     return Math.max(1, Math.min(native, cap));
   }
 
-  /** watch real frame times; if the screen cannot hold ~50 fps for a moment, step quality down one notch */
-  private watchPerformance(elapsedMs: number) {
-    if (this.quality >= 2 || pskip('gov')) return;
-    // the first moments of a stage build caches and warm up the JIT; do not judge them
-    if (this.warmupMs > 0) {
-      this.warmupMs -= elapsedMs;
-      return;
+  /** the screen cannot keep up: the sparkle goes first (bloom, rim light, wind, then all of the polish), and only then the resolution */
+  private stepQuality() {
+    if (polishEnabled() && polishTier() < 2) setPolishTier(polishTier() + 1);
+    else if (this.quality < 2) {
+      this.quality++;
+      noteStepDown(this.quality, performance.now());
+      this.resizeCanvas();
     }
-    this.perfFrames++;
-    this.perfMs += elapsedMs;
-    if (this.perfMs < 1200) return;
-    const avg = this.perfMs / this.perfFrames;
-    this.perfFrames = 0;
-    this.perfMs = 0;
-    // a 60 Hz screen averages ~16.7 ms, 120 Hz ~8.3 ms. Slower than ~20 ms means it is dropping frames.
-    if (avg > 20) {
-      // the sparkle goes first (bloom, rim light, wind, then all of the polish), and only then the resolution
-      if (polishEnabled() && polishTier() < 2) setPolishTier(polishTier() + 1);
-      else {
-        this.quality++;
-        this.resizeCanvas();
-      }
-    }
+    perfNote(`slow: stepped down (quality ${this.quality}, polish ${polishEnabled() ? polishTier() : 'off'})`);
   }
 
   public resizeCanvas() {
@@ -520,6 +512,9 @@ export class GameEngine {
     this.lastRenderTime = elapsed < this.frameIntervalMs + 2 ? now : now - (elapsed % this.frameIntervalMs);
 
     const dt = Math.min(elapsed / 1000, 0.05);
+    // the frame-time check (menu switch, off by default): how long this frame's update and draw took on their own
+    const pl = perfEnabled() ? perfLog : null;
+    let tUpd = 0;
 
     try {
       if (!this.isPaused) {
@@ -534,11 +529,17 @@ export class GameEngine {
             this.slowMoLeft -= dt;
             sdt = dt * 0.3 * this.speedScale;
           }
+          const u0 = pl ? performance.now() : 0;
           this.update(sdt);
+          if (pl) tUpd = performance.now() - u0;
         }
       }
 
+      const r0 = pl ? performance.now() : 0;
       this.render();
+      if (pl) pl.record(elapsed, tUpd, performance.now() - r0, now, () => this.perfInfo());
+      // judge the real frame gap: too slow for a moment -> a lighter picture (never while a menu holds the game, or once at the lightest)
+      if (!this.isPaused && (this.quality < 2 || (polishEnabled() && polishTier() < 2)) && this.gov.feed(elapsed)) this.stepQuality();
       this.failStreak = 0;
     } catch (err) {
       // one bad frame must not freeze the game; a frame that fails over and over ends the stage cleanly
@@ -550,6 +551,16 @@ export class GameEngine {
     }
   };
   private failStreak = 0;
+
+  /** what the game was doing, for the frame-time check (only built when a freeze is logged or a timeline line is due) */
+  private perfInfo() {
+    const p = this.player;
+    const alive = this.enemies.filter((e) => !e.defeated).length;
+    return {
+      what: `${p.grounded ? 'ground' : 'air'} vy=${Math.round(p.vy)} x=${Math.round(p.x)} enemies=${alive}/${this.enemies.length} particles=${this.particles.length} quality=${this.quality} polish=${polishEnabled() ? polishTier() : 'off'}`,
+      parts: this.particles.length,
+    };
+  }
 
   /**
    * Main Physics & Simulation Tick (30 FPS)
@@ -2562,6 +2573,12 @@ export class GameEngine {
     }
   }
 
+  /** is a point within `pad` world units of what the camera shows? Things that are not are not drawn (a stage holds 100+ pickups and up to 40 animals) */
+  private onScreen(x: number, y: number, pad: number): boolean {
+    const c = this.camera;
+    return x > c.x - pad && x < c.x + c.viewportWidth + pad && y > c.y - pad && y < c.y + c.viewportHeight + pad;
+  }
+
   /** draw an animal with its hit reaction: leaning away and squashed after a blow, or tumbling and fading when beaten */
   private drawWithReaction(ctx: CanvasRenderingContext2D, e: Enemy, draw: () => void) {
     const recoil = e.recoil ?? 0;
@@ -2925,6 +2942,12 @@ export class GameEngine {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
       ctx.save();
       ctx.translate(cp.x, cp.y);
+      if (!cp.reached) {
+        ctx.save();
+        ctx.translate(20, -52);
+        drawAura(ctx, 'take', world.id, 30, 40, t, cp.x * 0.01);
+        ctx.restore();
+      }
       ctx.strokeStyle = '#6b4423';
       ctx.lineWidth = 6;
       ctx.lineCap = 'round';
@@ -3104,6 +3127,16 @@ export class GameEngine {
     this.drawWaterAndFlags(ctx, world);
     this.drawRivers(ctx, world, false);
 
+    // the bounce mushrooms wear the gold rim too (they sit in the scenery's colours)
+    for (const pl of this.platforms) {
+      if (pl.type !== 'bouncy' || pl.broken) continue;
+      if (pl.x + pl.width < this.camera.x - 60 || pl.x > this.camera.x + this.camera.viewportWidth + 60) continue;
+      ctx.save();
+      ctx.translate(pl.x + pl.width / 2, pl.y + 2);
+      drawAura(ctx, 'take', world.id, pl.width * 0.55, 30, this.gameTime, pl.x * 0.013);
+      ctx.restore();
+    }
+
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
     else renderWorldObjects(
@@ -3134,6 +3167,7 @@ export class GameEngine {
 
     // Render Collectibles
     this.collectibles.forEach((item) => {
+      if (!this.onScreen(item.x, item.y, 260)) return;
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
@@ -3167,7 +3201,7 @@ export class GameEngine {
     if (rig) {
       // fliers throw a shadow on the ground below them (walkers already carry their own)
       for (const e of this.enemies) {
-        if (e.defeated || e.type !== 'eagle') continue;
+        if (e.defeated || e.type !== 'eagle' || !this.onScreen(e.x, e.y, 300)) continue;
         drawGroundShadow(ctx, rig, this.platforms, e.x, e.y + e.height * 0.5, e.width * 0.45, 0.8);
       }
     }
@@ -3175,6 +3209,14 @@ export class GameEngine {
     // Render Enemies
     this.enemies.forEach((enemy) => {
       if (enemy.defeated && enemy.koTimer > (enemy.koLife ?? 0)) return;
+      if (!this.onScreen(enemy.x, enemy.y, 400)) return;
+      if (!enemy.defeated) {
+        // the ember rim (see readable.ts): everything that can hurt you wears it
+        ctx.save();
+        ctx.translate(enemy.x, enemy.y);
+        drawAura(ctx, 'danger', world.id, enemy.width * 0.8, enemy.height * 0.8, this.gameTime, enemy.id * 1.7);
+        ctx.restore();
+      }
       const draw = () => {
         if (enemy.type === 'snake') {
           if (!drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);

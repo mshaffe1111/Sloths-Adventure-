@@ -1,3 +1,4 @@
+import { PerfReadout } from './components/PerfReadout.tsx';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import type { GameScreen, LevelConfig, BossEntity } from './game/types.ts';
 import { generateAllLevels } from './game/worldsData.ts';
@@ -924,6 +925,7 @@ export default function App() {
             lives={lives}
           />
           {screen === 'playing' && <CoachOverlay step={coachStep} style={coachStyle} />}
+          <PerfReadout stageId={activeLevel.id} />
           <Wayside key={`${activeLevel.id}-${runId}`} level={activeLevel} active={screen === 'playing' && !coachStep && !lessonId && !reading} ratio={distanceRatio} hp={hp} />
           {screen === 'playing' && lessonId && (
             <LessonCard

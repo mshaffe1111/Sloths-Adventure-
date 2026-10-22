@@ -8,16 +8,22 @@
 
 import { drawBloom, pickBloom, monstera, bananaLeaf } from './flora.ts';
 
-export type RNG = () => number;
+/** a seeded random source; `state`/`seek` let a caller note where the sequence is and jump back to it (so a thing can be drawn on its own, with the same dice) */
+export type RNG = (() => number) & { state?: () => number; seek?: (s: number) => void };
 
 export function rng(seed: number): RNG {
   let a = (seed | 0) + 0x6d2b79f5;
-  return () => {
+  const f = (() => {
     a = (a + 0x6d2b79f5) | 0;
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }) as RNG;
+  f.state = () => a;
+  f.seek = (s: number) => {
+    a = s | 0;
   };
+  return f;
 }
 
 export function hex2rgb(h: string): [number, number, number] {

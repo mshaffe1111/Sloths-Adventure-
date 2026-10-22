@@ -4,6 +4,7 @@ import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
+import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
 import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, type GameSpeed } from '../game/assist.ts';
 
@@ -43,6 +44,38 @@ export const PolishToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Wind, glow, soft shadows and richer ground. Turn it off if the game feels slow.</small>
+    </div>
+  );
+};
+
+/** the frame-time check (saved on the device; off unless turned on): a corner box with frames per second and a report of freezes */
+export const PerfToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => perfEnabled());
+  const [offered] = React.useState(() => perfOffered());
+  if (!offered) return null;
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#a5f3fc" size={22}>
+            <path d="M3 12h4l3-8 4 16 3-8h4" />
+          </Icon>
+          Frame-time check
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setPerfPref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">For testing: shows a small box with the frame rate and logs every freeze. Tap the box to copy the report.</small>
     </div>
   );
 };

@@ -15,6 +15,30 @@ const hash = (n: number) => {
 
 interface View { x: number; y: number; w: number; h: number }
 
+/**
+ * Soft round blobs painted once and drawn scaled, with `globalAlpha` for their brightness. A cloud puff used to build its own radial gradient
+ * every frame (twenty or more at a time) - heavy on a phone, where it showed as stalls whenever a spore cloud was on screen.
+ */
+const discs = new Map<string, HTMLCanvasElement>();
+function disc(key: string, stops: Array<[number, string]>): HTMLCanvasElement {
+  let cv = discs.get(key);
+  if (cv) return cv;
+  cv = document.createElement('canvas');
+  cv.width = cv.height = 96;
+  const g = cv.getContext('2d');
+  if (g) {
+    const gr = g.createRadialGradient(48, 48, 0, 48, 48, 48);
+    for (const [at, col] of stops) gr.addColorStop(at, col);
+    g.fillStyle = gr;
+    g.fillRect(0, 0, 96, 96);
+  }
+  discs.set(key, cv);
+  return cv;
+}
+const sporeGlowPic = () => disc('spore-glow', [[0, 'rgba(216, 180, 254, 1)'], [1, 'rgba(216, 180, 254, 0)']]);
+const sporeHazePic = () => disc('spore-haze', [[0, 'rgba(192, 132, 252, 0.42)'], [0.7, 'rgba(167, 139, 250, 0.2)'], [1, 'rgba(167, 139, 250, 0)']]);
+const sporePuffPic = () => disc('spore-puff', [[0, 'rgba(221, 205, 255, 1)'], [0.6, 'rgba(167, 139, 250, 0.6)'], [1, 'rgba(167, 139, 250, 0)']]);
+
 const visible = (z: Zone, cam: View) => z.x1 > cam.x - 80 && z.x0 < cam.x + cam.w + 80 && z.bottom > cam.y - 80 && z.top < cam.y + cam.h + 80;
 
 /** the things the zones come out of (mushrooms, vents, rods): drawn before the player, on top of the ground */
@@ -34,13 +58,13 @@ export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zon
       ctx.translate(ex, by);
       // ground glow
       if (glow > 0) {
-        const g = ctx.createRadialGradient(0, -4, 2, 0, -4, 70);
-        g.addColorStop(0, `rgba(216, 180, 254, ${0.55 * glow})`);
-        g.addColorStop(1, 'rgba(216, 180, 254, 0)');
-        ctx.fillStyle = g;
+        ctx.save();
         ctx.beginPath();
         ctx.ellipse(0, -4, 70, 22, 0, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.clip();
+        ctx.globalAlpha = 0.55 * glow;
+        ctx.drawImage(sporeGlowPic(), -70, -74, 140, 140);
+        ctx.restore();
       }
       const sway = Math.sin(t * 1.4 + i * 1.7) * 1.5;
       // stalk
@@ -98,19 +122,10 @@ function drawCloud(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof
   const n = Math.max(10, Math.round(w / 18));
   ctx.save();
   // a haze that fills the box so the cloud reads as a place, soft at its edges
-  ctx.save();
-  ctx.translate((z.x0 + z.x1) / 2, z.baseY + 6);
-  ctx.scale(w / 2, h);
-  const hz = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
-  hz.addColorStop(0, `rgba(192, 132, 252, ${0.42 * level})`);
-  hz.addColorStop(0.7, `rgba(167, 139, 250, ${0.2 * level})`);
-  hz.addColorStop(1, 'rgba(167, 139, 250, 0)');
-  ctx.fillStyle = hz;
-  ctx.beginPath();
-  ctx.arc(0, 0, 1, Math.PI, Math.PI * 2);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
+  // (the upper half of the soft disc, stretched to the box)
+  ctx.globalAlpha = level;
+  ctx.drawImage(sporeHazePic(), 0, 0, 96, 48, z.x0, z.baseY + 6 - h, w, h);
+  ctx.globalAlpha = 1;
   for (let i = 0; i < n; i++) {
     const seed = hash(i + z.x0 * 0.013);
     const seed2 = hash(i * 3.3 + z.x0 * 0.007);
@@ -122,15 +137,10 @@ function drawCloud(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof
     const r = (34 + 34 * seed) * (0.6 + ph * 0.7);
     const a = level * 0.8 * Math.sin(ph * Math.PI);
     if (a <= 0.01) continue;
-    const g = ctx.createRadialGradient(x, y, 1, x, y, r);
-    g.addColorStop(0, `rgba(221, 205, 255, ${a})`);
-    g.addColorStop(0.6, `rgba(167, 139, 250, ${a * 0.6})`);
-    g.addColorStop(1, 'rgba(167, 139, 250, 0)');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.globalAlpha = Math.min(1, a);
+    ctx.drawImage(sporePuffPic(), x - r, y - r, r * 2, r * 2);
   }
+  ctx.globalAlpha = 1;
   // glittering spores
   if (st.phase === 'active') {
     ctx.fillStyle = `rgba(253, 246, 178, ${0.85 * st.strength})`;
