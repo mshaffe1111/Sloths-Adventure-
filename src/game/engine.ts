@@ -26,6 +26,7 @@ import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, drawGlideLeaf } from './glide.ts';
+import { drawGlideSprite } from './leafSprites.ts';
 import { renderScenery, renderOverlay, setWeatherAvoid, lookFor } from './scenery.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
@@ -223,6 +224,8 @@ export class GameEngine {
   private statStomps = 0;
   private statMaxStompChain = 0;
   private statMaxCombo = 0;
+  private statGlideSec = 0;
+  private statShimmySec = 0;
   private statKills: Record<string, number> = {};
   private statSeen = new Set<string>();
   private seenCheck = 0;
@@ -1157,6 +1160,7 @@ export class GameEngine {
         const glideCap = glideStep(this.glide, { has: this.skills.has('glide'), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy }, dt);
         p.vy = glideBrake(p.vy, glideCap, dt);
         this.glideOpen += ((this.glide.on ? 1 : 0) - this.glideOpen) * Math.min(1, dt * 16);
+        if (this.glide.on) this.statGlideSec += dt;
 
         p.x += (p.vx + this.windV) * dt;
         p.y += p.vy * dt;
@@ -2452,6 +2456,9 @@ export class GameEngine {
       maxStompChain: this.statMaxStompChain,
       maxCombo: this.statMaxCombo,
       stomps: this.statStomps,
+      id: this.currentStage.config.id,
+      glideSec: this.statGlideSec,
+      shimmySec: this.statShimmySec,
       kills: { ...this.statKills },
       seen: Array.from(this.statSeen),
     };
@@ -2717,6 +2724,7 @@ export class GameEngine {
     p.vx = dir * ROPE_SPEED;
     if (dir !== 0) p.facing = dir as 1 | -1;
     p.x += p.vx * dt;
+    if (dir !== 0) this.statShimmySec += dt;
     p.walkCycle += Math.abs(p.vx) * dt * 0.08;
     const atEnd = p.x <= rope.x0 || p.x >= rope.x1;
     p.x = Math.max(rope.x0, Math.min(rope.x1, p.x));
@@ -3269,7 +3277,10 @@ export class GameEngine {
     // Leaf Glide: the leaf over his head (it spreads when the glide starts and folds away after)
     if (this.glideOpen > 0.02) {
       const hp = this.player;
-      drawGlideLeaf(ctx, hp.x, hp.y - 80, this.glideOpen, this.gameTime, Math.max(-1, Math.min(1, hp.vx / 285)), this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1);
+      const lean = Math.max(-1, Math.min(1, hp.vx / 285));
+      const fade = this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1;
+      // the painted leaf from the leaf sheet; the drawn one only shows until the sheet has loaded
+      if (!drawGlideSprite(ctx, hp.x, hp.y - 84, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, hp.x, hp.y - 80, this.glideOpen, this.gameTime, lean, fade);
     }
     // the boss's attacks go over him, so a warning is never hidden behind Pokey
     if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);

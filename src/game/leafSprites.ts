@@ -79,3 +79,26 @@ export function drawPaintedLeaf(
   ctx.restore();
   return true;
 }
+
+/**
+ * The big painted leaf Pokey holds over his head for Leaf Glide (the broad heart-shaped one from the leaf sheet).
+ * `open` is 0 (folded) .. 1 (spread). Returns false until the sheet has loaded, so the caller can draw a plain leaf instead.
+ */
+export function drawGlideSprite(ctx: CanvasRenderingContext2D, x: number, y: number, open: number, time: number, lean: number, alpha: number): boolean {
+  load();
+  if (!ready || !atlas) return false;
+  const f = LEAF_FRAMES.big_C10_0;
+  if (!f) return false;
+  const h = 96;
+  const k = h / f.h;
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(Math.sin(time * 6) * 0.06 + lean * 0.14);
+  ctx.scale(0.35 + 0.65 * open, 0.5 + 0.5 * open);
+  ctx.globalAlpha = alpha;
+  ctx.imageSmoothingQuality = 'high';
+  // the notch at the bottom of the leaf is where Pokey holds it
+  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, (-f.w * k) / 2, -f.h * k + 6, f.w * k, f.h * k);
+  ctx.restore();
+  return true;
+}
