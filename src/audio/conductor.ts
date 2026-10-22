@@ -56,7 +56,7 @@ export interface SceneOptions {
 }
 
 /** minimum seconds between two plays of the same effect, so a held button or a coin spray never machine-guns */
-const MIN_GAP: Record<string, number> = { step: 0.17, flower: 0.035, leaf: 0.04, fruit: 0.05, whoosh: 0.07, jump: 0.06, hit: 0.04, climb: 0.1, land: 0.08, uiTap: 0.04 };
+const MIN_GAP: Record<string, number> = { step: 0.17, flower: 0.035, leaf: 0.04, fruit: 0.05, whoosh: 0.07, jump: 0.06, hit: 0.04, climb: 0.1, land: 0.08, uiTap: 0.04, glide: 0.03 };
 
 export class Conductor {
   private ctx: AudioContext | null = null;

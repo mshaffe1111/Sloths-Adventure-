@@ -144,6 +144,9 @@ export class GameEngine {
   /** Leaf Glide: the rules' state, and how far the leaf is spread (0 folded .. 1 open) */
   private glide = newGlide();
   private glideOpen = 0;
+  /** for the glide sound: whether the leaf was open last frame, and the time to the next little flutter */
+  private glideHeard = false;
+  private glideFlutter = 0;
   private ropeCooldown = 0;
   private ropeGrace = 0;
   private ropeId = -1;
@@ -592,6 +595,18 @@ export class GameEngine {
     if (p.grounded || p.climbing || p.isVineSwinging || p.hanging) {
       this.glideOpen = 0;
       this.glide.on = false;
+    }
+    // the glide sound: the leaf opens, flutters now and then while he drifts, and folds away
+    if (this.glide.on !== this.glideHeard) {
+      this.glideHeard = this.glide.on;
+      sound.playGlide(this.glide.on ? 0 : 2);
+      this.glideFlutter = 0.34 + Math.random() * 0.16;
+    } else if (this.glide.on) {
+      this.glideFlutter -= dt;
+      if (this.glideFlutter <= 0) {
+        sound.playGlide(1);
+        this.glideFlutter = 0.3 + Math.random() * 0.22;
+      }
     }
 
     this.lessonTick();
