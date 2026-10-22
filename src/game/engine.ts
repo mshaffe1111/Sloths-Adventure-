@@ -588,6 +588,11 @@ export class GameEngine {
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
+    // the glide leaf is gone the moment he lands or grabs anything
+    if (p.grounded || p.climbing || p.isVineSwinging || p.hanging) {
+      this.glideOpen = 0;
+      this.glide.on = false;
+    }
 
     this.lessonTick();
 
@@ -1161,6 +1166,7 @@ export class GameEngine {
         p.vy = glideBrake(p.vy, glideCap, dt);
         this.glideOpen += ((this.glide.on ? 1 : 0) - this.glideOpen) * Math.min(1, dt * 16);
         if (this.glide.on) this.statGlideSec += dt;
+        if (p.grounded) this.glideOpen = 0;
 
         p.x += (p.vx + this.windV) * dt;
         p.y += p.vy * dt;
@@ -3266,6 +3272,13 @@ export class GameEngine {
       drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560);
     }
 
+    // Leaf Glide: he floats on a small leaf under his feet (it spreads when the glide starts and is gone after he lands)
+    if (this.glideOpen > 0.02) {
+      const gp = this.player;
+      const lean = Math.max(-1, Math.min(1, gp.vx / 285));
+      const fade = this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1;
+      if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
+    }
     // Render Hero Sloth
     if (rig) {
       const hp = this.player;
@@ -3274,14 +3287,6 @@ export class GameEngine {
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else drawHeroSloth(ctx, this.player, this.gameTime);
-    // Leaf Glide: the leaf over his head (it spreads when the glide starts and folds away after)
-    if (this.glideOpen > 0.02) {
-      const hp = this.player;
-      const lean = Math.max(-1, Math.min(1, hp.vx / 285));
-      const fade = this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1;
-      // the painted leaf from the leaf sheet; the drawn one only shows until the sheet has loaded
-      if (!drawGlideSprite(ctx, hp.x, hp.y - 84, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, hp.x, hp.y - 80, this.glideOpen, this.gameTime, lean, fade);
-    }
     // the boss's attacks go over him, so a warning is never hidden behind Pokey
     if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);
     if (this.debugBoxes) this.drawHitboxes(ctx);

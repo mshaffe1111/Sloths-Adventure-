@@ -63,50 +63,28 @@ export function glideBrake(vy: number, cap: number, dt: number): number {
   return vy > cap ? Math.max(cap, vy - GLIDE.brake * dt) : vy;
 }
 
-/** the leaf over Pokey's head. `open` is 0 (folded) to 1 (spread); `fade` is 1 until the glide is about to run out */
+/** a plain leaf under Pokey's feet, shown only until the painted one has loaded. (x, y) is where his feet are; `open` is 0 (gone) to 1 (spread). */
 export function drawGlideLeaf(ctx: CanvasRenderingContext2D, x: number, y: number, open: number, time: number, lean: number, fade = 1): void {
   if (open <= 0.02) return;
-  const sway = Math.sin(time * 7) * 0.07 + lean * 0.12;
   ctx.save();
-  ctx.globalAlpha = Math.max(0.25, Math.min(1, fade));
-  ctx.translate(x, y);
-  ctx.rotate(sway);
-  ctx.scale(0.35 + 0.65 * open, 0.55 + 0.45 * open);
-  // stem down to his paws
-  ctx.strokeStyle = '#5b8a3a';
-  ctx.lineWidth = 3;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(0, 40);
-  ctx.lineTo(0, 0);
-  ctx.stroke();
-  // the blade
+  ctx.globalAlpha = Math.max(0.2, Math.min(1, fade)) * Math.min(1, open * 1.6);
+  ctx.translate(x, y + 7);
+  ctx.rotate(Math.sin(time * 6) * 0.05 + lean * 0.1);
+  ctx.scale(open, 0.55 + 0.45 * open);
   ctx.fillStyle = '#4ade80';
   ctx.strokeStyle = '#166534';
-  ctx.lineWidth = 2.2;
+  ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(-46, -4);
-  ctx.bezierCurveTo(-34, -40, 34, -40, 46, -4);
-  ctx.bezierCurveTo(30, 8, -30, 8, -46, -4);
+  ctx.moveTo(-29, 0);
+  ctx.quadraticCurveTo(0, -17, 29, 0);
+  ctx.quadraticCurveTo(0, 15, -29, 0);
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
-  // highlight and ribs
-  ctx.fillStyle = 'rgba(255,255,255,.22)';
-  ctx.beginPath();
-  ctx.moveTo(-40, -6);
-  ctx.bezierCurveTo(-28, -32, 4, -34, 14, -26);
-  ctx.bezierCurveTo(-4, -22, -24, -14, -40, -6);
-  ctx.fill();
   ctx.strokeStyle = '#15803d';
-  ctx.lineWidth = 1.6;
   ctx.beginPath();
-  ctx.moveTo(-44, -4);
-  ctx.quadraticCurveTo(0, -14, 44, -4);
-  for (const k of [-24, -8, 8, 24]) {
-    ctx.moveTo(k, -10);
-    ctx.lineTo(k * 1.15, k < 0 ? -26 + Math.abs(k) * 0.3 : -26 + Math.abs(k) * 0.3);
-  }
+  ctx.moveTo(-27, 0);
+  ctx.lineTo(27, 0);
   ctx.stroke();
   ctx.restore();
 }
