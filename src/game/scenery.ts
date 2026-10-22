@@ -1549,6 +1549,35 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   lanePool(ctx, look, world, vw, vh);
 }
 
+let vigPic: HTMLCanvasElement | null = null;
+let vigKey = '';
+/** the screen-edge darkening: painted once into a small canvas, then stretched (smooth, so it needs no detail) */
+function drawVignette(ctx: CanvasRenderingContext2D, col: string, vw: number, vh: number) {
+  const key = `${col}|${Math.round(vw)}x${Math.round(vh)}`;
+  const bw = Math.max(16, Math.round(vw / 8));
+  const bh = Math.max(16, Math.round(vh / 8));
+  if (!vigPic) vigPic = document.createElement('canvas');
+  if (key !== vigKey) {
+    vigPic.width = bw;
+    vigPic.height = bh;
+    const g = vigPic.getContext('2d');
+    if (!g) return;
+    g.clearRect(0, 0, bw, bh);
+    // the same gradient as before, in the small canvas's own units
+    const k = bw / vw;
+    const vg = g.createRadialGradient(bw / 2, bh / 2, vh * 0.55 * k, bw / 2, bh / 2, vw * 0.78 * k);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, rgba(col, 0.3));
+    g.fillStyle = vg;
+    g.fillRect(0, 0, bw, bh);
+    vigKey = key;
+  }
+  const prev = ctx.imageSmoothingEnabled;
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(vigPic, 0, 0, bw, bh, 0, 0, vw, vh);
+  ctx.imageSmoothingEnabled = prev;
+}
+
 /** Frame leaves + vignette + weather — drawn over the playfield. */
 export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX: number, vw: number, vh: number, time: number, lite = false) {
   const look = lookFor(world);
@@ -1558,13 +1587,9 @@ export function renderOverlay(ctx: CanvasRenderingContext2D, world: number, camX
   drawTile(ctx, set.front, 1.25, camX, vw, vh, s, 0, 0.96, rig ? { layer: 'front', rig, time, sway: !lite && polishTier() < 1 } : undefined);
   if (RICH_MID(look, world)) renderLifeFront(ctx, look, world, camX, vw, vh, time);
   if (rig && !lite) polishFront(ctx, rig, world, camX, vw, vh, time);
-  if (!lite) {
-    const vg = ctx.createRadialGradient(vw / 2, vh / 2, vh * 0.55, vw / 2, vh / 2, vw * 0.78);
-    vg.addColorStop(0, 'rgba(0,0,0,0)');
-    vg.addColorStop(1, rgba(darken(look.sky[0], 0.6), 0.3));
-    ctx.fillStyle = vg;
-    ctx.fillRect(0, 0, vw, vh);
-  }
+  // the dark edge vignette stays on at every quality (it is one small cached picture stretched over the screen): dropping it at lower
+  // quality made the whole picture suddenly lighter when the quality governor stepped down
+  drawVignette(ctx, darken(look.sky[0], 0.6), vw, vh);
   renderWeather(ctx, look, world, camX, vw, vh, time, lite);
 }
 
