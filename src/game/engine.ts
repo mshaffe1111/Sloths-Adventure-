@@ -82,6 +82,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
+import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 
 /** How many world units tall the screen shows. */
@@ -188,10 +189,8 @@ export class GameEngine {
    * Automatic quality: 0 = full, 1 = lighter resolution, 2 = lightest. Only ever steps down, and only when the
    * screen genuinely cannot keep up (the simulation itself never changes).
    */
-  private quality = 0;
-  private perfFrames = 0;
-  private warmupMs = 1000;
-  private perfMs = 0;
+  private quality = startQuality(typeof performance !== 'undefined' ? performance.now() : 0);
+  private gov = new FrameGovernor();
 
   private hitstopTimer: number = 0;
   private gameTime: number = 0;
@@ -398,29 +397,15 @@ export class GameEngine {
     return Math.max(1, Math.min(native, cap));
   }
 
-  /** watch real frame times; if the screen cannot hold ~50 fps for a moment, step quality down one notch */
-  private watchPerformance(elapsedMs: number) {
-    if (this.quality >= 2 || pskip('gov')) return;
-    // the first moments of a stage build caches and warm up the JIT; do not judge them
-    if (this.warmupMs > 0) {
-      this.warmupMs -= elapsedMs;
-      return;
+  /** the screen cannot keep up: the sparkle goes first (bloom, rim light, wind, then all of the polish), and only then the resolution */
+  private stepQuality() {
+    if (polishEnabled() && polishTier() < 2) setPolishTier(polishTier() + 1);
+    else if (this.quality < 2) {
+      this.quality++;
+      noteStepDown(this.quality, performance.now());
+      this.resizeCanvas();
     }
-    this.perfFrames++;
-    this.perfMs += elapsedMs;
-    if (this.perfMs < 1200) return;
-    const avg = this.perfMs / this.perfFrames;
-    this.perfFrames = 0;
-    this.perfMs = 0;
-    // a 60 Hz screen averages ~16.7 ms, 120 Hz ~8.3 ms. Slower than ~20 ms means it is dropping frames.
-    if (avg > 20) {
-      // the sparkle goes first (bloom, rim light, wind, then all of the polish), and only then the resolution
-      if (polishEnabled() && polishTier() < 2) setPolishTier(polishTier() + 1);
-      else {
-        this.quality++;
-        this.resizeCanvas();
-      }
-    }
+    perfNote(`slow: stepped down (quality ${this.quality}, polish ${polishEnabled() ? polishTier() : 'off'})`);
   }
 
   public resizeCanvas() {
@@ -553,6 +538,8 @@ export class GameEngine {
       const r0 = pl ? performance.now() : 0;
       this.render();
       if (pl) pl.record(elapsed, tUpd, performance.now() - r0, now, () => this.perfInfo());
+      // judge the real frame gap: too slow for a moment -> a lighter picture (never while a menu holds the game, or once at the lightest)
+      if (!this.isPaused && (this.quality < 2 || (polishEnabled() && polishTier() < 2)) && this.gov.feed(elapsed)) this.stepQuality();
       this.failStreak = 0;
     } catch (err) {
       // one bad frame must not freeze the game; a frame that fails over and over ends the stage cleanly

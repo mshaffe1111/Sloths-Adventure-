@@ -1,6 +1,7 @@
 import React from 'react';
 import { perfEnabled, perfLog, setPerfPref } from '../game/perfLog.ts';
 import { sound } from '../game/audio.ts';
+import { learned } from '../game/frameGovernor.ts';
 
 /**
  * The frame-time check's panel (only while the menu switch is on). A small box in the corner: frames per second and the number of freezes.
@@ -35,7 +36,7 @@ export const PerfReadout: React.FC<{ stageId: string }> = ({ stageId }) => {
   } catch {
     /* no audio */
   }
-  const text = perfLog.report(`stage ${stageId}, sound ${snd}, ${navigator.userAgent.replace(/^Mozilla\/5.0 /, '').slice(0, 90)}`);
+  const text = perfLog.report(`stage ${stageId}, sound ${snd}, quality ${learned.quality} of 2, ${navigator.userAgent.replace(/^Mozilla\/5.0 /, '').slice(0, 90)}`);
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);
@@ -61,7 +62,7 @@ export const PerfReadout: React.FC<{ stageId: string }> = ({ stageId }) => {
     >
       <div onClick={() => setOpen(!open)} style={{ cursor: 'pointer', fontSize: 15, fontWeight: 700, letterSpacing: 0.2 }}>
         {lv.secs}s · {st.fps} fps · now {lv.recent} ms · worst {st.max} ms · {st.hitches} freeze{st.hitches === 1 ? '' : 's'}
-        {lv.heap !== null ? ` · mem ${lv.heap} MB` : ''} · snd {snd} {open ? '▾' : '▸'}
+        {lv.heap !== null ? ` · mem ${lv.heap} MB` : ''} · snd {snd} · q{learned.quality} {open ? '▾' : '▸'}
       </div>
       {open && (
         <>
