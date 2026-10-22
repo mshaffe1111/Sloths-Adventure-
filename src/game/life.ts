@@ -711,7 +711,7 @@ function paintMist(g: CanvasRenderingContext2D, look: Look, camX: number, vw: nu
   g.globalAlpha = 1;
 }
 
-function renderMist(ctx: CanvasRenderingContext2D, look: Look, camX: number, vw: number, vh: number, time: number) {
+function renderMist(ctx: CanvasRenderingContext2D, look: Look, camX: number, vw: number, vh: number, time: number, lite = false) {
   const top = vh * 0.5;
   const rh = vh * 0.41; // the fog spans 50% to 91% of the screen height
   const bw = Math.max(1, Math.ceil(vw * MIST_SCALE));
@@ -719,7 +719,7 @@ function renderMist(ctx: CanvasRenderingContext2D, look: Look, camX: number, vw:
   const key = `${look.haze}|${bw}x${bh}`;
   if (!mistBuf) mistBuf = document.createElement('canvas');
   const fresh = key !== mistBufKey || time < mistAt || Math.abs(camX - mistCam) > 80;
-  if (fresh || time - mistAt >= MIST_EVERY) {
+  if (fresh || time - mistAt >= (lite ? MIST_EVERY * 2 : MIST_EVERY)) {
     if (mistBuf.width !== bw || mistBuf.height !== bh) {
       mistBuf.width = bw;
       mistBuf.height = bh;
@@ -823,7 +823,9 @@ export function renderLifeBack(ctx: CanvasRenderingContext2D, look: Look, world:
       if (!(painted && (k.birdKind === 'toucan' || k.birdKind === 'parrot'))) renderColorBirds(ctx, look, world, camX, vw, vh, time, k.birds, k.birdKind);
     } else renderBirds(ctx, look, world, camX, vw, vh, time, k.birds);
   }
-  if (k.mist && !lite) renderMist(ctx, look, camX, vw, vh, time);
+  // the mist is cheap now (a small cached copy, repainted a few times a second), so it stays on at every quality: dropping it made the screen
+  // suddenly lighter when the quality governor stepped down. Lower quality only repaints it less often.
+  if (k.mist) renderMist(ctx, look, camX, vw, vh, time, lite);
   renderMotes(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.motes / 2) : k.motes);
   if (k.nFauna > 0) renderFauna(ctx, look, world, camX, vw, vh, time, k.fauna, lite ? Math.ceil(k.nFauna / 2) : k.nFauna);
   if (k.bats > 0) renderBats(ctx, look, world, camX, vw, vh, time, lite ? Math.ceil(k.bats / 2) : k.bats);

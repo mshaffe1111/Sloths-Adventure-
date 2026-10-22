@@ -95,7 +95,7 @@ const WORLD_VIEW_H = 540;
 /** world units across a portrait screen */
 const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
-const INTRO_ZOOM_FROM = 0.78;
+const INTRO_ZOOM_FROM = 0.9; // a gentle dolly: the old 0.78 opened on a wide shot full of dark ground, so every stage began noticeably darker
 const INTRO_ZOOM_SECS = 1.3;
 
 export interface GameEngineCallbacks {
