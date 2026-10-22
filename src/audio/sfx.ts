@@ -330,6 +330,37 @@ export const SFX: Record<string, Fx> = {
     if (Math.random() < 0.45) grunt(core, d, t, 'hup', 1.15, 0.6);
   },
 
+  /**
+   * Leaf Glide: a big leaf catching the air. `a` = 0 as it opens (an airy unfurling rustle), 1 = a small flutter now and then while drifting,
+   * 2 = as it folds away (a short soft settle). Only rustle and air: no notes, so it sits under the music instead of competing with it.
+   */
+  glide(core, _key, a = 0) {
+    const t = core.ctx.currentTime;
+    const phase = Math.round(a);
+    const d = out(core, 0.1);
+    const j = jit(0.1);
+    if (phase === 1) {
+      // two or three little papery flaps, never the same twice
+      const n = 2 + Math.floor(Math.random() * 2);
+      for (let k = 0; k < n; k++) {
+        const at = t + k * (0.045 + Math.random() * 0.03);
+        noise(core, { t: at, type: 'bandpass', f0: (2300 + Math.random() * 1700) * j, f1: 1500, q: 2.2, peak: 0.07 - k * 0.012, dec: 0.05, dst: d, pink: true });
+      }
+      noise(core, { t, type: 'highpass', f0: 4200, peak: 0.02, dec: 0.16, attack: 0.04, dst: d, pink: true });
+      return;
+    }
+    if (phase === 2) {
+      noise(core, { t, type: 'bandpass', f0: 3000 * j, f1: 1100, q: 0.8, peak: 0.11, attack: 0.012, dec: 0.17, dst: d, pink: true });
+      smp(core, d, t, 'cloth', { gain: 0.18, rate: 1.0, hp: 600, lp: 3600 });
+      return;
+    }
+    // opening: the leaf unfurls, a rising rustle with a breath of air on top
+    noise(core, { t, type: 'bandpass', f0: 1200 * j, f1: 3400, q: 0.7, peak: 0.17, attack: 0.07, dec: 0.3, dst: d, pink: true });
+    noise(core, { t: t + 0.03, type: 'highpass', f0: 4800, peak: 0.05, dec: 0.28, attack: 0.08, dst: d, pink: true });
+    smp(core, d, t, 'cloth', { gain: 0.34, rate: 1.15 + VAR * 0.04, hp: 800, lp: 5000 });
+    smp(core, d, t + 0.02, 'swishK', { gain: 0.16, rate: 0.9, hp: 900, lp: 4200 });
+  },
+
   /** a quick claw jab: a swish of air, a solid thump with a crack on top. Four versions, and sometimes a "hah" */
   punch(core) {
     const t = core.ctx.currentTime;
@@ -1034,7 +1065,7 @@ export type SfxName = keyof typeof SFX;
 
 /** loudness trims measured offline so that frequent sounds sit low and big moments sit high without clipping */
 const TRIMS: Record<string, number> = {
-  jump: 1.45, doubleJump: 0.67, punch: 0.32, megaPunch: 0.42, kick: 0.35, whoosh: 0.41, hit: 0.85, flower: 1.45, fruit: 0.75, heart: 0.75, superHeart: 0.5,
+  jump: 1.45, doubleJump: 0.67, glide: 1.0, punch: 0.32, megaPunch: 0.42, kick: 0.35, whoosh: 0.41, hit: 0.85, flower: 1.45, fruit: 0.75, heart: 0.75, superHeart: 0.5,
   power: 0.55, vine: 0.58, climb: 1.23, shrine: 0.45, relic: 0.45, hurt: 0.76, eagle: 2.0, roar: 0.75, land: 0.83, step: 0.88, checkpoint: 0.55, oneUp: 0.55,
 };
 

@@ -109,6 +109,8 @@ class SoundEngine {
   // ------------------------------------------------------------------ the old API (same names, new sounds)
   playJump() { this.c.fx('jump'); }
   playDoubleJump() { this.c.fx('doubleJump'); }
+  /** Leaf Glide: 0 = the leaf opens, 1 = a little flutter while drifting, 2 = it folds away */
+  playGlide(phase: 0 | 1 | 2) { this.c.fx('glide', phase); }
   playPunch() { this.c.fx('punch'); }
   playMegaPunch() { this.c.fx('megaPunch'); }
   playKick() { this.c.fx('kick'); }
