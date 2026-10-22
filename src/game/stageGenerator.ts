@@ -2154,6 +2154,9 @@ function decorate(gen: Gen, spawnX: number) {
 
   // ---- fliers ----
   const wide = cfg.levelWidth;
+  // the level is built shorter than its planned width: eagles go along the real ground (up to the exit), or a quota stage could count
+  // fliers that wait beyond the exit and can never be reached (the how-many still comes from the planned width, so nothing else shifts)
+  const reach = Math.round(gen.cx);
   const nEagles =
     obj === 'stealth' ? 3 + Math.floor(gen.world * 0.45)
     : obj === 'purge' || obj === 'gauntlet' ? 1 + Math.floor(gen.world * 0.3)
@@ -2161,7 +2164,7 @@ function decorate(gen: Gen, spawnX: number) {
     : Math.floor(wide / 2000);
   for (let i = 0; i < nEagles; i++) {
     for (let tries = 0; tries < 20; tries++) {
-      const x = gen.rr(1100, wide - 1100);
+      const x = gen.rr(1100, Math.max(1101, reach - 1100));
       const homeY = gen.G - gen.rr(230, 270);
       if (gen.CP.every((c) => Math.abs(c.x - x) > 480) && gen.skyClear(x, homeY)) {
         gen.eagle(x, homeY);
