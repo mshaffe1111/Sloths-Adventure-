@@ -337,11 +337,27 @@ function drawCap(ctx: CanvasRenderingContext2D, p: Platform, look: Look, time: n
   }
 }
 
+/**
+ * Where each growing thing on a platform sits and where in the platform's dice sequence it starts, worked out the first time the platform is
+ * drawn. A long ground platform holds hundreds of them (lava ferns alone are dozens of fills each), and almost all are off screen, so after
+ * that first pass only the ones near the camera are drawn: the dice are put back to where that item began, so each looks exactly as before.
+ */
+interface DecorPlan {
+  x: number;
+  w: number;
+  entry: number;
+  total: number;
+  items: { x: number; d: number }[];
+}
+const decorPlans = new WeakMap<Platform, DecorPlan>();
+
 function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG, time = 0) {
   const capT = tone(look.ground.cap);
   const isGround = p.height >= 50;
   const step = isGround ? 54 : 46;
-  for (let x = p.x + 14; x < p.x + p.width - 12; x += step) {
+  const entry = r.state?.();
+  const plan = decorPlans.get(p);
+  const draw = (x: number) => {
     const px = x + (r() - 0.5) * 18;
     // polish: everything growing here leans with the wind, about its base
     const sway = curRig && polishTier() < 1 && px > curL - 80 && px < curR + 80;
@@ -353,7 +369,22 @@ function topDecor(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG
     }
     topItem(ctx, p, look, r, px, capT);
     if (sway) ctx.restore();
+  };
+  if (plan && entry !== undefined && plan.entry === entry && plan.x === p.x && plan.w === p.width && r.seek) {
+    for (const it of plan.items) {
+      if (it.x < curL - 150 || it.x > curR + 150) continue;
+      r.seek((entry + it.d) | 0);
+      draw(it.x);
+    }
+    r.seek((entry + plan.total) | 0);
+    return;
   }
+  const items: { x: number; d: number }[] = [];
+  for (let x = p.x + 14; x < p.x + p.width - 12; x += step) {
+    if (entry !== undefined) items.push({ x, d: ((r.state!() - entry) | 0) });
+    draw(x);
+  }
+  if (entry !== undefined && r.seek) decorPlans.set(p, { x: p.x, w: p.width, entry, total: (r.state!() - entry) | 0, items });
 }
 
 function topItem(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG, px: number, capT: Tone) {

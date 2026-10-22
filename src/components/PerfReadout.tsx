@@ -1,5 +1,6 @@
 import React from 'react';
 import { perfEnabled, perfLog, setPerfPref } from '../game/perfLog.ts';
+import { sound } from '../game/audio.ts';
 
 /**
  * The frame-time check's panel (only while the menu switch is on). A small box in the corner: frames per second and the number of freezes.
@@ -26,7 +27,15 @@ export const PerfReadout: React.FC<{ stageId: string }> = ({ stageId }) => {
   if (!on) return null;
   const st = perfLog.stats();
   const lv = perfLog.live(performance.now());
-  const text = perfLog.report(`stage ${stageId}, ${navigator.userAgent.replace(/^Mozilla\/5.0 /, '').slice(0, 90)}`);
+  // is the game's sound running, and is any signal coming out of it (the meter on the output)
+  let snd = '?';
+  try {
+    const a = sound.debug() as { state?: string; muted?: boolean; rms?: number };
+    snd = a.muted ? 'muted' : `${a.state ?? '?'} ${(a.rms ?? 0) > 0.0005 ? 'signal' : 'silent'}`;
+  } catch {
+    /* no audio */
+  }
+  const text = perfLog.report(`stage ${stageId}, sound ${snd}, ${navigator.userAgent.replace(/^Mozilla\/5.0 /, '').slice(0, 90)}`);
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);
@@ -52,7 +61,7 @@ export const PerfReadout: React.FC<{ stageId: string }> = ({ stageId }) => {
     >
       <div onClick={() => setOpen(!open)} style={{ cursor: 'pointer', fontSize: 15, fontWeight: 700, letterSpacing: 0.2 }}>
         {lv.secs}s · {st.fps} fps · now {lv.recent} ms · worst {st.max} ms · {st.hitches} freeze{st.hitches === 1 ? '' : 's'}
-        {lv.heap !== null ? ` · mem ${lv.heap} MB` : ''} {open ? '▾' : '▸'}
+        {lv.heap !== null ? ` · mem ${lv.heap} MB` : ''} · snd {snd} {open ? '▾' : '▸'}
       </div>
       {open && (
         <>
