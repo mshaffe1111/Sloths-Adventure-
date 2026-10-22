@@ -152,6 +152,20 @@ export function perfEnabled(): boolean {
   on = v;
   return v;
 }
+/**
+ * Is the frame-time check offered at all? Not to players: only in the test build, when it was already switched on, or when the page is opened
+ * with ?perf in the address (so it can be summoned on a phone without shipping a menu switch nobody needs).
+ */
+export function perfOffered(): boolean {
+  if (typeof __PERF_DEFAULT__ !== 'undefined' && __PERF_DEFAULT__ === true) return true;
+  try {
+    if (new URLSearchParams(location.search).has('perf')) return true;
+    if (localStorage.getItem('sloth_perf') !== null) return true;
+  } catch {
+    /* no window or storage */
+  }
+  return false;
+}
 export function setPerfPref(v: boolean) {
   on = v;
   try {
