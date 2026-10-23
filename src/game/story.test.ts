@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import {
   BOSS_STORIES, ENDING_PANELS, INTRO_PANELS, WORLD_MID, WORLD_STORIES, bossPanels, thornbarkPanels,
   type StoryCue, type StoryPanel, type StorySting,
@@ -8,11 +8,12 @@ import {
 import { AFTER_BOSS, MEMORIES, MEMORY_ORDER, nextAfterBoss, parseMemories, type MemoryId } from './storyChapters.ts';
 import { finalePanels } from './storyFinale.ts';
 import { FINDS } from './finds.ts';
+import { PLATES, isPlate } from './plateData.ts';
 
 const CUES: StoryCue[] = ['pokey', 'meeca', 'bloom', 'grandma', 'journey', 'comedy', 'tender', 'sorrow', 'dread', 'war', 'chase', 'reveal', 'resolve', 'triumph', 'mercy', 'finale', 'hush'];
 const STINGS: StorySting[] = ['cliffhanger', 'reveal', 'laugh', 'blow', 'bloom', 'darkness', 'door', 'heartbreak', 'triumph'];
 const SPEAKERS = [
-  'Narrator', 'Pokey', 'Meeca', 'Dot', 'Grandma', 'Grandfather', 'Officer', 'General Iron-Claw', 'Thornbark',
+  'Narrator', 'Pokey', 'Meeca', 'Dot', 'Grandma', 'Grandfather', 'Officer', 'Gruntlewick', 'General Iron-Claw', 'Thornbark',
   'Venom Fang', 'Crocus Rex', 'Shadow Prowler', 'Sky Sovereign', 'Tarantula Queen', 'Marsh Reaver', 'Stone Idol Golem', 'Night-Wing Monarch', 'Magma Drake',
 ];
 
@@ -69,6 +70,10 @@ test('every panel is well formed', () => {
       if (p.scene.castle !== undefined) assert.ok(p.scene.castle >= 5 && p.scene.castle <= 7, `${at}: only castles 5-7 are painted`);
       if (p.scene.zoom !== undefined) assert.ok(p.scene.zoom >= 1 && p.scene.zoom <= 3, `${at}: zoom ${p.scene.zoom}`);
       if (p.scene.photo) assert.ok(photoOk(p.scene.photo.key), `${at}: photo ${p.scene.photo.key} exists`);
+      if (p.scene.plate !== undefined) {
+        assert.ok(isPlate(p.scene.plate), `${at}: plate ${p.scene.plate} is listed`);
+        assert.ok(existsSync(new URL(`../assets/story/plates/${p.scene.plate}.webp`, import.meta.url)), `${at}: plate ${p.scene.plate} has its picture`);
+      }
     });
   }
 });
@@ -99,7 +104,7 @@ test('the three acts open with their own title cards, in order', () => {
 
 test('photographs in the story are real keepsake photos', () => {
   const photos = everything().flatMap((e) => e.panels).filter((p) => p.scene.photo).map((p) => p.scene.photo!.key);
-  assert.ok(photos.length >= 8, 'the story shows its photographs');
+  assert.ok(photos.length >= 5, 'the story shows its photographs'); // 8 before the rewrite: Grandma's letter is now two beats and the prologue's Grandma is a painted figure. The floor goes back up as Acts II and III get their plates.
   for (const k of photos) assert.ok(photoOk(k), `${k} exists`);
 });
 
@@ -123,12 +128,31 @@ test('the scenes that follow a guardian are ordered and complete', () => {
   assert.equal(nextAfterBoss(6, []), 'sealed');
   assert.equal(nextAfterBoss(6, [], 'sealed'), 'storm');
   assert.equal(nextAfterBoss(6, ['sealed'], 'sealed'), 'storm');
-  assert.equal(nextAfterBoss(6, ['sealed', 'storm'], 'storm'), undefined);
-  assert.equal(nextAfterBoss(6, ['sealed', 'storm']), undefined, 'seen scenes are not shown again');
+  assert.equal(nextAfterBoss(6, ['sealed', 'storm'], 'storm'), 'tally', 'the Tower scene comes last in its world');
+  assert.equal(nextAfterBoss(6, ['sealed', 'storm', 'tally'], 'tally'), undefined);
+  assert.equal(nextAfterBoss(6, ['sealed', 'storm', 'tally']), undefined, 'seen scenes are not shown again');
+  assert.equal(nextAfterBoss(3, []), 'horn');
+  assert.equal(nextAfterBoss(3, [], 'horn'), 'map');
   assert.equal(nextAfterBoss(1, []), undefined, 'World 1 has no scene after the guardian');
   assert.equal(nextAfterBoss(10, []), undefined, 'the General has the ending instead');
   assert.equal(nextAfterBoss(9, []), 'blessing');
   assert.equal(nextAfterBoss(9, [], 'blessing'), 'gates');
+  assert.equal(nextAfterBoss(9, [], 'gates'), 'door');
+});
+
+test('the three Tower scenes keep Pokey out of the room', () => {
+  for (const id of ['map', 'tally', 'door'] as MemoryId[]) {
+    const m = MEMORIES[id];
+    assert.ok(m.panels.length >= 6, `${id} is a real scene`);
+    for (const p of m.panels) {
+      assert.notEqual(p.speaker, 'Pokey', `${id}: Pokey is not in the Tower`);
+      assert.ok(!p.scene.actors.some((a) => a.kind === 'milo' || a.kind === 'dot'), `${id}: no Pokey or Dot on stage`);
+    }
+    const plates = new Set(m.panels.map((p) => p.scene.plate));
+    // the door scene opens on a cutaway to the cookhouse, where the soup is made, and then stays in the one room
+    assert.equal(plates.size, id === 'door' ? 2 : 1, `${id} is one painted room${id === 'door' ? ' after its opening cutaway' : ''}`);
+    if (id === 'door') assert.equal(m.panels[0].scene.plate, 'cookhouse', 'the door scene opens in the cookhouse');
+  }
 });
 
 test('the saved list of seen scenes survives bad data', () => {
@@ -159,12 +183,12 @@ test('the story keeps its promises: the lullaby, the letter, the bell, the seam'
   assert.ok(every.includes('Slow the rain, slow the thunder'), 'the lullaby is sung');
   assert.ok(every.includes('Slow is not stopped'), 'the family saying is spoken');
   assert.ok(every.includes('tailor'), 'the Lieutenant sews badly');
-  assert.ok(text(WORLD_STORIES[10].panels).includes('hummingbird-shaped hole'), 'Dot goes for the seam');
+  assert.ok(text(WORLD_STORIES[10].panels).includes('sew it badly'), 'Dot goes for the seam');
   assert.ok(text(ENDING_PANELS).includes('I fell into the cookhouse'), 'and lands in the cookhouse');
   // the jokes that were planted early get their payoff in the epilogue
   assert.ok(text(ENDING_PANELS).includes('slow mailman finally delivered'), 'the one parcel arrives');
   assert.ok(text(ENDING_PANELS).includes('poured the tea'), 'tea is at four');
-  // the nine years: Dot's letter and the armor agree
+  // the nine years: Dot's letter and the General's own count agree
   assert.ok(text(ENDING_PANELS).includes('nine years'));
   assert.ok(!text(WORLD_STORIES[10].panels).includes('six years'));
   // the first meeting happens once: Dot is not introduced a second time on the road
@@ -203,4 +227,10 @@ test('the story files carry no stray placeholder text', () => {
     const src = readFileSync(new URL(`./${f}.ts`, import.meta.url), 'utf8');
     assert.ok(!/TODO|FIXME|lorem|XXX/i.test(src), `${f} has leftovers`);
   }
+});
+
+test('the plates listed are the plates painted, and each has a floor to stand on', () => {
+  const files = readdirSync(new URL('../assets/story/plates/', import.meta.url)).filter((f) => f.endsWith('.webp')).map((f) => f.replace(/\.webp$/, ''));
+  assert.deepEqual(files.sort(), Object.keys(PLATES).sort(), 'every picture is listed and every listed plate has its picture');
+  for (const [k, v] of Object.entries(PLATES)) assert.ok(v.ground > 0.4 && v.ground < 0.95, `${k}: the floor is on the picture`);
 });

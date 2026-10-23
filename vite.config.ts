@@ -40,7 +40,7 @@ export default defineConfig(() => {
       VitePWA({
         registerType: 'autoUpdate',
         // the painted sprite sheets are cached with the app, so they load instantly and work offline
-        workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,webmanifest,mp3}'] },
+        workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,webmanifest,mp3,woff2}'] },
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
         manifest: {
           id: base,

@@ -45,6 +45,8 @@ export interface PoseKey {
   /** seconds to get to this key's offsets from the last key's (0 = at once) */
   dur?: number;
   ease?: Ease;
+  /** seconds to dissolve in from the previous key's frame (the General's look melting into the plain sloth): the old frame stays drawn underneath while this one comes up */
+  fade?: number;
 }
 
 export type FxKind = 'flash' | 'shake' | 'burst' | 'dust' | 'stars' | 'glints';
@@ -97,6 +99,9 @@ export interface PoseNow {
   sc: number;
   /** undefined = the actor's own facing */
   flip: boolean | undefined;
+  /** while a key dissolves in (`fade`): the frame it is coming from, and how far the new one has come up (0..1) */
+  under?: string;
+  mix?: number;
 }
 
 /** the pose and offsets of an actor `t` seconds into a picture (keys are in time order) */
@@ -134,8 +139,20 @@ export function poseAt(keys: PoseKey[], t: number): PoseNow {
   } else if (k.frame !== undefined) {
     frame = k.frame;
   }
+  let under: string | undefined;
+  let mix: number | undefined;
+  if ((k.fade ?? 0) > 0 && active > 0 && t - k.at < (k.fade as number)) {
+    const pk = keys[active - 1];
+    const pf = Array.isArray(pk.frame) ? pk.frame[0] : pk.frame;
+    if (pf && pf !== frame) {
+      under = pf;
+      mix = easeFn((t - k.at) / (k.fade as number), 'inOut');
+    }
+  }
   return {
     frame,
+    under,
+    mix,
     mood: k.mood,
     since: Math.max(0, t - k.at),
     travel,

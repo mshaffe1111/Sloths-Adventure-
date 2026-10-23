@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { StoryPanel } from '../game/story.ts';
-import { drawStoryScene, preloadScenePhotos, SCENE_W, SCENE_H } from '../game/storyArt.ts';
+import { drawStoryScene, preloadScenePhotos, preloadScenePlates, SCENE_W, SCENE_H } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
@@ -61,6 +61,7 @@ export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, fini
   // photographs the story holds up: start loading them now
   useEffect(() => {
     preloadScenePhotos(panels.map((p) => p.scene.photo?.key));
+    preloadScenePlates(panels.map((p) => p.scene.plate));
   }, [panels]);
   const [shown, setShown] = useState(0);
   const panel = panels[idx];

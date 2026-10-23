@@ -1,9 +1,15 @@
 @import "tailwindcss";
 
+/* the reading face for story text: Atkinson Hyperlegible Next (SIL Open Font License, see src/assets/fonts), bundled so it also works offline */
+@font-face { font-family: 'Atkinson Read'; font-style: normal; font-weight: 400; font-display: swap; src: url('./assets/fonts/atkinson-hyperlegible-next-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Atkinson Read'; font-style: normal; font-weight: 500; font-display: swap; src: url('./assets/fonts/atkinson-hyperlegible-next-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Atkinson Read'; font-style: normal; font-weight: 600; font-display: swap; src: url('./assets/fonts/atkinson-hyperlegible-next-latin-600-normal.woff2') format('woff2'); }
+
 @layer base {
   :root {
     --font-heading: 'Fredoka', cursive, sans-serif;
     --font-ui: 'Outfit', sans-serif;
+    --font-read: 'Atkinson Read', 'Atkinson Hyperlegible Next', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   }
 
   html, body {
@@ -361,8 +367,8 @@
 .sp-ava { display: inline-flex; align-items: center; justify-content: center; flex: none; overflow: hidden; border-radius: 50%; background: #fde68a; border: 1.5px solid #fff3c4; box-sizing: border-box; }
 .sp-name .ic, .sp-name .crest { margin-left: -2px; }
 .sp-note { vertical-align: -0.12em; margin: 0 .08em; }
-.sp-text { margin: 0; padding-top: 4px; min-height: 2.9em; font-size: clamp(15px, 2.3vh + 7px, 22px); line-height: 1.38; color: #fbf4de; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
-.sp-text.narr { font-style: italic; color: #e9f2dd; }
+.sp-text { margin: 0; padding-top: 4px; min-height: 3.1em; font-family: var(--font-read); font-weight: 500; letter-spacing: .012em; word-spacing: .03em; font-size: clamp(15px, 2.3vh + 7px, 22px); line-height: 1.5; color: #fbf4de; text-shadow: 0 1px 2px rgba(0,0,0,.6); text-wrap: pretty; }
+.sp-text.narr { color: #e4efd8; }
 .sp-tip { display: flex; align-items: flex-start; gap: 6px; margin: 6px 0 0; font-family: var(--font-ui); font-size: 12.5px; color: #9ff0bf; }
 .sp-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
 .sp-dot { height: 6px; width: 6px; border-radius: 3px; background: rgba(255,255,255,.22); transition: width .2s ease, background .2s ease; }
@@ -375,7 +381,7 @@
 .sp-next:active { transform: translateY(2px); box-shadow: 0 1px 0 #a85c00; }
 @media (max-height: 430px) {
   .sp-box { padding: 11px 14px 8px; border-radius: 16px; }
-  .sp-text { min-height: 2.7em; font-size: 15px; line-height: 1.32; }
+  .sp-text { min-height: 2.9em; padding-top: 6px; font-size: 15px; line-height: 1.4; }
   .sp-foot { margin-top: 5px; }
   .sp-next { padding: 5px 16px; font-size: 14px; }
 }
@@ -865,8 +871,8 @@
 .way-chip i { font-style: normal; font-size: 15px; line-height: 1; }
 .way-chip.way-bare { padding: 3px 6px; }
 .way-dot { margin: -6px 0 -6px -3px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); }
-.way-text { margin: 0; min-width: 0; font-size: 14.5px; line-height: 1.28; text-wrap: pretty; }
-.way-narr .way-text { font-style: italic; color: #fde7f0; }
+.way-text { margin: 0; min-width: 0; font-family: var(--font-read); font-weight: 500; letter-spacing: .01em; font-size: 14.5px; line-height: 1.35; text-wrap: pretty; }
+.way-narr .way-text { color: #fde7f0; }
 @keyframes way-life { 0% { opacity: 0; transform: translateY(-8px); } 7% { opacity: 1; transform: none; } 90% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-4px); } }
 @media (max-width: 520px) { .way { top: calc(env(safe-area-inset-top, 0px) + 132px); } }
 @media (max-height: 430px) and (min-width: 521px) { .way { top: calc(env(safe-area-inset-top, 0px) + 110px); padding: 6px 12px 6px 7px; } .way-text { font-size: 13.5px; } }

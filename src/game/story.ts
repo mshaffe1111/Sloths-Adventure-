@@ -93,6 +93,8 @@ export interface StoryScene {
   focusY?: number;
   /** which painted castle stands behind a world-10 picture (5-7); the Highland Fortress when unset */
   castle?: number;
+  /** a whole painted backdrop (a key of plateData.ts) drawn instead of the world's scenery; `world` is then only the music's and the notes' idea of where we are, and `ground` defaults to the plate's floor */
+  plate?: string;
   /** a camera move over the picture (replaces the slow default push-in) */
   camera?: CameraMove;
   /** the camera follows an actor that travels (`move`): it stays put on the screen and the world scrolls by, with parallax; see storyActors.ts */
@@ -125,7 +127,7 @@ export interface StoryScene {
  *   reveal   a secret comes out: suspended chords that hang, then fall
  *   resolve  Pokey decides: the theme rising, steady drums
  *   triumph  a win: the full orchestra, the theme in the major
- *   mercy    the General's armor cracks: the march melting into the lullaby
+ *   mercy    the General's war look lets go: the march melting into the lullaby
  *   finale   the guardians come home: everything, at last in the major
  *   hush     almost nothing: a held note, the ambience, then silence
  */

@@ -15,7 +15,7 @@ const ICONS: Record<string, IconName> = {
 };
 
 /** the speakers painted on the story sheets: their face sits beside the name (CelHead.tsx) */
-export const HEAD_SPEAKERS = new Set(['Grandma', 'Officer', 'Grandfather']);
+export const HEAD_SPEAKERS = new Set(['Grandma', 'Officer', 'Grandfather', 'Gruntlewick']);
 
 export function speakerMark(name: string): SpeakerMarkSpec {
   if (HEAD_SPEAKERS.has(name)) return { kind: 'head' };
