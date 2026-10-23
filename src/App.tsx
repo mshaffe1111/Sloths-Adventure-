@@ -6,7 +6,7 @@ import { InputEngine } from './game/inputEngine.ts';
 import { GameEngine } from './game/engine.ts';
 import { setExtraLives, startingLives } from './game/assist.ts';
 import { setLayoutVariant } from './game/stageGenerator.ts';
-import { layoutForEntry } from './game/layoutMemory.ts';
+import { forgetLayout, layoutForEntry } from './game/layoutMemory.ts';
 import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game/skills.ts';
 import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
@@ -588,6 +588,8 @@ export default function App() {
 
           // Save progression
           saveLevelProgress(lvl.id, stars, finalScore, timeSec);
+          // a cleared stage rolls a fresh layout next time (until then a retry keeps the one being learned)
+          forgetLayout(lvl.id);
 
           if (lvl.objectiveType === 'boss_lair') {
             // Boss defeated: play the defeat scene first

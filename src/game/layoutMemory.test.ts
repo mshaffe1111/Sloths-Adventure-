@@ -71,3 +71,18 @@ test('the same layout number always rebuilds the very same stage', () => {
   setLayoutVariant(null);
   assert.equal(a, b);
 });
+
+test('clearing a stage forgets its layout, so a replay rolls a fresh one; a retry keeps it', async () => {
+  const { forgetLayout, layoutForEntry } = await import('./layoutMemory.ts');
+  const m = new Map<string, string>();
+  const mem = { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => void m.set(k, v), removeItem: (k: string) => void m.delete(k) };
+  let n = 100;
+  const roll = () => ++n;
+  const lvl = { id: '2-3', objectiveType: 'sprint' as const, secret: undefined };
+  const first = layoutForEntry(lvl, mem, roll, false);
+  assert.equal(layoutForEntry(lvl, mem, roll, false), first, 'a retry keeps the layout');
+  forgetLayout('2-3', mem);
+  const next = layoutForEntry(lvl, mem, roll, false);
+  assert.notEqual(next, first, 'after a clear the next visit rolls again');
+  assert.equal(layoutForEntry(lvl, mem, roll, false), next);
+});

@@ -2,11 +2,12 @@ import type { LevelConfig } from './types.ts';
 import { rollLayoutVariant } from './stageGenerator.ts';
 
 /**
- * layoutMemory — a stage keeps the layout it was first played with.
+ * layoutMemory — a stage keeps its layout until you clear it.
  *
- * The first time you enter a stage it gets a random layout number, saved on the device. Every later visit (replaying
- * a cleared stage, coming back after leaving) uses the same number, so the stage is the same stage. A stage you have
- * never entered stays unrolled, so it is still a surprise. A New Game clears the numbers (they are part of the save).
+ * The first time you enter a stage it gets a random layout number, saved on the device. Every visit until it is cleared
+ * (a retry after losing, coming back after leaving) uses the same number, so the stage you are learning stays put. Clearing
+ * it forgets the number (Matt's choice, 2026-10-23), so a replay of a cleared stage rolls a fresh layout. A New Game clears
+ * the numbers too (they are part of the save).
  * The boss lairs and the secret stage have one designed layout and need no number.
  */
 export const layoutKey = (id: string) => `sloth_layout_${id}`;
@@ -14,6 +15,7 @@ export const layoutKey = (id: string) => `sloth_layout_${id}`;
 interface Mem {
   getItem(k: string): string | null;
   setItem(k: string, v: string): void;
+  removeItem?(k: string): void;
 }
 
 function browserMem(): Mem | null {
@@ -65,5 +67,14 @@ function hasLayoutOverride(): boolean {
     return new URLSearchParams(window.location.search).get('layout') != null;
   } catch {
     return false;
+  }
+}
+
+/** the stage was cleared: forget its layout, so the next visit rolls a fresh one */
+export function forgetLayout(id: string, mem: Mem | null = browserMem()): void {
+  try {
+    mem?.removeItem?.(layoutKey(id));
+  } catch {
+    /* storage blocked: the stage simply keeps its layout */
   }
 }

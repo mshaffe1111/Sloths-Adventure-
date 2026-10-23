@@ -1,187 +1,93 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, G, LOG } from './protoStage.ts';
-import { PHYS, airStep, canGrabSwing, reachGlide, reachJump, swingGrab, swingStep, tarzanLaunch, type AirBody } from './physics.ts';
-import { swingLandings } from './levelCheck.ts';
-import type { LevelConfig, Platform, Vine } from './types.ts';
+import { buildProtoStage, EXPERT_SECONDS, G, LOG } from './protoStage.ts';
+import { maxRise } from './protoCheck.ts';
+import { reachGlide, reachJump } from './physics.ts';
+import { modelStage, MODEL_SLOW } from './stageTime.ts';
+import type { LevelConfig } from './types.ts';
 
 const cfg = {
   worldIndex: 1, miniIndex: 6, id: '1-6', name: 'First Lianas', objectiveType: 'vine_runner', targetCount: 1, timeLimit: 270,
   levelWidth: 16100, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
 } as LevelConfig;
-const S = buildProtoStage(cfg);
-const swings = S.vines.filter((v) => v.vineType === 'swing_liana');
-const at = (x: number) => swings.find((v) => Math.abs(v.x - x) < 1)!;
-const plat = (pred: (p: Platform) => boolean) => S.platforms.find(pred)!;
-
-/** the highest a double jump lifts his feet (px), at either tick rate and the best moment for the second jump */
-function maxRise() {
-  let best = 0;
-  for (const dt of [1 / 30, 1 / 60]) {
-    for (let tD = 0.05; tD < 0.6; tD += 0.01) {
-      const b: AirBody = { x: 0, y: 0, vx: 0, vy: -PHYS.jumpV };
-      let t = 0, used = false, top = 0;
-      for (let i = 0; i < 300; i++) {
-        if (!used && t >= tD) { b.vy = -PHYS.doubleV; used = true; }
-        airStep(b, dt, 0);
-        t += dt;
-        top = Math.min(top, b.y);
-        if (used && b.vy > 0) break;
-      }
-      best = Math.max(best, -top);
-    }
-  }
-  return best;
-}
-/** landing on a thin branch counts when the feet pass within this of its top (engine catchDrop) */
+const SEEDS = Array.from({ length: 24 }, (_, i) => 1 + i * 37);
+const rise = maxRise();
+/** landing on a thin branch counts when the feet pass within this of its top; a bank's lip hoists him from this far below */
 const THIN = 14;
-/** catching the lip of a bank or wall hoists him up when the feet get within this of its top */
 const HOIST = 26;
 
-/** seconds of a swing on A during which letting go catches B (holding toward B, with the double jump if it helps) */
-function catchWindow(A: Vine, B: Vine) {
-  const dt = 1 / 30;
-  const len = A.bottomY - A.topY;
-  const s = swingGrab({ x: A.x - 40, y: A.topY + len * 0.7, vx: 300, vy: 100 }, A);
-  let ok = 0;
-  for (let k = 0; k < 90; k++) {
-    const r = swingStep(s, A, dt, 1, 0);
-    if (Math.sin(s.angle) <= 0.05) continue;
-    const l = tarzanLaunch(r.vx, r.vy, 1);
-    let hit = false;
-    for (const tD of [99, 0.15, 0.3, 0.45]) {
-      const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
-      let t = 0, used = false;
-      for (let i = 0; i < 60 && !hit; i++) {
-        if (!used && t >= tD) { c.vy = -PHYS.doubleV; used = true; }
-        airStep(c, dt, 1);
-        t += dt;
-        if (canGrabSwing(c.x, c.y, B)) hit = true;
-      }
-      if (hit) break;
+test('1-6: the same roll always builds the same stage, and different rolls differ', () => {
+  const a = JSON.stringify(buildProtoStage(cfg, 7));
+  assert.equal(JSON.stringify(buildProtoStage(cfg, 7)), a);
+  const widths = new Set(SEEDS.slice(0, 8).map((s) => Math.round(buildProtoStage(cfg, s).config.levelWidth)));
+  assert.ok(widths.size >= 6, `rolls look alike: ${[...widths]}`);
+});
+
+test('1-6: every roll keeps the plan: the beats, an exit, two golden seeds, the log and flags in order', () => {
+  for (const s of SEEDS) {
+    const st = buildProtoStage(cfg, s);
+    assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Start', 'Learn', 'Develop', 'Puzzle', 'Twist', 'Develop again', 'Finish'], `seed ${s}`);
+    assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1, `seed ${s}`);
+    assert.equal(st.collectibles.filter((c) => c.type === 'seed').length, 2, `seed ${s}`);
+    assert.equal(st.platforms.filter((p) => p.push).length, 1, `seed ${s}`);
+    const xs = st.checkpoints!.map((c) => c.x);
+    assert.deepEqual([...xs].sort((a, b) => a - b), xs);
+    assert.ok(xs.length >= 8, `seed ${s}: ${xs.length} flags`);
+    // never too long a stretch between two flags
+    const gaps = [xs[0], ...xs.slice(1).map((x, i) => x - xs[i])];
+    assert.ok(Math.max(...gaps) < 7000, `seed ${s}: a ${Math.round(Math.max(...gaps))} px stretch without a flag`);
+  }
+});
+
+test('1-6: every roll is at least two minutes for a quick player, and not endless for a slow one', () => {
+  for (const s of SEEDS) {
+    const st = buildProtoStage(cfg, s);
+    const quick = st.meta!.timing!.layoutSeconds;
+    assert.ok(quick >= EXPERT_SECONDS, `seed ${s}: ${Math.round(quick)} s`);
+    assert.ok(modelStage(st, MODEL_SLOW).total < 480, `seed ${s}: too long for a slow player`);
+  }
+});
+
+test('1-6: the canopy wall needs the log, and the nook needs the log against the rock', () => {
+  for (const s of SEEDS) {
+    const st = buildProtoStage(cfg, s);
+    const log = st.platforms.find((p) => p.push)!;
+    const wall = st.platforms.find((p) => p.height >= 90 && Math.abs(p.x - log.push!.max - 55) < 1)!;
+    assert.ok(wall, `seed ${s}: no wall at the log's far stop`);
+    assert.ok(G - wall.y > rise + HOIST + 10, `seed ${s}: the wall can be jumped`);
+    assert.ok(G - LOG.h - wall.y < rise - 15, `seed ${s}: the wall cannot be climbed from the log`);
+    const rock = st.platforms.find((p) => p.height === 50 && Math.abs(p.x + p.width - log.push!.min) < 1)!;
+    const nook = st.platforms.find((p) => p.height < 50 && p.y === 325 && p.x > rock.x - 1 && p.x < rock.x + rock.width)!;
+    assert.ok(rock && nook, `seed ${s}: rock or nook missing`);
+    assert.ok(G - LOG.h - nook.y < rise - 15);
+    assert.ok(rock.y - nook.y > rise + THIN + 10);
+    assert.ok(log.push!.min + 40 < nook.x + nook.width);
+  }
+});
+
+test('1-6: the far seed needs the Leaf Glide, and the treetop vines cannot be reached from the ground', () => {
+  for (const s of SEEDS) {
+    const st = buildProtoStage(cfg, s);
+    const seedC = st.collectibles.find((c) => c.type === 'seed' && c.findId === 'seed-2')!;
+    const ledge = st.platforms.find((p) => p.height < 50 && seedC.x >= p.x && seedC.x <= p.x + p.width && Math.abs(p.y - (seedC.y + 34)) < 2)!;
+    assert.ok(ledge, `seed ${s}: no ledge under the far seed`);
+    assert.ok(G - ledge.y > rise + THIN + 10, `seed ${s}: reachable from the floor`);
+    // the branch it is jumped to from: the nearest branch to its left
+    const from = st.platforms.filter((p) => p.height < 50 && p.x + p.width < ledge.x).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+    const gap = ledge.x - (from.x + from.width);
+    const dy = from.y - ledge.y;
+    assert.ok(gap > reachJump(dy, true) + 60, `seed ${s}: a double jump makes it (${Math.round(gap)})`);
+    assert.ok(gap < reachGlide(dy, true) - 60, `seed ${s}: even the glide falls short`);
+    // the next thing to the right is far enough away too (no jumping back to it)
+    const next = st.platforms.filter((p) => p.height < 50 && p.x > ledge.x + ledge.width).sort((a, b) => a.x - b.x)[0];
+    if (next) assert.ok(next.x - (ledge.x + ledge.width) > reachJump(next.y - ledge.y, true) + 40, `seed ${s}: a branch to the right is close`);
+    for (const v of st.vines) {
+      if (v.vineType !== 'swing_liana' || v.bottomY > 400) continue;
+      // a treetop vine: its lowest grab point is above the top of a double jump from the ground below it, unless the ground
+      // below is the safe forest floor of a high run (reaching it from there is a way back up, not a short cut)
+      const overFloor = st.platforms.some((p) => p.height >= 90 && p.y === G && v.x > p.x && v.x < p.x + p.width);
+      if (overFloor) continue;
+      assert.ok(G - rise > v.bottomY + 30, `seed ${s}: the treetop vine at ${Math.round(v.x)} can be reached from the ground`);
     }
-    if (hit) ok++;
   }
-  return ok * dt;
-}
-
-/**
- * Coming off liana A onto liana B (the first release that catches it), how many release moments on B land him on `to`
- * (out of a swing sampled at 30 Hz). Falls through anything else, as the water would take him.
- */
-function chainLanding(A: Vine, B: Vine, to: Platform) {
-  const dt = 1 / 30;
-  const len = A.bottomY - A.topY;
-  const s = swingGrab({ x: A.x - 40, y: A.topY + len * 0.7, vx: 300, vy: 100 }, A);
-  let arrival: AirBody | null = null;
-  for (let k = 0; k < 90 && !arrival; k++) {
-    const r = swingStep(s, A, dt, 1, 0);
-    if (Math.sin(s.angle) <= 0.2) continue;
-    const l = tarzanLaunch(r.vx, r.vy, 1);
-    const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
-    for (let i = 0; i < 60; i++) {
-      airStep(c, dt, 1);
-      if (canGrabSwing(c.x, c.y, B)) { arrival = { ...c }; break; }
-    }
-  }
-  if (!arrival) return -1;
-  const sb = swingGrab(arrival, B);
-  let ok = 0;
-  for (let k = 0; k < 90; k++) {
-    const r = swingStep(sb, B, dt, 1, 0);
-    if (Math.sin(sb.angle) <= 0.05) continue;
-    const l = tarzanLaunch(r.vx, r.vy, 1);
-    let landed = false;
-    for (const tD of [99, 0.2, 0.4]) {
-      const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
-      let t = 0, used = false;
-      for (let i = 0; i < 90; i++) {
-        if (!used && t >= tD) { c.vy = -PHYS.doubleV; used = true; }
-        const prevY = c.y;
-        airStep(c, dt, 1);
-        t += dt;
-        if (c.vy >= 0 && prevY <= to.y + 14 && c.y >= to.y && c.x > to.x + 10 && c.x < to.x + to.width) { landed = true; break; }
-        if (c.y > 900) break;
-      }
-      if (landed) break;
-    }
-    if (landed) ok++;
-  }
-  return ok;
-}
-
-const rise = maxRise();
-
-
-test('1-6: a double jump cannot top the canopy wall, but it can from the log', () => {
-  const wall = plat((p) => p.x === 7000 && p.y === G - 230);
-  assert.ok((G - wall.y) > (rise + HOIST + 10), `${String(G - wall.y)} > ${String(rise + HOIST + 10)}`);
-  assert.ok(G - LOG.h - wall.y < rise - 15);
-});
-
-test('1-6: the secret nook needs the log under it', () => {
-  const nook = plat((p) => p.x === 5790 && p.y === 325);
-  const rock = plat((p) => p.x === 5760 && p.height === 50);
-  assert.ok(G - LOG.h - nook.y < rise - 15); // from the log: yes
-  assert.ok((rock.y - nook.y) > (rise + THIN + 10), `${String(rock.y - nook.y)} > ${String(rise + THIN + 10)}`); // from the rock: no
-  const log = plat((p) => !!p.push);
-  // pushed left, the log stops against the rock, right under the nook
-  assert.equal(log.push!.min, rock.x + rock.width);
-  assert.ok((log.push!.min + 20) > (nook.x), `${String(log.push!.min + 20)} > ${String(nook.x)}`);
-  assert.ok(log.push!.min + 40 < nook.x + nook.width); // enough of the log under the nook to stand on
-});
-
-test('1-6: the swing gaps are too wide to jump, so the lianas are the way', () => {
-  assert.ok((1360 - 1000) > (reachJump(0, true) + 40), `${String(1360 - 1000)} > ${String(reachJump(0, true) + 40)}`);
-  assert.ok((5560 - 5100) > (reachJump(0, true) + 40), `${String(5560 - 5100)} > ${String(reachJump(0, true) + 40)}`);
-});
-
-test('1-6: the far seed needs the Leaf Glide', () => {
-  const b4 = plat((p) => p.x === 9450);
-  const gs = plat((p) => p.x === 10280);
-  const gap = gs.x - (b4.x + b4.width);
-  const dy = b4.y - gs.y; // negative = a drop
-  assert.ok((gap) > (reachJump(dy, true) + 100), `${String(gap)} > ${String(reachJump(dy, true) + 100)}`);
-  assert.ok(gap < reachGlide(dy, true) - 100);
-  assert.ok((G - gs.y) > (rise + THIN + 10), `${String(G - gs.y)} > ${String(rise + THIN + 10)}`); // not from the floor
-  // and the first liana of the finish is too far away to swing back to it
-  assert.ok((swings.find((v) => v.x > 11000)!.x - (gs.x + gs.width)) > (650), `${String(swings.find((v) => v.x > 11000)!.x - (gs.x + gs.width))} > ${String(650)}`);
-});
-
-test('1-6: the liana at the top of the kapok is out of reach from the ground', () => {
-  const high = at(5240);
-  assert.ok((G - rise) > (high.bottomY + 30), `${String(G - rise)} > ${String(high.bottomY + 30)}`);
-});
-
-test('1-6: every liana catches the next with a forgiving window', () => {
-  for (const [a, b] of [[2220, 2540], [3530, 3860], [3860, 4170], [8420, 8620], [11120, 11460], [11460, 11800], [11800, 12140]]) {
-    assert.ok(catchWindow(at(a), at(b)) > 0.6, `${a} -> ${b}`);
-  }
-});
-
-test('1-6: the last liana of each run lands on the bank beyond', () => {
-  // single lianas: from the ledge he jumps off
-  const cases: Array<[number, number, number]> = [
-    [1150, 1000, 1360],
-    [5240, 4860, 5560],
-  ];
-  const got: string[] = [];
-  for (const [vx, fromX, toX] of cases) {
-    const from = plat((p) => Math.abs(p.x + p.width - fromX) < 1 || Math.abs(p.x - fromX) < 1);
-    const to = plat((p) => Math.abs(p.x - toX) < 1);
-    const hits = swingLandings(from, at(vx), 1, S.platforms, S.waterY!);
-    got.push(`${vx}->${toX}:${hits.get(to.id) ?? 0}`);
-  }
-  // the end of a chain: arriving from the liana before
-  for (const [pa, pb, toX] of [[2220, 2540, 2780], [3860, 4170, 4400], [8420, 8620, 8780], [11800, 12140, 12400]]) {
-    const to = plat((p) => Math.abs(p.x - toX) < 1);
-    got.push(`${pa}>${pb}->${toX}:${chainLanding(at(pa), at(pb), to)}`);
-  }
-  assert.deepEqual(got.filter((g) => Number(g.split(':')[1]) < 8), [], got.join(' '));
-});
-
-test('1-6: has two seeds and the checkpoints in order', () => {
-  assert.equal(S.collectibles.filter((c) => c.type === 'seed').length, 2);
-  const xs = S.checkpoints!.map((c) => c.x);
-  assert.deepEqual([...xs].sort((a, b) => a - b), xs);
 });
