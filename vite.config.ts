@@ -46,7 +46,7 @@ export default defineConfig(() => {
           id: base,
           name: 'Sloths Rainforest Adventures',
           short_name: 'SlothAdv',
-          description: 'High-DPI side-scrolling action adventure game where Sloth navigates 10 lush rainforest stages to save Meeca.',
+          description: 'Help Pokey the sloth climb, swing and sneak through 10 rainforest worlds and 100 stages to rescue Meeca, the sloth he loves.',
           theme_color: '#0e3b28',
           background_color: '#0b1a13',
           // an installed copy opens full screen (Matt prefers it), and falls back to an app window where full screen is not offered
