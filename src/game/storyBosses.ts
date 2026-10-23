@@ -28,14 +28,14 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   1: {
     intro: [
       { speaker: 'Venom Fang', text: 'Sssloth. I am supposssed to tell you I will eat you twice before lunch. Consider it ssaid.', boss: 'calm' },
-      { speaker: 'Dot', text: 'He\'d have to catch me first, and I\'m very hard to catch, I once spent forty minutes inside a teapot and nobody knew.' },
+      { speaker: 'Dot', text: 'He\'d have to catch me first. I\'m very hard to catch. I once spent forty minutes inside a teapot, and nobody knew.' },
       { speaker: 'Pokey', text: 'Excuse me. We\'re looking for Meeca. May we come through, please?' },
-      { speaker: 'Venom Fang', text: 'Ssomeone asssked. Nobody asssks. It changesss nothing. Ssstand there, I have been told to bite you.' },
+      { speaker: 'Venom Fang', text: 'Ssomeone asssked. Nobody asssks. It changesss nothing. Ssstand ssstill. I have been told to bite you.' },
     ],
     defeat: [
       { speaker: 'Venom Fang', text: 'I shall not be mentioning the knot. If anyone asks, I did it on purpose.' },
       { speaker: 'Pokey', text: 'Of course. Thank you. And I\'m sorry about the knot.' },
-      { speaker: 'Venom Fang', text: 'Do not look at the collar. It itchesss. It always itchesss. The fortresss is north. Ssstay off the high branchesss, the others will not be asssking.' },
+      { speaker: 'Venom Fang', text: 'Do not look at the collar. It itchesss. It always itchesss. The fortresss is north. Ssstay off the high branchesss. The others will not be asssking.' },
     ],
     tip: 'Venom Fang strikes after a red ring flashes. Jump over the lunge, then punch his head.',
   },
@@ -45,10 +45,10 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'Your Majesty. May I cross, please? I only have a petal and a very polite request.' },
       { speaker: 'Crocus Rex', text: 'A petal! The little keeper wove me this on her way past, with a soldier on each arm. It is crooked. It will stay crooked. Do not look at it.', boss: 'calm' },
       { speaker: 'Pokey', text: 'It suits you, Your Majesty.' },
-      { speaker: 'Crocus Rex', text: '...Does it? No. NO. Nice try. It is a matter of professional pride that I bite something first.' },
+      { speaker: 'Crocus Rex', text: 'Does it? No. NO. Nice try. It is a matter of professional pride that I bite something first.' },
     ],
     defeat: [
-      { speaker: 'Crocus Rex', text: 'The crown! Mind the crown! ...Still on. Good. You may have the river. I do it because you were polite, and the General need not know that.' },
+      { speaker: 'Crocus Rex', text: 'The crown! Mind the crown! Still on. Good. You may have the river. I give it because you were polite, and the General need not know.' },
       { speaker: 'Pokey', text: 'Thank you. I\'ll tell Meeca you\'re wearing it.' },
       { speaker: 'Crocus Rex', text: 'Tell her it was never crooked. Tell her I said so. Now go, before I am ordered to be unreasonable.' },
     ],
@@ -114,18 +114,18 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   },
   7: {
     intro: [
-      { speaker: 'Stone Idol Golem', text: 'I… am… the guardian… of this… temple. None… may… pass.' },
+      { speaker: 'Stone Idol Golem', text: 'I... am... the guardian... of this... temple. None... may... pass.' },
       { speaker: 'Pokey', text: 'Finally. Somebody I can keep up with.' },
-      { speaker: 'Stone Idol Golem', text: 'I… have… waited… a thousand… years. For…', boss: 'calm' },
+      { speaker: 'Stone Idol Golem', text: 'I... have... waited... a thousand... years. For...', boss: 'calm' },
       { speaker: 'Pokey', text: 'I\'ll wait.', pokey: 'happy' },
     ],
     defeat: [
-      { speaker: 'Stone Idol Golem', text: 'The rune… is broken. The way up… is open.' },
+      { speaker: 'Stone Idol Golem', text: 'The rune... is broken. The way up... is open.' },
       { speaker: 'Pokey', text: 'Thank you. Rest well.' },
-      { speaker: 'Stone Idol Golem', text: 'Behind… the rune…' },
+      { speaker: 'Stone Idol Golem', text: 'Behind... the rune...' },
       { speaker: 'Pokey', text: 'Take your time.' },
-      { speaker: 'Stone Idol Golem', text: 'I… always… do.' },
-      { speaker: 'Stone Idol Golem', text: 'There is… a photograph. The General asked me… to keep it… from you. I am… sorry. I do not… think… I should.' },
+      { speaker: 'Stone Idol Golem', text: 'I... always... do.' },
+      { speaker: 'Stone Idol Golem', text: 'There is... a photograph. The General asked me... to keep it... from you. I am... sorry. I do not... think... I should.' },
     ],
     tip: 'The Golem\'s rune glows before a smash. Dodge it, then punch the glowing rune on his chest.',
   },
@@ -142,14 +142,14 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'If I get there, I will.' },
       { speaker: 'Night-Wing Monarch', text: 'Then take the lava road. The Drake lives on it. He is bad at visitors. Be patient with the fire.', boss: 'calm' },
     ],
-    tip: 'The Monarch swoops in the dark. Listen for the screech, dodge, then punch as he turns.',
+    tip: 'The Monarch swoops in the dark. Listen for the screech, dodge, then punch as she turns.',
   },
   9: {
     intro: [
       { speaker: 'Magma Drake', text: 'I am to burn you. There is a speech that goes with it. I have lost my place.' },
       { speaker: 'Pokey', text: 'I\'d rather not be burned, thank you. May I pass? I brought a petal.' },
       { speaker: 'Magma Drake', text: 'Soldiers do not bring petals. Soldiers do not bring anything. Is it for me? No. Of course not. Then we will see what it can do.', boss: 'calm' },
-      { speaker: 'Dot', text: 'It\'s a FLOWER, it\'s smaller than my head, please stop looking at it like a weapon!' },
+      { speaker: 'Dot', text: 'It\'s a FLOWER. It\'s smaller than my head. Please stop looking at it like a weapon!' },
     ],
     defeat: [
       { speaker: 'Magma Drake', text: 'My fire. A hundred years I kept that going, and the first visitor puts it out. I suppose that is what visitors are for.' },
@@ -215,16 +215,16 @@ export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: st
 /** The secret boss: the Jungle Guardian, twisted by thorns. After the fight he is himself again. */
 export function thornbarkPanels(kind: 'intro' | 'defeat'): StoryPanel[] {
   const intro: BossLine[] = [
-    { speaker: 'Thornbark', text: 'Grrr… the thorns… they whisper… Leave this hollow, little sloth…' },
+    { speaker: 'Thornbark', text: 'Grrr... the thorns... they whisper... Leave this hollow, little sloth...' },
     { speaker: 'Pokey', text: 'You were the Jungle Guardian. Grandma told me about you. The thorns did this to you, didn\'t they?' },
-    { speaker: 'Thornbark', text: 'I would not kneel. The others did. I would not. The thorns grew through me… to teach me…', boss: 'calm' },
-    { speaker: 'Thornbark', text: 'I cannot stop them… they want you gone. RUN… or FIGHT.' },
+    { speaker: 'Thornbark', text: 'I would not kneel. The others did. I would not. The thorns grew through me... to teach me...', boss: 'calm' },
+    { speaker: 'Thornbark', text: 'I cannot stop them... they want you gone. RUN... or FIGHT.' },
   ];
   const defeat: BossLine[] = [
-    { speaker: 'Thornbark', text: 'The thorns… they are gone. I can think again. Thank you, small sloth.' },
+    { speaker: 'Thornbark', text: 'The thorns... they are gone. I can think again. Thank you, small sloth.' },
     { speaker: 'Pokey', text: 'I didn\'t beat them. I just kept coming back until they got tired of me. It\'s my best skill.' },
     { speaker: 'Thornbark', text: 'The keeper before her sat among my roots for fifty years, humming. Your Meeca hums the same song. Tell her an old tree is listening.' },
-    { speaker: 'Thornbark', text: 'Take this Thorn Heart. It was a heart all along; the thorns were only what grew around it. Go and bring your Meeca home.' },
+    { speaker: 'Thornbark', text: 'Take this Thorn Heart. It was a heart all along. The thorns were only what grew around it. Go and bring your Meeca home.' },
   ];
   const lines = kind === 'intro' ? intro : defeat;
   const beats: Beat[] = lines.map((line, i) => {

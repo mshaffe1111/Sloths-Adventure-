@@ -62,7 +62,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
       9: dot('start', 'I\'m too small to be worth the chase. Best thing about me, honestly.'),
     },
     hurt: [
-      hDot('Recipient down! ...Recipient up. Good. Carry on.'),
+      hDot('Recipient down! Wait. Recipient up. Good. Carry on.'),
       hDot('Meeca would know what to say here. I only have "ow." So. Ow.'),
       hDot('Ow! That one was yours, but I felt it.'),
     ],
@@ -71,12 +71,12 @@ export const WAYSIDE: Record<number, WorldWay> = {
   // 2 Petals for the Crown · 3 Stuck in the Reeds · 4 Over the Water · 5 River Snappers · 6 Up the Bank Houses · 7 The Mailman's Route · 8 Reed Cages · 9 The Court
   2: {
     stages: {
-      2: dot('start', 'A sloth watched me pick a flower and said "oh." That was ten minutes ago. He\'s still saying it.'),
-      3: dot('half', '"Admire something. Anything." ...Gorgeous cage. Wonderful reeds. I\'m practicing.'),
-      4: pokey('half', 'I could watch this river all day. ...Not now. Swing, Pokey.'),
+      2: dot('start', 'A sloth watched me pick a flower and said, "Oh." That was ten minutes ago. He\'s still saying it.'),
+      3: dot('half', '"Admire something. Anything." All right. Gorgeous cage. Wonderful reeds. I\'m practicing.'),
+      4: pokey('half', 'I could watch this river all day... Not now. Swing, Pokey.'),
       5: pokey('half', 'The sign said PLEASE BE PATIENT. I\'m doing my best, but this one keeps lunging.'),
       6: pokey('half', 'Every house in the bank has a round door, and every door says PLEASE BE PATIENT. I\'m climbing past them very patiently.'),
-      7: dot('half', 'I asked the mailman for the time. He said "soon." I\'m going to hold him to that.'),
+      7: dot('half', 'I asked the mailman for the time. He said, "Soon." I\'m going to hold him to that.'),
       9: pokey('start', 'Meeca came through here first. I bet she admired the whole river out loud.'),
     },
     hurt: [
@@ -89,7 +89,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
   // 2 Glowworm Path · 3 Footprints in a Circle · 4 The Sinkhole · 5 Sleeping Vines · 6 Grandma's Things · 7 Which Fern? · 8 Thorn Vine Swing · 9 The Prowler's Ring
   3: {
     stages: {
-      2: dot('start', 'Stay where I can see you. ...I can\'t see anything. Stay where I can hear you.'),
+      2: dot('start', 'Stay where I can see you... I can\'t see anything. Stay where I can hear you.'),
       3: petal('half', 'Dot pats the little pouch at his side again. He does it every time the dark gets close.'),
       4: petal('half', 'A glowworm lights his next handhold. He thanks it. It glows a little brighter and pretends not to.'),
       5: pokey('start', 'I used to be good at quiet. In here, quiet is a thing that listens back.'),
@@ -97,7 +97,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
     },
     hurt: [
       hDot('That was the dark\'s fault. I\'ll keep saying so until we\'re out.'),
-      hDot('Say something. ...That was a grunt. A grunt counts.'),
+      hDot('Say something... That was a grunt. A grunt counts.'),
       hDot('I\'d help you up, but I\'d have to open my eyes.'),
     ],
   },
@@ -115,7 +115,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
     hurt: [
       hDot('Check the ledge. I\'m going to say that at every ledge for the rest of my life.'),
       hDot('I counted your hearts. I count them every time now. Don\'t ask me why.'),
-      hDot('Pokey! ...Okay. You\'re up. My heart does a thing. It\'s nothing. It does it all day.'),
+      hDot('Pokey! Oh. Okay, you\'re up. My heart does a thing. It\'s nothing. It does it all day.'),
     ],
   },
   // silk, a table set for two, and a letter in a pouch
@@ -128,7 +128,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
       5: petal('near', 'Tally marks scratched into the silk, row after row. He doesn\'t count them. He cuts the threads.'),
       6: pokey('start', 'I started carving her a reply on a branch. I\'m up to "M." It\'s a good M.'),
       7: dot('half', 'Every thread here hums when you step on it. Walk like you owe the place money.'),
-      8: dot('half', 'I\'m just checking it\'s still there. It\'s still there. ...I\'m going to check again.'),
+      8: dot('half', 'I\'m just checking it\'s still there. It\'s still there... I\'m going to check again.'),
     },
     hurt: [
       hDot('Careful! The webs are sticky and the cake is stickier. Don\'t ask how I know.'),
@@ -169,7 +169,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
     hurt: [
       hPetal('He says "I\'m fine" to the empty ruins, out of habit. The ruins don\'t argue.'),
       hPetal('A stone face watched him fall. It has seen slower.'),
-      hPokey('Don\'t tell Dot. ...He\'d have so much to say about it. Tell him anyway.'),
+      hPokey('Don\'t tell Dot... He\'d have so much to say about it. Tell him anyway.'),
     ],
   },
 
@@ -179,13 +179,13 @@ export const WAYSIDE: Record<number, WorldWay> = {
     stages: {
       2: dot('start', 'I had a joke saved for you in the mangrove. Three days of flying and it\'s gone. It had a bird in it.'),
       4: pokey('start', 'Sneaking\'s the one thing I\'ve always done at full speed.'),
-      5: pokey('start', 'I tell myself: next branch, then the one after. That\'s all a long way is.'),
+      5: pokey('start', 'I tell myself, "Next branch, then the one after." That\'s all a long way is.'),
       6: petal('half', 'Fireflies blink on along the branch ahead, one by one, like a lamp left lit just in case.'),
       7: pokey('near', 'I\'m climbing slowly so Dot can rest. Turns out I\'ve been training for this my whole life.'),
       8: dot('near', 'Those hunters left a net behind, tied shut with a bow. A bow, Pokey. With loops.'),
     },
     hurt: [
-      hDot('Ow, oh, that was you. I\'m so used to it being me.', 1, 5),
+      hDot('Ow. Oh, that was you. I\'m so used to it being me.', 1, 5),
       hDot('I\'m not counting your scratches. I\'ve got enough of my own.', 1, 5),
       hDot('One branch, then the next. You told me that. I\'m telling you.', 6, 9),
     ],
@@ -197,7 +197,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
       2: dot('start', 'It\'s hot. I\'m a small bird in a large oven. I\'d like that on the record.'),
       3: pokey('half', 'It\'s boiling out. I\'d still wear Meeca\'s scarf. All of it. Right now.'),
       4: dot('start', 'When he says "Visitor," don\'t answer. When he says "Intruder," really don\'t answer.'),
-      6: dot('half', 'I\'m not touching the pouch. Look. Hands off. ...Claws off. I\'m a bird.'),
+      6: dot('half', 'I\'m not touching the pouch. Look. Hands off... Claws off. I\'m a bird.'),
       7: pokey('half', 'The ledges up here are warm. I\'ve decided to think of that as friendly.'),
       8: dot('half', 'More thread. Either the lieutenant is very careless, or he wants us to find him.'),
       9: dot('start', 'Plan for the Drake: be so polite he feels bad. It\'s worked eight times.'),

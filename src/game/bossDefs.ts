@@ -1940,13 +1940,13 @@ export const BOSS_TIPS: Record<number, string> = {
   1: 'Venom Fang spits goo that slows you and slams up from the floor where you stood. Stay moving, then punish the recovery.',
   2: 'Crocus Rex rolls the length of the arena and crashes into the wall. Jump the tail sweep and hit him while he is dizzy.',
   3: 'The Shadow Prowler vanishes and reappears behind you. Watch for the fade, then turn and strike.',
-  4: 'The Sky Sovereign is a giant of the air. Step off the red mark and she crashes; then hit whatever glows: her head, her chest, her talons or her back.',
-  5: 'The Tarantula Queen is a giant of the hollow. Jump her venom jet, step out of the web and cocoon marks, then hit whatever glows: abdomen, fangs, eyes or chest.',
-  6: 'The Marsh Reaver is a giant of the blackwater. Jump his low spear sweep and the mud waves, duck the high swipe, then hit whatever glows: back, neck, head or flank.',
-  7: 'The Stone Idol Golem is a giant of the ruins. Jump his spinning hammer, slip the crystal rift, then hit whatever glows: chest, head, back or belly.',
-  8: 'The Night-Wing Monarch is a giant bat. Jump her low rings and stay down for the high ones, then hit whatever glows: mouth, wing joint, talons, chest, head or back.',
-  9: 'The Magma Drake breathes fire at chest height: duck or jump. Keep off the lava geysers.',
-  10: 'General Iron-Claw is the last giant. Jump his shocks and clubs, dodge the lightning columns, let him crash into a wall, then hit whatever glows: head, pauldron, mouth, foot, knuckles, cape or belly.',
+  4: 'The Sky Sovereign is a giant of the air. Step off the red mark and let her crash. Then hit whatever glows: her head, her chest, her talons, or her back.',
+  5: 'The Tarantula Queen is a giant of the hollow. Jump her venom jet and step out of the web and cocoon marks. Then hit whatever glows: abdomen, fangs, eyes, or chest.',
+  6: 'The Marsh Reaver is a giant of the blackwater. Jump his low spear sweep and the mud waves, duck the high swipe, then hit whatever glows: back, neck, head, or flank.',
+  7: 'The Stone Idol Golem is a giant of the ruins. Jump his spinning hammer, slip the crystal rift, then hit whatever glows: chest, head, back, or belly.',
+  8: 'The Night-Wing Monarch is a giant bat. Jump her low rings and stay down for the high ones, then hit whatever glows: mouth, wing joint, talons, chest, head, or back.',
+  9: 'The Magma Drake breathes fire at chest height, so duck or jump it. Keep off the lava geysers.',
+  10: 'General Iron-Claw is the last giant. Jump his shocks and clubs, dodge the lightning columns, let him crash into a wall, then hit whatever glows: head, pauldron, mouth, foot, knuckles, cape, or belly.',
 };
 
 /** the secret boss lives outside the ten worlds */

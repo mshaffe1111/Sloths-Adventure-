@@ -260,16 +260,16 @@ const OBJECTIVE_NAMES: Record<ObjectiveType, string> = {
 };
 
 const OBJECTIVE_DESCRIPTIONS: Record<ObjectiveType, (target: number) => string> = {
-  sprint: () => 'Race through towering rainforest trees and touch the sacred Exit Shrine!',
-  harvest: (target) => `Gather ${target} exotic Rainforest Orchids & Golden Monstera Leaves!`,
-  purge: (target) => `Defeat ${target} prowling jungle predators using your sharp Claw Punches!`,
-  ascent: () => 'Climb vertical giant vines and bouncy fungus up through misty tree layers to the summit!',
-  stealth: () => 'Evade dive-bombing Harpy Eagles by ducking under thick rainforest foliage to reach the end!',
-  vine_runner: () => 'Grip hanging rainforest vines and swing across giant canopy chasms!',
-  relic_hunt: (target) => `Search ancient moss-covered tree hollows to uncover ${target} hidden Jungle Idols!`,
-  rescue: (target) => `Smash bamboo cages to free ${target} trapped baby animals!`,
-  gauntlet: (target) => `Fight through intense enemy ambushes, defeat ${target} predators, and reach the exit!`,
-  boss_lair: () => 'Confront the Stage Boss! Watch telegraphs, dodge devastating attacks, and rescue Meeca!',
+  sprint: () => 'Run through the treetops and reach the Exit Shrine.',
+  harvest: (target) => `Gather ${target} flowers.`,
+  purge: (target) => `Clear ${target} foes off the branches.`,
+  ascent: () => 'Climb the vines up through the trees to the top.',
+  stealth: () => 'Hide from the eagles under the leaves, and reach the end.',
+  vine_runner: () => 'Swing on the hanging vines across the gaps.',
+  relic_hunt: (target) => `Search the hollow trees for ${target} hidden relics.`,
+  rescue: (target) => `Break the cages and free ${target} little ones.`,
+  gauntlet: (target) => `Fight your way through. Defeat ${target} and reach the exit.`,
+  boss_lair: () => 'Face the guardian. Watch for the warning before each attack, then hit back.',
 };
 
 /**
@@ -403,7 +403,11 @@ export function generateAllLevels(): LevelConfig[] {
         timeLimit,
         levelWidth,
         levelHeight,
-        description: spec?.desc ? spec.desc.replace('{n}', String(targetCount)) : OBJECTIVE_DESCRIPTIONS[objType](targetCount),
+        description: spec?.desc
+          ? spec.desc.replace('{n}', String(targetCount))
+          : objType === 'boss_lair'
+            ? `Face ${world.bossName}. Watch for the warning before each attack, then hit back.`
+            : OBJECTIVE_DESCRIPTIONS[objType](targetCount),
         unlocked,
         completed,
         stars,

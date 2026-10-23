@@ -28,7 +28,7 @@ export const SKILLS: SkillDef[] = [
   {
     id: 'shimmy',
     name: 'Shimmy Rope',
-    blurb: 'Grab a rope and creep across, hand over hand. Ropes stretch over gaps the jungle used to make impossible.',
+    blurb: 'Grab a rope and creep across, hand over hand. Ropes stretch over gaps you could never cross before.',
     controls: [
       [['Jump'], 'up into a rope to grab it'],
       [['←', '→'], 'shimmy along it'],

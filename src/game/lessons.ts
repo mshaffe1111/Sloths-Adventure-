@@ -86,7 +86,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
     id: 'tough',
     title: 'A big one!',
     face: 'face_surprised',
-    intro: 'Big animals take several hits and are hard to shove. Watch for it rearing back: that is when it strikes, so step away, then hit it as it recovers.',
+    intro: 'Big animals take several hits and are hard to shove. Watch for it rearing back. That is when it strikes, so step away, then hit it as it recovers.',
     lines: same([{ how: 'Keep at it', what: 'It takes a few hits', sub: 'a mega punch hits hardest, and landing on a caiman only bounces you off' }]),
   },
   gap: {
@@ -97,7 +97,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
     lines: {
       screen: [
         { glyph: 'jump', how: 'Slide up and across', what: 'Run and jump', sub: 'keep your thumb moving forward in the air' },
-        { glyph: 'tap', how: 'Tap in the air', what: 'Double jump', sub: 'for a gap that is a little too wide. It pushes you forward' },
+        { glyph: 'tap', how: 'Tap in the air', what: 'Double jump', sub: 'it pushes you forward, for a gap that is a little too wide' },
       ],
       pad: [{ how: 'Pad → then Jump', what: 'Run and jump' }, { how: 'Jump again in the air', what: 'Double jump', sub: 'for a gap that is a little too wide' }],
       keys: [{ how: 'D or → then Space', what: 'Run and jump' }, { how: 'Space again in the air', what: 'Double jump', sub: 'for a gap that is a little too wide' }],
@@ -220,7 +220,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
     id: 'shrine',
     title: 'The exit shrine!',
     face: 'face_cheer',
-    intro: 'Touch it to finish the stage. If the stage asked for something first, such as fruit, foes or friends, the shrine opens once you have done it.',
+    intro: 'Touch it to finish the stage. If the stage asked for something first, such as fruit, foes, or friends, the shrine opens once you have done it.',
     lines: same([{ how: 'Reach it', what: 'Finish the stage' }]),
   },
 };
