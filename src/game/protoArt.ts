@@ -8,6 +8,24 @@ import type { Collectible, Platform } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 
+const KIT_KEY = 'sloth_paint_w1';
+/** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
+export function paintedKitEnabled(): boolean {
+  try {
+    return typeof localStorage !== 'undefined' && localStorage.getItem(KIT_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+export function setPaintedKitPref(on: boolean) {
+  try {
+    if (on) localStorage.setItem(KIT_KEY, '1');
+    else localStorage.removeItem(KIT_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
 let img: HTMLImageElement | null = null;
 let ready = false;
 function load() {

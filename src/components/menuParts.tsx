@@ -2,6 +2,7 @@ import React from 'react';
 import { polishEnabled, setPolishPref } from '../game/polish.ts';
 import { goldSnakeEnabled, setGoldSnakePref } from '../game/goldSnake.ts';
 import { protoStageEnabled, setProtoStagePref } from '../game/protoStage.ts';
+import { paintedKitEnabled, setPaintedKitPref } from '../game/protoArt.ts';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
@@ -353,6 +354,38 @@ export const ProtoStageToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Plays the rebuilt "First Lianas": vine-to-vine swings, a tree to climb, a log to push, a branch that snaps and two golden seeds to find. Starts the next time you enter 1-6. Off by default while it is being tested.</small>
+    </div>
+  );
+};
+
+/** Matt's painted World 1 platforms on every World 1 stage (protoArt.ts): off by default while it is being tested */
+export const PaintedKitToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => paintedKitEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#a3d977" size={22}>
+            <path d="M3 17h18" />
+            <path d="M5 17v-4h6v4" />
+            <path d="M13 17v-7h6v7" />
+          </Icon>
+          Painted platforms (World 1)
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setPaintedKitPref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">The new painted ground, branches, trunks and rocks on every World 1 stage. Starts on the next stage you enter. Off by default while it is being tested.</small>
     </div>
   );
 };

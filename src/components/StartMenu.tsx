@@ -2,7 +2,7 @@ import React from 'react';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { SKILLS, type SkillId } from '../game/skills.ts';
 import { SkillIcon } from './SkillIcon.tsx';
-import { Icon, Sliders, COARSE, PolishToggle, OrchSfxToggle, GoldSnakeToggle, ProtoStageToggle } from './PauseMenu.tsx';
+import { Icon, Sliders, COARSE, PolishToggle, OrchSfxToggle, GoldSnakeToggle, ProtoStageToggle, PaintedKitToggle } from './PauseMenu.tsx';
 import { ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 
@@ -140,6 +140,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({ isMuted, onToggleMute, onC
       <OrchSfxToggle />
       <GoldSnakeToggle />
       <ProtoStageToggle />
+      <PaintedKitToggle />
     </div>
   </div>
   );

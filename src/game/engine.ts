@@ -85,7 +85,7 @@ import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
-import { drawCurtainArt, drawProtoScene, drawSeedArt, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { drawCurtainArt, drawProtoScene, drawSeedArt, paintedKitEnabled, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -168,6 +168,7 @@ export class GameEngine {
   /** the hand-built stage's painted props: the platforms they draw, and their state */
   private paintedPlats: Platform[] = [];
   private swingVines: Vine[] = [];
+  private paintKit = false;
   private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
   private pushSoundT = 0;
   /** a hint that rides above Pokey for a few seconds */
@@ -360,7 +361,9 @@ export class GameEngine {
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
     this.drawPlats = this.pushLogs.length ? this.platforms.filter((pl) => !pl.push) : this.platforms;
-    if (this.proto) {
+    // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
+    this.paintKit = !!this.proto || (config.worldIndex === 1 && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
+    if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
       this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id));
       this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
@@ -3288,15 +3291,15 @@ export class GameEngine {
     else renderWorldObjects(
       ctx,
       world.id,
-      this.proto && protoArtReady() ? this.paintedPlats : this.drawPlats,
-      this.proto && protoArtReady() ? this.swingVines : this.vines,
-      this.proto && protoArtReady() ? [] : this.currentStage.trees,
+      this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats,
+      this.paintKit && protoArtReady() ? this.swingVines : this.vines,
+      this.paintKit && protoArtReady() ? [] : this.currentStage.trees,
       this.camera,
       this.gameTime
     );
 
     this.drawRivers(ctx, world, true);
-    if (!(this.proto && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.protoScene)))
+    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     drawCrumbleTiles(ctx, this.platforms, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     drawZoneBases(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
