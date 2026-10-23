@@ -3,7 +3,9 @@
  *
  *   composeStage(world, seed)  a new tune for a stage, always in that world's style: its mode, tempo, instruments
  *                              and groove, but a different key, chord progression, melody and arrangement for every
- *                              seed. The same seed always gives the same piece.
+ *                              seed. The same seed always gives the same piece. The worlds follow the story's three acts
+ *                              (acts.ts): sunny and Pokey's, somber with the lullaby sung sadly, heavy with the Iron
+ *                              March; some stages open with one of those tunes, quoted exactly.
  *   composeStory(kind)         the long, dramatic scores for the cutscenes. They are composed from fixed seeds, so
  *                              they are the same every time, but they are built by the same machinery.
  *
@@ -19,10 +21,13 @@
  *                on chord tones, leaps are limited, long notes close phrases.
  *   3. arrangement  pads, bass, arpeggios, a countermelody and drums from the world's palette, layered in by intensity.
  */
-import { SCALES, hashStr, rng } from './theory.ts';
+import { SCALES, hashStr, parseMelodyBar, rng } from './theory.ts';
 import type { ChordTrack, DrumName, DrumTrack, MelodyTrack, PatternTrack, Theme, Track } from './music.ts';
 import { IRON_CLAW, SLOMATT_A } from './tunes.ts';
+import { lullaby, stepBy } from './motifs.ts';
 import { orchestrate, PACE_CODE, paceFromCode, type Pace } from './orchestrate.ts';
+import { actOfWorld, fitShift, LEAD_BAND, LEAD_SIT, leadWindow, MIN_BPM, type ActId } from './acts.ts';
+import { trim, VOICE_RANGE, VOICE_TRIM_DB } from './scoreKit.ts';
 
 type R = () => number;
 type Mode = keyof typeof SCALES;
@@ -96,7 +101,7 @@ interface Harmony {
   doms: boolean[];
 }
 
-function harmony16(r: R, mode: Mode, tonicPc: number, o: { slow: boolean; seventh: number; hero: boolean }): Harmony {
+function harmony16(r: R, mode: Mode, tonicPc: number, o: { slow: boolean; seventh: number; tune?: Quote }): Harmony {
   const lib = progressionsFor(mode);
   const p1 = pick(r, lib);
   let p2 = pick(r, lib);
@@ -104,9 +109,9 @@ function harmony16(r: R, mode: Mode, tonicPc: number, o: { slow: boolean; sevent
   const cad = cadenceRoot(mode);
   const pre = pick(r, MINORISH.has(mode) ? [3, 5, 1] : [3, 1, 5]);
   const roots: number[] = [];
-  if (o.hero) {
-    // a fixed 8-bar tune brings its own chords (I V vi IV I V IV V)
-    roots.push(0, 4, 5, 3, 0, 4, 3, 4);
+  if (o.tune) {
+    // a fixed 8-bar tune brings its own chords (Pokey's: I V vi IV I V IV V)
+    roots.push(...o.tune.roots);
   } else if (o.slow) {
     roots.push(p1[0], p1[0], p1[1], p1[1], p1[2], p1[2], cad, 0);
   } else {
@@ -114,8 +119,9 @@ function harmony16(r: R, mode: Mode, tonicPc: number, o: { slow: boolean; sevent
   }
   if (o.slow) roots.push(p2[0], p2[0], p2[1], p2[1], p2[2], p2[2], pre, cad);
   else roots.push(p2[0], p2[1], p2[2], p2[3], p2[0], p2[1], pre, cad);
-  // the raised-third dominant only where a chord really leads home: the last bars of a section
-  const doms = roots.map((root, i) => cadenceIsDom(mode) && root === 4 && i % 8 >= 6);
+  // the raised-third dominant only where a chord really leads home: the last bars of a section. (The harmonic minor already has one, and a
+  // tune that keeps the plain minor fifth chord, like the lament, keeps it through its own eight bars.)
+  const doms = roots.map((root, i) => cadenceIsDom(mode) && mode !== 'harmonicMinor' && root === 4 && i % 8 >= 6 && !(o.tune?.doms === 'none' && i < 8));
   const names = roots.map((root, i) => chordName(tonicPc, mode, root, { seventh: r() < o.seventh, dom: doms[i] }));
   return { roots, names, doms };
 }
@@ -344,14 +350,19 @@ function sectionB(c: MelCtx, roots: number[], motif: BarN, startMid: number, dom
   const b0 = buildBar(c, roots[0], rC, from ? clamp(startMid - 1, from.end - 4, from.end + 4) : startMid - 1, null);
   // climb at the pace needed to get above the A section's top by the peak
   const climb = from ? clamp(from.top - 2 - b0.end, 2, 4) : pick(c.r, [3, 2, 2]);
-  const b1 = buildBar(c, roots[1], rC, b0.end + climb, b0.deltas);
+  let b1 = buildBar(c, roots[1], rC, b0.end + climb, b0.deltas);
+  // a climb that has come down again cannot reach the peak (the peak is at most a sixth above where it starts): build it again, rising
+  if (from && b1.end + 5 < Math.min(c.hi - 1, from.top + 1)) b1 = buildBar(c, roots[1], rC, Math.min(c.hi - 3, from.top - 5, b0.end + 4), [1, 1, 1, 1, 1, 1, 1]);
   const b2 = peakBar(c, roots[2], b1.end, from ? from.top + 1 : undefined);
   const b3 = fallBar(c, roots[3], b2.end);
   const b4 = buildBar(c, roots[4], pickRhythm(c), clamp(startMid, b3.end - 4, b3.end + 4), motif.deltas);
   const b5 = buildBar(c, roots[5], pickRhythm(c), b4.end + pick(c.r, [-1, 1]), motif.deltas);
   const b6 = buildBar(c, roots[6], pickRhythm(c), b5.end + pick(c.r, [-2, -1, 1]), null, doms?.[6]);
   // the last bar leans back toward where the tune begins, so the loop turns over without a jump
-  const b7 = cadenceBar(c, roots[7], 'open', Math.round((b6.end + startMid) / 2), doms?.[7]);
+  let b7 = cadenceBar(c, roots[7], 'open', Math.round((b6.end + startMid) / 2), doms?.[7]);
+  // ...but not by a jump: when the bar before has come down a long way, the close starts from where it ended
+  const first7 = b7.notes[0].n;
+  if (first7 !== null && Math.abs(first7 - b6.end) > 4) b7 = cadenceBar(c, roots[7], 'open', b6.end, doms?.[7]);
   return [b0, b1, b2, b3, b4, b5, b6, b7];
 }
 
@@ -392,13 +403,19 @@ function degreeRange(tonic: number, scale: number[], loMidi: number, hiMidi: num
 
 type Groove = 'bounce' | 'lazy' | 'drift' | 'drive' | 'march';
 
+/** the story's own tunes a stage can quote, and the sound they belong to */
+export type TuneName = 'pokey' | 'lullaby' | 'lament' | 'march';
+
 interface WorldCard {
+  /** the mode when the stage does not quote a tune (a quoted tune brings its own) */
   mode: Mode;
   tonics: string[];
   bpm: [number, number];
   swing?: number;
   swing8?: number;
+  /** who plays the tune (the real orchestra's solo voices; each is given only tunes that sit in its range, see acts.ts) */
   leads: Inst[];
+  /** who plays it instead on every second time round */
   alts: Inst[];
   pads: Array<'pad' | 'strings' | 'choir'>;
   bass: Inst[];
@@ -408,25 +425,63 @@ interface WorldCard {
   dens: MelCtx['dens'];
   /** chance of a seventh on any chord */
   seventh: number;
-  /** chance the A section is Pokey's theme */
-  hero: number;
+  /** the chance the A section is one of the story's tunes, tune by tune */
+  tunes: Array<[TuneName, number]>;
   /** longer chords (two bars each) */
   slow: number;
-  lead: [number, number];
   delay: number;
 }
 
+/**
+ * The worlds follow the story, in three acts (acts.ts). Each act has its own sound, and none of them stands still: a stage is a run.
+ *
+ *   Act I   The Trail      worlds 1-3   sunny and good-humored; flute, clarinet and violins over a bouncing pulse; Pokey's own tune
+ *   Act II  The Cost       worlds 4-7   somber; oboe, cello and clarinet, the dorian and plain minor, fewer notes, the lullaby played sadly
+ *   Act III The Iron Road  worlds 8-10  heavy; cellos and horns, the phrygian and the harmonic minor, the Iron March
+ */
 const CARDS: Record<number, WorldCard> = {
-  1: { mode: 'major', tonics: ['C', 'D', 'F', 'G'], bpm: [102, 116], leads: ['flute', 'marimba', 'pluck'], alts: ['marimba', 'bell'], pads: ['pad'], bass: ['bass'], arps: ['marimba', 'harp'], counters: ['marimba', 'bell'], groove: 'bounce', dens: 'normal', seventh: 0.1, hero: 0.35, slow: 0.1, lead: [64, 84], delay: 0.75 },
-  2: { mode: 'major', tonics: ['G', 'D', 'A', 'C'], bpm: [94, 106], swing8: 0.18, leads: ['kalimba', 'pluck', 'flute'], alts: ['pluck', 'marimba'], pads: ['pad'], bass: ['bass'], arps: ['harp', 'kalimba'], counters: ['flute', 'bell'], groove: 'lazy', dens: 'normal', seventh: 0.15, hero: 0.25, slow: 0.15, lead: [64, 86], delay: 0.75 },
-  3: { mode: 'minor', tonics: ['A', 'E', 'D', 'B'], bpm: [76, 90], leads: ['bell', 'kalimba', 'softLead'], alts: ['kalimba', 'bell'], pads: ['strings'], bass: ['subBass'], arps: ['kalimba', 'harp'], counters: ['bell', 'flute'], groove: 'drift', dens: 'sparse', seventh: 0.3, hero: 0, slow: 0.55, lead: [67, 90], delay: 0.75 },
-  4: { mode: 'lydian', tonics: ['F', 'C', 'G', 'Bb'], bpm: [90, 102], leads: ['bell', 'harp', 'flute'], alts: ['harp', 'bell'], pads: ['strings'], bass: ['bass', 'subBass'], arps: ['harp', 'bell'], counters: ['flute', 'kalimba'], groove: 'drift', dens: 'sparse', seventh: 0.35, hero: 0.1, slow: 0.4, lead: [69, 92], delay: 0.75 },
-  5: { mode: 'major', tonics: ['A', 'E', 'D', 'G'], bpm: [112, 124], swing8: 0.22, leads: ['steelpan', 'kalimba', 'marimba'], alts: ['kalimba', 'steelpan'], pads: ['pad'], bass: ['bass'], arps: ['marimba', 'pluck'], counters: ['steelpan', 'bell'], groove: 'bounce', dens: 'busy', seventh: 0.1, hero: 0.3, slow: 0, lead: [66, 90], delay: 0.75 },
-  6: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], bpm: [86, 98], swing: 0.28, leads: ['pluck', 'marimba', 'flute'], alts: ['marimba', 'pluck'], pads: ['strings'], bass: ['bass'], arps: ['marimba', 'kalimba'], counters: ['flute', 'bell'], groove: 'lazy', dens: 'normal', seventh: 0.25, hero: 0.1, slow: 0.2, lead: [62, 84], delay: 0.75 },
-  7: { mode: 'phrygian', tonics: ['E', 'A', 'D', 'B'], bpm: [82, 94], leads: ['brass', 'softLead', 'flute'], alts: ['softLead', 'brass'], pads: ['choir', 'strings'], bass: ['subBass'], arps: ['kalimba', 'pluck'], counters: ['bell', 'flute'], groove: 'march', dens: 'sparse', seventh: 0.1, hero: 0, slow: 0.5, lead: [60, 82], delay: 0.75 },
-  8: { mode: 'lydian', tonics: ['D', 'A', 'G', 'E'], bpm: [74, 86], leads: ['softLead', 'bell', 'flute'], alts: ['bell', 'softLead'], pads: ['strings'], bass: ['subBass'], arps: ['kalimba', 'harp'], counters: ['bell', 'kalimba'], groove: 'drift', dens: 'sparse', seventh: 0.35, hero: 0.1, slow: 0.5, lead: [66, 88], delay: 0.75 },
-  9: { mode: 'phrygian', tonics: ['D', 'A', 'G', 'E'], bpm: [122, 134], leads: ['brass', 'softLead', 'pluck'], alts: ['softLead', 'brass'], pads: ['strings'], bass: ['synthBass'], arps: ['pluck', 'brass'], counters: ['brass', 'bell'], groove: 'drive', dens: 'busy', seventh: 0.05, hero: 0, slow: 0, lead: [60, 82], delay: 0.5 },
-  10: { mode: 'minor', tonics: ['C', 'G', 'F', 'D'], bpm: [114, 126], leads: ['brass', 'softLead'], alts: ['softLead', 'brass'], pads: ['strings', 'choir'], bass: ['synthBass'], arps: ['pluck', 'brass'], counters: ['bell', 'brass'], groove: 'drive', dens: 'normal', seventh: 0.1, hero: 0, slow: 0.1, lead: [55, 79], delay: 0.5 },
+  // ---- Act I
+  1: { mode: 'major', tonics: ['C', 'D', 'F', 'G'], bpm: [108, 122], leads: ['flute', 'clarinet', 'violins'], alts: ['clarinet', 'oboe', 'flute'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'oboe'], groove: 'bounce', dens: 'normal', seventh: 0.1, tunes: [['pokey', 0.35]], slow: 0.1, delay: 0.75 },
+  2: { mode: 'major', tonics: ['G', 'D', 'A', 'C'], bpm: [104, 116], swing8: 0.18, leads: ['oboe', 'clarinet', 'flute'], alts: ['flute', 'clarinet', 'oboe'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'clarinet'], groove: 'lazy', dens: 'normal', seventh: 0.15, tunes: [['pokey', 0.25]], slow: 0.15, delay: 0.75 },
+  3: { mode: 'minor', tonics: ['A', 'E', 'D', 'B'], bpm: [104, 112], leads: ['oboe', 'clarinet', 'flute', 'cello'], alts: ['clarinet', 'oboe', 'flute'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['flute', 'clarinet'], groove: 'drift', dens: 'sparse', seventh: 0.3, tunes: [], slow: 0.35, delay: 0.75 },
+  // ---- Act II: the notes get thin
+  4: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], bpm: [100, 112], leads: ['oboe', 'cello', 'clarinet'], alts: ['clarinet', 'oboe', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['clarinet', 'oboe'], groove: 'lazy', dens: 'sparse', seventh: 0.3, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
+  5: { mode: 'minor', tonics: ['A', 'E', 'D', 'G'], bpm: [106, 118], leads: ['oboe', 'clarinet', 'cello'], alts: ['clarinet', 'oboe', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['clarinet', 'oboe'], groove: 'lazy', dens: 'normal', seventh: 0.25, tunes: [['lament', 0.35]], slow: 0.15, delay: 0.75 },
+  6: { mode: 'dorian', tonics: ['D', 'G', 'A', 'E'], bpm: [100, 110], leads: ['clarinet', 'oboe', 'cello'], alts: ['oboe', 'clarinet', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['harp'], counters: ['oboe', 'clarinet'], groove: 'lazy', dens: 'sparse', seventh: 0.25, tunes: [['lament', 0.3]], slow: 0.3, delay: 0.75 },
+  7: { mode: 'phrygian', tonics: ['E', 'A', 'D', 'B'], bpm: [100, 112], leads: ['cello', 'horn', 'oboe', 'clarinet'], alts: ['horn', 'cello', 'clarinet'], pads: ['choir', 'strings'], bass: ['bass'], arps: ['celloStac'], counters: ['oboe', 'clarinet'], groove: 'march', dens: 'sparse', seventh: 0.1, tunes: [['march', 0.3], ['lament', 0.2]], slow: 0.4, delay: 0.75 },
+  // ---- Act III: heavy, the Iron March
+  8: { mode: 'lydian', tonics: ['D', 'A', 'G', 'E'], bpm: [108, 114], leads: ['clarinet', 'oboe', 'cello', 'violins'], alts: ['oboe', 'clarinet', 'cello'], pads: ['strings', 'choir'], bass: ['bass'], arps: ['harp'], counters: ['oboe', 'clarinet'], groove: 'drift', dens: 'sparse', seventh: 0.3, tunes: [['lullaby', 0.4]], slow: 0.45, delay: 0.75 },
+  9: { mode: 'phrygian', tonics: ['D', 'A', 'G', 'E'], bpm: [118, 132], leads: ['cello', 'cello', 'oboe', 'clarinet'], alts: ['oboe', 'clarinet', 'cello'], pads: ['strings'], bass: ['bass'], arps: ['celloStac', 'violinStac'], counters: ['oboe', 'clarinet'], groove: 'drive', dens: 'normal', seventh: 0.05, tunes: [['march', 0.4]], slow: 0, delay: 0.5 },
+  10: { mode: 'minor', tonics: ['C', 'G', 'F', 'D'], bpm: [114, 128], leads: ['horn', 'cello', 'cello', 'oboe'], alts: ['cello', 'horn', 'oboe'], pads: ['strings', 'choir'], bass: ['bass'], arps: ['celloStac', 'hornStac'], counters: ['oboe', 'clarinet'], groove: 'drive', dens: 'normal', seventh: 0.1, tunes: [['march', 0.45]], slow: 0.1, delay: 0.5 },
+};
+
+/**
+ * The story's tunes as a stage quotes them: eight bars that open the stage, the chords under them, and where they leave the music for the
+ * made-up section that follows (scale-degree indexes: 0 is the tonic, 7 the octave above).
+ */
+interface Quote {
+  /** the mode the tune lives in: a stage that quotes it is in that mode */
+  mode: Mode;
+  /** the eight bars, in the stage's own scale degrees */
+  bars: string[];
+  /** the chord root under each bar (scale degree, 0..6) */
+  roots: number[];
+  /** the shape of the tune's opening, which the made-up section answers */
+  deltas: number[];
+  from: { end: number; top: number };
+  /** 'none': the fifth chord stays plain (the tune has its own notes against it) through the eight bars */
+  doms: 'auto' | 'none';
+}
+
+const QUOTES: Record<TuneName, Quote> = {
+  // Act I: Pokey's walk, in the major (the happy one)
+  pokey: { mode: 'major', bars: SLOMATT_A, roots: [0, 4, 5, 3, 0, 4, 3, 4], deltas: [1, -1, 1], from: { end: 7, top: 8 }, doms: 'auto' },
+  // Act III's rest: Meeca's lullaby as it was sung, counted square so that it walks
+  lullaby: { mode: 'major', bars: lullaby('sq'), roots: [0, 0, 5, 4, 3, 1, 4, 0], deltas: [1, 1], from: { end: 0, top: 8 }, doms: 'auto' },
+  // Act II: the lullaby stepped up two notes of the scale into the relative minor, broad and rocking, over minor chords: the same notes, sung sadly
+  lament: { mode: 'minor', bars: stepBy(lullaby('44'), 2), roots: [0, 4, 0, 4, 3, 3, 4, 0], deltas: [1, 1], from: { end: 2, top: 10 }, doms: 'none' },
+  // Act III: the lullaby with its lights out: the Iron March (the harmonic minor; the chords are the ones the lullaby has, turned dark)
+  march: { mode: 'harmonicMinor', bars: lullaby('sq', { scale: 'harmonicMinor' }), roots: [0, 0, 5, 4, 3, 1, 4, 0], deltas: [1, 1], from: { end: 0, top: 8 }, doms: 'none' },
 };
 
 const PC: Record<string, number> = { C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5, 'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11 };
@@ -507,36 +562,118 @@ const drumTracks = (r: R, groove: Groove): DrumTrack[] =>
 export interface Composed {
   theme: Theme;
   /** what was chosen, for the debug overlay and for tests */
-  info: { key: string; mode: string; bpm: number; lead: string; groove: Groove; hero: boolean; progression: string[] };
+  info: { key: string; mode: string; bpm: number; lead: string; groove: Groove; hero: boolean; tune: TuneName | null; act: ActId; progression: string[] };
 }
+
+/** the lowest and highest note of some bars of melody, as written (MIDI) */
+function extentOf(bars: string[], tonicMidi: number, scale: number[]): [number, number] {
+  let lo = 999;
+  let hi = -999;
+  for (const b of bars) {
+    for (const n of parseMelodyBar(b, tonicMidi, scale, 16)) {
+      if (n.midi === null) continue;
+      lo = Math.min(lo, n.midi);
+      hi = Math.max(hi, n.midi);
+    }
+  }
+  return [lo, hi];
+}
+
+/** a roll of the dice over the tunes a world may quote: one of them, or none */
+function rollTune(r: R, tunes: Array<[TuneName, number]>): TuneName | null {
+  const u = r();
+  let acc = 0;
+  for (const [name, p] of tunes) {
+    acc += p;
+    if (u < acc) return name;
+  }
+  return null;
+}
+
+/** an instrument may play a made-up line when the line stays inside what its recording covers */
+const coversRange = (inst: string, shift: number, lo: number, hi: number) => {
+  const v = VOICE_RANGE[inst];
+  return !!v && lo + shift >= v[0] && hi + shift <= v[1];
+};
 
 export function composeStageFull(world: number, seed: number, pace?: Pace): Composed {
   const w = clamp(Math.floor(world) || 1, 1, 10);
   const card = CARDS[w];
+  const act = actOfWorld(w);
   const r = rng((hashStr(`stage${w}`) ^ Math.imul(seed >>> 0, 2654435761)) >>> 0);
-  const tonicName = pick(r, card.tonics);
-  const tonicPc = PC[tonicName];
-  const mode = card.mode;
+  const tonicName0 = pick(r, card.tonics);
+  // a stage is a run, even in the saddest act: the act sets the slowest the music may be
+  const bpm = Math.max(MIN_BPM[act], Math.round(card.bpm[0] + r() * (card.bpm[1] - card.bpm[0])));
+  // some stages open with one of the story's tunes, and then the stage is in that tune's mode
+  const tune = rollTune(r, card.tunes);
+  const quote = tune ? QUOTES[tune] : undefined;
+  const mode = quote ? quote.mode : card.mode;
   const scale = SCALES[mode];
+  const first = Math.floor(r() * card.leads.length);
+  const order = card.leads.map((_, i) => card.leads[(first + i) % card.leads.length]);
+
+  // who plays the tune and where: an instrument only gets a tune that sits in its own range (a cello or a horn plays it an octave down),
+  // so a quoted tune goes in the first key of the world's where one of its leads can play it
+  const tonicOf = (name: string) => (PC[name] >= 10 ? 48 : 60) + PC[name];
+  let tonicName = tonicName0;
+  let lead = order[0];
+  let shift = LEAD_SIT[lead] ?? 0;
+  if (quote) {
+    // the lead the dice gave is kept if any key of the world's lets it play the tune; the key moves, not the voice
+    const start = card.tonics.indexOf(tonicName0);
+    let placed = false;
+    for (const inst of order) {
+      for (let k = 0; k < card.tonics.length && !placed; k++) {
+        const name = card.tonics[(start + k) % card.tonics.length];
+        const [tlo, thi] = extentOf(quote.bars, tonicOf(name), scale);
+        const s = fitShift(inst, tlo, thi);
+        if (s !== null) {
+          tonicName = name;
+          lead = inst;
+          shift = s;
+          placed = true;
+        }
+      }
+      if (placed) break;
+    }
+    if (!placed) {
+      // no lead of the world's can take it in any of its keys: the nearest instrument that can
+      const [tlo, thi] = extentOf(quote.bars, tonicOf(tonicName0), scale);
+      for (const inst of Object.keys(LEAD_BAND)) {
+        const s = fitShift(inst, tlo, thi);
+        if (s !== null) {
+          lead = inst;
+          shift = s;
+          break;
+        }
+      }
+    }
+  }
+  const tonicPc = PC[tonicName];
   const flats = usesFlats(tonicPc, mode);
   const tonicStr = `${noteName(tonicPc, flats)}${tonicPc >= 10 ? 3 : 4}`;
-  const tonicMidi = (tonicPc >= 10 ? 48 : 60) + tonicPc;
-  const bpm = Math.round(card.bpm[0] + r() * (card.bpm[1] - card.bpm[0]));
-  const hero = card.hero > 0 && r() < card.hero && mode === 'major';
-  const slow = !hero && r() < card.slow;
-  const h = harmony16(r, mode, tonicPc, { slow, seventh: card.seventh, hero });
+  const tonicMidi = tonicOf(tonicName);
+  const tuneRange = quote ? extentOf(quote.bars, tonicMidi, scale) : null;
+  const slow = !quote && r() < card.slow;
+  const h = harmony16(r, mode, tonicPc, { slow, seventh: card.seventh, tune: quote });
 
-  // the melody: A section, B section, composed to the chords
-  const [lo, hi] = degreeRange(tonicMidi, scale, card.lead[0], card.lead[1]);
+  // the melody: A section, B section, composed to the chords. The made-up part keeps to the instrument's own comfortable stretch.
+  const win = leadWindow(lead);
+  const [lo, hi] = degreeRange(
+    tonicMidi,
+    scale,
+    tuneRange ? Math.min(win[0] - shift, tuneRange[0]) : win[0] - shift,
+    tuneRange ? Math.max(win[1] - shift, tuneRange[1] + 3) : win[1] - shift,
+  );
   const c: MelCtx = { r, steps: 16, lo, hi, dens: card.dens };
   const mid = Math.round(lo + (hi - lo) * 0.45);
   let barsA: string[];
   let motif: BarN;
   let from: { end: number; top: number };
-  if (hero) {
-    barsA = SLOMATT_A.slice();
-    motif = buildBar(c, 0, [4, 4, 4, 4], mid, null);
-    from = { end: 7, top: 8 }; // the tune ends on the high tonic and touches the second above it
+  if (quote) {
+    barsA = quote.bars.slice();
+    motif = { notes: [], end: quote.from.end, deltas: quote.deltas };
+    from = quote.from;
   } else {
     const a = sectionA(c, h.roots.slice(0, 8), mid + pick(r, [-1, 0, 1]), h.doms.slice(0, 8));
     barsA = a.bars.map(barStr);
@@ -546,8 +683,13 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
   const b = sectionB(c, h.roots.slice(8, 16), motif, mid, h.doms.slice(8, 16), from);
   const bars = [...barsA, ...b.map(barStr)];
 
-  const lead = pick(r, card.leads);
-  const alt = pick(r, card.alts.filter((x) => x !== lead).concat(card.alts));
+  // who plays it instead on every second time round: only someone who can reach all of it at the same shift
+  const noteLo = tuneRange ? Math.min(tuneRange[0], win[0] - shift) : win[0] - shift;
+  const noteHi = tuneRange ? Math.max(tuneRange[1] + 3, win[1] - shift) : win[1] - shift;
+  // (and one that is about as loud as the lead for the same gain: the violins record far quieter than the winds, say)
+  const trimDb = (x: string) => VOICE_TRIM_DB[x] ?? 0;
+  const altChoices = card.alts.filter((x) => x !== lead && (LEAD_SIT[x] ?? 0) === (LEAD_SIT[lead] ?? 0) && Math.abs(trimDb(x) - trimDb(lead)) <= 2 && coversRange(x, shift, noteLo, noteHi));
+  const alt = altChoices.length ? pick(r, altChoices) : undefined;
   const padInst = pick(r, card.pads);
   const bassInst = pick(r, card.bass);
   const groove = card.groove;
@@ -557,14 +699,16 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
   const tracks: Track[] = [];
   tracks.push({ kind: 'chords', name: 'pad', inst: padInst, lo: padLo, hi: padHi, voices: 4, gain: padInst === 'pad' ? 0.34 : 0.3, rev: 0.45 } as ChordTrack);
   tracks.push({ kind: 'pattern', name: 'bass', inst: bassInst, oct: bassInst === 'bass' ? 36 : 33, pats: [pick(r, BASS_POOLS[groove]), pick(r, BASS_POOLS[groove])], gain: 0.52, rev: 0.05 } as PatternTrack);
-  tracks.push({ kind: 'melody', name: 'lead', inst: lead, altInst: alt, bars, gain: lead === 'brass' ? 0.5 : 0.64, rev: 0.32, dly: 0.16 } as MelodyTrack);
+  tracks.push({ kind: 'melody', name: 'lead', inst: lead, ...(alt ? { altInst: alt } : {}), bars, ...(shift ? { shift } : {}), gain: Math.round(0.64 * (LEAD_LEVEL[lead] ?? 1) * trim(lead) * 1000) / 1000, rev: 0.32, dly: 0.16 } as MelodyTrack);
   const arpInst = pick(r, card.arps);
-  tracks.push({ kind: 'pattern', name: 'arp', lite: true, inst: arpInst, oct: 58, pats: [pick(r, ARP_POOLS[groove]), pick(r, ARP_POOLS[groove])], gain: 0.38, rev: 0.3, dly: 0.14, pan: pick(r, [-0.25, 0.25]), gate: [0.1, 0.45] } as PatternTrack);
+  tracks.push({ kind: 'pattern', name: 'arp', lite: true, inst: arpInst, oct: ARP_OCT[arpInst] ?? 58, pats: [pick(r, ARP_POOLS[groove]), pick(r, ARP_POOLS[groove])], gain: 0.38, rev: 0.3, dly: 0.14, pan: pick(r, [-0.25, 0.25]), gate: [0.1, 0.45] } as PatternTrack);
   const counterInst = pick(r, card.counters);
+  const counterSit = LEAD_SIT[counterInst] ?? 0;
   tracks.push({
     kind: 'melody', name: 'counter', lite: true, inst: counterInst,
     bars: Array.from({ length: 16 }, () => null), gen: { lo: tonicMidi + 7, hi: tonicMidi + 19, density: 0.3 },
-    gain: 0.4, rev: 0.5, dly: 0.22, pan: pick(r, [-0.3, 0.3]), gate: [0.4, 0.8],
+    ...(counterSit ? { shift: counterSit } : {}),
+    gain: Math.round(0.4 * trim(counterInst) * 1000) / 1000, rev: 0.5, dly: 0.22, pan: pick(r, [-0.3, 0.3]), gate: [0.4, 0.8],
   } as MelodyTrack);
   tracks.push(...drumTracks(r, groove));
 
@@ -580,9 +724,24 @@ export function composeStageFull(world: number, seed: number, pace?: Pace): Comp
     tracks,
   };
   // the same tune, dressed in the orchestra for what the player is doing (the notes do not change with the pace)
-  if (pace) theme = orchestrate(theme, { world: w, pace, seed });
-  return { theme, info: { key: `${noteName(tonicPc, flats)} ${mode}`, mode, bpm, lead, groove, hero, progression: h.names } };
+  if (pace) theme = { ...orchestrate(theme, { world: w, pace, seed }), ...(STAGE_LEVEL[w] ? { level: STAGE_LEVEL[w] } : {}) };
+  return { theme, info: { key: `${noteName(tonicPc, flats)} ${mode}`, mode, bpm, lead, groove, hero: !!quote, tune, act, progression: h.names } };
 }
+
+/**
+ * How loud a solo voice plays its tune next to the woodwinds, once its recording's own level is made up for (scoreKit's trim): measured by
+ * rendering stages and comparing the tune with everything else. The cello's low notes carry a lot of weight, and the horn is a loud instrument.
+ */
+const LEAD_LEVEL: Record<string, number> = { cello: 0.7, horn: 0.85 };
+
+/**
+ * The master level of a dressed stage, world by world, so that every act plays about as loud as the music before it (A-weighted, measured on
+ * rendered stages): the brass-heavy worlds, with their tuba, trombones, choir and drums, came out about a decibel and a half hot.
+ */
+const STAGE_LEVEL: Record<number, number | undefined> = { 7: 0.84, 8: 0.94, 9: 0.94, 10: 0.81 };
+
+/** where an arpeggio of each voice is centred (MIDI): a figure for the cello lies lower than one for the violins */
+const ARP_OCT: Record<string, number> = { harp: 58, celloStac: 48, violinStac: 62, hornStac: 48 };
 
 export const composeStage = (world: number, seed: number, pace?: Pace): Theme => composeStageFull(world, seed, pace).theme;
 

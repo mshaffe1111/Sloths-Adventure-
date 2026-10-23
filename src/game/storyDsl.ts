@@ -18,7 +18,7 @@
  *   G  General Iron-Claw (the world-10 painted boss).   B<n>  the guardian of world n (B3 = Shadow Prowler)
  *   D  Dot the hummingbird, :pose is what he does (hover, perch, yelp, flinch, dizzy, cheer, puzzled, sad, gasp, sleep).   T  Thornbark.   H  the Heartbloom, :bud|bloom|epic|ultimate
  *   The story sheets (storyCels.ts has every pose; a bad pose name throws, so the tests catch it):
- *   GR Grandma   LP Lieutenant Pell   TC the town crier   PO the mail carrier   GN the General, armor to tunic (GN:crack, GN:rise)   GV the General in grey   GY the grandfather
+ *   GR Grandma   LP Lieutenant Pell   TC the town crier   PO the mail carrier   GN the General in his war look (GN:ready, GN:soften, GN:morph into GV)   GV the General as himself, a plain sloth   GY the grandfather, young (the same plain sloth)   GC the grandfather leading the cub Meeca by the hand (one picture, two figures)   GB/GP busts of the war look and the plain face
  *   MS Meeca's story poses (pink #07: faces, emotion, music box, the tower)   MF Meeca's face bust, :a+b+c changes expression   PN Pokey (satchel)   PV the cub (pink bow, satchel strap)   PX Pokey bandaged   PA PB Pokey and Meeca together   PH Pokey and Meeca hugging   e.g.  GR:water@.4  PH:hug_a@.5
  *   @x across the picture 0..1, ^y feet down the picture, *scale, < faces left, > faces right, ~ a dark silhouette, ! angry (boss), # beaten (boss)
  * An unset x, y and facing take the kind's usual place (Pokey on the left looking right, everyone else on the right looking left).
@@ -27,6 +27,7 @@
 import { DOT_POSES, isDotPose, type DotPose } from './dotSprite.ts';
 import { CEL_CAST, celPoses, celTrack, isCelCode } from './storyCels.ts';
 import type { SceneActor, SceneMood, ScenePhoto, StoryCue, StoryPanel, StoryScene, StorySting } from './story.ts';
+import { PLATES, isPlate } from './plateData.ts';
 
 export interface Beat {
   /** who speaks ('Narrator' for the storyteller) */
@@ -74,6 +75,8 @@ export const M = say('Meeca');
 export const D = say('Dot');
 export const GM = say('Grandma');
 export const GEN = say('General Iron-Claw');
+/** the General once the war look has let go: his badge is the plain face, and Meeca's word for him */
+export const GF = say('Grandfather');
 export const OFF = say('Officer');
 
 /** a slow camera move: from (zoom, focus x, focus y) to (zoom, x, y) over `dur` seconds */
@@ -260,6 +263,11 @@ export function chapter(spec: ChapterSpec, beats: Beat[]): StoryPanel[] {
       world, mood, particles: 'sparkles', zoom: 1.25, focusX: 0.5,
       ...spec.base, ...framed, ...b.p, actors,
     } as StoryScene;
+    // a plate brings its own floor: the actors stand on it unless the beat says otherwise
+    if (scene.plate !== undefined) {
+      if (!isPlate(scene.plate)) throw new Error(`${spec.name} beat ${n + 1}: unknown plate "${scene.plate}"`);
+      if (scene.ground === undefined) scene.ground = PLATES[scene.plate].ground;
+    }
     if (b.ph) scene.photo = { key: b.ph[0], caption: b.ph[1], size: b.ph[2] ?? 0.5, tilt: b.ph[3] } as ScenePhoto;
     const panel: StoryPanel = { chapter: spec.name, speaker: b.s, text: b.t, scene };
     if (b.tip) panel.tip = b.tip;

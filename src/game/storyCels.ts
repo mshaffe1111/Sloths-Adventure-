@@ -1,11 +1,11 @@
 /**
  * The painted cast of Matt's story sheets: Pokey's and Meeca's extra performances (Matt: the pink headband and #07 vest are MEECA's, the satchel is POKEY's, whatever the sheet
- * file names say), the two of them together, the General in three states, Grandma, Lieutenant Pell, the
+ * file names say), the two of them together, the General (a sloth in every state), Grandma, Lieutenant Pell, the
  * town crier and the mail carrier. Three atlases (src/assets/characters/cels-*.webp, cut by scratchpad story/cut.py + pack.py) hold 278 frames, each stored the way the sheet
  * drew it; `f` says which way the figure looks there, so a frame is mirrored only when its actor has to face the other way.
  *
  * In a cast string (storyDsl.ts) a figure is its CODE and a POSE:  `GR:water@.4`  `PH:hug_a@.5`  `GN:crack@.7<`. A pose is one frame (`code.pose` in CELS) or an ACT,
- * a short timed performance made of several frames (the General's armor cracking open). Pure parts here are testable without a canvas.
+ * a short timed performance made of several frames (the General's war look melting into the plain sloth). Pure parts here are testable without a canvas.
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { CELS, CEL_ATLAS_SIZES, type CelFrame } from './storyCelData.ts';
@@ -56,9 +56,15 @@ export const CEL_CAST: Record<string, CelCast> = {
   PA: { prefix: 'da', name: 'Pokey and Meeca together (first pass)', x: 0.5, face: 1, rest: 'side_by_side', who: ['Pokey', 'Meeca'] },
   PB: { prefix: 'db', name: 'Pokey and Meeca together (second pass)', x: 0.5, face: 1, rest: 'side_by_side', who: ['Pokey', 'Meeca'] },
   PH: { prefix: 'hug', name: 'Pokey and Meeca hugging', x: 0.5, face: 1, rest: 'stand_close', who: ['Pokey', 'Meeca'] },
-  GN: { prefix: 'gn', name: 'the General, armor to tunic', x: 0.7, face: -1, rest: 'tunic_stand', who: ['General Iron-Claw'] },
-  GV: { prefix: 'gv', name: 'the General in a grey tunic', x: 0.7, face: -1, rest: 'stand', who: ['General Iron-Claw'] },
-  GY: { prefix: 'gy', name: 'the General, younger (the grandfather)', x: 0.7, face: -1, rest: 'stand', who: ['Grandfather', 'General Iron-Claw'] },
+  // the General is a sloth in every state (Matt's sloth sheets). GN is his war look: red eyes, the spiked pauldron, the cape, the club. GV is who he is underneath: the plain sloth with the rust scarf and
+  // the wrapped wrists. GY is the same sloth when he was young (the grandfather). GB and GP are his faces, war look and plain.
+  GN: { prefix: 'gn', name: 'the General, war look (red eyes, pauldron, cape, club)', x: 0.7, face: -1, rest: 'ready_a', who: ['General Iron-Claw'] },
+  GV: { prefix: 'gv', name: 'the General, plain sloth (rust scarf, wrapped wrists)', x: 0.7, face: -1, rest: 'stand', who: ['General Iron-Claw'] },
+  GY: { prefix: 'gy', name: 'the General, young (the grandfather)', x: 0.7, face: -1, rest: 'stand', who: ['Grandfather', 'General Iron-Claw'] },
+  /** the grandfather leading the cub Meeca by the hand (one picture of the two): who the General was before the war look, and who she was when he held her hand */
+  GC: { prefix: 'gc', name: 'the grandfather leading the cub Meeca by the hand', x: 0.5, face: 1, rest: 'hand', who: ['Grandfather', 'General Iron-Claw', 'Meeca'] },
+  GB: { prefix: 'gb', name: 'the General, face (war look)', x: 0.66, face: -1, rest: 'stare', who: ['General Iron-Claw'], y: 1.04, scale: 1.5, bust: true },
+  GP: { prefix: 'gp', name: 'the General, face (plain)', x: 0.66, face: -1, rest: 'calm', who: ['General Iron-Claw', 'Grandfather'], y: 1.04, scale: 1.5, bust: true },
   GR: { prefix: 'gr', name: 'Grandma', x: 0.66, face: -1, rest: 'stand_hands', who: ['Grandma'] },
   LP: { prefix: 'lp', name: 'Lieutenant Pell', x: 0.66, face: -1, rest: 'stand_worry', who: ['Officer'] },
   TC: { prefix: 'tc', name: 'the town crier', x: 0.66, face: -1, rest: 'scroll', who: ['Gruntlewick'] },
@@ -84,13 +90,13 @@ const loop = (prefix: string, names: string[], fps: number): Act => [{ at: 0, fr
 
 /** acts by `CODE:name` */
 export const CEL_ACTS: Record<string, Act> = {
-  // the General's armor splits open and falls away (about nine seconds), and the old soldier stands up inside it
-  'GN:crack': run('gn', [['ready_a', 1.2], ['ready_b', 1.0], ['ready_c', 1.0], ['crack_spark', 1.2], ['crack_b', 1.2], ['crack_c', 1.2], ['armor_off', 1.4], ['bare_sorrow', 1]]),
-  'GN:rise': run('gn', [['armor_off', 1.3], ['bare_sorrow', 1.6], ['tunic_club_a', 1]]),
+  // the war look: a slow stand, and his eyes going out (the red, then the lids) as the song reaches him
   'GN:ready': loop('gn', ['ready_a', 'ready_b', 'ready_c', 'ready_b'], 1.6),
-  'GN:sorrow': run('gn', [['tunic_sad_a', 2.4], ['tunic_sad_b', 2.2], ['tunic_sad_c', 2.4], ['tunic_sad_a', 1]]),
-  'GN:club': loop('gn', ['tunic_club_a', 'tunic_club_b', 'tunic_club_c', 'tunic_club_d'], 1.1),
-  'GV:read': run('gv', [['sit_read', 2.5], ['kneel_read', 2.5], ['kneel_fold', 1]]),
+  'GN:soften': run('gn', [['glare', 1.1], ['narrow', 1.3], ['dim', 1.5], ['lids', 1.5], ['shut', 1.6], ['sleep_b', 1]]),
+  // the change itself: the war look dissolves (club, cape and spikes first) and the plain sloth comes up through it, about five seconds
+  'GN:morph': [{ at: 0, frame: 'gn.sleep_b' }, { at: 1.6, frame: 'gv.stand_m', fade: 3.4 }],
+  'GV:sorrow': run('gv', [['sorrow', 2.4], ['sorrow_b', 2.2], ['wipe_eye', 2.4], ['sorrow', 1]]),
+  'GV:read': run('gv', [['sorrow', 2.6], ['sorrow_b', 2.6], ['wipe_eye', 1]]),
   'PN:walk': loop('mc', ['walk_a', 'walk_b'], 3),
   'PN:run': loop('mc', ['run_a', 'run_b'], 6),
   'PV:walk': loop('mb', ['walk_a', 'walk_b'], 3),
@@ -153,7 +159,8 @@ export interface HeadSpec {
 export const HEADS: Record<string, HeadSpec> = {
   Grandma: { key: 'gr.laugh', x: 0.05, y: 0.0, s: 0.9 },
   Officer: { key: 'lp.hopeful', x: 0.1, y: 0.0, s: 0.8 },
-  Grandfather: { key: 'gy.smile', x: 0.05, y: 0.0, s: 0.9 },
+  Grandfather: { key: 'gy.smile', x: 0.1, y: 0.0, s: 0.8 },
+  Gruntlewick: { key: 'tc.hat_stand', x: 0.3, y: 0.0, s: 0.66 },
 };
 
 // ───────────── loading and drawing ─────────────

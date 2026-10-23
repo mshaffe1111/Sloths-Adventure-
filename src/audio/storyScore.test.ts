@@ -5,7 +5,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CUE_INTENSITY, sceneForPanel, stingDue } from './scenes.ts';
+import { CUE_INTENSITY, CUT_IN, CUT_IN_GAP, HOLD_SECONDS, holdScene, sceneForPanel, stingDue, type Held } from './scenes.ts';
 import { CUES, cueId } from './score.ts';
 import { themeById } from './themes.ts';
 import { STINGS, STORY_STINGS, STORY_STING_NAMES, stingDuck, stingLength, stingVoices } from './stingers.ts';
@@ -103,6 +103,59 @@ test('every panel of the story has music that exists, and the script\'s cues and
   assert.ok(cued / all.length > 0.8, `${cued} of ${all.length} panels name a cue`);
   assert.ok(cuesUsed.size >= 14, `${cuesUsed.size} of ${CUES.length} cues are used by the script`);
   assert.deepEqual([...stingsUsed].sort(), [...STING_NAMES].sort(), 'the script uses every sting there is, and only those');
+});
+
+// ───────────────────────────────────────────── holding a piece ─────────────────────────────────────────────
+
+test('a piece is held: a new cue does not take over until it has played a while, but the fullness follows each panel', () => {
+  const first = mk('WORLD 3 · A', { cue: 'tender', intensity: 0.4 });
+  let h = holdScene(null, sceneForPanel(first), first, 100);
+  assert.equal(h.scene.id, cueId('tender'), 'the first panel gets its own piece');
+  const joke = mk('WORLD 3 · A', { cue: 'comedy', intensity: 0.7 });
+  const h2 = holdScene(h.held, sceneForPanel(joke), joke, 100 + 10);
+  assert.equal(h2.scene.id, cueId('tender'), 'ten seconds in, the joke does not change the piece');
+  assert.equal(h2.scene.intensity, 0.7, 'but it fills it as the panel asks');
+  assert.deepEqual(h2.held, h.held, 'and the held piece keeps its start time');
+  const h3 = holdScene(h2.held, sceneForPanel(joke), joke, 100 + HOLD_SECONDS);
+  assert.equal(h3.scene.id, cueId('comedy'), `after ${HOLD_SECONDS} seconds the script\'s cue takes over`);
+  assert.equal(h3.held.since, 100 + HOLD_SECONDS);
+});
+
+test('a new scene, and the big cues, change the piece without waiting (but not twice in a breath)', () => {
+  const a = mk('WORLD 3 · A', { cue: 'tender' });
+  const held: Held = holdScene(null, sceneForPanel(a), a, 0).held;
+  const other = mk('WORLD 3 · B', { cue: 'sorrow' });
+  assert.equal(holdScene(held, sceneForPanel(other), other, 5).scene.id, cueId('sorrow'), 'a new chapter is a new scene: its music starts at once');
+  for (const cue of CUT_IN) {
+    const big = mk('WORLD 3 · A', { cue });
+    assert.equal(holdScene(held, sceneForPanel(big), big, CUT_IN_GAP + 1).scene.id, cueId(cue), `${cue} cuts in`);
+    assert.equal(holdScene(held, sceneForPanel(big), big, CUT_IN_GAP - 1).scene.id, cueId('tender'), `${cue} not so soon after the last change`);
+  }
+  for (const cue of ['dread', 'sorrow', 'comedy', 'hush', 'reveal', 'journey'] as StoryCue[]) assert.ok(!CUT_IN.has(cue), `${cue} waits its turn`);
+});
+
+test('read at eight seconds a panel, the story\'s music changes piece every few scenes\' worth of panels, not every two', () => {
+  const runs: Array<{ id: string; panels: StoryPanel[] }> = [{ id: 'prologue', panels: INTRO_PANELS }, { id: 'ending', panels: ENDING_PANELS }];
+  for (let w = 1; w <= 10; w++) {
+    const boss = BOSS_STORIES[w].intro[0].speaker;
+    runs.push({ id: `w${w}`, panels: WORLD_STORIES[w].panels }, { id: `m${w}`, panels: WORLD_MID[w] }, { id: `b${w}`, panels: bossPanels(w, 'intro', boss) });
+  }
+  for (const [id, m] of Object.entries(MEMORIES)) runs.push({ id, panels: m.panels });
+  let panels = 0;
+  let changes = 0;
+  for (const r of runs) {
+    let held: Held | null = null;
+    let last = '';
+    r.panels.forEach((p, i) => {
+      const h = holdScene(held, sceneForPanel(p), p, i * 8);
+      held = h.held;
+      if (last && h.scene.id !== last) changes++;
+      last = h.scene.id;
+      panels++;
+    });
+  }
+  assert.ok(panels > 400, `${panels} panels`);
+  assert.ok(changes / panels < 0.2, `${changes} changes in ${panels} panels: a piece should last five panels or more on average`);
 });
 
 // ───────────────────────────────────────────── when the sting fires ─────────────────────────────────────────────

@@ -12,7 +12,7 @@
 import { Conductor, type SceneOptions } from '../audio/conductor.ts';
 import type { AmbientType } from '../audio/ambience.ts';
 import { enemyIndex, hitArg, type Material } from '../audio/combat.ts';
-import { sceneForPanel, sceneForScreen, type PanelInfo } from '../audio/scenes.ts';
+import { holdScene, sceneForPanel, sceneForScreen, type Held, type PanelInfo } from '../audio/scenes.ts';
 
 type PredatorKind = 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
 
@@ -70,16 +70,22 @@ class SoundEngine {
 
   // ------------------------------------------------------------------ music
   scene(id: string | null, opts?: SceneOptions) {
+    this.held = null;
     this.c.setScene(id, opts);
   }
   /** music for a non-cutscene screen (cutscenes choose their own, panel by panel) */
   screen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string) {
+    this.held = null;
     const s = sceneForScreen(screen, world, isBoss, levelId, mini, salt, objective);
     if (s) this.c.setScene(s.id, { intensity: s.intensity, seed: s.seed, tempo: s.tempo });
     this.c.setPaused(screen === 'paused');
   }
+  /** the story piece being held (see scenes.ts holdScene); cleared when any other music is chosen */
+  private held: Held | null = null;
   storyPanel(panel: PanelInfo) {
-    const s = sceneForPanel(panel);
+    const h = holdScene(this.held, sceneForPanel(panel), panel, performance.now() / 1000);
+    this.held = h.held;
+    const s = h.scene;
     this.c.setScene(s.id, { intensity: s.intensity });
     // the storm belongs to the storm panels only: the quiet scenes after it must not keep the thunder
     this.c.setAmbient(panel.chapter.toUpperCase().startsWith('THE STORM') ? 'thunderstorm' : 'gentle_breeze');

@@ -483,11 +483,11 @@ export const riser: DrumVoice = (core, dst, t, vel) => {
 // The recorded orchestra (see orchVoices.ts and orchLoader.ts). Each has a synthesized stand-in until it has loaded.
 // ---------------------------------------------------------------------------------------------
 
-export const cello: NoteVoice = sustained('cello', { copies: 2, a: 0.13, r: 0.4, gain: 0.85, bright: [2400, 9000] }, bass);
+export const cello: NoteVoice = sustained('cello', { copies: 3, a: 0.13, r: 0.4, gain: 0.85, bright: [2400, 9000] }, bass);
 export const contra: NoteVoice = sustained('contra', { a: 0.1, r: 0.32, gain: 0.95, bright: [1400, 5500] }, subBass);
-export const violins: NoteVoice = sustained('violins', { copies: 3, a: 0.17, r: 0.45, gain: 0.55, bright: [2600, 9500] }, softLead);
-export const violas: NoteVoice = sustained('violas', { copies: 2, a: 0.15, r: 0.42, gain: 0.65, bright: [2400, 8500] }, softLead);
-export const horn: NoteVoice = sustained('horn', { copies: 2, a: 0.07, r: 0.32, gain: 0.8, bright: [1500, 6500] }, brass);
+export const violins: NoteVoice = sustained('violins', { copies: 4, a: 0.17, r: 0.45, gain: 0.55, bright: [2600, 9500] }, softLead);
+export const violas: NoteVoice = sustained('violas', { copies: 3, a: 0.15, r: 0.42, gain: 0.65, bright: [2400, 8500] }, softLead);
+export const horn: NoteVoice = sustained('horn', { copies: 3, a: 0.07, r: 0.32, gain: 0.8, bright: [1500, 6500] }, brass);
 export const trombone: NoteVoice = sustained('trombone', { copies: 2, a: 0.07, r: 0.3, gain: 0.75, bright: [1300, 5500] }, brass);
 export const tuba: NoteVoice = sustained('tuba', { a: 0.09, r: 0.3, gain: 0.9, bright: [1000, 3800] }, bass);
 export const celloStac: NoteVoice = plucked('celloStac', { gain: 0.95, ring: 0.3, damp: 0.14, bright: [3000, 10000] }, pluck);
@@ -496,10 +496,10 @@ export const hornStac: NoteVoice = plucked('hornStac', { gain: 0.85, ring: 0.36,
 export const contraPizz: NoteVoice = plucked('contraPizz', { gain: 1.1, ring: 0.8, damp: 0.25, bright: [1600, 6000] }, bass);
 
 export const harp: NoteVoice = plucked('harp', { gain: 0.95, ring: 1.8, damp: 0.5, bright: [3500, 10000] }, harpSynth);
-export const flute: NoteVoice = sustained('flute', { a: 0.07, r: 0.25, gain: 0.85, bright: [2800, 9500] }, fluteSynth);
-export const oboe: NoteVoice = sustained('oboe', { a: 0.06, r: 0.25, gain: 0.8, bright: [2400, 8000] }, softLead);
-export const clarinet: NoteVoice = sustained('clarinet', { a: 0.06, r: 0.25, gain: 0.85, bright: [2200, 7500] }, softLead);
-export const bassoon: NoteVoice = sustained('bassoon', { a: 0.07, r: 0.28, gain: 0.9, bright: [1800, 6000] }, bass);
+export const flute: NoteVoice = sustained('flute', { copies: 2, a: 0.07, r: 0.25, gain: 0.85, bright: [2800, 9500] }, fluteSynth);
+export const oboe: NoteVoice = sustained('oboe', { copies: 2, a: 0.06, r: 0.25, gain: 0.8, bright: [2400, 8000] }, softLead);
+export const clarinet: NoteVoice = sustained('clarinet', { copies: 2, a: 0.06, r: 0.25, gain: 0.85, bright: [2200, 7500] }, softLead);
+export const bassoon: NoteVoice = sustained('bassoon', { copies: 2, a: 0.07, r: 0.28, gain: 0.9, bright: [1800, 6000] }, bass);
 export const snare: DrumVoice = sampledDrum('snare', { gain: 0.9, by: 'vel', jitter: 0.02 }, snareSynth);
 export const triangle: DrumVoice = sampledDrum('triangle', { gain: 0.55, by: 'random', jitter: 0.01, ring: 1.6 }, rim);
 
@@ -514,11 +514,53 @@ export const timpani: DrumVoice = sampledDrum('timp', { gain: 1.0, by: 'random',
 export const crash: DrumVoice = sampledDrum('cymbal', { gain: 0.8, by: 'random', jitter: 0.02, ring: 2.4 }, crashSynth);
 export const gong: DrumVoice = sampledDrum('gong', { gain: 0.9, by: 'vel', jitter: 0.01 }, crashSynth);
 
+// ---- what the music plays in place of the synthesized voices (see realize.ts): all of them recordings, each with its stand-in
+
+/** a real marimba (the recordings run F2 to C7) */
+export const marimbaR: NoteVoice = plucked('marimba', { gain: 0.95, ring: 1.0, damp: 0.35, bright: [3000, 9500] }, marimba);
+/** a real glockenspiel: it only sounds above G5, so a note written lower rings an octave up (or two) */
+export const glockR: NoteVoice = (core, dst, t, hz, dur, vel) => {
+  let h = hz;
+  while (h < 784) h *= 2;
+  plucked('glock', { gain: 0.8, ring: 2.6, damp: 0.7, bright: [4500, 13000] }, bell)(core, dst, t, h, dur, vel);
+};
+/** the low line: always a bowed double bass, and a short note is let ring a little (a plucked or clipped bass note repeated every eighth is a "boop") */
+export const bassR: NoteVoice = (core, dst, t, hz, dur, vel) => contra(core, dst, t, hz, Math.max(dur, 0.34), vel * 0.92);
+/** a figure that repeats (an arpeggio, a pulse): bowed short notes, as strings play an ostinato, in place of a plucked or struck note that pings */
+export const figR: NoteVoice = (core, dst, t, hz, dur, vel) => {
+  const m = 69 + 12 * Math.log2(hz / 440);
+  (m < 55 ? celloStac : violinStac)(core, dst, t, m > 86 ? hz / 2 : hz, dur, vel * 0.8);
+};
+/** a harp played softly, for arpeggios: rounder and quieter than the harp's own bright pluck, so a figure that repeats does not ping */
+export const harpSoft: NoteVoice = plucked('harp', { gain: 0.78, ring: 1.5, damp: 0.5, bright: [1500, 4200] }, harpSynth);
+/** the woodwinds as a choir: each note of the chord goes to the instrument that sits in its register, a little apart as the players would be */
+export const orchWinds: ChordVoice = (core, dst, t, hzs, dur, vel) => {
+  const share = 0.9 / Math.sqrt(Math.max(1, hzs.length) / 2);
+  hzs.forEach((hz, i) => {
+    const m = 69 + 12 * Math.log2(hz / 440);
+    const v = m < 55 ? bassoon : m < 74 ? clarinet : flute;
+    v(core, dst, t + 0.007 * i + Math.random() * 0.01, hz, dur, vel * share);
+  });
+};
+/** the bottom of the orchestra under a chord: the double basses on its lowest note and the cellos on the next one up */
+export const orchLow: ChordVoice = (core, dst, t, hzs, dur, vel) => {
+  const sorted = [...hzs].sort((a, b) => a - b);
+  if (!sorted.length) return;
+  contra(core, dst, t + Math.random() * 0.01, sorted[0], dur, vel * 0.9);
+  if (sorted.length > 1) cello(core, dst, t + 0.012 + Math.random() * 0.01, sorted[1], dur, vel * 0.5);
+};
+/** a rim click or a woodblock, played as the snare drum's quietest hit */
+export const snareSoft: DrumVoice = (core, dst, t, vel) => snare(core, dst, t, vel * 0.3);
+/** nothing: hi-hats and shakers have no place in an orchestra */
+export const mute: DrumVoice = () => {};
+
 export const NOTE_VOICES: Record<string, NoteVoice> = {
   marimba, kalimba, bell, steelpan, pluck, harp, flute, softLead, brass, bass, subBass, synthBass,
   cello, contra, violins, violas, horn, trombone, tuba, celloStac, violinStac, hornStac, contraPizz, oboe, clarinet, bassoon,
+  marimbaR, glockR, bassR, harpSoft, figR,
 };
-export const CHORD_VOICES: Record<string, ChordVoice> = { pad, strings, choir, orchStrings, orchBrass };
+export const CHORD_VOICES: Record<string, ChordVoice> = { pad, strings, choir, orchStrings, orchBrass, orchWinds, orchLow };
 export const DRUM_VOICES: Record<string, DrumVoice> = {
   kick, softKick, snare, rim, brush, hat, ohat, shaker, congaHi, congaLo, clave, woodblock, tom, taiko, timpani, crash, riser, bassDrum, gong, triangle,
+  snareSoft, mute,
 };

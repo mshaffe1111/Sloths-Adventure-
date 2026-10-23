@@ -14,8 +14,8 @@
  *   - Every voice sits in its own register: basses and tuba below 130 Hz, cellos and bassoon and trombone from there up to the
  *     middle of the staff, horns and violas and clarinet in the middle, violins, flute and oboe on top. Nothing is doubled in
  *     the same octave except to make a section.
- *   - The tune is doubled in contrasting colours (a reed on it, strings an octave up, cellos an octave down), each only as the
- *     stage heats up, so the arrangement grows on its own with the intensity gates.
+ *   - The tune is doubled in contrasting colours (a reed on it, strings an octave up, cellos an octave down) by the fuller
+ *     orchestra (realize.ts), each only as the stage heats up, so the arrangement grows on its own with the intensity gates.
  *   - Something always moves: a sustained bed holds the harmony, a short-note ostinato gives the pulse, and the percussion marks
  *     the beat and the phrase (timpani on the beat, bass drum under the downbeats, a gong or crash at the top of a phrase).
  *   - Percussion that is not pitched stays out of the way of the tune: the high, hissy parts are kept low.
@@ -25,7 +25,7 @@
  * Pure data in, data out: nothing here touches audio, so it is all testable without a sound card.
  */
 import { hashStr, rng } from './theory.ts';
-import type { ChordTrack, DrumTrack, MelodyTrack, NoteInstName, PatternTrack, Theme, Track } from './music.ts';
+import type { ChordTrack, DrumTrack, NoteInstName, PatternTrack, Theme, Track } from './music.ts';
 
 export type Pace = 'run' | 'fight' | 'climb' | 'sneak' | 'boss';
 
@@ -59,10 +59,6 @@ interface Flavour {
   /** the staccato voice of the ostinato (usual, alternative), and the one that answers it high */
   ost: [NoteInstName, NoteInstName];
   ostHi: NoteInstName;
-  /** the tune doubled an octave down */
-  double: [NoteInstName, NoteInstName];
-  /** the reed that joins the tune */
-  wood: [NoteInstName, NoteInstName];
   /** brass colour for stabs and swells */
   brass: 'horn' | 'trombone';
   /** how much drum: 0 light .. 2 heavy */
@@ -78,26 +74,29 @@ interface Flavour {
 }
 
 const FLAVOUR: Record<number, Flavour> = {
-  // 1 Emerald Canopy: sunny and light on its feet. Pizzicato, a clarinet, a lot of harp
-  1: { bass: ['contraPizz', 'cello'], ost: ['violinStac', 'celloStac'], ostHi: 'violinStac', double: ['cello', 'violas'], wood: ['clarinet', 'oboe'], brass: 'horn', weight: 0, pad: 'orchStrings', harp: 1, snare: false, triangle: true, choir: false },
+  // ---- Act I, The Trail: sunny and light on its feet. Pizzicato, clarinet and flute, a lot of harp
+  // 1 Emerald Canopy: pizzicato, a lot of harp
+  1: { bass: ['contraPizz', 'cello'], ost: ['violinStac', 'celloStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 1, snare: false, triangle: true, choir: false },
   // 2 Sunlit Riverbank: lazy and flowing. Oboe and harp over violas, no snare
-  2: { bass: ['contraPizz', 'bassoon'], ost: ['celloStac', 'violinStac'], ostHi: 'violinStac', double: ['violas', 'cello'], wood: ['oboe', 'clarinet'], brass: 'horn', weight: 0, pad: 'orchStrings', harp: 1, snare: false, triangle: false, choir: false },
+  2: { bass: ['contraPizz', 'bassoon'], ost: ['celloStac', 'violinStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 1, snare: false, triangle: false, choir: false },
   // 3 the deep minor world: cellos and bassoon, sparse
-  3: { bass: ['cello', 'contra'], ost: ['celloStac', 'celloStac'], ostHi: 'violinStac', double: ['cello', 'violas'], wood: ['oboe', 'clarinet'], brass: 'horn', weight: 0, pad: 'orchStrings', harp: 0.6, snare: false, triangle: false, choir: false },
-  // 4 floating lydian: harp, violins and flute, almost no drums
-  4: { bass: ['contraPizz', 'cello'], ost: ['violinStac', 'violinStac'], ostHi: 'violinStac', double: ['violas', 'cello'], wood: ['clarinet', 'oboe'], brass: 'horn', weight: 0, pad: 'orchStrings', harp: 1, snare: false, triangle: true, choir: false },
-  // 5 busy and bright: bouncy violins, snare and triangle
-  5: { bass: ['contraPizz', 'tuba'], ost: ['violinStac', 'celloStac'], ostHi: 'celloStac', double: ['cello', 'violas'], wood: ['clarinet', 'oboe'], brass: 'horn', weight: 1, pad: 'orchStrings', harp: 0.5, snare: true, triangle: true, choir: false },
-  // 6 lazy dorian: pizzicato and cello, oboe, a swing of bassoon
-  6: { bass: ['contraPizz', 'bassoon'], ost: ['celloStac', 'violinStac'], ostHi: 'violinStac', double: ['violas', 'cello'], wood: ['oboe', 'clarinet'], brass: 'horn', weight: 1, pad: 'orchStrings', harp: 0.6, snare: true, triangle: false, choir: false },
-  // 7 phrygian march: tuba, trombone and a marching snare
-  7: { bass: ['tuba', 'contra'], ost: ['celloStac', 'hornStac'], ostHi: 'hornStac', double: ['cello', 'cello'], wood: ['clarinet', 'oboe'], brass: 'trombone', weight: 2, pad: 'orchBrass', harp: 0, snare: true, triangle: false, choir: true },
-  // 8 the night world: violas and violins, harp, a choir, hardly any drum
-  8: { bass: ['cello', 'contra'], ost: ['violinStac', 'violinStac'], ostHi: 'violinStac', double: ['violas', 'violas'], wood: ['oboe', 'clarinet'], brass: 'horn', weight: 0, pad: 'orchStrings', harp: 1, snare: false, triangle: true, choir: true },
+  3: { bass: ['cello', 'contra'], ost: ['celloStac', 'celloStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 0.6, snare: false, triangle: false, choir: false },
+  // ---- Act II, The Cost: somber. Bowed basses (no bouncing pizzicato), cellos for the pulse, nothing glittering, no snare
+  // 4 the mystery: bowed cello and bass, a little harp, no drums to speak of
+  4: { bass: ['cello', 'contra'], ost: ['celloStac', 'celloStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 0.6, snare: false, triangle: false, choir: false },
+  // 5 the cost gets personal: cellos and bassoon, a heavier timpani
+  5: { bass: ['cello', 'bassoon'], ost: ['celloStac', 'violinStac'], ostHi: 'celloStac', brass: 'horn', weight: 1, pad: 'orchStrings', harp: 0.4, snare: false, triangle: false, choir: false },
+  // 6 low and slow-hearted: bassoon and cello, a thin harp
+  6: { bass: ['bassoon', 'cello'], ost: ['celloStac', 'celloStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 0.5, snare: false, triangle: false, choir: false },
+  // 7 the General: tuba, trombone and a marching snare under a choir. The march is coming
+  7: { bass: ['tuba', 'contra'], ost: ['celloStac', 'hornStac'], ostHi: 'hornStac', brass: 'trombone', weight: 1, pad: 'orchBrass', harp: 0, snare: true, triangle: false, choir: true },
+  // ---- Act III, The Iron Road: heavy
+  // 8 the night world, the rest: violas and violins, harp, a choir, hardly any drum
+  8: { bass: ['cello', 'contra'], ost: ['violinStac', 'violinStac'], ostHi: 'violinStac', brass: 'horn', weight: 0, pad: 'orchStrings', harp: 1, snare: false, triangle: true, choir: true },
   // 9 driving phrygian: contrabass, 16th cellos, trombone stabs and snare
-  9: { bass: ['contra', 'tuba'], ost: ['celloStac', 'celloStac'], ostHi: 'hornStac', double: ['cello', 'cello'], wood: ['oboe', 'clarinet'], brass: 'trombone', weight: 2, pad: 'orchStrings', harp: 0, snare: true, triangle: false, choir: false },
+  9: { bass: ['contra', 'tuba'], ost: ['celloStac', 'celloStac'], ostHi: 'hornStac', brass: 'trombone', weight: 2, pad: 'orchStrings', harp: 0, snare: true, triangle: false, choir: false },
   // 10 the final world: tuba, trombone and horns, a choir, timpani, bass drum
-  10: { bass: ['tuba', 'contra'], ost: ['celloStac', 'hornStac'], ostHi: 'hornStac', double: ['cello', 'cello'], wood: ['clarinet', 'oboe'], brass: 'trombone', weight: 2, pad: 'orchBrass', harp: 0.4, snare: true, triangle: false, choir: true },
+  10: { bass: ['tuba', 'contra'], ost: ['celloStac', 'hornStac'], ostHi: 'hornStac', brass: 'trombone', weight: 2, pad: 'orchBrass', harp: 0.4, snare: true, triangle: false, choir: true },
 };
 
 const pick = <T>(r: () => number, a: readonly T[]): T => a[Math.min(a.length - 1, Math.floor(r() * a.length))];
@@ -188,7 +187,6 @@ export function orchestrate(theme: Theme, o: { world: number; pace: Pace; seed: 
   /** a stage's own dice: the same stage always gets the same picks, another stage another */
   const chance = (q: number) => r() < q;
   const tracks: Track[] = [];
-  const lead = theme.tracks.find((t) => t.kind === 'melody') as MelodyTrack | undefined;
   const hasInst = (inst: string) => theme.tracks.some((t) => t.kind === 'pattern' && t.inst === inst);
   const hasVoice = (v: string) => theme.tracks.some((t) => t.kind === 'drums' && t.voice === v);
 
@@ -250,18 +248,6 @@ export function orchestrate(theme: Theme, o: { world: number; pace: Pace; seed: 
   }
   if (f.triangle && TRI[p].length) {
     tracks.push({ kind: 'drums', name: 'triR', lite: true, voice: 'triangle', pats: TRI[p].map(fit), gain: 0.4, rev: 0.4, gate: [0.3, 0.6] } as DrumTrack);
-  }
-
-  // ---- the lead is doubled in other colours: that is where the body of a tune is
-  if (lead) {
-    const common = { kind: 'melody' as const, bars: lead.bars, gen: lead.gen, legato: lead.legato, genKey: lead.genKey ?? lead.name };
-    const sh = lead.shift ?? 0;
-    // the section of violins on the tune itself as the stage heats up
-    tracks.push({ ...common, name: 'leadStrings', lite: true, inst: 'violins', gain: 0.3, rev: 0.5, shift: sh, gate: [0.2, 0.5] } as MelodyTrack);
-    tracks.push({ ...common, name: 'leadReed', lite: true, inst: chance(0.7) ? f.wood[0] : f.wood[1], gain: 0.34, rev: 0.4, shift: sh, pan: 0.25, gate: [0.2, 0.5] } as MelodyTrack);
-    tracks.push({ ...common, name: 'leadDouble', inst: chance(0.7) ? f.double[0] : f.double[1], gain: 0.46, rev: 0.3, shift: sh - 12, gate: [0.05, 0.3] } as MelodyTrack);
-    // the big paces put a horn on it too, an octave and a bit down where a horn lives
-    if (big || p === 'climb') tracks.push({ ...common, name: 'leadHorn', lite: true, inst: 'horn', gain: 0.4, rev: 0.35, shift: sh - 12, pan: -0.2, gate: [0.3, 0.6] } as MelodyTrack);
   }
 
   // ---- the timpani, bass drum, and for a boss the gong

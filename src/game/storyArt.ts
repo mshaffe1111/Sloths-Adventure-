@@ -13,6 +13,7 @@ import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
 import { drawPaintedBird } from './birdSprites.ts';
 import { drawDotFrame, poseFrame, warmDot } from './dotSprite.ts';
 import { photoUrl } from './photos.ts';
+import { plateImage, preloadPlates } from './plates.ts';
 import { CEL_K, CELS, drawCel, warmCels } from './storyCels.ts';
 
 export const SCENE_W = 960;
@@ -477,6 +478,26 @@ export function preloadScenePhotos(keys: Array<string | undefined>) {
   for (const k of keys) if (k) photoImage(k);
 }
 
+/** start loading the whole-picture backdrops (plates) a cutscene will show */
+export function preloadScenePlates(keys: Array<string | undefined>) {
+  preloadPlates(keys);
+}
+
+/** a plate fills the picture (cover), the painting's own floor under the actors; until it has loaded the picture is a dark ground, never another world's scenery */
+function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: number, lift: number) {
+  const im = plateImage(key);
+  const hh = h * (1 + lift) + 4;
+  if (!im) {
+    ctx.fillStyle = '#0a0f18';
+    ctx.fillRect(0, 0, w, hh);
+    return;
+  }
+  const s = Math.max(w / im.naturalWidth, hh / im.naturalHeight);
+  const iw = im.naturalWidth * s;
+  const ih = im.naturalHeight * s;
+  ctx.drawImage(im, (w - iw) / 2, 0, iw, ih);
+}
+
 /** the look of a memory: colour drained and warmed, the edges melting into old paper, a faint projector flicker */
 function drawMemoryWash(ctx: CanvasRenderingContext2D, w: number, h: number, t: number) {
   ctx.save();
@@ -626,7 +647,11 @@ function drawCelActor(ctx: CanvasRenderingContext2D, a: SceneActor, w: number, h
   // a face bust breathes a little
   if (bust) ctx.translate(0, Math.sin(t * 2.4) * 2);
   else if (c.c !== 'raw') ctx.scale(1, 1 + Math.sin(t * 1.9 + (a.x * 7)) * 0.006);
-  drawCel(ctx, pose.frame, 0, 0, k, face);
+  if (pose.under && pose.mix !== undefined && CELS[pose.under]) {
+    // a dissolve: the old frame stays whole underneath while the new one comes up over it
+    drawCel(ctx, pose.under, 0, 0, k, face);
+    drawCel(ctx, pose.frame, 0, 0, k, face, pose.mix);
+  } else drawCel(ctx, pose.frame, 0, 0, k, face);
   ctx.restore();
 }
 
@@ -1258,21 +1283,26 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   const scroll = followScroll(scene.follow, scene.actors, t, w);
   // the sky and hills drift slowly behind the actors
   const camX = (scene.camX ?? 400) + t * 9 + scroll;
-  withBakeScale(STORY_BAKE, () => renderScenery(ctx, scene.world, camX, 0, w, h * (1 + lift) + 4, t, true));
-  drawSetPieceScrolled(ctx, scene.world, scene.mood, w, h, t, scene.castle, scroll);
+  const plated = !!scene.plate;
+  if (plated) {
+    drawPlate(ctx, scene.plate as string, w, h, lift);
+  } else {
+    withBakeScale(STORY_BAKE, () => renderScenery(ctx, scene.world, camX, 0, w, h * (1 + lift) + 4, t, true));
+    drawSetPieceScrolled(ctx, scene.world, scene.mood, w, h, t, scene.castle, scroll);
+  }
 
   if (scene.lineup) {
     drawBranch(ctx, h * ground, w, h, scroll);
     drawLineup(ctx, w, h, t, ground);
   } else {
-    drawBranch(ctx, h * ground, w, h, scroll);
+    if (!plated) drawBranch(ctx, h * ground, w, h, scroll);
     scene.actors.forEach((a) => drawActor(ctx, a, w, h, t, ground, scroll));
   }
 
   drawFx(ctx, scene.fx, t, w, h);
   drawParticles(ctx, scene.particles, w, h, t);
   drawMood(ctx, scene.mood, w, h, t);
-  withBakeScale(STORY_BAKE, () => renderOverlay(ctx, scene.world, camX, w, h * (1 + lift) + 4, t, true));
+  if (!plated) withBakeScale(STORY_BAKE, () => renderOverlay(ctx, scene.world, camX, w, h * (1 + lift) + 4, t, true));
   ctx.restore();
   ctx.save();
   if (scene.memory) drawMemoryWash(ctx, w, h, t);

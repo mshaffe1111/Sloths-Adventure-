@@ -19,6 +19,8 @@ export interface OrchSample {
 export interface AudioCoreOptions {
   /** quality of the reverb tail in seconds */
   reverbSeconds?: number;
+  /** the music hall's reverberation time in seconds */
+  hallSeconds?: number;
 }
 
 export class AudioCore {
@@ -154,7 +156,16 @@ export class AudioCore {
     dOut.connect(this.reverbIn);
 
     this.sends = { music: c.createGain(), sfx: c.createGain(), amb: c.createGain() };
-    for (const g of Object.values(this.sends)) g.connect(this.reverbIn);
+    this.sends.sfx.connect(this.reverbIn);
+    this.sends.amb.connect(this.reverbIn);
+    // the music has a hall of its own: a longer, darker room with the first reflections in it, so the orchestra sits on a stage instead of in a box
+    const hall = c.createConvolver();
+    hall.buffer = makeHall(c, opts.hallSeconds ?? 2.7);
+    const hallOut = c.createGain();
+    hallOut.gain.value = 0.85;
+    this.sends.music.connect(hall);
+    hall.connect(hallOut);
+    hallOut.connect(this.master);
     this.musicEchoSend = c.createGain();
     this.musicEchoSend.connect(this.delayIn);
 
@@ -246,6 +257,66 @@ function makeImpulse(ctx: BaseAudioContext, seconds: number): AudioBuffer {
       lp = lp * a + (Math.random() * 2 - 1) * (1 - a);
       d[i] = lp * env * 2.6;
     }
+  }
+  return buf;
+}
+
+/**
+ * A concert hall for the music: a pause before the room answers, a cluster of first reflections off the nearest walls (different in each ear),
+ * then a long diffuse tail that falls faster in the highs than in the lows, as air and cloth soak up treble first. Levelled to carry the same energy as
+ * the small room, so the music's reverb sends mean the same thing they did.
+ */
+function makeHall(ctx: BaseAudioContext, seconds: number): AudioBuffer {
+  const sr = ctx.sampleRate;
+  const len = Math.floor(sr * (seconds * 1.35));
+  const buf = ctx.createBuffer(2, len, sr);
+  const pre = Math.floor(sr * 0.026);
+  // decay rates (per second) of the three bands: lows ring longest
+  const kLow = 6.9 / (seconds * 1.25);
+  const kMid = 6.9 / seconds;
+  const kHigh = 6.9 / (seconds * 0.5);
+  let seed = 90210;
+  const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296) * 2 - 1;
+  for (let ch = 0; ch < 2; ch++) {
+    const d = buf.getChannelData(ch);
+    // first reflections: sixteen taps in the first 90 ms, each a little darker than the last
+    for (let k = 0; k < 16; k++) {
+      const at = pre + Math.floor(sr * (0.004 + (k / 16) * 0.09 + (rnd() * 0.5 + 0.5) * 0.004 + ch * 0.0017));
+      const amp = (0.55 * Math.pow(0.86, k)) * (rnd() > 0 ? 1 : -1);
+      let lp = 0;
+      for (let j = 0; j < 40 && at + j < len; j++) {
+        lp += (rnd() - lp) * Math.max(0.15, 0.7 - k * 0.04);
+        d[at + j] += lp * amp * Math.exp(-j / 12);
+      }
+    }
+    // the tail: three noise bands with their own decay
+    let lo = 0, hi = 0, hiPrev = 0;
+    for (let i = pre; i < len; i++) {
+      const t = (i - pre) / sr;
+      const w = rnd();
+      lo += (w - lo) * 0.045; // below ~300 Hz
+      hi = 0.75 * (hi + w - hiPrev); // above ~3 kHz
+      hiPrev = w;
+      const mid = w - lo - hi * 0.35;
+      const onset = Math.min(1, t / 0.05);
+      const swell = onset * onset * (3 - 2 * onset);
+      d[i] += swell * (lo * 5.5 * Math.exp(-t * kLow) + mid * 0.8 * Math.exp(-t * kMid) + hi * 0.55 * Math.exp(-t * kHigh));
+    }
+  }
+  // the same energy as the small room (see makeImpulse), so a send level means the same in both
+  const ref = makeImpulse(ctx, 2.1);
+  let eHall = 0;
+  let eRef = 0;
+  for (let ch = 0; ch < 2; ch++) {
+    const a = buf.getChannelData(ch);
+    const b = ref.getChannelData(ch);
+    for (let i = 0; i < a.length; i++) eHall += a[i] * a[i];
+    for (let i = 0; i < b.length; i++) eRef += b[i] * b[i];
+  }
+  const norm = Math.sqrt(eRef / Math.max(1e-9, eHall));
+  for (let ch = 0; ch < 2; ch++) {
+    const a = buf.getChannelData(ch);
+    for (let i = 0; i < a.length; i++) a[i] *= norm;
   }
   return buf;
 }

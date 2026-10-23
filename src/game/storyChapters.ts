@@ -4,7 +4,7 @@
  * storyFinale.ts; this file says which scene plays when, remembers which ones the player has seen, and lists them for the Library.
  */
 import type { StoryPanel } from './story.ts';
-import { GARDEN, GATES, BLESSING, HORN, PHOTOGRAPH, PROMISE_PANELS, SEAM, SEALED, STORM, TEA, WAITING } from './storyMemories.ts';
+import { DOOR, GARDEN, GATES, BLESSING, HORN, MAP, PHOTOGRAPH, PROMISE_PANELS, SEAM, SEALED, STORM, TALLY, TEA, WAITING } from './storyMemories.ts';
 
 export { finalePanels } from './storyFinale.ts';
 export { PROMISE_PANELS } from './storyMemories.ts';
@@ -12,7 +12,7 @@ export { PROMISE_PANELS } from './storyMemories.ts';
 // ───────────── the scenes ─────────────
 
 export type MemoryId =
-  | 'waiting' | 'horn' | 'garden' | 'tea' | 'sealed' | 'storm' | 'photograph' | 'promise' | 'seam' | 'blessing' | 'gates';
+  | 'waiting' | 'horn' | 'map' | 'garden' | 'tea' | 'sealed' | 'storm' | 'tally' | 'photograph' | 'promise' | 'seam' | 'blessing' | 'gates' | 'door';
 
 export interface MemoryDef {
   id: MemoryId;
@@ -27,22 +27,25 @@ export interface MemoryDef {
 export const MEMORIES: Record<MemoryId, MemoryDef> = {
   waiting: { id: 'waiting', title: 'The Waiting', hint: 'Beat the guardian of World 2.', kind: 'memory', panels: WAITING },
   horn: { id: 'horn', title: 'The Horn', hint: 'Beat the guardian of World 3.', kind: 'scene', panels: HORN },
+  map: { id: 'map', title: 'The Map', hint: 'Beat the guardian of World 3.', kind: 'scene', panels: MAP },
   garden: { id: 'garden', title: "Grandma's Garden", hint: 'Beat the guardian of World 4.', kind: 'memory', panels: GARDEN },
   tea: { id: 'tea', title: 'Tea with the Queen', hint: 'Beat the guardian of World 5.', kind: 'scene', panels: TEA },
   sealed: { id: 'sealed', title: 'The Sealed Note', hint: 'Beat the guardian of World 6.', kind: 'scene', panels: SEALED },
   storm: { id: 'storm', title: 'The Singing Storm', hint: 'Beat the guardian of World 6.', kind: 'memory', panels: STORM },
+  tally: { id: 'tally', title: 'The Tally', hint: 'Beat the guardian of World 6.', kind: 'scene', panels: TALLY },
   photograph: { id: 'photograph', title: 'The Photograph', hint: 'Beat the guardian of World 7.', kind: 'scene', panels: PHOTOGRAPH },
   promise: { id: 'promise', title: 'The Promise', hint: 'Rest a while in World 8.', kind: 'memory', panels: PROMISE_PANELS },
   seam: { id: 'seam', title: 'The Lieutenant', hint: 'Beat the guardian of World 8.', kind: 'scene', panels: SEAM },
   blessing: { id: 'blessing', title: 'The Blessing', hint: 'Beat the guardian of World 9.', kind: 'memory', panels: BLESSING },
   gates: { id: 'gates', title: 'The Open Gates', hint: 'Beat the guardian of World 9.', kind: 'scene', panels: GATES },
+  door: { id: 'door', title: 'The Door', hint: 'Beat the guardian of World 9.', kind: 'scene', panels: DOOR },
 };
 
-export const MEMORY_ORDER: MemoryId[] = ['waiting', 'horn', 'garden', 'tea', 'sealed', 'storm', 'photograph', 'promise', 'seam', 'blessing', 'gates'];
+export const MEMORY_ORDER: MemoryId[] = ['waiting', 'horn', 'map', 'garden', 'tea', 'sealed', 'storm', 'tally', 'photograph', 'promise', 'seam', 'blessing', 'gates', 'door'];
 
 /** which scenes play, in this order, the first time each world's guardian goes down (World 8's dream plays inside its world card) */
 export const AFTER_BOSS: Partial<Record<number, MemoryId[]>> = {
-  2: ['waiting'], 3: ['horn'], 4: ['garden'], 5: ['tea'], 6: ['sealed', 'storm'], 7: ['photograph'], 8: ['seam'], 9: ['blessing', 'gates'],
+  2: ['waiting'], 3: ['horn', 'map'], 4: ['garden'], 5: ['tea'], 6: ['sealed', 'storm', 'tally'], 7: ['photograph'], 8: ['seam'], 9: ['blessing', 'gates', 'door'],
 };
 
 /** the next scene still to play after a guardian falls (and after the one just seen, when `after` is given) */

@@ -15,6 +15,8 @@ test('every frame sits inside its atlas and no two frames overlap', () => {
       for (let j = i + 1; j < list.length; j++) {
         const [ka, a] = list[i];
         const [kb, b] = list[j];
+        // the young grandfather (gy.*) is the plain sloth: the same rectangle under a second name
+        if (a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h) continue;
         const apart = a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y;
         assert.ok(apart, `${ka} and ${kb} do not overlap`);
       }
