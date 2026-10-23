@@ -3,6 +3,7 @@ import { polishEnabled, setPolishPref } from '../game/polish.ts';
 import { goldSnakeEnabled, setGoldSnakePref } from '../game/goldSnake.ts';
 import { protoStageEnabled, setProtoStagePref } from '../game/protoStage.ts';
 import { paintedKitEnabled, setPaintedKitPref } from '../game/protoArt.ts';
+import { heroClipsEnabled, setHeroClipsPref } from '../game/heroClips.ts';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
@@ -386,6 +387,37 @@ export const PaintedKitToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">The new painted ground, branches, trunks and rocks on every World 1 stage. Starts on the next stage you enter. Off by default while it is being tested.</small>
+    </div>
+  );
+};
+
+/** Pokey's new moving clips (heroClips.ts): off by default while they are being tested */
+export const HeroClipsToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => heroClipsEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#f6c177" size={22}>
+            <circle cx="12" cy="8" r="4" />
+            <path d="M5 21c1-4 4-6 7-6s6 2 7 6" />
+          </Icon>
+          New animations (test)
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setHeroClipsPref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">Real animation made with the trained art models: stand still and Pokey yawns, scratches, waves and nods off, rubs his head after a hit and cheers at the exit; some story scenes move (the campfire, the storm, the misty village). Starts on the next stage or scene. Off by default while it is being tested.</small>
     </div>
   );
 };

@@ -91,6 +91,10 @@ export interface LevelConfig {
 }
 
 export interface PlayerState {
+  /** leaning into a log that moves (the push clip, heroClips.ts) */
+  pushing?: boolean;
+  /** game time he reached the exit, while the cheer plays before the stage clears (heroClips.ts) */
+  cheerAt?: number;
   x: number;
   y: number;
   vx: number;

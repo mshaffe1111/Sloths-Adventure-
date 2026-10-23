@@ -85,6 +85,7 @@ import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
+import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
 import { drawCurtainArt, drawProtoScene, drawSeedArt, paintedKitEnabled, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
@@ -278,6 +279,8 @@ export class GameEngine {
   private readonly speedScale: number = gameSpeed();
   private checkpoint = { x: 0, y: 0 };
   private respawnFlash = 0;
+  /** where he stood when the exit cheer began (heroClips.ts) */
+  private cheerX = 0;
   /** Seconds at the start of a stage / after a respawn where run input is ignored, so Pokey is dropped in standing still. */
   private inputGrace = 0.5;
 
@@ -358,6 +361,8 @@ export class GameEngine {
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
     this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
+    resetHeroClips();
+    warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
     this.drawPlats = this.pushLogs.length ? this.platforms.filter((pl) => !pl.push) : this.platforms;
@@ -1245,6 +1250,7 @@ export class GameEngine {
       p.x = Math.max(20, Math.min(maxX, p.x));
 
       // --- Solid ground blocks: walls you cannot walk through (Mario-style) ---
+      p.pushing = false;
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
         const half = 19;
         const prevX = p.x - p.vx * dt;
@@ -1264,6 +1270,7 @@ export class GameEngine {
           // a hollow log (protoStage.ts): walking into it pushes it along, slower than a walk
           if (plat.push && p.grounded && ((fromLeft && this.input.state.right) || (fromRight && this.input.state.left))) {
             const dir = fromLeft ? 1 : -1;
+            p.pushing = true;
             const nx = Math.max(plat.push.min, Math.min(plat.push.max - plat.width, plat.x + dir * PUSH_SPEED * dt));
             if (nx !== plat.x) {
               plat.x = nx;
@@ -1843,10 +1850,23 @@ export class GameEngine {
       bossDefeated
     );
 
-    if (isWin && !this.isGameOver) {
+    // with the new clips on (heroClips.ts, test), reaching the exit plays his cheer before the stage clears
+    let cheering = false;
+    if (isWin && !this.isGameOver && this.exitTotemReached && heroClipsEnabled() && hasClip('cheer')) {
+      if (p.cheerAt === undefined) {
+        p.cheerAt = this.gameTime;
+        this.cheerX = p.x;
+      }
+      if (this.gameTime - p.cheerAt < CHEER_SECONDS) {
+        cheering = true;
+        p.vx = 0;
+        if (p.grounded) p.x = this.cheerX; // he stays at the door while he cheers
+      }
+    }
+    if (isWin && !this.isGameOver && !cheering) {
       this.isGameOver = true;
       const stars = calculateLevelStars(
-        this.gameTime,
+        (p.cheerAt ?? this.gameTime),
         this.currentStage.config.timeLimit,
         p.hp / p.maxHp,
         objType === 'boss_lair' ? (bossDefeated ? 1 : 0) : currentProgress / Math.max(1, this.currentStage.config.targetCount),
@@ -1854,7 +1874,7 @@ export class GameEngine {
       );
 
       this.callbacks.onStageStats?.(this.buildStats(true, stars));
-      this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
+      this.callbacks.onVictory(stars, Math.round(p.cheerAt ?? this.gameTime), this.runScore);
     }
 
     // --- Particle System Update ---
@@ -3413,6 +3433,7 @@ export class GameEngine {
       if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
     }
     // Render Hero Sloth
+    heroClipsLive(true);
     if (rig) {
       const hp = this.player;
       drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));
@@ -3420,6 +3441,7 @@ export class GameEngine {
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else drawHeroSloth(ctx, this.player, this.gameTime);
+    heroClipsLive(false);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
       for (const cv of this.proto.covers) {

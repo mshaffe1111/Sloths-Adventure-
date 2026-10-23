@@ -1,9 +1,9 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
-import { COARSE, Icon, PolishToggle, OrchSfxToggle, GoldSnakeToggle, ProtoStageToggle, PaintedKitToggle, ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle } from './menuParts.tsx';
+import { COARSE, Icon, PolishToggle, OrchSfxToggle, GoldSnakeToggle, ProtoStageToggle, PaintedKitToggle, HeroClipsToggle, ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 
-export { COARSE, Icon, PolishToggle, OrchSfxToggle, GoldSnakeToggle, ProtoStageToggle, PaintedKitToggle };
+export { COARSE, Icon, PolishToggle, OrchSfxToggle, GoldSnakeToggle, ProtoStageToggle, PaintedKitToggle, HeroClipsToggle };
 import type { LevelConfig } from '../game/types.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { SKILLS, type SkillId } from '../game/skills.ts';
@@ -233,6 +233,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
       <GoldSnakeToggle />
       <ProtoStageToggle />
       <PaintedKitToggle />
+      <HeroClipsToggle />
     </div>
   </div>
 );
