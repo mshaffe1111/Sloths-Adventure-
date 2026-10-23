@@ -66,6 +66,21 @@ function markMidStorySeen(w: number) {
   } catch {}
 }
 
+/**
+ * Once progress is first written, ask the browser to keep this site's storage (saves and the offline game) rather than clear it when space
+ * runs low. Asked once per visit, never waited on; a browser may say no or not ask at all, and nothing changes either way.
+ */
+let askedToKeepStorage = false;
+function askToKeepStorage() {
+  if (askedToKeepStorage) return;
+  askedToKeepStorage = true;
+  try {
+    void navigator.storage?.persist?.()?.catch?.(() => {});
+  } catch {
+    /* not offered here */
+  }
+}
+
 export default function App() {
   const [screen, setScreen] = useState<GameScreen>('title');
   const [allLevels, setAllLevels] = useState<LevelConfig[]>(() => generateAllLevels());
@@ -601,6 +616,7 @@ export default function App() {
         bestTime: prevTime === 0 ? bestTime : bestTime > 0 ? Math.min(prevTime, bestTime) : prevTime,
       };
       localStorage.setItem(`sloth_lvl_${id}`, JSON.stringify(saved));
+      askToKeepStorage();
       setNewSkills(newlyLearned(id, skillsBefore));
       setSkills(learnedSkills());
     } catch {
