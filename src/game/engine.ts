@@ -883,7 +883,9 @@ export class GameEngine {
     const onRope = this.updateRope(dt);
     if (onRope) {
       // hanging from a rope: updateRope has done all the moving
-    } else if (nearTreeVine && (p.climbing || wantGrab)) {
+    } else if (nearTreeVine && (p.climbing || wantGrab) && (p.climbing || !(p.grounded && p.y <= nearTreeVine.topY + 14))) {
+      // (standing on the branch at the very top of a trunk, a jump is a jump: it used to grab the trunk and turn into the
+      // little vault off its top, a 21 px hop, so nothing could be jumped to from beside a trunk's top)
       if (!p.climbing) {
         sound.playVineGrab();
         // the press that grabbed the trunk must not also leap off it or hop away with a drifting thumb
