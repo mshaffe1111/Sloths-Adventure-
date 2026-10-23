@@ -94,6 +94,8 @@ import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 /** How many world units tall the screen shows. */
 /** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
 const FIND_SEARCH_SECONDS = 0.9;
+/** seconds before a crumbled platform grows back */
+const REGROW_SECONDS = 3;
 /** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
 const PUSH_SPEED = 120;
 
@@ -1397,8 +1399,20 @@ export class GameEngine {
         plat.fragileTimer -= dt;
         if (plat.fragileTimer <= 0) {
           plat.broken = true;
+          plat.regrowAt = this.gameTime + REGROW_SECONDS;
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
           sound.playHitImpact(true);
+        }
+      }
+      // a crumbled platform comes back a few seconds later (never while Pokey is where it would appear), so a stage can
+      // never be left with a gap nobody can cross: falling costs a little time, never the way on
+      if (plat.broken && plat.type === 'fragile' && plat.regrowAt !== undefined && this.gameTime >= plat.regrowAt) {
+        const inside = p.x + 20 > plat.x && p.x - 20 < plat.x + plat.width && p.y > plat.y - 70 && p.y < plat.y + plat.height + 10;
+        if (!inside) {
+          plat.broken = false;
+          plat.fragileTimer = undefined;
+          plat.regrowAt = undefined;
+          this.spawnSparkBurst(plat.x + plat.width * 0.5, plat.y - 6, '#86efac');
         }
       }
     }
@@ -1589,7 +1603,7 @@ export class GameEngine {
     // the hand-built stage's one-time hints (protoStage.ts)
     if (this.proto) {
       for (const h of this.proto.hints) {
-        if (h.shown || p.x < h.x) continue;
+        if (h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY)) continue;
         h.shown = true;
         const mode = lessonInputMode();
         this.stageHint = { text: mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, life: 3.6 };
@@ -2959,6 +2973,7 @@ export class GameEngine {
       if (pl.type === 'fragile') {
         pl.broken = false;
         pl.fragileTimer = undefined;
+        pl.regrowAt = undefined;
       }
     }
     // a liana that was mid-swing stops swinging

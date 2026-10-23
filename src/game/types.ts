@@ -240,6 +240,8 @@ export interface Platform {
   /** World 7 ruin tiles: seconds the tile holds once stepped on (instead of the usual 1.1) */
   crumbleAfter?: number;
   broken?: boolean;
+  /** a broken crumbling platform grows back at this game time (engine.ts), so nothing that breaks can ever be needed to finish */
+  regrowAt?: number;
   moveRange?: number;
   moveSpeed?: number;
   baseX?: number;

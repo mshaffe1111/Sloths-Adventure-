@@ -48,7 +48,7 @@ export const LOG = { w: 220, h: 100 } as const;
 
 /** a short line shown above Pokey the first time he passes x */
 /** `text` is for screen gestures (the default), `pad` and `keys` for the on-screen pad and a keyboard */
-export interface StageHint { x: number; text: string; pad: string; keys: string; shown?: boolean }
+export interface StageHint { x: number; text: string; pad: string; keys: string; shown?: boolean; /** only when Pokey is this low or lower (fell to the floor) */ belowY?: number }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
 
@@ -178,6 +178,7 @@ export function buildProtoStage(config: LevelConfig): GeneratedStage & { proto: 
   liana(8620, 200, 560);
   branch(8780, 9350, 400);
   trunk(9250, G, 400);
+  for (let i = 0; i < 3; i++) flower(9250, G - 70 - i * 55, 'hibiscus');
   snake(9060, 400, 120);
   branch(9450, 9800, 340);
   row(9500, 9760, 306, 3, 'hibiscus');
@@ -210,6 +211,7 @@ export function buildProtoStage(config: LevelConfig): GeneratedStage & { proto: 
     { x: 4700, text: 'Flick up beside the trunk, keep your thumb up', pad: 'Jump at the trunk, hold Pad up', keys: 'Jump at the trunk, hold W or up' },
     { x: 6100, text: 'Keep sliding into the log to push it', pad: 'Hold the pad into the log to push it', keys: 'Hold left or right into the log to push it' },
     { x: 7900, text: 'The canopy road', pad: 'The canopy road', keys: 'The canopy road' },
+    { x: 8500, belowY: 520, text: 'Fell? Climb the next tree back up', pad: 'Fell? Climb the next tree back up', keys: 'Fell? Climb the next tree back up' },
     { x: 9820, text: 'Something shiny, far away...', pad: 'Something shiny, far away...', keys: 'Something shiny, far away...' },
   ];
 
