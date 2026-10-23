@@ -22,7 +22,7 @@ const entryLimit = (k: string) => (k === 'sloth_badges' ? MAX_BADGE_ENTRY_CHARS 
 const ALLOWED: RegExp[] = [
   /^sloth_lvl_(\d{1,2}|S)-\d{1,2}$/, // per-stage result
   /^sloth_layout_(\d{1,2}|S)-\d{1,2}$/, // the layout a stage was first played with (it stays the same)
-  /^sloth_story_[wm]\d{1,2}$/, // world intro seen (w) and the scene halfway through the world (m)
+  /^sloth_story_[wmn]\d{1,2}$/, // world intro seen (w), the scene halfway through the world (m), World 1's first note after 1-1 (n)
   /^sloth_way_\d{1,2}-\d{1,2}$/, // which in-stage asides have been heard (so a new game hears them again; the on/off switch is a device setting, not here)
   /^sloth_secret_gate$/,
   /^sloth_thorn_heart$/,
@@ -189,5 +189,6 @@ export function resetProgress(store: Store, opts: { skipStory?: boolean } = {}) 
       store.setItem(`sloth_story_w${w}`, '1');
       store.setItem(`sloth_story_m${w}`, '1');
     }
+    store.setItem('sloth_story_n1', '1');
   }
 }

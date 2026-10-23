@@ -51,6 +51,23 @@ function markWorldStorySeen(w: number) {
     localStorage.setItem(worldStoryKey(w), '1');
   } catch {}
 }
+/**
+ * World 1's arrival scene (Dot's return and Meeca's first note) plays once, after stage 1-1 is first cleared:
+ * a new player plays straight after the prologue, and the note arrives as the reward for the first stage.
+ */
+const FIRST_NOTE_KEY = 'sloth_story_n1';
+function hasSeenFirstNote(): boolean {
+  try {
+    return localStorage.getItem(FIRST_NOTE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+function markFirstNoteSeen() {
+  try {
+    localStorage.setItem(FIRST_NOTE_KEY, '1');
+  } catch {}
+}
 /** the scene halfway through a world (after its 5th stage) plays once */
 const midStoryKey = (w: number) => `sloth_story_m${w}`;
 function hasSeenMidStory(w: number): boolean {
@@ -473,7 +490,15 @@ export default function App() {
     };
   }
 
+  /** true while World 1's arrival scene plays as the reward after clearing 1-1 (it then goes on to the stage-cleared card) */
+  const storyAfterClear = useRef(false);
   const continueAfterWorldStory = (lvl: LevelConfig) => {
+    if (storyAfterClear.current) {
+      storyAfterClear.current = false;
+      markFirstNoteSeen();
+      setScreen('victory');
+      return;
+    }
     markWorldStorySeen(lvl.worldIndex);
     if (lvl.objectiveType === 'boss_lair') setScreen('boss_intro');
     else launchEngine(lvl);
@@ -567,6 +592,10 @@ export default function App() {
           if (lvl.objectiveType === 'boss_lair') {
             // Boss defeated: play the defeat scene first
             setScreen('boss_defeat');
+          } else if (lvl.worldIndex === 1 && lvl.miniIndex === 1 && WORLD_STORIES[1] && !hasSeenFirstNote()) {
+            // the first stage is cleared: Dot arrives with Meeca's first note
+            storyAfterClear.current = true;
+            setScreen('world_story');
           } else if (lvl.miniIndex === 5 && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
             // halfway through a world, Dot catches up with a note from Meeca
             setScreen('world_mid');
@@ -778,7 +807,7 @@ export default function App() {
       {screen === 'world_story' && WORLD_STORIES[activeLevel.worldIndex] && (
         <StoryPlayer
           panels={WORLD_STORIES[activeLevel.worldIndex].panels}
-          finishLabel="Let's go"
+          finishLabel={storyAfterClear.current ? 'Onward' : "Let's go"}
           onFinish={() => continueAfterWorldStory(activeLevel)}
         />
       )}
