@@ -1,5 +1,6 @@
 import React from 'react';
 import { polishEnabled, setPolishPref } from '../game/polish.ts';
+import { goldSnakeEnabled, setGoldSnakePref } from '../game/goldSnake.ts';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
@@ -291,6 +292,37 @@ export const OrchSfxToggle: React.FC = () => {
   );
 };
 
+
+/** Matt's golden snake (saved on the device): off by default while testers try it */
+export const GoldSnakeToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => goldSnakeEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#f6c35a" size={22}>
+            <path d="M4 16c3 0 3-4 6-4s3 4 6 4 3-4 4-4" />
+            <circle cx="20" cy="11" r="1.6" />
+          </Icon>
+          Golden snakes
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setGoldSnakePref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">Try the new snake: one painting with a body that slithers, rears and strikes smoothly. It moves and hits exactly like the old one. Off by default while it is being tested.</small>
+    </div>
+  );
+};
 
 /** full screen on or off (the game starts full screen; this is the way out, and back): hidden where the browser cannot do it */
 export const FullscreenSetting: React.FC = () => {

@@ -34,6 +34,7 @@ import { drawEagleSprite } from './eagleSprite.ts';
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
+import { drawGoldSnake } from './goldSnake.ts';
 import { drawTayraSprite } from './tayraSprite.ts';
 import { drawHarpyFallback, drawHarpySprite } from './harpySprite.ts';
 import { drawOcelotSprite } from './ocelotSprite.ts';
@@ -3273,7 +3274,7 @@ export class GameEngine {
       }
       const draw = () => {
         if (enemy.type === 'snake') {
-          if (!drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
+          if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
