@@ -63,6 +63,7 @@ import {
   calculateHitScore,
   atExitDoor,
   atSealedDoor,
+  ascentProgress,
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
@@ -279,6 +280,8 @@ export class GameEngine {
   private dbgStrike: Rect | null = null;
 
   private exitTotemReached: boolean = false;
+  /** a climbing stage: the highest his feet have been (smallest y), so its progress bar only ever goes up */
+  private bestClimbY = Infinity;
   private daisyRescued: boolean = false;
   private isGameOver: boolean = false;
   private nearTreeVine: Vine | null = null;
@@ -1789,10 +1792,16 @@ export class GameEngine {
     this.bossFrame(dt);
     this.updateCamera(dt);
 
-    // Calculate progress ratio across the level
-    const totalDist = Math.max(1, (this.currentStage.exitTotemX || this.currentStage.config.levelWidth) - 140);
-    const distTraveled = Math.max(0, p.x - 140);
-    const distanceRatio = Math.min(1.0, distTraveled / totalDist);
+    // Calculate progress ratio across the level (a climbing stage counts how high he has got, not how far along: its door is at the top)
+    let distanceRatio: number;
+    if (objType === 'ascent') {
+      this.bestClimbY = Math.min(this.bestClimbY, p.y);
+      distanceRatio = ascentProgress(this.currentStage.spawnY, this.currentStage.exitTotemY, this.bestClimbY);
+    } else {
+      const totalDist = Math.max(1, (this.currentStage.exitTotemX || this.currentStage.config.levelWidth) - 140);
+      const distTraveled = Math.max(0, p.x - 140);
+      distanceRatio = Math.min(1.0, distTraveled / totalDist);
+    }
 
     // Notify HUD
     this.callbacks.onProgressUpdate(

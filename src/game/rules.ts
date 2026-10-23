@@ -213,6 +213,17 @@ export function atExitDoor(p: { x: number; y: number }, doorX: number, doorGroun
   return Math.abs(p.x - doorX) <= 40 && feet > doorGroundY - 142 && head < doorGroundY - 8;
 }
 
+/**
+ * How far up a climbing stage he has got, 0..1: the best height his feet have reached (`bestY`, the smallest y so far), measured from where
+ * he started (`spawnY`) up to the summit floor the door stands on (`goalY`, the same `exitTotemY` that atExitDoor checks). Running along the
+ * ground floor counts for nothing; only the climb does.
+ */
+export function ascentProgress(spawnY: number, goalY: number, bestY: number): number {
+  const rise = spawnY - goalY;
+  if (!(rise > 0) || !Number.isFinite(bestY)) return 0;
+  return Math.min(1, Math.max(0, (spawnY - bestY) / rise));
+}
+
 /** is he on the door's own floor and at or past the door's near side (a sealed door stops him there)? */
 export function atSealedDoor(p: { x: number; y: number }, doorX: number, doorGroundY: number): boolean {
   return p.x >= doorX - 25 && p.x <= doorX + 120 && p.y > doorGroundY - 142 && p.y - 38 < doorGroundY + 4;
