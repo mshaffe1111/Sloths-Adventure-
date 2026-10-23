@@ -23,7 +23,7 @@ test('clips: off by default, so the hero draws as before', () => {
 
 test('clips: every sheet is cut at the standard hero size, feet inside the frame', () => {
   for (const [name, c] of Object.entries(HERO_CLIPS)) {
-    assert.ok(c.n > 8 && c.cols > 0 && c.fps > 0, name);
+    assert.ok(c.n > (name.startsWith('move-') ? 4 : 8) && c.cols > 0 && c.fps > 0, name); // a strike sheet is a handful of hand-picked frames
     assert.ok(c.ax > 0 && c.ax < c.w && c.ay > c.h * 0.8 && c.ay <= c.h, `${name}: feet at ${c.ax},${c.ay} in ${c.w}x${c.h}`);
     assert.ok(c.h < 320, `${name}: ${c.h} px tall, the standing hero is 200`);
   }

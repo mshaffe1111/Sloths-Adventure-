@@ -290,6 +290,9 @@ export class GameEngine {
   private atkQueue: { want: AttackWant; ttl: number; face: number } | null = null;
   private lastPunch: MoveId | null = null;
   private chainTimer = 0;
+  /** kicks thrown close together take turns: a front snap kick, then a high side kick (only the new animation sheets show it) */
+  private kickTurn = 0;
+  private kickChain = 0;
   private swingId = 0;
   private megaCooldown = 0;
   /** after a stomp, a short breather where nothing can hurt Pokey (the thing he landed on is not a threat any more) */
@@ -2279,6 +2282,7 @@ export class GameEngine {
     if (this.megaCooldown > 0) this.megaCooldown -= dt;
     this.input.megaReady = this.megaCooldown <= 0;
     if (this.chainTimer > 0) this.chainTimer -= dt;
+    if (this.kickChain > 0) this.kickChain -= dt;
     if (p.grounded) this.stompChain = 0;
 
     let want: AttackWant | null = null;
@@ -2332,6 +2336,7 @@ export class GameEngine {
     else if (inp.right && !inp.left) p.facing = 1;
     else if (face) p.facing = face > 0 ? 1 : -1; // a flicked kick goes the way the thumb flicked
     if (id === 'mega') this.megaCooldown = 1.0;
+    if (id === 'kick') this.kickTurn = this.kickChain > 0 ? this.kickTurn + 1 : 0;
     this.chainTimer = 0;
     this.atk = { move, t: 0, id: ++this.swingId, connected: false, lunged: false, hits: new Set(), sounded: false };
   }
@@ -2342,6 +2347,7 @@ export class GameEngine {
     const id = a.move.id;
     this.lastPunch = id === 'jab' || id === 'cross' ? id : null;
     this.chainTimer = this.lastPunch ? 0.35 : 0;
+    this.kickChain = id === 'kick' ? 0.5 : 0;
     this.atk = null;
   }
 
@@ -2373,7 +2379,7 @@ export class GameEngine {
       return;
     }
     const m = a.move;
-    p.attackMove = m.id;
+    p.attackMove = m.id === 'kick' && this.kickTurn % 2 ? 'kick2' : m.id;
     p.attackU = Math.min(1, a.t / Math.max(0.001, moveLength(m)));
     p.punching = m.kind !== 'kick';
     p.kicking = m.kind === 'kick';

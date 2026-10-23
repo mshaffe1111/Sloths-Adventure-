@@ -131,7 +131,7 @@ export function isCalm(p: PlayerState, time: number, ev: ClipCalm): boolean {
  * heroClipsData; a move only uses its sheet once the sheet exists and has loaded, so a missing one leaves the standard frames in place.
  */
 export const MOVE_SHEETS: Record<string, string> = {
-  run: 'move-run', walk: 'move-walk', jab: 'move-jab', cross: 'move-cross', hook: 'move-hook', kick: 'move-kick', mega: 'move-mega',
+  run: 'move-run', walk: 'move-walk', jab: 'move-jab', cross: 'move-cross', hook: 'move-hook', kick: 'move-kick', kick2: 'move-kick2', mega: 'move-mega',
 };
 /** strides per turn of walkCycle (the same rate as the standard hero's cycle, so the feet keep pace with the ground) */
 const STRIDE_RATE = 0.6;
