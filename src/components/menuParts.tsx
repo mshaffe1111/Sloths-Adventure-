@@ -1,6 +1,7 @@
 import React from 'react';
 import { polishEnabled, setPolishPref } from '../game/polish.ts';
 import { goldSnakeEnabled, setGoldSnakePref } from '../game/goldSnake.ts';
+import { protoStageEnabled, setProtoStagePref } from '../game/protoStage.ts';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
@@ -320,6 +321,38 @@ export const GoldSnakeToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Try the new snake: one painting with a body that slithers, rears and strikes smoothly. It moves and hits exactly like the old one. Off by default while it is being tested.</small>
+    </div>
+  );
+};
+
+/** the hand-built 1-6 (protoStage.ts): off by default while it is being tested */
+export const ProtoStageToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => protoStageEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#7fd36a" size={22}>
+            <path d="M5 3v8a4 4 0 0 0 8 0" />
+            <path d="M13 3v5" />
+            <path d="M19 3v10a3 3 0 0 1-6 0" />
+          </Icon>
+          New stage 1-6 (test)
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setProtoStagePref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">Plays the rebuilt "First Lianas": vine-to-vine swings, a tree to climb, a log to push, a branch that snaps and two golden seeds to find. Starts the next time you enter 1-6. Off by default while it is being tested.</small>
     </div>
   );
 };

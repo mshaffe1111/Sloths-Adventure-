@@ -871,6 +871,9 @@
   .lc-face { display: none; }
   .lc .ui-kicker { display: none; }
   .lc .ui-h2 { font-size: 19px; }
+  /* a landscape phone: the lines sit two by two so every one fits without scrolling */
+  .lc { width: min(100%, 680px); }
+  .lc-lines { display: grid; grid-template-columns: 1fr 1fr; }
 }
 
 /* wayside: a one-line aside while you play (never pauses, never takes a tap) */

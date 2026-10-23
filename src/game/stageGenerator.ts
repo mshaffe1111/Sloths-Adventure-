@@ -1,3 +1,4 @@
+import { buildProtoStage, protoStageEnabled, PROTO_STAGE_ID } from './protoStage.ts';
 import type {
   LevelConfig,
   Platform,
@@ -2730,6 +2731,8 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
 }
 
 export function generateStage(config: LevelConfig): GeneratedStage {
+  // the hand-built 1-6 (a test, off by default: protoStage.ts)
+  if (config.id === PROTO_STAGE_ID && !config.secret && protoStageEnabled()) return buildProtoStage(config);
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {
     // not a shipped level (or the seed table is stale): find a good layout now

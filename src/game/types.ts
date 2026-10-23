@@ -247,6 +247,8 @@ export interface Platform {
   /** 'drift' platforms: a log carried across a river (see river.ts) */
   drift?: import('./river.ts').DriftInfo;
   style?: 'branch' | 'log' | 'moss_stone' | 'ruin' | 'canopy_bridge';
+  /** a hollow log Pokey pushes by walking into it (protoStage.ts): it slides between these x bounds */
+  push?: { min: number; max: number };
 }
 
 /**
@@ -327,7 +329,7 @@ export interface Rope {
 
 export interface Collectible {
   id: number;
-  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate' | 'find';
+  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate' | 'find' | 'seed';
   botanicalVariant?: 'orchid' | 'hibiscus' | 'monstera' | 'fern' | 'lotus' | 'cheetah_flower' | 'solar_bloom' | 'nectar_spore';
   x: number;
   y: number;
