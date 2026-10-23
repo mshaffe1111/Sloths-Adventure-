@@ -74,27 +74,68 @@ export function autoUpdateAllowed(now = Date.now()): boolean {
   }
 }
 
+/** the service worker in charge changed while this copy was open (a newer one installed itself and took over: see `autoUpdate` in vite.config.ts) */
+let workerReplaced = false;
+try {
+  const sw = typeof navigator !== 'undefined' ? navigator.serviceWorker : undefined;
+  if (sw?.controller) sw.addEventListener('controllerchange', () => (workerReplaced = true));
+} catch {
+  /* no service workers here */
+}
+
 /**
- * Swap this open copy for the newest build. The old copy's cached files are cleared first, so the reload cannot be served the old game by the
- * service worker (which installs itself again on the way back in). Progress lives in the browser's storage and is not touched.
+ * Wait (a little) for the new build's service worker to take charge, so the reload below is served the new game from its cache.
+ * True once it has; false when nothing new is coming (offline, no service worker, the server has nothing newer) or it is taking too long.
  */
-export async function applyUpdate(): Promise<void> {
+async function newWorkerInCharge(timeoutMs: number): Promise<boolean> {
+  if (workerReplaced) return true;
+  const sw = navigator.serviceWorker;
+  if (!sw || navigator.onLine === false) return false;
   try {
-    sessionStorage.setItem(APPLIED_KEY, String(Date.now()));
+    const reg = await sw.getRegistration();
+    if (!reg) return false;
+    const changed = new Promise<boolean>((resolve) => {
+      sw.addEventListener('controllerchange', () => resolve(true), { once: true });
+      window.setTimeout(() => resolve(workerReplaced), timeoutMs);
+    });
+    if (!reg.installing && !reg.waiting) await reg.update().catch(() => {});
+    if (workerReplaced) return true;
+    if (!reg.installing && !reg.waiting) return false;
+    return await changed;
   } catch {
-    /* ignore */
+    return false;
   }
-  try {
-    const regs = (await navigator.serviceWorker?.getRegistrations?.()) ?? [];
-    await Promise.all(regs.map((r) => r.unregister()));
-  } catch {
-    /* carry on */
-  }
-  try {
-    const keys = (await globalThis.caches?.keys?.()) ?? [];
-    await Promise.all(keys.map((k) => globalThis.caches.delete(k)));
-  } catch {
-    /* carry on */
-  }
-  window.location.reload();
+}
+
+let applying: Promise<void> | null = null;
+
+/**
+ * Swap this open copy for the newest build. The new build's service worker fetches only the files that changed (the rest it keeps from
+ * the cache) and takes over by itself; this waits a moment for that and reloads, so the cached game stays whole and still opens with no
+ * network. Only when an update was tried in the last few minutes and the old build came back anyway (the player pressing the button again)
+ * is the service worker let go, so the reload comes straight from the server; even then the cached files are kept for it to reuse.
+ * Progress lives in the browser's storage and is not touched.
+ */
+export function applyUpdate(): Promise<void> {
+  // App.tsx asks again every couple of seconds while it waits for a calm moment: one swap at a time
+  if (applying) return applying;
+  applying = (async () => {
+    const triedJustNow = !autoUpdateAllowed();
+    try {
+      sessionStorage.setItem(APPLIED_KEY, String(Date.now()));
+    } catch {
+      /* ignore */
+    }
+    const ready = await newWorkerInCharge(15 * 1000);
+    if (!ready && triedJustNow && navigator.onLine !== false) {
+      try {
+        const regs = (await navigator.serviceWorker?.getRegistrations?.()) ?? [];
+        await Promise.all(regs.map((r) => r.unregister()));
+      } catch {
+        /* carry on */
+      }
+    }
+    window.location.reload();
+  })();
+  return applying;
 }
