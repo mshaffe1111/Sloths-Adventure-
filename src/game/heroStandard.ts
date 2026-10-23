@@ -60,6 +60,9 @@ export interface StdChoice {
   bob: number;
   /** line the raised hand up with the rope or ladder instead of the feet */
   byHand?: boolean;
+  /** line the middle of the body up with his position instead of the feet: the walk and run, whose feet reach far ahead and behind,
+   * so planting them made the whole body jump back and forth by up to 30 px from one frame to the next */
+  byBody?: boolean;
   /** hang from the top of the picture, swaying */
   hang?: boolean;
   /** lean or flip angle in radians, about the middle of the body (positive tips him forward) */
@@ -195,7 +198,7 @@ export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHu
   if (speed > 10) {
     const run = speed >= WALK_MAX;
     const u = ((((p.walkCycle * STRIDE_RATE) / (Math.PI * 2)) % 1) + 1) % 1;
-    return out({ name: cycle(run ? RUN_CYCLE : WALK_CYCLE, p), bob: -Math.abs(Math.sin(u * Math.PI * 2)) * (run ? 1.6 : 0.8) });
+    return out({ name: cycle(run ? RUN_CYCLE : WALK_CYCLE, p), bob: -Math.abs(Math.sin(u * Math.PI * 2)) * (run ? 1.6 : 0.8), byBody: true });
   }
   // standing: a slow breath, and a blink every few seconds
   const blink = time % 3.6 > 3.45;

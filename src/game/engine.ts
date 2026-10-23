@@ -2368,9 +2368,13 @@ export class GameEngine {
       p.attackType = 'none';
       p.swingCock = 0;
       p.swingReach = 0;
+      p.attackMove = undefined;
+      p.attackU = undefined;
       return;
     }
     const m = a.move;
+    p.attackMove = m.id;
+    p.attackU = Math.min(1, a.t / Math.max(0.001, moveLength(m)));
     p.punching = m.kind !== 'kick';
     p.kicking = m.kind === 'kick';
     p.attackType = m.kind;

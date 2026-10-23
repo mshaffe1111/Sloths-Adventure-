@@ -118,6 +118,9 @@ export interface PlayerState {
   kicking: boolean;
   kickTimer: number;
   attackType: 'none' | 'punch' | 'kick' | 'mega';
+  /** fight: which move is playing (jab, cross, hook, mega, kick, airKick) and how far through it (0..1), for the drawing */
+  attackMove?: string;
+  attackU?: number;
   /** fight: how far the claw or foot is pulled back (0..1) and thrust out (0..1) right now, for the drawing */
   swingCock?: number;
   swingReach?: number;

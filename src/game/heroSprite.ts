@@ -402,7 +402,7 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
   drawAuras(ctx, p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  const dx = ch.centred ? -(f.w * k) / 2 : -(ch.byHand ? f.hx : f.ax) * k;
+  const dx = ch.centred ? -(f.w * k) / 2 : -(ch.byHand || ch.byBody ? f.hx : f.ax) * k;
   const dy = ch.centred ? -pivot - (f.h * k) / 2 : -f.ay * k + ch.bob;
   const sheetImg = clipF ? heroCoatSheet(img) : stdSheet(img);
   if (rimOn()) {

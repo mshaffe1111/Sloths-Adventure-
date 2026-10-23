@@ -126,6 +126,39 @@ export function isCalm(p: PlayerState, time: number, ev: ClipCalm): boolean {
   );
 }
 
+/**
+ * The moves redrawn from video (the run, the walk, each punch of the combo with its own arm, the kicks, the mega). Each is a sheet in
+ * heroClipsData; a move only uses its sheet once the sheet exists and has loaded, so a missing one leaves the standard frames in place.
+ */
+export const MOVE_SHEETS: Record<string, string> = {
+  run: 'move-run', walk: 'move-walk', jab: 'move-jab', cross: 'move-cross', hook: 'move-hook', kick: 'move-kick', mega: 'move-mega',
+};
+/** strides per turn of walkCycle (the same rate as the standard hero's cycle, so the feet keep pace with the ground) */
+const STRIDE_RATE = 0.6;
+const WALK_MAX = 90;
+
+/** pure: which frame of an n-frame sheet a move at progress u (0..1) shows */
+export function moveIndex(n: number, u: number): number {
+  return Math.max(0, Math.min(n - 1, Math.floor(u * n)));
+}
+
+/** the redrawn frame for a move or the run/walk, or null when he is doing something else or the sheet is not there */
+export function movePick(p: PlayerState): ClipFrame | null {
+  if (p.attackMove && p.attackU !== undefined && !p.isVineSwinging && !p.climbing && !p.hanging) {
+    if (!p.grounded && p.attackMove !== 'mega') return null; // the air attacks keep their own frames
+    const sheet = MOVE_SHEETS[p.attackMove];
+    if (!sheet || !hasClip(sheet)) return null;
+    return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, p.attackU));
+  }
+  if (!p.grounded || p.climbing || p.hanging || p.isVineSwinging || p.ducking || p.pushing) return null;
+  const speed = Math.abs(p.vx);
+  if (speed <= 10) return null;
+  const sheet = MOVE_SHEETS[speed >= WALK_MAX ? 'run' : 'walk'];
+  if (!hasClip(sheet)) return null;
+  const u = ((((p.walkCycle * STRIDE_RATE) / (Math.PI * 2)) % 1) + 1) % 1;
+  return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, u));
+}
+
 /** the clip frame to draw for this moment, or null for the ordinary hero */
 export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame | null {
   if (!live || !heroClipsEnabled()) return null;
@@ -135,6 +168,15 @@ export function clipPick(p: PlayerState, time: number, ev: ClipCalm): ClipFrame 
   if (p.cheerAt !== undefined && hasClip('cheer')) {
     const c = HERO_CLIPS.cheer;
     return frameOf('cheer', Math.floor((time - p.cheerAt) * c.fps), Math.min(1, (time - p.cheerAt) / CLIP_FADE));
+  }
+  // the redrawn run, walk and fight moves (only while hurt is not showing: the flinch keeps its own frames)
+  if (!ev.isHurt(time)) {
+    const mv = movePick(p);
+    if (mv) {
+      playing = null;
+      stillSince = time;
+      return mv;
+    }
   }
   if (p.pushing && hasClip('push')) {
     const c = HERO_CLIPS.push;
