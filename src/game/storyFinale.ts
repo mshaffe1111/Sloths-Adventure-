@@ -101,15 +101,15 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
 
   // ───────────── THE SEAM ─────────────
   const seam = chapter({ name: 'THE SEAM', w: 10, m: 'day', cue: 'comedy', i: 0.5, base: { plate: 'courtyard', particles: 'sparkles' } }, [
-    D('Hello! Everybody stay calm, I am alive! I fell into the cookhouse, and I have been eating extremely well.', 'P:surprised@.22 GV:stand@.62*1.12 MS:stand_wait@.82*.8 D:cheer@.46^.34', { sting: 'laugh' }),
+    D('Hello! Everybody stay calm. I am alive! I fell into the cookhouse, and I have been eating extremely well.', 'P:surprised@.22 GV:stand@.62*1.12 MS:stand_wait@.82*.8 D:cheer@.46^.34', { sting: 'laugh' }),
     OFF('He has been no trouble at all, ma\'am. Sir. Everyone. I apologize.', '=', { p: { zoom: 1.0 } }),
     P('Dot!', 'P:cheer@.22 GV:stand@.62*1.12 MS:stand_wait@.82*.8 D@.46^.34', { cue: 'journey', i: 0.6, sting: 'triumph' }),
-    D('I\'m so sorry I\'m late! I know, I KNOW, the seam was tiny and I went in sideways, and there was a cookhouse, and a ham, and then Pell found me, and I\'m SO sorry, I\'m always, I\'m always...',
+    D('I\'m so sorry I\'m late! I know. I KNOW. The seam was tiny, and I went in sideways, and there was a cookhouse, and a ham, and then Pell found me. I\'m SO sorry. I\'m always... I\'m always...',
       'P:happy@.22 GV:stand@.62*1.12 MS:stand_wait@.82*.8 D@.46^.34'),
     N('Dot stopped. This time he took the pouch off his hip and held it out in both claws.', 'P:idle@.22 GV:stand@.62*1.12 MS:stand_wait@.82*.8 D@.5^.34', { cue: 'sorrow', i: 0.3, p: { zoom: 1.5, focusX: 0.5 } }),
     D('General. I have something I should have brought you nine years ago.', '=', { cue: 'sorrow', i: 0.35 }),
     N('It was a letter, yellow at the edges, sealed with one faded petal.', '=', { cue: 'tender', i: 0.3 }),
-    D('She gave it to me on the last night, in the storm. "Give him this when he can sit still," she said. I flew at dawn and the storm kept me a day. One day. I have been afraid ever since that it says so.',
+    D('She gave it to me on the last night, in the storm. "Give him this when he can sit still," she said. I flew at dawn, and the storm kept me a day. One day. I have been afraid ever since that it says so.',
       '=', { cue: 'sorrow', i: 0.4 }),
     GF('Give it here, little courier.', 'P:idle@.22 GV:reach_a@.62*1.12 MS:stand_wait@.82*.8 D@.5^.34', { cue: 'grandma', i: 0.4 }),
     GM('My dearest. If you are reading this, you are sitting down, which means something has gone very right or very wrong. Either way, put the kettle on. The little bird will be late. I always set the kettle for when he actually arrives.', '', { ph: ['s3_02', 'Grandma', 0.46, -0.02], cue: 'grandma', i: 0.6, p: { memory: true } }),
@@ -118,7 +118,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     GF('Courier. Sit.', 'P:idle@.22 GV:letter@.62*1.12 MS:stand_wait@.82*.8 D@.5^.34', { cue: 'mercy', i: 0.6, m: 'glow' }),
     N('Pokey stood very still. After a while, Dot landed on his head.', 'P:idle@.22 GV:sit@.62*1.12 D:perch@.22^.32', { cue: 'tender', i: 0.4, p: { zoom: 1.3, focusX: 0.4 } }),
     P('I thought you came round because you liked me.', 'P:idle@.22 GV:sit@.62*1.12 D:perch@.22^.32', { cue: 'tender', i: 0.3, p: { zoom: 1.3, focusX: 0.3 } }),
-    D('I did! I do! It was both, it was always both, Pokey, I swear it was—', '=', { cue: 'sorrow', i: 0.4 }),
+    D('I did! I do! It was both. It was always both, Pokey. I swear it was—', '=', { cue: 'sorrow', i: 0.4 }),
     P('Okay.', '=', { cue: 'tender', i: 0.4 }),
     N('Dot did not say anything. His wing went to the pouch at his hip, which was empty, and he left it there.', 'P:idle@.22 GV:sit@.62*1.12 D:perch@.22^.32', { cue: 'hush', i: 0.2, p: { zoom: 1.6, focusX: 0.3 } }),
   ]);
@@ -154,7 +154,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
       M('I let you.', '=', { sting: 'bloom', p: VIL }),
     ]),
     ...when(has('w3_keepsake'), [
-      P('Sir, I found a medal in a fern. On the back it says "For the next cub."', TEA, { cue: 'tender', i: 0.4, p: VIL }),
+      P('Sir, I found a medal in a fern. On the back it says, "For the next cub."', TEA, { cue: 'tender', i: 0.4, p: VIL }),
       GF('I scratched that on the back the day they gave it to me, for the river. I was keeping it for a cub who would need it more than I did.', '=', { p: VIL }),
       P('I think I\'m a little old to be a cub, sir.', '=', { p: VIL }),
       GF('You are exactly the right age to be brave and foolish. Keep it.', '=', { cue: 'resolve', i: 0.5, sting: 'triumph', p: VIL }),
@@ -171,7 +171,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
       N('Meeca wound it. The little box played Grandma\'s song all the way through, a little out of tune. The General bowed his head, and for a long time nobody said a word.', TEA, { cue: 'grandma', i: 0.7, sting: 'bloom', p: { ...VIL, particles: 'petals' } }),
     ]),
     ...when(has('w5_keepsake'), [
-      P('There was a petal, too. It says: "Be patient with the slow ones. They always arrive."', TEA, { cue: 'grandma', i: 0.5, p: VIL }),
+      P('There was a petal, too. It says, "Be patient with the slow ones. They always arrive."', TEA, { cue: 'grandma', i: 0.5, p: VIL }),
       GF('That is her handwriting. Everything of hers turns up in a fern. I am beginning to think the bird has a problem.', '=', { sting: 'laugh', p: VIL }),
     ]),
     ...when(all, [
@@ -196,7 +196,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     ...when(has('w8_keepsake'), [
       N('Pokey took a paper packet from his satchel, the one he had found in a fern in the Twilight Treetops. Meeca read the label. "For the hill," she said. "Plant when it is quiet." It was. The three of them sat down in the grass together, and none of them said a word.', 'P:happy@.34*.9 M:happy@.54*.9 GV:sit@.74*1.12', { cue: 'tender', i: 0.5, sting: 'bloom', p: { plate: 'hill', zoom: 1.35 } }),
     ]),
-    N('Home was exactly as they had left it, except the Heartbloom was open, and a snail who had set off across the garden path on the morning of the storm was one centimeter from the finish line.', 'PH:arm_around@.34*1.1 H:epic@.68^.8', { cue: 'tender', i: 0.5, p: { zoom: 1.2 } }),
+    N('Home was exactly as they had left it, except that the Heartbloom was open, and a snail who had set off across the garden path on the morning of the storm was one centimeter from the finish line.', 'PH:arm_around@.34*1.1 H:epic@.68^.8', { cue: 'tender', i: 0.5, p: { zoom: 1.2 } }),
     P('He deserves it. He trained.', 'PH:cheek_glad@.34*1.1 H:epic@.68^.8', { sting: 'laugh' }),
     N('Meeca sat down on the garden path beside the snail. After a while Pokey sat down too.', 'PH:sit_hug@.4*1.1 H:epic@.7^.8', { cue: 'finale', i: 0.8, sting: 'bloom', p: { zoom: 1.2 } }),
   ]);

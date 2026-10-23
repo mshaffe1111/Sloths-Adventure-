@@ -87,7 +87,7 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
       <Gesture kind="run" how="Slide sideways" what="Run" sub="slide right to run right, left to run left. Slide the other way to turn around" />
       <Gesture kind="jump" how="Slide up and across" what="Run and jump" sub="while you run, keep sliding up and forward in one quick motion. This is how you cross gaps" />
       <Gesture kind="up" how="Flick up" what="Jump" sub="a quick flick, standing or running" />
-      <Gesture kind="tap" how="Tap in the air" what="Double jump" sub="tap anywhere while you are in the air. It pushes you forward the way you face; slide the other way to brake. Or flick up again, or wiggle the thumb you are still steering with: down a little, then up" />
+      <Gesture kind="tap" how="Tap in the air" what="Double jump" sub="tap anywhere while you are in the air. It pushes you forward the way you face, and sliding the other way brakes. You can also flick up again, or wiggle your steering thumb down a little, then up" />
       <Gesture kind="down" how="Slide down" what="Duck" sub="hold it to stay low" />
       <div className="htp-tip">
         <span className="htp-tipicon" aria-hidden="true">
@@ -105,7 +105,7 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
     {!short && (
     <Section title="Prefer buttons? Use the pad">
       <p className="ui-copy">
-        In the <b>Menu</b>, set <b>Touch controls</b> to <b>Pad</b>. A thumb pad appears wherever you press on one side of the screen, and <b>Jump</b>, <b>Punch</b> and <b>Kick</b> buttons sit on the
+        In the <b>Menu</b>, set <b>Touch controls</b> to <b>Pad</b>. A thumb pad appears wherever you press on one side of the screen, and <b>Jump</b>, <b>Punch</b>, and <b>Kick</b> buttons sit on the
         other. Left-handed? Flip the pad's side right there.
       </p>
       <Row how={<>Pad <Arr d="l" /> <Arr d="r" /></>} what="Run" />
@@ -135,7 +135,7 @@ const Controls: React.FC<{ short: boolean }> = ({ short }) => (
     {!short && (
       <Section title="Good to know">
         <p className="ui-copy">
-          <b>The first time</b> you meet something new (a foe, a trunk to climb, a swinging vine, a bouncy mushroom and more), the game pauses and Pokey explains it once. A New Game shows them again. A game controller works too. <b>Tree trunks can be climbed</b>: jump into one and hold up. Once you clear stage 1-3 you learn the <b>Shimmy Rope</b>: jump up into a rope to grab it, run
+          <b>The first time</b> you meet something new (a foe, a trunk to climb, a swinging vine, a bouncy mushroom, and more), the game pauses and Pokey explains it once. A New Game shows them again. A game controller works too. <b>Tree trunks can be climbed</b>: jump into one and hold up. Once you clear stage 1-3, you learn the <b>Shimmy Rope</b>: jump up into a rope to grab it, run
           along it with <Arr d="l" /> <Arr d="r" />, and press down and jump to let go.
         </p>
       </Section>
@@ -154,7 +154,7 @@ const Goal: React.FC = () => (
     <Section title="Top of the screen">
       <Row how={<Many name="heart" n={3} />} what="Hearts" sub="your health. A heart pick-up refills one" />
       <Row how="× 3" what="Lives" sub="lose every heart and a life goes. With none left the stage is over, and you can try it again" />
-      <Row how={<Many name="star" n={1} />} what="Score" sub="fruit, flowers, leaves and every foe you beat add to it" />
+      <Row how={<Many name="star" n={1} />} what="Score" sub="fruit, flowers, leaves, and every foe you beat add to it" />
     </Section>
     <Section title="Stars for a stage">
       <Row how={<Many name="star" n={1} />} what="One star" sub="for clearing the stage" />
@@ -164,7 +164,7 @@ const Goal: React.FC = () => (
     <Section title="Pick-ups on the way">
       <Row how={<Icon name="bolt" size={24} />} what="Speed" sub="run faster for a while" />
       <Row how={<Icon name="shield" size={24} />} what="Invincible" sub="enemies cannot hurt you for a while" />
-      <Row how={<Icon name="magnet" size={24} />} what="Magnet" sub="pulls nearby fruit, flowers and hearts to you" />
+      <Row how={<Icon name="magnet" size={24} />} what="Magnet" sub="pulls nearby fruit, flowers, and hearts to you" />
       <Row how={<Icon name="cage" size={24} />} what="Cages" sub="punch a cage to set the friend inside free" />
     </Section>
     <Section title="Where to go next">
@@ -179,7 +179,7 @@ const Saving: React.FC = () => (
   <>
     <Section title="Your progress saves itself">
       <p className="ui-copy">
-        Every cleared stage, star and trophy is saved <b>on this device, in this browser</b> as you play. Close the game and come back and <b>Continue</b> takes you right to where you were.
+        Every cleared stage, star and trophy is saved <b>on this device, in this browser</b> as you play. Close the game, come back later, and <b>Continue</b> takes you right to where you were.
       </p>
     </Section>
     <Section title="Keep a backup">
@@ -192,7 +192,7 @@ const Saving: React.FC = () => (
     <Section title="The Menu">
       <p className="ui-copy">
         <b>Menu</b> sits at the top of the title screen, and in a stage it pauses the game ({COARSE ? 'tap Menu at the top' : <>or press <K>Esc</K></>}). It has <b>Resume</b>, <b>Restart</b> for the stage,
-        <b> Trophies</b>, <b>Jungle Cards</b> and the <b>World Map</b>, your learned skills, and the Music and Effects volume. You can also open this guide from there.
+        <b> Trophies</b>, <b>Jungle Cards</b>, and the <b>World Map</b>, your learned skills, and the Music and Effects volume. You can also open this guide from there.
       </p>
     </Section>
   </>
@@ -203,7 +203,7 @@ const Visuals: React.FC = () => (
     <Section title="Polished visuals">
       <p className="ui-copy">
         An extra layer of finish: <b>trees and grass sway in the wind</b>, Pokey gets a <b>rim of sunlight and a soft shadow</b>, light shafts and drifting pollen move through the jungle, and the
-        ground gets roots, dappled light and richer soil.
+        ground gets roots, dappled light, and richer soil.
       </p>
       <p className="ui-copy">
         It is <b>off by default</b>, because it asks a lot of an older phone. If the game ever feels slow, switch it off. It also steps itself down on its own when the game starts to struggle.

@@ -30,7 +30,7 @@ const GRANDMA_PHOTO: [string, string, number, number] = ['s3_02', 'Grandma', 0.4
 // ═════════════════════════════════ World 2 · the day they met ═════════════════════════════════
 
 export const WAITING = chapter({ name: 'MEMORY · THE WAITING', w: 1, m: 'day', cue: 'tender', i: 0.4, base: { memory: true, particles: 'sparkles' } }, [
-  N('Pokey remembered the day they met. He had been crossing one single vine for two days.', kp('walk', 0.22), { cue: 'pokey', x: { 0: { move: { dx: 0.4, dur: 8, gait: 'walk' } } } }),
+  N('Pokey remembered the day they met. He had been crossing a single vine for two days.', kp('walk', 0.22), { cue: 'pokey', x: { 0: { move: { dx: 0.4, dur: 8, gait: 'walk' } } } }),
   N('A family of squirrels had moved in below him, raised their young, and put up a small sign. The sign said THE SLOTH.', kp('walk', 0.3), { sting: 'laugh', x: { 0: { move: { dx: 0.3, dur: 8, gait: 'walk' } } } }),
   M('You\'ve been on this vine two days. Is it a good vine?', `${kp('idle')} ${km('happy')}`, { cue: 'meeca', i: 0.4 }),
   P('Very good. I\'m nearly halfway.', `${kp('happy')} ${km('happy')}`),
@@ -38,7 +38,7 @@ export const WAITING = chapter({ name: 'MEMORY · THE WAITING', w: 1, m: 'day', 
   P('The other side.', `${kp('talk')} ${km('talk')}`),
   M('And what\'s on the other side?', '='),
   P('I\'ve lost track. It\'s still a very good vine.', `${kp('think')} ${km('laugh')}`, { sting: 'laugh' }),
-  N('Every other cub who had come along that branch had said one of two things. "Hurry up," or "Can you move?" She sat down next to him instead and unwrapped a leaf with mango in it.',
+  N('Every other cub who had come along that branch had said "Hurry up" or "Can you move?" She sat down next to him instead and unwrapped a leaf with mango in it.',
     `${kp('idle')} ${km('happy')}`, { cue: 'tender', i: 0.4 }),
   M('Then I\'ll wait. I brought breakfast.', `${kp('surprised')} ${km('cheer')}`, { cue: 'meeca', i: 0.5 }),
   P('Won\'t you be bored?', `${kp('talk')} ${km('happy')}`),
@@ -79,7 +79,7 @@ export const GARDEN = chapter({ name: 'MEMORY · GRANDMA\'S GARDEN', w: 5, m: 'g
   GM('When it opens. Until then you bring a chair and you sit with it and you don\'t poke. Bring knitting if you must fidget.', `${km('think', 0.3)} GR:hand_chest@.74*.92 H:bud@.52^.8*1.2`),
   N('Young, clumsy Pokey watered the wrong plant, with great care.', '', { ph: ['s4_07', 'Somebody was always nearby', 0.5, 0.02] }),
   P('I think I watered the fern.', `${kp('worried', 0.18)} ${km('laugh', 0.38)} H:bud@.56^.8 GR:look_up@.8*.92`),
-  M('You watered the fern, the snail and my sandal.', `${kp('worried', 0.18)} ${km('laugh', 0.38)} H:bud@.56^.8 GR:giggle@.8*.92`, { sting: 'laugh' }),
+  M('You watered the fern, the snail, and my sandal.', `${kp('worried', 0.18)} ${km('laugh', 0.38)} H:bud@.56^.8 GR:giggle@.8*.92`, { sting: 'laugh' }),
   GM('Thank you for watering it anyway, Pokey. Nobody ever waters the fern. That frond has been unrolling since Tuesday. Slow is not stopped, dear.', `${kp('worried', 0.18)} ${km('laugh', 0.38)} H:bud@.56^.8 GR:hand_chest@.8*.92`, { cue: 'grandma', i: 0.5 }),
   P('It\'s Thursday.', `${kp('happy', 0.18)} ${km('happy', 0.38)} H:bloom@.56^.8 GR:laugh@.8*.92`, { cue: 'pokey', i: 0.5 }),
   N('The frond unrolled another inch. Nobody saw it do it.', `${kp('happy', 0.18)} ${km('happy', 0.38)} H:bloom@.56^.8 GR:wave@.8*.92`, { cue: 'tender', i: 0.5, p: { particles: 'petals' } }),
@@ -92,7 +92,7 @@ export const TEA = chapter({ name: 'WORLD 5 · TEA WITH THE QUEEN', w: 5, m: 'du
   QUEEN('Sit. I know you are in a hurry. Sit anyway. I have not poured for anyone in nine years, and I would like to remember how it is done.', 'P:idle@.26 D@.46^.4 B5#@.74<'),
   D('Pokey, it\'s a trap.', 'P:worried@.26 D@.46^.4 B5#@.74<'),
   P('It\'s a tea.', 'P:talk@.26 D@.46^.4 B5#@.74<'),
-  D('It\'s a trap with biscuits, which is the WORST kind, I won\'t be drinking anything, I\'m forty percent sugar already, I\'m practically a biscuit myself.', '=', { sting: 'laugh' }),
+  D('It\'s a trap with biscuits, which is the WORST kind. I won\'t be drinking anything. I\'m forty percent sugar already. I\'m practically a biscuit myself.', '=', { sting: 'laugh' }),
   N('Pokey drank the whole cup, down to the leaves. The Queen watched every sip. In all the years of her sanctuary, nobody had ever stayed to the bottom.', 'P:happy@.26 D@.46^.4 B5#@.74<', { cue: 'tender', i: 0.4 }),
   QUEEN('You will forgive an old queen for asking. It is a long road, and the Highlands are cold. Why do you keep going?', 'P:idle@.26 D@.46^.4 B5#@.74<'),
   P('Because she waited for me once.', 'PF:happy@.4', { cue: 'meeca', i: 0.4 }),
@@ -123,7 +123,7 @@ export const SEALED = chapter({ name: 'WORLD 6 · THE SEALED NOTE', w: 6, m: 'du
   M('I\'m not going to tell you to hurry. This is what I sing to the Heartbloom on its worst days.', 'P:sad@.4 M:think@.64'),
   M(LULLABY, 'P:sad@.4 M:sing@.64', { cue: 'meeca', i: 0.7, sting: 'bloom' }),
   M('That\'s the whole spell. I know it isn\'t much. I\'m not counting, Pokey. Come when you come.', 'P:tired@.4 M:happy@.64', { cue: 'tender', i: 0.5 }),
-  N('Pokey read it three times. He put it back in the satchel and took the satchel off, and sat for a long time with nothing on his shoulder.', 'PX:read_cry@.5', { m: 'dusk', cue: 'resolve', i: 0.4, p: { memory: false, particles: 'petals' } }),
+  N('Pokey read it three times. He put it back in the satchel, took the satchel off, and sat for a long time with nothing on his shoulder.', 'PX:read_cry@.5', { m: 'dusk', cue: 'resolve', i: 0.4, p: { memory: false, particles: 'petals' } }),
 ]);
 
 // ART HOOK: the nest-in-the-storm plate (two grown sloths seen from behind, going out along the branch; a cub's hands on the rim) belongs on the "It had been his parents' nest" beat once it is painted.
@@ -176,7 +176,7 @@ export const PROMISE_PANELS: StoryPanel[] = chapter({ name: 'MEMORY · THE PROMI
 export const SEAM = chapter({ name: 'WORLD 8 · THE LIEUTENANT', w: 8, m: 'night', cue: 'comedy', i: 0.3, base: { particles: 'sparkles' } }, [
   N('The Monarch was gone, and the fireflies came back one at a time. In the dark, a lantern was bobbing along at ground level, as if the person holding it did not want to be seen.', 'P:tired@.26 D@.5^.4 LP:lantern@.9*.9', { p: pan(1.1, 0.3, 0.55, 1.3, 0.55, 0.65, 8) }),
   OFF('I am so sorry, but would you mind not looking at me?', 'P:idle@.26 D@.5^.4 LP:peek_door@.84*.9'),
-  D('SOLDIER! Pokey, there\'s a SOLDIER, I\'ll distract him, I\'m extremely distracting, look at my three feathers!', 'P:worried@.26 D:yelp@.5^.4 LP:peek_door@.84*.9', { cue: 'comedy', i: 0.45 }),
+  D('SOLDIER! Pokey, there\'s a SOLDIER! I\'ll distract him. I\'m extremely distracting. Look at my three feathers!', 'P:worried@.26 D:yelp@.5^.4 LP:peek_door@.84*.9', { cue: 'comedy', i: 0.45 }),
   OFF('I am so sorry, but please do not scream. Everyone screams. I am Lieutenant Pell. I bring Miss Meeca her breakfast.', 'P:surprised@.26 D@.5^.4 LP:bow@.8*.9'),
   P('You bring her breakfast?', 'P:happy@.26 D@.5^.4 LP:cap_in_hand@.8*.9'),
   OFF('I am so sorry. Yes.', 'P:happy@.26 D@.5^.4 LP:bow@.8*.9', { sting: 'laugh' }),
@@ -215,13 +215,13 @@ const GATE_WALL = 'B1@.206^.349*.15> B2@.246^.326*.15> B3@.286^.303*.15> B4@.326
 export const GATES = chapter({ name: 'WORLD 9 · THE OPEN GATES', w: 10, m: 'storm', cue: 'dread', i: 0.35, base: { plate: 'gates', particles: 'rain' } }, [
   N('The lava road ended where the mountain began. Above him the fortress went up in iron towers, and every thorn on every wall pointed down.',
     'P:idle@.3 D@.6^.4', { p: pan(1.0, 0.5, 0.35, 1.25, 0.65, 0.45, 9) }),
-  D('Pokey. POKEY. The front door is open, the big one, up there, wide open and nobody standing in it, and I have been through forty doors in my life and not one of them did that on purpose!', 'P:idle@.3 D@.6^.4'),
+  D('Pokey. POKEY. The front door is open. The big one, up there. Wide open, and nobody standing in it. I have been through forty doors in my life, and not one of them did that on purpose!', 'P:idle@.3 D@.6^.4'),
   P('Is that bad?', 'P:talk@.3 D@.6^.4'),
   D('It\'s WELCOMING, Pokey.', '=', { sting: 'laugh' }),
   N('Along the great wall, one by one, the guardians took their places. They did not look down. Every collar was glowing.', `P:worried@.3 D@.6^.4 ${GATE_WALL}`, { cue: 'dread', i: 0.45, p: GATE_VIEW }),
   N('Above them, the great gates of the Highland Fortress groaned on their hinges, though nobody was pushing them. Lightning walked the length of the wall.', `P:worried@.3 D@.6^.4 ${GATE_WALL}`, { cue: 'war', i: 0.5, sting: 'door', p: { ...GATE_VIEW, fx: [{ at: 0.8, kind: 'flash', dur: 0.4, amount: 0.5 }, { at: 0.8, kind: 'shake', amount: 7, dur: 0.6 }] } }),
   GEN('Come up, sloth. I have counted every step you took. There are a thousand more.', `P:worried@.3 D@.6^.4 ${GATE_WALL}`, { cue: 'war', i: 0.7, sting: 'blow', p: GATE_VIEW }),
-  D('He counted your STEPS, Pokey, that\'s, I don\'t know what that is, that\'s a hobby, that\'s a very concerning hobby.', `P:worried@.3 D@.6^.4 ${GATE_WALL}`, { cue: 'comedy', i: 0.4, p: GATE_VIEW }),
+  D('He counted your STEPS, Pokey. That\'s... I don\'t know what that is. That\'s a hobby. That\'s a very concerning hobby.', `P:worried@.3 D@.6^.4 ${GATE_WALL}`, { cue: 'comedy', i: 0.4, p: GATE_VIEW }),
   N('Pokey looked up the thousand steps. Then he looked at the petal on his wrist, which had begun, faintly, to glow.', `P:determined@.3 ${GATE_WALL}`, { cue: 'resolve', i: 0.5, sting: 'cliffhanger', p: { ...GATE_VIEW, fx: [{ at: 0.8, kind: 'glints', x: 0.3, y: 0.8 }] } }),
 ]);
 
