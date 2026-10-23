@@ -59,6 +59,8 @@ SETS = [
     ('bassoon', 'sus', 'Woodwinds/Bassoon/vib/*_v2_1.wav', {}),
     ('snare', 'perc', 'VSCO 1 Percussion/drums/snare/drum3_marching/snare3_{p,mp,f,fff}_1.wav', {'dur': 0.7, 'pitch': 'order'}),
     ('triangle', 'perc', 'VSCO 1 Percussion/varMetal/triangle/2/triangle2_hit_{p,mp}.wav', {'dur': 2.2, 'pitch': 'order'}),
+    ('glock', 'perc', 'Percussion/Glock/glock_medium_*.wav', {'dur': 3.2, 'pitch': 'name'}),
+    ('marimba', 'perc', 'Percussion/Marimba/Marimba_hit_Outrigger_*_loud_01.wav', {'dur': 1.6, 'pitch': 'name'}),
 ]
 ONLY = set(os.environ['ONLY'].split(',')) if os.environ.get('ONLY') else None
 LOOP_START = 1.3  # seconds into a sustained note where the loop begins

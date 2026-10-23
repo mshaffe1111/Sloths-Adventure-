@@ -231,7 +231,7 @@ export function resolve(): Theme {
 // ───────────────────────────────────────────── mercy ─────────────────────────────────────────────
 
 /**
- * The armour opens. 28 bars of 4/4 at 64 (the March's own tempo), in D. The same eight bars of the lullaby, each time a little more free:
+ * The war look lets go. 28 bars of 4/4 at 64 (the March's own tempo), in D. The same eight bars of the lullaby, each time a little more free:
  *   bars 0-7    the Iron March: the lullaby in the minor, square, a trombone low on it, timpani on one and three, a tuba, brass chords. At the thorn
  *               (bar 4) the sixth rises back (B-flat to B), the chords turn to G and E minor for two bars and one violin holds that B like light through a
  *               crack; the iron half closes (A, then the long D), but on the last bar the violin's note falls a step to the third, F-sharp, and the chord is D major

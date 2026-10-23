@@ -9,6 +9,7 @@
 import type { AudioCore, OrchSample } from './core.ts';
 import { bytesOf } from './sampleLoader.ts';
 import type { Theme } from './music.ts';
+import { fullOrchestra, realVoice } from './realize.ts';
 
 const files = import.meta.glob('../assets/orch/*.mp3', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
@@ -67,7 +68,7 @@ export async function loadOrchFrom(core: AudioCore, data: Record<string, ArrayBu
 }
 
 /** every recorded instrument there is, for a renderer that wants the lot */
-export const ALL_ORCH = ['cello', 'contra', 'violins', 'violas', 'horn', 'trombone', 'tuba', 'celloStac', 'violinStac', 'hornStac', 'contraPizz', 'timp', 'bdrum', 'gong', 'cymbal', 'harp', 'flute', 'oboe', 'clarinet', 'bassoon', 'snare', 'triangle'];
+export const ALL_ORCH = ['cello', 'contra', 'violins', 'violas', 'horn', 'trombone', 'tuba', 'celloStac', 'violinStac', 'hornStac', 'contraPizz', 'timp', 'bdrum', 'gong', 'cymbal', 'harp', 'flute', 'oboe', 'clarinet', 'bassoon', 'snare', 'triangle', 'glock', 'marimba'];
 
 /** which recordings each voice draws on */
 export const VOICE_GROUPS: Record<string, string[]> = {
@@ -76,17 +77,26 @@ export const VOICE_GROUPS: Record<string, string[]> = {
   orchStrings: ['cello', 'violas', 'violins'], orchBrass: ['horn', 'trombone'],
   harp: ['harp'], flute: ['flute'], oboe: ['oboe'], clarinet: ['clarinet'], bassoon: ['bassoon'], snare: ['snare'], triangle: ['triangle'],
   timpani: ['timp'], taiko: ['bdrum'], bassDrum: ['bdrum'], crash: ['cymbal'], gong: ['gong'],
+  marimbaR: ['marimba'], glockR: ['glock'], bassR: ['contra'], harpSoft: ['harp'], figR: ['violinStac', 'celloStac'], orchLow: ['contra', 'cello'], orchWinds: ['bassoon', 'clarinet', 'flute'], snareSoft: ['snare'],
 };
 
 /** the instruments a piece will need */
-export function groupsFor(theme: Theme): string[] {
+export function groupsFor(theme: Theme, real = true): string[] {
   const out = new Set<string>();
-  for (const t of theme.tracks) {
+  for (const t of real ? [...theme.tracks, ...fullOrchestra(theme)] : theme.tracks) {
     const key = t.kind === 'drums' ? t.voice : t.kind === 'melody' ? [t.inst, t.altInst ?? ''] : t.inst;
-    for (const k of Array.isArray(key) ? key : [key]) for (const g of VOICE_GROUPS[k] ?? []) out.add(g);
+    for (const k of Array.isArray(key) ? key : [key]) {
+      // the voice the music really plays (see realize.ts)
+      const v = !real || !k ? k : realVoice(t, k);
+      for (const g of VOICE_GROUPS[v] ?? []) out.add(g);
+    }
   }
-  // the breakdown's crash and its drum roll
+  // the breakdown's crash and its drum roll, and the bell that answers the lead on the lift pass
   out.add('cymbal');
   out.add('bdrum');
+  if (real) {
+    out.add('timp');
+    out.add('glock');
+  }
   return [...out];
 }

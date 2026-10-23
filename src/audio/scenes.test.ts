@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sceneForPanel, sceneForScreen } from './scenes.ts';
+import { MENU_THEME, sceneForPanel, sceneForScreen } from './scenes.ts';
 import { STINGS, stingLength } from './stingers.ts';
 import { THEMES, themeById } from './themes.ts';
 import { AMBIENT_TYPES } from './ambience.ts';
@@ -20,6 +20,16 @@ test('every screen that should have music maps to a real piece', () => {
   }
   // cutscenes choose per panel, so the app leaves them alone
   for (const screen of ['story_cutscene', 'world_story', 'boss_intro', 'boss_defeat', 'ending_story']) assert.equal(sceneForScreen(screen, 1, false), null);
+});
+
+test('the title screen and the pause menu play the first stage\'s tune, whatever world is behind them', () => {
+  assert.equal(MENU_THEME, 'world1');
+  for (let w = 1; w <= 10; w++) {
+    assert.equal(sceneForScreen('title', w, false)?.id, 'world1');
+    assert.equal(sceneForScreen('paused', w, false)?.id, 'world1');
+    assert.equal(sceneForScreen('paused', w, true, 'lvl', 3)?.id, 'world1');
+    assert.notEqual(sceneForScreen('playing', w, false, 'lvl', 3)?.id, 'world1', 'a stage in play has its own music');
+  }
 });
 
 test('every cutscene panel in the game has music', () => {

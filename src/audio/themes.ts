@@ -614,4 +614,5 @@ export const themeById = (id: string): Theme | null => THEMES[id] ?? themeFromId
 
 /** which theme plays for each world (1..10) and for its boss */
 export const WORLD_THEME = (world: number) => `world${Math.max(1, Math.min(10, world))}`;
-export const BOSS_THEME = (world: number) => (world >= 10 ? 'bossFinal' : world >= 7 ? 'bossC' : world >= 4 ? 'bossB' : 'bossA');
+/** the boss follows the act: A the Trail, B the Cost, C the Iron Road, and the last world's own */
+export const BOSS_THEME = (world: number) => (world >= 10 ? 'bossFinal' : world >= 8 ? 'bossC' : world >= 4 ? 'bossB' : 'bossA');

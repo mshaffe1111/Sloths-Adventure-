@@ -5,6 +5,7 @@ import { hashStr } from './theory.ts';
 import { BOSS_THEME, WORLD_THEME } from './themes.ts';
 import { stageThemeId } from './composer.ts';
 import { PACE_CODE, PACE_TEMPO, paceFor } from './orchestrate.ts';
+import { actOfWorld } from './acts.ts';
 import { cueId } from './score.ts';
 import type { StoryCue } from '../game/story.ts';
 
@@ -78,6 +79,39 @@ export function sceneForPanel(p: PanelInfo): SceneChoice {
   }
 }
 
+// ───────────────────────────────────────────── holding a piece ─────────────────────────────────────────────
+
+/**
+ * The script names a cue on almost every panel, and the cues change a lot (a joke, a worry, a tender word): left to itself the music started a
+ * different piece every two panels, and every piece begins with its quietest bars, so a scene was all intros and never got to its fullness.
+ * So a piece is held: the script's cue only takes over once the piece has played for HOLD_SECONDS, at a new scene (chapter), or when it is one
+ * of the big cues. A held piece still follows the script's fullness (the layers come and go with each panel's intensity).
+ */
+export const HOLD_SECONDS = 50;
+/** the cues that cut in without waiting: the fights, the finish, the mercy */
+export const CUT_IN: ReadonlySet<StoryCue> = new Set<StoryCue>(['war', 'chase', 'finale', 'mercy', 'triumph']);
+/** but never closer than this to the last change, so two big cues in a row do not tear the music up */
+export const CUT_IN_GAP = 8;
+
+/** which story piece is playing, in which chapter, since when (seconds) */
+export interface Held {
+  id: string;
+  chapter: string;
+  since: number;
+}
+
+/** the piece to play for a panel given the one already held (null = none yet): the panel's own choice, or the held piece at the panel's fullness */
+export function holdScene(held: Held | null, want: SceneChoice, panel: PanelInfo, now: number): { scene: SceneChoice; held: Held } {
+  const take = { scene: want, held: { id: want.id, chapter: panel.chapter, since: now } };
+  if (!held) return take;
+  if (want.id === held.id) return { scene: want, held: { ...held, chapter: panel.chapter } };
+  const age = now - held.since;
+  if (panel.chapter !== held.chapter) return take;
+  if (age >= HOLD_SECONDS) return take;
+  if (panel.cue && CUT_IN.has(panel.cue) && age >= CUT_IN_GAP) return take;
+  return { scene: { ...want, id: held.id }, held };
+}
+
 /**
  * Whether a panel's one-off sting should sound now: not while the chapter's title card is up, and not before the picture has begun to
  * show its words (at once for a picture with none). `fresh` is the first pass after the panel changed, when the card and typing state
@@ -93,7 +127,7 @@ export type GameplayScreen = 'title' | 'world_map' | 'playing' | 'paused' | 'vic
 /**
  * Which piece a stage plays. Most stages get a tune composed for them (see composer.ts): the same stage and the same
  * `salt` always give the same tune, and a new salt (the app picks one each time a stage is entered) gives a new one.
- * About one in five picks the world's written theme instead, so the signature tunes still turn up.
+ * In the first act about one in five picks the world's written theme instead, so the signature tunes still turn up.
  */
 export function stageMusic(world: number, levelId: string, mini: number, salt = 0, objective?: string): SceneChoice {
   const seed = (levelId ? hashStr(levelId) ^ (salt >>> 0) : 0) >>> 0;
@@ -101,19 +135,26 @@ export function stageMusic(world: number, levelId: string, mini: number, salt = 
   const pace = paceFor(objective);
   const tempo = levelId ? Math.round(stageTempo(seed, mini) * PACE_TEMPO[pace] * 10000) / 10000 : 1;
   if (!levelId) return { id: WORLD_THEME(world), intensity: 0.35, seed, tempo };
-  if ((seed >>> 5) % 5 === 0) return { id: `${WORLD_THEME(world)}~${PACE_CODE[pace]}`, intensity: 0.35, seed, tempo };
+  // about one in five stages of the first act plays the world's written theme, so Pokey's signature tunes still turn up; the later acts have
+  // their own sounds (composer.ts) and never fall back to a tune written for another mood
+  if (actOfWorld(world) === 'trail' && (seed >>> 5) % 5 === 0) return { id: `${WORLD_THEME(world)}~${PACE_CODE[pace]}`, intensity: 0.35, seed, tempo };
   return { id: stageThemeId(world, seed, pace), intensity: 0.35, seed, tempo };
 }
+
+/** the piece the title screen and the pause menu play: the first stage's own tune, as it was written */
+export const MENU_THEME = 'world1';
 
 /** music for the non-cutscene screens; null means "leave it to the cutscene player" */
 export function sceneForScreen(screen: string, world: number, isBoss: boolean, levelId = '', mini = 1, salt = 0, objective?: string): SceneChoice | null {
   switch (screen) {
     case 'title':
-      return { id: 'title~c', intensity: 0.6 };
+      // the menus play the sound of the first stage: the tune the game is known by
+      return { id: MENU_THEME, intensity: 0.6 };
     case 'world_map':
       return { id: 'map~r', intensity: 0.55 };
-    case 'playing':
     case 'paused':
+      return { id: MENU_THEME, intensity: 0.45 };
+    case 'playing':
     {
       if (isBoss) return { id: `${BOSS_THEME(world)}~b`, intensity: 0.6, seed: levelId ? hashStr(levelId) : 0, tempo: 1 };
       return stageMusic(world, levelId, mini, salt, objective);

@@ -10,6 +10,7 @@
  */
 import { AudioCore } from './core.ts';
 import { CHORD_VOICES, DRUM_VOICES, NOTE_VOICES } from './instruments.ts';
+import { fullOrchestra, realVoice, STAGE, trimOf } from './realize.ts';
 import {
   chordMidi,
   chordPcs,
@@ -76,6 +77,10 @@ export interface MelodyTrack extends TrackBase {
   altInst?: NoteInstName;
   /** what the composed (null) bars are seeded by, instead of the track's name: a track that doubles another one uses the other's, so both play the same notes */
   genKey?: string;
+  /** every note is moved by octaves into this range (MIDI): the span an instrument really plays in */
+  fold?: [number, number];
+  /** play the nearest chord tone below the tune (no more than this many semitones down, at least a minor third) instead of the tune itself: a harmony part */
+  harmonize?: number;
 }
 
 /** held chords (pads, strings, choir) or re-struck chord stabs */
@@ -155,6 +160,22 @@ export interface PlaybackOpts {
   tempo?: number;
   /** begin at this pass through the loop (for testing a particular arrangement) */
   startLoop?: number;
+  /** play every part on the recording of its instrument instead of the built-in synthesized voices (default: yes; false is the old sound) */
+  real?: boolean;
+}
+
+/** a note moved by whole octaves into a range */
+export function foldInto(m: number, [lo, hi]: [number, number]): number {
+  let x = m;
+  while (x < lo) x += 12;
+  while (x > hi) x -= 12;
+  return x;
+}
+
+/** the nearest chord tone below a tune note, at least a minor third down and no more than `most` semitones (an octave down when no tone is that close) */
+export function harmonyBelow(m: number, pcs: number[], most: number): number {
+  for (let d = 3; d <= most; d++) if (pcs.includes((((m - d) % 12) + 12) % 12)) return m - d;
+  return m - 12;
 }
 
 const clampTempo = (x: number) => Math.max(0.8, Math.min(1.25, x));
@@ -196,6 +217,8 @@ export class Playback {
   private intensity = 0.4;
   private targetIntensity = 0.4;
   private rand = rng(7);
+  /** every part plays the recording of its instrument (see realize.ts) */
+  private readonly real: boolean;
   /** skip tracks marked `lite` (slow phones) */
   liteMode = false;
   disposed = false;
@@ -207,6 +230,7 @@ export class Playback {
     this.c = core.ctx;
     this.theme = theme;
     this.spb = theme.stepsPerBar ?? 16;
+    this.real = opts.real !== false;
     this.seed = Math.abs(Math.floor(opts.seed ?? 0));
     this.tempoScale = this.tempoTarget = clampTempo(opts.tempo ?? 1);
     this.tonic = noteMidi(theme.tonic);
@@ -223,17 +247,33 @@ export class Playback {
     this.barChords = [];
     for (const ch of chords) for (let i = 0; i < ch.bars; i++) this.barChords.push({ chord: ch, start: i === 0, left: ch.bars - i });
 
-    for (const spec of theme.tracks) {
+    // the real orchestra plays more than the theme wrote (see fullOrchestra), and every part sits where its instrument sits on the stage
+    const specs: Track[] = this.real ? [...theme.tracks, ...fullOrchestra(theme)] : theme.tracks;
+    for (const spec of specs) {
       const gate = this.c.createGain();
       gate.gain.value = 0;
       let node: AudioNode = gate;
-      if (spec.pan) {
+      const seat = this.real ? STAGE[realVoice(spec)] : undefined;
+      const depth = seat?.depth ?? 0;
+      const pan = spec.pan ?? seat?.pan ?? 0;
+      if (pan) {
         const p = this.c.createStereoPanner();
-        p.pan.value = spec.pan;
+        p.pan.value = pan;
         gate.connect(p);
         node = p;
       }
-      const wet = core.withReverb(this.out, spec.rev ?? 0.15, 'music');
+      // the further back a part sits, the more the air has taken from its treble, the less of it comes straight at the listener and the more arrives off the hall
+      if (depth >= 0.4) {
+        const air = this.c.createBiquadFilter();
+        air.type = 'lowpass';
+        air.frequency.value = 17000 - 11000 * depth;
+        air.Q.value = 0.3;
+        node.connect(air);
+        node = air;
+      }
+      const direct = 1 - 0.28 * depth;
+      const wet = core.withReverb(this.out, Math.min(1.1, ((spec.rev ?? 0.15) + 0.22 * depth) / direct), 'music');
+      wet.gain.value = direct;
       node.connect(wet);
       if (spec.dly) {
         const d = this.c.createGain();
@@ -382,13 +422,13 @@ export class Playback {
     const now = this.c.currentTime;
 
     if (riserBar) {
-      push(Math.max(0, this.spb - 12), (t) => DRUM_VOICES.riser(this.core, this.accent, t, 0.9));
-      for (let i = 0; i < 8; i++) push(this.spb - 8 + i, (t) => DRUM_VOICES.tom(this.core, this.accent, t, 0.25 + 0.075 * i));
+      push(Math.max(0, this.spb - 12), (t) => this.drum('riser')(this.core, this.accent, t, 0.9));
+      for (let i = 0; i < 8; i++) push(this.spb - 8 + i, (t) => this.drum('tom')(this.core, this.accent, t, 0.25 + 0.075 * i));
     }
     if (crashBar) {
       push(0, (t) => {
-        DRUM_VOICES.crash(this.core, this.accent, t, 0.9);
-        DRUM_VOICES.taiko(this.core, this.accent, t, 0.8);
+        this.drum('crash')(this.core, this.accent, t, 0.9);
+        this.drum('taiko')(this.core, this.accent, t, 0.8);
       });
     }
     // the first melody track is the lead: on the lift pass a bell answers it an octave up
@@ -396,7 +436,7 @@ export class Playback {
 
     for (const rt of this.tracks) {
       const spec = rt.spec;
-      const g = this.gateFor(spec) * spec.gain;
+      const g = this.gateFor(spec) * spec.gain * (this.real ? trimOf(spec.kind === 'drums' ? spec.voice : spec.inst) : 1);
       rt.gate.gain.setTargetAtTime(g, Math.max(now, this.nextTime - 0.02), 0.3);
       if (g < 0.02 || (this.liteMode && spec.lite)) continue;
       if (spec.mask && spec.mask[barInLoop % spec.mask.length] === '.') continue;
@@ -407,12 +447,12 @@ export class Playback {
         const isFill = spec.fill && barInLoop % 4 === 3;
         const n = rt.drums!.length;
         const cells = isFill ? rt.fill! : rt.drums![(barInLoop + (n === 2 ? swap : 0)) % n];
-        const voice = DRUM_VOICES[spec.voice];
+        const voice = DRUM_VOICES[this.real ? realVoice(spec) : spec.voice];
         for (const h of cells) push(h.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.006, vel(h.v)));
       } else if (spec.kind === 'pattern') {
         const n2 = rt.pats!.length;
         const cells = rt.pats![(barInLoop + (n2 === 2 ? swap : 0)) % n2];
-        const voice = NOTE_VOICES[spec.inst];
+        const voice = NOTE_VOICES[this.real ? realVoice(spec) : spec.inst];
         const n = bc.chord.tones.length;
         for (const cell of cells) {
           let midi: number;
@@ -442,8 +482,8 @@ export class Playback {
           });
         }
         const inst = spec.altInst && lp % 2 === 1 ? spec.altInst : spec.inst;
-        const voice = NOTE_VOICES[inst];
-        const echo = phase === 3 && rt === lead && !this.liteMode ? NOTE_VOICES.bell : null;
+        const voice = NOTE_VOICES[this.real ? realVoice(spec, inst) : inst];
+        const echo = phase === 3 && rt === lead && !this.liteMode ? NOTE_VOICES[this.real ? 'glockR' : 'bell'] : null;
         for (const nt of bar) {
           if (nt.midi === null) continue;
           const composed = mel[barInLoop % mel.length] === null;
@@ -451,11 +491,15 @@ export class Playback {
           const m = nt.midi + (composed ? spec.shift ?? 0 : sh);
           rt.lastPitch = composed ? m - (spec.shift ?? 0) : m;
           const dur = nt.len * stepDur * (spec.legato ?? 0.95);
-          push(nt.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.004, midiHz(m), dur, vel(nt.vel ?? 0.85)));
+          // a part that sings below the tune or plays in a narrower range than the tune does (see fullOrchestra) is moved to where it can: the tune itself stays as it was
+          let pm = m;
+          if (spec.harmonize) pm = harmonyBelow(pm, chordPcs(bc.chord), spec.harmonize);
+          if (spec.fold) pm = foldInto(pm, spec.fold);
+          push(nt.step, (t) => voice(this.core, rt.gate, t + (this.rand() - 0.5) * 0.004, midiHz(pm), dur, vel(nt.vel ?? 0.85)));
           if (echo && nt.len >= 2) push(nt.step, (t) => echo(this.core, rt.gate, t + stepDur * 1.5, midiHz(m + 12), Math.min(dur, stepDur * 4), 0.3));
         }
       } else if (spec.kind === 'chords') {
-        const voice = CHORD_VOICES[spec.inst];
+        const voice = CHORD_VOICES[this.real ? realVoice(spec) : spec.inst];
         rt.lastVoicing = voiceLead(rt.lastVoicing, bc.chord, spec.lo, spec.hi, spec.voices ?? 4);
         const notes = rt.lastVoicing.map(midiHz);
         if (spec.stabs) {
@@ -467,6 +511,11 @@ export class Playback {
         }
       }
     }
+  }
+
+  /** a drum voice by its written name, as this performance plays it (the recording that stands for it when the music is the real orchestra) */
+  private drum(name: string) {
+    return DRUM_VOICES[this.real ? realVoice({ kind: 'drums', voice: name }) : name];
   }
 
   /** fade away and stop composing; dispose() once the fade is over */

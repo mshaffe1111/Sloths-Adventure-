@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { bossMaterial, ENEMY_ORDER, enemyIndex, hitArg, MATERIALS, materialFor, nextVariant, roarPitch, streakStage, unpackHit } from './combat.ts';
 import { Playback } from './music.ts';
-import { sceneForScreen, stageTempo } from './scenes.ts';
+import { MENU_THEME, sceneForScreen, stageTempo } from './scenes.ts';
 import { parseChord, shiftChord } from './theory.ts';
 import { THEMES, themeById } from './themes.ts';
 
@@ -37,7 +37,8 @@ test('every stage gets its own seed and a gentle tempo', () => {
       const s = sceneForScreen('playing', w, false, id, m)!;
       assert.ok(themeById(s.id));
       assert.ok(s.tempo! >= 0.85 && s.tempo! <= 1.15, `${id} tempo ${s.tempo}`);
-      assert.equal(s.seed, sceneForScreen('paused', w, false, id, m)!.seed, 'pausing keeps the same arrangement');
+      // the pause menu plays the menu music (the first stage's own tune), the same wherever the player was
+      assert.equal(sceneForScreen('paused', w, false, id, m)!.id, MENU_THEME, 'pausing plays the menu music');
       seeds.add(s.seed!);
     }
   }
