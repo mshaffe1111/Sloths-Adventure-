@@ -120,6 +120,21 @@ export function columnHit(zones: readonly Zone[] | undefined, x: number, y: numb
   return null;
 }
 
+/**
+ * Hot air over a vent (World 9, Matt's "hot-air lift from vents"): with the leaf open over a vent, Pokey rises on the warm air. It
+ * lifts him anywhere above the column up to VENT_LIFT_H over its top, and inside the column too while it is not erupting (while it
+ * erupts, the column itself burns as before). The level check never counts on it, so it is a gift, never a must.
+ */
+export const VENT_LIFT_H = 340;
+export function ventLift(zones: readonly Zone[] | undefined, x: number, y: number, t: number): boolean {
+  if (!zones) return false;
+  for (const z of zones) {
+    if (z.kind !== 'geyser' || x < z.x0 || x > z.x1 || y < z.top - VENT_LIFT_H || y > z.bottom) continue;
+    if (y < z.top || zoneState(z, t).phase !== 'active') return true;
+  }
+  return false;
+}
+
 // ---------------------------------------------------------------------------
 // Drowsiness (World 3)
 // ---------------------------------------------------------------------------

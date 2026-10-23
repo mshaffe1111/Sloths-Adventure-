@@ -13,6 +13,7 @@ import { lookFor, type Look } from './scenery.ts';
 import { getSoil, capTransform } from './soil.ts';
 import { isRich } from './rainforest.ts';
 import { paintDecorAt } from './envKit.ts';
+import { drawGroundFlora, groundFlora } from './paintedScenery.ts';
 import { polishEnabled, polishTier, rigFor, type Rig } from './polish.ts';
 import { getSceneSeed } from './sceneSeed.ts';
 import { fillCapWindy, windShear, lightBody, dapples, surfaceRoots, restShadow, liveBlades, soilGlints } from './terrainPolish.ts';
@@ -20,6 +21,7 @@ import { planStage, baseLook, VARIANTS, type StagePlan, type ThinPlan } from './
 import { drawThin } from './platformArt.ts';
 import { drawBounce, drawRaftLive, shakeOffset } from './spanArt.ts';
 import './shelfArt.ts';
+import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
 
@@ -393,6 +395,10 @@ function topItem(ctx: CanvasRenderingContext2D, p: Platform, look: Look, r: RNG,
     const roll = r();
     if (roll < 0.5) drawGrass(ctx, px, p.y - 2, 13 + r() * 11, capT, r, 5);
     else if (roll < 0.72) {
+      // one of Matt's painted flowers for this world, standing on the ground (the little drawn bloom while the art loads)
+      const pool = groundFlora(curWorld, 'flower');
+      const pick = r();
+      if (drawGroundFlora(ctx, 'flower', pool[Math.floor(pick * pool.length) % pool.length], px, p.y + 2, 20 + pick * 6, pick > 0.5)) return;
       ctx.strokeStyle = capT.dark;
       ctx.lineWidth = 2.5;
       ctx.beginPath();

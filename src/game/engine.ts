@@ -25,7 +25,7 @@ import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
-import { newGlide, glideStep, glideBrake, drawGlideLeaf } from './glide.ts';
+import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
 import { drawGlideSprite } from './leafSprites.ts';
 import { renderScenery, renderOverlay, setWeatherAvoid, lookFor } from './scenery.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
@@ -44,7 +44,7 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
-import { zoneEffect, windPush, zoneDrag, columnHit, inZone, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
+import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
@@ -1177,8 +1177,16 @@ export class GameEngine {
         p.vy += gravity * dt;
         if (p.vy > PHYS.maxFall) p.vy = PHYS.maxFall;
         // Leaf Glide: holding Jump while falling opens the leaf and slows the fall
-        const glideCap = glideStep(this.glide, { has: this.skills.has('glide'), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy }, dt);
+        const lift = this.currentStage.config.worldIndex === 9 && ventLift(this.currentStage.zones, p.x, p.y - 32, this.gameTime);
+        const glideCap = glideStep(this.glide, { has: this.skills.has('glide'), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
         p.vy = glideBrake(p.vy, glideCap, dt);
+        if (lift && this.glide.on) {
+          p.vy = glideLift(p.vy, dt);
+          if (!this.zoneHinted.lift) {
+            this.zoneHinted.lift = true;
+            this.addFloatingText('WARM AIR! HOLD THE LEAF OPEN TO RISE', p.x, p.y - 80, '#fdba74');
+          }
+        }
         this.glideOpen += ((this.glide.on ? 1 : 0) - this.glideOpen) * Math.min(1, dt * 16);
         if (this.glide.on) this.statGlideSec += dt;
         if (p.grounded) this.glideOpen = 0;

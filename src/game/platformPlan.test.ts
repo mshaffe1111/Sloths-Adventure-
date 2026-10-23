@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { planStage, baseLook, findStairs, groundRegions, lookShares, longestRun, h01, VARIANTS, PILLAR_VARIANTS, type ThinLook } from './platformPlan.ts';
+import { planStage, baseLook, findStairs, groundRegions, lookShares, longestRun, h01, VARIANTS, PILLAR_VARIANTS, SIGNATURE, type ThinLook } from './platformPlan.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
 import { generateAllLevels } from './worldsData.ts';
 import type { Platform } from './types.ts';
@@ -9,6 +9,28 @@ let nextId = 1;
 const plat = (x: number, y: number, width: number, height: number, extra: Partial<Platform> = {}): Platform => ({
   id: nextId++, x, y, width, height, type: 'solid', ...extra,
 });
+
+/**
+ * The variety rules are for the mixed looks: a world's own material (SIGNATURE) is the place itself, so it may take more than 40% and
+ * stand in a row (as bridges always could). These measure the rest: the largest share any other look takes, and the longest run of any other look.
+ */
+function mixedShares(order: ThinLook[], world: number) {
+  const sig = SIGNATURE[world]?.look;
+  const counts = new Map<ThinLook, number>();
+  for (const l of order) if (l !== sig && l !== 'bridge') counts.set(l, (counts.get(l) ?? 0) + 1);
+  let maxLook: ThinLook | null = null;
+  let max = 0;
+  for (const [l, c] of counts) if (c > max) { max = c; maxLook = l; }
+  const distinct = new Set(order).size;
+  let run = 0;
+  let best = 0;
+  for (let i = 0; i < order.length; i++) {
+    const free = order[i] === sig || order[i] === 'bridge'; // a span and the world's own material may stand in a row
+    run = free ? 0 : i > 0 && order[i] === order[i - 1] ? run + 1 : 1;
+    best = Math.max(best, run);
+  }
+  return { maxShare: order.length ? max / order.length : 0, maxLook, distinct, run: best, sigShare: sig ? order.filter((l) => l === sig).length / order.length : 0 };
+}
 
 /** a row of thin platforms with the generator's tags, the way a stage lays them out */
 function thinRow(n: number, style: Platform['style'] | undefined, type: Platform['type'] = 'solid'): Platform[] {
@@ -66,12 +88,21 @@ test('a stage of one generator style is still drawn with several looks, never ab
     const ps = thinRow(14, style);
     for (const world of [1, 4, 7, 9]) {
       const plan = planStage(ps, world, 11);
-      const s = lookShares(plan.order);
+      const s = mixedShares(plan.order, world);
       assert.ok(s.maxShare <= 0.4 + 1e-9, `${style} in world ${world}: ${s.maxLook} is ${Math.round(s.maxShare * 100)}%`);
-      assert.ok(s.distinct >= 4, `${style} in world ${world}: only ${s.distinct} looks`);
-      assert.ok(longestRun(plan.order) <= 2, `${style} in world ${world}: three identical looks in a row`);
+      assert.ok(s.distinct >= (SIGNATURE[world] ? 3 : 4), `${style} in world ${world}: only ${s.distinct} looks`);
+      assert.ok(s.run <= 2, `${style} in world ${world}: three identical looks in a row`);
     }
   }
+});
+
+test('a world with a material of its own shows it on a good share of its platforms', () => {
+  const ps = thinRow(20, 'branch');
+  for (const w of Object.keys(SIGNATURE).map(Number)) {
+    const s = mixedShares(planStage(ps, w, 11).order, w);
+    assert.ok(s.sigShare >= 0.3, `world ${w}: its own material is only ${Math.round(s.sigShare * 100)}%`);
+  }
+  assert.equal(mixedShares(planStage(ps, 1, 11).order, 1).sigShare, 0, 'a world without one keeps the mix');
 });
 
 test('on the generated stages of every world the plan meets the variety targets', () => {
@@ -85,10 +116,10 @@ test('on the generated stages of every world the plan meets the variety targets'
     const n = plan.order.length;
     if (n < 8) continue;
     checked++;
-    const s = lookShares(plan.order);
+    const s = mixedShares(plan.order, l.worldIndex);
     assert.ok(s.maxShare <= 0.4 + 1e-9, `${l.id}: ${s.maxLook} is ${Math.round(s.maxShare * 100)}% of ${n} platforms`);
-    assert.ok(s.distinct >= 4, `${l.id}: only ${s.distinct} looks among ${n} platforms`);
-    assert.ok(longestRun(plan.order) <= 2, `${l.id}: three identical looks in a row`);
+    assert.ok(s.distinct >= (SIGNATURE[l.worldIndex] ? 3 : 4), `${l.id}: only ${s.distinct} looks among ${n} platforms`);
+    assert.ok(s.run <= 2, `${l.id}: three identical looks in a row`);
   }
   assert.ok(checked >= 20, `only ${checked} stages were large enough to check`);
 });

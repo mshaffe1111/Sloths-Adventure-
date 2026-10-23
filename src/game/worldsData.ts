@@ -1,6 +1,7 @@
 import type { WorldInfo, LevelConfig, ObjectiveType } from './types.ts';
 import { testUnlockOn } from './testUnlock.ts';
 import { targetSeconds } from './stageTime.ts';
+import { STAGE_PLAN, stageSpec } from './stagePlan.ts';
 
 export const WORLDS_DATA: WorldInfo[] = [
   {
@@ -280,8 +281,9 @@ export const PX_PER_SEC = 120;
 /** a stage is never shorter than this nor longer than that, so it neither flashes by nor outgrows a phone's memory */
 export const STAGE_MIN_W = 6000;
 export const STAGE_MAX_W = 30000;
-/** flowers asked for per 1000 px of a harvest stage: the stage holds about 5.7 per 1000 px, so a quota of about 4.1 per 1000 px of the nominal width makes it about 1.6 times the quota */
-const HARVEST_QUOTA_PER_KPX = 4.1;
+/** flowers asked for per 1000 px of a harvest stage (halved 2026-10 with the flowers themselves: about half the loose flowers are left out now, see
+ * stageGenerator flower()); the generator tops a harvest up to about 1.6 times its quota */
+const HARVEST_QUOTA_PER_KPX = 2.05;
 const widthForSeconds = (sec: number) => Math.min(STAGE_MAX_W, Math.max(STAGE_MIN_W, Math.round((sec * PX_PER_SEC) / 100) * 100));
 /** vertical stages: modelled seconds of a climb per px of height (a climb is slow: about 25 px of height a second) */
 export const ASCENT_PX_PER_SEC = 24;
@@ -289,27 +291,18 @@ const ASCENT_MIN_H = 2600;
 
 /**
  * Generates the 100 level configs (10 worlds x 10 mini-stages).
- * Mini-stages 1..9 correspond to the 9 distinct mission archetypes.
+ * Mini-stages 1..9 are each world's own missions from the story (stagePlan.ts).
  * Mini-stage 10 is the hardcoded Boss Lair.
  */
 export function generateAllLevels(): LevelConfig[] {
   const levels: LevelConfig[] = [];
-  const archetypes: ObjectiveType[] = [
-    'sprint',
-    'harvest',
-    'purge',
-    'ascent',
-    'stealth',
-    'vine_runner',
-    'relic_hunt',
-    'rescue',
-    'gauntlet',
-    'boss_lair',
-  ];
 
   WORLDS_DATA.forEach((world) => {
-    archetypes.forEach((objType, miniIdx0) => {
+    // each world's stages come from the story (stagePlan.ts); the tenth is always the guardian's lair
+    const lineup: ObjectiveType[] = [...(STAGE_PLAN[world.id] ?? []).map((s) => s.type), 'boss_lair'];
+    lineup.forEach((objType, miniIdx0) => {
       const miniIndex = miniIdx0 + 1;
+      const spec = stageSpec(world.id, miniIndex);
       const id = `${world.id}-${miniIndex}`;
       let targetCount = 1;
       let timeLimit = 0;
@@ -336,7 +329,7 @@ export function generateAllLevels(): LevelConfig[] {
           levelWidth = lengthOf('harvest');
           // a harvest stage places about 1.6 times its quota (the rest is the reward on the longer lane of a fork): its generated flowers run about
           // HARVEST_FLOWERS_PER_KPX per 1000 px, so the quota is the share of them that makes the ratio come out near 1.6 (it used to be met in the first third)
-          targetCount = Math.max(grownQuota(8 + (world.id - 1) * 2, oldSized(4800), levelWidth, 45), Math.round((levelWidth / 1000) * HARVEST_QUOTA_PER_KPX));
+          targetCount = Math.max(grownQuota(6 + (world.id - 1), oldSized(4800), levelWidth, 24), Math.round((levelWidth / 1000) * HARVEST_QUOTA_PER_KPX));
           break;
         case 'purge':
           levelWidth = lengthOf('purge');
@@ -404,13 +397,13 @@ export function generateAllLevels(): LevelConfig[] {
         worldIndex: world.id,
         miniIndex,
         id,
-        name: objType === 'boss_lair' ? `${world.bossName}'s Lair` : `${OBJECTIVE_NAMES[objType]}`,
+        name: objType === 'boss_lair' ? `${world.bossName}'s Lair` : spec?.name ?? OBJECTIVE_NAMES[objType],
         objectiveType: objType,
         targetCount,
         timeLimit,
         levelWidth,
         levelHeight,
-        description: OBJECTIVE_DESCRIPTIONS[objType](targetCount),
+        description: spec?.desc ? spec.desc.replace('{n}', String(targetCount)) : OBJECTIVE_DESCRIPTIONS[objType](targetCount),
         unlocked,
         completed,
         stars,

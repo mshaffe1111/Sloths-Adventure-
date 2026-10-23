@@ -14,6 +14,7 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
+import { paintedFor, onPaintedReady, hasPainted } from './paintedBackdrops.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
 import { polishEnabled, polishTier, pskip, rigFor, polishBack, polishFront, swayWeight, swayAmount, gustAt, type LayerName, type Rig } from './polish.ts';
@@ -66,7 +67,7 @@ export const LOOKS: Record<number, Look> = {
     trees: ['jungle', 'palm', 'jungle', 'umbrella'],
     leaves: ['#2fbf4a', '#1c9a47', '#7ad94b', '#0f7d4d'], flora: ['#ff5d73', '#ffb02e', '#ff7ad9', '#fff06a'],
     rays: '#fff2a0', rayA: 0.16, weather: 'leaves', grade: ['#ffe08a', 0.05],
-    ground: { cap: '#5fd13a', capHi: '#a6f06a', capDark: '#2f8a2a', dirt: '#5a3e30', dirtDark: '#2a1812', stone: '#c9bfa8', outline: '#3b1f0c', kind: 'grass' },
+    ground: { cap: '#4fa03e', capHi: '#86c86a', capDark: '#2e6e2c', dirt: '#5a3e30', dirtDark: '#2a1812', stone: '#c9bfa8', outline: '#3b1f0c', kind: 'grass' },
     water: { top: '#59d6ff', bottom: '#1d8fd0', foam: '#e8fbff' },
     vine: { main: '#2f9a3a', leaf: '#6fe05a', flower: '#ff5d73' },
   },
@@ -81,8 +82,9 @@ export const LOOKS: Record<number, Look> = {
     trees: ['palm', 'willow', 'palm', 'jungle'],
     leaves: ['#18b58c', '#7ed95a', '#0e8f7a', '#c4e24a'], flora: ['#ff8a2a', '#ff5a5a', '#ffd23a', '#ff9ad0'],
     rays: '#ffd08a', rayA: 0.2, weather: 'petals', grade: ['#ff9a40', 0.08],
-    ground: { cap: '#8fd43a', capHi: '#d2f36a', capDark: '#4e9a2a', dirt: '#e8c27a', dirtDark: '#6a4a3a', stone: '#e8d4a8', outline: '#4a2a10', kind: 'grass' },
-    water: { top: '#3ee0d0', bottom: '#0f8fb0', foam: '#fff6df' },
+    ground: { cap: '#7fae46', capHi: '#b6d07a', capDark: '#4a7a30', dirt: '#c5a568', dirtDark: '#6a4a3a', stone: '#e8d4a8', outline: '#4a2a10', kind: 'grass' },
+    // the river is "wide, brown, and in no hurry" (the story, and the painted backdrop): slow green-brown water, not turquoise
+    water: { top: '#8a7d55', bottom: '#3a3220', foam: '#efe4c4' },
     vine: { main: '#3aa84a', leaf: '#a8e85a', flower: '#ff8a2a' },
   },
   // 3 — Mossy Grotto: bioluminescent cave forest
@@ -96,8 +98,9 @@ export const LOOKS: Record<number, Look> = {
     trees: ['jungle', 'willow', 'jungle', 'willow'],
     leaves: ['#10907a', '#0a6a70', '#4fc890', '#12607a'], flora: ['#ff5ad0', '#5ae6ff', '#ffb02e', '#b06aff'],
     rays: '#7affc8', rayA: 0.12, weather: 'spores', glow: '#7dffe0', grade: ['#00121e', 0.32],
-    ground: { cap: '#1fa27c', capHi: '#6ae6b8', capDark: '#0a5a4c', dirt: '#223f46', dirtDark: '#0a1a26', stone: '#6a8e8a', outline: '#040f16', kind: 'moss' },
-    water: { top: '#3ab8d8', bottom: '#064a6a', foam: '#b8f0f0' },
+    ground: { cap: '#24806a', capHi: '#50aa8b', capDark: '#0a4a40', dirt: '#223f46', dirtDark: '#0a1a26', stone: '#6a8e8a', outline: '#040f16', kind: 'moss' },
+    // cave water: dark, with a cold teal glow (the painted grotto has no bright blue)
+    water: { top: '#2a6a6e', bottom: '#04161e', foam: '#9ae0d8' },
     vine: { main: '#0e8a70', leaf: '#4fd8a8', flower: '#ff5ad0' },
   },
   // 4 — Mist Cascades: waterfalls, rain, rainbow
@@ -110,8 +113,9 @@ export const LOOKS: Record<number, Look> = {
     trees: ['jungle', 'willow', 'palm', 'jungle'],
     leaves: ['#2fb58a', '#1a9a7a', '#7fe0b0', '#2a8aa0'], flora: ['#ff6a8a', '#ffb8c8', '#fff06a', '#8ad0ff'],
     rays: '#ffffff', rayA: 0.14, weather: 'mist', grade: ['#4a78a8', 0.1],
-    ground: { cap: '#4fc09a', capHi: '#a8f0d0', capDark: '#22806a', dirt: '#7e8a8e', dirtDark: '#3a464e', stone: '#b4c0c4', outline: '#1c262c', kind: 'moss' },
-    water: { top: '#8ae6ff', bottom: '#2a8ac0', foam: '#ffffff' },
+    ground: { cap: '#5f9486', capHi: '#a2c8bc', capDark: '#408071', dirt: '#7e8a8e', dirtDark: '#3a464e', stone: '#b4c0c4', outline: '#1c262c', kind: 'moss' },
+    // the water runs cloudy: the Heartbloom has stayed closed too long (the story)
+    water: { top: '#a8bcc4', bottom: '#4a5e6a', foam: '#ffffff' },
     vine: { main: '#2aa07a', leaf: '#7fe8b8', flower: '#ff6a8a' },
   },
   // 5 — Orchid Sanctuary: magenta dawn, petals
@@ -125,8 +129,10 @@ export const LOOKS: Record<number, Look> = {
     trees: ['umbrella', 'jungle', 'palm', 'willow'],
     leaves: ['#3fbf6a', '#a05ad8', '#ff7ab8', '#1f9a5a'], flora: ['#ff4fb8', '#ffffff', '#ffb02e', '#b46aff'],
     rays: '#ffd0f0', rayA: 0.2, weather: 'petals', grade: ['#ff5ac8', 0.07],
-    ground: { cap: '#d45ad0', capHi: '#ff9ae8', capDark: '#8a2a90', dirt: '#8a4a6a', dirtDark: '#3e1f3e', stone: '#d8b8d0', outline: '#2a0f2a', kind: 'grass' },
-    water: { top: '#ff9ad8', bottom: '#8a4ad0', foam: '#fff0fa' },
+    // dim violet moss and plum earth, to sit inside the painted backdrop's fading violet light (it was candy magenta)
+    ground: { cap: '#7c76a4', capHi: '#bdb6dc', capDark: '#3c3860', dirt: '#4c3e5c', dirtDark: '#1e1830', stone: '#aaa2c4', outline: '#160f24', kind: 'grass' },
+    // dim violet water under the closing orchids, to match the painted backdrop
+    water: { top: '#7a6a9a', bottom: '#2a2046', foam: '#ece4fa' },
     vine: { main: '#8a3fb0', leaf: '#ff8ad8', flower: '#ffffff' },
   },
   // 6 — Deep Mangrove: chartreuse swamp haze, fireflies
@@ -141,8 +147,9 @@ export const LOOKS: Record<number, Look> = {
     trees: ['willow', 'jungle', 'willow', 'umbrella'],
     leaves: ['#3f7a34', '#2a6030', '#6a9a3a', '#1f4a30'], flora: ['#ffd23a', '#ff8a3a', '#e8e08a', '#c85a7a'],
     rays: '#d8e0a0', rayA: 0.12, weather: 'fireflies', glow: '#d8ff7a', grade: ['#3a5a2a', 0.12],
-    ground: { cap: '#5a8a34', capHi: '#9ac45a', capDark: '#2a4a1a', dirt: '#4a3a26', dirtDark: '#1a1208', stone: '#8a8a70', outline: '#14100a', kind: 'moss' },
-    water: { top: '#5a4026', bottom: '#140e06', foam: '#a89878' },
+    ground: { cap: '#6e8a57', capHi: '#adc489', capDark: '#384a2f', dirt: '#4a3e30', dirtDark: '#1a1208', stone: '#8a8a70', outline: '#14100a', kind: 'moss' },
+    // "the water between them lay flat and gray" (the story, and the painted swamp)
+    water: { top: '#4a4e4c', bottom: '#0e1010', foam: '#b8bcb4' },
     vine: { main: '#4a6a2a', leaf: '#9ac04a', flower: '#e8e08a' },
   },
   // 7 — Ancient Ruins: amber stone, golden light
@@ -156,8 +163,9 @@ export const LOOKS: Record<number, Look> = {
     trees: ['jungle', 'umbrella', 'palm', 'jungle'],
     leaves: ['#4fa83a', '#d8b83a', '#2f8a3a', '#e08a32'], flora: ['#ffb030', '#ff6a3a', '#fff06a', '#ff9ad0'],
     rays: '#ffe0a0', rayA: 0.22, weather: 'leaves', grade: ['#ffa040', 0.08],
-    ground: { cap: '#8fc040', capHi: '#d0ec6a', capDark: '#4f7a2a', dirt: '#c8a070', dirtDark: '#3e3340', stone: '#e8d2a8', outline: '#3a2410', kind: 'stone' },
-    water: { top: '#6ad8c8', bottom: '#2a8a98', foam: '#fff4d8' },
+    ground: { cap: '#8eaa62', capHi: '#bbcb83', capDark: '#587241', dirt: '#8b7153', dirtDark: '#3e3340', stone: '#e8d2a8', outline: '#3a2410', kind: 'stone' },
+    // old temple water, green-grey under the dusk (it was bright turquoise)
+    water: { top: '#5a7a70', bottom: '#1a2a26', foam: '#dfe8d8' },
     vine: { main: '#4a8a2a', leaf: '#a8d84a', flower: '#ffb030' },
   },
   // 8 — Twilight Treetops: purple dusk, moon, glow flowers
@@ -172,7 +180,7 @@ export const LOOKS: Record<number, Look> = {
     trees: ['umbrella', 'willow', 'jungle', 'palm'],
     leaves: ['#2f7a6a', '#3f9a78', '#245a6a', '#1c4a52'], flora: ['#f4ecd4', '#5ae0c0', '#ffb25a', '#e8c0e0'],
     rays: '#d8e0ff', rayA: 0.14, weather: 'fireflies', glow: '#8aff9a', grade: ['#2a3a8a', 0.12],
-    ground: { cap: '#2f8a68', capHi: '#7ad0a0', capDark: '#1a4a3a', dirt: '#a39c90', dirtDark: '#403c38', stone: '#cfc8b8', outline: '#0e1418', kind: 'moss' },
+    ground: { cap: '#2d8564', capHi: '#61a680', capDark: '#1a4a3a', dirt: '#66625a', dirtDark: '#403c38', stone: '#cfc8b8', outline: '#0e1418', kind: 'moss' },
     water: { top: '#4a8aa8', bottom: '#14304a', foam: '#e0f0f4' },
     vine: { main: '#2a6a5a', leaf: '#5ae0c0', flower: '#f4ecd4' },
   },
@@ -201,8 +209,9 @@ export const LOOKS: Record<number, Look> = {
     trees: ['dead', 'jungle', 'dead', 'palm'],
     leaves: ['#4a3556', '#6e2a48', '#38304e', '#7e3a54'], flora: ['#ff5a72', '#ff9aa8', '#e8d0ff', '#ffd05a'],
     rays: '#ff8aa0', rayA: 0.07, weather: 'storm', grade: ['#3a0f3a', 0.13],
-    ground: { cap: '#5e3340', capHi: '#d4586a', capDark: '#2a1020', dirt: '#33303f', dirtDark: '#15121c', stone: '#7c7690', outline: '#06040a', kind: 'stone' },
-    water: { top: '#b0486a', bottom: '#2a1050', foam: '#ffd8e4' },
+    ground: { cap: '#4a4e5e', capHi: '#8a90a4', capDark: '#22242e', dirt: '#33303f', dirtDark: '#15121c', stone: '#7c7690', outline: '#06040a', kind: 'stone' },
+    // rain pooled in the rock: cold slate, not the old crimson
+    water: { top: '#4a5468', bottom: '#0e1220', foam: '#c8d0dc' },
     vine: { main: '#5a2e44', leaf: '#c8708a', flower: '#ff7a96' },
   },
 };
@@ -287,14 +296,27 @@ export function lookFor(worldId: number): Look {
 const H = 720; // design height every layer is authored at
 const TW = 2400; // tile width in design space
 
+/** a baked layer, or a painted strip (paintedBackdrops.ts) */
+type Layer = HTMLCanvasElement | HTMLImageElement;
+/** a layer's width in design units: a baked tile is TW wide; a painted strip keeps its own proportions at the design height */
+const tileW = (cv: Layer) => (cv instanceof HTMLCanvasElement ? TW : (cv.naturalWidth * H) / cv.naturalHeight);
+const layerH = (cv: Layer) => (cv instanceof HTMLCanvasElement ? cv.height : cv.naturalHeight);
+const layerWpx = (cv: Layer) => (cv instanceof HTMLCanvasElement ? cv.width : cv.naturalWidth);
+
 interface LayerSet {
   world: number;
   seed: number;
-  far: HTMLCanvasElement;
-  hills: HTMLCanvasElement;
-  mid: HTMLCanvasElement;
-  near: HTMLCanvasElement;
+  far: Layer;
+  /** null when the world is painted (its middle strip stands where the hills and the drawn trees were) */
+  hills: Layer | null;
+  mid: Layer;
+  /** null only for a painted world whose near strip is still to come */
+  near: Layer | null;
   front: HTMLCanvasElement;
+  /** the world's painted strips are in use */
+  painted?: boolean;
+  /** a painted world whose strips are still decoding: a plain sky stands in (the drawn layers are never built for it, they would only be thrown away) */
+  waiting?: boolean;
   clouds: HTMLCanvasElement[];
   /** the three haze veils are already painted into far, hills and mid (gameplay sets only), so they are not drawn again every frame */
   hazed: boolean;
@@ -307,6 +329,35 @@ interface LayerSet {
 const sets = new Map<string, LayerSet>();
 let bakeScale = 1;
 onSceneSeedChange(() => sets.clear());
+// when a world's painted strips finish loading, its drawn stand-in is dropped and the next frame builds the painted set
+onPaintedReady((world) => {
+  for (const [k, v] of [...sets.entries()]) if (v.world === world && (!v.painted || v.waiting)) sets.delete(k);
+});
+
+/** a sky-coloured stand-in for a painted world whose strips are still decoding: a few pixels wide, drawn stretched across the tile */
+function waitingSky(look: Look): HTMLCanvasElement {
+  const cv = document.createElement('canvas');
+  cv.width = 4;
+  cv.height = H;
+  const c = cv.getContext('2d')!;
+  const g = c.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, look.sky[0]);
+  g.addColorStop(1, look.sky[look.sky.length - 1]);
+  c.fillStyle = g;
+  c.fillRect(0, 0, 4, H);
+  return cv;
+}
+const clearStrip = (() => {
+  let cv: HTMLCanvasElement | null = null;
+  return () => {
+    if (!cv) {
+      cv = document.createElement('canvas');
+      cv.width = 1;
+      cv.height = 1;
+    }
+    return cv;
+  };
+})();
 
 /** run fn with every layer baked (and drawn) at `scale` of full resolution */
 export function withBakeScale<T>(scale: number, fn: () => T): T {
@@ -1160,7 +1211,8 @@ function buildNear(look: Look, world: number): HTMLCanvasElement {
 
 // ───────────────────────────── front layer (frame) ─────────────────────────────
 
-function buildFront(look: Look, world: number): HTMLCanvasElement {
+/** `hangs`: the big leaves hanging into the top corners (off over a painted backdrop: drawn leaves that size clash with the painting) */
+function buildFront(look: Look, world: number, hangs = true): HTMLCanvasElement {
   const [cv, ctx] = makeLayer(1.2);
   const r = rng(world * 523 + 9 + getSceneSeed() * 1013);
   const dark = look.leaves.map((c) => tone(mix(c, '#04120c', 0.6)));
@@ -1177,7 +1229,7 @@ function buildFront(look: Look, world: number): HTMLCanvasElement {
     });
   }
   // a few big leaves hanging into the top corners
-  for (let x = 240; x < TW; x += 760) {
+  for (let x = 240; hangs && x < TW; x += 760) {
     wrap(x, 220, (xx) => {
       if (paintFrontHang(ctx, world, look, xx, (xx / 760) | 0, r)) return;
       drawMonstera(ctx, xx, -50, 110 + r() * 30, Math.PI + (r() - 0.5) * 0.5, dark[(r() * dark.length) | 0]);
@@ -1353,6 +1405,24 @@ function ensure(world: number): LayerSet {
   // the painted plants and flowers stand in the scenery too: start loading them now (a bake that finds them not ready keeps the vector foliage)
   warmFloraArt();
   const look = lookFor(world);
+  // a world painted as strips needs nothing baked but the foreground frame
+  const painted = paintedFor(world);
+  if (painted) {
+    const set: LayerSet = {
+      world, seed: getSceneSeed(), far: painted.far, hills: null, mid: painted.mid, near: painted.near,
+      front: buildFront(look, world, false), clouds: [], hazed: true, painted: true,
+    };
+    sets.set(key, set);
+    return set;
+  }
+  if (hasPainted(world)) {
+    const set: LayerSet = {
+      world, seed: getSceneSeed(), far: waitingSky(look), hills: null, mid: clearStrip(), near: null,
+      front: buildFront(look, world, false), clouds: [], hazed: true, painted: true, waiting: true,
+    };
+    sets.set(key, set);
+    return set;
+  }
   const cache: LayerSet = {
     world,
     seed: getSceneSeed(),
@@ -1365,14 +1435,14 @@ function ensure(world: number): LayerSet {
     hazed: false,
   };
   // the far layers are pushed back into the air (less contrast, less colour) so the middle ground, and the hero in it, stay the clearest
-  recede(cache, look, world);
+  recede(cache as { far: HTMLCanvasElement; hills: HTMLCanvasElement; mid: HTMLCanvasElement }, look, world);
   // Gameplay paints a haze veil over each of the three distant layers, every frame: three more full-screen blends on a phone. A veil laid
   // over a layer and then over what is behind it is the same picture as the veil baked into that layer ("over" is associative), so it is
   // baked once here. Menu vistas (small bake scale) keep drawing theirs live, because they skip the veils on purpose.
   if (bakeScale >= 1) {
-    bakeHaze(cache.far, look.haze, HAZE_FAR);
-    bakeHaze(cache.hills, look.haze, HAZE_HILLS);
-    bakeHaze(cache.mid, look.haze, HAZE_MID);
+    bakeHaze(cache.far as HTMLCanvasElement, look.haze, HAZE_FAR);
+    bakeHaze(cache.hills as HTMLCanvasElement, look.haze, HAZE_HILLS);
+    bakeHaze(cache.mid as HTMLCanvasElement, look.haze, HAZE_MID);
     cache.hazed = true;
   }
   sets.set(key, cache);
@@ -1393,8 +1463,8 @@ interface TileOpt {
   sway: boolean;
 }
 
-function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, alpha = 1, o?: TileOpt) {
-  const pitch = TW * s;
+function drawTile(ctx: CanvasRenderingContext2D, cv: Layer, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0, alpha = 1, o?: TileOpt) {
+  const pitch = tileW(cv) * s;
   const lv = o ? o.rig.layers[o.layer] : null;
   const shift = lv ? lv.shift * pitch : 0;
   let x0 = -((camX * par + shift) % pitch);
@@ -1412,7 +1482,7 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: num
     const N = 16;
     const gust = gustAt(o.rig, o.time) * amp;
     const sp = o.rig.wind.spd;
-    const rowH = cv.height / N;
+    const rowH = layerH(cv) / N;
     const dH = dh / N;
     for (let x = x0 - pitch; x < vw; x += pitch) {
       if (x + pitch < -amp - 4) continue;
@@ -1427,8 +1497,8 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: num
         if (w <= 0.001) continue;
         const dx = Math.sin(o.time * sp + i * 0.42 + (camX * par) * 0.0016 + o.rig.wind.phase) * gust * w;
         const sy = Math.floor(i * rowH);
-        const sh = Math.min(cv.height - sy, Math.floor((i + 1) * rowH) - sy + 1);
-        ctx.drawImage(cv, 0, sy, cv.width, sh, flip ? -dx : Math.floor(x + dx), y0 + i * dH, Math.ceil(pitch) + 1, dH + 1);
+        const sh = Math.min(layerH(cv) - sy, Math.floor((i + 1) * rowH) - sy + 1);
+        ctx.drawImage(cv, 0, sy, layerWpx(cv), sh, flip ? -dx : Math.floor(x + dx), y0 + i * dH, Math.ceil(pitch) + 1, dH + 1);
       }
       if (flip) ctx.restore();
     }
@@ -1444,6 +1514,41 @@ function drawTile(ctx: CanvasRenderingContext2D, cv: HTMLCanvasElement, par: num
     }
   }
   ctx.globalAlpha = prev;
+}
+
+/**
+ * Where a painted strip sits on screen: it is drawn `k` times the design height, with the row `a` of the picture (0 top, 1 bottom: the
+ * line where its land meets its floor) placed at `at` of the view height, just above the ground Pokey runs on. Without this the
+ * strips' land would sit behind the ground blocks and only their sky would show.
+ */
+export const STRIP_FIT: Record<'far' | 'mid' | 'near', { k: number; a: number; at: number }> = {
+  far: { k: 1.2, a: 0.72, at: 0.6 },
+  mid: { k: 1.0, a: 0.69, at: 0.58 },
+  near: { k: 1.05, a: 0.72, at: 0.63 },
+};
+
+/** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT */
+function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0) {
+  const f = STRIP_FIT[part];
+  const dh = H * s * f.k;
+  const pitch = tileW(img) * s * f.k;
+  const top = vh * f.at - f.a * dh + yOff;
+  let x0 = -((camX * par) % pitch);
+  if (x0 > 0) x0 -= pitch;
+  // every other copy is mirrored, so each edge meets its own reflection: the strip repeats with no seam whatever is painted at its ends
+  let k = Math.floor((camX * par) / pitch);
+  for (let x = x0; x < vw; x += pitch, k++) {
+    const px = Math.floor(x);
+    const pw = Math.ceil(pitch) + 1;
+    if (k % 2 === 0) ctx.drawImage(img, px, top, pw, dh);
+    else {
+      ctx.save();
+      ctx.translate(px + pw, top);
+      ctx.scale(-1, 1);
+      ctx.drawImage(img, 0, 0, pw, dh);
+      ctx.restore();
+    }
+  }
 }
 
 /** how strong the haze is over the far, hill and mid layers (top of the veil is a fifth of this) */
@@ -1533,15 +1638,24 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   const rig = polishEnabled() && polishTier() < 2 ? rigFor(look, world, getSceneSeed()) : null;
   const to = (layer: LayerName): TileOpt | undefined => (rig ? { layer, rig, time, sway: !lite && polishTier() < 1 } : undefined);
   const live = !lite && !set.hazed;
+  if (set.painted) {
+    drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, s, yo * 0.3);
+    drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
+    if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo);
+    ctx.fillStyle = rgba(look.grade[0], look.grade[1]);
+    ctx.fillRect(0, 0, vw, vh);
+    lanePool(ctx, look, world, vw, vh);
+    return;
+  }
   drawTile(ctx, set.far, 0.05, camX, vw, vh, s, yo * 0.3, 1, to('far'));
   if (live) veil(ctx, look.haze, HAZE_FAR, vw, vh);
-  drawTile(ctx, set.hills, 0.12, camX, vw, vh, s, yo * 0.5, 1, to('hills'));
+  if (set.hills) drawTile(ctx, set.hills, 0.12, camX, vw, vh, s, yo * 0.5, 1, to('hills'));
   if (live) veil(ctx, look.haze, HAZE_HILLS, vw, vh);
   drawTile(ctx, set.mid, 0.26, camX, vw, vh, s, yo * 0.8, 1, to('mid'));
   if (live) veil(ctx, look.haze, HAZE_MID, vw, vh);
-  drawTile(ctx, set.near, 0.5, camX, vw, vh, s, yo, 1, to('near'));
+  if (set.near) drawTile(ctx, set.near, 0.5, camX, vw, vh, s, yo, 1, to('near'));
   if (rig && !lite) polishBack(ctx, look, rig, world, camX, vw, vh, time);
-  if (RICH_MID(look, world)) renderLifeBack(ctx, look, world, camX, vw, vh, time, lite);
+  if (RICH_MID(look, world) && !set.painted) renderLifeBack(ctx, look, world, camX, vw, vh, time, lite);
   // colour grade pulls every layer into one mood
   // plain alpha tint (blend modes force a full-canvas flush on software/mobile GPUs)
   ctx.fillStyle = rgba(look.grade[0], look.grade[1]);

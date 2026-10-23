@@ -197,9 +197,9 @@ export const LESSONS: Record<LessonId, Lesson> = {
   },
   idol: {
     id: 'idol',
-    title: 'A Jungle Idol!',
+    title: 'Something hidden!',
     face: 'face_wink',
-    intro: 'A hidden treasure. Some stages ask you to find them all, so look in the high and out-of-the-way places.',
+    intro: 'Some stages hide things to find: Grandma\'s keepsakes, Meeca\'s messages, old relics. Look in the high and out-of-the-way places.',
     lines: same([{ how: 'Just touch it', what: 'Collect it' }]),
   },
   power: {

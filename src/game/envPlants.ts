@@ -8,7 +8,8 @@
  *   W5 understory (the spider queen): heliconia, orchids, bromeliads, golden orb webs, silk cocoons.
  *   W7 overgrown temple: a half-buried idol face, fallen carved blocks, fig roots, aerial roots.
  *   W9 volcanic regrowth: ohia with red lehua flowers, steam vents, uluhe ferns in the cracks, lichen, obsidian.
- *   W10 cleared war camp: stumps, sharpened stakes, log piles, torn banners, a camp fire, chains.
+ *   W10 the mountain above the trees (the story: "after that the rain had nothing to hit but rock"): wet slate rocks, wind-bent wire grass,
+ *      fallen iron thorns from the General's netting, rain puddles, chains on the way up. (The old war-camp props stay for the lair.)
  *   W1 lowland rainforest (the snake): shed skin, hollow logs, heliconia.
  */
 import { tone, mix, lighten, darken, rgba, type RNG, type Tone } from './artKit.ts';
@@ -891,7 +892,110 @@ const obsidian: PlantFn = (ctx, x, y, s, look, r) => {
   }
 };
 
-// ───────────────────────────── W10: the cleared war camp ─────────────────────────────
+// ───────────────────────────── W10: the mountain above the treeline ─────────────────────────────
+
+/** a wet slate rock, split along its layers, shining with rain */
+const slaterock: PlantFn = (ctx, x, y, s, look, r) => {
+  const st = tone(mix(look.ground.stone, '#4a5266', 0.5), '#0a0c16');
+  const w = s * (0.7 + r() * 0.3);
+  const h = s * (0.45 + r() * 0.25);
+  ctx.fillStyle = st.mid;
+  ctx.strokeStyle = look.ground.outline;
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(x - w, y + 2);
+  ctx.lineTo(x - w * 0.8, y - h * 0.7);
+  ctx.lineTo(x - w * 0.2, y - h);
+  ctx.lineTo(x + w * 0.5, y - h * 0.85);
+  ctx.lineTo(x + w, y - h * 0.2);
+  ctx.lineTo(x + w * 0.9, y + 2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // the layers of the slate
+  ctx.strokeStyle = rgba(st.deep, 0.6);
+  ctx.lineWidth = 1;
+  for (let k = 1; k < 3; k++) {
+    const yy = y - h * (k / 3);
+    ctx.beginPath();
+    ctx.moveTo(x - w * 0.85, yy + 2);
+    ctx.lineTo(x + w * 0.85, yy - 2);
+    ctx.stroke();
+  }
+  // rain sheen along the top
+  ctx.strokeStyle = 'rgba(210,225,245,0.45)';
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.moveTo(x - w * 0.6, y - h * 0.82);
+  ctx.lineTo(x + w * 0.3, y - h * 0.9);
+  ctx.stroke();
+};
+
+/** a tuft of wiry mountain grass, combed flat by the wind */
+const wiregrass: PlantFn = (ctx, x, y, s, _look, r) => {
+  const blades = 9 + ((r() * 5) | 0);
+  const lean = 0.55 + r() * 0.25;
+  for (let k = 0; k < blades; k++) {
+    const bx = x + (r() - 0.5) * s * 0.4;
+    const len = s * (0.55 + r() * 0.5);
+    ctx.strokeStyle = k % 3 ? '#7a7448' : '#9a9060';
+    ctx.lineWidth = 1.3;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(bx, y + 2);
+    ctx.quadraticCurveTo(bx + len * lean * 0.4, y - len * 0.7, bx + len * lean, y - len * 0.55);
+    ctx.stroke();
+  }
+};
+
+/** one of the General's iron thorns, broken off the netting and lying in the rock, rusting */
+const ironthorn: PlantFn = (ctx, x, y, s, look, r) => {
+  const dir = r() > 0.5 ? 1 : -1;
+  ctx.save();
+  ctx.translate(x, y + 2);
+  ctx.rotate(dir * (0.35 + r() * 0.3));
+  ctx.fillStyle = '#2a2830';
+  ctx.strokeStyle = look.ground.outline;
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.moveTo(-s * 0.08, 0);
+  ctx.quadraticCurveTo(-s * 0.12, -s * 0.5, dir * s * 0.15, -s * 0.95);
+  ctx.quadraticCurveTo(s * 0.02, -s * 0.45, s * 0.08, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // rust streaks
+  ctx.strokeStyle = 'rgba(150,80,40,0.7)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(-s * 0.03, -s * 0.15);
+  ctx.lineTo(-s * 0.02, -s * 0.45);
+  ctx.stroke();
+  ctx.restore();
+  // the stub of the netting it broke from
+  ctx.strokeStyle = '#3a3846';
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(x - s * 0.3, y + 1);
+  ctx.lineTo(x + s * 0.25, y - s * 0.08);
+  ctx.stroke();
+};
+
+/** rain pooled in a hollow of the rock */
+const puddle: PlantFn = (ctx, x, y, s, _look, r) => {
+  const w = s * (0.8 + r() * 0.5);
+  ctx.fillStyle = 'rgba(40,48,66,0.9)';
+  ctx.beginPath();
+  ctx.ellipse(x, y + 1, w, s * 0.12, 0, 0, TAU);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(200,215,240,0.45)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.ellipse(x - w * 0.2, y, w * 0.45, s * 0.05, 0, 0, TAU);
+  ctx.stroke();
+};
+
+// ───────────────────────────── the war camp (kept for the General's lair) ─────────────────────────────
 
 const stump: PlantFn = (ctx, x, y, s, look, r) => {
   const bark = tone('#4a3a2c', '#0a0604');
@@ -1257,7 +1361,7 @@ export const SWAYS: Record<string, SwayFn> = {
       const x = 90 + k * 90 + r() * 20;
       const len = 90 + r() * 170;
       for (let y = 6, i = 0; y < len; y += 8, i++) link(x, y, i % 2 === 0);
-      if (k === 1) {
+      if (k === 1 && variant < 0) {
         c.fillStyle = '#9a2a38';
         c.beginPath();
         c.moveTo(x, len);
@@ -1317,6 +1421,10 @@ export const EXTRA_PLANTS: Record<string, PlantDef> = {
   campfire: { draw: campfire, near: 1.3, decor: [22, 28] },
   snakeskin: { draw: snakeskin, near: 1.2, decor: [14, 20] },
   hollowlog: { draw: hollowlog, near: 1.4, decor: [26, 34] },
+  slaterock: { draw: slaterock, near: 1.4, decor: [22, 32] },
+  wiregrass: { draw: wiregrass, near: 1.4, decor: [22, 32] },
+  ironthorn: { draw: ironthorn, near: 1.3, decor: [24, 34] },
+  puddle: { draw: puddle, near: 1, decor: [16, 24] },
 };
 
 export { lighten };

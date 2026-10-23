@@ -1,7 +1,7 @@
 /**
  * Leaf Glide: a skill Pokey learns (see skills.ts). While he is falling, holding Jump opens a leaf over his head and his fall
- * slows to a gentle drift. It never lifts him, so it makes a long gap or a pit-edge slip easier to cover without changing how high
- * any jump goes (the level builder and beatability check ignore it, so no stage ever needs it).
+ * slows to a gentle drift, which carries him a long way out over a drop. The level check simulates it (physics.ts) and from 4-7 a
+ * stage may have a drop only the leaf can cross (skills.ts). Over a vent's warm air in World 9 it lifts him (zones.ts ventLift).
  *
  * The rules are plain functions so they can be tested; the engine feeds them once per frame and draws the leaf.
  */
@@ -18,6 +18,9 @@ export const GLIDE = {
   brake: 4200,
   /** an upward launch at least this fast gives the glide back */
   refillUp: 200,
+  /** riding the hot air over a vent (zones.ts ventLift): how hard it pushes up, px/s per second, and the fastest it carries him up */
+  lift: 2000,
+  liftMax: 240,
 } as const;
 
 export interface GlideState {
@@ -39,6 +42,8 @@ export interface GlideInput {
   /** Jump is being held */
   held: boolean;
   vy: number;
+  /** over a vent's warm air (World 9): the leaf stays open and rises instead of falling */
+  lift?: boolean;
 }
 
 /**
@@ -51,11 +56,23 @@ export function glideStep(g: GlideState, a: GlideInput, dt: number): number {
     g.on = false;
     return Infinity;
   }
+  if (a.lift && a.has && a.held) {
+    // the warm air holds the leaf open as long as he stays in it, and gives the glide back for when he drifts out
+    g.on = true;
+    g.left = GLIDE.maxTime;
+    g.fallT = GLIDE.onset;
+    return GLIDE.fallSpeed;
+  }
   if (a.vy <= -GLIDE.refillUp) g.left = GLIDE.maxTime;
   g.fallT = a.vy > GLIDE.minFall ? g.fallT + dt : 0;
   g.on = a.has && a.held && g.fallT >= GLIDE.onset && g.left > 0;
   if (g.on) g.left = Math.max(0, g.left - dt);
   return g.on ? GLIDE.fallSpeed : Infinity;
+}
+
+/** the warm air over a vent pushes the open leaf up, to at most liftMax */
+export function glideLift(vy: number, dt: number): number {
+  return Math.max(-GLIDE.liftMax, vy - GLIDE.lift * dt);
 }
 
 /** pull a falling speed down toward the glide cap (never speeds him up) */

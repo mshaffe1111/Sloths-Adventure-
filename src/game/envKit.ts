@@ -8,6 +8,7 @@
  *      jade vine, Parkia pompoms and pale night-opening moonflowers, with foxfire fungus glowing on the rotting wood.
  * A world with no kit here keeps the shared jungle undergrowth (see scenery.buildNear).
  */
+import { drawGroundFlora, groundFlora } from './paintedScenery.ts';
 import { tone, mix, rgba, lighten, darken, type RNG, type Tone } from './artKit.ts';
 import { fernFrond } from './flora.ts';
 import { leaf } from './rainforest.ts';
@@ -582,7 +583,16 @@ export function paintDecorAt(ctx: CanvasRenderingContext2D, world: number, look:
   const kit = ENV[world];
   if (!kit || kit.decor.length === 0) return false;
   if (kit.decorChance !== undefined && r() > kit.decorChance) return false;
-  const def = PLANTS[pickWeighted(r, kit.decor)];
+  const name = pickWeighted(r, kit.decor);
+  // Matt's painted flowers and plants (paintedScenery.ts): one of the world's signature species, standing on the ground
+  if (name === 'pflower' || name === 'pplant') {
+    const kind = name === 'pflower' ? 'flower' : 'plant';
+    const pool = groundFlora(world, kind);
+    const num = pool[Math.floor(r() * pool.length) % pool.length];
+    const size = kind === 'flower' ? 22 + r() * 8 : 28 + r() * 12;
+    return drawGroundFlora(ctx, kind, num, px, py + 2, size, r() < 0.5);
+  }
+  const def = PLANTS[name];
   if (!def) return false;
   def.draw(ctx, px, py, def.decor[0] + r() * (def.decor[1] - def.decor[0]), look, r);
   return true;
@@ -688,49 +698,51 @@ const PLANTS: Record<string, PlantDef> = {
   karstpebbles: { draw: (c, x, y, s, l) => pebbleStack(c, x, y, s, tone(mix(l.ground.stone, '#8a8f9a', 0.3), '#1a2030'), l.ground.outline), near: 1, decor: [9, 15] },
 };
 
-ENV[1] = { near: [], decor: [['snakeskin', 2], ['hollowlog', 2], ['heliconia', 3]], decorChance: 0.3 };
+ENV[1] = { near: [], decor: [['snakeskin', 1.5], ['hollowlog', 1.5], ['pflower', 3], ['pplant', 3]], decorChance: 0.35 };
 ENV[2] = {
   near: [['reedclump', 3], ['nipa', 2], ['hyacinth', 2], ['proproot', 3]],
-  decor: [['reedclump', 4], ['nipa', 2], ['hyacinth', 2], ['proproot', 2], ['driftwood', 1.5], ['crocnest', 1]],
+  decor: [['reedclump', 4], ['nipa', 2], ['pflower', 2.5], ['pplant', 2], ['proproot', 2], ['driftwood', 1.5], ['crocnest', 1]],
   sway: 'droop', front: 'reed',
 };
 ENV[3] = {
   near: [['birdnest', 3], ['bracket', 2], ['clawrock', 2], ['kneeroot', 2]],
-  decor: [['birdnest', 3], ['bracket', 2], ['clawrock', 2], ['bones', 1.2], ['kneeroot', 2], ['fernclump', 2]],
+  decor: [['birdnest', 3], ['bracket', 2], ['clawrock', 2], ['bones', 1.2], ['kneeroot', 2], ['fernclump', 2], ['pplant', 2], ['pflower', 1.2]],
   sway: 'glowworm', front: 'fern',
 };
 ENV[4] = {
   near: [['gunnera', 3], ['treefern', 3], ['dripmoss', 2]],
-  decor: [['ferncrown', 30], ['mosscushion', 20], ['pebbles', 16], ['feather', 12], ['gunnera', 12], ['horsetail', 10]],
+  decor: [['ferncrown', 26], ['mosscushion', 18], ['pebbles', 14], ['feather', 10], ['gunnera', 10], ['horsetail', 8], ['pplant', 16], ['pflower', 12]],
   sway: 'dripfern', front: 'fern',
 };
 ENV[5] = {
   near: [['heliconia', 3], ['orchidclump', 3], ['bromrosette', 2], ['orbweb', 2]],
-  decor: [['heliconia', 3], ['orchidclump', 3], ['bromrosette', 2], ['orbweb', 2.5], ['cocoon', 1.2]],
+  // (no orange heliconia on the ground any more: it shouted over the dim violet backdrop)
+  decor: [['pflower', 3.5], ['pplant', 2], ['bromrosette', 1.5], ['orbweb', 2.5], ['cocoon', 1.2]],
   sway: 'silk', front: 'fern',
 };
 ENV[6] = {
   near: [['pitcher', 2], ['pegs', 3], ['bogfern', 2], ['kneeroot', 2]],
-  decor: [['pegs', 3], ['pitcher', 2], ['bogfern', 2], ['kneeroot', 2], ['mudbubble', 2]],
+  decor: [['pegs', 3], ['pflower', 2], ['pplant', 2], ['bogfern', 2], ['kneeroot', 2], ['mudbubble', 2]],
   sway: 'bogmoss', front: 'reed',
 };
 ENV[7] = {
   near: [['idolhead', 1], ['blockpile', 3], ['figroot', 3], ['fernclump', 2]],
-  decor: [['blockpile', 3], ['figroot', 2], ['idolhead', 1.2], ['fernclump', 3]],
+  decor: [['blockpile', 3], ['figroot', 2], ['idolhead', 1.2], ['fernclump', 2.5], ['pplant', 2], ['pflower', 1.5]],
   sway: 'aerial', front: 'rock',
 };
 ENV[8] = {
   near: [['jadevine', 3], ['parkia', 2], ['moonflower', 3], ['foxfire', 2]],
-  decor: [['foxfire', 30], ['moonflower', 20], ['ferncrown', 18], ['stalagmite', 14], ['parkia', 10], ['karstpebbles', 8]],
+  decor: [['foxfire', 26], ['pflower', 20], ['ferncrown', 14], ['pplant', 14], ['stalagmite', 12], ['parkia', 6], ['karstpebbles', 8]],
   sway: 'jadevine', front: 'fern',
 };
 ENV[9] = {
   near: [['ohia', 2], ['steamvent', 2], ['lavafern', 2], ['obsidian', 2]],
-  decor: [['ohia', 2], ['steamvent', 2], ['lavafern', 3], ['lichenrock', 2], ['obsidian', 2]],
+  decor: [['ohia', 2], ['steamvent', 2], ['lavafern', 2.5], ['lichenrock', 2], ['obsidian', 2], ['pplant', 1.5], ['pflower', 1.2]],
   sway: 'charvine', front: 'rock',
 };
+// the mountain above the treeline: rock, wind-bent grass, the General's broken thorns and rain (the war camp went with the old backdrop)
 ENV[10] = {
-  near: [['stump', 3], ['stakes', 3], ['logpile', 2], ['banner', 1]],
-  decor: [['stump', 3], ['stakes', 2], ['logpile', 2], ['banner', 1], ['campfire', 0.7]],
+  near: [['slaterock', 3], ['wiregrass', 3], ['ironthorn', 1.5]],
+  decor: [['slaterock', 3], ['wiregrass', 3], ['ironthorn', 1.2], ['puddle', 1.5], ['pebbles', 1], ['pflower', 0.6]],
   sway: 'chains', front: 'rock',
 };

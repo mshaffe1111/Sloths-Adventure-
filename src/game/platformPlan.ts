@@ -24,11 +24,27 @@ import type { Platform } from './types.ts';
 export type ThinLook =
   | 'island' | 'branch' | 'log' | 'stone' | 'ruin' | 'shelf' | 'bridge'
   | 'plank' | 'slices' | 'lashed' | 'toadstool' | 'parasol' | 'bloom'
-  | 'raft' | 'barge' | 'pad' | 'drift' | 'canoe' | 'reeds';
+  | 'raft' | 'barge' | 'pad' | 'drift' | 'canoe' | 'reeds'
+  | 'jetty' | 'slate' | 'silk' | 'root' | 'basalt' | 'steps';
 
 /** how many variants each look has */
 export const VARIANTS: Record<ThinLook, number> = {
   island: 3, branch: 5, log: 4, stone: 4, ruin: 4, shelf: 3, bridge: 3, plank: 2, slices: 2, lashed: 2, toadstool: 3, parasol: 3, bloom: 3, raft: 3, barge: 3, pad: 3, drift: 3, canoe: 3, reeds: 3,
+  jetty: 2, slate: 2, silk: 2, root: 2, basalt: 2, steps: 2,
+};
+
+/**
+ * The material a world is known by (worldLedges.ts), and the share of its ordinary stepping platforms that take it. The rest keep
+ * the mixed looks, so a stage is never one repeated shape; the signature is exempt from the 38% cap and the no-three-in-a-row rule
+ * (like bridges, it is the place, not a repeat). Worlds without an entry keep today's mix.
+ */
+export const SIGNATURE: Partial<Record<number, { look: ThinLook; share: number }>> = {
+  2: { look: 'jetty', share: 0.5 },
+  4: { look: 'slate', share: 0.5 },
+  5: { look: 'silk', share: 0.45 },
+  6: { look: 'root', share: 0.55 },
+  9: { look: 'basalt', share: 0.55 },
+  10: { look: 'steps', share: 0.55 },
 };
 
 const FRAGILE_LOOKS: ThinLook[] = ['plank', 'slices', 'lashed'];
@@ -123,6 +139,8 @@ export function baseLook(p: Platform): ThinLook {
 }
 
 const SWAPPABLE = new Set<ThinLook>(['island', 'branch', 'log', 'stone', 'ruin', 'shelf']);
+/** looks the variety rules leave alone: a span, and the world's own material */
+const exemptLook = (k: ThinLook, world: number) => k === 'bridge' || k === SIGNATURE[world]?.look;
 
 /** which kin look a swapped platform takes, by world (weights); ruins belong to the ruin worlds, shards and girders to theirs */
 function altWeights(world: number, from: ThinLook): Array<[ThinLook, number]> {
@@ -167,6 +185,14 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
       if (t <= 0) { looks[i] = k; break; }
     }
   }
+  // the world's own material takes its share of the ordinary stepping platforms (chosen by hash, so it never changes between visits)
+  const sig = SIGNATURE[world];
+  if (sig) {
+    for (let i = 0; i < n; i++) {
+      if (thin[i].type !== 'solid' || !SWAPPABLE.has(looks[i]) || thin[i].width < 44) continue;
+      if (h01(thin[i].id, world, 61) < sig.share) looks[i] = sig.look;
+    }
+  }
   const count = (k: ThinLook) => looks.filter((l) => l === k).length;
   const swappable = (i: number) => thin[i].type === 'solid' && SWAPPABLE.has(looks[i]) && thin[i].width >= 44;
   const tripleAt = (i: number, k: ThinLook) => {
@@ -190,7 +216,7 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
     const cap = Math.max(2, Math.floor(n * 0.38));
     // 1. no look takes more than ~38% of the thin platforms (bridges are exempt: they are a span, not a stepping stone)
     for (let guard = 0; guard < 64; guard++) {
-      const over = [...new Set(looks)].filter((k) => k !== 'bridge' && count(k) > cap).sort((a, b) => count(b) - count(a));
+      const over = [...new Set(looks)].filter((k) => !exemptLook(k, world) && count(k) > cap).sort((a, b) => count(b) - count(a));
       let done = false;
       for (const worst of over) {
         // swap one of its swappable members, chosen by hash
@@ -206,7 +232,7 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
     }
     // 2. never three in a row
     for (let i = 2; i < n; i++) {
-      if (looks[i] === looks[i - 1] && looks[i] === looks[i - 2] && looks[i] !== 'bridge') {
+      if (looks[i] === looks[i - 1] && looks[i] === looks[i - 2] && !exemptLook(looks[i], world)) {
         const j = swappable(i) ? i : swappable(i - 1) ? i - 1 : -1;
         if (j >= 0) {
           const alt = pickAlt(j, Math.max(cap, 3));
@@ -223,7 +249,7 @@ function planThin(platforms: readonly Platform[], world: number, out: StagePlan)
       if (!missing.length) break;
       // take a member of the most common look and give it the missing look
       let top: ThinLook = looks[0];
-      for (const k of present) if (k !== 'bridge' && count(k) > count(top)) top = k;
+      for (const k of present) if (!exemptLook(k, world) && count(k) > count(top)) top = k;
       const idx = looks.map((l, i) => (l === top && swappable(i) ? i : -1)).filter((i) => i >= 0);
       if (!idx.length) break;
       idx.sort((a, b) => h01(thin[a].id, 11) - h01(thin[b].id, 11));

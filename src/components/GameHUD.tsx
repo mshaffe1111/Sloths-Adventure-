@@ -1,5 +1,6 @@
 import React from 'react';
 import type { LevelConfig } from '../game/types.ts';
+import { countWord } from '../game/stagePlan.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { BossHud } from './BossHud.tsx';
 
@@ -38,13 +39,6 @@ const GOAL_TEXT: Record<string, string> = {
   ascent: 'Climb to the top',
   stealth: 'Sneak to the end',
   vine_runner: 'Swing to the end',
-};
-const COUNT_TEXT: Record<string, string> = {
-  harvest: 'flowers',
-  purge: 'predators',
-  gauntlet: 'predators',
-  relic_hunt: 'idols',
-  rescue: 'animals freed',
 };
 
 const POWER_UPS = {
@@ -170,7 +164,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                   ) : (
                     <>
                       <span className="tabular-nums">
-                        {currentObjectiveCount} / {targetObjectiveCount} {COUNT_TEXT[levelConfig.objectiveType] ?? ''}
+                        {currentObjectiveCount} / {targetObjectiveCount} {countWord(levelConfig.worldIndex, levelConfig.objectiveType)}
                       </span>
                       <span className={done ? 'text-amber-300 font-semibold animate-pulse' : ''}>{done ? 'Sanctuary open!' : 'Sanctuary sealed'}</span>
                     </>

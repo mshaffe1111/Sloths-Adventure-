@@ -18,26 +18,26 @@ export const DEFAULT_SPRITE_FLOWERS = true;
  * 32 painted flowers turns up across the game.
  */
 export const WORLD_FLOWERS: Record<number, number[]> = {
-  // 1 canopy meadow: bright, friendly
-  1: [93, 74, 96, 76, 68, 90, 70, 84, 87, 92, 86, 94],
-  // 2 river: water-lovers and gingers
-  2: [79, 72, 83, 71, 78, 87, 68, 90, 84, 74, 96, 76],
-  // 3 spore caves: odd and glowing
-  3: [66, 85, 88, 73, 89, 80, 75, 91, 69, 95, 81, 82],
-  // 4 cliffs: hanging and climbing
-  4: [67, 91, 76, 93, 70, 95, 89, 75, 96, 68, 92, 94],
-  // 5 web thicket: pinks and purples
-  5: [69, 73, 80, 89, 82, 95, 84, 81, 93, 70, 85, 88],
-  // 6 mudflat: swamp blooms
-  6: [88, 79, 66, 65, 85, 72, 75, 91, 71, 78, 83, 77],
-  // 7 ruins: warm amber and gold
-  7: [78, 86, 76, 87, 71, 83, 94, 92, 68, 77, 90, 96],
-  // 8 dusk caves: purples and magentas
-  8: [82, 69, 80, 89, 73, 81, 95, 93, 70, 84, 75, 91],
-  // 9 volcano: fire
-  9: [77, 86, 87, 68, 92, 94, 96, 74, 65, 90, 71, 78],
-  // 10 storm: cool and pale
-  10: [81, 84, 95, 75, 70, 91, 93, 82, 69, 73, 89, 80],
+  // 1 the trail through the kapok canopy: bright and friendly (heliconia, anthurium, allamanda, hot lips, canna, red passion flower)
+  1: [68, 74, 76, 85, 86, 96, 87, 71, 83, 70, 94, 90],
+  // 2 the river village, where the king wants flowers for his crown: showy gingers and water-lovers
+  2: [87, 72, 79, 83, 78, 71, 86, 68, 90, 74, 76, 84],
+  // 3 the grotto in the dark: odd ones, and pale ones that seem to glow
+  3: [66, 88, 73, 91, 75, 80, 89, 95, 69, 65, 79, 72],
+  // 4 the cliffs above the falls: climbers and hanging flowers (the jade vine, the clock vine, the hanging lobster claws)
+  4: [67, 94, 90, 82, 89, 84, 70, 76, 93, 95, 92, 69],
+  // 5 the Orchid Sanctuary, the loveliest place on the road: orchids, all twelve
+  5: [93, 81, 95, 75, 91, 73, 89, 88, 69, 82, 84, 70],
+  // 6 the mangrove: rot flowers, the bucket orchid, and pale lilies on black water
+  6: [65, 66, 88, 79, 72, 78, 71, 83, 85, 80, 91, 75],
+  // 7 the temple ruins: amber and gold, thin and stubborn between the stones
+  7: [77, 76, 94, 86, 68, 71, 78, 87, 96, 74, 83, 92],
+  // 8 the treetops at night: pale night blooms by firefly light
+  8: [79, 91, 75, 72, 80, 95, 89, 81, 84, 73, 82, 69],
+  // 9 the volcano: fire (the flame vine first)
+  9: [92, 77, 85, 86, 96, 74, 83, 71, 87, 68, 65, 94],
+  // 10 the storm on the mountain: cool and pale, the few that turn to face the tower
+  10: [81, 84, 95, 89, 91, 70, 73, 75, 79, 82, 80, 93],
 };
 
 /** the four flowers a stage carries (sheet numbers): a window of the world's pool that moves 3 along each stage, and 2 more each time round */
