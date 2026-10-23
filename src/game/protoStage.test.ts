@@ -154,7 +154,7 @@ test('1-6: the liana at the top of the kapok is out of reach from the ground', (
 });
 
 test('1-6: every liana catches the next with a forgiving window', () => {
-  for (const [a, b] of [[2230, 2610], [3520, 3900], [3900, 4290], [8420, 8620], [11130, 11530], [11530, 11960], [11960, 12400]]) {
+  for (const [a, b] of [[2220, 2540], [3530, 3860], [3860, 4170], [8420, 8620], [11120, 11460], [11460, 11800], [11800, 12140]]) {
     assert.ok(catchWindow(at(a), at(b)) > 0.6, `${a} -> ${b}`);
   }
 });
@@ -173,7 +173,7 @@ test('1-6: the last liana of each run lands on the bank beyond', () => {
     got.push(`${vx}->${toX}:${hits.get(to.id) ?? 0}`);
   }
   // the end of a chain: arriving from the liana before
-  for (const [pa, pb, toX] of [[2230, 2610, 2900], [3900, 4290, 4520], [8420, 8620, 8780], [11960, 12400, 12700]]) {
+  for (const [pa, pb, toX] of [[2220, 2540, 2780], [3860, 4170, 4400], [8420, 8620, 8780], [11800, 12140, 12400]]) {
     const to = plat((p) => Math.abs(p.x - toX) < 1);
     got.push(`${pa}>${pb}->${toX}:${chainLanding(at(pa), at(pb), to)}`);
   }

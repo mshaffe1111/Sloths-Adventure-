@@ -124,22 +124,22 @@ export function buildProtoStage(config: LevelConfig): GeneratedStage & { proto: 
   bank(1360, 2000);
   row(1560, 1880, G - 34, 4, 'orchid');
   // hollow 2: two lianas in a row, still over the soft floor. The first chain.
-  bank(2000, 2900, 710, 'moss_stone');
-  liana(2230, G - 310, G + 30);
-  liana(2610, G - 310, G + 30);
-  arc(2010, 2430, G - 150, 5);
-  arc(2430, 2890, G - 150, 5);
-  bank(2900, 3300);
+  bank(2000, 2780, 710, 'moss_stone');
+  liana(2220, G - 310, G + 30);
+  liana(2540, G - 310, G + 30);
+  arc(2010, 2380, G - 150, 5);
+  arc(2380, 2770, G - 150, 5);
+  bank(2780, 3300);
 
   // ---------- 2. DEVELOP: the gorge, then the tree and the liana only its top can reach ----------
   // three lianas over real water, at three different heights
-  liana(3520, 270);
-  liana(3900, 230);
-  liana(4290, 290);
-  arc(3310, 3720, G - 160, 5);
-  arc(3720, 4100, G - 200, 5);
-  arc(4100, 4510, G - 150, 5);
-  bank(4520, 5100);
+  liana(3530, 270);
+  liana(3860, 240);
+  liana(4170, 280);
+  arc(3310, 3700, G - 160, 5);
+  arc(3700, 4020, G - 200, 5);
+  arc(4020, 4390, G - 150, 5);
+  bank(4400, 5100);
   // the kapok: climb it, walk out on the branch at the top, leap for the high liana (out of reach from the ground)
   trunk(4900, G, 300);
   branch(4860, 5060, 300);
@@ -189,18 +189,20 @@ export function buildProtoStage(config: LevelConfig): GeneratedStage & { proto: 
   row(8000, 8100, 326, 2, 'hibiscus');
 
   // ---------- 5. FINISH: four lianas home ----------
-  liana(11130, 270);
-  liana(11530, 220, 560);
-  liana(11960, 260);
-  liana(12400, 200, 540);
-  arc(10900, 11330, G - 170, 5);
-  arc(11330, 11750, G - 220, 5);
-  arc(11750, 12180, G - 180, 5);
-  arc(12180, 12700, G - 230, 6);
-  bank(12700, 13500, G - 60);
+  liana(11120, 270);
+  liana(11460, 230, 570);
+  liana(11800, 260);
+  liana(12140, 220, 560);
+  arc(10900, 11290, G - 170, 5);
+  arc(11290, 11630, G - 220, 5);
+  arc(11630, 11970, G - 180, 5);
+  arc(11970, 12390, G - 230, 6);
+  bank(12400, 13500, G - 60);
   row(12780, 13000, G - 94, 3, 'orchid');
 
   const exitX = 13240;
+  // the Exit Shrine itself (the door the stage ends at)
+  C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 60 - 30, collected: false, bobPhase: 0 });
   const cfg: LevelConfig = { ...config, levelWidth: 13500, levelHeight: Math.max(config.levelHeight, 900) };
 
   // written for a thumb on the glass first (the game is a phone and tablet game); the pad and keyboard wording follow it
