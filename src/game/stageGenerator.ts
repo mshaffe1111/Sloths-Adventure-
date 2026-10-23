@@ -1,4 +1,9 @@
 import { buildProtoStage, protoStageEnabled, PROTO_STAGE_ID } from './protoStage.ts';
+import { ctestEnabled } from './playRecorder.ts';
+
+/** the stage the control test replaces (no story scene before it), and the one fixed seed, so every tester plays the same layout */
+export const CTEST_STAGE_ID = '1-2';
+const CTEST_SEED = 7;
 import type {
   LevelConfig,
   Platform,
@@ -2732,6 +2737,7 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
 
 export function generateStage(config: LevelConfig): GeneratedStage {
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
+  if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, CTEST_SEED, 'ctest');
   if (config.id === PROTO_STAGE_ID && !config.secret && protoStageEnabled()) return buildProtoStage(config, layoutVariant ?? 1);
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {

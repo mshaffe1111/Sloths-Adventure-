@@ -106,7 +106,7 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * where the snakes sit, the order of the pieces inside a beat, and the dressing. Every rolled piece is checked against the physics
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
-export function buildProtoStage(config: LevelConfig, seed = 1): GeneratedStage & { proto: ProtoExtras } {
+export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | 'ctest' = 'proto'): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const P: Platform[] = [];
   const V: Vine[] = [];
@@ -440,6 +440,91 @@ export function buildProtoStage(config: LevelConfig, seed = 1): GeneratedStage &
   };
   const mixed = (...fs: Array<() => void>) => R.shuffle(fs).forEach((g) => g());
 
+  /**
+   * gaps to jump across, each wider than the last, over a soft mossy floor (a miss costs a hop back up, never a life):
+   * half and three quarters of a single jump, then two that need the second jump
+   */
+  function gaps() {
+    const x0 = x;
+    run(R.r(200, 260));
+    const one = reachJump(0, false), two = reachJump(0, true);
+    for (const w of [one * 0.5, one * 0.75, two * 0.7, two * 0.85]) {
+      const edge = x;
+      close();
+      const far = Math.round(edge + w);
+      bank(edge, far, HOLLOW_Y, 'moss_stone');
+      flower(edge + w / 2, G - 120, 'hibiscus');
+      open(far);
+      run(R.r(260, 320));
+    }
+    expert += (x - x0) / RUN + 2;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+
+  /** a tree to climb all the way up, and back down: flowers on the trunk and on the branch at the top */
+  function climbTree() {
+    const x0 = x;
+    run(R.r(300, 360));
+    const tX = x - 150;
+    const perchY = 300;
+    trunk(tX, G, perchY);
+    branch(tX - 40, tX + 220, perchY);
+    for (let i = 0; i < 4; i++) flower(tX, G - 70 - i * 60, 'hibiscus');
+    row(tX + 60, tX + 190, perchY - 34, 2, 'orchid');
+    run(R.r(200, 260));
+    expert += (x - x0) / RUN + (2 * (G - perchY)) / CLIMB;
+    pieces.push({ k: 'kapok', x0, x1: x });
+  }
+
+  if (plan === 'ctest') {
+    // the control test: the same stage for every player (the seed is fixed by the caller), one skill per stretch, cheap to fail
+    beat('Run and stop', () => {
+      hint(x + 60, 'Run to the flowers and stop on them', 'Run to the flowers and stop on them', 'Run to the flowers and stop on them');
+      run(500);
+      row(x, x + 160, G - 34, 3, 'orchid');
+      run(700);
+      hint(x - 300, 'Now turn around and run back a little', 'Now turn around and run back a little', 'Now turn around and run back a little');
+      run(300);
+      flag();
+    });
+    beat('Short hops', () => {
+      hint(x + 60, 'Hop up the stumps');
+      stumps();
+      stumps();
+      flag();
+    });
+    beat('Long jumps', () => {
+      hint(x + 60, 'Jump the gaps. The last two need a second jump', 'Jump the gaps. The last two need a second jump', 'Jump the gaps. The last two need a second jump');
+      gaps();
+      flag();
+    });
+    beat('Climb up and down', () => {
+      hint(x + 60, 'Climb to the top of the tree, then climb back down', 'Climb to the top of the tree, then climb back down', 'Climb to the top of the tree, then climb back down');
+      climbTree();
+      rest(300);
+      climbTree();
+      flag();
+    });
+    beat('Swing', () => {
+      hint(x + 120, 'Jump into the vine to grab it, jump again to let go');
+      chain(1, true, 'hollow');
+      rest(R.r(300, 400));
+      chain(2, true, 'hollow');
+      rest(R.r(300, 400));
+      chain(3, true, 'hollow');
+      flag();
+    });
+    beat('Fight', () => {
+      hint(x + 60, 'Punch and kick the snakes', 'Punch and kick the snakes', 'Punch and kick the snakes');
+      snakes();
+      rest(300);
+      snakes();
+      flag();
+    });
+    beat('Finish', () => rest(700));
+  }
+
+  if (plan === 'proto') {
   beat('Start', () => rest(R.r(600, 800)));
   beat('Learn: swing over soft moss', () => {
     hint(x + 120, 'Flick up into the vine to grab it', 'Jump into the vine to grab it', 'Jump into the vine to grab it');
@@ -503,6 +588,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1): GeneratedStage &
     // the walk to the shrine makes up any last seconds the dice left short
     if (expert < EXPERT_SECONDS) rest((EXPERT_SECONDS - expert) * RUN + 60);
   });
+  }
   const exitX = x - 260;
   close();
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });

@@ -1,3 +1,4 @@
+import { recorder } from './playRecorder.ts';
 import type {
   LevelConfig,
   PlayerState,
@@ -631,6 +632,7 @@ export class GameEngine {
     const p = this.player;
     const groundedBefore = p.grounded;
     const vyBefore = p.vy;
+    if (recorder.on) this.recordPokey();
     // the touch recogniser reads this: in the air with a second jump to spare, a tap is that jump
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
@@ -1400,6 +1402,7 @@ export class GameEngine {
       for (const cp of this.currentStage.checkpoints ?? []) {
         if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40) {
           cp.reached = true;
+          recorder.event('checkpoint', Math.round(cp.x));
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right)
           const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : cp.x > this.checkpoint.x;
           if (further) this.checkpoint = { x: cp.x, y: cp.y };
@@ -1878,6 +1881,7 @@ export class GameEngine {
       );
 
       this.callbacks.onStageStats?.(this.buildStats(true, stars));
+      recorder.event('finish', Math.round(p.cheerAt ?? this.gameTime));
       this.callbacks.onVictory(stars, Math.round(p.cheerAt ?? this.gameTime), this.runScore);
     }
 
@@ -2362,6 +2366,20 @@ export class GameEngine {
       this.addFloatingText('MEGA PUNCH!', p.x, p.y - 50, '#fde047');
     }
     if (m.lunge && p.grounded) p.vx = Math.max(-380, Math.min(380, p.vx + p.facing * m.lunge));
+  }
+
+  /** the control-test recorder: where Pokey is, what he is doing and which stretch of the test he is on */
+  private recordPokey() {
+    const p = this.player;
+    const st = this.input.state;
+    let s = p.climbing ? 'c' : p.isVineSwinging ? 's' : p.hanging ? 'h' : p.grounded ? (p.ducking ? 'k' : 'g') : 'a';
+    if (p.attackMove) s += ':' + p.attackMove;
+    // what the controls are holding (touch, pad or keys alike)
+    const held = (st.left ? 'L' : '') + (st.right ? 'R' : '') + (st.up ? 'U' : '') + (st.down ? 'D' : '');
+    if (held) s += '/' + held;
+    let section = '';
+    if (this.proto) for (const b of this.proto.beats) if (p.x >= b[0] && p.x < b[1]) section = b[2];
+    recorder.pokey(p.x, p.y, p.vx, p.vy, s, section);
   }
 
   /** copy the move's progress into the player state the drawing reads */
@@ -2933,6 +2951,7 @@ export class GameEngine {
 
     this.statHeartsLost += amount;
     p.hp = Math.max(0, p.hp - amount);
+    recorder.event('hurt', p.hp);
     p.invincibleTimer = 1.2; // 1.2s invulnerability
     p.squashX = 1.3;
     p.squashY = 0.7; // hurt flinch
@@ -2965,6 +2984,7 @@ export class GameEngine {
   }
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
+    recorder.event('lostLife', reason);
     this.lives -= 1;
     this.statLivesLost++;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);

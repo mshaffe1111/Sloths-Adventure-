@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { InputEngine } from '../game/inputEngine.ts';
 import { TouchGestures } from '../game/touchGestures.ts';
 import { jumpHelp } from '../game/jumpHelp.ts';
+import { recorder } from '../game/playRecorder.ts';
 
 /**
  * The whole screen is the controller. There are no buttons.
@@ -22,13 +23,14 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   if (!gestures.current) {
     gestures.current = new TouchGestures(
       {
-        move: (d) => inputEngine.triggerTouchMove(d),
-        duck: (on) => inputEngine.triggerTouchDuck(on),
-        jumpPress: () => inputEngine.triggerTouchUp(),
-        jumpRelease: () => inputEngine.releaseTouchUp(),
-        punch: () => inputEngine.triggerTouchPunch(),
-        kick: (dir) => inputEngine.triggerTouchKick(dir ?? 0),
-        mega: () => inputEngine.triggerTouchMega(),
+        // each decision also goes to the control-test recorder (it does nothing unless the test is running)
+        move: (d) => { recorder.intent('move', d); inputEngine.triggerTouchMove(d); },
+        duck: (on) => { recorder.intent('duck', on ? 1 : 0); inputEngine.triggerTouchDuck(on); },
+        jumpPress: () => { recorder.intent('jump'); inputEngine.triggerTouchUp(); },
+        jumpRelease: () => { recorder.intent('jumpUp'); inputEngine.releaseTouchUp(); },
+        punch: () => { recorder.intent('punch'); inputEngine.triggerTouchPunch(); },
+        kick: (dir) => { recorder.intent('kick', dir ?? 0); inputEngine.triggerTouchKick(dir ?? 0); },
+        mega: () => { recorder.intent('mega'); inputEngine.triggerTouchMega(); },
         feedback: (kind) => {
           const haptic = { jump: 15, duck: 0, punch: 20, kick: 25, mega: 35 }[kind];
           if (haptic) inputEngine.triggerHaptic(haptic);
@@ -91,6 +93,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
+      recorder.touch('d', t.identifier, t.clientX, t.clientY, now, Math.max((t as unknown as { radiusX?: number }).radiusX || 0, (t as unknown as { radiusY?: number }).radiusY || 0));
       G.down(t.identifier, t.clientX, t.clientY, now);
     }
   };
@@ -98,18 +101,23 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
+      recorder.touch('m', t.identifier, t.clientX, t.clientY, now);
       G.move(t.identifier, t.clientX, t.clientY, now);
     }
   };
   // a cancelled touch (a system gesture took it) is not a lift: it must not punch, kick or jump
   const onCancel = (e: React.TouchEvent) => {
     const now = stamp(e);
-    for (let i = 0; i < e.changedTouches.length; i++) G.cancelFinger(e.changedTouches[i].identifier, now);
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      recorder.touch('c', e.changedTouches[i].identifier, 0, 0, now);
+      G.cancelFinger(e.changedTouches[i].identifier, now);
+    }
   };
   const onEnd = (e: React.TouchEvent) => {
     const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
+      recorder.touch('u', t.identifier, t.clientX, t.clientY, now);
       G.up(t.identifier, t.clientX, t.clientY, now);
     }
   };

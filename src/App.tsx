@@ -37,6 +37,9 @@ import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type Cosmet
 import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
+import { ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
+import { ctestEnabled } from './game/playRecorder.ts';
+import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -100,6 +103,9 @@ function askToKeepStorage() {
 
 export default function App() {
   const [screen, setScreen] = useState<GameScreen>('title');
+  // the control test (#ctest in the address): the name screen first, then the test stage, recorded
+  const [ctestGate, setCtestGate] = useState(() => ctestEnabled());
+  const [recording, setRecording] = useState(false);
   const [allLevels, setAllLevels] = useState<LevelConfig[]>(() => generateAllLevels());
   const [activeLevel, setActiveLevel] = useState<LevelConfig>(() => allLevels[0]);
   const [selectedWorldId, setSelectedWorldId] = useState<number>(1);
@@ -747,6 +753,24 @@ export default function App() {
           style={{ touchAction: 'none' }}
         />
       </div>
+
+      {ctestGate && (
+        <ControlTestGate
+          onStart={() => {
+            setCtestGate(false);
+            setRecording(true);
+            const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
+            // the test only asks him to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
+            const lvl = base && { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 };
+            if (lvl) {
+              setActiveLevel(lvl);
+              setSelectedWorldId(lvl.worldIndex);
+              launchEngine(lvl);
+            }
+          }}
+        />
+      )}
+      {recording && <RecordingBadge />}
 
       {/* Title Screen View */}
       {screen === 'title' && (
