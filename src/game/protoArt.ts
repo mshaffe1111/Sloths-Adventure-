@@ -1,5 +1,6 @@
 /**
- * protoArt — Matt's painted props for the hand-built 1-6 (three Gemini sheets, 2026-10-23, cut into one atlas).
+ * protoArt — Matt's painted props: World 1's three Gemini sheets (2026-10-23, the hand-built 1-6 and every World 1 stage), and each
+ * other world's own ground and climbing sheets as they arrive (kitAtlasData.ts).
  *
  * The log, the rock, the golden seed, the leaf curtain, the branches (whole, creaking, snapped), the perch, the earth banks, the moss
  * floor and the root wall. Every draw returns false until the atlas has loaded, and the caller then draws the old shapes.
@@ -7,6 +8,7 @@
 import type { Collectible, Platform } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
+import { KIT_FRAMES } from './kitAtlasData.ts';
 
 const KIT_KEY = 'sloth_paint_w1';
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
@@ -26,28 +28,53 @@ export function setPaintedKitPref(on: boolean) {
   }
 }
 
-let img: HTMLImageElement | null = null;
-let ready = false;
-function load() {
-  if (img || typeof Image === 'undefined') return;
+/*
+ * One kit per world. World 1's atlas (props-atlas.webp, PROTO_FRAMES) has every piece, the log, the seed and the leaf curtain too; another
+ * world's atlas (kits/w<N>.webp, KIT_FRAMES) has its own ground and climbing pieces, and anything it lacks comes from World 1's.
+ */
+let kitWorld = 1;
+/** which world's kit the painted layer draws (the engine sets it when a stage starts) */
+export function setKitWorld(w: number) {
+  kitWorld = hasKit(w) ? w : 1;
+}
+/** whether a world has its own painted kit yet */
+export function hasKit(w: number): boolean {
+  return w === 1 || !!KIT_FRAMES[w];
+}
+/** whether the painted layer is drawing a world's own kit (true) or World 1's (false) */
+function ownKit(): boolean {
+  return kitWorld !== 1;
+}
+const imgs = new Map<number, HTMLImageElement>();
+const ready = new Set<number>();
+function load(w: number) {
+  if (imgs.has(w) || typeof Image === 'undefined') return;
   const im = new Image();
-  img = im;
-  trackAtlas(im, new URL('../assets/proto/props-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; });
+  imgs.set(w, im);
+  const url = w === 1 ? new URL('../assets/proto/props-atlas.webp', import.meta.url).href : new URL(`../assets/kits/w${w}.webp`, import.meta.url).href;
+  trackAtlas(im, url, () => { ready.add(w); }, () => { imgs.delete(w); });
 }
 export function protoArtReady() {
-  load();
-  return ready && !!img;
+  load(1);
+  if (kitWorld !== 1) load(kitWorld);
+  return ready.has(1) && (kitWorld === 1 || ready.has(kitWorld));
 }
 
 type Name = keyof typeof PROTO_FRAMES;
+/** the picture and the rect of piece `n`: this world's own when it has one, else World 1's */
+function frameOf(n: Name): { img: HTMLImageElement; f: ProtoFrame } {
+  const own = kitWorld !== 1 ? KIT_FRAMES[kitWorld]?.[n] : undefined;
+  if (own && ready.has(kitWorld)) return { img: imgs.get(kitWorld)!, f: own };
+  return { img: imgs.get(1)!, f: PROTO_FRAMES[n] };
+}
 /** draw frame `n` so it fills the box (x, y, w, h) */
 function blit(ctx: CanvasRenderingContext2D, n: Name, x: number, y: number, w: number, h: number) {
-  const f: ProtoFrame = PROTO_FRAMES[n];
-  ctx.drawImage(img!, f.x, f.y, f.w, f.h, x, y, w, h);
+  const { img, f } = frameOf(n);
+  ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, w, h);
 }
 /** frame `n` at width w, keeping its shape, with its bottom at y and centred on cx */
 function stand(ctx: CanvasRenderingContext2D, n: Name, cx: number, bottom: number, w: number) {
-  const f = PROTO_FRAMES[n];
+  const { f } = frameOf(n);
   const h = (w * f.h) / f.w;
   blit(ctx, n, cx - w / 2, bottom - h, w, h);
 }
@@ -56,7 +83,7 @@ function stand(ctx: CanvasRenderingContext2D, n: Name, cx: number, bottom: numbe
 export function drawLogArt(ctx: CanvasRenderingContext2D, p: Platform, moving: boolean): boolean {
   if (!protoArtReady()) return false;
   // the painted log sits a little proud of its box: the moss and the twig stick up above the top
-  const f = PROTO_FRAMES.log;
+  const f = frameOf('log').f;
   const w = p.width * 1.08;
   const h = (w * f.h) / f.w;
   ctx.save();
@@ -112,7 +139,7 @@ export function drawCurtainArt(ctx: CanvasRenderingContext2D, x: number, y: numb
 /** a branch you land on: whole, creaking (a timer is running), or snapped (the halves fall away for a second) */
 export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state: 'whole' | 'creak' | 'snapped', since: number): boolean {
   if (!protoArtReady()) return false;
-  const f = PROTO_FRAMES.branch;
+  const f = frameOf('branch').f;
   // the painted branch is thicker than the walkable strip: its top lines up with the platform top
   const h = Math.max(30, Math.min(54, (p.width * f.h) / f.w));
   const y = p.y - 6;
@@ -141,7 +168,7 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
 /** the perch branch at the top of a climb trunk, growing out to the right */
 export function drawPerchArt(ctx: CanvasRenderingContext2D, trunkX: number, perchY: number, perchRight: number): boolean {
   if (!protoArtReady()) return false;
-  const f = PROTO_FRAMES.perch;
+  const f = frameOf('perch').f;
   const w = Math.max(120, perchRight - trunkX + 70);
   const h = (w * f.h) / f.w;
   // the art's trunk stub is its left third: centre that on the trunk
@@ -150,10 +177,11 @@ export function drawPerchArt(ctx: CanvasRenderingContext2D, trunkX: number, perc
 }
 
 /** a bank of earth: the painted top edge repeated along it, the end caps where it drops away */
-export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean }, moss: boolean): boolean {
+export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean }, moss: boolean, viewBottom = 0): boolean {
   if (!protoArtReady()) return false;
+  if (!moss) drawGroundFill(ctx, p, viewBottom);
   const n: Name = moss ? 'mossStrip' : 'bank';
-  const f = PROTO_FRAMES[n];
+  const f = frameOf(n).f;
   const th = moss ? 46 : 110;
   const tw = (th * f.w) / f.h;
   ctx.save();
@@ -163,7 +191,7 @@ export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { 
   for (let x = p.x - (open.left ? 18 : 0); x < p.x + p.width + 18; x += tw - 2) blit(ctx, n, x, p.y - (moss ? 14 : 18), tw, th);
   ctx.restore();
   if (!moss) {
-    const cap = PROTO_FRAMES.bankEnd;
+    const cap = frameOf('bankEnd').f;
     const cw = (th * cap.w) / cap.h;
     if (open.right) blit(ctx, 'bankEnd', p.x + p.width - cw * 0.55, p.y - 18, cw, th);
     if (open.left) {
@@ -177,6 +205,27 @@ export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { 
   return true;
 }
 
+/** a world with its own kit: the deep ground below the top band, in that world's earth or rock, all the way down */
+function drawGroundFill(ctx: CanvasRenderingContext2D, p: Platform, viewBottom: number) {
+  const f = ownKit() ? KIT_FRAMES[kitWorld]?.fill : undefined;
+  const img = imgs.get(kitWorld);
+  if (!f || !img || !ready.has(kitWorld)) return;
+  const tw = 230;
+  const th = (tw * f.h) / f.w;
+  const top = p.y + 70;
+  // the drawn ground underneath runs to the bottom of the screen, so the painted one does too
+  const bottom = Math.max(p.y + p.height, viewBottom);
+  if (bottom <= top) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(p.x, top, p.width, bottom - top + 2);
+  ctx.clip();
+  // anchored to the world, not the platform, so neighbouring banks line up
+  const x0 = Math.floor(p.x / (tw - 2)) * (tw - 2);
+  for (let y = top; y < bottom; y += th - 2) for (let x = x0; x < p.x + p.width; x += tw - 2) ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, tw, th);
+  ctx.restore();
+}
+
 /** the face of the high canopy wall: the painted root wall, once, from its mossy lip down to the ground */
 export function drawWallArt(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number, w: number): boolean {
   if (!protoArtReady()) return false;
@@ -184,12 +233,16 @@ export function drawWallArt(ctx: CanvasRenderingContext2D, x: number, top: numbe
   return true;
 }
 
+/** a world with its own kit paints every thin ledge with its own piece (a drifting river log and a spring keep their own look) */
+function thinKit(p: Platform): boolean {
+  return p.height < 50 && !p.push && p.type !== 'drift' && p.type !== 'bouncy';
+}
 /** which of the stage's platforms the painted props draw (the rest keep the drawn look) */
 export function paintedPlatforms(platforms: Platform[]): Set<number> {
   const out = new Set<number>();
   for (const p of platforms) {
     if (p.push) out.add(p.id);
-    else if (p.height < 50 && p.style === 'branch') out.add(p.id);
+    else if (p.height < 50 && (p.style === 'branch' || (ownKit() && thinKit(p)))) out.add(p.id);
     else if (p.height === 50 && p.style === 'moss_stone') out.add(p.id);
   }
   return out;
@@ -212,7 +265,7 @@ export function drawProtoScene(
   trees: Array<{ x: number; topY: number }>,
   vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number }>,
   t: number,
-  view: { x0: number; x1: number },
+  view: { x0: number; x1: number; y1?: number },
   st: ProtoSceneState,
 ): boolean {
   if (!protoArtReady()) return false;
@@ -224,10 +277,10 @@ export function drawProtoScene(
     // the high canopy: a wall face on the side that faces the yard
     const isWall = banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
     if (isWall) drawWallArt(ctx, p.x, p.y, banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6, 230);
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r') }, p.style === 'moss_stone');
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r') }, p.style === 'moss_stone', view.y1 ?? 0);
   }
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
-  const tf = PROTO_FRAMES.trunk;
+  const tf = frameOf('trunk').f;
   for (const v of vines) {
     if (v.vineType !== 'tree_climb' || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
     const bottom = (v as { bottomY?: number }).bottomY ?? v.topY + 300;
@@ -243,7 +296,7 @@ export function drawProtoScene(
   // branches (a perch where a climb trunk ends under one)
   const tops = vines.filter((v) => v.vineType === 'tree_climb');
   for (const p of platforms) {
-    if (!vis(p) || p.push || p.height >= 50 || p.style !== 'branch') continue;
+    if (!vis(p) || p.push || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);
     if (trunk && p.width <= 220) {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);

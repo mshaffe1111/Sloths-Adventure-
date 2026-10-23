@@ -371,7 +371,7 @@ export const PaintedKitToggle: React.FC = () => {
             <path d="M5 17v-4h6v4" />
             <path d="M13 17v-7h6v7" />
           </Icon>
-          Painted platforms (World 1)
+          Painted platforms (test)
         </span>
         <button
           type="button"
@@ -386,7 +386,7 @@ export const PaintedKitToggle: React.FC = () => {
           {on ? 'On' : 'Off'}
         </button>
       </div>
-      <small className="pm-polish-note">The new painted ground, branches, trunks and rocks on every World 1 stage. Starts on the next stage you enter. Off by default while it is being tested.</small>
+      <small className="pm-polish-note">The new painted ground, ledges, climbs and rocks, in each world's own look where its sheets are in (Worlds 1 to 6 so far; the rest keep today's look). Starts on the next stage you enter. Off by default while it is being tested.</small>
     </div>
   );
 };
