@@ -40,15 +40,16 @@ export const SKILLS: SkillDef[] = [
   {
     id: 'glide',
     name: 'Leaf Glide',
-    blurb: 'Hold Jump while falling to open a big leaf and drift down slowly. It only slows the fall, so it is a help, never a must.',
+    blurb: 'Hold Jump while falling to open a big leaf and drift down slowly, a long way out over the drop. Some drops ahead are too wide to cross without it.',
     controls: [
       [['Jump'], 'then hold Jump as you start to fall'],
       [['←', '→'], 'steer while you drift'],
       [['Let go'], 'to drop normally'],
     ],
-    unlockedBy: '1-5',
-    // no stage ever needs it: this is past the last stage, so the level builder never relies on it
-    requiredFromStage: '10-10',
+    // learned at the start of Act II, when the ledge gives way in World 4 (stagePlan.ts: 4-1 The Broken Ledge, then 4-2 First Glide)
+    unlockedBy: '4-1',
+    // 4-7 The Long Drop is the first stage with a drop only the leaf can cross (the beatability check simulates the glide, physics.ts)
+    requiredFromStage: '4-7',
   },
 ];
 
@@ -68,6 +69,11 @@ export function skillsFrom(isCleared: (stageId: string) => boolean): Set<SkillId
 /** the stage (by its place in the game) may need this skill: everyone who gets there has it */
 export function skillGuaranteedAt(skill: SkillId, mission: number): boolean {
   return mission >= missionOf(SKILL_BY_ID[skill].requiredFromStage);
+}
+
+/** everyone who gets to this stage has learned the skill (stages unlock in order), though the stage may not yet rely on it */
+export function skillHeldAt(skill: SkillId, mission: number): boolean {
+  return mission > missionOf(SKILL_BY_ID[skill].unlockedBy);
 }
 
 /** cleared stages as saved on this device (`sloth_lvl_<id>` holds { completed: true, ... }) */

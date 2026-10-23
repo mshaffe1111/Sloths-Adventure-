@@ -148,7 +148,7 @@ const Goal: React.FC = () => (
     <Section title="Each stage">
       <p className="ui-copy">
         Every stage ends at a <b>sacred exit shrine</b>, and the card at the top right shows the stage name and how far along you are. Some stages first ask for something: fruit to gather, foes to beat,
-        friends to rescue from cages, or hidden <b>Jungle Idols</b> to find. Finish the job, then touch the shrine. The last stage of every world is a <b>boss fight</b> with a health bar of its own.
+        friends to rescue from cages, or hidden <b>keepsakes and relics</b> to find. Finish the job, then touch the shrine. The last stage of every world is a <b>boss fight</b> with a health bar of its own.
       </p>
     </Section>
     <Section title="Top of the screen">

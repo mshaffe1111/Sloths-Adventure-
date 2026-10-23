@@ -88,9 +88,12 @@ test('the first stage, the guardians and the hidden Hollow stay quiet; the rest 
 });
 
 test('the lines know which stage they are in: flowers, cages, sneaking', () => {
-  assert.match(stageLine(1, 2)!.text, /flowers/);
-  assert.match(stageLine(1, 5)!.text, /[Qq]uiet/);
-  for (const w of [5, 7, 8, 9, 10]) assert.ok(/cage|bars|door|freed/i.test(stageLine(w, 8)!.text), `world ${w} stage 8 is the rescue`);
+  // (each world's stages follow its chapter, stagePlan.ts)
+  assert.match(stageLine(1, 2)!.text, /petals/);
+  assert.match(stageLine(1, 7)!.text, /[Qq]uiet/);
+  assert.match(stageLine(2, 3)!.text, /cage/, '2-3 is a rescue');
+  assert.match(stageLine(5, 5)!.text, /silk|threads/, '5-5 frees creatures caught in silk');
+  assert.match(stageLine(3, 7)!.text, /ferns/, '3-7 is the search among the ferns');
   assert.equal(hurtLine(6, 3)!.who, 'Dot');
   assert.equal(hurtLine(6, 8)!.who, 'Petal');
   assert.equal(hurtLine(8, 9)!.who, 'Dot');
@@ -100,7 +103,7 @@ test('the lines know which stage they are in: flowers, cages, sneaking', () => {
 test('plants and payoffs are where the story needs them', () => {
   // Dot's pouch is seen before the scene that explains it (world 5 halfway), and again after
   assert.match(stageLine(3, 3)!.text, /pouch/);
-  assert.match(stageLine(5, 6)!.text, /still there/);
+  assert.match(stageLine(5, 8)!.text, /still there/);
   assert.match(stageLine(9, 6)!.text, /pouch/);
   // his tail: denial before the halfway scene in world 4, the bare patch after it
   assert.match(stageLine(4, 3)!.text, /tail/);
@@ -108,15 +111,15 @@ test('plants and payoffs are where the story needs them', () => {
   // the joke he saves for the halfway of world 6 is a line before stage 5 ends, and he has lost it by world 8
   assert.match(stageLine(6, 5)!.text, /joke/);
   assert.match(stageLine(8, 2)!.text, /joke/);
-  // the cages: tied with a bow, unlocked, sewn shut
+  // someone on the iron road is helping, badly: a net tied with a bow, a thread dropped where he will find it, a hole sewn shut
   assert.match(stageLine(8, 8)!.text, /bow/);
-  assert.match(stageLine(9, 8)!.text, /isn't locked/);
+  assert.match(stageLine(9, 8)!.text, /thread/);
   assert.match(stageLine(10, 8)!.text, /sewn/);
 });
 
 test('a scripted line waits for its moment', () => {
-  const base = { world: 2, mini: 3, ratio: 0, playedMs: 0, shownL: false, shownH: false };
-  // world 2 stage 3 is a "half" line
+  const base = { world: 2, mini: 5, ratio: 0, playedMs: 0, shownL: false, shownH: false };
+  // world 2 stage 5 is a "half" line
   assert.equal(dueLine({ ...base, ratio: 0.3, playedMs: 30_000 }), null);
   const half = dueLine({ ...base, ratio: 0.5 });
   assert.equal(half?.flag, 'L');
@@ -126,8 +129,8 @@ test('a scripted line waits for its moment', () => {
   const start = { world: 1, mini: 2, ratio: 0, shownL: false, shownH: false };
   assert.equal(dueLine({ ...start, playedMs: START_AFTER_MS - 1 }), null);
   assert.equal(dueLine({ ...start, playedMs: START_AFTER_MS })?.flag, 'L');
-  // a "near" line (world 5 stage 8)
-  const near = { world: 5, mini: 8, playedMs: 60_000, shownL: false, shownH: false };
+  // a "near" line (world 5 stage 5)
+  const near = { world: 5, mini: 5, playedMs: 60_000, shownL: false, shownH: false };
   assert.equal(dueLine({ ...near, ratio: 0.8 }), null);
   assert.equal(dueLine({ ...near, ratio: 0.86 })?.flag, 'L');
 });

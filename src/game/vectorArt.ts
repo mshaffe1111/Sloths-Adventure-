@@ -6,6 +6,8 @@ import { drawHeroSprite } from './heroSprite.ts';
 import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './creatures.ts';
 import { drawBloom, type Bloom } from './flora.ts';
 import { drawFlowerSprite } from './flowerSprites.ts';
+import { drawPickup } from './pickupSprites.ts';
+import { isPetalStage, relicArt } from './stagePlan.ts';
 import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
 import { rng, tone } from './artKit.ts';
 import { drawAura } from './readable.ts';
@@ -1098,6 +1100,8 @@ export function drawCollectible(
       // a glowing bloom; the species rotates through the collection so no two pickups in a row look alike
       fillGlow(ctx, 'bloom', 0, 0, 2, 24, [[0, 'rgba(255, 236, 170, 0.6)'], [1, 'rgba(255, 236, 170, 0)']]);
       // the painted flower when it is on and loaded (the vector bloom below is the fallback and the classic look)
+      // World 1's harvests gather Meeca's petals (stagePlan.ts)
+      if (item.type === 'flower' && isPetalStage(world, mini) && drawPickup(ctx, 'petal', 27, -0.3 + Math.sin(time * 2 + item.bobPhase) * 0.12)) break;
       if (item.type === 'flower' && drawFlowerSprite(ctx, world, mini, item.id, Math.sin(time * 2 + item.bobPhase) * 0.07)) break;
       const species: Array<[Bloom, string, string]> = [
         ['hibiscus', '#f2455e', '#ffd23a'],
@@ -1144,6 +1148,9 @@ export function drawCollectible(
 
     case 'relic': {
       fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
+      // what this world's search turns up (Grandma's things, Meeca's messages, the lieutenant's thread); the golden idol elsewhere
+      const keep = relicArt(world, item.id);
+      if (keep && drawPickup(ctx, keep, 34, Math.sin(time * 1.6 + item.bobPhase) * 0.06)) break;
       // stone base
       softBlob(ctx, 0, 14, 14, 5, 0, '#9a9fa8', 0.3);
       // golden idol body + head

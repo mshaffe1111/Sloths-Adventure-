@@ -12,7 +12,7 @@ import type {
 } from './types.ts';
 import { calculateDifficultyScaling } from './rules.ts';
 import { WORLDS_DATA } from './worldsData.ts';
-import { ASSIST, easeAssist, reachBounce, reachJump, TAKEOFF_SLACK } from './physics.ts';
+import { ASSIST, easeAssist, reachBounce, reachGlide, reachJump, TAKEOFF_SLACK } from './physics.ts';
 import { HANG_DROP, ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE, ropeYAt } from './rope.ts';
 import { skillGuaranteedAt } from './skills.ts';
 import { PICKUP_APART, swingLandings, validateStage } from './levelCheck.ts';
@@ -95,6 +95,7 @@ type Kind =
   | 'ladder' | 'swing' | 'moving' | 'fragile' | 'yard' | 'tower' | 'river' | 'zone'
   | 'valley' | 'rolling' | 'hurdles' | 'terrace' | 'gapbridge' | 'skyhop' | 'islands' | 'canopy'
   | 'ropegap' | 'ropebonus'
+  | 'leafdrop' | 'leafbonus'
   | 'pillars' | 'slope' | 'stumps' | 'zigzag' | 'trampoline' | 'causeway' | 'pegs' | 'meadow' | 'ditch' | 'twin'
   | 'yardMound' | 'yardSunken' | 'yardBridge' | 'yardTiers' | 'yardLedges';
 
@@ -104,6 +105,8 @@ const UNLOCK: Record<Kind, number> = {
   bounce: 3, swing: 4, moving: 8, fragile: 11, tower: 14, river: 1, zone: 1,
   valley: 1, rolling: 1, hurdles: 1, terrace: 2, gapbridge: 1, skyhop: 1, islands: 1, canopy: 1,
   ropegap: 4, ropebonus: 1,
+  // the leaf glide is learned on clearing 4-1: a drop it makes easier from 4-2, one only it can cross from 4-7 (skills.ts)
+  leafbonus: 32, leafdrop: 37,
   pillars: 3, slope: 1, stumps: 1, zigzag: 2, trampoline: 3, causeway: 1, pegs: 3, meadow: 1, ditch: 1, twin: 2,
   yardMound: 1, yardSunken: 1, yardBridge: 2, yardTiers: 2, yardLedges: 1,
 };
@@ -115,6 +118,7 @@ const BASE_WEIGHT: Record<Kind, number> = {
   zone: 0, // likewise Worlds 3 and 4 place their cloud and gust pieces on purpose (see zones.ts)
   valley: 1.6, rolling: 1.6, hurdles: 1.5, terrace: 1.5, gapbridge: 1.4, skyhop: 1.6, islands: 1.6, canopy: 1.6,
   ropegap: 1.5, ropebonus: 1.3,
+  leafdrop: 0.5, leafbonus: 0.5,
   pillars: 1.5, slope: 1.5, stumps: 1.5, zigzag: 1.5, trampoline: 1.4, causeway: 1.5, pegs: 1.4, meadow: 1.5, ditch: 1.5, twin: 1.5,
   yardMound: 0.5, yardSunken: 0.5, yardBridge: 0.5, yardTiers: 0.5, yardLedges: 0.5,
 };
@@ -130,19 +134,41 @@ const OBJ_WEIGHT: Partial<Record<ObjectiveType, Partial<Record<Kind, number>>>> 
   gauntlet: { yard: 3.2, yardMound: 5, yardSunken: 4, yardBridge: 4, yardTiers: 4, yardLedges: 4, moving: 1.3, fragile: 1.3, meadow: 1.5, twin: 1.3, pegs: 0.6, pillars: 0.6 },
 };
 
+/**
+ * Each world leans on the way of moving its chapter is about (stagePlan.ts has the missions; this tilts the pieces inside them): the
+ * kapok canopy and its first lianas, hopping the river, the dark hollows, the cliffs above the falls, silk bridges, swinging root to
+ * root, the temple's towers and failing floors, the night treetops, stepping stones over the heat, and the thousand steps.
+ */
+const WORLD_WEIGHT: Record<number, Partial<Record<Kind, number>>> = {
+  1: { canopy: 1.5, ladder: 1.4, swing: 1.3, meadow: 1.2 },
+  2: { stones: 1.8, islands: 1.8, causeway: 1.6, bridge: 1.4, gapbridge: 1.4 },
+  3: { valley: 1.5, ditch: 1.5, cliff: 1.3, stumps: 1.3, bounce: 1.4 },
+  4: { cliff: 1.8, terrace: 1.7, skyhop: 1.6, ladder: 1.4, pit: 1.3, leafdrop: 5, leafbonus: 5 },
+  5: { bridge: 1.8, gapbridge: 1.6, swing: 1.4, pegs: 1.3 },
+  6: { swing: 1.9, ropegap: 1.8, islands: 1.4, stumps: 1.4, pegs: 1.3 },
+  7: { tower: 1.8, pillars: 1.8, terrace: 1.5, ladder: 1.4, fragile: 1.6 },
+  8: { swing: 1.6, canopy: 1.6, skyhop: 1.5, ropegap: 1.4, leafdrop: 3 },
+  9: { stones: 1.6, pillars: 1.6, fragile: 1.4, trampoline: 1.3, terrace: 1.3, leafdrop: 2 },
+  10: { terrace: 1.8, ladder: 1.6, cliff: 1.6, zigzag: 1.5, tower: 1.4 },
+};
+
+/** the stages whose first act is built around one piece because the story says so */
+const STORY_CORE: Record<string, Kind> = { '4-2': 'leafbonus', '4-7': 'leafdrop', '8-6': 'leafdrop' };
+
 /** how taxing a piece is; a spacer of flat ground follows the hard ones */
 const INTENSITY: Record<Kind, number> = {
   flat: 0, hill: 0, bridge: 0, ladder: 0, pit: 1, stones: 1, cliff: 1, bounce: 1,
   yard: 1, swing: 2, moving: 2, fragile: 2, tower: 2, river: 1, zone: 1,
   valley: 0, rolling: 0, hurdles: 1, terrace: 1, gapbridge: 1, skyhop: 1, islands: 1, canopy: 0,
   ropegap: 1, ropebonus: 0,
+  leafdrop: 2, leafbonus: 1,
   pillars: 1, slope: 0, stumps: 0, zigzag: 1, trampoline: 1, causeway: 0, pegs: 1, meadow: 0, ditch: 0, twin: 0,
   yardMound: 1, yardSunken: 1, yardBridge: 1, yardTiers: 1, yardLedges: 1,
 };
 
 /** the pieces that put something in the way: a pit to jump, an animal, a zone, a river, a platform that moves or breaks (a stretch without one is an empty corridor) */
 const HAZARD_KIND = new Set<Kind>([
-  'pit', 'stones', 'swing', 'moving', 'fragile', 'river', 'zone', 'skyhop', 'islands', 'pillars', 'zigzag', 'trampoline', 'pegs', 'ropegap', 'gapbridge',
+  'pit', 'stones', 'swing', 'moving', 'fragile', 'river', 'zone', 'skyhop', 'islands', 'pillars', 'zigzag', 'trampoline', 'pegs', 'ropegap', 'gapbridge', 'leafdrop',
   'yard', 'yardMound', 'yardSunken', 'yardBridge', 'yardTiers', 'yardLedges',
 ]);
 const YARD_KINDS: Kind[] = ['yardMound', 'yardSunken', 'yardBridge', 'yardTiers', 'yardLedges', 'yard'];
@@ -322,11 +348,24 @@ export class Gen {
     return FLOWER_VARIANTS[Math.floor(this.srnd() * FLOWER_VARIANTS.length)];
   }
 
-  flower(x: number, y: number, variant: (typeof FLOWER_VARIANTS)[number] = this.species()) {
+  /**
+   * About six in ten of the loose flowers are left out (2026-10: fewer flowers, for the look and the memory): a flower on its own, or a whole row, is
+   * dropped by a hash of where it stands. The arcs over a gap stay (they show the jump), and so do the ones a piece asks for on purpose
+   * (`keep`): a harvest's quota rows, the flower in each geyser pocket. A dropped flower still takes its roll, so the layout is unchanged.
+   */
+  thinned(x: number, y: number): boolean {
+    const h = Math.sin(Math.round(x) * 12.9898 + Math.round(y) * 78.233 + this.world * 37.719) * 43758.5453;
+    return h - Math.floor(h) < 0.6;
+  }
+
+  flower(x: number, y: number, variant: (typeof FLOWER_VARIANTS)[number] = this.species(), keep = false) {
     const v = variant;
+    const bobPhase = this.rnd() * Math.PI * 2;
+    if (!keep && this.thinned(x, y)) return;
     this.C.push({
-      id: this.cid++, type: v === 'fern' || v === 'monstera' ? 'leaf' : 'flower',
-      botanicalVariant: v, x, y, collected: false, bobPhase: this.rnd() * Math.PI * 2,
+      // a harvest gathers flowers only (petals in World 1, night blooms in World 8...): no leaves among them
+      id: this.cid++, type: (v === 'fern' || v === 'monstera') && this.cfg.objectiveType !== 'harvest' ? 'leaf' : 'flower',
+      botanicalVariant: v, x, y, collected: false, bobPhase,
     });
   }
 
@@ -341,16 +380,25 @@ export class Gen {
     this.row(x - w / 2 + 22, x + w / 2 - 22, this.g - rise - 34, flowers);
   }
 
-  row(x0: number, x1: number, y: number, n: number) {
+  /** a row of flowers: kept or left out whole (see thinned), unless `keep` */
+  row(x0: number, x1: number, y: number, n: number, keep = false) {
     const sp = this.species();
-    for (let i = 0; i < n; i++) this.flower(n === 1 ? (x0 + x1) / 2 : x0 + ((x1 - x0) * i) / (n - 1), y, sp);
+    const all = keep || !this.thinned(x0, y);
+    for (let i = 0; i < n; i++) {
+      const x = n === 1 ? (x0 + x1) / 2 : x0 + ((x1 - x0) * i) / (n - 1);
+      if (all) this.flower(x, y, sp, true);
+      else this.rnd(); // the dropped flower's roll
+    }
   }
 
-  arc(x0: number, x1: number, y: number, peak: number, n: number) {
+  /** an arc of flowers: over a gap it is always kept (it shows the jump); a decorative one (`keep` false) is kept or left out whole */
+  arc(x0: number, x1: number, y: number, peak: number, n: number, keep = true) {
     const sp = this.species();
+    const all = keep || !this.thinned(x0, y);
     for (let i = 0; i < n; i++) {
       const u = (i + 0.5) / n;
-      this.flower(x0 + (x1 - x0) * u, y - peak * 4 * u * (1 - u), sp);
+      if (all) this.flower(x0 + (x1 - x0) * u, y - peak * 4 * u * (1 - u), sp, true);
+      else this.rnd();
     }
   }
 
@@ -661,6 +709,40 @@ export class Gen {
     this.log.push(`cliff${Math.round(H)}`);
   }
 
+  /**
+   * A lookout and a long drop to the ground beyond (the leaf glide, skills.ts). `required`: the far ground is past any jump or double
+   * jump, so only the leaf carries him over (built only where everyone has the glide). Otherwise the gap is a fair double jump, and a
+   * line of flowers runs on along the glide's path for anyone who opens the leaf. Either way the flowers show the way down.
+   */
+  chunkLeafDrop(required: boolean) {
+    const H = Math.min(this.rr(130, 190), this.g - 230);
+    if (H < 110 || this.cfg.secret || (required && !skillGuaranteedAt('glide', this.m))) { this.chunkCliff(); return; }
+    const { g1 } = this.cliffUp(H);
+    const top = this.flat(this.rr(220, 320), { perch: true });
+    const gTop = this.g;
+    this.closeBank();
+    const dbl = reachJump(-H, true);
+    const glide = reachGlide(-H, false);
+    // required: well past a double jump (by 18% or 70 px) and well inside a plain glide; otherwise a comfortable double jump
+    const lo = required ? Math.max(dbl * 1.18, dbl + 70) : dbl * 0.62;
+    const hi = required ? Math.max(lo, Math.min(glide * 0.88, reachGlide(-H, true) * 0.62)) : dbl * 0.74;
+    const w = this.rr(lo, hi);
+    const x0 = this.cx;
+    // the flowers along the glide: a little rise off the edge, then a long gentle slope down (past the landing, for the bonus)
+    const span = required ? w : Math.min(glide * 0.85, w + 260);
+    const n = required ? 6 : 8;
+    for (let i = 0; i < n; i++) {
+      const u = (i + 0.5) / n;
+      this.flower(x0 + 10 + span * u, gTop - 44 - 70 * Math.sin(Math.PI * Math.min(1, u * 2.2)) * (1 - u) + (H - 10) * u, undefined, true);
+    }
+    this.row(top.x0 + 50, top.x1 - 60, gTop - 32, 3);
+    this.cx += w;
+    this.g = g1;
+    this.openBank();
+    this.flat(this.rr(220, 300), { safe: true });
+    this.log.push(`${required ? 'leafdrop' : 'leafbonus'}${Math.round(w)}`);
+  }
+
   chunkBounce() {
     const H = this.rr(140, 172);
     this.flat(this.rr(190, 260));
@@ -773,7 +855,7 @@ export class Gen {
       x: base + Math.sin(off) * range, y: this.g, width: pw, height: 28, type: 'moving',
       moveRange: range, moveSpeed: this.rr(0.8, 1.25), baseX: base, swayOffset: off,
     }, 'ledge');
-    this.arc(this.cx + 30, this.cx + W - 30, this.g - 40, 70, 5);
+    this.arc(this.cx + 30, this.cx + W - 30, this.g - 40, 70, 5, false);
     this.cx += W;
     this.openBank();
     this.log.push('moving');
@@ -1104,7 +1186,7 @@ export class Gen {
     const s = this.flat(this.rr(380, 620));
     const arcs = this.ri(1, 2);
     const seg = (s.x1 - s.x0 - 100) / arcs;
-    for (let i = 0; i < arcs; i++) this.arc(s.x0 + 50 + i * seg, s.x0 + 50 + (i + 1) * seg, this.g - 36, this.rr(40, 64), this.ri(5, 7));
+    for (let i = 0; i < arcs; i++) this.arc(s.x0 + 50 + i * seg, s.x0 + 50 + (i + 1) * seg, this.g - 36, this.rr(40, 64), this.ri(5, 7), false);
     this.log.push('meadow');
   }
 
@@ -1347,7 +1429,7 @@ export class Gen {
       const startX = s.x0 + 165;
       for (let i = 0; i < p.count; i++) place(startX + i * spacing, i);
       // a flower in each pocket: the reward for waiting in the right place
-      for (let i = 0; i <= p.count; i++) this.flower(startX - spacing / 2 + i * spacing, g0 - 40);
+      for (let i = 0; i <= p.count; i++) this.flower(startX - spacing / 2 + i * spacing, g0 - 40, undefined, true);
       this.log.push(`${p.kind}Row${p.count}`);
       return;
     }
@@ -1428,6 +1510,8 @@ export class Gen {
       case 'bridge': this.chunkBridge(); break;
       case 'stones': this.chunkStones(); break;
       case 'cliff': this.chunkCliff(); break;
+      case 'leafdrop': this.chunkLeafDrop(true); break;
+      case 'leafbonus': this.chunkLeafDrop(false); break;
       case 'bounce': this.chunkBounce(); break;
       case 'ladder': this.chunkLadder(); break;
       case 'swing': this.chunkSwing(); break;
@@ -1548,6 +1632,9 @@ export class Gen {
   /** the idea this stage (or this act of it) is built around; `exclude` are the ideas the earlier acts used */
   pickCore(exclude: Kind[] = []): Kind {
     const obj = this.cfg.objectiveType;
+    // a stage the story names for a way of moving is built around it (stagePlan.ts: 4-2 First Glide, 4-7 The Long Drop, 8-6 Glide by Moonlight)
+    const story = STORY_CORE[this.cfg.id];
+    if (story && !exclude.length && UNLOCK[story] <= this.m && !this.cfg.secret) return story;
     const all = (Object.keys(UNLOCK) as Kind[]).filter((k) => this.recipeOk(k) && !exclude.includes(k));
     if (obj === 'purge' || obj === 'gauntlet') {
       const ys = YARD_KINDS.filter((k) => UNLOCK[k] <= this.m && !exclude.includes(k));
@@ -1607,7 +1694,7 @@ export class Gen {
       if (UNLOCK[k] > this.m || forbid.includes(k)) continue;
       if (k === 'flat') continue; // flats come from spacers
       if (k === 'tower' && this.G < 560) continue;
-      let wt = BASE_WEIGHT[k] * (OBJ_WEIGHT[this.cfg.objectiveType]?.[k] ?? 1);
+      let wt = BASE_WEIGHT[k] * (OBJ_WEIGHT[this.cfg.objectiveType]?.[k] ?? 1) * (WORLD_WEIGHT[this.world]?.[k] ?? 1);
       if (this.fav.has(k)) wt *= 2.2;
       if (last.includes(k)) wt *= 0.25;
       // variety: the more often a kind has been used, and the more of the stage it already covers, the less likely it is
@@ -1639,7 +1726,7 @@ export class Gen {
     for (const k of LIGHT) {
       if (UNLOCK[k] > this.m || last.includes(k) || k === lastLabel) continue;
       if (k === 'tower' && this.G < 560) continue;
-      let wt = BASE_WEIGHT[k] * (OBJ_WEIGHT[this.cfg.objectiveType]?.[k] ?? 1);
+      let wt = BASE_WEIGHT[k] * (OBJ_WEIGHT[this.cfg.objectiveType]?.[k] ?? 1) * (WORLD_WEIGHT[this.world]?.[k] ?? 1);
       if (this.used.get(k)) wt *= Math.pow(0.4, this.used.get(k) ?? 0); else wt *= 4;
       if ((this.lenOf.get(k) ?? 0) > 0.2 * Math.max(this.cx, 8000)) wt *= 0.1;
       if (this.safeMode && INTENSITY[k] > 1) wt *= 0.2;
@@ -2140,7 +2227,7 @@ function decorate(gen: Gen, spawnX: number) {
     const pool = [...flats, ...perches];
     while (sharedFlora() < cfg.targetCount + 4 && guard++ < 200 && pool.length) {
       const s = pool[guard % pool.length];
-      gen.row(s.x0 + 30, s.x1 - 30, s.y - 32, 4);
+      gen.row(s.x0 + 30, s.x1 - 30, s.y - 32, 4, true);
     }
   }
 
@@ -2227,17 +2314,17 @@ function decorate(gen: Gen, spawnX: number) {
     });
     for (let guard = 0; guard < 80 && longer.length && total() < goal; guard++) {
       const sp = longer[guard % longer.length];
-      gen.row(sp.x0 + 24, sp.x1 - 24, sp.y - 32, 3);
+      gen.row(sp.x0 + 24, sp.x1 - 24, sp.y - 32, 3, true);
       gen.settlePickups();
     }
     for (let guard = 0; guard < 60 && pool.length && (total() < cfg.targetCount + 4 || sharedFlora() < cfg.targetCount + 2); guard++) {
       const sp = pool[guard % pool.length];
-      gen.row(sp.x0 + 30, sp.x1 - 30, sp.y - 32, 4);
+      gen.row(sp.x0 + 30, sp.x1 - 30, sp.y - 32, 4, true);
       gen.settlePickups();
     }
     for (let guard = 0; guard < 60 && pool.length && total() < goal; guard++) {
       const sp = pool[guard % pool.length];
-      gen.row(sp.x0 + 30, sp.x1 - 30, sp.y - 32, 4);
+      gen.row(sp.x0 + 30, sp.x1 - 30, sp.y - 32, 4, true);
       gen.settlePickups();
     }
   }
@@ -2661,9 +2748,33 @@ export function generateStage(config: LevelConfig): GeneratedStage {
   addSecrets(stage);
   // flower arcs over the gaps the route crosses that have none, then the finds: a fern is never put beside a trail (and no trail leads to one)
   const reachableIds = acceptedIds ?? validateStage(stage).reachableIds;
+  const beforeTrails = stage.collectibles.length;
   addJumpTrails(stage, reachableIds);
+  capHarvest(stage, new Set(stage.collectibles.slice(beforeTrails).map((c) => c.id)));
   addFinds(stage, reachableIds);
   return stage;
+}
+
+/**
+ * A harvest holds no more than about 2.2 times its quota (a long stage's own pieces, and the arcs over its jumps, can lay more than that):
+ * flowers on the shared ground are taken out again, evenly along the stage, never a lane's reward or an arc over a jump, and never below
+ * the quota and its margin.
+ */
+function capHarvest(stage: GeneratedStage, keep: Set<number>) {
+  const cfg = stage.config;
+  if (cfg.objectiveType !== 'harvest') return;
+  const isFlora = (c: Collectible) => c.type === 'flower' || c.type === 'leaf';
+  const lane = new Set<number>();
+  for (const f of stage.lanes ?? []) for (const r of [f.high, f.low]) r.flowers.forEach((i) => lane.add(i));
+  const flora = stage.collectibles.filter(isFlora);
+  const shared = flora.filter((c) => !lane.has(c.id));
+  const spare = shared.filter((c) => !keep.has(c.id));
+  const drop = Math.min(flora.length - Math.floor(cfg.targetCount * 2.2), shared.length - (cfg.targetCount + 4), spare.length);
+  if (drop <= 0) return;
+  const step = spare.length / drop;
+  const out = new Set<number>();
+  for (let i = 0; i < drop; i++) out.add(spare[Math.min(spare.length - 1, Math.floor(i * step + step / 2))].id);
+  stage.collectibles = stage.collectibles.filter((c) => !out.has(c.id));
 }
 
 /**

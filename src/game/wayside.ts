@@ -4,9 +4,8 @@
  * after a fall. Each stage 2-9 of a world may have one scripted line (at the start, at the halfway mark or near the exit), and the first
  * time Pokey gets hurt in a stage there can be a second, from a small pool.
  *
- * Every world has the same ten stages in the same order, so a line can lean on what the player is doing:
- *   2 harvest (flowers) · 3 purge (predators) · 4 ascent (climbing) · 5 stealth (sneaking) · 6 vine swing · 7 idol hunt · 8 rescue (cages) · 9 gauntlet
- * and on where the story stands: the halfway scene plays after stage 5, so lines on stages 6-9 know what it told us.
+ * Each world's stages come from its chapter (stagePlan.ts; the names are listed above each world below), so a line can lean on what the
+ * player is doing there, and on where the story stands: the halfway scene plays after stage 5, so lines on stages 6-9 know what it told us.
  *
  * Rules the writing follows (see the notes in the story research):
  *   - a line is a thing someone says or does, never a feeling announced
@@ -51,13 +50,15 @@ const hPetal = (text: string, from?: number, to?: number): HurtWay => ({ who: 'P
 
 export const WAYSIDE: Record<number, WorldWay> = {
   // ── ACT I · THE TRAIL: Dot is new, chatty, and sure he is fast ──
+  // 2 Petal Trail · 3 Branch Snakes · 4 Up the Kapok · 5 More Petals · 6 First Lianas · 7 A Very Good Bush · 8 The Long Branch · 9 The Boa's Branches
   1: {
     stages: {
-      2: dot('start', 'She said don\'t stop to smell the flowers. Nobody said anything about picking them.'),
+      2: dot('start', 'She said don\'t stop to smell the flowers. She never said anything about picking up her petals.'),
       3: dot('half', 'You said "excuse me" just before that punch. I heard it. So did he.'),
-      5: dot('start', 'Quiet stage. Quiet\'s easy. I\'ll just hum softly the whole way.'),
+      5: petal('start', 'These petals are fresher. She came this way not long ago.'),
       6: pokey('half', 'Meeca used to cross these twice before I\'d finished one. She\'d wait at the end with a snack.'),
-      8: pokey('half', 'They all look at me like I\'m the fast part of the plan. Hello. I\'m the slow part.'),
+      7: dot('start', 'Quiet stage. Quiet\'s easy. I\'ll just hum softly the whole way.'),
+      8: pokey('half', 'Dot has flown to the end of this branch and back four times. I\'m still on my first.'),
       9: dot('start', 'I\'m too small to be worth the chase. Best thing about me, honestly.'),
     },
     hurt: [
@@ -67,13 +68,15 @@ export const WAYSIDE: Record<number, WorldWay> = {
     ],
   },
   // the village of PLEASE BE PATIENT, Gruntlewick, the mailman, and a river king in a petal tiara
+  // 2 Petals for the Crown · 3 Stuck in the Reeds · 4 Over the Water · 5 River Snappers · 6 Up the Bank Houses · 7 The Mailman's Route · 8 Reed Cages · 9 The Court
   2: {
     stages: {
       2: dot('start', 'A sloth watched me pick a flower and said "oh." That was ten minutes ago. He\'s still saying it.'),
-      3: pokey('half', 'The sign said PLEASE BE PATIENT. I\'m doing my best, but this one keeps lunging.'),
-      4: dot('half', 'I asked the mailman for the time. He said "soon." I\'m going to hold him to that.'),
-      6: pokey('half', 'I could watch this river all day. ...Not now. Swing, Pokey.'),
-      7: dot('half', '"Admire something. Anything." ...Gorgeous idol. Wonderful idol. I\'m practicing.'),
+      3: dot('half', '"Admire something. Anything." ...Gorgeous cage. Wonderful reeds. I\'m practicing.'),
+      4: pokey('half', 'I could watch this river all day. ...Not now. Swing, Pokey.'),
+      5: pokey('half', 'The sign said PLEASE BE PATIENT. I\'m doing my best, but this one keeps lunging.'),
+      6: pokey('half', 'Every house in the bank has a round door, and every door says PLEASE BE PATIENT. I\'m climbing past them very patiently.'),
+      7: dot('half', 'I asked the mailman for the time. He said "soon." I\'m going to hold him to that.'),
       9: pokey('start', 'Meeca came through here first. I bet she admired the whole river out loud.'),
     },
     hurt: [
@@ -83,6 +86,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
     ],
   },
   // the dark: glowworms, footprints in a circle, and something that can stand as still as he can
+  // 2 Glowworm Path · 3 Footprints in a Circle · 4 The Sinkhole · 5 Sleeping Vines · 6 Grandma's Things · 7 Which Fern? · 8 Thorn Vine Swing · 9 The Prowler's Ring
   3: {
     stages: {
       2: dot('start', 'Stay where I can see you. ...I can\'t see anything. Stay where I can hear you.'),
@@ -99,9 +103,10 @@ export const WAYSIDE: Record<number, WorldWay> = {
   },
 
   // ── ACT II · THE COST: the jokes get thinner and Dot works harder at them ──
+  // 1 The Broken Ledge · 2 First Glide · 3 Waterfall Steps · 4 Crosswind · 5 The Sovereign's Dive · 6 Above the Mist · 7 The Long Drop · 8 Nests · 9 The Aerie
   4: {
     stages: {
-      2: petal('start', 'The flowers by the falls have gone pale at the edges. He picks them gently, one hand underneath.'),
+      2: petal('start', 'The leaf is bigger than he is. He holds it over his head and steps off the edge before he can think about it.'),
       3: dot('start', 'Don\'t look at my tail. It\'s molting season. That\'s a real season. I looked it up.'),
       5: dot('start', 'The mist got into the notes. Meeca\'s last one is now mostly weather.'),
       6: pokey('start', 'Dot\'s flying lower than yesterday. I\'m pretending I haven\'t noticed. He\'s pretending I haven\'t.'),
@@ -114,13 +119,16 @@ export const WAYSIDE: Record<number, WorldWay> = {
     ],
   },
   // silk, a table set for two, and a letter in a pouch
+  // 2 Don't Sit · 3 Closing Orchids · 4 Silk Bridges · 5 Caught in Silk · 6 Meeca's Messages · 7 Don't Touch the Silk · 8 Up the Bloom Trees · 9 The Queen's Garden
   5: {
     stages: {
-      2: pokey('start', 'I started carving her a reply on a branch. I\'m up to "M." It\'s a good M.'),
-      4: dot('half', 'Every thread here hums when you step on it. Walk like you owe the place money.'),
-      5: pokey('start', 'I keep thinking about that table, set for two. A trap only needs one cup.'),
-      6: dot('half', 'I\'m just checking it\'s still there. It\'s still there. ...I\'m going to check again.'),
-      8: petal('near', 'Tally marks scratched into the cage floor, row after row. He doesn\'t count them. He opens the door.'),
+      2: pokey('start', 'I keep thinking about that table, set for two. A trap only needs one cup.'),
+      3: petal('start', 'The orchids fold shut as he passes, one after another, like doors closing down a hall.'),
+      4: dot('half', 'It\'s a bridge. It\'s a lovely bridge. I\'m not admiring it. You\'re not admiring it.'),
+      5: petal('near', 'Tally marks scratched into the silk, row after row. He doesn\'t count them. He cuts the threads.'),
+      6: pokey('start', 'I started carving her a reply on a branch. I\'m up to "M." It\'s a good M.'),
+      7: dot('half', 'Every thread here hums when you step on it. Walk like you owe the place money.'),
+      8: dot('half', 'I\'m just checking it\'s still there. It\'s still there. ...I\'m going to check again.'),
     },
     hurt: [
       hDot('Careful! The webs are sticky and the cake is stickier. Don\'t ask how I know.'),
@@ -129,14 +137,16 @@ export const WAYSIDE: Record<number, WorldWay> = {
     ],
   },
   // the mangrove: noon, black water that looks back, and Dot gone after the Last Note (stage 5)
+  // 1 The Root Maze · 2 Flat Water · 3 Root to Root · 4 Low Tide · 5 The Spear · 6 Before Noon · 7 Through the Roots · 8 Stilt Climb · 9 Blackwater
   6: {
     stages: {
       2: dot('start', 'I\'m not afraid of black water. I\'m afraid of what lives in it and has opinions.'),
-      4: dot('half', 'From up here the water looks like a mirror. It looks back, mostly.'),
+      3: dot('half', 'From up here the water looks like a mirror. It looks back, mostly.'),
       5: dot('start', 'I\'m saving a joke for the halfway. A real one. Don\'t let me forget it.'),
+      6: pokey('start', 'Dot said never meet the Reaver at noon. I\'m fairly sure it\'s noon somewhere. Probably here.'),
       7: petal('half', 'The sealed note sits in the satchel. He doesn\'t touch it. He knows exactly where it is.'),
-      8: petal('near', 'Through the bars, someone holds out half a berry. He takes it, and eats it slowly, so they can see he likes it.'),
-      9: pokey('start', 'Dot said never meet the Reaver at noon. I\'m fairly sure it\'s noon somewhere. Probably here.'),
+      8: petal('near', 'Near the top he stops, and leaves room on the root beside him. Out of habit.'),
+      9: pokey('start', 'Blackwater. Dot would have a name for it. Something rude. I\'m trying to think of one for him.'),
     },
     hurt: [
       hDot('The water\'s watching. Don\'t give it anything to talk about.', 1, 5),
@@ -145,13 +155,15 @@ export const WAYSIDE: Record<number, WorldWay> = {
     ],
   },
   // alone among the statues: the quiet has a shape
+  // 2 Brown Vines · 3 Ten Chairs · 4 The Way Up · 5 Stone Sentries · 6 Falling Floors · 7 The Photograph · 8 The Upper Temple · 9 The Golem's Hall
   7: {
     stages: {
       2: petal('start', 'Flowers push up between the old stones, thin and stubborn. He tells the buds to take their time.'),
+      3: petal('half', 'Ten stone chairs in a ring, and one of them knocked over. He sets it upright before he goes on.'),
       4: petal('half', 'Every statue faces the temple, as if waiting for somebody to finish a sentence.'),
       5: pokey('start', 'I\'m the loudest thing in these ruins. That has never happened before.'),
       7: pokey('half', 'There\'s a ledge about Dot\'s size, made for sitting on and complaining from. I check it anyway.'),
-      8: petal('near', 'Freed, the little creature doesn\'t run. It walks beside him a while, in no hurry at all.'),
+      8: petal('near', 'The steps were cut for someone much bigger. He climbs each one like a small wall, and doesn\'t mind.'),
       9: pokey('start', 'Nobody in these ruins is in a hurry. It\'s the first place I\'ve ever felt like the youngest.'),
     },
     hurt: [
@@ -162,13 +174,15 @@ export const WAYSIDE: Record<number, WorldWay> = {
   },
 
   // ── ACT III · THE IRON ROAD: Dot is back and hurt, then gone again ──
+  // 2 Night Blooms · 3 Long Swings · 4 Bat Roosts · 5 Next Branch · 6 Glide by Moonlight · 7 The Tallest Tree · 8 Night Hunters · 9 Monarch's Wood
   8: {
     stages: {
       2: dot('start', 'I had a joke saved for you in the mangrove. Three days of flying and it\'s gone. It had a bird in it.'),
-      4: pokey('near', 'I\'m climbing slowly so Dot can rest. Turns out I\'ve been training for this my whole life.'),
-      5: pokey('start', 'Sneaking\'s the one thing I\'ve always done at full speed.'),
+      4: pokey('start', 'Sneaking\'s the one thing I\'ve always done at full speed.'),
+      5: pokey('start', 'I tell myself: next branch, then the one after. That\'s all a long way is.'),
       6: petal('half', 'Fireflies blink on along the branch ahead, one by one, like a lamp left lit just in case.'),
-      8: dot('near', 'Somebody tied this cage shut with a bow. A bow, Pokey. With loops.'),
+      7: pokey('near', 'I\'m climbing slowly so Dot can rest. Turns out I\'ve been training for this my whole life.'),
+      8: dot('near', 'Those hunters left a net behind, tied shut with a bow. A bow, Pokey. With loops.'),
     },
     hurt: [
       hDot('Ow, oh, that was you. I\'m so used to it being me.', 1, 5),
@@ -176,14 +190,16 @@ export const WAYSIDE: Record<number, WorldWay> = {
       hDot('One branch, then the next. You told me that. I\'m telling you.', 6, 9),
     ],
   },
-  // heat, a staircase of a volcano, and soldiers who have stopped locking things
+  // heat, a staircase of a volcano, and a lieutenant who keeps dropping his thread
+  // 2 Rising Heat · 3 Ember Canopy · 4 The Drake's Doorstep · 5 Vent Riding · 6 Ash Fields · 7 Lava Steps · 8 Pell's Thread · 9 The Drake's Hoard
   9: {
     stages: {
       2: dot('start', 'It\'s hot. I\'m a small bird in a large oven. I\'d like that on the record.'),
-      4: pokey('half', 'The ledges up here are warm. I\'ve decided to think of that as friendly.'),
+      3: pokey('half', 'It\'s boiling out. I\'d still wear Meeca\'s scarf. All of it. Right now.'),
+      4: dot('start', 'When he says "Visitor," don\'t answer. When he says "Intruder," really don\'t answer.'),
       6: dot('half', 'I\'m not touching the pouch. Look. Hands off. ...Claws off. I\'m a bird.'),
-      7: pokey('half', 'It\'s boiling out. I\'d still wear Meeca\'s scarf. All of it. Right now.'),
-      8: petal('near', 'This cage isn\'t locked. The creature inside waits politely to be rescued anyway.'),
+      7: pokey('half', 'The ledges up here are warm. I\'ve decided to think of that as friendly.'),
+      8: dot('half', 'More thread. Either the lieutenant is very careless, or he wants us to find him.'),
       9: dot('start', 'Plan for the Drake: be so polite he feels bad. It\'s worked eight times.'),
     },
     hurt: [
@@ -193,13 +209,15 @@ export const WAYSIDE: Record<number, WorldWay> = {
     ],
   },
   // the storm: Dot has gone into the net, Pokey climbs alone, and the flowers turn toward the tower
+  // 2 The Thousand Steps · 3 Thunder · 4 Holding On · 5 Halfway Up · 6 The Iron Netting · 7 The Walls · 8 The Last Steps · 9 The Fortress Gate
   10: {
     stages: {
       2: petal('start', 'Even here, in the rain, a few flowers have turned to face the tower.'),
       4: petal('half', 'Lightning shows him every step of the climb. He takes them one at a time.'),
       6: petal('half', 'Between swings he checks the netting for a small green shape. Nothing yet.'),
       7: pokey('half', 'I\'ve been humming Meeca\'s song. About a third of it\'s right. She\'ll know which third.'),
-      8: petal('near', 'Someone has sewn this cage door shut, very badly. Every stitch is in the wrong place.'),
+      5: petal('half', 'He counts the steps that are left. Then he stops counting, and just climbs.'),
+      8: petal('near', 'Someone has sewn a hole in the netting shut, very badly. Every stitch is in the wrong place.'),
     },
     hurt: [
       hPetal('He sits. He breathes. He stands. In that order, every time.'),

@@ -52,7 +52,10 @@ test('the ascent a player is given (a random layout, checked) can be climbed', (
 
 test('the layouts that used to have no way up are fixed (same seeds as the audit: 7-4/787875, 8-4/633784, 9-4/206527, 10-4/652245, 10-4/737943)', () => {
   const known: Array<[string, number]> = [['7-4', 787875], ['8-4', 633784], ['9-4', 206527], ['10-4', 652245], ['10-4', 737943]];
-  for (const [id, v] of known) {
+  // (since the stages follow the story, 8-4 and 9-4 are no longer climbs: the seeds are checked on the ones that still are)
+  const still = known.filter(([id]) => ascents.some((a) => a.id === id));
+  assert.ok(still.length >= 3);
+  for (const [id, v] of still) {
     const l = ascents.find((a) => a.id === id)!;
     setLayoutVariant(v);
     const s = generateStage(l);

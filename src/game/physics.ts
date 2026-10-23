@@ -3,6 +3,8 @@
  * generated jump is guaranteed reachable. Units: px, px/s, px/s^2, seconds.
  * Feel target: snappy and precise (quick start/stop, variable jump height).
  */
+import { GLIDE } from './glide.ts';
+
 export const PHYS = {
   maxRun: 285,
   groundAcc: 2600,
@@ -167,6 +169,8 @@ export interface FlightOpts {
   /** allow one double jump at the best moment */
   dbl: boolean;
   dt: number;
+  /** open the leaf on the way down (glide.ts), as the engine does while Jump is held */
+  glide?: boolean;
 }
 
 /**
@@ -178,15 +182,15 @@ export interface FlightOpts {
  */
 const REACH_OFFSET = 4096;
 const REACH_SIZE = REACH_OFFSET * 2 + 1;
-interface ReachTable { v0: number; vx: number; dbl: boolean; dt: number; vals: Float64Array; far: Map<number, number> }
+interface ReachTable { v0: number; vx: number; dbl: boolean; dt: number; glide: boolean; vals: Float64Array; far: Map<number, number> }
 const reachTables: ReachTable[] = [];
 
-function reachTable(v0: number, vx: number, dbl: boolean, dt: number): ReachTable {
+function reachTable(v0: number, vx: number, dbl: boolean, dt: number, glide = false): ReachTable {
   for (let i = 0; i < reachTables.length; i++) {
     const t = reachTables[i];
-    if (t.v0 === v0 && t.vx === vx && t.dbl === dbl && t.dt === dt) return t;
+    if (t.v0 === v0 && t.vx === vx && t.dbl === dbl && t.dt === dt && t.glide === glide) return t;
   }
-  const t: ReachTable = { v0, vx, dbl, dt, vals: new Float64Array(REACH_SIZE).fill(NaN), far: new Map() };
+  const t: ReachTable = { v0, vx, dbl, dt, glide, vals: new Float64Array(REACH_SIZE).fill(NaN), far: new Map() };
   reachTables.push(t);
   return t;
 }
@@ -198,13 +202,13 @@ function reachAt(t: ReachTable, dy: number): number {
   if (i >= 0 && i < REACH_SIZE) {
     const hit = t.vals[i];
     if (hit === hit) return hit;
-    const v = simulateReach(step * 2, t.v0, t.vx, t.dbl, t.dt);
+    const v = simulateReach(step * 2, t.v0, t.vx, t.dbl, t.dt, t.glide);
     t.vals[i] = v;
     return v;
   }
   const hit = t.far.get(step);
   if (hit !== undefined) return hit;
-  const v = simulateReach(step * 2, t.v0, t.vx, t.dbl, t.dt);
+  const v = simulateReach(step * 2, t.v0, t.vx, t.dbl, t.dt, t.glide);
   t.far.set(step, v);
   return v;
 }
@@ -215,11 +219,11 @@ function reachAt(t: ReachTable, dy: number): number {
  * surface is never reached. Pure number crunching, memoised.
  */
 export function flightReach(dy: number, o: FlightOpts): number {
-  return reachAt(reachTable(o.v0, o.vx, o.dbl, o.dt), dy);
+  return reachAt(reachTable(o.v0, o.vx, o.dbl, o.dt, !!o.glide), dy);
 }
 
-function simulateReach(dy: number, v0: number, vx: number, dbl: boolean, dt: number): number {
-  const o: FlightOpts = { v0, vx, dbl, dt };
+function simulateReach(dy: number, v0: number, vx: number, dbl: boolean, dt: number, glide = false): number {
+  const o: FlightOpts = { v0, vx, dbl, dt, glide };
   const target = -dy;
   const tries = o.dbl ? Array.from({ length: 36 }, (_, i) => i * o.dt * (1 / 30 / o.dt)) : [-1];
   let best = -1;
@@ -227,13 +231,30 @@ function simulateReach(dy: number, v0: number, vx: number, dbl: boolean, dt: num
     const b: AirBody = { x: 0, y: 0, vx: o.vx, vy: -o.v0 };
     let t = 0;
     let doubled = !o.dbl;
-    for (let i = 0; i < 400; i++) {
+    // the leaf: the same rules as the engine (glide.ts), with Jump held the whole way down
+    let fallT = 0;
+    let left: number = GLIDE.maxTime;
+    for (let i = 0; i < 600; i++) {
       if (!doubled && t >= tD - 1e-9) {
         b.vy = -PHYS.doubleV;
         doubled = true;
       }
       const prev = b.y;
-      airStep(b, o.dt, 1, false);
+      if (glide) {
+        // airStep's steer and gravity, then the leaf's brake, then the move (the engine's order)
+        const x0 = b.x, y0 = b.y;
+        airStep(b, o.dt, 1, false);
+        b.x = x0;
+        b.y = y0;
+        if (b.vy <= -GLIDE.refillUp) left = GLIDE.maxTime;
+        fallT = b.vy > GLIDE.minFall ? fallT + o.dt : 0;
+        if (fallT >= GLIDE.onset && left > 0) {
+          left = Math.max(0, left - o.dt);
+          if (b.vy > GLIDE.fallSpeed) b.vy = Math.max(GLIDE.fallSpeed, b.vy - GLIDE.brake * o.dt);
+        }
+        b.x += b.vx * o.dt;
+        b.y += b.vy * o.dt;
+      } else airStep(b, o.dt, 1, false);
       t += o.dt;
       if (b.vy >= 0 && prev <= target + 14 && b.y >= target) {
         if (b.x > best) best = b.x;
@@ -276,6 +297,16 @@ export function reachMin(dy: number, v0: number, vx: number, dbl: boolean): numb
   for (let i = 0; i < SIM_DTS.length; i++) m = Math.min(m, reachAt(reachTable(v0, vx, dbl, SIM_DTS[i]), dy));
   return m;
 }
+
+/** Worst case over both tick rates, gliding down on the leaf (Leaf Glide, from the stage that guarantees it). */
+export function reachMinGlide(dy: number, v0: number, dbl: boolean): number {
+  let m = Infinity;
+  for (let i = 0; i < SIM_DTS.length; i++) m = Math.min(m, reachAt(reachTable(v0, PHYS.maxRun, dbl, SIM_DTS[i], true), dy));
+  return m;
+}
+/** Max horizontal gap for a jump or double jump with the leaf open on the way down. dy > 0 = target is higher. */
+export const reachGlide = (dy: number, dbl: boolean) => reachMinGlide(dy, PHYS.jumpV, dbl);
+export const reachBounceGlide = (dy: number, dbl: boolean) => reachMinGlide(dy, PHYS.bounceV, dbl);
 
 /** Max horizontal gap for a normal jump / double jump / mushroom bounce. dy > 0 = target is higher. */
 export const reachJump = (dy: number, dbl: boolean) => reachMin(dy, PHYS.jumpV, PHYS.maxRun, dbl);

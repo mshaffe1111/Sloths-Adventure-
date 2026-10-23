@@ -1,6 +1,6 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
-import { COARSE, Icon, PolishToggle, OrchSfxToggle, ControlsSetting, AssistSetting, WaysideToggle, PerfToggle } from './menuParts.tsx';
+import { COARSE, Icon, PolishToggle, OrchSfxToggle, ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 
 export { COARSE, Icon, PolishToggle, OrchSfxToggle };
@@ -223,6 +223,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
         </div>
         <Sliders />
       </div>
+      <FullscreenSetting />
       <ControlsSetting />
       <AssistSetting />
       <PolishToggle />

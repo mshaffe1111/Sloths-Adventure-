@@ -6,6 +6,7 @@ import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
 import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
 import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
+import { fullscreenSupported, isFullscreen, launchedAsApp, toggleFullscreen } from '../game/fullscreen.ts';
 import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, type GameSpeed } from '../game/assist.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
@@ -290,3 +291,29 @@ export const OrchSfxToggle: React.FC = () => {
   );
 };
 
+
+/** full screen on or off (the game starts full screen; this is the way out, and back): hidden where the browser cannot do it */
+export const FullscreenSetting: React.FC = () => {
+  const [on, setOn] = React.useState(() => isFullscreen());
+  React.useEffect(() => {
+    const f = () => setOn(isFullscreen());
+    document.addEventListener('fullscreenchange', f);
+    return () => document.removeEventListener('fullscreenchange', f);
+  }, []);
+  if (!fullscreenSupported() || launchedAsApp()) return null;
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#93c5fd" size={22}>
+            <path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5" />
+          </Icon>
+          Full screen
+        </span>
+        <button type="button" data-fs-toggle="true" className="pm-mute pm-polish" aria-pressed={on} onClick={() => setOn(toggleFullscreen())}>
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+    </div>
+  );
+};

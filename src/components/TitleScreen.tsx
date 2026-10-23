@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { TitleDefs, TitleFrame, TitleHero, TitleFireflies, TitleSlomatt } from './TitleScene.tsx';
-import { VistaCanvas } from './VistaCanvas.tsx';
+import { PaintedVista } from './PaintedVista.tsx';
+import { FullscreenButton, LogoWord, Ribbon, TitlePair } from './gameUi.tsx';
+import { homeScreenTipDue, markHomeScreenTip } from '../game/fullscreen.ts';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
 import { StartMenu } from './StartMenu.tsx';
@@ -105,93 +106,95 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
     () => false,
   );
 
-  return (
-    <div className="fixed inset-0 z-40 bg-[#1a2a1c] select-none font-game text-white overflow-hidden">
-      <VistaCanvas worlds={SHOWCASE} hold={14} pan={14} />
-      <TitleDefs />
-      <TitleFrame />
-      <TitleFireflies />
-      {/* warm light from above, deep edges, and a floor so the buttons always read */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 18%, rgba(255,226,150,.28), transparent 55%), radial-gradient(ellipse at center, transparent 55%, rgba(14,8,4,.55) 100%)' }} />
-      <div className="absolute inset-x-0 bottom-0 h-[42%] pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,22,14,.72), rgba(10,22,14,0))' }} />
+  // on an iPhone in the browser there is no full screen: say once how to get it (add the game to the Home Screen)
+  const [fsTip, setFsTip] = useState(() => homeScreenTipDue());
+  const start = () => {
+    if (!resume && !howToSeen()) {
+      markHowToSeen();
+      setIntro(true);
+    } else onStartGame();
+  };
 
-      <div className="relative z-10 flex h-full flex-col items-center px-4 py-3 sm:px-8 sm:py-5">
-        <div className="w-full max-w-5xl flex items-center justify-between gap-2">
-          <div className="ui-chip">
-            <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse" />
-            <span>10 Worlds · 100 Stages</span>
-          </div>
-          <div className="flex items-center gap-2">
+  return (
+    <div className="gx2 select-none">
+      <PaintedVista worlds={SHOWCASE} hold={14} pan={9} />
+      <div className="gx2-shade" />
+      <TitlePair stageSelector=".gx2-stage" />
+
+      <div className="gx2-ui">
+        <div className="gx2-top">
+          <span className="gx-leaf-tag">10 Worlds · 100 Stages</span>
+          <div className="gx2-top-r">
             {!isInstalled && onInstallDesktop && (
-              <button type="button" onClick={onInstallDesktop} className="ui-chip ui-chip-btn" title="Install the game as an app">
+              <button type="button" onClick={onInstallDesktop} className="gx-leaf-tag" title="Install the game as an app">
                 Install app
               </button>
             )}
-            <button type="button" onClick={onToggleMute} className={`ui-chip ui-chip-btn${waiting ? ' ui-chip-wait' : ''}`}>
-              {isMuted ? 'Sound off' : waiting ? 'Tap for sound' : 'Sound on'}
+            <button
+              type="button"
+              onClick={onToggleMute}
+              className={`gx-token gx-mute${waiting ? ' wait' : ''}`}
+              aria-pressed={isMuted}
+              aria-label={isMuted ? 'Sound off' : waiting ? 'Tap for sound' : 'Sound on'}
+              title={isMuted ? 'Sound off' : waiting ? 'Tap for sound' : 'Sound on'}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 9v6h4l5 4V5L8 9z" />
+                {isMuted ? <path d="M17 9l5 6M22 9l-5 6" /> : <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />}
+              </svg>
+            </button>
+            <FullscreenButton />
+          </div>
+        </div>
+
+        <div className="gx2-logo">
+          <LogoWord />
+          <Ribbon text="RAINFOREST ADVENTURES" />
+        </div>
+        <div className="gx2-stage" aria-hidden="true" />
+
+        <div className="gx2-post">
+          <button type="button" data-start="true" onClick={start} className="gx-sign gx2-sign">
+            <span className="gx-sign-t">{resume ? 'CONTINUE' : 'START ADVENTURE'}</span>
+            {resume && (
+              <span className="gx-sign-s">
+                {resume.stage} <i>·</i> {resume.stars} <Icon name="star" size={12} />
+              </span>
+            )}
+          </button>
+          <div className="gx2-planks">
+            <button type="button" onClick={onOpenMap} className="gx-plank">
+              <Icon name="map" size={18} />
+              World Map
+            </button>
+            <button type="button" onClick={onViewStory} className="gx-plank">
+              <Icon name="scroll" size={18} />
+              Story
+            </button>
+            <button type="button" onClick={() => setHowOpen(true)} className="gx-plank">
+              <Icon name="bulb" size={18} />
+              How to Play
+            </button>
+            <button type="button" onClick={() => setMenuOpen(true)} className="gx-plank" aria-label="Menu" data-menu="true">
+              <Icon name="leaf" size={18} />
+              Menu
+            </button>
+          </div>
+          <div className="gx-tags">
+            <button type="button" onClick={onOpenTrophies} className="gx-leaf-tag">
+              <Icon name="trophy" size={14} />
+              Trophies{badgeCount ? ` · ${badgeCount}` : ''}
+            </button>
+            <button type="button" onClick={() => setSaveOpen(true)} className="gx-leaf-tag">
+              Save / Load
+            </button>
+            <button type="button" onClick={() => setNewOpen(true)} className="gx-leaf-tag">
+              New Game
             </button>
           </div>
         </div>
 
-        <div className="flex w-full flex-1 min-h-0 flex-col items-center justify-center text-center">
-          <TitleHero className="title-hero w-full max-w-[1280px] shrink-0 h-[clamp(100px,min(28.5vh,58.3vw),400px)]" />
-
-          <div className="title-logo-wrap">
-            <TitleSlomatt />
-            <h1 className="title-logo mt-0">SLOTHS</h1>
-          </div>
-          <div className="title-ribbon">RAINFOREST ADVENTURES</div>
-
-          <div className="mt-2 sm:mt-4 flex flex-col items-center gap-2 w-full">
-            <button type="button" data-start="true" onClick={() => {
-                if (!resume && !howToSeen()) {
-                  markHowToSeen();
-                  setIntro(true);
-                } else onStartGame();
-              }}
-              className="title-btn title-btn-start ui-main">
-              <span className="ui-main-t">{resume ? 'CONTINUE' : 'START ADVENTURE'}</span>
-              {resume && (
-                <span className="ui-main-s">
-                  {resume.stage} <i>·</i> {resume.stars} <Icon name="star" size={13} style={{ verticalAlign: '-2px' }} /> earned
-                </span>
-              )}
-            </button>
-            {/* the way into everything else: the Menu (settings, trophies, cards, skills) first, then the three places to go */}
-            <div className="grid grid-cols-2 gap-2 w-full max-w-[340px] sm:flex sm:max-w-none sm:flex-wrap sm:items-center sm:justify-center sm:gap-3">
-              <button type="button" onClick={() => setMenuOpen(true)} className="ui-pill ui-pill-cream justify-center inline-flex items-center gap-2" aria-label="Menu" data-menu="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
-                  <path d="M4 7h16M4 12h16M4 17h16" />
-                </svg>
-                Menu
-              </button>
-              <button type="button" onClick={onOpenMap} className="ui-pill ui-pill-sky justify-center">
-                World Map
-              </button>
-              <button type="button" onClick={() => setHowOpen(true)} className="ui-pill ui-pill-green justify-center">
-                How to Play
-              </button>
-              <button type="button" onClick={onViewStory} className="ui-pill ui-pill-rose justify-center">
-                Story
-              </button>
-            </div>
-            {/* your game: smaller, because they are used less often */}
-            <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
-              <button type="button" onClick={onOpenTrophies} className="ui-chip ui-chip-btn ui-chip-lg">
-                <Icon name="trophy" size={16} />
-                Trophies{badgeCount ? ` · ${badgeCount}` : ''}
-              </button>
-              <button type="button" onClick={() => setSaveOpen(true)} className="ui-chip ui-chip-btn ui-chip-lg">
-                Save / Load
-              </button>
-              <button type="button" onClick={() => setNewOpen(true)} className="ui-chip ui-chip-btn ui-chip-lg">
-                New Game
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <p className="title-credit relative w-full text-center font-sans text-[11px] sm:text-xs tracking-wide text-amber-50/70 [text-shadow:0_1px_3px_rgba(0,0,0,.6)]">
+        <p className="gx2-credit">
           Created and made by Matt{' '}
           <button type="button" onClick={tapShaffer} className="title-credit-btn" aria-label="Shaffer">
             Shaffer
@@ -215,6 +218,24 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           )}
         </p>
       </div>
+
+      {fsTip && (
+        <div className="gx2-tip" role="note">
+          <span>
+            <b>Full screen on iPhone:</b> tap Share, then <b>Add to Home Screen</b>, and open the game from there.
+          </span>
+          <button
+            type="button"
+            className="gx-leaf-tag"
+            onClick={() => {
+              markHomeScreenTip();
+              setFsTip(false);
+            }}
+          >
+            Got it
+          </button>
+        </div>
+      )}
 
       {menuOpen && (
         <StartMenu

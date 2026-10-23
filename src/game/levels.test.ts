@@ -88,7 +88,8 @@ test('validator rejects a cliff whose climbing vine is removed', () => {
 });
 
 test('validator rejects a wide swing gap with no liana', () => {
-  const wide = levels.find((l) => buildStage(l, LEVEL_ATTEMPTS[l.id] ?? 0).meta!.chunks.some((c) => /^swing3[5-9]/.test(c)));
+  // (before 4-7: from there the leaf glide may carry him over a gap a liana spans, see skills.ts)
+  const wide = levels.find((l) => (l.worldIndex - 1) * 10 + l.miniIndex < 37 && buildStage(l, LEVEL_ATTEMPTS[l.id] ?? 0).meta!.chunks.some((c) => /^swing3[1-9]/.test(c)));
   assert.ok(wide, 'some level has a wide swing gap');
   const r = broken(wide!.id, (s) => { s.vines = s.vines.filter((v) => v.vineType !== 'swing_liana'); });
   assert.equal(r.ok, false);

@@ -10,7 +10,7 @@
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform, Vine } from './types.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
-import { skillGuaranteedAt } from './skills.ts';
+import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
   PHYS,
@@ -22,6 +22,8 @@ import {
   canGrabSwing,
   maxDropReach,
   reachBounce,
+  reachBounceGlide,
+  reachGlide,
   reachJump,
   reachMin,
   SWING,
@@ -247,6 +249,8 @@ export function validateStage(stage: GeneratedStage): CheckResult {
 
   // a double jump is a tool the player may need from mission 6 on; before that every gap is a plain jump
   const allowDouble = (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6;
+  // the leaf glide, from the stage everyone who gets there has learned it (skills.ts): it carries a falling jump much further
+  const allowGlide = skillGuaranteedAt('glide', (cfg.worldIndex - 1) * 10 + cfg.miniIndex);
   const byX = [...plats].sort((a, b) => ext(a)[0] - ext(b)[0]);
 
   // 1. jumps between platforms (only compare neighbours within a plausible horizontal window)
@@ -265,7 +269,8 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     if (byX[i].y > maxY) maxY = byX[i].y;
   }
   const maxDrop = nP ? maxY - minY : 0;
-  const leftReach = maxDropReach(maxDrop) * MARGIN - TAKEOFF_SLACK;
+  const leftReach = (allowGlide ? Math.max(maxDropReach(maxDrop), reachGlide(-maxDrop, true), reachBounceGlide(-maxDrop, true)) : maxDropReach(maxDrop)) * MARGIN - TAKEOFF_SLACK;
+  const rightWindow = allowGlide ? Math.max(460, leftReach) : 460;
   for (let i = 0; i < nP; i++) {
     const a = byX[i];
     const ax0 = px0[i], ax1 = px1[i];
@@ -278,7 +283,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     for (let j = lo; j < nP; j++) {
       if (i === j) continue;
       const bx0 = px0[j];
-      if (bx0 > ax1 + 460) {
+      if (bx0 > ax1 + rightWindow) {
         if (j > i) break;
         continue;
       }
@@ -288,7 +293,11 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       if (gap > leftReach) continue;
       const dy = a.y - b.y;
       const f = a.type === 'bouncy' ? reachBounce : reachJump;
-      const r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
+      let r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
+      if (allowGlide && !(r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK)) {
+        const fg = a.type === 'bouncy' ? reachBounceGlide : reachGlide;
+        r = Math.max(r, fg(dy, false), fg(dy, true));
+      }
       if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) {
         link(pid(a), pid(b));
         if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
@@ -412,6 +421,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   }
 
   // items must be near something reachable
+  const heldGlide = skillHeldAt('glide', (cfg.worldIndex - 1) * 10 + cfg.miniIndex);
   const nearReachable = (x: number, y: number) => {
     for (const p of reachPlats) {
       const [x0, x1] = ext(p);
@@ -420,6 +430,16 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     for (const v of vines) {
       if (seen.has(vid(v)) && Math.abs(x - v.x) < 70 && y >= v.topY - 40 && y <= v.bottomY) return true;
       if (usedSwing.has(v.id) && Math.abs(x - v.x) < 190 && y >= v.topY - 40 && y <= v.bottomY + 20) return true;
+    }
+    // pickups along a glide: below a reachable ledge and within how far the leaf carries at that height (a glide's flowers, out over a drop)
+    if (heldGlide) {
+      for (const p of reachPlats) {
+        const [x0, x1] = ext(p);
+        const dy = p.y - y; // > 0: the pickup is above the ledge's top
+        if (dy > 100 || dy < -900) continue;
+        const r = reachGlide(dy, false);
+        if (r >= 0 && dxTo(x0, x1, x) <= r * MARGIN - TAKEOFF_SLACK) return true;
+      }
     }
     // pickups hanging under a rope (reached by shimmying along it)
     for (const r of stage.ropes ?? []) {

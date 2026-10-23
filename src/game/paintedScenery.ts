@@ -54,5 +54,56 @@ export function paintShrub(target: CanvasRenderingContext2D, kind: 'plant' | 'fl
   return true;
 }
 
+/**
+ * The painted flowers and plants growing along the ground of a stage (2026-10, Matt's ask: his flowers and plants in place of the drawn
+ * ones). They stand at play depth, so they must never pass for a pickup: they stand on their base instead of floating, carry no gold
+ * rim, and sit a shade darker than the pickups. Each is cut once into a small shaded canvas (about 100 px) and drawn from that.
+ */
+const groundCache = new Map<string, HTMLCanvasElement | null>();
+const GROUND_PX = 96;
+function groundSprite(kind: 'plant' | 'flower', num: number): HTMLCanvasElement | null {
+  const key = kind + num;
+  const hit = groundCache.get(key);
+  if (hit !== undefined) return hit;
+  if (!(kind === 'plant' ? plantsPainted() : flowersPainted()) || typeof document === 'undefined') return null; // not cached: asked again once loaded
+  const c = document.createElement('canvas');
+  c.width = Math.ceil(GROUND_PX * 1.3);
+  c.height = Math.ceil(GROUND_PX * 1.06);
+  const g = c.getContext('2d');
+  if (!g) return null;
+  const ok = kind === 'plant' ? drawPlantAt(g, num, c.width / 2, c.height - 1, GROUND_PX) : drawFlowerAt(g, num, c.width / 2, c.height - 1, GROUND_PX);
+  if (!ok) {
+    groundCache.set(key, null);
+    return null;
+  }
+  g.globalCompositeOperation = 'source-atop';
+  g.fillStyle = 'rgba(16, 30, 22, 0.24)';
+  g.fillRect(0, 0, c.width, c.height);
+  groundCache.set(key, c);
+  return c;
+}
+
+/** the flowers and plants of a world that grow along its ground: its six signature species of each */
+export function groundFlora(world: number, kind: 'plant' | 'flower'): number[] {
+  return kind === 'plant' ? sceneryPlants(world) : sceneryFlowers(world);
+}
+
+/** draw a painted flower or plant standing on (x, y), `size` units tall-ish; false when the art is not loaded (draw something else) */
+export function drawGroundFlora(ctx: CanvasRenderingContext2D, kind: 'plant' | 'flower', num: number, x: number, y: number, size: number, flip = false): boolean {
+  const spr = groundSprite(kind, num);
+  if (!spr) return false;
+  const k = size / GROUND_PX;
+  const w = spr.width * k;
+  const h = spr.height * k;
+  if (flip) {
+    ctx.save();
+    ctx.translate(x, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(spr, -w / 2, y - h, w, h);
+    ctx.restore();
+  } else ctx.drawImage(spr, x - w / 2, y - h, w, h);
+  return true;
+}
+
 // the art starts loading as soon as the game does, so by the time a stage bakes its backdrop (a second or two later) it is ready
 if (typeof window !== 'undefined') warmFloraArt();

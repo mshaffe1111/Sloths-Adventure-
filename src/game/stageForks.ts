@@ -333,9 +333,9 @@ export function buildFork(gen: Gen, plan: ForkPlan, index: number, boost = 0): b
   });
   const lowFlowerCap = capture(gen, () => {
     const n = plan.reversed ? 4 : 7;
-    gen.row(fl.x0 + 70, fl.x1 - 70, fl.y - 34, n);
+    gen.row(fl.x0 + 70, fl.x1 - 70, fl.y - 34, n, true); // a lane's flowers are its reward: never thinned
     // a few more just inside the steps, over where the animals are not
-    if (!plan.reversed) gen.row(x0 + 18, x0 + 95, g0 + 40 - 34, 2);
+    if (!plan.reversed) gen.row(x0 + 18, x0 + 95, g0 + 40 - 34, 2, true);
   });
   let reward: LaneFork['reward'] = null;
   const hiFlowerCap = capture(gen, () => {
@@ -349,7 +349,7 @@ export function buildFork(gen: Gen, plan: ForkPlan, index: number, boost = 0): b
     gen.item(kind, rx, ry);
     reward = { x: rx, y: ry };
     gen.arc(pk.x + 10, pk.x + pk.width - 10, pk.y - 56, 40, plan.reversed ? 3 : 2);
-    if (plan.reversed && hi.overlook && hi.overlook !== pk) gen.row(hi.overlook.x + 40, hi.overlook.x + hi.overlook.width - 40, hi.overlook.y - 36, 3);
+    if (plan.reversed && hi.overlook && hi.overlook !== pk) gen.row(hi.overlook.x + 40, hi.overlook.x + hi.overlook.width - 40, hi.overlook.y - 36, 3, true);
   });
   // the scenic lane keeps an animal on its overlook (a slower walk to match the faster hollow)
   const overlookCap = capture(gen, () => {
