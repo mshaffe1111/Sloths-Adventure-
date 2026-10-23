@@ -225,7 +225,8 @@ export default function App() {
     setReadingCompletes(false);
     if (pausedForFind.current) {
       pausedForFind.current = false;
-      engineRef.current?.resume();
+      // closed while the pause menu is up (the app was put away with the reader open): the menu's Resume carries on, not this
+      if (screen === 'playing') engineRef.current?.resume();
     }
   };
   /** what the last stage reported; folded in once its result has been saved (see the effect below) */
@@ -645,6 +646,8 @@ export default function App() {
   const resumeGame = () => {
     sound.playPause(false);
     setScreen('playing');
+    // a lesson card or a just-found note is still up: the stage stays still behind it, and closing it carries on
+    if (lessonId || (reading && pausedForFind.current)) return;
     engineRef.current?.resume();
   };
 
