@@ -652,6 +652,7 @@ export class GameEngine {
       const r0 = pl ? performance.now() : 0;
       this.render();
       if (pl) pl.record(elapsed, tUpd, performance.now() - r0, now, () => this.perfInfo());
+      if (recorder.on) this.recordFrames(elapsed, now);
       // judge the real frame gap: too slow for a moment -> a lighter picture (never while a menu holds the game, or once at the lightest)
       if (!this.isPaused && (this.quality < 2 || (polishEnabled() && polishTier() < 2)) && this.gov.feed(elapsed)) this.stepQuality();
       this.failStreak = 0;
@@ -665,6 +666,28 @@ export class GameEngine {
     }
   };
   private failStreak = 0;
+
+  /**
+   * the control test: every 5 s, how smooth the picture was (frames a second, the slowest tenth, the worst frame), the picture quality
+   * the game settled on, the canvas size, and the sound's own line. Testers called a run choppy with the sound breaking up; this shows
+   * where, on their own phones.
+   */
+  private frameWin: number[] = [];
+  private frameWinAt = 0;
+  private recordFrames(elapsed: number, now: number) {
+    if (!this.frameWinAt) this.frameWinAt = now;
+    if (!this.isPaused) this.frameWin.push(elapsed);
+    // a freeze long enough to feel: noted on its own, with where he was
+    if (!this.isPaused && elapsed > 250) recorder.event('stall', `${Math.round(elapsed)}ms x${Math.round(this.player.x)} q${this.quality}`);
+    if (now - this.frameWinAt < 5000) return;
+    const f = this.frameWin.sort((a, b) => a - b);
+    this.frameWin = [];
+    this.frameWinAt = now;
+    if (f.length < 5) return;
+    const total = f.reduce((a, b) => a + b, 0);
+    const p90 = f[Math.floor(f.length * 0.9)];
+    recorder.event('fps', `${(1000 * f.length / total).toFixed(1)}fps p90 ${Math.round(p90)}ms max ${Math.round(f[f.length - 1])}ms q${this.quality} ${this.canvas.width}x${this.canvas.height} | ${sound.report()}`);
+  }
 
   /** what the game was doing, for the frame-time check (only built when a freeze is logged or a timeline line is due) */
   private perfInfo() {
