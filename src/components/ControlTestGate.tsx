@@ -52,6 +52,22 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
   );
 };
 
+/** the end of the test (at the shrine): thanks, and a way to play it again */
+export const ControlTestDone: React.FC<{ onAgain: () => void }> = ({ onAgain }) => (
+  <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#0e3b28]/95 p-3 text-[#f4ecd8]">
+    <div className="mx-auto my-6 w-full max-w-md rounded-2xl border border-[#f4ecd8]/20 bg-[#123d2a] p-5 text-center shadow-2xl">
+      <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Control test</p>
+      <h1 className="mt-1 text-2xl font-black leading-tight">You're done. Thank you!</h1>
+      <p className="mt-3 text-sm leading-snug text-[#f4ecd8]/85">
+        Your play has been sent to Matt. You can close this page now, or play the level again. Every run helps.
+      </p>
+      <button type="button" onClick={onAgain} className="mt-5 w-full rounded-xl bg-[#f2c14e] py-2.5 text-lg font-black text-[#2a1a08]">
+        Play again
+      </button>
+    </div>
+  </div>
+);
+
 /** the little red dot while the test records (it never takes a touch) */
 export const RecordingBadge: React.FC = () => {
   const [state, setState] = React.useState(recorder.sendState);

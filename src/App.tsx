@@ -37,8 +37,8 @@ import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type Cosmet
 import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
-import { ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
-import { ctestEnabled } from './game/playRecorder.ts';
+import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
+import { ctestEnabled, recorder } from './game/playRecorder.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -106,6 +106,8 @@ export default function App() {
   // the control test (#ctest in the address): the name screen first, then the test stage, recorded
   const [ctestGate, setCtestGate] = useState(() => ctestEnabled());
   const [recording, setRecording] = useState(false);
+  // the test stage cleared: a thank-you instead of carrying on into the next stage of the game (holds the stage to replay)
+  const [ctestDone, setCtestDone] = useState<LevelConfig | null>(null);
   const [allLevels, setAllLevels] = useState<LevelConfig[]>(() => generateAllLevels());
   const [activeLevel, setActiveLevel] = useState<LevelConfig>(() => allLevels[0]);
   const [selectedWorldId, setSelectedWorldId] = useState<number>(1);
@@ -583,6 +585,12 @@ export default function App() {
           setClearTime(timeSec);
           setScore(finalScore);
 
+          // the control test is over at its shrine: thank the tester (nothing is saved, and the game does not go on to 1-3)
+          if (ctestEnabled() && lvl.id === CTEST_STAGE_ID) {
+            setCtestDone(lvl);
+            return;
+          }
+
           if (lvl.secret) {
             // Thornbark beaten: the Thorn Heart, no stage to unlock
             markThornHeart();
@@ -771,6 +779,16 @@ export default function App() {
         />
       )}
       {recording && <RecordingBadge />}
+      {ctestDone && (
+        <ControlTestDone
+          onAgain={() => {
+            const lvl = ctestDone;
+            setCtestDone(null);
+            recorder.event('playAgain');
+            launchEngine(lvl);
+          }}
+        />
+      )}
 
       {/* Title Screen View */}
       {screen === 'title' && (
