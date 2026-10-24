@@ -778,7 +778,16 @@ export default function App() {
           }}
         />
       )}
-      {recording && <RecordingBadge />}
+      {recording && !ctestDone && (
+        <RecordingBadge
+          onDone={() => {
+            // ending early: note where he was, stop the stage, and go to the questions
+            recorder.event('quit');
+            engineRef.current?.pause();
+            setCtestDone(activeLevel);
+          }}
+        />
+      )}
       {ctestDone && (
         <ControlTestDone
           onAgain={() => {
