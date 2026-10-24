@@ -92,7 +92,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawChaseSection, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -399,13 +399,13 @@ export class GameEngine {
     warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
-    this.drawPlats = this.pushLogs.length || this.proto?.chase ? this.platforms.filter((pl) => !pl.push && !pl.chase) : this.platforms;
+    this.drawPlats = this.pushLogs.length || this.proto?.chase ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown) : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
     this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
-      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase);
+      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown);
       this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
       this.protoScene = { brokeAt: new Map(), movedAt: new Map() };
       protoArtReady(); // start loading the props
@@ -3749,6 +3749,13 @@ export class GameEngine {
   /** 1-8's long branch: its sections from Matt's sheet (cracking just ahead of the collapse), the pieces falling away */
   private drawChase(ctx: CanvasRenderingContext2D) {
     const ch = this.chase!;
+    for (const pl of this.platforms) {
+      if (!pl.crown || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width + 300)) continue;
+      if (!drawCrownArt(ctx, pl)) {
+        ctx.fillStyle = '#4a6b2e';
+        ctx.fillRect(pl.x, pl.y, pl.width, 60);
+      }
+    }
     for (const pl of this.platforms) {
       if (!pl.chase || pl.broken || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width + 200)) continue;
       const state = sectionState(ch, pl.x, pl.x + pl.width);

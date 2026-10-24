@@ -1671,7 +1671,7 @@ function buildLongBranch(config: LevelConfig, seed: number): GeneratedStage & { 
     expert += 415 / SWING + 0.6;
   });
   // the next tree's crown: solid, and the shrine on it
-  const crown: Platform = { id: pid++, x: Math.round(x), y: level, width: 900, height: BANK_H, type: 'solid', style: 'log' };
+  const crown: Platform = { id: pid++, x: Math.round(x), y: level, width: 900, height: 40, type: 'solid', crown: true };
   P.push(crown);
   row(crown.x + 80, crown.x + 340, level - 34, 3, 'hibiscus');
   const exitX = crown.x + 620;

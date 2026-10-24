@@ -150,6 +150,26 @@ export function drawChaseSection(ctx: CanvasRenderingContext2D, p: { x: number; 
   return true;
 }
 
+// Matt's crown of a giant tree (2026-10-24): the end of 1-8, where the shrine stands
+let crownImg: HTMLImageElement | null = null;
+let crownReady = false;
+/** the crown painting's walkable moss line (px down from its top, at its own size) and the part of its width that is flat */
+const CROWN = { w: 1200, h: 577, top: 128, flat: 0.9 };
+
+/** a tree's crown to stand on: the painting's moss line on the walkable top, its trunk going on down out of view */
+export function drawCrownArt(ctx: CanvasRenderingContext2D, p: { x: number; y: number; width: number }): boolean {
+  if (!crownImg && typeof Image !== 'undefined') {
+    const im = new Image();
+    crownImg = im;
+    trackAtlas(im, new URL('../assets/proto/crown.webp', import.meta.url).href, () => { crownReady = true; }, () => { crownImg = null; });
+  }
+  if (!crownReady || !crownImg) return false;
+  const w = p.width / CROWN.flat;
+  const k = w / CROWN.w;
+  ctx.drawImage(crownImg, p.x - (w - p.width) / 2, p.y - CROWN.top * k, w, CROWN.h * k);
+  return true;
+}
+
 /** one half of a section breaking away (drawn in its own rotated frame by the caller) */
 export function drawChaseBroken(ctx: CanvasRenderingContext2D, right: boolean, x: number, y: number, w: number, h: number): boolean {
   load3();
