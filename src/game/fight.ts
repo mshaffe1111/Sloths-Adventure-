@@ -221,6 +221,7 @@ export const TRAITS: Record<EnemyType, Traits> = {
   jaguar: { stomp: true, armor: true, knockResist: 0.55, stunResist: 0.2, ko: 'flop', grow: 3 },
   boa: { stomp: true, armor: true, knockResist: 0.7, stunResist: 0.2, ko: 'flop', grow: 3 },
   caiman: { stomp: 'armored', armor: true, knockResist: 0.8, stunResist: 0.25, ko: 'flop', grow: 3 },
+  turtle: { stomp: true, armor: false, knockResist: 0.3, stunResist: 0, ko: 'flop', grow: 4 },
   tayra: { stomp: true, armor: false, knockResist: 0, stunResist: 0, ko: 'launch', grow: 5 },
   harpy: { stomp: true, armor: true, knockResist: 0.4, stunResist: 0.1, ko: 'flop', grow: 4 },
   frog: { stomp: true, armor: false, knockResist: 0, stunResist: 0, ko: 'launch', grow: 5 },

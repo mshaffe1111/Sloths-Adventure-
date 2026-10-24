@@ -11,10 +11,10 @@
  */
 import type { Enemy, Platform } from './types.ts';
 
-export type BrainType = 'snake' | 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' | 'harpy';
+export type BrainType = 'snake' | 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' | 'harpy' | 'turtle';
 
 export const isBrainType = (t: string): t is BrainType =>
-  t === 'snake' || t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra' || t === 'harpy';
+  t === 'snake' || t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra' || t === 'harpy' || t === 'turtle';
 
 export interface PlayerRef {
   x: number;
@@ -73,6 +73,10 @@ export const PERSONALITY: Record<BrainType, Personality> = {
   tayra: {
     trait: 'Relentless. Fast and agile, it runs you down and does not give up the chase.',
     sense: 340, senseBack: 240, engage: 160, chase: 135, keep: 110, giveUp: 6, nominal: 70, reach: 220,
+  },
+  turtle: {
+    trait: 'A grumpy river snapper. Hit it head-on and it hides in its shell. Get behind it, or stomp it, or kick its shell away.',
+    sense: 180, senseBack: 30, engage: 85, chase: 26, keep: 50, giveUp: 2, nominal: 22, reach: 60,
   },
   harpy: {
     trait: 'A ground bruiser. It crouches, slides at you low, then leaps and stomps so the ground shakes. Jump the slide, then jump the shockwave.',

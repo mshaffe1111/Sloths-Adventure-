@@ -33,6 +33,7 @@ export type EnemyType =
   | 'snake'        // Tree Snake / Emerald Boa
   | 'eagle'        // Harpy Eagle / Hawk
   | 'ocelot'       // Ocelot
+  | 'turtle'       // Snapping turtle (World 2's river snappers): hides in its shell from the front, kick the shell to send it sliding
   | 'jaguar'       // Jaguar: crouch, leap, land (the big sloth predator)
   | 'boa'          // Boa constrictor: coiled ambusher with a long strike
   | 'caiman'       // Spectacled caiman: slow armoured lunger
@@ -205,6 +206,8 @@ export interface Enemy {
   stateT?: number;
   /** predator AI: world y of the enemy's own origin while standing (leaps and lunges return to it) */
   groundY?: number;
+  /** a river snapper's shell, kicked: which way it slides (predatorAI.ts) */
+  slideDir?: 1 | -1;
   /** predator AI: where it started this move, and where it is going */
   fromX?: number;
   toX?: number;

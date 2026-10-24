@@ -1,17 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildW2Stage, CAGES_23, FLOWER_GOAL_22, type W2Plan } from './w2Stages.ts';
+import { buildW2Stage, CAGES_23, FLOWER_GOAL_22, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
+import { turtleGuard } from './predatorAI.ts';
+import type { Enemy } from './types.ts';
 import { EXPERT_SECONDS } from './protoStage.ts';
 import { validateStage } from './levelCheck.ts';
 import type { LevelConfig } from './types.ts';
 
 const cfg = (id: W2Plan): LevelConfig =>
   ({
-    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-1' ? 'sprint' : id === '2-2' ? 'harvest' : id === '2-4' ? 'vine_runner' : 'rescue',
+    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-1' ? 'sprint' : id === '2-2' ? 'harvest' : id === '2-4' ? 'vine_runner' : id === '2-5' ? 'purge' : 'rescue',
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
-const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4'];
+const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4', '2-5'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
@@ -91,4 +93,31 @@ test('2-4: the first crossings on the vines cost no life, the rest are deep, and
     assert.ok(open.some((r) => st.rivers!.some((q) => !q.open && q.x0 > r.x1 && q.x0 - r.x1 < 520)), `seed ${s}: vines then logs`);
     assert.ok(st.vines.every((v) => v.vineType === 'swing_liana'));
   }
+});
+
+test('2-5: snappers, about one and a half times the goal, a row close enough for one kicked shell to bowl over', () => {
+  for (const s of SEEDS) {
+    const st = buildW2Stage(cfg('2-5'), s, '2-5');
+    assert.equal(st.config.targetCount, SNAPPER_GOAL_25);
+    assert.ok(st.enemies.every((e) => e.type === 'turtle'));
+    assert.ok(st.enemies.length >= SNAPPER_GOAL_25 * 1.4, `seed ${s}: ${st.enemies.length} snappers`);
+    const xs = st.enemies.map((e) => e.x).sort((a, b) => a - b);
+    let run = 1, best = 1;
+    for (let i = 1; i < xs.length; i++) {
+      run = xs[i] - xs[i - 1] < 160 ? run + 1 : 1;
+      best = Math.max(best, run);
+    }
+    assert.ok(best >= 4, `seed ${s}: a row of four`);
+  }
+});
+
+test('the snapper: head-on it hides, its shell is kicked away, and from behind (or open after a snap) the blow lands', () => {
+  const t = (state: string, facing: 1 | -1) => ({ x: 100, state, facing }) as unknown as Enemy;
+  assert.equal(turtleGuard(t('patrol', -1), 40, false), 'shell', 'he is on the side it faces');
+  assert.equal(turtleGuard(t('patrol', 1), 40, false), 'hit', 'behind it');
+  assert.equal(turtleGuard(t('windup', -1), 40, true), 'shell');
+  assert.equal(turtleGuard(t('recover', -1), 40, false), 'hit', 'open after the snap');
+  assert.equal(turtleGuard(t('shell', -1), 40, true), 'slide');
+  assert.equal(turtleGuard(t('shell', -1), 40, false), 'bump');
+  assert.equal(turtleGuard(t('dizzy', -1), 40, false), 'hit');
 });

@@ -20,16 +20,19 @@ import type { W2Decor } from './riverArt.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 
-export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4';
+export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-1': '2-1',
   '2-2': '2-2',
   '2-3': '2-3',
   '2-4': '2-4',
+  '2-5': '2-5',
 };
 
 /** 2-2 asks for 80 flowers for the king's crown (the stage holds about one and a half times that) */
 export const FLOWER_GOAL_22 = 80;
+/** 2-5 asks for 14 snappers chased off (the stage holds about 21) */
+export const SNAPPER_GOAL_25 = 14;
 /** 2-3: three little ones to free (a capybara, a duckling, an otter) */
 export const CAGES_23 = 3;
 
@@ -125,6 +128,14 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       defeated: false,
       koTimer: 0,
       behaviorTimer: 0,
+    } as Enemy);
+  };
+  /** a river snapper (predatorAI.ts 'turtle') patrolling its patch of bank */
+  const turtle = (tx: number, surface = G, range = 120) => {
+    E.push({
+      id: eid++, type: 'turtle', x: tx, y: surface - 14, vx: 22, vy: 0, width: 48, height: 24, hp: 1, maxHp: 1, facing: R.chance(0.5) ? 1 : -1,
+      patrolMinX: tx - range / 2, patrolMaxX: tx + range / 2, attackCooldown: 1.5, telegraphTimer: 0, isAttacking: false,
+      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
     } as Enemy);
   };
   const goldenSeed = (x: number, y: number) => {
@@ -592,6 +603,73 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       }
       rest(R.r(500, 700));
     });
+  } else if (plan === '2-5') {
+    // 2-5 River Snappers: chase the snapping turtles off the bank. Learn: one at a time; a blow to the face only sends it into its
+    // shell, so get behind it or stomp it. Develop: a row of them on one stretch of bank, where a kicked shell bowls the rest over.
+    // Twist: snappers on the islands between the rivers, so the fight is on a short patch of ground with water each side.
+    open(0);
+    /** a long bank with snappers spread along it, each on its own patch, clear of the flags at either end */
+    const snapperBank = (n: number, spacing: [number, number]) => {
+      const x0b = x;
+      run(R.r(260, 320));
+      for (let i = 0; i < n; i++) {
+        run(R.r(spacing[0], spacing[1]));
+        turtle(x);
+      }
+      run(R.r(380, 440));
+      row(x0b + 120, x - 120, G - 34, Math.max(2, Math.round((x - x0b) / 200)), 'hibiscus');
+      expert += (x - x0b) / RUN + n * 1.6;
+      pieces.push({ k: `snappers${n}`, x0: x0b, x1: x });
+    };
+    beat('Learn: one snapper', () => {
+      rest(R.r(420, 500));
+      hint(200, 'Snappers! Hit one from behind, or jump on it.');
+      run(R.r(260, 300));
+      turtle(x, G, 100);
+      run(R.r(380, 440));
+      expert += 3;
+      hint(x - 200, 'Head-on, it hides. Kick the shell!', 'Head-on, it hides. Kick the shell!', 'Head-on, it hides. Kick the shell!');
+      snapperBank(2, [300, 360]);
+      river(1, 72, 3, 168);
+      flag();
+    });
+    beat('Develop: bowl them over', () => {
+      rest(R.r(240, 300));
+      hint(x + 20, 'A row of snappers. Kick a shell into the others!');
+      // close together: a shell kicked along this bank meets every one of them
+      snapperBank(4, [110, 140]);
+      heart(x - 40, G - 60);
+      river(-1, 70, 3, 170);
+      snapperBank(3, [260, 320]);
+      flag();
+    });
+    beat('Twist: snappers on the islands', () => {
+      rest(R.r(240, 300));
+      river(1, 75, 3, 165);
+      for (let k = 0; k < 2; k++) {
+        const ix = x;
+        island(R.r(380, 440));
+        turtle((ix + x) / 2, G, 90);
+        expert += 2;
+        river(k ? -1 : 1, 75, 3, 165);
+      }
+      heart(x - 40, G - 60);
+      // a golden seed high over a row of snappers: the top of a double jump from the middle of the bank
+      const sx = x;
+      snapperBank(3, [200, 240]);
+      goldenSeed((sx + x) / 2, G - 190);
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 10) {
+        rest(R.r(220, 300));
+        snapperBank(n % 3 === 0 ? 4 : 2, n % 3 === 0 ? [120, 150] : [260, 320]);
+        river(n % 2 ? -1 : 1, 72 + n * 2, 3, 165);
+        if (++n % 2 === 0) flag();
+      }
+      rest(R.r(500, 700));
+    });
   } else {
     // 2-3 Stuck in the Reeds: three little ones in reed cages. One by the bank in the reeds, one out on an island in the river,
     // one up a mooring post. Two blows break a cage.
@@ -668,7 +746,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
   });
 
   const width = Math.ceil(x + 20);
-  const targetCount = plan === '2-2' ? FLOWER_GOAL_22 : plan === '2-3' ? CAGES_23 : config.targetCount;
+  const targetCount = plan === '2-2' ? FLOWER_GOAL_22 : plan === '2-3' ? CAGES_23 : plan === '2-5' ? SNAPPER_GOAL_25 : config.targetCount;
   const cfg: LevelConfig = {
     ...config,
     levelWidth: width,

@@ -77,7 +77,8 @@ import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
-import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider } from './predatorAI.ts';
+import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
+import { drawTurtle } from './turtleArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
 import {
   applyHit, bodyRect, canCancel, chooseMove, contactPoint, headRect, hurtRect, isCommitted, koLaunch, moveBox, moveLength, MOVES, phaseAt,
@@ -215,6 +216,8 @@ export class GameEngine {
   private floatingTexts: FloatingText[] = [];
 
   private isRunning: boolean = false;
+  /** the first time a snapper hides, Dot's line says what to do about it */
+  private turtleTold = false;
   private isPaused: boolean = false;
   private animFrameId: number | null = null;
   private lastTime: number = 0;
@@ -1604,7 +1607,7 @@ export class GameEngine {
         const step = stepPredator(e, { x: p.x, y: p.y, facing: p.facing, ducking: p.ducking }, dt);
         // the tree snake has no call of its own: it hisses like the boa
         // (the night harpy chitters and thumps like the tayra)
-        const call = e.type === 'snake' ? 'boa' : e.type === 'harpy' ? 'tayra' : e.type;
+        const call = e.type === 'snake' ? 'boa' : e.type === 'harpy' ? 'tayra' : e.type === 'turtle' ? 'caiman' : e.type;
         if (e.type === 'snake') {
           // the painted/vector snake reads these two flags for its red warning ring and its strike cycle
           e.isAttacking = e.state === 'rear' || e.state === 'strike';
@@ -1655,6 +1658,15 @@ export class GameEngine {
       }
     }
 
+    // a kicked snapper shell slides along the bank and knocks over whatever it meets
+    for (const s of this.enemies) {
+      if (s.defeated || s.type !== 'turtle' || s.state !== 'slide') continue;
+      for (const o of this.enemies) {
+        if (o === s || o.defeated || o.type === 'eagle' || Math.abs(o.x - s.x) > 34 || Math.abs(o.y - s.y) > 30) continue;
+        o.hp = 0;
+        this.knockOut(o, (s.slideDir ?? 1) as 1 | -1, 'BOWLED OVER!');
+      }
+    }
     separateHunters(this.enemies, dt);
     for (const e of this.enemies) if (!e.defeated && isPredator(e.type)) keepOnLedge(e);
 
@@ -2594,6 +2606,34 @@ export class GameEngine {
   private hitEnemy(e: Enemy, m: MoveSpec, box: Rect, hr: Rect, a: NonNullable<GameEngine['atk']>) {
     const p = this.player;
     const dir: 1 | -1 = m.kind === 'mega' ? (e.x >= p.x ? 1 : -1) : p.facing;
+    // a river snapper hides from a blow to its face; its shell can be kicked away (predatorAI.ts turtleGuard)
+    if (e.type === 'turtle') {
+      const g = turtleGuard(e, p.x, m.kind === 'kick');
+      if (g !== 'hit') {
+        a.connected = true;
+        this.hitstopTimer = Math.max(this.hitstopTimer, 0.05);
+        sound.playHitImpact(g === 'slide', 'armor');
+        const cp = contactPoint(box, hr);
+        this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
+        if (g === 'shell') {
+          e.state = 'shell';
+          e.stateT = 0;
+          e.vx = 0;
+          if (!this.turtleTold) this.addFloatingText('IT HID! GET BEHIND IT, OR KICK THE SHELL', e.x, e.y - 40, '#cbd5e1');
+          else this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
+          this.turtleTold = true;
+        } else if (g === 'slide') {
+          e.state = 'slide';
+          e.stateT = 0;
+          e.slideDir = dir;
+          this.addFloatingText('WHOOSH!', e.x, e.y - 30, '#fef08a');
+        } else {
+          e.x += dir * 10;
+          this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
+        }
+        return;
+      }
+    }
     const wasCommitted = isCommitted(e);
     const res = resolveMelee(e, m, dir);
     applyHit(e, res);
@@ -3613,6 +3653,8 @@ export class GameEngine {
           if (!drawCaimanSprite(ctx, enemy, this.gameTime)) drawCaiman(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'tayra') {
           if (!drawTayraSprite(ctx, enemy, this.gameTime)) drawTayra(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'turtle') {
+          drawTurtle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'harpy') {
           if (!drawHarpySprite(ctx, enemy, this.gameTime)) drawHarpyFallback(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'frog') {
