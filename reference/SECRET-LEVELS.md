@@ -17,8 +17,9 @@ glow around Pokey. It should feel unlike every other level.
 **The story beat.** At the far end the tunnel passes under the net. It is too narrow for Pokey, but he can push a folded note up
 through the crack: the first message that reaches Meeca in the whole game.
 
-**The payoff (only if it was found).**
-- World 10, "The Song from the Tower": Meeca sings because she knows he is coming.
+**The payoff (only if it was found).** Dot reaches her window in World 8 (storyWorlds W8_B), so she learns there that Pokey is coming;
+the note is still the first thing in his own words to reach her, a world earlier. So the payoff rests on the words, not the news:
+- World 8: Dot mentions she already had something under her pillow, folded small.
 - The ending: she quotes his note back to him.
 - The note's words are still to write.
 
