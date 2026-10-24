@@ -19,6 +19,7 @@
  */
 
 import { findForStage } from './finds.ts';
+import { ctestEnabled } from './playRecorder.ts';
 
 export type WayAt = 'start' | 'half' | 'near';
 /** which line of a stage: L its scripted line, H the aside after the first fall, F the hint that a Hush Fern is hiding something here */
@@ -231,6 +232,8 @@ export const WAYSIDE: Record<number, WorldWay> = {
 export function waysideApplies(level: { worldIndex: number; miniIndex: number; secret?: unknown; objectiveType?: string }): boolean {
   if (level.secret) return false;
   if (level.objectiveType === 'boss_lair') return false;
+  // the control test stands in for 1-2, whose petal lines would make no sense there (and would cover the middle of the screen)
+  if (ctestEnabled()) return false;
   if (level.miniIndex < 1 || level.miniIndex > 9) return false;
   if (level.worldIndex === 1 && level.miniIndex === 1) return false;
   return !!WAYSIDE[level.worldIndex];

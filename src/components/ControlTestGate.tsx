@@ -122,23 +122,43 @@ export const ControlTestDone: React.FC<{ onAgain: () => void }> = ({ onAgain }) 
   );
 };
 
-/** the little red dot while the test records (it never takes a touch) */
-export const RecordingBadge: React.FC = () => {
+/**
+ * the little red dot while the test records, and an "I'm done" button beside it: a tester who is stuck or has played enough can end
+ * the test any time (it used to end only at the shrine, so anyone who gave up never reached the questions). The button asks once more
+ * before it ends, so a stray touch while playing cannot end the run.
+ */
+export const RecordingBadge: React.FC<{ onDone?: () => void }> = ({ onDone }) => {
   const [state, setState] = React.useState(recorder.sendState);
+  const [sure, setSure] = React.useState(false);
   React.useEffect(() => {
     recorder.onState = setState;
     return () => {
       recorder.onState = null;
     };
   }, []);
+  React.useEffect(() => {
+    if (!sure) return;
+    const t = window.setTimeout(() => setSure(false), 3000);
+    return () => window.clearTimeout(t);
+  }, [sure]);
   return (
     <div
-      className="pointer-events-none fixed left-1/2 z-[55] flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/45 px-2.5 py-1 text-[11px] font-bold text-white"
+      className="fixed left-1/2 z-[55] flex -translate-x-1/2 items-center gap-2"
       style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + 6px)' }}
-      aria-label="Recording"
     >
-      <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
-      REC{state === 'blocked' ? ' · not sending from this link' : ''}
+      <div className="pointer-events-none flex items-center gap-1.5 rounded-full bg-black/45 px-2.5 py-1 text-[11px] font-bold text-white" aria-label="Recording">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+        REC{state === 'blocked' ? ' · not sending from this link' : ''}
+      </div>
+      {onDone && (
+        <button
+          type="button"
+          onClick={() => (sure ? onDone() : setSure(true))}
+          className={`rounded-full px-3 py-1 text-[12px] font-bold ${sure ? 'bg-[#f2c14e] text-[#2a1a08]' : 'bg-black/45 text-white'}`}
+        >
+          {sure ? 'Tap again to finish' : "I'm done"}
+        </button>
+      )}
     </div>
   );
 };
