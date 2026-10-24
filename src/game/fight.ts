@@ -313,11 +313,12 @@ export function stompTest(p: { x: number; y: number; vy: number }, prevFeet: num
   if (tr.stomp === false) return null;
   if (p.vy <= 40) return null;
   const head = headRect(e);
-  const overX = Math.abs(p.x - (head.x + head.w / 2)) < head.w / 2 + 8;
+  // (a little wider than the head, and down to the ground: a tester landing on low snakes "on top" kept getting bitten, 2026-10-23)
+  const overX = Math.abs(p.x - (head.x + head.w / 2)) < head.w / 2 + 14;
   if (!overX) return null;
   // feet came from above the head's top and are now inside the zone
   const fromAbove = prevFeet <= head.y + head.h * 0.55;
-  const inside = p.y >= head.y - 4 && p.y <= head.y + head.h + 10;
+  const inside = p.y >= head.y - 4 && p.y <= head.y + head.h + 18;
   if (!fromAbove || !inside) return null;
   if (tr.stomp === 'armored') return { kind: 'bounce' };
   return { kind: 'stomp', damage: diving ? 2 : 1 };

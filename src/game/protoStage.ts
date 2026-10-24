@@ -136,6 +136,10 @@ export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: num
 
 /** the floor under a teaching swing: soft moss, high enough above the water that a miss costs a hop, not a life */
 const HOLLOW_Y = 710;
+/** the step out of a soft pit: the pit is 130 deep and one jump rises about 108, so 55 up and then 75 up, each an easy single jump */
+const PIT_STEP = 55;
+/** the tallest stump one jump from the ground climbs with room to spare */
+const STUMP_REACH = 90;
 /** how high a double jump lifts him (computed once from the physics) */
 const RISE = maxRise();
 
@@ -206,6 +210,11 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone' });
     P.push({ id: pid++, x: far, y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone' });
     bank(edge - 60, far + 60, HOLLOW_Y, 'moss_stone');
+    // a low mossy step at the foot of the far wall: the pit is deeper than one jump rises, so without it only the second jump got him
+    // out, and beginners who had not found the second jump were stuck there (the control test, 2026-10-23)
+    // (a narrow pit gets its whole floor raised instead: a sliver of a step is no help)
+    const sw = far - edge < 170 ? far - edge : 70;
+    P.push({ id: pid++, x: far - sw, y: HOLLOW_Y - PIT_STEP, width: sw, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
   };
   const block = (x0: number, x1: number, h: number) => {
     const p: Platform = { id: pid++, x: x0, y: G - h, width: x1 - x0, height: h, type: 'solid', style: 'moss_stone' };
@@ -482,12 +491,18 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     run(R.r(120, 200));
     const n = R.i(3, 5);
     let h = 0;
+    let gap = 0;
     for (let k = 0; k < n; k++) {
       h = Math.max(50, Math.min(150, h + R.pick([50, 60, 70, -50] as const)));
       const w = R.r(90, 150);
-      block(x, x + w, k === 0 ? 50 : h);
-      flower(x + w / 2, G - (k === 0 ? 50 : h) - 34, 'orchid');
-      run(w + R.r(60, 120));
+      const top = k === 0 ? 50 : h;
+      // too tall to reach from the ground with one jump: a low step in the gap before it, against its side, so dropping into the gap
+      // is never a wall that only the second jump climbs (beginners gave up there, the control test, 2026-10-23)
+      if (top > STUMP_REACH && gap > 0) block(x - Math.round(gap / 2), x, Math.max(40, top - 70));
+      block(x, x + w, top);
+      flower(x + w / 2, G - top - 34, 'orchid');
+      gap = R.r(60, 120);
+      run(w + gap);
     }
     run(R.r(80, 160));
     expert += (x - x0) / 240;

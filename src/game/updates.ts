@@ -139,3 +139,26 @@ export function applyUpdate(): Promise<void> {
   })();
   return applying;
 }
+
+/**
+ * The control test's big Refresh button (ControlTestGate.tsx): the sure way to the newest build, whatever the phone has kept. It lets the
+ * service worker go, empties its caches, and reloads with a fresh address so no cache (the browser's, the phone's, the server's) can hand
+ * back the old page. The #ctest part of the address is kept. A tester's iPhone sat on a day-old build through several runs (2026-10-23);
+ * this is for that. It costs one full download of the game, so it is a button, never automatic.
+ */
+export async function hardRefresh(): Promise<void> {
+  try {
+    const regs = (await navigator.serviceWorker?.getRegistrations?.()) ?? [];
+    await Promise.all(regs.map((r) => r.unregister()));
+  } catch {
+    /* carry on */
+  }
+  try {
+    if (typeof caches !== 'undefined') await Promise.all((await caches.keys()).map((k) => caches.delete(k)));
+  } catch {
+    /* carry on */
+  }
+  const u = new URL(window.location.href);
+  u.searchParams.set('fresh', String(Date.now()));
+  window.location.replace(u.toString());
+}

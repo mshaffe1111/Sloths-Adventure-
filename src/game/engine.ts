@@ -3,6 +3,7 @@ import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
+import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
   LevelConfig,
@@ -105,6 +106,11 @@ import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 const FIND_SEARCH_SECONDS = 0.9;
 /** seconds before a crumbled platform grows back */
 const REGROW_SECONDS = 3;
+/** how close (across, and up or down) an animal or cage must be for a tap to punch rather than jump */
+const TAP_PUNCH_X = 130;
+const TAP_PUNCH_Y = 60;
+/** how near a flower must be to pick it while swinging on a vine (34 on foot) */
+const SWING_PICK = 56;
 /** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
 const PUSH_SPEED = 120;
 
@@ -330,6 +336,11 @@ export class GameEngine {
   private stompGrace = 0;
   /** stomps in a row without touching the ground */
   private stompChain = 0;
+  /** the last falling speed and feet height in the air, and how long he has been on the ground since: a landing ON an animal's back
+   *  that the frame step carried straight to the ground still counts as a stomp for a moment (resolveStomps) */
+  private fallVy = 0;
+  private fallFeet = 0;
+  private groundedFor = 0;
   /** ?hitboxes=1 draws every hit and hurt box, so you can see exactly what the game is judging */
   private debugBoxes = false;
   private dbgHurt: Rect[] = [];
@@ -679,6 +690,8 @@ export class GameEngine {
     if (this.refined) {
       this.input.kickNear = this.somethingToKick();
       this.input.onVine = p.climbing || !!p.isVineSwinging;
+      // nothing to hit within reach, on the ground or on a vine: a tap jumps (or leaps off the vine)
+      this.input.tapJump = !this.somethingToPunch() && (p.grounded || !!p.isVineSwinging) && !p.climbing && !p.hanging && !this.isGameOver;
     }
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
@@ -1501,6 +1514,7 @@ export class GameEngine {
     // --- Attacks: wind-up, strike, follow-through (see fight.ts) ---
     this.updateAttack(dt);
     this.resolveStomps(dt);
+    this.watchForStuck();
 
     // --- Enemy Behavior & AI ---
     for (const e of this.enemies) {
@@ -1773,7 +1787,9 @@ export class GameEngine {
       }
 
       const dist = distance2D(p.x, p.y - 20, c.x, c.y);
-      if (dist < 34) {
+      // swinging, he cannot steer to a flower the way he can running, so the reach is wider (the control test: flowers along the
+      // vines were the hardest thing to line up, 2026-10-23)
+      if (dist < (p.isVineSwinging ? SWING_PICK : 34)) {
         c.collected = true;
 
         if (c.type === 'flower' || c.type === 'leaf' || c.type === 'fruit') {
@@ -2502,6 +2518,20 @@ export class GameEngine {
   }
 
   /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
+  /**
+   * an animal or a cage close enough, and level enough, that a tap means a punch (closer than somethingToKick: a snake up on a branch,
+   * or one well down the path, leaves a tap as a jump, so hopping up to it still works)
+   */
+  private somethingToPunch(): boolean {
+    const p = this.player;
+    const cx = p.x + p.width / 2, cy = p.y - p.height / 2;
+    const near = (x: number, y: number) => Math.abs(x - cx) < TAP_PUNCH_X && Math.abs(y - cy) < TAP_PUNCH_Y;
+    for (const e of this.enemies) if (!e.defeated && near(e.x + (e.width ?? 0) / 2, e.y)) return true;
+    if (this.boss && Math.abs(this.boss.x - cx) < TAP_PUNCH_X * 2) return true;
+    for (const c of this.collectibles) if (c.type === 'cage' && !c.collected && near(c.x, c.y)) return true;
+    return false;
+  }
+
   private somethingToKick(): boolean {
     const p = this.player;
     const cx = p.x + p.width / 2, cy = p.y - p.height / 2;
@@ -2890,17 +2920,57 @@ export class GameEngine {
     return false;
   }
 
+  /** Dot's stuck-helper (stuckHelper.ts): jumping again and again at a wall only the second jump climbs gets the second jump explained */
+  private stuck = new StuckWatch();
+  private wallWasAhead = false;
+  private watchForStuck() {
+    const p = this.player;
+    if (p.grounded) this.wallWasAhead = this.wallAhead();
+    const air = !p.grounded && !p.climbing && !p.isVineSwinging;
+    if (this.stuck.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.wallWasAhead })) {
+      this.guide(stuckLine(lessonInputMode()), 6);
+      recorder.event('stuckHelp', Math.round(p.x));
+    }
+  }
+  /** a solid face just in front of him, standing on the ground, taller than one jump climbs */
+  private wallAhead(): boolean {
+    const p = this.player;
+    const f = p.facing >= 0 ? 1 : -1;
+    for (const q of this.platforms) {
+      if (q.type !== 'solid' || q.broken) continue;
+      const near = f > 0 ? q.x - p.x : p.x - (q.x + q.width);
+      if (near < 0 || near > 90) continue;
+      if (q.y < p.y - 100 && q.y > p.y - 320 && q.y + q.height >= p.y - 12) return true;
+    }
+    return false;
+  }
+
   /** landing on an animal's back from above: it takes damage and Pokey bounces; armored backs just bounce him */
   private resolveStomps(dt: number) {
     const p = this.player;
     if (this.stompGrace > 0) this.stompGrace -= dt;
-    if (p.climbing || p.isVineSwinging || p.grounded) return;
-    const prevFeet = p.y - p.vy * dt;
+    if (p.climbing || p.isVineSwinging) return;
+    if (!p.grounded) {
+      this.groundedFor = 0;
+      if (p.vy > 0) {
+        this.fallVy = p.vy;
+        this.fallFeet = p.y - p.vy * dt;
+      }
+    } else {
+      this.groundedFor += dt;
+      // just touched down from a fall: check that landing once more, as if still falling
+      if (this.groundedFor > 0.09 || this.fallVy <= 40) return;
+    }
+    const vyNow = p.grounded ? this.fallVy : p.vy;
+    const prevFeet = p.grounded ? this.fallFeet : p.y - p.vy * dt;
     const diving = this.input.state.down;
     for (const e of this.enemies) {
       if (e.defeated) continue;
-      const r = stompTest({ x: p.x, y: p.y, vy: p.vy }, prevFeet, e, diving);
+      const r = stompTest({ x: p.x, y: p.y, vy: vyNow }, prevFeet, e, diving);
       if (!r) continue;
+      this.fallVy = 0;
+      p.grounded = false;
+      recorder.event('stomp', e.type);
       this.stompGrace = 0.3;
       p.jumpsLeft = Math.max(p.jumpsLeft, 1);
       p.isDoubleJumping = false;

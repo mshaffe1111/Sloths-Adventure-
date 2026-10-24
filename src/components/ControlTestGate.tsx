@@ -1,6 +1,53 @@
 import React from 'react';
 import { recorder, savedTesterName } from '../game/playRecorder.ts';
 import { refinedControls } from '../game/refinedControls.ts';
+import { checkForUpdate, hardRefresh } from '../game/updates.ts';
+import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
+
+/**
+ * The big Refresh at the top of the name screen, so every tester starts on the newest build: it checks by itself and says so when a newer
+ * one is out, and the button always works (updates.ts hardRefresh). The date shows which build this phone has.
+ */
+const FreshBuild: React.FC = () => {
+  const [state, setState] = React.useState<'checking' | 'new' | 'same' | 'unknown'>('checking');
+  const [busy, setBusy] = React.useState(false);
+  React.useEffect(() => {
+    let live = true;
+    void checkForUpdate().then((r) => live && setState(r));
+    return () => {
+      live = false;
+    };
+  }, []);
+  const stamp = formatBuildTime(BUILD_TIME);
+  const isNew = state === 'new';
+  // just came back from a Refresh (the address carries its stamp), or the server says this is the newest: say so, so nobody loops
+  const fresh = !isNew && (state === 'same' || /[?&]fresh=/.test(window.location.search));
+  return (
+    <div className={`mb-3 rounded-2xl border-2 p-3 ${isNew ? 'border-[#f2c14e] bg-[#f2c14e]/15' : 'border-[#f4ecd8]/25 bg-black/20'}`}>
+      <p className="text-center text-base font-black leading-tight">
+        {isNew ? 'A newer version is out. Tap Refresh first!' : fresh ? (
+          <span className="text-[#9be29b]">✓ You have the newest version. Good to go!</span>
+        ) : 'First, tap Refresh to get the newest version'}
+      </p>
+      <button
+        type="button"
+        disabled={busy}
+        onClick={() => {
+          setBusy(true);
+          void hardRefresh();
+        }}
+        className={`mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-4 text-2xl font-black text-[#2a1a08] ${isNew ? 'animate-pulse bg-[#f2c14e]' : 'bg-[#f2c14e]'}`}
+      >
+        <span aria-hidden="true" className="text-3xl leading-none">↻</span>
+        {busy ? 'Refreshing…' : 'Refresh'}
+      </button>
+      <p className="mt-2 text-center text-xs text-[#f4ecd8]/75">
+        {stamp ? `This version: ${stamp}` : 'This version: (no date)'}
+        {state === 'checking' ? ' · checking…' : ''}
+      </p>
+    </div>
+  );
+};
 
 /**
  * The control test's front door (only with #ctest in the address): who is playing, what gets recorded, and Start.
@@ -19,13 +66,15 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
   return (
     <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#0e3b28]/95 p-3 text-[#f4ecd8]">
       <form onSubmit={go} className="mx-auto my-2 w-full max-w-xl rounded-2xl border border-[#f4ecd8]/20 bg-[#123d2a] p-4 shadow-2xl sm:p-5">
+        <FreshBuild />
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Control test</p>
         <h1 className="mt-1 text-2xl font-black leading-tight">Who's playing?</h1>
         <p className="mt-2 text-sm leading-snug text-[#f4ecd8]/85">
           Play this short level however feels natural to you. Thumbs, one finger, anything goes. There's no wrong way.
         </p>
         <p className="mt-2 rounded-lg bg-black/20 px-3 py-2 text-sm leading-snug">
-          <b className="text-[#f2c14e]">How to play:</b> slide a finger to run · flick up to jump · tap to punch · flick sideways to kick
+          <b className="text-[#f2c14e]">How to play:</b> slide a finger to run ·{' '}
+          {refinedControls() ? 'tap or flick up to jump · tap near a foe to punch' : 'flick up to jump · tap to punch'} · flick sideways to kick
         </p>
         <p className="mt-2 text-xs leading-snug text-[#f4ecd8]/70">
           While you play, it records your taps and swipes and what Pokey does, so Matt can see where the controls trip people

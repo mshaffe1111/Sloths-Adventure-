@@ -99,3 +99,40 @@ test('refined controls: on a vine, sliding straight up climbs (no jump), and onl
   for (let k = 1; k <= 5; k++) g.move(2, 200 + k * 14, 500 - k * 14, 1000 + k * 16);
   assert.ok(out.includes('jump'), out.join(' '));
 });
+
+/** a pad whose game says whether a tap should jump (nothing in reach, standing or swinging) */
+function tapPad(tapJump: boolean, refined = true) {
+  const out: string[] = [];
+  const g = new TouchGestures({
+    move: (d) => out.push(`move:${d}`), duck: () => {}, jumpPress: () => out.push('jump'), jumpRelease: () => out.push('jumpUp'),
+    punch: () => out.push('punch'), kick: () => out.push('kick'), mega: () => out.push('mega'), feedback: () => {},
+  }, () => 400, { assist: () => true, air: () => false, refined: () => refined, kickNear: () => !tapJump, tapJump: () => tapJump });
+  return { g, out };
+}
+const tap = (g: TouchGestures, x: number, at = 0) => {
+  g.down(1, x, 600, at);
+  g.up(1, x, 600, at + 90);
+};
+
+test('smart tap: with nothing in reach a tap jumps, on either half of the screen', () => {
+  for (const x of [80, 300]) {
+    const { g, out } = tapPad(true);
+    tap(g, x);
+    assert.ok(out.includes('jump') && out.includes('jumpUp'), `x ${x}: ${out.join(' ')}`);
+    assert.ok(!out.includes('punch'), `x ${x}: ${out.join(' ')}`);
+  }
+});
+
+test('smart tap: with a foe or cage in reach a tap still punches', () => {
+  for (const x of [80, 300]) {
+    const { g, out } = tapPad(false);
+    tap(g, x);
+    assert.ok(out.includes('punch') && !out.includes('jump'), `x ${x}: ${out.join(' ')}`);
+  }
+});
+
+test('smart tap: the old rules keep tap = punch', () => {
+  const { g, out } = tapPad(true, false);
+  tap(g, 300);
+  assert.ok(out.includes('punch') && !out.includes('jump'), out.join(' '));
+});
