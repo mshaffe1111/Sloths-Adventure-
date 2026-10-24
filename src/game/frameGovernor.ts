@@ -8,7 +8,15 @@
  */
 export const GOV_WINDOW_MS = 1200;
 export const GOV_SLOW_MS = 40;
-export const GOV_WARMUP_MS = 1000;
+/**
+ * the start of a stage is not judged: sheets arrive, the music starts, the browser warms up. One second was too short: a tester's phone
+ * ran at 22 to 25 fps for the first half minute of a stage and the picture stepped down to its lightest, then held 30 fps at full quality
+ * on later runs (the control test, 2026-10-24)
+ */
+export const GOV_WARMUP_MS = 4000;
+/** a window this fast counts as steady; this many steady windows in a row and a lightened picture steps back up a notch */
+export const GOV_FAST_MS = 35.5;
+export const GOV_UP_WINDOWS = 8;
 export const GOV_SETTLE_MS = 1500;
 export const GOV_MAX_GAP_MS = 120;
 
@@ -16,12 +24,33 @@ export class FrameGovernor {
   private warm: number = GOV_WARMUP_MS;
   private frames = 0;
   private ms = 0;
+  private steady = 0;
+  /** stepped back up and then had to step down again: no more stepping up this stage (no see-sawing) */
+  private upBlocked = false;
+  private wentUp = false;
+  /** set when the screen has been steady long enough for a sharper picture; the caller takes it with `takeUp` */
+  private up = false;
+
+  /** true once (then cleared) when the picture may step back up a notch */
+  takeUp(): boolean {
+    const u = this.up;
+    this.up = false;
+    if (u) {
+      this.wentUp = true;
+      this.warm = GOV_SETTLE_MS;
+    }
+    return u;
+  }
 
   /** a new stage: warm up again (caches are being built) */
   reset() {
     this.warm = GOV_WARMUP_MS;
     this.frames = 0;
     this.ms = 0;
+    this.steady = 0;
+    this.up = false;
+    this.upBlocked = false;
+    this.wentUp = false;
   }
 
   /** one frame's real gap in ms; true when the picture should get lighter now */
@@ -39,7 +68,14 @@ export class FrameGovernor {
     this.ms = 0;
     if (avg > GOV_SLOW_MS) {
       this.warm = GOV_SETTLE_MS;
+      this.steady = 0;
+      if (this.wentUp) this.upBlocked = true;
       return true;
+    }
+    this.steady = avg < GOV_FAST_MS ? this.steady + 1 : 0;
+    if (this.steady >= GOV_UP_WINDOWS && !this.upBlocked) {
+      this.steady = 0;
+      this.up = true;
     }
     return false;
   }
@@ -59,6 +95,12 @@ export function startQuality(now: number): number {
     learned.at = now;
   }
   return learned.quality;
+}
+
+/** the picture stepped back up: remember the sharper setting for the next stage */
+export function noteStepUp(quality: number, now: number) {
+  learned.quality = quality;
+  learned.at = now;
 }
 
 export function noteStepDown(quality: number, now: number) {

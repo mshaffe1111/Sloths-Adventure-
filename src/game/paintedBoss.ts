@@ -42,6 +42,10 @@ export interface PaintedBossSpec {
   k: number;
   /** a soft rim of light around a boss that is dark against its arena (shadowBlur colour); none by default */
   glow?: string;
+  /** how much of the made-up squash, stretch and tilt (bossMotion) to add: 1 for still frames, less for a boss whose frames are animated */
+  motion?: number;
+  /** turn the frame about its own middle (radians, clockwise facing right): a body that rolls */
+  spin?: (c: PickContext, frame: string) => number;
   pick: (c: PickContext) => string;
 }
 
@@ -111,13 +115,22 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
       mem.x = b.x;
       mem.t = time;
       const m = br.move ? def.moves[br.move] ?? null : null;
-      const name = spec.pick({ b, def, br, m, moving: Math.abs(mem.vx) > 12, dist: mem.dist, time });
+      const pc: PickContext = { b, def, br, m, moving: Math.abs(mem.vx) > 12, dist: mem.dist, time };
+      const name = spec.pick(pc);
       const f = spec.frames[name];
       if (!f) return false;
       const mo = bossMotion({
         state: br.state, t: br.t, tell: m?.tell ?? 0, act: m?.act ?? 0, pose: m?.pose ?? null,
         phase: b.phase, time, moving: Math.abs(mem.vx) > 12, hit: b.hitFlashTimer,
       });
+      const mk = spec.motion ?? 1;
+      if (mk !== 1) {
+        mo.sx = 1 + (mo.sx - 1) * mk;
+        mo.sy = 1 + (mo.sy - 1) * mk;
+        mo.rot *= mk;
+        mo.dx *= mk;
+        mo.dy *= mk;
+      }
       const dir = b.facing < 0 ? -1 : 1;
       ctx.save();
       ctx.translate(b.x + mo.dx * dir, feetY + mo.dy);
@@ -129,6 +142,14 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
         ctx.shadowBlur = 9;
       }
       const k = spec.k * (def.scale ?? 1);
+      const turn = spec.spin?.(pc, name) ?? 0;
+      if (turn) {
+        const cx = (f.w / 2 - f.ax) * k;
+        const cy = (f.h / 2 - f.ay) * k;
+        ctx.translate(cx, cy);
+        ctx.rotate(turn);
+        ctx.translate(-cx, -cy);
+      }
       ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
       ctx.restore();
       return true;

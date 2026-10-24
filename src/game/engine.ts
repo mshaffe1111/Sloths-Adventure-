@@ -3,6 +3,7 @@ import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
+import { liftY } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
@@ -51,8 +52,8 @@ import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
-import { drawLadder, drawLily, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, riverArtReady } from './riverArt.ts';
-import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -80,6 +81,7 @@ import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
 import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
+import { drawGuardSprite } from './guardArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
 import {
   applyHit, bodyRect, canCancel, chooseMove, contactPoint, headRect, hurtRect, isCommitted, koLaunch, moveBox, moveLength, MOVES, phaseAt,
@@ -98,7 +100,7 @@ import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
-import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
+import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 
 /** How many world units tall the screen shows. */
@@ -228,6 +230,11 @@ export class GameEngine {
   private isRunning: boolean = false;
   /** the first time a snapper hides, Dot's line says what to do about it */
   private turtleTold = false;
+  /** the first time a guard of the river king blocks (2-9) */
+  private guardTold = false;
+  /** 2-8: when each rising river began to rise (game time), and whether Dot has warned about it */
+  private floodAt = new Map<import('./river.ts').RiverZone, number>();
+  private floodTold = false;
   private isPaused: boolean = false;
   private animFrameId: number | null = null;
   private lastTime: number = 0;
@@ -426,15 +433,17 @@ export class GameEngine {
     warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
-    this.drawPlats = this.pushLogs.length || this.proto?.chase ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown) : this.platforms;
+    this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
+      ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
+      : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
     // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
-    setLianaTops(!this.proto?.decor?.some((d) => d.n === 'canopy'));
+    setLianaTops(!this.proto?.decor?.some((d) => d.n === 'canopy' || d.n === 'swingFrame'));
     this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
-      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown);
+      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown && !pl.art);
       this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
       this.protoScene = { brokeAt: new Map(), movedAt: new Map() };
       protoArtReady(); // start loading the props
@@ -655,6 +664,14 @@ export class GameEngine {
       if (recorder.on) this.recordFrames(elapsed, now);
       // judge the real frame gap: too slow for a moment -> a lighter picture (never while a menu holds the game, or once at the lightest)
       if (!this.isPaused && (this.quality < 2 || (polishEnabled() && polishTier() < 2)) && this.gov.feed(elapsed)) this.stepQuality();
+      else if (!this.isPaused && this.quality === 2) this.gov.feed(elapsed);
+      // steady for a while at a lightened picture: back up a notch (it used to stay low for good after one slow start)
+      if (!this.isPaused && this.quality > 0 && this.gov.takeUp()) {
+        this.quality--;
+        noteStepUp(this.quality, performance.now());
+        this.resizeCanvas();
+        perfNote(`steady: stepped up (quality ${this.quality})`);
+      }
       this.failStreak = 0;
     } catch (err) {
       // one bad frame must not freeze the game; a frame that fails over and over ends the stage cleanly
@@ -753,6 +770,14 @@ export class GameEngine {
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
     for (const plat of this.platforms) {
       if (plat.type !== 'moving' || plat.broken) continue;
+      if (plat.lift) {
+        // World 2's basket lift rides up and down, and carries whoever stands in it
+        const ny = liftY(plat.lift, this.gameTime);
+        const dy = ny - plat.y;
+        plat.y = ny;
+        if (p.grounded && this.standingOnId === plat.id) p.y += dy;
+        continue;
+      }
       const nx = (plat.baseX ?? plat.x) + Math.sin(this.gameTime * (plat.moveSpeed ?? 1) + (plat.swayOffset ?? 0)) * (plat.moveRange ?? 0);
       const dx = nx - plat.x;
       plat.x = nx;
@@ -776,6 +801,22 @@ export class GameEngine {
           p.vy = 0;
         }
       }
+    }
+    // 2-8: rising water. It starts once he steps in, and covers the low reed islands
+    for (const r of this.currentStage.rivers ?? []) {
+      const f = r.flood;
+      if (!f) continue;
+      f.y0 ??= r.surfaceY;
+      let at = this.floodAt.get(r);
+      if (at === undefined && p.x > f.trigger && !this.isGameOver) {
+        at = this.gameTime;
+        this.floodAt.set(r, at);
+        if (!this.floodTold) {
+          this.floodTold = true;
+          this.guide('The water is rising! Free them and get back to the bank!', 4);
+        }
+      }
+      r.surfaceY = floodLevel(f, f.y0, at === undefined ? undefined : this.gameTime - at);
     }
     if (!this.riverHinted && this.currentStage.rivers?.length) {
       const r0 = this.currentStage.rivers[0];
@@ -1486,6 +1527,8 @@ export class GameEngine {
         p.vy = 0;
         p.grounded = true;
         p.invincibleTimer = Math.max(p.invincibleTimer, 1);
+        // a rising teaching river (2-8) goes back down for the next try
+        if (river.flood) this.floodAt.delete(river);
       } else if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playWhoosh();
@@ -2681,14 +2724,21 @@ export class GameEngine {
           e.state = 'shell';
           e.stateT = 0;
           e.vx = 0;
-          if (!this.turtleTold) this.addFloatingText('IT HID! GET BEHIND IT, OR KICK THE SHELL', e.x, e.y - 40, '#cbd5e1');
-          else this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
-          this.turtleTold = true;
+          if (e.royal) {
+            // the river king's guard blocks with his spear
+            if (!this.guardTold) this.addFloatingText('BLOCKED! GET BEHIND HIM, OR KICK HIM', e.x, e.y - 60, '#cbd5e1');
+            else this.addFloatingText('CLANK!', e.x, e.y - 50, '#cbd5e1');
+            this.guardTold = true;
+          } else {
+            if (!this.turtleTold) this.addFloatingText('IT HID! GET BEHIND IT, OR KICK THE SHELL', e.x, e.y - 40, '#cbd5e1');
+            else this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
+            this.turtleTold = true;
+          }
         } else if (g === 'slide') {
           e.state = 'slide';
           e.stateT = 0;
           e.slideDir = dir;
-          this.addFloatingText('WHOOSH!', e.x, e.y - 30, '#fef08a');
+          this.addFloatingText(e.royal ? 'OOF! WHOA!' : 'WHOOSH!', e.x, e.y - (e.royal ? 56 : 30), '#fef08a');
         } else {
           e.x += dir * 10;
           this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
@@ -3296,6 +3346,8 @@ export class GameEngine {
 
   private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt') {
     const p = this.player;
+    // the rising rivers go back down: he comes back to water at its starting level
+    this.floodAt.clear();
     this.hazards.length = 0;
     this.slowTimer = 0;
     this.drowsy = 0;
@@ -3349,8 +3401,8 @@ export class GameEngine {
    * World 2 rivers. Before the platforms: the water body between the banks, with streaks that show the flow.
    * After them (`over`): a translucent sheet across the lower half of every log, so the logs sit in the water, not on it.
    */
-  private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean) {
-    const rivers = this.currentStage.rivers;
+  private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean, floodsOnly = false) {
+    const rivers = floodsOnly ? this.currentStage.rivers?.filter((r) => r.flood && this.floodAt.has(r)) : this.currentStage.rivers;
     if (!rivers?.length) return;
     const cam = this.camera;
     const t = this.gameTime;
@@ -3660,9 +3712,24 @@ export class GameEngine {
     if (this.riverLogsPainted(world.id)) {
       for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(ctx, pl, this.gameTime);
     }
+    // a ripple where the next log is about to slide out from under the bank, so it never appears without warning
+    for (const pl of this.platforms) {
+      const d = pl.drift;
+      if (pl.type !== 'drift' || !d || pl.broken) continue;
+      const travelled = driftProgress(d, this.gameTime) * driftCycle(d) * d.speed;
+      const lead = d.speed * 1.1;
+      if (travelled > d.width || travelled < d.width - lead) continue;
+      const ex = d.dir === 1 ? d.x0 + 18 : d.x1 - 18;
+      if (!this.onScreen(ex, d.baseY, 80)) continue;
+      drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
+    }
     this.drawRivers(ctx, world, true);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
+    if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
+    // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
+    for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
     // 2-6: the village's ladders where the climbs are
     if (this.proto?.ladders) {
       for (const v of this.vines) if (v.vineType === 'tree_climb' && this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) drawLadder(ctx, v.x, v.topY, v.bottomY);
@@ -3767,7 +3834,9 @@ export class GameEngine {
         } else if (enemy.type === 'tayra') {
           if (!drawTayraSprite(ctx, enemy, this.gameTime)) drawTayra(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'turtle') {
-          if (!drawTurtleSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
+          if (enemy.royal) {
+            if (!drawGuardSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
+          } else if (!drawTurtleSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'harpy') {
           if (!drawHarpySprite(ctx, enemy, this.gameTime)) drawHarpyFallback(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'frog') {

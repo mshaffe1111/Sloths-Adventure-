@@ -41,6 +41,17 @@ export interface RiverZone {
   safe?: { backX: number; backY: number };
   /** water crossed some other way, with no logs on it (swung over on the vines of 2-4) */
   open?: boolean;
+  /**
+   * 2-8 Reed Cages: still water that rises once he passes `trigger`, from where it starts to `y1` over `seconds`, covering the low reed
+   * islands in it (the banks stay dry). Back to where it started when he respawns. `y0` is filled in by the engine (the starting level).
+   */
+  flood?: { y1: number; seconds: number; trigger: number; y0?: number };
+}
+
+/** how high a rising river is `since` seconds after it began (y grows downward: it moves from y0 up to y1) */
+export function floodLevel(f: { y1: number; seconds: number }, y0: number, since: number | undefined): number {
+  if (since === undefined) return y0;
+  return y0 - (y0 - f.y1) * Math.max(0, Math.min(1, since / f.seconds));
 }
 
 /** seconds for one log to cross the whole window, hidden end to hidden end */

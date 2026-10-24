@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildW2Stage, CAGES_23, FLOWER_GOAL_22, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
+import { buildW2Stage, CAGES_23, CAGES_28, COURT_GOAL_29, FLOWER_GOAL_22, ISLAND_TOP, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
+import { floodLevel } from './river.ts';
 import { turtleGuard } from './predatorAI.ts';
 import type { Enemy } from './types.ts';
 import { EXPERT_SECONDS } from './protoStage.ts';
@@ -9,11 +10,11 @@ import type { LevelConfig } from './types.ts';
 
 const cfg = (id: W2Plan): LevelConfig =>
   ({
-    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-1' ? 'sprint' : id === '2-2' ? 'harvest' : id === '2-4' ? 'vine_runner' : id === '2-5' ? 'purge' : 'rescue',
+    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-1' || id === '2-7' ? 'sprint' : id === '2-2' ? 'harvest' : id === '2-4' ? 'vine_runner' : id === '2-5' ? 'purge' : id === '2-9' ? 'gauntlet' : 'rescue',
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
-const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4', '2-5'];
+const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4', '2-5', '2-7', '2-8', '2-9'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
@@ -22,7 +23,20 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
       // (the reachability check models a single liana from ledge to ledge, not a chain of them: 2-4's chains are checked as they are
       // built instead, with World 1's swing checks, protoCheck.ts, and its pickups by flowerReach.ts below)
       if (plan !== '2-4') {
-        const res = validateStage(st);
+        // (2-7's vine crossings are chains too: a bridge stands in for each, checked by the swing tests, and the rest is checked here)
+        const bridged = plan === '2-7'
+          ? { ...st, platforms: [...st.platforms, ...(st.rivers ?? []).filter((r) => r.open && st.vines.some((v) => v.x > r.x0 && v.x < r.x1)).map((r, i) => ({ id: 90000 + i, x: r.x0, y: 580, width: r.x1 - r.x0, height: 20, type: 'solid' as const }))] }
+          : st;
+        const res = validateStage(bridged);
+        if (plan === '2-7') {
+          // the flowers along a swing are checked with the swings (flowerReach.ts), not from the stand-in bridge
+          const spans = (st.rivers ?? []).filter((r) => r.open && st.vines.some((v) => v.x > r.x0 && v.x < r.x1));
+          res.errors = res.errors.filter((e) => {
+            const m = e.match(/^flower #\d+ at \((\d+), \d+\) is out of reach$/);
+            return !(m && spans.some((r) => Number(m[1]) > r.x0 - 60 && Number(m[1]) < r.x1 + 60));
+          });
+          res.ok = res.errors.length === 0;
+        }
         assert.ok(res.ok, `${plan} seed ${s}: ${res.errors.join('; ')}`);
       }
       assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Learn', 'Develop', 'Twist', 'Finish'], `${plan} seed ${s}`);
@@ -36,7 +50,9 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
         const logs = st.platforms.filter((p) => p.drift?.x0 === r.x0);
         const pads = st.platforms.filter((p) => p.lily && p.x >= r.x0 && p.x <= r.x1);
         const vines = st.vines.filter((v) => v.vineType === 'swing_liana' && v.x > r.x0 && v.x < r.x1);
-        assert.ok(r.open ? vines.length >= 2 : r.speed === 0 ? pads.length >= 3 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
+        const porches = st.platforms.filter((p) => p.art === 'porch' && p.x > r.x0 && p.x < r.x1);
+        const islands = st.platforms.filter((p) => p.y === ISLAND_TOP && p.x > r.x0 && p.x < r.x1);
+        assert.ok(r.open ? vines.length >= 2 || porches.length >= 2 : r.flood ? islands.length >= 2 : r.speed === 0 ? pads.length >= 3 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
       }
     }
   }
@@ -92,6 +108,70 @@ test('2-4: the first crossings on the vines cost no life, the rest are deep, and
     // an island: a vine crossing that ends where a log river begins, a short bank apart
     assert.ok(open.some((r) => st.rivers!.some((q) => !q.open && q.x0 > r.x1 && q.x0 - r.x1 < 520)), `seed ${s}: vines then logs`);
     assert.ok(st.vines.every((v) => v.vineType === 'swing_liana'));
+  }
+});
+
+test('2-8: cages on reed islands in water that rises over them (and stops under the banks); a cage up a post, high and dry', () => {
+  for (const s of SEEDS) {
+    const st = buildW2Stage(cfg('2-8'), s, '2-8');
+    const cages = st.collectibles.filter((c) => c.type === 'cage');
+    assert.equal(st.config.targetCount, CAGES_28);
+    assert.ok(cages.length >= CAGES_28 * 1.3, `seed ${s}: ${cages.length} cages`);
+    const floods = st.rivers!.filter((r) => r.flood);
+    assert.ok(floods.length >= 5, `seed ${s}: ${floods.length} basins`);
+    assert.ok(floods[0].safe && floods[1].safe && floods.slice(2).every((r) => !r.safe), `seed ${s}: the first two basins are the teaching ones`);
+    for (const r of floods) {
+      const top = floodLevel(r.flood!, r.surfaceY, 999);
+      // risen: over the islands (a cage on one is lost to the water), under the banks either side
+      assert.ok(top < ISLAND_TOP - 8 + 1 && top > 580, `seed ${s}: ${top}`);
+      // still: the islands stand clear of it
+      assert.ok(r.surfaceY > ISLAND_TOP + 8);
+      // the islands go under no sooner than 15 s after it starts
+      let t = 0;
+      while (floodLevel(r.flood!, r.surfaceY, t) > ISLAND_TOP - 8) t += 0.1;
+      assert.ok(t >= 15, `seed ${s}: islands under after ${t.toFixed(1)} s`);
+    }
+    const high = cages.find((c) => c.y < 450);
+    assert.ok(high && st.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - high.x) < 160), `seed ${s}: the post cage`);
+  }
+});
+
+test('2-9: the court: guards (royal snappers) and snappers, about one and a half times the goal, a row close enough to bowl over', () => {
+  for (const s of SEEDS) {
+    const st = buildW2Stage(cfg('2-9'), s, '2-9');
+    assert.equal(st.config.targetCount, COURT_GOAL_29);
+    assert.ok(st.enemies.length >= COURT_GOAL_29 * 1.35, `seed ${s}: ${st.enemies.length}`);
+    const guards = st.enemies.filter((e) => e.royal);
+    assert.ok(guards.length >= COURT_GOAL_29 * 0.8, `seed ${s}: ${guards.length} guards`);
+    assert.ok(guards.every((g) => g.type === 'turtle' && g.hp === 2 && g.height > 50));
+    const xs = guards.map((e) => e.x).sort((a, b) => a - b);
+    let run = 1, best = 1;
+    for (let i = 1; i < xs.length; i++) {
+      run = xs[i] - xs[i - 1] < 160 ? run + 1 : 1;
+      best = Math.max(best, run);
+    }
+    assert.ok(best >= 4, `seed ${s}: a row of four guards`);
+    assert.ok(st.proto.decor!.some((d) => d.n === 'throne') && st.proto.decor!.some((d) => d.n === 'archway'), `seed ${s}: the king's throne and the archway`);
+  }
+});
+
+test('2-7: steps up, porches, lifts up to ground a double jump cannot reach, swing frames, and the village at the end', () => {
+  for (const s of SEEDS) {
+    const st = buildW2Stage({ ...cfg('2-5'), id: '2-7', miniIndex: 7, objectiveType: 'sprint' } as LevelConfig, s, '2-7');
+    const lifts = st.platforms.filter((p) => p.lift);
+    assert.ok(lifts.length >= 3, `seed ${s}: ${lifts.length} lifts`);
+    // a lift going up climbs higher than any jump (so riding it is the way), and stops level with the ground at each end
+    for (const l of lifts) {
+      assert.ok(l.lift!.bottom === 580 && l.lift!.bottom - l.lift!.top >= 120, `seed ${s}: lift ${l.id}`);
+      const highGround = st.platforms.some((p) => p.type === 'solid' && !p.art && Math.abs(p.y - l.lift!.top) < 2 && (Math.abs(p.x - (l.x + l.width + 6)) < 12 || Math.abs(p.x + p.width - (l.x - 6)) < 12));
+      assert.ok(highGround, `seed ${s}: lift ${l.id} meets high ground at its top`);
+    }
+    assert.ok(lifts.some((l) => l.lift!.postRight && l.lift!.bottom - l.lift!.top > 200), `seed ${s}: a lift up past a double jump`);
+    assert.ok(st.platforms.filter((p) => p.art === 'porch').length >= 6, `seed ${s}: porches`);
+    assert.ok(st.platforms.some((p) => p.art === 'steps'), `seed ${s}: steps`);
+    assert.ok(st.proto.decor!.filter((d) => d.n === 'swingFrame').length >= 5, `seed ${s}: swing frames`);
+    assert.ok(st.proto.decor!.some((d) => d.text?.join(' ') === 'PLEASE BE PATIENT'));
+    assert.ok(st.proto.decor!.some((d) => d.cel?.startsWith('po.') && d.walk), `seed ${s}: the mailman`);
   }
 });
 

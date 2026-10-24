@@ -208,6 +208,9 @@ export interface Enemy {
   groundY?: number;
   /** a river snapper's shell, kicked: which way it slides (predatorAI.ts) */
   slideDir?: 1 | -1;
+  /** 2-9: a snapper of the river king's guard: stands upright with a spear, jabs further, blocks a blow to the front instead of hiding,
+   *  and is staggered back by a kick (it shares the snapper's brain, predatorAI.ts) */
+  royal?: boolean;
   /** predator AI: where it started this move, and where it is going */
   fromX?: number;
   toX?: number;
@@ -274,6 +277,10 @@ export interface Platform {
   crown?: boolean;
   /** World 2: a cluster of lily pads floating on still water (painted from Matt's river sheet, riverArt.ts) */
   lily?: boolean;
+  /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
+  lift?: import('./lift.ts').LiftInfo;
+  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts) */
+  art?: 'lift' | 'steps' | 'porch';
 }
 
 /**

@@ -49,10 +49,10 @@ function blit(ctx: CanvasRenderingContext2D, n: W2Piece, x: number, y: number, w
 }
 
 /** a piece standing on the ground: `w` wide, its bottom at `bottom`, centred on `cx`. Returns its drawn height (0 before loading). */
-export function drawW2Piece(ctx: CanvasRenderingContext2D, n: W2Piece, cx: number, bottom: number, w: number, flip = false): number {
+export function drawW2Piece(ctx: CanvasRenderingContext2D, n: W2Piece, cx: number, bottom: number, w: number, flip = false, hh?: number): number {
   if (!riverArtReady()) return 0;
   const f = W2_FRAMES[n];
-  const h = (w * f.h) / f.w;
+  const h = hh ?? (w * f.h) / f.w;
   blit(ctx, n, cx - w / 2, bottom - h, w, h, flip);
   return h;
 }
@@ -159,6 +159,10 @@ export interface W2Decor {
   front?: boolean;
   text?: string[];
   walk?: [number, number, number];
+  /** a swing frame (2-7): the height of its beam (the posts run from there down to `b`) */
+  top?: number;
+  /** drawn this tall instead of in the painting's own shape (the carved steps, stretched to the stairs they cover) */
+  h?: number;
 }
 
 /** where a walking figure is at time t (px), and which way it faces: back and forth between its two ends, very slowly */
@@ -193,11 +197,15 @@ export function drawW2Decor(ctx: CanvasRenderingContext2D, items: W2Decor[], x0:
     if (!d.n) continue;
     const w = d.w ?? 100;
     if (d.x + w < x0 - 40 || d.x - w > x1 + 40) continue;
+    if (d.n === 'swingFrame' && d.top !== undefined) {
+      drawSwingFrame(ctx, d.x, d.top, d.b, w);
+      continue;
+    }
     if (d.n === 'reedTall' || d.n === 'reedShort' || d.n === 'reedLean') {
       drawReeds(ctx, d.n, d.x, d.b, w, t, d.flip);
       continue;
     }
-    const h = drawW2Piece(ctx, d.n, d.x, d.b, w, d.flip);
+    const h = drawW2Piece(ctx, d.n, d.x, d.b, w, d.flip, d.h);
     if (d.text && h) {
       // the sign's words, painted on its board (the board fills the top 55% of the picture)
       ctx.save();
@@ -213,6 +221,95 @@ export function drawW2Decor(ctx: CanvasRenderingContext2D, items: W2Decor[], x0:
       ctx.restore();
     }
   }
+}
+
+/** part of a piece: the box (sx, sy, sw, sh) of its picture, in the picture's own pixels, drawn into (x, y, w, h) */
+function blitPart(ctx: CanvasRenderingContext2D, n: W2Piece, sx: number, sy: number, sw: number, sh: number, x: number, y: number, w: number, h: number, flip = false) {
+  const f = W2_FRAMES[n];
+  ctx.save();
+  if (flip) {
+    ctx.translate(x + w, y);
+    ctx.scale(-1, 1);
+    ctx.drawImage(img!, f.x + sx, f.y + sy, sw, sh, 0, 0, w, h);
+  } else ctx.drawImage(img!, f.x + sx, f.y + sy, sw, sh, x, y, w, h);
+  ctx.restore();
+}
+
+/**
+ * a rope-swing frame over the water (2-7): Matt's frame, its two posts standing in the river and its beam across the top, built to the
+ * size the swing needs (the beam at `top`, the posts down to `bottom`, `w` between the posts' outer edges). The vine hangs from the middle
+ * of the beam; the painting's own two thin ropes are left out (the vine is the rope).
+ */
+export function drawSwingFrame(ctx: CanvasRenderingContext2D, cx: number, top: number, bottom: number, w: number) {
+  if (!riverArtReady()) return;
+  const k = w / 340;
+  const postW = 62 * k;
+  const beamH = 70 * k;
+  // the posts (left and right), from just under the beam's top to the water
+  blitPart(ctx, 'swingFrame', 18, 60, 62, 280, cx - w / 2, top + beamH * 0.4, postW, bottom - top - beamH * 0.4);
+  blitPart(ctx, 'swingFrame', 287, 60, 62, 280, cx + w / 2 - postW, top + beamH * 0.4, postW, bottom - top - beamH * 0.4);
+  // the beam with its lashed ends, the full width (the rope knots in the middle stay: the vine hangs there)
+  blitPart(ctx, 'swingFrame', 0, 10, 380, 70, cx - (w * 380) / 340 / 2, top - beamH * 0.35, (w * 380) / 340, beamH);
+}
+
+/**
+ * The rope-and-basket lift (2-7), drawn from Matt's lift painting: the crane (post, arm and pulley) stands fixed on the upper ground
+ * beside the shaft, the rope runs from the pulley down to the basket wherever it is, and the sack of stones on the other rope rises as
+ * the basket sinks. `p` is the basket's platform (its floor is p.y), `postRight`: the crane stands on the right of the shaft.
+ */
+export function drawW2Lift(ctx: CanvasRenderingContext2D, p: Platform, postRight: boolean): boolean {
+  if (!riverArtReady() || !p.lift) return false;
+  // the basket in the painting is 66 px across (x 112..178) with its rim at y 300; the rope comes down at x 145
+  const k = p.width / 66;
+  const cx = p.x + p.width / 2;
+  const top = p.lift.top;
+  const s = postRight ? -1 : 1;
+  // the crane: the painting's top 150 px, its post's foot on the upper ground (the basket's top stop), its rope over the shaft
+  const craneX = cx - s * 145 * k;
+  const craneTop = top - 145 * k;
+  const pulleyX = cx - s * (145 - 127) * k;
+  const pulleyY = craneTop + 77 * k;
+  // the counterweight's rope (the pulley's other side) and the sack: high when the basket is low
+  const sackX = pulleyX - s * 21 * k;
+  const travel = p.lift.bottom - top;
+  const sackY = pulleyY + 40 * k + travel - (p.y - top);
+  ctx.save();
+  ctx.strokeStyle = '#6b4a2b';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = Math.max(2, 3.2 * k);
+  ctx.beginPath();
+  ctx.moveTo(pulleyX + s * 20 * k, pulleyY);
+  ctx.lineTo(cx, p.y - 57 * k);
+  ctx.moveTo(sackX, pulleyY);
+  ctx.lineTo(sackX, sackY);
+  ctx.stroke();
+  ctx.restore();
+  // the sack of stones (x 40..100, y 270..378 in the painting)
+  blitPart(ctx, 'lift', 40, 270, 60, 108, sackX - 30 * k, sackY - 10 * k, 60 * k, 108 * k, postRight);
+  // the crane in front of the ropes' tops
+  blitPart(ctx, 'lift', 0, 0, 181, 150, postRight ? craneX - 181 * k : craneX, craneTop, 181 * k, 150 * k, postRight);
+  // the basket with its hook and handle (x 108..181, y 255..345): its rim on the platform's floor
+  // (the rim a little above his feet, so he stands in the basket, not on its edge)
+  blitPart(ctx, 'lift', 108, 255, 73, 90, cx - (145 - 108) * k, p.y - 57 * k, 73 * k, 90 * k);
+  return true;
+}
+
+/**
+ * a ripple where the next log will slide out from under the bank (the logs used to appear with no warning: a tester could not see them
+ * coming, 2026-10-24). Grows over the last second before the log shows.
+ */
+export function drawLogComing(ctx: CanvasRenderingContext2D, x: number, surfaceY: number, k: number, t: number) {
+  ctx.save();
+  ctx.globalAlpha = 0.25 + 0.55 * k;
+  ctx.strokeStyle = '#eafcff';
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 3; i++) {
+    const r = 10 + i * 9 + ((t * 26) % 9) + k * 8;
+    ctx.beginPath();
+    ctx.ellipse(x, surfaceY + 2, r, r * 0.28, 0, Math.PI * 1.05, Math.PI * 1.95);
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 
 /** the little ones' pictures: sad in the cage, happy when freed */

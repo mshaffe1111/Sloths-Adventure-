@@ -58,3 +58,21 @@ test('a hiccup in a healthy run does not step down', () => {
   for (let i = 0; i < 300; i++) if (g.feed(i % 60 === 0 ? 200 : 33.4)) steps++;
   assert.equal(steps, 0);
 });
+
+test('the first four seconds of a stage are not judged (a slow start is start-up work)', () => {
+  const g = new FrameGovernor();
+  assert.equal(run(g, 60, 3800), 0);
+});
+
+test('steady frames after a step down bring the sharper picture back, once; slow again after that and it stays down', () => {
+  const g = new FrameGovernor();
+  run(g, 33.4, 5000);
+  assert.ok(run(g, 60, 3000) >= 1, 'stepped down');
+  let ups = 0;
+  for (let t = 0; t < 20_000; t += 33.4) { g.feed(33.4); if (g.takeUp()) ups++; }
+  assert.ok(ups >= 1, 'stepped back up');
+  assert.ok(run(g, 60, 4000) >= 1, 'slow again: down');
+  let again = 0;
+  for (let t = 0; t < 30_000; t += 33.4) { g.feed(33.4); if (g.takeUp()) again++; }
+  assert.equal(again, 0, 'no see-sawing');
+});
