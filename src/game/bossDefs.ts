@@ -24,6 +24,7 @@ import {
 } from './bossAI.ts';
 import type { BossCtx, BossDef, MoveDef } from './bossAI.ts';
 import { inMoonPool } from './prowlerPools.ts';
+import { VF, lungeReach, venomHurt, venomWeak } from './venomFang.ts';
 
 // ───────────────────────────── shared move builders ─────────────────────────────
 
@@ -146,111 +147,92 @@ const impact = (b: BossEntity, c: BossCtx, shake: number, color: string) => {
 
 // ───────────────────────────── 1. Venom Fang: emerald boa ─────────────────────────────
 
+/** the two little snakes he calls down from the canopy (phase 2), where a hero has room to deal with them */
+const venomSnakes = (c: BossCtx) => {
+  for (const dx of [250, 560]) {
+    const x = c.arena.left + dx;
+    if (c.dropMinion) c.dropMinion('snake', x);
+    else c.spawnMinion('snake', x, c.arena.floor);
+  }
+};
+
+// the gentlest boss in the game (Matt, 2026-10-24: "this needs to be the easiest of the bosses"). One move to learn, the stage plan's
+// low lunge: he rears back with the floor flashing, his head sweeps along the ground to the far end, you dodge by getting off the
+// floor, and his dazed head lies there to be punched. Each phase adds one World 1 move. The geometry is in venomFang.ts.
 const VENOM: BossDef = {
   world: 1,
   name: 'Venom Fang',
-  // a giant: the painted boa is drawn 2.6 times its old size, so Pokey is a small figure under its crown
-  scale: 2.6,
-  w: 340,
-  h: 230,
+  // the coil pile: it only hurts while he winds up and lunges
+  w: 250,
+  h: 150,
   artDy: 0,
-  speed: [56, 74, 98],
-  prefer: 430,
-  gap: [1.6, 1.2, 0.9],
+  speed: [0, 0, 0],
+  prefer: 0,
+  gap: [1.6, 1.35, 1.15],
   color: '#84cc16',
   color2: '#365314',
-  // the first boss is the gentlest giant: ten hits, two hit points a hit (a hook or a kick is one segment of the bar, a jab half of one)
-  hp: 20,
-  hits: 10,
-  // the crowned head is the one weak point: high up, and open only in the moment after it attacks (or when it is stunned)
-  // (measured from the painted frames: the crown sits at 26 / 175 in the open pose and at 144 / 206 when it is stunned)
-  weak: { dx: 26, dy: 175, w: 130, h: 110 },
-  weakStun: { dx: 144, dy: 206, w: 130, h: 110 },
+  // six hits (a hook or a kick is one segment of the bar, a jab half of one), and each opening takes two before he pulls back,
+  // so the fight is three clean openings, one a phase
+  hp: 12,
+  hits: 6,
+  openCap: 4,
+  weakAt: (b, floor) => venomWeak(b, floor),
+  openAfter: ['sweep'],
+  aimText: 'HIT HIS HEAD WHEN IT IS DOWN!',
+  faceFixed: true,
+  frameArena: true,
+  floorAt: 0.84,
   arenaW: 1300,
   lair: 'venom',
   entrance: { eye: [190, 242, 100], dark: [1, 6, 3] },
-  // the Mushroom Hollow: a stump at each end, a bounce mushroom either side of the middle to spring up to the crown, one wide
-  // branch across the middle (head height) and a swinging liana hanging below it. No stair: the way up is the mushrooms
-  perches: [
-    { dx: 30, up: 75, w: 130 },
-    { dx: 330, up: 30, w: 70, kind: 'bouncy' },
-    { dx: 500, up: 195, w: 290 },
-    { dx: 880, up: 30, w: 70, kind: 'bouncy' },
-    { dx: 1140, up: 75, w: 130 },
-  ],
-  vines: [{ dx: 645, top: 330, bottom: 60 }],
-  // at 35% the bog rises along the floor by each fence (warned first): the ledges and the open middle stay safe
+  guide: {
+    start: 'When he rears back, get off the ground! Climb the tree, jump on the stump or grab the vine. Then punch his head.',
+    2: 'Little snakes! Punch them, and keep an eye on Venom Fang.',
+    3: "The stump is cracking now. Don't stay on it too long!",
+  },
+  // three ways off the floor: the vine up the wall tree by the left fence, the stump (a double jump), and the liana in the middle
+  climbs: [20],
+  perches: [{ dx: 330, up: 130, w: 150, crack: 3 }],
+  vines: [{ dx: 660, top: 440, bottom: 165 }],
   onPhase: (phase, _b, c) => {
-    if (phase !== 3) return;
-    for (const dir of [1, -1] as const) {
-      const edge = dir > 0 ? c.arena.left : c.arena.right;
-      const h = makeHazard({
-        kind: 'strip', x: edge, y: c.arena.floor - 9, floorY: c.arena.floor, w: 6, h: 18, warn: 1.8, warnMax: 1.8,
-        life: 1e9, maxLife: 1e9, dmg: 1, dir, ox: edge, growTo: 170, growRate: 50, color: '#a3e635', color2: '#365314', look: 'venom',
-      });
-      c.hazards.push(h);
-    }
-    c.text('THE BOG RISES!', c.arena.left + 300, c.arena.floor - 260, '#a3e635');
-    c.shake(0.55);
+    c.dropHeart?.(c.arena.left + 405);
+    if (phase === 2) venomSnakes(c);
+    if (phase === 3) c.crackPerches?.(3);
   },
   moves: {
-    // lobs a glob of venom that lands as a lingering, slowing puddle
-    spit: {
-      tell: 0.75,
-      act: 0.25,
-      rec: 1.3,
-      min: 200,
-      pose: 'spit',
-      onAct: (b, c) => {
-        const phase = b.phase;
-        const mouth = { x: b.x + b.facing * (b.width / 2 - 20), y: c.arena.floor - 190 };
-        const shots = phase >= 3 ? [-210, 0, 210] : phase === 2 ? [-150, 150] : [0];
-        for (const off of shots) {
-          const h = lob(c, mouth.x, mouth.y, c.px + off, 0.85 + Math.abs(off) * 0.0008, { kind: 'glob', onLand: 'puddle', color: '#a3e635', color2: '#3f6212', dmg: 1, look: 'venom' });
-          h.dir = b.facing;
-        }
-      },
-    },
-    // the head strikes a long way forward: duck-proof, so back away or jump it
-    lunge: {
-      tell: 0.8,
-      act: 0.42,
-      rec: 1.2,
-      max: 520,
+    // the low lunge: the head sweeps the floor to the far end and lies there dazed (the opening)
+    sweep: {
+      tell: 1.2,
+      act: VF.act,
+      rec: 2.6,
       pose: 'lunge',
-      onAct: (b) => {
-        b.ai!.d.dir = b.facing;
+      interruptible: false,
+      onTell: (b, c) => {
+        b.ai!.d.reach = lungeReach(b.facing, c.arena.left, c.arena.right);
       },
-      tick: (b, c, dt) => {
-        const br = b.ai!;
-        const dir = br.d.dir;
-        b.x += dir * 640 * dt;
-        br.hurt = [frontBox(b, c, 170, 150, 15), bodyBox(b)];
+      tick: (b, c) => {
+        b.ai!.hurt = venomHurt(b, c.arena.floor, 0);
+      },
+      onEnd: (b, c) => {
+        c.shake(0.4);
+        c.thud(true);
+        c.debris(b.ai!.d.reach, c.arena.floor - 8, '#a3e635');
+        c.text('DAZED!', b.ai!.d.reach, c.arena.floor - 130, '#fde047');
       },
     },
-    // the tail bursts up from the floor under where you were standing
-    tailSlam: {
-      tell: 0.95,
-      act: 0.4,
-      rec: 1.0,
-      pose: 'whip',
-      onTell: (b, c) => {
-        const h = column(c, c.px, 1.05, 230, '#65a30d', '#365314', 0.55);
-        h.look = 'tail';
-        addMark(c, b, h, 0);
-        if (b.phase >= 2) {
-          for (const [slot, off] of [[1, -260], [2, 260]] as const) {
-            if (slot === 2 && b.phase < 3) continue;
-            const e = column(c, c.px + off, 1.05, 230, '#65a30d', '#365314', 0.55);
-            e.look = 'tail';
-            addMark(c, b, e, slot);
-          }
-        }
-      },
-      tellTick: (b, c, dt) => {
-        trackMark(b, c, b.ai!.d.h0, dt, 0.55);
-        if (b.ai!.d.h1) trackMark(b, c, b.ai!.d.h1, dt, 0.55, 260, -260);
-        if (b.ai!.d.h2) trackMark(b, c, b.ai!.d.h2, dt, 0.55, 260, 260);
+    // phase 2 on: he rears up and shakes the canopy, and two little snakes drop in (only when the last ones are gone)
+    call: {
+      tell: 0.9,
+      act: 0.35,
+      rec: 0.7,
+      phase: 2,
+      weight: 0.7,
+      pose: 'roar',
+      interruptible: false,
+      when: (_b, c) => c.minionsAlive === 0,
+      onAct: (_b, c) => {
+        c.shake(0.4);
+        venomSnakes(c);
       },
     },
   },
@@ -1937,7 +1919,7 @@ export const bossDefFor = (world: number): BossDef => BOSS_DEFS[world] ?? VENOM;
 
 /** one line of advice per boss, shown before the fight */
 export const BOSS_TIPS: Record<number, string> = {
-  1: 'Venom Fang spits goo that slows you and slams up from the floor where you stood. Stay moving, then punish the recovery.',
+  1: 'Venom Fang sweeps his head along the floor. When he rears back and the floor flashes, get off the ground. Then punch his head while he is dazed.',
   2: 'Crocus Rex rolls the length of the arena and crashes into the wall. Jump the tail sweep and hit him while he is dizzy.',
   3: 'The Shadow Prowler vanishes and reappears behind you. Watch for the fade, then turn and strike.',
   4: 'The Sky Sovereign is a giant of the air. Step off the red mark and let her crash. Then hit whatever glows: her head, her chest, her talons, or her back.',

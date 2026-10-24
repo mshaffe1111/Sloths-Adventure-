@@ -1,5 +1,7 @@
 import { countWord } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
+import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
+import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
@@ -31,7 +33,7 @@ import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
 import { drawGlideSprite } from './leafSprites.ts';
-import { renderScenery, renderOverlay, setWeatherAvoid, lookFor } from './scenery.ts';
+import { renderScenery, renderOverlay, setCanopy, setWeatherAvoid, lookFor } from './scenery.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
@@ -88,9 +90,9 @@ import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerabili
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
-import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
+import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -267,6 +269,21 @@ export class GameEngine {
   private barrierMsgCooldown = 0;
   /** the goal hints already shown this stage (start, and late if well short) */
   private goalSaid = { start: false, late: false };
+  /** the watching eagle (1-7: watcher.ts): its rhythm, the eagle drawn for it, where it was when it saw him, and rustling bushes */
+  private watch: WatchState = newWatch();
+  private watchEagle: Enemy | null = null;
+  private watchFrom = { x: 0, y: 0 };
+  private bushRustle = new Map<number, number>();
+  /** 1-9's ring: 'idle' until he comes in, then each wave drops (snakes falling from the canopy, not yet in play), then 'open' */
+  private ring = { state: 'idle' as 'idle' | 'fight' | 'open', wave: 0, ids: [] as number[] };
+  private ringDrops: Array<{ e: Enemy; t: number; delay: number }> = [];
+  /** 1-8's collapsing branch (chase.ts): its state, the pieces falling away, and whether the last leap has had its slow motion */
+  private chase: ChaseState | null = null;
+  private chaseFalling: Array<{ x: number; y: number; w: number; h: number; vx: number; vy: number; rot: number; vr: number; t: number; right: boolean }> = [];
+  private chaseSlowDone = false;
+  private chaseNext = 0;
+  /** where the eagle's shadow falls this frame (drawn after the bushes and the front grass), or null */
+  private watchShadowAt: { x: number; a: number } | null = null;
   private comboCount: number = 0;
   private comboResetTimer: number = 0;
   /** the first-stage lesson for a new touch player (see touchCoach.ts), when there is one */
@@ -374,17 +391,26 @@ export class GameEngine {
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
     this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
+    this.ring = { state: 'idle', wave: 0, ids: [] };
+    this.ringDrops = [];
+    this.chase = this.proto?.chase ? newChase(this.proto.chase) : null;
+    this.chaseFalling = [];
+    this.chaseSlowDone = false;
+    this.chaseNext = 0;
+    this.watch = newWatch();
+    this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
+    this.bushRustle.clear();
     resetHeroClips();
     warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
-    this.drawPlats = this.pushLogs.length ? this.platforms.filter((pl) => !pl.push) : this.platforms;
+    this.drawPlats = this.pushLogs.length || this.proto?.chase ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown) : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
     this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
-      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id));
+      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown);
       this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
       this.protoScene = { brokeAt: new Map(), movedAt: new Map() };
       protoArtReady(); // start loading the props
@@ -1652,6 +1678,12 @@ export class GameEngine {
       }
     }
 
+    // the watching eagle (1-7): calm, a screech, then its shadow sweeps the ground; seen in the open, it dives (watcher.ts)
+    if (this.proto?.watch) this.updateWatch(dt);
+    if (this.chase) this.updateChase(dt);
+    if (this.ringDrops.length) this.stepDrops(dt);
+    if (this.proto?.ring) this.updateRing(dt);
+
     // --- Collectibles Pickup & Objectives ---
     for (const c of this.collectibles) {
       if (c.collected) continue;
@@ -2046,6 +2078,32 @@ export class GameEngine {
         thud: (heavy) => sound.playHitImpact(heavy ?? true, bossMaterial(world)),
         debris: (x, y, color) => this.spawnDebrisBurst(x, y, color),
         text: (msg, x, y, color) => this.addFloatingText(msg, x, y, color),
+        dropMinion: (kind, x) => {
+          const a = this.currentStage.arena;
+          if (!a) return;
+          const id = 9000 + this.minionSeq++;
+          const e = {
+            id, type: kind, x, y: a.floor - 14, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: x > this.player.x ? -1 : 1,
+            patrolMinX: Math.max(a.left + 30, x - 160), patrolMaxX: Math.min(a.right - 30, x + 160), attackCooldown: 0.9, telegraphTimer: 0,
+            isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
+          } as Enemy;
+          this.ringDrops.push({ e, t: 0, delay: this.ringDrops.length * 0.3 });
+          sound.playWhoosh();
+        },
+        dropHeart: (x) => {
+          const a = this.currentStage.arena;
+          if (!a) return;
+          this.collectibles.push({ id: 80000 + this.minionSeq++, type: 'heart', x, y: a.floor - 40, collected: false, bobPhase: 0 });
+          this.spawnSparkBurst(x, a.floor - 60, '#fda4af');
+        },
+        crackPerches: (phase) => {
+          for (const pl of this.platforms) {
+            if (pl.crackFrom === undefined || pl.crackFrom > phase || pl.type === 'fragile') continue;
+            pl.type = 'fragile';
+            pl.crumbleAfter = 2.0;
+            this.spawnDebrisBurst(pl.x + pl.width / 2, pl.y + 4, '#a16207');
+          }
+        },
       };
     }
     const c = this.bossCtx;
@@ -2121,6 +2179,11 @@ export class GameEngine {
     if (en.t >= en.total) {
       this.entrance = null;
       this.entranceDone = true;
+      const start = def.guide?.start;
+      if (start && !tipHeard(this.currentStage.config.id, 'boss:start')) {
+        markTipHeard(this.currentStage.config.id, 'boss:start');
+        this.guide(start, 5);
+      }
       b.ai.alpha = 1;
       b.ai.state = 'roar';
       b.ai.t = 0;
@@ -2160,7 +2223,15 @@ export class GameEngine {
     if (b.phase !== prevPhase) {
       def.onPhase?.(b.phase, b, c);
       sound.playBossRoar(this.currentStage.config.worldIndex);
-      if (b.phase === 3) {
+      const line = def.guide?.[b.phase as 2 | 3];
+      if (line) {
+        const id = this.currentStage.config.id;
+        if (!tipHeard(id, 'boss:' + b.phase)) {
+          markTipHeard(id, 'boss:' + b.phase);
+          this.guide(line, 4);
+        }
+        sound.setTempo(b.phase === 3 ? 1.08 : 1.04);
+      } else if (b.phase === 3) {
         sound.setTempo(1.08);
         this.addFloatingText('PHASE 3: ENRAGED!', b.x, b.y - b.height, '#ef4444');
       } else {
@@ -2277,7 +2348,7 @@ export class GameEngine {
     let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
     base = Math.max(0.5, Math.min(1.8, base));
     const baseViewW = w / base;
-    const need = Math.abs(p.x - b.x) + 440 + Math.max(0, b.width - 140) * 0.6;
+    const need = this.bossDef?.frameArena && !portrait ? arena.right - arena.left + 120 : Math.abs(p.x - b.x) + 440 + Math.max(0, b.width - 140) * 0.6;
     // upright, the hero stays a readable size: the view never opens wider than ~720 units (the boss's head, the part you hit, is on the hero's side)
     const widest = portrait ? Math.max(baseViewW, 720) : arena.right - arena.left + 200;
     const want = Math.max(baseViewW, Math.min(need, widest));
@@ -2584,7 +2655,7 @@ export class GameEngine {
         }
         return;
       }
-      if (!weakOpen(b)) {
+      if (!weakOpen(b, def ?? undefined)) {
         // the head is covered while it is moving or attacking: a heavy blow can still rattle it, a light one clangs
         if (vul === 'open') vul = 'armored';
       }
@@ -2626,6 +2697,13 @@ export class GameEngine {
     const crit = vul === 'stunned';
     if (crit) dmg = Math.ceil(dmg * 1.5);
     b.hp = Math.max(0, b.hp - dmg);
+    if (def?.openCap && b.ai?.state === 'rec' && b.ai.move) {
+      const br = b.ai;
+      br.d.taken = (br.d.taken ?? 0) + dmg;
+      const rec = def.moves[br.move!]?.rec ?? 0;
+      // he has had enough: a moment to see the hit land, then he drags his head away
+      if (br.d.taken >= def.openCap) br.t = Math.max(br.t, rec - 0.35);
+    }
     b.hitFlashTimer = 0.15;
     this.hitstopTimer = Math.max(this.hitstopTimer, m.hitstop + 0.02);
     this.camera.trauma = Math.min(1, this.camera.trauma + 0.4);
@@ -3248,15 +3326,17 @@ export class GameEngine {
 
     // Look-ahead tracking
     const lookAhead = p.facing * 90;
-    this.camera.targetX = p.x - vw * 0.45 + lookAhead;
+    // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
+    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + lookAhead;
     this.camera.targetY = p.y - vh * 0.55;
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
-      let tx = (p.x + bs.x) / 2 - vw / 2;
+      const arenaWide = this.bossDef?.frameArena && vw >= this.currentStage.arena.right - this.currentStage.arena.left;
+      let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : (p.x + bs.x) / 2 - vw / 2;
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
-      this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * 0.7);
+      this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
     }
 
     // Smooth damp camera
@@ -3357,6 +3437,8 @@ export class GameEngine {
     // a boss with its own lair: either the backdrop is darkened and re-lit, or (lairOwnsScene) the lair paints all of it itself
     const lair = this.currentStage.arena && this.bossDef?.lair ? this.bossDef.lair : null;
     const ownScene = !!lair && lairOwnsScene(lair);
+    // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
+    setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
     if (!ownScene) renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     const lairView = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
     if (lair && this.currentStage.arena) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right, this.boss?.phase ?? 1);
@@ -3399,6 +3481,7 @@ export class GameEngine {
     this.drawRivers(ctx, world, true);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    if (this.chase) this.drawChase(ctx);
     // trunk hollows (1-4): over the trunk, glowing once he is close enough to see in
     for (const h of this.proto?.hollows ?? []) {
       if (this.onScreen(h.x, h.y, 260)) drawHollowArt(ctx, h.x, h.y, Math.hypot(this.player.x - h.x, this.player.y - 30 - h.y) < 230);
@@ -3515,6 +3598,8 @@ export class GameEngine {
       const fade = this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1;
       if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
     }
+    if (this.proto?.watch) this.drawWatchBack(ctx);
+    if (this.ringDrops.length) this.drawRingDrops(ctx);
     // Render Hero Sloth
     heroClipsLive(true);
     if (rig) {
@@ -3525,6 +3610,8 @@ export class GameEngine {
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else drawHeroSloth(ctx, this.player, this.gameTime);
     heroClipsLive(false);
+    if (this.proto?.bushes) this.drawBushes(ctx);
+    if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
       for (const cv of this.proto.covers) {
@@ -3587,6 +3674,7 @@ export class GameEngine {
     }
 
     ctx.restore(); // end world transform
+    if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
     // 3. Render Foreground Foliage (Framing screen edges)
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
@@ -3638,6 +3726,363 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
+  /** the drop: how long a snake takes from the canopy to the branch (s), and from how high it falls (px) */
+  private static readonly RING_DROP = { t: 0.55, h: 420 };
+
+  /** 1-9's ring: drop the waves, and open the wall when every one of them is down */
+  private updateRing(dt: number) {
+    const ring = this.proto!.ring!;
+    const r = this.ring;
+    const p = this.player;
+    const id = this.currentStage.config.id;
+    const dropWave = (n: number) => {
+      ring.waves[n].forEach((d, k) => {
+        const base = d.kind === 'boa'
+          ? { type: 'boa', width: 58, height: 26, hp: 3, maxHp: 3, vx: 0, y: d.surface - 16, patrolMinX: d.x - 12, patrolMaxX: d.x + 12 }
+          : { type: 'snake', width: 38, height: 22, hp: 1, maxHp: 1, vx: 28, y: d.surface - 14, patrolMinX: d.x - 70, patrolMaxX: d.x + 70 };
+        const e = {
+          id: 9500 + n * 10 + k, x: d.x, vy: 0, facing: d.x > p.x ? -1 : 1, attackCooldown: 0.9, telegraphTimer: 0, isAttacking: false,
+          animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, ...base,
+        } as Enemy;
+        this.ringDrops.push({ e, t: 0, delay: k * 0.35 });
+        r.ids.push(e.id);
+      });
+      sound.playWhoosh();
+    };
+    if (r.state === 'idle') {
+      if (p.x > ring.x0 + 120 && p.x < ring.x1) {
+        r.state = 'fight';
+        r.wave = 0;
+        dropWave(0);
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+        if (!tipHeard(id, 'ring:go')) {
+          markTipHeard(id, 'ring:go');
+          this.guide('Snakes from above! Clear them all to open the way', 3);
+        }
+      }
+      return;
+    }
+    if (r.state !== 'fight' || this.ringDrops.length) return;
+    const alive = this.enemies.some((e) => r.ids.includes(e.id) && !e.defeated);
+    if (alive) return;
+    if (r.wave + 1 < ring.waves.length) {
+      r.wave++;
+      dropWave(r.wave);
+      return;
+    }
+    // every one down: the wall gives way
+    r.state = 'open';
+    const wall = this.platforms.find((pl) => pl.id === ring.wallId);
+    if (wall) {
+      wall.broken = true;
+      this.spawnSparkBurst(wall.x + wall.width / 2, wall.y + 60, '#8b5a2b');
+      this.spawnSparkBurst(wall.x + wall.width / 2, wall.y + 180, '#a3d977');
+    }
+    this.camera.trauma = Math.min(1, this.camera.trauma + 0.45);
+    sound.playShrineUnlocked();
+    if (!tipHeard(id, 'ring:open')) {
+      markTipHeard(id, 'ring:open');
+      this.guide('The way is open!', 2.4);
+    }
+  }
+
+  /** animals falling from the canopy (1-9's ring, Venom Fang's call): in play where they land */
+  private stepDrops(dt: number) {
+    for (const d of this.ringDrops) d.t += dt;
+    const landed = this.ringDrops.filter((d) => d.t >= d.delay + GameEngine.RING_DROP.t);
+    for (const d of landed) {
+      this.enemies.push(d.e);
+      this.spawnJumpDust(d.e.x, d.e.y + 14);
+      sound.playLand(0.5);
+    }
+    this.ringDrops = this.ringDrops.filter((d) => d.t < d.delay + GameEngine.RING_DROP.t);
+  }
+
+  /** the snakes still falling into the ring, drawn on their way down */
+  private drawRingDrops(ctx: CanvasRenderingContext2D) {
+    for (const d of this.ringDrops) {
+      const u = Math.max(0, d.t - d.delay) / GameEngine.RING_DROP.t;
+      if (d.t < d.delay) continue;
+      const e = d.e;
+      const y0 = e.y;
+      e.y = y0 - GameEngine.RING_DROP.h * (1 - u * u);
+      if (e.type === 'snake') {
+        if (!drawGoldSnake(ctx, e, this.gameTime) && !drawSnakeSprite(ctx, e, this.gameTime)) drawTreeSnake(ctx, e, this.gameTime);
+      } else if (!drawBoaSprite(ctx, e, this.gameTime)) drawBoa(ctx, e, this.gameTime);
+      e.y = y0;
+    }
+  }
+
+  /** step 1-8's collapse: sections behind it fall, caught or off the branch costs a heart and the flag (chase.ts) */
+  private updateChase(dt: number) {
+    const plan = this.proto!.chase!;
+    const ch = this.chase!;
+    const p = this.player;
+    const wasActive = ch.active;
+    stepChase(ch, plan, dt, p.x);
+    if (ch.active && !wasActive) {
+      // it starts: a crack, a jolt, and Dot's warning (said once on this device)
+      sound.playHitImpact(true);
+      this.camera.trauma = Math.min(1, this.camera.trauma + 0.45);
+      const id = this.currentStage.config.id;
+      if (!tipHeard(id, 'chase:go')) {
+        markTipHeard(id, 'chase:go');
+        this.guide('It is breaking behind us! Keep moving!', 3);
+      }
+    }
+    // sections behind the front fall away (and a creak now and then just ahead of it)
+    for (const pl of this.platforms) {
+      if (!pl.chase || pl.broken) continue;
+      if (sectionState(ch, pl.x, pl.x + pl.width) !== 'fallen') continue;
+      pl.broken = true;
+      const half = pl.width / 2;
+      const h = (pl.width * 100) / 370;
+      for (const right of [false, true]) {
+        this.chaseFalling.push({ x: pl.x + (right ? half : 0), y: pl.y - 8, w: half, h, vx: (right ? 40 : -30) + Math.random() * 30, vy: -40 - Math.random() * 60, rot: 0, vr: (right ? 1 : -1) * (0.8 + Math.random()), t: 0, right });
+      }
+      this.spawnSparkBurst(pl.x + pl.width, pl.y, '#8b5a2b');
+      if (this.onScreen(pl.x + pl.width, pl.y, 200)) {
+        sound.playHitImpact(false);
+        this.camera.trauma = Math.min(0.5, this.camera.trauma + 0.12);
+      }
+    }
+    if (ch.active && this.gameTime > this.chaseNext) {
+      this.chaseNext = this.gameTime + 0.9 + Math.random() * 0.6;
+      if (p.x - ch.front < 700) sound.playTreeClimb();
+    }
+    for (const f of this.chaseFalling) {
+      f.t += dt;
+      f.vy += 1500 * dt;
+      f.x += f.vx * dt;
+      f.y += f.vy * dt;
+      f.rot += f.vr * dt;
+    }
+    this.chaseFalling = this.chaseFalling.filter((f) => f.t < 1.8);
+    // the last liana: a moment of slow motion as he catches it, with everything coming down behind him
+    if (!this.chaseSlowDone && p.isVineSwinging && this.vines.find((v) => v.id === p.swingVineId)?.x === plan.end) {
+      this.chaseSlowDone = true;
+      this.slowMoLeft = 0.55;
+    }
+    // caught by the front, or off the branch (below the lowest section near him by more than a fall can come back from)
+    let low = -Infinity;
+    for (const pl of this.platforms) if (pl.chase && Math.abs(pl.x + pl.width / 2 - p.x) < 800) low = Math.max(low, pl.y);
+    const off = low > -Infinity && p.y > low + 300 && !p.isVineSwinging && !p.climbing;
+    if ((caught(ch, p.x) && !p.isVineSwinging) || off) this.chaseCaught();
+  }
+
+  /** caught on the long branch: one heart, back at the flag with the branch whole again from there, the collapse waiting a moment */
+  private chaseCaught() {
+    const p = this.player;
+    const hp = p.hp - 1;
+    this.statHeartsLost += 1;
+    recorder.event('hurt', hp);
+    sound.playPlayerHurt();
+    if (hp <= 0) this.loseLife('pit');
+    else {
+      this.respawnAtCheckpoint('pit');
+      p.hp = hp;
+    }
+    const flagX = this.checkpoint.x;
+    for (const pl of this.platforms) if (pl.chase && pl.x + pl.width > flagX - 700) pl.broken = false;
+    this.chaseFalling = [];
+    restartAt(this.chase!, this.proto!.chase!, flagX);
+  }
+
+  /** 1-8's long branch: its sections from Matt's sheet (cracking just ahead of the collapse), the pieces falling away */
+  private drawChase(ctx: CanvasRenderingContext2D) {
+    const ch = this.chase!;
+    for (const pl of this.platforms) {
+      if (!pl.crown || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width + 300)) continue;
+      if (!drawCrownArt(ctx, pl)) {
+        ctx.fillStyle = '#4a6b2e';
+        ctx.fillRect(pl.x, pl.y, pl.width, 60);
+      }
+    }
+    for (const pl of this.platforms) {
+      if (!pl.chase || pl.broken || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width + 200)) continue;
+      const state = sectionState(ch, pl.x, pl.x + pl.width);
+      // a quiver in the cracking sections
+      const dy = state === 'cracked' ? Math.sin(this.gameTime * 40 + pl.x) * 1.2 : 0;
+      if (!drawChaseSection(ctx, pl, state === 'cracked', Math.round(pl.x / BRANCH_TILE) % 2 === 1, dy)) {
+        ctx.fillStyle = state === 'cracked' ? '#7a5532' : '#8a6238';
+        ctx.fillRect(pl.x, pl.y + dy, pl.width, 34);
+      }
+    }
+    for (const f of this.chaseFalling) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - f.t / 1.8);
+      ctx.translate(f.x + f.w / 2, f.y + f.h / 2);
+      ctx.rotate(f.rot);
+      if (!drawChaseBroken(ctx, f.right, -f.w / 2, -f.h / 2, f.w, f.h)) {
+        ctx.fillStyle = '#7a5532';
+        ctx.fillRect(-f.w / 2, -f.h / 4, f.w, f.h / 2);
+      }
+      ctx.restore();
+    }
+  }
+
+  /** the danger at the trailing edge of the view: darker the closer the collapse (screen space) */
+  private drawChaseEdge(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
+    const ch = this.chase!;
+    if (!ch.active) return;
+    const gap = this.player.x - ch.front;
+    const k = Math.max(0, Math.min(1, (650 - gap) / 500));
+    if (k <= 0.02) return;
+    const w = vw * 0.32;
+    const g = ctx.createLinearGradient(0, 0, w, 0);
+    g.addColorStop(0, `rgba(70, 18, 8, ${0.55 * k})`);
+    g.addColorStop(1, 'rgba(70, 18, 8, 0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, vh);
+  }
+
+  /** step the watching eagle and its dive (1-7) */
+  private updateWatch(dt: number) {
+    const p = this.player;
+    const bushes = this.proto?.bushes ?? [];
+    const zone = zoneAt(this.proto!.watch!, p.x);
+    const before = this.watch.diveT;
+    const ev = stepWatch(this.watch, dt, zone, Math.random);
+    const id = this.currentStage.config.id;
+    if (ev.warned) {
+      sound.playEagleScreech();
+      if (!tipHeard(id, 'watch:hide')) {
+        markTipHeard(id, 'watch:hide');
+        this.guide(lessonInputMode() === 'screen' ? 'Here it comes! Slide down inside a bush to hide' : 'Here it comes! Hold down inside a bush to hide', 3);
+      }
+    }
+    const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
+    if (this.watch.phase === 'pass') {
+      const sx = shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
+      if (sees(this.watch, sx, bushes, me)) {
+        this.watch.seen = true;
+        this.watchFrom = { x: sx, y: this.camera.y + 125 };
+        sound.playEagleScreech();
+        if (!tipHeard(id, 'watch:seen')) {
+          markTipHeard(id, 'watch:seen');
+          this.guide('It saw you! Get into a bush before its shadow reaches you', 3.2);
+        }
+      }
+      // the strike: unless he made it into a bush in time
+      if (this.watch.seen && before < WATCH.dive && this.watch.diveT >= WATCH.dive) {
+        if (hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
+        else this.damagePlayer(1);
+      }
+    }
+    // a bush rustles while he moves in it
+    for (let i = 0; i < bushes.length; i++) {
+      const b = bushes[i];
+      const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
+      const r = this.bushRustle.get(i) ?? 0;
+      this.bushRustle.set(i, inside && Math.abs(p.vx) > 15 ? 1 : Math.max(0, r - dt * 2.5));
+    }
+  }
+
+  /** the watching eagle, its shadow, and (in front of Pokey) the bushes: drawn in the world's space */
+  private drawWatchBack(ctx: CanvasRenderingContext2D) {
+    this.watchShadowAt = null;
+    const w = this.watch;
+    const zone = zoneAt(this.proto!.watch!, this.player.x);
+    if (!this.watchEagle) {
+      this.watchEagle = { id: 9977, type: 'eagle', x: 0, y: 0, vx: 0, vy: 0, width: 58, height: 42, hp: 1, maxHp: 1, facing: 1, patrolMinX: 0, patrolMaxX: 0, attackCooldown: 0, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0 } as Enemy;
+    }
+    const e = this.watchEagle;
+    const cam = this.camera;
+    let scale = 1;
+    let alpha = 1;
+    if (w.phase === 'calm') {
+      if (!zone) return;
+      // far off, small, circling high over the trees
+      const a = this.gameTime * 0.7;
+      e.x = cam.x + cam.viewportWidth * (0.5 + 0.32 * Math.cos(a));
+      e.y = cam.y + 120 + 10 * Math.sin(a * 2);
+      e.facing = Math.sin(a) > 0 ? -1 : 1;
+      e.swoopPhase = 'patrol';
+      e.isAttacking = false;
+      scale = 0.38;
+      alpha = 0.55;
+    } else if (w.phase === 'warn') {
+      // it turns for its run: at the edge, flaring, and its shadow starts to show there
+      const u = w.t / WATCH.warn;
+      e.x = w.dir === 1 ? cam.x - 40 + 60 * u : cam.x + cam.viewportWidth + 40 - 60 * u;
+      e.y = cam.y + 125;
+      e.facing = w.dir;
+      e.swoopPhase = 'telegraph';
+      scale = 0.6 + 0.4 * u;
+      this.watchShadowAt = { x: w.dir === 1 ? cam.x + 30 : cam.x + cam.viewportWidth - 30, a: 0.18 + 0.3 * u };
+    } else {
+      const sx = shadowX(w, cam.x, cam.viewportWidth);
+      e.facing = w.dir;
+      if (w.seen) {
+        // the dive: from where it saw him down to him, then back up and away
+        const u = Math.min(1, w.diveT / WATCH.dive);
+        const k = u < 1 ? u * u : 1;
+        e.x = this.watchFrom.x + (this.player.x - this.watchFrom.x) * k;
+        e.y = this.watchFrom.y + (this.player.y - 40 - this.watchFrom.y) * k;
+        e.swoopPhase = 'swoop';
+        e.isAttacking = u > 0.6;
+      } else {
+        e.x = sx;
+        e.y = cam.y + 125;
+        e.swoopPhase = 'patrol';
+        e.isAttacking = false;
+        this.watchShadowAt = { x: sx, a: 0.5 };
+      }
+    }
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(e.x, e.y);
+    ctx.scale(scale, scale);
+    ctx.translate(-e.x, -e.y);
+    if (!drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
+    ctx.restore();
+  }
+
+  /** the eagle's shadow on the ground under x (the surface nearest below the middle of the view) */
+  private drawWatchShadow(ctx: CanvasRenderingContext2D, x: number, a: number) {
+    const top = this.camera.y + 120;
+    let gy = this.player.y;
+    let best = Infinity;
+    for (const pl of this.platforms) {
+      if (x < pl.x || x > pl.x + pl.width || pl.y < top || pl.y > this.camera.y + this.camera.viewportHeight + 60) continue;
+      if (pl.y < best) { best = pl.y; gy = pl.y; }
+    }
+    // a dark oval on the grass (drawn after the front grass and the bushes, so they never hide it): a wide soft halo and a firmer
+    // core, plain enough to read against the dark soil at a glance
+    ctx.save();
+    ctx.fillStyle = `rgba(8, 12, 8, ${a * 0.45})`;
+    ctx.beginPath();
+    ctx.ellipse(x, gy - 6, 120, 20, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = `rgba(8, 12, 8, ${a})`;
+    ctx.beginPath();
+    ctx.ellipse(x, gy - 6, 82, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /** the bushes, in front of Pokey */
+  private drawBushes(ctx: CanvasRenderingContext2D) {
+    const p = this.player;
+    const bushes = this.proto?.bushes ?? [];
+    for (let i = 0; i < bushes.length; i++) {
+      const b = bushes[i];
+      if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
+      const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
+      if (drawBushArt(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      // before the sheet loads: a plain green mound
+      const h = bushHeight(b);
+      ctx.save();
+      ctx.globalAlpha = inside ? 0.8 : 1;
+      ctx.fillStyle = '#2f6b2a';
+      ctx.beginPath();
+      if (b.hanging) ctx.ellipse(b.x + b.w / 2, b.y + h / 2, b.w / 2, h / 2, 0, 0, Math.PI * 2);
+      else ctx.ellipse(b.x + b.w / 2, b.y - h / 2 + 6, b.w / 2, h / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
   /** a sleeping animal's Z's, drifting up from its head (a stand-in until the sleeping snake art arrives) */
   private drawSleepZ(ctx: CanvasRenderingContext2D, e: Enemy) {
     ctx.save();

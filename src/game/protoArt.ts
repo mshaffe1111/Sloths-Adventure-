@@ -10,6 +10,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
+import { PROTO3_FRAMES } from './proto3AtlasData.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -75,6 +76,107 @@ export function drawHollowArt(ctx: CanvasRenderingContext2D, x: number, y: numbe
   const h = (w * f.h) / f.w;
   // the opening's middle sits 47% of the way down the painting
   return blit2(ctx, glow ? 'hollowGlow' : 'hollow', x - w / 2, y - h * 0.47, w, h);
+}
+
+/**
+ * A hiding bush (1-7): Matt's painted bushes, drawn in front of Pokey. `inside`: he is in it, so it is drawn a little see-through
+ * (the player can still find him) and rustles when he moves. Returns false until the sheet has loaded.
+ */
+export function drawBushArt(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number; kind: 'tall' | 'wide' | 'fern'; hanging?: boolean }, inside: boolean, rustle: number, t: number): boolean {
+  load2();
+  if (!ready2 || !img2) return false;
+  const n = b.kind === 'tall' ? 'bushTall' : b.kind === 'wide' ? 'bushWide' : 'fernClump';
+  const f = PROTO2_FRAMES[n];
+  const h = (b.w * f.h) / f.w;
+  ctx.save();
+  // (a hanging bush first gets the vine strands it hangs by, up to the rope just above it)
+  if (b.hanging) {
+    ctx.strokeStyle = '#3d5a22';
+    ctx.lineWidth = 2.5;
+    for (const u of [0.28, 0.5, 0.72]) {
+      ctx.beginPath();
+      ctx.moveTo(b.x + b.w * u, b.y - 4);
+      ctx.quadraticCurveTo(b.x + b.w * u + 4, b.y + 6, b.x + b.w * u, b.y + 16);
+      ctx.stroke();
+    }
+  }
+  // see-through enough with him inside that the player can still find him
+  if (inside) ctx.globalAlpha = 0.62;
+  // anchored at the bottom middle (a hanging bush at its top middle), leaning a touch when he rustles it
+  const ax = b.x + b.w / 2, ay = b.hanging ? b.y : b.y + 6;
+  ctx.translate(ax, ay);
+  ctx.transform(1, 0, Math.sin(t * 22) * 0.05 * rustle, 1, 0, 0);
+  if (b.hanging) blit2(ctx, n, -b.w / 2, 0, b.w, h);
+  else blit2(ctx, n, -b.w / 2, -h, b.w, h);
+  ctx.restore();
+  return true;
+}
+
+/** a bush's drawn height (for the fallback shape) */
+export function bushHeight(b: { w: number; kind: 'tall' | 'wide' | 'fern' }): number {
+  const f = PROTO2_FRAMES[b.kind === 'tall' ? 'bushTall' : b.kind === 'wide' ? 'bushWide' : 'fernClump'];
+  return (b.w * f.h) / f.w;
+}
+
+// Matt's long-branch sheet (2026-10-24): 1-8's chase
+let img3: HTMLImageElement | null = null;
+let ready3 = false;
+function load3() {
+  if (img3 || typeof Image === 'undefined') return;
+  const im = new Image();
+  img3 = im;
+  trackAtlas(im, new URL('../assets/proto/props3-atlas.webp', import.meta.url).href, () => { ready3 = true; }, () => { img3 = null; });
+}
+
+/**
+ * One section of 1-8's long branch: the repeating log (every other one mirrored, so the joins never show), the cracked log ahead of
+ * the collapse, or the branch's tip. The log's moss line sits on the walkable top. False until the sheet has loaded.
+ */
+export function drawChaseSection(ctx: CanvasRenderingContext2D, p: { x: number; y: number; width: number; chaseTip?: boolean }, cracked: boolean, mirror: boolean, dy = 0): boolean {
+  load3();
+  if (!ready3 || !img3) return false;
+  const f = PROTO3_FRAMES[p.chaseTip ? 'chaseTip' : cracked ? 'chaseCrack' : 'chaseSeg'];
+  // the log is drawn 60 px thick on a 222 px section (the painted proportions); the tip keeps its own shape at the same scale
+  const k = p.width / 370;
+  const w = f.w * k, h = f.h * k;
+  const top = p.y + 2 - f.top * k + dy;
+  ctx.save();
+  if (mirror && !p.chaseTip) {
+    ctx.translate(p.x + p.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(img3, f.x, f.y, f.w, f.h, 0, top, p.width, h);
+  } else ctx.drawImage(img3, f.x, f.y, f.w, f.h, p.x, top, p.chaseTip ? w : p.width, h);
+  ctx.restore();
+  return true;
+}
+
+// Matt's crown of a giant tree (2026-10-24): the end of 1-8, where the shrine stands
+let crownImg: HTMLImageElement | null = null;
+let crownReady = false;
+/** the crown painting's walkable moss line (px down from its top, at its own size) and the part of its width that is flat */
+const CROWN = { w: 1200, h: 577, top: 128, flat: 0.9 };
+
+/** a tree's crown to stand on: the painting's moss line on the walkable top, its trunk going on down out of view */
+export function drawCrownArt(ctx: CanvasRenderingContext2D, p: { x: number; y: number; width: number }): boolean {
+  if (!crownImg && typeof Image !== 'undefined') {
+    const im = new Image();
+    crownImg = im;
+    trackAtlas(im, new URL('../assets/proto/crown.webp', import.meta.url).href, () => { crownReady = true; }, () => { crownImg = null; });
+  }
+  if (!crownReady || !crownImg) return false;
+  const w = p.width / CROWN.flat;
+  const k = w / CROWN.w;
+  ctx.drawImage(crownImg, p.x - (w - p.width) / 2, p.y - CROWN.top * k, w, CROWN.h * k);
+  return true;
+}
+
+/** one half of a section breaking away (drawn in its own rotated frame by the caller) */
+export function drawChaseBroken(ctx: CanvasRenderingContext2D, right: boolean, x: number, y: number, w: number, h: number): boolean {
+  load3();
+  if (!ready3 || !img3) return false;
+  const f = PROTO3_FRAMES[right ? 'chaseBrokenR' : 'chaseBrokenL'];
+  ctx.drawImage(img3, f.x, f.y, f.w, f.h, x, y, w, h);
+  return true;
 }
 
 export function protoArtReady() {
@@ -327,7 +429,7 @@ export function drawProtoScene(
 ): boolean {
   if (!protoArtReady()) return false;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
-  const banks = platforms.filter((p) => p.height >= 90 && !p.push);
+  const banks = platforms.filter((p) => p.height >= 90 && !p.push && !p.broken);
   for (const p of banks) {
     if (!vis(p)) continue;
     const touches = (side: 'l' | 'r') => banks.some((q) => q !== p && q.y <= p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2));

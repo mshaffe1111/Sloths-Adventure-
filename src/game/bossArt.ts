@@ -10,7 +10,7 @@ import { drawBossEntity } from './vectorArt.ts';
 import { demoPlayer, drawMilo } from './miloVariants.ts';
 import { queenSprite } from './queenSprite.ts';
 import type { PaintedBoss } from './paintedBoss.ts';
-import { venomSprite } from './venomSprite.ts';
+import { venomRig } from './venomRig.ts';
 import { crocSprite } from './crocSprite.ts';
 import { prowlerSprite } from './prowlerSprite.ts';
 import { monarchSprite } from './monarchSprite.ts';
@@ -22,7 +22,7 @@ import { golemSprite } from './golemSprite.ts';
 import { thornbarkSprite } from './thornbarkSprite.ts';
 
 /** the bosses that have a painted version */
-const PAINTED: Record<number, PaintedBoss> = { 1: venomSprite, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 5: queenSprite, 6: reaverSprite, 7: golemSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
+const PAINTED: Record<number, PaintedBoss> = { 1: venomRig, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 5: queenSprite, 6: reaverSprite, 7: golemSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
 
 /** the poses the painted bosses strike on the story cards: calm, angry (while it speaks its threat) and beaten */
 const CARD_POSES: Record<number, [string, string, string]> = {
@@ -227,7 +227,14 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   const feetY = floor - air;
   const xf = poseFor(b, m, time);
   const painted = PAINTED[world];
-  if (painted?.active()) {
+  if (painted && (painted as { rig?: boolean }).rig && painted.active()) {
+    // a rigged boss poses itself (its head can be far from its body): no squash or lean of the whole
+    xf.sx = 1;
+    xf.sy = 1;
+    xf.lean = 0;
+    xf.dx = 0;
+    xf.dy = 0;
+  } else if (painted?.active()) {
     // the painted boss is already posed for each part of a move: keep only a little of the squash, lean and shake
     xf.sx = 1 + (xf.sx - 1) * 0.35;
     xf.sy = 1 + (xf.sy - 1) * 0.35;
@@ -1178,7 +1185,23 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
   const r = weakRect(b, def, floor);
   const br = b.ai;
   if (!r || !br || br.state === 'dying' || b.defeated) return;
-  const open = weakOpen(b);
+  const open = weakOpen(b, def);
+  if (def.weakAt) {
+    // a head that comes down to be hit: only a ring round it while it is open (the head itself says where; no ember up high)
+    if (!open) return;
+    const pulse = 0.5 + 0.5 * Math.sin(time * 9);
+    ctx.save();
+    ctx.globalAlpha = 0.55 + 0.35 * pulse;
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 3 + 2 * pulse;
+    ctx.setLineDash([14, 9]);
+    ctx.lineDashOffset = -time * 40;
+    ctx.beginPath();
+    ctx.ellipse(r.x + r.w / 2, r.y + r.h * 0.55, r.w * 0.58 + 6 * pulse, r.h * 0.62 + 4 * pulse, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
   const cx = r.x + r.w / 2;
   const cy = r.y + r.h / 2;
   const rad = Math.min(r.w, r.h) * 0.5;

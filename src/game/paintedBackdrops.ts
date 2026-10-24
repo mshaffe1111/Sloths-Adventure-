@@ -79,3 +79,33 @@ export function paintedFor(world: number): PaintedSet | null {
   load(world);
   return null;
 }
+
+// ---- the canopy strips: the same world seen from high in the trees (Matt, 2026-10-24: 1-8's chase on the long branch, and the top of
+// 1-4's climb). Only the middle and near strips change; the far strip (sky and treetops) is already the view from up high.
+
+export interface CanopySet {
+  mid: HTMLImageElement;
+  near: HTMLImageElement;
+}
+const canopyReady = new Map<number, CanopySet>();
+const canopyLoading = new Set<number>();
+const canopyUrl = (world: number, part: 'mid' | 'near') => FILES[`../assets/backdrops/w${world}c-${part}.webp`] ?? null;
+
+/** the canopy strips for a world if it has them and they are decoded; otherwise null (and they start loading) */
+export function canopyFor(world: number): CanopySet | null {
+  const hit = canopyReady.get(world);
+  if (hit) return hit;
+  const mu = canopyUrl(world, 'mid'), nu = canopyUrl(world, 'near');
+  if (!mu || !nu || canopyLoading.has(world) || typeof Image === 'undefined') return null;
+  canopyLoading.add(world);
+  const mid = new Image();
+  const near = new Image();
+  mid.decoding = 'async';
+  near.decoding = 'async';
+  mid.src = mu;
+  near.src = nu;
+  Promise.all([mid, near].map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
+    .then(() => canopyReady.set(world, { mid, near }))
+    .catch(() => { /* the ground strips stay */ });
+  return null;
+}

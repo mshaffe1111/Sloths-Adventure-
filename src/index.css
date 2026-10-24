@@ -511,6 +511,17 @@
 .boss-hud-hearts.danger { animation: boss-danger 0.9s ease-in-out infinite; border-color: #ef4444; }
 @keyframes boss-danger { 0%, 100% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 0 rgba(239, 68, 68, 0); } 50% { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 18px rgba(239, 68, 68, 0.85); } }
 @media (prefers-reduced-motion: reduce) { .boss-hud-hearts.danger { animation: none; } .boss-seg.ghost { animation-duration: 0.2s; } }
+/* a phone on its side: the plate is one short block (name and bar, the hearts beside the bar), so it clears the Menu button and the guide's bubble */
+@media (max-height: 520px) and (orientation: landscape) {
+  .boss-hud { width: min(23rem, 45vw); display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 8px; row-gap: 3px; }
+  .boss-hud-name { grid-column: 1; grid-row: 1; }
+  .boss-hud-title { font-size: 17px; }
+  .boss-hud-count { font-size: 11px; }
+  .boss-hud-bar { grid-column: 1; grid-row: 2; padding: 3px; }
+  .boss-hud-segs { height: 12px; }
+  .boss-hud-hearts { grid-column: 2; grid-row: 1 / span 2; align-self: end; padding: 4px 8px; gap: 3px; }
+  .boss-heart { width: 19px; height: 19px; }
+}
 
 .pm-scrim { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 12px; background: rgba(2, 20, 14, 0.78); font-family: var(--font-heading); color: #f0fdf4; }
 .pm-card { width: 100%; max-width: 540px; max-height: 100%; overflow-y: auto; box-sizing: border-box; padding: 20px 24px 18px; border-radius: 26px; background: linear-gradient(180deg, #0b3a2c, #06261d); border: 3px solid #6ee7b7; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55); display: flex; flex-direction: column; gap: 14px; }

@@ -466,7 +466,7 @@ function drawTrunkFoot(ctx: CanvasRenderingContext2D, t: TreeStructure) {
     ctx.strokeStyle = '#050603';
     ctx.lineWidth = 3;
     ctx.stroke();
-    ctx.strokeStyle = 'rgba(214, 180, 110, 0.3)';
+    ctx.strokeStyle = 'rgba(214, 180, 110, 0.12)';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(t.x + side * 24, y - 100);

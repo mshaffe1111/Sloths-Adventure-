@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { BossEntity } from './types.ts';
 import { BOSS_DEFS, bossDefFor } from './bossDefs.ts';
-import { bodyHurts, bossMaxHp, hazardBox, interruptBoss, newBrain, phaseFor, stepBoss, stepHazards, vulnerability } from './bossAI.ts';
+import { bodyHurts, bossMaxHp, column, lob, hazardBox, interruptBoss, newBrain, phaseFor, stepBoss, stepHazards, vulnerability } from './bossAI.ts';
 import type { BossCtx, BossHazard } from './bossAI.ts';
 
 const ARENA = { left: 760, right: 1840, floor: 560 };
@@ -48,7 +48,8 @@ test('there is a boss definition for every world, each with moves that make sens
     assert.ok(def, `world ${w}`);
     assert.equal(def.world, w);
     const names = Object.keys(def.moves);
-    assert.ok(names.length >= 3, `${def.name} has ${names.length} moves`);
+    // the first boss is the gentlest: one move to learn (and one more from phase 2); the rest have three or more
+    assert.ok(names.length >= (w === 1 ? 2 : 3), `${def.name} has ${names.length} moves`);
     for (const n of names) {
       const m = def.moves[n];
       assert.ok(m.tell >= 0.45, `${def.name}.${n} warns for at least 0.45 s (fair)`);
@@ -167,12 +168,7 @@ test('the croc crashes into the wall at the end of its death roll and is left st
 
 test('warnings come first: a column or a drop cannot hurt until its warning is over', () => {
   const { ctx } = makeCtx(1000);
-  const b = makeBoss(1);
-  b.ai!.state = 'tell';
-  b.ai!.move = 'tailSlam';
-  b.ai!.t = 0;
-  bossDefFor(1).moves.tailSlam.onTell!(b, ctx);
-  const col = ctx.hazards[0];
+  const col = column(ctx, ctx.px, 1.05, 230, '#65a30d', '#365314', 0.55);
   assert.ok(col.warn >= 0.9, 'long warning');
   assert.equal(hazardBox(col), null);
   for (let i = 0; i < 80; i++) stepHazards(ctx.hazards, ARENA, 1 / 60, noEv);
@@ -182,9 +178,7 @@ test('warnings come first: a column or a drop cannot hurt until its warning is o
 
 test('spit lands as a puddle that slows but does not hurt', () => {
   const { ctx } = makeCtx(1000);
-  const b = makeBoss(1);
-  b.x = 1500;
-  bossDefFor(1).moves.spit.onAct!(b, ctx);
+  lob(ctx, 1500, ARENA.floor - 190, ctx.px, 0.85, { kind: 'glob', onLand: 'puddle', color: '#a3e635', color2: '#3f6212', dmg: 1, look: 'venom' });
   assert.equal(ctx.hazards.length, 1);
   for (let i = 0; i < 180 && ctx.hazards.some((h) => h.kind === 'glob'); i++) stepHazards(ctx.hazards, ARENA, 1 / 60, noEv);
   const puddle = ctx.hazards.find((h) => h.kind === 'puddle');

@@ -250,6 +250,8 @@ export interface Platform {
   fragileTimer?: number;
   /** World 7 ruin tiles: seconds the tile holds once stepped on (instead of the usual 1.1) */
   crumbleAfter?: number;
+  /** a boss ledge that starts cracking (becomes fragile) from this phase of the fight */
+  crackFrom?: number;
   broken?: boolean;
   /** a broken crumbling platform grows back at this game time (engine.ts), so nothing that breaks can ever be needed to finish */
   regrowAt?: number;
@@ -262,6 +264,11 @@ export interface Platform {
   style?: 'branch' | 'log' | 'moss_stone' | 'ruin' | 'canopy_bridge';
   /** a hollow log Pokey pushes by walking into it (protoStage.ts): it slides between these x bounds */
   push?: { min: number; max: number };
+  /** a section of 1-8's long branch: it falls when the collapse passes (chase.ts), drawn from Matt's long-branch sheet; `chaseTip`: the end */
+  chase?: boolean;
+  chaseTip?: boolean;
+  /** a tree's crown to stand on, high in the canopy (Matt's crown painting: the end of 1-8) */
+  crown?: boolean;
 }
 
 /**

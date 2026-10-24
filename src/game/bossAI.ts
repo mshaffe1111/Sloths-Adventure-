@@ -168,6 +168,12 @@ export interface BossCtx {
   thud: (heavy?: boolean) => void;
   debris: (x: number, y: number, color: string) => void;
   text: (msg: string, x: number, y: number, color: string) => void;
+  /** an animal falls into the fight from the canopy (lands a moment later, where it is drawn falling) */
+  dropMinion?: (kind: 'snake', x: number) => void;
+  /** the ledges marked `crack` start crumbling under a hero who stays on them */
+  crackPerches?: (phase: number) => void;
+  /** a heart falls in at x (for a hero who has been hurt) */
+  dropHeart?: (x: number) => void;
 }
 
 export interface MoveDef {
@@ -182,6 +188,8 @@ export interface MoveDef {
   max?: number;
   /** first phase this move is allowed in */
   phase?: number;
+  /** pick this move only while this holds (for example: no little snakes left) */
+  when?: (b: BossEntity, c: BossCtx) => boolean;
   weight?: number;
   /** what the drawing should do (see bossArt.poseFor) */
   pose: 'bite' | 'lunge' | 'slam' | 'leap' | 'rear' | 'spit' | 'charge' | 'fly' | 'fade' | 'whip' | 'roar';
@@ -246,7 +254,9 @@ export interface BossDef {
   /** the fenced arena is this wide (the usual 1,080 is too small for a giant) */
   arenaW?: number;
   /** this boss's own ledges (the usual three branches are the same everywhere): x from the left fence, height above the floor */
-  perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number }; /** a bounce mushroom (70 wide; `up` is its top) */ kind?: 'bouncy' }>;
+  perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number }; /** a bounce mushroom (70 wide; `up` is its top) */ kind?: 'bouncy'; /** from this phase on it cracks under a hero who stays on it */ crack?: number }>;
+  /** climbing vines down the inside of the wall (x from the left fence): a way off the floor */
+  climbs?: number[];
   /** swinging lianas of its own: x from the left fence, and the height of the top and the bottom above the floor */
   vines?: Array<{ dx: number; top: number; bottom: number }>;
   /** this boss has its own lair look (see lairArt.ts) */
@@ -257,6 +267,20 @@ export interface BossDef {
   onPhase?: (phase: number, b: BossEntity, c: BossCtx) => void;
   /** drawn as a fighter (the evil sloth) instead of one of the animal rigs */
   puppet?: 'thornbark';
+  /** the weak point worked out from the pose (a head that travels far from the body), instead of the fixed boxes above */
+  weakAt?: (b: BossEntity, floor: number) => { x: number; y: number; w: number; h: number } | null;
+  /** only the recovery after these moves opens the weak point (the others leave it covered) */
+  openAfter?: string[];
+  /** damage one opening can take: after that he pulls back (so each opening is one clear win, not a free-for-all) */
+  openCap?: number;
+  /** the guide's lines for this fight: at the start, and at each new phase (said once per device) */
+  guide?: { start?: string; 2?: string; 3?: string };
+  /** where the floor sits in the view (0..1 from the top; the usual 0.7 leaves a band of earth under a low fight) */
+  floorAt?: number;
+  /** the camera keeps the whole arena in view (a boss whose attacks reach the far fence), on a wide screen */
+  frameArena?: boolean;
+  /** stays facing the way it starts (a boss coiled at one end of its lair) */
+  faceFixed?: boolean;
 }
 
 /** boss hit points: 41 in world 1, 122 in world 10 (a jab does 1, a hook or kick 2) */
@@ -287,6 +311,7 @@ export function vulnerability(b: BossEntity): 'closed' | 'armored' | 'open' | 's
 
 /** the world box of a giant's weak point (null for a boss that can be hit anywhere) */
 export function weakRect(b: BossEntity, def: BossDef, floor: number): { x: number; y: number; w: number; h: number } | null {
+  if (def.weakAt) return def.weakAt(b, floor);
   const st = b.ai?.state;
   const byMove = st === 'rec' && b.ai?.move ? def.weakByMove?.[b.ai.move] : undefined;
   const k = st === 'stun' && def.weakStun ? def.weakStun : byMove ?? def.weak;
@@ -297,8 +322,9 @@ export function weakRect(b: BossEntity, def: BossDef, floor: number): { x: numbe
 }
 
 /** the weak point can be hurt only in the opening after a move, or while the boss is stunned */
-export function weakOpen(b: BossEntity): boolean {
+export function weakOpen(b: BossEntity, def?: BossDef): boolean {
   const st = b.ai?.state;
+  if (st === 'rec' && def?.openAfter) return !!b.ai?.move && def.openAfter.includes(b.ai.move);
   return st === 'rec' || st === 'stun';
 }
 
@@ -310,7 +336,9 @@ export function bodyHurts(b: BossEntity): boolean {
   return br.state === 'act' || (br.state === 'tell' && br.t > 0.3);
 }
 
+let fixedFacing = false;
 function face(b: BossEntity, c: BossCtx) {
+  if (fixedFacing) return;
   b.facing = c.px < b.x ? -1 : 1;
 }
 
@@ -321,11 +349,12 @@ function pickMove(b: BossEntity, def: BossDef, c: BossCtx, phase: number): strin
   const eligible = names.filter((n) => {
     const m = def.moves[n];
     if ((m.phase ?? 1) > phase) return false;
+    if (m.when && !m.when(b, c)) return false;
     if (m.min !== undefined && dist < m.min) return false;
     if (m.max !== undefined && dist > m.max) return false;
     return true;
   });
-  let pool = eligible.length ? eligible : names.filter((n) => (def.moves[n].phase ?? 1) <= phase);
+  let pool = eligible.length ? eligible : names.filter((n) => (def.moves[n].phase ?? 1) <= phase && (!def.moves[n].when || def.moves[n].when!(b, c)));
   // never the same move three times running, and avoid the last one when there is a choice
   const last = br.recent[br.recent.length - 1];
   const fresh = pool.filter((n) => n !== last);
@@ -333,7 +362,7 @@ function pickMove(b: BossEntity, def: BossDef, c: BossCtx, phase: number): strin
   else if (last && br.recent.length >= 2 && br.recent[br.recent.length - 2] === last) {
     // only one move suits this distance and it has already run twice (a hero hugging the boss): make it use another one
     // anyway, whatever the range, so no boss can be locked to a single move
-    const other = names.filter((n) => n !== last && (def.moves[n].phase ?? 1) <= phase);
+    const other = names.filter((n) => n !== last && (def.moves[n].phase ?? 1) <= phase && (!def.moves[n].when || def.moves[n].when!(b, c)));
     if (other.length) pool = other;
   }
   const total = pool.reduce((s, n) => s + (def.moves[n].weight ?? 1), 0);
@@ -369,6 +398,7 @@ function clampToArena(b: BossEntity, c: BossCtx) {
 /** one tick of the boss. Returns the phase the boss is now in (so the engine can react to a change). */
 export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): void {
   const br = b.ai!;
+  fixedFacing = !!def.faceFixed;
   br.t += dt;
   if (br.breakCd > 0) br.breakCd -= dt;
   if (br.poiseT > 0 && (br.poiseT -= dt) <= 0) br.poise = 0;
