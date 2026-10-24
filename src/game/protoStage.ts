@@ -112,6 +112,23 @@ export function stream(seed: number) {
   };
 }
 
+/**
+ * Hearts on the harder stretches (Matt, 2026-10-24): beside every second checkpoint flag from the second on, a heart floats a jump
+ * up over the flag, so a player who has been knocked about through the middle of a stage can top up before what comes next.
+ * Returns the next free pickup id.
+ */
+export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: number }>, cid: number): number {
+  const sorted = [...flags].sort((a, b) => a.x - b.x || b.y - a.y);
+  sorted.forEach((f, i) => {
+    if (i % 2 === 0) return;
+    const hx = f.x + 70, hy = f.y - 60;
+    // never on top of another pickup
+    if (C.some((c) => Math.hypot(c.x - hx, c.y - hy) < 40)) return;
+    C.push({ id: cid++, type: 'heart', x: hx, y: hy, collected: false, bobPhase: hx * 0.01 });
+  });
+  return cid;
+}
+
 /** the floor under a teaching swing: soft moss, high enough above the water that a miss costs a hop, not a life */
 const HOLLOW_Y = 710;
 /** how high a double jump lifts him (computed once from the physics) */
@@ -1375,6 +1392,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
 
   const width = Math.ceil(x + 20);
   const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : {}) };
+  cid = heartsAtFlags(C, checkpoints, cid);
   // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
   return {
@@ -1606,6 +1624,7 @@ function buildKapok(config: LevelConfig, seed: number): GeneratedStage & { proto
   const H = floorY + 120;
   const exitX = Math.round(crown.x + crown.width - 140);
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: crown.y - 30, collected: false, bobPhase: 0 });
+  cid = heartsAtFlags(C, checkpoints, cid);
 
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES }, C);
   const cfg: LevelConfig = { ...config, levelWidth: W, levelHeight: H };
