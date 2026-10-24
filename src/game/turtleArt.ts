@@ -1,10 +1,13 @@
 /**
- * The river snapper (World 2's snapping turtle), drawn in shapes until Matt's painted sheet arrives: a domed shell, a beaked head that
+ * The river snapper (World 2's snapping turtle): Matt's painted sheet (drawTurtleSprite, at the end), and these shapes while it loads: a domed shell, a beaked head that
  * pulls back before it snaps, and the shell alone while it hides, slides, or sits dizzy. The origin is the middle of the body, the feet
  * 14 below (predatorAI.ts FEET).
  */
 import { TURTLE } from './predatorAI.ts';
 import type { Enemy } from './types.ts';
+import { trackAtlas } from './atlasLoader.ts';
+import { bodyRect } from './fight.ts';
+import { TURTLE_FRAMES, TURTLE_WALK_W } from './turtleAtlasData.ts';
 
 const OL = '#2b2416';
 const SHELL = '#5f6b3a';
@@ -135,4 +138,78 @@ export function drawTurtle(ctx: CanvasRenderingContext2D, e: Enemy, t: number) {
     }
     ctx.restore();
   }
+}
+
+// ───────────── Matt's painted snapper (2026-10-24) ─────────────
+
+let img: HTMLImageElement | null = null;
+let ready = false;
+function load() {
+  if (img || typeof Image === 'undefined') return;
+  const im = new Image();
+  img = im;
+  trackAtlas(im, new URL('../assets/enemies/turtle-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; });
+}
+
+/** world units per atlas pixel: the walking turtle is drawn 66 units across (its 48-unit body plus head and tail) */
+const K = 66 / TURTLE_WALK_W;
+const WALK = ['walk1', 'walk2', 'walk3', 'walk2'] as const;
+
+/** which painted pose for this moment */
+export function turtlePose(e: Enemy, t: number): keyof typeof TURTLE_FRAMES {
+  const st = e.state ?? 'patrol';
+  const u = e.stateT ?? 0;
+  if (e.defeated) return e.koLanded ? (Math.floor(t * 6) % 2 ? 'flip2' : 'flip1') : 'flip1';
+  if (st === 'windup') return 'tell';
+  if (st === 'snap') return e.id % 2 ? 'snap' : 'bite';
+  if (st === 'recover') return 'after';
+  if (st === 'shell' || st === 'slide') return 'hide';
+  if (st === 'peek') return u < 0.2 ? 'hide' : 'peek';
+  if (st === 'dizzy') return 'dizzy';
+  if (Math.abs(e.vx) > 3) return WALK[Math.floor(t * 5 + e.id) % WALK.length];
+  return 'walk2';
+}
+
+/** the painted snapper, or false until the sheet has loaded (the shapes above draw instead) */
+export function drawTurtleSprite(ctx: CanvasRenderingContext2D, e: Enemy, t: number): boolean {
+  load();
+  if (!ready || !img) return false;
+  const f = TURTLE_FRAMES[turtlePose(e, t)];
+  ctx.save();
+  if (e.defeated && e.koLanded) {
+    // the knock-out spin ends belly-up already in the painted pose: undo the engine's turn
+    const br = bodyRect(e);
+    const cx = br.x + br.w / 2, cy = br.y + br.h / 2;
+    ctx.translate(cx, cy);
+    ctx.rotate(-(e.koAngle ?? 0));
+    ctx.translate(-cx, -cy);
+  }
+  const feet = e.y + 16;
+  ctx.translate(e.x, feet);
+  ctx.scale(e.facing, 1);
+  if (e.state === 'slide' && !e.defeated) ctx.rotate(Math.sin(t * 30) * 0.05);
+  if (!e.defeated) {
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 30, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.h * K, f.w * K, f.h * K);
+  ctx.restore();
+  // a kicked shell leaves dust lines behind it (the dizzy pose has its own spiral eyes)
+  if (e.state === 'slide' && !e.defeated) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = 'round';
+    const d = -(e.slideDir ?? 1);
+    for (let k = 0; k < 3; k++) {
+      ctx.beginPath();
+      ctx.moveTo(e.x + d * (34 + k * 6), e.y + 6 - k * 7);
+      ctx.lineTo(e.x + d * (54 + k * 8), e.y + 6 - k * 7);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  return true;
 }

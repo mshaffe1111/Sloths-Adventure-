@@ -273,3 +273,21 @@ export function drawW2Cage(
   }
   return true;
 }
+
+/**
+ * A village ladder up the bank (2-6): Matt's lashed-pole ladder repeated from the porch below up past the porch above, standing where
+ * the climb is (the engine climbs it like a trunk). False until the sheet has loaded.
+ */
+export function drawLadder(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number): boolean {
+  if (!riverArtReady()) return false;
+  const f = W2_FRAMES.ladder;
+  const w = 50;
+  const h = (w * f.h) / f.w;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x - w, top - 26, w * 2, bottom - top + 34);
+  ctx.clip();
+  for (let y = bottom + 8 - h; y > top - 26 - h; y -= h - 6) blit(ctx, 'ladder', x - w / 2, y, w, h);
+  ctx.restore();
+  return true;
+}

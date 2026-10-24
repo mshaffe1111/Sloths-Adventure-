@@ -17,6 +17,7 @@ import { catchWindow, earlyCatch, jumpGrab, landWindow } from './protoCheck.ts';
 import { buildKapok, EXPERT_SECONDS, G, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
 import { gapFor, driftX, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverZone } from './river.ts';
 import type { W2Decor } from './riverArt.ts';
+import { W2_FRAMES } from './w2PropsData.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 
@@ -384,6 +385,17 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       if (ok) ok = landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far) >= 8;
       if (!ok && tries < 13) continue;
       rivers.push({ x0: edge, x1: farX, surfaceY: SURFACE, dir: 1, speed: opts.flow ?? 45, open: true, ...(opts.safe ? { safe: { backX: edge - 70, backY: G } } : {}) });
+      // the canopy the vines hang from: a leafy clump at each vine's top, and boughs reaching between them
+      for (let k = 0; k < n; k++) {
+        const cw = Math.round(R.r(190, 230));
+        canopyAt(xs[k], tops[k], cw);
+        if (k + 1 < n) {
+          const lw = Math.round(xs[k + 1] - xs[k] + 120);
+          const ly = Math.min(tops[k], tops[k + 1]) - 6;
+          decor.push({ n: 'limbShort', x: (xs[k] + xs[k + 1]) / 2, b: ly + w2h('limbShort', lw) * 0.6, w: lw, flip: k % 2 === 1 });
+        }
+      }
+      if (R.chance(0.5)) decor.push({ n: 'pole', x: edge + R.r(30, 70), b: SURFACE + 30, w: 64, flip: R.chance(0.5) });
       for (let k = 0; k < n; k++) {
         V.push({ ...vs[k], id: V.length + 1, swayPhase: (xs[k] * 0.013) % 6.28 });
         // the flowers arc where the leap goes, from one vine to the next
@@ -398,6 +410,11 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       return;
     }
   }
+
+  /** a piece's drawn height at width w (Matt's sheet, w2PropsData.ts) */
+  const w2h = (n: keyof typeof W2_FRAMES, w: number) => (w * W2_FRAMES[n].h) / W2_FRAMES[n].w;
+  /** the leafy clump a vine hangs from, centred on its top */
+  const canopyAt = (vx: number, top: number, w: number) => decor.push({ n: 'canopy', x: vx, b: top + w2h('canopy', w) * 0.45, w, flip: R.chance(0.5) });
 
   /** a reed cage with a little one in it, standing at (cx, floor) */
   function cage(cx: number, floor: number, critter: 'capy' | 'duck' | 'otter') {

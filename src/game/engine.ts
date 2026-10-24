@@ -50,7 +50,7 @@ import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
-import { drawLily, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, riverArtReady } from './riverArt.ts';
+import { drawLadder, drawLily, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, riverArtReady } from './riverArt.ts';
 import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
@@ -78,7 +78,7 @@ import { sound } from './audio.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
-import { drawTurtle } from './turtleArt.ts';
+import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
 import {
   applyHit, bodyRect, canCancel, chooseMove, contactPoint, headRect, hurtRect, isCommitted, koLaunch, moveBox, moveLength, MOVES, phaseAt,
@@ -94,7 +94,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -411,6 +411,8 @@ export class GameEngine {
     this.drawPlats = this.pushLogs.length || this.proto?.chase ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown) : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
+    // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
+    setLianaTops(!this.proto?.decor?.some((d) => d.n === 'canopy'));
     this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
@@ -3555,8 +3557,12 @@ export class GameEngine {
       for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(ctx, pl, this.gameTime);
     }
     this.drawRivers(ctx, world, true);
-    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
+    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // 2-6: the village's ladders where the climbs are
+    if (this.proto?.ladders) {
+      for (const v of this.vines) if (v.vineType === 'tree_climb' && this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) drawLadder(ctx, v.x, v.topY, v.bottomY);
+    }
     // World 2: lily pads on the water, then the village and the reeds behind Pokey (riverArt.ts)
     if (this.currentStage.config.worldIndex === 2 && riverArtReady()) {
       for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
@@ -3657,7 +3663,7 @@ export class GameEngine {
         } else if (enemy.type === 'tayra') {
           if (!drawTayraSprite(ctx, enemy, this.gameTime)) drawTayra(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'turtle') {
-          drawTurtle(ctx, enemy, this.gameTime);
+          if (!drawTurtleSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'harpy') {
           if (!drawHarpySprite(ctx, enemy, this.gameTime)) drawHarpyFallback(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'frog') {

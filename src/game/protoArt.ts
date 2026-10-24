@@ -223,6 +223,11 @@ const LIANA_FIT: Record<number, { ax: number; strand: number; capT: number; capB
   4: { ax: 0.55, strand: 0.15, capT: 0.12, capB: 0.28, lift: 0.04 },
 };
 const LIANA_DEFAULT = { ax: 0.5, strand: 0.22, capT: 0.16, capB: 0.16, lift: 0.04 };
+let lianaTops = true;
+/** whether a swinging liana draws its own leafy clump at the top (off where the stage hangs its vines from painted boughs, 2-4) */
+export function setLianaTops(on: boolean) {
+  lianaTops = on;
+}
 /** worlds whose own painted liana is not a single hanging vine to swing on (see drawSwingLianaArt) */
 const SWING_LIANA_FROM_W1 = new Set([2, 9]);
 /** how thick a swing liana's strand is drawn, in world units */
@@ -259,7 +264,7 @@ export function drawSwingLianaArt(ctx: CanvasRenderingContext2D, v: { x: number;
   ctx.restore();
   // the leafy clump it hangs from (the painted bush, hung upside down from the canopy)
   load2();
-  const bush = ready2 ? img2 : null;
+  const bush = ready2 && lianaTops ? img2 : null;
   if (bush) {
     const b = PROTO2_FRAMES.bushWide;
     const bw = 150 + (Math.abs(v.id) % 3) * 16;

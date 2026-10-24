@@ -83,6 +83,8 @@ export interface ProtoExtras {
   watch?: import('./watcher.ts').WatchZone[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
   decor?: import('./riverArt.ts').W2Decor[];
+  /** 2-6: the climbs are the village's ladders (riverArt.ts drawLadder), not trunks */
+  ladders?: boolean;
   /** 2-6: the face of the river bank the village is dug into, behind the whole climb (drawn by protoArt.ts drawEarthWall) */
   bankWall?: { x0: number; x1: number; top: number; bottom: number };
 }
@@ -1637,13 +1639,16 @@ export function buildKapok(config: LevelConfig, seed: number, village = false): 
       const at = spots.find((x) => clear(p, x, half));
       if (at === undefined) continue;
       k++;
-      if (kind === 0) decor.push({ n: 'door', x: at, b: p.y + 6, w: 140, flip: k % 2 === 0 });
+      if (kind === 0) {
+        decor.push({ n: 'doorRoof', x: at, b: p.y + 6, w: 150, flip: k % 2 === 0 });
+        decor.push({ n: 'lantern', x: at + (k % 2 === 0 ? -92 : 92), b: p.y - 62, w: 26 });
+      }
       else if (kind === 1) decor.push({ n: 'window', x: at, b: p.y - 16, w: 62 });
       else decor.push({ n: 'laundry', x: at, b: p.y + 4, w: 160 });
     }
     for (const w of villageWindows) decor.push({ n: 'window', x: w.x, b: w.y + 34, w: 70 });
-    decor.push({ n: 'chimney', x: crown.x + 120, b: crown.y + 2, w: 54 });
-    decor.push({ n: 'door', x: crown.x + crown.width - 330, b: crown.y + 6, w: 170 });
+    decor.push({ n: 'rooftop', x: crown.x + 150, b: crown.y + 4, w: 170 });
+    decor.push({ n: 'bell', x: crown.x + crown.width - 330, b: crown.y + 4, w: 96 });
     decor.push({ cel: 'tc.hat_shout', x: crown.x + crown.width - 60, b: crown.y + 2, k: 0.42, flip: true });
     // the floor at the bottom is the river's bank, with reeds
     decor.push({ n: 'reedTall', x: 160, b: 6, w: 64 }, { n: 'reedShort', x: W - 200, b: 6, w: 90 });
@@ -1685,7 +1690,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false): 
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
-    proto: { hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(bankWall ? { bankWall } : {}) },
+    proto: { hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}) },
   };
 }
 
