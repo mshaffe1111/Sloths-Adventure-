@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildW2Stage, CAGES_23, FLOWER_GOAL_22, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
+import { buildW2Stage, CAGES_23, CAGES_28, FLOWER_GOAL_22, ISLAND_TOP, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
+import { floodLevel } from './river.ts';
 import { turtleGuard } from './predatorAI.ts';
 import type { Enemy } from './types.ts';
 import { EXPERT_SECONDS } from './protoStage.ts';
@@ -13,7 +14,7 @@ const cfg = (id: W2Plan): LevelConfig =>
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
-const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4', '2-5', '2-7'];
+const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4', '2-5', '2-7', '2-8'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
@@ -50,7 +51,8 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
         const pads = st.platforms.filter((p) => p.lily && p.x >= r.x0 && p.x <= r.x1);
         const vines = st.vines.filter((v) => v.vineType === 'swing_liana' && v.x > r.x0 && v.x < r.x1);
         const porches = st.platforms.filter((p) => p.art === 'porch' && p.x > r.x0 && p.x < r.x1);
-        assert.ok(r.open ? vines.length >= 2 || porches.length >= 2 : r.speed === 0 ? pads.length >= 3 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
+        const islands = st.platforms.filter((p) => p.y === ISLAND_TOP && p.x > r.x0 && p.x < r.x1);
+        assert.ok(r.open ? vines.length >= 2 || porches.length >= 2 : r.flood ? islands.length >= 2 : r.speed === 0 ? pads.length >= 3 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
       }
     }
   }
@@ -106,6 +108,31 @@ test('2-4: the first crossings on the vines cost no life, the rest are deep, and
     // an island: a vine crossing that ends where a log river begins, a short bank apart
     assert.ok(open.some((r) => st.rivers!.some((q) => !q.open && q.x0 > r.x1 && q.x0 - r.x1 < 520)), `seed ${s}: vines then logs`);
     assert.ok(st.vines.every((v) => v.vineType === 'swing_liana'));
+  }
+});
+
+test('2-8: cages on reed islands in water that rises over them (and stops under the banks); a cage up a post, high and dry', () => {
+  for (const s of SEEDS) {
+    const st = buildW2Stage(cfg('2-8'), s, '2-8');
+    const cages = st.collectibles.filter((c) => c.type === 'cage');
+    assert.equal(st.config.targetCount, CAGES_28);
+    assert.ok(cages.length >= CAGES_28 * 1.3, `seed ${s}: ${cages.length} cages`);
+    const floods = st.rivers!.filter((r) => r.flood);
+    assert.ok(floods.length >= 5, `seed ${s}: ${floods.length} basins`);
+    assert.ok(floods[0].safe && floods[1].safe && floods.slice(2).every((r) => !r.safe), `seed ${s}: the first two basins are the teaching ones`);
+    for (const r of floods) {
+      const top = floodLevel(r.flood!, r.surfaceY, 999);
+      // risen: over the islands (a cage on one is lost to the water), under the banks either side
+      assert.ok(top < ISLAND_TOP - 8 + 1 && top > 580, `seed ${s}: ${top}`);
+      // still: the islands stand clear of it
+      assert.ok(r.surfaceY > ISLAND_TOP + 8);
+      // the islands go under no sooner than 15 s after it starts
+      let t = 0;
+      while (floodLevel(r.flood!, r.surfaceY, t) > ISLAND_TOP - 8) t += 0.1;
+      assert.ok(t >= 15, `seed ${s}: islands under after ${t.toFixed(1)} s`);
+    }
+    const high = cages.find((c) => c.y < 450);
+    assert.ok(high && st.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - high.x) < 160), `seed ${s}: the post cage`);
   }
 });
 

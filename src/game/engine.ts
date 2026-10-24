@@ -53,7 +53,7 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
-import { driftCycle, driftProgress, driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -229,6 +229,9 @@ export class GameEngine {
   private isRunning: boolean = false;
   /** the first time a snapper hides, Dot's line says what to do about it */
   private turtleTold = false;
+  /** 2-8: when each rising river began to rise (game time), and whether Dot has warned about it */
+  private floodAt = new Map<import('./river.ts').RiverZone, number>();
+  private floodTold = false;
   private isPaused: boolean = false;
   private animFrameId: number | null = null;
   private lastTime: number = 0;
@@ -795,6 +798,22 @@ export class GameEngine {
           p.vy = 0;
         }
       }
+    }
+    // 2-8: rising water. It starts once he steps in, and covers the low reed islands
+    for (const r of this.currentStage.rivers ?? []) {
+      const f = r.flood;
+      if (!f) continue;
+      f.y0 ??= r.surfaceY;
+      let at = this.floodAt.get(r);
+      if (at === undefined && p.x > f.trigger && !this.isGameOver) {
+        at = this.gameTime;
+        this.floodAt.set(r, at);
+        if (!this.floodTold) {
+          this.floodTold = true;
+          this.guide('The water is rising! Free them and get back to the bank!', 4);
+        }
+      }
+      r.surfaceY = floodLevel(f, f.y0, at === undefined ? undefined : this.gameTime - at);
     }
     if (!this.riverHinted && this.currentStage.rivers?.length) {
       const r0 = this.currentStage.rivers[0];
@@ -1505,6 +1524,8 @@ export class GameEngine {
         p.vy = 0;
         p.grounded = true;
         p.invincibleTimer = Math.max(p.invincibleTimer, 1);
+        // a rising teaching river (2-8) goes back down for the next try
+        if (river.flood) this.floodAt.delete(river);
       } else if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playWhoosh();
@@ -3315,6 +3336,8 @@ export class GameEngine {
 
   private respawnAtCheckpoint(reason: 'water' | 'pit' | 'hurt') {
     const p = this.player;
+    // the rising rivers go back down: he comes back to water at its starting level
+    this.floodAt.clear();
     this.hazards.length = 0;
     this.slowTimer = 0;
     this.drowsy = 0;
@@ -3368,8 +3391,8 @@ export class GameEngine {
    * World 2 rivers. Before the platforms: the water body between the banks, with streaks that show the flow.
    * After them (`over`): a translucent sheet across the lower half of every log, so the logs sit in the water, not on it.
    */
-  private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean) {
-    const rivers = this.currentStage.rivers;
+  private drawRivers(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number], over: boolean, floodsOnly = false) {
+    const rivers = floodsOnly ? this.currentStage.rivers?.filter((r) => r.flood && this.floodAt.has(r)) : this.currentStage.rivers;
     if (!rivers?.length) return;
     const cam = this.camera;
     const t = this.gameTime;
@@ -3693,6 +3716,8 @@ export class GameEngine {
     this.drawRivers(ctx, world, true);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
+    if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
     // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
     for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
     // 2-6: the village's ladders where the climbs are

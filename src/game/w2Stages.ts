@@ -21,7 +21,7 @@ import { W2_FRAMES } from './w2PropsData.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 
-export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5' | '2-6' | '2-7';
+export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5' | '2-6' | '2-7' | '2-8';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-1': '2-1',
   '2-2': '2-2',
@@ -30,6 +30,7 @@ export const W2_STAGES: Record<string, W2Plan> = {
   '2-5': '2-5',
   '2-6': '2-6',
   '2-7': '2-7',
+  '2-8': '2-8',
 };
 
 /** 2-2 asks for 80 flowers for the king's crown (the stage holds about one and a half times that) */
@@ -38,6 +39,10 @@ export const FLOWER_GOAL_22 = 80;
 export const SNAPPER_GOAL_25 = 14;
 /** 2-3: three little ones to free (a capybara, a duckling, an otter) */
 export const CAGES_23 = 3;
+/** 2-8 Reed Cages asks for 7 more little ones (the stage holds about one and a half times that) */
+export const CAGES_28 = 7;
+/** a reed island's top in a rising river: just above the still water (it starts 20 px below), so the water covers it as it rises */
+export const ISLAND_TOP = 600;
 
 const WATER = 730;
 const BANK_H = 90;
@@ -572,6 +577,54 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     }
   }
 
+  // ----- 2-8 Reed Cages: still water that rises -----
+
+  /**
+   * a basin of still water with low reed islands in it, cages on some of them. Once he steps in the water starts to rise, and covers the
+   * islands after about `seconds` (it stops just under the banks). `safe`: falling in puts him back on the bank, and the water goes down
+   * for the next try (the teaching basin). `post`: the last island has a mooring post with a cage on its shelf, above any water.
+   */
+  function floodBasin(islands: number, cageAt: number[], seconds: number, opts: { safe?: boolean; post?: boolean } = {}) {
+    const x0b = x;
+    run(R.r(140, 200));
+    close();
+    const bx0 = x;
+    let ix = x;
+    let postAt = -1;
+    for (let i = 0; i < islands; i++) {
+      ix += Math.round(one * R.r(0.36, 0.46));
+      const w = Math.round(R.r(150, 200));
+      P.push({ id: pid++, x: ix, y: ISLAND_TOP, width: w, height: 110, type: 'solid', style: 'moss_stone' });
+      if (cageAt.includes(i)) cage(ix + w * 0.55, ISLAND_TOP, R.pick(['capy', 'duck', 'otter'] as const));
+      else row(ix + 40, ix + w - 40, ISLAND_TOP - 34, 2, 'lotus');
+      reeds(ix + R.r(16, 36), ISLAND_TOP + 4, R.chance(0.5));
+      if (opts.post && i === islands - 1) postAt = ix + 40;
+      ix += w;
+    }
+    ix += Math.round(one * R.r(0.36, 0.44));
+    // it rises from 22 px under the islands to 8 px over them (and stops 10 px under the banks)
+    rivers.push({
+      x0: bx0, x1: ix, surfaceY: SURFACE, dir: 1, speed: 0,
+      flood: { y1: ISLAND_TOP - 10, seconds, trigger: bx0 + 30 },
+      ...(opts.safe ? { safe: { backX: bx0 - 70, backY: G } } : {}),
+    });
+    reeds(bx0 - 20, G + 6);
+    reeds(ix + 20, G + 6, true);
+    if (postAt > 0) {
+      // the mooring post on the last island, its shelf high and dry, the cage on it; a jump from the shelf reaches the far bank
+      const topY = G - 200;
+      const keep = bankY;
+      bankY = ISLAND_TOP;
+      post(postAt, topY);
+      bankY = keep;
+      cage(postAt + 110, topY, R.pick(['capy', 'duck', 'otter'] as const));
+    }
+    open(ix, G);
+    run(R.r(160, 220));
+    expert += (x - x0b) / RUN + islands * 0.5 + cageAt.length * 1.6 + (postAt > 0 ? 4 : 0);
+    pieces.push({ k: opts.post ? 'floodPost' : 'flood', x0: x0b, x1: x });
+  }
+
   /** a reed cage with a little one in it, standing at (cx, floor) */
   function cage(cx: number, floor: number, critter: 'capy' | 'duck' | 'otter') {
     C.push({
@@ -705,6 +758,52 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       rest(R.r(160, 220));
       heart(x - 60, G - 60);
       villageEnd();
+    });
+  } else if (plan === '2-8') {
+    // 2-8 Reed Cages: more little ones caught in the reeds, on islands in still water that rises once he steps in. Learn on a basin where
+    // a fall costs nothing; then wider basins with more cages; the twist puts the last cage up a mooring post, high and dry, with the jump
+    // to the far bank from its shelf.
+    open(0);
+    beat('Learn: the water rises', () => {
+      rest(R.r(460, 540));
+      hint(220, 'More little ones in the reeds! Free them before the water rises.');
+      floodBasin(2, [1], 30, { safe: true });
+      hint(x - 220, 'Back on the bank before the islands go under!');
+      rest(R.r(220, 280));
+      floodBasin(3, [0, 2], 30, { safe: true });
+      flag();
+    });
+    beat('Develop: deep water', () => {
+      rest(R.r(220, 280));
+      hint(x + 10, 'Deep water now. Be quick!');
+      floodBasin(3, [1, 2], 26);
+      heart(x - 40, G - 60);
+      guardedRest(R.r(600, 660));
+      river(1, 72, 3, 168);
+      floodBasin(4, [0, 3], 28);
+      flag();
+    });
+    beat('Twist: up the mooring post', () => {
+      rest(R.r(220, 280));
+      hint(x + 10, 'One is up the post. Climb above the water!', 'One is up the post. Hold Up to climb above the water!', 'One is up the post. Hold W or Up to climb above the water!');
+      floodBasin(3, [1], 24, { post: true });
+      heart(x - 40, G - 60);
+      rest(R.r(240, 320));
+      // a golden seed over the middle of a basin, a double jump from an island before it floods
+      const sx = x;
+      floodBasin(4, [2], 24);
+      goldenSeed(sx + (x - sx) * 0.45, ISLAND_TOP - 170);
+      flag();
+    });
+    beat('Finish: before the water rises', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 10) {
+        rest(R.r(220, 300));
+        if (n % 3 === 2) river(n % 2 ? -1 : 1, 74, 3, 166);
+        else floodBasin(R.i(3, 4), n % 3 === 0 ? [0, 2] : [1], 24, { post: n % 4 === 3 });
+        if (++n % 2 === 0) flag();
+      }
+      rest(R.r(500, 700));
     });
   } else if (plan === '2-2') {
     // 2-2 Petals for the Crown: the river king wants admiring. Gather flowers for his crown: over the logs, high and low, and across the
@@ -952,7 +1051,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
   });
 
   const width = Math.ceil(x + 20);
-  const targetCount = plan === '2-2' ? FLOWER_GOAL_22 : plan === '2-3' ? CAGES_23 : plan === '2-5' ? SNAPPER_GOAL_25 : config.targetCount;
+  const targetCount = plan === '2-2' ? FLOWER_GOAL_22 : plan === '2-3' ? CAGES_23 : plan === '2-5' ? SNAPPER_GOAL_25 : plan === '2-8' ? CAGES_28 : config.targetCount;
   const cfg: LevelConfig = {
     ...config,
     levelWidth: width,
