@@ -2551,7 +2551,12 @@ function buildBoss(gen: Gen): GeneratedStage {
       } else if (pc.moving) {
         const base = left + pc.dx;
         gen.plat({ x: base, y, width: pc.w, height: 26, type: 'moving', moveRange: pc.moving.range, moveSpeed: pc.moving.speed, baseX: base, swayOffset: 0}, 'ledge');
-      } else gen.plat({ x: left + pc.dx, y, width: pc.w, height: 26, type: 'solid'}, 'ledge');
+      } else gen.plat({ x: left + pc.dx, y, width: pc.w, height: 26, type: 'solid', ...(pc.crack ? { crackFrom: pc.crack } : {})}, 'ledge');
+    }
+    // a climbing vine down the inside face of the wall trunk (the wall's own vine is just out of reach behind the fence)
+    for (const dx of def.climbs ?? []) {
+      const wall = gen.T.find((t) => Math.abs(t.x - (left - 40)) < 1);
+      gen.V.push({ id: gen.vid++, x: left + dx, topY: floor - 430, bottomY: floor - 20, swaySpeed: 1.0, swayPhase: 0, vineType: 'tree_climb', ...(wall ? { treeId: wall.id } : {}) });
     }
     for (const v of def.vines ?? []) {
       gen.V.push({ id: gen.vid++, x: left + v.dx, topY: floor - v.top, bottomY: floor - v.bottom, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true });
@@ -2572,7 +2577,7 @@ function buildBoss(gen: Gen): GeneratedStage {
   };
   if (perchList.length) {
     // a heart on the first ledge and one on the last, where a hero who has been hurt can reach them
-    for (const pc of [perchList[0], perchList[perchList.length - 1]]) gen.item('heart', left + pc.dx + pc.w / 2, floor - pc.up - 44);
+    for (const pc of new Set([perchList[0], perchList[perchList.length - 1]])) gen.item('heart', left + pc.dx + pc.w / 2, floor - pc.up - 44);
   } else {
     gen.item('heart', left + 170, 400);
     gen.item('heart', right - 170, 400);

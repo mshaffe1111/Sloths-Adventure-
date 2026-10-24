@@ -1681,6 +1681,7 @@ export class GameEngine {
     // the watching eagle (1-7): calm, a screech, then its shadow sweeps the ground; seen in the open, it dives (watcher.ts)
     if (this.proto?.watch) this.updateWatch(dt);
     if (this.chase) this.updateChase(dt);
+    if (this.ringDrops.length) this.stepDrops(dt);
     if (this.proto?.ring) this.updateRing(dt);
 
     // --- Collectibles Pickup & Objectives ---
@@ -2077,6 +2078,32 @@ export class GameEngine {
         thud: (heavy) => sound.playHitImpact(heavy ?? true, bossMaterial(world)),
         debris: (x, y, color) => this.spawnDebrisBurst(x, y, color),
         text: (msg, x, y, color) => this.addFloatingText(msg, x, y, color),
+        dropMinion: (kind, x) => {
+          const a = this.currentStage.arena;
+          if (!a) return;
+          const id = 9000 + this.minionSeq++;
+          const e = {
+            id, type: kind, x, y: a.floor - 14, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: x > this.player.x ? -1 : 1,
+            patrolMinX: Math.max(a.left + 30, x - 160), patrolMaxX: Math.min(a.right - 30, x + 160), attackCooldown: 0.9, telegraphTimer: 0,
+            isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
+          } as Enemy;
+          this.ringDrops.push({ e, t: 0, delay: this.ringDrops.length * 0.3 });
+          sound.playWhoosh();
+        },
+        dropHeart: (x) => {
+          const a = this.currentStage.arena;
+          if (!a) return;
+          this.collectibles.push({ id: 80000 + this.minionSeq++, type: 'heart', x, y: a.floor - 40, collected: false, bobPhase: 0 });
+          this.spawnSparkBurst(x, a.floor - 60, '#fda4af');
+        },
+        crackPerches: (phase) => {
+          for (const pl of this.platforms) {
+            if (pl.crackFrom === undefined || pl.crackFrom > phase || pl.type === 'fragile') continue;
+            pl.type = 'fragile';
+            pl.crumbleAfter = 2.0;
+            this.spawnDebrisBurst(pl.x + pl.width / 2, pl.y + 4, '#a16207');
+          }
+        },
       };
     }
     const c = this.bossCtx;
@@ -2152,6 +2179,11 @@ export class GameEngine {
     if (en.t >= en.total) {
       this.entrance = null;
       this.entranceDone = true;
+      const start = def.guide?.start;
+      if (start && !tipHeard(this.currentStage.config.id, 'boss:start')) {
+        markTipHeard(this.currentStage.config.id, 'boss:start');
+        this.guide(start, 5);
+      }
       b.ai.alpha = 1;
       b.ai.state = 'roar';
       b.ai.t = 0;
@@ -2191,7 +2223,15 @@ export class GameEngine {
     if (b.phase !== prevPhase) {
       def.onPhase?.(b.phase, b, c);
       sound.playBossRoar(this.currentStage.config.worldIndex);
-      if (b.phase === 3) {
+      const line = def.guide?.[b.phase as 2 | 3];
+      if (line) {
+        const id = this.currentStage.config.id;
+        if (!tipHeard(id, 'boss:' + b.phase)) {
+          markTipHeard(id, 'boss:' + b.phase);
+          this.guide(line, 4);
+        }
+        sound.setTempo(b.phase === 3 ? 1.08 : 1.04);
+      } else if (b.phase === 3) {
         sound.setTempo(1.08);
         this.addFloatingText('PHASE 3: ENRAGED!', b.x, b.y - b.height, '#ef4444');
       } else {
@@ -2308,7 +2348,7 @@ export class GameEngine {
     let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
     base = Math.max(0.5, Math.min(1.8, base));
     const baseViewW = w / base;
-    const need = Math.abs(p.x - b.x) + 440 + Math.max(0, b.width - 140) * 0.6;
+    const need = this.bossDef?.frameArena && !portrait ? arena.right - arena.left + 120 : Math.abs(p.x - b.x) + 440 + Math.max(0, b.width - 140) * 0.6;
     // upright, the hero stays a readable size: the view never opens wider than ~720 units (the boss's head, the part you hit, is on the hero's side)
     const widest = portrait ? Math.max(baseViewW, 720) : arena.right - arena.left + 200;
     const want = Math.max(baseViewW, Math.min(need, widest));
@@ -2615,7 +2655,7 @@ export class GameEngine {
         }
         return;
       }
-      if (!weakOpen(b)) {
+      if (!weakOpen(b, def ?? undefined)) {
         // the head is covered while it is moving or attacking: a heavy blow can still rattle it, a light one clangs
         if (vul === 'open') vul = 'armored';
       }
@@ -2657,6 +2697,13 @@ export class GameEngine {
     const crit = vul === 'stunned';
     if (crit) dmg = Math.ceil(dmg * 1.5);
     b.hp = Math.max(0, b.hp - dmg);
+    if (def?.openCap && b.ai?.state === 'rec' && b.ai.move) {
+      const br = b.ai;
+      br.d.taken = (br.d.taken ?? 0) + dmg;
+      const rec = def.moves[br.move!]?.rec ?? 0;
+      // he has had enough: a moment to see the hit land, then he drags his head away
+      if (br.d.taken >= def.openCap) br.t = Math.max(br.t, rec - 0.35);
+    }
     b.hitFlashTimer = 0.15;
     this.hitstopTimer = Math.max(this.hitstopTimer, m.hitstop + 0.02);
     this.camera.trauma = Math.min(1, this.camera.trauma + 0.4);
@@ -3285,10 +3332,11 @@ export class GameEngine {
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
-      let tx = (p.x + bs.x) / 2 - vw / 2;
+      const arenaWide = this.bossDef?.frameArena && vw >= this.currentStage.arena.right - this.currentStage.arena.left;
+      let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : (p.x + bs.x) / 2 - vw / 2;
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
-      this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * 0.7);
+      this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
     }
 
     // Smooth damp camera
@@ -3714,15 +3762,6 @@ export class GameEngine {
       }
       return;
     }
-    // the drops: falling from the canopy, then in play where they land
-    for (const d of this.ringDrops) d.t += dt;
-    const landed = this.ringDrops.filter((d) => d.t >= d.delay + GameEngine.RING_DROP.t);
-    for (const d of landed) {
-      this.enemies.push(d.e);
-      this.spawnJumpDust(d.e.x, d.e.y + 14);
-      sound.playLand(0.5);
-    }
-    this.ringDrops = this.ringDrops.filter((d) => d.t < d.delay + GameEngine.RING_DROP.t);
     if (r.state !== 'fight' || this.ringDrops.length) return;
     const alive = this.enemies.some((e) => r.ids.includes(e.id) && !e.defeated);
     if (alive) return;
@@ -3745,6 +3784,18 @@ export class GameEngine {
       markTipHeard(id, 'ring:open');
       this.guide('The way is open!', 2.4);
     }
+  }
+
+  /** animals falling from the canopy (1-9's ring, Venom Fang's call): in play where they land */
+  private stepDrops(dt: number) {
+    for (const d of this.ringDrops) d.t += dt;
+    const landed = this.ringDrops.filter((d) => d.t >= d.delay + GameEngine.RING_DROP.t);
+    for (const d of landed) {
+      this.enemies.push(d.e);
+      this.spawnJumpDust(d.e.x, d.e.y + 14);
+      sound.playLand(0.5);
+    }
+    this.ringDrops = this.ringDrops.filter((d) => d.t < d.delay + GameEngine.RING_DROP.t);
   }
 
   /** the snakes still falling into the ring, drawn on their way down */

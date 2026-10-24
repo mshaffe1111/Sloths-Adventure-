@@ -123,64 +123,98 @@ test('the first meeting is long, a retry is short', () => {
   assert.ok(ENTRANCE_LONG >= 4.5 && ENTRANCE_SHORT <= 2);
 });
 
-// ───────────── Venom Fang (world 1): the second giant ─────────────
+// ───────────── Venom Fang (world 1): the gentlest boss (rebuilt 2026-10-24) ─────────────
 const venom = bossDefFor(1);
+import { VF, lungeReach, venomHurt, venomWeak } from './venomFang.ts';
+import { playerHurtRect } from './fight.ts';
 
-test('Venom Fang is a giant with one weak point a double jump from the floor, and a ten-hit bar', () => {
-  assert.ok((venom.scale ?? 1) >= 2.5 && venom.w >= 300);
-  assert.equal(venom.hp, (venom.hits ?? 0) * 2);
-  assert.equal(venom.hits, 10);
-  const r = weakRect({ ...mk('rec'), x: 1500, width: venom.w, height: venom.h } as BossEntity, venom, floor)!;
-  assert.ok(floor - (r.y + r.h) <= DOUBLE_RISE, 'reachable with a double jump');
+const venomStage = () => generateStage(generateAllLevels().find((l) => l.id === '1-10')!);
+const venomAt = (stage: ReturnType<typeof venomStage>, state: 'idle' | 'tell' | 'act' | 'rec', t: number) => {
+  const b = { ...stage.boss!, ai: { ...newBrain(), state, move: 'sweep', t, d: { reach: lungeReach(-1, stage.arena!.left, stage.arena!.right) } } } as BossEntity;
+  return b;
+};
+
+test('Venom Fang is the gentlest boss: one move to learn, six hits, two an opening', () => {
+  assert.equal(venom.hits, 6);
+  assert.equal(venom.hp, 12);
+  assert.equal(venom.openCap, 4, 'each opening takes two full hits, then he pulls back');
+  const p1 = Object.keys(venom.moves).filter((n) => (venom.moves[n].phase ?? 1) <= 1);
+  assert.deepEqual(p1, ['sweep'], 'phase 1 has the sweep and nothing else');
+  assert.ok(venom.moves.sweep.tell >= 1.0, 'a long warning');
+  assert.ok(venom.moves.sweep.rec >= 2.4, 'a long opening');
   assert.ok(venom.lair === 'venom' && venom.entrance);
-  const stage = generateStage(generateAllLevels().find((l) => l.id === '1-10')!);
-  const a = stage.arena!;
-  assert.ok(a.right - a.left >= venom.w + 700, 'room to run around a giant');
+  const stage = venomStage();
   assert.equal(stage.boss!.maxHp, venom.hp);
   assert.equal(validateStage(stage).ok, true);
 });
 
-import { PHYS, reachBounce } from './physics.ts';
-
-test('every ledge of the Venom Fang lair can be reached (mushrooms count), and the crown is within a bounce', () => {
-  const ps = venom.perches ?? [];
-  const bouncy = ps.filter((p) => p.kind === 'bouncy');
-  assert.ok(bouncy.length >= 2, 'bounce mushrooms are how you get up');
-  for (const p of ps) {
-    if (p.kind === 'bouncy') {
-      assert.ok(p.up <= SAFE.rise1, 'a mushroom is reached from the floor');
-      continue;
+test('his lunge sweeps the whole floor: standing anywhere on it is hit', () => {
+  const stage = venomStage();
+  const a = stage.arena!;
+  for (let x = a.left + 14; x <= stage.boss!.x - 200; x += 20) {
+    const me = playerHurtRect({ x, y: a.floor });
+    let hit = false;
+    for (let t = 0; t <= VF.act; t += 1 / 60) {
+      for (const r of venomHurt(venomAt(stage, 'act', t), a.floor, 0)) {
+        if (me.x < r.x + r.w && me.x + me.w > r.x && me.y < r.y + r.h && me.y + me.h > r.y) hit = true;
+      }
     }
-    if (p.up <= SAFE.rise1) continue;
-    // otherwise some mushroom has to launch you onto it
-    const ok = bouncy.some((m) => {
-      const gap = Math.max(0, p.dx - (m.dx + m.w), m.dx - (p.dx + p.w));
-      return reachBounce(p.up - m.up, false) >= gap;
-    });
-    assert.ok(ok, `ledge at ${p.dx}, ${p.up} up, has no mushroom that reaches it`);
+    assert.ok(hit, `standing at ${x - a.left} from the fence is hit`);
   }
-  // a bounce from a mushroom puts a hero's feet above the bottom of the crown
-  const bounceRise = (PHYS.bounceV * PHYS.bounceV) / (2 * PHYS.gravUp);
-  const m = bouncy[0];
-  assert.ok(m.up + bounceRise >= venom.weak!.dy - venom.weak!.h / 2, 'a bounce reaches the crown');
-  assert.ok((venom.vines ?? []).length >= 1);
 });
+
+test('every way off the floor clears the lunge: the stump, the liana, the vine up the wall', () => {
+  const stage = venomStage();
+  const a = stage.arena!;
+  const top = Math.min(...[0.3, 0.6, 0.9].flatMap((u) => venomHurt(venomAt(stage, 'act', VF.act * u), a.floor, 0).map((r) => r.y)));
+  const stump = stage.platforms.find((p) => p.crackFrom === 3)!;
+  assert.ok(stump && stump.y < top - 5, 'feet on the stump are above everything that hurts');
+  const liana = stage.vines.find((v) => v.vineType === 'swing_liana')!;
+  assert.ok(liana.bottomY < top - 20, 'hanging from the liana\'s end clears it');
+  const climb = stage.vines.find((v) => v.vineType === 'tree_climb' && v.x > a.left && v.x < a.left + 60)!;
+  assert.ok(climb, 'a vine to climb inside the fence');
+  assert.ok(climb.topY < top - 150, 'and it goes well above');
+  // the stump is a double jump up, the liana's end within a jump and a reach
+  assert.ok(a.floor - stump.y <= DOUBLE_RISE - 20);
+});
+
+test('the punch target is his dazed head on the floor, open only after the lunge', () => {
+  const stage = venomStage();
+  const a = stage.arena!;
+  const rec = venomAt(stage, 'rec', 0.5);
+  const r = venomWeak(rec, a.floor)!;
+  assert.ok(r.y + r.h >= a.floor - 2 && r.y >= a.floor - 110, 'at Pokey\'s height');
+  assert.ok(r.x < a.left + 120, 'at the far end, where the head landed');
+  assert.equal(weakOpen(rec, venom), true);
+  assert.equal(weakOpen(venomAt(stage, 'idle', 3), venom), false);
+  const call = { ...rec, ai: { ...rec.ai!, move: 'call' } } as BossEntity;
+  assert.equal(weakOpen(call, venom), false, 'calling the snakes leaves no opening');
+});
+
+test('each phase adds one World 1 move: little snakes, then the stump cracks; a heart each time', () => {
+  const drops: number[] = [];
+  const hearts: number[] = [];
+  const cracks: number[] = [];
+  const ctx = {
+    arena: { left: 760, right: 2060, floor: 560 }, hazards: [], text: () => {}, shake: () => {},
+    dropMinion: (_k: string, x: number) => drops.push(x), dropHeart: (x: number) => hearts.push(x), crackPerches: (p: number) => cracks.push(p),
+  } as unknown as import('./bossAI.ts').BossCtx;
+  venom.onPhase!(2, mk('idle'), ctx);
+  assert.equal(drops.length, 2);
+  assert.deepEqual(cracks, []);
+  venom.onPhase!(3, mk('idle'), ctx);
+  assert.equal(drops.length, 2, 'no more snakes from the phase change itself');
+  assert.deepEqual(cracks, [3]);
+  assert.equal(hearts.length, 2);
+  assert.ok(venom.moves.call.phase === 2 && venom.moves.call.when!(mk('idle'), { minionsAlive: 1 } as never) === false, 'he calls more only when the last are gone');
+});
+
 
 // no two lairs share a layout: the ledges of every giant differ from the others'
 test('every giant boss has its own layout', () => {
   const sig = (w: number) => JSON.stringify((bossDefFor(w).perches ?? []).map((p) => [Math.round(p.dx / 100), Math.round(p.up / 50), p.kind ?? (p.moving ? 'm' : 's')]));
   const giants = [1, 2, 3, 9].filter((w) => bossDefFor(w).perches?.length);
   assert.equal(new Set(giants.map(sig)).size, giants.length);
-});
-
-test('the bog rises at 35%: two warned strips with the venom look', () => {
-  const hazards: import('./bossAI.ts').BossHazard[] = [];
-  const ctx = { arena: { left: 760, right: 2060, floor: 560 }, hazards, text: () => {}, shake: () => {} } as unknown as import('./bossAI.ts').BossCtx;
-  venom.onPhase!(2, mk('idle'), ctx);
-  assert.equal(hazards.length, 0);
-  venom.onPhase!(3, mk('idle'), ctx);
-  assert.equal(hazards.length, 2);
-  assert.ok(hazards.every((h) => h.kind === 'strip' && h.look === 'venom' && h.warn > 1));
 });
 
 import { lairOwnsScene } from './lairArt.ts';
