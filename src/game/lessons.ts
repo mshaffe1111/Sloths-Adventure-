@@ -8,6 +8,7 @@
  */
 import { controlStyle } from './controlPrefs.ts';
 import type { GlyphKind } from '../components/GestureGlyph.tsx';
+import { ctestEnabled } from './playRecorder.ts';
 
 export type LessonId =
   | 'foe' | 'nostomp' | 'eagle' | 'tough'
@@ -230,6 +231,8 @@ export const LESSONS: Record<LessonId, Lesson> = {
 const KEY = 'sloth_lessons';
 
 function forced(): 'off' | 'all' | null {
+  // the control test is about the controls: no pop-up lessons stopping the play
+  if (ctestEnabled()) return 'off';
   try {
     const q = new URLSearchParams(window.location.search).get('lessons');
     return q === 'off' || q === 'all' ? q : null;

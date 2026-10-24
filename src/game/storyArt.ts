@@ -14,6 +14,7 @@ import { drawPaintedBird } from './birdSprites.ts';
 import { drawDotFrame, poseFrame, warmDot } from './dotSprite.ts';
 import { photoUrl } from './photos.ts';
 import { plateImage, preloadPlates } from './plates.ts';
+import { drawLivePlate, preloadLivePlates } from './livePlates.ts';
 import { CEL_K, CELS, drawCel, warmCels } from './storyCels.ts';
 
 export const SCENE_W = 960;
@@ -481,10 +482,11 @@ export function preloadScenePhotos(keys: Array<string | undefined>) {
 /** start loading the whole-picture backdrops (plates) a cutscene will show */
 export function preloadScenePlates(keys: Array<string | undefined>) {
   preloadPlates(keys);
+  preloadLivePlates(keys);
 }
 
 /** a plate fills the picture (cover), the painting's own floor under the actors; until it has loaded the picture is a dark ground, never another world's scenery */
-function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: number, lift: number) {
+function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: number, lift: number, t = 0) {
   const im = plateImage(key);
   const hh = h * (1 + lift) + 4;
   if (!im) {
@@ -496,6 +498,8 @@ function drawPlate(ctx: CanvasRenderingContext2D, key: string, w: number, h: num
   const iw = im.naturalWidth * s;
   const ih = im.naturalHeight * s;
   ctx.drawImage(im, (w - iw) / 2, 0, iw, ih);
+  // the parts of the painting that move (livePlates.ts, test): fire, fireflies, rain, mist
+  drawLivePlate(ctx, key, (w - iw) / 2, 0, s, t);
 }
 
 /** the look of a memory: colour drained and warmed, the edges melting into old paper, a faint projector flicker */
@@ -1285,7 +1289,7 @@ export function drawStoryScene(ctx: CanvasRenderingContext2D, scene: StoryScene,
   const camX = (scene.camX ?? 400) + t * 9 + scroll;
   const plated = !!scene.plate;
   if (plated) {
-    drawPlate(ctx, scene.plate as string, w, h, lift);
+    drawPlate(ctx, scene.plate as string, w, h, lift, t);
   } else {
     withBakeScale(STORY_BAKE, () => renderScenery(ctx, scene.world, camX, 0, w, h * (1 + lift) + 4, t, true));
     drawSetPieceScrolled(ctx, scene.world, scene.mood, w, h, t, scene.castle, scroll);

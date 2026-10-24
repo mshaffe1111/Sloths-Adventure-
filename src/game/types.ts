@@ -91,6 +91,10 @@ export interface LevelConfig {
 }
 
 export interface PlayerState {
+  /** leaning into a log that moves (the push clip, heroClips.ts) */
+  pushing?: boolean;
+  /** game time he reached the exit, while the cheer plays before the stage clears (heroClips.ts) */
+  cheerAt?: number;
   x: number;
   y: number;
   vx: number;
@@ -114,6 +118,9 @@ export interface PlayerState {
   kicking: boolean;
   kickTimer: number;
   attackType: 'none' | 'punch' | 'kick' | 'mega';
+  /** fight: which move is playing (jab, cross, hook, mega, kick, airKick) and how far through it (0..1), for the drawing */
+  attackMove?: string;
+  attackU?: number;
   /** fight: how far the claw or foot is pulled back (0..1) and thrust out (0..1) right now, for the drawing */
   swingCock?: number;
   swingReach?: number;
@@ -240,6 +247,8 @@ export interface Platform {
   /** World 7 ruin tiles: seconds the tile holds once stepped on (instead of the usual 1.1) */
   crumbleAfter?: number;
   broken?: boolean;
+  /** a broken crumbling platform grows back at this game time (engine.ts), so nothing that breaks can ever be needed to finish */
+  regrowAt?: number;
   moveRange?: number;
   moveSpeed?: number;
   baseX?: number;
@@ -247,6 +256,8 @@ export interface Platform {
   /** 'drift' platforms: a log carried across a river (see river.ts) */
   drift?: import('./river.ts').DriftInfo;
   style?: 'branch' | 'log' | 'moss_stone' | 'ruin' | 'canopy_bridge';
+  /** a hollow log Pokey pushes by walking into it (protoStage.ts): it slides between these x bounds */
+  push?: { min: number; max: number };
 }
 
 /**
@@ -327,7 +338,7 @@ export interface Rope {
 
 export interface Collectible {
   id: number;
-  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate' | 'find';
+  type: 'fruit' | 'flower' | 'leaf' | 'relic' | 'cage' | 'heart' | 'super_heart' | 'powerup_speed' | 'powerup_invincible' | 'powerup_magnet' | 'exit_totem' | 'thorn_gate' | 'find' | 'seed';
   botanicalVariant?: 'orchid' | 'hibiscus' | 'monstera' | 'fern' | 'lotus' | 'cheetah_flower' | 'solar_bloom' | 'nectar_spore';
   x: number;
   y: number;

@@ -17,6 +17,7 @@ import { HeroEvents } from './heroEvents.ts';
 import { makeTintedCanvas, type Coat } from './heroTint.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { rimFor, rimOn } from './heroRim.ts';
+import { clipPick } from './heroClips.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -254,7 +255,23 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   events.track(p, time);
   // the standard hero (heroStandard.ts), when switched on and loaded, draws every pose it has a frame for
   const stdImg = standardAtlas();
+  // a moving clip (heroClips.ts, test): when one fits this moment it draws in the standard hero's place
+  const clip = stdImg ? clipPick(p, time, events) : null;
   const ch = stdImg ? stdPick(p, time, events) : null;
+  if (clip) {
+    // at each end of a clip the ordinary pose shows through, so the change of pose melts instead of popping
+    if (clip.blend < 1 && ch && stdFrame(ch.name)) {
+      ctx.save();
+      ctx.globalAlpha *= 1 - clip.blend;
+      drawStandard(ctx, p, time, ch, stdImg!);
+      ctx.restore();
+    }
+    ctx.save();
+    ctx.globalAlpha *= clip.blend;
+    const drew = drawStandard(ctx, p, time, { name: clip.name, bob: 0 }, clip.img, clip.f);
+    ctx.restore();
+    if (drew) return true;
+  }
   const mainLoaded = ready && !!atlas;
   const source = heroSource(!!(stdImg && ch && stdFrame(ch.name)), mainLoaded);
   if (source === 'none') return false;
@@ -336,8 +353,8 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
 }
 
 /** draws one frame of the standard hero. It turns and squashes the way the main hero does, so every effect (the flip, the hang, the vine) behaves the same */
-function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, ch: StdChoice, img: HTMLImageElement): boolean {
-  const f = stdFrame(ch.name);
+function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: number, ch: StdChoice, img: HTMLImageElement, clipF?: StdFrame): boolean {
+  const f = clipF ?? stdFrame(ch.name);
   if (!f) return false;
   const k = STD_K;
   ctx.save();
@@ -381,13 +398,13 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
     ctx.rotate(rot);
     ctx.translate(0, pivot);
   }
-  if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha = 0.55;
+  if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha *= 0.55;
   drawAuras(ctx, p, time);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
-  const dx = ch.centred ? -(f.w * k) / 2 : -(ch.byHand ? f.hx : f.ax) * k;
+  const dx = ch.centred ? -(f.w * k) / 2 : -(ch.byHand || ch.byBody ? f.hx : f.ax) * k;
   const dy = ch.centred ? -pivot - (f.h * k) / 2 : -f.ay * k + ch.bob;
-  const sheetImg = stdSheet(img);
+  const sheetImg = clipF ? heroCoatSheet(img) : stdSheet(img);
   if (rimOn()) {
     const rim = rimFor(`${ch.name}|${coat}`, sheetImg, f, STD_RIM_R);
     if (rim) ctx.drawImage(rim.img, dx - rim.pad * k, dy - rim.pad * k, rim.img.width * k, rim.img.height * k);

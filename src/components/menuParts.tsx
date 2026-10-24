@@ -1,5 +1,9 @@
 import React from 'react';
 import { polishEnabled, setPolishPref } from '../game/polish.ts';
+import { goldSnakeEnabled, setGoldSnakePref } from '../game/goldSnake.ts';
+import { protoStageEnabled, setProtoStagePref } from '../game/protoStage.ts';
+import { paintedKitEnabled, setPaintedKitPref } from '../game/protoArt.ts';
+import { heroClipsEnabled, setHeroClipsPref } from '../game/heroClips.ts';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
@@ -291,6 +295,132 @@ export const OrchSfxToggle: React.FC = () => {
   );
 };
 
+
+/** Matt's golden snake (saved on the device): off by default while testers try it */
+export const GoldSnakeToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => goldSnakeEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#f6c35a" size={22}>
+            <path d="M4 16c3 0 3-4 6-4s3 4 6 4 3-4 4-4" />
+            <circle cx="20" cy="11" r="1.6" />
+          </Icon>
+          Golden snakes
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setGoldSnakePref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">Try the new snake: one painting with a body that slithers, rears and strikes smoothly. It moves and hits exactly like the old one. Off by default while it is being tested.</small>
+    </div>
+  );
+};
+
+/** the hand-built 1-6 (protoStage.ts): off by default while it is being tested */
+export const ProtoStageToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => protoStageEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#7fd36a" size={22}>
+            <path d="M5 3v8a4 4 0 0 0 8 0" />
+            <path d="M13 3v5" />
+            <path d="M19 3v10a3 3 0 0 1-6 0" />
+          </Icon>
+          New stage 1-6 (test)
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setProtoStagePref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">Plays the rebuilt "First Lianas": vine-to-vine swings, a tree to climb, a log to push, a branch that snaps and two golden seeds to find. Starts the next time you enter 1-6. Off by default while it is being tested.</small>
+    </div>
+  );
+};
+
+/** Matt's painted World 1 platforms on every World 1 stage (protoArt.ts): off by default while it is being tested */
+export const PaintedKitToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => paintedKitEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#a3d977" size={22}>
+            <path d="M3 17h18" />
+            <path d="M5 17v-4h6v4" />
+            <path d="M13 17v-7h6v7" />
+          </Icon>
+          Painted platforms (test)
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setPaintedKitPref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">The new painted ground, ledges, climbs and rocks, in each world's own look where its sheets are in (Worlds 1 to 6 so far; the rest keep today's look). Starts on the next stage you enter. Off by default while it is being tested.</small>
+    </div>
+  );
+};
+
+/** Pokey's new moving clips (heroClips.ts): off by default while they are being tested */
+export const HeroClipsToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => heroClipsEnabled());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#f6c177" size={22}>
+            <circle cx="12" cy="8" r="4" />
+            <path d="M5 21c1-4 4-6 7-6s6 2 7 6" />
+          </Icon>
+          New animations (test)
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setHeroClipsPref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">Real animation made with the trained art models: stand still and Pokey yawns, scratches, waves and nods off, rubs his head after a hit and cheers at the exit; some story scenes move (the campfire, the storm, the misty village). Starts on the next stage or scene. Off by default while it is being tested.</small>
+    </div>
+  );
+};
 
 /** full screen on or off (the game starts full screen; this is the way out, and back): hidden where the browser cannot do it */
 export const FullscreenSetting: React.FC = () => {

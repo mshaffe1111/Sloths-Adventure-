@@ -134,3 +134,17 @@ test('a sealed door stops him on its own floor only', () => {
   assert.ok(!atSealedDoor({ x: X - 60, y: Y }, X, Y));
   assert.ok(!atSealedDoor({ x: X, y: Y - 250 }, X, Y), 'a player on a high ledge is not stopped by the door below');
 });
+
+import { ascentProgress } from './rules.ts';
+
+test('a climbing stage counts height climbed, not distance run along the floor', () => {
+  const spawnY = 2880;
+  const goalY = 330;
+  assert.equal(ascentProgress(spawnY, goalY, spawnY), 0, 'still on the floor he started on');
+  assert.equal(ascentProgress(spawnY, goalY, spawnY + 50), 0, 'never below zero');
+  assert.equal(ascentProgress(spawnY, goalY, (spawnY + goalY) / 2), 0.5, 'halfway up is half');
+  assert.equal(ascentProgress(spawnY, goalY, goalY), 1, 'on the summit floor the door stands on');
+  assert.equal(ascentProgress(spawnY, goalY, goalY - 200), 1, 'never above one');
+  assert.equal(ascentProgress(spawnY, goalY, Infinity), 0, 'no height recorded yet');
+  assert.equal(ascentProgress(500, 500, 300), 0, 'a stage with no climb reports nothing rather than dividing by zero');
+});

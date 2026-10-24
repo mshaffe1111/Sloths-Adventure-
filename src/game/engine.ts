@@ -1,3 +1,4 @@
+import { recorder } from './playRecorder.ts';
 import type {
   LevelConfig,
   PlayerState,
@@ -18,7 +19,7 @@ import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
-import { lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
+import { lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, easeAssist, newAirDrive, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
@@ -34,6 +35,7 @@ import { drawEagleSprite } from './eagleSprite.ts';
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
+import { drawGoldSnake } from './goldSnake.ts';
 import { drawTayraSprite } from './tayraSprite.ts';
 import { drawHarpyFallback, drawHarpySprite } from './harpySprite.ts';
 import { drawOcelotSprite } from './ocelotSprite.ts';
@@ -63,6 +65,7 @@ import {
   calculateHitScore,
   atExitDoor,
   atSealedDoor,
+  ascentProgress,
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
@@ -82,6 +85,9 @@ import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerabili
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
+import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
+import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
+import { drawCurtainArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -90,6 +96,10 @@ import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 /** How many world units tall the screen shows. */
 /** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
 const FIND_SEARCH_SECONDS = 0.9;
+/** seconds before a crumbled platform grows back */
+const REGROW_SECONDS = 3;
+/** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
+const PUSH_SPEED = 120;
 
 const WORLD_VIEW_H = 540;
 /** world units across a portrait screen */
@@ -153,6 +163,18 @@ export class GameEngine {
   private enemies: Enemy[];
   private boss: BossEntity | null;
   private collectibles: Collectible[];
+  /** the hand-built stage's extras (protoStage.ts): logs to push, hints, leaves over secrets */
+  private proto: ProtoExtras | null = null;
+  private pushLogs: Platform[] = [];
+  private drawPlats: Platform[] = [];
+  /** the hand-built stage's painted props: the platforms they draw, and their state */
+  private paintedPlats: Platform[] = [];
+  private swingVines: Vine[] = [];
+  private paintKit = false;
+  private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
+  private pushSoundT = 0;
+  /** a hint that rides above Pokey for a few seconds */
+  private stageHint: { text: string; life: number } | null = null;
 
   // --- boss fight (rules in bossAI.ts / bossDefs.ts) ---
   private hazards: BossHazard[] = [];
@@ -258,6 +280,8 @@ export class GameEngine {
   private readonly speedScale: number = gameSpeed();
   private checkpoint = { x: 0, y: 0 };
   private respawnFlash = 0;
+  /** where he stood when the exit cheer began (heroClips.ts) */
+  private cheerX = 0;
   /** Seconds at the start of a stage / after a respawn where run input is ignored, so Pokey is dropped in standing still. */
   private inputGrace = 0.5;
 
@@ -267,6 +291,9 @@ export class GameEngine {
   private atkQueue: { want: AttackWant; ttl: number; face: number } | null = null;
   private lastPunch: MoveId | null = null;
   private chainTimer = 0;
+  /** kicks thrown close together take turns: a front snap kick, then a high side kick (only the new animation sheets show it) */
+  private kickTurn = 0;
+  private kickChain = 0;
   private swingId = 0;
   private megaCooldown = 0;
   /** after a stomp, a short breather where nothing can hurt Pokey (the thing he landed on is not a threat any more) */
@@ -279,6 +306,8 @@ export class GameEngine {
   private dbgStrike: Rect | null = null;
 
   private exitTotemReached: boolean = false;
+  /** a climbing stage: the highest his feet have been (smallest y), so its progress bar only ever goes up */
+  private bestClimbY = Infinity;
   private daisyRescued: boolean = false;
   private isGameOver: boolean = false;
   private nearTreeVine: Vine | null = null;
@@ -335,6 +364,22 @@ export class GameEngine {
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
+    this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
+    resetHeroClips();
+    warmHeroClips();
+    if (this.proto) for (const h of this.proto.hints) h.shown = false;
+    this.pushLogs = this.platforms.filter((pl) => !!pl.push);
+    this.drawPlats = this.pushLogs.length ? this.platforms.filter((pl) => !pl.push) : this.platforms;
+    // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
+    setKitWorld(config.worldIndex);
+    this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
+    if (this.paintKit) {
+      const painted = paintedPlatforms(this.platforms);
+      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id));
+      this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
+      this.protoScene = { brokeAt: new Map(), movedAt: new Map() };
+      protoArtReady(); // start loading the props
+    }
     if (perfEnabled()) {
       // a fresh frame-time log for each stage, so a slowdown that grows through the stage shows on the timeline
       perfLog.reset(performance.now());
@@ -587,6 +632,7 @@ export class GameEngine {
     const p = this.player;
     const groundedBefore = p.grounded;
     const vyBefore = p.vy;
+    if (recorder.on) this.recordPokey();
     // the touch recogniser reads this: in the air with a second jump to spare, a tap is that jump
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
@@ -851,7 +897,9 @@ export class GameEngine {
     const onRope = this.updateRope(dt);
     if (onRope) {
       // hanging from a rope: updateRope has done all the moving
-    } else if (nearTreeVine && (p.climbing || wantGrab)) {
+    } else if (nearTreeVine && (p.climbing || wantGrab) && (p.climbing || !(p.grounded && p.y <= nearTreeVine.topY + 14))) {
+      // (standing on the branch at the very top of a trunk, a jump is a jump: it used to grab the trunk and turn into the
+      // little vault off its top, a 21 px hop, so nothing could be jumped to from beside a trunk's top)
       if (!p.climbing) {
         sound.playVineGrab();
         // the press that grabbed the trunk must not also leap off it or hop away with a drifting thumb
@@ -1208,6 +1256,7 @@ export class GameEngine {
       p.x = Math.max(20, Math.min(maxX, p.x));
 
       // --- Solid ground blocks: walls you cannot walk through (Mario-style) ---
+      p.pushing = false;
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
         const half = 19;
         const prevX = p.x - p.vx * dt;
@@ -1222,6 +1271,25 @@ export class GameEngine {
             // caught the lip of the ledge: hoist up onto it
             p.y = plat.y;
             p.vy = 0;
+            continue;
+          }
+          // a hollow log (protoStage.ts): walking into it pushes it along, slower than a walk
+          if (plat.push && p.grounded && ((fromLeft && this.input.state.right) || (fromRight && this.input.state.left))) {
+            const dir = fromLeft ? 1 : -1;
+            p.pushing = true;
+            const nx = Math.max(plat.push.min, Math.min(plat.push.max - plat.width, plat.x + dir * PUSH_SPEED * dt));
+            if (nx !== plat.x) {
+              plat.x = nx;
+              this.protoScene.movedAt.set(plat.id, this.gameTime);
+              this.pushSoundT -= dt;
+              if (this.pushSoundT <= 0) {
+                this.pushSoundT = 0.28;
+                sound.playTreeClimb();
+                this.spawnJumpDust(fromLeft ? plat.x + plat.width - 6 : plat.x + 6, plat.y + plat.height);
+              }
+            }
+            p.x = fromLeft ? plat.x - half : plat.x + plat.width + half;
+            p.vx = dir * Math.min(Math.abs(p.vx), PUSH_SPEED);
             continue;
           }
           p.x = fromLeft ? plat.x - half : plat.x + plat.width + half;
@@ -1334,6 +1402,7 @@ export class GameEngine {
       for (const cp of this.currentStage.checkpoints ?? []) {
         if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40) {
           cp.reached = true;
+          recorder.event('checkpoint', Math.round(cp.x));
           // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right)
           const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : cp.x > this.checkpoint.x;
           if (further) this.checkpoint = { x: cp.x, y: cp.y };
@@ -1349,8 +1418,20 @@ export class GameEngine {
         plat.fragileTimer -= dt;
         if (plat.fragileTimer <= 0) {
           plat.broken = true;
+          plat.regrowAt = this.gameTime + REGROW_SECONDS;
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
           sound.playHitImpact(true);
+        }
+      }
+      // a crumbled platform comes back a few seconds later (never while Pokey is where it would appear), so a stage can
+      // never be left with a gap nobody can cross: falling costs a little time, never the way on
+      if (plat.broken && plat.type === 'fragile' && plat.regrowAt !== undefined && this.gameTime >= plat.regrowAt) {
+        const inside = p.x + 20 > plat.x && p.x - 20 < plat.x + plat.width && p.y > plat.y - 70 && p.y < plat.y + plat.height + 10;
+        if (!inside) {
+          plat.broken = false;
+          plat.fragileTimer = undefined;
+          plat.regrowAt = undefined;
+          this.spawnSparkBurst(plat.x + plat.width * 0.5, plat.y - 6, '#86efac');
         }
       }
     }
@@ -1538,6 +1619,16 @@ export class GameEngine {
       }
     }
 
+    // the hand-built stage's one-time hints (protoStage.ts)
+    if (this.proto) {
+      for (const h of this.proto.hints) {
+        if (h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY)) continue;
+        h.shown = true;
+        const mode = lessonInputMode();
+        this.stageHint = { text: mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, life: 3.6 };
+      }
+    }
+
     // --- Collectibles Pickup & Objectives ---
     for (const c of this.collectibles) {
       if (c.collected) continue;
@@ -1578,6 +1669,25 @@ export class GameEngine {
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
         else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
         if ((c.search ?? 0) >= 1) this.collectFind(c);
+        continue;
+      }
+
+      if (c.type === 'seed') {
+        // a golden seed: a secret, saved on the device (protoStage.ts)
+        if (distance2D(p.x, p.y - 20, c.x, c.y) < 38) {
+          c.collected = true;
+          const id = this.currentStage.config.id;
+          const n = c.findId ?? 'seed';
+          const again = seedFound(id, n);
+          markSeedFound(id, n);
+          const all = this.collectibles.filter((q) => q.type === 'seed');
+          const got = all.filter((q) => seedFound(id, q.findId ?? 'seed')).length;
+          this.runScore += again ? 200 : 1000;
+          sound.playRelicFound();
+          this.spawnSparkBurst(c.x, c.y, '#facc15');
+          this.camera.trauma = Math.max(this.camera.trauma, 0.25);
+          this.addFloatingText(again ? 'GOLDEN SEED (found before)' : `SECRET! GOLDEN SEED ${got} OF ${all.length}`, c.x, c.y - 34, '#facc15', 2.4);
+        }
         continue;
       }
 
@@ -1747,10 +1857,23 @@ export class GameEngine {
       bossDefeated
     );
 
-    if (isWin && !this.isGameOver) {
+    // with the new clips on (heroClips.ts, test), reaching the exit plays his cheer before the stage clears
+    let cheering = false;
+    if (isWin && !this.isGameOver && this.exitTotemReached && heroClipsEnabled() && hasClip('cheer')) {
+      if (p.cheerAt === undefined) {
+        p.cheerAt = this.gameTime;
+        this.cheerX = p.x;
+      }
+      if (this.gameTime - p.cheerAt < CHEER_SECONDS) {
+        cheering = true;
+        p.vx = 0;
+        if (p.grounded) p.x = this.cheerX; // he stays at the door while he cheers
+      }
+    }
+    if (isWin && !this.isGameOver && !cheering) {
       this.isGameOver = true;
       const stars = calculateLevelStars(
-        this.gameTime,
+        (p.cheerAt ?? this.gameTime),
         this.currentStage.config.timeLimit,
         p.hp / p.maxHp,
         objType === 'boss_lair' ? (bossDefeated ? 1 : 0) : currentProgress / Math.max(1, this.currentStage.config.targetCount),
@@ -1758,7 +1881,8 @@ export class GameEngine {
       );
 
       this.callbacks.onStageStats?.(this.buildStats(true, stars));
-      this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
+      recorder.event('finish', Math.round(p.cheerAt ?? this.gameTime));
+      this.callbacks.onVictory(stars, Math.round(p.cheerAt ?? this.gameTime), this.runScore);
     }
 
     // --- Particle System Update ---
@@ -1774,6 +1898,7 @@ export class GameEngine {
       pt.vy += 300 * dt; // gravity
     }
 
+    if (this.stageHint && (this.stageHint.life -= dt) <= 0) this.stageHint = null;
     // --- Floating Texts Update ---
     for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
       const ft = this.floatingTexts[i];
@@ -1789,10 +1914,16 @@ export class GameEngine {
     this.bossFrame(dt);
     this.updateCamera(dt);
 
-    // Calculate progress ratio across the level
-    const totalDist = Math.max(1, (this.currentStage.exitTotemX || this.currentStage.config.levelWidth) - 140);
-    const distTraveled = Math.max(0, p.x - 140);
-    const distanceRatio = Math.min(1.0, distTraveled / totalDist);
+    // Calculate progress ratio across the level (a climbing stage counts how high he has got, not how far along: its door is at the top)
+    let distanceRatio: number;
+    if (objType === 'ascent') {
+      this.bestClimbY = Math.min(this.bestClimbY, p.y);
+      distanceRatio = ascentProgress(this.currentStage.spawnY, this.currentStage.exitTotemY, this.bestClimbY);
+    } else {
+      const totalDist = Math.max(1, (this.currentStage.exitTotemX || this.currentStage.config.levelWidth) - 140);
+      const distTraveled = Math.max(0, p.x - 140);
+      distanceRatio = Math.min(1.0, distTraveled / totalDist);
+    }
 
     // Notify HUD
     this.callbacks.onProgressUpdate(
@@ -2155,6 +2286,7 @@ export class GameEngine {
     if (this.megaCooldown > 0) this.megaCooldown -= dt;
     this.input.megaReady = this.megaCooldown <= 0;
     if (this.chainTimer > 0) this.chainTimer -= dt;
+    if (this.kickChain > 0) this.kickChain -= dt;
     if (p.grounded) this.stompChain = 0;
 
     let want: AttackWant | null = null;
@@ -2208,6 +2340,7 @@ export class GameEngine {
     else if (inp.right && !inp.left) p.facing = 1;
     else if (face) p.facing = face > 0 ? 1 : -1; // a flicked kick goes the way the thumb flicked
     if (id === 'mega') this.megaCooldown = 1.0;
+    if (id === 'kick') this.kickTurn = this.kickChain > 0 ? this.kickTurn + 1 : 0;
     this.chainTimer = 0;
     this.atk = { move, t: 0, id: ++this.swingId, connected: false, lunged: false, hits: new Set(), sounded: false };
   }
@@ -2218,6 +2351,7 @@ export class GameEngine {
     const id = a.move.id;
     this.lastPunch = id === 'jab' || id === 'cross' ? id : null;
     this.chainTimer = this.lastPunch ? 0.35 : 0;
+    this.kickChain = id === 'kick' ? 0.5 : 0;
     this.atk = null;
   }
 
@@ -2234,6 +2368,20 @@ export class GameEngine {
     if (m.lunge && p.grounded) p.vx = Math.max(-380, Math.min(380, p.vx + p.facing * m.lunge));
   }
 
+  /** the control-test recorder: where Pokey is, what he is doing and which stretch of the test he is on */
+  private recordPokey() {
+    const p = this.player;
+    const st = this.input.state;
+    let s = p.climbing ? 'c' : p.isVineSwinging ? 's' : p.hanging ? 'h' : p.grounded ? (p.ducking ? 'k' : 'g') : 'a';
+    if (p.attackMove) s += ':' + p.attackMove;
+    // what the controls are holding (touch, pad or keys alike)
+    const held = (st.left ? 'L' : '') + (st.right ? 'R' : '') + (st.up ? 'U' : '') + (st.down ? 'D' : '');
+    if (held) s += '/' + held;
+    let section = '';
+    if (this.proto) for (const b of this.proto.beats) if (p.x >= b[0] && p.x < b[1]) section = b[2];
+    recorder.pokey(p.x, p.y, p.vx, p.vy, s, section);
+  }
+
   /** copy the move's progress into the player state the drawing reads */
   private syncAttackPose() {
     const p = this.player;
@@ -2244,9 +2392,13 @@ export class GameEngine {
       p.attackType = 'none';
       p.swingCock = 0;
       p.swingReach = 0;
+      p.attackMove = undefined;
+      p.attackU = undefined;
       return;
     }
     const m = a.move;
+    p.attackMove = m.id === 'kick' && this.kickTurn % 2 ? 'kick2' : m.id;
+    p.attackU = Math.min(1, a.t / Math.max(0.001, moveLength(m)));
     p.punching = m.kind !== 'kick';
     p.kicking = m.kind === 'kick';
     p.attackType = m.kind;
@@ -2799,6 +2951,7 @@ export class GameEngine {
 
     this.statHeartsLost += amount;
     p.hp = Math.max(0, p.hp - amount);
+    recorder.event('hurt', p.hp);
     p.invincibleTimer = 1.2; // 1.2s invulnerability
     p.squashX = 1.3;
     p.squashY = 0.7; // hurt flinch
@@ -2831,6 +2984,7 @@ export class GameEngine {
   }
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
+    recorder.event('lostLife', reason);
     this.lives -= 1;
     this.statLivesLost++;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
@@ -2875,6 +3029,7 @@ export class GameEngine {
       if (pl.type === 'fragile') {
         pl.broken = false;
         pl.fragileTimer = undefined;
+        pl.regrowAt = undefined;
       }
     }
     // a liana that was mid-swing stops swinging
@@ -3187,14 +3342,16 @@ export class GameEngine {
     else renderWorldObjects(
       ctx,
       world.id,
-      this.platforms,
-      this.vines,
-      this.currentStage.trees,
+      this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats,
+      this.paintKit && protoArtReady() ? this.swingVines : this.vines,
+      this.paintKit && protoArtReady() ? [] : this.currentStage.trees,
       this.camera,
       this.gameTime
     );
 
     this.drawRivers(ctx, world, true);
+    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
+      for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     drawCrumbleTiles(ctx, this.platforms, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     drawZoneBases(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     if (lair && this.currentStage.arena) drawLairWorld(ctx, lair, this.currentStage.arena, lairView, this.gameTime);
@@ -3213,6 +3370,10 @@ export class GameEngine {
     // Render Collectibles
     this.collectibles.forEach((item) => {
       if (!this.onScreen(item.x, item.y, 260)) return;
+      if (item.type === 'seed') {
+        if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
+        return;
+      }
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
@@ -3264,7 +3425,7 @@ export class GameEngine {
       }
       const draw = () => {
         if (enemy.type === 'snake') {
-          if (!drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
+          if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
@@ -3303,6 +3464,7 @@ export class GameEngine {
       if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
     }
     // Render Hero Sloth
+    heroClipsLive(true);
     if (rig) {
       const hp = this.player;
       drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));
@@ -3310,6 +3472,15 @@ export class GameEngine {
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else drawHeroSloth(ctx, this.player, this.gameTime);
+    heroClipsLive(false);
+    // leaves in front of a hidden nook part as he comes near (protoStage.ts)
+    if (this.proto) {
+      for (const cv of this.proto.covers) {
+        if (!this.onScreen(cv.x + cv.w / 2, cv.y, 300)) continue;
+        const near = Math.max(0, Math.min(1, (1 - Math.hypot(this.player.x - (cv.x + cv.w / 2), this.player.y - 30 - (cv.y + cv.h / 2)) / 260) * 1.6));
+        if (!drawCurtainArt(ctx, cv.x - 20, cv.y - 40, cv.w + 40, cv.h + 60, near)) drawLeafCover(ctx, cv, this.player.x, this.player.y - 30, this.gameTime);
+      }
+    }
     // the boss's attacks go over him, so a warning is never hidden behind Pokey
     if (this.boss && !this.boss.defeated && this.hazards.length) drawHazards(ctx, this.hazards, this.gameTime);
     if (this.debugBoxes) this.drawHitboxes(ctx);
@@ -3342,6 +3513,25 @@ export class GameEngine {
       ctx.fillStyle = ft.color;
       ctx.fillText(ft.text, ft.x, ft.y);
     });
+    if (this.stageHint) {
+      const h = this.stageHint;
+      const a = Math.min(1, h.life / 0.4, (3.6 - h.life) / 0.25);
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, a);
+      ctx.font = '700 17px Fredoka, sans-serif';
+      ctx.textAlign = 'center';
+      const w = ctx.measureText(h.text).width + 28;
+      // kept inside the view, so on a narrow portrait screen the bubble is never cut off at the edge
+      const hx = Math.max(this.camera.x + w / 2 + 8, Math.min(this.camera.x + this.camera.viewportWidth - w / 2 - 8, this.player.x));
+      const hy = Math.max(this.camera.y + 130, this.player.y - 118);
+      ctx.fillStyle = 'rgba(20, 38, 26, 0.82)';
+      ctx.beginPath();
+      ctx.roundRect(hx - w / 2, hy - 22, w, 34, 17);
+      ctx.fill();
+      ctx.fillStyle = '#fff3c4';
+      ctx.fillText(h.text, hx, hy);
+      ctx.restore();
+    }
 
     ctx.restore(); // end world transform
 
@@ -3395,15 +3585,15 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
-  private addFloatingText(text: string, x: number, y: number, color: string) {
+  private addFloatingText(text: string, x: number, y: number, color: string, life = 0.8) {
     this.floatingTexts.push({
       id: Math.random(),
       text,
       x,
       y,
       color,
-      life: 0.8,
-      maxLife: 0.8,
+      life,
+      maxLife: life,
       scale: 1,
     });
   }

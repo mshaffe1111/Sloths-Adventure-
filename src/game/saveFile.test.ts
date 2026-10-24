@@ -69,7 +69,7 @@ test('unknown keys inside a save are never written', () => {
 });
 
 test('only game entries count as save keys', () => {
-  for (const k of ['sloth_lvl_1-1', 'sloth_lvl_10-10', 'sloth_lvl_S-1', 'sloth_story_w3', 'sloth_secret_gate', 'sloth_game_muted']) assert.ok(isSaveKey(k), k);
+  for (const k of ['sloth_lvl_1-1', 'sloth_lvl_10-10', 'sloth_lvl_S-1', 'sloth_story_w3', 'sloth_story_n1', 'sloth_secret_gate', 'sloth_game_muted']) assert.ok(isSaveKey(k), k);
   for (const k of ['sloth_hint_v3', 'sloth_lvl_', 'sloth_lvl_1-1; drop', 'token', '__proto__']) assert.ok(!isSaveKey(k), k);
 });
 
@@ -98,6 +98,7 @@ test('a new game can skip the story: every world story beat is marked seen', () 
     assert.equal(st.m.get(`sloth_story_w${w}`), '1');
     assert.equal(st.m.get(`sloth_story_m${w}`), '1');
   }
+  assert.equal(st.m.get('sloth_story_n1'), '1');
   assert.equal(st.m.has('sloth_lvl_1-1'), false);
 });
 

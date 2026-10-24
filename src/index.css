@@ -5,6 +5,14 @@
 @font-face { font-family: 'Atkinson Read'; font-style: normal; font-weight: 500; font-display: swap; src: url('./assets/fonts/atkinson-hyperlegible-next-latin-500-normal.woff2') format('woff2'); }
 @font-face { font-family: 'Atkinson Read'; font-style: normal; font-weight: 600; font-display: swap; src: url('./assets/fonts/atkinson-hyperlegible-next-latin-600-normal.woff2') format('woff2'); }
 
+/* the heading and UI faces: Fredoka and Outfit (SIL Open Font License, see src/assets/fonts), bundled so the game looks the same offline */
+@font-face { font-family: 'Fredoka'; font-style: normal; font-weight: 400; font-display: swap; src: url('./assets/fonts/fredoka-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fredoka'; font-style: normal; font-weight: 600; font-display: swap; src: url('./assets/fonts/fredoka-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fredoka'; font-style: normal; font-weight: 700; font-display: swap; src: url('./assets/fonts/fredoka-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Outfit'; font-style: normal; font-weight: 500; font-display: swap; src: url('./assets/fonts/outfit-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Outfit'; font-style: normal; font-weight: 700; font-display: swap; src: url('./assets/fonts/outfit-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Outfit'; font-style: normal; font-weight: 900; font-display: swap; src: url('./assets/fonts/outfit-latin-900-normal.woff2') format('woff2'); }
+
 @layer base {
   :root {
     --font-heading: 'Fredoka', cursive, sans-serif;
@@ -863,6 +871,9 @@
   .lc-face { display: none; }
   .lc .ui-kicker { display: none; }
   .lc .ui-h2 { font-size: 19px; }
+  /* a landscape phone: the lines sit two by two so every one fits without scrolling */
+  .lc { width: min(100%, 680px); }
+  .lc-lines { display: grid; grid-template-columns: 1fr 1fr; }
 }
 
 /* wayside: a one-line aside while you play (never pauses, never takes a tap) */

@@ -6,7 +6,7 @@ import { InputEngine } from './game/inputEngine.ts';
 import { GameEngine } from './game/engine.ts';
 import { setExtraLives, startingLives } from './game/assist.ts';
 import { setLayoutVariant } from './game/stageGenerator.ts';
-import { layoutForEntry } from './game/layoutMemory.ts';
+import { forgetLayout, layoutForEntry } from './game/layoutMemory.ts';
 import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game/skills.ts';
 import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
@@ -37,6 +37,9 @@ import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type Cosmet
 import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
+import { ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
+import { ctestEnabled } from './game/playRecorder.ts';
+import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -49,6 +52,23 @@ function hasSeenWorldStory(w: number): boolean {
 function markWorldStorySeen(w: number) {
   try {
     localStorage.setItem(worldStoryKey(w), '1');
+  } catch {}
+}
+/**
+ * World 1's arrival scene (Dot's return and Meeca's first note) plays once, after stage 1-1 is first cleared:
+ * a new player plays straight after the prologue, and the note arrives as the reward for the first stage.
+ */
+const FIRST_NOTE_KEY = 'sloth_story_n1';
+function hasSeenFirstNote(): boolean {
+  try {
+    return localStorage.getItem(FIRST_NOTE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+function markFirstNoteSeen() {
+  try {
+    localStorage.setItem(FIRST_NOTE_KEY, '1');
   } catch {}
 }
 /** the scene halfway through a world (after its 5th stage) plays once */
@@ -66,8 +86,26 @@ function markMidStorySeen(w: number) {
   } catch {}
 }
 
+/**
+ * Once progress is first written, ask the browser to keep this site's storage (saves and the offline game) rather than clear it when space
+ * runs low. Asked once per visit, never waited on; a browser may say no or not ask at all, and nothing changes either way.
+ */
+let askedToKeepStorage = false;
+function askToKeepStorage() {
+  if (askedToKeepStorage) return;
+  askedToKeepStorage = true;
+  try {
+    void navigator.storage?.persist?.()?.catch?.(() => {});
+  } catch {
+    /* not offered here */
+  }
+}
+
 export default function App() {
   const [screen, setScreen] = useState<GameScreen>('title');
+  // the control test (#ctest in the address): the name screen first, then the test stage, recorded
+  const [ctestGate, setCtestGate] = useState(() => ctestEnabled());
+  const [recording, setRecording] = useState(false);
   const [allLevels, setAllLevels] = useState<LevelConfig[]>(() => generateAllLevels());
   const [activeLevel, setActiveLevel] = useState<LevelConfig>(() => allLevels[0]);
   const [selectedWorldId, setSelectedWorldId] = useState<number>(1);
@@ -225,7 +263,8 @@ export default function App() {
     setReadingCompletes(false);
     if (pausedForFind.current) {
       pausedForFind.current = false;
-      engineRef.current?.resume();
+      // closed while the pause menu is up (the app was put away with the reader open): the menu's Resume carries on, not this
+      if (screen === 'playing') engineRef.current?.resume();
     }
   };
   /** what the last stage reported; folded in once its result has been saved (see the effect below) */
@@ -457,7 +496,15 @@ export default function App() {
     };
   }
 
+  /** true while World 1's arrival scene plays as the reward after clearing 1-1 (it then goes on to the stage-cleared card) */
+  const storyAfterClear = useRef(false);
   const continueAfterWorldStory = (lvl: LevelConfig) => {
+    if (storyAfterClear.current) {
+      storyAfterClear.current = false;
+      markFirstNoteSeen();
+      setScreen('victory');
+      return;
+    }
     markWorldStorySeen(lvl.worldIndex);
     if (lvl.objectiveType === 'boss_lair') setScreen('boss_intro');
     else launchEngine(lvl);
@@ -547,10 +594,16 @@ export default function App() {
 
           // Save progression
           saveLevelProgress(lvl.id, stars, finalScore, timeSec);
+          // a cleared stage rolls a fresh layout next time (until then a retry keeps the one being learned)
+          forgetLayout(lvl.id);
 
           if (lvl.objectiveType === 'boss_lair') {
             // Boss defeated: play the defeat scene first
             setScreen('boss_defeat');
+          } else if (lvl.worldIndex === 1 && lvl.miniIndex === 1 && WORLD_STORIES[1] && !hasSeenFirstNote()) {
+            // the first stage is cleared: Dot arrives with Meeca's first note
+            storyAfterClear.current = true;
+            setScreen('world_story');
           } else if (lvl.miniIndex === 5 && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
             // halfway through a world, Dot catches up with a note from Meeca
             setScreen('world_mid');
@@ -600,6 +653,7 @@ export default function App() {
         bestTime: prevTime === 0 ? bestTime : bestTime > 0 ? Math.min(prevTime, bestTime) : prevTime,
       };
       localStorage.setItem(`sloth_lvl_${id}`, JSON.stringify(saved));
+      askToKeepStorage();
       setNewSkills(newlyLearned(id, skillsBefore));
       setSkills(learnedSkills());
     } catch {
@@ -645,6 +699,8 @@ export default function App() {
   const resumeGame = () => {
     sound.playPause(false);
     setScreen('playing');
+    // a lesson card or a just-found note is still up: the stage stays still behind it, and closing it carries on
+    if (lessonId || (reading && pausedForFind.current)) return;
     engineRef.current?.resume();
   };
 
@@ -697,6 +753,24 @@ export default function App() {
           style={{ touchAction: 'none' }}
         />
       </div>
+
+      {ctestGate && (
+        <ControlTestGate
+          onStart={() => {
+            setCtestGate(false);
+            setRecording(true);
+            const base = allLevels.find((l) => l.id === CTEST_STAGE_ID);
+            // the test only asks him to reach the shrine (1-2 itself is a petal hunt, and its shrine would stay sealed)
+            const lvl = base && { ...base, name: 'Control Test', objectiveType: 'sprint' as const, targetCount: 1 };
+            if (lvl) {
+              setActiveLevel(lvl);
+              setSelectedWorldId(lvl.worldIndex);
+              launchEngine(lvl);
+            }
+          }}
+        />
+      )}
+      {recording && <RecordingBadge />}
 
       {/* Title Screen View */}
       {screen === 'title' && (
@@ -759,7 +833,7 @@ export default function App() {
       {screen === 'world_story' && WORLD_STORIES[activeLevel.worldIndex] && (
         <StoryPlayer
           panels={WORLD_STORIES[activeLevel.worldIndex].panels}
-          finishLabel="Let's go"
+          finishLabel={storyAfterClear.current ? 'Onward' : "Let's go"}
           onFinish={() => continueAfterWorldStory(activeLevel)}
         />
       )}
