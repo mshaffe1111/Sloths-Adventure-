@@ -10,6 +10,7 @@ import { trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
+import { PROTO3_FRAMES } from './proto3AtlasData.ts';
 
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
@@ -115,6 +116,47 @@ export function drawBushArt(ctx: CanvasRenderingContext2D, b: { x: number; w: nu
 export function bushHeight(b: { w: number; kind: 'tall' | 'wide' | 'fern' }): number {
   const f = PROTO2_FRAMES[b.kind === 'tall' ? 'bushTall' : b.kind === 'wide' ? 'bushWide' : 'fernClump'];
   return (b.w * f.h) / f.w;
+}
+
+// Matt's long-branch sheet (2026-10-24): 1-8's chase
+let img3: HTMLImageElement | null = null;
+let ready3 = false;
+function load3() {
+  if (img3 || typeof Image === 'undefined') return;
+  const im = new Image();
+  img3 = im;
+  trackAtlas(im, new URL('../assets/proto/props3-atlas.webp', import.meta.url).href, () => { ready3 = true; }, () => { img3 = null; });
+}
+
+/**
+ * One section of 1-8's long branch: the repeating log (every other one mirrored, so the joins never show), the cracked log ahead of
+ * the collapse, or the branch's tip. The log's moss line sits on the walkable top. False until the sheet has loaded.
+ */
+export function drawChaseSection(ctx: CanvasRenderingContext2D, p: { x: number; y: number; width: number; chaseTip?: boolean }, cracked: boolean, mirror: boolean, dy = 0): boolean {
+  load3();
+  if (!ready3 || !img3) return false;
+  const f = PROTO3_FRAMES[p.chaseTip ? 'chaseTip' : cracked ? 'chaseCrack' : 'chaseSeg'];
+  // the log is drawn 60 px thick on a 222 px section (the painted proportions); the tip keeps its own shape at the same scale
+  const k = p.width / 370;
+  const w = f.w * k, h = f.h * k;
+  const top = p.y + 2 - f.top * k + dy;
+  ctx.save();
+  if (mirror && !p.chaseTip) {
+    ctx.translate(p.x + p.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(img3, f.x, f.y, f.w, f.h, 0, top, p.width, h);
+  } else ctx.drawImage(img3, f.x, f.y, f.w, f.h, p.x, top, p.chaseTip ? w : p.width, h);
+  ctx.restore();
+  return true;
+}
+
+/** one half of a section breaking away (drawn in its own rotated frame by the caller) */
+export function drawChaseBroken(ctx: CanvasRenderingContext2D, right: boolean, x: number, y: number, w: number, h: number): boolean {
+  load3();
+  if (!ready3 || !img3) return false;
+  const f = PROTO3_FRAMES[right ? 'chaseBrokenR' : 'chaseBrokenL'];
+  ctx.drawImage(img3, f.x, f.y, f.w, f.h, x, y, w, h);
+  return true;
 }
 
 export function protoArtReady() {

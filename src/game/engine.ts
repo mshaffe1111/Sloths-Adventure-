@@ -1,6 +1,7 @@
 import { countWord } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
+import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
@@ -32,7 +33,7 @@ import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
 import { drawGlideSprite } from './leafSprites.ts';
-import { renderScenery, renderOverlay, setWeatherAvoid, lookFor } from './scenery.ts';
+import { renderScenery, renderOverlay, setCanopy, setWeatherAvoid, lookFor } from './scenery.ts';
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
@@ -89,9 +90,9 @@ import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerabili
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
-import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
+import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { bushHeight, drawBushArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawChaseSection, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -273,6 +274,11 @@ export class GameEngine {
   private watchEagle: Enemy | null = null;
   private watchFrom = { x: 0, y: 0 };
   private bushRustle = new Map<number, number>();
+  /** 1-8's collapsing branch (chase.ts): its state, the pieces falling away, and whether the last leap has had its slow motion */
+  private chase: ChaseState | null = null;
+  private chaseFalling: Array<{ x: number; y: number; w: number; h: number; vx: number; vy: number; rot: number; vr: number; t: number; right: boolean }> = [];
+  private chaseSlowDone = false;
+  private chaseNext = 0;
   /** where the eagle's shadow falls this frame (drawn after the bushes and the front grass), or null */
   private watchShadowAt: { x: number; a: number } | null = null;
   private comboCount: number = 0;
@@ -382,6 +388,10 @@ export class GameEngine {
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
     this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
+    this.chase = this.proto?.chase ? newChase(this.proto.chase) : null;
+    this.chaseFalling = [];
+    this.chaseSlowDone = false;
+    this.chaseNext = 0;
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
     this.bushRustle.clear();
@@ -389,13 +399,13 @@ export class GameEngine {
     warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
-    this.drawPlats = this.pushLogs.length ? this.platforms.filter((pl) => !pl.push) : this.platforms;
+    this.drawPlats = this.pushLogs.length || this.proto?.chase ? this.platforms.filter((pl) => !pl.push && !pl.chase) : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
     this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
-      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id));
+      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase);
       this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
       this.protoScene = { brokeAt: new Map(), movedAt: new Map() };
       protoArtReady(); // start loading the props
@@ -1665,6 +1675,7 @@ export class GameEngine {
 
     // the watching eagle (1-7): calm, a screech, then its shadow sweeps the ground; seen in the open, it dives (watcher.ts)
     if (this.proto?.watch) this.updateWatch(dt);
+    if (this.chase) this.updateChase(dt);
 
     // --- Collectibles Pickup & Objectives ---
     for (const c of this.collectibles) {
@@ -3262,7 +3273,8 @@ export class GameEngine {
 
     // Look-ahead tracking
     const lookAhead = p.facing * 90;
-    this.camera.targetX = p.x - vw * 0.45 + lookAhead;
+    // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
+    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + lookAhead;
     this.camera.targetY = p.y - vh * 0.55;
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
@@ -3371,6 +3383,8 @@ export class GameEngine {
     // a boss with its own lair: either the backdrop is darkened and re-lit, or (lairOwnsScene) the lair paints all of it itself
     const lair = this.currentStage.arena && this.bossDef?.lair ? this.bossDef.lair : null;
     const ownScene = !!lair && lairOwnsScene(lair);
+    // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
+    setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
     if (!ownScene) renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     const lairView = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
     if (lair && this.currentStage.arena) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right, this.boss?.phase ?? 1);
@@ -3413,6 +3427,7 @@ export class GameEngine {
     this.drawRivers(ctx, world, true);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    if (this.chase) this.drawChase(ctx);
     // trunk hollows (1-4): over the trunk, glowing once he is close enough to see in
     for (const h of this.proto?.hollows ?? []) {
       if (this.onScreen(h.x, h.y, 260)) drawHollowArt(ctx, h.x, h.y, Math.hypot(this.player.x - h.x, this.player.y - 30 - h.y) < 230);
@@ -3604,6 +3619,7 @@ export class GameEngine {
     }
 
     ctx.restore(); // end world transform
+    if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
     // 3. Render Foreground Foliage (Framing screen edges)
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
@@ -3655,6 +3671,122 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
+  /** step 1-8's collapse: sections behind it fall, caught or off the branch costs a heart and the flag (chase.ts) */
+  private updateChase(dt: number) {
+    const plan = this.proto!.chase!;
+    const ch = this.chase!;
+    const p = this.player;
+    const wasActive = ch.active;
+    stepChase(ch, plan, dt, p.x);
+    if (ch.active && !wasActive) {
+      // it starts: a crack, a jolt, and Dot's warning (said once on this device)
+      sound.playHitImpact(true);
+      this.camera.trauma = Math.min(1, this.camera.trauma + 0.45);
+      const id = this.currentStage.config.id;
+      if (!tipHeard(id, 'chase:go')) {
+        markTipHeard(id, 'chase:go');
+        this.guide('It is breaking behind us! Keep moving!', 3);
+      }
+    }
+    // sections behind the front fall away (and a creak now and then just ahead of it)
+    for (const pl of this.platforms) {
+      if (!pl.chase || pl.broken) continue;
+      if (sectionState(ch, pl.x, pl.x + pl.width) !== 'fallen') continue;
+      pl.broken = true;
+      const half = pl.width / 2;
+      const h = (pl.width * 100) / 370;
+      for (const right of [false, true]) {
+        this.chaseFalling.push({ x: pl.x + (right ? half : 0), y: pl.y - 8, w: half, h, vx: (right ? 40 : -30) + Math.random() * 30, vy: -40 - Math.random() * 60, rot: 0, vr: (right ? 1 : -1) * (0.8 + Math.random()), t: 0, right });
+      }
+      this.spawnSparkBurst(pl.x + pl.width, pl.y, '#8b5a2b');
+      if (this.onScreen(pl.x + pl.width, pl.y, 200)) {
+        sound.playHitImpact(false);
+        this.camera.trauma = Math.min(0.5, this.camera.trauma + 0.12);
+      }
+    }
+    if (ch.active && this.gameTime > this.chaseNext) {
+      this.chaseNext = this.gameTime + 0.9 + Math.random() * 0.6;
+      if (p.x - ch.front < 700) sound.playTreeClimb();
+    }
+    for (const f of this.chaseFalling) {
+      f.t += dt;
+      f.vy += 1500 * dt;
+      f.x += f.vx * dt;
+      f.y += f.vy * dt;
+      f.rot += f.vr * dt;
+    }
+    this.chaseFalling = this.chaseFalling.filter((f) => f.t < 1.8);
+    // the last liana: a moment of slow motion as he catches it, with everything coming down behind him
+    if (!this.chaseSlowDone && p.isVineSwinging && this.vines.find((v) => v.id === p.swingVineId)?.x === plan.end) {
+      this.chaseSlowDone = true;
+      this.slowMoLeft = 0.55;
+    }
+    // caught by the front, or off the branch (below the lowest section near him by more than a fall can come back from)
+    let low = -Infinity;
+    for (const pl of this.platforms) if (pl.chase && Math.abs(pl.x + pl.width / 2 - p.x) < 800) low = Math.max(low, pl.y);
+    const off = low > -Infinity && p.y > low + 300 && !p.isVineSwinging && !p.climbing;
+    if ((caught(ch, p.x) && !p.isVineSwinging) || off) this.chaseCaught();
+  }
+
+  /** caught on the long branch: one heart, back at the flag with the branch whole again from there, the collapse waiting a moment */
+  private chaseCaught() {
+    const p = this.player;
+    const hp = p.hp - 1;
+    this.statHeartsLost += 1;
+    recorder.event('hurt', hp);
+    sound.playPlayerHurt();
+    if (hp <= 0) this.loseLife('pit');
+    else {
+      this.respawnAtCheckpoint('pit');
+      p.hp = hp;
+    }
+    const flagX = this.checkpoint.x;
+    for (const pl of this.platforms) if (pl.chase && pl.x + pl.width > flagX - 700) pl.broken = false;
+    this.chaseFalling = [];
+    restartAt(this.chase!, this.proto!.chase!, flagX);
+  }
+
+  /** 1-8's long branch: its sections from Matt's sheet (cracking just ahead of the collapse), the pieces falling away */
+  private drawChase(ctx: CanvasRenderingContext2D) {
+    const ch = this.chase!;
+    for (const pl of this.platforms) {
+      if (!pl.chase || pl.broken || !this.onScreen(pl.x + pl.width / 2, pl.y, pl.width + 200)) continue;
+      const state = sectionState(ch, pl.x, pl.x + pl.width);
+      // a quiver in the cracking sections
+      const dy = state === 'cracked' ? Math.sin(this.gameTime * 40 + pl.x) * 1.2 : 0;
+      if (!drawChaseSection(ctx, pl, state === 'cracked', Math.round(pl.x / BRANCH_TILE) % 2 === 1, dy)) {
+        ctx.fillStyle = state === 'cracked' ? '#7a5532' : '#8a6238';
+        ctx.fillRect(pl.x, pl.y + dy, pl.width, 34);
+      }
+    }
+    for (const f of this.chaseFalling) {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - f.t / 1.8);
+      ctx.translate(f.x + f.w / 2, f.y + f.h / 2);
+      ctx.rotate(f.rot);
+      if (!drawChaseBroken(ctx, f.right, -f.w / 2, -f.h / 2, f.w, f.h)) {
+        ctx.fillStyle = '#7a5532';
+        ctx.fillRect(-f.w / 2, -f.h / 4, f.w, f.h / 2);
+      }
+      ctx.restore();
+    }
+  }
+
+  /** the danger at the trailing edge of the view: darker the closer the collapse (screen space) */
+  private drawChaseEdge(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
+    const ch = this.chase!;
+    if (!ch.active) return;
+    const gap = this.player.x - ch.front;
+    const k = Math.max(0, Math.min(1, (650 - gap) / 500));
+    if (k <= 0.02) return;
+    const w = vw * 0.32;
+    const g = ctx.createLinearGradient(0, 0, w, 0);
+    g.addColorStop(0, `rgba(70, 18, 8, ${0.55 * k})`);
+    g.addColorStop(1, 'rgba(70, 18, 8, 0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, vh);
+  }
+
   /** step the watching eagle and its dive (1-7) */
   private updateWatch(dt: number) {
     const p = this.player;

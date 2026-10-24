@@ -14,7 +14,7 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
-import { paintedFor, onPaintedReady, hasPainted } from './paintedBackdrops.ts';
+import { canopyFor, paintedFor, onPaintedReady, hasPainted } from './paintedBackdrops.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
 import { polishEnabled, polishTier, pskip, rigFor, polishBack, polishFront, swayWeight, swayAmount, gustAt, type LayerName, type Rig } from './polish.ts';
@@ -1639,6 +1639,12 @@ export function renderSky(ctx: CanvasRenderingContext2D, world: number, vw: numb
 }
 
 /** Everything behind the playfield. */
+let canopyK = 0;
+/** how far up in the trees the view is, 0 (the forest floor) to 1 (the canopy): the painted middle and near strips fade over */
+export function setCanopy(k: number): void {
+  canopyK = Math.max(0, Math.min(1, k));
+}
+
 export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX: number, camY: number, vw: number, vh: number, time: number, lite = false) {
   const look = lookFor(world);
   const set = ensure(world);
@@ -1652,8 +1658,21 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   const live = !lite && !set.hazed;
   if (set.painted) {
     drawStrip(ctx, set.far, 'far', 0.05, camX, vw, vh, s, yo * 0.3);
-    drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
-    if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo);
+    // high in the trees the middle and near strips fade over to the canopy ones (setCanopy: 1-8's branch, the top of 1-4's climb)
+    const cano = canopyK > 0.01 && !set.waiting ? canopyFor(world) : null;
+    const k = cano ? canopyK : 0;
+    if (k < 0.99) {
+      ctx.globalAlpha = 1 - k;
+      drawStrip(ctx, set.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
+      if (set.near) drawStrip(ctx, set.near, 'near', 0.42, camX, vw, vh, s, yo);
+      ctx.globalAlpha = 1;
+    }
+    if (cano && k > 0.01) {
+      ctx.globalAlpha = k;
+      drawStrip(ctx, cano.mid, 'mid', 0.2, camX, vw, vh, s, yo * 0.8);
+      drawStrip(ctx, cano.near, 'near', 0.42, camX, vw, vh, s, yo);
+      ctx.globalAlpha = 1;
+    }
     ctx.fillStyle = rgba(look.grade[0], look.grade[1]);
     ctx.fillRect(0, 0, vw, vh);
     lanePool(ctx, look, world, vw, vh);

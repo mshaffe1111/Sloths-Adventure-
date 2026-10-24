@@ -262,6 +262,9 @@ export interface Platform {
   style?: 'branch' | 'log' | 'moss_stone' | 'ruin' | 'canopy_bridge';
   /** a hollow log Pokey pushes by walking into it (protoStage.ts): it slides between these x bounds */
   push?: { min: number; max: number };
+  /** a section of 1-8's long branch: it falls when the collapse passes (chase.ts), drawn from Matt's long-branch sheet; `chaseTip`: the end */
+  chase?: boolean;
+  chaseTip?: boolean;
 }
 
 /**
