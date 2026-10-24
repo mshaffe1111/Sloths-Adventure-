@@ -1,5 +1,6 @@
 import React from 'react';
 import { recorder, savedTesterName } from '../game/playRecorder.ts';
+import { refinedControls } from '../game/refinedControls.ts';
 
 /**
  * The control test's front door (only with #ctest in the address): who is playing, what gets recorded, and Start.
@@ -11,6 +12,8 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
     e?.preventDefault();
     if (!name.trim()) return;
     recorder.start(name);
+    // which touch rules this run used, so before and after can be compared
+    recorder.event('rules', refinedControls() ? 'refined' : 'old');
     onStart();
   };
   return (

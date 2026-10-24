@@ -3,6 +3,7 @@ import { InputEngine } from '../game/inputEngine.ts';
 import { TouchGestures } from '../game/touchGestures.ts';
 import { jumpHelp } from '../game/jumpHelp.ts';
 import { recorder } from '../game/playRecorder.ts';
+import { refinedControls } from '../game/refinedControls.ts';
 
 /**
  * The whole screen is the controller. There are no buttons.
@@ -38,7 +39,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady },
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear },
     );
   }
   const G = gestures.current;

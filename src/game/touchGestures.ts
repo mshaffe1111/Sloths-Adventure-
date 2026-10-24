@@ -95,6 +95,14 @@ export interface GestureEnv {
   air(): boolean;
   /** false while a mega punch is still cooling down: a held thumb then waits instead of announcing a punch that cannot happen */
   megaReady?(): boolean;
+  /**
+   * Refined controls (the control test's answer, 2026-10-23): a sideways flick only kicks when something is there to kick. The recorded
+   * testers threw 85 kicks and 80 of them had no animal within 250 px: a steering thumb lifting quickly, or a quick sideways swipe that
+   * was meant to start a run (in all 27 of those the finger stayed down afterwards and wanted to run). Unset = the old rules.
+   */
+  refined?(): boolean;
+  /** an animal, the boss or a cage is close enough to kick (asked only when refined) */
+  kickNear?(): boolean;
 }
 
 type Role = 'mover' | 'pending' | 'action' | 'ignored';
@@ -144,6 +152,11 @@ export class TouchGestures {
     this.sink = sink;
     this.width = width;
     this.env = env;
+  }
+
+  /** refined controls are on and nothing is near enough to kick: a sideways flick is a run, not a kick */
+  private noKick(): boolean {
+    return !!this.env?.refined?.() && !(this.env.kickNear?.() ?? true);
   }
 
   private assistOn(): boolean {
@@ -231,7 +244,7 @@ export class TouchGestures {
       // on the left half too, where the run starts at once and a flick used to leave only a stutter (speed decides, not the side)
       const edx = f.x - f.x0;
       const eel = Math.max(1, t - f.t0);
-      const flicked = !f.jumped && !f.ducked && eel <= TUNING.flickLiftMs && Math.abs(edx) >= TUNING.flickPx && Math.abs(edx) >= Math.abs(f.y - f.y0) && Math.abs(edx) / eel >= (f.early ? TUNING.flickLiftSpeed : TUNING.steerFlickSpeed);
+      const flicked = !this.noKick() && !f.jumped && !f.ducked && eel <= TUNING.flickLiftMs && Math.abs(edx) >= TUNING.flickPx && Math.abs(edx) >= Math.abs(f.y - f.y0) && Math.abs(edx) / eel >= (f.early ? TUNING.flickLiftSpeed : TUNING.steerFlickSpeed);
       if (flicked) {
         this.sink.feedback('kick');
         this.sink.kick(edx < 0 ? -1 : 1);
@@ -439,6 +452,18 @@ export class TouchGestures {
         return true;
       }
       if (ax >= TUNING.flickPx && !upish && ax >= ay && ax / el >= sp) {
+        if (this.noKick()) {
+          // nothing to kick: a lone finger flicking sideways wants to run that way, so it steers from where it began
+          if (f.role === 'pending' && !this.mover() && !lifting) {
+            f.role = 'mover';
+            f.early = true;
+            f.ax = f.x0;
+            f.ay = f.y0;
+            this.steer(f);
+            return true;
+          }
+          return false;
+        }
         f.consumed = true;
         this.sink.feedback('kick');
         this.sink.kick(dx < 0 ? -1 : 1);

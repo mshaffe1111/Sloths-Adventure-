@@ -1,4 +1,5 @@
 import { recorder } from './playRecorder.ts';
+import { autoPump, KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import type {
   LevelConfig,
   PlayerState,
@@ -21,7 +22,7 @@ import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep }
 import { controlStyle } from './controlPrefs.ts';
 import { lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, easeAssist, newAirDrive, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, SWING, airCarry, airTakeOff, easeAssist, newAirDrive, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -162,6 +163,8 @@ export class GameEngine {
   private ropeId = -1;
   private enemies: Enemy[];
   private boss: BossEntity | null;
+  /** refined controls (refinedControls.ts), fixed for the stage */
+  private refined = refinedControls();
   private collectibles: Collectible[];
   /** the hand-built stage's extras (protoStage.ts): logs to push, hints, leaves over secrets */
   private proto: ProtoExtras | null = null;
@@ -635,6 +638,7 @@ export class GameEngine {
     if (recorder.on) this.recordPokey();
     // the touch recogniser reads this: in the air with a second jump to spare, a tap is that jump
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
+    if (this.refined) this.input.kickNear = this.somethingToKick();
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
     // the glide leaf is gone the moment he lands or grabs anything
@@ -1040,7 +1044,9 @@ export class GameEngine {
           if (this.input.state.left) p.facing = -1;
           const steer = (this.input.state.right ? 1 : 0) - (this.input.state.left ? 1 : 0);
           const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
-          const r = swingStep(sw, nearSwingVine, dt, steer as -1 | 0 | 1, climb as -1 | 0 | 1);
+          // refined controls: with nothing held the vine swings itself up to a good size (one-finger players never pumped it)
+          const push = this.refined && steer === 0 ? autoPump(sw.angle, sw.omega, sw.len, SWING.g, p.facing) : steer;
+          const r = swingStep(sw, nearSwingVine, dt, push as -1 | 0 | 1, climb as -1 | 0 | 1);
           p.swingAngle = sw.angle;
           p.swingAngularVelocity = sw.omega;
           p.swingLength = sw.len;
@@ -1079,6 +1085,8 @@ export class GameEngine {
             ? 1
             : this.input.state.left
             ? -1
+            : this.refined
+            ? p.facing // refined: always the way he faces, toward the next vine (the swing's side threw testers backward)
             : (Math.sin(p.swingAngle) > 0.05 ? 1 : Math.sin(p.swingAngle) < -0.05 ? -1 : p.facing);
 
           p.facing = releaseDir as 1 | -1;
@@ -1159,7 +1167,8 @@ export class GameEngine {
               p.vx -= dir * (this.atk && p.grounded ? PHYS.groundDec : PHYS.airDec) * dt;
             }
           } else {
-            const dec = p.grounded ? PHYS.groundDec : PHYS.airStop;
+            // refined controls: a finger lifted in mid-air no longer brakes him (holding down still does)
+            const dec = p.grounded ? PHYS.groundDec : this.refined && !this.input.state.down ? 0 : PHYS.airStop;
             if (Math.abs(p.vx) <= dec * dt) p.vx = 0;
             else p.vx -= Math.sign(p.vx) * dec * dt;
           }
@@ -2366,6 +2375,17 @@ export class GameEngine {
       this.addFloatingText('MEGA PUNCH!', p.x, p.y - 50, '#fde047');
     }
     if (m.lunge && p.grounded) p.vx = Math.max(-380, Math.min(380, p.vx + p.facing * m.lunge));
+  }
+
+  /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
+  private somethingToKick(): boolean {
+    const p = this.player;
+    const cx = p.x + p.width / 2, cy = p.y - p.height / 2;
+    const near = (x: number, y: number) => Math.abs(x - cx) < KICK_NEAR_PX && Math.abs(y - cy) < KICK_NEAR_PX * 0.6;
+    for (const e of this.enemies) if (!e.defeated && near(e.x + (e.width ?? 0) / 2, e.y)) return true;
+    if (this.boss && near(this.boss.x, this.boss.y)) return true;
+    for (const c of this.collectibles) if (c.type === 'cage' && !c.collected && near(c.x, c.y)) return true;
+    return false;
   }
 
   /** the control-test recorder: where Pokey is, what he is doing and which stretch of the test he is on */

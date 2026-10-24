@@ -28,6 +28,8 @@ export class InputEngine {
   public source: 'keys' | 'pad' | 'gesture' = 'keys';
   /** the engine says, every frame: he is in the air and still has a second jump (the gesture recogniser reads it to accept a tap as that jump) */
   public airJumpReady = false;
+  /** the engine says something is close enough to kick (the refined touch rules only kick then) */
+  public kickNear = true;
   /** the engine says, every frame: a mega punch can start (it is not cooling down), so a held thumb only announces one that will happen */
   public megaReady = true;
   private jumpBufferTimer = 0;
