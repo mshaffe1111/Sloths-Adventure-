@@ -18,15 +18,15 @@
 import { fixPickups } from './flowerReach.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
-import { reachGlide, reachJump } from './physics.ts';
+import { JUMP_RISE, reachGlide, reachJump } from './physics.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow, maxRise } from './protoCheck.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-6': 'proto' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto' };
 const KEY = 'sloth_proto_16';
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
@@ -116,6 +116,8 @@ const RISE = maxRise();
  * has to follow most of it, high and low, to open the sanctuary.
  */
 export const PETAL_GOAL_12 = 80;
+/** 1-5 More Petals asks for 90 (a step up from 1-2's 80), and holds about one and a half times that */
+export const PETAL_GOAL_15 = 90;
 /** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
 export const SNAKE_GOAL_13 = 16;
 
@@ -713,6 +715,22 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     pieces.push({ k: 'highrun', x0, x1: x });
   }
 
+  /**
+   * the goal is a real test when the stage holds about one and a half times it (two in three to find, room to miss some): the
+   * finish is thinned evenly, the taught parts and the hidden shelf are left whole
+   */
+  function thinFinish(goal: number) {
+    const fin = beats[beats.length - 1];
+    const late = C.filter((c) => c.type === 'flower' && c.x >= fin[0]);
+    const keep = Math.max(Math.round(late.length / 3), Math.round(goal * 1.5) - (C.filter((c) => c.type === 'flower').length - late.length));
+    if (late.length > keep) {
+      const step = late.length / (late.length - keep);
+      const out = new Set<Collectible>();
+      for (let i = 0; i < late.length - keep; i++) out.add(late[Math.min(late.length - 1, Math.floor(i * step + step / 2))]);
+      for (let i = C.length - 1; i >= 0; i--) if (out.has(C[i])) C.splice(i, 1);
+    }
+  }
+
   if (plan === '1-2') {
     // 1-2 The Petal Trail: the petals show the way. Taught on the floor (they arc over each gap where the jump goes), tested up the
     // stumps to the branches overhead, twisted into a trail that swaps between high and low. The stage asks for 33 of them.
@@ -758,17 +776,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       }
       rest(R.r(700, 900));
     });
-    // the goal is a real test when the stage holds about one and a half times it (two in three to find, room to miss some): the
-    // finish is thinned evenly, the taught parts and the hidden shelf are left whole
-    const fin = beats[beats.length - 1];
-    const late = C.filter((c) => c.type === 'flower' && c.x >= fin[0]);
-    const keep = Math.max(Math.round(late.length / 3), Math.round(PETAL_GOAL_12 * 1.5) - (C.filter((c) => c.type === 'flower').length - late.length));
-    if (late.length > keep) {
-      const step = late.length / (late.length - keep);
-      const out = new Set<Collectible>();
-      for (let i = 0; i < late.length - keep; i++) out.add(late[Math.min(late.length - 1, Math.floor(i * step + step / 2))]);
-      for (let i = C.length - 1; i >= 0; i--) if (out.has(C[i])) C.splice(i, 1);
-    }
+    thinFinish(PETAL_GOAL_12);
   }
 
   /** branches over a soft pit with a snake on most of them: punch it or hop over it (falling only drops him to the moss) */
@@ -859,6 +867,126 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       ropeGap(false, true);
       rest(R.r(600, 800));
     });
+  }
+
+  /** petals arcing over soft gaps only a double jump crosses: the top of each arc is higher than one jump reaches */
+  function doubleArcs() {
+    const x0 = x;
+    run(R.r(180, 240));
+    const two = reachJump(0, true);
+    for (const w of [two * 0.66, two * 0.74, two * 0.8]) {
+      const edge = x;
+      close();
+      const far = Math.round(edge + w);
+      softPit(edge, far);
+      arc(edge - 40, far + 40, Math.round(G - 20 - JUMP_RISE - 45), 3, 'hibiscus');
+      open(far);
+      run(R.r(240, 320));
+    }
+    expert += (x - x0) / RUN + 2;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+
+  /**
+   * creaking branches with petals on them, over safe ground: each one gives way a moment after he lands (and grows back), so he grabs
+   * and keeps moving. Never needed to get through (the floor runs underneath), only to get the petals.
+   */
+  function creakRun() {
+    const x0 = x;
+    run(R.r(160, 220));
+    block(x, x + 100, 60);
+    flower(x + 50, G - 94, 'orchid');
+    run(100 + R.r(50, 80));
+    const y = G - Math.round(R.r(135, 150));
+    const n = R.i(4, 5);
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(150, 200));
+      branch(x, x + w, y + Math.round(R.r(-12, 12)), 'fragile');
+      row(x + 35, x + w - 35, y - 34, 2, 'hibiscus');
+      run(w + Math.round(reachJump(0, false) * R.r(0.35, 0.5)));
+    }
+    run(R.r(160, 240));
+    expert += (x - x0) / RUN + 1;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
+  /** a tree to climb, with World 1's keepsake hidden in a Hush Fern at the end of its branch (crouch beside it to search) */
+  function fernTree() {
+    const x0 = x;
+    run(R.r(300, 360));
+    const tX = x - 150;
+    const perchY = 300;
+    trunk(tX, G, perchY);
+    branch(tX - 40, tX + 300, perchY);
+    for (let i = 0; i < 4; i++) flower(tX, G - 70 - i * 60, 'hibiscus');
+    row(tX + 60, tX + 160, perchY - 34, 2, 'orchid');
+    const keep = findForStage(config.worldIndex, config.miniIndex);
+    if (keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: tX + 250, y: perchY - 26, collected: false, bobPhase: 0 });
+    run(R.r(260, 320));
+    expert += (x - x0) / RUN + (2 * (G - perchY)) / CLIMB;
+    pieces.push({ k: 'kapok', x0, x1: x });
+  }
+
+  /** a lookout up a trunk, and far out over the floor a ledge only the Leaf Glide reaches, with a golden seed (back after World 4) */
+  function glideLookout() {
+    const x0 = x;
+    run(R.r(300, 360));
+    const tX = x - 120;
+    const perchY = 300;
+    trunk(tX, G, perchY);
+    branch(tX - 40, tX + 220, perchY);
+    for (let i = 0; i < 3; i++) flower(tX, G - 70 - i * 70, 'orchid');
+    // higher than a double jump from the floor, and past a double jump from the lookout, well inside a glide
+    const gy = Math.round(G - RISE - 30);
+    const dy = perchY - gy;
+    const gap = Math.round((reachJump(dy, true) + reachGlide(dy, true)) / 2);
+    const lx = tX + 220 + gap;
+    branch(lx, lx + 120, gy);
+    goldenSeed(lx + 60, gy - 34);
+    hint(tX - 60, 'Something shiny, far away...', 'Something shiny, far away...', 'Something shiny, far away...', undefined);
+    x = lx + 120 + R.r(380, 460);
+    expert += (x - x0) / RUN + (2 * (G - perchY)) / CLIMB;
+    pieces.push({ k: 'kapok', x0, x1: x });
+  }
+
+  if (plan === '1-5') {
+    // 1-5 More Petals: everything so far, mixed. Every group of petals asks for a different move (a climb, a rope, a double jump, a
+    // bounce, a punch), then the petals go onto creaking branches that give way: grab and keep moving. The keepsake hides in a fern
+    // up a tree, and a seed far out from a lookout waits for the Leaf Glide.
+    beat('Start', () => {
+      rest(R.r(650, 800));
+      flag();
+    });
+    beat('Test: a move for every group', () => {
+      hint(x + 40, 'Every group of petals needs a different move', 'Every group of petals needs a different move', 'Every group of petals needs a different move');
+      mixed(
+        () => fernTree(),
+        () => ropeGap(false, true),
+        () => doubleArcs(),
+        () => mushroomCache(),
+        () => { rest(R.r(200, 300)); snakes(); },
+      );
+      flag();
+    });
+    beat('Twist: creaking branches', () => {
+      hint(x + 60, 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving');
+      creakRun();
+      rest(R.r(250, 350));
+      creakRun();
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      const pieceList = [() => ropeGap(false, true), () => creakRun(), () => doubleArcs(), () => { rest(R.r(250, 350)); stumps(); }, () => highRoad()];
+      while (expert < EXPERT_SECONDS - 22 && n < 24) {
+        pieceList[n % pieceList.length]();
+        n++;
+        if (n % 3 === 0) flag();
+      }
+      glideLookout();
+      rest(R.r(700, 900));
+    });
+    thinFinish(PETAL_GOAL_15);
   }
 
   if (plan === 'ctest') {
@@ -979,7 +1107,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : {}) };
   // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
   return {
