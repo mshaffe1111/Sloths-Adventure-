@@ -132,7 +132,14 @@ export function isCalm(p: PlayerState, time: number, ev: ClipCalm): boolean {
  */
 export const MOVE_SHEETS: Record<string, string> = {
   run: 'move-run', walk: 'move-walk', jab: 'move-jab', cross: 'move-cross', hook: 'move-hook', kick: 'move-kick', kick2: 'move-kick2', mega: 'move-mega',
+  climb: 'move-climb', swing: 'move-swing', jump: 'move-jump',
 };
+/** the climb sheet is one full hand-over-hand cycle (left reach, right reach) over this much height */
+export const CLIMB_CYCLE_PX = 110;
+/** the swing sheet runs from the back of the swing to the front; this angle (radians) or more is the end of the sheet */
+export const SWING_REACH = 1.0;
+/** the jump sheet runs from take-off to the bottom of the fall, by vertical speed from this (rising, px/s) to this (falling) */
+export const JUMP_VY: [number, number] = [-720, 620];
 /** strides per turn of walkCycle (the same rate as the standard hero's cycle, so the feet keep pace with the ground) */
 const STRIDE_RATE = 0.6;
 const WALK_MAX = 90;
@@ -142,6 +149,15 @@ export function moveIndex(n: number, u: number): number {
   return Math.max(0, Math.min(n - 1, Math.floor(u * n)));
 }
 
+/** pure: how far through the swing sheet (0 back .. 1 front) an angle ahead of him (radians, + = in front) is */
+export function swingU(ahead: number): number {
+  return Math.max(0, Math.min(1, (ahead / SWING_REACH + 1) / 2));
+}
+/** pure: how far through the jump sheet (0 take-off .. 1 falling fast) a vertical speed is */
+export function jumpU(vy: number): number {
+  return Math.max(0, Math.min(1, (vy - JUMP_VY[0]) / (JUMP_VY[1] - JUMP_VY[0])));
+}
+
 /** the redrawn frame for a move or the run/walk, or null when he is doing something else or the sheet is not there */
 export function movePick(p: PlayerState): ClipFrame | null {
   if (p.attackMove && p.attackU !== undefined && !p.isVineSwinging && !p.climbing && !p.hanging) {
@@ -149,6 +165,26 @@ export function movePick(p: PlayerState): ClipFrame | null {
     const sheet = MOVE_SHEETS[p.attackMove];
     if (!sheet || !hasClip(sheet)) return null;
     return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, p.attackU));
+  }
+  // the climb: the frame follows the height he has climbed, so his paws keep pace with the trunk
+  if (p.climbing) {
+    const sheet = MOVE_SHEETS.climb;
+    if (!hasClip(sheet)) return null;
+    const u = ((((-p.y / CLIMB_CYCLE_PX) % 1) + 1) % 1);
+    return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, u));
+  }
+  // the swing: the frame follows where he is in the swing, from the back (0) to the front (1)
+  if (p.isVineSwinging) {
+    const sheet = MOVE_SHEETS.swing;
+    if (!hasClip(sheet)) return null;
+    const ahead = (p.swingAngle ?? 0) * p.facing;
+    return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, swingU(ahead)));
+  }
+  // an ordinary jump (not the flip, a dive or a bounce, which keep their own frames): take-off, the top, the fall, by vertical speed
+  if (!p.grounded && !p.hanging) {
+    const sheet = MOVE_SHEETS.jump;
+    if (p.isDoubleJumping || p.diving || p.bounce || !hasClip(sheet)) return null;
+    return frameOf(sheet, moveIndex(HERO_CLIPS[sheet].n, jumpU(p.vy)));
   }
   if (!p.grounded || p.climbing || p.hanging || p.isVineSwinging || p.ducking || p.pushing) return null;
   const speed = Math.abs(p.vx);
