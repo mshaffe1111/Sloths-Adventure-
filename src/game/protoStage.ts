@@ -28,11 +28,12 @@ import { driftX, gapFor, LOG_DROP, LOG_HEIGHT, logLayout, surfaceBelowBank, type
 import type { SkillId } from './skills.ts';
 import type { Zone } from './zones.ts';
 import type { W3Decor } from './w3Art.ts';
+import type { ThornVine } from './thornVine.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -85,6 +86,8 @@ export interface ProtoExtras {
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
   bushes?: import('./watcher.ts').Bush[];
   watch?: import('./watcher.ts').WatchZone[];
+  /** World 3's sleeping thorn vines (3-5: thornVine.ts) */
+  thorns?: import('./thornVine.ts').ThornVine[];
   /** World 3's painted dressing: stalactites, glowworm threads, ferns, the grotto mouth (protoStage.ts, drawn by w3Art.ts) */
   w3decor?: import('./w3Art.ts').W3Decor[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
@@ -164,6 +167,8 @@ export const PETAL_GOAL_15 = 90;
 export const GUARD_GOAL_19 = 16;
 /** 3-3 asks for 12 prowlers driven off (the stage holds about one and a half times that) */
 export const PROWLER_GOAL_33 = 12;
+/** 3-6 asks for 5 of Grandma's things (the stage hides 7) */
+export const GRANDMA_GOAL_36 = 5;
 /** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
 export const SNAKE_GOAL_13 = 16;
 
@@ -180,6 +185,7 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  */
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto'): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-4') return buildKapok(config, seed);
+  if (plan === '3-4') return buildKapok(config, seed, false, true);
   if (plan === '1-8') return buildLongBranch(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];
@@ -1835,6 +1841,174 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     });
   }
 
+
+  // ----- 3-5 Sleeping Vines: the old thorn vines (thornVine.ts) -----
+  const THORNS: ThornVine[] = [];
+  /** a thorn vine hanging over the path at vx: its bud just over his head, dozing `sleep` seconds a cycle */
+  const thornAt = (vx: number, sleep: [number, number]) =>
+    THORNS.push({ x: Math.round(vx), top: G - 470, bud: G - 112, reach: 105, sleep: R.r(sleep[0], sleep[1]), stir: 1.1, look: 1.7, offset: R.r(0, 10) });
+  /**
+   * a row of thorn vines, `spacing` apart: room to stand between two of them and freeze. `pits`: every other vine hangs over a soft pit,
+   * hopped while it sleeps.
+   */
+  function vineRow(n: number, sleep: [number, number], spacing: [number, number], pits = false) {
+    const x0 = x;
+    run(R.r(260, 320));
+    for (let k = 0; k < n; k++) {
+      if (pits && k % 2 === 1) {
+        const w = Math.round(reachJump(0, false) * R.r(0.45, 0.55));
+        run(R.r(spacing[0], spacing[1]) - w / 2);
+        const edge = x;
+        close();
+        const far = edge + w;
+        softPit(edge, far);
+        thornAt((edge + far) / 2, sleep);
+        open(far);
+        // (the next vine is measured from this one, so the pocket between them stays as wide as the rest)
+        x -= w / 2;
+        continue;
+      } else {
+        run(R.r(spacing[0], spacing[1]));
+        thornAt(x, sleep);
+      }
+      // a flower in the pocket before each vine: where he stands to wait
+      flower(x - R.r(150, 180), G - 40, 'orchid');
+    }
+    run(R.r(300, 380));
+    expert += (x - x0) / RUN + n * 1.4;
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  // ----- 3-6 Grandma's Things: what Dot hid in the ferns -----
+  const THINGS = ['locket', 'rattle', 'teddy bear', 'bell'];
+  let thingsPlaced = 0;
+  /** one of Grandma's things in a fern at px on the surface: crouch beside it to find it (engine.ts, a hidden relic) */
+  const thingFern = (px: number, surface: number) => {
+    const id = cid++;
+    C.push({ id, type: 'relic', hidden: true, x: Math.round(px), y: surface - 26, collected: false, bobPhase: 0, thing: THINGS[id % 4] });
+    thingsPlaced++;
+    // nothing else in the fern: a flower there would hide it (and give it away)
+    for (let i = C.length - 2; i >= 0; i--) if (C[i].type === 'flower' && Math.abs(C[i].x - px) < 90 && Math.abs(C[i].y - (surface - 26)) < 90) C.splice(i, 1);
+  };
+  /** a fern that holds nothing, the same as the rest (all ferns look alike) */
+  const plainFern = (px: number, surface = G) => W3D.push({ n: 'fern', x: Math.round(px), b: surface + 6, w: 150, flip: R.chance(0.5) });
+  /** a stretch of floor with ferns along it, one of them hiding a thing */
+  function fernPatch(ferns: number) {
+    const x0 = x;
+    const len = 300 + ferns * R.r(190, 230);
+    run(len);
+    const hide = R.i(0, ferns - 1);
+    for (let k = 0; k < ferns; k++) {
+      const fx = x0 + 200 + ((len - 400) * k) / Math.max(1, ferns - 1);
+      if (k === hide) thingFern(fx, G);
+      else plainFern(fx);
+    }
+    expert += len / RUN + 3;
+    pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  if (plan === '3-5') {
+    // 3-5 Sleeping Vines: the old thorn vines Grandma said were asleep. One of them moved. Pass under them while they sleep; when one
+    // opens an eye, freeze (or duck) until it dozes off again. World 3's keepsake, the medal, is in a Hush Fern along the way.
+    beat('Start', () => {
+      rest(R.r(600, 720));
+      hint(x - 300, 'Grandma said the old thorn vines were asleep...');
+      flag();
+    });
+    beat('Learn: one vine', () => {
+      hint(x + 40, 'When a vine opens an eye, freeze! Move on when it sleeps');
+      vineRow(1, [5, 6], [380, 420]);
+      vineRow(2, [4.5, 5.5], [380, 440]);
+      flag();
+    });
+    beat('Develop: a row of them', () => {
+      vineRow(4, [3.6, 4.6], [340, 420]);
+      flag();
+      // the keepsake: the medal, in a Hush Fern on a quiet stretch
+      const keep = findForStage(config.worldIndex, config.miniIndex);
+      const k0 = x;
+      rest(R.r(560, 640));
+      if (keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: Math.round(k0 + (x - k0) / 2), y: G - 26, collected: false, bobPhase: 0 });
+      expert += 3;
+      vineRow(4, [3.6, 4.4], [360, 430], true);
+      flag();
+    });
+    beat('Twist: vines in the dark', () => {
+      hint(x + 40, 'In the dark, standing still does two things');
+      const z0 = x;
+      glowDark(R.r(1500, 1700), 1);
+      // the vines hang between the glowworms, clear of where the dark starts
+      for (let vx = z0 + 640; vx < x - 420; vx += R.r(380, 460)) if (!P.some((pl) => pl.style === 'moss_stone' && vx > pl.x - 120 && vx < pl.x + pl.width + 120)) thornAt(vx, [3.6, 4.4]);
+      expert += 3;
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 16) {
+        const k = n % 3;
+        if (k === 0) vineRow(R.i(3, 4), [3.4, 4.2], [340, 420], n > 2);
+        else if (k === 1) { rest(R.r(240, 340)); stumps(); }
+        else sporeGap();
+        n++;
+        if (n % 2 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
+  if (plan === '3-6') {
+    // 3-6 Grandma's Things: Dot hid Grandma's things in the ferns, a LOT of ferns, very fast, because there were boots. Crouch beside a
+    // fern that rustles on its own. On the floor first, then up on the grotto's stones, past the spores, and in the dark.
+    beat('Start', () => {
+      rest(R.r(560, 680));
+      hint(x - 340, "Dot hid Grandma's things in the ferns. Crouch beside one that rustles", "Dot hid Grandma's things in the ferns. Hold down beside one that rustles", "Dot hid Grandma's things in the ferns. Hold down beside one that rustles");
+      flag();
+    });
+    beat('Learn: the rustling fern', () => {
+      fernPatch(3);
+      rest(R.r(240, 320));
+      fernPatch(4);
+      flag();
+    });
+    beat('Develop: up high and past the spores', () => {
+      // on top of the stones: the highest pillar's top holds a fern
+      const x0 = x;
+      pillars([60, 130, 90], [0.5, 0.62]);
+      const tops = P.filter((pl) => pl.style === 'moss_stone' && pl.x > x0 && pl.y < G - 100);
+      const hi = tops.sort((a, b) => a.y - b.y)[0];
+      if (hi) thingFern(hi.x + hi.width / 2, hi.y);
+      sporeRest(R.r(620, 720));
+      fernPatch(3);
+      flag();
+    });
+    beat('Twist: ferns in the dark', () => {
+      hint(x + 40, 'Ferns in the dark too. Stand still, and the glowworms help you look');
+      const stops = glowDark(R.r(1300, 1500), 1);
+      // a fern at the first stop, and plain ones about
+      thingFern(stops[0] + 160, G);
+      plainFern(stops[0] + 420);
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while ((expert < EXPERT_SECONDS - 10 || thingsPlaced < GRANDMA_GOAL_36 + 2) && n < 16) {
+        const k = n % 3;
+        if (k === 0) fernPatch(R.i(3, 4));
+        else if (k === 1) highRoad();
+        else { rest(R.r(240, 340)); stumps(); }
+        n++;
+        if (n % 2 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
+  if (plan === '3-2') {
+    // World 3's note (Meeca, in plain sight: a Keeper's Bell) on the quiet floor just before the eyes
+    const note = findForStage(config.worldIndex, config.miniIndex);
+    const at = beats.find((b) => b[2].startsWith('Develop'));
+    if (note && note.kind === 'note' && at) C.push({ id: cid++, type: 'find', findId: note.id, hidden: false, x: Math.round(at[0] + 170), y: G - 26, collected: false, bobPhase: 0 });
+  }
   // the walk to the shrine makes up any last seconds the dice left short
   if (config.worldIndex === 3 && expert < EXPERT_SECONDS) rest((EXPERT_SECONDS - expert) * RUN + 60);
 
@@ -1848,7 +2022,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
         const kinds = plan === '3-2' ? (['stalagmites', 'mushrooms', 'clawRock', 'stalagmites'] as const) : (['stalagmites', 'mushrooms', 'fern', 'stalagmites', 'clawRock'] as const);
         const k = R.pick(kinds);
         const w = k === 'stalagmites' ? R.r(140, 200) : k === 'mushrooms' ? R.r(84, 110) : k === 'fern' ? R.r(140, 180) : R.r(100, 130);
-        if (!BUSHES.some((b) => cx > b.x - 60 && cx < b.x + b.w + 60)) W3D.push({ n: k, x: Math.round(cx), b: G + 8, w: Math.round(w), flip: R.chance(0.5) });
+        const busy = BUSHES.some((b) => cx > b.x - 60 && cx < b.x + b.w + 60) || C.some((c) => (c.hidden || c.type === 'find') && Math.abs(c.x - cx) < 170) || W3D.some((d) => d.n === 'fern' && Math.abs(d.x - cx) < 170);
+        if (!busy) W3D.push({ n: k, x: Math.round(cx), b: G + 8, w: Math.round(w), flip: R.chance(0.5) });
         if (R.chance(0.5)) {
           const hangLit = !darkAt(cx) && R.chance(0.45);
           W3D.push({ n: hangLit ? 'glowLit' : 'stalactite', x: Math.round(cx + R.r(-90, 90)), b: G - 480, w: Math.round(hangLit ? R.r(70, 90) : R.r(110, 150)), hang: true, flip: R.chance(0.5) });
@@ -1861,7 +2036,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
@@ -1885,6 +2060,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     ...(GZ.length ? { zones: GZ } : {}),
     proto: {
       ...(W3D.length ? { w3decor: W3D } : {}),
+      ...(THORNS.length ? { thorns: THORNS } : {}),
       hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
       ...(MIX ? { mix: MIX, grant: ['shimmy'] as SkillId[] } : {}),
     },
@@ -1906,8 +2082,12 @@ const KAPOK_MARGIN = 90;
  * `village` (2-6 Up the Bank Houses, w2Stages.ts): the same climb up the riverbank village. World 2's kit paints it (bamboo posts, plank
  * porches, earth), the porches get the village's round doors, windows and washing, the secret hollow is a lit round window instead,
  * and Gruntlewick waits at the top with his scroll.
+ *
+ * `grotto` (3-4 The Sinkhole): the same climb up the wall of the sinkhole toward the moonlight. World 3's kit paints it (root columns,
+ * limestone shelves), prowling ocelots stand in for the snakes, and Matt's grotto pieces dress it: moss hanging under the shelves,
+ * glowing mushrooms and ferns on them, stalactites and glowworm threads up in the dark.
  */
-export function buildKapok(config: LevelConfig, seed: number, village = false): GeneratedStage & { proto: ProtoExtras } {
+export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const W = KAPOK_W;
   const P: Platform[] = [];
@@ -2022,6 +2202,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false): 
   beat('Learn: up the trunk', () => {
     cur = { ...P[0], x: 300, width: 400 } as Platform; // the patch of floor the first trunk stands on
     if (village) hint('Up through the village! Slide up a post to climb', 'Up through the village! Hold up on a post to climb', 'Up through the village! Hold up on a post to climb');
+    else if (grotto) hint('Up the sinkhole, toward the moonlight! Slide up a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb');
     else hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
     climb(Math.round(R.r(280, 320)), 4);
     row(cur.x + 80, cur.x + cur.width - 30, cur.y - 34, 2, 'hibiscus');
@@ -2059,7 +2240,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false): 
       if (n % 3 === 2) hops(R.i(2, 3));
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
-      if (n >= 2 && cur.width >= 320 && R.chance(0.4)) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
+      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
@@ -2124,7 +2306,28 @@ export function buildKapok(config: LevelConfig, seed: number, village = false): 
     // the floor at the bottom is the river's bank, with reeds
     decor.push({ n: 'reedTall', x: 160, b: 6, w: 64 }, { n: 'reedShort', x: W - 200, b: 6, w: 90 });
   }
+  const w3decor: W3Decor[] = [];
+  if (grotto) {
+    // the sinkhole: moss hanging under the shelves, mushrooms and ferns on them, the clawed rock and stalagmites on the floor,
+    // stalactites and glowworm threads up in the dark (clear of the root columns and the ropes)
+    const clear = (x: number, y: number, half: number) =>
+      V.every((v) => v.vineType !== 'tree_climb' || v.topY > y + 10 || v.bottomY < y - 10 || Math.abs(v.x - x) > half + 30) &&
+      ROPES.every((r) => Math.abs(r.y + ROPE_RISE - y) > 20 || (Math.abs(r.x0 - x) > half + 30 && Math.abs(r.x1 - x) > half + 30));
+    let k = 0;
+    for (const p of P) {
+      if (p === P[0] || p.width < 180) continue;
+      const at = [0.5, 0.3, 0.7].map((u) => p.x + p.width * u).find((x) => clear(x, p.y, 50));
+      if (at === undefined) continue;
+      const kind = k++ % 4;
+      if (kind === 0) w3decor.push({ n: 'mushrooms', x: at, b: p.y + 6, w: 80 });
+      else if (kind === 1) w3decor.push({ n: 'fern', x: at, b: p.y + 6, w: 120, flip: k % 2 === 0 });
+      else if (kind === 2) w3decor.push({ n: 'mossCurtain', x: p.x + p.width / 2, b: p.y + 14, w: Math.min(220, p.width * 0.7), hang: true });
+      else w3decor.push({ n: 'glowLit', x: at, b: p.y + 20, w: 60, hang: true });
+    }
+    for (let fx = 200; fx < W - 200; fx += R.r(420, 620)) w3decor.push({ n: R.pick(['stalagmites', 'clawRock', 'mushrooms'] as const), x: Math.round(fx), b: 8, w: Math.round(R.r(110, 170)) });
+  }
   const shift = 400 - crown.y;
+  for (const d of w3decor) d.b += shift;
   for (const p of P) p.y += shift;
   for (const v of V) { v.topY += shift; v.bottomY += shift; }
   for (const t of T) { t.groundY += shift; t.topY += shift; }
@@ -2161,7 +2364,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false): 
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
-    proto: { hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}) },
+    proto: { hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}) },
   };
 }
 

@@ -159,3 +159,133 @@ export function drawGlowworm(ctx: CanvasRenderingContext2D, x: number, hands: nu
   }
   return true;
 }
+
+/**
+ * A sleeping thorn vine (thornVine.ts), drawn in shapes until Matt's sheet arrives: a thick twisted vine hanging from the roof, thorns
+ * along it, and a drooping bud with eyes at its end. `phase` and `u` say what it is doing; `lash` (0..1, or -1) swings it out toward `dir`.
+ */
+export function drawThornVine(
+  ctx: CanvasRenderingContext2D, v: { x: number; top: number; bud: number }, phase: 'sleep' | 'stir' | 'look', u: number, lash: number, dir: number, t: number,
+) {
+  const len = v.bud - v.top;
+  const sway = Math.sin(t * 0.7 + v.x * 0.01) * 0.03;
+  const swing = lash >= 0 ? Math.sin(Math.min(1, lash) * Math.PI) * 0.95 * dir : 0;
+  const tense = phase === 'look' ? 1 : phase === 'stir' ? u : 0;
+  ctx.save();
+  ctx.translate(v.x, v.top);
+  ctx.rotate(-(sway + swing));
+  // the vine: a twisted stroke, darker edge then the body
+  const path = () => {
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    const n = 8;
+    for (let i = 1; i <= n; i++) {
+      const y = (len * i) / n;
+      const wob = Math.sin(i * 1.7 + v.x) * (6 - 3 * tense);
+      ctx.lineTo(wob, y);
+    }
+  };
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#0f1f10';
+  ctx.lineWidth = 22;
+  path();
+  ctx.stroke();
+  ctx.strokeStyle = '#2f5a2a';
+  ctx.lineWidth = 15;
+  path();
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(140, 190, 110, 0.5)';
+  ctx.lineWidth = 2.5;
+  path();
+  ctx.stroke();
+  // thorns, standing up as it wakes
+  ctx.fillStyle = '#1a2a14';
+  for (let i = 1; i < 11; i++) {
+    const y = (len * i) / 11;
+    const s = i % 2 ? 1 : -1;
+    const wob = Math.sin((i * 8) / 11 * 1.7 + v.x) * 4;
+    const out = 12 + 8 * tense;
+    ctx.beginPath();
+    ctx.moveTo(wob + s * 4, y - 5);
+    ctx.lineTo(wob + s * (4 + out), y - 1 - 6 * tense);
+    ctx.lineTo(wob + s * 4, y + 3);
+    ctx.closePath();
+    ctx.fill();
+  }
+  // a couple of leaves
+  ctx.fillStyle = '#3f7a35';
+  for (const [fy, s] of [[0.28, 1], [0.55, -1]] as const) {
+    ctx.beginPath();
+    ctx.ellipse(s * 12, len * fy, 10, 5, s * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // the bud
+  const bw = 25, bh = 33;
+  ctx.fillStyle = '#0f1f10';
+  ctx.beginPath();
+  ctx.ellipse(0, len - bh * 0.4, bw + 2, bh + 2, 0, 0, Math.PI * 2);
+  ctx.fill();
+  const g = ctx.createLinearGradient(0, len - bh * 1.4, 0, len + bh * 0.6);
+  g.addColorStop(0, '#2f5a2a');
+  g.addColorStop(1, '#5b8f3d');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.ellipse(0, len - bh * 0.4, bw, bh, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // eyes: shut while it sleeps, one cracks open as it stirs, both open (and cross) while it looks
+  const eye = (ex: number, open: number) => {
+    const ey = len - bh * 0.35;
+    if (open < 0.15) {
+      ctx.strokeStyle = '#0f1f10';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(ex, ey - 2, 6, 0.15 * Math.PI, 0.85 * Math.PI);
+      ctx.stroke();
+      return;
+    }
+    ctx.fillStyle = '#f7f3c4';
+    ctx.beginPath();
+    ctx.ellipse(ex, ey, 7.5, 7.5 * open, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#7a1d10';
+    ctx.beginPath();
+    ctx.arc(ex + dir * 2, ey + 0.5, 3.6 * Math.max(0.5, open), 0, Math.PI * 2);
+    ctx.fill();
+    if (phase === 'look') {
+      // a cross brow
+      ctx.strokeStyle = '#0f1f10';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(ex - 8, ey - 11 + (ex < 0 ? -3 : 3));
+      ctx.lineTo(ex + 8, ey - 11 + (ex < 0 ? 3 : -3));
+      ctx.stroke();
+    }
+  };
+  eye(-9, phase === 'sleep' ? 0 : phase === 'stir' ? Math.min(1, u * 2) * 0.6 : 0.85);
+  eye(9, phase === 'look' ? 0.85 : phase === 'stir' ? Math.max(0, u * 2 - 1) * 0.6 : 0);
+  ctx.restore();
+  if (phase === 'sleep') {
+    const zu = (t * 0.4 + v.x * 0.003) % 1;
+    ctx.save();
+    ctx.globalAlpha = Math.sin(zu * Math.PI) * 0.8;
+    ctx.fillStyle = '#d9f99d';
+    ctx.font = `700 ${11 + zu * 7}px Fredoka, sans-serif`;
+    ctx.fillText('z', v.x + 16 + zu * 12, v.bud - 30 - zu * 26);
+    ctx.restore();
+  }
+}
+
+/**
+ * A fern that hides one of Grandma's things (3-6, 3-7: a hidden relic), drawn with the origin 26 px above the ground it stands on (as
+ * the finds are). It looks like every other fern, except that every few seconds it rustles on its own (something is in it), and harder
+ * while he searches it. `decoy` ferns (3-7) rustle too, at their own beat, and hold nothing.
+ */
+export function drawThingFern(ctx: CanvasRenderingContext2D, item: { id: number; search?: number }, t: number, w = 150): boolean {
+  if (!w3ArtReady()) return false;
+  const search = item.search ?? 0;
+  const tell = Math.max(0, Math.sin(t * 1.25 + item.id * 2.3) - 0.8) / 0.2;
+  const rustle = Math.max(search > 0 ? 1 : 0, tell);
+  drawW3Fern(ctx, { x: -w / 2, w, y: 26 - 6 }, false, rustle, t);
+  return true;
+}

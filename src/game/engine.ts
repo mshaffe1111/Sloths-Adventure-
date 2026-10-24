@@ -55,7 +55,8 @@ import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
-import { drawGlowworm, drawW3Decor, drawW3Fern, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
+import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
+import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
@@ -273,6 +274,8 @@ export class GameEngine {
   /** World 3's glowworms (zones.ts): how long he has stood still in the dark, and when each sleeping light woke (game time, by id) */
   private glowStill = 0;
   private glowWake = new Map<number, number>();
+  /** World 3's thorn vines: a lash under way (by vine index: when it saw him, which way, whether it has landed), and the cycle it was in */
+  private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
@@ -437,6 +440,7 @@ export class GameEngine {
     this.bushRustle.clear();
     this.glowStill = 0;
     this.glowWake.clear();
+    this.vineLash.clear();
     resetHeroClips();
     warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
@@ -895,6 +899,7 @@ export class GameEngine {
       }
       this.darkShow += (want - this.darkShow) * Math.min(1, dt * 3);
       this.stepGlowworms(dt, zones);
+      if (this.proto?.thorns) this.stepThornVines();
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -1780,7 +1785,7 @@ export class GameEngine {
     // --- Collectibles Magnet Attraction (when Nectar Magnet power-up is active) ---
     if (p.activePowerUp === 'magnet') {
       for (const c of this.collectibles) {
-        if (c.collected || c.type === 'cage' || c.type === 'exit_totem' || c.type === 'thorn_gate' || c.type === 'find') continue;
+        if (c.collected || c.type === 'cage' || c.type === 'exit_totem' || c.type === 'thorn_gate' || c.type === 'find' || c.hidden) continue;
         const dist = distance2D(p.x, p.y - 20, c.x, c.y);
         if (dist < 260 && dist > 10) {
           const pullSpeed = 460 * dt;
@@ -1850,6 +1855,23 @@ export class GameEngine {
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
         else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
         if ((c.search ?? 0) >= 1) this.collectFind(c);
+        continue;
+      }
+
+      if (c.type === 'relic' && c.hidden) {
+        // World 3: one of Grandma's things in a fern (Dot hid them very fast, because there were boots): crouch beside it, like a Hush Fern
+        const close = Math.abs(p.x - c.x) < 64 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
+        c.near = close && !p.ducking;
+        if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
+        else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
+        if ((c.search ?? 0) >= 1) {
+          c.collected = true;
+          p.relicsFound++;
+          this.runScore += 500;
+          sound.playRelicFound();
+          this.spawnSparkBurst(c.x, c.y, '#fde68a');
+          this.addFloatingText(`GRANDMA'S ${(c.thing ?? 'keepsake').toUpperCase()}!`, c.x, c.y - 40, '#fde68a', 2);
+        }
         continue;
       }
 
@@ -3753,6 +3775,14 @@ export class GameEngine {
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id));
+    // World 3's sleeping thorn vines (thornVine.ts)
+    for (let i = 0; i < (this.proto?.thorns?.length ?? 0); i++) {
+      const v = this.proto!.thorns![i];
+      if (!this.onScreen(v.x, (v.top + v.bud) / 2, 400)) continue;
+      const ph = vinePhase(v, this.gameTime);
+      const l = this.vineLash.get(i);
+      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : this.player.x >= v.x ? 1 : -1, this.gameTime);
+    }
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
     for (const z of this.currentStage.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights) continue;
@@ -4471,6 +4501,44 @@ export class GameEngine {
       if (!tipHeard(id, 'glow:woke')) {
         markTipHeard(id, 'glow:woke');
         this.guide('The glowworms noticed you! They light up when you stop and listen.', 4.5);
+      }
+    }
+  }
+
+  /**
+   * World 3's thorn vines (thornVine.ts): a vine that is looking lashes at him if he moves within its reach; the lash lands a moment
+   * later, and costs a heart if he is still in reach. One lash per look.
+   */
+  private stepThornVines() {
+    const p = this.player;
+    const vines = this.proto!.thorns!;
+    const id = this.currentStage.config.id;
+    for (let i = 0; i < vines.length; i++) {
+      const v = vines[i];
+      if (Math.abs(v.x - p.x) > 900) continue;
+      const ph = vinePhase(v, this.gameTime);
+      const cycle = Math.floor((this.gameTime + v.offset) / vinePeriod(v));
+      if (ph.phase === 'stir' && Math.abs(v.x - p.x) < v.reach + 260 && !tipHeard(id, 'vine:freeze')) {
+        markTipHeard(id, 'vine:freeze');
+        this.guide('A vine is stirring! Freeze until it goes back to sleep', 3.2);
+      }
+      const lash = this.vineLash.get(i);
+      if (lash && this.gameTime - lash.at > VINE.windup + VINE.out) this.vineLash.delete(i);
+      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, p)) {
+        this.vineLash.set(i, { at: this.gameTime, dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
+        sound.playWhoosh();
+      }
+      const l = this.vineLash.get(i);
+      if (l && !l.landed && this.gameTime - l.at >= VINE.windup) {
+        l.landed = true;
+        if (inReach(v, p.x, p.y) && p.invincibleTimer <= 0) {
+          this.damagePlayer(1);
+          p.vx = l.dir * 260;
+          if (!tipHeard(id, 'vine:hit')) {
+            markTipHeard(id, 'vine:hit');
+            this.guide('Ouch! When a vine opens an eye, stand still, or duck', 3.2);
+          }
+        }
       }
     }
   }
