@@ -10,7 +10,7 @@
 export type Tier = 'bronze' | 'silver' | 'gold';
 
 /** the nine predators a player can meet, in journal order */
-export const PREDATORS = ['snake', 'tayra', 'ocelot', 'jaguar', 'boa', 'eagle', 'spider', 'caiman', 'frog', 'harpy'] as const;
+export const PREDATORS = ['snake', 'tayra', 'ocelot', 'jaguar', 'boa', 'eagle', 'spider', 'caiman', 'turtle', 'frog', 'harpy'] as const;
 export type PredatorId = (typeof PREDATORS)[number];
 
 /** what the engine reports when a stage ends */
@@ -213,7 +213,7 @@ export const BADGES: BadgeDef[] = [
   })),
 
   // the story and the secrets
-  { id: 'naturalist', name: 'Naturalist', desc: 'Meet all 10 predators of the jungle', tier: 'gold', icon: 'book', test: (c) => PREDATORS.every((p) => c.store.seen.includes(p)), progress: (c) => count(PREDATORS.filter((p) => c.store.seen.includes(p)).length, PREDATORS.length) },
+  { id: 'naturalist', name: 'Naturalist', desc: `Meet all ${PREDATORS.length} predators of the jungle`, tier: 'gold', icon: 'book', test: (c) => PREDATORS.every((p) => c.store.seen.includes(p)), progress: (c) => count(PREDATORS.filter((p) => c.store.seen.includes(p)).length, PREDATORS.length) },
   { id: 'thorn_finder', name: 'Thorn Finder', desc: 'Find the secret gate', tier: 'silver', icon: 'key', test: (c) => c.gateFound },
   { id: 'thorn_heart', name: 'Heart of Thorns', desc: 'Free Thornbark and earn the Thorn Heart', tier: 'gold', icon: 'thornHeart', test: (c) => c.thornHeart },
   { id: 'jungle_hero', name: 'Jungle Hero', desc: 'Defeat General Iron-Claw and finish the game', tier: 'gold', icon: 'medal', test: (c) => bossDone(c.levels, 10) },

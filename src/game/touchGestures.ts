@@ -31,6 +31,8 @@ export interface GestureSink {
   mega(): void;
   /** hold climbing up (-1), down (1) or stop (0) on a vine or trunk, with no jump and no duck (refined controls) */
   climb?(dir: -1 | 0 | 1): void;
+  /** a tap that jumps because there was nothing to hit (refined controls, tapJump): a full jump. Unset = jumpPress then jumpRelease */
+  tapJump?(): void;
   /** a label for the little pill on screen, plus haptics */
   feedback(kind: 'jump' | 'duck' | 'punch' | 'kick' | 'mega'): void;
 }
@@ -110,6 +112,13 @@ export interface GestureEnv {
    * jump and down is never a duck (Jen's index finger on a vine kept making him jump). Only a diagonal slide up jumps off.
    */
   onVine?(): boolean;
+  /**
+   * Refined controls, second round (the control test, 2026-10-24): a tap with nothing near enough to hit is a JUMP, standing or swinging
+   * (swinging, that jump is the leap off the vine). Beginners tap to jump: one tester's first run threw 150 punches at nothing, 79 of
+   * them hanging on a vine trying to let go and 72 at the foot of a stump trying to get up it. With a foe or a cage in reach a tap
+   * still punches, and swipes are untouched.
+   */
+  tapJump?(): boolean;
 }
 
 type Role = 'mover' | 'pending' | 'action' | 'ignored';
@@ -274,7 +283,7 @@ export class TouchGestures {
         this.sink.feedback('jump');
         this.sink.jumpPress();
         this.sink.jumpRelease();
-      } else if (stillTap && !wasReplant) { this.sink.feedback('punch'); this.sink.punch(); }
+      } else if (stillTap && !wasReplant) this.tapAct();
       if (!wasTap && !flicked) {
         this.lastMoverUp = t;
         this.lastMoverUpX = f.x;
@@ -311,9 +320,23 @@ export class TouchGestures {
       const replant = f.tapT0 >= this.lastMoverUp && f.tapT0 - this.lastMoverUp < TUNING.replantMs &&
         Math.hypot(f.x0 - this.lastMoverUpX, f.y0 - this.lastMoverUpY) < 100;
       if (replant) return;
-      this.sink.feedback('punch');
-      this.sink.punch();
+      this.tapAct();
     }
+  }
+
+  /** a tap on the ground or a vine: a punch when something is in reach, else (refined controls) a jump */
+  private tapAct() {
+    if (this.env?.refined?.() && this.env.tapJump?.()) {
+      this.sink.feedback('jump');
+      if (this.sink.tapJump) this.sink.tapJump();
+      else {
+        this.sink.jumpPress();
+        this.sink.jumpRelease();
+      }
+      return;
+    }
+    this.sink.feedback('punch');
+    this.sink.punch();
   }
 
   /** a finger that was cancelled (not lifted): let go of what it held, and judge nothing */

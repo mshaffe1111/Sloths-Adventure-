@@ -3,6 +3,7 @@ import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
+import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
   LevelConfig,
@@ -50,6 +51,7 @@ import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
+import { drawLadder, drawLily, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, riverArtReady } from './riverArt.ts';
 import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
@@ -76,7 +78,8 @@ import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
 import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
-import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider } from './predatorAI.ts';
+import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
+import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
 import {
   applyHit, bodyRect, canCancel, chooseMove, contactPoint, headRect, hurtRect, isCommitted, koLaunch, moveBox, moveLength, MOVES, phaseAt,
@@ -92,7 +95,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -103,6 +106,11 @@ import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 const FIND_SEARCH_SECONDS = 0.9;
 /** seconds before a crumbled platform grows back */
 const REGROW_SECONDS = 3;
+/** how close (across, and up or down) an animal or cage must be for a tap to punch rather than jump */
+const TAP_PUNCH_X = 130;
+const TAP_PUNCH_Y = 60;
+/** how near a flower must be to pick it while swinging on a vine (34 on foot) */
+const SWING_PICK = 56;
 /** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
 const PUSH_SPEED = 120;
 
@@ -174,6 +182,10 @@ export class GameEngine {
   private collectibles: Collectible[];
   /** the hand-built stage's extras (protoStage.ts): logs to push, hints, leaves over secrets */
   private proto: ProtoExtras | null = null;
+  /** the stretches of this stage, in order (the control test's end questions list them) */
+  public stretchNames(): string[] {
+    return (this.proto?.beats ?? []).map((b) => b[2]);
+  }
   private pushLogs: Platform[] = [];
   private drawPlats: Platform[] = [];
   /** the hand-built stage's painted props: the platforms they draw, and their state */
@@ -214,6 +226,8 @@ export class GameEngine {
   private floatingTexts: FloatingText[] = [];
 
   private isRunning: boolean = false;
+  /** the first time a snapper hides, Dot's line says what to do about it */
+  private turtleTold = false;
   private isPaused: boolean = false;
   private animFrameId: number | null = null;
   private lastTime: number = 0;
@@ -326,6 +340,11 @@ export class GameEngine {
   private stompGrace = 0;
   /** stomps in a row without touching the ground */
   private stompChain = 0;
+  /** the last falling speed and feet height in the air, and how long he has been on the ground since: a landing ON an animal's back
+   *  that the frame step carried straight to the ground still counts as a stomp for a moment (resolveStomps) */
+  private fallVy = 0;
+  private fallFeet = 0;
+  private groundedFor = 0;
   /** ?hitboxes=1 draws every hit and hurt box, so you can see exactly what the game is judging */
   private debugBoxes = false;
   private dbgHurt: Rect[] = [];
@@ -391,6 +410,9 @@ export class GameEngine {
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
     this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
+    // moves the stage lends him (the control test's rope), and the test's mix, logged so the run can be built again
+    for (const s of this.proto?.grant ?? []) this.skills.add(s);
+    if (this.proto?.mix) recorder.event('mix', this.proto.mix);
     this.ring = { state: 'idle', wave: 0, ids: [] };
     this.ringDrops = [];
     this.chase = this.proto?.chase ? newChase(this.proto.chase) : null;
@@ -407,6 +429,8 @@ export class GameEngine {
     this.drawPlats = this.pushLogs.length || this.proto?.chase ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown) : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
+    // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
+    setLianaTops(!this.proto?.decor?.some((d) => d.n === 'canopy'));
     this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
@@ -673,6 +697,8 @@ export class GameEngine {
     if (this.refined) {
       this.input.kickNear = this.somethingToKick();
       this.input.onVine = p.climbing || !!p.isVineSwinging;
+      // nothing to hit within reach, on the ground or on a vine: a tap jumps (or leaps off the vine)
+      this.input.tapJump = !this.somethingToPunch() && (p.grounded || !!p.isVineSwinging) && !p.climbing && !p.hanging && !this.isGameOver;
     }
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
@@ -1426,7 +1452,18 @@ export class GameEngine {
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
       const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
-      if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
+      if (river?.safe && p.y > river.surfaceY + 8 && !this.isGameOver) {
+        // a teaching river (2-1): a splash and back to the bank to try again, no life lost
+        this.spawnWaterSplash(p.x, river.surfaceY);
+        sound.playWhoosh();
+        this.addFloatingText('SPLASH! TRY AGAIN', p.x, river.surfaceY - 40, '#7dd3fc');
+        p.x = river.safe.backX;
+        p.y = river.safe.backY;
+        p.vx = 0;
+        p.vy = 0;
+        p.grounded = true;
+        p.invincibleTimer = Math.max(p.invincibleTimer, 1);
+      } else if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playWhoosh();
         sound.playHitImpact(true);
@@ -1484,6 +1521,7 @@ export class GameEngine {
     // --- Attacks: wind-up, strike, follow-through (see fight.ts) ---
     this.updateAttack(dt);
     this.resolveStomps(dt);
+    this.watchForStuck();
 
     // --- Enemy Behavior & AI ---
     for (const e of this.enemies) {
@@ -1592,7 +1630,7 @@ export class GameEngine {
         const step = stepPredator(e, { x: p.x, y: p.y, facing: p.facing, ducking: p.ducking }, dt);
         // the tree snake has no call of its own: it hisses like the boa
         // (the night harpy chitters and thumps like the tayra)
-        const call = e.type === 'snake' ? 'boa' : e.type === 'harpy' ? 'tayra' : e.type;
+        const call = e.type === 'snake' ? 'boa' : e.type === 'harpy' ? 'tayra' : e.type === 'turtle' ? 'caiman' : e.type;
         if (e.type === 'snake') {
           // the painted/vector snake reads these two flags for its red warning ring and its strike cycle
           e.isAttacking = e.state === 'rear' || e.state === 'strike';
@@ -1643,6 +1681,15 @@ export class GameEngine {
       }
     }
 
+    // a kicked snapper shell slides along the bank and knocks over whatever it meets
+    for (const s of this.enemies) {
+      if (s.defeated || s.type !== 'turtle' || s.state !== 'slide') continue;
+      for (const o of this.enemies) {
+        if (o === s || o.defeated || o.type === 'eagle' || Math.abs(o.x - s.x) > 34 || Math.abs(o.y - s.y) > 30) continue;
+        o.hp = 0;
+        this.knockOut(o, (s.slideDir ?? 1) as 1 | -1, 'BOWLED OVER!');
+      }
+    }
     separateHunters(this.enemies, dt);
     for (const e of this.enemies) if (!e.defeated && isPredator(e.type)) keepOnLedge(e);
 
@@ -1747,7 +1794,9 @@ export class GameEngine {
       }
 
       const dist = distance2D(p.x, p.y - 20, c.x, c.y);
-      if (dist < 34) {
+      // swinging, he cannot steer to a flower the way he can running, so the reach is wider (the control test: flowers along the
+      // vines were the hardest thing to line up, 2026-10-23)
+      if (dist < (p.isVineSwinging ? SWING_PICK : 34)) {
         c.collected = true;
 
         if (c.type === 'flower' || c.type === 'leaf' || c.type === 'fruit') {
@@ -2476,6 +2525,20 @@ export class GameEngine {
   }
 
   /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
+  /**
+   * an animal or a cage close enough, and level enough, that a tap means a punch (closer than somethingToKick: a snake up on a branch,
+   * or one well down the path, leaves a tap as a jump, so hopping up to it still works)
+   */
+  private somethingToPunch(): boolean {
+    const p = this.player;
+    const cx = p.x + p.width / 2, cy = p.y - p.height / 2;
+    const near = (x: number, y: number) => Math.abs(x - cx) < TAP_PUNCH_X && Math.abs(y - cy) < TAP_PUNCH_Y;
+    for (const e of this.enemies) if (!e.defeated && near(e.x + (e.width ?? 0) / 2, e.y)) return true;
+    if (this.boss && Math.abs(this.boss.x - cx) < TAP_PUNCH_X * 2) return true;
+    for (const c of this.collectibles) if (c.type === 'cage' && !c.collected && near(c.x, c.y)) return true;
+    return false;
+  }
+
   private somethingToKick(): boolean {
     const p = this.player;
     const cx = p.x + p.width / 2, cy = p.y - p.height / 2;
@@ -2568,6 +2631,7 @@ export class GameEngine {
       this.spawnDebrisBurst(c.x, c.y, '#ca8a04');
       if (c.cageHp <= 0) {
         c.collected = true;
+        c.freedAt = this.gameTime;
         p.crittersRescued++;
         this.runScore += 400;
         sound.playCritterRescued();
@@ -2581,6 +2645,34 @@ export class GameEngine {
   private hitEnemy(e: Enemy, m: MoveSpec, box: Rect, hr: Rect, a: NonNullable<GameEngine['atk']>) {
     const p = this.player;
     const dir: 1 | -1 = m.kind === 'mega' ? (e.x >= p.x ? 1 : -1) : p.facing;
+    // a river snapper hides from a blow to its face; its shell can be kicked away (predatorAI.ts turtleGuard)
+    if (e.type === 'turtle') {
+      const g = turtleGuard(e, p.x, m.kind === 'kick');
+      if (g !== 'hit') {
+        a.connected = true;
+        this.hitstopTimer = Math.max(this.hitstopTimer, 0.05);
+        sound.playHitImpact(g === 'slide', 'armor');
+        const cp = contactPoint(box, hr);
+        this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
+        if (g === 'shell') {
+          e.state = 'shell';
+          e.stateT = 0;
+          e.vx = 0;
+          if (!this.turtleTold) this.addFloatingText('IT HID! GET BEHIND IT, OR KICK THE SHELL', e.x, e.y - 40, '#cbd5e1');
+          else this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
+          this.turtleTold = true;
+        } else if (g === 'slide') {
+          e.state = 'slide';
+          e.stateT = 0;
+          e.slideDir = dir;
+          this.addFloatingText('WHOOSH!', e.x, e.y - 30, '#fef08a');
+        } else {
+          e.x += dir * 10;
+          this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
+        }
+        return;
+      }
+    }
     const wasCommitted = isCommitted(e);
     const res = resolveMelee(e, m, dir);
     applyHit(e, res);
@@ -2835,17 +2927,57 @@ export class GameEngine {
     return false;
   }
 
+  /** Dot's stuck-helper (stuckHelper.ts): jumping again and again at a wall only the second jump climbs gets the second jump explained */
+  private stuck = new StuckWatch();
+  private wallWasAhead = false;
+  private watchForStuck() {
+    const p = this.player;
+    if (p.grounded) this.wallWasAhead = this.wallAhead();
+    const air = !p.grounded && !p.climbing && !p.isVineSwinging;
+    if (this.stuck.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.wallWasAhead })) {
+      this.guide(stuckLine(lessonInputMode()), 6);
+      recorder.event('stuckHelp', Math.round(p.x));
+    }
+  }
+  /** a solid face just in front of him, standing on the ground, taller than one jump climbs */
+  private wallAhead(): boolean {
+    const p = this.player;
+    const f = p.facing >= 0 ? 1 : -1;
+    for (const q of this.platforms) {
+      if (q.type !== 'solid' || q.broken) continue;
+      const near = f > 0 ? q.x - p.x : p.x - (q.x + q.width);
+      if (near < 0 || near > 90) continue;
+      if (q.y < p.y - 100 && q.y > p.y - 320 && q.y + q.height >= p.y - 12) return true;
+    }
+    return false;
+  }
+
   /** landing on an animal's back from above: it takes damage and Pokey bounces; armored backs just bounce him */
   private resolveStomps(dt: number) {
     const p = this.player;
     if (this.stompGrace > 0) this.stompGrace -= dt;
-    if (p.climbing || p.isVineSwinging || p.grounded) return;
-    const prevFeet = p.y - p.vy * dt;
+    if (p.climbing || p.isVineSwinging) return;
+    if (!p.grounded) {
+      this.groundedFor = 0;
+      if (p.vy > 0) {
+        this.fallVy = p.vy;
+        this.fallFeet = p.y - p.vy * dt;
+      }
+    } else {
+      this.groundedFor += dt;
+      // just touched down from a fall: check that landing once more, as if still falling
+      if (this.groundedFor > 0.09 || this.fallVy <= 40) return;
+    }
+    const vyNow = p.grounded ? this.fallVy : p.vy;
+    const prevFeet = p.grounded ? this.fallFeet : p.y - p.vy * dt;
     const diving = this.input.state.down;
     for (const e of this.enemies) {
       if (e.defeated) continue;
-      const r = stompTest({ x: p.x, y: p.y, vy: p.vy }, prevFeet, e, diving);
+      const r = stompTest({ x: p.x, y: p.y, vy: vyNow }, prevFeet, e, diving);
       if (!r) continue;
+      this.fallVy = 0;
+      p.grounded = false;
+      recorder.event('stomp', e.type);
       this.stompGrace = 0.3;
       p.jumpsLeft = Math.max(p.jumpsLeft, 1);
       p.isDoubleJumping = false;
@@ -3209,28 +3341,32 @@ export class GameEngine {
       ctx.rect(r.x0, r.surfaceY - 30, r.x1 - r.x0, bottom - r.surfaceY + 30);
       ctx.clip();
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
+      const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
-        drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
-        // the current: pale streaks sliding along the surface the way the logs go
-        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
-        ctx.lineWidth = 2.4;
-        ctx.lineCap = 'round';
-        const span = 140;
-        for (let k = Math.floor(a / span) - 1; k < b / span + 1; k++) {
-          for (let row = 0; row < 3; row++) {
-            const sx = (((k * span + row * 47 + t * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
-            const x = r.x0 + sx - span * 0.5;
-            const y = wave(x) + 7 + row * 9;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + r.dir * 26, y);
-            ctx.stroke();
+        if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
+        // the current: pale streaks sliding along the surface the way the logs go (still water, a lily pond, has none)
+        if (r.speed > 0) {
+          ctx.strokeStyle = painted ? 'rgba(235,250,245,0.38)' : 'rgba(255,255,255,0.55)';
+          ctx.lineWidth = 2.4;
+          ctx.lineCap = 'round';
+          const span = 140;
+          for (let k = Math.floor(a / span) - 1; k < b / span + 1; k++) {
+            for (let row = 0; row < 3; row++) {
+              const sx = (((k * span + row * 47 + t * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
+              const x = r.x0 + sx - span * 0.5;
+              const y = wave(x) + 7 + row * 9;
+              ctx.beginPath();
+              ctx.moveTo(x, y);
+              ctx.lineTo(x + r.dir * 26, y);
+              ctx.stroke();
+            }
           }
         }
       } else {
         const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
-        g.addColorStop(0, 'rgba(56, 148, 168, 0.55)');
-        g.addColorStop(1, 'rgba(24, 90, 120, 0.8)');
+        // (the painted river's own colours when it is painted, so the logs sink into the same water)
+        g.addColorStop(0, painted ? 'rgba(96, 160, 152, 0.3)' : 'rgba(56, 148, 168, 0.55)');
+        g.addColorStop(1, painted ? 'rgba(38, 66, 71, 0.75)' : 'rgba(24, 90, 120, 0.8)');
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.moveTo(a, bottom);
@@ -3251,6 +3387,22 @@ export class GameEngine {
       }
       ctx.restore();
     }
+  }
+
+  /** World 2 draws its drifting logs and lily pads from Matt's painted sheet once it has loaded */
+  private riverLogsPainted(worldId: number): boolean {
+    return this.paintedRivers(worldId) && (!!this.currentStage.rivers?.length || this.platforms.some((p) => p.lily)) && riverArtReady();
+  }
+  /** World 2's painted water, logs and lily pads: World 2, and the control test's river stretches (built on World 1's ground) */
+  private paintedRivers(worldId: number): boolean {
+    return worldId === 2 || !!this.proto?.mix;
+  }
+  private noLogs: { from: Platform[]; out: Platform[] } | null = null;
+  /** the platforms the drawn layer paints, less the drifting logs and lily pads when the painted ones draw instead (kept between frames) */
+  private withoutPaintedLogs(worldId: number, plats: Platform[]): Platform[] {
+    if (!this.riverLogsPainted(worldId)) return plats;
+    if (this.noLogs?.from !== plats) this.noLogs = { from: plats, out: plats.filter((p) => p.type !== 'drift' && !p.lily) };
+    return this.noLogs.out;
   }
 
   /** Pit water (behind the ground banks) and checkpoint flags. */
@@ -3455,6 +3607,9 @@ export class GameEngine {
 
     this.drawWaterAndFlags(ctx, world);
     this.drawRivers(ctx, world, false);
+    // 2-6: the river bank the village is dug into, behind the whole climb
+    if (this.proto?.bankWall)
+      drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
 
     // the bounce mushrooms wear the gold rim too (they sit in the scenery's colours)
     for (const pl of this.platforms) {
@@ -3471,16 +3626,29 @@ export class GameEngine {
     else renderWorldObjects(
       ctx,
       world.id,
-      this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats,
+      this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats),
       this.paintKit && protoArtReady() ? this.swingVines : this.vines,
       this.paintKit && protoArtReady() ? [] : this.currentStage.trees,
       this.camera,
       this.gameTime
     );
 
+    // World 2's painted drifting logs (the drawn ones were left out above), under the water's sheet so they sit in the river
+    if (this.riverLogsPainted(world.id)) {
+      for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(ctx, pl, this.gameTime);
+    }
     this.drawRivers(ctx, world, true);
-    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
+    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // 2-6: the village's ladders where the climbs are
+    if (this.proto?.ladders) {
+      for (const v of this.vines) if (v.vineType === 'tree_climb' && this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) drawLadder(ctx, v.x, v.topY, v.bottomY);
+    }
+    // World 2: lily pads on the water, then the village and the reeds behind Pokey (riverArt.ts)
+    if (this.paintedRivers(this.currentStage.config.worldIndex) && riverArtReady()) {
+      for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
+    }
+    if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
     if (this.chase) this.drawChase(ctx);
     // trunk hollows (1-4): over the trunk, glowing once he is close enough to see in
     for (const h of this.proto?.hollows ?? []) {
@@ -3508,6 +3676,8 @@ export class GameEngine {
         if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
         return;
       }
+      // World 2's painted reed cages, and the little one hopping home once it is free
+      if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime)) return;
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
@@ -3573,6 +3743,8 @@ export class GameEngine {
           if (!drawCaimanSprite(ctx, enemy, this.gameTime)) drawCaiman(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'tayra') {
           if (!drawTayraSprite(ctx, enemy, this.gameTime)) drawTayra(ctx, enemy, this.gameTime);
+        } else if (enemy.type === 'turtle') {
+          if (!drawTurtleSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'harpy') {
           if (!drawHarpySprite(ctx, enemy, this.gameTime)) drawHarpyFallback(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'frog') {
@@ -3611,6 +3783,7 @@ export class GameEngine {
     } else drawHeroSloth(ctx, this.player, this.gameTime);
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
+    if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {

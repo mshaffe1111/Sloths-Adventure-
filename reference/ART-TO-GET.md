@@ -1,0 +1,22 @@
+# Art to get
+
+Matt's running list of drawings still needed from Gemini. A new need joins the list, and a line is crossed out once the art is in the game.
+
+## Pokey's animations
+
+1. ~~**Holding onto a vine (the swing).**~~ Received 2026-10-24 (four sheets; sheet 1 frames 1-3 and sheet 2 frame 4 used).
+2. **Climbing a tree, seen from behind.** Only his back shows. His arms and legs move in turn, hand over hand, up the trunk: a four-frame cycle, with the frames that go down too.
+
+## World 2 (2-1 to 2-3)
+
+3. **The reed cages, redrawn.** All three states must be the same dome cage (whole, cracked, burst). The first sheet's whole cage was a different design.
+4. **The river king peeking from the water** in his crooked petal crown: proud, flustered, surprised (the end of 2-2). (Prompt 4)
+5. ~~**Boughs for the vines to hang from** over the river: long tree limbs, a rope-swing frame, a canopy clump, a leaning pole (2-4). (Prompt 5)~~ Received 2026-10-24.
+6. ~~**The village up the bank**: ladder, porch with railing, door with porch roof, rope-and-basket lift, carved steps, bell tower, lantern, thatched rooftop (2-6). (Prompt 6)~~ Received 2026-10-24.
+7. ~~**The snapping turtle**: walk, the tell, the snap, after the snap, hiding, peeking, flipped, dizzy (2-5). (Prompt 7)~~ Received 2026-10-24 (the game-style redraw, from a fresh Gemini chat).
+
+## Done
+
+- ~~World 2 river pieces: logs, lily pads, reeds, water strip~~ (2026-10-24)
+- ~~World 2 village pieces: round door, window, sign, mailbox, chimney, jetty, washing line~~ (2026-10-24)
+- ~~The little ones: capybara, duckling, otter, sad and freed~~ (2026-10-24)

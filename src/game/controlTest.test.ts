@@ -4,6 +4,7 @@ import { buildProtoStage, G } from './protoStage.ts';
 import { reachJump } from './physics.ts';
 import { maxRise } from './protoCheck.ts';
 import { ctestEnabled } from './playRecorder.ts';
+import { validateStage } from './levelCheck.ts';
 import type { LevelConfig } from './types.ts';
 
 const cfg = {
@@ -15,16 +16,40 @@ test('control test: off unless the address asks for it', () => {
   assert.equal(ctestEnabled(), false);
 });
 
-test('control test: every tester gets the same stage, one skill per stretch, in order, with an exit', () => {
-  const a = buildProtoStage(cfg, 7, 'ctest');
-  assert.equal(JSON.stringify(buildProtoStage(cfg, 7, 'ctest')), JSON.stringify(a));
-  assert.deepEqual(a.proto.beats.map((b) => b[2]), ['Run and stop', 'Short hops', 'Long jumps', 'Climb up and down', 'Swing', 'Fight', 'Finish']);
-  assert.equal(a.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
-  assert.ok((a.checkpoints ?? []).length >= 6, 'a flag after every stretch');
-  assert.ok(a.enemies.length >= 2 && a.enemies.every((e) => e.type === 'snake'));
-  assert.equal(a.collectibles.filter((c) => c.type === 'seed').length, 0, 'no secrets in a test');
-  // a test is cheap to fail: nothing to fall into but soft moss (the water is below everything)
-  assert.ok(a.platforms.every((p) => p.y <= 720), 'every floor is above the water');
+const SEEDS = Array.from({ length: 40 }, (_, i) => 1 + i * 7919);
+
+test('control test: the basics every run, then six stretches (two moving, two fighting, two other), a flag after each, one exit', () => {
+  const seen = new Set<string>();
+  const bad: string[] = [];
+  for (const s of SEEDS) {
+    const a = buildProtoStage(cfg, s, 'ctest');
+    assert.equal(JSON.stringify(buildProtoStage(cfg, s, 'ctest')), JSON.stringify(a), 'the same seed builds the same run');
+    const names = a.proto.beats.map((b) => b[2]);
+    assert.deepEqual(names.slice(0, 3), ['Run and stop', 'Short hops', 'Long jumps']);
+    assert.equal(names[names.length - 1], 'Finish');
+    assert.equal(names.length, 10, names.join(', '));
+    names.slice(3, 9).forEach((n) => seen.add(n));
+    assert.ok(a.proto.mix?.includes(String(s)), 'the mix names its seed');
+    assert.deepEqual(a.proto.grant, ['shimmy']);
+    assert.equal(a.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
+    assert.ok((a.checkpoints ?? []).length >= 9, `seed ${s}: a flag after every stretch`);
+    assert.equal(a.collectibles.filter((c) => c.type === 'seed' || c.type === 'find').length, 0, 'no secrets in a test');
+    assert.ok(a.platforms.every((p) => p.y <= 720), 'every floor is above the water');
+    // every river in a test is safe: a splash puts him back on the bank
+    assert.ok((a.rivers ?? []).every((r) => r.safe), `seed ${s}: safe water`);
+    // (checked with every move the test allows: the second jump, and the rope it lends)
+    // (the checker cannot push the log: check that stretch with the log already pushed against the wall)
+    const pushed = a.platforms.map((p) => (p.push ? { ...p, x: p.push.max - p.width } : p));
+    const res = validateStage({ ...a, platforms: pushed, config: { ...a.config, miniIndex: 9 } });
+    // (and flowers on the floor the pushed log now covers are picked up on the way to it)
+    const logIds = new Set(a.platforms.filter((p) => p.push).map((p) => `platform ${p.id}`));
+    res.errors = res.errors.filter((e) => ![...logIds].some((id) => e.endsWith(id)));
+    res.ok = res.errors.length === 0;
+    if (!res.ok || a.proto.movedPickups) bad.push(`${a.proto.mix} moved ${a.proto.movedPickups}: ${res.errors.join('; ')}`);
+  }
+  assert.equal(bad.length, 0, bad.join('\n'));
+  // across forty runs, every stretch turns up
+  assert.equal(seen.size, 20, [...seen].join(', '));
 });
 
 test('control test: the long jumps get wider, and the last two need the second jump but can be made with it', () => {

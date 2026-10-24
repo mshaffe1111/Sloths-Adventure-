@@ -18,6 +18,7 @@ import { makeTintedCanvas, type Coat } from './heroTint.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { rimFor, rimOn } from './heroRim.ts';
 import { clipPick, heroClipsAreLive, heroClipsLive } from './heroClips.ts';
+import { drawVineHang } from './heroVine.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -253,6 +254,8 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   if (!heroSpriteEnabled()) return false;
   load();
   events.track(p, time);
+  // holding a vine: Matt's vine-swing pictures, his hands round the real liana (heroVine.ts)
+  if (p.isVineSwinging && drawVineHang(ctx, p)) return true;
   // the standard hero (heroStandard.ts), when switched on and loaded, draws every pose it has a frame for
   const stdImg = standardAtlas();
   // a moving clip (heroClips.ts, test): when one fits this moment it draws in the standard hero's place
@@ -370,6 +373,13 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
   if (ch.swing !== undefined) ctx.rotate(ch.swing);
   const q = ch.squash ?? 1;
   ctx.scale(p.facing * (1 + (p.squashX - 1) * q), 1 + (p.squashY - 1) * q);
+  if (ch.trail) {
+    // hanging from a vine: the body trails behind the swing, turning about the hands so they stay on the vine
+    const top = -f.ay * k;
+    ctx.translate(0, top);
+    ctx.rotate(ch.trail * p.facing);
+    ctx.translate(0, -top);
+  }
   if (ch.hang) {
     // swing gently from the hands; a quicker rocking while he creeps hand over hand
     const moving = Math.abs(p.vx) > 10;

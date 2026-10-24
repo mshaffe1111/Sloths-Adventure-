@@ -1,9 +1,9 @@
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
-import { ctestEnabled } from './playRecorder.ts';
+import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
+import { ctestEnabled, ctestSeed } from './playRecorder.ts';
 
-/** the stage the control test replaces (no story scene before it), and the one fixed seed, so every tester plays the same layout */
+/** the stage the control test replaces (no story scene before it); its layout is a new mix each run (playRecorder.ts ctestSeed) */
 export const CTEST_STAGE_ID = '1-2';
-const CTEST_SEED = 7;
 import type {
   LevelConfig,
   Platform,
@@ -2743,9 +2743,11 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
 
 export function generateStage(config: LevelConfig): GeneratedStage {
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
-  if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, CTEST_SEED, 'ctest');
+  if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, ctestSeed(), 'ctest');
   // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]);
+  // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
+  if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]);
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {
     // not a shipped level (or the seed table is stale): find a good layout now

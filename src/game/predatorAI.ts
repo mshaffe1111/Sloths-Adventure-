@@ -15,10 +15,10 @@ import { PERSONALITY, SPIDER, roam, speedScale, walkBounds, type BrainEvents, ty
 export type { PlayerRef } from './enemyBrain.ts';
 
 /** every ground animal with a brain (see enemyBrain.ts): the tree snake counts, it just is not a hunter of sloths by trade */
-export type PredatorType = 'snake' | 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' | 'harpy';
+export type PredatorType = 'snake' | 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra' | 'harpy' | 'turtle';
 
 export const isPredator = (t: string): t is PredatorType =>
-  t === 'snake' || t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra' || t === 'harpy';
+  t === 'snake' || t === 'ocelot' || t === 'jaguar' || t === 'boa' || t === 'caiman' || t === 'tayra' || t === 'harpy' || t === 'turtle';
 
 export interface Box {
   x: number;
@@ -43,7 +43,7 @@ export interface PredatorStep {
 }
 
 /** distance from an enemy's origin down to its feet, per kind (matches the drawing's ground line) */
-export const FEET: Record<PredatorType, number> = { snake: 14, ocelot: 19, jaguar: 24, boa: 16, caiman: 15, tayra: 15, harpy: 16 };
+export const FEET: Record<PredatorType, number> = { snake: 14, ocelot: 19, jaguar: 24, boa: 16, caiman: 15, tayra: 15, harpy: 16, turtle: 14 };
 
 /** where each kind sits relative to the walking surface, so spawners and drawings agree */
 export const SURFACE_OFFSET = FEET;
@@ -60,6 +60,22 @@ export const HARPY = { crouch: 0.6, slide: 0.42, slideSpeed: 270, air: 0.36, hop
 
 /** how far the stomp's shockwave has travelled (px each way from the harpy) `t` seconds after it lands */
 export const harpyShockReach = (t: number) => HARPY.shockFrom + (HARPY.shockTo - HARPY.shockFrom) * clamp(t / HARPY.quake, 0, 1);
+
+/** the river snapper's timings (s) and reach (px): exported so the drawing and the tests read the same numbers */
+export const TURTLE = { windup: 0.5, snap: 0.18, recover: 0.75, reach: 46, shell: 1.8, peek: 0.45, slideSpeed: 380, slideMax: 2.2, dizzy: 1.1 };
+
+/**
+ * What a blow does to a snapper (engine.ts hitEnemy): `shell`: it was hit head-on and hides (no harm done); `slide`: its shell is
+ * kicked and slides away; `bump`: a punch on the hidden shell only nudges it; `hit`: from behind, or while it is open after a snap or
+ * dizzy, the blow lands. A stomp always lands (fight.ts: stomp true).
+ */
+export function turtleGuard(e: Enemy, attackerX: number, kick: boolean): 'shell' | 'slide' | 'bump' | 'hit' {
+  if (e.state === 'shell' || e.state === 'peek') return kick ? 'slide' : 'bump';
+  if (e.state === 'slide') return 'bump';
+  if (e.state === 'dizzy' || e.state === 'recover') return 'hit';
+  const front = (attackerX >= e.x ? 1 : -1) === e.facing;
+  return front ? 'shell' : 'hit';
+}
 
 /** a simple readable arc: u 0..1 -> height multiplier 0..1..0 */
 const arc = (u: number) => 4 * u * (1 - u);
@@ -300,6 +316,69 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
     }
 
     // ---------------------------------------------------------------- caiman: slow, then a big lunge and a snap
+    case 'turtle': {
+      // the river snapper: creeps, pulls its head back (the tell), snaps, and needs a moment to recover. Hit head-on it hides in its
+      // shell (engine.ts); a kick sends the shell sliding along the bank, knocking over anything in its way, until it bumps the end of
+      // its ground and the turtle climbs out dizzy
+      if (e.state === 'shell') {
+        e.vx = 0;
+        if (t >= TURTLE.shell) enter(e, 'peek');
+      } else if (e.state === 'peek') {
+        e.vx = 0;
+        if (t >= TURTLE.peek) {
+          enter(e, 'patrol');
+          e.attackCooldown = 1;
+        }
+      } else if (e.state === 'slide') {
+        const dir = (e.slideDir ?? 1) as 1 | -1;
+        e.vx = dir * TURTLE.slideSpeed;
+        e.x += e.vx * dt;
+        const [lo, hi] = walkBounds(e);
+        if ((dir > 0 && e.x >= hi) || (dir < 0 && e.x <= lo) || t >= TURTLE.slideMax) {
+          e.x = clamp(e.x, lo, hi);
+          e.vx = 0;
+          enter(e, 'dizzy');
+          ev.impact = true;
+        }
+      } else if (e.state === 'dizzy') {
+        e.vx = 0;
+        if (t >= TURTLE.dizzy) {
+          enter(e, 'patrol');
+          e.attackCooldown = 1.2;
+        }
+      } else if (e.state === 'patrol') {
+        if (roam(e, p, dt, feet, PERSONALITY.turtle, ready, speed, ev)) {
+          e.facing = toward;
+          enter(e, 'windup');
+          e.vx = 0;
+          ev.telegraph = true;
+        }
+      } else if (e.state === 'windup') {
+        e.vx = 0;
+        if (t < 0.25) e.facing = toward;
+        if (t >= TURTLE.windup) {
+          enter(e, 'snap');
+          ev.launch = true;
+        }
+      } else if (e.state === 'snap') {
+        e.vx = 0;
+        if (t >= TURTLE.snap) {
+          enter(e, 'recover');
+          ev.impact = true;
+        }
+      } else if (e.state === 'recover') {
+        e.vx = 0;
+        if (t >= TURTLE.recover) {
+          enter(e, 'patrol');
+          e.attackCooldown = 1.6;
+        }
+      }
+      if (e.state !== 'slide') keepOnGround(e, dt);
+      // the body (not while it hides: a shell sitting still, or one sliding away, does not hurt him), and the head when it snaps
+      if (e.state === 'patrol' || e.state === 'windup' || e.state === 'snap' || e.state === 'recover') hurt.push({ x: e.x - 24, y: e.y - 6, w: 48, h: 20 });
+      if (e.state === 'snap') hurt.push({ x: e.facing > 0 ? e.x + 20 : e.x - 20 - TURTLE.reach, y: e.y - 10, w: TURTLE.reach, h: 22 });
+      break;
+    }
     case 'caiman': {
       if (e.state === 'patrol') {
         if (roam(e, p, dt, feet, PERSONALITY.caiman, ready, speed, ev)) {

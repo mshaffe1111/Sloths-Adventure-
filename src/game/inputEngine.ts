@@ -30,6 +30,8 @@ export class InputEngine {
   public airJumpReady = false;
   /** the engine says something is close enough to kick (the refined touch rules only kick then) */
   public kickNear = true;
+  /** the engine says a tap should jump: nothing in reach to hit, and he is standing or swinging (refined touch rules, touchGestures.ts) */
+  public tapJump = false;
   /** the engine says he is climbing a trunk or swinging on a vine (the refined touch rules climb there instead of jumping) */
   public onVine = false;
   /** the engine says, every frame: a mega punch can start (it is not cooling down), so a held thumb only announces one that will happen */

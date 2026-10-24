@@ -33,6 +33,7 @@ export type EnemyType =
   | 'snake'        // Tree Snake / Emerald Boa
   | 'eagle'        // Harpy Eagle / Hawk
   | 'ocelot'       // Ocelot
+  | 'turtle'       // Snapping turtle (World 2's river snappers): hides in its shell from the front, kick the shell to send it sliding
   | 'jaguar'       // Jaguar: crouch, leap, land (the big sloth predator)
   | 'boa'          // Boa constrictor: coiled ambusher with a long strike
   | 'caiman'       // Spectacled caiman: slow armoured lunger
@@ -205,6 +206,8 @@ export interface Enemy {
   stateT?: number;
   /** predator AI: world y of the enemy's own origin while standing (leaps and lunges return to it) */
   groundY?: number;
+  /** a river snapper's shell, kicked: which way it slides (predatorAI.ts) */
+  slideDir?: 1 | -1;
   /** predator AI: where it started this move, and where it is going */
   fromX?: number;
   toX?: number;
@@ -269,6 +272,8 @@ export interface Platform {
   chaseTip?: boolean;
   /** a tree's crown to stand on, high in the canopy (Matt's crown painting: the end of 1-8) */
   crown?: boolean;
+  /** World 2: a cluster of lily pads floating on still water (painted from Matt's river sheet, riverArt.ts) */
+  lily?: boolean;
 }
 
 /**
@@ -365,6 +370,9 @@ export interface Collectible {
   search?: number;
   /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
+  /** World 2's reed cages: the little one inside (Matt's sheet: a baby capybara, duckling or otter), and when it was freed (game time) */
+  critter?: 'capy' | 'duck' | 'otter';
+  freedAt?: number;
 }
 
 export interface Particle {

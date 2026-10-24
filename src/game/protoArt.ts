@@ -211,6 +211,73 @@ export function drawKitPiece(ctx: CanvasRenderingContext2D, n: Name, x: number, 
   return true;
 }
 
+/**
+ * Where each world's painted liana runs, as shares of its picture (measured from the sheets): the strand's middle across the picture
+ * (`ax`), how wide the strand is (`strand`), and the top and bottom pieces that keep their shape while the middle stretches to the
+ * vine's length (`capT`, `capB`). `lift`: how much of the picture's top sits above the point the vine hangs from (World 1's branch stub).
+ */
+const LIANA_FIT: Record<number, { ax: number; strand: number; capT: number; capB: number; lift: number }> = {
+  1: { ax: 0.61, strand: 0.2, capT: 0.18, capB: 0.2, lift: 0.08 },
+  2: { ax: 0.54, strand: 0.25, capT: 0.33, capB: 0.24, lift: 0 },
+  3: { ax: 0.5, strand: 0.25, capT: 0.28, capB: 0.12, lift: 0.04 },
+  4: { ax: 0.55, strand: 0.15, capT: 0.12, capB: 0.28, lift: 0.04 },
+};
+const LIANA_DEFAULT = { ax: 0.5, strand: 0.22, capT: 0.16, capB: 0.16, lift: 0.04 };
+let lianaTops = true;
+/** whether a swinging liana draws its own leafy clump at the top (off where the stage hangs its vines from painted boughs, 2-4) */
+export function setLianaTops(on: boolean) {
+  lianaTops = on;
+}
+/** worlds whose own painted liana is not a single hanging vine to swing on (see drawSwingLianaArt) */
+const SWING_LIANA_FROM_W1 = new Set([2, 9]);
+/** how thick a swing liana's strand is drawn, in world units */
+const LIANA_THICK = 15;
+
+/**
+ * A swinging liana in the world's own painted style (Matt, 2026-10-24: the drawn braid looked out of place next to the painted
+ * kit): the painting turns with the vine about the point it hangs from, its top and bottom keep their shape and the twisted middle
+ * stretches to the vine's length. A painted leafy clump hides where it hangs from. False until the kit has loaded.
+ */
+export function drawSwingLianaArt(ctx: CanvasRenderingContext2D, v: { x: number; topY: number; bottomY: number; id: number }, ang: number): boolean {
+  if (!protoArtReady()) return false;
+  // World 2's painted rope (a coil at the top and a loop at the bottom) read as a noose, and World 9's is a swing seat on two ropes:
+  // those worlds swing on World 1's jungle liana instead
+  const borrow = SWING_LIANA_FROM_W1.has(kitWorld);
+  const { img, f } = borrow ? { img: imgs.get(1)!, f: PROTO_FRAMES.liana } : frameOf('liana');
+  const own = !borrow && kitWorld !== 1 && !!KIT_FRAMES[kitWorld]?.liana && img === imgs.get(kitWorld);
+  const fit = (own ? LIANA_FIT[kitWorld] : LIANA_FIT[1]) ?? LIANA_DEFAULT;
+  const k = LIANA_THICK / (fit.strand * f.w);
+  const w = f.w * k;
+  const len = v.bottomY - v.topY;
+  const topH = f.h * fit.capT * k, botH = f.h * fit.capB * k;
+  const lift = f.h * fit.lift * k;
+  const midH = Math.max(10, len + lift - topH - botH);
+  const sy0 = f.y, sy1 = f.y + f.h * fit.capT, sy2 = f.y + f.h * (1 - fit.capB);
+  ctx.save();
+  ctx.translate(v.x, v.topY);
+  ctx.rotate(-ang);
+  const x0 = -fit.ax * w;
+  // (each piece overlaps the next by a pixel so no seam shows)
+  ctx.drawImage(img, f.x, sy0, f.w, sy1 - sy0, x0, -lift, w, topH + 1);
+  ctx.drawImage(img, f.x, sy1, f.w, sy2 - sy1, x0, -lift + topH, w, midH + 1);
+  ctx.drawImage(img, f.x, sy2, f.w, f.y + f.h - sy2, x0, -lift + topH + midH, w, botH);
+  ctx.restore();
+  // the leafy clump it hangs from (the painted bush, hung upside down from the canopy)
+  load2();
+  const bush = ready2 && lianaTops ? img2 : null;
+  if (bush) {
+    const b = PROTO2_FRAMES.bushWide;
+    const bw = 150 + (Math.abs(v.id) % 3) * 16;
+    const bh = (bw * b.h) / b.w;
+    ctx.save();
+    ctx.translate(v.x + ((Math.abs(v.id) % 2) * 2 - 1) * 10, v.topY + 6);
+    ctx.scale(Math.abs(v.id) % 2 ? -1 : 1, -1);
+    ctx.drawImage(bush, b.x, b.y, b.w, b.h, -bw / 2, -bh * 0.35, bw, bh);
+    ctx.restore();
+  }
+  return true;
+}
+
 /** the hollow log, with a puff of dust while it is moving */
 export function drawLogArt(ctx: CanvasRenderingContext2D, p: Platform, moving: boolean): boolean {
   if (!protoArtReady()) return false;
@@ -392,6 +459,41 @@ function drawGroundFill(ctx: CanvasRenderingContext2D, p: Platform, viewBottom: 
   ctx.restore();
 }
 
+/**
+ * The face of a river bank behind a climb (2-6, the village dug into the bank): the world's painted earth repeated across the view,
+ * shaded back so the porches and posts in front stand out, with the grassy lip along its top. False until the kit has loaded.
+ */
+export function drawEarthWall(ctx: CanvasRenderingContext2D, wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number }): boolean {
+  if (!protoArtReady() || !ownKit()) return false;
+  const f = KIT_FRAMES[kitWorld]?.fill;
+  const img = imgs.get(kitWorld);
+  if (!f || !img) return false;
+  const a = Math.max(wall.x0, view.x0 - 10), b = Math.min(wall.x1, view.x1 + 10);
+  const top = Math.max(wall.top, view.y0 - 10), bottom = Math.min(wall.bottom, view.y1 + 10);
+  if (b <= a || bottom <= top) return true;
+  const tw = 300;
+  const th = (tw * f.h) / f.w;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(a, top, b - a, bottom - top);
+  ctx.clip();
+  // anchored to the world, so it does not swim as the camera climbs
+  const x0 = Math.floor(a / (tw - 2)) * (tw - 2);
+  const y0 = wall.top + Math.floor((top - wall.top) / (th - 2)) * (th - 2);
+  for (let y = y0; y < bottom; y += th - 2) for (let x = x0; x < b; x += tw - 2) ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, tw, th);
+  // set back: darker, and darker still toward the bottom of the view, so the climb in front reads clearly
+  ctx.fillStyle = 'rgba(28, 18, 8, 0.42)';
+  ctx.fillRect(a, top, b - a, bottom - top);
+  ctx.restore();
+  // the grassy lip where the bank meets the sky
+  if (wall.top >= view.y0 - 60 && wall.top <= view.y1 + 60) {
+    const m = frameOf('mossStrip').f;
+    const mh = 46, mw = (mh * m.w) / m.h;
+    for (let x = Math.floor(a / (mw - 2)) * (mw - 2); x < b; x += mw - 2) blit(ctx, 'mossStrip', x, wall.top - 16, mw, mh);
+  }
+  return true;
+}
+
 /** the face of the high canopy wall: the painted root wall, once, from its mossy lip down to the ground */
 export function drawWallArt(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number, w: number): boolean {
   if (!protoArtReady()) return false;
@@ -401,7 +503,7 @@ export function drawWallArt(ctx: CanvasRenderingContext2D, x: number, top: numbe
 
 /** a world with its own kit paints every thin ledge with its own piece (a drifting river log and a spring keep their own look) */
 function thinKit(p: Platform): boolean {
-  return p.height < 50 && !p.push && p.type !== 'drift' && p.type !== 'bouncy';
+  return p.height < 50 && !p.push && !p.lily && p.type !== 'drift' && p.type !== 'bouncy';
 }
 /** which of the stage's platforms the painted props draw (the rest keep the drawn look) */
 export function paintedPlatforms(platforms: Platform[]): Set<number> {

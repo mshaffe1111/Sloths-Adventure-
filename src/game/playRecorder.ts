@@ -33,6 +33,25 @@ const NAME_KEY = 'sloth_ctest_name';
 
 type Line = (string | number)[];
 
+let mixSeed = 0;
+/**
+ * The control test's layout seed. A new one each run (Start, Play again: newMix), the same one for a retry inside the run, so every run
+ * is a different mix of stretches (protoStage.ts). `?mix=<seed>` in the address builds that one run again.
+ */
+export function ctestSeed(): number {
+  try {
+    const q = Number(new URLSearchParams(location.search).get('mix'));
+    if (Number.isInteger(q) && q > 0) return q;
+  } catch {
+    /* no window */
+  }
+  if (!mixSeed) newMix();
+  return mixSeed;
+}
+export function newMix() {
+  mixSeed = 1 + Math.floor(Math.random() * 999999);
+}
+
 /** the control test is on: #ctest in the address (the only part a shared Claude link passes on), or ?ctest=1 */
 export function ctestEnabled(): boolean {
   try {
@@ -95,6 +114,7 @@ class PlayRecorder {
 
   start(who: string) {
     if (this.on) return;
+    newMix();
     this.who = who.trim().slice(0, 40) || 'anonymous';
     try {
       localStorage.setItem(NAME_KEY, this.who);

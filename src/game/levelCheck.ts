@@ -504,7 +504,9 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   // rivers: the logs must be spaced so a hop between neighbours is easy, and a bank must stand at each end of the water
   for (const r of stage.rivers ?? []) {
     const logs = plats.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
-    if (logs.length < 2) errors.push(`river at x=${Math.round(r.x0)} has fewer than two logs`);
+    // (still water, a lily pond, has no current and no logs: it is crossed on its pads, which the reach check covers)
+    if (r.speed === 0 || r.open) { /* no logs to space */ }
+    else if (logs.length < 2) errors.push(`river at x=${Math.round(r.x0)} has fewer than two logs`);
     else {
       const d = logs[0].drift!;
       const spacing = ((d.x1 - d.x0 + d.width) / logs.length);

@@ -194,6 +194,7 @@ export function calculateHitScore(
   if (enemyType === 'harpy') baseScore = 350;
   if (enemyType === 'boa') baseScore = 300;
   if (enemyType === 'caiman') baseScore = 300;
+  if (enemyType === 'turtle') baseScore = 200;
   if (enemyType === 'jaguar') baseScore = 350;
   if (enemyType === 'boss') baseScore = 1000;
 
