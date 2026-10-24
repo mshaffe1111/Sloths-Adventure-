@@ -9,6 +9,7 @@ import type { Collectible, Platform } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
+import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 
 const KIT_KEY = 'sloth_paint_w1';
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
@@ -54,6 +55,37 @@ function load(w: number) {
   const url = w === 1 ? new URL('../assets/proto/props-atlas.webp', import.meta.url).href : new URL(`../assets/kits/w${w}.webp`, import.meta.url).href;
   trackAtlas(im, url, () => { ready.add(w); }, () => { imgs.delete(w); });
 }
+// Matt's second World 1 sheet set (2026-10-23): the kapok trunk with a hollow, a plain trunk, and the hiding bushes
+let img2: HTMLImageElement | null = null;
+let ready2 = false;
+function load2() {
+  if (img2 || typeof Image === 'undefined') return;
+  const im = new Image();
+  img2 = im;
+  trackAtlas(im, new URL('../assets/proto/props2-atlas.webp', import.meta.url).href, () => { ready2 = true; }, () => { img2 = null; });
+}
+/** a piece of the second sheet so it fills the box (x, y, w, h); false until it has loaded */
+function blit2(ctx: CanvasRenderingContext2D, n: keyof typeof PROTO2_FRAMES, x: number, y: number, w: number, h: number): boolean {
+  load2();
+  if (!ready2 || !img2) return false;
+  const f = PROTO2_FRAMES[n];
+  ctx.drawImage(img2, f.x, f.y, f.w, f.h, x, y, w, h);
+  return true;
+}
+
+/**
+ * A hollow in a climb trunk (1-4's secret): the painted trunk section with its round opening, centred on the trunk at height y (the
+ * opening's middle). `glow` (he is close): the variant with warm light inside, so something is plainly in there.
+ */
+export function drawHollowArt(ctx: CanvasRenderingContext2D, x: number, y: number, glow: boolean): boolean {
+  const f = PROTO2_FRAMES.hollow;
+  // a little wider than the stacked trunk (84), the way a kapok swells where it is hollow
+  const w = 104;
+  const h = (w * f.h) / f.w;
+  // the opening's middle sits 47% of the way down the painting
+  return blit2(ctx, glow ? 'hollowGlow' : 'hollow', x - w / 2, y - h * 0.47, w, h);
+}
+
 export function protoArtReady() {
   load(1);
   if (kitWorld !== 1) load(kitWorld);

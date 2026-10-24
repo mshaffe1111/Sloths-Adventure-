@@ -20,6 +20,11 @@ test('1-2: every roll keeps the plan (learn, test, twist, finish), asks for 80 p
     assert.ok(petals >= PETAL_GOAL_12 * 1.4 && petals <= PETAL_GOAL_12 * 1.7, `seed ${s}: ${petals} petals`);
     assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `seed ${s}: ${st.meta!.timing!.layoutSeconds.toFixed(0)} s`);
     assert.ok(st.proto.covers.length >= 1, `seed ${s}: the hidden shelf behind leaves`);
+    // World 1's note is on that shelf (a hand-built stage has to place its own find)
+    const note = st.collectibles.find((c) => c.type === 'find');
+    assert.equal(note?.findId, 'w1_note', `seed ${s}`);
+    const cv = st.proto.covers[0];
+    assert.ok(note!.x >= cv.x && note!.x <= cv.x + cv.w && note!.y >= cv.y - 40 && note!.y <= cv.y + cv.h, `seed ${s}: the note sits behind the leaves`);
     assert.equal(st.proto.movedPickups, 0, `seed ${s}: the plan put every petal where he can get it (nothing for the safety pass to move)`);
   }
 });
