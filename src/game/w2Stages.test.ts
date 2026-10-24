@@ -151,7 +151,7 @@ test('2-9: the court: guards (royal snappers) and snappers, about one and a half
       best = Math.max(best, run);
     }
     assert.ok(best >= 4, `seed ${s}: a row of four guards`);
-    assert.ok(st.proto.decor!.some((d) => d.n === 'bell'), `seed ${s}: the king's bell`);
+    assert.ok(st.proto.decor!.some((d) => d.n === 'throne') && st.proto.decor!.some((d) => d.n === 'archway'), `seed ${s}: the king's throne and the archway`);
   }
 });
 

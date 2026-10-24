@@ -839,14 +839,20 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       expert += (x - x0g) / RUN + n * 2.4 + snappers * 1.6;
       pieces.push({ k: `guards${n}`, x0: x0g, x1: x });
     };
-    /** the court's dressing along a stretch of bank: lanterns on posts, and a sign */
+    /** the court's dressing along a stretch of bank: lanterns on posts and the king's banners, taking turns (Matt's court sheet) */
     const courtLanterns = (x0c: number, x1c: number) => {
-      for (let lx = x0c + 80; lx < x1c - 60; lx += R.r(260, 340)) piece('lantern', lx, G + 4, 40);
+      let k = 0;
+      for (let lx = x0c + 80; lx < x1c - 60; lx += R.r(240, 320)) {
+        if (k++ % 2) piece('banner', lx, G + 6, 64, { flip: R.chance(0.5) });
+        else piece('lantern', lx, G + 4, 40);
+      }
     };
     beat('Learn: one guard', () => {
       rest(R.r(460, 540));
       hint(220, 'The river king’s guards! Hit one from behind, or when he lowers his spear.');
-      piece('sign', 360, G + 4, 132, { text: ['THE KING’S', 'COURT'] });
+      piece('sign', 300, G + 4, 132, { text: ['THE KING’S', 'COURT'] });
+      // the way into the court: the floral archway
+      piece('archway', 520, G + 6, 210);
       run(R.r(260, 320));
       guard(x, G, 100);
       run(R.r(420, 480));
@@ -897,16 +903,23 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
         else river(n % 4 ? -1 : 1, 74 + n * 2, 3, 165);
         if (++n % 2 === 0) flag();
       }
-      // the king's court: lanterns, the bell, his sign
+      // the king's court: through the archway, along the lily-pad carpet between the banners, to his throne on its dais, the shell
+      // gong beside it. (The throne is empty: the king waits in his lair, the boss fight.)
       rest(R.r(200, 260));
       const k0 = x;
-      run(240);
+      run(160);
+      piece('archway', x, G + 6, 230);
+      run(120);
       piece('sign', x, G + 4, 140, { text: ['BOW TO', 'THE KING'] });
-      run(200);
-      piece('bell', x, G + 6, 150);
-      run(260);
-      courtLanterns(k0, x);
-      run(R.r(300, 380));
+      run(150);
+      for (let i = 0; i < 3; i++) piece('lilyCarpet', x + 110 + i * 200, G + 16, 230);
+      piece('banner', x + 40, G + 6, 70);
+      piece('banner', x + 560, G + 6, 70, { flip: true });
+      run(640);
+      piece('gong', x - 30, G + 6, 120);
+      piece('dais', x + 140, G + 14, 250);
+      piece('throne', x + 140, G - 30, 200);
+      run(660); // the sanctuary door stands past the dais, not in front of the throne
       expert += (x - k0) / RUN;
     });
   } else if (plan === '2-2') {
