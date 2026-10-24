@@ -18,7 +18,7 @@ Matt's running list of drawings still needed from Gemini. A new need joins the l
 8. ~~**The royal snapper guard** (2-9's court): the snapping turtle upright with a reed-bound spear: standing, marching, the wind-up, the jab, after the jab, hit, knocked flat, dazed.~~ Received 2026-10-24 (seven sheets: the spear sheet and the hurt sheet are cut; the climbing, rope and jumping sheets are kept for later).
 
 9. ~~**The River King's court props**: throne, banner, shell gong, lily-pad carpet, floral archway, dais (2-9). (Prompt 9)~~ Received 2026-10-24 (all six used in 2-9's court).
-10. **Crocus Rex animated** (the World 2 boss): no Gemini art needed. His nine old poses get the crooked petal crown painted on by Qwen-Image and are animated by Wan 2.2 on Hugging Face (2026-10-24, in progress).
+10. ~~**Crocus Rex animated** (the World 2 boss): no Gemini art needed. His nine old poses got the crooked petal crown painted by Qwen-Image and were animated by Wan 2.2 on Hugging Face.~~ Done 2026-10-24.
 
 ## World 7 (when we get there)
 
