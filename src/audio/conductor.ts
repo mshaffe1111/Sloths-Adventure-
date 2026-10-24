@@ -21,6 +21,9 @@ const LOOKAHEAD = 0.6;
 const TICK_MS = 25;
 const DEFAULT_KEY: KeyInfo = { tonic: 60, scale: [0, 2, 4, 5, 7, 9, 11] };
 
+/** a phone or tablet (they get the lighter sound and the roomier buffer) */
+const PHONE = typeof navigator !== 'undefined' && /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
+
 const KEY_MUSIC = 'sloth_music_vol';
 const KEY_SFX = 'sloth_sfx_vol';
 const KEY_MUTED = 'sloth_game_muted';
@@ -118,7 +121,9 @@ export class Conductor {
       if (!AC) return;
       let ctx: AudioContext;
       try {
-        ctx = new AC({ latencyHint: 'interactive' });
+        // a phone gets a roomier buffer: with the smallest one ('interactive') the sound crackled and broke up on Android while the
+        // game was busy drawing (the control test, 2026-10-24). 'balanced' costs a few hundredths of a second of delay on the effects.
+        ctx = new AC({ latencyHint: PHONE ? 'balanced' : 'interactive' });
         // iPhones follow the ringer switch for Web Audio unless the page says this is playback, not a notification
         const session = (navigator as unknown as { audioSession?: { type: string } }).audioSession;
         if (session) session.type = 'playback';
@@ -133,7 +138,8 @@ export class Conductor {
       void import('./sampleLoader.ts').then((m) => m.loadSamples(this.core as AudioCore)).catch(() => {});
       this.warmOrchSfx();
       this.amb = new Ambience(this.core);
-      this.lite = typeof navigator !== 'undefined' && /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) && (navigator.hardwareConcurrency ?? 8) <= 4;
+      // every phone plays the lighter arrangement (fewer voices at once): the full one was too much for a busy phone's sound
+      this.lite = PHONE;
       this.amb.lite = this.lite;
       this.core.lite = this.lite;
       this.applyVolumes(true);
@@ -414,10 +420,37 @@ export class Conductor {
 
   // ------------------------------------------------------------------------------------------- the clock
 
+  /**
+   * how much the sound clock fell behind real time since the last report (ms): the audio hardware running dry, heard as a crackle or a
+   * gap. The control test logs it with the frame rate (engine.ts).
+   */
+  private lagMs = 0;
+  private lastTickReal = 0;
+  private lastTickAudio = 0;
+  /** a short line for the control test's recording: light or full sound, the buffer, and the sound lost since the last call */
+  report(): string {
+    const ctx = this.ctx;
+    if (!ctx) return 'no sound';
+    const lag = Math.round(this.lagMs);
+    this.lagMs = 0;
+    return `${this.lite ? 'lite' : 'full'} ${ctx.state} buf${Math.round((ctx.baseLatency ?? 0) * 1000)}ms lag${lag}ms`;
+  }
+
   private tick = () => {
     const core = this.core;
-    if (!core || core.ctx.state !== 'running') return;
+    if (!core || core.ctx.state !== 'running') {
+      this.lastTickReal = 0;
+      return;
+    }
     const now = core.ctx.currentTime;
+    const real = performance.now();
+    if (this.lastTickReal && real - this.lastTickReal < 1000) {
+      // the sound clock should move with real time: when it moves less, the hardware went without sound for that long
+      const behind = real - this.lastTickReal - (now - this.lastTickAudio) * 1000;
+      if (behind > 4) this.lagMs += behind;
+    }
+    this.lastTickReal = real;
+    this.lastTickAudio = now;
     const until = now + LOOKAHEAD;
     this.playback?.update(until);
     this.amb?.update(until);
