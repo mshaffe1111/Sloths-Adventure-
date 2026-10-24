@@ -208,6 +208,9 @@ export interface Enemy {
   groundY?: number;
   /** a river snapper's shell, kicked: which way it slides (predatorAI.ts) */
   slideDir?: 1 | -1;
+  /** 2-9: a snapper of the river king's guard: stands upright with a spear, jabs further, blocks a blow to the front instead of hiding,
+   *  and is staggered back by a kick (it shares the snapper's brain, predatorAI.ts) */
+  royal?: boolean;
   /** predator AI: where it started this move, and where it is going */
   fromX?: number;
   toX?: number;

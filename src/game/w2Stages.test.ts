@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildW2Stage, CAGES_23, CAGES_28, FLOWER_GOAL_22, ISLAND_TOP, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
+import { buildW2Stage, CAGES_23, CAGES_28, COURT_GOAL_29, FLOWER_GOAL_22, ISLAND_TOP, SNAPPER_GOAL_25, type W2Plan } from './w2Stages.ts';
 import { floodLevel } from './river.ts';
 import { turtleGuard } from './predatorAI.ts';
 import type { Enemy } from './types.ts';
@@ -10,11 +10,11 @@ import type { LevelConfig } from './types.ts';
 
 const cfg = (id: W2Plan): LevelConfig =>
   ({
-    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-1' || id === '2-7' ? 'sprint' : id === '2-2' ? 'harvest' : id === '2-4' ? 'vine_runner' : id === '2-5' ? 'purge' : 'rescue',
+    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-1' || id === '2-7' ? 'sprint' : id === '2-2' ? 'harvest' : id === '2-4' ? 'vine_runner' : id === '2-5' ? 'purge' : id === '2-9' ? 'gauntlet' : 'rescue',
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
-const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4', '2-5', '2-7', '2-8'];
+const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4', '2-5', '2-7', '2-8', '2-9'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
@@ -133,6 +133,25 @@ test('2-8: cages on reed islands in water that rises over them (and stops under 
     }
     const high = cages.find((c) => c.y < 450);
     assert.ok(high && st.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - high.x) < 160), `seed ${s}: the post cage`);
+  }
+});
+
+test('2-9: the court: guards (royal snappers) and snappers, about one and a half times the goal, a row close enough to bowl over', () => {
+  for (const s of SEEDS) {
+    const st = buildW2Stage(cfg('2-9'), s, '2-9');
+    assert.equal(st.config.targetCount, COURT_GOAL_29);
+    assert.ok(st.enemies.length >= COURT_GOAL_29 * 1.35, `seed ${s}: ${st.enemies.length}`);
+    const guards = st.enemies.filter((e) => e.royal);
+    assert.ok(guards.length >= COURT_GOAL_29 * 0.8, `seed ${s}: ${guards.length} guards`);
+    assert.ok(guards.every((g) => g.type === 'turtle' && g.hp === 2 && g.height > 50));
+    const xs = guards.map((e) => e.x).sort((a, b) => a - b);
+    let run = 1, best = 1;
+    for (let i = 1; i < xs.length; i++) {
+      run = xs[i] - xs[i - 1] < 160 ? run + 1 : 1;
+      best = Math.max(best, run);
+    }
+    assert.ok(best >= 4, `seed ${s}: a row of four guards`);
+    assert.ok(st.proto.decor!.some((d) => d.n === 'bell'), `seed ${s}: the king's bell`);
   }
 });
 

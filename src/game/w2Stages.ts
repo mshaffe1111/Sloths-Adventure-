@@ -21,7 +21,7 @@ import { W2_FRAMES } from './w2PropsData.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 
-export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5' | '2-6' | '2-7' | '2-8';
+export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5' | '2-6' | '2-7' | '2-8' | '2-9';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-1': '2-1',
   '2-2': '2-2',
@@ -31,6 +31,7 @@ export const W2_STAGES: Record<string, W2Plan> = {
   '2-6': '2-6',
   '2-7': '2-7',
   '2-8': '2-8',
+  '2-9': '2-9',
 };
 
 /** 2-2 asks for 80 flowers for the king's crown (the stage holds about one and a half times that) */
@@ -41,6 +42,8 @@ export const SNAPPER_GOAL_25 = 14;
 export const CAGES_23 = 3;
 /** 2-8 Reed Cages asks for 7 more little ones (the stage holds about one and a half times that) */
 export const CAGES_28 = 7;
+/** 2-9 The River King's Court asks for 14 of the court's guards and snappers (it holds about one and a half times that) */
+export const COURT_GOAL_29 = 14;
 /** a reed island's top in a rising river: just above the still water (it starts 20 px below), so the water covers it as it rises */
 export const ISLAND_TOP = 600;
 
@@ -145,6 +148,14 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     E.push({
       id: eid++, type: 'turtle', x: tx, y: surface - 14, vx: 22, vy: 0, width: 48, height: 24, hp: 1, maxHp: 1, facing: R.chance(0.5) ? 1 : -1,
       patrolMinX: tx - range / 2, patrolMaxX: tx + range / 2, attackCooldown: 1.5, telegraphTimer: 0, isAttacking: false,
+      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
+    } as Enemy);
+  };
+  /** one of the river king's guards (2-9): a royal snapper, upright with a spear, marching his patch (predatorAI.ts, `royal`) */
+  const guard = (gx: number, surface = G, range = 120) => {
+    E.push({
+      id: eid++, type: 'turtle', royal: true, x: gx, y: surface - 14, vx: 20, vy: 0, width: 36, height: 66, hp: 2, maxHp: 2, facing: R.chance(0.5) ? 1 : -1,
+      patrolMinX: gx - range / 2, patrolMaxX: gx + range / 2, attackCooldown: 1.6, telegraphTimer: 0, isAttacking: false,
       animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
     } as Enemy);
   };
@@ -805,6 +816,99 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       }
       rest(R.r(500, 700));
     });
+  } else if (plan === '2-9') {
+    // 2-9 The River King's Court: fight through the court to the king. His guards (royal snappers, upright with spears) block a blow to
+    // the front, jab further than a snapper bites, and need two hits; from behind, or open after a jab, they go down; a kick staggers one
+    // back into whoever stands behind him. Learn one guard at a time; then guards and snappers on the islands; the twist is the court
+    // itself, a row of guards before the king's bell, where one good kick bowls the rest over.
+    open(0);
+    /** a stretch of bank with guards (and snappers between them) spread along it, clear of the flags at either end */
+    const guardBank = (n: number, spacing: [number, number], snappers = 0) => {
+      const x0g = x;
+      run(R.r(260, 320));
+      for (let i = 0; i < n; i++) {
+        run(R.r(spacing[0], spacing[1]));
+        guard(x);
+        if (i < snappers) {
+          run(R.r(spacing[0] * 0.6, spacing[1] * 0.6));
+          turtle(x);
+        }
+      }
+      run(R.r(400, 460));
+      row(x0g + 120, x - 120, G - 34, Math.max(2, Math.round((x - x0g) / 220)), 'hibiscus');
+      expert += (x - x0g) / RUN + n * 2.4 + snappers * 1.6;
+      pieces.push({ k: `guards${n}`, x0: x0g, x1: x });
+    };
+    /** the court's dressing along a stretch of bank: lanterns on posts, and a sign */
+    const courtLanterns = (x0c: number, x1c: number) => {
+      for (let lx = x0c + 80; lx < x1c - 60; lx += R.r(260, 340)) piece('lantern', lx, G + 4, 40);
+    };
+    beat('Learn: one guard', () => {
+      rest(R.r(460, 540));
+      hint(220, 'The river king’s guards! Hit one from behind, or when he lowers his spear.');
+      piece('sign', 360, G + 4, 132, { text: ['THE KING’S', 'COURT'] });
+      run(R.r(260, 320));
+      guard(x, G, 100);
+      run(R.r(420, 480));
+      expert += 4;
+      hint(x - 240, 'Head-on he blocks. Kick him!', 'Head-on he blocks. Kick him!', 'Head-on he blocks. Kick him!');
+      guardBank(2, [320, 380]);
+      river(1, 72, 3, 168);
+      flag();
+    });
+    beat('Develop: guards on the islands', () => {
+      rest(R.r(240, 300));
+      for (let k = 0; k < 2; k++) {
+        const ix = x;
+        island(R.r(400, 460));
+        guard((ix + x) / 2, G, 100);
+        expert += 3;
+        river(k ? -1 : 1, 74, 3, 166);
+      }
+      heart(x - 40, G - 60);
+      guardBank(2, [280, 340], 2);
+      lilyPond(5);
+      flag();
+    });
+    beat('Twist: the court', () => {
+      rest(R.r(240, 300));
+      hint(x + 20, 'The court! Kick one guard into the rest!');
+      const c0 = x;
+      // close together: a guard kicked along this bank meets every one behind him
+      guardBank(4, [110, 140]);
+      courtLanterns(c0, x);
+      heart(x - 40, G - 60);
+      river(-1, 70, 3, 170);
+      const c1 = x;
+      guardBank(3, [240, 300], 1);
+      courtLanterns(c1, x);
+      // a golden seed high over the court: the top of a double jump from the middle of the bank
+      goldenSeed((c1 + x) / 2, G - 190);
+      flag();
+    });
+    beat('Finish: to the king', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 16 && n < 10) {
+        rest(R.r(220, 300));
+        const c = x;
+        guardBank(n % 3 === 0 ? 4 : 2, n % 3 === 0 ? [120, 150] : [260, 320], n % 2);
+        courtLanterns(c, x);
+        if (n % 2) lilyPond(4);
+        else river(n % 4 ? -1 : 1, 74 + n * 2, 3, 165);
+        if (++n % 2 === 0) flag();
+      }
+      // the king's court: lanterns, the bell, his sign
+      rest(R.r(200, 260));
+      const k0 = x;
+      run(240);
+      piece('sign', x, G + 4, 140, { text: ['BOW TO', 'THE KING'] });
+      run(200);
+      piece('bell', x, G + 6, 150);
+      run(260);
+      courtLanterns(k0, x);
+      run(R.r(300, 380));
+      expert += (x - k0) / RUN;
+    });
   } else if (plan === '2-2') {
     // 2-2 Petals for the Crown: the river king wants admiring. Gather flowers for his crown: over the logs, high and low, and across the
     // lily pond. The flowers show the way: they arc where the hop goes.
@@ -1051,7 +1155,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
   });
 
   const width = Math.ceil(x + 20);
-  const targetCount = plan === '2-2' ? FLOWER_GOAL_22 : plan === '2-3' ? CAGES_23 : plan === '2-5' ? SNAPPER_GOAL_25 : plan === '2-8' ? CAGES_28 : config.targetCount;
+  const targetCount = plan === '2-2' ? FLOWER_GOAL_22 : plan === '2-3' ? CAGES_23 : plan === '2-5' ? SNAPPER_GOAL_25 : plan === '2-8' ? CAGES_28 : plan === '2-9' ? COURT_GOAL_29 : config.targetCount;
   const cfg: LevelConfig = {
     ...config,
     levelWidth: width,

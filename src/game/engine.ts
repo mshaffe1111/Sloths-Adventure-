@@ -81,6 +81,7 @@ import { FIND_BY_ID } from './finds.ts';
 import { bossMaterial, materialFor } from '../audio/combat.ts';
 import { FEET, endStagger, isPredator, staggerPredator, stepPredator, stepSpider, turtleGuard } from './predatorAI.ts';
 import { drawTurtle, drawTurtleSprite } from './turtleArt.ts';
+import { drawGuardSprite } from './guardArt.ts';
 import { assignTerritories, keepOnLedge, separateHunters, walkBounds } from './enemyBrain.ts';
 import {
   applyHit, bodyRect, canCancel, chooseMove, contactPoint, headRect, hurtRect, isCommitted, koLaunch, moveBox, moveLength, MOVES, phaseAt,
@@ -229,6 +230,8 @@ export class GameEngine {
   private isRunning: boolean = false;
   /** the first time a snapper hides, Dot's line says what to do about it */
   private turtleTold = false;
+  /** the first time a guard of the river king blocks (2-9) */
+  private guardTold = false;
   /** 2-8: when each rising river began to rise (game time), and whether Dot has warned about it */
   private floodAt = new Map<import('./river.ts').RiverZone, number>();
   private floodTold = false;
@@ -2721,14 +2724,21 @@ export class GameEngine {
           e.state = 'shell';
           e.stateT = 0;
           e.vx = 0;
-          if (!this.turtleTold) this.addFloatingText('IT HID! GET BEHIND IT, OR KICK THE SHELL', e.x, e.y - 40, '#cbd5e1');
-          else this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
-          this.turtleTold = true;
+          if (e.royal) {
+            // the river king's guard blocks with his spear
+            if (!this.guardTold) this.addFloatingText('BLOCKED! GET BEHIND HIM, OR KICK HIM', e.x, e.y - 60, '#cbd5e1');
+            else this.addFloatingText('CLANK!', e.x, e.y - 50, '#cbd5e1');
+            this.guardTold = true;
+          } else {
+            if (!this.turtleTold) this.addFloatingText('IT HID! GET BEHIND IT, OR KICK THE SHELL', e.x, e.y - 40, '#cbd5e1');
+            else this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
+            this.turtleTold = true;
+          }
         } else if (g === 'slide') {
           e.state = 'slide';
           e.stateT = 0;
           e.slideDir = dir;
-          this.addFloatingText('WHOOSH!', e.x, e.y - 30, '#fef08a');
+          this.addFloatingText(e.royal ? 'OOF! WHOA!' : 'WHOOSH!', e.x, e.y - (e.royal ? 56 : 30), '#fef08a');
         } else {
           e.x += dir * 10;
           this.addFloatingText('TINK!', e.x, e.y - 30, '#cbd5e1');
@@ -3824,7 +3834,9 @@ export class GameEngine {
         } else if (enemy.type === 'tayra') {
           if (!drawTayraSprite(ctx, enemy, this.gameTime)) drawTayra(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'turtle') {
-          if (!drawTurtleSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
+          if (enemy.royal) {
+            if (!drawGuardSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
+          } else if (!drawTurtleSprite(ctx, enemy, this.gameTime)) drawTurtle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'harpy') {
           if (!drawHarpySprite(ctx, enemy, this.gameTime)) drawHarpyFallback(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'frog') {

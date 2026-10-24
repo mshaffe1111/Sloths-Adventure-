@@ -63,6 +63,8 @@ export const harpyShockReach = (t: number) => HARPY.shockFrom + (HARPY.shockTo -
 
 /** the river snapper's timings (s) and reach (px): exported so the drawing and the tests read the same numbers */
 export const TURTLE = { windup: 0.5, snap: 0.18, recover: 0.75, reach: 46, shell: 1.8, peek: 0.45, slideSpeed: 380, slideMax: 2.2, dizzy: 1.1 };
+/** the river king's guard (a royal snapper, 2-9): a longer wind-up, a spear that reaches further, a shorter block, a longer opening */
+export const GUARD = { windup: 0.62, reach: 78, block: 1.1, recover: 0.95 };
 
 /**
  * What a blow does to a snapper (engine.ts hitEnemy): `shell`: it was hit head-on and hides (no harm done); `slide`: its shell is
@@ -322,7 +324,7 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
       // its ground and the turtle climbs out dizzy
       if (e.state === 'shell') {
         e.vx = 0;
-        if (t >= TURTLE.shell) enter(e, 'peek');
+        if (t >= (e.royal ? GUARD.block : TURTLE.shell)) enter(e, 'peek');
       } else if (e.state === 'peek') {
         e.vx = 0;
         if (t >= TURTLE.peek) {
@@ -356,7 +358,7 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
       } else if (e.state === 'windup') {
         e.vx = 0;
         if (t < 0.25) e.facing = toward;
-        if (t >= TURTLE.windup) {
+        if (t >= (e.royal ? GUARD.windup : TURTLE.windup)) {
           enter(e, 'snap');
           ev.launch = true;
         }
@@ -368,13 +370,19 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
         }
       } else if (e.state === 'recover') {
         e.vx = 0;
-        if (t >= TURTLE.recover) {
+        if (t >= (e.royal ? GUARD.recover : TURTLE.recover)) {
           enter(e, 'patrol');
           e.attackCooldown = 1.6;
         }
       }
       if (e.state !== 'slide') keepOnGround(e, dt);
       // the body (not while it hides: a shell sitting still, or one sliding away, does not hurt him), and the head when it snaps
+      if (e.royal) {
+        // the guard stands upright: his body, and the spear's reach when he jabs
+        if (e.state === 'patrol' || e.state === 'windup' || e.state === 'snap' || e.state === 'recover') hurt.push({ x: e.x - 16, y: e.y - 46, w: 32, h: 58 });
+        if (e.state === 'snap') hurt.push({ x: e.facing > 0 ? e.x + 14 : e.x - 14 - GUARD.reach, y: e.y - 34, w: GUARD.reach, h: 22 });
+        break;
+      }
       if (e.state === 'patrol' || e.state === 'windup' || e.state === 'snap' || e.state === 'recover') hurt.push({ x: e.x - 24, y: e.y - 6, w: 48, h: 20 });
       if (e.state === 'snap') hurt.push({ x: e.facing > 0 ? e.x + 20 : e.x - 20 - TURTLE.reach, y: e.y - 10, w: TURTLE.reach, h: 22 });
       break;
