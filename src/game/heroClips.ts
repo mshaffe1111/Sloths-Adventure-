@@ -86,6 +86,9 @@ let live = false;
 export function heroClipsLive(on: boolean) {
   live = on;
 }
+export function heroClipsAreLive(): boolean {
+  return live;
+}
 /** forget everything (a new stage, a respawn) */
 export function resetHeroClips() {
   playing = null;

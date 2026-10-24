@@ -12,6 +12,7 @@ import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { CoachOverlay } from './components/CoachOverlay.tsx';
 import { LessonCard } from './components/LessonCard.tsx';
+import { JournalToast } from './components/JournalToast.tsx';
 import { Wayside } from './components/Wayside.tsx';
 import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
@@ -1043,6 +1044,7 @@ export default function App() {
               }}
             />
           )}
+          <JournalToast active={screen === 'playing' && !coachStep && !lessonId && !reading} />
           {inputEngineRef.current && (
             <ControlSwitch inputEngine={inputEngineRef.current} />
           )}

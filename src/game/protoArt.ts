@@ -204,6 +204,13 @@ function stand(ctx: CanvasRenderingContext2D, n: Name, cx: number, bottom: numbe
   blit(ctx, n, cx - w / 2, bottom - h, w, h);
 }
 
+/** one piece of the painted World 1 kit filling a box (the journal's demo scenes); false until the kit has loaded */
+export function drawKitPiece(ctx: CanvasRenderingContext2D, n: Name, x: number, y: number, w: number, h: number): boolean {
+  if (!protoArtReady()) return false;
+  blit(ctx, n, x, y, w, h);
+  return true;
+}
+
 /** the hollow log, with a puff of dust while it is moving */
 export function drawLogArt(ctx: CanvasRenderingContext2D, p: Platform, moving: boolean): boolean {
   if (!protoArtReady()) return false;

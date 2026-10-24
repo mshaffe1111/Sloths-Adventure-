@@ -933,3 +933,124 @@
   .ending-card .ending-score div { font-size: 1.5rem !important; }
   .ending-card button { padding-top: 8px !important; padding-bottom: 8px !important; }
 }
+
+/* ───────── Pokey's Journal (How to Play, components/HowToPlay.tsx) ───────── */
+.jr { width: min(100%, 920px); height: min(100%, 600px); display: flex; flex-direction: column; overflow: hidden; padding: 12px 14px 14px; }
+.jr-short { width: min(100%, 860px); }
+.jr-head { display: flex; align-items: center; gap: 10px; flex: none; }
+.jr-head-txt { min-width: 0; }
+.jr-head .ui-h2 { font-size: 23px; white-space: nowrap; }
+.jr-progress { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; font-size: 12px; font-weight: 700; color: #d9e6d6; white-space: nowrap; }
+.jr-bar { display: block; width: 130px; height: 8px; border-radius: 99px; background: rgba(0,0,0,.35); overflow: hidden; }
+.jr-bar > span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #ffd36a, #ffb02e); }
+.jr-mode { font-size: 11px; font-weight: 700; color: #c9dcc6; padding: 5px 10px; border-radius: 99px; background: rgba(0,0,0,.28); white-space: nowrap; }
+.jr-short .jr-mode { margin-left: auto; }
+.jr-head .ui-x { width: 44px; height: 44px; flex: none; }
+.jr-back { display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 14px 0 10px; border-radius: 22px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.2); color: #f4ecd4; font: 600 15px var(--font-heading); cursor: pointer; flex: none; }
+.jr-back .ic { color: #ffcf5a; }
+.jr-split { display: flex; gap: 12px; flex: 1; min-height: 0; margin-top: 10px; }
+.jr-chapters { width: 192px; flex: none; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; }
+.jr-ch { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 10px; border: 0; border-radius: 12px; background: rgba(0,0,0,.25); color: #e6efe2; font: 600 15px var(--font-heading); text-align: left; cursor: pointer; flex: none; }
+.jr-ch svg { color: #ffcf5a; flex: none; }
+.jr-ch.on { background: linear-gradient(#ffd36a, #ffb02e); color: #3b2200; font-weight: 700; }
+.jr-ch.on svg { color: #3b2200; }
+.jr-ch-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jr-ch-n { font: 700 12px var(--font-ui); color: #b9cdb6; }
+.jr-ch.on .jr-ch-n { color: #3b2200; }
+.jr-ch-extra { margin-top: auto; background: transparent; border: 1px solid rgba(255,226,150,.35); font: 700 13px var(--font-ui); min-height: 38px; }
+.jr-new { font: 900 11px var(--font-ui); letter-spacing: .08em; color: #0f2a1b; background: #7ee2a8; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
+.jr-new-s { font-size: 10px; padding: 2px 6px; }
+.jr-dot { width: 10px; height: 10px; flex: none; border-radius: 50%; background: #2fbf6c; box-shadow: 0 0 0 2px #e9fff1, 0 0 8px rgba(47, 191, 108, .8); }
+.jr-main { flex: 1; min-width: 0; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.jr-short .jr-main { margin-top: 8px; display: flex; flex-direction: column; }
+.jr-short .jr-page { flex: 1; min-height: 0; }
+.jr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.jr-tile { display: flex; flex-direction: column; padding: 0; border-radius: 16px; overflow: hidden; border: 1.5px solid rgba(255,226,150,.35); background: #0d2016; cursor: pointer; text-align: left; }
+.jr-tile:active { transform: scale(.98); }
+.jr-tile.fresh { border: 2px solid #7ee2a8; box-shadow: 0 0 14px rgba(126,226,168,.35); }
+.jr-tile.locked { border-style: dashed; border-color: rgba(255,226,150,.3); background: #0a1a12; }
+.jr-tile-art { position: relative; display: block; height: 104px; background-color: #1b3a28; background-size: cover; background-position: 40% 35%; }
+.jr-tile.locked .jr-tile-art { background: radial-gradient(circle at 50% 60%, #1e4030, #0a1a12 75%); }
+.jr-tile .jr-new { position: absolute; top: 7px; left: 7px; }
+.jr-pose { position: absolute; left: 50%; bottom: 2px; width: 100px; height: 100px; transform: translateX(-50%); background-size: 300% 300%; background-repeat: no-repeat; }
+.jr-pose.dark { filter: brightness(0); opacity: .5; }
+.jr-q { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 700 40px var(--font-heading); color: #ffcf5a; text-shadow: 0 3px 0 rgba(0,0,0,.45); }
+.jr-tile-name { padding: 6px 10px 7px; font: 600 15px var(--font-heading); color: #fff3c4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jr-tile.locked .jr-tile-name { font: 700 12px/18px var(--font-ui); color: #b9cdb6; }
+.jr-page { display: flex; gap: 16px; min-height: 100%; }
+.jr-left { width: min(46%, 420px); flex: none; display: flex; flex-direction: column; gap: 8px; }
+.jr-left .jr-nav { margin-top: 0; padding-top: 0; }
+.jr-demo-wrap { position: relative; width: 100%; flex: none; aspect-ratio: 16 / 10; align-self: flex-start; border-radius: 18px; overflow: hidden; border: 1.5px solid rgba(255,226,150,.45); background: #173323; }
+.jr-demo { display: block; width: 100%; height: 100%; }
+.jr-locked-art { border-style: dashed; background: radial-gradient(circle at 50% 55%, #1e4030, #0a1a12 75%); }
+.jr-locked-art .jr-pose { width: 64%; height: 96%; bottom: 0; }
+.jr-locked-art .jr-q { font-size: 64px; }
+.jr-page-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.jr-page-kick { display: flex; align-items: center; gap: 8px; min-height: 20px; }
+.jr-page-title { margin: 0; font: 700 28px/1.05 var(--font-heading); color: #fff3c4; }
+.jr-intro { margin: 0; font-size: 14px; line-height: 1.45; color: #d9e6d6; }
+.jr-intro b { color: #fff3c4; }
+.jr-lines { display: flex; flex-direction: column; gap: 6px; }
+.jr-line { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 14px; background: rgba(0,0,0,.25); }
+.jr-glyph { width: 50px; height: 50px; flex: none; border-radius: 12px; background: rgba(255,207,90,.12); display: flex; align-items: center; justify-content: center; color: #ffcf5a; }
+.jr-line-txt { display: flex; flex-direction: column; min-width: 0; }
+.jr-how { font: 700 12.5px/1.3 var(--font-ui); color: #ffcf5a; }
+.jr-line-txt b { font: 600 17px/1.2 var(--font-heading); color: #fff3c4; }
+.jr-line-txt small { font-size: 12px; line-height: 1.3; color: #b9cdb6; }
+.jr-nav { display: flex; gap: 8px; margin-top: auto; padding-top: 6px; }
+.jr-nav .ui-btn { flex: 1; min-height: 44px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jr-nav .ui-btn:disabled { opacity: .4; cursor: default; }
+.jr-riddle { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 14px; background: rgba(0,0,0,.25); font-size: 13px; line-height: 1.4; color: #d9e6d6; }
+.jr-riddle .ic { color: #ffcf5a; flex: none; }
+.jr-riddle b { color: #fff3c4; }
+.jr-intro-tabs { margin: 0 0 10px; }
+.jr-foot-note { margin: 10px 0 0; font-size: 12px; color: #b9cdb6; }
+.jr-extras { display: flex; flex-direction: column; gap: 12px; padding-right: 4px; }
+/* a phone on its side: tighter all round, so a chapter's six tiles and all the chapters fit without scrolling */
+@media (max-height: 460px) {
+  .jr { padding: 8px 12px 9px; }
+  .jr-head .ui-h2 { font-size: 20px; }
+  .jr-split { margin-top: 7px; }
+  .jr-chapters { gap: 4px; }
+  .jr-ch { min-height: 32px; font-size: 14px; }
+  .jr-ch-extra { min-height: 30px; font-size: 12px; }
+  .jr-grid { gap: 8px; }
+  .jr-tile-art { height: 74px; }
+  .jr-tile-name { padding: 4px 9px 5px; font-size: 14px; }
+  .jr-tile.locked .jr-tile-name { font-size: 11px; line-height: 17px; }
+  .jr-pose { width: 74px; height: 74px; }
+  .jr-page-title { font-size: 23px; }
+  .jr-intro { font-size: 13px; line-height: 1.38; }
+  .jr-line { padding: 6px 9px; gap: 10px; }
+  .jr-glyph { width: 42px; height: 42px; }
+  .jr-line-txt b { font-size: 15px; }
+  .jr-page-txt { gap: 6px; }
+}
+/* a phone held upright: the chapters become a row you can scroll, and a page stacks */
+@media (max-width: 640px) {
+  .jr-split { flex-direction: column; }
+  .jr-chapters { width: auto; flex-direction: row; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; }
+  .jr-ch-extra { margin-top: 0; }
+  .jr-page { flex-direction: column; }
+  .jr-left { display: contents; }
+  .jr-left .jr-nav { order: 3; }
+  .jr-page-txt { order: 2; }
+  .jr-demo-wrap { width: 100%; }
+  .jr-progress, .jr-mode { display: none; }
+  .jr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.pm-tile-badge { margin-left: auto; flex: none; }
+/* the "new page in your journal" note during play (components/JournalToast.tsx): bottom centre, clear of Dot's bubble at the top */
+.jr-toast { position: fixed; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); z-index: 40; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; max-width: min(92vw, 520px); padding: 7px 18px 7px 7px; border-radius: 99px; background: linear-gradient(180deg, rgba(34,66,44,.97), rgba(18,40,28,.98)); border: 1.5px solid #7ee2a8; box-shadow: 0 10px 30px rgba(0,0,0,.5); pointer-events: none; animation: jr-toast 3.6s ease both; font-family: var(--font-ui); }
+.jr-toast-icon { width: 40px; height: 40px; flex: none; border-radius: 50%; background: linear-gradient(#ffd36a, #ffb02e); display: flex; align-items: center; justify-content: center; }
+.jr-toast-txt { display: flex; flex-direction: column; min-width: 0; }
+.jr-toast-kick { font-size: 10px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; color: #7ee2a8; }
+.jr-toast-txt b { font: 700 17px/1.15 var(--font-heading); color: #fff3c4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@keyframes jr-toast { 0% { opacity: 0; transform: translate(-50%, 24px); } 9% { opacity: 1; transform: translate(-50%, 0); } 88% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, 12px); } }
+@media (prefers-reduced-motion: reduce) { .jr-toast { animation: none; } }
+@media (max-height: 460px) {
+  .jr-short .jr-intro-tabs { margin: 0 0 6px; padding: 3px; }
+  .jr-short .jr-intro-tabs button { padding: 4px 0; font-size: 14px; }
+  .jr-short .jr-left { width: min(40%, 360px); }
+  .jr-short .jr-foot-note { display: none; }
+}

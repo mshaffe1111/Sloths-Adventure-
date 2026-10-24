@@ -293,3 +293,36 @@ span.gx-leaf-tag { cursor: default; }
   backdrop-filter: none; -webkit-backdrop-filter: none; }
 .ui-chip-btn:hover { background: var(--gx-wood-grain), linear-gradient(180deg, #b87a42, #7a4a20); }
 .map-kicker { color: #ffd36a; }
+
+/* ───────── Pokey's Journal (How to Play): parchment, dark-wood inlays for the moves, wooden chapter tabs ───────── */
+.jr-progress { color: var(--gx-ink-soft); }
+.jr-bar { background: rgba(120, 80, 30, .2); }
+.jr-mode { color: var(--gx-ink-soft); background: rgba(120, 80, 30, .14); }
+.jr-ch { color: var(--gx-ink); background: rgba(120, 80, 30, .13); font-family: var(--font-fun); font-weight: 400; }
+.jr-ch svg { color: #b4541a; }
+.jr-ch-n { color: var(--gx-ink-soft); }
+.jr-ch.on { color: #fff4d8; text-shadow: 0 1px 0 #4a2208; background: var(--gx-wood-grain), linear-gradient(180deg, #f0b04a, #d9822b 52%, #a85a17); box-shadow: 0 2px 0 #4a2208; font-weight: 400; }
+.jr-ch.on svg, .jr-ch.on .jr-ch-n { color: #fff4d8; }
+.jr-ch-extra { background: transparent; border-color: rgba(120, 80, 30, .4); color: var(--gx-ink-soft); font-family: var(--font-ui); font-weight: 700; }
+.jr-tile { border: 3px solid #2a1608; box-shadow: 0 3px 0 #2a1608; }
+.jr-tile.locked { border: 3px dashed rgba(90, 54, 24, .7); box-shadow: none; }
+.jr-tile.fresh { border-color: #2f9a5c; box-shadow: 0 0 0 2px #7ee2a8, 0 3px 0 #1d4a1b; }
+.jr-tile-name { font-family: var(--font-fun); font-weight: 400; color: #fff4d8; background: var(--gx-wood-grain), linear-gradient(180deg, #5a3618, #452812); }
+.jr-tile.locked .jr-tile-name { color: #f3d9a6; background: #2a1a0c; }
+.jr-demo-wrap { border: 3px solid #2a1608; box-shadow: 0 3px 0 #2a1608; }
+.jr-locked-art { border-style: dashed; border-color: rgba(90, 54, 24, .7); box-shadow: none; }
+.jr-page-title { font-family: var(--font-fun); font-weight: 400; color: #4a2a10; text-shadow: 0 1px 0 rgba(255, 255, 255, .6); }
+.jr-intro { color: var(--gx-ink); }
+.jr-intro b { color: #8a3b10; }
+.jr-line { background: var(--gx-wood-grain), linear-gradient(180deg, #5a3618, #452812); border: 2px solid #2a1608; box-shadow: inset 0 1px 0 rgba(255, 220, 170, .18); }
+.jr-how { color: #ffd36a; }
+.jr-line-txt b { color: #fff4d8; font-family: var(--font-fun); font-weight: 400; }
+.jr-line-txt small { color: #f3d9a6; }
+.jr-glyph { background: rgba(255, 207, 90, .14); }
+.jr-riddle { color: var(--gx-ink); background: rgba(240, 176, 74, .18); border: 1px solid rgba(168, 90, 23, .45); }
+.jr-riddle .ic { color: #b4541a; }
+.jr-riddle b { color: #8a3b10; }
+.jr-back { color: #fff4d8; font-family: var(--font-fun); font-weight: 400; border: 3px solid #3a200c; text-shadow: 0 2px 0 #3a200c;
+  background: var(--gx-wood-grain), linear-gradient(180deg, #c99256, #9b6331 52%, #74461f); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .45), 0 3px 0 #24130a; }
+.jr-back .ic { color: #fff4d8; }
+.jr-foot-note { color: var(--gx-ink-soft); }
