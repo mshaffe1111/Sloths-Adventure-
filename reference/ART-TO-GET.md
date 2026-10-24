@@ -15,6 +15,8 @@ Matt's running list of drawings still needed from Gemini. A new need joins the l
 6. ~~**The village up the bank**: ladder, porch with railing, door with porch roof, rope-and-basket lift, carved steps, bell tower, lantern, thatched rooftop (2-6). (Prompt 6)~~ Received 2026-10-24.
 7. ~~**The snapping turtle**: walk, the tell, the snap, after the snap, hiding, peeking, flipped, dizzy (2-5). (Prompt 7)~~ Received 2026-10-24 (the game-style redraw, from a fresh Gemini chat).
 
+8. ~~**The royal snapper guard** (2-9's court): the snapping turtle upright with a reed-bound spear: standing, marching, the wind-up, the jab, after the jab, hit, knocked flat, dazed.~~ Received 2026-10-24 (seven sheets: the spear sheet and the hurt sheet are cut; the climbing, rope and jumping sheets are kept for later).
+
 ## Done
 
 - ~~World 2 river pieces: logs, lily pads, reeds, water strip~~ (2026-10-24)
