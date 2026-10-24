@@ -1,24 +1,32 @@
 import React from 'react';
-import { HowToPlay } from './HowToPlay.tsx';
+import { HowToPlay, journalNewCount } from './HowToPlay.tsx';
 import { Icon } from './menuParts.tsx';
 
-/** the "How to Play" tile for the start and pause menus: it opens the guide on top of the menu and closes back to it */
+/** the journal's tile for the start and pause menus (How to Play is Pokey's Journal): it opens on top of the menu and closes back to it */
 export const HowToTile: React.FC = () => {
   const [open, setOpen] = React.useState(false);
+  const [fresh, setFresh] = React.useState(() => journalNewCount());
   return (
     <>
       <button type="button" className="pm-tile" onClick={() => setOpen(true)}>
         <Icon color="#fde68a">
-          <circle cx="12" cy="12" r="9" />
-          <path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.2c-.8.5-1.2 1-1.2 1.9" />
-          <path d="M12 17h.01" />
+          <path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1z" />
+          <path d="M12 6v14" />
         </Icon>
         <span>
-          <b>How to Play</b>
-          <small>Controls, saving, tips</small>
+          <b>Pokey's Journal</b>
+          <small>How to play: every move you have learned</small>
         </span>
+        {fresh > 0 && <span className="jr-new jr-new-s pm-tile-badge">{fresh} NEW</span>}
       </button>
-      {open && <HowToPlay onClose={() => setOpen(false)} />}
+      {open && (
+        <HowToPlay
+          onClose={() => {
+            setOpen(false);
+            setFresh(journalNewCount());
+          }}
+        />
+      )}
     </>
   );
 };

@@ -1,262 +1,373 @@
 import React from 'react';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
-import { COARSE } from './menuParts.tsx';
-import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
+import { GestureGlyph } from './GestureGlyph.tsx';
 import { Icon } from './icons/index.tsx';
+import { JournalDemo } from './JournalDemo.tsx';
+import { CHAPTERS, PAGES, PAGE_BY_ID, chapterPages, isNew, markLooked, openPages, type ChapterId, type JournalPage, type PoseId } from '../game/movesJournal.ts';
+import { lessonInputMode, type InputMode, type LessonLine } from '../game/lessons.ts';
 
 /**
- * How to play: controls, what the stage is asking for, saving and the menu.
+ * How to Play is Pokey's Journal (Matt, 2026-10-24): a book that fills in as you play. Chapters by kind of move; each page is one move
+ * or idea with Pokey doing it on a loop and the moves for this player's own controls; pages still to come are mystery pages. The pages
+ * and their unlock rules are in game/movesJournal.ts, the scenes in game/journalScenes.ts. Stars, lives and saving keep a short section
+ * of their own at the back.
  *
- * It owns nothing but its own tab, so any screen can mount it (the title, the start menu, the pause menu) and
- * simply unmount it again on close. `intro` is the short first-time version a brand-new player sees before the
- * very first stage: the controls and one big "Let's go" button, with a way to open the whole guide.
+ * `intro` is the first-time version before the very first stage: the three basics (run, jump, punch) and one big "Let's go".
  */
 interface Props {
   onClose: () => void;
-  /** the first-time pop-up: controls only, and the button says "Let's go" */
+  /** the first-time pop-up: the basics only, and the button says "Let's go" */
   intro?: boolean;
 }
 
-type Tab = 'controls' | 'goal' | 'saving';
+const POSES_URL = new URL('../assets/hero/journal-poses.webp', import.meta.url).href;
+const FOREST_URL = new URL('../assets/backdrops/w1c-mid.webp', import.meta.url).href;
+const POSE_CELL: Record<PoseId, number> = { stand: 0, run: 1, jump: 2, duck: 3, punch: 4, kick: 5, climb: 6, hang: 7, swing: 8 };
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'controls', label: 'Controls' },
-  { id: 'goal', label: 'The goal' },
-  { id: 'saving', label: 'Saving' },
-];
+const MODE_LABEL: Record<InputMode, string> = { screen: 'touch screen', pad: 'thumb pad', keys: 'keyboard' };
 
-const K: React.FC<{ children: React.ReactNode }> = ({ children }) => <kbd className="htp-key">{children}</kbd>;
+/** Pokey's pose for a page's tile, from the pose sheet (3 x 3 cells) */
+const Pose: React.FC<{ pose: PoseId; dark?: boolean }> = ({ pose, dark }) => {
+  const i = POSE_CELL[pose];
+  return (
+    <span
+      className={`jr-pose${dark ? ' dark' : ''}`}
+      aria-hidden="true"
+      style={{ backgroundImage: `url(${POSES_URL})`, backgroundPosition: `${(i % 3) * 50}% ${Math.floor(i / 3) * 50}%` }}
+    />
+  );
+};
 
-/** an arrow in the game's own icon style: l, r, u or d */
-const Arr: React.FC<{ d: 'l' | 'r' | 'u' | 'd'; size?: number }> = ({ d, size = 13 }) => <Icon name="arrow" size={size} rotate={{ r: 0, d: 90, l: 180, u: 270 }[d]} />;
-/** a row of the same icon: hearts, stars */
-const Many: React.FC<{ name: 'heart' | 'star'; n: number }> = ({ name, n }) => (
-  <span className="htp-many">
-    {Array.from({ length: n }, (_, i) => (
-      <Icon key={i} name={name} size={20} />
-    ))}
-  </span>
-);
+const ChapterIcon: React.FC<{ id: ChapterId | 'extras' }> = ({ id }) => {
+  const d: Record<string, React.ReactNode> = {
+    moving: <><circle cx="14" cy="4.5" r="2" /><path d="M8 21l3-6 3 2v5M6 12l4-4 4 2 3 3M11 15l-1-6" /></>,
+    fighting: <path d="M6 13V8a2 2 0 014 0v4M10 11V6a2 2 0 014 0v6M14 11V8a2 2 0 014 0v6a6 6 0 01-6 6H11a5 5 0 01-5-5" />,
+    climbing: <path d="M7 2v20M17 2c0 6-6 6-6 12v8" />,
+    sneaking: <path d="M3 20c2-6 5-9 9-9s7 3 9 9M7 14c-1-3 0-6 2-8M17 14c1-3 0-6-2-8M12 11V4" />,
+    dangers: <path d="M12 3l10 18H2zM12 10v5M12 18v.5" />,
+    finding: <><circle cx="11" cy="11" r="6" /><path d="M16 16l5 5" /></>,
+    extras: <path d="M12 3l2.8 5.8 6.2.9-4.5 4.3 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.7l6.2-.9z" />,
+  };
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      {d[id]}
+    </svg>
+  );
+};
 
-/** one line of a controls list: how you do it, what it does */
-const Row: React.FC<{ how: React.ReactNode; what: string; sub?: string }> = ({ how, what, sub }) => (
-  <div className="htp-row">
-    <span className="htp-how">{how}</span>
-    <span className="htp-what">
-      <b>{what}</b>
-      {sub && <small>{sub}</small>}
+/** one way of doing the move: the thumb picture (touch), how, and what it does */
+const Line: React.FC<{ l: LessonLine; mode: InputMode }> = ({ l, mode }) => (
+  <div className="jr-line">
+    {mode === 'screen' && l.glyph ? (
+      <span className="jr-glyph">
+        <GestureGlyph kind={l.glyph} size={50} bare />
+      </span>
+    ) : (
+      <span className="jr-glyph jr-glyph-txt" aria-hidden="true">
+        <Icon name="arrow" size={18} />
+      </span>
+    )}
+    <span className="jr-line-txt">
+      <span className="jr-how">{l.how}</span>
+      <b>{l.what}</b>
+      {l.sub && <small>{l.sub}</small>}
     </span>
   </div>
 );
 
-/** a touch gesture: its picture, how you do it, what it does */
-const Gesture: React.FC<{ kind: GlyphKind; how: React.ReactNode; what: string; sub?: string }> = ({ kind, how, what, sub }) => (
-  <div className="htp-g">
-    <GestureGlyph kind={kind} size={76} />
-    <span className="htp-what">
-      <span className="htp-how">{how}</span>
-      <b>{what}</b>
-      {sub && <small>{sub}</small>}
-    </span>
+const NewBadge: React.FC = () => <span className="jr-new">NEW!</span>;
+
+/** a page you have: Pokey doing it, and how */
+const PageView: React.FC<{ p: JournalPage; mode: InputMode; fresh: boolean; nav: React.ReactNode; navBeside?: boolean }> = ({ p, mode, fresh, nav, navBeside }) => (
+  <div className="jr-page">
+    <div className="jr-left">
+      <div className="jr-demo-wrap">
+        <JournalDemo demo={p.demo} label={`Pokey: ${p.title}`} className="jr-demo" />
+      </div>
+      {!navBeside && nav}
+    </div>
+    <div className="jr-page-txt">
+      <div className="jr-page-kick">
+        {fresh && <NewBadge />}
+        {p.where && <span className="ui-kicker">{p.where}</span>}
+      </div>
+      <h3 className="jr-page-title">{p.title}</h3>
+      <p className="jr-intro">{p.intro}</p>
+      <div className="jr-lines">
+        {p.lines[mode].map((l, i) => (
+          <Line key={i} l={l} mode={mode} />
+        ))}
+      </div>
+      {navBeside && nav}
+    </div>
   </div>
 );
 
-const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-  <section className="htp-sec">
-    <h3 className="ui-label">{title}</h3>
-    {children}
-  </section>
-);
-
-const Controls: React.FC<{ short: boolean }> = ({ short }) => (
-  <>
-    {(!short || COARSE) && (
-    <Section title="On a phone or tablet">
-      <div className="htp-tip htp-first">
-        <span className="htp-tipicon" aria-hidden="true">
-          <GestureGlyph kind="tap" size={44} bare />
-        </span>
+/** a page still to come */
+const LockedView: React.FC<{ p: JournalPage; nav: React.ReactNode }> = ({ p, nav }) => (
+  <div className="jr-page">
+    <div className="jr-left">
+      <div className="jr-demo-wrap jr-locked-art">
+        <Pose pose={p.pose} dark />
+        <span className="jr-q">?</span>
+      </div>
+      {nav}
+    </div>
+    <div className="jr-page-txt">
+      <span className="ui-kicker">A page still to come</span>
+      <h3 className="jr-page-title">? ? ?</h3>
+      <p className="jr-intro">
+        <b>{p.where}.</b> Keep going and this page fills in by itself.
+      </p>
+      <div className="jr-riddle">
+        <Icon name="bulb" size={22} />
         <span>
-          <b>Touch anywhere on the screen to move.</b> You do not have to touch Pokey, and there is nothing to aim at. Put your thumb down <b>anywhere</b> and slide.
+          <b>Dot's hint:</b> {p.riddle}
         </span>
       </div>
-      <p className="ui-copy">
-        There are no buttons: <b>your thumb is the controller</b>. It does not matter where you start, and you never have to find a button. Keep your thumb down to keep going, and lift it to stop. Do not like the tap in the air? The Menu has a Jump help switch.
-      </p>
-      <Gesture kind="run" how="Slide sideways" what="Run" sub="slide right to run right, left to run left. Slide the other way to turn around" />
-      <Gesture kind="jump" how="Slide up and across" what="Run and jump" sub="while you run, keep sliding up and forward in one quick motion. This is how you cross gaps" />
-      <Gesture kind="up" how="Flick up" what="Jump" sub="a quick flick, standing or running" />
-      <Gesture kind="tap" how="Tap in the air" what="Double jump" sub="tap anywhere while you are in the air. It pushes you forward the way you face, and sliding the other way brakes. You can also flick up again, or wiggle your steering thumb down a little, then up" />
-      <Gesture kind="down" how="Slide down" what="Duck" sub="hold it to stay low" />
-      <div className="htp-tip">
-        <span className="htp-tipicon" aria-hidden="true">
-          <Icon name="bulb" size={22} />
-        </span>
-        <span>
-          <b>Two thumbs:</b> run and jump with your left thumb, and use your right thumb for the attacks below. A jump wants a <b>quick</b> flick, not a long slide.
-        </span>
-      </div>
-      <Gesture kind="tap" how="Tap" what="Punch" />
-      <Gesture kind="flick" how={<>Quick flick <Arr d="l" /> <Arr d="r" /></>} what="Kick" sub="the way you flick is the way he kicks" />
-      <Gesture kind="hold" how="Press and hold" what="Mega punch" sub="slower, but it hits hard" />
-    </Section>
-    )}
-    {!short && (
-    <Section title="Prefer buttons? Use the pad">
-      <p className="ui-copy">
-        In the <b>Menu</b>, set <b>Touch controls</b> to <b>Pad</b>. A thumb pad appears wherever you press on one side of the screen, and <b>Jump</b>, <b>Punch</b>, and <b>Kick</b> buttons sit on the
-        other. Left-handed? Flip the pad's side right there.
-      </p>
-      <Row how={<>Pad <Arr d="l" /> <Arr d="r" /></>} what="Run" />
-      <Row how={<>Pad <Arr d="d" /> / <Arr d="u" /></>} what="Duck / jump" sub="hold up to climb a trunk or grab a rope" />
-      <Row how="Jump" what="Jump" sub="hold for height, press again in the air for a double jump" />
-      <Row how="Punch" what="Punch" sub="tap to punch, hold for a mega punch" />
-      <Row how="Kick" what="Kick" />
-    </Section>
-    )}
-    {(!short || !COARSE) && (
-    <Section title="With a keyboard">
-      <Row how={<><K>A</K> <K>D</K> or <K><Arr d="l" size={12} /></K> <K><Arr d="r" size={12} /></K></>} what="Run" />
-      <Row how={<><K>W</K> <K><Arr d="u" size={12} /></K> or <K>Space</K></>} what="Jump" sub="press again in the air for a double jump" />
-      <Row how={<><K>S</K> or <K><Arr d="d" size={12} /></K></>} what="Duck" />
-      <Row how={<><K>J</K> or <K>Z</K></>} what="Punch" />
-      <Row how={<><K>K</K> or <K>X</K></>} what="Kick" />
-      <Row how={<><K>L</K> or <K>Shift</K></>} what="Mega punch" />
-      {!short && (
-        <>
-          <Row how={<><K>Esc</K> or <K>P</K></>} what="Menu" sub="pauses the game" />
-          <Row how={<K>M</K>} what="Mute" />
-          <Row how={<K>R</K>} what="Restart the stage" sub="from the Menu" />
-        </>
-      )}
-    </Section>
-    )}
-    {!short && (
-      <Section title="Good to know">
-        <p className="ui-copy">
-          <b>The first time</b> you meet something new (a foe, a trunk to climb, a swinging vine, a bouncy mushroom, and more), the game pauses and Pokey explains it once. A New Game shows them again. A game controller works too. <b>Tree trunks can be climbed</b>: jump into one and hold up. Once you clear stage 1-3, you learn the <b>Shimmy Rope</b>: jump up into a rope to grab it, run
-          along it with <Arr d="l" /> <Arr d="r" />, and press down and jump to let go.
-        </p>
-      </Section>
-    )}
-  </>
+    </div>
+  </div>
 );
 
-const Goal: React.FC = () => (
-  <>
-    <Section title="Each stage">
+const Extras: React.FC = () => (
+  <div className="jr-extras">
+    <section className="htp-sec">
+      <h3 className="ui-label">Each stage</h3>
       <p className="ui-copy">
-        Every stage ends at a <b>sacred exit shrine</b>, and the card at the top right shows the stage name and how far along you are. Some stages first ask for something: fruit to gather, foes to beat,
-        friends to rescue from cages, or hidden <b>keepsakes and relics</b> to find. Finish the job, then touch the shrine. The last stage of every world is a <b>boss fight</b> with a health bar of its own.
+        Every stage ends at an <b>exit shrine</b>. Some ask for something first, like petals to gather or snakes to beat: the yellow count at the top right shows how many. The last stage of every
+        world is a <b>boss</b>.
       </p>
-    </Section>
-    <Section title="Top of the screen">
-      <Row how={<Many name="heart" n={3} />} what="Hearts" sub="your health. A heart pick-up refills one" />
-      <Row how="× 3" what="Lives" sub="lose every heart and a life goes. With none left the stage is over, and you can try it again" />
-      <Row how={<Many name="star" n={1} />} what="Score" sub="fruit, flowers, leaves, and every foe you beat add to it" />
-    </Section>
-    <Section title="Stars for a stage">
-      <Row how={<Many name="star" n={1} />} what="One star" sub="for clearing the stage" />
-      <Row how={<Many name="star" n={2} />} what="Two stars" sub="clear it with at least half your hearts left, or beat the target time" />
-      <Row how={<Many name="star" n={3} />} what="Three stars" sub="lose no life, keep most of your hearts, and be quick (or collect nearly everything)" />
-    </Section>
-    <Section title="Pick-ups on the way">
-      <Row how={<Icon name="bolt" size={24} />} what="Speed" sub="run faster for a while" />
-      <Row how={<Icon name="shield" size={24} />} what="Invincible" sub="enemies cannot hurt you for a while" />
-      <Row how={<Icon name="magnet" size={24} />} what="Magnet" sub="pulls nearby fruit, flowers, and hearts to you" />
-      <Row how={<Icon name="cage" size={24} />} what="Cages" sub="punch a cage to set the friend inside free" />
-    </Section>
-    <Section title="Where to go next">
+    </section>
+    <section className="htp-sec">
+      <h3 className="ui-label">Hearts and lives</h3>
       <p className="ui-copy">
-        The <b>World Map</b> lets you pick any world you have reached. <b>Trophies</b> shows your badges, and <b>Jungle Cards</b> fills in as you meet each creature.
+        <b>Hearts</b> are your health: a hit costs one, a heart pick-up gives one back. Lose every heart and a <b>life</b> goes, and you start again from the last flag. With no lives left, you can try the
+        stage again.
       </p>
-    </Section>
-  </>
-);
-
-const Saving: React.FC = () => (
-  <>
-    <Section title="Your progress saves itself">
+    </section>
+    <section className="htp-sec">
+      <h3 className="ui-label">Stars for a stage</h3>
       <p className="ui-copy">
-        Every cleared stage, star and trophy is saved <b>on this device, in this browser</b> as you play. Close the game, come back later, and <b>Continue</b> takes you right to where you were.
+        <b>One star</b> for clearing it. <b>Two</b> for keeping at least half your hearts, or beating the target time. <b>Three</b> for losing no life, keeping most of your hearts, and being quick (or
+        collecting nearly everything).
       </p>
-    </Section>
-    <Section title="Keep a backup">
+    </section>
+    <section className="htp-sec">
+      <h3 className="ui-label">Your game saves itself</h3>
       <p className="ui-copy">
-        Clearing the browser's site data, or switching phones, loses a save. On the title screen, <b>Save / Load</b> can write your whole game to a <b>file</b> or a <b>save code</b> you can paste
-        into a note. To bring it back, open <b>Save / Load</b> on the new device, pick <b>Load</b>, and choose the file or paste the code.
+        Every stage, star and trophy is kept <b>on this device, in this browser</b>. Switching phones or clearing the browser's data loses it, so on the title screen <b>Save / Load</b> can write your game
+        to a file or a save code, and bring it back.
       </p>
       <p className="ui-copy ui-warn">New Game erases your progress. It offers a backup first, so use it.</p>
-    </Section>
-    <Section title="The Menu">
+    </section>
+    <section className="htp-sec">
+      <h3 className="ui-label">The Menu</h3>
       <p className="ui-copy">
-        <b>Menu</b> sits at the top of the title screen, and in a stage it pauses the game ({COARSE ? 'tap Menu at the top' : <>or press <K>Esc</K></>}). It has <b>Resume</b>, <b>Restart</b> for the stage,
-        <b> Trophies</b>, <b>Jungle Cards</b>, and the <b>World Map</b>, your learned skills, and the Music and Effects volume. You can also open this guide from there.
+        In a stage, <b>Menu</b> at the top pauses the game. It has Resume, Restart, Trophies, the World Map, this journal, how you control the game, and the sound.
       </p>
-    </Section>
-  </>
+    </section>
+  </div>
 );
 
+/** the first-time card: run, jump and punch, one at a time, then off you go */
+const Intro: React.FC<{ mode: InputMode; onGo: () => void; onMore: () => void }> = ({ mode, onGo, onMore }) => {
+  const basics = ['run', 'jump', 'punch'].map((id) => PAGE_BY_ID[id]);
+  const [i, setI] = React.useState(0);
+  const p = basics[i];
+  return (
+    <>
+      <div className="ui-tabs jr-intro-tabs" role="tablist" aria-label="The basics">
+        {basics.map((b, k) => (
+          <button key={b.id} type="button" role="tab" aria-selected={k === i} className={k === i ? 'on' : ''} onClick={() => setI(k)}>
+            {k + 1}. {b.title}
+          </button>
+        ))}
+      </div>
+      <PageView
+        p={p}
+        mode={mode}
+        fresh={false}
+        navBeside
+        nav={
+          <div className="jr-nav">
+            {i < basics.length - 1 ? (
+              <button type="button" className="ui-btn ui-btn-gold" onClick={() => setI(i + 1)}>
+                Next: {basics[i + 1].title}
+              </button>
+            ) : (
+              <button type="button" className="ui-btn ui-btn-gold" onClick={onGo} data-start="true">
+                Let's go!
+              </button>
+            )}
+            <button type="button" className="ui-btn ui-btn-plain" onClick={onMore}>
+              Open the journal
+            </button>
+          </div>
+        }
+      />
+      <p className="jr-foot-note">Every new move you meet gets its own page in Pokey's Journal. Find it in the Menu.</p>
+    </>
+  );
+};
+
+type View = { kind: 'chapter'; ch: ChapterId } | { kind: 'page'; id: string } | { kind: 'extras' };
+
 export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
-  const [tab, setTab] = React.useState<Tab>('controls');
+  const mode = React.useMemo(() => lessonInputMode(), []);
+  const open = React.useMemo(() => openPages(), []);
   const [short, setShort] = React.useState(intro);
+  const [view, setView] = React.useState<View>({ kind: 'chapter', ch: 'moving' });
+  // which pages were NEW when the journal opened: a page stays marked for this visit even after you look at it
+  const [fresh] = React.useState(() => new Set(PAGES.filter((p) => isNew(p.id, open)).map((p) => p.id)));
+  const [looked, setLooked] = React.useState<Set<string>>(new Set());
+  // every new view starts at its top (a page opened from the bottom row must not open half-scrolled)
+  const mainRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0;
+  }, [view]);
+
+  const show = (id: string) => {
+    setView({ kind: 'page', id });
+    if (open.has(id)) {
+      markLooked(id);
+      setLooked((s) => new Set(s).add(id));
+    }
+  };
+
+  const page = view.kind === 'page' ? PAGE_BY_ID[view.id] : null;
+  const ch: ChapterId | null = view.kind === 'chapter' ? view.ch : page ? page.chapter : null;
+  const list = ch ? chapterPages(ch) : [];
+  const at = page ? list.findIndex((p) => p.id === page.id) : -1;
+  const step = (d: number) => {
+    const n = list[at + d];
+    if (n) show(n.id);
+  };
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.code === 'Escape') {
         e.preventDefault();
         e.stopPropagation();
-        onClose();
+        if (!short && view.kind === 'page') setView({ kind: 'chapter', ch: PAGE_BY_ID[view.id].chapter });
+        else onClose();
+      } else if (!short && view.kind === 'page' && (e.code === 'ArrowRight' || e.code === 'ArrowLeft')) {
+        e.preventDefault();
+        step(e.code === 'ArrowRight' ? 1 : -1);
       }
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [onClose]);
+  });
+
+  const total = PAGES.length;
+  const have = open.size;
+  const newIn = (c: ChapterId) => chapterPages(c).filter((p) => fresh.has(p.id) && !looked.has(p.id)).length;
+
+  const title = short ? 'How to Play' : view.kind === 'extras' ? 'Stars, lives & saving' : CHAPTERS.find((c) => c.id === ch)?.name ?? '';
+
+  const nav = page && (
+    <div className="jr-nav">
+      <button type="button" className="ui-btn ui-btn-plain" disabled={at <= 0} onClick={() => step(-1)}>
+        ‹ {at > 0 ? (open.has(list[at - 1].id) ? list[at - 1].title : '? ? ?') : 'Back'}
+      </button>
+      <button type="button" className="ui-btn ui-btn-gold" disabled={at >= list.length - 1} onClick={() => step(1)}>
+        {at < list.length - 1 ? (open.has(list[at + 1].id) ? list[at + 1].title : '? ? ?') : 'Last page'} ›
+      </button>
+    </div>
+  );
 
   return (
-    <div className="ui-scrim select-none" role="dialog" aria-modal="true" aria-label="How to play" onClick={onClose}>
-      <div className="ui-panel htp" onClick={(e) => e.stopPropagation()}>
-        <div className="ui-panel-head">
-          <div className="flex items-center gap-3">
+    <div className="ui-scrim select-none" role="dialog" aria-modal="true" aria-label="Pokey's Journal" onClick={onClose}>
+      <div className={`ui-panel jr${short ? ' jr-short' : ''}`} onClick={(e) => e.stopPropagation()}>
+        <div className="jr-head">
+          {page && !short ? (
+            <button type="button" className="jr-back" onClick={() => setView({ kind: 'chapter', ch: page.chapter })}>
+              <Icon name="arrow" size={14} rotate={180} /> {CHAPTERS.find((c) => c.id === page.chapter)?.name}
+            </button>
+          ) : (
             <span className="htp-face">
-              <HeroFaceIcon size={44} face="face_happy" />
+              <HeroFaceIcon size={42} face="face_happy" />
             </span>
-            <div>
-              <div className="ui-kicker">{short ? 'Before you start' : 'Pokey says'}</div>
-              <h2 className="ui-h2">How to Play</h2>
-            </div>
+          )}
+          <div className="jr-head-txt">
+            <div className="ui-kicker">{short ? 'Before you start' : "Pokey's Journal"}</div>
+            <h2 className="ui-h2">{page && !short ? `Page ${at + 1} of ${list.length}` : title}</h2>
           </div>
+          {!short && (
+            <div className="jr-progress" aria-label={`${have} of ${total} pages`}>
+              <span>
+                {have} of {total} pages
+              </span>
+              <span className="jr-bar">
+                <span style={{ width: `${Math.round((have / total) * 100)}%` }} />
+              </span>
+            </div>
+          )}
+          <span className="jr-mode">For your {MODE_LABEL[mode]}</span>
           <button type="button" className="ui-x" onClick={onClose} aria-label="Close">
             <Icon name="cross" size={14} />
           </button>
         </div>
 
-        {!short && (
-          <div className="ui-tabs" role="tablist">
-            {TABS.map((t) => (
-              <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={tab === t.id ? 'on' : ''} onClick={() => setTab(t.id)}>
-                {t.label}
+        {short ? (
+          <div className="jr-main">
+            <Intro mode={mode} onGo={onClose} onMore={() => setShort(false)} />
+          </div>
+        ) : (
+          <div className="jr-split">
+            <nav className="jr-chapters" aria-label="Chapters">
+              {CHAPTERS.map((c) => {
+                const ps = chapterPages(c.id);
+                const n = ps.filter((p) => open.has(p.id)).length;
+                const on = ch === c.id && view.kind !== 'extras';
+                const fresh = newIn(c.id);
+                return (
+                  <button key={c.id} type="button" className={`jr-ch${on ? ' on' : ''}`} aria-current={on ? 'page' : undefined} onClick={() => setView({ kind: 'chapter', ch: c.id })}>
+                    <ChapterIcon id={c.id} />
+                    <span className="jr-ch-name">{c.name}</span>
+                    {fresh > 0 && <span className="jr-dot" aria-label={`${fresh} new`} />}
+                    <span className="jr-ch-n">
+                      {n}/{ps.length}
+                    </span>
+                  </button>
+                );
+              })}
+              <button type="button" className={`jr-ch jr-ch-extra${view.kind === 'extras' ? ' on' : ''}`} onClick={() => setView({ kind: 'extras' })}>
+                <ChapterIcon id="extras" />
+                <span className="jr-ch-name">Stars, lives &amp; saving</span>
               </button>
-            ))}
+            </nav>
+
+            <div className="jr-main" ref={mainRef}>
+              {view.kind === 'extras' && <Extras />}
+              {view.kind === 'chapter' && (
+                <div className="jr-grid">
+                  {chapterPages(view.ch).map((p) => {
+                    const has = open.has(p.id);
+                    const isFresh = fresh.has(p.id) && !looked.has(p.id);
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        className={`jr-tile${has ? '' : ' locked'}${isFresh ? ' fresh' : ''}`}
+                        onClick={() => show(p.id)}
+                        aria-label={has ? p.title : `A page still to come: ${p.where}`}
+                      >
+                        <span className="jr-tile-art" style={has ? { backgroundImage: `linear-gradient(rgba(10,30,18,.38), rgba(10,30,18,.38)), url(${FOREST_URL})` } : undefined}>
+                          <Pose pose={p.pose} dark={!has} />
+                          {!has && <span className="jr-q">?</span>}
+                          {isFresh && <NewBadge />}
+                        </span>
+                        <span className="jr-tile-name">{has ? p.title : p.where}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {page && (open.has(page.id) ? <PageView p={page} mode={mode} fresh={fresh.has(page.id)} nav={nav} /> : <LockedView p={page} nav={nav} />)}
+            </div>
           </div>
         )}
-
-        <div className="ui-body htp-body">
-          {tab === 'controls' && <Controls short={short} />}
-          {!short && tab === 'goal' && <Goal />}
-          {!short && tab === 'saving' && <Saving />}
-        </div>
-
-        <div className="ui-row htp-foot">
-          <button type="button" className="ui-btn ui-btn-gold" onClick={onClose} data-start="true">
-            {intro ? "Let's go!" : 'Got it'}
-          </button>
-          {short && (
-            <button type="button" className="ui-btn ui-btn-plain" onClick={() => setShort(false)}>
-              The full guide
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );
@@ -277,4 +388,10 @@ export function markHowToSeen() {
   } catch {
     /* ignore */
   }
+}
+
+/** how many pages are NEW (for a badge on the Menu's journal tile) */
+export function journalNewCount(): number {
+  const open = openPages();
+  return PAGES.filter((p) => isNew(p.id, open)).length;
 }

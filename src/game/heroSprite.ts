@@ -17,7 +17,7 @@ import { HeroEvents } from './heroEvents.ts';
 import { makeTintedCanvas, type Coat } from './heroTint.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { rimFor, rimOn } from './heroRim.ts';
-import { clipPick } from './heroClips.ts';
+import { clipPick, heroClipsAreLive, heroClipsLive } from './heroClips.ts';
 
 export const DEFAULT_SPRITE_HERO = true;
 /** how tall the standing hero is drawn, in world units: the classic hero is about 66 */
@@ -148,7 +148,7 @@ const RUN_CYCLE = HERO_RUN;
 const STRIDE_RATE = 0.6;
 
 // short-lived poses that are triggered by a change of state rather than a flag on the player (see heroEvents.ts)
-const events = new HeroEvents();
+let events = new HeroEvents();
 
 /** the painted climb is one step per few pixels of height gained, so it follows the climbing speed */
 const CLIMB_STEP_PX = 22;
@@ -412,4 +412,27 @@ function drawStandard(ctx: CanvasRenderingContext2D, p: PlayerState, time: numbe
   ctx.drawImage(sheetImg, f.x, f.y, f.w, f.h, dx, dy, f.w * k, f.h * k);
   ctx.restore();
   return true;
+}
+
+/**
+ * A second Pokey (the journal's looping demos, JournalDemo.tsx): drawn with his own memory of landings, hits and flips, and with no
+ * idle clips, so he never disturbs the stage's own Pokey, which the paused game keeps drawing behind the menu.
+ */
+const demoMemory = { events: new HeroEvents(), flipLeft: 0, flipLeftAt: 0 };
+export function drawHeroDemo(ctx: CanvasRenderingContext2D, p: PlayerState, time: number): boolean {
+  const keep = { events, flipLeft, flipLeftAt, live: heroClipsAreLive() };
+  events = demoMemory.events;
+  flipLeft = demoMemory.flipLeft;
+  flipLeftAt = demoMemory.flipLeftAt;
+  heroClipsLive(false);
+  try {
+    return drawHeroSprite(ctx, p, time);
+  } finally {
+    demoMemory.flipLeft = flipLeft;
+    demoMemory.flipLeftAt = flipLeftAt;
+    events = keep.events;
+    flipLeft = keep.flipLeft;
+    flipLeftAt = keep.flipLeftAt;
+    heroClipsLive(keep.live);
+  }
 }
