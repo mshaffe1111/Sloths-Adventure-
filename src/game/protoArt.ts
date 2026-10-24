@@ -223,6 +223,8 @@ const LIANA_FIT: Record<number, { ax: number; strand: number; capT: number; capB
   4: { ax: 0.55, strand: 0.15, capT: 0.12, capB: 0.28, lift: 0.04 },
 };
 const LIANA_DEFAULT = { ax: 0.5, strand: 0.22, capT: 0.16, capB: 0.16, lift: 0.04 };
+/** worlds whose own painted liana is not a single hanging vine to swing on (see drawSwingLianaArt) */
+const SWING_LIANA_FROM_W1 = new Set([2, 9]);
 /** how thick a swing liana's strand is drawn, in world units */
 const LIANA_THICK = 15;
 
@@ -233,8 +235,11 @@ const LIANA_THICK = 15;
  */
 export function drawSwingLianaArt(ctx: CanvasRenderingContext2D, v: { x: number; topY: number; bottomY: number; id: number }, ang: number): boolean {
   if (!protoArtReady()) return false;
-  const { img, f } = frameOf('liana');
-  const own = kitWorld !== 1 && !!KIT_FRAMES[kitWorld]?.liana && img === imgs.get(kitWorld);
+  // World 2's painted rope (a coil at the top and a loop at the bottom) read as a noose, and World 9's is a swing seat on two ropes:
+  // those worlds swing on World 1's jungle liana instead
+  const borrow = SWING_LIANA_FROM_W1.has(kitWorld);
+  const { img, f } = borrow ? { img: imgs.get(1)!, f: PROTO_FRAMES.liana } : frameOf('liana');
+  const own = !borrow && kitWorld !== 1 && !!KIT_FRAMES[kitWorld]?.liana && img === imgs.get(kitWorld);
   const fit = (own ? LIANA_FIT[kitWorld] : LIANA_FIT[1]) ?? LIANA_DEFAULT;
   const k = LIANA_THICK / (fit.strand * f.w);
   const w = f.w * k;

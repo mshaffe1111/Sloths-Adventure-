@@ -13,17 +13,19 @@
 import { fixPickups } from './flowerReach.ts';
 import { findForStage } from './finds.ts';
 import { reachJump } from './physics.ts';
+import { catchWindow, earlyCatch, jumpGrab, landWindow } from './protoCheck.ts';
 import { EXPERT_SECONDS, G, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
 import { gapFor, driftX, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverZone } from './river.ts';
 import type { W2Decor } from './riverArt.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 
-export type W2Plan = '2-1' | '2-2' | '2-3';
+export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-1': '2-1',
   '2-2': '2-2',
   '2-3': '2-3',
+  '2-4': '2-4',
 };
 
 /** 2-2 asks for 80 flowers for the king's crown (the stage holds about one and a half times that) */
@@ -342,6 +344,47 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     });
   }
 
+  /**
+   * vines over the river (2-4): the bank ends, lianas hang over the water from the boughs above, and the far bank (or an island, when
+   * `island` gives its length) is where the last swing lands. `safe`: the water costs no life (the teaching crossing). Rolled again until
+   * the jump grabs the first vine, every vine catches the next, and the last one lands (the same checks as World 1's lianas, protoCheck.ts).
+   */
+  function swingRiver(n: number, opts: { safe?: boolean; island?: number; flow?: number } = {}) {
+    const x0r = x;
+    run(R.r(150, 230));
+    const edge = x;
+    close();
+    for (let tries = 0; tries < 14; tries++) {
+      const easy = !!opts.safe || tries > 7;
+      const d0 = R.r(170, 200);
+      const sp = Array.from({ length: n - 1 }, () => (easy ? R.r(300, 330) : R.r(315, 350)));
+      const d1 = R.r(200, 240);
+      const xs = [edge + d0];
+      for (const g of sp) xs.push(xs[xs.length - 1] + g);
+      const farX = Math.round(xs[n - 1] + d1);
+      const tops = xs.map(() => Math.round(opts.safe ? R.r(190, 220) : R.r(140, 200)));
+      const vs: Vine[] = xs.map((vx, k) => ({ id: -1 - k, x: vx, topY: tops[k], bottomY: Math.min(G + 30, tops[k] + 410), swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }));
+      const far: Platform = { id: -99, x: farX, y: G, width: opts.island ?? 400, height: BANK_H, type: 'solid' };
+      let ok = jumpGrab(edge, G, vs[0]) >= 4;
+      for (let k = 0; ok && k < n - 1; k++) ok = catchWindow(vs[k], vs[k + 1]) > 0.6 && earlyCatch(vs[k], vs[k + 1]);
+      if (ok) ok = landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far) >= 8;
+      if (!ok && tries < 13) continue;
+      rivers.push({ x0: edge, x1: farX, surfaceY: SURFACE, dir: 1, speed: opts.flow ?? 45, open: true, ...(opts.safe ? { safe: { backX: edge - 70, backY: G } } : {}) });
+      for (let k = 0; k < n; k++) {
+        V.push({ ...vs[k], id: V.length + 1, swayPhase: (xs[k] * 0.013) % 6.28 });
+        // the flowers arc where the leap goes, from one vine to the next
+        arc(k === 0 ? edge + 10 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, tops[k] + 200), 4, 'hibiscus', 70);
+      }
+      reeds(edge - 20, G + 6, R.chance(0.5));
+      reeds(farX + 24, G + 6, R.chance(0.5));
+      open(farX);
+      run(opts.island ?? R.r(140, 200));
+      expert += (edge - x0r) / RUN + (farX - edge) / 430 + 0.3 * n + (x - farX) / RUN;
+      pieces.push({ k: `swing${n}`, x0: x0r, x1: x });
+      return;
+    }
+  }
+
   /** a reed cage with a little one in it, standing at (cx, floor) */
   function cage(cx: number, floor: number, critter: 'capy' | 'duck' | 'otter') {
     C.push({
@@ -495,6 +538,56 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
         rest(R.r(240, 340));
         if (n % 2 === 0) river(n % 4 === 2 ? -1 : 1, 72, 3, 165, { flowers: 6 });
         else lilyPond(4);
+        if (++n % 2 === 0) flag();
+      }
+      rest(R.r(500, 700));
+    });
+  } else if (plan === '2-4') {
+    // 2-4 Over the Water: swing across the river on the hanging vines. Learn over water that costs no life, two vines at a time; then
+    // longer chains over the deep river; the twist mixes the two rules: a swing lands on an island in the middle of the river, and the
+    // logs carry him on from there.
+    open(0);
+    beat('Learn: swing over the water', () => {
+      rest(R.r(480, 560));
+      hint(260, 'Swing over the river! Jump into a vine to grab it.');
+      swingRiver(2, { safe: true });
+      hint(x - 160, 'Missed? Splash! Try again from the bank.');
+      rest(R.r(240, 320));
+      swingRiver(2, { safe: true });
+      flag();
+    });
+    beat('Develop: the long swing', () => {
+      rest(R.r(240, 320));
+      hint(x + 10, 'Deep water now. Let go at the front of the swing.');
+      swingRiver(3);
+      heart(x - 40, G - 60);
+      guardedRest(R.r(600, 680));
+      swingRiver(3);
+      flag();
+    });
+    beat('Twist: vines and logs', () => {
+      rest(R.r(240, 320));
+      hint(x + 10, 'Swing to the island, then ride the logs!');
+      swingRiver(2, { island: Math.round(R.r(240, 300)) });
+      river(1, 70, 3, 168);
+      heart(x - 40, G - 60);
+      rest(R.r(240, 320));
+      // a golden seed above the last vine of a long chain, a leap from the top of its swing
+      const v0 = V.length;
+      swingRiver(4);
+      const last = V[V.length - 1];
+      if (V.length > v0) goldenSeed(last.x + 40, last.topY + 40);
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 10) {
+        if (n % 3 === 1) guardedRest(R.r(600, 680));
+        else rest(R.r(240, 340));
+        if (n % 3 === 2) {
+          swingRiver(2, { island: Math.round(R.r(240, 300)) });
+          river(n % 2 ? -1 : 1, 70, 3, 168);
+        } else swingRiver(n % 2 ? 4 : 3);
         if (++n % 2 === 0) flag();
       }
       rest(R.r(500, 700));

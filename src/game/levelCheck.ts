@@ -505,7 +505,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   for (const r of stage.rivers ?? []) {
     const logs = plats.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
     // (still water, a lily pond, has no current and no logs: it is crossed on its pads, which the reach check covers)
-    if (r.speed === 0) { /* no logs to space */ }
+    if (r.speed === 0 || r.open) { /* no logs to space */ }
     else if (logs.length < 2) errors.push(`river at x=${Math.round(r.x0)} has fewer than two logs`);
     else {
       const d = logs[0].drift!;

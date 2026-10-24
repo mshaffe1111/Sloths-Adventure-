@@ -39,6 +39,8 @@ export interface RiverZone {
    * `back` is where he is set down.
    */
   safe?: { backX: number; backY: number };
+  /** water crossed some other way, with no logs on it (swung over on the vines of 2-4) */
+  open?: boolean;
 }
 
 /** seconds for one log to cross the whole window, hidden end to hidden end */

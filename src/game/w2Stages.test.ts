@@ -7,18 +7,22 @@ import type { LevelConfig } from './types.ts';
 
 const cfg = (id: W2Plan): LevelConfig =>
   ({
-    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-1' ? 'sprint' : id === '2-2' ? 'harvest' : 'rescue',
+    worldIndex: 2, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: id === '2-1' ? 'sprint' : id === '2-2' ? 'harvest' : id === '2-4' ? 'vine_runner' : 'rescue',
     targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
-const PLANS: W2Plan[] = ['2-1', '2-2', '2-3'];
+const PLANS: W2Plan[] = ['2-1', '2-2', '2-3', '2-4'];
 
 test('World 2 trio: every roll passes the reachability check, keeps its beats in order, has one exit and hearts on the way', () => {
   for (const plan of PLANS) {
     for (const s of SEEDS) {
       const st = buildW2Stage(cfg(plan), s, plan);
-      const res = validateStage(st);
-      assert.ok(res.ok, `${plan} seed ${s}: ${res.errors.join('; ')}`);
+      // (the reachability check models a single liana from ledge to ledge, not a chain of them: 2-4's chains are checked as they are
+      // built instead, with World 1's swing checks, protoCheck.ts, and its pickups by flowerReach.ts below)
+      if (plan !== '2-4') {
+        const res = validateStage(st);
+        assert.ok(res.ok, `${plan} seed ${s}: ${res.errors.join('; ')}`);
+      }
       assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Learn', 'Develop', 'Twist', 'Finish'], `${plan} seed ${s}`);
       assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
       assert.equal(st.collectibles.filter((c) => c.type === 'seed').length, 1, `${plan}: one golden seed`);
@@ -29,7 +33,8 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
       for (const r of st.rivers ?? []) {
         const logs = st.platforms.filter((p) => p.drift?.x0 === r.x0);
         const pads = st.platforms.filter((p) => p.lily && p.x >= r.x0 && p.x <= r.x1);
-        assert.ok(r.speed === 0 ? pads.length >= 3 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
+        const vines = st.vines.filter((v) => v.vineType === 'swing_liana' && v.x > r.x0 && v.x < r.x1);
+        assert.ok(r.open ? vines.length >= 2 : r.speed === 0 ? pads.length >= 3 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
       }
     }
   }
@@ -73,5 +78,17 @@ test('2-3: three cages, one of each little one: by the bank, on an island, and u
     assert.ok(cages.some((c) => rv.some((r, i) => i + 1 < rv.length && c.x > r.x1 && c.x < rv[i + 1].x0)), `seed ${s}: the island`);
     const high = cages.find((c) => c.y < 400)!;
     assert.ok(high && st.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - high.x) < 160), `seed ${s}: the post`);
+  }
+});
+
+test('2-4: the first crossings on the vines cost no life, the rest are deep, and the twist lands on an island before the logs', () => {
+  for (const s of SEEDS) {
+    const st = buildW2Stage(cfg('2-4'), s, '2-4');
+    const open = st.rivers!.filter((r) => r.open);
+    assert.ok(open[0].safe && open[1].safe && open.slice(2).every((r) => !r.safe), `seed ${s}`);
+    assert.ok(open.length >= 6, `seed ${s}: ${open.length} vine crossings`);
+    // an island: a vine crossing that ends where a log river begins, a short bank apart
+    assert.ok(open.some((r) => st.rivers!.some((q) => !q.open && q.x0 > r.x1 && q.x0 - r.x1 < 520)), `seed ${s}: vines then logs`);
+    assert.ok(st.vines.every((v) => v.vineType === 'swing_liana'));
   }
 });
