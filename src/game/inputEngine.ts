@@ -30,6 +30,8 @@ export class InputEngine {
   public airJumpReady = false;
   /** the engine says something is close enough to kick (the refined touch rules only kick then) */
   public kickNear = true;
+  /** the engine says he is climbing a trunk or swinging on a vine (the refined touch rules climb there instead of jumping) */
+  public onVine = false;
   /** the engine says, every frame: a mega punch can start (it is not cooling down), so a held thumb only announces one that will happen */
   public megaReady = true;
   private jumpBufferTimer = 0;
@@ -188,6 +190,12 @@ export class InputEngine {
     this.state.jumpPressed = true;
     this.state.jumpHeld = true;
     this.jumpBufferTimer = 0.16;
+  }
+
+  /** climbing on a vine or trunk by touch: hold up or down with no jump (refined controls) */
+  public triggerTouchClimb(dir: -1 | 0 | 1) {
+    this.state.up = dir < 0;
+    this.state.down = dir > 0;
   }
 
   public releaseTouchUp() {

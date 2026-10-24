@@ -60,3 +60,42 @@ test('refined controls: a vine swings itself up to a good size from a dead hang,
   }
   assert.ok(maxA > AUTO_SWING * 0.8 && maxA < AUTO_SWING * 1.25, `swing settles near ${AUTO_SWING} rad, got ${maxA.toFixed(2)}`);
 });
+
+test('refined controls: holding a direction on a vine pumps a natural swing instead of pinning him near the top', async () => {
+  const { steerPump, STEER_SWING } = await import('./refinedControls.ts');
+  const v = { x: 0, topY: 0, bottomY: 420 };
+  const old = { angle: 0, omega: 0, len: 380 };
+  const neu = { angle: 0, omega: 0, len: 380 };
+  let oldMax = 0, newMax = 0, newMin = 0;
+  for (let f = 0; f < 30 * 8; f++) {
+    swingStep(old, v, 1 / 30, 1, 0);
+    swingStep(neu, v, 1 / 30, steerPump(neu.angle, neu.omega, neu.len, SWING.g, 1), 0);
+    if (f > 30 * 4) { oldMax = Math.max(oldMax, old.angle); newMax = Math.max(newMax, neu.angle); newMin = Math.min(newMin, neu.angle); }
+  }
+  // the old rule ends up pinned high on the held side; the new one keeps swinging both ways at about STEER_SWING
+  assert.ok(oldMax > 1.1, `old rule pins him near the top: ${oldMax.toFixed(2)} rad`);
+  assert.ok(newMax < STEER_SWING * 1.15 && newMin < -STEER_SWING * 0.6, `a real swing: ${newMin.toFixed(2)} to ${newMax.toFixed(2)} rad`);
+});
+
+test('refined controls: on a vine, sliding straight up climbs (no jump), and only a diagonal slide jumps off', () => {
+  const out: string[] = [];
+  const g = new TouchGestures({
+    move: (d) => out.push(`move:${d}`), duck: (on) => out.push(`duck:${on}`), jumpPress: () => out.push('jump'), jumpRelease: () => {},
+    punch: () => out.push('punch'), kick: () => out.push('kick'), mega: () => {}, feedback: () => {}, climb: (d) => out.push(`climb:${d}`),
+  }, () => 400, { assist: () => true, air: () => false, refined: () => true, kickNear: () => false, onVine: () => true });
+  // an index finger on top of the character, sliding straight up quickly
+  g.down(1, 220, 500, 0);
+  for (let k = 1; k <= 6; k++) g.move(1, 221, 500 - k * 15, k * 16);
+  assert.ok(out.includes('climb:-1') && !out.includes('jump'), out.join(' '));
+  // straight down: climb down, never a duck
+  for (let k = 1; k <= 8; k++) g.move(1, 221, 410 + k * 15, 100 + k * 16);
+  assert.ok(out.includes('climb:1') && !out.some((o) => o.startsWith('duck:true')), out.join(' '));
+  const before = out.length;
+  g.up(1, 221, 530, 300);
+  assert.ok(out.slice(before).includes('climb:0'), 'lifting the finger stops the climb: ' + out.slice(before).join(' '));
+  // a diagonal flick up jumps off
+  out.length = 0;
+  g.down(2, 200, 500, 1000);
+  for (let k = 1; k <= 5; k++) g.move(2, 200 + k * 14, 500 - k * 14, 1000 + k * 16);
+  assert.ok(out.includes('jump'), out.join(' '));
+});

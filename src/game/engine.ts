@@ -1,5 +1,5 @@
 import { recorder } from './playRecorder.ts';
-import { autoPump, KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
+import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
   LevelConfig,
   PlayerState,
@@ -638,7 +638,10 @@ export class GameEngine {
     if (recorder.on) this.recordPokey();
     // the touch recogniser reads this: in the air with a second jump to spare, a tap is that jump
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
-    if (this.refined) this.input.kickNear = this.somethingToKick();
+    if (this.refined) {
+      this.input.kickNear = this.somethingToKick();
+      this.input.onVine = p.climbing || !!p.isVineSwinging;
+    }
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
     // the glide leaf is gone the moment he lands or grabs anything
@@ -1045,7 +1048,8 @@ export class GameEngine {
           const steer = (this.input.state.right ? 1 : 0) - (this.input.state.left ? 1 : 0);
           const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
           // refined controls: with nothing held the vine swings itself up to a good size (one-finger players never pumped it)
-          const push = this.refined && steer === 0 ? autoPump(sw.angle, sw.omega, sw.len, SWING.g, p.facing) : steer;
+          // and holding a direction pumps with the swing instead of pinning him near the top (refinedControls.ts steerPump)
+          const push = !this.refined ? steer : steer === 0 ? autoPump(sw.angle, sw.omega, sw.len, SWING.g, p.facing) : steerPump(sw.angle, sw.omega, sw.len, SWING.g, steer as -1 | 1);
           const r = swingStep(sw, nearSwingVine, dt, push as -1 | 0 | 1, climb as -1 | 0 | 1);
           p.swingAngle = sw.angle;
           p.swingAngularVelocity = sw.omega;

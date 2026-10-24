@@ -43,15 +43,34 @@ export const KICK_NEAR_PX = 260;
 /** the swing a vine builds on its own (radians either side of hanging straight down) */
 export const AUTO_SWING = 0.8;
 
+/** the biggest swing holding a direction can build (radians, about 55 degrees): past this, holding pushes no more */
+export const STEER_SWING = 0.95;
+
+/** the size of a swing (radians either side) from its energy: where it would come to rest if nothing pushed */
+export function swingAmp(angle: number, omega: number, len: number, g: number): number {
+  const c = 1 - Math.cos(angle) + (omega * omega * len) / (2 * g);
+  return Math.acos(Math.max(-1, Math.min(1, 1 - c)));
+}
+
+/**
+ * pure: holding a direction on a vine pumps WITH the swing, the way a child pumps a playground swing. The old rule pushed with a
+ * constant force for as long as a direction was held; on a long vine gravity could never pull him back, so holding right pinned him
+ * almost at the top (Matt, 2026-10-23). Now the push only comes while he is already moving the held way, and stops once the swing
+ * is `STEER_SWING` big; stopped at the far end with the direction still held, gravity brings him back down.
+ */
+export function steerPump(angle: number, omega: number, len: number, g: number, steer: -1 | 1): -1 | 0 | 1 {
+  if (swingAmp(angle, omega, len, g) >= STEER_SWING) return 0;
+  // from a dead hang, holding a direction starts the swing that way
+  if (Math.abs(omega) < 0.05 && Math.abs(angle) < 0.05) return steer;
+  return omega * steer > 0 ? steer : 0;
+}
+
 /**
  * pure: which way to push a vine this frame when nothing is held. It pushes along the swing's motion (the way a child pumps a swing),
  * starting in the facing direction from a dead hang, and stops pushing once the swing has reached `AUTO_SWING`.
  */
 export function autoPump(angle: number, omega: number, len: number, g: number, facing: -1 | 1): -1 | 0 | 1 {
-  // the swing's size from its energy: where it would come to rest if nothing pushed
-  const c = 1 - Math.cos(angle) + (omega * omega * len) / (2 * g);
-  const amp = Math.acos(Math.max(-1, Math.min(1, 1 - c)));
-  if (amp >= AUTO_SWING) return 0;
+  if (swingAmp(angle, omega, len, g) >= AUTO_SWING) return 0;
   if (Math.abs(omega) < 0.05) return facing;
   return omega > 0 ? 1 : -1;
 }
