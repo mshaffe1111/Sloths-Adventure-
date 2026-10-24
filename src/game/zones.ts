@@ -42,8 +42,11 @@ export interface Zone {
   force: number;
   /** x positions of the mushrooms that puff the cloud (spores) */
   emit?: number[];
-  /** darkness: the fireflies and lanterns that light the way (world px) */
-  lights?: Array<{ x: number; y: number; r: number }>;
+  /**
+   * darkness: the fireflies and lanterns that light the way (world px). World 3's glowworms are `sleep`ing lights: dark until Pokey stands
+   * still near them for a moment (GLOW_STILL), then they wake one after another and stay lit (engine.ts). `id` names one for its threads.
+   */
+  lights?: Array<{ x: number; y: number; r: number; sleep?: boolean; id?: number }>;
 }
 
 export type ZonePhase = 'idle' | 'warn' | 'active';
@@ -62,6 +65,11 @@ export interface ZoneState {
 export const ZONE_RAMP = 0.35;
 
 export const idleTime = (z: Pick<Zone, 'period' | 'warn' | 'active'>) => z.period - z.warn - z.active;
+
+/** World 3: how long Pokey must stand still for the glowworms near him to wake (s) */
+export const GLOW_STILL = 0.7;
+/** World 3: sleeping glowworms this far ahead of him (and a little behind) wake when he stands still, the far ones a moment later */
+export const GLOW_REACH = { back: 260, ahead: 1050, speed: 900, fade: 0.6 } as const;
 
 /** webs, darkness and crumbling ruins never change: they are simply on */
 export const isStatic = (z: Pick<Zone, 'kind'>) => z.kind === 'web' || z.kind === 'dark' || z.kind === 'crumble';

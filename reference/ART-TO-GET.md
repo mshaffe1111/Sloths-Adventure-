@@ -22,8 +22,9 @@ Matt's running list of drawings still needed from Gemini. A new need joins the l
 
 ## World 3 (3-1 to 3-3 first)
 
-12. **The grotto pieces**: glowworm threads lit and asleep, a stalactite, stalagmites, glowing mushrooms, the grotto mouth (3-1 to 3-3). (Prompt 12)
-13. **Ferns and hiding places**: a fern clump still and rustling, a moss curtain, a hollow log, a giant pawprint in the mud, a clawed boulder (3-2, 3-3). (Prompt 13)
+12. ~~**The grotto pieces**: glowworm threads lit and asleep, a stalactite, stalagmites, glowing mushrooms, the grotto mouth (3-1 to 3-3). (Prompt 12)~~ Received 2026-10-24.
+13. ~~**Ferns and hiding places**: a fern clump still and rustling, a moss curtain, a hollow log, a giant pawprint in the mud, a clawed boulder (3-2, 3-3). (Prompt 13)~~ Received 2026-10-24 (the pawprint came top-down; it is squashed into a print lying in the mud).
+14. ~~**The glowworm** (Matt's own idea): five sheets, hanging, waving, crawling, sleeping, and a punching set.~~ Received 2026-10-24: the glowworms are the lights in World 3's dark, asleep on their threads until Pokey stands still (the hanging, waving and sleeping poses used; the crawling and punching sets kept for later).
 
 ## World 7 (when we get there)
 

@@ -637,6 +637,7 @@ let darkCanvas: HTMLCanvasElement | null = null;
 export function drawDarkness(
   ctx: CanvasRenderingContext2D, vw: number, vh: number, level: number,
   hero: { x: number; y: number }, lights: ReadonlyArray<{ x: number; y: number; r: number }>, t: number,
+  opts: { heroR?: number; ink?: string; fireflies?: boolean } = {},
 ) {
   if (level <= 0.01 || typeof document === 'undefined') return;
   if (!darkCanvas) darkCanvas = document.createElement('canvas');
@@ -649,7 +650,7 @@ export function drawDarkness(
   d.setTransform(dpr, 0, 0, dpr, 0, 0);
   d.globalCompositeOperation = 'source-over';
   d.clearRect(0, 0, vw, vh);
-  d.fillStyle = 'rgb(3, 6, 22)';
+  d.fillStyle = opts.ink ?? 'rgb(3, 6, 22)';
   d.fillRect(0, 0, vw, vh);
   d.globalCompositeOperation = 'destination-out';
   const hole = (x: number, y: number, r: number, a: number) => {
@@ -663,7 +664,7 @@ export function drawDarkness(
     d.fill();
   };
   // Pokey's lantern
-  hole(hero.x, hero.y, 210 + Math.sin(t * 3) * 6, 1);
+  hole(hero.x, hero.y, (opts.heroR ?? 210) + Math.sin(t * 3) * 6, 1);
   for (let i = 0; i < lights.length; i++) {
     const l = lights[i];
     const bob = Math.sin(t * 1.7 + i * 2.1);
@@ -675,7 +676,8 @@ export function drawDarkness(
   ctx.globalAlpha = 0.9 * level;
   ctx.drawImage(darkCanvas, 0, 0);
   ctx.restore();
-  // the fireflies themselves: small warm points in each light
+  // the fireflies themselves: small warm points in each light (World 3's lights are glowworms, drawn by the stage)
+  if (opts.fireflies === false) return;
   ctx.save();
   ctx.globalAlpha = level;
   for (let i = 0; i < lights.length; i++) {
