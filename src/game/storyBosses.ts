@@ -48,7 +48,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Crocus Rex', text: 'Does it? No. NO. Nice try. It is a matter of professional pride that I bite something first.' },
     ],
     defeat: [
-      { speaker: 'Crocus Rex', text: 'The crown! Mind the crown! Still on. Good. You may have the river. I give it because you were polite, and the General need not know.' },
+      { speaker: 'Crocus Rex', text: 'My crown! Where is my... oh. There. Fine. You may have the river. I give it because you were polite, and the General need not know.' },
       { speaker: 'Pokey', text: 'Thank you. I\'ll tell Meeca you\'re wearing it.' },
       { speaker: 'Crocus Rex', text: 'Tell her it was never crooked. Tell her I said so. Now go, before I am ordered to be unreasonable.' },
     ],

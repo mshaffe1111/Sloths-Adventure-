@@ -38,7 +38,7 @@ const FRAMES = {
   ...CROC_ANIM_FRAMES,
   idle: CROC_ANIM_FRAMES[crocAt('idle', 0)],
   roar: CROC_ANIM_FRAMES[crocAt('roar', 0.6)],
-  defeated: CROC_ANIM_FRAMES[crocAt('defeated', 0.15)], // slumped, the crown still on (the victory line checks it is)
+  defeated: CROC_ANIM_FRAMES[crocAt('defeated', 1)], // flat on his back, the crown knocked off (the victory line looks for it)
 };
 
 /** the death sequence's length (engine stepBossDeath) */
