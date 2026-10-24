@@ -12,6 +12,7 @@ import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
 import { fullscreenSupported, isFullscreen, launchedAsApp, toggleFullscreen } from '../game/fullscreen.ts';
 import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, type GameSpeed } from '../game/assist.ts';
+import { refinedControls, setRefinedControlsPref } from '../game/refinedControls.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -418,6 +419,37 @@ export const HeroClipsToggle: React.FC = () => {
         </button>
       </div>
       <small className="pm-polish-note">Real animation made with the trained art models: stand still and Pokey yawns, scratches, waves and nods off, rubs his head after a hit and cheers at the exit; some story scenes move (the campfire, the storm, the misty village). Starts on the next stage or scene. Off by default while it is being tested.</small>
+    </div>
+  );
+};
+
+/** the refined touch rules from the control test (refinedControls.ts): off by default while testers play */
+export const RefinedControlsToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => refinedControls());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#9ccfd8" size={22}>
+            <path d="M9 11V5a2 2 0 0 1 4 0v6" />
+            <path d="M13 9a2 2 0 0 1 4 0v4a6 6 0 0 1-6 6h-1a6 6 0 0 1-5-3l-2-4a2 2 0 0 1 3-2l2 2" />
+          </Icon>
+          Refined controls (test)
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setRefinedControlsPref(v);
+            setOn(v);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">The fixes from the control test: Pokey keeps his speed when you lift your finger mid-jump, letting go of a vine sends you forward, vines swing on their own, and a sideways flick only kicks when an animal is near. Starts on the next stage. Off by default while it is being tested.</small>
     </div>
   );
 };

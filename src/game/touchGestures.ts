@@ -29,6 +29,8 @@ export interface GestureSink {
   punch(): void;
   kick(dir?: -1 | 1): void;
   mega(): void;
+  /** hold climbing up (-1), down (1) or stop (0) on a vine or trunk, with no jump and no duck (refined controls) */
+  climb?(dir: -1 | 0 | 1): void;
   /** a label for the little pill on screen, plus haptics */
   feedback(kind: 'jump' | 'duck' | 'punch' | 'kick' | 'mega'): void;
 }
@@ -95,6 +97,19 @@ export interface GestureEnv {
   air(): boolean;
   /** false while a mega punch is still cooling down: a held thumb then waits instead of announcing a punch that cannot happen */
   megaReady?(): boolean;
+  /**
+   * Refined controls (the control test's answer, 2026-10-23): a sideways flick only kicks when something is there to kick. The recorded
+   * testers threw 85 kicks and 80 of them had no animal within 250 px: a steering thumb lifting quickly, or a quick sideways swipe that
+   * was meant to start a run (in all 27 of those the finger stayed down afterwards and wanted to run). Unset = the old rules.
+   */
+  refined?(): boolean;
+  /** an animal, the boss or a cage is close enough to kick (asked only when refined) */
+  kickNear?(): boolean;
+  /**
+   * he is on a vine or a trunk (climbing or swinging). With refined controls, straight up and down there always CLIMB: up is never a
+   * jump and down is never a duck (Jen's index finger on a vine kept making him jump). Only a diagonal slide up jumps off.
+   */
+  onVine?(): boolean;
 }
 
 type Role = 'mover' | 'pending' | 'action' | 'ignored';
@@ -115,7 +130,7 @@ interface Finger {
   jumped: boolean;
   ducked: boolean;
   /** recent (t,y) samples for the vertical-speed gate */
-  hist: { t: number; y: number }[];
+  hist: { t: number; y: number; x?: number }[];
   tapT0: number;
   /** after a jump: the highest the thumb has been, and the lowest since (for the wiggle that jumps again) */
   pk: number;
@@ -144,6 +159,22 @@ export class TouchGestures {
     this.sink = sink;
     this.width = width;
     this.env = env;
+  }
+
+  /** refined controls are on and he is on a vine or trunk: vertical slides climb */
+  private vine(): boolean {
+    return !!this.env?.refined?.() && !!this.env.onVine?.();
+  }
+  private climbDir: -1 | 0 | 1 = 0;
+  private setClimb(d: -1 | 0 | 1) {
+    if (d === this.climbDir) return;
+    this.climbDir = d;
+    this.sink.climb?.(d);
+  }
+
+  /** refined controls are on and nothing is near enough to kick: a sideways flick is a run, not a kick */
+  private noKick(): boolean {
+    return !!this.env?.refined?.() && !(this.env.kickNear?.() ?? true);
   }
 
   private assistOn(): boolean {
@@ -181,7 +212,7 @@ export class TouchGestures {
   down(id: number, x: number, y: number, t: number) {
     this.now = t;
     if (this.fingers.has(id)) return;
-    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y }], tapT0: t, pk: y, tr: y, early: false, megaDone: false };
+    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y, x }], tapT0: t, pk: y, tr: y, early: false, megaDone: false };
     const m = this.mover();
     if (m) {
       // a second finger: ignore it if it is practically on top of the steering thumb
@@ -204,7 +235,7 @@ export class TouchGestures {
     if (!f) return;
     f.x = x;
     f.y = y;
-    f.hist.push({ t, y });
+    f.hist.push({ t, y, x });
     while (f.hist.length > 2 && t - f.hist[0].t > 150) f.hist.shift();
     if (f.role === 'mover') this.steer(f);
     else if (f.role === 'pending' || f.role === 'action') this.judge(f, t, false);
@@ -224,6 +255,7 @@ export class TouchGestures {
       // otherwise every tap in a quick run of taps on the left half would look like a re-plant of the one before, and be eaten
       const wasTap = !f.jumped && !f.ducked && Math.hypot(f.x - f.x0, f.y - f.y0) <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs && this.heldDir === 'none';
       this.setDir('none');
+      this.setClimb(0);
       this.duckOn = false;
       this.sink.duck(false);
       if (f.jumped) this.sink.jumpRelease();
@@ -231,7 +263,7 @@ export class TouchGestures {
       // on the left half too, where the run starts at once and a flick used to leave only a stutter (speed decides, not the side)
       const edx = f.x - f.x0;
       const eel = Math.max(1, t - f.t0);
-      const flicked = !f.jumped && !f.ducked && eel <= TUNING.flickLiftMs && Math.abs(edx) >= TUNING.flickPx && Math.abs(edx) >= Math.abs(f.y - f.y0) && Math.abs(edx) / eel >= (f.early ? TUNING.flickLiftSpeed : TUNING.steerFlickSpeed);
+      const flicked = !this.noKick() && !f.jumped && !f.ducked && eel <= TUNING.flickLiftMs && Math.abs(edx) >= TUNING.flickPx && Math.abs(edx) >= Math.abs(f.y - f.y0) && Math.abs(edx) / eel >= (f.early ? TUNING.flickLiftSpeed : TUNING.steerFlickSpeed);
       if (flicked) {
         this.sink.feedback('kick');
         this.sink.kick(edx < 0 ? -1 : 1);
@@ -288,6 +320,7 @@ export class TouchGestures {
   cancelFinger(id: number, t: number) {
     const f = this.fingers.get(id);
     if (!f) return;
+    if (f.role === 'mover') this.setClimb(0);
     this.fingers.delete(id);
     if (f.jumped) this.sink.jumpRelease();
     if (f.ducked) this.sink.duck(false);
@@ -307,6 +340,7 @@ export class TouchGestures {
   }
 
   cancelAll() {
+    this.setClimb(0);
     for (const f of this.fingers.values()) {
       if (f.jumped) this.sink.jumpRelease();
     }
@@ -352,6 +386,11 @@ export class TouchGestures {
     else if (this.heldDir === 'right') this.setDir(dx < stop ? (dx < -TUNING.moveDead ? 'left' : 'none') : 'right');
     else this.setDir(dx > -stop ? (dx > TUNING.moveDead ? 'right' : 'none') : 'left');
 
+    if (this.vine()) {
+      this.vineSteer(f);
+      return;
+    }
+    if (this.climbDir !== 0) this.setClimb(0); // off the vine now (at the top, or let go): the climb is over
     // vertical: the anchor drifts after the finger so a slow slide down or up never piles up into a jump or duck
     let dy = f.y - f.ay;
     if (dy > 70) {
@@ -411,6 +450,41 @@ export class TouchGestures {
   }
   private duckOn = false;
 
+  /**
+   * On a vine or trunk (refined): the finger is a joystick for climbing. Above where it was planted = climb up, below = climb down, held
+   * as long as it stays there; the anchor follows the finger so moving back the other way turns round at once. A slide that goes up AND
+   * clearly sideways (diagonal) is the only jump, the way Pokey leaves a vine.
+   */
+  private vineSteer(f: Finger) {
+    if (this.duckOn) {
+      this.duckOn = false;
+      this.sink.duck(false);
+    }
+    let dy = f.y - f.ay;
+    const reach = 40;
+    if (dy > reach) {
+      f.ay = f.y - reach;
+      dy = reach;
+    } else if (dy < -reach) {
+      f.ay = f.y + reach;
+      dy = -reach;
+    }
+    // the last ~120 ms of movement: a diagonal flick up jumps off
+    const h0 = f.hist[0];
+    const mx = f.x - (h0.x ?? f.x);
+    const my = f.y - h0.y;
+    if (!f.jumped && my < -TUNING.jumpDy && Math.abs(mx) >= Math.abs(my) * 0.7) {
+      this.setClimb(0);
+      this.fireJump(f, false);
+      return;
+    }
+    if (f.jumped && dy > -TUNING.jumpDy * 0.4) {
+      f.jumped = false;
+      this.sink.jumpRelease();
+    }
+    this.setClimb(dy < -16 ? -1 : dy > 16 ? 1 : 0);
+  }
+
   // ───────────────────────────── flicks, taps, holds, and undecided fingers ─────────────────────────────
 
   /** returns true if the finger did something this call */
@@ -422,6 +496,14 @@ export class TouchGestures {
     const ax = Math.abs(dx);
     const ay = Math.abs(dy);
 
+    // on a vine or trunk (refined): a lone finger that moves takes over at once as the climbing finger; nothing vertical is a jump or duck
+    if (this.vine() && !lifting && f.role === 'pending' && !this.mover() && Math.hypot(dx, dy) >= 12) {
+      f.role = 'mover';
+      f.ax = f.x0;
+      f.ay = f.y0;
+      this.steer(f);
+      return true;
+    }
     // a flick is fast: recognised at once if it is very fast, or when the finger lifts soon after a quick sweep
     const window = lifting ? TUNING.flickLiftMs : TUNING.decideMs + 40;
     if (el <= window) {
@@ -439,6 +521,18 @@ export class TouchGestures {
         return true;
       }
       if (ax >= TUNING.flickPx && !upish && ax >= ay && ax / el >= sp) {
+        if (this.noKick()) {
+          // nothing to kick: a lone finger flicking sideways wants to run that way, so it steers from where it began
+          if (f.role === 'pending' && !this.mover() && !lifting) {
+            f.role = 'mover';
+            f.early = true;
+            f.ax = f.x0;
+            f.ay = f.y0;
+            this.steer(f);
+            return true;
+          }
+          return false;
+        }
         f.consumed = true;
         this.sink.feedback('kick');
         this.sink.kick(dx < 0 ? -1 : 1);

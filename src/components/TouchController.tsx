@@ -3,6 +3,7 @@ import { InputEngine } from '../game/inputEngine.ts';
 import { TouchGestures } from '../game/touchGestures.ts';
 import { jumpHelp } from '../game/jumpHelp.ts';
 import { recorder } from '../game/playRecorder.ts';
+import { refinedControls } from '../game/refinedControls.ts';
 
 /**
  * The whole screen is the controller. There are no buttons.
@@ -31,6 +32,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
         punch: () => { recorder.intent('punch'); inputEngine.triggerTouchPunch(); },
         kick: (dir) => { recorder.intent('kick', dir ?? 0); inputEngine.triggerTouchKick(dir ?? 0); },
         mega: () => { recorder.intent('mega'); inputEngine.triggerTouchMega(); },
+        climb: (d) => { recorder.intent('climb', d); inputEngine.triggerTouchClimb(d); },
         feedback: (kind) => {
           const haptic = { jump: 15, duck: 0, punch: 20, kick: 25, mega: 35 }[kind];
           if (haptic) inputEngine.triggerHaptic(haptic);
@@ -38,7 +40,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady },
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine },
     );
   }
   const G = gestures.current;
