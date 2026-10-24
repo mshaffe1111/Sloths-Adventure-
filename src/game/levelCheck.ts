@@ -226,6 +226,8 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   const plats: Platform[] = [];
   for (const p of stage.platforms) {
     if (p.broken) continue;
+    // a lift (2-7) is one stop the player reaches at its top and at its bottom: two copies under one id, so riding it joins them
+    if (p.lift) { plats.push({ ...p, y: p.lift.top }, { ...p, y: p.lift.bottom }); continue; }
     if (p.type === 'moving' || p.type === 'drift' || (p.x >= stripLo && p.x + p.width <= stripHi)) { plats.push(p); continue; }
     const x0 = Math.max(p.x, stripLo);
     const x1 = Math.min(p.x + p.width, stripHi);

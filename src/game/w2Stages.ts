@@ -21,7 +21,7 @@ import { W2_FRAMES } from './w2PropsData.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 
-export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5' | '2-6';
+export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5' | '2-6' | '2-7';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-1': '2-1',
   '2-2': '2-2',
@@ -29,6 +29,7 @@ export const W2_STAGES: Record<string, W2Plan> = {
   '2-4': '2-4',
   '2-5': '2-5',
   '2-6': '2-6',
+  '2-7': '2-7',
 };
 
 /** 2-2 asks for 80 flowers for the king's crown (the stage holds about one and a half times that) */
@@ -364,7 +365,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
    * `island` gives its length) is where the last swing lands. `safe`: the water costs no life (the teaching crossing). Rolled again until
    * the jump grabs the first vine, every vine catches the next, and the last one lands (the same checks as World 1's lianas, protoCheck.ts).
    */
-  function swingRiver(n: number, opts: { safe?: boolean; island?: number; flow?: number } = {}) {
+  function swingRiver(n: number, opts: { safe?: boolean; island?: number; flow?: number; frames?: boolean } = {}) {
     const x0r = x;
     run(R.r(150, 230));
     const edge = x;
@@ -385,8 +386,10 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       if (ok) ok = landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far) >= 8;
       if (!ok && tries < 13) continue;
       rivers.push({ x0: edge, x1: farX, surfaceY: SURFACE, dir: 1, speed: opts.flow ?? 45, open: true, ...(opts.safe ? { safe: { backX: edge - 70, backY: G } } : {}) });
+      // 2-7: each vine hangs from a rope-swing frame standing in the river (no canopy)
+      if (opts.frames) for (let k = 0; k < n; k++) decor.push({ n: 'swingFrame', x: xs[k], b: SURFACE + 34, w: 220, top: tops[k] - 6 });
       // the canopy the vines hang from: a leafy clump at each vine's top, and boughs reaching between them
-      for (let k = 0; k < n; k++) {
+      for (let k = 0; !opts.frames && k < n; k++) {
         const cw = Math.round(R.r(190, 230));
         canopyAt(xs[k], tops[k], cw);
         if (k + 1 < n) {
@@ -395,7 +398,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
           decor.push({ n: 'limbShort', x: (xs[k] + xs[k + 1]) / 2, b: ly + w2h('limbShort', lw) * 0.6, w: lw, flip: k % 2 === 1 });
         }
       }
-      if (R.chance(0.5)) decor.push({ n: 'pole', x: edge + R.r(30, 70), b: SURFACE + 30, w: 64, flip: R.chance(0.5) });
+      if (!opts.frames && R.chance(0.5)) decor.push({ n: 'pole', x: edge + R.r(30, 70), b: SURFACE + 30, w: 64, flip: R.chance(0.5) });
       for (let k = 0; k < n; k++) {
         V.push({ ...vs[k], id: V.length + 1, swayPhase: (xs[k] * 0.013) % 6.28 });
         // the flowers arc where the leap goes, from one vine to the next
@@ -415,6 +418,159 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
   const w2h = (n: keyof typeof W2_FRAMES, w: number) => (w * W2_FRAMES[n].h) / W2_FRAMES[n].w;
   /** the leafy clump a vine hangs from, centred on its top */
   const canopyAt = (vx: number, top: number, w: number) => decor.push({ n: 'canopy', x: vx, b: top + w2h('canopy', w) * 0.45, w, flip: R.chance(0.5) });
+
+  // ----- 2-7 The Mailman's Route: the village's own ways about -----
+
+  /**
+   * the carved steps (Matt's painting) up or down the bank: a step every 22 px or so, walked straight up (the wall check lifts him over a
+   * step that low), the upper ground carrying on at the new height. Each step is a block down to the ground, drawn by the painting.
+   */
+  function stairs(rise: number, up: boolean) {
+    const x0s = x;
+    run(R.r(140, 200));
+    close();
+    const n = Math.max(3, Math.round(rise / 22));
+    const r = rise / n;
+    const tread = 28;
+    const fromY = bankY;
+    const toY = up ? fromY - rise : fromY + rise;
+    const sx = x;
+    for (let i = 0; i < n; i++) {
+      const top = Math.round(up ? fromY - r * (i + 1) : fromY + r * (i + 1));
+      P.push({ id: pid++, x: sx + i * tread, y: top, width: tread + 1, height: BANK_H + (G - top), type: 'solid', style: 'log', art: 'steps' });
+      if (i % 2 === 1) flower(sx + i * tread + tread / 2, top - 34, 'orchid');
+    }
+    const ex = sx + n * tread;
+    // the ground under the stairs (the steps themselves are drawn by the painting, which covers the rock between them and this)
+    bank(sx, ex, up ? fromY : toY);
+    // the painting: its walk runs from (30, 280) up to (265, 25) when flipped (climbing to the right), (95, 25) down to (330, 280) not
+    const kx = (n * tread) / 235;
+    const ky = rise / 255;
+    const w = 360 * kx;
+    const h = 304 * ky;
+    const left = up ? sx - 30 * kx : sx - 95 * kx;
+    const topY = up ? toY - 25 * ky : fromY - 25 * ky;
+    decor.push({ n: 'steps', x: left + w / 2, b: topY + h, w, h, flip: up });
+    open(ex, toY);
+    run(R.r(120, 180));
+    expert += (x - x0s) / RUN + n * 0.08;
+    pieces.push({ k: up ? 'stairsUp' : 'stairsDown', x0: x0s, x1: x });
+  }
+
+  /**
+   * a row of porches (Matt's porch: a deck jutting from a rock) at the level he is on, a hop apart. Over the river (`water`) a fall costs
+   * a life and the row ends on high ground at the same level; over dry ground (the teaching row) it ends with a hop down to the path
+   * below, where a fall would have put him anyway.
+   */
+  function porchRun(n: number, water: boolean) {
+    const x0p = x;
+    run(R.r(120, 170));
+    close();
+    const level = bankY;
+    const xs = x;
+    let px = x;
+    for (let k = 0; k < n; k++) {
+      px += Math.round(one * R.r(0.4, 0.52));
+      const w = Math.round(R.r(150, 185));
+      const y = Math.round(level + (k === 0 ? 0 : R.r(-14, 14)));
+      P.push({ id: pid++, x: px, y, width: w, height: 20, type: 'solid', art: 'porch' });
+      // the painting's deck runs from 8.5% to 94% of its width, its top 183 of 268 px down
+      const wd = w / 0.855;
+      const hd = (wd * 268) / 260;
+      decor.push({ n: 'porch', x: px - 0.085 * wd + wd / 2, b: y + ((268 - 183) / 268) * hd, w: wd, flip: k % 2 === 1 && !water });
+      row(px + 32, px + w - 32, y - 34, 2, 'hibiscus');
+      px += w;
+    }
+    px += Math.round(one * R.r(0.4, 0.5));
+    if (water) {
+      rivers.push({ x0: xs, x1: px, surfaceY: SURFACE, dir: 1, speed: 35, open: true });
+      reeds(xs + 20, G + 6);
+      reeds(px - 20, G + 6, true);
+      open(px, level);
+    } else {
+      // the path below the porches, and the row ends with a hop down onto it
+      bank(xs, px, G);
+      open(px, G);
+    }
+    run(R.r(140, 200));
+    expert += (x - x0p) / RUN + n * 0.4;
+    pieces.push({ k: water ? 'porchesWater' : 'porches', x0: x0p, x1: x });
+  }
+
+  /** a basket on the rope (2-7): `up` rides from the path up to high ground on the right, else from high ground down to the path */
+  function lift(up: boolean, high = G - Math.round(R.r(220, 240))) {
+    const x0l = x;
+    run(R.r(160, 220));
+    const W = 96;
+    let sx: number;
+    const top = up ? high : bankY;
+    if (up) {
+      // the path runs up to the foot of the high ground; the shaft is the last stretch of path before the rock
+      sx = x + 6;
+      run(W + 12);
+      close();
+      open(x, top);
+    } else {
+      close();
+      sx = x + 6;
+      open(x, G);
+      run(W + 12);
+    }
+    P.push({
+      id: pid++, x: sx, y: G, width: W, height: 18, type: 'moving', art: 'lift',
+      lift: { top, bottom: G, speed: 95, wait: 1.6, phase: R.r(0, 4), postRight: up },
+    });
+    // flowers up the shaft: the ride collects them (the lower two: a jump from the path reaches them too)
+    for (let i = 1; i <= 2; i++) flower(sx + W / 2, G - ((G - top) * i) / 4 - 40, 'hibiscus');
+    run(R.r(180, 240));
+    expert += (x - x0l) / RUN + (G - top) / 95 + 2.4;
+    pieces.push({ k: up ? 'liftUp' : 'liftDown', x0: x0l, x1: x });
+    return { sx, top };
+  }
+
+  /** a stretch of high ground with a snake on it, keeping to the near side of the middle (clear of a flag at the far end) */
+  function guardedHigh(len: number) {
+    rest(len);
+    snake(x - len * 0.6, bankY);
+  }
+
+  /** the mailman on his round: walks back and forth along a stretch of path ahead */
+  const mailman = (a: number, b: number, y = G) => decor.push({ cel: 'po.carry_stand', celWalk: 'po.walk_parcel', x: a, b: y + 2, k: 0.42, walk: [a, b, 9] });
+
+  /** a house door in the bank with its sign: PLEASE BE PATIENT (the village's motto) */
+  const patientDoor = (dx: number, y = G) => {
+    piece('door', dx, y + 6, 170);
+    piece('sign', dx - 150, y + 4, 112, { text: ['PLEASE BE', 'PATIENT'] });
+  };
+
+  /** the village at the end of a stage (2-1, 2-7): the jetty, the sign, the mailbox, doors in the bank, washing, a chimney and Gruntlewick */
+  function villageEnd() {
+    const v0 = x;
+    // the jetty reaches out over the last river, when the village's bank is where one ends
+    if (rivers.some((r) => Math.abs(r.x1 - bankFrom) < 2)) piece('jetty', bankFrom - 50, SURFACE + 26, 210, { flip: true });
+    run(200);
+    piece('sign', x, G + 4, 132, { text: ['PLEASE BE', 'PATIENT'] });
+    run(120);
+    piece('mailbox', x, G + 2, 54);
+    run(180);
+    mailman(x, x + 360);
+    piece('door', x + 60, G + 6, 210);
+    piece('window', x + 230, G - 30, 82);
+    run(380);
+    piece('laundry', x, G + 4, 200);
+    run(260);
+    piece('door', x, G + 6, 190, { flip: true });
+    piece('chimney', x + 120, G - 72, 60);
+    decor.push({ cel: 'tc.scroll', x: x + 220, b: G + 2, k: 0.42, flip: true });
+    run(460);
+    expert += (x - v0) / RUN;
+    if (expert < EXPERT_SECONDS) {
+      // a short last stroll to the shrine for any seconds the dice left short (never a long empty walk)
+      const extra = Math.min(320, (EXPERT_SECONDS - expert) * RUN);
+      run(extra);
+      expert += extra / RUN;
+    }
+  }
 
   /** a reed cage with a little one in it, standing at (cx, floor) */
   function cage(cx: number, floor: number, critter: 'capy' | 'duck' | 'otter') {
@@ -481,44 +637,74 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       rest(R.r(160, 220));
       heart(x - 60, G - 60);
       // the village: its jetty out over the last river's bank, the sign, the mailbox, round doors in the bank
-      const v0 = x;
-      // the jetty reaches out over the last river from the village's bank, its posts in the water
-      piece('jetty', bankFrom - 50, SURFACE + 26, 210, { flip: true });
-      run(200);
-      piece('sign', x, G + 4, 132, { text: ['PLEASE BE', 'PATIENT'] });
-      run(120);
-      piece('mailbox', x, G + 2, 54);
-      run(180);
-      decor.push({
-        cel: 'po.carry_stand',
-        celWalk: 'po.walk_parcel',
-        x: x,
-        b: G + 2,
-        k: 0.42,
-        walk: [x - 60, x + 360, 9],
-      });
-      piece('door', x + 60, G + 6, 210);
-      piece('window', x + 230, G - 30, 82);
-      run(380);
-      piece('laundry', x, G + 4, 200);
-      run(260);
-      piece('door', x, G + 6, 190, { flip: true });
-      piece('chimney', x + 120, G - 72, 60);
-      decor.push({
-        cel: 'tc.scroll',
-        x: x + 220,
-        b: G + 2,
-        k: 0.42,
-        flip: true,
-      });
-      run(460);
-      expert += (x - v0) / RUN;
-      if (expert < EXPERT_SECONDS) {
-        // a short last stroll to the shrine for any seconds the dice left short (never a long empty walk)
-        const extra = Math.min(320, (EXPERT_SECONDS - expert) * RUN);
-        run(extra);
-        expert += extra / RUN;
+      villageEnd();
+    });
+  } else if (plan === '2-7') {
+    // 2-7 The Mailman's Route: the long way round the river, the way the mailman goes: up the carved steps, along the porches, into the
+    // basket of a rope lift and up the bank, over the river on the logs and on the rope-swing frames, and past every door marked PLEASE
+    // BE PATIENT to the end of his round.
+    open(0);
+    beat('Learn: up the steps, along the porches', () => {
+      rest(R.r(460, 540));
+      hint(220, 'Follow the mailman’s route round the village!');
+      mailman(260, 520);
+      stairs(Math.round(R.r(110, 130)), true);
+      hint(x - 160, 'Hop along the porches');
+      porchRun(3, false);
+      rest(R.r(260, 320));
+      patientDoor(x - 110);
+      flag();
+      piece('mailbox', x - 40, G + 2, 54);
+    });
+    beat('Develop: the basket lift, porches over the river', () => {
+      rest(R.r(220, 280));
+      hint(x + 40, 'Step into the basket. It carries you up!');
+      lift(true);
+      rest(R.r(160, 220));
+      porchRun(3, true);
+      heart(x - 60, bankY - 60);
+      guardedHigh(R.r(600, 660));
+      lift(false);
+      river(1, 72, 3, 168);
+      flag();
+      piece('mailbox', x - 40, G + 2, 54);
+    });
+    beat('Twist: the swing frames', () => {
+      rest(R.r(220, 300));
+      hint(x + 10, 'Swing across on the rope frames!');
+      swingRiver(2, { frames: true });
+      rest(R.r(240, 320));
+      patientDoor(x - 110);
+      swingRiver(3, { frames: true });
+      heart(x - 40, G - 60);
+      // a golden seed above the next lift's crane: a double jump from the basket at the top
+      const lf = lift(true);
+      goldenSeed(lf.sx + 48, lf.top - 175);
+      rest(R.r(160, 220));
+      stairs(Math.round(G - bankY), false);
+      flag();
+    });
+    beat('Finish: the end of the round', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 14 && n < 10) {
+        rest(R.r(220, 300));
+        const k = n % 4;
+        if (k === 0) {
+          lift(true);
+          rest(R.r(140, 200));
+          porchRun(R.i(2, 3), true);
+          lift(false);
+        } else if (k === 1) river(n % 2 ? -1 : 1, 74, 3, 166);
+        else if (k === 2) swingRiver(n % 3 === 2 ? 3 : 2, { frames: true });
+        else {
+          stairs(Math.round(R.r(110, 130)), true);
+          porchRun(3, false);
+        }
+        if (++n % 2 === 0) flag();
       }
+      rest(R.r(160, 220));
+      heart(x - 60, G - 60);
+      villageEnd();
     });
   } else if (plan === '2-2') {
     // 2-2 Petals for the Crown: the river king wants admiring. Gather flowers for his crown: over the logs, high and low, and across the

@@ -274,6 +274,10 @@ export interface Platform {
   crown?: boolean;
   /** World 2: a cluster of lily pads floating on still water (painted from Matt's river sheet, riverArt.ts) */
   lily?: boolean;
+  /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
+  lift?: import('./lift.ts').LiftInfo;
+  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts) */
+  art?: 'lift' | 'steps' | 'porch';
 }
 
 /**

@@ -3,6 +3,7 @@ import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
+import { liftY } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
@@ -51,8 +52,8 @@ import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
-import { drawLadder, drawLily, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, riverArtReady } from './riverArt.ts';
-import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
+import { driftCycle, driftProgress, driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -426,15 +427,17 @@ export class GameEngine {
     warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
-    this.drawPlats = this.pushLogs.length || this.proto?.chase ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown) : this.platforms;
+    this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
+      ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
+      : this.platforms;
     // Matt's painted World 1 kit: always in the hand-built 1-6, and in the rest of World 1 when switched on (off by default)
     setKitWorld(config.worldIndex);
     // a stage that hangs its vines from painted boughs (2-4) draws no leafy clump at each liana's top
-    setLianaTops(!this.proto?.decor?.some((d) => d.n === 'canopy'));
+    setLianaTops(!this.proto?.decor?.some((d) => d.n === 'canopy' || d.n === 'swingFrame'));
     this.paintKit = !!this.proto || (hasKit(config.worldIndex) && paintedKitEnabled() && config.objectiveType !== 'boss_lair');
     if (this.paintKit) {
       const painted = paintedPlatforms(this.platforms);
-      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown);
+      this.paintedPlats = this.platforms.filter((pl) => !painted.has(pl.id) && !pl.chase && !pl.crown && !pl.art);
       this.swingVines = this.vines.filter((v) => v.vineType !== 'tree_climb');
       this.protoScene = { brokeAt: new Map(), movedAt: new Map() };
       protoArtReady(); // start loading the props
@@ -761,6 +764,14 @@ export class GameEngine {
     // --- Moving platforms: slide on a sine path and carry whoever stands on them ---
     for (const plat of this.platforms) {
       if (plat.type !== 'moving' || plat.broken) continue;
+      if (plat.lift) {
+        // World 2's basket lift rides up and down, and carries whoever stands in it
+        const ny = liftY(plat.lift, this.gameTime);
+        const dy = ny - plat.y;
+        plat.y = ny;
+        if (p.grounded && this.standingOnId === plat.id) p.y += dy;
+        continue;
+      }
       const nx = (plat.baseX ?? plat.x) + Math.sin(this.gameTime * (plat.moveSpeed ?? 1) + (plat.swayOffset ?? 0)) * (plat.moveRange ?? 0);
       const dx = nx - plat.x;
       plat.x = nx;
@@ -3668,9 +3679,22 @@ export class GameEngine {
     if (this.riverLogsPainted(world.id)) {
       for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(ctx, pl, this.gameTime);
     }
+    // a ripple where the next log is about to slide out from under the bank, so it never appears without warning
+    for (const pl of this.platforms) {
+      const d = pl.drift;
+      if (pl.type !== 'drift' || !d || pl.broken) continue;
+      const travelled = driftProgress(d, this.gameTime) * driftCycle(d) * d.speed;
+      const lead = d.speed * 1.1;
+      if (travelled > d.width || travelled < d.width - lead) continue;
+      const ex = d.dir === 1 ? d.x0 + 18 : d.x1 - 18;
+      if (!this.onScreen(ex, d.baseY, 80)) continue;
+      drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
+    }
     this.drawRivers(ctx, world, true);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // World 2's basket lifts (2-7): the crane, the ropes and the basket where it is now (over the ground, so the basket shows at the bottom)
+    for (const pl of this.platforms) if (pl.lift && this.onScreen(pl.x + pl.width / 2, (pl.lift.top + pl.lift.bottom) / 2, 400)) drawW2Lift(ctx, pl, !!pl.lift.postRight);
     // 2-6: the village's ladders where the climbs are
     if (this.proto?.ladders) {
       for (const v of this.vines) if (v.vineType === 'tree_climb' && this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) drawLadder(ctx, v.x, v.topY, v.bottomY);

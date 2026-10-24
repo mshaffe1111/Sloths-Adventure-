@@ -503,7 +503,7 @@ export function drawWallArt(ctx: CanvasRenderingContext2D, x: number, top: numbe
 
 /** a world with its own kit paints every thin ledge with its own piece (a drifting river log and a spring keep their own look) */
 function thinKit(p: Platform): boolean {
-  return p.height < 50 && !p.push && !p.lily && p.type !== 'drift' && p.type !== 'bouncy';
+  return p.height < 50 && !p.push && !p.lily && !p.art && p.type !== 'drift' && p.type !== 'bouncy';
 }
 /** which of the stage's platforms the painted props draw (the rest keep the drawn look) */
 export function paintedPlatforms(platforms: Platform[]): Set<number> {
@@ -538,7 +538,7 @@ export function drawProtoScene(
 ): boolean {
   if (!protoArtReady()) return false;
   const vis = (p: Platform) => p.x + p.width > view.x0 - 80 && p.x < view.x1 + 80;
-  const banks = platforms.filter((p) => p.height >= 90 && !p.push && !p.broken);
+  const banks = platforms.filter((p) => p.height >= 90 && !p.push && !p.broken && !p.art);
   for (const p of banks) {
     if (!vis(p)) continue;
     const touches = (side: 'l' | 'r') => banks.some((q) => q !== p && q.y <= p.y + 2 && (side === 'l' ? Math.abs(q.x + q.width - p.x) < 2 : Math.abs(p.x + p.width - q.x) < 2));
