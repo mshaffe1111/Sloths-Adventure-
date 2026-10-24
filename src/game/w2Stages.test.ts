@@ -126,7 +126,8 @@ test('2-6: the climb up the bank village, with the bank behind it, doors on the 
   for (const s of SEEDS.slice(0, 8)) {
     const st = buildW2Stage({ ...cfg('2-5'), id: '2-6', miniIndex: 6, objectiveType: 'ascent' } as LevelConfig, s, '2-6');
     assert.ok(st.proto.bankWall, `seed ${s}`);
-    assert.ok(st.proto.decor!.filter((d) => d.n === 'door').length >= 5, `seed ${s}: doors`);
+    assert.ok(st.proto.decor!.filter((d) => d.n === 'doorRoof').length >= 5, `seed ${s}: doors`);
+    assert.ok(st.proto.ladders, 'the climbs are ladders');
     assert.ok(st.proto.decor!.some((d) => d.cel?.startsWith('tc.')), `seed ${s}: Gruntlewick`);
     assert.ok(st.vines.some((v) => v.vineType === 'tree_climb'));
     assert.ok(st.collectibles.filter((c) => c.type === 'heart').length >= 2, `seed ${s}: hearts`);
