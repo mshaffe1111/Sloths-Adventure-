@@ -274,6 +274,9 @@ export class GameEngine {
   private watchEagle: Enemy | null = null;
   private watchFrom = { x: 0, y: 0 };
   private bushRustle = new Map<number, number>();
+  /** 1-9's ring: 'idle' until he comes in, then each wave drops (snakes falling from the canopy, not yet in play), then 'open' */
+  private ring = { state: 'idle' as 'idle' | 'fight' | 'open', wave: 0, ids: [] as number[] };
+  private ringDrops: Array<{ e: Enemy; t: number; delay: number }> = [];
   /** 1-8's collapsing branch (chase.ts): its state, the pieces falling away, and whether the last leap has had its slow motion */
   private chase: ChaseState | null = null;
   private chaseFalling: Array<{ x: number; y: number; w: number; h: number; vx: number; vy: number; rot: number; vr: number; t: number; right: boolean }> = [];
@@ -388,6 +391,8 @@ export class GameEngine {
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
     this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
+    this.ring = { state: 'idle', wave: 0, ids: [] };
+    this.ringDrops = [];
     this.chase = this.proto?.chase ? newChase(this.proto.chase) : null;
     this.chaseFalling = [];
     this.chaseSlowDone = false;
@@ -1676,6 +1681,7 @@ export class GameEngine {
     // the watching eagle (1-7): calm, a screech, then its shadow sweeps the ground; seen in the open, it dives (watcher.ts)
     if (this.proto?.watch) this.updateWatch(dt);
     if (this.chase) this.updateChase(dt);
+    if (this.proto?.ring) this.updateRing(dt);
 
     // --- Collectibles Pickup & Objectives ---
     for (const c of this.collectibles) {
@@ -3545,6 +3551,7 @@ export class GameEngine {
       if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
     }
     if (this.proto?.watch) this.drawWatchBack(ctx);
+    if (this.ringDrops.length) this.drawRingDrops(ctx);
     // Render Hero Sloth
     heroClipsLive(true);
     if (rig) {
@@ -3671,6 +3678,90 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
+  /** the drop: how long a snake takes from the canopy to the branch (s), and from how high it falls (px) */
+  private static readonly RING_DROP = { t: 0.55, h: 420 };
+
+  /** 1-9's ring: drop the waves, and open the wall when every one of them is down */
+  private updateRing(dt: number) {
+    const ring = this.proto!.ring!;
+    const r = this.ring;
+    const p = this.player;
+    const id = this.currentStage.config.id;
+    const dropWave = (n: number) => {
+      ring.waves[n].forEach((d, k) => {
+        const base = d.kind === 'boa'
+          ? { type: 'boa', width: 58, height: 26, hp: 3, maxHp: 3, vx: 0, y: d.surface - 16, patrolMinX: d.x - 12, patrolMaxX: d.x + 12 }
+          : { type: 'snake', width: 38, height: 22, hp: 1, maxHp: 1, vx: 28, y: d.surface - 14, patrolMinX: d.x - 70, patrolMaxX: d.x + 70 };
+        const e = {
+          id: 9500 + n * 10 + k, x: d.x, vy: 0, facing: d.x > p.x ? -1 : 1, attackCooldown: 0.9, telegraphTimer: 0, isAttacking: false,
+          animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, ...base,
+        } as Enemy;
+        this.ringDrops.push({ e, t: 0, delay: k * 0.35 });
+        r.ids.push(e.id);
+      });
+      sound.playWhoosh();
+    };
+    if (r.state === 'idle') {
+      if (p.x > ring.x0 + 120 && p.x < ring.x1) {
+        r.state = 'fight';
+        r.wave = 0;
+        dropWave(0);
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+        if (!tipHeard(id, 'ring:go')) {
+          markTipHeard(id, 'ring:go');
+          this.guide('Snakes from above! Clear them all to open the way', 3);
+        }
+      }
+      return;
+    }
+    // the drops: falling from the canopy, then in play where they land
+    for (const d of this.ringDrops) d.t += dt;
+    const landed = this.ringDrops.filter((d) => d.t >= d.delay + GameEngine.RING_DROP.t);
+    for (const d of landed) {
+      this.enemies.push(d.e);
+      this.spawnJumpDust(d.e.x, d.e.y + 14);
+      sound.playLand(0.5);
+    }
+    this.ringDrops = this.ringDrops.filter((d) => d.t < d.delay + GameEngine.RING_DROP.t);
+    if (r.state !== 'fight' || this.ringDrops.length) return;
+    const alive = this.enemies.some((e) => r.ids.includes(e.id) && !e.defeated);
+    if (alive) return;
+    if (r.wave + 1 < ring.waves.length) {
+      r.wave++;
+      dropWave(r.wave);
+      return;
+    }
+    // every one down: the wall gives way
+    r.state = 'open';
+    const wall = this.platforms.find((pl) => pl.id === ring.wallId);
+    if (wall) {
+      wall.broken = true;
+      this.spawnSparkBurst(wall.x + wall.width / 2, wall.y + 60, '#8b5a2b');
+      this.spawnSparkBurst(wall.x + wall.width / 2, wall.y + 180, '#a3d977');
+    }
+    this.camera.trauma = Math.min(1, this.camera.trauma + 0.45);
+    sound.playShrineUnlocked();
+    if (!tipHeard(id, 'ring:open')) {
+      markTipHeard(id, 'ring:open');
+      this.guide('The way is open!', 2.4);
+    }
+  }
+
+  /** the snakes still falling into the ring, drawn on their way down */
+  private drawRingDrops(ctx: CanvasRenderingContext2D) {
+    for (const d of this.ringDrops) {
+      const u = Math.max(0, d.t - d.delay) / GameEngine.RING_DROP.t;
+      if (d.t < d.delay) continue;
+      const e = d.e;
+      const y0 = e.y;
+      e.y = y0 - GameEngine.RING_DROP.h * (1 - u * u);
+      if (e.type === 'snake') {
+        if (!drawGoldSnake(ctx, e, this.gameTime) && !drawSnakeSprite(ctx, e, this.gameTime)) drawTreeSnake(ctx, e, this.gameTime);
+      } else if (!drawBoaSprite(ctx, e, this.gameTime)) drawBoa(ctx, e, this.gameTime);
+      e.y = y0;
+    }
+  }
+
   /** step 1-8's collapse: sections behind it fall, caught or off the branch costs a heart and the flag (chase.ts) */
   private updateChase(dt: number) {
     const plan = this.proto!.chase!;
