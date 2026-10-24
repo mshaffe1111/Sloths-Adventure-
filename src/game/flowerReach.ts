@@ -103,6 +103,8 @@ const SIT = 34;
  * below platforms that you're going across").
  */
 function tuckedUnder(w: ReachWorld, x: number, y: number): Platform | undefined {
+  // on a trunk he climbs past it: a branch above is no trouble
+  if (w.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(x - v.x) <= 40 && y >= v.topY - 20 && y <= v.bottomY + 20)) return undefined;
   let best: Platform | undefined;
   for (const p of w.platforms) {
     if (p.broken || p.type === 'drift' || p.type === 'moving' || !dry(w, p)) continue;

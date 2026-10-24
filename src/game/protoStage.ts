@@ -23,7 +23,8 @@ import { catchWindow, earlyCatch, jumpGrab, landWindow, maxRise } from './protoC
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export const HAND_STAGES: Record<string, 'proto' | '1-1'> = { '1-1': '1-1', '1-6': 'proto' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-6': 'proto' };
 const KEY = 'sloth_proto_16';
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
@@ -63,6 +64,8 @@ export interface ProtoExtras {
   covers: LeafCover[];
   /** the beats, for the blueprint and the tests: [x0, x1, name] */
   beats: Array<[number, number, string]>;
+  /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */
+  movedPickups?: number;
 }
 
 /** a small seeded random stream (mulberry32): the same seed always builds the same stage */
@@ -109,7 +112,7 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * where the snakes sit, the order of the pieces inside a beat, and the dressing. Every rolled piece is checked against the physics
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
-export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | 'ctest' | '1-1' = 'proto'): GeneratedStage & { proto: ProtoExtras } {
+export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto'): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const P: Platform[] = [];
   const V: Vine[] = [];
@@ -617,6 +620,133 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
     });
   }
 
+  /**
+   * the petal stairs: stumps rising to a run of branches, the petals climbing with them. The forest floor carries on below (safe),
+   * but the petals are up top. With `nook`, a branch above the run hides behind leaves that part as he comes close: more petals there.
+   */
+  function trailUp(nook: boolean) {
+    const x0 = x;
+    run(R.r(160, 220));
+    const steps = [50, 100, 150];
+    for (const h of steps) {
+      const w = R.r(90, 120);
+      block(x, x + w, h);
+      flower(x + w / 2, G - h - 34, 'orchid');
+      run(w + R.r(50, 80));
+    }
+    const y = G - Math.round(R.r(185, 200));
+    let bx = x - 30;
+    const n = R.i(3, 4);
+    let nookAt = -1;
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(220, 300));
+      branch(bx, bx + w, y);
+      row(bx + 40, bx + w - 40, y - 34, 2, 'orchid');
+      if (k === n - 2) nookAt = bx + w * 0.5;
+      bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
+    }
+    if (nook && nookAt > 0) {
+      // up a double jump from the run: a hidden shelf of petals behind leaves
+      const ny = y - Math.round(R.r(140, 160));
+      branch(nookAt - 60, nookAt + 160, ny);
+      row(nookAt - 20, nookAt + 120, ny - 34, 3, 'hibiscus');
+      covers.push({ x: nookAt - 90, y: ny - 80, w: 280, h: 110 });
+    }
+    // the petals lead back down to the floor
+    arc(bx - 60, bx + 160, y + 20, 3, 'orchid');
+    x = bx + R.r(200, 260);
+    expert += (x - x0) / RUN + 2;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
+  /**
+   * the split trail: a high road of branches and the forest floor run side by side, and the petals swap between them. Each time
+   * they go high a mushroom on the floor bounces him up; each time they go low he drops. Three drops in all.
+   */
+  function splitTrail() {
+    const x0 = x;
+    run(R.r(160, 220));
+    const y = G - Math.round(R.r(175, 195));
+    for (let k = 0; k < 3; k++) {
+      // high: a mushroom up, then branches with petals
+      P.push({ id: pid++, x: x, y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      let bx = x + 40;
+      const n = R.i(2, 3);
+      for (let j = 0; j < n; j++) {
+        const w = Math.round(R.r(200, 280));
+        branch(bx, bx + w, y);
+        row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
+        bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
+      }
+      // low: the branches carry on overhead with nothing on them, and the petals are on the floor
+      const lowLen = Math.round(R.r(520, 700));
+      branch(bx, bx + lowLen, y);
+      arc(bx - 40, bx + 120, y + 60, 2, 'orchid');
+      row(bx + 160, bx + lowLen - 40, G - 34, Math.round(lowLen / 200), 'orchid');
+      x = bx + lowLen + R.r(80, 140);
+    }
+    expert += (x - x0) / RUN + 4;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
+  if (plan === '1-2') {
+    // 1-2 The Petal Trail: the petals show the way. Taught on the floor (they arc over each gap where the jump goes), tested up the
+    // stumps to the branches overhead, twisted into a trail that swaps between high and low. The stage asks for 33 of them.
+    beat('Learn: follow the petals', () => {
+      rest(R.r(500, 650));
+      hint(x - 200, 'Follow the petals', 'Follow the petals', 'Follow the petals');
+      row(x - 160, x + 40, G - 34, 3, 'orchid');
+      const one = reachJump(0, false);
+      for (const w of [one * 0.4, one * 0.5, one * 0.6]) {
+        run(R.r(160, 220));
+        const edge = x;
+        close();
+        const far = Math.round(edge + w);
+        softPit(edge, far);
+        arc(edge - 50, far + 50, G - 110, 3, 'hibiscus');
+        open(far);
+      }
+      run(R.r(160, 220));
+      stumps();
+      flag();
+    });
+    beat('Test: up to the branches', () => {
+      hint(x + 60, 'The petals go up', 'The petals go up', 'The petals go up');
+      trailUp(false);
+      rest(R.r(300, 400));
+      trailUp(true);
+      flag();
+    });
+    beat('Twist: high and low', () => {
+      hint(x + 60, 'Stay on the petals, high or low', 'Stay on the petals, high or low', 'Stay on the petals, high or low');
+      splitTrail();
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 24) {
+        const k = n % 3;
+        if (k === 0) trailUp(false);
+        else if (k === 1) { rest(R.r(250, 400)); stumps(); }
+        else highRoad();
+        n++;
+        if (n % 3 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+    // a harvest is no test when the petals are three times what it asks for (the generator keeps to about 2.2 times, capHarvest):
+    // the finish is thinned evenly, the taught parts and the hidden shelf are left whole
+    const fin = beats[beats.length - 1];
+    const late = C.filter((c) => c.type === 'flower' && c.x >= fin[0]);
+    const keep = Math.max(Math.round(late.length / 3), Math.round(config.targetCount * 2.2) - (C.filter((c) => c.type === 'flower').length - late.length));
+    if (late.length > keep) {
+      const step = late.length / (late.length - keep);
+      const out = new Set<Collectible>();
+      for (let i = 0; i < late.length - keep; i++) out.add(late[Math.min(late.length - 1, Math.floor(i * step + step / 2))]);
+      for (let i = C.length - 1; i >= 0; i--) if (out.has(C[i])) C.splice(i, 1);
+    }
+  }
+
   if (plan === 'ctest') {
     // the control test: the same stage for every player (the seed is fixed by the caller), one skill per stretch, cheap to fail
     beat('Run and stop', () => {
@@ -737,7 +867,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
   const width = Math.ceil(x + 20);
   const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900) };
   // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
-  fixPickups({ platforms: P, vines: V, waterY: WATER }, C);
+  const movedPickups = fixPickups({ platforms: P, vines: V, waterY: WATER }, C);
   return {
     config: cfg,
     trees: T,
@@ -754,7 +884,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
     checkpoints: checkpoints.sort((a, b) => a.x - b.x),
     waterY: WATER,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces: pieces.map((p) => ({ k: p.k, x0: p.x0, x1: p.x1 })), timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers, beats },
+    proto: { hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups },
   };
 }
 // ---------------------------------------------------------------------------------------------------------------------------
