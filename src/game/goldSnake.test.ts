@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { goldShape, goldSnakeEnabled } from './goldSnake.ts';
 
-test('the golden snake is off unless switched on', () => {
-  assert.equal(goldSnakeEnabled(), false);
+test('the golden snake is the game\'s snake (on unless ?snake=classic)', () => {
+  assert.equal(goldSnakeEnabled(), true);
 });
 
 test('the strike lunges forward and the rear-up lifts the head', () => {

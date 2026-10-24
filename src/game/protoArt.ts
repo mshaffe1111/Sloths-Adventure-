@@ -11,24 +11,15 @@ import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 
-const KIT_KEY = 'sloth_paint_w1';
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
+  // the game's platforms since 2026-10-24 (Matt tested them): `?paint=0` shows the old drawn ones
   try {
-    return typeof localStorage !== 'undefined' && localStorage.getItem(KIT_KEY) === '1';
+    return !(typeof location !== 'undefined' && /[?&]paint=0\b/.test(location.search));
   } catch {
-    return false;
+    return true;
   }
 }
-export function setPaintedKitPref(on: boolean) {
-  try {
-    if (on) localStorage.setItem(KIT_KEY, '1');
-    else localStorage.removeItem(KIT_KEY);
-  } catch {
-    /* ignore */
-  }
-}
-
 /*
  * One kit per world. World 1's atlas (props-atlas.webp, PROTO_FRAMES) has every piece, the log, the seed and the leaf curtain too; another
  * world's atlas (kits/w<N>.webp, KIT_FRAMES) has its own ground and climbing pieces, and anything it lacks comes from World 1's.

@@ -27,26 +27,19 @@ export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
 export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5';
 export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto' };
-const KEY = 'sloth_proto_16';
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
+  // the stages rebuilt from the stage plan are the game's stages since 2026-10-24 (Matt tested them): `?proto=0` plays the old ones.
+  // Outside a browser (the generator's own tests) the generated stages are what is being checked, so they are built there; the
+  // hand-built stages have their own tests (stage1x.test.ts, protoStage.test.ts), which call buildProtoStage directly.
+  if (typeof location === 'undefined') return false;
   try {
-    if (typeof location !== 'undefined' && /[?&]proto=1\b/.test(location.search)) return true;
-    return typeof localStorage !== 'undefined' && localStorage.getItem(KEY) === '1';
+    return !/[?&]proto=0\b/.test(location.search);
   } catch {
-    return false;
+    return true;
   }
 }
-export function setProtoStagePref(on: boolean) {
-  try {
-    if (on) localStorage.setItem(KEY, '1');
-    else localStorage.removeItem(KEY);
-  } catch {
-    /* ignore */
-  }
-}
-
 /** ground height, the water line, and the height of a bank of earth */
 export const G = 580;
 const WATER = 730;

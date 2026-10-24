@@ -11,32 +11,20 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { trackAtlas } from './atlasLoader.ts';
 
-const KEY = 'sloth_snake_gold';
 let enabled: boolean | null = null;
 
 export function goldSnakeEnabled(): boolean {
   if (enabled !== null) return enabled;
-  let v = false;
+  // the game's snake since 2026-10-24 (Matt tested it): `?snake=classic` brings back the old one for comparing
+  let v = true;
   try {
     const q = new URLSearchParams(location.search).get('snake');
-    if (q === 'gold') v = true;
-    else if (q === 'classic' || q === 'sprite') v = false;
-    else v = localStorage.getItem(KEY) === '1';
+    if (q === 'classic' || q === 'sprite') v = false;
   } catch {
-    /* no window or storage: off */
+    /* no window: on */
   }
   enabled = v;
   return v;
-}
-
-export function setGoldSnakePref(on: boolean) {
-  enabled = on;
-  try {
-    if (on) localStorage.setItem(KEY, '1');
-    else localStorage.removeItem(KEY);
-  } catch {
-    /* storage blocked: the choice lasts for this visit */
-  }
 }
 
 let head: HTMLImageElement | null = null;

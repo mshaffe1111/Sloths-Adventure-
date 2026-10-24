@@ -1,9 +1,4 @@
 import React from 'react';
-import { polishEnabled, setPolishPref } from '../game/polish.ts';
-import { goldSnakeEnabled, setGoldSnakePref } from '../game/goldSnake.ts';
-import { protoStageEnabled, setProtoStagePref } from '../game/protoStage.ts';
-import { paintedKitEnabled, setPaintedKitPref } from '../game/protoArt.ts';
-import { heroClipsEnabled, setHeroClipsPref } from '../game/heroClips.ts';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
@@ -12,7 +7,6 @@ import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
 import { fullscreenSupported, isFullscreen, launchedAsApp, toggleFullscreen } from '../game/fullscreen.ts';
 import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, type GameSpeed } from '../game/assist.ts';
-import { refinedControls, setRefinedControlsPref } from '../game/refinedControls.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -22,37 +16,6 @@ export const Icon: React.FC<{ color: string; children: React.ReactNode; size?: n
     {children}
   </svg>
 );
-
-/** the polished-visuals switch (saved on the device) */
-export const PolishToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => polishEnabled());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <Icon color="#fde68a" size={22}>
-            <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" />
-            <path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" />
-          </Icon>
-          Polished visuals
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setPolishPref(v);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">Wind, glow, soft shadows and richer ground. Turn it off if the game feels slow.</small>
-    </div>
-  );
-};
 
 /** the frame-time check (saved on the device; off unless turned on): a corner box with frames per second and a report of freezes */
 export const PerfToggle: React.FC = () => {
@@ -296,163 +259,6 @@ export const OrchSfxToggle: React.FC = () => {
   );
 };
 
-
-/** Matt's golden snake (saved on the device): off by default while testers try it */
-export const GoldSnakeToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => goldSnakeEnabled());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <Icon color="#f6c35a" size={22}>
-            <path d="M4 16c3 0 3-4 6-4s3 4 6 4 3-4 4-4" />
-            <circle cx="20" cy="11" r="1.6" />
-          </Icon>
-          Golden snakes
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setGoldSnakePref(v);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">Try the new snake: one painting with a body that slithers, rears and strikes smoothly. It moves and hits exactly like the old one. Off by default while it is being tested.</small>
-    </div>
-  );
-};
-
-/** the hand-built 1-6 (protoStage.ts): off by default while it is being tested */
-export const ProtoStageToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => protoStageEnabled());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <Icon color="#7fd36a" size={22}>
-            <path d="M5 3v8a4 4 0 0 0 8 0" />
-            <path d="M13 3v5" />
-            <path d="M19 3v10a3 3 0 0 1-6 0" />
-          </Icon>
-          New stages (test)
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setProtoStagePref(v);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">Plays the stages rebuilt from the stage plan, each with its own idea: so far 1-1 Into the Canopy (run, jump, stepping stones, the second jump, a mushroom secret) and 1-6 First Lianas. Starts the next time you enter one. Off by default while they are being tested.</small>
-    </div>
-  );
-};
-
-/** Matt's painted World 1 platforms on every World 1 stage (protoArt.ts): off by default while it is being tested */
-export const PaintedKitToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => paintedKitEnabled());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <Icon color="#a3d977" size={22}>
-            <path d="M3 17h18" />
-            <path d="M5 17v-4h6v4" />
-            <path d="M13 17v-7h6v7" />
-          </Icon>
-          Painted platforms (test)
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setPaintedKitPref(v);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">The new painted ground, ledges, climbs and rocks, in each world's own look where its sheets are in (Worlds 1 to 6 so far; the rest keep today's look). Starts on the next stage you enter. Off by default while it is being tested.</small>
-    </div>
-  );
-};
-
-/** Pokey's new moving clips (heroClips.ts): off by default while they are being tested */
-export const HeroClipsToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => heroClipsEnabled());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <Icon color="#f6c177" size={22}>
-            <circle cx="12" cy="8" r="4" />
-            <path d="M5 21c1-4 4-6 7-6s6 2 7 6" />
-          </Icon>
-          New animations (test)
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setHeroClipsPref(v);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">Real animation made with the trained art models: stand still and Pokey yawns, scratches, waves and nods off, rubs his head after a hit and cheers at the exit; some story scenes move (the campfire, the storm, the misty village). Starts on the next stage or scene. Off by default while it is being tested.</small>
-    </div>
-  );
-};
-
-/** the refined touch rules from the control test (refinedControls.ts): off by default while testers play */
-export const RefinedControlsToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => refinedControls());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <Icon color="#9ccfd8" size={22}>
-            <path d="M9 11V5a2 2 0 0 1 4 0v6" />
-            <path d="M13 9a2 2 0 0 1 4 0v4a6 6 0 0 1-6 6h-1a6 6 0 0 1-5-3l-2-4a2 2 0 0 1 3-2l2 2" />
-          </Icon>
-          Refined controls (test)
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setRefinedControlsPref(v);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">The fixes from the control test: Pokey keeps his speed when you lift your finger mid-jump, letting go of a vine sends you forward, vines swing on their own, and a sideways flick only kicks when an animal is near. Starts on the next stage. Off by default while it is being tested.</small>
-    </div>
-  );
-};
 
 /** full screen on or off (the game starts full screen; this is the way out, and back): hidden where the browser cannot do it */
 export const FullscreenSetting: React.FC = () => {
