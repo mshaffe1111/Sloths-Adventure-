@@ -182,6 +182,10 @@ export class GameEngine {
   private collectibles: Collectible[];
   /** the hand-built stage's extras (protoStage.ts): logs to push, hints, leaves over secrets */
   private proto: ProtoExtras | null = null;
+  /** the stretches of this stage, in order (the control test's end questions list them) */
+  public stretchNames(): string[] {
+    return (this.proto?.beats ?? []).map((b) => b[2]);
+  }
   private pushLogs: Platform[] = [];
   private drawPlats: Platform[] = [];
   /** the hand-built stage's painted props: the platforms they draw, and their state */
@@ -406,6 +410,9 @@ export class GameEngine {
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
     this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
+    // moves the stage lends him (the control test's rope), and the test's mix, logged so the run can be built again
+    for (const s of this.proto?.grant ?? []) this.skills.add(s);
+    if (this.proto?.mix) recorder.event('mix', this.proto.mix);
     this.ring = { state: 'idle', wave: 0, ids: [] };
     this.ringDrops = [];
     this.chase = this.proto?.chase ? newChase(this.proto.chase) : null;
@@ -3334,7 +3341,7 @@ export class GameEngine {
       ctx.rect(r.x0, r.surfaceY - 30, r.x1 - r.x0, bottom - r.surfaceY + 30);
       ctx.clip();
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
-      const painted = world.id === 2 && riverArtReady();
+      const painted = this.paintedRivers(world.id) && riverArtReady();
       if (!over) {
         if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
         // the current: pale streaks sliding along the surface the way the logs go (still water, a lily pond, has none)
@@ -3384,7 +3391,11 @@ export class GameEngine {
 
   /** World 2 draws its drifting logs and lily pads from Matt's painted sheet once it has loaded */
   private riverLogsPainted(worldId: number): boolean {
-    return worldId === 2 && (!!this.currentStage.rivers?.length || this.platforms.some((p) => p.lily)) && riverArtReady();
+    return this.paintedRivers(worldId) && (!!this.currentStage.rivers?.length || this.platforms.some((p) => p.lily)) && riverArtReady();
+  }
+  /** World 2's painted water, logs and lily pads: World 2, and the control test's river stretches (built on World 1's ground) */
+  private paintedRivers(worldId: number): boolean {
+    return worldId === 2 || !!this.proto?.mix;
   }
   private noLogs: { from: Platform[]; out: Platform[] } | null = null;
   /** the platforms the drawn layer paints, less the drifting logs and lily pads when the painted ones draw instead (kept between frames) */
@@ -3634,7 +3645,7 @@ export class GameEngine {
       for (const v of this.vines) if (v.vineType === 'tree_climb' && this.onScreen(v.x, (v.topY + v.bottomY) / 2, (v.bottomY - v.topY) / 2 + 200)) drawLadder(ctx, v.x, v.topY, v.bottomY);
     }
     // World 2: lily pads on the water, then the village and the reeds behind Pokey (riverArt.ts)
-    if (this.currentStage.config.worldIndex === 2 && riverArtReady()) {
+    if (this.paintedRivers(this.currentStage.config.worldIndex) && riverArtReady()) {
       for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);

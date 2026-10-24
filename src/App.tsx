@@ -39,7 +39,7 @@ import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
-import { ctestEnabled, recorder } from './game/playRecorder.ts';
+import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -795,10 +795,13 @@ export default function App() {
       )}
       {ctestDone && (
         <ControlTestDone
+          stretches={engineRef.current?.stretchNames() ?? []}
           onAgain={() => {
             const lvl = ctestDone;
             setCtestDone(null);
             recorder.event('playAgain');
+            // a new mix of stretches for the next run
+            newMix();
             launchEngine(lvl);
           }}
         />

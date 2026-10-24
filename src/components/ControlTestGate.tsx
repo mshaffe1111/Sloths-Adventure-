@@ -70,7 +70,8 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Control test</p>
         <h1 className="mt-1 text-2xl font-black leading-tight">Who's playing?</h1>
         <p className="mt-2 text-sm leading-snug text-[#f4ecd8]/85">
-          Play this short level however feels natural to you. Thumbs, one finger, anything goes. There's no wrong way.
+          Play this short level however feels natural to you. Thumbs, one finger, anything goes. There's no wrong way. Every run is a
+          different mix of challenges, so playing again shows you new ones.
         </p>
         <p className="mt-2 rounded-lg bg-black/20 px-3 py-2 text-sm leading-snug">
           <b className="text-[#f2c14e]">How to play:</b> slide a finger to run ·{' '}
@@ -104,15 +105,22 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
   );
 };
 
-/** the quick questions at the end: what the recording cannot tell (which hand, how the phone was held, what felt hard) */
-const QUESTIONS: Array<{ id: string; q: string; a: string[]; many?: boolean }> = [
-  { id: 'hand', q: 'What did you mostly play with?', a: ['One thumb', 'Two thumbs', 'One finger (like your pointer)', 'A mix'] },
-  { id: 'held', q: 'How did you hold the phone?', a: ['In one hand', 'In both hands', 'Lying on a table or lap'] },
-  { id: 'hard', q: 'What felt hardest? (tap any)', a: ['Running', 'Short hops', 'Long jumps', 'Climbing', 'Swinging on vines', 'Fighting', 'Nothing'], many: true },
-];
+/**
+ * the quick questions at the end: what the recording cannot tell (which hand, how the phone was held, what felt hard). "Hardest" lists
+ * the stretches this run had (every run is a different mix: protoStage.ts).
+ */
+const questions = (stretches: string[]): Array<{ id: string; q: string; a: string[]; many?: boolean }> => {
+  const played = stretches.filter((n) => n !== 'Finish' && n !== 'Run and stop');
+  return [
+    { id: 'hand', q: 'What did you mostly play with?', a: ['One thumb', 'Two thumbs', 'One finger (like your pointer)', 'A mix'] },
+    { id: 'held', q: 'How did you hold the phone?', a: ['In one hand', 'In both hands', 'Lying on a table or lap'] },
+    { id: 'hard', q: 'What felt hardest? (tap any)', a: ['Running', ...(played.length ? played : ['Short hops', 'Long jumps', 'Climbing', 'Swinging on vines', 'Fighting']), 'Nothing'], many: true },
+  ];
+};
 
 /** the end of the test (at the shrine): a few one-tap questions, thanks, and a way to play it again */
-export const ControlTestDone: React.FC<{ onAgain: () => void }> = ({ onAgain }) => {
+export const ControlTestDone: React.FC<{ onAgain: () => void; stretches?: string[] }> = ({ onAgain, stretches = [] }) => {
+  const QUESTIONS = React.useMemo(() => questions(stretches), [stretches.join('|')]);
   const [ans, setAns] = React.useState<Record<string, string[]>>({});
   const [note, setNote] = React.useState('');
   const [sent, setSent] = React.useState(false);
@@ -164,7 +172,7 @@ export const ControlTestDone: React.FC<{ onAgain: () => void }> = ({ onAgain }) 
         )}
         <button type="button" onClick={onAgain}
           className={`mt-3 w-full rounded-xl py-2.5 text-lg font-black ${sent ? 'bg-[#f2c14e] text-[#2a1a08]' : 'border border-[#f4ecd8]/30 text-[#f4ecd8]'}`}>
-          Play again
+          Play again (a new mix)
         </button>
       </div>
     </div>

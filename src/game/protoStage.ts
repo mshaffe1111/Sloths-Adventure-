@@ -24,6 +24,8 @@ import { findForStage } from './finds.ts';
 import type { Bush, WatchZone } from './watcher.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow, maxRise } from './protoCheck.ts';
 import type { W2Decor } from './riverArt.ts';
+import { driftX, gapFor, LOG_DROP, LOG_HEIGHT, logLayout, surfaceBelowBank, type RiverZone } from './river.ts';
+import type { SkillId } from './skills.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
@@ -87,6 +89,10 @@ export interface ProtoExtras {
   ladders?: boolean;
   /** 2-6: the face of the river bank the village is dug into, behind the whole climb (drawn by protoArt.ts drawEarthWall) */
   bankWall?: { x0: number; x1: number; top: number; bottom: number };
+  /** the control test's mix: the seed and the stretches it drew, in order (logged when the run starts, so any run can be built again) */
+  mix?: string;
+  /** moves this stage lends him whether or not he has learned them yet (the control test's rope stretch needs Shimmy Rope) */
+  grant?: SkillId[];
 }
 
 /** a small seeded random stream (mulberry32): the same seed always builds the same stage */
@@ -158,7 +164,7 @@ export const SNAKE_GOAL_13 = 16;
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
 
-export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy' | 'highrun' | 'stumps' | 'snakes';
+export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy' | 'highrun' | 'stumps' | 'snakes' | 'river' | 'pond' | 'turtles' | 'cages';
 
 /**
  * The hand-built 1-6, planned and rolled: the stage is always the same chain of beats (learn, develop, puzzle, twist, develop again,
@@ -173,6 +179,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   const P: Platform[] = [];
   const V: Vine[] = [];
   const ROPES: Rope[] = [];
+  const RIVERS: RiverZone[] = [];
+  let MIX: string | undefined;
   const BUSHES: Bush[] = [];
   const ZONES: WatchZone[] = [];
   let RING: ProtoExtras['ring'];
@@ -1293,52 +1301,203 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     });
   }
 
+  // ----- the control test's own pieces: World 2's water and its animals, built on World 1's ground -----
+  const SURF = G + surfaceBelowBank;
+  const LOG_Y = G + LOG_DROP;
+  /** a river with drifting logs; falling in only puts him back on the bank (a test is cheap to fail) */
+  function riverCross(dir: 1 | -1, speed: number, logs: number, logW: number) {
+    const x0 = x;
+    run(R.r(140, 200));
+    close();
+    const rx0 = x;
+    const gap = Math.round(gapFor(dir, speed));
+    const width = (logs + 1) * (logW + gap) - logW;
+    const rx1 = rx0 + width;
+    const { count, period } = logLayout({ dir, speed, logW, gap, width });
+    for (let i = 0; i < count; i++) {
+      const pl: Platform = {
+        id: pid++, x: rx0, y: LOG_Y, width: logW, height: LOG_HEIGHT, type: 'drift', style: 'log',
+        drift: { x0: rx0, x1: rx1, dir, speed, width: logW, offset: (i * period) / count, baseY: LOG_Y },
+      };
+      pl.x = driftX(pl.drift!, 0);
+      P.push(pl);
+    }
+    RIVERS.push({ x0: rx0, x1: rx1, surfaceY: SURF, dir, speed, safe: { backX: rx0 - 70, backY: G } });
+    arc(rx0 + 50, rx1 - 50, G - 80, logs + 1, 'hibiscus');
+    open(rx1);
+    run(R.r(160, 220));
+    expert += (x - x0) / RUN + width / (RUN * (dir === 1 ? 0.75 : 0.45)) + 1;
+    pieces.push({ k: 'river', x0, x1: x });
+  }
+  /** still water crossed on lily pads (falling in puts him back on the bank) */
+  function lilyPads(n: number) {
+    const x0 = x;
+    run(R.r(140, 190));
+    close();
+    const px0 = x;
+    let px = px0;
+    const one = reachJump(0, false);
+    for (let i = 0; i < n; i++) {
+      px += Math.round(one * R.r(0.42, 0.55));
+      const w = Math.round(R.r(84, 104));
+      P.push({ id: pid++, x: px, y: SURF - 8, width: w, height: 12, type: 'solid', lily: true });
+      flower(px + w / 2, SURF - 60, 'hibiscus');
+      px += w;
+    }
+    px += Math.round(one * R.r(0.42, 0.55));
+    RIVERS.push({ x0: px0, x1: px, surfaceY: SURF, dir: 1, speed: 0, safe: { backX: px0 - 70, backY: G } });
+    open(px);
+    run(R.r(160, 220));
+    expert += (x - x0) / RUN + n * 0.35;
+    pieces.push({ k: 'pond', x0, x1: x });
+  }
+  /** snapping turtles along the ground: punch one from behind, or kick its shell into the others */
+  function turtles() {
+    const x0 = x;
+    run(R.r(260, 320));
+    const n = R.i(3, 4);
+    for (let k = 0; k < n; k++) {
+      run(R.r(150, 220));
+      E.push({
+        id: eid++, type: 'turtle', x, y: G - 14, vx: 22, vy: 0, width: 48, height: 24, hp: 1, maxHp: 1, facing: R.chance(0.5) ? 1 : -1,
+        patrolMinX: x - 60, patrolMaxX: x + 60, attackCooldown: 1.5, telegraphTimer: 0, isAttacking: false,
+        animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
+      } as Enemy);
+    }
+    // (well clear of the flag that follows)
+    run(R.r(440, 500));
+    expert += (x - x0) / RUN + 2 * n;
+    pieces.push({ k: 'turtles', x0, x1: x });
+  }
+  /** cages with a little one in each: punch a cage twice to break it */
+  function cages() {
+    const x0 = x;
+    const kinds = R.shuffle(['capy', 'duck', 'otter'] as Array<'capy' | 'duck' | 'otter'>);
+    for (const critter of kinds) {
+      run(R.r(280, 360));
+      C.push({ id: cid++, type: 'cage', x, y: G - 26, collected: false, bobPhase: 0, cageHp: 2, critter });
+    }
+    run(R.r(300, 360));
+    expert += (x - x0) / RUN + 3;
+    pieces.push({ k: 'cages', x0, x1: x });
+  }
+
+  /**
+   * the control test: move everything built from `x0` on (ground, branches, vines, trunks, ropes, bushes, water, animals, pickups,
+   * hints) `dx` further along, and the cursor with it, leaving a longer stretch of ground before it
+   */
+  function shiftFrom(x0: number, dx: number) {
+    dx = Math.round(dx);
+    for (const p of P) {
+      if (p.x >= x0) {
+        p.x += dx;
+        if (p.drift) p.drift = { ...p.drift, x0: p.drift.x0 + dx, x1: p.drift.x1 + dx };
+        if (p.push) p.push = { min: p.push.min + dx, max: p.push.max + dx };
+      } else if (p.drift && p.drift.x0 >= x0) p.drift = { ...p.drift, x0: p.drift.x0 + dx, x1: p.drift.x1 + dx };
+    }
+    for (const v of V) if (v.x >= x0) v.x += dx;
+    for (const t of T) if (t.x >= x0) t.x += dx;
+    for (const r of ROPES) if (r.x0 >= x0 - 60) { r.x0 += dx; r.x1 += dx; }
+    for (const b of BUSHES) if (b.x >= x0) b.x += dx;
+    for (const z of ZONES) if (z.x0 >= x0) { z.x0 += dx; z.x1 += dx; }
+    for (const r of RIVERS) if (r.x0 >= x0) { r.x0 += dx; r.x1 += dx; if (r.safe) r.safe = { ...r.safe, backX: r.safe.backX + dx }; }
+    for (const e of E) if (e.x >= x0) { e.x += dx; e.patrolMinX += dx; e.patrolMaxX += dx; }
+    for (const c of C) if (c.x >= x0) c.x += dx;
+    for (const h of hints) if (h.x >= x0) h.x += dx;
+    for (const c of covers) if (c.x >= x0) c.x += dx;
+    if (RING && RING.x0 >= x0) RING = { ...RING, x0: RING.x0 + dx, x1: RING.x1 + dx, waves: RING.waves.map((w) => w.map((d) => ({ ...d, x: d.x + dx }))) };
+    if (bankFrom >= x0) bankFrom += dx;
+    x += dx;
+    expert += dx / RUN;
+  }
+
   if (plan === 'ctest') {
-    // the control test: the same stage for every player (the seed is fixed by the caller), one skill per stretch, cheap to fail
+    // The control test (Matt, 2026-10-24): the basics every run, then six short stretches drawn from the whole game, two of each kind
+    // (moving about, fighting, and the rest: the eagle and the water). Every run is a different mix (the caller gives each run a new
+    // seed: playRecorder.ts ctestSeed), so across runs every stretch gets played, and stretches can be compared tester by tester.
+    // The seed and the mix are logged when the run starts, so any run can be built again (?mix=<seed>).
     beat('Run and stop', () => {
-      hint(x + 60, 'Run to the flowers and stop on them', 'Run to the flowers and stop on them', 'Run to the flowers and stop on them');
-      run(500);
+      hint(x + 60, 'Run to the flowers and stop on them');
+      run(450);
       row(x, x + 160, G - 34, 3, 'orchid');
-      run(700);
-      hint(x - 300, 'Now turn around and run back a little', 'Now turn around and run back a little', 'Now turn around and run back a little');
-      run(300);
+      run(550);
+      hint(x - 250, 'Now turn around and run back a little');
+      run(250);
       flag();
     });
     beat('Short hops', () => {
       hint(x + 60, 'Hop up the stumps');
       stumps();
-      stumps();
       flag();
     });
     beat('Long jumps', () => {
-      hint(x + 60, 'Jump the gaps. The last two need a second jump', 'Jump the gaps. The last two need a second jump', 'Jump the gaps. The last two need a second jump');
+      hint(x + 60, 'Jump the gaps. The last two need a second jump');
       gaps();
       flag();
     });
-    beat('Climb up and down', () => {
-      hint(x + 60, 'Climb to the top of the tree, then climb back down', 'Climb to the top of the tree, then climb back down', 'Climb to the top of the tree, then climb back down');
-      climbTree();
-      rest(300);
-      climbTree();
-      flag();
-    });
-    beat('Swing', () => {
-      hint(x + 120, 'Jump into the vine to grab it, jump again to let go');
-      chain(1, true, 'hollow');
-      rest(R.r(300, 400));
-      chain(2, true, 'hollow');
-      rest(R.r(300, 400));
-      chain(3, true, 'hollow');
-      flag();
-    });
-    beat('Fight', () => {
-      hint(x + 60, 'Punch and kick the snakes', 'Punch and kick the snakes', 'Punch and kick the snakes');
-      snakes();
-      rest(300);
-      snakes();
-      flag();
-    });
+    type Stretch = { name: string; tip: [string, string, string]; build: () => void };
+    const same = (t: string): [string, string, string] => [t, t, t];
+    const moving: Stretch[] = [
+      { name: 'Climb', tip: same('Climb to the top of the tree, then back down'), build: () => climbTree() },
+      { name: 'Swing', tip: same('Jump into the vine to grab it, jump again to let go'), build: () => { chain(1, true, 'hollow'); rest(R.r(250, 350)); chain(2, true, 'hollow'); } },
+      { name: 'Rope', tip: ['Jump up into the rope to grab it, then slide to move along', 'Jump up into the rope, then hold left or right', 'Jump up into the rope, then hold left or right'], build: () => { ropeGap(false, true); ropeGap(false, true); } },
+      { name: 'Crumbling branches', tip: same('Creaky branches! Grab the petals and keep moving'), build: () => creakRun() },
+      { name: 'Bounce', tip: same('Land on the mushroom to bounce up high'), build: () => { highRoad(); mushroomCache(); } },
+      { name: 'Stepping stones', tip: same('Hop from stone to stone'), build: () => pillars(R.shuffle([60, 110, 70, 130]), [0.55, 0.68]) },
+      { name: 'Double jumps', tip: same('Jump, then jump again in the air to cross'), build: () => doubleArcs() },
+      { name: 'Canopy road', tip: same('Climb up and cross the high branches'), build: () => canopy(false) },
+      { name: 'High vines', tip: same('Climb the tree, then swing across the vines'), build: () => highRun() },
+      { name: 'Push the log', tip: same('Push the log against the wall, then climb up'), build: () => logPuzzle() },
+    ];
+    const fighting: Stretch[] = [
+      { name: 'Snakes', tip: same('Punch and kick the snakes'), build: () => { snakes(); } },
+      { name: 'Snakes on branches', tip: same('Punch the snakes or hop over them'), build: () => snakeBranches(3, G - 130) },
+      { name: 'Boa guard', tip: same('A guard! Wait for it to strike, then punch it'), build: () => guardBranch() },
+      { name: 'Sleeping snake', tip: same('Sneak past the sleeping snake, or knock it off'), build: () => sleepingGuard() },
+      { name: 'Snake ring', tip: same('Snakes from above! Clear them all to open the way'), build: () => snakeRing() },
+      { name: 'Snapping turtles', tip: same('Hit a turtle from behind, or kick its shell'), build: () => turtles() },
+      { name: 'Cages', tip: same('Punch each cage twice to free the little one'), build: () => cages() },
+    ];
+    const other: Stretch[] = [
+      { name: 'Hide from the eagle', tip: ['An eagle is watching. Slide down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide'], build: () => bushRow(4, [420, 520], ['tall', 'wide', 'fern'], [6.5, 8]) },
+      { name: 'River logs', tip: same('Hop on the logs and ride them across'), build: () => { riverCross(1, 55, 2, 190); rest(R.r(260, 340)); riverCross(-1, 55, 2, 185); } },
+      { name: 'Lily pads', tip: same('Hop across the lily pads'), build: () => lilyPads(5) },
+    ];
+    const drawn = R.shuffle([...R.shuffle(moving).slice(0, 2), ...R.shuffle(fighting).slice(0, 2), ...R.shuffle(other).slice(0, 2)]);
+    // an animal's patch keeps this far from every flag (levelCheck.ts SAFE_APPROACH is 200), so a respawn never lands beside one
+    const CLEAR = 240;
+    for (const st of drawn) {
+      beat(st.name, () => {
+        const flagAt = x - 80;
+        const foes = E.length;
+        rest(R.r(160, 220));
+        hint(x - 60, ...st.tip);
+        const from = x;
+        st.build();
+        // too near the flag behind? slide the whole stretch on (everything it built since `from`)
+        const near = E.slice(foes).reduce((m, e) => Math.min(m, e.patrolMinX - flagAt), Infinity);
+        if (near < CLEAR) shiftFrom(from, CLEAR - near);
+        // and room before the next flag
+        const far = E.slice(foes).reduce((m, e) => Math.max(m, e.patrolMaxX), -Infinity);
+        if (x - 80 - far < CLEAR) run(CLEAR - (x - 80 - far));
+        flag();
+      });
+    }
     beat('Finish', () => rest(700));
+    MIX = `seed ${seed}: ${drawn.map((d) => d.name).join(', ')}`;
+    // no secrets in a test
+    for (let i = C.length - 1; i >= 0; i--) if (C[i].type === 'seed' || C[i].type === 'find') C.splice(i, 1);
+    // a piece's own flag can sit by its own animal (the log's high ground): that animal stays home
+    const nearFlag = (e: Enemy) => checkpoints.some((f) => Math.abs(e.y - f.y) < 400 && (f.x >= e.patrolMinX - CLEAR && f.x <= e.patrolMaxX + CLEAR));
+    for (let i = E.length - 1; i >= 0; i--) if (nearFlag(E[i])) E.splice(i, 1);
+    // where two stretches meet, a flower can land on another or inside a branch: the later one goes
+    const solid = (c: Collectible) => P.some((p) => p.type !== 'drift' && !p.push && c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2);
+    for (let i = C.length - 1; i >= 0; i--) {
+      const c = C[i];
+      if (c.type !== 'flower') continue;
+      if (solid(c) || C.some((o, j) => j < i && o.type === 'flower' && Math.hypot(o.x - c.x, o.y - c.y) < 40)) C.splice(i, 1);
+    }
+    covers.length = 0;
   }
 
   if (plan === 'proto') {
@@ -1431,7 +1590,11 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     checkpoints: checkpoints.sort((a, b) => a.x - b.x),
     waterY: WATER,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces: pieces.map((p) => ({ k: p.k, x0: p.x0, x1: p.x1 })), timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}) },
+    ...(RIVERS.length ? { rivers: RIVERS } : {}),
+    proto: {
+      hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
+      ...(MIX ? { mix: MIX, grant: ['shimmy'] as SkillId[] } : {}),
+    },
   };
 }
 // ---------------------------------------------------------------------------------------------------------------------------
