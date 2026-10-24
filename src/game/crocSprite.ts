@@ -1,43 +1,84 @@
 /**
- * Painted Crocus Rex (world 2 boss, the river king) from the Gemini pose sheets. A switch like the other painted creatures:
- * `?croc=sprite` / `?croc=classic`, `localStorage.sloth_croc = 'sprite'`, DEFAULT_SPRITE_CROC otherwise (classic = the vector croc).
+ * Painted Crocus Rex (world 2 boss, the river king), animated: his old painted poses with a crooked petal crown composited on, each
+ * one turned into a short clip by Wan 2.2 and cut into the frames in croc-anim.webp (crocAnimData.ts). A switch like the other painted
+ * creatures: `?croc=sprite` / `?croc=classic`, `localStorage.sloth_croc = 'sprite'`, DEFAULT_SPRITE_CROC otherwise (classic = the vector croc).
  *
- * Poses follow the boss brain: idle (smouldering from phase 3), a crawl (a run from phase 2), the bellow before the death roll, the
- * arched tail for the tail whip, the reared belly slam and the rubble eruption for the mud surge, the three spinning death-roll frames,
- * the open jaws on recovery, the stagger after a crash and the knock-back, belly-up and defeated frames at the end.
+ * The clips follow the boss brain: breathing and tail-swaying while he waits, a swaggering crawl, the roar (on a phase change and as the
+ * wind-up for the death roll and the geysers), the tail wound up and then the spin that sweeps it round both sides, the rear and the
+ * belly slam, the flinch with the jaws open on recovery (where the weak point is), the dizzy wobble, the death roll and the defeat.
+ * The frames are drawn at the old frames' size, so the weak points measured off the old poses still sit on his head.
  */
 import { createPaintedBoss } from './paintedBoss.ts';
-import { CROC_FRAMES } from './crocAtlasData.ts';
+import { CROC_ANIM_FRAMES, CROC_ANIM_UP, CROC_CLIPS } from './crocAnimData.ts';
 
 export const DEFAULT_SPRITE_CROC = true;
-const WALK = ['crawl0', 'crawl1', 'crawl2', 'crawl1'];
-const ROLL = ['roll1', 'roll2', 'roll3'];
-const STRIDE = 70;
+type Seq = keyof typeof CROC_CLIPS;
+
+/** frame at progress p (0..1, held at the ends) through a sequence */
+export function crocAt(seq: Seq, p: number): string {
+  const f = CROC_CLIPS[seq];
+  return f[Math.max(0, Math.min(f.length - 1, Math.floor(p * f.length)))];
+}
+/** looping frame at this many frames a second */
+export function crocLoop(seq: Seq, time: number, fps: number): string {
+  const f = CROC_CLIPS[seq];
+  return f[Math.floor(time * fps) % f.length];
+}
+/** back and forth through a sequence (for a clip whose ends do not meet) */
+export function crocPing(seq: Seq, time: number, fps: number): string {
+  const f = CROC_CLIPS[seq];
+  const n = f.length;
+  if (n < 2) return f[0];
+  const i = Math.floor(time * fps) % (2 * n - 2);
+  return f[i < n ? i : 2 * n - 2 - i];
+}
+
+/** the story cards ask for 'idle', 'roar' and 'defeated' by name */
+const FRAMES = {
+  ...CROC_ANIM_FRAMES,
+  idle: CROC_ANIM_FRAMES[crocAt('idle', 0)],
+  roar: CROC_ANIM_FRAMES[crocAt('roar', 0.6)],
+  defeated: CROC_ANIM_FRAMES[crocAt('defeated', 0.15)], // slumped, the crown still on (the victory line checks it is)
+};
+
+/** the death sequence's length (engine stepBossDeath) */
+const DYING_S = 2.0;
+/** world units of crawl a full walk cycle covers */
+const CRAWL_CYCLE = 300;
 
 export const crocSprite = createPaintedBoss({
   param: 'croc',
   defaultOn: DEFAULT_SPRITE_CROC,
-  url: new URL('../assets/enemies/croc-atlas.webp', import.meta.url).href,
-  frames: CROC_FRAMES,
-  k: 0.8,
-  pick: ({ b, br, m, moving, dist, time, def }) => {
-    let name: string;
-    if (br.state === 'dying') name = br.t < 0.5 ? 'knockback' : br.t < 1.3 ? 'beaten' : 'defeated';
-    else if (br.state === 'stun') name = def.scale || Math.floor(time * 2.2) % 2 === 0 ? 'stagger' : 'recoil'; // the giant stays in the pose its weak point was measured in
-    else if (br.state === 'roar') name = 'roar';
-    else if (br.state === 'tell') name = m?.pose === 'slam' ? 'bellyslam' : m?.pose === 'whip' ? 'tailbite' : b.phase >= 3 && m?.pose === 'charge' ? 'jawsnap' : b.phase >= 3 && m?.pose === 'roar' ? 'clawswipe' : 'roar'; // phase 3: jaws snapping before the death roll, a claw raking the bank before the geysers
-    else if (br.state === 'act') {
-      if (m?.pose === 'charge') name = ROLL[Math.floor(time * 11) % ROLL.length];
-      else if (m?.pose === 'whip') name = 'tailwhip';
-      else name = 'eruptslam';
-    } // the giant's recovery shows the jaws held open (hurt): the jawbite frame is cut off at the rump when it is drawn this big
-    else if (br.state === 'rec') name = def.scale ? 'hurt' : 'jawbite';
-    else if (moving) {
-      // the run frames have no tail at all (the rump ends in a straight cut), which shows at giant size: the giant always crawls
-      if (b.phase >= 2 && !def.scale) name = Math.floor((dist / 44) * 2) % 2 === 0 ? 'run0' : 'run1';
-      else name = WALK[Math.floor((dist / (def.scale && b.phase >= 2 ? 56 : STRIDE)) * WALK.length) % WALK.length];
-    } else name = b.phase >= 3 ? 'enrage1' : 'idle';
-    if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) name = 'hurt';
-    return name;
+  url: new URL('../assets/enemies/croc-anim.webp', import.meta.url).href,
+  frames: FRAMES,
+  k: 0.8 / CROC_ANIM_UP,
+  // the clips move him already: only a touch of the made-up squash and lean, for weight
+  motion: 0.3,
+  // the death roll: the curled-up frames turn over and over as he rolls
+  spin: ({ br, m, time }) => (br.state === 'act' && m?.pose === 'charge' ? time * 11 : 0),
+  pick: ({ b, br, m, moving, dist, time }) => {
+    const p = (len: number | undefined) => (len && len > 0 ? br.t / len : 1);
+    if (br.state === 'dying') return crocAt('defeated', br.t / DYING_S);
+    if (br.state === 'stun') return crocPing('stagger', time, 9);
+    if (br.state === 'roar') return crocAt('roar', p(br.hold));
+    if (b.hitFlashTimer > 0.12 && (br.state === 'idle' || br.state === 'rec')) return crocAt('hurt', 0.2);
+    if (br.state === 'tell') {
+      if (m?.pose === 'slam') return crocAt('slamUp', p(m.tell));
+      if (m?.pose === 'whip') return crocAt('whipWind', p(m.tell));
+      return crocAt('roar', p(m?.tell)); // the death roll and the geysers: he rears back and roars first
+    }
+    if (br.state === 'act') {
+      if (m?.pose === 'charge') return crocLoop('roll', time, 16);
+      if (m?.pose === 'whip') return crocAt('whipSpin', p(m.act));
+      if (m?.pose === 'slam') return crocAt('slamDown', p(m.act));
+      return crocPing('roarHold', time, 10);
+    }
+    // recovery: the flinch with the jaws held open, where the weak point sits
+    if (br.state === 'rec') return crocAt('hurt', p(m?.rec));
+    if (moving) {
+      const f = CROC_CLIPS.crawl;
+      return f[Math.floor((dist / CRAWL_CYCLE) * f.length) % f.length];
+    }
+    return crocLoop('idle', time, b.phase >= 3 ? 11 : 8);
   },
 });
