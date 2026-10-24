@@ -17,14 +17,14 @@
  */
 import { fixPickups } from './flowerReach.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
-import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
+import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
 import { reachGlide, reachJump } from './physics.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow, maxRise } from './protoCheck.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-6': 'proto' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-6': 'proto' };
 const KEY = 'sloth_proto_16';
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
@@ -106,6 +106,8 @@ const RISE = maxRise();
  * has to follow most of it, high and low, to open the sanctuary.
  */
 export const PETAL_GOAL_12 = 80;
+/** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
+export const SNAKE_GOAL_13 = 16;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
@@ -122,6 +124,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   const R = stream(seed);
   const P: Platform[] = [];
   const V: Vine[] = [];
+  const ROPES: Rope[] = [];
   const T: TreeStructure[] = [];
   const E: Enemy[] = [];
   const C: Collectible[] = [];
@@ -183,8 +186,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       flower(x0 + (x1 - x0) * t, yTop + 70 * (1 - Math.sin(Math.PI * t)), v);
     }
   };
-  const snake = (x: number, surface: number, range = 90) => {
+  const snake = (x: number, surface: number, range = 90, asleep = false) => {
     E.push({
+      asleep,
       id: eid++, type: 'snake', x, y: surface - 14, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: R.chance(0.5) ? 1 : -1,
       patrolMinX: x - range / 2, patrolMaxX: x + range / 2, attackCooldown: 2, telegraphTimer: 0, isAttacking: false,
       animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
@@ -753,6 +757,96 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     }
   }
 
+  /** branches over a soft pit with a snake on most of them: punch it or hop over it (falling only drops him to the moss) */
+  function snakeBranches(n: number, y: number) {
+    const x0 = x;
+    run(R.r(160, 220));
+    const edge = x;
+    close();
+    let bx = edge + Math.round(reachJump(G - y, false) * R.r(0.45, 0.6));
+    let m = 0;
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(210, 280));
+      const top = y + Math.round(R.r(-20, 20));
+      branch(bx, bx + w, top);
+      if (k !== 0 || n < 3) { snake(bx + w / 2, top, w - 90); m++; }
+      else row(bx + 50, bx + w - 50, top - 34, 2, 'orchid');
+      bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.55));
+    }
+    const far = Math.round(bx + 20);
+    softPit(edge, far);
+    open(far);
+    run(R.r(200, 280));
+    expert += (x - x0) / RUN + 1.6 * m;
+    pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  /**
+   * a rope over a wide soft pit, a snake on the near ledge beside its end. Before Shimmy Rope is learned (clearing this stage) he drops
+   * into the moss and climbs out the far side; after, he shimmies across. `bonus`: petals along under the rope for the shimmy.
+   */
+  function ropeGap(guard: boolean, bonus: boolean) {
+    const x0 = x;
+    run(R.r(260, 340));
+    const edge = x;
+    if (guard) snake(edge - 120, G, 140);
+    close();
+    const far = Math.round(edge + R.r(380, 430));
+    softPit(edge, far);
+    ROPES.push({ id: ROPES.length + 1, x0: edge - 44, x1: far + 44, y: G - 146, g0: G, g1: G, required: false });
+    if (bonus) row(edge + 60, far - 60, G - 146 + 86 - 40, 3, 'hibiscus');
+    open(far);
+    run(R.r(220, 300));
+    expert += (x - x0) / RUN + 2.5 + (guard ? 1.5 : 0);
+    pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  if (plan === '1-3') {
+    // 1-3 Branch Snakes: punching. One snake asleep on a wide branch to learn on, then snakes on narrow branches (punch or hop),
+    // then a snake guarding a rope: clearing the stage teaches Shimmy Rope, and a short rope near the end is there to try it on.
+    beat('Learn: the sleeping snake', () => {
+      rest(R.r(600, 750));
+      const wx = x + 120;
+      branch(wx, wx + 420, G - 90);
+      snake(wx + 260, G - 90, 60, true);
+      row(wx + 40, wx + 160, G - 124, 2, 'orchid');
+      hint(wx - 80, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
+      run(R.r(700, 800));
+      expert += 3;
+      snakes();
+      flag();
+    });
+    beat('Test: snakes on the branches', () => {
+      hint(x + 60, 'Punch the snakes or hop over them', 'Punch the snakes or hop over them', 'Punch the snakes or hop over them');
+      snakeBranches(3, G - 130);
+      rest(R.r(250, 350));
+      stumps();
+      snakeBranches(4, G - 150);
+      flag();
+    });
+    beat('Twist: the rope guard', () => {
+      hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
+      ropeGap(true, false);
+      snakes();
+      ropeGap(true, true);
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 24) {
+        const k = n % 3;
+        if (k === 0) snakeBranches(R.i(3, 4), G - Math.round(R.r(120, 160)));
+        else if (k === 1) { rest(R.r(250, 400)); snakes(); }
+        else { stumps(); rest(R.r(200, 300)); }
+        n++;
+        if (n % 3 === 0) flag();
+      }
+      // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
+      ropeGap(false, true);
+      rest(R.r(600, 800));
+    });
+  }
+
   if (plan === 'ctest') {
     // the control test: the same stage for every player (the seed is fixed by the caller), one skill per stretch, cheap to fail
     beat('Run and stop', () => {
@@ -871,15 +965,15 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : {}) };
   // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
-  const movedPickups = fixPickups({ platforms: P, vines: V, waterY: WATER }, C);
+  const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
   return {
     config: cfg,
     trees: T,
     platforms: P,
     vines: V,
-    ropes: [],
+    ropes: ROPES,
     enemies: E,
     boss: null,
     collectibles: C,

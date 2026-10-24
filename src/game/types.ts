@@ -181,6 +181,10 @@ export interface Enemy {
   recoil?: number;
   recoilDir?: 1 | -1;
   koLanded?: boolean;
+  /** a snake that starts asleep (protoStage.ts 1-3): it lies still until Pokey comes close, so the first one is a free punch */
+  asleep?: boolean;
+  /** seconds left of the drowsy moment just after it woke (the waking head shows) */
+  wakeT?: number;
   /** fight: how a defeated animal leaves (launch velocity, spin and how long it stays on screen) */
   koVx?: number;
   koVy?: number;

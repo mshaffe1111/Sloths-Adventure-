@@ -1,4 +1,5 @@
 import { countWord } from './stagePlan.ts';
+import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { recorder } from './playRecorder.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
@@ -1642,6 +1643,10 @@ export class GameEngine {
       for (const h of this.proto.hints) {
         if (h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY)) continue;
         h.shown = true;
+        // said once per stage on this device: not again on a replay or a retry (tipMemory.ts)
+        const id = `tip:${h.text}`;
+        if (tipHeard(this.currentStage.config.id, id)) continue;
+        markTipHeard(this.currentStage.config.id, id);
         const mode = lessonInputMode();
         this.guide(mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, 3.6);
       }
@@ -1832,7 +1837,12 @@ export class GameEngine {
       const along = p.x / Math.max(1, this.currentStage.exitTotemX);
       if (!this.goalSaid.start && this.gameTime > 0.3 && !this.stageHint) {
         this.goalSaid.start = true;
-        this.guide(`Collect ${this.currentStage.config.targetCount} ${word} to open the sanctuary`, 4);
+        // the first time this stage is played on this device only (the yellow counter says it after that)
+        const gid = `goal:${this.currentStage.config.targetCount}`;
+        if (!tipHeard(this.currentStage.config.id, gid)) {
+          markTipHeard(this.currentStage.config.id, gid);
+          this.guide(`Collect ${this.currentStage.config.targetCount} ${word} to open the sanctuary`, 4);
+        }
       } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
         this.goalSaid.late = true;
         this.guide(`Still ${need} ${word} to find before the sanctuary opens`, 4);
@@ -3463,6 +3473,7 @@ export class GameEngine {
       const draw = () => {
         if (enemy.type === 'snake') {
           if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
+          if (enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
@@ -3623,6 +3634,25 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
+  /** a sleeping animal's Z's, drifting up from its head (a stand-in until the sleeping snake art arrives) */
+  private drawSleepZ(ctx: CanvasRenderingContext2D, e: Enemy) {
+    ctx.save();
+    ctx.font = '700 15px Fredoka, sans-serif';
+    ctx.textAlign = 'center';
+    for (let i = 0; i < 3; i++) {
+      const u = (this.gameTime * 0.45 + i / 3 + e.id * 0.13) % 1;
+      ctx.globalAlpha = Math.sin(u * Math.PI) * 0.9;
+      ctx.fillStyle = '#eef6ff';
+      ctx.strokeStyle = 'rgba(20, 38, 26, 0.7)';
+      ctx.lineWidth = 3;
+      const zx = e.x + e.facing * 10 + u * 22, zy = e.y - 18 - u * 40;
+      ctx.font = `700 ${11 + u * 9}px Fredoka, sans-serif`;
+      ctx.strokeText('z', zx, zy);
+      ctx.fillText('z', zx, zy);
+    }
+    ctx.restore();
+  }
+
   /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
   private guide(text: string, seconds: number) {
     this.stageHint = { text, life: seconds };

@@ -136,13 +136,47 @@ export function drawCurtainArt(ctx: CanvasRenderingContext2D, x: number, y: numb
   return true;
 }
 
+const topCache = new Map<string, number>();
+/**
+ * Where the solid top of a painted piece starts, as a share of its height: the first row the picture fills across most of its
+ * width. A branch painting carries a bromeliad and moss tufts above the bark, so lining the picture's top edge up with the walkable
+ * top left Pokey standing on the air above the log (Matt, 2026-10-23). Measured once per picture; each world's kit has its own.
+ */
+function solidTop(n: Name, fallback: number): number {
+  const { img, f } = frameOf(n);
+  const key = `${img.src}#${n}`;
+  const hit = topCache.get(key);
+  if (hit !== undefined) return hit;
+  let v = fallback;
+  try {
+    const c = document.createElement('canvas');
+    const w = Math.min(160, f.w), h = Math.round((f.h * w) / f.w);
+    c.width = w;
+    c.height = h;
+    const g = c.getContext('2d', { willReadFrequently: true })!;
+    g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, w, h);
+    const a = g.getImageData(0, 0, w, h).data;
+    for (let y = 0; y < h; y++) {
+      let n2 = 0;
+      for (let x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3] > 40) n2++;
+      if (n2 > w * 0.6) { v = y / h; break; }
+    }
+  } catch {
+    /* no canvas to measure on: the measured share for World 1's branch */
+  }
+  topCache.set(key, v);
+  return v;
+}
+
 /** a branch you land on: whole, creaking (a timer is running), or snapped (the halves fall away for a second) */
 export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state: 'whole' | 'creak' | 'snapped', since: number): boolean {
   if (!protoArtReady()) return false;
   const f = frameOf('branch').f;
   // the painted branch is thicker than the walkable strip: its top lines up with the platform top
   const h = Math.max(30, Math.min(54, (p.width * f.h) / f.w));
-  const y = p.y - 6;
+  // the bark's top on the walkable top (2 px down, so his feet sink into the moss a touch rather than hover)
+  const name: Name = state === 'creak' ? 'branchCreak' : 'branch';
+  const y = p.y + 2 - solidTop(name, 0.29) * h;
   if (state === 'snapped') {
     if (since > 1.4) return true;
     const drop = 0.5 * 2200 * since * since;
@@ -161,7 +195,7 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
     ctx.restore();
     return true;
   }
-  blit(ctx, state === 'creak' ? 'branchCreak' : 'branch', p.x - 6, y, p.width + 12, h);
+  blit(ctx, name, p.x - 6, y, p.width + 12, h);
   return true;
 }
 
