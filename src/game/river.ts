@@ -34,6 +34,11 @@ export interface RiverZone {
   surfaceY: number;
   dir: 1 | -1;
   speed: number;
+  /**
+   * a teaching river (2-1): falling in costs no life. He splashes, and is set back on the bank he jumped from to try again.
+   * `back` is where he is set down.
+   */
+  safe?: { backX: number; backY: number };
 }
 
 /** seconds for one log to cross the whole window, hidden end to hidden end */

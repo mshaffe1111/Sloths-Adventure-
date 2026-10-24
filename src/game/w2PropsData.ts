@@ -1,0 +1,27 @@
+// generated from Matt's World 2 sheets (2026-10-24: river pieces, village pieces, the little ones and the reed cages) by scratchpad/w2art/pack.py: where each piece sits in w2-props.webp
+export interface W2Frame { x: number; y: number; w: number; h: number }
+export const W2_FRAMES = {
+  cageA: { x: 564, y: 424, w: 216, h: 300 },
+  cageB: { x: 784, y: 424, w: 271, h: 300 },
+  cageC: { x: 1059, y: 424, w: 350, h: 290 },
+  capyHappy: { x: 1053, y: 728, w: 182, h: 260 },
+  capySad: { x: 0, y: 1018, w: 179, h: 220 },
+  chimney: { x: 1486, y: 0, w: 210, h: 300 },
+  door: { x: 478, y: 0, w: 480, h: 318 },
+  duckHappy: { x: 1239, y: 728, w: 185, h: 260 },
+  duckSad: { x: 632, y: 1018, w: 158, h: 210 },
+  jetty: { x: 0, y: 424, w: 560, h: 300 },
+  laundry: { x: 962, y: 0, w: 520, h: 316 },
+  lily: { x: 1542, y: 1018, w: 300, h: 94 },
+  logLong: { x: 1098, y: 1018, w: 440, h: 106 },
+  logShort: { x: 794, y: 1018, w: 300, h: 131 },
+  mailbox: { x: 895, y: 728, w: 154, h: 260 },
+  otterHappy: { x: 1428, y: 728, w: 190, h: 260 },
+  otterSad: { x: 183, y: 1018, w: 201, h: 220 },
+  reedLean: { x: 235, y: 0, w: 239, h: 330 },
+  reedShort: { x: 1622, y: 728, w: 294, h: 240 },
+  reedTall: { x: 0, y: 0, w: 231, h: 420 },
+  sign: { x: 644, y: 728, w: 247, h: 280 },
+  water: { x: 0, y: 728, w: 640, h: 286 },
+  window: { x: 388, y: 1018, w: 240, h: 210 },
+} as const satisfies Record<string, W2Frame>;

@@ -269,6 +269,8 @@ export interface Platform {
   chaseTip?: boolean;
   /** a tree's crown to stand on, high in the canopy (Matt's crown painting: the end of 1-8) */
   crown?: boolean;
+  /** World 2: a cluster of lily pads floating on still water (painted from Matt's river sheet, riverArt.ts) */
+  lily?: boolean;
 }
 
 /**
@@ -365,6 +367,9 @@ export interface Collectible {
   search?: number;
   /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
+  /** World 2's reed cages: the little one inside (Matt's sheet: a baby capybara, duckling or otter), and when it was freed (game time) */
+  critter?: 'capy' | 'duck' | 'otter';
+  freedAt?: number;
 }
 
 export interface Particle {

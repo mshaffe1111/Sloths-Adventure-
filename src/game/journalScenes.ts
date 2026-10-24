@@ -11,7 +11,8 @@ import type { BossEntity } from './types.ts';
 import type { DemoId } from './movesJournal.ts';
 import { demoPlayer } from './miloVariants.ts';
 import { drawHeroDemo } from './heroSprite.ts';
-import { drawBankArt, drawBranchArt, drawBushArt, drawKitPiece, drawLogArt } from './protoArt.ts';
+import { drawBankArt, drawBranchArt, drawBushArt, drawKitPiece, drawLogArt, drawSwingLianaArt } from './protoArt.ts';
+import { VINE_HANG } from './heroVine.ts';
 import { drawGoldSnake } from './goldSnake.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
 import { drawTreeSnake, drawHarpyEagle, drawHazardEntity } from './creatures.ts';
@@ -413,20 +414,24 @@ export function drawScene(ctx: CanvasRenderingContext2D, id: DemoId, t: number, 
       ground(ctx, 230, SCENE_W + 10);
       pit(ctx, 70, 230);
       const px = 150;
-      const L = 112;
+      // his hands this far down the vine, his body hanging below them (heroVine.ts)
+      const L = 44;
+      const w = (TAU * 2) / SCENE_LEN.swing;
       const a = 0.62 * Math.sin((t / SCENE_LEN.swing) * TAU * 2);
-      const hx = px + Math.sin(a) * L;
-      const hy = -6 + Math.cos(a) * L;
-      ctx.save();
-      ctx.strokeStyle = '#4e6b25';
-      ctx.lineWidth = 4;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(px, -6);
-      ctx.quadraticCurveTo(px + Math.sin(a) * L * 0.5 - a * 6, -6 + Math.cos(a) * L * 0.5, hx, hy);
-      ctx.stroke();
-      ctx.restore();
-      pokey(ctx, now, hx, hy + 44, { isVineSwinging: true, grounded: false, swingAngle: a, facing: 1 });
+      const omega = 0.62 * Math.cos((t / SCENE_LEN.swing) * TAU * 2) * w;
+      if (!drawSwingLianaArt(ctx, { x: px, topY: -6, bottomY: -6 + L + VINE_HANG + 30, id: 1 }, a)) {
+        ctx.save();
+        ctx.strokeStyle = '#4e6b25';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(px, -6);
+        ctx.lineTo(px + Math.sin(a) * (L + VINE_HANG), -6 + Math.cos(a) * (L + VINE_HANG));
+        ctx.stroke();
+        ctx.restore();
+      }
+      const feet = L + VINE_HANG;
+      pokey(ctx, now, px + Math.sin(a) * feet, -6 + Math.cos(a) * feet, { isVineSwinging: true, grounded: false, swingAngle: a, swingAngularVelocity: omega, facing: 1 });
       break;
     }
     case 'bounce': {

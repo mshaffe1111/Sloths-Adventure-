@@ -80,10 +80,12 @@ export interface ProtoExtras {
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
   bushes?: import('./watcher.ts').Bush[];
   watch?: import('./watcher.ts').WatchZone[];
+  /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
+  decor?: import('./riverArt.ts').W2Decor[];
 }
 
 /** a small seeded random stream (mulberry32): the same seed always builds the same stage */
-function stream(seed: number) {
+export function stream(seed: number) {
   let a = (seed * 2654435761) >>> 0;
   const next = () => {
     a = (a + 0x6d2b79f5) >>> 0;

@@ -50,6 +50,7 @@ import { drawFrogSprite } from './frogSprite.ts';
 import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
+import { drawLily, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, riverArtReady } from './riverArt.ts';
 import { driftX, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
@@ -1426,7 +1427,18 @@ export class GameEngine {
       // Pits and water: falling below the surface costs a life (Mario-style)
       const waterY = this.currentStage.waterY;
       const river = this.currentStage.rivers?.find((r) => p.x > r.x0 && p.x < r.x1);
-      if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
+      if (river?.safe && p.y > river.surfaceY + 8 && !this.isGameOver) {
+        // a teaching river (2-1): a splash and back to the bank to try again, no life lost
+        this.spawnWaterSplash(p.x, river.surfaceY);
+        sound.playWhoosh();
+        this.addFloatingText('SPLASH! TRY AGAIN', p.x, river.surfaceY - 40, '#7dd3fc');
+        p.x = river.safe.backX;
+        p.y = river.safe.backY;
+        p.vx = 0;
+        p.vy = 0;
+        p.grounded = true;
+        p.invincibleTimer = Math.max(p.invincibleTimer, 1);
+      } else if (river && p.y > river.surfaceY + 8 && !this.isGameOver) {
         this.spawnWaterSplash(p.x, river.surfaceY);
         sound.playWhoosh();
         sound.playHitImpact(true);
@@ -2568,6 +2580,7 @@ export class GameEngine {
       this.spawnDebrisBurst(c.x, c.y, '#ca8a04');
       if (c.cageHp <= 0) {
         c.collected = true;
+        c.freedAt = this.gameTime;
         p.crittersRescued++;
         this.runScore += 400;
         sound.playCritterRescued();
@@ -3209,28 +3222,32 @@ export class GameEngine {
       ctx.rect(r.x0, r.surfaceY - 30, r.x1 - r.x0, bottom - r.surfaceY + 30);
       ctx.clip();
       const wave = (x: number) => r.surfaceY + Math.sin(x * 0.03 + t * 2.2 * r.dir) * 2.5 + Math.sin(x * 0.07 - t * 1.5 * r.dir) * 1.5;
+      const painted = world.id === 2 && riverArtReady();
       if (!over) {
-        drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
-        // the current: pale streaks sliding along the surface the way the logs go
-        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
-        ctx.lineWidth = 2.4;
-        ctx.lineCap = 'round';
-        const span = 140;
-        for (let k = Math.floor(a / span) - 1; k < b / span + 1; k++) {
-          for (let row = 0; row < 3; row++) {
-            const sx = (((k * span + row * 47 + t * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
-            const x = r.x0 + sx - span * 0.5;
-            const y = wave(x) + 7 + row * 9;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + r.dir * 26, y);
-            ctx.stroke();
+        if (!painted || !drawRiverWater(ctx, a, b, r.surfaceY, bottom, t, r.dir, r.speed)) drawWater(ctx, world.id, a, b, r.surfaceY, bottom, t);
+        // the current: pale streaks sliding along the surface the way the logs go (still water, a lily pond, has none)
+        if (r.speed > 0) {
+          ctx.strokeStyle = painted ? 'rgba(235,250,245,0.38)' : 'rgba(255,255,255,0.55)';
+          ctx.lineWidth = 2.4;
+          ctx.lineCap = 'round';
+          const span = 140;
+          for (let k = Math.floor(a / span) - 1; k < b / span + 1; k++) {
+            for (let row = 0; row < 3; row++) {
+              const sx = (((k * span + row * 47 + t * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
+              const x = r.x0 + sx - span * 0.5;
+              const y = wave(x) + 7 + row * 9;
+              ctx.beginPath();
+              ctx.moveTo(x, y);
+              ctx.lineTo(x + r.dir * 26, y);
+              ctx.stroke();
+            }
           }
         }
       } else {
         const g = ctx.createLinearGradient(0, r.surfaceY, 0, r.surfaceY + 60);
-        g.addColorStop(0, 'rgba(56, 148, 168, 0.55)');
-        g.addColorStop(1, 'rgba(24, 90, 120, 0.8)');
+        // (the painted river's own colours when it is painted, so the logs sink into the same water)
+        g.addColorStop(0, painted ? 'rgba(96, 160, 152, 0.3)' : 'rgba(56, 148, 168, 0.55)');
+        g.addColorStop(1, painted ? 'rgba(38, 66, 71, 0.75)' : 'rgba(24, 90, 120, 0.8)');
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.moveTo(a, bottom);
@@ -3251,6 +3268,18 @@ export class GameEngine {
       }
       ctx.restore();
     }
+  }
+
+  /** World 2 draws its drifting logs and lily pads from Matt's painted sheet once it has loaded */
+  private riverLogsPainted(worldId: number): boolean {
+    return worldId === 2 && (!!this.currentStage.rivers?.length || this.platforms.some((p) => p.lily)) && riverArtReady();
+  }
+  private noLogs: { from: Platform[]; out: Platform[] } | null = null;
+  /** the platforms the drawn layer paints, less the drifting logs and lily pads when the painted ones draw instead (kept between frames) */
+  private withoutPaintedLogs(worldId: number, plats: Platform[]): Platform[] {
+    if (!this.riverLogsPainted(worldId)) return plats;
+    if (this.noLogs?.from !== plats) this.noLogs = { from: plats, out: plats.filter((p) => p.type !== 'drift' && !p.lily) };
+    return this.noLogs.out;
   }
 
   /** Pit water (behind the ground banks) and checkpoint flags. */
@@ -3471,16 +3500,25 @@ export class GameEngine {
     else renderWorldObjects(
       ctx,
       world.id,
-      this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats,
+      this.withoutPaintedLogs(world.id, this.paintKit && protoArtReady() ? this.paintedPlats : this.drawPlats),
       this.paintKit && protoArtReady() ? this.swingVines : this.vines,
       this.paintKit && protoArtReady() ? [] : this.currentStage.trees,
       this.camera,
       this.gameTime
     );
 
+    // World 2's painted drifting logs (the drawn ones were left out above), under the water's sheet so they sit in the river
+    if (this.riverLogsPainted(world.id)) {
+      for (const pl of this.platforms) if (pl.type === 'drift' && !pl.broken && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawRiverLog(ctx, pl, this.gameTime);
+    }
     this.drawRivers(ctx, world, true);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // World 2: lily pads on the water, then the village and the reeds behind Pokey (riverArt.ts)
+    if (this.currentStage.config.worldIndex === 2 && riverArtReady()) {
+      for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
+    }
+    if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
     if (this.chase) this.drawChase(ctx);
     // trunk hollows (1-4): over the trunk, glowing once he is close enough to see in
     for (const h of this.proto?.hollows ?? []) {
@@ -3508,6 +3546,8 @@ export class GameEngine {
         if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
         return;
       }
+      // World 2's painted reed cages, and the little one hopping home once it is free
+      if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime)) return;
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
@@ -3611,6 +3651,7 @@ export class GameEngine {
     } else drawHeroSloth(ctx, this.player, this.gameTime);
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
+    if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {

@@ -71,6 +71,8 @@ export interface StdChoice {
   centred?: boolean;
   /** vine swing: the angle the whole body turns about its feet */
   swing?: number;
+  /** vine swing: how far the body trails behind the swing, turning about the hands (radians, world sense: positive swings the feet left) */
+  trail?: number;
   /** how much of the code's squash and stretch to add (default 1): the painted squash frames already carry it */
   squash?: number;
 }
@@ -157,7 +159,11 @@ export function stdPick(p: PlayerState, time: number, ev: Pick<HeroEvents, 'isHu
   const out = (c: StdChoice): StdChoice | null => (has(c.name) ? c : null);
 
   if (p.isVineSwinging) {
-    return out({ name: stdSwingFrame(p.swingAngle ?? 0, p.swingAngularVelocity ?? 0, p.facing), bob: 0, swing: -(p.swingAngle ?? 0) * 0.35 });
+    // hanging by both hands from the vine (Matt, 2026-10-24: the leaping poses let go of it): the whole body turns with the vine,
+    // so the hands stay on it, and trails a little behind the swing
+    const a = p.swingAngle ?? 0;
+    const trail = Math.max(-0.2, Math.min(0.2, (p.swingAngularVelocity ?? 0) * 0.09));
+    return out({ name: 'swing_grip', bob: 0, swing: -a, byHand: true, trail });
   }
   if (p.hanging) return out({ name: stdHangFrame(Math.abs(p.vx) > 10, time), bob: 0, hang: true });
   if (p.climbing) {

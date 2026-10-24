@@ -23,6 +23,7 @@ import { drawBounce, drawRaftLive, shakeOffset } from './spanArt.ts';
 import './shelfArt.ts';
 import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
+import { drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
 
 /** worlds painted with the new baked ground (grown world by world) */
@@ -1112,6 +1113,8 @@ function drawGameVine(ctx: CanvasRenderingContext2D, v: Vine, look: Look, time: 
   const tipY = v.topY + Math.cos(ang) * len;
   const midX = (v.x + tipX) * 0.5 + Math.sin(ang * 0.5) * 12;
   const midY = (v.topY + tipY) * 0.5;
+  // the world's painted liana when its kit has loaded (the swinging ones; a climb vine keeps its drawn look on its trunk)
+  if (v.vineType === 'swing_liana' && paintedKitEnabled() && drawSwingLianaArt(ctx, v, ang)) return;
   const style = look.glow && Math.abs(v.id) % 5 === 4 ? 3 : Math.abs(v.id) % 3; // 0 twist, 1 liana, 2 leafy, 3 glow
   const ol = look.ground.outline;
   const gl = tone(look.vine.main);
