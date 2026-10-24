@@ -151,7 +151,7 @@ class PlayRecorder {
   event(what: string, detail?: string | number) {
     if (!this.on) return;
     this.push(detail === undefined ? ['e', this.now(), what] : ['e', this.now(), what, detail]);
-    if (what === 'finish') void this.flush(false);
+    if (what === 'finish' || what === 'survey') void this.flush(false);
   }
 
   /** Pokey, once a tick: kept ten times a second, and at once whenever what he is doing changes */

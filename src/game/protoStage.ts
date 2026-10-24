@@ -134,6 +134,17 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
     P.push(p);
     return p;
   };
+  /**
+   * a soft pit between two banks: a mossy floor, walled on both sides down to it. (Without the walls the floor stopped at the banks'
+   * edges and there was open air under them, so walking along the floor carried him under a bank and off the end, into the water.)
+   */
+  const softPit = (edge: number, far: number) => {
+    const wallTop = G + BANK_H;
+    const wallH = HOLLOW_Y - wallTop + 4;
+    P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: far, y: wallTop, width: 60, height: wallH, type: 'solid', style: 'moss_stone' });
+    bank(edge - 60, far + 60, HOLLOW_Y, 'moss_stone');
+  };
   const block = (x0: number, x1: number, h: number) => {
     const p: Platform = { id: pid++, x: x0, y: G - h, width: x1 - x0, height: h, type: 'solid', style: 'moss_stone' };
     P.push(p);
@@ -228,7 +239,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
       if (!ok && tries < 11) continue;
       // build it
       close();
-      if (soft) bank(edge, farX, HOLLOW_Y, 'moss_stone');
+      if (soft) softPit(edge, farX);
       for (let k = 0; k < n; k++) {
         liana(xs[k], vs[k].topY, vs[k].bottomY);
         arc(k === 0 ? edge + 10 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 4);
@@ -452,7 +463,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
       const edge = x;
       close();
       const far = Math.round(edge + w);
-      bank(edge, far, HOLLOW_Y, 'moss_stone');
+      softPit(edge, far);
       flower(edge + w / 2, G - 120, 'hibiscus');
       open(far);
       run(R.r(260, 320));

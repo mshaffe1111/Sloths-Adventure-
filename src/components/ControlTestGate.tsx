@@ -52,6 +52,73 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
   );
 };
 
+/** the quick questions at the end: what the recording cannot tell (which hand, how the phone was held, what felt hard) */
+const QUESTIONS: Array<{ id: string; q: string; a: string[]; many?: boolean }> = [
+  { id: 'hand', q: 'What did you mostly play with?', a: ['One thumb', 'Two thumbs', 'One finger (like your pointer)', 'A mix'] },
+  { id: 'held', q: 'How did you hold the phone?', a: ['In one hand', 'In both hands', 'Lying on a table or lap'] },
+  { id: 'hard', q: 'What felt hardest? (tap any)', a: ['Running', 'Short hops', 'Long jumps', 'Climbing', 'Swinging on vines', 'Fighting', 'Nothing'], many: true },
+];
+
+/** the end of the test (at the shrine): a few one-tap questions, thanks, and a way to play it again */
+export const ControlTestDone: React.FC<{ onAgain: () => void }> = ({ onAgain }) => {
+  const [ans, setAns] = React.useState<Record<string, string[]>>({});
+  const [note, setNote] = React.useState('');
+  const [sent, setSent] = React.useState(false);
+  const pick = (id: string, a: string, many?: boolean) =>
+    setAns((o) => {
+      const cur = o[id] ?? [];
+      const next = many ? (cur.includes(a) ? cur.filter((x) => x !== a) : [...cur, a]) : [a];
+      return { ...o, [id]: next };
+    });
+  const send = () => {
+    recorder.event('survey', JSON.stringify({ ...ans, note: note.trim().slice(0, 300) }));
+    setSent(true);
+  };
+  return (
+    <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#0e3b28]/95 p-3 text-[#f4ecd8]">
+      <div className="mx-auto my-2 w-full max-w-xl rounded-2xl border border-[#f4ecd8]/20 bg-[#123d2a] p-4 shadow-2xl sm:p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Control test</p>
+        <h1 className="mt-1 text-2xl font-black leading-tight">You're done. Thank you!</h1>
+        {!sent ? (
+          <>
+            <p className="mt-2 text-sm leading-snug text-[#f4ecd8]/85">Three quick taps help Matt a lot:</p>
+            {QUESTIONS.map((q) => (
+              <div key={q.id} className="mt-3">
+                <p className="text-sm font-bold">{q.q}</p>
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {q.a.map((a) => {
+                    const on = (ans[q.id] ?? []).includes(a);
+                    return (
+                      <button key={a} type="button" onClick={() => pick(q.id, a, q.many)} aria-pressed={on}
+                        className={`rounded-full border px-3 py-1.5 text-sm ${on ? 'border-[#f2c14e] bg-[#f2c14e] font-bold text-[#2a1a08]' : 'border-[#f4ecd8]/30 bg-black/15'}`}>
+                        {a}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+            <label className="mt-3 block text-sm font-bold" htmlFor="ctest-note">Anything feel wrong or annoying? (optional)</label>
+            <textarea id="ctest-note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={300} rows={2}
+              className="mt-1 w-full rounded-lg border border-[#f4ecd8]/30 bg-[#0b2e20] px-3 py-2 text-base text-[#f4ecd8] outline-none focus:border-[#f2c14e]" />
+            <button type="button" onClick={send} className="mt-3 w-full rounded-xl bg-[#f2c14e] py-2.5 text-lg font-black text-[#2a1a08]">
+              Send
+            </button>
+          </>
+        ) : (
+          <p className="mt-3 text-sm leading-snug text-[#f4ecd8]/85">
+            Sent. You can close this page now, or play the level again. Every run helps.
+          </p>
+        )}
+        <button type="button" onClick={onAgain}
+          className={`mt-3 w-full rounded-xl py-2.5 text-lg font-black ${sent ? 'bg-[#f2c14e] text-[#2a1a08]' : 'border border-[#f4ecd8]/30 text-[#f4ecd8]'}`}>
+          Play again
+        </button>
+      </div>
+    </div>
+  );
+};
+
 /** the little red dot while the test records (it never takes a touch) */
 export const RecordingBadge: React.FC = () => {
   const [state, setState] = React.useState(recorder.sendState);
