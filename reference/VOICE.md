@@ -76,6 +76,16 @@ Over-polite, apologizes inside his own sentences, corrects himself mid-order. He
 
 Plain, warm, past tense. Says what the camera can't. Never explains a feeling the scene already shows.
 
+## Boss fights
+
+Matt's direction: the bosses look at Pokey and can't believe this is what showed up to fight them. The snake's attitude is "what are you doing here?" Pokey tells him, flat out, that he's here to save Meeca. The snake says he'll have to get through him first, and he can't picture something this slow beating something this powerful. When the boss loses, it can't believe it either: beaten by a sloth, and not just any sloth, the slowest sloth in the rainforest. Pokey answers with a one-liner that breaks the tension, something like "Wait till the neighbors hear." He doesn't apologize to anything he just knocked down. No "I'm sorry about the knot."
+
+Why it works: the General said "He's too slow. He'll never make it." Every boss who thinks the same thing and loses proves the General wrong one more time, and the player carries that into the last fight.
+
+So it isn't the same scene ten times, it changes as the game goes. Word spreads ahead of Pokey. The early bosses laugh because they've never heard of him. By the middle they've heard rumors and don't believe them (the Marsh Reaver's "The sloth is somehow still coming. I thought you would be taller." is already this). By the end they're nervous before he arrives. Pokey's one-liners grow along with it: in World 1 he's nearly as surprised as the snake that he won, and by World 9 he expected it. Each boss's disbelief comes out in its own voice (the croc's vanity, the Queen's manners), never one shared line.
+
+The guardians keep their soft side. After Pokey wins and says his line, the beaten guardian softens on their own: a clue, the itchy collar, the small thing they wanted. That softness comes from them, not from Pokey being nice to them.
+
 ## The prologue, as approved
 
 *Morning came down through the canopy one branch at a time. Pokey's branch was usually last.*
@@ -161,6 +171,8 @@ Dot is she everywhere in the game, not he. The Cast Bible still says he and need
 Grandma's ghost in the prologue uses the existing Grandma art, faded.
 
 The World 3 memory about hiding the satchel is cut.
+
+Every boss intro and defeat gets rewritten world by world to the boss-fight direction above. Pokey's apologies come out (the snake's knot, the Prowler's "Sorry. It's the only trick I have."), and the croc's "I give it because you were polite" changes, since Pokey isn't asking politely anymore.
 
 The prologue goes into the game (src/game/storyIntro.ts) once the rewrite is approved as a whole.
 
