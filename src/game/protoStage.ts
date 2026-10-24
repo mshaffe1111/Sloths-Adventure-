@@ -15,12 +15,15 @@
  * many vines each chain has, how far apart and how high they hang, the length of every stretch, the snakes, and the order inside a beat.
  * Every rolled piece is checked against the shared physics (protoCheck.ts) and rolled again if it fails (see protoStage.test.ts).
  */
+import { fixPickups } from './flowerReach.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 import { reachGlide, reachJump } from './physics.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow, maxRise } from './protoCheck.ts';
 
 export const PROTO_STAGE_ID = '1-6';
+/** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
+export const HAND_STAGES: Record<string, 'proto' | '1-1'> = { '1-1': '1-1', '1-6': 'proto' };
 const KEY = 'sloth_proto_16';
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
@@ -106,7 +109,7 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * where the snakes sit, the order of the pieces inside a beat, and the dressing. Every rolled piece is checked against the physics
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
-export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | 'ctest' = 'proto'): GeneratedStage & { proto: ProtoExtras } {
+export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | 'ctest' | '1-1' = 'proto'): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const P: Platform[] = [];
   const V: Vine[] = [];
@@ -487,6 +490,133 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
     pieces.push({ k: 'kapok', x0, x1: x });
   }
 
+  /**
+   * stepping stones: mossy pillars standing in a soft pit, at the heights given (px above the ground), each gap a share of what a jump
+   * between those heights can reach (`share` of a single jump, or of a double jump when `dbl`). Lands on open ground after the last.
+   */
+  function pillars(heights: number[], share: [number, number], dbl = false) {
+    const x0 = x;
+    run(R.r(140, 200));
+    const edge = x;
+    close();
+    let px = edge, prevTop = G;
+    const tops: number[] = [];
+    for (const h of heights) {
+      const top = G - h;
+      const gap = Math.round(reachJump(prevTop - top, dbl) * R.r(share[0], share[1]));
+      const w = Math.round(R.r(110, 160));
+      px += gap;
+      P.push({ id: pid++, x: px, y: top, width: w, height: HOLLOW_Y - top + 10, type: 'solid', style: 'moss_stone' });
+      flower(px + w / 2, top - 34, 'orchid');
+      tops.push(top);
+      px += w;
+      prevTop = top;
+    }
+    const far = Math.round(px + reachJump(prevTop - G, dbl) * R.r(share[0], share[1]));
+    softPit(edge, far);
+    open(far);
+    run(R.r(160, 240));
+    expert += (x - x0) / RUN + 0.6 * heights.length;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+
+  /** a mushroom that bounces Pokey up to a high branch nobody can jump to: a cache of petals and a golden seed (1-1's secret) */
+  function mushroomCache() {
+    const x0 = x;
+    run(R.r(180, 240));
+    const mx = x;
+    P.push({ id: pid++, x: mx, y: G - 30, width: 70, height: 30, type: 'bouncy' });
+    // higher than a double jump reaches from the ground, so only the mushroom gets him there
+    const by = Math.round(G - RISE - 70);
+    branch(mx - 40, mx + 230, by);
+    row(mx + 10, mx + 200, by - 34, 4, 'hibiscus');
+    goldenSeed(mx + 150, by - 70);
+    run(R.r(320, 380));
+    expert += (x - x0) / RUN + 1.5;
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  /**
+   * the high road: a mushroom bounces him up onto a run of branches with small gaps between them (flowers along the top). Falling off
+   * only drops him onto the ground path below, which runs the same way, so the high road is a bonus, never a trap.
+   */
+  function highRoad() {
+    const x0 = x;
+    run(R.r(160, 220));
+    P.push({ id: pid++, x: x, y: G - 30, width: 70, height: 30, type: 'bouncy' });
+    const y = Math.round(G - R.r(170, 200));
+    let bx = x + 40;
+    const n = R.i(3, 5);
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(170, 260));
+      branch(bx, bx + w, y);
+      row(bx + 30, bx + w - 30, y - 34, 2, 'hibiscus');
+      bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.6));
+    }
+    x = bx + R.r(100, 160);
+    expert += (x - x0) / RUN + 1.2;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
+  if (plan === '1-1') {
+    // 1-1 Into the Canopy: run and jump. Taught over soft moss, tested on stepping stones at three heights, and twisted at the end
+    // into gaps only the second jump crosses. The touch coach teaches the gestures at the start (engine.ts), so the hints come later.
+    beat('Learn: run and jump', () => {
+      rest(R.r(700, 850));
+      stumps();
+      rest(R.r(250, 350));
+      hint(x + 40, 'Jump the little gaps', 'Jump the little gaps', 'Jump the little gaps');
+      const one = reachJump(0, false);
+      for (const w of [one * 0.35, one * 0.45, one * 0.55]) {
+        const edge = x;
+        close();
+        const far = Math.round(edge + w);
+        softPit(edge, far);
+        open(far);
+        run(R.r(220, 300));
+      }
+      flag();
+    });
+    beat('Test: the stepping stones', () => {
+      hint(x + 60, 'Hop from stone to stone', 'Hop from stone to stone', 'Hop from stone to stone');
+      pillars([60, 120, 60], [0.5, 0.62]);
+      rest(R.r(250, 350));
+      pillars(R.shuffle([40, 100, 140, 80]), [0.55, 0.68]);
+      mushroomCache();
+      pillars([90, 30, 120, 60], [0.58, 0.7]);
+      flag();
+    });
+    beat('Twist: the second jump', () => {
+      hint(x + 60, 'Flick up again in the air to jump twice', 'Press Jump again in the air', 'Press Space again in the air');
+      const two = reachJump(0, true);
+      for (const w of [two * 0.62, two * 0.72, two * 0.82]) {
+        run(R.r(220, 300));
+        const edge = x;
+        close();
+        const far = Math.round(edge + w);
+        softPit(edge, far);
+        flower(edge + w / 2, G - 150, 'hibiscus');
+        open(far);
+      }
+      run(R.r(200, 260));
+      pillars([60, 140], [0.7, 0.8], true);
+      flag();
+    });
+    beat('Finish', () => {
+      // more of the same, rolled, until even a quick player needs two minutes
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 24) {
+        const k = n % 3;
+        if (k === 0) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.72], n > 2);
+        else if (k === 1) highRoad();
+        else { rest(R.r(250, 400)); stumps(); }
+        n++;
+        if (n % 3 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
   if (plan === 'ctest') {
     // the control test: the same stage for every player (the seed is fixed by the caller), one skill per stretch, cheap to fail
     beat('Run and stop', () => {
@@ -606,6 +736,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
 
   const width = Math.ceil(x + 20);
   const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900) };
+  // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
+  fixPickups({ platforms: P, vines: V, waterY: WATER }, C);
   return {
     config: cfg,
     trees: T,

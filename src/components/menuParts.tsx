@@ -340,7 +340,7 @@ export const ProtoStageToggle: React.FC = () => {
             <path d="M13 3v5" />
             <path d="M19 3v10a3 3 0 0 1-6 0" />
           </Icon>
-          New stage 1-6 (test)
+          New stages (test)
         </span>
         <button
           type="button"
@@ -355,7 +355,7 @@ export const ProtoStageToggle: React.FC = () => {
           {on ? 'On' : 'Off'}
         </button>
       </div>
-      <small className="pm-polish-note">Plays the rebuilt "First Lianas": vine-to-vine swings, a tree to climb, a log to push, a branch that snaps and two golden seeds to find. Starts the next time you enter 1-6. Off by default while it is being tested.</small>
+      <small className="pm-polish-note">Plays the stages rebuilt from the stage plan, each with its own idea: so far 1-1 Into the Canopy (run, jump, stepping stones, the second jump, a mushroom secret) and 1-6 First Lianas. Starts the next time you enter one. Off by default while they are being tested.</small>
     </div>
   );
 };
