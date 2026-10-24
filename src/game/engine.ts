@@ -98,7 +98,7 @@ import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips
 import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, setLianaTops, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
-import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
+import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 
 /** How many world units tall the screen shows. */
@@ -655,6 +655,14 @@ export class GameEngine {
       if (recorder.on) this.recordFrames(elapsed, now);
       // judge the real frame gap: too slow for a moment -> a lighter picture (never while a menu holds the game, or once at the lightest)
       if (!this.isPaused && (this.quality < 2 || (polishEnabled() && polishTier() < 2)) && this.gov.feed(elapsed)) this.stepQuality();
+      else if (!this.isPaused && this.quality === 2) this.gov.feed(elapsed);
+      // steady for a while at a lightened picture: back up a notch (it used to stay low for good after one slow start)
+      if (!this.isPaused && this.quality > 0 && this.gov.takeUp()) {
+        this.quality--;
+        noteStepUp(this.quality, performance.now());
+        this.resizeCanvas();
+        perfNote(`steady: stepped up (quality ${this.quality})`);
+      }
       this.failStreak = 0;
     } catch (err) {
       // one bad frame must not freeze the game; a frame that fails over and over ends the stage cleanly

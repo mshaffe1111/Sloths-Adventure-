@@ -431,7 +431,7 @@ export class Conductor {
   report(): string {
     const ctx = this.ctx;
     if (!ctx) return 'no sound';
-    const lag = Math.round(this.lagMs);
+    const lag = Math.max(0, Math.round(this.lagMs));
     this.lagMs = 0;
     return `${this.lite ? 'lite' : 'full'} ${ctx.state} buf${Math.round((ctx.baseLatency ?? 0) * 1000)}ms lag${lag}ms`;
   }
@@ -446,8 +446,9 @@ export class Conductor {
     const real = performance.now();
     if (this.lastTickReal && real - this.lastTickReal < 1000) {
       // the sound clock should move with real time: when it moves less, the hardware went without sound for that long
-      const behind = real - this.lastTickReal - (now - this.lastTickAudio) * 1000;
-      if (behind > 4) this.lagMs += behind;
+      // (the sound clock moves in steps of a buffer, so a tick can be a little behind and the next a little ahead: add both, and only
+      // a real loss of sound adds up)
+      this.lagMs += real - this.lastTickReal - (now - this.lastTickAudio) * 1000;
     }
     this.lastTickReal = real;
     this.lastTickAudio = now;
