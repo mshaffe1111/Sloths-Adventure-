@@ -23,5 +23,8 @@ the note is still the first thing in his own words to reach her, a world earlier
 - The ending: she quotes his note back to him.
 - The note's words are still to write.
 
-**Still to decide when World 7 is built.** The level's art (Gemini prompts then), the note's wording, the exact stage that hides
+**Art.** All new, written as Gemini prompts when World 7 is built (listed in ART-TO-GET.md, item 11): tunnel pieces, glowworm threads,
+roots, flooded passages, both cracks, Pokey pushing the note up, Meeca finding it.
+
+**Still to decide when World 7 is built.** The level's art, the note's wording, the exact stage that hides
 the crack, and a mock-up of the new screens for Matt to approve before building.

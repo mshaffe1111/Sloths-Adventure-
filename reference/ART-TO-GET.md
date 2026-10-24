@@ -20,6 +20,10 @@ Matt's running list of drawings still needed from Gemini. A new need joins the l
 9. ~~**The River King's court props**: throne, banner, shell gong, lily-pad carpet, floral archway, dais (2-9). (Prompt 9)~~ Received 2026-10-24 (all six used in 2-9's court).
 10. **Crocus Rex animated** (the World 2 boss): no Gemini art needed. His nine old poses get the crooked petal crown painted on by Qwen-Image and are animated by Wan 2.2 on Hugging Face (2026-10-24, in progress).
 
+## World 7 (when we get there)
+
+11. **Under the Ruins, the secret level** (see SECRET-LEVELS.md). Prompts to write then: the tunnel pieces, glowworm threads, roots to climb, flooded passages, the hidden crack that leads in, the narrow crack under the net, Pokey pushing the note up, and Meeca finding it.
+
 ## Done
 
 - ~~World 2 river pieces: logs, lily pads, reeds, water strip~~ (2026-10-24)
