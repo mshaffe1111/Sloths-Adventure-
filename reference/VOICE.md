@@ -46,7 +46,9 @@ After the kidnapping, he isn't carefree anymore. He thinks it's his fault, becau
 
 The keeper of the Heartbloom, and the one who holds everybody steady. She's warm and quick, a little bossy in the way a good host is bossy ("Everybody sit down. Sit, sit, I'll go get the tea"), and she treats Dot's fussing the way a granddaughter treats a worried aunt. "If I've told you once, I've told you twice" is her mixing up a saying, on purpose, and it stays that way.
 
-Why she's like that: the storm that took her grandmother left her with a garden and a very quiet house, and she decided somebody had to keep everything gentle so nobody else would leave. She looks after everyone's feelings, and nobody looks after hers.
+Why she's like that: Grandma and Grandpa raised her, in the house with the garden. Her parents are never mentioned. The night of the storm, Grandma died, and by morning Grandpa was gone: the door standing open, his chair empty. Meeca believes he walked out on her. She doesn't know he put on the war look and became the General. So she lost the woman who raised her and was left by the man who raised her, on the same night, and she was alone with the garden and a very quiet house. She decided somebody had to keep everything gentle so nobody else would leave. She looks after everyone's feelings, and nobody looks after hers.
+
+In the tower she starts working it out on her own, before Pokey ever finds the photograph. The soup she liked as a cub keeps showing up, made wrong. Someone stands outside her door every night, eleven steps there and eleven back, and never knocks. A blanket arrives when she's cold. She pays attention to everything, so by the end "Hello, Grandpa" isn't a surprise to her. It's something she's been holding. Her one angry scene is at him, for leaving her, and only after that does she take his hand.
 
 She is never a damsel. Faced with an army she's indignant, not scared, at least not on the outside: "You're standing in my garden. And you're blocking my flower." When she's taken, she doesn't scream for rescue so much as give Pokey a job: "Follow the petals!"
 
@@ -60,7 +62,9 @@ Why she's like that: she's terrified of being late, and the player won't know wh
 
 ### General Iron-Claw
 
-Short, formal, heavy. He gives orders, not explanations. "That one. She's the keeper. Bring her to me." He counts out loud ("One. Two. Three.") because counting is how he makes a loss feel like a plan. He calls Meeca "little bloom," which was Grandma's name for her, and it lands on Meeca before she knows why.
+Short, formal, heavy. He gives orders, not explanations. "That one. She's the keeper. Bring her to me." He counts out loud ("One. Two. Three.") because counting is how he makes a loss feel like a plan. He calls Meeca "little bloom," the family's name for her, and it lands on Meeca before she knows why.
+
+The guardians know exactly who he is. Before he was anybody's General he was Iron-Claw, the head of their council and their friend, and they said yes to his Pact because they couldn't tell a grieving man no. What they keep from Pokey is who he is to Meeca, and the collar holds their tongues. A boss can let something slip that only makes sense later ("You're going to take her from him?"), then catch itself.
 
 He's cruel to Pokey in the prologue ("He's too slow. He was always too slow."), and that line has to stick, because Pokey carries it the whole game. He doesn't joke, and he doesn't say sorry, until the very end.
 
@@ -179,5 +183,9 @@ The prologue goes into the game (src/game/storyIntro.ts) once the rewrite is app
 ## Still open
 
 When did Grandma die? The Tarantula Queen says "a winter," and Dot (line 401) says "the night of the storm." The lean is that it was a winter storm, which makes both lines true. It's a different storm from the one that took Pokey's parents, since Grandma knew Pokey afterward and taught him "slow is not stopped."
+
+In the prologue Meeca says "Nobody's called me that since Grandma." If "little bloom" was mostly Grandpa's name for her, that line points away from him, which may be exactly right (it hides the twist), or it may want to be "since Grandpa," which would be a big early clue. Matt to decide.
+
+Meeca's parents are never mentioned. Leave it unspoken, or give it one line?
 
 What does Pokey remember of his parents? The suggestion is that he doesn't remember their faces, just small things, like rain on the nest or someone humming. Not decided.
