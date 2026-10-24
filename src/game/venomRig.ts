@@ -10,7 +10,7 @@ import type { PaintedBoss } from './paintedBoss.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { VENOM2_FRAMES, VENOM2_PX, type VenomFrame } from './venom2AtlasData.ts';
 import { VENOM_FRAMES } from './venomAtlasData.ts';
-import { NECK, VF, coilCut, venomPose, type CoilPose, type HeadPose } from './venomFang.ts';
+import { NECK, VF, coilCut, coilTop, venomPose, type CoilPose, type HeadPose } from './venomFang.ts';
 
 const URL_ATLAS = new URL('../assets/enemies/venom2-atlas.webp', import.meta.url).href;
 const K = VF.S / VENOM2_PX;
@@ -73,12 +73,12 @@ function resample(pts: Array<[number, number]>, step: number): Array<[number, nu
  * The neck, painted along the spine (local points) in the body's own colours: so it bends cleanly at any angle (slices of the
  * painted tile fanned out into teeth on the outside of a bend). Belly to the right of the way it runs.
  */
-function neck(ctx: CanvasRenderingContext2D, raw: Array<[number, number]>) {
+function neck(ctx: CanvasRenderingContext2D, raw: Array<[number, number]>, cap: CanvasLineCap = 'round') {
   if (raw.length < 2) return;
   const pts = resample(raw, 4);
   const W = NECK;
   ctx.save();
-  ctx.lineCap = 'round';
+  ctx.lineCap = cap;
   ctx.lineJoin = 'round';
   stroke(ctx, pts, W + 4, COL.line);
   stroke(ctx, pts, W, COL.back);
@@ -152,10 +152,19 @@ function warnLine(ctx: CanvasRenderingContext2D, x0: number, x1: number, u: numb
   ctx.restore();
 }
 
-/** one pose drawn in the local frame (x forward, y up from the floor at 0) */
+/**
+ * One pose drawn in the local frame (x forward, y up from the floor at 0). The painted necks are trimmed off the coil and the heads,
+ * so the drawn neck goes under both: the part inside the pile is drawn before the coil (it rises out of the ring's hole), the rest
+ * after it (in the open air, where the two parts overlap without a seam), and the head is laid over the neck's end.
+ */
 function drawPose(ctx: CanvasRenderingContext2D, coil: CoilPose, head: HeadPose, spine: Array<[number, number]>, jx: number, jy: number, flash: boolean, squash: number) {
+  const pts = extendSpine(spine, 26);
+  const top = coilTop(coil) - 6;
+  let k = pts.findIndex(([, y]) => y < top);
+  if (k < 0) k = pts.length;
+  neck(ctx, pts.slice(0, Math.min(pts.length, k + 3)));
   piece(ctx, VENOM2_FRAMES['coil_' + coil], 0, 0);
-  neck(ctx, extendSpine(spine, 14));
+  if (k < pts.length - 1) neck(ctx, pts.slice(Math.max(0, k - 1)), 'butt');
   if (flash) ctx.filter = 'brightness(1.45)';
   piece(ctx, VENOM2_FRAMES['head_' + head], jx, jy, squash);
   ctx.filter = 'none';
@@ -165,12 +174,12 @@ function drawPose(ctx: CanvasRenderingContext2D, coil: CoilPose, head: HeadPose,
 const STILLS: Record<string, { coil: CoilPose; head: HeadPose }> = {
   idle: { coil: 'calm', head: 'calm' },
   n_idle: { coil: 'calm', head: 'calm' },
-  threat: { coil: 'tight', head: 'hiss' },
-  enrage: { coil: 'tight', head: 'angry' },
+  threat: { coil: 'calm', head: 'hiss' },
+  enrage: { coil: 'calm', head: 'angry' },
   enrageidle: { coil: 'calm', head: 'angry' },
-  n_roar: { coil: 'tight', head: 'snap' },
+  n_roar: { coil: 'calm', head: 'snap' },
   hurt: { coil: 'calm', head: 'hurt' },
-  deathroar: { coil: 'tight', head: 'snap' },
+  deathroar: { coil: 'calm', head: 'snap' },
   dead: { coil: 'slump', head: 'defeated' },
 };
 /** the story cards were laid out for the old painted frames: draw the new pose at the old size */
@@ -178,8 +187,8 @@ const STILL_K = (VENOM_FRAMES.idle.w * 0.95) / (VENOM2_FRAMES.coil_calm.w * K);
 
 function stillSpine(coil: CoilPose, head: HeadPose): { pts: Array<[number, number]>; jx: number; jy: number } {
   const c = coilCut(coil);
-  const jx = coil === 'slump' ? c.x + 40 : c.x + 22;
-  const jy = coil === 'slump' ? c.y - 30 : c.y - 46;
+  const jx = coil === 'slump' ? c.x + 40 : c.x + 10;
+  const jy = coil === 'slump' ? c.y - 30 : -262;
   const f = VENOM2_FRAMES['head_' + head];
   const dx = f.dx ?? 0.35;
   const dy = f.dy ?? -0.94;
@@ -220,7 +229,7 @@ export const venomRig: PaintedBoss & { rig: true } = {
     ctx.save();
     ctx.translate(b.x, feetY);
     ctx.scale(f, 1);
-    if (p.warn > 0) warnLine(ctx, coilCut('tight').x + 250, (p.warnTo - b.x) * f, p.warn, time);
+    if (p.warn > 0) warnLine(ctx, coilCut('calm').x + 250, (p.warnTo - b.x) * f, p.warn, time);
     const hit = b.hitFlashTimer > 0.02;
     const squash = hit && p.head === 'dazed' ? 0.86 : 1;
     drawPose(ctx, p.coil, p.head, spine, jx, jy, hit, squash);

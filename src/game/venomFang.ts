@@ -31,7 +31,7 @@ export const VF = {
   headHurt: 92,
 } as const;
 
-export type CoilPose = 'calm' | 'tight' | 'slump';
+export type CoilPose = 'calm' | 'slump';
 export type HeadPose = 'calm' | 'hiss' | 'strike' | 'snap' | 'dazed' | 'hurt' | 'angry' | 'defeated';
 
 export interface VenomPose {
@@ -66,10 +66,21 @@ export function flatHead(h: 'strike' | 'dazed'): { ahead: number; below: number 
   return { ahead: unit(f.w - f.ax), below: unit(f.h - f.ay) };
 }
 
-/** the raised head's join in the local frame (resting, phase 1 sways gently) */
+/** the height above the floor where the neck comes clear of a coil (local y) */
+export function coilTop(c: CoilPose): number {
+  const f = VENOM2_FRAMES['coil_' + c];
+  return unit((f.top ?? f.ay) - f.ay);
+}
+
+/** the raised head's join in the local frame (resting, it sways gently) */
 function raised(time: number, lift = 0): { x: number; y: number } {
   const c = coilCut('calm');
-  return { x: c.x + 34 + Math.sin(time * 1.3) * 6, y: c.y - 92 - lift + Math.sin(time * 1.9) * 5 };
+  return { x: c.x + 10 + Math.sin(time * 1.3) * 6, y: -262 - lift + Math.sin(time * 1.9) * 5 };
+}
+/** reared back for the lunge */
+function reared(): { x: number; y: number } {
+  const c = coilCut('calm');
+  return { x: c.x - 44, y: -288 };
 }
 
 /** where the head's front ends up after a lunge (world x), for a boss at bx facing f in an arena */
@@ -79,7 +90,7 @@ export function lungeReach(f: number, left: number, right: number): number {
 
 /** the point where the neck meets the floor during a lunge (local), and the first tip position */
 function floorFoot(): { x: number; y: number } {
-  const c = coilCut('tight');
+  const c = coilCut('calm');
   return { x: c.x + 250, y: -NECK / 2 };
 }
 
@@ -150,26 +161,24 @@ export function venomPose(b: BossEntity, floor: number, time: number): VenomPose
     jx = c.x + 40;
     jy = c.y - 30;
   } else if (lunging && st === 'tell') {
-    coil = 'tight';
     head = 'hiss';
-    const c = coilCut('tight');
     const u = Math.min(1, t / 0.5);
     const r = raised(time);
-    jx = lerp(r.x, c.x - 34, ease(u));
-    jy = lerp(r.y, c.y - 70, ease(u));
+    const rr = reared();
+    jx = lerp(r.x, rr.x, ease(u));
+    jy = lerp(r.y, rr.y, ease(u));
     shake = 2 + 3 * u;
     warn = Math.min(1, t / 0.35);
   } else if (lunging && st === 'act') {
-    coil = 'tight';
     head = 'strike';
     const u = Math.min(1, t / VF.act);
-    const c = coilCut('tight');
     if (u < VF.dive) {
       // the dive: from reared up to the floor in front of the coil
       const k = ease(u / VF.dive);
       const land = flatJoin(startTip, 'strike');
-      jx = lerp(c.x - 34, land.x, k);
-      jy = lerp(c.y - 70, land.y, k);
+      const rr = reared();
+      jx = lerp(rr.x, land.x, k);
+      jy = lerp(rr.y, land.y, k);
     } else {
       const k = easeOut((u - VF.dive) / (1 - VF.dive));
       const tip = lerp(startTip, reach, k);
@@ -179,7 +188,6 @@ export function venomPose(b: BossEntity, floor: number, time: number): VenomPose
       onFloor = true;
     }
   } else if (lunging && st === 'rec') {
-    coil = 'tight';
     head = 'dazed';
     const j = flatJoin(reach, 'dazed');
     jx = j.x;
@@ -189,7 +197,6 @@ export function venomPose(b: BossEntity, floor: number, time: number): VenomPose
     // dragging the head home along the floor, then lifting it
     const u = t / VF.retract;
     if (u < 0.7) {
-      coil = 'tight';
       head = 'dazed';
       const tip = lerp(reach, startTip, ease(u / 0.7));
       const j = flatJoin(tip, 'dazed');
@@ -229,7 +236,8 @@ export function venomPose(b: BossEntity, floor: number, time: number): VenomPose
   let local: Array<[number, number]>;
   if (onFloor) {
     // up out of the coil, down to the floor, and along it to the head
-    const bend = curve(c.x, c.y, c.dx, c.dy, foot.x, foot.y, 1, 0, 14);
+    // up out of the ring leaning forward, over the front of the coil and down: one wide arch, no hook at the hole
+    const bend = curve(c.x, c.y, 0.32, -0.95, foot.x, foot.y, 1, 0, 16);
     local = [...bend];
     const endX = jx;
     const steps = Math.max(1, Math.ceil(Math.abs(endX - foot.x) / 40));
