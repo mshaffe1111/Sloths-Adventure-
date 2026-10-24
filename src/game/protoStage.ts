@@ -23,6 +23,7 @@ import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
 import type { Bush, WatchZone } from './watcher.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow, maxRise } from './protoCheck.ts';
+import type { W2Decor } from './riverArt.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
@@ -82,6 +83,8 @@ export interface ProtoExtras {
   watch?: import('./watcher.ts').WatchZone[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
   decor?: import('./riverArt.ts').W2Decor[];
+  /** 2-6: the face of the river bank the village is dug into, behind the whole climb (drawn by protoArt.ts drawEarthWall) */
+  bankWall?: { x0: number; x1: number; top: number; bottom: number };
 }
 
 /** a small seeded random stream (mulberry32): the same seed always builds the same stage */
@@ -1426,8 +1429,12 @@ const KAPOK_MARGIN = 90;
  * trunk, back and forth across the tree (with a hidden hollow up a side trunk: a golden seed). Twist: one long rope across the widest
  * gap, near the top. Finish: the last trunk to the crown and the shrine. A fall only drops him to a lower branch or the floor: it costs
  * the climb, never a life. Built from y = 0 upward and shifted down at the end, so the crown sits near the top of the stage.
+ *
+ * `village` (2-6 Up the Bank Houses, w2Stages.ts): the same climb up the riverbank village. World 2's kit paints it (bamboo posts, plank
+ * porches, earth), the porches get the village's round doors, windows and washing, the secret hollow is a lit round window instead,
+ * and Gruntlewick waits at the top with his scroll.
  */
-function buildKapok(config: LevelConfig, seed: number): GeneratedStage & { proto: ProtoExtras } {
+export function buildKapok(config: LevelConfig, seed: number, village = false): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const W = KAPOK_W;
   const P: Platform[] = [];
@@ -1440,6 +1447,7 @@ function buildKapok(config: LevelConfig, seed: number): GeneratedStage & { proto
   const hints: StageHint[] = [];
   const beats: Array<[number, number, string]> = [];
   const hollows: Array<{ x: number; y: number }> = [];
+  const villageWindows: Array<{ x: number; y: number }> = [];
   let pid = 1, vid = 1, tid = 1, eid = 1, cid = 1, seedN = 0;
   let expert = 0;
   const RUN = 285, CLIMB = 220;
@@ -1540,7 +1548,8 @@ function buildKapok(config: LevelConfig, seed: number): GeneratedStage & { proto
   cur = P[0];
   beat('Learn: up the trunk', () => {
     cur = { ...P[0], x: 300, width: 400 } as Platform; // the patch of floor the first trunk stands on
-    hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
+    if (village) hint('Up through the village! Slide up a post to climb', 'Up through the village! Hold up on a post to climb', 'Up through the village! Hold up on a post to climb');
+    else hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
     climb(Math.round(R.r(280, 320)), 4);
     row(cur.x + 80, cur.x + cur.width - 30, cur.y - 34, 2, 'hibiscus');
     climb(Math.round(R.r(260, 300)), 3);
@@ -1560,7 +1569,8 @@ function buildKapok(config: LevelConfig, seed: number): GeneratedStage & { proto
       const h = Math.round(R.r(380, 420));
       trunk(sx, cur.y, cur.y - h);
       const hy = Math.round(cur.y - h * 0.5);
-      hollows.push({ x: sx, y: hy });
+      if (!village) hollows.push({ x: sx, y: hy });
+      else villageWindows.push({ x: sx, y: hy });
       seedN++;
       C.push({ id: cid++, type: 'seed', x: sx, y: hy + 4, collected: false, bobPhase: seedN, findId: `seed-${seedN}` });
       const top = ledge(sx - 40, sx + 150, cur.y - h);
@@ -1609,6 +1619,35 @@ function buildKapok(config: LevelConfig, seed: number): GeneratedStage & { proto
 
   // shift down: the crown sits 400 px under the top of the stage, the floor 120 px over its bottom
   const crown = cur;
+  const decor: W2Decor[] = [];
+  if (village) {
+    // the village on its porches: a round door on every wide one (clear of the posts and the rope ends), a lit window or washing on
+    // the others, a chimney and Gruntlewick with his scroll up top, and the lit window where 1-4 has its hollow
+    // (only the posts that stand on or rise from this porch, and the ropes tied to it, are in the way)
+    const clear = (p: Platform, x: number, half: number) =>
+      V.every((v) => v.vineType !== 'tree_climb' || v.topY > p.y + 10 || v.bottomY < p.y - 10 || Math.abs(v.x - x) > half + 40) &&
+      ROPES.every((r) => (r.g0 !== p.y && r.g1 !== p.y) || (Math.abs(r.x0 - x) > half + 30 && Math.abs(r.x1 - x) > half + 30));
+    let k = 0;
+    for (const p of P) {
+      if (p === P[0] || p === crown || p.width < 220) continue;
+      // try the middle of the porch, then a third of the way along from each end
+      const spots = [0.5, 0.33, 0.67].map((u) => p.x + p.width * u);
+      const kind = k % 3;
+      const half = kind === 0 ? 70 : kind === 1 ? 36 : 85;
+      const at = spots.find((x) => clear(p, x, half));
+      if (at === undefined) continue;
+      k++;
+      if (kind === 0) decor.push({ n: 'door', x: at, b: p.y + 6, w: 140, flip: k % 2 === 0 });
+      else if (kind === 1) decor.push({ n: 'window', x: at, b: p.y - 16, w: 62 });
+      else decor.push({ n: 'laundry', x: at, b: p.y + 4, w: 160 });
+    }
+    for (const w of villageWindows) decor.push({ n: 'window', x: w.x, b: w.y + 34, w: 70 });
+    decor.push({ n: 'chimney', x: crown.x + 120, b: crown.y + 2, w: 54 });
+    decor.push({ n: 'door', x: crown.x + crown.width - 330, b: crown.y + 6, w: 170 });
+    decor.push({ cel: 'tc.hat_shout', x: crown.x + crown.width - 60, b: crown.y + 2, k: 0.42, flip: true });
+    // the floor at the bottom is the river's bank, with reeds
+    decor.push({ n: 'reedTall', x: 160, b: 6, w: 64 }, { n: 'reedShort', x: W - 200, b: 6, w: 90 });
+  }
   const shift = 400 - crown.y;
   for (const p of P) p.y += shift;
   for (const v of V) { v.topY += shift; v.bottomY += shift; }
@@ -1618,10 +1657,13 @@ function buildKapok(config: LevelConfig, seed: number): GeneratedStage & { proto
   for (const r of ROPES) { r.y += shift; r.g0 += shift; r.g1 += shift; }
   for (const cp of checkpoints) cp.y += shift;
   for (const h of hollows) h.y += shift;
+  for (const d of decor) d.b += shift;
   for (const h of hints) if (h.aboveY !== undefined) h.aboveY += shift;
   for (const b of beats) { b[0] += shift; b[1] += shift; }
   const floorY = P[0].y;
   const H = floorY + 120;
+  // the bank's face rises from the floor to just under the top porch, where the village opens onto the sky
+  const bankWall = village ? { x0: 0, x1: W, top: crown.y + 40, bottom: floorY + 10 } : undefined;
   const exitX = Math.round(crown.x + crown.width - 140);
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: crown.y - 30, collected: false, bobPhase: 0 });
   cid = heartsAtFlags(C, checkpoints, cid);
@@ -1643,7 +1685,7 @@ function buildKapok(config: LevelConfig, seed: number): GeneratedStage & { proto
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
-    proto: { hints, covers: [], beats, movedPickups, hollows },
+    proto: { hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(bankWall ? { bankWall } : {}) },
   };
 }
 

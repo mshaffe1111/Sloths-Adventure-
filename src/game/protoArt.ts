@@ -454,6 +454,41 @@ function drawGroundFill(ctx: CanvasRenderingContext2D, p: Platform, viewBottom: 
   ctx.restore();
 }
 
+/**
+ * The face of a river bank behind a climb (2-6, the village dug into the bank): the world's painted earth repeated across the view,
+ * shaded back so the porches and posts in front stand out, with the grassy lip along its top. False until the kit has loaded.
+ */
+export function drawEarthWall(ctx: CanvasRenderingContext2D, wall: { x0: number; x1: number; top: number; bottom: number }, view: { x0: number; x1: number; y0: number; y1: number }): boolean {
+  if (!protoArtReady() || !ownKit()) return false;
+  const f = KIT_FRAMES[kitWorld]?.fill;
+  const img = imgs.get(kitWorld);
+  if (!f || !img) return false;
+  const a = Math.max(wall.x0, view.x0 - 10), b = Math.min(wall.x1, view.x1 + 10);
+  const top = Math.max(wall.top, view.y0 - 10), bottom = Math.min(wall.bottom, view.y1 + 10);
+  if (b <= a || bottom <= top) return true;
+  const tw = 300;
+  const th = (tw * f.h) / f.w;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(a, top, b - a, bottom - top);
+  ctx.clip();
+  // anchored to the world, so it does not swim as the camera climbs
+  const x0 = Math.floor(a / (tw - 2)) * (tw - 2);
+  const y0 = wall.top + Math.floor((top - wall.top) / (th - 2)) * (th - 2);
+  for (let y = y0; y < bottom; y += th - 2) for (let x = x0; x < b; x += tw - 2) ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, tw, th);
+  // set back: darker, and darker still toward the bottom of the view, so the climb in front reads clearly
+  ctx.fillStyle = 'rgba(28, 18, 8, 0.42)';
+  ctx.fillRect(a, top, b - a, bottom - top);
+  ctx.restore();
+  // the grassy lip where the bank meets the sky
+  if (wall.top >= view.y0 - 60 && wall.top <= view.y1 + 60) {
+    const m = frameOf('mossStrip').f;
+    const mh = 46, mw = (mh * m.w) / m.h;
+    for (let x = Math.floor(a / (mw - 2)) * (mw - 2); x < b; x += mw - 2) blit(ctx, 'mossStrip', x, wall.top - 16, mw, mh);
+  }
+  return true;
+}
+
 /** the face of the high canopy wall: the painted root wall, once, from its mossy lip down to the ground */
 export function drawWallArt(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number, w: number): boolean {
   if (!protoArtReady()) return false;

@@ -14,19 +14,20 @@ import { fixPickups } from './flowerReach.ts';
 import { findForStage } from './finds.ts';
 import { reachJump } from './physics.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow } from './protoCheck.ts';
-import { EXPERT_SECONDS, G, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
+import { buildKapok, EXPERT_SECONDS, G, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
 import { gapFor, driftX, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type RiverZone } from './river.ts';
 import type { W2Decor } from './riverArt.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 
-export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5';
+export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5' | '2-6';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-1': '2-1',
   '2-2': '2-2',
   '2-3': '2-3',
   '2-4': '2-4',
   '2-5': '2-5',
+  '2-6': '2-6',
 };
 
 /** 2-2 asks for 80 flowers for the king's crown (the stage holds about one and a half times that) */
@@ -43,6 +44,8 @@ export const SURFACE = G + surfaceBelowBank;
 const LOG_Y = G + LOG_DROP;
 
 export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
+  // 2-6 Up the Bank Houses: World 1's climbing stage (1-4) built up the riverbank village instead of the kapok
+  if (plan === '2-6') return buildKapok(config, seed, true);
   const R = stream(seed * 7 + 2);
   const P: Platform[] = [];
   const V: Vine[] = [];

@@ -94,7 +94,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { bushHeight, drawBushArt, drawChaseBroken, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawChaseBroken, drawEarthWall, drawChaseSection, drawCrownArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -3524,6 +3524,9 @@ export class GameEngine {
 
     this.drawWaterAndFlags(ctx, world);
     this.drawRivers(ctx, world, false);
+    // 2-6: the river bank the village is dug into, behind the whole climb
+    if (this.proto?.bankWall)
+      drawEarthWall(ctx, this.proto.bankWall, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
 
     // the bounce mushrooms wear the gold rim too (they sit in the scenery's colours)
     for (const pl of this.platforms) {
