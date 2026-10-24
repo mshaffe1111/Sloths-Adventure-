@@ -26,6 +26,12 @@ Matt's running list of drawings still needed from Gemini. A new need joins the l
 13. ~~**Ferns and hiding places**: a fern clump still and rustling, a moss curtain, a hollow log, a giant pawprint in the mud, a clawed boulder (3-2, 3-3). (Prompt 13)~~ Received 2026-10-24 (the pawprint came top-down; it is squashed into a print lying in the mud).
 14. ~~**The glowworm** (Matt's own idea): five sheets, hanging, waving, crawling, sleeping, and a punching set.~~ Received 2026-10-24: the glowworms are the lights in World 3's dark, asleep on their threads until Pokey stands still (the hanging, waving and sleeping poses used; the crawling and punching sets kept for later).
 
+## World 3 (3-4 to 3-6)
+
+15. **The sleeping thorn vine**: hangs from the cave roof; asleep, stirring, the lash, back to sleep (3-5, 3-8). (Prompt 15)
+16. **Grandma's things**: the bronze medal (World 3's keepsake), a teacup, spectacles, wool and needles, a seed pouch and trowel, a thimble and pincushion (3-6, 3-7). (Prompt 16)
+17. **The sinkhole**: the moonlit rim, a tall wall section, a trickle of water, a mossy ledge, a root bridge, a root ladder (3-4). (Prompt 17)
+
 ## World 7 (when we get there)
 
 11. **Under the Ruins, the secret level** (see SECRET-LEVELS.md). Prompts to write then: the tunnel pieces, glowworm threads, roots to climb, flooded passages, the hidden crack that leads in, the narrow crack under the net, Pokey pushing the note up, and Meeca finding it.
