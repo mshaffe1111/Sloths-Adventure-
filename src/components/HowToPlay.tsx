@@ -1,11 +1,11 @@
 import React from 'react';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
-import { COARSE, PolishToggle } from './menuParts.tsx';
+import { COARSE } from './menuParts.tsx';
 import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
 import { Icon } from './icons/index.tsx';
 
 /**
- * How to play: controls, what the stage is asking for, saving, the menu and the Polished visuals switch.
+ * How to play: controls, what the stage is asking for, saving and the menu.
  *
  * It owns nothing but its own tab, so any screen can mount it (the title, the start menu, the pause menu) and
  * simply unmount it again on close. `intro` is the short first-time version a brand-new player sees before the
@@ -17,13 +17,12 @@ interface Props {
   intro?: boolean;
 }
 
-type Tab = 'controls' | 'goal' | 'saving' | 'visuals';
+type Tab = 'controls' | 'goal' | 'saving';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'controls', label: 'Controls' },
   { id: 'goal', label: 'The goal' },
   { id: 'saving', label: 'Saving' },
-  { id: 'visuals', label: 'Visuals' },
 ];
 
 const K: React.FC<{ children: React.ReactNode }> = ({ children }) => <kbd className="htp-key">{children}</kbd>;
@@ -198,21 +197,6 @@ const Saving: React.FC = () => (
   </>
 );
 
-const Visuals: React.FC = () => (
-  <>
-    <Section title="Polished visuals">
-      <p className="ui-copy">
-        An extra layer of finish: <b>trees and grass sway in the wind</b>, Pokey gets a <b>rim of sunlight and a soft shadow</b>, light shafts and drifting pollen move through the jungle, and the
-        ground gets roots, dappled light, and richer soil.
-      </p>
-      <p className="ui-copy">
-        It is <b>off by default</b>, because it asks a lot of an older phone. If the game ever feels slow, switch it off. It also steps itself down on its own when the game starts to struggle.
-      </p>
-    </Section>
-    <PolishToggle />
-  </>
-);
-
 export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
   const [tab, setTab] = React.useState<Tab>('controls');
   const [short, setShort] = React.useState(intro);
@@ -261,7 +245,6 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
           {tab === 'controls' && <Controls short={short} />}
           {!short && tab === 'goal' && <Goal />}
           {!short && tab === 'saving' && <Saving />}
-          {!short && tab === 'visuals' && <Visuals />}
         </div>
 
         <div className="ui-row htp-foot">

@@ -96,7 +96,7 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
   if (e.state === undefined) {
     e.groundY = e.y;
     e.speed = Math.abs(e.vx) || 40;
-    e.state = type === 'boa' ? 'coil' : 'patrol';
+    e.state = type === 'boa' ? 'coil' : type === 'snake' && e.asleep ? 'sleep' : 'patrol';
     e.stateT = 0;
     e.fromX = e.x;
     e.toX = e.x;
@@ -121,7 +121,18 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
   switch (type) {
     // ---------------------------------------------------------------- snake: shy, then a quick aimed strike
     case 'snake': {
-      if (e.state === 'patrol') {
+      if (e.wakeT && e.wakeT > 0) e.wakeT = Math.max(0, e.wakeT - dt);
+      if (e.state === 'sleep') {
+        // asleep: it lies still until he is right beside it on its own branch, then wakes slowly (a moment before it can strike)
+        e.vx = 0;
+        if (dist < 95 && Math.abs(p.y - feet) < 60) {
+          e.asleep = false;
+          e.wakeT = 1.1;
+          enter(e, 'patrol');
+          e.attackCooldown = Math.max(e.attackCooldown, 1.1);
+          e.facing = toward;
+        }
+      } else if (e.state === 'patrol') {
         if (roam(e, p, dt, feet, PERSONALITY.snake, ready, speed, ev)) {
           enter(e, 'rear');
           e.vx = 0;

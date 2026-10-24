@@ -61,17 +61,6 @@ export function setPolishTier(t: number) {
 export function setPolishEnabled(v: boolean | null) {
   enabled = v;
 }
-/** the menu switch: applies at once and is remembered on the device (an address override like ?polish=0 still wins for that visit) */
-export function setPolishPref(on: boolean) {
-  enabled = on;
-  tier = 0;
-  try {
-    localStorage.setItem('sloth_polish', on ? 'on' : 'off');
-  } catch {
-    /* storage blocked: it just will not be remembered */
-  }
-}
-
 export type LayerName = 'far' | 'hills' | 'mid' | 'near' | 'front';
 export interface LayerVar {
   /** fraction of a tile the layer is slid sideways, so the stage starts on a different stretch of it */

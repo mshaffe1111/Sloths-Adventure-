@@ -19,8 +19,8 @@ function swipe(g: TouchGestures, lift: boolean) {
   if (lift) g.up(1, 324, 601, 70);
 }
 
-test('refined controls: off unless asked for', () => {
-  assert.equal(refinedControls(), false);
+test('refined controls: the game\'s controls (on unless ?refined=0)', () => {
+  assert.equal(refinedControls(), true);
 });
 
 test('refined controls: a quick sideways swipe with nothing near runs instead of kicking', () => {

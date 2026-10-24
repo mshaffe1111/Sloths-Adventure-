@@ -14,34 +14,20 @@ import { HERO_CLIPS, type HeroClip } from './heroClipsData.ts';
 import type { PlayerState } from './types.ts';
 import type { StdFrame } from './heroStandardData.ts';
 
-const KEY = 'sloth_clips';
 let forced: boolean | null = null;
 export function heroClipsEnabled(): boolean {
+  // Pokey's moving clips are the game's since 2026-10-24 (Matt tested them): `?clips=0` turns them off for comparing
   if (forced === null) {
-    forced = false;
+    forced = true;
     try {
       const q = new URLSearchParams(location.search).get('clips');
-      if (q === '1' || q === 'on') forced = true;
+      if (q === '0' || q === 'off') forced = false;
     } catch {
       /* no window */
     }
   }
-  if (forced) return true;
-  try {
-    return typeof localStorage !== 'undefined' && localStorage.getItem(KEY) === '1';
-  } catch {
-    return false;
-  }
+  return forced;
 }
-export function setHeroClipsPref(on: boolean) {
-  try {
-    if (on) localStorage.setItem(KEY, '1');
-    else localStorage.removeItem(KEY);
-  } catch {
-    /* ignore */
-  }
-}
-
 /** the idle clips, in the order he goes through them (only the ones that exist and have loaded play) */
 export const IDLE_CLIPS = ['idle-yawn', 'look-around', 'belly-scratch', 'wave', 'doze'];
 /** seconds of standing still before the first idle clip, and between one and the next */

@@ -1,3 +1,5 @@
+import { countWord } from './stagePlan.ts';
+import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { recorder } from './playRecorder.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
@@ -88,7 +90,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { drawCurtainArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -126,6 +128,8 @@ export interface GameEngineCallbacks {
   onLivesChange?: (lives: number, maxLives: number) => void;
   /** the game loop failed over and over: the app should leave the stage */
   onFatal?: () => void;
+  /** a guiding line (a stage tip, the goal, a reminder, the sealed door): the app has Dot say it (Wayside.tsx) */
+  onGuide?: (text: string, seconds: number) => void;
   onBossEncounter?: (boss: BossEntity) => void;
   /** Pokey stepped through the hidden Thorn Gate */
   onSecret?: () => void;
@@ -261,6 +265,8 @@ export class GameEngine {
   private trailOn = false;
   private trailT = 0;
   private barrierMsgCooldown = 0;
+  /** the goal hints already shown this stage (start, and late if well short) */
+  private goalSaid = { start: false, late: false };
   private comboCount: number = 0;
   private comboResetTimer: number = 0;
   /** the first-stage lesson for a new touch player (see touchCoach.ts), when there is one */
@@ -1635,10 +1641,14 @@ export class GameEngine {
     // the hand-built stage's one-time hints (protoStage.ts)
     if (this.proto) {
       for (const h of this.proto.hints) {
-        if (h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY)) continue;
+        if (h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY) || (h.aboveY !== undefined && p.y > h.aboveY)) continue;
         h.shown = true;
+        // said once per stage on this device: not again on a replay or a retry (tipMemory.ts)
+        const id = `tip:${h.text}`;
+        if (tipHeard(this.currentStage.config.id, id)) continue;
+        markTipHeard(this.currentStage.config.id, id);
         const mode = lessonInputMode();
-        this.stageHint = { text: mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, life: 3.6 };
+        this.guide(mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, 3.6);
       }
     }
 
@@ -1819,6 +1829,26 @@ export class GameEngine {
       this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.25);
     }
 
+    // the goal, said plainly (Matt, 2026-10-23: players did not know why the sanctuary stayed shut): once at the start, and once more
+    // when he is most of the way along and still well short, so nobody reaches a sealed door by surprise
+    if (isQuotaType && !quotaMet) {
+      const need = this.currentStage.config.targetCount - currentProgress;
+      const word = countWord(this.currentStage.config.worldIndex, objType) || 'more';
+      const along = p.x / Math.max(1, this.currentStage.exitTotemX);
+      if (!this.goalSaid.start && this.gameTime > 0.3 && !this.stageHint) {
+        this.goalSaid.start = true;
+        // the first time this stage is played on this device only (the yellow counter says it after that)
+        const gid = `goal:${this.currentStage.config.targetCount}`;
+        if (!tipHeard(this.currentStage.config.id, gid)) {
+          markTipHeard(this.currentStage.config.id, gid);
+          this.guide(`Collect ${this.currentStage.config.targetCount} ${word} to open the sanctuary`, 4);
+        }
+      } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
+        this.goalSaid.late = true;
+        this.guide(`Still ${need} ${word} to find before the sanctuary opens`, 4);
+      }
+    }
+
     // Update Exit Totem locked visual in collectibles list
     const exitItem = this.collectibles.find((c) => c.type === 'exit_totem');
     if (exitItem) {
@@ -1845,17 +1875,10 @@ export class GameEngine {
           if (this.barrierMsgCooldown <= 0) {
           this.barrierMsgCooldown = 1.2;
           const remaining = this.currentStage.config.targetCount - currentProgress;
-          const msg =
-            objType === 'harvest'
-              ? `🔒 Need ${remaining} more Flora!`
-              : objType === 'purge'
-              ? `🔒 Defeat ${remaining} more Beasts!`
-              : objType === 'rescue'
-              ? `🔒 Free ${remaining} more Critters!`
-              : objType === 'relic_hunt'
-              ? `🔒 Find ${remaining} more Idols!`
-              : `🔒 Finish the goal to open the shrine!`;
-          this.addFloatingText(msg, this.currentStage.exitTotemX - 40, p.y - 45, '#f87171');
+          // the same word the counter at the top uses, so the two always agree
+          const word = countWord(this.currentStage.config.worldIndex, objType);
+          // in the banner the stage hints use (the small red floating text was hard to read on the bright doorway)
+          if (!this.stageHint) this.guide(word ? `Sealed: ${remaining} more ${word} needed` : 'Finish the goal to open the sanctuary', 3);
           }
         }
       }
@@ -3376,6 +3399,10 @@ export class GameEngine {
     this.drawRivers(ctx, world, true);
     if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
+    // trunk hollows (1-4): over the trunk, glowing once he is close enough to see in
+    for (const h of this.proto?.hollows ?? []) {
+      if (this.onScreen(h.x, h.y, 260)) drawHollowArt(ctx, h.x, h.y, Math.hypot(this.player.x - h.x, this.player.y - 30 - h.y) < 230);
+    }
     drawCrumbleTiles(ctx, this.platforms, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     drawZoneBases(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
     if (lair && this.currentStage.arena) drawLairWorld(ctx, lair, this.currentStage.arena, lairView, this.gameTime);
@@ -3450,6 +3477,7 @@ export class GameEngine {
       const draw = () => {
         if (enemy.type === 'snake') {
           if (!drawGoldSnake(ctx, enemy, this.gameTime) && !drawSnakeSprite(ctx, enemy, this.gameTime)) drawTreeSnake(ctx, enemy, this.gameTime);
+          if (enemy.state === 'sleep') this.drawSleepZ(ctx, enemy);
         } else if (enemy.type === 'eagle') {
           if (!drawEagleSprite(ctx, enemy, this.gameTime)) drawHarpyEagle(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'ocelot') {
@@ -3537,7 +3565,8 @@ export class GameEngine {
       ctx.fillStyle = ft.color;
       ctx.fillText(ft.text, ft.x, ft.y);
     });
-    if (this.stageHint) {
+    // (when the app has Dot say the hints, it draws them: this canvas banner is only the fallback)
+    if (this.stageHint && !this.callbacks.onGuide) {
       const h = this.stageHint;
       const a = Math.min(1, h.life / 0.4, (3.6 - h.life) / 0.25);
       ctx.save();
@@ -3609,6 +3638,31 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
+  /** a sleeping animal's Z's, drifting up from its head (a stand-in until the sleeping snake art arrives) */
+  private drawSleepZ(ctx: CanvasRenderingContext2D, e: Enemy) {
+    ctx.save();
+    ctx.font = '700 15px Fredoka, sans-serif';
+    ctx.textAlign = 'center';
+    for (let i = 0; i < 3; i++) {
+      const u = (this.gameTime * 0.45 + i / 3 + e.id * 0.13) % 1;
+      ctx.globalAlpha = Math.sin(u * Math.PI) * 0.9;
+      ctx.fillStyle = '#eef6ff';
+      ctx.strokeStyle = 'rgba(20, 38, 26, 0.7)';
+      ctx.lineWidth = 3;
+      const zx = e.x + e.facing * 10 + u * 22, zy = e.y - 18 - u * 40;
+      ctx.font = `700 ${11 + u * 9}px Fredoka, sans-serif`;
+      ctx.strokeText('z', zx, zy);
+      ctx.fillText('z', zx, zy);
+    }
+    ctx.restore();
+  }
+
+  /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
+  private guide(text: string, seconds: number) {
+    this.stageHint = { text, life: seconds };
+    this.callbacks.onGuide?.(text, seconds);
+  }
+
   private addFloatingText(text: string, x: number, y: number, color: string, life = 0.8) {
     this.floatingTexts.push({
       id: Math.random(),

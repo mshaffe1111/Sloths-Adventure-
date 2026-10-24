@@ -11,41 +11,40 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { trackAtlas } from './atlasLoader.ts';
 
-const KEY = 'sloth_snake_gold';
 let enabled: boolean | null = null;
 
 export function goldSnakeEnabled(): boolean {
   if (enabled !== null) return enabled;
-  let v = false;
+  // the game's snake since 2026-10-24 (Matt tested it): `?snake=classic` brings back the old one for comparing
+  let v = true;
   try {
     const q = new URLSearchParams(location.search).get('snake');
-    if (q === 'gold') v = true;
-    else if (q === 'classic' || q === 'sprite') v = false;
-    else v = localStorage.getItem(KEY) === '1';
+    if (q === 'classic' || q === 'sprite') v = false;
   } catch {
-    /* no window or storage: off */
+    /* no window: on */
   }
   enabled = v;
   return v;
 }
 
-export function setGoldSnakePref(on: boolean) {
-  enabled = on;
-  try {
-    if (on) localStorage.setItem(KEY, '1');
-    else localStorage.removeItem(KEY);
-  } catch {
-    /* storage blocked: the choice lasts for this visit */
-  }
-}
-
 let head: HTMLImageElement | null = null;
 let ready = false;
+/** the same head asleep (eyes shut) and waking (a drowsy yawn), painted to swap in place (Matt, 2026-10-23) */
+let sleepHead: HTMLImageElement | null = null;
+let wakeHead: HTMLImageElement | null = null;
+let sleepReady = false;
+let wakeReady = false;
 function load() {
   if (head || typeof Image === 'undefined') return;
   const img = new Image();
   head = img;
   trackAtlas(img, new URL('../assets/enemies/goldsnake-head.webp', import.meta.url).href, () => { ready = true; }, () => { head = null; });
+  const s = new Image();
+  sleepHead = s;
+  trackAtlas(s, new URL('../assets/enemies/goldsnake-sleep.webp', import.meta.url).href, () => { sleepReady = true; }, () => { sleepHead = null; });
+  const w = new Image();
+  wakeHead = w;
+  trackAtlas(w, new URL('../assets/enemies/goldsnake-wake.webp', import.meta.url).href, () => { wakeReady = true; }, () => { wakeHead = null; });
 }
 
 /** colours sampled from Matt's sheet */
@@ -107,7 +106,10 @@ export function drawGoldSnake(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
   else if ((enemy.stagger ?? 0) > 0) mode = 'dazed';
   else if ((enemy.recoil ?? 0) > 0.35) mode = 'hurt';
   const sh = goldShape(mode, r.modeT, time);
-  if (b.dt > 0) r.wave += b.dt * sh.speed;
+  // asleep it lies still (no slither), just breathing a little
+  const asleep = enemy.state === 'sleep' && !enemy.defeated;
+  if (asleep) { sh.amp *= 0.35; sh.lift = 0; sh.lunge = 0; }
+  if (b.dt > 0 && !asleep) r.wave += b.dt * sh.speed;
 
   if (enemy.telegraphTimer > 0) {
     // the same red warning ring the other snakes show before a strike
@@ -205,11 +207,14 @@ export function drawGoldSnake(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
 
   // the painted head, turned along the neck
   const ang = Math.atan2(ys[0] - ys[3], xs[0] - xs[3]);
-  const hw = HEAD_W, hh = (hw * head.naturalHeight) / head.naturalWidth;
+  const waking = (enemy.wakeT ?? 0) > 0 && !enemy.defeated;
+  const face = asleep && sleepReady && sleepHead ? sleepHead : waking && wakeReady && wakeHead ? wakeHead : head;
+  const hw = HEAD_W, hh = (hw * face.naturalHeight) / face.naturalWidth;
   ctx.save();
   ctx.translate(xs[0], ys[0]);
   ctx.rotate(ang * 0.85 + (mode === 'defeat' ? 0.35 : mode === 'hurt' ? -0.25 : 0));
-  ctx.drawImage(head, -hw * 0.2, -hh * 0.62, hw, hh);
+  if (asleep) ctx.translate(0, 1 + Math.sin(time * 2.2 + enemy.id) * 0.6);
+  ctx.drawImage(face, -hw * 0.2, -hh * 0.62, hw, hh);
   ctx.restore();
   if (mode === 'dazed') {
     // three little stars over the head

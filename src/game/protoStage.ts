@@ -15,32 +15,31 @@
  * many vines each chain has, how far apart and how high they hang, the length of every stretch, the snakes, and the order inside a beat.
  * Every rolled piece is checked against the shared physics (protoCheck.ts) and rolled again if it fails (see protoStage.test.ts).
  */
+import { fixPickups } from './flowerReach.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
-import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
-import { reachGlide, reachJump } from './physics.ts';
+import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
+import { JUMP_RISE, reachGlide, reachJump } from './physics.ts';
+import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
+import { findForStage } from './finds.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow, maxRise } from './protoCheck.ts';
 
 export const PROTO_STAGE_ID = '1-6';
-const KEY = 'sloth_proto_16';
+/** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
+  // the stages rebuilt from the stage plan are the game's stages since 2026-10-24 (Matt tested them): `?proto=0` plays the old ones.
+  // Outside a browser (the generator's own tests) the generated stages are what is being checked, so they are built there; the
+  // hand-built stages have their own tests (stage1x.test.ts, protoStage.test.ts), which call buildProtoStage directly.
+  if (typeof location === 'undefined') return false;
   try {
-    if (typeof location !== 'undefined' && /[?&]proto=1\b/.test(location.search)) return true;
-    return typeof localStorage !== 'undefined' && localStorage.getItem(KEY) === '1';
+    return !/[?&]proto=0\b/.test(location.search);
   } catch {
-    return false;
+    return true;
   }
 }
-export function setProtoStagePref(on: boolean) {
-  try {
-    if (on) localStorage.setItem(KEY, '1');
-    else localStorage.removeItem(KEY);
-  } catch {
-    /* ignore */
-  }
-}
-
 /** ground height, the water line, and the height of a bank of earth */
 export const G = 580;
 const WATER = 730;
@@ -51,7 +50,13 @@ export const LOG = { w: 220, h: 100 } as const;
 
 /** a short line shown above Pokey the first time he passes x */
 /** `text` is for screen gestures (the default), `pad` and `keys` for the on-screen pad and a keyboard */
-export interface StageHint { x: number; text: string; pad: string; keys: string; shown?: boolean; /** only when Pokey is this low or lower (fell to the floor) */ belowY?: number }
+export interface StageHint {
+  x: number; text: string; pad: string; keys: string; shown?: boolean;
+  /** only when Pokey is this low or lower (fell to the floor) */
+  belowY?: number;
+  /** only when Pokey is this high or higher (a climbing stage: the hint waits for his height, not his x) */
+  aboveY?: number;
+}
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
 
@@ -60,6 +65,10 @@ export interface ProtoExtras {
   covers: LeafCover[];
   /** the beats, for the blueprint and the tests: [x0, x1, name] */
   beats: Array<[number, number, string]>;
+  /** pickups the last pass had to move to where he can get them (flowerReach.ts): a hand-built stage should need none */
+  movedPickups?: number;
+  /** hollows in climb trunks (1-4): drawn on the trunk at this height, glowing once he is close */
+  hollows?: Array<{ x: number; y: number }>;
 }
 
 /** a small seeded random stream (mulberry32): the same seed always builds the same stage */
@@ -95,6 +104,16 @@ const HOLLOW_Y = 710;
 /** how high a double jump lifts him (computed once from the physics) */
 const RISE = maxRise();
 
+/**
+ * 1-2 The Petal Trail asks for 80 petals, not the generated stage's 33 (Matt, 2026-10-23): the trail holds about half again as many, so he
+ * has to follow most of it, high and low, to open the sanctuary.
+ */
+export const PETAL_GOAL_12 = 80;
+/** 1-5 More Petals asks for 90 (a step up from 1-2's 80), and holds about one and a half times that */
+export const PETAL_GOAL_15 = 90;
+/** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
+export const SNAKE_GOAL_13 = 16;
+
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
 
@@ -106,10 +125,12 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * where the snakes sit, the order of the pieces inside a beat, and the dressing. Every rolled piece is checked against the physics
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
-export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | 'ctest' = 'proto'): GeneratedStage & { proto: ProtoExtras } {
+export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto'): GeneratedStage & { proto: ProtoExtras } {
+  if (plan === '1-4') return buildKapok(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];
   const V: Vine[] = [];
+  const ROPES: Rope[] = [];
   const T: TreeStructure[] = [];
   const E: Enemy[] = [];
   const C: Collectible[] = [];
@@ -171,8 +192,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
       flower(x0 + (x1 - x0) * t, yTop + 70 * (1 - Math.sin(Math.PI * t)), v);
     }
   };
-  const snake = (x: number, surface: number, range = 90) => {
+  const snake = (x: number, surface: number, range = 90, asleep = false) => {
     E.push({
+      asleep,
       id: eid++, type: 'snake', x, y: surface - 14, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: R.chance(0.5) ? 1 : -1,
       patrolMinX: x - range / 2, patrolMaxX: x + range / 2, attackCooldown: 2, telegraphTimer: 0, isAttacking: false,
       animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
@@ -487,6 +509,479 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
     pieces.push({ k: 'kapok', x0, x1: x });
   }
 
+  /**
+   * stepping stones: mossy pillars standing in a soft pit, at the heights given (px above the ground), each gap a share of what a jump
+   * between those heights can reach (`share` of a single jump, or of a double jump when `dbl`). Lands on open ground after the last.
+   */
+  function pillars(heights: number[], share: [number, number], dbl = false) {
+    const x0 = x;
+    run(R.r(140, 200));
+    const edge = x;
+    close();
+    let px = edge, prevTop = G;
+    const tops: number[] = [];
+    for (const h of heights) {
+      const top = G - h;
+      const gap = Math.round(reachJump(prevTop - top, dbl) * R.r(share[0], share[1]));
+      const w = Math.round(R.r(110, 160));
+      px += gap;
+      P.push({ id: pid++, x: px, y: top, width: w, height: HOLLOW_Y - top + 10, type: 'solid', style: 'moss_stone' });
+      flower(px + w / 2, top - 34, 'orchid');
+      tops.push(top);
+      px += w;
+      prevTop = top;
+    }
+    const far = Math.round(px + reachJump(prevTop - G, dbl) * R.r(share[0], share[1]));
+    softPit(edge, far);
+    open(far);
+    run(R.r(160, 240));
+    expert += (x - x0) / RUN + 0.6 * heights.length;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+
+  /** a mushroom that bounces Pokey up to a high branch nobody can jump to: a cache of petals and a golden seed (1-1's secret) */
+  function mushroomCache() {
+    const x0 = x;
+    run(R.r(180, 240));
+    const mx = x;
+    P.push({ id: pid++, x: mx, y: G - 30, width: 70, height: 30, type: 'bouncy' });
+    // higher than a double jump reaches from the ground, so only the mushroom gets him there
+    const by = Math.round(G - RISE - 70);
+    branch(mx - 40, mx + 230, by);
+    row(mx + 10, mx + 200, by - 34, 4, 'hibiscus');
+    goldenSeed(mx + 150, by - 70);
+    run(R.r(320, 380));
+    expert += (x - x0) / RUN + 1.5;
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  /**
+   * the high road: a mushroom bounces him up onto a run of branches with small gaps between them (flowers along the top). Falling off
+   * only drops him onto the ground path below, which runs the same way, so the high road is a bonus, never a trap.
+   */
+  function highRoad() {
+    const x0 = x;
+    run(R.r(160, 220));
+    P.push({ id: pid++, x: x, y: G - 30, width: 70, height: 30, type: 'bouncy' });
+    const y = Math.round(G - R.r(170, 200));
+    let bx = x + 40;
+    const n = R.i(3, 5);
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(170, 260));
+      branch(bx, bx + w, y);
+      row(bx + 30, bx + w - 30, y - 34, 2, 'hibiscus');
+      bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.6));
+    }
+    x = bx + R.r(100, 160);
+    expert += (x - x0) / RUN + 1.2;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
+  if (plan === '1-1') {
+    // 1-1 Into the Canopy: run and jump. Taught over soft moss, tested on stepping stones at three heights, and twisted at the end
+    // into gaps only the second jump crosses. The touch coach teaches the gestures at the start (engine.ts), so the hints come later.
+    beat('Learn: run and jump', () => {
+      rest(R.r(700, 850));
+      stumps();
+      rest(R.r(250, 350));
+      hint(x + 40, 'Jump the little gaps', 'Jump the little gaps', 'Jump the little gaps');
+      const one = reachJump(0, false);
+      for (const w of [one * 0.35, one * 0.45, one * 0.55]) {
+        const edge = x;
+        close();
+        const far = Math.round(edge + w);
+        softPit(edge, far);
+        open(far);
+        run(R.r(220, 300));
+      }
+      flag();
+    });
+    beat('Test: the stepping stones', () => {
+      hint(x + 60, 'Hop from stone to stone', 'Hop from stone to stone', 'Hop from stone to stone');
+      pillars([60, 120, 60], [0.5, 0.62]);
+      rest(R.r(250, 350));
+      pillars(R.shuffle([40, 100, 140, 80]), [0.55, 0.68]);
+      mushroomCache();
+      pillars([90, 30, 120, 60], [0.58, 0.7]);
+      flag();
+    });
+    beat('Twist: the second jump', () => {
+      hint(x + 60, 'Flick up again in the air to jump twice', 'Press Jump again in the air', 'Press Space again in the air');
+      const two = reachJump(0, true);
+      for (const w of [two * 0.62, two * 0.72, two * 0.82]) {
+        run(R.r(220, 300));
+        const edge = x;
+        close();
+        const far = Math.round(edge + w);
+        softPit(edge, far);
+        flower(edge + w / 2, G - 150, 'hibiscus');
+        open(far);
+      }
+      run(R.r(200, 260));
+      pillars([60, 140], [0.7, 0.8], true);
+      flag();
+    });
+    beat('Finish', () => {
+      // more of the same, rolled, until even a quick player needs two minutes
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 24) {
+        const k = n % 3;
+        if (k === 0) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.72], n > 2);
+        else if (k === 1) highRoad();
+        else { rest(R.r(250, 400)); stumps(); }
+        n++;
+        if (n % 3 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
+  /**
+   * the petal stairs: stumps rising to a run of branches, the petals climbing with them. The forest floor carries on below (safe),
+   * but the petals are up top. With `nook`, a branch above the run hides behind leaves that part as he comes close: more petals there.
+   */
+  function trailUp(nook: boolean) {
+    const x0 = x;
+    run(R.r(160, 220));
+    const steps = [50, 100, 150];
+    for (const h of steps) {
+      const w = R.r(90, 120);
+      block(x, x + w, h);
+      flower(x + w / 2, G - h - 34, 'orchid');
+      run(w + R.r(50, 80));
+    }
+    const y = G - Math.round(R.r(185, 200));
+    let bx = x - 30;
+    const n = R.i(3, 4);
+    let nookAt = -1;
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(220, 300));
+      branch(bx, bx + w, y);
+      row(bx + 40, bx + w - 40, y - 34, 2, 'orchid');
+      if (k === n - 2) nookAt = bx + w * 0.5;
+      bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
+    }
+    if (nook && nookAt > 0) {
+      // up a double jump from the run: a hidden shelf of petals behind leaves
+      const ny = y - Math.round(R.r(140, 160));
+      branch(nookAt - 60, nookAt + 160, ny);
+      row(nookAt - 20, nookAt + 100, ny - 34, 3, 'hibiscus');
+      // World 1's note waits on the shelf (the generated 1-2 places it itself; a hand-built stage has to: finds.ts, a note in stage 2)
+      const note = findForStage(config.worldIndex, config.miniIndex);
+      if (note && note.kind === 'note') C.push({ id: cid++, type: 'find', findId: note.id, hidden: false, x: nookAt + 140, y: ny - 40, collected: false, bobPhase: 0 });
+      covers.push({ x: nookAt - 90, y: ny - 80, w: 280, h: 110 });
+    }
+    // the petals lead back down to the floor
+    arc(bx - 60, bx + 160, y + 20, 3, 'orchid');
+    x = bx + R.r(200, 260);
+    expert += (x - x0) / RUN + 2;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
+  /**
+   * the split trail: a high road of branches and the forest floor run side by side, and the petals swap between them. Each time
+   * they go high a mushroom on the floor bounces him up; each time they go low he drops. Three drops in all.
+   */
+  function splitTrail() {
+    const x0 = x;
+    run(R.r(160, 220));
+    const y = G - Math.round(R.r(175, 195));
+    for (let k = 0; k < 3; k++) {
+      // high: a mushroom up, then branches with petals
+      P.push({ id: pid++, x: x, y: G - 30, width: 70, height: 30, type: 'bouncy' });
+      let bx = x + 40;
+      const n = R.i(2, 3);
+      for (let j = 0; j < n; j++) {
+        const w = Math.round(R.r(200, 280));
+        branch(bx, bx + w, y);
+        row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
+        bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
+      }
+      // low: the branches carry on overhead with nothing on them, and the petals are on the floor
+      const lowLen = Math.round(R.r(520, 700));
+      branch(bx, bx + lowLen, y);
+      arc(bx - 40, bx + 120, y + 60, 2, 'orchid');
+      row(bx + 160, bx + lowLen - 40, G - 34, Math.round(lowLen / 200), 'orchid');
+      x = bx + lowLen + R.r(80, 140);
+    }
+    expert += (x - x0) / RUN + 4;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
+  /**
+   * the goal is a real test when the stage holds about one and a half times it (two in three to find, room to miss some): the
+   * finish is thinned evenly, the taught parts and the hidden shelf are left whole
+   */
+  function thinFinish(goal: number) {
+    const fin = beats[beats.length - 1];
+    const late = C.filter((c) => c.type === 'flower' && c.x >= fin[0]);
+    const keep = Math.max(Math.round(late.length / 3), Math.round(goal * 1.5) - (C.filter((c) => c.type === 'flower').length - late.length));
+    if (late.length > keep) {
+      const step = late.length / (late.length - keep);
+      const out = new Set<Collectible>();
+      for (let i = 0; i < late.length - keep; i++) out.add(late[Math.min(late.length - 1, Math.floor(i * step + step / 2))]);
+      for (let i = C.length - 1; i >= 0; i--) if (out.has(C[i])) C.splice(i, 1);
+    }
+  }
+
+  if (plan === '1-2') {
+    // 1-2 The Petal Trail: the petals show the way. Taught on the floor (they arc over each gap where the jump goes), tested up the
+    // stumps to the branches overhead, twisted into a trail that swaps between high and low. The stage asks for 33 of them.
+    beat('Learn: follow the petals', () => {
+      rest(R.r(500, 650));
+      hint(x - 200, 'Follow the petals', 'Follow the petals', 'Follow the petals');
+      row(x - 160, x + 40, G - 34, 3, 'orchid');
+      const one = reachJump(0, false);
+      for (const w of [one * 0.4, one * 0.5, one * 0.6]) {
+        run(R.r(160, 220));
+        const edge = x;
+        close();
+        const far = Math.round(edge + w);
+        softPit(edge, far);
+        arc(edge - 50, far + 50, G - 110, 3, 'hibiscus');
+        open(far);
+      }
+      run(R.r(160, 220));
+      stumps();
+      flag();
+    });
+    beat('Test: up to the branches', () => {
+      hint(x + 60, 'The petals go up', 'The petals go up', 'The petals go up');
+      trailUp(false);
+      rest(R.r(300, 400));
+      trailUp(true);
+      flag();
+    });
+    beat('Twist: high and low', () => {
+      hint(x + 60, 'Stay on the petals, high or low', 'Stay on the petals, high or low', 'Stay on the petals, high or low');
+      splitTrail();
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 24) {
+        const k = n % 3;
+        if (k === 0) trailUp(false);
+        else if (k === 1) { rest(R.r(250, 400)); stumps(); }
+        else highRoad();
+        n++;
+        if (n % 3 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+    thinFinish(PETAL_GOAL_12);
+  }
+
+  /** branches over a soft pit with a snake on most of them: punch it or hop over it (falling only drops him to the moss) */
+  function snakeBranches(n: number, y: number) {
+    const x0 = x;
+    run(R.r(160, 220));
+    const edge = x;
+    close();
+    let bx = edge + Math.round(reachJump(G - y, false) * R.r(0.45, 0.6));
+    let m = 0;
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(210, 280));
+      const top = y + Math.round(R.r(-20, 20));
+      branch(bx, bx + w, top);
+      if (k !== 0 || n < 3) { snake(bx + w / 2, top, w - 90); m++; }
+      else row(bx + 50, bx + w - 50, top - 34, 2, 'orchid');
+      bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.55));
+    }
+    const far = Math.round(bx + 20);
+    softPit(edge, far);
+    open(far);
+    run(R.r(200, 280));
+    expert += (x - x0) / RUN + 1.6 * m;
+    pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  /**
+   * a rope over a wide soft pit, a snake on the near ledge beside its end. Before Shimmy Rope is learned (clearing this stage) he drops
+   * into the moss and climbs out the far side; after, he shimmies across. `bonus`: petals along under the rope for the shimmy.
+   */
+  function ropeGap(guard: boolean, bonus: boolean) {
+    const x0 = x;
+    run(R.r(260, 340));
+    const edge = x;
+    if (guard) snake(edge - 120, G, 140);
+    close();
+    const far = Math.round(edge + R.r(380, 430));
+    softPit(edge, far);
+    ROPES.push({ id: ROPES.length + 1, x0: edge - 44, x1: far + 44, y: G - 146, g0: G, g1: G, required: false });
+    if (bonus) row(edge + 60, far - 60, G - 146 + 86 - 40, 3, 'hibiscus');
+    open(far);
+    run(R.r(220, 300));
+    expert += (x - x0) / RUN + 2.5 + (guard ? 1.5 : 0);
+    pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  if (plan === '1-3') {
+    // 1-3 Branch Snakes: punching. One snake asleep on a wide branch to learn on, then snakes on narrow branches (punch or hop),
+    // then a snake guarding a rope: clearing the stage teaches Shimmy Rope, and a short rope near the end is there to try it on.
+    beat('Learn: the sleeping snake', () => {
+      rest(R.r(600, 750));
+      const wx = x + 120;
+      branch(wx, wx + 420, G - 90);
+      snake(wx + 260, G - 90, 60, true);
+      row(wx + 40, wx + 160, G - 124, 2, 'orchid');
+      hint(wx - 80, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
+      run(R.r(700, 800));
+      expert += 3;
+      snakes();
+      flag();
+    });
+    beat('Test: snakes on the branches', () => {
+      hint(x + 60, 'Punch the snakes or hop over them', 'Punch the snakes or hop over them', 'Punch the snakes or hop over them');
+      snakeBranches(3, G - 130);
+      rest(R.r(250, 350));
+      stumps();
+      snakeBranches(4, G - 150);
+      flag();
+    });
+    beat('Twist: the rope guard', () => {
+      hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
+      ropeGap(true, false);
+      snakes();
+      ropeGap(true, true);
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 24) {
+        const k = n % 3;
+        if (k === 0) snakeBranches(R.i(3, 4), G - Math.round(R.r(120, 160)));
+        else if (k === 1) { rest(R.r(250, 400)); snakes(); }
+        else { stumps(); rest(R.r(200, 300)); }
+        n++;
+        if (n % 3 === 0) flag();
+      }
+      // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
+      ropeGap(false, true);
+      rest(R.r(600, 800));
+    });
+  }
+
+  /** petals arcing over soft gaps only a double jump crosses: the top of each arc is higher than one jump reaches */
+  function doubleArcs() {
+    const x0 = x;
+    run(R.r(180, 240));
+    const two = reachJump(0, true);
+    for (const w of [two * 0.66, two * 0.74, two * 0.8]) {
+      const edge = x;
+      close();
+      const far = Math.round(edge + w);
+      softPit(edge, far);
+      arc(edge - 40, far + 40, Math.round(G - 20 - JUMP_RISE - 45), 3, 'hibiscus');
+      open(far);
+      run(R.r(240, 320));
+    }
+    expert += (x - x0) / RUN + 2;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+
+  /**
+   * creaking branches with petals on them, over safe ground: each one gives way a moment after he lands (and grows back), so he grabs
+   * and keeps moving. Never needed to get through (the floor runs underneath), only to get the petals.
+   */
+  function creakRun() {
+    const x0 = x;
+    run(R.r(160, 220));
+    block(x, x + 100, 60);
+    flower(x + 50, G - 94, 'orchid');
+    run(100 + R.r(50, 80));
+    const y = G - Math.round(R.r(135, 150));
+    const n = R.i(4, 5);
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(150, 200));
+      branch(x, x + w, y + Math.round(R.r(-12, 12)), 'fragile');
+      row(x + 35, x + w - 35, y - 34, 2, 'hibiscus');
+      run(w + Math.round(reachJump(0, false) * R.r(0.35, 0.5)));
+    }
+    run(R.r(160, 240));
+    expert += (x - x0) / RUN + 1;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
+  /** a tree to climb, with World 1's keepsake hidden in a Hush Fern at the end of its branch (crouch beside it to search) */
+  function fernTree() {
+    const x0 = x;
+    run(R.r(300, 360));
+    const tX = x - 150;
+    const perchY = 300;
+    trunk(tX, G, perchY);
+    branch(tX - 40, tX + 300, perchY);
+    for (let i = 0; i < 4; i++) flower(tX, G - 70 - i * 60, 'hibiscus');
+    row(tX + 60, tX + 160, perchY - 34, 2, 'orchid');
+    const keep = findForStage(config.worldIndex, config.miniIndex);
+    if (keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: tX + 250, y: perchY - 26, collected: false, bobPhase: 0 });
+    run(R.r(260, 320));
+    expert += (x - x0) / RUN + (2 * (G - perchY)) / CLIMB;
+    pieces.push({ k: 'kapok', x0, x1: x });
+  }
+
+  /** a lookout up a trunk, and far out over the floor a ledge only the Leaf Glide reaches, with a golden seed (back after World 4) */
+  function glideLookout() {
+    const x0 = x;
+    run(R.r(300, 360));
+    const tX = x - 120;
+    const perchY = 300;
+    trunk(tX, G, perchY);
+    branch(tX - 40, tX + 220, perchY);
+    for (let i = 0; i < 3; i++) flower(tX, G - 70 - i * 70, 'orchid');
+    // higher than a double jump from the floor, and past a double jump from the lookout, well inside a glide
+    const gy = Math.round(G - RISE - 30);
+    const dy = perchY - gy;
+    const gap = Math.round((reachJump(dy, true) + reachGlide(dy, true)) / 2);
+    const lx = tX + 220 + gap;
+    branch(lx, lx + 120, gy);
+    goldenSeed(lx + 60, gy - 34);
+    hint(tX - 60, 'Something shiny, far away...', 'Something shiny, far away...', 'Something shiny, far away...', undefined);
+    x = lx + 120 + R.r(380, 460);
+    expert += (x - x0) / RUN + (2 * (G - perchY)) / CLIMB;
+    pieces.push({ k: 'kapok', x0, x1: x });
+  }
+
+  if (plan === '1-5') {
+    // 1-5 More Petals: everything so far, mixed. Every group of petals asks for a different move (a climb, a rope, a double jump, a
+    // bounce, a punch), then the petals go onto creaking branches that give way: grab and keep moving. The keepsake hides in a fern
+    // up a tree, and a seed far out from a lookout waits for the Leaf Glide.
+    beat('Start', () => {
+      rest(R.r(650, 800));
+      flag();
+    });
+    beat('Test: a move for every group', () => {
+      hint(x + 40, 'Every group of petals needs a different move', 'Every group of petals needs a different move', 'Every group of petals needs a different move');
+      mixed(
+        () => fernTree(),
+        () => ropeGap(false, true),
+        () => doubleArcs(),
+        () => mushroomCache(),
+        () => { rest(R.r(200, 300)); snakes(); },
+      );
+      flag();
+    });
+    beat('Twist: creaking branches', () => {
+      hint(x + 60, 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving');
+      creakRun();
+      rest(R.r(250, 350));
+      creakRun();
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      const pieceList = [() => ropeGap(false, true), () => creakRun(), () => doubleArcs(), () => { rest(R.r(250, 350)); stumps(); }, () => highRoad()];
+      while (expert < EXPERT_SECONDS - 22 && n < 24) {
+        pieceList[n % pieceList.length]();
+        n++;
+        if (n % 3 === 0) flag();
+      }
+      glideLookout();
+      rest(R.r(700, 900));
+    });
+    thinFinish(PETAL_GOAL_15);
+  }
+
   if (plan === 'ctest') {
     // the control test: the same stage for every player (the seed is fixed by the caller), one skill per stretch, cheap to fail
     beat('Run and stop', () => {
@@ -605,13 +1100,15 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : {}) };
+  // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
+  const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
   return {
     config: cfg,
     trees: T,
     platforms: P,
     vines: V,
-    ropes: [],
+    ropes: ROPES,
     enemies: E,
     boss: null,
     collectibles: C,
@@ -622,9 +1119,241 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: 'proto' | '
     checkpoints: checkpoints.sort((a, b) => a.x - b.x),
     waterY: WATER,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces: pieces.map((p) => ({ k: p.k, x0: p.x0, x1: p.x1 })), timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers, beats },
+    proto: { hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups },
   };
 }
+// ---------------------------------------------------------------------------------------------------------------------------
+// 1-4 Up the Kapok: the first climbing stage, built from the floor up
+
+/** the kapok's width (the engine keeps him inside it) and the margin nothing is built in */
+const KAPOK_W = 3200;
+const KAPOK_MARGIN = 90;
+
+/**
+ * 1-4 Up the Kapok: going up. Learn: climb a trunk to its branch, twice, straight up from the floor. Test: a zigzag of rope, branch and
+ * trunk, back and forth across the tree (with a hidden hollow up a side trunk: a golden seed). Twist: one long rope across the widest
+ * gap, near the top. Finish: the last trunk to the crown and the shrine. A fall only drops him to a lower branch or the floor: it costs
+ * the climb, never a life. Built from y = 0 upward and shifted down at the end, so the crown sits near the top of the stage.
+ */
+function buildKapok(config: LevelConfig, seed: number): GeneratedStage & { proto: ProtoExtras } {
+  const R = stream(seed);
+  const W = KAPOK_W;
+  const P: Platform[] = [];
+  const V: Vine[] = [];
+  const T: TreeStructure[] = [];
+  const E: Enemy[] = [];
+  const C: Collectible[] = [];
+  const ROPES: Rope[] = [];
+  const checkpoints: Array<{ x: number; y: number; reached: boolean }> = [];
+  const hints: StageHint[] = [];
+  const beats: Array<[number, number, string]> = [];
+  const hollows: Array<{ x: number; y: number }> = [];
+  let pid = 1, vid = 1, tid = 1, eid = 1, cid = 1, seedN = 0;
+  let expert = 0;
+  const RUN = 285, CLIMB = 220;
+
+  const ledge = (x0: number, x1: number, y: number) => {
+    const p: Platform = { id: pid++, x: Math.round(x0), y: Math.round(y), width: Math.round(x1 - x0), height: 24, type: 'solid', style: 'branch' };
+    P.push(p);
+    return p;
+  };
+  const trunk = (x: number, groundY: number, perchY: number) => {
+    const tree: TreeStructure = { id: tid++, x, groundY, topY: perchY - 150, trunkWidth: 76, hasClimbVine: true, canopyRadius: 150 };
+    T.push(tree);
+    V.push({ id: vid++, x, topY: perchY - 2, bottomY: groundY - 6, swaySpeed: 0.9, swayPhase: (x * 0.007) % 6.28, vineType: 'tree_climb', treeId: tree.id });
+  };
+  /** is there already a branch across this span within about a body's height and a half of y (above or below)? */
+  const blocked = (x0: number, x1: number, y: number) => P.some((p) => p !== P[0] && p.x < x1 + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130);
+  const flower = (x: number, y: number, v: Collectible['botanicalVariant'] = 'orchid') =>
+    C.push({ id: cid++, type: 'flower', botanicalVariant: v, x: Math.round(x), y: Math.round(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
+  const row = (x0: number, x1: number, y: number, n: number, v: Collectible['botanicalVariant'] = 'orchid') => {
+    for (let i = 0; i < n; i++) flower(x0 + ((x1 - x0) * i) / Math.max(1, n - 1), y, v);
+  };
+  const snake = (x: number, surface: number, range: number) => {
+    E.push({
+      id: eid++, type: 'snake', x, y: surface - 14, vx: 28, vy: 0, width: 38, height: 22, hp: 1, maxHp: 1, facing: R.chance(0.5) ? 1 : -1,
+      patrolMinX: x - range / 2, patrolMaxX: x + range / 2, attackCooldown: 2, telegraphTimer: 0, isAttacking: false,
+      animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0,
+    } as Enemy);
+  };
+  const hint = (text: string, pad: string, keys: string, aboveY?: number) => hints.push({ x: 0, text, pad, keys, aboveY });
+
+  // the floor: the whole width, so a fall is never more than a climb back
+  P.push({ id: pid++, x: 0, y: 0, width: W, height: BANK_H, type: 'solid', style: 'log' });
+
+  /** where he stands now, and which way the climb is heading across the tree */
+  let cur: Platform;
+  let dir: 1 | -1 = 1;
+  /** a trunk up from `cur` (near its end on the way he is heading), to a branch growing out to the right of it */
+  const climb = (h0: number, flowers = 3) => {
+    let h = h0;
+    // (kept far enough from the right edge for the branch it grows: the trunk moves in along the branch he is on)
+    const tX = Math.round(Math.max(cur.x + 40, Math.min(dir === 1 ? cur.x + cur.width - 60 : cur.x + 60, W - KAPOK_MARGIN - 220)));
+    // the branch at the top grows out to the right of the trunk, never past the edge of the tree
+    const pw = Math.max(170, Math.min(Math.round(R.r(260, 320)), W - KAPOK_MARGIN - tX));
+    // a little higher if another branch is already in the way
+    for (let k = 0; k < 3 && blocked(tX - 40, tX + pw, cur.y - h); k++) h += 70;
+    const y = cur.y - h;
+    trunk(tX, cur.y, y);
+    for (let i = 0; i < flowers; i++) flower(tX, cur.y - 70 - ((h - 110) * i) / Math.max(1, flowers - 1), 'hibiscus');
+    expert += h / CLIMB + 0.8;
+    cur = ledge(tX - 40, tX + pw, y);
+    return tX;
+  };
+  /** the room left past `cur` on the side he is heading */
+  const room = () => (dir === 1 ? W - KAPOK_MARGIN - (cur.x + cur.width) : cur.x - KAPOK_MARGIN);
+  /** a rope from the end of `cur` across a gap to a new branch at the same height (Shimmy Rope: needed from 1-4) */
+  const rope = (gap: number, w: number, under = 3) => {
+    const y = cur.y;
+    const at = (d: 1 | -1) => (d === 1 ? cur.x + cur.width + gap : cur.x - gap - w);
+    const fits = (d: 1 | -1) => (d === 1 ? W - KAPOK_MARGIN - (cur.x + cur.width) : cur.x - KAPOK_MARGIN) >= gap + w && !blocked(at(d), at(d) + w, y);
+    if (!fits(dir) && fits(dir === 1 ? -1 : 1)) dir = dir === 1 ? -1 : 1;
+    else if (room() < gap + w) dir = dir === 1 ? -1 : 1;
+    const nx0 = at(dir);
+    const next = ledge(nx0, nx0 + w, y);
+    const a = dir === 1 ? cur : next, b = dir === 1 ? next : cur;
+    ROPES.push({ id: ROPES.length + 1, x0: a.x + a.width - 44, x1: b.x + 44, y: y - ROPE_RISE, g0: y, g1: y, required: true });
+    // petals under the rope, at the height he hangs (only a shimmy reaches them)
+    if (under) row(a.x + a.width + 70, b.x - 70, y - ROPE_RISE + HANG_DROP - 26, under, 'orchid');
+    row(next.x + 50, next.x + next.width - 50, y - 34, 2, 'hibiscus');
+    expert += 1.2 + (b.x - a.x - a.width + 88) / ROPE_SPEED + w / RUN;
+    cur = next;
+  };
+  /** a few short hops along and up branches */
+  const hops = (n: number) => {
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(180, 240));
+      const rise = Math.round(R.r(20, 60));
+      const gap = Math.round(reachJump(rise, false) * R.r(0.4, 0.55));
+      const at = (d: 1 | -1) => (d === 1 ? cur.x + cur.width + gap : cur.x - gap - w);
+      const fits = (d: 1 | -1) => (d === 1 ? W - KAPOK_MARGIN - (cur.x + cur.width) : cur.x - KAPOK_MARGIN) >= gap + w && !blocked(at(d), at(d) + w, cur.y - rise);
+      if (!fits(dir)) {
+        if (fits(dir === 1 ? -1 : 1)) dir = dir === 1 ? -1 : 1;
+        else return; // no room either way: the trunk that follows takes him up instead
+      }
+      const nx0 = at(dir);
+      cur = ledge(nx0, nx0 + w, cur.y - rise);
+      flower(nx0 + w / 2, cur.y - 34, 'orchid');
+      expert += (gap + w) / RUN + 0.5;
+    }
+  };
+  const flag = () => checkpoints.push({ x: Math.round(cur.x + cur.width / 2), y: cur.y, reached: false });
+  const beat = (name: string, f: () => void) => {
+    const b0 = cur ? cur.y : 0;
+    f();
+    beats.push([b0, cur.y, name]);
+  };
+
+  // ---- Learn: up two trunks from the floor
+  cur = P[0];
+  beat('Learn: up the trunk', () => {
+    cur = { ...P[0], x: 300, width: 400 } as Platform; // the patch of floor the first trunk stands on
+    hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
+    climb(Math.round(R.r(280, 320)), 4);
+    row(cur.x + 80, cur.x + cur.width - 30, cur.y - 34, 2, 'hibiscus');
+    climb(Math.round(R.r(260, 300)), 3);
+    flag();
+  });
+
+  // ---- Test: across and up, rope, branch and trunk, back and forth; a side trunk with a hollow
+  beat('Test: zigzag up', () => {
+    hint('Jump up to the rope, then slide along it', 'Jump up to the rope, then hold the way to go', 'Jump up to the rope, then hold the way to go', cur.y + 10);
+    rope(Math.round(R.r(390, 440)), Math.round(R.r(300, 360)));
+    climb(Math.round(R.r(270, 320)));
+    // (a long branch: the side trunk stands at its near end, the way on at its far end)
+    rope(Math.round(R.r(390, 450)), Math.round(R.r(410, 450)));
+    // the secret: a side trunk at the near end of this branch, up to a dead end, with a hollow halfway (a golden seed inside)
+    {
+      const sx = Math.round(dir === 1 ? cur.x + 60 : cur.x + cur.width - 60);
+      const h = Math.round(R.r(380, 420));
+      trunk(sx, cur.y, cur.y - h);
+      const hy = Math.round(cur.y - h * 0.5);
+      hollows.push({ x: sx, y: hy });
+      seedN++;
+      C.push({ id: cid++, type: 'seed', x: sx, y: hy + 4, collected: false, bobPhase: seedN, findId: `seed-${seedN}` });
+      const top = ledge(sx - 40, sx + 150, cur.y - h);
+      row(top.x + 70, top.x + top.width - 25, top.y - 34, 2, 'hibiscus');
+    }
+    climb(Math.round(R.r(270, 320)));
+    flag();
+    hops(R.i(2, 3));
+    climb(Math.round(R.r(260, 300)));
+    // more of the same until even a quick climber needs most of two minutes (the twist and the crown add the rest)
+    let n = 0;
+    while (expert < EXPERT_SECONDS - 32 && n < 30) {
+      if (n % 3 === 2) hops(R.i(2, 3));
+      else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
+      // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
+      if (n >= 2 && cur.width >= 320 && R.chance(0.4)) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      climb(Math.round(R.r(260, 320)));
+      n++;
+      if (n % 2 === 0) flag();
+    }
+  });
+
+  // ---- Twist: the long rope across the widest gap, with the whole crown around him
+  beat('Twist: the long rope', () => {
+    // set out from the side of the tree that leaves the most room
+    dir = cur.x + cur.width / 2 < W / 2 ? 1 : -1;
+    hint('A long way across. Keep sliding', 'A long way across. Keep holding the way to go', 'A long way across. Keep holding the way to go', cur.y + 10);
+    const gap = Math.min(Math.round(R.r(900, 1050)), Math.round(room() - 340));
+    rope(gap, 340, 6);
+    flag();
+  });
+
+  // ---- Finish: up to the crown and the shrine
+  beat('Finish: the crown', () => {
+    climb(Math.round(R.r(280, 320)));
+    hops(2);
+    // the crown: a wide branch with the shrine on it
+    if (room() < 620) dir = dir === 1 ? -1 : 1;
+    const tX = Math.round(dir === 1 ? cur.x + cur.width - 60 : cur.x + 60);
+    const top = cur.y - 300;
+    trunk(tX, cur.y, top);
+    expert += 300 / CLIMB + 1;
+    cur = ledge(tX - 40, Math.min(W - KAPOK_MARGIN, tX + 560), top);
+    row(cur.x + 80, cur.x + 300, top - 34, 3, 'hibiscus');
+  });
+
+  // shift down: the crown sits 400 px under the top of the stage, the floor 120 px over its bottom
+  const crown = cur;
+  const shift = 400 - crown.y;
+  for (const p of P) p.y += shift;
+  for (const v of V) { v.topY += shift; v.bottomY += shift; }
+  for (const t of T) { t.groundY += shift; t.topY += shift; }
+  for (const c of C) c.y += shift;
+  for (const e of E) e.y += shift;
+  for (const r of ROPES) { r.y += shift; r.g0 += shift; r.g1 += shift; }
+  for (const cp of checkpoints) cp.y += shift;
+  for (const h of hollows) h.y += shift;
+  for (const h of hints) if (h.aboveY !== undefined) h.aboveY += shift;
+  for (const b of beats) { b[0] += shift; b[1] += shift; }
+  const floorY = P[0].y;
+  const H = floorY + 120;
+  const exitX = Math.round(crown.x + crown.width - 140);
+  C.push({ id: cid++, type: 'exit_totem', x: exitX, y: crown.y - 30, collected: false, bobPhase: 0 });
+
+  const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES }, C);
+  const cfg: LevelConfig = { ...config, levelWidth: W, levelHeight: H };
+  return {
+    config: cfg,
+    trees: T,
+    platforms: P,
+    vines: V,
+    ropes: ROPES,
+    enemies: E,
+    boss: null,
+    collectibles: C,
+    spawnX: 200,
+    spawnY: floorY,
+    exitTotemX: exitX,
+    exitTotemY: crown.y,
+    checkpoints: checkpoints.sort((a, b) => b.y - a.y),
+    meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
+    proto: { hints, covers: [], beats, movedPickups, hollows },
+  };
+}
+
 // ---------------------------------------------------------------------------------------------------------------------------
 // golden seeds: the secrets, saved per stage
 

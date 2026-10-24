@@ -192,6 +192,8 @@ export default function App() {
   const [score, setScore] = useState<number>(0);
   const [currentCount, setCurrentCount] = useState<number>(0);
   const [targetCount, setTargetCount] = useState<number>(1);
+  /** the guiding line Dot is saying (a stage tip, the goal, the sealed door): from the engine, shown by Wayside */
+  const [guideLine, setGuideLine] = useState<{ text: string; ms: number; n: number } | null>(null);
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
@@ -530,6 +532,7 @@ export default function App() {
     setScore(0);
     setCurrentCount(0);
     setTargetCount(lvl.targetCount);
+    setGuideLine(null);
     setDistanceRatio(0);
     setScreen('playing');
 
@@ -543,6 +546,7 @@ export default function App() {
       try {
       engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
         onFatal: () => setScreen('world_map'),
+        onGuide: (text, seconds) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1 })),
         onStageStats: (s) => {
           pendingStats.current = s;
           setLastStats(s);
@@ -1027,7 +1031,7 @@ export default function App() {
           />
           {screen === 'playing' && <CoachOverlay step={coachStep} style={coachStyle} />}
           <PerfReadout stageId={activeLevel.id} />
-          <Wayside key={`${activeLevel.id}-${runId}`} level={activeLevel} active={screen === 'playing' && !coachStep && !lessonId && !reading} ratio={distanceRatio} hp={hp} />
+          <Wayside key={`${activeLevel.id}-${runId}`} level={activeLevel} active={screen === 'playing' && !coachStep && !lessonId && !reading} ratio={distanceRatio} hp={hp} guide={guideLine} />
           {screen === 'playing' && lessonId && (
             <LessonCard
               id={lessonId}

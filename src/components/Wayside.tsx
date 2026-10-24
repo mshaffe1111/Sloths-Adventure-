@@ -3,7 +3,7 @@ import type { LevelConfig } from '../game/types.ts';
 import { DotFace } from './DotFace.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
 import { restFace } from '../game/dotSprite.ts';
-import { GAP_MS, HURT_WINDOW_MS, dueLine, hidesFern, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayFlag, type WayLine } from '../game/wayside.ts';
+import { GAP_MS, HURT_WINDOW_MS, dotPresent, dueLine, hidesFern, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayFlag, type WayLine } from '../game/wayside.ts';
 import { findForStage, loadFinds } from '../game/finds.ts';
 
 interface Props {
@@ -13,6 +13,8 @@ interface Props {
   /** how far along the stage (0-1) */
   ratio: number;
   hp: number;
+  /** a guiding line from the engine (a stage tip, the goal, a reminder, the sealed door); `n` counts up with each new one */
+  guide?: { text: string; ms: number; n: number } | null;
 }
 
 const WHO: Record<WayLine['who'], { color: string; name: string }> = {
@@ -45,14 +47,20 @@ interface Run {
   F: boolean;
   cur: null | { flag: WayFlag; left: number; seen: number; marked: boolean };
   n: number;
+  /** the guiding line being said, and the last one taken from the engine */
+  guide: null | { text: string; left: number; ms: number; n: number };
+  lastGuide: number;
 }
+
+/** a guiding line stays up at least as long as a story line of its length, and no longer than this */
+const GUIDE_MAX_MS = 6500;
 
 /**
  * The story while you play: one small line at a time from Dot, Pokey or the petal, a few per stage (see game/wayside.ts).
  * It reads a stage's own clock (only the time the game is actually running), waits for a calm moment, and never takes a tap.
  * Mount it with a key that changes for every new run of a stage.
  */
-export const Wayside: React.FC<Props> = ({ level, active, ratio, hp }) => {
+export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) => {
   const world = level.worldIndex;
   const mini = level.miniIndex;
   const applies = waysideApplies(level);
@@ -66,8 +74,41 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp }) => {
     F: wasShown(world, mini, 'F'),
     cur: null,
     n: 0,
+    guide: null,
+    // a line from before this run of the stage is not said again
+    lastGuide: guide?.n ?? 0,
   }));
   const [line, setLine] = useState<(WayLine & { n: number }) | null>(null);
+  const [guideShown, setGuideShown] = useState<{ text: string; ms: number; n: number } | null>(null);
+
+  // a guiding line comes first: a story line on screen gives way (and, if it was not heard yet, comes again later)
+  useEffect(() => {
+    if (!guide || guide.n <= run.lastGuide) return;
+    run.lastGuide = guide.n;
+    if (run.cur) {
+      run.cur = null;
+      setLine(null);
+    }
+    const ms = Math.min(GUIDE_MAX_MS, Math.max(guide.ms, showMs(guide.text)));
+    run.guide = { text: guide.text, left: ms, ms, n: guide.n };
+    setGuideShown({ text: guide.text, ms, n: guide.n });
+  }, [guide, run]);
+
+  // the guiding line's clock runs only while play does (a paused game keeps the line up)
+  useEffect(() => {
+    if (!active) return;
+    const id = window.setInterval(() => {
+      const g = run.guide;
+      if (!g) return;
+      g.left -= TICK_MS;
+      if (g.left <= 0) {
+        run.guide = null;
+        run.gapUntil = run.played + GAP_MS;
+        setGuideShown(null);
+      }
+    }, TICK_MS);
+    return () => window.clearInterval(id);
+  }, [active, run]);
   const ratioRef = useRef(ratio);
   ratioRef.current = ratio;
 
@@ -82,6 +123,8 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp }) => {
     if (!applies || !active || !waysideEnabled()) return;
     const id = window.setInterval(() => {
       run.played += TICK_MS;
+      // story lines wait while Dot is guiding
+      if (run.guide) return;
       const cur = run.cur;
       if (cur) {
         cur.seen += TICK_MS;
@@ -121,6 +164,31 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp }) => {
     return () => window.clearInterval(id);
   }, [applies, active, world, mini, run]);
 
+  if (guideShown && active && run.guide) {
+    // Dot guides; where the story has him away (late World 6, World 7, World 10) it is Pokey's own thought
+    const dot = dotPresent(world, mini);
+    const g = WHO[dot ? 'Dot' : 'Pokey'];
+    return (
+      <div
+        key={`g${guideShown.n}`}
+        className="way way-guide"
+        role="status"
+        aria-live="polite"
+        style={{ ['--dot' as string]: g.color, ['--way-ms' as string]: `${Math.max(1200, guideShown.ms)}ms` }}
+      >
+        {dot && <WayDot text={guideShown.text} hurt={false} />}
+        <span className="way-chip">
+          {!dot && (
+            <i aria-hidden="true">
+              <SpeakerMark name="Pokey" size={20} />
+            </i>
+          )}
+          {g.name}
+        </span>
+        <p className="way-text">{guideShown.text}</p>
+      </div>
+    );
+  }
   if (!line || !active || !run.cur) return null;
   const w = WHO[line.who];
   const narr = line.who === 'Petal';

@@ -884,6 +884,7 @@
 .way-dot { margin: -6px 0 -6px -3px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); }
 .way-text { margin: 0; min-width: 0; font-family: var(--font-read); font-weight: 500; letter-spacing: .01em; font-size: 14.5px; line-height: 1.35; text-wrap: pretty; }
 .way-narr .way-text { color: #fde7f0; }
+.way-guide .way-text { font-weight: 600; color: #fff3c4; }
 @keyframes way-life { 0% { opacity: 0; transform: translateY(-8px); } 7% { opacity: 1; transform: none; } 90% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-4px); } }
 @media (max-width: 520px) { .way { top: calc(env(safe-area-inset-top, 0px) + 132px); } }
 @media (max-height: 430px) and (min-width: 521px) { .way { top: calc(env(safe-area-inset-top, 0px) + 110px); padding: 6px 12px 6px 7px; } .way-text { font-size: 13.5px; } }

@@ -1548,6 +1548,18 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
       ctx.drawImage(img, 0, 0, pw, dh);
       ctx.restore();
     }
+    // the strip is fitted to end a little above the bottom of the view, where the ground usually covers it; up a climb (1-4, the
+    // ascents) the camera is in the air and that band showed the bare sky, so the strip's last rows carry on down to the edge
+    const gap = vh - (top + dh);
+    if (gap > 0) {
+      const iw = img instanceof HTMLCanvasElement ? img.width : img.naturalWidth;
+      const ih = img instanceof HTMLCanvasElement ? img.height : img.naturalHeight;
+      const rows = Math.max(1, Math.round(ih * 0.03));
+      ctx.save();
+      if (k % 2 !== 0) { ctx.translate(px + pw, 0); ctx.scale(-1, 1); }
+      ctx.drawImage(img, 0, ih - rows, iw, rows, k % 2 !== 0 ? 0 : px, top + dh - 1, pw, gap + 2);
+      ctx.restore();
+    }
   }
 }
 

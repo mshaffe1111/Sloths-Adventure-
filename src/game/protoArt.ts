@@ -9,25 +9,17 @@ import type { Collectible, Platform } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
+import { PROTO2_FRAMES } from './proto2AtlasData.ts';
 
-const KIT_KEY = 'sloth_paint_w1';
 /** the painted World 1 kit on every World 1 stage (saved on the device): off by default while testers play */
 export function paintedKitEnabled(): boolean {
+  // the game's platforms since 2026-10-24 (Matt tested them): `?paint=0` shows the old drawn ones
   try {
-    return typeof localStorage !== 'undefined' && localStorage.getItem(KIT_KEY) === '1';
+    return !(typeof location !== 'undefined' && /[?&]paint=0\b/.test(location.search));
   } catch {
-    return false;
+    return true;
   }
 }
-export function setPaintedKitPref(on: boolean) {
-  try {
-    if (on) localStorage.setItem(KIT_KEY, '1');
-    else localStorage.removeItem(KIT_KEY);
-  } catch {
-    /* ignore */
-  }
-}
-
 /*
  * One kit per world. World 1's atlas (props-atlas.webp, PROTO_FRAMES) has every piece, the log, the seed and the leaf curtain too; another
  * world's atlas (kits/w<N>.webp, KIT_FRAMES) has its own ground and climbing pieces, and anything it lacks comes from World 1's.
@@ -54,6 +46,37 @@ function load(w: number) {
   const url = w === 1 ? new URL('../assets/proto/props-atlas.webp', import.meta.url).href : new URL(`../assets/kits/w${w}.webp`, import.meta.url).href;
   trackAtlas(im, url, () => { ready.add(w); }, () => { imgs.delete(w); });
 }
+// Matt's second World 1 sheet set (2026-10-23): the kapok trunk with a hollow, a plain trunk, and the hiding bushes
+let img2: HTMLImageElement | null = null;
+let ready2 = false;
+function load2() {
+  if (img2 || typeof Image === 'undefined') return;
+  const im = new Image();
+  img2 = im;
+  trackAtlas(im, new URL('../assets/proto/props2-atlas.webp', import.meta.url).href, () => { ready2 = true; }, () => { img2 = null; });
+}
+/** a piece of the second sheet so it fills the box (x, y, w, h); false until it has loaded */
+function blit2(ctx: CanvasRenderingContext2D, n: keyof typeof PROTO2_FRAMES, x: number, y: number, w: number, h: number): boolean {
+  load2();
+  if (!ready2 || !img2) return false;
+  const f = PROTO2_FRAMES[n];
+  ctx.drawImage(img2, f.x, f.y, f.w, f.h, x, y, w, h);
+  return true;
+}
+
+/**
+ * A hollow in a climb trunk (1-4's secret): the painted trunk section with its round opening, centred on the trunk at height y (the
+ * opening's middle). `glow` (he is close): the variant with warm light inside, so something is plainly in there.
+ */
+export function drawHollowArt(ctx: CanvasRenderingContext2D, x: number, y: number, glow: boolean): boolean {
+  const f = PROTO2_FRAMES.hollow;
+  // a little wider than the stacked trunk (84), the way a kapok swells where it is hollow
+  const w = 104;
+  const h = (w * f.h) / f.w;
+  // the opening's middle sits 47% of the way down the painting
+  return blit2(ctx, glow ? 'hollowGlow' : 'hollow', x - w / 2, y - h * 0.47, w, h);
+}
+
 export function protoArtReady() {
   load(1);
   if (kitWorld !== 1) load(kitWorld);
@@ -136,13 +159,47 @@ export function drawCurtainArt(ctx: CanvasRenderingContext2D, x: number, y: numb
   return true;
 }
 
+const topCache = new Map<string, number>();
+/**
+ * Where the solid top of a painted piece starts, as a share of its height: the first row the picture fills across most of its
+ * width. A branch painting carries a bromeliad and moss tufts above the bark, so lining the picture's top edge up with the walkable
+ * top left Pokey standing on the air above the log (Matt, 2026-10-23). Measured once per picture; each world's kit has its own.
+ */
+function solidTop(n: Name, fallback: number): number {
+  const { img, f } = frameOf(n);
+  const key = `${img.src}#${n}`;
+  const hit = topCache.get(key);
+  if (hit !== undefined) return hit;
+  let v = fallback;
+  try {
+    const c = document.createElement('canvas');
+    const w = Math.min(160, f.w), h = Math.round((f.h * w) / f.w);
+    c.width = w;
+    c.height = h;
+    const g = c.getContext('2d', { willReadFrequently: true })!;
+    g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, w, h);
+    const a = g.getImageData(0, 0, w, h).data;
+    for (let y = 0; y < h; y++) {
+      let n2 = 0;
+      for (let x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3] > 40) n2++;
+      if (n2 > w * 0.6) { v = y / h; break; }
+    }
+  } catch {
+    /* no canvas to measure on: the measured share for World 1's branch */
+  }
+  topCache.set(key, v);
+  return v;
+}
+
 /** a branch you land on: whole, creaking (a timer is running), or snapped (the halves fall away for a second) */
 export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state: 'whole' | 'creak' | 'snapped', since: number): boolean {
   if (!protoArtReady()) return false;
   const f = frameOf('branch').f;
   // the painted branch is thicker than the walkable strip: its top lines up with the platform top
   const h = Math.max(30, Math.min(54, (p.width * f.h) / f.w));
-  const y = p.y - 6;
+  // the bark's top on the walkable top (2 px down, so his feet sink into the moss a touch rather than hover)
+  const name: Name = state === 'creak' ? 'branchCreak' : 'branch';
+  const y = p.y + 2 - solidTop(name, 0.29) * h;
   if (state === 'snapped') {
     if (since > 1.4) return true;
     const drop = 0.5 * 2200 * since * since;
@@ -161,7 +218,7 @@ export function drawBranchArt(ctx: CanvasRenderingContext2D, p: Platform, state:
     ctx.restore();
     return true;
   }
-  blit(ctx, state === 'creak' ? 'branchCreak' : 'branch', p.x - 6, y, p.width + 12, h);
+  blit(ctx, name, p.x - 6, y, p.width + 12, h);
   return true;
 }
 

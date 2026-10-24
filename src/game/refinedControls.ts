@@ -16,24 +16,14 @@
  */
 import { ctestEnabled } from './playRecorder.ts';
 
-const KEY = 'sloth_refined_controls';
 
 export function refinedControls(): boolean {
+  // the game's controls since 2026-10-24 (Matt tested them): `?refined=0` brings back the old rules for comparing
   if (ctestEnabled()) return true;
   try {
-    if (typeof location !== 'undefined' && /[?&]refined=1\b/.test(location.search)) return true;
-    return typeof localStorage !== 'undefined' && localStorage.getItem(KEY) === '1';
+    return !(typeof location !== 'undefined' && /[?&]refined=0\b/.test(location.search));
   } catch {
-    return false;
-  }
-}
-
-export function setRefinedControlsPref(on: boolean) {
-  try {
-    if (on) localStorage.setItem(KEY, '1');
-    else localStorage.removeItem(KEY);
-  } catch {
-    /* ignore */
+    return true;
   }
 }
 

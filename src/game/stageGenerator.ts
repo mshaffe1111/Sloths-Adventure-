@@ -1,4 +1,4 @@
-import { buildProtoStage, protoStageEnabled, PROTO_STAGE_ID } from './protoStage.ts';
+import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { ctestEnabled } from './playRecorder.ts';
 
 /** the stage the control test replaces (no story scene before it), and the one fixed seed, so every tester plays the same layout */
@@ -20,13 +20,14 @@ import { calculateDifficultyScaling } from './rules.ts';
 import { WORLDS_DATA } from './worldsData.ts';
 import { ASSIST, easeAssist, reachBounce, reachGlide, reachJump, TAKEOFF_SLACK } from './physics.ts';
 import { HANG_DROP, ROPE_MIN_GAP, ROPE_OVERLAP, ROPE_RISE, ropeYAt } from './rope.ts';
-import { skillGuaranteedAt } from './skills.ts';
+import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { PICKUP_APART, swingLandings, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { SECRET_GATE_LEVEL } from './secret.ts';
 import { addJumpTrails } from './jumpTrails.ts';
+import { fixPickups } from './flowerReach.ts';
 import { findForStage } from './finds.ts';
 import { pieceWidth, zoneRecipes, crumbleTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP, type Zone, type ZonePiece } from './zones.ts';
 import { balanceStyles, styleFor, type PlatformKind } from './platformStyles.ts';
@@ -2738,7 +2739,8 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
 export function generateStage(config: LevelConfig): GeneratedStage {
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, CTEST_SEED, 'ctest');
-  if (config.id === PROTO_STAGE_ID && !config.secret && protoStageEnabled()) return buildProtoStage(config, layoutVariant ?? 1);
+  // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
+  if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]);
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {
     // not a shipped level (or the seed table is stale): find a good layout now
@@ -2761,6 +2763,11 @@ export function generateStage(config: LevelConfig): GeneratedStage {
   addJumpTrails(stage, reachableIds);
   capHarvest(stage, new Set(stage.collectibles.slice(beforeTrails).map((c) => c.id)));
   addFinds(stage, reachableIds);
+  // last: every flower where he can get it (nothing tucked under a branch he walks across, nothing out of reach: flowerReach.ts)
+  fixPickups(
+    { platforms: stage.platforms, vines: stage.vines, ropes: stage.ropes, waterY: stage.waterY, glide: skillHeldAt('glide', (config.worldIndex - 1) * 10 + config.miniIndex), onRoute: new Set(reachableIds) },
+    stage.collectibles,
+  );
   return stage;
 }
 

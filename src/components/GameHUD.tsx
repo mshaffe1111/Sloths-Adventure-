@@ -163,7 +163,8 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                     </>
                   ) : (
                     <>
-                      <span className="tabular-nums">
+                      {/* the count the sanctuary waits on: yellow and bold so it reads at a glance (testers never saw it in pale green) */}
+                      <span className="tabular-nums text-amber-300 font-bold text-[12px] sm:text-[15px]">
                         {currentObjectiveCount} / {targetObjectiveCount} {countWord(levelConfig.worldIndex, levelConfig.objectiveType)}
                       </span>
                       <span className={done ? 'text-amber-300 font-semibold animate-pulse' : ''}>{done ? 'Sanctuary open!' : 'Sanctuary sealed'}</span>
