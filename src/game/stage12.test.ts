@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS, G } from './protoStage.ts';
+import { buildProtoStage, EXPERT_SECONDS, G, PETAL_GOAL_12 } from './protoStage.ts';
 import { badPickups } from './flowerReach.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -10,13 +10,14 @@ const cfg = {
 } as LevelConfig;
 const SEEDS = Array.from({ length: 20 }, (_, i) => 1 + i * 41);
 
-test('1-2: every roll keeps the plan (learn, test, twist, finish), holds plenty of petals for the 33 asked, and takes two minutes', () => {
+test('1-2: every roll keeps the plan (learn, test, twist, finish), asks for 80 petals and holds about half again as many, and takes two minutes', () => {
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-2');
     assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Learn', 'Test', 'Twist', 'Finish'], `seed ${s}`);
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1);
     const petals = st.collectibles.filter((c) => c.type === 'flower').length;
-    assert.ok(petals >= 33 * 1.6, `seed ${s}: ${petals} petals`);
+    assert.equal(st.config.targetCount, PETAL_GOAL_12);
+    assert.ok(petals >= PETAL_GOAL_12 * 1.4 && petals <= PETAL_GOAL_12 * 1.7, `seed ${s}: ${petals} petals`);
     assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 15, `seed ${s}: ${st.meta!.timing!.layoutSeconds.toFixed(0)} s`);
     assert.ok(st.proto.covers.length >= 1, `seed ${s}: the hidden shelf behind leaves`);
     assert.equal(st.proto.movedPickups, 0, `seed ${s}: the plan put every petal where he can get it (nothing for the safety pass to move)`);

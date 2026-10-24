@@ -1,3 +1,4 @@
+import { countWord } from './stagePlan.ts';
 import { recorder } from './playRecorder.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
@@ -126,6 +127,8 @@ export interface GameEngineCallbacks {
   onLivesChange?: (lives: number, maxLives: number) => void;
   /** the game loop failed over and over: the app should leave the stage */
   onFatal?: () => void;
+  /** a guiding line (a stage tip, the goal, a reminder, the sealed door): the app has Dot say it (Wayside.tsx) */
+  onGuide?: (text: string, seconds: number) => void;
   onBossEncounter?: (boss: BossEntity) => void;
   /** Pokey stepped through the hidden Thorn Gate */
   onSecret?: () => void;
@@ -261,6 +264,8 @@ export class GameEngine {
   private trailOn = false;
   private trailT = 0;
   private barrierMsgCooldown = 0;
+  /** the goal hints already shown this stage (start, and late if well short) */
+  private goalSaid = { start: false, late: false };
   private comboCount: number = 0;
   private comboResetTimer: number = 0;
   /** the first-stage lesson for a new touch player (see touchCoach.ts), when there is one */
@@ -1638,7 +1643,7 @@ export class GameEngine {
         if (h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY)) continue;
         h.shown = true;
         const mode = lessonInputMode();
-        this.stageHint = { text: mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, life: 3.6 };
+        this.guide(mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, 3.6);
       }
     }
 
@@ -1819,6 +1824,21 @@ export class GameEngine {
       this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.25);
     }
 
+    // the goal, said plainly (Matt, 2026-10-23: players did not know why the sanctuary stayed shut): once at the start, and once more
+    // when he is most of the way along and still well short, so nobody reaches a sealed door by surprise
+    if (isQuotaType && !quotaMet) {
+      const need = this.currentStage.config.targetCount - currentProgress;
+      const word = countWord(this.currentStage.config.worldIndex, objType) || 'more';
+      const along = p.x / Math.max(1, this.currentStage.exitTotemX);
+      if (!this.goalSaid.start && this.gameTime > 0.3 && !this.stageHint) {
+        this.goalSaid.start = true;
+        this.guide(`Collect ${this.currentStage.config.targetCount} ${word} to open the sanctuary`, 4);
+      } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
+        this.goalSaid.late = true;
+        this.guide(`Still ${need} ${word} to find before the sanctuary opens`, 4);
+      }
+    }
+
     // Update Exit Totem locked visual in collectibles list
     const exitItem = this.collectibles.find((c) => c.type === 'exit_totem');
     if (exitItem) {
@@ -1845,17 +1865,10 @@ export class GameEngine {
           if (this.barrierMsgCooldown <= 0) {
           this.barrierMsgCooldown = 1.2;
           const remaining = this.currentStage.config.targetCount - currentProgress;
-          const msg =
-            objType === 'harvest'
-              ? `🔒 Need ${remaining} more Flora!`
-              : objType === 'purge'
-              ? `🔒 Defeat ${remaining} more Beasts!`
-              : objType === 'rescue'
-              ? `🔒 Free ${remaining} more Critters!`
-              : objType === 'relic_hunt'
-              ? `🔒 Find ${remaining} more Idols!`
-              : `🔒 Finish the goal to open the shrine!`;
-          this.addFloatingText(msg, this.currentStage.exitTotemX - 40, p.y - 45, '#f87171');
+          // the same word the counter at the top uses, so the two always agree
+          const word = countWord(this.currentStage.config.worldIndex, objType);
+          // in the banner the stage hints use (the small red floating text was hard to read on the bright doorway)
+          if (!this.stageHint) this.guide(word ? `Sealed: ${remaining} more ${word} needed` : 'Finish the goal to open the sanctuary', 3);
           }
         }
       }
@@ -3537,7 +3550,8 @@ export class GameEngine {
       ctx.fillStyle = ft.color;
       ctx.fillText(ft.text, ft.x, ft.y);
     });
-    if (this.stageHint) {
+    // (when the app has Dot say the hints, it draws them: this canvas banner is only the fallback)
+    if (this.stageHint && !this.callbacks.onGuide) {
       const h = this.stageHint;
       const a = Math.min(1, h.life / 0.4, (3.6 - h.life) / 0.25);
       ctx.save();
@@ -3609,6 +3623,12 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
+  /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
+  private guide(text: string, seconds: number) {
+    this.stageHint = { text, life: seconds };
+    this.callbacks.onGuide?.(text, seconds);
+  }
+
   private addFloatingText(text: string, x: number, y: number, color: string, life = 0.8) {
     this.floatingTexts.push({
       id: Math.random(),

@@ -101,6 +101,12 @@ const HOLLOW_Y = 710;
 /** how high a double jump lifts him (computed once from the physics) */
 const RISE = maxRise();
 
+/**
+ * 1-2 The Petal Trail asks for 80 petals, not the generated stage's 33 (Matt, 2026-10-23): the trail holds about half again as many, so he
+ * has to follow most of it, high and low, to open the sanctuary.
+ */
+export const PETAL_GOAL_12 = 80;
+
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
 
@@ -734,11 +740,11 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       }
       rest(R.r(700, 900));
     });
-    // a harvest is no test when the petals are three times what it asks for (the generator keeps to about 2.2 times, capHarvest):
-    // the finish is thinned evenly, the taught parts and the hidden shelf are left whole
+    // the goal is a real test when the stage holds about one and a half times it (two in three to find, room to miss some): the
+    // finish is thinned evenly, the taught parts and the hidden shelf are left whole
     const fin = beats[beats.length - 1];
     const late = C.filter((c) => c.type === 'flower' && c.x >= fin[0]);
-    const keep = Math.max(Math.round(late.length / 3), Math.round(config.targetCount * 2.2) - (C.filter((c) => c.type === 'flower').length - late.length));
+    const keep = Math.max(Math.round(late.length / 3), Math.round(PETAL_GOAL_12 * 1.5) - (C.filter((c) => c.type === 'flower').length - late.length));
     if (late.length > keep) {
       const step = late.length / (late.length - keep);
       const out = new Set<Collectible>();
@@ -865,7 +871,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : {}) };
   // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
   const movedPickups = fixPickups({ platforms: P, vines: V, waterY: WATER }, C);
   return {
