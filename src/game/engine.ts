@@ -1,5 +1,6 @@
 import { countWord } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
+import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { recorder } from './playRecorder.ts';
 import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
 import type {
@@ -90,7 +91,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
 import { drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
-import { drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
+import { bushHeight, drawBushArt, drawCurtainArt, drawHollowArt, drawProtoScene, drawSeedArt, hasKit, paintedKitEnabled, setKitWorld, paintedPlatforms, protoArtReady, type ProtoSceneState } from './protoArt.ts';
 import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown } from './frameGovernor.ts';
@@ -267,6 +268,13 @@ export class GameEngine {
   private barrierMsgCooldown = 0;
   /** the goal hints already shown this stage (start, and late if well short) */
   private goalSaid = { start: false, late: false };
+  /** the watching eagle (1-7: watcher.ts): its rhythm, the eagle drawn for it, where it was when it saw him, and rustling bushes */
+  private watch: WatchState = newWatch();
+  private watchEagle: Enemy | null = null;
+  private watchFrom = { x: 0, y: 0 };
+  private bushRustle = new Map<number, number>();
+  /** where the eagle's shadow falls this frame (drawn after the bushes and the front grass), or null */
+  private watchShadowAt: { x: number; a: number } | null = null;
   private comboCount: number = 0;
   private comboResetTimer: number = 0;
   /** the first-stage lesson for a new touch player (see touchCoach.ts), when there is one */
@@ -374,6 +382,9 @@ export class GameEngine {
     if (this.boss) this.bossDef = bossDefForLevel(config);
     this.collectibles = this.currentStage.collectibles;
     this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
+    this.watch = newWatch();
+    this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
+    this.bushRustle.clear();
     resetHeroClips();
     warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
@@ -1651,6 +1662,9 @@ export class GameEngine {
         this.guide(mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, 3.6);
       }
     }
+
+    // the watching eagle (1-7): calm, a screech, then its shadow sweeps the ground; seen in the open, it dives (watcher.ts)
+    if (this.proto?.watch) this.updateWatch(dt);
 
     // --- Collectibles Pickup & Objectives ---
     for (const c of this.collectibles) {
@@ -3515,6 +3529,7 @@ export class GameEngine {
       const fade = this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1;
       if (!drawGlideSprite(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade)) drawGlideLeaf(ctx, gp.x, gp.y, this.glideOpen, this.gameTime, lean, fade);
     }
+    if (this.proto?.watch) this.drawWatchBack(ctx);
     // Render Hero Sloth
     heroClipsLive(true);
     if (rig) {
@@ -3525,6 +3540,8 @@ export class GameEngine {
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else drawHeroSloth(ctx, this.player, this.gameTime);
     heroClipsLive(false);
+    if (this.proto?.bushes) this.drawBushes(ctx);
+    if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
       for (const cv of this.proto.covers) {
@@ -3638,6 +3655,153 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
+  /** step the watching eagle and its dive (1-7) */
+  private updateWatch(dt: number) {
+    const p = this.player;
+    const bushes = this.proto?.bushes ?? [];
+    const zone = zoneAt(this.proto!.watch!, p.x);
+    const before = this.watch.diveT;
+    const ev = stepWatch(this.watch, dt, zone, Math.random);
+    const id = this.currentStage.config.id;
+    if (ev.warned) {
+      sound.playEagleScreech();
+      if (!tipHeard(id, 'watch:hide')) {
+        markTipHeard(id, 'watch:hide');
+        this.guide(lessonInputMode() === 'screen' ? 'Here it comes! Slide down inside a bush to hide' : 'Here it comes! Hold down inside a bush to hide', 3);
+      }
+    }
+    const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
+    if (this.watch.phase === 'pass') {
+      const sx = shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
+      if (sees(this.watch, sx, bushes, me)) {
+        this.watch.seen = true;
+        this.watchFrom = { x: sx, y: this.camera.y + 125 };
+        sound.playEagleScreech();
+        if (!tipHeard(id, 'watch:seen')) {
+          markTipHeard(id, 'watch:seen');
+          this.guide('It saw you! Get into a bush before its shadow reaches you', 3.2);
+        }
+      }
+      // the strike: unless he made it into a bush in time
+      if (this.watch.seen && before < WATCH.dive && this.watch.diveT >= WATCH.dive) {
+        if (hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
+        else this.damagePlayer(1);
+      }
+    }
+    // a bush rustles while he moves in it
+    for (let i = 0; i < bushes.length; i++) {
+      const b = bushes[i];
+      const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
+      const r = this.bushRustle.get(i) ?? 0;
+      this.bushRustle.set(i, inside && Math.abs(p.vx) > 15 ? 1 : Math.max(0, r - dt * 2.5));
+    }
+  }
+
+  /** the watching eagle, its shadow, and (in front of Pokey) the bushes: drawn in the world's space */
+  private drawWatchBack(ctx: CanvasRenderingContext2D) {
+    this.watchShadowAt = null;
+    const w = this.watch;
+    const zone = zoneAt(this.proto!.watch!, this.player.x);
+    if (!this.watchEagle) {
+      this.watchEagle = { id: 9977, type: 'eagle', x: 0, y: 0, vx: 0, vy: 0, width: 58, height: 42, hp: 1, maxHp: 1, facing: 1, patrolMinX: 0, patrolMaxX: 0, attackCooldown: 0, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0 } as Enemy;
+    }
+    const e = this.watchEagle;
+    const cam = this.camera;
+    let scale = 1;
+    let alpha = 1;
+    if (w.phase === 'calm') {
+      if (!zone) return;
+      // far off, small, circling high over the trees
+      const a = this.gameTime * 0.7;
+      e.x = cam.x + cam.viewportWidth * (0.5 + 0.32 * Math.cos(a));
+      e.y = cam.y + 120 + 10 * Math.sin(a * 2);
+      e.facing = Math.sin(a) > 0 ? -1 : 1;
+      e.swoopPhase = 'patrol';
+      e.isAttacking = false;
+      scale = 0.38;
+      alpha = 0.55;
+    } else if (w.phase === 'warn') {
+      // it turns for its run: at the edge, flaring, and its shadow starts to show there
+      const u = w.t / WATCH.warn;
+      e.x = w.dir === 1 ? cam.x - 40 + 60 * u : cam.x + cam.viewportWidth + 40 - 60 * u;
+      e.y = cam.y + 125;
+      e.facing = w.dir;
+      e.swoopPhase = 'telegraph';
+      scale = 0.6 + 0.4 * u;
+      this.watchShadowAt = { x: w.dir === 1 ? cam.x + 30 : cam.x + cam.viewportWidth - 30, a: 0.18 + 0.3 * u };
+    } else {
+      const sx = shadowX(w, cam.x, cam.viewportWidth);
+      e.facing = w.dir;
+      if (w.seen) {
+        // the dive: from where it saw him down to him, then back up and away
+        const u = Math.min(1, w.diveT / WATCH.dive);
+        const k = u < 1 ? u * u : 1;
+        e.x = this.watchFrom.x + (this.player.x - this.watchFrom.x) * k;
+        e.y = this.watchFrom.y + (this.player.y - 40 - this.watchFrom.y) * k;
+        e.swoopPhase = 'swoop';
+        e.isAttacking = u > 0.6;
+      } else {
+        e.x = sx;
+        e.y = cam.y + 125;
+        e.swoopPhase = 'patrol';
+        e.isAttacking = false;
+        this.watchShadowAt = { x: sx, a: 0.5 };
+      }
+    }
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(e.x, e.y);
+    ctx.scale(scale, scale);
+    ctx.translate(-e.x, -e.y);
+    if (!drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
+    ctx.restore();
+  }
+
+  /** the eagle's shadow on the ground under x (the surface nearest below the middle of the view) */
+  private drawWatchShadow(ctx: CanvasRenderingContext2D, x: number, a: number) {
+    const top = this.camera.y + 120;
+    let gy = this.player.y;
+    let best = Infinity;
+    for (const pl of this.platforms) {
+      if (x < pl.x || x > pl.x + pl.width || pl.y < top || pl.y > this.camera.y + this.camera.viewportHeight + 60) continue;
+      if (pl.y < best) { best = pl.y; gy = pl.y; }
+    }
+    // a dark oval on the grass (drawn after the front grass and the bushes, so they never hide it): a wide soft halo and a firmer
+    // core, plain enough to read against the dark soil at a glance
+    ctx.save();
+    ctx.fillStyle = `rgba(8, 12, 8, ${a * 0.45})`;
+    ctx.beginPath();
+    ctx.ellipse(x, gy - 6, 120, 20, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = `rgba(8, 12, 8, ${a})`;
+    ctx.beginPath();
+    ctx.ellipse(x, gy - 6, 82, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /** the bushes, in front of Pokey */
+  private drawBushes(ctx: CanvasRenderingContext2D) {
+    const p = this.player;
+    const bushes = this.proto?.bushes ?? [];
+    for (let i = 0; i < bushes.length; i++) {
+      const b = bushes[i];
+      if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
+      const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
+      if (drawBushArt(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      // before the sheet loads: a plain green mound
+      const h = bushHeight(b);
+      ctx.save();
+      ctx.globalAlpha = inside ? 0.8 : 1;
+      ctx.fillStyle = '#2f6b2a';
+      ctx.beginPath();
+      if (b.hanging) ctx.ellipse(b.x + b.w / 2, b.y + h / 2, b.w / 2, h / 2, 0, 0, Math.PI * 2);
+      else ctx.ellipse(b.x + b.w / 2, b.y - h / 2 + 6, b.w / 2, h / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
   /** a sleeping animal's Z's, drifting up from its head (a stand-in until the sleeping snake art arrives) */
   private drawSleepZ(ctx: CanvasRenderingContext2D, e: Enemy) {
     ctx.save();

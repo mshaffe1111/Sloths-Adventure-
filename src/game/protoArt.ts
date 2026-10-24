@@ -77,6 +77,46 @@ export function drawHollowArt(ctx: CanvasRenderingContext2D, x: number, y: numbe
   return blit2(ctx, glow ? 'hollowGlow' : 'hollow', x - w / 2, y - h * 0.47, w, h);
 }
 
+/**
+ * A hiding bush (1-7): Matt's painted bushes, drawn in front of Pokey. `inside`: he is in it, so it is drawn a little see-through
+ * (the player can still find him) and rustles when he moves. Returns false until the sheet has loaded.
+ */
+export function drawBushArt(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number; kind: 'tall' | 'wide' | 'fern'; hanging?: boolean }, inside: boolean, rustle: number, t: number): boolean {
+  load2();
+  if (!ready2 || !img2) return false;
+  const n = b.kind === 'tall' ? 'bushTall' : b.kind === 'wide' ? 'bushWide' : 'fernClump';
+  const f = PROTO2_FRAMES[n];
+  const h = (b.w * f.h) / f.w;
+  ctx.save();
+  // (a hanging bush first gets the vine strands it hangs by, up to the rope just above it)
+  if (b.hanging) {
+    ctx.strokeStyle = '#3d5a22';
+    ctx.lineWidth = 2.5;
+    for (const u of [0.28, 0.5, 0.72]) {
+      ctx.beginPath();
+      ctx.moveTo(b.x + b.w * u, b.y - 4);
+      ctx.quadraticCurveTo(b.x + b.w * u + 4, b.y + 6, b.x + b.w * u, b.y + 16);
+      ctx.stroke();
+    }
+  }
+  // see-through enough with him inside that the player can still find him
+  if (inside) ctx.globalAlpha = 0.62;
+  // anchored at the bottom middle (a hanging bush at its top middle), leaning a touch when he rustles it
+  const ax = b.x + b.w / 2, ay = b.hanging ? b.y : b.y + 6;
+  ctx.translate(ax, ay);
+  ctx.transform(1, 0, Math.sin(t * 22) * 0.05 * rustle, 1, 0, 0);
+  if (b.hanging) blit2(ctx, n, -b.w / 2, 0, b.w, h);
+  else blit2(ctx, n, -b.w / 2, -h, b.w, h);
+  ctx.restore();
+  return true;
+}
+
+/** a bush's drawn height (for the fallback shape) */
+export function bushHeight(b: { w: number; kind: 'tall' | 'wide' | 'fern' }): number {
+  const f = PROTO2_FRAMES[b.kind === 'tall' ? 'bushTall' : b.kind === 'wide' ? 'bushWide' : 'fernClump'];
+  return (b.w * f.h) / f.w;
+}
+
 export function protoArtReady() {
   load(1);
   if (kitWorld !== 1) load(kitWorld);

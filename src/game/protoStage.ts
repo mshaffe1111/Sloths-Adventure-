@@ -21,12 +21,13 @@ import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vi
 import { JUMP_RISE, reachGlide, reachJump } from './physics.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
+import type { Bush, WatchZone } from './watcher.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow, maxRise } from './protoCheck.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -69,6 +70,9 @@ export interface ProtoExtras {
   movedPickups?: number;
   /** hollows in climb trunks (1-4): drawn on the trunk at this height, glowing once he is close */
   hollows?: Array<{ x: number; y: number }>;
+  /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
+  bushes?: import('./watcher.ts').Bush[];
+  watch?: import('./watcher.ts').WatchZone[];
 }
 
 /** a small seeded random stream (mulberry32): the same seed always builds the same stage */
@@ -131,6 +135,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   const P: Platform[] = [];
   const V: Vine[] = [];
   const ROPES: Rope[] = [];
+  const BUSHES: Bush[] = [];
+  const ZONES: WatchZone[] = [];
   const T: TreeStructure[] = [];
   const E: Enemy[] = [];
   const C: Collectible[] = [];
@@ -982,6 +988,113 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     thinFinish(PETAL_GOAL_15);
   }
 
+  /** the bush sizes (px wide); each painting keeps its own shape */
+  const BUSH_W = { tall: 124, wide: 176, fern: 150 } as const;
+  const bush = (bx: number, kind: Bush['kind'], extra: Partial<Bush> = {}) => {
+    const b: Bush = { x: Math.round(bx), w: BUSH_W[kind], y: G, kind, ...extra };
+    BUSHES.push(b);
+    return b;
+  };
+  /** the time a stretch takes a quick player who waits out the eagle's passes in the bushes (calm, plus a warning and a sweep) */
+  const watched = (len: number, calm: number) => (len / RUN) * ((calm + 4) / calm);
+
+  /** bushes along the ground, `gap` apart, petals between them (a run, a bush, a run...) */
+  function bushRow(n: number, gap: [number, number], kinds: Array<Bush['kind']>, calm: [number, number]) {
+    const x0 = x;
+    for (let k = 0; k < n; k++) {
+      const g = R.r(gap[0], gap[1]);
+      if (k > 0) row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
+      run(g);
+      const kind = kinds[k % kinds.length];
+      bush(x - BUSH_W[kind] / 2, kind);
+    }
+    run(R.r(260, 340));
+    ZONES.push({ x0, x1: x, calm });
+    expert += watched(x - x0, (calm[0] + calm[1]) / 2);
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  /**
+   * one bush with a secret: a short trunk stands inside it, up to a branch path hidden behind leaves (a golden seed at its end).
+   * From outside it looks like any other bush; climb up from inside it.
+   */
+  function secretBush(calm: [number, number]) {
+    const x0 = x;
+    run(R.r(380, 460));
+    const b = bush(x - BUSH_W.tall / 2, 'tall');
+    const tX = Math.round(b.x + b.w / 2);
+    const perchY = Math.round(G - 160);
+    trunk(tX, G, perchY);
+    const end = tX + Math.round(R.r(360, 420));
+    branch(tX - 40, end, perchY);
+    row(tX + 70, end - 90, perchY - 34, 3, 'hibiscus');
+    goldenSeed(end - 40, perchY - 34);
+    covers.push({ x: tX + 30, y: perchY - 90, w: end - tX, h: 110 });
+    run(R.r(520, 620));
+    ZONES.push({ x0, x1: x, calm });
+    expert += watched(x - x0, (calm[0] + calm[1]) / 2);
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  /** a rope over a wide soft pit with bushes hanging from it: shimmy from one to the next between the eagle's passes */
+  function ropeBushes(calm: [number, number]) {
+    const x0 = x;
+    run(R.r(300, 380));
+    bush(x - 200, 'wide');
+    const edge = x;
+    close();
+    const far = Math.round(edge + R.r(980, 1100));
+    softPit(edge, far);
+    const ry = G - ROPE_RISE;
+    ROPES.push({ id: ROPES.length + 1, x0: edge - 44, x1: far + 44, y: ry, g0: G, g1: G, required: false });
+    const span = far - edge;
+    // hanging just under the rope (by a few vine strands): his body, hanging from his hands, is inside the bush
+    for (const u of [0.26, 0.52, 0.78]) bush(edge + span * u - 52, 'tall', { w: 104, y: ry + 6, hanging: true });
+    for (const u of [0.13, 0.39, 0.65, 0.9]) flower(edge + span * u, ry + HANG_DROP - 26, 'orchid');
+    open(far);
+    run(R.r(260, 340));
+    ZONES.push({ x0, x1: x, calm });
+    expert += (edge - x0) / RUN + (span + 88) / ROPE_SPEED * ((calm[0] + calm[1]) / 2 + 4) / ((calm[0] + calm[1]) / 2) + (x - far) / RUN;
+    pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  if (plan === '1-7') {
+    // 1-7 A Very Good Bush: hide from the eagle. Taught with long calms and big bushes close together, tested with the bushes farther
+    // apart and shorter calms, then twisted onto a rope line with bushes hanging from it. One bush hides a way up to a secret path.
+    beat('Start', () => {
+      rest(R.r(600, 750));
+      flag();
+    });
+    beat('Learn: hide in the bushes', () => {
+      hint(x + 20, 'An eagle is watching. Slide down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide');
+      bushRow(5, [380, 470], ['tall', 'tall', 'wide'], [7.5, 9]);
+      flag();
+    });
+    beat('Test: farther apart', () => {
+      hint(x + 40, 'Run when it has gone by', 'Run when it has gone by', 'Run when it has gone by');
+      bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [4.8, 6]);
+      secretBush([4.8, 6]);
+      stumps();
+      bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [4.6, 5.6]);
+      flag();
+    });
+    beat('Twist: the rope line', () => {
+      hint(x + 60, 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by');
+      ropeBushes([4.6, 5.4]);
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 12) {
+        if (n % 2 === 0) bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [4.4, 5.4]);
+        else ropeBushes([4.4, 5.2]);
+        n++;
+        flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
   if (plan === 'ctest') {
     // the control test: the same stage for every player (the seed is fixed by the caller), one skill per stretch, cheap to fail
     beat('Run and stop', () => {
@@ -1119,7 +1232,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     checkpoints: checkpoints.sort((a, b) => a.x - b.x),
     waterY: WATER,
     meta: { attempt: seed, chunks: pieces.map((p) => p.k), width, pieces: pieces.map((p) => ({ k: p.k, x0: p.x0, x1: p.x1 })), timing: { layoutSeconds: expert, decorSeconds: 0, route: width } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups },
+    proto: { hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}) },
   };
 }
 // ---------------------------------------------------------------------------------------------------------------------------
