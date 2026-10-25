@@ -12,3 +12,19 @@
 - The "Got it!" button on tips doesn't work for about a second after it shows up. Wait a beat before tapping it.
 - A quick tap while my other thumb was running once came out as a mega punch.
 - Baskets: standing in one didn't take me up, whether I walked in, waited or jumped in.
+
+## 2026-10-25 (session 2, iPhone 440 wide, two thumbs, first flying stage)
+- Always check the hearts AND the little red marks under the nectar bar. Each scratch on a thorn costs a heart; when hearts run out a life goes, and it can happen with no warning line from Dot.
+- Mist at the bottom costs a heart and puts you back at the last flower.
+- "Got it!"-style tips aren't the only teaching: the talk box at the bottom changes as you go. Read it, it moves on fast.
+
+### Flying (as Dot)
+- Sliding the left thumb left/right flies sideways. If you only slide, you slowly sink. Don't hold a long slide at the start: flap first.
+- Flick up = one flap, a big hop. Three in a row and the wings need a rest. Flaps go higher than you think; one flick is usually enough to line up with a hole.
+- Quick taps = hover in place. Hovering holds height but does not climb. To get up to a flower's head, flick up first, then tap to stay.
+- To drink, be right in the flower's head and tap-tap-tap. Being on the stem below it does nothing. A drained flower droops and refills after a few seconds.
+- Nectar (bar bottom-left, also a small arc over Dot's head) goes faster than it looks when you flap a lot. Top up at every flower, don't skip one.
+- Iron netting just bonks you back. When the hole is lower than you, stop flapping and let yourself sink before sliding in. When it's higher, one flick, then slide.
+- Holes with spiky bundles on the lips: line up the height first, hover with taps, then slide through in short pushes. Flapping while inside the hole hits the top spikes.
+- Flying through dandelion puffs pops them and can give a lot of points.
+- Upright, Dot's talk box sits at the bottom right over the nectar bar. Watch the arc over Dot's head instead.
