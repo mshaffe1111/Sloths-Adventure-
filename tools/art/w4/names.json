@@ -1,0 +1,12 @@
+{
+  "w4p-cliff-11": {"rock": 0, "shardA": 1, "shardB": 2, "overhang": 3, "shardC": 4, "shardD": 5, "ledgeA": 7, "ledgeB": 8},
+  "w4p-cliff-33": {"rockMoss": 0, "pillarSnap": 5, "fallLedge": 6},
+  "w4p-fern-33": {"frondCurl": 0, "frondUncurl": 1, "frondHalf": 2, "frondBridge": 3},
+  "w4p-chimes-11": {"chimesSwing": 0, "chimesStill": 1, "floatLedge": 2, "rockPillar": 4, "grassCliff": 5, "ribbonFlag": 6},
+  "w4p-water-11": {"boulderBig": 0, "boulderSmall": 1, "fallCliff": 2, "channel": 3, "wetSteps": 4},
+  "w4p-water-33": {"boulderMoss": 0, "fallSmall": 1, "boulderRound": 2, "basin": 3, "wetSteps2": 4},
+  "w4p-pools-11": {"cave": 0, "poolFull": 1, "poolEmpty": 2, "ribbonLog": 3, "channelFall": 4, "brokenLog": 7},
+  "w4p-pools-33": {"cave2": 0, "poolLog": 3, "logJam": 4},
+  "w4-capuchin2-44": {"capRunPetal": 0, "capWalk": 1, "capNest": 2, "capStartled": 3, "capSitBranch": 4, "capGuard": 5},
+  "w4-capuchin2-11": {"capHoldPetal": 0, "capPoint": 1, "capFists": 2, "capEat": 3, "capScreech": 4, "capHang": 5, "capWorried": 6}
+}

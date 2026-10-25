@@ -5,9 +5,11 @@
  * run, steps them against Pokey each frame, and draws them. The engine only hands it what it needs through `W4Host`, so engine.ts gains
  * a field, a step call and two draw calls rather than seven mechanics.
  *
- * The drawing here is the stand-in look (shapes in the World 4 palette) until the painted atlases are cut from art batch 1.
+ * The pieces are painted (w4Art.ts, art batch 1); each draw keeps a plain-shape stand-in for the moment before the atlas loads. The
+ * falling water itself stays drawn here, because it has to pour, ease and dry.
  */
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
+import { drawW4, type W4Piece } from './w4Art.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
 import { ROCK, rockAt, rockHits, type RockDrop } from './rockfall.ts';
@@ -307,7 +309,7 @@ export class W4Play {
   }
 }
 
-// ───────────────────────────── the stand-in drawing ─────────────────────────────
+// ───────────────────────────── drawing ─────────────────────────────
 
 function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
   if (flow <= 0.02) return;
@@ -345,6 +347,7 @@ function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: 
 }
 
 function drawPool(ctx: CanvasRenderingContext2D, cx: number, pool: Pool, level: number) {
+  if (drawW4(ctx, 'poolEmpty', cx, pool.emptyY + 40, 260) && drawW4(ctx, 'poolFull', cx, pool.emptyY + 40, 260, { alpha: level })) return;
   const y = poolLogY(pool, level) + 14;
   ctx.save();
   ctx.fillStyle = 'rgba(56,189,248,0.45)';
@@ -353,6 +356,9 @@ function drawPool(ctx: CanvasRenderingContext2D, cx: number, pool: Pool, level: 
 }
 
 function drawChime(ctx: CanvasRenderingContext2D, c: Chime, angle: number) {
+  // the swinging painting leans its tubes to the right: mirrored for a gust blowing left, still between gusts
+  const swing = Math.abs(angle) > 0.12;
+  if (drawW4(ctx, swing ? 'chimesSwing' : 'chimesStill', c.x + 30, c.y, 96, { flip: swing && angle < 0, rot: swing ? angle * 0.15 : angle })) return;
   ctx.save();
   ctx.strokeStyle = '#5b3a1e';
   ctx.lineWidth = 7;
@@ -379,9 +385,16 @@ function drawChime(ctx: CanvasRenderingContext2D, c: Chime, angle: number) {
   ctx.restore();
 }
 
+const SHARDS: W4Piece[] = ['shardA', 'shardB', 'shardC', 'shardD'];
+
 function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
   const s = rockAt(r, t);
   ctx.save();
+  const painted = s.phase === 'fall' ? drawW4(ctx, r.x % 2 ? 'rockMoss' : 'rock', r.x, s.y, ROCK.radius * 2.4, { rot: s.u * 2.5 }) : false;
+  if (s.phase === 'shatter' && SHARDS.every((n, k) => drawW4(ctx, n, r.x + (k - 1.5) * (14 + 50 * s.u), r.land - 30 * Math.sin(Math.PI * Math.min(1, s.u * 1.4)) * (k % 2 ? 1 : 0.6), 20, { rot: s.u * (k - 1.5) * 3, alpha: 1 - s.u }))) {
+    ctx.restore();
+    return;
+  }
   if (s.phase === 'warn' || s.phase === 'fall') {
     // the shadow on the ground grows as the rock comes
     const u = s.phase === 'warn' ? s.u * 0.6 : 0.6 + 0.4 * s.u;
@@ -395,7 +408,7 @@ function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
     ctx.fillStyle = '#9ca3af';
     for (let k = 0; k < 4; k++) ctx.fillRect(r.x - 8 + k * 5, r.top + ((t * 300 + k * 40) % 90), 3, 3);
   }
-  if (s.phase === 'fall') {
+  if (s.phase === 'fall' && !painted) {
     ctx.fillStyle = '#6b7280';
     ctx.strokeStyle = '#1f2937';
     ctx.lineWidth = 3;
@@ -422,6 +435,8 @@ function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
 
 function drawFrond(ctx: CanvasRenderingContext2D, s: PatienceSpot, st: PatienceState) {
   const u = st.done ? 1 : st.level;
+  // the four paintings, curled to bridge; the bridge lies across the gap past the spot, the others stand on the spot's edge
+  if (u >= 1 ? drawW4(ctx, 'frondBridge', s.x1 + 90, s.y + 10, 200) : drawW4(ctx, u < 0.34 ? 'frondCurl' : u < 0.67 ? 'frondUncurl' : 'frondHalf', s.x1 + 10, s.y + 4, 64 + 30 * u, { rot: u * 0.6 })) return;
   const x0 = s.x1;
   const len = 160 * u;
   ctx.save();
@@ -489,7 +504,37 @@ function drawFruit(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.restore();
 }
 
+/** the painted pose for what a monkey is doing */
+function monkeyPose(m: Capuchin, s: CapState): W4Piece {
+  switch (s.mode) {
+    case 'flee': return s.carrying ? 'capRunPetal' : 'capWalk';
+    case 'tease': return s.carrying ? 'capHoldPetal' : 'capFists';
+    case 'dropped': case 'blown': return 'capStartled';
+    case 'stare': return 'capWorried';
+    case 'screech': return 'capScreech';
+    case 'lured': return 'capWalk';
+    case 'eat': return 'capEat';
+    case 'pace': return 'capGuard';
+    default: return m.job === 'lookout' ? 'capPoint' : 'capSitBranch';
+  }
+}
+
 function drawMonkey(ctx: CanvasRenderingContext2D, m: Capuchin, s: CapState, t: number) {
+  const moving = s.mode === 'flee' || s.mode === 'lured' || s.mode === 'pace';
+  const left = m.job === 'guard' ? s.dir < 0 : s.mode === 'flee' ? (m.path?.[s.post]?.x ?? s.x) < s.x : s.mode === 'lured' ? (s.fruit?.x ?? s.x) < s.x : false;
+  const bob = moving ? Math.abs(Math.sin(t * 14)) * 3 : 0;
+  if (s.mode === 'blown') {
+    if (drawW4(ctx, 'capStartled', s.x + s.t * 300, s.y - s.t * 60, 64, { rot: s.t * 8, alpha: Math.max(0, 1 - s.t / 0.8) })) return;
+  } else if (drawW4(ctx, monkeyPose(m, s), s.x, s.y - bob, 70, { flip: left })) {
+    if (s.mode === 'stare') {
+      ctx.save();
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText('?', s.x - 5, s.y - 82);
+      ctx.restore();
+    }
+    return;
+  }
   ctx.save();
   ctx.translate(s.x, s.y);
   if (s.mode === 'blown') {
@@ -497,7 +542,6 @@ function drawMonkey(ctx: CanvasRenderingContext2D, m: Capuchin, s: CapState, t: 
     ctx.translate(s.t * 300, -s.t * 60);
     ctx.rotate(s.t * 8);
   }
-  const bob = s.mode === 'flee' || s.mode === 'lured' ? Math.abs(Math.sin(t * 14)) * 4 : 0;
   // tail, body, cream face under a dark cap
   ctx.strokeStyle = '#3b2416';
   ctx.lineWidth = 4;
