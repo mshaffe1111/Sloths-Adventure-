@@ -5,13 +5,10 @@
  * otherwise.
  *
  * The clips follow the boss brain: breathing low while he waits, a prowling walk, the coiled crouch before a pounce, the long leap and
- * the landing, the rear-up roar (on a phase change and before the claw combo), raised paws and snapping jaws in the combo, the stretched
- * leap held low for the dash, the flinch, the dazed rearing when stunned and the slow collapse. The shadow step fades the cat out through
- * the boss alpha, so it needs no frame of its own. The frames are drawn at the old frames' size, so the weak points measured off the old
+ * the landing, the rear-up roar (on a phase change and before the claw combo), a long claw swipe and snapping jaws in the combo, a
+ * flat-out gallop for the dash and for running from phase 2, the flinch, the dazed rearing when stunned and the slow collapse. The
+ * shadow step fades the cat out through the boss alpha, so it needs no frame of its own. The frames are drawn at the old frames' size, so the weak points measured off the old
  * poses (bossDefs.ts) still sit where the glow is.
- *
- * Still to come: a gallop and a true claw swipe (both clips failed and are being redone); the dash and the swipe borrow from the pounce
- * and the roar until then.
  */
 import { createPaintedBoss } from './paintedBoss.ts';
 import { PROWLER_ANIM_FRAMES, PROWLER_ANIM_UP, PROWLER_CLIPS } from './prowlerAnimData.ts';
@@ -47,14 +44,14 @@ const FRAMES = {
   w_2: PROWLER_ANIM_FRAMES[at('walk', 0.5)],
   w_3: PROWLER_ANIM_FRAMES[at('walk', 0.75)],
   run_0: PROWLER_ANIM_FRAMES[at('dash', 0)],
-  run_1: PROWLER_ANIM_FRAMES[at('dash', 1)],
+  run_1: PROWLER_ANIM_FRAMES[at('dash', 0.5)],
   viper: PROWLER_ANIM_FRAMES[at('crouch', 0.5)],
   leap: PROWLER_ANIM_FRAMES[at('air', 0.4)],
   land: PROWLER_ANIM_FRAMES[at('land', 0.5)],
   pound: PROWLER_ANIM_FRAMES[at('land', 0.8)],
   alert: PROWLER_ANIM_FRAMES[at('roar', 0.5)],
   screech: PROWLER_ANIM_FRAMES[at('roar', 0.6)],
-  swipe: PROWLER_ANIM_FRAMES[at('swipe', 0.5)],
+  swipe: PROWLER_ANIM_FRAMES[at('claw', 0.5)],
   bite: PROWLER_ANIM_FRAMES[at('bite', 0.5)],
   frenzy: PROWLER_ANIM_FRAMES[at('bite', 1)],
   tailwhip: PROWLER_ANIM_FRAMES[at('bite', 0)],
@@ -67,6 +64,8 @@ const FRAMES = {
 const DYING_S = 2.0;
 /** world units of prowling a full walk cycle covers */
 const WALK_CYCLE = 300;
+/** world units of running a full gallop stride covers */
+const RUN_CYCLE = 420;
 
 export const prowlerSprite = createPaintedBoss({
   param: 'prowler',
@@ -95,16 +94,19 @@ export const prowlerSprite = createPaintedBoss({
         const beat = b.phase >= 3 ? 0.22 : 0.3;
         const k = Math.floor(br.t / beat);
         const u = (br.t % beat) / beat;
-        return k % 2 === 0 ? at('swipe', u) : at('bite', u);
+        return k % 2 === 0 ? at('claw', u) : at('bite', u);
       }
-      return ping('dash', time, 12); // the dash: stretched out low
+      return loop('dash', time, 16); // the dash: a flat-out gallop
     }
     if (br.state === 'rec') {
       if (m?.pose === 'leap') return at('land', 0.35 + 0.65 * p(m.rec));
       return loop('idle', time, 10);
     }
     if (moving) {
-      if (b.phase >= 2) return ping('dash', dist / 40, 1);
+      if (b.phase >= 2) {
+        const f = PROWLER_CLIPS.dash;
+        return f[Math.floor((dist / RUN_CYCLE) * f.length) % f.length];
+      }
       const f = PROWLER_CLIPS.walk;
       return f[Math.floor((dist / WALK_CYCLE) * f.length) % f.length];
     }
