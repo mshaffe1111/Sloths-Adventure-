@@ -93,7 +93,8 @@ async function screenText() {
 
 async function shot(tag = '') {
   const p = path.join(outDir, `${String(++shotN).padStart(4, '0')}${tag ? '-' + tag : ''}.png`);
-  await page.screenshot({ path: p });
+  // (css pixels, not the 1.5x device pixels: a tester reads many of these, and smaller pictures go further)
+  await page.screenshot({ path: p, scale: 'css' });
   return p;
 }
 
@@ -179,7 +180,12 @@ async function handle(cmd) {
     persona = JSON.parse(fs.readFileSync(file, 'utf8'));
     seed = [...cmd.name].reduce((a, c) => a * 31 + c.charCodeAt(0), 7) & 0x7fffffff;
     views = personaViews(persona);
-    return { text: `playing as ${persona.name}: phone ${views.port.width}x${views.port.height} upright, ${views.land.width}x${views.land.height} sideways` };
+    // "persona sally 1": their thumbs as they were in their first real session (2 = second, ...), so a bot gets better the way they did
+    const curve = persona.curve || [];
+    const level = Math.min(Number(cmd.level || 0), curve.length);
+    if (level > 0) Object.assign(persona, curve[level - 1]);
+    const at = level > 0 ? `, thumbs as in their session ${level} of ${curve.length}` : '';
+    return { text: `playing as ${persona.name}: phone ${views.port.width}x${views.port.height} upright, ${views.land.width}x${views.land.height} sideways${at}` };
   }
   if (cmd.cmd === 'start') {
     const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0));
@@ -213,6 +219,10 @@ async function handle(cmd) {
   if (cmd.cmd === 'turn') {
     // turn the phone: same stage, other way up
     view = view === 'land' ? 'port' : 'land';
+    // (the game asks for full screen on the first touch (wideMode.ts), and a full-screen window cannot be resized: step out of it
+    // first, as the browser does when a real phone turns, then resize)
+    await page.evaluate(() => document.fullscreenElement && document.exitFullscreen().catch(() => {}));
+    await page.clock.runFor(50);
     await page.setViewportSize(views[view]);
     await page.clock.runFor(300);
     return { shot: await shot(view), text: await screenText() };
