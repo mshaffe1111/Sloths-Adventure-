@@ -1,0 +1,53 @@
+---
+job: extension
+config:
+  name: "slothadv_motion_v1"
+  process:
+    - type: 'sd_trainer'
+      training_folder: "/out"
+      device: cuda:0
+      network:
+        type: "lora"
+        linear: 32
+        linear_alpha: 32
+      save:
+        dtype: float16
+        save_every: 250
+        max_step_saves_to_keep: 8
+      datasets:
+        - folder_path: "/data/motion"
+          caption_ext: "txt"
+          caption_dropout_rate: 0.05
+          num_frames: 33
+          resolution: [ 480 ]
+      train:
+        batch_size: 1
+        steps: 1500
+        gradient_accumulation: 1
+        train_unet: true
+        train_text_encoder: false
+        gradient_checkpointing: true
+        noise_scheduler: "flowmatch"
+        timestep_type: 'linear'
+        optimizer: "adamw8bit"
+        lr: 1e-4
+        optimizer_params:
+          weight_decay: 1e-4
+        disable_sampling: true
+        dtype: bf16
+        switch_boundary_every: 10
+        cache_text_embeddings: true
+      model:
+        name_or_path: "ai-toolkit/Wan2.2-I2V-A14B-Diffusers-bf16"
+        arch: 'wan22_14b_i2v'
+        quantize: true
+        qtype: "qfloat8"
+        quantize_te: true
+        qtype_te: "qfloat8"
+        low_vram: true
+        model_kwargs:
+          train_high_noise: true
+          train_low_noise: true
+meta:
+  name: "[name]"
+  version: '1.0'

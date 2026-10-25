@@ -1,0 +1,494 @@
+[
+ {
+  "id": "p001",
+  "src": "standard-set/01_turnaround-idle-blinks-tilts.jpg",
+  "cell": 1,
+  "cap": "standing idle pose"
+ },
+ {
+  "id": "p002",
+  "src": "standard-set/01_turnaround-idle-blinks-tilts.jpg",
+  "cell": 2,
+  "cap": "standing idle pose"
+ },
+ {
+  "id": "p003",
+  "src": "standard-set/01_turnaround-idle-blinks-tilts.jpg",
+  "cell": 3,
+  "cap": "standing idle pose"
+ },
+ {
+  "id": "p004",
+  "src": "standard-set/01_turnaround-idle-blinks-tilts.jpg",
+  "cell": 6,
+  "cap": "standing idle pose"
+ },
+ {
+  "id": "p005",
+  "src": "standard-set/01_turnaround-idle-blinks-tilts.jpg",
+  "cell": 7,
+  "cap": "standing idle pose"
+ },
+ {
+  "id": "p006",
+  "src": "standard-set/01_turnaround-idle-blinks-tilts.jpg",
+  "cell": 9,
+  "cap": "standing idle pose"
+ },
+ {
+  "id": "p007",
+  "src": "standard-set/01_turnaround-idle-blinks-tilts.jpg",
+  "cell": 11,
+  "cap": "standing idle pose"
+ },
+ {
+  "id": "p008",
+  "src": "standard-set/01_turnaround-idle-blinks-tilts.jpg",
+  "cell": 13,
+  "cap": "standing idle pose"
+ },
+ {
+  "id": "p009",
+  "src": "standard-set/01_turnaround-idle-blinks-tilts.jpg",
+  "cell": 16,
+  "cap": "standing idle pose"
+ },
+ {
+  "id": "p010",
+  "src": "standard-set/02_walk-and-run.jpg",
+  "cell": 1,
+  "cap": "walking or running, side view"
+ },
+ {
+  "id": "p011",
+  "src": "standard-set/02_walk-and-run.jpg",
+  "cell": 3,
+  "cap": "walking or running, side view"
+ },
+ {
+  "id": "p012",
+  "src": "standard-set/02_walk-and-run.jpg",
+  "cell": 9,
+  "cap": "walking or running, side view"
+ },
+ {
+  "id": "p013",
+  "src": "standard-set/02_walk-and-run.jpg",
+  "cell": 11,
+  "cap": "walking or running, side view"
+ },
+ {
+  "id": "p014",
+  "src": "standard-set/03_jump-fall-land-climb.jpg",
+  "cell": 1,
+  "cap": "jumping, falling, landing or climbing"
+ },
+ {
+  "id": "p015",
+  "src": "standard-set/03_jump-fall-land-climb.jpg",
+  "cell": 3,
+  "cap": "jumping, falling, landing or climbing"
+ },
+ {
+  "id": "p016",
+  "src": "standard-set/03_jump-fall-land-climb.jpg",
+  "cell": 5,
+  "cap": "jumping, falling, landing or climbing"
+ },
+ {
+  "id": "p017",
+  "src": "standard-set/03_jump-fall-land-climb.jpg",
+  "cell": 7,
+  "cap": "jumping, falling, landing or climbing"
+ },
+ {
+  "id": "p018",
+  "src": "standard-set/03_jump-fall-land-climb.jpg",
+  "cell": 9,
+  "cap": "jumping, falling, landing or climbing"
+ },
+ {
+  "id": "p019",
+  "src": "standard-set/03_jump-fall-land-climb.jpg",
+  "cell": 12,
+  "cap": "jumping, falling, landing or climbing"
+ },
+ {
+  "id": "p020",
+  "src": "standard-set/03_jump-fall-land-climb.jpg",
+  "cell": 14,
+  "cap": "jumping, falling, landing or climbing"
+ },
+ {
+  "id": "p021",
+  "src": "standard-set/04_vine-crossing-branch-crawl-swing.jpg",
+  "cell": 1,
+  "cap": "hanging from a vine, crawling or swinging"
+ },
+ {
+  "id": "p022",
+  "src": "standard-set/04_vine-crossing-branch-crawl-swing.jpg",
+  "cell": 4,
+  "cap": "hanging from a vine, crawling or swinging"
+ },
+ {
+  "id": "p023",
+  "src": "standard-set/04_vine-crossing-branch-crawl-swing.jpg",
+  "cell": 6,
+  "cap": "hanging from a vine, crawling or swinging"
+ },
+ {
+  "id": "p024",
+  "src": "standard-set/04_vine-crossing-branch-crawl-swing.jpg",
+  "cell": 9,
+  "cap": "hanging from a vine, crawling or swinging"
+ },
+ {
+  "id": "p025",
+  "src": "standard-set/04_vine-crossing-branch-crawl-swing.jpg",
+  "cell": 12,
+  "cap": "hanging from a vine, crawling or swinging"
+ },
+ {
+  "id": "p026",
+  "src": "standard-set/04_vine-crossing-branch-crawl-swing.jpg",
+  "cell": 15,
+  "cap": "hanging from a vine, crawling or swinging"
+ },
+ {
+  "id": "p027",
+  "src": "standard-set/05_attacks-and-object-interactions.jpg",
+  "cell": 1,
+  "cap": "punching, kicking or handling an object"
+ },
+ {
+  "id": "p028",
+  "src": "standard-set/05_attacks-and-object-interactions.jpg",
+  "cell": 3,
+  "cap": "punching, kicking or handling an object"
+ },
+ {
+  "id": "p029",
+  "src": "standard-set/05_attacks-and-object-interactions.jpg",
+  "cell": 6,
+  "cap": "punching, kicking or handling an object"
+ },
+ {
+  "id": "p030",
+  "src": "standard-set/05_attacks-and-object-interactions.jpg",
+  "cell": 9,
+  "cap": "punching, kicking or handling an object"
+ },
+ {
+  "id": "p031",
+  "src": "standard-set/05_attacks-and-object-interactions.jpg",
+  "cell": 11,
+  "cap": "punching, kicking or handling an object"
+ },
+ {
+  "id": "p032",
+  "src": "standard-set/05_attacks-and-object-interactions.jpg",
+  "cell": 14,
+  "cap": "punching, kicking or handling an object"
+ },
+ {
+  "id": "p033",
+  "src": "standard-set/05_attacks-and-object-interactions.jpg",
+  "cell": 16,
+  "cap": "punching, kicking or handling an object"
+ },
+ {
+  "id": "p034",
+  "src": "standard-set/06_hit-knockback-tumble-defeat.jpg",
+  "cell": 1,
+  "cap": "getting hit, tumbling or knocked down"
+ },
+ {
+  "id": "p035",
+  "src": "standard-set/06_hit-knockback-tumble-defeat.jpg",
+  "cell": 3,
+  "cap": "getting hit, tumbling or knocked down"
+ },
+ {
+  "id": "p036",
+  "src": "standard-set/06_hit-knockback-tumble-defeat.jpg",
+  "cell": 6,
+  "cap": "getting hit, tumbling or knocked down"
+ },
+ {
+  "id": "p037",
+  "src": "standard-set/06_hit-knockback-tumble-defeat.jpg",
+  "cell": 9,
+  "cap": "getting hit, tumbling or knocked down"
+ },
+ {
+  "id": "p038",
+  "src": "standard-set/06_hit-knockback-tumble-defeat.jpg",
+  "cell": 12,
+  "cap": "getting hit, tumbling or knocked down"
+ },
+ {
+  "id": "p039",
+  "src": "standard-set/06_hit-knockback-tumble-defeat.jpg",
+  "cell": 15,
+  "cap": "getting hit, tumbling or knocked down"
+ },
+ {
+  "id": "p040",
+  "src": "standard-set/07_slide-roll-ledge.jpg",
+  "cell": 2,
+  "cap": "sliding, rolling or grabbing a ledge"
+ },
+ {
+  "id": "p041",
+  "src": "standard-set/07_slide-roll-ledge.jpg",
+  "cell": 6,
+  "cap": "sliding, rolling or grabbing a ledge"
+ },
+ {
+  "id": "p042",
+  "src": "standard-set/07_slide-roll-ledge.jpg",
+  "cell": 10,
+  "cap": "sliding, rolling or grabbing a ledge"
+ },
+ {
+  "id": "p043",
+  "src": "standard-set/07_slide-roll-ledge.jpg",
+  "cell": 14,
+  "cap": "sliding, rolling or grabbing a ledge"
+ },
+ {
+  "id": "p044",
+  "src": "standard-set/08_victory-anger-relief-stun.jpg",
+  "cell": 1,
+  "cap": "cheering, angry, relieved or dizzy"
+ },
+ {
+  "id": "p045",
+  "src": "standard-set/08_victory-anger-relief-stun.jpg",
+  "cell": 3,
+  "cap": "cheering, angry, relieved or dizzy"
+ },
+ {
+  "id": "p046",
+  "src": "standard-set/08_victory-anger-relief-stun.jpg",
+  "cell": 5,
+  "cap": "cheering, angry, relieved or dizzy"
+ },
+ {
+  "id": "p047",
+  "src": "standard-set/08_victory-anger-relief-stun.jpg",
+  "cell": 8,
+  "cap": "cheering, angry, relieved or dizzy"
+ },
+ {
+  "id": "p048",
+  "src": "standard-set/08_victory-anger-relief-stun.jpg",
+  "cell": 9,
+  "cap": "cheering, angry, relieved or dizzy"
+ },
+ {
+  "id": "p049",
+  "src": "standard-set/08_victory-anger-relief-stun.jpg",
+  "cell": 12,
+  "cap": "cheering, angry, relieved or dizzy"
+ },
+ {
+  "id": "p050",
+  "src": "standard-set/08_victory-anger-relief-stun.jpg",
+  "cell": 14,
+  "cap": "cheering, angry, relieved or dizzy"
+ },
+ {
+  "id": "p051",
+  "src": "standard-set/10_cutscene-acting.jpg",
+  "cell": 1,
+  "cap": "acting in a story scene"
+ },
+ {
+  "id": "p052",
+  "src": "standard-set/10_cutscene-acting.jpg",
+  "cell": 3,
+  "cap": "acting in a story scene"
+ },
+ {
+  "id": "p053",
+  "src": "standard-set/10_cutscene-acting.jpg",
+  "cell": 6,
+  "cap": "acting in a story scene"
+ },
+ {
+  "id": "p054",
+  "src": "standard-set/10_cutscene-acting.jpg",
+  "cell": 8,
+  "cap": "acting in a story scene"
+ },
+ {
+  "id": "p055",
+  "src": "standard-set/10_cutscene-acting.jpg",
+  "cell": 10,
+  "cap": "acting in a story scene"
+ },
+ {
+  "id": "p056",
+  "src": "standard-set/10_cutscene-acting.jpg",
+  "cell": 12,
+  "cap": "acting in a story scene"
+ },
+ {
+  "id": "p057",
+  "src": "standard-set/10_cutscene-acting.jpg",
+  "cell": 15,
+  "cap": "acting in a story scene"
+ },
+ {
+  "id": "p058",
+  "src": "standard-set/11_dialogue-faces.jpg",
+  "cell": 1,
+  "cap": "head and shoulders portrait, talking expression"
+ },
+ {
+  "id": "p059",
+  "src": "standard-set/11_dialogue-faces.jpg",
+  "cell": 5,
+  "cap": "head and shoulders portrait, talking expression"
+ },
+ {
+  "id": "p060",
+  "src": "standard-set/11_dialogue-faces.jpg",
+  "cell": 9,
+  "cap": "head and shoulders portrait, talking expression"
+ },
+ {
+  "id": "p061",
+  "src": "standard-set/11_dialogue-faces.jpg",
+  "cell": 11,
+  "cap": "head and shoulders portrait, talking expression"
+ },
+ {
+  "id": "p062",
+  "src": "standard-set/11_dialogue-faces.jpg",
+  "cell": 14,
+  "cap": "head and shoulders portrait, talking expression"
+ },
+ {
+  "id": "p063",
+  "src": "standard-set/11_dialogue-faces.jpg",
+  "cell": 16,
+  "cap": "head and shoulders portrait, talking expression"
+ },
+ {
+  "id": "p064",
+  "src": "standard-set/12b_gestures-and-reactions.jpg",
+  "cell": 2,
+  "cap": "gesturing or reacting"
+ },
+ {
+  "id": "p065",
+  "src": "standard-set/12b_gestures-and-reactions.jpg",
+  "cell": 5,
+  "cap": "gesturing or reacting"
+ },
+ {
+  "id": "p066",
+  "src": "standard-set/12b_gestures-and-reactions.jpg",
+  "cell": 8,
+  "cap": "gesturing or reacting"
+ },
+ {
+  "id": "p067",
+  "src": "standard-set/12b_gestures-and-reactions.jpg",
+  "cell": 11,
+  "cap": "gesturing or reacting"
+ },
+ {
+  "id": "p068",
+  "src": "standard-set/12b_gestures-and-reactions.jpg",
+  "cell": 13,
+  "cap": "gesturing or reacting"
+ },
+ {
+  "id": "p069",
+  "src": "standard-set/12b_gestures-and-reactions.jpg",
+  "cell": 16,
+  "cap": "gesturing or reacting"
+ },
+ {
+  "id": "p070",
+  "src": "standard-set-v2/03_jump-fall-land-climb.jpg",
+  "cell": 2,
+  "cap": "jumping, falling or landing"
+ },
+ {
+  "id": "p071",
+  "src": "standard-set-v2/03_jump-fall-land-climb.jpg",
+  "cell": 6,
+  "cap": "jumping, falling or landing"
+ },
+ {
+  "id": "p072",
+  "src": "standard-set-v2/04_vine-crossing-branch-crawl-swing.jpg",
+  "cell": 3,
+  "cap": "hanging from a vine, crawling or swinging"
+ },
+ {
+  "id": "p073",
+  "src": "standard-set-v2/04_vine-crossing-branch-crawl-swing.jpg",
+  "cell": 8,
+  "cap": "hanging from a vine, crawling or swinging"
+ },
+ {
+  "id": "p074",
+  "src": "standard-set-v2/04_vine-crossing-branch-crawl-swing.jpg",
+  "cell": 13,
+  "cap": "hanging from a vine, crawling or swinging"
+ },
+ {
+  "id": "p075",
+  "src": "standard-set-v2/13_swim-dive-glide.jpg",
+  "cell": 2,
+  "cap": "swimming, diving or gliding"
+ },
+ {
+  "id": "p076",
+  "src": "standard-set-v2/13_swim-dive-glide.jpg",
+  "cell": 7,
+  "cap": "swimming, diving or gliding"
+ },
+ {
+  "id": "p077",
+  "src": "standard-set-v2/13_swim-dive-glide.jpg",
+  "cell": 12,
+  "cap": "swimming, diving or gliding"
+ },
+ {
+  "id": "p078",
+  "src": "standard-set-v2/14_aim-items-wall-and-air-moves.jpg",
+  "cell": 2,
+  "cap": "aiming, using an item or moving in the air"
+ },
+ {
+  "id": "p079",
+  "src": "standard-set-v2/14_aim-items-wall-and-air-moves.jpg",
+  "cell": 9,
+  "cap": "aiming, using an item or moving in the air"
+ },
+ {
+  "id": "p080",
+  "src": "standard-set-v2/14_aim-items-wall-and-air-moves.jpg",
+  "cell": 15,
+  "cap": "aiming, using an item or moving in the air"
+ },
+ {
+  "id": "p081",
+  "src": "standard-set-v2/15_air-attacks-stomp-bounce-spring.jpg",
+  "cell": 4,
+  "cap": "attacking in the air, stomping or bouncing"
+ },
+ {
+  "id": "p082",
+  "src": "standard-set-v2/15_air-attacks-stomp-bounce-spring.jpg",
+  "cell": 10,
+  "cap": "attacking in the air, stomping or bouncing"
+ }
+]

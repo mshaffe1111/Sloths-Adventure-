@@ -1,0 +1,14 @@
+import { chromium } from 'playwright';
+const out = (new URL('./', import.meta.url).pathname.replace(/\/$/, '') + '/');
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 844, height: 390 }, deviceScaleFactor: 2 });
+p.on('pageerror', e => console.log('ERR', e.message));
+await p.goto('http://127.0.0.1:4301/');
+await p.waitForTimeout(2500);
+await p.evaluate(() => window.__play('3-10'));
+await p.waitForTimeout(9000); console.log(await p.evaluate(() => Object.keys(typeof window.__engine==="function"?window.__engine():window.__engine).filter(k=>/play|pokey|hero|cam/i.test(k)).join(",")));
+await p.screenshot({ path: out + 'lair-a.png' });
+await p.evaluate(() => { let e = window.__engine; if (typeof e === "function") e = e(); e.player.x -= 1400; });
+await p.waitForTimeout(1500);
+await p.screenshot({ path: out + 'lair-b.png' });
+await b.close();
