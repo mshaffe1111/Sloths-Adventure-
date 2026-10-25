@@ -1,0 +1,134 @@
+{
+ "sessions": 13,
+ "minutesPlayed": 75.5,
+ "devices": {
+  "iPhone 402x713 portrait": 6,
+  "iPhone 402x714 portrait": 6,
+  "iPhone 874x277 landscape": 1
+ },
+ "strokes": 4185,
+ "mix": {
+  "drag": 0.397,
+  "tap": 0.02,
+  "flick": 0.583,
+  "hold": 0.0
+ },
+ "tapMs": {
+  "p10": 29,
+  "p50": 71,
+  "p90": 113
+ },
+ "holdMs": {
+  "p10": 834,
+  "p50": 834,
+  "p90": 834
+ },
+ "flickPx": {
+  "p10": 111.364,
+  "p50": 203.246,
+  "p90": 302.452
+ },
+ "flickPxPerMs": {
+  "p10": 0.529,
+  "p50": 1.008,
+  "p90": 1.828
+ },
+ "flickMs": {
+  "p10": 130,
+  "p50": 196,
+  "p90": 271
+ },
+ "dragMs": {
+  "p10": 321,
+  "p50": 529,
+  "p90": 1429
+ },
+ "jumpFlickOffVerticalDeg": {
+  "p10": 5.356,
+  "p50": 27.474,
+  "p90": 41.154
+ },
+ "jumpHoldMs": {
+  "p10": 83,
+  "p50": 151,
+  "p90": 367
+ },
+ "gapBetweenTouchesMs": {
+  "p10": 129,
+  "p50": 255,
+  "p90": 688
+ },
+ "touchStartX": {
+  "p10": 0.323,
+  "p50": 0.512,
+  "p90": 0.754
+ },
+ "touchStartY": {
+  "p10": 0.588,
+  "p50": 0.734,
+  "p90": 0.849
+ },
+ "leftHalfShare": 0.46,
+ "twoFingerShare": 0.452,
+ "touchSizePx": {
+  "p10": 12,
+  "p50": 24,
+  "p90": 36
+ },
+ "perMinute": {
+  "move": 86.4,
+  "jump": 39.4,
+  "duck": 97.3,
+  "jumpUp": 95.5,
+  "punch": 1.2,
+  "kick": 4.2,
+  "climb": 3.7,
+  "tapjump": 0.0
+ },
+ "hurtPerMinute": 1.05,
+ "livesLostPerMinute": 0.11,
+ "secondsPerSection": {
+  "p10": 0.767,
+  "p50": 10.101,
+  "p90": 28.421
+ },
+ "quits": 0,
+ "finishes": 13,
+ "stuckHelp": 1,
+ "survey": [
+  {
+   "note": ""
+  },
+  {
+   "note": ""
+  },
+  {
+   "hand": [
+    "One finger (like your pointer)"
+   ],
+   "held": [
+    "In one hand"
+   ],
+   "hard": [
+    "Long jumps"
+   ],
+   "note": ""
+  },
+  {
+   "note": ""
+  },
+  {
+   "hand": [
+    "One finger (like your pointer)"
+   ],
+   "held": [
+    "In one hand"
+   ],
+   "hard": [
+    "High vines"
+   ],
+   "note": ""
+  }
+ ],
+ "name": "Steph"
+}
