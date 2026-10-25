@@ -31,7 +31,7 @@ import type { W3Decor } from './w3Art.ts';
 import type { ThornVine } from './thornVine.ts';
 import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
 import { PATIENCE, type PatienceSpot } from './patience.ts';
-import type { Nest } from './eaglet.ts';
+import { NEST, type Nest } from './eaglet.ts';
 import type { Chime, DotKnot } from './w4Kit.ts';
 import { buildWaterfallSteps } from './w4Stage43.ts';
 import { buildLongDrop } from './w4LongDrop.ts';
@@ -2847,13 +2847,14 @@ const KAPOK_MARGIN = 90;
 /**
  * 4-6's mist: the wide ledge at the foot of each hidden column (it catches every miss from the column), the three lanes the small
  * hidden ledges stand in (their middles this far apart) and how wide they are, how long standing still takes to settle the mist (s),
- * and the seconds the climb below leaves for the mist and the nests
+ * and the seconds the climb below leaves for everything above it (the mist, the nests, the two together, across the tree, the high
+ * mist: about 160 s of 4-6's 240)
  */
 const MIST_FOOT = 560;
 const MIST_LANE = 150;
 const MIST_STEP = 130;
 const MIST_FILL = 3;
-const MIST_LEAVES = 64;
+const MIST_LEAVES = 160;
 
 /**
  * 1-4 Up the Kapok: going up. Learn: climb a trunk to its branch, twice, straight up from the floor. Test: a zigzag of rope, branch and
@@ -2881,7 +2882,12 @@ const MIST_LEAVES = 64;
  * the foot of each column catches every miss, so a slip costs a look, never a life. The first column is two ledges, then four, then
  * five. Above the mist the nests: eaglets asleep on wide ledges (eaglet.ts); move near one while they look about and their wings blow
  * him back a few steps, so go while they sleep and stand still while they look. The first nest is alone on its ledge, then a ledge
- * with two on different rhythms, then the crown and the shrine. No glide is needed (4-7 is the first stage that needs the leaf).
+ * with two on different rhythms. Then the two together: a mist spot with eaglets watching it and the first step up (one nest, then one
+ * either side), so he stands still for the mist, then waits for them to doze before he climbs out of their sight into it. Then across
+ * the tree on ropes between nest ledges, out one way and back the other (hang on at each rope's end, out of their sight, until they
+ * doze). At the top the high mist: two tall columns with a small ledge halfway, which the lower mist shows and which settles the upper
+ * mist in turn; then the crown and the shrine. It is a long stage (stageSeconds('4-6'), four minutes). No glide is needed (4-7 is the
+ * first stage that needs the leaf).
  */
 export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false, mist = false): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
@@ -3039,8 +3045,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     climb(Math.round(R.r(260, 300)));
     // more of the same until even a quick climber needs most of two minutes (the twist and the crown add the rest)
     let n = 0;
-    // (4-6 leaves room for the mist and the nests, which take a while)
-    while (expert < EXPERT_SECONDS - (mist ? MIST_LEAVES : 32) && n < 30) {
+    // (4-6 leaves room for the mist and the nests, which take a while: it is a longer stage, stageSeconds('4-6'))
+    while (expert < (mist ? stageSeconds('4-6') - MIST_LEAVES : EXPERT_SECONDS - 32) && n < 30) {
       if (n % 3 === 2) hops(R.i(2, 3));
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
@@ -3113,41 +3119,210 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     flag();
   });
 
+  // ---- 4-6 after the mist: the nests, then the nests and the mist together, across the tree, and the high mist at the top
+  /** 4-6: up a trunk from one end of `cur` (`at`; by default the end with more room past it) to a new ledge `len` long, growing out
+   * from the trunk the way there is room for it. Returns the new ledge's near end (where the trunk tops out) and which way it grows */
+  const trunkTo = (len: number, at?: 1 | -1) => {
+    const side: 1 | -1 = at ?? (W - KAPOK_MARGIN - (cur.x + cur.width) >= cur.x - KAPOK_MARGIN ? 1 : -1);
+    const tX = Math.round(side === 1 ? cur.x + cur.width - 60 : cur.x + 60);
+    const fitsOut = (d: 1 | -1) => (d === 1 ? W - KAPOK_MARGIN - (tX - 40) : tX + 40 - KAPOK_MARGIN) >= len;
+    const d: 1 | -1 = fitsOut(side) ? side : side === 1 ? -1 : 1;
+    const x0 = d === 1 ? tX - 40 : tX + 40 - len;
+    let h = Math.round(R.r(280, 310));
+    for (let k = 0; k < 3 && blocked(x0, x0 + len, cur.y - h); k++) h += 70;
+    trunk(tX, cur.y, cur.y - h);
+    // (from a little way up the trunk: its foot may be in the top of the mist)
+    for (let i = 0; i < 3; i++) flower(tX, cur.y - 140 - ((h - 180) * i) / 2, 'hibiscus');
+    expert += h / CLIMB + 0.8;
+    cur = ledge(x0, x0 + len, cur.y - h);
+    dir = d;
+    return { e: d === 1 ? cur.x : cur.x + cur.width, d };
+  };
+  /** 4-6: a column of `n` small hidden ledges up from height y0, each a plain hop up from the last, in the three lanes around cx */
+  const hiddenSteps = (cx: number, y0: number, n: number, rise: number) => {
+    const ids: number[] = [];
+    let lane = R.i(-1, 1);
+    let last: Platform | undefined;
+    for (let i = 1; i <= n; i++) {
+      if (i > 1) lane += R.chance(0.2) ? 0 : R.pick([-1, 1].filter((m) => Math.abs(lane + m) <= 1));
+      const lx = cx + lane * MIST_LANE;
+      last = ledge(lx - MIST_STEP / 2, lx + MIST_STEP / 2, y0 - i * rise);
+      ids.push(last.id);
+      expert += 0.8;
+    }
+    return { ids, lane, last: last! };
+  };
+  /** 4-6: the wide ledge over the top of a column (it catches the next column's misses in turn), shifted a little from cx */
+  const overColumn = (last: Platform, cx: number, rise: number) => {
+    const lastX = last.x + last.width / 2;
+    const nx = Math.round(Math.max(lastX - 200, Math.min(lastX + 200, Math.max(KAPOK_MARGIN + MIST_FOOT / 2, Math.min(W - KAPOK_MARGIN - MIST_FOOT / 2, cx + R.r(-90, 90))))));
+    return ledge(nx - MIST_FOOT / 2, nx + MIST_FOOT / 2, last.y - rise);
+  };
+  /** 4-6: a long ledge with a nest in its middle, or two on different rhythms (above the mist, taught alone first) */
+  const nestLedge = (len: number, at: number[], reach: number, first: boolean) => {
+    const goRight = W - KAPOK_MARGIN - (cur.x + cur.width) >= cur.x - KAPOK_MARGIN;
+    const tX = Math.round(goRight ? cur.x + cur.width - 60 : cur.x + 60);
+    const d: 1 | -1 = goRight ? 1 : -1;
+    const x0 = d === 1 ? tX - 40 : tX + 40 - len;
+    let h = Math.round(R.r(280, 310));
+    for (let k = 0; k < 3 && blocked(x0, x0 + len, cur.y - h); k++) h += 70;
+    trunk(tX, cur.y, cur.y - h);
+    // (from a little way up the trunk: its foot is still in the top of the mist)
+    for (let i = 0; i < 3; i++) flower(tX, cur.y - 140 - ((h - 180) * i) / 2, 'hibiscus');
+    expert += h / CLIMB + 0.8;
+    cur = ledge(x0, x0 + len, cur.y - h);
+    const e = d === 1 ? cur.x : cur.x + cur.width;
+    if (first) hint('Sleeping eaglets! Go while they sleep. When one peeks up, stand still', 'Sleeping eaglets! Go while they sleep. When one peeks up, stand still', 'Sleeping eaglets! Go while they sleep. When one peeks up, stand still', cur.y + 10);
+    for (const u of at) {
+      const x = Math.round(e + d * u);
+      const every = Math.round(R.r(5.4, 6.4) * 10) / 10;
+      nests.push({ x, y: cur.y, x0: x - reach, x1: x + reach, every, offset: Math.round(R.r(0, every) * 10) / 10 });
+      expert += 2.4;
+    }
+    // petals between the nests and past them (worth the wait)
+    row(e + d * 90, e + d * (at[0] - reach - 40), cur.y - 34, 2, 'hibiscus');
+    expert += len / RUN;
+    dir = d;
+  };
+  /**
+   * 4-6: the nests and the mist together. A long ledge, clear of the mist, with the mist spot near its far end and the eaglets beside
+   * it (`two`: one either side), close enough that the spot and the first step up are in their sight. Standing still on the spot
+   * settles the mist and the eaglets do not mind it; then the climb starts in their sight, so it waits for them to doze. The first step
+   * is plain to see, under the mist (it starts high enough that the nests stand clear of it); the hidden column goes on up from there,
+   * out of their sight, and every miss lands back on the long ledge. Two nests share a rhythm, one waking a moment after the other, so
+   * there is always a while when both sleep.
+   */
+  const NEST_OFF = 150, NEST_SEES = 255, SPOT_IN = 580;
+  const nestMist = (two: boolean, n: number, first: boolean, at?: 1 | -1) => {
+    // (laid out from the trunk: the way in, the near nest's sight, the spot, the far nest's sight, and room past each to be blown back)
+    const push = (NEST.push * NEST.blow) / 2 + 10;
+    const len = Math.ceil(SPOT_IN + NEST_SEES - NEST_OFF + push + 10 + (two ? 2 * NEST_OFF : 0));
+    const { e, d } = trunkTo(len, at);
+    const foot = cur;
+    const cx = Math.round(e + d * SPOT_IN);
+    checkpoints.push({ x: Math.round(e + d * 100), y: foot.y, reached: false });
+    if (first) hint('Eaglets by the mist! Stand still and it settles: they do not mind that. Then climb while they sleep', 'Eaglets by the mist! Stand still and it settles: they do not mind that. Then climb while they sleep', 'Eaglets by the mist! Stand still and it settles: they do not mind that. Then climb while they sleep', foot.y + 10);
+    const every = Math.round(R.r(two ? 6.2 : 5.6, two ? 6.6 : 6.4) * 10) / 10;
+    const offset = Math.round(R.r(0, every) * 10) / 10;
+    const nx = Math.round(cx - d * NEST_OFF);
+    nests.push({ x: nx, y: foot.y, x0: nx - NEST_SEES, x1: nx + NEST_SEES, every, offset });
+    if (two) {
+      const fx = Math.round(cx + d * NEST_OFF);
+      // (the same rhythm, a little ahead: it wakes first, then the other, and both sleep again for a while before the next look)
+      const lag = Math.round(R.r(1, 1.3) * 10) / 10;
+      nests.push({ x: fx, y: foot.y, x0: fx - NEST_SEES, x1: fx + NEST_SEES, every, offset: Math.round(((offset + lag) % every) * 10) / 10 });
+    }
+    // petals by the trunk, before their sight
+    row(e + d * 60, e + d * 120, foot.y - 34, 2, 'hibiscus');
+    // the first step, plain to see; then the hidden column above it, all inside the mist
+    const step = ledge(cx - MIST_STEP / 2, cx + MIST_STEP / 2, foot.y - 82);
+    const rise = R.i(68, 72);
+    const col = hiddenSteps(cx, step.y, n, rise);
+    const top = overColumn(col.last, cx, rise);
+    mistSpots.push({
+      kind: 'mist', x0: cx - 100, x1: cx + 100, y: foot.y, fill: MIST_FILL, hides: [...col.ids, top.id],
+      area: { top: top.y - 30, bottom: foot.y - 150 },
+      view: { x: cx, y: Math.round((foot.y + top.y) / 2) },
+    });
+    // the walk in, the nests, the mist, the wait for them to doze, the step
+    expert += SPOT_IN / RUN + 2.4 * (two ? 2 : 1) + MIST_FILL + PATIENCE.settle + 1.2 + 1.2 + 0.8;
+    cur = top;
+  };
+  /**
+   * 4-6: the high mist. A tall column with a ledge to stop on halfway: standing still at the foot settles the lower half and shows the
+   * ledge in the middle; standing still on that ledge settles the upper half. Every step stands over the wide ledge at the foot, so a
+   * miss from anywhere in it lands there.
+   */
+  const splitMist = (nLow: number, nHigh: number, first: boolean, at?: 1 | -1) => {
+    trunkTo(MIST_FOOT + 80, at);
+    const foot = cur;
+    flag();
+    const cx = Math.round(foot.x + foot.width / 2);
+    const rise = R.i(66, 72);
+    const low = hiddenSteps(cx, foot.y, nLow, rise);
+    // the ledge halfway, over the last step of the lower half (and close enough to the middle that the upper lanes stay over the foot)
+    const cm = Math.round(cx + low.lane * 75);
+    const mid = ledge(cm - 110, cm + 110, low.last.y - rise);
+    mistSpots.push({
+      kind: 'mist', x0: cx - 100, x1: cx + 100, y: foot.y, fill: MIST_FILL, hides: [...low.ids, mid.id],
+      area: { top: mid.y - 30, bottom: foot.y - 40 },
+      view: { x: cx, y: Math.round((foot.y + mid.y) / 2) },
+    });
+    if (first) hint('A ledge to stop on, halfway up! Stand still on it too, and the mist above settles', 'A ledge to stop on, halfway up! Stand still on it too, and the mist above settles', 'A ledge to stop on, halfway up! Stand still on it too, and the mist above settles', mid.y + 10);
+    const high = hiddenSteps(cm, mid.y, nHigh, rise);
+    const top = overColumn(high.last, cm, rise);
+    mistSpots.push({
+      kind: 'mist', x0: cm - 60, x1: cm + 60, y: mid.y, fill: MIST_FILL, hides: [...high.ids, top.id],
+      area: { top: top.y - 30, bottom: mid.y + 40 },
+      view: { x: cm, y: Math.round((mid.y + top.y) / 2) },
+    });
+    expert += 2 * (MIST_FILL + PATIENCE.settle + 1.2) + 0.8;
+    cur = top;
+  };
+
+  // ---- 4-6: above the mist, the eagle nests. Up a trunk at the end of the ledge to a long ledge with a nest in its middle, alone
+  // (taught), then a longer one with two nests on different rhythms
+  if (mist) beat('Develop: the nests', () => {
+    nestLedge(900, [450], 230, true);
+    // (the flag where he arrives, clear of the nest)
+    checkpoints.push({ x: Math.round((dir === 1 ? cur.x : cur.x + cur.width) + dir * 100), y: cur.y, reached: false });
+    nestLedge(1100, [350, 750], 170, false);
+  });
+
+  // ---- 4-6: the nests and the mist together: one nest by the first spot, then one either side of a longer column. The trunk up
+  // stands at the far end of the nests' ledge (so they are always passed)
+  if (mist) beat('Twist: nests in the mist', () => {
+    nestMist(false, 3, true, dir);
+    nestMist(true, 4, false);
+  });
+
+  // ---- 4-6: across the tree on ropes, high over the mist, with eaglets on the ledges between: hang on at the end of each rope (out of
+  // their sight) until they doze. Out one way, up a trunk at the far side and back the other way when there is no room left.
+  if (mist) beat('Test: across the tree', () => {
+    trunkTo(300);
+    flag();
+    hint('All the way across the tree! Stop at the end of each rope, and go while the eaglets doze', 'All the way across the tree! Stop at the end of each rope, and go while the eaglets doze', 'All the way across the tree! Stop at the end of each rope, and go while the eaglets doze', cur.y + 10);
+    /** room to land on past the rope, a nest's sight, and room to be blown back and to leave from past it */
+    const IN = 140, SEES = 160, GAP2 = 120;
+    [1, 2, 1].forEach((k, i) => {
+      const minLen = k === 2 ? 2 * IN + 4 * SEES + GAP2 : 2 * IN + 2 * SEES + 40;
+      const want = minLen + Math.round(R.r(40, 120));
+      if (room() < 380 + minLen) {
+        // up a trunk at the far end of this ledge (clear of its nests' sight) to a short ledge heading back across
+        const tX = Math.round(dir === 1 ? cur.x + cur.width - 60 : cur.x + 60);
+        const x0 = dir === 1 ? tX - 260 : tX - 40;
+        let h = Math.round(R.r(280, 310));
+        for (let q = 0; q < 3 && blocked(x0, x0 + 300, cur.y - h); q++) h += 70;
+        trunk(tX, cur.y, cur.y - h);
+        for (let f = 0; f < 3; f++) flower(tX, cur.y - 70 - ((h - 110) * f) / 2, 'hibiscus');
+        expert += h / CLIMB + 0.8;
+        cur = ledge(x0, x0 + 300, cur.y - h);
+        dir = dir === 1 ? -1 : 1;
+      }
+      const gap = Math.max(360, Math.min(R.i(380, 430), room() - minLen));
+      const len = Math.max(minLen, Math.min(want, room() - gap));
+      rope(gap, len, 2);
+      const e = dir === 1 ? cur.x : cur.x + cur.width;
+      const at = k === 2 ? [IN + SEES, len - IN - SEES] : [len / 2];
+      for (const u of at) {
+        const x = Math.round(e + dir * u);
+        const every = Math.round(R.r(5.4, 6.4) * 10) / 10;
+        nests.push({ x, y: cur.y, x0: x - SEES, x1: x + SEES, every, offset: Math.round(R.r(0, every) * 10) / 10 });
+        expert += 2.4;
+      }
+      if (i === 1) flag();
+    });
+  });
+
   // ---- Finish: up to the crown and the shrine
   beat('Finish: the crown', () => {
     if (mist) {
-      // 4-6: above the mist, the eagle nests. Up a trunk at the end of the ledge to a long ledge with a nest in its middle, alone
-      // (taught), then a longer one with two nests on different rhythms; the crown and the shrine beyond.
-      const nestLedge = (len: number, at: number[], reach: number, first: boolean) => {
-        const goRight = W - KAPOK_MARGIN - (cur.x + cur.width) >= cur.x - KAPOK_MARGIN;
-        const tX = Math.round(goRight ? cur.x + cur.width - 60 : cur.x + 60);
-        const d: 1 | -1 = goRight ? 1 : -1;
-        const x0 = d === 1 ? tX - 40 : tX + 40 - len;
-        let h = Math.round(R.r(280, 310));
-        for (let k = 0; k < 3 && blocked(x0, x0 + len, cur.y - h); k++) h += 70;
-        trunk(tX, cur.y, cur.y - h);
-        // (from a little way up the trunk: its foot is still in the top of the mist)
-        for (let i = 0; i < 3; i++) flower(tX, cur.y - 140 - ((h - 180) * i) / 2, 'hibiscus');
-        expert += h / CLIMB + 0.8;
-        cur = ledge(x0, x0 + len, cur.y - h);
-        const e = d === 1 ? cur.x : cur.x + cur.width;
-        if (first) hint('Sleeping eaglets! Go while they sleep. When one peeks up, stand still', 'Sleeping eaglets! Go while they sleep. When one peeks up, stand still', 'Sleeping eaglets! Go while they sleep. When one peeks up, stand still', cur.y + 10);
-        for (const u of at) {
-          const x = Math.round(e + d * u);
-          const every = Math.round(R.r(5.4, 6.4) * 10) / 10;
-          nests.push({ x, y: cur.y, x0: x - reach, x1: x + reach, every, offset: Math.round(R.r(0, every) * 10) / 10 });
-          expert += 2.4;
-        }
-        // petals between the nests and past them (worth the wait)
-        row(e + d * 90, e + d * (at[0] - reach - 40), cur.y - 34, 2, 'hibiscus');
-        expert += len / RUN;
-        dir = d;
-      };
-      nestLedge(900, [450], 230, true);
-      // (the flag where he arrives, clear of the nest)
-      checkpoints.push({ x: Math.round((dir === 1 ? cur.x : cur.x + cur.width) + dir * 100), y: cur.y, reached: false });
-      nestLedge(1100, [350, 750], 170, false);
-      // the crown, up a trunk at the far end of the nests (so they are always passed), out the way there is room
+      // 4-6: the high mist, up past the nests: two tall columns with a ledge to stop on halfway, then the crown and the shrine.
+      // (The first trunk stands at the far end of the last ledge across the tree, past its nest.)
+      splitMist(2, 3, true, dir);
+      splitMist(3, 4, false);
+      dir = W - KAPOK_MARGIN - (cur.x + cur.width) >= cur.x - KAPOK_MARGIN ? 1 : -1;
+      // the crown, up a trunk at the end of the last column's ledge, out the way there is room
       const tX = Math.round(dir === 1 ? cur.x + cur.width - 60 : cur.x + 60);
       const out = dir === 1 ? W - KAPOK_MARGIN - (tX - 40) >= 560 : tX + 40 - KAPOK_MARGIN < 560;
       const top = cur.y - 300;
@@ -3156,10 +3331,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       cur = out ? ledge(tX - 40, tX + 520, top) : ledge(tX - 520, tX + 40, top);
       row(cur.x + 80, cur.x + 300, top - 34, 3, 'hibiscus');
       return;
-    } else {
-      climb(Math.round(R.r(280, 320)));
-      hops(2);
     }
+    climb(Math.round(R.r(280, 320)));
+    hops(2);
     // the crown: a wide branch with the shrine on it
     if (room() < 620) dir = dir === 1 ? -1 : 1;
     const tX = Math.round(dir === 1 ? cur.x + cur.width - 60 : cur.x + 60);
