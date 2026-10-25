@@ -6,6 +6,25 @@
 import type { Enemy } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { GUARD_FRAMES, GUARD_STAND_H } from './guardAtlasData.ts';
+import { GUARD, TURTLE } from './predatorAI.ts';
+import { makeCreatureAnim } from './creatureAnim.ts';
+import { GUARD_ANIM, GUARD_ANIM_UP, GUARD_ANIM_URL, GUARD_SEQ } from './guardAnimData.ts';
+
+/** the moving guard (2026-10-25): his own poses brought to life with the motion model; the single poses draw while it loads */
+const ANIM = makeCreatureAnim(GUARD_ANIM_URL, GUARD_ANIM, GUARD_SEQ, GUARD_ANIM_UP);
+
+/** the animated frame for this moment, or null to keep the single painted pose (flinching, blocking, sitting dazed, knocked out) */
+function guardClip(e: Enemy, t: number): string | null {
+  if (!ANIM.ready() || e.defeated || e.hitFlashTimer > 0.05) return null;
+  const st = e.state ?? 'patrol';
+  const u = e.stateT ?? 0;
+  if (st === 'windup') return ANIM.at('tell', u / GUARD.windup);
+  if (st === 'snap') return ANIM.at('jab', u / TURTLE.snap);
+  if (st === 'recover') return ANIM.at('after', u / GUARD.recover);
+  if (st === 'slide') return ANIM.at('hit', u / 0.6);
+  if (st === 'shell' || st === 'peek' || st === 'dizzy') return null;
+  return Math.abs(e.vx) > 3 ? ANIM.loop('march', t + e.id * 0.3, 12) : ANIM.ping('stand', t + e.id, 6);
+}
 
 let img: HTMLImageElement | null = null;
 let ready = false;
@@ -58,7 +77,8 @@ export function drawGuardSprite(ctx: CanvasRenderingContext2D, e: Enemy, t: numb
     ctx.ellipse(0, 0, 24, 3.5, 0, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.h * K, f.w * K, f.h * K);
+  const clip = guardClip(e, t);
+  if (!(clip && ANIM.draw(ctx, clip, K))) ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.h * K, f.w * K, f.h * K);
   ctx.restore();
   return true;
 }

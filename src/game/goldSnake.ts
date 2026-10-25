@@ -10,6 +10,30 @@
 import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { makeCreatureAnim } from './creatureAnim.ts';
+import { GOLDSNAKE_ANIM, GOLDSNAKE_ANIM_UP, GOLDSNAKE_ANIM_URL, GOLDSNAKE_SEQ } from './goldsnakeAnimData.ts';
+
+/**
+ * The painted snake (2026-10-25): Wan 2.2 clips (with our motion model) of whole-body paintings made from Matt's head, cut into
+ * frames: slithering, rearing, the open-mouthed strike, flinching, dizzy, the defeat, curled up asleep and the waking yawn. Drawn
+ * with its origin on the snake's feet; while the sheet loads (or with `?snake=drawn`) the code body below draws instead.
+ */
+const ANIM = makeCreatureAnim(GOLDSNAKE_ANIM_URL, GOLDSNAKE_ANIM, GOLDSNAKE_SEQ, GOLDSNAKE_ANIM_UP);
+let paintedOn: boolean | null = null;
+function painted(): boolean {
+  if (paintedOn === null) {
+    paintedOn = true;
+    try {
+      if (new URLSearchParams(location.search).get('snake') === 'drawn') paintedOn = false;
+    } catch {
+      /* no window */
+    }
+  }
+  return paintedOn && ANIM.ready();
+}
+/** how wide the shadow under each pose is: the long slither, the upright S, the coil */
+const SHADOW: Record<string, number> = { prowl: 46, hurt: 48, dazed: 46, defeat: 48, rear: 20, strike: 22, recover: 22, wake: 30, sleep: 30 };
+const FADE = 0.12;
 
 let enabled: boolean | null = null;
 
@@ -75,7 +99,7 @@ export function goldShape(mode: GoldMode, modeT: number, time: number) {
   }
 }
 
-interface Rig { mode: 'prowl' | 'rear' | 'strike' | 'recover'; modeT: number; wave: number }
+interface Rig { mode: 'prowl' | 'rear' | 'strike' | 'recover'; modeT: number; wave: number; t: number; defT: number; seq: string; frame: string; prev: string; fade: number }
 
 const radius = (s: number) => (s < 0.08 ? MAX_R * 0.85 + s * 2 : MAX_R * (1 - Math.pow(Math.max(0, s - 0.08) / 0.92, 1.25)) + 0.4);
 
@@ -120,6 +144,11 @@ export function drawGoldSnake(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
     ctx.arc(enemy.x + 2 * (b.fs < 0 ? -1 : 1), enemy.y, 26, 0, Math.PI * 2);
     ctx.stroke();
     ctx.restore();
+  }
+
+  if (painted()) {
+    drawPainted(ctx, enemy, r, mode, asleep, b.fs, b.dt, time);
+    return true;
   }
 
   // the spine, in the snake's own space: the head at +x, the ground at y = 0
@@ -226,4 +255,56 @@ export function drawGoldSnake(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
   }
   ctx.restore();
   return true;
+}
+
+/** the painted frames: picks the clip for the snake's mode, and dissolves for a moment when it changes pose */
+function drawPainted(ctx: CanvasRenderingContext2D, enemy: Enemy, r: Rig, mode: GoldMode, asleep: boolean, fs: number, dt: number, time: number) {
+  r.t = (r.t ?? 0) + dt;
+  r.defT = enemy.defeated ? (r.defT ?? 0) + dt : 0;
+  const waking = (enemy.wakeT ?? 0) > 0 && !enemy.defeated;
+  let seq: string, frame: string;
+  if (mode === 'defeat') { seq = 'defeat'; frame = ANIM.at(seq, r.defT / 0.9); }
+  else if (asleep) { seq = 'sleep'; frame = ANIM.ping(seq, r.t + enemy.id, 5); }
+  else if (waking) { seq = 'wake'; frame = ANIM.at(seq, 1 - (enemy.wakeT ?? 0) / 1.1); }
+  else if (mode === 'dazed') { seq = 'dazed'; frame = ANIM.ping(seq, r.t, 8); }
+  else if (mode === 'hurt') { seq = 'hurt'; frame = ANIM.at(seq, (1 - (enemy.recoil ?? 0)) / 0.65); }
+  else if (mode === 'rear') { seq = 'rear'; frame = ANIM.ping(seq, r.t, 14); }
+  else if (mode === 'strike') { seq = 'strike'; frame = ANIM.at(seq, r.modeT / 0.18); }
+  else if (mode === 'recover') { seq = 'recover'; frame = ANIM.at(seq, r.modeT / 0.55); }
+  else { seq = 'prowl'; frame = ANIM.loop(seq, r.t + enemy.id * 0.37, 16); }
+  if (r.seq !== seq) {
+    if (r.frame) { r.prev = r.frame; r.fade = FADE; }
+    r.seq = seq;
+  }
+  r.frame = frame;
+  r.fade = Math.max(0, (r.fade ?? 0) - dt);
+
+  ctx.save();
+  ctx.translate(enemy.x, enemy.y + 12);
+  ctx.scale(fs, 1);
+  // contact shadow
+  ctx.fillStyle = 'rgba(20,35,20,.22)';
+  ctx.beginPath();
+  ctx.ellipse(0, 0.5, SHADOW[seq] ?? 40, 2.6, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.4)';
+  if (asleep) {
+    // breathing
+    ctx.scale(1, 1 + Math.sin(time * 2.2 + enemy.id) * 0.018);
+  }
+  ANIM.draw(ctx, frame, 1);
+  if (r.fade > 0 && r.prev) {
+    ctx.globalAlpha = r.fade / FADE;
+    ANIM.draw(ctx, r.prev, 1);
+    ctx.globalAlpha = 1;
+  }
+  ctx.filter = 'none';
+  if (mode === 'dazed') {
+    ctx.fillStyle = '#fde68a';
+    for (let k = 0; k < 3; k++) {
+      const a = time * 4 + (k * Math.PI * 2) / 3;
+      ctx.beginPath(); ctx.arc(26 + Math.cos(a) * 11, -46 + Math.sin(a) * 4, 2.2, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  ctx.restore();
 }

@@ -6,13 +6,18 @@
  * It returns false while the atlas loads (or when switched off) and the caller then draws the vector eagle,
  * so the game never shows nothing.
  *
- * Poses so far: the wing loop (patrol, hover, climb), a warning pose, a three-frame dive and a talons-out strike.
- * The shriek with an open beak and the hit reactions will join when those sheets arrive.
+ * Poses: the wing loop (patrol, hover, climb), the screech before a dive, the dive and the talons-out strike, each a short clip
+ * made from these same painted poses (eagleAnimData.ts); the single painted frames are drawn while that sheet loads.
  */
 import type { Enemy } from './types.ts';
 import { bodyFor, clamp, damp, Spring } from './creatureRig.ts';
 import { EAGLE_FLAP, EAGLE_FRAMES } from './eagleAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { makeCreatureAnim } from './creatureAnim.ts';
+import { EAGLE_ANIM, EAGLE_ANIM_UP, EAGLE_ANIM_URL, EAGLE_SEQ } from './eagleAnimData.ts';
+
+/** the clips of the eagle's own poses (2026-10-25): a full wing beat, the screech before a dive, the dive and the talons-out strike */
+const ANIM = makeCreatureAnim(EAGLE_ANIM_URL, EAGLE_ANIM, EAGLE_SEQ, EAGLE_ANIM_UP);
 
 export const DEFAULT_SPRITE_EAGLE = true;
 /** world units per atlas pixel: the eye is about 27 px across in the atlas, so this makes the eye about 12 units */
@@ -55,6 +60,9 @@ interface SpriteRig {
   clock: number;
   pitch: Spring;
   diveT: number;
+  /** seconds since the warning began, and a running clock for the wing beat */
+  flareT: number;
+  t: number;
 }
 
 export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, time: number): boolean {
@@ -63,7 +71,7 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   if (!ready || !atlas) return false;
 
   const b = bodyFor('eaglespr', enemy, time);
-  if (!b.rig) b.rig = { clock: enemy.id * 3.1, pitch: new Spring(0), diveT: 0 } as SpriteRig;
+  if (!b.rig) b.rig = { clock: enemy.id * 3.1, pitch: new Spring(0), diveT: 0, flareT: 0, t: enemy.id * 0.37 } as SpriteRig;
   const r = b.rig as SpriteRig;
 
   const phase = enemy.swoopPhase;
@@ -75,6 +83,8 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   if (b.dt > 0) {
     r.clock += fps * b.dt;
     r.diveT = dive ? r.diveT + b.dt : 0;
+    r.flareT = flare ? r.flareT + b.dt : 0;
+    r.t += b.dt * (hover ? 1.25 : phase === 'ascend' ? 1.15 : 1);
     const bias = hover ? -0.28 : flare ? -0.15 : 0;
     // the dive frames are already drawn nose-down, so they take only a little of the velocity tilt
     const target = clamp(Math.atan2(b.vy, Math.abs(b.fv) + 25) * 0.85, -0.7, 0.9) * (dive ? 0.25 : 1) + bias;
@@ -87,6 +97,13 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   else name = EAGLE_FLAP[Math.floor(r.clock) % EAGLE_FLAP.length];
   const f = EAGLE_FRAMES[name];
   if (!f) return false;
+  // the animated clip for the same moment, once its sheet has loaded
+  let clip: string | null = null;
+  if (ANIM.ready()) {
+    if (dive) clip = enemy.isAttacking && r.diveT > 0.3 ? ANIM.at('swoop', (r.diveT - 0.3) / 0.6) : ANIM.at('dive', r.diveT / 0.45);
+    else if (flare) clip = ANIM.at('flare', r.flareT / 0.9);
+    else clip = ANIM.loop('fly', r.t, 16);
+  }
 
   ctx.save();
   ctx.translate(enemy.x, enemy.y);
@@ -112,7 +129,7 @@ export function drawEagleSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   ctx.save();
   ctx.translate(EYE_DX, EYE_DY + (flare ? Math.sin(time * 70) * 1.2 : 0));
   ctx.rotate(r.pitch.x);
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
+  if (!(clip && ANIM.draw(ctx, clip, K))) ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
   ctx.restore();
 
   if (flare) {

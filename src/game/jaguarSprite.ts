@@ -14,6 +14,13 @@ import { bodyFor } from './creatureRig.ts';
 import { bodyRect } from './fight.ts';
 import { JAGUAR_FRAMES } from './jaguarAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { makeCreatureAnim } from './creatureAnim.ts';
+import { JAGUAR_ANIM, JAGUAR_ANIM_UP, JAGUAR_ANIM_URL, JAGUAR_SEQ } from './jaguarAnimData.ts';
+
+/** the moving jaguar (2026-10-25): its own poses brought to life with the motion model; the single poses draw while it loads */
+const ANIM = makeCreatureAnim(JAGUAR_ANIM_URL, JAGUAR_ANIM, JAGUAR_SEQ, JAGUAR_ANIM_UP);
+/** world units the animated walk covers in one full cycle */
+const CYCLE = 100;
 
 export const DEFAULT_SPRITE_JAGUAR = true;
 /** world units per atlas pixel */
@@ -91,6 +98,15 @@ export function drawJaguarSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   else name = WALK[Math.floor((r.dist / STRIDE) * WALK.length) % WALK.length];
   const f = JAGUAR_FRAMES[name];
   if (!f) return false;
+  // the animated clip for the same moment (null keeps the single painted pose: dazed, knocked back, knocked out)
+  let clip: string | null = null;
+  if (ANIM.ready() && !enemy.defeated && name !== 'dazed' && name !== 'knock') {
+    if (name === 'hurt') clip = ANIM.at('hurt', (1 - (enemy.recoil ?? 0)) / 0.65);
+    else if (st === 'windup') clip = t < 0.3 ? ANIM.at('roar', t / 0.3) : ANIM.ping('stalk', t, 14);
+    else if (st === 'leap') clip = ANIM.at('leap', t / LEAP_T);
+    else if (st === 'recover') clip = ANIM.at('land', t / 0.95);
+    else clip = ANIM.at('walk', (((r.dist / CYCLE) % 1) + 1) % 1);
+  }
 
   // the shadow stays on the ground while the animal is in the air
   const lift = Math.max(0, (enemy.groundY ?? enemy.y) - enemy.y);
@@ -116,8 +132,14 @@ export function drawJaguarSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   }
   if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   // in the air the engine already lifts the animal, so the pose hangs from its lowest paw instead of the painted ground line
-  const ay = airborne ? f.h : f.ay;
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -ay * K + sink, f.w * K, f.h * K);
+  if (clip) {
+    const c = JAGUAR_ANIM[clip];
+    if (airborne && c) ctx.translate(0, (c.ay - c.h) * (K / JAGUAR_ANIM_UP));
+    ANIM.draw(ctx, clip, K);
+  } else {
+    const ay = airborne ? f.h : f.ay;
+    ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -ay * K + sink, f.w * K, f.h * K);
+  }
   ctx.restore();
   return true;
 }
