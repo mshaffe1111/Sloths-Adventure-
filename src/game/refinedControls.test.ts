@@ -162,3 +162,17 @@ test('a tap is always a punch, never a jump: on either half, with something in r
     }
   }
 });
+
+test('straight up or down on a swinging vine always climbs it, and the swing keeps its rhythm', () => {
+  const v = { x: 500, topY: 100, bottomY: 500 };
+  const s = { angle: 0.3, omega: 0, len: 300 };
+  for (let i = 0; i < 30; i++) swingStep(s, v, 1 / 30, 1, -1);
+  assert.ok(s.len < 300 - 120, `holding up should climb (len ${s.len.toFixed(0)})`);
+  const up = s.len;
+  for (let i = 0; i < 30; i++) swingStep(s, v, 1 / 30, 1, 1);
+  assert.ok(s.len > up + 120, `holding down should slide lower (len ${s.len.toFixed(0)})`);
+  for (let i = 0; i < 300; i++) swingStep(s, v, 1 / 30, 1, 1);
+  assert.equal(s.len, v.bottomY - v.topY, 'he stops at the bottom of the vine');
+  for (let i = 0; i < 300; i++) swingStep(s, v, 1 / 30, 1, -1);
+  assert.equal(s.len, SWING.minLen, 'he stops near the top');
+});

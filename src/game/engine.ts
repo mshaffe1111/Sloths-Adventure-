@@ -62,6 +62,8 @@ import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLeve
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { W4Play } from './w4Play.ts';
+import { camAnchor, camLook, CAM, snapCam } from './cameraFollow.ts';
+import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
@@ -287,6 +289,9 @@ export class GameEngine {
   private glowWake = new Map<number, number>();
   /** World 3's thorn vines: a lash under way (by vine index: when it saw him, which way, whether it has landed), and the cycle it was in */
   private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
+  /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
+  private camAnchorY = NaN;
+  private camLookX: number = CAM.lookAhead;
   /** World 4's rocks, fern, falls, chimes, knots and capuchins for this run (w4Play.ts) */
   private w4: W4Play | null = null;
   private zoneHinted: Record<string, boolean> = {};
@@ -472,6 +477,8 @@ export class GameEngine {
     this.vineLash.clear();
     resetHeroClips();
     warmHeroClips();
+    // the clip sheets of the creatures in this stage start loading now, not as each one first comes on screen
+    warmCreatureAnims(new Set(this.enemies.flatMap((e) => (e.type === 'turtle' && e.royal ? ['guard'] : [e.type]))));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
@@ -1219,7 +1226,8 @@ export class GameEngine {
           if (this.input.state.left) p.facing = -1;
           // the timed swing (physics.ts TIMED): the vine swings itself at a steady height and rhythm; holding a direction only turns
           // him to face the way he will let go, and the only choice is when. A glint shows the sweet spot for letting go.
-          const r = swingStep(sw, nearSwingVine, dt, p.facing, 0);
+          const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
+          const r = swingStep(sw, nearSwingVine, dt, p.facing, climb);
           const sweet = inSweetSpot(sw, p.facing);
           this.sweetGlow += ((sweet ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
           this.sweetGlint -= dt;
@@ -3499,6 +3507,7 @@ export class GameEngine {
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * 0.55);
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
+    this.camAnchorY = NaN;
     this.addFloatingText(
       reason === 'hurt' ? 'TRY AGAIN!' : 'OH NO!',
       p.x,
@@ -3662,11 +3671,13 @@ export class GameEngine {
     const p = this.player;
     const { viewportWidth: vw, viewportHeight: vh } = this.camera;
 
-    // Look-ahead tracking
-    const lookAhead = p.facing * 90;
+    // Look-ahead tracking: eased across when he turns, and a height that ignores hops and swings (cameraFollow.ts: the screen jiggled)
+    this.camLookX = camLook(this.camLookX, p.facing, dt);
+    const sv = p.isVineSwinging ? this.nearSwingVine : null;
+    this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
-    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + lookAhead;
-    this.camera.targetY = p.y - vh * 0.55;
+    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + this.camLookX;
+    this.camera.targetY = this.camAnchorY - vh * 0.55;
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
@@ -3791,7 +3802,9 @@ export class GameEngine {
 
     // 2. Render In-World Game Elements with Camera Transform
     ctx.save();
-    ctx.translate(-Math.round(this.camera.x) + shakeX, -Math.round(this.camera.y) + shakeY);
+    // (snapped to whole device pixels: whole CSS pixels moved the world in steps of three on a phone while he moved smoothly)
+    const snap = dpr * this.zoom;
+    ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
 
     this.drawWaterAndFlags(ctx, world);
     this.drawRivers(ctx, world, false);

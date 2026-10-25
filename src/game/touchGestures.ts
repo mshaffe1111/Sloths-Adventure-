@@ -64,8 +64,19 @@ export const TUNING = {
   tapPx: 22,
   holdMs: 460,
   holdPx: 20,
-  /** a tap that begins this soon after the steering finger lifted is a re-plant, not a punch */
-  replantMs: 190,
+  /**
+   * a tap that begins this soon after the steering finger lifted is the thumb bouncing back onto the glass, not a punch. It was 190 ms,
+   * and replaying the control test's fingers through these rules showed it ate one tap in seven: run up to a snake, let go, tap. A
+   * thumb that is really put back down to steer stays down, so it is never a tap anyway (2026-10-25)
+   */
+  replantMs: 50,
+  /**
+   * a short touch that drifts sideways a little is still a tap, though it nudged a step first: a thumb tap on a phone often slides
+   * 15 to 30 px. In the recordings those touches were followed by another tap exactly as often as clean taps were (people mash punch),
+   * and two in three of them did nothing (2026-10-25)
+   */
+  nudgeTapPx: 30,
+  nudgeTapMs: 250,
   /** a second finger this close to the steering finger is probably the same hand */
   palmPx: 70,
   /** the right half starts here (fraction of the width); left of it steers at once */
@@ -251,11 +262,13 @@ export class TouchGestures {
     f.y = y;
     this.fingers.delete(id);
     if (f.role === 'mover') {
-      const stillTap = !f.jumped && !f.ducked && this.heldDir === 'none' && Math.hypot(f.x - f.x0, f.y - f.y0) <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs;
+      const travel = Math.hypot(f.x - f.x0, f.y - f.y0);
+      const nudge = this.heldDir !== 'none' && travel <= TUNING.nudgeTapPx && t - f.t0 <= TUNING.nudgeTapMs && Math.abs(f.x - f.x0) >= Math.abs(f.y - f.y0);
+      const stillTap = !f.jumped && !f.ducked && ((this.heldDir === 'none' && travel <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) || nudge);
       const wasReplant = f.tapT0 - this.lastMoverUp < TUNING.replantMs;
       // only a finger that really steered or jumped counts as a "thumb that was just lifted". A finger that merely tapped must not:
       // otherwise every tap in a quick run of taps on the left half would look like a re-plant of the one before, and be eaten
-      const wasTap = !f.jumped && !f.ducked && Math.hypot(f.x - f.x0, f.y - f.y0) <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs && this.heldDir === 'none';
+      const wasTap = stillTap;
       this.setDir('none');
       this.setClimb(0);
       this.duckOn = false;

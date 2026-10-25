@@ -76,8 +76,8 @@ test('in the air, the steering thumb put back down a moment after lifting is a r
   t.down(1, 200, 260);
   t.drag(1, 200, 260, 300, 262, 300);
   t.up(1, 300, 262);
-  t.wait(60);
-  t.down(2, 220, 260); // back on the left half, soon after the lift
+  t.wait(30);
+  t.down(2, 220, 260); // back on the left half, bouncing straight back down
   t.wait(70);
   t.up(2, 220, 260);
   assert.equal(t.count('jump'), 0);

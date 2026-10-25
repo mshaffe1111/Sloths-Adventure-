@@ -320,6 +320,8 @@ export const SWING = {
   damp: 0.993, // per 1/60 s
   maxAngle: 1.18,
   minLen: 80,
+  /** px/s he climbs up or slides down a swinging vine while up or down is held */
+  climb: 150,
   grabX: 48,
   leapMin: 340,
   leapMax: 520,
@@ -394,7 +396,6 @@ export function timedAmp(angle: number, omega: number): number {
  * the vine keeps the length it was grabbed at.
  */
 export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0 | 1, climb: -1 | 0 | 1 = 0) {
-  void climb;
   const w = (2 * Math.PI) / TIMED.period;
   s.omega += -w * w * Math.sin(s.angle) * dt;
   const amp = timedAmp(s.angle, s.omega);
@@ -405,6 +406,9 @@ export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0
     s.omega *= 1 - Math.min(0.5, TIMED.trim * dt);
   }
   s.angle = Math.max(-1.05, Math.min(1.05, s.angle + s.omega * dt));
+  // straight up or down on a vine always climbs it (a stage rule): up shortens his hold, down lets him slide lower. The timed swing
+  // keeps its rhythm at any length, so climbing never spoils the sweet spot (lost in the timed swing of 2026-10-24, restored 10-25)
+  s.len += climb * SWING.climb * dt;
   s.len = Math.max(SWING.minLen, Math.min(v.bottomY - v.topY, s.len));
   const tang = s.omega * s.len;
   return {

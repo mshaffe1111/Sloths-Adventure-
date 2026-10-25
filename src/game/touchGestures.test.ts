@@ -143,7 +143,7 @@ test('re-planting the steering thumb right after lifting it does not punch', () 
   t.down(1, 200, 250);
   t.drag(1, 200, 250, 300, 250, 400);
   t.up(1, 300, 250);
-  t.wait(60); // lifted, and back down almost at once
+  t.wait(30); // lifted, and bouncing back down at once
   t.down(2, 220, 250);
   t.wait(70);
   t.up(2, 220, 250);
@@ -263,12 +263,12 @@ test('mashing taps on the left half punches every time (a tap is never a "re-pla
   }
 });
 
-test('a tap right after really steering is still treated as the thumb landing again, not a punch', () => {
+test('the thumb bouncing straight back onto the glass after really steering is not a punch', () => {
   const t = rig();
   t.down(1, 200, 250);
   t.drag(1, 200, 250, 290, 250, 450);
   t.up(1, 290, 250);
-  t.wait(60);
+  t.wait(30);
   t.down(2, 290, 250);
   t.wait(60);
   t.up(2, 290, 250);
@@ -371,4 +371,30 @@ test('while mega is cooling down a held thumb waits, then goes off the moment it
   t.wait(40);
   assert.equal(t.log.filter((l) => l === 'mega').length, 1);
   t.up(1, 600, 250);
+});
+
+test('run up, let go, and tap a moment later: that tap punches (the re-plant rule used to eat it)', () => {
+  const t = rig();
+  t.down(1, 200, 250);
+  t.drag(1, 200, 250, 300, 250, 400);
+  t.up(1, 300, 250);
+  t.wait(120);
+  t.down(2, 300, 250);
+  t.wait(70);
+  t.up(2, 300, 250);
+  assert.equal(t.count('punch'), 1);
+});
+
+test('a quick tap that slides a little sideways still punches', () => {
+  const t = rig();
+  t.down(1, 200, 250);
+  t.drag(1, 200, 250, 222, 252, 120); // 22 px in 120 ms: the run starts, a step
+  t.up(1, 222, 252);
+  assert.equal(t.count('punch'), 1);
+  // a real run that stops is not a punch
+  t.wait(500);
+  t.down(1, 200, 250);
+  t.drag(1, 200, 250, 290, 250, 400);
+  t.up(1, 290, 250);
+  assert.equal(t.count('punch'), 1);
 });
