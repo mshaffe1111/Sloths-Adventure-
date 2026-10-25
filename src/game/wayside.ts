@@ -10,9 +10,9 @@
  * Rules the writing follows (see the notes in the story research):
  *   - a line is a thing someone says or does, never a feeling announced
  *   - it is short enough to read in a glance, and funny or tender because of who says it, not because of a pun
- *   - some lines plant something a later scene pays off (Dot's pouch, his tail feathers, the joke he is saving, the badly tied cages),
+ *   - some lines plant something a later scene pays off (Dot's pouch, her tail feathers, the joke she is saving, the badly tied cages),
  *     and some answer a scene we have already seen
- *   - who can speak follows the story: Dot is with Pokey in worlds 1-5, in world 6 until the Last Note scene (he flies away after stage 5),
+ *   - who can speak follows the story: Dot is with Pokey in worlds 1-5, in world 6 until the Last Note scene (she flies away after stage 5),
  *     is gone through world 7, comes back bleeding at the start of world 8, stays through world 9, and is in the net in world 10.
  *     When Dot is gone the aside is Pokey's own thought (first person) or the petal's (third person, a narrator)
  *   - each line shows once ever (per stage), so a replay is quiet
@@ -50,7 +50,7 @@ const hPokey = (text: string, from?: number, to?: number): HurtWay => ({ who: 'P
 const hPetal = (text: string, from?: number, to?: number): HurtWay => ({ who: 'Petal', text, from, to });
 
 export const WAYSIDE: Record<number, WorldWay> = {
-  // ── ACT I · THE TRAIL: Dot is new, chatty, and sure he is fast ──
+  // ── ACT I · THE TRAIL: Dot is chatty, two days late, and sure she is fast ──
   // 2 Petal Trail · 3 Branch Snakes · 4 Up the Kapok · 5 More Petals · 6 First Lianas · 7 A Very Good Bush · 8 The Long Branch · 9 The Boa's Branches
   1: {
     stages: {
@@ -73,7 +73,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
   2: {
     stages: {
       2: dot('start', 'A sloth watched me pick a flower and said, "Oh." That was ten minutes ago. He\'s still saying it.'),
-      3: dot('half', '"Admire something. Anything." All right. Gorgeous cage. Wonderful reeds. I\'m practicing.'),
+      3: dot('half', 'Reeds, reeds, a cage, more reeds. I\'ve looked at so many reeds today. Some of them on purpose.'),
       4: pokey('half', 'I could watch this river all day... Not now. Swing, Pokey.'),
       5: pokey('half', 'The sign said PLEASE BE PATIENT. I\'m doing my best, but this one keeps lunging.'),
       6: pokey('half', 'Every house in the bank has a round door, and every door says PLEASE BE PATIENT. I\'m climbing past them very patiently.'),
@@ -91,10 +91,10 @@ export const WAYSIDE: Record<number, WorldWay> = {
   3: {
     stages: {
       2: dot('start', 'Stay where I can see you... I can\'t see anything. Stay where I can hear you.'),
-      3: petal('half', 'Dot pats the little pouch at his side again. He does it every time the dark gets close.'),
+      3: petal('half', 'Dot pats the little pouch at her side again. She does it every time the dark gets close.'),
       4: petal('half', 'A glowworm lights his next handhold. He thanks it. It glows a little brighter and pretends not to.'),
       5: pokey('start', 'I used to be good at quiet. In here, quiet is a thing that listens back.'),
-      7: dot('half', 'I\'ve apologized to eleven ferns so far. None of them was the one.'),
+      7: dot('half', 'I\'ve apologized to twelve ferns so far. None of them was the one.'),
     },
     hurt: [
       hDot('That was the dark\'s fault. I\'ll keep saying so until we\'re out.'),
@@ -110,8 +110,8 @@ export const WAYSIDE: Record<number, WorldWay> = {
       2: petal('start', 'The leaf is bigger than he is. He holds it over his head and steps off the edge before he can think about it.'),
       3: dot('start', 'Don\'t look at my tail. It\'s molting season. That\'s a real season. I looked it up.'),
       5: dot('start', 'The mist got into the notes. Meeca\'s last one is now mostly weather.'),
-      6: pokey('start', 'Dot\'s flying lower than yesterday. I\'m pretending I haven\'t noticed. He\'s pretending I haven\'t.'),
-      7: petal('half', 'Dot flies with his bare patch to the wind, so it won\'t show. It shows.'),
+      6: pokey('start', 'Dot\'s flying lower than yesterday. I\'m pretending I haven\'t noticed. She\'s pretending I haven\'t.'),
+      7: petal('half', 'Dot flies with her bare patch to the wind, so it won\'t show. It shows.'),
     },
     hurt: [
       hDot('Check the ledge. I\'m going to say that at every ledge for the rest of my life.'),
@@ -144,10 +144,10 @@ export const WAYSIDE: Record<number, WorldWay> = {
       2: dot('start', 'I\'m not afraid of black water. I\'m afraid of what lives in it and has opinions.'),
       3: dot('half', 'From up here the water looks like a mirror. It looks back, mostly.'),
       5: dot('start', 'I\'m saving a joke for the halfway. A real one. Don\'t let me forget it.'),
-      6: pokey('start', 'Dot said never meet the Reaver at noon. I\'m fairly sure it\'s noon somewhere. Probably here.'),
+      6: pokey('start', 'Meeca said never meet the Reaver at noon. I\'m fairly sure it\'s noon somewhere. Probably here.'),
       7: petal('half', 'The sealed note sits in the satchel. He doesn\'t touch it. He knows exactly where it is.'),
       8: petal('near', 'Near the top he stops, and leaves room on the root beside him. Out of habit.'),
-      9: pokey('start', 'Blackwater. Dot would have a name for it. Something rude. I\'m trying to think of one for him.'),
+      9: pokey('start', 'Blackwater. Dot would have a name for it. Something rude. I\'m trying to think of one for her.'),
     },
     hurt: [
       hDot('The water\'s watching. Don\'t give it anything to talk about.', 1, 5),
@@ -170,7 +170,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
     hurt: [
       hPetal('He says "I\'m fine" to the empty ruins, out of habit. The ruins don\'t argue.'),
       hPetal('A stone face watched him fall. It has seen slower.'),
-      hPokey('Don\'t tell Dot... He\'d have so much to say about it. Tell him anyway.'),
+      hPokey('Don\'t tell Dot. She\'d have so much to say about it. Tell her anyway.'),
     ],
   },
 
@@ -195,13 +195,13 @@ export const WAYSIDE: Record<number, WorldWay> = {
   // 2 Rising Heat · 3 Ember Canopy · 4 The Drake's Doorstep · 5 Vent Riding · 6 Ash Fields · 7 Lava Steps · 8 Pell's Thread · 9 The Drake's Hoard
   9: {
     stages: {
-      2: dot('start', 'It\'s hot. I\'m a small bird in a large oven. I\'d like that on the record.'),
-      3: pokey('half', 'It\'s boiling out. I\'d still wear Meeca\'s scarf. All of it. Right now.'),
+      2: dot('start', 'It\'s hot. I\'m a small bird in a large oven. Somebody should write that down.'),
+      3: pokey('half', 'It\'s so hot Dot has stopped glowing and started sweating. I didn\'t know birds could do that.'),
       4: dot('start', 'When he says "Visitor," don\'t answer. When he says "Intruder," really don\'t answer.'),
-      6: dot('half', 'I\'m not touching the pouch. Look. Hands off... Claws off. I\'m a bird.'),
-      7: pokey('half', 'The ledges up here are warm. I\'ve decided to think of that as friendly.'),
+      6: dot('half', 'I\'m not touching the pouch. Look. Hands off. Wings off. I\'m a bird.'),
+      7: pokey('half', 'It\'s boiling out, and I\'d still wear Meeca\'s scarf. All of it. Right now.'),
       8: dot('half', 'More thread. Either the lieutenant is very careless, or he wants us to find him.'),
-      9: dot('start', 'Plan for the Drake: be so polite he feels bad. It\'s worked eight times.'),
+      9: dot('start', 'Plan for the Drake: you say something dry, I panic, he gets confused. It\'s worked eight times.'),
     },
     hurt: [
       hDot('You\'re smoking. Slightly. Pat it out gently and panic a little.'),
@@ -251,7 +251,7 @@ export function hurtLine(world: number, mini: number): WayLine | undefined {
   return { who: h.who, text: h.text };
 }
 
-/** is Dot with Pokey at this point of the story? He is away from the second half of world 6 (after the Last Note), all of world 7, and in the net in world 10 */
+/** is Dot with Pokey at this point of the story? She is away from the second half of world 6 (after the Last Note), all of world 7, and in the net in world 10 */
 export function dotPresent(world: number, mini: number): boolean {
   return !(world === 6 && mini >= 6) && world !== 7 && world !== 10;
 }

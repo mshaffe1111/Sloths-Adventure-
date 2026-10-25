@@ -120,13 +120,11 @@ The prologue is in VOICE.md, as approved.
 
 **Venom Fang:** ...From the General. Up there. I was told to stop anyone who followed her. I pictured a soldier. A hawk, maybe. I did not picture this.
 
-**Dot:** Pokey, he's long. He's really long. How long is he? I can't see the end of him. Where does he end?
-
-**Venom Fang:** Further than you'd like. You'll have to get through me, ssloth. Take all the time you need. Someone has to.
+**Venom Fang:** You'll have to get through me, ssloth. Take all the time you need. Someone has to.
 
 **Pokey:** I usually do.
 
-**Venom Fang:** I have been told to bite you. Hold still. It's quicker for both of us.
+(In the game, a guardian gets at most five lines before a fight, because they play on every try. Dot's line about how long the snake is didn't fit, so it was cut, along with "I have been told to bite you.")
 
 *After the fight.*
 
@@ -396,7 +394,7 @@ The General's younger years again. Two captions changed.
 
 **Dot:** Ferny ones. Around here, ish. If you crouch down next to the right one, it rustles. Or that might be the wind. I've gotten very good at ferns. I can tell you which ones are rude.
 
-*So the search for Meeca's grandma's things began. A sloth crouched beside a fern, and a hummingbird hovered beside the sloth, and the two of them said "Hello?" in very small voices.*
+*So the search for Meeca's grandma's things began. A sloth crouched beside a fern, and a hummingbird hovered beside the sloth, and the two of them said, "Hello?" in very small voices.*
 
 ### The guardian: Shadow Prowler
 
@@ -1684,7 +1682,7 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 *Up in the window, Meeca began the verse again. The red in his eyes went down a little with every line, until there was only brown.*
 
-*The club went first. Then the cape, and the spikes on his shoulder. None of it made a sound. What was left was an old sloth, brown and tired, standing in the rain.*
+*The club went first. Then the cape, and the spikes on his shoulder. None of it made a sound. What was left was an old sloth, brown and tired, in a rust-colored scarf.*
 
 **Lieutenant Pell:** The door is open, Miss. I am sorry it was ever shut.
 
@@ -1786,7 +1784,7 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 **Dot:** It's a trap with cookies. I've had four.
 
-*A few days later, back home in the garden, they laid out everything Pokey had found in the ferns.*
+(The keepsake lines below only play for the keepsakes the player found.)
 
 **Meeca:** My locket. You fastened it on me the day I started school. "So you'll always know your name." I never took it off until they took me.
 
@@ -1844,7 +1842,7 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 *It was a small bronze bell, green with age. Meeca's grandma had rung it whenever someone she loved was coming home. It hadn't rung since the day she died.*
 
-*The General turned it over in his big hands. Then, very gently, he rang it. One clear note went out over the garden and down the path, the way it used to.*
+*The General turned it over in his big hands. Then, very gently, he rang it. One clear note went out over the village and up the mountain, the way it used to go down a garden path.*
 
 **Grandfather:** Somebody is coming home.
 
@@ -1854,7 +1852,7 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 ### The end
 
-*That evening, they climbed the hill behind the house to the old tree, where Meeca's grandma had said she'd be. The General went up last.*
+*That evening, they climbed the hill to the old tree, where Meeca's grandma had said she'd be. The General went up last.*
 
 **Grandfather:** Hello, love. I'm late. I brought the whole family.
 
@@ -1880,7 +1878,7 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 **Dot's year with the letter.** She now says she had it that whole year he sat by the chair and couldn't make herself give it to him, which is why "a long time ago" fits better than "nine years ago."
 
-**Fixes in the weeks after.** The key line used to say he lost it "in the first storm," which didn't fit any storm we have. Now he wore it for that year and thought he lost it the morning he left, and Meeca says he left it on Grandma's chair and she's kept it in her apron ever since. That's the same apron from World 3. The croc's "I would like it noted" (British) is now "Everyone look. I kept the crown." Dot's "biscuits" is cookies. The snail is half an inch from the finish, not a centimeter, and Pokey's last line is the exact callback, "He trained for it." The General's armor used to leave him wearing a scarf, which nothing explained, so now it's just an old sloth standing in the rain.
+**Fixes in the weeks after.** The key line used to say he lost it "in the first storm," which didn't fit any storm we have. Now he wore it for that year and thought he lost it the morning he left, and Meeca says he left it on Grandma's chair and she's kept it in her apron ever since. That's the same apron from World 3. The croc's "I would like it noted" (British) is now "Everyone look. I kept the crown." Dot's "biscuits" is cookies. The snail is half an inch from the finish, not a centimeter, and Pokey's last line is the exact callback, "He trained for it." The General's plain-sloth art wears a rust-colored scarf, so the line keeps it.
 
 **Thornbark.** He can't believe what came for him ("A sloth. They sent... a sloth. No. Nobody sent you.") and gets his wish from the Cast Bible, someone telling him he was right not to kneel. Pokey says it straight, because it's true, not to be nice. He's also now clearly the tenth council member, the one who said no ("Nine of them knelt"), and the Queen says "All but one of us" so it all lines up.
 
@@ -1903,7 +1901,7 @@ A separate reader went through all ten worlds looking for slips. These are fixed
 
 **Callbacks with no setup.** "Next branch" is now Pokey's own way of doing things, not something Meeca said that we never saw. "Dot always laughed at her own jokes" became "Dot waited for him to laugh." The scarf from World 9 now shows up at the end, four times around and still dragging, and he's wearing it. The letters Meeca wrote and couldn't send are paid off too: she gives them to him, and the handwriting never wobbles once.
 
-**The ending.** The General sits in the chair the Queen dusted every morning for nine years, puts his feet up, and finishes the cup. That's her whole story paid off, where before the chairs were "too small." The keepsakes and the bell happen back home in the garden a few days later, and the hill is the one behind the house. Gruntlewick took five months, not three weeks. The pins: the General started with a box of forty, which says how fast he thought this would be over.
+**The ending.** The General sits in the chair the Queen dusted every morning for nine years, puts his feet up, and finishes the cup. That's her whole story paid off, where before the chairs were "too small." The keepsakes and the bell stay at the tea table, where the game's pictures already are. Gruntlewick took five months, not three weeks. The pins: the General started with a box of forty, which says how fast he thought this would be over.
 
 **Every boss loses in their own voice.** "Beaten. By a sloth." is now only the snake's, since it's your line. The croc is upside down in his own mud, the eagle is on the ground ("I am never on the ground"), the Reaver can't believe anyone won at lunch, and Thornbark can't believe a sloth came at all.
 

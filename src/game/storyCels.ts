@@ -66,7 +66,7 @@ export const CEL_CAST: Record<string, CelCast> = {
   GB: { prefix: 'gb', name: 'the General, face (war look)', x: 0.66, face: -1, rest: 'stare', who: ['General Iron-Claw'], y: 1.04, scale: 1.5, bust: true },
   GP: { prefix: 'gp', name: 'the General, face (plain)', x: 0.66, face: -1, rest: 'calm', who: ['General Iron-Claw', 'Grandfather'], y: 1.04, scale: 1.5, bust: true },
   GR: { prefix: 'gr', name: 'Grandma', x: 0.66, face: -1, rest: 'stand_hands', who: ['Grandma'] },
-  LP: { prefix: 'lp', name: 'Lieutenant Pell', x: 0.66, face: -1, rest: 'stand_worry', who: ['Officer'] },
+  LP: { prefix: 'lp', name: 'Lieutenant Pell', x: 0.66, face: -1, rest: 'stand_worry', who: ['Lieutenant Pell'] },
   TC: { prefix: 'tc', name: 'the town crier', x: 0.66, face: -1, rest: 'scroll', who: ['Gruntlewick'] },
   PO: { prefix: 'po', name: 'the mail carrier', x: 0.66, face: -1, rest: 'carry_stand', who: ['Mailman'] },
 };
@@ -158,7 +158,7 @@ export interface HeadSpec {
 }
 export const HEADS: Record<string, HeadSpec> = {
   Grandma: { key: 'gr.laugh', x: 0.05, y: 0.0, s: 0.9 },
-  Officer: { key: 'lp.hopeful', x: 0.1, y: 0.0, s: 0.8 },
+  'Lieutenant Pell': { key: 'lp.hopeful', x: 0.1, y: 0.0, s: 0.8 },
   Grandfather: { key: 'gy.smile', x: 0.1, y: 0.0, s: 0.8 },
   Gruntlewick: { key: 'tc.hat_stand', x: 0.3, y: 0.0, s: 0.66 },
 };

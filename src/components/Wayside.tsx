@@ -165,7 +165,7 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) =>
   }, [applies, active, world, mini, run]);
 
   if (guideShown && active && run.guide) {
-    // Dot guides; where the story has him away (late World 6, World 7, World 10) it is Pokey's own thought
+    // Dot guides; where the story has her away (late World 6, World 7, World 10) it is Pokey's own thought
     const dot = dotPresent(world, mini);
     const g = WHO[dot ? 'Dot' : 'Pokey'];
     return (

@@ -32,6 +32,14 @@ Matt's running list of drawings still needed from Gemini. A new need joins the l
 16. **Grandma's things**: the bronze medal (World 3's keepsake), a teacup, spectacles, wool and needles, a seed pouch and trowel, a thimble and pincushion (3-6, 3-7). (Prompt 16)
 17. **The sinkhole**: the moonlit rim, a tall wall section, a trickle of water, a mossy ledge, a root bridge, a root ladder (3-4). (Prompt 17)
 
+## The story rewrite (prompts in STORY-ART-PROMPTS.md)
+
+18. **The squirrel family and their sign THE SLOTH** (World 1 opening, the vine memory). Until it comes, the squirrel talks from off screen. (Prompt 18)
+19. **The village building the raft** (World 2 halfway). Until it comes, the riverbank scenery and the village folk stand in. (Prompt 19)
+20. **Dot holding on to Pokey's claw over the gorge** (World 4, the start of Act II). (Prompt 20)
+21. **Dot covered in flour** (the ending). Until it comes, she is her usual green. (Prompt 21)
+22. **Pokey's parents going out into the storm** (the World 6 memory and Dot's confession in World 10). (Prompt 22)
+
 ## World 7 (when we get there)
 
 11. **Under the Ruins, the secret level** (see SECRET-LEVELS.md). Prompts to write then: the tunnel pieces, glowworm threads, roots to climb, flooded passages, the hidden crack that leads in, the narrow crack under the net, Pokey pushing the note up, and Meeca finding it.
