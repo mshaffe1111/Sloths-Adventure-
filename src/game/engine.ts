@@ -481,7 +481,7 @@ export class GameEngine {
     // the clip sheets of the creatures in this stage start loading now, not as each one first comes on screen
     warmCreatureAnims(new Set(this.enemies.flatMap((e) => (e.type === 'turtle' && e.royal ? ['guard'] : [e.type]))));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
-    this.pushLogs = this.platforms.filter((pl) => !!pl.push);
+    this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)

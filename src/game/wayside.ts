@@ -258,7 +258,7 @@ export function dotPresent(world: number, mini: number): boolean {
   return !(world === 6 && mini >= 6) && world !== 7 && world !== 10;
 }
 
-/** does this stage hide a find in a Hush Fern (a keepsake in stage 5, a book in stage 8)? */
+/** does this stage hide a find in a Hush Fern (a keepsake in stage 5 (3 in World 4), a book in stage 8)? */
 export function hidesFern(world: number, mini: number): boolean {
   const f = findForStage(world, mini);
   return !!f && f.kind !== 'note';

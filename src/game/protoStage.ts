@@ -33,6 +33,7 @@ import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
 import { PATIENCE, type PatienceSpot } from './patience.ts';
 import type { Nest } from './eaglet.ts';
 import type { Chime, DotKnot } from './w4Kit.ts';
+import { buildWaterfallSteps } from './w4Stage43.ts';
 import { buildLongDrop } from './w4LongDrop.ts';
 import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
@@ -40,8 +41,8 @@ import type { Capuchin } from './capuchin.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-4' | '4-5' | '4-6' | '4-7';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -201,6 +202,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildKapok(config, seed, false, true);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
+  if (plan === '4-3') return buildWaterfallSteps(config, seed);
   if (plan === '4-6') return buildKapok(config, seed, false, false, false, true);
   if (plan === '4-7') return buildLongDrop(config, seed);
   if (plan === '1-8') return buildLongBranch(config, seed);

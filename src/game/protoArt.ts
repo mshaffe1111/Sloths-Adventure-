@@ -587,7 +587,7 @@ export function drawProtoScene(
     if (p.height === 50 && p.style === 'moss_stone') drawRockArt(ctx, p);
   }
   for (const p of platforms) {
-    if (!vis(p) || !p.push) continue;
+    if (!vis(p) || !p.push || p.art) continue; // (a pushed boulder is World 4's to paint: w4Play.ts)
     drawLogArt(ctx, p, t - (st.movedAt.get(p.id) ?? -9) < 0.2);
   }
   void trees;
