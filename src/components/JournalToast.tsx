@@ -1,5 +1,6 @@
 import React from 'react';
 import { takeNewlyOpened } from '../game/movesJournal.ts';
+import { guideShowMs } from '../game/wayside.ts';
 
 /**
  * "New page in your journal": while a stage is being played, any journal page that has just opened (a lesson card, a tip from Dot, a
@@ -7,7 +8,7 @@ import { takeNewlyOpened } from '../game/movesJournal.ts';
  * open together (the first foe opens Kick, Mega punch and Stomp) share one note. It waits while a card or the menu is up, and while
  * Dot is speaking: her line can sit at the bottom of the screen too, and the note used to cover it (`guide`: her latest line).
  */
-export const JournalToast: React.FC<{ active: boolean; guide?: { ms: number; n: number } | null }> = ({ active, guide }) => {
+export const JournalToast: React.FC<{ active: boolean; guide?: { text: string; ms: number; n: number } | null }> = ({ active, guide }) => {
   const [note, setNote] = React.useState<{ titles: string[]; n: number } | null>(null);
   const queue = React.useRef<string[][]>([]);
   const showing = React.useRef(false);
@@ -45,13 +46,15 @@ export const JournalToast: React.FC<{ active: boolean; guide?: { ms: number; n: 
   // Dot starts a line: a note on screen steps aside (it comes back after her) and the queue waits until she is done
   React.useEffect(() => {
     if (!guide) return;
-    holdUntil.current = performance.now() + guide.ms + 400;
+    // (as long as her line is actually up: Wayside keeps a line long enough to read, longer than the engine asked for)
+    const ms = guideShowMs(guide.text, guide.ms);
+    holdUntil.current = performance.now() + ms + 400;
     if (current.current) {
       queue.current.unshift(current.current);
       current.current = null;
       setNote(null);
     }
-    if (showing.current) later(next, guide.ms + 400);
+    if (showing.current) later(next, ms + 400);
   }, [guide?.n]); // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {

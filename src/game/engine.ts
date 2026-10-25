@@ -3684,6 +3684,8 @@ export class GameEngine {
     if (look) {
       this.camera.targetX += (look.x - vw / 2 - this.camera.targetX) * look.u;
       this.camera.targetY += (look.y - vh / 2 - this.camera.targetY) * look.u;
+      // (never so far that he leaves the view: his feet stay above the bottom tenth)
+      this.camera.targetY = Math.max(this.camera.targetY, p.y - vh * 0.9);
     }
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {

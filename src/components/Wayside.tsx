@@ -3,7 +3,7 @@ import type { LevelConfig } from '../game/types.ts';
 import { DotFace } from './DotFace.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
 import { restFace } from '../game/dotSprite.ts';
-import { GAP_MS, HURT_WINDOW_MS, dotPresent, dueLine, hidesFern, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayFlag, type WayLine } from '../game/wayside.ts';
+import { GAP_MS, HURT_WINDOW_MS, dotPresent, dueLine, guideShowMs, hidesFern, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayFlag, type WayLine } from '../game/wayside.ts';
 import { findForStage, loadFinds } from '../game/finds.ts';
 
 interface Props {
@@ -53,7 +53,6 @@ interface Run {
 }
 
 /** a guiding line stays up at least as long as a story line of its length, and no longer than this */
-const GUIDE_MAX_MS = 6500;
 
 /**
  * The story while you play: one small line at a time from Dot, Pokey or the petal, a few per stage (see game/wayside.ts).
@@ -89,7 +88,7 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) =>
       run.cur = null;
       setLine(null);
     }
-    const ms = Math.min(GUIDE_MAX_MS, Math.max(guide.ms, showMs(guide.text)));
+    const ms = guideShowMs(guide.text, guide.ms);
     run.guide = { text: guide.text, left: ms, ms, n: guide.n };
     setGuideShown({ text: guide.text, ms, n: guide.n });
   }, [guide, run]);

@@ -231,3 +231,12 @@ test('where Dot is away, the thought is Pokey\'s own', () => {
   assert.equal(fernLine(6, 8)?.who, 'Pokey');
   assert.equal(fernLine(8, 5)?.who, 'Dot');
 });
+
+import { GUIDE_MAX_MS, guideShowMs } from './wayside.ts';
+
+test("a guiding line stays up long enough to read (the journal note waits that long too), and never past the cap", () => {
+  const line = 'That vine is tied up out of reach. Walk up to the knot and wait there';
+  assert.equal(guideShowMs(line, 1000), Math.min(GUIDE_MAX_MS, showMs(line)));
+  assert.ok(guideShowMs(line, 1000) > 1000);
+  assert.equal(guideShowMs('Hi', 99999), GUIDE_MAX_MS);
+});

@@ -276,6 +276,11 @@ export function fernLine(world: number, mini: number): WayLine | undefined {
 }
 
 /** how long a line stays up: long enough to read it twice at a glance */
+/** the longest a guiding line from Dot stays up (ms) */
+export const GUIDE_MAX_MS = 6500;
+/** how long a guiding line handed over for `ms` stays up: long enough to read, never longer than GUIDE_MAX_MS (Wayside, JournalToast) */
+export const guideShowMs = (text: string, ms: number): number => Math.min(GUIDE_MAX_MS, Math.max(ms, showMs(text)));
+
 export function showMs(text: string): number {
   return Math.min(7600, 2800 + text.length * 50);
 }

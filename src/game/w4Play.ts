@@ -107,6 +107,8 @@ export class W4Play {
   private flow: number[];
   private pool: number[];
   private knots: Array<KnotState & { freedAt?: number }>;
+  /** the host's clock at the last step (s) */
+  private clock = 0;
   private vineFull = new Map<number, number>();
   private vineTied = new Map<number, number>();
   private monkeys: CapState[];
@@ -149,6 +151,7 @@ export class W4Play {
   step(dt: number, h: W4Host): { speed: number } {
     const p = h.player;
     const w4 = this.w4;
+    this.clock = h.t;
     let speed = 1;
 
     // into the mist: well below the last ledge, with nothing under him, is a fall
@@ -450,6 +453,14 @@ export class W4Play {
       if (s.kind !== 'mist' || !s.area || !onSpot(s, px, feetY)) return;
       const u = Math.min(1, this.patience[i].level * 2);
       if (u > 0 && (!best || u > best.u)) best = { x: s.view?.x ?? (s.x0 + s.x1) / 2, y: s.view?.y ?? (s.y + s.area.top) / 2, u };
+    });
+    // 4-4's knots: waiting under one (and while Dot flies up and picks it), the view tilts up between him and the knot, so the knot and
+    // Dot are on screen even held sideways (the engine keeps him in view)
+    (this.w4.knots ?? []).forEach((k, i) => {
+      const st = this.knots[i];
+      if (!underKnot(k, px, feetY) || (st.phase === 'free' && (st.freedAt === undefined || this.clock - st.freedAt > 1.2))) return;
+      const u = st.phase === 'tied' ? Math.min(1, st.t / DOT_HELP.ask) : 1;
+      if (u > 0 && (!best || u > best.u)) best = { x: k.x, y: (k.y + feetY) / 2, u };
     });
     return best;
   }
