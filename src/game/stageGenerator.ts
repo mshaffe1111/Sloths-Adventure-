@@ -1,5 +1,6 @@
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
+import { DOT_STAGE_ID, dotGeneratedStage } from './dotFlightStage.ts';
 import { ctestEnabled, ctestSeed } from './playRecorder.ts';
 
 /** the stage the control test replaces (no story scene before it); its layout is a new mix each run (playRecorder.ts ctestSeed) */
@@ -65,6 +66,8 @@ export interface GeneratedStage {
   zones?: import('./zones.ts').Zone[];
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
+  /** Dot's netting flight (dotFlightStage.ts): she flies it, there is no ground, and the engine hands the stage to dotFlightRun.ts */
+  dot?: import('./dotFlightStage.ts').DotStage;
   /** what the generator built (for tests and debugging) */
   meta?: {
     attempt: number;
@@ -2744,6 +2747,8 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
 export function generateStage(config: LevelConfig): GeneratedStage {
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, ctestSeed(), 'ctest');
+  // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
+  if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);
   // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]);
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24

@@ -1,4 +1,5 @@
 import React from 'react';
+import { DOT_STAGE_ID } from '../game/extraStages.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { countWord } from '../game/stagePlan.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
@@ -158,7 +159,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                     <>
                       <span className="tabular-nums">{distPercent}% there</span>
                       <span className={distPercent >= 85 ? 'text-amber-300 font-semibold animate-pulse' : ''}>
-                        {distPercent >= 85 ? 'Sanctuary ahead!' : GOAL_TEXT[levelConfig.objectiveType]}
+                        {levelConfig.id === DOT_STAGE_ID ? (distPercent >= 85 ? 'The gap ahead!' : 'Fly to the gap') : distPercent >= 85 ? 'Sanctuary ahead!' : GOAL_TEXT[levelConfig.objectiveType]}
                       </span>
                     </>
                   ) : (

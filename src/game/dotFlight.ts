@@ -87,6 +87,8 @@ export class DotFlight {
   popped = new Set<number>();
   /** the wind pushing her this step (for the drawing: feathers ruffle) */
   wind = { x: 0, y: 0 };
+  /** she fell into the mist this step (said once, until she is brought back) */
+  private fallen = false;
   private lowSaid = false;
   private gustSeen = new Set<number>();
   private letterSaid = false;
@@ -117,6 +119,7 @@ export class DotFlight {
     this.invuln = 2;
     this.waiting = true;
     this.slow = 1;
+    this.fallen = false;
   }
 
   /**
@@ -227,6 +230,16 @@ export class DotFlight {
       ev.push({ k: 'low' });
     }
 
+    // through the gap: she floats on out into the light, whatever the thumb does
+    if (this.through) {
+      this.hovering = true;
+      this.vx += (90 - this.vx) * Math.min(1, dt * 3);
+      this.vy += ((st.letter.y - 30 - this.y) * 1.5 - this.vy) * Math.min(1, dt * 3);
+      this.face = 1;
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
+      return;
+    }
     // hovering: a tap's buzz, or the thumb kept down after a flap (once its rise is spent), or waiting at the start, or drinking
     const holding = held && this.sinceFlap > DOT.holdAfter && this.vy > -90;
     const canHover = this.energy > 0 && !this.through;
@@ -300,7 +313,10 @@ export class DotFlight {
       }
     }
     // the mist
-    if (this.y > MIST + 8 && !this.through) ev.push({ k: 'mist' });
+    if (this.y > MIST + 8 && !this.through && !this.fallen) {
+      this.fallen = true;
+      ev.push({ k: 'mist' });
+    }
 
     // dew, puffs, silk
     for (const d of st.dew) {

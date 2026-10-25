@@ -18,9 +18,10 @@
  * between flowers, every hole against her body, the thorns clear of every route through a hole, the gusts' lulls long enough to cross.
  */
 import type { LevelConfig } from './types.ts';
+import type { GeneratedStage } from './stageGenerator.ts';
 import { stream } from './protoStage.ts';
 
-export const DOT_STAGE_ID = '4-D';
+export { DOT_STAGE_ID, dotStageConfig } from './extraStages.ts';
 /** the stage's height: the netting overhead hangs to TOP, the mist of the gorge begins at MIST (below it she has fallen) */
 export const DOT_H = 1000;
 export const TOP = 70;
@@ -173,7 +174,8 @@ export interface DotStage {
   /** the backgrounds along the stage: [x where it starts, which painting] */
   backs: Array<[number, BackName]>;
 }
-export type BackName = 'far1' | 'far2' | 'near1' | 'near2' | 'near3';
+/** (near-22 has a hummingbird of its own in the middle of it, which read as a second Dot: it is not used) */
+export type BackName = 'far1' | 'far2' | 'near1' | 'near3';
 
 /** a hole's top at time t */
 export function openingY(o: Opening, t: number): number {
@@ -187,24 +189,22 @@ export function gustState(g: Gust, t: number): { blowing: boolean; warn: number 
   return { blowing: false, warn: until < GUST_WARN ? 1 - until / GUST_WARN : 0 };
 }
 
-/** the level's entry in World 4 (generateAllLevels slots it in after 4-5 when the New stages switch is on) */
-export function dotStageConfig(): LevelConfig {
+/** the stage as the engine takes it: no ground, no animals, her flight in `dot` (the engine hands it to dotFlightRun.ts) */
+export function dotGeneratedStage(config: LevelConfig, seed: number): GeneratedStage {
+  const st = buildDotStage(seed);
   return {
-    worldIndex: 4,
-    miniIndex: 11,
-    id: DOT_STAGE_ID,
-    name: "Dot's Netting Flight",
-    objectiveType: 'sprint',
-    targetCount: 1,
-    timeLimit: 0,
-    levelWidth: 20000,
-    levelHeight: DOT_H,
-    description: "Fly Meeca's note through the General's iron netting, to the one gap as wide as a folded letter.",
-    unlocked: false,
-    completed: false,
-    stars: 0,
-    highScore: 0,
-    bestTime: 0,
+    config: { ...config, levelWidth: st.width, levelHeight: DOT_H },
+    trees: [],
+    platforms: [],
+    vines: [],
+    enemies: [],
+    boss: null,
+    collectibles: [],
+    spawnX: st.spawn.x,
+    spawnY: st.spawn.y,
+    exitTotemX: st.letter.x,
+    exitTotemY: st.letter.y,
+    dot: st,
   };
 }
 
@@ -273,7 +273,7 @@ export function buildDotStage(seed = 1): DotStage {
   };
   const giant = (gx: number, depth: number) => {
     const piece = R.pick(['heliDrip', 'trumpet', 'fuchsiaDrop', 'passion2', 'blueCluster2']);
-    decor.push({ k: 'giant', x: Math.round(gx), y: MIST + 60, w: R.i(260, 420), depth, flip: R.chance(0.5), piece });
+    decor.push({ k: 'giant', x: Math.round(gx), y: MIST + 60, w: R.i(230, 340), depth, flip: R.chance(0.5), piece });
   };
   const beat = (name: string, body: () => void) => {
     const x0 = x;
@@ -301,9 +301,9 @@ export function buildDotStage(seed = 1): DotStage {
     route.push({ x: spawn.x, y: spawn.y, k: 'go' });
     hint(
       60,
-      "Meeca's note, my satchel, and one gap in the whole netting. Slide your thumb left or right and I fly. I know the way. Mostly.",
-      "Meeca's note, my satchel, and one gap in the whole netting. Push the pad left or right and I fly. I know the way. Mostly.",
-      "Meeca's note, my satchel, and one gap in the whole netting. Left and right arrows and I fly. I know the way. Mostly.",
+      "Meeca's note, safe in my satchel. Now out through the netting. Slide your thumb left or right and I fly. I know the way. Mostly.",
+      "Meeca's note, safe in my satchel. Now out through the netting. Push the pad left or right and I fly. I know the way. Mostly.",
+      "Meeca's note, safe in my satchel. Now out through the netting. Left and right arrows and I fly. I know the way. Mostly.",
     );
     dewLine(340, 500, 760, 470, 5);
     giant(520, 0.55);
@@ -391,7 +391,7 @@ export function buildDotStage(seed = 1): DotStage {
     flower(x, Math.min(MIST - 180, Math.max(TOP + 160, y + R.r(-40, 40))), { stalk: true });
     advance(R.r(300, 360));
   });
-  backs.push([x - 300, 'near2']);
+  backs.push([x - 300, 'near3']);
   beat('Develop: puffs and the silk pocket', () => {
     hint(x - 330, 'Dandelion puffs! Fly right through them and they pop. Things hide behind puffs. Not always. Sometimes. Today, yes.');
     // wall A: the way on (a small hole) and, high up, a little hole behind puffs into a pocket floored by a panel, then wall B
@@ -454,7 +454,7 @@ export function buildDotStage(seed = 1): DotStage {
     flower(x, Math.min(MIST - 200, Math.max(TOP + 160, y + R.r(0, 80))), { stalk: true });
     advance(R.r(320, 360));
   });
-  backs.push([x - 300, 'near3']);
+  backs.push([x - 300, 'near1']);
   const swayWall = (h: number, phase: number) => {
     const amp = R.r(120, 170);
     const mid = R.r(TOP + 80 + amp + h / 2, MIST - 100 - amp - h / 2);
@@ -545,7 +545,7 @@ export function buildDotStage(seed = 1): DotStage {
         flower(x - 40, Math.min(MIST - 200, Math.max(TOP + 160, y + R.r(-40, 40))), { stalk: true });
         advance(R.r(260, 320));
       }
-      if (n === 4) backs.push([x - 300, 'near2']);
+      if (n === 4) backs.push([x - 300, 'near3']);
     }
   });
   backs.push([x - 200, 'far2']);
@@ -554,7 +554,7 @@ export function buildDotStage(seed = 1): DotStage {
     advance(80);
     flower(x, 500, { stalk: true, kind: 'heli' });
     advance(380);
-    hint(x - 420, 'There it is. The only gap in the whole netting, about as wide as a folded letter. Good thing I\'m carrying one.');
+    hint(x - 420, "There it is. The only way out of the whole netting, about as wide as a folded letter. Good thing that's what I'm carrying.");
     const gh = 38;
     const gy = R.r(440, 520);
     const wl = wall([{ y: gy, h: gh }], 0, 70, 2.5);

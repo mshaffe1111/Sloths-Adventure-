@@ -2,8 +2,8 @@
 
     python3 -I tools/art/dotstage/pack.py <dir with the dotst-back-* sheets>
 
-Writes src/assets/props/dot-props.webp and src/game/dotPropsData.ts (shelf packing, tallest first), and the five painted backgrounds
-as src/assets/backdrops/dot-far-1/2.webp and dot-near-1/2/3.webp. Every file stays far under the 4 MiB limit."""
+Writes src/assets/props/dot-props.webp and src/game/dotPropsData.ts (shelf packing, tallest first), and the painted backgrounds
+as src/assets/backdrops/dot-far-1/2.webp and dot-near-1/3.webp (near-22 has a hummingbird of its own in it, which read as a second Dot). Every file stays far under the 4 MiB limit."""
 import json, sys
 from pathlib import Path
 from PIL import Image
@@ -51,7 +51,7 @@ lines.append('} satisfies Record<string, DotPropFrame>;')
 
 if SRC:
     for src, dst in [('dotst-back-far-11', 'dot-far-1'), ('dotst-back-far-22', 'dot-far-2'), ('dotst-back-near-11', 'dot-near-1'),
-                     ('dotst-back-near-22', 'dot-near-2'), ('dotst-back-near-33', 'dot-near-3')]:
+                     ('dotst-back-near-33', 'dot-near-3')]:
         im = Image.open(SRC / f'{src}.png').convert('RGB')
         o = ROOT / f'src/assets/backdrops/{dst}.webp'
         im.save(o, 'WEBP', quality=80, method=6)

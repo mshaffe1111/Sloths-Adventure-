@@ -61,3 +61,16 @@ test("the stage's entry: World 4, after 4-5, a sprint to the gap", () => {
   assert.equal(c.objectiveType, 'sprint');
   assert.equal(c.timeLimit, 0);
 });
+
+test('with the New stages switch on, the stage comes right after 4-5 and before 4-6; off (and in the tests), the hundred stay as they were', async () => {
+  const { generateAllLevels } = await import('./worldsData.ts');
+  const { withExtraStages } = await import('./extraStages.ts');
+  const base = generateAllLevels();
+  assert.equal(base.length, 100);
+  assert.ok(!base.some((l) => l.id === DOT_STAGE_ID));
+  const all = withExtraStages(base, true);
+  assert.equal(all.length, 101);
+  const i = all.findIndex((l) => l.id === DOT_STAGE_ID);
+  assert.equal(all[i - 1].id, '4-5');
+  assert.equal(all[i + 1].id, '4-6');
+});
