@@ -6,6 +6,9 @@ import { catchWindow, earlyCatch, jumpGrab, jumpReaches, landWindow, maxRise } f
 import { reachJump } from './physics.ts';
 import { rockFits } from './rockfall.ts';
 import { tiedBottom, W4Play } from './w4Play.ts';
+import { dotAtKnot, DOT_HELP, KNOT_MARK_FADE, KNOT_TEACH, knotMark, knotSpotX, newKnot, stepKnot } from './w4Kit.ts';
+import { windPush } from './zones.ts';
+import { gustBand } from './zoneArt.ts';
 import type { LevelConfig, Platform, Vine } from './types.ts';
 
 const cfg = (): LevelConfig =>
@@ -167,7 +170,7 @@ test('4-4: Dot frees the knotted vine, and it is the only way across its gorge; 
       };
       for (let t = 0; t < 5; t += 1 / 30) w.step(1 / 30, { ...host, t });
       assert.equal(mine.bottomY, v.bottomY, `seed ${s}: Dot did not free the vine`);
-      assert.ok(st.proto.hints.some((h) => /tied up out of reach. Walk up to the knot and wait/.test(h.text) && h.x < main.x0), `seed ${s}: the knot is not taught`);
+      assert.ok(st.proto.hints.some((h) => h.text === KNOT_TEACH && h.x < main.x0), `seed ${s}: the knot is not taught`);
     }
   }
 });
@@ -206,7 +209,7 @@ test('4-4: the rocks over the landing are fair and taught, and the wind and the 
     const hintAt = (re: RegExp) => st.proto.hints.find((h) => re.test(h.text))?.x ?? Infinity;
     const lanes = (st.zones ?? []).filter((z) => z.kind === 'wind').sort((a, b) => a.x0 - b.x0);
     assert.ok(hintAt(/The chimes swing the way the wind will blow/) < lanes[0].x0, `seed ${s}`);
-    assert.ok(hintAt(/swing back at you/) < lanes.find((z) => z.dir === -1)!.x0, `seed ${s}`);
+    assert.ok(hintAt(/swinging back at you/) < lanes.find((z) => z.dir === -1)!.x0, `seed ${s}`);
     assert.ok(hintAt(/Rocks fall on the next landing/) < Math.min(...rocks.map((r) => r.x)) - 600, `seed ${s}`);
   }
 });
@@ -232,12 +235,123 @@ test('4-4: the second twist puts Dot\'s knots in the wind and the headwind over 
       assert.ok(c && c.x + 40 < v.x, `seed ${s}: the chimes are not behind the knotted vine`);
     }
     const first = knots.sort((a, b) => a.x - b.x)[0];
-    assert.ok(st.proto.hints.some((h) => /A knot, and the wind over the gorge/.test(h.text) && h.x > b0 && h.x < first.x0), `seed ${s}: the knot in the wind is not taught`);
+    assert.ok(st.proto.hints.some((h) => /Another knot, and wind over the gorge/.test(h.text) && h.x > b0 && h.x < first.x0), `seed ${s}: the knot in the wind is not taught`);
     // the headwind over a landing the rocks fall on
     const rock = (st.proto.w4?.rocks ?? []).find((r) => r.x > b0 && r.x < b1);
     assert.ok(rock, `seed ${s}: no rocks in the second twist`);
     const over = lanes.find(({ z }) => z.x1 < rock.x && rock.x - z.x1 < 200)!;
     assert.ok(over && over.z.dir === -1, `seed ${s}: the rocks' gorge is not into the wind`);
     assert.ok(st.proto.hints.some((h) => /Wind in your face and rocks on the landing/.test(h.text) && h.x < over.z.x0), `seed ${s}: the headwind over the rocks is not taught`);
+  }
+});
+
+/** the bank (ground at G) a knot's spot is on */
+const bankUnder = (st: Stage, x0: number, x1: number) => st.platforms.find((p) => p.y === G && p.x <= x0 && p.x + p.width >= x1);
+
+test('4-4: standing still on a knot\'s spot through a whole gust cycle never moves him off the ledge, and Dot still frees the vine', () => {
+  // his middle may hang this far past a ledge and still stand on it (engine.ts: 0.26 of his 44 px, and the assist's 0.1 more)
+  const OVERHANG = 44 * 0.36;
+  for (const s of SEEDS) {
+    const st = build(s);
+    const zones = st.zones ?? [];
+    const lanes = zones.filter((z) => z.kind === 'wind');
+    const period = Math.max(...lanes.map((z) => z.period));
+    for (const k of st.proto.w4?.knots ?? []) {
+      const bank = bankUnder(st, k.x0, k.x1);
+      assert.ok(bank, `seed ${s}: the knot at ${k.x} has no ground under its spot`);
+      const edge = bank.x + bank.width;
+      // the spot ends a sloth's length short of the drop (a step past it is still on the bank), and no gust lane comes near it, even for
+      // a hop in place
+      assert.ok(edge - k.x1 >= 36, `seed ${s}: the knot's spot ends ${Math.round(edge - k.x1)} px from the edge`);
+      assert.ok(k.x1 - k.x0 >= 40, `seed ${s}: the knot's spot is only ${Math.round(k.x1 - k.x0)} px wide`);
+      for (const z of lanes) assert.ok(z.x0 > k.x1 + 40 || z.x1 < k.x0 - 40, `seed ${s}: a gust lane at ${z.x0} reaches the knot's spot (${k.x0}..${k.x1})`);
+      // stand still anywhere on it, starting anywhere in the gust cycle, for a whole cycle and more: the wind never moves him
+      for (const from of [k.x0, knotSpotX(k), k.x1]) {
+        for (let start = 0; start < period; start += 0.4) {
+          let px = from;
+          for (let t = start; t < start + period + 1; t += 1 / 30) {
+            px += windPush(zones, px, G - 30, t, true) * (1 / 30);
+            assert.ok(px >= k.x0 && px <= k.x1 && px + OVERHANG < edge, `seed ${s}: standing still at ${Math.round(from)}, the wind moved him to ${Math.round(px)}`);
+          }
+        }
+      }
+      // and the engine side, with the wind blowing: he stands still at the spot's end nearest the edge until Dot has freed the vine
+      const vines = st.vines.map((q) => ({ ...q }));
+      const w = new W4Play(st.proto.w4!, st.platforms.map((p) => ({ ...p })), vines);
+      const player = { x: k.x1, y: G, vx: 0, vy: 0, grounded: true, invincibleTimer: 0 };
+      const host = {
+        player, platforms: [], vines, collectibles: [], zones, punch: null, hidden: false,
+        hurt() {}, tip() {}, float() {}, screech() {}, sfx() {},
+      };
+      for (let t = 0; t < period + 4; t += 1 / 30) {
+        w.step(1 / 30, { ...host, t } as never);
+        player.x += windPush(zones, player.x, G - 30, t, true) * (1 / 30);
+      }
+      assert.ok(player.x + OVERHANG < edge, `seed ${s}: blown off the ledge`);
+      const v = st.vines.find((q) => q.id === k.releases.id)!;
+      assert.equal(vines.find((q) => q.id === v.id)!.bottomY, v.bottomY, `seed ${s}: Dot did not free the vine`);
+    }
+  }
+});
+
+test('4-4: the knot\'s spot is marked on the ground until it is freed, and Dot flies up from beside him to the knot', () => {
+  const st = build(SEEDS[0]);
+  const k = st.proto.w4!.knots![0];
+  let ks = newKnot();
+  assert.equal(knotMark(ks, 0), 1, 'the mark shows while the knot is tied');
+  assert.equal(dotAtKnot(k, ks, 0), null, 'Dot is not out before he waits');
+  const path: Array<{ x: number; y: number }> = [];
+  for (let t = 0; ks.phase !== 'free'; t += 1 / 30) {
+    ks = stepKnot(ks, true, 1 / 30);
+    if (ks.phase === 'free') break;
+    assert.equal(knotMark(ks, 0), 1, `the mark fades while ${ks.phase}`);
+    const d = dotAtKnot(k, ks, t);
+    assert.ok(d, `Dot is not drawn while ${ks.phase}`);
+    assert.equal(d.face, k.x < knotSpotX(k) ? -1 : 1, 'Dot looks toward the knot');
+    if (ks.phase === 'flying') path.push(d);
+  }
+  // she sets off from by his head over the spot, and ends beside the knot
+  const first = path[0], last = path[path.length - 1];
+  assert.ok(Math.abs(first.x - knotSpotX(k)) < 40 && k.ground - first.y > 60 && k.ground - first.y < 130, `Dot starts at ${Math.round(first.x)}, ${Math.round(first.y)}`);
+  assert.ok(Math.hypot(last.x - k.x, last.y - k.y) < 40, 'Dot does not reach the knot');
+  // freed, the mark fades and is gone
+  assert.ok(knotMark(ks, KNOT_MARK_FADE / 2) > 0 && knotMark(ks, KNOT_MARK_FADE + 0.01) === 0, 'the mark stays after the knot is freed');
+  // the whole wait, from standing still to the vine free, is the "about three seconds" Dot promises
+  const wait = DOT_HELP.ask + DOT_HELP.fly + DOT_HELP.pick;
+  assert.ok(wait >= 2 && wait <= 3.5, `${wait} s`);
+});
+
+test('4-4: what Dot says about the knots and the wind is the same everywhere, and says what to look for', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const lines = st.proto.hints.flatMap((h) => [h.text, h.pad, h.keys]);
+    // (Dot says these lines herself: never "wait for Dot"; no "until it drops"; no chimes that "say go")
+    for (const l of lines) assert.ok(!/wait for dot/i.test(l) && !/until it drops/i.test(l) && !/say go/i.test(l), `seed ${s}: "${l}"`);
+    // the first knot's lesson is the line she says on its spot (w4Play.ts), and it names the mark and the wait
+    assert.ok(lines.includes(KNOT_TEACH), `seed ${s}`);
+    assert.match(KNOT_TEACH, /glowing spot/);
+    assert.match(KNOT_TEACH, /three seconds/);
+    const windKnot = st.proto.hints.find((h) => /Another knot/.test(h.text));
+    assert.ok(windKnot && /glowing spot/.test(windKnot.text) && /three seconds/.test(windKnot.text) && /chimes swing your way/.test(windKnot.text), `seed ${s}: ${windKnot?.text}`);
+    assert.ok(st.proto.hints.some((h) => /until the wind dies down/.test(h.text)), `seed ${s}: the headwind line`);
+  }
+});
+
+test('4-4: the first gust lane blows softer over a mossy floor, and the later ones keep their full strength', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const lanes = (st.zones ?? []).filter((z) => z.kind === 'wind').sort((a, b) => a.x0 - b.x0);
+    assert.ok(lanes[0].force < lanes[lanes.length - 1].force && lanes[0].force >= 100, `seed ${s}: first gust ${lanes[0].force}`);
+    // a miss in the first gorge drops onto its mossy floor (a climb back, not a life)
+    assert.ok(st.platforms.some((p) => p.y > G + 60 && p.x <= lanes[0].x0 && p.x + p.width >= lanes[0].x1), `seed ${s}: no soft floor under the first gorge`);
+    for (const z of lanes.slice(3)) assert.equal(z.force, 140, `seed ${s}: a later gust at ${z.force}`);
+  }
+});
+
+test('4-4: the wind streaks keep to the air he swings through, not the sky behind', () => {
+  const st = build(SEEDS[0]);
+  for (const z of (st.zones ?? []).filter((q) => q.kind === 'wind')) {
+    const b = gustBand(z);
+    assert.ok(b.top >= z.top && b.bottom <= z.bottom && b.bottom - b.top <= 380 && b.bottom >= G, `band ${b.top}..${b.bottom}`);
   }
 });

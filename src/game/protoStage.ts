@@ -32,7 +32,7 @@ import type { ThornVine } from './thornVine.ts';
 import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
 import { PATIENCE, type PatienceSpot } from './patience.ts';
 import { NEST, type Nest } from './eaglet.ts';
-import { DOT_HELP, type Chime, type DotKnot } from './w4Kit.ts';
+import { DOT_HELP, KNOT_TEACH, type Chime, type DotKnot } from './w4Kit.ts';
 import { buildWaterfallSteps } from './w4Stage43.ts';
 import type { CliffNest, NestKind } from './w4Nests.ts';
 import { buildLongDrop } from './w4LongDrop.ts';
@@ -2689,15 +2689,18 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   const W4R: RockDrop[] = [];
   /** how hard a crosswind gust blows (px/s; the level check allows up to 160) */
   const CROSS = 140;
+  /** the stage's very first gust lane blows softer (over its mossy floor), while he learns when to let go */
+  const FIRST_GUST = 110;
   /**
    * a crosswind gorge: a chain of lianas where every vine catches the next in the calm (chain()'s checks), with its first gap wide, and a
    * gust lane over the whole chain, its chimes on a post at the near edge. In the wide gap a plain leap in the calm falls about half the
    * time and the second jump always makes it; a gust behind him (`dir` +1) carries a plain leap over; a gust in his face (-1) pulls it
    * short, so he hangs on and lets it blow past (wind only pushes him in the air: on the vine he is safe). The gust behind is checked
    * too, so it never carries him past the next vine or the far bank. `soft`: a mossy floor under it (taught). `rock`: rocks come loose
-   * over the far bank's landing, so he waits on the last vine for the shadow.
+   * over the far bank's landing, so he waits on the last vine for the shadow. `force`: the first gorge's gusts are gentler (FIRST_GUST)
+   * while the timing is learned.
    */
-  function windChain(n: number, dir: 1 | -1, soft: boolean, rock = false) {
+  function windChain(n: number, dir: 1 | -1, soft: boolean, rock = false, force = CROSS) {
     const x0 = x;
     run(R.r(240, 320));
     const edge = x;
@@ -2715,9 +2718,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       const far: Platform = { id: -99, x: farX, y: G, width: 400, height: BANK_H, type: 'solid' };
       let ok = jumpGrab(edge, G, vs[0]) >= 4;
       for (let k = 0; ok && k < n - 1; k++) {
-        ok = catchWindow(vs[k], vs[k + 1]) > 0.6 && earlyCatch(vs[k], vs[k + 1]) && catchWindow(vs[k], vs[k + 1], CROSS) > 0.6 && earlyCatch(vs[k], vs[k + 1], 0.5, CROSS);
+        ok = catchWindow(vs[k], vs[k + 1]) > 0.6 && earlyCatch(vs[k], vs[k + 1]) && catchWindow(vs[k], vs[k + 1], force) > 0.6 && earlyCatch(vs[k], vs[k + 1], 0.5, force);
       }
-      if (ok) ok = landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far) >= 8 && landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far, CROSS) >= 8;
+      if (ok) ok = landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far) >= 8 && landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far, force) >= 8;
       if (!ok && tries < 15) continue;
       close();
       if (soft) softPit(edge, farX);
@@ -2726,7 +2729,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
         arc(k === 0 ? edge + 10 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 4);
       }
       // the lane: from just behind the first vine (where the first leap starts) to just short of the far bank, so no ground stands in it
-      gustZone(xs[0] - 50, farX - 10, dir, edge - 80, CROSS);
+      gustZone(xs[0] - 50, farX - 10, dir, edge - 80, force);
       open(farX);
       if (rock) {
         const rx = Math.round(farX + R.r(80, 110));
@@ -2745,10 +2748,14 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
    * there, and well out of reach of any jump (his hands would need to come within 30 px of it, and the double jump stops 35 short)
    */
   const KNOT_Y = Math.round(G - RISE - 66);
+  /** the spot where he waits for Dot ends this far short of the bank's edge (px): more than his body, so a step past it is still safe */
+  const KNOT_EDGE = 40;
+  /** and the knotted vine hangs this far (to 10 more) back from the edge, so the spot between them is wider than he is */
+  const KNOT_BACK = 112;
   /**
    * Dot's knot: the gorge's first liana hangs over the end of the bank, tied up out of reach (it ends at its knot, w4Play.ts). Standing
-   * still beside it at the edge sends Dot up to pick it loose, and it drops down for him: a jump from under it grabs it, and the swing
-   * carries him out over the gorge; the rest of the chain is as chain() rolls it. No jump reaches the tied-up vine or the second one, so
+   * still on its spot (glowing on the ground, w4Play.ts drawKnot), from the vine to a step short of the edge, sends Dot up to pick it
+   * loose, and it drops down for him: a jump from under it grabs it, and the swing carries him out over the gorge; the rest of the chain is as chain() rolls it. No jump reaches the tied-up vine or the second one, so
    * the knot is the way across. In the calm: the knot is the lesson here. (He waits between the vine and the edge, so the knot and Dot
    * are a little left of him: in landscape that keeps them clear of the menu button at the top of the screen.)
    *
@@ -2763,19 +2770,21 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const edge = x;
     const wind = dir ? CROSS : 0;
     for (let tries = 0; tries < (dir ? 24 : 14); tries++) {
-      const k0 = edge - R.r(95, 108);
+      // (the knotted vine hangs well back from the edge, so the spot where he waits for Dot is a sloth's length short of the drop: a
+      // player who walks a little past it is still on the bank, and no gust lane comes near it)
+      const k0 = edge - R.r(KNOT_BACK, KNOT_BACK + 10);
       // the second vine is short and hangs from high up, far enough out that no jump from the bank reaches it (jumpReaches), and still
       // caught by every leap from the knotted vine
-      const xs = [k0, edge + R.r(288, 300)];
+      const xs = [k0, k0 + R.r(383, 400)];
       for (let k = 2; k < n; k++) xs.push(xs[k - 1] + (dir && k === 2 ? R.r(378, 402) : R.r(300, 330)));
       const farX = xs[n - 1] + R.r(200, 240);
       const tops = xs.map((_, k) => Math.round(k === 0 ? R.r(148, 160) : R.r(140, 180)));
-      const bottoms = xs.map((_, k) => (k === 0 ? G - 40 : k === 1 ? 390 : Math.min(G + 30, tops[k] + 410)));
+      const bottoms = xs.map((_, k) => (k === 0 ? G - 40 : k === 1 ? 370 : Math.min(G + 30, tops[k] + 410)));
       const vs: Vine[] = xs.map((vx, k) => ({ id: -1 - k, x: vx, topY: tops[k], bottomY: bottoms[k], swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }));
       const tied: Vine = { ...vs[0], bottomY: KNOT_Y };
       const far: Platform = { id: -99, x: farX, y: G, width: 400, height: BANK_H, type: 'solid' };
       // freed, a jump from the bank under it grabs it; tied up, no jump from anywhere on the bank does, nor to the second vine
-      let ok = jumpGrab(xs[0] + 60, G, vs[0]) >= 6 && !jumpReaches(bankFrom, edge, G, tied) && !jumpReaches(bankFrom, edge + 15, G, vs[1]);
+      let ok = jumpGrab(xs[0] + 60, G, vs[0]) >= 6 && jumpGrab(edge - KNOT_EDGE, G, vs[0]) >= 4 && !jumpReaches(bankFrom, edge, G, tied) && !jumpReaches(bankFrom, edge + 15, G, vs[1]);
       for (let k = 0; ok && k < n - 1; k++) {
         ok = catchWindow(vs[k], vs[k + 1]) > 0.6 && earlyCatch(vs[k], vs[k + 1]);
         if (ok && dir) ok = catchWindow(vs[k], vs[k + 1], wind) > 0.6 && earlyCatch(vs[k], vs[k + 1], 0.5, wind);
@@ -2787,9 +2796,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       close();
       const lv = xs.map((vx, k) => liana(vx, vs[k].topY, vs[k].bottomY));
       for (let k = 1; k < n; k++) arc(k === 1 ? edge + 60 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 4);
-      W4K.push({ x: lv[0].x, y: KNOT_Y, x0: lv[0].x + 30, x1: edge - 6, ground: G, releases: { kind: 'vine', id: lv[0].id } });
-      // (the chimes stand behind the knotted vine, clear of the spot where he waits for Dot)
-      if (dir) gustZone(edge + 20, farX - 10, dir, k0 - R.r(70, 90), CROSS);
+      W4K.push({ x: lv[0].x, y: KNOT_Y, x0: lv[0].x + 8, x1: edge - KNOT_EDGE, ground: G, releases: { kind: 'vine', id: lv[0].id } });
+      // (the chimes stand behind the knotted vine, clear of the spot where he waits for Dot; the lane starts out over the gorge)
+      if (dir) gustZone(edge + 40, farX - 10, dir, k0 - R.r(70, 90), CROSS);
       open(farX);
       run(R.r(140, 200));
       expert += (edge - x0) / RUN + 0.6 + 0.9 + 1.1 + 0.8 + (farX - edge) / SWING + 0.3 * n + (dir ? 2.4 : 0) + (x - farX) / RUN;
@@ -2829,8 +2838,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
 
   if (plan === '4-4') {
     // 4-4 Crosswind: swing the gorges while gusts blow across them. The chimes at each gorge's edge swing the way the next gust will
-    // blow: let go with it behind you and it carries the leap over the wide gap; with it in your face, hang on until it drops (on the
-    // vine he is safe, the wind only pushes him in the air). In the calm the second jump always makes it. Then Dot's knot, a vine tied up
+    // blow: let go with it behind you and it carries the leap over the wide gap; with it in your face, hang on until the wind dies down
+    // (on the vine he is safe, the wind only pushes him in the air). In the calm the second jump always makes it. Then Dot's knot, a vine tied up
     // out of reach that she frees when he stands still under it, and rocks coming loose over a landing. A second knot hides the seed.
     beat('Start', () => {
       rest(R.r(600, 720));
@@ -2839,19 +2848,19 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       flag();
     });
     beat('Learn: the wind behind you', () => {
-      hint(x + 40, 'The chimes swing the way the wind will blow. Let go with it behind you, and it carries you over');
-      windChain(2, 1, true);
+      hint(x + 40, 'The chimes swing the way the wind will blow. Let go when they swing your way, and the wind carries you over');
+      windChain(2, 1, true, false, FIRST_GUST);
       rest(R.r(220, 300));
       hint(x + 40, 'No wind? Then add your second jump as you fly', 'No wind? Then press Jump again as you fly', 'No wind? Then press Space again as you fly');
       windChain(2, 1, true);
       flag();
     });
     beat('Develop: into the wind, and Dot\'s knot', () => {
-      hint(x + 40, 'The chimes swing back at you: the wind will blow against you. Hang on to the vine until it drops');
+      hint(x + 40, 'See the chimes swinging back at you? That wind will blow in your face. Hang on to your vine until the wind dies down, then let go');
       windChain(2, -1, true);
       rest(R.r(240, 320));
       flag();
-      hint(x + 60, 'That vine is tied up out of reach. Walk up to the knot and wait there');
+      hint(x + 60, KNOT_TEACH);
       knotChain(3);
       rest(R.r(220, 300));
       windChain(3, R.chance(0.5) ? 1 : -1, false);
@@ -2870,7 +2879,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     beat('Twist again: knots in the wind', () => {
       // what the stage taught, two at a time: Dot's knot over a gorge the gusts blow across (wait for Dot, then for the chimes), and
       // the wind in his face over a landing the rocks fall on (hang on through the gust and the rock both)
-      hint(x + 60, 'A knot, and the wind over the gorge! Wait for Dot, then hang on until the chimes say go');
+      hint(x + 60, 'Another knot, and wind over the gorge! Stand still on the glowing spot while I untie it, about three seconds. Then let go when the chimes swing your way, and hang on while they swing back at you');
       knotChain(4, R.chance(0.5) ? 1 : -1);
       rest(R.r(240, 320));
       flag();

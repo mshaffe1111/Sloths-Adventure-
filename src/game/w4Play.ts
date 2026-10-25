@@ -15,7 +15,7 @@ import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapStat
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
 import { ROCK, rockAt, rockHits, type RockDrop } from './rockfall.ts';
 import { FALLS, fallPush, inFall, plugged, poolLogY, stepFlow, stepPool, type Pool, type Waterfall } from './waterfalls.ts';
-import { chimeLean, DOT_HELP, newKnot, stepKnot, underKnot, type Chime, type DotKnot, type KnotState } from './w4Kit.ts';
+import { chimeLean, dotAtKnot, DOT_HELP, KNOT_TEACH, knotMark, knotSpotX, newKnot, stepKnot, underKnot, type Chime, type DotKnot, type KnotState } from './w4Kit.ts';
 import { zoneState, type Zone } from './zones.ts';
 import { nestWind, type CliffNest } from './w4Nests.ts';
 import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
@@ -274,7 +274,7 @@ export class W4Play {
     (w4.knots ?? []).forEach((k, i) => {
       const was = this.knots[i];
       const asking = underKnot(k, p.x, p.y) && still;
-      if (was.phase === 'tied' && underKnot(k, p.x, p.y)) h.tip('w4:knot', 'That vine is tied up too high! Stand still under it and I will fly up', 3.2);
+      if (was.phase === 'tied' && underKnot(k, p.x, p.y)) h.tip('w4:knot', KNOT_TEACH, 3.6);
       const now: KnotState & { freedAt?: number } = stepKnot(was, asking, dt);
       if (now.phase === 'free' && was.phase !== 'free') {
         now.freedAt = h.t;
@@ -485,8 +485,8 @@ export class W4Play {
   }
 
   /** standing still on a mist spot, the view drifts over to the way up it is showing him: where to look, and how much (0..1) */
-  look(px: number, feetY: number): { x: number; y: number; u: number } | null {
-    let best: { x: number; y: number; u: number } | null = null;
+  look(px: number, feetY: number): { x: number; y: number; u: number; leftX?: number } | null {
+    let best: { x: number; y: number; u: number; leftX?: number } | null = null;
     (this.w4.patience ?? []).forEach((s, i) => {
       if (s.kind !== 'mist' || !s.area || !onSpot(s, px, feetY)) return;
       const u = Math.min(1, this.patience[i].level * 2);
@@ -498,7 +498,10 @@ export class W4Play {
       const st = this.knots[i];
       if (!underKnot(k, px, feetY) || (st.phase === 'free' && (st.freedAt === undefined || this.clock - st.freedAt > 1.2))) return;
       const u = st.phase === 'tied' ? Math.min(1, st.t / DOT_HELP.ask) : 1;
-      if (u > 0 && (!best || u > best.u)) best = { x: k.x, y: (k.y + feetY) / 2, u };
+      // (aimed a little below the knot rather than halfway down to him: held upright, Dot's speech bubble covers the top of the screen,
+      // and the knot and her flight up to it must show below it; the engine keeps his feet in view. Held sideways there is no room
+      // under the bubble, so `leftX`: the view puts the knot near its left edge, beside the bubble in the middle)
+      if (u > 0 && (!best || u > best.u)) best = { x: k.x, y: Math.min((k.y + feetY) / 2, k.y + 60), u, leftX: k.x };
     });
     return best;
   }
@@ -985,24 +988,96 @@ function drawFrond(ctx: CanvasRenderingContext2D, s: PatienceSpot, st: PatienceS
   ctx.restore();
 }
 
-function drawKnot(ctx: CanvasRenderingContext2D, k: DotKnot, st: KnotState, t: number) {
+function drawKnot(ctx: CanvasRenderingContext2D, k: DotKnot, st: KnotState & { freedAt?: number }, t: number) {
   ctx.save();
+  // the spot he waits on: a soft glow on the ground with Dot's little landing mark in it, and a ring round it that fills as he keeps still
+  const mark = knotMark(st, st.freedAt === undefined ? 0 : t - st.freedAt);
+  if (mark > 0) {
+    const cx = knotSpotX(k);
+    const rx = Math.max(34, (k.x1 - k.x0) / 2 + 16);
+    const gy = k.ground - 2;
+    const pulse = 0.75 + 0.25 * Math.sin(t * 3.2);
+    const lit = st.phase === 'tied' ? Math.min(1, st.t / DOT_HELP.ask) : 1;
+    ctx.globalAlpha = mark;
+    const g = ctx.createRadialGradient(cx, gy, 2, cx, gy, rx);
+    g.addColorStop(0, `rgba(190, 255, 220, ${0.7 * pulse + 0.25 * lit})`);
+    g.addColorStop(0.6, `rgba(110, 231, 183, ${0.38 * pulse + 0.2 * lit})`);
+    g.addColorStop(1, 'rgba(110, 231, 183, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(cx, gy, rx, 15, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // the landing mark: three little strokes, like a hummingbird's footprint
+    ctx.strokeStyle = `rgba(236, 253, 245, ${0.7 + 0.3 * lit})`;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    for (const a of [-0.55, 0, 0.55]) {
+      ctx.beginPath();
+      ctx.moveTo(cx, gy + 3);
+      ctx.lineTo(cx + Math.sin(a) * 11, gy + 3 - Math.cos(a) * 7);
+      ctx.stroke();
+    }
+    // its rim, faint, so the spot reads as a place to stand; and how long he has kept still: the ring fills, and stays full while she
+    // is up there
+    ctx.strokeStyle = `rgba(167, 243, 208, ${0.35 + 0.2 * pulse})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(cx, gy, rx - 6, 10, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    if (lit > 0) {
+      ctx.strokeStyle = 'rgba(236, 253, 245, 0.9)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(cx, gy, rx - 6, 10, 0, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * lit);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
   if (st.phase !== 'free') {
+    // the knot: it shakes while she picks at it, and comes loose a strand at a time
+    const shake = st.phase === 'picking' ? Math.sin(t * 40) * 2.5 : 0;
+    const left = st.phase === 'picking' ? 1 - 0.5 * Math.min(1, st.t / DOT_HELP.pick) : 1;
     ctx.strokeStyle = '#7c4a1e';
     ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.arc(k.x, k.y, 10, 0, Math.PI * 2);
+    ctx.arc(k.x + shake, k.y, 10, 0, Math.PI * 2 * left);
     ctx.stroke();
+    if (st.phase === 'picking') {
+      // bits of fibre flicking off
+      ctx.strokeStyle = '#a16207';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 3; i++) {
+        const u = (st.t * 2.4 + i / 3) % 1;
+        const a = i * 2.1 + 0.6;
+        ctx.globalAlpha = 1 - u;
+        ctx.beginPath();
+        ctx.moveTo(k.x + Math.cos(a) * (12 + u * 20), k.y + Math.sin(a) * 8 + u * 26);
+        ctx.lineTo(k.x + Math.cos(a) * (18 + u * 20), k.y + Math.sin(a) * 8 + u * 30);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
   }
-  // Dot on her way up, then picking at it
-  if (st.phase === 'flying' || st.phase === 'picking') {
-    const u = st.phase === 'flying' ? Math.min(1, st.t / DOT_HELP.fly) : 1;
-    const dx = k.x - 30 + Math.sin(t * 10) * (st.phase === 'picking' ? 6 : 0);
-    const dy = k.ground - 90 + (k.y - (k.ground - 90)) * u;
-    if (!drawDotFrame(ctx, flyFrame(t), dx, dy, 0.5, 1)) {
+  // Dot: out by his head while he waits, flying up to the knot, then pecking it loose
+  const d = dotAtKnot(k, st, t);
+  if (d) {
+    if (st.phase === 'flying') {
+      // a faint trail behind her, so the flight reads
+      const back = dotAtKnot(k, { phase: 'flying', t: Math.max(0, st.t - 0.12) }, t);
+      if (back) {
+        ctx.strokeStyle = 'rgba(167, 243, 208, 0.5)';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(back.x, back.y);
+        ctx.lineTo(d.x, d.y);
+        ctx.stroke();
+      }
+    }
+    if (!drawDotFrame(ctx, flyFrame(t), d.x, d.y, 0.6, d.face, d.pecking ? 0.25 : 0)) {
       ctx.fillStyle = '#10b981';
       ctx.beginPath();
-      ctx.arc(dx, dy, 10, 0, Math.PI * 2);
+      ctx.arc(d.x, d.y, 11, 0, Math.PI * 2);
       ctx.fill();
     }
   }
