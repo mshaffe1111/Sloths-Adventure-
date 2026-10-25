@@ -279,8 +279,8 @@ export interface Platform {
   lily?: boolean;
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;
-  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge (w4Play.ts) */
-  art?: 'lift' | 'steps' | 'porch' | 'frond';
+  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts) */
+  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog';
 }
 
 /**

@@ -25,16 +25,29 @@ export interface FruitTree {
   ground: number;
 }
 
+/** a painted World 4 piece standing in the scene, behind Pokey (a channel along a shelf, a cave): bottom middle at (x, b), `w` wide */
+export interface W4Decor {
+  n: W4Piece;
+  x: number;
+  b: number;
+  w: number;
+  flip?: boolean;
+  /** the id of the fall whose water it shows: drawn faint once that fall runs dry */
+  wet?: number;
+}
+
 /** what a World 4 stage adds (ProtoExtras.w4) */
 export interface W4Extras {
   rocks?: RockDrop[];
   patience?: PatienceSpot[];
   falls?: Waterfall[];
-  pools?: Pool[];
+  /** `art`: where the basin is painted (its middle, its bottom, its width), when it is not centred under its fall */
+  pools?: Array<Pool & { art?: { cx: number; b: number; w: number } }>;
   chimes?: Chime[];
   knots?: DotKnot[];
   monkeys?: Array<Capuchin & { petalId?: number }>;
   fruit?: FruitTree[];
+  decor?: W4Decor[];
 }
 
 /** what the engine lends World 4 each frame */
@@ -267,11 +280,21 @@ export class W4Play {
   drawBack(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number }, zones: readonly Zone[], platforms: Platform[]) {
     const w4 = this.w4;
     const near = (x: number, pad = 300) => x > view.x0 - pad && x < view.x1 + pad;
-    (w4.falls ?? []).forEach((w, i) => near(w.x) && drawFall(ctx, w, this.flow[i], t));
+    for (const d of w4.decor ?? []) {
+      if (!near(d.x, d.w)) continue;
+      const wi = d.wet !== undefined ? (w4.falls ?? []).findIndex((w) => w.id === d.wet) : -1;
+      drawW4(ctx, d.n, d.x, d.b, d.w, { flip: d.flip, ...(wi >= 0 ? { alpha: 0.35 + 0.65 * this.flow[wi] } : {}) });
+    }
+    (w4.falls ?? []).forEach((w, i) => near(w.x, w.width + 300) && drawFall(ctx, w, this.flow[i], t));
     (w4.pools ?? []).forEach((pool, i) => {
       const fall = (w4.falls ?? []).find((w) => w.id === pool.fedBy);
-      if (fall && near(fall.x)) drawPool(ctx, fall.x + fall.width / 2, pool, this.pool[i]);
+      if (pool.art && near(pool.art.cx)) drawPool(ctx, pool.art.cx, pool, this.pool[i], pool.art);
+      else if (fall && near(fall.x)) drawPool(ctx, fall.x + fall.width / 2, pool, this.pool[i]);
+      const log = pool.art ? platforms.find((q) => q.id === pool.platformId && q.art === 'poolLog') : undefined;
+      if (log && near(log.x)) drawFloatLog(ctx, log, t);
     });
+    // the boulders that plug the falls (pushed platforms painted as boulders, rolling as they go)
+    for (const p of platforms) if (p.art === 'boulder' && near(p.x)) drawBoulder(ctx, p);
     (w4.chimes ?? []).forEach((c) => {
       const z = zones[c.zone];
       if (near(c.x)) drawChime(ctx, c, z ? chimeLean(z, t).angle : 0);
@@ -315,7 +338,7 @@ function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: 
   ctx.save();
   const width = w.width * (0.25 + 0.75 * flow);
   const x = w.x + (w.width - width) / 2;
-  ctx.globalAlpha = 0.35 + 0.5 * flow;
+  ctx.globalAlpha = 0.25 + 0.4 * flow; // (see-through: the steps behind the water show)
   const g = ctx.createLinearGradient(x, 0, x + width, 0);
   g.addColorStop(0, '#93c5fd');
   g.addColorStop(0.5, '#e0f2fe');
@@ -345,12 +368,81 @@ function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: 
   ctx.restore();
 }
 
-function drawPool(ctx: CanvasRenderingContext2D, cx: number, pool: Pool, level: number) {
-  if (drawW4(ctx, 'poolEmpty', cx, pool.emptyY + 40, 260) && drawW4(ctx, 'poolFull', cx, pool.emptyY + 40, 260, { alpha: level })) return;
+function drawPool(ctx: CanvasRenderingContext2D, cx: number, pool: Pool, level: number, art?: { b: number; w: number }) {
+  const b = art?.b ?? pool.emptyY + 40;
+  const w = art?.w ?? 260;
+  if (drawW4(ctx, 'poolEmpty', cx, b, w) && drawW4(ctx, 'poolFull', cx, b, w, { alpha: level })) return;
   const y = poolLogY(pool, level) + 14;
   ctx.save();
   ctx.fillStyle = 'rgba(56,189,248,0.45)';
-  ctx.fillRect(cx - 120, y, 240, Math.max(0, pool.emptyY + 30 - y));
+  ctx.fillRect(cx - w / 2 + 20, y, w - 40, Math.max(0, b - 10 - y));
+  ctx.restore();
+}
+
+/** the log floating on a pool (a plain drawn log: it rides up and down on the water) */
+function drawFloatLog(ctx: CanvasRenderingContext2D, p: Platform, t: number) {
+  const { width: w, height: h } = p;
+  const x = p.x;
+  const y = p.y + Math.sin(t * 2.2 + p.x) * 1.5;
+  const r = h / 2;
+  ctx.save();
+  const g = ctx.createLinearGradient(0, y, 0, y + h);
+  g.addColorStop(0, '#9a6a3c');
+  g.addColorStop(0.5, '#7a4f2a');
+  g.addColorStop(1, '#4f321b');
+  ctx.fillStyle = g;
+  ctx.strokeStyle = '#2e1d0f';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arc(x + w - r, y + r, r, -Math.PI / 2, Math.PI / 2);
+  ctx.lineTo(x + r, y + h);
+  ctx.arc(x + r, y + r, r, Math.PI / 2, Math.PI * 1.5);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  // the cut end, with its rings
+  ctx.fillStyle = '#c89a62';
+  ctx.beginPath();
+  ctx.ellipse(x + w - r, y + r, r * 0.55, r * 0.9, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(46,29,15,0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.ellipse(x + w - r, y + r, r * 0.28, r * 0.5, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  // moss, and ripples where it sits in the water
+  ctx.fillStyle = '#5f9a3a';
+  ctx.beginPath();
+  ctx.ellipse(x + w * 0.4, y + 2, w * 0.25, 5, 0, Math.PI, 0);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(224,242,254,0.8)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.ellipse(x + w / 2, y + h - 2, w * 0.6 + Math.sin(t * 3) * 4, 5, 0, 0, Math.PI);
+  ctx.stroke();
+  ctx.restore();
+}
+
+/** a boulder that is pushed along a shelf: it turns as it rolls */
+function drawBoulder(ctx: CanvasRenderingContext2D, p: Platform) {
+  const cx = p.x + p.width / 2;
+  const cy = p.y + p.height / 2;
+  const turn = (p.x - (p.push?.min ?? 0)) / (p.width / 2);
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(turn);
+  if (!drawW4(ctx, 'boulderRound', 0, p.height * 0.62, p.width * 1.25)) {
+    ctx.fillStyle = '#78716c';
+    ctx.strokeStyle = '#292524';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, p.height / 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
   ctx.restore();
 }
 
