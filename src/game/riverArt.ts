@@ -337,12 +337,12 @@ export function drawW2Cage(
     y: number;
     cageHp?: number;
     collected: boolean;
-    critter?: 'capy' | 'duck' | 'otter';
+    critter?: 'capy' | 'duck' | 'otter' | 'eaglet';
     freedAt?: number;
   },
   t: number,
 ): boolean {
-  if (!riverArtReady() || !c.critter) return false;
+  if (!riverArtReady() || !c.critter || c.critter === 'eaglet') return false;
   const floor = c.y + 26;
   const pics = CRITTER[c.critter];
   const since = c.freedAt !== undefined ? t - c.freedAt : -1;

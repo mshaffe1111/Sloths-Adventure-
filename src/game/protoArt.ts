@@ -531,7 +531,7 @@ export function drawProtoScene(
   ctx: CanvasRenderingContext2D,
   platforms: Platform[],
   trees: Array<{ x: number; topY: number }>,
-  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number }>,
+  vines: Array<{ vineType?: string; x: number; topY: number; bottomY?: number; rope?: boolean }>,
   t: number,
   view: { x0: number; x1: number; y1?: number },
   st: ProtoSceneState,
@@ -550,7 +550,8 @@ export function drawProtoScene(
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;
   for (const v of vines) {
-    if (v.vineType !== 'tree_climb' || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
+    // (a vine hanging down a cliff is not a trunk: its stage draws it)
+    if (v.vineType !== 'tree_climb' || v.rope || v.x < view.x0 - 120 || v.x > view.x1 + 120) continue;
     const bottom = (v as { bottomY?: number }).bottomY ?? v.topY + 300;
     const tw = 84;
     const th = (tw * tf.h) / tf.w;
@@ -562,7 +563,7 @@ export function drawProtoScene(
     ctx.restore();
   }
   // branches (a perch where a climb trunk ends under one)
-  const tops = vines.filter((v) => v.vineType === 'tree_climb');
+  const tops = vines.filter((v) => v.vineType === 'tree_climb' && !v.rope);
   for (const p of platforms) {
     if (!vis(p) || p.push || p.art || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);

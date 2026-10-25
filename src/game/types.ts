@@ -343,6 +343,8 @@ export interface Vine {
   treeId?: number;
   isSwingingVine?: boolean;
   swingAngle?: number;
+  /** a climbing vine hanging down a cliff (4-8's knotted vines), not a tree's trunk: its stage draws it (w4Play.ts), not the kapok art */
+  rope?: boolean;
 }
 
 /** A rope stretched across a gap. Pokey can hang from it and shimmy along it once he has learned the skill (see rope.ts). */
@@ -379,8 +381,11 @@ export interface Collectible {
   search?: number;
   /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
-  /** World 2's reed cages: the little one inside (Matt's sheet: a baby capybara, duckling or otter), and when it was freed (game time) */
-  critter?: 'capy' | 'duck' | 'otter';
+  /**
+   * World 2's reed cages: the little one inside (Matt's sheet: a baby capybara, duckling or otter), and when it was freed (game time).
+   * 'eaglet': World 4's nests on the cliff (4-8), a chick caught in old netting (w4Nests.ts draws it)
+   */
+  critter?: 'capy' | 'duck' | 'otter' | 'eaglet';
   freedAt?: number;
 }
 

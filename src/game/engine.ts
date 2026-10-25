@@ -63,6 +63,7 @@ import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLeve
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { W4Play } from './w4Play.ts';
+import { drawNest } from './w4Nests.ts';
 import { camAnchor, camLook, CAM, snapCam } from './cameraFollow.ts';
 import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
@@ -1426,7 +1427,8 @@ export class GameEngine {
         if (p.vy > PHYS.maxFall) p.vy = PHYS.maxFall;
         // Leaf Glide: holding Jump while falling opens the leaf and slows the fall
         const lift = (this.currentStage.config.worldIndex === 9 && ventLift(this.currentStage.zones, p.x, p.y - 32, this.gameTime)) || !!this.w4?.inUpdraft(p.x, p.y - 32);
-        const glideCap = glideStep(this.glide, { has: this.skills.has('glide'), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
+        // (pouring water folds the leaf: World 4's falls cannot be glided through, w4Play.ts inPour)
+        const glideCap = glideStep(this.glide, { has: this.skills.has('glide') && !this.w4?.inPour(p.x, p.y), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
         p.vy = glideBrake(p.vy, glideCap, dt);
         if (lift && this.glide.on) {
           p.vy = glideLift(p.vy, dt);
@@ -3922,6 +3924,8 @@ export class GameEngine {
       }
       // World 2's painted reed cages, and the little one hopping home once it is free
       if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime)) return;
+      // 4-8's eaglets in their nests, the netting over them, and their parents (w4Nests.ts)
+      if (item.type === 'cage' && item.critter === 'eaglet') return drawNest(ctx, item, this.gameTime);
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
@@ -4834,6 +4838,8 @@ export class GameEngine {
       },
     });
     this.dragSpeed *= out.speed;
+    // a freed eaglet's parent beating its wings over the nest (4-8): a tailwind on top of the gust lanes
+    this.windV += out.wind;
   }
 
   /** how awake a sleeping light is: 0 asleep, rising to 1 over GLOW_REACH.fade once it wakes */
