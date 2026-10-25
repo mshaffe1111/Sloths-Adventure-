@@ -16,6 +16,7 @@ import { ROCK, rockAt, rockHits, type RockDrop } from './rockfall.ts';
 import { FALLS, fallPush, inFall, plugged, poolLogY, stepFlow, stepPool, type Pool, type Waterfall } from './waterfalls.ts';
 import { chimeLean, DOT_HELP, newKnot, stepKnot, underKnot, type Chime, type DotKnot, type KnotState } from './w4Kit.ts';
 import { zoneState, type Zone } from './zones.ts';
+import { nestWind, type Nest } from './w4Nests.ts';
 import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
 
 /** a fruit hanging in a tree: punch near it and it drops to `ground`, where a capuchin can smell it; it grows back after a while */
@@ -48,6 +49,8 @@ export interface W4Extras {
   updrafts?: Updraft[];
   /** a fall this far below the ledge he last stood on is a fall into the mist (4-7: the gaps have no floor) */
   deepFall?: number;
+  /** 4-8's nests on the cliff (w4Nests.ts): which cage each one is and the puzzle around it; a freed chick's parent blows a tailwind */
+  nests?: Nest[];
 }
 
 /** what the engine lends World 4 each frame */
@@ -75,6 +78,8 @@ export interface W4Host {
 
 const FRUIT_BACK = 9;
 const KNOT_DROP = 0.8;
+/** a guard on its feet leaps up and shoves him back if he tries to jump over it: it reaches this far above its feet (px) */
+export const GUARD_LEAP = 200;
 
 export class W4Play {
   private patience: PatienceState[];
@@ -91,7 +96,7 @@ export class W4Play {
   /** the view drawBack last drew (drawFront culls by it) */
   private view = { x0: -Infinity, x1: Infinity };
 
-  constructor(private readonly w4: W4Extras, platforms: Platform[], vines: Vine[]) {
+  constructor(private readonly w4: W4Extras, platforms: Platform[], private readonly vines: Vine[]) {
     this.patience = (w4.patience ?? []).map(() => newPatience());
     this.flow = (w4.falls ?? []).map(() => 1);
     this.pool = (w4.pools ?? []).map(() => 1);
@@ -114,8 +119,11 @@ export class W4Play {
     }
   }
 
-  /** one frame. Returns how much of his walking speed is left (pouring water slows a wade) */
-  step(dt: number, h: W4Host): { speed: number } {
+  /**
+   * one frame. Returns how much of his walking speed is left (pouring water slows a wade), and any push the stage's own winds give him
+   * on top of the gust lanes (a freed eaglet's parent beating its wings: px/s, + to the right)
+   */
+  step(dt: number, h: W4Host): { speed: number; wind: number } {
     const p = h.player;
     const w4 = this.w4;
     let speed = 1;
@@ -282,15 +290,15 @@ export class W4Play {
           h.sfx('monkey');
           h.float('WHOOOA!', s.x, s.y - 60, '#99f6e4');
         }
-        if (capBlocks(m, s, p.x) && Math.abs(p.y - s.y) < 40) {
-          // a guard on its feet will not let him by: he bumps back off it
+        if (capBlocks(m, s, p.x) && p.y < s.y + 40 && p.y > s.y - GUARD_LEAP) {
+          // a guard on its feet will not let him by: he bumps back off it (and a jump over it meets it leaping up at him)
           p.x = s.x + (p.x >= s.x ? 30 : -30);
           p.vx = 0;
           h.tip('w4:guard', 'The guard will not let you pass. Wait for the wind to blow it over', 3.2);
         }
       }
     });
-    return { speed };
+    return { speed, wind: w4.nests?.length ? nestWind(h.collectibles, p.x, p.y, p.grounded, h.t) : 0 };
   }
 
   /** behind Pokey: the falls, the pools, the chimes, the rock shadows and rocks, the fern, the knots and Dot, the monkeys, the fruit */
@@ -314,7 +322,26 @@ export class W4Play {
     (w4.patience ?? []).forEach((s, i) => {
       if (s.kind === 'frond' && near(s.x1)) drawFrond(ctx, s, this.patience[i], platforms);
     });
+    for (const v of this.vines) if (v.rope && near(v.x)) drawCliffVine(ctx, v, t);
     (w4.knots ?? []).forEach((k, i) => near(k.x) && drawKnot(ctx, k, this.knots[i], t));
+    // a fall's plug: the boulder he rolls under its water (the push platform; painted over the log the scene would draw), the spout
+    // the water pours from, and the water running off the boulder once it is in
+    (w4.falls ?? []).forEach((w, i) => {
+      const b = w.plug ? platforms.find((q) => q.id === w.plug!.platformId) : undefined;
+      if (!b || !near(w.x)) return;
+      drawSpout(ctx, b, w, this.flow[i], t);
+      if (!drawW4(ctx, 'boulderMoss', b.x + b.width / 2, b.y + b.height + 8, b.width * 1.3)) {
+        ctx.save();
+        ctx.fillStyle = '#78716c';
+        ctx.strokeStyle = '#1c1917';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(b.x + b.width / 2, b.y + b.height / 2 + 4, b.width / 2 + 6, b.height / 2 + 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+    });
     this.fruit.forEach((f) => f.state !== 'gone' && near(f.x) && drawFruit(ctx, f.x, f.y));
     (w4.monkeys ?? []).forEach((m, i) => near(this.monkeys[i].x) && drawMonkey(ctx, m, this.monkeys[i], t));
   }
@@ -336,6 +363,11 @@ export class W4Play {
   /** is he behind a pouring fall? (a hiding place from lookouts and the Sovereign) */
   behindFall(px: number, feetY: number): boolean {
     return (this.w4.falls ?? []).some((w, i) => this.flow[i] > 0.5 && inFall(w, px, feetY, 64));
+  }
+
+  /** is he in a fall that is pouring now (not a curtain)? Its weight folds the leaf: a glide does not carry him through it */
+  inPour(px: number, feetY: number): boolean {
+    return (this.w4.falls ?? []).some((w, i) => !w.veil && this.flow[i] > FALLS.trickle && inFall(w, px, feetY, 64));
   }
 
   /** is he in rising warm air (an updraft)? */
@@ -688,6 +720,88 @@ function drawKnot(ctx: CanvasRenderingContext2D, k: DotKnot, st: KnotState, t: n
       ctx.fill();
     }
   }
+  ctx.restore();
+}
+
+/** a vine hanging down the cliff (4-8): tied up in a coil under its knot until Dot frees it, then it drops to the ground (v.bottomY moves) */
+function drawCliffVine(ctx: CanvasRenderingContext2D, v: Vine, t: number) {
+  ctx.save();
+  ctx.lineCap = 'round';
+  const sway = (y: number) => Math.sin(t * 1.2 + y * 0.012 + v.x * 0.01) * Math.min(6, (y - v.topY) * 0.03);
+  for (const [ink, w] of [['#1a2e05', 9], ['#4d7c0f', 5]] as const) {
+    ctx.strokeStyle = ink;
+    ctx.lineWidth = w;
+    ctx.beginPath();
+    ctx.moveTo(v.x, v.topY);
+    for (let y = v.topY; y <= v.bottomY; y += 14) ctx.lineTo(v.x + sway(y), y);
+    ctx.stroke();
+  }
+  // leaves along it
+  ctx.fillStyle = '#65a30d';
+  ctx.strokeStyle = '#1a2e05';
+  ctx.lineWidth = 1.5;
+  for (let y = v.topY + 30, k = 0; y < v.bottomY - 10; y += 46, k++) {
+    const s = k % 2 ? 1 : -1;
+    ctx.beginPath();
+    ctx.ellipse(v.x + sway(y) + s * 9, y, 9, 4.5, s * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
+  if (v.bottomY - v.topY < 60) {
+    // rolled up in a bundle under the knot
+    ctx.fillStyle = '#4d7c0f';
+    ctx.strokeStyle = '#1a2e05';
+    ctx.lineWidth = 3;
+    for (let k = 0; k < 3; k++) {
+      ctx.beginPath();
+      ctx.ellipse(v.x, v.topY + 22 + k * 7, 18 - k * 2, 9, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
+  ctx.restore();
+}
+
+/**
+ * a plugged fall's water (4-8): the spout high on the cliff it pours from, and once the boulder sits under it, the water landing on the
+ * boulder's top and running off back along the shelf instead of down the gap
+ */
+function drawSpout(ctx: CanvasRenderingContext2D, b: Platform, w: Waterfall, flow: number, t: number) {
+  const sx = w.x + 40;
+  if (!drawW4(ctx, 'channelFall', sx, w.top + 40, 150, { flip: true })) {
+    ctx.save();
+    ctx.fillStyle = '#57534e';
+    ctx.fillRect(sx - 70, w.top - 30, 140, 34);
+    ctx.restore();
+  }
+  const off = 1 - flow;
+  if (off < 0.05) return;
+  const top = b.y;
+  ctx.save();
+  ctx.globalAlpha = off;
+  // a thin stream from the spout onto the boulder
+  ctx.fillStyle = 'rgba(186, 230, 253, 0.8)';
+  ctx.fillRect(sx - 14, w.top + 20, 28, top - w.top - 16);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+  ctx.lineWidth = 2;
+  for (let k = 0; k < 3; k++) {
+    const y = w.top + 20 + ((t * 380 + k * 70) % Math.max(1, top - w.top - 40));
+    ctx.beginPath();
+    ctx.moveTo(sx - 6 + k * 6, y);
+    ctx.lineTo(sx - 6 + k * 6, y + 30);
+    ctx.stroke();
+  }
+  // spray off the boulder's top, and the water running away left along the shelf
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  for (let k = 0; k < 5; k++) {
+    const u = (t * 1.8 + k * 0.23) % 1;
+    ctx.beginPath();
+    ctx.arc(sx - u * 50, top - 4 - Math.sin(u * Math.PI) * 18, 3 + 2 * (1 - u), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  const y = b.y + b.height;
+  ctx.fillStyle = 'rgba(125, 211, 252, 0.85)';
+  ctx.fillRect(b.x - 220, y - 6, 220, 6);
   ctx.restore();
 }
 

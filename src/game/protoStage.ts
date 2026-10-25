@@ -31,7 +31,8 @@ import type { W3Decor } from './w3Art.ts';
 import type { ThornVine } from './thornVine.ts';
 import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
 import { PATIENCE, type PatienceSpot } from './patience.ts';
-import type { Chime } from './w4Kit.ts';
+import { DOT_HELP, type Chime, type DotKnot } from './w4Kit.ts';
+import type { Nest, NestKind } from './w4Nests.ts';
 import { buildLongDrop } from './w4LongDrop.ts';
 import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
@@ -39,8 +40,8 @@ import type { Capuchin } from './capuchin.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-5' | '4-7';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-5': '4-5', '4-7': '4-7' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-5' | '4-7' | '4-8';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-5': '4-5', '4-7': '4-7', '4-8': '4-8' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -182,11 +183,18 @@ export const PROWLER_GOAL_39 = 14;
 export const GRANDMA_GOAL_36 = 5;
 /** 3-7 Which Fern?: how many more of Grandma's things */
 export const GRANDMA_GOAL_37 = 6;
+/** 4-8 Nests on the Cliff asks for 8 chicks freed (the cliff holds 12 nests, one and a half times that) */
+export const NEST_GOAL_48 = 8;
+/** 4-8's falls: how far onto the shelf the water lands (the boulder's last stretch), and how far above the shelf it pours from */
+const FALL_LIP = 60;
+const FALL_HEAD = 280;
 /** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
 export const SNAKE_GOAL_13 = 16;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
+/** 4-8 runs longer than the two-minute floor (Matt, 2026-10-25: stages vary in length): about three minutes for a quick player */
+export const W48_SECONDS = EXPERT_SECONDS + 40;
 
 export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy' | 'highrun' | 'stumps' | 'snakes' | 'river' | 'pond' | 'turtles' | 'cages';
 
@@ -2567,6 +2575,254 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     });
   }
 
+  // 4-8 Nests on the Cliff (2026-10-25): eaglet chicks caught in old netting on the cliff nests (w4Nests.ts). Two blows tear a
+  // netting open (a 'cage', as in World 2); each nest is a small puzzle with a World 4 idea in it, each taught where it first comes:
+  // a vine tied up out of reach that Dot unties (w4Kit.ts DotKnot), a fall pouring between him and the nest that a boulder rolled under
+  // its spout stops (waterfalls.ts plug), a capuchin guard pacing the nest's ledge that a gust knocks over (capuchin.ts), and a branch
+  // too far out for any jump that only the leaf reaches (needed from 4-7 on). The second twist puts two of them together. A freed
+  // chick's parent swoops down and its wingbeats blow a tailwind along the stretch ahead for a few seconds. The forest floor runs
+  // under everything: a miss is a climb back, never a life.
+  if (plan === '4-8') {
+    const KNOTS: DotKnot[] = (W4X.knots = []);
+    const FALLS8: Waterfall[] = (W4X.falls = []);
+    const GUARDS: Capuchin[] = (W4X.monkeys = []);
+    const NESTS: Nest[] = (W4X.nests = []);
+    /** the seconds a quick player spends at a nest: two blows, and the parent's swoop */
+    const FREE = 1.8;
+    /** the seconds Dot takes, from standing still under a knot to the vine on the ground */
+    const DOT = DOT_HELP.ask + DOT_HELP.fly + DOT_HELP.pick + 0.8;
+    /** a chick in a nest at cx on platform pl (`also`: the second idea in a nest that needs two) */
+    const nest = (cx: number, pl: Platform, kind: NestKind, also?: NestKind) => {
+      const id = cid++;
+      C.push({ id, type: 'cage', x: Math.round(cx), y: pl.y - 26, collected: false, bobPhase: 0, cageHp: 2, critter: 'eaglet' });
+      NESTS.push({ cageId: id, kind, ...(also ? { also } : {}), platformId: pl.id, x: Math.round(cx), y: pl.y });
+    };
+    /** the way up to a ledge at y from the floor at x: a trunk, or (`rope`) a vine down the cliff tied up under its knot for Dot */
+    const wayUp = (vx: number, y: number, rope: boolean) => {
+      if (!rope) trunk(vx, G, y);
+      else {
+        const id = vid++;
+        V.push({ id, x: vx, topY: y - 2, bottomY: G - 6, swaySpeed: 0.9, swayPhase: 0, vineType: 'tree_climb', rope: true });
+        KNOTS.push({ x: vx, y: y + 16, x0: vx - 44, x1: vx + 44, ground: G, releases: { kind: 'vine', id } });
+      }
+      // (up the climb, the top one well under the ledge)
+      for (let i = 0; i < 3; i++) flower(vx, Math.round(G - 80 - (i * (G - y - 140)) / 2), 'hibiscus');
+      return (G - y) / CLIMB + (rope ? DOT : 0);
+    };
+    /** the plain one, to learn the netting on: a nest on a low rock by the path */
+    function plainNest() {
+      const x0 = x;
+      run(R.r(300, 360));
+      const rock = block(x, x + 180, 50);
+      nest(x + 110, rock, 'plain');
+      run(180 + R.r(420, 500));
+      expert += (x - x0) / RUN + 0.5 + FREE;
+      pieces.push({ k: 'cages', x0, x1: x });
+    }
+    /**
+     * a ledge up the cliff, far higher than a jump, and a vine down from it tied up out of reach under its knot: stand still under it
+     * and Dot flies up and unties it, and it drops to the ground. `high`: the nest is a hop further up, on a second ledge.
+     */
+    function knotNest(high: boolean) {
+      const x0 = x;
+      run(R.r(320, 380));
+      const vx = Math.round(x);
+      const y = Math.round(G - R.r(250, 265));
+      const ledge = branch(vx - 40, vx + Math.round(R.r(260, 300)), y);
+      expert += wayUp(vx, y, true);
+      let top = ledge;
+      if (high) {
+        const rise = Math.round(R.r(90, 110));
+        const gap = Math.round(reachJump(rise, false) * R.r(0.4, 0.5));
+        const nx = ledge.x + ledge.width + gap;
+        top = branch(nx, nx + Math.round(R.r(220, 250)), y - rise);
+        row(ledge.x + 120, ledge.x + ledge.width - 30, y - 34, 2, 'orchid');
+      }
+      nest(top.x + top.width - 70, top, 'knot');
+      x = Math.max(x, top.x + top.width) + R.r(300, 360);
+      expert += (vx - x0) / RUN + (top.x + top.width - vx) / RUN + (high ? 1 : 0) + FREE + 0.8 + (x - top.x - top.width) / RUN;
+      pieces.push({ k: 'kapok', x0, x1: x });
+    }
+    /**
+     * a shelf up a trunk, and water pouring down from a spout high on the cliff, past the shelf's end and over the gap to the nest's
+     * ledge, from higher than any jump goes: in pouring water a jump is pushed down (and the leaf folds). Roll the boulder along the
+     * shelf to its end, under the spout, and the water runs off it instead; then the gap is a jump from the top of the boulder.
+     */
+    function fallNest() {
+      const x0 = x;
+      run(R.r(320, 380));
+      const tX = Math.round(x);
+      const sy = Math.round(G - R.r(230, 245));
+      const shelfEnd = tX + Math.round(R.r(360, 400));
+      branch(tX - 40, shelfEnd, sy);
+      expert += wayUp(tX, sy, false);
+      const BW = 100, BH = 84;
+      const boulder: Platform = { id: pid++, x: tX + 70, y: sy - BH, width: BW, height: BH, type: 'solid', style: 'moss_stone', push: { min: tX + 60, max: shelfEnd } };
+      P.push(boulder);
+      const gap = Math.round(R.r(220, 240));
+      // (the water lands on the shelf's last stretch too, where the boulder stops; it starts higher than a double jump off the boulder)
+      FALLS8.push({ id: FALLS8.length + 1, x: shelfEnd - FALL_LIP, width: gap + FALL_LIP, top: sy - FALL_HEAD, bottom: G, plug: { platformId: boulder.id, atX: shelfEnd - BW } });
+      const nl = branch(shelfEnd + gap, shelfEnd + gap + Math.round(R.r(200, 240)), sy + Math.round(R.r(0, 16)));
+      nest(nl.x + nl.width - 70, nl, 'fall');
+      x = nl.x + nl.width + R.r(300, 360);
+      expert += (tX - x0) / RUN + 0.5 + (shelfEnd - BW - tX - 70) / PUSH + 1.2 + 1.4 + nl.width / RUN + FREE + 0.8 + (x - nl.x - nl.width) / RUN;
+      pieces.push({ k: 'log', x0, x1: x });
+    }
+    /**
+     * a ledge up a trunk (or a knotted vine) with a capuchin pacing it: on its feet it will not let him by (nor over: it leaps up at
+     * him). Chimes on a post below ring before each gust along the cliff, and a gust knocks it over for a while. The nest is at the
+     * ledge's far end; or (`glide`) the ledge is a high perch and the nest is out on a branch only the leaf reaches from its far end,
+     * with the gust behind him.
+     */
+    function guardNest(rope: boolean, glide: boolean) {
+      const x0 = x;
+      run(R.r(340, 400));
+      const tX = Math.round(x);
+      const chimeX = tX - 150;
+      const gy = Math.round(glide ? G - R.r(335, 350) : G - R.r(230, 245));
+      const end = tX + Math.round(R.r(440, 480));
+      const ledge = branch(tX - 40, end, gy);
+      expert += wayUp(tX, gy, rope);
+      const gx0 = tX + 120, gx1 = end - 180;
+      GUARDS.push({ job: 'guard', x: Math.round((gx0 + gx1) / 2), y: gy, x0: gx0, x1: gx1 });
+      gustZone(tX - 220, end + 60, 1, chimeX);
+      let last = end;
+      if (glide) {
+        const nb = glideOut(ledge);
+        nest(nb.x + nb.width - 70, nb, 'guard', 'glide');
+        last = nb.x + nb.width;
+      } else nest(end - 60, ledge, 'guard', rope ? 'knot' : undefined);
+      x = last + R.r(320, 380);
+      expert += (tX - x0) / RUN + 3.6 + (end - tX) / RUN + (glide ? 1.6 : 0) + FREE + 0.8 + (x - last) / RUN;
+      pieces.push({ k: 'kapok', x0, x1: x });
+    }
+    /**
+     * out from the end of a high perch: the nest's branch a little lower, too far for any jump (and far higher than a jump from the
+     * floor), easy for the leaf. Petals trail down the way the leaf drifts.
+     */
+    function glideOut(perch: Platform) {
+      const drop = Math.round(R.r(50, 70));
+      const gap = Math.round((reachJump(-drop, true) + reachGlide(-drop, true)) / 2);
+      const bx = perch.x + perch.width + gap;
+      const nb = branch(bx, bx + Math.round(R.r(170, 200)), perch.y + drop);
+      for (let i = 1; i <= 3; i++) {
+        const u = i / 4;
+        flower(Math.round(perch.x + perch.width + gap * u), Math.round(perch.y - 20 + (drop + 50) * u), 'orchid');
+      }
+      return nb;
+    }
+    /**
+     * up a tall trunk (or a knotted vine) to a perch, and the nest out on a branch only the leaf reaches. `secret`: farther out again,
+     * from the nest's branch, a little ledge with a golden seed only a second glide reaches.
+     */
+    function glideNest(secret: boolean, rope: boolean) {
+      const x0 = x;
+      run(R.r(320, 380));
+      const tX = Math.round(x);
+      const py = Math.round(G - R.r(335, 355));
+      const perch = branch(tX - 40, tX + 170, py);
+      expert += wayUp(tX, py, rope);
+      const nb = glideOut(perch);
+      nest(nb.x + nb.width - 70, nb, 'glide', rope ? 'knot' : undefined);
+      let end = nb.x + nb.width;
+      if (secret) {
+        const sx = Math.round(end + (reachJump(-40, true) + reachGlide(-40, true)) / 2);
+        branch(sx, sx + 120, nb.y + 40);
+        goldenSeed(sx + 60, nb.y + 40 - 34);
+        hint(nb.x - 200, 'Something shiny, far out past that nest...');
+        end = sx + 120;
+      }
+      x = end + R.r(320, 380);
+      expert += (tX - x0) / RUN + 1 + (nb.x - perch.x - perch.width) / 330 + FREE + 0.8 + (x - nb.x - nb.width) / RUN;
+      pieces.push({ k: 'canopy', x0, x1: x });
+    }
+    /** the forest floor between two nests: far enough apart that no glide from one reaches the next one's ledges */
+    const between = () => rest(R.r(420, 500));
+
+    beat('Start: the cliff path', () => {
+      rest(R.r(560, 680));
+      hint(x - 420, 'Eaglet chicks are caught in old netting on the cliff nests. Free them!');
+      rest(R.r(200, 260));
+      hint(x + 40, 'Tap twice to tear the netting', 'Press Punch twice to tear the netting', 'Press J twice to tear the netting');
+      plainNest();
+      hint(x - 300, 'Its parent can reach it now! Feel its wings blow you along?');
+      rest(R.r(200, 260));
+      flag();
+    });
+    beat('Learn: Dot and the boulder', () => {
+      hint(x + 40, 'That vine is tied up out of reach. Stand still under the knot and Dot will fly up');
+      knotNest(false);
+      between();
+      hint(x + 40, 'Water pours between you and that nest. Climb up and keep sliding into the boulder to roll it under the water', 'Water pours between you and that nest. Climb up and hold the pad into the boulder to roll it under the water', 'Water pours between you and that nest. Climb up and hold right into the boulder to roll it under the water');
+      fallNest();
+      rest(R.r(200, 260));
+      flag();
+    });
+    beat('Develop: the guard', () => {
+      hint(x + 40, 'A capuchin guards that nest! When the chimes ring, the wind will knock it over');
+      guardNest(false, false);
+      rest(R.r(200, 260));
+      flag();
+      between();
+      knotNest(true);
+      rest(R.r(200, 260));
+      flag();
+    });
+    beat('Twist: by leaf', () => {
+      hint(x + 40, 'That nest is too far to jump to. Climb up, jump, and keep your thumb on the glass to open your leaf', 'That nest is too far to jump to. Climb up, jump, and hold Jump to open your leaf', 'That nest is too far to jump to. Climb up, jump, and hold Space to open your leaf');
+      glideNest(false, false);
+      between();
+      fallNest();
+      rest(R.r(200, 260));
+      flag();
+    });
+    beat('Twist: two at once', () => {
+      // (the order is rolled; each says what it needs)
+      const combos: Array<() => void> = [
+        () => {
+          hint(x + 40, 'Dot first, then your leaf: the vine takes you up to a perch, and the nest is a glide away');
+          glideNest(false, true);
+        },
+        () => {
+          hint(x + 40, 'Another guard, and its ledge is tied up too. Dot first, then wait for the chimes');
+          guardNest(true, false);
+        },
+        () => {
+          hint(x + 40, 'A guard on the high perch! When the wind knocks it over, run past and glide with the wind behind you');
+          guardNest(false, true);
+        },
+      ];
+      R.shuffle(combos).forEach((f, i) => {
+        if (i) between();
+        f();
+        rest(R.r(200, 260));
+        flag();
+      });
+    });
+    beat('Finish', () => {
+      between();
+      guardNest(false, false);
+      between();
+      flag();
+      // the cliff path on toward the shrine, until a quick player has had about three minutes, then the last nest
+      let n = 0;
+      while (expert < W48_SECONDS - 20 && n < 24) {
+        const k = n % 3;
+        if (k === 0) gustGap(1);
+        else if (k === 1) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+        else highRoad();
+        rest(R.r(220, 300));
+        n++;
+        if (n % 2 === 0) flag();
+      }
+      between();
+      glideNest(true, false);
+      rest(R.r(700, 900));
+      // (the walk to the shrine makes up any last seconds the dice left short)
+      if (expert < W48_SECONDS) rest((W48_SECONDS - expert) * RUN + 60);
+    });
+  }
+
   if (plan === '3-2') {
     // World 3's note (Meeca, in plain sight: a Keeper's Bell) on the quiet floor just before the eyes
     const note = findForStage(config.worldIndex, config.miniIndex);
@@ -2600,7 +2856,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
