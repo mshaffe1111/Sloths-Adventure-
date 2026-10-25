@@ -63,6 +63,7 @@ import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLeve
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { W4Play } from './w4Play.ts';
+import { drawW4Bush } from './w4Art.ts';
 import { camAnchor, camLook, CAM, snapCam } from './cameraFollow.ts';
 import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
@@ -4850,6 +4851,8 @@ export class GameEngine {
       const b = bushes[i];
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
+      // (World 4 has its own painted cover: w4Art.ts)
+      if (this.w4 && !b.hanging && drawW4Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });
