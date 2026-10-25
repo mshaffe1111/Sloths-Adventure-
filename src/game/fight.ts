@@ -187,12 +187,12 @@ export function chooseMove(want: AttackWant, airborne: boolean, prev: MoveId | n
 
 /**
  * Can a buffered button start the next move now? After a hit, the follow-through can be cancelled a third of
- * the way in; a swing that hit nothing must be played out in full (so whiffing costs you).
+ * the way in; a swing that hit nothing plays most of its follow-through first (whiffing still costs a little,
+ * but mashing at nothing no longer leaves him standing there: testers felt "stuck", 2026-10-24).
  */
 export function canCancel(m: MoveSpec, t: number, connected: boolean): boolean {
   if (t >= moveLength(m)) return true;
-  if (!connected) return false;
-  return t >= m.startup + m.active + m.recovery * 0.35;
+  return t >= m.startup + m.active + m.recovery * (connected ? 0.35 : 0.6);
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -311,14 +311,16 @@ export type StompResult = null | { kind: 'stomp'; damage: number } | { kind: 'bo
 export function stompTest(p: { x: number; y: number; vy: number }, prevFeet: number, e: Enemy, diving = false): StompResult {
   const tr = TRAITS[e.type];
   if (tr.stomp === false) return null;
-  if (p.vy <= 40) return null;
+  // any downward motion counts (the top of a hop onto a low snake falls slowly: 40 px/s used to be required)
+  if (p.vy <= 0) return null;
   const head = headRect(e);
   // (a little wider than the head, and down to the ground: a tester landing on low snakes "on top" kept getting bitten, 2026-10-23)
-  const overX = Math.abs(p.x - (head.x + head.w / 2)) < head.w / 2 + 14;
+  const overX = Math.abs(p.x - (head.x + head.w / 2)) < head.w / 2 + 18;
   if (!overX) return null;
-  // feet came from above the head's top and are now inside the zone
-  const fromAbove = prevFeet <= head.y + head.h * 0.55;
-  const inside = p.y >= head.y - 4 && p.y <= head.y + head.h + 18;
+  // feet came from the upper part of the head and are now inside the zone. Generous, because a phone at 25 frames a second moves
+  // him 20 px a frame in a fall: the snake ring still logged 14 bites against 21 stomps (2026-10-24)
+  const fromAbove = prevFeet <= head.y + head.h * 0.8;
+  const inside = p.y >= head.y - 6 && p.y <= head.y + head.h + 24;
   if (!fromAbove || !inside) return null;
   if (tr.stomp === 'armored') return { kind: 'bounce' };
   return { kind: 'stomp', damage: diving ? 2 : 1 };

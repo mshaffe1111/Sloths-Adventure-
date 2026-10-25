@@ -30,12 +30,12 @@ export interface WatchZone {
 }
 
 export const WATCH = {
-  /** from the screech to the sweep: long enough to reach a bush that is near */
-  warn: 1.4,
+  /** from the screech to the sweep: long enough to reach a bush that is near (1.4 s caught most testers running, 2026-10-24) */
+  warn: 2.0,
   /** the sweep across the view */
   pass: 2.6,
-  /** from being seen to the strike */
-  dive: 0.5,
+  /** from being seen to the strike: time to duck into a bush right beside him */
+  dive: 0.75,
   /** how close the shadow's middle must come to see him (px either side) */
   sight: 70,
 } as const;

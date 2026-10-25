@@ -7,6 +7,7 @@ import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
 import { fullscreenSupported, isFullscreen, launchedAsApp, toggleFullscreen } from '../game/fullscreen.ts';
 import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, type GameSpeed } from '../game/assist.ts';
+import { DIFFICULTY_LABEL, difficulty, setDifficulty, subscribeDifficulty, type Difficulty } from '../game/difficulty.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -167,6 +168,36 @@ export const ControlsSetting: React.FC = () => {
               ? 'No buttons: slide, flick and tap anywhere. In the air a tap (or a wiggle of your thumb) is the second jump. A tap in the air no longer punches until the second jump is used.'
               : 'Like Tap, and the second jump also pushes Pokey forward the way he faces, so one thumb can jump, tap and cross a gap. Push the other way to brake. A first jump is always just a jump.'}
       </small>
+    </div>
+  );
+};
+
+/** Easy or Normal: picked at New Game, changeable here any time; it applies from the next stage */
+export const DifficultySetting: React.FC = () => {
+  const [level, setLevel] = React.useState<Difficulty>(() => difficulty());
+  React.useEffect(() => subscribeDifficulty(() => setLevel(difficulty())), []);
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <Icon color="#fcd34d" size={22}>
+            <path d="M4 18l4-6 4 4 4-8 4 10z" />
+          </Icon>
+          Difficulty
+        </span>
+        <Seg
+          value={level}
+          options={[
+            { id: 'easy', label: DIFFICULTY_LABEL.easy.name },
+            { id: 'normal', label: DIFFICULTY_LABEL.normal.name },
+          ]}
+          onPick={(v) => {
+            setDifficulty(v);
+            setLevel(v);
+          }}
+        />
+      </div>
+      <small className="pm-polish-note">{DIFFICULTY_LABEL[level].blurb} It starts from the next stage.</small>
     </div>
   );
 };

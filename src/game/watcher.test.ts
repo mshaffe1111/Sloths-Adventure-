@@ -19,7 +19,7 @@ test('the eagle keeps a steady rhythm: calm, a warning, a sweep, then calm again
     if (ev.warned) warned++;
     if (phases[phases.length - 1] !== s.phase) phases.push(s.phase);
   }
-  // 30 s at 6 + 1.4 + 2.6 = 10 s a cycle: warnings at 6, 16 and 26 s, two sweeps finished (the third ends at 30 s)
+  // 30 s at 6 + 2.0 + 2.6 = 10.6 s a cycle: warnings at 6, 16.6 and 27.2 s, two sweeps finished
   assert.equal(warned, 3);
   assert.equal(s.passes, 2);
   assert.deepEqual(phases.slice(0, 4), ['calm', 'warn', 'pass', 'calm']);

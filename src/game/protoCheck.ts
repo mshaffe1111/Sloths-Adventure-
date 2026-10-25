@@ -2,7 +2,7 @@
  * protoCheck — the physics checks the planned-stage builder (protoStage.ts) runs on every piece it rolls, using the same physics as the
  * engine (physics.ts). A piece whose numbers fail is rolled again, so a stage never reaches a player with a swing that cannot be made.
  */
-import { PHYS, airStep, canGrabSwing, swingGrab, swingStep, tarzanLaunch, type AirBody } from './physics.ts';
+import { PHYS, airStep, canGrabSwing, swingGrab, swingStep, timedLaunch, type AirBody } from './physics.ts';
 import type { Platform, Vine } from './types.ts';
 
 const DT = 1 / 30;
@@ -60,7 +60,7 @@ export function catchWindow(A: Vine, B: Vine): number {
   for (let k = 0; k < 90; k++) {
     const r = swingStep(s, A, DT, 1, 0);
     if (Math.sin(s.angle) <= 0.05) continue;
-    const l = tarzanLaunch(r.vx, r.vy, 1);
+    const l = timedLaunch(s, 1);
     let hit = false;
     for (const tD of [99, 0.15, 0.3, 0.45]) {
       const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
@@ -84,7 +84,7 @@ function arriveFrom(A: Vine, B: Vine) {
   for (let k = 0; k < 90; k++) {
     const r = swingStep(s, A, DT, 1, 0);
     if (Math.sin(s.angle) <= 0.2) continue;
-    const l = tarzanLaunch(r.vx, r.vy, 1);
+    const l = timedLaunch(s, 1);
     const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
     for (let i = 0; i < 60; i++) {
       airStep(c, DT, 1);
@@ -102,7 +102,7 @@ export function landWindow(A: Vine | null, B: Vine, to: Platform): number {
   for (let k = 0; k < 90; k++) {
     const r = swingStep(sb, B, DT, 1, 0);
     if (Math.sin(sb.angle) <= 0.05) continue;
-    const l = tarzanLaunch(r.vx, r.vy, 1);
+    const l = timedLaunch(sb, 1);
     let landed = false;
     for (const tD of [99, 0.2, 0.4]) {
       const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
@@ -131,7 +131,7 @@ export function earlyCatch(A: Vine, B: Vine, at = 0.5): boolean {
   for (let k = 0; k < 90; k++) {
     const r = swingStep(s, A, DT, 1, 0);
     if (Math.sin(s.angle) < at || s.omega <= 0) continue;
-    const l = tarzanLaunch(r.vx, r.vy, 1);
+    const l = timedLaunch(s, 1);
     for (const tD of [99, 0.3]) {
       const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
       let t = 0, used = false, hit = false;

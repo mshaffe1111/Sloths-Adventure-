@@ -5,7 +5,10 @@ import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState }
 import { recorder } from './playRecorder.ts';
 import { liftY } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
-import { autoPump, KICK_NEAR_PX, refinedControls, steerPump } from './refinedControls.ts';
+import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
+import { isEasy } from './difficulty.ts';
+import { VINE_HANG } from './heroVine.ts';
+import { easyStage } from './easyMode.ts';
 import type {
   LevelConfig,
   PlayerState,
@@ -28,7 +31,7 @@ import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep }
 import { controlStyle } from './controlPrefs.ts';
 import { lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, SWING, airCarry, airTakeOff, easeAssist, newAirDrive, swingGrab, swingStep, tarzanLaunch } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, easeAssist, inSweetSpot, newAirDrive, setTimedSwing, swingGrab, swingStep, timedLaunch } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -305,6 +308,8 @@ export class GameEngine {
   /** 1-9's ring: 'idle' until he comes in, then each wave drops (snakes falling from the canopy, not yet in play), then 'open' */
   private ring = { state: 'idle' as 'idle' | 'fight' | 'open', wave: 0, ids: [] as number[] };
   private ringDrops: Array<{ e: Enemy; t: number; delay: number }> = [];
+  /** a snake that has just dropped into the ring is shaken for a moment and cannot bite yet (game time it can from, by id) */
+  private harmlessUntil = new Map<number, number>();
   /** 1-8's collapsing branch (chase.ts): its state, the pieces falling away, and whether the last leap has had its slow motion */
   private chase: ChaseState | null = null;
   private chaseFalling: Array<{ x: number; y: number; w: number; h: number; vx: number; vy: number; rot: number; vr: number; t: number; right: boolean }> = [];
@@ -384,6 +389,10 @@ export class GameEngine {
   private climbAssist = 0;
   /** same for a liana: the jump press that caught it is not also the leap off it */
   private swingGrace = 0;
+  /** seconds until the next sweet-spot glint on a swinging vine */
+  private sweetGlint = 0;
+  /** 0..1: the golden glow round him while he is in the sweet spot (eased in and out) */
+  private sweetGlow = 0;
   private lastReleasedVineId: number = -1;
   private wasQuotaMet: boolean = false;
   private treeClimbAudioTimer: number = 0;
@@ -413,7 +422,9 @@ export class GameEngine {
     setSceneSeed(rollSceneSeed());
 
     // Generate Stage data
-    this.currentStage = generateStage(config);
+    // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
+    setTimedSwing(isEasy());
+    this.currentStage = isEasy() ? easyStage(generateStage(config)) : generateStage(config);
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
@@ -1185,12 +1196,16 @@ export class GameEngine {
           const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100 };
           if (this.input.state.right) p.facing = 1;
           if (this.input.state.left) p.facing = -1;
-          const steer = (this.input.state.right ? 1 : 0) - (this.input.state.left ? 1 : 0);
-          const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
-          // refined controls: with nothing held the vine swings itself up to a good size (one-finger players never pumped it)
-          // and holding a direction pumps with the swing instead of pinning him near the top (refinedControls.ts steerPump)
-          const push = !this.refined ? steer : steer === 0 ? autoPump(sw.angle, sw.omega, sw.len, SWING.g, p.facing) : steerPump(sw.angle, sw.omega, sw.len, SWING.g, steer as -1 | 1);
-          const r = swingStep(sw, nearSwingVine, dt, push as -1 | 0 | 1, climb as -1 | 0 | 1);
+          // the timed swing (physics.ts TIMED): the vine swings itself at a steady height and rhythm; holding a direction only turns
+          // him to face the way he will let go, and the only choice is when. A glint shows the sweet spot for letting go.
+          const r = swingStep(sw, nearSwingVine, dt, p.facing, 0);
+          const sweet = inSweetSpot(sw, p.facing);
+          this.sweetGlow += ((sweet ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
+          this.sweetGlint -= dt;
+          if (sweet && this.sweetGlint <= 0) {
+            this.sweetGlint = 0.14;
+            this.spawnSparkBurst(r.x - Math.sin(sw.angle) * VINE_HANG * 0.6, r.y - Math.cos(sw.angle) * VINE_HANG * 0.6, '#fde68a');
+          }
           p.swingAngle = sw.angle;
           p.swingAngularVelocity = sw.omega;
           p.swingLength = sw.len;
@@ -1236,10 +1251,12 @@ export class GameEngine {
           p.facing = releaseDir as 1 | -1;
           // Forward boost + heroic upward arc (capped so a big swing cannot rocket you off the map)
           {
-            const l = tarzanLaunch(p.vx, p.vy, releaseDir as 1 | -1);
+            // let go in the sweet spot: the leap toward the next vine. Anywhere else he flies off the way the vine was carrying him.
+            const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100 };
+            const l = timedLaunch(sw, releaseDir as 1 | -1);
             p.vx = l.vx;
             p.vy = l.vy;
-            this.launched = true;
+            this.launched = l.sweet;
           }
           p.jumpsLeft = 2; // Full air control - player can double jump mid-air!
           p.isDoubleJumping = false;
@@ -1739,7 +1756,8 @@ export class GameEngine {
           if (e.type === 'jaguar' || e.type === 'tayra') this.spawnDebrisBurst(e.x, e.y + 22, '#a16207');
         }
         if (this.debugBoxes) this.dbgHurt.push(...step.hurt);
-        for (const h of step.hurt) {
+        const shaken = this.gameTime < (this.harmlessUntil.get(e.id) ?? -1);
+        for (const h of shaken ? [] : step.hurt) {
           if (checkAABBCollision(...this.pBox(), h.x, h.y, h.w, h.h)) {
             this.damagePlayer(1);
             break;
@@ -2555,8 +2573,12 @@ export class GameEngine {
     inp.kickPressed = false;
     inp.kickDir = 0;
     inp.punchPressed = false;
-    // a press is remembered for most of a swing, so mashing during a miss still throws the next one the moment the last ends
-    if (want) this.atkQueue = { want, ttl: 0.32, face };
+    // a press is remembered until the swing it came during can give way (and a little after), so a press is never lost: a tap early in a
+    // long move (the hook, the jump kick) used to run out before the move ended, and nothing came of it (testers' logs, 2026-10-24)
+    if (want) {
+      const busy = this.atk ? Math.max(0, moveLength(this.atk.move) - this.atk.t) : 0;
+      this.atkQueue = { want, ttl: Math.max(0.32, busy + 0.15), face };
+    }
     else if (this.atkQueue) {
       this.atkQueue.ttl -= dt;
       if (this.atkQueue.ttl <= 0) this.atkQueue = null;
@@ -2579,7 +2601,8 @@ export class GameEngine {
       const a = this.atk;
       if (q.want === 'mega' && this.megaCooldown > 0) {
         this.atkQueue = null;
-      } else if (!a || canCancel(a.move, a.t, a.connected)) {
+      } else if (!a || canCancel(a.move, a.t, a.connected) || (a.move.id === 'airKick' && p.grounded && a.t >= a.move.startup)) {
+        // (a jump kick ends the moment he lands if another press is waiting: it used to play on along the ground and swallow the punch)
         this.atkQueue = null;
         if (a) this.endAttack();
         this.startAttack(q.want, q.face);
@@ -3128,7 +3151,12 @@ export class GameEngine {
           e.hoverTimer = 0.9;
           e.isAttacking = false;
         }
-        this.addFloatingText(wasCommitted && res.interrupt ? 'STOMPED!' : 'STOMP!', e.x, head.y - 14, '#fde68a');
+        // a tough one (the boa takes three): say how many more, so a stomp that did not finish it still reads as working
+        const more = Math.max(0, Math.ceil(e.hp / Math.max(1, r.damage)));
+        const word = wasCommitted && res.interrupt ? 'STOMPED!' : 'STOMP!';
+        this.addFloatingText(more > 0 ? `${word} ${more} MORE` : word, e.x, head.y - 14, '#fde68a');
+        // and a longer breather after bouncing off one that is still standing
+        this.stompGrace = 0.5;
       }
       return;
     }
@@ -3673,6 +3701,8 @@ export class GameEngine {
   /** how much early-stage help is in force on this stage (1 on stage 1-1, fading to 0 by stage 25) */
   private assistNow(): number {
     const c = this.currentStage.config;
+    // Easy keeps the first stage's help (the longer ledge grace, the stronger second jump, the wider landing) the whole game
+    if (isEasy()) return 1;
     return easeAssist((c.worldIndex - 1) * 10 + c.miniIndex);
   }
 
@@ -3917,6 +3947,34 @@ export class GameEngine {
     }
     if (this.proto?.watch) this.drawWatchBack(ctx);
     if (this.ringDrops.length) this.drawRingDrops(ctx);
+    // the swing's sweet spot: a warm glow round him while letting go now would leap to the next vine
+    if (this.player.isVineSwinging && this.sweetGlow > 0.03) {
+      const gp = this.player;
+      // centred on his body, which hangs from his hands partway up the vine (heroVine.ts)
+      const a = gp.swingAngle ?? 0;
+      const cx = gp.x - Math.sin(a) * VINE_HANG * 0.6;
+      const cy = gp.y - Math.cos(a) * VINE_HANG * 0.6;
+      const k = this.sweetGlow;
+      const pulse = 1 + 0.06 * Math.sin(this.gameTime * 18);
+      ctx.save();
+      const g = ctx.createRadialGradient(cx, cy, 8, cx, cy, 62 * pulse);
+      g.addColorStop(0, `rgba(255, 214, 90, ${0.55 * k})`);
+      g.addColorStop(0.7, `rgba(255, 196, 40, ${0.25 * k})`);
+      g.addColorStop(1, 'rgba(255, 196, 40, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 62 * pulse, 0, Math.PI * 2);
+      ctx.fill();
+      // a bright ring, so the moment reads against a pale sky as well as dark leaves
+      ctx.strokeStyle = `rgba(255, 236, 150, ${0.9 * k})`;
+      ctx.lineWidth = 3.5;
+      ctx.shadowColor = 'rgba(255, 170, 0, 0.9)';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 50 * pulse, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    } else if (!this.player.isVineSwinging) this.sweetGlow = 0;
     // Render Hero Sloth
     heroClipsLive(true);
     if (rig) {
@@ -3994,6 +4052,7 @@ export class GameEngine {
 
     ctx.restore(); // end world transform
     if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
+    if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
     // 3. Render Foreground Foliage (Framing screen edges)
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
@@ -4158,6 +4217,7 @@ export class GameEngine {
     const landed = this.ringDrops.filter((d) => d.t >= d.delay + GameEngine.RING_DROP.t);
     for (const d of landed) {
       this.enemies.push(d.e);
+      this.harmlessUntil.set(d.e.id, this.gameTime + 0.6);
       this.spawnJumpDust(d.e.x, d.e.y + 14);
       sound.playLand(0.5);
     }
@@ -4171,6 +4231,13 @@ export class GameEngine {
       if (d.t < d.delay) continue;
       const e = d.e;
       const y0 = e.y;
+      // where it will land: a shadow on the branch that darkens as it comes down
+      ctx.save();
+      ctx.fillStyle = `rgba(20, 10, 2, ${0.3 + 0.35 * u})`;
+      ctx.beginPath();
+      ctx.ellipse(e.x, y0 + (e.type === 'boa' ? 12 : 10), e.width * (0.55 + 0.3 * u), 7 + 3 * u, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
       e.y = y0 - GameEngine.RING_DROP.h * (1 - u * u);
       if (e.type === 'snake') {
         if (!drawGoldSnake(ctx, e, this.gameTime) && !drawSnakeSprite(ctx, e, this.gameTime)) drawTreeSnake(ctx, e, this.gameTime);
@@ -4302,6 +4369,22 @@ export class GameEngine {
     ctx.fillRect(0, 0, w, vh);
   }
 
+  /** the eagle's warning on the screen: the edge it will come from pulses amber until the sweep starts (screen space) */
+  private drawWatchEdge(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
+    const w = this.watch;
+    if (w.phase !== 'warn') return;
+    const u = Math.min(1, w.t / WATCH.warn);
+    const k = (0.35 + 0.65 * u) * (0.6 + 0.4 * Math.sin(this.gameTime * 11));
+    const width = vw * 0.22;
+    const fromLeft = w.dir === 1;
+    const g = ctx.createLinearGradient(fromLeft ? 0 : vw, 0, fromLeft ? width : vw - width, 0);
+    g.addColorStop(0, `rgba(245, 158, 11, ${0.8 * k})`);
+    g.addColorStop(0.35, `rgba(251, 191, 36, ${0.35 * k})`);
+    g.addColorStop(1, 'rgba(251, 191, 36, 0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(fromLeft ? 0 : vw - width, 0, width, vh);
+  }
+
   /** step the watching eagle and its dive (1-7) */
   private updateWatch(dt: number) {
     const p = this.player;
@@ -4316,6 +4399,9 @@ export class GameEngine {
     const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
       cry(0);
+      // every pass is called out, not only the first: a word over his head and a buzz on a phone (many play with the sound off)
+      this.addFloatingText(`HIDE! ${hide === 'fern' ? 'INTO A FERN' : 'INTO A BUSH'}`, p.x, p.y - 96, '#fbbf24');
+      this.input.triggerHaptic(120);
       if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
         this.guide(lessonInputMode() === 'screen' ? `Here it comes! Slide down inside a ${hide} to hide` : `Here it comes! Hold down inside a ${hide} to hide`, 3);

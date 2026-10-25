@@ -8,6 +8,7 @@
  * The screens decide WHEN this is allowed (title screen and world map only, never during a stage); this module
  * has no opinion about screens.
  */
+import { reloadDifficulty } from './difficulty.ts';
 
 export const SAVE_FORMAT = 'sloths-rainforest-adventures-save';
 export const SAVE_VERSION = 1;
@@ -33,6 +34,7 @@ const ALLOWED: RegExp[] = [
   /^sloth_finds$/, // the notes, books and keepsakes found
   /^sloth_memories$/, // the flashbacks seen
   /^sloth_cosmetic$/, // which reward Pokey wears
+  /^sloth_difficulty$/, // Easy or Normal, picked at New Game (difficulty.ts)
   // sloth_lessons, sloth_coach_done, sloth_hint_v3 and sloth_howto_seen are NOT here on purpose: a help message is shown once per device,
   // and starting a new game (or loading a save) must not bring them back for someone who already knows how to play
 ];
@@ -168,6 +170,7 @@ export function parseSave(text: string): ParseResult {
 export function applySave(store: Store, save: SaveFile) {
   for (const k of store.keys()) if (isSaveKey(k)) store.removeItem(k);
   for (const [k, v] of Object.entries(save.data)) store.setItem(k, v);
+  reloadDifficulty();
 }
 
 export function saveFileName(now = new Date()): string {
@@ -184,6 +187,7 @@ const KEEP_ON_NEW_GAME = /^sloth_(music_vol|sfx_vol|game_muted)$/;
  */
 export function resetProgress(store: Store, opts: { skipStory?: boolean } = {}) {
   for (const k of store.keys()) if (isSaveKey(k) && !KEEP_ON_NEW_GAME.test(k)) store.removeItem(k);
+  reloadDifficulty();
   if (opts.skipStory) {
     for (let w = 1; w <= 10; w++) {
       store.setItem(`sloth_story_w${w}`, '1');
