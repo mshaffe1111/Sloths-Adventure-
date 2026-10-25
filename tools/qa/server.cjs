@@ -93,7 +93,8 @@ async function screenText() {
 
 async function shot(tag = '') {
   const p = path.join(outDir, `${String(++shotN).padStart(4, '0')}${tag ? '-' + tag : ''}.png`);
-  await page.screenshot({ path: p });
+  // (css pixels, not the 1.5x device pixels: a tester reads many of these, and smaller pictures go further)
+  await page.screenshot({ path: p, scale: 'css' });
   return p;
 }
 
@@ -218,6 +219,10 @@ async function handle(cmd) {
   if (cmd.cmd === 'turn') {
     // turn the phone: same stage, other way up
     view = view === 'land' ? 'port' : 'land';
+    // (the game asks for full screen on the first touch (wideMode.ts), and a full-screen window cannot be resized: step out of it
+    // first, as the browser does when a real phone turns, then resize)
+    await page.evaluate(() => document.fullscreenElement && document.exitFullscreen().catch(() => {}));
+    await page.clock.runFor(50);
     await page.setViewportSize(views[view]);
     await page.clock.runFor(300);
     return { shot: await shot(view), text: await screenText() };
