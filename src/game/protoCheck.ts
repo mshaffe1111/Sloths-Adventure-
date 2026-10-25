@@ -2,7 +2,7 @@
  * protoCheck — the physics checks the planned-stage builder (protoStage.ts) runs on every piece it rolls, using the same physics as the
  * engine (physics.ts). A piece whose numbers fail is rolled again, so a stage never reaches a player with a swing that cannot be made.
  */
-import { PHYS, airStep, canGrabSwing, swingGrab, swingStep, timedLaunch, type AirBody } from './physics.ts';
+import { PHYS, airStep, canGrabSwing, inSweetSpot, swingGrab, swingStep, timedLaunch, type AirBody } from './physics.ts';
 import type { Platform, Vine } from './types.ts';
 
 const DT = 1 / 30;
@@ -146,4 +146,27 @@ export function earlyCatch(A: Vine, B: Vine, at = 0.5): boolean {
     return true;
   }
   return false;
+}
+
+/**
+ * the band of heights his feet pass through within `reach` of x = cx, over every sweet-spot leap from A that catches B (3-8 hangs a
+ * thorn vine there: its bud just above the band, its reach down through it). Null when no leap catches B.
+ */
+export function leapBand(A: Vine, B: Vine, cx: number, reach: number): [number, number] | null {
+  const { s } = enter(A);
+  let lo = Infinity, hi = -Infinity;
+  for (let k = 0; k < 150; k++) {
+    const r = swingStep(s, A, DT, 1, 0);
+    if (k < 45 || !inSweetSpot(s, 1)) continue;
+    const l = timedLaunch(s, 1);
+    const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
+    let a = Infinity, b = -Infinity, hit = false;
+    for (let i = 0; i < 60 && !hit; i++) {
+      airStep(c, DT, 1);
+      if (Math.abs(c.x - cx) < reach) { a = Math.min(a, c.y); b = Math.max(b, c.y); }
+      if (canGrabSwing(c.x, c.y, B)) hit = true;
+    }
+    if (hit && a < Infinity) { lo = Math.min(lo, a); hi = Math.max(hi, b); }
+  }
+  return lo < Infinity ? [lo, hi] : null;
 }

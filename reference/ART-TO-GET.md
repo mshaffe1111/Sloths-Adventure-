@@ -28,9 +28,15 @@ Matt's running list of drawings still needed from Gemini. A new need joins the l
 
 ## World 3 (3-4 to 3-6)
 
-15. **The sleeping thorn vine**: hangs from the cave roof; asleep, stirring, the lash, back to sleep (3-5, 3-8). (Prompt 15)
+15. **The sleeping thorn vine**: hangs from the cave roof; asleep, stirring, the lash, back to sleep (3-5, 3-7, 3-8: in 3-8 they hang between the lianas, their heads at the height Pokey leaps past). Until it comes, the vines are drawn in code. (Prompt 15)
 16. **Grandma's things**: the bronze medal (World 3's keepsake), a teacup, spectacles, wool and needles, a seed pouch and trowel, a thimble and pincushion (3-6, 3-7). (Prompt 16)
 17. **The sinkhole**: the moonlit rim, a tall wall section, a trickle of water, a mossy ledge, a root bridge, a root ladder (3-4). (Prompt 17)
+
+## World 3 (3-7 to 3-9)
+
+23. **The Prowler's Ring** (3-9): clawed limestone pillars (whole, cracked, broken), a low scratched wall, bones and a torn blue ribbon, amber eyes in the dark, a ring of pawprints in pale mud. Until it comes, the ring is the grotto's shelves and stone block, and the prowlers' eyes are drawn in code. Prompt:
+
+> In the same soft painted storybook style as the attached picture, draw a sheet of separate cutout pieces on a flat solid magenta background (#FF00FF), each piece separate with space around it, no shadows on the background. The pieces are for a ring of old limestone deep in a dark mossy cave, where a big cat hunts: 1) a tall standing limestone pillar with three deep claw scratches down it, moss on top; 2) the same pillar cracked down the middle; 3) the same pillar broken, fallen into two pieces with dust; 4) a low curved limestone wall section, scratched; 5) a pile of small bones and a scrap of torn blue ribbon; 6) a pair of glowing amber cat eyes peering out of darkness (just the eyes and a hint of fur around them, on black); 7) a ring of large pawprints pressed into pale mud, seen from the side as a flat strip of ground. Calm, mysterious, a little scary, not gory. No text.
 
 ## The story rewrite (prompts in STORY-ART-PROMPTS.md)
 

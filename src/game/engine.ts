@@ -307,7 +307,8 @@ export class GameEngine {
   private bushRustle = new Map<number, number>();
   /** 1-9's ring: 'idle' until he comes in, then each wave drops (snakes falling from the canopy, not yet in play), then 'open' */
   private ring = { state: 'idle' as 'idle' | 'fight' | 'open', wave: 0, ids: [] as number[] };
-  private ringDrops: Array<{ e: Enemy; t: number; delay: number }> = [];
+  /** animals coming into a ring: snakes dropping from the canopy, or (3-9) prowlers leaping in from the dark at `from` */
+  private ringDrops: Array<{ e: Enemy; t: number; delay: number; from?: { x: number; y: number } }> = [];
   /** a snake that has just dropped into the ring is shaken for a moment and cannot bite yet (game time it can from, by id) */
   private harmlessUntil = new Map<number, number>();
   /** 1-8's collapsing branch (chase.ts): its state, the pieces falling away, and whether the last leap has had its slow motion */
@@ -2041,7 +2042,9 @@ export class GameEngine {
         const gid = `goal:${this.currentStage.config.targetCount}`;
         if (!tipHeard(this.currentStage.config.id, gid)) {
           markTipHeard(this.currentStage.config.id, gid);
-          this.guide(`Collect ${this.currentStage.config.targetCount} ${word} to open the sanctuary`, 4);
+          // (the verb fits the goal: "Collect 14 predators" was what a beat-the-animals stage used to say)
+          const verb = objType === 'purge' || objType === 'gauntlet' ? 'Defeat' : objType === 'rescue' ? 'Free' : objType === 'relic_hunt' ? 'Find' : 'Collect';
+          this.guide(`${verb} ${this.currentStage.config.targetCount} ${word} to open the sanctuary`, 4);
         }
       } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
         this.goalSaid.late = true;
@@ -4151,6 +4154,8 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
+  /** the leap of a prowler into its ring: how long it takes (s), and how high it arcs (px) */
+  private static readonly RING_LEAP = { t: 0.7, h: 90 };
   /** the drop: how long a snake takes from the canopy to the branch (s), and from how high it falls (px) */
   private static readonly RING_DROP = { t: 0.55, h: 420 };
 
@@ -4162,17 +4167,29 @@ export class GameEngine {
     const id = this.currentStage.config.id;
     const dropWave = (n: number) => {
       ring.waves[n].forEach((d, k) => {
+        const cat = d.kind === 'ocelot' || d.kind === 'jaguar';
         const base = d.kind === 'boa'
           ? { type: 'boa', width: 58, height: 26, hp: 3, maxHp: 3, vx: 0, y: d.surface - 16, patrolMinX: d.x - 12, patrolMaxX: d.x + 12 }
-          : { type: 'snake', width: 38, height: 22, hp: 1, maxHp: 1, vx: 28, y: d.surface - 14, patrolMinX: d.x - 70, patrolMaxX: d.x + 70 };
+          : d.kind === 'jaguar'
+            ? { type: 'jaguar', width: 64, height: 38, hp: 3, maxHp: 3, vx: 42, y: d.surface - 24, patrolMinX: d.x - 90, patrolMaxX: d.x + 90, groundY: d.surface - 24 }
+            : d.kind === 'ocelot'
+              ? { type: 'ocelot', width: 48, height: 28, hp: 2, maxHp: 2, vx: 55, y: d.surface - 18, patrolMinX: d.x - 90, patrolMaxX: d.x + 90, groundY: d.surface - 18 }
+              : { type: 'snake', width: 38, height: 22, hp: 1, maxHp: 1, vx: 28, y: d.surface - 14, patrolMinX: d.x - 70, patrolMaxX: d.x + 70 };
         const e = {
-          id: 9500 + n * 10 + k, x: d.x, vy: 0, facing: d.x > p.x ? -1 : 1, attackCooldown: 0.9, telegraphTimer: 0, isAttacking: false,
+          id: 9500 + n * 10 + k, x: d.x, vy: 0, facing: d.x > p.x ? -1 : 1, attackCooldown: cat ? 1.4 : 0.9, telegraphTimer: 0, isAttacking: false,
           animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, ...base,
         } as Enemy;
-        this.ringDrops.push({ e, t: 0, delay: k * 0.35 });
+        // a prowler comes out of the dark a little beyond its spot, on the side away from him (inside the ring, so it is in view), and
+        // leaps to it
+        const fx = d.x + (d.x >= p.x ? 300 : -300);
+        const from = cat ? { x: Math.max(ring.x0 + 30, Math.min(ring.x1 - 30, fx)), y: e.y } : undefined;
+        if (from) e.facing = d.x > from.x ? 1 : -1;
+        this.ringDrops.push({ e, t: 0, delay: k * (cat ? 0.6 : 0.35), from });
         r.ids.push(e.id);
       });
-      sound.playWhoosh();
+      // snakes come with the rush of their fall; prowlers with a growl out of the dark
+      if (ring.waves[n].some((d) => d.kind === 'ocelot' || d.kind === 'jaguar')) sound.playPredator('jaguar', 0);
+      else sound.playWhoosh();
     };
     if (r.state === 'idle') {
       if (p.x > ring.x0 + 120 && p.x < ring.x1) {
@@ -4182,7 +4199,7 @@ export class GameEngine {
         this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
         if (!tipHeard(id, 'ring:go')) {
           markTipHeard(id, 'ring:go');
-          this.guide('Snakes from above! Clear them all to open the way', 3);
+          this.guide(ring.waves[0].some((d) => d.kind === 'ocelot' || d.kind === 'jaguar') ? 'Prowlers out of the dark! Drive them all off to open the way' : 'Snakes from above! Clear them all to open the way', 3);
         }
       }
       return;
@@ -4214,22 +4231,57 @@ export class GameEngine {
   /** animals falling from the canopy (1-9's ring, Venom Fang's call): in play where they land */
   private stepDrops(dt: number) {
     for (const d of this.ringDrops) d.t += dt;
-    const landed = this.ringDrops.filter((d) => d.t >= d.delay + GameEngine.RING_DROP.t);
+    const dur = (d: { from?: unknown }) => (d.from ? GameEngine.RING_LEAP.t : GameEngine.RING_DROP.t);
+    const landed = this.ringDrops.filter((d) => d.t >= d.delay + dur(d));
     for (const d of landed) {
+      if (d.from) {
+        // landed: back to prowling where it came down
+        d.e.state = 'patrol';
+        d.e.stateT = 0;
+        this.camera.trauma = Math.min(1, this.camera.trauma + (d.e.type === 'jaguar' ? 0.25 : 0.12));
+      }
       this.enemies.push(d.e);
       this.harmlessUntil.set(d.e.id, this.gameTime + 0.6);
       this.spawnJumpDust(d.e.x, d.e.y + 14);
       sound.playLand(0.5);
     }
-    this.ringDrops = this.ringDrops.filter((d) => d.t < d.delay + GameEngine.RING_DROP.t);
+    this.ringDrops = this.ringDrops.filter((d) => d.t < d.delay + dur(d));
   }
 
   /** the snakes still falling into the ring, drawn on their way down */
   private drawRingDrops(ctx: CanvasRenderingContext2D) {
     for (const d of this.ringDrops) {
-      const u = Math.max(0, d.t - d.delay) / GameEngine.RING_DROP.t;
       if (d.t < d.delay) continue;
       const e = d.e;
+      if (d.from) {
+        // a prowler's leap in from the dark: an arc from the ring's edge to its spot, drawn in its own leap poses
+        const u = Math.min(1, (d.t - d.delay) / GameEngine.RING_LEAP.t);
+        const x0 = e.x, y0 = e.y, st0 = e.state, t0 = e.stateT;
+        const yEnd = y0;
+        e.x = d.from.x + (x0 - d.from.x) * u;
+        e.y = d.from.y + (yEnd - d.from.y) * u - GameEngine.RING_LEAP.h * 4 * u * (1 - u);
+        e.state = 'leap';
+        e.stateT = u * (e.type === 'jaguar' ? 0.58 : 0.36);
+        // two eyes in the dark first, then the cat
+        if (u < 0.12) {
+          ctx.save();
+          ctx.fillStyle = `rgba(255, 190, 60, ${0.5 + 4 * u})`;
+          for (const s of [-1, 1]) {
+            ctx.beginPath();
+            ctx.ellipse(d.from.x + s * 7, d.from.y - 18, 4, 2.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        } else if (e.type === 'jaguar') {
+          if (!drawJaguarSprite(ctx, e, this.gameTime)) drawJaguar(ctx, e, this.gameTime);
+        } else if (!drawOcelotSprite(ctx, e, this.gameTime)) drawOcelot(ctx, e, this.gameTime);
+        e.x = x0;
+        e.y = y0;
+        e.state = st0;
+        e.stateT = t0;
+        continue;
+      }
+      const u = Math.max(0, d.t - d.delay) / GameEngine.RING_DROP.t;
       const y0 = e.y;
       // where it will land: a shadow on the branch that darkens as it comes down
       ctx.save();
@@ -4610,19 +4662,23 @@ export class GameEngine {
       }
       const lash = this.vineLash.get(i);
       if (lash && this.gameTime - lash.at > VINE.windup + VINE.out) this.vineLash.delete(i);
-      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, p)) {
-        this.vineLash.set(i, { at: this.gameTime, dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
+      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging })) {
+        // something flying past is struck at once (a leap is through its reach in half a second); on the ground it winds up first
+        this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
         sound.playWhoosh();
       }
       const l = this.vineLash.get(i);
       if (l && !l.landed && this.gameTime - l.at >= VINE.windup) {
         l.landed = true;
-        if (inReach(v, p.x, p.y) && p.invincibleTimer <= 0) {
+        // (caught the next liana before it landed: he is out of its sight again)
+        if (inReach(v, p.x, p.y) && p.invincibleTimer <= 0 && !p.isVineSwinging) {
+          const flying = !p.grounded;
           this.damagePlayer(1);
           p.vx = l.dir * 260;
-          if (!tipHeard(id, 'vine:hit')) {
-            markTipHeard(id, 'vine:hit');
-            this.guide('Ouch! When a vine opens an eye, stand still, or duck', 3.2);
+          const key = flying ? 'vine:hitAir' : 'vine:hit';
+          if (!tipHeard(id, key)) {
+            markTipHeard(id, key);
+            this.guide(flying ? 'Ouch! Hang on to your liana while a thorn vine looks, and let go while it sleeps' : 'Ouch! When a vine opens an eye, stand still, or duck', 3.4);
           }
         }
       }

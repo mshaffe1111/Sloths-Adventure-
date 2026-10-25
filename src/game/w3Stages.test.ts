@@ -1,26 +1,56 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS, G, GRANDMA_GOAL_36, PROWLER_GOAL_33 } from './protoStage.ts';
+import { buildProtoStage, EXPERT_SECONDS, G, GRANDMA_GOAL_36, GRANDMA_GOAL_37, PROWLER_GOAL_33, PROWLER_GOAL_39 } from './protoStage.ts';
+import { catchWindow } from './protoCheck.ts';
+import { airStep, swingGrab, swingStep, timedLaunch, inSweetSpot, setTimedSwing } from './physics.ts';
 import { inReach, vinePhase, vineSees, type ThornVine } from './thornVine.ts';
 import { validateStage } from './levelCheck.ts';
 import { GLOW_REACH } from './zones.ts';
 import type { LevelConfig } from './types.ts';
 
-type W3 = '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6';
-const TYPE: Record<W3, LevelConfig['objectiveType']> = { '3-1': 'sprint', '3-2': 'stealth', '3-3': 'purge', '3-4': 'ascent', '3-5': 'stealth', '3-6': 'relic_hunt' };
+type W3 = '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9';
+const TYPE: Record<W3, LevelConfig['objectiveType']> = { '3-1': 'sprint', '3-2': 'stealth', '3-3': 'purge', '3-4': 'ascent', '3-5': 'stealth', '3-6': 'relic_hunt', '3-7': 'relic_hunt', '3-8': 'vine_runner', '3-9': 'gauntlet' };
 const cfg = (id: W3): LevelConfig =>
   ({
     worldIndex: 3, miniIndex: Number(id.split('-')[1]), id, name: id, objectiveType: TYPE[id], targetCount: 1, timeLimit: 0, levelWidth: 9000,
     levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0,
   }) as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
-const PLANS: W3[] = ['3-1', '3-2', '3-3', '3-4', '3-5', '3-6'];
+const PLANS: W3[] = ['3-1', '3-2', '3-3', '3-4', '3-5', '3-6', '3-7', '3-8', '3-9'];
+
+/**
+ * 3-8's liana chains are checked as they are built (protoCheck.ts: every vine catches the next), not by the reachability check, which
+ * models one liana from ledge to ledge: for that check a stand-in bridge spans each chain, as World 2's tests do for 2-7.
+ */
+function bridged(st: ReturnType<typeof buildProtoStage>) {
+  const xs = st.vines.filter((v) => v.isSwingingVine).map((v) => v.x).sort((a, b) => a - b);
+  const spans: number[][] = [];
+  for (const vx of xs) {
+    const l = spans[spans.length - 1];
+    if (l && vx - l[1] < 420) l[1] = vx;
+    else spans.push([vx, vx]);
+  }
+  const bridges = spans.map((sp, i) => ({ id: 90000 + i, x: sp[0] - 260, y: G, width: sp[1] - sp[0] + 520, height: 20, type: 'solid' as const }));
+  return { stage: { ...st, platforms: [...st.platforms, ...bridges] }, bridges };
+}
+function check(plan: W3, st: ReturnType<typeof buildProtoStage>) {
+  if (plan !== '3-8') return validateStage(st);
+  const { stage, bridges } = bridged(st);
+  const res = validateStage(stage);
+  // (the flowers along a swing are on its flight, not on the stand-in bridge)
+  res.errors = res.errors.filter((e) => {
+    const m = e.match(/^flower #\d+ at \((\d+), \d+\) is out of reach$/);
+    return !(m && bridges.some((b) => Number(m[1]) > b.x - 60 && Number(m[1]) < b.x + b.width + 60));
+  });
+  res.ok = res.errors.length === 0;
+  return res;
+}
 
 test('World 3 trio: every roll passes the reachability check, has one exit, and is at least two minutes for a quick player', () => {
   for (const plan of PLANS) {
     for (const s of SEEDS) {
       const st = buildProtoStage(cfg(plan), s, plan);
-      const res = validateStage(st);
+      const res = check(plan, st);
       assert.ok(res.ok, `${plan} seed ${s}: ${res.errors.join('; ')}`);
       assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1, `${plan} seed ${s}`);
       // (3-4 is World 1's climb, 1-4, up the sinkhole: timed the way 1-4 is, a little under two minutes for a quick climber)
@@ -38,6 +68,9 @@ test('World 3 trio: the beats are always there, in order', () => {
     '3-4': ['Learn', 'Test', 'Twist', 'Finish'],
     '3-5': ['Start', 'Learn', 'Develop', 'Twist', 'Finish'],
     '3-6': ['Start', 'Learn', 'Develop', 'Twist', 'Finish'],
+    '3-7': ['Start', 'Learn', 'Develop', 'Twist', 'Finish'],
+    '3-8': ['Start', 'Learn', 'Develop', 'Twist', 'Finish'],
+    '3-9': ['Start', 'Learn', 'Develop', 'Twist', 'Finish'],
   };
   for (const plan of PLANS) for (const s of SEEDS.slice(0, 6)) {
     assert.deepEqual(buildProtoStage(cfg(plan), s, plan).proto.beats.map((b) => b[2].split(':')[0]), want[plan], `${plan} seed ${s}`);
@@ -129,5 +162,101 @@ test('3-2 holds World 3\'s note in plain sight', () => {
   for (const s of SEEDS.slice(0, 6)) {
     const st = buildProtoStage(cfg('3-2'), s, '3-2');
     assert.equal(st.collectibles.filter((c) => c.type === 'find' && !c.hidden && c.findId === 'w3_note').length, 1, `seed ${s}`);
+  }
+});
+
+test("3-7: more of Grandma's things than it asks for, some under thorn vines, some where the eyes watch, and a vine never over a flag", () => {
+  for (const s of SEEDS) {
+    const st = buildProtoStage(cfg('3-7'), s, '3-7');
+    const things = st.collectibles.filter((c) => c.type === 'relic');
+    assert.equal(st.config.targetCount, GRANDMA_GOAL_37);
+    assert.ok(things.length >= GRANDMA_GOAL_37 + 2 && things.every((c) => c.hidden && c.thing), `seed ${s}: ${things.length}`);
+    const vs = st.proto.thorns ?? [];
+    // a thing under a vine: searching there is keeping still (crouched), so the vine leaves him be
+    assert.ok(things.some((c) => vs.some((v) => inReach(v, c.x, G))), `seed ${s}: no thing under a vine`);
+    // a thing in a watched stretch, with a fern to hide in either side of it
+    const watched = things.filter((c) => (st.proto.watch ?? []).some((w) => c.x > w.x0 && c.x < w.x1));
+    assert.ok(watched.length >= 2, `seed ${s}: ${watched.length} things where the eyes watch`);
+    for (const c of watched) {
+      const ferns = (st.proto.bushes ?? []).map((b) => b.x + b.w / 2);
+      assert.ok(ferns.some((f) => f < c.x && c.x - f < 450) && ferns.some((f) => f > c.x && f - c.x < 450), `seed ${s}: no fern near the thing at ${c.x}`);
+    }
+    for (const c of st.checkpoints ?? []) assert.ok(vs.every((v) => Math.abs(v.x - c.x) > v.reach + 40), `seed ${s}: a flag under a vine at ${c.x}`);
+    for (let i = 1; i < vs.length; i++) {
+      const [a, b] = [vs[i - 1], vs[i]].sort((p, q) => p.x - q.x);
+      assert.ok(b.x - a.x > a.reach + b.reach + 60 || Math.abs(a.bud - b.bud) > 100, `seed ${s}: vines at ${a.x} and ${b.x}`);
+    }
+  }
+});
+
+test('3-8: a thorn vine in every gap of a liana chain, and a leap through it while it looks is seen', () => {
+  for (const s of SEEDS) {
+    const st = buildProtoStage(cfg('3-8'), s, '3-8');
+    const lianas = st.vines.filter((v) => v.isSwingingVine).sort((a, b) => a.x - b.x);
+    const vs = st.proto.thorns ?? [];
+    let gaps = 0;
+    for (let k = 0; k + 1 < lianas.length; k++) {
+      const [A, B] = [lianas[k], lianas[k + 1]];
+      if (B.x - A.x > 420) continue;
+      gaps++;
+      const v = vs.find((t) => t.x > A.x && t.x < B.x);
+      assert.ok(v, `seed ${s}: no thorn vine between the lianas at ${A.x} and ${B.x}`);
+      // every leap that catches B passes through its reach, and catching B takes him out of it
+      const sw = swingGrab({ x: A.x - 40, y: A.topY + 280, vx: 300, vy: 100 }, A);
+      let leaps = 0, seen = 0;
+      for (let f = 0; f < 240; f++) {
+        const r = swingStep(sw, A, 1 / 30, 1, 0);
+        if (f < 60 || !inSweetSpot(sw, 1)) continue;
+        const l = timedLaunch(sw, 1);
+        const c = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
+        let through = false;
+        for (let i = 0; i < 45; i++) {
+          airStep(c, 1 / 30, 1);
+          if (inReach(v!, c.x, c.y)) through = true;
+          if (Math.abs(c.x - B.x) < 40) break;
+        }
+        leaps++;
+        if (through) seen++;
+      }
+      assert.ok(leaps > 0 && seen === leaps, `seed ${s}: ${seen} of ${leaps} leaps pass the vine at ${v!.x}`);
+      assert.ok(!inReach(v!, B.x, B.topY + 300) && !inReach(v!, A.x, A.topY + 300), `seed ${s}: a liana within the vine's reach`);
+      // on a liana he is out of its sight, however it swings
+      assert.ok(!vineSees(v!, v!.sleep + v!.stir + 0.5 - v!.offset, { x: v!.x, y: v!.bud + 50, vx: 300, grounded: false, swinging: true }));
+    }
+    assert.ok(gaps >= 8, `seed ${s}: ${gaps} gaps with vines`);
+    assert.equal(st.collectibles.filter((c) => c.type === 'find' && c.hidden && c.findId === 'w3_book').length, 1, `seed ${s}: the photo album`);
+  }
+});
+
+test('3-8 on Easy: the slower swing still carries every liana to the next', () => {
+  setTimedSwing(true);
+  try {
+    for (const s of SEEDS.slice(0, 6)) {
+      const lianas = buildProtoStage(cfg('3-8'), s, '3-8').vines.filter((v) => v.isSwingingVine).sort((a, b) => a.x - b.x);
+      for (let k = 0; k + 1 < lianas.length; k++) if (lianas[k + 1].x - lianas[k].x < 420) assert.ok(catchWindow(lianas[k], lianas[k + 1]) > 0.6, `seed ${s}: ${lianas[k].x}`);
+    }
+  } finally {
+    setTimedSwing(false);
+  }
+});
+
+test("3-9: enough prowlers for the goal, a jaguar among them, and a ring whose waves leap in from the dark", () => {
+  for (const s of SEEDS) {
+    const st = buildProtoStage(cfg('3-9'), s, '3-9');
+    const prowlers = st.enemies.filter((e) => e.type === 'ocelot' || e.type === 'jaguar');
+    assert.equal(st.config.targetCount, PROWLER_GOAL_39);
+    assert.ok(prowlers.length >= Math.ceil(PROWLER_GOAL_39 * 1.4), `seed ${s}: ${prowlers.length} prowlers`);
+    assert.ok(prowlers.some((e) => e.type === 'jaguar'), `seed ${s}: no jaguar`);
+    const ring = st.proto.ring!;
+    assert.ok(ring && ring.waves.length === 3, `seed ${s}: no ring`);
+    assert.ok(ring.waves.flat().every((d) => d.kind === 'ocelot' || d.kind === 'jaguar') && ring.waves[2].some((d) => d.kind === 'jaguar'), `seed ${s}`);
+    // every leap lands on something inside the ring
+    for (const d of ring.waves.flat()) {
+      assert.ok(d.x > ring.x0 + 60 && d.x < ring.x1 - 60, `seed ${s}: a prowler lands outside the ring at ${d.x}`);
+      assert.ok(st.platforms.some((p) => d.x >= p.x && d.x <= p.x + p.width && Math.abs(p.y - d.surface) < 2), `seed ${s}: nothing under ${d.x}`);
+    }
+    // the wall is real, and a flag waits beyond it
+    assert.ok(st.platforms.some((p) => p.id === ring.wallId));
+    assert.ok((st.checkpoints ?? []).some((c) => c.x > ring.x1), `seed ${s}`);
   }
 });
