@@ -29,11 +29,13 @@ import type { SkillId } from './skills.ts';
 import type { Zone } from './zones.ts';
 import type { W3Decor } from './w3Art.ts';
 import type { ThornVine } from './thornVine.ts';
+import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
+import { PATIENCE, type PatienceSpot } from './patience.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -192,6 +194,7 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto'): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildKapok(config, seed, false, true);
+  if (plan === '4-1') return buildKapok(config, seed, false, false, true);
   if (plan === '1-8') return buildLongBranch(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];
@@ -2353,8 +2356,14 @@ const KAPOK_MARGIN = 90;
  * `grotto` (3-4 The Sinkhole): the same climb up the wall of the sinkhole toward the moonlight. World 3's kit paints it (root columns,
  * limestone shelves), prowling ocelots stand in for the snakes, and Matt's grotto pieces dress it: moss hanging under the shelves,
  * glowing mushrooms and ferns on them, stalactites and glowworm threads up in the dark.
+ *
+ * `cliff` (4-1 The Broken Ledge, World 4's first stage): the same climb back up the cliff after the ledge broke away under him. Bits of
+ * the broken ledge keep coming loose: on some of the wide ledges a rock drops on its own rhythm, its shadow growing first (rockfall.ts),
+ * so the new thing to learn is to stop short and go once it has fallen. The first one is on a ledge of its own, with nothing else to
+ * do there. At the top the way to the shrine is a gap too wide to jump, and a curled fern frond at its edge: stand still beside it and
+ * it unrolls into a bridge (patience.ts: "slow is not stopped"). Clearing it teaches the Leaf Glide (skills.ts).
  */
-export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false): GeneratedStage & { proto: ProtoExtras } {
+export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const W = KAPOK_W;
   const P: Platform[] = [];
@@ -2401,6 +2410,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   // the floor: the whole width, so a fall is never more than a climb back
   P.push({ id: pid++, x: 0, y: 0, width: W, height: BANK_H, type: 'solid', style: 'log' });
 
+  /** 4-1: the fern frond at the cliff top */
+  let spot: PatienceSpot | undefined;
   /** where he stands now, and which way the climb is heading across the tree */
   let cur: Platform;
   let dir: 1 | -1 = 1;
@@ -2470,6 +2481,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     cur = { ...P[0], x: 300, width: 400 } as Platform; // the patch of floor the first trunk stands on
     if (village) hint('Up through the village! Slide up a post to climb', 'Up through the village! Hold up on a post to climb', 'Up through the village! Hold up on a post to climb');
     else if (grotto) hint('Up the sinkhole, toward the moonlight! Slide up a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb');
+    else if (cliff) hint('The ledge broke away! Climb back up. Slide up a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb');
     else hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
     climb(Math.round(R.r(280, 320)), 4);
     row(cur.x + 80, cur.x + cur.width - 30, cur.y - 34, 2, 'hibiscus');
@@ -2508,7 +2520,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
       // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
-      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      // (the cliff has its falling rocks instead)
+      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto && !cliff) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
@@ -2535,8 +2548,28 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const top = cur.y - 300;
     trunk(tX, cur.y, top);
     expert += 300 / CLIMB + 1;
-    cur = ledge(tX - 40, Math.min(W - KAPOK_MARGIN, tX + 560), top);
-    row(cur.x + 80, cur.x + 300, top - 34, 3, 'hibiscus');
+    if (!cliff) {
+      cur = ledge(tX - 40, Math.min(W - KAPOK_MARGIN, tX + 560), top);
+      row(cur.x + 80, cur.x + 300, top - 34, 3, 'hibiscus');
+      return;
+    }
+    // the cliff top: a ledge, the gap, and the fern frond at its edge that bridges it for a sloth who waits. The bridge goes toward
+    // the side of the stage with the room for it; the shrine's ledge is beyond.
+    const lw = 300, fw = 300;
+    const gap = Math.round(reachJump(0, true) + 110);
+    const right = W - KAPOK_MARGIN - (tX + lw) >= gap + fw;
+    const spotLedge = right ? ledge(tX - 40, tX + lw, top) : ledge(tX - lw + 40, tX + 40, top);
+    row(spotLedge.x + 60, spotLedge.x + spotLedge.width - 60, top - 34, 2, 'hibiscus');
+    const edge = right ? spotLedge.x + spotLedge.width : spotLedge.x;
+    const farX0 = right ? edge + gap : edge - gap - fw;
+    // the bridge: solid in the stage data (the reachability check counts it), held away by the engine until the frond unrolls (w4Play.ts)
+    const bridge = ledge(right ? edge : farX0 + fw, right ? farX0 : edge, top);
+    bridge.art = 'frond';
+    spot = { kind: 'frond', x0: right ? edge - 120 : edge + 20, x1: right ? edge - 20 : edge + 120, y: top, fill: 4, platformId: bridge.id, dir: right ? 1 : -1 };
+    hint('A curled-up fern at the edge. Stand still beside it, and be patient', 'A curled-up fern at the edge. Stand still beside it, and be patient', 'A curled-up fern at the edge. Stand still beside it, and be patient', top + 10);
+    expert += 4 + PATIENCE.settle + gap / RUN;
+    cur = ledge(farX0, farX0 + fw, top);
+    row(cur.x + 60, cur.x + 160, top - 34, 2, 'hibiscus');
   });
 
   // shift down: the crown sits 400 px under the top of the stage, the floor 120 px over its bottom
@@ -2598,7 +2631,33 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     for (const wx of [tileW / 2 - 40, W - tileW / 2 + 40]) for (let wb = 8; wb > top; wb -= tileH - 6) w3decor.unshift({ n: 'wallTile', x: Math.round(wx), b: Math.round(wb), w: tileW, flip: wx > W / 2 });
     for (const tx of [tileW + 60, W - tileW - 60]) w3decor.push({ n: 'trickle', x: Math.round(tx), b: 8, w: 96 });
   }
+  // 4-1: rocks coming loose over the wide ledges of the middle of the climb, clear of every trunk and rope end on that ledge (he can
+  // always stop beside one to wait). One rock to a ledge, never on the first ledges (the climb is learned first) or the top.
+  const rocks: RockDrop[] = [];
+  if (cliff) {
+    const ledges = P.filter((p) => p !== P[0] && p !== crown && p.y < P[0].y - 600 && p.y > crown.y + 500 && p.width >= 260 && p.id !== spot?.platformId).sort((a, b) => b.y - a.y);
+    const climbsAt = (p: Platform) => [
+      ...V.filter((v) => v.topY <= p.y + 10 && v.bottomY >= p.y - 10).map((v) => v.x),
+      ...ROPES.filter((r) => r.g0 === p.y || r.g1 === p.y).flatMap((r) => [r.x0, r.x1]),
+    ];
+    for (let k = 0; k < ledges.length && rocks.length < 7; k += 2) {
+      const p = ledges[k];
+      const busy = climbsAt(p);
+      const rx = [0.5, 0.38, 0.62].map((u) => Math.round(p.x + p.width * u)).find((rx) => busy.every((bx) => Math.abs(bx - rx) > ROCK.radius + 90));
+      if (rx === undefined) continue;
+      // it falls from the underside of whatever ledge hangs over this one, or from high above
+      const over = P.filter((q) => q.y < p.y - 60 && q.x < rx + ROCK.radius && q.x + q.width > rx - ROCK.radius).reduce((m, q) => Math.max(m, q.y + 24), p.y - 460);
+      const r: RockDrop = { x: rx, top: over, land: p.y, every: Math.round(R.r(4.6, 5.6) * 10) / 10, warn: 1.4, offset: Math.round(R.r(0, 5) * 10) / 10 };
+      if (!rockFits(r)) continue;
+      if (!rocks.length) hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', p.y + 10);
+      rocks.push(r);
+      expert += 1.6;
+    }
+  }
+
   const shift = 400 - crown.y;
+  for (const r of rocks) { r.top += shift; r.land += shift; }
+  if (spot) spot.y += shift;
   for (const d of w3decor) d.b += shift;
   for (const p of P) p.y += shift;
   for (const v of V) { v.topY += shift; v.bottomY += shift; }
@@ -2636,7 +2695,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
-    proto: { hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}) },
+    proto: {
+      hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}),
+      ...(cliff ? { w4: { rocks, patience: spot ? [spot] : [] } } : {}),
+    },
   };
 }
 

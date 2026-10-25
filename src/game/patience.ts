@@ -24,6 +24,8 @@ export interface PatienceSpot {
   platformId?: number;
   /** mist: the ledges it hides (platform ids), solid all along but only seen while the mist is down */
   hides?: number[];
+  /** frond: which way it unrolls from the spot (+1: across to the right of x1, -1: to the left of x0) */
+  dir?: 1 | -1;
 }
 
 export const PATIENCE = {

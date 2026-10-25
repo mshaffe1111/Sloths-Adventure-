@@ -564,7 +564,7 @@ export function drawProtoScene(
   // branches (a perch where a climb trunk ends under one)
   const tops = vines.filter((v) => v.vineType === 'tree_climb');
   for (const p of platforms) {
-    if (!vis(p) || p.push || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
+    if (!vis(p) || p.push || p.art || p.height >= 50 || (p.style !== 'branch' && !(ownKit() && thinKit(p)))) continue;
     const trunk = tops.find((v) => v.x >= p.x && v.x <= p.x + p.width && Math.abs(v.topY + 2 - p.y) < 4);
     if (trunk && p.width <= 220) {
       drawPerchArt(ctx, trunk.x, p.y, p.x + p.width);

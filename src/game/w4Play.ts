@@ -106,7 +106,7 @@ export class W4Play {
       if (Math.abs(r.x - p.x) > 900) return;
       const s = rockAt(r, h.t);
       const cycle = `${i}:${Math.floor((h.t + r.offset) / r.every)}`;
-      if (s.phase === 'warn' && Math.abs(r.x - p.x) < 500) h.tip('w4:rock', 'Rocks! Watch for the shadow on the ground, and wait for it to pass', 3.2);
+      // (the stage's own hint teaches the rocks where the first one falls; this is only the line after a hit)
       if (s.phase === 'shatter' && !this.rockHit.has(cycle + 's')) {
         this.rockHit.add(cycle + 's');
         if (Math.abs(r.x - p.x) < 700) h.sfx('rock');
@@ -124,7 +124,6 @@ export class W4Play {
     (w4.patience ?? []).forEach((s, i) => {
       const was = this.patience[i];
       const here = onSpot(s, p.x, p.y);
-      if (here && !was.done && Math.abs(p.vx) >= 18) h.tip(`w4:${s.kind}`, s.kind === 'frond' ? 'This frond is curled up tight. Stand still beside it, and be patient' : 'The mist hides the way. Stand still and let it settle', 3.4);
       const now = stepPatience(s, was, here, still, dt);
       this.patience[i] = now;
       if (s.kind === 'frond' && now.done && !was.done) {
@@ -265,7 +264,7 @@ export class W4Play {
   }
 
   /** behind Pokey: the falls, the pools, the chimes, the rock shadows and rocks, the fern, the knots and Dot, the monkeys, the fruit */
-  drawBack(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number }, zones: readonly Zone[]) {
+  drawBack(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number }, zones: readonly Zone[], platforms: Platform[]) {
     const w4 = this.w4;
     const near = (x: number, pad = 300) => x > view.x0 - pad && x < view.x1 + pad;
     (w4.falls ?? []).forEach((w, i) => near(w.x) && drawFall(ctx, w, this.flow[i], t));
@@ -279,7 +278,7 @@ export class W4Play {
     });
     for (const r of w4.rocks ?? []) if (near(r.x)) drawRock(ctx, r, t);
     (w4.patience ?? []).forEach((s, i) => {
-      if (s.kind === 'frond' && near(s.x1)) drawFrond(ctx, s, this.patience[i]);
+      if (s.kind === 'frond' && near(s.x1)) drawFrond(ctx, s, this.patience[i], platforms);
     });
     (w4.knots ?? []).forEach((k, i) => near(k.x) && drawKnot(ctx, k, this.knots[i], t));
     this.fruit.forEach((f) => f.state !== 'gone' && near(f.x) && drawFruit(ctx, f.x, f.y));
@@ -433,10 +432,14 @@ function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
   ctx.restore();
 }
 
-function drawFrond(ctx: CanvasRenderingContext2D, s: PatienceSpot, st: PatienceState) {
+function drawFrond(ctx: CanvasRenderingContext2D, s: PatienceSpot, st: PatienceState, platforms: Platform[]) {
   const u = st.done ? 1 : st.level;
   // the four paintings, curled to bridge; the bridge lies across the gap past the spot, the others stand on the spot's edge
-  if (u >= 1 ? drawW4(ctx, 'frondBridge', s.x1 + 90, s.y + 10, 200) : drawW4(ctx, u < 0.34 ? 'frondCurl' : u < 0.67 ? 'frondUncurl' : 'frondHalf', s.x1 + 10, s.y + 4, 64 + 30 * u, { rot: u * 0.6 })) return;
+  const d = s.dir ?? 1;
+  const edge = d === 1 ? s.x1 + 20 : s.x0 - 20;
+  const bridge = s.platformId !== undefined ? platforms.find((q) => q.id === s.platformId) : undefined;
+  if (u >= 1 && bridge ? drawW4(ctx, 'frondBridge', bridge.x + bridge.width / 2, s.y + 14, bridge.width + 40, { flip: d < 0 }) : drawW4(ctx, u < 0.34 ? 'frondCurl' : u < 0.67 ? 'frondUncurl' : 'frondHalf', edge, s.y + 4, 64 + 30 * u, { rot: d * u * 0.6, flip: d < 0 })) return;
+  if (d < 0) return; // (the plain-shape stand-in only draws the rightward frond; the atlas is there long before anyone reaches one)
   const x0 = s.x1;
   const len = 160 * u;
   ctx.save();
