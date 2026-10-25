@@ -6,6 +6,9 @@
  * The page's clock is faked (Playwright clock): the game only moves while a command runs, so a tester can look, think and then act,
  * the way a player who pauses would. Nothing here reads the game's insides: a tester sees the screenshots and the text on screen.
  * `start` is the one exception: it opens a stage straight away (window.__play) so a tester need not walk the map.
+ *
+ * `persona <name>` (tools/playtesters/personas/<name>.json) makes the touch commands land and move the way that tester's thumbs did:
+ * their phone size, where their thumbs sit, how long a tap lasts, how far and fast a flick goes and how far off straight it leans.
  */
 const http = require('http');
 const fs = require('fs');
@@ -25,11 +28,32 @@ let steer = null;
 /** errors the page threw since the last command (a player would see a freeze or a blank screen; a tester should hear about it) */
 const errors = [];
 
+// ───── persona: one real tester's thumbs (from tools/playtesters/profile.py) ─────
+let persona = null;
+let seed = 1;
+const rand = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+/** a value from a tester's p10 / p50 / p90 spread (two halves of a rough bell), or the fallback when the spread is missing */
+function draw(spread, fallback) {
+  if (!spread || spread.p50 == null) return fallback;
+  const u = rand();
+  const lo = spread.p10 ?? spread.p50, hi = spread.p90 ?? spread.p50;
+  return u < 0.5 ? lo + (spread.p50 - lo) * (u / 0.5) : spread.p50 + (hi - spread.p50) * ((u - 0.5) / 0.5);
+}
+function personaViews(p) {
+  // their own phone, both ways up (the portrait size is what the browser showed them)
+  const dev = Object.keys(p.devices).find((d) => d.includes('portrait')) || '';
+  const m = dev.match(/(\d+)x(\d+)/);
+  if (!m) return VIEWS;
+  const w = Number(m[1]), h = Number(m[2]);
+  return { port: { width: w, height: h }, land: { width: h, height: Math.round(w * 0.9) } };
+}
+let views = VIEWS;
+
 async function open(stage, v, flag = 0) {
   if (page) await page.close().catch(() => {});
-  view = VIEWS[v] ? v : 'land';
+  view = views[v] ? v : 'land';
   // (a phone: touch screen, mobile browser, so the game shows and reads its touch controls)
-  const ctx = await browser.newContext({ viewport: VIEWS[view], deviceScaleFactor: 1.5, isMobile: true, hasTouch: true });
+  const ctx = await browser.newContext({ viewport: views[view], deviceScaleFactor: 1.5, isMobile: true, hasTouch: true });
   page = await ctx.newPage();
   page.on('pageerror', (e) => errors.push('page error: ' + e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push('console error: ' + m.text().slice(0, 200)));
@@ -74,20 +98,24 @@ async function shot(tag = '') {
 }
 
 // ───── touch: the phone's real controls (TouchController.tsx / touchGestures.ts read these) ─────
-const W = () => VIEWS[view].width, H = () => VIEWS[view].height;
+const W = () => views[view].width, H = () => views[view].height;
 let actionAt = null;
 const points = () => [...(steer ? [{ x: steer.x, y: steer.y, id: 1 }] : []), ...(actionAt ? [{ x: actionAt.x, y: actionAt.y, id: 2 }] : [])];
 const touch = (type) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: points() });
 const frames = async (ms) => { for (let t = 0; t < ms; t += 33) await page.clock.runFor(Math.min(33, ms - t)); };
 async function steerTo(dir) {
   if (!steer) {
-    steer = { ax: Math.round(W() * 0.18), ay: Math.round(H() * 0.72) };
+    // a persona's thumb lands where theirs did (left share of their touches), with a little scatter
+    const fx = persona ? Math.min(0.45, Math.max(0.08, draw(persona.touchStartX, 0.18) * (persona.leftHalfShare > 0.5 ? 0.5 : 0.35))) : 0.18;
+    const fy = persona ? Math.min(0.92, Math.max(0.55, draw(persona.touchStartY, 0.72))) : 0.72;
+    steer = { ax: Math.round(W() * fx), ay: Math.round(H() * fy) };
     steer.x = steer.ax; steer.y = steer.ay;
     await touch('touchStart');
     await frames(33);
   }
-  const [dx, dy] = { right: [70, 0], left: [-70, 0], none: [0, 0], up: [0, -55], down: [0, 55] }[dir] ?? [0, 0];
-  const tx = steer.ax + dx, ty = steer.ay + dy;
+  const reach = persona ? 50 + rand() * 40 : 70;
+  const [dx, dy] = { right: [reach, 0], left: [-reach, 0], none: [0, 0], up: [0, -55], down: [0, 55] }[dir] ?? [0, 0];
+  const tx = steer.ax + dx, ty = steer.ay + dy + (persona && (dir === 'left' || dir === 'right') ? (rand() - 0.5) * 24 : 0);
   // a thumb slides over about a tenth of a second, not in one jump
   for (let k = 1; k <= 4; k++) {
     steer.x = Math.round(steer.x + (tx - steer.x) / (5 - k));
@@ -97,17 +125,26 @@ async function steerTo(dir) {
   }
 }
 async function action(kind, dir, holdMs) {
-  actionAt = { x: Math.round(W() * 0.78), y: Math.round(H() * 0.62) };
+  const ax = persona ? Math.min(0.92, Math.max(0.55, 0.78 + (rand() - 0.5) * 0.16)) : 0.78;
+  const ay = persona ? Math.min(0.9, Math.max(0.45, draw(persona.touchStartY, 0.62) - 0.08)) : 0.62;
+  actionAt = { x: Math.round(W() * ax), y: Math.round(H() * ay) };
   await touch('touchStart');
   if (kind === 'flick') {
-    const [dx, dy] = { up: [0, -80], down: [0, 80], left: [-80, 0], right: [80, 0] }[dir] ?? [0, -80];
-    for (let k = 1; k <= 3; k++) {
-      await page.clock.runFor(20);
-      actionAt = { x: actionAt.x + dx / 3, y: actionAt.y + dy / 3 };
+    // a persona's flick: their length, their speed, and their lean off straight
+    const len = persona ? draw(persona.flickPx, 80) : 80;
+    const ms = persona ? Math.max(30, Math.min(260, len / Math.max(0.2, draw(persona.flickPxPerMs, 1.3)))) : 60;
+    const lean = persona ? ((rand() < 0.5 ? -1 : 1) * draw(persona.jumpFlickOffVerticalDeg, 0) * Math.PI) / 180 : 0;
+    const base = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[dir] ?? [0, -1];
+    const ux = base[0] * Math.cos(lean) - base[1] * Math.sin(lean), uy = base[0] * Math.sin(lean) + base[1] * Math.cos(lean);
+    const n = Math.max(3, Math.round(ms / 20));
+    for (let k = 1; k <= n; k++) {
+      await page.clock.runFor(ms / n);
+      actionAt = { x: actionAt.x + (ux * len) / n, y: actionAt.y + (uy * len) / n };
       await touch('touchMove');
     }
   }
-  await frames(kind === 'tap' ? 60 : kind === 'hold' ? holdMs : 20);
+  const tapMs = persona ? Math.max(25, draw(persona.tapMs, 60)) : 60;
+  await frames(kind === 'tap' ? tapMs : kind === 'hold' ? holdMs : 20);
   if (kind === 'flick' && holdMs) await frames(holdMs);
   actionAt = null;
   await touch('touchEnd');
@@ -137,6 +174,13 @@ async function step(s) {
 }
 
 async function handle(cmd) {
+  if (cmd.cmd === 'persona') {
+    const file = path.join(__dirname, '..', 'playtesters', 'personas', `${cmd.name}.json`);
+    persona = JSON.parse(fs.readFileSync(file, 'utf8'));
+    seed = [...cmd.name].reduce((a, c) => a * 31 + c.charCodeAt(0), 7) & 0x7fffffff;
+    views = personaViews(persona);
+    return { text: `playing as ${persona.name}: phone ${views.port.width}x${views.port.height} upright, ${views.land.width}x${views.land.height} sideways` };
+  }
   if (cmd.cmd === 'start') {
     const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0));
     return { shot: await shot('start'), text: (cmd.flag ? `[started at flag ${cmd.flag} of ${flags}] ` : '') + (await screenText()) };
@@ -169,7 +213,7 @@ async function handle(cmd) {
   if (cmd.cmd === 'turn') {
     // turn the phone: same stage, other way up
     view = view === 'land' ? 'port' : 'land';
-    await page.setViewportSize(VIEWS[view]);
+    await page.setViewportSize(views[view]);
     await page.clock.runFor(300);
     return { shot: await shot(view), text: await screenText() };
   }

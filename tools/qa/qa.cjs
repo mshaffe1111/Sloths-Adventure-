@@ -1,6 +1,7 @@
 /**
  * Drive the blind play-test harness (server.cjs).
  *
+ *   node tools/qa/qa.cjs <port> persona jen                 play with that tester's phone size and thumbs (tools/playtesters/personas)
  *   node tools/qa/qa.cjs <port> start 4-8 [land|port] [flag]  open a stage, phone held sideways (land) or upright (port),
  *                                                         optionally from its Nth flag
  *   node tools/qa/qa.cjs <port> do "right 800" "jump" "right+jump 300" "wait 1000"
@@ -19,7 +20,11 @@
 const http = require('http');
 const [port, cmd, ...rest] = process.argv.slice(2);
 const body =
-  cmd === 'start' ? { cmd, stage: rest[0], view: rest[1], flag: rest[2] } : cmd === 'do' ? { cmd, steps: rest } : cmd === 'click' ? { cmd, text: rest.join(' ') } : { cmd };
+  cmd === 'start' ? { cmd, stage: rest[0], view: rest[1], flag: rest[2] }
+  : cmd === 'do' ? { cmd, steps: rest }
+  : cmd === 'click' ? { cmd, text: rest.join(' ') }
+  : cmd === 'persona' ? { cmd, name: rest[0] }
+  : { cmd };
 const req = http.request({ host: '127.0.0.1', port: Number(port), method: 'POST', path: '/' }, (res) => {
   let s = '';
   res.on('data', (c) => (s += c));
