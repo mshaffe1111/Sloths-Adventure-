@@ -1017,3 +1017,128 @@ Unchanged.
 **Meeca's letter to Grandma.** It used to say "You would like him," but Grandma knew Pokey. She's the one who thanked him for watering the fern. Now it's "You always liked him." "You would tell him to eat something" became "You'd tell him to stop looming in the doorway," which plants Grandma's line from the World 9 memory. The joke at the end used to tell Pokey to skip "the part about your hat," but there's no part about a hat, so it read like a mistake. Now it's "Please skip the part where I said you're slow."
 
 **Pell talks like Pell.** He never uses contractions ("I am sorry about the knocking"), so I went back and fixed his World 3 lines to match.
+
+---
+
+## World 7: Ancient Ruins
+
+### Alone
+
+*The temple door stood slightly open. Meeca had come through here. So, by the look of the floor, had something heavy.*
+
+*The vines on the old walls hung brown. When he touched one, it didn't move.*
+
+*He turned to say something to Dot. The air by his shoulder was empty.*
+
+*In the first courtyard, ten stone chairs stood in a ring around a cracked floor where a faint sigil still glowed. Each one had a creature carved into its back: a panther, a crocodile, an owl.*
+
+*An eleventh chair stood a little apart from the ring, plain, with no carving at all. Dry leaves lay on the seat. In the middle was a deep dent, worn by someone who'd sat there often, and then stopped.*
+
+**Pokey:** Ten, and him.
+
+*From the shadows, something very large began to speak. It took four minutes to say good morning.*
+
+### Hidden note (in plain sight)
+
+> Pokey, they let us rest in the old temple tonight. I keep thinking someone I love walked here once. I can't think who.
+>
+> The General stood in front of a plain stone chair for an hour. He didn't sit down. The soldiers wouldn't look at him. Not afraid. Sad. I don't understand it yet.
+>
+> Love, M.
+
+### The quiet (halfway through the world)
+
+**Pokey:** Excuse me. Do you know the way up?
+
+*The statue said nothing.*
+
+**Pokey:** Thanks for not interrupting.
+
+*Further in, he stopped to listen to the quiet. It was a different quiet from the Grotto's.*
+
+**Pokey:** Dot would say this place is older than the river, and she'd have a number. She'd have it written down.
+
+*He left a gap after it, for the answer.*
+
+*He hummed to fill it, badly.*
+
+### The guardian: Stone Idol Golem
+
+*Before the fight.*
+
+**Stone Idol Golem:** I... heard... you were... coming. Three... weeks... ago.
+
+**Stone Idol Golem:** You... are... early.
+
+**Pokey:** First time for everything.
+
+**Stone Idol Golem:** I... am... the guardian... of this... temple. None... may... pass.
+
+**Pokey:** Finally. Somebody I can keep up with.
+
+**Stone Idol Golem:** I... have... waited... a thousand... years. For...
+
+**Pokey:** I'll wait.
+
+*After the fight.*
+
+**Stone Idol Golem:** Beaten. In... under... an hour. You are... so... fast.
+
+**Pokey:** Say that again. Slower. I want to enjoy it.
+
+**Stone Idol Golem:** The rune... is broken. The way up... is open. Behind... the rune...
+
+**Pokey:** Take your time.
+
+**Stone Idol Golem:** I... always... do.
+
+**Stone Idol Golem:** There is... a photograph. The General asked me... to keep it... from you. I am... sorry. I do not... think... I should.
+
+### The photograph
+
+*Behind the broken rune there was a hollow in the stone. Inside it, wrapped in cloth, lay a single photograph.*
+
+**Pokey:** A baby. And whoever's holding her. I know him. I stood at his door once.
+
+*He turned it over. There was pencil on the back, in a hand he'd seen on Meeca's birthday cards. Meeca, three weeks old. Grandpa hasn't put her down since.*
+
+**Pokey:** Grandpa.
+
+*Before the cape and the club and the red eyes, General Iron-Claw had held her like something that might spill.*
+
+*Pokey sat down on the stone. He took hold of the satchel strap with both hands.*
+
+**Pokey:** I asked him for his blessing once. He told me to come back when I could protect her. Then he was just gone. Everybody thought he left. She thinks he left her.
+
+**Pokey:** He came and took her himself.
+
+*Pokey sat in the ruins until the last of the light was gone. Then he turned the photograph face-down, then face-up, then put it in the satchel beside the note.*
+
+*The petal on his wrist turned north and held there. He got up.*
+
+### Hidden keepsake
+
+> A small stuffed bear with one eye sewn back on. The stitches are tiny and careful, as if the one who made them practiced first, with very large hands.
+
+### Hidden photo album: Our Girl
+
+Unchanged.
+
+- **A picnic, with a new arrival.** A basket, a blanket, and one very small passenger. On the back: "Our girl."
+- **Bedtime.** He read to her every night, long before she could follow a word. The books were all about generals who retire.
+- **Hello.** He held her as if she might break. Then, quickly, as if he might.
+- **Meeca, three weeks old.** In pencil, on the back: "Grandpa has not put her down since."
+
+### What changed in World 7, and why
+
+**The Golem calls him early.** The Golem lives so slowly that, to him, Pokey is early, and after the fight he's amazed at how fast Pokey was. It's the first time in his life anyone has called Pokey early or fast, and his "Say that again. Slower. I want to enjoy it" is the most pleased with himself he gets in the whole game. It also turns the bosses' "you're too slow" joke inside out at the right point, just before the photograph. His "Thank you. Rest well" is gone. The Golem's soft side is still "I always do" and his choice to give up the photograph.
+
+**How Pokey puts it together.** In the old script, the back of the photo just said "Grandpa" somehow. Now it's in Grandma's handwriting: "Meeca, three weeks old. Grandpa hasn't put her down since." The same words are in this world's photo album, so a player who found it gets a little jolt. Pokey recognizes the man he asked for a blessing, and the Golem has just told him the General hid this photo. That's enough for him to see it.
+
+**"She thinks he left her."** The old Pokey said "I thought he had gone up there to be sad." Now he says what everybody believed, that the old soldier just left, and then what that did to Meeca. It's the first time anyone says out loud what she believes, and it's Pokey who says it, which is why he grabs the strap with both hands.
+
+**Meeca's note was a problem.** The net sealed in World 6, so no more notes can come out of the tower. The old World 7 note talked about the tower, so it couldn't have reached him. Now it's a note she dropped on the march, when the column rested in this same temple. She watched the General stand in front of the plain eleventh chair for an hour without sitting. That ties the empty chair Pokey finds to the General before Pokey knows, and it's one more thing Meeca is putting together.
+
+**Dot is she.** Also "Thank you for not interrupting" is now a spoken line, "Thanks for not interrupting," since it's funnier coming from Pokey than from the narrator.
+
+**One thing to flag for World 8.** The old World 8 note is also from the tower, after the net is sealed (the pillow, and the General standing outside her door every night). I'll fix that when I get there.

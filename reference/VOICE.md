@@ -74,7 +74,7 @@ She's gone, so she only appears in memories, her letter, and once as something P
 
 ### Lieutenant Pell
 
-Over-polite, apologizes inside his own sentences, corrects himself mid-order. He's always Lieutenant Pell (the old script sometimes calls him Officer; those get fixed).
+Over-polite, apologizes inside his own sentences, corrects himself mid-order. He never uses contractions ("I am sorry about the knocking"), which is what makes him sound stiff and kind at the same time. He's always Lieutenant Pell (the old script sometimes calls him Officer; those get fixed).
 
 ### The narrator
 
