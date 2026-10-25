@@ -86,6 +86,8 @@ export interface ProtoExtras {
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
   bushes?: import('./watcher.ts').Bush[];
   watch?: import('./watcher.ts').WatchZone[];
+  /** World 4's rocks, patience spots, falls and pools, chimes, Dot's knots, capuchins and fruit (w4Play.ts) */
+  w4?: import('./w4Play.ts').W4Extras;
   /** World 3's sleeping thorn vines (3-5: thornVine.ts) */
   thorns?: import('./thornVine.ts').ThornVine[];
   /** World 3's painted dressing: stalactites, glowworm threads, ferns, the grotto mouth (protoStage.ts, drawn by w3Art.ts) */

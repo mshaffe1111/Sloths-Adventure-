@@ -61,6 +61,7 @@ import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } 
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
+import { W4Play } from './w4Play.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
@@ -286,6 +287,8 @@ export class GameEngine {
   private glowWake = new Map<number, number>();
   /** World 3's thorn vines: a lash under way (by vine index: when it saw him, which way, whether it has landed), and the cycle it was in */
   private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
+  /** World 4's rocks, fern, falls, chimes, knots and capuchins for this run (w4Play.ts) */
+  private w4: W4Play | null = null;
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
@@ -471,6 +474,7 @@ export class GameEngine {
     warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
+    this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
@@ -927,6 +931,7 @@ export class GameEngine {
       this.darkShow += (want - this.darkShow) * Math.min(1, dt * 3);
       this.stepGlowworms(dt, zones);
       if (this.proto?.thorns) this.stepThornVines();
+      if (this.w4) this.stepW4(dt);
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -3856,6 +3861,7 @@ export class GameEngine {
       const l = this.vineLash.get(i);
       drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : this.player.x >= v.x ? 1 : -1, this.gameTime);
     }
+    this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.currentStage.zones ?? []);
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
     for (const z of this.currentStage.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights) continue;
@@ -4032,6 +4038,7 @@ export class GameEngine {
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
+    this.w4?.drawFront(ctx, this.platforms, this.gameTime);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
       for (const cv of this.proto.covers) {
@@ -4727,6 +4734,57 @@ export class GameEngine {
         }
       }
     }
+  }
+
+  /**
+   * World 4 (w4Play.ts): the rocks, the fern and the mist, the falls and their pools, the chimes, Dot's knots and the capuchins. Wading
+   * in pouring water slows him on top of whatever the wind is doing; a lookout's screech brings the Sovereign's pass early.
+   */
+  private stepW4(dt: number) {
+    const p = this.player;
+    const id = this.currentStage.config.id;
+    const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
+    const out = this.w4!.step(dt, {
+      t: this.gameTime,
+      player: p,
+      platforms: this.platforms,
+      vines: this.vines,
+      collectibles: this.collectibles,
+      zones: this.currentStage.zones ?? [],
+      punch: p.punching && (p.attackU ?? 1) < 0.6 ? { x: p.x + p.facing * 40, y: p.y - 40 } : null,
+      hidden: hidden(this.proto?.bushes ?? [], me) || this.w4!.behindFall(p.x, p.y),
+      hurt: (dir) => {
+        this.damagePlayer(1);
+        p.vx = dir * 240;
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+      },
+      tip: (key, text, seconds) => {
+        if (tipHeard(id, key)) return;
+        markTipHeard(id, key);
+        this.guide(text, seconds);
+      },
+      float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
+      screech: () => {
+        // the monkey's shout brings the Sovereign: her warning starts now (and is as long as ever, so there is time to hide)
+        if (this.proto?.watch && this.watch.phase === 'calm') {
+          this.watch.phase = 'warn';
+          this.watch.t = 0;
+          this.watch.dur = WATCH.warn;
+          sound.playEagleScreech();
+          this.addFloatingText('HIDE!', p.x, p.y - 96, '#fbbf24');
+          this.input.triggerHaptic(120);
+        }
+      },
+      sfx: (kind) => {
+        if (kind === 'rock') sound.playHitImpact();
+        else if (kind === 'chime') sound.playVineGrab();
+        else if (kind === 'monkey') sound.playPredator('tayra', 0);
+        else if (kind === 'frond') sound.playShrineUnlocked();
+        else if (kind === 'knot') sound.playRelicFound();
+        else sound.playWhoosh();
+      },
+    });
+    this.dragSpeed *= out.speed;
   }
 
   /** how awake a sleeping light is: 0 asleep, rising to 1 over GLOW_REACH.fade once it wakes */
