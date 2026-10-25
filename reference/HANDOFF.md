@@ -2,6 +2,8 @@
 
 The full picture for any Claude session picking this game up. It's kept in the repo so nothing starts from scratch. Last brought up to date 2026-10-25. Keep it current: when something here changes, change this file in the same PR.
 
+**The living version is Matt's doc [Sloths handoff and roadmap](https://claude.ai/artifact/Y664eSHsuhSWhwQAq52pVa)**: the roadmap to go, video and animation status and the decisions waiting on Matt are kept there (tick items as they ship). This file is the same reference kept in the repo.
+
 Owner: **Matt** (Matt Shaffer). He plays and tests on a Pixel phone, and other people are testing the live game too.
 
 ---
