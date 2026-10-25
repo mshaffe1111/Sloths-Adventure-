@@ -1,0 +1,8 @@
+{
+  "dotst-nectar-33": {"heliGlow": 0, "drooped": 1, "fuchsia": 2, "trumpet": 3, "passion": 4, "blueCluster": 5},
+  "dotst-nectar-11": {"fuchsiaDrop": 0, "vine": 1, "heliDrip": 2, "passion2": 3, "blueCluster2": 4},
+  "dotst-bits-11": {"dew": 0, "silk": 1, "puff": 2, "thorn": 3, "letter": 4, "feather": 5},
+  "dotst-bits-33": {"dew2": 0, "silkWide": 1, "puff2": 2, "thornStick": 3, "note": 4, "feather2": 5},
+  "w4p-netting-11": {"panelTorn": 0, "panel": 1, "ring": 2, "chain": 4, "chainHook": 5},
+  "w4p-netting-33": {"strandHook": 1}
+}
