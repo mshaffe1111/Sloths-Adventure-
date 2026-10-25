@@ -14,7 +14,7 @@ Unchecked leads don't block a sign-off. A signed-off stage is not tested again.
 - QA builds from the pushed branch, retests every item, and replies pass or fail on each, plus anything new.
 - A bug closes only after its retest passes.
 
-Batch reports: batch 1, https://claude.ai/artifact/4tVn4iZZC4gFANqqYhC4vi
+Batch reports: batch 1, https://claude.ai/artifact/4tVn4iZZC4gFANqqYhC4vi · batch 2, https://claude.ai/artifact/7SCS8XYyzzEid6uq4bT9CR
 
 ## Stages
 
@@ -28,12 +28,15 @@ Batch reports: batch 1, https://claude.ai/artifact/4tVn4iZZC4gFANqqYhC4vi
 | 1-6 | testing | card timing, liana release (confirmed by the coding team) | 0/1 | 2 |
 | 1-7 | testing | card timing | 0/1 | 2 |
 | 1-8 | testing | card timing | 0/1 | 2 |
-| 2-3 | testing | card timing, "Free 3 animals freed" | 0/1 | 2 |
+| 2-3 | testing | card timing, "Free 3 animals freed", river logs 72 px real gap | 0/1 | 2 |
 | 2-6 | testing | card timing | 0/1 | 2 |
 | 2-7 | blocked | basket lift leaves Pokey behind | 0/1 | 2 |
 | 3-9 | testing | card timing, knockback | 0/1 | 2 |
 | 4-1, 4-2, 4-5, 4-6 | ready to test | none known | - | - |
 | 4-3, 4-4, 4-7, 4-8 | waiting on fixes | coding team's own list | - | - |
-| 4-D (Dot's flight), 4-9, 4-10 | not built yet | - | - | - |
+| 4-D Dot's Netting Flight | testing (promotion 1) | none yet | - | 3 |
+| 4-9, 4-10 | not promoted yet | - | - | - |
 
 Card timing and knockback are game-wide; they're listed on the stages where a bot hit them.
+
+**Game-wide, confirmed, open:** with a steering thumb down, the double jump never fires and the jump stops his run (touchGestures.ts two-finger path). It blocks most stages for two-thumb players. Retest with `tools/qa/doublejump-check.cjs`. No stage can be signed off until it passes.
