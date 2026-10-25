@@ -29,3 +29,13 @@
 - Holes with spiky bundles on the lips: line up the height first, hover with taps, then slide through in short pushes. Flapping while inside the hole hits the top spikes.
 - Flying through dandelion puffs pops them and can give a lot of points.
 - Upright, Dot's talk box sits at the bottom right over the nectar bar. Watch the arc over Dot's head instead.
+
+## 2026-10-25 (session 3, iPhone 440 wide, two thumbs, retest run)
+- Tips like "Got it!" can stay greyed out longer than a beat. If it won't take the tap, keep playing a second (nudge the thumb) and try again.
+- Two flicks while the left thumb keeps steering does give the double jump (the journal page for it popped up). In the air he does a little somersault on the second flick.
+- Tall steps ("too tall for one jump"): don't run at them full speed. Every time I sprinted in and flicked twice, I bonked the face and slid back down. Start right next to the step, flick, then the second flick at the top of the first jump, and only then push forward.
+- Turning the phone sideways shows more of the steps above you. When stuck on a climb upright, turn the phone and look before trying again.
+- Climbing a vine trunk: flick up beside it, then keep the thumb pushed up. If he stops halfway, lift the thumb and push up again.
+- Water knocking you down off a trunk: keep holding up, it's slow but you get there.
+- Big boulder in the way: just walk into it and keep pushing, it rolls.
+- When a "Water ahead!" card pops up right as you jump, you lose the jump. Land first, read, then go.

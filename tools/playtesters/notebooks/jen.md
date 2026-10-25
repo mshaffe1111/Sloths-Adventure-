@@ -20,3 +20,21 @@
   Treat every log-to-log move as a big risk and look closely first.
 - Tips pop up mid-move and swallow the rest of my gestures. After a tip, expect to redo the last thing I tried.
 - Sideways shows more of what's ahead. Upright, I can't see a river until I'm nearly at it.
+
+## 2026-10-25 (session 2)
+
+- Falling-rock warnings: when Dot says wait for the shadow, actually stop. Walking under it while it's still up there cost
+  me a heart. Stand still, let it drop, then go.
+- Trunks: flick up next to the trunk, then keep the thumb pushed up. Letting go too early just drops me back down.
+- Ropes overhead: flick up into it, then slide along. It holds you fine.
+- Flying as Dot (the hummingbird):
+  - Each flick up is one flap, a small hop (roughly a third of a thumb-width of screen). Four or five flicks to climb
+    a real distance. Flicking fast in a row stacks them.
+  - Sliding left/right flies, but she slowly sinks while I slide. Long slides end up much lower than I started.
+  - Sliding down drops her fast. A short nudge is plenty; a long one put me straight into the bottom thorns.
+  - The thing I kept getting wrong: lining up height. Stop, flap or sink until she sits level with the middle of the
+    gap, THEN slide through in short pushes. Don't flap and slide in the same breath.
+  - Thorny vines hurt on touch and there's very little room. After a hit she blinks and I lose track of where she is
+    for a moment; wait for her to show before the next move.
+  - The yellow bar is nectar. Flowers refill it. Don't burn it flapping for nothing.
+- "Continue from checkpoint" after running out of lives may put me back at the very start, not the last flower.

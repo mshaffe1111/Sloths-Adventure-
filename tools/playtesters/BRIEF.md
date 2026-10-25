@@ -22,6 +22,7 @@ node tools/qa/qa.cjs {PORT} look | turn | burst | perf
 - `tap` punches. `flick up` jumps (`flickhold up 400` for a higher jump). `flick left|right` kicks. `hold 700` is a mega.
 - The game stands still between commands. Several steps in one `do` run back to back, like real play.
 - `burst` takes eight frames in a row (for flicker). `perf` gives memory. `turn` flips the phone.
+- The clock only moves inside a command. A card's "Got it!" turns on after about a second of game time, so `do "wait 1200"` before you `click` it.
 - Run commands from /home/user/Sloths-Adventure-.
 
 ## How {NAME} plays

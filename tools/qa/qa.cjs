@@ -25,6 +25,7 @@ const body =
   : cmd === 'do' ? { cmd, steps: rest }
   : cmd === 'click' ? { cmd, text: rest.join(' ') }
   : cmd === 'persona' ? { cmd, name: rest[0], level: rest[1] }
+  : cmd === 'probe' ? { cmd, ms: rest[0] }
   : { cmd };
 const req = http.request({ host: '127.0.0.1', port: Number(port), method: 'POST', path: '/' }, (res) => {
   let s = '';

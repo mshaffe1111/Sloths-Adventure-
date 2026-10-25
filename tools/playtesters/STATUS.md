@@ -30,12 +30,18 @@ Batch reports: batch 1, https://claude.ai/artifact/4tVn4iZZC4gFANqqYhC4vi · bat
 | 1-8 | testing | card timing | 0/1 | 2 |
 | 2-3 | testing | card timing, "Free 3 animals freed", river logs 72 px real gap | 0/1 | 2 |
 | 2-6 | testing | card timing | 0/1 | 2 |
-| 2-7 | blocked | basket lift leaves Pokey behind | 0/1 | 2 |
+| 2-7 | testing | none open (basket lift fixed: retest PASS, promotion 2) | 0/2 | 3 |
 | 3-9 | testing | card timing, knockback | 0/1 | 2 |
-| 4-1, 4-2, 4-5, 4-6 | ready to test | none known | - | - |
-| 4-3, 4-4, 4-7, 4-8 | waiting on fixes | coding team's own list | - | - |
-| 4-D Dot's Netting Flight | testing (promotion 1) | none yet | - | 3 |
-| 4-9, 4-10 | not promoted yet | - | - | - |
+| 4-1 | testing | none confirmed (26% stall unverified) | 0/1 | 3 |
+| 4-2 | testing | none confirmed (wind stall at 27-29% is a lead) | 0/1 | 3 |
+| 4-5 | testing | none confirmed (unseen hits, monkey fruit are leads) | 0/1 | 3 |
+| 4-6 | ready to test | coding team's own list | - | - |
+| 4-3 | testing | coding team's own list; surge retest not reached | 0/1 | 3 |
+| 4-8 | testing | water wall PASS (one fall); boulders and nests inconclusive | 0/1 | 3 |
+| 4-4, 4-7 | waiting on fixes | coding team's own list | - | - |
+| 4-D Dot's Netting Flight | testing | flap taught too late; no checkpoints (Continue restarts at 0%) | 0/3 | 3 |
+| 4-9 The Aerie | ready to test (promotion 2) | - | - | - |
+| 4-10 | not promoted yet | - | - | - |
 
 Card timing and knockback are game-wide; they're listed on the stages where a bot hit them.
 

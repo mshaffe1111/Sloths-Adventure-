@@ -217,6 +217,16 @@ async function handle(cmd) {
     return { shot: await shot(), text: await screenText() };
   }
   if (cmd.cmd === 'look') return { shot: await shot(), text: await screenText() };
+  if (cmd.cmd === 'probe') {
+    // QA lead only, not in the tester brief (testers play blind): run N ms and report how high he got, to check a tester's report
+    const ms = Number(cmd.ms || 1200);
+    const read = () => page.evaluate(() => { const p = window.__engine().player; return { x: Math.round(p.x), y: Math.round(p.y), g: p.grounded, dj: !!p.isDoubleJumping, jl: p.jumpsLeft }; });
+    const s0 = await read();
+    let minY = s0.y, dj = s0.dj;
+    for (let t = 0; t < ms; t += 33) { await page.clock.runFor(33); const r = await read(); minY = Math.min(minY, r.y); dj = dj || r.dj; }
+    const s1 = await read();
+    return { text: JSON.stringify({ start: s0, end: s1, rise: s0.y - minY, sawDoubleJump: dj }) };
+  }
   if (cmd.cmd === 'burst') {
     // eight frames in a row in one strip: flicker, jitter and things popping in and out show up side by side
     const paths = [];
