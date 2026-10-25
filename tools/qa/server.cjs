@@ -49,19 +49,23 @@ function personaViews(p) {
 }
 let views = VIEWS;
 
-async function open(stage, v, flag = 0) {
+async function open(stage, v, flag = 0, layout = 1) {
   if (page) await page.close().catch(() => {});
   view = views[v] ? v : 'land';
   // (a phone: touch screen, mobile browser, so the game shows and reads its touch controls)
-  const ctx = await browser.newContext({ viewport: views[view], deviceScaleFactor: 1.5, isMobile: true, hasTouch: true });
+  const ctx = await browser.newContext({ viewport: views[view], deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   page = await ctx.newPage();
   page.on('pageerror', (e) => errors.push('page error: ' + e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push('console error: ' + m.text().slice(0, 200)));
   cdp = await ctx.newCDPSession(page);
   await cdp.send('Performance.enable');
   steer = null;
-  await page.clock.install();
-  await page.goto(url);
+  // the clock stands still between commands: install() alone lets fake time flow in real time, so a tester died while thinking.
+  // Same layout every entry (?layout=N, stageGenerator.ts layoutForEntry), so repro steps hold.
+  const T0 = Date.UTC(2026, 9, 25, 12);
+  await page.clock.install({ time: T0 });
+  await page.clock.pauseAt(T0 + 1000);
+  await page.goto(url + (url.includes('?') ? '&' : '?') + `layout=${layout}`);
   await page.clock.runFor(3500);
   await page.evaluate((id) => window.__play(id), stage);
   await page.clock.runFor(3000);
@@ -69,12 +73,13 @@ async function open(stage, v, flag = 0) {
   if (flag > 0) {
     const ok = await page.evaluate((n) => {
       const e = window.__engine();
-      const cps = [...(e.currentStage.checkpoints ?? [])].sort((a, b) => a.x - b.x);
+      // flags in stage order (some stages run downhill or back left), and placing him there costs no life
+      const cps = e.currentStage.checkpoints ?? [];
       const cp = cps[Math.min(n, cps.length) - 1];
       if (!cp) return 0;
-      for (const c of e.currentStage.checkpoints) if (c.x <= cp.x) c.reached = true;
+      cps.forEach((c, i) => { if (i < n) c.reached = true; });
       e.checkpoint = { x: cp.x, y: cp.y };
-      e.respawnAtCheckpoint('hurt');
+      const p = e.player; p.x = cp.x; p.y = cp.y; p.vx = 0; p.vy = 0;
       return cps.length;
     }, flag);
     await page.clock.runFor(1500);
@@ -93,7 +98,8 @@ async function screenText() {
 
 async function shot(tag = '') {
   const p = path.join(outDir, `${String(++shotN).padStart(4, '0')}${tag ? '-' + tag : ''}.png`);
-  await page.screenshot({ path: p });
+  // (css pixels, not the 1.5x device pixels: a tester reads many of these, and smaller pictures go further)
+  await page.screenshot({ path: p, scale: 'css' });
   return p;
 }
 
@@ -187,7 +193,7 @@ async function handle(cmd) {
     return { text: `playing as ${persona.name}: phone ${views.port.width}x${views.port.height} upright, ${views.land.width}x${views.land.height} sideways${at}` };
   }
   if (cmd.cmd === 'start') {
-    const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0));
+    const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0), Number(cmd.layout || 1));
     return { shot: await shot('start'), text: (cmd.flag ? `[started at flag ${cmd.flag} of ${flags}] ` : '') + (await screenText()) };
   }
   if (!page) throw new Error('no stage open: start one first');
@@ -199,6 +205,8 @@ async function handle(cmd) {
     // press a button on screen by its words (a lesson card's "Got it!", a menu)
     const b = page.locator('button', { hasText: new RegExp(`^\\s*${cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') });
     if (!(await b.count())) return { error: `no button "${cmd.text}" on screen`, text: await screenText() };
+    // a player lifts their thumbs off the glass to press a button: the bot's fingers must not stay down under the card
+    if (steer || actionAt) { steer = null; actionAt = null; await touch('touchEnd'); }
     await b.first().click();
     await page.clock.runFor(300);
     return { shot: await shot(), text: await screenText() };
@@ -218,6 +226,10 @@ async function handle(cmd) {
   if (cmd.cmd === 'turn') {
     // turn the phone: same stage, other way up
     view = view === 'land' ? 'port' : 'land';
+    // (the game asks for full screen on the first touch (wideMode.ts), and a full-screen window cannot be resized: step out of it
+    // first, as the browser does when a real phone turns, then resize)
+    await page.evaluate(() => document.fullscreenElement && document.exitFullscreen().catch(() => {}));
+    await page.clock.runFor(50);
     await page.setViewportSize(views[view]);
     await page.clock.runFor(300);
     return { shot: await shot(view), text: await screenText() };
