@@ -450,3 +450,11 @@ export function tarzanLaunch(vx: number, vy: number, dir: -1 | 1) {
     vy: Math.max(SWING.leapVyMin, Math.min(-PHYS.vineReleaseV, vy - 300)),
   };
 }
+
+/**
+ * is a solid block (one 50 px tall or more) a wall beside him, at his feet's height? Not while he stands on it or above its top, nor
+ * when he is wholly under it (a boulder up on a shelf over his head): only then can he bump into it, or push it (engine.ts)
+ */
+export function blockBeside(feetY: number, height: number, block: { y: number; height: number }): boolean {
+  return feetY > block.y + 6 && feetY - height < block.y + block.height;
+}

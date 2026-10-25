@@ -40,6 +40,13 @@ import type { Collectible, LevelConfig, Platform, TreeStructure, Vine } from './
 export const WET = { rise: 130, tread: 130, margin: 110 } as const;
 /** the pushable boulder */
 export const BOULDER = { w: 96, h: 88 } as const;
+/**
+ * A surge's water is a wall while it pours (waterfalls.ts fallWall): caught on its stair when it comes back, he is washed down to its
+ * foot. So its quiet spell is long enough for a player to climb from the foot of the water to the next dry spot (the cave behind it,
+ * or out of the water at the top): a moment to start and the walk in, and a double jump for each wet step (s).
+ */
+export const SURGE_CLIMB = { start: 1.0, perJump: 0.9 } as const;
+export const quietFor = (jumps: number, rolled: number): number => Math.round(Math.max(rolled, SURGE_CLIMB.start + SURGE_CLIMB.perJump * jumps) * 10) / 10;
 
 /** what the tests read back about the falls: which platforms each one pours over, and the beat it belongs to */
 export interface FallInfo {
@@ -239,7 +246,7 @@ export function buildWaterfallSteps(
       up(y - shelfY, 0);
       run(140);
       end();
-      const surge = { pour: Math.round(R.r(3.4, 3.8) * 10) / 10, ease: 1.5, quiet: Math.round(R.r(3.4, 3.8) * 10) / 10, offset: Math.round(R.r(0, 8) * 10) / 10 };
+      const surge = { pour: Math.round(R.r(3.4, 3.8) * 10) / 10, ease: 1.5, quiet: quietFor(n + 2, Math.round(R.r(3.4, 3.8) * 10) / 10), offset: Math.round(R.r(0, 8) * 10) / 10 };
       falls.push({ id: fid, x: s0, width: s1 - s0, top: r(shelfY - 160), bottom: y0, surge });
       info.push({ fallId: fid, kind: 'surge', steps: sSteps });
       fid++;
@@ -319,7 +326,7 @@ export function buildWaterfallSteps(
     run(R.r(320, 380));
     const c0 = r(x);
     run(WET.margin);
-    const surge = { pour: Math.round(R.r(3.4, 3.9) * 10) / 10, ease: 1.5, quiet: Math.round(R.r(3.0, 3.4) * 10) / 10, offset: Math.round(R.r(0, 8) * 10) / 10 };
+    const surge = { pour: Math.round(R.r(3.4, 3.9) * 10) / 10, ease: 1.5, quiet: quietFor(3, Math.round(R.r(3.0, 3.4) * 10) / 10), offset: Math.round(R.r(0, 8) * 10) / 10 };
     const wetStep = () => {
       up(WET.rise, WET.tread);
       flower(x - WET.tread / 2, y - 34, 'orchid');
@@ -332,6 +339,8 @@ export function buildWaterfallSteps(
     decor.push({ n: 'cave', x: x - 120, b: cy + 12, w: 230 });
     flower(x - 200, cy - 34, 'hibiscus');
     const cave = { x: r(x - 120), y: cy };
+    // (the hollow in the rock behind the water: standing in it, the pour goes past in front of him, waterfalls.ts shelter)
+    const shelter = { x0: r(x - 225), x1: r(x), y: cy };
     // World 4's keepsake, here by Matt's design for this stage (finds.ts FIND_STAGE_IN)
     const keep = FIND_BY_ID[`w${config.worldIndex}_keepsake`];
     if (keepsake && keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: r(x - 60), y: cy - 26, collected: false, bobPhase: 0 });
@@ -341,7 +350,7 @@ export function buildWaterfallSteps(
     const c1 = r(x);
     const steps = P.filter((p) => p.x >= c0 + WET.margin - 1 && p.x < c1 - 1 && p.y < y0).map((p) => p.id);
     up(WET.rise, 0);
-    falls.push({ id: fid, x: c0, width: c1 - c0, top: r(y - 160), bottom: y0, surge });
+    falls.push({ id: fid, x: c0, width: c1 - c0, top: r(y - 160), bottom: y0, surge, shelter: [shelter] });
     info.push({ fallId: fid, kind: 'surge', steps });
     fid++;
     // a quick player waits half a cycle on average, once for each half of the climb
@@ -462,7 +471,7 @@ export function buildWaterfallSteps(
   function surgePair() {
     const x0 = x, y0 = y;
     run(R.r(320, 380));
-    const pour = Math.round(R.r(3.4, 3.8) * 10) / 10, ease = 1.5, quiet = Math.round(R.r(3.0, 3.4) * 10) / 10;
+    const pour = Math.round(R.r(3.4, 3.8) * 10) / 10, ease = 1.5, quiet = quietFor(3, Math.round(R.r(3.0, 3.4) * 10) / 10);
     const cycle = pour + ease + quiet;
     const off = Math.round(R.r(0, 8) * 10) / 10;
     const a0 = r(x);
@@ -581,7 +590,11 @@ export function buildWaterfallSteps(
   for (const c of C) c.y += shift;
   for (const cp of checkpoints) cp.y += shift;
   for (const h of hints) if (h.aboveY !== undefined) h.aboveY += shift;
-  for (const w of falls) { w.top += shift; w.bottom += shift; }
+  for (const w of falls) {
+    w.top += shift;
+    w.bottom += shift;
+    for (const q of w.shelter ?? []) q.y += shift;
+  }
   for (const pl of pools) { pl.fullY += shift; pl.emptyY += shift; if (pl.art) pl.art.b += shift; }
   for (const m of monkeys) { m.y += shift; for (const q of m.path ?? []) q.y += shift; }
   for (const d of decor) d.b += shift;

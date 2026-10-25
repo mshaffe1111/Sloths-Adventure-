@@ -10,6 +10,8 @@
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform, Vine } from './types.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
+import { maxRise } from './protoCheck.ts';
+import type { Waterfall } from './waterfalls.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
@@ -227,23 +229,118 @@ function swingLandingsIn(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, w
 
 // ---- Graph -----------------------------------------------------------------
 
-export function validateStage(stage: GeneratedStage): CheckResult {
+/** how the check treats a stage's falls and boulders (World 4) */
+export interface CheckOptions {
+  /** boulders to leave where they stand (platform ids): otherwise the check rolls a fall's boulder into its slot once he can get behind it */
+  frozen?: ReadonlySet<number>;
+  /** handed the graph the check walked last (its pieces of ground, its links, what was reached), for tests that ask more of it */
+  inspect?: (g: CheckGraph) => void;
+}
+
+/** the graph a check walked: every piece of ground (a platform, less what a boulder or pouring water covers), the links, what was reached */
+export interface CheckGraph {
+  plats: readonly Platform[];
+  adj: ReadonlyMap<string, ReadonlySet<string>>;
+  key: (p: Platform) => string;
+  seen: ReadonlySet<string>;
+  /** where a boulder stood in that walk (one the check rolled is in its slot) */
+  boulderX: (id: number) => number;
+  /** the falls pouring in that walk */
+  pouring: readonly Waterfall[];
+}
+
+/** his body, against the water: half its width, its height, and how far over the ground he took off from a jump can carry his head */
+const BODY_HALF = 16;
+const BODY_H = 48;
+let headRise = 0;
+const riseAll = () => headRise || (headRise = maxRise() + 26 + BODY_H);
+
+/** World 4's falls (proto.w4.falls); a curtain (veil, 4-5) is somewhere to stand behind, not a wall */
+const wallFalls = (stage: GeneratedStage): Waterfall[] =>
+  ((stage as { proto?: { w4?: { falls?: Waterfall[] } } }).proto?.w4?.falls ?? []).filter((w) => !w.veil);
+
+/** a fall of World 4 that pours now: a plug fall until its boulder sits in the slot, any fall with no rhythm always (a surge goes quiet on
+ * its own, so it is a wait, not a wall) */
+export const fallPours = (w: Waterfall, boulderX: (id: number) => number | undefined): boolean => {
+  if (w.veil) return false;
+  if (w.plug) {
+    const x = boulderX(w.plug.platformId);
+    return x === undefined || x < w.plug.atX - 2;
+  }
+  return !w.surge;
+};
+
+/** [a, b) spans less [x0, x1) */
+function cutSpans(spans: Array<[number, number]>, x0: number, x1: number): Array<[number, number]> {
+  const out: Array<[number, number]> = [];
+  for (const [a, b] of spans) {
+    if (x1 <= a || x0 >= b) {
+      out.push([a, b]);
+      continue;
+    }
+    if (x0 > a) out.push([a, x0]);
+    if (x1 < b) out.push([x1, b]);
+  }
+  return out;
+}
+
+export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
   const errors: string[] = [];
   const cfg = stage.config;
   // The engine keeps the hero inside [20, W - 20]: ground beyond that cannot be stood on, a vine out there cannot be grabbed, and a
   // platform that sticks out only counts for the part that is inside. (A platform that leaves less than STAND_MIN px does not count.)
   const stripLo = STRIP_MARGIN;
   const stripHi = cfg.levelWidth - STRIP_MARGIN;
-  const plats: Platform[] = [];
-  for (const p of stage.platforms) {
-    if (p.broken) continue;
-    // a lift (2-7) is one stop the player reaches at its top and at its bottom: two copies under one id, so riding it joins them
-    if (p.lift) { plats.push({ ...p, y: p.lift.top }, { ...p, y: p.lift.bottom }); continue; }
-    if (p.type === 'moving' || p.type === 'drift' || (p.x >= stripLo && p.x + p.width <= stripHi)) { plats.push(p); continue; }
-    const x0 = Math.max(p.x, stripLo);
-    const x1 = Math.min(p.x + p.width, stripHi);
-    if (x1 - x0 >= STAND_MIN) plats.push({ ...p, x: x0, width: x1 - x0 });
-  }
+  // World 4's falls and boulders. A pouring fall is a wall of water (w4Play.ts barrier): no ground under it can be stood on, and no jump
+  // or climb crosses it. A boulder (a pushed solid block) is a wall on the ground it stands on: that ground is two pieces, one either
+  // side, joined only by climbing over it. Once he can stand behind a plug fall's boulder (on the ground beside it, on the side away from
+  // the slot) the check rolls it into the slot, the fall dries, and the stage is walked again (unless `opts.frozen` holds it).
+  const falls = wallFalls(stage);
+  const rollers = stage.platforms.filter((p) => p.push && p.type === 'solid' && p.height >= 50 && !p.broken);
+  const byId = new Map(stage.platforms.map((p) => [p.id, p]));
+  const rolledTo = new Map<number, number>();
+  const boulderX = (id: number) => rolledTo.get(id) ?? byId.get(id)?.x ?? NaN;
+  let pouring: Waterfall[] = [];
+  let plats: Platform[] = [];
+  const keys = new WeakMap<Platform, string>();
+  const layout = () => {
+    pouring = falls.filter((w) => fallPours(w, (id) => (byId.has(id) ? boulderX(id) : undefined)));
+    plats = [];
+    for (const p0 of stage.platforms) {
+      if (p0.broken) continue;
+      const p = rolledTo.has(p0.id) ? { ...p0, x: rolledTo.get(p0.id)! } : p0;
+      // a lift (2-7) is one stop the player reaches at its top and at its bottom: two copies under one id, so riding it joins them
+      if (p.lift) { plats.push({ ...p, y: p.lift.top }, { ...p, y: p.lift.bottom }); continue; }
+      if (p.type === 'moving' || p.type === 'drift') { plats.push(p); continue; }
+      let spans: Array<[number, number]> = [[p.x, p.x + p.width]];
+      for (const b of rollers) if (b.id !== p.id && Math.abs(b.y + b.height - p.y) < 2) spans = cutSpans(spans, boulderX(b.id), boulderX(b.id) + b.width);
+      for (const w of pouring) if (p.y > w.top && p.y - BODY_H < w.bottom) spans = cutSpans(spans, w.x - BODY_HALF, w.x + w.width + BODY_HALF);
+      const whole = spans.length === 1 && spans[0][0] === p.x && spans[0][1] === p.x + p.width;
+      if (whole && p.x >= stripLo && p.x + p.width <= stripHi) { plats.push(p); continue; }
+      spans.forEach(([s0, s1], k) => {
+        const x0 = Math.max(s0, stripLo);
+        const x1 = Math.min(s1, stripHi);
+        if (x1 - x0 < STAND_MIN) return;
+        const piece = { ...p, x: x0, width: x1 - x0 };
+        if (!whole) keys.set(piece, `p${p.id}~${k}`);
+        plats.push(piece);
+      });
+    }
+  };
+  /** does pouring water stand between two pieces of ground (or a trunk: x0 === x1), across the heights a jump between them passes? */
+  const waterBetween = (ax0: number, ax1: number, ay: number, bx0: number, bx1: number, by: number): boolean => {
+    for (const w of pouring) {
+      const l = w.x - BODY_HALF, r = w.x + w.width + BODY_HALF, mid = w.x + w.width / 2;
+      const aLeft = ax0 + ax1 < 2 * mid;
+      const bLeft = bx0 + bx1 < 2 * mid;
+      if (aLeft === bLeft) continue;
+      // (one of them reaching past the water, over or under it, is a way round it, not through it)
+      const [lx1, rx0] = aLeft ? [ax1, bx0] : [bx1, ax0];
+      if (lx1 >= r || rx0 <= l) continue;
+      if (w.top < Math.max(ay, by) && w.bottom > Math.min(ay, by) - riseAll()) return true;
+    }
+    return false;
+  };
   const vines = stage.vines.filter((v) => v.x >= stripLo && v.x <= stripHi);
   const waterY = stage.waterY ?? cfg.levelHeight + 100;
   let maxGapUsed = 0;
@@ -257,199 +354,238 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     if (!adj.has(a)) adj.set(a, new Set());
     adj.get(a)!.add(b);
   };
-  const pid = (p: Platform) => `p${p.id}`;
+  const pid = (p: Platform) => keys.get(p) ?? `p${p.id}`;
   const vid = (v: Vine) => `v${v.id}`;
 
   // a double jump is a tool the player may need from mission 6 on; before that every gap is a plain jump
   const allowDouble = (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6;
   // the leaf glide, from the stage everyone who gets there has learned it (skills.ts): it carries a falling jump much further
   const allowGlide = skillGuaranteedAt('glide', (cfg.worldIndex - 1) * 10 + cfg.miniIndex);
-  const byX = [...plats].sort((a, b) => ext(a)[0] - ext(b)[0]);
   // a drop deeper than this is a fall into the mist (4-7), never a way on (with room to spare)
   const deep = stage.deepFall !== undefined ? stage.deepFall - 30 : Infinity;
+  const mission = (cfg.worldIndex - 1) * 10 + cfg.miniIndex;
+  const ropesCount = skillGuaranteedAt('shimmy', mission);
+  const drafts = allowGlide ? stage.updrafts ?? [] : [];
+  let seen = new Set<string>();
+  let firstWalk = true;
 
-  // 1. jumps between platforms (only compare neighbours within a plausible horizontal window)
-  // To the right the window is 460 px. To the left a platform can only be reached if the gap is within the furthest any jump
-  // in THIS stage could cover (its biggest drop sets that), so everything further left is skipped: the same links as comparing
-  // every pair, found without visiting them.
-  const nP = byX.length;
-  const px0 = new Float64Array(nP), px1 = new Float64Array(nP), prefMax1 = new Float64Array(nP);
-  let minY = Infinity, maxY = -Infinity;
-  for (let i = 0; i < nP; i++) {
-    const [x0, x1] = ext(byX[i]);
-    px0[i] = x0;
-    px1[i] = x1;
-    prefMax1[i] = i > 0 ? Math.max(prefMax1[i - 1], x1) : x1;
-    if (byX[i].y < minY) minY = byX[i].y;
-    if (byX[i].y > maxY) maxY = byX[i].y;
-  }
-  const maxDrop = nP ? maxY - minY : 0;
-  const leftReach = (allowGlide ? Math.max(maxDropReach(maxDrop), reachGlide(-maxDrop, true), reachBounceGlide(-maxDrop, true)) : maxDropReach(maxDrop)) * MARGIN - TAKEOFF_SLACK;
-  const rightWindow = allowGlide ? Math.max(460, leftReach) : 460;
-  for (let i = 0; i < nP; i++) {
-    const a = byX[i];
-    const ax0 = px0[i], ax1 = px1[i];
-    // first platform whose right edge (or any earlier one's) is within reach of a's left edge
-    let lo = 0, hi = i;
-    while (lo < hi) {
-      const mid = (lo + hi) >> 1;
-      if (prefMax1[mid] < ax0 - leftReach) lo = mid + 1; else hi = mid;
-    }
-    for (let j = lo; j < nP; j++) {
-      if (i === j) continue;
-      const bx0 = px0[j];
-      if (bx0 > ax1 + rightWindow) {
-        if (j > i) break;
-        continue;
-      }
-      const b = byX[j];
-      const bx1 = px1[j];
-      const gap = Math.max(0, bx0 - ax1, ax0 - bx1);
-      if (gap > leftReach) continue;
-      const dy = a.y - b.y;
-      if (-dy > deep) continue;
-      const f = a.type === 'bouncy' ? reachBounce : reachJump;
-      let r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
-      if (allowGlide && !(r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK)) {
-        const fg = a.type === 'bouncy' ? reachBounceGlide : reachGlide;
-        r = Math.max(r, fg(dy, false), fg(dy, true));
-      }
-      if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) {
-        link(pid(a), pid(b));
-        if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
-      }
-    }
-  }
+  /** build the graph over the ground as `layout` left it, and walk it from the spawn point (false: nothing under the spawn point) */
+  const walk = (): boolean => {
+    adj.clear();
+    usedSwing.clear();
+    maxGapUsed = 0;
+    swingEdges = 0;
+    climbEdges = 0;
+    const byX = [...plats].sort((a, b) => ext(a)[0] - ext(b)[0]);
 
-  // 2. climbing vines
-  for (const v of vines) {
-    if (v.vineType === 'swing_liana') continue;
-    const n = vid(v);
-    // entering: stand next to the trunk and press up
-    for (const p of plats) {
-      const [x0, x1] = ext(p);
-      if (p.type !== 'bouncy' && p.y >= v.topY - 12 && p.y <= v.bottomY + 25 && dxTo(x0, x1, v.x) < 42) link(pid(p), n);
+    // 1. jumps between platforms (only compare neighbours within a plausible horizontal window)
+    // To the right the window is 460 px. To the left a platform can only be reached if the gap is within the furthest any jump
+    // in THIS stage could cover (its biggest drop sets that), so everything further left is skipped: the same links as comparing
+    // every pair, found without visiting them.
+    const nP = byX.length;
+    const px0 = new Float64Array(nP), px1 = new Float64Array(nP), prefMax1 = new Float64Array(nP);
+    let minY = Infinity, maxY = -Infinity;
+    for (let i = 0; i < nP; i++) {
+      const [x0, x1] = ext(byX[i]);
+      px0[i] = x0;
+      px1[i] = x1;
+      prefMax1[i] = i > 0 ? Math.max(prefMax1[i - 1], x1) : x1;
+      if (byX[i].y < minY) minY = byX[i].y;
+      if (byX[i].y > maxY) maxY = byX[i].y;
     }
-    // leaving
-    for (const p of plats) {
-      const [x0, x1] = ext(p);
-      const gx = dxTo(x0, x1, v.x);
-      let ok = false;
-      // vault off the top
-      if (p.y >= v.topY - 22 && p.y <= v.topY + 90) {
-        const dy = v.topY - 12 - p.y;
-        const r = reachMin(dy, 190, 160, false);
-        if (r >= 0 && gx <= r * MARGIN) ok = true;
+    const maxDrop = nP ? maxY - minY : 0;
+    const leftReach = (allowGlide ? Math.max(maxDropReach(maxDrop), reachGlide(-maxDrop, true), reachBounceGlide(-maxDrop, true)) : maxDropReach(maxDrop)) * MARGIN - TAKEOFF_SLACK;
+    const rightWindow = allowGlide ? Math.max(460, leftReach) : 460;
+    for (let i = 0; i < nP; i++) {
+      const a = byX[i];
+      const ax0 = px0[i], ax1 = px1[i];
+      // first platform whose right edge (or any earlier one's) is within reach of a's left edge
+      let lo = 0, hi = i;
+      while (lo < hi) {
+        const mid = (lo + hi) >> 1;
+        if (prefMax1[mid] < ax0 - leftReach) lo = mid + 1; else hi = mid;
       }
-      // hop sideways / leap off at any height
-      if (!ok) {
-        for (let h = v.topY; h <= v.bottomY && !ok; h += 12) {
-          const dy = h - p.y;
-          if (-dy > deep) continue;
-          const hop = reachMin(dy, PHYS.treeHopV, 240, true);
-          const leap = reachMin(dy, PHYS.treeLeapV, 330, true);
-          const r = Math.max(hop, leap);
-          if (r >= 0 && gx <= r * MARGIN) ok = true;
+      for (let j = lo; j < nP; j++) {
+        if (i === j) continue;
+        const bx0 = px0[j];
+        if (bx0 > ax1 + rightWindow) {
+          if (j > i) break;
+          continue;
+        }
+        const b = byX[j];
+        const bx1 = px1[j];
+        const gap = Math.max(0, bx0 - ax1, ax0 - bx1);
+        if (gap > leftReach) continue;
+        const dy = a.y - b.y;
+        if (-dy > deep) continue;
+        const f = a.type === 'bouncy' ? reachBounce : reachJump;
+        let r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
+        if (allowGlide && !(r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK)) {
+          const fg = a.type === 'bouncy' ? reachBounceGlide : reachGlide;
+          r = Math.max(r, fg(dy, false), fg(dy, true));
+        }
+        if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) {
+          if (pouring.length && waterBetween(ax0, ax1, a.y, bx0, bx1, b.y)) continue;
+          link(pid(a), pid(b));
+          if (a.type !== 'bouncy') maxGapUsed = Math.max(maxGapUsed, gap);
         }
       }
-      if (ok) {
-        link(n, pid(p));
-        climbEdges++;
+    }
+
+    // 2. climbing vines
+    for (const v of vines) {
+      if (v.vineType === 'swing_liana') continue;
+      // (a trunk with pouring water on it cannot be climbed)
+      if (pouring.some((w) => v.x > w.x - BODY_HALF && v.x < w.x + w.width + BODY_HALF && v.bottomY > w.top && v.topY < w.bottom)) continue;
+      const n = vid(v);
+      const across = (x0: number, x1: number, y: number) => pouring.length > 0 && waterBetween(x0, x1, y, v.x, v.x, Math.max(v.topY, Math.min(v.bottomY, y)));
+      // entering: stand next to the trunk and press up
+      for (const p of plats) {
+        const [x0, x1] = ext(p);
+        if (p.type !== 'bouncy' && p.y >= v.topY - 12 && p.y <= v.bottomY + 25 && dxTo(x0, x1, v.x) < 42 && !across(x0, x1, p.y)) link(pid(p), n);
+      }
+      // leaving
+      for (const p of plats) {
+        const [x0, x1] = ext(p);
+        const gx = dxTo(x0, x1, v.x);
+        let ok = false;
+        // vault off the top
+        if (p.y >= v.topY - 22 && p.y <= v.topY + 90) {
+          const dy = v.topY - 12 - p.y;
+          const r = reachMin(dy, 190, 160, false);
+          if (r >= 0 && gx <= r * MARGIN) ok = true;
+        }
+        // hop sideways / leap off at any height
+        if (!ok) {
+          for (let h = v.topY; h <= v.bottomY && !ok; h += 12) {
+            const dy = h - p.y;
+            if (-dy > deep) continue;
+            const hop = reachMin(dy, PHYS.treeHopV, 240, true);
+            const leap = reachMin(dy, PHYS.treeLeapV, 330, true);
+            const r = Math.max(hop, leap);
+            if (r >= 0 && gx <= r * MARGIN) ok = true;
+          }
+        }
+        if (ok && !across(x0, x1, p.y)) {
+          link(n, pid(p));
+          climbEdges++;
+        }
       }
     }
-  }
 
-  // 3. swinging lianas
-  for (const v of vines) {
-    if (v.vineType !== 'swing_liana') continue;
-    const pack = landingPack(v, plats);
-    for (const a of plats) {
-      if (a.type === 'moving' || a.type === 'drift' || a.type === 'bouncy') continue;
-      const dirs: Array<1 | -1> = [];
-      if (a.x + a.width <= v.x + 40 && v.x - (a.x + a.width) < 520) dirs.push(1);
-      if (a.x >= v.x - 40 && a.x - v.x < 520) dirs.push(-1);
-      for (const dir of dirs) {
-        const res = swingLandingsIn(a, v, dir, pack, waterY);
-        for (const [id, lines] of res) {
-          if (lines >= 6 && id !== a.id) {
-            link(`p${a.id}`, `p${id}`);
-            usedSwing.add(v.id);
-            swingEdges++;
+    // 3. swinging lianas
+    for (const v of vines) {
+      if (v.vineType !== 'swing_liana') continue;
+      const pack = landingPack(v, plats);
+      for (const a of plats) {
+        if (a.type === 'moving' || a.type === 'drift' || a.type === 'bouncy') continue;
+        const dirs: Array<1 | -1> = [];
+        if (a.x + a.width <= v.x + 40 && v.x - (a.x + a.width) < 520) dirs.push(1);
+        if (a.x >= v.x - 40 && a.x - v.x < 520) dirs.push(-1);
+        for (const dir of dirs) {
+          const res = swingLandingsIn(a, v, dir, pack, waterY);
+          for (const [id, lines] of res) {
+            if (lines >= 6 && id !== a.id) {
+              link(`p${a.id}`, `p${id}`);
+              usedSwing.add(v.id);
+              swingEdges++;
+            }
           }
         }
       }
     }
-  }
 
-  // 3b. shimmy ropes: a rope joins the two ledges it hangs over, but only counts where EVERY player has the skill (a stage
-  // entered before that may have ropes as extras, and must be finishable without them)
-  const mission = (cfg.worldIndex - 1) * 10 + cfg.miniIndex;
-  const ropesCount = skillGuaranteedAt('shimmy', mission);
-  for (const r of stage.ropes ?? []) {
-    if (r.required && !ropesCount) errors.push(`rope #${r.id} is needed here, but the player may not have learned the skill yet`);
-    if (!ropesCount) continue;
-    const gapStart = r.x0 + ROPE_OVERLAP;
-    const gapEnd = r.x1 - ROPE_OVERLAP;
-    const left = plats.filter((p) => Math.abs(p.y - r.g0) < 3 && Math.abs(ext(p)[1] - gapStart) < 8);
-    const right = plats.filter((p) => Math.abs(p.y - r.g1) < 3 && Math.abs(ext(p)[0] - gapEnd) < 8);
-    if (!left.length || !right.length) {
-      errors.push(`rope #${r.id} does not join two ledges`);
-      continue;
-    }
-    for (const a of left) for (const b of right) {
-      link(pid(a), pid(b));
-      link(pid(b), pid(a));
-    }
-  }
-
-  // 3c. warm air (4-7): with the leaf open in an updraft he rises to its top and hangs there, his feet about LIFT_HOVER under its top,
-  // then drifts off it, still gliding (the warm air gave him back a whole glide). In: walk or jump off a ledge and glide into it, at
-  // any depth it reaches down to. Out: from the top, a drift with the leaf open onto any ledge below it (a ledge above is out of reach).
-  const drafts = allowGlide ? stage.updrafts ?? [] : [];
-  drafts.forEach((u, i) => {
-    const n = `u${i}`;
-    const in0 = u.x0 + LIFT_INSIDE, in1 = u.x1 - LIFT_INSIDE;
-    if (in1 <= in0) return;
-    for (const a of plats) {
-      if (a.type === 'bouncy') continue;
-      const [x0, x1] = ext(a);
-      // the deepest he can glide in at: the bottom of the air, never as far down as the mist
-      const d = Math.min(u.bottom - 40 - a.y, deep);
-      if (d < 0 || a.y + d < u.top + 40) continue;
-      const gap = Math.max(0, in0 - x1, x0 - in1);
-      const r = Math.max(reachGlide(-d, false), reachGlide(-d, true));
-      if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) link(pid(a), n);
-    }
-    const hover = u.top + LIFT_HOVER;
-    for (const b of plats) {
-      const drop = b.y - hover;
-      if (drop < 10 || drop > deep) continue;
-      const [x0, x1] = ext(b);
-      const gap = Math.max(0, x0 - u.x1, u.x0 - x1);
-      let r = Infinity;
-      for (const dt of SIM_DTS) r = Math.min(r, flightReach(-drop, { v0: 0, vx: PHYS.maxRun, dbl: false, dt, glide: true }));
-      if (r >= 0 && gap <= r * MARGIN - LIFT_SLACK) link(n, pid(b));
-    }
-  });
-
-  // 4. walk the graph
-  const start = plats.find((p) => stage.spawnX >= ext(p)[0] - 4 && stage.spawnX <= ext(p)[1] + 4 && Math.abs(p.y - stage.spawnY) < 6);
-  if (!start) {
-    errors.push('no platform under the spawn point');
-    return finish();
-  }
-  const seen = new Set<string>([pid(start)]);
-  const q = [pid(start)];
-  while (q.length) {
-    const n = q.pop()!;
-    for (const m of adj.get(n) ?? []) {
-      if (!seen.has(m)) {
-        seen.add(m);
-        q.push(m);
+    // 3b. shimmy ropes: a rope joins the two ledges it hangs over, but only counts where EVERY player has the skill (a stage
+    // entered before that may have ropes as extras, and must be finishable without them)
+    for (const r of stage.ropes ?? []) {
+      if (firstWalk && r.required && !ropesCount) errors.push(`rope #${r.id} is needed here, but the player may not have learned the skill yet`);
+      if (!ropesCount) continue;
+      const gapStart = r.x0 + ROPE_OVERLAP;
+      const gapEnd = r.x1 - ROPE_OVERLAP;
+      const left = plats.filter((p) => Math.abs(p.y - r.g0) < 3 && Math.abs(ext(p)[1] - gapStart) < 8);
+      const right = plats.filter((p) => Math.abs(p.y - r.g1) < 3 && Math.abs(ext(p)[0] - gapEnd) < 8);
+      if (!left.length || !right.length) {
+        if (firstWalk) errors.push(`rope #${r.id} does not join two ledges`);
+        continue;
+      }
+      for (const a of left) for (const b of right) {
+        link(pid(a), pid(b));
+        link(pid(b), pid(a));
       }
     }
+
+    // 3c. warm air (4-7): with the leaf open in an updraft he rises to its top and hangs there, his feet about LIFT_HOVER under its top,
+    // then drifts off it, still gliding (the warm air gave him back a whole glide). In: walk or jump off a ledge and glide into it, at
+    // any depth it reaches down to. Out: from the top, a drift with the leaf open onto any ledge below it (a ledge above is out of reach).
+    drafts.forEach((u, i) => {
+      const n = `u${i}`;
+      const in0 = u.x0 + LIFT_INSIDE, in1 = u.x1 - LIFT_INSIDE;
+      if (in1 <= in0) return;
+      for (const a of plats) {
+        if (a.type === 'bouncy') continue;
+        const [x0, x1] = ext(a);
+        // the deepest he can glide in at: the bottom of the air, never as far down as the mist
+        const d = Math.min(u.bottom - 40 - a.y, deep);
+        if (d < 0 || a.y + d < u.top + 40) continue;
+        const gap = Math.max(0, in0 - x1, x0 - in1);
+        const r = Math.max(reachGlide(-d, false), reachGlide(-d, true));
+        if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) link(pid(a), n);
+      }
+      const hover = u.top + LIFT_HOVER;
+      for (const b of plats) {
+        const drop = b.y - hover;
+        if (drop < 10 || drop > deep) continue;
+        const [x0, x1] = ext(b);
+        const gap = Math.max(0, x0 - u.x1, u.x0 - x1);
+        let r = Infinity;
+        for (const dt of SIM_DTS) r = Math.min(r, flightReach(-drop, { v0: 0, vx: PHYS.maxRun, dbl: false, dt, glide: true }));
+        if (r >= 0 && gap <= r * MARGIN - LIFT_SLACK) link(n, pid(b));
+      }
+    });
+
+    // 4. walk the graph
+    const start = plats.find((p) => stage.spawnX >= ext(p)[0] - 4 && stage.spawnX <= ext(p)[1] + 4 && Math.abs(p.y - stage.spawnY) < 6);
+    if (!start) return false;
+    seen = new Set<string>([pid(start)]);
+    const q = [pid(start)];
+    while (q.length) {
+      const n = q.pop()!;
+      for (const m of adj.get(n) ?? []) {
+        if (!seen.has(m)) {
+          seen.add(m);
+          q.push(m);
+        }
+      }
+    }
+    return true;
+  };
+
+  // walk the stage; while there is a boulder he can get behind, roll it into its slot and walk again
+  for (;;) {
+    layout();
+    if (!walk()) {
+      errors.push('no platform under the spawn point');
+      return finish();
+    }
+    firstWalk = false;
+    let rolled = false;
+    for (const w of pouring) {
+      if (!w.plug || opts.frozen?.has(w.plug.platformId)) continue;
+      const b = byId.get(w.plug.platformId);
+      // (only into a slot its roll reaches)
+      if (!b?.push || b.push.max - b.width < w.plug.atX - 2 || b.push.min > w.plug.atX + 2) continue;
+      const x = boulderX(b.id);
+      const toRight = w.plug.atX >= x;
+      const behind = plats.find((p) => Math.abs(p.y - (b.y + b.height)) < 2 && (toRight ? Math.abs(p.x + p.width - x) < 2 : Math.abs(p.x - (x + b.width)) < 2));
+      if (behind && seen.has(pid(behind))) {
+        rolledTo.set(b.id, w.plug.atX);
+        rolled = true;
+      }
+    }
+    if (!rolled) break;
   }
-  reachedIds = [...seen].filter((k) => k.startsWith('p')).map((k) => Number(k.slice(1)));
+  opts.inspect?.({ plats, adj, key: pid, seen, boulderX, pouring });
+  reachedIds = [...new Set([...seen].filter((k) => k.startsWith('p')).map((k) => Number(k.slice(1).split('~')[0])))];
   const reach = (p: Platform) => seen.has(pid(p));
   const reachPlats = plats.filter(reach);
 

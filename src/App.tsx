@@ -461,11 +461,12 @@ export default function App() {
     }
   }, []);
 
-  // dev only: jump straight into any level (for testing and screenshots)
+  // dev only: jump straight into any level (for testing and screenshots); `layout` picks a roll (the designed one when left out)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
-    (window as unknown as { __play?: (id: string) => void }).__play = (id: string) => {
+    (window as unknown as { __play?: (id: string, layout?: number) => void }).__play = (id: string, layout?: number) => {
       const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
       if (lvl) {
+        if (layout !== undefined) setLayoutVariant(layout);
         setActiveLevel(lvl);
         launchEngine(lvl);
       }
