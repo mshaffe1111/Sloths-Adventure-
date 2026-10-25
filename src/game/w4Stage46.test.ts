@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS, HAND_STAGES } from './protoStage.ts';
+import { buildProtoStage, HAND_STAGES, stageSeconds } from './protoStage.ts';
 import { validateStage } from './levelCheck.ts';
 import { skillGuaranteedAt } from './skills.ts';
 import { reachJump, SAFE } from './physics.ts';
@@ -17,20 +17,22 @@ const cfg = (): LevelConfig =>
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
 const build = (s: number) => buildProtoStage(cfg(), s, '4-6');
 const RUN = 285;
+/** a wide ledge, the kind at the foot of a column of the mist (protoStage.ts MIST_FOOT) */
+const MIST_WIDE = 500;
 
 test('4-6 is hand-built, and is judged without the leaf (4-7 is the first stage that needs it)', () => {
   assert.equal(HAND_STAGES['4-6'], '4-6');
   assert.equal(skillGuaranteedAt('glide', 36), false);
 });
 
-test('4-6: every roll can be finished, has one exit, and takes a quick climber two minutes', () => {
+test('4-6: every roll can be finished, has one exit, and takes a quick climber its four minutes', () => {
   for (const s of SEEDS) {
     const st = build(s);
     const res = validateStage(st);
     assert.ok(res.ok, `seed ${s}: ${res.errors.join('; ')}`);
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1, `seed ${s}`);
-    // (timed like the other climbs, 1-4, 3-4 and 4-1)
-    assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS - 20, `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
+    // (timed like the other climbs, 1-4, 3-4 and 4-1: a climb counts 20 s short)
+    assert.ok(st.meta!.timing!.layoutSeconds >= stageSeconds('4-6') - 20, `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
     assert.ok((st.proto.movedPickups ?? 0) <= 2, `seed ${s}: ${st.proto.movedPickups} pickups had to be moved`);
   }
 });
@@ -39,7 +41,8 @@ test('4-6: each mist spot has a ledge to stand still on and hides only real ledg
   for (const s of SEEDS) {
     const st = build(s);
     const spots = st.proto.w4?.patience ?? [];
-    assert.equal(spots.length, 3, `seed ${s}`);
+    // the three columns that teach it, the two by the nests, and two tall ones with a ledge halfway (two spots each)
+    assert.equal(spots.length, 9, `seed ${s}`);
     for (const m of spots) {
       assert.equal(m.kind, 'mist');
       assert.ok(m.area && m.area.top < m.area.bottom, `seed ${s}: a spot without its band`);
@@ -67,12 +70,16 @@ test('4-6: the mist starts small and grows, the hidden ledges are the way up, an
     assert.ok(counts[0] <= 3 && counts[1] > counts[0] && counts[2] >= counts[1], `seed ${s}: ${counts}`);
     for (const m of spots) {
       const foot = st.platforms.find((p) => p.y === m.y && p.x <= m.x0 && p.x + p.width >= m.x1)!;
-      const steps = m.hides!.map((id) => st.platforms.find((p) => p.id === id)!).filter((p) => p.width < foot.width);
+      // the small ledges of the column: the hidden ones, and a plain first step under the mist (by the nests)
+      const mx = (m.x0 + m.x1) / 2;
+      const plain = st.platforms.filter((p) => p.width < 200 && p.y < m.y && p.y > m.area!.bottom && Math.abs(p.x + p.width / 2 - mx) <= 220 && !m.hides!.includes(p.id));
+      const steps = [...plain, ...m.hides!.map((id) => st.platforms.find((p) => p.id === id)!).filter((p) => p.width < MIST_WIDE)];
       let below = foot.y;
       for (const p of steps.sort((a, b) => b.y - a.y)) {
-        // a plain hop up from the last (never a double jump), and caught by the wide ledge at the column's foot
+        // a plain hop up from the last (never a double jump), and caught by a wide ledge under the column (at its foot)
         assert.ok(below - p.y <= SAFE.rise1, `seed ${s}: a hidden ledge ${below - p.y} px up`);
-        assert.ok(p.x >= foot.x + 20 && p.x + p.width <= foot.x + foot.width - 20, `seed ${s}: a hidden ledge that hangs past the ledge that catches a miss`);
+        const catches = st.platforms.some((q) => q.width >= MIST_WIDE && q.y >= m.y && q.y - p.y <= 800 && p.x >= q.x + 20 && p.x + p.width <= q.x + q.width - 20);
+        assert.ok(catches, `seed ${s}: a hidden ledge that hangs past the ledge that catches a miss`);
         below = p.y;
       }
       // the whole column fits on a phone's screen in landscape (the view drifts to the middle of it while he stands still)
@@ -224,6 +231,126 @@ test('4-6: no hop in the mist needs more than a plain jump across', () => {
         const gap = Math.max(0, b.x - (a.x + a.width), a.x - (b.x + b.width));
         assert.ok(gap <= reachJump(a.y - b.y, false) * 0.6, `seed ${s}: a ${gap} px gap in the mist`);
       }
+    }
+  }
+});
+
+// ---- the longer climb (Matt, 2026-10-25: stages vary, 4-6 is a four-minute one): the nests and the mist together, across the tree,
+// and the high mist with a ledge halfway
+
+/** the mist spots whose standing ledge has eaglets watching the spot */
+const nestSpots = (st: ReturnType<typeof build>) =>
+  st.proto.w4!.patience!.filter((m) => (st.proto.w4!.nests ?? []).some((n) => n.y === m.y && nearNest(n, (m.x0 + m.x1) / 2, m.y)));
+
+test('4-6: the nests and the mist together: the eaglets watch the spot and the first step, stand clear of the mist, and the climb leaves their sight', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const spots = nestSpots(st);
+    const nests = st.proto.w4!.nests!;
+    // one nest by the first, then one either side of a longer column
+    assert.equal(spots.length, 2, `seed ${s}`);
+    assert.deepEqual(spots.map((m) => nests.filter((n) => n.y === m.y).length), [1, 2], `seed ${s}`);
+    assert.ok(st.proto.hints.some((h) => /Eaglets by the mist/.test(h.text) && h.aboveY !== undefined && Math.abs(h.aboveY - spots[0].y) <= 20), `seed ${s}: not taught`);
+    for (const m of spots) {
+      const mx = (m.x0 + m.x1) / 2;
+      const watching = nests.filter((n) => n.y === m.y);
+      // the whole spot is in their sight (standing still there is what keeps him safe, and what settles the mist)
+      for (const n of watching) assert.ok(nearNest(n, m.x0, m.y) && nearNest(n, m.x1, m.y), `seed ${s}: the spot is half out of their sight`);
+      // the nests (heads up, and the z over them) stand clear of the mist
+      assert.ok(m.area!.bottom <= m.y - 140, `seed ${s}: the nests are in the mist`);
+      // the first step: plain to see (not hidden), a plain hop up, and in their sight
+      const step = st.platforms.find((p) => p.width < 200 && p.y < m.y && p.y > m.area!.bottom && Math.abs(p.x + p.width / 2 - mx) <= 220);
+      assert.ok(step && !m.hides!.includes(step.id) && m.y - step.y <= SAFE.rise1, `seed ${s}: no first step`);
+      assert.ok(watching.every((n) => nearNest(n, step.x + step.width / 2, step.y)), `seed ${s}: the first step is out of their sight`);
+      // two hops into the mist and he is out of their sight
+      const hidden = m.hides!.map((id) => st.platforms.find((p) => p.id === id)!).sort((a, b) => b.y - a.y);
+      assert.ok(watching.every((n) => !nearNest(n, hidden[1].x + hidden[1].width / 2, hidden[1].y)), `seed ${s}: still in their sight high in the mist`);
+    }
+    // two nests on one spot: on the same rhythm, one waking a little after the other, so both sleep long enough to climb out of sight
+    const pair = nests.filter((n) => n.y === spots[1].y);
+    assert.equal(pair[0].every, pair[1].every, `seed ${s}`);
+    let both = 0, best = 0;
+    for (let t = 0; t < pair[0].every * 2; t += 0.05) {
+      both = pair.every((n) => nestAt(n, t).phase === 'sleep') ? both + 0.05 : 0;
+      best = Math.max(best, both);
+    }
+    assert.ok(best >= 1.9, `seed ${s}: both sleep at once for only ${best.toFixed(2)} s`);
+  }
+});
+
+test('4-6: across the tree: ropes between nest ledges, each rope landing and leaving out of the eaglets\' sight', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const nests = st.proto.w4!.nests!;
+    assert.ok(st.proto.hints.some((h) => /All the way across the tree/.test(h.text)), `seed ${s}: not explained`);
+    const on = (p: Platform) => nests.filter((n) => n.y === p.y && n.x > p.x && n.x < p.x + p.width);
+    // the ledges with nests that a rope reaches
+    const roped = st.platforms.filter((p) => on(p).length && (st.ropes ?? []).some((r) => r.g0 === p.y || r.g1 === p.y));
+    assert.ok(roped.length >= 3, `seed ${s}: ${roped.length} nest ledges across the tree`);
+    assert.ok(roped.some((p) => on(p).length === 2), `seed ${s}: no ledge with two nests`);
+    for (const p of roped) {
+      for (const r of (st.ropes ?? []).filter((q) => q.g0 === p.y)) {
+        // the rope's ends over this ledge: he lets go or jumps up there, never where they can see him
+        for (const rx of [r.x0, r.x1].filter((x) => x >= p.x && x <= p.x + p.width)) {
+          for (const n of on(p)) assert.ok(rx < n.x0 - 60 || rx > n.x1 + 60, `seed ${s}: a rope ends in the eaglets' sight at ${rx}`);
+        }
+      }
+    }
+  }
+});
+
+test('4-6: the high mist: two tall columns, each with a ledge halfway that the lower mist shows and that settles the upper mist', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const spots = st.proto.w4!.patience!;
+    const standOn = (m: (typeof spots)[number]) => st.platforms.find((p) => p.y === m.y && p.x <= m.x0 && p.x + p.width >= m.x1)!;
+    const halfway = spots.filter((m) => standOn(m).width < MIST_WIDE);
+    assert.equal(halfway.length, 2, `seed ${s}`);
+    for (const m of halfway) {
+      const mid = standOn(m);
+      // the spot below shows the ledge halfway, and only up to it
+      const below = spots.find((q) => q.hides!.includes(mid.id));
+      assert.ok(below && below.y > m.y, `seed ${s}: nothing shows the ledge halfway`);
+      assert.ok(below.area!.top >= mid.y - 40, `seed ${s}: the lower mist shows the upper half too`);
+      // the upper mist reaches down over the ledge halfway, and its steps are above it
+      assert.ok(m.area!.bottom >= mid.y, `seed ${s}`);
+      for (const id of m.hides!) assert.ok(st.platforms.find((p) => p.id === id)!.y < mid.y, `seed ${s}`);
+    }
+    assert.ok(st.proto.hints.some((h) => /halfway up/.test(h.text) && h.aboveY !== undefined && Math.abs(h.aboveY - halfway[0].y) <= 20), `seed ${s}: the ledge halfway is not explained`);
+    // and the shrine is above it all
+    const exit = st.collectibles.find((c) => c.type === 'exit_totem')!;
+    for (const m of spots) assert.ok(exit.y < m.area!.top - 200, `seed ${s}: the shrine is in the mist`);
+  }
+});
+
+test('the high mist in play: standing at the foot shows the ledge halfway but not above it; standing on that ledge shows the rest', () => {
+  for (const s of SEEDS.slice(0, 4)) {
+    const st = build(s);
+    const spots = st.proto.w4!.patience!;
+    const plats = st.platforms.map((p) => ({ ...p }));
+    const standOn = (m: (typeof spots)[number]) => plats.find((p) => p.y === m.y && p.x <= m.x0 && p.x + p.width >= m.x1)!;
+    const upper = spots.find((m) => standOn(m).width < MIST_WIDE)!;
+    const mid = standOn(upper);
+    const lower = spots.find((q) => q.hides!.includes(mid.id))!;
+    const up1 = plats.find((p) => p.id === upper.hides![0])!;
+    {
+      const w = new W4Play(st.proto.w4!, plats, st.vines);
+      const { h, player } = host(plats);
+      player.x = (lower.x0 + lower.x1) / 2;
+      player.y = lower.y;
+      run(w, h, lower.fill + PATIENCE.settle + 0.2);
+      assert.ok(w.mistAt(mid.y) < 0.05, `seed ${s}: the ledge halfway is still in the mist`);
+      assert.ok(w.mistAt(up1.y) > 0.9, `seed ${s}: the upper half shows from the foot`);
+    }
+    {
+      const w = new W4Play(st.proto.w4!, plats, st.vines);
+      const { h, player } = host(plats);
+      player.x = (upper.x0 + upper.x1) / 2;
+      player.y = upper.y;
+      run(w, h, upper.fill + PATIENCE.settle + 0.2);
+      assert.ok(w.mistAt(up1.y) < 0.05 && w.mistAt(mid.y) < 0.05, `seed ${s}: the upper mist did not settle`);
+      const look = w.look(player.x, player.y);
+      assert.ok(look && look.y < upper.y, `seed ${s}: the view does not look up the upper half`);
     }
   }
 });
