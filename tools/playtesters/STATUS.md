@@ -14,7 +14,7 @@ Unchecked leads don't block a sign-off. A signed-off stage is not tested again.
 - QA builds from the pushed branch, retests every item, and replies pass or fail on each, plus anything new.
 - A bug closes only after its retest passes.
 
-Batch reports: batch 1, https://claude.ai/artifact/4tVn4iZZC4gFANqqYhC4vi · batch 2, https://claude.ai/artifact/7SCS8XYyzzEid6uq4bT9CR
+Batch reports: batch 1, https://claude.ai/artifact/4tVn4iZZC4gFANqqYhC4vi · batch 2, https://claude.ai/artifact/7SCS8XYyzzEid6uq4bT9CR · batch 3, https://claude.ai/artifact/MjVwvkHsNPpwR2Q73akAwQ
 
 ## Stages
 
