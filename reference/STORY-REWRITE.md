@@ -345,3 +345,168 @@ The General's younger years again. Two captions changed.
 **No more seasons.** The mailman's parcel has been on its way "since before the rains started," not since the spring.
 
 **The memory barely changed.** It was already good. The squirrel sign now gets nailed up in the memory itself, since World 1 introduces the sign.
+
+---
+
+## World 3: Mossy Grotto
+
+### Into the dark
+
+*The Mossy Grotto was lit from above by glowworms. They hung from the ceiling in long threads, and each one hummed a slightly different note.*
+
+**Dot:** I don't do dark, Pokey. I do daylight. I'll do a little dusk if I have to. This isn't dusk. This is the inside of a boot.
+
+**Pokey:** Stay close. I'm dim, but I'm steady.
+
+**Dot:** Dim and steady. I'll take it. I've worked for less.
+
+*Pokey stopped to listen to the glowworms, and the glowworms noticed. One at a time, over his head, they turned up, until he stood in a warm yellow light that hadn't been there a minute before.*
+
+*Between the stalactites hung the old thorn vines that Meeca's grandma always said were asleep. One of them moved.*
+
+*On the floor, in the mud, were footprints. Each one was as wide as Pokey was tall. They went once around the two of them, in a perfect circle, and stopped.*
+
+**Dot:** I'm looking at them with my eyes closed.
+
+**Pokey:** That doesn't make them smaller.
+
+*Far back in the dark, something shifted its weight. Whatever it was, it could stand perfectly still, too.*
+
+### Hidden note (in plain sight)
+
+> Pokey, it's dark in there, and I can't do anything about that. But Grandma told me once that the glowworms only light up for people who stand still and listen. You're the best I know at standing still.
+>
+> P.S. Ask Dot what I put in her bush.
+>
+> Love, M.
+
+### All ferns look alike (halfway through the world)
+
+**Dot:** Okay. I have to tell you something, and I need you to not look at me like that.
+
+**Pokey:** Like what?
+
+**Dot:** Like that. Remember my bush? When they marched her past it, she emptied her apron pockets into it. Grandma's things. She keeps them in her apron, she always has, she doesn't like leaving them in the house by themselves. And then there were boots everywhere, so I hid them. In ferns. A lot of ferns. All the way to the mountain and back. Very fast.
+
+**Pokey:** In ferns.
+
+**Dot:** It was a good plan. The ferns were the problem. All ferns look alike. That's the thing about ferns.
+
+**Pokey:** Which ferns?
+
+**Dot:** Ferny ones. Around here, ish. If you crouch down next to the right one, it rustles. Or that might be the wind. I've gotten very good at ferns. I can tell you which ones are rude.
+
+*So the search for Grandma's things began. A sloth crouched beside a fern, and a hummingbird hovered beside the sloth, and the two of them said "Hello?" in very small voices.*
+
+### The guardian: Shadow Prowler
+
+*Before the fight.*
+
+**Shadow Prowler:** Word came down the river that the snake lost to a sloth. I did not believe it.
+
+*Two amber eyes opened in the dark, a long way apart.*
+
+**Shadow Prowler:** I still do not. You will not hit what you cannot find, little sloth. I am the dark between the threads. I try to be.
+
+**Pokey:** I can wait.
+
+**Shadow Prowler:** Everyone says that. Then they hurry. Everyone hurries. Nobody has ever lasted me past the second hour.
+
+**Pokey:** I never learned how to hurry.
+
+*After the fight.*
+
+**Shadow Prowler:** Two hours, and you did not look at the sky once. I got tired first. That has never happened to me.
+
+**Pokey:** Two hours? Try two days on a vine sometime.
+
+**Shadow Prowler:** Meeca went north, toward the clouds. The thorns on our necks are called the Iron Pact. Ask the others how it began. I am not permitted to say.
+
+### The horn
+
+*They came out of the Grotto at dawn, the way you come out of a long sleep: slowly, not quite sure of the time.*
+
+**Dot:** We did it. You did it. I was there, and I was loud, and I think that should count for something.
+
+**Pokey:** You were really loud. It helped.
+
+*To the north, past the last of the trees, a dark point stood on the horizon, narrow and straight. The Highland Fortress. It looked no closer than it had the day before.*
+
+**Pokey:** She's up there.
+
+**Dot:** And the weather lives up there too. I've been trying not to say it.
+
+*The Prowler had followed them out as far as the ledge, keeping to the shade.*
+
+**Shadow Prowler:** North, past the falls. Follow the wind, not the path. And, sloth. When the horn sounds, do not stand near me.
+
+**Pokey:** What horn?
+
+*The note came down out of the north. It was so low he felt it in his feet before he heard it, and back in the Grotto the glowworms went out, one after another, all along the ceiling.*
+
+*It rolled on and on, like thunder. Pokey took hold of the ledge with both hands.*
+
+*The collar on the Prowler's neck turned the red of a coal. His eyes went flat, as if someone far away had put a hand over them.*
+
+**Shadow Prowler:** Run. Run, little one. I cannot—
+
+**General Iron-Claw (from the north, through the collar):** Prowler. The ledge.
+
+*The Prowler's claws came down on the ledge. He fought them every inch of the way, and he wasn't strong enough.*
+
+**Shadow Prowler:** I am sorry. I am so sorry.
+
+*The ledge went the way a dropped plate goes. Dot screamed Pokey's name the whole way down. Pokey didn't say anything at all.*
+
+### The tower: the map
+
+*The General had ordered the pins by the thousand. One for every night the sloth slept somewhere new. The sloth slept a great deal.*
+
+*The pins had run out the week before. Now there were forks standing in the map, in a row, where the last pins should have been.*
+
+**General Iron-Claw:** Forty-four.
+
+**Lieutenant Pell:** Sir, I'm sorry to interrupt. I'm also sorry to report that the mess hall is out of forks.
+
+**General Iron-Claw:** Spoons.
+
+**Lieutenant Pell:** Sir, the spoons are for the soup. I'm sorry. People will notice. Sir. Everyone will notice.
+
+*Pell went away and came back with a tray of spoons.*
+
+**General Iron-Claw:** Four fingers to the tower. He hasn't gone around anything. Not the river. Not the Grotto. He walks straight through.
+
+**Lieutenant Pell:** That's very foolish of him, sir.
+
+**General Iron-Claw:** Yes.
+
+**General Iron-Claw:** Go to bed, Lieutenant. Leave the lantern.
+
+**Lieutenant Pell:** Yes, sir. Good night, sir. I'm sorry about the spoons.
+
+*When the door had closed, the General took a spoon from the tray and drove it into the map beside the last fork, bowl up.*
+
+**General Iron-Claw:** Forty-five.
+
+### Hidden keepsake
+
+> A tarnished medal on a faded blue ribbon. Someone scratched a line on the back with a pin: "For the next cub."
+
+### Hidden photo album: The Statesman
+
+- **A speech to the valley.** They cheered him. He looked slightly alarmed by it.
+- **The banquet.** He raised a glass to his fiercest rival, and meant it.
+- **The Original Council.** Ten of them around one table. They argued about everything, for twenty years.
+- **The study.** After every long day he went home and read. The books outnumbered the medals.
+
+### What changed in World 3, and why
+
+**Where Grandma's things came from.** This is the big one, and it fixes a hole. The old script had Dot say Meeca asked her to hide Grandma's things "before the soldiers came." In our prologue there's no time for that. The birds go quiet, the soldiers are there, and Dot leaves after them. So now, when the column marches Meeca past the bush Dot is hiding in (the bush from World 1), Meeca empties her apron pockets into it. She carries Grandma's things in her apron because she doesn't like leaving them alone in that empty house, which is her whole wound in one small habit. Then Dot, with boots everywhere, stuffs them into ferns "all the way to the mountain and back," which is also why a keepsake turns up in a fern in every world, and why the General says at the very end that everything of hers turns up in a fern. Meeca's World 1 note ("tell her I saw her in that bush") and this world's note ("Ask Dot what I put in her bush") set it up. Tell me if you'd rather it go a different way.
+
+**The Prowler has heard of him.** He's the first boss who's heard the rumor, that the snake lost to a sloth, and he doesn't believe it. That's the start of word spreading ahead of Pokey. Pokey's "Sorry. It's the only trick I have" is gone. Now it's "Two hours? Try two days on a vine sometime," which brags and calls back to the vine memory in World 2.
+
+**The General's voice through the collar.** The old line was "You wait well, sloth. Let us see how you fall," which is a villain speech. Now it's an order: "Prowler. The ledge." Three words, and the Prowler has to obey them. That's colder, and it's how the General talks.
+
+**The map got a fix.** The General used to say Pokey hadn't gone around "the swamp" or "the Reaver," but those are World 6, three worlds away. Now it's the river and the Grotto.
+
+**Smaller things.** Dot's "if there are snacks" is gone (food again). Her "I would like that counted" sounded like a courtroom, so now it's "I think that should count for something." The narration says "Meeca's grandma" instead of "Grandma," so nobody thinks she's Pokey's. Pell is Lieutenant Pell, not "Officer." The old album said the council was five friends, but the Queen says it was ten, so now it's ten.
