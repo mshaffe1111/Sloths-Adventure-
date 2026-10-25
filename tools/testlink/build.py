@@ -32,6 +32,24 @@ if prev.exists():
 if dist.exists():
     dist.rename(prev)
 subprocess.run(['npx', 'vite', 'build', '-c', 'tools/testlink/vite.testlink.config.ts'], cwd=REPO, check=True)
+# the music samples (260-odd small mp3s) go into one pack file, served to the game's fetch() by a few lines in index.html, so the
+# artifact stays under its 511-file limit (test link only: the real game and its offline cache are untouched)
+mp3s = sorted((dist / 'assets').glob('*.mp3'))
+if mp3s:
+    blob, index = bytearray(), {}
+    for p in mp3s:
+        data = p.read_bytes()
+        index[p.name] = [len(blob), len(data)]
+        blob += data
+        p.unlink()
+    pack = f'audio-pack-{hashlib.md5(blob).hexdigest()[:8]}.bin'
+    (dist / 'assets' / pack).write_bytes(blob)
+    shim = ('<script>(function(){var I=' + json.dumps(index, separators=(',', ':')) + ',P=null,F=window.fetch.bind(window);'
+            'window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"",n=s.split("?")[0].split("/").pop(),e=I[n];'
+            'if(!e)return F(u,o);P=P||F("./assets/' + pack + '").then(function(r){return r.arrayBuffer()});'
+            'return P.then(function(b){return new Response(b.slice(e[0],e[0]+e[1]),{status:200,headers:{"content-type":"audio/mpeg"}})})};})();</script>')
+    html = (dist / 'index.html').read_text()
+    (dist / 'index.html').write_text(html.replace('<head>', '<head>\n    ' + shim, 1))
 with open(dist / 'index.html', 'a') as f:
     f.write(f'\n<!-- test build: {note} -->\n')
 

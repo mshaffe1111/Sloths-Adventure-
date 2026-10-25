@@ -1,0 +1,45 @@
+{
+ "tag": "sovscreech",
+ "items": [
+  {
+   "name": "sov-screech-perch-1",
+   "images": [
+    "idle"
+   ],
+   "seed": 1,
+   "prompt": "the same huge grey harpy eagle as in the picture, same painted storybook style, same colours, same feathered crest, same yellow talons, side view facing right, whole body in frame, on the same flat plain grey background, now SCREECHING: beak wide open, head thrust forward and up, crest feathers raised and fanned out, wings half raised and spread back, standing on the same branch, a fierce loud cry"
+  },
+  {
+   "name": "sov-screech-perch-2",
+   "images": [
+    "idle"
+   ],
+   "seed": 2,
+   "prompt": "the same huge grey harpy eagle as in the picture, same painted storybook style, same colours, same feathered crest, same yellow talons, side view facing right, whole body in frame, on the same flat plain grey background, now SCREECHING: beak wide open, head thrust forward and up, crest feathers raised and fanned out, wings half raised and spread back, standing on the same branch, a fierce loud cry"
+  },
+  {
+   "name": "sov-screech-perch-3",
+   "images": [
+    "idle"
+   ],
+   "seed": 3,
+   "prompt": "the same huge grey harpy eagle as in the picture, same painted storybook style, same colours, same feathered crest, same yellow talons, side view facing right, whole body in frame, on the same flat plain grey background, now SCREECHING: beak wide open, head thrust forward and up, crest feathers raised and fanned out, wings half raised and spread back, standing on the same branch, a fierce loud cry"
+  },
+  {
+   "name": "sov-screech-air-1",
+   "images": [
+    "idle"
+   ],
+   "seed": 1,
+   "prompt": "the same huge grey harpy eagle as in the picture, same painted storybook style, same colours, same feathered crest, same yellow talons, side view facing right, whole body in frame, on the same flat plain grey background, now hovering in the air and SCREECHING: beak wide open, head thrust forward, crest raised and fanned, both huge wings spread wide and swept forward, talons out below, no branch, a fierce loud cry"
+  },
+  {
+   "name": "sov-screech-air-2",
+   "images": [
+    "idle"
+   ],
+   "seed": 2,
+   "prompt": "the same huge grey harpy eagle as in the picture, same painted storybook style, same colours, same feathered crest, same yellow talons, side view facing right, whole body in frame, on the same flat plain grey background, now hovering in the air and SCREECHING: beak wide open, head thrust forward, crest raised and fanned, both huge wings spread wide and swept forward, talons out below, no branch, a fierce loud cry"
+  }
+ ]
+}
