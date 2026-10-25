@@ -1424,7 +1424,7 @@ export class GameEngine {
         p.vy += gravity * dt;
         if (p.vy > PHYS.maxFall) p.vy = PHYS.maxFall;
         // Leaf Glide: holding Jump while falling opens the leaf and slows the fall
-        const lift = this.currentStage.config.worldIndex === 9 && ventLift(this.currentStage.zones, p.x, p.y - 32, this.gameTime);
+        const lift = (this.currentStage.config.worldIndex === 9 && ventLift(this.currentStage.zones, p.x, p.y - 32, this.gameTime)) || !!this.w4?.inUpdraft(p.x, p.y - 32);
         const glideCap = glideStep(this.glide, { has: this.skills.has('glide'), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
         p.vy = glideBrake(p.vy, glideCap, dt);
         if (lift && this.glide.on) {
@@ -4787,6 +4787,11 @@ export class GameEngine {
           this.addFloatingText('HIDE!', p.x, p.y - 96, '#fbbf24');
           this.input.triggerHaptic(120);
         }
+      },
+      fellOff: () => {
+        if (this.isGameOver) return;
+        sound.playPlayerHurt();
+        this.loseLife('pit');
       },
       sfx: (kind) => {
         if (kind === 'rock') sound.playHitImpact();

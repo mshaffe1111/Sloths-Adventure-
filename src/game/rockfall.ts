@@ -16,6 +16,8 @@ export interface RockDrop {
   every: number;
   warn: number;
   offset: number;
+  /** falls through open air (a gap in 4-7): no ground under it for a shadow, so the warning is the grit trickling from above */
+  air?: boolean;
 }
 
 export const ROCK = {

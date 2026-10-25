@@ -1057,7 +1057,7 @@ export default function App() {
               }}
             />
           )}
-          <JournalToast active={screen === 'playing' && !coachStep && !lessonId && !reading} />
+          <JournalToast active={screen === 'playing' && !coachStep && !lessonId && !reading} guide={guideLine} />
           {inputEngineRef.current && (
             <ControlSwitch inputEngine={inputEngineRef.current} />
           )}

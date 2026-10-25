@@ -25,6 +25,14 @@ export interface FruitTree {
   ground: number;
 }
 
+/** warm air rising out of the mist (4-7): an open leaf inside it is lifted, like the vents' warm air in World 9 */
+export interface Updraft {
+  x0: number;
+  x1: number;
+  top: number;
+  bottom: number;
+}
+
 /** what a World 4 stage adds (ProtoExtras.w4) */
 export interface W4Extras {
   rocks?: RockDrop[];
@@ -35,6 +43,9 @@ export interface W4Extras {
   knots?: DotKnot[];
   monkeys?: Array<Capuchin & { petalId?: number }>;
   fruit?: FruitTree[];
+  updrafts?: Updraft[];
+  /** a fall this far below the ledge he last stood on is a fall into the mist (4-7: the gaps have no floor) */
+  deepFall?: number;
 }
 
 /** what the engine lends World 4 each frame */
@@ -56,6 +67,8 @@ export interface W4Host {
   /** a lookout called the Sovereign */
   screech(x: number): void;
   sfx(kind: 'rock' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash'): void;
+  /** he fell into the mist (deepFall) */
+  fellOff?(): void;
 }
 
 const FRUIT_BACK = 9;
@@ -71,6 +84,8 @@ export class W4Play {
   private fruit: Array<{ state: 'hang' | 'fall' | 'ground' | 'gone'; x: number; y: number; vy: number; at: number }>;
   private chimeRang: number[];
   private rockHit = new Set<string>();
+  /** the height of the ground he last stood on (deepFall) */
+  private groundY = NaN;
 
   constructor(private readonly w4: W4Extras, platforms: Platform[], vines: Vine[]) {
     this.patience = (w4.patience ?? []).map(() => newPatience());
@@ -100,6 +115,15 @@ export class W4Play {
     const p = h.player;
     const w4 = this.w4;
     let speed = 1;
+
+    // into the mist: well below the last ledge, with nothing under him, is a fall
+    if (w4.deepFall !== undefined) {
+      if (p.grounded || p.climbing || !Number.isFinite(this.groundY)) this.groundY = p.y;
+      else if (p.y > this.groundY + w4.deepFall) {
+        this.groundY = NaN;
+        h.fellOff?.();
+      }
+    }
 
     // falling rocks: the shadow warns, the rock falls, and it hurts only if it reaches him
     (w4.rocks ?? []).forEach((r, i) => {
@@ -276,6 +300,7 @@ export class W4Play {
       const z = zones[c.zone];
       if (near(c.x)) drawChime(ctx, c, z ? chimeLean(z, t).angle : 0);
     });
+    for (const u of w4.updrafts ?? []) if (near((u.x0 + u.x1) / 2)) drawUpdraft(ctx, u, t);
     for (const r of w4.rocks ?? []) if (near(r.x)) drawRock(ctx, r, t);
     (w4.patience ?? []).forEach((s, i) => {
       if (s.kind === 'frond' && near(s.x1)) drawFrond(ctx, s, this.patience[i], platforms);
@@ -300,6 +325,11 @@ export class W4Play {
   /** is he behind a pouring fall? (a hiding place from lookouts and the Sovereign) */
   behindFall(px: number, feetY: number): boolean {
     return (this.w4.falls ?? []).some((w, i) => this.flow[i] > 0.5 && inFall(w, px, feetY, 64));
+  }
+
+  /** is he in rising warm air (an updraft)? */
+  inUpdraft(px: number, y: number): boolean {
+    return (this.w4.updrafts ?? []).some((u) => px >= u.x0 && px <= u.x1 && y >= u.top && y <= u.bottom);
   }
 
   /** a frond that has unrolled (for the tests and the stage check) */
@@ -394,7 +424,7 @@ function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
     ctx.restore();
     return;
   }
-  if (s.phase === 'warn' || s.phase === 'fall') {
+  if ((s.phase === 'warn' || s.phase === 'fall') && !r.air) {
     // the shadow on the ground grows as the rock comes
     const u = s.phase === 'warn' ? s.u * 0.6 : 0.6 + 0.4 * s.u;
     ctx.fillStyle = `rgba(15,23,42,${0.15 + 0.4 * u})`;
@@ -403,9 +433,28 @@ function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
     ctx.fill();
   }
   if (s.phase === 'warn') {
-    // grit trickling from the ledge above
     ctx.fillStyle = '#9ca3af';
-    for (let k = 0; k < 4; k++) ctx.fillRect(r.x - 8 + k * 5, r.top + ((t * 300 + k * 40) % 90), 3, 3);
+    if (r.air) {
+      // through open air: a pale band down the whole of its path with grit streaming through it, so the warning is in view on any
+      // screen and reads against grey rock as well as pale mist; it thickens as the rock comes
+      const span = r.land - r.top;
+      ctx.fillStyle = `rgba(255, 251, 235, ${0.1 + 0.18 * s.u})`;
+      ctx.fillRect(r.x - 24, r.top, 48, span);
+      const n = 8 + Math.round(14 * s.u);
+      ctx.strokeStyle = 'rgba(30, 27, 24, 0.75)';
+      ctx.lineWidth = 1.5;
+      for (let k = 0; k < n; k++) {
+        const gx = r.x - 12 + ((k * 7) % 24);
+        const gy = r.top + ((t * 360 + k * (span / n)) % span);
+        const sz = 4 + (k % 3) * 2;
+        ctx.fillStyle = k % 2 ? '#a8a29e' : '#78716c';
+        ctx.fillRect(gx, gy, sz, sz);
+        ctx.strokeRect(gx, gy, sz, sz);
+      }
+    } else {
+      // grit trickling from the ledge above
+      for (let k = 0; k < 4; k++) ctx.fillRect(r.x - 8 + k * 5, r.top + ((t * 300 + k * 40) % 90), 3, 3);
+    }
   }
   if (s.phase === 'fall' && !painted) {
     ctx.fillStyle = '#6b7280';
@@ -428,6 +477,23 @@ function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
       const d = 10 + 40 * s.u;
       ctx.fillRect(r.x + Math.cos(a) * d * (k % 2 ? 1 : -1) - 4, r.land - Math.sin(a) * d * (1 - s.u) - 8, 8, 8);
     }
+  }
+  ctx.restore();
+}
+
+function drawUpdraft(ctx: CanvasRenderingContext2D, u: Updraft, t: number) {
+  // pale wisps rising, thicker in the middle of the column
+  ctx.save();
+  const w = u.x1 - u.x0;
+  for (let k = 0; k < 9; k++) {
+    const x = u.x0 + w * ((k + 0.5) / 9) + Math.sin(t * 1.7 + k) * 8;
+    const span = u.bottom - u.top;
+    const y = u.bottom - ((t * 160 + k * 97) % span);
+    const a = 0.14 + 0.14 * Math.sin((Math.PI * (k + 0.5)) / 9);
+    ctx.fillStyle = `rgba(241, 245, 249, ${a})`;
+    ctx.beginPath();
+    ctx.ellipse(x, y, 7, 26, 0, 0, Math.PI * 2);
+    ctx.fill();
   }
   ctx.restore();
 }
