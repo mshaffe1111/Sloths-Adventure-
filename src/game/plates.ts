@@ -12,18 +12,33 @@ export function plateUrl(key?: string): string | null {
 }
 
 const imgs = new Map<string, HTMLImageElement>();
+/** plates kept decoded at once (a plate is up to 2 MB; the one showing and the next few are all a story needs) */
+const KEEP = 4;
 
 /** the loaded picture for a plate, or null while it is still on its way */
 export function plateImage(key: string): HTMLImageElement | null {
   let im = imgs.get(key);
-  if (!im) {
+  if (im) {
+    // most recently used goes to the end, so the oldest is the one let go
+    imgs.delete(key);
+    imgs.set(key, im);
+  } else {
     const url = plateUrl(key);
     if (!url || typeof Image === 'undefined') return null;
     im = new Image();
     im.src = url;
     imgs.set(key, im);
+    for (const k of imgs.keys()) {
+      if (imgs.size <= KEEP) break;
+      imgs.delete(k);
+    }
   }
   return im.complete && im.naturalWidth > 0 ? im : null;
+}
+
+/** let go of every plate (a story has closed) */
+export function releasePlates() {
+  imgs.clear();
 }
 
 /** start loading the plates a cutscene will show, so the first one is not late */

@@ -45,7 +45,7 @@ function load(w: number) {
   const im = new Image();
   imgs.set(w, im);
   const url = w === 1 ? new URL('../assets/proto/props-atlas.webp', import.meta.url).href : new URL(`../assets/kits/w${w}.webp`, import.meta.url).href;
-  trackAtlas(im, url, () => { ready.add(w); }, () => { imgs.delete(w); });
+  trackAtlas(im, url, () => { ready.add(w); }, () => { imgs.delete(w); }, () => { imgs.delete(w); ready.delete(w); });
 }
 // Matt's second World 1 sheet set (2026-10-23): the kapok trunk with a hollow, a plain trunk, and the hiding bushes
 let img2: HTMLImageElement | null = null;
@@ -54,7 +54,7 @@ function load2() {
   if (img2 || typeof Image === 'undefined') return;
   const im = new Image();
   img2 = im;
-  trackAtlas(im, new URL('../assets/proto/props2-atlas.webp', import.meta.url).href, () => { ready2 = true; }, () => { img2 = null; });
+  trackAtlas(im, new URL('../assets/proto/props2-atlas.webp', import.meta.url).href, () => { ready2 = true; }, () => { img2 = null; }, () => { img2 = null; ready2 = false; });
 }
 /** a piece of the second sheet so it fills the box (x, y, w, h); false until it has loaded */
 function blit2(ctx: CanvasRenderingContext2D, n: keyof typeof PROTO2_FRAMES, x: number, y: number, w: number, h: number): boolean {
@@ -125,7 +125,7 @@ function load3() {
   if (img3 || typeof Image === 'undefined') return;
   const im = new Image();
   img3 = im;
-  trackAtlas(im, new URL('../assets/proto/props3-atlas.webp', import.meta.url).href, () => { ready3 = true; }, () => { img3 = null; });
+  trackAtlas(im, new URL('../assets/proto/props3-atlas.webp', import.meta.url).href, () => { ready3 = true; }, () => { img3 = null; }, () => { img3 = null; ready3 = false; });
 }
 
 /**
@@ -161,7 +161,7 @@ export function drawCrownArt(ctx: CanvasRenderingContext2D, p: { x: number; y: n
   if (!crownImg && typeof Image !== 'undefined') {
     const im = new Image();
     crownImg = im;
-    trackAtlas(im, new URL('../assets/proto/crown.webp', import.meta.url).href, () => { crownReady = true; }, () => { crownImg = null; });
+    trackAtlas(im, new URL('../assets/proto/crown.webp', import.meta.url).href, () => { crownReady = true; }, () => { crownImg = null; }, () => { crownImg = null; crownReady = false; });
   }
   if (!crownReady || !crownImg) return false;
   const w = p.width / CROWN.flat;

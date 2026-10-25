@@ -23,7 +23,7 @@ function hollowPicture(): HTMLImageElement | null {
   if (typeof Image === 'undefined') return null;
   if (!hollowImg) {
     hollowImg = new Image();
-    trackAtlas(hollowImg, HOLLOW_URL, () => { hollowReady = true; }, () => { hollowImg = null; });
+    trackAtlas(hollowImg, HOLLOW_URL, () => { hollowReady = true; }, () => { hollowImg = null; }, () => { hollowImg = null; hollowReady = false; });
   }
   return hollowReady ? hollowImg : null;
 }

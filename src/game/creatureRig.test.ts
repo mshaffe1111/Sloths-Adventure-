@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { Gait, ik2, bodyFor, resetBodies, FollowChain, type Body, type LegSpec } from './creatureRig.ts';
+import { Gait, ik2, bodyFor, resetBodies, bodyCount, FollowChain, type Body, type LegSpec } from './creatureRig.ts';
 import type { Enemy } from './types.ts';
 import { spiderLegs } from './creatures.ts';
 
@@ -117,3 +117,14 @@ for (const speed of [0, 45, 95]) {
     assert.equal(over, 0);
   });
 }
+
+test('bodies from an old stage are pruned after the next stage restarts the clock', () => {
+  resetBodies();
+  // a long first stage: its creatures are drawn until t = 300 s
+  for (let id = 1; id <= 20; id++) bodyFor('snake', { id, facing: 1, x: id * 50, y: 0 } as Enemy, 300);
+  assert.equal(bodyCount(), 20);
+  // the next stage starts at t = 0 and only ever draws one creature
+  const e = { id: 500, facing: 1, x: 0, y: 0 } as Enemy;
+  for (let t = 0; t < 10; t += 1 / 30) bodyFor('snake', e, t);
+  assert.equal(bodyCount(), 1, 'the old stage\'s bodies were kept');
+});

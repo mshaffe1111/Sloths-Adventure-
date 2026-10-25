@@ -38,7 +38,7 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
     if (img || typeof Image === 'undefined') return;
     const im = new Image();
     img = im;
-    trackAtlas(im, url, () => { loaded = true; }, () => { img = null; });
+    trackAtlas(im, url, () => { loaded = true; }, () => { img = null; }, () => { img = null; loaded = false; });
   };
   const seqOf = (s: string) => seqs[s] ?? [];
   return {

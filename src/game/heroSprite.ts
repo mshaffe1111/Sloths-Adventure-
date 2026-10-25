@@ -45,11 +45,25 @@ export function heroSpriteEnabled(): boolean {
 let atlas: HTMLImageElement | null = null;
 let ready = false;
 
-// the reward coat Pokey wears (made once from the painted sheet, then reused)
+// the reward coat Pokey wears (made once from the painted sheet, then reused). Each recoloured sheet is a full-size canvas (about 97 MB
+// for all of his sheets in one coat), and a canvas cannot be thrown away by the browser the way a picture can, so a coat he is no
+// longer wearing has its copies let go at once.
 let coat: Coat = 'none';
 const tinted: Partial<Record<Coat, HTMLCanvasElement | null>> = {};
 export function setHeroCoat(c: Coat) {
+  if (c === coat) return;
   coat = c;
+  const free = (per: Partial<Record<Coat, HTMLCanvasElement | null>>) => {
+    for (const k of Object.keys(per) as Coat[]) {
+      if (k === c) continue;
+      const cv = per[k];
+      if (cv) cv.width = cv.height = 0; // frees its pixels now, not whenever the canvas is collected
+      delete per[k];
+    }
+  };
+  free(tinted);
+  free(stdTinted);
+  for (const per of otherTinted.values()) free(per);
 }
 function sheet(): CanvasImageSource | null {
   if (!atlas) return null;
@@ -80,7 +94,8 @@ export function stdSheet(img: HTMLImageElement): CanvasImageSource {
   if (stdTinted[coat] === undefined) stdTinted[coat] = makeTintedCanvas(img, coat);
   return stdTinted[coat] ?? img;
 }
-const otherTinted = new WeakMap<HTMLImageElement, Partial<Record<Coat, HTMLCanvasElement | null>>>();
+// (a Map, not a WeakMap, so a change of coat can reach every copy; the sheets it is keyed by are the hero's own, kept for good anyway)
+const otherTinted = new Map<HTMLImageElement, Partial<Record<Coat, HTMLCanvasElement | null>>>();
 /** any other sheet of the hero's art (the cutscene poses, heroStory.ts) in the reward coat he is wearing, made once per coat */
 export function heroCoatSheet(img: HTMLImageElement): CanvasImageSource {
   if (coat === 'none') return img;

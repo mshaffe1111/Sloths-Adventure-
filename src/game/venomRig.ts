@@ -21,7 +21,7 @@ function load() {
   if (atlas || typeof Image === 'undefined') return;
   const img = new Image();
   atlas = img;
-  trackAtlas(img, URL_ATLAS, () => { ready = true; }, () => { atlas = null; });
+  trackAtlas(img, URL_ATLAS, () => { ready = true; }, () => { atlas = null; }, () => { atlas = null; ready = false; });
 }
 
 /** a piece drawn with its anchor at (x, y) of the current frame */

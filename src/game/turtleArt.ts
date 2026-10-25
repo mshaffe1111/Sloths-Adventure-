@@ -150,7 +150,7 @@ function load() {
   if (img || typeof Image === 'undefined') return;
   const im = new Image();
   img = im;
-  trackAtlas(im, new URL('../assets/enemies/turtle-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; });
+  trackAtlas(im, new URL('../assets/enemies/turtle-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; }, () => { img = null; ready = false; });
 }
 
 /** the moving snapper (2026-10-25): its own poses brought to life with the motion model; the single poses draw while it loads */

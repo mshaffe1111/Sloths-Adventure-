@@ -13,8 +13,8 @@ import { drawCastleBackdrop, FORTRESS_CASTLE } from './castleSprites.ts';
 import { drawPaintedBird } from './birdSprites.ts';
 import { drawDotFrame, poseFrame, warmDot } from './dotSprite.ts';
 import { photoUrl } from './photos.ts';
-import { plateImage, preloadPlates } from './plates.ts';
-import { drawLivePlate, preloadLivePlates } from './livePlates.ts';
+import { plateImage, preloadPlates, releasePlates } from './plates.ts';
+import { drawLivePlate, preloadLivePlates, releaseLivePlates } from './livePlates.ts';
 import { CEL_K, CELS, drawCel, warmCels } from './storyCels.ts';
 
 export const SCENE_W = 960;
@@ -479,10 +479,20 @@ export function preloadScenePhotos(keys: Array<string | undefined>) {
   for (const k of keys) if (k) photoImage(k);
 }
 
-/** start loading the whole-picture backdrops (plates) a cutscene will show */
+/**
+ * start loading the whole-picture backdrops (plates) the next panels will show: `keys` the plates of the panels coming up, the first
+ * one next. Only the next one's moving parts are started (two of those sheets are held at once: the one showing and the next).
+ */
 export function preloadScenePlates(keys: Array<string | undefined>) {
   preloadPlates(keys);
-  preloadLivePlates(keys);
+  preloadLivePlates(keys.filter(Boolean).slice(0, 1));
+}
+
+/** a story has closed: let go of its plates, their moving parts and its photographs (they load again, from the offline cache, if it is played again) */
+export function releaseStoryArt() {
+  releasePlates();
+  releaseLivePlates();
+  photoImgs.clear();
 }
 
 /** a plate fills the picture (cover), the painting's own floor under the actors; until it has loaded the picture is a dark ground, never another world's scenery */

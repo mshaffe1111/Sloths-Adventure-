@@ -4,6 +4,7 @@ import type { GameScreen, LevelConfig, BossEntity } from './game/types.ts';
 import { generateAllLevels } from './game/worldsData.ts';
 import { InputEngine } from './game/inputEngine.ts';
 import { GameEngine } from './game/engine.ts';
+import { enterWorld } from './game/atlasLoader.ts';
 import { setExtraLives, startingLives } from './game/assist.ts';
 import { setLayoutVariant } from './game/stageGenerator.ts';
 import { forgetLayout, layoutForEntry } from './game/layoutMemory.ts';
@@ -221,6 +222,8 @@ export default function App() {
   // Canvas and Engine refs
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const engineRef = useRef<GameEngine | null>(null);
+  /** the short wait before a new engine is built (launchEngine): a second start inside it cancels the first, so two engines never run */
+  const launchTimer = useRef(0);
   // the first-stage lesson (see game/touchCoach.ts): which step is showing, and for which kind of touch controls
   const [coachStep, setCoachStep] = useState<CoachStep>(null);
   // a first-time lesson card (the stage has paused itself; see game/lessons.ts)
@@ -329,10 +332,12 @@ export default function App() {
     if (screen === 'title') window.dispatchEvent(new Event('sloth-check-update'));
   }, [screen]);
 
-  // nothing needs the game loop on the menu and story screens
+  // nothing needs the game loop on the menu and story screens, nor the stage it was playing: letting go of the engine frees that
+  // stage's world (its terrain, creatures and effects) while the menus are up; the next stage builds a new one
   useEffect(() => {
     if (['title', 'world_map', 'story_cutscene', 'world_story', 'world_mid', 'boss_intro', 'boss_defeat', 'ending_story', 'memory'].includes(screen)) {
       engineRef.current?.stop();
+      engineRef.current = null;
     }
   }, [screen]);
 
@@ -436,6 +441,8 @@ export default function App() {
 
   // Start a specific level
   const startLevel = useCallback((lvl: LevelConfig) => {
+    // a stage in another world lets the last world's sheets go before this one's story or boss intro loads its own (atlasLoader.ts)
+    enterWorld(lvl.worldIndex);
     if (!new URLSearchParams(window.location.search).get('music')) setMusicSalt((Math.random() * 0x7fffffff) | 0);
     // a stage rolls its layout the first time it is entered and keeps it from then on (a retry keeps it too)
     setLayoutVariant(layoutForEntry(lvl));
@@ -516,6 +523,8 @@ export default function App() {
   };
 
   const launchEngine = useCallback((lvl: LevelConfig) => {
+    enterWorld(lvl.worldIndex);
+    clearTimeout(launchTimer.current);
     if (engineRef.current) {
       engineRef.current.stop();
       engineRef.current = null;
@@ -538,7 +547,7 @@ export default function App() {
     setScreen('playing');
 
     // Slight delay to allow canvas element mounting
-    setTimeout(() => {
+    launchTimer.current = window.setTimeout(() => {
       if (!canvasRef.current || !inputEngineRef.current) return;
       // The input engine outlives each stage, so drop any direction left over from the last one.
       inputEngineRef.current.clearAll();
@@ -638,6 +647,7 @@ export default function App() {
         return;
       }
 
+      engineRef.current?.stop();
       engineRef.current = engine;
       engine.start();
     }, 20);

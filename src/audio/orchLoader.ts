@@ -24,6 +24,46 @@ export function parseOrchName(path: string): { inst: string; midi: number; loop:
 
 const started = new WeakMap<AudioCore, Map<string, Promise<void>>>();
 
+/**
+ * The rate each recording is decoded at. A decoded note is raw 32-bit sound at the rate it is decoded at, and the context's own rate (48 kHz on
+ * an iPhone) made the orchestra 75 to 100 MB (memory audit, 2026-10-25). Every pitched voice already filters its top away (the `bright`
+ * caps in instruments.ts reach 13 kHz at most, most stop under 10 kHz), so they keep nothing a lower rate loses: 24 kHz holds sound up to
+ * 12 kHz, about half the memory. The violin staccato reaches 11 kHz, so it gets 32 kHz for room when a note is pitched up; the drums and
+ * bells are not filtered and keep the full rate.
+ */
+const FULL_RATE = new Set(['cymbal', 'snare', 'triangle', 'gong', 'glock', 'timp', 'bdrum']);
+export function decodeRate(inst: string): number | null {
+  if (FULL_RATE.has(inst)) return null;
+  return inst === 'violinStac' ? 32000 : 24000;
+}
+const lowDecoders = new Map<number, BaseAudioContext | null>();
+/** an offline context at `rate`, only for decoding (a buffer plays in any context; the source resamples it as it plays) */
+function decoderAt(rate: number): BaseAudioContext | null {
+  if (lowDecoders.has(rate)) return lowDecoders.get(rate)!;
+  let d: BaseAudioContext | null = null;
+  try {
+    if (typeof OfflineAudioContext !== 'undefined') d = new OfflineAudioContext(1, 1, rate);
+  } catch {
+    d = null;
+  }
+  lowDecoders.set(rate, d);
+  return d;
+}
+async function decodeFor(core: AudioCore, inst: string, bytes: ArrayBuffer): Promise<AudioBuffer> {
+  const rate = decodeRate(inst);
+  const low = rate && core.ctx.sampleRate > rate ? decoderAt(rate) : null;
+  if (low) {
+    try {
+      // (a copy: decoding takes the bytes over, and the context's own decoder needs them if this one fails)
+      const buf = await low.decodeAudioData(bytes.slice(0));
+      if (buf && typeof buf.duration === 'number') return buf;
+    } catch {
+      /* this browser will not decode at that rate: the context's own rate it is */
+    }
+  }
+  return core.ctx.decodeAudioData(bytes);
+}
+
 function store(core: AudioCore, inst: string, midi: number, loop: number, buf: AudioBuffer) {
   const list = core.orch.get(inst) ?? [];
   list.push({ buf, midi, loopStart: loop, loopEnd: loop > 0 ? Math.min(buf.duration, loop + LOOP_LEN) : 0 });
@@ -45,7 +85,7 @@ export function loadOrch(core: AudioCore, insts: Iterable<string>): Promise<void
             const n = parseOrchName(path);
             if (!n || n.inst !== inst) return;
             try {
-              store(core, inst, n.midi, n.loop, await core.ctx.decodeAudioData(await bytesOf(url)));
+              store(core, inst, n.midi, n.loop, await decodeFor(core, inst, await bytesOf(url)));
             } catch {
               /* a note that will not decode is just missing: the nearest one is used instead */
             }

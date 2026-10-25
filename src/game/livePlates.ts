@@ -3,21 +3,38 @@
  * cutter (src/assets/story/live/<plate>.webp, livePlateData.ts), drawn over the still painting so it stays sharp. Neighbouring frames are blended,
  * so 8 frames a second looks smooth, and the end blends into the start, so it loops.
  *
- * On with the same test switch as Pokey's new clips (heroClips.ts): off by default.
+ * On with the same switch as Pokey's new clips (heroClips.ts): on since 2026-10-24, `?clips=0` turns both off.
+ *
+ * A sheet is 3120 x 1800, 21 MB decoded, so only KEEP sheets are held at once (the plate showing and the next one), and a story that
+ * closes lets them all go (memory audit, 2026-10-25: all thirteen came to 278 MB, kept for good).
  */
 import { LIVE_PLATES } from './livePlateData.ts';
 import { heroClipsEnabled } from './heroClips.ts';
 
 const imgs = new Map<string, HTMLImageElement>();
+const KEEP = 2;
 function sheet(key: string): HTMLImageElement | null {
   if (!LIVE_PLATES[key] || typeof Image === 'undefined') return null;
   let im = imgs.get(key);
-  if (!im) {
+  if (im) {
+    // most recently used goes to the end, so the oldest is the one let go
+    imgs.delete(key);
+    imgs.set(key, im);
+  } else {
     im = new Image();
     im.src = new URL(`../assets/story/live/${key}.webp`, import.meta.url).href;
     imgs.set(key, im);
+    for (const k of imgs.keys()) {
+      if (imgs.size <= KEEP) break;
+      imgs.delete(k);
+    }
   }
   return im.complete && im.naturalWidth > 0 ? im : null;
+}
+
+/** let go of every sheet (a story has closed) */
+export function releaseLivePlates() {
+  imgs.clear();
 }
 
 /** start loading the moving parts of the plates a cutscene will show */

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { StoryPanel } from '../game/story.ts';
-import { drawStoryScene, preloadScenePhotos, preloadScenePlates, SCENE_W, SCENE_H } from '../game/storyArt.ts';
+import { drawStoryScene, preloadScenePhotos, preloadScenePlates, releaseStoryArt, SCENE_W, SCENE_H } from '../game/storyArt.ts';
 import { sound } from '../game/audio.ts';
 import { stingDue } from '../audio/scenes.ts';
 import { typeSchedule } from '../game/storyTyping.ts';
@@ -59,11 +59,15 @@ const FPS = 30;
 /** Full-screen cinematic: the stage scenery behind the actors, a title card for each chapter, and a dialogue panel. */
 export const StoryPlayer: React.FC<StoryPlayerProps> = ({ panels, onFinish, finishLabel = 'Continue', finishIcon = 'arrow', skipLabel = 'Skip' }) => {
   const [idx, setIdx] = useState(0);
-  // photographs the story holds up: start loading them now
+  // the photographs and backdrops of the next panels: start loading them now (only a few ahead: holding every picture of a story at
+  // once came to about 300 MB, memory audit 2026-10-25)
   useEffect(() => {
-    preloadScenePhotos(panels.map((p) => p.scene.photo?.key));
-    preloadScenePlates(panels.map((p) => p.scene.plate));
-  }, [panels]);
+    const ahead = panels.slice(idx, idx + 3);
+    preloadScenePhotos(ahead.map((p) => p.scene.photo?.key));
+    preloadScenePlates(ahead.slice(1).map((p) => p.scene.plate));
+  }, [panels, idx]);
+  // a closed story lets its pictures go
+  useEffect(() => () => releaseStoryArt(), []);
   const [shown, setShown] = useState(0);
   const panel = panels[idx];
   const prevChapter = idx > 0 ? panels[idx - 1].chapter : null;
