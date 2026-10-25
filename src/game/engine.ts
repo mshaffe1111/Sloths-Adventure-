@@ -59,7 +59,7 @@ import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
-import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
+import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -3866,7 +3866,7 @@ export class GameEngine {
       for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
-    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id));
+    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     // World 3's sleeping thorn vines (thornVine.ts)
     for (let i = 0; i < (this.proto?.thorns?.length ?? 0); i++) {
       const v = this.proto!.thorns![i];
@@ -4049,7 +4049,7 @@ export class GameEngine {
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
-    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id));
+    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
@@ -4323,14 +4323,17 @@ export class GameEngine {
         e.stateT = u * (e.type === 'jaguar' ? 0.58 : 0.36);
         // two eyes in the dark first, then the cat
         if (u < 0.12) {
-          ctx.save();
-          ctx.fillStyle = `rgba(255, 190, 60, ${0.5 + 4 * u})`;
-          for (const s of [-1, 1]) {
-            ctx.beginPath();
-            ctx.ellipse(d.from.x + s * 7, d.from.y - 18, 4, 2.4, 0, 0, Math.PI * 2);
-            ctx.fill();
+          // Matt's eyes in the dark (World 3's ring sheet), or two amber dots until it has loaded
+          if (!drawW3Piece(ctx, 'catEyes', d.from.x, d.from.y + 4, 70, 0.6 + 3.4 * u)) {
+            ctx.save();
+            ctx.fillStyle = `rgba(255, 190, 60, ${0.5 + 4 * u})`;
+            for (const s of [-1, 1]) {
+              ctx.beginPath();
+              ctx.ellipse(d.from.x + s * 7, d.from.y - 18, 4, 2.4, 0, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.restore();
           }
-          ctx.restore();
         } else if (e.type === 'jaguar') {
           if (!drawJaguarSprite(ctx, e, this.gameTime)) drawJaguar(ctx, e, this.gameTime);
         } else if (!drawOcelotSprite(ctx, e, this.gameTime)) drawOcelot(ctx, e, this.gameTime);
@@ -4717,7 +4720,8 @@ export class GameEngine {
       const cycle = Math.floor((this.gameTime + v.offset) / vinePeriod(v));
       if (ph.phase === 'stir' && Math.abs(v.x - p.x) < v.reach + 260 && !tipHeard(id, 'vine:freeze')) {
         markTipHeard(id, 'vine:freeze');
-        this.guide('A vine is stirring! Freeze until it goes back to sleep', 3.2);
+        // (3-8: on a liana the answer is to hang on, not to freeze)
+        this.guide(p.isVineSwinging ? 'A thorn vine is stirring! Hang on to your liana until it sleeps' : 'A vine is stirring! Freeze until it goes back to sleep', 3.2);
       }
       const lash = this.vineLash.get(i);
       if (lash && this.gameTime - lash.at > VINE.windup + VINE.out) this.vineLash.delete(i);

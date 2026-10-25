@@ -2210,6 +2210,13 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     };
     // the scratched floor: pawprints round the ring
     prints(r0 + 120, r0 + W - 120);
+    // Matt's ring pieces: a clawed pillar at the way in, a low scratched wall and old bones inside, and the way out a cracked pillar that
+    // lies broken once the ring is cleared (it stands over the wall block, and is drawn only while the block stands, then the broken one)
+    W3D.push({ n: 'pillar', x: r0 + 30, b: G + 6, w: 150 });
+    W3D.push({ n: 'ringWall', x: r0 + W * 0.5, b: G + 8, w: 250 });
+    W3D.push({ n: 'bones', x: r0 + W * 0.28, b: G + 6, w: 120 });
+    W3D.push({ n: 'pillarCracked', x: r0 + W + 60, b: G + 6, w: 170, front: true, wall: wall.id });
+    W3D.push({ n: 'pillarBroken', x: r0 + W + 60, b: G + 8, w: 300, wall: wall.id, whenBroken: true });
     x = r0 + W + 120;
     run(R.r(260, 340));
     expert += (x - x0) / RUN + 24;
@@ -2583,6 +2590,11 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       else w3decor.push({ n: 'glowLit', x: at, b: p.y + 20, w: 60, hang: true });
     }
     for (let fx = 200; fx < W - 200; fx += R.r(420, 620)) w3decor.push({ n: R.pick(['stalagmites', 'clawRock', 'mushrooms'] as const), x: Math.round(fx), b: 8, w: Math.round(R.r(110, 170)) });
+    // Matt's sinkhole sheet: the sinkhole's wet walls rising either side of the climb, and water trickling down to the floor
+    const top = Math.min(...P.map((p) => p.y)) - 300;
+    const tileW = 340, tileH = Math.round((340 * 1200) / 1054);
+    for (const wx of [tileW / 2 - 40, W - tileW / 2 + 40]) for (let wb = 8; wb > top; wb -= tileH - 6) w3decor.unshift({ n: 'wallTile', x: Math.round(wx), b: Math.round(wb), w: tileW, flip: wx > W / 2 });
+    for (const tx of [tileW + 60, W - tileW - 60]) w3decor.push({ n: 'trickle', x: Math.round(tx), b: 8, w: 96 });
   }
   const shift = 400 - crown.y;
   for (const d of w3decor) d.b += shift;
