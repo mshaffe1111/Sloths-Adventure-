@@ -3678,6 +3678,12 @@ export class GameEngine {
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
     this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + this.camLookX;
     this.camera.targetY = this.camAnchorY - vh * 0.55;
+    // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
+    const look = this.w4?.look(p.x, p.y);
+    if (look) {
+      this.camera.targetX += (look.x - vw / 2 - this.camera.targetX) * look.u;
+      this.camera.targetY += (look.y - vh / 2 - this.camera.targetY) * look.u;
+    }
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
@@ -3874,7 +3880,7 @@ export class GameEngine {
       const l = this.vineLash.get(i);
       drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : this.player.x >= v.x ? 1 : -1, this.gameTime);
     }
-    this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.currentStage.zones ?? [], this.platforms);
+    this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
     for (const z of this.currentStage.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights) continue;

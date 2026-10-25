@@ -31,12 +31,13 @@ import type { W3Decor } from './w3Art.ts';
 import type { ThornVine } from './thornVine.ts';
 import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
 import { PATIENCE, type PatienceSpot } from './patience.ts';
+import type { Nest } from './eaglet.ts';
 import type { Chime } from './w4Kit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-6';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-6': '4-6' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -196,6 +197,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildKapok(config, seed, false, true);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
+  if (plan === '4-6') return buildKapok(config, seed, false, false, false, true);
   if (plan === '1-8') return buildLongBranch(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];
@@ -2473,6 +2475,16 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
 /** the kapok's width (the engine keeps him inside it) and the margin nothing is built in */
 const KAPOK_W = 3200;
 const KAPOK_MARGIN = 90;
+/**
+ * 4-6's mist: the wide ledge at the foot of each hidden column (it catches every miss from the column), the three lanes the small
+ * hidden ledges stand in (their middles this far apart) and how wide they are, how long standing still takes to settle the mist (s),
+ * and the seconds the climb below leaves for the mist and the nests
+ */
+const MIST_FOOT = 560;
+const MIST_LANE = 150;
+const MIST_STEP = 130;
+const MIST_FILL = 3;
+const MIST_LEAVES = 64;
 
 /**
  * 1-4 Up the Kapok: going up. Learn: climb a trunk to its branch, twice, straight up from the floor. Test: a zigzag of rope, branch and
@@ -2493,8 +2505,16 @@ const KAPOK_MARGIN = 90;
  * so the new thing to learn is to stop short and go once it has fallen. The first one is on a ledge of its own, with nothing else to
  * do there. At the top the way to the shrine is a gap too wide to jump, and a curled fern frond at its edge: stand still beside it and
  * it unrolls into a bridge (patience.ts: "slow is not stopped"). Clearing it teaches the Leaf Glide (skills.ts).
+ *
+ * `mist` (4-6 Above the Mist): the same climb up the cliff, then up through a bank of mist toward the eagle nests. In the mist the way
+ * up is a column of small hidden ledges: stand still on the wide ledge at its foot and the mist settles and shows them (patience.ts,
+ * kind 'mist'); move and it slowly rises again, so the way must be remembered. The ledges are solid all along, and the wide ledge at
+ * the foot of each column catches every miss, so a slip costs a look, never a life. The first column is two ledges, then four, then
+ * five. Above the mist the nests: eaglets asleep on wide ledges (eaglet.ts); move near one while they look about and their wings blow
+ * him back a few steps, so go while they sleep and stand still while they look. The first nest is alone on its ledge, then a ledge
+ * with two on different rhythms, then the crown and the shrine. No glide is needed (4-7 is the first stage that needs the leaf).
  */
-export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false): GeneratedStage & { proto: ProtoExtras } {
+export function buildKapok(config: LevelConfig, seed: number, village = false, grotto = false, cliff = false, mist = false): GeneratedStage & { proto: ProtoExtras } {
   const R = stream(seed);
   const W = KAPOK_W;
   const P: Platform[] = [];
@@ -2543,6 +2563,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
 
   /** 4-1: the fern frond at the cliff top */
   let spot: PatienceSpot | undefined;
+  /** 4-6: the mist's spots, one at the foot of each hidden column, and the eagle nests above it */
+  const mistSpots: PatienceSpot[] = [];
+  const nests: Nest[] = [];
   /** where he stands now, and which way the climb is heading across the tree */
   let cur: Platform;
   let dir: 1 | -1 = 1;
@@ -2612,6 +2635,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     cur = { ...P[0], x: 300, width: 400 } as Platform; // the patch of floor the first trunk stands on
     if (village) hint('Up through the village! Slide up a post to climb', 'Up through the village! Hold up on a post to climb', 'Up through the village! Hold up on a post to climb');
     else if (grotto) hint('Up the sinkhole, toward the moonlight! Slide up a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb', 'Up the sinkhole, toward the moonlight! Hold up on a root to climb');
+    else if (mist) hint('Up toward the eagle nests, above the mist! Slide up a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb');
     else if (cliff) hint('The ledge broke away! Climb back up. Slide up a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb');
     else hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
     climb(Math.round(R.r(280, 320)), 4);
@@ -2646,21 +2670,72 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     climb(Math.round(R.r(260, 300)));
     // more of the same until even a quick climber needs most of two minutes (the twist and the crown add the rest)
     let n = 0;
-    while (expert < EXPERT_SECONDS - 32 && n < 30) {
+    // (4-6 leaves room for the mist and the nests, which take a while)
+    while (expert < EXPERT_SECONDS - (mist ? MIST_LEAVES : 32) && n < 30) {
       if (n % 3 === 2) hops(R.i(2, 3));
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
       // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
       // (the cliff has its falling rocks instead)
-      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto && !cliff) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
     }
   });
 
+  // ---- 4-6's twist: up through the mist, three hidden columns, each shown by standing still at its foot
+  if (mist) beat('Twist: the mist', () => {
+    // up a trunk to the first wide ledge, at the foot of the mist
+    const tX = Math.round(dir === 1 ? cur.x + cur.width - 60 : cur.x + 60);
+    const out: 1 | -1 = W - KAPOK_MARGIN - (tX - 40) >= MIST_FOOT ? 1 : -1;
+    const span = (y: number) => (out === 1 ? [tX - 40, tX - 40 + MIST_FOOT, y] : [tX + 40 - MIST_FOOT, tX + 40, y]) as [number, number, number];
+    let h = Math.round(R.r(280, 310));
+    for (let k = 0; k < 3 && blocked(...span(cur.y - h)); k++) h += 70;
+    trunk(tX, cur.y, cur.y - h);
+    for (let i = 0; i < 3; i++) flower(tX, cur.y - 70 - ((h - 110) * i) / 2, 'hibiscus');
+    expert += h / CLIMB + 0.8;
+    // (no petals here or anywhere in the mist: they are drawn over it, and would give the hidden ledges away)
+    cur = ledge(...span(cur.y - h));
+    flag();
+    const sizes = [2, 4, 5];
+    sizes.forEach((n, k) => {
+      const foot = cur;
+      const cx = Math.round(foot.x + foot.width / 2);
+      if (k === 0) hint('Thick mist! Stand still here and it settles to show the ledges. Then remember the way', 'Thick mist! Stand still here and it settles to show the ledges. Then remember the way', 'Thick mist! Stand still here and it settles to show the ledges. Then remember the way', foot.y + 10);
+      if (k === 1) hint('Further up this time. Stand still, look hard, and remember', 'Further up this time. Stand still, look hard, and remember', 'Further up this time. Stand still, look hard, and remember', foot.y + 10);
+      // the column: one small ledge to a step, in one of three lanes (left, middle, right of the foot), never the same lane twice
+      // running unless the dice say so; each a plain hop up from the last
+      const rise = R.i(66, 72);
+      const hidden: number[] = [];
+      let lane = R.i(-1, 1);
+      let last = foot;
+      for (let i = 1; i <= n; i++) {
+        if (i > 1) lane += R.chance(0.2) ? 0 : R.pick([-1, 1].filter((m) => Math.abs(lane + m) <= 1));
+        const lx = cx + lane * MIST_LANE;
+        last = ledge(lx - MIST_STEP / 2, lx + MIST_STEP / 2, foot.y - i * rise);
+        hidden.push(last.id);
+        expert += 0.8;
+      }
+      // the next wide ledge over the top of the column (it catches the next column's misses in turn), shifted a little
+      const lastX = last.x + last.width / 2;
+      const nx = Math.round(Math.max(lastX - 200, Math.min(lastX + 200, Math.max(KAPOK_MARGIN + MIST_FOOT / 2, Math.min(W - KAPOK_MARGIN - MIST_FOOT / 2, cx + R.r(-90, 90))))));
+      const top = ledge(nx - MIST_FOOT / 2, nx + MIST_FOOT / 2, foot.y - (n + 1) * rise);
+      hidden.push(top.id);
+      // the band it settles: from just under the foot (the first foot stands clear, below the mist) to just over the next wide ledge
+      mistSpots.push({
+        kind: 'mist', x0: cx - 100, x1: cx + 100, y: foot.y, fill: MIST_FILL, hides: hidden,
+        area: { top: top.y - 30, bottom: k === 0 ? foot.y - 40 : foot.y + 40 },
+        view: { x: cx, y: Math.round((foot.y + top.y) / 2) },
+      });
+      expert += MIST_FILL + PATIENCE.settle + 1.2;
+      cur = top;
+    });
+    flag();
+  });
+
   // ---- Twist: the long rope across the widest gap, with the whole crown around him
-  beat('Twist: the long rope', () => {
+  if (!mist) beat('Twist: the long rope', () => {
     // set out from the side of the tree that leaves the most room
     dir = cur.x + cur.width / 2 < W / 2 ? 1 : -1;
     hint('A long way across. Keep sliding', 'A long way across. Keep holding the way to go', 'A long way across. Keep holding the way to go', cur.y + 10);
@@ -2671,8 +2746,51 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
 
   // ---- Finish: up to the crown and the shrine
   beat('Finish: the crown', () => {
-    climb(Math.round(R.r(280, 320)));
-    hops(2);
+    if (mist) {
+      // 4-6: above the mist, the eagle nests. Up a trunk at the end of the ledge to a long ledge with a nest in its middle, alone
+      // (taught), then a longer one with two nests on different rhythms; the crown and the shrine beyond.
+      const nestLedge = (len: number, at: number[], reach: number, first: boolean) => {
+        const goRight = W - KAPOK_MARGIN - (cur.x + cur.width) >= cur.x - KAPOK_MARGIN;
+        const tX = Math.round(goRight ? cur.x + cur.width - 60 : cur.x + 60);
+        const d: 1 | -1 = goRight ? 1 : -1;
+        const x0 = d === 1 ? tX - 40 : tX + 40 - len;
+        let h = Math.round(R.r(280, 310));
+        for (let k = 0; k < 3 && blocked(x0, x0 + len, cur.y - h); k++) h += 70;
+        trunk(tX, cur.y, cur.y - h);
+        // (from a little way up the trunk: its foot is still in the top of the mist)
+        for (let i = 0; i < 3; i++) flower(tX, cur.y - 140 - ((h - 180) * i) / 2, 'hibiscus');
+        expert += h / CLIMB + 0.8;
+        cur = ledge(x0, x0 + len, cur.y - h);
+        const e = d === 1 ? cur.x : cur.x + cur.width;
+        if (first) hint('Sleeping eaglets! Go while they sleep. When one peeks up, stand still', 'Sleeping eaglets! Go while they sleep. When one peeks up, stand still', 'Sleeping eaglets! Go while they sleep. When one peeks up, stand still', cur.y + 10);
+        for (const u of at) {
+          const x = Math.round(e + d * u);
+          const every = Math.round(R.r(5.4, 6.4) * 10) / 10;
+          nests.push({ x, y: cur.y, x0: x - reach, x1: x + reach, every, offset: Math.round(R.r(0, every) * 10) / 10 });
+          expert += 2.4;
+        }
+        // petals between the nests and past them (worth the wait)
+        row(e + d * 90, e + d * (at[0] - reach - 40), cur.y - 34, 2, 'hibiscus');
+        expert += len / RUN;
+        dir = d;
+      };
+      nestLedge(900, [450], 230, true);
+      // (the flag where he arrives, clear of the nest)
+      checkpoints.push({ x: Math.round((dir === 1 ? cur.x : cur.x + cur.width) + dir * 100), y: cur.y, reached: false });
+      nestLedge(1100, [350, 750], 170, false);
+      // the crown, up a trunk at the far end of the nests (so they are always passed), out the way there is room
+      const tX = Math.round(dir === 1 ? cur.x + cur.width - 60 : cur.x + 60);
+      const out = dir === 1 ? W - KAPOK_MARGIN - (tX - 40) >= 560 : tX + 40 - KAPOK_MARGIN < 560;
+      const top = cur.y - 300;
+      trunk(tX, cur.y, top);
+      expert += 300 / CLIMB + 1;
+      cur = out ? ledge(tX - 40, tX + 520, top) : ledge(tX - 520, tX + 40, top);
+      row(cur.x + 80, cur.x + 300, top - 34, 3, 'hibiscus');
+      return;
+    } else {
+      climb(Math.round(R.r(280, 320)));
+      hops(2);
+    }
     // the crown: a wide branch with the shrine on it
     if (room() < 620) dir = dir === 1 ? -1 : 1;
     const tX = Math.round(dir === 1 ? cur.x + cur.width - 60 : cur.x + 60);
@@ -2789,6 +2907,13 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   const shift = 400 - crown.y;
   for (const r of rocks) { r.top += shift; r.land += shift; }
   if (spot) spot.y += shift;
+  for (const m of mistSpots) {
+    m.y += shift;
+    m.area!.top += shift;
+    m.area!.bottom += shift;
+    m.view!.y += shift;
+  }
+  for (const n of nests) n.y += shift;
   for (const d of w3decor) d.b += shift;
   for (const p of P) p.y += shift;
   for (const v of V) { v.topY += shift; v.bottomY += shift; }
@@ -2829,6 +2954,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     proto: {
       hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}),
       ...(cliff ? { w4: { rocks, patience: spot ? [spot] : [] } } : {}),
+      ...(mist ? { w4: { patience: mistSpots, nests } } : {}),
     },
   };
 }
