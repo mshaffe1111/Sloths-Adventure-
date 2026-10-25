@@ -171,6 +171,16 @@ def main():
     for key, sessions in by.items():
         p = profile(sessions)
         p['name'] = sessions[0]['player'].split(' ')[0]
+        # how they got better: one snapshot per real session, oldest first (a bot plays its Nth batch with the Nth snapshot)
+        p['curve'] = []
+        for s in sorted(sessions, key=lambda s: s['session']):
+            one = profile([s])
+            if one['strokes'] < 50:
+                continue
+            p['curve'].append({k: one[k] for k in (
+                'minutesPlayed', 'mix', 'tapMs', 'flickPx', 'flickPxPerMs', 'jumpFlickOffVerticalDeg', 'touchStartX', 'touchStartY',
+                'leftHalfShare', 'twoFingerShare', 'gapBetweenTouchesMs', 'hurtPerMinute', 'livesLostPerMinute', 'secondsPerSection')})
+            p['curve'][-1]['session'] = s['session']
         json.dump(p, open(os.path.join(out, f'{key}.json'), 'w'), indent=1)
         print(key, p['minutesPlayed'], 'min', p['strokes'], 'strokes', p['mix'])
 

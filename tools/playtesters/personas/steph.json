@@ -130,5 +130,624 @@
    "note": ""
   }
  ],
- "name": "Steph"
+ "name": "Steph",
+ "curve": [
+  {
+   "minutesPlayed": 7.1,
+   "mix": {
+    "drag": 0.569,
+    "tap": 0.094,
+    "flick": 0.337
+   },
+   "tapMs": {
+    "p10": 62,
+    "p50": 71,
+    "p90": 96
+   },
+   "flickPx": {
+    "p10": 76.42,
+    "p50": 177.553,
+    "p90": 290.993
+   },
+   "flickPxPerMs": {
+    "p10": 0.371,
+    "p50": 0.864,
+    "p90": 1.476
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 8.531,
+    "p50": 32.689,
+    "p90": 42.78
+   },
+   "touchStartX": {
+    "p10": 0.341,
+    "p50": 0.488,
+    "p90": 0.644
+   },
+   "touchStartY": {
+    "p10": 0.585,
+    "p50": 0.722,
+    "p90": 0.78
+   },
+   "leftHalfShare": 0.554,
+   "twoFingerShare": 0.646,
+   "gapBetweenTouchesMs": {
+    "p10": 104,
+    "p50": 362,
+    "p90": 837
+   },
+   "hurtPerMinute": 2.27,
+   "livesLostPerMinute": 0.14,
+   "secondsPerSection": {
+    "p10": 0.2,
+    "p50": 18.203,
+    "p90": 65.244
+   },
+   "session": "20261023-2038-2g8g"
+  },
+  {
+   "minutesPlayed": 7.4,
+   "mix": {
+    "drag": 0.45,
+    "tap": 0.013,
+    "flick": 0.537
+   },
+   "tapMs": {
+    "p10": 38,
+    "p50": 63,
+    "p90": 171
+   },
+   "flickPx": {
+    "p10": 105.019,
+    "p50": 193.041,
+    "p90": 286.122
+   },
+   "flickPxPerMs": {
+    "p10": 0.481,
+    "p50": 0.886,
+    "p90": 1.483
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 4.65,
+    "p50": 27.156,
+    "p90": 39.023
+   },
+   "touchStartX": {
+    "p10": 0.376,
+    "p50": 0.52,
+    "p90": 0.726
+   },
+   "touchStartY": {
+    "p10": 0.689,
+    "p50": 0.78,
+    "p90": 0.865
+   },
+   "leftHalfShare": 0.441,
+   "twoFingerShare": 0.67,
+   "gapBetweenTouchesMs": {
+    "p10": 87,
+    "p50": 204,
+    "p90": 662
+   },
+   "hurtPerMinute": 1.35,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 8.958,
+    "p50": 24.171,
+    "p90": 37.54
+   },
+   "session": "20261023-2045-lq5z"
+  },
+  {
+   "minutesPlayed": 6.5,
+   "mix": {
+    "drag": 0.464,
+    "flick": 0.517,
+    "tap": 0.019
+   },
+   "tapMs": {
+    "p10": 38,
+    "p50": 63,
+    "p90": 112
+   },
+   "flickPx": {
+    "p10": 139.014,
+    "p50": 227.607,
+    "p90": 297.834
+   },
+   "flickPxPerMs": {
+    "p10": 0.61,
+    "p50": 1.045,
+    "p90": 1.676
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 7.778,
+    "p50": 33.616,
+    "p90": 42.553
+   },
+   "touchStartX": {
+    "p10": 0.264,
+    "p50": 0.44,
+    "p90": 0.699
+   },
+   "touchStartY": {
+    "p10": 0.648,
+    "p50": 0.732,
+    "p90": 0.799
+   },
+   "leftHalfShare": 0.637,
+   "twoFingerShare": 0.659,
+   "gapBetweenTouchesMs": {
+    "p10": 154,
+    "p50": 287,
+    "p90": 688
+   },
+   "hurtPerMinute": 1.23,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 6.043,
+    "p50": 18.337,
+    "p90": 55.909
+   },
+   "session": "20261023-2053-x7a5"
+  },
+  {
+   "minutesPlayed": 16.7,
+   "mix": {
+    "drag": 0.456,
+    "flick": 0.539,
+    "tap": 0.005
+   },
+   "tapMs": {
+    "p10": 21,
+    "p50": 30,
+    "p90": 30
+   },
+   "flickPx": {
+    "p10": 137.713,
+    "p50": 220.184,
+    "p90": 294.81
+   },
+   "flickPxPerMs": {
+    "p10": 0.618,
+    "p50": 1.054,
+    "p90": 1.756
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 7.754,
+    "p50": 33.378,
+    "p90": 43.544
+   },
+   "touchStartX": {
+    "p10": 0.266,
+    "p50": 0.403,
+    "p90": 0.726
+   },
+   "touchStartY": {
+    "p10": 0.666,
+    "p50": 0.757,
+    "p90": 0.833
+   },
+   "leftHalfShare": 0.668,
+   "twoFingerShare": 0.599,
+   "gapBetweenTouchesMs": {
+    "p10": 113,
+    "p50": 229,
+    "p90": 538
+   },
+   "hurtPerMinute": 0.6,
+   "livesLostPerMinute": 0.06,
+   "secondsPerSection": {
+    "p10": 8.119,
+    "p50": 16.719,
+    "p90": 38.073
+   },
+   "session": "20261023-2100-eids"
+  },
+  {
+   "minutesPlayed": 12.3,
+   "mix": {
+    "drag": 0.299,
+    "flick": 0.684,
+    "tap": 0.016,
+    "hold": 0.001
+   },
+   "tapMs": {
+    "p10": 12,
+    "p50": 95,
+    "p90": 130
+   },
+   "flickPx": {
+    "p10": 98.005,
+    "p50": 181.342,
+    "p90": 262.093
+   },
+   "flickPxPerMs": {
+    "p10": 0.477,
+    "p50": 0.906,
+    "p90": 1.576
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 5.356,
+    "p50": 26.414,
+    "p90": 39.55
+   },
+   "touchStartX": {
+    "p10": 0.43,
+    "p50": 0.609,
+    "p90": 0.806
+   },
+   "touchStartY": {
+    "p10": 0.67,
+    "p50": 0.792,
+    "p90": 0.87
+   },
+   "leftHalfShare": 0.238,
+   "twoFingerShare": 0.763,
+   "gapBetweenTouchesMs": {
+    "p10": 162,
+    "p50": 313,
+    "p90": 779
+   },
+   "hurtPerMinute": 1.06,
+   "livesLostPerMinute": 0.33,
+   "secondsPerSection": {
+    "p10": 6.286,
+    "p50": 18.57,
+    "p90": 103.084
+   },
+   "session": "20261024-1031-gh68"
+  },
+  {
+   "minutesPlayed": 2.5,
+   "mix": {
+    "drag": 0.5,
+    "flick": 0.5
+   },
+   "tapMs": null,
+   "flickPx": {
+    "p10": 96.773,
+    "p50": 203.494,
+    "p90": 287.92
+   },
+   "flickPxPerMs": {
+    "p10": 0.429,
+    "p50": 0.963,
+    "p90": 1.625
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 8.616,
+    "p50": 35.989,
+    "p90": 39.452
+   },
+   "touchStartX": {
+    "p10": 0.291,
+    "p50": 0.483,
+    "p90": 0.731
+   },
+   "touchStartY": {
+    "p10": 0.584,
+    "p50": 0.682,
+    "p90": 0.772
+   },
+   "leftHalfShare": 0.53,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 138,
+    "p50": 279,
+    "p90": 822
+   },
+   "hurtPerMinute": 0.8,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 8.601,
+    "p50": 23.138,
+    "p90": 51.142
+   },
+   "session": "20261024-1259-aua5"
+  },
+  {
+   "minutesPlayed": 1.7,
+   "mix": {
+    "drag": 0.414,
+    "flick": 0.571,
+    "tap": 0.015
+   },
+   "tapMs": {
+    "p10": 12,
+    "p50": 13,
+    "p90": 13
+   },
+   "flickPx": {
+    "p10": 186.955,
+    "p50": 252.507,
+    "p90": 342.546
+   },
+   "flickPxPerMs": {
+    "p10": 0.828,
+    "p50": 1.591,
+    "p90": 2.396
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 2.365,
+    "p50": 20.035,
+    "p90": 43.014
+   },
+   "touchStartX": {
+    "p10": 0.169,
+    "p50": 0.304,
+    "p90": 0.682
+   },
+   "touchStartY": {
+    "p10": 0.52,
+    "p50": 1.697,
+    "p90": 1.921
+   },
+   "leftHalfShare": 0.752,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 146,
+    "p50": 230,
+    "p90": 505
+   },
+   "hurtPerMinute": 0.0,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 6.12,
+    "p50": 10.101,
+    "p90": 11.502
+   },
+   "session": "20261024-1609-ewey"
+  },
+  {
+   "minutesPlayed": 7.7,
+   "mix": {
+    "drag": 0.267,
+    "flick": 0.733
+   },
+   "tapMs": null,
+   "flickPx": {
+    "p10": 128.55,
+    "p50": 209.995,
+    "p90": 311.328
+   },
+   "flickPxPerMs": {
+    "p10": 0.685,
+    "p50": 1.009,
+    "p90": 1.98
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 5.028,
+    "p50": 24.29,
+    "p90": 38.843
+   },
+   "touchStartX": {
+    "p10": 0.393,
+    "p50": 0.545,
+    "p90": 0.774
+   },
+   "touchStartY": {
+    "p10": 0.515,
+    "p50": 0.599,
+    "p90": 0.676
+   },
+   "leftHalfShare": 0.348,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 129,
+    "p50": 196,
+    "p90": 521
+   },
+   "hurtPerMinute": 1.04,
+   "livesLostPerMinute": 0.13,
+   "secondsPerSection": {
+    "p10": 0.367,
+    "p50": 4.934,
+    "p90": 20.703
+   },
+   "session": "20261024-1611-c1li"
+  },
+  {
+   "minutesPlayed": 3.3,
+   "mix": {
+    "drag": 0.297,
+    "flick": 0.703
+   },
+   "tapMs": null,
+   "flickPx": {
+    "p10": 151.489,
+    "p50": 256.564,
+    "p90": 382.154
+   },
+   "flickPxPerMs": {
+    "p10": 0.675,
+    "p50": 1.28,
+    "p90": 2.301
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 3.421,
+    "p50": 24.659,
+    "p90": 41.799
+   },
+   "touchStartX": {
+    "p10": 0.343,
+    "p50": 0.537,
+    "p90": 0.799
+   },
+   "touchStartY": {
+    "p10": 0.55,
+    "p50": 0.644,
+    "p90": 0.725
+   },
+   "leftHalfShare": 0.42,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 137,
+    "p50": 254,
+    "p90": 621
+   },
+   "hurtPerMinute": 0.61,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 0.234,
+    "p50": 5.266,
+    "p90": 21.104
+   },
+   "session": "20261024-1619-7n3u"
+  },
+  {
+   "minutesPlayed": 3.4,
+   "mix": {
+    "drag": 0.466,
+    "flick": 0.534
+   },
+   "tapMs": null,
+   "flickPx": {
+    "p10": 151.605,
+    "p50": 242.687,
+    "p90": 330.412
+   },
+   "flickPxPerMs": {
+    "p10": 0.742,
+    "p50": 1.292,
+    "p90": 2.668
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 10.84,
+    "p50": 33.797,
+    "p90": 42.022
+   },
+   "touchStartX": {
+    "p10": 0.321,
+    "p50": 0.46,
+    "p90": 0.644
+   },
+   "touchStartY": {
+    "p10": 0.674,
+    "p50": 0.796,
+    "p90": 0.888
+   },
+   "leftHalfShare": 0.676,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 129,
+    "p50": 295,
+    "p90": 771
+   },
+   "hurtPerMinute": 1.17,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 0.733,
+    "p50": 7.217,
+    "p90": 13.736
+   },
+   "session": "20261024-2052-7xvf"
+  },
+  {
+   "minutesPlayed": 3.4,
+   "mix": {
+    "drag": 0.289,
+    "flick": 0.694,
+    "tap": 0.017
+   },
+   "tapMs": {
+    "p10": 37,
+    "p50": 79,
+    "p90": 180
+   },
+   "flickPx": {
+    "p10": 119.971,
+    "p50": 207.454,
+    "p90": 328.892
+   },
+   "flickPxPerMs": {
+    "p10": 0.58,
+    "p50": 1.08,
+    "p90": 2.311
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 8.052,
+    "p50": 25.896,
+    "p90": 41.448
+   },
+   "touchStartX": {
+    "p10": 0.373,
+    "p50": 0.502,
+    "p90": 0.751
+   },
+   "touchStartY": {
+    "p10": 0.585,
+    "p50": 0.672,
+    "p90": 0.734
+   },
+   "leftHalfShare": 0.474,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 130,
+    "p50": 238,
+    "p90": 604
+   },
+   "hurtPerMinute": 1.46,
+   "livesLostPerMinute": 0.29,
+   "secondsPerSection": {
+    "p10": 0.728,
+    "p50": 11.807,
+    "p90": 26.938
+   },
+   "session": "20261025-1606-stkm"
+  },
+  {
+   "minutesPlayed": 3.4,
+   "mix": {
+    "drag": 0.417,
+    "flick": 0.578,
+    "tap": 0.005
+   },
+   "tapMs": {
+    "p10": 29,
+    "p50": 29,
+    "p90": 29
+   },
+   "flickPx": {
+    "p10": 134.715,
+    "p50": 205.061,
+    "p90": 310.461
+   },
+   "flickPxPerMs": {
+    "p10": 0.555,
+    "p50": 1.046,
+    "p90": 1.943
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 10.704,
+    "p50": 29.547,
+    "p90": 41.754
+   },
+   "touchStartX": {
+    "p10": 0.348,
+    "p50": 0.53,
+    "p90": 0.731
+   },
+   "touchStartY": {
+    "p10": 0.479,
+    "p50": 0.609,
+    "p90": 0.709
+   },
+   "leftHalfShare": 0.417,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 121,
+    "p50": 279,
+    "p90": 779
+   },
+   "hurtPerMinute": 0.29,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 8.667,
+    "p50": 12.135,
+    "p90": 55.943
+   },
+   "session": "20261025-1659-uh75"
+  }
+ ]
 }
