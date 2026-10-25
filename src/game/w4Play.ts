@@ -14,7 +14,7 @@ import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
 import { ROCK, rockAt, rockHits, type RockDrop } from './rockfall.ts';
-import { FALLS, fallPush, inFall, plugged, poolLogY, stepFlow, stepPool, type Pool, type Waterfall } from './waterfalls.ts';
+import { FALLS, fallPush, fallWall, inColumn, inFall, plugged, poolLogY, stepFlow, stepPool, type Pool, type Waterfall } from './waterfalls.ts';
 import { chimeLean, DOT_HELP, newKnot, stepKnot, underKnot, type Chime, type DotKnot, type KnotState } from './w4Kit.ts';
 import { zoneState, type Zone } from './zones.ts';
 import { nestWind, type CliffNest } from './w4Nests.ts';
@@ -128,10 +128,14 @@ export class W4Play {
   private view = { x0: -Infinity, x1: Infinity };
   /** each nest: the last look that blew him back, and when its latest flurry started and which way it pushes */
   private nestBlow: Array<{ cycle: number; at: number; dir: number }>;
+  /** each fall: the side he is on (-1 left, 1 right), kept while he is in its water: the side he came in from, that it throws him out of */
+  private fallSide: Array<-1 | 1>;
+  private splashAt = -9;
 
   constructor(private readonly w4: W4Extras, platforms: Platform[], private readonly vines: Vine[]) {
     this.patience = (w4.patience ?? []).map(() => newPatience());
     this.flow = (w4.falls ?? []).map(() => 1);
+    this.fallSide = (w4.falls ?? []).map(() => -1);
     this.pool = (w4.pools ?? []).map(() => 1);
     this.knots = (w4.knots ?? []).map(() => newKnot());
     this.monkeys = (w4.monkeys ?? []).map((m) => newCapuchin(m));
@@ -155,14 +159,16 @@ export class W4Play {
   }
 
   /**
-   * one frame. Returns how much of his walking speed is left (pouring water slows a wade), and any push the stage's own winds give him
-   * on top of the gust lanes (a freed eaglet's parent beating its wings: px/s, + to the right)
+   * one frame. Returns how much of his walking speed is left (shallow water slows a wade), any push the stage's own winds give him on
+   * top of the gust lanes (a freed eaglet's parent beating its wings: px/s, + to the right), and whether pouring water threw him back
+   * this frame (the engine takes his steering for a moment, FALLS.stagger, so the knock reads)
    */
-  step(dt: number, h: W4Host): { speed: number; wind: number } {
+  step(dt: number, h: W4Host): { speed: number; wind: number; knocked: boolean } {
     const p = h.player;
     const w4 = this.w4;
     this.clock = h.t;
     let speed = 1;
+    let knocked = false;
 
     // into the mist: well below the last ledge, with nothing under him, is a fall
     if (w4.deepFall !== undefined) {
@@ -241,6 +247,23 @@ export class W4Play {
       const before = this.flow[i];
       this.flow[i] = stepFlow(w, before, plugged(w, platX), h.t, dt);
       if (before > FALLS.trickle && this.flow[i] <= FALLS.trickle && Math.abs(w.x - p.x) < 900) h.sfx('splash');
+      // pouring water is a wall: it throws him back out the side he came in from (waterfalls.ts fallWall); out of it, that side is
+      // simply the side he is on
+      if (!inColumn(w, p.x, p.y)) this.fallSide[i] = p.x < w.x + w.width / 2 ? -1 : 1;
+      else if (!w.veil && !p.climbing && !p.hanging && !p.isVineSwinging) {
+        const hit = fallWall(w, this.flow[i], this.fallSide[i], p, dt);
+        if (hit) {
+          p.x = hit.x;
+          p.vx = hit.vx;
+          p.vy = hit.vy;
+          knocked = true;
+          if (!hit.washed && h.t - this.splashAt > 0.6) {
+            this.splashAt = h.t;
+            h.sfx('splash');
+          }
+          h.tip(w.surge ? 'w4:surge' : 'w4:fall', w.surge ? 'Too strong to climb! Wait in the cave for the water to ease' : 'The water pushes you back. Can you stop it at the top?', 3.4);
+        }
+      }
       if (!inFall(w, p.x, p.y, 64)) return;
       // a curtain of water to hide behind (4-5): it hides him and leaves him be
       if (w.veil) h.tip('w4:veil', 'Behind the water nobody can see you. Wait here while she goes by', 3.2);
@@ -364,7 +387,7 @@ export class W4Play {
         }
       }
     });
-    return { speed, wind: w4.cliffNests?.length ? nestWind(h.collectibles, p.x, p.y, p.grounded, h.t) : 0 };
+    return { speed, wind: w4.cliffNests?.length ? nestWind(h.collectibles, p.x, p.y, p.grounded, h.t) : 0, knocked };
   }
 
   /** behind Pokey: the falls, the pools, the chimes, the rock shadows and rocks, the fern, the knots and Dot, the monkeys, the fruit */

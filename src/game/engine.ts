@@ -32,7 +32,7 @@ import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep }
 import { controlStyle } from './controlPrefs.ts';
 import { lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, easeAssist, inSweetSpot, newAirDrive, setTimedSwing, swingGrab, swingStep, timedLaunch } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, easeAssist, inSweetSpot, newAirDrive, setTimedSwing, swingGrab, swingStep, timedLaunch } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -63,6 +63,7 @@ import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLeve
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { W4Play } from './w4Play.ts';
+import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
 import { camAnchor, camLook, CAM, snapCam } from './cameraFollow.ts';
@@ -1465,7 +1466,9 @@ export class GameEngine {
         const prevX = p.x - p.vx * dt;
         for (const plat of this.platforms) {
           if (plat.broken || plat.type !== 'solid' || plat.height < 50) continue;
-          if (p.y <= plat.y + 6) continue; // standing on, or above, the top
+          // (not when he stands on it or above its top, nor when he is wholly under it: a boulder up on a shelf, World 4, is no wall to him
+          // on the ground under the shelf, and he cannot push it from below)
+          if (!blockBeside(p.y, p.height, plat)) continue;
           if (p.x + half <= plat.x || p.x - half >= plat.x + plat.width) continue;
           const fromLeft = prevX + half <= plat.x + 2;
           const fromRight = prevX - half >= plat.x + plat.width - 2;
@@ -4839,6 +4842,8 @@ export class GameEngine {
       },
     });
     this.dragSpeed *= out.speed;
+    // thrown back by pouring water: his steering comes back a moment later, so the knock reads as a knock
+    if (out.knocked) this.inputGrace = Math.max(this.inputGrace, FALLS.stagger);
     // a freed eaglet's parent beating its wings over the nest (4-8): a tailwind on top of the gust lanes
     this.windV += out.wind;
   }
