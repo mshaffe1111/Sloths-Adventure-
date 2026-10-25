@@ -1142,3 +1142,180 @@ Unchanged.
 **Dot is she.** Also "Thank you for not interrupting" is now a spoken line, "Thanks for not interrupting," since it's funnier coming from Pokey than from the narrator.
 
 **One thing to flag for World 8.** The old World 8 note is also from the tower, after the net is sealed (the pillow, and the General standing outside her door every night). I'll fix that when I get there.
+
+---
+
+## World 8: Twilight Treetops
+
+### Act card: the iron road
+
+*Seven guardians lay behind him. No note had come since the mangrove, and he'd stopped checking the satchel for one.*
+
+**Pokey:** Seven. Two more, and then him.
+
+### The dream
+
+*The fireflies came out as the light went. Pokey kept going. Meeca was somewhere ahead in the dark, and so was something with enormous wings.*
+
+*He sat down on a branch to rest his eyes. He was asleep before he'd finished sitting.*
+
+*He dreamed of the old nest, and the stars over it.*
+
+**Meeca:** Hold out your wrist. I'm tying a petal on it. It's off the Heartbloom, so it'll point at me.
+
+**Pokey:** A petal will wilt.
+
+**Meeca:** Not this one. Grandma says it lasts exactly as long as somebody's thinking of you, so you're stuck with it.
+
+**Pokey:** Then it'll last.
+
+**Meeca:** Keep it on. Even if I go somewhere you can't follow.
+
+**Pokey:** Especially then.
+
+*In the dream, the petal began to glow. It pointed out of the dark, and he went.*
+
+### Wake up
+
+**Dot:** Wake up, wake up, wake up. You were mumbling, mostly about a petal. I've been flying for three days, and I would like to sit down on something that isn't air. Is this branch taken? Pokey? Pokey!
+
+**Pokey:** Dot. You came back. You're bleeding.
+
+**Dot:** It's a scratch. It's nine scratches. I counted. I found a seam in the net that was just a little narrower than me, and I went through it anyway. Then I went up the wall to her window. It has bars. I fit between them, mostly. Here.
+
+**Dot (reading):** "Pokey, I bet you're asleep right now. It's fine. I would be too. Keep going. I'm still here. And I've figured out who he is. I'll tell you when I can look at you."
+
+**Pokey:** She knows. Meeca knows.
+
+**Dot:** She worked it out by herself, up there, in the dark. She said she tried being angry for an afternoon, and it didn't fit. She gave me four more notes. They're in my pouch. I'm rationing them. She's really funny when she's scared.
+
+**Pokey:** Dot, sit down. I have to tell you something.
+
+**Dot:** I'm sitting. It's hover-sitting. It takes core.
+
+**Pokey:** The General is her grandfather. I found the photograph in the ruins.
+
+**Dot:** I know. I've always known. I was there the night of the storm.
+
+*Dot landed on the branch. Pokey hadn't seen her feet touch anything in days.*
+
+**Pokey:** You never said.
+
+**Dot:** I can't tell you half of it. It doesn't come in halves. Grandma gave me a letter for him that night. I was late with it, and I still have it, and I'm going to say the rest once, to him.
+
+**Pokey:** She's been up there by herself with all of it.
+
+**Dot:** Yes.
+
+**Pokey:** Then we should go.
+
+### Hidden note (in plain sight, one of Dot's four)
+
+> Pokey, Pell asked me again if I wanted a pillow. I told him I'm a hostage, not a guest. He said, "Yes, Miss. Would you like a pillow?"
+>
+> Every night somebody stands outside my door. Eleven steps there, eleven back. He never knocks. I know who it is now. I'm not going to make it easy for him.
+>
+> Love, M.
+
+### One branch (halfway through the world)
+
+**Pokey:** Dot, you're humming.
+
+**Dot:** I'm vibrating. It happens when I don't sleep. It's worse.
+
+**Dot:** Pokey. A question. It's the middle of the night, I'm asking it out loud, and I'd like you to not repeat it.
+
+**Pokey:** Okay.
+
+**Dot:** It's about a bird. Not me. A bird who's nearly somewhere, and also a day behind, and I'd like to know what you'd say to her.
+
+**Pokey:** Next branch.
+
+**Dot:** That's it?
+
+**Pokey:** That's what Meeca says. Then the one after.
+
+**Dot:** Huh.
+
+*Dot stopped vibrating somewhere around the next branch. Neither of them mentioned it.*
+
+### The guardian: Night-Wing Monarch
+
+*Before the fight.*
+
+**Night-Wing Monarch:** Good evening, little climber. They say you have beaten seven of us. I confess I hoped you would take the long way around.
+
+**Pokey:** I'm going to get Meeca back.
+
+**Night-Wing Monarch:** I am told to stop you. I shall try to do it softly. You talk in your sleep, you know. I was on the branch above you, writing it down. Then the bird woke you in the middle, and I have been wondering since where the petal was going.
+
+**Pokey:** I didn't know anybody was up there.
+
+*After the fight.*
+
+**Night-Wing Monarch:** Hm. I was asked to stop you softly. I am not sure that counts.
+
+**Pokey:** You were very soft about it.
+
+**Night-Wing Monarch:** Will you tell me how it ends? The dream. The bird woke you before the petal got anywhere.
+
+**Pokey:** It ends with me getting there.
+
+**Night-Wing Monarch:** Ah. A good ending. Then take the lava road. The Drake lives on it. He is bad at visitors. Be patient with the fire.
+
+### The lieutenant
+
+*The Monarch was gone, and the fireflies came back one at a time. In the dark, a lantern was bobbing along at ground level, as if the person holding it didn't want to be seen.*
+
+**Lieutenant Pell:** I am so sorry, but would you mind not looking at me?
+
+**Dot:** Soldier! Pokey, there's a soldier! I'll distract him. I'm extremely distracting. Look at my three feathers!
+
+**Lieutenant Pell:** I am so sorry, but please do not scream. Everyone screams. I am Lieutenant Pell. I bring Miss Meeca her breakfast.
+
+**Pokey:** Is she okay?
+
+**Lieutenant Pell:** She is very polite to me. I do not deserve it. I am sorry. Yes.
+
+**Lieutenant Pell:** I am not supposed to be here. I have come to tell you two things, and then I shall go back and say I was in the latrine.
+
+**Lieutenant Pell:** The first. The General has asked the cook for the soup Miss Meeca liked as a cub. It has come out wrong four times this week. He eats it anyway.
+
+**Lieutenant Pell:** The second. There is a seam in the net behind the cookhouse. The bird found it, and that was not an accident. Nobody checks the cookhouse, and we have been leaving it open since you started.
+
+**Lieutenant Pell:** If I am ordered to sew it shut, I shall do it badly. I was a tailor's apprentice. I was terrible. We are not allowed to say that we hope you win.
+
+**Dot:** On purpose? I got nine scratches!
+
+**Lieutenant Pell:** I am so sorry about the scratches.
+
+**Pokey:** Thanks, Lieutenant.
+
+**Lieutenant Pell:** Oh, I am sorry. Please do not thank me. It is embarrassing.
+
+*The lantern bobbed away into the dark. From somewhere down the slope, a quiet voice said, "Good luck." Then, after a moment, "Sir."*
+
+### Hidden keepsake
+
+> A paper packet of seeds, labeled in a careful hand: "For the hill. Plant when it is quiet." It has never been opened.
+
+### Hidden photo album: The Little Walks
+
+Unchanged.
+
+- **First day of school.** She insisted on carrying her own bag. He insisted on carrying the bag.
+- **A gift.** He knelt to fasten something small around her neck. "So you will always know your name," he said.
+- **Festival day.** She could see everything from up there. He could see only her.
+- **Planting day.** She watered it far too much. The tree survived out of politeness.
+
+### What changed in World 8, and why
+
+**Meeca figured it out, on her own.** The old script already had this, and it lines up with what we decided. Her World 8 note now gives the clue she figured it out from: someone outside her door every night, eleven steps there and eleven back, who never knocks, and "I know who it is now." Dot carried that note in her pouch, one of the four Meeca gave her, so it's no longer a tower note that couldn't get out.
+
+**The Monarch is nervous.** By World 8 the bosses know he's coming and dread it: "They say you have beaten seven of us. I confess I hoped you would take the long way around." After the fight, Pokey teases him ("You were very soft about it"). When asked how the dream ends, the old Pokey said "If I get there, I will." Now he says "It ends with me getting there." Seven worlds in, he expects to win, which is the arc we wanted for his one-liners.
+
+**Pell.** Pokey's first question to him is "Is she okay?" instead of "You bring her breakfast?" Same reason as World 1: that's the first thing he'd want to know. Pell's answer, "She is very polite to me. I do not deserve it," is Meeca's manners as armor, seen from the other side of the door.
+
+**Small fixes.** "I'm quite sure you're asleep" became "I bet you're asleep." Dot is she throughout. "Of course" became "Okay," and "Thank you, Lieutenant" became "Thanks, Lieutenant," because those are Pokey.
+
+**For the ending.** Dot says Grandma gave her a letter for him "that night," and she was late with it. That's the night of the storm, ten years ago. In the ending she says "I have something I should have brought you nine years ago." Both can be true: that night was ten years ago, and the last day she could have handed it to him at home, before he left, was nine years ago. I'll keep it lined up when we get there.
