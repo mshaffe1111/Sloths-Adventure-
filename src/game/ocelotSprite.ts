@@ -14,6 +14,13 @@ import type { Enemy } from './types.ts';
 import { bodyFor } from './creatureRig.ts';
 import { OCELOT_FRAMES } from './ocelotAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { makeCreatureAnim } from './creatureAnim.ts';
+import { OCELOT_ANIM, OCELOT_ANIM_UP, OCELOT_ANIM_URL, OCELOT_SEQ } from './ocelotAnimData.ts';
+
+/** the moving ocelot (2026-10-25): its own poses brought to life with the motion model; the single poses draw while it loads */
+const ANIM = makeCreatureAnim(OCELOT_ANIM_URL, OCELOT_ANIM, OCELOT_SEQ, OCELOT_ANIM_UP);
+/** world units the animated walk covers in one full cycle */
+const CYCLE = 84;
 
 export const DEFAULT_SPRITE_OCELOT = true;
 /** world units per atlas pixel */
@@ -88,6 +95,16 @@ export function drawOcelotSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   else name = WALK[Math.floor((r.dist / STRIDE) * WALK.length) % WALK.length];
   const f = OCELOT_FRAMES[name];
   if (!f) return false;
+  // the animated clip for the same moment (null keeps the single painted pose: the knock-out tumble and the knock-back)
+  let clip: string | null = null;
+  if (ANIM.ready() && name !== 'tumble' && name !== 'knock') {
+    if (name === 'hurt') clip = ANIM.at('hurt', (1 - (enemy.recoil ?? 0)) / 0.65);
+    else if (name === 'dazed') clip = ANIM.ping('dazed', time, 7);
+    else if (st === 'windup') clip = ANIM.at('gather', t / 0.38);
+    else if (st === 'leap') clip = ANIM.at('leap', t / LEAP_T);
+    else if (st === 'recover') clip = ANIM.at('land', t / 0.4);
+    else clip = ANIM.at('walk', (((r.dist / CYCLE) % 1) + 1) % 1);
+  }
 
   // the shadow stays on the ground while the animal is in the air
   const lift = Math.max(0, (enemy.groundY ?? enemy.y) - enemy.y);
@@ -104,8 +121,14 @@ export function drawOcelotSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
   }
   if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   // in the air the engine already lifts the animal, so the pose hangs from its lowest paw instead of the painted ground line
-  const ay = airborne ? f.h : f.ay;
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -ay * K, f.w * K, f.h * K);
+  if (clip) {
+    const c = OCELOT_ANIM[clip];
+    if (airborne && c) ctx.translate(0, (c.ay - c.h) * (K / OCELOT_ANIM_UP));
+    ANIM.draw(ctx, clip, K);
+  } else {
+    const ay = airborne ? f.h : f.ay;
+    ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -ay * K, f.w * K, f.h * K);
+  }
   ctx.restore();
   return true;
 }

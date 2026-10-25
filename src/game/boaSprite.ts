@@ -14,6 +14,11 @@ import { bodyFor } from './creatureRig.ts';
 import { bodyRect } from './fight.ts';
 import { BOA_FRAMES } from './boaAtlasData.ts';
 import { trackAtlas } from './atlasLoader.ts';
+import { makeCreatureAnim } from './creatureAnim.ts';
+import { BOA_ANIM, BOA_ANIM_UP, BOA_ANIM_URL, BOA_SEQ } from './boaAnimData.ts';
+
+/** the boa's moving moments (2026-10-25): its stagger and its coiled breathing, made with the motion model from its own poses */
+const ANIM = makeCreatureAnim(BOA_ANIM_URL, BOA_ANIM, BOA_SEQ, BOA_ANIM_UP);
 
 export const DEFAULT_SPRITE_BOA = true;
 /** world units per atlas pixel */
@@ -76,6 +81,7 @@ export function drawBoaSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
   let sx = 1;
   let sy = 1;
   let lying = false;
+  let clip: string | null = null;
   if (enemy.defeated) {
     // flops over (the engine spins it), then lies belly-up where it landed
     if (enemy.koLanded) {
@@ -83,7 +89,10 @@ export function drawBoaSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
       lying = true;
     } else name = 'hurt_b';
   } else if ((enemy.recoil ?? 0) > 0.35) name = 'hurt_b';
-  else if ((enemy.stagger ?? 0) > 0) name = 'hurt_a';
+  else if ((enemy.stagger ?? 0) > 0) {
+    name = 'hurt_a';
+    if (ANIM.ready()) clip = ANIM.ping('dazed', time + enemy.id, 10);
+  }
   else if (st === 'rear') {
     name = 'alert';
     sy = 1 + 0.035 * Math.sin(time * 18 + enemy.id); // the tense tremble before the strike
@@ -102,7 +111,10 @@ export function drawBoaSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
   else {
     // waiting, coiled: now and then it lifts its head to look about
     name = (time + enemy.id * 1.7) % 6.3 < 1.1 ? 'alert' : 'coil';
-    if (name === 'coil') sy = 1 + 0.02 * Math.sin(time * 2.2 + enemy.id); // slow breathing
+    if (name === 'coil') {
+      if (ANIM.ready()) clip = ANIM.ping('coil', time + enemy.id, 5);
+      else sy = 1 + 0.02 * Math.sin(time * 2.2 + enemy.id); // slow breathing
+    }
   }
   const f = BOA_FRAMES[name];
   if (!f) return false;
@@ -127,7 +139,7 @@ export function drawBoaSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, time:
   }
   if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   ctx.scale(sx, sy);
-  ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
+  if (!(clip && ANIM.draw(ctx, clip, K))) ctx.drawImage(atlas, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
   ctx.restore();
   return true;
 }
