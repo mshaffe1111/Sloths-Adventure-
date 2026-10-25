@@ -189,6 +189,22 @@ export const SNAKE_GOAL_13 = 16;
 
 /** the stage's length target: a quick, sure player (Matt) needs at least this long (s) */
 export const EXPERT_SECONDS = 140;
+/**
+ * Each stage's own length (s, a quick, sure player), from World 4 on (Matt, 2026-10-25: "2 mins is the minimum. Stages should vary and
+ * can go as long as 5 plus minutes"). A slower player takes about half as long again. A stage not listed takes EXPERT_SECONDS.
+ */
+export const STAGE_SECONDS: Record<string, number> = {
+  '4-1': 120, // the climb (climbs count 20 s short of the others)
+  '4-2': 180,
+  '4-3': 210,
+  '4-4': 170,
+  '4-5': 140, // Matt: leave as is
+  '4-6': 240,
+  '4-7': 270, // the long glide down
+  '4-8': 180,
+  '4-9': 300, // the Aerie: the long climb before the Sky Sovereign
+};
+export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_SECONDS;
 
 export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy' | 'highrun' | 'stumps' | 'snakes' | 'river' | 'pond' | 'turtles' | 'cages';
 
