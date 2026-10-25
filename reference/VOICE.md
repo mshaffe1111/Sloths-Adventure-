@@ -34,9 +34,9 @@ If the answer is "to be funny," "to explain the plot," or "to end the scene neat
 
 ### Pokey
 
-He's slow, and he's fine with it. In the prologue he's carefree, easygoing, a little literal, with a dry sense of humor that never hurries. He teases Dot gently ("Well, you're really late then.") and doesn't rise to anything. The jokes come out flat and short, aimed at himself or the situation, one beat and then he moves on.
+He's slow, and he's fine with it. He's sarcastic: easygoing, a little literal, with a dry sense of humor that never hurries. He teases Dot gently ("Well, you're really late then.") and doesn't rise to anything. The jokes come out flat and short, aimed at himself or the situation, one beat and then he moves on. (See the cheat sheet below for how his sarcasm works.)
 
-Why he's like that: he lost his parents in a storm when he was a cub, and nobody ever told him how. A funny, easy kid gets left alone. A sad one gets questions he can't answer. So the jokes are how he keeps things light, and he's been doing it so long he doesn't know he's doing it.
+Why he's like that: he lost his parents in a storm when he was a cub. He remembers small things about them, not the night itself. What he knows about that night he knows from what people told him, and they didn't tell him much: "it was a storm," and then they changed the subject. A funny, easy kid gets left alone. A sad one gets questions he can't answer. So the jokes are how he keeps things light, and he's been doing it so long he doesn't know he's doing it.
 
 When something real happens, the joke doesn't come. That silence is how the player knows. When he's scared he holds on to things with both hands (the branch, the nest, the satchel strap). He never says "I'm afraid of thunder." He says "You know how I feel about thunder," and "It's only weather."
 
@@ -62,7 +62,7 @@ Why she's like that: she's terrified of being late, and the player won't know wh
 
 ### General Iron-Claw
 
-Short, formal, heavy. He gives orders, not explanations. "That one. She's the keeper. Bring her to me." He counts out loud ("One. Two. Three.") because counting is how he makes a loss feel like a plan. He calls Meeca "little bloom," the family's name for her, and it lands on Meeca before she knows why.
+Short, formal, heavy. He gives orders, not explanations. "That one. She's the keeper. Bring her to me." He counts out loud ("One. Two. Three.") because counting is how he makes a loss feel like a plan. He calls Meeca "little bloom," the family's name for her. She answers "Who told you that?" and the line just stands there. The player doesn't know what it means yet, only that it scared her, and it lets her think, for now, that this man knows what happened to her grandpa or did something to him.
 
 The guardians know exactly who he is. Before he was anybody's General he was Iron-Claw, the head of their council and their friend, and they said yes to his Pact because they couldn't tell a grieving man no. What they keep from Pokey is who he is to Meeca, and the collar holds their tongues. A boss can let something slip that only makes sense later ("You're going to take her from him?"), then catch itself.
 
@@ -79,6 +79,92 @@ Over-polite, apologizes inside his own sentences, corrects himself mid-order. He
 ### The narrator
 
 Plain, warm, past tense. Says what the camera can't. Never explains a feeling the scene already shows.
+
+## Cheat sheet: how each of them talks
+
+These notes come from reading up on how sarcasm, dry humor and nervous talk actually work in conversation (sources at the bottom of the page). The example lines are there to show the voice, so I can check a new line against them. They aren't script lines, and none of them should be dropped into a scene as they are.
+
+### Pokey's sarcasm
+
+Sarcasm is saying something you obviously don't mean and trusting the other person to hear what you do mean. The classic example in the research is "My, you're early!" said to someone who showed up late, which is almost exactly Pokey's first joke in the prologue. When English speakers are sarcastic out loud they slow down and drop their voice. That's Pokey's natural speed, which is part of why he's funny.
+
+The kinds he uses, with the sort of thing he'd say:
+
+Saying the opposite. He falls off a branch into the mud: "Well. That went great." Dot shows up soaked, a day late: "Look at you. Right on time."
+
+Understatement, where something huge gets described as small. Facing the crocodile king: "He's bigger than I pictured." A storm tearing the canopy apart: "It's a little breezy."
+
+Deadpan, a flat true statement in a moment that's anything but. Dot: "You could have been killed!" Pokey: "I could have. I took my time about it, though."
+
+At himself. He's the easiest target he has, and the safest. "I'd run, but then we'd both be here all day."
+
+Mock polite, manners used as a jab. To a snake sprawled across the only path: "Oh, don't get up. I'll go around. Might take me a week."
+
+The question nobody answers. "Is it me, or is everything in this forest trying to eat me?"
+
+After a win, the tension breaker. The snake, flat on his back, can't believe it. Pokey: "Wait till the neighbors hear."
+
+When he uses it: when something's after him, after he wins, when he's embarrassed, when somebody's fussing over him, and when he's scared. When he's scared the lines get shorter and flatter ("It's only weather."). The research on sarcasm as armor says it shows up most when a person feels exposed and stands in for saying the feeling straight out. That's Pokey: "You know how I feel about thunder" instead of "I'm scared."
+
+When he doesn't: when someone he loves is hurt, when Meeca's in danger, and in the real moments. Then the joke just doesn't come, and he says the plain thing. Dot hurt on the ground: "Dot. Hey. I'm here. I've got you." No twist on it.
+
+Who it's aimed at: himself, the situation, and anybody who has it coming, like a boss who just laughed at him. Gentle teasing with Dot and Meeca, never a cut. The research is clear that sarcasm only feels warm between people who already trust each other. Aimed at a stranger, or the wrong way at a friend, it reads as mean, even when it's funny. And a sarcastic character only stays likable when he's good underneath and the jokes are obviously covering something.
+
+Making it land on screen: in writing, sarcasm gets missed a lot. People think they're being obviously sarcastic about 80 percent of the time and get read that way about half the time. Kids start catching sarcasm around five or six, and only if there's a clear clue. So the gap between what he says and what's happening has to be obvious from the picture and the line before it. Mud on his face plus "That went great" works for anyone. A sly, quiet one only the adults catch is fine now and then, but never the one that has to carry the moment.
+
+### Dot
+
+She talks like a worrier. Nervous people talk fast, restart their sentences, add details nobody needed, repeat words, change the subject when they're cornered, and trail off. Dot does all of that, and then she turns it on whoever she's looking after.
+
+The ramble: "I'm fine, I'm completely fine, I flew into a fern, it was a big fern, honestly it was mostly the fern's fault, and are you limping? Why are you limping?"
+
+The fussing, which is her love: "Did you sleep? You didn't sleep. You've got that look." / "Is that a scratch? Let me see. Let me see it."
+
+Scolding that's really fear: "Don't you ever do that to me again. Do you hear me? Ever."
+
+Dodging when it gets close to her secret. Pokey: "Dot, why do you always come back for me?" Dot: "Look at that cloud. Doesn't that look like a, a bird? A big bird. Anyway."
+
+Counting what she has left: "Three feathers. I had five this morning."
+
+Quiet means serious. When the ramble stops and the sentences go short, everyone listens: "Pokey. Get down. Now." It only works if it's rare.
+
+### General Iron-Claw
+
+Bossy. He just gives orders. Short sentences, one point each, no feelings in them. He doesn't explain himself and doesn't ask questions unless they're really demands. The research on commanders says that in a crisis they get quieter, not louder. That's him: the angrier he is, the fewer words he uses.
+
+Orders: "Bring her. Feed her. Nobody touches the flower."
+
+Reports to himself: "The sloth crossed the river at dawn. Double the bridge."
+
+Shutting down a question. Pell: "Sir, may I ask why we—" General: "No."
+
+Counting: "Four days. He should have quit in four days. He hasn't."
+
+Even his kindness comes out as an order: "Take a blanket up to her. Don't tell her who sent it."
+
+### Grandma
+
+Sweet and almost all-knowing. She already knows what you came for before you say it. She answers the question you didn't ask, and she's never surprised. She shows love by doing things (the kettle, the mending, the cup already poured), insists on manners, and teases a little, which is how you know she likes you. Her advice always comes attached to something in her hands.
+
+Knowing: "You've been out in the rain, and you've been crying, and you'd like me to ask about the rain."
+
+Answering what wasn't asked. Pokey: "I just came by to borrow a pot." Grandma: "She's in the garden, dear. Take the pot anyway."
+
+Never surprised: "There you are. I put a cup out an hour ago."
+
+Teasing: "Wipe your feet, dear. All four of them."
+
+Teaching with a thing: "Watch the kettle. It doesn't hurry, and it always boils."
+
+### Meeca
+
+Warm, quick and specific, a host who runs the room. Polite even to enemies, because manners are her armor. In a crisis she gets practical and small.
+
+Running the room: "Sit. No, not there, that's the fern's spot. There."
+
+Polite as armor, to a soldier dragging her off: "Thank you. Mind the step."
+
+Practical when scared: "Okay. Okay. What do I have. I have a hairpin. Good."
 
 ## What happened, in order
 
@@ -158,7 +244,7 @@ The guardians keep their soft side. After Pokey wins and says his line, the beat
 
 **General:** Come, little bloom. You're coming with me.
 
-**Meeca:** ...Nobody's called me that since Grandma.
+**Meeca:** ...Who told you that?
 
 **General:** Grab her. We're leaving.
 
@@ -202,8 +288,17 @@ The prologue goes into the game (src/game/storyIntro.ts) once the rewrite is app
 
 ## Still open
 
-In the prologue Meeca says "Nobody's called me that since Grandma." If "little bloom" was mostly Grandpa's name for her, that line points away from him, which may be exactly right (it hides the twist), or it may want to be "since Grandpa," which would be a big early clue. Matt to decide.
-
 Meeca's parents are never mentioned. Leave it unspoken, or give it one line?
 
-What does Pokey remember of his parents? The suggestion is that he doesn't remember their faces, just small things, like rain on the nest or someone humming. Not decided.
+## Sources for the cheat sheet
+
+- Sarcasm, how it's signaled (slower, lower voice) and children's development: https://en.wikipedia.org/wiki/Sarcasm
+- When children understand sarcasm (about five or six; teasing around seven to ten): https://ucalgary.ca/news/why-its-difficult-children-understand-sarcasm
+- Kinds of sarcasm, when it bonds and when it hurts, the 80 vs 50 percent email finding: https://www.scienceofpeople.com/sarcasm-why-it-hurts-us/
+- Sarcasm as armor, when it shows up: https://www.psychologs.com/sarcasm-as-a-defence-mechanism-psychology-behind-humour-avoidance-and-emotional-protection/?amp=1
+- Writing sarcastic characters who stay likable: https://literaryterms.net/when-and-how-to-use-sarcasm/
+- Dry humor and deadpan (underreaction, plain facts, less is more): https://www.backstage.com/magazine/article/dry-humor-comedy-advice-76705/
+- One-liners (setup, deserving target, character fit): https://www.goodreads.com/author_blog_posts/6828274-jumping-the-snark-9-tips-for-one-liners-that-slice
+- How real people talk, including nervous talk: https://blog.usesession.com/blog/allegedlyiwrite/767066505864265728
+- How a commander talks: https://www.thepromptindex.com/skill/396-submarine-captain-tone
+- The grandmother archetype and how to keep her fresh: https://onestopforwriters.com/tropes/conventional-granny
