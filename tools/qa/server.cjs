@@ -49,19 +49,23 @@ function personaViews(p) {
 }
 let views = VIEWS;
 
-async function open(stage, v, flag = 0) {
+async function open(stage, v, flag = 0, layout = 1) {
   if (page) await page.close().catch(() => {});
   view = views[v] ? v : 'land';
   // (a phone: touch screen, mobile browser, so the game shows and reads its touch controls)
-  const ctx = await browser.newContext({ viewport: views[view], deviceScaleFactor: 1.5, isMobile: true, hasTouch: true });
+  const ctx = await browser.newContext({ viewport: views[view], deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   page = await ctx.newPage();
   page.on('pageerror', (e) => errors.push('page error: ' + e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push('console error: ' + m.text().slice(0, 200)));
   cdp = await ctx.newCDPSession(page);
   await cdp.send('Performance.enable');
   steer = null;
-  await page.clock.install();
-  await page.goto(url);
+  // the clock stands still between commands: install() alone lets fake time flow in real time, so a tester died while thinking.
+  // Same layout every entry (?layout=N, stageGenerator.ts layoutForEntry), so repro steps hold.
+  const T0 = Date.UTC(2026, 9, 25, 12);
+  await page.clock.install({ time: T0 });
+  await page.clock.pauseAt(T0 + 1000);
+  await page.goto(url + (url.includes('?') ? '&' : '?') + `layout=${layout}`);
   await page.clock.runFor(3500);
   await page.evaluate((id) => window.__play(id), stage);
   await page.clock.runFor(3000);
@@ -69,12 +73,13 @@ async function open(stage, v, flag = 0) {
   if (flag > 0) {
     const ok = await page.evaluate((n) => {
       const e = window.__engine();
-      const cps = [...(e.currentStage.checkpoints ?? [])].sort((a, b) => a.x - b.x);
+      // flags in stage order (some stages run downhill or back left), and placing him there costs no life
+      const cps = e.currentStage.checkpoints ?? [];
       const cp = cps[Math.min(n, cps.length) - 1];
       if (!cp) return 0;
-      for (const c of e.currentStage.checkpoints) if (c.x <= cp.x) c.reached = true;
+      cps.forEach((c, i) => { if (i < n) c.reached = true; });
       e.checkpoint = { x: cp.x, y: cp.y };
-      e.respawnAtCheckpoint('hurt');
+      const p = e.player; p.x = cp.x; p.y = cp.y; p.vx = 0; p.vy = 0;
       return cps.length;
     }, flag);
     await page.clock.runFor(1500);
@@ -188,7 +193,7 @@ async function handle(cmd) {
     return { text: `playing as ${persona.name}: phone ${views.port.width}x${views.port.height} upright, ${views.land.width}x${views.land.height} sideways${at}` };
   }
   if (cmd.cmd === 'start') {
-    const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0));
+    const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0), Number(cmd.layout || 1));
     return { shot: await shot('start'), text: (cmd.flag ? `[started at flag ${cmd.flag} of ${flags}] ` : '') + (await screenText()) };
   }
   if (!page) throw new Error('no stage open: start one first');
