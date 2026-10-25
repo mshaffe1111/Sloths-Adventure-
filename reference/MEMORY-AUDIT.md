@@ -176,3 +176,26 @@ The browsers give a game very little to go on:
 - WebKit's memory-pressure handling: https://github.com/WebKit/WebKit/blob/main/Source/WTF/wtf/MemoryPressureHandler.cpp
 - Chrome keeps unpacked pictures in memory it can throw away: https://github.com/chromium/chromium/blob/main/cc/tiles/gpu_image_decode_cache.h
 - Web Audio buffers are raw 32-bit sound, resampled to the context's rate: https://github.com/WebAudio/web-audio-api/blob/main/index.bs
+
+## Results after the fixes (measured 2026-10-25)
+
+The same headless tour (title, World Map, then the first stage and the boss of every world in one session), run on `main` and on the fixed build. Each was run twice. The first run was normal. The second told the browser memory was critically low before every reading, the way a phone low on memory behaves: Chrome then throws away the pictures it has unpacked but isn't drawing.
+
+Numbers are the game page's process memory, in MB.
+
+| Moment | `main`, phone-like | Fixed, phone-like | `main`, normal | Fixed, normal |
+|---|---|---|---|---|
+| Title screen | 361 | 335 | 473 | 454 |
+| World Map, first visit | 417 | 382 | 805 | 549 |
+| In 1-1 | 438 | 397 | 888 | 644 |
+| In 3-10 | 448 | 408 | 977 | 939 |
+| In 7-1 | 471 | 444 | 993 | 963 |
+| In 10-10 | 473 | 435 | 985 | 956 |
+| Back on the map at the end | 490 | 460 | 1003 | 975 |
+
+What it shows:
+
+- **On a phone-like Chrome, the fix saves 25 to 45 MB during play, about 8%.** It's a real saving but smaller than the estimate in this audit. Chrome on Android already drops unpacked pictures under memory pressure, so the game's own references were costing less there than the estimate assumed.
+- **Without memory pressure, the World Map now opens 256 MB lighter**, and the first worlds of a session run 150 to 250 MB lighter. The work of unpacking every world's backdrop at the map is gone too, which a phone feels as a faster, smoother map.
+- **This tour doesn't cover the story, the reward coats or iPhones.** Those are where the fix matters most: the story's moving backdrops (278 MB) and the coat copies (97 MB a coat) are canvases or pictures Safari can't easily drop. Measure them on a real iPhone with Safari's Timelines (above).
+- **Neither build climbs out of control across ten worlds in this test.** Before the creature-body fix, the old build's body list kept growing; the tour is too short to show that leak, but the regression test covers it.
