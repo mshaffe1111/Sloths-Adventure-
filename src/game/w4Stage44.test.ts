@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS, G, HAND_STAGES } from './protoStage.ts';
+import { buildProtoStage, G, HAND_STAGES, stageSeconds } from './protoStage.ts';
 import { validateStage } from './levelCheck.ts';
 import { catchWindow, earlyCatch, jumpGrab, jumpReaches, landWindow, maxRise } from './protoCheck.ts';
 import { reachJump } from './physics.ts';
@@ -61,15 +61,15 @@ test('4-4 is hand-built', () => {
   assert.equal(HAND_STAGES['4-4'], '4-4');
 });
 
-test('4-4: every roll can be finished, has one exit, and takes a quick player at least two minutes', () => {
+test('4-4: every roll can be finished, has one exit, and takes a quick player its full length (STAGE_SECONDS)', () => {
   for (const s of SEEDS) {
     const st = build(s);
     const res = check(st);
     assert.ok(res.ok, `seed ${s}: ${res.errors.join('; ')}`);
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1, `seed ${s}`);
-    assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS, `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
+    assert.ok(st.meta!.timing!.layoutSeconds >= stageSeconds('4-4'), `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
     assert.ok((st.proto.movedPickups ?? 0) <= 2, `seed ${s}: ${st.proto.movedPickups} pickups had to be moved`);
-    assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Start', 'Learn', 'Develop', 'Twist', 'Finish'], `seed ${s}`);
+    assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Start', 'Learn', 'Develop', 'Twist', 'Twist again', 'Finish'], `seed ${s}`);
   }
 });
 
@@ -128,45 +128,47 @@ test('4-4: Dot frees the knotted vine, and it is the only way across its gorge; 
   for (const s of SEEDS) {
     const st = build(s);
     const knots = st.proto.w4?.knots ?? [];
-    assert.equal(knots.length, 2, `seed ${s}: ${knots.length} knots`);
+    // the Develop beat's knot, the two knots in the wind (Twist again) and the secret's
+    assert.equal(knots.length, 4, `seed ${s}: ${knots.length} knots`);
     const secret = secretKnot(st);
-    const main = knots.find((k) => k !== secret)!;
-    assert.ok(main && secret, `seed ${s}`);
-    const v = st.vines.find((q) => q.id === main.releases.id && main.releases.kind === 'vine');
-    assert.ok(v && v.isSwingingVine, `seed ${s}: the knot frees no vine`);
-    const bank = st.platforms.find((p) => p.y === G && p.x + p.width >= main.x1 && p.x <= main.x0)!;
-    assert.ok(bank, `seed ${s}: he cannot stand under the knot`);
-    const edge = bank.x + bank.width;
-    // freed, a jump from the bank grabs it; rolled up, nothing does, nor the next vine; and the gorge is far wider than any jump
-    // it hangs over the end of the bank, and wherever he waits under it a jump straight up grabs it once it is free (hands within 48 px)
-    // he waits between the vine and the edge, a step from the vine (so the knot is a little left of him on screen)
-    assert.ok(main.x0 > v.x && main.x1 < edge && main.x1 - v.x < 130, `seed ${s}: the spot is not beside the vine`);
-    assert.ok(jumpGrab(v.x + 60, G, v) >= 6, `seed ${s}: the freed vine is hard to grab`);
-    const tied = tiedBottom(v.topY, v.bottomY, main.y);
-    assert.ok(!jumpReaches(bank.x, edge, G, { ...v, bottomY: tied }), `seed ${s}: the tied-up vine can be grabbed`);
-    assert.ok(tied + 30 < G - RISE - 20, `seed ${s}: the tied-up vine is within a jump`);
-    // and low enough to be seen: no more than 260 px above his feet
-    assert.ok(G - main.y <= 260, `seed ${s}: the knot is ${G - main.y} px up`);
-    const chain = chains(st).find((c) => c.includes(v))!;
-    assert.equal(chain[0], v, `seed ${s}: the knotted vine is not the first of its chain`);
-    assert.ok(!jumpReaches(bank.x, edge, G, chain[1]), `seed ${s}: the second vine can be jumped to`);
-    const far = st.platforms.filter((p) => p.y === G && p.x > edge).sort((a, b) => a.x - b.x)[0];
-    assert.ok(far.x - edge > reachJump(0, true) + 200, `seed ${s}: the gorge can be jumped`);
-    // with no way over this gorge (the knot left tied), the exit cannot be reached
-    assert.equal(check(st, [v]).ok, false, `seed ${s}: the exit is reachable without the knot`);
-    // the engine side: the vine hangs rolled up until he stands still under the knot, then drops to its full length
-    const vines = st.vines.map((q) => ({ ...q }));
-    const w = new W4Play(st.proto.w4!, st.platforms.map((p) => ({ ...p })), vines);
-    const mine = vines.find((q) => q.id === v.id)!;
-    assert.equal(mine.bottomY, tied, `seed ${s}`);
-    const player = { x: (main.x0 + main.x1) / 2, y: G, vx: 0, vy: 0, grounded: true, invincibleTimer: 0 } as never;
-    const host = {
-      player, platforms: [], vines, collectibles: [], zones: st.zones ?? [], punch: null, hidden: false,
-      hurt() {}, tip() {}, float() {}, screech() {}, sfx() {},
-    };
-    for (let t = 0; t < 5; t += 1 / 30) w.step(1 / 30, { ...host, t });
-    assert.equal(mine.bottomY, v.bottomY, `seed ${s}: Dot did not free the vine`);
-    assert.ok(st.proto.hints.some((h) => /tied up out of reach. Walk up to the knot and wait/.test(h.text) && h.x < main.x0), `seed ${s}: the knot is not taught`);
+    assert.ok(secret, `seed ${s}`);
+    for (const main of knots.filter((k) => k !== secret)) {
+      const v = st.vines.find((q) => q.id === main.releases.id && main.releases.kind === 'vine');
+      assert.ok(v && v.isSwingingVine, `seed ${s}: the knot frees no vine`);
+      const bank = st.platforms.find((p) => p.y === G && p.x + p.width >= main.x1 && p.x <= main.x0)!;
+      assert.ok(bank, `seed ${s}: he cannot stand under the knot`);
+      const edge = bank.x + bank.width;
+      // freed, a jump from the bank grabs it; rolled up, nothing does, nor the next vine; and the gorge is far wider than any jump
+      // it hangs over the end of the bank, and wherever he waits under it a jump straight up grabs it once it is free (hands within 48 px)
+      // he waits between the vine and the edge, a step from the vine (so the knot is a little left of him on screen)
+      assert.ok(main.x0 > v.x && main.x1 < edge && main.x1 - v.x < 130, `seed ${s}: the spot is not beside the vine`);
+      assert.ok(jumpGrab(v.x + 60, G, v) >= 6, `seed ${s}: the freed vine is hard to grab`);
+      const tied = tiedBottom(v.topY, v.bottomY, main.y);
+      assert.ok(!jumpReaches(bank.x, edge, G, { ...v, bottomY: tied }), `seed ${s}: the tied-up vine can be grabbed`);
+      assert.ok(tied + 30 < G - RISE - 20, `seed ${s}: the tied-up vine is within a jump`);
+      // and low enough to be seen: no more than 260 px above his feet
+      assert.ok(G - main.y <= 260, `seed ${s}: the knot is ${G - main.y} px up`);
+      const chain = chains(st).find((c) => c.includes(v))!;
+      assert.equal(chain[0], v, `seed ${s}: the knotted vine is not the first of its chain`);
+      assert.ok(!jumpReaches(bank.x, edge, G, chain[1]), `seed ${s}: the second vine can be jumped to`);
+      const far = st.platforms.filter((p) => p.y === G && p.x > edge).sort((a, b) => a.x - b.x)[0];
+      assert.ok(far.x - edge > reachJump(0, true) + 200, `seed ${s}: the gorge can be jumped`);
+      // with no way over this gorge (the knot left tied), the exit cannot be reached
+      assert.equal(check(st, [v]).ok, false, `seed ${s}: the exit is reachable without the knot`);
+      // the engine side: the vine hangs rolled up until he stands still under the knot, then drops to its full length
+      const vines = st.vines.map((q) => ({ ...q }));
+      const w = new W4Play(st.proto.w4!, st.platforms.map((p) => ({ ...p })), vines);
+      const mine = vines.find((q) => q.id === v.id)!;
+      assert.equal(mine.bottomY, tied, `seed ${s}`);
+      const player = { x: (main.x0 + main.x1) / 2, y: G, vx: 0, vy: 0, grounded: true, invincibleTimer: 0 } as never;
+      const host = {
+        player, platforms: [], vines, collectibles: [], zones: st.zones ?? [], punch: null, hidden: false,
+        hurt() {}, tip() {}, float() {}, screech() {}, sfx() {},
+      };
+      for (let t = 0; t < 5; t += 1 / 30) w.step(1 / 30, { ...host, t });
+      assert.equal(mine.bottomY, v.bottomY, `seed ${s}: Dot did not free the vine`);
+      assert.ok(st.proto.hints.some((h) => /tied up out of reach. Walk up to the knot and wait/.test(h.text) && h.x < main.x0), `seed ${s}: the knot is not taught`);
+    }
   }
 });
 
@@ -206,5 +208,36 @@ test('4-4: the rocks over the landing are fair and taught, and the wind and the 
     assert.ok(hintAt(/The chimes swing the way the wind will blow/) < lanes[0].x0, `seed ${s}`);
     assert.ok(hintAt(/swing back at you/) < lanes.find((z) => z.dir === -1)!.x0, `seed ${s}`);
     assert.ok(hintAt(/Rocks fall on the next landing/) < Math.min(...rocks.map((r) => r.x)) - 600, `seed ${s}`);
+  }
+});
+
+test('4-4: the second twist puts Dot\'s knots in the wind and the headwind over the rocks, each taught as it first comes', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const names = st.proto.beats.map((b) => b[2]);
+    const at = names.findIndex((n) => n.startsWith('Twist again'));
+    assert.ok(at > names.findIndex((n) => n.startsWith('Twist:')) && at < names.findIndex((n) => n === 'Finish'), `seed ${s}: ${names.join(' / ')}`);
+    const [b0, b1] = st.proto.beats[at];
+    const lanes = (st.zones ?? []).map((z, i) => ({ z, i })).filter(({ z }) => z.kind === 'wind');
+    const chimes = st.proto.w4?.chimes ?? [];
+    // two knots in the beat, each over a gorge with a gust lane across it, and its chimes behind the knotted vine, clear of his spot
+    const knots = (st.proto.w4?.knots ?? []).filter((k) => k.x > b0 && k.x < b1);
+    assert.equal(knots.length, 2, `seed ${s}: ${knots.length} knots in the second twist`);
+    for (const k of knots) {
+      const v = st.vines.find((q) => q.id === k.releases.id)!;
+      const chain = chains(st).find((c) => c.includes(v))!;
+      const lane = lanes.find(({ z }) => z.x0 > k.x1 && z.x0 < chain[1].x && z.x1 > chain[chain.length - 1].x);
+      assert.ok(lane, `seed ${s}: the knot at ${k.x} has no wind over its gorge`);
+      const c = chimes.find((q) => q.zone === lane.i)!;
+      assert.ok(c && c.x + 40 < v.x, `seed ${s}: the chimes are not behind the knotted vine`);
+    }
+    const first = knots.sort((a, b) => a.x - b.x)[0];
+    assert.ok(st.proto.hints.some((h) => /A knot, and the wind over the gorge/.test(h.text) && h.x > b0 && h.x < first.x0), `seed ${s}: the knot in the wind is not taught`);
+    // the headwind over a landing the rocks fall on
+    const rock = (st.proto.w4?.rocks ?? []).find((r) => r.x > b0 && r.x < b1);
+    assert.ok(rock, `seed ${s}: no rocks in the second twist`);
+    const over = lanes.find(({ z }) => z.x1 < rock.x && rock.x - z.x1 < 200)!;
+    assert.ok(over && over.z.dir === -1, `seed ${s}: the rocks' gorge is not into the wind`);
+    assert.ok(st.proto.hints.some((h) => /Wind in your face and rocks on the landing/.test(h.text) && h.x < over.z.x0), `seed ${s}: the headwind over the rocks is not taught`);
   }
 });

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS, HAND_STAGES } from './protoStage.ts';
+import { buildProtoStage, EXPERT_SECONDS, G, HAND_STAGES, stageSeconds } from './protoStage.ts';
 import { validateStage } from './levelCheck.ts';
 import { reachJump } from './physics.ts';
 import { ROCK, rockFits } from './rockfall.ts';
@@ -71,14 +71,14 @@ test('4-1: the shrine is across a gap no jump crosses, bridged by the fern frond
 
 const build42 = (s: number) => buildProtoStage(cfg('4-2', 'sprint'), s, '4-2');
 
-test('4-2: every roll can be finished without the leaf (none is needed before 4-7), has one exit, and is two minutes long', () => {
+test('4-2: every roll can be finished without the leaf (none is needed before 4-7), has one exit, and runs its full length (STAGE_SECONDS)', () => {
   assert.equal(HAND_STAGES['4-2'], '4-2');
   for (const s of SEEDS) {
     const st = build42(s);
     const res = validateStage(st);
     assert.ok(res.ok, `seed ${s}: ${res.errors.join('; ')}`);
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1, `seed ${s}`);
-    assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS, `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
+    assert.ok(st.meta!.timing!.layoutSeconds >= stageSeconds('4-2'), `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
     assert.ok((st.proto.movedPickups ?? 0) <= 2, `seed ${s}: ${st.proto.movedPickups} pickups had to be moved`);
   }
 });
@@ -100,5 +100,36 @@ test('4-2: every gust lane has its chimes, gusts blow both ways, and the leaf an
     assert.ok(st.proto.hints.some((h) => /chimes/.test(h.text)), `seed ${s}`);
     // the secret: a golden seed out where only the leaf reaches
     assert.ok(st.collectibles.some((c) => c.type === 'seed'), `seed ${s}: no golden seed`);
+  }
+});
+
+test('4-2: the second twist rides the leaf on a high wind and turns the wind halfway over the stones, each taught as it first comes', () => {
+  for (const s of SEEDS) {
+    const st = build42(s);
+    const names = st.proto.beats.map((b) => b[2]);
+    const at = names.findIndex((n) => n.startsWith('Twist again'));
+    assert.ok(at > names.findIndex((n) => n.startsWith('Twist:')) && at < names.findIndex((n) => n === 'Finish'), `seed ${s}: ${names.join(' / ')}`);
+    const [b0, b1] = st.proto.beats[at];
+    const lanes = (st.zones ?? []).map((z, i) => ({ z, i })).filter(({ z }) => z.kind === 'wind' && z.x0 >= b0 - 200 && z.x0 < b1);
+    const chimes = st.proto.w4?.chimes ?? [];
+    const chimeOf = (i: number) => chimes.find((c) => c.zone === i)!;
+    // the high wind: behind him, stopping short of the ground (no bank is in it), its chimes up on the perch the leaf leaves from
+    const high = lanes.filter(({ z }) => z.bottom < G - 20);
+    assert.ok(high.length >= 2, `seed ${s}: ${high.length} high winds`);
+    for (const { z, i } of high) {
+      assert.equal(z.dir, 1, `seed ${s}`);
+      const c = chimeOf(i);
+      assert.ok(c.y < G - 200 && st.platforms.some((p) => p.style === 'branch' && p.y === c.y && p.x <= c.x && p.x + p.width >= c.x), `seed ${s}: the chimes are not on the perch`);
+      assert.ok(!st.platforms.some((p) => p.y === G && p.x < z.x1 && p.x + p.width > z.x0 && p.y > z.top && p.y < z.bottom + 20), `seed ${s}`);
+    }
+    const hintAt = (re: RegExp) => st.proto.hints.find((h) => re.test(h.text))?.x ?? Infinity;
+    assert.ok(hintAt(/Wind up high! Open your leaf/) < high[0].z.x0, `seed ${s}: the high wind is not taught`);
+    // the turn: a lane behind him straight into one in his face, the second's chimes on a stone in the middle, where it turns
+    const turn = lanes.find(({ z }, k) => z.dir === 1 && lanes[k + 1] && lanes[k + 1].z.dir === -1 && lanes[k + 1].z.x0 === z.x1);
+    assert.ok(turn, `seed ${s}: the wind never turns`);
+    const back = lanes[lanes.indexOf(turn) + 1];
+    const c = chimeOf(back.i);
+    assert.ok(c.y < G && st.platforms.some((p) => p.style === 'moss_stone' && p.y === c.y && p.x <= c.x && p.x + p.width >= c.x + 20), `seed ${s}: the turning chimes are not on a stone`);
+    assert.ok(hintAt(/The wind turns halfway across/) < turn.z.x0, `seed ${s}: the turn is not taught`);
   }
 });
