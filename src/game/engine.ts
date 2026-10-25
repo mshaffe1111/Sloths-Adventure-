@@ -9,6 +9,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
+
 import type {
   LevelConfig,
   PlayerState,
@@ -107,6 +108,15 @@ import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
+
+/** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
+function wayDodgeOn(): boolean {
+  try {
+    return !/[?&]waydodge=0\b/.test(location.search);
+  } catch {
+    return true;
+  }
+}
 
 /** How many world units tall the screen shows. */
 /** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
@@ -636,6 +646,9 @@ export class GameEngine {
   }
 
   public stop() {
+    // (the banner goes back to its usual place for whatever comes next)
+    if (typeof document !== 'undefined') delete document.documentElement.dataset.wayLow;
+    this.wayLow = false;
     this.isRunning = false;
     if (this.animFrameId !== null) {
       cancelAnimationFrame(this.animFrameId);
@@ -2176,6 +2189,42 @@ export class GameEngine {
     );
 
     this.updateSound(dt, groundedBefore, vyBefore, distanceRatio);
+    this.markWayDodge(dt);
+  }
+
+  /** Dot's lines dodge Pokey: true while the banner has moved to the bottom of the screen (see markWayDodge) */
+  private wayLow = false;
+  private wayClearT = 0;
+  /**
+   * Dot's banner (Wayside.tsx) sits in a band across the upper middle of the screen, which on a phone held sideways is where Pokey
+   * often is (on a liana, up a tree, on a high shelf). While any part of him is in that band, the banner moves to the bottom of the
+   * screen; it comes back once he has been clear of the band for a moment, so it does not flick back and forth.
+   * (`?waydodge=0` turns it off, to compare)
+   */
+  private markWayDodge(dt: number) {
+    if (!wayDodgeOn() || typeof document === 'undefined') return;
+    const p = this.player;
+    const w = this.viewCssW, h = this.viewCssH;
+    if (!w || !h) return;
+    // the banner's slot (index.css .way): its top, and about two lines of height below it
+    const slot = w <= 520 ? 132 : h <= 430 ? 110 : 96;
+    const bandTop = slot - 12, bandBot = slot + 88;
+    const head = (p.y - 125 - this.camera.y) * this.zoom;
+    const feet = (p.y + 10 - this.camera.y) * this.zoom;
+    const under = feet > bandTop && head < bandBot;
+    if (under) {
+      this.wayClearT = 0;
+      if (!this.wayLow) {
+        this.wayLow = true;
+        document.documentElement.dataset.wayLow = '1';
+      }
+    } else if (this.wayLow) {
+      this.wayClearT += dt;
+      if (this.wayClearT > 0.8) {
+        this.wayLow = false;
+        delete document.documentElement.dataset.wayLow;
+      }
+    }
   }
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
