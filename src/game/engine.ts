@@ -61,6 +61,9 @@ import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } 
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
+import { W4Play } from './w4Play.ts';
+import { camAnchor, camLook, CAM, snapCam } from './cameraFollow.ts';
+import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
@@ -123,9 +126,6 @@ function wayDodgeOn(): boolean {
 const FIND_SEARCH_SECONDS = 0.9;
 /** seconds before a crumbled platform grows back */
 const REGROW_SECONDS = 3;
-/** how close (across, and up or down) an animal or cage must be for a tap to punch rather than jump */
-const TAP_PUNCH_X = 130;
-const TAP_PUNCH_Y = 60;
 /** how near a flower must be to pick it while swinging on a vine (34 on foot) */
 const SWING_PICK = 56;
 /** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
@@ -289,6 +289,11 @@ export class GameEngine {
   private glowWake = new Map<number, number>();
   /** World 3's thorn vines: a lash under way (by vine index: when it saw him, which way, whether it has landed), and the cycle it was in */
   private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
+  /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
+  private camAnchorY = NaN;
+  private camLookX: number = CAM.lookAhead;
+  /** World 4's rocks, fern, falls, chimes, knots and capuchins for this run (w4Play.ts) */
+  private w4: W4Play | null = null;
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
@@ -472,8 +477,11 @@ export class GameEngine {
     this.vineLash.clear();
     resetHeroClips();
     warmHeroClips();
+    // the clip sheets of the creatures in this stage start loading now, not as each one first comes on screen
+    warmCreatureAnims(new Set(this.enemies.flatMap((e) => (e.type === 'turtle' && e.royal ? ['guard'] : [e.type]))));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push);
+    this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
@@ -776,13 +784,11 @@ export class GameEngine {
     const groundedBefore = p.grounded;
     const vyBefore = p.vy;
     if (recorder.on) this.recordPokey();
-    // the touch recogniser reads this: in the air with a second jump to spare, a tap is that jump
+    // the touch recogniser reads this: in the air with a second jump to spare, a shorter slide up is that jump
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
     if (this.refined) {
       this.input.kickNear = this.somethingToKick();
       this.input.onVine = p.climbing || !!p.isVineSwinging;
-      // nothing to hit within reach, on the ground or on a vine: a tap jumps (or leaps off the vine)
-      this.input.tapJump = !this.somethingToPunch() && (p.grounded || !!p.isVineSwinging) && !p.climbing && !p.hanging && !this.isGameOver;
     }
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
@@ -932,6 +938,7 @@ export class GameEngine {
       this.darkShow += (want - this.darkShow) * Math.min(1, dt * 3);
       this.stepGlowworms(dt, zones);
       if (this.proto?.thorns) this.stepThornVines();
+      if (this.w4) this.stepW4(dt);
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -1219,7 +1226,8 @@ export class GameEngine {
           if (this.input.state.left) p.facing = -1;
           // the timed swing (physics.ts TIMED): the vine swings itself at a steady height and rhythm; holding a direction only turns
           // him to face the way he will let go, and the only choice is when. A glint shows the sweet spot for letting go.
-          const r = swingStep(sw, nearSwingVine, dt, p.facing, 0);
+          const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
+          const r = swingStep(sw, nearSwingVine, dt, p.facing, climb);
           const sweet = inSweetSpot(sw, p.facing);
           this.sweetGlow += ((sweet ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
           this.sweetGlint -= dt;
@@ -2711,20 +2719,6 @@ export class GameEngine {
   }
 
   /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
-  /**
-   * an animal or a cage close enough, and level enough, that a tap means a punch (closer than somethingToKick: a snake up on a branch,
-   * or one well down the path, leaves a tap as a jump, so hopping up to it still works)
-   */
-  private somethingToPunch(): boolean {
-    const p = this.player;
-    const cx = p.x + p.width / 2, cy = p.y - p.height / 2;
-    const near = (x: number, y: number) => Math.abs(x - cx) < TAP_PUNCH_X && Math.abs(y - cy) < TAP_PUNCH_Y;
-    for (const e of this.enemies) if (!e.defeated && near(e.x + (e.width ?? 0) / 2, e.y)) return true;
-    if (this.boss && Math.abs(this.boss.x - cx) < TAP_PUNCH_X * 2) return true;
-    for (const c of this.collectibles) if (c.type === 'cage' && !c.collected && near(c.x, c.y)) return true;
-    return false;
-  }
-
   private somethingToKick(): boolean {
     const p = this.player;
     const cx = p.x + p.width / 2, cy = p.y - p.height / 2;
@@ -3513,6 +3507,7 @@ export class GameEngine {
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * 0.55);
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
+    this.camAnchorY = NaN;
     this.addFloatingText(
       reason === 'hurt' ? 'TRY AGAIN!' : 'OH NO!',
       p.x,
@@ -3676,11 +3671,13 @@ export class GameEngine {
     const p = this.player;
     const { viewportWidth: vw, viewportHeight: vh } = this.camera;
 
-    // Look-ahead tracking
-    const lookAhead = p.facing * 90;
+    // Look-ahead tracking: eased across when he turns, and a height that ignores hops and swings (cameraFollow.ts: the screen jiggled)
+    this.camLookX = camLook(this.camLookX, p.facing, dt);
+    const sv = p.isVineSwinging ? this.nearSwingVine : null;
+    this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
-    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + lookAhead;
-    this.camera.targetY = p.y - vh * 0.55;
+    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + this.camLookX;
+    this.camera.targetY = this.camAnchorY - vh * 0.55;
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
@@ -3805,7 +3802,9 @@ export class GameEngine {
 
     // 2. Render In-World Game Elements with Camera Transform
     ctx.save();
-    ctx.translate(-Math.round(this.camera.x) + shakeX, -Math.round(this.camera.y) + shakeY);
+    // (snapped to whole device pixels: whole CSS pixels moved the world in steps of three on a phone while he moved smoothly)
+    const snap = dpr * this.zoom;
+    ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
 
     this.drawWaterAndFlags(ctx, world);
     this.drawRivers(ctx, world, false);
@@ -3875,6 +3874,7 @@ export class GameEngine {
       const l = this.vineLash.get(i);
       drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : this.player.x >= v.x ? 1 : -1, this.gameTime);
     }
+    this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.currentStage.zones ?? [], this.platforms);
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
     for (const z of this.currentStage.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights) continue;
@@ -4051,6 +4051,7 @@ export class GameEngine {
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
+    this.w4?.drawFront(ctx, this.platforms, this.gameTime);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
       for (const cv of this.proto.covers) {
@@ -4746,6 +4747,57 @@ export class GameEngine {
         }
       }
     }
+  }
+
+  /**
+   * World 4 (w4Play.ts): the rocks, the fern and the mist, the falls and their pools, the chimes, Dot's knots and the capuchins. Wading
+   * in pouring water slows him on top of whatever the wind is doing; a lookout's screech brings the Sovereign's pass early.
+   */
+  private stepW4(dt: number) {
+    const p = this.player;
+    const id = this.currentStage.config.id;
+    const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
+    const out = this.w4!.step(dt, {
+      t: this.gameTime,
+      player: p,
+      platforms: this.platforms,
+      vines: this.vines,
+      collectibles: this.collectibles,
+      zones: this.currentStage.zones ?? [],
+      punch: p.punching && (p.attackU ?? 1) < 0.6 ? { x: p.x + p.facing * 40, y: p.y - 40 } : null,
+      hidden: hidden(this.proto?.bushes ?? [], me) || this.w4!.behindFall(p.x, p.y),
+      hurt: (dir) => {
+        this.damagePlayer(1);
+        p.vx = dir * 240;
+        this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+      },
+      tip: (key, text, seconds) => {
+        if (tipHeard(id, key)) return;
+        markTipHeard(id, key);
+        this.guide(text, seconds);
+      },
+      float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
+      screech: () => {
+        // the monkey's shout brings the Sovereign: her warning starts now (and is as long as ever, so there is time to hide)
+        if (this.proto?.watch && this.watch.phase === 'calm') {
+          this.watch.phase = 'warn';
+          this.watch.t = 0;
+          this.watch.dur = WATCH.warn;
+          sound.playEagleScreech();
+          this.addFloatingText('HIDE!', p.x, p.y - 96, '#fbbf24');
+          this.input.triggerHaptic(120);
+        }
+      },
+      sfx: (kind) => {
+        if (kind === 'rock') sound.playHitImpact();
+        else if (kind === 'chime') sound.playVineGrab();
+        else if (kind === 'monkey') sound.playPredator('tayra', 0);
+        else if (kind === 'frond') sound.playShrineUnlocked();
+        else if (kind === 'knot') sound.playRelicFound();
+        else sound.playWhoosh();
+      },
+    });
+    this.dragSpeed *= out.speed;
   }
 
   /** how awake a sleeping light is: 0 asleep, rising to 1 over GLOW_REACH.fade once it wakes */

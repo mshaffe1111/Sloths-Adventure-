@@ -78,7 +78,7 @@ export function createPaintedBoss(spec: PaintedBossSpec): PaintedBoss {
     if (atlas || typeof Image === 'undefined') return;
     const img = new Image();
     atlas = img;
-    trackAtlas(img, spec.url, () => { ready = true; }, () => { atlas = null; });
+    trackAtlas(img, spec.url, () => { ready = true; }, () => { atlas = null; }, () => { atlas = null; ready = false; });
   };
   const active = () => {
     if (!isEnabled()) return false;

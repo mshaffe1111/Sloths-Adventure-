@@ -34,7 +34,7 @@ function load() {
   if (img || typeof Image === 'undefined') return;
   const im = new Image();
   img = im;
-  trackAtlas(im, new URL('../assets/props/w3-props.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; });
+  trackAtlas(im, new URL('../assets/props/w3-props.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; }, () => { img = null; ready = false; });
 }
 /** whether the World 3 pieces have loaded (starts the load) */
 export function w3ArtReady(): boolean {

@@ -31,6 +31,18 @@ export interface CreatureAnim {
   draw(ctx: CanvasRenderingContext2D, name: string, k: number): boolean;
 }
 
+/** every creature's clip sheet, by its name (the file's name before -anim: 'ocelot', 'jaguar', 'boa', 'turtle', 'guard', ...) */
+const ALL = new Map<string, CreatureAnim>();
+
+/**
+ * Start loading the clip sheets of the creatures a stage holds, as the stage starts. They used to start loading the first time each
+ * creature came on screen, so the swap from its still frames to its clips (and handing a 13 to 46 MB sheet to the graphics) landed in
+ * the middle of meeting it.
+ */
+export function warmCreatureAnims(names: Iterable<string>) {
+  for (const n of names) ALL.get(n)?.ready();
+}
+
 export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>, seqs: Record<string, readonly string[]>, up: number): CreatureAnim {
   let img: HTMLImageElement | null = null;
   let loaded = false;
@@ -38,10 +50,10 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
     if (img || typeof Image === 'undefined') return;
     const im = new Image();
     img = im;
-    trackAtlas(im, url, () => { loaded = true; }, () => { img = null; });
+    trackAtlas(im, url, () => { loaded = true; }, () => { img = null; }, () => { img = null; loaded = false; });
   };
   const seqOf = (s: string) => seqs[s] ?? [];
-  return {
+  const anim: CreatureAnim = {
     ready() {
       load();
       return loaded && !!img;
@@ -71,4 +83,7 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
       return true;
     },
   };
+  const name = /([a-z0-9]+)-anim[^/]*$/.exec(url.split('?')[0])?.[1];
+  if (name) ALL.set(name, anim);
+  return anim;
 }

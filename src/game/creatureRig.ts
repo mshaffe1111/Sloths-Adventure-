@@ -214,9 +214,12 @@ export function bodyFor(kind: string, enemy: Enemy, time: number): Body {
   if (b.dt > 0) b.fs = b.fsSpring.step(b.facing, 420, 40, b.dt);
   b.fv = b.vx * b.facing;
   b.seen = time;
+  // game time starts again at 0 every stage: without this the prune would wait for the new stage to outlast the old one's clock
+  if (time < lastPrune) lastPrune = time;
   if (time - lastPrune > 3) {
     lastPrune = time;
-    for (const [k, v] of BODIES) if (time - v.seen > 4) BODIES.delete(k);
+    // (a body last seen "in the future" belongs to an earlier stage's clock)
+    for (const [k, v] of BODIES) if (time - v.seen > 4 || v.seen > time + 0.5) BODIES.delete(k);
   }
   return b;
 }
@@ -225,6 +228,9 @@ export function bodyFor(kind: string, enemy: Enemy, time: number): Body {
 export function mirrorAbout(wx: number, pts: V2[]) {
   for (const p of pts) p.x = 2 * wx - p.x;
 }
+
+/** how many bodies are kept (for the test) */
+export const bodyCount = (): number => BODIES.size;
 
 /** Test / reset hook. */
 export function resetBodies() {

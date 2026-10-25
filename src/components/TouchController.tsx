@@ -33,8 +33,6 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
         kick: (dir) => { recorder.intent('kick', dir ?? 0); inputEngine.triggerTouchKick(dir ?? 0); },
         mega: () => { recorder.intent('mega'); inputEngine.triggerTouchMega(); },
         climb: (d) => { recorder.intent('climb', d); inputEngine.triggerTouchClimb(d); },
-        // (the press is held its full minimum, so a tap gives the same full jump a flick does)
-        tapJump: () => { recorder.intent('tapjump'); inputEngine.triggerTouchUp(); inputEngine.releaseTouchUp(); },
         feedback: (kind) => {
           const haptic = { jump: 15, duck: 0, punch: 20, kick: 25, mega: 35 }[kind];
           if (haptic) inputEngine.triggerHaptic(haptic);
@@ -42,7 +40,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, tapJump: () => inputEngine.tapJump },
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine },
     );
   }
   const G = gestures.current;

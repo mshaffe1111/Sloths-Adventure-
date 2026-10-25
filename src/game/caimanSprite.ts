@@ -48,7 +48,7 @@ function load() {
   if (atlas || typeof Image === 'undefined') return;
   const img = new Image();
   atlas = img;
-  trackAtlas(img, new URL('../assets/enemies/caiman-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
+  trackAtlas(img, new URL('../assets/enemies/caiman-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; }, () => { atlas = null; ready = false; });
 }
 
 interface SpriteRig {

@@ -27,7 +27,7 @@ function lairPicture(): HTMLImageElement | null {
   if (typeof Image === 'undefined') return null;
   if (!lairImg) {
     lairImg = new Image();
-    trackAtlas(lairImg, LAIR_URL, () => { lairReady = true; }, () => { lairImg = null; });
+    trackAtlas(lairImg, LAIR_URL, () => { lairReady = true; }, () => { lairImg = null; }, () => { lairImg = null; lairReady = false; });
   }
   return lairReady ? lairImg : null;
 }

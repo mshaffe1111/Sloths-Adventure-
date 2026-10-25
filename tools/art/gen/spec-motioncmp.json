@@ -1,0 +1,83 @@
+{
+ "tag": "motioncmp",
+ "jobs": {
+  "v1": {
+   "clips": [
+    {
+     "name": "cmp-v1-glide",
+     "src": "pokey-glide-44",
+     "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion. The cartoon sloth with a satchel floats gently down hanging from the big leaf on its little strings, the leaf rocking and billowing in the air, his legs swaying. The character stays in the middle of the frame.",
+     "seed": 7
+    },
+    {
+     "name": "cmp-v1-dotfly",
+     "src": "dot-fly-11",
+     "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion. The tiny green hummingbird flies forward in place, her wings beating so fast they blur, her body bobbing a little, facing right the whole time. She stays in the middle of the frame and never leaves it.",
+     "seed": 7
+    },
+    {
+     "name": "cmp-v1-walk",
+     "src": "pokey-stand-side-11",
+     "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion. The cartoon sloth with a satchel walks forward slowly in place, arms swinging, a calm steady walk, seen from the side facing right the whole time. He stays in the middle of the frame.",
+     "seed": 7
+    },
+    {
+     "name": "cmp-v1-climb",
+     "src": "pokey-ledge-22",
+     "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion. The cartoon sloth with a satchel pulls himself up over the edge of the rock ledge, slow and careful, then stands up on top. He stays in the middle of the frame.",
+     "seed": 7
+    }
+   ],
+   "motion": {
+    "high": [
+     "mshaffe111/slothadv-motion-lora",
+     "slothadv_motion_v1_high_noise.safetensors"
+    ],
+    "low": [
+     "mshaffe111/slothadv-motion-lora",
+     "slothadv_motion_v1_low_noise.safetensors"
+    ],
+    "scale": 1.0
+   }
+  },
+  "v2": {
+   "clips": [
+    {
+     "name": "cmp-v2-glide",
+     "src": "pokey-glide-44",
+     "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion. The cartoon sloth with a satchel floats gently down hanging from the big leaf on its little strings, the leaf rocking and billowing in the air, his legs swaying. The character stays in the middle of the frame.",
+     "seed": 7
+    },
+    {
+     "name": "cmp-v2-dotfly",
+     "src": "dot-fly-11",
+     "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion. The tiny green hummingbird flies forward in place, her wings beating so fast they blur, her body bobbing a little, facing right the whole time. She stays in the middle of the frame and never leaves it.",
+     "seed": 7
+    },
+    {
+     "name": "cmp-v2-walk",
+     "src": "pokey-stand-side-11",
+     "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion. The cartoon sloth with a satchel walks forward slowly in place, arms swinging, a calm steady walk, seen from the side facing right the whole time. He stays in the middle of the frame.",
+     "seed": 7
+    },
+    {
+     "name": "cmp-v2-climb",
+     "src": "pokey-ledge-22",
+     "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion. The cartoon sloth with a satchel pulls himself up over the edge of the rock ledge, slow and careful, then stands up on top. He stays in the middle of the frame.",
+     "seed": 7
+    }
+   ],
+   "motion": {
+    "high": [
+     "mshaffe111/slothadv-motion-lora",
+     "slothadv_motion_v2_high_noise.safetensors"
+    ],
+    "low": [
+     "mshaffe111/slothadv-motion-lora",
+     "slothadv_motion_v2_low_noise.safetensors"
+    ],
+    "scale": 1.0
+   }
+  }
+ }
+}

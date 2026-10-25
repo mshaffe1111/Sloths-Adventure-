@@ -44,13 +44,13 @@ function rig(opts: { assist?: boolean; air?: boolean } = {}) {
   };
 }
 
-test('in the air, a tap anywhere is the second jump, not a punch', () => {
+test('in the air, a tap is a punch (the fight makes it a jump kick), never the second jump', () => {
   const t = rig();
   t.down(1, 640, 260);
   t.wait(80);
   t.up(1, 640, 260);
-  assert.equal(t.count('jump'), 1);
-  assert.equal(t.count('punch'), 0);
+  assert.equal(t.count('punch'), 1);
+  assert.equal(t.count('jump'), 0);
 });
 
 test('on the ground a tap still punches', () => {
@@ -71,16 +71,16 @@ test('with jump help off, a tap in the air still punches (the old feel, for comp
   assert.equal(t.count('jump'), 0);
 });
 
-test('a tap with the thumb that was steering a moment ago is the second jump (no "re-plant" excuse in the air)', () => {
+test('in the air, the steering thumb put back down a moment after lifting is a re-plant: no jump and no punch', () => {
   const t = rig();
   t.down(1, 200, 260);
   t.drag(1, 200, 260, 300, 262, 300);
   t.up(1, 300, 262);
-  t.wait(60);
-  t.down(2, 220, 260); // back on the left half, soon after the lift
+  t.wait(30);
+  t.down(2, 220, 260); // back on the left half, bouncing straight back down
   t.wait(70);
   t.up(2, 220, 260);
-  assert.equal(t.count('jump'), 1);
+  assert.equal(t.count('jump'), 0);
   assert.equal(t.count('punch'), 0);
 });
 
@@ -149,12 +149,13 @@ test('a flick sideways in the air is still a kick', () => {
 
 test('a second jump just taken locks the next for a moment (two fingers landing together do not double up)', () => {
   const t = rig();
-  t.down(1, 640, 260);
-  t.wait(50);
-  t.up(1, 640, 260);
-  t.down(2, 700, 250);
-  t.wait(40);
-  t.up(2, 700, 250);
+  // two thumbs slide up a short way, one just after the other: the first is the second jump, the second is held off
+  t.down(1, 640, 280);
+  t.down(2, 700, 280);
+  t.drag(1, 640, 280, 642, 250, 120);
+  t.drag(2, 700, 280, 702, 250, 60);
+  t.up(1, 642, 250);
+  t.up(2, 702, 250);
   assert.equal(t.count('jump'), 1);
 });
 

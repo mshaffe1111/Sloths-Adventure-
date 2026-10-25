@@ -130,6 +130,12 @@ export class Conductor {
         this.core = new AudioCore(ctx);
       } catch {
         this.core = null;
+        // the context was made before the core failed: close it, or every later tap would make (and leak) another one
+        try {
+          void (ctx! as AudioContext | undefined)?.close();
+        } catch {
+          /* already gone */
+        }
         return;
       }
       this.ctx = ctx;

@@ -3,7 +3,9 @@
  *
  * Painting a limb or a ruin takes dozens of path operations; a phone at a steady 30 fps cannot afford that for every platform
  * every frame. So each thin platform is painted once into its own small canvas (keyed by world, scene seed, id, look, variant and
- * size) and afterwards costs one drawImage. The cache is dropped whenever the scene seed changes (a new stage) and is bounded.
+ * size) and afterwards costs one drawImage. The cache is dropped whenever the scene seed changes (a new stage) and is bounded: by
+ * count, and by memory (a stage's sprites came to as much as 46 MB, memory audit 2026-10-25), letting go first of the sprites that
+ * have not been drawn for a while, so the ones on screen are never thrown away and painted again.
  */
 import type { Platform } from './types.ts';
 import { rng } from './artKit.ts';
@@ -16,6 +18,9 @@ import { h01, type ThinLook, type ThinPlan } from './platformPlan.ts';
 /** texture pixels per world unit */
 export const RES = 2;
 const MAX_SPRITES = 140;
+/** bytes the sprites may hold before the ones not drawn for IDLE_MS are let go */
+const BUDGET = 24 * 2 ** 20;
+const IDLE_MS = 1500;
 
 export interface Sprite {
   cv: HTMLCanvasElement;
@@ -31,10 +36,33 @@ export type Painter = (a: Art) => void;
 export interface Pad { x: number; top: number; bot: number }
 
 const cache = new Map<string, Sprite>();
-onSceneSeedChange(() => cache.clear());
+/** when each sprite was last drawn (ms), and the bytes they all hold */
+const used = new Map<string, number>();
+let bytes = 0;
+const sizeOf = (sp: Sprite) => sp.cv.width * sp.cv.height * 4;
+const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+
+function drop(key: string) {
+  const sp = cache.get(key);
+  if (!sp) return;
+  bytes -= sizeOf(sp);
+  // a zero-size canvas frees its pixels now, not whenever it is collected (nothing draws a sprite once it has left the cache)
+  sp.cv.width = sp.cv.height = 0;
+  cache.delete(key);
+  used.delete(key);
+}
 
 export function clearSprites() {
-  cache.clear();
+  for (const k of [...cache.keys()]) drop(k);
+  bytes = 0;
+}
+onSceneSeedChange(clearSprites);
+
+/** a cached sprite, marked as drawn now */
+function hit(key: string): Sprite | undefined {
+  const sp = cache.get(key);
+  if (sp) used.set(key, now());
+  return sp;
 }
 
 export function spriteCount() {
@@ -48,8 +76,8 @@ export function spriteFor(
   const w = Math.round(p.width);
   const h = Math.round(height ?? p.height);
   const key = `${getSceneSeed()}:${world}:${p.id}:${plan.look}:${plan.variant}:${w}:${h}`;
-  const hit = cache.get(key);
-  if (hit) return hit;
+  const had = hit(key);
+  if (had) return had;
   const cvW = Math.ceil((w + pad.x * 2) * RES);
   const cvH = Math.ceil((pad.top + h + pad.bot) * RES);
   const cv = document.createElement('canvas');
@@ -76,22 +104,27 @@ export function spriteFor(
 }
 
 function store(key: string, sp: Sprite) {
-  if (cache.size >= MAX_SPRITES) {
-    // drop the oldest quarter
-    let n = 0;
-    for (const k of cache.keys()) {
-      cache.delete(k);
-      if (++n >= MAX_SPRITES / 4) break;
+  const t = now();
+  if (cache.size >= MAX_SPRITES || bytes + sizeOf(sp) > BUDGET) {
+    // the oldest ones not drawn lately go first; past half again the count, the oldest go whatever they are
+    for (const k of [...cache.keys()]) {
+      if (cache.size < MAX_SPRITES && bytes + sizeOf(sp) <= BUDGET) break;
+      if (t - (used.get(k) ?? 0) > IDLE_MS || cache.size >= MAX_SPRITES * 1.5) drop(k);
     }
   }
   cache.set(key, sp);
+  used.set(key, t);
+  bytes += sizeOf(sp);
 }
+
+/** what the cache holds (for the tests) */
+export const spriteBytes = (): number => bytes;
 
 /** a sprite for anything that is not a thin platform (steps, pillars): painted by `paint` in box space, cached under `key` */
 export function bakeSprite(key: string, w: number, h: number, pad: Pad, paint: (c: CanvasRenderingContext2D) => void): Sprite {
   const k = `${getSceneSeed()}:${key}`;
-  const hit = cache.get(k);
-  if (hit) return hit;
+  const had = hit(k);
+  if (had) return had;
   const cv = document.createElement('canvas');
   cv.width = Math.ceil((w + pad.x * 2) * RES);
   cv.height = Math.ceil((pad.top + h + pad.bot) * RES);

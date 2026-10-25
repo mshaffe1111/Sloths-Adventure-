@@ -1,0 +1,40 @@
+{
+ "tag": "w4capu2",
+ "loras": [
+  [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ ],
+ "items": [
+  {
+   "name": "w4-capuchin2-11",
+   "prompt": "slothadv style, painted storybook illustration, a character sheet of one white-faced capuchin monkey for a 2D side-scrolling game: cream white face, throat and shoulders, a dark brown-black cap of fur on top of its head, dark brown body, arms and legs, long dark curling tail, small pink face and hands, cheeky and mischievous, nine separate poses in a 3 by 3 grid on a flat plain grey background (#808080), each pose with lots of space around it, side views facing right: walking on all fours, running on all fours with a stolen pink flower petal in its mouth, sitting upright, screeching with its mouth wide open pointing ahead, eating a round orange fruit happily, startled leaping up with arms raised, sitting curled on a twig nest, standing guard with a small red sash, hanging upside down by its tail, the same monkey every time, no text, no frames",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w4-capuchin2-22",
+   "prompt": "slothadv style, painted storybook illustration, a character sheet of one white-faced capuchin monkey for a 2D side-scrolling game: cream white face, throat and shoulders, a dark brown-black cap of fur on top of its head, dark brown body, arms and legs, long dark curling tail, small pink face and hands, cheeky and mischievous, nine separate poses in a 3 by 3 grid on a flat plain grey background (#808080), each pose with lots of space around it, side views facing right: walking on all fours, running on all fours with a stolen pink flower petal in its mouth, sitting upright, screeching with its mouth wide open pointing ahead, eating a round orange fruit happily, startled leaping up with arms raised, sitting curled on a twig nest, standing guard with a small red sash, hanging upside down by its tail, the same monkey every time, no text, no frames",
+   "seed": 22,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w4-capuchin2-33",
+   "prompt": "slothadv style, painted storybook illustration, a character sheet of one white-faced capuchin monkey for a 2D side-scrolling game: cream white face, throat and shoulders, a dark brown-black cap of fur on top of its head, dark brown body, arms and legs, long dark curling tail, small pink face and hands, cheeky and mischievous, nine separate poses in a 3 by 3 grid on a flat plain grey background (#808080), each pose with lots of space around it, side views facing right: walking on all fours, running on all fours with a stolen pink flower petal in its mouth, sitting upright, screeching with its mouth wide open pointing ahead, eating a round orange fruit happily, startled leaping up with arms raised, sitting curled on a twig nest, standing guard with a small red sash, hanging upside down by its tail, the same monkey every time, no text, no frames",
+   "seed": 33,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w4-capuchin2-44",
+   "prompt": "slothadv style, painted storybook illustration, a character sheet of one white-faced capuchin monkey for a 2D side-scrolling game: cream white face, throat and shoulders, a dark brown-black cap of fur on top of its head, dark brown body, arms and legs, long dark curling tail, small pink face and hands, cheeky and mischievous, nine separate poses in a 3 by 3 grid on a flat plain grey background (#808080), each pose with lots of space around it, side views facing right: walking on all fours, running on all fours with a stolen pink flower petal in its mouth, sitting upright, screeching with its mouth wide open pointing ahead, eating a round orange fruit happily, startled leaping up with arms raised, sitting curled on a twig nest, standing guard with a small red sash, hanging upside down by its tail, the same monkey every time, no text, no frames",
+   "seed": 44,
+   "w": 1024,
+   "h": 1024
+  }
+ ]
+}

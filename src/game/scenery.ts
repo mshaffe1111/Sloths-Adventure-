@@ -14,7 +14,7 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
-import { canopyFor, paintedFor, onPaintedReady, hasPainted } from './paintedBackdrops.ts';
+import { canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted } from './paintedBackdrops.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
 import { polishEnabled, polishTier, pskip, rigFor, polishBack, polishFront, swayWeight, swayAmount, gustAt, type LayerName, type Rig } from './polish.ts';
@@ -328,10 +328,14 @@ interface LayerSet {
  */
 const sets = new Map<string, LayerSet>();
 let bakeScale = 1;
+/** a bake this small is a map thumbnail (VistaCanvas bakes them at 0.2) */
+const THUMB_BAKE = 0.25;
 onSceneSeedChange(() => sets.clear());
-// when a world's painted strips finish loading, its drawn stand-in is dropped and the next frame builds the painted set
+// when a world's painted strips finish loading, its drawn stand-in is dropped and the next frame builds the painted set; when they are
+// dropped to save memory (paintedBackdrops.ts keeps only a couple of worlds), the sets holding them go too, so the pictures can be freed
 onPaintedReady((world) => {
-  for (const [k, v] of [...sets.entries()]) if (v.world === world && (!v.painted || v.waiting)) sets.delete(k);
+  const strips = peekPainted(world);
+  for (const [k, v] of [...sets.entries()]) if (v.world === world && (!v.painted || v.waiting || v.far !== strips?.far)) sets.delete(k);
 });
 
 /** a sky-coloured stand-in for a painted world whose strips are still decoding: a few pixels wide, drawn stretched across the tile */
@@ -1406,7 +1410,8 @@ function ensure(world: number): LayerSet {
   warmFloraArt();
   const look = lookFor(world);
   // a world painted as strips needs nothing baked but the foreground frame
-  const painted = paintedFor(world);
+  // (a map thumbnail, baked at THUMB_BAKE or smaller, uses only strips already decoded: it is baked before any could arrive)
+  const painted = paintedFor(world, bakeScale > THUMB_BAKE);
   if (painted) {
     const set: LayerSet = {
       world, seed: getSceneSeed(), far: painted.far, hills: null, mid: painted.mid, near: painted.near,

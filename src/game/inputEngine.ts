@@ -26,12 +26,10 @@ export class InputEngine {
    * jumpHelp.ts only touches the last.
    */
   public source: 'keys' | 'pad' | 'gesture' = 'keys';
-  /** the engine says, every frame: he is in the air and still has a second jump (the gesture recogniser reads it to accept a tap as that jump) */
+  /** the engine says, every frame: he is in the air and still has a second jump (the gesture recogniser then takes a shorter slide up as that jump) */
   public airJumpReady = false;
   /** the engine says something is close enough to kick (the refined touch rules only kick then) */
   public kickNear = true;
-  /** the engine says a tap should jump: nothing in reach to hit, and he is standing or swinging (refined touch rules, touchGestures.ts) */
-  public tapJump = false;
   /** the engine says he is climbing a trunk or swinging on a vine (the refined touch rules climb there instead of jumping) */
   public onVine = false;
   /** the engine says, every frame: a mega punch can start (it is not cooling down), so a held thumb only announces one that will happen */

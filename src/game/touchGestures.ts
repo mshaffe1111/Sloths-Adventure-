@@ -10,11 +10,13 @@
  *   - A touch on the left half steers at once. A touch on the right half waits a beat to see if it is a flick, a
  *     tap or the start of a drag; if it turns out to be a drag it becomes the steering finger.
  *   - Only one finger steers. A second finger is the action finger: tap = punch, flick = kick or jump, hold = mega.
+ *   - A tap is always a punch (in the air, a jump kick): every jump is the finger moving up (Matt, 2026-10-25, undoing the control test's
+ *     tap-jump: a tap had jumped whenever nothing was close enough to hit).
  *   - A tap that lands right after the steering finger was lifted is treated as re-planting the thumb, not a punch.
  *   - Sideways drift while steering never ducks, and a sloppy flick up while steering is forgiven.
  *
  * Jump help (jumpHelp.ts, on by default) adds, for the second jump:
- *   - in the air with a second jump to spare, a TAP anywhere is that jump (it used to be a punch), and so is a short, slow slide up;
+ *   - in the air with a second jump to spare, a short, slow slide up is that jump;
  *   - the steering thumb itself can jump again with a short down-and-up wiggle, so one finger is enough;
  *   - a finger that is not steering and slides up (at any speed) is a jump, where it used to need a fast flick and otherwise did nothing.
  *
@@ -31,8 +33,6 @@ export interface GestureSink {
   mega(): void;
   /** hold climbing up (-1), down (1) or stop (0) on a vine or trunk, with no jump and no duck (refined controls) */
   climb?(dir: -1 | 0 | 1): void;
-  /** a tap that jumps because there was nothing to hit (refined controls, tapJump): a full jump. Unset = jumpPress then jumpRelease */
-  tapJump?(): void;
   /** a label for the little pill on screen, plus haptics */
   feedback(kind: 'jump' | 'duck' | 'punch' | 'kick' | 'mega'): void;
 }
@@ -64,8 +64,19 @@ export const TUNING = {
   tapPx: 22,
   holdMs: 460,
   holdPx: 20,
-  /** a tap that begins this soon after the steering finger lifted is a re-plant, not a punch */
-  replantMs: 190,
+  /**
+   * a tap that begins this soon after the steering finger lifted is the thumb bouncing back onto the glass, not a punch. It was 190 ms,
+   * and replaying the control test's fingers through these rules showed it ate one tap in seven: run up to a snake, let go, tap. A
+   * thumb that is really put back down to steer stays down, so it is never a tap anyway (2026-10-25)
+   */
+  replantMs: 50,
+  /**
+   * a short touch that drifts sideways a little is still a tap, though it nudged a step first: a thumb tap on a phone often slides
+   * 15 to 30 px. In the recordings those touches were followed by another tap exactly as often as clean taps were (people mash punch),
+   * and two in three of them did nothing (2026-10-25)
+   */
+  nudgeTapPx: 30,
+  nudgeTapMs: 250,
   /** a second finger this close to the steering finger is probably the same hand */
   palmPx: 70,
   /** the right half starts here (fraction of the width); left of it steers at once */
@@ -112,13 +123,6 @@ export interface GestureEnv {
    * jump and down is never a duck (Jen's index finger on a vine kept making him jump). Only a diagonal slide up jumps off.
    */
   onVine?(): boolean;
-  /**
-   * Refined controls, second round (the control test, 2026-10-24): a tap with nothing near enough to hit is a JUMP, standing or swinging
-   * (swinging, that jump is the leap off the vine). Beginners tap to jump: one tester's first run threw 150 punches at nothing, 79 of
-   * them hanging on a vine trying to let go and 72 at the foot of a stump trying to get up it. With a foe or a cage in reach a tap
-   * still punches, and swipes are untouched.
-   */
-  tapJump?(): boolean;
 }
 
 type Role = 'mover' | 'pending' | 'action' | 'ignored';
@@ -258,11 +262,13 @@ export class TouchGestures {
     f.y = y;
     this.fingers.delete(id);
     if (f.role === 'mover') {
-      const stillTap = !f.jumped && !f.ducked && this.heldDir === 'none' && Math.hypot(f.x - f.x0, f.y - f.y0) <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs;
+      const travel = Math.hypot(f.x - f.x0, f.y - f.y0);
+      const nudge = this.heldDir !== 'none' && travel <= TUNING.nudgeTapPx && t - f.t0 <= TUNING.nudgeTapMs && Math.abs(f.x - f.x0) >= Math.abs(f.y - f.y0);
+      const stillTap = !f.jumped && !f.ducked && ((this.heldDir === 'none' && travel <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) || nudge);
       const wasReplant = f.tapT0 - this.lastMoverUp < TUNING.replantMs;
       // only a finger that really steered or jumped counts as a "thumb that was just lifted". A finger that merely tapped must not:
       // otherwise every tap in a quick run of taps on the left half would look like a re-plant of the one before, and be eaten
-      const wasTap = !f.jumped && !f.ducked && Math.hypot(f.x - f.x0, f.y - f.y0) <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs && this.heldDir === 'none';
+      const wasTap = stillTap;
       this.setDir('none');
       this.setClimb(0);
       this.duckOn = false;
@@ -277,13 +283,7 @@ export class TouchGestures {
         this.sink.feedback('kick');
         this.sink.kick(edx < 0 ? -1 : 1);
       }
-      if (stillTap && this.canAir()) {
-        // in the air with a second jump to spare, a tap is that jump (and a thumb put down in the air is not a re-plant: it is a tap)
-        this.lastAir = t;
-        this.sink.feedback('jump');
-        this.sink.jumpPress();
-        this.sink.jumpRelease();
-      } else if (stillTap && !wasReplant) this.tapAct();
+      if (stillTap && !wasReplant) this.tapAct();
       if (!wasTap && !flicked) {
         this.lastMoverUp = t;
         this.lastMoverUpX = f.x;
@@ -308,14 +308,6 @@ export class TouchGestures {
     if (was || acted) return;
     const dist = Math.hypot(f.x - f.x0, f.y - f.y0);
     if (dist <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) {
-      if (this.canAir()) {
-        // in the air with a second jump to spare: a tap is that jump, not a punch
-        this.lastAir = t;
-        this.sink.feedback('jump');
-        this.sink.jumpPress();
-        this.sink.jumpRelease();
-        return;
-      }
       // re-planting the thumb right after steering is not a punch: only if it began after the lift AND near it
       const replant = f.tapT0 >= this.lastMoverUp && f.tapT0 - this.lastMoverUp < TUNING.replantMs &&
         Math.hypot(f.x0 - this.lastMoverUpX, f.y0 - this.lastMoverUpY) < 100;
@@ -324,17 +316,8 @@ export class TouchGestures {
     }
   }
 
-  /** a tap on the ground or a vine: a punch when something is in reach, else (refined controls) a jump */
+  /** a tap: always a punch (the fight turns one in the air into a jump kick) */
   private tapAct() {
-    if (this.env?.refined?.() && this.env.tapJump?.()) {
-      this.sink.feedback('jump');
-      if (this.sink.tapJump) this.sink.tapJump();
-      else {
-        this.sink.jumpPress();
-        this.sink.jumpRelease();
-      }
-      return;
-    }
     this.sink.feedback('punch');
     this.sink.punch();
   }

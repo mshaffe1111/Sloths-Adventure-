@@ -26,6 +26,10 @@ function load() {
     () => {
       img = null;
     },
+    () => {
+      img = null;
+      ready = false;
+    },
   );
 }
 /** whether the World 2 pieces have loaded (starts the load) */

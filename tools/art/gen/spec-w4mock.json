@@ -1,0 +1,157 @@
+{
+ "tag": "w4mock",
+ "loras": [
+  [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ],
+  [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors",
+   0.8
+  ]
+ ],
+ "items": [
+  {
+   "name": "w4mock-01-broken-ledge-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, climbing a wet mossy cliff face up out of thick white mist, hand over hand on rocky handholds, a tiny emerald-green hummingbird hovering beside him holding one of his claws, the broken edge of a ledge above, a tall waterfall to one side, cool dawn light, no text, no interface, no letters",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-01-broken-ledge-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, climbing a wet mossy cliff face up out of thick white mist, hand over hand on rocky handholds, a tiny emerald-green hummingbird hovering beside him holding one of his claws, the broken edge of a ledge above, a tall waterfall to one side, cool dawn light, no text, no interface, no letters",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-02-first-glide-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, floating across a wide misty gorge holding a huge green leaf over his head like a parachute, legs dangling, tall waterfalls behind, mossy rock ledges on the left and right, a tiny emerald hummingbird flying beside him, no text, no interface, no letters",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-02-first-glide-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, floating across a wide misty gorge holding a huge green leaf over his head like a parachute, legs dangling, tall waterfalls behind, mossy rock ledges on the left and right, a tiny emerald hummingbird flying beside him, no text, no interface, no letters",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-03-waterfall-steps-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, pushing a big round mossy boulder into a stream at the top of a cliff to block the water, below it a waterfall has dried to a trickle revealing wet stone steps going up the cliff, no text, no interface, no letters",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-03-waterfall-steps-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, pushing a big round mossy boulder into a stream at the top of a cliff to block the water, below it a waterfall has dried to a trickle revealing wet stone steps going up the cliff, no text, no interface, no letters",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-04-crosswind-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, swinging on a long hanging vine across a gap between two cliffs, strong wind blowing leaves and mist sideways, bamboo wind chimes swinging on a wooden post, waterfalls far behind, no text, no interface, no letters",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-04-crosswind-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, swinging on a long hanging vine across a gap between two cliffs, strong wind blowing leaves and mist sideways, bamboo wind chimes swinging on a wooden post, waterfalls far behind, no text, no interface, no letters",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-05-sovereigns-dive-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, the huge dark shadow of a giant eagle sweeping across a misty cliff path, pokeysloth, an orange-and-cream sloth with a brown satchel, hiding in a small cave behind a curtain of falling water, peeking out, a long feather drifting down, no text, no interface, no letters",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-05-sovereigns-dive-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, the huge dark shadow of a giant eagle sweeping across a misty cliff path, pokeysloth, an orange-and-cream sloth with a brown satchel, hiding in a small cave behind a curtain of falling water, peeking out, a long feather drifting down, no text, no interface, no letters",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-05b-dot-netting-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, a tiny emerald-green hummingbird with a folded paper note in her beak, flying fast through narrow gaps in a huge dark iron netting strung between misty cliffs, a few loose feathers in the air, dramatic and tense, no text, no interface, no letters",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-05b-dot-netting-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, a tiny emerald-green hummingbird with a folded paper note in her beak, flying fast through narrow gaps in a huge dark iron netting strung between misty cliffs, a few loose feathers in the air, dramatic and tense, no text, no interface, no letters",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-06-above-the-mist-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, standing very still on a rock ledge while a thick sea of white mist settles below him, revealing a path of floating rock ledges climbing up to giant eagle nests on the cliff above, no text, no interface, no letters",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-06-above-the-mist-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, pokeysloth, an orange-and-cream sloth with a brown satchel, standing very still on a rock ledge while a thick sea of white mist settles below him, revealing a path of floating rock ledges climbing up to giant eagle nests on the cliff above, no text, no interface, no letters",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-08-nests-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, baby birds caught in rope netting inside big round nests on branches growing out of a tall cliff, pokeysloth, an orange-and-cream sloth with a brown satchel, climbing toward them along a ledge, mist and waterfalls behind, no text, no interface, no letters",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-08-nests-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, baby birds caught in rope netting inside big round nests on branches growing out of a tall cliff, pokeysloth, an orange-and-cream sloth with a brown satchel, climbing toward them along a ledge, mist and waterfalls behind, no text, no interface, no letters",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-09-aerie-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, a huge eagle aerie of woven branches at the top of a windy mountain cliff, torn red army banners flapping, pokeysloth, an orange-and-cream sloth with a brown satchel, facing two mischievous capuchin monkey guards, storm clouds and mist, no text, no interface, no letters",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-09-aerie-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide 2D side-scrolling platformer game scene seen from the side, a huge eagle aerie of woven branches at the top of a windy mountain cliff, torn red army banners flapping, pokeysloth, an orange-and-cream sloth with a brown satchel, facing two mischievous capuchin monkey guards, storm clouds and mist, no text, no interface, no letters",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4mock-07-long-drop-11",
+   "prompt": "slothadv style, painted storybook illustration, pokeysloth, an orange-and-cream sloth with a brown satchel, gliding down a tall narrow waterfall shaft holding a big green leaf over his head, dodging falling rocks and a tumbling log, steep wet cliffs on both sides, mist far below, a 2D vertical scrolling game scene seen from the side, no text, no interface, no letters",
+   "seed": 11,
+   "w": 928,
+   "h": 1664
+  },
+  {
+   "name": "w4mock-07-long-drop-22",
+   "prompt": "slothadv style, painted storybook illustration, pokeysloth, an orange-and-cream sloth with a brown satchel, gliding down a tall narrow waterfall shaft holding a big green leaf over his head, dodging falling rocks and a tumbling log, steep wet cliffs on both sides, mist far below, a 2D vertical scrolling game scene seen from the side, no text, no interface, no letters",
+   "seed": 22,
+   "w": 928,
+   "h": 1664
+  }
+ ]
+}

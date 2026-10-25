@@ -51,12 +51,12 @@ function load() {
   if (!atlas) {
     const img = new Image();
     atlas = img;
-    trackAtlas(img, new URL('../assets/enemies/snake-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
+    trackAtlas(img, new URL('../assets/enemies/snake-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; }, () => { atlas = null; ready = false; });
   }
   if (!atlas2) {
     const img = new Image();
     atlas2 = img;
-    trackAtlas(img, new URL('../assets/enemies/snake2-atlas.webp', import.meta.url).href, () => { ready2 = true; }, () => { atlas2 = null; });
+    trackAtlas(img, new URL('../assets/enemies/snake2-atlas.webp', import.meta.url).href, () => { ready2 = true; }, () => { atlas2 = null; }, () => { atlas2 = null; ready2 = false; });
   }
 }
 

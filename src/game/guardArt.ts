@@ -32,7 +32,7 @@ function load() {
   if (img || typeof Image === 'undefined') return;
   const im = new Image();
   img = im;
-  trackAtlas(im, new URL('../assets/enemies/guard-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; });
+  trackAtlas(im, new URL('../assets/enemies/guard-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; }, () => { img = null; ready = false; });
 }
 
 /** world units per atlas pixel: the standing guard is drawn 80 units tall (Pokey is about 48): a big, proud guard */

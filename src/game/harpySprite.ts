@@ -45,7 +45,7 @@ function load() {
   if (atlas || typeof Image === 'undefined') return;
   const img = new Image();
   atlas = img;
-  trackAtlas(img, new URL('../assets/enemies/harpy-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
+  trackAtlas(img, new URL('../assets/enemies/harpy-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; }, () => { atlas = null; ready = false; });
 }
 
 /** which frame the harpy shows. Pure, so a test can check every state has a pose that exists in the atlas */

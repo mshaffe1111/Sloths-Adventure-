@@ -90,7 +90,7 @@ export const PAGES: JournalPage[] = [
     intro: 'Hop up onto logs and stumps, and over little gaps.',
     lines: {
       screen: [
-        { glyph: 'up', how: 'A tap, or a quick flick up', what: 'Jump', sub: 'standing still or running. Near a foe, a tap punches instead' },
+        { glyph: 'up', how: 'A quick flick up', what: 'Jump', sub: 'standing still or running' },
         { glyph: 'jump', how: 'Slide up and across, in one move', what: 'Run and jump', sub: 'keep sliding forward in the air to go far' },
       ],
       pad: [{ how: 'Jump button', what: 'Jump', sub: 'hold it for a higher jump' }],
@@ -104,8 +104,7 @@ export const PAGES: JournalPage[] = [
     intro: 'Jump again while you are still in the air. It carries you a little further, for gaps that are just too wide.',
     lines: {
       screen: [
-        { glyph: 'tap', how: 'Flick up, then tap in the air', what: 'Jump again', sub: 'the tap pushes you forward the way you face' },
-        { glyph: 'up', how: 'Or flick up a second time', what: 'Same thing' },
+        { glyph: 'up', how: 'Flick up again in the air', what: 'Jump again', sub: 'it pushes you forward the way you face' },
       ],
       pad: [{ how: 'Press Jump again in the air', what: 'Jump again' }],
       keys: [{ how: 'Press Space again in the air', what: 'Jump again' }],
@@ -145,7 +144,7 @@ export const PAGES: JournalPage[] = [
     id: 'punch', chapter: 'fighting', title: 'Punch', demo: 'punch', pose: 'punch', open: { always: true }, where: '', riddle: '',
     intro: 'Pokey\'s Claw Punch. A few quick ones in a row make a combo.',
     lines: {
-      screen: [{ glyph: 'tap', how: 'Tap beside a foe', what: 'Punch', sub: 'tap again for the next punch. With nothing close, a tap jumps' }],
+      screen: [{ glyph: 'tap', how: 'Tap beside a foe', what: 'Punch', sub: 'tap again for the next punch. In the air, a tap is a jump kick' }],
       pad: [{ how: 'Punch button', what: 'Punch' }],
       keys: [{ how: 'J or Z', what: 'Punch' }],
     },

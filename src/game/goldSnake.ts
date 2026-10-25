@@ -62,13 +62,13 @@ function load() {
   if (head || typeof Image === 'undefined') return;
   const img = new Image();
   head = img;
-  trackAtlas(img, new URL('../assets/enemies/goldsnake-head.webp', import.meta.url).href, () => { ready = true; }, () => { head = null; });
+  trackAtlas(img, new URL('../assets/enemies/goldsnake-head.webp', import.meta.url).href, () => { ready = true; }, () => { head = null; }, () => { head = null; ready = false; });
   const s = new Image();
   sleepHead = s;
-  trackAtlas(s, new URL('../assets/enemies/goldsnake-sleep.webp', import.meta.url).href, () => { sleepReady = true; }, () => { sleepHead = null; });
+  trackAtlas(s, new URL('../assets/enemies/goldsnake-sleep.webp', import.meta.url).href, () => { sleepReady = true; }, () => { sleepHead = null; }, () => { sleepHead = null; sleepReady = false; });
   const w = new Image();
   wakeHead = w;
-  trackAtlas(w, new URL('../assets/enemies/goldsnake-wake.webp', import.meta.url).href, () => { wakeReady = true; }, () => { wakeHead = null; });
+  trackAtlas(w, new URL('../assets/enemies/goldsnake-wake.webp', import.meta.url).href, () => { wakeReady = true; }, () => { wakeHead = null; }, () => { wakeHead = null; wakeReady = false; });
 }
 
 /** colours sampled from Matt's sheet */
