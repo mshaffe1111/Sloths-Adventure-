@@ -23,6 +23,8 @@ export interface FruitTree {
   x: number;
   y: number;
   ground: number;
+  /** which side of its fruit the trunk stands (drawn only): -1 left (the default), 1 right */
+  trunk?: 1 | -1;
 }
 
 /** warm air rising out of the mist (4-7): an open leaf inside it is lifted, like the vents' warm air in World 9 */
@@ -86,6 +88,8 @@ export class W4Play {
   private rockHit = new Set<string>();
   /** the height of the ground he last stood on (deepFall) */
   private groundY = NaN;
+  /** the view drawBack last drew (drawFront culls by it) */
+  private view = { x0: -Infinity, x1: Infinity };
 
   constructor(private readonly w4: W4Extras, platforms: Platform[], vines: Vine[]) {
     this.patience = (w4.patience ?? []).map(() => newPatience());
@@ -165,7 +169,9 @@ export class W4Play {
       this.flow[i] = stepFlow(w, before, plugged(w, platX), h.t, dt);
       if (before > FALLS.trickle && this.flow[i] <= FALLS.trickle && Math.abs(w.x - p.x) < 900) h.sfx('splash');
       if (!inFall(w, p.x, p.y, 64)) return;
-      if (this.flow[i] > FALLS.trickle) {
+      // a curtain of water to hide behind (4-5): it hides him and leaves him be
+      if (w.veil) h.tip('w4:veil', 'Behind the water nobody can see you. Wait here while she goes by', 3.2);
+      else if (this.flow[i] > FALLS.trickle) {
         const v = fallPush(this.flow[i], p, dt);
         p.vy = v.vy;
         speed = Math.min(speed, 1 - (1 - FALLS.wade) * this.flow[i]);
@@ -290,8 +296,11 @@ export class W4Play {
   /** behind Pokey: the falls, the pools, the chimes, the rock shadows and rocks, the fern, the knots and Dot, the monkeys, the fruit */
   drawBack(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number }, zones: readonly Zone[], platforms: Platform[]) {
     const w4 = this.w4;
+    this.view = view;
     const near = (x: number, pad = 300) => x > view.x0 - pad && x < view.x1 + pad;
-    (w4.falls ?? []).forEach((w, i) => near(w.x) && drawFall(ctx, w, this.flow[i], t));
+    // (a curtain's water is drawn in front of him, drawFront; behind it, the hollow in the cliff he stands in)
+    (w4.falls ?? []).forEach((w, i) => near(w.x) && (w.veil ? drawHollow(ctx, w) : drawFall(ctx, w, this.flow[i], t)));
+    (w4.fruit ?? []).forEach((tree) => near(tree.x) && drawFruitTree(ctx, tree));
     (w4.pools ?? []).forEach((pool, i) => {
       const fall = (w4.falls ?? []).find((w) => w.id === pool.fedBy);
       if (fall && near(fall.x)) drawPool(ctx, fall.x + fall.width / 2, pool, this.pool[i]);
@@ -312,6 +321,8 @@ export class W4Play {
 
   /** in front of Pokey: the mist that hides the high ledges until he stands still */
   drawFront(ctx: CanvasRenderingContext2D, platforms: Platform[], t: number) {
+    const v = this.view;
+    (this.w4.falls ?? []).forEach((w) => w.veil && w.x + w.width > v.x0 - 300 && w.x < v.x1 + 300 && drawVeil(ctx, w, t));
     (this.w4.patience ?? []).forEach((s, i) => {
       if (s.kind !== 'mist') return;
       const show = mistReveal(this.patience[i]);
@@ -372,6 +383,125 @@ function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: 
     ctx.arc(x + (k / 5) * width, w.bottom - 4 + Math.sin(t * 8 + k) * 3, 8 * flow + 3, 0, Math.PI * 2);
     ctx.fill();
   }
+  ctx.restore();
+}
+
+/**
+ * a curtain of water in front of him (4-5): a sheet with rippling edges, thicker at its sides and thin enough in the middle to see him
+ * standing behind it, streaks pouring down it, and spray and mist where it lands on the path
+ */
+function drawVeil(ctx: CanvasRenderingContext2D, w: Waterfall, t: number) {
+  const x0 = w.x, x1 = w.x + w.width, top = w.top, bot = w.bottom;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x0, top);
+  for (let y = top; y < bot; y += 28) ctx.lineTo(x0 + 5 * Math.sin(y * 0.045 + t * 5), y);
+  ctx.lineTo(x0 - 14, bot);
+  ctx.lineTo(x1 + 14, bot);
+  for (let y = bot; y > top; y -= 28) ctx.lineTo(x1 + 5 * Math.sin(y * 0.045 + t * 5 + 2.1), y);
+  ctx.lineTo(x1, top);
+  ctx.closePath();
+  const g = ctx.createLinearGradient(x0, 0, x1, 0);
+  g.addColorStop(0, 'rgba(147, 197, 253, 0.85)');
+  g.addColorStop(0.18, 'rgba(219, 234, 254, 0.62)');
+  g.addColorStop(0.5, 'rgba(240, 249, 255, 0.42)');
+  g.addColorStop(0.82, 'rgba(219, 234, 254, 0.62)');
+  g.addColorStop(1, 'rgba(125, 211, 252, 0.85)');
+  ctx.fillStyle = g;
+  ctx.fill();
+  // streaks pouring down, at different speeds and lengths
+  ctx.lineCap = 'round';
+  for (let k = 0; k < 9; k++) {
+    const sx = x0 + ((k + 0.5) / 9) * w.width;
+    const speed = 420 + ((k * 53) % 160);
+    const len = 46 + ((k * 31) % 50);
+    const period = 150 + ((k * 37) % 70);
+    ctx.strokeStyle = k % 3 === 0 ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.55)';
+    ctx.lineWidth = k % 3 === 0 ? 3.5 : 1.8;
+    ctx.beginPath();
+    const off = (t * speed + k * 71) % period;
+    for (let y = top + off; y < bot - 10; y += period) {
+      ctx.moveTo(sx, y);
+      ctx.lineTo(sx, Math.min(bot - 10, y + len));
+    }
+    ctx.stroke();
+  }
+  // where it lands: a cloud of mist, and spray bouncing up off the stone
+  const cx = (x0 + x1) / 2;
+  const mist = ctx.createRadialGradient(cx, bot - 10, 10, cx, bot - 10, w.width);
+  mist.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
+  mist.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  ctx.fillStyle = mist;
+  ctx.beginPath();
+  ctx.ellipse(cx, bot - 12, w.width * 0.95, 46, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+  for (let k = 0; k < 8; k++) {
+    const u = (t * 1.6 + k * 0.37) % 1;
+    const sx = x0 - 6 + ((k * 0.61) % 1) * (w.width + 12);
+    ctx.globalAlpha = 1 - u;
+    ctx.beginPath();
+    ctx.arc(sx + (k % 2 ? 1 : -1) * u * 18, bot - 6 - Math.sin(u * Math.PI) * 26, 3 + 3 * (1 - u), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+/** the hollow in the cliff behind a curtain of water (the painted cave, a dark arch until the atlas loads) */
+function drawHollow(ctx: CanvasRenderingContext2D, w: Waterfall) {
+  const cx = w.x + w.width / 2;
+  if (drawW4(ctx, 'cave', cx, w.bottom + 10, w.width + 110)) return;
+  ctx.save();
+  ctx.fillStyle = '#334155';
+  ctx.beginPath();
+  ctx.ellipse(cx, w.bottom, w.width / 2 + 40, 130, 0, Math.PI, 0);
+  ctx.fill();
+  ctx.restore();
+}
+
+/** a little fruit tree: a trunk, a leafy crown, and the bough its fruit hangs from (the fruit is drawn on its own) */
+function drawFruitTree(ctx: CanvasRenderingContext2D, tree: FruitTree) {
+  const side = tree.trunk ?? -1;
+  const tx = tree.x + 46 * side;
+  const top = tree.y - 70;
+  ctx.save();
+  ctx.lineCap = 'round';
+  for (const [ink, grow] of [['#1c140c', 5], ['#5b3a1e', 0]] as const) {
+    ctx.strokeStyle = ink;
+    ctx.lineWidth = 14 + grow;
+    ctx.beginPath();
+    ctx.moveTo(tx, tree.ground + 4);
+    ctx.quadraticCurveTo(tx + 6, (tree.ground + top) / 2, tx - 4, top);
+    ctx.stroke();
+    ctx.lineWidth = 6 + grow;
+    ctx.beginPath();
+    ctx.moveTo(tx, top + 26);
+    ctx.quadraticCurveTo(tx - 30 * side, top + 18, tree.x, tree.y - 30);
+    ctx.stroke();
+  }
+  // the crown: overlapping leaf clumps inked round the outside like the painted pieces, darker underneath, lit on top
+  const clumps: Array<[number, number, number]> = [[-30, 6, 40], [34, 10, 38], [-6, -14, 46], [40, -18, 34], [-44, -22, 30]];
+  ctx.fillStyle = '#1c2b17';
+  for (const [dx, dy, r] of clumps) {
+    ctx.beginPath();
+    ctx.arc(tx + dx, top + dy, r + 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  for (const [shade, lift, k] of [['#2f5d27', 0, 1], ['#4d8f33', -8, 0.78], ['#6aa84f', -16, 0.45]] as const) {
+    ctx.fillStyle = shade;
+    for (const [dx, dy, r] of clumps) {
+      ctx.beginPath();
+      ctx.arc(tx + dx - (1 - k) * 6, top + dy + lift, r * k, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  // the stem the fruit hangs on
+  ctx.strokeStyle = '#3f6212';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(tree.x, tree.y - 30);
+  ctx.lineTo(tree.x, tree.y - 9);
+  ctx.stroke();
   ctx.restore();
 }
 

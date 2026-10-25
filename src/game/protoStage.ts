@@ -33,11 +33,14 @@ import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
 import { PATIENCE, type PatienceSpot } from './patience.ts';
 import type { Chime } from './w4Kit.ts';
 import { buildLongDrop } from './w4LongDrop.ts';
+import type { FruitTree, W4Extras } from './w4Play.ts';
+import type { Waterfall } from './waterfalls.ts';
+import type { Capuchin } from './capuchin.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-7';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-7': '4-7' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-5' | '4-7';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-5': '4-5', '4-7': '4-7' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -2405,6 +2408,165 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     });
   }
 
+  // 4-5 The Sovereign's Dive (2026-10-25): the Sky Sovereign herself hunts along the foot of the cliffs, the way the eagle did in 1-7
+  // (watcher.ts: calm, a scream and her shadow at the edge, then the sweep). Hide from her the old way, crouched in a bush, or the World
+  // 4 way: stand behind a curtain of water pouring off the cliff (waterfalls.ts `veil`; the engine counts it as hidden). Capuchin
+  // lookouts sit on the path watching the stretch ahead of them: seen in the open, one stares, then screeches and brings her pass early.
+  // Punch the fruit down from the tree before its stretch and it goes off to eat (capuchin.ts), and sees nothing while it eats.
+  const W4X: W4Extras = {};
+  if (plan === '4-5') {
+    const FALLS4: Waterfall[] = (W4X.falls = []);
+    const MONKEYS: Capuchin[] = (W4X.monkeys = []);
+    const FRUIT: FruitTree[] = (W4X.fruit = []);
+    /** a curtain's width: room for him to stand inside it with a step to spare either side */
+    const VEIL_W = 140;
+    /** the fruit hangs this high (a standing punch knocks it down: w4Play reaches 70 px from his fist) */
+    const FRUIT_Y = G - 85;
+    /** a curtain of water centred on cx, from far above the view down onto the path */
+    const veil = (cx: number) => FALLS4.push({ id: FALLS4.length + 1, x: Math.round(cx - VEIL_W / 2), width: VEIL_W, top: G - 1100, bottom: G, veil: true });
+    type Cover = Bush['kind'] | 'fall';
+    /** a place to hide, centred on the cursor */
+    const cover = (kind: Cover) => (kind === 'fall' ? veil(x) : bush(x - BUSH_W[kind] / 2, kind));
+    /** cover along the ground `gap` apart (a run, a place to hide, a run...), petals between, under her watch */
+    function coverRow(n: number, gap: [number, number], kinds: Cover[], calm: [number, number]) {
+      const x0 = x;
+      for (let k = 0; k < n; k++) {
+        const g = R.r(gap[0], gap[1]);
+        if (k > 0) row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
+        run(g);
+        cover(kinds[k % kinds.length]);
+      }
+      run(R.r(260, 340));
+      ZONES.push({ x0, x1: x, calm });
+      expert += watched(x - x0, (calm[0] + calm[1]) / 2);
+      pieces.push({ k: 'rest', x0, x1: x });
+    }
+    /** a lookout sitting on the path at mx, watching sx0..x1, and its fruit tree (`trunk` 1: the trunk stands right of the fruit) */
+    function lookout(sx0: number, mx: number, x1: number, fruitX: number, trunk?: 1) {
+      MONKEYS.push({ job: 'lookout', x: Math.round(mx), y: G, x0: Math.round(sx0), x1: Math.round(x1) });
+      FRUIT.push({ x: Math.round(fruitX), y: FRUIT_Y, ground: G, ...(trunk ? { trunk } : {}) });
+    }
+    /**
+     * a lookout on the path, watching the stretch ahead of it (to at most 1150 px past it: w4Play steps monkeys within 1200 px of him),
+     * with cover along the stretch for her passes. Its fruit tree stands just short of the stretch: punch the fruit down from there and
+     * it walks back to eat.
+     */
+    function lookoutRun(kinds: Cover[], gap: [number, number], calm: [number, number]) {
+      const x0 = x;
+      run(R.r(240, 300));
+      const tx = x;
+      const sx0 = tx + 110;
+      const mx = sx0 + R.r(40, 80);
+      x = mx;
+      for (const kind of kinds) {
+        const g = R.r(gap[0], gap[1]);
+        row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
+        run(g);
+        cover(kind);
+      }
+      run(R.r(200, 240));
+      lookout(sx0, mx, Math.min(x, mx + 1150), tx);
+      run(R.r(160, 220));
+      ZONES.push({ x0, x1: x, calm });
+      expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 1.5;
+      pieces.push({ k: 'rest', x0, x1: x });
+    }
+    /**
+     * two lookouts in a row: the first one's fruit is the old trick, and its stretch ends in a curtain of water. The second one's tree
+     * stands just past that curtain, low enough to punch from inside the water, where neither of them (nor she) can see him.
+     */
+    function lookoutPair(calm: [number, number]) {
+      const x0 = x;
+      run(R.r(240, 300));
+      const tA = x;
+      const a0 = tA + 110;
+      const mA = a0 + R.r(40, 80);
+      x = mA;
+      run(R.r(360, 420));
+      cover(R.pick(['tall', 'fern'] as const));
+      row(x + 80, x + 300, G - 34, 2, 'orchid');
+      run(R.r(380, 440));
+      const fx = x;
+      veil(fx);
+      lookout(a0, mA, fx, tA);
+      // the second tree, just outside the water: from inside it, facing on, his fist reaches it (w4Play: 70 px)
+      const tB = fx + VEIL_W / 2 + 15;
+      const mB = tB + R.r(170, 210);
+      x = mB;
+      run(R.r(360, 420));
+      cover(R.pick(['fall', 'wide'] as const));
+      run(R.r(300, 360));
+      lookout(fx + VEIL_W / 2, mB, Math.min(x, mB + 1150), tB, 1);
+      run(R.r(160, 220));
+      ZONES.push({ x0, x1: x, calm });
+      expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 3;
+      pieces.push({ k: 'rest', x0, x1: x });
+    }
+    /**
+     * the secret: one curtain hides a trunk in the hollow behind it, up to a branch path behind leaves with a golden seed at its end.
+     * From outside it looks like any other curtain; climb up from inside the water.
+     */
+    function secretFall(calm: [number, number]) {
+      const x0 = x;
+      run(R.r(380, 460));
+      veil(x);
+      const tX = Math.round(x);
+      const perchY = Math.round(G - 160);
+      trunk(tX, G, perchY);
+      const end = tX + Math.round(R.r(360, 420));
+      branch(tX - 40, end, perchY);
+      row(tX + 90, end - 90, perchY - 34, 3, 'hibiscus');
+      goldenSeed(end - 40, perchY - 34);
+      covers.push({ x: tX + VEIL_W / 2, y: perchY - 90, w: end - tX - VEIL_W / 2 + 20, h: 110 });
+      run(R.r(520, 620));
+      ZONES.push({ x0, x1: x, calm });
+      expert += watched(x - x0, (calm[0] + calm[1]) / 2);
+      pieces.push({ k: 'rest', x0, x1: x });
+    }
+
+    beat('Start: the cliff path', () => {
+      rest(R.r(560, 680));
+      hint(x - 420, 'The Sky Sovereign is hunting along the cliffs. Stay under cover!');
+      rest(R.r(200, 260));
+      flag();
+    });
+    beat('Learn: under cover', () => {
+      hint(x + 20, 'Her shadow! Slide down inside a bush to hide', 'Her shadow! Hold down inside a bush to hide', 'Her shadow! Hold down inside a bush to hide');
+      coverRow(3, [380, 460], ['tall', 'wide', 'fern'], [7.5, 9]);
+      hint(x + 20, 'Stand behind a waterfall. She cannot see you through the water');
+      coverRow(4, [400, 480], ['fall'], [7, 8.5]);
+      flag();
+    });
+    beat('Develop: the lookout', () => {
+      hint(x + 20, 'A monkey lookout! If it sees you, it calls her. Tap to punch the fruit down, and it will go and eat', 'A monkey lookout! If it sees you, it calls her. Press Punch to knock the fruit down, and it will go and eat', 'A monkey lookout! If it sees you, it calls her. Press J to knock the fruit down, and it will go and eat');
+      lookoutRun(['fall', 'wide'], [380, 440], [6, 7.5]);
+      rest(R.r(240, 320));
+      coverRow(3, [640, 780], ['fall', 'fern', 'fall'], [5, 6.2]);
+      flag();
+    });
+    beat('Twist: two lookouts', () => {
+      hint(x + 20, 'Two lookouts! Knock the second fruit down from behind the waterfall');
+      lookoutPair([5, 6]);
+      rest(R.r(220, 300));
+      secretFall([5, 6]);
+      stumps();
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 16) {
+        const k = n % 3;
+        if (k === 0) coverRow(3, [700, 860], R.shuffle<Cover>(['fall', 'wide', 'fall']), [4.6, 5.6]);
+        else if (k === 1) lookoutRun(R.shuffle<Cover>(['fall', 'tall']), [400, 460], [4.8, 5.8]);
+        else lookoutPair([4.6, 5.6]);
+        rest(R.r(220, 300));
+        n++;
+        if (n % 2 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
   if (plan === '3-2') {
     // World 3's note (Meeca, in plain sight: a Keeper's Bell) on the quiet floor just before the eyes
     const note = findForStage(config.worldIndex, config.miniIndex);
@@ -2465,7 +2627,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       ...(THORNS.length ? { thorns: THORNS } : {}),
       hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
       ...(MIX ? { mix: MIX, grant: ['shimmy'] as SkillId[] } : {}),
-      ...(W4C.length ? { w4: { chimes: W4C } } : {}),
+      ...(W4C.length || Object.keys(W4X).length ? { w4: { ...W4X, ...(W4C.length ? { chimes: W4C } : {}) } } : {}),
     },
   };
 }
