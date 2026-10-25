@@ -63,6 +63,7 @@ import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLeve
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { W4Play } from './w4Play.ts';
+import { DotRun } from './dotFlightRun.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
 import { camAnchor, camLook, CAM, snapCam } from './cameraFollow.ts';
@@ -297,6 +298,8 @@ export class GameEngine {
   private camLookX: number = CAM.lookAhead;
   /** World 4's rocks, fern, falls, chimes, knots and capuchins for this run (w4Play.ts) */
   private w4: W4Play | null = null;
+  /** Dot's netting flight (dotFlightRun.ts): while it is set, she is the player and it runs the stage */
+  private dotRun: DotRun | null = null;
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
@@ -485,6 +488,7 @@ export class GameEngine {
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
+    if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
@@ -782,6 +786,7 @@ export class GameEngine {
     }
     if (this.stepEntrance(dt)) return;
     this.input.update(dt);
+    if (this.dotRun) return this.stepDot(dt);
 
     const p = this.player;
     const groundedBefore = p.grounded;
@@ -3519,6 +3524,8 @@ export class GameEngine {
       '#fca5a5'
     );
     if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 84, '#fde68a');
+    // Dot's flight: she comes back at the last flower she drank at
+    if (this.dotRun) this.dotRun.fl.respawn();
   }
 
   /**
@@ -3790,6 +3797,11 @@ export class GameEngine {
 
     // Clean viewport clearing to prevent any screen flicker or ghosting
     ctx.clearRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
+    if (this.dotRun) {
+      this.renderDot(ctx, dpr);
+      ctx.restore();
+      return;
+    }
 
     // Apply Screen Shake (Trauma squared for punchy feel)
     const shakeMag = this.camera.trauma * this.camera.trauma * 16;
@@ -4225,6 +4237,95 @@ export class GameEngine {
     }
 
     ctx.restore(); // end DPR transform
+  }
+
+  // --- Dot's netting flight (dotFlightRun.ts does the work; these hand it the engine's input, hearts, camera and canvas) ---
+  private startDot(st: import('./dotFlightStage.ts').DotStage) {
+    this.dotRun = new DotRun(st, {
+      stageId: this.currentStage.config.id,
+      guide: (text, seconds) => this.guide(text, seconds),
+      float: (text, x, y, color) => this.addFloatingText(text, x, y, color, 1.2),
+      loseHeart: () => {
+        const p = this.player;
+        if (this.isGameOver) return;
+        this.statHeartsLost++;
+        p.hp = Math.max(0, p.hp - 1);
+        recorder.event('hurt', p.hp);
+        if (p.hp <= 0) this.loseLife('hurt');
+      },
+      score: (n) => (this.runScore += n),
+      shake: (n) => (this.camera.trauma = Math.min(1, this.camera.trauma + n)),
+      win: () => {
+        if (this.isGameOver) return;
+        this.isGameOver = true;
+        const p = this.player;
+        const stars = calculateLevelStars(this.gameTime, 0, p.hp / p.maxHp, 1, this.statLivesLost);
+        this.callbacks.onStageStats?.(this.buildStats(true, stars));
+        this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
+      },
+    });
+  }
+
+  private stepDot(dt: number) {
+    const run = this.dotRun!;
+    const p = this.player;
+    // the touch recogniser reads these: a short slide up flaps while she has a flap in hand; nothing is ever a kick or a climb
+    this.input.airJumpReady = run.fl.canFlap();
+    this.input.kickNear = false;
+    this.input.onVine = false;
+    this.input.megaReady = true;
+    if (!this.isGameOver || run.fl.through) run.step(dt, this.input.state);
+    this.checkpoint = { ...run.fl.checkpoint };
+    p.x = run.fl.x;
+    p.y = run.fl.y + 22;
+    p.vx = run.fl.vx;
+    p.vy = run.fl.vy;
+    p.facing = run.fl.face;
+    // the moment at the gap: the view closes in a touch
+    const z = 1 + 0.12 * run.moment();
+    if (Math.abs(z - this.bossZoom) > 0.002) {
+      this.bossZoom = z;
+      this.applyZoom();
+    }
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.life -= dt;
+      if (ft.life <= 0) this.floatingTexts.splice(i, 1);
+      else ft.y -= 35 * dt;
+    }
+    if (this.stageHint && (this.stageHint.life -= dt) <= 0) this.stageHint = null;
+    this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
+    run.camera(this.camera, dt);
+    this.callbacks.onProgressUpdate(run.fl.through ? 1 : 0, 1, this.runScore, p.hp, run.ratio(), null, 0);
+    this.markWayDodge(dt);
+  }
+
+  private renderDot(ctx: CanvasRenderingContext2D, dpr: number) {
+    const shakeMag = this.camera.trauma * this.camera.trauma * 14;
+    const shake = { x: (Math.random() - 0.5) * shakeMag, y: (Math.random() - 0.5) * shakeMag };
+    // her panel: held sideways it sits under the hearts and lives (GameHUD.tsx), left; upright, the top is full (the stage card, Dot's banner), so it sits bottom left
+    const portrait = this.viewCssH > this.viewCssW;
+    const hudAt = { x: 12, y: portrait ? this.viewCssH - 66 : this.viewCssH < 430 ? 112 : 124 };
+    this.dotRun!.draw(ctx, this.camera, dpr, this.zoom, this.viewCssW, this.viewCssH, shake, hudAt);
+    // the floating words (a scratch, the silk), in the world
+    ctx.save();
+    const snap = dpr * this.zoom;
+    ctx.translate(-snapCam(this.camera.x, snap), -snapCam(this.camera.y, snap));
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 15px Fredoka, sans-serif';
+    for (const ft of this.floatingTexts) {
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(30, 20, 30, 0.6)';
+      ctx.strokeText(ft.text, ft.x, ft.y);
+      ctx.fillStyle = ft.color;
+      ctx.fillText(ft.text, ft.x, ft.y);
+    }
+    ctx.restore();
+    if (this.respawnFlash > 0) {
+      this.respawnFlash = Math.max(0, this.respawnFlash - 1 / 30);
+      ctx.fillStyle = `rgba(255, 255, 255, ${(this.respawnFlash / 0.6) * 0.7})`;
+      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
+    }
   }
 
   // --- Juice Helpers ---

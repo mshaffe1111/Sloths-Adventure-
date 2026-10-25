@@ -12,6 +12,8 @@ const CLUES: Record<number, { title: string; text: string }> = {
 };
 
 export function getStageClue(levelId: string): { title: string; text: string } {
+  // Dot's netting flight (extraStages.ts): no clue of Meeca's on the way, just the note delivered
+  if (levelId === '4-D') return { title: 'Still Here', text: "Meeca's note came out through the gap as wide as a folded letter. A white feather stayed behind on the thorns." };
   const stage = Number(levelId.split('-')[1]) || 1;
   return CLUES[stage] ?? { title: 'Another Petal', text: "Meeca's trail leads on to the next realm." };
 }
