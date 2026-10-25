@@ -466,23 +466,23 @@ The General's younger years again. Two captions changed.
 
 **General Iron-Claw:** Forty-four.
 
-**Lieutenant Pell:** Sir, I'm sorry to interrupt. I'm also sorry to report that the mess hall is out of forks.
+**Lieutenant Pell:** Sir, I am sorry to interrupt. I am also sorry to report that the mess hall is out of forks.
 
 **General Iron-Claw:** Spoons.
 
-**Lieutenant Pell:** Sir, the spoons are for the soup. I'm sorry. People will notice. Sir. Everyone will notice.
+**Lieutenant Pell:** Sir, the spoons are for the soup. I am sorry. People will notice. Sir. Everyone will notice.
 
 *Pell went away and came back with a tray of spoons.*
 
 **General Iron-Claw:** Four fingers to the tower. He hasn't gone around anything. Not the river. Not the Grotto. He walks straight through.
 
-**Lieutenant Pell:** That's very foolish of him, sir.
+**Lieutenant Pell:** That is very foolish of him, sir.
 
 **General Iron-Claw:** Yes.
 
 **General Iron-Claw:** Go to bed, Lieutenant. Leave the lantern.
 
-**Lieutenant Pell:** Yes, sir. Good night, sir. I'm sorry about the spoons.
+**Lieutenant Pell:** Yes, sir. Good night, sir. I am sorry about the spoons.
 
 *When the door had closed, the General took a spoon from the tray and drove it into the map beside the last fork, bowl up.*
 
@@ -826,3 +826,194 @@ Unchanged.
 **The timeline in her story.** "Then came a winter" is now "Then came the storm," and she adds that he sat in her chair for a year before he came to them, so it matches the order of events we set. Pokey's reaction changed from "His wife" to "In a storm." He's hearing about someone who lost family in a storm, which is his own story, and that's why he picks the cup up with both hands. He doesn't put together that it's Meeca's grandpa. The player might start to.
 
 **Smaller things.** "Biscuits" became cookies. "An officer" in Meeca's note is now Lieutenant Pell by name. Dot is she throughout.
+
+---
+
+## World 6: Deep Mangrove
+
+### The blackwater
+
+*The roots of the Deep Mangrove stood up out of the water in a maze, and the sun only got in where they let it. The water between them lay flat and gray. Rivers are kind when the Heartbloom is open. This one had stopped being kind.*
+
+**Pokey:** Water that flat has something under it.
+
+*Out of the black water, a spear rose, slowly. It turned to look at them. Then it sank again.*
+
+**Dot:** Did the water just look at us?
+
+**Pokey:** Somebody's holding it.
+
+**Dot:** That's worse. I'm fine. I'm completely fine. I've backed up about nine feet, which for me is a lot. I'm just over here!
+
+**Dot (reading):** "Pokey, the Reaver eats lunch at noon. Do NOT meet him at noon." That's all it says. There's no second line. There's a stain.
+
+**Pokey:** What time is it?
+
+**Dot:** Noon. It's noon. I can see the sun, right there, straight down through the roots. Pokey, it is directly overhead.
+
+### The last note (halfway through the world)
+
+**Dot:** Pokey. I have to tell you something. I tried to make it funny the whole way over. I got as far as a pelican, and then I couldn't.
+
+**Pokey:** Go on.
+
+**Dot:** That was the last note I can get out. The net's sealed past here. There's no gap anymore. I checked every inch of it. I checked it with my face.
+
+**Dot:** She gave me two at the end. The lunch one was the silly one. This one's sealed. She wrote it on a really bad day, and she made me swear to give it to you only when you need it.
+
+**Pokey:** How will I know when I need it?
+
+**Dot:** She said, "He'll know. He'll have stopped."
+
+*Dot had three tail feathers left. She'd left the rest in the net. Pokey had counted, and said nothing.*
+
+*Dot tucked the sealed note into the satchel with both claws, gently, as if it might break.*
+
+**Dot:** I'm going around. There's always a seam. I'm a hummingbird. I live in seams. I'll find the one that's open, and I'll be back before you've... before you've even— I'll be early, Pokey. Watch me.
+
+**Pokey:** We never agreed on a time.
+
+*Dot went up through the roots. One leaf kept shivering after she was gone.*
+
+### The guardian: Marsh Reaver
+
+*Before the fight.*
+
+**Marsh Reaver:** Who wades into the blackwater at noon? Nobody wades at noon. It is LUNCH.
+
+**Pokey:** I know what time it is. I'm not waiting.
+
+**Marsh Reaver:** Wait. You're the sloth. The runners talk about you when they bring my lunch. "The sloth is coming. The sloth is slow. The sloth is somehow still coming." I thought you'd be taller.
+
+**Pokey:** I'm taller upside down.
+
+*After the fight.*
+
+**Marsh Reaver:** Beaten. At LUNCH. By the slow one. The runners are going to sing about this.
+
+**Pokey:** Your lunch is getting cold.
+
+**Marsh Reaver:** It is cold NOW. Hrmph. Keep your feet. The ruins are past the reeds, and the third root is a crocodile. GO.
+
+### The sealed note
+
+*Past the Reaver's water, the ground went up in steps of root, and Pokey took them one at a time. At the fourth, he stopped.*
+
+*He'd been walking for months. Under the satchel strap, his fur had worn through to a pale stripe.*
+
+*A snail overtook him on the left. Pokey tipped his head to it. It didn't tip back. It had a schedule.*
+
+**Pokey:** I'm tired.
+
+*There was nobody there to hear it. He said it again anyway.*
+
+*The petal on his wrist kept pointing north. He turned his wrist over so he wouldn't have to watch it.*
+
+*Then he sat down on a root and didn't look at the next one.*
+
+*He took the sealed note out of the satchel. The last word of every line was written on top of the one before it, where Meeca had run out of paper.*
+
+**Meeca:** Pokey. If you're reading this, you've stopped. Good. Take the satchel off first. It rubs your shoulder, and you never say.
+
+**Meeca:** I'm not going to tell you to hurry. This is what I sing to the Heartbloom on its worst days.
+
+**Meeca:** ♪ Slow the rain, slow the thunder. Slow the thorn that holds you under. Slow the kettle, slow the stair. Someone's coming. Keep a chair. ♪
+
+**Meeca:** That's the whole spell. I know it isn't much. I'm not counting, Pokey. Come when you come.
+
+*Pokey read it three times. He put it back in the satchel, took the satchel off, and sat for a long time with nothing on his shoulder.*
+
+### Memory: the singing storm
+
+*A storm, in the old nest. Pokey was small, and the nest was bigger than he was.*
+
+**Pokey:** It's only weather.
+
+**Meeca:** You're holding the nest with both hands.
+
+**Pokey:** It's a very good nest. I want it to stay.
+
+*It had been his parents' nest. He remembered a few small things about them. The sound his father's claws made on the bark, coming home. His mother humming something he could never get all the way back. On a night like this one they'd gone out along the far branches, and afterward the grown-ups said it was a storm, sweetheart, and talked about something else. Nobody ever told him what they went out for.*
+
+**Meeca:** Can I sit?
+
+**Pokey:** It's small.
+
+**Meeca:** I'm small.
+
+*She put one hand over both of his on the rim of the nest. She didn't ask him to let go.*
+
+**Meeca:** ♪ Slow the rain... slow the thunder... ♪
+
+*The thunder kept coming. After a while, he could hear her over it.*
+
+**Pokey:** Who taught you that?
+
+**Meeca:** Grandma. It was her song first. She has a music box that plays it, with a little iron key. When it runs down, I sing the rest.
+
+*Down in the house, the music box ran down. She went on without it, and he fell asleep with both hands still on the nest.*
+
+### The tower: the tally
+
+*There were a hundred and twelve marks on the wall behind the bed, in bundles of five. Meeca had made them with the handle of a spoon. She sat down at the desk with her back to them.*
+
+*Her handwriting was very steady. It always was when she lied.*
+
+**Meeca (writing):** Dear Pokey. Don't hurry. I'm not counting.
+
+**Lieutenant Pell:** Miss Meeca? It is Lieutenant Pell. I am knocking. I am sorry about the knocking.
+
+**Meeca:** You don't have to knock, Pell. You're the one with the key.
+
+**Lieutenant Pell:** It is the General's key, Miss. I only carry it. I have brought a pillow. I am sorry that it is only a pillow.
+
+**Meeca:** Thank you. It looks soft. Pell, who told him to call me that? Little bloom.
+
+*Pell looked at the pillow for a while.*
+
+**Lieutenant Pell:** I could not say, Miss. I am sorry that I could not say. And if there is a letter, I am not permitted to carry it. I am very sorry that I am not permitted.
+
+**Meeca:** It isn't finished.
+
+*Pell closed the door softly and turned the key softly. Somebody had told him to lock it. Nobody had told him to be loud about it.*
+
+*Meeca finished the letter and put it under the new pillow. Then she picked up the spoon and turned to the wall. The hundred and thirteenth mark took a long time. She was careful not to press any harder than she had for the others.*
+
+### Hidden note (in plain sight)
+
+> Dear Grandma,
+>
+> Pokey is coming. I know you'd tell me not to wait for anyone. But he's slow and stubborn, and he has never once turned back. You always liked him. You'd tell him to stop looming in the doorway.
+>
+> Love, Meeca
+>
+> (Pokey: if Dot gave you this by mistake, hello. Please skip the part where I said you're slow.)
+
+### Hidden keepsake
+
+> A small wooden rattle, chewed at one end by someone with no teeth yet. It still rattles, very faintly, like a secret.
+
+### Hidden photo album: The Guardian
+
+Unchanged.
+
+- **On patrol.** The armor was heavy. He wore it so that nobody else would have to.
+- **Festival day.** Confetti, a sash, a wave. He waved back at everyone, including the macaws.
+- **Guardian's watch.** Evenings he watched the river road, in case anyone needed him.
+- **A handshake.** A traveler with a heavy pack and a lazy smile. They talked until dawn.
+
+### What changed in World 6, and why
+
+**This world was already the best in the old script,** so most of it stayed. The pelican, "I checked it with my face," "He'll know. He'll have stopped," the snail with a schedule, the sealed note, the song, and the tally marks are all still here.
+
+**Pokey goes in at noon on purpose.** The old Pokey said "I lost track of the time," but Dot had just told him it was noon. Now he says "I know what time it is. I'm not waiting." It's the foot tapping from World 2 grown into something reckless, and it's why he runs out of everything right after the fight and has to sit down on that root. He pushed past what he had.
+
+**The Reaver after the fight.** "Thank you, I'll leave you your lunch" is gone. Now the Reaver is outraged ("Beaten. At LUNCH.") and Pokey says "Your lunch is getting cold." It's a jab, but the Reaver's soft side still comes through: he gives directions and warns him about the crocodile root.
+
+**What Pokey remembers of his parents.** I added the small things you described: the sound of his father's claws on the bark coming home, and his mother humming something he can never get all the way back. He doesn't remember the night. The night is still only what the grown-ups told him.
+
+**Meeca starts asking questions.** In the tower she asks Pell who told the General to call her "little bloom," and Pell can't say. That's the first step of her working it out on her own.
+
+**Meeca's letter to Grandma.** It used to say "You would like him," but Grandma knew Pokey. She's the one who thanked him for watering the fern. Now it's "You always liked him." "You would tell him to eat something" became "You'd tell him to stop looming in the doorway," which plants Grandma's line from the World 9 memory. The joke at the end used to tell Pokey to skip "the part about your hat," but there's no part about a hat, so it read like a mistake. Now it's "Please skip the part where I said you're slow."
+
+**Pell talks like Pell.** He never uses contractions ("I am sorry about the knocking"), so I went back and fixed his World 3 lines to match.
