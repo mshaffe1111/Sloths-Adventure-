@@ -60,12 +60,11 @@ async function open(stage, v, flag = 0, layout = 1) {
   cdp = await ctx.newCDPSession(page);
   await cdp.send('Performance.enable');
   steer = null;
-  // the clock is installed and PAUSED: time moves only inside a command (clock.install alone lets time keep flowing, and a tester
-  // reading a screenshot came back to find Pokey had fallen)
+  // the clock stands still between commands: install() alone lets fake time flow in real time, so a tester died while thinking.
+  // Same layout every entry (?layout=N, stageGenerator.ts layoutForEntry), so repro steps hold.
   const T0 = Date.UTC(2026, 9, 25, 12);
   await page.clock.install({ time: T0 });
   await page.clock.pauseAt(T0 + 1000);
-  // the same roll of the stage every time (the game rolls a fresh layout per entry; ?layout=N replays one), so steps reproduce
   await page.goto(url + (url.includes('?') ? '&' : '?') + `layout=${layout}`);
   await page.clock.runFor(3500);
   await page.evaluate((id) => window.__play(id), stage);
@@ -74,15 +73,13 @@ async function open(stage, v, flag = 0, layout = 1) {
   if (flag > 0) {
     const ok = await page.evaluate((n) => {
       const e = window.__engine();
-      // (flags in the stage's own order: a stage that runs downhill or back left is not in x order)
+      // flags in stage order (some stages run downhill or back left), and placing him there costs no life
       const cps = e.currentStage.checkpoints ?? [];
       const cp = cps[Math.min(n, cps.length) - 1];
       if (!cp) return 0;
       cps.forEach((c, i) => { if (i < n) c.reached = true; });
       e.checkpoint = { x: cp.x, y: cp.y };
-      // (placed there, not respawned: a respawn counts as a life lost)
-      const p = e.player;
-      p.x = cp.x; p.y = cp.y; p.vx = 0; p.vy = 0;
+      const p = e.player; p.x = cp.x; p.y = cp.y; p.vx = 0; p.vy = 0;
       return cps.length;
     }, flag);
     await page.clock.runFor(1500);
@@ -208,6 +205,8 @@ async function handle(cmd) {
     // press a button on screen by its words (a lesson card's "Got it!", a menu)
     const b = page.locator('button', { hasText: new RegExp(`^\\s*${cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') });
     if (!(await b.count())) return { error: `no button "${cmd.text}" on screen`, text: await screenText() };
+    // a player lifts their thumbs off the glass to press a button: the bot's fingers must not stay down under the card
+    if (steer || actionAt) { steer = null; actionAt = null; await touch('touchEnd'); }
     await b.first().click();
     await page.clock.runFor(300);
     return { shot: await shot(), text: await screenText() };

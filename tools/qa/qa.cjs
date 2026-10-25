@@ -3,8 +3,7 @@
  *
  *   node tools/qa/qa.cjs <port> persona jen [N]             play with that tester's phone size and thumbs (tools/playtesters/personas);
  *                                                         N = their thumbs as in their Nth real session (they got better)
- *   node tools/qa/qa.cjs <port> start 4-8 [land|port] [flag] [layout]  open a stage sideways (land) or upright (port), optionally
- *                                                         from its Nth flag; layout picks the roll (default 1, the same every time),
+ *   node tools/qa/qa.cjs <port> start 4-8 [land|port] [flag] [layout]  open a stage, phone held sideways (land) or upright (port),
  *                                                         optionally from its Nth flag
  *   node tools/qa/qa.cjs <port> do "right 800" "jump" "right+jump 300" "wait 1000"
  *   node tools/qa/qa.cjs <port> click "Got it!"           press a button on screen by its words
