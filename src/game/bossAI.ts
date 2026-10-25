@@ -174,6 +174,8 @@ export interface BossCtx {
   crackPerches?: (phase: number) => void;
   /** a heart falls in at x (for a hero who has been hurt) */
   dropHeart?: (x: number) => void;
+  /** every warning lasts this many times as long (Easy: difficulty.ts); 1 when unset */
+  tellMul?: number;
 }
 
 export interface MoveDef {
@@ -385,7 +387,7 @@ function startMove(b: BossEntity, def: BossDef, c: BossCtx, name: string) {
   br.recent.push(name);
   if (br.recent.length > 3) br.recent.shift();
   face(b, c);
-  b.telegraphTimer = m.tell;
+  b.telegraphTimer = m.tell * (c.tellMul ?? 1);
   b.isAttacking = false;
   m.onTell?.(b, c);
 }
@@ -452,11 +454,12 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
 
     case 'tell': {
       if (!m) break;
-      b.telegraphTimer = Math.max(0, m.tell - br.t);
+      const tell = m.tell * (c.tellMul ?? 1);
+      b.telegraphTimer = Math.max(0, tell - br.t);
       // it keeps watching you for the first half of the windup, then commits
-      if (br.t < m.tell * 0.5) face(b, c);
+      if (br.t < tell * 0.5) face(b, c);
       m.tellTick?.(b, c, dt);
-      if (br.t >= m.tell) {
+      if (br.t >= tell) {
         br.state = 'act';
         br.t = 0;
         b.telegraphTimer = 0;

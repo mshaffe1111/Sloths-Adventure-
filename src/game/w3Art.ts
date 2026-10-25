@@ -23,6 +23,9 @@ export interface W3Decor {
   hang?: boolean;
   /** a glowworm thread: the id of its light (asleep until the light wakes) */
   light?: number;
+  /** drawn only while the platform with this id stands (or, with `whenBroken`, once it has broken): 3-9's ring wall */
+  wall?: number;
+  whenBroken?: boolean;
 }
 
 let img: HTMLImageElement | null = null;
@@ -62,10 +65,13 @@ function blit(ctx: CanvasRenderingContext2D, n: W3Piece, x: number, y: number, w
  * The dressing on one layer (behind Pokey, or `front`) between x0 and x1. `lit(id)` says how awake a light is (0 asleep, 1 lit); the
  * glowworm threads cross-fade from asleep to lit with it, and sway a little.
  */
-export function drawW3Decor(ctx: CanvasRenderingContext2D, items: W3Decor[], x0: number, x1: number, t: number, front: boolean, lit: (id: number) => number) {
+export function drawW3Decor(
+  ctx: CanvasRenderingContext2D, items: W3Decor[], x0: number, x1: number, t: number, front: boolean, lit: (id: number) => number, broken: (id: number) => boolean = () => false,
+) {
   if (!w3ArtReady()) return;
   for (const d of items) {
     if (!!d.front !== front) continue;
+    if (d.wall !== undefined && broken(d.wall) !== !!d.whenBroken) continue;
     if (d.x + d.w < x0 - 60 || d.x - d.w > x1 + 60) continue;
     const h = w3Height(d.n, d.w);
     const left = d.x - d.w / 2;
@@ -160,13 +166,65 @@ export function drawGlowworm(ctx: CanvasRenderingContext2D, x: number, hands: nu
   return true;
 }
 
+/** the painted thorn vine's size in the world, and where in its frames the vine's top and the bud sit (fractions of the frame) */
+const THORN_H = 270;
+const THORN_TOP_X = 0.35;
+const THORN_BUD_Y = 0.8;
+/**
+ * The painted thorn vine (Matt's sheet, 2026-10-25): asleep and breathing, then a yawn back to sleep after a look, one eye cracking open
+ * as it stirs, both open and coiled while it looks, and the lash. The sheet's vine curls round to a bud that hangs to one side; the bud
+ * is kept toward Pokey (the frames are mirrored for the other side), and the frames lash the way the lash goes. A long vine is a plain
+ * painted stroke from the roof down to the top of the frame.
+ */
+function drawThornSprite(
+  ctx: CanvasRenderingContext2D, v: { x: number; top: number; bud: number; sleep?: number }, phase: 'sleep' | 'stir' | 'look', u: number, lash: number, dir: number, t: number,
+) {
+  let i: number;
+  if (lash >= 0) i = 8 + Math.min(3, Math.floor(lash * 4));
+  else if (phase === 'look') i = Math.floor(t * 2.5 + v.x) % 5 === 0 ? 6 : 7;
+  else if (phase === 'stir') i = 4 + Math.min(2, Math.floor(u * 3));
+  else {
+    const since = u * (v.sleep ?? 4);
+    i = since < 1.2 ? 12 + Math.min(3, Math.floor(since / 0.3)) : Math.floor(t * 2.2 + v.x * 0.01) % 4;
+  }
+  const n = `thorn${i}` as W3Piece;
+  const f = W3_FRAMES[n];
+  const h = THORN_H;
+  const w = (h * f.w) / f.h;
+  const top = v.bud - 10 - THORN_BUD_Y * h;
+  // the stretch of vine above the painting, from the roof
+  if (top > v.top + 4) {
+    const sway = Math.sin(t * 0.7 + v.x * 0.01) * 3;
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (const [col, lw] of [['#0f1f10', 26], ['#3a6a34', 18], ['rgba(150, 200, 120, 0.35)', 3]] as const) {
+      ctx.strokeStyle = col;
+      ctx.lineWidth = lw;
+      ctx.beginPath();
+      ctx.moveTo(v.x, v.top);
+      ctx.quadraticCurveTo(v.x + sway, (v.top + top) / 2, v.x, top + 12);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  ctx.save();
+  ctx.translate(v.x, top);
+  if (dir < 0) ctx.scale(-1, 1);
+  ctx.drawImage(img!, f.x, f.y, f.w, f.h, -THORN_TOP_X * w, 0, w, h);
+  ctx.restore();
+}
+
 /**
  * A sleeping thorn vine (thornVine.ts), drawn in shapes until Matt's sheet arrives: a thick twisted vine hanging from the roof, thorns
  * along it, and a drooping bud with eyes at its end. `phase` and `u` say what it is doing; `lash` (0..1, or -1) swings it out toward `dir`.
  */
 export function drawThornVine(
-  ctx: CanvasRenderingContext2D, v: { x: number; top: number; bud: number }, phase: 'sleep' | 'stir' | 'look', u: number, lash: number, dir: number, t: number,
+  ctx: CanvasRenderingContext2D, v: { x: number; top: number; bud: number; sleep?: number }, phase: 'sleep' | 'stir' | 'look', u: number, lash: number, dir: number, t: number,
 ) {
+  if (w3ArtReady()) {
+    drawThornSprite(ctx, v, phase, u, lash, dir, t);
+    return;
+  }
   const len = v.bud - v.top;
   const sway = Math.sin(t * 0.7 + v.x * 0.01) * 0.03;
   const swing = lash >= 0 ? Math.sin(Math.min(1, lash) * Math.PI) * 0.95 * dir : 0;
@@ -287,5 +345,16 @@ export function drawThingFern(ctx: CanvasRenderingContext2D, item: { id: number;
   const tell = Math.max(0, Math.sin(t * 1.25 + item.id * 2.3) - 0.8) / 0.2;
   const rustle = Math.max(search > 0 ? 1 : 0, tell);
   drawW3Fern(ctx, { x: -w / 2, w, y: 26 - 6 }, false, rustle, t);
+  return true;
+}
+
+/** one World 3 piece by name, centred on x with its bottom at y (false until the pieces have loaded) */
+export function drawW3Piece(ctx: CanvasRenderingContext2D, n: W3Piece, x: number, bottom: number, w: number, alpha = 1): boolean {
+  if (!w3ArtReady()) return false;
+  const h = w3Height(n, w);
+  ctx.save();
+  ctx.globalAlpha *= alpha;
+  blit(ctx, n, x - w / 2, bottom - h, w, h);
+  ctx.restore();
   return true;
 }

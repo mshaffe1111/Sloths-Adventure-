@@ -11,6 +11,57 @@
  */
 import type { LairArena, LairView } from './lairArt.ts';
 import { POOL_HALF, PROWLER_POOLS } from './prowlerPools.ts';
+import { trackAtlas } from './atlasLoader.ts';
+
+/**
+ * Matt's painted Glowcap Sinkhole (Gemini, 2026-10-24) behind the fight, in place of the code-drawn cave once it has loaded. It is
+ * pinned to the arena, not the screen, so its two painted moon pools sit under the game's own (PROWLER_POOLS): in the painting they
+ * are 30.5% and 71.8% of the way across, and their middle is 85.3% of the way down.
+ */
+const LAIR_URL = new URL('../assets/lairs/prowler-lair.webp', import.meta.url).href;
+const PAINT_POOLS = [0.305, 0.718];
+const PAINT_POOL_Y = 0.853;
+let lairImg: HTMLImageElement | null = null;
+let lairReady = false;
+function lairPicture(): HTMLImageElement | null {
+  if (typeof Image === 'undefined') return null;
+  if (!lairImg) {
+    lairImg = new Image();
+    trackAtlas(lairImg, LAIR_URL, () => { lairReady = true; }, () => { lairImg = null; });
+  }
+  return lairReady ? lairImg : null;
+}
+
+/** the painting in screen space, scaled and placed so its pools land on the game's pools */
+function paintLair(ctx: CanvasRenderingContext2D, pic: HTMLImageElement, v: LairView, a: LairArena) {
+  ctx.fillStyle = '#0c0f10';
+  ctx.fillRect(0, 0, v.vw, v.vh);
+  const iw = pic.naturalWidth;
+  const ih = pic.naturalHeight;
+  const dw = (PROWLER_POOLS[1] - PROWLER_POOLS[0]) / (PAINT_POOLS[1] - PAINT_POOLS[0]);
+  const dh = (dw * ih) / iw;
+  const left = a.left + PROWLER_POOLS[0] - PAINT_POOLS[0] * dw - v.x;
+  const top = a.floor - 10 - PAINT_POOL_Y * dh - v.y;
+  ctx.drawImage(pic, left, top, dw, dh);
+  // past the painting's edges the cave goes on as its own mirror image, a little darker, so a wide screen never sees a hard end
+  for (const side of [-1, 1]) {
+    const edge = side < 0 ? left : left + dw;
+    if (side < 0 ? edge <= 0 : edge >= v.vw) continue;
+    ctx.save();
+    ctx.translate(edge, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(pic, side < 0 ? 0 : -dw, top, dw, dh);
+    ctx.restore();
+    ctx.fillStyle = 'rgba(6, 10, 12, 0.35)';
+    if (side < 0) ctx.fillRect(0, 0, edge, v.vh);
+    else ctx.fillRect(edge, 0, v.vw - edge, v.vh);
+  }
+  // the painted mushrooms dim with the rest when the lights go out
+  if (glow < 0.98) {
+    ctx.fillStyle = `rgba(0, 4, 8, ${0.55 * (1 - glow)})`;
+    ctx.fillRect(0, 0, v.vw, v.vh);
+  }
+}
 
 function rand(i: number): number {
   const s = Math.sin(i * 127.1 + 311.7) * 43758.5453;
@@ -134,6 +185,14 @@ export function drawProwlerBack(ctx: CanvasRenderingContext2D, v: LairView, a: L
   const H = v.vh;
   const floorY = a.floor - v.y;
 
+  const pic = lairPicture();
+  if (pic) {
+    paintLair(ctx, pic, v, a);
+    backLife(ctx, v, a, time, bossX, floorY);
+    ctx.restore();
+    return;
+  }
+
   const bg = ctx.createLinearGradient(0, 0, 0, H);
   bg.addColorStop(0, '#02080d');
   bg.addColorStop(0.5, '#05202a');
@@ -251,6 +310,42 @@ export function drawProwlerBack(ctx: CanvasRenderingContext2D, v: LairView, a: L
   }
   ctx.globalAlpha = 1;
   ctx.restore();
+}
+
+/** what moves over the painting: dust turning in the two shafts, a faint light behind the boss, spores drifting up */
+function backLife(ctx: CanvasRenderingContext2D, v: LairView, a: LairArena, time: number, bossX: number, floorY: number) {
+  const W = v.vw;
+  const H = v.vh;
+  const moon = 0.9 + 0.1 * Math.sin(time * 0.6);
+  ctx.fillStyle = '#e8f8ff';
+  for (let k = 0; k < PROWLER_POOLS.length; k++) {
+    const sx = a.left + PROWLER_POOLS[k] - v.x;
+    if (sx < -300 || sx > W + 300) continue;
+    for (let i = 0; i < 16; i++) {
+      const ph = (time * (0.03 + rand(i + k * 20) * 0.03) + rand(i + 5 + k * 20)) % 1;
+      const y = ph * floorY;
+      const half = 30 + (POOL_HALF * 0.8 - 30) * (y / Math.max(1, floorY));
+      const x = sx + (rand(i + 9 + k * 20) - 0.5) * 2 * half * 0.8 + Math.sin(time * 0.7 + i) * 6;
+      ctx.globalAlpha = Math.sin(ph * Math.PI) * 0.6 * moon;
+      ctx.fillRect(x, y, 1.8, 1.8);
+    }
+  }
+  ctx.globalAlpha = 0.14;
+  stampGlow(ctx, '#5ae6ff', bossX - v.x, floorY - 90, 320, 1);
+  for (let i = 0; i < 26; i++) {
+    const ph = (time * (0.02 + rand(i) * 0.035) + rand(i + 50)) % 1;
+    const ex = (rand(i + 9) * W * 1.1 + Math.sin(time * 0.5 + i) * 30 + W) % W;
+    const ey = H * (0.96 - ph * 0.9) + Math.sin(time * 0.8 + i * 2) * 10;
+    const col = CAP_COLORS[i % 4];
+    const r = 1.4 + rand(i + 3) * 2;
+    ctx.globalAlpha = Math.sin(ph * Math.PI) * (0.25 + 0.6 * glow);
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(ex, ey, r, 0, Math.PI * 2);
+    ctx.fill();
+    stampGlow(ctx, col, ex, ey, r * 4, 0.5);
+  }
+  ctx.globalAlpha = 1;
 }
 
 // ───────────────────────────── a moon pool ─────────────────────────────

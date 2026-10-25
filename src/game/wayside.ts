@@ -95,6 +95,8 @@ export const WAYSIDE: Record<number, WorldWay> = {
       4: petal('half', 'A glowworm lights his next handhold. He thanks it. It glows a little brighter and pretends not to.'),
       5: pokey('start', 'I used to be good at quiet. In here, quiet is a thing that listens back.'),
       7: dot('half', 'I\'ve apologized to twelve ferns so far. None of them was the one.'),
+      8: dot('start', 'Old vines only watch for things in a hurry. So don\'t hurry. You\'re very good at that.'),
+      9: pokey('half', 'Seems to me a ring is just a road that forgot where it was going.'),
     },
     hurt: [
       hDot('That was the dark\'s fault. I\'ll keep saying so until we\'re out.'),

@@ -28,9 +28,15 @@ Matt's running list of drawings still needed from Gemini. A new need joins the l
 
 ## World 3 (3-4 to 3-6)
 
-15. **The sleeping thorn vine**: hangs from the cave roof; asleep, stirring, the lash, back to sleep (3-5, 3-8). (Prompt 15)
+15. ~~**The sleeping thorn vine** (3-5, 3-7, 3-8). (Prompt 15)~~ Received 2026-10-25 (all sixteen frames used: breathing asleep, stirring, looking, the lash, settling back).
 16. **Grandma's things**: the bronze medal (World 3's keepsake), a teacup, spectacles, wool and needles, a seed pouch and trowel, a thimble and pincushion (3-6, 3-7). (Prompt 16)
-17. **The sinkhole**: the moonlit rim, a tall wall section, a trickle of water, a mossy ledge, a root bridge, a root ladder (3-4). (Prompt 17)
+17. ~~**The sinkhole** (3-4). (Prompt 17)~~ Received 2026-10-25 (the wall sections and trickles are in 3-4; the rim, ledge, root bridge and root ladder are cut and kept for the ledges and climbs).
+
+## World 3 (3-7 to 3-9)
+
+23. ~~**The Prowler's Ring** (3-9).~~ Received 2026-10-25 (the clawed pillar at the way in, the scratched rock and bones inside, the cracked pillar over the way out that lies broken once the ring is cleared, and the amber eyes as each cat leaps in).
+
+24. ~~**The Glowcap Sinkhole, painted** (3-10).~~ Received 2026-10-25 (pinned to the arena so its two painted moon pools sit under the game's; the code mushrooms, moon pools and last-phase dark stay on top).
 
 ## The story rewrite (prompts in STORY-ART-PROMPTS.md)
 

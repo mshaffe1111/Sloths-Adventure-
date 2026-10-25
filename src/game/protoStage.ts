@@ -22,7 +22,7 @@ import { JUMP_RISE, reachGlide, reachJump } from './physics.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
 import type { Bush, WatchZone } from './watcher.ts';
-import { catchWindow, earlyCatch, jumpGrab, landWindow, maxRise } from './protoCheck.ts';
+import { catchWindow, earlyCatch, jumpGrab, landWindow, leapBand, maxRise } from './protoCheck.ts';
 import type { W2Decor } from './riverArt.ts';
 import { driftX, gapFor, LOG_DROP, LOG_HEIGHT, logLayout, surfaceBelowBank, type RiverZone } from './river.ts';
 import type { SkillId } from './skills.ts';
@@ -32,8 +32,8 @@ import type { ThornVine } from './thornVine.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -78,9 +78,9 @@ export interface ProtoExtras {
   hollows?: Array<{ x: number; y: number }>;
   /**
    * a ring of branches walled at its far end (1-9): snakes drop from the canopy in waves when he comes in, and the wall opens when
-   * every one of them is down. Each drop names the surface it lands on.
+   * every one of them is down. Each drop names the surface it lands on. In 3-9's ring the prowlers leap in out of the dark instead.
    */
-  ring?: { x0: number; x1: number; wallId: number; waves: Array<Array<{ x: number; surface: number; kind: 'snake' | 'boa' }>> };
+  ring?: { x0: number; x1: number; wallId: number; waves: Array<Array<{ x: number; surface: number; kind: 'snake' | 'boa' | 'ocelot' | 'jaguar' }>> };
   /** the collapse that chases him along the long branch (1-8: chase.ts) */
   chase?: import('./chase.ts').ChasePlan;
   /** bushes to hide in, and the stretches the eagle watches (1-7: watcher.ts) */
@@ -167,8 +167,12 @@ export const PETAL_GOAL_15 = 90;
 export const GUARD_GOAL_19 = 16;
 /** 3-3 asks for 12 prowlers driven off (the stage holds about one and a half times that) */
 export const PROWLER_GOAL_33 = 12;
+/** 3-9 The Prowler's Ring: how many prowlers to drive off (the ring's own waves count too, on top of these) */
+export const PROWLER_GOAL_39 = 14;
 /** 3-6 asks for 5 of Grandma's things (the stage hides 7) */
 export const GRANDMA_GOAL_36 = 5;
+/** 3-7 Which Fern?: how many more of Grandma's things */
+export const GRANDMA_GOAL_37 = 6;
 /** 1-3 Branch Snakes asks for 16 snakes, not 10: the stage holds about 25, so the punching it teaches is most of the way through */
 export const SNAKE_GOAL_13 = 16;
 
@@ -1880,12 +1884,13 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   }
 
   // ----- 3-6 Grandma's Things: what Dot hid in the ferns -----
-  const THINGS = ['locket', 'rattle', 'teddy bear', 'bell'];
+  // (3-7's things are others of hers: Dot hid a great many things)
+  const THINGS = plan === '3-7' ? ['teacup', 'spectacles', 'thimble', 'ball of wool', 'seed pouch'] : ['locket', 'rattle', 'teddy bear', 'bell'];
   let thingsPlaced = 0;
   /** one of Grandma's things in a fern at px on the surface: crouch beside it to find it (engine.ts, a hidden relic) */
   const thingFern = (px: number, surface: number) => {
     const id = cid++;
-    C.push({ id, type: 'relic', hidden: true, x: Math.round(px), y: surface - 26, collected: false, bobPhase: 0, thing: THINGS[id % 4] });
+    C.push({ id, type: 'relic', hidden: true, x: Math.round(px), y: surface - 26, collected: false, bobPhase: 0, thing: THINGS[id % THINGS.length] });
     thingsPlaced++;
     // nothing else in the fern: a flower there would hide it (and give it away)
     for (let i = C.length - 2; i >= 0; i--) if (C[i].type === 'flower' && Math.abs(C[i].x - px) < 90 && Math.abs(C[i].y - (surface - 26)) < 90) C.splice(i, 1);
@@ -2003,6 +2008,266 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     });
   }
 
+  // ----- 3-7 Which Fern?: Grandma's things, among everything the grotto has taught so far -----
+  /**
+   * a row of thorn vines with a fern under each: crouching beside a fern to search is also keeping still, so a vine that wakes while he
+   * searches lets him be. One fern of the row holds a thing; the others are only ferns.
+   */
+  function vineFerns(n: number, sleep: [number, number], spacing: [number, number]) {
+    const x0 = x;
+    run(R.r(260, 320));
+    const hide = R.i(0, n - 1);
+    for (let k = 0; k < n; k++) {
+      run(R.r(spacing[0], spacing[1]));
+      thornAt(x, sleep);
+      // the fern a little to one side of the vine, still well inside its reach
+      const fx = x + (R.chance(0.5) ? -1 : 1) * Math.round(R.r(30, 50));
+      if (k === hide) thingFern(fx, G);
+      else plainFern(fx);
+    }
+    run(R.r(300, 380));
+    expert += (x - x0) / RUN + n * 1.6 + 1.5;
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+  /**
+   * ferns the eyes watch: hiding ferns (bushes) and searching ferns in turn. A search takes a moment out in the open, so it is done
+   * between the eyes' passes, and the next hiding fern is never far.
+   */
+  function watchedFerns(n: number, calm: [number, number]) {
+    const x0 = x;
+    const hide = R.i(0, n - 1);
+    for (let k = 0; k < n; k++) {
+      run(R.r(300, 360));
+      bush(x - BUSH_W.grotto / 2, 'grotto');
+      run(R.r(260, 320));
+      if (k === hide) thingFern(x, G);
+      else plainFern(x);
+    }
+    run(R.r(300, 360));
+    bush(x - BUSH_W.grotto / 2, 'grotto');
+    run(R.r(260, 340));
+    ZONES.push({ x0, x1: x, calm });
+    expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 2;
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  if (plan === '3-7') {
+    // 3-7 Which Fern?: all ferns look alike, and Dot has apologized to twelve of them. More of Grandma's things, hidden among everything
+    // the grotto has taught: a fern under a sleeping vine (crouching to search is keeping still), ferns the eyes watch (search between
+    // their passes), and in the twist ferns under vines in the dark, where crouching does three things at once.
+    beat('Start', () => {
+      rest(R.r(560, 680));
+      hint(x - 340, 'More of Grandma\'s things. Crouch beside a fern that rustles', 'More of Grandma\'s things. Hold down beside a fern that rustles', 'More of Grandma\'s things. Hold down beside a fern that rustles');
+      fernPatch(3);
+      flag();
+    });
+    beat('Learn: a fern under a vine', () => {
+      hint(x - 200, 'Searching is keeping still. A vine that wakes leaves you be');
+      vineFerns(2, [4.6, 5.4], [420, 480]);
+      rest(R.r(240, 320));
+      vineFerns(3, [4.2, 5], [400, 460]);
+      flag();
+    });
+    beat('Develop: ferns the eyes watch', () => {
+      hint(x + 40, 'The eyes are back. Search between their looks, and hide in the next fern');
+      watchedFerns(2, [6.5, 7.5]);
+      flag();
+      sporeRest(R.r(600, 700));
+      watchedFerns(3, [5.8, 6.8]);
+      flag();
+    });
+    beat('Twist: ferns in the dark, under the vines', () => {
+      hint(x + 40, 'In the dark, under a vine, crouching by a fern does three things at once');
+      const z0 = x;
+      const stops = glowDark(R.r(1500, 1700), 1);
+      // a vine over the first stop, with the fern that hides a thing under it; plain ferns about
+      const vx = stops[0] + 150;
+      thornAt(vx, [4.2, 5]);
+      thingFern(vx + 40, G);
+      plainFern(stops[0] + 470);
+      for (let fx = z0 + 900; fx < x - 500; fx += R.r(420, 520)) if (!P.some((pl) => pl.style === 'moss_stone' && fx > pl.x - 140 && fx < pl.x + pl.width + 140)) plainFern(fx);
+      expert += 3;
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while ((expert < EXPERT_SECONDS - 10 || thingsPlaced < GRANDMA_GOAL_37 + 2) && n < 16) {
+        const k = n % 4;
+        if (k === 0) vineFerns(R.i(3, 4), [3.8, 4.6], [380, 450]);
+        else if (k === 1) fernPatch(R.i(4, 5));
+        else if (k === 2) watchedFerns(R.i(2, 3), [5.2, 6.2]);
+        else { rest(R.r(240, 340)); stumps(); }
+        n++;
+        if (n % 2 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
+  // ----- 3-8 Thorn Vine Swing: lianas with old thorn vines hanging in the gaps between them -----
+  /**
+   * a chain of lianas (chain(): every vine catches the next) with a thorn vine hanging in each gap between two of them, low enough
+   * that the leap from one to the next passes through its reach. Hanging on a liana he is out of its sight (thornVine.ts), so he waits
+   * there while it looks and leaps while it sleeps. Neighbouring vines keep different rhythms.
+   */
+  function thornChain(n: number, soft: boolean, sleep: [number, number]) {
+    const before = V.length;
+    chain(n, soft, soft ? 'hollow' : 'gorge');
+    const ls = V.slice(before).filter((v) => v.isSwingingVine).sort((a, b) => a.x - b.x);
+    for (let k = 0; k + 1 < ls.length; k++) {
+      const mx = Math.round((ls[k].x + ls[k + 1].x) / 2);
+      // the bud just above the highest his feet go in that leap, and its reach down to the floor of the gap: a leap taken while it
+      // looks always passes through it, and the next liana (60 px of grab either side) is clear of it
+      const reach = Math.min(95, Math.round((ls[k + 1].x - ls[k].x) / 2 - 70));
+      const band = leapBand(ls[k], ls[k + 1], mx, reach) ?? [G - 260, G - 120];
+      const bud = Math.round(band[0] - 8);
+      const sl = R.r(sleep[0], sleep[1]);
+      THORNS.push({ x: mx, top: Math.min(bud - 200, ls[k].topY), bud, reach, below: Math.round(band[1] - bud + 40), sleep: sl, stir: 1.1, look: 1.8, offset: R.r(0, sl + 2.9) });
+      expert += 1.4;
+    }
+  }
+
+  if (plan === '3-8') {
+    // 3-8 Thorn Vine Swing: swing past the thorn vines without touching the thorns. A sloth hanging on a liana is the stillest thing
+    // in the forest, so the vines cannot see him there: ride the liana while the vine in the next gap looks, and leap while it sleeps.
+    // The timed swing's gold ring says when to let go; the vine's eye says whether. World 3's photo album is in a fern on the way.
+    beat('Start', () => {
+      rest(R.r(600, 720));
+      hint(x - 320, 'Thorn vines hang between the lianas. Swing past without touching the thorns');
+      flag();
+    });
+    beat('Learn: one vine in the gap', () => {
+      // (said on the walk up, so Dot's line is gone by the time he is on the liana: it hangs where the vine and he are)
+      hint(x - 260, 'Hang on while the thorn vine looks. Let go while it sleeps');
+      thornChain(2, true, [4.8, 5.6]);
+      rest(R.r(260, 340));
+      thornChain(2, true, [4.4, 5.2]);
+      flag();
+    });
+    beat('Develop: a longer chain', () => {
+      thornChain(3, false, [4.2, 5]);
+      flag();
+      // the photo album, in a Hush Fern on a quiet stretch between the chains
+      const book = findForStage(config.worldIndex, config.miniIndex);
+      const b0 = x;
+      rest(R.r(560, 660));
+      if (book && book.kind === 'book') C.push({ id: cid++, type: 'find', findId: book.id, hidden: true, x: Math.round(b0 + (x - b0) / 2), y: G - 26, collected: false, bobPhase: 0 });
+      expert += 3;
+      thornChain(3, false, [4, 4.8]);
+      flag();
+    });
+    beat('Twist: a vine over the landing', () => {
+      hint(x - 260, 'One hangs over the landing too. Land, and freeze if it wakes');
+      thornChain(3, false, [3.8, 4.6]);
+      // the far bank: a sleeping vine just past where he lands (3-5's rule: on the ground, standing still is safe)
+      const landX = x;
+      run(R.r(220, 280));
+      thornAt(x, [3.6, 4.4]);
+      run(R.r(300, 360));
+      expert += (x - landX) / RUN + 1.6;
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 14) {
+        const k = n % 3;
+        if (k === 0) thornChain(R.i(3, 4), false, [3.6, 4.4]);
+        else if (k === 1) { rest(R.r(240, 340)); stumps(); }
+        else vineRow(R.i(2, 3), [3.6, 4.4], [360, 430]);
+        n++;
+        flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
+  // ----- 3-9 The Prowler's Ring: a ring of clawed limestone, and the prowlers it belongs to -----
+  /**
+   * the ring: limestone shelves round a floor, walled at its far end. When he comes in, ocelots and then a jaguar leap in out of the
+   * dark at its edge in waves (engine.ts updateRing), and the wall gives way when every one is down.
+   */
+  function prowlerRing() {
+    const x0 = x;
+    run(R.r(180, 240));
+    const r0 = x;
+    const W = Math.round(R.r(1150, 1250));
+    const ly = G - 140, ty = G - 270;
+    const L = branch(r0 + 160, r0 + 420, ly);
+    const Rb = branch(r0 + W - 420, r0 + W - 160, ly);
+    const Tp = branch(r0 + W / 2 - 170, r0 + W / 2 + 170, ty);
+    row(Tp.x + 50, Tp.x + Tp.width - 50, ty - 34, 3, 'orchid');
+    // a heart on the high shelf: the ring is a long fight
+    C.push({ id: cid++, type: 'heart', x: Math.round(Tp.x + Tp.width / 2), y: ty - 80, collected: false, bobPhase: 0 });
+    const wall = block(r0 + W, r0 + W + 120, 330);
+    const mid = (pl: Platform) => pl.x + pl.width / 2;
+    RING = {
+      x0: r0, x1: r0 + W, wallId: wall.id,
+      waves: [
+        [{ x: r0 + W * 0.5, surface: G, kind: 'ocelot' }, { x: mid(L), surface: ly, kind: 'ocelot' }],
+        [{ x: r0 + W * 0.35, surface: G, kind: 'ocelot' }, { x: mid(Rb), surface: ly, kind: 'ocelot' }, { x: r0 + W * 0.65, surface: G, kind: 'ocelot' }],
+        [{ x: r0 + W * 0.55, surface: G, kind: 'jaguar' }, { x: mid(Tp), surface: ty, kind: 'ocelot' }],
+      ],
+    };
+    // the scratched floor: pawprints round the ring
+    prints(r0 + 120, r0 + W - 120);
+    // Matt's ring pieces: a clawed pillar at the way in, a low scratched wall and old bones inside, and the way out a cracked pillar that
+    // lies broken once the ring is cleared (it stands over the wall block, and is drawn only while the block stands, then the broken one)
+    W3D.push({ n: 'pillar', x: r0 + 30, b: G + 6, w: 150 });
+    W3D.push({ n: 'ringWall', x: r0 + W * 0.5, b: G + 8, w: 250 });
+    W3D.push({ n: 'bones', x: r0 + W * 0.28, b: G + 6, w: 120 });
+    W3D.push({ n: 'pillarCracked', x: r0 + W + 60, b: G + 6, w: 170, front: true, wall: wall.id });
+    W3D.push({ n: 'pillarBroken', x: r0 + W + 60, b: G + 8, w: 300, wall: wall.id, whenBroken: true });
+    x = r0 + W + 120;
+    run(R.r(260, 340));
+    expert += (x - x0) / RUN + 24;
+    pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  if (plan === '3-9') {
+    // 3-9 The Prowler's Ring: break out of the ring. The prowlers again, now all together: ocelots on the floor and the shelves, a jaguar,
+    // the dark between fights, and the ring, where they leap in out of the dark in waves until every one is down and the way opens.
+    const placed = () => E.filter((e) => e.type === 'ocelot' || e.type === 'jaguar').length;
+    beat('Start', () => {
+      const x0 = x;
+      rest(R.r(620, 740));
+      prints(x0 + 200, x - 80);
+      hint(x0 + 120, 'Pawprints in a circle, and they all go one way...');
+      flag();
+    });
+    beat('Learn: two at once', () => {
+      hint(x + 40, 'Two prowlers! Keep one in front of you');
+      prowlFloor(['ocelot', 'ocelot']);
+      rest(R.r(240, 320));
+      prowlShelves(3, G - 140);
+      flag();
+    });
+    beat('Develop: the jaguar, and the dark', () => {
+      prowlFloor(['jaguar', 'ocelot']);
+      flag();
+      glowDark(R.r(1000, 1200), 1);
+      prowlShelves(4, G - 150);
+      flag();
+    });
+    beat('Twist: the ring', () => {
+      hint(x + 60, 'The ring! They will come out of the dark. Drive them all off to open the way');
+      prowlerRing();
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while ((expert < EXPERT_SECONDS - 10 || placed() < Math.ceil(PROWLER_GOAL_39 * 1.4)) && n < 16) {
+        const k = n % 4;
+        if (k === 0) prowlShelves(R.i(3, 4), G - Math.round(R.r(120, 160)));
+        else if (k === 1) { rest(R.r(250, 400)); prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot']); }
+        else if (k === 2) glowDark(R.r(900, 1100), 1);
+        else sporeGap();
+        n++;
+        if (n % 2 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
   if (plan === '3-2') {
     // World 3's note (Meeca, in plain sight: a Keeper's Bell) on the quiet floor just before the eyes
     const note = findForStage(config.worldIndex, config.miniIndex);
@@ -2036,7 +2301,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);
-  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : {}) };
+  const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
   // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
@@ -2325,6 +2590,11 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       else w3decor.push({ n: 'glowLit', x: at, b: p.y + 20, w: 60, hang: true });
     }
     for (let fx = 200; fx < W - 200; fx += R.r(420, 620)) w3decor.push({ n: R.pick(['stalagmites', 'clawRock', 'mushrooms'] as const), x: Math.round(fx), b: 8, w: Math.round(R.r(110, 170)) });
+    // Matt's sinkhole sheet: the sinkhole's wet walls rising either side of the climb, and water trickling down to the floor
+    const top = Math.min(...P.map((p) => p.y)) - 300;
+    const tileW = 340, tileH = Math.round((340 * 1200) / 1054);
+    for (const wx of [tileW / 2 - 40, W - tileW / 2 + 40]) for (let wb = 8; wb > top; wb -= tileH - 6) w3decor.unshift({ n: 'wallTile', x: Math.round(wx), b: Math.round(wb), w: tileW, flip: wx > W / 2 });
+    for (const tx of [tileW + 60, W - tileW - 60]) w3decor.push({ n: 'trickle', x: Math.round(tx), b: 8, w: 96 });
   }
   const shift = 400 - crown.y;
   for (const d of w3decor) d.b += shift;

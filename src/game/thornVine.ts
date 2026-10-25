@@ -17,6 +17,8 @@ export interface ThornVine {
   bud: number;
   /** how far either side of it the lash reaches (px) */
   reach: number;
+  /** how far below the bud it reaches (px; VINE.below when unset). 3-8's vines hang over the lianas' gaps, where he flies far below */
+  below?: number;
   /** seconds asleep, stirring (the warning), and looking, per cycle */
   sleep: number;
   stir: number;
@@ -50,14 +52,17 @@ export function vinePhase(v: ThornVine, t: number): { phase: VinePhase; u: numbe
 
 /** is he in a vine's reach (beside it, and not far below its bud)? */
 export function inReach(v: ThornVine, px: number, feetY: number): boolean {
-  return Math.abs(px - v.x) < v.reach && feetY > v.bud && feetY < v.bud + VINE.below;
+  return Math.abs(px - v.x) < v.reach && feetY > v.bud && feetY < v.bud + (v.below ?? VINE.below);
 }
 
 /** does a vine that is looking see him? (moving within its reach) */
-export function vineSees(v: ThornVine, t: number, p: { x: number; y: number; vx: number; grounded: boolean; ducking?: boolean }): boolean {
+export function vineSees(v: ThornVine, t: number, p: { x: number; y: number; vx: number; grounded: boolean; ducking?: boolean; swinging?: boolean }): boolean {
   if (vinePhase(v, t).phase !== 'look') return false;
   if (!inReach(v, p.x, p.y)) return false;
   if (p.ducking) return false;
+  // a sloth hanging on a liana is the stillest thing in the forest, however it swings: an old vine does not see him there (3-8: wait
+  // on the liana while the vine looks, and leap while it sleeps)
+  if (p.swinging) return false;
   return !p.grounded || Math.abs(p.vx) > VINE.still;
 }
 

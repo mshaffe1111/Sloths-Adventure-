@@ -9,6 +9,7 @@ import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
+
 import type {
   LevelConfig,
   PlayerState,
@@ -58,7 +59,7 @@ import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
-import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
+import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -107,6 +108,15 @@ import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
+
+/** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
+function wayDodgeOn(): boolean {
+  try {
+    return !/[?&]waydodge=0\b/.test(location.search);
+  } catch {
+    return true;
+  }
+}
 
 /** How many world units tall the screen shows. */
 /** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
@@ -307,7 +317,8 @@ export class GameEngine {
   private bushRustle = new Map<number, number>();
   /** 1-9's ring: 'idle' until he comes in, then each wave drops (snakes falling from the canopy, not yet in play), then 'open' */
   private ring = { state: 'idle' as 'idle' | 'fight' | 'open', wave: 0, ids: [] as number[] };
-  private ringDrops: Array<{ e: Enemy; t: number; delay: number }> = [];
+  /** animals coming into a ring: snakes dropping from the canopy, or (3-9) prowlers leaping in from the dark at `from` */
+  private ringDrops: Array<{ e: Enemy; t: number; delay: number; from?: { x: number; y: number } }> = [];
   /** a snake that has just dropped into the ring is shaken for a moment and cannot bite yet (game time it can from, by id) */
   private harmlessUntil = new Map<number, number>();
   /** 1-8's collapsing branch (chase.ts): its state, the pieces falling away, and whether the last leap has had its slow motion */
@@ -435,6 +446,13 @@ export class GameEngine {
     assignTerritories(this.enemies, this.platforms, (e) => e.y + (isPredator(e.type) ? FEET[e.type] : 0));
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
+    // Easy (difficulty.ts): a guardian takes about two thirds as many hits, each hit worth the same, and warns a little longer (tellMul)
+    if (this.boss && this.bossDef?.hits && isEasy()) {
+      const per = this.boss.maxHp / this.bossDef.hits;
+      this.bossHits = Math.max(4, Math.round(this.bossDef.hits * 0.7));
+      this.boss.maxHp = Math.round(per * this.bossHits);
+      this.boss.hp = this.boss.maxHp;
+    } else this.bossHits = this.bossDef?.hits;
     this.collectibles = this.currentStage.collectibles;
     this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
     // moves the stage lends him (the control test's rope), and the test's mix, logged so the run can be built again
@@ -635,6 +653,9 @@ export class GameEngine {
   }
 
   public stop() {
+    // (the banner goes back to its usual place for whatever comes next)
+    if (typeof document !== 'undefined') delete document.documentElement.dataset.wayLow;
+    this.wayLow = false;
     this.isRunning = false;
     if (this.animFrameId !== null) {
       cancelAnimationFrame(this.animFrameId);
@@ -2041,7 +2062,9 @@ export class GameEngine {
         const gid = `goal:${this.currentStage.config.targetCount}`;
         if (!tipHeard(this.currentStage.config.id, gid)) {
           markTipHeard(this.currentStage.config.id, gid);
-          this.guide(`Collect ${this.currentStage.config.targetCount} ${word} to open the sanctuary`, 4);
+          // (the verb fits the goal: "Collect 14 predators" was what a beat-the-animals stage used to say)
+          const verb = objType === 'purge' || objType === 'gauntlet' ? 'Defeat' : objType === 'rescue' ? 'Free' : objType === 'relic_hunt' ? 'Find' : 'Collect';
+          this.guide(`${verb} ${this.currentStage.config.targetCount} ${word} to open the sanctuary`, 4);
         }
       } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
         this.goalSaid.late = true;
@@ -2173,6 +2196,44 @@ export class GameEngine {
     );
 
     this.updateSound(dt, groundedBefore, vyBefore, distanceRatio);
+    this.markWayDodge(dt);
+  }
+
+  /** Dot's lines dodge Pokey: true while the banner has moved to the bottom of the screen (see markWayDodge) */
+  private wayLow = false;
+  /** how many hits the guardian takes in this fight (its own count, or Easy's fewer) */
+  private bossHits: number | undefined;
+  private wayClearT = 0;
+  /**
+   * Dot's banner (Wayside.tsx) sits in a band across the upper middle of the screen, which on a phone held sideways is where Pokey
+   * often is (on a liana, up a tree, on a high shelf). While any part of him is in that band, the banner moves to the bottom of the
+   * screen; it comes back once he has been clear of the band for a moment, so it does not flick back and forth.
+   * (`?waydodge=0` turns it off, to compare)
+   */
+  private markWayDodge(dt: number) {
+    if (!wayDodgeOn() || typeof document === 'undefined') return;
+    const p = this.player;
+    const w = this.viewCssW, h = this.viewCssH;
+    if (!w || !h) return;
+    // the banner's slot (index.css .way): its top, and about two lines of height below it
+    const slot = w <= 520 ? 132 : h <= 430 ? 110 : 96;
+    const bandTop = slot - 12, bandBot = slot + 88;
+    const head = (p.y - 125 - this.camera.y) * this.zoom;
+    const feet = (p.y + 10 - this.camera.y) * this.zoom;
+    const under = feet > bandTop && head < bandBot;
+    if (under) {
+      this.wayClearT = 0;
+      if (!this.wayLow) {
+        this.wayLow = true;
+        document.documentElement.dataset.wayLow = '1';
+      }
+    } else if (this.wayLow) {
+      this.wayClearT += dt;
+      if (this.wayClearT > 0.8) {
+        this.wayLow = false;
+        delete document.documentElement.dataset.wayLow;
+      }
+    }
   }
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
@@ -2258,6 +2319,7 @@ export class GameEngine {
           this.ringDrops.push({ e, t: 0, delay: this.ringDrops.length * 0.3 });
           sound.playWhoosh();
         },
+        tellMul: isEasy() ? 1.3 : 1,
         dropHeart: (x) => {
           const a = this.currentStage.arena;
           if (!a) return;
@@ -2483,7 +2545,7 @@ export class GameEngine {
     const sig = `${b.hp}|${b.phase}|${b.defeated ? 1 : 0}|${entering ? 1 : 0}`;
     if (sig === this.bossSig) return;
     this.bossSig = sig;
-    this.callbacks.onBossUpdate(b.defeated ? null : { name: def.name, hp: b.hp, maxHp: b.maxHp, phase: b.phase, hits: def.hits, color: def.color, entering });
+    this.callbacks.onBossUpdate(b.defeated ? null : { name: def.name, hp: b.hp, maxHp: b.maxHp, phase: b.phase, hits: this.bossHits, color: def.color, entering });
   }
 
   /** while the boss lives the fight is fenced in, and the camera follows both fighters */
@@ -3804,7 +3866,7 @@ export class GameEngine {
       for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
-    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id));
+    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     // World 3's sleeping thorn vines (thornVine.ts)
     for (let i = 0; i < (this.proto?.thorns?.length ?? 0); i++) {
       const v = this.proto!.thorns![i];
@@ -3987,7 +4049,7 @@ export class GameEngine {
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
-    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id));
+    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
@@ -4151,6 +4213,8 @@ export class GameEngine {
   }
 
   // --- Juice Helpers ---
+  /** the leap of a prowler into its ring: how long it takes (s), and how high it arcs (px) */
+  private static readonly RING_LEAP = { t: 0.7, h: 90 };
   /** the drop: how long a snake takes from the canopy to the branch (s), and from how high it falls (px) */
   private static readonly RING_DROP = { t: 0.55, h: 420 };
 
@@ -4162,17 +4226,29 @@ export class GameEngine {
     const id = this.currentStage.config.id;
     const dropWave = (n: number) => {
       ring.waves[n].forEach((d, k) => {
+        const cat = d.kind === 'ocelot' || d.kind === 'jaguar';
         const base = d.kind === 'boa'
           ? { type: 'boa', width: 58, height: 26, hp: 3, maxHp: 3, vx: 0, y: d.surface - 16, patrolMinX: d.x - 12, patrolMaxX: d.x + 12 }
-          : { type: 'snake', width: 38, height: 22, hp: 1, maxHp: 1, vx: 28, y: d.surface - 14, patrolMinX: d.x - 70, patrolMaxX: d.x + 70 };
+          : d.kind === 'jaguar'
+            ? { type: 'jaguar', width: 64, height: 38, hp: 3, maxHp: 3, vx: 42, y: d.surface - 24, patrolMinX: d.x - 90, patrolMaxX: d.x + 90, groundY: d.surface - 24 }
+            : d.kind === 'ocelot'
+              ? { type: 'ocelot', width: 48, height: 28, hp: 2, maxHp: 2, vx: 55, y: d.surface - 18, patrolMinX: d.x - 90, patrolMaxX: d.x + 90, groundY: d.surface - 18 }
+              : { type: 'snake', width: 38, height: 22, hp: 1, maxHp: 1, vx: 28, y: d.surface - 14, patrolMinX: d.x - 70, patrolMaxX: d.x + 70 };
         const e = {
-          id: 9500 + n * 10 + k, x: d.x, vy: 0, facing: d.x > p.x ? -1 : 1, attackCooldown: 0.9, telegraphTimer: 0, isAttacking: false,
+          id: 9500 + n * 10 + k, x: d.x, vy: 0, facing: d.x > p.x ? -1 : 1, attackCooldown: cat ? 1.4 : 0.9, telegraphTimer: 0, isAttacking: false,
           animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, ...base,
         } as Enemy;
-        this.ringDrops.push({ e, t: 0, delay: k * 0.35 });
+        // a prowler comes out of the dark a little beyond its spot, on the side away from him (inside the ring, so it is in view), and
+        // leaps to it
+        const fx = d.x + (d.x >= p.x ? 300 : -300);
+        const from = cat ? { x: Math.max(ring.x0 + 30, Math.min(ring.x1 - 30, fx)), y: e.y } : undefined;
+        if (from) e.facing = d.x > from.x ? 1 : -1;
+        this.ringDrops.push({ e, t: 0, delay: k * (cat ? 0.6 : 0.35), from });
         r.ids.push(e.id);
       });
-      sound.playWhoosh();
+      // snakes come with the rush of their fall; prowlers with a growl out of the dark
+      if (ring.waves[n].some((d) => d.kind === 'ocelot' || d.kind === 'jaguar')) sound.playPredator('jaguar', 0);
+      else sound.playWhoosh();
     };
     if (r.state === 'idle') {
       if (p.x > ring.x0 + 120 && p.x < ring.x1) {
@@ -4182,7 +4258,7 @@ export class GameEngine {
         this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
         if (!tipHeard(id, 'ring:go')) {
           markTipHeard(id, 'ring:go');
-          this.guide('Snakes from above! Clear them all to open the way', 3);
+          this.guide(ring.waves[0].some((d) => d.kind === 'ocelot' || d.kind === 'jaguar') ? 'Prowlers out of the dark! Drive them all off to open the way' : 'Snakes from above! Clear them all to open the way', 3);
         }
       }
       return;
@@ -4214,22 +4290,60 @@ export class GameEngine {
   /** animals falling from the canopy (1-9's ring, Venom Fang's call): in play where they land */
   private stepDrops(dt: number) {
     for (const d of this.ringDrops) d.t += dt;
-    const landed = this.ringDrops.filter((d) => d.t >= d.delay + GameEngine.RING_DROP.t);
+    const dur = (d: { from?: unknown }) => (d.from ? GameEngine.RING_LEAP.t : GameEngine.RING_DROP.t);
+    const landed = this.ringDrops.filter((d) => d.t >= d.delay + dur(d));
     for (const d of landed) {
+      if (d.from) {
+        // landed: back to prowling where it came down
+        d.e.state = 'patrol';
+        d.e.stateT = 0;
+        this.camera.trauma = Math.min(1, this.camera.trauma + (d.e.type === 'jaguar' ? 0.25 : 0.12));
+      }
       this.enemies.push(d.e);
       this.harmlessUntil.set(d.e.id, this.gameTime + 0.6);
       this.spawnJumpDust(d.e.x, d.e.y + 14);
       sound.playLand(0.5);
     }
-    this.ringDrops = this.ringDrops.filter((d) => d.t < d.delay + GameEngine.RING_DROP.t);
+    this.ringDrops = this.ringDrops.filter((d) => d.t < d.delay + dur(d));
   }
 
   /** the snakes still falling into the ring, drawn on their way down */
   private drawRingDrops(ctx: CanvasRenderingContext2D) {
     for (const d of this.ringDrops) {
-      const u = Math.max(0, d.t - d.delay) / GameEngine.RING_DROP.t;
       if (d.t < d.delay) continue;
       const e = d.e;
+      if (d.from) {
+        // a prowler's leap in from the dark: an arc from the ring's edge to its spot, drawn in its own leap poses
+        const u = Math.min(1, (d.t - d.delay) / GameEngine.RING_LEAP.t);
+        const x0 = e.x, y0 = e.y, st0 = e.state, t0 = e.stateT;
+        const yEnd = y0;
+        e.x = d.from.x + (x0 - d.from.x) * u;
+        e.y = d.from.y + (yEnd - d.from.y) * u - GameEngine.RING_LEAP.h * 4 * u * (1 - u);
+        e.state = 'leap';
+        e.stateT = u * (e.type === 'jaguar' ? 0.58 : 0.36);
+        // two eyes in the dark first, then the cat
+        if (u < 0.12) {
+          // Matt's eyes in the dark (World 3's ring sheet), or two amber dots until it has loaded
+          if (!drawW3Piece(ctx, 'catEyes', d.from.x, d.from.y + 4, 70, 0.6 + 3.4 * u)) {
+            ctx.save();
+            ctx.fillStyle = `rgba(255, 190, 60, ${0.5 + 4 * u})`;
+            for (const s of [-1, 1]) {
+              ctx.beginPath();
+              ctx.ellipse(d.from.x + s * 7, d.from.y - 18, 4, 2.4, 0, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.restore();
+          }
+        } else if (e.type === 'jaguar') {
+          if (!drawJaguarSprite(ctx, e, this.gameTime)) drawJaguar(ctx, e, this.gameTime);
+        } else if (!drawOcelotSprite(ctx, e, this.gameTime)) drawOcelot(ctx, e, this.gameTime);
+        e.x = x0;
+        e.y = y0;
+        e.state = st0;
+        e.stateT = t0;
+        continue;
+      }
+      const u = Math.max(0, d.t - d.delay) / GameEngine.RING_DROP.t;
       const y0 = e.y;
       // where it will land: a shadow on the branch that darkens as it comes down
       ctx.save();
@@ -4606,23 +4720,28 @@ export class GameEngine {
       const cycle = Math.floor((this.gameTime + v.offset) / vinePeriod(v));
       if (ph.phase === 'stir' && Math.abs(v.x - p.x) < v.reach + 260 && !tipHeard(id, 'vine:freeze')) {
         markTipHeard(id, 'vine:freeze');
-        this.guide('A vine is stirring! Freeze until it goes back to sleep', 3.2);
+        // (3-8: on a liana the answer is to hang on, not to freeze)
+        this.guide(p.isVineSwinging ? 'A thorn vine is stirring! Hang on to your liana until it sleeps' : 'A vine is stirring! Freeze until it goes back to sleep', 3.2);
       }
       const lash = this.vineLash.get(i);
       if (lash && this.gameTime - lash.at > VINE.windup + VINE.out) this.vineLash.delete(i);
-      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, p)) {
-        this.vineLash.set(i, { at: this.gameTime, dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
+      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging })) {
+        // something flying past is struck at once (a leap is through its reach in half a second); on the ground it winds up first
+        this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
         sound.playWhoosh();
       }
       const l = this.vineLash.get(i);
       if (l && !l.landed && this.gameTime - l.at >= VINE.windup) {
         l.landed = true;
-        if (inReach(v, p.x, p.y) && p.invincibleTimer <= 0) {
+        // (caught the next liana before it landed: he is out of its sight again)
+        if (inReach(v, p.x, p.y) && p.invincibleTimer <= 0 && !p.isVineSwinging) {
+          const flying = !p.grounded;
           this.damagePlayer(1);
           p.vx = l.dir * 260;
-          if (!tipHeard(id, 'vine:hit')) {
-            markTipHeard(id, 'vine:hit');
-            this.guide('Ouch! When a vine opens an eye, stand still, or duck', 3.2);
+          const key = flying ? 'vine:hitAir' : 'vine:hit';
+          if (!tipHeard(id, key)) {
+            markTipHeard(id, key);
+            this.guide(flying ? 'Ouch! Hang on to your liana while a thorn vine looks, and let go while it sleeps' : 'Ouch! When a vine opens an eye, stand still, or duck', 3.4);
           }
         }
       }
