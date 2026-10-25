@@ -222,5 +222,275 @@
    "note": ""
   }
  ],
- "name": "Jen"
+ "name": "Jen",
+ "curve": [
+  {
+   "minutesPlayed": 22.4,
+   "mix": {
+    "drag": 0.353,
+    "flick": 0.515,
+    "tap": 0.131,
+    "hold": 0.001
+   },
+   "tapMs": {
+    "p10": 62,
+    "p50": 87,
+    "p90": 108
+   },
+   "flickPx": {
+    "p10": 84.853,
+    "p50": 177.418,
+    "p90": 286.225
+   },
+   "flickPxPerMs": {
+    "p10": 0.447,
+    "p50": 0.936,
+    "p90": 1.895
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 7.312,
+    "p50": 27.777,
+    "p90": 43.162
+   },
+   "touchStartX": {
+    "p10": 0.255,
+    "p50": 0.409,
+    "p90": 0.655
+   },
+   "touchStartY": {
+    "p10": 0.671,
+    "p50": 0.822,
+    "p90": 0.886
+   },
+   "leftHalfShare": 0.664,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 109,
+    "p50": 547,
+    "p90": 1510
+   },
+   "hurtPerMinute": 0.76,
+   "livesLostPerMinute": 0.49,
+   "secondsPerSection": {
+    "p10": 3.569,
+    "p50": 33.569,
+    "p90": 453.622
+   },
+   "session": "20261023-2049-iejx"
+  },
+  {
+   "minutesPlayed": 5.5,
+   "mix": {
+    "flick": 0.465,
+    "drag": 0.518,
+    "tap": 0.018
+   },
+   "tapMs": {
+    "p10": 71,
+    "p50": 87,
+    "p90": 87
+   },
+   "flickPx": {
+    "p10": 60.407,
+    "p50": 135.37,
+    "p90": 243.772
+   },
+   "flickPxPerMs": {
+    "p10": 0.377,
+    "p50": 0.785,
+    "p90": 1.425
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 3.945,
+    "p50": 28.156,
+    "p90": 41.135
+   },
+   "touchStartX": {
+    "p10": 0.353,
+    "p50": 0.47,
+    "p90": 0.599
+   },
+   "touchStartY": {
+    "p10": 0.624,
+    "p50": 0.728,
+    "p90": 0.793
+   },
+   "leftHalfShare": 0.588,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 267,
+    "p50": 614,
+    "p90": 2485
+   },
+   "hurtPerMinute": 0.0,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 1.37,
+    "p50": 15.542,
+    "p90": 61.101
+   },
+   "session": "20261024-1038-yxsn"
+  },
+  {
+   "minutesPlayed": 6.6,
+   "mix": {
+    "drag": 0.392,
+    "flick": 0.482,
+    "tap": 0.126
+   },
+   "tapMs": {
+    "p10": 54,
+    "p50": 74,
+    "p90": 100
+   },
+   "flickPx": {
+    "p10": 80.225,
+    "p50": 166.688,
+    "p90": 253.332
+   },
+   "flickPxPerMs": {
+    "p10": 0.469,
+    "p50": 0.975,
+    "p90": 1.962
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 4.289,
+    "p50": 33.275,
+    "p90": 41.367
+   },
+   "touchStartX": {
+    "p10": 0.338,
+    "p50": 0.472,
+    "p90": 0.686
+   },
+   "touchStartY": {
+    "p10": 0.764,
+    "p50": 0.815,
+    "p90": 0.866
+   },
+   "leftHalfShare": 0.565,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 147,
+    "p50": 451,
+    "p90": 1059
+   },
+   "hurtPerMinute": 0.75,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 1.733,
+    "p50": 12.169,
+    "p90": 28.435
+   },
+   "session": "20261024-2126-a5id"
+  },
+  {
+   "minutesPlayed": 14.6,
+   "mix": {
+    "drag": 0.224,
+    "flick": 0.69,
+    "tap": 0.085,
+    "hold": 0.001
+   },
+   "tapMs": {
+    "p10": 37,
+    "p50": 70,
+    "p90": 83
+   },
+   "flickPx": {
+    "p10": 71.701,
+    "p50": 150.904,
+    "p90": 253.663
+   },
+   "flickPxPerMs": {
+    "p10": 0.446,
+    "p50": 0.973,
+    "p90": 1.949
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 9.696,
+    "p50": 30.343,
+    "p90": 42.474
+   },
+   "touchStartX": {
+    "p10": 0.282,
+    "p50": 0.423,
+    "p90": 0.703
+   },
+   "touchStartY": {
+    "p10": 0.69,
+    "p50": 0.786,
+    "p90": 0.859
+   },
+   "leftHalfShare": 0.633,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 150,
+    "p50": 379,
+    "p90": 1004
+   },
+   "hurtPerMinute": 0.0,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 5.034,
+    "p50": 15.662,
+    "p90": 35.453
+   },
+   "session": "20261025-1308-qndu"
+  },
+  {
+   "minutesPlayed": 11.6,
+   "mix": {
+    "drag": 0.296,
+    "flick": 0.59,
+    "tap": 0.112,
+    "hold": 0.002
+   },
+   "tapMs": {
+    "p10": 54,
+    "p50": 83,
+    "p90": 112
+   },
+   "flickPx": {
+    "p10": 73.246,
+    "p50": 152.069,
+    "p90": 270.601
+   },
+   "flickPxPerMs": {
+    "p10": 0.453,
+    "p50": 1.023,
+    "p90": 1.994
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 3.991,
+    "p50": 23.54,
+    "p90": 40.956
+   },
+   "touchStartX": {
+    "p10": 0.363,
+    "p50": 0.569,
+    "p90": 1.328
+   },
+   "touchStartY": {
+    "p10": 0.352,
+    "p50": 0.793,
+    "p90": 0.861
+   },
+   "leftHalfShare": 0.397,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 171,
+    "p50": 447,
+    "p90": 1022
+   },
+   "hurtPerMinute": 0.17,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 5.171,
+    "p50": 14.47,
+    "p90": 28.111
+   },
+   "session": "20261025-1603-e9or"
+  }
+ ]
 }

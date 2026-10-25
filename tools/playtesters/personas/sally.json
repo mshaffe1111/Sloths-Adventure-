@@ -136,5 +136,330 @@
    "note": "Getting stuck and having to stop, game jiggles, having trouble high jumping"
   }
  ],
- "name": "Sally"
+ "name": "Sally",
+ "curve": [
+  {
+   "minutesPlayed": 98.3,
+   "mix": {
+    "drag": 0.626,
+    "tap": 0.276,
+    "hold": 0.005,
+    "flick": 0.093
+   },
+   "tapMs": {
+    "p10": 26,
+    "p50": 105,
+    "p90": 158
+   },
+   "flickPx": {
+    "p10": 33.242,
+    "p50": 91.482,
+    "p90": 148.661
+   },
+   "flickPxPerMs": {
+    "p10": 0.274,
+    "p50": 0.411,
+    "p90": 0.611
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 12.2,
+    "p50": 23.782,
+    "p90": 25.589
+   },
+   "touchStartX": {
+    "p10": 0.203,
+    "p50": 0.287,
+    "p90": 0.706
+   },
+   "touchStartY": {
+    "p10": 0.434,
+    "p50": 0.618,
+    "p90": 0.763
+   },
+   "leftHalfShare": 0.68,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 88,
+    "p50": 554,
+    "p90": 2493
+   },
+   "hurtPerMinute": 0.02,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 8.203,
+    "p50": 285.603,
+    "p90": 438.935
+   },
+   "session": "20261024-1006-9apf"
+  },
+  {
+   "minutesPlayed": 8.8,
+   "mix": {
+    "drag": 0.821,
+    "tap": 0.076,
+    "flick": 0.103
+   },
+   "tapMs": {
+    "p10": 26,
+    "p50": 64,
+    "p90": 165
+   },
+   "flickPx": {
+    "p10": 45.804,
+    "p50": 101.178,
+    "p90": 170.857
+   },
+   "flickPxPerMs": {
+    "p10": 0.298,
+    "p50": 0.444,
+    "p90": 0.675
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 6.582,
+    "p50": 38.774,
+    "p90": 43.452
+   },
+   "touchStartX": {
+    "p10": 0.266,
+    "p50": 0.319,
+    "p90": 0.694
+   },
+   "touchStartY": {
+    "p10": 0.581,
+    "p50": 0.63,
+    "p90": 0.758
+   },
+   "leftHalfShare": 0.844,
+   "twoFingerShare": 0.011,
+   "gapBetweenTouchesMs": {
+    "p10": 318,
+    "p50": 542,
+    "p90": 1331
+   },
+   "hurtPerMinute": 0.23,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 8.199,
+    "p50": 48.157,
+    "p90": 255.993
+   },
+   "session": "20261024-1216-z7lp"
+  },
+  {
+   "minutesPlayed": 9.8,
+   "mix": {
+    "drag": 0.609,
+    "hold": 0.017,
+    "tap": 0.231,
+    "flick": 0.143
+   },
+   "tapMs": {
+    "p10": 15,
+    "p50": 51,
+    "p90": 197
+   },
+   "flickPx": {
+    "p10": 41.012,
+    "p50": 84.149,
+    "p90": 153.287
+   },
+   "flickPxPerMs": {
+    "p10": 0.28,
+    "p50": 0.38,
+    "p90": 0.69
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 1.432,
+    "p50": 39.118,
+    "p90": 44.226
+   },
+   "touchStartX": {
+    "p10": 0.212,
+    "p50": 0.272,
+    "p90": 0.666
+   },
+   "touchStartY": {
+    "p10": 0.449,
+    "p50": 0.725,
+    "p90": 0.762
+   },
+   "leftHalfShare": 0.765,
+   "twoFingerShare": 0.053,
+   "gapBetweenTouchesMs": {
+    "p10": 27,
+    "p50": 457,
+    "p90": 1272
+   },
+   "hurtPerMinute": 0.2,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 8.171,
+    "p50": 76.657,
+    "p90": 236.261
+   },
+   "session": "20261024-1257-k7w7"
+  },
+  {
+   "minutesPlayed": 16.9,
+   "mix": {
+    "drag": 0.569,
+    "tap": 0.416,
+    "flick": 0.01,
+    "hold": 0.005
+   },
+   "tapMs": {
+    "p10": 37,
+    "p50": 84,
+    "p90": 132
+   },
+   "flickPx": {
+    "p10": 60.208,
+    "p50": 69.635,
+    "p90": 69.635
+   },
+   "flickPxPerMs": {
+    "p10": 0.254,
+    "p50": 0.417,
+    "p90": 0.417
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 4.764,
+    "p50": 4.764,
+    "p90": 4.764
+   },
+   "touchStartX": {
+    "p10": 0.228,
+    "p50": 0.297,
+    "p90": 0.65
+   },
+   "touchStartY": {
+    "p10": 0.56,
+    "p50": 0.614,
+    "p90": 0.689
+   },
+   "leftHalfShare": 0.797,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 65,
+    "p50": 618,
+    "p90": 1896
+   },
+   "hurtPerMinute": 0.0,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 0.659,
+    "p50": 15.326,
+    "p90": 218.233
+   },
+   "session": "20261025-1343-6p4d"
+  },
+  {
+   "minutesPlayed": 9.0,
+   "mix": {
+    "drag": 0.421,
+    "tap": 0.504,
+    "flick": 0.039,
+    "hold": 0.036
+   },
+   "tapMs": {
+    "p10": 42,
+    "p50": 97,
+    "p90": 165
+   },
+   "flickPx": {
+    "p10": 25.942,
+    "p50": 77.233,
+    "p90": 113.137
+   },
+   "flickPxPerMs": {
+    "p10": 0.276,
+    "p50": 0.376,
+    "p90": 0.72
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 0.313,
+    "p50": 8.881,
+    "p90": 27.553
+   },
+   "touchStartX": {
+    "p10": 0.225,
+    "p50": 0.334,
+    "p90": 0.659
+   },
+   "touchStartY": {
+    "p10": 0.459,
+    "p50": 0.596,
+    "p90": 0.662
+   },
+   "leftHalfShare": 0.725,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 27,
+    "p50": 327,
+    "p90": 1323
+   },
+   "hurtPerMinute": 3.23,
+   "livesLostPerMinute": 0.56,
+   "secondsPerSection": {
+    "p10": 0.632,
+    "p50": 13.015,
+    "p90": 72.694
+   },
+   "session": "20261025-1406-f6eo"
+  },
+  {
+   "minutesPlayed": 8.5,
+   "mix": {
+    "drag": 0.497,
+    "tap": 0.403,
+    "hold": 0.007,
+    "flick": 0.093
+   },
+   "tapMs": {
+    "p10": 21,
+    "p50": 94,
+    "p90": 160
+   },
+   "flickPx": {
+    "p10": 40.608,
+    "p50": 64.56,
+    "p90": 123.004
+   },
+   "flickPxPerMs": {
+    "p10": 0.261,
+    "p50": 0.393,
+    "p90": 0.543
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 14.112,
+    "p50": 41.055,
+    "p90": 41.055
+   },
+   "touchStartX": {
+    "p10": 0.216,
+    "p50": 0.391,
+    "p90": 0.662
+   },
+   "touchStartY": {
+    "p10": 0.558,
+    "p50": 0.611,
+    "p90": 0.651
+   },
+   "leftHalfShare": 0.652,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 22,
+    "p50": 349,
+    "p90": 1133
+   },
+   "hurtPerMinute": 0.0,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 8.845,
+    "p50": 18.246,
+    "p90": 40.264
+   },
+   "session": "20261025-1415-mkhy"
+  }
+ ]
 }

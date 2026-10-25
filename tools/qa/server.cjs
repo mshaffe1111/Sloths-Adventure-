@@ -179,7 +179,12 @@ async function handle(cmd) {
     persona = JSON.parse(fs.readFileSync(file, 'utf8'));
     seed = [...cmd.name].reduce((a, c) => a * 31 + c.charCodeAt(0), 7) & 0x7fffffff;
     views = personaViews(persona);
-    return { text: `playing as ${persona.name}: phone ${views.port.width}x${views.port.height} upright, ${views.land.width}x${views.land.height} sideways` };
+    // "persona sally 1": their thumbs as they were in their first real session (2 = second, ...), so a bot gets better the way they did
+    const curve = persona.curve || [];
+    const level = Math.min(Number(cmd.level || 0), curve.length);
+    if (level > 0) Object.assign(persona, curve[level - 1]);
+    const at = level > 0 ? `, thumbs as in their session ${level} of ${curve.length}` : '';
+    return { text: `playing as ${persona.name}: phone ${views.port.width}x${views.port.height} upright, ${views.land.width}x${views.land.height} sideways${at}` };
   }
   if (cmd.cmd === 'start') {
     const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0));
