@@ -5,12 +5,12 @@
  * run, steps them against Pokey each frame, and draws them. The engine only hands it what it needs through `W4Host`, so engine.ts gains
  * a field, a step call and two draw calls rather than seven mechanics.
  *
- * The pieces are painted (w4Art.ts, art batch 1); each draw keeps a plain-shape stand-in for the moment before the atlas loads. The
- * falling water itself stays drawn here, because it has to pour, ease and dry.
+ * The pieces are painted (w4Art.ts, art batches 1 and 2); each draw keeps a plain-shape stand-in for the moment before the atlas loads.
+ * The falling water itself stays drawn here, because it has to pour, ease and dry; only the lip it pours over is painted.
  */
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
-import { drawW4, type W4Piece } from './w4Art.ts';
-import { NEST, nearNest, nestAt, nestCycle, type Nest } from './eaglet.ts';
+import { drawW4, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
+import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
 import { ROCK, rockAt, rockHits, type RockDrop } from './rockfall.ts';
@@ -377,7 +377,7 @@ export class W4Play {
     }
     // (a curtain's water is drawn in front of him, drawFront; behind it, the hollow in the cliff he stands in)
     (w4.falls ?? []).forEach((w, i) => near(w.x, w.width + 300) && (w.veil ? drawHollow(ctx, w) : drawFall(ctx, w, this.flow[i], t)));
-    (w4.fruit ?? []).forEach((tree) => near(tree.x) && drawFruitTree(ctx, tree));
+    const treePainted = (w4.fruit ?? []).map((tree, i) => near(tree.x) && drawFruitTree(ctx, tree, this.fruit[i].state === 'hang'));
     (w4.pools ?? []).forEach((pool, i) => {
       const fall = (w4.falls ?? []).find((w) => w.id === pool.fedBy);
       if (pool.art && near(pool.art.cx)) drawPool(ctx, pool.art.cx, pool, this.pool[i], pool.art);
@@ -416,7 +416,16 @@ export class W4Play {
         ctx.restore();
       }
     });
-    this.fruit.forEach((f) => f.state !== 'gone' && near(f.x) && drawFruit(ctx, f.x, f.y));
+    this.fruit.forEach((f, i) => {
+      if (!near(f.x)) return;
+      // (eaten: the peel it left, until the fruit grows back)
+      if (f.state === 'gone') return drawPeel(ctx, f.x, f.y + 10, t - f.at);
+      // (hanging in a painted tree: that tree's low orange is this one)
+      if (f.state === 'hang' && treePainted[i]) return;
+      // (a painted monkey eating it holds it in its hands)
+      if (f.state === 'ground' && w4ArtReady() && this.monkeys.some((s) => s.mode === 'eat' && s.fruit?.x === f.x && s.fruit?.y === f.y)) return;
+      drawFruit(ctx, f.x, f.y);
+    });
     (w4.monkeys ?? []).forEach((m, i) => near(this.monkeys[i].x) && drawMonkey(ctx, m, this.monkeys[i], t));
     (w4.nests ?? []).forEach((n, i) => near(n.x) && drawNest(ctx, n, t, t - this.nestBlow[i].at));
     // the mist bank over everything in it (ledges and trunks alike), behind Pokey so he can always be seen in it
@@ -529,7 +538,36 @@ export class W4Play {
 
 // ───────────────────────────── drawing ─────────────────────────────
 
+/** a fall: its water, then the painted lip it pours over */
 function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
+  drawFallWater(ctx, w, flow, t);
+  drawLip(ctx, w, flow);
+}
+
+/**
+ * the painted lips over a fall: one for about every `span` px of its width (a wide fall pours off a row of them), each `pad` px wider
+ * than its share so they overlap, their rock's underside `below` px down the water (hiding where it starts)
+ */
+const LIP = { span: 300, pad: 50, below: 40 };
+
+/**
+ * The painted lip at a fall's top: the rock pouring a full fall while it flows, the same rock trickling once it is stopped, the one
+ * fading into the other with the flow. Only the lip: the water under it is drawn by drawFallWater. A fall a boulder plugs already
+ * pours out of its painted channel (the stage's decor), so it gets none. Nothing before the atlas loads.
+ */
+function drawLip(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number) {
+  if (w.plug || !w4ArtReady()) return;
+  const n = Math.max(1, Math.round(w.width / LIP.span));
+  const lw = w.width / n + LIP.pad;
+  for (let k = 0; k < n; k++) {
+    const cx = w.x + ((k + 0.5) / n) * w.width;
+    // (the trickle under the pour, so halfway through they are both solid rock rather than two see-through ones)
+    if (flow < 1) drawW4(ctx, 'lipTrickle', cx, w.top + LIP.below, lw, { flip: k % 2 === 1, alpha: Math.min(1, 2 * (1 - flow)) });
+    if (flow > 0) drawW4(ctx, 'lipPour', cx, w.top + LIP.below, lw, { flip: k % 2 === 1, alpha: Math.min(1, 2 * flow) });
+  }
+}
+
+function drawFallWater(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
   if (flow <= 0.02) return;
   ctx.save();
   const width = w.width * (0.25 + 0.75 * flow);
@@ -637,9 +675,33 @@ function drawHollow(ctx: CanvasRenderingContext2D, w: Waterfall) {
   ctx.restore();
 }
 
-/** a little fruit tree: a trunk, a leafy crown, and the bough its fruit hangs from (the fruit is drawn on its own) */
-function drawFruitTree(ctx: CanvasRenderingContext2D, tree: FruitTree) {
+/**
+ * where the painted fruit trees' parts sit, as fractions of the painting: the full tree's low orange (the one that drops, drawn at the
+ * fruit's place) and its trunk; the picked tree's trunk, so it stands where the full one did
+ */
+const TREE_ART = { orangeX: 0.803, orangeY: 0.534, trunkFull: 0.43, trunkPicked: 0.37 };
+/** how long a peel lies there fading (s), from when the monkey finishes the fruit (it grows back after FRUIT_BACK) */
+const PEEL_FADE = 2;
+
+/**
+ * A fruit tree: painted with its oranges while its fruit hangs (its low orange is the fruit), with one left high up once that is knocked
+ * down. Returns whether it was painted (the hanging fruit is then not drawn again). The stand-in: a trunk, a leafy crown, and the bough
+ * its fruit hangs from (the fruit drawn on its own).
+ */
+function drawFruitTree(ctx: CanvasRenderingContext2D, tree: FruitTree, hanging: boolean): boolean {
   const side = tree.trunk ?? -1;
+  if (w4ArtReady()) {
+    // (the trunk stands left of the fruit as painted; trunk 1 mirrors it)
+    const m = side === 1 ? -1 : 1;
+    const h = (tree.ground + 4 - tree.y) / (1 - TREE_ART.orangeY);
+    const wFull = h / w4Height('fruitTree4', 1);
+    const cx = tree.x - (TREE_ART.orangeX - 0.5) * wFull * m;
+    if (hanging) return drawW4(ctx, 'fruitTree4', cx, tree.ground + 4, wFull, { flip: m < 0 });
+    const trunkX = cx + (TREE_ART.trunkFull - 0.5) * wFull * m;
+    const wPicked = h / w4Height('fruitTree1', 1);
+    drawW4(ctx, 'fruitTree1', trunkX - (TREE_ART.trunkPicked - 0.5) * wPicked * m, tree.ground + 4, wPicked, { flip: m < 0 });
+    return false;
+  }
   const tx = tree.x + 46 * side;
   const top = tree.y - 70;
   ctx.save();
@@ -681,6 +743,13 @@ function drawFruitTree(ctx: CanvasRenderingContext2D, tree: FruitTree) {
   ctx.lineTo(tree.x, tree.y - 9);
   ctx.stroke();
   ctx.restore();
+  return false;
+}
+
+/** the peel a monkey leaves (`age` s after it finished), fading before the fruit grows back; nothing before the atlas loads */
+function drawPeel(ctx: CanvasRenderingContext2D, x: number, ground: number, age: number) {
+  const a = Math.min(1, (FRUIT_BACK - age) / PEEL_FADE);
+  if (a > 0) drawW4(ctx, 'orangeEaten', x, ground + 2, 50, { alpha: a });
 }
 
 function drawPool(ctx: CanvasRenderingContext2D, cx: number, pool: Pool, level: number, art?: { b: number; w: number }) {
@@ -1021,6 +1090,8 @@ function drawSpout(ctx: CanvasRenderingContext2D, b: Platform, w: Waterfall, flo
 }
 
 function drawFruit(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  // (the painted orange, its middle at (x, y), the size of the ones in the painted tree)
+  if (drawW4(ctx, 'orange', x, y + 14, 32)) return;
   ctx.save();
   ctx.fillStyle = '#f97316';
   ctx.strokeStyle = '#7c2d12';
@@ -1130,9 +1201,71 @@ function drawMist(ctx: CanvasRenderingContext2D, pl: Platform, a: number, t: num
 function drawNest(ctx: CanvasRenderingContext2D, n: Nest, t: number, sinceBlow: number) {
   const { phase, u } = nestAt(n, t);
   const blowing = sinceBlow >= 0 && sinceBlow < NEST.blow + 0.3;
+  const painted = drawPaintedNest(ctx, n, phase, u, blowing, t);
   ctx.save();
   ctx.translate(n.x, n.y);
   ctx.scale(1.3, 1.3);
+  if (!painted) drawStandInNest(ctx, phase, u, blowing, t);
+  // (over the painted eaglet's head, which stands taller than the stand-in's, and higher still over it flying)
+  else ctx.translate(0, phase === 'look' ? -84 : -48);
+  // what they are doing, over their heads
+  ctx.font = 'bold 22px sans-serif';
+  ctx.textAlign = 'center';
+  if (phase === 'sleep') {
+    const z = (t * 0.8) % 1;
+    ctx.globalAlpha = 1 - z * 0.8;
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 3;
+    ctx.strokeText('z', 18 + z * 14, -50 - z * 26);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillText('z', 18 + z * 14, -50 - z * 26);
+  } else if (phase === 'stir') {
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillText('?', -12, -80);
+  } else {
+    ctx.fillStyle = '#dc2626';
+    ctx.fillText('!', 0, -86);
+  }
+  // a flurry of wind lines when they blow him back
+  if (blowing) {
+    ctx.globalAlpha = Math.max(0, 1 - sinceBlow / (NEST.blow + 0.3));
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 3;
+    for (let k = 0; k < 4; k++) {
+      for (const side of [-1, 1]) {
+        const x0 = side * (50 + sinceBlow * 260 + k * 8);
+        ctx.beginPath();
+        ctx.moveTo(x0, -20 - k * 12);
+        ctx.lineTo(x0 + side * 40, -22 - k * 12);
+        ctx.stroke();
+      }
+    }
+  }
+  ctx.restore();
+}
+
+/** the painted nest is drawn this wide (the stand-in's bowl, a little wider); its bowl's underside is this far up the painting */
+const NEST_ART = { w: 150, bowlFull: 0.28, bowlEmpty: 0.05 };
+
+/**
+ * The painted nest: the eaglet in it while it sleeps (bobbing up as it stirs), and once it looks about, the empty nest with the eaglet
+ * up and flapping over it (harder in a flurry), until it settles back in. False before the atlas loads.
+ */
+function drawPaintedNest(ctx: CanvasRenderingContext2D, n: Nest, phase: NestPhase, u: number, blowing: boolean, t: number): boolean {
+  if (!w4ArtReady()) return false;
+  if (phase !== 'look') {
+    const hop = phase === 'stir' ? Math.abs(Math.sin(u * Math.PI * 3)) * 6 : 0;
+    return drawW4(ctx, 'nestEaglet', n.x, n.y + w4Height('nestEaglet', NEST_ART.w) * NEST_ART.bowlFull - hop, NEST_ART.w);
+  }
+  drawW4(ctx, 'nestEmpty', n.x, n.y + w4Height('nestEmpty', NEST_ART.w) * NEST_ART.bowlEmpty, NEST_ART.w);
+  // (it lifts out over the first moment of the look, then hovers, bobbing with its wingbeats)
+  const lift = Math.min(1, u * 5);
+  const beat = Math.sin(t * (blowing ? 30 : 12));
+  return drawW4(ctx, 'eagletFly', n.x + (blowing ? beat * 3 : 0), n.y - 20 - 70 * lift + beat * 4, 130, { rot: blowing ? beat * 0.12 : beat * 0.04 });
+}
+
+/** the stand-in nest: two chicks, asleep (heads tucked), one stirring (a head up), both looking about, flapping in a flurry */
+function drawStandInNest(ctx: CanvasRenderingContext2D, phase: NestPhase, u: number, blowing: boolean, t: number) {
   // the chicks: white down, dark beaks; heads tucked asleep, up when they look
   const chick = (dx: number, up: number, eyes: boolean, flap: number) => {
     ctx.fillStyle = '#f8fafc';
@@ -1199,38 +1332,4 @@ function drawNest(ctx: CanvasRenderingContext2D, n: Nest, t: number, sinceBlow: 
     ctx.lineTo(-36 + k * 14, -2 - (k % 2) * 5);
     ctx.stroke();
   }
-  // what they are doing, over their heads
-  ctx.font = 'bold 22px sans-serif';
-  ctx.textAlign = 'center';
-  if (phase === 'sleep') {
-    const z = (t * 0.8) % 1;
-    ctx.globalAlpha = 1 - z * 0.8;
-    ctx.strokeStyle = '#1e293b';
-    ctx.lineWidth = 3;
-    ctx.strokeText('z', 18 + z * 14, -50 - z * 26);
-    ctx.fillStyle = '#f8fafc';
-    ctx.fillText('z', 18 + z * 14, -50 - z * 26);
-  } else if (phase === 'stir') {
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillText('?', -12, -80);
-  } else {
-    ctx.fillStyle = '#dc2626';
-    ctx.fillText('!', 0, -86);
-  }
-  // a flurry of wind lines when they blow him back
-  if (blowing) {
-    ctx.globalAlpha = Math.max(0, 1 - sinceBlow / (NEST.blow + 0.3));
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 3;
-    for (let k = 0; k < 4; k++) {
-      for (const side of [-1, 1]) {
-        const x0 = side * (50 + sinceBlow * 260 + k * 8);
-        ctx.beginPath();
-        ctx.moveTo(x0, -20 - k * 12);
-        ctx.lineTo(x0 + side * 40, -22 - k * 12);
-        ctx.stroke();
-      }
-    }
-  }
-  ctx.restore();
 }
