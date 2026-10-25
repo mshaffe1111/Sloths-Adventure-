@@ -61,20 +61,57 @@ test('refined controls: a vine swings itself up to a good size from a dead hang,
   assert.ok(maxA > AUTO_SWING * 0.8 && maxA < AUTO_SWING * 1.25, `swing settles near ${AUTO_SWING} rad, got ${maxA.toFixed(2)}`);
 });
 
-test('refined controls: holding a direction on a vine pumps a natural swing instead of pinning him near the top', async () => {
-  const { steerPump, STEER_SWING } = await import('./refinedControls.ts');
+test('timed swing: whatever is held, the vine settles to the same height and rhythm', async () => {
+  const { TIMED, setTimedSwing } = await import('./physics.ts');
+  setTimedSwing(false);
   const v = { x: 0, topY: 0, bottomY: 420 };
-  const old = { angle: 0, omega: 0, len: 380 };
-  const neu = { angle: 0, omega: 0, len: 380 };
-  let oldMax = 0, newMax = 0, newMin = 0;
-  for (let f = 0; f < 30 * 8; f++) {
-    swingStep(old, v, 1 / 30, 1, 0);
-    swingStep(neu, v, 1 / 30, steerPump(neu.angle, neu.omega, neu.len, SWING.g, 1), 0);
-    if (f > 30 * 4) { oldMax = Math.max(oldMax, old.angle); newMax = Math.max(newMax, neu.angle); newMin = Math.min(newMin, neu.angle); }
+  for (const hold of [1, -1] as const) {
+    const s = { angle: 0, omega: 0, len: 380 };
+    let maxA = 0, minA = 0, flips = 0, prev = 0;
+    for (let f = 0; f < 60 * 10; f++) {
+      swingStep(s, v, 1 / 60, hold, 0);
+      if (f > 60 * 5) {
+        maxA = Math.max(maxA, s.angle); minA = Math.min(minA, s.angle);
+        if (prev && Math.sign(s.omega) !== prev) flips++;
+      }
+      prev = Math.sign(s.omega);
+    }
+    assert.ok(Math.abs(maxA - TIMED.amp) < 0.06 && Math.abs(-minA - TIMED.amp) < 0.06, `swings both ways to ${TIMED.amp}: ${minA.toFixed(2)}..${maxA.toFixed(2)}`);
+    const period = (2 * 5) / flips; // 5 s watched, two turns per swing
+    assert.ok(Math.abs(period - TIMED.period) < 0.15, `period ${period.toFixed(2)} s, wanted ${TIMED.period}`);
   }
-  // the old rule ends up pinned high on the held side; the new one keeps swinging both ways at about STEER_SWING
-  assert.ok(oldMax > 1.1, `old rule pins him near the top: ${oldMax.toFixed(2)} rad`);
-  assert.ok(newMax < STEER_SWING * 1.15 && newMin < -STEER_SWING * 0.6, `a real swing: ${newMin.toFixed(2)} to ${newMax.toFixed(2)} rad`);
+});
+
+test('timed swing: letting go in the sweet spot leaps; anywhere else he only flies off the vine', async () => {
+  const { setTimedSwing, inSweetSpot, timedLaunch } = await import('./physics.ts');
+  setTimedSwing(false);
+  const v = { x: 0, topY: 0, bottomY: 420 };
+  const s = { angle: 0, omega: 0, len: 380 };
+  let sweet = 0, sour = 0;
+  for (let f = 0; f < 60 * 10; f++) {
+    swingStep(s, v, 1 / 60, 1, 0);
+    if (f < 60 * 5) continue;
+    const l = timedLaunch(s, 1);
+    if (inSweetSpot(s, 1)) {
+      assert.ok(l.sweet && l.vx >= SWING.leapMin * 0.95, `a leap: ${l.vx.toFixed(0)}`);
+      sweet++;
+    } else {
+      // off the vine the way it was carrying him: never flung up the screen
+      assert.ok(!l.sweet && l.vy >= -380 && Math.abs(l.vx) < SWING.leapMin, `no fling: ${l.vx.toFixed(0)}, ${l.vy.toFixed(0)}`);
+      sour++;
+    }
+  }
+  // the sweet spot is a real window, but not most of the swing
+  assert.ok(sweet > 0 && sour > sweet, `sweet ${sweet} frames, the rest ${sour}`);
+});
+
+test('timed swing: Easy slows the swing and widens the sweet spot', async () => {
+  const { TIMED, setTimedSwing } = await import('./physics.ts');
+  setTimedSwing(false);
+  const normal = { ...TIMED };
+  setTimedSwing(true);
+  assert.ok(TIMED.period > normal.period && TIMED.sweetTo - TIMED.sweetFrom > normal.sweetTo - normal.sweetFrom && TIMED.grabX > normal.grabX);
+  setTimedSwing(false);
 });
 
 test('refined controls: on a vine, sliding straight up climbs (no jump), and only a diagonal slide jumps off', () => {

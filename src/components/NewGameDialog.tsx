@@ -1,6 +1,7 @@
 import React from 'react';
 import { browserStore, buildSave, resetProgress } from '../game/saveFile.ts';
 import { Icon } from './icons/index.tsx';
+import { DIFFICULTY_LABEL, difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
 
 /**
  * Start a new adventure. With progress on this device it says what will be erased (and points at the backup
@@ -24,12 +25,16 @@ export const NewGameDialog: React.FC<Props> = ({ onClose, onStarted, onBackup })
   })();
   const hasProgress = !!current && (current.summary.stagesCleared > 0 || current.summary.stars > 0);
 
+  // a brand-new player starts on Easy; someone starting over keeps what they had
+  const [level, setLevel] = React.useState<Difficulty>(() => (hasProgress ? difficulty() : 'easy'));
+
   const begin = (skipStory: boolean) => {
     try {
       resetProgress(browserStore(), { skipStory });
     } catch {
       /* storage blocked: the game still starts, it just cannot forget */
     }
+    setDifficulty(level);
     onStarted(skipStory);
   };
 
@@ -69,6 +74,15 @@ export const NewGameDialog: React.FC<Props> = ({ onClose, onStarted, onBackup })
             </>
           )}
           {!hasProgress && <p className="ui-copy">Start from Stage 1-1. Play the story as you go, or jump straight into the jungle.</p>}
+          <div className="ng-diff" role="radiogroup" aria-label="Difficulty">
+            {(['easy', 'normal'] as Difficulty[]).map((d) => (
+              <button key={d} type="button" role="radio" aria-checked={level === d} className={`ng-diff-card${level === d ? ' on' : ''}`} onClick={() => setLevel(d)}>
+                <span className="ng-diff-name">{DIFFICULTY_LABEL[d].name}</span>
+                <span className="ng-diff-blurb">{DIFFICULTY_LABEL[d].blurb}</span>
+              </button>
+            ))}
+          </div>
+          <p className="ui-copy ng-diff-note">You can change this any time in the menu.</p>
           <div className="ui-row">
             <button type="button" className="ui-btn ui-btn-gold" onClick={() => begin(false)}>
               {hasProgress ? 'Start over, with the story' : 'Start with the story'}

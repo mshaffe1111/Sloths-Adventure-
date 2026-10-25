@@ -29,7 +29,7 @@ import {
   SWING,
   swingGrab,
   swingStep,
-  tarzanLaunch,
+  timedLaunch,
   type AirBody,
 } from './physics.ts';
 
@@ -168,7 +168,8 @@ function swingLandingsIn(a: Platform, v: Vine, dir: 1 | -1, pack: LandingPack, w
       for (let f = 0; f < 100; f++) {
         const pos = swingStep(sw, v, dt, steer);
         // release now: Tarzan leap toward the far side
-        const l = tarzanLaunch(pos.vx, pos.vy, dir);
+        void pos;
+        const l = timedLaunch(sw, dir);
         fb.x = pos.x; fb.y = pos.y; fb.vx = l.vx; fb.vy = l.vy;
         let landed = NO_LANDING;
         // the first platform (by height) that can still be hit: that band only moves down while the body falls

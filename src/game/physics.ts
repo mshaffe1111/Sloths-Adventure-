@@ -340,7 +340,7 @@ export interface SwingState {
 
 /** Can a body at (x, y) grab this liana? */
 export function canGrabSwing(x: number, y: number, v: SwingVine): boolean {
-  return Math.abs(x - v.x) < SWING.grabX && y >= v.topY - 15 && y <= v.bottomY + 30;
+  return Math.abs(x - v.x) < TIMED.grabX && y >= v.topY - 15 && y <= v.bottomY + 30;
 }
 
 /** Start swinging from the body's actual position and velocity (no teleport). */
@@ -353,13 +353,59 @@ export function swingGrab(b: AirBody, v: SwingVine): SwingState {
   return { angle, omega, len };
 }
 
+/**
+ * The timed swing (Matt, 2026-10-24): a vine swings by itself, at the same height and the same rhythm every time, and the only thing
+ * the player decides is WHEN to let go. Holding a direction no longer pumps it and sliding up no longer shortens it (together they let
+ * Pokey whip himself almost to the top of the screen). `TIMED` holds the numbers; Easy (difficulty.ts) widens the sweet spot and slows
+ * the rhythm a little. Pure and shared by the engine, the stage builder and the reachability checks, so they always agree.
+ */
+export const TIMED = {
+  /** seconds for one full swing there and back, whatever the vine's length */
+  period: 1.9,
+  /** how far the swing goes either side of hanging straight down (radians, about 46 degrees) */
+  amp: 0.8,
+  /** how fast a grab that is too small or too big settles to `amp` (rad/s^2 of push, and the share of speed taken off per second) */
+  settle: 3.2,
+  trim: 2.5,
+  /** the sweet spot: moving toward the next vine, between these angles past straight down (radians; negative = still behind it) */
+  sweetFrom: -0.12,
+  sweetTo: 0.72,
+  /** how close (px) a flying body's hands must come to a vine to catch it */
+  grabX: 60,
+};
+
+/** Easy or Normal for the swing: called by the engine when a stage starts (and by the tests) */
+export function setTimedSwing(easy: boolean) {
+  TIMED.period = easy ? 2.2 : 1.9;
+  TIMED.sweetFrom = easy ? -0.32 : -0.12;
+  TIMED.sweetTo = easy ? 0.95 : 0.72;
+  TIMED.grabX = easy ? 76 : 60;
+}
+
+/** how big a swing is (radians either side) from where it is and how fast it moves, on the timed rhythm */
+export function timedAmp(angle: number, omega: number): number {
+  const w = (2 * Math.PI) / TIMED.period;
+  const c = 1 - Math.cos(angle) + (omega * omega) / (2 * w * w);
+  return Math.acos(Math.max(-1, Math.min(1, 1 - c)));
+}
+
+/**
+ * One step of a swing. `steer` is only a hint for which way to start a swing from a dead hang (the way he faces); `climb` is ignored:
+ * the vine keeps the length it was grabbed at.
+ */
 export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0 | 1, climb: -1 | 0 | 1 = 0) {
-  s.omega += ((-SWING.g / Math.max(50, s.len)) * Math.sin(s.angle)) * dt;
-  s.omega += steer * SWING.steer * dt;
-  s.omega *= Math.pow(SWING.damp, dt * 60);
-  s.angle = Math.max(-SWING.maxAngle, Math.min(SWING.maxAngle, s.angle + s.omega * dt));
-  if (climb < 0) s.len = Math.max(60, s.len - 150 * dt);
-  else if (climb > 0) s.len = Math.min(v.bottomY - v.topY, s.len + 150 * dt);
+  void climb;
+  const w = (2 * Math.PI) / TIMED.period;
+  s.omega += -w * w * Math.sin(s.angle) * dt;
+  const amp = timedAmp(s.angle, s.omega);
+  if (amp < TIMED.amp - 0.01) {
+    const dir = Math.abs(s.omega) > 0.05 ? Math.sign(s.omega) : steer || 1;
+    s.omega += dir * TIMED.settle * dt;
+  } else if (amp > TIMED.amp + 0.02) {
+    s.omega *= 1 - Math.min(0.5, TIMED.trim * dt);
+  }
+  s.angle = Math.max(-1.05, Math.min(1.05, s.angle + s.omega * dt));
+  s.len = Math.max(SWING.minLen, Math.min(v.bottomY - v.topY, s.len));
   const tang = s.omega * s.len;
   return {
     x: v.x + Math.sin(s.angle) * s.len,
@@ -367,6 +413,29 @@ export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0
     vx: Math.cos(s.angle) * tang,
     vy: -Math.sin(s.angle) * tang,
   };
+}
+
+/** is this the moment to let go toward `dir`? (moving that way, between just behind straight down and most of the way up the front) */
+export function inSweetSpot(s: SwingState, dir: -1 | 1): boolean {
+  const moving = Math.sign(s.omega) === dir && Math.abs(s.omega) > 0.2;
+  const a = s.angle * dir;
+  return moving && a >= TIMED.sweetFrom && a <= TIMED.sweetTo;
+}
+
+/**
+ * Letting go. In the sweet spot it is the old Tarzan leap toward `dir` (forward and up, enough to reach the next vine). Anywhere else he
+ * simply flies off the way the vine was carrying him, with a small hop: on the backswing he goes backward, at the top he drops.
+ */
+export function timedLaunch(s: SwingState, dir: -1 | 1): { vx: number; vy: number; sweet: boolean } {
+  const tang = s.omega * s.len;
+  const vx = Math.cos(s.angle) * tang;
+  const vy = -Math.sin(s.angle) * tang;
+  if (inSweetSpot(s, dir)) {
+    const l = tarzanLaunch(vx, vy, dir);
+    return { ...l, sweet: true };
+  }
+  // anywhere else he only lets go: a small hop off the vine with part of its speed, never a fling up the screen or back the way he came
+  return { vx: Math.max(-300, Math.min(300, vx * 0.6)), vy: Math.max(vy * 0.6, -260) - 120, sweet: false };
 }
 
 /** Velocity after letting go with a jump ("Tarzan leap"). */
