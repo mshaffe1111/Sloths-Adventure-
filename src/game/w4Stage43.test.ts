@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProtoStage, EXPERT_SECONDS, HAND_STAGES } from './protoStage.ts';
+import { buildProtoStage, HAND_STAGES, stageSeconds } from './protoStage.ts';
 import { buildWaterfallSteps, WET, type FallInfo } from './w4Stage43.ts';
 import { validateStage } from './levelCheck.ts';
 import { PHYS, reachJump } from './physics.ts';
@@ -36,13 +36,14 @@ test('4-3 is hand-built', () => {
   assert.ok(st.proto.w4?.falls?.length, 'buildProtoStage builds Waterfall Steps');
 });
 
-test('4-3: every roll can be finished, has one exit, takes a quick player two minutes, and needs no pickup moved', () => {
+test('4-3: every roll can be finished, has one exit, takes a quick player its own length (3.5 minutes), and needs no pickup moved', () => {
   for (const s of SEEDS) {
     const st = build(s);
     const res = validateStage(st);
     assert.ok(res.ok, `seed ${s}: ${res.errors.join('; ')}`);
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1, `seed ${s}`);
-    assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS, `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
+    assert.ok(st.meta!.timing!.layoutSeconds >= stageSeconds('4-3'), `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
+    assert.ok(st.meta!.timing!.layoutSeconds <= stageSeconds('4-3') + 25, `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s is far over`);
     assert.equal(st.proto.movedPickups ?? 0, 0, `seed ${s}: ${st.proto.movedPickups} pickups had to be moved`);
     // an ascent: the shrine is the highest ground, the start the lowest
     const top = Math.min(...st.platforms.map((p) => p.y));
@@ -53,15 +54,17 @@ test('4-3: every roll can be finished, has one exit, takes a quick player two mi
   }
 });
 
-test('4-3: each fall is a different idea, in order: plugs, the pool and its log, then the surges', () => {
+test('4-3: each fall is a different idea, in order: plugs, the pool and its log, the surges, then the surges with the others', () => {
   for (const s of SEEDS) {
     const st = build(s);
     const kinds = st.falls43.map((f) => f.kind);
-    assert.deepEqual(kinds.slice(0, 3), ['plug', 'plug', 'pool'], `seed ${s}: ${kinds.join(',')}`);
-    assert.ok(kinds.slice(3).length >= 2 && kinds.slice(3).every((k) => k === 'surge'), `seed ${s}: ${kinds.join(',')}`);
+    // the lessons, then the thief up a surge, the tide pool, a surge stair up to a plug, and the two surges of the finish
+    assert.deepEqual(kinds.slice(0, 8), ['plug', 'plug', 'pool', 'surge', 'surge', 'tide', 'surge', 'plug'], `seed ${s}: ${kinds.join(',')}`);
+    assert.ok(kinds.slice(8).length >= 2 && kinds.slice(8).every((k) => k === 'surge'), `seed ${s}: ${kinds.join(',')}`);
     const falls = st.proto.w4!.falls!;
     for (const f of st.falls43) {
       const w = falls.find((q) => q.id === f.fallId)!;
+      if (f.kind === 'tide') continue; // (it pours into its pool, over no steps: its own test below)
       assert.ok(f.steps.length >= 2, `seed ${s}: fall ${f.fallId} pours over ${f.steps.length} steps`);
       // every step under the water is inside the falling water, and is a full wet step up
       for (const id of f.steps) {
@@ -105,6 +108,7 @@ test('4-3: while a fall pours, its steps are the only way on, and the way to sto
   for (const s of SEEDS) {
     const st = build(s);
     st.falls43.forEach((f, i) => {
+      if (f.kind === 'tide') return;
       // (the falls before this one are dry by now: plugged, or climbed in a quiet spell)
       const pouring = withWater(st, [f]);
       const top = st.platforms.find((p) => p.id === f.steps[f.steps.length - 1])!;
@@ -171,24 +175,36 @@ test('4-3: the thief sits by a petal and runs off up the terraces, post to post,
   for (const s of SEEDS) {
     const st = build(s);
     const monkeys = st.proto.w4!.monkeys!;
-    assert.equal(monkeys.length, 1);
-    const m = monkeys[0];
-    assert.equal(m.job, 'thief');
-    const petal = st.collectibles.find((c) => c.id === m.petalId);
-    assert.ok(petal && petal.type === 'flower', `seed ${s}: the thief has no petal`);
-    // he meets the monkey before he can touch the petal (it sits on the far side of it)
-    assert.ok(petal!.x > m.x && petal!.x - m.x < 80, `seed ${s}`);
+    assert.equal(monkeys.length, 2);
     const reach = new Set(validateStage(st).reachableIds);
     const on = (x: number, y: number) => st.platforms.find((p) => p.x <= x && p.x + p.width >= x && Math.abs(p.y - y) < 1);
-    assert.ok(on(m.x, m.y), `seed ${s}: the monkey sits on nothing`);
-    let lastX = m.x;
-    assert.ok((m.path ?? []).length >= 3, `seed ${s}`);
-    for (const post of m.path!) {
-      const p = on(post.x, post.y);
-      assert.ok(p && reach.has(p.id), `seed ${s}: a post at ${post.x} is not on reachable ground`);
-      assert.ok(post.x > lastX + 150, `seed ${s}: the posts do not run on ahead`);
-      lastX = post.x;
+    for (const m of monkeys) {
+      assert.equal(m.job, 'thief');
+      const petal = st.collectibles.find((c) => c.id === m.petalId);
+      assert.ok(petal && petal.type === 'flower', `seed ${s}: the thief has no petal`);
+      // he meets the monkey before he can touch the petal (it sits on the far side of it)
+      assert.ok(petal!.x > m.x && petal!.x - m.x < 80, `seed ${s}`);
+      assert.ok(on(m.x, m.y), `seed ${s}: the monkey sits on nothing`);
+      let lastX = m.x;
+      assert.ok((m.path ?? []).length >= 3, `seed ${s}`);
+      for (const post of m.path!) {
+        const p = on(post.x, post.y);
+        assert.ok(p && reach.has(p.id), `seed ${s}: a post at ${post.x} is not on reachable ground`);
+        assert.ok(post.x > lastX + 150, `seed ${s}: the posts do not run on ahead`);
+        lastX = post.x;
+      }
     }
+    // the second runs up behind a surge: one of its posts is the cave behind the water, on a step of that surge's stair
+    const second = monkeys[1];
+    const surge = st.falls43[4];
+    assert.equal(surge.kind, 'surge');
+    const w = st.proto.w4!.falls!.find((q) => q.id === surge.fallId)!;
+    const inCave = second.path!.find((q) => q.x > w.x && q.x < w.x + w.width);
+    assert.ok(inCave, `seed ${s}: the second thief does not run behind the water`);
+    const caveLedge = on(inCave!.x, inCave!.y)!;
+    assert.ok(surge.steps.includes(caveLedge.id) && caveLedge.width > WET.tread + 60, `seed ${s}: its post behind the water is not the cave`);
+    assert.ok(st.proto.w4!.decor!.some((d) => d.n === 'cave' && Math.abs(d.x - inCave!.x) < 2), `seed ${s}: that cave is not painted`);
+    assert.ok(second.x > w.x - 1600 && second.x < w.x, `seed ${s}: the second thief does not sit just before the surge`);
   }
 });
 
@@ -210,7 +226,20 @@ test('4-3: every new thing is taught where it first appears, and the rocks are f
     const sf = falls.find((w) => w.surge)!;
     const surge = said(/comes and goes/);
     assert.ok(surge && /cave/.test(surge.text) && surge.x < sf.x, `seed ${s}: the surge is not explained`);
-    const pair = falls.filter((w) => w.surge)[1];
+    // the thief behind the falls, the tide pool and the surge up to the boulder, each explained before it
+    const m2 = st.proto.w4!.monkeys![1];
+    const behind = said(/runs up behind the falling water/);
+    assert.ok(behind && behind.x < m2.x, `seed ${s}: the second thief is not explained`);
+    const tide = falls.find((w) => w.id === st.falls43.find((f) => f.kind === 'tide')!.fallId)!;
+    const fills = said(/only fills while its fall pours/);
+    assert.ok(fills && /log/.test(fills.text) && fills.x < tide.x - 400, `seed ${s}: the tide pool is not explained`);
+    const quiet = said(/Cross when it goes quiet/);
+    assert.ok(quiet && quiet.aboveY !== undefined && quiet.aboveY <= tide.top + 170, `seed ${s}: the gap at the top of the tide pool is not explained up there`);
+    const upTo = st.falls43[6];
+    const stair = falls.find((w) => w.id === upTo.fallId)!;
+    const climbUp = said(/to the boulder above the next fall/);
+    assert.ok(climbUp && climbUp.x < stair.x, `seed ${s}: the surge up to the boulder is not explained`);
+    const pair = falls.filter((w) => w.surge)[4];
     const two = said(/Two falls/);
     assert.ok(two && two.x < pair.x, `seed ${s}: the pair of surges is not explained`);
     // the rocks came in 4-1; here they come back on a few long terraces, with a reminder at the first
@@ -222,5 +251,62 @@ test('4-3: every new thing is taught where it first appears, and the rocks are f
       for (const v of st.vines) assert.ok(Math.abs(v.x - r.x) > 120 || v.bottomY < r.land - 20, `seed ${s}: a rock falls where he climbs`);
       for (const w of falls) assert.ok(r.x < w.x - 60 || r.x > w.x + w.width + 60, `seed ${s}: a rock falls in the water`);
     }
+  }
+});
+
+test('4-3: the tide pool: the surge lifts the log to the only way up, and the fall pours over the gap at the top', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    assert.equal(st.tides43.length, 1);
+    const t = st.tides43[0];
+    const w = st.proto.w4!.falls!.find((q) => q.id === t.fallId)!;
+    const pool = st.proto.w4!.pools!.find((q) => q.fedBy === t.fallId)!;
+    assert.ok(w.surge && !w.plug, `seed ${s}: the tide pool's fall is not on its own rhythm`);
+    assert.ok(w.surge!.quiet >= 2.8 && w.surge!.ease >= 1, `seed ${s}`);
+    assert.equal(pool.platformId, t.log);
+    assert.ok(pool.emptyY - pool.fullY >= 80, `seed ${s}: the log hardly rises`);
+    // the log is clear of the falling water (standing on it, the pour neither pushes nor slows him)
+    const log = st.platforms.find((p) => p.id === t.log)!;
+    assert.ok(log.x + log.width < w.x - 5, `seed ${s}: the log is in the water`);
+    const at = (y: number) => validateStage({ ...st, platforms: st.platforms.map((p) => (p.id === t.log ? { ...p, y } : p)) });
+    // the log high: the way on is open; the log low (the pool drained in a quiet spell): the ledge beside it, and the shrine, are not
+    const high = at(pool.fullY), low = at(pool.emptyY);
+    assert.ok(high.ok, `seed ${s}: ${high.errors.join('; ')}`);
+    assert.ok(!low.reachableIds.includes(t.ledge) && !low.ok, `seed ${s}: the ledge is reached without the water lifting the log`);
+    // half full is not enough either: he has to wait for the water to lift it most of the way
+    const half = at(Math.round((pool.fullY + pool.emptyY) / 2));
+    assert.ok(!half.reachableIds.includes(t.ledge), `seed ${s}: a half-full pool is enough`);
+    // at the top the water pours over the whole gap between the shelf and the cliff top, from well above them: in the pour he is
+    // washed down into the pool, in the quiet he jumps across
+    const lip = st.platforms.find((p) => p.id === t.lip)!;
+    const beyond = st.platforms.find((p) => Math.abs(p.y - lip.y) < 1 && p.x > lip.x + lip.width && p.x - (lip.x + lip.width) < 200)!;
+    assert.ok(beyond, `seed ${s}: no cliff top across the gap`);
+    assert.ok(w.x >= lip.x + lip.width && w.x + w.width <= beyond.x + 1 && w.x - (lip.x + lip.width) < 40, `seed ${s}: the water does not fill the gap`);
+    assert.ok(w.top <= lip.y - 150 && w.bottom >= log.y + 100, `seed ${s}: the water does not reach from above the gap to the pool`);
+    // without the shelf the cliff top cannot be reached: the shelf is the only way, and the shelf is only reached from the log's ledge
+    const noLip = validateStage({ ...st, platforms: st.platforms.filter((p) => p.id !== t.lip) });
+    assert.ok(!noLip.ok, `seed ${s}: the cliff top is reached without the shelf`);
+  }
+});
+
+test('4-3: the boulder up the surge: its shelf is reached only up the surge stair, and a slip off the shelf only costs a climb', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const stair = st.falls43[6];
+    const plugF = st.falls43[7];
+    assert.equal(stair.kind, 'surge');
+    assert.equal(plugF.kind, 'plug');
+    const shelf = st.platforms.find((p) => p.id === plugF.shelf)!;
+    // while the surge pours (its steps out of reach) the shelf cannot be reached; once it is quiet it can
+    assert.ok(!reachable(withWater(st, [stair, plugF])).has(shelf.id), `seed ${s}: the shelf is reached past the pouring surge`);
+    assert.ok(reachable(withWater(st, [plugF])).has(shelf.id), `seed ${s}: the shelf cannot be reached up the quiet surge`);
+    // the floor under the shelf: a tree there climbs back up to it
+    const floor = st.platforms.find((p) => p.y > shelf.y + 400 && p.x <= shelf.x + 60 && p.x + p.width >= shelf.x + 60)!;
+    assert.ok(floor, `seed ${s}: nothing under the shelf`);
+    const tree = st.vines.find((v) => v.x > shelf.x && v.x < shelf.x + 120 && Math.abs(v.topY + 2 - shelf.y) < 1 && v.bottomY > floor.y - 20);
+    assert.ok(tree, `seed ${s}: no tree from the floor back up to the shelf`);
+    const pouring = withWater(st, [plugF]);
+    const res = validateStage({ ...pouring, spawnX: floor.x + 40, spawnY: floor.y });
+    assert.ok(res.reachableIds.includes(shelf.id), `seed ${s}: dropped to the floor before plugging, he cannot get back to the boulder`);
   }
 });

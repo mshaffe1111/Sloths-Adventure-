@@ -1619,8 +1619,8 @@ export class GameEngine {
         if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40) {
           cp.reached = true;
           recorder.event('checkpoint', Math.round(cp.x));
-          // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right)
-          const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : cp.x > this.checkpoint.x;
+          // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
+          const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
           if (further) this.checkpoint = { x: cp.x, y: cp.y };
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');

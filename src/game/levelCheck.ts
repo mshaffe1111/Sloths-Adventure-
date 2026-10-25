@@ -20,6 +20,7 @@ import {
   TAKEOFF_SLACK,
   airStep,
   canGrabSwing,
+  flightReach,
   maxDropReach,
   reachBounce,
   reachBounceGlide,
@@ -54,6 +55,15 @@ const MARGIN = 0.97;
 /** the engine keeps the hero this far inside the world's left and right edges (engine.ts), and a ledge narrower than STAND_MIN is not somewhere to stand */
 const STRIP_MARGIN = 20;
 const STAND_MIN = 24;
+/**
+ * the warm air (4-7, glide.ts): the open leaf is lifted while his middle (32 px over his feet) is inside it, so at its top his feet hang
+ * at most about this far under its top edge (32 px, and a dip each time the lift lets go); he must be this far inside it to be
+ * carried; and a drift off it gives up this much of its reach (he starts it from anywhere across the air, already moving, so this is
+ * only room to spare)
+ */
+const LIFT_HOVER = 36;
+const LIFT_INSIDE = 30;
+const LIFT_SLACK = 30;
 /** two pickups closer than this overlap on the screen */
 export const PICKUP_APART = 36;
 /** the clear approach kept around the start, every flag and the exit: no animal's patch comes closer than this */
@@ -255,6 +265,8 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   // the leaf glide, from the stage everyone who gets there has learned it (skills.ts): it carries a falling jump much further
   const allowGlide = skillGuaranteedAt('glide', (cfg.worldIndex - 1) * 10 + cfg.miniIndex);
   const byX = [...plats].sort((a, b) => ext(a)[0] - ext(b)[0]);
+  // a drop deeper than this is a fall into the mist (4-7), never a way on (with room to spare)
+  const deep = stage.deepFall !== undefined ? stage.deepFall - 30 : Infinity;
 
   // 1. jumps between platforms (only compare neighbours within a plausible horizontal window)
   // To the right the window is 460 px. To the left a platform can only be reached if the gap is within the furthest any jump
@@ -295,6 +307,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       const gap = Math.max(0, bx0 - ax1, ax0 - bx1);
       if (gap > leftReach) continue;
       const dy = a.y - b.y;
+      if (-dy > deep) continue;
       const f = a.type === 'bouncy' ? reachBounce : reachJump;
       let r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
       if (allowGlide && !(r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK)) {
@@ -332,6 +345,7 @@ export function validateStage(stage: GeneratedStage): CheckResult {
       if (!ok) {
         for (let h = v.topY; h <= v.bottomY && !ok; h += 12) {
           const dy = h - p.y;
+          if (-dy > deep) continue;
           const hop = reachMin(dy, PHYS.treeHopV, 240, true);
           const leap = reachMin(dy, PHYS.treeLeapV, 330, true);
           const r = Math.max(hop, leap);
@@ -388,6 +402,36 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     }
   }
 
+  // 3c. warm air (4-7): with the leaf open in an updraft he rises to its top and hangs there, his feet about LIFT_HOVER under its top,
+  // then drifts off it, still gliding (the warm air gave him back a whole glide). In: walk or jump off a ledge and glide into it, at
+  // any depth it reaches down to. Out: from the top, a drift with the leaf open onto any ledge below it (a ledge above is out of reach).
+  const drafts = allowGlide ? stage.updrafts ?? [] : [];
+  drafts.forEach((u, i) => {
+    const n = `u${i}`;
+    const in0 = u.x0 + LIFT_INSIDE, in1 = u.x1 - LIFT_INSIDE;
+    if (in1 <= in0) return;
+    for (const a of plats) {
+      if (a.type === 'bouncy') continue;
+      const [x0, x1] = ext(a);
+      // the deepest he can glide in at: the bottom of the air, never as far down as the mist
+      const d = Math.min(u.bottom - 40 - a.y, deep);
+      if (d < 0 || a.y + d < u.top + 40) continue;
+      const gap = Math.max(0, in0 - x1, x0 - in1);
+      const r = Math.max(reachGlide(-d, false), reachGlide(-d, true));
+      if (r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK) link(pid(a), n);
+    }
+    const hover = u.top + LIFT_HOVER;
+    for (const b of plats) {
+      const drop = b.y - hover;
+      if (drop < 10 || drop > deep) continue;
+      const [x0, x1] = ext(b);
+      const gap = Math.max(0, x0 - u.x1, u.x0 - x1);
+      let r = Infinity;
+      for (const dt of SIM_DTS) r = Math.min(r, flightReach(-drop, { v0: 0, vx: PHYS.maxRun, dbl: false, dt, glide: true }));
+      if (r >= 0 && gap <= r * MARGIN - LIFT_SLACK) link(n, pid(b));
+    }
+  });
+
   // 4. walk the graph
   const start = plats.find((p) => stage.spawnX >= ext(p)[0] - 4 && stage.spawnX <= ext(p)[1] + 4 && Math.abs(p.y - stage.spawnY) < 6);
   if (!start) {
@@ -429,6 +473,11 @@ export function validateStage(stage: GeneratedStage): CheckResult {
     for (const p of reachPlats) {
       const [x0, x1] = ext(p);
       if (dxTo(x0, x1, x) <= 150 && p.y - y >= -14 && p.y - y <= 190) return true;
+    }
+    // up the warm air he rode
+    for (let i = 0; i < drafts.length; i++) {
+      const u = drafts[i];
+      if (seen.has(`u${i}`) && x >= u.x0 && x <= u.x1 && y >= u.top && y <= u.bottom) return true;
     }
     for (const v of vines) {
       if (seen.has(vid(v)) && Math.abs(x - v.x) < 70 && y >= v.topY - 40 && y <= v.bottomY) return true;

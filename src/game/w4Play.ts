@@ -62,6 +62,8 @@ export interface W4Extras {
   updrafts?: Updraft[];
   /** a fall this far below the ledge he last stood on is a fall into the mist (4-7: the gaps have no floor) */
   deepFall?: number;
+  /** the stage goes down, back and forth across the cliff (4-7): a lower flag is further on, wherever it stands */
+  descent?: boolean;
   /** 4-6: sleeping eaglets (eaglet.ts) */
   nests?: Nest[];
   decor?: W4Decor[];

@@ -13,7 +13,14 @@
  *   4. TWIST    the surge. A great fall that pours and eases on its own rhythm, over a long stair with a cave halfway up behind the
  *               water: climb in the quiet spell (it warns as it eases), wait in the cave for the next one, climb on. World 4's keepsake,
  *               half a pink ribbon, hides in a fern at the back of the cave.
- *   5. FINISH   two surges side by side, half a beat apart (climb one, wait on the dry ledge between, climb the other), and the last
+ *   5. DEVELOP  the thief behind the falls. A second capuchin grabs a petal and runs up a surge's stair, teasing from the cave behind
+ *               the water: follow it up in the quiet spells.
+ *   6. TWIST    the tide pool (the pool and the surge together). A fall on its own rhythm fills a pool: its log rises while the fall
+ *               pours and sinks in the quiet, and the log at its highest is the only way up to the ledge beside it. Up the tree there to
+ *               a shelf over the pool, where the same fall pours across the gap to the cliff top: cross it in the quiet.
+ *   7. TWIST    the boulder up the surge (the plug and the surge together). The boulder's shelf is reached up a stair under a surge;
+ *               a tree from the floor under the shelf climbs back to it after a slip.
+ *   8. FINISH   two surges side by side, half a beat apart (climb one, wait on the dry ledge between, climb the other), and the last
  *               terraces to the shrine. From the pool on, a rock now and then comes loose over a long terrace (taught in 4-1).
  *
  * The cliff is built as solid terraces down to the floor, so nothing here can drop him anywhere he cannot climb back from, and a fall
@@ -21,7 +28,7 @@
  */
 import { fixPickups } from './flowerReach.ts';
 import { FIND_BY_ID } from './finds.ts';
-import { EXPERT_SECONDS, heartsAtFlags, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
+import { heartsAtFlags, stageSeconds, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Capuchin } from './capuchin.ts';
 import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
@@ -37,15 +44,18 @@ export const BOULDER = { w: 96, h: 88 } as const;
 /** what the tests read back about the falls: which platforms each one pours over, and the beat it belongs to */
 export interface FallInfo {
   fallId: number;
-  kind: 'plug' | 'pool' | 'surge';
+  kind: 'plug' | 'pool' | 'surge' | 'tide';
   /** the steps (and the cave ledge) under the water: climbable only while it is dry or quiet */
   steps: number[];
-  /** plug and pool falls: the shelf the boulder sits on, and the platform the pool's log is */
+  /** plug and pool falls: the shelf the boulder sits on, and the platform the pool's log is (a tide's log too) */
   shelf?: number;
   log?: number;
 }
 
-export function buildWaterfallSteps(config: LevelConfig, seed: number): GeneratedStage & { proto: ProtoExtras; falls43: FallInfo[] } {
+export function buildWaterfallSteps(
+  config: LevelConfig,
+  seed: number,
+): GeneratedStage & { proto: ProtoExtras; falls43: FallInfo[]; tides43: Array<{ fallId: number; log: number; ledge: number; lip: number; top: number }> } {
   const R = stream(seed);
   const P: Platform[] = [];
   const V: Vine[] = [];
@@ -179,9 +189,11 @@ export function buildWaterfallSteps(config: LevelConfig, seed: number): Generate
    *   hops: up a zigzag of little rock ledges beside the fall instead;
    *   pool: the fall fills a pool with a log floating on it, the log lifts him to a ledge, and a tree there reaches the shelf (the order:
    *         stopping the fall sinks the log, so it has to be ridden first; the boulder is only reached from it, so it always is).
+   *   surge: up a short stair under a fall that comes and goes on its own (climb it in a quiet spell) to the shelf; a tree from the
+   *         floor under the shelf climbs back to it, so a slip off the shelf only costs a climb.
    * The shelf is too far from the terrace above the steps for any jump, so the steps are the only way on, and they are under the water.
    */
-  function plugFall(kind: 'tree' | 'hops' | 'pool') {
+  function plugFall(kind: 'tree' | 'hops' | 'pool' | 'surge') {
     const x0 = x, y0 = y;
     const n = 3;
     const topY = y0 - (n + 1) * WET.rise;
@@ -212,6 +224,33 @@ export function buildWaterfallSteps(config: LevelConfig, seed: number): Generate
       c0 = r(hx + 370 + R.r(240, 280));
       hint(x0 + 40, 'Another fall over the steps. Hop up the ledges beside it, and stop this one too');
       expert += (hx - x0) / RUN + k * 0.9 + 0.6;
+    } else if (kind === 'surge') {
+      run(R.r(280, 340));
+      const s0 = r(x);
+      run(WET.margin);
+      for (let i = 0; i < n + 1; i++) {
+        up(WET.rise, WET.tread);
+        flower(x - WET.tread / 2, y - 34, 'orchid');
+      }
+      end();
+      const s1 = r(x);
+      const sSteps = P.filter((p) => p.x >= s0 + WET.margin - 1 && p.x < s1 - 1 && p.y < y0).map((p) => p.id);
+      // a last little step out of the water, onto the rock the shelf juts from
+      up(y - shelfY, 0);
+      run(140);
+      end();
+      const surge = { pour: Math.round(R.r(3.4, 3.8) * 10) / 10, ease: 1.5, quiet: Math.round(R.r(3.4, 3.8) * 10) / 10, offset: Math.round(R.r(0, 8) * 10) / 10 };
+      falls.push({ id: fid, x: s0, width: s1 - s0, top: r(shelfY - 160), bottom: y0, surge });
+      info.push({ fallId: fid, kind: 'surge', steps: sSteps });
+      fid++;
+      // down to the floor under the shelf, with the tree back up
+      y = y0;
+      from = x;
+      treeX = r(x + 40);
+      c0 = r(treeX + R.r(400, 440));
+      trunk(treeX, y0, shelfY);
+      hint(x0 + 40, 'This one comes and goes as well. Climb up beside it in a quiet spell, to the boulder above the next fall');
+      expert += (s0 - x0) / RUN + (surge.pour + surge.ease + surge.quiet) / 2 + (n + 1) * 0.6 + 0.6 + 140 / RUN + 1.5;
     } else {
       run(R.r(260, 320));
       // the ledge the log reaches, the pool and its log, then the floor the water covers in front of the steps
@@ -275,7 +314,7 @@ export function buildWaterfallSteps(config: LevelConfig, seed: number): Generate
    * a great fall on its own rhythm over a long wet stair, with a cave ledge halfway up behind the water: climb in a quiet spell, wait in
    * the cave for the next, climb on. The keepsake hides at the back of the cave.
    */
-  function surgeFall() {
+  function surgeFall(keepsake = true): { x: number; y: number } {
     const x0 = x, y0 = y;
     run(R.r(320, 380));
     const c0 = r(x);
@@ -292,9 +331,10 @@ export function buildWaterfallSteps(config: LevelConfig, seed: number): Generate
     const cy = y;
     decor.push({ n: 'cave', x: x - 120, b: cy + 12, w: 230 });
     flower(x - 200, cy - 34, 'hibiscus');
+    const cave = { x: r(x - 120), y: cy };
     // World 4's keepsake, here by Matt's design for this stage (finds.ts FIND_STAGE_IN)
     const keep = FIND_BY_ID[`w${config.worldIndex}_keepsake`];
-    if (keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: r(x - 60), y: cy - 26, collected: false, bobPhase: 0 });
+    if (keepsake && keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: r(x - 60), y: cy - 26, collected: false, bobPhase: 0 });
     wetStep();
     wetStep();
     end();
@@ -307,6 +347,79 @@ export function buildWaterfallSteps(config: LevelConfig, seed: number): Generate
     // a quick player waits half a cycle on average, once for each half of the climb
     const cycle = surge.pour + surge.ease + surge.quiet;
     expert += (c0 - x0) / RUN + 2 * (cycle / 2) + 5 * 0.6;
+    return cave;
+  }
+
+  /**
+   * the thief behind the falls: a second capuchin, by a petal, runs off up a surge's stair and teases him from the cave behind the
+   * water, then from the top. Follow it up in the quiet spells.
+   */
+  function thiefFalls() {
+    const x0 = x;
+    run(R.r(300, 360));
+    const mx = r(x);
+    const sitY = y;
+    const petal = flower(mx + 46, sitY - 30, 'hibiscus');
+    hint(x0 + 40, 'Another monkey! This one runs up behind the falling water. Follow it in the quiet, and catch it in the cave');
+    const path: Array<{ x: number; y: number }> = [];
+    run(R.r(380, 440));
+    path.push({ x: r(x - 60), y: r(y) });
+    expert += (x - x0) / RUN;
+    const cave = surgeFall(false);
+    path.push(cave);
+    const x1 = x;
+    run(R.r(320, 380));
+    path.push({ x: r(x - 80), y: r(y) });
+    monkeys.push({ job: 'thief', x: mx, y: sitY, petalId: petal.id, path });
+    expert += (x - x1) / RUN + 2.5;
+  }
+
+  /**
+   * the tide pool: a fall on its own rhythm pours into a pool, and the log on it rises while the fall pours and sinks in the quiet. The
+   * only way up is the log at its highest: stand on it, let the water lift it, jump to the ledge beside it and climb the tree there to a
+   * shelf over the pool. The fall pours across the gap between that shelf and the cliff top: cross it in the quiet (in the pour, it
+   * washes him back down into the pool).
+   */
+  const tides: Array<{ fallId: number; log: number; ledge: number; lip: number; top: number }> = [];
+  function tidePool() {
+    const x0 = x, y0 = y;
+    run(R.r(260, 320));
+    const n0 = x;
+    const nw = r(R.r(300, 340));
+    const bx = r(n0 + nw + 20);
+    const bw = 300;
+    const fullY = y0 - 150;
+    const emptyY = y0 - 60;
+    const ledgeY = r(fullY - 140);
+    const lipY = r(ledgeY - 260);
+    const ledge = shelf(n0, n0 + nw, ledgeY);
+    row(ledge.x + 60, ledge.x + ledge.width - 120, ledgeY - 34, 2, 'orchid');
+    const log: Platform = { id: pid++, x: bx + 30, y: fullY, width: 160, height: 30, type: 'solid', style: 'log', art: 'poolLog' };
+    P.push(log);
+    flower(log.x + log.width / 2, fullY - 40, 'hibiscus');
+    // the tree from the ledge up to the shelf over the pool, which stops short of the falling water
+    const treeX = r(n0 + 70);
+    trunk(treeX, ledgeY, lipY);
+    flower(treeX, ledgeY - 110, 'hibiscus');
+    const lip = shelf(treeX - 40, bx + 180, lipY);
+    row(treeX + 80, bx + 120, lipY - 34, 3, 'orchid');
+    // the water: down the far end of the basin, from above the shelf to the pool
+    const wx = bx + 200;
+    x = bx + bw;
+    end();
+    y = lipY;
+    from = x;
+    const surge = { pour: Math.round(R.r(3.4, 3.8) * 10) / 10, ease: 1.5, quiet: Math.round(R.r(3.2, 3.6) * 10) / 10, offset: Math.round(R.r(0, 8) * 10) / 10 };
+    falls.push({ id: fid, x: wx, width: x - wx, top: lipY - 160, bottom: y0, surge });
+    pools.push({ fedBy: fid, platformId: log.id, fullY, emptyY, art: { cx: log.x + log.width / 2, b: y0 + 6, w: bw } });
+    info.push({ fallId: fid, kind: 'tide', steps: [], log: log.id });
+    tides.push({ fallId: fid, log: log.id, ledge: ledge.id, lip: lip.id, top: lipY });
+    fid++;
+    hint(x0 + 40, 'This pool only fills while its fall pours. Stand on the log and let the water lift you');
+    hint(treeX - 120, 'The water pours over the gap ahead. Cross when it goes quiet', 'The water pours over the gap ahead. Cross when it goes quiet', 'The water pours over the gap ahead. Cross when it goes quiet', lipY + 10);
+    const cycle = surge.pour + surge.ease + surge.quiet;
+    // to the log, wait for the water to lift it, up to the ledge, up the tree, along the shelf, wait for the quiet, across
+    expert += (bx - x0) / RUN + 0.8 + cycle / 2 + 0.8 + (ledgeY - lipY) / CLIMB + 0.6 + (bx + 180 - treeX) / RUN + cycle / 3 + 0.8;
   }
 
   /**
@@ -424,13 +537,32 @@ export function buildWaterfallSteps(config: LevelConfig, seed: number): Generate
     rest(R.r(240, 300));
     flag();
   });
+  beat('Develop: the thief behind the falls', () => {
+    thiefFalls();
+    flag();
+    terrace();
+    rest(R.r(200, 260));
+    flag();
+  });
+  beat('Twist: the tide pool', () => {
+    tidePool();
+    rest(R.r(240, 300));
+    flag();
+    rockRest(R.r(480, 560));
+  });
+  beat('Twist: the boulder up the surge', () => {
+    plugFall('surge');
+    rest(R.r(220, 280));
+    flag();
+    terrace(true);
+  });
   beat('Finish: to the shrine', () => {
     terrace(true);
     surgePair();
     rest(R.r(240, 300));
     flag();
     let n = 0;
-    while (expert < EXPERT_SECONDS + 6 && n < 12) {
+    while (expert < stageSeconds('4-3') + 4 && n < 24) {
       terrace(true);
       n++;
       if (n % 3 === 0) flag();
@@ -480,5 +612,6 @@ export function buildWaterfallSteps(config: LevelConfig, seed: number): Generate
       w4: { falls, pools, monkeys, decor, rocks },
     },
     falls43: info,
+    tides43: tides,
   };
 }
