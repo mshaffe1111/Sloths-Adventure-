@@ -20,6 +20,11 @@ export interface Waterfall {
   plug?: { platformId: number; atX: number };
   /** a fall on its own rhythm: seconds pouring, easing (the warning), and quiet, and where in the cycle it starts */
   surge?: { pour: number; ease: number; quiet: number; offset: number };
+  /**
+   * a curtain of water pouring over the path from the cliff above, with a hollow behind it (4-5): standing in it hides him from the
+   * Sovereign and the lookouts (W4Play.behindFall), and it neither pushes him nor holds him back. Drawn in front of him.
+   */
+  veil?: boolean;
 }
 
 /** a pool a fall keeps full, and the log that floats on it (a platform that rises and sinks with the water) */

@@ -43,6 +43,7 @@ import { renderScenery, renderOverlay, setCanopy, setWeatherAvoid, lookFor } fro
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
+import { sovereignSprite } from './sovereignSprite.ts';
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
@@ -4510,33 +4511,37 @@ export class GameEngine {
     const id = this.currentStage.config.id;
     // World 3's watcher is the eyes in the dark: a low growl, and ferns to hide in
     const grotto = this.currentStage.config.worldIndex === 3;
+    // World 4's watcher is the Sky Sovereign (4-5), and the water of a pouring fall hides him from her as well as a bush does
+    const cliffs = this.currentStage.config.worldIndex === 4;
+    const water = !!this.w4?.behindFall(p.x, p.y);
     const cry = (phase: 0 | 2) => (grotto ? sound.playPredator('jaguar', phase) : sound.playEagleScreech());
     const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
       cry(0);
       // every pass is called out, not only the first: a word over his head and a buzz on a phone (many play with the sound off)
-      this.addFloatingText(`HIDE! ${hide === 'fern' ? 'INTO A FERN' : 'INTO A BUSH'}`, p.x, p.y - 96, '#fbbf24');
+      this.addFloatingText(cliffs ? 'HIDE! WATER OR BUSH' : `HIDE! ${hide === 'fern' ? 'INTO A FERN' : 'INTO A BUSH'}`, p.x, p.y - 96, '#fbbf24');
       this.input.triggerHaptic(120);
       if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
-        this.guide(lessonInputMode() === 'screen' ? `Here it comes! Slide down inside a ${hide} to hide` : `Here it comes! Hold down inside a ${hide} to hide`, 3);
+        const duck = lessonInputMode() === 'screen' ? `Slide down inside a ${hide}` : `Hold down inside a ${hide}`;
+        this.guide(cliffs ? `Here she comes! Stand behind a waterfall, or ${duck.toLowerCase()}` : `Here it comes! ${duck} to hide`, 3);
       }
     }
     const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
     if (this.watch.phase === 'pass') {
       const sx = shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
-      if (sees(this.watch, sx, bushes, me)) {
+      if (!water && sees(this.watch, sx, bushes, me)) {
         this.watch.seen = true;
         this.watchFrom = { x: sx, y: this.camera.y + 125 };
         cry(2);
         if (!tipHeard(id, 'watch:seen')) {
           markTipHeard(id, 'watch:seen');
-          this.guide(grotto ? 'It saw you! Get into a fern before it reaches you' : 'It saw you! Get into a bush before its shadow reaches you', 3.2);
+          this.guide(grotto ? 'It saw you! Get into a fern before it reaches you' : cliffs ? 'She saw you! Get behind the water or into a bush, quick' : 'It saw you! Get into a bush before its shadow reaches you', 3.2);
         }
       }
-      // the strike: unless he made it into a bush in time
+      // the strike: unless he made it into a bush (or behind the water) in time
       if (this.watch.seen && before < WATCH.dive && this.watch.diveT >= WATCH.dive) {
-        if (hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
+        if (water || hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
         else this.damagePlayer(1);
       }
     }
@@ -4631,8 +4636,26 @@ export class GameEngine {
     ctx.translate(e.x, e.y);
     ctx.scale(scale, scale);
     ctx.translate(-e.x, -e.y);
-    if (!drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
+    if (!(this.currentStage.config.worldIndex === 4 && this.drawSovereignWatch(ctx, e)) && !drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
     ctx.restore();
+  }
+
+  /**
+   * World 4's watcher is the Sky Sovereign herself, in her painted boss frames (sovereignSprite.ts): beating her wings while she
+   * circles far off, screaming with her wings up at the edge of the view, gliding wide over the cliffs, plunging when she has seen him.
+   * False until her atlas has loaded (the eagle stands in).
+   */
+  private drawSovereignWatch(ctx: CanvasRenderingContext2D, e: Enemy): boolean {
+    const flap = ['down', 'glide', 'up', 'glide'][Math.floor(this.gameTime * 6.5) % 4];
+    const name = e.swoopPhase === 'telegraph' ? 'alert' : e.swoopPhase === 'swoop' ? (e.isAttacking ? 'talon' : 'diveplunge') : this.watch.phase === 'pass' ? 'glide' : flap;
+    // (she flies a little lower than the eagle, below the stage card in landscape, and comes down to him when she dives)
+    const low = 50 * (e.swoopPhase === 'swoop' ? 1 - Math.min(1, this.watch.diveT / WATCH.dive) : 1);
+    ctx.save();
+    ctx.translate(e.x, e.y + 36 + low);
+    ctx.scale(e.facing < 0 ? -1 : 1, 1);
+    const ok = sovereignSprite.still(ctx, name);
+    ctx.restore();
+    return ok;
   }
 
   /** the eagle's shadow on the ground under x (the surface nearest below the middle of the view) */
