@@ -57,7 +57,8 @@ const FRAMES = {
   tailwhip: PROWLER_ANIM_FRAMES[at('bite', 0)],
   hurt: PROWLER_ANIM_FRAMES[at('hurt', 0.6)],
   curl: PROWLER_ANIM_FRAMES[at('defeated', 0.5)],
-  dead: PROWLER_ANIM_FRAMES[at('defeated', 1)],
+  // the story card's beaten guardian: sinking down with his head still up (flat on the floor he sits behind the speech box)
+  dead: PROWLER_ANIM_FRAMES[at('defeated', 0.3)],
 };
 
 /** the death sequence's length (engine stepBossDeath) */
