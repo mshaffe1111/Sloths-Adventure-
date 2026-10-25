@@ -102,6 +102,7 @@ test('punches chain jab, cross, hook; a swing that missed must be played out in 
   assert.equal(canCancel(m, later, true), true);
   assert.equal(canCancel(m, later, false), false);
   assert.equal(canCancel(m, moveLength(m), false), true);
+  assert.equal(canCancel(m, m.startup + m.active + m.recovery * 0.7, false), true, 'a miss can be cut short near its end');
 });
 
 test('the pose pulls back, thrusts out and settles', () => {

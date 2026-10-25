@@ -308,6 +308,8 @@ export class GameEngine {
   /** 1-9's ring: 'idle' until he comes in, then each wave drops (snakes falling from the canopy, not yet in play), then 'open' */
   private ring = { state: 'idle' as 'idle' | 'fight' | 'open', wave: 0, ids: [] as number[] };
   private ringDrops: Array<{ e: Enemy; t: number; delay: number }> = [];
+  /** a snake that has just dropped into the ring is shaken for a moment and cannot bite yet (game time it can from, by id) */
+  private harmlessUntil = new Map<number, number>();
   /** 1-8's collapsing branch (chase.ts): its state, the pieces falling away, and whether the last leap has had its slow motion */
   private chase: ChaseState | null = null;
   private chaseFalling: Array<{ x: number; y: number; w: number; h: number; vx: number; vy: number; rot: number; vr: number; t: number; right: boolean }> = [];
@@ -1754,7 +1756,8 @@ export class GameEngine {
           if (e.type === 'jaguar' || e.type === 'tayra') this.spawnDebrisBurst(e.x, e.y + 22, '#a16207');
         }
         if (this.debugBoxes) this.dbgHurt.push(...step.hurt);
-        for (const h of step.hurt) {
+        const shaken = this.gameTime < (this.harmlessUntil.get(e.id) ?? -1);
+        for (const h of shaken ? [] : step.hurt) {
           if (checkAABBCollision(...this.pBox(), h.x, h.y, h.w, h.h)) {
             this.damagePlayer(1);
             break;
@@ -2570,8 +2573,12 @@ export class GameEngine {
     inp.kickPressed = false;
     inp.kickDir = 0;
     inp.punchPressed = false;
-    // a press is remembered for most of a swing, so mashing during a miss still throws the next one the moment the last ends
-    if (want) this.atkQueue = { want, ttl: 0.32, face };
+    // a press is remembered until the swing it came during can give way (and a little after), so a press is never lost: a tap early in a
+    // long move (the hook, the jump kick) used to run out before the move ended, and nothing came of it (testers' logs, 2026-10-24)
+    if (want) {
+      const busy = this.atk ? Math.max(0, moveLength(this.atk.move) - this.atk.t) : 0;
+      this.atkQueue = { want, ttl: Math.max(0.32, busy + 0.15), face };
+    }
     else if (this.atkQueue) {
       this.atkQueue.ttl -= dt;
       if (this.atkQueue.ttl <= 0) this.atkQueue = null;
@@ -2594,7 +2601,8 @@ export class GameEngine {
       const a = this.atk;
       if (q.want === 'mega' && this.megaCooldown > 0) {
         this.atkQueue = null;
-      } else if (!a || canCancel(a.move, a.t, a.connected)) {
+      } else if (!a || canCancel(a.move, a.t, a.connected) || (a.move.id === 'airKick' && p.grounded && a.t >= a.move.startup)) {
+        // (a jump kick ends the moment he lands if another press is waiting: it used to play on along the ground and swallow the punch)
         this.atkQueue = null;
         if (a) this.endAttack();
         this.startAttack(q.want, q.face);
@@ -3143,7 +3151,12 @@ export class GameEngine {
           e.hoverTimer = 0.9;
           e.isAttacking = false;
         }
-        this.addFloatingText(wasCommitted && res.interrupt ? 'STOMPED!' : 'STOMP!', e.x, head.y - 14, '#fde68a');
+        // a tough one (the boa takes three): say how many more, so a stomp that did not finish it still reads as working
+        const more = Math.max(0, Math.ceil(e.hp / Math.max(1, r.damage)));
+        const word = wasCommitted && res.interrupt ? 'STOMPED!' : 'STOMP!';
+        this.addFloatingText(more > 0 ? `${word} ${more} MORE` : word, e.x, head.y - 14, '#fde68a');
+        // and a longer breather after bouncing off one that is still standing
+        this.stompGrace = 0.5;
       }
       return;
     }
@@ -4039,6 +4052,7 @@ export class GameEngine {
 
     ctx.restore(); // end world transform
     if (this.chase) this.drawChaseEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
+    if (this.proto?.watch) this.drawWatchEdge(ctx, this.camera.viewportWidth, this.camera.viewportHeight);
 
     // 3. Render Foreground Foliage (Framing screen edges)
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
@@ -4203,6 +4217,7 @@ export class GameEngine {
     const landed = this.ringDrops.filter((d) => d.t >= d.delay + GameEngine.RING_DROP.t);
     for (const d of landed) {
       this.enemies.push(d.e);
+      this.harmlessUntil.set(d.e.id, this.gameTime + 0.6);
       this.spawnJumpDust(d.e.x, d.e.y + 14);
       sound.playLand(0.5);
     }
@@ -4216,6 +4231,13 @@ export class GameEngine {
       if (d.t < d.delay) continue;
       const e = d.e;
       const y0 = e.y;
+      // where it will land: a shadow on the branch that darkens as it comes down
+      ctx.save();
+      ctx.fillStyle = `rgba(20, 10, 2, ${0.3 + 0.35 * u})`;
+      ctx.beginPath();
+      ctx.ellipse(e.x, y0 + (e.type === 'boa' ? 12 : 10), e.width * (0.55 + 0.3 * u), 7 + 3 * u, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
       e.y = y0 - GameEngine.RING_DROP.h * (1 - u * u);
       if (e.type === 'snake') {
         if (!drawGoldSnake(ctx, e, this.gameTime) && !drawSnakeSprite(ctx, e, this.gameTime)) drawTreeSnake(ctx, e, this.gameTime);
@@ -4347,6 +4369,22 @@ export class GameEngine {
     ctx.fillRect(0, 0, w, vh);
   }
 
+  /** the eagle's warning on the screen: the edge it will come from pulses amber until the sweep starts (screen space) */
+  private drawWatchEdge(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
+    const w = this.watch;
+    if (w.phase !== 'warn') return;
+    const u = Math.min(1, w.t / WATCH.warn);
+    const k = (0.35 + 0.65 * u) * (0.6 + 0.4 * Math.sin(this.gameTime * 11));
+    const width = vw * 0.22;
+    const fromLeft = w.dir === 1;
+    const g = ctx.createLinearGradient(fromLeft ? 0 : vw, 0, fromLeft ? width : vw - width, 0);
+    g.addColorStop(0, `rgba(245, 158, 11, ${0.8 * k})`);
+    g.addColorStop(0.35, `rgba(251, 191, 36, ${0.35 * k})`);
+    g.addColorStop(1, 'rgba(251, 191, 36, 0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(fromLeft ? 0 : vw - width, 0, width, vh);
+  }
+
   /** step the watching eagle and its dive (1-7) */
   private updateWatch(dt: number) {
     const p = this.player;
@@ -4361,6 +4399,9 @@ export class GameEngine {
     const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
       cry(0);
+      // every pass is called out, not only the first: a word over his head and a buzz on a phone (many play with the sound off)
+      this.addFloatingText(`HIDE! ${hide === 'fern' ? 'INTO A FERN' : 'INTO A BUSH'}`, p.x, p.y - 96, '#fbbf24');
+      this.input.triggerHaptic(120);
       if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
         this.guide(lessonInputMode() === 'screen' ? `Here it comes! Slide down inside a ${hide} to hide` : `Here it comes! Hold down inside a ${hide} to hide`, 3);
