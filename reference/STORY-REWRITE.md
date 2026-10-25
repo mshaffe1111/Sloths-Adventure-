@@ -510,3 +510,162 @@ The General's younger years again. Two captions changed.
 **The map got a fix.** The General used to say Pokey hadn't gone around "the swamp" or "the Reaver," but those are World 6, three worlds away. Now it's the river and the Grotto.
 
 **Smaller things.** Dot's "if there are snacks" is gone (food again). Her "I would like that counted" sounded like a courtroom, so now it's "I think that should count for something." The narration says "Meeca's grandma" instead of "Grandma," so nobody thinks she's Pokey's. Pell is Lieutenant Pell, not "Officer." The old album said the council was five friends, but the Queen says it was ten, so now it's ten.
+
+---
+
+## World 4: Mist Cascades
+
+### Act card: the cost
+
+*The vine held. Pokey hung from the end of it, turning a little, over the long white nothing where the ledge used to be.*
+
+**Pokey:** I'm looking down.
+
+**Dot:** Don't look at the down! Look at the up! The up is nice! Hold on, I've got you, I've got you—
+
+*She had hold of one of his claws and was pulling with everything she had. The vine didn't notice.*
+
+**Pokey:** Dot. Let go. If I fall, I'm not taking you with me.
+
+**Dot:** Don't you dare say that. Don't you dare.
+
+*She didn't let go. It took Pokey eleven minutes to climb up, and she held on to that claw the whole way, as if she was the one doing the climbing. At the top she sat down hard.*
+
+**Pokey:** That wasn't the Prowler. That was the General. He used the Prowler like a hand.
+
+**Dot:** I know.
+
+**Pokey:** The Prowler said sorry. Twice.
+
+*He still had hold of the vine. Both hands.*
+
+**Pokey:** That was a loud horn.
+
+**Dot:** It was a horn, Pokey. Horns have somebody on the other end. Thunder doesn't. I check. I check every time.
+
+### The falls
+
+*Waterfalls as tall as the sky. The water ran cloudy, which the old sloths say happens when the Heartbloom has stayed closed too long.*
+
+*A feather drifted down out of the mist, as long as Pokey's whole arm.*
+
+**Dot:** That's Her Majesty the Sky Sovereign, so please, please be polite. She hates being interrupted in the middle of a dive.
+
+**Pokey:** I'll wait till she's done.
+
+**Dot:** She started it at breakfast. I watched her go. She took a sandwich.
+
+### Hidden note (in plain sight)
+
+> Pokey, the soldiers keep asking me how to make the flower open. I keep telling them it's a plant, not a door.
+>
+> Grandma said the Heartbloom only opens for people who aren't in a hurry. I always thought she was being poetic. I'm starting to think she was giving instructions.
+>
+> Love, M.
+
+### Feathers (halfway through the world)
+
+**Dot:** Okay. The note. Don't be alarmed. It's short.
+
+**Pokey:** Short.
+
+*Today's note said, "Still here." That was all of it.*
+
+*Dot kept turning so Pokey would only see one side of her.*
+
+**Pokey:** Dot. Turn around.
+
+*She didn't, and then she did. There was a bare patch on her tail the size of a thumb.*
+
+**Dot:** It's nothing. It's the netting. It's a scratch. It's nine scratches. I'm fine.
+
+**Pokey:** Why do you keep bringing them?
+
+**Dot:** Two words weigh nothing. I checked. I weighed it against a berry, and the berry won. It won by a lot. I was really thorough about it.
+
+**Pokey:** Oh, Dot.
+
+**Dot:** Don't. I'll cry, and I can't afford the water weight.
+
+*Pokey read the note twice. Then he put it in the satchel, on top, where it wouldn't get squashed.*
+
+### The guardian: Sky Sovereign
+
+*Before the fight.*
+
+**Sky Sovereign:** Nothing climbs my cliffs. State your business, sloth, and keep it short. I was mid-dive.
+
+**Pokey:** I'm going to get Meeca back. She came through here with a column of soldiers.
+
+**Sky Sovereign:** I saw her. She waved. I have orders concerning whatever follows her.
+
+*The great bird tipped her head and looked at him with one gold eye, then the other.*
+
+**Sky Sovereign:** You're the one who went off the ledge in the gorge. Nothing climbs out of that gorge. How?
+
+**Pokey:** Slowly.
+
+**Sky Sovereign:** The cat says you outwaited him. Cats lie.
+
+**Pokey:** I fell off the last ledge. I'd rather not do it twice.
+
+*After the fight.*
+
+**Sky Sovereign:** Enough. Grounded. By a sloth. The owls will be talking about this for a year.
+
+**Pokey:** I won't tell anybody.
+
+**Dot:** I'm telling everybody.
+
+**Sky Sovereign:** The cliff is yours. I am relieved, if you must know. Do not repeat that. And I did not cut your ledge. I will not have it said that I did.
+
+**Pokey:** I know. I heard who did.
+
+**Sky Sovereign:** Good. Take the wind lane to the orchids, and mind the next collar. The General's hand is on every one of them, and it does not ask.
+
+### Memory: Grandma's garden
+
+*The Heartbloom garden, years ago. Meeca's grandma was teaching her how to keep it.*
+
+**Grandma:** Don't fuss at it, dear. Sit.
+
+**Meeca:** But how will I know it's happy?
+
+**Grandma:** When it opens. Until then, you bring a chair, and you sit with it, and you don't poke. Bring your knitting if you have to fidget.
+
+*Young Pokey, all elbows, was watering the wrong plant, very carefully.*
+
+**Pokey:** I think I watered the fern.
+
+**Meeca:** You watered the fern, the snail, and my sandal.
+
+**Grandma:** Thank you for watering it anyway, Pokey. Nobody ever waters the fern. That frond's been unrolling since Tuesday. Slow is not stopped, dear.
+
+**Pokey:** It's Thursday.
+
+*The frond unrolled another inch. Nobody saw it happen.*
+
+### Hidden keepsake
+
+> Half of a pink ribbon, the end torn clean across. A knot is still tied in it. Somewhere, someone is keeping the other half.
+
+### Hidden photo album: Two Travelers
+
+Unchanged.
+
+- **The mountains.** She said the mountain was too tall. He said that was its only fault.
+- **Tea on the veranda.** Neither of them said much. It was the best conversation of the year.
+- **The falls.** He insisted on bringing the camera. She insisted on being in the picture.
+- **The riverboat.** She pointed at everything. He looked at her.
+
+### What changed in World 4, and why
+
+**The fall has weight now.** The old version had Pokey hanging over the drop and joking that Dot weighs about as much as a spoon, and Dot saying "A spoonful. Heaped." Your notes were right that it undoes the fall. Now Dot is grabbing his claw and pulling with everything she's got, which does nothing, and Pokey tells her to let go so he doesn't take her down with him. That's the plain thing he says when it's real, and Dot's "Don't you dare" is her fear coming out as scolding. She holds on for all eleven minutes of the climb anyway. Her joke about being "hello'd at by arrows" is gone too. After a fall like that, she goes quiet ("I know"), which is how you know it's serious.
+
+**Pokey notices her tail.** The old scene had the bare patch only in the narration. Now Pokey sees her hiding one side and says "Turn around," because he notices everything. Her "It's a scratch. It's nine scratches" is straight from the Cast Bible. "I'd like it noted that I was thorough" (British again) is now "I was really thorough about it."
+
+**The eagle has heard of him.** She knows he went off the ledge and can't believe he climbed out ("How?" "Slowly."), and she's heard the cat's story and doesn't buy it. After she loses, Pokey says "I won't tell anybody" and Dot says "I'm telling everybody." It's a one-liner shared between the two of them, so it doesn't feel like the same beat as the last two bosses. His "I know. I heard who did" lets her keep her honesty and reminds the player who's really behind all this.
+
+**Meeca's note.** The soldiers used to ask her "where" the flower is, but they were standing in her garden. Now they ask how to make it open, and she tells them it's "a plant, not a door."
+
+**The memory barely changed.** "Grandma" became "Meeca's grandma" in the narration, and "with great care" became "very carefully."
