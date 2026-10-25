@@ -60,7 +60,7 @@ The prologue is in VOICE.md, as approved.
 
 *Pokey didn't say anything to that.*
 
-**Dot:** She's already gotten three notes out through it. I've got all three. This is the first one.
+**Dot:** She's already gotten two notes out through it. I've got both. This is the first one.
 
 **Dot (reading):** "Pokey. If you have this, you found the petal. I put it low so you wouldn't have to look up. I saw you run. I didn't know you could do that. Don't you listen to a word he said. And don't stand in the rain and think about it. Follow the petals. Love, M."
 
@@ -173,7 +173,7 @@ These are the General's younger years. Unchanged except the third caption, which
 
 **British and courtroom words are gone.** "Post," "I want that on the record," and "Wonderful."
 
-**One fix after you read it.** The old script had Dot say Meeca "got three notes out before they closed it," which would mean the gap is shut and no more notes can come. But notes keep arriving all game. It now says Meeca has already gotten three notes out through the gap, so Dot can keep flying back for new ones.
+**One fix after you read it.** The old script had Dot say Meeca "got three notes out before they closed it," which would mean the gap is shut and no more notes can come. But notes keep arriving all game. It now says Meeca has already gotten two notes out through the gap, so Dot can keep flying back for new ones.
 
 ---
 
@@ -189,7 +189,7 @@ These are the General's younger years. Unchanged except the third caption, which
 
 *At the top of the bank, the village crier, Gruntlewick, was reading out a flood warning. He had started on Tuesday. The flood had come and gone since. He was on the word FLOOD.*
 
-**Dot:** And that's the mailman. With the parcel. He's been taking that parcel to number nine since before the rains started. It says URGENT on it, in red. I offered to carry it for him. He said thank you, and held on tighter.
+**Dot:** And that's the mailman. With the package. He's been taking that package to number nine since before the rains started. It says URGENT on it, in red. I offered to carry it for him. He said thank you, and held on tighter.
 
 *The mailman and Pokey passed each other on the path. They nodded. It took a while, and neither of them minded.*
 
@@ -241,9 +241,9 @@ These are the General's younger years. Unchanged except the third caption, which
 
 **Dot (reading):** "Every guardian wears an iron collar with thorns on the inside. They scratch at them when they think nobody's looking. I don't think they chose this. Be kind to them. But please win. Love, M."
 
-**Pokey:** The snake kept scratching his neck the whole time. I thought he had a rash.
+**Pokey:** The snake said his collar itched. I thought it was just a collar.
 
-**Dot:** It isn't a rash.
+**Dot:** It isn't just a collar.
 
 *Down on the bank, a sloth carefully fitted the first log of the raft into place, stepped back, and looked at it for a long time.*
 
@@ -277,7 +277,7 @@ These are the General's younger years. Unchanged except the third caption, which
 
 *After the fight.*
 
-**Crocus Rex:** Beaten! I, Crocus Rex, King of the Sunlit Riverbank, beaten by a SLOTH! The village will never let me hear the end of it. They'll make a sign!
+**Crocus Rex:** Upside down! I, Crocus Rex, King of the Sunlit Riverbank, upside down in my own mud! The village will never let me hear the end of it. They'll make a sign!
 
 **Pokey:** They're pretty slow. You've got a few years.
 
@@ -342,7 +342,7 @@ The General's younger years again. Two captions changed.
 
 **The croc follows your direction.** He's never heard of Pokey and laughs at him ("I've watched logs float past faster than you"). Pokey's "Nice crown" and "It suits you" can be read as dry or as sincere, and the croc can't tell which, which is his whole problem. After the fight he's grand about losing and worried the village will make a sign, and Pokey's "They're pretty slow. You've got a few years" turns the village gag on him. No "I give it because you were polite," since Pokey wasn't. The crown request stays, because that's his soft side.
 
-**No more seasons.** The mailman's parcel has been on its way "since before the rains started," not since the spring.
+**No more seasons.** The mailman's package has been on its way "since before the rains started," not since the spring.
 
 **The memory barely changed.** It was already good. The squirrel sign now gets nailed up in the memory itself, since World 1 introduces the sign.
 
@@ -396,7 +396,7 @@ The General's younger years again. Two captions changed.
 
 **Dot:** Ferny ones. Around here, ish. If you crouch down next to the right one, it rustles. Or that might be the wind. I've gotten very good at ferns. I can tell you which ones are rude.
 
-*So the search for Grandma's things began. A sloth crouched beside a fern, and a hummingbird hovered beside the sloth, and the two of them said "Hello?" in very small voices.*
+*So the search for Meeca's grandma's things began. A sloth crouched beside a fern, and a hummingbird hovered beside the sloth, and the two of them said "Hello?" in very small voices.*
 
 ### The guardian: Shadow Prowler
 
@@ -454,13 +454,13 @@ The General's younger years again. Two captions changed.
 
 *The Prowler's claws came down on the ledge. He fought them every inch of the way, and he wasn't strong enough.*
 
-**Shadow Prowler:** I am sorry. I am so sorry.
+**Shadow Prowler:** Forgive me, little one. Forgive me.
 
 *The ledge went the way a dropped plate goes. Dot screamed Pokey's name the whole way down. Pokey didn't say anything at all.*
 
 ### The tower: the map
 
-*The General had ordered the pins by the thousand. One for every night the sloth slept somewhere new. The sloth slept a great deal.*
+*The General had started with a box of forty pins, one for every night the sloth slept somewhere new. He hadn't thought he would need more. The sloth slept a great deal.*
 
 *The pins had run out the week before. Now there were forks standing in the map, in a row, where the last pins should have been.*
 
@@ -474,7 +474,9 @@ The General's younger years again. Two captions changed.
 
 *Pell went away and came back with a tray of spoons.*
 
-**General Iron-Claw:** Four fingers to the tower. He hasn't gone around anything. Not the river. Not the Grotto. He walks straight through.
+*The General laid his paw flat on the map. The last fork stood four fingers from the tower.*
+
+**General Iron-Claw:** He hasn't gone around anything. Not the river. Not the Grotto. He walks straight through.
 
 **Lieutenant Pell:** That is very foolish of him, sir.
 
@@ -529,7 +531,7 @@ The General's younger years again. Two captions changed.
 
 **Dot:** Don't you dare say that. Don't you dare.
 
-*She didn't let go. It took Pokey eleven minutes to climb up, and she held on to that claw the whole way, as if she was the one doing the climbing. At the top she sat down hard.*
+*She didn't let go. It took Pokey the better part of an hour to climb up, and she held on to that claw the whole way, as if she was the one doing the climbing. At the top she sat down hard.*
 
 **Pokey:** That wasn't the Prowler. That was the General. He used the Prowler like a hand.
 
@@ -541,7 +543,7 @@ The General's younger years again. Two captions changed.
 
 **Pokey:** That was a loud horn.
 
-**Dot:** It was a horn, Pokey. Horns have somebody on the other end. Thunder doesn't. I check. I check every time.
+**Dot:** It was a horn, Pokey. Horns have somebody on the other end. Thunder doesn't. I always listen for which one it is. Every time.
 
 ### The falls
 
@@ -611,7 +613,7 @@ The General's younger years again. Two captions changed.
 
 *After the fight.*
 
-**Sky Sovereign:** Enough. Grounded. By a sloth. The owls will be talking about this for a year.
+**Sky Sovereign:** Enough. I am on the ground. I am never on the ground. The owls will be talking about this for a year.
 
 **Pokey:** I won't tell anybody.
 
@@ -660,7 +662,7 @@ Unchanged.
 
 ### What changed in World 4, and why
 
-**The fall has weight now.** The old version had Pokey hanging over the drop and joking that Dot weighs about as much as a spoon, and Dot saying "A spoonful. Heaped." Your notes were right that it undoes the fall. Now Dot is grabbing his claw and pulling with everything she's got, which does nothing, and Pokey tells her to let go so he doesn't take her down with him. That's the plain thing he says when it's real, and Dot's "Don't you dare" is her fear coming out as scolding. She holds on for all eleven minutes of the climb anyway. Her joke about being "hello'd at by arrows" is gone too. After a fall like that, she goes quiet ("I know"), which is how you know it's serious.
+**The fall has weight now.** The old version had Pokey hanging over the drop and joking that Dot weighs about as much as a spoon, and Dot saying "A spoonful. Heaped." Your notes were right that it undoes the fall. Now Dot is grabbing his claw and pulling with everything she's got, which does nothing, and Pokey tells her to let go so he doesn't take her down with him. That's the plain thing he says when it's real, and Dot's "Don't you dare" is her fear coming out as scolding. She holds on for the whole climb anyway. Her joke about being "hello'd at by arrows" is gone too. After a fall like that, she goes quiet ("I know"), which is how you know it's serious.
 
 **Pokey notices her tail.** The old scene had the bare patch only in the narration. Now Pokey sees her hiding one side and says "Turn around," because he notices everything. Her "It's a scratch. It's nine scratches" is straight from the Cast Bible. "I'd like it noted that I was thorough" (British again) is now "I was really thorough about it."
 
@@ -688,7 +690,7 @@ Unchanged.
 
 **Dot:** Rules. Don't sit. Don't eat anything. Don't drink anything. Don't touch the silk. Don't admire the silk. It takes it as a compliment.
 
-*A little table stood in the middle of the path, set for two: china cups, a plate of tiny cakes, two soft chairs, and a card in careful handwriting on a silk napkin. "Do sit. The kettle is on. It is always on."*
+*A little table stood in the middle of the path, set for two: china cups, a plate of tiny cakes, two soft chairs, and a card in careful handwriting on a silk napkin. "Do sit. The pot is warm. It is always warm."*
 
 **Pokey:** That's very polite.
 
@@ -702,7 +704,7 @@ Unchanged.
 
 ### Hidden note (in plain sight)
 
-> Pokey, Lieutenant Pell gave me a blanket today. He said, "Don't tell the General." I said thank you. He said, "Please don't thank me. It's embarrassing."
+> Pokey, Lieutenant Pell brought me a blanket today. He said, "It is not from the General." I hadn't asked. I said thank you. He said, "Please do not thank me. It is embarrassing."
 >
 > I'm not sure anymore whose side everyone is on. I think half of them are waiting for permission to stop.
 >
@@ -736,19 +738,19 @@ Unchanged.
 
 **Pokey:** I don't know yet. It hasn't been wrong.
 
-*Dot let go of the pouch. A minute later her claw was back on it.*
+*Dot let go of the pouch. A minute later her wing was back on it.*
 
 ### The guardian: Tarantula Queen
 
 *Before the fight.*
 
-**Tarantula Queen:** Welcome, dear. Do stay awhile. Everyone does. Eventually.
+**Tarantula Queen:** Welcome, darling. Do stay awhile. Everyone does. Eventually.
 
 **Pokey:** I can't stay. My friend's in a tower.
 
 **Dot:** There's a doily, Pokey. Nothing good has ever had a doily.
 
-**Tarantula Queen:** The eagle sent word a sloth was coming, so I set the table. A week ago. I thought, he'll be along any minute, dear. And then I thought, no. No, he won't.
+**Tarantula Queen:** The eagle sent word a sloth was coming, so I set the table. A week ago. I thought, he'll be along any minute, darling. And then I thought, no. No, he won't.
 
 **Pokey:** Sorry I'm late.
 
@@ -758,11 +760,11 @@ Unchanged.
 
 *After the fight.*
 
-**Tarantula Queen:** My webs. Fifty years of silk, and a sloth walks straight through it. Well. It was only silk, dear.
+**Tarantula Queen:** My webs. Fifty years of silk, and a sloth walks straight through it. Well. It was only silk, darling.
 
 **Pokey:** I'll send a thank-you note.
 
-**Tarantula Queen:** Don't go yet. The kettle's already on. The cat told you to ask how it began, didn't he? Sit. I'll tell you.
+**Tarantula Queen:** Don't go yet. The pot's still warm. The cat told you to ask how it began, didn't he? Sit. I'll tell you.
 
 ### Tea with the Queen
 
@@ -790,13 +792,13 @@ Unchanged.
 
 **Tarantula Queen:** Iron-Claw. Before he was anyone's General. Then came the storm. His wife died in it, and the help came late. He sat in her chair for a year. Then he came to each of us at night, crying, with the same bargain. "No more waiting. No more late. Let me make this forest fast enough to save anyone."
 
-**Tarantula Queen:** We said yes. That's all the Pact is. I poured him a cup first. He never touched it, and I said yes before it went cold.
+**Tarantula Queen:** We said yes. All but one of us. That's all the Pact is. I poured him a cup first. He never touched it, and I said yes before it went cold.
 
 **Pokey:** In a storm.
 
 *Pokey put the cup down. Then he picked it up again, with both hands.*
 
-**Tarantula Queen:** Have another cake, dear.
+**Tarantula Queen:** Have another cake, darling.
 
 *Dot had been quiet the whole time. Her claw rested on the little pouch at her side, and she didn't look up.*
 
@@ -857,9 +859,9 @@ Unchanged.
 
 **Pokey:** Go on.
 
-**Dot:** That was the last note I can get out. The net's sealed past here. There's no gap anymore. I checked every inch of it. I checked it with my face.
+**Dot:** That was the last note I can get out. They found the gap and closed it. Somebody told the General. I've been all the way around twice looking for another way in. I checked it with my face.
 
-**Dot:** She gave me two at the end. The lunch one was the silly one. This one's sealed. She wrote it on a really bad day, and she made me swear to give it to you only when you need it.
+**Dot:** She gave me three at the end. The lunch one was the silly one. There's one I'm not supposed to give you at all, so I'm going to leave it somewhere you'll find it by accident. And this one's sealed. She wrote it on a really bad day, and she made me swear to give it to you only when you need it.
 
 **Pokey:** How will I know when I need it?
 
@@ -867,7 +869,7 @@ Unchanged.
 
 *Dot had three tail feathers left. She'd left the rest in the net. Pokey had counted, and said nothing.*
 
-*Dot tucked the sealed note into the satchel with both claws, gently, as if it might break.*
+*Dot tucked the sealed note into the satchel with both feet, gently, as if it might break.*
 
 **Dot:** I'm going around. There's always a seam. I'm a hummingbird. I live in seams. I'll find the one that's open, and I'll be back before you've... before you've even— I'll be early, Pokey. Watch me.
 
@@ -889,7 +891,7 @@ Unchanged.
 
 *After the fight.*
 
-**Marsh Reaver:** Beaten. At LUNCH. By the slow one. The runners are going to sing about this.
+**Marsh Reaver:** You waded in at LUNCH and WON. Nobody wins at lunch. The runners are going to sing about this.
 
 **Pokey:** Your lunch is getting cold.
 
@@ -961,6 +963,8 @@ Unchanged.
 
 **Meeca (writing):** Dear Pokey. Don't hurry. I'm not counting.
 
+*There was nobody to carry it now. She wrote it anyway.
+
 **Lieutenant Pell:** Miss Meeca? It is Lieutenant Pell. I am knocking. I am sorry about the knocking.
 
 **Meeca:** You don't have to knock, Pell. You're the one with the key.
@@ -979,7 +983,7 @@ Unchanged.
 
 *Meeca finished the letter and put it under the new pillow. Then she picked up the spoon and turned to the wall. The hundred and thirteenth mark took a long time. She was careful not to press any harder than she had for the others.*
 
-### Hidden note (in plain sight)
+### Hidden note (the one Dot leaves where he'll find it "by accident")
 
 > Dear Grandma,
 >
@@ -1100,7 +1104,7 @@ Unchanged.
 
 **Pokey:** A baby. And whoever's holding her. I know him. I stood at his door once.
 
-*He turned it over. There was pencil on the back, in a hand he'd seen on Meeca's birthday cards. Meeca, three weeks old. Grandpa hasn't put her down since.*
+*He turned it over. There was pencil on the back, in a hand he'd seen on Meeca's birthday cards. Meeca, three weeks old. Grandpa has not put her down since.*
 
 **Pokey:** Grandpa.
 
@@ -1133,7 +1137,7 @@ Unchanged.
 
 **The Golem calls him early.** The Golem lives so slowly that, to him, Pokey is early, and after the fight he's amazed at how fast Pokey was. It's the first time in his life anyone has called Pokey early or fast, and his "Say that again. Slower. I want to enjoy it" is the most pleased with himself he gets in the whole game. It also turns the bosses' "you're too slow" joke inside out at the right point, just before the photograph. His "Thank you. Rest well" is gone. The Golem's soft side is still "I always do" and his choice to give up the photograph.
 
-**How Pokey puts it together.** In the old script, the back of the photo just said "Grandpa" somehow. Now it's in Grandma's handwriting: "Meeca, three weeks old. Grandpa hasn't put her down since." The same words are in this world's photo album, so a player who found it gets a little jolt. Pokey recognizes the man he asked for a blessing, and the Golem has just told him the General hid this photo. That's enough for him to see it.
+**How Pokey puts it together.** In the old script, the back of the photo just said "Grandpa" somehow. Now it's in Grandma's handwriting: "Meeca, three weeks old. Grandpa has not put her down since." The same words are in this world's photo album, so a player who found it gets a little jolt. Pokey recognizes the man he asked for a blessing, and the Golem has just told him the General hid this photo. That's enough for him to see it.
 
 **"She thinks he left her."** The old Pokey said "I thought he had gone up there to be sad." Now he says what everybody believed, that the old soldier just left, and then what that did to Meeca. It's the first time anyone says out loud what she believes, and it's Pokey who says it, which is why he grabs the strap with both hands.
 
@@ -1181,13 +1185,13 @@ Unchanged.
 
 **Pokey:** Dot. You came back. You're bleeding.
 
-**Dot:** It's a scratch. It's nine scratches. I counted. I found a seam in the net that was just a little narrower than me, and I went through it anyway. Then I went up the wall to her window. It has bars. I fit between them, mostly. Here.
+**Dot:** It's fine. It's nothing. I found a seam in the net, behind some kind of cookhouse, that was just a little narrower than me, and I went through it anyway. Then I went up the wall to her window. It has bars. I fit between them, mostly. Here.
 
 **Dot (reading):** "Pokey, I bet you're asleep right now. It's fine. I would be too. Keep going. I'm still here. And I've figured out who he is. I'll tell you when I can look at you."
 
 **Pokey:** She knows. Meeca knows.
 
-**Dot:** She worked it out by herself, up there, in the dark. She said she tried being angry for an afternoon, and it didn't fit. She gave me four more notes. They're in my pouch. I'm rationing them. She's really funny when she's scared.
+**Dot:** She worked it out by herself, up there, in the dark. She said she tried being angry for an afternoon, and it didn't fit. She gave me six more notes. I'm going to leave some of them where you'll find them, so you've got something to look forward to. She's really funny when she's scared.
 
 **Pokey:** Dot, sit down. I have to tell you something.
 
@@ -1195,9 +1199,9 @@ Unchanged.
 
 **Pokey:** The General is her grandfather. I found the photograph in the ruins.
 
-**Dot:** I know. I've always known. I was there the night of the storm.
+**Dot:** I know. I've known since the morning he left. I saw which way he went. And I was there the night her grandma died.
 
-*Dot landed on the branch. Pokey hadn't seen her feet touch anything in days.*
+*Dot landed on the branch. Pokey couldn't remember the last time he'd seen her feet touch anything.*
 
 **Pokey:** You never said.
 
@@ -1209,7 +1213,7 @@ Unchanged.
 
 **Pokey:** Then we should go.
 
-### Hidden note (in plain sight, one of Dot's four)
+### Hidden note (in plain sight, one of the six Dot left for him)
 
 > Pokey, Pell asked me again if I wanted a pillow. I told him I'm a hostage, not a guest. He said, "Yes, Miss. Would you like a pillow?"
 >
@@ -1233,7 +1237,7 @@ Unchanged.
 
 **Dot:** That's it?
 
-**Pokey:** That's what Meeca says. Then the one after.
+**Pokey:** That's all I ever do. Then the one after.
 
 **Dot:** Huh.
 
@@ -1243,11 +1247,11 @@ Unchanged.
 
 *Before the fight.*
 
-**Night-Wing Monarch:** Good evening, little climber. They say you have beaten seven of us. I confess I hoped you would take the long way around.
+**Night-Wing Monarch:** Good evening, little climber. They say you have beaten seven of us. I hoped you would take the long way, through the dreams.
 
 **Pokey:** I'm going to get Meeca back.
 
-**Night-Wing Monarch:** I am told to stop you. I shall try to do it softly. You talk in your sleep, you know. I was on the branch above you, writing it down. Then the bird woke you in the middle, and I have been wondering since where the petal was going.
+**Night-Wing Monarch:** I am told to stop you. I will try to do it softly. You talk in your sleep, you know. I was on the branch above you, writing it down. Then the bird woke you in the middle, and I have been wondering since where the petal was going.
 
 **Pokey:** I didn't know anybody was up there.
 
@@ -1285,9 +1289,9 @@ Unchanged.
 
 **Lieutenant Pell:** If I am ordered to sew it shut, I shall do it badly. I was a tailor's apprentice. I was terrible. We are not allowed to say that we hope you win.
 
-**Dot:** On purpose? I got nine scratches!
+**Dot:** On purpose? Do you know what that seam did to me?
 
-**Lieutenant Pell:** I am so sorry about the scratches.
+**Lieutenant Pell:** I am so sorry about the seam.
 
 **Pokey:** Thanks, Lieutenant.
 
@@ -1310,7 +1314,7 @@ Unchanged.
 
 ### What changed in World 8, and why
 
-**Meeca figured it out, on her own.** The old script already had this, and it lines up with what we decided. Her World 8 note now gives the clue she figured it out from: someone outside her door every night, eleven steps there and eleven back, who never knocks, and "I know who it is now." Dot carried that note in her pouch, one of the four Meeca gave her, so it's no longer a tower note that couldn't get out.
+**Meeca figured it out, on her own.** The old script already had this, and it lines up with what we decided. Her World 8 note now gives the clue she figured it out from: someone outside her door every night, eleven steps there and eleven back, who never knocks, and "I know who it is now." Meeca gave Dot six notes in the tower, and Dot leaves some of them where Pokey will find them, so this is no longer a tower note that couldn't get out.
 
 **The Monarch is nervous.** By World 8 the bosses know he's coming and dread it: "They say you have beaten seven of us. I confess I hoped you would take the long way around." After the fight, Pokey teases him ("You were very soft about it"). When asked how the dream ends, the old Pokey said "If I get there, I will." Now he says "It ends with me getting there." Seven worlds in, he expects to win, which is the arc we wanted for his one-liners.
 
@@ -1330,7 +1334,7 @@ Unchanged.
 
 *A voice boomed, "A visitor!" There was a pause. Then, much smaller, it said, "Intruder."*
 
-**Dot (reading):** "It's cold. I'm fine. The General sent up a blanket. Please don't tell him I said thank you." That's the last of the silly ones. The rest are the other kind, and I'm not reading those out loud. They're yours.
+**Dot (reading):** "It's cold. I'm fine. He sent up another blanket. Please don't tell him I said thank you." That's the last one I'm reading out loud. The rest are the other kind. They're yours.
 
 **Pokey:** She said thank you to him?
 
@@ -1338,7 +1342,7 @@ Unchanged.
 
 *Behind the smoke, the fortress stood up out of the thunder. Pokey put the note in the satchel, on top.*
 
-### Hidden note (in plain sight, one of Dot's four)
+### Hidden note (in plain sight, one of the six Dot left for him)
 
 > Pokey, last night the General said something through my door, to nobody in particular: "Fast people are the ones who arrive in time."
 >
@@ -1354,7 +1358,7 @@ Unchanged.
 
 **Lieutenant Pell:** I am so sorry. It is me again. I told the kitchen I was out buying thread. I have bought a great deal of thread. I have been ordered to sew the seam shut, and I have done six stitches, and I am afraid five of them are in the wrong place.
 
-**Dot:** Pell! I forgive the scratches. All nine of them.
+**Dot:** Pell! I forgive you for the seam.
 
 **Lieutenant Pell:** Miss Meeca asked me to tell you one thing. She says, "Tell Pokey I'm knitting him a scarf. It's going to be very long. He'll have time to get here."
 
@@ -1362,7 +1366,7 @@ Unchanged.
 
 **Lieutenant Pell:** I shall. Sir. Everyone. I am so sorry. I really must go.
 
-**Dot:** Pokey, you've been quiet for two hours. I counted. It was two hours and eleven minutes. You're worrying. I can tell. You do a thing with your eyebrow.
+**Dot:** Pokey, you've been quiet for two hours. I counted. It was two hours and seven minutes. You're worrying. I can tell. You do a thing with your eyebrow.
 
 **Pokey:** I'm thinking about Meeca's grandfather.
 
@@ -1384,7 +1388,7 @@ Unchanged.
 
 **Magma Drake:** You came. Eight of them said you would, and I did not tidy. I am to burn you. There is a speech that goes with it. I have lost my place.
 
-**Pokey:** Take your time. I'll wait.
+**Pokey:** It starts with "I am to burn you." You did that part.
 
 **Magma Drake:** Don't be— what is that? On your wrist. It glows. Is it for me?
 
@@ -1483,7 +1487,7 @@ Unchanged.
 
 ### What changed in World 9, and why
 
-**The Drake.** He's nervous before Pokey even shows up ("Eight of them said you would, and I did not tidy"). When he loses his place in his own speech, Pokey says "Take your time. I'll wait," which is Pokey's patience used as a jab. In the old version Pokey offered him the petal. Now the Drake asks if it's for him, Pokey just says "No," and the Drake's "No. Of course not" is his loneliness showing. After the fight, "I'd like to visit again" is gone. Now the Drake asks Pokey to come back with tea, and Pokey says "Maybe. If you tidy." The Drake still gets his wish. He just has to ask for it.
+**The Drake.** He's nervous before Pokey even shows up ("Eight of them said you would, and I did not tidy"). When he loses his place in his own speech, Pokey helpfully reminds him how it starts ("I am to burn you. You did that part."), which is Pokey being sarcastic and polite at once. In the old version Pokey offered him the petal. Now the Drake asks if it's for him, Pokey just says "No," and the Drake's "No. Of course not" is his loneliness showing. After the fight, "I'd like to visit again" is gone. Now the Drake asks Pokey to come back with tea, and Pokey says "Maybe. If you tidy." The Drake still gets his wish. He just has to ask for it.
 
 **The blessing has the right timeline.** It's ten years ago, not nine. And the ending no longer has Pokey going back after the storm to find the chair already empty. Now it's the storm, then a year of the old soldier by the window not answering the door, then the morning the door stood open. It's the same order of events Meeca lived through.
 
@@ -1523,7 +1527,7 @@ Unchanged.
 
 **Dot:** I know. Everybody knows. You hold things. You held a teacup for forty minutes at Meeca's birthday because a cloud went over. A teacup, Pokey. It was empty.
 
-*Dot always laughed at her own jokes. She didn't now. She put a wing over the pouch at her side and left it there.*
+*Dot waited for him to laugh. He didn't, and neither did she. She put a wing over the pouch at her side and left it there.*
 
 **Dot:** Pokey. The night your parents went out. There was a warning to give. The storm had turned early, and I was the one who was supposed to fly it around the nests. And I took the wrong river. I took the wrong... I was late, Pokey. For them.
 
@@ -1543,15 +1547,15 @@ Unchanged.
 
 *The thorns hummed in the wind. Pokey stood in the rain for a long time. Then he went through the door that had been made for him. It was exactly his width.*
 
-### Hidden note (in plain sight, one of the three Dot left in the satchel)
+### Hidden note (one of the three Dot left in the satchel)
 
 > Pokey,
 >
-> Whatever happens tomorrow, you were never too slow. I've just been waiting for somebody who stops.
+> Whenever you get here, you were never too slow. Everybody else always hurried past me. You're the one who stops.
 >
 > Come and get me. Bring snacks.
 >
-> P.S. Don't hurt him more than you have to. I don't know why I wrote that.
+> P.S. Don't hurt him more than you have to. I'll explain when I see you.
 >
 > Love, M.
 
@@ -1581,7 +1585,7 @@ Unchanged.
 
 **Pokey:** I know it does, sir. My folks went out in a storm when I was little. The warning came late. Tonight I found out whose warning it was.
 
-**General Iron-Claw:** Then you know.
+**General Iron-Claw:** Then you know what it costs.
 
 **Pokey:** She's my best friend, sir. She's been late my whole life. She came back every time.
 
@@ -1601,7 +1605,7 @@ Unchanged.
 
 ### Hidden keepsake
 
-> A small bronze bell, green with age. Grandma rang it whenever someone she loved was coming home. It hasn't rung since the day she died.
+> A small bronze bell, green with age. Meeca's grandma rang it whenever someone she loved was coming home. It hasn't rung since the day she died.
 
 ### Hidden photo album: The Last Pages
 
@@ -1628,7 +1632,7 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 *After the fight.*
 
-**Thornbark:** The thorns... they are gone. I can think again. Beaten... by a sloth. Small sloth. Slow sloth.
+**Thornbark:** The thorns... they are gone. I can think again. A sloth. They sent... a sloth. No. Nobody sent you.
 
 **Pokey:** I didn't beat them. I just kept coming back until they got tired of me. It's my best skill.
 
@@ -1636,7 +1640,7 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 *The old tree was quiet for a long time.*
 
-**Thornbark:** Nobody has said that. Not in nine years. The keeper before her sat among my roots for fifty years, humming. Your Meeca hums the same song. Tell her an old tree is listening.
+**Thornbark:** Nobody has said that. Not in nine years. Nine of them knelt. I am the one who would not. The keeper before her sat among my roots for fifty years, humming. Your Meeca hums the same song. Tell her an old tree is listening.
 
 **Thornbark:** Take this Thorn Heart. It was a heart before the thorns grew around it. Go and bring your Meeca home.
 
@@ -1670,9 +1674,9 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 **Stone Idol Golem:** I have waited a thousand years for—
 
-**Night-Wing Monarch:** Again, please. I slept through the middle.
+**Night-Wing Monarch:** Once more, please. I slept through the middle.
 
-*At the far end of the wall, where Thornbark had always stood by himself, the old tree bent down low.*
+*Far away, down in his hollow, the old tree Thornbark lifted his branches to listen.*
 
 *The iron collars cracked and fell. They rang on the stones for a long time.*
 
@@ -1746,7 +1750,7 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 *It was a letter, yellow at the edges, sealed with one faded petal.*
 
-**Dot:** She gave it to me on the last night, in the storm. "Give him this when he can sit still," she said. I flew out to find you, and the storm kept me a day. One day. And then you were home, sitting by her chair, all that year, so still, and I had it the whole time, and I couldn't. I was afraid it said it was my fault.
+**Dot:** She gave it to me the night she died, in the storm. "Give him this when he can sit still," she said. I flew out to find you, and the storm kept me a day. One day. And then you were home, sitting by her chair, all that year, so still, and I had it the whole time, and I couldn't. I was afraid it said it was my fault.
 
 **Grandfather:** Give it here, little courier.
 
@@ -1770,19 +1774,19 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 ### The weeks after
 
-*Down at the Sunlit Riverbank, Gruntlewick the crier reached the end of his flood warning. It had taken three weeks. At the top of the bank, the slow mailman finally delivered his one parcel, which was the flood warning, addressed to Gruntlewick. Gruntlewick signed for it.*
+*Down at the Sunlit Riverbank, Gruntlewick the crier reached the end of his flood warning. He'd started it on a Tuesday, five months before. At the top of the bank, the slow mailman finally delivered his one package, which was the flood warning, addressed to Gruntlewick. Gruntlewick signed for it.*
 
 *In the ruins, the Stone Idol Golem finally finished a sentence. Nobody was there to hear it. He said it again, slowly, to the chairs.*
 
 *Lieutenant Pell left the army that week and opened a tailor's shop at the foot of the mountain. He hung the sign himself. It hangs a little crooked, and he apologizes to it every morning.*
 
-*On the first fine afternoon, at four o'clock exactly, the Tarantula Queen poured the tea. The General took his cup in both paws and looked at the chairs. Every one of them was too small.*
+*On the first fine afternoon, at four o'clock exactly, the Tarantula Queen poured the tea. The General looked at the chair at the head of the table, the one she had dusted every morning for nine years.*
 
-*He sat on the ground and finished the whole cup.*
+*He sat down in it, put his feet up, and finished the whole cup.*
 
 **Dot:** It's a trap with cookies. I've had four.
 
-*Afterward, they laid out everything Pokey had found in the ferns.*
+*A few days later, back home in the garden, they laid out everything Pokey had found in the ferns.*
 
 **Meeca:** My locket. You fastened it on me the day I started school. "So you'll always know your name." I never took it off until they took me.
 
@@ -1826,17 +1830,21 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 **Meeca:** You left it on her chair. I've had it in my apron ever since. It's the key to Grandma's music box. It plays the song.
 
-*Meeca wound it. The little box played Grandma's song all the way through, a little out of tune. The General bowed his head, and for a long time nobody said a word.*
+*Meeca wound it. The little box played her grandma's song all the way through, a little out of tune. The General bowed his head, and for a long time nobody said a word.*
 
 **Pokey:** There was a petal, too. It says, "Be patient with the slow ones. They always arrive."
 
 **Grandfather:** That is her handwriting. Everything of hers turns up in a fern. I am beginning to think the bird has a problem.
 
+*Meeca had finished the scarf. It went around Pokey four times and still dragged on the ground. He was wearing it.*
+
+*She also gave him the letters from under her pillow, all of them, every one saying she was fine. He read them one at a time. The handwriting never wobbled once.*
+
 **Pokey:** Sir, I think this is yours. It was in a fern.
 
-*It was a small bronze bell, green with age. Grandma had rung it whenever someone she loved was coming home. It hadn't rung since the day she died.*
+*It was a small bronze bell, green with age. Meeca's grandma had rung it whenever someone she loved was coming home. It hadn't rung since the day she died.*
 
-*The General turned it over in his big hands. Then, very gently, he rang it. One clear note went out over the village and up the mountain, the way it used to go down a garden path.*
+*The General turned it over in his big hands. Then, very gently, he rang it. One clear note went out over the garden and down the path, the way it used to.*
 
 **Grandfather:** Somebody is coming home.
 
@@ -1846,13 +1854,13 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 ### The end
 
-*That evening, they climbed the hill to the old tree, where Grandma had said she'd be. The General went up last.*
+*That evening, they climbed the hill behind the house to the old tree, where Meeca's grandma had said she'd be. The General went up last.*
 
 **Grandfather:** Hello, love. I'm late. I brought the whole family.
 
 *Pokey took a paper packet out of his satchel, the one he'd found in a fern in the Twilight Treetops. Meeca read the label. "For the hill," she said. "Plant when it is quiet." It was. The three of them sat down in the grass together, four if you counted Dot, who was sitting on Pokey's head and for once didn't say a word.*
 
-*Home was exactly the way they'd left it, except that the Heartbloom was open, and a snail who had set off across the garden path on the morning of the storm was half an inch from the finish line.*
+*Home was exactly the way they'd left it, except that the Heartbloom was open, and a snail who had set off across the garden path on the morning they took Meeca was half an inch from the finish line.*
 
 **Pokey:** Of course he made it. He trained for it.
 
@@ -1874,6 +1882,33 @@ Unchanged. (This is the album that told us he stayed a year.)
 
 **Fixes in the weeks after.** The key line used to say he lost it "in the first storm," which didn't fit any storm we have. Now he wore it for that year and thought he lost it the morning he left, and Meeca says he left it on Grandma's chair and she's kept it in her apron ever since. That's the same apron from World 3. The croc's "I would like it noted" (British) is now "Everyone look. I kept the crown." Dot's "biscuits" is cookies. The snail is half an inch from the finish, not a centimeter, and Pokey's last line is the exact callback, "He trained for it." The General's armor used to leave him wearing a scarf, which nothing explained, so now it's just an old sloth standing in the rain.
 
-**Thornbark.** He gets the boss treatment ("Beaten... by a sloth. Small sloth. Slow sloth.") and gets his wish from the Cast Bible, someone telling him he was right not to kneel. Pokey says it straight, because it's true, not to be nice.
+**Thornbark.** He can't believe what came for him ("A sloth. They sent... a sloth. No. Nobody sent you.") and gets his wish from the Cast Bible, someone telling him he was right not to kneel. Pokey says it straight, because it's true, not to be nice. He's also now clearly the tenth council member, the one who said no ("Nine of them knelt"), and the Queen says "All but one of us" so it all lines up.
 
 **"Bring snacks."** Meeca's last note still says "Come and get me. Bring snacks." I kept it on purpose, because it's a callback to Dot leaving to get snacks right before everything went wrong, and it's Meeca joking because she's scared. If it breaks the food rule for you, it can go.
+
+
+---
+
+## Continuity pass (after a fresh read of the whole thing)
+
+A separate reader went through all ten worlds looking for slips. These are fixed above.
+
+**Notes now add up.** World 1: Meeca has gotten two notes out, not three (the third was never read). World 6: the General found the gap and closed it ("Somebody told the General"), and Dot only went around twice, so she could still miss the cookhouse seam she finds in World 8. Dot gets three notes at the end of World 6, including the "Dear Grandma" one she leaves for Pokey to find "by accident." In World 8 Meeca gives her six, and Dot leaves some along the way. That covers the World 8 and 9 notes, the one she reads aloud, and the three in the satchel at the mountain.
+
+**The council adds up.** It was ten plus Iron-Claw. Nine said yes and Thornbark said no. The Queen now says "All but one of us," and in the ending Thornbark listens from his hollow instead of standing on the wall.
+
+**The blankets.** In World 5, Pell brings a blanket and says "It is not from the General," which Meeca hadn't asked about. That's Pell being bad at secrets and a clue for her. In World 9 it's "He sent up another blanket."
+
+**Things people couldn't know yet.** Dot knows who the General is because she saw which way he went the morning he left. Meeca's last note no longer says "tomorrow" or "I don't know why I wrote that," since she gave it to Dot days earlier and already knew. It's now "I'll explain when I see you." In World 2, Pokey already heard about the itchy collar from the snake, so he now says he thought it was "just a collar."
+
+**Callbacks with no setup.** "Next branch" is now Pokey's own way of doing things, not something Meeca said that we never saw. "Dot always laughed at her own jokes" became "Dot waited for him to laugh." The scarf from World 9 now shows up at the end, four times around and still dragging, and he's wearing it. The letters Meeca wrote and couldn't send are paid off too: she gives them to him, and the handwriting never wobbles once.
+
+**The ending.** The General sits in the chair the Queen dusted every morning for nine years, puts his feet up, and finishes the cup. That's her whole story paid off, where before the chairs were "too small." The keepsakes and the bell happen back home in the garden a few days later, and the hill is the one behind the house. Gruntlewick took five months, not three weeks. The pins: the General started with a box of forty, which says how fast he thought this would be over.
+
+**Every boss loses in their own voice.** "Beaten. By a sloth." is now only the snake's, since it's your line. The croc is upside down in his own mud, the eagle is on the ground ("I am never on the ground"), the Reaver can't believe anyone won at lunch, and Thornbark can't believe a sloth came at all.
+
+**Voices that were bleeding together.** The Prowler's apology was Pell's ("I am so sorry"), so now it's "Forgive me, little one." The Queen calls people "darling" now, so "dear" stays Grandma's, and her pot is warm instead of her kettle being on. The Monarch lost his "shall" and "I confess." Pell's World 5 lines have no contractions. The narrator says "Meeca's grandma" everywhere.
+
+**Repeats trimmed.** "It's a scratch. It's nine scratches" happens once now, in World 4. Dot's fuss about the seam replaces the second and third times. "Eleven" is kept for the General's steps, which matter, and dropped from the climb and from Dot's count. Pokey's "Take your time" with the Drake is now him reminding the Drake how his own speech starts.
+
+**Two things I left alone for you to decide.** "She took a sandwich" (the eagle's long dive, World 4) and "Bring snacks" (Meeca's last note) both mention food, but neither one is a hero thinking about eating. And Pokey saying "I'm afraid of thunder" in World 10 is on purpose. It's the one time in the whole game he says it straight, and the voice page now says so.

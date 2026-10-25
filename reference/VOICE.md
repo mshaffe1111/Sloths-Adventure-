@@ -38,7 +38,7 @@ He's slow, and he's fine with it. He's sarcastic: easygoing, a little literal, w
 
 Why he's like that: he lost his parents in a storm when he was a cub. He remembers small things about them, not the night itself. What he knows about that night he knows from what people told him, and they didn't tell him much: "it was a storm," and then they changed the subject. A funny, easy kid gets left alone. A sad one gets questions he can't answer. So the jokes are how he keeps things light, and he's been doing it so long he doesn't know he's doing it.
 
-When something real happens, the joke doesn't come. That silence is how the player knows. When he's scared he holds on to things with both hands (the branch, the nest, the satchel strap). He never says "I'm afraid of thunder." He says "You know how I feel about thunder," and "It's only weather."
+When something real happens, the joke doesn't come. That silence is how the player knows. When he's scared he holds on to things with both hands (the branch, the nest, the satchel strap). He doesn't say "I'm afraid of thunder." He says "You know how I feel about thunder," and "It's only weather." The one exception is World 10, at the foot of the mountain, the one time in the game he says it straight.
 
 After the kidnapping, he isn't carefree anymore. He thinks it's his fault, because he was too slow, and the General said so out loud. Everything he does in the game comes from "I have to save her." He keeps his manners, though; politeness is how he faces people even when they're scary ("Excuse me, sir?").
 
@@ -64,7 +64,7 @@ Why she's like that: she's terrified of being late, and the player won't know wh
 
 Short, formal, heavy. He gives orders, not explanations. "That one. She's the keeper. Bring her to me." He counts out loud ("One. Two. Three.") because counting is how he makes a loss feel like a plan. He calls Meeca "little bloom," the family's name for her. She answers "Who told you that?" and the line just stands there. The player doesn't know what it means yet, only that it scared her, and it lets her think, for now, that this man knows what happened to her grandpa or did something to him.
 
-The guardians know exactly who he is. Before he was anybody's General he was Iron-Claw, the head of their council and their friend, and they said yes to his Pact because they couldn't tell a grieving man no. What they keep from Pokey is who he is to Meeca, and the collar holds their tongues. A boss can let something slip that only makes sense later ("You're going to take her from him?"), then catch itself.
+The guardians know exactly who he is. Before he was anybody's General he was Iron-Claw, the head of their council and their friend, and nine of them said yes to his Pact because they couldn't tell a grieving man no (Thornbark refused). What they keep from Pokey is who he is to Meeca, and the collar holds their tongues. A boss can let something slip that only makes sense later ("You're going to take her from him?"), then catch itself.
 
 He's cruel to Pokey in the prologue ("He's too slow. He was always too slow."), and that line has to stick, because Pokey carries it the whole game. He doesn't joke, and he doesn't say sorry, until the very end.
 
@@ -180,7 +180,7 @@ Then the storm came, and Grandma died in it. The help came late.
 
 There was a funeral. Grandpa was there, in the photograph with everyone who loved her. Afterward he went up the hill to the old tree where she's buried and stood there a long time, and then he stopped going. For about a year he stayed in the house, by her chair at the window, home but not really there. Meeca kept the house warm and gentle the whole time, trying to bring him back.
 
-Nine years before the game, one morning, the door was standing open and his chair was empty. Meeca believes he left her. What really happened: he went to each of the ten council members at night, crying, with the same bargain (no more waiting, no more late), and they said yes. That's the Iron Pact, and the thorn collars on their necks come from it. He put on the war look and became General Iron-Claw. He's carried the club for nine years.
+Nine years before the game, one morning, the door was standing open and his chair was empty. Meeca believes he left her. What really happened: he went to each of the ten council members at night, crying, with the same bargain (no more waiting, no more late). Nine said yes. Thornbark said no, and the thorns grew through him. That's the Iron Pact, and the thorn collars on their necks come from it. He put on the war look and became General Iron-Claw. He's carried the club for nine years.
 
 The Heartbloom hasn't opened for Meeca since Grandma died. The morning the game starts, it begins to open, and the General comes for the keeper.
 
