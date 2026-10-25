@@ -46,7 +46,7 @@ After the kidnapping, he isn't carefree anymore. He thinks it's his fault, becau
 
 The keeper of the Heartbloom, and the one who holds everybody steady. She's warm and quick, a little bossy in the way a good host is bossy ("Everybody sit down. Sit, sit, I'll go get the tea"), and she treats Dot's fussing the way a granddaughter treats a worried aunt. "If I've told you once, I've told you twice" is her mixing up a saying, on purpose, and it stays that way.
 
-Why she's like that: Grandma and Grandpa raised her, in the house with the garden. Her parents are never mentioned. The night of the storm, Grandma died, and by morning Grandpa was gone: the door standing open, his chair empty. Meeca believes he walked out on her. She doesn't know he put on the war look and became the General. So she lost the woman who raised her and was left by the man who raised her, on the same night, and she was alone with the garden and a very quiet house. She decided somebody had to keep everything gentle so nobody else would leave. She looks after everyone's feelings, and nobody looks after hers.
+Why she's like that: Grandma and Grandpa raised her, in the house with the garden. Her parents are never mentioned. Grandma died in the storm. Grandpa came home from the funeral and sat by Grandma's chair for a year, there but not there, while Meeca did everything she could to keep the house gentle and bring him back. Then one morning the door was open and he was gone. Meeca believes he walked out on her. She doesn't know he put on the war look and became the General. So she lost the woman who raised her, then the man who raised her left anyway, and she was alone with the garden and a very quiet house. She decided somebody had to keep everything gentle so nobody else would leave. She looks after everyone's feelings, and nobody looks after hers.
 
 In the tower she starts working it out on her own, before Pokey ever finds the photograph. The soup she liked as a cub keeps showing up, made wrong. Someone stands outside her door every night, eleven steps there and eleven back, and never knocks. A blanket arrives when she's cold. She pays attention to everything, so by the end "Hello, Grandpa" isn't a surprise to her. It's something she's been holding. Her one angry scene is at him, for leaving her, and only after that does she take his hand.
 
@@ -79,6 +79,26 @@ Over-polite, apologizes inside his own sentences, corrects himself mid-order. He
 ### The narrator
 
 Plain, warm, past tense. Says what the camera can't. Never explains a feeling the scene already shows.
+
+## What happened, in order
+
+These are the facts every line has to agree with. It's a tropical rainforest: there's a rainy season and a dry season, and no winter, ever. Anything that says winter, a freeze or snow is wrong.
+
+Years before the game, when Pokey was a cub, his parents went out along the far branches in a storm and never came back. Dot was supposed to fly the warning around the nests that the storm had turned early, and she went down the wrong river and was late. Nobody told Pokey anything except "it was a storm." Later he sat on a vine for two days, and Meeca sat with him for six hours. That's how they met.
+
+Meeca was raised by Grandma and Grandpa in the house with the garden. Grandma kept the Heartbloom for fifty years. Grandpa, Iron-Claw, was the head of the forest's council of ten.
+
+Ten years before the game, a few weeks before the storm, Pokey knocked on their door. Grandma let him in. Grandpa timed him coming up the path, fourteen minutes, and told him "Come back when you can protect her."
+
+Then the storm came, and Grandma died in it. The help came late.
+
+There was a funeral. Grandpa was there, in the photograph with everyone who loved her. Afterward he went up the hill to the old tree where she's buried and stood there a long time, and then he stopped going. For about a year he stayed in the house, by her chair at the window, home but not really there. Meeca kept the house warm and gentle the whole time, trying to bring him back.
+
+Nine years before the game, one morning, the door was standing open and his chair was empty. Meeca believes he left her. What really happened: he went to each of the ten council members at night, crying, with the same bargain (no more waiting, no more late), and they said yes. That's the Iron Pact, and the thorn collars on their necks come from it. He put on the war look and became General Iron-Claw. He's carried the club for nine years.
+
+The Heartbloom hasn't opened for Meeca since Grandma died. The morning the game starts, it begins to open, and the General comes for the keeper.
+
+Things in the script that have to change to match: the Queen's "Then came a winter" in World 5 becomes the storm. Pokey's World 9 memory says "nine years ago, a few weeks before the storm" (it's ten), and has him going back after the storm to find the chair already empty, so it has to be a year later. Grandma's last letter, the one Dot carried and never delivered, gets checked against this when we reach Worlds 5 and 10.
 
 ## Boss fights
 
@@ -168,7 +188,7 @@ The guardians keep their soft side. After Pokey wins and says his line, the beat
 
 ## Things the prologue changes later on
 
-Dot is she everywhere in the game, not he. The Cast Bible still says he and needs the same fix.
+Dot is she everywhere in the game, not he. The Cast Bible still says he and needs the same fix. It also says Grandpa vanished the same night Grandma died; he left a year later, after the funeral (see What happened, in order).
 
 "Eat something" in World 1 (line 58 in the script doc) moves to Dot, and only where things are calm.
 
@@ -181,8 +201,6 @@ Every boss intro and defeat gets rewritten world by world to the boss-fight dire
 The prologue goes into the game (src/game/storyIntro.ts) once the rewrite is approved as a whole.
 
 ## Still open
-
-When did Grandma die? The Tarantula Queen says "a winter," and Dot (line 401) says "the night of the storm." The lean is that it was a winter storm, which makes both lines true. It's a different storm from the one that took Pokey's parents, since Grandma knew Pokey afterward and taught him "slow is not stopped."
 
 In the prologue Meeca says "Nobody's called me that since Grandma." If "little bloom" was mostly Grandpa's name for her, that line points away from him, which may be exactly right (it hides the twist), or it may want to be "since Grandpa," which would be a big early clue. Matt to decide.
 
