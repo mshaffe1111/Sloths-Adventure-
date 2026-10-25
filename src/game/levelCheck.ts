@@ -535,9 +535,13 @@ export function validateStage(stage: GeneratedStage): CheckResult {
   if (cfg.objectiveType === 'rescue' && count((t) => t === 'cage') < need) errors.push('not enough cages for the quota');
   if (cfg.objectiveType === 'relic_hunt' && count((t) => t === 'relic') < need) errors.push('not enough relics for the quota');
   if (cfg.objectiveType === 'purge' || cfg.objectiveType === 'gauntlet') {
-    if (stage.enemies.length < need) errors.push('not enough enemies for the quota');
+    // (4-9: a capuchin guard blown off its ledge counts as one defeated, w4Play.ts)
+    const w4 = (stage as { proto?: { w4?: { monkeys?: Array<{ job: string; x: number; blowOff?: number }> } } }).proto?.w4;
+    const guards = (w4?.monkeys ?? []).filter((m) => m.job === 'guard' && m.blowOff);
+    const foes = [...stage.enemies.map((e) => e.x), ...guards.map((m) => m.x)];
+    if (foes.length < need) errors.push('not enough enemies for the quota');
     // only those on the way to the exit can be defeated: one that waits beyond it is no use to the quota
-    else if (stage.enemies.filter((e) => e.x <= stage.exitTotemX + 35).length < need) errors.push('not enough enemies before the exit for the quota');
+    else if (foes.filter((x) => x <= stage.exitTotemX + 35).length < need) errors.push('not enough enemies before the exit for the quota');
   }
 
   // fairness: nothing hostile right on top of the player when they spawn or respawn
