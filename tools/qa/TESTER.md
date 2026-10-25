@@ -38,6 +38,16 @@ node tools/qa/qa.cjs <port> look | turn | burst | perf
   spot first), or to cover the rest of a long stage after you have played a good part of it from the start.
 - If the harness says `PAGE` (an error the page threw), write it down exactly.
 
+## Getting better, like a real player
+
+- **Your notebook.** Before you play, read `tools/qa/notebook.md` if it exists (this one file is allowed). It is what earlier testers
+  learned about *playing*: how the gestures feel, how far a jump goes, when to flick. It never says what is in a stage. When you
+  finish, add what you learned to it: player skills only, short, no stage layouts, no "the secret is at...". Leave out anything a
+  player couldn't know from playing.
+- **Count your tries.** When a stretch beats you, go back to the flag and try again, the way a person would. For each stretch that
+  took more than one go, log how many tries it took, what killed you each time, and whether you could see it coming. "Took 2 tries"
+  is normal. "Took 9, same unwarned rock every time" is a finding.
+
 ## What to log
 
 Log **every** issue, however small. A real person would mention all of these:
@@ -77,5 +87,6 @@ Write your report as Markdown to the file you were given, with:
 3. **Issues**: every issue, worst first, in the format above.
 4. **Collectibles**: everything you saw to collect (flowers, petals, hearts, golden seeds, keepsakes, anything that sparkles):
    whether you got it, and if not, why. Note anything that looked collectible but wasn't.
-5. **Coverage**: how far you got from the start by playing, which flags you started from, which orientations you used, total game
+5. **Tries**: each stretch that took more than one go: how many tries, what got you each time, and whether it was fair.
+6. **Coverage**: how far you got from the start by playing, which flags you started from, which orientations you used, total game
    time played, and memory at start and end.
