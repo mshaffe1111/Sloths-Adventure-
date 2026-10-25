@@ -200,6 +200,8 @@ async function handle(cmd) {
     // press a button on screen by its words (a lesson card's "Got it!", a menu)
     const b = page.locator('button', { hasText: new RegExp(`^\\s*${cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') });
     if (!(await b.count())) return { error: `no button "${cmd.text}" on screen`, text: await screenText() };
+    // a player lifts their thumbs off the glass to press a button: the bot's fingers must not stay down under the card
+    if (steer || actionAt) { steer = null; actionAt = null; await touch('touchEnd'); }
     await b.first().click();
     await page.clock.runFor(300);
     return { shot: await shot(), text: await screenText() };
