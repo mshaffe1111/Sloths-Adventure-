@@ -1,6 +1,7 @@
 import React from 'react';
 import { recorder, savedTesterName } from '../game/playRecorder.ts';
 import { refinedControls } from '../game/refinedControls.ts';
+import { difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { checkForUpdate, hardRefresh } from '../game/updates.ts';
 import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
 
@@ -55,12 +56,16 @@ const FreshBuild: React.FC = () => {
  */
 export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) => {
   const [name, setName] = React.useState(savedTesterName);
+  const [level, setLevel] = React.useState<Difficulty>(difficulty);
   const go = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!name.trim()) return;
+    setDifficulty(level);
     recorder.start(name);
     // which touch rules this run used, so before and after can be compared
     recorder.event('rules', refinedControls() ? 'refined' : 'old');
+    // and how hard it was set (difficulty.ts): Easy runs are not compared with Normal ones
+    recorder.event('difficulty', level);
     onStart();
   };
   return (
@@ -93,6 +98,27 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
           className="mt-1 w-full rounded-lg border border-[#f4ecd8]/30 bg-[#0b2e20] px-3 py-2.5 text-base text-[#f4ecd8] outline-none focus:border-[#f2c14e]"
           placeholder="e.g. Jen"
         />
+        <p className="mt-3 text-sm font-bold">How hard?</p>
+        <div className="mt-1 grid grid-cols-2 gap-2" role="radiogroup" aria-label="How hard">
+          {(
+            [
+              ['easy', 'Easy', 'Fewer animals, more forgiving jumps, slower vines'],
+              ['normal', 'Normal', 'The game as it is meant to be played'],
+            ] as const
+          ).map(([id, label, blurb]) => (
+            <button
+              key={id}
+              type="button"
+              role="radio"
+              aria-checked={level === id}
+              onClick={() => setLevel(id)}
+              className={`rounded-xl border-2 px-3 py-2 text-left ${level === id ? 'border-[#f2c14e] bg-[#f2c14e]/15' : 'border-[#f4ecd8]/25 bg-black/20'}`}
+            >
+              <span className="block text-base font-black">{label}</span>
+              <span className="block text-xs leading-snug text-[#f4ecd8]/80">{blurb}</span>
+            </button>
+          ))}
+        </div>
         <button
           type="submit"
           disabled={!name.trim()}
