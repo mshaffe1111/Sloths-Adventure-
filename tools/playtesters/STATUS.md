@@ -1,0 +1,39 @@
+# Stage QA status
+
+The QA team (bot playtesters) keeps this list. The coding team fixes; QA tests, reports and retests.
+
+**Signed off** (Matt, 2026-10-25) when:
+- every confirmed bug on the stage is fixed and has passed a QA retest;
+- at least two of the four persona bots (Jen, Sally, Steph, Brycen) finish it;
+- it plays upright and sideways.
+
+Unchecked leads don't block a sign-off. A signed-off stage is not tested again.
+
+**How work moves**
+- The coding team promotes a fix or a new stage: it rebuilds Matt's test link, pushes `ccr-0d59a91c-oy3imz`, and sends QA a promotion note with a retest list.
+- QA builds from the pushed branch, retests every item, and replies pass or fail on each, plus anything new.
+- A bug closes only after its retest passes.
+
+Batch reports: batch 1, https://claude.ai/artifact/4tVn4iZZC4gFANqqYhC4vi
+
+## Stages
+
+| Stage | Status | Open confirmed bugs | Bots finished | Last batch |
+|---|---|---|---|---|
+| 1-1 | testing | card timing | 0/1 | 2 |
+| 1-2 | testing | card timing | 0/1 | 2 |
+| 1-3 | testing | card timing, knockback | 0/1 | 2 |
+| 1-4 | testing | card timing | 0/1 | 2 |
+| 1-5 | testing | card timing, gap card wording | 0/1 | 2 |
+| 1-6 | testing | card timing, liana release (confirmed by the coding team) | 0/1 | 2 |
+| 1-7 | testing | card timing | 0/1 | 2 |
+| 1-8 | testing | card timing | 0/1 | 2 |
+| 2-3 | testing | card timing, "Free 3 animals freed" | 0/1 | 2 |
+| 2-6 | testing | card timing | 0/1 | 2 |
+| 2-7 | blocked | basket lift leaves Pokey behind | 0/1 | 2 |
+| 3-9 | testing | card timing, knockback | 0/1 | 2 |
+| 4-1, 4-2, 4-5, 4-6 | ready to test | none known | - | - |
+| 4-3, 4-4, 4-7, 4-8 | waiting on fixes | coding team's own list | - | - |
+| 4-D (Dot's flight), 4-9, 4-10 | not built yet | - | - | - |
+
+Card timing and knockback are game-wide; they're listed on the stages where a bot hit them.
