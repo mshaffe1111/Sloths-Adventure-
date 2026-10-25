@@ -68,3 +68,37 @@ test('4-1: the shrine is across a gap no jump crosses, bridged by the fern frond
     assert.ok(st.proto.hints.some((h) => /curled-up fern/.test(h.text)), `seed ${s}`);
   }
 });
+
+const build42 = (s: number) => buildProtoStage(cfg('4-2', 'sprint'), s, '4-2');
+
+test('4-2: every roll can be finished without the leaf (none is needed before 4-7), has one exit, and is two minutes long', () => {
+  assert.equal(HAND_STAGES['4-2'], '4-2');
+  for (const s of SEEDS) {
+    const st = build42(s);
+    const res = validateStage(st);
+    assert.ok(res.ok, `seed ${s}: ${res.errors.join('; ')}`);
+    assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1, `seed ${s}`);
+    assert.ok(st.meta!.timing!.layoutSeconds >= EXPERT_SECONDS, `seed ${s}: ${Math.round(st.meta!.timing!.layoutSeconds)} s`);
+    assert.ok((st.proto.movedPickups ?? 0) <= 2, `seed ${s}: ${st.proto.movedPickups} pickups had to be moved`);
+  }
+});
+
+test('4-2: every gust lane has its chimes, gusts blow both ways, and the leaf and the chimes are taught', () => {
+  for (const s of SEEDS) {
+    const st = build42(s);
+    const winds = (st.zones ?? []).filter((z) => z.kind === 'wind');
+    const chimes = st.proto.w4?.chimes ?? [];
+    assert.ok(winds.length >= 4, `seed ${s}: ${winds.length} gust lanes`);
+    assert.equal(chimes.length, winds.length, `seed ${s}`);
+    for (const c of chimes) {
+      const z = st.zones![c.zone];
+      assert.equal(z.kind, 'wind', `seed ${s}: chimes that listen to a ${z.kind} zone`);
+      assert.ok(c.x >= z.x0 && c.x <= z.x1, `seed ${s}: chimes outside their lane`);
+    }
+    assert.ok(winds.some((z) => z.dir === 1) && winds.some((z) => z.dir === -1), `seed ${s}`);
+    assert.ok(st.proto.hints.some((h) => /Your leaf/.test(h.text)), `seed ${s}`);
+    assert.ok(st.proto.hints.some((h) => /chimes/.test(h.text)), `seed ${s}`);
+    // the secret: a golden seed out where only the leaf reaches
+    assert.ok(st.collectibles.some((c) => c.type === 'seed'), `seed ${s}: no golden seed`);
+  }
+});

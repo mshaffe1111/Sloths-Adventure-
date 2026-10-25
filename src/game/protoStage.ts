@@ -18,7 +18,7 @@
 import { fixPickups } from './flowerReach.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
-import { JUMP_RISE, reachGlide, reachJump } from './physics.ts';
+import { JUMP_RISE, reachGlide, reachJump, SAFE } from './physics.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
 import type { Bush, WatchZone } from './watcher.ts';
@@ -31,11 +31,12 @@ import type { W3Decor } from './w3Art.ts';
 import type { ThornVine } from './thornVine.ts';
 import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
 import { PATIENCE, type PatienceSpot } from './patience.ts';
+import type { Chime } from './w4Kit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -2273,6 +2274,135 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     });
   }
 
+  // ======================================================================================================================
+  // World 4, the Mist Cascades (2026-10-25): the leaf, and the wind. Gusts blow on a beat (zones.ts), and bamboo chimes on posts beside
+  // each gust lane ring and swing the way the next gust will blow while it warns (w4Kit.ts chimeLean): read them, and jump with the
+  // wind behind you or wait for it to drop. The leaf is taught here (learned on clearing 4-1) but no drop needs it before 4-7.
+  const W4C: Chime[] = [];
+  /** a gust lane over [x0, x1] (`dir` +1: behind him, -1: into his face), with its chimes on a post at `chimeX` */
+  const gustZone = (x0: number, x1: number, dir: 1 | -1, chimeX: number, force = 120) => {
+    GZ.push({ kind: 'wind', x0: Math.round(x0), x1: Math.round(x1), top: G - 560, bottom: G + 40, baseY: G, dir, period: 2.8 + 1.4 + 2.2, warn: 1.4, active: 2.2, force, offset: Math.round(R.r(0, 6.4) * 10) / 10 });
+    W4C.push({ x: Math.round(chimeX), y: G, zone: GZ.length - 1 });
+  };
+  /**
+   * the leaf, taught: up a trunk to a perch that ends at the edge of a soft pit, and a gap a double jump still crosses (from the perch
+   * or from the ground: the leaf makes it easy, it is never needed). Petals trail down the way the leaf drifts.
+   */
+  function leafDrop(share: number) {
+    const x0 = x;
+    run(R.r(280, 340));
+    const tX = x - 130;
+    const perchY = Math.round(G - R.r(230, 270));
+    trunk(tX, G, perchY);
+    branch(tX - 40, x, perchY);
+    for (let i = 0; i < 3; i++) flower(tX, G - 70 - i * 55, 'hibiscus');
+    const edge = x;
+    close();
+    const gap = Math.round(reachJump(0, true) * share);
+    const far = edge + gap;
+    softPit(edge, far);
+    for (let i = 1; i <= 4; i++) {
+      const u = i / 5;
+      flower(Math.round(edge + gap * u), Math.round(perchY - 10 + (G - 70 - perchY) * u * u), 'orchid');
+    }
+    open(far);
+    run(R.r(260, 320));
+    expert += (tX - x0) / RUN + (G - perchY) / CLIMB + 1.2 + (x - edge) / RUN;
+    pieces.push({ k: 'canopy', x0, x1: x });
+  }
+  /**
+   * a gap with a gust lane over it. Behind him (+1): a plain jump crosses it, and with the gust a glide carries far out to petals only
+   * the wind reaches. Into his face (-1): small enough that the double jump still makes it in the gust (levelCheck), easy in the calm.
+   */
+  function gustGap(dir: 1 | -1) {
+    const x0 = x;
+    run(R.r(320, 380));
+    const edge = x;
+    close();
+    const one = reachJump(0, false);
+    // (the level check keeps every gap under a gust within a safe plain jump, and a headwind's within the double jump)
+    const gap = Math.round(dir > 0 ? Math.min(one * R.r(0.68, 0.74), SAFE.gap1 - 12) : Math.min(one * 0.6, SAFE.gap2 - 120 * 0.7 - 40));
+    const far = edge + gap;
+    softPit(edge, far);
+    if (dir > 0) arc(edge + 20, far + 140, G - 175, 5, 'hibiscus');
+    else flower(edge + gap / 2, G - 110, 'orchid');
+    open(far);
+    run(R.r(320, 380));
+    gustZone(edge - 170, far + 110, dir, edge - 120);
+    expert += (x - x0) / RUN + (dir < 0 ? 3.2 : 1.2);
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  /**
+   * the secret: a tall trunk to a perch 400 px up, and out past its end a little ledge with a golden seed, too far for any jump and too
+   * high to reach from the ground: only the leaf drifts that far. The ground runs on underneath, so a try costs nothing.
+   */
+  function leafSecret() {
+    const x0 = x;
+    run(R.r(300, 360));
+    const tX = x - 140;
+    const perchY = G - 400;
+    trunk(tX, G, perchY);
+    const perch = branch(tX - 40, tX + 170, perchY);
+    row(perch.x + 70, perch.x + perch.width - 30, perchY - 34, 2, 'hibiscus');
+    const drop = 160;
+    const lx = Math.round(perch.x + perch.width + reachJump(-drop, true) * 1.08);
+    branch(lx, lx + 130, perchY + drop);
+    goldenSeed(lx + 25, perchY + drop - 34);
+    hint(x0 + 40, 'Something shiny, far out from the top of that tree...');
+    x = Math.max(x, lx + 130 + 260);
+    expert += (tX - x0) / RUN + (x - tX) / RUN;
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  if (plan === '4-2') {
+    // 4-2 First Glide: learn the leaf over soft moss, then the chimes and the gusts behind him, then the twist: gusts into his face,
+    // waited out. A canopy road with a seed only the leaf reaches (the secret). Open the leaf and drift across the falls to the shrine.
+    beat('Start: the falls', () => {
+      rest(R.r(560, 680));
+      hint(x - 420, 'Across the falls to the shrine!');
+      rest(R.r(260, 340));
+      flag();
+    });
+    beat('Learn: the leaf', () => {
+      hint(x + 40, 'Your leaf! Flick up, then keep your thumb on the glass as you fall', 'Your leaf! Hold Jump as you fall', 'Your leaf! Hold Space as you fall');
+      leafDrop(0.72);
+      rest(R.r(240, 320));
+      leafDrop(0.86);
+      flag();
+    });
+    beat('Develop: the chimes', () => {
+      hint(x + 40, 'Hear the chimes? They ring before the wind blows. Jump with it behind you');
+      gustGap(1);
+      rest(R.r(220, 300));
+      gustGap(1);
+      flag();
+    });
+    beat('Twist: into the wind', () => {
+      hint(x + 40, 'The chimes swing back at you: the wind will blow against you. Wait for it to drop');
+      gustGap(-1);
+      rest(R.r(220, 300));
+      gustGap(-1);
+      rest(R.r(200, 260));
+      leafSecret();
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < EXPERT_SECONDS - 10 && n < 24) {
+        const k = n % 4;
+        if (k === 0) leafDrop(R.r(0.78, 0.88));
+        else if (k === 1) gustGap(R.chance(0.5) ? 1 : -1);
+        else if (k === 2) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+        else highRoad();
+        rest(R.r(220, 300));
+        n++;
+        if (n % 3 === 0) flag();
+      }
+      rest(R.r(700, 900));
+    });
+  }
+
   if (plan === '3-2') {
     // World 3's note (Meeca, in plain sight: a Keeper's Bell) on the quiet floor just before the eyes
     const note = findForStage(config.worldIndex, config.miniIndex);
@@ -2280,7 +2410,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     if (note && note.kind === 'note' && at) C.push({ id: cid++, type: 'find', findId: note.id, hidden: false, x: Math.round(at[0] + 170), y: G - 26, collected: false, bobPhase: 0 });
   }
   // the walk to the shrine makes up any last seconds the dice left short
-  if (config.worldIndex === 3 && expert < EXPERT_SECONDS) rest((EXPERT_SECONDS - expert) * RUN + 60);
+  if ((config.worldIndex === 3 || config.worldIndex === 4) && expert < EXPERT_SECONDS) rest((EXPERT_SECONDS - expert) * RUN + 60);
 
   // the grotto's dressing behind every stretch of floor: stalagmites, glowing mushrooms, a clawed rock; stalactites and glowworm threads
   // hanging from the roof (no ferns in 3-2, where a fern is a hiding place)
@@ -2333,6 +2463,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       ...(THORNS.length ? { thorns: THORNS } : {}),
       hints: hints.sort((a, b) => a.x - b.x), covers, beats, movedPickups, ...(BUSHES.length ? { bushes: BUSHES } : {}), ...(ZONES.length ? { watch: ZONES } : {}), ...(RING ? { ring: RING } : {}),
       ...(MIX ? { mix: MIX, grant: ['shimmy'] as SkillId[] } : {}),
+      ...(W4C.length ? { w4: { chimes: W4C } } : {}),
     },
   };
 }
