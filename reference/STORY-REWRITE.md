@@ -669,3 +669,160 @@ Unchanged.
 **Meeca's note.** The soldiers used to ask her "where" the flower is, but they were standing in her garden. Now they ask how to make it open, and she tells them it's "a plant, not a door."
 
 **The memory barely changed.** "Grandma" became "Meeca's grandma" in the narration, and "with great care" became "very carefully."
+
+---
+
+## World 5: Orchid Sanctuary
+
+### Don't sit
+
+*The Orchid Sanctuary was the loveliest place on the whole road, and Pokey was counting the insides of his own eyelids.*
+
+*It was barely afternoon, and the orchids were already closing, a few at a time.*
+
+*On the trunk of the first tree, someone had carved a message with something small and sharp. The letters were shaky, as if they'd been cut on the move. POKEY. DON'T SIT. M.*
+
+**Pokey:** She did this while they marched her past.
+
+**Dot:** With a hairpin. She's so resourceful. She's the most resourceful person I know. And now she doesn't have a hairpin, so if she needs to pick a lock, and I'm saying she will, she'll have to do it with her hands.
+
+**Dot:** Rules. Don't sit. Don't eat anything. Don't drink anything. Don't touch the silk. Don't admire the silk. It takes it as a compliment.
+
+*A little table stood in the middle of the path, set for two: china cups, a plate of tiny cakes, two soft chairs, and a card in careful handwriting on a silk napkin. "Do sit. The kettle is on. It is always on."*
+
+**Pokey:** That's very polite.
+
+**Dot:** That's what makes it scary.
+
+*Pokey looked at the chairs. They looked back.*
+
+**Pokey:** Dot. Be honest. How bad would it be if I just sat for one minute?
+
+**Dot:** You'd be a chair, Pokey. You'd be, forever, a very still chair.
+
+### Hidden note (in plain sight)
+
+> Pokey, Lieutenant Pell gave me a blanket today. He said, "Don't tell the General." I said thank you. He said, "Please don't thank me. It's embarrassing."
+>
+> I'm not sure anymore whose side everyone is on. I think half of them are waiting for permission to stop.
+>
+> Love, M.
+
+### The pouch (halfway through the world)
+
+*They stopped to rest on a branch where the orchids hung in rows. Pokey stood, because the note said so. Dot touched the pouch at her side. Then she touched it again.*
+
+**Pokey:** You keep checking that pouch.
+
+**Dot:** It's a thing. It isn't for you.
+
+**Pokey:** Who's it for?
+
+**Dot:** Somebody I'm scared of.
+
+**Pokey:** The General?
+
+**Dot:** It's not him I'm scared of. It's what it says, and what he does when he reads it, and that I... that I took so—
+
+*She stopped.*
+
+**Pokey:** Then give it to him when you're ready. Not before.
+
+**Dot:** And what if it's too late by then?
+
+**Pokey:** Slow isn't stopped.
+
+**Dot:** Is that true, or is that just something you say?
+
+**Pokey:** I don't know yet. It hasn't been wrong.
+
+*Dot let go of the pouch. A minute later her claw was back on it.*
+
+### The guardian: Tarantula Queen
+
+*Before the fight.*
+
+**Tarantula Queen:** Welcome, dear. Do stay awhile. Everyone does. Eventually.
+
+**Pokey:** I can't stay. My friend's in a tower.
+
+**Dot:** There's a doily, Pokey. Nothing good has ever had a doily.
+
+**Tarantula Queen:** The eagle sent word a sloth was coming, so I set the table. A week ago. I thought, he'll be along any minute, dear. And then I thought, no. No, he won't.
+
+**Pokey:** Sorry I'm late.
+
+**Tarantula Queen:** You didn't sit, either. And you didn't eat the cake. Nobody has ever not eaten the cake.
+
+**Pokey:** Somebody carved me a note.
+
+*After the fight.*
+
+**Tarantula Queen:** My webs. Fifty years of silk, and a sloth walks straight through it. Well. It was only silk, dear.
+
+**Pokey:** I'll send a thank-you note.
+
+**Tarantula Queen:** Don't go yet. The kettle's already on. The cat told you to ask how it began, didn't he? Sit. I'll tell you.
+
+### Tea with the Queen
+
+*The Tarantula Queen didn't bow. She laid out four cups, a plate of small cakes, and a napkin that was clearly not a napkin. The fourth cup went at the head of the table, in front of a chair nobody had been offered.*
+
+**Tarantula Queen:** Sit. I know you're in a hurry. Sit anyway. I haven't poured for anyone in nine years, and I'd like to remember how it's done.
+
+**Dot:** Pokey, it's a trap.
+
+**Pokey:** It's a tea.
+
+**Dot:** It's a trap with cookies, which is the worst kind. I'm not drinking anything. I'm forty percent sugar already. I'm practically a cookie myself.
+
+*Pokey drank the whole cup, down to the leaves. The Queen watched every sip. In all the years of her sanctuary, nobody had ever stayed to the bottom.*
+
+**Tarantula Queen:** You'll forgive an old queen for asking. It's a long road, and the Highlands are cold. Why do you keep going?
+
+**Pokey:** Because she waited for me once.
+
+**Tarantula Queen:** Ah.
+
+**Tarantula Queen:** Mind that chair. I dust it every morning. He always put his feet up on it, and he took too much honey and not enough company. We were a council in the old days, ten of us and him at the head. We argued about everything. It was glorious.
+
+**Pokey:** Who sat there?
+
+**Tarantula Queen:** Iron-Claw. Before he was anyone's General. Then came the storm. His wife died in it, and the help came late. He sat in her chair for a year. Then he came to each of us at night, crying, with the same bargain. "No more waiting. No more late. Let me make this forest fast enough to save anyone."
+
+**Tarantula Queen:** We said yes. That's all the Pact is. I poured him a cup first. He never touched it, and I said yes before it went cold.
+
+**Pokey:** In a storm.
+
+*Pokey put the cup down. Then he picked it up again, with both hands.*
+
+**Tarantula Queen:** Have another cake, dear.
+
+*Dot had been quiet the whole time. Her claw rested on the little pouch at her side, and she didn't look up.*
+
+*When Pokey stood to leave, the cup at the head of the table was still full. She'd been topping it up the whole time.*
+
+### Hidden keepsake
+
+> A single Heartbloom petal, pressed flat for a very long time. In tiny pencil, in a hand that has since stopped writing: "Be patient with the slow ones. They always arrive."
+
+### Hidden photo album: Where They Went
+
+Unchanged.
+
+- **Low tide.** They walked the whole shore and didn't once check the time.
+- **Lost, on purpose.** The map said turn left. They turned right and found the better view.
+- **The old temples.** A place they promised to return to. They would, years later, for a different reason.
+- **A toast.** To slow mornings, she said. He agreed, mostly.
+
+### What changed in World 5, and why
+
+**The trap is sitting, not cake.** The old version had Pokey asking how bad it would be to eat just one cake, and Dot saying he'd be "a very still cake." That's food again. But Meeca's carved warning already says DON'T SIT, and the sanctuary is putting him to sleep, so the temptation is a soft chair. Now he asks about sitting for one minute, and Dot says he'd be "a very still chair." Same joke, and now it's the trap the story actually set up. He doesn't eat the cake or sit in the chair, and when the Queen asks how he resisted, he says "Somebody carved me a note."
+
+**Why Pokey sits for tea after all.** With Pokey not being nice to the bosses, he needs his own reason to sit down at the Queen's table. Now she offers one: the Prowler told him to "ask the others how it began," and she says "Sit. I'll tell you." He stays for the answer, and staying is the thing she's wanted for nine years. Her soft side comes from her, the way we said it should.
+
+**The Queen expected him to be slow.** She heard he was coming and set the table a week early, then realized it'd be a while. Pokey's "Sorry I'm late" is a sarcastic jab in a world where lateness is the thing that hurts everybody, and Dot hears it. After the fight, "I'll send a thank-you note" is mock politeness aimed right at her manners.
+
+**The timeline in her story.** "Then came a winter" is now "Then came the storm," and she adds that he sat in her chair for a year before he came to them, so it matches the order of events we set. Pokey's reaction changed from "His wife" to "In a storm." He's hearing about someone who lost family in a storm, which is his own story, and that's why he picks the cup up with both hands. He doesn't put together that it's Meeca's grandpa. The player might start to.
+
+**Smaller things.** "Biscuits" became cookies. "An officer" in Meeca's note is now Lieutenant Pell by name. Dot is she throughout.
