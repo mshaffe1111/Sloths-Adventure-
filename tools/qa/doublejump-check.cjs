@@ -2,7 +2,7 @@
  * Retest: does a second flick up give a double jump, with and without a steering thumb down? (QA, batch 2, 2026-10-25)
  *   node tools/qa/doublejump-check.cjs 'http://127.0.0.1:<port>/?proto=1'     (a dev build, as for server.cjs)
  * Prints, for each case, the rise in px, whether player.isDoubleJumping was seen, and the touch intents the game produced.
- * Passes when every row shows doubleJump: true.
+ * Passes when every row shows doubleJump: true. (touchEnd names only the lifted finger: CDP lifts the points it is given.)
  */
 const { chromium } = require('playwright');
 const URL = process.argv[2];
@@ -25,7 +25,7 @@ async function trial(browser, gap, steering) {
   if (steering) { steer = { x: 70, y: 520 }; await send('touchStart'); for (let k = 0; k < 4; k++) { steer.x += 18; await send('touchMove'); await page.clock.runFor(25); } await page.clock.runFor(300); }
   await page.evaluate(() => { const i = window.__engine().input; window.__log = []; for (const m of ['triggerTouchUp','releaseTouchUp','triggerTouchKick','triggerTouchPunch','triggerTouchMega','triggerTouchDuck','triggerTouchMove','triggerTouchClimb']) { const f = i[m].bind(i); i[m] = (...a) => { window.__log.push(m.replace('triggerTouch','').replace('releaseTouch','rel') + (a.length ? '(' + a.join(',') + ')' : '')); return f(...a); }; } });
   const s0 = await st();
-  async function flick() { act = { x: 310, y: 450 }; await send('touchStart'); for (let k = 0; k < 3; k++) { await page.clock.runFor(20); act.y -= 27; await send('touchMove'); } await page.clock.runFor(20); act = null; await send('touchEnd'); }
+  async function flick() { act = { x: 310, y: 450 }; await send('touchStart'); for (let k = 0; k < 3; k++) { await page.clock.runFor(20); act.y -= 27; await send('touchMove'); } await page.clock.runFor(20); const up = { x: act.x, y: act.y, id: 2 }; act = null; await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [up] }); }
   await flick();
   let minY = 1e9, sawDJ = false;
   for (let t = 0; t < gap; t += 10) { await page.clock.runFor(10); }
