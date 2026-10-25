@@ -15,7 +15,8 @@ export interface Bush {
   x: number;
   w: number;
   y: number;
-  kind: 'tall' | 'wide' | 'fern';
+  /** 'grotto': World 3's fern (w3Art.ts) */
+  kind: 'tall' | 'wide' | 'fern' | 'grotto';
   hanging?: boolean;
   /** the bush in front of the hidden hollow: not a hiding place (there is no ground under it) */
   secret?: boolean;

@@ -96,18 +96,32 @@ function venomFang(bossName: string): StoryPanel[] {
         ],
       },
     },
-    {
-      speaker: lines[2].speaker,
-      text: lines[2].text,
-      scene: {
-        particles: 'petals',
-        camera: { from: { zoom: 1.3, fx: 0.6, fy: 0.62 }, to: { zoom: 1.65, fx: 0.64, fy: 0.58 }, dur: 6 },
-        actors: [
-          hero({ seq: [{ at: 0, frame: 'idle_a', dx: 0.06 }] }),
-          boss(w, { seq: [{ at: 0, frame: 'dead', dx: 0.06 }] }),
-        ],
-      },
-    },
+    // the rest of the guardian's lines: the snake in close-up while he talks, Pokey's face when Pokey answers
+    ...lines.slice(2).map((line, i): Beat => line.speaker === 'Pokey'
+      ? {
+        speaker: line.speaker,
+        text: line.text,
+        scene: {
+          particles: 'petals',
+          camera: { from: { zoom: 1.0, fx: 0.5, fy: 0.55 }, to: { zoom: 1.08, fx: 0.42, fy: 0.55 }, dur: 5 },
+          actors: [
+            boss(w, { x: 0.78, scale: 0.7, seq: [{ at: 0, frame: 'dead', dx: 0.02 }] }),
+            hero({ x: 0.3, y: 1.04, scale: 1.25, portrait: true, seq: [{ at: 0, frame: 'face_calm' }, { at: 1.2, frame: 'face_happy' }] }),
+          ],
+        },
+      }
+      : {
+        speaker: line.speaker,
+        text: line.text,
+        scene: {
+          particles: 'petals',
+          camera: { from: { zoom: 1.3 + i * 0.05, fx: 0.6, fy: 0.62 }, to: { zoom: 1.6, fx: 0.64, fy: 0.58 }, dur: 6 },
+          actors: [
+            hero({ seq: [{ at: 0, frame: 'idle_a', dx: 0.06 }] }),
+            boss(w, { seq: [{ at: 0, frame: 'dead', dx: 0.06 }] }),
+          ],
+        },
+      }),
     {
       speaker: 'Narrator',
       text: 'The great serpent unwinds, grumbles, and slithers away. Past the bend, a trail of flattened ferns leads north, toward the Sunlit Riverbank.',

@@ -43,13 +43,13 @@ export const FINDS: FindDef[] = [
     id: 'w1_note', world: 1, kind: 'note', paper: 'leaf',
     title: 'The first petal',
     hint: 'World 1, in plain sight. Look for a pink bell.',
-    pages: [{ text: 'Pokey, you found the first one. Good. Keep going. The path is longer than it looks and shorter than you fear.\n\nP.S. Dot says hello. Dot says a lot of things, mostly fast.\n\nLove, M.' }],
+    pages: [{ text: "Pokey, if you're reading this, you're already further than they think you'll get. They walk too fast to look down. I've been dropping things the whole way and nobody's noticed. Keep your eyes low.\n\nSorry about the handwriting. I'm writing this walking.\n\nP.S. If you see Dot, tell her I saw her in that bush.\n\nLove, M." }],
   },
   {
     id: 'w1_keepsake', world: 1, kind: 'keepsake', icon: 'key',
     title: 'A small iron key',
     hint: 'World 1, hidden. Crouch beside a fern.',
-    pages: [{ text: 'A tiny iron key on a green ribbon. The teeth are worn smooth from years of being carried. Somebody kept it very close.' }],
+    pages: [{ text: "A tiny iron key on a green ribbon. The teeth are worn smooth from years of being carried. Somebody kept it close." }],
   },
   {
     id: 'w1_book', world: 1, kind: 'book',
@@ -58,7 +58,7 @@ export const FINDS: FindDef[] = [
     pages: [
       { photo: 's1_01', caption: 'Top of the class', text: 'He was first in his class and did not seem to know it.' },
       { photo: 's1_02', caption: 'Graduation day', text: 'He held the diploma as if it might fly away.' },
-      { photo: 's1_03', caption: 'Three friends, one bench', text: 'Before any of them had a rank, they had each other.' },
+      { photo: 's1_03', caption: 'Three friends, one bench', text: 'Three friends on one bench. Years later, two of them would sit on his council.' },
       { photo: 's1_04', caption: 'The first posting', text: 'A border outpost, a map, and a great deal of patience.' },
     ],
   },
@@ -67,7 +67,7 @@ export const FINDS: FindDef[] = [
     id: 'w2_note', world: 2, kind: 'note', paper: 'leaf',
     title: 'About the river',
     hint: 'World 2, in plain sight. Look for a pink bell.',
-    pages: [{ text: 'Pokey, the river is wide. Don\'t swim. Actually, swim a little.\n\nP.S. The crocodile has a crown. Be polite about it.\n\nLove, M.' }],
+    pages: [{ text: "Pokey, we crossed the river today. The soldiers wouldn't touch the water, so the crocodile carried us over, three at a time. He has a crown now. I made it out of the petals I had left, so there won't be many for a while. You'll find the way.\n\nDon't swim.\n\nP.S. He's nicer than he looks. Don't tell him I said that.\n\nLove, M." }],
   },
   {
     id: 'w2_keepsake', world: 2, kind: 'keepsake', icon: 'locket',
@@ -82,7 +82,7 @@ export const FINDS: FindDef[] = [
     pages: [
       { photo: 's1_05', caption: 'The flood', text: 'A cub was swept off the bank. He did not stop to ask whose it was.' },
       { photo: 's1_06', caption: 'The medal', text: 'They gave him a medal. He kept it in a drawer.' },
-      { photo: 's1_07', caption: 'Planting the future', text: 'Every year after, he planted one tree where the river had been.' },
+      { photo: 's1_07', caption: 'Planting the future', text: 'Every year after, he planted one tree where the bank had washed away.' },
       { photo: 's1_08', caption: 'A signature', text: 'Peace is mostly paperwork, he used to say. He was good at both.' },
     ],
   },
@@ -91,7 +91,7 @@ export const FINDS: FindDef[] = [
     id: 'w3_note', world: 3, kind: 'note', paper: 'leaf',
     title: 'About the dark',
     hint: 'World 3, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Pokey, it's dark in there and I can't help that. Here's what I can do: the glowworms only light up for people who stand still. You are very good at standing still.\n\nP.S. Dot has been hiding Grandma's things in ferns so the soldiers won't find them. Dot's memory is terrible. Crouch down and look around.\n\nLove, M." }],
+    pages: [{ text: "Pokey, it's dark in there, and I can't do anything about that. But Grandma told me once that the glowworms only light up for people who stand still and listen. You're the best I know at standing still.\n\nP.S. Ask Dot what I put in her bush.\n\nLove, M." }],
   },
   {
     id: 'w3_keepsake', world: 3, kind: 'keepsake', icon: 'medal',
@@ -106,16 +106,16 @@ export const FINDS: FindDef[] = [
     pages: [
       { photo: 's1_09', caption: 'A speech to the valley', text: 'They cheered him. He looked slightly alarmed by it.' },
       { photo: 's1_10', caption: 'The banquet', text: 'He raised a glass to his fiercest rival, and meant it.' },
-      { photo: 's1_14', caption: 'The Original Council', text: 'Five friends who agreed to disagree, in the same room, for twenty years.' },
+      { photo: 's1_14', caption: 'The Original Council', text: 'Ten of them around one table. They argued about everything, for twenty years.' },
       { photo: 's1_13', caption: 'The study', text: 'After every long day he went home and read. The books outnumbered the medals.' },
     ],
   },
   // ───────────── World 4: Mist Cascades ─────────────
   {
     id: 'w4_note', world: 4, kind: 'note', paper: 'journal',
-    title: 'Not a map',
+    title: 'Not a door',
     hint: 'World 4, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Pokey, the soldiers keep asking me where Grandma's flower is. I keep telling them it's a plant, not a map.\n\nGrandma said the Heartbloom only opens for people who aren't in a hurry. I always thought she was being poetic. I am starting to think she was giving instructions.\n\nLove, M." }],
+    pages: [{ text: "Pokey, the soldiers keep asking me how to make the flower open. I keep telling them it's a plant, not a door.\n\nGrandma said the Heartbloom only opens for people who aren't in a hurry. I always thought she was being poetic. I'm starting to think she was giving instructions.\n\nLove, M." }],
   },
   {
     id: 'w4_keepsake', world: 4, kind: 'keepsake', icon: 'ribbon',
@@ -139,7 +139,7 @@ export const FINDS: FindDef[] = [
     id: 'w5_note', world: 5, kind: 'note', paper: 'leaf',
     title: 'A blanket',
     hint: 'World 5, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Pokey, an officer gave me a blanket today. He said, \"Don't tell the General.\" I said thank you. He said, \"Please don't thank me. It's embarrassing.\"\n\nI am no longer sure whose side everyone is on. I think half of them are waiting for permission to stop.\n\nLove, M." }],
+    pages: [{ text: "Pokey, Lieutenant Pell brought me a blanket today. He said, \"It is not from the General.\" I hadn't asked. I said thank you. He said, \"Please do not thank me. It is embarrassing.\"\n\nI'm not sure anymore whose side everyone is on. I think half of them are waiting for permission to stop.\n\nLove, M." }],
   },
   {
     id: 'w5_keepsake', world: 5, kind: 'keepsake', icon: 'petal',
@@ -163,7 +163,7 @@ export const FINDS: FindDef[] = [
     id: 'w6_note', world: 6, kind: 'note', paper: 'letter',
     title: 'A letter to Grandma',
     hint: 'World 6, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Dear Grandma,\n\nPokey is coming. I know you'd tell me not to wait for anyone. But he is slow and stubborn, and he has never once turned back. You would like him. You would tell him to eat something.\n\nLove, Meeca\n\n(Pokey: if Dot delivered this by mistake, hello. Please skip the part about your hat.)" }],
+    pages: [{ text: "Dear Grandma,\n\nPokey is coming. I know you'd tell me not to wait for anyone. But he's slow and stubborn, and he has never once turned back. You always liked him. You'd tell him to stop looming in the doorway.\n\nLove, Meeca\n\n(Pokey: if Dot gave you this by mistake, hello. Please skip the part where I said you're slow.)" }],
   },
   {
     id: 'w6_keepsake', world: 6, kind: 'keepsake', icon: 'rattle',
@@ -185,9 +185,9 @@ export const FINDS: FindDef[] = [
   // ───────────── World 7: Ancient Ruins ─────────────
   {
     id: 'w7_note', world: 7, kind: 'note', paper: 'journal',
-    title: 'The quiet',
+    title: 'The plain chair',
     hint: 'World 7, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Pokey, this place is older than the General and older than Grandma's stories. I keep thinking someone I love walked here once. I can't think who.\n\nThe officers go quiet when the General passes my door. Not afraid-quiet. Sad-quiet. I don't understand it yet.\n\nLove, M." }],
+    pages: [{ text: "Pokey, they let us rest in the old temple tonight. I keep thinking someone I love walked here once. I can't think who.\n\nThe General stood in front of a plain stone chair for an hour. He didn't sit down. The soldiers wouldn't look at him. Not afraid. Sad. I don't understand it yet.\n\nLove, M." }],
   },
   {
     id: 'w7_keepsake', world: 7, kind: 'keepsake', icon: 'teddy',
@@ -211,13 +211,13 @@ export const FINDS: FindDef[] = [
     id: 'w8_note', world: 8, kind: 'note', paper: 'leaf',
     title: 'A pillow',
     hint: 'World 8, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Pokey, a lieutenant asked if I wanted a pillow. I said I'm a hostage, not a guest. He said, \"Yes, ma'am. Would you like a pillow?\"\n\nEvery night the General stands outside my door for a long time. He never comes in. I think he wants to say something. I am not going to make it easy.\n\nLove, M." }],
+    pages: [{ text: "Pokey, Pell asked me again if I wanted a pillow. I told him I'm a hostage, not a guest. He said, \"Yes, Miss. Would you like a pillow?\"\n\nEvery night somebody stands outside my door. Eleven steps there, eleven back. He never knocks. I know who it is now. I'm not going to make it easy for him.\n\nLove, M." }],
   },
   {
     id: 'w8_keepsake', world: 8, kind: 'keepsake', icon: 'seeds',
     title: 'A packet of seeds',
     hint: 'World 8, hidden. Crouch beside a fern.',
-    pages: [{ text: 'A paper packet of seeds, labelled in a careful hand: "For the hill. Plant when it is quiet." It has never been opened.' }],
+    pages: [{ text: 'A paper packet of seeds, labeled in a careful hand: "For the hill. Plant when it is quiet." It has never been opened.' }],
   },
   {
     id: 'w8_book', world: 8, kind: 'book',
@@ -233,9 +233,9 @@ export const FINDS: FindDef[] = [
   // ───────────── World 9: Volcanic Jungle ─────────────
   {
     id: 'w9_note', world: 9, kind: 'note', paper: 'leaf',
-    title: 'It is very hot',
+    title: 'Through the door',
     hint: 'World 9, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Pokey, last night the General said something to nobody in particular: \"Fast people are the ones who arrive in time.\"\n\nI told him my friend is the slowest person I know and has never once failed to arrive. He didn't answer. He didn't leave, either.\n\nP.S. It is very hot in here. Dot has stopped glowing and started sweating.\n\nLove, M." }],
+    pages: [{ text: "Pokey, last night the General said something through my door, to nobody in particular: \"Fast people are the ones who arrive in time.\"\n\nI told him my friend is the slowest person I know and has never once failed to arrive. He didn't answer. He didn't leave, either.\n\nP.S. Tell Dot the bars aren't getting any wider.\n\nLove, M." }],
   },
   {
     id: 'w9_keepsake', world: 9, kind: 'keepsake', icon: 'stopwatch',
@@ -259,13 +259,13 @@ export const FINDS: FindDef[] = [
     id: 'w10_note', world: 10, kind: 'note', paper: 'letter',
     title: 'Come and get me',
     hint: 'World 10, in plain sight. Look for a pink bell.',
-    pages: [{ text: "Pokey,\n\nWhatever happens tomorrow, you were never too slow. I have just been waiting for someone who stops.\n\nCome and get me. Bring snacks.\n\nP.S. Don't hurt him more than you have to. I don't know why I wrote that.\n\nLove, M." }],
+    pages: [{ text: "Pokey,\n\nWhenever you get here, you were never too slow. Everybody else always hurried past me. You're the one who stops.\n\nCome and get me. Bring snacks.\n\nP.S. Don't hurt him more than you have to. I'll explain when I see you.\n\nLove, M." }],
   },
   {
     id: 'w10_keepsake', world: 10, kind: 'keepsake', icon: 'bell',
     title: 'A small bronze bell',
     hint: 'World 10, hidden. Crouch beside a fern.',
-    pages: [{ text: 'A small bronze bell, green with age. Grandma rang it whenever someone she loved was coming home. It has not rung since the day she died.' }],
+    pages: [{ text: "A small bronze bell, green with age. Meeca's grandma rang it whenever someone she loved was coming home. It hasn't rung since the day she died." }],
   },
   {
     id: 'w10_book', world: 10, kind: 'book',

@@ -371,6 +371,8 @@ export interface Collectible {
   isLocked?: boolean;
   /** a story find (note, book or keepsake): which one (see finds.ts) */
   findId?: string;
+  /** World 3: one of Grandma's things hidden in a fern (a relic with `hidden`): what it is, for the words when it turns up */
+  thing?: string;
   /** a hidden find sits in a Hush Fern and is found by crouching beside it; otherwise it is a Keeper's Bell flower you just touch */
   hidden?: boolean;
   /** how far the search has got, 0..1 (hidden finds) */

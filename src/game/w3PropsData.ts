@@ -1,0 +1,25 @@
+// generated from Matt's World 3 sheets (2026-10-24: the grotto pieces, ferns and hiding places, the glowworms) by scratchpad/w3/pack.py: where each piece sits in w3-props.webp
+export interface W3Frame { x: number; y: number; w: number; h: number }
+export const W3_FRAMES = {
+  clawRock: { x: 0, y: 804, w: 320, h: 226 },
+  fern: { x: 1472, y: 444, w: 380, h: 235 },
+  fernRustle: { x: 1096, y: 444, w: 372, h: 288 },
+  glowDim: { x: 424, y: 444, w: 244, h: 345 },
+  glowHang0: { x: 324, y: 804, w: 108, h: 209 },
+  glowHang1: { x: 537, y: 804, w: 117, h: 200 },
+  glowHang2: { x: 1098, y: 804, w: 152, h: 187 },
+  glowLit: { x: 1115, y: 0, w: 251, h: 420 },
+  glowSleep0: { x: 658, y: 804, w: 126, h: 200 },
+  glowSleep1: { x: 436, y: 804, w: 97, h: 204 },
+  glowWave0: { x: 1731, y: 804, w: 182, h: 185 },
+  glowWave1: { x: 788, y: 804, w: 142, h: 190 },
+  glowWave2: { x: 934, y: 804, w: 160, h: 188 },
+  glowWave3: { x: 1254, y: 804, w: 169, h: 187 },
+  grottoMouth: { x: 0, y: 0, w: 636, h: 440 },
+  hollowLog: { x: 672, y: 444, w: 420, h: 293 },
+  mossCurtain: { x: 640, y: 0, w: 471, h: 440 },
+  mushrooms: { x: 1427, y: 804, w: 300, h: 185 },
+  pawprint: { x: 0, y: 1034, w: 320, h: 122 },
+  stalactite: { x: 1370, y: 0, w: 319, h: 400 },
+  stalagmites: { x: 0, y: 444, w: 420, h: 356 },
+} as const satisfies Record<string, W3Frame>;

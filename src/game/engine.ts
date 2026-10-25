@@ -54,7 +54,9 @@ import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } from './river.ts';
-import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump } from './zones.ts';
+import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
+import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
+import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
@@ -269,6 +271,11 @@ export class GameEngine {
   private dragJump = 1;
   /** World 8: how dark it is on screen, 0..1 */
   private darkShow = 0;
+  /** World 3's glowworms (zones.ts): how long he has stood still in the dark, and when each sleeping light woke (game time, by id) */
+  private glowStill = 0;
+  private glowWake = new Map<number, number>();
+  /** World 3's thorn vines: a lash under way (by vine index: when it saw him, which way, whether it has landed), and the cycle it was in */
+  private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
@@ -305,6 +312,8 @@ export class GameEngine {
   private chaseNext = 0;
   /** where the eagle's shadow falls this frame (drawn after the bushes and the front grass), or null */
   private watchShadowAt: { x: number; a: number } | null = null;
+  /** World 3: the watcher is a pair of eyes in the dark, not an eagle (where they are this frame, world px; drawn over the darkness) */
+  private watchEyes: { x: number; y: number; s: number; a: number; narrow: number } | null = null;
   private comboCount: number = 0;
   private comboResetTimer: number = 0;
   /** the first-stage lesson for a new touch player (see touchCoach.ts), when there is one */
@@ -429,6 +438,9 @@ export class GameEngine {
     this.watch = newWatch();
     this.watch.dur = 5; // the first pass waits a little longer, for the hint to be read
     this.bushRustle.clear();
+    this.glowStill = 0;
+    this.glowWake.clear();
+    this.vineLash.clear();
     resetHeroClips();
     warmHeroClips();
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
@@ -865,6 +877,10 @@ export class GameEngine {
           geyser: ['VENTS ERUPT ON A BEAT. STAND BETWEEN THEM', '#fdba74'],
           bolt: ['LIGHTNING STRIKES WHERE THE RODS CHARGE', '#bae6fd'],
         };
+        if (z.kind === 'dark' && z.lights?.some((l) => l.sleep)) {
+          this.addFloatingText('TOO DARK. STAND STILL AND LISTEN', p.x, p.y - 100, '#99f6e4');
+          continue;
+        }
         this.addFloatingText(hint[z.kind][0], p.x, p.y - 100, hint[z.kind][1]);
       }
     } else {
@@ -882,6 +898,8 @@ export class GameEngine {
         want = Math.max(want, Math.max(0, 1 - out / 220));
       }
       this.darkShow += (want - this.darkShow) * Math.min(1, dt * 3);
+      this.stepGlowworms(dt, zones);
+      if (this.proto?.thorns) this.stepThornVines();
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -1767,7 +1785,7 @@ export class GameEngine {
     // --- Collectibles Magnet Attraction (when Nectar Magnet power-up is active) ---
     if (p.activePowerUp === 'magnet') {
       for (const c of this.collectibles) {
-        if (c.collected || c.type === 'cage' || c.type === 'exit_totem' || c.type === 'thorn_gate' || c.type === 'find') continue;
+        if (c.collected || c.type === 'cage' || c.type === 'exit_totem' || c.type === 'thorn_gate' || c.type === 'find' || c.hidden) continue;
         const dist = distance2D(p.x, p.y - 20, c.x, c.y);
         if (dist < 260 && dist > 10) {
           const pullSpeed = 460 * dt;
@@ -1837,6 +1855,23 @@ export class GameEngine {
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
         else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
         if ((c.search ?? 0) >= 1) this.collectFind(c);
+        continue;
+      }
+
+      if (c.type === 'relic' && c.hidden) {
+        // World 3: one of Grandma's things in a fern (Dot hid them very fast, because there were boots): crouch beside it, like a Hush Fern
+        const close = Math.abs(p.x - c.x) < 64 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
+        c.near = close && !p.ducking;
+        if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
+        else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
+        if ((c.search ?? 0) >= 1) {
+          c.collected = true;
+          p.relicsFound++;
+          this.runScore += 500;
+          sound.playRelicFound();
+          this.spawnSparkBurst(c.x, c.y, '#fde68a');
+          this.addFloatingText(`GRANDMA'S ${(c.thing ?? 'keepsake').toUpperCase()}!`, c.x, c.y - 40, '#fde68a', 2);
+        }
         continue;
       }
 
@@ -3739,6 +3774,24 @@ export class GameEngine {
       for (const pl of this.platforms) if (pl.lily && this.onScreen(pl.x + pl.width / 2, pl.y, pl.width)) drawLily(ctx, pl.x + pl.width / 2, pl.y + 8, pl.width * 1.15, this.gameTime, pl.id % 2 === 1);
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
+    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id));
+    // World 3's sleeping thorn vines (thornVine.ts)
+    for (let i = 0; i < (this.proto?.thorns?.length ?? 0); i++) {
+      const v = this.proto!.thorns![i];
+      if (!this.onScreen(v.x, (v.top + v.bud) / 2, 400)) continue;
+      const ph = vinePhase(v, this.gameTime);
+      const l = this.vineLash.get(i);
+      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : this.player.x >= v.x ? 1 : -1, this.gameTime);
+    }
+    // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
+    for (const z of this.currentStage.zones ?? []) {
+      if (z.kind !== 'dark' || !z.lights) continue;
+      for (const l of z.lights) {
+        if (!l.sleep || !this.onScreen(l.x, l.y, 200)) continue;
+        const at = this.glowWake.get(l.id ?? -1);
+        drawGlowworm(ctx, l.x, l.y - GLOWWORM_H / 2, at === undefined || this.gameTime < at ? -1 : this.gameTime - at, this.gameTime, l.id ?? 0);
+      }
+    }
     if (this.chase) this.drawChase(ctx);
     // trunk hollows (1-4): over the trunk, glowing once he is close enough to see in
     for (const h of this.proto?.hollows ?? []) {
@@ -3876,6 +3929,7 @@ export class GameEngine {
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
+    if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id));
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
@@ -3953,7 +4007,11 @@ export class GameEngine {
       const lights: Array<{ x: number; y: number; r: number }> = [];
       for (const z of this.currentStage.zones ?? []) {
         if (z.kind !== 'dark' || !z.lights || z.x1 < cx0 - 300 || z.x0 > cx0 + this.camera.viewportWidth + 300) continue;
-        for (const l of z.lights) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
+        for (const l of z.lights) {
+          // a sleeping glowworm glimmers faintly (something is up there); awake, its light opens out
+          const u = l.sleep ? this.glowLit(l.id ?? -1) : 1;
+          lights.push({ x: l.x - cx0, y: l.y - cy0, r: u > 0.01 ? l.r * (0.35 + 0.65 * u) : 42 });
+        }
       }
       // every flower and leaf glows a little, so a reward is never lost in the dark
       for (const c of this.collectibles) {
@@ -3961,7 +4019,50 @@ export class GameEngine {
         if (c.x < cx0 - 80 || c.x > cx0 + this.camera.viewportWidth + 80) continue;
         lights.push({ x: c.x - cx0, y: c.y - cy0, r: 62 });
       }
-      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime);
+      // World 3 has no lantern: Pokey is dim, but steady (a small glow of his own), and the grotto's dark is green-black
+      const grotto = this.currentStage.config.worldIndex === 3;
+      if (this.watchShadowAt) lights.push({ x: this.watchShadowAt.x - cx0, y: this.player.y - 40 - cy0, r: 150 * this.watchShadowAt.a * 2 });
+      drawDarkness(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.darkShow, { x: this.player.x - cx0, y: this.player.y - 30 - cy0 }, lights, this.gameTime, grotto ? { heroR: 125, ink: 'rgb(2, 12, 10)', fireflies: false } : undefined);
+    }
+    if (this.watchEyes) {
+      // World 3's watcher: two amber eyes, over the darkness so they always show
+      const e = this.watchEyes;
+      const ex = e.x - this.camera.x, ey = e.y - this.camera.y;
+      ctx.save();
+      ctx.globalAlpha = e.a;
+      // the shape of something big around them, darker than the cave, so the eyes read on a lit stretch too
+      const shade = ctx.createRadialGradient(ex, ey + 8 * e.s, 4, ex, ey + 8 * e.s, 95 * e.s);
+      shade.addColorStop(0, 'rgba(2, 8, 6, 0.75)');
+      shade.addColorStop(1, 'rgba(2, 8, 6, 0)');
+      ctx.fillStyle = shade;
+      ctx.beginPath();
+      ctx.ellipse(ex, ey + 8 * e.s, 110 * e.s, 70 * e.s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'lighter';
+      for (const side of [-1, 1]) {
+        const cx = ex + side * 26 * e.s, cy = ey;
+        const halo = ctx.createRadialGradient(cx, cy, 2, cx, cy, 34 * e.s);
+        halo.addColorStop(0, 'rgba(253, 224, 71, 0.9)');
+        halo.addColorStop(1, 'rgba(234, 88, 12, 0)');
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 34 * e.s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      for (const side of [-1, 1]) {
+        const cx = ex + side * 26 * e.s, cy = ey;
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        // a cat's eye: an almond, tilted up at the outside, thinner as it narrows
+        ctx.ellipse(cx, cy, 15 * e.s, (8 - 5 * e.narrow) * e.s, side * -0.25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#1c1206';
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, 2.6 * e.s, (7 - 4 * e.narrow) * e.s, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
     }
     if (this.respawnFlash > 0) {
       ctx.fillStyle = `rgba(255, 255, 255, ${this.respawnFlash / 0.6 * 0.7})`;
@@ -4209,11 +4310,15 @@ export class GameEngine {
     const before = this.watch.diveT;
     const ev = stepWatch(this.watch, dt, zone, Math.random);
     const id = this.currentStage.config.id;
+    // World 3's watcher is the eyes in the dark: a low growl, and ferns to hide in
+    const grotto = this.currentStage.config.worldIndex === 3;
+    const cry = (phase: 0 | 2) => (grotto ? sound.playPredator('jaguar', phase) : sound.playEagleScreech());
+    const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
-      sound.playEagleScreech();
+      cry(0);
       if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
-        this.guide(lessonInputMode() === 'screen' ? 'Here it comes! Slide down inside a bush to hide' : 'Here it comes! Hold down inside a bush to hide', 3);
+        this.guide(lessonInputMode() === 'screen' ? `Here it comes! Slide down inside a ${hide} to hide` : `Here it comes! Hold down inside a ${hide} to hide`, 3);
       }
     }
     const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
@@ -4222,10 +4327,10 @@ export class GameEngine {
       if (sees(this.watch, sx, bushes, me)) {
         this.watch.seen = true;
         this.watchFrom = { x: sx, y: this.camera.y + 125 };
-        sound.playEagleScreech();
+        cry(2);
         if (!tipHeard(id, 'watch:seen')) {
           markTipHeard(id, 'watch:seen');
-          this.guide('It saw you! Get into a bush before its shadow reaches you', 3.2);
+          this.guide(grotto ? 'It saw you! Get into a fern before it reaches you' : 'It saw you! Get into a bush before its shadow reaches you', 3.2);
         }
       }
       // the strike: unless he made it into a bush in time
@@ -4246,8 +4351,34 @@ export class GameEngine {
   /** the watching eagle, its shadow, and (in front of Pokey) the bushes: drawn in the world's space */
   private drawWatchBack(ctx: CanvasRenderingContext2D) {
     this.watchShadowAt = null;
+    this.watchEyes = null;
     const w = this.watch;
     const zone = zoneAt(this.proto!.watch!, this.player.x);
+    if (this.currentStage.config.worldIndex === 3) {
+      // the Mossy Grotto: something large in the dark, watching. Two eyes far back among the stalactites (calm), opening wide at the
+      // edge of the view (warn), sweeping across with a pool of their amber light on the floor (pass), and if they see him, narrowing
+      // and coming at him: a paw out of the dark
+      const cam = this.camera;
+      if (w.phase === 'calm') {
+        if (!zone) return;
+        const a = this.gameTime * 0.35;
+        const blink = Math.sin(this.gameTime * 1.3) > 0.97 ? 0.15 : 1;
+        this.watchEyes = { x: cam.x + cam.viewportWidth * (0.5 + 0.36 * Math.cos(a)), y: cam.y + 160 + 12 * Math.sin(a * 1.7), s: 0.6, a: 0.5 * blink, narrow: 0 };
+      } else if (w.phase === 'warn') {
+        const u = w.t / WATCH.warn;
+        this.watchEyes = { x: w.dir === 1 ? cam.x + 40 + 30 * u : cam.x + cam.viewportWidth - 40 - 30 * u, y: cam.y + 175, s: 0.8 + 0.5 * u, a: 0.5 + 0.5 * u, narrow: 0 };
+        this.watchShadowAt = { x: w.dir === 1 ? cam.x + 30 : cam.x + cam.viewportWidth - 30, a: 0.18 + 0.3 * u };
+      } else if (w.seen) {
+        const u = Math.min(1, w.diveT / WATCH.dive);
+        const k = u * u;
+        this.watchEyes = { x: this.watchFrom.x + (this.player.x - this.watchFrom.x) * k, y: this.watchFrom.y + (this.player.y - 70 - this.watchFrom.y) * k, s: 1.3 + 0.5 * k, a: 1, narrow: 0.6 };
+      } else {
+        const sx = shadowX(w, cam.x, cam.viewportWidth);
+        this.watchEyes = { x: sx, y: cam.y + 175, s: 1.3, a: 1, narrow: 0 };
+        this.watchShadowAt = { x: sx, a: 0.5 };
+      }
+      return;
+    }
     if (!this.watchEagle) {
       this.watchEagle = { id: 9977, type: 'eagle', x: 0, y: 0, vx: 0, vy: 0, width: 58, height: 42, hp: 1, maxHp: 1, facing: 1, patrolMinX: 0, patrolMaxX: 0, attackCooldown: 0, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0 } as Enemy;
     }
@@ -4312,6 +4443,20 @@ export class GameEngine {
       if (x < pl.x || x > pl.x + pl.width || pl.y < top || pl.y > this.camera.y + this.camera.viewportHeight + 60) continue;
       if (pl.y < best) { best = pl.y; gy = pl.y; }
     }
+    if (this.currentStage.config.worldIndex === 3) {
+      // the eyes' gaze: a pool of amber light on the floor
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const g = ctx.createRadialGradient(x, gy - 10, 10, x, gy - 10, 130);
+      g.addColorStop(0, `rgba(251, 191, 36, ${a * 0.55})`);
+      g.addColorStop(1, 'rgba(251, 191, 36, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.ellipse(x, gy - 10, 130, 34, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
     // a dark oval on the grass (drawn after the front grass and the bushes, so they never hide it): a wide soft halo and a firmer
     // core, plain enough to read against the dark soil at a glance
     ctx.save();
@@ -4327,6 +4472,84 @@ export class GameEngine {
   }
 
   /** the bushes, in front of Pokey */
+  /**
+   * World 3's glowworms: standing still in the dark for GLOW_STILL wakes the sleeping lights near him, the far ones a moment later, and
+   * they stay lit (the story: he stopped to listen, and the glowworms noticed).
+   */
+  private stepGlowworms(dt: number, zones: readonly import('./zones.ts').Zone[] | undefined) {
+    const p = this.player;
+    const dark = (zones ?? []).filter((z) => z.kind === 'dark' && z.lights?.some((l) => l.sleep) && p.x >= z.x0 - 120 && p.x <= z.x1 + 120);
+    if (!dark.length) {
+      this.glowStill = 0;
+      return;
+    }
+    const still = p.grounded && Math.abs(p.vx) < 25 && !this.isGameOver;
+    this.glowStill = still ? this.glowStill + dt : 0;
+    if (this.glowStill < GLOW_STILL) return;
+    let woke = 0;
+    for (const z of dark) {
+      for (const l of z.lights!) {
+        if (!l.sleep || l.id === undefined || this.glowWake.has(l.id)) continue;
+        if (l.x < p.x - GLOW_REACH.back || l.x > p.x + GLOW_REACH.ahead) continue;
+        this.glowWake.set(l.id, this.gameTime + Math.max(0, l.x - p.x) / GLOW_REACH.speed);
+        woke++;
+      }
+    }
+    if (woke) {
+      sound.playShrineUnlocked();
+      const id = this.currentStage.config.id;
+      if (!tipHeard(id, 'glow:woke')) {
+        markTipHeard(id, 'glow:woke');
+        this.guide('The glowworms noticed you! They light up when you stop and listen.', 4.5);
+      }
+    }
+  }
+
+  /**
+   * World 3's thorn vines (thornVine.ts): a vine that is looking lashes at him if he moves within its reach; the lash lands a moment
+   * later, and costs a heart if he is still in reach. One lash per look.
+   */
+  private stepThornVines() {
+    const p = this.player;
+    const vines = this.proto!.thorns!;
+    const id = this.currentStage.config.id;
+    for (let i = 0; i < vines.length; i++) {
+      const v = vines[i];
+      if (Math.abs(v.x - p.x) > 900) continue;
+      const ph = vinePhase(v, this.gameTime);
+      const cycle = Math.floor((this.gameTime + v.offset) / vinePeriod(v));
+      if (ph.phase === 'stir' && Math.abs(v.x - p.x) < v.reach + 260 && !tipHeard(id, 'vine:freeze')) {
+        markTipHeard(id, 'vine:freeze');
+        this.guide('A vine is stirring! Freeze until it goes back to sleep', 3.2);
+      }
+      const lash = this.vineLash.get(i);
+      if (lash && this.gameTime - lash.at > VINE.windup + VINE.out) this.vineLash.delete(i);
+      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, p)) {
+        this.vineLash.set(i, { at: this.gameTime, dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
+        sound.playWhoosh();
+      }
+      const l = this.vineLash.get(i);
+      if (l && !l.landed && this.gameTime - l.at >= VINE.windup) {
+        l.landed = true;
+        if (inReach(v, p.x, p.y) && p.invincibleTimer <= 0) {
+          this.damagePlayer(1);
+          p.vx = l.dir * 260;
+          if (!tipHeard(id, 'vine:hit')) {
+            markTipHeard(id, 'vine:hit');
+            this.guide('Ouch! When a vine opens an eye, stand still, or duck', 3.2);
+          }
+        }
+      }
+    }
+  }
+
+  /** how awake a sleeping light is: 0 asleep, rising to 1 over GLOW_REACH.fade once it wakes */
+  private glowLit(id: number): number {
+    const at = this.glowWake.get(id);
+    if (at === undefined) return 0;
+    return Math.max(0, Math.min(1, (this.gameTime - at) / GLOW_REACH.fade));
+  }
+
   private drawBushes(ctx: CanvasRenderingContext2D) {
     const p = this.player;
     const bushes = this.proto?.bushes ?? [];
@@ -4334,9 +4557,9 @@ export class GameEngine {
       const b = bushes[i];
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
-      if (drawBushArt(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
+      if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
-      const h = bushHeight(b);
+      const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });
       ctx.save();
       ctx.globalAlpha = inside ? 0.8 : 1;
       ctx.fillStyle = '#2f6b2a';

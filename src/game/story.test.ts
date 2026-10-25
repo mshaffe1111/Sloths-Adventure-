@@ -13,7 +13,7 @@ import { PLATES, isPlate } from './plateData.ts';
 const CUES: StoryCue[] = ['pokey', 'meeca', 'bloom', 'grandma', 'journey', 'comedy', 'tender', 'sorrow', 'dread', 'war', 'chase', 'reveal', 'resolve', 'triumph', 'mercy', 'finale', 'hush'];
 const STINGS: StorySting[] = ['cliffhanger', 'reveal', 'laugh', 'blow', 'bloom', 'darkness', 'door', 'heartbreak', 'triumph'];
 const SPEAKERS = [
-  'Narrator', 'Pokey', 'Meeca', 'Dot', 'Grandma', 'Grandfather', 'Officer', 'Gruntlewick', 'General Iron-Claw', 'Thornbark',
+  'Narrator', 'Pokey', 'Meeca', 'Dot', 'Grandma', 'Grandfather', 'Lieutenant Pell', 'Gruntlewick', 'Squirrel', 'General Iron-Claw', 'Thornbark',
   'Venom Fang', 'Crocus Rex', 'Shadow Prowler', 'Sky Sovereign', 'Tarantula Queen', 'Marsh Reaver', 'Stone Idol Golem', 'Night-Wing Monarch', 'Magma Drake',
 ];
 

@@ -29,7 +29,7 @@ const VOICES: Record<string, Voice> = {
   Meeca: { base: 67, hop: PENT, type: 'sine', dec: 0.085, peak: 0.16, lp: 4000, glide: 1.02 },
   Dot: { base: 79, hop: PENT, type: 'sine', dec: 0.05, peak: 0.12, lp: 5000, glide: 1.04 },
   Grandma: { base: 57, hop: [0, 2, 4, 7, 9, 12], type: 'triangle', dec: 0.1, peak: 0.12, lp: 1500, glide: 0.99 },
-  Officer: { base: 45, hop: PENT, type: 'square', dec: 0.08, peak: 0.07, lp: 800, glide: 0.96 },
+  'Lieutenant Pell': { base: 45, hop: PENT, type: 'square', dec: 0.08, peak: 0.07, lp: 800, glide: 0.96 },
   'General Iron-Claw': { base: 38, hop: MINOR, type: 'sawtooth', dec: 0.09, peak: 0.13, lp: 700, glide: 0.95 },
   // Meeca's grandfather before the iron: the General's voice, softened
   Grandfather: { base: 41, hop: PENT, type: 'triangle', dec: 0.1, peak: 0.13, lp: 900, glide: 0.97 },
@@ -43,6 +43,7 @@ const VOICES: Record<string, Voice> = {
   'Stone Idol Golem': { base: 36, hop: [0, 7, 12], type: 'triangle', dec: 0.12, peak: 0.22, lp: 450, glide: 0.98 },
   'Night-Wing Monarch': { base: 60, hop: MINOR, type: 'triangle', dec: 0.09, peak: 0.1, lp: 1500, breath: 0.5, glide: 0.98 },
   'Magma Drake': { base: 36, hop: MINOR, type: 'sawtooth', dec: 0.1, peak: 0.12, lp: 650, glide: 0.95 },
+  Squirrel: { base: 76, hop: PENT, type: 'square', dec: 0.04, peak: 0.07, lp: 3200, glide: 1.05 },
 };
 const FALLBACK: Voice = { base: 48, hop: PENT, type: 'triangle', dec: 0.08, peak: 0.12, lp: 1400, glide: 0.98 };
 

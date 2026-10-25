@@ -11,7 +11,8 @@ import { isPetalStage, relicArt } from './stagePlan.ts';
 import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
 import { rng, tone } from './artKit.ts';
 import { drawAura } from './readable.ts';
-import { drawHushFern, drawKeepersBell } from './findArt.ts';
+import { drawHushFern, drawKeepersBell, drawSearchHint } from './findArt.ts';
+import { drawThingFern } from './w3Art.ts';
 import { leaf } from './rainforest.ts';
 import { drawGiantBat } from './bossBat.ts';
 
@@ -1069,7 +1070,7 @@ export function drawCollectible(
   ctx.translate(item.x, item.y);
   const bobY = Math.sin(time * 4 + item.bobPhase) * 4;
   ctx.translate(0, bobY);
-  if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate' && item.type !== 'find') {
+  if (item.type !== 'exit_totem' && item.type !== 'cage' && item.type !== 'thorn_gate' && item.type !== 'find' && !(item.type === 'relic' && item.hidden)) {
     const big = item.type === 'relic' ? 1.25 : 1.4;
     ctx.scale(big, big);
     // the gold rim on a soft dark pool (see readable.ts): everything you can take wears it, so it reads on any backdrop
@@ -1147,6 +1148,13 @@ export function drawCollectible(
     }
 
     case 'relic': {
+      if (item.hidden) {
+        // World 3: one of Grandma's things, hidden in a fern (crouch beside it): the fern, and the search ring over it
+        ctx.translate(0, -bobY);
+        if (!drawThingFern(ctx, item, time)) drawHushFern(ctx, item, time);
+        else drawSearchHint(ctx, item, time);
+        break;
+      }
       fillGlow(ctx, 'relic', 0, -2, 4, 30, [[0, 'rgba(255, 220, 110, 0.6)'], [1, 'rgba(255, 220, 110, 0)']]);
       // what this world's search turns up (Grandma's things, Meeca's messages, the lieutenant's thread); the golden idol elsewhere
       const keep = relicArt(world, item.id);

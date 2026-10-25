@@ -16,7 +16,7 @@
  *   M  Meeca (kind 'daisy').  :mood is her mood (idle, talk, happy, laugh, sing, think, surprised, sad, sob, scared, scaredwave, cheer,
  *      walk, run, hurt, ko)
  *   G  General Iron-Claw (the world-10 painted boss).   B<n>  the guardian of world n (B3 = Shadow Prowler)
- *   D  Dot the hummingbird, :pose is what he does (hover, perch, yelp, flinch, dizzy, cheer, puzzled, sad, gasp, sleep).   T  Thornbark.   H  the Heartbloom, :bud|bloom|epic|ultimate
+ *   D  Dot the hummingbird, :pose is what she does (hover, perch, yelp, flinch, dizzy, cheer, puzzled, sad, gasp, sleep).   T  Thornbark.   H  the Heartbloom, :bud|bloom|epic|ultimate
  *   The story sheets (storyCels.ts has every pose; a bad pose name throws, so the tests catch it):
  *   GR Grandma   LP Lieutenant Pell   TC the town crier   PO the mail carrier   GN the General in his war look (GN:ready, GN:soften, GN:morph into GV)   GV the General as himself, a plain sloth   GY the grandfather, young (the same plain sloth)   GC the grandfather leading the cub Meeca by the hand (one picture, two figures)   GB/GP busts of the war look and the plain face
  *   MS Meeca's story poses (pink #07: faces, emotion, music box, the tower)   MF Meeca's face bust, :a+b+c changes expression   PN Pokey (satchel)   PV the cub (pink bow, satchel strap)   PX Pokey bandaged   PA PB Pokey and Meeca together   PH Pokey and Meeca hugging   e.g.  GR:water@.4  PH:hug_a@.5
@@ -77,7 +77,7 @@ export const GM = say('Grandma');
 export const GEN = say('General Iron-Claw');
 /** the General once the war look has let go: his badge is the plain face, and Meeca's word for him */
 export const GF = say('Grandfather');
-export const OFF = say('Officer');
+export const OFF = say('Lieutenant Pell');
 
 /** a slow camera move: from (zoom, focus x, focus y) to (zoom, x, y) over `dur` seconds */
 export function pan(z0: number, x0: number, y0: number, z1: number, x1: number, y1: number, dur: number) {

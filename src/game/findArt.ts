@@ -93,7 +93,12 @@ export function drawHushFern(ctx: CanvasRenderingContext2D, item: Collectible, t
   ctx.globalAlpha = 1;
   ctx.restore();
 
-  // the search ring over the fern
+  drawSearchHint(ctx, item, time);
+}
+
+/** over a fern that hides something: the search ring while he crouches, or HOLD DOWN when he is close but standing (origin as above) */
+export function drawSearchHint(ctx: CanvasRenderingContext2D, item: Collectible, time: number) {
+  const search = item.search ?? 0;
   if (search > 0) {
     ctx.save();
     ctx.translate(0, -GROUND - 34);
