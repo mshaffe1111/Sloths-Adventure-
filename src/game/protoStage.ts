@@ -209,6 +209,7 @@ export const STAGE_SECONDS: Record<string, number> = {
   '4-7': 270, // the long glide down
   '4-8': 180,
   '4-9': 300, // the Aerie: the long climb before the Sky Sovereign
+  '4-D': 200, // Dot's netting flight, after 4-5 (dotFlightStage.ts DOT_STAGE_SECONDS)
 };
 export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_SECONDS;
 /** 4-8's length (STAGE_SECONDS: about three minutes for a quick player) */
