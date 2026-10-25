@@ -2380,6 +2380,79 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     pieces.push({ k: 'rest', x0, x1: x });
   }
 
+  /**
+   * the leaf on the wind (4-2's second twist): up a trunk to a high perch at the edge of a soft pit, and a gust lane behind him out over
+   * the pit and the far bank, its chimes on the end of the perch. The lane stops just above the ground (nothing he stands on is in it but
+   * the perch's end, so no gust shoves him along a bank): it is the air the leaf drifts through. Open the leaf as the chimes swing his way
+   * and the gust carries it far out along the petals; in the calm the leaf, or the second jump, still crosses (the pit is leafDrop's).
+   */
+  function gustLeaf() {
+    const x0 = x;
+    run(R.r(300, 360));
+    const tX = x - 150;
+    const perchY = Math.round(G - R.r(260, 290));
+    trunk(tX, G, perchY);
+    branch(tX - 40, x, perchY);
+    for (let i = 0; i < 3; i++) flower(tX, G - 70 - i * 55, 'hibiscus');
+    const edge = x;
+    close();
+    const gap = Math.round(reachJump(0, true) * R.r(0.78, 0.86));
+    const far = edge + gap;
+    softPit(edge, far);
+    // the petals ride the wind: two just off the perch, then a long high line out over the far bank, where the gust carries the leaf
+    // (each one a double jump from the bank, so the wind and the leaf are never needed for them)
+    for (let i = 1; i <= 2; i++) flower(edge + 70 * i, perchY + 12 * i, 'orchid');
+    for (let i = 0; i < 4; i++) flower(Math.round(far - 60 + 150 * i), Math.round(G - 185 + 7 * i), 'orchid');
+    GZ.push({ kind: 'wind', x0: edge - 20, x1: far + 420, top: G - 600, bottom: G - 24, baseY: G, dir: 1, period: 2.8 + 1.4 + 2.2, warn: 1.4, active: 2.2, force: 120, offset: Math.round(R.r(0, 6.4) * 10) / 10 });
+    W4C.push({ x: edge - 12, y: perchY, zone: GZ.length - 1 });
+    open(far);
+    run(R.r(480, 560));
+    expert += (tX - x0) / RUN + (G - perchY) / CLIMB + 1.6 + (x - edge) / RUN;
+    pieces.push({ k: 'canopy', x0, x1: x });
+  }
+
+  /**
+   * the wind turns (4-2's second twist): stepping stones over a soft pit under two gust lanes, the first behind him and the second in his
+   * face. The first lane's chimes stand on the bank; the second's on the broad stone in the middle, where the wind turns. Each gap keeps
+   * the gust rules (a plain jump with the wind behind, the double jump into it), so he hops with the first gust, then waits on the broad
+   * stone for the second to drop.
+   */
+  function turnStones() {
+    const x0 = x;
+    run(R.r(300, 360));
+    const edge = x;
+    close();
+    const one = reachJump(0, false);
+    const tail = () => Math.round(Math.min(one * R.r(0.6, 0.68), SAFE.gap1 - 12));
+    const head = () => Math.round(Math.min(one * R.r(0.5, 0.55), SAFE.gap2 - 120 * 0.7 - 40));
+    const stones: Platform[] = [];
+    const stone = (gap: number, h: number, w: number) => {
+      const last = stones[stones.length - 1];
+      const sx = (last ? last.x + last.width : edge) + gap;
+      const p: Platform = { id: pid++, x: sx, y: G - h, width: w, height: HOLLOW_Y - (G - h) + 10, type: 'solid', style: 'moss_stone' };
+      P.push(p);
+      stones.push(p);
+      flower(sx + w / 2, G - h - 34, 'orchid');
+      return p;
+    };
+    stone(tail(), Math.round(R.r(45, 65)), Math.round(R.r(140, 170)));
+    stone(tail(), Math.round(R.r(70, 95)), Math.round(R.r(140, 170)));
+    const mid = stone(tail(), Math.round(R.r(60, 85)), Math.round(R.r(230, 270)));
+    stone(head(), Math.round(R.r(80, 105)), Math.round(R.r(130, 160)));
+    stone(head(), Math.round(R.r(50, 75)), Math.round(R.r(130, 160)));
+    const lastS = stones[stones.length - 1];
+    const far = lastS.x + lastS.width + head();
+    softPit(edge, far);
+    const turn = Math.round(mid.x + mid.width * 0.45);
+    gustZone(edge - 170, turn, 1, edge - 120);
+    gustZone(turn, far + 110, -1, turn + 30);
+    W4C[W4C.length - 1].y = mid.y;
+    open(far);
+    run(R.r(320, 380));
+    expert += (x - x0) / RUN + 0.6 * stones.length + 1.2 + 3.2;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+
   if (plan === '4-2') {
     // 4-2 First Glide: learn the leaf over soft moss, then the chimes and the gusts behind him, then the twist: gusts into his face,
     // waited out. A canopy road with a seed only the leaf reaches (the secret). Open the leaf and drift across the falls to the shrine.
@@ -2412,14 +2485,29 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       leafSecret();
       flag();
     });
+    beat('Twist again: the wind turns', () => {
+      // the leaf and the gusts together: a high wind that carries the leaf far, then a crossing where the wind turns halfway over
+      hint(x + 40, 'Wind up high! Open your leaf as the chimes swing your way, and ride it far');
+      gustLeaf();
+      rest(R.r(220, 300));
+      flag();
+      hint(x + 40, 'The wind turns halfway across! The chimes on the big stone tell you the second gust');
+      turnStones();
+      rest(R.r(220, 300));
+      gustLeaf();
+      flag();
+    });
     beat('Finish', () => {
+      // 4-2 runs three minutes (STAGE_SECONDS); the walk to the shrine (rest(700..900), at least 2.4 s) closes it
       let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 24) {
-        const k = n % 4;
+      while (expert + 2.5 < stageSeconds('4-2') && n < 40) {
+        const k = n % 5;
         if (k === 0) leafDrop(R.r(0.78, 0.88));
         else if (k === 1) gustGap(R.chance(0.5) ? 1 : -1);
         else if (k === 2) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
-        else highRoad();
+        else if (k === 3) highRoad();
+        else if (R.chance(0.5)) turnStones();
+        else gustLeaf();
         rest(R.r(220, 300));
         n++;
         if (n % 3 === 0) flag();
@@ -2655,17 +2743,23 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
    * carries him out over the gorge; the rest of the chain is as chain() rolls it. No jump reaches the tied-up vine or the second one, so
    * the knot is the way across. In the calm: the knot is the lesson here. (He waits between the vine and the edge, so the knot and Dot
    * are a little left of him: in landscape that keeps them clear of the menu button at the top of the screen.)
+   *
+   * `dir` (4-4's second twist, the knot in the wind): a gust lane over the whole gorge, from just past the bank's end to just short of the
+   * far bank, its chimes on the bank behind the knotted vine. The gap after the short second vine is the wide one (windChain's): with
+   * the gust behind him a plain leap makes it, in his face it falls short, so he waits for Dot, then waits on the short vine for the
+   * chimes. Every leap is checked with the gust behind as well as in the calm (it never carries him past a vine or the far bank).
    */
-  function knotChain(n: number) {
+  function knotChain(n: number, dir?: 1 | -1) {
     const x0 = x;
     run(R.r(400, 480));
     const edge = x;
-    for (let tries = 0; tries < 14; tries++) {
+    const wind = dir ? CROSS : 0;
+    for (let tries = 0; tries < (dir ? 24 : 14); tries++) {
       const k0 = edge - R.r(95, 108);
       // the second vine is short and hangs from high up, far enough out that no jump from the bank reaches it (jumpReaches), and still
       // caught by every leap from the knotted vine
       const xs = [k0, edge + R.r(288, 300)];
-      for (let k = 2; k < n; k++) xs.push(xs[k - 1] + R.r(300, 330));
+      for (let k = 2; k < n; k++) xs.push(xs[k - 1] + (dir && k === 2 ? R.r(378, 402) : R.r(300, 330)));
       const farX = xs[n - 1] + R.r(200, 240);
       const tops = xs.map((_, k) => Math.round(k === 0 ? R.r(148, 160) : R.r(140, 180)));
       const bottoms = xs.map((_, k) => (k === 0 ? G - 40 : k === 1 ? 390 : Math.min(G + 30, tops[k] + 410)));
@@ -2674,16 +2768,23 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       const far: Platform = { id: -99, x: farX, y: G, width: 400, height: BANK_H, type: 'solid' };
       // freed, a jump from the bank under it grabs it; tied up, no jump from anywhere on the bank does, nor to the second vine
       let ok = jumpGrab(xs[0] + 60, G, vs[0]) >= 6 && !jumpReaches(bankFrom, edge, G, tied) && !jumpReaches(bankFrom, edge + 15, G, vs[1]);
-      for (let k = 0; ok && k < n - 1; k++) ok = catchWindow(vs[k], vs[k + 1]) > 0.6 && earlyCatch(vs[k], vs[k + 1]);
-      if (ok) ok = landWindow(vs[n - 2], vs[n - 1], far) >= 8;
-      if (!ok && tries < 13) continue;
+      for (let k = 0; ok && k < n - 1; k++) {
+        ok = catchWindow(vs[k], vs[k + 1]) > 0.6 && earlyCatch(vs[k], vs[k + 1]);
+        if (ok && dir) ok = catchWindow(vs[k], vs[k + 1], wind) > 0.6 && earlyCatch(vs[k], vs[k + 1], 0.5, wind);
+      }
+      if (ok) ok = landWindow(vs[n - 2], vs[n - 1], far) >= 8 && (!dir || landWindow(vs[n - 2], vs[n - 1], far, wind) >= 8);
+      // in the wind, the wide gap is one the gust in his face really does pull short
+      if (ok && dir) ok = catchWindow(vs[1], vs[2], -wind) < catchWindow(vs[1], vs[2]) - 0.3;
+      if (!ok && tries < (dir ? 23 : 13)) continue;
       close();
       const lv = xs.map((vx, k) => liana(vx, vs[k].topY, vs[k].bottomY));
       for (let k = 1; k < n; k++) arc(k === 1 ? edge + 60 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 4);
       W4K.push({ x: lv[0].x, y: KNOT_Y, x0: lv[0].x + 30, x1: edge - 6, ground: G, releases: { kind: 'vine', id: lv[0].id } });
+      // (the chimes stand behind the knotted vine, clear of the spot where he waits for Dot)
+      if (dir) gustZone(edge + 20, farX - 10, dir, k0 - R.r(70, 90), CROSS);
       open(farX);
       run(R.r(140, 200));
-      expert += (edge - x0) / RUN + 0.6 + 0.9 + 1.1 + 0.8 + (farX - edge) / SWING + 0.3 * n + (x - farX) / RUN;
+      expert += (edge - x0) / RUN + 0.6 + 0.9 + 1.1 + 0.8 + (farX - edge) / SWING + 0.3 * n + (dir ? 2.4 : 0) + (x - farX) / RUN;
       pieces.push({ k: 'gorge', x0, x1: x });
       return;
     }
@@ -2758,12 +2859,30 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       windChain(2, d > 0 ? -1 : 1, false);
       flag();
     });
+    beat('Twist again: knots in the wind', () => {
+      // what the stage taught, two at a time: Dot's knot over a gorge the gusts blow across (wait for Dot, then for the chimes), and
+      // the wind in his face over a landing the rocks fall on (hang on through the gust and the rock both)
+      hint(x + 60, 'A knot, and the wind over the gorge! Wait for Dot, then hang on until the chimes say go');
+      knotChain(4, R.chance(0.5) ? 1 : -1);
+      rest(R.r(240, 320));
+      flag();
+      hint(x + 40, 'Wind in your face and rocks on the landing: hang on for the gust and the rock both');
+      windChain(3, -1, false, true);
+      rest(R.r(240, 320));
+      flag();
+      knotChain(3, R.chance(0.5) ? 1 : -1);
+      flag();
+    });
     beat('Finish', () => {
+      // 4-4 runs 170 s (STAGE_SECONDS); the walk to the shrine (rest(700..900), at least 2.4 s) closes it
       let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 14) {
+      while (expert + 2.5 < stageSeconds('4-4') && n < 30) {
         const k = n % 3;
-        if (k === 0) windChain(R.i(2, 3), R.chance(0.5) ? 1 : -1, false, n === 3);
-        else if (k === 1) {
+        if (k === 0) {
+          windChain(R.i(2, 3), R.chance(0.5) ? 1 : -1, false, n === 3);
+          // (a flag follows: keep it clear of the rocks)
+          if (n === 3) rest(R.r(200, 260));
+        } else if (k === 1) {
           if (n === 1) knotSecret();
           else { rest(R.r(240, 320)); stumps(); }
         } else windChain(R.i(3, 4), R.chance(0.5) ? 1 : -1, false);
