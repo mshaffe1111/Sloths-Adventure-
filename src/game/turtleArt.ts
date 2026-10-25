@@ -8,6 +8,8 @@ import type { Enemy } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { bodyRect } from './fight.ts';
 import { TURTLE_FRAMES, TURTLE_WALK_W } from './turtleAtlasData.ts';
+import { makeCreatureAnim } from './creatureAnim.ts';
+import { TURTLE_ANIM, TURTLE_ANIM_UP, TURTLE_ANIM_URL, TURTLE_SEQ } from './turtleAnimData.ts';
 
 const OL = '#2b2416';
 const SHELL = '#5f6b3a';
@@ -151,6 +153,23 @@ function load() {
   trackAtlas(im, new URL('../assets/enemies/turtle-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; });
 }
 
+/** the moving snapper (2026-10-25): its own poses brought to life with the motion model; the single poses draw while it loads */
+const ANIM = makeCreatureAnim(TURTLE_ANIM_URL, TURTLE_ANIM, TURTLE_SEQ, TURTLE_ANIM_UP);
+
+/** the animated frame for this moment, or null to keep the single painted pose (in the shell, sliding, dizzy, the knock-out spin) */
+function turtleClip(e: Enemy, t: number): string | null {
+  if (!ANIM.ready()) return null;
+  const st = e.state ?? 'patrol';
+  const u = e.stateT ?? 0;
+  if (e.defeated) return e.koLanded ? ANIM.ping('flip', t + e.id, 10) : null;
+  if (st === 'windup') return ANIM.at('tell', u / TURTLE.windup);
+  if (st === 'snap') return ANIM.at('snap', u / TURTLE.snap);
+  if (st === 'recover') return ANIM.at('after', u / TURTLE.recover);
+  if (st === 'peek') return ANIM.at('peek', u / TURTLE.peek);
+  if (st === 'shell' || st === 'slide' || st === 'dizzy') return null;
+  return Math.abs(e.vx) > 3 ? ANIM.loop('walk', t + e.id * 0.3, 14) : ANIM.at('walk', 0);
+}
+
 /** world units per atlas pixel: the walking turtle is drawn 66 units across (its 48-unit body plus head and tail) */
 const K = 66 / TURTLE_WALK_W;
 const WALK = ['walk1', 'walk2', 'walk3', 'walk2'] as const;
@@ -194,7 +213,8 @@ export function drawTurtleSprite(ctx: CanvasRenderingContext2D, e: Enemy, t: num
     ctx.ellipse(0, 0, 30, 3.5, 0, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.h * K, f.w * K, f.h * K);
+  const clip = turtleClip(e, t);
+  if (!(clip && ANIM.draw(ctx, clip, K))) ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.h * K, f.w * K, f.h * K);
   ctx.restore();
   // a kicked shell leaves dust lines behind it (the dizzy pose has its own spiral eyes)
   if (e.state === 'slide' && !e.defeated) {
