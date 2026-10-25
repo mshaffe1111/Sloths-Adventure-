@@ -1319,3 +1319,174 @@ Unchanged.
 **Small fixes.** "I'm quite sure you're asleep" became "I bet you're asleep." Dot is she throughout. "Of course" became "Okay," and "Thank you, Lieutenant" became "Thanks, Lieutenant," because those are Pokey.
 
 **For the ending.** Dot says Grandma gave her a letter for him "that night," and she was late with it. That's the night of the storm, ten years ago. In the ending she says "I have something I should have brought you nine years ago." Both can be true: that night was ten years ago, and the last day she could have handed it to him at home, before he left, was nine years ago. I'll keep it lined up when we get there.
+
+---
+
+## World 9: Volcanic Jungle
+
+### The last silly one
+
+*The Volcanic Jungle glowed from underneath. The air tasted like pepper. Up ahead, something enormous was clearing its throat.*
+
+*A voice boomed, "A visitor!" There was a pause. Then, much smaller, it said, "Intruder."*
+
+**Dot (reading):** "It's cold. I'm fine. The General sent up a blanket. Please don't tell him I said thank you." That's the last of the silly ones. The rest are the other kind, and I'm not reading those out loud. They're yours.
+
+**Pokey:** She said thank you to him?
+
+**Dot:** She says thank you to everybody. She said it to a thorn once. It had been trying to snag her sleeve, and it just stopped.
+
+*Behind the smoke, the fortress stood up out of the thunder. Pokey put the note in the satchel, on top.*
+
+### Hidden note (in plain sight, one of Dot's four)
+
+> Pokey, last night the General said something through my door, to nobody in particular: "Fast people are the ones who arrive in time."
+>
+> I told him my friend is the slowest person I know and has never once failed to arrive. He didn't answer. He didn't leave, either.
+>
+> P.S. Tell Dot the bars aren't getting any wider.
+>
+> Love, M.
+
+### The lantern (halfway through the world)
+
+*The lantern was back, held low to the ground, which hadn't fooled anybody the first time.*
+
+**Lieutenant Pell:** I am so sorry. It is me again. I told the kitchen I was out buying thread. I have bought a great deal of thread. I have been ordered to sew the seam shut, and I have done six stitches, and I am afraid five of them are in the wrong place.
+
+**Dot:** Pell! I forgive the scratches. All nine of them.
+
+**Lieutenant Pell:** Miss Meeca asked me to tell you one thing. She says, "Tell Pokey I'm knitting him a scarf. It's going to be very long. He'll have time to get here."
+
+**Pokey:** Tell her I'll wear it.
+
+**Lieutenant Pell:** I shall. Sir. Everyone. I am so sorry. I really must go.
+
+**Dot:** Pokey, you've been quiet for two hours. I counted. It was two hours and eleven minutes. You're worrying. I can tell. You do a thing with your eyebrow.
+
+**Pokey:** I'm thinking about Meeca's grandfather.
+
+**Dot:** What about him?
+
+**Pokey:** Do you think he sleeps?
+
+**Dot:** No.
+
+**Pokey:** He ate four bowls of the wrong soup. Somebody who does that isn't sleeping.
+
+**Dot:** You're going to go up there and ask him, aren't you? Nicely. With your words. In front of all those spikes.
+
+**Pokey:** I thought I'd start there.
+
+### The guardian: Magma Drake
+
+*Before the fight.*
+
+**Magma Drake:** You came. Eight of them said you would, and I did not tidy. I am to burn you. There is a speech that goes with it. I have lost my place.
+
+**Pokey:** Take your time. I'll wait.
+
+**Magma Drake:** Don't be— what is that? On your wrist. It glows. Is it for me?
+
+**Pokey:** No.
+
+**Magma Drake:** No. Of course not. Then we will see what it can do.
+
+**Dot:** It's a flower! It's smaller than my head! Please stop looking at it like it's a weapon!
+
+*After the fight.*
+
+**Magma Drake:** My fire. A hundred years I kept that going, and the first visitor puts it out. I suppose that is what visitors are for.
+
+**Pokey:** You sound terrible. Drink some water.
+
+**Magma Drake:** Will you come back? After. Bring tea. Two cups.
+
+**Pokey:** Maybe. If you tidy.
+
+**Magma Drake:** Go. Now. Before I say something nice.
+
+### Memory: the blessing
+
+*Ten years ago, a few weeks before the storm, Pokey knocked on a door.*
+
+**Grandma:** Don't loom in the doorway, dear. Come in. Sit. He doesn't bite. Often.
+
+**Pokey:** Sir, I'd like your blessing. I'd like to walk beside Meeca for as long as she'll have me.
+
+**Grandfather:** Boy. It took you fourteen minutes to come up my path. I timed it.
+
+**Pokey:** Yes, sir. I stopped to look at your fern.
+
+*The old soldier looked at him for a long time. The kettle in the next room began to sing. Somewhere behind the door, someone was pretending, badly, not to listen.*
+
+**Grandfather:** Come back when you can protect her.
+
+**Pokey:** I will. Slowly.
+
+*Pokey went down the path with one hand on his satchel strap. The kettle was still singing when he reached the gate.*
+
+*Then the storm came, and took Meeca's grandma. For a year after, the old soldier sat by the window and didn't come to the door when Pokey knocked. Then one morning the door stood open, and his chair was empty.*
+
+### The open gates
+
+*The lava road ended where the mountain began. Above him, the fortress went up in iron towers, and every thorn on every wall pointed down.*
+
+**Dot:** Pokey. Pokey! The front door is open. The big one, up there. Wide open, and nobody standing in it. I've been through forty doors in my life, and not one of them did that on purpose!
+
+**Pokey:** Is that bad?
+
+**Dot:** It's welcoming, Pokey.
+
+*Along the great wall, one by one, the guardians took their places. They didn't look down. Every collar was glowing.*
+
+*Above them, the great gates of the Highland Fortress groaned on their hinges, though nobody was pushing them. Lightning walked the length of the wall.*
+
+**General Iron-Claw:** Come up, sloth. I have counted every step you took. There are a thousand more.
+
+**Dot:** He counted your steps, Pokey. That's... I don't know what that is. That's a hobby. That's a very concerning hobby.
+
+*Pokey looked up the thousand steps. Then he looked at the petal on his wrist, which had begun, faintly, to glow.*
+
+### The tower: the door
+
+*The soup was the fifth try, and it had been hot when he left the kitchen. He took the last eleven steps slowly.*
+
+*Her door was oak, banded in iron, with a peephole at the height of a guard's eye. He had never used the peephole. Under the door lay a line of lamplight, and he stopped at the edge of it.*
+
+**General Iron-Claw:** One.
+
+*His paw came up as far as the wood and stayed there.*
+
+**General Iron-Claw:** Two.
+
+**Meeca:** ♪ Slow the rain, slow the thunder. Slow the thorn that holds you under. ♪
+
+*His wife had hummed it over the kettle for forty years, always a little flat. Meeca sang it in tune. It was worse.*
+
+*He didn't say three.*
+
+*He set the bowl on the stool and moved it an inch, so it sat square to the wall. Then he walked down the corridor, counting, and lost the number at the stairs.*
+
+### Hidden keepsake
+
+> A dented stopwatch, glass cracked, still ticking. Scratched on the back: "I always stopped it a second early. She never knew."
+
+### Hidden photo album: The Runner
+
+Unchanged.
+
+- **Training day.** She ran. He clapped. She wasn't keeping score, so he did.
+- **The vine.** She wasn't supposed to be that high. He wasn't supposed to be that proud.
+- **The certificate.** Her first medal. He read the certificate twice, then a third time out loud.
+- **Side by side.** He wore the suit. She wore the headband. Both were their best clothes.
+
+### What changed in World 9, and why
+
+**The Drake.** He's nervous before Pokey even shows up ("Eight of them said you would, and I did not tidy"). When he loses his place in his own speech, Pokey says "Take your time. I'll wait," which is Pokey's patience used as a jab. In the old version Pokey offered him the petal. Now the Drake asks if it's for him, Pokey just says "No," and the Drake's "No. Of course not" is his loneliness showing. After the fight, "I'd like to visit again" is gone. Now the Drake asks Pokey to come back with tea, and Pokey says "Maybe. If you tidy." The Drake still gets his wish. He just has to ask for it.
+
+**The blessing has the right timeline.** It's ten years ago, not nine. And the ending no longer has Pokey going back after the storm to find the chair already empty. Now it's the storm, then a year of the old soldier by the window not answering the door, then the morning the door stood open. It's the same order of events Meeca lived through.
+
+**Meeca's note had a bug.** Its P.S. said "Dot has stopped glowing and started sweating," but Dot is with Pokey, not in the tower, so Meeca couldn't have seen that. It also said "it is very hot in here," while the other note in this world says she's cold. Now the P.S. is "Tell Dot the bars aren't getting any wider," which is Meeca teasing Dot about squeezing through her window bars in World 8. The General's line now comes "through my door," because he never comes in.
+
+**Everything else stayed.** The four bowls of wrong soup, "I thought I'd start there," "a very concerning hobby," and the whole scene at the door were already right.
