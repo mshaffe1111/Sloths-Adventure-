@@ -36,7 +36,7 @@ export function chimeLean(z: Zone, t: number): { angle: number; ringing: boolean
 // ───────────────────────────── Dot's help ─────────────────────────────
 
 export interface DotKnot {
-  /** the knot (world px) Dot flies up to */
+  /** the knot (world px) Dot flies up to; a knotted vine hangs tied up down to it until she frees it (w4Play.ts tiedBottom) */
   x: number;
   y: number;
   /** where Pokey stands to ask: his middle within [x0, x1], his feet near `ground` */
