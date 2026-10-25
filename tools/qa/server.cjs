@@ -108,6 +108,9 @@ const W = () => views[view].width, H = () => views[view].height;
 let actionAt = null;
 const points = () => [...(steer ? [{ x: steer.x, y: steer.y, id: 1 }] : []), ...(actionAt ? [{ x: actionAt.x, y: actionAt.y, id: 2 }] : [])];
 const touch = (type) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: points() });
+// CDP's touchEnd lifts the points it is GIVEN, so a lift names only the finger leaving the glass (it used to send the fingers still
+// down: lifting the action thumb lifted the steering thumb and left the action finger stuck; found by the World 4 session)
+const liftFinger = (pt) => cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [pt] });
 const frames = async (ms) => { for (let t = 0; t < ms; t += 33) await page.clock.runFor(Math.min(33, ms - t)); };
 async function steerTo(dir) {
   if (!steer) {
@@ -152,8 +155,9 @@ async function action(kind, dir, holdMs) {
   const tapMs = persona ? Math.max(25, draw(persona.tapMs, 60)) : 60;
   await frames(kind === 'tap' ? tapMs : kind === 'hold' ? holdMs : 20);
   if (kind === 'flick' && holdMs) await frames(holdMs);
+  const up = { x: actionAt.x, y: actionAt.y, id: 2 };
   actionAt = null;
-  await touch('touchEnd');
+  await liftFinger(up);
   await frames(33);
 }
 
@@ -164,7 +168,7 @@ async function step(s) {
   if (what === 'wait') return frames(Number(msStr || 500));
   // touch: "steer right 800" (the thumb stays down until "lift"), "tap", "flick up", "flickhold up 600", "hold 700", "lift"
   if (what === 'steer') { await steerTo(a); return frames(Number(b || 0)); }
-  if (what === 'lift') { if (steer) { steer = null; await touch('touchEnd'); } return frames(33); }
+  if (what === 'lift') { if (steer) { const up = { x: steer.x, y: steer.y, id: 1 }; steer = null; await liftFinger(up); } return frames(33); }
   if (what === 'tap') return action('tap');
   if (what === 'flick') return action('flick', a);
   if (what === 'flickhold') return action('flick', a, Number(b || 500));
@@ -206,7 +210,8 @@ async function handle(cmd) {
     const b = page.locator('button', { hasText: new RegExp(`^\\s*${cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') });
     if (!(await b.count())) return { error: `no button "${cmd.text}" on screen`, text: await screenText() };
     // a player lifts their thumbs off the glass to press a button: the bot's fingers must not stay down under the card
-    if (steer || actionAt) { steer = null; actionAt = null; await touch('touchEnd'); }
+    if (actionAt) { const up = { x: actionAt.x, y: actionAt.y, id: 2 }; actionAt = null; await liftFinger(up); }
+    if (steer) { const up = { x: steer.x, y: steer.y, id: 1 }; steer = null; await liftFinger(up); }
     await b.first().click();
     await page.clock.runFor(300);
     return { shot: await shot(), text: await screenText() };

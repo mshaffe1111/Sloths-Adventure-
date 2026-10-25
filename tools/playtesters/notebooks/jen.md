@@ -1,9 +1,9 @@
 # Jen's notebook
 
+> Corrected 2026-10-25 by the QA lead: the test rig lifted the wrong thumb when two were down (now fixed). Lessons that came from that bug were removed: a flick while steering works, the double jump works with a steering thumb down, and a quick tap doesn't turn into a mega punch.
+
 ## 2026-10-25 (session 1, first time playing)
 
-- One thumb means I have to lift my steering thumb before I flick. A flick while my thumb is still sliding often does
-  nothing, and so does a flick right at the end of a long run. Stop, let go, flick, then slide in the air to carry forward.
 - One flick clears small rocks and stumps. Tall stumps need a second flick in the air (double jump). If I bonk a wall
   and slide down, double jump right away.
 - A plain jump carries me barely a body length forward unless I slide in the air. Short walks between jumps, or I run off

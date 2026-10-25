@@ -39,4 +39,4 @@ Batch reports: batch 1, https://claude.ai/artifact/4tVn4iZZC4gFANqqYhC4vi · bat
 
 Card timing and knockback are game-wide; they're listed on the stages where a bot hit them.
 
-**Game-wide, confirmed, open:** with a steering thumb down, the double jump never fires and the jump stops his run (touchGestures.ts two-finger path). It blocks most stages for two-thumb players. Retest with `tools/qa/doublejump-check.cjs`. No stage can be signed off until it passes.
+**Withdrawn (batch 2):** "with a steering thumb down, the double jump never fires" was a test-rig bug, not a game bug. CDP's touchEnd lifts the points it is given, and the rig gave it the fingers still down. It's fixed in tools/qa (lifts name only the lifted finger), and `tools/qa/doublejump-check.cjs` now passes on the game. Two-thumb leads from batches 1 and 2 (running-jump stall, side flick as jump-kick, quick tap as mega punch, ring shelves unreachable) are to be rechecked on the fixed rig.
