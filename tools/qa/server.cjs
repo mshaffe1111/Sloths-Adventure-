@@ -74,8 +74,10 @@ async function open(stage, v, flag = 0, layout = 1) {
   if (flag > 0) {
     const ok = await page.evaluate((n) => {
       const e = window.__engine();
-      // (flags in the stage's own order: a stage that runs downhill or back left is not in x order)
-      const cps = e.currentStage.checkpoints ?? [];
+      // (flags in the order he reaches them: the list is kept left to right, and a stage that runs down a cliff and back (4-7,
+      // w4.descent) reaches them top to bottom; taken left to right, "flag 3" was a flag five tiers further down)
+      const all = e.currentStage.checkpoints ?? [];
+      const cps = e.proto?.w4?.descent ? [...all].sort((a, b) => a.y - b.y) : all;
       const cp = cps[Math.min(n, cps.length) - 1];
       if (!cp) return 0;
       cps.forEach((c, i) => { if (i < n) c.reached = true; });

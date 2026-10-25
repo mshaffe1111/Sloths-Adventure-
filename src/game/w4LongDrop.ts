@@ -31,13 +31,21 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, LevelConfig, Platform } from './types.ts';
 import { GLIDE } from './glide.ts';
 import { reachGlide, reachJump, TAKEOFF_SLACK } from './physics.ts';
+
+/** how far the leaf carries him from one jump (no second jump) to a ledge `dy` lower */
+export const leafReach = (dy: number): number => reachGlide(-dy, false);
 import { rockFits, type RockDrop } from './rockfall.ts';
 import { heartsAtFlags, stageSeconds, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
 import type { Updraft, W4Decor } from './w4Play.ts';
 
 const RUN = 285;
+/** a ledge with a flag is at least this wide: he comes back to it after a fall (see flag) */
+export const FLAG_LEDGE = 520;
 /** how far below the ledge he last stood on a glide may fall before it counts as a fall into the mist (px) */
 export const LONG_DROP_FALL = 700;
+/** 4-7 shows more of the world than other stages (the engine's 540 tall sideways, 440 wide upright), so the far side of a leaf's gap
+ *  and the ledge under a turn are in view before he goes */
+export const LONG_DROP_VIEW = { land: 640, port: 620 };
 /** in warm air the open leaf rises until his middle (32 px over his feet) is at its top: his feet hang about this far under it */
 export const DRAFT_HOVER = 36;
 /** a ledge the warm air is needed for sits this far under where he hangs at the top of it (an easy drift down onto it) */
@@ -94,13 +102,25 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
   const hint = (x: number, text: string, pad = text, keys = text, below?: number) =>
     hints.push({ x: r(x), text, pad, keys, ...(below !== undefined ? { belowY: r(below) } : {}) });
   let tier = 0;
+  /** where the flag stands on the ledge a turn has just dropped him onto */
+  let turnFlag = 0;
   /** a line about the ledge he is on (see hint) */
   const say = (text: string, pad = text, keys = text) => hint(dir > 0 ? cur.x + 100 : 0, text, pad, keys, tier > 0 ? cur.y - 60 : undefined);
   let lastFlag = -Infinity;
-  /** a flag on the ledge he is on (only if it is lower than the last one: lower is further on) */
-  const flag = () => {
+  /**
+   * a flag on the ledge he is on (only if it is lower than the last one: lower is further on). He comes back to it after a fall, so
+   * the ledge is made wide (FLAG_LEDGE, out the way he is going) and the flag stands in its middle, well back from the edge: upright a
+   * short slide after a respawn ran him off a short one. `at`: where it stands instead (a turn: where he lands)
+   */
+  const flag = (at?: number) => {
     if (cur.y <= lastFlag + 20) return;
-    let fx = r(cur.x + cur.width / 2);
+    if (at === undefined && cur.width < FLAG_LEDGE && cur === P[P.length - 1]) {
+      const more = FLAG_LEDGE - cur.width;
+      if (dir < 0) cur.x -= more;
+      cur.width += more;
+      expert += more / RUN;
+    }
+    let fx = r(at ?? cur.x + cur.width / 2);
     while (checkpoints.some((c) => c.x === fx)) fx++;
     checkpoints.push({ x: fx, y: cur.y, reached: false });
     lastFlag = cur.y;
@@ -114,14 +134,18 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     beats.push([Math.min(...made.map((p) => p.x)), Math.max(...made.map((p) => p.x + p.width)), name]);
   };
 
-  /** the widest gap the leaf crosses from a ledge `dy` above the next, kept well inside what the level check allows */
-  const leafMax = (dy: number) => reachGlide(-dy, true) * 0.97 - TAKEOFF_SLACK - 40;
-  /** wider than any jump from that height */
-  const jumpMax = (dy: number) => reachJump(-dy, true) * 1.12;
+  /**
+   * the widest gap the leaf crosses from a ledge `dy` above the next, the way Dot teaches it: one jump, then the thumb held (no second
+   * jump), set off from well back from the edge. (It was the jump, the second jump and the leaf together: a tester who did as Dot said
+   * fell short, again and again.) A second jump before the leaf carries him much further still.
+   */
+  const leafMax = (dy: number) => leafReach(dy) * 0.97 - TAKEOFF_SLACK - 30;
+  /** wider than any jump from that height, double jump and all */
+  const jumpMax = (dy: number) => reachJump(-dy, true) * 1.04;
 
   // the top: the ledge broke away behind him; the only way is down
-  let cur = ledge(120, 900, 0);
-  row(400, 820, -34, 4, 'hibiscus');
+  let cur = ledge(120, 1180, 0);
+  row(400, 1100, -34, 5, 'hibiscus');
   /** which way the path runs: 1 right, -1 left */
   let dir: 1 | -1 = 1;
   /** the end of the ledge he is on, the way he is going */
@@ -139,12 +163,12 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
    * of the cliff.
    */
   function drop(o: { leaf: boolean; rock?: boolean; draft?: boolean; long?: boolean; deep?: boolean; plunge?: boolean }) {
-    let dy = Math.round(o.plunge ? R.r(400, 500) : o.deep ? R.r(400, 460) : R.r(120, 190));
+    let dy = Math.round(o.plunge ? R.r(360, 410) : o.deep ? R.r(340, 390) : R.r(120, 190));
     let gap: number;
     if (o.leaf) {
       // (a deeper drop when the window between a jump and the leaf is too narrow at this height)
-      while (leafMax(dy) - jumpMax(dy) < 60 && dy < 300) dy += 20;
-      gap = Math.round(jumpMax(dy) + (leafMax(dy) - jumpMax(dy)) * (o.plunge ? R.r(0.2, 0.45) : R.r(0.25, 0.6)));
+      while (leafMax(dy) - jumpMax(dy) < 36 && dy < 300) dy += 20;
+      gap = Math.round(jumpMax(dy) + (leafMax(dy) - jumpMax(dy)) * (o.plunge ? R.r(0.2, 0.5) : R.r(0.25, 0.7)));
     } else gap = Math.round(reachJump(-dy, true) * R.r(0.55, 0.72));
     const edge = edgeOf(cur);
     const fromY = cur.y;
@@ -254,11 +278,16 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
    */
   function turn(cave: boolean) {
     const e = edgeOf(cur);
-    const dy = r(R.r(500, 550));
+    const dy = r(R.r(520, 570));
     const w = r(R.r(620, 700));
     const out = 300;
     const far = e + dir * out;
     const t = dir > 0 ? ledge(far - w, far, cur.y + dy) : ledge(far, far + w, cur.y + dy);
+    // a trail of petals down the way he falls when he walks off the end (the arc of a walk off at a run), so the turn is shown, not
+    // guessed; he lands on them going back the other way
+    for (const u of [0.25, 0.42, 0.58]) drift.add(flower(e + dir * RUN * u * 0.85, cur.y - 34 + 1250 * u * u, 'orchid'));
+    // (the flag where he lands: a walk off at a run comes down about 180 px out, and he goes back past this on his way)
+    turnFlag = r(e + dir * 40);
     expert += cur.width / RUN + out / RUN + 0.8 + w / RUN;
     dir = dir > 0 ? -1 : 1;
     tier++;
@@ -272,18 +301,21 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
   }
 
   beat('Start: the ledge is gone', () => {
-    hint(160, 'The ledge is gone. The only way now is down: on the leaf');
+    // (before the first edge: the mist under the ledges is no floor)
+    hint(160, 'The ledge is gone: the only way now is down. The mist below is a long fall: miss a ledge and you go back to the last flag');
   });
   beat('Learn: little drops', () => {
-    hint(cur.x + 300, 'Flick up, then keep your thumb on the glass as you fall', 'Hold Jump as you fall', 'Hold Space as you fall');
+    hint(cur.x + 700, 'Jump the gaps! Flick up, and keep your thumb on the glass as you fall', 'Jump the gaps! Hold Jump as you fall', 'Jump the gaps! Hold Space as you fall');
     for (let k = 0; k < 4; k++) drop({ leaf: false });
     flag();
   });
   beat('Develop: only the leaf', () => {
-    hint(cur.x + 100, 'Too far to jump! Open your leaf and drift across');
+    hint(cur.x + 100, 'Too far to jump! Flick up and keep your thumb on the glass: your leaf opens and drifts you across', 'Too far to jump! Jump and hold Jump: your leaf opens and drifts you across', 'Too far to jump! Jump and hold Space: your leaf opens and drifts you across');
     for (let k = 0; k < 6; k++) {
       drop({ leaf: true, long: k === 2 });
       if (k % 2 === 1) flag();
+      // walking off is not the end: in the air, a flick up is one more hop, and the thumb held opens the leaf
+      if (k === 1) say('Slipped off an edge? Flick up and keep your thumb on the glass: one more hop, and your leaf opens', 'Slipped off an edge? Press Jump and hold it: one more hop, and your leaf opens', 'Slipped off an edge? Press Space and hold it: one more hop, and your leaf opens');
     }
   });
   beat('Twist: falling rocks', () => {
@@ -296,7 +328,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
   beat('Rest: the cave', () => {
     hint(cur.x + 60, 'A cave in the cliff below! Walk off the end and drop straight down into it');
     turn(true);
-    flag();
+    flag(turnFlag);
     say('A rest in the cave. The path turns back here: glide the other way now');
   });
   beat('Develop: the other way', () => {
@@ -313,8 +345,9 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     }
   });
   beat('Twist: up on the warm air', () => {
+    say('The path turns back here! Walk off the end and drop straight down onto the ledge below, then glide the other way');
     turn(false);
-    flag();
+    flag(turnFlag);
     drop({ leaf: true, deep: true });
     flag();
     say(
@@ -329,9 +362,9 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     }
   });
   beat('Rest: the lower cave', () => {
-    say('Another cave below. Drop down and rest');
+    say('Another cave below. Walk off the end, drop down into it and rest');
     turn(true);
-    flag();
+    flag(turnFlag);
   });
   beat('Twist: rocks in the warm air', () => {
     drop({ leaf: true, deep: true });
@@ -367,8 +400,9 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     flag();
   });
   beat('Develop: the long crossing', () => {
+    say('Another turn! Walk off the end, drop straight down, and back the other way');
     turn(false);
-    flag();
+    flag(turnFlag);
     drop({ leaf: true });
     say('Too far even for the leaf! Glide to the warm air in the middle, rise in it, and glide on');
     for (let k = 0; k < 2; k++) {
@@ -449,7 +483,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     updrafts,
     deepFall: LONG_DROP_FALL,
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: W } },
-    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, w4: { rocks, updrafts, deepFall: LONG_DROP_FALL, decor, descent: true } },
+    proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, w4: { rocks, updrafts, deepFall: LONG_DROP_FALL, decor, descent: true, route: P.map((p) => p.id), view: LONG_DROP_VIEW } },
     drafts47: drafts,
   };
 }

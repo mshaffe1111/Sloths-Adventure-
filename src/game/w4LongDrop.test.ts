@@ -4,8 +4,8 @@ import { buildProtoStage, HAND_STAGES, stageSeconds } from './protoStage.ts';
 import { validateStage } from './levelCheck.ts';
 import { rockFits } from './rockfall.ts';
 import { glideBrake, glideLift, glideStep, newGlide } from './glide.ts';
-import { PHYS, reachGlide } from './physics.ts';
-import { buildLongDrop, DRAFT_HOVER, type DraftInfo } from './w4LongDrop.ts';
+import { PHYS, reachGlide, reachJump } from './physics.ts';
+import { buildLongDrop, DRAFT_HOVER, FLAG_LEDGE, leafReach, LONG_DROP_VIEW, type DraftInfo } from './w4LongDrop.ts';
 import type { LevelConfig, Platform } from './types.ts';
 import type { Updraft } from './w4Play.ts';
 
@@ -226,4 +226,81 @@ test('4-7 runtime: falling well below the last ledge is a fall into the mist; an
   assert.equal(fell, 1, 'it counts once');
   assert.equal(w.inUpdraft(550, 1000), true);
   assert.equal(w.inUpdraft(650, 1000), false);
+});
+
+test('4-7: every flag stands well back from the edge on a wide ledge; a turn\'s flag where he lands, on his way back', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    for (const cp of st.checkpoints!) {
+      const p = flagLedge(st, cp);
+      // (upright, a short slide after a respawn ran him off a short ledge: testers 2026-10-25)
+      assert.ok(p.width >= FLAG_LEDGE, `seed ${s}: the flag at ${cp.x} is on a ledge only ${p.width} wide`);
+      assert.ok(Math.min(cp.x - p.x, p.x + p.width - cp.x) >= 240, `seed ${s}: the flag at ${cp.x} is ${Math.round(Math.min(cp.x - p.x, p.x + p.width - cp.x))} px from an edge`);
+    }
+  }
+});
+
+test('4-7: the view follows the path: the ledges in order, a wider view, depth for progress (and flags in that order)', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    assert.deepEqual(st.proto.w4!.route, st.platforms.map((p) => p.id));
+    assert.deepEqual(st.proto.w4!.view, LONG_DROP_VIEW);
+    assert.ok(LONG_DROP_VIEW.land > 540 && LONG_DROP_VIEW.port > 440);
+  }
+});
+
+test('4-7: the leaf as Dot teaches it (one jump, thumb held) crosses every leaf gap, where even a double jump falls short', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const P = st.platforms;
+    let leafGaps = 0;
+    for (let i = 1; i < P.length; i++) {
+      const a = P[i - 1], b = P[i];
+      const dy = b.y - a.y;
+      const gap = Math.max(b.x - (a.x + a.width), a.x - (b.x + b.width));
+      if (gap <= 0 || dy < 0 || (st.updrafts ?? []).some((u) => u.x0 < Math.max(a.x, b.x) + 10 && u.x1 > Math.min(a.x + a.width, b.x + b.width) - 10 && u.top < b.y && u.bottom > a.y)) continue;
+      // (from 70 px back from the edge, with room to spare: what the leaf alone carries him)
+      assert.ok(gap <= leafReach(dy) * 0.97 - 70 - 20, `seed ${s}: ledge ${a.id} to ${b.id}: ${gap} px is too far for the leaf from one jump (${Math.round(leafReach(dy))})`);
+      if (gap > reachJump(-dy, true)) leafGaps++;
+    }
+    assert.ok(leafGaps >= 12, `seed ${s}: only ${leafGaps} gaps need the leaf`);
+  }
+});
+
+test('4-7 teaches the drop before the first edge, the slip off an edge, and every turn', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const said = (re: RegExp) => st.proto.hints.find((h) => re.test(h.text));
+    const first = said(/mist below is a long fall/)!;
+    assert.ok(first && first.x < st.platforms[0].x + st.platforms[0].width - 600, `seed ${s}: the mist is not explained before the first edge`);
+    assert.ok(said(/back to the last flag/));
+    assert.ok(said(/Slipped off an edge\? Flick up/), `seed ${s}`);
+    // every turn (a ledge straight under the end of the one before) has a line, and a trail of petals down to it
+    const turns = st.platforms.filter((b, i) => i > 0 && b.y - st.platforms[i - 1].y > 450 && b.x < st.platforms[i - 1].x + st.platforms[i - 1].width && b.x + b.width > st.platforms[i - 1].x);
+    assert.ok(turns.length >= 4);
+    for (const re of [/cave in the cliff below/, /path turns back here! Walk off/, /Another cave below/, /Another turn!/]) assert.ok(said(re), `seed ${s}: no ${re}`);
+    for (const t of turns) {
+      const a = st.platforms[st.platforms.indexOf(t) - 1];
+      const trail = st.collectibles.filter((c) => c.type === 'flower' && c.y > a.y && c.y < t.y - 30 && Math.abs(c.x - (a.x + a.width / 2)) < a.width / 2 + 260);
+      assert.ok(trail.length >= 3, `seed ${s}: no petal trail down the turn to ledge ${t.id}`);
+    }
+  }
+});
+
+test('4-7 runtime: a lower flag counts as further on, whatever its x; a flag only counts once touched', async () => {
+  // (the engine's own rule, engine.ts: in a descent a flag replaces the checkpoint only when it is lower; flags are touched within 70 px)
+  const st = build(2);
+  const order = [...st.checkpoints!].sort((a, b) => a.y - b.y);
+  let cp = { x: st.spawnX, y: st.spawnY };
+  for (const f of order) {
+    if (f.y > cp.y) cp = { x: f.x, y: f.y };
+  }
+  assert.deepEqual(cp, { x: order[order.length - 1].x, y: order[order.length - 1].y });
+  // touched out of order (back up after a fall is impossible here, but a higher flag must never replace a lower one)
+  let c2 = { x: order[5].x, y: order[5].y };
+  for (const f of [order[2], order[3]]) if (f.y > c2.y) c2 = { x: f.x, y: f.y };
+  assert.deepEqual(c2, { x: order[5].x, y: order[5].y });
+  // and left to right is not the order: the tiers run back and forth
+  const byX = [...st.checkpoints!].sort((a, b) => a.x - b.x);
+  assert.notDeepEqual(byX.map((c) => c.y), order.map((c) => c.y));
 });
