@@ -1,0 +1,120 @@
+{
+ "sessions": 2,
+ "minutesPlayed": 6.1,
+ "devices": {
+  "iPhone 440x755 portrait": 1,
+  "iPhone 440x796 portrait": 1
+ },
+ "strokes": 358,
+ "mix": {
+  "tap": 0.687,
+  "drag": 0.246,
+  "hold": 0.039,
+  "flick": 0.028
+ },
+ "tapMs": {
+  "p10": 37,
+  "p50": 88,
+  "p90": 130
+ },
+ "holdMs": {
+  "p10": 334,
+  "p50": 658,
+  "p90": 1421
+ },
+ "flickPx": {
+  "p10": 51.039,
+  "p50": 90.427,
+  "p90": 110.168
+ },
+ "flickPxPerMs": {
+  "p10": 0.284,
+  "p50": 0.433,
+  "p90": 0.755
+ },
+ "flickMs": {
+  "p10": 121,
+  "p50": 213,
+  "p90": 263
+ },
+ "dragMs": {
+  "p10": 320,
+  "p50": 1096,
+  "p90": 4201
+ },
+ "jumpFlickOffVerticalDeg": null,
+ "jumpHoldMs": {
+  "p10": 0,
+  "p50": 0,
+  "p90": 733
+ },
+ "gapBetweenTouchesMs": {
+  "p10": 38,
+  "p50": 237,
+  "p90": 479
+ },
+ "touchStartX": {
+  "p10": 0.25,
+  "p50": 0.732,
+  "p90": 0.777
+ },
+ "touchStartY": {
+  "p10": 0.83,
+  "p50": 0.863,
+  "p90": 0.905
+ },
+ "leftHalfShare": 0.282,
+ "twoFingerShare": 0.603,
+ "touchSizePx": {
+  "p10": 24,
+  "p50": 24,
+  "p90": 24
+ },
+ "perMinute": {
+  "tapjump": 17.0,
+  "duck": 43.1,
+  "jumpUp": 41.0,
+  "move": 48.3,
+  "jump": 16.6,
+  "mega": 2.3,
+  "punch": 12.9,
+  "kick": 0.2
+ },
+ "hurtPerMinute": 0.82,
+ "livesLostPerMinute": 0.0,
+ "secondsPerSection": {
+  "p10": 0.267,
+  "p50": 7.634,
+  "p90": 17.135
+ },
+ "quits": 0,
+ "finishes": 2,
+ "stuckHelp": 0,
+ "survey": [
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "Nothing"
+   ],
+   "note": ""
+  },
+  {
+   "hand": [
+    "Two thumbs"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "Snapping turtles"
+   ],
+   "note": ""
+  }
+ ],
+ "name": "Brycen"
+}

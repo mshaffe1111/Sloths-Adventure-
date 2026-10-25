@@ -1,0 +1,226 @@
+{
+ "sessions": 5,
+ "minutesPlayed": 60.8,
+ "devices": {
+  "Android phone 411x918 portrait": 5
+ },
+ "strokes": 2748,
+ "mix": {
+  "drag": 0.316,
+  "flick": 0.575,
+  "tap": 0.109,
+  "hold": 0.001
+ },
+ "tapMs": {
+  "p10": 54,
+  "p50": 79,
+  "p90": 104
+ },
+ "holdMs": {
+  "p10": 320,
+  "p50": 428,
+  "p90": 729
+ },
+ "flickPx": {
+  "p10": 74.33,
+  "p50": 159.211,
+  "p90": 268.927
+ },
+ "flickPxPerMs": {
+  "p10": 0.442,
+  "p50": 0.958,
+  "p90": 1.934
+ },
+ "flickMs": {
+  "p10": 99,
+  "p50": 162,
+  "p90": 249
+ },
+ "dragMs": {
+  "p10": 308,
+  "p50": 566,
+  "p90": 2111
+ },
+ "jumpFlickOffVerticalDeg": {
+  "p10": 6.654,
+  "p50": 28.679,
+  "p90": 42.325
+ },
+ "jumpHoldMs": {
+  "p10": 27,
+  "p50": 89,
+  "p90": 199
+ },
+ "gapBetweenTouchesMs": {
+  "p10": 146,
+  "p50": 467,
+  "p90": 1205
+ },
+ "touchStartX": {
+  "p10": 0.282,
+  "p50": 0.45,
+  "p90": 0.735
+ },
+ "touchStartY": {
+  "p10": 0.626,
+  "p50": 0.804,
+  "p90": 0.871
+ },
+ "leftHalfShare": 0.592,
+ "twoFingerShare": 0.0,
+ "touchSizePx": null,
+ "perMinute": {
+  "move": 71.1,
+  "duck": 85.6,
+  "jumpUp": 71.4,
+  "jump": 24.1,
+  "kick": 2.4,
+  "punch": 4.0,
+  "mega": 0.1,
+  "climb": 3.8,
+  "tapjump": 0.4
+ },
+ "hurtPerMinute": 0.39,
+ "livesLostPerMinute": 0.18,
+ "secondsPerSection": {
+  "p10": 1.964,
+  "p50": 14.971,
+  "p90": 43.451
+ },
+ "quits": 1,
+ "finishes": 13,
+ "stuckHelp": 0,
+ "survey": [
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In one hand"
+   ],
+   "note": "Collecting petals while on the vine"
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In one hand"
+   ],
+   "hard": [
+    "Hide from the eagle"
+   ],
+   "note": "Getting the hearts"
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In one hand"
+   ],
+   "hard": [
+    "Hide from the eagle"
+   ],
+   "note": ""
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "River logs",
+    "Swing"
+   ],
+   "note": "Cannot climb up and down vines"
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "Lily pads"
+   ],
+   "note": ""
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "Bounce"
+   ],
+   "note": "It was hard getting on the bouncy pads"
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "Swing"
+   ],
+   "note": ""
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "River logs"
+   ],
+   "note": ""
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "River logs"
+   ],
+   "note": "The 2nd rope flickered when it swung high to the left"
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "Nothing"
+   ],
+   "note": ""
+  },
+  {
+   "hand": [
+    "One thumb"
+   ],
+   "held": [
+    "In both hands"
+   ],
+   "hard": [
+    "Nothing"
+   ],
+   "note": ""
+  }
+ ],
+ "name": "Jen"
+}
