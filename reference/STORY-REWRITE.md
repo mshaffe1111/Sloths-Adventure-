@@ -1490,3 +1490,390 @@ Unchanged.
 **Meeca's note had a bug.** Its P.S. said "Dot has stopped glowing and started sweating," but Dot is with Pokey, not in the tower, so Meeca couldn't have seen that. It also said "it is very hot in here," while the other note in this world says she's cold. Now the P.S. is "Tell Dot the bars aren't getting any wider," which is Meeca teasing Dot about squeezing through her window bars in World 8. The General's line now comes "through my door," because he never comes in.
 
 **Everything else stayed.** The four bowls of wrong soup, "I thought I'd start there," "a very concerning hobby," and the whole scene at the door were already right.
+
+---
+
+## World 10: Stormy Highlands Fortress
+
+### One sloth wide
+
+*The Stormy Highlands began where the trees stopped, and after that the rain had nothing to hit but rock. A thousand steps went up the mountain. The Highland Fortress sat on the last of them with one window lit.*
+
+*The netting was back at the foot of the mountain. Iron thorns, floor to cloud, humming faintly in the wind. In front of the first step it had folded away into a doorway. It was exactly one sloth wide.*
+
+**Dot:** He measured you.
+
+**Pokey:** Dot. This is where you go home.
+
+**Dot:** No.
+
+**Pokey:** The door fits one. You heard the Lieutenant. They've probably sewn the seam shut by now.
+
+**Dot:** He said he'd sew it badly. He was a tailor's apprentice, and he was terrible. It's the one thing I'm sure of about this whole fortress, and I'm counting on it.
+
+**Pokey:** He's been practicing.
+
+*Thunder came down the mountain, long and low. Pokey took hold of the nearest rock with both hands. Dot watched him do it.*
+
+**Pokey:** It's only weather.
+
+*The thunder came again. His hands stayed where they were.*
+
+**Pokey:** I'm afraid of thunder.
+
+**Dot:** I know. Everybody knows. You hold things. You held a teacup for forty minutes at Meeca's birthday because a cloud went over. A teacup, Pokey. It was empty.
+
+*Dot always laughed at her own jokes. She didn't now. She put a wing over the pouch at her side and left it there.*
+
+**Dot:** Pokey. The night your parents went out. There was a warning to give. The storm had turned early, and I was the one who was supposed to fly it around the nests. And I took the wrong river. I took the wrong... I was late, Pokey. For them.
+
+**Dot:** They were already out on the far branches. I've never told anybody. I tell myself it wouldn't have mattered. I say it every night, and it doesn't take. And I showed up at your branch every morning after that, and you thought I was just being nice.
+
+*Pokey didn't say anything. He looked at his hands on the rock, and then at Dot.*
+
+**Dot:** You don't have to answer. I'm going in. I'm going to be early for something, once. I'm going to be so early that—
+
+**Pokey:** Dot—
+
+*Dot pushed three folded notes into the satchel with one claw, and then she was gone along the netting, around the black shoulder of the mountain, toward a badly sewn seam Pokey couldn't see.*
+
+*Up the mountain, a flash, and something metal fell over. Then nothing at all.*
+
+**Pokey:** Dot?
+
+*The thorns hummed in the wind. Pokey stood in the rain for a long time. Then he went through the door that had been made for him. It was exactly his width.*
+
+### Hidden note (in plain sight, one of the three Dot left in the satchel)
+
+> Pokey,
+>
+> Whatever happens tomorrow, you were never too slow. I've just been waiting for somebody who stops.
+>
+> Come and get me. Bring snacks.
+>
+> P.S. Don't hurt him more than you have to. I don't know why I wrote that.
+>
+> Love, M.
+
+### The song from the tower (halfway up the mountain)
+
+*Halfway up the mountain, the thunder stopped for a while. In the gap, from far above, Pokey heard something that wasn't thunder.*
+
+*It was a voice, singing softly, and the tune was one he knew.*
+
+*At a barred window at the top of the mountain, Meeca was singing with her eyes closed and her back straight. She had sung it every night since they brought her up.*
+
+**Pokey:** Meeca.
+
+*He couldn't make out the words from this far away. He took the next step, and the next, and found that he was humming. Up on the wall, one collar went dark for a moment, and came on again.*
+
+### The guardian: General Iron-Claw
+
+*Before the fight.*
+
+**General Iron-Claw:** Nine hundred and ninety-nine steps. I counted. Still slow, boy.
+
+**Pokey:** Still here, sir.
+
+**Pokey:** I've come for Meeca. Where's Dot?
+
+**General Iron-Claw:** I do not know where your bird is, and I find that I mind. You did not hurry once, boy. I watched for it. Slow gets people killed.
+
+**Pokey:** I know it does, sir. My folks went out in a storm when I was little. The warning came late. Tonight I found out whose warning it was.
+
+**General Iron-Claw:** Then you know.
+
+**Pokey:** She's my best friend, sir. She's been late my whole life. She came back every time.
+
+*The General looked at him for a long time.*
+
+**General Iron-Claw:** I have buried what late costs. I will not bury another.
+
+*After the fight.*
+
+**General Iron-Claw:** You climbed every step. Why did you not turn back?
+
+**Pokey:** She was at the top, sir.
+
+**General Iron-Claw:** I left the door open. I told myself it was a trap.
+
+**Pokey:** It was a good door, sir. It fit.
+
+### Hidden keepsake
+
+> A small bronze bell, green with age. Grandma rang it whenever someone she loved was coming home. It hasn't rung since the day she died.
+
+### Hidden photo album: The Last Pages
+
+Unchanged. (This is the album that told us he stayed a year.)
+
+- **The whole family.** Everyone who loved her stood close.
+- **The hill.** Under the old tree, where the valley is widest. He stood there a long time. Then he stopped coming.
+- **Her chair.** The chair by the window stayed where it was. So did he, for a year.
+- **The last photograph.** After this one there are no more pictures. Only orders.
+
+---
+
+## The secret guardian: Thornbark
+
+*Before the fight.*
+
+**Thornbark:** Grrr... the thorns... they whisper... Leave this hollow, little sloth...
+
+**Pokey:** You were the Jungle Guardian. Meeca's grandma told me about you. The thorns did this to you, didn't they?
+
+**Thornbark:** I would not kneel. The others did. I would not. The thorns grew through me... to teach me...
+
+**Thornbark:** I cannot stop them... they want you gone. RUN... or FIGHT.
+
+*After the fight.*
+
+**Thornbark:** The thorns... they are gone. I can think again. Beaten... by a sloth. Small sloth. Slow sloth.
+
+**Pokey:** I didn't beat them. I just kept coming back until they got tired of me. It's my best skill.
+
+**Pokey:** You were right, you know. Not to kneel.
+
+*The old tree was quiet for a long time.*
+
+**Thornbark:** Nobody has said that. Not in nine years. The keeper before her sat among my roots for fifty years, humming. Your Meeca hums the same song. Tell her an old tree is listening.
+
+**Thornbark:** Take this Thorn Heart. It was a heart before the thorns grew around it. Go and bring your Meeca home.
+
+---
+
+## The ending
+
+### The tower
+
+*The General lay in the rubble in the middle of the courtyard. The thunder was still coming up the mountain after them both.*
+
+*Pokey had hold of the nearest wall with both hands. He always held something when it thundered.*
+
+*He let go with one hand.*
+
+*He held it out across the wet stones. Thunder broke over the wall, and he didn't take it back.*
+
+*The General looked at the hand. From the lit window high in the tower, somebody began to sing.*
+
+**Meeca:** ♪ Slow the rain, slow the thunder. Slow the thorn that holds you under. Slow the kettle, slow the stair. Someone's coming. Keep a chair. ♪
+
+*Along the walls, the iron thorns of the Pact went still. The guardians raised their heads.*
+
+**Venom Fang:** Sso. That's the song.
+
+**Crocus Rex:** Everyone look. I kept the crown.
+
+**Shadow Prowler:** Again, keeper. The thorn line.
+
+**Tarantula Queen:** Tea is at four, dears. Everyone is invited. Even you, General.
+
+**Stone Idol Golem:** I have waited a thousand years for—
+
+**Night-Wing Monarch:** Again, please. I slept through the middle.
+
+*At the far end of the wall, where Thornbark had always stood by himself, the old tree bent down low.*
+
+*The iron collars cracked and fell. They rang on the stones for a long time.*
+
+*In the courtyard, the General got to his feet. He did it slowly and without help, and he didn't take his eyes off the hand.*
+
+*Up in the window, Meeca began the verse again. The red in his eyes went down a little with every line, until there was only brown.*
+
+*The club went first. Then the cape, and the spikes on his shoulder. None of it made a sound. What was left was an old sloth, brown and tired, standing in the rain.*
+
+**Lieutenant Pell:** The door is open, Miss. I am sorry it was ever shut.
+
+*Meeca came down the steps and stopped ten paces away. Her back was very straight.*
+
+**Meeca:** Hello, Grandpa.
+
+**Grandfather:** Little bloom.
+
+**Meeca:** No. You don't get to say that yet.
+
+**Meeca:** You left. You sat in her chair for a whole year, and I kept the kettle on, and I kept the garden, and I kept everything so quiet and so gentle so you'd come back to me. And one morning the door was standing open, and you didn't even close it behind you.
+
+**Meeca:** Then you put me in a room with a lock and sent me soup. I ate all of it. I said thank you every time. I wrote Pokey that I was fine. A hundred and ninety-one nights, and I kept every letter on the line so he wouldn't know.
+
+**Meeca:** And every night, somebody stood outside my door and never knocked. Eleven steps there, eleven back. I counted them. I KNEW it was you.
+
+*The General looked down at his empty hands. He had held a club in them for nine years.*
+
+**Grandfather:** She waited for help. It came late. I counted every hour. I have not stopped.
+
+**Grandfather:** I should have knocked.
+
+*Meeca didn't say it was all right. She crossed the stones and took his hand. It closed over hers completely.*
+
+**Grandfather:** One. Two.
+
+**Meeca:** Grandpa.
+
+**Grandfather:** I have lost count.
+
+**Grandfather:** Boy.
+
+**Pokey:** Sir?
+
+**Grandfather:** Come back when you can protect her, I said. You protected her from me. I suppose that counts.
+
+**Grandfather:** You may. Walk. With her.
+
+**Grandfather:** Sometimes.
+
+**Meeca:** Grandpa!
+
+**Grandfather:** Mostly.
+
+### The seam
+
+*The sun was just coming up over the wall when a small, white, very dusty shape came around the corner of the cookhouse, with a lantern bobbing along behind it.*
+
+**Dot:** Hello! Everybody stay calm. I'm alive! I fell into the cookhouse. Into the flour. All of it.
+
+**Lieutenant Pell:** She has been no trouble at all, Miss. Sir. Everyone. I apologize.
+
+**Pokey:** Dot!
+
+**Dot:** I'm so sorry I'm late! I know. I know. The seam was tiny, and I went in sideways, and there was a cookhouse, and a lot of flour, and then Pell found me. I'm so sorry. I'm always... I'm always...
+
+**Pokey:** Seems to me it's still morning.
+
+*Dot stopped. Then she took the pouch off her side and held it out in both claws.*
+
+**Dot:** General. I have something I should have given you a long time ago.
+
+*It was a letter, yellow at the edges, sealed with one faded petal.*
+
+**Dot:** She gave it to me on the last night, in the storm. "Give him this when he can sit still," she said. I flew out to find you, and the storm kept me a day. One day. And then you were home, sitting by her chair, all that year, so still, and I had it the whole time, and I couldn't. I was afraid it said it was my fault.
+
+**Grandfather:** Give it here, little courier.
+
+**Grandma:** My dearest. If you're reading this, you're sitting down, which means something has gone very right or very wrong. Either way, put the kettle on. The little bird will be late. I always set the kettle for when she actually arrives.
+
+**Grandma:** It isn't anybody's fault, my love. It was only weather. Don't build anything on my account. I put a fence around the garden once, and the rabbits were over it by lunch, and so were the neighbors. I'll be on the hill. Leave the gate open.
+
+**Dot:** She always had the kettle on when I got there. Every time. However late I was. I thought she was just lucky.
+
+**Grandfather:** Courier. Sit.
+
+*Pokey stood very still. After a while, Dot landed on his head.*
+
+**Pokey:** I thought you came around because you liked me.
+
+**Dot:** I did! I do! It was both. It was always both, Pokey. I swear it was—
+
+**Pokey:** Okay.
+
+*Dot didn't say anything. Her wing went to the pouch at her side, which was empty, and she left it there.*
+
+### The weeks after
+
+*Down at the Sunlit Riverbank, Gruntlewick the crier reached the end of his flood warning. It had taken three weeks. At the top of the bank, the slow mailman finally delivered his one parcel, which was the flood warning, addressed to Gruntlewick. Gruntlewick signed for it.*
+
+*In the ruins, the Stone Idol Golem finally finished a sentence. Nobody was there to hear it. He said it again, slowly, to the chairs.*
+
+*Lieutenant Pell left the army that week and opened a tailor's shop at the foot of the mountain. He hung the sign himself. It hangs a little crooked, and he apologizes to it every morning.*
+
+*On the first fine afternoon, at four o'clock exactly, the Tarantula Queen poured the tea. The General took his cup in both paws and looked at the chairs. Every one of them was too small.*
+
+*He sat on the ground and finished the whole cup.*
+
+**Dot:** It's a trap with cookies. I've had four.
+
+*Afterward, they laid out everything Pokey had found in the ferns.*
+
+**Meeca:** My locket. You fastened it on me the day I started school. "So you'll always know your name." I never took it off until they took me.
+
+**Grandfather:** You were so small. I thought the chain would be too heavy for you.
+
+**Meeca:** Grandpa. Is that my rattle?
+
+**Grandfather:** It was the only thing that stopped you crying. I used it on the Council. It worked on them too.
+
+**Pokey:** Sir, who sewed the eye back on the bear?
+
+**Grandfather:** A soldier is trained in needlework. I was not good at it. The eye is on the wrong side.
+
+**Meeca:** It looks surprised. I always loved that.
+
+**Grandfather:** I always stopped the watch one second early, so you would beat your time. You never knew.
+
+**Meeca:** Grandpa. I always knew.
+
+**Grandfather:** You did?
+
+**Meeca:** I let you.
+
+**Pokey:** Sir, I found a medal in a fern. On the back it says, "For the next cub."
+
+**Grandfather:** I scratched that on the back the day they gave it to me, for the river. I was keeping it for a cub who would need it more than I did.
+
+**Pokey:** I think I'm a little old to be a cub, sir.
+
+**Grandfather:** You are exactly the right age to be brave and foolish. Keep it.
+
+**Pokey:** There was half a ribbon in a fern. The knot was still tied.
+
+**Grandfather:** She tied it around our wrists the day we were married. When she was gone, I could not undo the knot. I had to cut it.
+
+*He opened his paw. Inside was the other half. Pokey laid his beside it. The cut ends were a thumb's width short, so the General tied them together with a bit of string from his belt.*
+
+**Pokey:** There was a key in a fern, too, on a green ribbon.
+
+**Grandfather:** I wore that around my neck for a year. I thought I lost it the morning I left.
+
+**Meeca:** You left it on her chair. I've had it in my apron ever since. It's the key to Grandma's music box. It plays the song.
+
+*Meeca wound it. The little box played Grandma's song all the way through, a little out of tune. The General bowed his head, and for a long time nobody said a word.*
+
+**Pokey:** There was a petal, too. It says, "Be patient with the slow ones. They always arrive."
+
+**Grandfather:** That is her handwriting. Everything of hers turns up in a fern. I am beginning to think the bird has a problem.
+
+**Pokey:** Sir, I think this is yours. It was in a fern.
+
+*It was a small bronze bell, green with age. Grandma had rung it whenever someone she loved was coming home. It hadn't rung since the day she died.*
+
+*The General turned it over in his big hands. Then, very gently, he rang it. One clear note went out over the village and up the mountain, the way it used to go down a garden path.*
+
+**Grandfather:** Somebody is coming home.
+
+**Meeca:** Yes, Grandpa. You are.
+
+*Far off in the east, the last of the storm said something. Pokey was holding a teacup in one hand. He went on holding it in one hand.*
+
+### The end
+
+*That evening, they climbed the hill to the old tree, where Grandma had said she'd be. The General went up last.*
+
+**Grandfather:** Hello, love. I'm late. I brought the whole family.
+
+*Pokey took a paper packet out of his satchel, the one he'd found in a fern in the Twilight Treetops. Meeca read the label. "For the hill," she said. "Plant when it is quiet." It was. The three of them sat down in the grass together, four if you counted Dot, who was sitting on Pokey's head and for once didn't say a word.*
+
+*Home was exactly the way they'd left it, except that the Heartbloom was open, and a snail who had set off across the garden path on the morning of the storm was half an inch from the finish line.*
+
+**Pokey:** Of course he made it. He trained for it.
+
+*Meeca sat down on the garden path beside the snail. After a while, Pokey sat down too.*
+
+### What changed in World 10 and the ending, and why
+
+**Pokey's answer to the General.** This is the biggest addition. The Cast Bible says Pokey is the one person in the story with a real reason to blame lateness, and he doesn't, and that's the argument the General can't win. The old script never actually had him make it. Now, right after Dot's confession at the bottom of the mountain, the General says "Slow gets people killed," and Pokey tells him: his folks went out in a storm, the warning came late, he found out tonight whose warning it was, and "She's my best friend, sir. She's been late my whole life. She came back every time." No joke. It's the plain thing, and it's where his answer to Dot goes. And "Still slow, boy" now gets "Still here, sir," which is also what Meeca's shortest note said.
+
+**Meeca's angry scene.** The old ending had her list the tower things: the soup, the letters, the footsteps. That's restrained, but it isn't her being angry about the real thing. Now she starts with it: "You left." The year by the chair, keeping everything gentle so he'd come back, and the door left standing open. Then the tower, and then "I KNEW it was you," the one place she shouts. His answer is the only apology he makes in the whole game: "I should have knocked." She doesn't say it's all right. She just takes his hand.
+
+**Dot's confession.** No more capitals on "I was LATE." Your notes were right that it needs her voice to drop, not shout, so it's "I was late, Pokey. For them."
+
+**Dot comes back in the morning.** She shows up covered in flour, apologizing for being late, and Pokey says "Seems to me it's still morning," the same joke he made the very first time she showed up late, in the prologue. It's how he forgives her without making a speech. Then, after the letter, his "Okay" stays as it was.
+
+**The letter.** I added one line to Grandma's letter: "It isn't anybody's fault, my love. It was only weather." Pokey has said "It's only weather" all game to hide being scared. Here Grandma says it and means it, and it's what lets everybody off the hook. Dot's reaction changed too. The old version referred to Meeca keeping Dot's tea, which our new prologue doesn't set up. Now Dot realizes Grandma always had the kettle on when she arrived, "however late I was."
+
+**Dot's year with the letter.** She now says she had it that whole year he sat by the chair and couldn't make herself give it to him, which is why "a long time ago" fits better than "nine years ago."
+
+**Fixes in the weeks after.** The key line used to say he lost it "in the first storm," which didn't fit any storm we have. Now he wore it for that year and thought he lost it the morning he left, and Meeca says he left it on Grandma's chair and she's kept it in her apron ever since. That's the same apron from World 3. The croc's "I would like it noted" (British) is now "Everyone look. I kept the crown." Dot's "biscuits" is cookies. The snail is half an inch from the finish, not a centimeter, and Pokey's last line is the exact callback, "He trained for it." The General's armor used to leave him wearing a scarf, which nothing explained, so now it's just an old sloth standing in the rain.
+
+**Thornbark.** He gets the boss treatment ("Beaten... by a sloth. Small sloth. Slow sloth.") and gets his wish from the Cast Bible, someone telling him he was right not to kneel. Pokey says it straight, because it's true, not to be nice.
+
+**"Bring snacks."** Meeca's last note still says "Come and get me. Bring snacks." I kept it on purpose, because it's a callback to Dot leaving to get snacks right before everything went wrong, and it's Meeca joking because she's scared. If it breaks the food rule for you, it can go.
