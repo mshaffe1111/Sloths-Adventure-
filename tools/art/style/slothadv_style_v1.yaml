@@ -1,0 +1,64 @@
+---
+job: extension
+config:
+  name: "slothadv_style_v1"
+  process:
+    - type: 'sd_trainer'
+      training_folder: "/out"
+      device: cuda:0
+      network:
+        type: "lora"
+        linear: 32
+        linear_alpha: 32
+      save:
+        dtype: float16
+        save_every: 500
+        max_step_saves_to_keep: 8
+      datasets:
+        - folder_path: "/data/style"
+          caption_ext: "txt"
+          caption_dropout_rate: 0.05
+          shuffle_tokens: false
+          cache_latents_to_disk: true
+          resolution: [ 768, 1024 ]
+      train:
+        batch_size: 1
+        cache_text_embeddings: true
+        steps: 3000
+        gradient_accumulation: 1
+        train_unet: true
+        train_text_encoder: false
+        gradient_checkpointing: true
+        noise_scheduler: "flowmatch"
+        optimizer: "adamw8bit"
+        lr: 1e-4
+        dtype: bf16
+      model:
+        name_or_path: "Qwen/Qwen-Image"
+        arch: "qwen_image"
+        quantize: true
+        qtype: "qfloat8"
+        quantize_te: true
+        qtype_te: "qfloat8"
+        low_vram: false
+      sample:
+        sampler: "flowmatch"
+        sample_every: 500
+        sample_start_step: 0
+        width: 1024
+        height: 1024
+        prompts:
+          - "slothadv style, painted storybook illustration, a chubby capybara village guard holding a wooden spear, standing, side view, plain grey background"
+          - "slothadv style, painted storybook illustration, a howler monkey leaping with its arms out, angry, side view, plain grey background"
+          - "slothadv style, painted storybook illustration, a toucan with a bright orange beak perched on a branch, plain grey background"
+          - "slothadv style, painted storybook illustration, a young sloth in a red scarf waving hello, front view, plain grey background"
+          - "slothadv style, painted storybook illustration, a mossy carved stone temple doorway, a game prop, plain grey background"
+          - "slothadv style, painted storybook illustration, a wide side-scrolling game background, the far background layer, misty waterfalls and cliffs at dawn"
+        neg: ""
+        seed: 42
+        walk_seed: true
+        guidance_scale: 3
+        sample_steps: 25
+meta:
+  name: "[name]"
+  version: '1.0'

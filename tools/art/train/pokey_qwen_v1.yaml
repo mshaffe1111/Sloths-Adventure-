@@ -1,0 +1,64 @@
+---
+job: extension
+config:
+  name: "pokey_qwen_v1"
+  process:
+    - type: 'sd_trainer'
+      training_folder: "/out"
+      device: cuda:0
+      network:
+        type: "lora"
+        linear: 32
+        linear_alpha: 32
+      save:
+        dtype: float16
+        save_every: 500
+        max_step_saves_to_keep: 6
+      datasets:
+        - folder_path: "/data/pokey"
+          caption_ext: "txt"
+          caption_dropout_rate: 0.05
+          shuffle_tokens: false
+          cache_latents_to_disk: true
+          resolution: [ 768, 1024 ]
+      train:
+        batch_size: 1
+        cache_text_embeddings: true
+        steps: 2500
+        gradient_accumulation: 1
+        train_unet: true
+        train_text_encoder: false
+        gradient_checkpointing: true
+        noise_scheduler: "flowmatch"
+        optimizer: "adamw8bit"
+        lr: 1e-4
+        dtype: bf16
+      model:
+        name_or_path: "Qwen/Qwen-Image"
+        arch: "qwen_image"
+        quantize: true
+        qtype: "qfloat8"
+        quantize_te: true
+        qtype_te: "qfloat8"
+        low_vram: false
+      sample:
+        sampler: "flowmatch"
+        sample_every: 500
+        sample_start_step: 0
+        width: 1024
+        height: 1024
+        prompts:
+          - "pokeysloth, a big sleepy yawn, mouth wide open, eyes squeezed shut, both arms stretched up above his head, painted storybook illustration, plain grey background"
+          - "pokeysloth, sitting on the ground asleep, head resting on his chest, painted storybook illustration, plain grey background"
+          - "pokeysloth, hanging from a vine by both paws, legs dangling, painted storybook illustration, plain grey background"
+          - "pokeysloth, running fast, side view facing right, painted storybook illustration, plain grey background"
+          - "pokeysloth, waving hello with one paw, big smile, front view, painted storybook illustration, plain grey background"
+          - "pokeysloth, scratching his belly lazily, eyes half closed, painted storybook illustration, plain grey background"
+        neg: ""
+        seed: 42
+        walk_seed: true
+        guidance_scale: 3
+        sample_steps: 25
+meta:
+  name: "[name]"
+  version: '1.0'
