@@ -7,8 +7,10 @@
  *   lookout  (4-5, 4-8) sits watching a stretch. If it sees him out in the open it points and screeches, which calls the Sovereign
  *            (the engine starts her pass). The warning is fair: it stares and its fur bristles first. A fruit that lands near it
  *            (knocked down from a tree) draws it off to eat, and while it eats it sees nothing. Hiding (a bush, behind a fall) is hidden.
- *   guard    (4-9) paces the aerie's ledges. A gust that blows across it knocks it off its feet and it tumbles out of the way, then
- *            climbs back after a while: read the chimes, wait for the wind, walk through.
+ *   guard    (4-8, 4-9) paces a ledge. A gust that blows across it knocks it off its feet and it tumbles out of the way, then
+ *            climbs back after a while: read the chimes, wait for the wind, walk through. On the aerie's narrow ledges (4-9,
+ *            `blowOff`) the gust blows it clean off the ledge, and it is back up in a couple of seconds: be right behind it as the gust
+ *            hits.
  *
  * Pure (no canvas, no engine): the stage builder, the engine and the tests agree on what every monkey is doing.
  */
@@ -25,6 +27,12 @@ export interface Capuchin {
   /** lookout: the stretch it watches (x range); guard: the ledge it paces (x range) */
   x0?: number;
   x1?: number;
+  /**
+   * guard (4-9): it paces a narrow ledge over a drop, and a gust blows it clean off: it tumbles down out of sight and climbs back up
+   * onto its ledge this many seconds later (BLOW_OFF), much sooner than a 4-8 guard gets back up. So the wind only clears the way for
+   * a sloth who is right behind it when the gust hits.
+   */
+  blowOff?: number;
 }
 
 export const CAP = {
@@ -49,6 +57,12 @@ export const CAP = {
   knock: 0.6,
 } as const;
 
+/**
+ * 4-9: seconds a guard blown off its ledge takes to climb back up. From right behind it the far end of its beat is half a second's
+ * run away; from the chimes it is about two seconds, so he has to be close when the gust hits (or set off as the chimes ring)
+ */
+export const BLOW_OFF = 1.8;
+
 export type CapMode = 'sit' | 'flee' | 'tease' | 'dropped' | 'stare' | 'screech' | 'lured' | 'eat' | 'pace' | 'blown';
 
 export interface CapState {
@@ -65,6 +79,8 @@ export interface CapState {
   fruit?: { x: number; y: number };
   /** guard: which way it paces */
   dir: 1 | -1;
+  /** guard: the way the gust that knocked it blew (it tumbles that way) */
+  fell?: 1 | -1;
 }
 
 export function newCapuchin(c: Capuchin): CapState {
@@ -189,15 +205,17 @@ export function stepLookout(
 export function stepGuard(c: Capuchin, s: CapState, gust: number, dt: number): { knocked?: boolean } {
   s.t += dt;
   if (s.mode === 'blown') {
-    if (s.t >= CAP.down) {
+    if (s.t >= (c.blowOff ?? CAP.down)) {
       s.x = c.x;
       s.y = c.y;
+      s.fell = undefined;
       go(s, 'pace');
     }
     return {};
   }
   if (Math.abs(gust) >= CAP.knock) {
     go(s, 'blown');
+    s.fell = gust > 0 ? 1 : -1;
     return { knocked: true };
   }
   const x0 = c.x0 ?? c.x - 80;

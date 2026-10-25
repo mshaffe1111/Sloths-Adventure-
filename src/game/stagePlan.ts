@@ -161,6 +161,8 @@ export function relicArt(world: number, k: number): string | null {
 export function countWord(world: number, type: string): string {
   if (type === 'harvest') return world === 1 ? 'petals' : world === 8 ? 'night blooms' : 'flowers';
   if (type === 'relic_hunt') return ({ 3: 'keepsakes', 5: 'messages', 9: 'threads' } as Record<number, string>)[world] ?? 'relics';
+  // (4-9 The Aerie: the capuchin guards the wind blows off their ledges)
+  if (type === 'gauntlet' && world === 4) return 'guards';
   if (type === 'purge' || type === 'gauntlet') return 'predators';
   if (type === 'rescue') return 'animals freed';
   return '';

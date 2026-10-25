@@ -4828,8 +4828,13 @@ export class GameEngine {
         sound.playPlayerHurt();
         this.loseLife('pit');
       },
+      // 4-9 The Aerie: a guard blown off its ledge while he is close counts toward the stage's goal
+      defeat: () => {
+        p.enemiesDefeated++;
+      },
       sfx: (kind) => {
-        if (kind === 'rock') sound.playHitImpact();
+        if (kind === 'cry') sound.playEagleScreech();
+        else if (kind === 'rock') sound.playHitImpact();
         else if (kind === 'chime') sound.playVineGrab();
         else if (kind === 'monkey') sound.playPredator('tayra', 0);
         else if (kind === 'frond') sound.playShrineUnlocked();
