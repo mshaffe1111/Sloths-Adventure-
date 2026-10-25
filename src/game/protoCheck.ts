@@ -53,8 +53,11 @@ function enter(A: Vine): { s: ReturnType<typeof swingGrab> } {
   return { s: swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * 0.7, len - 20), vx: 300, vy: 100 }, A) };
 }
 
-/** seconds of a swing on A during which letting go (holding toward B, with the double jump if it helps) catches B */
-export function catchWindow(A: Vine, B: Vine): number {
+/**
+ * seconds of a swing on A during which letting go (holding toward B, with the double jump if it helps) catches B. `wind` (px/s, + to the
+ * right) is a gust blowing at full strength the whole flight, as the engine adds it in the air (zones.ts windPush): 0 is the calm.
+ */
+export function catchWindow(A: Vine, B: Vine, wind = 0): number {
   const { s } = enter(A);
   let ok = 0;
   for (let k = 0; k < 90; k++) {
@@ -68,6 +71,7 @@ export function catchWindow(A: Vine, B: Vine): number {
       for (let i = 0; i < 60 && !hit; i++) {
         if (!used && t >= tD) { c.vy = -PHYS.doubleV; used = true; }
         airStep(c, DT, 1);
+        c.x += wind * DT;
         t += DT;
         if (canGrabSwing(c.x, c.y, B)) hit = true;
       }
@@ -79,7 +83,7 @@ export function catchWindow(A: Vine, B: Vine): number {
 }
 
 /** the swing state on B when he arrives from A (the first release of A that catches B), or null */
-function arriveFrom(A: Vine, B: Vine) {
+function arriveFrom(A: Vine, B: Vine, wind = 0) {
   const { s } = enter(A);
   for (let k = 0; k < 90; k++) {
     const r = swingStep(s, A, DT, 1, 0);
@@ -88,15 +92,16 @@ function arriveFrom(A: Vine, B: Vine) {
     const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
     for (let i = 0; i < 60; i++) {
       airStep(c, DT, 1);
+      c.x += wind * DT;
       if (canGrabSwing(c.x, c.y, B)) return swingGrab(c, B);
     }
   }
   return null;
 }
 
-/** how many release moments (30 Hz) of a swing on B land him on `to`; the swing is entered from A, or from a jump when A is null */
-export function landWindow(A: Vine | null, B: Vine, to: Platform): number {
-  const sb = A ? arriveFrom(A, B) : enter(B).s;
+/** how many release moments (30 Hz) of a swing on B land him on `to`; the swing is entered from A, or from a jump when A is null (`wind` as in catchWindow) */
+export function landWindow(A: Vine | null, B: Vine, to: Platform, wind = 0): number {
+  const sb = A ? arriveFrom(A, B, wind) : enter(B).s;
   if (!sb) return -1;
   let ok = 0;
   for (let k = 0; k < 90; k++) {
@@ -111,6 +116,7 @@ export function landWindow(A: Vine | null, B: Vine, to: Platform): number {
         if (!used && t >= tD) { c.vy = -PHYS.doubleV; used = true; }
         const prevY = c.y;
         airStep(c, DT, 1);
+        c.x += wind * DT;
         t += DT;
         if (c.vy >= 0 && prevY <= to.y + 14 && c.y >= to.y && c.x > to.x + 10 && c.x < to.x + to.width) { landed = true; break; }
         if (c.y > 900) break;
@@ -126,7 +132,7 @@ export function landWindow(A: Vine | null, B: Vine, to: Platform): number {
  * The let-go most players make: the moment the swing passes forward through `at` (sin of the angle). Does it catch B both when they
  * just let go and when they add the second jump on the way? (A next vine hung too low is flown clean over by an early, high leap.)
  */
-export function earlyCatch(A: Vine, B: Vine, at = 0.5): boolean {
+export function earlyCatch(A: Vine, B: Vine, at = 0.5, wind = 0): boolean {
   const { s } = enter(A);
   for (let k = 0; k < 90; k++) {
     const r = swingStep(s, A, DT, 1, 0);
@@ -138,6 +144,7 @@ export function earlyCatch(A: Vine, B: Vine, at = 0.5): boolean {
       for (let i = 0; i < 60 && !hit; i++) {
         if (!used && t >= tD) { c.vy = -PHYS.doubleV; used = true; }
         airStep(c, DT, 1);
+        c.x += wind * DT;
         t += DT;
         if (canGrabSwing(c.x, c.y, B)) hit = true;
       }
@@ -169,4 +176,31 @@ export function leapBand(A: Vine, B: Vine, cx: number, reach: number): [number, 
     if (hit && a < Infinity) { lo = Math.min(lo, a); hi = Math.max(hi, b); }
   }
   return lo < Infinity ? [lo, hi] : null;
+}
+
+/**
+ * A closer look than jumpGrab, for a vine that must stay out of reach: every take-off spot on the ground [x0, x1] at height `y` (2 px
+ * apart), running toward the vine at full speed or standing, with the second jump at any moment or none, at 30 and 60 frames a second.
+ * Does any of them come within grabbing reach of the vine? (4-4's tied-up knot vine, and the vine after it.)
+ */
+export function jumpReaches(x0: number, x1: number, y: number, v: Vine): boolean {
+  for (const dt of [1 / 30, 1 / 60]) {
+    for (let from = Math.max(x0, v.x - 420); from <= Math.min(x1, v.x + 420); from += 2) {
+      const dir: -1 | 1 = v.x >= from ? 1 : -1;
+      for (const run of [PHYS.maxRun, 0]) {
+        for (const tD of [99, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5]) {
+          const b: AirBody = { x: from, y, vx: dir * run, vy: -PHYS.jumpV };
+          let t = 0, used = false;
+          for (let i = 0; i < 4 / dt; i++) {
+            if (!used && t >= tD) { b.vy = -PHYS.doubleV; used = true; }
+            airStep(b, dt, dir);
+            t += dt;
+            if (canGrabSwing(b.x, b.y, v)) return true;
+            if (b.y > y + 300) break;
+          }
+        }
+      }
+    }
+  }
+  return false;
 }

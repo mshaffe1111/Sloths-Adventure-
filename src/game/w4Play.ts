@@ -61,12 +61,16 @@ export interface W4Host {
 const FRUIT_BACK = 9;
 const KNOT_DROP = 0.8;
 
+/** where a knotted vine ends while it is tied: at its knot, never shorter than a rolled-up bundle at its top, never longer than itself */
+export const tiedBottom = (topY: number, bottomY: number, knotY: number): number => Math.min(bottomY, Math.max(topY + 24, knotY));
+
 export class W4Play {
   private patience: PatienceState[];
   private flow: number[];
   private pool: number[];
   private knots: Array<KnotState & { freedAt?: number }>;
   private vineFull = new Map<number, number>();
+  private vineTied = new Map<number, number>();
   private monkeys: CapState[];
   private fruit: Array<{ state: 'hang' | 'fall' | 'ground' | 'gone'; x: number; y: number; vy: number; at: number }>;
   private chimeRang: number[];
@@ -85,13 +89,14 @@ export class W4Play {
       const pl = s.kind === 'frond' ? platforms.find((q) => q.id === s.platformId) : undefined;
       if (pl) pl.broken = true;
     }
-    // a knotted vine hangs rolled up under its knot until Dot frees it
+    // a knotted vine hangs tied up, down to its knot (or rolled up at its top when the knot is there), until Dot frees it
     for (const k of w4.knots ?? []) {
       if (k.releases.kind !== 'vine') continue;
       const v = vines.find((q) => q.id === k.releases.id);
       if (!v) continue;
       this.vineFull.set(v.id, v.bottomY);
-      v.bottomY = v.topY + 24;
+      v.bottomY = tiedBottom(v.topY, v.bottomY, k.y);
+      this.vineTied.set(v.id, v.bottomY);
     }
   }
 
@@ -182,9 +187,10 @@ export class W4Play {
       if (now.freedAt !== undefined && k.releases.kind === 'vine') {
         const v = h.vines.find((q) => q.id === k.releases.id);
         const full = this.vineFull.get(k.releases.id);
-        if (v && full !== undefined) {
+        const tied = this.vineTied.get(k.releases.id);
+        if (v && full !== undefined && tied !== undefined) {
           const u = Math.min(1, (h.t - now.freedAt) / KNOT_DROP);
-          v.bottomY = v.topY + 24 + (full - v.topY - 24) * u * u;
+          v.bottomY = tied + (full - tied) * u * u;
         }
       }
     });
