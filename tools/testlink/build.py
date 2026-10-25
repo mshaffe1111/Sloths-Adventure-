@@ -42,7 +42,7 @@ if mp3s:
         index[p.name] = [len(blob), len(data)]
         blob += data
         p.unlink()
-    pack = f'audio-pack-{hashlib.md5(blob).hexdigest()[:8]}.bin'
+    pack = f'audio-pack-{hashlib.md5(blob).hexdigest()[:8]}.mp3'  # (joined mp3s are still an mp3: a type the artifact accepts)
     (dist / 'assets' / pack).write_bytes(blob)
     shim = ('<script>(function(){var I=' + json.dumps(index, separators=(',', ':')) + ',P=null,F=window.fetch.bind(window);'
             'window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"",n=s.split("?")[0].split("/").pop(),e=I[n];'
