@@ -1,0 +1,25 @@
+# generated pictures, clips, sheets, model weights and build output stay out of git (they live on Hugging Face or are rebuilt)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.webm
+*.zip
+*.webp
+*.pth
+*.safetensors
+*.log
+secrets/
+node_modules/
+__pycache__/
+testlink/dist/
+testlink/dist-prev/
+testlink/filesmap.json
+art/gen/clips/
+art/gen/stills/
+art/reanim/in/
+art/reanim/up/
+art/reanim/small/
+art/eshots/
+art/previews/

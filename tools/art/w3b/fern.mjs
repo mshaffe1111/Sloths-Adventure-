@@ -1,0 +1,24 @@
+import { chromium, devices } from 'playwright';
+const b = await chromium.launch();
+const ctx = await b.newContext({ ...devices['Pixel 7 landscape'] });
+const page = await ctx.newPage();
+page.on('pageerror', (e) => console.log('ERR', e.message));
+await page.addInitScript(() => { try { localStorage.setItem('sloth_howto_seen','1'); localStorage.setItem('sloth_lessons', JSON.stringify(['foe','nostomp','eagle','tough','gap','climb','swing','bounce','crumble','moving','water','fruit','heart','cage','idol','power','checkpoint','shrine'])); } catch {} });
+await page.goto('http://127.0.0.1:4301/');
+await page.waitForTimeout(3000);
+await page.evaluate(() => window.__play('3-7'));
+await page.waitForTimeout(6000);
+const E = '(typeof __engine==="function"?__engine():__engine)';
+const info = JSON.parse(await page.evaluate(`JSON.stringify((()=>{const e=${E}; const th=e.proto.thorns; const c=e.collectibles.find(c=>c.type==='relic'&&th.some(v=>Math.abs(v.x-c.x)<v.reach)); const v=th.find(v=>Math.abs(v.x-c.x)<v.reach); return {c:{x:c.x,y:c.y,thing:c.thing}, v}})())`));
+console.log(JSON.stringify(info));
+// stand beside the fern, wait for the vine to look, then crouch through the look
+await page.evaluate(`(()=>{const e=${E}; const p=e.player; p.x=${info.c.x}-30; p.y=580; p.vx=0; p.vy=0;})()`);
+await page.evaluate(`new Promise(res=>{const e=${E}; const f=()=>{const v=e.proto.thorns.find(t=>t.x===${info.v.x}); const T=v.sleep+v.stir+v.look; const c=(((e.gameTime+v.offset)%T)+T)%T; if(c>v.sleep && c<v.sleep+0.3) res(); else requestAnimationFrame(f)}; f();})`);
+const hp0 = await page.evaluate(`${E}.player.hp`);
+await page.keyboard.down('ArrowDown');
+await page.waitForTimeout(1500);
+await page.screenshot({ path: 'fern-search.png' });
+await page.waitForTimeout(1500);
+await page.keyboard.up('ArrowDown');
+console.log('hp', hp0, '->', await page.evaluate(`${E}.player.hp`), 'relics', await page.evaluate(`${E}.player.relicsFound`));
+await b.close();
