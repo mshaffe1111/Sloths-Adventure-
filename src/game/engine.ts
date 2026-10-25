@@ -3,7 +3,7 @@ import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
-import { liftY } from './lift.ts';
+import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { isEasy } from './difficulty.ts';
@@ -1525,63 +1525,64 @@ export class GameEngine {
       const playerFeet = p.y;
       const playerPrevFeet = p.y - p.vy * dt;
 
-      for (const plat of p.hanging ? [] : this.platforms) {
-        if (plat.broken) continue;
+      // every floor his feet meet this frame (in stage order)
+      const floors = (p.hanging ? [] : this.platforms).filter((plat) => {
+        if (plat.broken) return false;
         // a log is only there between its banks; the part hidden under a bank is not standable
-        if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) continue;
-
+        if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) return false;
         // Check if player is horizontally within platform (generous width tolerance)
         // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
         // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
         const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26 + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
-        if (p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width) {
-          // Check landing from above
-          if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) {
-            p.y = plat.y;
-            const landV = p.vy; // how hard he came down: the squash below follows it
-            p.vy = 0;
-            p.grounded = true;
-            this.standingOnId = plat.id;
-            p.jumpsLeft = 2; // Restore double jump capability on landing
-            p.isDoubleJumping = false;
-            p.somersaultAngle = 0;
+        if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) return false;
+        // Check landing from above
+        return p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y;
+      });
+      // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
+      // so a lift never rises without him
+      const plat = pickFloor(floors, p.x);
+      if (plat) {
+        p.y = plat.y;
+        const landV = p.vy; // how hard he came down: the squash below follows it
+        p.vy = 0;
+        p.grounded = true;
+        this.standingOnId = plat.id;
+        p.jumpsLeft = 2; // Restore double jump capability on landing
+        p.isDoubleJumping = false;
+        p.somersaultAngle = 0;
 
-            // Jump Buffering: If jump was tapped just before landing, instantly jump!
-            if (this.jumpBufferTimer > 0) {
-              this.jumpBufferTimer = 0;
-              p.vy = -PHYS.jumpV;
-              p.grounded = false;
-              p.jumpsLeft = 1;
-              p.squashX = 0.82;
-              p.squashY = 1.28;
-              this.takeOff(false);
-              sound.playJump();
-              this.spawnJumpDust(p.x, p.y);
-              break;
-            }
+        // Jump Buffering: If jump was tapped just before landing, instantly jump!
+        if (this.jumpBufferTimer > 0) {
+          this.jumpBufferTimer = 0;
+          p.vy = -PHYS.jumpV;
+          p.grounded = false;
+          p.jumpsLeft = 1;
+          p.squashX = 0.82;
+          p.squashY = 1.28;
+          this.takeOff(false);
+          sound.playJump();
+          this.spawnJumpDust(p.x, p.y);
+        } else {
+          // Squash on landing: a hop settles lightly, a long drop flattens him more
+          if (p.squashY > 0.9) {
+            const hard = Math.max(0, Math.min(1, landV / PHYS.maxFall));
+            p.squashX = 1.1 + 0.15 * hard;
+            p.squashY = 0.9 - 0.17 * hard;
+          }
 
-            // Squash on landing: a hop settles lightly, a long drop flattens him more
-            if (p.squashY > 0.9) {
-              const hard = Math.max(0, Math.min(1, landV / PHYS.maxFall));
-              p.squashX = 1.1 + 0.15 * hard;
-              p.squashY = 0.9 - 0.17 * hard;
-            }
+          // Bouncy mushroom interaction
+          if (plat.type === 'bouncy') this.bounceOff();
 
-            // Bouncy mushroom interaction
-            if (plat.type === 'bouncy') this.bounceOff();
-
-            // Fragile branch interaction
-            if (plat.type === 'fragile') {
-              if (plat.fragileTimer === undefined) {
-                plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
-                if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
-                  this.zoneHinted.crumble = true;
-                  this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
-                }
+          // Fragile branch interaction
+          if (plat.type === 'fragile') {
+            if (plat.fragileTimer === undefined) {
+              plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+              if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
+                this.zoneHinted.crumble = true;
+                this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
               }
             }
-            break;
           }
         }
       }
