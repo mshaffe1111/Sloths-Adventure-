@@ -1,10 +1,10 @@
 /**
  * How much help a touch player gets with the second jump, chosen in the menu and kept on the device. It only ever changes the Screen controls
- * (slide, flick and tap); the keyboard, a game pad and the on-screen Pad keep their own, exact feel. A first jump is never changed: lift the
+ * (slide and flick; a tap is always a punch); the keyboard, a game pad and the on-screen Pad keep their own, exact feel. A first jump is never changed: lift the
  * thumb and Pokey stops in the air, a jump from standing goes straight up, so small platforms stay easy to land on.
  *   off:     how it used to be. The second jump needs a fast flick up.
- *   keep:    ("Tap") a tap anywhere in the air is the second jump, and so is a short wiggle of the thumb that is still steering.
- *   forward: ("Tap + forward") all of "keep", and a second jump taken with nothing steering also pushes him forward, the way he faces,
+ *   keep:    ("On") a short, slow slide up in the air is the second jump, and so is a short wiggle of the thumb that is still steering.
+ *   forward: ("On + forward") all of "keep", and a second jump taken with nothing steering also pushes him forward, the way he faces,
  *            until he lands. Steering or pushing back takes over at once.
  */
 export type JumpHelp = 'off' | 'keep' | 'forward';

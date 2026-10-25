@@ -149,8 +149,8 @@ export const ControlsSetting: React.FC = () => {
             value={help}
             options={[
               { id: 'off', label: 'Off' },
-              { id: 'keep', label: 'Tap' },
-              { id: 'forward', label: 'Tap + forward' },
+              { id: 'keep', label: 'On' },
+              { id: 'forward', label: 'On + forward' },
             ]}
             onPick={(v) => {
               setJumpHelp(v);
@@ -163,10 +163,10 @@ export const ControlsSetting: React.FC = () => {
         {style === 'pad'
           ? 'A pad for running, and Jump, Punch and Kick buttons on the other side. Flip it for left-handers.'
           : help === 'off'
-            ? 'No buttons: slide, flick and tap anywhere on the screen. The second jump needs a quick flick up.'
+            ? 'No buttons: slide, flick and tap anywhere on the screen. A tap punches and every jump is a move up. The second jump needs a quick flick up.'
             : help === 'keep'
-              ? 'No buttons: slide, flick and tap anywhere. In the air a tap (or a wiggle of your thumb) is the second jump. A tap in the air no longer punches until the second jump is used.'
-              : 'Like Tap, and the second jump also pushes Pokey forward the way he faces, so one thumb can jump, tap and cross a gap. Push the other way to brake. A first jump is always just a jump.'}
+              ? 'No buttons: slide, flick and tap anywhere. A tap punches and every jump is a move up. In the air a short slide up (or a wiggle of your thumb) is the second jump.'
+              : 'Like On, and the second jump also pushes Pokey forward the way he faces, so one thumb can jump twice and cross a gap. Push the other way to brake. A first jump is always just a jump.'}
       </small>
     </div>
   );

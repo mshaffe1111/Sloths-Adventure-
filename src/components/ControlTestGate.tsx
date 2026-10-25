@@ -80,7 +80,7 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
         </p>
         <p className="mt-2 rounded-lg bg-black/20 px-3 py-2 text-sm leading-snug">
           <b className="text-[#f2c14e]">How to play:</b> slide a finger to run ·{' '}
-          {refinedControls() ? 'tap or flick up to jump · tap near a foe to punch' : 'flick up to jump · tap to punch'} · flick sideways to kick
+          flick up to jump · tap to punch · flick sideways to kick
         </p>
         <p className="mt-2 text-xs leading-snug text-[#f4ecd8]/70">
           While you play, it records your taps and swipes and what Pokey does, so Matt can see where the controls trip people

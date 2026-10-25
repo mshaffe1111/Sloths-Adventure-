@@ -123,9 +123,6 @@ function wayDodgeOn(): boolean {
 const FIND_SEARCH_SECONDS = 0.9;
 /** seconds before a crumbled platform grows back */
 const REGROW_SECONDS = 3;
-/** how close (across, and up or down) an animal or cage must be for a tap to punch rather than jump */
-const TAP_PUNCH_X = 130;
-const TAP_PUNCH_Y = 60;
 /** how near a flower must be to pick it while swinging on a vine (34 on foot) */
 const SWING_PICK = 56;
 /** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
@@ -776,13 +773,11 @@ export class GameEngine {
     const groundedBefore = p.grounded;
     const vyBefore = p.vy;
     if (recorder.on) this.recordPokey();
-    // the touch recogniser reads this: in the air with a second jump to spare, a tap is that jump
+    // the touch recogniser reads this: in the air with a second jump to spare, a shorter slide up is that jump
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
     if (this.refined) {
       this.input.kickNear = this.somethingToKick();
       this.input.onVine = p.climbing || !!p.isVineSwinging;
-      // nothing to hit within reach, on the ground or on a vine: a tap jumps (or leaps off the vine)
-      this.input.tapJump = !this.somethingToPunch() && (p.grounded || !!p.isVineSwinging) && !p.climbing && !p.hanging && !this.isGameOver;
     }
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
@@ -2711,20 +2706,6 @@ export class GameEngine {
   }
 
   /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
-  /**
-   * an animal or a cage close enough, and level enough, that a tap means a punch (closer than somethingToKick: a snake up on a branch,
-   * or one well down the path, leaves a tap as a jump, so hopping up to it still works)
-   */
-  private somethingToPunch(): boolean {
-    const p = this.player;
-    const cx = p.x + p.width / 2, cy = p.y - p.height / 2;
-    const near = (x: number, y: number) => Math.abs(x - cx) < TAP_PUNCH_X && Math.abs(y - cy) < TAP_PUNCH_Y;
-    for (const e of this.enemies) if (!e.defeated && near(e.x + (e.width ?? 0) / 2, e.y)) return true;
-    if (this.boss && Math.abs(this.boss.x - cx) < TAP_PUNCH_X * 2) return true;
-    for (const c of this.collectibles) if (c.type === 'cage' && !c.collected && near(c.x, c.y)) return true;
-    return false;
-  }
-
   private somethingToKick(): boolean {
     const p = this.player;
     const cx = p.x + p.width / 2, cy = p.y - p.height / 2;

@@ -44,7 +44,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
     intro: 'Touching it costs a heart. Hit it first, or land on its head.',
     lines: {
       screen: [
-        { glyph: 'tap', how: 'Tap when it is close', what: 'Punch', sub: 'with nothing close, a tap is a jump' },
+        { glyph: 'tap', how: 'Tap when it is close', what: 'Punch', sub: 'in the air, a tap is a jump kick' },
         { glyph: 'flick', how: 'Quick flick ← →', what: 'Kick', sub: 'it kicks the way you flick' },
         { glyph: 'hold', how: 'Press and hold', what: 'Mega punch', sub: 'slower, but it hits hard' },
         { glyph: 'up', how: 'Jump on its head', what: 'Stomp', sub: 'most foes can be stomped' },
@@ -98,7 +98,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
     lines: {
       screen: [
         { glyph: 'jump', how: 'Slide up and across', what: 'Run and jump', sub: 'keep your thumb moving forward in the air' },
-        { glyph: 'tap', how: 'Tap in the air', what: 'Double jump', sub: 'it pushes you forward, for a gap that is a little too wide' },
+        { glyph: 'up', how: 'Flick up again in the air', what: 'Double jump', sub: 'it pushes you forward, for a gap that is a little too wide' },
       ],
       pad: [{ how: 'Pad → then Jump', what: 'Run and jump' }, { how: 'Jump again in the air', what: 'Double jump', sub: 'for a gap that is a little too wide' }],
       keys: [{ how: 'D or → then Space', what: 'Run and jump' }, { how: 'Space again in the air', what: 'Double jump', sub: 'for a gap that is a little too wide' }],
@@ -137,7 +137,7 @@ export const LESSONS: Record<LessonId, Lesson> = {
       screen: [
         { glyph: 'up', how: 'Jump into the vine', what: 'Grab on' },
         { glyph: 'run', how: 'Slide left and right', what: 'Swing harder' },
-        { glyph: 'up', how: 'Tap or flick up', what: 'Let go and leap', sub: 'let go while you are swinging forward' },
+        { glyph: 'jump', how: 'Flick up and forward', what: 'Let go and leap', sub: 'let go while you are swinging forward' },
       ],
       pad: [{ how: 'Jump into the vine', what: 'Grab on' }, { how: 'Pad ← →', what: 'Swing harder' }, { how: 'Jump', what: 'Let go and leap' }],
       keys: [{ how: 'Jump into the vine', what: 'Grab on' }, { how: 'A D or ← →', what: 'Swing harder' }, { how: 'Space', what: 'Let go and leap' }],

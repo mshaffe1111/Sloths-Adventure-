@@ -50,7 +50,7 @@ export class StuckWatch {
 /** Dot's line, for the kind of controls in use */
 export function stuckLine(mode: 'screen' | 'pad' | 'keys'): string {
   return mode === 'screen'
-    ? 'Too tall for one jump! Tap again in the air to jump twice'
+    ? 'Too tall for one jump! Flick up again in the air to jump twice'
     : mode === 'pad'
       ? 'Too tall for one jump! Press Jump again in the air to jump twice'
       : 'Too tall for one jump! Press Space again in the air to jump twice';

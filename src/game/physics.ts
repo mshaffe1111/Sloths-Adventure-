@@ -49,7 +49,7 @@ export const ASSIST = {
 } as const;
 
 /**
- * Keeping going in the air (touch only, see jumpHelp.ts). A thumb that lifts to tap for the second jump must not stop Pokey in mid-air, and a
+ * Keeping going in the air (touch only, see jumpHelp.ts). A thumb that lifts between the two jumps must not stop Pokey in mid-air, and a
  * jump from a standstill may lean the way he faces. `drive` is the way he is being carried (0 = none); pushing back brakes him, and
  * after that the old stop-when-you-let-go is back until the next take-off.
  */
