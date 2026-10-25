@@ -1,0 +1,68 @@
+{
+ "tag": "w4batch2",
+ "loras": [
+  [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ ],
+ "items": [
+  {
+   "name": "w4p-cover-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a round leafy shrub on a small mossy rock, big enough for a small animal to crouch inside, the same round shrub rustling with leaves flying, a tall clump of misty cliff ferns, a wide low bush of broad dark green leaves, a curtain of hanging moss and thin vines, a hollow grey boulder with a dark opening to hide in",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-cover-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a round leafy shrub on a small mossy rock, big enough for a small animal to crouch inside, the same round shrub rustling with leaves flying, a tall clump of misty cliff ferns, a wide low bush of broad dark green leaves, a curtain of hanging moss and thin vines, a hollow grey boulder with a dark opening to hide in",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-fruit-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a small gnarled cliff tree with round orange fruits hanging among its leaves, the same tree with its fruits gone, a single round orange fruit with a leaf, a fallen orange fruit split open on the ground, a short twisted tree with one fruit, a small pile of fruit peels",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-fruit-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a small gnarled cliff tree with round orange fruits hanging among its leaves, the same tree with its fruits gone, a single round orange fruit with a leaf, a fallen orange fruit split open on the ground, a short twisted tree with one fruit, a small pile of fruit peels",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-falllip-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a wide mossy grey rock ledge with a thin sheet of white water pouring off its front edge, the same rock ledge dry with only a thin trickle, a narrow rock lip with a heavy waterfall pouring straight down, the foot of a waterfall with white foam splashing on a rock shelf, a small rock overhang dripping water, a cave mouth seen through a thin curtain of falling water",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-falllip-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a wide mossy grey rock ledge with a thin sheet of white water pouring off its front edge, the same rock ledge dry with only a thin trickle, a narrow rock lip with a heavy waterfall pouring straight down, the foot of a waterfall with white foam splashing on a rock shelf, a small rock overhang dripping water, a cave mouth seen through a thin curtain of falling water",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-nests-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a large twig eagle nest on a rock ledge, a fluffy grey eaglet chick tangled in old brown rope netting inside the nest, the same fluffy grey eaglet chick free and flapping its small wings, an empty twig nest, a torn piece of old brown rope netting, a tall narrow rock perch with a twig nest on top",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-nests-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a large twig eagle nest on a rock ledge, a fluffy grey eaglet chick tangled in old brown rope netting inside the nest, the same fluffy grey eaglet chick free and flapping its small wings, an empty twig nest, a torn piece of old brown rope netting, a tall narrow rock perch with a twig nest on top",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  }
+ ]
+}
