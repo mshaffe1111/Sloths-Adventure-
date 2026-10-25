@@ -65,6 +65,13 @@ export interface GeneratedStage {
   zones?: import('./zones.ts').Zone[];
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
+  /**
+   * 4-7: warm air rising out of the mist (the same objects as proto.w4.updrafts): an open leaf in it rises to its top, so the validator
+   * lets him ride one up and drift off it onto a ledge (a ledge only the warm air reaches)
+   */
+  updrafts?: Array<{ x0: number; x1: number; top: number; bottom: number }>;
+  /** 4-7: a fall this far below the ground he last stood on is a fall into the mist (w4Play deepFall), so the validator joins no drop deeper */
+  deepFall?: number;
   /** what the generator built (for tests and debugging) */
   meta?: {
     attempt: number;
