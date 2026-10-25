@@ -1,0 +1,173 @@
+{
+ "tag": "w4batch1",
+ "loras": [
+  [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ ],
+ "items": [
+  {
+   "name": "w4p-cliff-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a wet mossy rock overhang jutting out from a cliff, a single loose mossy boulder chunk, a cluster of three small falling rock chunks, the jagged broken-off end of a mossy rock ledge, a wet stone handhold outcrop, a narrow mossy cliff shelf dripping water",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-cliff-22",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a wet mossy rock overhang jutting out from a cliff, a single loose mossy boulder chunk, a cluster of three small falling rock chunks, the jagged broken-off end of a mossy rock ledge, a wet stone handhold outcrop, a narrow mossy cliff shelf dripping water",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-cliff-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a wet mossy rock overhang jutting out from a cliff, a single loose mossy boulder chunk, a cluster of three small falling rock chunks, the jagged broken-off end of a mossy rock ledge, a wet stone handhold outcrop, a narrow mossy cliff shelf dripping water",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-fern-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: six stages of the same giant fern frond unrolling, left to right and top to bottom: a tight curled fiddlehead, starting to uncurl, half unrolled, mostly unrolled, nearly flat, fully unrolled lying flat and long like a little leafy bridge, the same green fern every time",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-fern-22",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: six stages of the same giant fern frond unrolling, left to right and top to bottom: a tight curled fiddlehead, starting to uncurl, half unrolled, mostly unrolled, nearly flat, fully unrolled lying flat and long like a little leafy bridge, the same green fern every time",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-fern-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: six stages of the same giant fern frond unrolling, left to right and top to bottom: a tight curled fiddlehead, starting to uncurl, half unrolled, mostly unrolled, nearly flat, fully unrolled lying flat and long like a little leafy bridge, the same green fern every time",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-chimes-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a weathered wooden post with bamboo wind chimes hanging still, the same post with the chimes swinging hard to the left, the same post with the chimes swinging hard to the right, a cliff-top tuft of long grass blowing in the wind, a long cloth-and-leaf streamer on a stick blowing sideways, a tall narrow rock spire with a flat mossy top",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-chimes-22",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a weathered wooden post with bamboo wind chimes hanging still, the same post with the chimes swinging hard to the left, the same post with the chimes swinging hard to the right, a cliff-top tuft of long grass blowing in the wind, a long cloth-and-leaf streamer on a stick blowing sideways, a tall narrow rock spire with a flat mossy top",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-chimes-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a weathered wooden post with bamboo wind chimes hanging still, the same post with the chimes swinging hard to the left, the same post with the chimes swinging hard to the right, a cliff-top tuft of long grass blowing in the wind, a long cloth-and-leaf streamer on a stick blowing sideways, a tall narrow rock spire with a flat mossy top",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-water-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a big round mossy boulder, a small stone stream channel ending at a cliff edge with water pouring over, the same stone channel blocked by a round boulder with the water stopped, the top lip of a waterfall with water pouring down, the same waterfall lip dried up with only a thin trickle, a short flight of wet carved stone steps",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-water-22",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a big round mossy boulder, a small stone stream channel ending at a cliff edge with water pouring over, the same stone channel blocked by a round boulder with the water stopped, the top lip of a waterfall with water pouring down, the same waterfall lip dried up with only a thin trickle, a short flight of wet carved stone steps",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-water-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a big round mossy boulder, a small stone stream channel ending at a cliff edge with water pouring over, the same stone channel blocked by a round boulder with the water stopped, the top lip of a waterfall with water pouring down, the same waterfall lip dried up with only a thin trickle, a short flight of wet carved stone steps",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-pools-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a small dark cave hollow in grey rock seen from the side, a shallow pool of clear water in a rock basin, the same rock basin drained and empty, a small dam of mossy logs across a stream, the same log dam broken apart, half of a pink silk ribbon torn clean across with a knot tied in it",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-pools-22",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a small dark cave hollow in grey rock seen from the side, a shallow pool of clear water in a rock basin, the same rock basin drained and empty, a small dam of mossy logs across a stream, the same log dam broken apart, half of a pink silk ribbon torn clean across with a knot tied in it",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-pools-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a small dark cave hollow in grey rock seen from the side, a shallow pool of clear water in a rock basin, the same rock basin drained and empty, a small dam of mossy logs across a stream, the same log dam broken apart, half of a pink silk ribbon torn clean across with a knot tied in it",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-netting-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a square panel of dark riveted iron mesh netting, the same iron netting panel with a small torn seam opening just big enough for a tiny bird, a long single iron strand with hooks, a snapped iron strand dangling, a heavy iron ring anchor bolted into rock, a soldier's hanging oil lantern glowing warm orange",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-netting-22",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a square panel of dark riveted iron mesh netting, the same iron netting panel with a small torn seam opening just big enough for a tiny bird, a long single iron strand with hooks, a snapped iron strand dangling, a heavy iron ring anchor bolted into rock, a soldier's hanging oil lantern glowing warm orange",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4p-netting-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a square panel of dark riveted iron mesh netting, the same iron netting panel with a small torn seam opening just big enough for a tiny bird, a long single iron strand with hooks, a snapped iron strand dangling, a heavy iron ring anchor bolted into rock, a soldier's hanging oil lantern glowing warm orange",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "w4-capuchin-sheet-11",
+   "prompt": "slothadv style, painted storybook illustration, a character sheet of a cheeky capuchin monkey for a 2D side-scrolling game, sixteen separate poses in a 4 by 4 grid on a flat plain grey background (#808080), each pose with space around it, side views facing right: walking, running on all fours, sitting, holding a stolen pink flower petal, screeching with its mouth wide open and pointing, eating a fruit happily, startled and jumping, curled up sitting on a nest, standing as a guard wearing a small red army sash, throwing a fruit, laughing, sneaking on tiptoe, dizzy, sleeping, waving its tail, hanging by its tail, the same monkey every time, cute and mischievous, no text",
+   "seed": 11,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w4-capuchin-sheet-22",
+   "prompt": "slothadv style, painted storybook illustration, a character sheet of a cheeky capuchin monkey for a 2D side-scrolling game, sixteen separate poses in a 4 by 4 grid on a flat plain grey background (#808080), each pose with space around it, side views facing right: walking, running on all fours, sitting, holding a stolen pink flower petal, screeching with its mouth wide open and pointing, eating a fruit happily, startled and jumping, curled up sitting on a nest, standing as a guard wearing a small red army sash, throwing a fruit, laughing, sneaking on tiptoe, dizzy, sleeping, waving its tail, hanging by its tail, the same monkey every time, cute and mischievous, no text",
+   "seed": 22,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w4-capuchin-sheet-33",
+   "prompt": "slothadv style, painted storybook illustration, a character sheet of a cheeky capuchin monkey for a 2D side-scrolling game, sixteen separate poses in a 4 by 4 grid on a flat plain grey background (#808080), each pose with space around it, side views facing right: walking, running on all fours, sitting, holding a stolen pink flower petal, screeching with its mouth wide open and pointing, eating a fruit happily, startled and jumping, curled up sitting on a nest, standing as a guard wearing a small red army sash, throwing a fruit, laughing, sneaking on tiptoe, dizzy, sleeping, waving its tail, hanging by its tail, the same monkey every time, cute and mischievous, no text",
+   "seed": 33,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "w4-dotflight-back-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background, a huge dark iron netting strung across a misty mountain gorge between tall grey cliffs, seen from the air, wind tugging the strands, small warm lanterns hanging on it far away, cold blue-grey morning light, no characters, no text, no interface",
+   "seed": 11,
+   "w": 1664,
+   "h": 928
+  },
+  {
+   "name": "w4-dotflight-back-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background, a huge dark iron netting strung across a misty mountain gorge between tall grey cliffs, seen from the air, wind tugging the strands, small warm lanterns hanging on it far away, cold blue-grey morning light, no characters, no text, no interface",
+   "seed": 22,
+   "w": 1664,
+   "h": 928
+  }
+ ]
+}
