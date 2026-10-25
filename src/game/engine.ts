@@ -3696,7 +3696,9 @@ export class GameEngine {
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {
-      this.camera.targetX += (look.x - vw / 2 - this.camera.targetX) * look.u;
+      // (a knot, on a wide view: kept 110 px in from the left edge, clear of Dot's banner across the middle of the screen)
+      const lx = look.leftX !== undefined && vw > vh * 1.3 ? look.leftX - 110 : look.x - vw / 2;
+      this.camera.targetX += (lx - this.camera.targetX) * look.u;
       this.camera.targetY += (look.y - vh / 2 - this.camera.targetY) * look.u;
       // (never so far that he leaves the view: his feet stay above the bottom tenth)
       this.camera.targetY = Math.max(this.camera.targetY, p.y - vh * 0.9);
