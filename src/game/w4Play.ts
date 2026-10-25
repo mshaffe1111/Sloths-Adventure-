@@ -10,6 +10,7 @@
  */
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
 import { drawW4, type W4Piece } from './w4Art.ts';
+import { NEST, nearNest, nestAt, nestCycle, type Nest } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
 import { ROCK, rockAt, rockHits, type RockDrop } from './rockfall.ts';
@@ -48,6 +49,8 @@ export interface W4Extras {
   updrafts?: Updraft[];
   /** a fall this far below the ledge he last stood on is a fall into the mist (4-7: the gaps have no floor) */
   deepFall?: number;
+  /** 4-6: sleeping eaglets (eaglet.ts) */
+  nests?: Nest[];
 }
 
 /** what the engine lends World 4 each frame */
@@ -68,12 +71,19 @@ export interface W4Host {
   float(text: string, x: number, y: number, color: string): void;
   /** a lookout called the Sovereign */
   screech(x: number): void;
-  sfx(kind: 'rock' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash'): void;
+  sfx(kind: 'rock' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash' | 'gust'): void;
   /** he fell into the mist (deepFall) */
   fellOff?(): void;
 }
 
 const FRUIT_BACK = 9;
+/** the mist bank: how thick it is (alpha) where it has not settled, the haze left where it has, and how softly its edges fade (px) */
+const MIST_THICK = 0.9;
+const MIST_HAZE = 0.12;
+const MIST_EDGE = 70;
+const CLEAR_EDGE = 24;
+/** how far y is outside a band of mist (0 inside it) */
+const bandGap = (b: { top: number; bottom: number }, y: number) => (y < b.top ? b.top - y : y > b.bottom ? y - b.bottom : 0);
 const KNOT_DROP = 0.8;
 
 export class W4Play {
@@ -90,6 +100,8 @@ export class W4Play {
   private groundY = NaN;
   /** the view drawBack last drew (drawFront culls by it) */
   private view = { x0: -Infinity, x1: Infinity };
+  /** each nest: the last look that blew him back, and when its latest flurry started and which way it pushes */
+  private nestBlow: Array<{ cycle: number; at: number; dir: number }>;
 
   constructor(private readonly w4: W4Extras, platforms: Platform[], vines: Vine[]) {
     this.patience = (w4.patience ?? []).map(() => newPatience());
@@ -99,6 +111,7 @@ export class W4Play {
     this.monkeys = (w4.monkeys ?? []).map((m) => newCapuchin(m));
     this.fruit = (w4.fruit ?? []).map((f) => ({ state: 'hang', x: f.x, y: f.y, vy: 0, at: 0 }));
     this.chimeRang = (w4.chimes ?? []).map(() => -9);
+    this.nestBlow = (w4.nests ?? []).map(() => ({ cycle: -1, at: -9, dir: 1 }));
     // a frond's bridge is not there until it unrolls
     for (const s of w4.patience ?? []) {
       const pl = s.kind === 'frond' ? platforms.find((q) => q.id === s.platformId) : undefined;
@@ -159,6 +172,35 @@ export class W4Play {
         if (pl) pl.broken = false;
         h.sfx('frond');
         h.float('SLOW IS NOT STOPPED', p.x, p.y - 100, '#bbf7d0');
+      }
+      // the mist rising again after it has shown him the way: Dot says to remember it (once)
+      if (s.kind === 'mist' && was.level >= 0.99 && now.level < was.level) h.tip('w4:mist', 'The mist is coming back! Remember where the ledges were', 3.2);
+    });
+
+    // the eaglets: moving near the nest while they look about blows him back a few steps, again and again while he keeps moving there
+    // (a flurry holds him where he is, so a look cannot be walked through); standing still, nothing happens. Once he is out of their
+    // sight no new flurry starts, so he is never blown further than one flurry past the edge of it (eaglet.ts)
+    (w4.nests ?? []).forEach((n, i) => {
+      const b = this.nestBlow[i];
+      const near = nearNest(n, p.x, p.y);
+      const phase = nestAt(n, h.t).phase;
+      if (near && phase === 'stir') h.tip('w4:nestStir', 'Shh! One is waking. Stand still while they look', 3);
+      if (near && !still && phase === 'look' && h.t - b.at >= NEST.blow) {
+        const cycle = nestCycle(n, h.t);
+        if (b.cycle !== cycle) {
+          h.float('PEEP PEEP!', n.x, n.y - 100, '#fde68a');
+          h.tip('w4:nestBlow', 'Whoa! Stand still while they look, and go while they sleep', 3.4);
+        }
+        b.cycle = cycle;
+        b.at = h.t;
+        b.dir = p.x >= n.x ? 1 : -1;
+        h.sfx('gust');
+      }
+      const u = (h.t - b.at) / NEST.blow;
+      if (u >= 0 && u < 1) {
+        p.x += b.dir * NEST.push * (1 - u) * dt;
+        p.vx = 0;
+        speed = Math.min(speed, 0.1);
       }
     });
 
@@ -294,7 +336,7 @@ export class W4Play {
   }
 
   /** behind Pokey: the falls, the pools, the chimes, the rock shadows and rocks, the fern, the knots and Dot, the monkeys, the fruit */
-  drawBack(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number }, zones: readonly Zone[], platforms: Platform[]) {
+  drawBack(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number; y0?: number; y1?: number }, zones: readonly Zone[], platforms: Platform[]) {
     const w4 = this.w4;
     this.view = view;
     const near = (x: number, pad = 300) => x > view.x0 - pad && x < view.x1 + pad;
@@ -317,6 +359,70 @@ export class W4Play {
     (w4.knots ?? []).forEach((k, i) => near(k.x) && drawKnot(ctx, k, this.knots[i], t));
     this.fruit.forEach((f) => f.state !== 'gone' && near(f.x) && drawFruit(ctx, f.x, f.y));
     (w4.monkeys ?? []).forEach((m, i) => near(this.monkeys[i].x) && drawMonkey(ctx, m, this.monkeys[i], t));
+    (w4.nests ?? []).forEach((n, i) => near(n.x) && drawNest(ctx, n, t, t - this.nestBlow[i].at));
+    // the mist bank over everything in it (ledges and trunks alike), behind Pokey so he can always be seen in it
+    if (view.y0 !== undefined && view.y1 !== undefined) this.drawMistBank(ctx, t, { x0: view.x0, x1: view.x1, y0: view.y0, y1: view.y1 });
+  }
+
+  /** the mist's thickness at height y (0 clear .. 1 thick): the bands it covers, less what standing still has settled */
+  mistAt(y: number): number {
+    let mist = 0, clear = 0;
+    (this.w4.patience ?? []).forEach((s, i) => {
+      if (s.kind !== 'mist' || !s.area) return;
+      const gap = bandGap(s.area, y);
+      mist = Math.max(mist, 1 - gap / MIST_EDGE);
+      // (what it settles ends more sharply than the bank does, so a settled spot shows nothing of the next column up)
+      clear = Math.max(clear, Math.max(0, 1 - gap / CLEAR_EDGE) * mistReveal(this.patience[i]));
+    });
+    return mist * (1 - clear);
+  }
+
+  private drawMistBank(ctx: CanvasRenderingContext2D, t: number, v: { x0: number; x1: number; y0: number; y1: number }) {
+    const bands = (this.w4.patience ?? []).filter((s) => s.kind === 'mist' && s.area).map((s) => s.area!);
+    if (!bands.length) return;
+    const top = Math.max(v.y0, Math.min(...bands.map((b) => b.top)) - MIST_EDGE);
+    const bottom = Math.min(v.y1, Math.max(...bands.map((b) => b.bottom)) + MIST_EDGE);
+    if (bottom <= top) return;
+    ctx.save();
+    // the bank: one wash of fog from top to bottom, as thick as the mist is at each height (a thin haze stays where it has settled)
+    const g = ctx.createLinearGradient(0, top, 0, bottom);
+    const stops = Math.max(2, Math.ceil((bottom - top) / 12));
+    for (let k = 0; k <= stops; k++) {
+      const y = top + ((bottom - top) * k) / stops;
+      const inside = Math.max(0, ...bands.map((b) => 1 - bandGap(b, y) / MIST_EDGE));
+      const a = Math.min(1, MIST_THICK * this.mistAt(y) + MIST_HAZE * inside);
+      g.addColorStop(k / stops, `rgba(223,231,238,${a.toFixed(3)})`);
+    }
+    ctx.fillStyle = g;
+    ctx.fillRect(v.x0 - 20, top, v.x1 - v.x0 + 40, bottom - top);
+    // drifting puffs on top, so it reads as mist rather than a wall
+    const gx = 170, gy = 64;
+    for (let y = Math.floor(top / gy) * gy; y < bottom + gy; y += gy) {
+      // (as thin as the mist is anywhere across a puff, so none shows as a disc where the mist has settled or at its edges)
+      const m = Math.min(this.mistAt(y - 34), this.mistAt(y), this.mistAt(y + 34));
+      if (m <= 0.03) continue;
+      const row = Math.round(y / gy);
+      const drift = (t * (14 + (Math.abs(row) % 3) * 6) + Math.abs(row) * 53) % gx;
+      ctx.fillStyle = row % 2 ? '#f8fafc' : '#cbd5e1';
+      ctx.globalAlpha = 0.4 * m * m;
+      for (let x = Math.floor(v.x0 / gx) * gx - gx; x < v.x1 + gx; x += gx) {
+        ctx.beginPath();
+        ctx.ellipse(x + drift, y + Math.sin(t * 0.5 + x * 0.01) * 6, 120, 34, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  /** standing still on a mist spot, the view drifts over to the way up it is showing him: where to look, and how much (0..1) */
+  look(px: number, feetY: number): { x: number; y: number; u: number } | null {
+    let best: { x: number; y: number; u: number } | null = null;
+    (this.w4.patience ?? []).forEach((s, i) => {
+      if (s.kind !== 'mist' || !s.area || !onSpot(s, px, feetY)) return;
+      const u = Math.min(1, this.patience[i].level * 2);
+      if (u > 0 && (!best || u > best.u)) best = { x: s.view?.x ?? (s.x0 + s.x1) / 2, y: s.view?.y ?? (s.y + s.area.top) / 2, u };
+    });
+    return best;
   }
 
   /** in front of Pokey: the mist that hides the high ledges until he stands still */
@@ -324,7 +430,7 @@ export class W4Play {
     const v = this.view;
     (this.w4.falls ?? []).forEach((w) => w.veil && w.x + w.width > v.x0 - 300 && w.x < v.x1 + 300 && drawVeil(ctx, w, t));
     (this.w4.patience ?? []).forEach((s, i) => {
-      if (s.kind !== 'mist') return;
+      if (s.kind !== 'mist' || s.area) return; // (a band of mist is drawn as one bank, behind him: drawBack)
       const show = mistReveal(this.patience[i]);
       for (const id of s.hides ?? []) {
         const pl = platforms.find((q) => q.id === id);
@@ -793,6 +899,115 @@ function drawMist(ctx: CanvasRenderingContext2D, pl: Platform, a: number, t: num
     ctx.beginPath();
     ctx.ellipse(x, pl.y - 6, pl.width / 3, 34, 0, 0, Math.PI * 2);
     ctx.fill();
+  }
+  ctx.restore();
+}
+
+/** a nest of harpy eaglets: asleep (heads tucked, a z), one stirring (a head up), both looking about, and a flurry of wings */
+function drawNest(ctx: CanvasRenderingContext2D, n: Nest, t: number, sinceBlow: number) {
+  const { phase, u } = nestAt(n, t);
+  const blowing = sinceBlow >= 0 && sinceBlow < NEST.blow + 0.3;
+  ctx.save();
+  ctx.translate(n.x, n.y);
+  ctx.scale(1.3, 1.3);
+  // the chicks: white down, dark beaks; heads tucked asleep, up when they look
+  const chick = (dx: number, up: number, eyes: boolean, flap: number) => {
+    ctx.fillStyle = '#f8fafc';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    if (flap) {
+      for (const side of [-1, 1]) {
+        ctx.beginPath();
+        ctx.ellipse(dx + side * 18, -28, 15, 6, side * (0.5 + flap), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+    ctx.beginPath();
+    ctx.ellipse(dx, -22, 17, 15, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    const hy = -30 - up * 18;
+    ctx.beginPath();
+    ctx.arc(dx + 4, hy, 11, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // the little crest
+    ctx.beginPath();
+    ctx.moveTo(dx, hy - 9);
+    ctx.lineTo(dx - 3, hy - 17);
+    ctx.lineTo(dx + 5, hy - 10);
+    ctx.fill();
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.moveTo(dx + 13, hy - 1);
+    ctx.lineTo(dx + 20, hy + 2);
+    ctx.lineTo(dx + 13, hy + 4);
+    ctx.fill();
+    if (eyes) {
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(dx + 7, hy - 2, 2.4, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.strokeStyle = '#475569';
+      ctx.beginPath();
+      ctx.moveTo(dx + 4, hy - 2);
+      ctx.lineTo(dx + 10, hy - 2);
+      ctx.stroke();
+    }
+  };
+  const flap = blowing ? 0.5 * Math.sin(t * 40) : 0;
+  const up1 = phase === 'look' ? 1 : phase === 'stir' ? Math.min(1, u * 3) : 0;
+  const up2 = phase === 'look' ? Math.min(1, u * 4) : 0;
+  chick(-16, up1, phase !== 'sleep', flap);
+  chick(14, up2, phase === 'look', flap);
+  // the nest: a bowl of woven sticks in front of them
+  ctx.fillStyle = '#7c5a36';
+  ctx.beginPath();
+  ctx.ellipse(0, -12, 54, 18, 0, 0, Math.PI);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#4a3420';
+  ctx.lineWidth = 3;
+  for (let k = 0; k < 7; k++) {
+    ctx.beginPath();
+    ctx.moveTo(-50 + k * 14, -14 + (k % 2) * 5);
+    ctx.lineTo(-36 + k * 14, -2 - (k % 2) * 5);
+    ctx.stroke();
+  }
+  // what they are doing, over their heads
+  ctx.font = 'bold 22px sans-serif';
+  ctx.textAlign = 'center';
+  if (phase === 'sleep') {
+    const z = (t * 0.8) % 1;
+    ctx.globalAlpha = 1 - z * 0.8;
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 3;
+    ctx.strokeText('z', 18 + z * 14, -50 - z * 26);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillText('z', 18 + z * 14, -50 - z * 26);
+  } else if (phase === 'stir') {
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillText('?', -12, -80);
+  } else {
+    ctx.fillStyle = '#dc2626';
+    ctx.fillText('!', 0, -86);
+  }
+  // a flurry of wind lines when they blow him back
+  if (blowing) {
+    ctx.globalAlpha = Math.max(0, 1 - sinceBlow / (NEST.blow + 0.3));
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 3;
+    for (let k = 0; k < 4; k++) {
+      for (const side of [-1, 1]) {
+        const x0 = side * (50 + sinceBlow * 260 + k * 8);
+        ctx.beginPath();
+        ctx.moveTo(x0, -20 - k * 12);
+        ctx.lineTo(x0 + side * 40, -22 - k * 12);
+        ctx.stroke();
+      }
+    }
   }
   ctx.restore();
 }
