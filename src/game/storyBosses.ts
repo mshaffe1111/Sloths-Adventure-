@@ -72,7 +72,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'Two hours? Try two days on a vine sometime.', sting: 'laugh' },
       { speaker: 'Shadow Prowler', text: 'Meeca went north, toward the clouds. The thorns on our necks are called the Iron Pact. Ask the others how it began. I am not permitted to say.', boss: 'calm', cue: 'reveal', intensity: 0.35 },
     ],
-    tip: 'Shadow Prowler vanishes, then pounces. Watch the glowing eyes and strike as he lands.',
+    tip: 'Shadow Prowler slips into the dark and comes out behind you. Keep a moon pool at your back, and hit him where he glows.',
   },
   4: {
     intro: [

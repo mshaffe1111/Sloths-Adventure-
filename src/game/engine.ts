@@ -446,6 +446,13 @@ export class GameEngine {
     assignTerritories(this.enemies, this.platforms, (e) => e.y + (isPredator(e.type) ? FEET[e.type] : 0));
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
+    // Easy (difficulty.ts): a guardian takes about two thirds as many hits, each hit worth the same, and warns a little longer (tellMul)
+    if (this.boss && this.bossDef?.hits && isEasy()) {
+      const per = this.boss.maxHp / this.bossDef.hits;
+      this.bossHits = Math.max(4, Math.round(this.bossDef.hits * 0.7));
+      this.boss.maxHp = Math.round(per * this.bossHits);
+      this.boss.hp = this.boss.maxHp;
+    } else this.bossHits = this.bossDef?.hits;
     this.collectibles = this.currentStage.collectibles;
     this.proto = (this.currentStage as GeneratedStage & { proto?: ProtoExtras }).proto ?? null;
     // moves the stage lends him (the control test's rope), and the test's mix, logged so the run can be built again
@@ -2194,6 +2201,8 @@ export class GameEngine {
 
   /** Dot's lines dodge Pokey: true while the banner has moved to the bottom of the screen (see markWayDodge) */
   private wayLow = false;
+  /** how many hits the guardian takes in this fight (its own count, or Easy's fewer) */
+  private bossHits: number | undefined;
   private wayClearT = 0;
   /**
    * Dot's banner (Wayside.tsx) sits in a band across the upper middle of the screen, which on a phone held sideways is where Pokey
@@ -2310,6 +2319,7 @@ export class GameEngine {
           this.ringDrops.push({ e, t: 0, delay: this.ringDrops.length * 0.3 });
           sound.playWhoosh();
         },
+        tellMul: isEasy() ? 1.3 : 1,
         dropHeart: (x) => {
           const a = this.currentStage.arena;
           if (!a) return;
@@ -2535,7 +2545,7 @@ export class GameEngine {
     const sig = `${b.hp}|${b.phase}|${b.defeated ? 1 : 0}|${entering ? 1 : 0}`;
     if (sig === this.bossSig) return;
     this.bossSig = sig;
-    this.callbacks.onBossUpdate(b.defeated ? null : { name: def.name, hp: b.hp, maxHp: b.maxHp, phase: b.phase, hits: def.hits, color: def.color, entering });
+    this.callbacks.onBossUpdate(b.defeated ? null : { name: def.name, hp: b.hp, maxHp: b.maxHp, phase: b.phase, hits: this.bossHits, color: def.color, entering });
   }
 
   /** while the boss lives the fight is fenced in, and the camera follows both fighters */
