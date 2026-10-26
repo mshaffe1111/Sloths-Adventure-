@@ -134,6 +134,7 @@ The cutting and packing scripts are in `tools/art/` (`w2art/`, `w3*/`, `packprop
 | Meeca, Dot, story cels | `src/assets/characters/`, `dotSprite.ts`, `storyCels.ts` |
 | Regular creatures | `src/game/<creature>Sprite.ts` / `turtleArt.ts` / `guardArt.ts`, atlases `src/assets/enemies/*-atlas.webp` + `*AtlasData.ts` |
 | **Animated creature clips** (motion model, 2026-10-25) | `creatureAnim.ts` (shared loader), `*AnimData.ts`, `src/assets/enemies/*-anim.webp`: golden snake, eagle, ocelot, jaguar, turtle, royal guard, boa. Each keeps its single painted poses as the fallback. |
+| **World 5, ready but unused** (2026-10-26) | jumping spider clips `spiderAnimData.ts` + `spider-anim.webp`; the Tarantula Queen's boss clips `queenAnimData.ts` + `queen-anim.webp` (idle, skitter, silk shot / leg slam / web net each with a tell of 0.9-1.1 s, hurt, stunned, defeat, "do sit" and pouring tea; `QUEEN_MOVES`); Meeca carving on a trunk `meecaCarveData.ts` + `characters/meeca-carve.webp`; pose sheets (idle, move, tell, attack, hurt, defeated) for the five new creatures `<dangler\|butler\|seamstress\|mantis\|dozer>AtlasData.ts` + `*-poses.webp` (not `-atlas`, so `creatureArt.ts` does not bundle them yet). Test `w5Anims.test.ts`; tools `tools/art/w5/`. No stage or fight uses them yet. |
 | Golden snake (the game's snake) | `goldSnake.ts` (`?snake=classic` brings back the old one) |
 | Enemy brains and timings | `predatorAI.ts` (`TURTLE`, `GUARD`, …) |
 | Bosses / guardians | `bossDefs.ts`, `bossArt.ts`, `<boss>Sprite.ts`; boss sheets in `reference/boss-sheets/` |
@@ -204,8 +205,10 @@ Everything is in `tools/README.md` and `tools/art/`. In short:
   - `mshaffe111/slothadv-style-lora`: the game's painted look on Qwen-Image. Trigger: `slothadv style, painted storybook illustration`.
   - `mshaffe111/slothadv-motion-lora`: the motion model for Wan 2.2 I2V. It has a high-noise file and a low-noise file. Trigger: `slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion`. v2 (82 clips) was training on 2026-10-25 as job `6ade0882046eb82b1ece5767`; compare it with v1 before switching.
   - Character models: `mshaffe111/<pokey|meeca|dot|general|venom|croc|prowler|sovereign|queen|reaver|golem|monarch|drake|ironclaw|thornbark>-qwen-lora`.
+  - World 5 creature models (2026-10-26, 800 steps on every concept take, one variant word per take family): `mshaffe111/<dangler|butler|seamstress|mantis|dozer>-qwen-lora`, triggers `danglerspider`, `butlerspider`, `seamstressspider`, `orchidmantis`, `dozermoth` (spec `tools/art/gen/spec-w5creatures-train.json`). If a model repo is missing, the LoRA is in the bucket `mshaffe111/w5-xfer` under `train/<name>/`.
 - **Data**: `mshaffe111/<name>-lora-data`, `char-sheets`, `slothadv-style-data`, `slothadv-motion-data`.
 - **Generated output**: `mshaffe111/slothadv-gen`, with `stills/` and `clips/<name>.zip`.
+- **When the connector cannot write the repos** (its token is read-only plus jobs): jobs mount the private bucket `mshaffe111/w5-xfer` read-write at `/out` and write there; `hf_fs attach` brings a picture back byte for byte, and `tools/art/w5/unpack_carrier.py` unpacks files packed into a carrier PNG (`tools/art/w5/w5cpu.py`). The World 5 clips (`clips/w5-*.zip`), starts and edits live in that bucket.
 - **Jobs**: run on `ostris/aitoolkit:latest` with flavor `rtx-pro-6000`, about $2.75/h. The overnight run of 2026-10-24/25 cost about $69; 90 creature clips cost about $14.
 - **Lessons learned:**
   - The motion model fixed walks and runs in place.
