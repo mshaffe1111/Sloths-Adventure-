@@ -118,5 +118,31 @@ def round2():
     print(len(ed), 'edits', len(cl), 'clips')
 
 
+FACE = ('Change his face: instead of a dark mask across his eyes, he has a plain, friendly sloth face with light cream fur round his '
+        'eyes and only a thin, soft brown stripe running from each eye back toward his ear, like a real three-toed sloth, his eyes clearly '
+        'visible. ')
+
+
+def round3():
+    """soldier A's stand redrawn from his walk (the two-picture edit of round 2 gave him Pell's peaked cap), and both soldiers' eye
+    stripes toned down so they read as plain sloths, not bandit masks (coordinator, 2026-10-26)"""
+    same = {'a': 'the same dark chocolate-brown fur, the same soft olive cap, the same plain olive tunic and trousers',
+            'b': 'the same reddish cinnamon-brown fur, the same soft olive cap, the same plain olive tunic and trousers, the same rolled grey '
+                 'blanket on his back'}
+    ed = []
+    for s in (1, 2):
+        for v, pose, src, what in (('a', 'walk', 'w5sa-walk-1', 'The same walking pose, the same lantern down at his side.'),
+                                   ('a', 'stand', 'w5sa-walk-1', 'Now he has stopped walking and stands still, feet together, holding the '
+                                                                 'same lantern up in front of him in one paw, a plain stern face.'),
+                                   ('b', 'walk', 'w5sb-walk-1', 'The same walking pose, the same lantern down at his side.'),
+                                   ('b', 'stand', 'w5sb-stand-1', 'The same standing pose, the same lantern held up.')):
+            ed.append(edit(f'w5s{v}-{pose}3-{s}', [f'stills/{src}.png'],
+                           'The same sloth soldier as in the picture, ' + same[v] + ', ' + KEEP + FACE + what +
+                           ' Side view facing right, whole body in frame. One sloth only.', s))
+    (G / 'spec-w5pell3-edits.json').write_text(json.dumps({'tag': 'w5pell3', 'script': 'tools/art/w5/w5gpu.py', 'flavor': 'rtx-pro-6000',
+                                                            'edits': ed}))
+    print(len(ed), 'edits')
+
+
 if __name__ == '__main__':
-    round2() if '--round2' in sys.argv else round1()
+    {'--round2': round2, '--round3': round3}.get(next((a for a in sys.argv if a.startswith('--')), ''), round1)()

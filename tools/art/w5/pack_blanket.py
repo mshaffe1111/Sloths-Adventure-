@@ -2,7 +2,12 @@
 patch (folded, a prop), and Meeca with it round her shoulders, from model-free on-model edits (tools/art/w5/make_pell_specs.py).
 Writes src/assets/characters/meeca-blanket.webp + src/game/meecaBlanketData.ts. Not used by any scene yet.
 
-    python3 -I tools/art/w5/pack_blanket.py <blanket edit.png> <meeca edit.png>
+    python3 -I tools/art/w5/pack_blanket.py <blanket edit.png> <meeca edit.png> [<pell offer edit.png> '<json fix>' <work dir>]
+
+The fix gives both blankets the one patch on Pell's blanket in his offer edit (the edits drew three different patches): the edit's own
+patch is painted out and Pell's square brown patch with its crooked X stitches is warped over the spot.
+  {"src_box": [x0, y0, x1, y1], "src_quad": [4 corners of Pell's patch], "prop_quad": [4 corners of the prop's patch], "prop_grow": px,
+   "meeca_disc": [cx, cy, r, y max], "meeca_side": px, "meeca_deg": deg}   (picture px of each edit, corners clockwise from top left)
 
 Each picture is keyed off its own background (w5lib.sheet_mask, as pack_poses.py does), its ground shadow cut (w5gpu.clean_start's
 rule, done here on the cut-out: a dark neutral fringe at the bottom), and sized: Meeca to her standard sheet's standing height
@@ -48,6 +53,97 @@ def cut(path):
     return Image.fromarray(np.dstack([a[y0:y1, x0:x1], alpha[y0:y1, x0:x1] * 255]).astype(np.uint8), 'RGBA')
 
 
+def persp(dst, src):
+    """PIL PERSPECTIVE coefficients mapping output points dst[i] to input points src[i] (four of each)"""
+    A, b = [], []
+    for (x, y), (u, v) in zip(dst, src):
+        A += [[x, y, 1, 0, 0, 0, -u * x, -u * y], [0, 0, 0, x, y, 1, -v * x, -v * y]]
+        b += [u, v]
+    return np.linalg.solve(np.array(A, float), np.array(b, float))
+
+
+def inpaint(a, region, iters=400):
+    """fill region with the colours around it, smoothly (repeated averaging of the four neighbours)"""
+    ys, xs = np.nonzero(region)
+    y0, y1, x0, x1 = max(0, ys.min() - 2), ys.max() + 3, max(0, xs.min() - 2), xs.max() + 3
+    sub, m = a[y0:y1, x0:x1].copy(), region[y0:y1, x0:x1]
+    ring = ndimage.binary_dilation(m, iterations=3) & ~m
+    sub[m] = sub[ring].mean(0)
+    for _ in range(iters):
+        avg = (np.roll(sub, 1, 0) + np.roll(sub, -1, 0) + np.roll(sub, 1, 1) + np.roll(sub, -1, 1)) / 4
+        sub[m] = avg[m]
+    a[y0:y1, x0:x1] = sub
+
+
+def pell_patch(path, box, quad):
+    """the darned patch on Pell's blanket in his offer edit: the brown square, its outline and its crooked stitches (everything in box
+    that is not the blanket's olive), as RGBA, with its four corners (quad, picture px) to warp it by"""
+    a = np.asarray(Image.open(path).convert('RGB')).astype(np.float32)
+    x0, y0, x1, y1 = box
+    sub = a[y0:y1, x0:x1]
+    edge = np.concatenate([sub[:3].reshape(-1, 3), sub[-3:].reshape(-1, 3), sub[:, :3].reshape(-1, 3), sub[:, -3:].reshape(-1, 3)])
+    olive = np.median(edge, 0)
+    m = np.sqrt(((sub - olive) ** 2).sum(-1)) > 28
+    lab, n = ndimage.label(m)
+    sizes = ndimage.sum(m, lab, range(1, n + 1))
+    m = np.isin(lab, 1 + np.flatnonzero(sizes > sizes.max() * 0.01))
+    al = ndimage.gaussian_filter(ndimage.binary_dilation(m, iterations=1).astype(float), 0.7)
+    return Image.fromarray(np.dstack([sub, al * 255]).clip(0, 255).astype(np.uint8), 'RGBA'), [(u - x0, v - y0) for u, v in quad]
+
+
+def repatch(path, region, quad, patch):
+    """paint out the edit's own patch (region: a function of the picture array giving the pixels to fill) and lay Pell's patch over the
+    spot, warped onto quad (its four corners, picture px, clockwise from top left)"""
+    im = Image.open(path).convert('RGB')
+    a = np.asarray(im).astype(np.float32)
+    inpaint(a, region(a))
+    base = Image.fromarray(a.clip(0, 255).astype(np.uint8)).convert('RGBA')
+    p, src = patch
+    warped = p.transform(base.size, Image.PERSPECTIVE, tuple(persp(quad, src)), Image.BICUBIC)
+    base.alpha_composite(warped)
+    return base.convert('RGB')
+
+
+def disc_region(cx, cy, r, ymax):
+    """Meeca's take: a round orange patch with stitches sticking out of it, above the blanket's hem"""
+    def f(a):
+        yy, xx = np.mgrid[0:a.shape[0], 0:a.shape[1]]
+        near = ((xx - cx) ** 2 + (yy - cy) ** 2 < r * r) & (yy < ymax)
+        lum = a.mean(-1)
+        hit = near & (((a[..., 0] - a[..., 1]) > 30) | (lum < 100))
+        return ndimage.binary_dilation(hit, iterations=4) & near
+    return f
+
+
+def quad_region(quad, grow):
+    """the prop's take: the stitched patch inside quad, its stitches and thread a little past it (grow px)"""
+    def f(a):
+        from PIL import ImageDraw
+        mk = Image.new('L', (a.shape[1], a.shape[0]), 0)
+        ImageDraw.Draw(mk).polygon([tuple(q) for q in quad], fill=255)
+        return ndimage.binary_dilation(np.asarray(mk) > 0, iterations=grow)
+    return f
+
+
+def square(cx, cy, side, deg):
+    t = np.radians(deg)
+    c, s = np.cos(t), np.sin(t)
+    return [(cx + c * dx - s * dy, cy + s * dx + c * dy) for dx, dy in ((-side / 2, -side / 2), (side / 2, -side / 2), (side / 2, side / 2), (-side / 2, side / 2))]
+
+
+# one patch on both blankets: the brown square with crooked X stitches from Pell's offer (picture px of each edit; 2026-10-26 takes:
+# w5p-offer-1, w5p-blanket-1, w5m-blanket-3)
+FIX = json.loads(sys.argv[4]) if len(sys.argv) > 4 else None
+if FIX:
+    patch = pell_patch(sys.argv[3], FIX['src_box'], FIX['src_quad'])
+    pb = FIX['prop_quad']
+    Path('/tmp').exists()
+    fixed_b = repatch(sys.argv[1], quad_region(pb, FIX.get('prop_grow', 14)), pb, patch)
+    cx, cy, r, ymax = FIX['meeca_disc']
+    fixed_m = repatch(sys.argv[2], disc_region(cx, cy, r, ymax), square(cx, cy, FIX['meeca_side'], FIX.get('meeca_deg', -6)), patch)
+    tmp = Path(sys.argv[5] if len(sys.argv) > 5 else '.')
+    fixed_b.save(tmp / 'blanket-repatched.png'); fixed_m.save(tmp / 'meeca-repatched.png')
+    sys.argv[1], sys.argv[2] = str(tmp / 'blanket-repatched.png'), str(tmp / 'meeca-repatched.png')
 blanket, meeca = cut(sys.argv[1]), cut(sys.argv[2])
 blanket = blanket.resize((BLANKET_W, round(blanket.height * BLANKET_W / blanket.width)), Image.LANCZOS)
 meeca = meeca.resize((round(meeca.width * UP * STAND_H / meeca.height), round(UP * STAND_H)), Image.LANCZOS)
