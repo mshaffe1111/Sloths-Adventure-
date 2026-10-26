@@ -244,6 +244,8 @@ export class GameEngine {
   /** the line on screen is one of the boss fight's (bossCtx.guide) */
   private bossGuideUp = false;
   private guideN = 0;
+  /** the boss's state when its line was said */
+  private bossGuideIn = '';
   /** real seconds of slow motion still to play (the last hit on a giant) */
   private slowMoLeft = 0;
   private bossSig = '';
@@ -2618,6 +2620,7 @@ export class GameEngine {
           markTipHeard(id, 'boss:' + key);
           this.guide(line, 3.6);
           this.bossGuideUp = true;
+          this.bossGuideIn = this.boss?.ai?.state ?? '';
           return true;
         },
         crackPerches: (phase) => {
@@ -2817,6 +2820,8 @@ export class GameEngine {
     // Dot's fight line belongs to the moment it was said: when a new move begins (or a life is lost) it goes, so "get her head" never
     // hangs over the next attack
     if (guideWas && this.bossGuideUp && br.state === 'tell' && prevState !== 'tell' && this.guideN === guideN) this.clearGuide();
+    // (a warning said in a wind-up goes when that attack is over: "stay down" is not left up once the sweep has passed)
+    else if (guideWas && this.bossGuideUp && this.bossGuideIn === 'tell' && prevState === 'act' && br.state !== 'act' && this.guideN === guideN) this.clearGuide();
     // the opening begins: a chime, and for a giant with a glowing spot a NOW! over it (a crash already says DIZZY!, CAUGHT! ...), so the
     // moment is heard and seen wherever the eye is
     if (def.openCue && !wasOpen && weakOpen(b, def) && b.phase === prevPhase) {
@@ -3571,6 +3576,8 @@ export class GameEngine {
   private wallWasAhead = false;
   private watchForStuck() {
     const p = this.player;
+    // (no stage tips in a boss fight: Dot's lines there are the fight's own)
+    if (this.boss && !this.boss.defeated && (this.entrance || this.entranceDone)) return;
     if (p.grounded) this.wallWasAhead = this.wallAhead();
     const air = !p.grounded && !p.climbing && !p.isVineSwinging;
     if (this.stuck.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.wallWasAhead })) {

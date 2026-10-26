@@ -558,13 +558,16 @@ function skySlam(b: BossEntity, c: BossCtx, p: SkyPillar, markX: number) {
   b.facing = side > 0 ? -1 : 1;
   br.air = Math.min(br.air, PILLAR.h);
   for (const q of c.pillars ?? []) q.aimed = false;
-  // stone bursts from the rock where the mark was: standing on the mark (or on the rock's top) is what gets him hurt
-  // (a short burst, a little inside the mark's edge: a hero who has stepped off it and comes straight back for her head is not caught)
-  const lo = Math.min(markX - 62, p.x - p.w / 2);
-  const hi = Math.max(markX + 62, p.x + p.w / 2);
-  const shards = makeHazard({ kind: 'column', x: (lo + hi) / 2, y: c.arena.floor - (PILLAR.h + 70) / 2, floorY: c.arena.floor, w: hi - lo, h: PILLAR.h + 70, life: 0.14, maxLife: 0.14, color: '#a8a29e', color2: '#44403c' });
-  shards.look = 'shards';
-  c.hazards.push(shards);
+  // stone bursts from the rock where the mark was: standing on the mark (or on the rock's top) is what gets him hurt. Only inside the
+  // mark's own footprint, the one GET OFF! showed (MARK_BURST, a little inside its edge), so a short step off it clears it, whichever
+  // way; and up on the rock's top
+  const burst = (x: number, w: number, y0: number, h: number) => {
+    const sh = makeHazard({ kind: 'column', x, y: c.arena.floor - y0 - h / 2, floorY: c.arena.floor, w, h, life: 0.14, maxLife: 0.14, color: '#a8a29e', color2: '#44403c' });
+    sh.look = 'shards';
+    c.hazards.push(sh);
+  };
+  burst(markX, MARK_BURST * 2, 0, PILLAR.h + 70);
+  burst(p.x, p.w, p.h, 70);
   c.shake(broke ? 1 : 0.8);
   c.thud(true);
   c.debris(p.x, c.arena.floor - PILLAR.h * 0.7, '#a8a29e');
@@ -622,14 +625,20 @@ const skySettle = (b: BossEntity, c: BossCtx, dt: number) => {
  * chimes): she drifts toward him at SKY_COME.speed until her middle is SKY_COME.stop from him. She may fly over a rock on the way but
  * never stops over one (her weak spot would sit up on the rock top): then she stops short of it. Returns her new x.
  */
-export const SKY_COME = { speed: 240, stop: 150 } as const;
+export const SKY_COME = { speed: 240, stop: 150, clear: 90 } as const;
 export function skyApproach(x: number, c: BossCtx, dt: number): number {
   const dir = c.px >= x ? 1 : -1;
-  let to = c.px - dir * SKY_COME.stop;
-  // (she may fly over a rock on the way, but she never stops over one: short of it, on her side)
-  for (const p of standing(c.pillars)) if (Math.abs(to - p.x) < p.w / 2 + 70) to = p.x - dir * (p.w / 2 + 70);
-  if ((to - x) * dir <= 0) return x;
-  return x + dir * Math.min(Math.abs(to - x), SKY_COME.speed * dt);
+  let to = Math.abs(c.px - x) > SKY_COME.stop ? c.px - dir * SKY_COME.stop : x;
+  // (she may fly over a rock on the way, but she never settles with one under her, wings included: short of it, on her side, even
+  // when that means backing off one)
+  for (const p of standing(c.pillars)) {
+    const clear = p.w / 2 + SKY_COME.clear;
+    if (Math.abs(to - p.x) < clear) to = p.x + (x >= p.x ? 1 : -1) * clear;
+  }
+  const half = 125;
+  to = Math.max(c.arena.left + half, Math.min(c.arena.right - half, to));
+  if (Math.abs(to - x) < 0.5) return x;
+  return x + Math.sign(to - x) * Math.min(Math.abs(to - x), SKY_COME.speed * dt);
 }
 const skyOpening = (b: BossEntity, c: BossCtx, dt: number) => {
   skySettle(b, c, dt);
@@ -642,6 +651,10 @@ export const DIVE_LOCK = 0.45;
 export const RAKE_COMMIT = 0.42;
 export const RAKE_TOP = 120;
 export const RAKE_PAST = 40;
+/** the highest she climbs (the dive's and the snatch's wind-ups): the camera keeps her under the bar at this (bossCamera.ts) */
+export const SKY_CLIMB = 220;
+/** what hurts where a dive lands: this far either side of the mark's middle (the 150-wide mark, a little inside its edge) */
+export const MARK_BURST = 60;
 /** her feathers fly level this high above the floor (their middle; 14 tall): over a crouched hero (24 tall), into a standing one (38) */
 export const FEATHER_LANE = 34;
 export const FEATHER_GAP = 0.1;
@@ -768,7 +781,7 @@ const SOVEREIGN: BossDef = {
       tellTick: (b, c, dt) => {
         const br = b.ai!;
         // she climbs (not out of the camera's reach: it pulls back for her, frameAir) and flies over the mark as it follows him
-        br.air += (250 - br.air) * Math.min(1, dt * 4);
+        br.air += (SKY_CLIMB - br.air) * Math.min(1, dt * 4);
         // the mark locks early (DIVE_LOCK) and says GET OFF!, leaving three quarters of a second to step off it
         trackMark(b, c, br.d.h0, dt, DIVE_LOCK, 320);
         const h = c.hazards.find((x) => x.id === br.d.h0);
@@ -806,7 +819,8 @@ const SOVEREIGN: BossDef = {
         b.x += Math.max(-sp, Math.min(sp, dx));
         br.air -= 1300 * dt;
         b.facing = dx >= 0 ? 1 : -1;
-        br.hurt = [{ x: b.x - 70, y: c.arena.floor - br.air - 70, w: 140, h: 90 }];
+        // (only over the mark: she gets there before she is low, and her talons never sweep beside it)
+        br.hurt = [{ x: br.d.tx - MARK_BURST, y: c.arena.floor - br.air - 70, w: MARK_BURST * 2, h: 90 }];
         if (p && !p.broken && br.air <= p.h + 8) {
           skySlam(b, c, p, br.d.tx);
           return;
@@ -1026,7 +1040,7 @@ const SOVEREIGN: BossDef = {
       },
       tellTick: (b, c, dt) => {
         const br = b.ai!;
-        br.air += (230 - br.air) * Math.min(1, dt * 3);
+        br.air += (SKY_CLIMB - br.air) * Math.min(1, dt * 3);
         trackMark(b, c, br.d.h0, dt, DIVE_LOCK, 300);
         const h = c.hazards.find((x) => x.id === br.d.h0);
         if (h && br.t > DIVE_LOCK) {
@@ -1052,7 +1066,7 @@ const SOVEREIGN: BossDef = {
         b.x = br.d.x0 + (br.d.tx - br.d.x0) * (reach * reach * (3 - 2 * reach));
         br.air = u < 0.5 ? br.d.a0 + (6 - br.d.a0) * (u / 0.5) : 6 + (150 - 6) * ((u - 0.5) / 0.5);
         // only her talons hurt (the mark's width), as in the dive: stepping off the mark is the dodge, not outrunning her wings
-        br.hurt = [{ x: b.x - 65, y: c.arena.floor - br.air - 90, w: 130, h: 90 }];
+        br.hurt = [{ x: br.d.tx - (MARK_BURST - 5), y: c.arena.floor - br.air - 90, w: (MARK_BURST - 5) * 2, h: 90 }];
         if (u < 0.55) {
           const p = pillarFor(c.pillars, br.d.tx);
           if (p && Math.abs(b.x - p.x) < PILLAR.reach && br.air <= p.h + 8) skySlam(b, c, p, br.d.tx);
