@@ -133,6 +133,49 @@ export function warmW5Seamstress(): boolean {
 export type SeamPose = 'idle' | 'tell' | 'attack';
 
 /**
+ * which still of her sheet each pose draws. Knitting is the standing still with her needles and her knitting in her hands (the sheet's
+ * "hurt" still, eyes on her work): the sheet's own idle still sits her on a disc of web with the lace spread round her, and upright at
+ * 320 x 782 that read as "a webbed chair and a lace cloth", no character at all (QA v200)
+ */
+export const SEAM_STILL: Record<SeamPose, keyof typeof SEAMSTRESS_FRAMES> = { idle: 'hurt', tell: 'tell', attack: 'attack' };
+/** the dark edge round her (source px of the sheet), so her pink reads against the pink and lilac of the dusk and her own silk */
+const SEAM_EDGE = 5;
+const seamEdged = new Map<string, HTMLCanvasElement>();
+/** a still of hers with a dark plum edge all round, made once */
+function edgedStill(name: keyof typeof SEAMSTRESS_FRAMES): HTMLCanvasElement | null {
+  const got = seamEdged.get(name);
+  if (got) return got;
+  if (typeof document === 'undefined' || !seamImg) return null;
+  const f = SEAMSTRESS_FRAMES[name];
+  const e = SEAM_EDGE;
+  const c = document.createElement('canvas');
+  c.width = f.w + 2 * e;
+  c.height = f.h + 2 * e;
+  const g = c.getContext('2d');
+  if (!g) return null;
+  // (the silhouette, spread round by the edge's width, then darkened, then the still itself on top)
+  for (let a = 0; a < 16; a++) {
+    const r = (a * Math.PI) / 8;
+    g.drawImage(seamImg, f.x, f.y, f.w, f.h, e + Math.cos(r) * e, e + Math.sin(r) * e, f.w, f.h);
+  }
+  g.globalCompositeOperation = 'source-in';
+  g.fillStyle = '#2b1426';
+  g.fillRect(0, 0, c.width, c.height);
+  g.globalCompositeOperation = 'source-over';
+  g.drawImage(seamImg, f.x, f.y, f.w, f.h, e, e, f.w, f.h);
+  seamEdged.set(name, c);
+  return c;
+}
+
+/** how far her head is from her feet's middle across (world px, the way she faces): her stills are anchored at the feet, off centre */
+export const seamHeadDx = (pose: SeamPose): number => {
+  const f = SEAMSTRESS_FRAMES[SEAM_STILL[pose]];
+  return ((f.w * 0.45 - f.ax) * SEAMSTRESS.h) / SEAMSTRESS_FRAMES[SEAM_STILL.idle].h;
+};
+/** how tall her still for this pose stands, at the scale she is drawn (world px): the tell's raised needles stand over her head */
+export const seamTop = (pose: SeamPose): number => (SEAMSTRESS.h * SEAMSTRESS_FRAMES[SEAM_STILL[pose]].h) / SEAMSTRESS_FRAMES[SEAM_STILL.idle].h;
+
+/**
  * The Seamstress from her pose sheet, feet at (x, b), facing `dir`: knitting (idle: her lace spread on the ground before her), looking up
  * with her needles raised (the tell, `u` 0..1 through it: she rises a little), casting the lace (attack). Until the sheet is in, a plain
  * stand-in of the same size: a pink fuzzy body in a lace apron, round glasses, dark legs and her needles.
@@ -147,12 +190,16 @@ export function drawSeamstress(ctx: CanvasRenderingContext2D, x: number, b: numb
   ctx.fill();
   ctx.scale(dir, 1);
   if (warmW5Seamstress()) {
-    const f = SEAMSTRESS_FRAMES[pose];
+    const name = SEAM_STILL[pose];
+    const f = SEAMSTRESS_FRAMES[name];
     // (every pose at the knitting pose's scale, so she keeps her size; a little lift through the tell, a breath as she knits)
-    const k = h / SEAMSTRESS_FRAMES.idle.h;
+    const k = h / SEAMSTRESS_FRAMES[SEAM_STILL.idle].h;
     ctx.translate(0, -u * 4);
     if (pose === 'idle') ctx.scale(1, 1 + Math.sin(t * 2.4) * 0.012);
-    ctx.drawImage(seamImg!, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
+    const edged = edgedStill(name);
+    const e = SEAM_EDGE;
+    if (edged) ctx.drawImage(edged, (-f.ax - e) * k, (-f.ay - e) * k, edged.width * k, edged.height * k);
+    else ctx.drawImage(seamImg!, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
     ctx.restore();
     return;
   }

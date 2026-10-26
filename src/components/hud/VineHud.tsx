@@ -310,6 +310,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
       );
       label = `${goalNow} of ${target} ${info.noun}`;
     } else {
+      label = '';
       const r = Math.max(0, Math.min(1, distanceRatio));
       const fs = Math.round(cg.icon * 0.7);
       const tw = cw - Math.round(cg.plate * 0.8) - Math.round(cg.icon * 0.6);
@@ -327,6 +328,11 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
         </span>
       );
     }
+    // (a collect or rescue stage: how far along the stage he is, a thin line along the foot of the plate with his marker on it, the
+    // vine HUD's distance trail made small: goalInfo far)
+    const far = info.far && !meeca && !underBoss && (ckind === 'count' || ckind === 'slots');
+    const fr = Math.max(0, Math.min(1, distanceRatio));
+    if (far) label += `, ${Math.round(fr * 100)}% of the way along`;
     goal = (
       <div
         ref={counterRef}
@@ -359,10 +365,17 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
             <span className="vh-thread" style={{ left: Math.round(cw * 0.8), top: pv + 2, height: plateTop - pv }} />
           </>
         )}
-        <span className={`vh-cplate${art ? ' painted' : ''}`} style={{ top: plateTop, height: plateH, gap: Math.round(cg.icon * 0.18) }}>
+        <span className={`vh-cplate${art ? ' painted' : ''}${far ? ' far' : ''}`} style={{ top: plateTop, height: plateH, gap: Math.round(cg.icon * 0.18) }}>
           {art && <PlateArt w={cw} h={plateH} />}
           {inner}
         </span>
+        {far && (
+          <span className="vh-far" aria-hidden="true" style={{ left: Math.round(cw * 0.24), width: Math.round(cw * 0.52), top: plateTop + plateH - (short ? 7 : 8) }}>
+            <span className="vh-far-fill" style={{ width: `${fr * 100}%` }} />
+            <span className="vh-far-end" />
+            <span className="vh-far-dot" style={{ left: `calc(${(fr * 100).toFixed(1)}% - 4px)` }} />
+          </span>
+        )}
         {view.goalDelta > 0 && ckind !== 'distance' && (
           <span className="vh-tag gold" style={{ left: cw / 2 - 10, top: cg.height + 2, fontSize: Math.round(cg.num * 0.6) }}>
             +{view.goalDelta}

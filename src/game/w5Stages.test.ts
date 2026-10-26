@@ -8,7 +8,7 @@ import { findForStage } from './finds.ts';
 import { levelConfig } from './realPlay.ts';
 import { ORCHID, orchidAt, orchidFair, TABLE_CARD, type W5Extras } from './w5Kit.ts';
 import { W5_HINTS } from './w5Lines.ts';
-import { W5_HARVEST_SHARE, W5_ORCHID, type W5Info } from './w5Stages.ts';
+import { W5_HARVEST_SHARE, W5_LESSON_ORCHID, W5_ORCHID, type W5Info } from './w5Stages.ts';
 import { w5BackdropStem } from './w5Backdrop.ts';
 import { W5_FRAMES } from './w5PropsData.ts';
 import { stageSpec } from './stagePlan.ts';
@@ -166,7 +166,9 @@ test("5-3: the closing orchids: a harvest from their cups, closing sooner as it 
       const ground = o.stem!;
       assert.ok(st.platforms.some((p) => p.y === ground && p.x <= o.x - o.w / 2 && p.x + p.width >= o.x + o.w / 2), `seed ${s}: nothing under the orchid at ${o.x}`);
     }
-    assert.equal(orchids[0].open, W5_ORCHID.openFirst);
+    // (the lesson keeps a longer, gentler beat of its own; the stage's closing earlier starts after it)
+    assert.ok(orchids[0].lesson && orchids[0].open === W5_LESSON_ORCHID.open && orchids[0].period === W5_LESSON_ORCHID.period, `seed ${s}: the lesson's beat`);
+    assert.ok(orchids[1].open >= W5_ORCHID.openFirst - 0.2, `seed ${s}: the first steps open ${orchids[1].open} s`);
     assert.ok(orchids[orchids.length - 1].open <= W5_ORCHID.openFirst - 0.7, `seed ${s}: the last orchid open ${orchids[orchids.length - 1].open} s`);
     // each row: a plain hop from the bank, bloom to bloom, and off the last; they close one after another down the row
     for (const row of inf.rows) {

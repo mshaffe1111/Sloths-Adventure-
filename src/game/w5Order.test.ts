@@ -738,16 +738,17 @@ test('World 5 cakes: the touch box is inside the painted cake, and in the real e
 });
 
 /** 5-3's orchids: the first one alone over the grass, then two over the grass, then the rows over the soft pits */
-test('5-3: the first orchid is alone over the grass, one plain hop up from a stump, before any row over a pit; nothing needs a second jump', () => {
+test('5-3: the first orchid is alone on clear grass, one plain hop up from the path, before any row over a pit; nothing needs a second jump', () => {
   for (const s of SEEDS) {
     const st = build('5-3', s);
     const inf = st.w5info;
     assert.ok(validateStage(st).ok, `seed ${s}`);
     const first = inf.orchids[0];
     assert.equal(first.piece, 'lesson', `seed ${s}`);
-    // (one plain hop up from a plain stump beside it: 1-1's first stepping stone)
-    const stump = st.platforms.find((p) => p.style === 'moss_stone' && p.y + p.height === G && p.x + p.width <= first.x0 && first.x0 - (p.x + p.width) < 60);
-    assert.ok(stump && G - stump.y <= 50 && stump.y - first.y <= 75 && first.ground === G, `seed ${s}: the first orchid ${G - first.y} px up, its stump ${stump ? G - stump.y : 'none'}`);
+    // (one plain hop up from the path itself, and nothing on the grass before it to get caught behind: QA v200)
+    assert.ok(G - first.y <= 96 && first.ground === G, `seed ${s}: the first orchid ${G - first.y} px up`);
+    const inTheWay = st.platforms.filter((p) => p.y < G && p.y + p.height >= G - 4 && p.x < first.x1 + 40 && p.x + p.width > first.x0 - 600);
+    assert.deepEqual(inTheWay.map((p) => p.x), [], `seed ${s}: something on the grass before the first orchid`);
     // (grass right under it: a miss is a drop to the path)
     assert.ok(st.platforms.some((p) => p.y === G && p.x <= first.x0 && p.x + p.width >= first.x1), `seed ${s}: no grass under the first orchid`);
     // the next orchids are a beat later: the lesson is on its own
@@ -769,7 +770,7 @@ test('5-3 in the real engine: a row of orchids crossed with plain jumps, startin
       const o0 = w5.orchids!.find((o) => Math.abs(o.x - (st.w5info.orchids[row.orchids[0]].x0 + st.w5info.orchids[row.orchids[0]].x1) / 2) < 2)!;
       sim.stand(row.edge - 60, G);
       // (he has just walked up and the first one is opening: he goes as it opens, as Dot says)
-      sim.t = 60 + ((((0.85 - o0.offset - 0.4) % o0.period) + o0.period) % o0.period);
+      sim.t = o0.period * 10 + ((((0.85 - o0.offset - 0.4) % o0.period) + o0.period) % o0.period);
       let hold = 0, deep = false;
       for (let i = 0; i < 30 * 8 && !(sim.p.grounded && sim.p.x > row.far + 30); i++) {
         const p = sim.p;
@@ -846,7 +847,7 @@ test('5-3 upright (320x782, 390x844) and short (640x320): waiting at a row its f
       for (let k = 0; k + 1 < row.orchids.length; k++) {
         const o = st.w5info.orchids[row.orchids[k]];
         const ko = w5.orchids!.find((q) => Math.abs(q.x - (o.x0 + o.x1) / 2) < 2)!;
-        sim.t = 60 + ((((0.1 - ko.offset) % ko.period) + ko.period) % ko.period);
+        sim.t = ko.period * 10 + ((((0.1 - ko.offset) % ko.period) + ko.period) % ko.period);
         sim.stand((o.x0 + o.x1) / 2, o.y);
         for (let i = 0; i < 24; i++) sim.frame();
         const next = st.w5info.orchids[row.orchids[k + 1]];

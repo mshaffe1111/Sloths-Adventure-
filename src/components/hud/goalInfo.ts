@@ -25,6 +25,11 @@ export interface GoalInfo {
   slotIcon: (i: number) => GoalIcon;
   /** the noun for the counter's accessible label ("petals") */
   noun: string;
+  /**
+   * a collect or rescue stage: the counter also shows, small and light, how far along the stage he is (QA v200, 5-3 and 5-5 upright:
+   * the goal count alone gave no sense of how much was left)
+   */
+  far?: boolean;
 }
 
 interface Cfg {
@@ -103,5 +108,5 @@ export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
     icon = { kind: 'drawn', name: 'foe' };
     slotIcon = () => icon;
   }
-  return { kind: 'count', line, sub: 'to open the sanctuary', icon, slotIcon, noun: g.many };
+  return { kind: 'count', line, sub: 'to open the sanctuary', icon, slotIcon, noun: g.many, far: type === 'harvest' || type === 'rescue' };
 }

@@ -31,7 +31,7 @@ export type TopicId =
   | 'vine' | 'trunk' | 'rope' | 'log' | 'foe' | 'gap' | 'ledge' | 'petal' | 'cage' | 'bush' | 'fern' | 'mushroom'
   | 'crumble' | 'moving' | 'water' | 'heart' | 'power' | 'relic' | 'flag' | 'exit' | 'controls'
   // (World 5's pieces Dot points at: GuideView.w5)
-  | 'cocoon' | 'orchid';
+  | 'cocoon' | 'orchid' | 'seamstress';
 export type GuideWho = 'Dot' | 'Pokey' | 'Petal';
 
 export interface GuideLine {

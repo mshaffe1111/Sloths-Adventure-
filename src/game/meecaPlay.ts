@@ -21,7 +21,7 @@ import {
   AHEAD_MAX, BACK_MAX, carveChars, carveSeconds, LANE_UP, MARCH, MEECA_G, PELL_AHEAD, pellIndex, SIGHT, TELL, TURN_BACK,
   type MeecaStage, type MeecaTrunk, type WatchRhythm,
 } from './meecaStage.ts';
-import { MEECA_CAUGHT, MEECA_ENDING, MEECA_GOAL, MEECA_THOUGHTS, PELL_CATCH, type MeecaThought } from './meecaLines.ts';
+import { MEECA_CARD, MEECA_CAUGHT, MEECA_ENDING, MEECA_GOAL, MEECA_THOUGHTS, PELL_CATCH, type MeecaThought } from './meecaLines.ts';
 import { markCarvingsDone, recordCarving } from './meecaCarved.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { readMs } from './dotGuide.ts';
@@ -180,6 +180,25 @@ export class MeecaPlay {
   /** the HUD steps aside for the card and the ending (its pieces would sit over the card's words and the story box) */
   get cinematic(): boolean {
     return (this.phase === 'card' && this.cardOut < 0) || this.phase === 'ending' || this.phase === 'done';
+  }
+  /**
+   * the words on the screen now, as the stage draws them on its canvas (the "Three days earlier" card, her thought cloud, Pell's words,
+   * the ending's story box): the page puts them in its text too (MeecaWords.tsx), so screen readers and QA's bots can read them
+   * (QA v200: nothing of 5-M's was in the page)
+   */
+  screenWords(): Array<{ kind: 'card' | 'thought' | 'pell' | 'scene'; text: string }> {
+    const out: Array<{ kind: 'card' | 'thought' | 'pell' | 'scene'; text: string }> = [];
+    if (this.phase === 'card' || (this.cardOut >= 0 && this.cardOut < 1)) {
+      const title = MEECA_CARD.title.join(' ');
+      const kicker = MEECA_CARD.kicker.replace(' · ', ': ').toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+      const tap = MEECA_CARD.tap.charAt(0) + MEECA_CARD.tap.slice(1).toLowerCase();
+      out.push({ kind: 'card', text: `${kicker}. ${title}. ${MEECA_CARD.sub.join(' ')} ${tap}.` });
+    }
+    if (this.thought && this.phase !== 'card') out.push({ kind: 'thought', text: `Meeca thinks: ${this.thought.text}` });
+    if (this.pellSay) out.push({ kind: 'pell', text: `Lieutenant Pell: ${this.pellSay.text}` });
+    const l = (this.phase === 'ending' || this.phase === 'done') && this.line >= 0 ? MEECA_ENDING[this.line] : null;
+    if (l) out.push({ kind: 'scene', text: `${l.who}: ${l.text}` });
+    return out;
   }
   /** how close the view comes in (1 = as usual): the ending, closer */
   zoomWant(): number {

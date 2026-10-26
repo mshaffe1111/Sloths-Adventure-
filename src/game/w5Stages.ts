@@ -86,11 +86,23 @@ const GAP_TELL_52 = 2400;
 /**
  * 5-3's closing orchids: the bloom's width (its ledge), each one's beat (s), and how long it stays open: from World 5's first stage's
  * (the lesson, and the stage's start) down to its fifth's by the end (w5Kit orchidTiming): "closing earlier" as the stage goes on.
- * In a row, each opens (and closes) this much after the one before it, so they close one after another down the row as he crosses.
+ * In a row, each opens (and closes) this much after the one before it, so they close one after another down the row as he crosses: a
+ * little under the time the quickest running hop takes from one bloom to the next (210 px or more at a full run, 0.73 s), so a player
+ * who sets off while the first is open finds each in turn about as open as the first was, and one who goes early never meets the next
+ * still shut. (It was 0.45 s: he fell 0.3 s further behind the closing with every bloom, and a running hop that set off late in the
+ * first one's beat met the third or fourth shut, QA v200 upright: 55 of 116 cup flowers missed.)
  */
-export const W5_ORCHID = { w: 124, period: 6, openFirst: orchidTiming(1).open, openLast: orchidTiming(5).open, lag: 0.45 } as const;
+export const W5_ORCHID = { w: 124, period: 6, openFirst: orchidTiming(1).open, openLast: orchidTiming(5).open, lag: 0.6 } as const;
 /** how high an orchid over the grass stands (its ledge, px above the path): 70 px above a plain 50 px stump beside it */
 export const W5_GRASS_ORCHID = 120;
+/**
+ * 5-3's first orchid, the lesson: on clear grass with nothing before it, one plain hop up from the path itself (no stump to get caught
+ * behind: QA v200 at 320 x 782, Dot's "Quick!" came while Pokey was stuck in the silk behind the stump, and it shut before he was
+ * free), a little narrower so its painted bloom still reaches the grass, and a generous beat: open for most of it, shut only briefly.
+ */
+export const W5_LESSON_ORCHID = { up: 94, w: 108, period: 8, open: 5.6 } as const;
+/** the orchids just after it (the first steps and the first row): a longer beat, and this much longer open, while the rhythm is new */
+export const W5_EARLY_ORCHID = { period: 7, more: 0.9 } as const;
 /** 5-3's quota: the share of its flowers to gather (the path's alone fall short of it: the cups are what the stage is for) */
 export const W5_HARVEST_SHARE = 0.62;
 
@@ -460,8 +472,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     return Math.round((W5_ORCHID.openFirst + (W5_ORCHID.openLast - W5_ORCHID.openFirst) * u) * 10) / 10;
   };
   /** a big orchid, its bloom's ledge at `top` (`cx` its middle), its stem from `ground`; `petals` flowers in its cup */
-  const orchid = (cx: number, top: number, ground: number, openS: number, offset: number, petals: number, piece: W5Info['orchids'][number]['piece']) => {
-    const w = W5_ORCHID.w;
+  const orchid = (cx: number, top: number, ground: number, openS: number, offset: number, petals: number, piece: W5Info['orchids'][number]['piece'], w: number = W5_ORCHID.w, period: number = W5_ORCHID.period) => {
     const pl: Platform = { id: pid++, x: r(cx - w / 2), y: r(top), width: w, height: 22, type: 'solid', style: 'branch', art: 'orchid' };
     P.push(pl);
     const ids: number[] = [];
@@ -470,8 +481,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       ids.push(f.id);
       info.cupFlowers.push(f.id);
     }
-    const period = W5_ORCHID.period;
-    orchids.push({ x: r(cx), y: r(top), w, period, open: openS, offset: Math.round((((offset % period) + period) % period) * 100) / 100, platformId: pl.id, petalIds: ids, stem: ground });
+    orchids.push({ x: r(cx), y: r(top), w, period, open: openS, lesson: piece === 'lesson' || undefined, offset: Math.round((((offset % period) + period) % period) * 100) / 100, platformId: pl.id, petalIds: ids, stem: ground });
     info.orchids.push({ x0: pl.x, x1: pl.x + w, y: pl.y, ground, open: openS, piece });
     return info.orchids.length - 1;
   };
@@ -486,27 +496,31 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     info.stumps.push({ x: r(x), h: W5_PLAIN_STUMPS.first, taught: doubleTaught });
     run(sw + R.r(36, 48));
   };
-  /** the first orchid: alone, over the grass, one plain hop up from a stump, long open, two flowers in its cup (a miss is a drop to the grass) */
+  /**
+   * the first orchid: alone, on clear grass, one plain hop up from the path, long open, two flowers in its cup (a miss is a drop to the
+   * grass). The stillness waits all along its stretch (w5Play.ts): the lesson is the orchid, not the silk
+   */
   function orchidLesson() {
     const x0 = x;
-    run(R.r(200, 260));
-    grassOrchid();
-    orchid(x + W5_ORCHID.w / 2, G - W5_GRASS_ORCHID, G, W5_ORCHID.openFirst, R.r(0, W5_ORCHID.period), 2, 'lesson');
-    run(W5_ORCHID.w);
+    const L = W5_LESSON_ORCHID;
+    run(R.r(300, 360));
+    orchid(x + L.w / 2, G - L.up, G, L.open, R.r(0, L.period), 2, 'lesson', L.w, L.period);
+    run(L.w);
     run(R.r(260, 320));
     garden(x0, x);
     expert += (x - x0) / RUN + 1.2;
   }
   /** orchids over the grass, each a plain hop above the last, closing one after the other; a fuller cup at the top */
-  function orchidSteps(n: number) {
+  function orchidSteps(n: number, early = false) {
     const x0 = x;
     run(R.r(200, 260));
-    const openS = openNow();
+    const openS = Math.round((openNow() + (early ? W5_EARLY_ORCHID.more : 0)) * 10) / 10;
+    const period = early ? W5_EARLY_ORCHID.period : W5_ORCHID.period;
     const base = R.r(0, W5_ORCHID.period);
     grassOrchid();
     let cx = x + W5_ORCHID.w / 2;
     for (let i = 0; i < n; i++) {
-      orchid(cx, G - W5_GRASS_ORCHID - 62 * i, G, openS, base - i * W5_ORCHID.lag, i === n - 1 ? 3 : 2, 'steps');
+      orchid(cx, G - W5_GRASS_ORCHID - 62 * i, G, openS, base - i * W5_ORCHID.lag, i === n - 1 ? 3 : 2, 'steps', W5_ORCHID.w, period);
       if (i < n - 1) cx += W5_ORCHID.w + R.r(40, 60);
     }
     x = r(cx + W5_ORCHID.w / 2);
@@ -515,17 +529,18 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     expert += (x - x0) / RUN + 0.6 * n + 1;
   }
   /** a row of orchids strung across a soft pit, each a plain hop from the last (and from the banks), closing one after another */
-  function orchidRow(n: number) {
+  function orchidRow(n: number, early = false) {
     run(R.r(180, 240));
     const edge = x;
-    const openS = openNow();
+    const openS = Math.round((openNow() + (early ? W5_EARLY_ORCHID.more : 0)) * 10) / 10;
+    const period = early ? W5_EARLY_ORCHID.period : W5_ORCHID.period;
     const base = R.r(0, W5_ORCHID.period);
     const top = G - 30;
     // (the hops: from the bank's edge to a bloom's lip, bloom to bloom, and off the last: well inside one running jump, about 175 px)
     let cx = edge + R.r(95, 115) + W5_ORCHID.w / 2;
     const ids: number[] = [];
     for (let i = 0; i < n; i++) {
-      ids.push(orchid(cx, top - (i % 2 ? R.r(0, 24) : 0), HOLLOW_Y, openS, base - i * W5_ORCHID.lag, R.chance(0.5) ? 2 : 1, 'row'));
+      ids.push(orchid(cx, top - (i % 2 ? R.r(0, 24) : 0), HOLLOW_Y, openS, base - i * W5_ORCHID.lag, R.chance(0.5) ? 2 : 1, 'row', W5_ORCHID.w, period));
       // (bloom to bloom: a short hop, so upright, standing on one, the whole of the next is in view: the view shows about 290 px ahead)
       if (i < n - 1) cx += W5_ORCHID.w + R.r(85, 100);
     }
@@ -735,12 +750,12 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       orchidLesson();
       hint(x - 120, W5_HINTS.s53start);
       rest(R.r(380, 440));
-      orchidSteps(2);
+      orchidSteps(2, true);
       flag();
     });
     beat('Develop: the rhythm', () => {
       rest(R.r(260, 320));
-      orchidRow(2);
+      orchidRow(2, true);
       rest(R.r(240, 300));
       cakeRow(1);
       orchidSteps(3);

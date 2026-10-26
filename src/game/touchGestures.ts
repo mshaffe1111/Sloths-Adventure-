@@ -127,6 +127,15 @@ export const TUNING = {
    */
   earlyDragMs: 60,
   earlyDragPx: 18,
+  /**
+   * the steering thumb's flick up, measured from its last low point (it drifts down the glass while it steers): a rise of jumpDy at this
+   * speed (px per ms) or more, that goes up at least this far for each px across (0.6: up to about 59 degrees over), within this long
+   */
+  riseSpeed: 0.35,
+  riseSlant: 0.6,
+  riseMs: 220,
+  /** with nothing to kick, a quick flick that rises at least this far for each px across is a jump (0.4: up to about 68 degrees over) */
+  flickJumpSlant: 0.4,
 } as const;
 
 /** what the recogniser may ask the game: is jump help on, and is he in the air with a second jump to spare */
@@ -189,6 +198,13 @@ interface Finger {
   early: boolean;
   /** this finger already threw its mega punch while resting; it may still go on to steer */
   megaDone: boolean;
+  /**
+   * the low point the thumb last rose from (its y and x, and when the rise began): a steering thumb that drifted down the glass and
+   * then flicks up is measured from there, not from where it was planted (riseFrom)
+   */
+  lowY: number;
+  lowX: number;
+  riseT0: number;
 }
 
 export class TouchGestures {
@@ -282,7 +298,7 @@ export class TouchGestures {
   down(id: number, x: number, y: number, t: number) {
     this.now = t;
     if (this.fingers.has(id)) return;
-    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y, x }], tapT0: t, pk: y, tr: y, early: false, megaDone: false };
+    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y, x }], tapT0: t, pk: y, tr: y, early: false, megaDone: false, lowY: y, lowX: x, riseT0: NaN };
     const m = this.mover();
     if (m) {
       // a second finger: ignore it if it is practically on top of the steering thumb
@@ -303,12 +319,51 @@ export class TouchGestures {
     this.now = t;
     const f = this.fingers.get(id);
     if (!f) return;
+    // the low point a rise starts from: the thumb going down (or holding) moves it; a rise that dawdles starts again from where it is
+    const lastT = f.hist[f.hist.length - 1].t;
+    if (y >= f.y || !(t - f.riseT0 <= TUNING.riseMs)) {
+      f.lowY = f.y;
+      f.lowX = f.x;
+      f.riseT0 = y < f.y ? Math.max(lastT, t - 34) : NaN;
+    }
+    if (y >= f.lowY) {
+      f.lowY = y;
+      f.lowX = x;
+      f.riseT0 = NaN;
+    }
     f.x = x;
     f.y = y;
     f.hist.push({ t, y, x });
     while (f.hist.length > 2 && t - f.hist[0].t > 150) f.hist.shift();
     if (f.role === 'mover') this.steer(f);
     else if (f.role === 'pending' || f.role === 'action') this.judge(f, t, false);
+    else if (f.role === 'ignored') this.palmFlick(f, t);
+  }
+
+  /**
+   * the rise of a quick flick up from the thumb's last low point: how far up, how far across, and how fast (px per ms). 0 when it is not
+   * rising now.
+   */
+  private riseFrom(f: Finger): { rise: number; across: number; speed: number } {
+    if (!Number.isFinite(f.riseT0)) return { rise: 0, across: 0, speed: 0 };
+    const rise = f.lowY - f.y;
+    return { rise, across: f.x - f.lowX, speed: rise / Math.max(1, this.now - f.riseT0) };
+  }
+
+  /**
+   * A finger put down close to the steering thumb is ignored (the same hand's knuckle or palm). But one that flicks up, quick and clear,
+   * is a thumb jumping: one-thumb players steer and then flick from right beside where they steer (QA v200, 320 x 782 upright: "a flick
+   * with the thumb still steering gets eaten"). A palm never sweeps up 34 px in a quarter of a second.
+   */
+  private palmFlick(f: Finger, t: number) {
+    if (f.consumed || t - f.t0 > TUNING.flickLiftMs) return;
+    const dx = f.x - f.x0;
+    const rise = f.y0 - f.y;
+    if (rise >= TUNING.jumpDy && rise >= Math.abs(dx) * TUNING.riseSlant && rise / Math.max(1, t - f.t0) >= TUNING.flickLiftSpeed) {
+      f.role = 'action';
+      f.consumed = true;
+      this.fireJump(f, this.canAir(), this.leanOf(dx, rise));
+    }
   }
 
   up(id: number, x: number, y: number, t: number) {
@@ -489,8 +544,16 @@ export class TouchGestures {
     const jdy = air ? TUNING.airJumpDy : TUNING.jumpDy;
     // (on a rope a jump is letting go: the thumb must be moving clearly up now, not sweeping along it with a bow in the stroke)
     const ropeUp = !rc || (rc.my < 0 && rc.sx <= -rc.my * TUNING.vineLeapMaxSlant);
+    // (and a quick flick up from wherever the thumb has drifted to is a jump too: a thumb steering for a while rolls down the glass,
+    // and its flick up then never got back above where it was planted, so the jump was eaten, QA v200 at 5-3's steps)
+    const q = this.riseFrom(f);
+    const quick = !f.jumped && !this.duckOn && q.rise >= jdy && q.speed >= TUNING.riseSpeed && q.rise >= Math.abs(q.across) * TUNING.riseSlant && ropeUp;
     if (dyJ < -jdy && !f.jumped && (vUp >= 0.15 || dyJ < -jdy * 2) && ropeUp) {
       this.fireJump(f, air);
+    } else if (quick) {
+      // (the anchor moves down to the low point, so the thumb held up there keeps the jump held, and the wiggle for the second works)
+      f.ay = f.lowY;
+      this.fireJump(f, air, this.leanOf(q.across, q.rise));
     } else if (dy > -TUNING.jumpDy * 0.4 && f.jumped) {
       f.jumped = false;
       this.sink.jumpRelease();
@@ -598,6 +661,13 @@ export class TouchGestures {
           if (this.vine() && this.env?.onSwing?.() && f.role === 'action') {
             f.consumed = true;
             this.fireJump(f, false, dx < 0 ? -1 : 1);
+            return true;
+          }
+          // nothing to kick, and the flick rises as it goes: the other thumb's flick up and well over is a jump (a flick 55 degrees over
+          // did nothing at all, QA v200: "a flick must always jump")
+          if (f.role === 'action' && !this.vine() && dy < 0 && ay >= 24 && ay >= ax * TUNING.flickJumpSlant) {
+            f.consumed = true;
+            this.fireJump(f, this.canAir(), dx < 0 ? -1 : 1);
             return true;
           }
           // nothing to kick: a lone finger flicking sideways wants to run that way, so it steers from where it began
