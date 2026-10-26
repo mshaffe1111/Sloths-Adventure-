@@ -108,6 +108,8 @@ export interface ProtoExtras {
   w4?: import('./w4Play.ts').W4Extras;
   /** World 5's chairs, cakes, teapots, threads, sheets, orchids, cocoons, carvings and spiders (w5Kit.ts, run by w5Play.ts) */
   w5?: import('./w5Kit.ts').W5Extras;
+  /** Meeca's stage (5-M, after 5-5): the column, the trees she carves, the ferns and the guards' rhythms (meecaStage.ts, run by meecaPlay.ts) */
+  meeca?: import('./meecaStage.ts').MeecaStage;
   /** World 3's sleeping thorn vines (3-5: thornVine.ts) */
   thorns?: import('./thornVine.ts').ThornVine[];
   /** World 3's painted dressing: stalactites, glowworm threads, ferns, the grotto mouth (protoStage.ts, drawn by w3Art.ts) */
@@ -255,6 +257,7 @@ export const STAGE_SECONDS: Record<string, number> = {
   '5-2': 200, // don't sit: the threads, the cakes and the Butler
   '5-3': 175, // closing orchids: a harvest from the orchids' cups as they open and shut, closing sooner as it goes on
   '5-4': 170, // silk bridges: the first dusk, the silk lines and the sheets (w5Stage54.ts)
+  '5-M': 165, // Meeca's stage, after 5-5: the column at dusk, five warnings carved, the blanket (meecaStage.ts MEECA_STAGE_SECONDS)
   '5-5': 190, // caught in silk: the cocoons, the pouch scene at the rest branch, the silk line up to the high web
 };
 export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_SECONDS;

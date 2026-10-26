@@ -259,13 +259,14 @@ test('5-5 in the real engine: every cocoon off the web is freed by three taps fr
   });
 });
 
-test("Meeca's stage has its place after 5-5 in the stage list (planned, not built yet: Dot's flight 4-D sits after 4-5 the same way)", () => {
-  const m = PLANNED_STAGES.find((p) => p.after === '5-5')!;
-  assert.ok(m, 'a planned stage after 5-5');
+test("Meeca's stage sits after 5-5 in the stage list, as Dot's flight 4-D sits after 4-5", () => {
+  const m = EXTRA_STAGES.find((p) => p.after === '5-5')!;
+  assert.ok(m, 'an extra stage after 5-5');
   const c = m.config();
   assert.equal(c.worldIndex, 5);
-  assert.ok(!EXTRA_STAGES.some((e) => e.after === '5-5'), 'not in the list until it is built');
+  assert.equal(c.id, '5-M');
+  assert.ok(!PLANNED_STAGES.some((e) => e.after === '5-5'), 'built: no longer only planned');
   const list = withExtraStages([levelConfig('5-4'), levelConfig('5-5'), levelConfig('5-6')], true);
-  assert.deepEqual(list.map((l) => l.id), ['5-4', '5-5', '5-6']);
+  assert.deepEqual(list.map((l) => l.id), ['5-4', '5-5', '5-M', '5-6']);
   assert.equal(w5BackdropStem(c.id), 'w5dusk2', 'dusk, the other take from 5-5');
 });

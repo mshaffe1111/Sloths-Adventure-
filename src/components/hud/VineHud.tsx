@@ -12,7 +12,7 @@
  * What is visible when lives in bloom.ts (tested); where things sit and the room left for Dot in hudLayout.ts.
  */
 import React from 'react';
-import { DOT_STAGE_ID } from '../../game/extraStages.ts';
+import { DOT_STAGE_ID, MEECA_STAGE_ID } from '../../game/extraStages.ts';
 import type { LevelConfig } from '../../game/types.ts';
 import { HeroFaceIcon } from '../HeroFaceIcon.tsx';
 import { DotFace } from '../DotFace.tsx';
@@ -90,13 +90,15 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   const { levelConfig, hp, maxHp, currentObjectiveCount, targetObjectiveCount, distanceRatio = 0, score, onMenu, activePowerUp, powerUpTimer, lives = 3, heroPoint } = props;
   const isBoss = props.bossHp !== undefined && props.bossMaxHp !== undefined;
   const dotStage = levelConfig.id === DOT_STAGE_ID;
+  // Meeca's stage: no hearts, lives or score (nothing can hurt her), the count plate only ("M. 1/5"), and her title card instead of the goal card
+  const meeca = levelConfig.id === MEECA_STAGE_ID;
   // (the count the engine sends wins over the stage's planned one: an easier layout can ask for a different number)
   const info = React.useMemo(
     () => goalInfo({ ...levelConfig, targetCount: targetObjectiveCount || levelConfig.targetCount }, dotStage),
     [levelConfig, dotStage, targetObjectiveCount],
   );
   const target = info.kind === 'count' ? targetObjectiveCount : 0;
-  const slots = showsSlots(target);
+  const slots = showsSlots(target) && !meeca;
 
   const vp = useViewport();
   const mode = hudMode(vp.w, vp.h);
@@ -197,7 +199,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   });
 
   // --- Dot's room, for the Dot helper (CSS variables on <html>) ---
-  const nHearts = heartsShown(mode, maxHp);
+  const nHearts = meeca ? 0 : heartsShown(mode, maxHp);
   // the goal counter hangs at the top centre and is the biggest thing up there (Matt, 2026-10-26). In a boss fight the bar takes
   // the top centre: the counter goes away, or (a fight that also counts something) hangs smaller under the bar.
   const boss = isBoss ? bossRect(vp.w, vp.h, ins) : null;
@@ -391,7 +393,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
 
   // the stage name tag (on change only; the goal card carries it at the start)
   const stageLabel = `${levelConfig.secret ? 'Secret' : levelConfig.id} · ${levelConfig.name}`;
-  const showCard = !isBoss && (info.kind === 'count' || info.kind === 'distance');
+  const showCard = !isBoss && !meeca && (info.kind === 'count' || info.kind === 'distance');
 
   // the right cluster: the Menu leaf, with the score hanging under it when it changes
   const mw = g.menu;
@@ -425,14 +427,14 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
             <Leaf frame="green_A01_3" w={tiny ? 16 : 20} style={{ left: vineEnd - 20, top: base - 18, transform: 'rotate(-15deg)' }} />
           </>
         )}
-        <div className={`vh-hearts ${view.hearts}${hp <= 1 && hp > 0 ? ' low' : ''}`} role="img" aria-label={`Health: ${hp} of ${maxHp} hearts`}>
+        {!meeca && <div className={`vh-hearts ${view.hearts}${hp <= 1 && hp > 0 ? ' low' : ''}`} role="img" aria-label={`Health: ${hp} of ${maxHp} hearts`}>
           {hearts}
           {folded && (
             <span className="vh-num" style={{ left: hx0 + hs / 2 + 3, top: vineY(hx0, base) + threads[0] + 1, fontSize: g.num - 2 }}>
               &times;{hp}
             </span>
           )}
-        </div>
+        </div>}
         {power && (
           <div className={`vh-power ${view.power}${view.lives === 'bloom' || lowRow ? ' quiet' : ''}`} role="img" aria-label={`${power.label}: ${Math.ceil(powerUpTimer ?? 0)} seconds left`}>
             {art ? <Tendril x={podX} y={podY} len={podLen + 2} k={k} /> : <span className="vh-thread" style={{ left: podX - 1, top: podY, height: podLen }} />}
@@ -446,7 +448,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
             </span>
           </div>
         )}
-        <div className={`vh-lives ${view.lives}`} role="img" aria-label={`Lives: ${lives}`} aria-hidden={view.lives === 'hidden'}>
+        {!meeca && <div className={`vh-lives ${view.lives}`} role="img" aria-label={`Lives: ${lives}`} aria-hidden={view.lives === 'hidden'}>
           {art ? <Tendril x={livesX} y={livesY} len={livesLen + 2} k={k} /> : <span className="vh-thread" style={{ left: livesX - 1, top: livesY, height: livesLen }} />}
           <span
             className="vh-hang vh-medal-wrap"
@@ -471,7 +473,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
             )}
             {view.livesDelta !== 0 && <span className={`vh-num vh-delta ${view.livesDelta < 0 ? 'bad' : 'gold'}`}>{view.livesDelta > 0 ? `+${view.livesDelta}` : `−${-view.livesDelta}`}</span>}
           </span>
-        </div>
+        </div>}
         {!showCard && !isBoss && (
           <div className={`vh-stage ${view.stage}`} aria-hidden="true" style={{ left: g.gutter, top: base + (tiny ? 30 : 40) }}>
             {stageLabel}
@@ -514,7 +516,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
             </span>
           </button>
         )}
-        <div
+        {!meeca && <div
           className={`vh-score ${view.score}`}
           data-hud-fade=""
           data-hud-keepout={view.score === 'hidden' ? undefined : ''}
@@ -531,7 +533,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
             <span className="vh-num" style={{ position: 'static', fontSize: tiny ? 16 : 19 }}>{score.toLocaleString()}</span>
           </span>
           {view.scoreDelta > 0 && <span className="vh-num vh-delta gold">+{view.scoreDelta.toLocaleString()}</span>}
-        </div>
+        </div>}
       </div>
 
       {goal}

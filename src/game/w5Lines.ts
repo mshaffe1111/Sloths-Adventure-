@@ -164,7 +164,7 @@ export interface W5SceneLine {
  *   - "They stopped to rest on a branch where the orchids hung in rows" (13 words) loses "on a branch" (the branch is the picture);
  *   - Dot's long line (26 words) is said in three bubbles, every word kept, the last trailing off as she stops;
  *   - "Dot let go of the pouch. A minute later her wing was back on it." (14) is two, the second a while after the first.
- * Meeca's own stage comes right after 5-5 and opens on "Three days earlier" (Matt, 2026-10-26; extraStages.ts PLANNED_STAGES).
+ * Meeca's own stage comes right after 5-5 and opens on "Three days earlier" (Matt, 2026-10-26; meecaStage.ts, extraStages.ts).
  */
 export const W5_POUCH: readonly W5SceneLine[] = [
   { id: 'n1', who: 'Petal', text: 'They stopped to rest where the orchids hung in rows.' },

@@ -116,7 +116,18 @@ export const Tick: React.FC<{ size: number }> = ({ size }) => (
 );
 
 /** the drawn goal icons, for goals with no painted pickup (stand-ins: see the report) */
-const Drawn: React.FC<{ name: 'idol' | 'foe' | 'cage' | 'door'; size: number }> = ({ name, size }) => {
+const Drawn: React.FC<{ name: 'idol' | 'foe' | 'cage' | 'door' | 'carving'; size: number }> = ({ name, size }) => {
+  if (name === 'carving')
+    // Meeca's warnings: a scrap of bark with "M." scratched into it
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
+        <rect x="2.5" y="3.5" width="19" height="17" rx="5" fill="#8a6440" stroke={INK} strokeWidth="2" />
+        <path d="M5 9.5l14 .6M5 15.8l14 .5" stroke="rgba(58,36,20,.45)" strokeWidth="1" fill="none" />
+        <path d="M6.6 16.4l.6-8.4 3 4.6 3-4.8.4 8.6" fill="none" stroke="rgba(38,20,10,.85)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M6.2 16l.6-8.4 3 4.6 3-4.8.4 8.6" fill="none" stroke="#f7e6c2" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="16.8" cy="15.6" r="1.3" fill="#f7e6c2" />
+      </svg>
+    );
   if (name === 'foe')
     // a claw mark on a leaf-green disc: "a predator"
     return (

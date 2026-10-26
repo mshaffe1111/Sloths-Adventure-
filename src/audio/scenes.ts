@@ -3,7 +3,7 @@
  */
 import { hashStr } from './theory.ts';
 import { BOSS_THEME, WORLD_THEME } from './themes.ts';
-import { stageThemeId } from './composer.ts';
+import { composeStageFull, stageThemeId } from './composer.ts';
 import { PACE_CODE, PACE_TEMPO, paceFor } from './orchestrate.ts';
 import { actOfWorld } from './acts.ts';
 import { cueId } from './score.ts';
@@ -129,7 +129,32 @@ export type GameplayScreen = 'title' | 'world_map' | 'playing' | 'paused' | 'vic
  * `salt` always give the same tune, and a new salt (the app picks one each time a stage is entered) gives a new one.
  * In the first act about one in five picks the world's written theme instead, so the signature tunes still turn up.
  */
+/** Meeca's stage (5-M, after 5-5) */
+export const MEECA_MUSIC_STAGE = '5-M';
+let meecaPick: SceneChoice | null = null;
+/**
+ * Meeca's stage plays her Heartbloom song as the stage music: the composer's World 5 sound (oboe, clarinet, cello over strings and
+ * harp) at the sneak pace (pizzicato, soft timpani, a hush: the column's quiet march), on a roll of the dice that opens with the
+ * lament, which is her lullaby's own notes sung sadly in the minor (composer.ts QUOTES), with the clarinet on the tune when a roll
+ * gives one. Slower and quieter than a stage: dusk, and a march. The same piece every time she plays it.
+ */
+export function meecaStageMusic(): SceneChoice {
+  if (meecaPick) return meecaPick;
+  let pick: number | null = null;
+  let any: number | null = null;
+  for (let seed = 1; seed < 600 && pick === null; seed++) {
+    const c = composeStageFull(5, seed, 'sneak');
+    if (c.info.tune !== 'lament') continue;
+    any ??= seed;
+    if (c.info.lead === 'clarinet') pick = seed;
+  }
+  const seed = pick ?? any ?? 1;
+  meecaPick = { id: stageThemeId(5, seed, 'sneak'), intensity: 0.26, seed, tempo: 0.86 };
+  return meecaPick;
+}
+
 export function stageMusic(world: number, levelId: string, mini: number, salt = 0, objective?: string): SceneChoice {
+  if (levelId === MEECA_MUSIC_STAGE) return meecaStageMusic();
   const seed = (levelId ? hashStr(levelId) ^ (salt >>> 0) : 0) >>> 0;
   // what the stage is about sets how the music moves: a run, a fight, a climb, a sneak (see orchestrate.ts)
   const pace = paceFor(objective);

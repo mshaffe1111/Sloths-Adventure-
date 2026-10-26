@@ -73,6 +73,9 @@ import { cardScale, W5Play } from './w5Play.ts';
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
+import { MeecaPlay, type MeecaControls } from './meecaPlay.ts';
+import { MEECA_VIEW } from './meecaStage.ts';
+import { drawDuskGrade, drawMeecaBack, drawMeecaFront, drawMeecaHero, drawPellSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
 import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
@@ -201,6 +204,8 @@ export interface GameEngineCallbacks {
   /** a first-time lesson is due: the stage has paused itself, and the app shows the card (then calls lessonClosed) */
   onLesson?: (id: LessonId) => void;
   onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null) => void;
+  /** Meeca's stage: its title card or its ending is up (the HUD steps aside), or not */
+  onCinematic?: (on: boolean) => void;
 }
 
 /** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
@@ -356,6 +361,9 @@ export class GameEngine {
   private viewCssY = 0;
   /** Dot's netting flight (dotFlightRun.ts): while it is set, she is the player and it runs the stage */
   private dotRun: DotRun | null = null;
+  /** Meeca's stage (5-M, meecaPlay.ts): she is the player, on his physics, with no fighting and no Dot */
+  private mc: MeecaPlay | null = null;
+  private mcCinematic: boolean | null = null;
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
@@ -564,6 +572,7 @@ export class GameEngine {
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
+    if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
@@ -720,7 +729,7 @@ export class GameEngine {
     const levelH = this.currentStage?.config.levelHeight ?? 900;
     const portrait = h > w;
     // (a stage may show more of the world than usual: 4-7, where the next ledge is far across and far below)
-    const wide = this.proto?.w4?.view;
+    const wide = this.proto?.w4?.view ?? (this.proto?.meeca ? MEECA_VIEW : undefined);
     let base = portrait ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
     base = Math.max(0.5, Math.min(1.8, base));
     const t = Math.min(1, this.introT / INTRO_ZOOM_SECS);
@@ -1015,6 +1024,8 @@ export class GameEngine {
     if (this.stepEntrance(dt)) return;
     this.input.update(dt);
     if (this.dotRun) return this.stepDot(dt);
+    // Meeca's stage: she cannot fight, and while the card, a catch or the ending is on, the controls are not hers
+    if (this.mc) this.mc.filter(this.input.state as MeecaControls);
     {
       // what his thumb holds, for a pause in mid-air (pause / resume)
       const inp = this.input.state;
@@ -1046,6 +1057,8 @@ export class GameEngine {
       this.input.onSwing = !!p.isVineSwinging;
       this.input.onRope = !!p.hanging;
     }
+    // (Meeca never kicks: a sideways flick is a run)
+    if (this.mc) this.input.kickNear = false;
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
     // the glide leaf is gone the moment he lands or grabs anything
@@ -2373,6 +2386,16 @@ export class GameEngine {
       }
     }
 
+    // Meeca's stage: the line carries her, the column marches, the guards look back, and she carves
+    if (this.mc) {
+      this.mc.after();
+      this.mc.step(dt);
+      if (this.mc.cinematic !== this.mcCinematic) {
+        this.mcCinematic = this.mc.cinematic;
+        this.callbacks.onCinematic?.(this.mc.cinematic);
+      }
+    }
+
     // --- Check Objective Completion ---
     let currentProgress = 0;
     const objType = this.currentStage.config.objectiveType;
@@ -2396,6 +2419,8 @@ export class GameEngine {
       default:
         currentProgress = this.exitTotemReached ? 1 : 0;
     }
+    // (Meeca's stage counts her warnings: "M. 1/5")
+    if (this.mc) currentProgress = this.mc.count;
 
     const isQuotaType =
       objType === 'harvest' ||
@@ -2539,7 +2564,16 @@ export class GameEngine {
 
     // --- Camera Tracking ---
     this.bossFrame(dt);
+    if (this.mc) {
+      // the ending comes in close on the two of them
+      const z = this.mc.zoomWant();
+      if (Math.abs(z - this.bossZoom) > 0.002) {
+        this.bossZoom = z;
+        this.applyZoom();
+      }
+    }
     this.updateCamera(dt);
+    this.mc?.camera(this.camera, dt);
 
     // Calculate progress ratio across the level (a climbing stage counts how high he has got, not how far along: its door is at the top)
     let distanceRatio: number;
@@ -2551,6 +2585,8 @@ export class GameEngine {
       this.bestDropY = Math.max(this.bestDropY, p.grounded ? p.y : -Infinity);
       const span = Math.max(1, this.currentStage.exitTotemY - this.currentStage.spawnY);
       distanceRatio = Math.max(0, Math.min(1, (this.bestDropY - this.currentStage.spawnY) / span));
+    } else if (this.mc) {
+      distanceRatio = this.mc.ratio();
     } else {
       const totalDist = Math.max(1, (this.currentStage.exitTotemX || this.currentStage.config.levelWidth) - 140);
       const distTraveled = Math.max(0, p.x - 140);
@@ -3758,6 +3794,7 @@ export class GameEngine {
   /** how far (px, signed) his drawing stands off a wall he is sliding down in the air (WALL_OFF): it never moves his body */
   private wallOff = 0;
   private watchForStuck() {
+    if (this.mc) return;
     const p = this.player;
     // (no stage tips in a boss fight: Dot's lines there are the fight's own)
     if (this.boss && !this.boss.defeated && (this.entrance || this.entranceDone)) return;
@@ -4431,7 +4468,7 @@ export class GameEngine {
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));
     const maxY = this.currentStage.config.levelHeight - vh;
     // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues)
-    this.camera.y = Math.max(this.currentStage.arena ? Math.min(0, maxY) : 0, Math.min(maxY, this.camera.y));
+    this.camera.y = Math.max(this.currentStage.arena || this.mc ? Math.min(0, maxY) - (this.mc ? 600 : 0) : 0, Math.min(maxY, this.camera.y));
   }
 
   /** the ledge he last stood on, the landing the view is showing, and how long it is kept once he has left the ground (s) */
@@ -4523,7 +4560,8 @@ export class GameEngine {
 
   /** look for the first of something new ahead of the hero a few times a second; when one is there, stop and let the app explain it */
   private lessonTick() {
-    if (this.lessonOpen || this.isGameOver) return;
+    // (Meeca's stage has no Dot and no lesson cards: her own thoughts teach it, meecaPlay.ts)
+    if (this.lessonOpen || this.isGameOver || this.mc) return;
     if ((this.lessonFrame = (this.lessonFrame + 1) % 6) !== 0) return;
     // a find picked up a moment ago: its reader opens as soon as stopping is safe (before any lesson), and a lesson leaves it a breather
     if (this.findsWaiting.length) {
@@ -4847,6 +4885,7 @@ export class GameEngine {
     }
     this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
+    if (this.mc) drawMeecaBack(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     this.markKeepOuts();
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
     for (const z of this.currentStage.zones ?? []) {
@@ -5040,7 +5079,8 @@ export class GameEngine {
       drawBackGlow(ctx, rig, hp.x, hp.y - 38, 78, 0.13);
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
-    } else drawHeroSloth(ctx, this.player, this.gameTime);
+    } else if (this.mc) drawMeecaHero(ctx, this.player, this.mc, this.gameTime);
+    else drawHeroSloth(ctx, this.player, this.gameTime);
     if (shiftOff) ctx.restore();
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
@@ -5048,6 +5088,7 @@ export class GameEngine {
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     this.w4?.drawFront(ctx, this.platforms, this.gameTime);
+    if (this.mc) drawMeecaFront(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     this.w5?.drawFront(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight, zoom: this.zoom, hud: this.camera.y + (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom });
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
@@ -5218,7 +5259,80 @@ export class GameEngine {
       );
     }
 
+    if (this.mc) this.renderMeecaScreen(ctx, dpr);
+
     ctx.restore(); // end DPR transform
+  }
+
+  // --- Meeca's stage (meecaPlay.ts does the work; these lend it his physics, the camera, the canvas and the clear) ---
+  private startMeeca(st: import('./meecaStage.ts').MeecaStage) {
+    const engine = this;
+    warmMeecaArt();
+    this.mc = new MeecaPlay(st, {
+      stageId: this.currentStage.config.id,
+      get view() {
+        const c = engine.camera;
+        return { x0: c.x, x1: c.x + c.viewportWidth, y0: c.y, y1: c.y + c.viewportHeight };
+      },
+      get player() {
+        return engine.player;
+      },
+      win: () => {
+        if (this.isGameOver) return;
+        this.isGameOver = true;
+        const p = this.player;
+        const stars = calculateLevelStars(this.gameTime, 0, p.hp / p.maxHp, 1, this.statLivesLost);
+        this.callbacks.onStageStats?.(this.buildStats(true, stars));
+        recorder.event('finish', Math.round(this.gameTime));
+        this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
+      },
+      score: (n) => (this.runScore += n),
+      sfx: (kind) => {
+        if (kind === 'scratch') sound.playTreeClimb();
+        else if (kind === 'cut') sound.playRelicFound();
+        else if (kind === 'turn') sound.playWhoosh();
+        else if (kind === 'caught') sound.playLand(0.5);
+        else if (kind === 'card') sound.playLevelStart();
+        else if (kind === 'next') sound.playStep();
+        else if (kind === 'blanket') sound.playCheckpoint();
+      },
+    });
+  }
+
+  /** Meeca's stage on top of the play, in CSS px: the dusk grade, her thought, Pell's words, the card, the story box, the fade */
+  private renderMeecaScreen(ctx: CanvasRenderingContext2D, dpr: number) {
+    const mc = this.mc!;
+    const W = this.viewCssW || this.camera.viewportWidth * this.zoom;
+    const H = this.viewCssH || this.camera.viewportHeight * this.zoom;
+    const z = this.zoom;
+    const sx = (x: number) => (x - this.camera.x) * z;
+    const sy = (y: number) => (y - this.camera.y) * z;
+    ctx.save();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawDuskGrade(ctx, W, H);
+    // under the HUD's band at the top (the counter and the Menu)
+    const top = H > W ? 96 : H <= 430 ? 66 : 84;
+    const p = this.player;
+    if (mc.thought && mc.phase !== 'card') {
+      const a = Math.min(1, (mc.t - mc.thought.at) / 0.2, (mc.thought.until - mc.t) / 0.3);
+      const tr = mc.next;
+      const wb = tr ? wordsBox(tr) : null;
+      drawThought(ctx, mc.thought.text, sx(p.x), sy(p.y - 92), W, H, top, Math.max(0, a), wb && { x0: sx(wb.x0), y0: sy(wb.y0), x1: sx(wb.x1), y1: sy(wb.y1) });
+    }
+    if (mc.pellSay) {
+      const g = mc.guards[mc.pell];
+      drawPellSay(ctx, mc.pellSay.text, sx(g.x), sy(g.y - 132), W, top);
+    }
+    const cardA = mc.phase === 'card' ? 1 : mc.cardOut >= 0 && mc.cardOut < 1 ? 1 - mc.cardOut : 0;
+    drawTitleCard(ctx, W, H, cardA, mc.t);
+    if (mc.phase === 'ending' || mc.phase === 'done') {
+      if (mc.line >= 0) drawSceneBox(ctx, W, H, mc.line, Math.min(1, (mc.t - mc.lineAt) / 0.25 + 0.4), mc.t);
+      if (mc.fade > 0) {
+        ctx.fillStyle = `rgba(14, 6, 22, ${mc.fade})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+    }
+    ctx.restore();
   }
 
   // --- Dot's netting flight (dotFlightRun.ts does the work; these hand it the engine's input, hearts, camera and canvas) ---

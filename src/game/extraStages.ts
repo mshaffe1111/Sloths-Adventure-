@@ -1,7 +1,7 @@
 /**
  * Extra stages that sit between a world's own ten (stagePlan.ts), the way the secret Thornbark's Hollow sits outside them
  * (secret.ts, miniIndex 11). The first is Dot's netting flight, right after 4-5 (Matt, 2026-10-25): cleared, it opens 4-6.
- * Meeca's bonus stage after 5-5 is planned the same way.
+ * The second is Meeca's stage, right after 5-5 (Matt, 2026-10-26): cleared, it opens 5-6.
  *
  * They come with the hand-built stages (protoStage.ts protoStageEnabled: the game's stages since 2026-10-24, no switch since
  * 2026-10-26), and are never in the list outside a browser, so the generator's own tests see the hundred stages they always did.
@@ -37,28 +37,24 @@ export function dotStageConfig(): LevelConfig {
   };
 }
 
-/** the extra stages, each with the id of the stage it follows */
-export const EXTRA_STAGES: Array<{ after: string; config: () => LevelConfig }> = [{ after: '4-5', config: dotStageConfig }];
-
-// ── Meeca's stage, after 5-5 (planned: being designed, not built) ──
+// ── Meeca's stage, after 5-5 (meecaStage.ts, run by meecaPlay.ts) ──
 export const MEECA_STAGE_ID = '5-M';
 
 /**
  * Meeca's own stage, right after 5-5 and required (Matt, 2026-10-26; HANDOFF "World 5 decisions"): it opens on a "Three days earlier"
  * card, after 5-5's pouch scene, and you play Meeca marched through the sanctuary at dusk. Its slot in World 5's list is kept here, the
- * way Dot's flight sits after 4-5. When its builder exists, move this entry into EXTRA_STAGES (and 5-5's clear then opens it, as 4-D's
- * opens 4-6); until then the list goes 5-5, 5-6 as before.
+ * way Dot's flight sits after 4-5: 5-5's clear opens it, and its clear opens 5-6.
  */
 export function meecaStageConfig(): LevelConfig {
   return {
     worldIndex: 5,
     miniIndex: 12,
     id: MEECA_STAGE_ID,
-    name: "Meeca's Stage",
-    objectiveType: 'sprint',
-    targetCount: 1,
+    name: 'Three Days Earlier',
+    objectiveType: 'stealth',
+    targetCount: 5,
     timeLimit: 0,
-    levelWidth: 24000,
+    levelWidth: 10000,
     levelHeight: 1000,
     description: 'Three days earlier. Marched through the sanctuary at dusk, Meeca carves on the move.',
     unlocked: false,
@@ -69,8 +65,14 @@ export function meecaStageConfig(): LevelConfig {
   };
 }
 
+/** the extra stages, each with the id of the stage it follows */
+export const EXTRA_STAGES: Array<{ after: string; config: () => LevelConfig }> = [
+  { after: '4-5', config: dotStageConfig },
+  { after: '5-5', config: meecaStageConfig },
+];
+
 /** extra stages planned but not built yet: each one's place (the stage it follows) is kept, and it joins EXTRA_STAGES once built */
-export const PLANNED_STAGES: Array<{ after: string; config: () => LevelConfig }> = [{ after: '5-5', config: meecaStageConfig }];
+export const PLANNED_STAGES: Array<{ after: string; config: () => LevelConfig }> = [];
 
 /** put the extra stages into the list after the stages they follow (with their saved results), when the switch is on */
 export function withExtraStages(levels: LevelConfig[], on = newStagesOn()): LevelConfig[] {

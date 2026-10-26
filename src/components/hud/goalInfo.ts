@@ -4,12 +4,13 @@
  */
 import { relicArt } from '../../game/stagePlan.ts';
 import { stageFlowers } from '../../game/flowerSprites.ts';
+import { MEECA_STAGE_ID } from '../../game/extraStages.ts';
 
 /** the picture for the goal: a painted pickup (src/assets/pickups), a flower from the flower sheet, or a drawn stand-in */
 export type GoalIcon =
   | { kind: 'pickup'; name: string }
   | { kind: 'flower'; num: number }
-  | { kind: 'drawn'; name: 'idol' | 'foe' | 'cage' | 'door' };
+  | { kind: 'drawn'; name: 'idol' | 'foe' | 'cage' | 'door' | 'carving' };
 
 export interface GoalInfo {
   /** 'count': a quota (counter or slots); 'distance': get to the end (the trail); 'boss': the boss bar is the goal; 'none' */
@@ -59,6 +60,11 @@ function words(world: number, type: string): { verb: string; one: string; many: 
 export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
   const type = cfg.objectiveType;
   const w = cfg.worldIndex;
+  if (cfg.id === MEECA_STAGE_ID) {
+    // Meeca's stage counts her warnings: a scrap of bark with "M." scratched on it, "1/5" (the approved mock-ups)
+    const icon: GoalIcon = { kind: 'drawn', name: 'carving' };
+    return { kind: 'count', line: `This stage: carve ${cfg.targetCount} warnings`, sub: 'for Pokey to find', icon, slotIcon: () => icon, noun: 'warnings' };
+  }
   if (type === 'boss_lair') {
     const icon: GoalIcon = { kind: 'drawn', name: 'foe' };
     return { kind: 'boss', line: '', sub: '', icon, slotIcon: () => icon, noun: '' };

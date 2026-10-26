@@ -69,7 +69,8 @@ test('with the New stages switch on, the stage comes right after 4-5 and before 
   assert.equal(base.length, 100);
   assert.ok(!base.some((l) => l.id === DOT_STAGE_ID));
   const all = withExtraStages(base, true);
-  assert.equal(all.length, 101);
+  // (Dot's flight and Meeca's stage, after 5-5)
+  assert.equal(all.length, 102);
   const i = all.findIndex((l) => l.id === DOT_STAGE_ID);
   assert.equal(all[i - 1].id, '4-5');
   assert.equal(all[i + 1].id, '4-6');
