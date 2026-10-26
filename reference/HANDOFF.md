@@ -54,6 +54,11 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
   - Dot: option C, perched. She sits on the scenery near the thing she's teaching, and a glowing ring and arrow point at it.
   - Dot's lines: Matt approved the shortened set (476 lines, review page https://claude.ai/artifact/PsV3hZSb7NgoDf1spAzAp2): tips 8 words or fewer that name the thumb move, story 12 or fewer, touch words only. They play in the new look; the old text stays when it is off.
   - Finger guides: none. No thumb or finger picture: Dot perched with her ring and arrow is the guide, and her words say the gesture ("Flick up to jump.").
+- **World 5 decisions (2026-10-26).** Follow the story in reference/STORY-REWRITE.md "World 5" closely: every prop and mechanic comes from it. Use new Hugging Face art wherever it does the world justice rather than settling for existing art.
+  - Light: lovely golden afternoon at 5-1, getting duskier as the orchids close, to misty violet twilight by the Queen's garden (World 8 is the night world, so World 5 must not read as night from the start). New backdrops per mood, plus the council-table arena.
+  - Mechanics are Dot's five rules: don't sit (stillness makes him drowsy, silk creeps, soft chairs tug), don't eat (cakes look like pickups but bring sleep), don't drink (warm teapots' sleepy steam), don't touch the silk (threads hum and spiders turn), don't admire the silk.
+  - Meeca's bonus stage after 5-5: you play Meeca slipping her guards and carving the warnings on the move; in 5-6 Pokey finds the carvings the player made; it ends with Pell gently recapturing her (sets up his blanket note).
+  - The boss arena is the old council's long table (ten chairs and Iron-Claw's head chair), which the tea scene then uses.
 - **Bosses.** Every weak-spot opening needs a clear tell, and must stay open at least as long as the time to reach it plus 0.8 s to react plus 0.6 s to hit (bossFair.test.ts, sovereignEngine.test.ts). Fight length depends on the player's skill; there is no minimum for bosses.
 
 ### Design rules for stages (check every stage against these)
