@@ -1048,7 +1048,16 @@ export default function App() {
           />
           {screen === 'playing' && <CoachOverlay step={coachStep} style={coachStyle} />}
           <PerfReadout stageId={activeLevel.id} />
-          <Wayside key={`${activeLevel.id}-${runId}`} level={activeLevel} active={screen === 'playing' && !coachStep && !lessonId && !reading} ratio={distanceRatio} hp={hp} guide={guideLine} />
+          <Wayside
+            key={`${activeLevel.id}-${runId}`}
+            level={activeLevel}
+            active={screen === 'playing' && !coachStep && !lessonId && !reading}
+            ratio={distanceRatio}
+            hp={hp}
+            guide={guideLine}
+            // the new look's Dot guide (newLook.ts): it reads the stage itself and takes the coach and lessons as her lines
+            dot={{ engine: () => engineRef.current, playing: screen === 'playing' && !reading, coachStep, coachStyle, lessonId, count: { cur: currentCount, target: targetCount } }}
+          />
           {screen === 'playing' && lessonId && (
             <LessonCard
               id={lessonId}

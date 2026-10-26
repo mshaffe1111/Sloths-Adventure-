@@ -126,6 +126,8 @@ import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
+import { newLookOn } from './newLook.ts';
+import type { GuideView } from './dotGuideView.ts';
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -4221,9 +4223,66 @@ export class GameEngine {
     this.lessonWaiting = null;
     seen.add(id);
     markLessonSeen(id);
+    // the new look: no card and no pause; the lesson is one of Dot's lines, said in play (dotGuide.ts)
+    if (this.newLook) {
+      this.lessonQuietUntil = this.gameTime + 6;
+      this.callbacks.onLesson?.(id);
+      return;
+    }
     this.lessonOpen = true;
     this.pause();
     this.callbacks.onLesson?.(id);
+  }
+
+  /** the new look (fixed for the stage): Dot's guide reads the stage each frame from guideView */
+  private newLook = newLookOn();
+
+  /** what Dot's guide needs to see, filled into `out` in place (nothing is allocated: it runs every frame) */
+  public guideView(out: GuideView): GuideView {
+    const p = this.player;
+    const cam = this.camera;
+    const cfg = this.currentStage.config;
+    out.live = !this.isGameOver;
+    out.flight = !!this.dotRun;
+    out.stageId = cfg.id;
+    out.t = this.gameTime;
+    out.paused = this.isPaused;
+    out.zoom = this.zoom;
+    out.camX = cam.x;
+    out.camY = cam.y;
+    out.cssW = this.viewCssW;
+    out.cssH = this.viewCssH;
+    out.px = p.x;
+    out.py = p.y;
+    out.pw = p.width;
+    out.ph = p.height;
+    out.vx = p.vx;
+    out.vy = p.vy;
+    out.facing = p.facing;
+    out.grounded = p.grounded;
+    out.climbing = p.climbing;
+    out.swinging = !!p.isVineSwinging;
+    out.hanging = !!p.hanging;
+    out.ducking = p.ducking;
+    out.gliding = this.glide.on;
+    out.pushing = !!p.pushing;
+    out.doubleJumping = p.isDoubleJumping;
+    out.attack = p.attackType;
+    out.hurt = p.invincibleTimer > 0 && p.activePowerUp !== 'invincible';
+    out.hp = p.hp;
+    out.lives = this.lives;
+    out.kickNear = this.input.kickNear;
+    out.boss = !!this.boss || !!this.currentStage.arena;
+    out.chase = !!this.chase;
+    out.levelH = cfg.levelHeight;
+    out.enemies = this.enemies;
+    out.platforms = this.platforms;
+    out.vines = this.vines;
+    out.ropes = this.ropes;
+    out.collectibles = this.collectibles;
+    out.hazards = this.hazards;
+    out.bushes = this.proto?.bushes ?? out.bushes;
+    return out;
   }
 
   /** is it safe to stop the stage for a card right now? (lessons.ts cardSafe) */

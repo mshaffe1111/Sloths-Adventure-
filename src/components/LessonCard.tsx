@@ -3,12 +3,25 @@ import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { GestureGlyph } from './GestureGlyph.tsx';
 import { LESSONS, lessonInputMode, type LessonId } from '../game/lessons.ts';
 import { arrowText } from './icons/arrowText.tsx';
+import { stageNewLook } from '../game/dotGuide.ts';
 
 /**
  * A first-time lesson: the game has paused itself, Pokey tells you what you are looking at, and you press the button when ready.
  * The button wakes a moment after the card appears, so a thumb that is still mashing the screen does not close it unread.
  */
-export const LessonCard: React.FC<{ id: LessonId; onClose: () => void }> = ({ id, onClose }) => {
+export const LessonCard: React.FC<{ id: LessonId; onClose: () => void }> = (props) =>
+  // the new look: no card in play (the stage did not stop); Dot says the lesson as one of her lines (components/dot/DotGuide.tsx)
+  stageNewLook() ? <LessonAsLine {...props} /> : <LessonCardShown {...props} />;
+
+/** the new look: hand the lesson straight back (Dot's guide took it from the same props) */
+const LessonAsLine: React.FC<{ id: LessonId; onClose: () => void }> = ({ id, onClose }) => {
+  React.useEffect(() => {
+    onClose();
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+};
+
+const LessonCardShown: React.FC<{ id: LessonId; onClose: () => void }> = ({ id, onClose }) => {
   const lesson = LESSONS[id];
   const mode = lessonInputMode();
   const [ready, setReady] = React.useState(false);

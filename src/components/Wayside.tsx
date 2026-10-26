@@ -5,6 +5,9 @@ import { SpeakerMark } from './SpeakerMark.tsx';
 import { restFace } from '../game/dotSprite.ts';
 import { GAP_MS, HURT_WINDOW_MS, dotPresent, dueLine, guideShowMs, hidesFern, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayFlag, type WayLine } from '../game/wayside.ts';
 import { findForStage, loadFinds } from '../game/finds.ts';
+import { newLookOn } from '../game/newLook.ts';
+import { beginStageLook } from '../game/dotGuide.ts';
+import { DotGuide, type DotGuideProps } from './dot/DotGuide.tsx';
 
 interface Props {
   level: LevelConfig;
@@ -15,6 +18,8 @@ interface Props {
   hp: number;
   /** a guiding line from the engine (a stage tip, the goal, a reminder, the sealed door); `n` counts up with each new one */
   guide?: { text: string; ms: number; n: number } | null;
+  /** what the new look's guide needs besides (newLook.ts): without it, or with the new look off, this is today's banner */
+  dot?: Pick<DotGuideProps, 'engine' | 'playing' | 'coachStep' | 'coachStyle' | 'lessonId' | 'count'>;
 }
 
 const WHO: Record<WayLine['who'], { color: string; name: string }> = {
@@ -63,7 +68,15 @@ interface Run {
  * It reads a stage's own clock (only the time the game is actually running), waits for a calm moment, and never takes a tap.
  * Mount it with a key that changes for every new run of a stage.
  */
-export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) => {
+export const Wayside: React.FC<Props> = (props) => {
+  // the look is fixed for this run of the stage (Wayside is mounted afresh for each run)
+  const [look] = useState(() => beginStageLook(!!props.dot && newLookOn()));
+  if (look && props.dot) return <DotGuide level={props.level} ratio={props.ratio} hp={props.hp} guide={props.guide} {...props.dot} />;
+  return <WaysideBanner {...props} />;
+};
+
+/** today's banner (the new look off) */
+const WaysideBanner: React.FC<Props> = ({ level, active, ratio, hp, guide }) => {
   const world = level.worldIndex;
   const mini = level.miniIndex;
   const applies = waysideApplies(level);
