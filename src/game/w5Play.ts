@@ -8,8 +8,8 @@
 import {
   BUTLER, CAKE, chairPull, COCOON, hitCocoon, humReaches, inSteam, newButler, newCocoon, newGate, newSit, orchidAt, potAt, punchReachesCocoon,
   admiring, seatedIn, silkSpeed, sitDrowsy, sleepySpeed, SIT, spoutOf, stepButler, stepGate, stepSit, TEAPOT, THREAD, threadTouched,
-  touchesCake, trayAt, W5_TEACH, onScreen, SPIDER5, type ButlerState, type CocoonState, type GateState, type SitState, type ViewBox,
-  type W5Extras,
+  touchesCake, trayAt, W5_TEACH, onScreen, SPIDER5, laced, newSeam, SEAMSTRESS, stepSeam, type ButlerState, type CocoonState,
+  type GateState, type SeamState, type SitState, type ViewBox, type W5Extras,
 } from './w5Kit.ts';
 import {
   carvingBox, drawBlossom, drawButler, drawCake, drawCard, drawCarving, drawChair, drawCocoon, drawDoily, drawFern, drawFlyingTray, drawOrchid,
@@ -17,7 +17,7 @@ import {
   drawW5Light, drawWrappedChair, takeAt,
 } from './w5Look.ts';
 import { w5ArtReady, type W5Piece as ArtPiece } from './w5Art.ts';
-import { drawW5Spider, warmW5Butler, warmW5Spider, type ButlerPose } from './w5Creatures.ts';
+import { drawSeamstress, drawW5Spider, warmW5Butler, warmW5Seamstress, warmW5Spider, type ButlerPose } from './w5Creatures.ts';
 import { W5_FRAMES } from './w5PropsData.ts';
 import { drawAura } from './readable.ts';
 import type { Collectible, Enemy, Platform, PlayerState as Player, Vine } from './types.ts';
@@ -57,6 +57,8 @@ const SEE = 560;
 const BUTLER_SEE = 1100;
 /** an awake spider's first-time line comes this far ahead (it notices him from SPIDER5.sense, 430 px): time to say it before */
 const SPIDER_SEE = 1300;
+/** the Seamstress's line comes this far before the start of the sheet she is knitting (she stands at its far end) */
+const SEAM_SEE = 760;
 const said = (key: string) => `tip:${key}`;
 /** what a cake or the tray did to him stays up this long (s): the engine's 0.8 s pop-up was gone before it was read */
 export const W5_POP_LIFE = 1.6;
@@ -82,6 +84,11 @@ export class W5Play {
   private threadAt: number[];
   private gates = new Map<number, GateState>();
   private cocoons: Array<CocoonState & { swing: number }>;
+  /** the silk lines (World 5's lianas), for Dot's line as the first comes into view */
+  private silkLines: Vine[];
+  /** the Seamstress at her knitting, and when her last lace was cast (for its flight to him) */
+  private seams: SeamState[];
+  private laceAt: number[];
   private orchidOf = new Map<number, number>();
   /** where the table card was drawn last frame (world), for Dot's bubble to keep clear of; null when it is not up */
   private cardBox: W5Box | null = null;
@@ -98,7 +105,10 @@ export class W5Play {
   /** how drowsy the screen shows him (the engine's drowsy veil) */
   veil = 0;
 
-  constructor(private readonly w5: W5Extras, platforms: Platform[], _vines: Vine[]) {
+  constructor(private readonly w5: W5Extras, platforms: Platform[], vines: Vine[]) {
+    this.silkLines = vines.filter((v) => v.silk);
+    this.seams = (w5.seamstresses ?? []).map(() => newSeam());
+    this.laceAt = (w5.seamstresses ?? []).map(() => -99);
     this.eaten = (w5.cakes ?? []).map(() => false);
     this.butlers = (w5.butlers ?? []).map(() => newButler());
     this.trayFly = (w5.butlers ?? []).map(() => null);
@@ -115,6 +125,7 @@ export class W5Play {
     // and the trained creatures this stage holds (World 5 sheets, let go with the world): the spider's clips, the Butler's poses
     if (w5.spiders?.length) warmW5Spider();
     if (w5.butlers?.length) warmW5Butler();
+    if (w5.seamstresses?.length) warmW5Seamstress();
   }
 
   /**
@@ -135,6 +146,8 @@ export class W5Play {
     this.veil = 0;
     this.moved = false;
     this.grace = 0;
+    // (the Seamstress back to her knitting)
+    this.seams = this.seams.map(() => newSeam());
   }
 
   /** a spider whose gate is shut (asleep, or crouching to rush): the engine leaves it standing, harmless, for this frame */
@@ -202,9 +215,20 @@ export class W5Play {
 
     // the silk sheets: lingering in front of one counts as standing still (and faster)
     let admire = false;
-    for (const s of w5.sheets ?? []) {
-      if (admiring(s, p.x, p.y, p.vx, p.grounded)) admire = true;
+    const admired = new Set<number>();
+    (w5.sheets ?? []).forEach((s, i) => {
+      if (admiring(s, p.x, p.y, p.vx, p.grounded)) {
+        admire = true;
+        admired.add(i);
+      }
       if (ahead(s.x0, s.bottom, 420)) h.tip(said(W5_TEACH.sheet), W5_TEACH.sheet, 3.6);
+    });
+
+    // the silk lines: Dot's line as the first comes into view (they swing like lianas: the engine's vine rules)
+    for (const v of this.silkLines) {
+      if (!ahead(v.x, v.bottomY)) continue;
+      h.tip(said(W5_TEACH.silk), W5_TEACH.silk, 4);
+      break;
     }
 
     // don't sit: standing still lets the silk creep up him; moving or a wiggle shakes it off; too long, and he is wrapped
@@ -214,6 +238,27 @@ export class W5Play {
     const r = stepSit(this.sit, { still, steer: h.steer, seated: seated >= 0, admiring: admire }, dt, !!w5.gentle);
     this.sit = r.s;
     if (r.began) h.tip(said(W5_TEACH.sit), W5_TEACH.sit, 4.2);
+
+    // the Seamstress: knitting; let him linger at her sheet and she looks up (the tell, a "!" over her), then casts lace onto him. Moving
+    // on during the tell calls it off. She looks up only in full view on the screen, so the warning is always seen
+    (w5.seamstresses ?? []).forEach((sm, i) => {
+      const sh = w5.sheets?.[sm.sheet];
+      if (sh && ahead(sh.x0, sh.bottom, SEAM_SEE)) h.tip(said(W5_TEACH.seamstress), W5_TEACH.seamstress, 3.8);
+      const v = h.view;
+      const seen = !v || onScreen(v, sm.x, sm.y - SEAMSTRESS.h / 2, 60, SEAMSTRESS.h, 10);
+      const was = this.seams[i];
+      const out = stepSeam(was, { lingering: admired.has(sm.sheet) && !r.wrapped, seen }, dt);
+      this.seams[i] = out.st;
+      if (out.st.phase === 'tell' && was.phase === 'knit') h.float('!', sm.x, sm.y - SEAMSTRESS.h - 18, '#fb7185');
+      if (out.cast) {
+        this.sit = { ...this.sit, silk: laced(this.sit.silk) };
+        this.laceAt[i] = h.t;
+        h.sfx('puff');
+        h.float('LACE!', p.x, p.y - 96, '#f5d0fe');
+        h.clearTip?.();
+        this.pendingTip = { key: said(W5_TEACH.laced), text: W5_TEACH.laced, seconds: 3.4, at: h.t + 0.15 };
+      }
+    });
     if (r.wrapped) {
       h.sfx('wrap');
       // (the creep's warning comes down, and the wrap's own line follows a beat later: both are urgent, and one sent over the other
@@ -384,6 +429,13 @@ export class W5Play {
       const near = p && p.x > s.x0 && p.x < s.x1 ? 1 : 0;
       drawSilkSheet(ctx, s.x0, s.x1, s.top, s.bottom, t, near);
     }
+    (w5.seamstresses ?? []).forEach((sm, i) => {
+      if (!vis(sm.x, 200)) return;
+      const st = this.seams[i];
+      // her pose: knitting (her lace spread on the ground before her), looking up with her needles raised (the tell), casting
+      const pose = st.phase === 'tell' ? 'tell' : st.phase === 'cast' ? 'attack' : 'idle';
+      drawSeamstress(ctx, sm.x, sm.y, sm.dir, pose, t, st.phase === 'tell' ? Math.min(1, st.t / SEAMSTRESS.tell) : 0);
+    });
     for (const tb of w5.tables ?? []) if (vis(tb.x)) drawTeaTable(ctx, tb.x, tb.y, t);
     (w5.chairs ?? []).forEach((c, i) => {
       if (!vis(c.x)) return;
@@ -468,6 +520,26 @@ export class W5Play {
       }
       ctx.restore();
     }
+    (w5.seamstresses ?? []).forEach((sm, i) => {
+      const st = this.seams[i];
+      if (sm.x < view.x0 - 200 || sm.x > view.x1 + 200) return;
+      if (st.phase === 'tell') {
+        // the warning: a red "!" over her that swells through the tell, as the spiders' crouch has
+        const u = Math.min(1, st.t / SEAMSTRESS.tell);
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.font = `800 ${20 + 10 * u}px Fredoka, sans-serif`;
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'rgba(40, 10, 20, 0.8)';
+        ctx.fillStyle = '#fb7185';
+        const y = sm.y - SEAMSTRESS.h - 14 - 6 * u;
+        ctx.strokeText('!', sm.x, y);
+        ctx.fillText('!', sm.x, y);
+        ctx.restore();
+      }
+      const since = t - this.laceAt[i];
+      if (p && since >= 0 && since < 0.7) drawLaceThrow(ctx, sm.x + sm.dir * 30, sm.y - SEAMSTRESS.h * 0.55, p.x, p.y - 30, Math.min(1, since / 0.25), 1 - Math.max(0, (since - 0.35) / 0.35), t);
+    });
     let card: W5Box | null = null;
     if (p) {
       for (const tb of w5.tables ?? []) {
@@ -572,7 +644,41 @@ export class W5Play {
     }
     // (and the table's card while it is up: Dot's bubble does not cover it)
     if (this.cardBox) out.push(this.cardBox);
+    // (and the Seamstress with the "!" over her: her tell is the warning, never under the bubble)
+    for (const sm of this.w5.seamstresses ?? []) {
+      if (sm.x + 60 > view.x0 && sm.x - 60 < view.x1) out.push({ x0: sm.x - 60, y0: sm.y - SEAMSTRESS.h - 50, x1: sm.x + 60, y1: sm.y });
+    }
   }
+}
+
+/** the Seamstress's lace flying from her needles (fx, fy) to him (tx, ty): `u` how far it has got, `a` how much of it is still to see */
+function drawLaceThrow(ctx: CanvasRenderingContext2D, fx: number, fy: number, tx: number, ty: number, u: number, a: number, t: number) {
+  if (a <= 0) return;
+  ctx.save();
+  ctx.globalAlpha = Math.max(0, Math.min(1, a));
+  ctx.lineCap = 'round';
+  const ex = fx + (tx - fx) * u, ey = fy + (ty - fy) * u;
+  const mx = (fx + ex) / 2, my = Math.min(fy, ey) - 40;
+  for (const [c, w] of [['rgba(90, 60, 110, 0.5)', 6], ['#fffaf2', 3]] as const) {
+    ctx.strokeStyle = c;
+    ctx.lineWidth = w;
+    ctx.beginPath();
+    ctx.moveTo(fx, fy);
+    ctx.quadraticCurveTo(mx, my, ex, ey);
+    ctx.stroke();
+  }
+  // little lace loops along it
+  ctx.strokeStyle = '#fffaf2';
+  ctx.lineWidth = 1.6;
+  for (let i = 1; i <= 5; i++) {
+    const k = (i / 6) * u;
+    const x = (1 - k) * (1 - k) * fx + 2 * (1 - k) * k * mx + k * k * ((fx + (tx - fx) * u));
+    const y = (1 - k) * (1 - k) * fy + 2 * (1 - k) * k * my + k * k * ey;
+    ctx.beginPath();
+    ctx.arc(x, y + Math.sin(t * 9 + i) * 2, 4.5, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 
 /** World 5's cocoon reach, for the stage builder (a cocoon must hang where a standing punch lands: COCOON.mid above his fist) */

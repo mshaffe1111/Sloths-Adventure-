@@ -9,7 +9,7 @@ import { W5_TEACH } from './w5Kit.ts';
 
 /** a stage hint: where it is said, its words for the screen, the pad and the keys (old look), and its new-look line */
 export interface W5Hint {
-  stage: '5-1' | '5-2' | '5-3';
+  stage: '5-1' | '5-2' | '5-3' | '5-4';
   kind: DotLineRow[3];
   old: string;
   pad?: string;
@@ -74,6 +74,28 @@ export const W5_HINTS = {
     text: 'They shut sooner now. Go when one opens.',
   },
   s53end: { stage: '5-3', kind: 'info', old: 'The last of the orchids. Nearly through, Pokey', text: 'The last orchids. Nearly through.' },
+  // ── 5-4 Silk Bridges (dusk: the light going as the orchids close) ──
+  s54start: {
+    stage: '5-4', kind: 'info', old: 'It\'s getting late, Pokey, and the orchids are closing. Swing across on the silk, and don\'t stop',
+    text: 'Getting late. Swing on the silk.',
+  },
+  // (Dot's fifth rule, before the first silk sheet: the sheet's own tip, "Slide straight past the silk", follows as it comes into view.
+  // It names the silk: QA found "And don't admire it" unclear, the "it" naming nothing)
+  s54admire: {
+    stage: '5-4', kind: 'info', old: 'Rule five. Don\'t admire the silk. It takes it as a compliment, and then it keeps you',
+    text: 'Rule five. Don\'t admire the silk.',
+  },
+  // (before the first chain of two: let go at the front of the swing, and the next line is there to catch)
+  s54chain: {
+    stage: '5-4', kind: 'move', old: 'Two silk lines in a row. Flick up at the front of the swing, and catch the next one',
+    text: 'Flick up at the front. Next silk line!', gesture: 'flick-up', target: 'vine',
+  },
+  // (before the first high bridge: the branches up, and the branch under it that catches a miss)
+  s54high: {
+    stage: '5-4', kind: 'info', old: 'A silk bridge, way up high. Hop up the branches. If you miss a line, there\'s a branch below to catch you',
+    text: 'Hop up high. A branch below catches misses.',
+  },
+  s54end: { stage: '5-4', kind: 'info', old: 'Nearly across. Don\'t look back at the silk', text: 'Nearly across. Don\'t look back at it.' },
 } as const satisfies Record<string, W5Hint>;
 
 /**
@@ -101,8 +123,10 @@ const TEACH_ROWS: DotLineRow[] = [
   ['w5.sheet', '', 'guide', 'move', T.sheet, 'Slide straight past the silk. Don\'t look.', null, 'slide', 'silk sheet'],
   ['w5.orchid', '', 'guide', 'move', T.orchid, 'Quick! Flick up before the orchid shuts!', null, 'flick-up', 'orchid'],
   ['w5.cocoon', '', 'guide', 'move', T.cocoon, 'Tap the cocoon to punch it open.', null, 'tap', 'cocoon'],
-  ['w5.silk', '', 'guide', 'move', T.silk, 'Flick up into the silk to swing.', null, 'flick-up', 'vine'],
+  ['w5.silk', '', 'guide', 'move', T.silk, 'Flick up into the silk to swing.', 'Then flick up and forward to let go.', 'flick-up', 'vine'],
   ['w5.spider', '', 'guide', 'move', T.spider, 'Tap to punch the spider, or stomp it.', null, 'tap', 'spider'],
+  ['w5.seamstress', '', 'guide', 'move', T.seamstress, 'The Seamstress! Slide past before she looks up.', null, 'slide', 'seamstress'],
+  ['w5.laced', '', 'guide', 'help', T.laced, 'She saw you looking! Slide left and right.', null, null, 'pokey'],
   ['w5.step', '', 'guide', 'help', W5_STEP_HELP, 'Keep sliding forward as you flick up.', null, 'flick-up', 'step'],
 ];
 
@@ -113,7 +137,7 @@ const TEACH_ROWS: DotLineRow[] = [
  */
 export const W5_THING_TIPS: ReadonlySet<string> = new Set([
   'w5.chair', 'w5.cake', 'w5.ate', 'w5.butler', 'w5.pot', 'w5.thread', 'w5.sheet', 'w5.orchid', 'w5.cocoon', 'w5.silk', 'w5.spider',
-  'hint.5-2.rules', 'hint.5-2.doze',
+  'w5.seamstress', 'hint.5-2.rules', 'hint.5-2.doze', 'hint.5-4.chain',
 ]);
 
 const HINT_ROWS: DotLineRow[] = Object.entries(W5_HINTS).map(([id, h]) => {
