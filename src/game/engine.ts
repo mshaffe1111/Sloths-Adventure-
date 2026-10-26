@@ -68,6 +68,7 @@ import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOW
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { DotRun } from './dotFlightRun.ts';
+import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
@@ -691,6 +692,11 @@ export class GameEngine {
     this.zoom = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
+  }
+
+  /** a stage is under way (running, not yet won or lost): stagePreload.ts draws nothing on the canvas then */
+  public inPlay(): boolean {
+    return this.isRunning && !this.isGameOver;
   }
 
   public start() {
@@ -4987,6 +4993,18 @@ export class GameEngine {
     });
   }
 
+  /** the control-test recorder in her flight: her, not Pokey (dotRecord.ts) */
+  private dotLog = new DotLog();
+  private recordDot(run: DotRun) {
+    const st = this.input.state;
+    const lines = this.dotLog.step(run.fl, run.lastEvents, { dir: (st.right ? 1 : 0) - (st.left ? 1 : 0), down: !!st.jumpHeld }, this.gameTime);
+    for (const l of lines) {
+      if (l.k === 'p') recorder.pokey(l.x, l.y, l.vx, l.vy, l.state, l.section);
+      else if (l.k === 'i') recorder.intent(l.name, l.arg);
+      else recorder.event(l.what, l.detail);
+    }
+  }
+
   private stepDot(dt: number) {
     const run = this.dotRun!;
     const p = this.player;
@@ -4997,6 +5015,7 @@ export class GameEngine {
     this.input.onRope = false;
     this.input.megaReady = true;
     if (!this.isGameOver || run.fl.through) run.step(dt, this.input.state);
+    else run.lastEvents = [];
     this.checkpoint = { ...run.fl.checkpoint };
     // her flowers are the stage's checkpoints: the ones up to hers are reached (Continue after a game over comes back to hers)
     for (const cp of this.currentStage.checkpoints ?? []) if (!cp.reached && cp.x <= run.fl.checkpoint.x + 1) cp.reached = true;
@@ -5005,6 +5024,7 @@ export class GameEngine {
     p.vx = run.fl.vx;
     p.vy = run.fl.vy;
     p.facing = run.fl.face;
+    if (recorder.on) this.recordDot(run);
     // the moment at the gap: the view closes in a touch
     const z = 1 + 0.12 * run.moment();
     if (Math.abs(z - this.bossZoom) > 0.002) {

@@ -3,7 +3,7 @@
  * played (engine.ts: `dotRun`), and this runs her flight (dotFlight.ts), says her lines, follows her with the camera and draws the
  * stage (dotFlightArt.ts). Hearts, lives, the checkpoint, the result and Dot's banner stay the engine's, through `DotHost`.
  */
-import { DotFlight, type FlightInput } from './dotFlight.ts';
+import { DotFlight, type FlightEvent, type FlightInput } from './dotFlight.ts';
 import { DOT, DOT_H, type DotStage } from './dotFlightStage.ts';
 import { DotFx, drawDotBackdrop, drawDotDepth, drawDotHud, drawDotMoment, drawDotPlayer, drawDotWorld, warmDotFlight } from './dotFlightArt.ts';
 import { lessonInputMode } from './lessons.ts';
@@ -59,6 +59,8 @@ export class DotRun {
   private bonkCd = 0;
   private buzzCd = 0;
   private lookX = 0.38;
+  /** what happened in the last step (the control test's recorder reads it: dotRecord.ts) */
+  lastEvents: FlightEvent[] = [];
   /** when the last life went (its line is not talked over) */
   private lifeAt = -9;
 
@@ -99,6 +101,7 @@ export class DotRun {
       this.once(`tip:${h.text}`, mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, 4.2);
     }
     const ev = fl.step(dt, input);
+    this.lastEvents = ev;
     for (const e of ev) {
       switch (e.k) {
         case 'flap':

@@ -40,11 +40,15 @@ function ownKit(): boolean {
 }
 const imgs = new Map<number, HTMLImageElement>();
 const ready = new Set<number>();
+/** the address of a world's kit sheet (World 1's is the full props atlas) */
+export function kitUrl(w: number): string {
+  return w === 1 ? new URL('../assets/proto/props-atlas.webp', import.meta.url).href : new URL(`../assets/kits/w${w}.webp`, import.meta.url).href;
+}
 function load(w: number) {
   if (imgs.has(w) || typeof Image === 'undefined') return;
   const im = new Image();
   imgs.set(w, im);
-  const url = w === 1 ? new URL('../assets/proto/props-atlas.webp', import.meta.url).href : new URL(`../assets/kits/w${w}.webp`, import.meta.url).href;
+  const url = kitUrl(w);
   trackAtlas(im, url, () => { ready.add(w); }, () => { imgs.delete(w); }, () => { imgs.delete(w); ready.delete(w); });
 }
 // Matt's second World 1 sheet set (2026-10-23): the kapok trunk with a hollow, a plain trunk, and the hiding bushes
@@ -179,6 +183,11 @@ export function drawChaseBroken(ctx: CanvasRenderingContext2D, right: boolean, x
   return true;
 }
 
+/** start loading the kit sheets a stage in world `w` draws (World 1's, and the world's own), before the stage starts */
+export function warmKit(w: number) {
+  load(1);
+  if (w !== 1 && hasKit(w)) load(w);
+}
 export function protoArtReady() {
   load(1);
   if (kitWorld !== 1) load(kitWorld);

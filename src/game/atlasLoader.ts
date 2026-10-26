@@ -11,8 +11,10 @@ export const lastSheet = { name: '', at: 0 };
  */
 export function trackAtlas(img: HTMLImageElement, url: string, onReady: () => void, onFail: () => void, forget?: () => void): void {
   const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
-  const entry: Held | null = forget ? { img, forget, gone: false } : null;
+  const entry: Held | null = forget ? { img, forget, gone: false, url } : null;
   if (entry) held.add(entry);
+  const sheet: Sheet = { img, ready: false, warm: false, waiters: [] };
+  sheets.set(url, sheet);
   const name = url.split('/').pop()?.split('?')[0] ?? '';
   // (sheets load the first time something draws with them: asked for in the middle of a stage, that thing is a stand-in, or nothing,
   // until the sheet arrives; the control test notes it, once per sheet per stage, as a likely flicker)
@@ -24,6 +26,8 @@ export function trackAtlas(img: HTMLImageElement, url: string, onReady: () => vo
     lastSheet.name = name;
     lastSheet.at = performance.now();
     if (recorder.on) recorder.event('sheet', `${lastSheet.name} ${Math.round(performance.now() - t0)}ms`);
+    sheet.ready = true;
+    settle(sheet);
     onReady();
   };
   img.onload = () => {
@@ -32,6 +36,7 @@ export function trackAtlas(img: HTMLImageElement, url: string, onReady: () => vo
   };
   img.onerror = () => {
     if (entry) held.delete(entry);
+    dropSheet(url, sheet);
     if (entry?.gone) return;
     if (recorder.on) recorder.blank(name, 'fail');
     setTimeout(onFail, 4000);
@@ -52,6 +57,7 @@ interface Held {
   forget: () => void;
   /** let go: a load still under way must not mark the module ready again */
   gone: boolean;
+  url: string;
 }
 const held = new Set<Held>();
 let heldWorld = 0;
@@ -63,6 +69,8 @@ export function releaseWorldArt(): number {
     h.gone = true;
     h.img.onload = null;
     h.img.onerror = null;
+    const sh = sheets.get(h.url);
+    if (sh?.img === h.img) dropSheet(h.url, sh);
     try {
       h.forget();
     } catch {
@@ -83,3 +91,82 @@ export function enterWorld(world: number) {
 
 /** how many world sheets are held (for the tests) */
 export const heldSheets = (): number => held.size;
+
+/**
+ * Every sheet asked for (by its address), so a stage about to start can wait for the ones it needs and have them decoded and drawn
+ * once before play begins (stagePreload.ts). A browser may put off the real decode, and handing the picture to the graphics, until the
+ * first time it is drawn: on a phone that first draw of a 10 to 20 MB sheet was a 376 to 472 ms freeze right as a stage began
+ * (QA's control-test logs, 2026-10-26: 'stall ... after w3-props', 'after w4-props').
+ */
+interface Sheet {
+  img: HTMLImageElement;
+  ready: boolean;
+  /** drawn once already (warmSheets) */
+  warm: boolean;
+  waiters: (() => void)[];
+}
+const sheets = new Map<string, Sheet>();
+function settle(s: Sheet) {
+  const w = s.waiters;
+  s.waiters = [];
+  for (const f of w) f();
+}
+function dropSheet(url: string, s: Sheet) {
+  if (sheets.get(url) === s) sheets.delete(url);
+  settle(s);
+}
+
+/** whether the sheet at this address has loaded and decoded */
+export const sheetReady = (url: string): boolean => !!sheets.get(url)?.ready;
+
+/**
+ * Resolves once each of these sheets has loaded and decoded, failed, or was never asked for (its module did not start it), or after
+ * `ms`, whichever is first. Resolves with how many were ready.
+ */
+export function whenSheetsReady(urls: readonly string[], ms: number): Promise<number> {
+  return new Promise((resolve) => {
+    let left = 0;
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      resolve(urls.filter(sheetReady).length);
+    };
+    const timer = setTimeout(finish, ms);
+    for (const u of urls) {
+      const s = sheets.get(u);
+      if (!s || s.ready) continue;
+      left++;
+      s.waiters.push(() => {
+        if (--left <= 0) finish();
+      });
+    }
+    if (left === 0) finish();
+  });
+}
+
+/**
+ * Draw each of these sheets that is ready once, at its own size, into a corner of `ctx` (then clear that corner): the browser decodes it
+ * in full and hands it to the graphics now, behind a menu, instead of on the first frame of play. Only the first time for each sheet.
+ * Returns how many were drawn.
+ */
+export function warmSheets(urls: readonly string[], ctx: CanvasRenderingContext2D | null): number {
+  if (!ctx) return 0;
+  let n = 0;
+  for (const u of urls) {
+    const s = sheets.get(u);
+    if (!s || !s.ready || s.warm) continue;
+    const w = Math.min(4, s.img.naturalWidth || 4), h = Math.min(4, s.img.naturalHeight || 4);
+    try {
+      // (1:1, a few pixels: a scaled-down draw could be served from a smaller decode, and the full-size one would still wait for play)
+      ctx.drawImage(s.img, 0, 0, w, h, 0, 0, w, h);
+      ctx.clearRect(0, 0, w, h);
+      s.warm = true;
+      n++;
+    } catch {
+      /* not drawable yet: play draws it as before */
+    }
+  }
+  return n;
+}
