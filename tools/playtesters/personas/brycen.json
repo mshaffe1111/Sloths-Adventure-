@@ -116,5 +116,107 @@
    "note": ""
   }
  ],
- "name": "Brycen"
+ "name": "Brycen",
+ "curve": [
+  {
+   "minutesPlayed": 4.2,
+   "mix": {
+    "tap": 0.672,
+    "drag": 0.278,
+    "hold": 0.035,
+    "flick": 0.015
+   },
+   "tapMs": {
+    "p10": 46,
+    "p50": 88,
+    "p90": 129
+   },
+   "flickPx": {
+    "p10": 62.769,
+    "p50": 90.427,
+    "p90": 106.471
+   },
+   "flickPxPerMs": {
+    "p10": 0.284,
+    "p50": 0.425,
+    "p90": 0.433
+   },
+   "jumpFlickOffVerticalDeg": null,
+   "touchStartX": {
+    "p10": 0.257,
+    "p50": 0.743,
+    "p90": 0.78
+   },
+   "touchStartY": {
+    "p10": 0.828,
+    "p50": 0.857,
+    "p90": 0.898
+   },
+   "leftHalfShare": 0.283,
+   "twoFingerShare": 0.591,
+   "gapBetweenTouchesMs": {
+    "p10": 46,
+    "p50": 237,
+    "p90": 545
+   },
+   "hurtPerMinute": 0.47,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 0.201,
+    "p50": 4.933,
+    "p90": 17.031
+   },
+   "session": "20261024-1651-pdzt"
+  },
+  {
+   "minutesPlayed": 1.9,
+   "mix": {
+    "tap": 0.706,
+    "drag": 0.206,
+    "hold": 0.044,
+    "flick": 0.044
+   },
+   "tapMs": {
+    "p10": 37,
+    "p50": 88,
+    "p90": 134
+   },
+   "flickPx": {
+    "p10": 50.695,
+    "p50": 79.057,
+    "p90": 110.168
+   },
+   "flickPxPerMs": {
+    "p10": 0.272,
+    "p50": 0.491,
+    "p90": 0.755
+   },
+   "jumpFlickOffVerticalDeg": null,
+   "touchStartX": {
+    "p10": 0.234,
+    "p50": 0.73,
+    "p90": 0.775
+   },
+   "touchStartY": {
+    "p10": 0.837,
+    "p50": 0.868,
+    "p90": 0.906
+   },
+   "leftHalfShare": 0.281,
+   "twoFingerShare": 0.619,
+   "gapBetweenTouchesMs": {
+    "p10": 29,
+    "p50": 212,
+    "p90": 446
+   },
+   "hurtPerMinute": 1.57,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 5.134,
+    "p50": 9.668,
+    "p90": 19.285
+   },
+   "session": "20261024-1657-7hy9"
+  }
+ ]
 }
