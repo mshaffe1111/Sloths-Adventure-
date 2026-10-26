@@ -2849,6 +2849,15 @@ export class GameEngine {
     this.camera.trauma = Math.max(0, this.camera.trauma - dt * 1.6);
     this.bossFrame(dt);
     this.updateCamera(dt);
+    // the new look: Dot says the fight's opening tip during the entrance, before the boss wakes, so her bubble is gone by the time it
+    // moves (QA v189, 1-10 upright: it filled the arena for 10-21 s of the fight). The old look keeps saying it as the fight starts.
+    if (this.newLook && en.t >= en.total * 0.45) {
+      const start = def.guide?.start;
+      if (start && !tipHeard(this.currentStage.config.id, 'boss:start')) {
+        markTipHeard(this.currentStage.config.id, 'boss:start');
+        this.guide(start, 5);
+      }
+    }
     if (en.t >= en.total) {
       this.entrance = null;
       this.entranceDone = true;
@@ -4520,6 +4529,20 @@ export class GameEngine {
     out.collectibles = this.collectibles;
     out.hazards = this.hazards;
     out.bushes = this.proto?.bushes ?? out.bushes;
+    out.popups = this.floatingTexts;
+    // (a boss's open weak spot, for Dot to keep her bubble off: copied into the view, no new object)
+    const bs = this.boss;
+    const bd = this.bossDef;
+    const ar = this.currentStage.arena;
+    const wr = bs && bd && ar && !bs.defeated && weakOpen(bs, bd) ? weakRect(bs, bd, ar.floor) : null;
+    out.weakOn = !!wr;
+    out.bossX = bs && !bs.defeated ? bs.x : NaN;
+    if (wr) {
+      out.weakX = wr.x;
+      out.weakY = wr.y;
+      out.weakW = wr.w;
+      out.weakH = wr.h;
+    }
     return out;
   }
 

@@ -6,12 +6,14 @@ import type { MoveId } from './dotGuide.ts';
 import type { GuideView } from './dotGuideView.ts';
 import { dotText } from './dotLines.ts';
 
-const MOVES: readonly MoveId[] = ['run', 'jump', 'double', 'grab', 'climb', 'leap', 'glide', 'punch', 'kick', 'crouch', 'push'];
+const MOVES: readonly MoveId[] = ['run', 'jump', 'double', 'grab', 'climb', 'leap', 'glide', 'punch', 'kick', 'crouch', 'push', 'bounce'];
+/** a mushroom's spring launches him faster than any jump can (PHYS.bounceV 830 against jumpV 640): past this, it was a bounce */
+export const BOUNCE_VY = -740;
 
 /** counts each move as it happens (the rising edge of what the engine shows), so a tip knows when its move is done */
 export class MoveWatch {
   private counts: Record<MoveId, number> = Object.fromEntries(MOVES.map((m) => [m, 0])) as Record<MoveId, number>;
-  private was = { air: false, dbl: false, held: false, climbing: false, swinging: false, glide: false, attack: 'none' as GuideView['attack'], duck: false, push: false };
+  private was = { vy: 0, air: false, dbl: false, held: false, climbing: false, swinging: false, glide: false, attack: 'none' as GuideView['attack'], duck: false, push: false };
   private runPx = 0;
   private lastX = NaN;
   private climbFrom = -Infinity;
@@ -37,6 +39,8 @@ export class MoveWatch {
     const air = !v.grounded && !held;
     // a jump: leaving the ground going up (not dropping off an edge, not letting go of a vine: that is a leap)
     if (air && !w.air && v.vy < -60 && !w.swinging && !w.held) c.jump++;
+    // a bounce: flung up off a mushroom (a jump never goes this fast), from the ground or landing on it from the air
+    if (v.vy < BOUNCE_VY && w.vy > -300 && !held) c.bounce++;
     if (v.doubleJumping && !w.dbl) c.double++;
     if (held && !w.held) c.grab++;
     // climbing counts once he has gone up a little way on a trunk
@@ -65,6 +69,7 @@ export class MoveWatch {
       }
     }
     this.lastX = v.px;
+    w.vy = v.vy;
     w.air = air;
     w.dbl = v.doubleJumping;
     w.held = held;

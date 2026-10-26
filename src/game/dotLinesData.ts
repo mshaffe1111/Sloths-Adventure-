@@ -135,7 +135,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.1-9.ring", "1-9", "stage hint", "lock", "Snakes from above! Clear them all to open the way", null, null, null, null],
   ["lock.ring.snakes", "1-9", "guide", "lock", "Snakes from above! Clear them all to open the way", "Snakes! Clear them all to open the way.", null, null, "thorn gate"],
   ["hint.1-6.fell", "1-6", "stage hint", "help", "Fell? Climb the next tree back up", "Fell? Climb the next tree back up", null, null, "next trunk"],
-  ["way.1.hurt0", "", "wayside", "story", "Recipient down! Wait. Recipient up. Good. Carry on.", "Recipient down! Wait. Recipient up. Good. Carry on.", null, null, null],
+  ["way.1.hurt0", "", "wayside", "story", "Pokey's down! Wait... up again. Good. Carry on.", "Pokey's down! Wait... up again. Good. Carry on.", null, null, null],
   ["way.1.hurt1", "", "wayside", "story", "Meeca would know what to say here. I only have \"ow.\" So. Ow.", "Meeca would know what to say. I only have \"ow.\" Ow.", null, null, null],
   ["way.1.hurt2", "", "wayside", "story", "Ow! That one was yours, but I felt it.", "Ow! That one was yours, but I felt it.", null, null, null],
   ["way.1-2", "1-2", "wayside", "story", "She said don't stop to smell the flowers. She never said anything about picking up her petals.", "She said don't stop to smell the flowers. Picking's different.", null, null, null],

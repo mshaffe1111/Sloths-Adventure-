@@ -20,8 +20,10 @@ import { BossHud } from '../BossHud.tsx';
 import { bloomUpdate, bloomView, newBloom, nextBloomEdge, showsSlots, type HudValues } from './bloom.ts';
 import { bossRect, centreGeo, centrePlace, counterW, heartsShown, hudGeo, hudMode, hudSafeRect, type Insets } from './hudLayout.ts';
 import { goalInfo } from './goalInfo.ts';
+import { fallbackSafeArea, setGuideSafeArea } from '../../game/dotGuidePerch.ts';
 import { Bolt, GoalPic, Heart, HudDefs, Leaf, MenuLines, Star, Tick, Vine, vineY } from './hudArt.tsx';
 import { GoalCard } from './GoalCard.tsx';
+import { PaintedVine, PlateArt, Piece, Tendril, fillStyle, useHudArt } from './painted.tsx';
 import './hud.css';
 
 export interface VineHudProps {
@@ -102,6 +104,9 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   const short = mode === 'short';
   /** the smallest sizes (about 640x320) */
   const tiny = short && g.heart <= 18;
+  // the painted pieces (painted.tsx), once their sheet has loaded; the drawn stand-ins until then. k: their scale (1 = as painted)
+  const art = useHudArt();
+  const k = g.heart / 22;
   const probe = React.useRef<HTMLDivElement>(null);
   const [ins, setIns] = React.useState<Insets>({ top: 0, right: 0, bottom: 0, left: 0 });
   React.useLayoutEffect(() => {
@@ -215,6 +220,16 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     s.setProperty('--hud-lane-h', `${safe.h}px`);
     s.setProperty('--hud-band-bottom', `${safe.bandBottom}px`);
   }, [mode, isBoss, safe.x, safe.y, safe.w, safe.h, safe.bandBottom]);
+  // Dot's bubbles go under everything the HUD has at the top (the counter, the boss bar), not just under a fixed band: it was
+  // drawn into the counter's curl on the shortest screens
+  React.useEffect(() => {
+    setGuideSafeArea((w, h) => {
+      const f = fallbackSafeArea(w, h);
+      const s = hudSafeRect(w, h, { boss: isBoss, hearts: nHearts, counter: cw, insets: ins });
+      return { rect: { ...f.rect, y0: Math.max(16, s.bandBottom + 6) }, keepOut: f.keepOut };
+    });
+    return () => setGuideSafeArea(null);
+  }, [isBoss, nHearts, cw, ins]);
   React.useEffect(
     () => () => {
       const r = document.documentElement;
@@ -238,16 +253,16 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   const hearts: React.ReactNode[] = [];
   for (let i = 0; i < nHearts; i++) {
     const x = hx0 + i * g.step;
-    const y = vineY(x, base) + 3;
-    const len = threads[i % threads.length];
+    const y = art ? base : vineY(x, base) + 3;
+    const len = threads[i % threads.length] + (art ? 3 : 0);
     const lost = view.heartDelta < 0 && i >= hp && i < hp - view.heartDelta;
     const thorn = maxHp > 5 && i === maxHp - 1;
     const st = folded ? (hp > 0 ? 'full' : 'empty') : lost ? 'lost' : i < hp ? (thorn ? 'thorn' : 'full') : 'empty';
     const won = view.heartDelta > 0 && i < hp && i >= hp - view.heartDelta;
     hearts.push(
       <React.Fragment key={i}>
-        <span className="vh-thread" style={{ left: x - 1, top: y, height: len }} />
-        <span className={`vh-hang vh-heart${won ? ' won' : ''}`} style={{ left: x - hs / 2, top: y + len - 3, ['--tilt' as string]: `${TILT[i % TILT.length]}deg` }}>
+        {art ? <Tendril x={x} y={y} len={len + 2} k={k} /> : <span className="vh-thread" style={{ left: x - 1, top: y, height: len }} />}
+        <span data-hud-fade="" className={`vh-hang vh-heart${won ? ' won' : ''}`} style={{ left: x - hs / 2, top: y + len - 3, ['--tilt' as string]: `${TILT[i % TILT.length]}deg` }}>
           <Heart size={hs} state={st} />
         </span>
       </React.Fragment>,
@@ -295,7 +310,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     } else {
       const r = Math.max(0, Math.min(1, distanceRatio));
       const fs = Math.round(cg.icon * 0.7);
-      const tw = cw - 24 - Math.round(cg.icon * 0.6);
+      const tw = cw - Math.round(cg.plate * 0.8) - Math.round(cg.icon * 0.6);
       inner = (
         <span className="vh-trail-box" style={{ width: tw + Math.round(cg.icon * 0.6), height: fs + 4 }}>
           <span className="vh-trail" style={{ left: 0, top: fs / 2 - 2, width: tw }}>
@@ -313,23 +328,37 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
     goal = (
       <div
         ref={counterRef}
+        data-hud-fade=""
         className={`vh-centre vh-goal ${ckind} ${ckind === 'distance' ? 'small' : view.goal}${view.goalGlow ? ' glow' : ''}${view.goalMet ? ' met' : ''}`}
         style={{ left: place.x, top: place.y, width: cw, height: cg.height }}
         {...(ckind === 'distance'
           ? { role: 'progressbar', 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': Math.round(Math.max(0, Math.min(1, distanceRatio)) * 100), 'aria-label': 'How far along the stage' }
           : { role: 'img', 'aria-label': label })}
       >
-        {place.row === 1 && !underBoss ? (
+        {art ? (
+          // (painted: in the top row the hearts' vine runs on across it; lower down it hangs from a short vine of its own)
+          !(place.row === 1 && !underBoss) && <PaintedVine x0={2} x1={cw - 2} y={pv} k={k} />
+        ) : place.row === 1 && !underBoss ? (
           // in the top row its vine is the canopy strung from the hearts' vine across to the Menu's
           <Vine x0={Math.round(ins.left + vineEnd - 14 - place.x)} x1={Math.round(vp.w - ins.right - g.gutter - g.menu - 16 - place.x)} base={pv} amp={2.4} ph={1.3} />
         ) : (
           <Vine x0={-26} x1={cw + 18} base={pv} amp={2.4} ph={1.3} curl />
         )}
-        {place.row === 1 && <Leaf frame="green_A02_3" w={Math.round(cg.icon * 0.5)} style={{ left: -12, top: pv - 13, transform: 'rotate(-30deg)' }} />}
-        {<Leaf frame="green_A01_3" w={Math.round(cg.icon * 0.5)} style={{ left: cw - 6, top: pv - 15, transform: 'rotate(20deg)' }} />}
-        <span className="vh-thread" style={{ left: Math.round(cw * 0.2), top: pv + 2, height: plateTop - pv }} />
-        <span className="vh-thread" style={{ left: Math.round(cw * 0.8), top: pv + 2, height: plateTop - pv }} />
-        <span className="vh-cplate" style={{ top: plateTop, height: plateH, gap: Math.round(cg.icon * 0.18) }}>
+        {!art && place.row === 1 && <Leaf frame="green_A02_3" w={Math.round(cg.icon * 0.5)} style={{ left: -12, top: pv - 13, transform: 'rotate(-30deg)' }} />}
+        {!art && <Leaf frame="green_A01_3" w={Math.round(cg.icon * 0.5)} style={{ left: cw - 6, top: pv - 15, transform: 'rotate(20deg)' }} />}
+        {art ? (
+          <>
+            <Tendril x={Math.round(cw * 0.3)} y={pv} len={plateTop - pv + 10} k={k} />
+            <Tendril x={Math.round(cw * 0.7)} y={pv} len={plateTop - pv + 10} k={k} />
+          </>
+        ) : (
+          <>
+            <span className="vh-thread" style={{ left: Math.round(cw * 0.2), top: pv + 2, height: plateTop - pv }} />
+            <span className="vh-thread" style={{ left: Math.round(cw * 0.8), top: pv + 2, height: plateTop - pv }} />
+          </>
+        )}
+        <span className={`vh-cplate${art ? ' painted' : ''}`} style={{ top: plateTop, height: plateH, gap: Math.round(cg.icon * 0.18) }}>
+          {art && <PlateArt w={cw} h={plateH} />}
           {inner}
         </span>
         {view.goalDelta > 0 && ckind !== 'distance' && (
@@ -347,6 +376,9 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
   const livesX = lowRow ? hx0 + 2 : hx0 + 1.5 * g.step;
   const livesY = vineY(livesX, base) + 3;
   const ls = tiny ? 32 : lowRow ? 34 : 40;
+  // (painted: the small number plate it sits on)
+  const lpw = tiny ? 60 : 70;
+  const lph = tiny ? 30 : 34;
   // the power-up pod (while it lasts), under the first heart
   const power = activePowerUp ? POWER[activePowerUp] : null;
   const podX = hx0 + 0.5 * g.step;
@@ -363,6 +395,16 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
 
   // the right cluster: the Menu leaf, with the score hanging under it when it changes
   const mw = g.menu;
+  // the painted vine: upright with the counter in the top row it runs right across; otherwise it ends in a curl (after the counter in
+  // the top row, after the hearts when the counter hangs lower) and the Menu hangs from a short vine of its own
+  const topRow = !!place && place.row === 1 && !underBoss;
+  const vineAcross = topRow && mode === 'port';
+  const leftVineEnd = vineAcross ? vp.w - ins.left + 10 : topRow ? Math.round(place!.x + cw + 10 - ins.left) : vineEnd;
+  // the painted Menu leaf (its three lines are painted on), and its touch box: at least 44 pt, covering the leaf
+  const lw = Math.round(47 * k);
+  const lh = Math.round((lw * 192) / 142);
+  const mbw = Math.max(g.menuHit, lw + 4);
+  const mbh = Math.max(g.menuHit + 6, lh + 2);
 
   return (
     <div className={`vh vh-${mode}${props.bossEntering ? ' entering' : ''}`} data-testid="vine-hud">
@@ -370,11 +412,19 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
       <HudDefs />
       <div className="vh-left">
         <div className="vh-shade" style={{ width: vineEnd + 70, height: tiny ? 58 : 78 }} />
-        <Vine x0={-10 - Math.round(ins.left)} x1={vineEnd} base={base} curl={!(place && place.row === 1 && !underBoss)} />
-        <Leaf frame="big_B06_0" w={tiny ? 34 : 42} style={{ left: -14, top: base - 20, transform: 'rotate(-20deg)' }} />
-        <Leaf frame="green_A01_3" w={tiny ? 16 : 20} style={{ left: hx0 + 1.5 * g.step, top: base - 17, transform: 'rotate(-40deg)' }} />
-        <Leaf frame="green_A02_3" w={tiny ? 15 : 18} style={{ left: hx0 + 3.5 * g.step, top: base - 15, transform: 'rotate(25deg)' }} />
-        <Leaf frame="green_A01_3" w={tiny ? 16 : 20} style={{ left: vineEnd - 20, top: base - 18, transform: 'rotate(-15deg)' }} />
+        {art ? (
+          // one painted run from the screen edge: upright across the whole top (the counter and the Menu hang from it); sideways on past
+          // the counter to a curl, the Menu on its own short vine; on past the hearts to a curl when the counter hangs lower
+          <PaintedVine x0={-10 - Math.round(ins.left)} x1={leftVineEnd} y={base} k={k} lead endR={!vineAcross} />
+        ) : (
+          <>
+            <Vine x0={-10 - Math.round(ins.left)} x1={vineEnd} base={base} curl={!(place && place.row === 1 && !underBoss)} />
+            <Leaf frame="big_B06_0" w={tiny ? 34 : 42} style={{ left: -14, top: base - 20, transform: 'rotate(-20deg)' }} />
+            <Leaf frame="green_A01_3" w={tiny ? 16 : 20} style={{ left: hx0 + 1.5 * g.step, top: base - 17, transform: 'rotate(-40deg)' }} />
+            <Leaf frame="green_A02_3" w={tiny ? 15 : 18} style={{ left: hx0 + 3.5 * g.step, top: base - 15, transform: 'rotate(25deg)' }} />
+            <Leaf frame="green_A01_3" w={tiny ? 16 : 20} style={{ left: vineEnd - 20, top: base - 18, transform: 'rotate(-15deg)' }} />
+          </>
+        )}
         <div className={`vh-hearts ${view.hearts}${hp <= 1 && hp > 0 ? ' low' : ''}`} role="img" aria-label={`Health: ${hp} of ${maxHp} hearts`}>
           {hearts}
           {folded && (
@@ -385,7 +435,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
         </div>
         {power && (
           <div className={`vh-power ${view.power}${view.lives === 'bloom' || lowRow ? ' quiet' : ''}`} role="img" aria-label={`${power.label}: ${Math.ceil(powerUpTimer ?? 0)} seconds left`}>
-            <span className="vh-thread" style={{ left: podX - 1, top: podY, height: podLen }} />
+            {art ? <Tendril x={podX} y={podY} len={podLen + 2} k={k} /> : <span className="vh-thread" style={{ left: podX - 1, top: podY, height: podLen }} />}
             <span className="vh-hang vh-pod" style={{ left: podX - pod / 2, top: podY + podLen - 2, width: pod, height: pod, background: `conic-gradient(${power.color} 0 ${left * 100}%, rgba(30,20,8,.6) ${left * 100}% 100%)` }}>
               <span className="vh-pod-in">
                 <Bolt size={tiny ? 12 : 14} color={power.color} />
@@ -397,12 +447,28 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
           </div>
         )}
         <div className={`vh-lives ${view.lives}`} role="img" aria-label={`Lives: ${lives}`} aria-hidden={view.lives === 'hidden'}>
-          <span className="vh-thread" style={{ left: livesX - 1, top: livesY, height: livesLen }} />
-          <span className="vh-hang vh-medal-wrap" style={{ left: livesX - ls / 2, top: livesY + livesLen - 4, ['--tilt' as string]: '5deg' }}>
-            <span className="vh-medal" style={{ width: ls, height: ls }}>
-              {dotStage ? <DotFace size={ls} face="closed" /> : <HeroFaceIcon size={ls - 4} face="face_happy" />}
-            </span>
-            <span className="vh-num" style={{ fontSize: tiny ? 18 : 21 }}>&times;{lives}</span>
+          {art ? <Tendril x={livesX} y={livesY} len={livesLen + 2} k={k} /> : <span className="vh-thread" style={{ left: livesX - 1, top: livesY, height: livesLen }} />}
+          <span
+            className="vh-hang vh-medal-wrap"
+            data-hud-fade=""
+            // (while it shows, Dot's bubble keeps off it)
+            data-hud-keepout={view.lives === 'hidden' ? undefined : ''}
+            style={art ? { left: livesX - lpw / 2, top: livesY + livesLen - 1, ['--tilt' as string]: '4deg' } : { left: livesX - ls / 2, top: livesY + livesLen - 4, ['--tilt' as string]: '5deg' }}
+          >
+            {art ? (
+              // painted: the face and the count on a small plate
+              <span className="vh-nplate lives" style={{ ...fillStyle('numPlate'), width: lpw, height: lph }}>
+                {dotStage ? <DotFace size={tiny ? 22 : 26} face="closed" /> : <HeroFaceIcon size={tiny ? 20 : 24} face="face_happy" />}
+                <span className="vh-num" style={{ fontSize: tiny ? 16 : 19 }}>&times;{lives}</span>
+              </span>
+            ) : (
+              <>
+                <span className="vh-medal" style={{ width: ls, height: ls }}>
+                  {dotStage ? <DotFace size={ls} face="closed" /> : <HeroFaceIcon size={ls - 4} face="face_happy" />}
+                </span>
+                <span className="vh-num" style={{ fontSize: tiny ? 18 : 21 }}>&times;{lives}</span>
+              </>
+            )}
             {view.livesDelta !== 0 && <span className={`vh-num vh-delta ${view.livesDelta < 0 ? 'bad' : 'gold'}`}>{view.livesDelta > 0 ? `+${view.livesDelta}` : `−${-view.livesDelta}`}</span>}
           </span>
         </div>
@@ -414,22 +480,53 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
       </div>
 
       <div className="vh-right">
-        <Vine x0={0} x1={mw + g.gutter + 30 + Math.round(ins.right)} base={base} ph={2} style={{ left: 'auto', right: -34 - Math.round(ins.right) }} className="vh-menu-vine" />
-        <button
-          type="button"
-          className="vh-menu"
-          onClick={onMenu}
-          aria-label="Menu (pauses the game)"
-          title="Menu [Esc]"
-          style={{ right: g.gutter - (g.menuHit - mw) / 2, top: base - 4, width: g.menuHit, height: g.menuHit + 6 }}
+        {art ? (
+          // (the Menu's own short vine, from a curl to the screen edge; upright the canopy vine runs across instead)
+          !vineAcross && <PaintedVine x0={320 - mw - g.gutter - 34} x1={330 + Math.round(ins.right)} y={base} k={k} endL />
+        ) : (
+          <Vine x0={0} x1={mw + g.gutter + 30 + Math.round(ins.right)} base={base} ph={2} style={{ left: 'auto', right: -34 - Math.round(ins.right) }} className="vh-menu-vine" />
+        )}
+        {art ? (
+          <button
+            type="button"
+            className="vh-menu painted"
+            data-hud-fade=""
+            onClick={onMenu}
+            aria-label="Menu (pauses the game)"
+            title="Menu [Esc]"
+            style={{ right: g.gutter - (mbw - lw) / 2, top: base - Math.round(6 * k), width: mbw, height: mbh }}
+          >
+            <Piece name="menuLeaf" w={lw} className="vh-menu-leaf" style={{ left: (mbw - lw) / 2, top: 0 }} />
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="vh-menu"
+            data-hud-fade=""
+            onClick={onMenu}
+            aria-label="Menu (pauses the game)"
+            title="Menu [Esc]"
+            style={{ right: g.gutter - (g.menuHit - mw) / 2, top: base - 4, width: g.menuHit, height: g.menuHit + 6 }}
+          >
+            <Leaf frame="big_C10_0" w={mw} className="vh-menu-leaf" style={{ left: (g.menuHit - mw) / 2, top: -2 }} />
+            <span className="vh-menu-lines">
+              <MenuLines size={tiny ? 20 : 22} />
+            </span>
+          </button>
+        )}
+        <div
+          className={`vh-score ${view.score}`}
+          data-hud-fade=""
+          data-hud-keepout={view.score === 'hidden' ? undefined : ''}
+          aria-label={`Score ${score.toLocaleString()}`}
+          // (upright in a boss fight the bar runs right under the top row: the score hangs in the row, left of the Menu, clear of "N hits left")
+          style={
+            isBoss && mode === 'port'
+              ? { right: g.gutter + (art ? mbw : g.menuHit) + 4, top: base + 2 }
+              : { right: g.gutter - 4, top: art ? base + mbh - Math.round(6 * k) + 2 : base + g.menuHit + (tiny ? 0 : 6) }
+          }
         >
-          <Leaf frame="big_C10_0" w={mw} className="vh-menu-leaf" style={{ left: (g.menuHit - mw) / 2, top: -2 }} />
-          <span className="vh-menu-lines">
-            <MenuLines size={tiny ? 20 : 22} />
-          </span>
-        </button>
-        <div className={`vh-score ${view.score}`} aria-label={`Score ${score.toLocaleString()}`} style={{ right: g.gutter - 4, top: base + g.menuHit + (tiny ? 0 : 6) }}>
-          <span className="vh-plate">
+          <span className={`vh-plate${art ? ' vh-nplate' : ''}`} style={art ? fillStyle('numPlate') : undefined}>
             <Star size={tiny ? 16 : 19} />
             <span className="vh-num" style={{ position: 'static', fontSize: tiny ? 16 : 19 }}>{score.toLocaleString()}</span>
           </span>
@@ -440,7 +537,7 @@ export const VineHud: React.FC<VineHudProps> = (props) => {
       {goal}
 
       {boss && (
-        <div className="vh-boss" style={{ left: boss.x, top: boss.y, width: boss.w }}>
+        <div data-hud-fade="" className="vh-boss" style={{ left: boss.x, top: boss.y, width: boss.w }}>
           <Leaf frame="big_B03_0" w={tiny ? 28 : 34} className="vh-boss-leaf" style={{ left: -24, bottom: -10, transform: 'rotate(-160deg)', zIndex: 1 }} />
           <Leaf frame="big_C05_0" w={tiny ? 28 : 34} className="vh-boss-leaf" style={{ right: -24, bottom: -8, transform: 'rotate(20deg)', zIndex: 1 }} />
           <BossHud
