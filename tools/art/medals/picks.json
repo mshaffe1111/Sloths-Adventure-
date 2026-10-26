@@ -1,0 +1,12 @@
+{
+ "medallions": {"bronze": "md-bronze-44", "silver": "md-silver-11", "gold": "md-gold-11", "platinum": "md-platinum-33"},
+ "solid": ["locket"],
+ "emblems": {
+  "paw": "em-paw-22", "fang": "em-claws-22", "boot": "em-boot-11", "flower": "em-flower-11", "star": "em-star-22", "stars3": "em-stars3-22",
+  "leaf": "em-leaf-11", "rope": "em-rope-22", "vine": "em-vine-11", "flame": "em-flame-11", "burst": "em-burst-22", "hourglass": "em-hourglass-22",
+  "crown": "em-crown-11", "locket": "em-locket-22", "cage": "em-cage-22", "compass": "em-compass-22", "fist": "em-fist-22", "kick": "em-kick-22",
+  "cake": "em-cake-11", "orchid": "em-orchid-11", "web": "em-web-11", "shield": "em-shield-11", "feather": "em-feather-11", "book": "em-book-11",
+  "key": "em-key-22", "thornheart": "em-thornheart-22", "bird": "em-bird-22", "moon": "em-moon-22", "carving": "em-carving-22", "map": "em-map-22",
+  "flag": "em-flag-11", "trophy": "em-trophy-22", "gem": "em-gem-22"
+ }
+}

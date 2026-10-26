@@ -72,6 +72,8 @@ const SEAM_SEE = 760;
  */
 const COCOON_SEE = 900;
 const said = (key: string) => `tip:${key}`;
+/** how much silk must have crept onto him (0..1) for shaking it off to count in the Trophy Room */
+export const SILK_SHED_FROM = 0.25;
 /** what a cake or the tray did to him stays up this long (s): the engine's 0.8 s pop-up was gone before it was read */
 export const W5_POP_LIFE = 1.6;
 type W5Box = { x0: number; y0: number; x1: number; y1: number };
@@ -123,6 +125,10 @@ export class W5Play {
   /** when he last pulled against the silk (steering or jumping with it on him), and how much was on him then */
   private tugAt = -99;
   private tugSilk = 0;
+  /** for the Trophy Room: trays punched away, times the silk was shaken off, and the most silk on him since it was last off */
+  private traysKnocked = 0;
+  private silkShed = 0;
+  private silkPeak = 0;
 
   /**
    * how far (world px, signed) to draw him off his place this moment: a quick wobble while he pulls against the silk, so being stuck is
@@ -182,6 +188,7 @@ export class W5Play {
   /** everything about him back to fresh (a respawn, or the test harness placing him somewhere new) */
   calm() {
     this.sit = newSit();
+    this.silkPeak = 0;
     this.sleepy = 0;
     this.pull = 0;
     this.seated = -1;
@@ -313,6 +320,12 @@ export class W5Play {
     if (tookOff && this.sit.silk > 0) this.sit = { ...this.sit, silk: Math.max(0, this.sit.silk - SIT.jump) };
     // pulling against the silk shows: he wobbles in it while he steers or jumps with silk on him (wobble)
     const pulled = Math.max(this.sit.silk, tookOff ? silkBefore : 0);
+    // silk that had got a real hold on him (a quarter of the way) and is now all shaken off counts as shaken off once
+    this.silkPeak = r.wrapped ? 0 : Math.max(this.silkPeak, silkBefore, this.sit.silk);
+    if (this.sit.silk <= 0 && this.silkPeak >= SILK_SHED_FROM) {
+      this.silkShed++;
+      this.silkPeak = 0;
+    }
     if (pulled > SIT.showTug && (h.steer !== 0 || tookOff)) {
       this.tugAt = h.t;
       this.tugSilk = pulled;
@@ -385,6 +398,7 @@ export class W5Play {
       const out = stepButler(st, { near, punched, touch }, dt);
       this.butlers[i] = out.st;
       if (out.knocked) {
+        this.traysKnocked++;
         this.trayFly[i] = { x: tray.x, y: tray.y, vx: b.dir * 260, vy: -380, at: h.t };
         // (said plainly, and long enough to read: QA 5-2, 2026-10-26, the tap at the tray scored but nothing said what it had done)
         h.float('TRAY AWAY!', tray.x, tray.y - 30, '#fef08a', W5_POP_LIFE);
@@ -498,6 +512,16 @@ export class W5Play {
     this.stepSilks(h);
     this.veil = Math.max(sitDrowsy(this.sit) * 0.8, this.sleepy > 0 ? 0.55 * Math.min(1, this.sleepy) : 0);
     return { speed: sleepySpeed(this.sleepy) * silkSpeed(this.sit.silk), pull };
+  }
+
+  /**
+   * what this run did, for the Trophy Room (badges.ts StageStats): cakes avoided (every tray punched away, and on a clear every cake
+   * left uneaten), petals picked from the orchids' cups while they were open, and the times the silk was shaken off
+   */
+  tally(collectibles: readonly Collectible[], win: boolean): { cakesAvoided: number; orchidPetals: number; silkShed: number } {
+    const uneaten = win ? this.eaten.filter((e) => !e).length : 0;
+    const orchidPetals = collectibles.filter((c) => c.collected && this.orchidOf.has(c.id)).length;
+    return { cakesAvoided: this.traysKnocked + uneaten, orchidPetals, silkShed: this.silkShed };
   }
 
   private ateCake(h: W5Host, doze: (s: number) => void) {

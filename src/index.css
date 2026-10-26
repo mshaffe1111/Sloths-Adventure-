@@ -1084,3 +1084,52 @@
   .jr-short .jr-left { width: min(40%, 360px); }
   .jr-short .jr-foot-note { display: none; }
 }
+
+/* ---------- Medals (2026-10-26): painted medallions and emblems, points, tiers ---------- */
+.tr-medal { position: relative; flex: none; }
+.tr-medal.tr-painted { border: 0; box-shadow: none; background: none; border-radius: 0; }
+.tr-paint, .tr-emblem { position: absolute; left: 0; top: 0; display: block; pointer-events: none; }
+.tr-painted .tr-paint { filter: drop-shadow(0 2px 3px rgba(0,0,0,.45)); }
+.tr-painted.tr-off { background: none !important; filter: grayscale(.72) brightness(.62) contrast(.92); }
+.tr-painted.tr-off .tr-emblem { opacity: .5; }
+.tr-platinum { background: radial-gradient(circle at 35% 30%, #ffffff, #b8d8d0 55%, #7fa8b0); }
+.tr-wnum { position: absolute; right: -2%; bottom: -2%; min-width: 1.6em; height: 1.6em; padding: 0 .25em; border-radius: .8em; display: flex; align-items: center; justify-content: center; background: #2a1608; color: #ffe6a8; border: 2px solid #f0b04a; font-family: var(--font-fun, var(--font-heading)); font-weight: 700; line-height: 1; box-shadow: 0 1px 3px rgba(0,0,0,.5); }
+.tr-points { color: #ffd83c; font-size: 15px; }
+.tr-sec small { font-family: var(--font-body, system-ui); font-size: 12px; color: #d9c49a; font-weight: 600; }
+.tr-sec-gold { color: #ffd83c !important; }
+.tr-sec-silver { color: #e2ecf2 !important; }
+.tr-sec-bronze { color: #f0b27a !important; }
+.tr-badge { display: flex; flex-direction: column; align-items: center; }
+.tr-badge .tr-medal { margin-bottom: 4px; }
+.tr-pg { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 3px; }
+.tr-pgbar { width: 86%; height: 6px; border-radius: 4px; background: rgba(0,0,0,.45); border: 1px solid rgba(255,220,160,.22); overflow: hidden; }
+.tr-pgbar i { display: block; height: 100%; background: linear-gradient(90deg, #f0b04a, #ffd83c); }
+.tr-pg span { font-size: 10px; color: #ffd27a; }
+.tr-pts { margin-top: auto; padding-top: 3px; font-size: 10px; font-weight: 800; letter-spacing: .04em; display: inline-flex; align-items: center; gap: 3px; color: #c9b089; }
+.tr-badge.got .tr-pts { color: #86efac; }
+.tr-plat { display: flex; align-items: center; gap: 14px; margin: 14px 0 4px; padding: 12px 14px; border-radius: 18px; border: 2px solid rgba(190, 230, 225, .35); background: radial-gradient(ellipse at 15% 40%, rgba(170, 235, 220, .16), transparent 60%), linear-gradient(180deg, #3a2210, #24140a); }
+.tr-plat.got { border-color: #c8f3ea; box-shadow: 0 0 18px rgba(170, 240, 225, .3); }
+.tr-plat-t { min-width: 0; }
+.tr-plat-k { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 800; color: #bdeee4; }
+.tr-plat-n { font-family: var(--font-fun, var(--font-heading)); font-size: 20px; color: #f2fffb; line-height: 1.15; }
+.tr-plat .tr-bd { min-height: 0; font-size: 11.5px; color: #f3e3c0; }
+.tr-plat-parts { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.tr-plat-parts li { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #c9b089; }
+.tr-plat-parts li.done { color: #86efac; }
+@media (max-width: 360px) { .tr-grid { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; } .tr-plat { gap: 10px; padding: 10px; } }
+.tr-bt { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+/* short sideways screens: each medal is a row (the medal beside its words), two to four across */
+@media (max-height: 430px) {
+  .tr-grid { grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 6px; }
+  .tr-badge { flex-direction: row; align-items: center; gap: 8px; padding: 6px 8px; text-align: left; }
+  .tr-badge .tr-medal { margin: 0; }
+  .tr-bt { align-items: flex-start; }
+  .tr-bd { min-height: 0; }
+  .tr-pg { align-items: flex-start; }
+  .tr-pgbar { width: 100%; }
+  .tr-pts { margin-top: 2px; padding-top: 0; }
+  .tr-plat { margin-top: 8px; padding: 8px 12px; }
+}
+.tr-painted .tr-emblem { filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.6)); }
+.tr-toast:not(.tr-toast-group) { width: min(92vw, 360px); }
+.tr-toast-p { margin-top: 2px; font-size: 12px; font-weight: 800; color: #86efac; }

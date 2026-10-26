@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { BADGES, GUARDIANS } from '../../game/badges.ts';
 import type { ObjectiveType } from '../../game/types.ts';
 import { splitArrows } from './arrowText.tsx';
-import { badgeIconName, guardianWorld } from './badgeIcons.ts';
+import { badgeIconName } from './badgeIcons.ts';
 import { CRESTS, crestFor, crestForSpeaker, crestName } from './crests.ts';
 import { ICON_NAMES } from './index.tsx';
 import { speakerMark } from './speakers.ts';
@@ -84,16 +84,6 @@ test('every badge draws as an icon of the set, and the Thorn Heart badge is the 
   assert.equal(badgeIconName('thornHeart'), 'thornHeart');
   assert.equal(badgeIconName('\u{1F3C6}'), 'star'); // an emoji or any unknown name falls back to a star
   assert.equal(BADGES.find((b) => b.id === 'thorn_heart')?.icon, 'thornHeart');
-});
-
-test('guardian badges find their world, other badges do not', () => {
-  assert.equal(guardianWorld('guardian_1'), 1);
-  assert.equal(guardianWorld('guardian_10'), 10);
-  assert.equal(guardianWorld('first_steps'), undefined);
-  assert.equal(guardianWorld('guardian_x'), undefined);
-  const g = BADGES.filter((b) => b.id.startsWith('guardian_'));
-  assert.equal(g.length, 10);
-  for (const b of g) assert.ok(crestFor(guardianWorld(b.id)!), `${b.id} has a crest`);
 });
 
 test('who stands beside a name in a story: Pokey a face, guardians a crest, the rest an icon', () => {

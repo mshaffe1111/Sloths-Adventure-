@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { BadgeDef } from '../game/badges.ts';
+import { TIER_NAME, TIER_POINTS, type BadgeDef } from '../game/badges.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
-import { guardianWorld } from './icons/badgeIcons.ts';
 import { useBlinkWatch } from './blinkWatch.ts';
 
 /**
- * "New badge!" slides in over whatever screen is showing, then goes away by itself.
- * One or two badges come one after the other; a bigger haul arrives together as a single card.
+ * "New medal!" slides in over whatever screen is showing, then goes away by itself, with the medal's tier and points.
+ * One or two medals come one after the other; a bigger haul arrives together as a single card with the points it is worth.
  */
 export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = ({ badges, onDone }) => {
   const [i, setI] = useState(0);
@@ -33,14 +32,16 @@ export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = 
   useBlinkWatch('badge', group ? 'group' : badges[i]?.id);
   if (group) {
     const names = badges.slice(0, 3).map((b) => b.name).join(', ');
+    const pts = badges.reduce((a, b) => a + TIER_POINTS[b.tier], 0);
     return (
       <div className="tr-toast tr-toast-group" key="group" role="status" aria-live="polite">
         <div className="tr-toast-medals">
           {badges.slice(0, 6).map((b) => (
-            <BadgeMedal key={b.id} icon={b.icon} tier={b.tier} earned size={36} world={guardianWorld(b.id)} />
+            <BadgeMedal key={b.id} badge={b} earned size={44} />
           ))}
         </div>
-        <div className="tr-toast-k">{badges.length} new badges!</div>
+        <div className="tr-toast-k">{badges.length} new medals!</div>
+        <div className="tr-toast-p">+{pts} points</div>
         <div className="tr-toast-d">
           {names}
           {badges.length > 3 ? ` and ${badges.length - 3} more` : ''}
@@ -52,11 +53,12 @@ export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = 
   if (!b) return null;
   return (
     <div className="tr-toast" key={b.id} role="status" aria-live="polite">
-      <BadgeMedal icon={b.icon} tier={b.tier} earned size={44} world={guardianWorld(b.id)} />
+      <BadgeMedal badge={b} earned size={60} />
       <div>
-        <div className="tr-toast-k">New badge!</div>
+        <div className="tr-toast-k">New {TIER_NAME[b.tier].toLowerCase()} medal!</div>
         <div className="tr-toast-n">{b.name}</div>
         <div className="tr-toast-d">{b.desc}</div>
+        <div className="tr-toast-p">+{TIER_POINTS[b.tier]} points</div>
       </div>
     </div>
   );
