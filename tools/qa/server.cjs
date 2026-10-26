@@ -262,6 +262,10 @@ async function handle(cmd) {
     const s1 = await read();
     return { text: JSON.stringify({ start: s0, end: s1, rise: s0.y - minY, sawDoubleJump: dj }) };
   }
+  if (cmd.cmd === 'eval') {
+    // QA lead only, never in a tester brief: read the game's state to check what a tester reported (the World 4 session's rig has the same)
+    return { text: JSON.stringify(await page.evaluate(cmd.text)) };
+  }
   if (cmd.cmd === 'jumptrace') {
     // QA lead only: every time something presses jump, where it came from (installed once; each call returns and clears the list)
     const out = await page.evaluate(() => {

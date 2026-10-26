@@ -30,6 +30,7 @@ const body =
   : cmd === 'persona' ? { cmd, name: rest[0], level: rest[1] }
   : cmd === 'probe' ? { cmd, ms: rest[0] }
   : cmd === 'beta' ? { cmd, on: rest[0] }
+  : cmd === 'eval' ? { cmd, text: rest.join(' ') }
   : { cmd };
 const req = http.request({ host: '127.0.0.1', port: Number(port), method: 'POST', path: '/' }, (res) => {
   let s = '';
