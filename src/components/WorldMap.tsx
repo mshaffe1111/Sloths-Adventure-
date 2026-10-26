@@ -23,6 +23,8 @@ interface WorldMapProps {
   resumeId?: string;
   onSaveLoaded: () => void;
   onOpenTrophies?: () => void;
+  /** the card has rested on a stage that can be played: its picture sheets can be got ready (stagePreload.ts) */
+  onPick?: (level: LevelConfig) => void;
 }
 
 const fmtTime = (s: number) => (s > 0 ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}` : '—');
@@ -84,6 +86,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   resumeId,
   onSaveLoaded,
   onOpenTrophies,
+  onPick,
 }) => {
   const [activeWorldId, setActiveWorldId] = useState<number>(selectedWorldId);
   const [saveOpen, setSaveOpen] = useState(false);
@@ -117,6 +120,14 @@ export const WorldMap: React.FC<WorldMapProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWorldId]);
   const picked = worldLevels.find((l) => l.id === pickId) ?? worldLevels[0];
+  // once the card has stayed on a playable stage for a moment (not while flicking through worlds), get that stage's sheets ready
+  const pickedOpen = !!picked && (picked.unlocked || picked.miniIndex === 1);
+  useEffect(() => {
+    if (!picked || !pickedOpen || !onPick) return;
+    const t = window.setTimeout(() => onPick(picked), 450);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [picked?.id, pickedOpen]);
 
   // paint the little world pictures one by one, this world first
   useEffect(() => {

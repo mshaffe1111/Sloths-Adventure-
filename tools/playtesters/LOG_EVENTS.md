@@ -14,8 +14,8 @@ The data cell starts with `gz64:` (gzip, then base64) or `raw:` (plain). Decoded
 | `['d', t, finger, x, y, size]` | finger down (screen px, touch size) |
 | `['m', t, finger, x, y]` | finger moved 2 px or more |
 | `['u', t, finger, x, y]` / `['c', t, finger]` | lifted / cancelled by the system |
-| `['i', t, intent, arg?]` | what the touch rules decided (move, duck, jump, jumpUp, punch, kick, mega) |
-| `['p', t, x, y, vx, vy, state]` | Pokey: `g` ground, `a` air, `c` climb, `s` swing, `h` hang, `k` duck, then `:move` and `/LRUD` held |
+| `['i', t, intent, arg?]` | what the touch rules decided (move, duck, jump, jumpUp, punch, kick, mega); in Dot's flight also `flap`, `flap empty`, `hover tap`, `hover hold` (see below) |
+| `['p', t, x, y, vx, vy, state]` | Pokey: `g` ground, `a` air, `c` climb, `s` swing, `h` hang, `k` duck, then `:move` and `/LRUD` held. **In Dot's flight (4-D) this is Dot**: a state starting with `d` (see below) |
 | `['e', t, name, detail?]` | **an event**: everything below |
 
 `t` is ms since the tester pressed Start. Pokey's `x` / `y` are world px; the level starts at x 0 and y grows downward.
@@ -65,7 +65,7 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 |---|---|---|
 | `fps` | `<n>fps p90 <ms>ms max <ms>ms q<quality> <w>x<h> slow <count> sd <ms>ms [lt <count>] \| <sound>` | Every 5 s of play. `fps`: should be about 30 (the game is locked at 30 on purpose). `p90`: 9 frames in 10 were at least this quick. `max`: the worst frame. `slow`: frames over 50 ms (a missed beat). `sd`: the spread of frame times. About 0 to 3 ms is even pacing; over 8 ms is uneven, a stutter, even when `fps` looks fine. `lt`: long tasks of 50 ms or more in the window (Chrome and Android only). After the `\|` comes the sound engine's own line. |
 | `mem` | `[<used>/<total>MB] parts <n> foes <n> items <n>` | Every 5 s. Memory is JavaScript heap in MB (Chrome and Android only), then live particles, enemies and pickups. A steady climb means a leak. |
-| `sheet` | `<file> <ms>ms` | A picture sheet finished loading and decoding, and how long that took. |
+| `sheet` | `<file> <ms>ms` | A picture sheet finished loading and decoding, and how long that took. From builds after 2026-10-26 a stage's own sheets are loaded, decoded and drawn once before it starts (behind the world map, the stage-cleared card, a story or a boss intro, `src/game/stagePreload.ts`), so their `sheet` lines usually come before the stage begins, not in its first seconds. |
 
 ### Flicker (likely causes; the game can't see pixels)
 
@@ -101,6 +101,38 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `survey` | the tester's answers (JSON) |
 | `playAgain` / `quit` | the tester's choice at the end |
 | `capped` | `<name>`: that glitch event reached its cap and logs nothing more this session |
+
+## Dot's netting flight (4-D)
+
+From builds after 2026-10-26, while Dot flies her netting stage the `p` lines are **her**, not Pokey (before that they showed Pokey
+parked off stage, and there were no sections, checkpoints or finish). Her `x` / `y` are world px of her stage (y grows downward; the
+netting overhead is near y 70 and the mist below at y 925). `src/game/dotRecord.ts`.
+
+| State | Meaning |
+|---|---|
+| `df` | rising on a flap |
+| `dh` | hovering (a tap's buzz, or the thumb kept down after a flap) |
+| `ds` | sinking or cruising (wings out, no hover) |
+| `dd` | drinking at a flower |
+| `dt` | tired: out of nectar, she can't flap or hover, only sink and steer |
+| `dw` | waiting: hanging still at the start, or after being brought back, until the player moves |
+| `dg` | through the folded-letter gap (the stage is over) |
+
+Then `/L` or `/R` when the thumb is steering.
+
+| Name | Detail |
+|---|---|
+| `section` | the beat she entered (`Learn: flap`, `Develop: iron thorns`, `Twist: the downdraft`, `Finish: the folded-letter gap`, …), with the same 40 px / 0.5 s hysteresis as Pokey's |
+| `checkpoint` | `<x> f<id> drink`: her first drink at that flower (it is her checkpoint now); `<x> f<id> pass`: she flew on past it, which also makes it her checkpoint; `<x> f<id> respawn` (or `<x> start respawn`): brought back there after a lost life or the mist |
+| `scratch` | `<scratches so far> x<x>`: an iron thorn. The `hurt` line (hearts left) follows as usual |
+| `mist` | `x<x>`: she fell into the mist (a heart, and back to her checkpoint) |
+| `nectar` | `<0..100> flaps <in hand>`: her nectar, every 5 s (the wings hold 3 flaps; a fraction is one on its way back) |
+| `empty` | `x<x>`: her nectar ran out |
+| `silk` | `<found>/<all>`: a piece of spider silk |
+| `gap` | `x<x>`: the slow squeeze at the folded-letter gap began |
+| `finish` | through the gap (game time, s) |
+| `i flap` / `i flap empty` | a flap she made / a flap asked for with no nectar left |
+| `i hover tap` / `i hover hold` | a tap's hover buzz / the thumb kept down after a flap took over as a hover (once each time) |
 
 ## Reading a glitch report: quick map
 
