@@ -10,3 +10,12 @@
 - Hearts drain in ones and twos from things low in the grass that are hard to pick out; when health is low, slow down and punch ahead.
 - Collect-type stages (flowers, animals) need you to look around, not just run right: running straight to the end leaves you short and Dot tells you how many are left.
 - Budget pictures: you get about 40 per run; spend them on stuck spots, not on running.
+
+## 2026-10-26, later run (World 5 again, upright, session 8)
+- Always `lift` before a `flick up-right`. If your thumb is still steering, the hop often gets eaten and you stand at the foot of a one-step ledge for ages. Lift, flick up-right, short steer 300, lift: that pops you up nearly every time.
+- `flickhold up` from a standstill only crouches; Pokey doesn't leave the ground. Give it a run-in or do it with your thumb already moving.
+- Getting onto a closing orchid is tight: it's shut before a standing hop lands. Run in and hop while moving, not from under it.
+- On silk you can end up at the very top of a slanted line. `flick up-right` gets you off; holding up again re-grabs, so don't hold-flick right after letting go.
+- If hearts drop and you saw nothing, a spider is behind you. Kick back (`flick left`) and punch every couple of steps; the "!" shows up right at the screen edge, so it's easy to miss.
+- Animal and flower stages don't fill up just from running right and punching. The things to collect sit up high, so plan to climb, and spend your pictures there.
+- Meeca's stage starts on a "Tap to begin" card, and none of the screen words show it. Tap first. Her thoughts don't come through as words, so spend pictures there early.
