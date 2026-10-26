@@ -9,6 +9,8 @@
 import { controlStyle } from './controlPrefs.ts';
 import type { GlyphKind } from '../components/GestureGlyph.tsx';
 import { ctestEnabled } from './playRecorder.ts';
+import type { GuideLine, TopicId } from './dotGuide.ts';
+import { dotLine, gestureMove, targetTopic } from './dotLines.ts';
 
 export type LessonId =
   | 'foe' | 'nostomp' | 'eagle' | 'tough'
@@ -386,4 +388,63 @@ export function cardSafe(s: CardSafety): boolean {
   if (s.hurt || !(s.grounded || s.holding)) return false;
   if (Math.abs(s.foeDx) < CARD_SAFE.foeDx && Math.abs(s.foeDy) < CARD_SAFE.foeDy) return false;
   return s.hazard >= CARD_SAFE.hazard;
+}
+
+// ───────────────────────────── the new look: a lesson is one of Dot's lines ─────────────────────────────
+
+/**
+ * With the new look (newLook.ts) a lesson does not stop the stage for a card: it becomes Dot's lines, said where they are needed, with her
+ * ring on the thing (dotGuide.ts). The words are Matt's approved lines (dotLines.ts, by id); a move lesson stays until the move is done,
+ * and the next line of the lesson follows it (grab the vine, then leap off it). The fuller wording stays in Pokey's Journal. The approved
+ * lines are for a touch screen; a pad or a keyboard gets a short line of its own.
+ */
+export const LESSON_DOT: Record<LessonId, { ids: string[]; topic: TopicId; pad?: string; keys?: string }> = {
+  foe: { ids: ['lesson.foe.punch'], topic: 'foe', pad: 'Press Punch when it\'s close.', keys: 'Press J to punch it when it\'s close.' },
+  nostomp: { ids: ['lesson.nostomp'], topic: 'foe', pad: 'Punch this one. Don\'t stomp it.', keys: 'Press J. Don\'t stomp this one.' },
+  eagle: { ids: ['lesson.eagle.duck'], topic: 'foe', pad: 'Pad down to duck its dive.', keys: 'Press S to duck its dive.' },
+  tough: { ids: ['lesson.tough'], topic: 'foe' },
+  gap: { ids: ['lesson.gap.jump'], topic: 'gap', pad: 'Push the pad, then Jump.', keys: 'Run, then Space to jump the gap.' },
+  climb: { ids: ['lesson.climb.grab', 'lesson.climb.up'], topic: 'trunk', pad: 'Jump at the trunk, hold Pad up.', keys: 'Jump at the trunk, hold W.' },
+  swing: { ids: ['lesson.swing.grab', 'lesson.swing.leap'], topic: 'vine', pad: 'Jump into the vine to grab it.', keys: 'Jump into the vine to grab it.' },
+  rope: { ids: ['lesson.rope.grab', 'lesson.rope.creep'], topic: 'rope', pad: 'Jump by the post to grab on.', keys: 'Jump by the post to grab on.' },
+  bounce: { ids: ['lesson.bounce'], topic: 'mushroom' },
+  crumble: { ids: ['lesson.crumble'], topic: 'crumble' },
+  moving: { ids: ['lesson.moving'], topic: 'moving' },
+  water: { ids: ['lesson.water'], topic: 'gap' },
+  fruit: { ids: ['lesson.fruit'], topic: 'petal' },
+  heart: { ids: ['lesson.heart'], topic: 'heart' },
+  cage: { ids: ['lesson.cage'], topic: 'cage', pad: 'Press Punch beside the cage.', keys: 'Press J beside the cage.' },
+  idol: { ids: ['lesson.idol'], topic: 'relic' },
+  power: { ids: ['lesson.power'], topic: 'power' },
+  checkpoint: { ids: ['lesson.checkpoint'], topic: 'flag' },
+  shrine: { ids: ['lesson.shrine'], topic: 'exit' },
+};
+
+/** one approved line as a guide line (a move line stays until its move; `next`: what follows it once done) */
+function lessonStep(lesson: LessonId, ids: string[], i: number, mode: InputMode): GuideLine | undefined {
+  const d = LESSON_DOT[lesson];
+  const l = dotLine(ids[i]);
+  if (!l || !l.text) return i + 1 < ids.length ? lessonStep(lesson, ids, i + 1, mode) : undefined;
+  const topic = targetTopic(l.target) ?? d.topic;
+  // (the first line of a lesson on a pad or keyboard: its own words, and nothing after it; the approved lines name touch gestures)
+  const own = mode === 'pad' ? d.pad : mode === 'keys' ? d.keys : undefined;
+  const move = l.kind === 'move' ? (/\.leap$/.test(l.id) ? 'leap' : gestureMove(l.gesture, topic)) : undefined;
+  return {
+    key: `lesson:${lesson}:${i}`,
+    text: mode !== 'screen' && i === 0 ? own ?? l.text : l.text,
+    kind: l.kind === 'move' ? 'teach' : 'info',
+    who: 'Dot',
+    move,
+    topic: i === 0 ? d.topic : topic,
+    gesture: l.gesture ?? undefined,
+    skill: `lesson:${lesson}${i ? `:${i}` : ''}`,
+    source: 'lesson',
+    waitMs: 9000,
+    next: mode === 'screen' && i + 1 < ids.length ? lessonStep(lesson, ids, i + 1, mode) : undefined,
+  };
+}
+
+/** the lesson as Dot's line(s), for the way this player is controlling the game */
+export function lessonDotLine(id: LessonId, mode: InputMode = lessonInputMode()): GuideLine | undefined {
+  return lessonStep(id, LESSON_DOT[id].ids, 0, mode);
 }

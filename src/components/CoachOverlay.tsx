@@ -3,12 +3,13 @@ import type { CoachStep } from '../game/touchCoach.ts';
 import type { ControlStyle } from '../game/controlPrefs.ts';
 import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
 import { useBlinkWatch } from './blinkWatch.ts';
+import { stageNewLook } from '../game/dotGuide.ts';
 
 /**
  * The first-stage lesson, drawn over the game (see game/touchCoach.ts for when each step shows). It takes no touches, so nothing it covers stops
  * working: the player does the move it shows, and it moves on by itself.
  */
-const TEXT: Record<ControlStyle, Record<Exclude<CoachStep, null>, { title: string; sub: string; glyph: GlyphKind }>> = {
+export const COACH_TEXT: Record<ControlStyle, Record<Exclude<CoachStep, null>, { title: string; sub: string; glyph: GlyphKind }>> = {
   screen: {
     run: { title: 'Touch anywhere and slide to run', sub: 'You do not have to touch Pokey. Put your thumb down anywhere on the screen and slide sideways. Slide the other way to turn around.', glyph: 'run' },
     jump: { title: 'Slide up and across to jump', sub: 'Keep running and slide your thumb up and forward in one quick move.', glyph: 'jump' },
@@ -23,8 +24,9 @@ const TEXT: Record<ControlStyle, Record<Exclude<CoachStep, null>, { title: strin
 
 export const CoachOverlay: React.FC<{ step: CoachStep; style: ControlStyle }> = ({ step, style }) => {
   useBlinkWatch('coach', step);
-  if (!step) return null;
-  const t = TEXT[style][step];
+  // the new look: Dot says the coach's steps herself, hovering beside Pokey (components/dot/DotGuide.tsx)
+  if (!step || stageNewLook()) return null;
+  const t = COACH_TEXT[style][step];
   return (
     <div className={`coach coach-${step}`} aria-live="polite">
       <div className="coach-card">

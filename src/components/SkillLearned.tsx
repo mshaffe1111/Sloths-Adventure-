@@ -4,6 +4,45 @@ import type { SkillDef } from '../game/skills.ts';
 import { HeroPose } from './HeroPose.tsx';
 import { SkillIcon } from './SkillIcon.tsx';
 import { arrowText } from './icons/arrowText.tsx';
+import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
+import { lessonInputMode, type InputMode } from '../game/lessons.ts';
+import type { SkillId } from '../game/skills.ts';
+import { stageNewLook } from '../game/dotGuide.ts';
+import { dotText } from '../game/dotLines.ts';
+
+/**
+ * The controls the card shows, for the way this player is controlling the game. The skill's own list (skills.ts) names buttons and arrow
+ * keys, which is right for a pad or a keyboard but showed key caps on a touch phone (inventory, 2026-10-26): a touch screen gets the thumb
+ * gestures instead, each with its gesture picture.
+ */
+const TOUCH: Record<SkillId, { blurb: string; controls: Array<[GlyphKind, string, string]> }> = {
+  shimmy: {
+    blurb: 'Grab a rope and creep across, hand over hand. Ropes stretch over gaps you could never cross before.',
+    controls: [
+      ['up', 'Flick up', 'into a rope to grab it'],
+      ['run', 'Slide \u2190 \u2192', 'to shimmy along it'],
+      ['down', 'Slide down', 'to let go'],
+    ],
+  },
+  glide: {
+    blurb: 'Open a big leaf as you fall and drift down slowly, a long way out over the drop. Some drops ahead are too wide to cross without it.',
+    controls: [
+      ['up', 'Flick up', 'then keep your thumb on the glass as you fall'],
+      ['run', 'Slide \u2190 \u2192', 'to steer while you drift'],
+      ['tap', 'Lift your thumb', 'to drop normally'],
+    ],
+  },
+};
+const KEYS: Record<string, string> = { Jump: 'Space', Down: '\u2193' };
+/** the note under the controls: from which stage the skill can be needed */
+const WHERE: Record<SkillId, string> = { shimmy: 'Ropes can show up from stage 1-4.', glide: 'Some drops need it from stage 4-7.' };
+const modeNow = (): InputMode => {
+  try {
+    return lessonInputMode();
+  } catch {
+    return 'screen';
+  }
+};
 
 /** The "NEW SKILL!" card, shown right after the stage that teaches a skill is cleared (before the stage-cleared card). */
 export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }> = ({ skill, onContinue }) => {
@@ -11,6 +50,10 @@ export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }>
     const id = window.setTimeout(() => sound.playStar(3), 250);
     return () => window.clearTimeout(id);
   }, []);
+  const mode = modeNow();
+  const touch = mode === 'screen' ? TOUCH[skill.id] : null;
+  // the new look: Matt's approved lines for the card (words carry the gesture; there is no thumb picture)
+  const fresh = stageNewLook() && mode === 'screen' ? { blurb: dotText(`skill.${skill.id}.blurb`), controls: dotText(`skill.${skill.id}.controls`), note: dotText(`skill.${skill.id}.note`) } : null;
   const heroH = Math.round(Math.max(120, Math.min(250, (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.36)));
 
   return (
@@ -42,9 +85,24 @@ export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }>
               <h3 className="sk-name">{skill.name}</h3>
             </div>
           </div>
-          <p className="sk-blurb">{skill.blurb}</p>
+          <p className="sk-blurb">{fresh?.blurb || touch?.blurb || skill.blurb}</p>
           <div className="sk-controls">
-            {skill.controls.map(([keys, what]) => (
+            {fresh?.controls && (
+              <div className="sk-chip sk-touch">
+                <span>{fresh.controls}</span>
+              </div>
+            )}
+            {!fresh?.controls && touch?.controls.map(([glyph, how, what]) => (
+              <div key={what} className="sk-chip sk-touch">
+                <GestureGlyph kind={glyph} size={44} />
+                <span className="sk-key">{arrowText(how, '1em')}</span>
+                <span>{what}</span>
+              </div>
+            ))}
+            {!fresh?.controls && !touch && skill.controls.map(([keys0, what]) => {
+              // a keyboard names its keys (Space, the arrows); a pad keeps the button names
+              const keys = mode === 'keys' ? keys0.map((k) => KEYS[k] ?? k) : keys0;
+              return (
               <div key={what} className="sk-chip">
                 {keys.map((k, i) => (
                   <React.Fragment key={k}>
@@ -54,12 +112,19 @@ export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }>
                 ))}
                 <span>{what}</span>
               </div>
-            ))}
+              );
+            })}
           </div>
           <div className="clr-clue sk-note">
             <div>
               <p>
-                <b>It is yours for the rest of the game.</b> Ropes can show up from stage 1-4.
+                {fresh?.note ? (
+                  <b>{fresh.note}</b>
+                ) : (
+                  <>
+                    <b>It is yours for the rest of the game.</b> {WHERE[skill.id] ?? ''}
+                  </>
+                )}
               </p>
             </div>
           </div>
