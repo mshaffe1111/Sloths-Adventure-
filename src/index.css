@@ -685,6 +685,13 @@
 .clr-card.lost { grid-template-columns: 256px minmax(0, 1fr); }
 @media (max-width: 640px) and (min-height: 521px) { .clr-card.lost { grid-template-columns: 1fr; gap: 8px; } .clr-card.lost .clr-hero { display: flex; margin-top: -4px; } .clr-sec:not(.one) .clr-btn2 { flex-direction: column; gap: 2px; font-size: 13px; line-height: 1.1; padding: 6px 4px; } }
 @media (max-height: 520px) { .clr-card.lost { grid-template-columns: 150px minmax(0, 1fr); } }
+/* the Continue button: one line where it fits; on a narrow screen "Continue" over a smaller "from checkpoint", the flag beside both */
+.clr-go { white-space: nowrap; }
+.clr-go svg { flex: none; }
+@media (max-width: 520px) {
+  .clr-go-t { display: flex; flex-direction: column; align-items: center; line-height: 1.02; }
+  .clr-go-s { font-size: 0.66em; }
+}
 
 /* ---------- Skills: the new-skill card and the pause menu's Skills row (approved mockups 5 and 6) ---------- */
 .sk-card { max-width: 780px; }

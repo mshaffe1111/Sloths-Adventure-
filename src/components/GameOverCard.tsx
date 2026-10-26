@@ -28,14 +28,15 @@ interface GameOverCardProps {
 
 /** Out of lives: the same card family as Stage Cleared, in dusk colours, with Pokey having a lie-down and a kind word. */
 export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, stats, onRetry, onContinue, onOpenMap, fails = 0, onTakeHelp }) => {
+  const offerHelp = !!onTakeHelp && shouldOfferHelp(fails);
   const heroW = typeof window === 'undefined' ? 240 : window.innerHeight <= 520 ? 130 : Math.min(240, window.innerWidth - 120);
-  const heroH = Math.round(Math.max(90, Math.min(170, (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.24)));
+  // with the extra-lives offer on the card, Pokey lies down smaller so the card still fits an upright phone (it ran off a 400 x 720 one)
+  const heroH = Math.round(Math.max(offerHelp ? 64 : 90, Math.min(170, (typeof window !== 'undefined' ? window.innerHeight : 700) * (offerHelp ? 0.14 : 0.24))));
   const chips: ChipSpec[] = [{ label: 'Score', value: score.toLocaleString(), colour: '#fde68a' }];
   if (stats && stats.timeSec > 0) chips.push({ label: 'Time', value: fmtTime(stats.timeSec) });
   if (stats && stats.floraTotal > 0) chips.push({ label: 'Flowers', value: `${stats.floraCollected}/${stats.floraTotal}` });
   if (stats && totalKills(stats) > 0) chips.push({ label: 'Foes', value: String(totalKills(stats)) });
 
-  const offerHelp = !!onTakeHelp && shouldOfferHelp(fails);
 
   return (
     <div className="clr-scrim lost select-none">
@@ -67,8 +68,11 @@ export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, 
             </div>
           )}
 
-          <button type="button" className="pm-go" data-start="true" onClick={onContinue}>
-            Continue from checkpoint
+          <button type="button" className="pm-go clr-go" data-start="true" onClick={onContinue}>
+            {/* on a narrow screen the words stack on purpose ("Continue" over "from checkpoint") rather than wrap anyhow beside the flag */}
+            <span className="clr-go-t">
+              Continue <span className="clr-go-s">from checkpoint</span>
+            </span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#022c22" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M5 4v16" />
               <path d="M5 5h12l-3 4 3 4H5" />

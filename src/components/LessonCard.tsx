@@ -19,9 +19,10 @@ export const LessonCard: React.FC<{ id: LessonId; onClose: () => void }> = ({ id
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.code === 'Enter' || e.code === 'Space' || e.code === 'Escape') {
-        // the stage is waiting on this card: neither the menu nor a jump should hear the key
+        // the stage is waiting on this card: neither the menu nor a jump should hear the key (the game's own key listener is on the
+        // same window, so only stopImmediatePropagation keeps it from seeing the press)
         e.preventDefault();
-        e.stopPropagation();
+        e.stopImmediatePropagation();
         if (ready) onClose();
       }
     };
@@ -55,7 +56,24 @@ export const LessonCard: React.FC<{ id: LessonId; onClose: () => void }> = ({ id
           ))}
         </div>
         <div className="ui-row lc-foot">
-          <button type="button" className="ui-btn ui-btn-gold" onClick={onClose} disabled={!ready} data-start="true">
+          {/* closes on the finger's lift as well as the click: a phone makes no click for a tap while another thumb is still on the glass
+              (the steering thumb, held while the card is read), so "Got it!" did nothing for a two-thumb player */}
+          <button
+            type="button"
+            className="ui-btn ui-btn-gold"
+            onClick={onClose}
+            onTouchEnd={(e) => {
+              if (!ready) return;
+              // (only a lift on the button: a finger that slid off it is not a press)
+              const t = e.changedTouches[0];
+              const r = e.currentTarget.getBoundingClientRect();
+              if (t && (t.clientX < r.left || t.clientX > r.right || t.clientY < r.top || t.clientY > r.bottom)) return;
+              e.preventDefault(); // (and no click after it: it would close the next card too)
+              onClose();
+            }}
+            disabled={!ready}
+            data-start="true"
+          >
             Got it!
           </button>
         </div>

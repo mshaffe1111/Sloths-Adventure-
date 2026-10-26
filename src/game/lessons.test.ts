@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { LESSONS, pickLesson, type LessonId, type LessonScene } from './lessons.ts';
+import { CARD_SAFE, LESSONS, cardSafe, pickLesson, type CardSafety, type LessonId, type LessonScene } from './lessons.ts';
 import { isSaveKey } from './saveFile.ts';
 
 const none: ReadonlySet<LessonId> = new Set();
@@ -71,7 +71,9 @@ test('pick-ups and the exit: one lesson each, the cage before the fruit beside i
   assert.equal(pickLesson(scene({ collectibles: [{ type: 'fruit', x: 1150, y: 480, collected: true }] }), none), null, 'already taken');
   const both = scene({ collectibles: [{ type: 'fruit', x: 1100, y: 480, collected: false }, { type: 'cage', x: 1200, y: 480, collected: false }] });
   assert.equal(pickLesson(both, none), 'cage');
-  assert.equal(pickLesson(scene({ checkpoints: [{ x: 1200, y: 500 }] }), none), 'checkpoint');
+  // the checkpoint card comes on the flag, once he has run past it, not 340 px before it (it used to open mid-climb on a ladder)
+  assert.equal(pickLesson(scene({ checkpoints: [{ x: 1200, y: 500 }] }), none), null, 'not on the way to the flag');
+  assert.equal(pickLesson(scene({ checkpoints: [{ x: 1040, y: 500, reached: true }] }), none), 'checkpoint');
 });
 
 test('every lesson has words for all three kinds of controls, and what has been shown stays on the device', () => {
@@ -82,4 +84,24 @@ test('every lesson has words for all three kinds of controls, and what has been 
   assert.ok(!isSaveKey('sloth_lessons'), 'a New Game must not bring the lessons back');
   assert.ok(!isSaveKey('sloth_coach_done'));
   assert.ok(!isSaveKey('sloth_hint_v3'));
+});
+
+test('a card only opens when stopping cannot hurt him: standing or holding on, not hurt, no foe at hand, nothing falling', () => {
+  const ok: CardSafety = { grounded: true, holding: false, hurt: false, foeDx: Infinity, foeDy: Infinity, hazard: Infinity };
+  assert.equal(cardSafe(ok), true, 'standing still in the open');
+  assert.equal(cardSafe({ ...ok, grounded: false, holding: true }), true, 'holding a trunk, a ladder or a rope');
+  // the play-testers' cases (2026-10-25): mid-glide or mid-jump, mid-vault off a ladder, a snake already touching him, just hit
+  assert.equal(cardSafe({ ...ok, grounded: false }), false, 'in the air');
+  assert.equal(cardSafe({ ...ok, foeDx: 40, foeDy: 0 }), false, 'a snake at his feet');
+  assert.equal(cardSafe({ ...ok, foeDx: -CARD_SAFE.foeDx + 10, foeDy: 20 }), false, 'a foe just behind him');
+  assert.equal(cardSafe({ ...ok, foeDx: 60, foeDy: 400 }), true, 'a foe on a ledge far below is not at hand');
+  assert.equal(cardSafe({ ...ok, foeDx: 400, foeDy: 0 }), true, 'a foe far ahead: the foe card itself can open');
+  assert.equal(cardSafe({ ...ok, hurt: true }), false, 'still blinking from a hit');
+  assert.equal(cardSafe({ ...ok, hazard: 0 }), false, 'a rock coming down, or a branch crumbling under him');
+});
+
+test('the heart card says what really happens: a heart is for when you are hurt', () => {
+  const h = LESSONS.heart;
+  assert.ok(/hurt/i.test(h.intro) && /full health/i.test(h.intro), h.intro);
+  assert.ok(!h.lines.screen.some((l) => /just touch it/i.test(l.how)), 'not "Just touch it": at full health it cannot be picked up');
 });

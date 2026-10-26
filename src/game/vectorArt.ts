@@ -5,7 +5,7 @@ import { drawMilo } from './miloVariants.ts';
 import { drawHeroSprite } from './heroSprite.ts';
 import { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity } from './creatures.ts';
 import { drawBloom, type Bloom } from './flora.ts';
-import { drawFlowerSprite } from './flowerSprites.ts';
+import { drawFlowerSprite, flowersPainted } from './flowerSprites.ts';
 import { drawPickup } from './pickupSprites.ts';
 import { isPetalStage, relicArt } from './stagePlan.ts';
 import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
@@ -1057,6 +1057,29 @@ function fillGlow(ctx: CanvasRenderingContext2D, key: string, cx: number, cy: nu
   ctx.drawImage(cv, cx - r1, cy - r1, 2 * r1, 2 * r1);
 }
 
+/** the classic (vector) blooms a flower pickup is drawn as when the painted flowers are off, by its id */
+const CLASSIC_BLOOMS: Array<[Bloom, string, string]> = [
+  ['hibiscus', '#f2455e', '#ffd23a'],
+  ['orchid', '#f07ad8', '#ffe26a'],
+  ['plumeria', '#fff4e8', '#ffb43a'],
+  ['passion', '#b46aff', '#ffffff'],
+  ['hibiscus', '#ff8a2a', '#ffe26a'],
+  ['daisy', '#ffe66a', '#ff8a2a'],
+];
+const BLOOM_NAMES: Partial<Record<Bloom, string>> = { hibiscus: 'HIBISCUS', orchid: 'ORCHID', plumeria: 'PLUMERIA', passion: 'PASSION FLOWER', daisy: 'DAISY' };
+
+/**
+ * the name the score pop-up gives a pickup: what is actually drawn. (It used to read the pickup's botanicalVariant, which the drawing
+ * never used, so a purple orchid said "+100 HIBISCUS!".) The painted flowers have no names on file, so they are just a flower.
+ */
+export function pickupName(item: Pick<Collectible, 'type' | 'id'>, world: number, mini: number): string {
+  if (item.type === 'leaf') return 'LEAF';
+  // (a 'fruit' pickup is drawn as one of the classic blooms too)
+  if (item.type === 'flower' && isPetalStage(world, mini)) return 'PETAL';
+  if (item.type === 'flower' && flowersPainted()) return 'FLOWER';
+  return BLOOM_NAMES[CLASSIC_BLOOMS[Math.abs(item.id) % CLASSIC_BLOOMS.length][0]] ?? 'FLOWER';
+}
+
 export function drawCollectible(
   ctx: CanvasRenderingContext2D,
   item: Collectible,
@@ -1104,15 +1127,7 @@ export function drawCollectible(
       // World 1's harvests gather Meeca's petals (stagePlan.ts)
       if (item.type === 'flower' && isPetalStage(world, mini) && drawPickup(ctx, 'petal', 27, -0.3 + Math.sin(time * 2 + item.bobPhase) * 0.12)) break;
       if (item.type === 'flower' && drawFlowerSprite(ctx, world, mini, item.id, Math.sin(time * 2 + item.bobPhase) * 0.07)) break;
-      const species: Array<[Bloom, string, string]> = [
-        ['hibiscus', '#f2455e', '#ffd23a'],
-        ['orchid', '#f07ad8', '#ffe26a'],
-        ['plumeria', '#fff4e8', '#ffb43a'],
-        ['passion', '#b46aff', '#ffffff'],
-        ['hibiscus', '#ff8a2a', '#ffe26a'],
-        ['daisy', '#ffe66a', '#ff8a2a'],
-      ];
-      const [kind, c1, c2] = species[Math.abs(item.id) % species.length];
+      const [kind, c1, c2] = CLASSIC_BLOOMS[Math.abs(item.id) % CLASSIC_BLOOMS.length];
       drawBloom(ctx, kind, 0, 0, 13, c1, c2, Math.sin(time * 2) * 0.12, rng(item.id * 17 + 3));
       break;
     }

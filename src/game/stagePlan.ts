@@ -157,6 +157,35 @@ export function relicArt(world: number, k: number): string | null {
   }
 }
 
+/**
+ * Dot's goal lines, said in words that fit the goal and the number (Matt's 2-3 said "Free 3 animals freed to open the sanctuary"):
+ *  'start'  "Free 3 animals to open the sanctuary"
+ *  'late'   "Still 2 animals to free before the sanctuary opens"
+ *  'sealed' "Sealed: free 2 more animals to open it"
+ * Empty for a stage with no count to reach.
+ */
+export function goalLine(kind: 'start' | 'late' | 'sealed', world: number, type: string, n: number): string {
+  const g = GOAL_WORDS(world, type);
+  if (!g) return '';
+  const noun = n === 1 ? g.one : g.many;
+  if (kind === 'start') return `${g.verb} ${n} ${noun} to open the sanctuary`;
+  if (kind === 'late') return `Still ${n} ${noun} to ${g.verb.toLowerCase()} before the sanctuary opens`;
+  return `Sealed: ${g.verb.toLowerCase()} ${n} more ${noun} to open it`;
+}
+function GOAL_WORDS(world: number, type: string): { verb: string; one: string; many: string } | null {
+  if (type === 'harvest') {
+    const [one, many] = world === 1 ? ['petal', 'petals'] : world === 8 ? ['night bloom', 'night blooms'] : ['flower', 'flowers'];
+    return { verb: 'Collect', one, many };
+  }
+  if (type === 'relic_hunt') {
+    const w = ({ 3: ['keepsake', 'keepsakes'], 5: ['message', 'messages'], 9: ['thread', 'threads'] } as Record<number, string[]>)[world] ?? ['relic', 'relics'];
+    return { verb: 'Find', one: w[0], many: w[1] };
+  }
+  if (type === 'purge' || type === 'gauntlet') return { verb: 'Defeat', one: 'predator', many: 'predators' };
+  if (type === 'rescue') return { verb: 'Free', one: 'animal', many: 'animals' };
+  return null;
+}
+
 /** the word the HUD counts in: what this world's harvest gathers and its searches find */
 export function countWord(world: number, type: string): string {
   if (type === 'harvest') return world === 1 ? 'petals' : world === 8 ? 'night blooms' : 'flowers';

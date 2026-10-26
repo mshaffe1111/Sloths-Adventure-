@@ -442,6 +442,27 @@ export function timedLaunch(s: SwingState, dir: -1 | 1): { vx: number; vy: numbe
   return { vx: Math.max(-300, Math.min(300, vx * 0.6)), vy: Math.max(vy * 0.6, -260) - 120, sweet: false };
 }
 
+/**
+ * Forgiveness for letting go (2026-10-25). Testers let go at the FORWARD END of the swing, the natural moment, which is just past the
+ * sweet spot: they dropped almost straight down, or kept swinging. So:
+ *  - `late`: a press up to this long after the sweet spot ended, while he is still well out in front, is the leap the sweet spot gave;
+ *  - `early`: a press while he swings forward but has not reached it yet waits (this long at most) and leaps when he gets there.
+ */
+export const RELEASE = { late: 0.36, early: 0.32, lateFrom: 0.3, earlyFrom: -0.7 };
+
+/**
+ * what a press to let go toward `dir` does now: 'sweet' (leap), 'late' (leap as from the sweet spot just passed), 'early' (hold the press
+ * until the sweet spot) or 'now' (let go as he is: a hop off the way the vine carries him). `sinceSweet` is how long ago the swing was
+ * last in its sweet spot for `dir` (Infinity if not this swing).
+ */
+export function releaseCall(s: SwingState, dir: -1 | 1, sinceSweet: number): 'sweet' | 'late' | 'early' | 'now' {
+  if (inSweetSpot(s, dir)) return 'sweet';
+  const a = s.angle * dir;
+  if (sinceSweet <= RELEASE.late && a >= RELEASE.lateFrom) return 'late';
+  if (Math.sign(s.omega) === dir && a >= RELEASE.earlyFrom && a < TIMED.sweetFrom) return 'early';
+  return 'now';
+}
+
 /** Velocity after letting go with a jump ("Tarzan leap"). */
 export function tarzanLaunch(vx: number, vy: number, dir: -1 | 1) {
   const speed = Math.max(SWING.leapMin, Math.min(SWING.leapMax, Math.abs(vx) * 1.15 + 120));
@@ -449,4 +470,10 @@ export function tarzanLaunch(vx: number, vy: number, dir: -1 | 1) {
     vx: dir * speed,
     vy: Math.max(SWING.leapVyMin, Math.min(-PHYS.vineReleaseV, vy - 300)),
   };
+}
+
+/** which way a hit knocks him: away from where it came from (`fromX`), or back the way he faces when that is not known */
+export function knockDir(px: number, facing: -1 | 1, fromX?: number): -1 | 1 {
+  if (fromX === undefined || !Number.isFinite(fromX) || Math.abs(px - fromX) < 1) return (facing === 1 ? -1 : 1);
+  return px > fromX ? 1 : -1;
 }

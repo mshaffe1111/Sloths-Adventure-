@@ -54,7 +54,10 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
   const extra: ChipSpec[] = [];
   if (stats && stats.floraTotal > 0) extra.push({ label: 'Flowers', value: `${stats.floraCollected}/${stats.floraTotal}`, colour: stats.floraCollected >= stats.floraTotal ? '#f9a8d4' : undefined });
   if (stats) extra.push({ label: 'Foes', value: String(totalKills(stats)) });
-  if (stats) extra.push({ label: 'Hits taken', value: String(stats.heartsLost), colour: stats.heartsLost === 0 ? '#6ee7b7' : undefined });
+  // hits are the hearts knocked off him; a fall into a pit or the water costs a life with no hit, so lives lost get their own chip
+  // ("Hits taken 0" after three falls read as a lie, 2026-10-25), and the green "clean run" colour only shows when neither happened
+  if (stats) extra.push({ label: 'Hits taken', value: String(stats.heartsLost), colour: stats.heartsLost === 0 && stats.livesLost === 0 ? '#6ee7b7' : undefined });
+  if (stats && stats.livesLost > 0) extra.push({ label: 'Lives lost', value: String(stats.livesLost) });
   if (stats && stats.maxCombo >= 2) extra.push({ label: 'Best combo', value: `x${stats.maxCombo}` });
   const heroW = typeof window !== 'undefined' && window.innerHeight <= 520 ? 120 : 196;
   const heroH = Math.round(Math.max(130, Math.min(300, (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.42)));

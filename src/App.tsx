@@ -1051,8 +1051,9 @@ export default function App() {
               id={lessonId}
               onClose={() => {
                 setLessonId(null);
-                // fingers that were down while the card opened must not keep running him once play carries on
-                inputEngineRef.current?.clearAll();
+                // no clearing of the controls here: a thumb lifted while the card was up has already let go of what it held, and one
+                // still on the glass keeps doing what it was (clearing it left the recogniser thinking it steered while nothing moved,
+                // so the next touch did nothing; and it dropped a held jump in mid-air)
                 engineRef.current?.lessonClosed();
               }}
             />
