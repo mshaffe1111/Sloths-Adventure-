@@ -621,6 +621,11 @@ export const orchidFair = (o: Orchid): boolean => o.open >= ORCHID.minOpen && o.
 export interface Cocoon {
   x: number;
   y: number;
+  /**
+   * tied across the path: he cannot walk or hop past it until it is punched open (the first cocoon of 5-5, so nobody walks past the
+   * stage's whole idea without knowing someone is inside: QA, v198)
+   */
+  block?: boolean;
 }
 
 export const COCOON = {
@@ -629,7 +634,23 @@ export const COCOON = {
   reach: 72,
   /** its middle is this far above its bottom */
   mid: 34,
+  /** a cocoon tied across the path holds him this far short of it (px, his x to its x): where a standing punch lands on its middle */
+  stop: 42,
+  /** and holds him at any height up to this far over it (no hopping past: its guy-lines and thread are in the way) */
+  stopUp: 320,
 } as const;
+
+/**
+ * a cocoon tied across the path (Cocoon.block) and still shut: where he may go no further, coming from the left at (x, y). Null when
+ * it does not hold him (open, or he is not at it).
+ */
+export function cocoonStop(c: Cocoon, freed: boolean, x: number, y: number): number | null {
+  if (!c.block || freed) return null;
+  const at = c.x - COCOON.stop;
+  if (x <= at || x > c.x + 30) return null;
+  if (y < c.y - COCOON.stopUp || y > c.y + 40) return null;
+  return at;
+}
 
 export interface CocoonState {
   hits: number;

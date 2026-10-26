@@ -72,7 +72,9 @@ function playThrough(id: string, w: number, h: number, every = 1.5, phase = 0.5)
     const stuck = r.t - bestAt > 2;
     const k = (i - hopAt + hopEvery * 1000) % hopEvery;
     const press = k === 0 || (stuck && k === 9);
-    r.frame({ right: true, press, jump: k < 16 });
+    // (5-5's first cocoon is tied across the path: a tap or two to punch it open, as Dot says, when he is up against it)
+    const blocked = (w5.cocoons ?? []).some((c, ci) => c.block && !e.w5.cocoons[ci].freed && c.x - p.x > 0 && c.x - p.x < 60 && p.grounded);
+    r.frame({ right: true, press: press && !blocked, jump: k < 16 && !blocked, punch: blocked && i % 14 === 0 });
     if (p.x > best + 20) {
       best = p.x;
       bestAt = r.t;
@@ -221,10 +223,12 @@ test(`5-5: every spider hit, upright and sideways, comes after a crouch on scree
     for (const every of [1.5, 1.1]) {
       const run = playThrough('5-5', w, h, every, 0.5);
       assert.ok(run.reached, `5-5 ${w}x${h}: the run stopped at x ${run.x} of ${Math.round(run.end)}`);
+      // (none rouses while the pouch scene plays, w5Play.ts: after it they come again, in every run)
+      assert.ok(run.rushes >= 1, `5-5 ${w}x${h} hop ${every} s: no spider rushed at all`);
       rushes += run.rushes;
       for (const hit of run.hits) if (hit.warned < WARN) bad.push(`${w}x${h} hop ${every} s: spider ${hit.id} at ${hit.t.toFixed(1)} s (dx ${hit.dx}) warned ${hit.warned.toFixed(2)} s`);
     }
   }
-  assert.ok(rushes > 10, `${rushes} rushes: they still come`);
+  assert.ok(rushes >= 8, `${rushes} rushes: they still come`);
   assert.deepEqual(bad, []);
 });

@@ -134,6 +134,9 @@ export function targetTopic(target: string | null): TopicId | undefined {
   if (/mushroom/.test(s)) return 'mushroom';
   if (/crumbl|shaky/.test(s)) return 'crumble';
   if (/bird|eagle|spider|ant|big animal|foe|snake|guard|monkey|prowler|jaguar/.test(s)) return 'foe';
+  // (World 5's cocoons and closing orchids: rung where they are, GuideView.w5. The orchid's tip rang Pokey: QA, 5-3, v198)
+  if (/cocoon/.test(s)) return 'cocoon';
+  if (/orchid/.test(s)) return 'orchid';
   return topicOf(s);
 }
 
@@ -214,6 +217,8 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     ...(thing ? { thing: true } : {}),
     // (a scene's lines are sent one after another, and may wait behind tips and the moments a spider is near: they keep their place)
     ...(scene ? { scene: true, waitMs: SCENE_WAIT_MS } : {}),
+    // (the goal's "Still {n}" line: its number as it is when read, dotGuide.ts countedText)
+    ...(sw?.line.id === 'goal.late' ? { counted: true } : {}),
     // (the engine's own time is for its old, longer words: the reading time of the new ones is the floor)
     ms: sw || o.boss ? undefined : o.ms,
     // a boss fight's warning or tip goes when its attack ends (the engine says so), or after about 6 s

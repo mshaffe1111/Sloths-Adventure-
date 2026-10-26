@@ -11,7 +11,7 @@ import {
   touchesCake, trayAt, W5_TEACH, onScreen, SPIDER5, laced, newSeam, SEAMSTRESS, stepSeam, type ButlerState, type CocoonState,
   type GateState, type SeamState, type SitState, type ViewBox, type W5Extras, WOBBLE,
 } from './w5Kit.ts';
-import { onRest } from './w5Kit.ts';
+import { cocoonStop, onRest } from './w5Kit.ts';
 import { W5_POUCH } from './w5Lines.ts';
 import { readMs } from './dotGuide.ts';
 import {
@@ -19,7 +19,7 @@ import {
   drawPennant, drawPiece, drawPinkBell, drawShrineArt, drawSilkOnPokey, drawSilkSheet, drawSleepyOnPokey, drawSteam, drawTeaTable, drawTeapot, drawThread,
   drawW5Light, drawWrappedChair, takeAt,
 } from './w5Look.ts';
-import { w5ArtReady, type W5Piece as ArtPiece } from './w5Art.ts';
+import { w5ArtReady, w5Height, type W5Piece as ArtPiece } from './w5Art.ts';
 import { drawSeamstress, drawW5Spider, warmW5Butler, warmW5Seamstress, warmW5Spider, type ButlerPose } from './w5Creatures.ts';
 import { W5_FRAMES } from './w5PropsData.ts';
 import { drawAura } from './readable.ts';
@@ -62,6 +62,11 @@ const BUTLER_SEE = 1100;
 const SPIDER_SEE = 1300;
 /** the Seamstress's line comes this far before the start of the sheet she is knitting (she stands at its far end) */
 const SEAM_SEE = 760;
+/**
+ * the cocoons' line comes this far ahead of the first (5-5's EARLY, w5Stages.ts): well before it, so it is up before the cocoon is in
+ * reach even when a line about the flag or the fern is being read (QA, v198: it came beside the third, after he had passed two)
+ */
+const COCOON_SEE = 900;
 const said = (key: string) => `tip:${key}`;
 /** what a cake or the tray did to him stays up this long (s): the engine's 0.8 s pop-up was gone before it was read */
 export const W5_POP_LIFE = 1.6;
@@ -124,6 +129,12 @@ export class W5Play {
     return Math.sin(t * WOBBLE.rate) * (WOBBLE.px + WOBBLE.perSilk * this.tugSilk) * fade;
   }
 
+  /**
+   * the cocoons' middles and the closing orchids' cups, for Dot's ring (dotGuideView.ts GuideView.w5): made once, a cocoon marked done
+   * once it is open. Her orchid tip rang Pokey, not the orchid (QA, 5-3, v198)
+   */
+  readonly guideThings: Array<{ kind: 'cocoon' | 'orchid'; x: number; y: number; done?: boolean }> = [];
+
   constructor(private readonly w5: W5Extras, platforms: Platform[], vines: Vine[]) {
     this.silkLines = vines.filter((v) => v.silk);
     this.seams = (w5.seamstresses ?? []).map(() => newSeam());
@@ -134,6 +145,9 @@ export class W5Play {
     this.threadAt = (w5.threads ?? []).map(() => -99);
     this.cocoons = (w5.cocoons ?? []).map(() => ({ ...newCocoon(), swing: -1 }));
     for (const s of w5.spiders ?? []) this.gates.set(s.id, newGate(!!s.doze));
+    for (const c of w5.cocoons ?? []) this.guideThings.push({ kind: 'cocoon', x: c.x, y: c.y - COCOON.mid });
+    // (the bloom's middle: its painted piece hangs from just over the ledge to under it, w5Look.ts drawOrchid)
+    for (const o of w5.orchids ?? []) this.guideThings.push({ kind: 'orchid', x: o.x, y: Math.round(o.y + w5Height('orchidOpen', o.w) * 0.4) });
     (w5.orchids ?? []).forEach((o, i) => {
       for (const id of o.petalIds ?? []) this.orchidOf.set(id, i);
       const pl = o.platformId !== undefined ? platforms.find((q) => q.id === o.platformId) : undefined;
@@ -363,6 +377,9 @@ export class W5Play {
 
     // the humming threads: a touch makes it hum, and the spiders that hear it turn and come
     const alarms = new Set<number>();
+    // (while 5-5's pouch scene plays, the garden holds its breath: no spider rouses and a hum calls none, so the scene is never read
+    // over a fight. QA, v198: he took two or three hits reading it as he went on)
+    const hush = this.restPlaying(h.t);
     (w5.threads ?? []).forEach((th, i) => {
       if (ahead(th.x0, th.y, 520)) h.tip(said(W5_TEACH.thread), W5_TEACH.thread, 3.8);
       if (h.t - this.threadAt[i] < THREAD.cool || !threadTouched(th, p.x, p.y, !!p.ducking)) return;
@@ -370,7 +387,7 @@ export class W5Play {
       h.sfx('hum');
       h.float('HMMMM...', (th.x0 + th.x1) / 2, th.y - 50, '#fff7d6');
       let heard = false;
-      for (const s of w5.spiders ?? []) {
+      for (const s of hush ? [] : w5.spiders ?? []) {
         const e = h.enemies.find((q) => q.id === s.id);
         if (!e || e.defeated || !humReaches(th, e.x, e.y)) continue;
         alarms.add(s.id);
@@ -390,6 +407,8 @@ export class W5Play {
       const dy = p.y - (e.y + 12);
       // (its line well before it can see him and crouch: QA, 2026-10-26, the tip came on the frame of the first bite)
       if (!g.dozing && ahead(e.x, e.y, SPIDER_SEE)) h.tip(said(W5_TEACH.spider), W5_TEACH.spider, 3.6);
+      // (the scene's hush: a spider still calm stays so, held where it stands, harmless)
+      if (hush && g.phase === 'calm') continue;
       const v = h.view;
       const seen = !v || onScreen(v, e.x, e.y, e.width, e.height, SPIDER5.edge);
       const shown = !v || onScreen(v, e.x, e.y, e.width, e.height);
@@ -412,12 +431,22 @@ export class W5Play {
       const st = this.cocoons[i];
       st.since += dt;
       if (st.freed) return;
-      if (ahead(c.x, c.y)) h.tip(said(W5_TEACH.cocoon), W5_TEACH.cocoon, 3.8);
+      if (ahead(c.x, c.y, COCOON_SEE)) h.tip(said(W5_TEACH.cocoon), W5_TEACH.cocoon, 3.8);
+      // (one tied across the path holds him where his punch lands on it, until it is open)
+      const stop = cocoonStop(c, st.freed, p.x, p.y);
+      if (stop !== null) {
+        // (he bumps it: it jiggles, a soft no)
+        if (p.vx > 0 && st.since > 0.8) st.since = 0.15;
+        p.x = stop;
+        if (p.vx > 0) p.vx = 0;
+      }
       if (!h.punch || st.swing === h.swing || !punchReachesCocoon(c, h.punch)) return;
       const nx = { ...hitCocoon(st), swing: h.swing };
       this.cocoons[i] = nx;
       h.sfx('crack');
       if (nx.freed) {
+        const g = this.guideThings.find((q) => q.kind === 'cocoon' && q.x === c.x && q.y === c.y - COCOON.mid);
+        if (g) g.done = true;
         h.sfx('free');
         h.float('FREED!', c.x, c.y - 90, '#bbf7d0');
         h.rescue?.();
@@ -501,7 +530,7 @@ export class W5Play {
     (w5.cocoons ?? []).forEach((c, i) => {
       if (!vis(c.x)) return;
       const st = this.cocoons[i];
-      drawCocoon(ctx, c.x, c.y, Math.max(0, 1 - st.since / 0.3), st.hits, st.freed, t);
+      drawCocoon(ctx, c.x, c.y, Math.max(0, 1 - st.since / 0.3), st.hits, st.freed, t, { look: this.player ? Math.sign(this.player.x - c.x) : 0, block: c.block });
     });
     (w5.butlers ?? []).forEach((b, i) => {
       if (!vis(b.x)) return;

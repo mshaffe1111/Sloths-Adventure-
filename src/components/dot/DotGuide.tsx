@@ -5,7 +5,7 @@ import type { CoachStep } from '../../game/touchCoach.ts';
 import type { ControlStyle } from '../../game/controlPrefs.ts';
 import { lessonDotLine, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
-import { GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
+import { countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markSkillSeen, markSkipOffered, offersSkip, seenSkills, skipTips } from '../../game/dotGuideHelp.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game/dotGuideView.ts';
@@ -1113,6 +1113,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       const cnt = latest.current.count;
       if (!run.goalDone && cnt && cnt.target > 1 && cnt.cur >= cnt.target && QUOTA.has(latest.current.level.objectiveType ?? '')) {
         run.goalDone = true;
+        // (a "Still {n}" line still waiting, or up, is old news now)
+        q.clear((l) => !!l.counted, run.clock, true);
         const t = dotText('goal.done');
         if (t) run.say({ key: 'goal:done', text: t, kind: 'goal', who: run.dot ? 'Dot' : 'Pokey', topic: 'exit', source: 'engine' });
       }
@@ -1187,7 +1189,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           {art ? <span ref={tailRef} className="dg-ptail" aria-hidden="true" style={pieceStyle('tail', TAIL_W)} /> : <span className="dg-tail b" />}
           {tag && <span className={`dg-tag ${tag === 'Pokey' ? 'pokey' : ''}`}>{tag}</span>}
           <div className="dg-bub-body">
-            <p>{l.text}</p>
+            <p>{l.counted && props.count ? countedText(l.text, props.count.target - props.count.cur) : l.text}</p>
             {run.skipN === show!.n && (
               <button
                 type="button"

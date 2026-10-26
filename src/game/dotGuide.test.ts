@@ -450,3 +450,30 @@ test('the bubble stays on screen, out of the thumb corners and off Pokey, uprigh
     }
   }
 });
+
+test('an information line steps aside, after a fair look, for a tip about a thing coming up now, and comes back once in full (QA, 5-5, v198)', () => {
+  const q = new GuideQueue();
+  const env = { danger: false, moveCount: () => 0 };
+  const flag = lessonDotLine('checkpoint', 'screen')!;
+  assert.equal(flag.kind, 'info');
+  q.push(flag, 0);
+  q.tick(0, env);
+  assert.equal(q.cur?.line.key, flag.key);
+  const cocoon: GuideLine = { key: 'engine:w5.cocoon', text: 'Somebody\'s in there! Tap to punch it open.', kind: 'teach', who: 'Dot', move: 'punch', thing: true, capMs: 6000, source: 'engine' };
+  q.push(cocoon, 1000);
+  q.tick(2000, env);
+  assert.equal(q.cur?.line.key, flag.key, 'the flag line has its fair look first');
+  q.tick(GUIDE.thingYieldMs + 10, env);
+  q.tick(GUIDE.thingYieldMs + 700, env);
+  assert.equal(q.cur?.line.key, cocoon.key, 'the cocoon tip goes up');
+  // the flag's line comes back after it, in full, and does not step aside again
+  for (let t = GUIDE.thingYieldMs + 700; t < 12000; t += 100) q.tick(t, env);
+  assert.equal(q.cur?.line.key, flag.key);
+  // (a plain tip about a move, not a thing, does not push it aside)
+  const q2 = new GuideQueue();
+  q2.push(flag, 0);
+  q2.tick(0, env);
+  q2.push({ key: 'x', text: 'Flick up into the vine', kind: 'teach', who: 'Dot', move: 'grab', source: 'engine' }, 100);
+  q2.tick(GUIDE.thingYieldMs + 500, env);
+  assert.equal(q2.cur?.line.key, flag.key);
+});

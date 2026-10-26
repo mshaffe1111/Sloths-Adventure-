@@ -143,6 +143,10 @@ export function findTarget(topic: TopicId | undefined, v: GuideView): Target | n
     case 'flag':
       // (the flag is already behind him when its line comes: nothing to point at)
       break;
+    case 'cocoon':
+    case 'orchid':
+      for (const w of v.w5) if (w.kind === topic && !w.done) consider(w.x, w.y, topic === 'cocoon' ? 36 : 40);
+      break;
     case 'gap':
     case 'ledge':
     case 'water': {

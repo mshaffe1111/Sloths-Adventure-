@@ -70,6 +70,8 @@ import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOW
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
+/** no World 5 pieces for Dot to point at (any other world) */
+const NO_W5_THINGS: readonly never[] = [];
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
@@ -4633,6 +4635,7 @@ export class GameEngine {
     out.collectibles = this.collectibles;
     out.hazards = this.hazards;
     out.bushes = this.proto?.bushes ?? out.bushes;
+    out.w5 = this.w5?.guideThings ?? NO_W5_THINGS;
     out.popups = this.floatingTexts;
     // (a boss's open weak spot, for Dot to keep her bubble off: copied into the view, no new object)
     const bs = this.boss;
