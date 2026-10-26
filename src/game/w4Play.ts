@@ -77,6 +77,11 @@ export interface W4Extras {
   deepFall?: number;
   /** the stage goes down, back and forth across the cliff (4-7): a lower flag is further on, wherever it stands */
   descent?: boolean;
+  /** the ledges in the order the path takes them (4-7): the view always shows the next one as well as him (engine landingToShow) */
+  route?: number[];
+  /** a wider view than usual (4-7, where the next ledge is far across and far down): the world shown, held sideways (its height) and
+   *  upright (its width), in place of the engine's 540 and 440 */
+  view?: { land: number; port: number };
   /** 4-6: sleeping eaglets (eaglet.ts) */
   nests?: Nest[];
   decor?: W4Decor[];
@@ -655,17 +660,16 @@ export class W4Play {
       if (m <= 0.03) continue;
       const row = Math.round(y / gy);
       const drift = (t * (14 + (Math.abs(row) % 3) * 6) + Math.abs(row) * 53) % gx;
-      ctx.fillStyle = row % 2 ? '#f8fafc' : '#cbd5e1';
+      const pic = softPuff(row % 2 ? '248,250,252' : '203,213,225');
       ctx.globalAlpha = 0.4 * m * m;
+      // (feathered puffs, not flat ovals: hard-edged white ovals read as shapes over the scene, testers 2026-10-25)
       for (let x = Math.floor(xa / gx) * gx - gx; x < xb + gx; x += gx) {
         const px = x + drift;
         // (past the ends of a stretch the puffs thin out with the bank)
         const side = span ? sideFade(span, px) : 1;
         if (side <= 0.02) continue;
         ctx.globalAlpha = 0.4 * m * m * side;
-        ctx.beginPath();
-        ctx.ellipse(px, y + Math.sin(t * 0.5 + x * 0.01) * 6, 120, 34, 0, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.drawImage(pic, px - 150, y + Math.sin(t * 0.5 + x * 0.01) * 6 - 46, 300, 92);
       }
     }
     ctx.restore();
@@ -1134,20 +1138,31 @@ function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
     if (r.air) {
       // through open air: a pale band down the whole of its path with grit streaming through it, so the warning is in view on any
       // screen and reads against grey rock as well as pale mist; it thickens as the rock comes
+      // (the band fades out at its sides and at both ends: a hard-edged bright strip read as a seam in the backdrop, testers
+      // 2026-10-25; and the grit is little round stones and dust, not grey squares)
       const span = r.land - r.top;
-      ctx.fillStyle = `rgba(255, 251, 235, ${0.1 + 0.18 * s.u})`;
-      ctx.fillRect(r.x - 24, r.top, 48, span);
+      const band = ctx.createLinearGradient(r.x - 30, 0, r.x + 30, 0);
+      const a = 0.12 + 0.2 * s.u;
+      band.addColorStop(0, 'rgba(255,251,235,0)');
+      band.addColorStop(0.5, `rgba(255,251,235,${a.toFixed(3)})`);
+      band.addColorStop(1, 'rgba(255,251,235,0)');
+      ctx.fillStyle = band;
+      ctx.fillRect(r.x - 30, r.top + 40, 60, span - 80);
       const n = 8 + Math.round(14 * s.u);
-      ctx.strokeStyle = 'rgba(30, 27, 24, 0.75)';
-      ctx.lineWidth = 1.5;
       for (let k = 0; k < n; k++) {
-        const gx = r.x - 12 + ((k * 7) % 24);
+        const gx = r.x + Math.sin(k * 2.3) * 11;
         const gy = r.top + ((t * 360 + k * (span / n)) % span);
-        const sz = 4 + (k % 3) * 2;
-        ctx.fillStyle = k % 2 ? '#a8a29e' : '#78716c';
-        ctx.fillRect(gx, gy, sz, sz);
-        ctx.strokeRect(gx, gy, sz, sz);
+        // (fading in and out at the ends of its fall)
+        const end = Math.min(1, (gy - r.top) / 60, (r.land - gy) / 60);
+        if (end <= 0) continue;
+        const rad = 1.6 + (k % 3) * 0.9;
+        ctx.globalAlpha = end;
+        ctx.fillStyle = k % 3 === 0 ? 'rgba(214,211,209,0.55)' : k % 2 ? '#57534e' : '#78716c';
+        ctx.beginPath();
+        ctx.ellipse(gx, gy, k % 3 === 0 ? rad * 2.2 : rad, k % 3 === 0 ? rad * 1.4 : rad * 1.15, k * 0.7, 0, Math.PI * 2);
+        ctx.fill();
       }
+      ctx.globalAlpha = 1;
     } else {
       // grit trickling from the ledge above
       for (let k = 0; k < 4; k++) ctx.fillRect(r.x - 8 + k * 5, r.top + ((t * 300 + k * 40) % 90), 3, 3);
@@ -1172,22 +1187,31 @@ function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
     for (let k = 0; k < 6; k++) {
       const a = (k / 6) * Math.PI;
       const d = 10 + 40 * s.u;
-      ctx.fillRect(r.x + Math.cos(a) * d * (k % 2 ? 1 : -1) - 4, r.land - Math.sin(a) * d * (1 - s.u) - 8, 8, 8);
+      ctx.beginPath();
+      ctx.arc(r.x + Math.cos(a) * d * (k % 2 ? 1 : -1), r.land - Math.sin(a) * d * (1 - s.u) - 4, 4 + (k % 2), 0, Math.PI * 2);
+      ctx.fill();
     }
   }
   ctx.restore();
 }
 
 function drawUpdraft(ctx: CanvasRenderingContext2D, u: Updraft, t: number) {
-  // pale wisps rising, thicker in the middle of the column
+  // a faint warm glow up the column (soft at its sides and ends), and pale wisps rising, thicker in the middle of it
   ctx.save();
   const w = u.x1 - u.x0;
+  const glow = ctx.createLinearGradient(u.x0, 0, u.x1, 0);
+  glow.addColorStop(0, 'rgba(253,230,190,0)');
+  glow.addColorStop(0.5, 'rgba(253,230,190,0.16)');
+  glow.addColorStop(1, 'rgba(253,230,190,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(u.x0, u.top + 60, w, u.bottom - u.top - 60);
   for (let k = 0; k < 9; k++) {
     const x = u.x0 + w * ((k + 0.5) / 9) + Math.sin(t * 1.7 + k) * 8;
     const span = u.bottom - u.top;
     const y = u.bottom - ((t * 160 + k * 97) % span);
-    const a = 0.14 + 0.14 * Math.sin((Math.PI * (k + 0.5)) / 9);
-    ctx.fillStyle = `rgba(241, 245, 249, ${a})`;
+    const a = (0.22 + 0.2 * Math.sin((Math.PI * (k + 0.5)) / 9)) * Math.min(1, (y - u.top) / 80);
+    if (a <= 0) continue;
+    ctx.fillStyle = `rgba(255, 247, 237, ${a.toFixed(3)})`;
     ctx.beginPath();
     ctx.ellipse(x, y, 7, 26, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -1514,13 +1538,80 @@ function drawMist(ctx: CanvasRenderingContext2D, pl: Platform, a: number, t: num
   if (a <= 0.02) return;
   ctx.save();
   ctx.globalAlpha = a;
-  ctx.fillStyle = '#e2e8f0';
-  for (let k = 0; k < 5; k++) {
-    const x = pl.x + (k / 4) * pl.width + Math.sin(t * 0.6 + k) * 10;
-    ctx.beginPath();
-    ctx.ellipse(x, pl.y - 6, pl.width / 3, 34, 0, 0, Math.PI * 2);
-    ctx.fill();
+  // feathered puffs, thick in the middle so the ledge is still hidden (two layers), soft at the rim
+  const pic = softPuff('226,232,240');
+  for (let layer = 0; layer < 2; layer++) {
+    for (let k = 0; k < 5; k++) {
+      const x = pl.x + (k / 4) * pl.width + Math.sin(t * 0.6 + k + layer) * 10;
+      const rx = pl.width / 3 + 40, ry = 52;
+      ctx.drawImage(pic, x - rx, pl.y - 6 - ry, rx * 2, ry * 2);
+    }
   }
+  ctx.restore();
+}
+
+/** a soft round puff of mist ('r,g,b'), painted once: opaque in the middle, feathered to nothing at its rim */
+const puffs = new Map<string, HTMLCanvasElement>();
+function softPuff(rgb: string): HTMLCanvasElement {
+  let cv = puffs.get(rgb);
+  if (cv) return cv;
+  const N = 128;
+  cv = document.createElement('canvas');
+  cv.width = N;
+  cv.height = N;
+  const c = cv.getContext('2d')!;
+  const g = c.createRadialGradient(N / 2, N / 2, 0, N / 2, N / 2, N / 2);
+  g.addColorStop(0, `rgba(${rgb},1)`);
+  g.addColorStop(0.4, `rgba(${rgb},0.8)`);
+  g.addColorStop(0.75, `rgba(${rgb},0.25)`);
+  g.addColorStop(1, `rgba(${rgb},0)`);
+  c.fillStyle = g;
+  c.fillRect(0, 0, N, N);
+  puffs.set(rgb, cv);
+  return cv;
+}
+
+/**
+ * 4-7: what lies under the ledges is a drop, not a floor. Over the backdrop (whose painted rocks, pools and feather read as ground a
+ * tester tried to stand on), from a little under the ledge he last stood on down to the bottom of the view: thick mist that deepens
+ * to a blue-grey dark, with soft banks drifting along its top so it is no flat line. Drawn in screen space, before the ledges, so every
+ * ledge (and Pokey) stands out in front of it. `lip`: the screen height of that ledge.
+ */
+export function drawAbyss(ctx: CanvasRenderingContext2D, vw: number, vh: number, lip: number, t: number) {
+  const top = lip + 26;
+  if (top >= vh) return;
+  ctx.save();
+  const g = ctx.createLinearGradient(0, top, 0, Math.max(top + 400, vh));
+  g.addColorStop(0, 'rgba(222,231,238,0)');
+  g.addColorStop(0.3, 'rgba(214,225,234,0.82)');
+  g.addColorStop(0.6, 'rgba(170,188,204,0.93)');
+  g.addColorStop(1, 'rgba(96,114,136,0.97)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, top, vw, Math.max(400, vh - top));
+  const pic = softPuff('236,242,247');
+  ctx.globalAlpha = 0.55;
+  for (let k = 0; k < 7; k++) {
+    const w = vw * 0.5;
+    const x = ((((k * 0.37 + t * 0.012 * (1 + (k % 3) * 0.3)) % 1.3) + 1.3) % 1.3) * (vw + w) - w;
+    ctx.drawImage(pic, x, top + 40 + (k % 3) * 34 - 60, w, 120);
+  }
+  ctx.restore();
+}
+
+/**
+ * 4-7: in the air, a soft shadow on the ledge under him (if there is one before the mist), darker as he comes down to it, so he can
+ * see where a glide is taking him. (x, feet) is Pokey, `ledge` the top of what is under him.
+ */
+export function drawLandingShadow(ctx: CanvasRenderingContext2D, x: number, feet: number, ledgeY: number) {
+  const h = ledgeY - feet;
+  if (h < 30) return;
+  const u = Math.max(0, 1 - h / 700);
+  ctx.save();
+  ctx.globalAlpha = 0.18 + 0.4 * u;
+  ctx.fillStyle = '#0f172a';
+  ctx.beginPath();
+  ctx.ellipse(x, ledgeY + 2, 16 + 16 * u, 4 + 3 * u, 0, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 

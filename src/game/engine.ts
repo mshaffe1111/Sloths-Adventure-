@@ -63,12 +63,12 @@ import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } 
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
-import { W4Play } from './w4Play.ts';
+import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, CAM, snapCam } from './cameraFollow.ts';
+import { camAnchor, camLook, CAM, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, type Box } from './cameraFollow.ts';
 import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -536,6 +536,9 @@ export class GameEngine {
       perfNote(`stage ${config.id} started`);
     }
     this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
+    this.camLedge = null;
+    this.camLand = null;
+    this.bestDropY = -Infinity;
 
     // Initialize Hero Sloth
     this.player = {
@@ -639,7 +642,9 @@ export class GameEngine {
     if (!w || !h) return;
     const levelH = this.currentStage?.config.levelHeight ?? 900;
     const portrait = h > w;
-    let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
+    // (a stage may show more of the world than usual: 4-7, where the next ledge is far across and far below)
+    const wide = this.proto?.w4?.view;
+    let base = portrait ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
     base = Math.max(0.5, Math.min(1.8, base));
     const t = Math.min(1, this.introT / INTRO_ZOOM_SECS);
     const ease = 1 - Math.pow(1 - t, 3);
@@ -1952,9 +1957,11 @@ export class GameEngine {
 
     // the hand-built stage's one-time hints (protoStage.ts)
     if (this.proto) {
+      // (a line that waits for his depth waits for him to stand down there: a fall into 4-7's mist, past the ledges below, used up
+      // the lines meant for them)
       // (several passed in one frame, as when a run starts from a later flag: only the last is said, and only it counts as heard, so a
       // line nobody saw is not lost for good)
-      const due = this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY) || (h.aboveY !== undefined && p.y > h.aboveY) || (h.beforeX !== undefined && p.x > h.beforeX)));
+      const due = this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && (p.y < h.belowY || !p.grounded)) || (h.aboveY !== undefined && p.y > h.aboveY) || (h.beforeX !== undefined && p.x > h.beforeX)));
       for (const h of due) {
         h.shown = true;
         if (h !== due[due.length - 1]) continue;
@@ -2314,6 +2321,11 @@ export class GameEngine {
     if (objType === 'ascent') {
       this.bestClimbY = Math.min(this.bestClimbY, p.y);
       distanceRatio = ascentProgress(this.currentStage.spawnY, this.currentStage.exitTotemY, this.bestClimbY);
+    } else if (this.proto?.w4?.descent) {
+      // down the cliff, back and forth (4-7): how far down he has got (left or right says nothing about how far on he is)
+      this.bestDropY = Math.max(this.bestDropY, p.grounded ? p.y : -Infinity);
+      const span = Math.max(1, this.currentStage.exitTotemY - this.currentStage.spawnY);
+      distanceRatio = Math.max(0, Math.min(1, (this.bestDropY - this.currentStage.spawnY) / span));
     } else {
       const totalDist = Math.max(1, (this.currentStage.exitTotemX || this.currentStage.config.levelWidth) - 140);
       const distTraveled = Math.max(0, p.x - 140);
@@ -4025,6 +4037,15 @@ export class GameEngine {
       // (never so far that he leaves the view: his feet stay above the bottom tenth)
       this.camera.targetY = Math.max(this.camera.targetY, p.y - vh * 0.9);
     }
+    // near the end of a ledge with a gap ahead, the view shows the far side too (cameraFollow.ts landingAhead)
+    if (!look && !this.chase?.active && !this.currentStage.arena) {
+      const land = this.landingToShow(dt);
+      if (land) {
+        const v = showBoth(this.camera.targetX, this.camera.targetY, p.x, p.y, land, vw, vh);
+        this.camera.targetX = v.x;
+        this.camera.targetY = v.y;
+      }
+    }
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
@@ -4039,16 +4060,85 @@ export class GameEngine {
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
     }
 
+    // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
+    // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
+    const band = (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
+    const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : this.camAnchorY;
+    this.camera.targetY = Math.min(this.camera.targetY, underHud(refY, band));
+
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * 6.5);
     this.camera.x += (this.camera.targetX - this.camera.x) * smoothFactor;
     this.camera.y += (this.camera.targetY - this.camera.y) * smoothFactor;
+    // (standing, never even for a moment while the view eases)
+    if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
 
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));
     const maxY = this.currentStage.config.levelHeight - vh;
     // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues)
     this.camera.y = Math.max(this.currentStage.arena ? Math.min(0, maxY) : 0, Math.min(maxY, this.camera.y));
+  }
+
+  /** the ledge he last stood on, the landing the view is showing, and how long it is kept once he has left the ground (s) */
+  /** a stage down a cliff (w4.descent): the lowest ledge he has stood on, for its progress bar */
+  private bestDropY = -Infinity;
+  /** 4-7: the height the mist under the ledges starts at (eased after the ledge he stands on) */
+  private abyssLip = NaN;
+  private camLedge: Platform | null = null;
+  private camLand: Box | null = null;
+  private camLandKeep = 0;
+  /**
+   * The landing the view should show as well as him. A stage that runs along a set path (4-7 down the cliff: w4.route) shows the next
+   * ledge on it wherever it is, above, across or straight below; any other stage, the nearest ledge or vine across the gap when he
+   * stands near the end of his ledge. In the air it keeps the one he set off for a little while, so the jump ends where he saw it.
+   */
+  private landingToShow(dt: number): Box | null {
+    const p = this.player;
+    if (p.grounded && this.standingOnId >= 0) {
+      if (this.camLedge?.id !== this.standingOnId) this.camLedge = this.platforms.find((q) => q.id === this.standingOnId) ?? null;
+    }
+    // swinging on a vine: where the swing will throw him, the way he faces (the way he lets go, physics.ts TIMED): the next vine or
+    // ledge past this one (QA, 1-8 upright: the landing branch was off screen, and the bot let go blind)
+    const sv = p.isVineSwinging ? this.nearSwingVine : null;
+    if (sv) {
+      const hang = { x: sv.x, width: 0, y: sv.topY + (p.swingLength ?? 100) + 30 };
+      this.camLand = landingAhead(sv.x, p.facing, hang, this.platforms, this.vines.filter((v) => v !== sv));
+      this.camLandKeep = 1.2;
+      return this.camLand;
+    }
+    if (p.climbing || p.hanging) {
+      this.camLand = null;
+      return null;
+    }
+    const ledge = this.camLedge;
+    const route = this.proto?.w4?.route;
+    if (route && ledge) {
+      const i = route.indexOf(ledge.id);
+      const next = i >= 0 && i + 1 < route.length ? this.platforms.find((q) => q.id === route[i + 1]) : undefined;
+      if (!next) return null;
+      // a crossing too wide for one view (upright the view is only 620 wide): warm air in the gap is the first landing, shown from the
+      // edge; once he is out over it, the ledge past it (Matt, 2026-10-26: every stage works upright too)
+      const dirN = Math.sign(next.x + next.width / 2 - (ledge.x + ledge.width / 2)) || p.facing;
+      const gapA = dirN > 0 ? ledge.x + ledge.width : next.x + next.width, gapB = dirN > 0 ? next.x : ledge.x;
+      const across = (this.proto?.w4?.updrafts ?? []).find((u) => u.x0 >= gapA - 10 && u.x1 <= gapB + 10 && u.top < ledge.y + 40 && u.bottom > ledge.y);
+      if (across && gapB - gapA > this.camera.viewportWidth * 0.75 && (dirN > 0 ? p.x < across.x0 : p.x > across.x1)) {
+        return { x0: across.x0, x1: across.x1, y0: Math.min(across.top, ledge.y - 100), y1: ledge.y + 40 };
+      }
+      // (the near end of it, or the part right under him when it runs under his ledge: a turn)
+      const x = Math.max(next.x + 40, Math.min(next.x + next.width - 40, p.x));
+      const far = Math.hypot(x - p.x, next.y - p.y);
+      if (far > this.camera.viewportWidth * 1.2) return null;
+      return landingBox(x, next.y, Math.sign(next.x + next.width / 2 - p.x) || p.facing);
+    }
+    if (p.grounded && ledge && Math.abs(p.y - ledge.y) < 4) {
+      this.camLand = landingAhead(p.x, p.facing, ledge, this.platforms, this.vines);
+      this.camLandKeep = 1.2;
+    } else if (!p.grounded) {
+      this.camLandKeep -= dt;
+      if (this.camLandKeep <= 0) this.camLand = null;
+    }
+    return this.camLand;
   }
 
   /** a press to let go a beat before the swing's sweet spot: keep it and let go when he gets there (true = held, he swings on) */
@@ -4220,6 +4310,12 @@ export class GameEngine {
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
     setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
     if (!ownScene) renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
+    if (this.proto?.w4?.deepFall !== undefined) {
+      const lipY = this.camLedge?.y ?? this.player.y;
+      this.abyssLip = Number.isFinite(this.abyssLip) && Math.abs(this.abyssLip - lipY) < 2000 ? this.abyssLip + (lipY - this.abyssLip) * 0.12 : lipY;
+      drawAbyss(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.abyssLip - this.camera.y, this.gameTime);
+    }
     const lairView = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
     if (lair && this.currentStage.arena) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right, this.boss?.phase ?? 1);
 
@@ -4304,6 +4400,13 @@ export class GameEngine {
       const ph = vinePhase(v, this.gameTime);
       const l = this.vineLash.get(i);
       drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : this.player.x >= v.x ? 1 : -1, this.gameTime);
+    }
+    // 4-7: in the air, a shadow on the ledge he is coming down to
+    if (this.proto?.w4?.deepFall !== undefined && !this.player.grounded && !this.player.climbing) {
+      const p = this.player;
+      let under = Infinity;
+      for (const q of this.platforms) if (!q.broken && q.y >= p.y && q.y < under && p.x > q.x && p.x < q.x + q.width && q.y - p.y < this.proto.w4.deepFall) under = q.y;
+      if (under < Infinity) drawLandingShadow(ctx, p.x, p.y, under);
     }
     this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)

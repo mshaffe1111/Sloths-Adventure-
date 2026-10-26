@@ -1381,6 +1381,42 @@ function poolSprite(col: string, a: number): HTMLCanvasElement {
   return cv;
 }
 
+/** a soft round puff of mist, painted once per colour: opaque in the middle, feathered to nothing at its rim */
+const puffSprites = new Map<string, HTMLCanvasElement>();
+export function mistPuff(col: string): HTMLCanvasElement {
+  let cv = puffSprites.get(col);
+  if (cv) return cv;
+  const N = 128;
+  cv = document.createElement('canvas');
+  cv.width = N;
+  cv.height = N;
+  const c = cv.getContext('2d')!;
+  const g = c.createRadialGradient(N / 2, N / 2, 0, N / 2, N / 2, N / 2);
+  g.addColorStop(0, rgba(col, 1));
+  g.addColorStop(0.35, rgba(col, 0.75));
+  g.addColorStop(0.7, rgba(col, 0.25));
+  g.addColorStop(1, rgba(col, 0));
+  c.fillStyle = g;
+  c.fillRect(0, 0, N, N);
+  puffSprites.set(col, cv);
+  return cv;
+}
+
+/** a world with mist in the air (World 4): wide soft banks drifting slowly across the lower half, behind the playfield */
+function mistDrift(ctx: CanvasRenderingContext2D, look: Look, vw: number, vh: number, time: number) {
+  if (look.weather !== 'mist') return;
+  const pic = mistPuff(look.haze);
+  ctx.save();
+  for (let i = 0; i < 5; i++) {
+    const x = (((i * 0.3 + time * 0.01 * (1 + i * 0.2)) % 1.4) - 0.2) * vw;
+    const rx = vw * 0.42;
+    const ry = vh * 0.13;
+    ctx.globalAlpha = 0.22;
+    ctx.drawImage(pic, x - rx, vh * (0.55 + i * 0.07) - ry, rx * 2, ry * 2);
+  }
+  ctx.restore();
+}
+
 function lanePool(ctx: CanvasRenderingContext2D, look: Look, world: number, vw: number, vh: number) {
   const hs = heroScreen();
   if (!hs) return;
@@ -1532,11 +1568,47 @@ export const STRIP_FIT: Record<'far' | 'mid' | 'near', { k: number; a: number; a
   near: { k: 1.05, a: 0.72, at: 0.63 },
 };
 
+/**
+ * The columns of a painted strip that are painted. Most strips (World 4's mid and near ones among them) were saved with about 70 px of
+ * clear canvas at each end; tiled edge to edge, that left a clear stripe at every join where the far strip showed through: the hard
+ * vertical seams and bright strips testers saw in the cliffs (2026-10-25). The strip is tiled from its painted columns only. Read once
+ * per picture, along a row low in it (the clear margin runs the full height; the tops of the near strips are sky).
+ */
+const spans = new WeakMap<object, { sx: number; sw: number }>();
+function paintedSpan(img: Layer, iw: number, ih: number): { sx: number; sw: number } {
+  const hit = spans.get(img);
+  if (hit) return hit;
+  let span = { sx: 0, sw: iw };
+  if (iw <= 0 || ih <= 0) return span;
+  try {
+    const c = document.createElement('canvas');
+    c.width = iw;
+    c.height = 1;
+    const g = c.getContext('2d', { willReadFrequently: true });
+    if (g && iw > 0 && ih > 0) {
+      g.drawImage(img, 0, Math.floor(ih * 0.8), iw, 1, 0, 0, iw, 1);
+      const a = g.getImageData(0, 0, iw, 1).data;
+      let l = 0, r = iw - 1;
+      while (l < iw && a[l * 4 + 3] < 200) l++;
+      while (r > l && a[r * 4 + 3] < 200) r--;
+      // (a couple of columns in, past the soft rim of the paint; never more than a sixth off either end)
+      if (r - l > iw * 0.66) span = { sx: l + 2, sw: r - l - 3 };
+    }
+  } catch {
+    /* (a picture that cannot be read keeps its full width) */
+  }
+  spans.set(img, span);
+  return span;
+}
+
 /** a painted strip, repeated across the view at its own parallax and placed by STRIP_FIT */
 function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof STRIP_FIT, par: number, camX: number, vw: number, vh: number, s: number, yOff = 0) {
   const f = STRIP_FIT[part];
   const dh = H * s * f.k;
-  const pitch = tileW(img) * s * f.k;
+  const iw = img instanceof HTMLCanvasElement ? img.width : img.naturalWidth;
+  const ih = img instanceof HTMLCanvasElement ? img.height : img.naturalHeight;
+  const { sx, sw } = paintedSpan(img, iw, ih);
+  const pitch = tileW(img) * (sw / Math.max(1, iw)) * s * f.k;
   const top = vh * f.at - f.a * dh + yOff;
   let x0 = -((camX * par) % pitch);
   if (x0 > 0) x0 -= pitch;
@@ -1545,24 +1617,22 @@ function drawStrip(ctx: CanvasRenderingContext2D, img: Layer, part: keyof typeof
   for (let x = x0; x < vw; x += pitch, k++) {
     const px = Math.floor(x);
     const pw = Math.ceil(pitch) + 1;
-    if (k % 2 === 0) ctx.drawImage(img, px, top, pw, dh);
+    if (k % 2 === 0) ctx.drawImage(img, sx, 0, sw, ih, px, top, pw, dh);
     else {
       ctx.save();
       ctx.translate(px + pw, top);
       ctx.scale(-1, 1);
-      ctx.drawImage(img, 0, 0, pw, dh);
+      ctx.drawImage(img, sx, 0, sw, ih, 0, 0, pw, dh);
       ctx.restore();
     }
     // the strip is fitted to end a little above the bottom of the view, where the ground usually covers it; up a climb (1-4, the
     // ascents) the camera is in the air and that band showed the bare sky, so the strip's last rows carry on down to the edge
     const gap = vh - (top + dh);
     if (gap > 0) {
-      const iw = img instanceof HTMLCanvasElement ? img.width : img.naturalWidth;
-      const ih = img instanceof HTMLCanvasElement ? img.height : img.naturalHeight;
       const rows = Math.max(1, Math.round(ih * 0.03));
       ctx.save();
       if (k % 2 !== 0) { ctx.translate(px + pw, 0); ctx.scale(-1, 1); }
-      ctx.drawImage(img, 0, ih - rows, iw, rows, k % 2 !== 0 ? 0 : px, top + dh - 1, pw, gap + 2);
+      ctx.drawImage(img, sx, ih - rows, sw, rows, k % 2 !== 0 ? 0 : px, top + dh - 1, pw, gap + 2);
       ctx.restore();
     }
   }
@@ -1680,6 +1750,7 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
     }
     ctx.fillStyle = rgba(look.grade[0], look.grade[1]);
     ctx.fillRect(0, 0, vw, vh);
+    mistDrift(ctx, look, vw, vh, time);
     lanePool(ctx, look, world, vw, vh);
     return;
   }
@@ -1696,6 +1767,7 @@ export function renderScenery(ctx: CanvasRenderingContext2D, world: number, camX
   // plain alpha tint (blend modes force a full-canvas flush on software/mobile GPUs)
   ctx.fillStyle = rgba(look.grade[0], look.grade[1]);
   ctx.fillRect(0, 0, vw, vh);
+  mistDrift(ctx, look, vw, vh, time);
   lanePool(ctx, look, world, vw, vh);
 }
 
@@ -1927,16 +1999,10 @@ function renderWeather(ctx: CanvasRenderingContext2D, look: Look, world: number,
       }
       break;
     }
-    case 'mist': {
-      ctx.fillStyle = rgba(look.haze, 0.18);
-      for (let i = 0; i < 5; i++) {
-        const x = (((i * 0.3 + time * 0.01 * (1 + i * 0.2)) % 1.4) - 0.2) * vw;
-        ctx.beginPath();
-        ctx.ellipse(x, vh * (0.55 + i * 0.07), vw * 0.3, vh * 0.08, 0, 0, Math.PI * 2);
-        ctx.fill();
-      }
+    case 'mist':
+      // (the mist drifts behind the playfield now, soft-edged: renderScenery mistDrift. Over it, its flat hard-edged ovals washed over
+      // the ground, the cliffs and Pokey alike: testers, 4-3, 4-4 and 4-7, 2026-10-25)
       break;
-    }
   }
 }
 

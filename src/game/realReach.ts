@@ -500,10 +500,13 @@ export class RealReach {
   private viaDrafts(a: Anchor, t: Target): number[] {
     if (!this.hasGlide || !this.drafts.length || a.kind === 'l') return [];
     const { fy, x0, x1 } = this.from(a, t);
+    const deep = this.sim.stage.deepFall;
     const out: number[] = [];
     this.drafts.forEach((u, i) => {
       // in: a glide down to its bottom; out: a glide from its top
       const gapIn = Math.max(0, u.x0 - x1, x0 - u.x1);
+      // (warm air whose top is deeper under him than the stage's deep fall is reached only by falling into the mist first)
+      if (deep !== undefined && u.top - fy > deep) return;
       if (u.bottom < fy - 40 || gapIn > this.far(fy - (u.bottom - 40)) * 1.15 + 60) return;
       const hover = u.top + 36;
       const dyOut = hover - this.targetTop(t, hover);
@@ -516,6 +519,14 @@ export class RealReach {
   }
 
   private bound(a: Anchor, t: Target): boolean {
+    // (a target deeper under him than the stage's deep fall is past a fall into the mist (w4Play deepFall: measured from the ground he
+    // last stood on, and riding warm air touches no ground), never a way down: without this, 4-7's ledges a tier or two above counted
+    // as near a ledge below, used up its tries, and the ledge right before it was never let try)
+    const deep = this.sim.stage.deepFall;
+    if (deep !== undefined) {
+      const { fy } = this.from(a, t);
+      if (this.targetTop(t, fy) - fy > deep) return false;
+    }
     return this.boundPlain(a, t) || this.viaDrafts(a, t).length > 0;
   }
 
