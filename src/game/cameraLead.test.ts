@@ -10,7 +10,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { GameEngine } from './engine.ts';
-import { CAM, camLag, camRun, RUN, runLead, runOffset } from './cameraFollow.ts';
+import { CAM, camLag, camRun, FRAME, framing, HERO_HEAD, HUD_BAND, RUN, runLead, runOffset } from './cameraFollow.ts';
 import { PHYS } from './physics.ts';
 
 const FLOOR = 700;
@@ -127,5 +127,47 @@ test('stopping after a run brings the view to rest: it does not carry on past hi
     // (a slow settle of a few px, never a swing back: under 1.5 px a frame, where a turn eases the view across at up to 13)
     assert.ok(fastest < 1.5, `${w}x${h}: the view swung back ${fastest.toFixed(1)} px in a frame after he stopped`);
     assert.ok(back < 24, `${w}x${h}: the view drifted back ${back.toFixed(1)} px after he stopped`);
+  }
+});
+
+// ───── the framing by the screen's shape (QA, 2026-10-26: cramped behind him upright, too much dirt on a squat sideways screen) ─────
+
+/** standing on the flat floor, settled: where his middle sits across the view and his feet down it (fractions) */
+function standing(w: number, h: number, facing: 1 | -1 = 1) {
+  const { r, e } = setup(w, h);
+  e.enemies = [];
+  r.stand(3000, FLOOR);
+  r.p.facing = facing;
+  for (let i = 0; i < 120; i++) r.frame();
+  const across = (r.p.x - e.camera.x) / e.camera.viewportWidth;
+  return { across: facing > 0 ? across : 1 - across, feet: (FLOOR - e.camera.y) / e.camera.viewportHeight, zoom: e.zoom as number, camY: e.camera.y as number, vh: e.camera.viewportHeight as number };
+}
+
+test('every other screen keeps the plain framing: sideways phones, tablets and desktops', () => {
+  for (const [w, h] of [[844, 390], [740, 360], [932, 430], [1024, 768], [768, 1024], [1280, 720]]) {
+    assert.deepEqual(framing(w, h, 1000), { look: CAM.lookAhead, back: RUN.back, feetAt: FRAME.feetAt }, `${w}x${h}`);
+  }
+  // (his feet 55% down, as far as the bottom of this 900 px stage lets the view go)
+  const s = standing(844, 390);
+  assert.ok(Math.abs(s.camY - Math.min(900 - s.vh, FLOOR - s.vh * 0.55)) < 1, `844x390: his feet ${Math.round(s.feet * 100)}% down`);
+});
+
+test('upright on a narrow phone he keeps room behind him, standing and at a run, and never less than before', () => {
+  for (const [w, h, stand, run] of [[390, 844, 0.28, 0.26], [360, 782, 0.28, 0.26], [400, 720, 0.28, 0.26], [320, 782, 0.21, 0.17]]) {
+    for (const facing of [1, -1] as const) {
+      const s = standing(w, h, facing);
+      assert.ok(s.across >= stand, `${w}x${h} facing ${facing}: standing ${Math.round(s.across * 100)}% from the edge behind him`);
+    }
+    const { heroAt } = warning(w, h);
+    assert.ok(heroAt >= run, `${w}x${h}: at a run ${Math.round(heroAt * 100)}% from the edge behind him`);
+  }
+});
+
+test('sideways on a squat screen his feet sit lower (less dirt, more sky), and his head stays under the HUD', () => {
+  for (const [w, h] of [[640, 320], [782, 288], [568, 320]]) {
+    const s = standing(w, h);
+    assert.ok(Math.abs(s.feet - FRAME.shortFeetAt) < 0.01, `${w}x${h}: his feet ${Math.round(s.feet * 100)}% down`);
+    const headCss = (FLOOR - HERO_HEAD - s.camY) * s.zoom;
+    assert.ok(headCss >= HUD_BAND.land, `${w}x${h}: his head ${Math.round(headCss)} px down, under the HUD (${HUD_BAND.land})`);
   }
 });

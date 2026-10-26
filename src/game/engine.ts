@@ -82,7 +82,7 @@ import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
 import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -4236,8 +4236,9 @@ export class GameEngine {
     this.respawnFlash = 0.6;
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
-    this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * 0.45);
-    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * 0.55);
+    const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
+    this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * FRAME.across);
+    this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * fr.feetAt);
     this.camCut = true;
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
@@ -4428,17 +4429,19 @@ export class GameEngine {
     const p = this.player;
     const { viewportWidth: vw, viewportHeight: vh } = this.camera;
 
+    // the framing for this screen's shape: less look-ahead on a narrow upright phone, his feet lower on a squat sideways one (cameraFollow.ts)
+    const fr = framing(this.viewCssW, this.viewCssH, vw);
     // Look-ahead tracking: eased across when he turns, and a height that ignores hops and swings (cameraFollow.ts: the screen jiggled)
-    this.camLookX = camLook(this.camLookX, p.facing, dt);
+    this.camLookX = camLook(this.camLookX, p.facing, dt, fr.look);
     // (and at a run, on a narrow view, it leads further: cameraFollow.ts runLead; it follows the look-ahead's side, so a turn eases it over)
     this.camRunK = camRun(this.camRunK, p.vx, p.facing, dt);
     this.camRunSlow = camRun(this.camRunSlow, p.vx, p.facing, dt, RUN.settle);
-    const runX = runOffset(vw, this.camRunK, this.camRunSlow, dt) * (this.camLookX / CAM.lookAhead);
+    const runX = runOffset(vw, this.camRunK, this.camRunSlow, dt, fr) * Math.max(-1, Math.min(1, this.camLookX / (fr.look || 1)));
     const sv = p.isVineSwinging ? this.nearSwingVine : null;
     this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
-    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + this.camLookX + runX;
-    this.camera.targetY = this.camAnchorY - vh * 0.55;
+    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * FRAME.across + this.camLookX + runX;
+    this.camera.targetY = this.camAnchorY - vh * fr.feetAt;
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {
