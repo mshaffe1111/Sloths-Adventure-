@@ -6,7 +6,7 @@
 
 const { chromium } = require('playwright');
 const [stage, view, secs, URL] = [process.argv[2], process.argv[3] || 'port', Number(process.argv[4] || 90), process.argv[5] || 'http://127.0.0.1:4304/?proto=1'];
-const VIEWS = { port: { width: 400, height: 720 }, land: { width: 844, height: 390 } };
+const VIEWS = { port: { width: 400, height: 720 }, land: { width: 844, height: 390 }, short: { width: 640, height: 320 } };
 (async () => {
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: VIEWS[view], isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
