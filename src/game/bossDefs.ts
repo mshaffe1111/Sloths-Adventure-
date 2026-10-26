@@ -219,6 +219,8 @@ const VENOM: BossDef = {
   startDx: 1300 - 125 - 2,
   // and they are a wall: no squeezing in behind them, nor up the fence tree back there (QA gate: Steph ended up there, out of reach)
   blockBody: true,
+  // upright, the tree, the stump and the vine stay in the view through every lunge (QA gate: the tree slid off the left edge)
+  frameRefuges: [10, 680],
   perches: [{ dx: 330, up: 130, w: 150, crack: 3 }, { dx: 36, up: 272, w: 96, noHeart: true }],
   vines: [{ dx: 660, top: 440, bottom: 165 }],
   onPhase: (phase, _b, c) => {
@@ -413,6 +415,11 @@ const PROWLER: BossDef = {
   // hurts by touch: only his strikes do, each after its wind-up
   // the floor a little lower on the screen, so the top of a pounce stays under the boss bar on a phone held sideways (QA gate)
   floorAt: 0.84,
+  // (QA gate: on a fresh phone Dot said nothing all fight) the first-time tips
+  guide: {
+    start: 'He hides in the dark. Stand by a moon pool, dodge, and hit him where he glows!',
+    3: 'The glowcaps are out! Watch for his eyes and the rings on the floor.',
+  },
   bodyGrace: 99,
   // He has no one weak point. Where it opens depends on what he has just done, and the glow shows where: the glowing eyes after a shadow
   // step (he is right at you), the throat after the claw combo, the arched back after a pounce (jump onto it), the tail after the dash
@@ -507,6 +514,7 @@ const PROWLER: BossDef = {
       rec: 3.2,
       pose: 'fade',
       softBody: true,
+      guide: 'He fades away to come out behind you. With a moon pool at your back, the light catches him!',
       crashText: 'CAUGHT IN THE MOON!',
       stunAfter: () => 3.0,
       // the first time, say what the light is for
