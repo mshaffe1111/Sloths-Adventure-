@@ -347,6 +347,9 @@ test('Dot explains each World 4 piece before he first meets it, and every one of
         .filter((q) => !q.broken && q.x + q.width > h.x + 4 && (h.aboveY === undefined || q.y <= h.aboveY) && (h.belowY === undefined || q.y >= h.belowY))
         .sort((a, b) => Math.abs(a.y - st.spawnY) - Math.abs(b.y - st.spawnY))[0];
       assert.ok(spot, `${id}: nowhere to stand where "${h.text}" shows`);
+      // (only this one is due: when several come due in one frame the game says just the furthest, engine.ts, so each is checked alone)
+      const said = (q: (typeof hints)[number]) => sim.said.some((s) => s.text === q.text || s.text === q.pad || s.text === q.keys);
+      for (const q of hints) q.shown = q === h ? said(q) : true;
       sim.stand(Math.max(h.x + 2, spot.x + 12), spot.y);
       sim.frame();
       // (it may have shown already, standing for an earlier one: each shows once)

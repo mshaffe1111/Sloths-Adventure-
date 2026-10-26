@@ -374,7 +374,9 @@ export function drawSanctuaryDoor(ctx: CanvasRenderingContext2D, time: number, l
   ctx.strokeStyle = 'rgba(6,30,22,.85)';
   ctx.lineJoin = 'round';
   const text = 'Touch the door!';
-  const y = BASE_Y + (58 - 306) * SCALE - 24 + bounce;
+  // (inside the glowing arch, a little over his head, not above the door: on a phone held sideways the top of the arch is up under the
+  // HUD when he stands at the door, and the prompt was crowded in with it)
+  const y = BASE_Y + (150 - 306) * SCALE + bounce;
   ctx.strokeText(text, 0, y);
   ctx.fillStyle = '#fde047';
   ctx.fillText(text, 0, y);

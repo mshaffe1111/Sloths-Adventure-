@@ -32,6 +32,11 @@ export interface Waterfall {
   veil?: boolean;
   /** ground behind the water (a cave ledge, 4-3): standing on it at height y, between x0 and x1, the pour goes past in front of him */
   shelter?: Array<{ x0: number; x1: number; y: number }>;
+  /**
+   * a plug fall he has got by (4-3): standing on ground right of x, at or above height y, he is past the top of its stair, which only a
+   * stopped fall lets him reach. Its boulder is then in its slot for good, so a run started from a later flag finds it as it was left
+   */
+  past?: { x: number; y: number };
 }
 
 /** a pool a fall keeps full, and the log that floats on it (a platform that rises and sinks with the water) */

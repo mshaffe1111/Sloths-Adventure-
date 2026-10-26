@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildProtoStage, HAND_STAGES, stageSeconds } from './protoStage.ts';
-import { buildWaterfallSteps, SURGE_CLIMB, WET, type FallInfo } from './w4Stage43.ts';
+import { buildWaterfallSteps, POOL, ROCK_TIP, ROCK_WARN, SURGE_CLIMB, WET, type FallInfo } from './w4Stage43.ts';
 import { validateStage } from './levelCheck.ts';
 import { PHYS, reachJump } from './physics.ts';
 import { FALLS } from './waterfalls.ts';
@@ -345,5 +345,53 @@ test('4-3: every surge goes quiet for long enough to climb from the foot of its 
       // every cave on a stair is sheltered, and only a cave
       for (const p of steps) if (p.width > WET.tread + 60) assert.ok((w.shelter ?? []).some((q) => q.y === p.y && q.x0 >= p.x && q.x1 <= p.x + p.width), `seed ${s}: a cave the water still pushes in`);
     }
+  }
+});
+
+test('4-3: the boulder is taught as it is moved (walk into it from beside it on its shelf), and every plug fall knows the ground past it', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const h = st.proto.hints.find((q) => /boulder/.test(q.text))!;
+    for (const t of [h.text, h.pad, h.keys]) assert.ok(/Walk right into it/.test(t) && /push/.test(t), `seed ${s}: "${t}"`);
+    // (said only before the boulder's slot: from further on, higher than its shelf, it used to come up late, well past it)
+    for (const q of st.proto.hints.filter((q) => /boulder in/.test(q.text) || q === h)) assert.ok(q.beforeX !== undefined && q.beforeX > q.x, `seed ${s}: "${q.text}" has no beforeX`);
+    for (const f of st.falls43.filter((q) => q.kind === 'plug' || q.kind === 'pool')) {
+      const w = st.proto.w4!.falls!.find((q) => q.id === f.fallId)!;
+      const top = st.platforms.find((p) => p.id === f.steps[f.steps.length - 1])!;
+      // the ground past it: right of the stair, at the height of the terrace the stair climbs to (and not the stair's own steps)
+      assert.ok(w.past && w.past.x > w.x + w.width && w.past.y < top.y, `seed ${s}: fall ${f.fallId} has no "past"`);
+      const on = st.platforms.find((p) => p.x <= w.past!.x && p.x + p.width > w.past!.x && Math.abs(p.y - (w.past!.y - 10)) < 1);
+      assert.ok(on, `seed ${s}: nothing to stand on past fall ${f.fallId}`);
+    }
+  }
+});
+
+test('4-3: from the log at its highest the ledge is a double jump straight up (it reaches out over the log), with a petal on it there and Dot saying so', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const pairs = [
+      { log: st.falls43.find((f) => f.kind === 'pool')!.log!, ledge: undefined as number | undefined },
+      { log: st.tides43[0].log, ledge: st.tides43[0].ledge },
+    ];
+    for (const pr of pairs) {
+      const log = st.platforms.find((p) => p.id === pr.log)!;
+      const pool = st.proto.w4!.pools!.find((q) => q.platformId === pr.log)!;
+      // the ledge over the log's near end
+      const ledge = st.platforms.find((p) => (pr.ledge === undefined || p.id === pr.ledge) && p.height === 24 && Math.abs(p.y - (pool.fullY - POOL.ledge)) < 1 && p.x < log.x && p.x + p.width >= log.x + POOL.over - 1)!;
+      assert.ok(ledge, `seed ${s}: no ledge reaching over the log ${pr.log}`);
+      assert.ok(POOL.ledge + 20 < PHYS.jumpV ** 2 / (2 * PHYS.gravUp) + PHYS.doubleV ** 2 / (2 * PHYS.gravUp), 'the jump up from the log is not a plain double jump');
+      assert.ok(st.collectibles.some((c) => c.type === 'flower' && c.x > log.x && c.x < log.x + POOL.over && Math.abs(c.y - (ledge.y - 34)) < 1), `seed ${s}: no petal on the ledge over the log`);
+      assert.ok(st.proto.hints.some((q) => /near end of the log/.test(q.text) && /straight up/.test(q.text) && q.x < log.x), `seed ${s}: Dot does not say where to jump from`);
+    }
+  }
+});
+
+test('4-3: every rock warns for ROCK_WARN seconds, and Dot\'s rock line is the one w4Play says if it was missed', () => {
+  assert.ok(ROCK_WARN >= 2);
+  for (const s of SEEDS) {
+    const st = build(s);
+    for (const r of st.proto.w4!.rocks ?? []) assert.equal(r.warn, ROCK_WARN, `seed ${s}`);
+    assert.equal(st.proto.w4!.rockTip, ROCK_TIP);
+    assert.ok(st.proto.hints.some((h) => h.text === ROCK_TIP), `seed ${s}`);
   }
 });

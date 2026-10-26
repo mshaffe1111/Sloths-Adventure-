@@ -283,6 +283,8 @@ export interface Platform {
   art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog';
   /** one of the Sky Sovereign's rock pillars in 4-10 (sovereignFight.ts): its index. It is a wall with a top to stand on; it cracks, and broken it is a stump */
   pillar?: number;
+  /** a knot of wood standing at the end of a high branch (4-6): a little wall, so he cannot walk off it into a very long fall */
+  lip?: boolean;
 }
 
 /**
