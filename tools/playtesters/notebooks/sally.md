@@ -60,3 +60,14 @@
 - Cakes put Pokey to sleep for a bit (little z over his head). Jump over anything sitting on the ground that looks like food.
 - Dot's speech box sits low on a small phone and can cover Pokey. Wait it out before a tricky jump.
 - "Skip tips" is safe to press: Pokey doesn't jump or punch when you press it.
+
+## 2026-10-26 (World 5 first look, new HUD on)
+- A short flick up only gets Pokey about knee-high. For anything taller than he is, flick up, wait a quarter second, then flick again while still holding the slide. The second flick is what gets you on top.
+- If two flicks straight up keep bumping a ledge, back off a step first, then do a long hold-jump plus one more flick and steer in at the top. An up-and-over flick (up-right) as the second flick also hooks you onto the lip.
+- Standing still is bad here: silk creeps onto Pokey after a couple of seconds. Wiggle the slide left-right-left-right to shake it off; keep moving in little slides with a tap between them.
+- Spiders crouch and show "!!" before they rush. Stop, let them come, and tap two or three times. If you get hit from behind, it was one you walked past: turn round (tiny slide back) and tap.
+- Waiters carry trays; tap them a few times. They come back at you if you walk away.
+- Never let go next to a chair or stool. Hold one long slide right past it.
+- Cakes make Pokey sleepy and slow (moon bubble). Hop them with two flicks; one short flick isn't enough to clear them on a running start.
+- Webs on the ground hum and call spiders. Two flicks over them, not one.
+- Dot keeps talking story lines even after Skip tips; that's fine, she isn't giving orders then.
