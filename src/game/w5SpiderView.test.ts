@@ -210,3 +210,19 @@ test('5-1: a punch or kick thrown at a rushing spider before it bites wins, neve
   assert.deepEqual(trades, []);
   assert.ok(wins > 20, `${wins} clean wins`);
 });
+
+// ── 5-5 Caught in Silk: its awake spiders, and the sleepers a thread's hum wakes, upright and sideways ──
+test(`5-5: every spider hit, upright and sideways, comes after a crouch on screen for ${WARN} s or more`, () => {
+  const bad: string[] = [];
+  let rushes = 0;
+  for (const [w, h] of VIEWS) {
+    for (const every of [1.5, 1.1]) {
+      const run = playThrough('5-5', w, h, every, 0.5);
+      assert.ok(run.reached, `5-5 ${w}x${h}: the run stopped at x ${run.x} of ${Math.round(run.end)}`);
+      rushes += run.rushes;
+      for (const hit of run.hits) if (hit.warned < WARN) bad.push(`${w}x${h} hop ${every} s: spider ${hit.id} at ${hit.t.toFixed(1)} s (dx ${hit.dx}) warned ${hit.warned.toFixed(2)} s`);
+    }
+  }
+  assert.ok(rushes > 10, `${rushes} rushes: they still come`);
+  assert.deepEqual(bad, []);
+});

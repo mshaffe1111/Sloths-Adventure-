@@ -34,11 +34,12 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import { findForStage } from './finds.ts';
 import { reachJump } from './physics.ts';
 import { PAST_SHRINE } from './rules.ts';
-import { TABLE_CARD, type Butler, type Cake, type Carving, type Chair, type TeaTable, type Thread, type W5Decor, type W5Extras, type W5Spider } from './w5Kit.ts';
+import { TABLE_CARD, W5_TEACH, type Butler, type Cake, type Carving, type Chair, type TeaTable, type Thread, type W5Decor, type W5Extras, type W5Spider } from './w5Kit.ts';
 import { W5_HINTS, type W5Hint } from './w5Lines.ts';
+import { silkLine, type Cocoon, type RestBranch } from './w5Kit.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 
-export type W5Plan = '5-1' | '5-2';
+export type W5Plan = '5-1' | '5-2' | '5-5';
 
 /** the floor of a soft pit, and the step out of it (as protoStage.ts) */
 const HOLLOW_Y = 710;
@@ -65,6 +66,25 @@ export const W5_HEART_UP = 34;
 const GAP_TELL = 760;
 const GAP_TELL_52 = 2400;
 
+// ── 5-5 Caught in Silk ──
+/** 5-5's goal: creatures freed (the stage hangs half again as many cocoons, the ones in the high web on top) */
+export const COCOON_GOAL_55 = 12;
+/** how far over the ground a cocoon's bottom hangs: his fist (40 px up) lands by its middle (w5Kit COCOON.mid, 34 px over its bottom) */
+export const COCOON_UP = 18;
+/** a quick player's seconds at a cocoon: stop, three punches, on */
+const COCOON_SECONDS = 1.4;
+/** how far ahead a first-time line is said in 5-5 (its own line would come at w5Play's SEE, 560 px: too late while the scene plays) */
+const EARLY = 900;
+/** the rest branch: how high (one hop from its mossy stump) */
+const REST_UP = 92;
+/** the high web: the silk line's top and bottom, how far past it the branch starts, and how high the branch is (above any jump) */
+const WEB_TOP = 480;
+const WEB_LOW = 80;
+const WEB_OFF = 190;
+/** the silk line hangs this far short of the pit's lip */
+const WEB_LIP = 20;
+const WEB_UP = 220;
+
 /** what the tests read back about the stage (ids and x's) */
 export interface W5Info {
   plan: W5Plan;
@@ -81,6 +101,8 @@ export interface W5Info {
   doubleLesson?: { hint: number; edge: number };
   /** the reminder before the first stump only the second jump climbs: the x of its line and of that stump */
   tallLesson?: { hint: number; at: number };
+  /** 5-5: the high web (the silk line's vine id, the branch it reaches, and the cocoons over it, by their place in w5.cocoons) */
+  web55?: { vine: number; branch: number; cocoons: number[] };
 }
 
 export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): GeneratedStage & { proto: ProtoExtras; w5info: W5Info } {
@@ -539,12 +561,187 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     });
   }
 
+  // ───────────────────────────── 5-5 Caught in Silk ─────────────────────────────
+  // 5-5 Caught in Silk (rescue, dusk): "Free {n} creatures wrapped in the silk." (COCOON_GOAL_55; the stage hangs about half again more)
+  //   1. START    the guests who sat, and silk over everything as the light goes (room for the goal card and the fern's line).
+  //   2. LEARN    the first cocoons hang low over the ground: Dot's line ("Tap to punch it open") as the first comes into view.
+  //   3. REST     the rest branch where the orchids hang in rows: the pouch scene (STORY-REWRITE.md World 5, "The pouch") plays there
+  //               and on as he walks, and standing on the branch while it plays is resting, not sitting (w5Play.ts stepRest). The calm
+  //               after it has cocoons to free and nothing that bites.
+  //   4. DEVELOP cocoons along a high road, a jumping spider by them, the second jump over a soft pit.
+  //   5. TWIST   a humming thread and its sleeper, then the high web: a silk line to swing up to a branch above any jump, with three
+  //               cocoons over it (on top of the goal: the ground and the high roads hold enough).
+  //   6. FINISH  the ideas again in new pairs, flags between, then World 5's keepsake (the pressed petal) in a Hush Fern near the end
+  //               (its crouch line holds the screen until he crouches, so nothing new comes after it), and the shrine.
+  // Every first-time line is said well ahead here (EARLY): a line of the scene on screen takes a moment to give way to it.
+  // (its own pieces: the cocoons, the rest branch and its scene, the silk line up to the high web, and World 5's keepsake in a fern)
+  const cocoons55: Cocoon[] = [];
+  let rest55: RestBranch | undefined;
+  if (plan === '5-5') {
+    // (the second jump and its stumps were taught in 5-1 and reminded in 5-2: no reminders here)
+    doubleSaid = true;
+    tallSaid = true;
+    /** a cocoon hanging with its bottom COCOON_UP px above the ground at `ground` (low enough for a standing punch: COCOON.mid over his fist) */
+    const cocoon = (cx: number, ground: number) => {
+      cocoons55.push({ x: r(cx), y: r(ground - COCOON_UP) });
+      return cocoons55.length - 1;
+    };
+    /** cocoons hanging low over the path, one at a time, with room between to stop and punch */
+    const cocoonRow = (n: number) => {
+      const x0 = x;
+      for (let i = 0; i < n; i++) {
+        run(R.r(280, 340));
+        cocoon(x, G);
+        // (a wrapped visitor lying in the grass nearby: somebody already let out, or not yet)
+        if (R.chance(0.35)) scenery(R.chance(0.5) ? 'cocoon' : 'cocoonTorn', x + R.r(90, 130), R.r(70, 90));
+      }
+      run(R.r(200, 260));
+      row(x0 + 140, x - 120, G - 34, Math.max(2, n), 'orchid');
+      garden(x0, x);
+      expert += (x - x0) / RUN + COCOON_SECONDS * n;
+    };
+    /** a quiet stretch with no fern but one: World 5's keepsake hides in a Hush Fern (crouch beside it) */
+    const fernStretch = () => {
+      const keep = findForStage(config.worldIndex, config.miniIndex);
+      const k0 = x;
+      run(R.r(560, 640));
+      if (keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: r(k0 + (x - k0) / 2), y: G - 26, collected: false, bobPhase: 0 });
+      scenery('blossom', k0 + 60, 90);
+      scenery('blossom2', x - 60, 90);
+      expert += (x - k0) / RUN + 3;
+    };
+    /**
+     * The rest branch where the orchids hang in rows (the pouch scene plays here: w5Play.ts, w5Lines.ts W5_POUCH). A mossy stump to step
+     * up from, the branch a hop above it (ground under the whole of it), the orchid rows hanging over, and nothing near that bites.
+     */
+    const restBranch = () => {
+      run(R.r(160, 200));
+      block(x, x + 130, W5_PLAIN_STUMPS.first);
+      run(150);
+      const y = G - REST_UP;
+      const len = r(R.r(600, 660));
+      branch(x - 20, x + len, y);
+      rest55 = { x0: r(x - 20), x1: r(x + len), y };
+      for (let k = 0; k < 3; k++) {
+        // two rows of hanging blooms, the near one low over his head, the far one higher and between
+        scenery(k % 2 ? 'orchidRow2' : 'orchidRow', x + 90 + k * 220, 250, { b: y - 92 });
+        if (k < 2) scenery(k % 2 ? 'orchidRow' : 'orchidRow2', x + 200 + k * 220, 220, { b: y - 200 });
+      }
+      row(x + 80, x + len - 80, y - 34, 3, 'orchid');
+      run(len + 40);
+      expert += (len + 320) / RUN + 1;
+    };
+    /**
+     * The high web: a silk line to swing on (World 5's lianas), and a branch high off the ground that only a leap from the swing reaches
+     * (above any jump), with cocoons hanging over it. Ground under all of it: a miss is a step back. These are on top of the goal.
+     */
+    const silkWeb = () => {
+      run(R.r(260, 320));
+      const vx = x;
+      const v = silkLine(900 + V.length, vx, G - WEB_TOP, G - WEB_LOW);
+      V.push(v);
+      // the silk line hangs at the lip of a soft pit (the swing is taken from the bank's end); the way on is the second jump over it
+      run(WEB_LIP);
+      const edge = x;
+      const far = edge + Math.min(r(R.r(...GAP2)), r(reachJump(0, true) * 0.8));
+      close();
+      softPit(edge, far);
+      info.gaps.push({ edge, far, double: true });
+      open(far);
+      const b0 = vx + WEB_OFF;
+      const len = r(R.r(460, 540));
+      const br = branch(b0, b0 + len, G - WEB_UP);
+      info.web55 = { vine: v.id, branch: br.id, cocoons: [] };
+      for (let i = 0; i < 3; i++) info.web55.cocoons.push(cocoon(b0 + 110 + ((len - 220) * i) / 2, G - WEB_UP));
+      x = Math.max(x, r(b0 + len));
+      run(R.r(220, 280));
+      expert += (x - vx) / RUN + 0.6 + 3 + COCOON_SECONDS * 3;
+    };
+
+    beat('Start: the silk', () => {
+      // the guests who sat, wrapped where they sat, and silk over everything as the light goes
+      scenery('wrappedChair', 520, 80);
+      scenery('silkLump', 760, 90);
+      rest(R.r(2250, 2400));
+      flag();
+    });
+    beat('Learn: the cocoons, on the ground', () => {
+      // (room after the flag for the fern's line and the goal card: the cocoon's own line comes as the first one comes into view)
+      rest(R.r(450, 520));
+      cocoonRow(3);
+      flag();
+    });
+    beat('Rest: the pouch', () => {
+      // (early in the stage: the scene is long, and it plays out as he goes on, well before the shrine)
+      restBranch();
+      // the calm after it: the scene goes on as he walks, with cocoons to free and nothing that bites
+      rest(R.r(380, 440), false);
+      cocoonRow(2);
+      rest(R.r(560, 640), false);
+      flag();
+    });
+    beat('Develop: cocoons along the high road, a spider by them', () => {
+      gap();
+      stumps(2);
+      highRoad(R.r(560, 640), (x0, x1, y) => {
+        cocoon(x0 + (x1 - x0) * 0.35, y);
+        cocoon(x0 + (x1 - x0) * 0.75, y);
+      });
+      spiderRun(1, R.r(900, 1000));
+      gap(true);
+      flag();
+    });
+    beat('Twist: the high web', () => {
+      // (each first-time line well ahead of its thing: while the pouch scene plays, a line of it on screen takes a moment to give way)
+      hint(x - EARLY, { stage: '5-5', kind: 'move', old: W5_TEACH.thread, text: null });
+      threadTrap(1);
+      // (a long breath after the thread, a hum's spiders and all, before the web: its two lines each have room of their own)
+      rest(R.r(1100, 1200), false);
+      hint(x - EARLY, { stage: '5-5', kind: 'move', old: W5_TEACH.silk, text: null });
+      silkWeb();
+      spiderRun(2, R.r(1000, 1100));
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < stageSeconds('5-5') - 12 && n < 30) {
+        const k = n % 4;
+        if (k === 0) {
+          gap(R.chance(0.5));
+          cocoonRow(1);
+        } else if (k === 1) {
+          highRoad(R.r(480, 560), (x0, x1, y) => {
+            if (R.chance(0.5)) cocoon((x0 + x1) / 2, y);
+          });
+          spiderRun(1, R.r(900, 1000));
+        } else if (k === 2) {
+          // (the first soft chairs of the stage: their line well ahead, the scene may be on)
+          if (!chairs.some((c) => !c.wrapped)) hint(x - EARLY + 300, { stage: '5-5', kind: 'move', old: W5_TEACH.chair, text: null });
+          chairWalk(2, 2);
+          cocoonRow(1);
+        } else {
+          threadTrap(1);
+          gap(true);
+        }
+        if (n % 2 === 1) flag();
+        n++;
+      }
+      // the keepsake's fern, near the end: its line (crouch beside it) waits for him to crouch, so nothing new comes after it
+      fernStretch();
+      rest(R.r(700, 820));
+      if (expert < stageSeconds('5-5')) rest((stageSeconds('5-5') - expert) * RUN + 60);
+    });
+  }
+
   // the shrine, and nothing past it
   const exitX = r(x - 220);
   close();
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
   const past = (px: number) => px > exitX + PAST_SHRINE;
   for (let i = C.length - 1; i >= 0; i--) if (past(C[i].x)) C.splice(i, 1);
+  for (let i = cocoons55.length - 1; i >= 0; i--) if (past(cocoons55[i].x)) cocoons55.splice(i, 1);
+  // (5-5: no petal at or past the shrine's door, where touching the shrine ends the stage before it can be picked)
+  if (plan === '5-5') for (let i = C.length - 1; i >= 0; i--) if (C[i].type === 'flower' && C[i].x > exitX - 40) C.splice(i, 1);
   for (const list of [cakes, butlers, chairs, threads] as Array<Array<{ x?: number; x0?: number }>>) {
     for (let i = list.length - 1; i >= 0; i--) if (past(list[i].x ?? list[i].x0 ?? 0)) list.splice(i, 1);
   }
@@ -555,10 +752,13 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   cid = heartsAtFlags(C, checkpoints, cid, W5_HEART_UP);
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: [] }, C);
   const cfg: LevelConfig = { ...config, levelWidth: W, levelHeight: Math.max(config.levelHeight, 900) };
+  if (plan === '5-5') cfg.targetCount = COCOON_GOAL_55;
   const w5: W5Extras = {
     mood: 'gold', petals: true, ...(plan === '5-1' ? { gentle: true } : {}),
     chairs, tables, cakes, butlers, threads, carvings, spiders, decor,
   };
+  // 5-5: the dusk (the other take from 5-4's, w5Backdrop.ts), the cocoons and the rest branch
+  if (plan === '5-5') Object.assign(w5, { mood: 'dusk', petals: false, cocoons: cocoons55, rest: rest55 } satisfies Partial<W5Extras>);
   return {
     config: cfg,
     trees: T,

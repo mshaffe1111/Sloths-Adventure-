@@ -671,7 +671,9 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   const count = (f: (t: string) => boolean) => stage.collectibles.filter((c) => f(c.type)).length;
   const need = cfg.targetCount;
   if (cfg.objectiveType === 'harvest' && count((t) => t === 'flower' || t === 'leaf') < need) errors.push('not enough flowers/leaves for the quota');
-  if (cfg.objectiveType === 'rescue' && count((t) => t === 'cage') < need) errors.push('not enough cages for the quota');
+  // (5-5: a creature wrapped in a cocoon counts as one to free, w5Play.ts; its stage test checks each hangs where a standing punch lands)
+  const cocoons = (stage as { proto?: { w5?: { cocoons?: unknown[] } } }).proto?.w5?.cocoons?.length ?? 0;
+  if (cfg.objectiveType === 'rescue' && count((t) => t === 'cage') + cocoons < need) errors.push('not enough cages for the quota');
   if (cfg.objectiveType === 'relic_hunt' && count((t) => t === 'relic') < need) errors.push('not enough relics for the quota');
   if (cfg.objectiveType === 'purge' || cfg.objectiveType === 'gauntlet') {
     // (4-9: a capuchin guard blown off its ledge counts as one defeated, w4Play.ts)

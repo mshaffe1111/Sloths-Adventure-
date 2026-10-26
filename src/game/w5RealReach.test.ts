@@ -15,7 +15,7 @@ import { validateStage } from './levelCheck.ts';
 
 const N = Number(process.env.REAL_REACH_SEEDS ?? 1);
 const SEEDS = Array.from({ length: Math.max(1, Math.min(16, N)) }, (_, i) => 1 + i * 37);
-const STAGES = (process.env.REAL_REACH_STAGES ?? '5-1,5-2').split(',').filter((s) => s.startsWith('5-'));
+const STAGES = (process.env.REAL_REACH_STAGES ?? '5-1,5-2,5-5').split(',').filter((s) => s.startsWith('5-'));
 
 for (const id of STAGES) {
   test(`${id} in the real engine: everything picked up, the shrine reached, nowhere he is stranded`, () => {

@@ -5,11 +5,12 @@
  * approved set, so the new look swaps them in the same way; the old look keeps the old words.
  */
 import type { DotLineRow } from './dotLinesData.ts';
+import type { GuideWho } from './dotGuide.ts';
 import { W5_TEACH } from './w5Kit.ts';
 
 /** a stage hint: where it is said, its words for the screen, the pad and the keys (old look), and its new-look line */
 export interface W5Hint {
-  stage: '5-1' | '5-2';
+  stage: '5-1' | '5-2' | '5-5';
   kind: DotLineRow[3];
   old: string;
   pad?: string;
@@ -88,7 +89,7 @@ const TEACH_ROWS: DotLineRow[] = [
   ['w5.hummed', '', 'guide', 'info', T.hummed, 'It hummed! Spiders coming!', null, null, 'spider'],
   ['w5.sheet', '', 'guide', 'move', T.sheet, 'Slide straight past the silk. Don\'t look.', null, 'slide', 'silk sheet'],
   ['w5.orchid', '', 'guide', 'move', T.orchid, 'Flick up while the orchid is open.', null, 'flick-up', 'orchid'],
-  ['w5.cocoon', '', 'guide', 'move', T.cocoon, 'Tap the cocoon to punch it open.', null, 'tap', 'cocoon'],
+  ['w5.cocoon', '', 'guide', 'move', T.cocoon, 'Somebody\'s in there! Tap to punch it open.', null, 'tap', 'cocoon'],
   ['w5.silk', '', 'guide', 'move', T.silk, 'Flick up into the silk to swing.', null, 'flick-up', 'vine'],
   ['w5.spider', '', 'guide', 'move', T.spider, 'Tap to punch the spider, or stomp it.', null, 'tap', 'spider'],
   ['w5.step', '', 'guide', 'help', W5_STEP_HELP, 'Keep sliding forward as you flick up.', null, 'flick-up', 'step'],
@@ -109,5 +110,56 @@ const HINT_ROWS: DotLineRow[] = Object.entries(W5_HINTS).map(([id, h]) => {
   return [`hint.${w.stage}.${id.slice(3)}`, w.stage, 'stage hint', w.kind, w.old, w.text, w.then ?? null, w.gesture ?? null, w.target ?? null];
 });
 
+// ───────────────────────────── 5-5 Caught in Silk: the pouch scene ─────────────────────────────
+
+/** one line of a scene played in a stage: who says it, and the words (each its own bubble, 12 words or fewer) */
+export interface W5SceneLine {
+  id: string;
+  who: GuideWho;
+  text: string;
+  /** seconds after the line before it was said (default: its reading time and a breath); "A minute later" waits longer */
+  after?: number;
+}
+
+/**
+ * The pouch (reference/STORY-REWRITE.md, World 5, "The pouch (halfway through the world)"), played in 5-5 at the rest branch where the
+ * orchids hang in rows: a short beat in play, not a cutscene. The script's lines as written, the narration in the past tense as the
+ * petal's (wayside.ts "Petal", the narrator). Changed only where the 12-word line rule forces it:
+ *   - "They stopped to rest on a branch where the orchids hung in rows" (13 words) loses "on a branch" (the branch is the picture);
+ *   - Dot's long line (26 words) is said in three bubbles, every word kept, the last trailing off as she stops;
+ *   - "Dot let go of the pouch. A minute later her wing was back on it." (14) is two, the second a while after the first.
+ * Meeca's own stage comes right after 5-5 and opens on "Three days earlier" (Matt, 2026-10-26; extraStages.ts PLANNED_STAGES).
+ */
+export const W5_POUCH: readonly W5SceneLine[] = [
+  { id: 'n1', who: 'Petal', text: 'They stopped to rest where the orchids hung in rows.' },
+  { id: 'n2', who: 'Petal', text: 'Pokey stood, because the note said so.' },
+  { id: 'n3', who: 'Petal', text: 'Dot touched the pouch at her side. Then she touched it again.' },
+  { id: 'p1', who: 'Pokey', text: 'You keep checking that pouch.' },
+  { id: 'd1', who: 'Dot', text: 'It\'s a thing. It isn\'t for you.' },
+  { id: 'p2', who: 'Pokey', text: 'Who\'s it for?' },
+  { id: 'd2', who: 'Dot', text: 'Somebody I\'m scared of.' },
+  { id: 'p3', who: 'Pokey', text: 'The General?' },
+  { id: 'd3', who: 'Dot', text: 'It\'s not him I\'m scared of.' },
+  { id: 'd4', who: 'Dot', text: 'It\'s what it says, and what he does when he reads it,' },
+  { id: 'd5', who: 'Dot', text: 'and that I... that I took so—' },
+  { id: 'n4', who: 'Petal', text: 'She stopped.' },
+  { id: 'p4', who: 'Pokey', text: 'Then give it to him when you\'re ready. Not before.' },
+  { id: 'd6', who: 'Dot', text: 'And what if it\'s too late by then?' },
+  { id: 'p5', who: 'Pokey', text: 'Slow isn\'t stopped.' },
+  { id: 'd7', who: 'Dot', text: 'Is that true, or is that just something you say?' },
+  { id: 'p6', who: 'Pokey', text: 'I don\'t know yet. It hasn\'t been wrong.' },
+  { id: 'n5', who: 'Petal', text: 'Dot let go of the pouch.' },
+  { id: 'n6', who: 'Petal', text: 'A minute later her wing was back on it.', after: 15 },
+];
+
+const sceneId = (l: W5SceneLine) => `scene.5-5.pouch.${l.id}`;
+// (a stage hint's surface, so the guide swaps them by their words as it does every engine line; the old words are the new ones)
+const POUCH_ROWS: DotLineRow[] = W5_POUCH.map((l) => [sceneId(l), '5-5', 'stage hint', 'story', l.text, l.text, null, null, null]);
+
+/** who says each scene line (dotLines.ts engineGuideLine: the engine hands over only words, and a scene has more than Dot in it) */
+export const W5_SPEAKERS: ReadonlyMap<string, GuideWho> = new Map(W5_POUCH.map((l) => [sceneId(l), l.who]));
+/** the scene's lines follow one another with a breath between, not a story aside's long wait (dotGuide.ts GuideLine.scene) */
+export const W5_SCENE_IDS: ReadonlySet<string> = new Set(W5_POUCH.map(sceneId));
+
 /** every World 5 row, for dotLines.ts */
-export const W5_DOT_LINES: readonly DotLineRow[] = [...TEACH_ROWS, ...HINT_ROWS];
+export const W5_DOT_LINES: readonly DotLineRow[] = [...TEACH_ROWS, ...HINT_ROWS, ...POUCH_ROWS];

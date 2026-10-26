@@ -61,6 +61,11 @@ export interface GuideLine {
    * (QA, 5-2, 2026-10-26: the cake, thread and tray tips were dropped unseen because she had already jumped and punched.)
    */
   thing?: boolean;
+  /**
+   * one line of a scene played in a stage (5-5's pouch scene, w5Lines.ts W5_POUCH): a story line, but the next one follows after a
+   * breath, not a story aside's long wait, so the people in it talk to each other
+   */
+  scene?: boolean;
   /** where it came from: an engine line can be taken down by the engine ("the moment has passed") */
   source: 'engine' | 'lesson' | 'coach' | 'story' | 'journal' | 'struggle';
 }
@@ -313,7 +318,7 @@ export class GuideQueue {
     }
     const b = this.best(now, env);
     if (!b) return null;
-    const gap = b.line.kind === 'story' ? GUIDE.storyGapMs : isUrgent(b.line) ? 0 : GUIDE.breathMs;
+    const gap = b.line.kind === 'story' && !b.line.scene ? GUIDE.storyGapMs : isUrgent(b.line) ? 0 : GUIDE.breathMs;
     if (now - this.endedAt < gap) return null;
     if (env.hold) return null;
     if (env.danger && !isUrgent(b.line)) return null;
