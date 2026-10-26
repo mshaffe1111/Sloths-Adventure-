@@ -118,7 +118,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { hitLabel, hitsLeft } from './bossHits.ts';
 import { drawBossOverDark, drawGroundCues } from './bossCues.ts';
 import { prowlerGlow } from './lairProwler.ts';
-import { baseScale, bossViewWidth, bossViewX } from './bossCamera.ts';
+import { baseScale, bossViewWidth, bossViewX, keepInView } from './bossCamera.ts';
 import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar } from './sovereignFight.ts';
 import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
@@ -3052,6 +3052,7 @@ export class GameEngine {
     const want = bossViewWidth({
       w, h, levelH, px: p.x, bx: b.x, bw: b.width, bh: b.height, air: b.ai?.air ?? 0, arenaW: arena.right - arena.left,
       frameArena: def?.frameArena, frameAir: def?.frameAir, floorAt: def?.floorAt, worldViewH: WORLD_VIEW_H, portraitViewW: PORTRAIT_VIEW_W,
+      minW: def?.frameRefuges ? def.frameRefuges[1] - def.frameRefuges[0] + 30 : undefined,
     });
     // the killing blow pushes the camera in
     const target = Math.max(0.4, (baseViewW / want) * (this.slowMoLeft > 0 ? 1.3 : 1));
@@ -4253,6 +4254,9 @@ export class GameEngine {
       const wr = def?.openCue && weakOpen(bs, def) ? weakRect(bs, def, this.currentStage.arena.floor) : null;
       const fx = wr ? wr.x + wr.w / 2 : bs.x;
       let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : bossViewX(p.x, fx, vw);
+      // (upright, a boss that lists its refuges keeps them in the view: the tree, stump and vine you dodge Venom from)
+      const fr = def?.frameRefuges;
+      if (fr && !arenaWide && this.viewCssH > this.viewCssW) tx = keepInView(tx, vw, this.currentStage.arena.left + fr[0], this.currentStage.arena.left + fr[1]);
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));

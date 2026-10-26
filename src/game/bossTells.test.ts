@@ -126,3 +126,50 @@ test('3-10: everything that hurts when the pounce lands is inside the ring, and 
     }
   }
 });
+
+test("3-10 on a fresh phone: Dot's first-time tips are said (the opening, and each move the first time), and the new look keeps them", async () => {
+  const { swapLine } = await import('./dotLines.ts');
+  const sim = new BossPlay('3-10');
+  sim.skipEntrance();
+  // every move once
+  const seen = new Set<string>();
+  for (let i = 0; i < 30 * 120 && seen.size < Object.keys(sim.def.moves).length; i++) {
+    sim.frame(i % 40 < 20 ? { left: true } : { right: true });
+    if (sim.boss.ai!.state === 'tell' && sim.boss.ai!.move) seen.add(sim.boss.ai!.move);
+    if (i === 30 * 20) sim.boss.hp = Math.floor(sim.boss.maxHp * 0.6);
+  }
+  const said = sim.guides.map((g) => g.text);
+  const want = [sim.def.guide!.start!, ...Object.entries(sim.def.moves).filter(([k, m]) => m.guide && seen.has(k)).map(([, m]) => m.guide!)];
+  assert.ok(want.length >= 3, `tips to check: ${want.length}`);
+  for (const w of want) {
+    assert.ok(said.includes(w), `never said: "${w}"`);
+    // the new look says Matt's words for a line, or the line itself; it never cuts a boss tip
+    const sw = swapLine(w, '3-10');
+    assert.ok(!sw || sw.text, `the new look cuts "${w}"`);
+  }
+});
+
+test('1-10 upright: the tree, the stump and the vine stay in view through every lunge', () => {
+  const sim = new BossPlay('1-10', false, { w: 390, h: 844 });
+  sim.skipEntrance();
+  const a = sim.arena;
+  const c = sim.e.camera as { x: number; viewportWidth: number };
+  let lunges = 0;
+  let quiet = 0;
+  // Pokey goes to different spots through the fight (by the tree, the stump, the middle, near the coils)
+  const spots = [a.left + 40, a.left + 400, a.left + 800, a.left + 1100];
+  for (let i = 0; i < 30 * 40; i++) {
+    const x = spots[Math.floor(i / 150) % spots.length];
+    sim.frame(Math.abs(sim.p.x - x) > 20 ? (sim.p.x < x ? { right: true } : { left: true }) : {});
+    const st = sim.boss.ai!.state;
+    // (not just after he is hurt or comes back from a lost life: the view snaps to him then and eases back)
+    if ((sim.p as { invincibleTimer: number }).invincibleTimer > 0) quiet = 30;
+    if (quiet > 0) quiet--;
+    else if ((st === 'tell' || st === 'act') && sim.boss.ai!.move === 'sweep' && sim.boss.ai!.t > 0.4) {
+      lunges++;
+      const v0 = c.x, v1 = c.x + c.viewportWidth;
+      for (const dx of [20, 330, 660]) assert.ok(a.left + dx > v0 && a.left + dx < v1, `refuge at ${dx} out of view (${Math.round(v0 - a.left)}..${Math.round(v1 - a.left)}) with Pokey at ${Math.round(sim.p.x - a.left)}`);
+    }
+  }
+  assert.ok(lunges > 10);
+});

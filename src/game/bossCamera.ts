@@ -24,6 +24,8 @@ export interface BossViewIn {
   frameArena?: boolean;
   frameAir?: boolean;
   floorAt?: number;
+  /** upright, open at least this wide (world units): a boss's refuges, so they all fit (frameRefuges) */
+  minW?: number;
   /** the world width a screen shows outside a boss fight: landscape is this tall, portrait this wide */
   worldViewH: number;
   portraitViewW: number;
@@ -52,6 +54,7 @@ export function bossViewWidth(o: BossViewIn): number {
   // upright, the hero stays a readable size: the view never opens wider than ~720 units (a sky boss, whose openings are spread wider, 860)
   // (sideways, a sky boss may open a little wider than the arena so she stays under the bar on a long, low phone)
   const widest = portrait ? Math.max(baseViewW, o.frameAir ? 860 : 720) : o.arenaW + (o.frameAir ? 320 : 200);
+  if (portrait && o.minW) need = Math.max(need, o.minW);
   return Math.max(baseViewW, Math.min(need, widest));
 }
 
@@ -59,4 +62,13 @@ export function bossViewWidth(o: BossViewIn): number {
 export function bossViewX(px: number, bx: number, vw: number): number {
   const tx = (px + bx) / 2 - vw / 2;
   return Math.max(px + 70 - vw, Math.min(px - 70, tx));
+}
+
+/**
+ * Keep a stretch of the arena (the refuges a boss's attacks are dodged from) in the view when it fits: the view moves no further than
+ * it must from where it wanted to be (2026-10-26, QA gate: upright, on every lunge Venom's camera slid his tree off the left edge).
+ */
+export function keepInView(tx: number, vw: number, x0: number, x1: number, margin = 10): number {
+  if (x1 - x0 + margin * 2 > vw) return tx;
+  return Math.min(x0 - margin, Math.max(x1 + margin - vw, tx));
 }
