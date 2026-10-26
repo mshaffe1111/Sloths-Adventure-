@@ -9,6 +9,8 @@ import { BossPlay } from './bossPlay.ts';
 import { venomPose, VF } from './venomFang.ts';
 import { darkReveal } from './bossCues.ts';
 import { hitLabel, hitsLeft } from './bossHits.ts';
+import { bodyHurts } from './bossAI.ts';
+import { POUNCE } from './bossDefs.ts';
 import type { BossEntity } from './types.ts';
 
 test("1-10: Dot's tip comes before the first lunge, which rears back for at least 0.6 s with a hiss", () => {
@@ -57,4 +59,69 @@ test('the hit pop says what came off the bar: half a hit, one, or two', () => {
   // a hook on a stunned boss (3) can take two at once: it says so
   assert.equal(hitsLeft(3, 12, 6) - hitsLeft(0, 12, 6), 2);
   assert.match(hitLabel(2, 0, true, 100), /CRITICAL ×2!/);
+});
+
+test('3-10: his body never hurts by touch, before a move or during one: only his strikes do', () => {
+  const sim = new BossPlay('3-10');
+  sim.skipEntrance();
+  const b = sim.boss;
+  for (const mv of Object.keys(sim.def.moves)) {
+    for (const [state, t] of [['tell', 0.5], ['act', 0.1], ['rec', 0.2], ['idle', 0]] as const) {
+      const as = { ...b, ai: { ...b.ai!, state, move: mv, t } } as BossEntity;
+      assert.equal(bodyHurts(as, sim.def), false, `${mv} ${state}`);
+    }
+  }
+  assert.ok(sim.def.moves.streak.tell >= 0.6, 'the dash rears up for long enough to read');
+});
+
+test('3-10: everything that hurts when the pounce lands is inside the ring, and nothing hurts before he comes down onto it', () => {
+  for (const screen of [{ w: 844, h: 390 }, { w: 390, h: 844 }]) {
+    const sim = new BossPlay('3-10', false, screen);
+    sim.skipEntrance();
+    const b = sim.boss;
+    const a = sim.arena;
+    const br = b.ai!;
+    for (let i = 0; i < 20; i++) sim.frame();
+    const moves = { ...sim.def.moves };
+    for (const k of Object.keys(sim.def.moves)) if (k !== 'pounce') delete (sim.def.moves as Record<string, unknown>)[k];
+    try {
+      // phase 2: the landing sends ripples too
+      b.hp = Math.floor(b.maxHp * 0.6);
+      sim.p.x = a.left + 400;
+      b.x = a.left + 900;
+      br.state = 'idle';
+      br.idle = 0.05;
+      br.recent = ['streak'];
+      const state = (): string => br.state;
+      let hurtFrames = 0;
+      let peak = 0;
+      for (let i = 0; i < 200; i++) {
+        sim.frame();
+        if (state() === 'act' && br.move === 'pounce') {
+          peak = Math.max(peak, br.air);
+          for (const h of br.hurt) {
+            hurtFrames++;
+            assert.ok(br.t >= POUNCE.act * POUNCE.strikeFrom - 0.04, `hurts at ${br.t.toFixed(2)} s, on the way`);
+            assert.ok(h.x >= br.d.aim - POUNCE.ring && h.x + h.w <= br.d.aim + POUNCE.ring, `a box at ${Math.round(h.x - br.d.aim)}..${Math.round(h.x + h.w - br.d.aim)} from the ring's middle`);
+          }
+        }
+        if (state() === 'rec') break;
+      }
+      assert.ok(hurtFrames > 0, 'the landing hurts');
+      // the ripples start at the ring's edge, after a warning beat
+      const waves = (sim.e.hazards as Array<{ kind: string; x: number; warn: number }>).filter((h) => h.kind === 'shock');
+      assert.equal(waves.length, 2);
+      for (const w of waves) assert.ok(Math.abs(Math.abs(w.x - br.d.aim) - POUNCE.ring) < 2 && w.warn > 0);
+      // sideways, the top of the leap stays below the boss bar (the top ~80 world px of the view)
+      if (screen.w > screen.h) {
+        // (in screen px: the painted cat stands about 180 world px tall in the leap; the bar takes the top 60 px of the screen)
+        const vh = sim.e.camera.viewportHeight as number;
+        const zoom = screen.h / vh;
+        const top = (vh * (sim.def.floorAt ?? 0.7) - peak - 180) * zoom;
+        assert.ok(top > 70, `the leap's top is ${Math.round(top)} px from the top of the screen`);
+      }
+    } finally {
+      Object.assign(sim.def.moves, moves);
+    }
+  }
 });

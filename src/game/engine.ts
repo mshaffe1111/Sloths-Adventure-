@@ -5098,7 +5098,9 @@ export class GameEngine {
   private drawPopups(ctx: CanvasRenderingContext2D) {
     ctx.save();
     ctx.textAlign = 'center';
-    ctx.font = 'bold 15px Fredoka, sans-serif';
+    // (a boss fight is zoomed out to show both fighters: the words grow back to a readable size on the phone, QA gate)
+    const fs = this.boss && !this.boss.defeated && this.zoom < 1 ? Math.round(Math.max(15, (15 / this.zoom) * 0.85)) : 15;
+    ctx.font = `bold ${fs}px Fredoka, sans-serif`;
     ctx.lineJoin = 'round';
     const cam = this.camera;
     const placed: Array<{ x0: number; x1: number; y: number }> = [];
@@ -5109,11 +5111,11 @@ export class GameEngine {
       const x = x0 > x1 ? cam.x + cam.viewportWidth / 2 : Math.max(x0, Math.min(x1, ft.x));
       let y = Math.max(cam.y + 22, Math.min(cam.y + cam.viewportHeight - 8, ft.y));
       for (let k = 0; k < 6; k++) {
-        const hit = placed.find((q) => x - half < q.x1 && x + half > q.x0 && Math.abs(y - q.y) < 17);
+        const hit = placed.find((q) => x - half < q.x1 && x + half > q.x0 && Math.abs(y - q.y) < fs + 2);
         if (!hit) break;
-        y = hit.y - 18;
+        y = hit.y - fs - 3;
       }
-      y = Math.max(cam.y + 22, y);
+      y = Math.max(cam.y + fs + 7, y);
       placed.push({ x0: x - half, x1: x + half, y });
       ctx.lineWidth = 3;
       ctx.strokeStyle = 'rgba(20, 14, 24, 0.7)';

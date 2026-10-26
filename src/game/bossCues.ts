@@ -9,6 +9,7 @@ import type { BossEntity } from './types.ts';
 import type { BossDef } from './bossAI.ts';
 import { weakOpen } from './bossAI.ts';
 import { drawBossFighter } from './bossArt.ts';
+import { POUNCE } from './bossDefs.ts';
 
 /** how much of him is drawn back over the dark (0..1): `dark` is how dark the lair is (0 lit, 1 fully dark) */
 export function darkReveal(b: BossEntity, def: BossDef, dark: number): number {
@@ -56,21 +57,50 @@ export function drawPounceRing(ctx: CanvasRenderingContext2D, b: BossEntity, def
   const br = b.ai;
   if (def.lair !== 'prowler' || !br || br.move !== 'pounce' || (br.state !== 'tell' && br.state !== 'act') || br.d.aim === undefined) return;
   const x = br.d.aim;
-  const rw = b.width / 2 + 14;
-  const tight = br.state === 'act' ? 1 : 0.5 + 0.5 * Math.min(1, br.t / 0.4);
+  // it covers the whole of what hurts when he lands, head and paws included, with a margin (bossReach.test.ts)
+  const rw = POUNCE.ring;
+  const pulse = 0.5 + 0.5 * Math.sin(time * 14);
   ctx.save();
-  ctx.globalAlpha = alpha * (0.55 + 0.35 * Math.sin(time * 16));
-  ctx.strokeStyle = '#e0fbff';
-  ctx.lineWidth = 4;
-  ctx.setLineDash([18, 10]);
-  ctx.lineDashOffset = -time * 60;
-  ctx.shadowColor = '#7dffe0';
-  ctx.shadowBlur = 12;
+  // the patch: a strong moonlit pool with a red heart, so it reads as "not here" at a glance (QA: "a faint glowing patch")
+  const g = ctx.createRadialGradient(x, floor - 2, 4, x, floor - 2, rw);
+  g.addColorStop(0, `rgba(255, 120, 120, ${0.55 * alpha})`);
+  g.addColorStop(0.55, `rgba(220, 250, 255, ${0.42 * alpha})`);
+  g.addColorStop(1, `rgba(220, 250, 255, ${0.12 * alpha})`);
+  ctx.translate(x, floor - 2);
+  ctx.scale(1, 0.12);
+  ctx.translate(-x, -(floor - 2));
+  ctx.fillStyle = g;
   ctx.beginPath();
-  ctx.ellipse(x, floor - 2, rw * (1.25 - 0.25 * tight), 16, 0, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.globalAlpha = alpha * 0.18;
-  ctx.fillStyle = '#bff7ff';
+  ctx.arc(x, floor - 2, rw, 0, Math.PI * 2);
   ctx.fill();
+  ctx.restore();
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.shadowColor = '#7dffe0';
+  ctx.shadowBlur = 16;
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 6 + 2 * pulse;
+  ctx.beginPath();
+  ctx.ellipse(x, floor - 2, rw, 30, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = '#ff6b6b';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([16, 10]);
+  ctx.lineDashOffset = -time * 70;
+  ctx.beginPath();
+  ctx.ellipse(x, floor - 2, rw - 14, 22, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  // chevrons over the edges, pointing out: get out this way
+  ctx.setLineDash([]);
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 5;
+  for (const d of [-1, 1]) {
+    const cx = x + d * (rw + 26 + 8 * pulse);
+    ctx.beginPath();
+    ctx.moveTo(cx - d * 12, floor - 34);
+    ctx.lineTo(cx, floor - 22);
+    ctx.lineTo(cx - d * 12, floor - 10);
+    ctx.stroke();
+  }
   ctx.restore();
 }
