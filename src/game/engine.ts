@@ -111,6 +111,9 @@ import { drawLairBack, drawLairFront, drawLairObjects, drawLairWorld, lairOwnsSc
 import { EASY_OPEN_MUL, bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
+import { hitLabel, hitsLeft } from './bossHits.ts';
+import { drawBossOverDark } from './bossCues.ts';
+import { prowlerGlow } from './lairProwler.ts';
 import { baseScale, bossViewWidth, bossViewX } from './bossCamera.ts';
 import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar } from './sovereignFight.ts';
 import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
@@ -2692,7 +2695,8 @@ export class GameEngine {
     // moment is heard and seen wherever the eye is
     if (def.openCue && !wasOpen && weakOpen(b, def) && b.phase === prevPhase) {
       sound.playCheckpoint();
-      const wr = def.weak ? weakRect(b, def, c.arena.floor) : null;
+      // (Venom's head is placed by weakAt: it gets its NOW! too)
+      const wr = def.weak || def.weakAt ? weakRect(b, def, c.arena.floor) : null;
       if (wr && br.state === 'rec') this.addFloatingText('NOW!', wr.x + wr.w / 2, wr.y - 18, '#fde047');
     }
 
@@ -2715,7 +2719,7 @@ export class GameEngine {
         this.addFloatingText('PHASE 2: SPEED UP!', b.x, b.y - b.height, '#f97316');
       }
     }
-    if (br.state === 'tell' && prevState !== 'tell') sound.playPredator('jaguar', 0);
+    if (br.state === 'tell' && prevState !== 'tell') sound.playPredator(def.tellCall ?? 'jaguar', 0);
     if (br.state === 'act' && prevState !== 'act') {
       if (br.move === 'screech') sound.playEagleScreech();
       else sound.playWhoosh();
@@ -3206,7 +3210,8 @@ export class GameEngine {
         this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
         if (this.clangCd <= 0) {
           this.clangCd = 0.45;
-          this.addFloatingText('CLANG!', b.x, b.y - b.height * 0.7, '#cbd5e1');
+          if (def?.openCue && wr) this.addFloatingText('NOT YET!', cp.x, cp.y - 30, '#cbd5e1');
+          else this.addFloatingText('CLANG!', b.x, b.y - b.height * 0.7, '#cbd5e1');
         }
         return;
       }
@@ -3215,7 +3220,8 @@ export class GameEngine {
       if (!broke) {
         // it shrugged it off (poise held): the blow still counts, but for half
         // (a covered weak point takes nothing: the glow is the only time it hurts)
-        const chip = def?.weak ? 0 : Math.max(1, Math.ceil(m.bossDamage / 2));
+        // (Venom's head is placed by weakAt, not weak: it counts as covered too, so a blow mid-lunge took hits off unseen)
+        const chip = wr ? 0 : Math.max(1, Math.ceil(m.bossDamage / 2));
         b.hp = Math.max(0, b.hp - chip);
         b.hitFlashTimer = 0.1;
         this.hitstopTimer = Math.max(this.hitstopTimer, 0.05);
@@ -3223,7 +3229,9 @@ export class GameEngine {
         this.spawnSparkBurst(cp.x, cp.y, '#fde68a');
         if (this.clangCd <= 0) {
           this.clangCd = 0.45;
-          this.addFloatingText('RATTLED!', b.x, b.y - b.height * 0.7, '#fde68a');
+          // (a boss with announced openings says the head is not open yet, at the spot that was hit)
+          if (def?.openCue && wr) this.addFloatingText('NOT YET!', cp.x, cp.y - 30, '#fde68a');
+          else this.addFloatingText('RATTLED!', b.x, b.y - b.height * 0.7, '#fde68a');
         }
         if (b.hp <= 0) this.startBossDeath(b);
         return;
@@ -3233,6 +3241,7 @@ export class GameEngine {
     let dmg = m.bossDamage;
     const crit = vul === 'stunned';
     if (crit) dmg = Math.ceil(dmg * 1.5);
+    const leftBefore = hitsLeft(b.hp, b.maxHp, this.bossHits);
     b.hp = Math.max(0, b.hp - dmg);
     this.capStun(b, dmg);
     if (def?.openCap && b.ai?.state === 'rec' && b.ai.move) {
@@ -3252,7 +3261,10 @@ export class GameEngine {
     this.comboResetTimer = 2.0;
     const pts = calculateHitScore('boss', m.kind === 'mega', this.comboCount) * (m.kind === 'kick' ? 2 : 1);
     this.runScore += pts;
-    this.addFloatingText(crit ? `CRITICAL! +${pts}` : `BOSS HIT! +${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
+    if (def?.openCue && wr) {
+      // what came off the bar (half a hit, one, two), over the spot that was hit
+      this.addFloatingText(hitLabel(leftBefore, hitsLeft(b.hp, b.maxHp, this.bossHits), crit, pts), wr.x + wr.w / 2, wr.y - 12, crit ? '#fb923c' : '#facc15');
+    } else this.addFloatingText(crit ? `CRITICAL! +${pts}` : `BOSS HIT! +${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
     if (b.hp <= 0) this.startBossDeath(b);
   }
 
@@ -4559,6 +4571,13 @@ export class GameEngine {
     // 3. Render Foreground Foliage (Framing screen edges)
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
     if (lair) drawLairFront(ctx, lair, lairView, this.gameTime);
+    // 3-10's last phase: the cave goes dark, so the Prowler (faintly, and lit as he winds up) and his eyes are drawn back over it
+    if (lair === 'prowler' && this.boss && this.bossDef && !this.boss.defeated && prowlerGlow() < 0.98) {
+      ctx.save();
+      ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
+      drawBossOverDark(ctx, this.boss, this.bossDef, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560, this.gameTime, (1 - prowlerGlow()) / (1 - 0.16));
+      ctx.restore();
+    }
     else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     if (rig && this.quality === 0 && polishTier() === 0) drawBloom(ctx, rig, this.camera.viewportWidth, this.camera.viewportHeight);
     drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.drowsyShow, this.gameTime);

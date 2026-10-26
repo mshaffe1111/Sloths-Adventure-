@@ -308,6 +308,10 @@ export interface BossDef {
   /** the opening is announced: the weak point warms up in the attack's last moments, a chime and a NOW! when it opens, and it flickers
    *  as it closes (bossArt.ts, engine.ts; the fairness pass: bossFair.test.ts) */
   openCue?: boolean;
+  /** seconds he waits after the entrance before his first move (0.8 when unset): time to read Dot's first tip */
+  firstIdle?: number;
+  /** the call heard as every wind-up starts (a jaguar's growl when unset) */
+  tellCall?: 'ocelot' | 'jaguar' | 'boa' | 'caiman' | 'tayra';
   /** the guide's lines for this fight: at the start, and at each new phase (said once per device) */
   guide?: { start?: string; 2?: string; 3?: string };
   /** where the floor sits in the view (0..1 from the top; the usual 0.7 leaves a band of earth under a low fight) */
@@ -506,7 +510,7 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
       if (br.t >= br.hold) {
         br.state = 'idle';
         br.t = 0;
-        br.idle = br.roarReason === 'enter' ? 0.8 : 0.9;
+        br.idle = br.roarReason === 'enter' ? def.firstIdle ?? 0.8 : 0.9;
       }
       break;
     }

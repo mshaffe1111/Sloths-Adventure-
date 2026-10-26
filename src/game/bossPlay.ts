@@ -102,6 +102,14 @@ export interface Opening {
   offscreen: number;
 }
 
+/** one wind-up: when it began, how long it lasted, and whether the boss was on the screen as it began */
+export interface Tell {
+  move: string;
+  t0: number;
+  dur: number;
+  onScreen: boolean;
+}
+
 /** the engine's private parts this harness reads and sets (a test seam: the names are the engine's own) */
 type Engine = Record<string, any>;
 
@@ -112,6 +120,9 @@ export class BossPlay {
   readonly e: Engine;
   readonly input = new FakeInput();
   readonly openings: Opening[] = [];
+  readonly tells: Tell[] = [];
+  /** Dot's lines, and when */
+  readonly guides: Array<{ t: number; text: string }> = [];
   /** every hit point the hero lost, and the game time */
   readonly hurt: number[] = [];
   /** the boss went down */
@@ -122,6 +133,8 @@ export class BossPlay {
 
   constructor(readonly id: string, readonly easy = false, screen: { w: number; h: number } = { w: 844, h: 390 }) {
     try {
+      // (a first meeting: Dot's tips not heard yet)
+      localStorage.clear();
       localStorage.setItem(DIFFICULTY_KEY, easy ? 'easy' : 'normal');
     } catch {
       /* no storage */
@@ -133,6 +146,11 @@ export class BossPlay {
     } as never) as unknown as Engine;
     this.e = e;
     for (const m of COSMETIC) e[m] = noop;
+    const say = e.guide.bind(e);
+    e.guide = (text: string, s: number) => {
+      this.guides.push({ t: e.gameTime, text });
+      say(text, s);
+    };
     e.inputGrace = 0;
     e.introT = 99;
     this.hp0 = e.player.hp;
@@ -208,8 +226,17 @@ export class BossPlay {
 
   /** note the openings as they come and go */
   private soon = false;
+  private lastState = '';
   private watch() {
     const b = this.boss;
+    const st = b.ai?.state ?? '';
+    const last = this.tells[this.tells.length - 1];
+    if (st === 'tell' && this.lastState !== 'tell') {
+      const c = this.e.camera;
+      const onScreen = b.x + b.width / 2 > c.x && b.x - b.width / 2 < c.x + c.viewportWidth;
+      this.tells.push({ move: b.ai!.move ?? '?', t0: this.t, dur: 0, onScreen });
+    } else if (st === 'tell' && last) last.dur = this.t - last.t0 + DT;
+    this.lastState = st;
     const soon = opensSoon(b, this.def);
     const open = this.open && !this.beaten;
     if (open && this.cur) {

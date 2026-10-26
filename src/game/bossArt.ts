@@ -1253,12 +1253,14 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
   const rad = Math.min(r.w, r.h) * 0.5;
   ctx.save();
   if (!open) {
-    // the last moments of an attack that ends in an opening: the ember swells and brightens, so the opening is seen coming
+    // the last moments of an attack that ends in an opening: the ember swells in a slow, dim pulse of the boss's own colour (not yet!).
+    // Only the opening itself is bright gold with the white ring and cross, with the chime and NOW!, so a spot that can't be hurt
+    // never looks like one that can (2026-10-26, QA: punches thrown at the warm-up glow)
     const soon = opensSoon(b, def);
-    ctx.globalAlpha = soon ? 0.6 + 0.3 * Math.sin(time * 24) : 0.28 + 0.1 * Math.sin(time * 3);
-    ctx.fillStyle = soon ? '#fde047' : def.color;
+    ctx.globalAlpha = soon ? 0.32 + 0.16 * Math.sin(time * 7) : 0.28 + 0.1 * Math.sin(time * 3);
+    ctx.fillStyle = def.color;
     ctx.beginPath();
-    ctx.arc(cx, cy, rad * (soon ? 0.45 : 0.22), 0, Math.PI * 2);
+    ctx.arc(cx, cy, rad * (soon ? 0.34 + 0.04 * Math.sin(time * 7) : 0.22), 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
     return;
