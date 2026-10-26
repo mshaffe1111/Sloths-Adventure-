@@ -523,7 +523,7 @@ function newLookShown55(run: ReturnType<typeof holdRight>, tail = 0): Map<string
   const ms = (t: number) => (t - t0) * 1000;
   const fern = fernLine(5, 5)!;
   let fernDue = true;
-  let k = 0, kl = 0;
+  let k = 0, kl = 0, kp = 0;
   for (const f of run.frames) {
     if (fernDue && ms(f.t) >= START_AFTER_MS) {
       fernDue = false;
@@ -539,6 +539,12 @@ function newLookShown55(run: ReturnType<typeof holdRight>, tail = 0): Map<string
       const l = lessonDotLine(run.lessons[kl].id, 'screen');
       if (l) q.push(l, ms(run.lessons[kl].t));
       kl++;
+    }
+    // (a line the engine says has passed goes, up or waiting, as DotGuide.tsx passedLine takes it down: the pouch scene walked away from)
+    while (kp < run.sim.passed.length && run.sim.passed[kp].t <= f.t + 1e-6) {
+      const l = engineGuideLine(run.sim.passed[kp].text, '5-5', { dot: true });
+      if (l) q.clear((w) => w.key === l.key, ms(run.sim.passed[kp].t));
+      kp++;
     }
     q.tick(ms(f.t), { danger: f.danger, hold: ms(f.t) < CARD_MS, moveCount: (m: MoveId) => (f.moves as Record<string, number>)[m] ?? 0 });
     for (const ev of q.drain()) {
@@ -579,15 +585,15 @@ test('5-5: holding right from the start, every first-time line comes before its 
       if (!n) problems.push(`seed ${seed}: ${l.name}: never shown`);
       else if (n.x > l.at - reach) problems.push(`seed ${seed}: ${l.name}: shown at x ${Math.round(n.x)}, ${Math.round(l.at - n.x)} px before it`);
     }
-    // the pouch scene: every line sent at the rest branch or after, in its order, and every one of them shown in the end
+    // the pouch scene: it plays only on the rest branch's calm stretch (QA v198: it played on over the pits), in its order. Running
+    // straight through, he hears its start; the rest waits for a player who rests there (w5Stage55.test.ts)
     const rest = st.proto.w5.rest!;
     const sent = W5_POUCH.map((l) => sentAt(run.said, l.text));
+    if (!sent[0]) problems.push(`seed ${seed}: the pouch scene never began`);
     sent.forEach((s, i) => {
-      if (!s) problems.push(`seed ${seed}: the pouch scene's line ${i} never sent`);
-      else if (s.x < rest.x0) problems.push(`seed ${seed}: the pouch scene's line ${i} before the rest branch`);
+      if (s && (s.x < rest.x0 || s.x > rest.calm!)) problems.push(`seed ${seed}: the pouch scene's line ${i} sent at x ${Math.round(s.x)}, off its calm stretch ${rest.x0}..${rest.calm}`);
     });
     const starts = W5_POUCH.map((l) => shown.get(keyOf('5-5', l.text))?.t ?? -1);
-    if (starts.some((t) => t < 0)) problems.push(`seed ${seed}: pouch lines never shown: ${starts.map((t, i) => (t < 0 ? i : '')).join(' ')}`);
     for (let i = 1; i < starts.length; i++) if (starts[i] >= 0 && starts[i - 1] >= 0 && starts[i] < starts[i - 1]) problems.push(`seed ${seed}: pouch line ${i} before line ${i - 1}`);
   }
   assert.deepEqual(problems, []);

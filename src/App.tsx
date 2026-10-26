@@ -42,6 +42,7 @@ import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/C
 import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
+import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -649,8 +650,9 @@ export default function App() {
               // the first stage is cleared: Dot arrives with Meeca's first note
               storyAfterClear.current = true;
               setScreen('world_story');
-            } else if ((lvl.id === DOT_STAGE_ID || (lvl.miniIndex === 5 && !(lvl.worldIndex === 4 && newStagesOn()))) && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
-              // (in World 4 the halfway scene waits for Dot's own flight after 4-5: she arrives with the note and nine scratches)
+            } else if (midSceneAfter(lvl, { dotStageId: DOT_STAGE_ID, newStages: newStagesOn() }) && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
+              // (in World 4 the halfway scene waits for Dot's own flight after 4-5: she arrives with the note and nine scratches; World 5's
+              // plays inside 5-5, at the rest branch: midScene.ts)
               // halfway through a world, Dot catches up with a note from Meeca
               setScreen('world_mid');
             } else {

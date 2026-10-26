@@ -217,6 +217,8 @@ export const STEP_FACE = { min: 30, max: 100 } as const;
  * than `near` px from his body, is where a plain flick up with the thumb lifted carries him onto it
  */
 export const STEP_UP = { min: 20, max: 96, near: 14 } as const;
+/** World 5: how far over a ledge's edge the lip's hoist puts his body (px past the face), so a foot is on it (the floor check wants ~8) */
+export const LIP_IN = 13;
 const STUCK_HOLD = 7;
 
 export class GameEngine {
@@ -360,6 +362,8 @@ export class GameEngine {
   private w4: W4Play | null = null;
   /** World 5's stillness and silk, chairs, cakes, teapots, threads, sheets, orchids and cocoons for this run (w5Play.ts) */
   private w5: W5Play | null = null;
+  /** World 5: the vines the lessons may teach (not its silk lines, which its own tip teaches) */
+  private lessonVines: Vine[] | null = null;
   /** the parts of World 5's stage Dot's bubble keeps off (Meeca's carvings), in world units, then on the page (guideKeepOut.ts) */
   private keepWorld: KeepOutBox[] = [];
   private keepPage: KeepOutBox[] = [];
@@ -1798,13 +1802,23 @@ export class GameEngine {
           if (p.x + half <= plat.x || p.x - half >= plat.x + plat.width) continue;
           const fromLeft = prevX + half <= plat.x + 2;
           const fromRight = prevX - half >= plat.x + plat.width - 2;
-          if (!fromLeft && !fromRight) continue;
+          // World 5: a body a little way over the edge already (he came over the corner in the air, a foot short of standing) with his
+          // feet just under the top is at the lip too. He used to slide down inside the face to the foot of it
+          const lipL = !!this.w5 && !fromLeft && !fromRight && p.x + half - plat.x <= LIP_IN && p.x < plat.x + plat.width / 2;
+          const lipR = !!this.w5 && !fromLeft && !fromRight && plat.x + plat.width - (p.x - half) <= LIP_IN && p.x >= plat.x + plat.width / 2;
+          if (!fromLeft && !fromRight && !lipL && !lipR) continue;
           if (p.y <= plat.y + 26 && p.vy >= -120) {
             // caught the lip of the ledge: hoist up onto it
             p.y = plat.y;
             p.vy = 0;
+            // World 5: and far enough onto it to stand. Hoisted with only a pixel or two of him over the edge, the floor check (a foot on
+            // it, about 8 px) never took him, so he hung in the air at the corner, dropped and was hoisted again, frame after frame, or
+            // slid down inside the face: QA's sideways player at the soft pits' lips of 5-3, 5-4 and 5-5 "ends up hanging on its side"
+            // (v198). Now the hoist puts a foot on the ledge, and he stands there.
+            if (this.w5) p.x = fromLeft || lipL ? Math.max(p.x, plat.x - half + LIP_IN) : Math.min(p.x, plat.x + plat.width + half - LIP_IN);
             continue;
           }
+          if (lipL || lipR) continue;
           // a hollow log (protoStage.ts): walking into it pushes it along, slower than a walk
           if (plat.push && p.grounded && ((fromLeft && this.input.state.right) || (fromRight && this.input.state.left))) {
             const dir = fromLeft ? 1 : -1;
@@ -1830,6 +1844,13 @@ export class GameEngine {
           // in the air below the lip: he cannot hold on, so he is drawn a little off the face (wallOff), not with a paw on it
           if (!p.grounded) wallSide = fromLeft ? 1 : -1;
         }
+      }
+      // World 5, by touch: jumping into a face carries him on into it until he is over its top, unless the thumb steers away. One thumb
+      // steers to the face, lifts and flicks: the face stopped him dead, and with the thumb off the glass he rose past its top and came
+      // straight back down beside it (QA v198: the same flick worked one try and not the next, by whether the thumb was still on).
+      if (wallSide !== 0 && this.w5 && this.touchHelp() !== 'off') {
+        const steerNow = this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
+        if (steerNow !== -wallSide && !this.input.state.down) this.airDrive = { drive: wallSide as -1 | 1, lean: true };
       }
       // (eased, so meeting a wall and leaving it never pops the drawing sideways)
       this.wallOff += (-wallSide * WALL_OFF - this.wallOff) * Math.min(1, dt * 18);
@@ -4599,7 +4620,9 @@ export class GameEngine {
         view: { x0: cam.x, x1: cam.x + cam.viewportWidth, y0: cam.y, y1: cam.y + cam.viewportHeight },
         enemies: this.enemies,
         collectibles: this.collectibles,
-        vines: this.vines,
+        // (World 5's silk lines are taught by its own tip, in silk words, with the let-go said while he swings: w5Lines.ts w5.silk. The
+        // vine lesson's "Flick up into the vine to grab it" came at 5-4's first silk line, QA v198)
+        vines: this.w5 ? (this.lessonVines ??= this.vines.filter((v) => !v.silk)) : this.vines,
         platforms: this.platforms,
         checkpoints: st.checkpoints ?? [],
         rivers: st.rivers ?? [],
@@ -4757,7 +4780,11 @@ export class GameEngine {
     // stayed stuck, and only an up-and-right flick now and then got out (v198, 2026-10-26). A one-step ledge takes one ordinary jump.
     if (!second && steer === 0 && this.w5) {
       const lean = inp.jumpLean ?? 0;
-      const dir = lean !== 0 ? lean : this.player.facing >= 0 ? 1 : -1;
+      const face: -1 | 1 = this.player.facing >= 0 ? 1 : -1;
+      // (the way the flick leaned first; then, with no step that way, the way he faces. A thumb's flick leans 20 to 40 degrees either
+      // way by chance, and one that leaned away from the step he faced went straight up and down: QA's sideways player, v198, at every
+      // soft pit's lip, one try in two)
+      const dir = lean !== 0 && this.stepAt(lean) ? lean : face;
       if (this.stepAt(dir)) {
         this.airDrive.drive = dir;
         this.airDrive.lean = true;
@@ -5205,6 +5232,8 @@ export class GameEngine {
       ctx.save();
       ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
       this.drawPopups(ctx);
+      // (and its warnings over all of it: a crouching spider's "!" is never under the words or the light)
+      this.w5.drawWarnings(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, zoom: this.zoom });
       ctx.restore();
     }
     if (this.darkShow > 0.01) {
@@ -6185,6 +6214,7 @@ export class GameEngine {
         this.guide(text, seconds);
       },
       clearTip: () => this.clearGuide(),
+      passTip: (text) => this.callbacks.onGuide?.(text, 0, true),
       float: (text, x, y, color, life) => this.addFloatingText(text, x, y, color, life),
       rescue: () => {
         p.crittersRescued++;

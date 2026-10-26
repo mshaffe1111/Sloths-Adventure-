@@ -53,7 +53,9 @@ export const PAINTED: Partial<Record<W5Piece, readonly ArtPiece[]>> = {
   table: ['teaTable'],
   chair: ['armchairRose', 'armchairRose2'],
   chairLilac: ['armchairLilac', 'armchairLilac2'],
-  wrappedChair: ['wrappedArmchair', 'wrappedChair', 'wrappedArmchair2', 'wrappedChair2'],
+  // (only the two takes whose wooden frame and tan cloth show through the silk: the all-white ones, a big wrapped bundle on the seat,
+  // read as cocoons, and both QA bots stopped to punch them, v198. A chair back, legs and wood: furniture, a guest who sat)
+  wrappedChair: ['wrappedArmchair2', 'wrappedChair2'],
   wrappedStool: ['wrappedStool'],
   cake: ['cakeIcon', 'cakeIcon2'],
   cakePlate: ['cakePlate', 'cakePlate2'],

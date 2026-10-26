@@ -203,7 +203,10 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
   const who: GuideWho = (sw && W5_SPEAKERS.get(sw.line.id)) ?? (o.dot === false ? 'Pokey' : 'Dot');
   const scene = !!sw && W5_SCENE_IDS.has(sw.line.id);
   const key = `engine:${sw?.line.id ?? text}`;
-  const then: GuideLine | undefined = sw?.then ? { key: `${key}:then`, text: sw.then, kind: kind === 'teach' ? 'info' : kind, who, topic, source: 'engine' } : undefined;
+  // (World 5's let-go on the silk follows the grab at once, with no breath: a quick thumb let go in the first sweet spot, and the line
+  // came after it, QA v198 sideways. It is said while he swings, before he needs it)
+  const thenNow = sw?.line.id === 'w5.silk';
+  const then: GuideLine | undefined = sw?.then ? { key: `${key}:then`, text: sw.then, kind: thenNow ? 'must' : kind === 'teach' ? 'info' : kind, who, topic, source: 'engine' } : undefined;
   return {
     key,
     text: said,

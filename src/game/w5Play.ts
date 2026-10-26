@@ -45,6 +45,8 @@ export interface W5Host {
   tip(key: string, text: string, seconds: number): void;
   /** the warning on screen has had its moment (the wrap came): take it down, so the next line need not wait behind it */
   clearTip?(): void;
+  /** the moment for a line already sent has passed: take it down, up or still waiting (a scene's line he walked away from) */
+  passTip?(text: string): void;
   /** a floating word in the world (`life` seconds: the engine's pop-up time when not given) */
   float(text: string, x: number, y: number, color: string, life?: number): void;
   sfx(kind: 'hum' | 'wrap' | 'cake' | 'puff' | 'tray' | 'free' | 'crack'): void;
@@ -112,6 +114,8 @@ export class W5Play {
   private pendingTip: { key: string; text: string; seconds: number; at: number } | null = null;
   /** how drowsy the screen shows him (the engine's drowsy veil) */
   veil = 0;
+  /** when he last wiggled (a new push left or right) */
+  private wiggleAt = -99;
   /** for the jump that sheds silk: was he on the ground last frame */
   private wasGrounded = true;
   /** when he last pulled against the silk (steering or jumping with it on him), and how much was on him then */
@@ -222,7 +226,7 @@ export class W5Play {
       this.pendingTip = null;
       h.tip(pt.key, pt.text, pt.seconds);
     }
-    this.stepRest(h);
+    this.stepRest(h, dt);
     this.enemies = h.enemies;
     this.player = p;
     // back at a flag (or placed there): a fresh start, no silk carried over
@@ -271,8 +275,13 @@ export class W5Play {
     // don't sit: standing still lets the silk creep up him; moving or a wiggle shakes it off; too long, and he is wrapped
     if (h.steer !== 0) this.moved = true;
     this.grace = Math.max(0, this.grace - dt);
-    const still = this.moved && this.grace <= 0 && ((p.grounded && !p.climbing && Math.abs(p.vx) < SIT.still && h.steer === 0) || admire);
-    const r = stepSit(this.sit, { still, steer: h.steer, seated: seated >= 0, admiring: admire }, dt, !!w5.gentle);
+    // (wiggling in front of a silk sheet is pulling free, not admiring it: a thumb sliding back and forth there kept him slower than a
+    // walk, so it still counted as lingering and the silk came on as fast as he shook it off; separate slides walked him out of it.
+    // QA v198: either way frees him now)
+    if (h.steer !== 0 && h.steer !== this.sit.steer) this.wiggleAt = h.t;
+    const lingering = admire && h.t - this.wiggleAt > WIGGLE_HOLD;
+    const still = this.moved && this.grace <= 0 && ((p.grounded && !p.climbing && Math.abs(p.vx) < SIT.still && h.steer === 0) || lingering);
+    const r = stepSit(this.sit, { still, steer: h.steer, seated: seated >= 0, admiring: lingering }, dt, !!w5.gentle);
     this.sit = r.s;
     // (taught before it ever catches him: the first time he stops, well before the silk can start. QA v198: the silk "grabbed silently",
     // its line only coming once it was on him)
@@ -298,7 +307,8 @@ export class W5Play {
       const v = h.view;
       const seen = !v || onScreen(v, sm.x, sm.y - SEAMSTRESS.h / 2, 60, SEAMSTRESS.h, 10);
       const was = this.seams[i];
-      const out = stepSeam(was, { lingering: admired.has(sm.sheet) && !r.wrapped, seen }, dt);
+      // (wiggling free of her lace, as she says to, is not lingering: she does not cast again at a thumb sliding left and right)
+      const out = stepSeam(was, { lingering: lingering && admired.has(sm.sheet) && !r.wrapped, seen }, dt);
       this.seams[i] = out.st;
       if (out.st.phase === 'tell' && was.phase === 'knit') h.float('!', sm.x, sm.y - SEAMSTRESS.h - 18, '#fb7185');
       if (out.cast) {
@@ -506,7 +516,8 @@ export class W5Play {
     for (const tb of w5.tables ?? []) if (vis(tb.x)) drawTeaTable(ctx, tb.x, tb.y, t);
     (w5.chairs ?? []).forEach((c, i) => {
       if (!vis(c.x)) return;
-      if (c.wrapped) drawWrappedChair(ctx, c.x, c.y, 84, c.face < 0, i % 3 === 2);
+      // (never the white stool: it reads as a cocoon, QA v198)
+      if (c.wrapped) drawWrappedChair(ctx, c.x, c.y, 84, c.face < 0);
       else {
         const p = this.player;
         const tug = p ? Math.min(1, Math.abs(chairPull(c, p.x, p.y, true)) / 60) : 0;
@@ -567,16 +578,8 @@ export class W5Play {
       if (!e || !g || e.defeated || e.x < view.x0 - 100 || e.x > view.x1 + 100) continue;
       ctx.save();
       ctx.textAlign = 'center';
-      if (g.phase === 'windup') {
-        // the crouch: a red "!" that swells, over a spider tensed to spring
-        const u = Math.min(1, g.t / 0.7);
-        ctx.font = `800 ${18 + 8 * u}px Fredoka, sans-serif`;
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = 'rgba(40, 10, 20, 0.8)';
-        ctx.fillStyle = '#fb7185';
-        ctx.strokeText('!', e.x, e.y - 26 - 6 * u);
-        ctx.fillText('!', e.x, e.y - 26 - 6 * u);
-      } else if (g.phase === 'calm' && g.dozing) {
+      // (the crouch's "!" is drawn over everything, after the light and the pop-up words: drawWarnings)
+      if (g.phase === 'calm' && g.dozing) {
         const u = (t * 0.7 + e.id * 0.3) % 1;
         ctx.globalAlpha = 1 - u;
         ctx.font = `700 ${11 + u * 8}px Fredoka, sans-serif`;
@@ -589,22 +592,7 @@ export class W5Play {
       ctx.restore();
     }
     (w5.seamstresses ?? []).forEach((sm, i) => {
-      const st = this.seams[i];
       if (sm.x < view.x0 - 200 || sm.x > view.x1 + 200) return;
-      if (st.phase === 'tell') {
-        // the warning: a red "!" over her that swells through the tell, as the spiders' crouch has
-        const u = Math.min(1, st.t / SEAMSTRESS.tell);
-        ctx.save();
-        ctx.textAlign = 'center';
-        ctx.font = `800 ${20 + 10 * u}px Fredoka, sans-serif`;
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = 'rgba(40, 10, 20, 0.8)';
-        ctx.fillStyle = '#fb7185';
-        const y = sm.y - SEAMSTRESS.h - 14 - 6 * u;
-        ctx.strokeText('!', sm.x, y);
-        ctx.fillText('!', sm.x, y);
-        ctx.restore();
-      }
       const since = t - this.laceAt[i];
       if (p && since >= 0 && since < 0.7) drawLaceThrow(ctx, sm.x + sm.dir * 30, sm.y - SEAMSTRESS.h * 0.55, p.x, p.y - 30, Math.min(1, since / 0.25), 1 - Math.max(0, (since - 0.35) / 0.35), t);
     });
@@ -639,6 +627,44 @@ export class W5Play {
       }
       ctx.restore();
     }
+  }
+
+  /**
+   * The warnings, over everything (world space, after the stage's light, the sleepy veil and the pop-up words): a spider's crouch, a red
+   * "!" that swells over it, and the Seamstress's look-up. Drawn under the light and the words, sideways at 918 x 370 (zoomed out to show
+   * the run ahead) a crouching spider's "!" was a few pixels of washed-out pink under "+100 FLOWER!", and two hearts went at 5-1's
+   * spider pair with "the cause not seen" (QA v198). Now it is at least as large on the screen as upright (cardScale), and on top.
+   */
+  drawWarnings(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number; zoom?: number }) {
+    const k = cardScale(view.zoom ?? CARD_READ_ZOOM);
+    const bang = (x: number, y: number, size: number) => {
+      ctx.font = `800 ${Math.round(size * k)}px Fredoka, sans-serif`;
+      ctx.lineWidth = 4 * k;
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = 'rgba(40, 10, 20, 0.85)';
+      ctx.fillStyle = '#fb7185';
+      ctx.strokeText('!', x, y);
+      ctx.fillText('!', x, y);
+    };
+    ctx.save();
+    ctx.textAlign = 'center';
+    for (const s of this.w5.spiders ?? []) {
+      const e = this.enemies.find((q) => q.id === s.id);
+      const g = this.gates.get(s.id);
+      if (!e || !g || e.defeated || g.phase !== 'windup' || e.x < view.x0 - 100 || e.x > view.x1 + 100) continue;
+      // the crouch: a red "!" that swells, over a spider tensed to spring
+      const u = Math.min(1, g.t / 0.7);
+      bang(e.x, e.y - 26 - (6 + 10 * (k - 1)) * u - 8 * (k - 1), 18 + 8 * u);
+    }
+    (this.w5.seamstresses ?? []).forEach((sm, i) => {
+      const st = this.seams[i];
+      if (st.phase !== 'tell' || sm.x < view.x0 - 200 || sm.x > view.x1 + 200) return;
+      // the warning: a red "!" over her that swells through the tell, as the spiders' crouch has
+      const u = Math.min(1, st.t / SEAMSTRESS.tell);
+      bang(sm.x, sm.y - SEAMSTRESS.h - 14 - 6 * u, 20 + 10 * u);
+    });
+    ctx.restore();
+    void t;
   }
 
   /** the light of the stage (screen space, after the world is drawn) */
@@ -712,6 +738,14 @@ export class W5Play {
     }
     // (and the table's card while it is up: Dot's bubble does not cover it)
     if (this.cardBox) out.push(this.cardBox);
+    // (and every cocoon not yet open, and, while the pouch scene plays, Pokey himself: a scene line covered him up to his head and hid a
+    // cocoon, so she walked past it, QA v198 sideways)
+    (this.w5.cocoons ?? []).forEach((c, i) => {
+      if (this.cocoons[i]?.freed || c.x + 40 < view.x0 || c.x - 40 > view.x1) return;
+      out.push({ x0: c.x - 36, y0: c.y - COCOON.mid - 48, x1: c.x + 36, y1: c.y + 8 });
+    });
+    const p = this.player;
+    if (p && this.restPlaying(this.clock)) out.push({ x0: p.x - 34, y0: p.y - 78, x1: p.x + 34, y1: p.y + 4 });
     // (and the Seamstress with the "!" over her: her tell is the warning, never under the bubble)
     for (const sm of this.w5.seamstresses ?? []) {
       if (sm.x + 60 > view.x0 && sm.x - 60 < view.x1) out.push({ x0: sm.x - 60, y0: sm.y - SEAMSTRESS.h - 50, x1: sm.x + 60, y1: sm.y });
@@ -729,15 +763,29 @@ export class W5Play {
    * The rest branch (5-5): when he comes to it, the pouch scene plays (w5Lines.ts W5_POUCH), one line at a time, each after the one
    * before has had its reading time (the guide queues them in order if something comes between). While the scene plays, standing on the
    * branch is resting, not sitting: the stillness does not count there (Pokey stood, because the note said so). Off the branch, it does.
+   * It plays only on the calm stretch, the branch and the quiet garden after it up to its flag (RestBranch.calm): walked on past that,
+   * it waits, and the line up is taken down. It used to play on over the soft pits and the spiders after it (QA v198, sideways).
    */
-  private stepRest(h: W5Host) {
+  private stepRest(h: W5Host, dt: number) {
     const rest = this.w5.rest;
     if (!rest) return;
     const p = h.player;
     const sc = (this.scene ??= { i: -1, next: 0, end: 0 });
-    if (sc.i < 0 && p.x >= rest.x0 + 30) {
+    const was = this.inCalm;
+    this.inCalm = p.x >= rest.x0 + 30 && p.x <= (rest.calm ?? Infinity);
+    if (sc.i < 0 && this.inCalm) {
       sc.i = 0;
       sc.next = h.t;
+    }
+    if (sc.i >= 0 && !this.inCalm) {
+      // (paused: its clock waits for him, and the line he walked off with is not read over the pits)
+      sc.next += dt;
+      sc.end += dt;
+      if (was) {
+        // (every line of it already sent goes, up or waiting in Dot's queue: none of it is read over the pits)
+        for (let k = 0; k < sc.i && k < W5_POUCH.length; k++) h.passTip?.(W5_POUCH[k].text);
+      }
+      return;
     }
     while (sc.i >= 0 && sc.i < W5_POUCH.length && h.t >= sc.next) {
       const l = W5_POUCH[sc.i];
@@ -749,11 +797,13 @@ export class W5Play {
     }
     if (this.restPlaying(h.t) && onRest(rest, p.x, p.y, p.grounded)) this.holdStill(0.25);
   }
+  /** he is on the rest branch's calm stretch (where the pouch scene plays) */
+  private inCalm = false;
 
-  /** the pouch scene has started and is not yet over (its last line still being read) */
+  /** the pouch scene is playing: started, not yet over (its last line still being read), and he is on its calm stretch */
   restPlaying(t: number): boolean {
     const sc = this.scene;
-    return !!sc && sc.i >= 0 && (sc.i < W5_POUCH.length || t < sc.end);
+    return !!sc && this.inCalm && sc.i >= 0 && (sc.i < W5_POUCH.length || t < sc.end);
   }
 
   /** a silk line's first-time line, as it comes into view (it swings like a vine: the liana system) */
@@ -824,6 +874,8 @@ function drawLaceThrow(ctx: CanvasRenderingContext2D, fx: number, fy: number, tx
   }
   ctx.restore();
 }
+/** a wiggle this recent (s) means he is pulling free, not lingering in front of a silk sheet */
+export const WIGGLE_HOLD = 0.5;
 /** a breath between one line of a scene and the next (a little over dotGuide.ts GUIDE.breathMs) */
 const SCENE_BREATH = 0.8;
 

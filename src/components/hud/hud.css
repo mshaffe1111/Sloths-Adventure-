@@ -65,6 +65,8 @@
 .vh-tendril { pointer-events: none; }
 /* play shows through: a piece with a pickup, a platform top, an animal or Pokey under it fades (seeThrough.ts); only the Menu takes touches */
 .vh-see:not(.hidden) { opacity: .3 !important; }
+/* (but the goal counter never fades past reading: over 5-5's logs it went nearly unreadable, QA v198 sideways. seeThrough.ts GOAL_MIN_OPACITY) */
+.vh-goal.vh-see:not(.hidden) { opacity: .62 !important; }
 .vh-centre, .vh-menu, .vh-boss { transition: opacity .2s ease; }
 .vh-nplate { position: relative; display: flex; align-items: center; justify-content: center; gap: 3px; box-sizing: border-box; filter: drop-shadow(0 2px 1px rgba(20, 10, 0, .4)); }
 .vh-nplate.lives { padding: 0 4px 1px 14px; }

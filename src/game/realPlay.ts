@@ -106,6 +106,8 @@ export class RealPlay {
   died = false;
   /** every line Dot said (the stage hints and the World 4 tips), in order, with where he was */
   readonly said: Array<{ text: string; x: number; y: number; t: number }> = [];
+  /** every line the engine said had passed (taken down, up or waiting: StageHint.passX, a scene walked away from), in order */
+  readonly passed: Array<{ text: string; t: number }> = [];
   /** keep him from being hurt (default) */
   safe = true;
 
@@ -114,6 +116,10 @@ export class RealPlay {
     const noop = () => {};
     const e = new GameEngine(headlessCanvas(), levelConfig(id), this.input as never, {
       onProgressUpdate: noop, onVictory: noop, onDefeat: noop, onGameOver: noop,
+      // (a line whose moment has passed: noted, so the tests can take it down as Dot's guide does)
+      onGuide: (text: string, _s: number, passed?: boolean) => {
+        if (passed) this.passed.push({ text, t: this.e?.gameTime ?? 0 });
+      },
     } as never) as unknown as Engine;
     setLayoutVariant(null);
     this.e = e;
