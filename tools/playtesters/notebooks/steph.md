@@ -38,3 +38,14 @@
 - 1-10 (snake): don't climb high up the tree. A short climb, just off the ground, is enough to dodge. Then a sideways nudge drops you right onto his dazed head. From way up the trunk, climbing down takes too long. Running back to his head from the far coils is also too slow, so dodge on the tree side or onto the stump.
 - 3-10 (panther): when he goes red and lunges along the floor, a double jump still got clipped. Get well away early instead. When he stands and roars late in the fight, a pounce follows fast, and standing at the edge of the glowing floor patch isn't far enough: get clear of it by a full body length. After his lunge the gold can be on his back end. Stay on the floor for it, because if you end up on a low ledge above him you can't get down in time.
 - 4-10 (bird): crouching (thumb held down) works for the feathers, the ledge rake and the screech. After the screech, being one short run away was close enough this time. When she lands to bite, a held flick plus a second flick gets you clear, and then turn round and tap her head while she's down.
+
+## 2026-10-26 (session 14, boss gate retest, upright with a turn sideways)
+
+### Bosses
+- General: a tap string of six right after a tiny nudge is the sweet spot; more than that and the extra taps just say "NOT YET!". If the punches whiff, you're about half a body short: one more short nudge, then tap again.
+- 1-10 (snake): a short climb, then just wait on the trunk with thumb up. When he's dazed, one short slide drops you on his head. From the very top, holding the thumb down climbs you back down fast enough now. When you hop off up high, steer while you fall so you land where you want.
+- 1-10: in the late part the little snakes run along the ground. A drop onto one is a stomp and it's free, but don't walk into the big one's mouth as he sweeps along the floor: that's where my one hit came from.
+- 3-10 (panther): the ring on the floor is honest. A held flick plus a second flick, steering away, gets you out of it even from right next to him.
+- 3-10: when the gold sits on his back end but his face points at you, don't run or jump at him. Going at his face or over his head both cost me hearts. Wait for him to turn or stop, then go.
+- 3-10: when he stands up and roars, don't just run flat out. I took a hit running away. Watch for the ring, then jump out of it.
+- 3-10: when he gets "caught in the moon" he's stunned for a good while with the gold on his chest. That's the big opening, so run straight in and tap-tap.
