@@ -5,7 +5,7 @@
  *
  * Only what that one stage needs (atlasLoader.ts: a decoded sheet is 10 to 46 MB, and a world's sheets are let go when play moves on):
  *   kit:<w>        the painted platforms: World 1's atlas (every piece) and the world's own kit (engine.ts paintKit)
- *   w2/w3/w4-props a hand-built World 2, 3 or 4 stage's dressing (riverArt.ts, w3Art.ts, w4Art.ts)
+ *   w2/w3/w4/w5-props a hand-built World 2, 3, 4 or 5 stage's dressing (riverArt.ts, w3Art.ts, w4Art.ts, w5Art.ts)
  *   dot            Dot's flight (4-D): her pieces, her frames and the four paintings behind the netting (dotFlightArt.ts)
  *   anim:<name>    a creature's clip sheet (creatureAnim.ts), for the hand-built stages that hold one (STAGE_ANIMS)
  *
@@ -51,7 +51,7 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
     out.push('kit:1');
     if (w !== 1 && hasKit) out.push(`kit:${w}`);
   }
-  if (built && w >= 2 && w <= 4) out.push(`w${w}-props`);
+  if (built && w >= 2 && w <= 5) out.push(`w${w}-props`);
   if (built) for (const a of STAGE_ANIMS[cfg.id] ?? []) out.push(`anim:${a}`);
   return out;
 }

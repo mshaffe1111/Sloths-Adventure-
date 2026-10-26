@@ -19,6 +19,8 @@ import { ctestEnabled } from './playRecorder.ts';
 import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
+import { W5_PROPS_URL, w5ArtReady } from './w5Art.ts';
+import { preloadBackdrop } from './paintedBackdrops.ts';
 import { stageSheets } from './stageSheets.ts';
 import { perfNote } from './perfLog.ts';
 import type { LevelConfig } from './types.ts';
@@ -42,6 +44,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'w4-props') {
       w4ArtReady();
       urls.push(W4_PROPS_URL);
+    } else if (k === 'w5-props') {
+      w5ArtReady();
+      urls.push(W5_PROPS_URL);
     } else if (k === 'dot') {
       warmDotSheets();
       urls.push(DOT_PROPS_URL, DOT_ATLAS_URL, ...Object.values(BACK_URL));
@@ -78,6 +83,8 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   enterWorld(cfg.worldIndex);
   const keys = stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled() });
   const urls = start(keys);
+  // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode)
+  preloadBackdrop(cfg.worldIndex, cfg.id);
   const t0 = performance.now();
   const ctx = canvas?.getContext('2d', { alpha: false }) ?? null;
   const done = whenSheetsReady(urls, ms).then((n) => {
