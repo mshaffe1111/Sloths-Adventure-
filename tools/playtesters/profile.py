@@ -9,7 +9,9 @@ Only numbers and the tester's own survey answers go into a profile; no raw finge
 """
 import collections, glob, json, math, os, statistics, sys
 
-WANT = {'Jen': 'jen', 'Sally': 'sally', 'Steph Roberts': 'steph', 'Brycen': 'brycen', 'Matt': 'matt'}
+WANT = {'Jen': 'jen', 'Sally': 'sally', 'Steph Roberts': 'steph', 'Brycen': 'brycen', 'Matt': 'matt',
+        # Sasa is Sally on a second, bigger Android (552 wide): same thumbs, folded in (Matt, 2026-10-26)
+        'Sasa': 'sally'}
 
 
 def pct(xs, p):

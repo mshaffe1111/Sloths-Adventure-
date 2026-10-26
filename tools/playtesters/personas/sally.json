@@ -1,93 +1,98 @@
 {
- "sessions": 8,
- "minutesPlayed": 176.5,
+ "sessions": 11,
+ "minutesPlayed": 233.0,
  "devices": {
-  "Android phone 320x782 portrait": 8
+  "Android phone 320x782 portrait": 8,
+  "Android phone 552x924 portrait": 3
  },
- "strokes": 2510,
+ "strokes": 3613,
  "mix": {
-  "drag": 0.609,
-  "tap": 0.294,
-  "hold": 0.014,
-  "flick": 0.084
+  "drag": 0.629,
+  "tap": 0.273,
+  "hold": 0.011,
+  "flick": 0.087
  },
  "tapMs": {
-  "p10": 26,
-  "p50": 91,
+  "p10": 20,
+  "p50": 86,
   "p90": 160
  },
  "holdMs": {
   "p10": 320,
-  "p50": 463,
+  "p50": 453,
   "p90": 4808
  },
  "flickPx": {
-  "p10": 38.013,
-  "p50": 88.023,
-  "p90": 172.722
+  "p10": 41.049,
+  "p50": 94.763,
+  "p90": 187.216
  },
  "flickPxPerMs": {
   "p10": 0.281,
-  "p50": 0.401,
-  "p90": 0.762
+  "p50": 0.415,
+  "p90": 0.821
  },
  "flickMs": {
-  "p10": 97,
-  "p50": 236,
-  "p90": 291
+  "p10": 102,
+  "p50": 242,
+  "p90": 292
  },
  "dragMs": {
-  "p10": 308,
-  "p50": 696,
-  "p90": 1754
+  "p10": 321,
+  "p50": 743,
+  "p90": 1806
  },
  "jumpFlickOffVerticalDeg": {
-  "p10": 4.764,
-  "p50": 27.553,
-  "p90": 43.452
+  "p10": 1.621,
+  "p50": 21.801,
+  "p90": 42.58
  },
  "jumpHoldMs": {
   "p10": 0,
-  "p50": 165,
-  "p90": 798
+  "p50": 347,
+  "p90": 905
  },
  "gapBetweenTouchesMs": {
-  "p10": 40,
-  "p50": 515,
-  "p90": 1636
+  "p10": 64,
+  "p50": 561,
+  "p90": 1744
  },
  "touchStartX": {
-  "p10": 0.219,
-  "p50": 0.287,
-  "p90": 0.669
+  "p10": 0.222,
+  "p50": 0.29,
+  "p90": 0.667
  },
  "touchStartY": {
-  "p10": 0.467,
-  "p50": 0.616,
-  "p90": 0.756
+  "p10": 0.46,
+  "p50": 0.595,
+  "p90": 0.743
  },
- "leftHalfShare": 0.759,
- "twoFingerShare": 0.028,
- "touchSizePx": null,
+ "leftHalfShare": 0.766,
+ "twoFingerShare": 0.032,
+ "touchSizePx": {
+  "p10": 5,
+  "p50": 5,
+  "p90": 5
+ },
  "perMinute": {
-  "move": 19.1,
-  "duck": 26.6,
-  "jumpUp": 18.6,
-  "jump": 4.2,
-  "punch": 2.2,
+  "move": 21.9,
+  "duck": 29.5,
+  "jumpUp": 20.5,
+  "jump": 4.9,
+  "punch": 2.8,
   "mega": 0.2,
-  "climb": 1.9,
-  "tapjump": 1.0
+  "climb": 1.5,
+  "tapjump": 0.8
  },
- "hurtPerMinute": 0.22,
- "livesLostPerMinute": 0.03,
+ "hurtPerMinute": 0.19,
+ "livesLostPerMinute": 0.02,
  "secondsPerSection": {
-  "p10": 0.922,
-  "p50": 15.769,
-  "p90": 218.233
+  "p10": 1.35,
+  "p50": 16.91,
+  "p90": 159.798
  },
  "quits": 1,
- "finishes": 5,
+ "finishes": 6,
  "stuckHelp": 0,
  "survey": [
   {
@@ -490,6 +495,110 @@
    "session": "20261025-1415-mkhy"
   },
   {
+   "minutesPlayed": 12.0,
+   "mix": {
+    "drag": 0.834,
+    "tap": 0.153,
+    "hold": 0.006,
+    "flick": 0.006
+   },
+   "tapMs": {
+    "p10": 50,
+    "p50": 82,
+    "p90": 232
+   },
+   "flickPx": {
+    "p10": 440.555,
+    "p50": 440.555,
+    "p90": 440.555
+   },
+   "flickPxPerMs": {
+    "p10": 1.478,
+    "p50": 1.478,
+    "p90": 1.478
+   },
+   "jumpFlickOffVerticalDeg": null,
+   "touchStartX": {
+    "p10": 0.263,
+    "p50": 0.295,
+    "p90": 0.627
+   },
+   "touchStartY": {
+    "p10": 0.51,
+    "p50": 0.545,
+    "p90": 0.655
+   },
+   "leftHalfShare": 0.81,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 231,
+    "p50": 874,
+    "p90": 1914
+   },
+   "hurtPerMinute": 0.17,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 3.616,
+    "p50": 24.081,
+    "p90": 159.798
+   },
+   "session": "20261025-1832-3jen"
+  },
+  {
+   "minutesPlayed": 23.3,
+   "mix": {
+    "drag": 0.588,
+    "tap": 0.256,
+    "flick": 0.149,
+    "hold": 0.007
+   },
+   "tapMs": {
+    "p10": 16,
+    "p50": 66,
+    "p90": 165
+   },
+   "flickPx": {
+    "p10": 72.111,
+    "p50": 107.935,
+    "p90": 203.887
+   },
+   "flickPxPerMs": {
+    "p10": 0.281,
+    "p50": 0.423,
+    "p90": 0.983
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 11.976,
+    "p50": 42.45,
+    "p90": 42.45
+   },
+   "touchStartX": {
+    "p10": 0.217,
+    "p50": 0.275,
+    "p90": 0.623
+   },
+   "touchStartY": {
+    "p10": 0.301,
+    "p50": 0.522,
+    "p90": 0.553
+   },
+   "leftHalfShare": 0.832,
+   "twoFingerShare": 0.039,
+   "gapBetweenTouchesMs": {
+    "p10": 165,
+    "p50": 463,
+    "p90": 1568
+   },
+   "hurtPerMinute": 0.09,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 13.853,
+    "p50": 16.91,
+    "p90": 52.029
+   },
+   "session": "20261025-1849-dna3"
+  },
+  {
    "minutesPlayed": 14.7,
    "mix": {
     "drag": 0.718,
@@ -582,6 +691,59 @@
     "p90": 36.654
    },
    "session": "20261025-1933-yh4n"
+  },
+  {
+   "minutesPlayed": 21.2,
+   "mix": {
+    "tap": 0.228,
+    "drag": 0.694,
+    "flick": 0.077
+   },
+   "tapMs": {
+    "p10": 34,
+    "p50": 68,
+    "p90": 136
+   },
+   "flickPx": {
+    "p10": 58.034,
+    "p50": 122.332,
+    "p90": 217.076
+   },
+   "flickPxPerMs": {
+    "p10": 0.286,
+    "p50": 0.495,
+    "p90": 0.906
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 0.682,
+    "p50": 6.772,
+    "p90": 16.42
+   },
+   "touchStartX": {
+    "p10": 0.246,
+    "p50": 0.303,
+    "p90": 0.712
+   },
+   "touchStartY": {
+    "p10": 0.333,
+    "p50": 0.526,
+    "p90": 0.563
+   },
+   "leftHalfShare": 0.732,
+   "twoFingerShare": 0.055,
+   "gapBetweenTouchesMs": {
+    "p10": 255,
+    "p50": 748,
+    "p90": 3044
+   },
+   "hurtPerMinute": 0.09,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 2.93,
+    "p50": 11.083,
+    "p90": 1093.706
+   },
+   "session": "20261025-1954-kqsd"
   }
  ]
 }
