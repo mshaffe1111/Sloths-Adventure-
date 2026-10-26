@@ -32,7 +32,7 @@ import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep }
 import { controlStyle } from './controlPrefs.ts';
 import { lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, easeAssist, inSweetSpot, newAirDrive, setTimedSwing, swingGrab, swingStep, timedLaunch } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, canGrabSwing, easeAssist, inSweetSpot, newAirDrive, setTimedSwing, swingGrab, swingStep, timedLaunch } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -88,6 +88,7 @@ import {
   atExitDoor,
   atSealedDoor,
   ascentProgress,
+  SHRINE_STOP,
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
@@ -1074,7 +1075,8 @@ export class GameEngine {
           break;
         }
       } else {
-        if (Math.abs(p.x - v.x) < 48 && p.y >= v.topY - 15 && p.y <= v.bottomY + 30) {
+        // (the timed swing's catch, physics.ts TIMED.grabX: 60 px, Easy's 76; the stage checks assume it, and it used to be a fixed 48 here)
+        if (canGrabSwing(p.x, p.y, v)) {
           nearSwingVine = v;
           break;
         }
@@ -1460,7 +1462,7 @@ export class GameEngine {
 
       // Clamp horizontal level bounds (safely stops player right at the victory shrine altar)
       const maxX = this.currentStage.exitTotemX > 0 && this.currentStage.config.objectiveType !== 'ascent'
-        ? this.currentStage.exitTotemX + 35
+        ? this.currentStage.exitTotemX + SHRINE_STOP
         : this.currentStage.config.levelWidth - 20;
       p.x = Math.max(20, Math.min(maxX, p.x));
 
@@ -3711,7 +3713,9 @@ export class GameEngine {
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {
-      this.camera.targetX += (look.x - vw / 2 - this.camera.targetX) * look.u;
+      // (a knot, on a wide view: kept 110 px in from the left edge, clear of Dot's banner across the middle of the screen)
+      const lx = look.leftX !== undefined && vw > vh * 1.3 ? look.leftX - 110 : look.x - vw / 2;
+      this.camera.targetX += (lx - this.camera.targetX) * look.u;
       this.camera.targetY += (look.y - vh / 2 - this.camera.targetY) * look.u;
       // (never so far that he leaves the view: his feet stay above the bottom tenth)
       this.camera.targetY = Math.max(this.camera.targetY, p.y - vh * 0.9);
