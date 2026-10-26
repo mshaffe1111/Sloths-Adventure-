@@ -1,0 +1,6 @@
+{"tag": "w5pstarts", "script": "tools/art/w5/w5cpu.py", "flavor": "cpu-upgrade", "tasks": [
+ {"do": "starts", "atlas": "cels:lp", "as": "pell", "tag": "w5p",
+  "frames": ["lantern_walk", "lantern_look", "stand_worry", "cap_in_hand", "mend_coat", "hopeful", "turn_away"],
+  "flip": ["turn_away"],
+  "dehalo": {"lantern_walk": [80, 60, 135, 160], "lantern_look": [88, 35, 142, 125]}}
+]}

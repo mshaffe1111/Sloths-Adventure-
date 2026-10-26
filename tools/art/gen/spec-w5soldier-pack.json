@@ -1,0 +1,14 @@
+{"tag": "w5soldierpack", "script": "tools/art/w5/w5cpu.py", "flavor": "cpu-upgrade", "tasks": [
+ {"do": "packall", "creature": "soldier", "up": 1.6, "key": "tight", "out": "soldiera-all",
+  "meta": {"soldiera-march3": {"creature": "soldiera", "frame": "march", "ax": 105.24, "ay": 215.67, "f": 4.247252747252747, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0},
+           "soldiera-idle3": {"creature": "soldiera", "frame": "idle", "ax": 109.47, "ay": 214.04, "f": 4.28421052631579, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0},
+           "soldiera-look3": {"creature": "soldiera", "frame": "idle", "ax": 109.47, "ay": 214.04, "f": 4.28421052631579, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0}},
+  "seqs": {"march_a": ["w5-soldiera-march3-s3", "all"], "idle_a": ["w5-soldiera-idle3-s3", "all"], "lookA3": ["w5-soldiera-look3-s3", "all"],
+           "lookA11": ["w5-soldiera-look3-s11", "all"]}},
+ {"do": "packall", "creature": "soldier", "up": 1.6, "key": "tight", "out": "soldierb-all",
+  "meta": {"soldierb-march3": {"creature": "soldierb", "frame": "march", "ax": 106.75, "ay": 213.73, "f": 4.285714285714286, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0},
+           "soldierb-idle3": {"creature": "soldierb", "frame": "idle", "ax": 100.77, "ay": 214.01, "f": 4.247368421052632, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0},
+           "soldierb-look3": {"creature": "soldierb", "frame": "idle", "ax": 100.77, "ay": 214.01, "f": 4.247368421052632, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0}},
+  "seqs": {"march_b": ["w5-soldierb-march3-s3", "all"], "idle_b": ["w5-soldierb-idle3-s3", "all"], "lookB3": ["w5-soldierb-look3-s3", "all"],
+           "lookB11": ["w5-soldierb-look3-s11", "all"]}}
+]}
