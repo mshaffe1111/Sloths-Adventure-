@@ -51,6 +51,9 @@ let views = VIEWS;
 
 async function open(stage, v, flag = 0, layout = 1) {
   if (page) await page.close().catch(() => {});
+  // a size of its own ("740x360"): that screen, as the phone is held then
+  const sized = /^(\d+)x(\d+)$/.exec(v || '');
+  if (sized) { views = { ...views, [v]: { width: Number(sized[1]), height: Number(sized[2]) } }; }
   view = views[v] ? v : 'land';
   // (a phone: touch screen, mobile browser, so the game shows and reads its touch controls)
   const ctx = await browser.newContext({ viewport: views[view], deviceScaleFactor: 1, isMobile: true, hasTouch: true });
@@ -226,6 +229,19 @@ async function handle(cmd) {
     await page.clock.runFor(300);
     return { shot: await shot(), text: await screenText() };
   }
+  if (cmd.cmd === 'press') {
+    // press a button with a second finger while the steering thumb stays on the glass (a two-thumb player answering a card)
+    const b = page.locator('button', { hasText: new RegExp(`^\\s*${cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') });
+    if (!(await b.count())) return { error: `no button "${cmd.text}" on screen`, text: await screenText() };
+    const r = await b.first().boundingBox();
+    const pt = { x: r.x + r.width / 2, y: r.y + r.height / 2, id: 3 };
+    const held = points();
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [...held, pt] });
+    await page.clock.runFor(80);
+    await liftFinger(pt);
+    await page.clock.runFor(300);
+    return { shot: await shot(), text: await screenText() };
+  }
   if (cmd.cmd === 'look') return { shot: await shot(), text: await screenText() };
   if (cmd.cmd === 'burst') {
     // eight frames in a row in one strip: flicker, jitter and things popping in and out show up side by side
@@ -233,7 +249,20 @@ async function handle(cmd) {
     for (let k = 0; k < 8; k++) { await page.clock.runFor(33); paths.push(await shot(`burst${k}`)); }
     return { shots: paths, text: await screenText() };
   }
+  if (cmd.cmd === 'eval') {
+    // a look under the hood (not something a player can do): the value of a JS expression in the page, e.g. "__engine().input.state"
+    const v = await page.evaluate((src) => { try { return JSON.stringify((0, eval)(src)); } catch (e) { return 'threw ' + e.message; } }, cmd.text);
+    return { text: String(v).slice(0, 2000) };
+  }
+  if (cmd.cmd === 'die') {
+    // lose a life on the spot (as from a fall), to reach the retry and game-over screens quickly
+    await page.evaluate(() => window.__engine().loseLife('pit'));
+    await page.clock.runFor(2500);
+    return { shot: await shot(), text: await screenText() };
+  }
   if (cmd.cmd === 'perf') {
+    // (rubbish collected first: listeners on screens already thrown away still count until then, and look like a leak)
+    await cdp.send('HeapProfiler.collectGarbage').catch(() => {});
     const m = Object.fromEntries((await cdp.send('Performance.getMetrics')).metrics.map((x) => [x.name, x.value]));
     const canv = await page.evaluate(() => document.querySelectorAll('canvas').length);
     return { text: `memory in use ${(m.JSHeapUsedSize / 1048576).toFixed(1)} MB of ${(m.JSHeapTotalSize / 1048576).toFixed(1)} MB, page objects ${m.Nodes}, canvases ${canv}, listeners ${m.JSEventListeners}` };

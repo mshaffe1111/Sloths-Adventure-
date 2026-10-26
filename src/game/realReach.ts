@@ -144,6 +144,13 @@ export class RealReach {
     this.opts = { traps: true, perTarget: 8, giveUps: 3, deepPlaces: 4, deepMoves: 120, ...opts, log: opts.log ?? (() => {}) };
     this.hasGlide = this.sim.e.skills.has('glide');
     this.drafts = this.sim.w4?.w4?.updrafts ?? [];
+    // a heart stays put while he is at full health (engine.ts), so he plays a heart short: every heart can then be picked up
+    const frame = this.sim.frame.bind(this.sim);
+    this.sim.frame = (pad?: Pad) => {
+      const p = this.sim.p;
+      if (p.hp >= p.maxHp) p.hp = p.maxHp - 1;
+      return frame(pad);
+    };
     // the boulders stay where they are until they are pushed on purpose (pushBoulders)
     for (const pl of this.sim.platforms as Array<Platform & { pushSaved?: Platform['push'] }>) {
       if (pl.push) {
