@@ -14,6 +14,12 @@ orientations); after each update, send the coding team the bugs, glitches and su
 coders hand over an update, and keeps runs small. Personas: Matt (expert, upright), Steph (upright), Sally (upright, small phone;
 Sasa is her second device), Jen and Brycen (sideways). Refresh them from the control-test sheet when Matt asks.
 
+**Difficulty climbs** (Matt, 2026-10-26): from World 5 on, stages and bosses may be harder, and nothing has to be beaten on the
+first try. By then players have experience. For World 5 and later, QA fails a stretch or a boss only when it can't be done (a
+window too short for any real thumb, a hit with no warning, a spot no one can reach), not because a bot needed several tries.
+Tries are still counted and reported, so the climb can be seen. Worlds 1-4 stay held to the first-timer standard (the 0.8 s
+reaction + 0.6 s margin on boss openings).
+
 **How work moves**
 - The coding team promotes a fix or a new stage: it rebuilds Matt's test link, pushes `ccr-0d59a91c-oy3imz`, and sends QA a promotion note with a retest list.
 - QA builds from the pushed branch, retests every item, and replies pass or fail on each, plus anything new.
