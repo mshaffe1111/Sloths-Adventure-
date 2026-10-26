@@ -45,9 +45,9 @@ export interface GuideBush extends GuideThing {
   w: number;
   kind: string;
 }
-/** one of World 5's pieces Dot can point at (w5Play.ts guideThings): a cocoon's middle, or a closing orchid's cup */
+/** one of World 5's pieces Dot can point at (w5Play.ts guideThings): a cocoon's middle, a closing orchid's cup, or the Seamstress */
 export interface GuideW5 extends GuideThing {
-  kind: 'cocoon' | 'orchid';
+  kind: 'cocoon' | 'orchid' | 'seamstress';
   /** a cocoon already punched open: nothing to point at */
   done?: boolean;
 }

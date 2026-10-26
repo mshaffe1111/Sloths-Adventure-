@@ -20,7 +20,7 @@ import {
   drawW5Light, drawWrappedChair, takeAt,
 } from './w5Look.ts';
 import { w5ArtReady, w5Height, type W5Piece as ArtPiece } from './w5Art.ts';
-import { drawSeamstress, drawW5Spider, warmW5Butler, warmW5Seamstress, warmW5Spider, type ButlerPose } from './w5Creatures.ts';
+import { drawSeamstress, drawW5Spider, seamHeadDx, seamTop, warmW5Butler, warmW5Seamstress, warmW5Spider, type ButlerPose } from './w5Creatures.ts';
 import { W5_FRAMES } from './w5PropsData.ts';
 import { drawAura } from './readable.ts';
 import type { Collectible, Enemy, Platform, PlayerState as Player, Vine } from './types.ts';
@@ -58,6 +58,8 @@ export interface W5Host {
 
 /** how far ahead (px) a piece is "coming into view" for its first-time line */
 const SEE = 560;
+/** his feet this far over an orchid's ledge (or on it) are in its cup: his body is down among its petals (W5Play.inCup) */
+const CUP_REACH = 56;
 /** the Butler is seen from further off (he stands tall with his tray): his line has time to come even after another */
 const BUTLER_SEE = 1100;
 /** an awake spider's first-time line comes this far ahead (it notices him from SPIDER5.sense, 430 px): time to say it before */
@@ -137,7 +139,7 @@ export class W5Play {
    * the cocoons' middles and the closing orchids' cups, for Dot's ring (dotGuideView.ts GuideView.w5): made once, a cocoon marked done
    * once it is open. Her orchid tip rang Pokey, not the orchid (QA, 5-3, v198)
    */
-  readonly guideThings: Array<{ kind: 'cocoon' | 'orchid'; x: number; y: number; done?: boolean }> = [];
+  readonly guideThings: Array<{ kind: 'cocoon' | 'orchid' | 'seamstress'; x: number; y: number; done?: boolean }> = [];
 
   constructor(private readonly w5: W5Extras, platforms: Platform[], vines: Vine[]) {
     this.silkLines = vines.filter((v) => v.silk);
@@ -152,6 +154,8 @@ export class W5Play {
     for (const c of w5.cocoons ?? []) this.guideThings.push({ kind: 'cocoon', x: c.x, y: c.y - COCOON.mid });
     // (the bloom's middle: its painted piece hangs from just over the ledge to under it, w5Look.ts drawOrchid)
     for (const o of w5.orchids ?? []) this.guideThings.push({ kind: 'orchid', x: o.x, y: Math.round(o.y + w5Height('orchidOpen', o.w) * 0.4) });
+    // (and the Seamstress, her middle: Dot's line about her rings her, QA v200: "saw only a webbed chair and a lace cloth")
+    for (const sm of w5.seamstresses ?? []) this.guideThings.push({ kind: 'seamstress', x: sm.x, y: Math.round(sm.y - SEAMSTRESS.h / 2) });
     (w5.orchids ?? []).forEach((o, i) => {
       for (const id of o.petalIds ?? []) this.orchidOf.set(id, i);
       const pl = o.platformId !== undefined ? platforms.find((q) => q.id === o.platformId) : undefined;
@@ -198,6 +202,18 @@ export class W5Play {
     return true;
   }
 
+  /**
+   * a petal in an open orchid's cup is picked the moment he lands in the cup or comes down into it, anywhere over the bloom, not only
+   * within the engine's 34 px of its middle (QA v200: a running hop that landed on an orchid and hopped on missed most of them, 55 of 116)
+   */
+  inCup(c: Collectible, px: number, py: number): boolean {
+    const i = this.orchidOf.get(c.id);
+    if (i === undefined) return false;
+    const o = this.w5.orchids![i];
+    if (!orchidAt(o, this.clock).picks) return false;
+    return px > o.x - o.w / 2 - 12 && px < o.x + o.w / 2 + 12 && py >= o.y - CUP_REACH && py <= o.y + 6;
+  }
+
   /** a petal in a shut orchid's cup cannot be picked (or seen) */
   shut(c: Collectible): boolean {
     const i = this.orchidOf.get(c.id);
@@ -240,6 +256,9 @@ export class W5Play {
       const pl = this.orchidPlat.get(i);
       if (pl) pl.broken = !s.solid;
       if (ahead(o.x, o.y)) h.tip(said(W5_TEACH.orchid), W5_TEACH.orchid, 4);
+      // the first orchid's stretch, from where its line comes to just past it: no silk creeps here, the lesson is the orchid (QA v200:
+      // "Quick! Flick up before the orchid shuts!" came while the silk had him behind a stump, and it shut before he was free)
+      if (o.lesson && p.x > o.x - SEE - 40 && p.x < o.x + o.w / 2 + 80 && Math.abs(p.y - o.y) < 300) this.grace = Math.max(this.grace, 0.2);
     });
 
     // the soft chairs tug him toward them as he passes; sitting in one brings the silk on faster
@@ -303,14 +322,14 @@ export class W5Play {
     // on during the tell calls it off. She looks up only in full view on the screen, so the warning is always seen
     (w5.seamstresses ?? []).forEach((sm, i) => {
       const sh = w5.sheets?.[sm.sheet];
-      if (sh && ahead(sh.x0, sh.bottom, SEAM_SEE)) h.tip(said(W5_TEACH.seamstress), W5_TEACH.seamstress, 3.8);
       const v = h.view;
       const seen = !v || onScreen(v, sm.x, sm.y - SEAMSTRESS.h / 2, 60, SEAMSTRESS.h, 10);
+      if (sh && ahead(sh.x0, sh.bottom, SEAM_SEE)) h.tip(said(W5_TEACH.seamstress), W5_TEACH.seamstress, 3.8);
       const was = this.seams[i];
       // (wiggling free of her lace, as she says to, is not lingering: she does not cast again at a thumb sliding left and right)
       const out = stepSeam(was, { lingering: lingering && admired.has(sm.sheet) && !r.wrapped, seen }, dt);
       this.seams[i] = out.st;
-      if (out.st.phase === 'tell' && was.phase === 'knit') h.float('!', sm.x, sm.y - SEAMSTRESS.h - 18, '#fb7185');
+      // (her "!" is drawn over everything while she looks up, on its badge: drawWarnings)
       if (out.cast) {
         this.sit = { ...this.sit, silk: laced(this.sit.silk) };
         this.laceAt[i] = h.t;
@@ -659,9 +678,20 @@ export class W5Play {
     (this.w5.seamstresses ?? []).forEach((sm, i) => {
       const st = this.seams[i];
       if (st.phase !== 'tell' || sm.x < view.x0 - 200 || sm.x > view.x1 + 200) return;
-      // the warning: a red "!" over her that swells through the tell, as the spiders' crouch has
+      // the warning: a red "!" over her that swells through the tell, as the spiders' crouch has, over the top of her raised needles (it
+      // sat on her own head) on a pale badge, so it reads against her pink and the dusk (QA v200: no "!" seen)
       const u = Math.min(1, st.t / SEAMSTRESS.tell);
-      bang(sm.x, sm.y - SEAMSTRESS.h - 14 - 6 * u, 20 + 10 * u);
+      const size = 30 + 12 * u;
+      const y = sm.y - seamTop('tell') - 10 - 6 * u;
+      const x = sm.x + sm.dir * seamHeadDx('tell');
+      ctx.fillStyle = 'rgba(255, 247, 237, 0.92)';
+      ctx.strokeStyle = 'rgba(40, 10, 20, 0.85)';
+      ctx.lineWidth = 3 * k;
+      ctx.beginPath();
+      ctx.arc(x, y - size * k * 0.36, size * k * 0.56, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      bang(x, y, size);
     });
     ctx.restore();
     void t;
@@ -748,7 +778,7 @@ export class W5Play {
     if (p && this.restPlaying(this.clock)) out.push({ x0: p.x - 34, y0: p.y - 78, x1: p.x + 34, y1: p.y + 4 });
     // (and the Seamstress with the "!" over her: her tell is the warning, never under the bubble)
     for (const sm of this.w5.seamstresses ?? []) {
-      if (sm.x + 60 > view.x0 && sm.x - 60 < view.x1) out.push({ x0: sm.x - 60, y0: sm.y - SEAMSTRESS.h - 50, x1: sm.x + 60, y1: sm.y });
+      if (sm.x + 80 > view.x0 && sm.x - 80 < view.x1) out.push({ x0: sm.x - 80, y0: sm.y - seamTop('tell') - 70, x1: sm.x + 80, y1: sm.y });
     }
   }
 

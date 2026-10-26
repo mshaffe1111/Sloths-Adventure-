@@ -13,6 +13,7 @@ import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { LessonCard } from './components/LessonCard.tsx';
 import { Wayside } from './components/Wayside.tsx';
+import { MeecaWords } from './components/MeecaWords.tsx';
 import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
 import type { CoachStep } from './game/touchCoach.ts';
@@ -232,6 +233,7 @@ export default function App() {
   const launchSeq = useRef(0);
   /** a stage is being played right now (stagePreload.ts then draws nothing on the canvas) */
   const inPlay = useCallback(() => !!engineRef.current?.inPlay(), []);
+  const meecaEngine = useCallback(() => engineRef.current, []);
   // the first-stage lesson (see game/touchCoach.ts): which step is showing, and for which kind of touch controls
   const [coachStep, setCoachStep] = useState<CoachStep>(null);
   // a first-time lesson card (the stage has paused itself; see game/lessons.ts)
@@ -1078,6 +1080,8 @@ export default function App() {
           />
           <PerfReadout stageId={activeLevel.id} />
           {/* (Meeca's stage has no Dot: her own thoughts are drawn in the stage, meecaPlay.ts) */}
+          {/* (Meeca's stage draws its words on the canvas: the same words in the page, for screen readers and QA's bots) */}
+          {activeLevel.id === MEECA_STAGE_ID && <MeecaWords engine={meecaEngine} />}
           {activeLevel.id !== MEECA_STAGE_ID && <Wayside
             key={`${activeLevel.id}-${runId}`}
             level={activeLevel}

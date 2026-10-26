@@ -145,7 +145,8 @@ export function findTarget(topic: TopicId | undefined, v: GuideView): Target | n
       break;
     case 'cocoon':
     case 'orchid':
-      for (const w of v.w5) if (w.kind === topic && !w.done) consider(w.x, w.y, topic === 'cocoon' ? 36 : 40);
+    case 'seamstress':
+      for (const w of v.w5) if (w.kind === topic && !w.done) consider(w.x, w.y, topic === 'cocoon' ? 36 : topic === 'seamstress' ? 56 : 40);
       break;
     case 'gap':
     case 'ledge':
@@ -304,6 +305,12 @@ export function placeBubble(
   hard: readonly Rect[] = [],
   /** half her height (she is wider than tall) */
   meH = me,
+  /**
+   * Pokey's own box: the one thing it may never cover while anywhere else on the screen is free of him. Every spot that covers him
+   * loses to every spot that does not (QA v200 upright: "Tap to punch the spider" in 5-3 and "Still stuck?" in 5-4 sat on him, because
+   * a spot far from her cost more than a corner of him); and the spots beside him, left and right at his height, are tried too
+   */
+  body: Rect | null = null,
 ): BubblePlace {
   const r = safe.rect;
   const gap = Math.max(34, me + 12);
@@ -311,14 +318,19 @@ export function placeBubble(
   let best: BubblePlace | null = null;
   let bestCost = Infinity;
   type Side = 'above' | 'below' | 'left' | 'right';
-  // (the sides of her, then the spots clear of each hard box: [side, y] with the bubble centred on her)
-  const spots: [Side, number | null][] = order.map((s) => [s, null]);
+  // (the sides of her, then the spots clear of each hard box: [side, y, x] with the bubble centred on her unless x is set)
+  const spots: [Side, number | null, number | null][] = order.map((s) => [s, null, null]);
   // (his painting reaches past his body box, his feet most of all: more room under a hard box than over it)
-  for (const k of hard) spots.push(['above', k.y0 - 16 - h], ['below', k.y1 + 24 + tag]);
-  spots.push(['above', r.y0]);
+  for (const k of hard) spots.push(['above', k.y0 - 16 - h, null], ['below', k.y1 + 24 + tag, null]);
+  spots.push(['above', r.y0, null]);
+  if (body) {
+    const my = (body.y0 + body.y1) / 2 - h / 2;
+    spots.push(['left', my, body.x0 - 10 - w], ['right', my, body.x1 + 10], ['below', body.y1 + 24 + tag, body.x0 - 10 - w], ['below', body.y1 + 24 + tag, body.x1 + 10]);
+    spots.push(['below', r.y1 - h, null], ['above', body.y0 - 16 - h, body.x0 - 10 - w], ['above', body.y0 - 16 - h, body.x1 + 10]);
+  }
   for (let i = 0; i < spots.length; i++) {
-    const [side, fixY] = spots[i];
-    let x = fixY !== null ? sx - w / 2 : side === 'left' ? sx - gap - w : side === 'right' ? sx + gap : sx - w / 2;
+    const [side, fixY, fixX] = spots[i];
+    let x = fixX ?? (fixY !== null ? sx - w / 2 : side === 'left' ? sx - gap - w : side === 'right' ? sx + gap : sx - w / 2);
     let y = fixY ?? (side === 'above' ? sy - gap - h : side === 'below' ? sy + gap + tag : sy - h / 2);
     x = Math.max(r.x0, Math.min(r.x1 - w, x));
     y = Math.max(r.y0, Math.min(r.y1 - h, y));
@@ -328,13 +340,16 @@ export function placeBubble(
     for (const k of safe.keepOut) cost += overlap(box, k) * 3;
     for (const a of avoid) cost += overlap(box, a) * 2;
     for (const a of hard) cost += overlap(box, a) * 12;
+    // (on Pokey: worse than anything else it could do)
+    const onHim = body ? overlap(box, body) : 0;
+    if (onHim > 0) cost += 1e8 + onHim * 100;
     // she must not end up under her own bubble (it was pushed over her by the edge)
     cost += overlap(box, { x0: sx - me, y0: sy - meH, x1: sx + me, y1: sy + meH }) * 20;
     // a bubble far from her reads as someone else's
     const far = Math.max(0, Math.hypot(Math.max(box.x0 - sx, 0, sx - box.x1), Math.max(box.y0 - sy, 0, sy - box.y1)) - gap - tag - 10);
     cost += far * far * 4;
     // (a spot clear of a hard box may land on her far side of it: the tail points the way she is)
-    const vert = fixY !== null ? (y + h / 2 < sy ? 'above' : 'below') : side;
+    const vert = fixX !== null ? (x + w < sx ? 'left' : x > sx ? 'right' : y + h / 2 < sy ? 'above' : 'below') : fixY !== null ? (y + h / 2 < sy ? 'above' : 'below') : side;
     const tail: TailSide = vert === 'above' ? 'b' : vert === 'below' ? 't' : vert === 'left' ? 'r' : 'l';
     const at = tail === 'b' || tail === 't' ? Math.max(18, Math.min(w - 30, sx - x - 8)) : Math.max(14, Math.min(h - 28, sy - y - 8));
     if (cost < bestCost) {

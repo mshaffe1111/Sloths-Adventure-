@@ -565,7 +565,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       const my = p.mode === 'perch' ? spot.y - 22 : spot.y;
       const order = p.mode === 'perch' ? (['above', 'left', 'right', 'below'] as const) : hoverOrder(v);
       hardNow(p);
-      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18);
+      // (Pokey himself, never under it while anywhere else is free: QA v200 upright)
+      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18, pokeyRect(v, 4));
       if (p.mode === 'perch' && (p.bub.cost ?? 0) > 0) {
         // no room for her bubble beside this perch without covering Pokey, an animal or the HUD: she hovers beside him instead
         const h = hoverSpot(v);
@@ -872,7 +873,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         landingRects(v, rects);
         popupRects(v, rects);
         hardNow();
-        p.bub = placeBubble(p.sx, p.sy, run.bw, run.bh, safe, rects, ['above', v.facing > 0 ? 'left' : 'right', 'below'], 26, run.hard);
+        p.bub = placeBubble(p.sx, p.sy, run.bw, run.bh, safe, rects, ['above', v.facing > 0 ? 'left' : 'right', 'below'], 26, run.hard, 26, pokeyRect(v, 4));
       }
       if (bub && cur && p?.bub && there && run.measuredN === cur.n) {
         let bx = p.mode === 'perch' ? run.dsx + p.bubDx : p.bub.x;

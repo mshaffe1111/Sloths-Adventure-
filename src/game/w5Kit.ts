@@ -524,8 +524,11 @@ export const SEAMSTRESS = {
   /** the silk her lace puts on him, and the most it can leave on him (her lace alone never wraps him: the stillness does) */
   lace: 0.4,
   most: 0.85,
-  /** how tall she stands (world units): about the Butler's height */
-  h: 96,
+  /**
+   * how tall she stands knitting (world units): a head over Pokey, so she reads as a figure upright and sideways (she was 96, the Butler's
+   * height, and upright at 320 x 782 she was lost among the sheet's lace, QA v200); her tell stands taller (w5Creatures seamTop)
+   */
+  h: 124,
 } as const;
 
 export type SeamPhase = 'knit' | 'tell' | 'cast' | 'rest';
@@ -579,6 +582,8 @@ export interface Orchid {
   petalIds?: number[];
   /** the ground its stem grows from (default: 260 px under the bloom) */
   stem?: number;
+  /** the stage's first, its lesson: the stillness waits along its stretch (w5Play.ts) */
+  lesson?: boolean;
 }
 
 export const ORCHID = {

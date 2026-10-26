@@ -82,7 +82,7 @@ import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, camRun, CAM, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
 import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -2336,8 +2336,9 @@ export class GameEngine {
 
       const dist = distance2D(p.x, p.y - 20, c.x, c.y);
       // swinging, he cannot steer to a flower the way he can running, so the reach is wider (the control test: flowers along the
-      // vines were the hardest thing to line up, 2026-10-23)
-      if (dist < (p.isVineSwinging ? SWING_PICK : 34)) {
+      // vines were the hardest thing to line up, 2026-10-23); and in World 5 an open orchid's cup gives up its petals to a hop that lands
+      // anywhere in it (w5Play.ts inCup)
+      if (dist < (p.isVineSwinging ? SWING_PICK : 34) || (this.w5 && !p.isVineSwinging && this.w5.inCup(c, p.x, p.y))) {
         // a heart is for when he is hurt: at full health it stays where it is, for later (the heart card says so)
         if (c.type === 'heart' && p.hp >= p.maxHp) {
           if (!this.zoneHinted.fullHeart) {
@@ -4489,6 +4490,10 @@ export class GameEngine {
     const behind = !!landShown && (landShown.x0 < this.camera.x || landShown.x1 > this.camera.x + vw);
     this.camera.x += (this.camera.targetX - this.camera.x) * (behind ? Math.min(1, dt * 13) : smoothFactor);
     this.camera.y += (this.camera.targetY - this.camera.y) * smoothFactor;
+    // the easing never loses him off the side: the aim keeps him in the view, but on a narrow view the eased camera trailed a quick swing
+    // back by 60 px or more, and on 5-4's long silk lines upright (320 x 782) he swung out past the left edge (QA v200). The framing is
+    // the aim's; this only keeps his whole body (and a little room) inside while the camera catches up (cameraFollow.ts keepHeroX)
+    this.camera.x = keepHeroX(this.camera.x, p.x, vw);
     // (standing, never even for a moment while the view eases)
     if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
 
@@ -5361,6 +5366,11 @@ export class GameEngine {
         else if (kind === 'blanket') sound.playCheckpoint();
       },
     });
+  }
+
+  /** the words Meeca's stage has on the screen now (meecaPlay.ts screenWords), for the page's text; none on any other stage */
+  meecaWords(): Array<{ kind: 'card' | 'thought' | 'pell' | 'scene'; text: string }> {
+    return this.mc?.screenWords() ?? [];
   }
 
   /** Meeca's stage on top of the play, in CSS px: the dusk grade, her thought, Pell's words, the card, the story box, the fade */

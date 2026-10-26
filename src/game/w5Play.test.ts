@@ -163,7 +163,8 @@ test("5-2: walking into the Butler's held-out tray is eating its cake (sleepy), 
 test('5-3: an open orchid holds him and gives up the flowers in its cup; it shivers, then shuts and drops him to the grass; a shut cup gives nothing', () => {
   const sim = new RealPlay('5-3', 1);
   const o = w5Of(sim).orchids![0];
-  const at = (s: number) => 60 + ((((s - o.offset) % o.period) + o.period) % o.period);
+  // (a whole number of its beats in: the lesson's beat is its own, 8 s, W5_LESSON_ORCHID)
+  const at = (s: number) => o.period * 10 + ((((s - o.offset) % o.period) + o.period) % o.period);
   const cup = () => sim.collectibles.filter((c) => o.petalIds!.includes(c.id));
   // open: he stands on it, and walking across it picks the cup
   sim.t = at(0.1);
@@ -180,7 +181,7 @@ test('5-3: an open orchid holds him and gives up the flowers in its cup; it shiv
   // a shut cup: passing through where it was picks nothing
   const sim2 = new RealPlay('5-3', 1);
   const o2 = w5Of(sim2).orchids![0];
-  sim2.t = 60 + ((((o2.open + ORCHID.tell + 0.2 - o2.offset) % o2.period) + o2.period) % o2.period);
+  sim2.t = o2.period * 10 + ((((o2.open + ORCHID.tell + 0.2 - o2.offset) % o2.period) + o2.period) % o2.period);
   sim2.fly(o2.x - 40, o2.y - 10, 0, 0, 0);
   for (let i = 0; i < 6; i++) sim2.frame({ right: true });
   assert.ok(sim2.collectibles.filter((c) => o2.petalIds!.includes(c.id)).every((c) => !c.collected), 'nothing from a shut cup');
