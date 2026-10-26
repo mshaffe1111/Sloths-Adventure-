@@ -1,0 +1,103 @@
+{
+  "tag": "w5train",
+  "status": "READY, NOT RUN. Waiting on Matt's approval of the five concept sheets (2026-10-26). Do not train before he approves.",
+  "how": "python3 -I tools/art/w5/train_w5creatures.py tools/art/gen/spec-w5creatures-train.json --cut | --build | --launch [names...]",
+  "fill_in": "For each creature: put the approved concept sheet paths in concept_sheets, run --cut, look at tools/art/w5/train/<name>/blobs/*-preview.jpg and fill poses ({sheet file name: {piece index: pose words}}); pieces left out are not used. Then --build and --launch.",
+  "pattern": "Same as the *-qwen-lora character models (queen_qwen_v1: 23 poses on flat grey, 1500 steps; meeca_qwen_v1: 2500 steps): Qwen-Image, LoRA rank 32, lr 1e-4, adamw8bit, qfloat8, buckets 768/1024, captions '<trigger>, <description>, <pose>, painted storybook illustration, plain grey background'. One ai-toolkit job per creature on rtx-pro-6000 (about 1.2 h each at 1500 steps, about $3.30; all five about $16.50).",
+  "style_notes": {
+    "household": "polite and creepy, tea-party style: tidy, mannered, a little too still; big readable eyes",
+    "wild": "painted nature, like the World 1-4 animals; big readable eyes"
+  },
+  "creatures": [
+    {
+      "name": "dangler",
+      "title": "the Dangler",
+      "style": "wild",
+      "trigger": "danglerspider",
+      "desc": "a round orb weaver spider with a striped abdomen and long thin legs, hanging on a single silk thread, big round readable eyes",
+      "lora_name": "dangler_qwen_v1",
+      "data_repo": "mshaffe111/dangler-lora-data",
+      "model_repo": "mshaffe111/dangler-qwen-lora",
+      "concept_sheets": [],
+      "poses": {},
+      "steps": 1500,
+      "samples": [
+        "danglerspider, hanging upside down on its silk thread, legs spread, painted storybook illustration, plain grey background",
+        "danglerspider, dropping fast down its thread, legs tucked, painted storybook illustration, plain grey background",
+        "danglerspider, climbing back up its thread, side view, painted storybook illustration, plain grey background"
+      ]
+    },
+    {
+      "name": "butler",
+      "title": "the Butler",
+      "style": "household",
+      "trigger": "butlerspider",
+      "desc": "a tall polite spider in a little waistcoat with a bow tie, carrying a silver cake tray, big readable eyes",
+      "lora_name": "butler_qwen_v1",
+      "data_repo": "mshaffe111/butler-lora-data",
+      "model_repo": "mshaffe111/butler-qwen-lora",
+      "concept_sheets": [],
+      "poses": {},
+      "steps": 1500,
+      "samples": [
+        "butlerspider, walking primly with the cake tray held high, side view facing right, painted storybook illustration, plain grey background",
+        "butlerspider, bowing politely and offering a tiny cake, painted storybook illustration, plain grey background",
+        "butlerspider, startled, the tray tipping, painted storybook illustration, plain grey background"
+      ]
+    },
+    {
+      "name": "seamstress",
+      "title": "the Seamstress",
+      "style": "household",
+      "trigger": "seamstressspider",
+      "desc": "a slender spider weaving fine white lace in a web panel, a thimble and a pin cushion, big readable eyes",
+      "lora_name": "seamstress_qwen_v1",
+      "data_repo": "mshaffe111/seamstress-lora-data",
+      "model_repo": "mshaffe111/seamstress-qwen-lora",
+      "concept_sheets": [],
+      "poses": {},
+      "steps": 1500,
+      "samples": [
+        "seamstressspider, in the middle of her lace web panel, weaving with her front legs, front view, painted storybook illustration, plain grey background",
+        "seamstressspider, flinging a lace strand forward, side view facing right, painted storybook illustration, plain grey background",
+        "seamstressspider, dizzy and tangled in her own lace, painted storybook illustration, plain grey background"
+      ]
+    },
+    {
+      "name": "mantis",
+      "title": "the Orchid Mantis",
+      "style": "wild",
+      "trigger": "orchidmantis",
+      "desc": "a pink and white orchid mantis with petal-shaped legs, disguised as an orchid flower, big readable eyes",
+      "lora_name": "mantis_qwen_v1",
+      "data_repo": "mshaffe111/mantis-lora-data",
+      "model_repo": "mshaffe111/mantis-qwen-lora",
+      "concept_sheets": [],
+      "poses": {},
+      "steps": 1500,
+      "samples": [
+        "orchidmantis, perfectly still pretending to be an orchid flower, painted storybook illustration, plain grey background",
+        "orchidmantis, rearing up with its forelegs raised to strike, side view facing right, painted storybook illustration, plain grey background",
+        "orchidmantis, knocked over and dazed, painted storybook illustration, plain grey background"
+      ]
+    },
+    {
+      "name": "dozer",
+      "title": "Dozer moths",
+      "style": "wild",
+      "trigger": "dozermoth",
+      "desc": "a soft fuzzy moth with dusty pale wings and feathery antennae, shedding glittering sleepy powder, big sleepy readable eyes",
+      "lora_name": "dozer_qwen_v1",
+      "data_repo": "mshaffe111/dozer-lora-data",
+      "model_repo": "mshaffe111/dozer-qwen-lora",
+      "concept_sheets": [],
+      "poses": {},
+      "steps": 1500,
+      "samples": [
+        "dozermoth, flying with its wings spread, side view facing right, painted storybook illustration, plain grey background",
+        "dozermoth, beating its wings and shaking out a cloud of sparkly sleepy dust, painted storybook illustration, plain grey background",
+        "dozermoth, swatted and spinning down, painted storybook illustration, plain grey background"
+      ]
+    }
+  ]
+}
