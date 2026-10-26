@@ -12,6 +12,7 @@ import type { Platform, Vine } from './types.ts';
 import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { maxRise } from './protoCheck.ts';
 import type { Waterfall } from './waterfalls.ts';
+import { PAST_SHRINE } from './rules.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
@@ -644,6 +645,8 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   for (const c of stage.collectibles) {
     if (c.type === 'exit_totem') continue;
     if (c.x < stripLo || c.x > stripHi) errors.push(`${c.type} #${c.id} is outside the walkable strip`);
+    // (in a stage that is not a climb the engine stops him at the shrine: nothing beyond it can be picked up)
+    if (cfg.objectiveType !== 'ascent' && stage.exitTotemX > 0 && c.x > stage.exitTotemX + PAST_SHRINE) errors.push(`${c.type} #${c.id} lies past the shrine, where he cannot go`);
     for (const p of stage.platforms) {
       if (p.broken || p.type === 'drift' || p.type === 'moving') continue;
       if (c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2) {

@@ -33,7 +33,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingStep, timedLaunch, type SwingState } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingStep, timedLaunch, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -90,6 +90,7 @@ import {
   atExitDoor,
   atSealedDoor,
   ascentProgress,
+  SHRINE_STOP,
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
@@ -1130,7 +1131,8 @@ export class GameEngine {
           break;
         }
       } else {
-        if (Math.abs(p.x - v.x) < 48 && p.y >= v.topY - 15 && p.y <= v.bottomY + 30) {
+        // (the timed swing's catch, physics.ts TIMED.grabX: 60 px, Easy's 76; the stage checks assume it, and it used to be a fixed 48 here)
+        if (canGrabSwing(p.x, p.y, v)) {
           nearSwingVine = v;
           break;
         }
@@ -1533,7 +1535,7 @@ export class GameEngine {
 
       // Clamp horizontal level bounds (safely stops player right at the victory shrine altar)
       const maxX = this.currentStage.exitTotemX > 0 && this.currentStage.config.objectiveType !== 'ascent'
-        ? this.currentStage.exitTotemX + 35
+        ? this.currentStage.exitTotemX + SHRINE_STOP
         : this.currentStage.config.levelWidth - 20;
       p.x = Math.max(20, Math.min(maxX, p.x));
 
