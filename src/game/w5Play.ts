@@ -13,7 +13,7 @@ import {
 } from './w5Kit.ts';
 import {
   carvingBox, drawBlossom, drawButler, drawCake, drawCard, drawCarving, drawChair, drawCocoon, drawDoily, drawFern, drawFlyingTray, drawOrchid,
-  drawPennant, drawPiece, drawPinkBell, drawShrineArt, drawSilkOnPokey, drawSilkSheet, drawSteam, drawTeaTable, drawTeapot, drawThread,
+  drawPennant, drawPiece, drawPinkBell, drawShrineArt, drawSilkOnPokey, drawSilkSheet, drawSleepyOnPokey, drawSteam, drawTeaTable, drawTeapot, drawThread,
   drawW5Light, drawWrappedChair, takeAt,
 } from './w5Look.ts';
 import { w5ArtReady, type W5Piece as ArtPiece } from './w5Art.ts';
@@ -52,14 +52,21 @@ export interface W5Host {
 
 /** how far ahead (px) a piece is "coming into view" for its first-time line */
 const SEE = 560;
+/** the Butler is seen from further off (he stands tall with his tray): his line has time to come even after another */
+const BUTLER_SEE = 1100;
+/** an awake spider's first-time line comes this far ahead (it notices him from SPIDER5.sense, 430 px): time to say it before */
+const SPIDER_SEE = 1300;
 const said = (key: string) => `tip:${key}`;
 
 export class W5Play {
   private sit: SitState = newSit();
   /** he has moved since the stage started (or since a respawn): standing at the start, reading Dot's first line, never wraps him */
   private moved = false;
-  /** seconds of sleepiness left (a cake, the steam, the Butler's tray) */
+  /** seconds of sleepiness left (a cake, the steam, the Butler's tray), and how long this spell of it was (the moon's ring) */
   private sleepy = 0;
+  private sleepyFor = 1;
+  /** seconds in which standing still does not count (the stuck-helper has just spoken: its line is read first, not the silk's) */
+  private grace = 0;
   private eaten: boolean[];
   private butlers: ButlerState[];
   private trayFly: Array<{ x: number; y: number; vx: number; vy: number; at: number } | null>;
@@ -99,6 +106,15 @@ export class W5Play {
     if (w5.butlers?.length) warmW5Butler();
   }
 
+  /**
+   * Dot's stuck-helper has just spoken (he keeps jumping at a step and landing where he began): for `seconds` the stillness does not
+   * count, so her help is what he reads, not the silk's warning over it (QA, 5-1, 2026-10-26: stuck at a step, all she said was "Wake
+   * up, Pokey!"). The silk already on him comes off as he hops.
+   */
+  holdStill(seconds: number) {
+    this.grace = Math.max(this.grace, seconds);
+  }
+
   /** everything about him back to fresh (a respawn, or the test harness placing him somewhere new) */
   calm() {
     this.sit = newSit();
@@ -107,6 +123,7 @@ export class W5Play {
     this.seated = -1;
     this.veil = 0;
     this.moved = false;
+    this.grace = 0;
   }
 
   /** a spider whose gate is shut (asleep, or crouching to rush): the engine leaves it standing, harmless, for this frame */
@@ -181,7 +198,8 @@ export class W5Play {
 
     // don't sit: standing still lets the silk creep up him; moving or a wiggle shakes it off; too long, and he is wrapped
     if (h.steer !== 0) this.moved = true;
-    const still = this.moved && ((p.grounded && !p.climbing && Math.abs(p.vx) < SIT.still && h.steer === 0) || admire);
+    this.grace = Math.max(0, this.grace - dt);
+    const still = this.moved && this.grace <= 0 && ((p.grounded && !p.climbing && Math.abs(p.vx) < SIT.still && h.steer === 0) || admire);
     const r = stepSit(this.sit, { still, steer: h.steer, seated: seated >= 0, admiring: admire }, dt, !!w5.gentle);
     this.sit = r.s;
     if (r.began) h.tip(said(W5_TEACH.sit), W5_TEACH.sit, 4.2);
@@ -206,6 +224,7 @@ export class W5Play {
     this.sleepy = Math.max(0, this.sleepy - dt);
     const doze = (secs: number) => {
       if (this.sleepy <= 0) this.zzz = 0;
+      if (secs > this.sleepy) this.sleepyFor = secs;
       this.sleepy = Math.max(this.sleepy, secs);
     };
 
@@ -225,7 +244,8 @@ export class W5Play {
       const near = b.dir * (p.x - b.x) > 0 && Math.abs(p.x - b.x) < BUTLER.offer && Math.abs(p.y - b.y) < 80;
       const punched = !!h.punch && Math.hypot(h.punch.x - tray.x, h.punch.y - tray.y) < BUTLER.punch;
       const touch = Math.abs(p.x - tray.x) < 13 + 20 && tray.y > p.y - 38 && tray.y < p.y + 4;
-      if (near) h.tip(said(W5_TEACH.butler), W5_TEACH.butler, 3.8);
+      // (his line as he comes into view, as every first-time tip is: by the time he holds the tray out it is too late to read it)
+      if (near || ahead(b.x, b.y, BUTLER_SEE)) h.tip(said(W5_TEACH.butler), W5_TEACH.butler, 3.8);
       const out = stepButler(st, { near, punched, touch }, dt);
       this.butlers[i] = out.st;
       if (out.knocked) {
@@ -274,7 +294,8 @@ export class W5Play {
       if (!e || !g || e.defeated) continue;
       const dx = p.x - e.x;
       const dy = p.y - (e.y + 12);
-      if (!g.dozing && ahead(e.x, e.y, 600)) h.tip(said(W5_TEACH.spider), W5_TEACH.spider, 3.6);
+      // (its line well before it can see him and crouch: QA, 2026-10-26, the tip came on the frame of the first bite)
+      if (!g.dozing && ahead(e.x, e.y, SPIDER_SEE)) h.tip(said(W5_TEACH.spider), W5_TEACH.spider, 3.6);
       const v = h.view;
       const seen = !v || onScreen(v, e.x, e.y, e.width, e.height, SPIDER5.edge);
       const shown = !v || onScreen(v, e.x, e.y, e.width, e.height);
@@ -331,7 +352,7 @@ export class W5Play {
     doze(CAKE.sleepy);
     h.ate?.();
     h.sfx('cake');
-    h.float('SO SLEEPY...', p.x, p.y - 96, '#ddd6fe');
+    h.float('SLEEPY AND SLOW...', p.x, p.y - 96, '#ddd6fe');
     h.tip(said(W5_TEACH.ate), W5_TEACH.ate, 3.2);
   }
 
@@ -406,6 +427,7 @@ export class W5Play {
     const p = this.player;
     for (const d of w5.decor ?? []) if (d.front && d.x > view.x0 - d.w && d.x < view.x1 + d.w) this.decor(ctx, d, t);
     if (p) drawSilkOnPokey(ctx, p.x, p.y, this.sit.silk, t);
+    if (p && this.sleepy > 0) drawSleepyOnPokey(ctx, p.x, p.y, this.sleepy / Math.max(0.1, this.sleepyFor), t);
     for (const s of w5.spiders ?? []) {
       const e = this.enemies.find((q) => q.id === s.id);
       const g = this.gates.get(s.id);

@@ -4,8 +4,8 @@ import type { GameEngine } from '../../game/engine.ts';
 import type { CoachStep } from '../../game/touchCoach.ts';
 import type { ControlStyle } from '../../game/controlPrefs.ts';
 import { lessonDotLine, type LessonId } from '../../game/lessons.ts';
-import { dotLine, dotText, gestureMove, swapLine, targetTopic } from '../../game/dotLines.ts';
-import { GUIDE, GuideQueue, classifyLine, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
+import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
+import { GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markSkillSeen, markSkipOffered, offersSkip, seenSkills, skipTips } from '../../game/dotGuideHelp.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game/dotGuideView.ts';
@@ -206,42 +206,8 @@ class GuideRun {
    */
   engineLine(text: string, ms: number): void {
     const v = this.view;
-    const sw = swapLine(text, this.stageId);
-    if (sw && sw.text === null) return;
-    const c = classifyLine(text, v.boss);
-    const said = sw?.text ?? text;
-    let kind = c.kind;
-    let move = c.move;
-    let topic = c.topic;
-    if (sw && kind !== 'must' && kind !== 'danger') {
-      const k = sw.line.kind;
-      kind = k === 'move' ? 'teach' : k === 'story' ? 'story' : k === 'help' ? 'struggle' : k === 'lock' ? 'must' : k === 'goal' ? 'goal' : 'info';
-      topic = targetTopic(sw.line.target) ?? c.topic;
-      move = kind === 'teach' ? c.move ?? gestureMove(sw.line.gesture, topic) : undefined;
-    }
-    // Dot's own flight: she is the one flying, so her tips are read, not watched for
-    if (v.flight && kind !== 'must') {
-      kind = 'info';
-      move = undefined;
-    }
-    const key = `engine:${sw?.line.id ?? text}`;
-    const then: GuideLine | undefined = sw?.then ? { key: `${key}:then`, text: sw.then, kind: kind === 'teach' ? 'info' : kind, who: this.dot ? 'Dot' : 'Pokey', topic, source: 'engine' } : undefined;
-    this.say({
-      key,
-      text: said,
-      kind,
-      who: this.dot ? 'Dot' : 'Pokey',
-      move,
-      topic,
-      gesture: sw?.line.gesture ?? undefined,
-      skill: kind === 'teach' && move ? `move:${move}` : c.skill,
-      // (the engine's own time is for its old, longer words: the reading time of the new ones is the floor)
-      ms: sw || v.boss ? undefined : ms,
-      // a boss fight's warning or tip goes when its attack ends (the engine says so), or after about 6 s
-      capMs: v.boss && kind !== 'must' ? GUIDE.bossLineMs : undefined,
-      next: then,
-      source: 'engine',
-    });
+    const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms });
+    if (l) this.say(l);
   }
 }
 

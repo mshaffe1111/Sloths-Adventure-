@@ -6,9 +6,9 @@
  * when it says a line and shows the new ones; a cut line is not said at all. With the new look off, nothing here is used.
  */
 import { DOT_LINES, type DotLineKind, type DotLineRow } from './dotLinesData.ts';
-import { W5_DOT_LINES } from './w5Lines.ts';
-import type { MoveId, TopicId } from './dotGuide.ts';
-import { topicOf } from './dotGuide.ts';
+import { W5_DOT_LINES, W5_THING_TIPS } from './w5Lines.ts';
+import type { GuideKind, GuideLine, GuideWho, MoveId, TopicId } from './dotGuide.ts';
+import { GUIDE, classifyLine, topicOf } from './dotGuide.ts';
 
 export interface DotLine {
   id: string;
@@ -162,4 +162,58 @@ export function gestureMove(gesture: string | null, topic: TopicId | undefined):
       // (climb-down, lift, hold-still: shown for their reading time)
       return undefined;
   }
+}
+
+/** a tip about a new thing rather than a new move (dotGuide.ts GuideLine.thing): World 5's first-time tips */
+/** how long a thing's tip stays up at most (ms): read, then gone, done or not */
+export const THING_CAP_MS = 6000;
+export const isThingTip = (id: string): boolean => W5_THING_TIPS.has(id);
+
+/**
+ * A line from the engine, in its old words, as the new look's guide queues it (components/dot/DotGuide.tsx engineLine): what it is
+ * comes from those words (a warning, the locked exit, a tip and the move that closes it), and what is said is Matt's approved line for
+ * it. Null: a cut line, not said. (Here, not in the component, so the tests queue exactly what the game does.)
+ */
+export function engineGuideLine(text: string, stageId: string, o: { boss?: boolean; flight?: boolean; dot?: boolean; ms?: number } = {}): GuideLine | null {
+  const sw = swapLine(text, stageId);
+  if (sw && sw.text === null) return null;
+  const c = classifyLine(text, !!o.boss);
+  const said = sw?.text ?? text;
+  let kind: GuideKind = c.kind;
+  let move = c.move;
+  let topic = c.topic;
+  const thing = !!sw && isThingTip(sw.line.id) && kind !== 'must' && kind !== 'danger';
+  if (sw && kind !== 'must' && kind !== 'danger') {
+    const k = sw.line.kind;
+    kind = k === 'move' || thing ? 'teach' : k === 'story' ? 'story' : k === 'help' ? 'struggle' : k === 'lock' ? 'must' : k === 'goal' ? 'goal' : 'info';
+    topic = targetTopic(sw.line.target) ?? c.topic;
+    move = kind === 'teach' ? c.move ?? gestureMove(sw.line.gesture, topic) : undefined;
+  }
+  // Dot's own flight: she is the one flying, so her tips are read, not watched for
+  if (o.flight && kind !== 'must') {
+    kind = 'info';
+    move = undefined;
+  }
+  const who: GuideWho = o.dot === false ? 'Pokey' : 'Dot';
+  const key = `engine:${sw?.line.id ?? text}`;
+  const then: GuideLine | undefined = sw?.then ? { key: `${key}:then`, text: sw.then, kind: kind === 'teach' ? 'info' : kind, who, topic, source: 'engine' } : undefined;
+  return {
+    key,
+    text: said,
+    kind,
+    who,
+    move,
+    topic,
+    gesture: sw?.line.gesture ?? undefined,
+    // (a thing's tip is taught once per thing, whatever moves this phone has seen: "Just reminders" still says it the first time)
+    skill: thing ? sw!.line.id : kind === 'teach' && move ? `move:${move}` : c.skill,
+    ...(thing ? { thing: true } : {}),
+    // (the engine's own time is for its old, longer words: the reading time of the new ones is the floor)
+    ms: sw || o.boss ? undefined : o.ms,
+    // a boss fight's warning or tip goes when its attack ends (the engine says so), or after about 6 s
+    // (a thing's tip is read, not held for its move: one the player never does, a punch, kept the screen 20 s and the next tips waited)
+    capMs: o.boss && kind !== 'must' ? GUIDE.bossLineMs : thing ? THING_CAP_MS : undefined,
+    next: then,
+    source: 'engine',
+  };
 }

@@ -1327,3 +1327,52 @@ export function drawW5Light(ctx: CanvasRenderingContext2D, vw: number, vh: numbe
   }
   ctx.restore();
 }
+
+/**
+ * Sleepy (a cake, the steam): a soft lilac tint over Pokey, breathing slowly, and over his head a little moon in a ring that empties
+ * as it wears off, so a player can see what has happened to him and that it passes (QA, 5-2, 2026-10-26: "z" alone did not say it).
+ * `left` is the share of the sleep still to go (0..1); feet at (x, y).
+ */
+export function drawSleepyOnPokey(ctx: CanvasRenderingContext2D, x: number, y: number, left: number, t: number) {
+  if (left <= 0.005) return;
+  const fade = Math.min(1, left * 6);
+  ctx.save();
+  const breath = 0.78 + 0.22 * Math.sin(t * 2.2);
+  const cy = y - 34;
+  const g = ctx.createRadialGradient(x, cy, 4, x, cy, 50);
+  g.addColorStop(0, `rgba(196, 181, 253, ${0.5 * fade * breath})`);
+  g.addColorStop(0.7, `rgba(167, 139, 250, ${0.28 * fade * breath})`);
+  g.addColorStop(1, 'rgba(167, 139, 250, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.ellipse(x, cy, 46, 50, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // the moon in its ring, bobbing slowly over his head
+  const bx = x, by = y - 96 + Math.sin(t * 1.7) * 2.5;
+  const R = 13;
+  ctx.globalAlpha = fade;
+  ctx.fillStyle = 'rgba(46, 16, 101, 0.78)';
+  ctx.beginPath();
+  ctx.arc(bx, by, R + 3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(221, 214, 254, 0.35)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(bx, by, R, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.strokeStyle = '#ddd6fe';
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(bx, by, R, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, left));
+  ctx.stroke();
+  // a crescent: a lilac disc with a dark disc bitten out of it
+  ctx.fillStyle = '#ede9fe';
+  ctx.beginPath();
+  ctx.arc(bx - 1, by, 7.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(46, 16, 101, 1)';
+  ctx.beginPath();
+  ctx.arc(bx + 3, by - 2.5, 6.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}

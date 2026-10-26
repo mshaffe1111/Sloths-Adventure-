@@ -102,18 +102,29 @@ test("5-2: a thread's hum wakes the sleeping spiders; each in view crouches for 
   for (const e of unseen) assert.equal(gates.get(e.id)!.phase, 'calm', `spider ${e.id}, off the screen, waits`);
   // the warning: still for SPIDER5.tell
   const xs = seen.map((e) => e.x);
-  for (let i = 0; i < Math.floor((SPIDER5.tell - 0.1) * 30); i++) sim.frame();
+  // (the one woken off the screen never comes without its crouch: the view settles as he stands, and if it comes into full view
+  // meanwhile, it crouches there first)
+  const far = unseen[0];
+  let farLast = gates.get(far.id)!.phase;
+  const step = () => {
+    sim.frame();
+    const ph = gates.get(far.id)!.phase;
+    assert.ok(!(farLast === 'calm' && ph === 'go'), 'the spider woken off the screen came without a crouch');
+    farLast = ph;
+  };
+  for (let i = 0; i < Math.floor((SPIDER5.tell - 0.1) * 30); i++) step();
   seen.forEach((e, k) => {
     assert.equal(gates.get(e.id)!.phase, 'windup');
     assert.equal(e.x, xs[k], 'it has not moved yet');
   });
-  sim.wait(0.3);
+  for (let i = 0; i < 9; i++) step();
   for (const e of seen) assert.equal(gates.get(e.id)!.phase, 'go');
   // the one the hum woke off the screen crouches as soon as it is in view (150 px off: a sleeper would wake only at a bump)
-  const far = unseen[0];
-  sim.stand(far.x + 150, G);
-  sim.frame();
-  assert.equal(gates.get(far.id)!.phase, 'windup', 'the woken spider comes once it is seen');
+  if (gates.get(far.id)!.phase === 'calm') {
+    sim.stand(far.x + 150, G);
+    sim.frame();
+    assert.equal(gates.get(far.id)!.phase, 'windup', 'the woken spider comes once it is seen');
+  }
   assert.ok(sim.said.some((s) => s.text === W5_TEACH.thread), 'the threads were taught');
 });
 
