@@ -138,3 +138,75 @@ test('5-1: holding right, a kick flicked left at a spider rushing from just behi
     assert.equal(r.p.hp, hp);
   }
 });
+
+/** 5-1 sideways (844 x 390), only its `n`th awake spider left, Pokey standing `gap` px to its left facing it */
+function faceSpider(n: number, gap: number) {
+  const r = new RealPlay('5-1', 1);
+  const e = r.e;
+  e.viewCssW = 844;
+  e.viewCssH = 390;
+  e.introT = 99;
+  e.applyZoom();
+  r.safe = false;
+  const w5: W5Extras = (r.stage as unknown as { proto: { w5: W5Extras } }).proto.w5;
+  const sid = w5.spiders!.filter((s) => !s.doze)[n].id;
+  const sp = (e.enemies as Enemy[]).find((q) => q.id === sid)!;
+  e.enemies = [sp];
+  r.stand(sp.x - gap, G);
+  r.p.facing = 1;
+  r.p.invincibleTimer = 0;
+  return { r, sp, gate: () => (e.w5.gates as Map<number, { phase: string }>).get(sid)!.phase, zoom: e.zoom as number };
+}
+
+/**
+ * QA v195 (5-1 sideways, Pokey 60 screen px left of each of the first 4 spiders): the first tap during the crouch did nothing; the
+ * second killed it as it rushed in. Its body was 34 px wide while its painted legs reach about 30 px out from its middle, so a jab whose
+ * fist was on its legs whiffed. A crouching spider can be punched or kicked: reading the tell is rewarded.
+ */
+test('5-1 sideways: a tap or kick at a crouching spider lands while it crouches, as far off as the fist reaches its legs', () => {
+  for (let n = 0; n < 4; n++) {
+    for (const gapPx of [60, 66]) {
+      for (const kick of [false, true]) {
+        const gap = Math.round(gapPx / faceSpider(n, 0).zoom);
+        const { r, sp, gate } = faceSpider(n, gap);
+        const hp = r.p.hp;
+        r.frame();
+        assert.equal(gate(), 'windup', `spider ${n}: it crouches`);
+        for (let i = 0; i < 5; i++) r.frame(i > 0 ? {} : kick ? { kick: 1 } : { punch: true });
+        assert.ok(sp.defeated, `spider ${n}, ${gapPx} screen px (${gap} world): the ${kick ? 'kick' : 'tap'} during its crouch did nothing (now ${gate()})`);
+        assert.equal(r.p.hp, hp);
+      }
+    }
+  }
+});
+
+/**
+ * QA v195: a heart lost on the frame he beat it. A spider rushing in, a tap or kick at every moment of its rush from several distances:
+ * one thrown before it bit (his hearts full as he threw it) that beats it never costs a heart as well, and nothing hurts him once it is
+ * beaten.
+ */
+test('5-1: a punch or kick thrown at a rushing spider before it bites wins, never a trade', () => {
+  const trades: string[] = [];
+  let wins = 0;
+  for (const kick of [false, true]) {
+    for (const gap of [40, 55, 70, 90]) {
+      for (let tapAt = 18; tapAt < 34; tapAt++) {
+        const { r, sp } = faceSpider(0, gap);
+        const hp = r.p.hp;
+        let whole = false, killF = -1, hurtF = -1;
+        for (let i = 0; i < 50 && (killF < 0 || i < killF + 6); i++) {
+          if (i === tapAt) whole = r.p.hp === hp;
+          r.frame(i !== tapAt ? {} : kick ? { kick: 1 } : { punch: true });
+          if (sp.defeated && killF < 0) killF = i;
+          if (r.p.hp < hp && hurtF < 0) hurtF = i;
+        }
+        const what = `${kick ? 'kick' : 'tap'} from ${gap} px at frame ${tapAt}`;
+        if (killF >= 0 && hurtF >= killF) trades.push(`${what}: hurt on or after the kill`);
+        else if (whole && killF >= 0 && hurtF >= tapAt) trades.push(`${what}: bitten at ${hurtF}, beaten at ${killF}`);
+        else if (whole && killF >= 0) wins++;
+      }
+    }
+  }
+  assert.deepEqual(trades, []);
+  assert.ok(wins > 20, `${wins} clean wins`);
+});
