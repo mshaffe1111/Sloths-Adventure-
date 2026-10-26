@@ -4117,6 +4117,14 @@ export class GameEngine {
       const i = route.indexOf(ledge.id);
       const next = i >= 0 && i + 1 < route.length ? this.platforms.find((q) => q.id === route[i + 1]) : undefined;
       if (!next) return null;
+      // a crossing too wide for one view (upright the view is only 620 wide): warm air in the gap is the first landing, shown from the
+      // edge; once he is out over it, the ledge past it (Matt, 2026-10-26: every stage works upright too)
+      const dirN = Math.sign(next.x + next.width / 2 - (ledge.x + ledge.width / 2)) || p.facing;
+      const gapA = dirN > 0 ? ledge.x + ledge.width : next.x + next.width, gapB = dirN > 0 ? next.x : ledge.x;
+      const across = (this.proto?.w4?.updrafts ?? []).find((u) => u.x0 >= gapA - 10 && u.x1 <= gapB + 10 && u.top < ledge.y + 40 && u.bottom > ledge.y);
+      if (across && gapB - gapA > this.camera.viewportWidth * 0.75 && (dirN > 0 ? p.x < across.x0 : p.x > across.x1)) {
+        return { x0: across.x0, x1: across.x1, y0: Math.min(across.top, ledge.y - 100), y1: ledge.y + 40 };
+      }
       // (the near end of it, or the part right under him when it runs under his ledge: a turn)
       const x = Math.max(next.x + 40, Math.min(next.x + next.width - 40, p.x));
       const far = Math.hypot(x - p.x, next.y - p.y);

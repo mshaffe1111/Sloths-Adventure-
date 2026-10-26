@@ -326,3 +326,20 @@ test('4-7: every drop\'s landing fits the view under him, sideways and upright, 
     }
   }
 });
+
+test('4-7 upright: a crossing too wide for the view shows its warm air from the edge, and the ledge past it from the warm air', () => {
+  // (the view is LONG_DROP_VIEW.port wide upright; the camera shows the warm air first, then the ledge once he is over it: engine landingToShow)
+  // (his own half width at the side of the view he stands at, and the first 60 px of the warm air or of the ledge)
+  const fit = LONG_DROP_VIEW.port * 0.96 - 30;
+  for (const s of SEEDS) {
+    const st = build(s);
+    for (const d of st.drafts47.filter((d) => d.kind === 'across')) {
+      const u = st.updrafts![d.i], A = platOf(st, d.from!), B = platOf(st, d.to!);
+      const right = B.x > A.x;
+      const toAir = right ? u.x0 - (A.x + A.width) : A.x - u.x1;
+      const toLedge = right ? B.x - (u.x0 + u.x1) / 2 : (u.x0 + u.x1) / 2 - (B.x + B.width);
+      assert.ok(toAir + 60 <= fit, `seed ${s}: the warm air is ${toAir} px out from the edge`);
+      assert.ok(toLedge + 60 <= fit, `seed ${s}: the ledge is ${Math.round(toLedge)} px past the middle of the warm air`);
+    }
+  }
+});
