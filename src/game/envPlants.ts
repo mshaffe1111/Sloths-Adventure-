@@ -602,7 +602,9 @@ const orbweb: PlantFn = (ctx, x, y, s, _look, r) => {
     ctx.quadraticCurveTo(x + dx * s * 0.95, y - s * 0.7, x + dx * s * 0.75, y - s * 1.2);
     ctx.stroke();
   }
-  orb(ctx, x, y - s * 0.78, s * 0.72, r, true);
+  // (no spider at its hub: a dark, spiky thing sitting in the grass by the path read as World 5's hazard, and QA v198 blamed hits on
+  // it; only the real spiders, rimmed in ember, look like they bite)
+  orb(ctx, x, y - s * 0.78, s * 0.72, r, false);
 };
 
 const cocoon: PlantFn = (ctx, x, y, s, _look, r) => {

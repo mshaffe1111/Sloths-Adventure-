@@ -9,7 +9,7 @@ import {
   BUTLER, CAKE, chairPull, COCOON, hitCocoon, humReaches, inSteam, newButler, newCocoon, newGate, newSit, orchidAt, potAt, punchReachesCocoon,
   admiring, seatedIn, silkSpeed, sitDrowsy, sleepySpeed, SIT, spoutOf, stepButler, stepGate, stepSit, TEAPOT, THREAD, threadTouched,
   touchesCake, trayAt, W5_TEACH, onScreen, SPIDER5, laced, newSeam, SEAMSTRESS, stepSeam, type ButlerState, type CocoonState,
-  type GateState, type SeamState, type SitState, type ViewBox, type W5Extras,
+  type GateState, type SeamState, type SitState, type ViewBox, type W5Extras, WOBBLE,
 } from './w5Kit.ts';
 import { onRest } from './w5Kit.ts';
 import { W5_POUCH } from './w5Lines.ts';
@@ -107,6 +107,22 @@ export class W5Play {
   private pendingTip: { key: string; text: string; seconds: number; at: number } | null = null;
   /** how drowsy the screen shows him (the engine's drowsy veil) */
   veil = 0;
+  /** for the jump that sheds silk: was he on the ground last frame */
+  private wasGrounded = true;
+  /** when he last pulled against the silk (steering or jumping with it on him), and how much was on him then */
+  private tugAt = -99;
+  private tugSilk = 0;
+
+  /**
+   * how far (world px, signed) to draw him off his place this moment: a quick wobble while he pulls against the silk, so being stuck is
+   * seen and every push is seen to do something (QA v198: "steering does nothing" with the silk on him). It never moves his body.
+   */
+  wobble(t: number): number {
+    const since = t - this.tugAt;
+    if (since < 0 || since > WOBBLE.hold || this.tugSilk <= SIT.showTug) return 0;
+    const fade = 1 - since / WOBBLE.hold;
+    return Math.sin(t * WOBBLE.rate) * (WOBBLE.px + WOBBLE.perSilk * this.tugSilk) * fade;
+  }
 
   constructor(private readonly w5: W5Extras, platforms: Platform[], vines: Vine[]) {
     this.silkLines = vines.filter((v) => v.silk);
@@ -150,6 +166,8 @@ export class W5Play {
     this.veil = 0;
     this.moved = false;
     this.grace = 0;
+    this.tugAt = -99;
+    this.tugSilk = 0;
     // (the Seamstress back to her knitting)
     this.seams = this.seams.map(() => newSeam());
   }
@@ -242,7 +260,21 @@ export class W5Play {
     const still = this.moved && this.grace <= 0 && ((p.grounded && !p.climbing && Math.abs(p.vx) < SIT.still && h.steer === 0) || admire);
     const r = stepSit(this.sit, { still, steer: h.steer, seated: seated >= 0, admiring: admire }, dt, !!w5.gentle);
     this.sit = r.s;
+    // (taught before it ever catches him: the first time he stops, well before the silk can start. QA v198: the silk "grabbed silently",
+    // its line only coming once it was on him)
+    if (r.s.still >= SIT.notice && r.s.silk <= 0) h.tip(said(W5_TEACH.still), W5_TEACH.still, 3.4);
     if (r.began) h.tip(said(W5_TEACH.sit), W5_TEACH.sit, 4.2);
+    // a jump is a wiggle: it sheds silk at once (and every moment in the air sheds more), so a jump is never lost in the silk
+    const tookOff = this.wasGrounded && !p.grounded && p.vy < -200 && !p.climbing && !p.isVineSwinging;
+    this.wasGrounded = p.grounded;
+    const silkBefore = this.sit.silk;
+    if (tookOff && this.sit.silk > 0) this.sit = { ...this.sit, silk: Math.max(0, this.sit.silk - SIT.jump) };
+    // pulling against the silk shows: he wobbles in it while he steers or jumps with silk on him (wobble)
+    const pulled = Math.max(this.sit.silk, tookOff ? silkBefore : 0);
+    if (pulled > SIT.showTug && (h.steer !== 0 || tookOff)) {
+      this.tugAt = h.t;
+      this.tugSilk = pulled;
+    }
 
     // the Seamstress: knitting; let him linger at her sheet and she looks up (the tell, a "!" over her), then casts lace onto him. Moving
     // on during the tell calls it off. She looks up only in full view on the screen, so the warning is always seen
@@ -498,7 +530,7 @@ export class W5Play {
     const w5 = this.w5;
     const p = this.player;
     for (const d of w5.decor ?? []) if (d.front && d.x > view.x0 - d.w && d.x < view.x1 + d.w) this.decor(ctx, d, t);
-    if (p) drawSilkOnPokey(ctx, p.x, p.y, this.sit.silk, t);
+    if (p) drawSilkOnPokey(ctx, p.x + this.wobble(t), p.y, this.sit.silk, t);
     if (p && this.sleepy > 0) drawSleepyOnPokey(ctx, p.x, p.y, this.sleepy / Math.max(0.1, this.sleepyFor), t);
     for (const s of w5.spiders ?? []) {
       const e = this.enemies.find((q) => q.id === s.id);

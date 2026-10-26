@@ -43,7 +43,19 @@ export const SIT = {
   slow: 0.35,
   /** seconds after a wrap before stillness counts again (the silk has just burst off) */
   cool: 1.2,
+  /**
+   * seconds of standing still before Dot first says so (W5_TEACH.still): well before the silk can start at `drowse`, so the rule is
+   * taught before it ever catches him (QA v198: the silk grabbed him "silently", its line only after the first catch)
+   */
+  notice: 1,
+  /** the silk a jump sheds at once (a jump is a wiggle: it is never swallowed by the silk) */
+  jump: 0.4,
+  /** with more silk than this on him, pulling against it shows (WOBBLE) */
+  showTug: 0.08,
 } as const;
+
+/** how he wobbles in the silk while he pulls against it (W5Play.wobble): world px, more the thicker it is; how quick; how long after */
+export const WOBBLE = { px: 1.5, perSilk: 3.5, rate: 38, hold: 0.3 } as const;
 
 export interface SitState {
   /** seconds he has stood still (scaled by the chair and the sheet) */
@@ -388,6 +400,12 @@ export const SPIDER5 = {
   lose: 0.4,
   /** an awake spider that heard a hum while off the screen still comes if it is in view within this long (s) */
   called: 4,
+  /**
+   * a rush is one way: once he is this far (px) past the spider's middle, behind where it was rushing, the rush is over, and it must
+   * crouch again in view before it comes back the other way. It used to turn and chase on the same rush, biting him from behind with
+   * no warning of its own, at the edge of the screen he had his back to (QA v198, 5-1 and 5-2 at 320 x 782)
+   */
+  past: 4,
 } as const;
 
 /** what the camera shows (world units): its left and right, top and bottom */
@@ -412,6 +430,8 @@ export interface GateState {
   called: number;
   /** seconds its rush has been off the screen */
   lost: number;
+  /** the way its rush goes (toward where he was as it crouched: +1 right, -1 left; 0 or unset, either way) */
+  dir?: -1 | 0 | 1;
 }
 export const newGate = (doze = false): GateState => ({ phase: 'calm', t: 0, dozing: doze, called: 0, lost: 0 });
 const CALM: GateState = { phase: 'calm', t: 0, dozing: false, called: 0, lost: 0 };
@@ -437,15 +457,19 @@ export function stepGate(
   if (g.phase === 'calm') {
     const bumped = g.dozing ? inp.grounded !== false && Math.abs(inp.dy) < 40 && Math.abs(inp.dx) < SPIDER5.doze : Math.abs(inp.dy) < SPIDER5.dy && Math.abs(inp.dx) < SPIDER5.sense;
     const called = inp.alarm ? SPIDER5.called : Math.max(0, g.called - dt);
-    if (seen && (inp.alarm || bumped || (!g.dozing && called > 0))) return { ...CALM, phase: 'windup' };
+    if (seen && (inp.alarm || bumped || (!g.dozing && called > 0))) return { ...CALM, phase: 'windup', dir: inp.dx >= 0 ? 1 : -1 };
     // (a hum heard off the screen wakes it; it comes once it is in view)
     if (inp.alarm) return { ...g, t, dozing: false, called };
     return { ...g, t, called };
   }
   if (g.phase === 'windup') {
     if (!shown) return CALM;
-    return t >= SPIDER5.tell ? { ...CALM, phase: 'go' } : { ...g, t };
+    // (he got past it while it crouched: it crouches again, facing him, the whole warning over)
+    if (g.dir && g.dir * inp.dx < -SPIDER5.past) return CALM;
+    return t >= SPIDER5.tell ? { ...CALM, phase: 'go', dir: g.dir } : { ...g, t };
   }
+  // (he got past it: the rush is spent, and coming back needs a crouch of its own)
+  if (g.dir && g.dir * inp.dx < -SPIDER5.past) return CALM;
   const lost = shown ? 0 : g.lost + dt;
   if (lost >= SPIDER5.lose) return CALM;
   // (a moment in before it can lose interest, so a rush is never cut off the frame it starts)
@@ -725,6 +749,7 @@ export const onRest = (r: RestBranch, px: number, py: number, grounded: boolean)
  * tip). The new look swaps each for Matt's short line (w5Lines.ts: 8 words or fewer, naming the thumb move).
  */
 export const W5_TEACH = {
+  still: 'Don\'t stop here, Pokey, don\'t even slow down. The silk creeps up on anyone who stands still. Slide on, keep moving',
   sit: 'Don\'t stand still here, Pokey! The silk creeps up on you. Keep moving, or slide left and right to shake it off',
   wrapped: 'Wrapped up! Never stand still for long here. Slide your thumb to wiggle free',
   wrapGentle: 'Wake up, Pokey! That silk nearly had you. Keep moving',
