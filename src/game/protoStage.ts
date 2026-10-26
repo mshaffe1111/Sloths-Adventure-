@@ -75,6 +75,8 @@ export interface StageHint {
   belowY?: number;
   /** only when Pokey is this high or higher (a climbing stage: the hint waits for his height, not his x) */
   aboveY?: number;
+  /** only while Pokey is left of this x (a line about something he has already gone by is not said late, from further on) */
+  beforeX?: number;
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
@@ -3881,7 +3883,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       if (p === P[0] || p.height !== 24 || p.width < 150) continue;
       for (const side of [-1, 1] as const) {
         const end = side < 0 ? p.x : p.x + p.width;
-        if (Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < LIP.drop) continue;
+        // (and at an end where a rope's post stands: walking up to the post he used to run past it and off the end, 44 px on, before
+        // he could jump up to the rope; the knot stops him at the post. Hanging, he passes over it, and he steps off the rope beyond it)
+        const post = ROPES.some((q) => (side > 0 ? Math.abs(q.x0 + 44 - end) < 2 : Math.abs(q.x1 - 44 - end) < 2) && Math.abs(q.g0 - p.y) < 2);
+        if (!post && Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < LIP.drop) continue;
         P.push({ id: pid++, x: side < 0 ? end : end - LIP.w, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true });
       }
     }

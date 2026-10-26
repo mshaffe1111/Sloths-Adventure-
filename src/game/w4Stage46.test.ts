@@ -365,6 +365,12 @@ test('4-6: no high branch ends in a long fall: each end over a drop of more than
       assert.ok(l.height >= 50 && l.height < 100 && l.type === 'solid', `seed ${s}`);
       assert.ok(st.platforms.some((p) => p.height === 24 && Math.abs(p.y - (l.y + l.height)) < 1 && (Math.abs(p.x - l.x) < 1 || Math.abs(p.x + p.width - (l.x + l.width)) < 1)), `seed ${s}: a lip on no branch end`);
     }
+    // a knot at each ledge end where a rope's post stands: walking up to the post he stops there, not 44 px on, off the end
+    for (const r of st.ropes ?? []) {
+      for (const [end, y] of [[r.x0 + 44, r.g0], [r.x1 - 44, r.g1]]) {
+        assert.ok(lips.some((l) => Math.abs(l.y + l.height - y) < 1 && (Math.abs(l.x - end) < 1 || Math.abs(l.x + l.width - end) < 1)), `seed ${s}: rope ${r.id}'s end at ${end} has no knot`);
+      }
+    }
     // the branches across the tree, by the nests (where play-testers walked off into a ten-second fall): every end is caught or walled
     const beat = st.proto.beats.find((b) => b[2] === 'Test: across the tree')!;
     const across = st.platforms.filter((p) => p.height === 24 && p.width >= 150 && p.y <= beat[0] + 1 && p.y >= beat[1] - 1);

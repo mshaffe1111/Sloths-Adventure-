@@ -121,7 +121,8 @@ export function buildWaterfallSteps(
     for (let i = 0; i < n; i++) flower(x0 + ((x1 - x0) * i) / Math.max(1, n - 1), y, v);
   };
   /** a line shown the first time he passes x (and, with `above`, only once he is that high) */
-  const hint = (x: number, text: string, pad = text, keys = text, above?: number) => hints.push({ x: r(x), text, pad, keys, ...(above !== undefined ? { aboveY: r(above) } : {}) });
+  const hint = (x: number, text: string, pad = text, keys = text, above?: number, before?: number) =>
+    hints.push({ x: r(x), text, pad, keys, ...(above !== undefined ? { aboveY: r(above) } : {}), ...(before !== undefined ? { beforeX: r(before) } : {}) });
 
   // ----- the cursor: `x` is the open end of the terrace he is on, at height `y`; it started at `from` -----
   let x = 0, y = 0, from = 0;
@@ -312,8 +313,8 @@ export function buildWaterfallSteps(
     // the stone channel the stream runs in, pouring off the end of the shelf (it runs dry once the boulder is in)
     decor.push({ n: 'channelFall', x: c0 - 50, b: shelfY + 96, w: 190, wet: fid });
     // (the boulder is pushed by walking into it from beside it on its shelf, physics.ts blockBeside: Dot says exactly that)
-    if (kind === 'tree') hint(treeX - 120, 'A boulder! Walk right into it and keep going: you push it along the shelf into the stream', 'A boulder! Walk right into it and keep holding right: you push it along the shelf into the stream', 'A boulder! Walk right into it and keep holding right: you push it along the shelf into the stream', shelfY + 10);
-    if (kind === 'pool') hint(treeX - 120, 'Now roll the boulder in, and watch the pool', 'Now roll the boulder in, and watch the pool', 'Now roll the boulder in, and watch the pool', shelfY + 10);
+    if (kind === 'tree') hint(treeX - 120, 'A boulder! Walk right into it and keep going: you push it along the shelf into the stream', 'A boulder! Walk right into it and keep holding right: you push it along the shelf into the stream', 'A boulder! Walk right into it and keep holding right: you push it along the shelf into the stream', shelfY + 10, c0);
+    if (kind === 'pool') hint(treeX - 120, 'Now roll the boulder in, and watch the pool', 'Now roll the boulder in, and watch the pool', 'Now roll the boulder in, and watch the pool', shelfY + 10, c0);
     expert += (c0 - BOULDER.w - bX) / PUSH + 1.2;
     // the water, and the stair it pours over
     run(c0 + WET.margin - x);

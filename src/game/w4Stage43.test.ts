@@ -353,6 +353,8 @@ test('4-3: the boulder is taught as it is moved (walk into it from beside it on 
     const st = build(s);
     const h = st.proto.hints.find((q) => /boulder/.test(q.text))!;
     for (const t of [h.text, h.pad, h.keys]) assert.ok(/Walk right into it/.test(t) && /push/.test(t), `seed ${s}: "${t}"`);
+    // (said only before the boulder's slot: from further on, higher than its shelf, it used to come up late, well past it)
+    for (const q of st.proto.hints.filter((q) => /boulder in/.test(q.text) || q === h)) assert.ok(q.beforeX !== undefined && q.beforeX > q.x, `seed ${s}: "${q.text}" has no beforeX`);
     for (const f of st.falls43.filter((q) => q.kind === 'plug' || q.kind === 'pool')) {
       const w = st.proto.w4!.falls!.find((q) => q.id === f.fallId)!;
       const top = st.platforms.find((p) => p.id === f.steps[f.steps.length - 1])!;

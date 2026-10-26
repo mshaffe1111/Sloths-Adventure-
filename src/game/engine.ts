@@ -1145,7 +1145,9 @@ export class GameEngine {
         this.input.state.jumpPressed = false;
         p.y = nearTreeVine.topY - 12;
         p.vy = -190;
-        p.vx = (this.input.state.left ? -1 : this.input.state.right ? 1 : p.facing) * 160;
+        // (with only up held, toward the side with more ledge at the top: he used to vault the way he faced, and walking back to a trunk
+        // (4-3's, after the water threw him back) he faced away from the shelf and vaulted off its short end)
+        p.vx = (this.input.state.left ? -1 : this.input.state.right ? 1 : this.vaultSide(nearTreeVine, p.facing)) * 160;
         p.grounded = true;
         p.jumpsLeft = 2;
         sound.playJump();
@@ -1861,7 +1863,7 @@ export class GameEngine {
     if (this.proto) {
       // (several passed in one frame, as when a run starts from a later flag: only the last is said, and only it counts as heard, so a
       // line nobody saw is not lost for good)
-      const due = this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY) || (h.aboveY !== undefined && p.y > h.aboveY)));
+      const due = this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY) || (h.aboveY !== undefined && p.y > h.aboveY) || (h.beforeX !== undefined && p.x > h.beforeX)));
       for (const h of due) {
         h.shown = true;
         if (h !== due[due.length - 1]) continue;
@@ -5043,6 +5045,21 @@ export class GameEngine {
       maxLife: life,
       scale: 1,
     });
+  }
+
+  /** which way off a trunk's top has more ledge to land on (within 200 px), so a vault with only up held lands on it; a tie keeps `facing` */
+  private vaultSide(v: Vine, facing: 1 | -1): 1 | -1 {
+    const reach = (dir: 1 | -1) => {
+      let d = 0;
+      while (d < 200) {
+        const x = v.x + dir * (d + 10);
+        if (!this.platforms.some((q) => !q.broken && q.type !== 'bouncy' && x >= q.x && x <= q.x + q.width && q.y >= v.topY - 16 && q.y <= v.topY + 30)) break;
+        d += 10;
+      }
+      return d;
+    };
+    const l = reach(-1), r = reach(1);
+    return l === r ? facing : r > l ? 1 : -1;
   }
 
   private spawnSparkBurst(x: number, y: number, color: string) {

@@ -232,7 +232,7 @@ export class W4Play {
 
     // 4-6: back down on the forest floor after a fall, away from the one trunk that climbs up from it: Dot points the way
     if (w4.floor) {
-      if (p.y < w4.floor.y - 600) this.wasUp = true;
+      if (p.y < w4.floor.y - 200) this.wasUp = true; // (up the first trunk, 280 px or more)
       else if (this.wasUp && p.grounded && Math.abs(p.y - w4.floor.y) < 4 && Math.abs(p.x - w4.floor.trunkX) > 350) {
         const way = p.x > w4.floor.trunkX ? 'left' : 'right';
         h.tip('w4:floor', `Back on the ground! Follow the petals ${way}, to the trunk by the start, and climb back up`, 4.2);
