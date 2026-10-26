@@ -11,6 +11,11 @@
  * the listeners are told so the scenery can rebuild. Only the last KEEP_WORLDS worlds used stay decoded (memory audit, 2026-10-25:
  * keeping every world a session visits was over 200 MB): an older world is dropped, the listeners are told the same way so the scenery
  * lets go of its strips too, and it loads again (from the offline cache) if it comes back.
+ *
+ * A world can paint different stages in different light (World 5: gold, dusk and twilight, two takes each, w5Backdrop.ts): the engine
+ * names the stage being played (setBackdropStage) and the world's strips are that stage's set. Each set counts as one of the
+ * KEEP_WORLDS kept decoded. Away from a stage (the map, the title, a story) a world shows the set the last stage used, or its plain
+ * w<N>-* set.
  */
 // (under the test runner there is no bundler and so no glob, the call throws, and no world is painted: the drawn layers are what get
 // tested. The bundler replaces the call itself, so it must stay a plain call for it to be found.)
@@ -20,6 +25,8 @@ try {
 } catch {
   FILES = {};
 }
+
+import { w5BackdropStem } from './w5Backdrop.ts';
 
 export interface PaintedSet {
   far: HTMLImageElement;
@@ -31,20 +38,52 @@ export interface PaintedSet {
 type Part = keyof PaintedSet;
 const PARTS: Part[] = ['far', 'mid', 'near'];
 
-function urlFor(world: number, part: Part): string | null {
-  return FILES[`../assets/backdrops/w${world}-${part}.webp`] ?? null;
+function urlFor(stem: string, part: Part): string | null {
+  return FILES[`../assets/backdrops/${stem}-${part}.webp`] ?? null;
 }
+
+/** the strip set a stage plays in: its world's own (w<N>), or the stage's light in a world painted in several (World 5) */
+export function backdropStem(world: number, stageId: string | null): string {
+  const own = world === 5 && stageId ? w5BackdropStem(stageId) : null;
+  return own && urlFor(own, 'far') && urlFor(own, 'mid') ? own : `w${world}`;
+}
+
+let stage: string | null = null;
+/** the stem each world shows now: the last stage played in it picks it */
+const shown = new Map<number, string>();
+const stemFor = (world: number): string => shown.get(world) ?? `w${world}`;
+const worldOf = (stem: string): number => Number(/^w(\d+)/.exec(stem)?.[1] ?? 0);
+
+/**
+ * A stage is starting (the engine, as it builds the stage): its world shows that stage's strips from now on. When that changes the
+ * set, the listeners are told, so the scenery lets go of the old set and the new one loads (the stage's preload has usually started it).
+ */
+export function setBackdropStage(stageId: string | null): void {
+  stage = stageId;
+  const world = Number(/^(\d+)-/.exec(stageId ?? '')?.[1] ?? 0);
+  if (!world) return;
+  const stem = backdropStem(world, stageId);
+  if (stemFor(world) === stem) return;
+  shown.set(world, stem);
+  listeners.forEach((fn) => fn(world));
+}
+
+/** the stage last named by setBackdropStage (for the tests) */
+export const backdropStage = (): string | null => stage;
+
+/** the strip set a world shows now (for the tests and the preview) */
+export const shownStem = (world: number): string => stemFor(world);
 
 /** this world has all three painted strips */
 export function hasPainted(world: number): boolean {
-  return !!urlFor(world, 'far') && !!urlFor(world, 'mid');
+  return !!urlFor(`w${world}`, 'far') && !!urlFor(`w${world}`, 'mid');
 }
 
 /** the worlds whose strips stay decoded at once: the one being played and one more (the map or a story showing another world) */
 export const KEEP_WORLDS = 2;
-const ready = new Map<number, PaintedSet>();
-const loading = new Set<number>();
-const failed = new Set<number>();
+const ready = new Map<string, PaintedSet>();
+const loading = new Set<string>();
+const failed = new Set<string>();
 const listeners = new Set<(world: number) => void>();
 
 export function onPaintedReady(fn: (world: number) => void): () => void {
@@ -52,37 +91,47 @@ export function onPaintedReady(fn: (world: number) => void): () => void {
   return () => listeners.delete(fn);
 }
 
-function loadWorld(world: number) {
-  if (loading.has(world) || failed.has(world) || typeof Image === 'undefined') return;
-  loading.add(world);
-  const parts = PARTS.filter((p) => !!urlFor(world, p));
+function loadSet(stem: string) {
+  if (ready.has(stem) || loading.has(stem) || failed.has(stem) || typeof Image === 'undefined') return;
+  const world = worldOf(stem);
+  loading.add(stem);
+  const parts = PARTS.filter((p) => !!urlFor(stem, p));
   const imgs = parts.map((p) => {
     const im = new Image();
     im.decoding = 'async';
-    im.src = urlFor(world, p)!;
+    im.src = urlFor(stem, p)!;
     return im;
   });
   Promise.all(imgs.map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
     .then(() => {
       const at = (p: Part) => imgs[parts.indexOf(p)] ?? null;
-      ready.set(world, { far: at('far')!, mid: at('mid')!, near: at('near') });
+      ready.set(stem, { far: at('far')!, mid: at('mid')!, near: at('near') });
       listeners.forEach((fn) => fn(world));
-      trim(world);
+      trim(stem);
     })
     .catch(() => {
       // a strip that will not load leaves the drawn layers in place for good
-      failed.add(world);
+      failed.add(stem);
     })
-    .finally(() => loading.delete(world));
+    .finally(() => loading.delete(stem));
 }
 
-/** drop the worlds used longest ago (the Map keeps the order of use) until only KEEP_WORLDS are left; `keep` is never dropped */
-function trim(keep: number) {
-  for (const w of [...ready.keys()]) {
+/**
+ * Start decoding the strips a stage will play in, without showing them yet (stagePreload.ts, behind the map or the stage-cleared
+ * card), so the stage does not open on a plain sky while they decode.
+ */
+export function preloadBackdrop(world: number, stageId: string): void {
+  if (hasPainted(world)) loadSet(backdropStem(world, stageId));
+}
+
+/** drop the sets used longest ago (the Map keeps the order of use) until only KEEP_WORLDS are left; `keep` is never dropped */
+function trim(keep: string) {
+  for (const k of [...ready.keys()]) {
     if (ready.size <= KEEP_WORLDS) break;
-    if (w === keep) continue;
-    ready.delete(w);
-    canopyReady.delete(w);
+    if (k === keep) continue;
+    ready.delete(k);
+    const w = worldOf(k);
+    if (k === `w${w}`) canopyReady.delete(w);
     listeners.forEach((fn) => fn(w));
   }
 }
@@ -93,22 +142,26 @@ function trim(keep: number) {
  */
 export function paintedFor(world: number, load = true): PaintedSet | null {
   if (!hasPainted(world)) return null;
-  const hit = ready.get(world);
+  const stem = stemFor(world);
+  const hit = ready.get(stem);
   if (hit) {
     // most recently used goes to the end, so the oldest is the one trim() drops
-    ready.delete(world);
-    ready.set(world, hit);
+    ready.delete(stem);
+    ready.set(stem, hit);
     return hit;
   }
-  if (load) loadWorld(world);
+  if (load) loadSet(stem);
   return null;
 }
 
-/** the decoded strips for a world, without loading them or counting as a use */
-export const peekPainted = (world: number): PaintedSet | null => ready.get(world) ?? null;
+/** the decoded strips a world shows now, without loading them or counting as a use */
+export const peekPainted = (world: number): PaintedSet | null => ready.get(stemFor(world)) ?? null;
 
 /** the worlds whose strips are decoded right now (for the tests and the memory check) */
-export const decodedWorlds = (): number[] => [...ready.keys()];
+export const decodedWorlds = (): number[] => [...new Set([...ready.keys()].map(worldOf))];
+
+/** the strip sets decoded right now ('w4', 'w5dusk1', ...) */
+export const decodedSets = (): string[] => [...ready.keys()];
 
 // ---- the canopy strips: the same world seen from high in the trees (Matt, 2026-10-24: 1-8's chase on the long branch, and the top of
 // 1-4's climb). Only the middle and near strips change; the far strip (sky and treetops) is already the view from up high.
@@ -127,7 +180,7 @@ export function canopyFor(world: number): CanopySet | null {
   const hit = canopyReady.get(world);
   if (hit) return hit;
   // the canopy strips go with the world's own: none for a world whose strips were dropped
-  if (!ready.has(world)) return null;
+  if (!ready.has(`w${world}`) || stemFor(world) !== `w${world}`) return null;
   const mu = canopyUrl(world, 'mid'), nu = canopyUrl(world, 'near');
   if (!mu || !nu || canopyLoading.has(world) || canopyFailed.has(world) || typeof Image === 'undefined') return null;
   canopyLoading.add(world);
@@ -138,7 +191,7 @@ export function canopyFor(world: number): CanopySet | null {
   mid.src = mu;
   near.src = nu;
   Promise.all([mid, near].map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
-    .then(() => { if (ready.has(world)) canopyReady.set(world, { mid, near }); })
+    .then(() => { if (ready.has(`w${world}`)) canopyReady.set(world, { mid, near }); })
     .catch(() => { canopyFailed.add(world); /* the ground strips stay */ })
     .finally(() => canopyLoading.delete(world));
   return null;
