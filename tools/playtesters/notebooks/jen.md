@@ -58,3 +58,20 @@
   When the lights go out he glows green and is still easy to see. Being up high didn't save me from a pounce:
   better to jump over him at the right moment than to sit and wait. Double jumping over him can leave you standing
   on his back for a second; just walk off. The glow opens just after a pounce or when he's caught in the light.
+
+## 2026-10-26 (bosses again, sideways, release check)
+
+### Bosses
+
+- Sky Sovereign: the red mark slides to where I'm standing and lands under a second later. Half a step isn't enough;
+  a short walk still left me inside it. Take a long, full slide away (most of a second), and don't walk into a rock,
+  because it stops you while you're still on the mark. She pins herself on the rock, then hop and punch her head.
+  One hop and one punch works from either side.
+- Feathers and the screech: hold the thumb down until Dot's next line comes up. Crouching the whole time never cost me a heart.
+- Shadow Prowler: when the ring shows, get WELL clear. Stepping just past the edge still got me clawed, because his
+  head and paws land beyond the ring on the side he's facing. Run away from the way he's facing, not just out of the ring.
+- Prowler again: don't stand on a low ledge right over his head. He took a heart off me there with no warning I could see.
+  After his dash he usually ends up facing me, and the glow is on his chest or back. A hop and a couple of punches still reach it.
+- Venom Fang: the stump and the swing platform are the easy spots to wait. From the far coils I got there just as the daze
+  ran out. Once I'm at the top of the tree, don't lift and push up again. That hopped me off, and the lunge caught me on the ground.
+- Dot's bubble moves around (top left, sometimes bottom left). Don't count on that corner being clear.
