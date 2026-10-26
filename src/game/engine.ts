@@ -1,3 +1,4 @@
+import { lastSheet } from './atlasLoader.ts';
 import { goalLine } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
@@ -811,9 +812,14 @@ export class GameEngine {
   private recordFrames(elapsed: number, now: number) {
     if (!this.frameWinAt) this.frameWinAt = now;
     if (!this.isPaused) this.frameWin.push(elapsed);
-    // a freeze long enough to feel: noted on its own, with where he was
-    if (!this.isPaused && elapsed > 250) recorder.event('stall', `${Math.round(elapsed)}ms x${Math.round(this.player.x)} q${this.quality}`);
+    // a hitch long enough to see (over 100 ms): noted on its own, with where he was and the last picture sheet to arrive (an atlas
+    // decoding mid-play is the usual cause), so a stall can be tied to what caused it
+    if (!this.isPaused && elapsed > 100) recorder.event('stall', `${Math.round(elapsed)}ms x${Math.round(this.player.x)} q${this.quality}${lastSheet.name && now - lastSheet.at < 1500 ? ` after ${lastSheet.name}` : ''}`);
     if (now - this.frameWinAt < 5000) return;
+    // memory (Chrome and Android only: iPhones don't report it), and how many live things the game is carrying, so the QA team can see
+    // memory climbing the longer someone plays
+    const mem = (performance as Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } }).memory;
+    recorder.event('mem', `${mem ? `${Math.round(mem.usedJSHeapSize / 2 ** 20)}/${Math.round(mem.totalJSHeapSize / 2 ** 20)}MB ` : ''}parts ${this.particles.length} foes ${this.enemies.length} items ${this.collectibles.length}`);
     const f = this.frameWin.sort((a, b) => a - b);
     this.frameWin = [];
     this.frameWinAt = now;
