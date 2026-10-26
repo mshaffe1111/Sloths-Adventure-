@@ -5,14 +5,15 @@
  * when the first hit landed, so the fairness rule (open >= reach + 0.8 s + 0.6 s) is checked against real input, not ideal input.
  *
  *   node tools/qa/server.cjs <port> <dev build url> <out dir>          (once, in the background)
- *   node tools/qa/bossReach.cjs <port> <stage> <land|port> <refuge> [persona] [openings]
+ *   node tools/qa/bossReach.cjs <port> <stage> <land|port> <refuge> [persona] [openings] [only this move]
  *
- * Refuges: 1-10 tree | stump | coils; 3-10 ledge (a low shelf) | floor | flee (runs from every wind-up and roar). Every heart lost
+ * Refuges: 1-10 tree | stump | coils; 3-10 ledge (a low shelf) | floor | flee (runs from every wind-up and roar) | dodgeleft (out of
+ * a pounce's ring to the left, so he lands facing back toward Pokey). Every heart lost
  * is printed with what hurt him and what the boss was doing (the engine's bossHurtLog). This is a measuring tool: it reads the fight's state through
  * the harness's `eval` (a blind tester never does).
  */
 const http = require('http');
-const [port, stage = '1-10', view = 'port', refuge = 'tree', persona = 'steph', want = '3'] = process.argv.slice(2);
+const [port, stage = '1-10', view = 'port', refuge = 'tree', persona = 'steph', want = '3', only = ''] = process.argv.slice(2);
 
 const call = (body) =>
   new Promise((res, rej) => {
@@ -29,7 +30,7 @@ const act = (...steps) => call({ cmd: 'do', steps, noshot: true });
 const STATE = `(() => { const e = __engine(); const b = e.boss, br = b.ai, p = e.player, a = e.currentStage.arena;
   return { t: e.gameTime, px: p.x, py: p.y, climbing: !!p.climbing, grounded: !!p.grounded, swinging: !!p.isVineSwinging, hp: p.hp, lives: e.lives,
     left: a.left, right: a.right, floor: a.floor, on: e.standingOnId, bx: b.x, bw: b.width, f: b.facing, bhp: b.hp, st: br.state, mv: br.move, bt: br.t,
-    reach: br.d.reach, entrance: !!e.entrance, hurts: e.bossHurtLog.length, lastHurt: e.bossHurtLog[e.bossHurtLog.length - 1] ?? null, plats: e.platforms.filter((q) => q.y < a.floor - 10 && q.x < a.right && q.x + q.width > a.left).map((q) => [q.id, q.x, q.x + q.width, q.y]) }; })()`;
+    reach: br.d.reach, aim: br.d.aim, entrance: !!e.entrance, hurts: e.bossHurtLog.length, lastHurt: e.bossHurtLog[e.bossHurtLog.length - 1] ?? null, plats: e.platforms.filter((q) => q.y < a.floor - 10 && q.x < a.right && q.x + q.width > a.left).map((q) => [q.id, q.x, q.x + q.width, q.y]) }; })()`;
 const peek = async () => JSON.parse((await call({ cmd: 'eval', text: STATE })).text);
 
 let steering = 'none';
@@ -79,6 +80,13 @@ async function toRefuge(s) {
     if (Math.abs(s.px - x) > 20) return steer(s.px > x ? 'left' : 'right', 100), false;
     return steer('lift', 100), true;
   }
+  if (refuge === 'dodgeleft') {
+    // (just out of the ring, as a player would stop: 300 px from its middle)
+    if ((s.st === 'tell' || s.st === 'act') && s.aim !== undefined && s.px > s.aim - 300) return steer('left', 100), true;
+    if (s.st === 'tell' || s.st === 'act') return steer('lift', 100), true;
+    // between attacks, back out to the right of him, so the next pounce comes from his left
+    if (s.px < s.bx + 350 && s.px < s.right - 60) return steer('right', 100), false;
+  }
   if (refuge === 'flee') {
     // run away from him as soon as he starts anything (a crouch, a roar), for a second
     const away = s.px < s.bx ? 'left' : 'right';
@@ -102,6 +110,7 @@ function spot(s) {
 (async () => {
   console.log((await call({ cmd: 'persona', name: persona })).text);
   await call({ cmd: 'start', stage, view });
+  if (only) await call({ cmd: 'eval', text: `(() => { const m = __engine().bossDef.moves; for (const k of Object.keys(m)) if (k !== '${only}') delete m[k]; return Object.keys(m); })()` });
   let s = await peek();
   while (s.entrance) {
     await act('wait 300');
@@ -128,7 +137,7 @@ function spot(s) {
     if (open && !lastOpen) {
       open0 = s.t - s.bt;
       openMove = s.st === 'stun' ? `${s.mv}:stun` : s.mv;
-      openFrom = { x: Math.round(s.px), up: Math.round(s.floor - s.py) };
+      openFrom = { x: Math.round(s.px), up: Math.round(s.floor - s.py), faces: Math.sign(s.px - s.bx) === s.f ? 'TOWARD Pokey' : 'away' };
       hp0 = s.bhp;
       firstHit = -1;
       // the reaction: a person sees the glow and only then moves
@@ -169,7 +178,11 @@ function spot(s) {
       // face it and tap (a jump kick for one up high)
       await steer(d > 0 ? 'right' : 'left', 30);
       if (sp.up - 50 < feet + 54) await act('tap', 'wait 120');
-      else await act('flick up', 'wait 120', 'tap', 'wait 200');
+      else {
+        // (thumb off the steer first: a jump while steering carries him past it)
+        await steer('lift', 30);
+        await act('flick up', 'wait 260', 'tap', 'wait 250');
+      }
       continue;
     }
     await toRefuge(s);
