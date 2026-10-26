@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { emptyGuideView, type GuideView } from './dotGuideView.ts';
 import { MoveWatch } from './dotGuideWatch.ts';
 import { GUIDE, GuideQueue, type GuideLine, type MoveId } from './dotGuide.ts';
-import { PUNCH_REACH, cornerBubble, fallbackSafeArea, hoverSpot, landingRects, perchPoseFor, placeBubble, pokeyRect, popupRects, weakSpotRect, type Rect } from './dotGuidePerch.ts';
+import { BUBBLE_TAG_H, PUNCH_REACH, cornerBubble, fallbackSafeArea, hoverSpot, landingRects, perchPoseFor, placeBubble, pokeyRect, popupRects, weakSpotRect, type Rect } from './dotGuidePerch.ts';
 import { dotHelp, helpAllows, markSkipOffered, offersSkip, skipOffered, skipTips } from './dotGuideHelp.ts';
 import { gestureMove } from './dotLines.ts';
 
@@ -228,4 +228,22 @@ test('a move tip for a move already done this stage is not said; one that arrive
   counts.climb = 1;
   assert.equal(q2.tick(1000, e2)?.line.key, 'up');
   assert.equal(q2.tick(700 + GUIDE.minShowMs, e2), null);
+});
+
+test("upright, with every side of her blocked by a carving and by Pokey, her bubble goes clear of both, name tag and his feet included (QA v194, 5-1)", () => {
+  for (const [w, h] of [[390, 844], [320, 782]] as const) {
+    const v = view(w, h, 80);
+    v.py = h * 0.62;
+    const safe = fallbackSafeArea(w, h);
+    const pk = pokeyRect(v, 4);
+    // Meeca's words on the tree just ahead of him, from above his head to the ground
+    const carving: Rect = { x0: w * 0.36, y0: v.py - 180, x1: w * 0.8, y1: v.py - 4 };
+    const bw = w - 32;
+    const bh = 111;
+    // Dot hovering behind his head
+    const b = placeBubble(40, v.py - v.ph - 14, bw, bh, safe, [pokeyRect(v)], ['above', 'left', 'below', 'right'], 32, [pk, carving]);
+    const box = { x0: b.x, y0: b.y - BUBBLE_TAG_H, x1: b.x + bw, y1: b.y + bh };
+    assert.ok(!overlaps(box, carving), `${w}x${h}: on the carving at ${b.x},${b.y}`);
+    assert.ok(!overlaps(box, { ...pk, y1: pk.y1 + 12 }), `${w}x${h}: on Pokey (or his feet) at ${b.x},${b.y}`);
+  }
 });

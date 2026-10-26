@@ -270,6 +270,9 @@ export interface BubblePlace {
   cost?: number;
 }
 
+/** how far her name tag ("Dot") stands up above the bubble's top edge (dotGuide.css .dg-tag): it covers what is under it too */
+export const BUBBLE_TAG_H = 14;
+
 function overlap(a: Rect, b: Rect): number {
   const w = Math.min(a.x1, b.x1) - Math.max(a.x0, b.x0);
   const h = Math.min(a.y1, b.y1) - Math.max(a.y0, b.y0);
@@ -279,7 +282,9 @@ function overlap(a: Rect, b: Rect): number {
 /**
  * Put a bubble of size w x h beside a speaker at (sx, sy) (screen px, her middle): above her first, then to either side, then below. Each
  * spot is pushed inside the safe rect; the first that covers nothing it must not (the HUD, the thumbs, Pokey, the animals) wins, or else
- * the one that covers least. `order` sets which sides to try first.
+ * the one that covers least. `order` sets which sides to try first. When every side of her covers something, it also tries just above
+ * and just below each `hard` box (Pokey first of all) and the top of the safe rect, a little further from her (QA v194, 5-1 upright:
+ * beside her it sat on Meeca's carving, or on Pokey's feet, with the open ground under him empty). The name tag above it counts.
  */
 export function placeBubble(
   sx: number,
@@ -298,14 +303,22 @@ export function placeBubble(
 ): BubblePlace {
   const r = safe.rect;
   const gap = Math.max(34, me + 12);
+  const tag = BUBBLE_TAG_H;
   let best: BubblePlace | null = null;
   let bestCost = Infinity;
-  for (const side of order) {
-    let x = side === 'left' ? sx - gap - w : side === 'right' ? sx + gap : sx - w / 2;
-    let y = side === 'above' ? sy - gap - h : side === 'below' ? sy + gap : sy - h / 2;
+  type Side = 'above' | 'below' | 'left' | 'right';
+  // (the sides of her, then the spots clear of each hard box: [side, y] with the bubble centred on her)
+  const spots: [Side, number | null][] = order.map((s) => [s, null]);
+  // (his painting reaches past his body box, his feet most of all: more room under a hard box than over it)
+  for (const k of hard) spots.push(['above', k.y0 - 16 - h], ['below', k.y1 + 24 + tag]);
+  spots.push(['above', r.y0]);
+  for (let i = 0; i < spots.length; i++) {
+    const [side, fixY] = spots[i];
+    let x = fixY !== null ? sx - w / 2 : side === 'left' ? sx - gap - w : side === 'right' ? sx + gap : sx - w / 2;
+    let y = fixY ?? (side === 'above' ? sy - gap - h : side === 'below' ? sy + gap + tag : sy - h / 2);
     x = Math.max(r.x0, Math.min(r.x1 - w, x));
     y = Math.max(r.y0, Math.min(r.y1 - h, y));
-    const box = { x0: x, y0: y, x1: x + w, y1: y + h };
+    const box = { x0: x, y0: y - tag, x1: x + w, y1: y + h };
     let cost = 0;
     // (the thumb corners and the HUD count most: nothing to read under a thumb, nothing over the hearts)
     for (const k of safe.keepOut) cost += overlap(box, k) * 3;
@@ -314,9 +327,11 @@ export function placeBubble(
     // she must not end up under her own bubble (it was pushed over her by the edge)
     cost += overlap(box, { x0: sx - me, y0: sy - meH, x1: sx + me, y1: sy + meH }) * 20;
     // a bubble far from her reads as someone else's
-    const far = Math.max(0, Math.hypot(Math.max(box.x0 - sx, 0, sx - box.x1), Math.max(box.y0 - sy, 0, sy - box.y1)) - gap - 10);
+    const far = Math.max(0, Math.hypot(Math.max(box.x0 - sx, 0, sx - box.x1), Math.max(box.y0 - sy, 0, sy - box.y1)) - gap - tag - 10);
     cost += far * far * 4;
-    const tail: TailSide = side === 'above' ? 'b' : side === 'below' ? 't' : side === 'left' ? 'r' : 'l';
+    // (a spot clear of a hard box may land on her far side of it: the tail points the way she is)
+    const vert = fixY !== null ? (y + h / 2 < sy ? 'above' : 'below') : side;
+    const tail: TailSide = vert === 'above' ? 'b' : vert === 'below' ? 't' : vert === 'left' ? 'r' : 'l';
     const at = tail === 'b' || tail === 't' ? Math.max(18, Math.min(w - 30, sx - x - 8)) : Math.max(14, Math.min(h - 28, sy - y - 8));
     if (cost < bestCost) {
       bestCost = cost;

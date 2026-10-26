@@ -12,6 +12,7 @@ import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game
 import {
   aheadRect,
   bubbleMaxW,
+  BUBBLE_TAG_H,
   choosePerch,
   dangerRects,
   findTarget,
@@ -109,6 +110,8 @@ interface Plan {
   placedAt: number;
   /** a perch was tried for this line and left no room for the bubble: she stays hovering */
   noPerch?: boolean;
+  /** how much of the keep-outs (the HUD, the thumbs, a carving) the bubble covered when it was placed */
+  ko?: number;
 }
 
 /** everything one run of a stage keeps: the queue, the watches, the story bookkeeping and Dot's flight */
@@ -421,14 +424,20 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
      */
     let safeCache: SafeArea | null = null;
     let safeAt = -1e9;
+    /** the stage's own keep-outs among them (World 5's carvings): words to read, so her bubble keeps off them as hard as off Pokey */
+    const stageKo: Rect[] = [];
     const safeNow = (): SafeArea => {
       const t = performance.now();
       if (safeCache && t - safeAt < 400) return safeCache;
       const base = guideSafeArea(v.cssW, v.cssH);
       const keepOut = base.keepOut.slice();
+      stageKo.length = 0;
       document.querySelectorAll('.hud-glass, [data-hud-keepout]').forEach((el) => {
         const r = el.getBoundingClientRect();
-        if (r.width > 0 && r.height > 0) keepOut.push({ x0: r.left - 6, y0: r.top - 6, x1: r.right + 6, y1: r.bottom + 6 });
+        if (!(r.width > 0 && r.height > 0)) return;
+        const k = { x0: r.left - 6, y0: r.top - 6, x1: r.right + 6, y1: r.bottom + 6 };
+        keepOut.push(k);
+        if (el.getAttribute('data-hud-keepout') === 'stage') stageKo.push(k);
       });
       safeCache = { rect: base.rect, keepOut };
       safeAt = t;
@@ -524,6 +533,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     const hardNow = (p?: Plan) => {
       run.hard.length = 0;
       run.hard.push(pokeyRect(v, 4));
+      safeNow();
+      for (const k of stageKo) run.hard.push(k);
       const w = weakSpotRect(v);
       if (w) run.hard.push(w);
       // the way forward (the platform tops ahead and the next landing, QA v189: it sat along a pillar's top in 4-2) and her own ring
@@ -536,6 +547,17 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const r = Math.max(18, Math.min(40, t.r * v.zoom)) + 22;
         run.hard.push({ x0: tx - r, y0: ty - r - 16, x1: tx + r, y1: ty + r });
       }
+    };
+
+    /** how much of the keep-outs a bubble at (x, y) covers, its name tag included: a carving that scrolls under it since is news */
+    const koCover = (x: number, y: number): number => {
+      let a = 0;
+      for (const k of safeNow().keepOut) {
+        const w = Math.min(x + run.bw, k.x1) - Math.max(x, k.x0);
+        const h = Math.min(y + run.bh, k.y1) - Math.max(y - BUBBLE_TAG_H, k.y0);
+        if (w > 0 && h > 0) a += w * h;
+      }
+      return a;
     };
 
     /** a boss fight: the corner band (and her spot beside it) */
@@ -584,6 +606,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       }
       p.bubDx = p.bub.x - spot.x;
       p.bubDy = p.bub.y - spot.y;
+      p.ko = koCover(p.bub.x, p.bub.y);
       p.placedAt = run.clock;
     };
 
@@ -759,9 +782,12 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
             // (Pokey, the open weak spot, the way ahead, her ring: whatever has come under it since it was placed)
             let covered = false;
             if (b) {
+              const ty = by - BUBBLE_TAG_H;
               hardNow(p);
-              for (const h of run.hard) if (bx < h.x1 && bx + run.bw > h.x0 && by < h.y1 && by + run.bh > h.y0) covered = true;
-              if (!covered && pr && bx < pr.x1 && bx + run.bw > pr.x0 && by < pr.y1 && by + run.bh > pr.y0) covered = true;
+              for (const h of run.hard) if (bx < h.x1 && bx + run.bw > h.x0 && ty < h.y1 && by + run.bh > h.y0) covered = true;
+              if (!covered && pr && bx < pr.x1 && bx + run.bw > pr.x0 && ty < pr.y1 && by + run.bh > pr.y0) covered = true;
+              // (a carving has scrolled in under it since it was placed: QA v194, 5-1's first tree)
+              if (!covered && p.ko !== undefined && koCover(bx, by) > p.ko + 400) covered = true;
             }
             // hovering for want of a perch: one may have come into view since (the camera moves on with him)
             const perch = p.mode === 'hover' && !p.noPerch && p.target && p.topic !== 'controls' && run.clock - run.lastReplan > 1000 ? choosePerch(v, p.target, safeNow()) : null;
