@@ -106,3 +106,20 @@
 - Her bubble can sit right on top of a ledge or the thing I'm aiming for. If I can't see the top of something, wait a beat
   for her to move or the line to finish.
 - New HUD: pickups near the top edge can hide behind the hearts or the Menu leaf, mostly on a squat screen. Check those corners.
+
+## 2026-10-26 (boss gate again, sideways, beta HUD)
+
+- Prowler: the opening right at the start is free. Step in and punch fast; four or five quick taps is two or three hits.
+- Prowler: most of my lost hearts came while I was running away in a straight line. Running isn't dodging. Stop, watch for
+  the crouch and the ring, and only then go, away from the side he's facing.
+- After a hit lands and the gold goes, back off at once. Hanging around for one more tap is when he gets me.
+- If the gold is behind me after a pounce, a tiny slide the other way just turns me round. Then tap.
+- Squat screen: everything still fits, but "hits left" shrinks to just the number. Don't stand still inside the ring
+  waiting to see what he does; that's a free heart for him.
+- Venom Fang: from past his coils a short run back to his head is enough to land a full hit, but getting over there
+  cost me a heart every time. Standing right against the coils hurt too. Don't touch the coils.
+- The swing platform crumbles now. Don't plan on waiting there long.
+- Vines: when I'd slid up and down and swung a while, flicks stopped letting me go. I just spun on the vine with a gold
+  ring around me and missed two openings. What finally worked: keep the thumb down sliding to the bottom, push toward
+  where I want to go, and flick up that way while the thumb is still down. A straight hop onto the vine and one clean
+  up-and-over flick off works first time; fiddling on it is what gets me stuck.
