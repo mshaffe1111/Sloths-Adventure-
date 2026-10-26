@@ -55,6 +55,7 @@ test('the Drake bar: one segment per hit, two hit points a hit, and it fits its 
 });
 
 import { SAFE } from './physics.ts';
+import { PILLAR } from './sovereignFight.ts';
 
 test('every ledge of the Drake lair can be reached from the floor or from a ledge before it', () => {
   const spans = (drake.perches ?? []).map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
@@ -363,7 +364,7 @@ test('a shadow step that comes out in a moon pool is caught and stunned; one in 
   const caught = run(left + PROWLER_POOLS[1] - (half + 20));
   assert.ok(inMoonPool(caught.x, left));
   assert.ok(caught.ai!.d.crashed, 'caught by the light');
-  assert.equal(prowler.moves.shadowStep.stunAfter!(caught), 2.1);
+  assert.equal(prowler.moves.shadowStep.stunAfter!(caught), 2.7); // (2.1 until the fairness pass: bossFair.test.ts)
   assert.ok(half > 0);
   // the hero in the shadows in the middle: he comes out in the dark and is not caught
   const free = run(left + 750);
@@ -406,7 +407,7 @@ test('the Sky Sovereign is a giant with a sixteen-hit bar, her own lair and room
 
 test('the Sovereign is weak somewhere different after each move, and each spot can be reached', () => {
   const spots: Record<string, { x: number; y: number; w: number; h: number }> = {};
-  for (const m of ['featherVolley', 'skySweep', 'snatch', 'talonRake']) {
+  for (const m of ['featherVolley', 'skySweep', 'snatch', 'talonRake', 'wingGust']) {
     const r = weakRect(sb('rec', m), sov, floor)!;
     assert.ok(r, m);
     spots[m] = r;
@@ -426,10 +427,14 @@ test('the Sovereign is weak somewhere different after each move, and each spot c
   assert.ok(left.x + left.w / 2 < 1500);
 });
 
-test('the Aerie: every ledge can be reached, there is a rope, and the storm breaks at the last phase only', () => {
+test('the Aerie: every ledge and rock top can be reached, there is a rope, and the storm breaks at the last phase only', () => {
   const ps = sov.perches ?? [];
-  assert.ok(ps.length >= 3);
-  const spans = ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up }));
+  assert.ok(sov.pillars, 'the rock pillars are its other perches');
+  // the rock tops first (a double jump from the floor), then the high ledge from a rock
+  const spans = [
+    ...PILLAR.at.map((dx) => ({ x0: dx - PILLAR.w / 2, x1: dx + PILLAR.w / 2, up: PILLAR.h })),
+    ...ps.map((p) => ({ x0: p.dx - (p.moving?.range ?? 0), x1: p.dx + p.w + (p.moving?.range ?? 0), up: p.up })),
+  ];
   const reached = [{ x0: -1e9, x1: 1e9, up: 0 }];
   for (const sp of spans) {
     const ok = reached.some((r) => {

@@ -59,6 +59,8 @@ export class DotRun {
   private bonkCd = 0;
   private buzzCd = 0;
   private lookX = 0.38;
+  /** when the last life went (its line is not talked over) */
+  private lifeAt = -9;
 
   constructor(stage: DotStage, host: DotHost) {
     this.fl = new DotFlight(stage);
@@ -117,6 +119,12 @@ export class DotRun {
           sound.playCheckpoint();
           if (e.first) this.once('meter', "That bar's my nectar. Flapping and hovering use it up, and when it's empty I can't flap, I just sink. So: flowers.", 5);
           break;
+        case 'checkpoint': {
+          const f = st.flowers.find((q) => q.id === e.id);
+          if (f) this.host.float('CHECKPOINT', f.x, f.y - 76, '#fde047');
+          if (fl.sipping < 0) sound.playCheckpoint();
+          break;
+        }
         case 'full':
           sound.playLeafPickup();
           break;
@@ -134,8 +142,8 @@ export class DotRun {
           this.host.shake(0.45);
           sound.playPlayerHurt();
           this.fx.feather(fl.x, fl.y + 6, e.dir);
-          this.host.float(fl.scratches === 9 ? 'NINE SCRATCHES' : `SCRATCH ${fl.scratches}`, fl.x, fl.y - 44, '#fda4af');
-          if (fl.scratches === 1) this.once('first-scratch', "Ow. That's one. I'm fine. I'm counting, but I'm fine.", 3);
+          this.host.float(`SCRATCH ${fl.scratches}`, fl.x, fl.y - 44, '#fda4af');
+          if (fl.scratches === 1 && this.clock - this.lifeAt > 1) this.once('first-scratch', "Ow. A heart gone, and one scratch for my tally. Only the hearts count: lose them all and it's back to the last flower. Scratches never end anything.", 5);
           break;
         case 'mist':
           this.once('mist', "Not the mist! I can't see a thing in there. Back to the last flower. I'll pretend that didn't happen.", 4);
@@ -202,7 +210,11 @@ export class DotRun {
     return Math.max(0, Math.min(1, (this.fl.x - this.fl.stage.spawn.x) / (L.x - this.fl.stage.spawn.x)));
   }
 
-  /** the camera keeps her a little left of middle (more of what is coming ahead), and level with her */
+  /**
+   * The camera keeps her a little left of middle (more of what is coming ahead), and level with her: always level, even right up
+   * against the netting overhead or down by the mist (more netting shows above, more mist below), so she never tucks under the
+   * hearts and the stage card at the top or her panel at the bottom (QA, 2026-10-25).
+   */
   camera(cam: Camera, dt: number) {
     const fl = this.fl;
     const vw = cam.viewportWidth;
@@ -211,12 +223,23 @@ export class DotRun {
     const want = fl.face > 0 ? (portrait ? 0.3 : 0.36) : 0.6;
     this.lookX += (want - this.lookX) * Math.min(1, dt * 1.5);
     cam.targetX = fl.x - vw * this.lookX;
-    cam.targetY = fl.y - vh * 0.5;
+    // (a touch below the middle when upright: the top of the screen holds the hearts, the stage card and her lines)
+    cam.targetY = fl.y - vh * (portrait ? 0.54 : 0.5);
     const k = Math.min(1, dt * 5);
     cam.x += (cam.targetX - cam.x) * k;
     cam.y += (cam.targetY - cam.y) * k;
     cam.x = Math.max(0, Math.min(fl.stage.width - vw, cam.x));
-    cam.y = Math.max(0, Math.min(DOT_H - vh, cam.y));
+    // (she lags the target by a step or two; held so she stays inside the middle half of the view whatever she does)
+    cam.y = Math.max(fl.y - vh * 0.75, Math.min(fl.y - vh * 0.3, cam.y));
+  }
+
+  /** a life gone (the engine has brought her back at the last flower): Dot says so, and that the scratches still count */
+  lostLife(livesLeft: number) {
+    const n = this.fl.scratches;
+    const tally = n === 0 ? '' : n === 1 ? ' That one scratch still counts.' : ` The ${n} scratches still count. I keep the tally for the whole flight.`;
+    const head = livesLeft <= 0 ? 'Last try.' : livesLeft === 1 ? 'One life left.' : `${livesLeft} lives left.`;
+    this.lifeAt = this.clock;
+    this.host.guide(`Oof. A life gone, so it's back to the last flower I drank at. ${head}${tally}`, 4.5);
   }
 
   /** how slowed the moment is, 0..1 (the engine zooms in a touch with it) */
@@ -227,7 +250,7 @@ export class DotRun {
   /**
    * Draw the stage. `ctx` is scaled to world units (zoom and device pixels); `shake` is the camera's shake this frame.
    */
-  draw(ctx: CanvasRenderingContext2D, cam: Camera, dpr: number, zoom: number, cssW: number, cssH: number, shake: { x: number; y: number }, hudAt: { x: number; y: number }) {
+  draw(ctx: CanvasRenderingContext2D, cam: Camera, dpr: number, zoom: number, cssW: number, cssH: number, shake: { x: number; y: number }, hudAt: { x: number; y: number; scale?: number }) {
     const fl = this.fl;
     const t = this.clock;
     const vw = cam.viewportWidth;

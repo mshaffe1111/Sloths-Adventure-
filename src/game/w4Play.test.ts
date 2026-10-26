@@ -65,6 +65,41 @@ test('a falling rock hurts him once if he stands under it, never if he waits to 
   assert.equal(aside.log.hurt, 0);
 });
 
+test('the first rock he meets cannot hit him before its warning has shown to him, and Dot names it then (4-3)', () => {
+  // (he arrives under a rock that is already falling: no warning yet, so it passes him by; the next one warns, and then hits)
+  const rock = { x: 500, top: 100, land: 700, every: 5, warn: 2, offset: 0 };
+  const fallT = (rock.land - rock.top) / ROCK.speed;
+  const first = rock.every - rock.warn - fallT - ROCK.shatter + rock.warn; // when the first rock lets go
+  const { h, player, log } = host();
+  player.x = 2000;
+  const w = new W4Play({ rocks: [rock], rockTip: 'Rocks!' }, [], []);
+  run(w, h, first + 0.05);
+  player.x = 500;
+  run(w, h, fallT);
+  assert.equal(log.hurt, 0, 'a rock nobody was warned of hit him');
+  assert.ok(!log.tips.length, 'Dot spoke of a warning he never saw');
+  run(w, h, rock.every);
+  assert.ok(log.tips.includes('tip:Rocks!'), `Dot did not name the warning (${log.tips.join(', ')})`);
+  assert.equal(log.hurt, 1, 'once warned, standing under it is still a hit');
+});
+
+test('past the top of a plug fall\'s stair (a run started from a later flag) its boulder is in its slot, and the water is not a wall behind him', () => {
+  const boulder = plat(7, 100, 300, 60, { height: 60, push: { min: 0, max: 260 } });
+  const w4: W4Extras = { falls: [{ id: 1, x: 380, width: 300, top: 300, bottom: 700, plug: { platformId: 7, atX: 200 }, past: { x: 720, y: 330 } }] };
+  const { h, player } = host({ platforms: [boulder] });
+  const w = new W4Play(w4, h.platforms, h.vines);
+  player.x = 760;
+  player.y = 320;
+  w.step(dt, h);
+  assert.equal(boulder.x, 200, 'the boulder of a fall he is past is not in its slot');
+  // and back down at its foot (left of it), the fall is dry: walking in, nothing throws him out
+  player.x = 360;
+  player.y = 700;
+  player.vx = 200;
+  run(w, h, 0.5, () => { player.x += 6; });
+  assert.ok(player.x > 380, 'the stopped fall still threw him back');
+});
+
 test('rolling the boulder into the channel dries the fall, and its pool drains and the log sinks', () => {
   const boulder = plat(7, 100, 300, 60, { height: 60, push: { min: 0, max: 260 } });
   const log = plat(8, 600, 600, 120);

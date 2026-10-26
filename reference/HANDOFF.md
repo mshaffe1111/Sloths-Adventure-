@@ -36,6 +36,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 - **Honest.** Honest pushback when it's warranted, no apologies, and research before saying something is wrong.
 - **Show first.** Show significant screen changes, new icons and new looks (a mock-up, screenshots, a preview video) before building them in.
 - **Phone first.** It's a phone/tablet game: touch only, every stage playable in portrait and landscape, and all hint text describes touch.
+- **Portrait AND landscape, always (Matt, 2026-10-26).** Every check, screenshot, mock-up, helper brief and QA gate pass covers both orientations, plus short landscape (about 640x320) for HUD work. Never assume landscape: Matt and Steph play upright; Jen and Brycen play sideways. It applies to everything built, not only checks: stages, menus, the world map, story cutscenes, cards, pop-ups, the HUD, boss arenas and new art. Each is designed for both from the start, not fitted to the second orientation afterwards. A check done in one orientation only is not done. QA persona bots play in their own person's orientation, and every gate pass also runs the other one.
 - **Testers are live.** Experiments default off, and nothing half-finished goes to `main`.
 - **After every round of changes**: rebuild and republish the test link in place (§6), and tell him what changed.
 - **Pushing:**
@@ -44,6 +45,11 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
   - he merges it himself.
 - **Background jobs.** While they run, keep doing useful work (checking, screenshots, the next piece) rather than waiting.
 - **Money.** Hugging Face compute is fine to spend on quality ("a couple of dollars here and there"). Say roughly what a job costs before launching big ones.
+- **Release rhythm (2026-10-26).** Work a couple of stages at a time: build them, have the QA team test them, fix and retest, then deploy. Then do the next couple. Never hold a deploy for a whole world.
+- **QA stays a separate session, playing blind.** The QA team doesn't know how stages are built, so it plays like a player would. This session builds and fixes; the QA team tests; they talk by message. Give QA small batches with a clear note of what changed and what to retest. A short gate pass comes before each deploy, and the full persona runs after.
+- **One building session.** Keep the building work in one session (it summarizes itself when long); don't split it across new sessions, since catching up costs Matt tokens and splitting confuses who's doing what.
+- **Helpers.** Matt is fine with more than 6 helpers at a time for important work when his tokens allow. Slow down when he says tokens are tight.
+- **Bosses.** Every weak-spot opening needs a clear tell, and must stay open at least as long as the time to reach it plus 0.8 s to react plus 0.6 s to hit (bossFair.test.ts, sovereignEngine.test.ts). Fight length depends on the player's skill; there is no minimum for bosses.
 
 ### Design rules for stages (check every stage against these)
 
@@ -115,6 +121,7 @@ The cutting and packing scripts are in `tools/art/` (`w2art/`, `w3*/`, `packprop
 | Golden snake (the game's snake) | `goldSnake.ts` (`?snake=classic` brings back the old one) |
 | Enemy brains and timings | `predatorAI.ts` (`TURTLE`, `GUARD`, …) |
 | Bosses / guardians | `bossDefs.ts`, `bossArt.ts`, `<boss>Sprite.ts`; boss sheets in `reference/boss-sheets/` |
+| The Sky Sovereign's fight (4-10): rock pillars, screech, gust, her ending | rules `sovereignFight.ts`, moves in `bossDefs.ts` (SOVEREIGN), look `sovereignArt.ts`, reach timing for Matt's opening rule `sovereignReach.ts`, tests `sovereign.test.ts`; her two screech poses are packed into her atlas by `tools/art/w4/sovscreech/pack_screech.py` |
 
 ### Story
 

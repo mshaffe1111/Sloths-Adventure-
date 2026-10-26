@@ -36,6 +36,8 @@ const WayDot: React.FC<{ text: string; hurt: boolean }> = ({ text, hurt }) => {
 const TICK_MS = 200;
 /** a line counts as heard (and is not repeated on a replay) once it has been up this long */
 const HEARD_MS = 1500;
+/** a line cut short by Dot's guiding comes back, but a line comes up at most this often in one run of a stage */
+const MAX_TRIES = 2;
 
 interface Run {
   played: number;
@@ -46,6 +48,8 @@ interface Run {
   H: boolean;
   F: boolean;
   cur: null | { flag: WayFlag; left: number; seen: number; marked: boolean };
+  /** how many times each line has come up in this run: one Dot cut short comes back once, never again after that */
+  tries: Record<WayFlag, number>;
   n: number;
   /** the guiding line being said, and the last one taken from the engine */
   guide: null | { text: string; left: number; ms: number; n: number };
@@ -72,6 +76,7 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) =>
     H: wasShown(world, mini, 'H'),
     F: wasShown(world, mini, 'F'),
     cur: null,
+    tries: { L: 0, H: 0, F: 0 },
     n: 0,
     guide: null,
     // a line from before this run of the stage is not said again
@@ -155,6 +160,12 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) =>
         shownF: run.F,
       });
       if (!due) return;
+      // (said twice in this run already, cut short both times: it waits for the next run)
+      if (run.tries[due.flag] >= MAX_TRIES) {
+        run[due.flag] = true;
+        return;
+      }
+      run.tries[due.flag] += 1;
       if (due.flag === 'H') run.hurtAt = -1;
       run.cur = { flag: due.flag, left: showMs(due.line.text), seen: 0, marked: false };
       run.n += 1;

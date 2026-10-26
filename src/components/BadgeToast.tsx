@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { BadgeDef } from '../game/badges.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
 import { guardianWorld } from './icons/badgeIcons.ts';
@@ -10,6 +10,10 @@ import { guardianWorld } from './icons/badgeIcons.ts';
 export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = ({ badges, onDone }) => {
   const [i, setI] = useState(0);
   const group = badges.length >= 3;
+  // the parent hands over a new onDone on every render (each frame of play), so the timer reads it from a ref; with it in the effect's
+  // list the timer restarted every render and the toast sat over Menu and Dot for a whole stage
+  const done = useRef(onDone);
+  done.current = onDone;
   useEffect(() => {
     setI(0);
   }, [badges]);
@@ -18,12 +22,12 @@ export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = 
     const t = window.setTimeout(
       () => {
         if (!group && i + 1 < badges.length) setI(i + 1);
-        else onDone();
+        else done.current();
       },
       group ? 4200 : 2600,
     );
     return () => window.clearTimeout(t);
-  }, [badges, i, group, onDone]);
+  }, [badges, i, group]);
 
   if (group) {
     const names = badges.slice(0, 3).map((b) => b.name).join(', ');

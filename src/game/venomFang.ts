@@ -20,6 +20,8 @@ export const VF = {
   S: 0.68,
   /** the head's front stops this far short of the far fence (room to stand in front of it) */
   inset: 12,
+  /** the rear-back at the start of the wind-up (s): the head draws up and back, hissing */
+  rear: 0.6,
   /** the lunge (s): the dive and the slide along the floor */
   act: 0.75,
   /** the head dives from its reared height to the floor in this share of the lunge, then slides */
@@ -77,10 +79,10 @@ function raised(time: number, lift = 0): { x: number; y: number } {
   const c = coilCut('calm');
   return { x: c.x + 10 + Math.sin(time * 1.3) * 6, y: -262 - lift + Math.sin(time * 1.9) * 5 };
 }
-/** reared back for the lunge */
+/** reared back for the lunge (drawn well up and back, so the wind-up reads on a phone: QA saw "no rear-back" at 44 / 288) */
 function reared(): { x: number; y: number } {
   const c = coilCut('calm');
-  return { x: c.x - 44, y: -288 };
+  return { x: c.x - 84, y: -322 };
 }
 
 /** where the head's front ends up after a lunge (world x), for a boss at bx facing f in an arena */
@@ -162,13 +164,14 @@ export function venomPose(b: BossEntity, floor: number, time: number): VenomPose
     jy = c.y - 30;
   } else if (lunging && st === 'tell') {
     head = 'hiss';
-    const u = Math.min(1, t / 0.5);
+    // (the rear-back takes 0.6 s, so it reads as a wind-up: bossTells.test.ts)
+    const u = Math.min(1, t / VF.rear);
     const r = raised(time);
     const rr = reared();
     jx = lerp(r.x, rr.x, ease(u));
     jy = lerp(r.y, rr.y, ease(u));
     shake = 2 + 3 * u;
-    warn = Math.min(1, t / 0.35);
+    warn = Math.min(1, t / 0.3);
   } else if (lunging && st === 'act') {
     head = 'strike';
     const u = Math.min(1, t / VF.act);

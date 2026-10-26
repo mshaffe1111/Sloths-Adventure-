@@ -75,6 +75,8 @@ export interface StageHint {
   belowY?: number;
   /** only when Pokey is this high or higher (a climbing stage: the hint waits for his height, not his x) */
   aboveY?: number;
+  /** only while Pokey is left of this x (a line about something he has already gone by is not said late, from further on) */
+  beforeX?: number;
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }
@@ -3360,6 +3362,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   const nests: Nest[] = [];
   /** where he stands now, and which way the climb is heading across the tree */
   let cur: Platform;
+  /** the one trunk up from the floor (4-6 marks the way back to it) */
+  let firstTrunkX = 0;
   let dir: 1 | -1 = 1;
   /** a trunk up from `cur` (near its end on the way he is heading), to a branch growing out to the right of it */
   const climb = (h0: number, flowers = 3) => {
@@ -3430,7 +3434,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     else if (mist) hint('Up toward the eagle nests, above the mist! Slide up a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb', 'Up toward the eagle nests, above the mist! Hold up on a trunk to climb');
     else if (cliff) hint('The ledge broke away! Climb back up. Slide up a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb', 'The ledge broke away! Climb back up. Hold up on a trunk to climb');
     else hint('Slide up on the trunk to climb', 'Hold up on the trunk to climb', 'Hold up on the trunk to climb');
-    climb(Math.round(R.r(280, 320)), 4);
+    firstTrunkX = climb(Math.round(R.r(280, 320)), 4);
     row(cur.x + 80, cur.x + cur.width - 30, cur.y - 34, 2, 'hibiscus');
     climb(Math.round(R.r(260, 300)), 3);
     flag();
@@ -3438,7 +3442,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
 
   // ---- Test: across and up, rope, branch and trunk, back and forth; a side trunk with a hollow
   beat('Test: zigzag up', () => {
-    hint('Jump up to the rope, then slide along it', 'Jump up to the rope, then hold the way to go', 'Jump up to the rope, then hold the way to go', cur.y + 10);
+    if (mist) hint('A rope! Stand by its post and jump straight up to grab it, then slide the way to go', 'A rope! Stand by its post and jump straight up to grab it, then hold the way to go', 'A rope! Stand by its post and jump straight up to grab it, then hold the way to go', cur.y + 10);
+    else hint('Jump up to the rope, then slide along it', 'Jump up to the rope, then hold the way to go', 'Jump up to the rope, then hold the way to go', cur.y + 10);
     rope(Math.round(R.r(390, 440)), Math.round(R.r(300, 360)));
     climb(Math.round(R.r(270, 320)));
     // (a long branch: the side trunk stands at its near end, the way on at its far end)
@@ -3668,8 +3673,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     if (first) hint('A ledge to stop on, halfway up! Stand still on it too, and the mist above settles', 'A ledge to stop on, halfway up! Stand still on it too, and the mist above settles', 'A ledge to stop on, halfway up! Stand still on it too, and the mist above settles', mid.y + 10);
     const high = hiddenSteps(cm, mid.y, nHigh, rise);
     const top = overColumn(high.last, cm, rise);
+    // (anywhere on the ledge halfway settles the upper mist: the whole ledge glows, w4Play drawSettleGlow)
     mistSpots.push({
-      kind: 'mist', x0: cm - 60, x1: cm + 60, y: mid.y, fill: MIST_FILL, hides: [...high.ids, top.id],
+      kind: 'mist', x0: mid.x + 12, x1: mid.x + mid.width - 12, y: mid.y, fill: MIST_FILL, hides: [...high.ids, top.id],
       area: { top: top.y - 30, bottom: mid.y + 40 },
       view: { x: cm, y: Math.round((mid.y + top.y) / 2) },
     });
@@ -3864,6 +3870,29 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     }
   }
 
+  // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
+  // a knot of wood stands at each such end, a little wall, so he cannot walk off into a ten-second fall (he can still hop over it). And
+  // a trail of petals along the floor leads back to the one trunk that climbs up from it.
+  if (mist) {
+    const LIP = { w: 18, h: 56, drop: 600 };
+    const dropAt = (p: Platform, x: number) => {
+      const under = P.filter((q) => q !== p && q.y > p.y && q.x <= x + 19 && q.x + q.width >= x - 19);
+      return under.length ? Math.min(...under.map((q) => q.y)) - p.y : Infinity;
+    };
+    for (const p of [...P]) {
+      if (p === P[0] || p.height !== 24 || p.width < 150) continue;
+      for (const side of [-1, 1] as const) {
+        const end = side < 0 ? p.x : p.x + p.width;
+        // (and at an end where a rope's post stands: walking up to the post he used to run past it and off the end, 44 px on, before
+        // he could jump up to the rope; the knot stops him at the post. Hanging, he passes over it, and he steps off the rope beyond it)
+        const post = ROPES.some((q) => (side > 0 ? Math.abs(q.x0 + 44 - end) < 2 : Math.abs(q.x1 - 44 - end) < 2) && Math.abs(q.g0 - p.y) < 2);
+        if (!post && Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < LIP.drop) continue;
+        P.push({ id: pid++, x: side < 0 ? end : end - LIP.w, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true });
+      }
+    }
+    for (let x = firstTrunkX + 260; x < W - KAPOK_MARGIN - 60; x += 300) flower(x, P[0].y - 34, 'hibiscus');
+  }
+
   const shift = 400 - crown.y;
   for (const r of rocks) { r.top += shift; r.land += shift; }
   if (spot) spot.y += shift;
@@ -3914,7 +3943,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     proto: {
       hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}),
       ...(cliff ? { w4: { rocks, patience: spot ? [spot] : [] } } : {}),
-      ...(mist ? { w4: { patience: mistSpots, nests } } : {}),
+      ...(mist ? { w4: { patience: mistSpots, nests, floor: { y: floorY, trunkX: firstTrunkX } } } : {}),
     },
   };
 }

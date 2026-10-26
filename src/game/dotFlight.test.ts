@@ -132,3 +132,124 @@ test('every roll of the stage can be flown to the folded-letter gap (16 seeds, h
     assert.ok(r.d.y < MIST);
   }
 });
+
+// ---- QA, 2026-10-25: the lesson is safe, the thorned holes take a flap, she drinks anywhere in the bloom ----
+
+const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
+
+test('nothing can hurt her before the flap and the hover are taught: the catch net is under the lesson (16 seeds, five ways to play it)', () => {
+  const scripts: Array<[string, (t: number) => Partial<FlightInput>]> = [
+    ['holding right only', () => ({ right: true })],
+    ['holding left, then right', (t) => (t < 4 ? { left: true } : { right: true })],
+    ['right with a flick now and then', (t) => ({ right: true, jumpPressed: Math.floor(t * 30) % 20 === 0 })],
+    ['right with taps', (t) => ({ right: true, punchPressed: Math.floor(t * 30) % 9 === 0 })],
+    ['right, the thumb kept down after a flick', (t) => ({ right: true, jumpPressed: Math.floor(t * 30) % 45 === 0, jumpHeld: true })],
+  ];
+  for (const seed of SEEDS) {
+    const st = buildDotStage(seed);
+    const flapAt = st.hints.find((h) => /flap/i.test(h.text))!.x;
+    const hoverAt = st.hints.find((h) => /hover/i.test(h.text))!.x;
+    const net = st.panels.find((p) => p.catch)!;
+    assert.ok(net && net.x + net.w > Math.max(flapAt, hoverAt) + 200, `seed ${seed}: the catch net ends at ${net?.x + net?.w}`);
+    for (const [name, inp] of scripts) {
+      const d = new DotFlight(st);
+      for (let t = 0; t < 50 && d.x < net.x + net.w; t += 1 / 30) {
+        const ev = d.step(1 / 30, input(inp(t)));
+        const bad = ev.find((e) => e.k === 'hurt' || e.k === 'mist');
+        assert.ok(!bad, `seed ${seed}, ${name}: ${bad?.k} at x ${Math.round(d.x)}, ${t.toFixed(1)} s in`);
+      }
+      assert.ok(d.y < MIST - 40, `seed ${seed}, ${name}: she got down to ${Math.round(d.y)}`);
+    }
+    // and the first line teaches the flap as well as the flying
+    assert.ok(/flap/i.test(st.hints[0].text) && /left or right/i.test(st.hints[0].text));
+  }
+});
+
+test('every hole with thorns along its edges: one flap from its middle, or two taps of hover, goes through without a scratch (16 seeds, her real flight)', () => {
+  let n = 0;
+  for (const seed of SEEDS) {
+    const st = buildDotStage(seed);
+    for (const w of st.walls) {
+      const edge = st.thorns.filter((t) => Math.min(t.x0, t.x1) < w.x + w.w && Math.max(t.x0, t.x1) > w.x && Math.abs(t.y0 - t.y1) < 20);
+      if (edge.length < 2) continue;
+      n++;
+      const o = w.openings[0];
+      const mid = o.y + o.h / 2;
+      const flapAt = (at: number): [string, (x: number, t: number) => Partial<FlightInput>] => {
+        let done = false;
+        return [
+          `a flap at ${Math.round(at)}`,
+          (x) => {
+            const p = !done && x >= w.x + at;
+            if (p) done = true;
+            return { right: true, jumpPressed: p };
+          },
+        ];
+      };
+      let since = -1;
+      const tries: Array<[string, (x: number, t: number) => Partial<FlightInput>]> = [
+        ...[-70, -30, 10, w.w / 2].map(flapAt),
+        // a tap as she gets to the thorns' ends, and another as that hover runs out
+        ['taps every half second', (x) => {
+          if (x >= w.x - 70) since++;
+          return { right: true, punchPressed: since >= 0 && since % 15 === 0 };
+        }],
+      ];
+      for (const [name, inp] of tries) {
+        const d = new DotFlight(st);
+        d.x = w.x - 130;
+        d.y = mid;
+        d.waiting = false;
+        let t = 0;
+        while (d.x < w.x + w.w + 70 && t < 6) {
+          const ev = d.step(1 / 30, input(inp(d.x, t)));
+          t += 1 / 30;
+          assert.ok(!ev.some((e) => e.k === 'hurt'), `seed ${seed}, wall ${w.id} (hole ${o.h} px), ${name}: scratched at y ${Math.round(d.y)} (hole ${o.y}..${o.y + o.h})`);
+        }
+        assert.ok(d.x >= w.x + w.w + 70, `seed ${seed}, wall ${w.id}, ${name}: stuck at ${Math.round(d.x)}, ${Math.round(d.y)}`);
+      }
+    }
+  }
+  assert.ok(n >= 16, `${n} thorned holes`);
+});
+
+test("she drinks anywhere in a flower's bloom and just under it, hovering, but not far down its stalk", () => {
+  for (const kind of ['heli', 'fuchsia', 'trumpet', 'passion', 'blue'] as const) {
+    const at = (dx: number, dy: number) => {
+      const st = sky();
+      st.flowers = [{ id: 1, x: 420, y: 500, kind, face: -1, stalk: true }];
+      const d = new DotFlight(st);
+      d.waiting = false;
+      d.energy = 20;
+      d.x = 420 + dx;
+      d.y = 500 + dy;
+      let n = 0;
+      run(d, 0.5, () => input({ punchPressed: n++ % 12 === 0 }));
+      return d.energy;
+    };
+    for (const [dx, dy] of [[0, 0], [-40, 0], [40, 0], [0, -30], [0, 25], [-30, 20]]) assert.ok(at(dx, dy) > 60, `${kind}: no drink at ${dx}, ${dy}`);
+    assert.ok(at(0, 260) < 20, `${kind}: drinks far down the stalk`);
+  }
+  // the blue flower: hovering just under its head, beside the stalk, drinks (QA: she tapped there until empty and sank)
+  const st = sky();
+  st.flowers = [{ id: 1, x: 420, y: 500, kind: 'blue', face: -1, stalk: true }];
+  const d = new DotFlight(st);
+  d.waiting = false;
+  d.energy = 10;
+  d.x = 400;
+  d.y = 590;
+  let k = 0;
+  run(d, 0.6, () => input({ punchPressed: k++ % 12 === 0 }));
+  assert.ok(d.energy > 60, `energy ${d.energy}`);
+});
+
+test('the scratch tally is the whole flight: coming back at a flower keeps it', () => {
+  const st = sky();
+  st.thorns = [{ id: 1, x0: 460, y0: 400, x1: 460, y1: 600 }];
+  const d = new DotFlight(st);
+  for (let k = 0; k < 30 && d.scratches === 0; k++) d.step(1 / 30, input({ right: true, punchPressed: true }));
+  assert.equal(d.scratches, 1);
+  d.respawn();
+  assert.equal(d.scratches, 1);
+  assert.ok(d.invuln > 0);
+});

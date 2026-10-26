@@ -32,6 +32,8 @@ export class InputEngine {
   public kickNear = true;
   /** the engine says he is climbing a trunk or swinging on a vine (the refined touch rules climb there instead of jumping) */
   public onVine = false;
+  /** the engine says he is on a swinging vine (not a trunk): a quick sideways flick there lets go and leaps that way */
+  public onSwing = false;
   /** the engine says, every frame: a mega punch can start (it is not cooling down), so a held thumb only announces one that will happen */
   public megaReady = true;
   private jumpBufferTimer = 0;
@@ -42,6 +44,16 @@ export class InputEngine {
   private isDestroyed = false;
   /** the touch recogniser registers here so a blur or a hidden page also cancels its fingers */
   public onFocusLost: (() => void) | null = null;
+  /** the touch recogniser registers here too: when the game drops every held input (a new stage), it forgets its fingers with it */
+  public onCleared: (() => void) | null = null;
+  /**
+   * counts the player's fresh inputs (a key going down or up, a touch decision, a pad change). The engine reads it to know a press is new:
+   * the pause after a respawn ignores only a direction held from before it, never a new touch (testers' first touch after a respawn
+   * was eaten).
+   */
+  public moves = 0;
+  /** what resume() put back as held (carry): taken away again at the first fresh input */
+  private carried: { jump: boolean; dir: -1 | 0 | 1 } | null = null;
   private padPrev = { left: false, right: false, up: false, down: false, punch: false, kick: false, mega: false };
   private touchUpAt = 0;
   private upReleaseTimer: number | undefined;
@@ -66,6 +78,7 @@ export class InputEngine {
     }
     // holding a key makes the browser repeat it: only the first press counts (or a held jump would double-jump and bunny-hop)
     if (e.repeat) return;
+    this.fresh();
     this.source = 'keys';
 
     if (key === 'ArrowLeft' || key === 'KeyA') {
@@ -116,6 +129,7 @@ export class InputEngine {
 
   private handleKeyUp = (e: KeyboardEvent) => {
     const key = e.code;
+    this.fresh();
     if (key === 'ArrowLeft' || key === 'KeyA') this.state.left = false;
     if (key === 'ArrowRight' || key === 'KeyD') this.state.right = false;
     if (key === 'ArrowUp' || key === 'KeyW' || key === 'Space') {
@@ -137,7 +151,40 @@ export class InputEngine {
     }
   };
 
+  /** a fresh input from the player: count it, and give back anything resume() was holding for him */
+  private fresh() {
+    this.moves++;
+    this.dropCarry();
+  }
+
+  /**
+   * After a pause in mid-air: hold Jump and the steering the way they were the moment before (the thumb left the glass to press a
+   * button), so a glide or a jump carries on instead of ending. The first fresh input, or the engine once he lands, takes it back.
+   */
+  public carry(jump: boolean, dir: -1 | 0 | 1) {
+    this.dropCarry();
+    if (!jump && !dir) return;
+    this.carried = { jump, dir };
+    if (jump) this.state.jumpHeld = true;
+    if (dir) {
+      this.state.left = dir < 0;
+      this.state.right = dir > 0;
+    }
+  }
+  public dropCarry() {
+    const c = this.carried;
+    if (!c) return;
+    this.carried = null;
+    if (c.jump) this.state.jumpHeld = false;
+    if (c.dir < 0) this.state.left = false;
+    if (c.dir > 0) this.state.right = false;
+  }
+  public get carrying(): boolean {
+    return !!this.carried;
+  }
+
   public clearAll() {
+    this.carried = null;
     this.state.left = false;
     this.state.right = false;
     this.state.up = false;
@@ -157,6 +204,7 @@ export class InputEngine {
     this.punchBufferTimer = 0;
     this.kickBufferTimer = 0;
     this.megaBufferTimer = 0;
+    this.onCleared?.();
   }
 
   /**
@@ -165,6 +213,7 @@ export class InputEngine {
    * - Slide finger left to move left
    */
   public triggerTouchMove(direction: 'left' | 'right' | 'none') {
+    this.fresh();
     if (direction === 'left') {
       this.state.left = true;
       this.state.right = false;
@@ -183,6 +232,7 @@ export class InputEngine {
    * - Double jump pressing up twice
    */
   public triggerTouchUp() {
+    this.fresh();
     if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
     this.upReleaseTimer = undefined;
     this.touchUpAt = performance.now();
@@ -194,6 +244,7 @@ export class InputEngine {
 
   /** climbing on a vine or trunk by touch: hold up or down with no jump (refined controls) */
   public triggerTouchClimb(dir: -1 | 0 | 1) {
+    this.fresh();
     this.state.up = dir < 0;
     this.state.down = dir > 0;
   }
@@ -220,6 +271,7 @@ export class InputEngine {
    * - Press down duck
    */
   public triggerTouchDuck(ducking: boolean) {
+    this.fresh();
     this.state.down = ducking;
   }
 
@@ -228,6 +280,7 @@ export class InputEngine {
    * - Tap to punch
    */
   public triggerTouchPunch() {
+    this.fresh();
     this.state.punchPressed = true;
     this.punchBufferTimer = 0.12;
   }
@@ -237,6 +290,7 @@ export class InputEngine {
    * - Double tap to kick
    */
   public triggerTouchKick(dir: number = 0) {
+    this.fresh();
     this.state.kickDir = dir;
     this.state.kickPressed = true;
     this.kickBufferTimer = 0.14;
@@ -247,6 +301,7 @@ export class InputEngine {
    * - Hold to mega punch
    */
   public triggerTouchMega() {
+    this.fresh();
     this.state.megaPunchPressed = true;
     this.megaBufferTimer = 0.14;
   }
@@ -282,6 +337,7 @@ export class InputEngine {
           if (gp.buttons[4]?.pressed || gp.buttons[5]?.pressed || gp.buttons[6]?.pressed || gp.buttons[7]?.pressed) now.mega = true;
         }
         const prev = this.padPrev;
+        if ((Object.keys(now) as (keyof typeof now)[]).some((k) => now[k] !== prev[k])) this.fresh();
         if (now.left || now.right || now.up || now.down || now.punch || now.kick || now.mega) this.source = 'pad';
         // directions follow the pad both ways: letting go of the stick lets go of the direction
         if (now.left) this.state.left = true;

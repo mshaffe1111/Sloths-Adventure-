@@ -217,7 +217,7 @@ export const PAGES: JournalPage[] = [
     ...fromLesson('bounce'),
   },
   {
-    id: 'shimmy', chapter: 'climbing', title: 'Shimmy rope', demo: 'shimmy', pose: 'hang', open: { skill: 'shimmy' },
+    id: 'shimmy', chapter: 'climbing', title: 'Shimmy rope', demo: 'shimmy', pose: 'hang', open: { skill: 'shimmy', lesson: ['rope'] },
     where: 'Learned by clearing 1-3', riddle: 'Hand over hand, all the way across.',
     intro: 'Grab a rope and creep across, hand over hand. Ropes stretch over gaps you could never jump.',
     lines: {
