@@ -5,6 +5,9 @@ logscan.py: QA log analysis of the control-test recordings (decoded sessions, as
 
 Reports freezes and choppy frame rates by device, the hardest sections (hurts, lives lost, quits), places players got stuck
 (no progress for over 15 s while touching), and per-player gesture habits (ducks, kicks, jumps per minute).
+From the 2026-10-26 recorder on: memory over a session ('mem'), which atlas sheet a freeze followed ('stall ... after <sheet>'),
+and a count of any other event kinds (err, long, hidden, screen, quality, blank, camjump, blink, jitter, flipflop: see
+tools/playtesters/LOG_EVENTS.md once it lands) with where they happened.
 """
 import json,glob,collections,re,statistics,sys
 D=sys.argv[1]
@@ -12,14 +15,15 @@ secTime=collections.defaultdict(list)   # section -> seconds spent per visit
 secHurt=collections.Counter(); secLife=collections.defaultdict(collections.Counter); secQuit=collections.Counter()
 secVisits=collections.Counter(); stalls=collections.defaultdict(list); fpsBad=collections.defaultdict(list)
 stuck=[]; duckOn=collections.Counter(); kicks=collections.Counter(); mins=collections.Counter(); jumps=collections.Counter()
-hitsAfterSheet=[]
+stallAfter=collections.Counter(); memRuns=[]; other=collections.defaultdict(list)
+KNOWN={'section','hurt','lostLife','quit','stall','fps','mem','checkpoint','sheet','stomp','finish','mix','survey','start','rules','playAgain','difficulty','stuckHelp'}
 for f in sorted(glob.glob(D+'/*.json')):
     s=json.load(open(f)); who=s['player']; dev=s['device'].split(';')[0]+' '+s['device'].split(';')[1].strip().split(' ')[0]
     lines=[l for part in s['parts'] if isinstance(part,list) for l in part]
     lines.sort(key=lambda l:l[1])
     if not lines: continue
     mins[who]+= (lines[-1][1]-lines[0][1])/60000
-    sec=None; secStart=None; lastX=None; lastMoveT=None; touching=0; stuckFrom=None
+    sec=None; secStart=None; lastX=None; lastMoveT=None; touching=0; stuckFrom=None; mem=[]
     for l in lines:
         k,t=l[0],l[1]
         if k=='e':
@@ -33,6 +37,13 @@ for f in sorted(glob.glob(D+'/*.json')):
             elif e=='stall':
                 m=re.match(r'(\d+)ms x(\d+)',d)
                 if m: stalls[dev].append((int(m.group(1)),int(m.group(2)),sec,who))
+                a=re.search(r'after (\S+)',d)
+                if a: stallAfter[re.sub(r'-[A-Za-z0-9_]{8}\.','.',a.group(1))]+=1
+            elif e=='mem':
+                m=re.match(r'([\d.]+)/([\d.]+)\s*MB',d)
+                if m: mem.append((t,float(m.group(1))))
+            elif e not in KNOWN:
+                other[e].append((dev,who,sec,d[:60]))
             elif e=='fps':
                 m=re.match(r'([\d.]+)fps p90 (\d+)ms max (\d+)ms',d)
                 if m and (float(m.group(1))<26 or int(m.group(2))>45): fpsBad[dev].append((float(m.group(1)),int(m.group(2)),int(m.group(3)),sec,who))
@@ -47,10 +58,19 @@ for f in sorted(glob.glob(D+'/*.json')):
                 if stuckFrom and t-stuckFrom[0]>15000 and lastMoveT and lastMoveT>stuckFrom[0]:
                     stuck.append(((t-stuckFrom[0])/1000,sec,who,stuckFrom[1]))
                 lastX=x; stuckFrom=(t,x)
-print('### Freezes (>250 ms) by device: count, at stage start (x<300), mid-stage worst')
+    if len(mem)>=3:
+        span=(mem[-1][0]-mem[0][0])/60000
+        memRuns.append((round((mem[-1][1]-mem[0][1])/max(span,0.1),2),who,dev,round(mem[0][1],1),round(mem[-1][1],1),round(max(v for _,v in mem),1),round(span,1)))
+print('### Freezes (>100 ms from 2026-10-26, >250 ms before) by device: count, at stage start (x<300), mid-stage worst')
 for dev,v in stalls.items():
     mid=[a for a in v if a[1]>=300]
     print(f'  {dev:32s} {len(v):3d} total, {len(v)-len(mid):3d} at start, mid-stage {len(mid)}: worst {sorted(mid,reverse=True)[:3]}')
+print('### Freezes that followed an atlas sheet finishing loading:', stallAfter.most_common(10))
+print('### Memory per session (MB per minute of play, start -> end, peak, minutes): climbers first')
+for r in sorted(memRuns,reverse=True)[:12]: print(f'  {r[0]:+6.2f} MB/min  {r[1]:14s} {r[2]:28s} {r[3]} -> {r[4]} MB, peak {r[5]}, {r[6]} min')
+print('### Other events (new recorder kinds): count, where')
+for k,v in sorted(other.items(),key=lambda kv:-len(kv[1])):
+    print(f'  {k:10s} {len(v):4d}  sections {collections.Counter(a[2] for a in v).most_common(4)}  devices {collections.Counter(a[0] for a in v).most_common(3)}  e.g. {v[0][3]!r}')
 print('### Choppy 5-second windows (<26 fps or p90 frame >45 ms) by device')
 for dev,v in fpsBad.items():
     print(f'  {dev:32s} {len(v):3d} windows; sections {collections.Counter(a[3] for a in v).most_common(4)}; worst {sorted(v)[:2]}')
