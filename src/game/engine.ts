@@ -106,7 +106,7 @@ import {
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
 import { drawEntrance, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
 import { drawLairBack, drawLairFront, drawLairObjects, drawLairWorld, lairOwnsScene } from './lairArt.ts';
-import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
+import { EASY_OPEN_MUL, bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { baseScale, bossViewWidth, bossViewX } from './bossCamera.ts';
@@ -2356,6 +2356,7 @@ export class GameEngine {
           sound.playWhoosh();
         },
         tellMul: isEasy() ? 1.3 : 1,
+        openMul: isEasy() && this.bossDef?.openCue ? EASY_OPEN_MUL : 1,
         dropHeart: (x) => {
           const a = this.currentStage.arena;
           if (!a) return;
@@ -2560,7 +2561,15 @@ export class GameEngine {
 
     const prevPhase = b.phase;
     const prevState = br.state;
+    const wasOpen = weakOpen(b, def);
     stepBoss(b, def, c, dt);
+    // the opening begins: a chime, and for a giant with a glowing spot a NOW! over it (a crash already says DIZZY!, CAUGHT! ...), so the
+    // moment is heard and seen wherever the eye is
+    if (def.openCue && !wasOpen && weakOpen(b, def) && b.phase === prevPhase) {
+      sound.playCheckpoint();
+      const wr = def.weak ? weakRect(b, def, c.arena.floor) : null;
+      if (wr && br.state === 'rec') this.addFloatingText('NOW!', wr.x + wr.w / 2, wr.y - 18, '#fde047');
+    }
 
     if (b.phase !== prevPhase) {
       def.onPhase?.(b.phase, b, c);
@@ -3104,7 +3113,7 @@ export class GameEngine {
     if (def?.openCap && b.ai?.state === 'rec' && b.ai.move) {
       const br = b.ai;
       br.d.taken = (br.d.taken ?? 0) + dmg;
-      const rec = def.moves[br.move!]?.rec ?? 0;
+      const rec = (def.moves[br.move!]?.rec ?? 0) * (this.bossCtx?.openMul ?? 1);
       // he has had enough: a moment to see the hit land, then he drags his head away
       if (br.d.taken >= def.openCap) br.t = Math.max(br.t, rec - 0.35);
     }
@@ -3877,7 +3886,11 @@ export class GameEngine {
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
       const arenaWide = this.bossDef?.frameArena && vw >= this.currentStage.arena.right - this.currentStage.arena.left;
-      let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : bossViewX(p.x, bs.x, vw);
+      // (while the weak point glows, frame it rather than his middle: Venom's dazed head lies far from his coils, off a phone held upright)
+      const def = this.bossDef;
+      const wr = def?.openCue && weakOpen(bs, def) ? weakRect(bs, def, this.currentStage.arena.floor) : null;
+      const fx = wr ? wr.x + wr.w / 2 : bs.x;
+      let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : bossViewX(p.x, fx, vw);
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
