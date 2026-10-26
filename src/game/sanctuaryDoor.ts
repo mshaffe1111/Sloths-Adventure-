@@ -330,6 +330,48 @@ function padlock(ctx: CanvasRenderingContext2D) {
   ctx.fill();
 }
 
+/**
+ * The new HUD (beta): a small carved plate under the padlock with how many are still missing ("3 more"), so a sealed door says
+ * why it is shut to a player who never looked up at the counter (HUD spec D, "the goal in the world").
+ */
+let plateN = -1;
+let plateText = '';
+let plateW = 0;
+function missingPlate(ctx: CanvasRenderingContext2D, n: number) {
+  ctx.save();
+  ctx.font = '700 21px Fredoka, sans-serif';
+  // (the words and their width only change with the number, so nothing new is made each frame)
+  if (n !== plateN) {
+    plateN = n;
+    plateText = `${n} more`;
+    plateW = Math.max(62, ctx.measureText(plateText).width + 24);
+  }
+  const text = plateText, w = plateW;
+  const x = 130 - w / 2, y = 222;
+  ctx.fillStyle = '#7a4e26';
+  ctx.strokeStyle = '#3a2414';
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, 31, 8);
+  ctx.fill();
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,226,170,.28)';
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(x + 6, y + 5);
+  ctx.lineTo(x + w - 6, y + 5);
+  ctx.stroke();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = '#3a2414';
+  ctx.strokeText(text, 130, y + 16.5);
+  ctx.fillStyle = '#fff3d6';
+  ctx.fillText(text, 130, y + 16.5);
+  ctx.restore();
+}
+
 /** drifting sparkles around an open door */
 function motes(ctx: CanvasRenderingContext2D, time: number) {
   const spots: Array<[number, number, number]> = [[82, 104, 0], [188, 92, 1.7], [104, 40, 3.1], [160, 34, 4.4], [64, 250, 5.2], [130, 150, 2.4], [112, 230, 0.9]];
@@ -348,7 +390,7 @@ function motes(ctx: CanvasRenderingContext2D, time: number) {
  * Draw the door with its ground-centre at the call's origin (translated down by BASE_Y).
  * `locked` = sealed (the stage's goal is not done yet).
  */
-export function drawSanctuaryDoor(ctx: CanvasRenderingContext2D, time: number, locked: boolean) {
+export function drawSanctuaryDoor(ctx: CanvasRenderingContext2D, time: number, locked: boolean, missing?: number) {
   ctx.save();
   ctx.translate(0, BASE_Y);
   ctx.scale(SCALE, SCALE);
@@ -359,6 +401,7 @@ export function drawSanctuaryDoor(ctx: CanvasRenderingContext2D, time: number, l
   frame(ctx, time, locked);
   if (locked) padlock(ctx);
   else motes(ctx, time);
+  if (locked && missing && missing > 0) missingPlate(ctx, missing);
 
   ctx.restore();
 

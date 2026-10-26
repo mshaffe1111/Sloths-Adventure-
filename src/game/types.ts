@@ -375,6 +375,8 @@ export interface Collectible {
   bobPhase: number;
   cageHp?: number;
   isLocked?: boolean;
+  /** the sanctuary door, sealed, with the new HUD (beta): how many of the goal are still missing (the door shows it) */
+  missing?: number;
   /** a story find (note, book or keepsake): which one (see finds.ts) */
   findId?: string;
   /** World 3: one of Grandma's things hidden in a fern (a relic with `hidden`): what it is, for the words when it turns up */

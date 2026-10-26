@@ -20,13 +20,36 @@ interface BossHudProps {
   heroMaxHp: number;
   /** the world's accent colour for the bar */
   accent?: string;
+  /**
+   * the new HUD (beta, newLook): the bar hangs on the vine with the world's colour, Pokey's hearts stay in their corner (not drawn
+   * here), and the name shrinks to fit before it is cut short
+   */
+  vine?: boolean;
+  /** short landscape (new HUD): "N hits left" becomes N with a little fist */
+  compact?: boolean;
+}
+
+/** the boss name shrinks (down to 14 px) until it fits on its line, before the ellipsis has to cut it */
+function useFitName(name: string, on: boolean) {
+  const ref = React.useRef<HTMLSpanElement>(null);
+  React.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!on || !el) return;
+    el.style.fontSize = '';
+    let size = parseFloat(getComputedStyle(el).fontSize) || 18;
+    while (size > 14 && el.scrollWidth > el.clientWidth + 1) {
+      size -= 1;
+      el.style.fontSize = `${size}px`;
+    }
+  }, [name, on]);
+  return ref;
 }
 
 /**
  * The boss's plate: name, a bar cut into one segment per hit with a gold notch at each phase change, and Pokey's hearts
  * under it. The segments that were just lost flash white and drain away a moment later, so a hit is felt on the bar.
  */
-export const BossHud: React.FC<BossHudProps> = ({ name, hp, maxHp, phase, hits, heroHp, heroMaxHp, accent = '#fb923c' }) => {
+export const BossHud: React.FC<BossHudProps> = ({ name, hp, maxHp, phase, hits, heroHp, heroMaxHp, accent = '#fb923c', vine = false, compact = false }) => {
   const segs = bossSegmentCount(maxHp, hits);
   const per = maxHp / segs;
   const left = Math.max(0, Math.ceil(hp / per - 1e-6));
@@ -62,15 +85,25 @@ export const BossHud: React.FC<BossHudProps> = ({ name, hp, maxHp, phase, hits, 
   }, [heroHp]);
 
   const lowHero = heroHp <= 1 && heroHp > 0;
+  const nameRef = useFitName(name, vine);
   const notchAt = (r: number) => `${Math.round(r * 1000) / 10}%`;
 
   return (
-    <div className="boss-hud" style={{ ['--boss-accent' as string]: accent }} role="group" aria-label={`${name}: ${left} of ${segs} hits left. You have ${heroHp} of ${heroMaxHp} hearts.`}>
+    <div className={`boss-hud${vine ? ' vine' : ''}`} style={{ ['--boss-accent' as string]: accent }} role="group" aria-label={vine ? `${name}: ${left} of ${segs} hits left.` : `${name}: ${left} of ${segs} hits left. You have ${heroHp} of ${heroMaxHp} hearts.`}>
       <div className="boss-hud-name">
-        <span className="boss-hud-title">{name}</span>
-        <span className="boss-hud-count" aria-hidden="true">
-          {left} {left === 1 ? 'hit' : 'hits'} left
-        </span>
+        <span className="boss-hud-title" ref={nameRef}>{name}</span>
+        {vine && compact ? (
+          <span className="boss-hud-count fist" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+              <path d="M6 10.5V8a2 2 0 0 1 4 0V7a2 2 0 0 1 4 0v.5a2 2 0 0 1 4 0V14a6 6 0 0 1-6 6h-1a5 5 0 0 1-5-5v-2.5a1.5 1.5 0 0 1 3 0" fill="#fbd38d" stroke="#3a2414" strokeWidth="1.8" strokeLinejoin="round" />
+            </svg>
+            {left}
+          </span>
+        ) : (
+          <span className="boss-hud-count" aria-hidden="true">
+            {left} {left === 1 ? 'hit' : 'hits'} left
+          </span>
+        )}
       </div>
       <div className="boss-hud-bar" aria-hidden="true">
         <div className="boss-hud-segs">
@@ -84,7 +117,7 @@ export const BossHud: React.FC<BossHudProps> = ({ name, hp, maxHp, phase, hits, 
         <span className={`boss-notch${phase >= 2 ? ' passed' : ''}`} style={{ left: notchAt(0.7) }} />
         <span className={`boss-notch${phase >= 3 ? ' passed' : ''}`} style={{ left: notchAt(0.35) }} />
       </div>
-      <div className={`boss-hud-hearts${lowHero ? ' danger' : ''}`} role="img" aria-label={`Your health: ${heroHp} of ${heroMaxHp} hearts`}>
+      {!vine && <div className={`boss-hud-hearts${lowHero ? ' danger' : ''}`} role="img" aria-label={`Your health: ${heroHp} of ${heroMaxHp} hearts`}>
         {Array.from({ length: heroMaxHp }).map((_, i) => {
           const full = i < heroHp;
           const fading = !full && i < heroGhost;
@@ -97,7 +130,7 @@ export const BossHud: React.FC<BossHudProps> = ({ name, hp, maxHp, phase, hits, 
             </svg>
           );
         })}
-      </div>
+      </div>}
     </div>
   );
 };

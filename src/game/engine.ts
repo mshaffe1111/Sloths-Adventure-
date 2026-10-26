@@ -126,6 +126,7 @@ import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
+import { newLookOn } from './newLook.ts';
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
 function wayDodgeOn(): boolean {
@@ -228,6 +229,8 @@ export class GameEngine {
   private paintKit = false;
   private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
   private pushSoundT = 0;
+  /** the new HUD and Dot (beta, newLook.ts), fixed for the stage */
+  private newLook = newLookOn();
   /** a hint that rides above Pokey for a few seconds */
   private stageHint: { text: string; life: number } | null = null;
 
@@ -690,6 +693,16 @@ export class GameEngine {
     this.addFloatingText(`FOUND: ${FIND_BY_ID[c.findId ?? '']?.title ?? 'a find'}`, c.x, c.y - 34, '#fde68a');
     // the app stops the stage to show it: that waits until he is standing or holding on, like a lesson card (lessonTick)
     if (c.findId) this.findsWaiting.push(c.findId);
+  }
+
+  /** where Pokey's middle is on the screen, in CSS px (the new HUD flies a pickup from here to its counter); null before the first frame */
+  public heroScreenPoint(): { x: number; y: number } | null {
+    if (!this.viewCssW) return null;
+    const p = this.player;
+    const run = this.dotRun;
+    const wx = run ? run.fl.x : p.x + p.width / 2;
+    const wy = run ? run.fl.y : p.y - 50; // (his drawing stands well above his box: head about 125 up, feet about 10 down)
+    return { x: (wx - this.camera.x) * this.zoom, y: (wy - this.camera.y) * this.zoom };
   }
 
   public pause() {
@@ -2213,7 +2226,8 @@ export class GameEngine {
           markTipHeard(this.currentStage.config.id, gid);
           // (the words fit the goal and the number: stagePlan.ts goalLine)
           const line = goalLine('start', this.currentStage.config.worldIndex, objType, this.currentStage.config.targetCount);
-          if (line) this.guide(line, 4);
+          // (with the new HUD the stage-start goal card says it, so Dot does not: hud/GoalCard.tsx)
+          if (line && !this.newLook) this.guide(line, 4);
         }
       } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
         this.goalSaid.late = true;
@@ -2226,6 +2240,8 @@ export class GameEngine {
     const exitItem = this.collectibles.find((c) => c.type === 'exit_totem');
     if (exitItem) {
       exitItem.isLocked = !isExitUnlocked;
+      // the new HUD (beta): a sealed door shows how many are still missing
+      exitItem.missing = this.newLook && isQuotaType ? Math.max(0, this.currentStage.config.targetCount - currentProgress) : undefined;
     }
 
     if (this.barrierMsgCooldown > 0) this.barrierMsgCooldown -= dt;

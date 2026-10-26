@@ -716,6 +716,9 @@ export default function App() {
     if (screen === 'title') leaveWideMode();
   }, [screen]);
 
+  // the new HUD (beta) flies a pickup from Pokey into its counter
+  const heroPoint = useCallback(() => engineRef.current?.heroScreenPoint() ?? null, []);
+
   const pauseGame = () => {
     engineRef.current?.pause();
     sound.playPause(true);
@@ -1045,6 +1048,8 @@ export default function App() {
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
             lives={lives}
+            heroPoint={heroPoint}
+            runKey={runId}
           />
           {screen === 'playing' && <CoachOverlay step={coachStep} style={coachStyle} />}
           <PerfReadout stageId={activeLevel.id} />
