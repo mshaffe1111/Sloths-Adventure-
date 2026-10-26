@@ -102,7 +102,7 @@ for f in sorted(glob.glob(D+'/*.json')):
     for l in lines:
         if l[0]!='e': continue
         e=l[2]; t=l[1]
-        if e=='look': look=('new' if 'newLook 1' in str(l[3]) else 'old')+(' quiet' if 'quiet' in str(l[3]) else '')
+        if e=='look': look=('old' if 'newLook 0' in str(l[3]) else 'new')  # from v197 the new look is the only one: 'help ...' alone+(' quiet' if 'quiet' in str(l[3]) else '')
         elif e in ('start','playAgain'): close(False,t); cur=None; seen=set()
         elif e=='section':
             d=str(l[3])
