@@ -112,11 +112,12 @@ def figure(a):
     return np.sqrt(((a - np.median(bd, 0)) ** 2).sum(-1)) > 30
 
 
-def clean_start(im, halo=None, shadow=False):
+def clean_start(im, halo=None, shadow=False, rim=False):
     """an edit's lantern glow and ground shadow, painted onto the flat grey, would key as a pale disc and a dark smudge under the feet:
     both are flooded from the open background and painted back to its grey. halo [x0, y0, x1, y1]: the box round the lantern, where a
     lighter, not too bright, not too coloured pixel joined to the grey is glow (the lit glass inside the lantern's dark frame stays);
-    shadow: in the lowest fifth of the figure, a darker neutral pixel joined to the grey is the shadow (dark outlines and fur stay)."""
+    shadow: in the lowest fifth of the figure, a darker neutral pixel joined to the grey is the shadow (dark outlines and fur stay);
+    rim: a pale, nearly grey pixel joined to the grey anywhere is a sticker outline (the dark outline inside it stays)."""
     try:
         from scipy import ndimage
     except ImportError:
@@ -132,6 +133,8 @@ def clean_start(im, halo=None, shadow=False):
         x0, y0, x1, y1 = halo
         inb[y0:y1, x0:x1] = True
         soft |= inb & (lum > bl + 1.5) & (lum < bl + 62) & (sat < 85)
+    if rim:  # a pale "sticker" outline some edits draw round the figure, outside its dark outline
+        soft |= (sat < 45) & (lum > bl + 1.5) & (lum < 240)
     if shadow:
         ys = np.nonzero((np.abs(a - bg).max(-1) > 30).any(1))[0]
         band = np.zeros(lum.shape, bool); band[int(ys.max() - 0.2 * (ys.max() - ys.min())):] = True

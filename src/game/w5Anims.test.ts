@@ -1,7 +1,8 @@
 /**
  * World 5's creature sheets, made ready before World 5 is built (2026-10-26) and not used by any stage yet: the jumping spider's clips
- * (spider-anim.webp), the Tarantula Queen's boss clips (queen-anim.webp), Meeca carving her warnings (meeca-carve.webp) and the pose
- * sheets of the five new creature models. Each sheet's frames lie inside it, it stays under the asset limit, and the clip sheets load
+ * (spider-anim.webp), the Tarantula Queen's boss clips (queen-anim.webp), Meeca carving her warnings (meeca-carve.webp), the pose
+ * sheets of the five new creature models, and Meeca's stage: Lieutenant Pell (pell-anim.webp), the General's soldiers
+ * (soldier-anim.webp) and the blanket (meeca-blanket.webp). Each sheet's frames lie inside it, it stays under the asset limit, and the clip sheets load
  * through the shared creature loader.
  */
 import { test } from 'node:test';
@@ -20,6 +21,9 @@ import { DANGLER_ATLAS_SIZE, DANGLER_ATLAS_URL, DANGLER_FRAMES } from './dangler
 import { SEAMSTRESS_ATLAS_SIZE, SEAMSTRESS_ATLAS_URL, SEAMSTRESS_FRAMES } from './seamstressAtlasData.ts';
 import { MANTIS_ATLAS_SIZE, MANTIS_ATLAS_URL, MANTIS_FRAMES } from './mantisAtlasData.ts';
 import { DOZER_ATLAS_SIZE, DOZER_ATLAS_URL, DOZER_FRAMES } from './dozerAtlasData.ts';
+import { PELL_ANIM, PELL_ANIM_SIZE, PELL_ANIM_UP, PELL_ANIM_URL, PELL_K, PELL_SEQ, PELL_UNITS } from './pellAnimData.ts';
+import { BLANKET_UNITS, MEECA_BLANKET_FRAMES, MEECA_BLANKET_SIZE, MEECA_BLANKET_UP, MEECA_BLANKET_URL } from './meecaBlanketData.ts';
+import { MEECA_UNITS } from './jennifurSprite.ts';
 
 /** width and height of a WebP file, from its header */
 export function webpSize(path: string): { w: number; h: number } {
@@ -106,4 +110,42 @@ test("the new creature models' pose sheets: idle, move, tell, attack, hurt and d
   // the orchid mantis also keeps her concept art's orchid disguise (the model drew her revealed in every take)
   checkSheet('mantis', MANTIS_ATLAS_URL, MANTIS_ATLAS_SIZE, MANTIS_FRAMES, one(MANTIS_FRAMES), [...poses, 'disguise']);
   checkSheet('dozer', DOZER_ATLAS_URL, DOZER_ATLAS_SIZE, DOZER_FRAMES, one(DOZER_FRAMES), poses);
+});
+
+/** each frame's standing height in world units: feet (the anchor, on the ground line) to the top of the frame */
+const heights = (frames: Record<string, AnimFrame>, names: readonly string[], k: number) => names.map((n) => frames[n].ay * k);
+
+/** every frame's anchor sits on the ground line under the figure */
+function anchoredOnGround(name: string, frames: Record<string, AnimFrame>, seqs: Record<string, readonly string[]>) {
+  for (const names of Object.values(seqs)) {
+    for (const n of names) {
+      const f = frames[n];
+      assert.ok(f.ay >= f.h - 3 && f.ay <= f.h + 3, `${name} ${n}: the anchor is on the ground line`);
+      assert.ok(f.ax > 0 && f.ax < f.w, `${name} ${n}: the anchor is under the figure`);
+    }
+  }
+}
+
+test("Lieutenant Pell's sheet (Meeca's stage): march, idle, the turn-and-look-back tell, a gentle catch and the blanket", () => {
+  const want = ['march', 'idle', 'turn', 'lookHold', 'turnBack', 'catch', 'offer'];
+  checkSheet('pell', PELL_ANIM_URL, PELL_ANIM_SIZE, PELL_ANIM, PELL_SEQ, want);
+  for (const s of want) assert.ok(PELL_SEQ[s].length >= 8, `${s} is a real animation (${PELL_SEQ[s].length} frames)`);
+  // the guards' tell is readable: the turn plays at least 0.8 s at 12 fps before he is looking back
+  assert.ok(PELL_SEQ.turn.length / 12 >= 0.8, 'the turn is a readable warning');
+  // he stands about as tall as Meeca, his feet on the ground line
+  assert.ok(Math.abs(PELL_UNITS - MEECA_UNITS) <= 10);
+  for (const h of heights(PELL_ANIM, PELL_SEQ.idle, PELL_K / PELL_ANIM_UP)) assert.ok(Math.abs(h - PELL_UNITS) < 0.15 * PELL_UNITS, `idle stands ${h.toFixed(1)} tall`);
+  anchoredOnGround('pell', PELL_ANIM, PELL_SEQ);
+  const anim = makeCreatureAnim(PELL_ANIM_URL, PELL_ANIM, PELL_SEQ, PELL_ANIM_UP);
+  assert.equal(anim.at('offer', 1), PELL_SEQ.offer[PELL_SEQ.offer.length - 1], 'the offer holds its last frame');
+  assert.equal(anim.loop('march', PELL_SEQ.march.length / 12, 12), PELL_SEQ.march[0], 'the march loops');
+});
+
+test('the blanket stills: the folded blanket and Meeca wrapped in it, at her standard scale', () => {
+  const frames = MEECA_BLANKET_FRAMES;
+  checkSheet('meeca-blanket', MEECA_BLANKET_URL, MEECA_BLANKET_SIZE, frames, { blanket: ['blanket'], meeca: ['meeca_blanket'] }, ['blanket', 'meeca']);
+  // Meeca stands her standard height (stored MEECA_BLANKET_UP times larger); the folded blanket is BLANKET_UNITS wide at that scale
+  assert.ok(Math.abs(frames.meeca_blanket.ay / MEECA_BLANKET_UP - MEECA_STAND_H) < 0.05 * MEECA_STAND_H);
+  const k = MEECA_UNITS / MEECA_STAND_H / MEECA_BLANKET_UP;
+  assert.ok(Math.abs(frames.blanket.w * k - BLANKET_UNITS) < 2);
 });

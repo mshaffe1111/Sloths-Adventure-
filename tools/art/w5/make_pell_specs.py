@@ -144,5 +144,30 @@ def round3():
     print(len(ed), 'edits')
 
 
+# the picked round-3 edits: take 2 of each (plain sloth faces). Soldier A's takes drew a pale sticker outline: "rim" cuts it.
+CLEAN3 = {'w5sa-walk3-2': [600, 480, 900, 820], 'w5sa-stand3-2': [580, 440, 880, 770], 'w5sb-walk3-2': [600, 500, 900, 860],
+          'w5sb-stand3-2': [600, 320, 900, 650]}
+
+
+def round4():
+    """the soldiers' clips from their plain-faced starts: march, idle and look back for each"""
+    cl = []
+    for v in 'ab':
+        who = SOLD.format(**SOLD_FUR[v])
+        c = lambda pic: {'clean': {'halo': CLEAN3[pic], 'shadow': True, 'rim': True}}
+        cl.append(clip(f'w5-soldier{v}-march3-s3', f'stills/w5s{v}-walk3-2.png', M + who + 'marches in place with a slow, steady walking '
+                       'cycle, holding a lantern down at his side that swings gently with each step, a smooth walking cycle' + END, 3)
+                  | c(f'w5s{v}-walk3-2'))
+        cl.append(clip(f'w5-soldier{v}-idle3-s3', f'stills/w5s{v}-stand3-2.png', M + who + 'stands in place holding a lantern, breathing '
+                       'slowly, shifting his weight a little and blinking' + END, 3) | c(f'w5s{v}-stand3-2'))
+        for s in (3, 11):
+            cl.append(clip(f'w5-soldier{v}-look3-s{s}', f'stills/w5s{v}-stand3-2.png', M + who + 'holding a lantern, slowly turns his head and '
+                           'shoulders to look back over his shoulder at something behind him, holds the look, then turns back to face forward'
+                           + END, s) | c(f'w5s{v}-stand3-2'))
+    (G / 'spec-w5pell4-clips.json').write_text(json.dumps({'tag': 'w5pell4', 'script': 'tools/art/w5/w5gpu.py', 'flavor': 'rtx-pro-6000',
+                                                            'motion': MOTION, 'clips': cl}))
+    print(len(cl), 'clips')
+
+
 if __name__ == '__main__':
-    {'--round2': round2, '--round3': round3}.get(next((a for a in sys.argv if a.startswith('--')), ''), round1)()
+    {'--round2': round2, '--round3': round3, '--round4': round4}.get(next((a for a in sys.argv if a.startswith('--')), ''), round1)()
