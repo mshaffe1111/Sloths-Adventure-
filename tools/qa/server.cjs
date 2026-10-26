@@ -108,7 +108,8 @@ async function screenText() {
     const said = [...document.querySelectorAll('[role="img"][aria-label], [role="progressbar"][aria-label]')]
       .filter((el) => el.getAttribute('aria-hidden') !== 'true' && el.getClientRects().length)
       .map((el) => el.getAttribute('aria-label') + (el.getAttribute('role') === 'progressbar' ? ` ${el.getAttribute('aria-valuenow')}%` : ''));
-    return `[game time ${Math.round(performance.now() / 1000)} s] ` + (said.length ? `{${[...new Set(said)].join(' · ')}} ` : '') + [...new Set(t)].slice(0, 40).join(' | ');
+    return `[game time ${Math.round(performance.now() / 1000)} s] ` + (said.length ? `{${[...new Set(said)].join(' · ')}} ` : '') + t.filter((s, i) => s !== t[i - 1]).slice(0, 40).join(' | ');
+    // (only a line repeating the one just before it is dropped: a Set lost the end screen's "HITS TAKEN 14" after "14 foes")
   });
 }
 
