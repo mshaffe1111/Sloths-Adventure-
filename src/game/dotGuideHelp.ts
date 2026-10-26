@@ -78,3 +78,40 @@ export function helpAllows(l: Pick<GuideLine, 'kind' | 'skill'>, help: DotHelp, 
   if ((l.kind === 'teach' || l.kind === 'info') && l.skill) return !seen.has(l.skill);
   return false;
 }
+
+/**
+ * "Skip tips" (Matt, 2026-10-26): Dot's very first tip on a phone carries a button that turns tips off ("Dot's help" to Quiet). It is
+ * offered once per device, on the first tip she gives in a fresh game (nothing taught on this phone yet), and only while the setting is
+ * still Teach me. A player who does not tap it keeps Teach me. Quiet still says the must-know lines (why an exit is locked).
+ */
+const SKIP_KEY = 'sloth_dot_skip_offered';
+/** the words she says when it is tapped (about 2 s) */
+export const SKIP_DONE = 'Tips off. Turn them back on in the Menu.';
+export const SKIP_DONE_MS = 2200;
+
+export function skipOffered(s: Pick<Storage, 'getItem'> | null = store()): boolean {
+  try {
+    return s?.getItem(SKIP_KEY) === '1';
+  } catch {
+    return true;
+  }
+}
+/** does this line, just going up, carry the Skip tips button? (a tip from Dot; not a must-know line, a warning or a story) */
+export function offersSkip(l: Pick<GuideLine, 'kind' | 'who'>, help: DotHelp, seen: ReadonlySet<string>, s: Pick<Storage, 'getItem'> | null = store()): boolean {
+  if (help !== 'teach' || seen.size > 0 || l.who !== 'Dot') return false;
+  if (l.kind !== 'teach' && l.kind !== 'info' && l.kind !== 'goal' && l.kind !== 'struggle') return false;
+  return !skipOffered(s);
+}
+export function markSkipOffered(s: Pick<Storage, 'setItem'> | null = store()): void {
+  try {
+    s?.setItem(SKIP_KEY, '1');
+  } catch {
+    /* ignore */
+  }
+}
+/** the button was tapped: tips off (Quiet) */
+export function skipTips(s: Pick<Storage, 'setItem'> | null = store()): DotHelp {
+  setDotHelp('quiet', s);
+  markSkipOffered(s);
+  return 'quiet';
+}

@@ -94,6 +94,16 @@ export interface GuideView {
   collectibles: readonly GuideCollectible[];
   hazards: readonly GuideThing[];
   bushes: readonly GuideBush[];
+  /** the score pop-ups floating up ("+100 FLOWER!"): Dot keeps off them */
+  popups: readonly GuideThing[];
+  /** a boss's weak spot while it is open (world units; the NOW! marker sits on it): Dot's bubble never covers it */
+  weakOn: boolean;
+  /** the boss's middle (world x), while one is up */
+  bossX: number;
+  weakX: number;
+  weakY: number;
+  weakW: number;
+  weakH: number;
 }
 
 const NONE: readonly never[] = [];
@@ -140,6 +150,13 @@ export function emptyGuideView(): GuideView {
     collectibles: NONE,
     hazards: NONE,
     bushes: NONE,
+    popups: NONE,
+    weakOn: false,
+    bossX: NaN,
+    weakX: 0,
+    weakY: 0,
+    weakW: 0,
+    weakH: 0,
   };
 }
 

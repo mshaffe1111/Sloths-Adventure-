@@ -141,6 +141,8 @@ export function gestureMove(gesture: string | null, topic: TopicId | undefined):
     case 'slide':
       return topic === 'log' ? 'push' : topic === 'vine' || topic === 'rope' ? undefined : 'run';
     case 'flick-up':
+      // (onto a mushroom: the tip is done when he bounces, not on any jump)
+      if (topic === 'mushroom') return 'bounce';
       return topic === 'vine' || topic === 'rope' || topic === 'trunk' ? 'grab' : 'jump';
     case 'double-jump':
       return 'double';

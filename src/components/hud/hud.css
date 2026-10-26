@@ -10,7 +10,7 @@
   background: radial-gradient(ellipse at 18% 0%, rgba(10, 22, 8, .46), rgba(10, 22, 8, .18) 48%, transparent 72%); padding-top: env(safe-area-inset-top, 0px); box-sizing: content-box; }
 
 .vh-thread { position: absolute; width: 2px; background: #4a3218; box-shadow: 0 0 0 .5px rgba(255, 240, 200, .25); }
-.vh-hang { position: absolute; transform-origin: 50% 0; transform: rotate(var(--tilt, 0deg)) scale(var(--s, 1)); transition: transform .38s cubic-bezier(.3, 1.6, .5, 1), filter .3s ease; }
+.vh-hang { position: absolute; transform-origin: 50% 0; transform: rotate(var(--tilt, 0deg)) scale(var(--s, 1)); transition: transform .38s cubic-bezier(.3, 1.6, .5, 1), filter .3s ease, opacity .2s ease; }
 .vh-hang svg, .vh-hang img { display: block; }
 
 /* numbers: warm cream with a dark-brown outline, on a small soft plate so they read on bright scenes (4-D's mist) */
@@ -55,6 +55,23 @@
 .vh-slot:not(.on) > * { filter: brightness(0) opacity(.6) drop-shadow(0 0 1.2px rgba(255, 243, 214, 1)) drop-shadow(0 0 .5px rgba(255, 243, 214, 1)); }
 .vh-slot.on > * { filter: drop-shadow(0 1.5px 0 rgba(30, 15, 5, .6)); }
 .vh-goal.slots.bloom .vh-cplate { transform: scale(1.08); }
+
+/* the painted pieces (painted.tsx), once their sheet has loaded: the log-slice plate, the small number plates, the tendrils */
+.vh-cplate.painted { border: 0; border-radius: 0; background: none; box-shadow: none; isolation: isolate; padding: 0; filter: drop-shadow(0 2px 1.5px rgba(20, 10, 0, .45)); }
+.vh-cplate.painted .vh-plate-art { z-index: -1; }
+.vh-goal.bloom .vh-cplate.painted { box-shadow: none; filter: drop-shadow(0 2px 1.5px rgba(20, 10, 0, .45)) drop-shadow(0 0 9px rgba(255, 220, 120, .6)); }
+.vh-goal.glow .vh-cplate.painted { filter: drop-shadow(0 0 10px #ffe98a) drop-shadow(0 0 3px #fff); }
+.vh-goal.met .vh-cplate.painted { filter: drop-shadow(0 2px 1.5px rgba(20, 10, 0, .45)) drop-shadow(0 0 5px rgba(255, 214, 90, .9)); }
+.vh-tendril { pointer-events: none; }
+/* play shows through: a piece with a pickup, a platform top, an animal or Pokey under it fades (seeThrough.ts); only the Menu takes touches */
+.vh-see:not(.hidden) { opacity: .3 !important; }
+.vh-centre, .vh-menu, .vh-boss { transition: opacity .2s ease; }
+.vh-nplate { position: relative; display: flex; align-items: center; justify-content: center; gap: 3px; box-sizing: border-box; filter: drop-shadow(0 2px 1px rgba(20, 10, 0, .4)); }
+.vh-nplate.lives { padding: 0 4px 1px 14px; }
+.vh-nplate.lives > :first-child { flex: none; }
+.vh-nplate .vh-num { position: static; padding: 0; margin: 0; background: none; -webkit-text-stroke-width: 3.5px; }
+.vh-plate.vh-nplate { padding: 6px 12px 7px 20px; border-radius: 0; background-color: transparent; }
+.vh-menu.painted .vh-menu-leaf { transform: rotate(-4deg); transform-origin: 40% 0; filter: drop-shadow(0 3px 2px rgba(20, 10, 0, .45)); }
 
 /* the distance trail: a thin vine line, Pokey's face moving along it, the sanctuary door at the end */
 .vh-trail-box { position: relative; display: block; }
@@ -117,6 +134,15 @@
 .vh-short .vh-card-big { font-size: 17px; }
 .vh-short .vh-card-pre, .vh-short .vh-card-sub { font-size: 12px; }
 .vh-short .vh-card-label { font-size: 10.5px; }
+/* painted (painted.tsx): the wood-and-parchment card, its words centred on the parchment; the retry version on the goal plate */
+.vh-card.painted { border: 0; border-radius: 0; box-shadow: none; background-color: transparent; justify-content: center; text-align: left; gap: 4px;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, .35)); }
+.vh-card.painted .vh-card-thread { width: 7px; margin-left: -2.5px; margin-bottom: -6px; background-color: transparent; box-shadow: none; }
+.vh-card.painted .vh-card-thread::after { display: none; }
+.vh-card.painted .vh-card-label { color: #7a5230; }
+.vh-card.painted.quick { width: var(--pw) !important; min-width: 0; padding: 0 0 2px; flex-direction: row; justify-content: center; }
+.vh-card.painted.quick .vh-card-big { color: #FFF3D6; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill; text-shadow: 0 2px 0 rgba(30, 15, 5, .45); }
+.vh-short .vh-card.painted.quick .vh-card-big { font-size: 19px; }
 
 /* a boss fight: the bar hangs top centre in the world's colour; the hearts stay in their corner */
 .vh-boss { position: fixed; z-index: 35; }

@@ -8,7 +8,12 @@
  *   - a line on screen keeps the screen for its reading time. Only an urgent line (a danger warning, a must-know rule change) may come in
  *     over it, and the line it interrupted goes back to the front of the queue to be said again in full;
  *   - a move tip ("Flick up into the vine") stays until the move is done, or 20 s; after its reading time it steps aside for a more
- *     important line and comes back later if it is still wanted;
+ *     important line and comes back later. A move tip is never dropped before its move is done: one still waiting stays in the queue
+ *     until he does the move (then it is not needed), and one that hit its 20 s comes back once more later;
+ *   - a move tip for a move already done this stage is not said; one up closes as soon as its move is done;
+ *   - nothing starts while the stage-start goal card is up (the two share the top-centre lane);
+ *   - every line is up for at least 1.5 s, even when its move is done at once or its sender takes it down (QA, v189: "Tap to punch it
+ *     when it's close" closed on the very punch it asked for, before it could be read);
  *   - an info line stays 1.5 s + 0.5 s a word, at least 4 s; nothing closes on a tap (a tap is a punch);
  *   - no line starts while Pokey is in danger, unless it is the danger warning itself;
  *   - a story aside waits 8 s after the last line; anything else waits a short breath.
@@ -18,7 +23,7 @@ import type { GlyphKind } from '../components/GestureGlyph.tsx';
 /** what kind of line: it sets the priority, who may silence it (the "Dot's help" setting) and how it leaves */
 export type GuideKind = 'must' | 'danger' | 'teach' | 'goal' | 'struggle' | 'info' | 'story' | 'journal';
 /** a move a tip asks for: the tip stays until the guide sees it done (dotGuideMoves.ts) */
-export type MoveId = 'run' | 'jump' | 'double' | 'grab' | 'climb' | 'leap' | 'glide' | 'punch' | 'kick' | 'crouch' | 'push';
+export type MoveId = 'run' | 'jump' | 'double' | 'grab' | 'climb' | 'leap' | 'glide' | 'punch' | 'kick' | 'crouch' | 'push' | 'bounce';
 /** the kind of thing a line is about, for the ring and arrow (dotGuideTarget.ts) */
 export type TopicId =
   | 'vine' | 'trunk' | 'rope' | 'log' | 'foe' | 'gap' | 'ledge' | 'petal' | 'cage' | 'bush' | 'fern' | 'mushroom'
@@ -45,6 +50,8 @@ export interface GuideLine {
   next?: GuideLine;
   /** the sender asked for this long on screen (ms); the reading time is the floor */
   ms?: number;
+  /** it goes after this long at most (ms), done or not: a boss fight's lines, which belong to one attack (about 6 s) */
+  capMs?: number;
   /** how long it may wait in the queue before it is old news (ms) */
   waitMs?: number;
   /** where it came from: an engine line can be taken down by the engine ("the moment has passed") */
@@ -79,6 +86,10 @@ export const GUIDE = {
   storyYieldMs: 2000,
   /** a line sent back by an interruption may wait this long to be said again */
   backMs: 30000,
+  /** every line is up at least this long (a move done at once, or a sender taking it down, waits for it) */
+  minShowMs: 1500,
+  /** a boss fight's warning or tip is up at most this long (it belongs to one attack; QA v189: one stayed 20 s of a 26 s fight) */
+  bossLineMs: 6000,
 } as const;
 
 const waitFor = (l: GuideLine) => l.waitMs ?? GUIDE.waitMs[l.kind];
@@ -102,6 +113,8 @@ export function showFor(l: GuideLine): number {
 
 interface Waiting {
   line: GuideLine;
+  /** a move tip: the move counter when it was queued (it waits until the move is done, not for a time); -1 until the first tick */
+  base?: number;
   /** old news after this (a line sent back by an interruption gets a longer wait: it was already said once) */
   until: number;
   /** order of arrival (an interrupted line goes back in front of its priority) */
@@ -121,6 +134,8 @@ export interface TickEnv {
   danger: boolean;
   /** how many times a move has been done in this run of the stage */
   moveCount(m: MoveId): number;
+  /** no line starts at all, not even an urgent one (the stage-start goal card is up: they share the top-centre lane) */
+  hold?: boolean;
 }
 
 export type GuideEvent =
@@ -138,6 +153,10 @@ export class GuideQueue {
   history: GuideLine[] = [];
   /** story asides that have already given way once (they come back once, not over and over) */
   private yielded = new Set<string>();
+  /** move tips that have hit their cap once (they come back once more, not over and over) */
+  private capped = new Set<string>();
+  /** the line on screen was taken down by its sender before its minimum time: it goes when that is up */
+  private clearCur = false;
   /** what happened on the last calls (the view and the tests read it) */
   events: GuideEvent[] = [];
 
@@ -158,18 +177,26 @@ export class GuideQueue {
     if (cur && isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind]) {
       this.events.push({ type: 'end', show: cur, why: 'cut' });
       // (it goes back in front of everything of its own priority, to be said again in full)
-      this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq });
+      this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
       this.cur = null;
       this.begin(line, now, 0);
       return;
     }
-    this.waiting.push({ line, until: now + waitFor(line), seq: ++this.seq });
+    this.waiting.push({ line, until: now + waitFor(line), seq: ++this.seq, base: line.move ? -1 : undefined });
   }
 
-  /** the sender says the moment has passed: take its line down (and any of its waiting lines that match) */
-  clear(match: (l: GuideLine) => boolean, now: number): void {
+  /**
+   * The sender says the moment has passed: take its line down (and any of its waiting lines that match). A line up less than its
+   * minimum time stays until that is up, unless `now` is asked for (the player turned tips off).
+   */
+  clear(match: (l: GuideLine) => boolean, now: number, at = false): void {
     this.waiting = this.waiting.filter((w) => !match(w.line));
     if (this.cur && match(this.cur.line)) {
+      if (!at && now - this.cur.startedAt < GUIDE.minShowMs) {
+        this.clearCur = true;
+        return;
+      }
+      this.clearCur = false;
       this.events.push({ type: 'end', show: this.cur, why: 'cleared' });
       this.cur = null;
       this.endedAt = now;
@@ -180,6 +207,7 @@ export class GuideQueue {
   reset(): void {
     this.waiting = [];
     this.cur = null;
+    this.clearCur = false;
     this.endedAt = -1e9;
   }
 
@@ -200,16 +228,39 @@ export class GuideQueue {
 
   /** run the clock: ends the line on screen when it is done, and starts the next one when it may */
   tick(now: number, env: TickEnv): Showing | null {
-    // old news goes first (a tip for a spot he has long run past)
-    this.waiting = this.waiting.filter((w) => now <= w.until);
+    // old news goes first (a tip for a spot he has long run past). A move tip is not old news until its move is done: it waits for
+    // that, however long, so it is never dropped unseen
+    // A move tip for a move he has already done this stage is not said at all (QA v189: "Flick up again midair" came 21 s after she
+    // had been double jumping)
+    // (the next step of a lesson still comes, in its place)
+    const skipped: GuideLine[] = [];
+    this.waiting = this.waiting.filter((w) => {
+      const m = w.line.move;
+      if (!m) return now <= w.until;
+      if (w.base === undefined || w.base < 0) {
+        if (env.moveCount(m) > 0) {
+          if (w.line.next) skipped.push(w.line.next);
+          return false;
+        }
+        w.base = env.moveCount(m);
+      }
+      return env.moveCount(m) <= w.base;
+    });
+    for (const n of skipped) this.push(n, now);
     const cur = this.cur;
     if (cur) {
       const age = now - cur.startedAt;
       const l = cur.line;
-      let why: 'done' | 'read' | 'cap' | 'yield' | null = null;
-      if (l.move) {
-        if (env.moveCount(l.move) > cur.base) why = 'done';
-        else if (age >= GUIDE.moveCapMs) why = 'cap';
+      let why: 'done' | 'read' | 'cap' | 'yield' | 'cleared' | null = null;
+      const shown = age >= GUIDE.minShowMs;
+      if (this.clearCur) {
+        if (shown) why = 'cleared';
+      } else if (l.capMs !== undefined && age >= Math.max(GUIDE.minShowMs, l.capMs)) {
+        why = 'read';
+      } else if (l.move) {
+        if (env.moveCount(l.move) > cur.base) {
+          if (shown) why = 'done';
+        } else if (age >= GUIDE.moveCapMs) why = 'cap';
         else if (age >= readMs(l.text)) {
           const b = this.best(now);
           if (b && PRIORITY[b.line.kind] > PRIORITY[l.kind]) why = 'yield';
@@ -223,17 +274,24 @@ export class GuideQueue {
       if (!why) return cur;
       this.events.push({ type: 'end', show: cur, why });
       this.cur = null;
+      this.clearCur = false;
       this.endedAt = now;
+      // a move tip that ran out of time without its move comes back once more, later (it waits for the move as any other does)
+      if (why === 'cap' && l.move && !this.capped.has(l.key)) {
+        this.capped.add(l.key);
+        this.waiting.push({ line: l, until: now + GUIDE.backMs, seq: ++this.seq, base: cur.base });
+      }
       // a move tip that stepped aside comes back after the more important line, if it is still wanted then
       if (why === 'yield' && (l.kind !== 'story' || !this.yielded.has(l.key))) {
         this.yielded.add(l.key);
-        this.waiting.push({ line: l, until: now + Math.max(GUIDE.backMs, waitFor(l)), seq: ++this.seq });
+        this.waiting.push({ line: l, until: now + Math.max(GUIDE.backMs, waitFor(l)), seq: ++this.seq, base: l.move ? cur.base : undefined });
       }
     }
     const b = this.best(now);
     if (!b) return null;
     const gap = b.line.kind === 'story' ? GUIDE.storyGapMs : isUrgent(b.line) ? 0 : GUIDE.breathMs;
     if (now - this.endedAt < gap) return null;
+    if (env.hold) return null;
     if (env.danger && !isUrgent(b.line)) return null;
     this.waiting.splice(this.waiting.indexOf(b), 1);
     this.begin(b.line, now, b.line.move ? env.moveCount(b.line.move) : 0);

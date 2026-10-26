@@ -5,9 +5,9 @@ import type { CoachStep } from '../../game/touchCoach.ts';
 import type { ControlStyle } from '../../game/controlPrefs.ts';
 import { lessonDotLine, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, gestureMove, swapLine, targetTopic } from '../../game/dotLines.ts';
-import { GuideQueue, classifyLine, noteSaid, readMs, showFor, type GuideLine, type Showing, type TopicId } from '../../game/dotGuide.ts';
+import { GUIDE, GuideQueue, classifyLine, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
-import { dotHelp, helpAllows, markSkillSeen, seenSkills } from '../../game/dotGuideHelp.ts';
+import { SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markSkillSeen, markSkipOffered, offersSkip, seenSkills, skipTips } from '../../game/dotGuideHelp.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game/dotGuideView.ts';
 import {
   aheadRect,
@@ -18,7 +18,12 @@ import {
   guideSafeArea,
   hoverOrder,
   hoverSpot,
+  landingRects,
+  perchPoseFor,
   placeBubble,
+  popupRects,
+  weakSpotRect,
+  cornerBubble,
   pokeyRect,
   type BubblePlace,
   type Perch,
@@ -30,6 +35,8 @@ import { HURT_WINDOW_MS, dotPresent, dueLine, hidesFern, markShown, wasShown, wa
 import { findForStage, loadFinds } from '../../game/finds.ts';
 import { DOT_ATLAS_SIZE, DOT_ATLAS_URL, DOT_FRAMES, flyFrame, warmDot } from '../../game/dotSprite.ts';
 import { COACH_TEXT } from '../CoachOverlay.tsx';
+import { fadeCovered, measurePieces, type FadePiece } from '../hud/seeThrough.ts';
+import { DOT_PERCH_FRAMES, DOT_PERCH_URL, TAIL_H, TAIL_W, drawBubble, perchArtReady, perchStyle, pieceStyle, ringBox, setPiece, useHudArt, hudArtReady, type PerchPose } from '../hud/painted.tsx';
 import './dotGuide.css';
 
 warmDot();
@@ -84,7 +91,8 @@ const FLY_MS = 600;
 const LEAVE_AFTER_MS = 1600;
 const SPARKS = 7;
 
-type Mode = 'perch' | 'hover' | 'pokey';
+/** perch: on the scenery by the thing; hover: beside Pokey; pokey: his own thought (no Dot); corner: a boss fight, out of the arena's middle */
+type Mode = 'perch' | 'hover' | 'pokey' | 'corner';
 interface Plan {
   mode: Mode;
   /** perch: her feet in the world; hover: her middle on screen */
@@ -158,6 +166,14 @@ class GuideRun {
   touching = 0;
   coachWas: CoachStep = null;
   goalDone = false;
+  /** the line (its n) that carries the Skip tips button, and where the bubble last sat (the "tips off" note goes there) */
+  skipN = -1;
+  /** the move counter, for the queue (made once: no new function each frame) */
+  countMove = (m: MoveId): number => this.moves.count(m);
+  /** when she last landed (ms of play): she says her line from then */
+  landedAt = 0;
+  lastBx = 16;
+  lastBy = 80;
 
   constructor(level: LevelConfig, guideN: number) {
     this.world = level.worldIndex;
@@ -217,7 +233,9 @@ class GuideRun {
       gesture: sw?.line.gesture ?? undefined,
       skill: kind === 'teach' && move ? `move:${move}` : c.skill,
       // (the engine's own time is for its old, longer words: the reading time of the new ones is the floor)
-      ms: sw ? undefined : ms,
+      ms: sw || v.boss ? undefined : ms,
+      // a boss fight's warning or tip goes when its attack ends (the engine says so), or after about 6 s
+      capMs: v.boss && kind !== 'must' ? GUIDE.bossLineMs : undefined,
       next: then,
       source: 'engine',
     });
@@ -251,13 +269,51 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   const arrowA = useRef<SVGPathElement>(null);
   const arrowB = useRef<SVGPathElement>(null);
   const bubRef = useRef<HTMLDivElement>(null);
+  // the painted pieces (hud/painted.tsx), once their sheet has loaded: the 9-slice bubble and its tail, the teal ring and arrow, and
+  // Dot's perched poses. The drawn stand-ins (the CSS bubble, the SVG ring, her old perch frame) until then.
+  const art = useHudArt();
+  const bubArt = useRef<HTMLCanvasElement>(null);
+  const tailRef = useRef<HTMLSpanElement>(null);
+  const pRing = useRef<HTMLSpanElement>(null);
+  const pRingA = useRef<HTMLSpanElement>(null);
+  const pRingB = useRef<HTMLSpanElement>(null);
+  const pArrow = useRef<HTMLSpanElement>(null);
+  const pArrowIn = useRef<HTMLSpanElement>(null);
+  const perchRef = useRef<HTMLDivElement>(null);
+  const toastRef = useRef<HTMLDivElement>(null);
+  const toastArt = useRef<HTMLCanvasElement>(null);
+  const [toast, setToast] = useState<{ x: number; y: number; n: number } | null>(null);
+
+  // Skip tips (her very first tip on this phone): Dot's help goes to Quiet, the rest of this line goes at once, and a short note says
+  // how to turn tips back on. The button swallows its touch: it is never also a punch or a jump.
+  const swallow = (e: React.SyntheticEvent) => e.stopPropagation();
+  const onSkip = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    run.help = skipTips();
+    run.skipN = -1;
+    // (what Quiet would not have said goes too; the locked-exit lines stay)
+    run.queue.clear((l) => !helpAllows(l, 'quiet', run.seen, run.storyOn), run.clock, true);
+    setToast({ x: run.lastBx, y: run.lastBy, n: performance.now() });
+  };
+  useEffect(() => {
+    if (!toast) return;
+    const t = window.setTimeout(() => setToast(null), SKIP_DONE_MS + 300);
+    return () => window.clearTimeout(t);
+  }, [toast]);
+  useLayoutEffect(() => {
+    const el = toastRef.current;
+    if (!toast || !el || !toastArt.current || !art) return;
+    drawBubble(toastArt.current, el.offsetWidth, el.offsetHeight);
+  }, [toast, art]);
 
   // a line from the engine (a stage tip, the goal, the sealed door, a warning); an empty one says the moment has passed
   useEffect(() => {
     if (!guide || guide.n <= run.lastGuide) return;
     run.lastGuide = guide.n;
     if (!guide.text) {
-      run.queue.clear((l) => l.source === 'engine' && l.kind === 'danger', run.clock);
+      // (in a boss fight every line of hers belongs to an attack: its end takes it down)
+      run.queue.clear((l) => l.source === 'engine' && (l.kind === 'danger' || run.view.boss), run.clock);
       return;
     }
     run.engineLine(guide.text, guide.ms);
@@ -320,7 +376,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     run.bw = el.offsetWidth;
     run.bh = el.offsetHeight;
     run.measuredN = show.n;
-  }, [show, run]);
+    // the painted bubble body, drawn once for this line at its size (crisp at the screen's pixel ratio)
+    if (art && bubArt.current) drawBubble(bubArt.current, run.bw, run.bh);
+  }, [show, run, art]);
 
   // the frame loop
   useEffect(() => {
@@ -338,6 +396,23 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     let stylesFor = 0;
     let off = true;
     const v = run.view;
+    // the painted pieces: what is on, and what was last written (so a frame writes only what changed)
+    let pRingOn = false;
+    let pArrowOn = false;
+    let perchOn = false;
+    let ringD = 0;
+    let arrowW = 0;
+    let arrowH = 0;
+    let arrowSet = false;
+    let perchPose = '';
+    let perchK = 0;
+    let tailL = NaN;
+    let tailT = NaN;
+    let tailF = '';
+    let tailFor = -1;
+    // the new HUD's pieces, faded while something he needs is under one (hud/seeThrough.ts): measured every 0.4 s, checked each frame
+    const fades: FadePiece[] = [];
+    let fadesAt = -1e9;
 
     /**
      * The safe area (the HUD's own helper, or the fallback band), plus whatever HUD pieces are on screen right now: the old HUD's glass
@@ -409,6 +484,14 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         p.sy = r.y0 + 10;
         return p;
       }
+      if (v.boss) {
+        // a boss fight: her bubble in a corner band away from the boss, Dot by it (cornerBubble, once the bubble is measured)
+        p.mode = 'corner';
+        p.target = null;
+        p.sx = v.facing > 0 ? 40 : v.cssW - 40;
+        p.sy = safe.rect.y0 + 70;
+        return p;
+      }
       let perch: Perch | null = null;
       if (target && l.topic !== 'controls') perch = choosePerch(v, target, safe);
       if (perch) {
@@ -436,17 +519,52 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
     };
     const spot = { x: 0, y: 0 };
 
+    /** what her bubble must cover least of all: Pokey, and a boss's open weak spot with its NOW! marker */
+    const hardNow = (p?: Plan) => {
+      run.hard.length = 0;
+      run.hard.push(pokeyRect(v, 4));
+      const w = weakSpotRect(v);
+      if (w) run.hard.push(w);
+      // the way forward (the platform tops ahead and the next landing, QA v189: it sat along a pillar's top in 4-2) and her own ring
+      // and the thing it is on
+      landingRects(v, run.hard);
+      const t = p?.target;
+      if (t) {
+        const tx = toScreenX(v, t.x);
+        const ty = toScreenY(v, t.y);
+        const r = Math.max(18, Math.min(40, t.r * v.zoom)) + 22;
+        run.hard.push({ x0: tx - r, y0: ty - r - 16, x1: tx + r, y1: ty + r });
+      }
+    };
+
+    /** a boss fight: the corner band (and her spot beside it) */
+    const placeCorner = (p: Plan) => {
+      hardNow();
+      const c = cornerBubble(v, run.bw, run.bh, safeNow(), run.hard);
+      p.bub = c.bub;
+      p.sx = c.dot.x;
+      p.sy = c.dot.y;
+      p.placedAt = run.clock;
+    };
+
     const placeBub = (p: Plan) => {
       if (!run.bw) return;
+      if (p.mode === 'corner') {
+        placeCorner(p);
+        return;
+      }
       const safe = safeNow();
       spotNow(p, spot);
       const rects = dangerRects(v, run.rects);
       rects.push(pokeyRect(v));
       if (p.mode !== 'perch') rects.push(aheadRect(v));
+      // the landings ahead of him (the block he must jump to) and the score pop-ups
+      landingRects(v, rects);
+      popupRects(v, rects);
       // her middle: a perched Dot stands on her spot, so her middle is a little above it
       const my = p.mode === 'perch' ? spot.y - 22 : spot.y;
       const order = p.mode === 'perch' ? (['above', 'left', 'right', 'below'] as const) : hoverOrder(v);
-      run.hard[0] = pokeyRect(v, 4);
+      hardNow(p);
       p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18);
       if (p.mode === 'perch' && (p.bub.cost ?? 0) > 0) {
         // no room for her bubble beside this perch without covering Pokey, an animal or the HUD: she hovers beside him instead
@@ -511,10 +629,22 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         run.storyOn = waysideEnabled();
       }
       off = false;
+      if (now - fadesAt > 400) {
+        fadesAt = now;
+        measurePieces(document, fades);
+      }
+      fadeCovered(v, fades);
       if (!styles || stylesFor !== v.cssH) {
-        styles = frameStyles(v.cssH < 430 && v.cssW > v.cssH ? 44 : 52);
+        const dotW = v.cssH < 430 && v.cssW > v.cssH ? 44 : 52;
+        styles = frameStyles(dotW);
         stylesFor = v.cssH;
         frameName = '';
+        // (her painted perched poses are at twice her flight sheet's scale: drawn at half, she is the same size sitting as flying)
+        perchK = (dotW / 128) * 0.5;
+        perchPose = '';
+        arrowW = dotW < 52 ? 22 : 26;
+        arrowH = (arrowW * 120) / 96;
+        arrowSet = false;
       }
 
       // the guide's clock: milliseconds of play (it stands still while paused, and holds while he is hurt)
@@ -527,11 +657,18 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       }
 
       // the queue
+      // (no line starts while the stage-start goal card is up: the two share the top-centre lane, QA v189)
+      const cardUp = document.documentElement.dataset.hudCard === '1';
       const danger = !v.flight && (inDanger(v) || v.boss || v.chase);
-      run.queue.tick(run.clock, { danger, moveCount: (m) => run.moves.count(m) });
+      run.queue.tick(run.clock, { danger, hold: cardUp, moveCount: run.countMove });
       for (const ev of run.queue.drain()) {
         if (ev.type === 'start') {
           noteSaid(ev.show.line);
+          // her very first tip on this phone carries the Skip tips button (once per device)
+          if (!v.flight && offersSkip(ev.show.line, run.help, run.seen)) {
+            markSkipOffered();
+            run.skipN = ev.show.n;
+          }
           run.storyMarked = false;
           startLine(ev.show);
           setShow(ev.show);
@@ -568,7 +705,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         run.fromY = run.dsy - (p?.mode === 'perch' && frame ? frame.h / 2 : 0);
       }
       const vis = run.state !== 'away';
-      dotOn = toggle(dotRef.current, 'on', vis, dotOn);
+      // perched, with her painted poses loaded: the posed painting stands in for the sprite
+      const perched = run.state === 'there' && p?.mode === 'perch' && perchArtReady();
+      dotOn = toggle(dotRef.current, 'on', vis && !perched, dotOn);
       if (run.state === 'flying' && p) {
         const u = Math.min(1, (now - run.flyT0) / FLY_MS);
         const k = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
@@ -580,6 +719,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         run.face = spot.x >= run.fromX ? 1 : -1;
         if (u >= 1) {
           run.state = 'there';
+          run.landedAt = run.clock;
           placeBub(p);
         }
       } else if (run.state === 'leaving') {
@@ -615,7 +755,13 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
             const b = p.bub;
             const bx = b ? (p.mode === 'perch' ? spot.x + p.bubDx : b.x) : 0;
             const by = b ? (p.mode === 'perch' ? spot.y + p.bubDy : b.y) : 0;
-            const covered = !!b && bx < pr.x1 && bx + run.bw > pr.x0 && by < pr.y1 && by + run.bh > pr.y0;
+            // (Pokey, the open weak spot, the way ahead, her ring: whatever has come under it since it was placed)
+            let covered = false;
+            if (b) {
+              hardNow(p);
+              for (const h of run.hard) if (bx < h.x1 && bx + run.bw > h.x0 && by < h.y1 && by + run.bh > h.y0) covered = true;
+              if (!covered && pr && bx < pr.x1 && bx + run.bw > pr.x0 && by < pr.y1 && by + run.bh > pr.y0) covered = true;
+            }
             // hovering for want of a perch: one may have come into view since (the camera moves on with him)
             const perch = p.mode === 'hover' && !p.noPerch && p.target && p.topic !== 'controls' && run.clock - run.lastReplan > 1000 ? choosePerch(v, p.target, safeNow()) : null;
             // an animal has walked up to her perch: she moves off it
@@ -640,7 +786,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           }
         }
       }
-      if (p && p.mode !== 'perch' && run.state === 'there' && p.bub && run.clock - p.placedAt > 2000 && cur) {
+      if (p && p.mode === 'hover' && run.state === 'there' && p.bub && run.clock - p.placedAt > 2000 && cur) {
         // hovering: she stays beside him even when he walks on (her bubble moves with her, once, after a settle)
         const h = hoverSpot(v);
         if (Math.abs(h.x - p.sx) > v.cssW * 0.22 || Math.abs(h.y - p.sy) > v.cssH * 0.2) {
@@ -666,6 +812,28 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const oy = sitting ? frame.h - 4 : frame.h / 2;
         dotRef.current.style.transform = `translate3d(${(run.dsx - ox).toFixed(1)}px, ${(run.dsy - oy).toFixed(1)}px, 0)`;
       }
+      const pe = perchRef.current;
+      perchOn = toggle(pe, 'on', perched, perchOn);
+      if (perched && pe) {
+        // her pose: talking while she says it, then pointing at the thing (ahead, up or down); her feet on the same spot in every pose
+        const tg = cur && p?.target ? p.target : null;
+        const tdx = tg ? toScreenX(v, tg.x) - run.dsx : null;
+        const tdy = tg ? toScreenY(v, tg.y) - (run.dsy - 20) : 0;
+        const pose = perchPoseFor(cur ? run.clock - Math.max(cur.startedAt, run.landedAt) : -1, cur ? wordCount(cur.line.text) : 0, !!cur?.line.move, tdx, tdy, now) as PerchPose;
+        if (pose !== perchPose) {
+          perchPose = pose;
+          const ps = perchStyle(pose, perchK);
+          pe.style.width = `${ps.w.toFixed(1)}px`;
+          pe.style.height = `${ps.h.toFixed(1)}px`;
+          pe.style.backgroundSize = ps.size;
+          pe.style.backgroundPosition = ps.pos;
+        }
+        // (painted facing left; mirrored to face right, about her own middle)
+        const f = DOT_PERCH_FRAMES[pose];
+        const flipR = run.face > 0 ? 1 : 0;
+        const fx = flipR ? f.w - f.fx : f.fx;
+        pe.style.transform = `translate3d(${(run.dsx - fx * perchK).toFixed(1)}px, ${(run.dsy + 3 - f.fy * perchK).toFixed(1)}px, 0)${flipR ? ' scaleX(-1)' : ''}`;
+      }
 
       // the sparkle trail she flies in on
       const flying = run.state === 'flying' || run.state === 'leaving';
@@ -688,7 +856,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
 
       // the bubble: placed once she has landed, beside her
       const bub = bubRef.current;
-      const there = run.state === 'there' || (p?.mode === 'pokey' && !!cur);
+      if (p?.mode === 'corner' && cur && !p.bub && run.measuredN === cur.n) placeCorner(p);
+      const there = run.state === 'there' || ((p?.mode === 'pokey' || p?.mode === 'corner') && !!cur);
       if (p?.mode === 'pokey' && cur && !p.bub && run.measuredN === cur.n && v.flight) {
         p.bub = { x: Math.max(16, (v.cssW - run.bw) / 2), y: p.sy, tail: 'b', at: 0 };
       }
@@ -696,7 +865,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         const safe = safeNow();
         const rects = dangerRects(v, run.rects);
         rects.push(pokeyRect(v, 12));
-        run.hard[0] = pokeyRect(v, 4);
+        landingRects(v, rects);
+        popupRects(v, rects);
+        hardNow();
         p.bub = placeBubble(p.sx, p.sy, run.bw, run.bh, safe, rects, ['above', v.facing > 0 ? 'left' : 'right', 'below'], 26, run.hard);
       }
       if (bub && cur && p?.bub && there && run.measuredN === cur.n) {
@@ -706,11 +877,46 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         bx = Math.max(safe.x0, Math.min(safe.x1 - run.bw, bx));
         by = Math.max(safe.y0, Math.min(safe.y1 - run.bh, by));
         bub.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0)`;
+        run.lastBx = bx;
+        run.lastBy = by;
         bubIn = toggle(bub, 'in', true, bubIn);
         // an info line stays fully readable until its last 0.3 s
         const left = cur.line.move ? Infinity : showFor(cur.line) - (run.clock - cur.startedAt);
         bubOut = toggle(bub, 'out', left < 300, bubOut);
-        const tail = bub.querySelector<HTMLElement>('.dg-tail');
+        const pt = tailRef.current;
+        if (pt && tailFor !== cur.n) {
+          tailFor = cur.n;
+          tailF = '';
+        }
+        if (pt) {
+          // the painted tail (it points down-left as painted): along the bottom edge under her, or the top edge when she is above the
+          // bubble; beside her, at the end nearest her. Mirrored to point the other way.
+          const side = p.bub.tail;
+          const up = side === 't' || ((side === 'l' || side === 'r') && run.dsy - 20 < by + run.bh / 2);
+          let right: boolean;
+          let left: number;
+          if (side === 'b' || side === 't') {
+            const at = Math.max(18, Math.min(run.bw - 18, run.dsx - bx));
+            right = at > run.bw / 2;
+            left = right ? at - TAIL_W + 5 : at - 5;
+          } else {
+            right = side === 'r';
+            left = right ? run.bw - TAIL_W - 12 : 12;
+          }
+          left = Math.round(Math.max(10, Math.min(run.bw - TAIL_W - 10, left)));
+          const top = Math.round(up ? -TAIL_H + 2 : run.bh - 2);
+          const fl = p.mode === 'pokey' ? 'none' : `${right ? -1 : 1},${up ? -1 : 1}`;
+          if (left !== tailL || top !== tailT || fl !== tailF) {
+            tailL = left;
+            tailT = top;
+            tailF = fl;
+            pt.style.left = `${left}px`;
+            pt.style.top = `${top}px`;
+            pt.style.display = fl === 'none' ? 'none' : '';
+            pt.style.transform = fl === 'none' ? '' : `scale(${fl})`;
+          }
+        }
+        const tail = pt ? null : bub.querySelector<HTMLElement>('.dg-tail');
         if (tail) {
           tail.className = `dg-tail ${p.bub.tail}`;
           const at = p.bub.tail === 'b' || p.bub.tail === 't' ? Math.max(14, Math.min(run.bw - 30, run.dsx - bx - 8)) : Math.max(12, Math.min(run.bh - 28, run.dsy - 20 - by));
@@ -734,6 +940,56 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       const tsy = tgt0 ? toScreenY(v, tgt0.y) : 0;
       const tgt = tgt0 && tsx > -10 && tsx < v.cssW + 10 && tsy > -10 && tsy < v.cssH + 10 ? tgt0 : null;
       const showRing = !!tgt;
+      // painted: the teal ring and arrow pieces (the SVG ones until the sheet is in)
+      const painted = hudArtReady() && !!pRing.current && !!pArrow.current;
+      if (painted && tgt) {
+        const tx = toScreenX(v, tgt.x);
+        const ty = toScreenY(v, tgt.y);
+        const r = Math.round(Math.max(18, Math.min(40, tgt.r * v.zoom)));
+        const ring = pRing.current!;
+        if (r !== ringD) {
+          ringD = r;
+          const d = ringBox(r);
+          const db = ringBox(r + 7);
+          ring.style.width = `${db.toFixed(1)}px`;
+          ring.style.height = `${db.toFixed(1)}px`;
+          if (pRingA.current) {
+            setPiece(pRingA.current, 'ring', d);
+            pRingA.current.style.left = pRingA.current.style.top = `${((db - d) / 2).toFixed(1)}px`;
+          }
+          if (pRingB.current) setPiece(pRingB.current, 'ringDashed', db);
+        }
+        const db = ringBox(r + 7);
+        ring.style.transform = `translate3d(${(tx - db / 2).toFixed(1)}px, ${(ty - db / 2).toFixed(1)}px, 0)`;
+        // the arrow: just outside the ring on her side of it, pointing in at the thing (above it when she is close, or not perched by it)
+        if (!arrowSet && pArrowIn.current && arrowW > 0) {
+          setPiece(pArrowIn.current, 'arrow', arrowW);
+          pArrow.current!.style.width = `${arrowW}px`;
+          pArrow.current!.style.height = `${arrowH.toFixed(1)}px`;
+          arrowSet = true;
+        }
+        let ux = run.dsx - tx;
+        let uy = run.dsy - (p?.mode === 'perch' ? 20 : 0) - ty;
+        const ul = Math.hypot(ux, uy);
+        if (p?.mode === 'pokey' || ul < r + arrowH + 24) {
+          ux = 0;
+          uy = -1;
+        } else {
+          ux /= ul;
+          uy /= ul;
+        }
+        const ad = r + arrowH * 0.5 + 6;
+        const ang = (Math.atan2(-uy, -ux) * 180) / Math.PI - 90;
+        pArrow.current!.style.transform = `translate3d(${(tx + ux * ad - arrowW / 2).toFixed(1)}px, ${(ty + uy * ad - arrowH / 2).toFixed(1)}px, 0) rotate(${ang.toFixed(1)}deg)`;
+      }
+      pRingOn = toggle(pRing.current, 'on', painted && showRing, pRingOn);
+      pArrowOn = toggle(pArrow.current, 'on', painted && showRing && arrowSet, pArrowOn);
+      if (painted) {
+        // (the SVG stand-ins stay off)
+        arrowOn = toggle(arrowG.current, 'on', false, arrowOn);
+        ringOn = toggle(ringRef.current, 'on', false, ringOn);
+        return;
+      }
       if (tgt && ringA.current && ringB.current) {
         const tx = toScreenX(v, tgt.x);
         const ty = toScreenY(v, tgt.y);
@@ -867,7 +1123,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   const vh = typeof window !== 'undefined' ? window.innerHeight : 400;
   const tag = l?.who === 'Petal' ? null : l?.who;
   return (
-    <div ref={rootRef} className="dg-root" data-off="1" aria-hidden={!l}>
+    <div ref={rootRef} className="dg-root" data-off="1" aria-hidden={!l && !toast}>
       <svg className="dg-fx" aria-hidden="true">
         <defs>
           <marker id="dg-ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
@@ -892,6 +1148,14 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           className="dg-spark"
         />
       ))}
+      <span ref={pRing} className="dg-pring" aria-hidden="true">
+        <span ref={pRingB} className="dg-pring-b" />
+        <span ref={pRingA} className="dg-pring-a" />
+      </span>
+      <span ref={pArrow} className="dg-parrow" aria-hidden="true">
+        <span ref={pArrowIn} className="dg-parrow-in" />
+      </span>
+      <div ref={perchRef} className="dg-perch" style={{ backgroundImage: `url(${DOT_PERCH_URL})` }} />
       <div ref={dotRef} className="dg-dot">
         <div ref={flipRef} style={{ position: 'relative' }}>
           {[1, 2, 0].map((i) => (
@@ -910,14 +1174,40 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         <div
           key={show!.n}
           ref={bubRef}
-          className={`dg-bub ${l.kind === 'story' ? 'story' : ''} ${l.who === 'Petal' ? 'narr' : ''}`}
+          className={`dg-bub ${l.kind === 'story' ? 'story' : ''} ${l.who === 'Petal' ? 'narr' : ''}${art ? ' painted' : ''}`}
           role="status"
           aria-live="polite"
           style={{ maxWidth: bubbleMaxW(vw, vh) }}
         >
+          {art && <canvas ref={bubArt} className="dg-bub-art" aria-hidden="true" />}
+          {art ? <span ref={tailRef} className="dg-ptail" aria-hidden="true" style={pieceStyle('tail', TAIL_W)} /> : <span className="dg-tail b" />}
           {tag && <span className={`dg-tag ${tag === 'Pokey' ? 'pokey' : ''}`}>{tag}</span>}
-          <span className="dg-tail b" />
-          <p>{l.text}</p>
+          <div className="dg-bub-body">
+            <p>{l.text}</p>
+            {run.skipN === show!.n && (
+              <button
+                type="button"
+                className="dg-skip"
+                onClick={onSkip}
+                onPointerDown={swallow}
+                onPointerUp={swallow}
+                onTouchStart={swallow}
+                onTouchEnd={swallow}
+                onMouseDown={swallow}
+                aria-label="Skip tips: Dot only speaks when she must"
+              >
+                <span>Skip tips</span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+      {toast && (
+        <div ref={toastRef} key={toast.n} className={`dg-bub dg-toast${art ? ' painted' : ''}`} role="status" aria-live="polite" style={{ transform: `translate3d(${toast.x.toFixed(1)}px, ${toast.y.toFixed(1)}px, 0)`, maxWidth: bubbleMaxW(vw, vh) }}>
+          {art && <canvas ref={toastArt} className="dg-bub-art" aria-hidden="true" />}
+          <div className="dg-bub-body">
+            <p>{SKIP_DONE}</p>
+          </div>
         </div>
       )}
     </div>

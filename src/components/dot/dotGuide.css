@@ -60,3 +60,42 @@
   .dg-bub.in { animation: none; opacity: 1; }
   .dg-ringg.on .dg-ring, .dg-ringg.on .dg-ring2 { animation: none; }
 }
+
+/* the painted pieces (hud/painted.tsx), once their sheet has loaded */
+/* the bubble: the parchment-and-wood 9-slice drawn into a canvas behind the words, its tail behind that */
+.dg-bub-body { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; position: relative; z-index: 1; }
+.dg-bub.painted { background: none; border: 0; border-radius: 0; box-shadow: none; padding: 15px 18px 13px 17px; isolation: isolate; filter: drop-shadow(0 4px 5px rgba(0, 0, 0, .32)); }
+.dg-bub.painted p { color: #2b1a0c; }
+.dg-bub.painted { padding-top: 19px; }
+.dg-bub.painted .dg-tag { top: -11px; left: 14px; z-index: 2; }
+.dg-bub-art { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.dg-ptail { position: absolute; z-index: -1; display: block; }
+/* her pieces on the thing she teaches: the teal ring (pulsing, the dashed one turning slowly round it) and the arrow (nudging in) */
+.dg-pring, .dg-parrow { position: absolute; left: 0; top: 0; opacity: 0; transition: opacity .25s ease; will-change: transform; pointer-events: none; }
+.dg-pring.on, .dg-parrow.on { opacity: 1; }
+.dg-pring-a, .dg-pring-b, .dg-parrow-in { position: absolute; left: 0; top: 0; display: block; }
+.dg-pring-b { opacity: .55; }
+.dg-pring.on .dg-pring-a { animation: dg-pulse 1.4s ease-in-out infinite; }
+.dg-pring.on .dg-pring-b { animation: dg-spin 9s linear infinite; }
+.dg-parrow.on .dg-parrow-in { animation: dg-nudge .9s ease-in-out infinite; }
+@keyframes dg-nudge { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(2px); } }
+/* Dot perched, in her painted poses (her feet on the same spot in each) */
+.dg-perch { position: absolute; left: 0; top: 0; background-repeat: no-repeat; opacity: 0; will-change: transform; transform-origin: 50% 50%;
+  filter: drop-shadow(0 0 4px rgba(205, 255, 215, .7)) drop-shadow(0 2px 1.5px rgba(20, 10, 0, .4)); }
+.dg-perch.on { opacity: 1; }
+/* Skip tips, on her very first tip: a real button (at least 44 pt), and the short note after it */
+.dg-skip { pointer-events: auto; align-self: flex-end; min-width: 96px; min-height: 44px; margin: -4px -8px -8px 0; padding: 0; border: 0; background: none;
+  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; }
+.dg-skip span { display: inline-block; padding: 6px 13px 7px; border-radius: 13px; font: 700 14px/1 var(--font-heading, system-ui, sans-serif); color: #fff3d6;
+  background: linear-gradient(180deg, #8a5a2c, #5e3a18); border: 2px solid #3a2414; box-shadow: inset 0 1px 0 rgba(255, 230, 190, .35), 0 2px 0 #2a1608; }
+.dg-skip:active span { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255, 230, 190, .35); }
+.dg-skip:focus-visible { outline: 3px solid #ffd65a; outline-offset: 1px; border-radius: 14px; }
+.dg-toast { visibility: visible; animation: dg-toast 2.5s ease both; }
+@keyframes dg-toast { 0% { opacity: 0; scale: .9; } 8% { opacity: 1; scale: 1; } 86% { opacity: 1; } 100% { opacity: 0; } }
+@media (max-height: 430px) and (orientation: landscape) {
+  .dg-bub.painted { padding: 17px 16px 11px 15px; }
+  .dg-skip span { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dg-pring.on .dg-pring-a, .dg-pring.on .dg-pring-b, .dg-parrow.on .dg-parrow-in { animation: none; }
+}
