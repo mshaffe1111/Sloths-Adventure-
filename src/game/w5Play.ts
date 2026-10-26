@@ -11,9 +11,14 @@ import {
   touchesCake, trayAt, W5_TEACH, type ButlerState, type CocoonState, type GateState, type SitState, type W5Extras,
 } from './w5Kit.ts';
 import {
-  drawBlossom, drawButler, drawCake, drawCard, drawCarving, drawChair, drawCocoon, drawDoily, drawFern, drawFlyingTray, drawOrchid,
-  drawSilkOnPokey, drawSilkSheet, drawSteam, drawTeaTable, drawTeapot, drawThread, drawW5Light, drawWrappedChair,
+  carvingBox, drawBlossom, drawButler, drawCake, drawCard, drawCarving, drawChair, drawCocoon, drawDoily, drawFern, drawFlyingTray, drawOrchid,
+  drawPennant, drawPiece, drawPinkBell, drawShrineArt, drawSilkOnPokey, drawSilkSheet, drawSteam, drawTeaTable, drawTeapot, drawThread,
+  drawW5Light, drawWrappedChair, takeAt,
 } from './w5Look.ts';
+import { w5ArtReady, type W5Piece as ArtPiece } from './w5Art.ts';
+import { drawW5Spider, warmW5Butler, warmW5Spider, type ButlerPose } from './w5Creatures.ts';
+import { W5_FRAMES } from './w5PropsData.ts';
+import { drawAura } from './readable.ts';
 import type { Collectible, Enemy, Platform, PlayerState as Player, Vine } from './types.ts';
 
 /** what the engine lends World 5 each frame */
@@ -32,6 +37,8 @@ export interface W5Host {
   hurt(dir: number): void;
   /** a Dot line, once per stage (`key` remembers it) */
   tip(key: string, text: string, seconds: number): void;
+  /** the warning on screen has had its moment (the wrap came): take it down, so the next line need not wait behind it */
+  clearTip?(): void;
   float(text: string, x: number, y: number, color: string): void;
   sfx(kind: 'hum' | 'wrap' | 'cake' | 'puff' | 'tray' | 'free' | 'crack'): void;
   /** a creature freed from a cocoon (a rescue stage counts it) */
@@ -65,6 +72,8 @@ export class W5Play {
   private enemies: Enemy[] = [];
   private player: Player | null = null;
   private clock = 0;
+  /** a line held a moment, to follow the warning it replaces (the wrap's line, after the creep's warning comes down) */
+  private pendingTip: { key: string; text: string; seconds: number; at: number } | null = null;
   /** how drowsy the screen shows him (the engine's drowsy veil) */
   veil = 0;
 
@@ -80,6 +89,11 @@ export class W5Play {
       const pl = o.platformId !== undefined ? platforms.find((q) => q.id === o.platformId) : undefined;
       if (pl) this.orchidPlat.set(i, pl);
     });
+    // the painted props: start the sheet now (stagePreload.ts has usually decoded it already); the stand-ins cover the moment until then
+    w5ArtReady();
+    // and the trained creatures this stage holds (World 5 sheets, let go with the world): the spider's clips, the Butler's poses
+    if (w5.spiders?.length) warmW5Spider();
+    if (w5.butlers?.length) warmW5Butler();
   }
 
   /** everything about him back to fresh (a respawn, or the test harness placing him somewhere new) */
@@ -123,6 +137,11 @@ export class W5Play {
     const p = h.player;
     const w5 = this.w5;
     this.clock = h.t;
+    if (this.pendingTip && h.t >= this.pendingTip.at) {
+      const pt = this.pendingTip;
+      this.pendingTip = null;
+      h.tip(pt.key, pt.text, pt.seconds);
+    }
     this.enemies = h.enemies;
     this.player = p;
     // back at a flag (or placed there): a fresh start, no silk carried over
@@ -165,14 +184,18 @@ export class W5Play {
     if (r.began) h.tip(said(W5_TEACH.sit), W5_TEACH.sit, 4.2);
     if (r.wrapped) {
       h.sfx('wrap');
+      // (the creep's warning comes down, and the wrap's own line follows a beat later: both are urgent, and one sent over the other
+      // would wait behind it until it was old news; the beat lets the screen take the first down before the second arrives)
+      h.clearTip?.();
+      const at = h.t + 0.15;
       if (w5.gentle) {
         // 5-1 teaches it gently: the silk bursts off and Dot wakes him; no heart
         h.float('WAKE UP!', p.x, p.y - 96, '#f5d0fe');
-        h.tip(said(W5_TEACH.wrapGentle), W5_TEACH.wrapGentle, 3.2);
+        this.pendingTip = { key: said(W5_TEACH.wrapGentle), text: W5_TEACH.wrapGentle, seconds: 3.2, at };
       } else {
         h.float('WRAPPED!', p.x, p.y - 96, '#f5d0fe');
         h.hurt(0);
-        h.tip(said(W5_TEACH.wrapped), W5_TEACH.wrapped, 3.6);
+        this.pendingTip = { key: said(W5_TEACH.wrapped), text: W5_TEACH.wrapped, seconds: 3.6, at };
       }
     }
 
@@ -354,7 +377,9 @@ export class W5Play {
       const st = this.butlers[i];
       const tray = trayAt(b, st);
       const bow = st.phase === 'knocked' ? Math.max(0, 1 - st.t / 0.8) : 0;
-      drawButler(ctx, b.x, b.y, b.dir, st.phase === 'knocked' ? { ...tray, out: -1 } : tray, st.cake && st.phase !== 'knocked', t, bow);
+      // his pose: lifting the tray as Pokey comes (the tell), holding it right out (the attack), the tray punched away (hurt, then dazed)
+      const pose: ButlerPose = st.phase === 'offer' ? (st.t < BUTLER.tell ? 'tell' : 'attack') : st.phase === 'knocked' ? (st.t < 0.35 ? 'hurt' : 'defeated') : 'idle';
+      drawButler(ctx, b.x, b.y, b.dir, st.phase === 'knocked' ? { ...tray, out: -1 } : tray, st.cake && st.phase !== 'knocked', t, bow, pose);
     });
     (w5.threads ?? []).forEach((th, i) => {
       if (!vis(th.x0)) return;
@@ -434,10 +459,67 @@ export class W5Play {
   private decor(ctx: CanvasRenderingContext2D, d: { n: string; x: number; b: number; w: number; flip?: boolean }, t: number) {
     if (d.n === 'fern') drawFern(ctx, d.x, d.b, d.w, t);
     else if (d.n === 'blossom' || d.n === 'blossom2') drawBlossom(ctx, d.x, d.b, d.w, t, d.n === 'blossom2' ? 1 : 0);
-    else if (d.n === 'doily') drawDoily(ctx, d.x, d.b - d.w / 2, d.w / 2);
-    else if (d.n === 'wrappedChair') drawWrappedChair(ctx, d.x, d.b, d.w, d.flip);
+    // (a doily on the ground: the painted one laid on its little wooden stool, a cake stand on it)
+    else if (d.n === 'doily') {
+      if (!drawPiece(ctx, 'doilyStool', d.x, d.b + 2, d.w * 1.7, d.flip)) drawDoily(ctx, d.x, d.b - d.w / 2, d.w / 2);
+      else drawPiece(ctx, takeAt(d.x, 2) ? 'cakeTier2' : 'cakeTier', d.x, d.b - d.w * 0.95, d.w * 0.95);
+    } else if (d.n === 'wrappedChair') drawWrappedChair(ctx, d.x, d.b, d.w, d.flip);
     else if (d.n === 'wrappedStool') drawWrappedChair(ctx, d.x, d.b, d.w, d.flip, true);
-    else if (d.n === 'cocoon') drawCocoon(ctx, d.x, d.b, 0, 0, false, t);
+    // (lying in the grass: the painted cocoon, wrapped, or burst open once someone got out)
+    else if (d.n === 'cocoon') {
+      if (!drawPiece(ctx, 'cocoonWrapped', d.x, d.b + 2, d.w, d.flip)) drawCocoon(ctx, d.x, d.b, 0, 0, false, t);
+    } else if (d.n in W5_FRAMES) drawPiece(ctx, d.n as ArtPiece, d.x, d.b, d.w, d.flip);
+  }
+
+  /**
+   * World 5's own look for a pickup the engine would draw plainly: Pell's note on its pink bell, and the exit as the painted totem. True
+   * when it drew (the engine then skips its own); false leaves the engine's (a sealed exit, a hidden find, or the sheet still loading).
+   */
+  drawItem(ctx: CanvasRenderingContext2D, c: Collectible, t: number, world: number): boolean {
+    if (c.collected) return false;
+    if (c.type === 'find' && !c.hidden) return drawPinkBell(ctx, c.x, c.y + 26, t, c.id);
+    if (c.type === 'exit_totem' && !c.isLocked && w5ArtReady()) {
+      ctx.save();
+      ctx.translate(c.x, c.y - 100);
+      drawAura(ctx, 'take', world, 58, 104, t, 0, 1);
+      ctx.restore();
+      return drawShrineArt(ctx, c.x, c.y + 30, t, false);
+    }
+    return false;
+  }
+
+  /**
+   * A World 5 jumping spider from its trained clips (w5Creatures.ts), crouching through its warning before it rushes. False for a spider
+   * that is not World 5's, or a pose the clips do not hold: the engine then draws the painted stills or the vector spider.
+   */
+  drawSpider(ctx: CanvasRenderingContext2D, e: Enemy, t: number, playerX: number): boolean {
+    const g = this.gates.get(e.id);
+    if (!g) return false;
+    return drawW5Spider(ctx, e, t, playerX, g.phase === 'windup' ? Math.min(1, g.t / 0.7) : null);
+  }
+
+  /** a checkpoint as the painted lace pennant (its pole's foot at the flag's spot); false leaves the engine's plain flag */
+  drawFlag(ctx: CanvasRenderingContext2D, cp: { x: number; y: number; reached: boolean }, t: number, world: number): boolean {
+    if (!w5ArtReady()) return false;
+    if (!cp.reached) {
+      ctx.save();
+      ctx.translate(cp.x + 20, cp.y - 52);
+      drawAura(ctx, 'take', world, 30, 40, t, cp.x * 0.01);
+      ctx.restore();
+    }
+    return drawPennant(ctx, cp.x, cp.y, cp.reached, t);
+  }
+
+  /**
+   * What Dot's bubble must leave clear (world units): Meeca's carvings, the words she is pointing at. The engine marks each on screen
+   * the way the HUD marks its own pieces (guideKeepOut.ts), so the guide keeps her bubble off it without knowing about World 5.
+   */
+  keepOuts(view: { x0: number; x1: number }, out: Array<{ x0: number; y0: number; x1: number; y1: number }>): void {
+    out.length = 0;
+    for (const c of this.w5.carvings ?? []) {
+      const b = carvingBox(c);
+      if (b.x1 > view.x0 && b.x0 < view.x1) out.push(b);
+    }
   }
 }
 

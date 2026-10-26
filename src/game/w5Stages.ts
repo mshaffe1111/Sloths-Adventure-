@@ -135,6 +135,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       id, type: 'spider', x: r(sx), y: G - 12, vx: 0, vy: 0, width: 34, height: 22, hp: 1, maxHp: 1, facing: doze ? 1 : -1,
       patrolMinX: r(x0), patrolMaxX: r(x1), attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0,
       defeated: false, koTimer: 0, behaviorTimer: 0, edgeMinX: r(x0), edgeMaxX: r(x1),
+      // (on the ground, not hanging on a thread: drawn as the painted jumping spider, w5Creatures.ts and spiderSprite.ts)
+      noThread: true,
     } as Enemy);
     spiders.push({ id, ...(doze ? { doze: true } : {}) });
     info.spiders.push(id);

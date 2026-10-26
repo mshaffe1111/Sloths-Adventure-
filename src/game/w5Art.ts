@@ -101,19 +101,26 @@ export function drawW5Orchid(ctx: CanvasRenderingContext2D, x: number, bottom: n
  * The sleepy steam from a warm teapot (DON'T DRINK): soft pale puffs rising and spreading from the spout at (x, y), `k` 0 to 1 how
  * strong the puff is now (the hazard's own rhythm), `t` the game time in seconds. Plain circles, no picture: it draws at once.
  */
-export function steamPuff(ctx: CanvasRenderingContext2D, x: number, y: number, k: number, t: number, scale = 1): void {
+export function steamPuff(ctx: CanvasRenderingContext2D, x: number, y: number, k: number, t: number, scale = 1, strong = 0): void {
   if (k <= 0.01) return;
   ctx.save();
+  // (`strong` 0..1: the hazard's puff, thicker and edged in a sleepy lilac so it reads against the pale gold garden at a glance)
+  const body = 0.42 + 0.36 * strong;
   for (let i = 0; i < 6; i++) {
     const age = (t * 0.55 + i / 6) % 1;
     const r = (6 + age * 22) * scale;
     const px = x + Math.sin(age * 5 + i * 1.7) * 9 * scale + age * 10 * scale;
     const py = y - age * 70 * scale;
-    ctx.globalAlpha = k * 0.42 * (1 - age) * Math.min(1, age * 6);
-    ctx.fillStyle = i % 2 ? '#f6ecff' : '#ffe8f2';
+    ctx.globalAlpha = k * body * (1 - age) * Math.min(1, age * 6);
+    ctx.fillStyle = strong > 0 ? (i % 2 ? '#ead8ff' : '#f8dcf4') : i % 2 ? '#f6ecff' : '#ffe8f2';
     ctx.beginPath();
     ctx.arc(px, py, r, 0, Math.PI * 2);
     ctx.fill();
+    if (strong > 0) {
+      ctx.strokeStyle = `rgba(130, 92, 190, ${0.55 * strong})`;
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+    }
   }
   ctx.restore();
 }
@@ -182,9 +189,10 @@ const shake = (i: number, k: number) => Math.sin(i * 12.9898 + k * 78.233) * 437
 
 /**
  * Scratch `text` with its middle at (cx, cy), letters `size` tall: dark strokes with a pale rim under them, as if cut into the bark.
- * A dot at the end of a word sits on the line, an apostrophe high. Shaky by `wobble` (a share of the letter's height).
+ * A dot at the end of a word sits on the line, an apostrophe high. Shaky by `wobble` (a share of the letter's height); `weight` thickens
+ * the strokes (1 as cut; more for a groove read from across a phone).
  */
-export function drawScratch(ctx: CanvasRenderingContext2D, text: string, cx: number, cy: number, size: number, wobble = 0.05, ink = '#2a1a10'): void {
+export function drawScratch(ctx: CanvasRenderingContext2D, text: string, cx: number, cy: number, size: number, wobble = 0.05, ink = '#2a1a10', weight = 1): void {
   const u = size / 6;
   const adv = (c: string) => (c === ' ' ? 3 : c === '.' || c === ',' || c === "'" || c === '!' ? 2.6 : 5.4);
   const chars = [...text.toUpperCase()];
@@ -196,7 +204,7 @@ export function drawScratch(ctx: CanvasRenderingContext2D, text: string, cx: num
   for (let pass = 0; pass < 2; pass++) {
     gx = -width / 2;
     ctx.strokeStyle = pass === 0 ? 'rgba(255,230,190,0.4)' : ink;
-    ctx.lineWidth = Math.max(1.2, size * (pass === 0 ? 0.15 : 0.12));
+    ctx.lineWidth = Math.max(1.2, size * (pass === 0 ? 0.15 : 0.12) * weight);
     chars.forEach((c, ci) => {
       const strokes = GLYPHS[c];
       if (strokes) {

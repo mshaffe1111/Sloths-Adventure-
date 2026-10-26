@@ -69,6 +69,7 @@ import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOW
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { W5Play } from './w5Play.ts';
+import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { DotLog } from './dotRecord.ts';
@@ -343,6 +344,12 @@ export class GameEngine {
   private w4: W4Play | null = null;
   /** World 5's stillness and silk, chairs, cakes, teapots, threads, sheets, orchids and cocoons for this run (w5Play.ts) */
   private w5: W5Play | null = null;
+  /** the parts of World 5's stage Dot's bubble keeps off (Meeca's carvings), in world units, then on the page (guideKeepOut.ts) */
+  private keepWorld: KeepOutBox[] = [];
+  private keepPage: KeepOutBox[] = [];
+  /** where the canvas sits on the page (css px), for marking stage boxes there */
+  private viewCssX = 0;
+  private viewCssY = 0;
   /** Dot's netting flight (dotFlightRun.ts): while it is set, she is the player and it runs the stage */
   private dotRun: DotRun | null = null;
   private zoneHinted: Record<string, boolean> = {};
@@ -688,6 +695,8 @@ export class GameEngine {
     this.canvas.height = Math.floor(h * dpr);
     this.viewCssW = w;
     this.viewCssH = h;
+    this.viewCssX = rect.left || 0;
+    this.viewCssY = rect.top || 0;
     this.applyZoom();
     this.camCut = true;
   }
@@ -809,6 +818,7 @@ export class GameEngine {
     }
     this.wayLow = false;
     this.isRunning = false;
+    setGuideKeepOuts([]);
     if (this.animFrameId !== null) {
       cancelAnimationFrame(this.animFrameId);
       this.animFrameId = null;
@@ -4207,6 +4217,25 @@ export class GameEngine {
   }
 
   /** Pit water (behind the ground banks) and checkpoint flags. */
+  /** mark on the page what Dot's bubble must leave clear on this stage (World 5's carvings; nothing elsewhere): guideKeepOut.ts */
+  private markKeepOuts() {
+    const cam = this.camera;
+    if (this.w5) this.w5.keepOuts({ x0: cam.x, x1: cam.x + cam.viewportWidth }, this.keepWorld);
+    else this.keepWorld.length = 0;
+    const out = this.keepPage;
+    const z = this.zoom;
+    while (out.length < this.keepWorld.length) out.push({ x0: 0, y0: 0, x1: 0, y1: 0 });
+    for (let i = 0; i < this.keepWorld.length; i++) {
+      const b = this.keepWorld[i];
+      const o = out[i];
+      o.x0 = this.viewCssX + (b.x0 - cam.x) * z;
+      o.y0 = this.viewCssY + (b.y0 - cam.y) * z;
+      o.x1 = this.viewCssX + (b.x1 - cam.x) * z;
+      o.y1 = this.viewCssY + (b.y1 - cam.y) * z;
+    }
+    setGuideKeepOuts(out, this.keepWorld.length);
+  }
+
   private drawWaterAndFlags(ctx: CanvasRenderingContext2D, world: (typeof WORLDS_DATA)[number]) {
     const waterY = this.currentStage.waterY;
     const t = this.gameTime;
@@ -4218,6 +4247,8 @@ export class GameEngine {
     }
     for (const cp of this.currentStage.checkpoints ?? []) {
       if (cp.x < x0 - 80 || cp.x > x1 + 80) continue;
+      // World 5: the painted lace pennant
+      if (this.w5?.drawFlag(ctx, cp, t, world.id)) continue;
       ctx.save();
       ctx.translate(cp.x, cp.y);
       if (!cp.reached) {
@@ -4769,6 +4800,7 @@ export class GameEngine {
     }
     this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
+    this.markKeepOuts();
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
     for (const z of this.currentStage.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights) continue;
@@ -4802,6 +4834,8 @@ export class GameEngine {
     this.collectibles.forEach((item) => {
       if (!this.onScreen(item.x, item.y, 260)) return;
       if (this.w5?.shut(item)) return;
+      // World 5's painted pink bell (Pell's note) and the painted exit totem
+      if (this.w5?.drawItem(ctx, item, this.gameTime, this.currentStage.config.worldIndex)) return;
       if (item.type === 'seed') {
         if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
         return;
@@ -4884,7 +4918,8 @@ export class GameEngine {
         } else if (enemy.type === 'frog') {
           if (!drawFrogSprite(ctx, enemy, this.gameTime)) drawHazardEntity(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'spider') {
-          if (!drawSpiderSprite(ctx, enemy, this.gameTime, this.player.x)) drawHazardEntity(ctx, enemy, this.gameTime);
+          // (World 5's jumping spiders: their trained clips, w5Play.ts)
+          if (!this.w5?.drawSpider(ctx, enemy, this.gameTime, this.player.x) && !drawSpiderSprite(ctx, enemy, this.gameTime, this.player.x)) drawHazardEntity(ctx, enemy, this.gameTime);
         } else {
           drawHazardEntity(ctx, enemy, this.gameTime);
         }
@@ -5942,6 +5977,7 @@ export class GameEngine {
         markTipHeard(id, key);
         this.guide(text, seconds);
       },
+      clearTip: () => this.clearGuide(),
       float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
       rescue: () => {
         p.crittersRescued++;
