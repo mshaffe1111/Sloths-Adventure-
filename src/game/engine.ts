@@ -156,6 +156,12 @@ const PUSH_SPEED = 120;
 
 const WORLD_VIEW_H = 540;
 /** world units across a portrait screen */
+/**
+ * In the air against a wall too tall to catch the lip of, he slides down it: his drawing stands this far off the face, so his reaching paw
+ * is not planted on it and it does not read as a grab that ought to hold (QA, 2026-10-26: a first-timer kept trying to climb 1-1's stones
+ * by their sides). Only the picture moves; the lip catch, his body and every reach stay as they were.
+ */
+const WALL_OFF = 9;
 const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 const INTRO_ZOOM_FROM = 0.9; // a gentle dolly: the old 0.78 opened on a wide shot full of dark ground, so every stage began noticeably darker
@@ -1717,6 +1723,7 @@ export class GameEngine {
 
       // --- Solid ground blocks: walls you cannot walk through (Mario-style) ---
       p.pushing = false;
+      let wallSide = 0;
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
         const half = 19;
         const prevX = p.x - (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
@@ -1757,8 +1764,12 @@ export class GameEngine {
           p.x = fromLeft ? plat.x - half : plat.x + plat.width + half;
           if (fromLeft && p.vx > 0) p.vx = 0;
           if (fromRight && p.vx < 0) p.vx = 0;
+          // in the air below the lip: he cannot hold on, so he is drawn a little off the face (wallOff), not with a paw on it
+          if (!p.grounded) wallSide = fromLeft ? 1 : -1;
         }
       }
+      // (eased, so meeting a wall and leaving it never pops the drawing sideways)
+      this.wallOff += (-wallSide * WALL_OFF - this.wallOff) * Math.min(1, dt * 18);
 
       // Mushrooms spring you up when you run into them, not only when you land on them
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
@@ -3645,6 +3656,8 @@ export class GameEngine {
   /** Dot's stuck-helper (stuckHelper.ts): jumping again and again at a wall only the second jump climbs gets the second jump explained */
   private stuck = new StuckWatch();
   private wallWasAhead = false;
+  /** how far (px, signed) his drawing stands off a wall he is sliding down in the air (WALL_OFF): it never moves his body */
+  private wallOff = 0;
   private watchForStuck() {
     const p = this.player;
     // (no stage tips in a boss fight: Dot's lines there are the fight's own)
@@ -4863,6 +4876,11 @@ export class GameEngine {
     } else if (!this.player.isVineSwinging) this.sweetGlow = 0;
     // Render Hero Sloth
     heroClipsLive(true);
+    const shiftOff = Math.abs(this.wallOff) > 0.3;
+    if (shiftOff) {
+      ctx.save();
+      ctx.translate(this.wallOff, 0);
+    }
     if (rig) {
       const hp = this.player;
       drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));
@@ -4870,6 +4888,7 @@ export class GameEngine {
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else drawHeroSloth(ctx, this.player, this.gameTime);
+    if (shiftOff) ctx.restore();
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);

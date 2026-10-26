@@ -71,6 +71,11 @@ export interface ReachOptions {
   deepPlaces?: number;
   deepMoves?: number;
   log?: (s: string) => void;
+  /**
+   * plain jumps only, no second jump (a first-timer who has not found it yet: 1-1 before its tip): the moves leave it out, and the
+   * engine's own air jump is switched off, so nothing he gets to needs it
+   */
+  single?: boolean;
 }
 
 interface Target {
@@ -141,7 +146,7 @@ export class RealReach {
 
   constructor(id: string, seed: number, opts: ReachOptions = {}) {
     this.sim = new RealPlay(id, seed);
-    this.opts = { traps: true, perTarget: 8, giveUps: 3, deepPlaces: 4, deepMoves: 120, ...opts, log: opts.log ?? (() => {}) };
+    this.opts = { traps: true, perTarget: 8, giveUps: 3, deepPlaces: 4, deepMoves: 120, single: false, ...opts, log: opts.log ?? (() => {}) };
     this.hasGlide = this.sim.e.skills.has('glide');
     this.drafts = this.sim.w4?.w4?.updrafts ?? [];
     // a heart stays put while he is at full health (engine.ts), so he plays a heart short: every heart can then be picked up
@@ -149,6 +154,7 @@ export class RealReach {
     this.sim.frame = (pad?: Pad) => {
       const p = this.sim.p;
       if (p.hp >= p.maxHp) p.hp = p.maxHp - 1;
+      if (this.opts.single && !p.grounded) p.jumpsLeft = 0;
       return frame(pad);
     };
     // the boulders stay where they are until they are pushed on purpose (pushBoulders)
@@ -676,7 +682,7 @@ export class RealReach {
     // (a target not reached yet also counts as got to when a move lands on it by the way, or walks onto it)
     const open = t.kind !== 'c' && this.stillOpen(t);
     let i = 0;
-    for (const m of this.moves(a, t).slice(0, limit)) {
+    for (const m of this.moves(a, t).filter((q) => !this.opts.single || q.dbl === undefined).slice(0, limit)) {
       this.prepareTime(a);
       const f0 = this.frames;
       const r = this.run(a, m, t);
