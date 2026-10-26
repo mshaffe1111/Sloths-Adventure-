@@ -4,6 +4,7 @@ import { refinedControls } from '../game/refinedControls.ts';
 import { difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { checkForUpdate, hardRefresh } from '../game/updates.ts';
 import { BUILD_TIME, formatBuildTime } from '../game/version.ts';
+import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
 
 /**
  * The big Refresh at the top of the name screen, so every tester starts on the newest build: it checks by itself and says so when a newer
@@ -24,8 +25,8 @@ const FreshBuild: React.FC = () => {
   // just came back from a Refresh (the address carries its stamp), or the server says this is the newest: say so, so nobody loops
   const fresh = !isNew && (state === 'same' || /[?&]fresh=/.test(window.location.search));
   return (
-    <div className={`mb-3 rounded-2xl border-2 p-3 ${isNew ? 'border-[#f2c14e] bg-[#f2c14e]/15' : 'border-[#f4ecd8]/25 bg-black/20'}`}>
-      <p className="text-center text-base font-black leading-tight">
+    <div className={`mb-4 rounded-2xl border-2 p-2.5 ${isNew ? 'border-[#f2c14e] bg-[#f2c14e]/15' : 'border-[#f4ecd8]/20 bg-black/20'}`}>
+      <p className="text-center text-sm font-black leading-tight">
         {isNew ? 'A newer version is out. Tap Refresh first!' : fresh ? (
           <span className="text-[#9be29b]">✓ You have the newest version. Good to go!</span>
         ) : 'First, tap Refresh to get the newest version'}
@@ -37,18 +38,45 @@ const FreshBuild: React.FC = () => {
           setBusy(true);
           void hardRefresh();
         }}
-        className={`mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-4 text-2xl font-black text-[#2a1a08] ${isNew ? 'animate-pulse bg-[#f2c14e]' : 'bg-[#f2c14e]'}`}
+        className={`mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xl font-black text-[#2a1a08] ${isNew ? 'animate-pulse bg-[#f2c14e]' : 'bg-[#f2c14e]/90'}`}
       >
-        <span aria-hidden="true" className="text-3xl leading-none">↻</span>
+        <span aria-hidden="true" className="text-2xl leading-none">↻</span>
         {busy ? 'Refreshing…' : 'Refresh'}
       </button>
-      <p className="mt-2 text-center text-xs text-[#f4ecd8]/75">
+      <p className="mt-1.5 text-center text-xs text-[#f4ecd8]/65">
         {stamp ? `This version: ${stamp}` : 'This version: (no date)'}
         {state === 'checking' ? ' · checking…' : ''}
       </p>
     </div>
   );
 };
+
+/** the four moves, as big tiles with their moving thumb (GestureGlyph): what to do, and what it does */
+const CONTROLS: ReadonlyArray<readonly [GlyphKind, string, string]> = [
+  ['run', 'Slide sideways', 'to run'],
+  ['jump', 'Flick up and forward', 'to jump'],
+  ['up', 'Flick up again in the air', 'to double jump'],
+  ['tap', 'Tap', 'to punch'],
+  ['flick', 'Flick toward an animal', 'to kick'],
+  ['down', 'Slide straight up or down', 'to climb a vine'],
+];
+
+/** what has tripped testers up so far (the control tests and QA, 2026-10): the fixes are habits, so they go on the front door */
+const TIPS: readonly string[] = [
+  'Keep your thumb on the screen to keep running. Lifting it stops Pokey.',
+  'Jump with a quick flick, not a slow drag. A slow slide up does not jump.',
+  'Tall steps need a double jump: flick up, then flick up again while he is in the air.',
+  'For a long jump, keep sliding forward as you flick up, and flick close to the edge.',
+  'A kick goes the way you flick. Tapping to punch works well too.',
+  'On a vine, slide straight up or down to climb. To let go, flick up and forward.',
+];
+
+/** a numbered step on the front door */
+const Step: React.FC<{ n: number }> = ({ n }) => (
+  <span aria-hidden="true" className="flex h-7 w-7 flex-none items-center justify-center rounded-full bg-[#f2c14e] text-sm font-black text-[#2a1a08]">
+    {n}
+  </span>
+);
 
 /**
  * The control test's front door (only with #ctest in the address): who is playing, what gets recorded, and Start.
@@ -73,33 +101,58 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
       <form onSubmit={go} className="mx-auto my-2 w-full max-w-xl rounded-2xl border border-[#f4ecd8]/20 bg-[#123d2a] p-4 shadow-2xl sm:p-5">
         <FreshBuild />
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f2c14e]">Control test</p>
-        <h1 className="mt-1 text-2xl font-black leading-tight">Who's playing?</h1>
-        <p className="mt-2 text-sm leading-snug text-[#f4ecd8]/85">
-          Play this short level however feels natural to you. Thumbs, one finger, anything goes. There's no wrong way. Every run is a
-          different mix of challenges, so playing again shows you new ones.
+        <h1 className="mt-1 text-2xl font-black leading-tight">Help test Pokey's controls</h1>
+        <p className="mt-2 text-[15px] leading-snug text-[#f4ecd8]/90">
+          A short level, about two minutes. Play however feels natural: thumbs, one finger, upright or sideways. There's no wrong way.
         </p>
-        <p className="mt-2 rounded-lg bg-black/20 px-3 py-2 text-sm leading-snug">
-          <b className="text-[#f2c14e]">How to play:</b> slide a finger to run ·{' '}
-          flick up to jump · tap to punch · flick sideways to kick
+        <p className="mt-2 flex items-start gap-2 rounded-xl border border-[#9be29b]/40 bg-[#9be29b]/10 px-3 py-2 text-[15px] font-bold leading-snug text-[#c9f2c9]">
+          <span aria-hidden="true" className="text-lg leading-none">🎲</span>
+          <span>Every run is made at random, so playing a few times helps the most.</span>
         </p>
-        <p className="mt-2 text-xs leading-snug text-[#f4ecd8]/70">
-          While you play, it records your taps and swipes and what Pokey does, so Matt can see where the controls trip people
-          up. No camera, microphone, location or personal info.
-        </p>
-        <label className="mt-3 block text-sm font-bold" htmlFor="ctest-name">
-          Your name or a nickname
-        </label>
+
+        <h2 className="mt-4 text-sm font-black uppercase tracking-[0.14em] text-[#f2c14e]">The controls</h2>
+        <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {CONTROLS.map(([kind, verb, what]) => (
+            <div key={what} className="ct-tile flex flex-col items-center rounded-xl bg-[#f4ecd8] px-2 py-2 text-center text-[#20321f] shadow">
+              <GestureGlyph kind={kind} size={52} />
+              <span className="mt-1 text-[15px] font-black leading-tight">{verb}</span>
+              <span className="text-[13px] font-bold leading-tight text-[#20321f]/75">{what}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-3 rounded-xl border border-[#f2c14e]/35 bg-[#f2c14e]/10 px-3 py-2">
+          <p className="text-sm font-black text-[#f2c14e]">Tips (what trips people up)</p>
+          <ul className="mt-1 list-disc space-y-1 pl-5 text-[14px] leading-snug text-[#f4ecd8]/90">
+            {TIPS.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
+        </div>
+
+        <h2 className="mt-5 text-sm font-black uppercase tracking-[0.14em] text-[#f2c14e]">Get started</h2>
+        <div className="mt-2 flex items-center gap-2">
+          <Step n={1} />
+          <label className="text-base font-black" htmlFor="ctest-name">
+            Your name or a nickname
+          </label>
+          <span className="rounded-full bg-[#f2c14e]/20 px-2 py-0.5 text-[11px] font-black uppercase tracking-wider text-[#f2c14e]">Required</span>
+        </div>
         <input
           id="ctest-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           maxLength={40}
+          required
           autoComplete="nickname"
-          className="mt-1 w-full rounded-lg border border-[#f4ecd8]/30 bg-[#0b2e20] px-3 py-2.5 text-base text-[#f4ecd8] outline-none focus:border-[#f2c14e]"
-          placeholder="e.g. Jen"
+          className="mt-1.5 w-full rounded-lg border-2 border-[#f4ecd8]/35 bg-[#0b2e20] px-3 py-2.5 text-base text-[#f4ecd8] outline-none focus:border-[#f2c14e]"
+          placeholder="e.g. Matt"
         />
-        <p className="mt-3 text-sm font-bold">How hard?</p>
-        <div className="mt-1 grid grid-cols-2 gap-2" role="radiogroup" aria-label="How hard">
+        <div className="mt-4 flex items-center gap-2">
+          <Step n={2} />
+          <p className="text-base font-black">How hard?</p>
+        </div>
+        <div className="mt-1.5 grid grid-cols-2 gap-2" role="radiogroup" aria-label="How hard">
           {(
             [
               ['easy', 'Easy', 'Fewer animals, more forgiving jumps, slower vines'],
@@ -119,13 +172,25 @@ export const ControlTestGate: React.FC<{ onStart: () => void }> = ({ onStart }) 
             </button>
           ))}
         </div>
+        <div className="mt-4 flex items-center gap-2">
+          <Step n={3} />
+          <p className="text-base font-black">{name.trim() ? 'Tap Start' : 'Type your name, then tap Start'}</p>
+        </div>
         <button
           type="submit"
           disabled={!name.trim()}
-          className="mt-3 w-full rounded-xl bg-[#f2c14e] py-2.5 text-lg font-black text-[#2a1a08] disabled:opacity-40"
+          className="mt-1.5 w-full rounded-xl bg-[#f2c14e] py-3.5 text-2xl font-black text-[#2a1a08] shadow-lg disabled:opacity-40"
         >
           Start
         </button>
+        <p className="mt-2 text-xs leading-snug text-[#f4ecd8]/70">
+          While you play, it records where your fingers touch and what Pokey does, to fine-tune how the game plays. No camera, microphone,
+          location or personal info, and nothing is kept: the recordings are deleted when testing ends.
+        </p>
+        <p className="mt-3 flex items-start gap-2 rounded-xl border border-[#f4ecd8]/25 bg-black/25 px-3 py-2 text-sm font-bold leading-snug">
+          <span aria-hidden="true" className="text-base leading-none">✕</span>
+          <span>When you're done, please close the browser tab. That stops the test.</span>
+        </p>
       </form>
     </div>
   );
