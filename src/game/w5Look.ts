@@ -858,23 +858,58 @@ export function drawSilkSheet(ctx: CanvasRenderingContext2D, x0: number, x1: num
   ctx.restore();
 }
 
-/** silk creeping up Pokey (feet at x, y): wraps of thread from the ground up, `silk` 0..1 of the way */
+/**
+ * silk creeping up Pokey (feet at x, y), `silk` 0..1 of the way: a pale veil over him as it thickens, strands tying him to the ground,
+ * and wraps of thread from the ground up, each with a dark edge so it reads in the golden light. QA v198 could not see it on him (the
+ * thin white loops were lost against his fur and the gold), so being stuck seemed to come from nowhere.
+ */
 export function drawSilkOnPokey(ctx: CanvasRenderingContext2D, x: number, y: number, silk: number, t: number) {
   if (silk <= 0.02) return;
   ctx.save();
+  const k = Math.min(1, silk);
+  // the veil: his body goes pale and lilac under the silk
+  ctx.globalAlpha = 0.18 + 0.32 * k;
+  ctx.fillStyle = '#f5f0ff';
+  ctx.beginPath();
+  ctx.ellipse(x, y - 4 - 25 * k, 21, 6 + 25 * k, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // the strands tying him down: from his sides out to the ground, taut, with a glint running along them
+  for (let i = 0; i < 4; i++) {
+    const side = i % 2 ? 1 : -1;
+    const top = y - 8 - (i < 2 ? 18 : 34) * k;
+    const foot = x + side * (26 + i * 7);
+    ctx.globalAlpha = Math.min(1, k * 2.4) * 0.9;
+    ctx.strokeStyle = 'rgba(70, 50, 90, 0.5)';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(x + side * 9, top);
+    ctx.lineTo(foot, y + 1);
+    ctx.stroke();
+    ctx.strokeStyle = '#fdfaff';
+    ctx.lineWidth = 1.3;
+    ctx.stroke();
+    const g = (t * 0.9 + i * 0.27) % 1;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(x + side * 9 + (foot - x - side * 9) * g, top + (y + 1 - top) * g, 1.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // the wraps, from his feet up
   const n = Math.ceil(silk * 7);
   for (let i = 0; i < n; i++) {
     const u = i / 7;
     const yy = y - 4 - u * 50;
     const a = Math.min(1, silk * 7 - i);
-    ctx.globalAlpha = 0.85 * a;
+    const rx = 18 - Math.abs(u - 0.5) * 6;
+    const rot = Math.sin(i * 1.9 + t * 0.4) * 0.35;
+    ctx.globalAlpha = 0.95 * a;
+    ctx.strokeStyle = 'rgba(70, 50, 90, 0.55)';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.ellipse(x, yy, rx, 5, rot, 0, Math.PI * 2);
+    ctx.stroke();
     ctx.strokeStyle = '#fdfaff';
     ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.ellipse(x, yy, 18 - Math.abs(u - 0.5) * 6, 5, Math.sin(i * 1.9 + t * 0.4) * 0.35, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.strokeStyle = 'rgba(150, 130, 170, 0.6)';
-    ctx.lineWidth = 1;
     ctx.stroke();
   }
   ctx.restore();

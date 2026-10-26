@@ -6,7 +6,7 @@
 import { RealPlay } from './realPlay.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { reachGlide, reachJump, setTimedSwing, TIMED } from './physics.ts';
+import { DOUBLE_RISE, reachGlide, reachJump, setTimedSwing, TIMED } from './physics.ts';
 import { buildProtoStage, HAND_STAGES, PIT_CLIMB, PIT_ESCAPE } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { levelConfig } from './realPlay.ts';
@@ -66,12 +66,13 @@ test('the engine at 30 fps carries a jump, a double jump and a glide at least as
   }
 });
 
-test('the highest he gets: a jump lifts his feet 97 px and a double jump 165 at 30 fps (less than the formulas JUMP_RISE and DOUBLE_RISE)', () => {
+test('the highest he gets: a jump lifts his feet 97 px and a double jump about 170 at 30 fps (less than the formulas JUMP_RISE and DOUBLE_RISE)', () => {
   const sim = bareSim(false);
   const rise = (d?: number) => G - Math.min(...flight(sim, d).map((q) => q.y));
   assert.ok(Math.abs(rise() - 97.8) < 2, `${rise()}`);
   const dbl = Math.max(...Array.from({ length: 25 }, (_, i) => rise(i + 1)));
-  assert.ok(dbl > 160 && dbl < 170, `${dbl}`);
+  // (the second jump adds to what the first still had, physics.ts secondJumpV: about 170 whenever it is taken, under DOUBLE_RISE)
+  assert.ok(dbl > 160 && dbl < 175 && dbl < DOUBLE_RISE, `${dbl}`);
 });
 
 /** the tallest wall he climbs from a standstill beside it, with or without the second jump */

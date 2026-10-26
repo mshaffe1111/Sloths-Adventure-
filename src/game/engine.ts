@@ -37,7 +37,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, timedLaunch, type SwingState } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, timedLaunch, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -205,6 +205,11 @@ export interface GameEngineCallbacks {
 
 /** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
 export const STEP_FACE = { min: 30, max: 100 } as const;
+/**
+ * World 5's step help (takeOff): a step this many px above his feet (one plain jump's climb: it rises about 108), with its face no more
+ * than `near` px from his body, is where a plain flick up with the thumb lifted carries him onto it
+ */
+export const STEP_UP = { min: 20, max: 96, near: 14 } as const;
 const STUCK_HOLD = 7;
 
 export class GameEngine {
@@ -1700,7 +1705,7 @@ export class GameEngine {
             sound.playJump();
             this.spawnJumpDust(p.x, p.y);
           } else if (p.jumpsLeft > 0 && !p.climbing) {
-            p.vy = -PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * (this.flightClear ? 1 : drowsyJump(this.drowsy)) * this.dragJump;
+            p.vy = secondJumpV(p.vy, PHYS.doubleV * (1 + ASSIST.doubleJump * assist) * (this.flightClear ? 1 : drowsyJump(this.drowsy)) * this.dragJump);
             p.jumpsLeft = 0;
             p.isDoubleJumping = true;
             p.somersaultAngle = 0;
@@ -4706,6 +4711,31 @@ export class GameEngine {
     const steer = this.inputGrace > 0 ? 0 : inp.left ? -1 : inp.right ? 1 : 0;
     const kind = this.currentStage.config.objectiveType;
     airTakeOff(this.airDrive, steer, this.player.facing, second, help === 'forward' && kind !== 'ascent' && kind !== 'boss_lair');
+    // World 5: a plain flick up with the thumb off the glass, standing right at a step one jump climbs, lands on it. One thumb lifts
+    // to flick, so he jumped straight up beside the step and came down where he began: in the soft pits' dips QA's one-thumb player
+    // stayed stuck, and only an up-and-right flick now and then got out (v198, 2026-10-26). A one-step ledge takes one ordinary jump.
+    if (!second && steer === 0 && this.w5) {
+      const lean = inp.jumpLean ?? 0;
+      const dir = lean !== 0 ? lean : this.player.facing >= 0 ? 1 : -1;
+      if (this.stepAt(dir)) {
+        this.airDrive.drive = dir;
+        this.airDrive.lean = true;
+        this.player.facing = dir;
+      }
+    }
+  }
+
+  /** a step one plain jump climbs (STEP_UP), right against him on the `dir` side, standing on the ground */
+  private stepAt(dir: -1 | 1): boolean {
+    const p = this.player;
+    for (const q of this.platforms) {
+      if (q.type !== 'solid' || q.broken || q.height < 50) continue;
+      const near = dir > 0 ? q.x - (p.x + 19) : p.x - 19 - (q.x + q.width);
+      if (near < -2 || near > STEP_UP.near) continue;
+      const rise = p.y - q.y;
+      if (rise >= STEP_UP.min && rise <= STEP_UP.max && q.y + q.height >= p.y - 12) return true;
+    }
+    return false;
   }
 
   /** how much early-stage help is in force on this stage (1 on stage 1-1, fading to 0 by stage 25) */
@@ -5029,10 +5059,12 @@ export class GameEngine {
     } else if (!this.player.isVineSwinging) this.sweetGlow = 0;
     // Render Hero Sloth
     heroClipsLive(true);
-    const shiftOff = Math.abs(this.wallOff) > 0.3;
+    // (and in World 5 a wobble while he pulls against the silk on him: w5Play.ts wobble)
+    const drawOff = this.wallOff + (this.w5?.wobble(this.gameTime) ?? 0);
+    const shiftOff = Math.abs(drawOff) > 0.3;
     if (shiftOff) {
       ctx.save();
-      ctx.translate(this.wallOff, 0);
+      ctx.translate(drawOff, 0);
     }
     if (rig) {
       const hp = this.player;

@@ -90,6 +90,19 @@ export function airCarry(st: AirDrive, steer: -1 | 0 | 1, down: boolean): -1 | 0
 
 const apex = (v: number, g: number) => (v * v) / (2 * g);
 
+/**
+ * The second jump's launch speed (px/s, up is negative), given his speed now and the second jump's own (`v2`, positive). It adds its
+ * height to what the first jump still had in it, so a double flick climbs the same however quickly the second flick follows the first.
+ * It used to REPLACE his speed, so a second flick 70 ms after the first (still rising at 510 px/s) threw away nearly all of the first
+ * jump and the pair rose 104 px, against 165 for one a third of a second later: a tall stump one double flick cleared, the next
+ * (thumbed a little quicker) did not (QA, World 5, v198, 2026-10-26). Rising, the two add as energies (v^2 + v2^2), which tops out at
+ * exactly the height a second jump at the first's peak reaches (DOUBLE_RISE), and gets there sooner, so no gap is crossed that was not
+ * before. Falling, it is the second jump's own speed, as it always was.
+ */
+export function secondJumpV(vy: number, v2: number): number {
+  return vy < 0 ? -Math.hypot(vy, v2) : -v2;
+}
+
 /** Maximum rise of a single full jump (px). */
 export const JUMP_RISE = apex(PHYS.jumpV, PHYS.gravUp); // ~108
 /** Maximum rise of jump + double jump at apex (px). */

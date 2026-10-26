@@ -110,6 +110,7 @@ export const W5_STEP_HELP_KEYS = 'Keep holding forward as you press Space. That 
 const T = W5_TEACH;
 /** the first-time tips (said anywhere in World 5, so no stage) */
 const TEACH_ROWS: DotLineRow[] = [
+  ['w5.still', '', 'guide', 'move', T.still, 'Don\'t stop! Silk creeps up. Slide on.', null, 'slide', 'pokey'],
   ['w5.sit', '', 'guide', 'move', T.sit, 'Slide left and right to shake it off.', null, 'slide', 'pokey'],
   ['w5.wrapped', '', 'guide', 'help', T.wrapped, 'Keep moving! Slide your thumb to wiggle free.', null, null, 'pokey'],
   ['w5.wrapGentle', '', 'guide', 'help', T.wrapGentle, 'Wake up, Pokey! Keep moving.', null, null, 'pokey'],
@@ -137,6 +138,9 @@ const TEACH_ROWS: DotLineRow[] = [
  * dropped them unseen before: QA, 5-2, 2026-10-26), and "Just reminders" says each one the first time.
  */
 export const W5_THING_TIPS: ReadonlySet<string> = new Set([
+  // (the stillness rule, before the silk: "slide" is a move every player has done, so as a plain move tip a phone that had run before
+  // would drop it. The silk's own line, once it is on him, is a warning and always said. QA v198)
+  'w5.still',
   'w5.chair', 'w5.cake', 'w5.ate', 'w5.butler', 'w5.pot', 'w5.thread', 'w5.sheet', 'w5.orchid', 'w5.cocoon', 'w5.silk', 'w5.spider',
   'w5.seamstress', 'hint.5-2.rules', 'hint.5-2.doze', 'hint.5-4.chain',
 ]);
