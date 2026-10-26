@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildProtoStage, HAND_STAGES, stageSeconds } from './protoStage.ts';
-import { buildWaterfallSteps, WET, type FallInfo } from './w4Stage43.ts';
+import { buildWaterfallSteps, SURGE_CLIMB, WET, type FallInfo } from './w4Stage43.ts';
 import { validateStage } from './levelCheck.ts';
 import { PHYS, reachJump } from './physics.ts';
 import { FALLS } from './waterfalls.ts';
@@ -17,15 +17,28 @@ const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
 const build = (s: number) => buildWaterfallSteps(cfg, s);
 type Stage = ReturnType<typeof build>;
 
-/** the stage as it is while some falls pour: their steps cannot be climbed (taken out), and a pool's log sits where its water has it */
-function withWater(st: Stage, pouring: FallInfo[], logAt: Record<number, number> = {}): GeneratedStage {
+/**
+ * the stage as it is while some falls pour: their steps cannot be climbed (taken out), a pool's log sits where its water has it, and
+ * the boulders of the falls in `plugged` sit in their slots (the level check models the rest of the water itself: levelCheck.ts)
+ */
+function withWater(st: Stage, pouring: FallInfo[], logAt: Record<number, number> = {}, plugged: FallInfo[] = []): GeneratedStage {
   const gone = new Set(pouring.flatMap((f) => f.steps));
-  const platforms: Platform[] = st.platforms.filter((p) => !gone.has(p.id)).map((p) => (logAt[p.id] !== undefined ? { ...p, y: logAt[p.id] } : p));
+  const slot = new Map<number, number>();
+  for (const f of plugged) {
+    const w = st.proto.w4!.falls!.find((q) => q.id === f.fallId)!;
+    if (w.plug) slot.set(w.plug.platformId, w.plug.atX);
+  }
+  const platforms: Platform[] = st.platforms
+    .filter((p) => !gone.has(p.id))
+    .map((p) => (logAt[p.id] !== undefined ? { ...p, y: logAt[p.id] } : slot.has(p.id) ? { ...p, x: slot.get(p.id)! } : p));
   return { ...st, platforms };
 }
+/** somewhere on a platform he can stand (not under a boulder: a boulder is a wall on the ground it stands on) */
+const standX = (stage: GeneratedStage, p: Platform) =>
+  [p.x + p.width / 2, p.x + 30, p.x + p.width - 30].find((x) => !stage.platforms.some((b) => b.push && b.y + b.height === p.y && x > b.x - 20 && x < b.x + b.width + 20)) ?? p.x + p.width / 2;
 /** can he get to the shrine from standing on this platform? */
 const exitFrom = (stage: GeneratedStage, p: Platform) => {
-  const res = validateStage({ ...stage, spawnX: p.x + p.width / 2, spawnY: p.y });
+  const res = validateStage({ ...stage, spawnX: standX(stage, p), spawnY: p.y });
   return !res.errors.some((e) => /exit platform .* not reachable|no platform under the spawn/.test(e));
 };
 const reachable = (stage: GeneratedStage) => new Set(validateStage(stage).reachableIds);
@@ -127,7 +140,7 @@ test('4-3: the order puzzle: the log is the only way to the boulder, and nothing
     const pool = st.proto.w4!.pools![0];
     const full = withWater(st, [pf], { [pf.log!]: pool.fullY });
     const drained = withWater(st, [pf], { [pf.log!]: pool.emptyY });
-    const dry = withWater(st, [], { [pf.log!]: pool.emptyY });
+    const dry = withWater(st, [], { [pf.log!]: pool.emptyY }, [pf]);
     // with the pool full the log takes him up to the boulder; had the pool drained first, the boulder would be out of reach (so
     // stopping the fall before riding the log cannot happen: the boulder is only reached from the log)
     assert.ok(reachable(full).has(pf.shelf!), `seed ${s}: the log does not reach the boulder`);
@@ -148,7 +161,7 @@ test('4-3: the order puzzle: the log is the only way to the boulder, and nothing
     for (const p of here) {
       if (!reachable(full).has(p.id)) continue;
       const q = full.platforms.find((d) => d.id === p.id)!;
-      const res = validateStage({ ...full, spawnX: q.x + q.width / 2, spawnY: q.y });
+      const res = validateStage({ ...full, spawnX: standX(full, q), spawnY: q.y });
       assert.ok(res.reachableIds.includes(pf.shelf!), `seed ${s}: from platform ${p.id} the boulder is out of reach while the fall pours`);
     }
   }
@@ -308,5 +321,29 @@ test('4-3: the boulder up the surge: its shelf is reached only up the surge stai
     const pouring = withWater(st, [plugF]);
     const res = validateStage({ ...pouring, spawnX: floor.x + 40, spawnY: floor.y });
     assert.ok(res.reachableIds.includes(shelf.id), `seed ${s}: dropped to the floor before plugging, he cannot get back to the boulder`);
+  }
+});
+
+test('4-3: every surge goes quiet for long enough to climb from the foot of its water to the next dry spot (its water washes him down)', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    for (const f of st.falls43) {
+      if (f.kind !== 'surge') continue;
+      const w = st.proto.w4!.falls!.find((q) => q.id === f.fallId)!;
+      const steps = f.steps.map((id) => st.platforms.find((p) => p.id === id)!).sort((a, b) => a.x - b.x);
+      // the stretches between dry spots: up to the cave behind the water (where the pour goes past in front of him), and on out of it
+      const runs: number[] = [];
+      let n = 0;
+      for (const p of steps) {
+        n++;
+        const sheltered = (w.shelter ?? []).some((q) => q.y === p.y && q.x0 >= p.x && q.x1 <= p.x + p.width);
+        if (sheltered) { runs.push(n); n = 0; }
+      }
+      runs.push(n + 1); // (and the step up out of the water at the top)
+      const most = Math.max(...runs);
+      assert.ok(w.surge!.quiet >= SURGE_CLIMB.start + SURGE_CLIMB.perJump * most - 0.05, `seed ${s}: ${w.surge!.quiet} s of quiet for ${most} wet jumps`);
+      // every cave on a stair is sheltered, and only a cave
+      for (const p of steps) if (p.width > WET.tread + 60) assert.ok((w.shelter ?? []).some((q) => q.y === p.y && q.x0 >= p.x && q.x1 <= p.x + p.width), `seed ${s}: a cave the water still pushes in`);
+    }
   }
 });

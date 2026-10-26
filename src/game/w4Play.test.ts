@@ -80,9 +80,10 @@ test('rolling the boulder into the channel dries the fall, and its pool drains a
   player.vy = 0;
   w.step(dt, h);
   assert.ok(player.vy > 0, 'pouring water did not push him down');
-  assert.ok(w.step(dt, h).speed < 1);
+  assert.ok(player.vx < 0 && player.x < 410, 'pouring water did not carry him back out the way he came');
   boulder.x = 200;
   run(w, h, 4);
+  player.x = 410;
   player.vy = 0;
   w.step(dt, h);
   assert.equal(player.vy, 0, 'a dry fall still pushed');

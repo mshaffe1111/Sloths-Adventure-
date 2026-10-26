@@ -38,3 +38,30 @@ export function liftStop(l: LiftInfo, t: number): -1 | 0 | 1 {
   const y = liftY(l, t);
   return y <= l.top + 0.5 ? 1 : y >= l.bottom - 0.5 ? -1 : 0;
 }
+
+/** a floor his feet can meet: where it is, and whether it moves (a lift's basket, a sliding ledge) */
+export interface FloorLike {
+  x: number;
+  y: number;
+  width: number;
+  type: string;
+}
+
+/**
+ * Of the floors his feet meet this frame (in stage order), the one he stands on. Usually the first; but where two meet him level, or
+ * near enough (a basket at its bottom stop sits flush on the path under it, and on its last frames down it is a frame's fall above it),
+ * the one under his middle wins, and a moving one over a still one: he is in the basket, not on the ground beneath it. Without this the
+ * stage order decided, and a basket built after the path under it (every lift going up in 2-7) rose empty, leaving him on the path.
+ */
+export function pickFloor<T extends FloorLike>(floors: readonly T[], px: number): T | undefined {
+  const first = floors[0];
+  if (!first || floors.length === 1) return first;
+  const top = Math.min(...floors.map((f) => f.y));
+  const rank = (f: T) => (px >= f.x && px <= f.x + f.width ? 2 : 0) + (f.type === 'moving' ? 1 : 0);
+  let best = first;
+  for (const f of floors) if (f.y <= top + FLOOR_TIE && rank(f) > rank(best)) best = f;
+  return best;
+}
+
+/** floors this close in height count as level for pickFloor (px): more than a frame's fall from rest at 30 fps (2500 / 30² ≈ 2.8) */
+export const FLOOR_TIE = 6;

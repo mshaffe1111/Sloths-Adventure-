@@ -81,6 +81,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 | **World 1 and World 3 hand-built stages** (1-1 to 1-9, 3-1 to 3-9) | `src/game/protoStage.ts` |
 | **World 2 hand-built stages** (2-1 to 2-9) | `src/game/w2Stages.ts`, art in `w2PropsData.ts` |
 | World 3 art and decor | `src/game/w3Art.ts`, `w3PropsData.ts` |
+| **Dot's netting flight** (`4-D`, the extra stage after 4-5 that opens 4-6; Dot is the player, on Pokey's controls: flick = flap, tap or thumb held = hover) | `src/game/dotFlightStage.ts` (the stage and its flight check), `dotFlight.ts` (her rules), `dotFlightRun.ts` (in the engine), `dotFlightArt.ts`; slotted by `extraStages.ts` with the New stages switch; tests `dotFlight*.test.ts` |
 | **Worlds 4-10** (still the procedural generator: planned, rolled, validated) | `src/game/stageGenerator.ts`, `levelSeeds.ts`, `levelCheck.ts`; run `npx tsx scripts/check-levels.ts [4]` |
 | Stage-length and layout checks | `scripts/measure-stages.ts`, `scripts/seed-levels.ts`, tests such as `w2Stages.test.ts`, `w3Stages.test.ts`, `protoStage.test.ts`, `levels.test.ts` |
 | Abilities (rope/shimmy, glide) and when they unlock | `src/game/skills.ts` |
@@ -96,6 +97,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 | Worlds 2-10 ground and climbing kits | `src/assets/kits/w2.webp` … `w10.webp` | `kitAtlasData.ts`; `platformKit.ts`, `drawKit.ts` |
 | World 2 props (river, village, court, cages, boughs) | `src/assets/props/w2-props.webp` | `w2PropsData.ts` |
 | World 3 props (grotto, ferns, thorn vine, sinkhole, ring) | `src/assets/props/w3-props.webp` | `w3PropsData.ts` |
+| Dot's netting flight (nectar flowers, dew, silk, puffs, thorns, the letter, netting pieces) and its four sunrise paintings | `src/assets/props/dot-props.webp`, `src/assets/backdrops/dot-*.webp` | `dotPropsData.ts`; cut and packed by `tools/art/dotstage/` |
 | Stage backgrounds (three strips per world) | `src/assets/backdrops/w<N>-far/mid/near.webp` | `scenery.ts`, `soil.ts`, `terrain.ts` |
 | Boss lairs | `src/assets/lairs/` | `lairKit.ts`, `lairProwler.ts` |
 | Matt's original prop sheets (World 1) | `reference/prop-sheets/` | — |
