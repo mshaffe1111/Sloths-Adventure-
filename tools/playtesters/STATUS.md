@@ -17,7 +17,10 @@ Sasa is her second device), Jen and Brycen (sideways). Refresh them from the con
 **Difficulty climbs** (Matt, 2026-10-26): from World 5 on, stages and bosses may be harder, and nothing has to be beaten on the
 first try. By then players have experience. For World 5 and later, QA fails a stretch or a boss only when it can't be done (a
 window too short for any real thumb, a hit with no warning, a spot no one can reach), not because a bot needed several tries.
-Tries are still counted and reported, so the climb can be seen. Worlds 1-4 stay held to the first-timer standard (the 0.8 s
+Tries are still counted and reported, so the climb can be seen. The same goes for real players' logs: `logscan.py`'s "Player
+or game?" table weighs each section against who it beats. If skilled players (40+ sections, rarely hit) get through clean and
+others take hits, that's the player, and it says who learned it later. If skilled players struggle too, it's the game. If nobody
+gets through, it asks whether it can be done at all. Worlds 1-4 stay held to the first-timer standard (the 0.8 s
 reaction + 0.6 s margin on boss openings).
 
 **How work moves**

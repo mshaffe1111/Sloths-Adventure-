@@ -82,6 +82,62 @@ for sct in secVisits:
 for r in sorted(rows,reverse=True): print(f'  {str(r[1]):22s} visits {r[2]:3d}  median {r[3]:5.1f}s  hurts {r[4]:3d} ({r[0]:.2f}/visit)  lives {r[5]}  quits {r[6]}')
 print('### Stuck: no progress for >15 s while touching (seconds, section, player, x)')
 c=collections.Counter(a[1] for a in stuck); print('  by section', c.most_common(8)); print('  longest', sorted(stuck,reverse=True)[:8])
+print('### Player or game? Each section judged against who it beats (Matt, 2026-10-26)')
+# A visit runs from a section starting to the next new section (passed), or to a quit or the session's end (gave up). Lives lost
+# count either way. A respawn that falls back to an earlier section isn't a pass. Skill tiers come from how players do overall:
+# a section that beats beginners but not skilled players is the player; one that beats skilled players too is the game.
+visits=[]  # (player, section, passed, lives, hurts, seconds, nth visit by this player)
+for f in sorted(glob.glob(D+'/*.json')):
+    s=json.load(open(f)); who=s['player']
+    lines=sorted([l for part in s['parts'] if isinstance(part,list) for l in part],key=lambda l:l[1])
+    cur=None; seen=set()
+    def close(passed,t):
+        if cur: visits.append((who,cur['sec'],passed,cur['lives'],cur['hurts'],(t-cur['t'])/1000))
+    for l in lines:
+        if l[0]!='e': continue
+        e=l[2]; t=l[1]
+        if e in ('start','playAgain'): close(False,t); cur=None; seen=set()
+        elif e=='section':
+            d=str(l[3])
+            if cur and d==cur['sec']: continue
+            if d in seen and cur: cur['lives']+=0; continue  # fell back after a fall: still the same attempt
+            close(True,t); seen.add(d); cur={'sec':d,'t':t,'lives':0,'hurts':0}
+        elif cur and e=='lostLife': cur['lives']+=1
+        elif cur and e=='hurt': cur['hurts']+=1
+        elif e=='finish': close(True,t); cur=None
+        elif e=='quit': close(False,t); cur=None
+    if cur: close(False,lines[-1][1] if lines else 0)
+nth=collections.Counter(); vv=[]
+for v in visits: nth[(v[0],v[1])]+=1; vv.append(v+(nth[(v[0],v[1])],))
+byP=collections.defaultdict(list)
+for v in vv: byP[v[0]].append(v)
+# skill: hits taken per section, and only with real experience behind it (40+ section visits): a 3-minute session with no hits
+# says little. Skilled = experienced and rarely hit; everyone else is judged as the learning group.
+hpv={p:sum(v[4] for v in L)/len(L) for p,L in byP.items()}
+skilled={p for p,L in byP.items() if len(L)>=40 and hpv[p]<=0.25}
+print('  skilled (40+ sections, <=0.25 hits a section):', ', '.join(f'{p} {hpv[p]:.2f}' for p in sorted(skilled,key=hpv.get)),
+      '| the rest:', ', '.join(f'{p} {hpv[p]:.2f} ({len(byP[p])})' for p in sorted(set(byP)-skilled,key=lambda p:-len(byP[p]))))
+bySec=collections.defaultdict(list)
+for v in vv: bySec[v[1]].append(v)
+for sec,L in sorted(bySec.items(),key=lambda kv:-len(kv[1])):
+    players={v[0] for v in L}
+    if len(players)<3: continue
+    passed=sum(v[2] for v in L)
+    sk=[v for v in L if v[0] in skilled]; first=[v for v in L if v[6]==1]
+    others=[v for v in L if v[0] not in skilled]
+    avg=lambda vs,i:sum(v[i] for v in vs)/len(vs) if vs else None
+    skPass,skLives,skHurt=(sum(v[2] for v in sk)/len(sk) if sk else None),avg(sk,3),avg(sk,4)
+    oPass,oLives,oHurt=(sum(v[2] for v in others)/len(others) if others else None),avg(others,3),avg(others,4)
+    # did the players it hit hard the first time do better later? (learning: the player, not the game)
+    learned=[p for p in players if any((v[3] or v[4]>=2) for v in L if v[0]==p and v[6]==1) and any(v[2] and not v[3] and v[4]<2 for v in L if v[0]==p and v[6]>1)]
+    if passed==0: verdict='CAN IT BE DONE? nobody got through'
+    elif sk and (skPass<0.5 or skLives>=0.5 or skHurt>=1.5): verdict='THE GAME: hard even for skilled players'
+    elif sk and oHurt is not None and oHurt>=1 and oHurt>=2*max(skHurt,0.1): verdict='THE PLAYER: skilled players get through clean, the rest take hits'+(' (learned it later: '+', '.join(learned)+')' if learned else '')
+    elif not sk and oHurt is not None and (oHurt>=1.5 or (oLives or 0)>=0.5): verdict='WATCH: hard for the learning group, no skilled player has played it yet'
+    else: verdict='fine'
+    fmt=lambda x,pct=False:'-' if x is None else (f'{x:.0%}' if pct else f'{x:.1f}')
+    print(f'  {sec:22s} {len(players):2d} players {len(L):3d} visits | skilled: through {fmt(skPass,1)}, hits {fmt(skHurt)}, lives {fmt(skLives)}'
+          f' | the rest: through {fmt(oPass,1)}, hits {fmt(oHurt)}, lives {fmt(oLives)} -> {verdict}')
 print('### Per player per minute: duck-on, kicks, jumps')
 for w in mins:
     if mins[w]>2: print(f'  {w:14s} {mins[w]:6.1f} min  duck {duckOn[w]/mins[w]:5.1f}/min  kicks {kicks[w]/mins[w]:4.1f}/min  jumps {jumps[w]/mins[w]:5.1f}/min')
