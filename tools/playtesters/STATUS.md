@@ -9,6 +9,11 @@ The QA team (bot playtesters) keeps this list. The coding team fixes; QA tests, 
 
 Unchecked leads don't block a sign-off. A signed-off stage is not tested again.
 
+**QA's job** (Matt, 2026-10-26): test what the coding team promotes, focused on what changed, with the best-fitting persona bots (both
+orientations); after each update, send the coding team the bugs, glitches and suggestions from the gameplay. QA tests only when the
+coders hand over an update, and keeps runs small. Personas: Matt (expert, upright), Steph (upright), Sally (upright, small phone;
+Sasa is her second device), Jen and Brycen (sideways). Refresh them from the control-test sheet when Matt asks.
+
 **How work moves**
 - The coding team promotes a fix or a new stage: it rebuilds Matt's test link, pushes `ccr-0d59a91c-oy3imz`, and sends QA a promotion note with a retest list.
 - QA builds from the pushed branch, retests every item, and replies pass or fail on each, plus anything new.
