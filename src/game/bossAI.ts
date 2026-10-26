@@ -241,6 +241,8 @@ export interface MoveDef {
   recStep?: { speed: number; stop: number };
   /** in the recovery it keeps facing the way the attack left it (the weak point is behind it, toward the player) */
   recHoldFacing?: boolean;
+  /** in the recovery it turns its back on the player (a weak point at the tail is then toward him) */
+  recFaceAway?: boolean;
   /** stunned after this move, it reels round toward the player the same way (a crash at the far fence still comes back to him) */
   stunStep?: { speed: number; stop: number };
 }
@@ -580,7 +582,8 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
     }
 
     case 'rec': {
-      if (!m?.recHoldFacing) face(b, c);
+      if (m?.recFaceAway) b.facing = c.px >= b.x ? -1 : 1;
+      else if (!m?.recHoldFacing) face(b, c);
       // flyers settle back toward their hover height while they recover
       const g = def.groundAt?.(b, c) ?? 0;
       br.air += (Math.max(g, (def.hover ?? 0) * 0.35) - br.air) * Math.min(1, dt * 2.5);

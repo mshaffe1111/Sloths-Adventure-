@@ -25,6 +25,7 @@ export function drawBossOverDark(ctx: CanvasRenderingContext2D, b: BossEntity, d
   const br = b.ai;
   if (k <= 0 || !br) return;
   drawBossFighter(ctx, { ...b, ai: { ...br, alpha: br.alpha * k } }, def, time, world, floor);
+  drawPounceRing(ctx, b, def, floor, time, dark);
   // the eyes: two glints at the head, flaring as he winds up (the same spot as his glowing-eyes weak point after a shadow step)
   const winding = br.state === 'tell';
   const f = b.facing < 0 ? -1 : 1;
@@ -44,5 +45,32 @@ export function drawBossOverDark(ctx: CanvasRenderingContext2D, b: BossEntity, d
     ctx.arc(ex + dx, ey, winding ? 22 : 12, 0, Math.PI * 2);
     ctx.fill();
   }
+  ctx.restore();
+}
+
+/**
+ * The spot a pounce will land on: a moonlit ring on the floor from the moment he crouches (he picks it then), so the dodge reads as
+ * "get out of the ring" (2026-10-26, QA: a double jump on the spot was hit). Drawn for the Shadow Prowler only, in the world.
+ */
+export function drawPounceRing(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, floor: number, time: number, alpha = 1) {
+  const br = b.ai;
+  if (def.lair !== 'prowler' || !br || br.move !== 'pounce' || (br.state !== 'tell' && br.state !== 'act') || br.d.aim === undefined) return;
+  const x = br.d.aim;
+  const rw = b.width / 2 + 14;
+  const tight = br.state === 'act' ? 1 : 0.5 + 0.5 * Math.min(1, br.t / 0.4);
+  ctx.save();
+  ctx.globalAlpha = alpha * (0.55 + 0.35 * Math.sin(time * 16));
+  ctx.strokeStyle = '#e0fbff';
+  ctx.lineWidth = 4;
+  ctx.setLineDash([18, 10]);
+  ctx.lineDashOffset = -time * 60;
+  ctx.shadowColor = '#7dffe0';
+  ctx.shadowBlur = 12;
+  ctx.beginPath();
+  ctx.ellipse(x, floor - 2, rw * (1.25 - 0.25 * tight), 16, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.globalAlpha = alpha * 0.18;
+  ctx.fillStyle = '#bff7ff';
+  ctx.fill();
   ctx.restore();
 }
