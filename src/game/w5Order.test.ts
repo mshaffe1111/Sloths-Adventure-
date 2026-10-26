@@ -26,6 +26,12 @@ import { stuckLine } from './stuckHelper.ts';
 import { inSweetSpot, reachJump } from './physics.ts';
 import type { W54Info } from './w5Stage54.ts';
 import { validateStage } from './levelCheck.ts';
+import { LESSON_DOT, lessonDotLine, type LessonId } from './lessons.ts';
+import { countedText } from './dotGuide.ts';
+import { findTarget } from './dotGuidePerch.ts';
+import { emptyGuideView, type GuideView } from './dotGuideView.ts';
+import { goalLine } from './stagePlan.ts';
+import { generateAllLevels } from './worldsData.ts';
 
 /** "within reach": this close (px) ahead of him, a thing can be touched or must be jumped now */
 const REACH = 250;
@@ -55,7 +61,7 @@ function forgetTips(id: string) {
   }
 }
 
-interface Frame { t: number; x: number; danger: boolean; moves: Record<'jump' | 'double' | 'run', number> }
+interface Frame { t: number; x: number; danger: boolean; moves: Record<'jump' | 'double' | 'run' | 'punch', number> }
 interface Said { text: string; x: number; t: number }
 
 /**
@@ -65,13 +71,35 @@ interface Said { text: string; x: number; t: number }
  * walks into the Butler's tray. Each frame keeps when it was, where he was, whether an animal was at hand (dotGuideWatch.ts inDanger:
  * no new line but a warning starts then) and the moves done so far (the queue's move counter).
  */
-function holdRight(id: Id, seed: number, untilX: number) {
+function holdRight(id: Id, seed: number, untilX: number, o: { lessons?: boolean; stroll?: number } = {}) {
   forgetTips(id);
   const sim = new RealPlay(id, seed);
   const w5 = (sim.stage as unknown as { proto: { w5: W5Extras } }).proto.w5;
   const gaps = (sim.stage as unknown as { w5info?: W5Info }).w5info?.gaps ?? [];
   const frames: Frame[] = [];
-  const moves = { jump: 0, double: 0, run: 0 };
+  const moves = { jump: 0, double: 0, run: 0, punch: 0 };
+  // the first-time lessons, as the engine sends them (engine.ts lessonTick: the harness turns it off). A phone that has had every
+  // lesson but the flag's, as QA's did on v198: its line ("A flag! Fall, and you start again here.") came as the cocoons did
+  const lessons: Array<{ id: LessonId; t: number; x: number }> = [];
+  if (o.lessons) {
+    const e = sim.e as Record<string, any>;
+    const proto = Object.getPrototypeOf(e);
+    e.lessonSeen = new Set(Object.keys(LESSON_DOT).filter((k) => k !== 'checkpoint'));
+    e.lessonTick = proto.lessonTick;
+    // (the harness keeps him from harm with a long blink: a lesson waits for a hurt player, so it is read as unhurt here)
+    e.safeToStop = function (this: Record<string, any>, sw?: boolean) {
+      const it = this.player.invincibleTimer;
+      this.player.invincibleTimer = 0;
+      try {
+        return proto.safeToStop.call(this, sw);
+      } finally {
+        this.player.invincibleTimer = it;
+      }
+    };
+    e.callbacks.onLesson = (lid: LessonId) => lessons.push({ id: lid, t: sim.t, x: sim.p.x });
+  }
+  const cocoonState = () => ((sim.e as Record<string, any>).w5?.cocoons ?? []) as Array<{ freed: boolean }>;
+  let jab = 0;
   let ran = 0, lastX = sim.p.x, hold = 0, second = false, wasDbl = false, needs2 = false;
   const inWay = (x: number, lo: number, hi: number) => x - sim.p.x > lo && x - sim.p.x < hi;
   for (let i = 0; i < 30 * 200 && sim.p.x < untilX; i++) {
@@ -105,6 +133,13 @@ function holdRight(id: Id, seed: number, untilX: number) {
       second = true;
       hold = 6;
     }
+    // (a shut cocoon right in front of him, 5-5: a tap to punch it, as Dot says, and another every half second while it holds)
+    const shut = cocoonState();
+    const jabNow = jab-- <= 0 && p.grounded && (w5.cocoons ?? []).some((c, i) => !shut[i]?.freed && inWay(c.x, 20, 80) && Math.abs(c.y + 18 - p.y) < 40);
+    if (jabNow) {
+      jab = 14;
+      moves.punch++;
+    }
     if (p.grounded && Math.abs(p.vx) > 60) {
       ran += Math.abs(p.x - lastX);
       if (ran >= 150) {
@@ -113,7 +148,9 @@ function holdRight(id: Id, seed: number, untilX: number) {
       }
     }
     lastX = p.x;
-    sim.frame({ right: true, press, jump: hold > 0 });
+    // (a stroll: the thumb off the glass now and then, as a player reading her lines goes; about walking pace, half his run)
+    const right = !o.stroll || (i % 10) / 10 < o.stroll || !p.grounded;
+    sim.frame({ right, press, jump: hold > 0, punch: jabNow });
     if (sim.p.isDoubleJumping && !wasDbl) moves.double++;
     wasDbl = !!sim.p.isDoubleJumping;
     hold--;
@@ -122,7 +159,7 @@ function holdRight(id: Id, seed: number, untilX: number) {
       || (!q.grounded && !q.climbing && q.vy > DANGER.fallVy);
     frames.push({ t: sim.t, x: q.x, danger, moves: { ...moves } });
   }
-  return { sim, frames, said: sim.said as Said[] };
+  return { sim, frames, said: sim.said as Said[], lessons };
 }
 
 /**
@@ -486,7 +523,7 @@ function newLookShown55(run: ReturnType<typeof holdRight>, tail = 0): Map<string
   const ms = (t: number) => (t - t0) * 1000;
   const fern = fernLine(5, 5)!;
   let fernDue = true;
-  let k = 0;
+  let k = 0, kl = 0;
   for (const f of run.frames) {
     if (fernDue && ms(f.t) >= START_AFTER_MS) {
       fernDue = false;
@@ -497,8 +534,17 @@ function newLookShown55(run: ReturnType<typeof holdRight>, tail = 0): Map<string
       if (l) q.push(l, ms(lines[k].s.t));
       k++;
     }
+    // (a lesson the engine sent: its Dot line, as DotGuide.tsx queues it)
+    while (kl < run.lessons.length && run.lessons[kl].t <= f.t + 1e-6) {
+      const l = lessonDotLine(run.lessons[kl].id, 'screen');
+      if (l) q.push(l, ms(run.lessons[kl].t));
+      kl++;
+    }
     q.tick(ms(f.t), { danger: f.danger, hold: ms(f.t) < CARD_MS, moveCount: (m: MoveId) => (f.moves as Record<string, number>)[m] ?? 0 });
-    for (const ev of q.drain()) if (ev.type === 'start' && !shown.has(ev.show.line.key)) shown.set(ev.show.line.key, { x: f.x, t: f.t });
+    for (const ev of q.drain()) {
+      if (process.env.W5_ORDER_DEBUG === '3') console.log('   ev', ev.type, f.t.toFixed(1), Math.round(f.x), ev.show.line.key.slice(0, 40), ev.type === 'end' ? ev.why : '', f.danger ? 'DANGER' : '');
+      if (ev.type === 'start' && !shown.has(ev.show.line.key)) shown.set(ev.show.line.key, { x: f.x, t: f.t });
+    }
   }
   const last = run.frames[run.frames.length - 1];
   for (let t = last.t; t < last.t + tail; t += 1 / 30) {
@@ -514,7 +560,7 @@ test('5-5: holding right from the start, every first-time line comes before its 
     const st = buildProtoStage(levelConfig('5-5'), seed, HAND_STAGES['5-5']) as Built;
     const ls = lessons55(st);
     // (on to the shrine: the pouch scene, from the rest branch on, plays out over most of the stage)
-    const run = holdRight('5-5' as '5-1', seed, st.exitTotemX - 100);
+    const run = holdRight('5-5' as '5-1', seed, st.exitTotemX - 100, { lessons: true });
     // (he has run past every cocoon: the shrine is sealed, and he has a minute there, going back for them)
     const shown = newLookShown55(run, 60);
     if (process.env.W5_ORDER_DEBUG) {
@@ -543,6 +589,28 @@ test('5-5: holding right from the start, every first-time line comes before its 
     const starts = W5_POUCH.map((l) => shown.get(keyOf('5-5', l.text))?.t ?? -1);
     if (starts.some((t) => t < 0)) problems.push(`seed ${seed}: pouch lines never shown: ${starts.map((t, i) => (t < 0 ? i : '')).join(' ')}`);
     for (let i = 1; i < starts.length; i++) if (starts[i] >= 0 && starts[i - 1] >= 0 && starts[i] < starts[i - 1]) problems.push(`seed ${seed}: pouch line ${i} before line ${i - 1}`);
+  }
+  assert.deepEqual(problems, []);
+});
+
+test("5-5, strolling in at a reader's pace or running: the cocoons' line is up before the first cocoon is in reach, ahead of the flag's and the fern's", () => {
+  // (QA, v198, an expert at 320x782 upright: "A flag! Fall, and you start again here." held the screen from x 2699 to 3344, and the
+  // cocoons' line came only at 3625, beside the third cocoon, after he had walked past two. It waited behind the flag's line.)
+  const problems: string[] = [];
+  for (const seed of SEEDS.slice(0, 4)) {
+    const st = buildProtoStage(levelConfig('5-5'), seed, HAND_STAGES['5-5']) as Built;
+    const first = Math.min(...st.proto.w5.cocoons!.map((c) => c.x));
+    for (const stroll of [0.3, 0.5, 0]) {
+      const run = holdRight('5-5' as '5-1', seed, first + 300, { lessons: true, stroll });
+      const shown = newLookShown55(run);
+      const n = shown.get(keyOf('5-5', W5_TEACH.cocoon));
+      const pace = `${stroll ? `strolling (${stroll})` : 'running'}`;
+      if (!run.lessons.some((l) => l.id === 'checkpoint')) problems.push(`seed ${seed} ${pace}: the flag's lesson never came (the model is off)`);
+      if (!n) problems.push(`seed ${seed} ${pace}: the cocoons' line never shown`);
+      else if (n.x > first - REACH) problems.push(`seed ${seed} ${pace}: the cocoons' line shown at x ${Math.round(n.x)}, ${Math.round(first - n.x)} px before the first cocoon`);
+      // (and he got past the first: it is tied across the path, and punched open)
+      if (run.sim.p.x < first) problems.push(`seed ${seed} ${pace}: held at the first cocoon (x ${Math.round(run.sim.p.x)})`);
+    }
   }
   assert.deepEqual(problems, []);
 });
@@ -781,4 +849,65 @@ test('5-3 upright (320x782, 390x844) and short (640x320): waiting at a row its f
       }
     }
   }
+});
+
+// ───────────────────────────── QA 4 (the expert at 320x782 upright, 5-3 and 5-5 on v198) ─────────────────────────────
+
+/** the engine's view for Dot's guide, at a phone's size, with him standing at x */
+function guideViewAt(sim: RealPlay, x: number, y: number, w: number, h: number): GuideView {
+  const e = sim.e as Record<string, any>;
+  delete e.updateCamera;
+  e.viewCssW = w;
+  e.viewCssH = h;
+  e.introT = 99;
+  e.applyZoom();
+  sim.stand(x, y);
+  sim.p.facing = 1;
+  for (let i = 0; i < 40; i++) sim.frame();
+  return e.guideView(emptyGuideView()) as GuideView;
+}
+
+test("5-3: Dot's ring for the first closing orchid's tip is on the orchid, not on Pokey, upright and sideways", () => {
+  const l = engineGuideLine(W5_TEACH.orchid, '5-3', { dot: true })!;
+  assert.equal(l.text, 'Quick! Flick up before the orchid shuts!');
+  assert.equal(l.topic, 'orchid', 'the tip is about the orchid');
+  assert.equal(l.move, 'jump');
+  for (const seed of [1, 38, 75]) {
+    const st = build('5-3', seed);
+    const first = st.w5info.orchids[0];
+    const cx = (first.x0 + first.x1) / 2;
+    for (const [w, h] of [[320, 782], [390, 844], [844, 390], [640, 320]] as const) {
+      // (where the tip comes: walking up to it, the orchid ahead of him on the screen)
+      const v = guideViewAt(new RealPlay('5-3', seed), first.x0 - 150, G, w, h);
+      const t = findTarget(l.topic, v);
+      assert.ok(t, `seed ${seed} ${w}x${h}: nothing rung`);
+      // (on the bloom: its ledge is its top petals, its middle a little under them)
+      assert.ok(Math.abs(t.x - cx) < 4 && t.y > first.y - 30 && t.y < first.y + 110, `seed ${seed} ${w}x${h}: the ring at (${Math.round(t.x)}, ${Math.round(t.y)}), the orchid at (${cx}, ${first.y}), Pokey at ${Math.round(v.px)}`);
+    }
+  }
+});
+
+test("the goal's \"Still {n}\" line says the count as it is when it is read, not as it was when it was sent (5-3, and every goal)", () => {
+  // (QA, 5-3 on v198: the HUD said 51/116 while Dot said "Still 68 flowers to collect!". The line waits its turn in her queue, and he
+  // picks more up meanwhile)
+  const cfg = levelConfig('5-3');
+  const sent = goalLine('late', cfg.worldIndex, cfg.objectiveType ?? 'harvest', 68);
+  const l = engineGuideLine(sent, '5-3', { dot: true })!;
+  assert.equal(l.text, 'Still 68 flowers to collect!');
+  assert.equal(l.counted, true);
+  assert.equal(countedText(l.text, 116 - 51), 'Still 65 flowers to collect!');
+  // every stage with a count says it the same way, so the fix holds game-wide (DotGuide.tsx puts the count in as it shows the line)
+  const seen = new Set<string>();
+  for (const c of generateAllLevels()) {
+    const t = goalLine('late', c.worldIndex, c.objectiveType ?? '', 9);
+    if (!t || seen.has(t)) continue;
+    seen.add(t);
+    const g = engineGuideLine(t, c.id, { dot: true });
+    if (!g) continue;
+    assert.ok(g.counted, `${c.id}: "${g.text}" is not counted`);
+    assert.match(countedText(g.text, 3), /\b3\b/, c.id);
+  }
+  assert.ok(seen.size >= 3);
+  // and a "Still {n}" line is the only one counted
+  assert.ok(!engineGuideLine(W5_TEACH.cocoon, '5-5', { dot: true })!.counted);
 });

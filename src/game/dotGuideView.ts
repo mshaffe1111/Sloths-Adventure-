@@ -45,6 +45,12 @@ export interface GuideBush extends GuideThing {
   w: number;
   kind: string;
 }
+/** one of World 5's pieces Dot can point at (w5Play.ts guideThings): a cocoon's middle, or a closing orchid's cup */
+export interface GuideW5 extends GuideThing {
+  kind: 'cocoon' | 'orchid';
+  /** a cocoon already punched open: nothing to point at */
+  done?: boolean;
+}
 
 export interface GuideView {
   /** a stage is running at all (false before the engine exists, and in Dot's own flight stage) */
@@ -94,6 +100,8 @@ export interface GuideView {
   collectibles: readonly GuideCollectible[];
   hazards: readonly GuideThing[];
   bushes: readonly GuideBush[];
+  /** World 5's cocoons and closing orchids (empty elsewhere) */
+  w5: readonly GuideW5[];
   /** the score pop-ups floating up ("+100 FLOWER!"): Dot keeps off them */
   popups: readonly GuideThing[];
   /** a boss's weak spot while it is open (world units; the NOW! marker sits on it): Dot's bubble never covers it */
@@ -150,6 +158,7 @@ export function emptyGuideView(): GuideView {
     collectibles: NONE,
     hazards: NONE,
     bushes: NONE,
+    w5: NONE,
     popups: NONE,
     weakOn: false,
     bossX: NaN,

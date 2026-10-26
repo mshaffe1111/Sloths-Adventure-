@@ -13,6 +13,9 @@ import { reachJump, DOUBLE_RISE } from './physics.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { findForStage } from './finds.ts';
 import { COCOON, SIT, W5_TEACH, type W5Extras } from './w5Kit.ts';
+import { COCOON_LOOK, cocoonWriggle } from './w5Look.ts';
+import { findTarget } from './dotGuidePerch.ts';
+import { emptyGuideView, type GuideView } from './dotGuideView.ts';
 import { W5_POUCH } from './w5Lines.ts';
 import { COCOON_GOAL_55, type W5Info } from './w5Stages.ts';
 import { engineGuideLine } from './dotLines.ts';
@@ -268,4 +271,121 @@ test("Meeca's stage has its place after 5-5 in the stage list (planned, not buil
   const list = withExtraStages([levelConfig('5-4'), levelConfig('5-5'), levelConfig('5-6')], true);
   assert.deepEqual(list.map((l) => l.id), ['5-4', '5-5', '5-6']);
   assert.equal(w5BackdropStem(c.id), 'w5dusk2', 'dusk, the other take from 5-5');
+});
+
+// ───────────────────────────── QA 4 (the expert at 320x782 upright, v198) ─────────────────────────────
+
+test('5-5: the first cocoon is tied across the path: he cannot walk or hop past it until three taps punch it open', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const cocoons = st.proto.w5.cocoons!;
+    const first = cocoons.slice().sort((a, b) => a.x - b.x)[0];
+    assert.equal(first.block, true, `seed ${s}: the first is tied across the path`);
+    assert.equal(cocoons.filter((c) => c.block).length, 1, `seed ${s}: only the first`);
+    // (on the ground, before the rest branch: taught where it is first met, World 5's way)
+    assert.equal(first.y, G - 18);
+    assert.ok(first.x < st.proto.w5.rest!.x0, `seed ${s}`);
+  }
+  for (const seed of [1, 38, 75]) {
+    const sim = new RealPlay('5-5', seed);
+    const c = w5Of(sim).cocoons!.find((q) => q.block)!;
+    sim.stand(c.x - 400, G);
+    // walking on and hopping, never punching: held where his punch lands on it
+    for (let i = 0; i < 30 * 8; i++) sim.frame({ right: true, press: i % 25 === 0, jump: i % 25 < 8 });
+    assert.ok(sim.p.x <= c.x - COCOON.stop + 6, `seed ${seed}: got past to ${Math.round(sim.p.x)} (the cocoon at ${c.x})`);
+    assert.ok(sim.p.x > c.x - COCOON.stop - 30, `seed ${seed}: held at ${Math.round(sim.p.x)}`);
+    // three taps from there (landed, still pushing at it), and on he goes
+    for (let i = 0; i < 30; i++) sim.frame({ right: true });
+    for (let k = 0; k < 3; k++) {
+      sim.frame({ punch: true });
+      for (let j = 0; j < 14; j++) sim.frame();
+    }
+    assert.equal(sim.p.crittersRescued, 1, `seed ${seed}: freed`);
+    for (let i = 0; i < 30 * 2; i++) sim.frame({ right: true });
+    assert.ok(sim.p.x > c.x + 100, `seed ${seed}: on past it (${Math.round(sim.p.x)})`);
+  }
+});
+
+test("5-5: the cocoons read: at his head, wriggling, eyes looking out, and Dot's ring on the first, upright and sideways", () => {
+  // (QA, v198: at 320x782 upright the cocoon could not be picked out from the orchids, stumps and grass)
+  assert.equal(COCOON_LOOK.over, COCOON.mid, 'its body drawn where his punch lands');
+  for (const x of [0, 3081, 5613]) {
+    let most = 0;
+    for (let t = 0; t < COCOON_LOOK.every; t += 1 / 30) most = Math.max(most, cocoonWriggle(t, x));
+    assert.ok(most > 0.9, 'a wriggle every couple of seconds');
+  }
+  const l = engineGuideLine(W5_TEACH.cocoon, '5-5', { dot: true })!;
+  assert.equal(l.topic, 'cocoon');
+  for (const seed of [1, 38]) {
+    for (const [w, h] of [[320, 782], [390, 844], [844, 390], [640, 320]] as const) {
+      const sim = new RealPlay('5-5', seed);
+      const c = w5Of(sim).cocoons!.find((q) => q.block)!;
+      const e = sim.e as Record<string, any>;
+      delete e.updateCamera;
+      e.viewCssW = w;
+      e.viewCssH = h;
+      e.introT = 99;
+      e.applyZoom();
+      sim.stand(c.x - 160, G);
+      sim.p.facing = 1;
+      for (let i = 0; i < 40; i++) sim.frame();
+      const v = e.guideView(emptyGuideView()) as GuideView;
+      const t = findTarget(l.topic, v);
+      assert.ok(t && Math.abs(t.x - c.x) < 2 && Math.abs(t.y - (c.y - COCOON.mid)) < 2, `seed ${seed} ${w}x${h}: the ring at ${t ? `${Math.round(t.x)}, ${Math.round(t.y)}` : 'nothing'}`);
+      // (its body is on the screen there, at his height)
+      assert.ok(c.x < e.camera.x + e.camera.viewportWidth - 20 && c.y - 80 > e.camera.y, `seed ${seed} ${w}x${h}: off the screen`);
+    }
+  }
+});
+
+test('5-5 in the real engine: walking on from the rest branch while the pouch scene plays, no spider rouses and no heart is lost', () => {
+  // (QA, v198: he took two or three hits reading the scene as he went on. While it plays the garden holds its breath)
+  for (const seed of [1, 38, 75]) {
+    forgetTips();
+    const sim = new RealPlay('5-5', seed);
+    sim.safe = false;
+    const w5 = w5Of(sim);
+    const rest = w5.rest!;
+    sim.stand(rest.x0 - 200, G);
+    const hp = sim.p.hp;
+    const gates = (sim.e as Record<string, any>).w5.gates as Map<number, { phase: string }>;
+    let hold = 0, jab = 0, playedTo = 0, roused = '';
+    for (let i = 0; i < 30 * 200 && (i < 60 || sim.e.w5.restPlaying(sim.e.gameTime)); i++) {
+      const p = sim.p;
+      let press = false;
+      const ahead = (x: number, lo: number, hi: number) => x - p.x > lo && x - p.x < hi;
+      if (p.grounded && hold <= 0) {
+        const face = sim.platforms.some((q) => q.type === 'solid' && ahead(q.x, 0, 70) && q.y < p.y - 12 && q.y > p.y - 220 && q.y + q.height > p.y - 4);
+        const floor = sim.platforms.some((q) => Math.abs(q.y - p.y) < 3 && q.x <= p.x + 40 && q.x + q.width >= p.x + 40);
+        if (face || !floor) {
+          press = true;
+          hold = 9;
+        }
+      }
+      const punch = jab-- <= 0 && (w5.cocoons ?? []).some((c) => ahead(c.x, 20, 80) && Math.abs(c.y + 18 - p.y) < 40);
+      if (punch) jab = 14;
+      sim.frame({ right: true, press, jump: hold > 0, punch });
+      hold--;
+      // (he keeps walking: a still moment would bring the silk, which is the stage's rule and not what this is about)
+      sim.e.w5.calm();
+      if (sim.e.w5.restPlaying(sim.e.gameTime)) {
+        playedTo = sim.p.x;
+        for (const [id, g] of gates) if (g.phase !== 'calm' && !roused) roused = `spider ${id} ${g.phase} at x ${Math.round(sim.p.x)}`;
+        assert.equal(sim.p.hp, hp, `seed ${seed}: a heart lost at x ${Math.round(sim.p.x)} while the scene plays`);
+      }
+    }
+    assert.equal(roused, '', `seed ${seed}`);
+    // (the scene played over a long stretch, past spiders and a humming thread)
+    const passed = sim.stage.enemies.filter((e) => e.x < playedTo).length;
+    assert.ok(passed >= 2, `seed ${seed}: the scene played to x ${Math.round(playedTo)}, past ${passed} spiders`);
+    // once it is over, they are spiders again: one that sees him crouches and comes
+    const sp = sim.e.enemies.find((e: { x: number; defeated: boolean }) => !e.defeated && e.x > sim.p.x + 300)!;
+    sim.stand(sp.x - 320, sp.y);
+    let woke = false;
+    for (let i = 0; i < 30 * 4 && !woke; i++) {
+      sim.frame({ right: i < 6 });
+      woke = gates.get(sp.id)?.phase !== 'calm';
+    }
+    assert.ok(woke, `seed ${seed}: after the scene the spider at ${sp.x} never stirred`);
+  }
 });

@@ -802,7 +802,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     tallSaid = true;
     /** a cocoon hanging with its bottom COCOON_UP px above the ground at `ground` (low enough for a standing punch: COCOON.mid over his fist) */
     const cocoon = (cx: number, ground: number) => {
-      cocoons55.push({ x: r(cx), y: r(ground - COCOON_UP) });
+      // (the first is tied across the path: he punches it open to go on, so nobody walks past the stage's idea unknowing. QA, v198)
+      cocoons55.push({ x: r(cx), y: r(ground - COCOON_UP), ...(cocoons55.length ? {} : { block: true }) });
       return cocoons55.length - 1;
     };
     /** cocoons hanging low over the path, one at a time, with room between to stop and punch */

@@ -160,6 +160,12 @@ export class RealReach {
       if (this.opts.single && !p.grounded) p.jumpsLeft = 0;
       return frame(pad);
     };
+    // (5-5's first cocoon, tied across the path, starts punched open: what is searched here is where he can get to. Its gate, three taps
+    // and then on, is played in w5Stage55.test.ts)
+    const w5 = this.sim.e.w5 as { w5?: { cocoons?: Array<{ block?: boolean }> }; cocoons?: Array<{ freed: boolean }> } | null;
+    (w5?.w5?.cocoons ?? []).forEach((c, i) => {
+      if (c.block && w5?.cocoons?.[i]) w5.cocoons[i].freed = true;
+    });
     // the boulders stay where they are until they are pushed on purpose (pushBoulders)
     for (const pl of this.sim.platforms as Array<Platform & { pushSaved?: Platform['push'] }>) {
       if (pl.push) {
