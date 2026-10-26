@@ -69,7 +69,7 @@ import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLeve
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
-import { W5Play } from './w5Play.ts';
+import { cardScale, W5Play } from './w5Play.ts';
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
@@ -189,7 +189,7 @@ export interface GameEngineCallbacks {
   /** the game loop failed over and over: the app should leave the stage */
   onFatal?: () => void;
   /** a guiding line (a stage tip, the goal, a reminder, the sealed door): the app has Dot say it (Wayside.tsx) */
-  onGuide?: (text: string, seconds: number) => void;
+  onGuide?: (text: string, seconds: number, passed?: boolean) => void;
   onBossEncounter?: (boss: BossEntity) => void;
   /** Pokey stepped through the hidden Thorn Gate */
   onSecret?: () => void;
@@ -283,6 +283,8 @@ export class GameEngine {
   private introT = 0;
   private particles: Particle[] = [];
   private floatingTexts: FloatingText[] = [];
+  /** stage tips said that go once he is past their spot (StageHint.passX), with the words they were said in */
+  private passTips: Array<{ x: number; text: string }> = [];
 
   private isRunning: boolean = false;
   /** the first time a snapper hides, Dot's line says what to do about it */
@@ -557,6 +559,7 @@ export class GameEngine {
     // the clip sheets of the creatures in this stage start loading now, not as each one first comes on screen
     warmCreatureAnims(new Set(this.enemies.flatMap((e) => (e.type === 'turtle' && e.royal ? ['guard'] : [e.type]))));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
+    this.passTips = [];
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
@@ -2180,7 +2183,17 @@ export class GameEngine {
         if (tipHeard(this.currentStage.config.id, id)) continue;
         markTipHeard(this.currentStage.config.id, id);
         const mode = lessonInputMode();
-        this.guide(mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text, 3.6);
+        const said = mode === 'pad' ? h.pad : mode === 'keys' ? h.keys : h.text;
+        this.guide(said, 3.6);
+        if (h.passX !== undefined) this.passTips.push({ x: h.passX, text: said });
+      }
+      // a move tip about one spot goes once he is on the ground past it, done or not (StageHint.passX)
+      for (let i = this.passTips.length - 1; i >= 0; i--) {
+        const pt = this.passTips[i];
+        if (p.x < pt.x || !p.grounded) continue;
+        this.passTips.splice(i, 1);
+        if (this.stageHint?.text === pt.text) this.stageHint = null;
+        this.callbacks.onGuide?.(pt.text, 0, true);
       }
     }
 
@@ -5035,7 +5048,7 @@ export class GameEngine {
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     this.w4?.drawFront(ctx, this.platforms, this.gameTime);
-    this.w5?.drawFront(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
+    this.w5?.drawFront(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight, zoom: this.zoom, hud: this.camera.y + (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom });
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
       for (const cv of this.proto.covers) {
@@ -5070,7 +5083,8 @@ export class GameEngine {
     drawZoneEffects(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
 
     // Render Floating Combat Texts (in 3-10's dark they come after the Prowler is drawn back over it, so he never hides them)
-    if (!(lair === 'prowler' && prowlerGlow() < 0.98)) this.drawPopups(ctx);
+    // (World 5's come after its golden light and the sleepy veil, below, which washed them out: "TRAY AWAY!" went unread, QA 5-2)
+    if (!(lair === 'prowler' && prowlerGlow() < 0.98) && !this.w5) this.drawPopups(ctx);
     // (when the app has Dot say the hints, it draws them: this canvas banner is only the fallback)
     if (this.stageHint && !this.callbacks.onGuide) {
       const h = this.stageHint;
@@ -5111,6 +5125,12 @@ export class GameEngine {
     if (rig && this.quality === 0 && polishTier() === 0) drawBloom(ctx, rig, this.camera.viewportWidth, this.camera.viewportHeight);
     this.w5?.drawLight(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
     drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, Math.max(this.drowsyShow, this.w5?.veil ?? 0), this.gameTime);
+    if (this.w5) {
+      ctx.save();
+      ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
+      this.drawPopups(ctx);
+      ctx.restore();
+    }
     if (this.darkShow > 0.01) {
       const cx0 = this.camera.x;
       const cy0 = this.camera.y;
@@ -5334,7 +5354,8 @@ export class GameEngine {
     ctx.save();
     ctx.textAlign = 'center';
     // (a boss fight is zoomed out to show both fighters: the words grow back to a readable size on the phone, QA gate)
-    const fs = this.boss && !this.boss.defeated && this.zoom < 1 ? Math.round(Math.max(15, (15 / this.zoom) * 0.85)) : 15;
+    // (World 5's words, a tray knocked away or a cake eaten, are as large as upright on a short landscape screen too: cardScale)
+    const fs = this.boss && !this.boss.defeated && this.zoom < 1 ? Math.round(Math.max(15, (15 / this.zoom) * 0.85)) : this.w5 ? Math.round(15 * cardScale(this.zoom)) : 15;
     ctx.font = `bold ${fs}px Fredoka, sans-serif`;
     ctx.lineJoin = 'round';
     const cam = this.camera;
@@ -6015,7 +6036,7 @@ export class GameEngine {
         this.guide(text, seconds);
       },
       clearTip: () => this.clearGuide(),
-      float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
+      float: (text, x, y, color, life) => this.addFloatingText(text, x, y, color, life),
       rescue: () => {
         p.crittersRescued++;
       },

@@ -32,9 +32,10 @@ test('a boss lair and a generated stage get only what they draw', () => {
   // a boss lair draws no painted platforms and is not hand-built
   assert.deepEqual(stageSheets(lvl('3-10'), on), []);
   // a generated stage: the kit when painting is on (its creatures are rolled with it, so they load as it starts)
-  const five = stageSheets(lvl('5-3'), on);
+  // (5-8: 5-1 to 5-4 are hand-built now)
+  const five = stageSheets(lvl('5-8'), on);
   assert.deepEqual(five, ['kit:1', 'kit:5']);
-  assert.deepEqual(stageSheets(lvl('5-3'), { ...on, paint: false }), []);
+  assert.deepEqual(stageSheets(lvl('5-8'), { ...on, paint: false }), []);
   // with the hand-built stages switched off (?proto=0), 3-1 is a generated stage: no World 3 props
   assert.deepEqual(stageSheets(lvl('3-1'), { ...on, hand: false }), ['kit:1', 'kit:3']);
 });

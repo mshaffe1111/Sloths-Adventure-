@@ -18,12 +18,24 @@
  *   2. LEARN    the sleeping spiders first (one lies alone, to be hopped: it wakes only if he walks right into it), then the humming
  *               threads: strung low across the way, they hum at a touch, and the sleeping spiders near them wake and come. Each is
  *               taught before the first one he could touch (QA, 2026-10-26).
- *   3. DEVELOP  the cakes: tiny cakes among the petals that make him sleepy; then the first Butler, holding out a tray with a cake on
+ *   3. DEVELOP  the cakes: one tiny cake on its own (they make him sleepy), then a pair; then the first Butler, holding out a tray with a cake on
  *               it (punch the tray away, or jump over him).
  *   4. TWIST    soft chairs among the threads ("You'd be a very still chair"), and Pell's blanket note in plain sight on a pink bell.
  *   5. TWIST    everything at once: threads before the jumps (the wide one with a reminder of the second jump), cakes on the high
  *               road, sleeping spiders under it, the Butler again.
  *   6. FINISH   new pairs until about 3:20 (STAGE_SECONDS).
+ *
+ * 5-3 Closing Orchids (harvest, gold): "The orchids are closing early. Gather {n} before they do."
+ *   1. START    the garden, with the sanctuary's orchids and the visitor chairs along the way: room for the goal before anything else.
+ *   2. LEARN    the first orchid, alone, over the grass and one plain hop up, with flowers in its cup: Dot's line comes before it, and
+ *               a miss (it shut) is only a drop to the grass. Then the story's "barely afternoon, and the orchids were already
+ *               closing", and two in a row, still over the grass, closing one after the other.
+ *   3. DEVELOP  the rhythm: orchids strung across soft pits, each a plain hop from the last, closing one after another down the row like
+ *               doors down a hall (go as the first opens); a cake alone on the path, a step of orchids up to a cupful, a spider.
+ *   4. TWIST    "they shut sooner now": from here each orchid stays open for less of its beat (Matt: closing earlier as it goes on),
+ *               a spider after a row, a soft chair and the guests who sat, a row of four.
+ *   5. FINISH   the ideas again in new pairs, a flag after each two, until about 2:55 (STAGE_SECONDS).
+ *   Its flowers count most of the way to the quota on the path, and the rest is in the cups: they are what the stage is for.
  *
  * Every drop is a soft pit (a mossy floor and a step back up the far side): a miss costs a climb, never a life. The hearts are lost to
  * spiders and to the silk, never to a fall.
@@ -34,11 +46,11 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import { findForStage } from './finds.ts';
 import { reachJump } from './physics.ts';
 import { PAST_SHRINE } from './rules.ts';
-import { TABLE_CARD, type Butler, type Cake, type Carving, type Chair, type TeaTable, type Thread, type W5Decor, type W5Extras, type W5Spider } from './w5Kit.ts';
+import { orchidTiming, TABLE_CARD, type Butler, type Cake, type Carving, type Chair, type Orchid, type TeaTable, type Thread, type W5Decor, type W5Extras, type W5Spider } from './w5Kit.ts';
 import { W5_HINTS, type W5Hint } from './w5Lines.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 
-export type W5Plan = '5-1' | '5-2';
+export type W5Plan = '5-1' | '5-2' | '5-3';
 
 /** the floor of a soft pit, and the step out of it (as protoStage.ts) */
 const HOLLOW_Y = 710;
@@ -59,11 +71,27 @@ export const W5_PLAIN_STUMPS = { first: 50, steps: [50, 60, 70] } as const;
 /** after it: one jump high (60 to 88, under SAFE.rise1), or (`tall`) two */
 const STUMP_H: [number, number] = [60, 88];
 const TALL_H: [number, number] = [118, 138];
+/**
+ * The first stump only the second jump climbs, after the lesson: no single jump lands on it (one reaches about 120 px with the ledge's
+ * help), and a double flick from right next to it lands on top however quick the second flick (from 67 ms on: at 135 px a quick double
+ * flick bumped the lip and a first-timer needed 4 tries, QA 5-1, 2026-10-26). The later ones climb back up to TALL_H.
+ */
+export const W5_FIRST_TALL = 125;
 /** how far up the hearts at the flags float: walking height (the engine picks up within 34 px of his middle, 20 px above his feet) */
 export const W5_HEART_UP = 34;
 /** how far before a gap's edge Dot's line about it is said (px): room to say it before he is near it, for a player at full run */
 const GAP_TELL = 760;
 const GAP_TELL_52 = 2400;
+/**
+ * 5-3's closing orchids: the bloom's width (its ledge), each one's beat (s), and how long it stays open: from World 5's first stage's
+ * (the lesson, and the stage's start) down to its fifth's by the end (w5Kit orchidTiming): "closing earlier" as the stage goes on.
+ * In a row, each opens (and closes) this much after the one before it, so they close one after another down the row as he crosses.
+ */
+export const W5_ORCHID = { w: 124, period: 6, openFirst: orchidTiming(1).open, openLast: orchidTiming(5).open, lag: 0.45 } as const;
+/** how high an orchid over the grass stands (its ledge, px above the path): 70 px above a plain 50 px stump beside it */
+export const W5_GRASS_ORCHID = 120;
+/** 5-3's quota: the share of its flowers to gather (the path's alone fall short of it: the cups are what the stage is for) */
+export const W5_HARVEST_SHARE = 0.62;
 
 /** what the tests read back about the stage (ids and x's) */
 export interface W5Info {
@@ -79,12 +107,19 @@ export interface W5Info {
   stumps: Array<{ x: number; h: number; taught: boolean }>;
   /** where the second jump is taught (5-1) or reminded (5-2): the x of its line and of the gap's edge */
   doubleLesson?: { hint: number; edge: number };
-  /** the reminder before the first stump only the second jump climbs: the x of its line and of that stump */
-  tallLesson?: { hint: number; at: number };
+  /** the reminder before the first stump only the second jump climbs: the x of its line and of that stump, and its height */
+  tallLesson?: { hint: number; at: number; h?: number };
+  /** 5-3's orchids: the bloom's left and right, its top, the ground its stem grows from, how long it is open, and which piece it is in */
+  orchids: Array<{ x0: number; x1: number; y: number; ground: number; open: number; piece: 'lesson' | 'steps' | 'row' }>;
+  /** 5-3's rows of orchids over a soft pit: the near edge, the far bank, and the orchids (indices into `orchids`) */
+  rows: Array<{ edge: number; far: number; orchids: number[] }>;
+  /** 5-3's flowers in the cups of the orchids (ids), and the rest */
+  cupFlowers: number[];
 }
 
 export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): GeneratedStage & { proto: ProtoExtras; w5info: W5Info } {
-  const R = stream(seed * 7 + (plan === '5-1' ? 501 : 502));
+  // (5-1 rolls from 501, 5-2 from 502, 5-3 from 503)
+  const R = stream(seed * 7 + 450 + Number(plan.replace('-', '')));
   const P: Platform[] = [];
   const V: Vine[] = [];
   const T: TreeStructure[] = [];
@@ -102,7 +137,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   const carvings: Carving[] = [];
   const spiders: W5Spider[] = [];
   const decor: W5Decor[] = [];
-  const info: W5Info = { plan, flagSeconds: [0], gaps: [], highRoads: [], spiders: [], stumps: [] };
+  const orchids: Orchid[] = [];
+  const info: W5Info = { plan, flagSeconds: [0], gaps: [], highRoads: [], spiders: [], stumps: [], orchids: [], rows: [], cupFlowers: [] };
   /** has the second jump been taught? (in 5-1, at its first wide gap; 5-2 comes after 5-1, and reminds at its first) */
   let doubleTaught = plan !== '5-1';
   let doubleSaid = false;
@@ -151,7 +187,14 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       flower(x0 + (x1 - x0) * t, yTop + 60 * (1 - Math.sin(Math.PI * t)), v);
     }
   };
-  const hint = (x: number, h: W5Hint) => hints.push({ x: r(x), text: h.old, pad: h.pad ?? h.old, keys: h.keys ?? h.old });
+  const hint = (x: number, h: W5Hint) => {
+    const sh: StageHint = { x: r(x), text: h.old, pad: h.pad ?? h.old, keys: h.keys ?? h.old };
+    hints.push(sh);
+    return sh;
+  };
+  /** the move tips about one spot (a wide gap, a tall stump): taken down once he is past it, done or not (QA, 2026-10-26: "Wide gap!"
+   *  stayed up from 5-1 17% to 26%, long after the gap) */
+  const PASS_BY = 80;
   /** a jumping spider on the ground the cursor is on, pacing [x0, x1]; `doze`: asleep until a thread hums or he walks into it */
   const spider = (sx: number, x0: number, x1: number, doze = false) => {
     const id = 500 + eid++;
@@ -177,6 +220,16 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   const garden = (x0: number, x1: number) => {
     for (let gx = x0 + R.r(40, 140); gx < x1 - 60; gx += R.r(170, 300)) {
       const k = R.f();
+      // (5-3: the sanctuary's own orchids among the bushes, and now and then one of the guests who sat)
+      if (plan === '5-3' && k > 0.74) {
+        if (k > 0.95) chairs.push({ x: r(gx), y: G, face: R.chance(0.5) ? 1 : -1, wrapped: true });
+        else {
+          // (small things only: a big painted bloom on the ground would look like a closing orchid to stand on)
+          const n = R.pick(['orchidSprout', 'orchidSprout2', 'mossRoot', 'mossRoot2', 'wrappedCup', 'wrappedStool'] as const);
+          scenery(n, gx, n.startsWith('orchidSprout') ? R.r(54, 70) : n.startsWith('mossRoot') ? R.r(90, 120) : n === 'wrappedCup' ? R.r(40, 50) : R.r(56, 66), { flip: R.chance(0.5) });
+        }
+        continue;
+      }
       scenery(k < 0.45 ? (R.chance(0.5) ? 'blossom' : 'blossom2') : 'fern', gx, k < 0.45 ? R.r(70, 110) : R.r(80, 120));
     }
   };
@@ -226,6 +279,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     const x0 = x;
     run(R.r(140, 220));
     const edge = x;
+    let tell: StageHint | null = null;
     if (double && !doubleSaid) {
       // the first gap only the second jump crosses: 5-1 teaches it here (the first place that needs it), 5-2 reminds
       doubleSaid = true;
@@ -233,12 +287,13 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       // (5-2's reminder comes well ahead, at the start of its beat: its stage's story aside, once it has given way, is read to the end
       // when it comes back, and it must not be what is on screen as he reaches the gap)
       const at = Math.min(x0 + 20, edge - (plan === '5-1' ? GAP_TELL : GAP_TELL_52));
-      hint(at, plan === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double);
+      tell = hint(at, plan === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double);
       info.doubleLesson = { hint: r(at), edge: r(edge) };
     }
     const w = r(R.r(...(double ? GAP2 : GAP1)));
     // (never wider than the jump reaches, with room to spare: a real thumb makes every one)
     const far = edge + Math.min(w, r(reachJump(0, double) * (double ? 0.8 : 0.94)));
+    if (tell) tell.passX = r(far + PASS_BY);
     close();
     softPit(edge, far);
     arc(edge + 10, far - 10, G - (double ? 170 : 128), double ? 4 : 3);
@@ -251,20 +306,30 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   function stumps(n: number, tall = false) {
     // (nothing a second jump is needed for before it is taught)
     if (tall && !doubleTaught) throw new Error(`${plan}: tall stumps before the second jump is taught`);
+    let tell: StageHint | null = null;
     if (tall && n > 1 && !tallSaid) {
       // the first stump only the second jump climbs: a reminder before it (QA, 2026-10-26: the help came only after 3 to 5 tries)
       tallSaid = true;
-      hint(x - 120, plan === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall);
+      tell = hint(x - 120, plan === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall);
       info.tallLesson = { hint: r(x - 120), at: 0 };
     }
     for (let i = 0; i < n; i++) {
       run(R.r(120, 180));
       const w = R.r(130, 190);
-      const h = !doubleTaught
+      const isTall = tall && i % 2 === 1;
+      // (the first tall one after the lesson is the fair one: W5_FIRST_TALL; the rest climb as World 5 does)
+      const firstTall = isTall && !!info.tallLesson && !info.tallLesson.at;
+      // (the roll is made either way, so the rest of the stage is laid out as before)
+      const rolled = !doubleTaught
         ? info.stumps.length === 0 ? W5_PLAIN_STUMPS.first : R.pick(W5_PLAIN_STUMPS.steps)
-        : tall && i % 2 === 1 ? R.r(...TALL_H) : R.r(...STUMP_H);
+        : isTall ? R.r(...TALL_H) : R.r(...STUMP_H);
+      const h = firstTall ? W5_FIRST_TALL : rolled;
       info.stumps.push({ x: r(x), h: r(h), taught: doubleTaught });
-      if (info.tallLesson && !info.tallLesson.at && h > 100) info.tallLesson.at = r(x);
+      if (firstTall) {
+        info.tallLesson!.at = r(x);
+        info.tallLesson!.h = r(h);
+        if (tell) tell.passX = r(x + w + PASS_BY);
+      }
       block(x, x + w, h);
       flower(x + w / 2, G - h - 34, 'hibiscus');
       run(w);
@@ -357,6 +422,93 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     run(R.r(280, 340));
     flower(x - 80, G - 34, 'hibiscus');
     expert += 640 / RUN + 1.2;
+  }
+
+  // ----- 5-3's closing orchids -----
+  /** how long an orchid stays open here: from openFirst at the start down to openLast at the end ("closing earlier" as it goes on) */
+  const openNow = () => {
+    // (all the way down by the last rows: the finish's last pieces come 12 to 30 s before the end)
+    const u = Math.max(0, Math.min(1, expert / (stageSeconds('5-3') - 30)));
+    return Math.round((W5_ORCHID.openFirst + (W5_ORCHID.openLast - W5_ORCHID.openFirst) * u) * 10) / 10;
+  };
+  /** a big orchid, its bloom's ledge at `top` (`cx` its middle), its stem from `ground`; `petals` flowers in its cup */
+  const orchid = (cx: number, top: number, ground: number, openS: number, offset: number, petals: number, piece: W5Info['orchids'][number]['piece']) => {
+    const w = W5_ORCHID.w;
+    const pl: Platform = { id: pid++, x: r(cx - w / 2), y: r(top), width: w, height: 22, type: 'solid', style: 'branch', art: 'orchid' };
+    P.push(pl);
+    const ids: number[] = [];
+    for (let k = 0; k < petals; k++) {
+      const f = flower(cx + (k - (petals - 1) / 2) * 40, top - 34, 'orchid');
+      ids.push(f.id);
+      info.cupFlowers.push(f.id);
+    }
+    const period = W5_ORCHID.period;
+    orchids.push({ x: r(cx), y: r(top), w, period, open: openS, offset: Math.round((((offset % period) + period) % period) * 100) / 100, platformId: pl.id, petalIds: ids, stem: ground });
+    info.orchids.push({ x0: pl.x, x1: pl.x + w, y: pl.y, ground, open: openS, piece });
+    return info.orchids.length - 1;
+  };
+  /**
+   * a plain stump to step up from (1-1's first stepping stone), and the orchid over the grass beside it, one plain hop above it. (The
+   * painted bloom hangs about 110 px below the ledge on its top petals: an orchid over the grass stands that high, or it sinks into the
+   * ground; a stump makes it one plain jump.)
+   */
+  const grassOrchid = () => {
+    const sw = r(R.r(100, 120));
+    block(x, x + sw, W5_PLAIN_STUMPS.first);
+    info.stumps.push({ x: r(x), h: W5_PLAIN_STUMPS.first, taught: doubleTaught });
+    run(sw + R.r(36, 48));
+  };
+  /** the first orchid: alone, over the grass, one plain hop up from a stump, long open, two flowers in its cup (a miss is a drop to the grass) */
+  function orchidLesson() {
+    const x0 = x;
+    run(R.r(200, 260));
+    grassOrchid();
+    orchid(x + W5_ORCHID.w / 2, G - W5_GRASS_ORCHID, G, W5_ORCHID.openFirst, R.r(0, W5_ORCHID.period), 2, 'lesson');
+    run(W5_ORCHID.w);
+    run(R.r(260, 320));
+    garden(x0, x);
+    expert += (x - x0) / RUN + 1.2;
+  }
+  /** orchids over the grass, each a plain hop above the last, closing one after the other; a fuller cup at the top */
+  function orchidSteps(n: number) {
+    const x0 = x;
+    run(R.r(200, 260));
+    const openS = openNow();
+    const base = R.r(0, W5_ORCHID.period);
+    grassOrchid();
+    let cx = x + W5_ORCHID.w / 2;
+    for (let i = 0; i < n; i++) {
+      orchid(cx, G - W5_GRASS_ORCHID - 62 * i, G, openS, base - i * W5_ORCHID.lag, i === n - 1 ? 3 : 2, 'steps');
+      if (i < n - 1) cx += W5_ORCHID.w + R.r(40, 60);
+    }
+    x = r(cx + W5_ORCHID.w / 2);
+    run(R.r(240, 300));
+    garden(x0, x);
+    expert += (x - x0) / RUN + 0.6 * n + 1;
+  }
+  /** a row of orchids strung across a soft pit, each a plain hop from the last (and from the banks), closing one after another */
+  function orchidRow(n: number) {
+    run(R.r(180, 240));
+    const edge = x;
+    const openS = openNow();
+    const base = R.r(0, W5_ORCHID.period);
+    const top = G - 30;
+    // (the hops: from the bank's edge to a bloom's lip, bloom to bloom, and off the last: well inside one running jump, about 175 px)
+    let cx = edge + R.r(95, 115) + W5_ORCHID.w / 2;
+    const ids: number[] = [];
+    for (let i = 0; i < n; i++) {
+      ids.push(orchid(cx, top - (i % 2 ? R.r(0, 24) : 0), HOLLOW_Y, openS, base - i * W5_ORCHID.lag, R.chance(0.5) ? 2 : 1, 'row'));
+      // (bloom to bloom: a short hop, so upright, standing on one, the whole of the next is in view: the view shows about 290 px ahead)
+      if (i < n - 1) cx += W5_ORCHID.w + R.r(85, 100);
+    }
+    const far = r(cx + W5_ORCHID.w / 2 + R.r(95, 115));
+    close();
+    softPit(edge, far);
+    info.rows.push({ edge: r(edge), far, orchids: ids });
+    open(far);
+    run(R.r(180, 240));
+    // (the wait for the first to open, and a hop on each)
+    expert += (far - edge) / RUN + 0.45 * n + 1.4 + 200 / RUN;
   }
 
   // ───────────────────────────── 5-1 The Loveliest Place ─────────────────────────────
@@ -471,10 +623,13 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     });
     beat('Develop: the cakes and the Butler', () => {
       // (each new thing with room before it: its line is said, and read, before he is at it, whatever was said just before; QA, 2026-10-26)
+      // the first cake on its own, with room to try a hop over it, and the pair after (QA, 5-2, 2026-10-26: the line was followed at
+      // once by two cakes)
       rest(R.r(450, 550));
-      cakeRow(2);
+      cakeRow(1);
+      rest(R.r(320, 400));
       gap();
-      cakeRow(3);
+      cakeRow(2);
       flag();
       rest(R.r(450, 550));
       butler();
@@ -539,13 +694,77 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     });
   }
 
+  // ───────────────────────────── 5-3 Closing Orchids ─────────────────────────────
+  if (plan === '5-3') {
+    beat('Start: barely afternoon', () => {
+      // (room for the goal card and the goal before the first orchid's line: a player who runs from the first moment has the goal read,
+      // then the orchid's line well before the first bloom. The story's line waits until he has seen one close)
+      rest(R.r(1950, 2100));
+      flag();
+    });
+    beat('Learn: the first orchid, over the grass', () => {
+      rest(R.r(260, 320));
+      orchidLesson();
+      hint(x - 120, W5_HINTS.s53start);
+      rest(R.r(380, 440));
+      orchidSteps(2);
+      flag();
+    });
+    beat('Develop: the rhythm', () => {
+      rest(R.r(260, 320));
+      orchidRow(2);
+      rest(R.r(240, 300));
+      cakeRow(1);
+      orchidSteps(3);
+      flag();
+      orchidRow(3);
+      spiderRun(1, R.r(900, 1000));
+      gap();
+      flag();
+    });
+    beat('Twist: they shut sooner', () => {
+      hint(x + 60, W5_HINTS.s53sooner);
+      rest(R.r(420, 500));
+      orchidRow(3);
+      spiderRun(1, R.r(900, 1000));
+      chairWalk(1, 2);
+      orchidRow(4);
+      flag();
+    });
+    beat('Finish', () => {
+      let n = 0;
+      while (expert < stageSeconds('5-3') - 12 && n < 30) {
+        const k = n % 4;
+        if (k === 0) {
+          orchidRow(R.chance(0.5) ? 3 : 4);
+          rest(R.r(240, 300));
+          cakeRow(1);
+        } else if (k === 1) {
+          spiderRun(1, R.r(900, 1000));
+          orchidSteps(3);
+        } else if (k === 2) {
+          highRoad(R.r(480, 600));
+          orchidRow(3);
+        } else {
+          gap();
+          orchidRow(4);
+        }
+        if (n % 2 === 1) flag();
+        n++;
+      }
+      hint(x + 40, W5_HINTS.s53end);
+      rest(R.r(700, 820));
+      if (expert < stageSeconds('5-3')) rest((stageSeconds('5-3') - expert) * RUN + 60);
+    });
+  }
+
   // the shrine, and nothing past it
   const exitX = r(x - 220);
   close();
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
   const past = (px: number) => px > exitX + PAST_SHRINE;
   for (let i = C.length - 1; i >= 0; i--) if (past(C[i].x)) C.splice(i, 1);
-  for (const list of [cakes, butlers, chairs, threads] as Array<Array<{ x?: number; x0?: number }>>) {
+  for (const list of [cakes, butlers, chairs, threads, orchids] as Array<Array<{ x?: number; x0?: number }>>) {
     for (let i = list.length - 1; i >= 0; i--) if (past(list[i].x ?? list[i].x0 ?? 0)) list.splice(i, 1);
   }
   info.flagSeconds.push(expert);
@@ -554,10 +773,12 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   // (the hearts at the flags at walking height, as the petals are: 60 px up, a first-timer ran under them at 4 of 5 hearts; QA, 2026-10-26)
   cid = heartsAtFlags(C, checkpoints, cid, W5_HEART_UP);
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: [] }, C);
-  const cfg: LevelConfig = { ...config, levelWidth: W, levelHeight: Math.max(config.levelHeight, 900) };
+  // (5-3's quota: a share of its flowers, more than the path holds alone)
+  const flowers = C.filter((c) => c.type === 'flower').length;
+  const cfg: LevelConfig = { ...config, levelWidth: W, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '5-3' ? { targetCount: Math.round(flowers * W5_HARVEST_SHARE) } : {}) };
   const w5: W5Extras = {
     mood: 'gold', petals: true, ...(plan === '5-1' ? { gentle: true } : {}),
-    chairs, tables, cakes, butlers, threads, carvings, spiders, decor,
+    chairs, tables, cakes, butlers, threads, carvings, spiders, decor, ...(orchids.length ? { orchids } : {}),
   };
   return {
     config: cfg,
