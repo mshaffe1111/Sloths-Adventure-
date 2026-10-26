@@ -15,7 +15,7 @@
  * can still steer, down to a flower. Iron thorns cost a heart and leave a scratch (the story's nine); the mist below is a heart and
  * back to the last flower she drank at. The folded-letter gap at the end slows everything down while she squeezes through.
  */
-import { DOT, DOT_H, MIST, TOP, gustState, openingY, segDist, type DotStage } from './dotFlightStage.ts';
+import { DOT, DOT_H, MIST, THORN_REACH, TOP, drinkBox, flowerCheckpoint, gustState, openingY, segDist, type DotStage } from './dotFlightStage.ts';
 
 /** the input fields she reads (InputEngine.state); presses she uses are cleared, as the engine does for Pokey */
 export interface FlightInput {
@@ -33,6 +33,8 @@ export type FlightEvent =
   | { k: 'flapEmpty' }
   | { k: 'buzz' }
   | { k: 'sip'; id: number; first: boolean }
+  /** a flower is her checkpoint now (she drank at it, or flew past it): a life lost, or Continue after a game over, brings her back here */
+  | { k: 'checkpoint'; id: number }
   | { k: 'full' }
   | { k: 'droop'; id: number }
   | { k: 'hurt'; x: number; y: number; dir: number }
@@ -106,7 +108,17 @@ export class DotFlight {
     return !this.through && this.energy > 0 && this.flaps >= 1 && this.sinceFlap >= DOT.gap;
   }
 
-  /** back at the last flower she drank at, full of nectar, hanging still until the player moves */
+  /** the flower her checkpoint is at (its x; the start is -1) */
+  cpX = -1;
+  /** this flower is her checkpoint now, unless she already has a later one */
+  private reach(f: { id: number; x: number; y: number; face: -1 | 1 }, ev: FlightEvent[]) {
+    if (f.x <= this.cpX) return;
+    this.cpX = f.x;
+    this.checkpoint = flowerCheckpoint(f);
+    ev.push({ k: 'checkpoint', id: f.id });
+  }
+
+  /** back at her checkpoint (the last flower she reached), full of nectar, hanging still until the player moves */
   respawn() {
     this.x = this.checkpoint.x;
     this.y = this.checkpoint.y;
@@ -180,12 +192,14 @@ export class DotFlight {
     if (this.sinceFlap >= DOT.gap && this.flaps < DOT.flaps) this.flaps = Math.min(DOT.flaps, this.flaps + dt / DOT.regen);
     if (dir !== 0) this.face = dir > 0 ? 1 : -1;
 
-    // drinking: at a flower's mouth with room in her tank, she hangs there (no energy spent) and fills up fast
+    // drinking: anywhere in a flower's bloom (and a margin round it) with room in her tank, she hangs there (no energy spent) and
+    // fills up fast
     this.sipping = -1;
     if (this.energy < DOT.energy - 0.5 && !this.through) {
       for (const f of st.flowers) {
-        if ((this.nectar.get(f.id) ?? 0) <= 0) continue;
-        if (Math.abs(f.x - this.x) > DOT.sipReach || Math.hypot(f.x - this.x, f.y - this.y) > DOT.sipReach) continue;
+        if (Math.abs(f.x - this.x) > 160 || (this.nectar.get(f.id) ?? 0) <= 0) continue;
+        const b = drinkBox(f);
+        if (this.x < b.x0 || this.x > b.x1 || this.y < b.y0 || this.y > b.y1) continue;
         this.sipping = f.id;
         break;
       }
@@ -198,8 +212,7 @@ export class DotFlight {
       this.nectar.set(f, left - take);
       if (!this.drunk.has(f)) {
         this.drunk.add(f);
-        const fl = st.flowers.find((q) => q.id === f)!;
-        this.checkpoint = { x: fl.x + (fl.face > 0 ? 34 : -34), y: fl.y };
+        this.reach(st.flowers.find((q) => q.id === f)!, ev);
         ev.push({ k: 'sip', id: f, first: this.drunk.size === 1 });
       }
       if (this.energy >= DOT.energy - 0.5) {
@@ -228,6 +241,13 @@ export class DotFlight {
     if (!this.lowSaid && this.energy < 30) {
       this.lowSaid = true;
       ev.push({ k: 'low' });
+    }
+
+    // every flower is a checkpoint, drunk at or not: flying on past one (above the mist) makes it the place she comes back to
+    if (!this.fallen && this.y < MIST - 20) {
+      for (const f of st.flowers) {
+        if (f.x > this.cpX && this.x > f.x + 20 && this.x < f.x + 400) this.reach(f, ev);
+      }
     }
 
     // through the gap: she floats on out into the light, whatever the thumb does
@@ -291,7 +311,7 @@ export class DotFlight {
     if (this.invuln <= 0) {
       for (const th of st.thorns) {
         if (this.x < Math.min(th.x0, th.x1) - 40 || this.x > Math.max(th.x0, th.x1) + 40) continue;
-        if (segDist(this.x, this.y, th) > DOT.R + 5) continue;
+        if (segDist(this.x, this.y, th) > THORN_REACH) continue;
         // pushed off the strand, away from where she touched it
         const dx = th.x1 - th.x0;
         const dy = th.y1 - th.y0;
