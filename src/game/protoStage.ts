@@ -16,6 +16,7 @@
  * Every rolled piece is checked against the shared physics (protoCheck.ts) and rolled again if it fails (see protoStage.test.ts).
  */
 import { fixPickups } from './flowerReach.ts';
+import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
 import { JUMP_RISE, reachGlide, reachJump, SAFE } from './physics.ts';
@@ -164,6 +165,13 @@ export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: num
 const HOLLOW_Y = 710;
 /** the step out of a soft pit: the pit is 130 deep and one jump rises about 108, so 55 up and then 75 up, each an easy single jump */
 const PIT_STEP = 55;
+/**
+ * the deepest a soft pit between two walls may be: in the engine (30 fps) a second jump and the lip hoist climb a 190 px wall from a
+ * standstill and a plain jump 122 px (realPlay.test.ts measures it), so a gap deeper than this, with margin, gets its floor raised to
+ * PIT_CLIMB under its lower side
+ */
+export const PIT_ESCAPE = 170;
+export const PIT_CLIMB = 100;
 /** the tallest stump one jump from the ground climbs with room to spare */
 const STUMP_REACH = 90;
 /** how high a double jump lifts him (computed once from the physics) */
@@ -281,6 +289,20 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     // (a narrow pit gets its whole floor raised instead: a sliver of a step is no help)
     const sw = far - edge < 170 ? far - edge : 70;
     P.push({ id: pid++, x: far - sw, y: HOLLOW_Y - PIT_STEP, width: sw, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
+  };
+  /**
+   * the gaps stepping stones leave in a soft pit (between the banks at `edge` and `far`): a gap between two stones that both stand higher
+   * than a second jump climbs out of the pit is a pit with no way out (the real engine stranded him there, realReach.ts), so its floor
+   * is raised to a plain jump under its lower side
+   */
+  const pitFloors = (edge: number, stones: Platform[], far: number) => {
+    const sides = [{ x0: edge, x1: edge, top: G }, ...stones.map((q) => ({ x0: q.x, x1: q.x + q.width, top: q.y })), { x0: far, x1: far, top: G }];
+    for (let i = 0; i + 1 < sides.length; i++) {
+      const lower = Math.max(sides[i].top, sides[i + 1].top);
+      if (HOLLOW_Y - lower <= PIT_ESCAPE) continue;
+      const floor = lower + PIT_CLIMB;
+      P.push({ id: pid++, x: sides[i].x1, y: floor, width: sides[i + 1].x0 - sides[i].x1, height: HOLLOW_Y + 10 - floor, type: 'solid', style: 'moss_stone' });
+    }
   };
   const block = (x0: number, x1: number, h: number) => {
     const p: Platform = { id: pid++, x: x0, y: G - h, width: x1 - x0, height: h, type: 'solid', style: 'moss_stone' };
@@ -642,12 +664,15 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     close();
     let px = edge, prevTop = G;
     const tops: number[] = [];
+    const stones: Platform[] = [];
     for (const h of heights) {
       const top = G - h;
       const gap = Math.round(reachJump(prevTop - top, dbl) * R.r(share[0], share[1]));
       const w = Math.round(R.r(110, 160));
       px += gap;
-      P.push({ id: pid++, x: px, y: top, width: w, height: HOLLOW_Y - top + 10, type: 'solid', style: 'moss_stone' });
+      const p: Platform = { id: pid++, x: px, y: top, width: w, height: HOLLOW_Y - top + 10, type: 'solid', style: 'moss_stone' };
+      P.push(p);
+      stones.push(p);
       flower(px + w / 2, top - 34, 'orchid');
       tops.push(top);
       px += w;
@@ -655,6 +680,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     }
     const far = Math.round(px + reachJump(prevTop - G, dbl) * R.r(share[0], share[1]));
     softPit(edge, far);
+    pitFloors(edge, stones, far);
     open(far);
     run(R.r(160, 240));
     expert += (x - x0) / RUN + 0.6 * heights.length;
@@ -2454,6 +2480,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const lastS = stones[stones.length - 1];
     const far = lastS.x + lastS.width + head();
     softPit(edge, far);
+    pitFloors(edge, stones, far);
     const turn = Math.round(mid.x + mid.width * 0.45);
     gustZone(edge - 170, turn, 1, edge - 120);
     gustZone(turn, far + 110, -1, turn + 30);
@@ -3191,6 +3218,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   }
   const exitX = x - 260;
   close();
+  // nothing lies past the shrine: the engine stops him at it (exitTotemX + 35), so a flower the last stretch laid beyond it could never
+  // be picked up (one did, in every stage built here, 2026-10-25)
+  for (let i = C.length - 1; i >= 0; i--) if (C[i].x > exitX + PAST_SHRINE) C.splice(i, 1);
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: G - 30, collected: false, bobPhase: 0 });
 
   const width = Math.ceil(x + 20);

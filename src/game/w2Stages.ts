@@ -11,6 +11,7 @@
  * doors, its PLEASE BE PATIENT sign and the mailman, who has been carrying the same parcel since the spring.
  */
 import { fixPickups } from './flowerReach.ts';
+import { PAST_SHRINE } from './rules.ts';
 import { findForStage } from './finds.ts';
 import { reachJump } from './physics.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow } from './protoCheck.ts';
@@ -1158,6 +1159,8 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
 
   const exitX = x - 220;
   close();
+  // nothing lies past the shrine, where he cannot go (rules.ts PAST_SHRINE)
+  for (let i = C.length - 1; i >= 0; i--) if (C[i].x > exitX + PAST_SHRINE) C.splice(i, 1);
   C.push({
     id: cid++,
     type: 'exit_totem',
