@@ -16,7 +16,7 @@ secHurt=collections.Counter(); secLife=collections.defaultdict(collections.Count
 secVisits=collections.Counter(); stalls=collections.defaultdict(list); fpsBad=collections.defaultdict(list)
 stuck=[]; duckOn=collections.Counter(); kicks=collections.Counter(); mins=collections.Counter(); jumps=collections.Counter()
 stallAfter=collections.Counter(); memRuns=[]; other=collections.defaultdict(list)
-KNOWN={'section','hurt','lostLife','quit','stall','fps','mem','checkpoint','sheet','stomp','finish','mix','survey','start','rules','playAgain','difficulty','stuckHelp'}
+KNOWN={'look','section','hurt','lostLife','quit','stall','fps','mem','checkpoint','sheet','stomp','finish','mix','survey','start','rules','playAgain','difficulty','stuckHelp'}
 for f in sorted(glob.glob(D+'/*.json')):
     s=json.load(open(f)); who=s['player']; dev=s['device'].split(';')[0]+' '+s['device'].split(';')[1].strip().split(' ')[0]
     lines=[l for part in s['parts'] if isinstance(part,list) for l in part]
@@ -87,21 +87,23 @@ print('### Player or game? Each section judged against who it beats (Matt, 2026-
 # count either way. A respawn that falls back to an earlier section isn't a pass. Skill tiers come from how players do overall:
 # a section that beats beginners but not skilled players is the player; one that beats skilled players too is the game.
 visits=[]  # (player, section, passed, lives, hurts, seconds, nth visit by this player)
+looks=[]  # the HUD each visit was played with: 'new'/'old' (+' quiet'), from the 'look' line (2026-10-26 on); '?' before
 for f in sorted(glob.glob(D+'/*.json')):
     s=json.load(open(f)); who=s['player']
     lines=sorted([l for part in s['parts'] if isinstance(part,list) for l in part],key=lambda l:l[1])
-    cur=None; seen=set()
+    cur=None; seen=set(); look='?'
     def close(passed,t):
-        if cur: visits.append((who,cur['sec'],passed,cur['lives'],cur['hurts'],(t-cur['t'])/1000))
+        if cur: visits.append((who,cur['sec'],passed,cur['lives'],cur['hurts'],(t-cur['t'])/1000)); looks.append(cur['look'])
     for l in lines:
         if l[0]!='e': continue
         e=l[2]; t=l[1]
-        if e in ('start','playAgain'): close(False,t); cur=None; seen=set()
+        if e=='look': look=('new' if 'newLook 1' in str(l[3]) else 'old')+(' quiet' if 'quiet' in str(l[3]) else '')
+        elif e in ('start','playAgain'): close(False,t); cur=None; seen=set()
         elif e=='section':
             d=str(l[3])
             if cur and d==cur['sec']: continue
             if d in seen and cur: cur['lives']+=0; continue  # fell back after a fall: still the same attempt
-            close(True,t); seen.add(d); cur={'sec':d,'t':t,'lives':0,'hurts':0}
+            close(True,t); seen.add(d); cur={'sec':d,'t':t,'lives':0,'hurts':0,'look':look}
         elif cur and e=='lostLife': cur['lives']+=1
         elif cur and e=='hurt': cur['hurts']+=1
         elif e=='finish': close(True,t); cur=None
@@ -138,6 +140,16 @@ for sec,L in sorted(bySec.items(),key=lambda kv:-len(kv[1])):
     fmt=lambda x,pct=False:'-' if x is None else (f'{x:.0%}' if pct else f'{x:.1f}')
     print(f'  {sec:22s} {len(players):2d} players {len(L):3d} visits | skilled: through {fmt(skPass,1)}, hits {fmt(skHurt)}, lives {fmt(skLives)}'
           f' | the rest: through {fmt(oPass,1)}, hits {fmt(oHurt)}, lives {fmt(oLives)} -> {verdict}')
+# does the new HUD and Dot help? the learning group's first visits, new look against old, section by section (once 'look' lines exist)
+if any(k!='?' for k in looks):
+    print('### New look or old: the learning group\'s first visits (through, hits, lives, seconds)')
+    fv=[(v,k) for v,k in zip(vv,looks) if v[6]==1 and v[0] not in skilled]
+    for sec in sorted({v[1] for v,_ in fv}):
+        row=[]
+        for k in ('new','new quiet','old'):
+            g=[v for v,kk in fv if v[1]==sec and kk==k]
+            if g: row.append(f"{k}: {len(g)} x through {sum(v[2] for v in g)/len(g):.0%} hits {sum(v[4] for v in g)/len(g):.1f} lives {sum(v[3] for v in g)/len(g):.1f} {statistics.median(v[5] for v in g):.0f}s")
+        if len(row)>1: print(f'  {sec:22s} '+' | '.join(row))
 print('### Per player per minute: duck-on, kicks, jumps')
 for w in mins:
     if mins[w]>2: print(f'  {w:14s} {mins[w]:6.1f} min  duck {duckOn[w]/mins[w]:5.1f}/min  kicks {kicks[w]/mins[w]:4.1f}/min  jumps {jumps[w]/mins[w]:5.1f}/min')
