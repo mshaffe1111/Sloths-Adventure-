@@ -33,23 +33,23 @@ export const DOT = {
   /** her body: a circle this big (the wings, tail and beak are not counted, so a brush with a wing tip is forgiven) */
   R: 13,
   /** flying flat out, px/s, and how quickly she gets there */
-  speed: 230,
-  accel: 1500,
+  speed: 290,
+  accel: 2200,
   /** with no direction held she brakes, as hummingbirds do */
   brake: 6,
   /** pulled down this hard (px/s²) and never faster than `fall`; flying along at speed holds her up a little (`cruiseFall`) */
   g: 620,
   fall: 210,
-  /** (gentler than it was: sliding along with one thumb, she sank too fast to keep up with flicks; QA, 2026-10-26) */
-  cruiseFall: 85,
+  /** (gentler: sliding along with one thumb she sank too fast to keep up with flicks; QA, then Matt's retune, 2026-10-26) */
+  cruiseFall: 55,
   /** a flap: straight up at this speed. Three in hand, one back each `regen` s, never two within `gap` s: she climbs, she can't rocket */
   flapV: 340,
   flaps: 3,
-  regen: 0.55,
+  regen: 0.4,
   gap: 0.16,
   /** hovering: she sinks this slowly and moves at this share of her speed. A tap holds her for `tap` s */
   hoverSink: 24,
-  hoverMul: 0.6,
+  hoverMul: 0.8,
   tap: 0.6,
   /** after a flap, a thumb still on the glass this long is a hover (a flick alone holds for 220 ms: inputEngine.ts) */
   holdAfter: 0.24,

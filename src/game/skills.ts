@@ -88,7 +88,9 @@ function clearedInStorage(stageId: string): boolean {
 
 /**
  * The skills the player has right now on this device. `?skills=all` (for testing) gives every skill.
- * A stage that needs a skill always counts as having it (it can only be reached after the unlocking stage).
+ * A stage after the one that teaches a skill always counts as having it: it can only be reached by clearing that stage, and the stage
+ * checks lay pickups for it from there on (levelCheck.ts skillHeldAt). Played straight from the tester's switch (testUnlock.ts), which
+ * opens stages without clearing anything, 4-2 First Glide used to start without the leaf it teaches.
  */
 export function learnedSkills(stageId?: string): Set<SkillId> {
   try {
@@ -99,7 +101,7 @@ export function learnedSkills(stageId?: string): Set<SkillId> {
   const have = skillsFrom(clearedInStorage);
   if (stageId) {
     const at = missionOf(stageId);
-    for (const s of SKILLS) if (skillGuaranteedAt(s.id, at)) have.add(s.id);
+    for (const s of SKILLS) if (skillHeldAt(s.id, at)) have.add(s.id);
   }
   return have;
 }
