@@ -293,6 +293,8 @@ export interface BossDef {
   perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number }; /** a bounce mushroom (70 wide; `up` is its top) */ kind?: 'bouncy'; /** from this phase on it cracks under a hero who stays on it */ crack?: number; /** no heart is put on it */ noHeart?: boolean }>;
   /** climbing vines down the inside of the wall (x from the left fence): a way off the floor */
   climbs?: number[];
+  /** Dot's line when Pokey first stands on one of its cracking ledges (said then, not when they start to crack) */
+  crackTip?: string;
   /** upright, keep this stretch of the arena in view (x from the left fence): where its attacks are dodged from */
   frameRefuges?: [number, number];
   /** its body is a wall Pokey cannot pass (a heap against a fence: behind it no attack could reach him) */
@@ -398,6 +400,9 @@ export function weakOpen(b: BossEntity, def?: BossDef): boolean {
   return st === 'rec' || st === 'stun';
 }
 
+/** a move's first wind-up (when Dot's tip for it is said) lasts this many times as long */
+export const FIRST_TELL_MUL = 2.2;
+
 /** Easy (difficulty.ts): every opening lasts this many times as long */
 export const EASY_OPEN_MUL = 1.25;
 
@@ -480,7 +485,14 @@ function startMove(b: BossEntity, def: BossDef, c: BossCtx, name: string) {
   face(b, c);
   b.telegraphTimer = m.tell * (c.tellMul ?? 1);
   b.isAttacking = false;
-  if (m.guide) c.guide?.('move:' + name, m.guide);
+  // the first time, Dot names it, and the wind-up runs long enough for her line to be read before it strikes (QA gate: the pounce
+  // tip came up with the hit)
+  // (for the bosses with announced openings, 1-10 to 3-10; the others keep their timing)
+  const said = m.guide ? c.guide?.('move:' + name, m.guide) : false;
+  if (said && def.openCue) {
+    br.d.firstMul = FIRST_TELL_MUL;
+    b.telegraphTimer *= FIRST_TELL_MUL;
+  }
   m.onTell?.(b, c);
 }
 
@@ -546,7 +558,7 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
 
     case 'tell': {
       if (!m) break;
-      const tell = m.tell * (c.tellMul ?? 1);
+      const tell = m.tell * (c.tellMul ?? 1) * (br.d.firstMul ?? 1);
       b.telegraphTimer = Math.max(0, tell - br.t);
       // it keeps watching you for the first half of the windup, then commits
       if (br.t < tell * 0.5) face(b, c);

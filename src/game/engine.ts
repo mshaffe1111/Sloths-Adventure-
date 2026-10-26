@@ -1871,6 +1871,8 @@ export class GameEngine {
           if (plat.type === 'fragile') {
             if (plat.fragileTimer === undefined) {
               plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+              // a boss's cracking ledge: Dot says so the first time he stands on one
+              if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
               if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
                 this.zoneHinted.crumble = true;
                 this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
@@ -3013,6 +3015,8 @@ export class GameEngine {
   readonly bossHurtLog: Array<{ t: number; by: string; state: string; move: string | null; bt: number }> = [];
   private noteBossHurt(by: string, state: string, move: string | null, bt: number) {
     this.bossHurtLog.push({ t: this.gameTime, by, state, move, bt });
+    // (and in the play log, for the QA team: tools/playtesters/LOG_EVENTS.md `bossHurt`)
+    recorder.event('bossHurt', `${by} ${state} ${move ?? '-'} ${bt.toFixed(2)}`);
     if (this.bossHurtLog.length > 40) this.bossHurtLog.shift();
   }
 

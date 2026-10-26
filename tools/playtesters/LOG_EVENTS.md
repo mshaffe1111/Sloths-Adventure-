@@ -95,6 +95,7 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `section` | the stretch of the test stage Pokey entered (from builds after 2026-10-26: only once he is 40 px into it and has stayed 0.5 s, and not while still swinging, so a swing over the line no longer flips it back and forth; `src/game/sectionTrack.ts`) |
 | `checkpoint` | checkpoint reached (its x) |
 | `hurt` | hit (hearts left) |
+| `bossHurt` | in a boss fight, just before its `hurt` line: what hit him and what the boss was doing, `<by> <state> <move> <seconds into it>`. `by` is `strike` (an attack's own box), `body` (touching him) or `hazard:<kind>`; `state` is `tell`, `act`, `rec`, `stun`, `idle` or `roar` (e.g. `strike act pounce 0.96`) |
 | `lostLife` | a life lost (`water`, `pit`, `hurt`, …) |
 | `stomp` | stomped a foe (its type, or `boss`) |
 | `stuckHelp` | the game helped him out of a stuck spot (x) |
