@@ -1,16 +1,16 @@
 {
- "sessions": 13,
- "minutesPlayed": 75.5,
+ "sessions": 14,
+ "minutesPlayed": 78.2,
  "devices": {
-  "iPhone 402x713 portrait": 6,
+  "iPhone 402x713 portrait": 7,
   "iPhone 402x714 portrait": 6,
   "iPhone 874x277 landscape": 1
  },
- "strokes": 4185,
+ "strokes": 4355,
  "mix": {
-  "drag": 0.397,
+  "drag": 0.4,
   "tap": 0.02,
-  "flick": 0.583,
+  "flick": 0.58,
   "hold": 0.0
  },
  "tapMs": {
@@ -25,13 +25,13 @@
  },
  "flickPx": {
   "p10": 111.364,
-  "p50": 203.246,
-  "p90": 302.452
+  "p50": 204.402,
+  "p90": 306.366
  },
  "flickPxPerMs": {
-  "p10": 0.529,
-  "p50": 1.008,
-  "p90": 1.828
+  "p10": 0.528,
+  "p50": 1.018,
+  "p90": 1.883
  },
  "flickMs": {
   "p10": 130,
@@ -40,13 +40,13 @@
  },
  "dragMs": {
   "p10": 321,
-  "p50": 529,
-  "p90": 1429
+  "p50": 537,
+  "p90": 1430
  },
  "jumpFlickOffVerticalDeg": {
-  "p10": 5.356,
-  "p50": 27.474,
-  "p90": 41.154
+  "p10": 5.618,
+  "p50": 27.391,
+  "p90": 41.065
  },
  "jumpHoldMs": {
   "p10": 83,
@@ -56,44 +56,44 @@
  "gapBetweenTouchesMs": {
   "p10": 129,
   "p50": 255,
-  "p90": 688
+  "p90": 687
  },
  "touchStartX": {
-  "p10": 0.323,
-  "p50": 0.512,
+  "p10": 0.321,
+  "p50": 0.51,
   "p90": 0.754
  },
  "touchStartY": {
-  "p10": 0.588,
-  "p50": 0.734,
-  "p90": 0.849
+  "p10": 0.589,
+  "p50": 0.732,
+  "p90": 0.847
  },
- "leftHalfShare": 0.46,
- "twoFingerShare": 0.452,
+ "leftHalfShare": 0.465,
+ "twoFingerShare": 0.434,
  "touchSizePx": {
   "p10": 12,
   "p50": 24,
   "p90": 36
  },
  "perMinute": {
-  "move": 86.4,
-  "jump": 39.4,
-  "duck": 97.3,
-  "jumpUp": 95.5,
+  "move": 87.7,
+  "jump": 39.7,
+  "duck": 98.2,
+  "jumpUp": 96.1,
   "punch": 1.2,
-  "kick": 4.2,
-  "climb": 3.7,
+  "kick": 4.1,
+  "climb": 3.9,
   "tapjump": 0.0
  },
- "hurtPerMinute": 1.05,
- "livesLostPerMinute": 0.11,
+ "hurtPerMinute": 1.01,
+ "livesLostPerMinute": 0.1,
  "secondsPerSection": {
   "p10": 0.767,
-  "p50": 10.101,
+  "p50": 10.301,
   "p90": 28.421
  },
  "quits": 0,
- "finishes": 13,
+ "finishes": 14,
  "stuckHelp": 1,
  "survey": [
   {
@@ -127,6 +127,9 @@
    "hard": [
     "High vines"
    ],
+   "note": ""
+  },
+  {
    "note": ""
   }
  ],
@@ -748,6 +751,59 @@
     "p90": 55.943
    },
    "session": "20261025-1659-uh75"
+  },
+  {
+   "minutesPlayed": 2.7,
+   "mix": {
+    "drag": 0.482,
+    "flick": 0.506,
+    "tap": 0.012
+   },
+   "tapMs": {
+    "p10": 37,
+    "p50": 113,
+    "p90": 113
+   },
+   "flickPx": {
+    "p10": 122.066,
+    "p50": 273.222,
+    "p90": 390.717
+   },
+   "flickPxPerMs": {
+    "p10": 0.489,
+    "p50": 1.527,
+    "p90": 2.593
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 11.619,
+    "p50": 25.921,
+    "p90": 40.217
+   },
+   "touchStartX": {
+    "p10": 0.299,
+    "p50": 0.468,
+    "p90": 0.706
+   },
+   "touchStartY": {
+    "p10": 0.614,
+    "p50": 0.705,
+    "p90": 0.785
+   },
+   "leftHalfShare": 0.582,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 121,
+    "p50": 246,
+    "p90": 655
+   },
+   "hurtPerMinute": 0.0,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 1.067,
+    "p50": 10.301,
+    "p90": 17.37
+   },
+   "session": "20261025-1846-9w0v"
   }
  ]
 }

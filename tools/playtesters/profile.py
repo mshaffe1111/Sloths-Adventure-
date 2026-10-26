@@ -9,7 +9,7 @@ Only numbers and the tester's own survey answers go into a profile; no raw finge
 """
 import collections, glob, json, math, os, statistics, sys
 
-WANT = {'Jen': 'jen', 'Sally': 'sally', 'Steph Roberts': 'steph', 'Brycen': 'brycen'}
+WANT = {'Jen': 'jen', 'Sally': 'sally', 'Steph Roberts': 'steph', 'Brycen': 'brycen', 'Matt': 'matt'}
 
 
 def pct(xs, p):

@@ -1,45 +1,45 @@
 {
- "sessions": 6,
- "minutesPlayed": 151.4,
+ "sessions": 8,
+ "minutesPlayed": 176.5,
  "devices": {
-  "Android phone 320x782 portrait": 6
+  "Android phone 320x782 portrait": 8
  },
- "strokes": 2156,
+ "strokes": 2510,
  "mix": {
-  "drag": 0.587,
-  "tap": 0.314,
-  "hold": 0.013,
-  "flick": 0.086
+  "drag": 0.609,
+  "tap": 0.294,
+  "hold": 0.014,
+  "flick": 0.084
  },
  "tapMs": {
   "p10": 26,
-  "p50": 92,
+  "p50": 91,
   "p90": 160
  },
  "holdMs": {
-  "p10": 313,
-  "p50": 409,
-  "p90": 1026
+  "p10": 320,
+  "p50": 463,
+  "p90": 4808
  },
  "flickPx": {
   "p10": 38.013,
-  "p50": 86.493,
-  "p90": 153.287
+  "p50": 88.023,
+  "p90": 172.722
  },
  "flickPxPerMs": {
-  "p10": 0.28,
-  "p50": 0.393,
-  "p90": 0.637
+  "p10": 0.281,
+  "p50": 0.401,
+  "p90": 0.762
  },
  "flickMs": {
-  "p10": 95,
-  "p50": 229,
-  "p90": 290
+  "p10": 97,
+  "p50": 236,
+  "p90": 291
  },
  "dragMs": {
-  "p10": 301,
-  "p50": 668,
-  "p90": 1743
+  "p10": 308,
+  "p50": 696,
+  "p90": 1754
  },
  "jumpFlickOffVerticalDeg": {
   "p10": 4.764,
@@ -48,46 +48,46 @@
  },
  "jumpHoldMs": {
   "p10": 0,
-  "p50": 125,
-  "p90": 800
+  "p50": 165,
+  "p90": 798
  },
  "gapBetweenTouchesMs": {
-  "p10": 39,
-  "p50": 479,
-  "p90": 1580
+  "p10": 40,
+  "p50": 515,
+  "p90": 1636
  },
  "touchStartX": {
   "p10": 0.219,
-  "p50": 0.3,
-  "p90": 0.675
+  "p50": 0.287,
+  "p90": 0.669
  },
  "touchStartY": {
   "p10": 0.467,
-  "p50": 0.615,
-  "p90": 0.758
+  "p50": 0.616,
+  "p90": 0.756
  },
- "leftHalfShare": 0.731,
- "twoFingerShare": 0.012,
+ "leftHalfShare": 0.759,
+ "twoFingerShare": 0.028,
  "touchSizePx": null,
  "perMinute": {
-  "move": 18.9,
-  "duck": 26.7,
+  "move": 19.1,
+  "duck": 26.6,
   "jumpUp": 18.6,
-  "jump": 4.0,
+  "jump": 4.2,
   "punch": 2.2,
   "mega": 0.2,
-  "climb": 2.0,
-  "tapjump": 1.2
+  "climb": 1.9,
+  "tapjump": 1.0
  },
- "hurtPerMinute": 0.23,
+ "hurtPerMinute": 0.22,
  "livesLostPerMinute": 0.03,
  "secondsPerSection": {
-  "p10": 0.825,
-  "p50": 18.246,
-  "p90": 236.261
+  "p10": 0.922,
+  "p50": 15.769,
+  "p90": 218.233
  },
  "quits": 1,
- "finishes": 3,
+ "finishes": 5,
  "stuckHelp": 0,
  "survey": [
   {
@@ -134,6 +134,34 @@
     "In one hand"
    ],
    "note": "Getting stuck and having to stop, game jiggles, having trouble high jumping"
+  },
+  {
+   "hand": [
+    "One finger (like your pointer)"
+   ],
+   "held": [
+    "In one hand"
+   ],
+   "hard": [
+    "Long jumps",
+    "Lily pads",
+    "Running",
+    "Swing"
+   ],
+   "note": "Getting over the water, really ruined the game,"
+  },
+  {
+   "hand": [
+    "A mix"
+   ],
+   "held": [
+    "In one hand"
+   ],
+   "hard": [
+    "Long jumps",
+    "River logs"
+   ],
+   "note": "Couldn't get over that large brow thing, water getting over"
   }
  ],
  "name": "Sally",
@@ -460,6 +488,100 @@
     "p90": 40.264
    },
    "session": "20261025-1415-mkhy"
+  },
+  {
+   "minutesPlayed": 14.7,
+   "mix": {
+    "drag": 0.718,
+    "tap": 0.17,
+    "flick": 0.087,
+    "hold": 0.025
+   },
+   "tapMs": {
+    "p10": 20,
+    "p50": 64,
+    "p90": 169
+   },
+   "flickPx": {
+    "p10": 36.77,
+    "p50": 158.808,
+    "p90": 235.032
+   },
+   "flickPxPerMs": {
+    "p10": 0.287,
+    "p50": 0.726,
+    "p90": 0.907
+   },
+   "jumpFlickOffVerticalDeg": {
+    "p10": 38.501,
+    "p50": 38.501,
+    "p90": 38.501
+   },
+   "touchStartX": {
+    "p10": 0.203,
+    "p50": 0.237,
+    "p90": 0.456
+   },
+   "touchStartY": {
+    "p10": 0.439,
+    "p50": 0.625,
+    "p90": 0.665
+   },
+   "leftHalfShare": 0.921,
+   "twoFingerShare": 0.162,
+   "gapBetweenTouchesMs": {
+    "p10": 38,
+    "p50": 879,
+    "p90": 1923
+   },
+   "hurtPerMinute": 0.0,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 4.048,
+    "p50": 10.577,
+    "p90": 40.328
+   },
+   "session": "20261025-1917-fl9d"
+  },
+  {
+   "minutesPlayed": 10.4,
+   "mix": {
+    "drag": 0.831,
+    "tap": 0.169
+   },
+   "tapMs": {
+    "p10": 14,
+    "p50": 50,
+    "p90": 153
+   },
+   "flickPx": null,
+   "flickPxPerMs": null,
+   "jumpFlickOffVerticalDeg": null,
+   "touchStartX": {
+    "p10": 0.222,
+    "p50": 0.237,
+    "p90": 0.403
+   },
+   "touchStartY": {
+    "p10": 0.477,
+    "p50": 0.615,
+    "p90": 0.657
+   },
+   "leftHalfShare": 0.961,
+   "twoFingerShare": 0.0,
+   "gapBetweenTouchesMs": {
+    "p10": 48,
+    "p50": 793,
+    "p90": 1484
+   },
+   "hurtPerMinute": 0.29,
+   "livesLostPerMinute": 0.0,
+   "secondsPerSection": {
+    "p10": 7.394,
+    "p50": 16.272,
+    "p90": 36.654
+   },
+   "session": "20261025-1933-yh4n"
   }
  ]
 }
