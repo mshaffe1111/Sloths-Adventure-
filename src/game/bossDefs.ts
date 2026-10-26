@@ -27,7 +27,7 @@ import { inMoonPool } from './prowlerPools.ts';
 import { GUST, PILLAR, SCREECH, pillarFor, rockShower, slamPillar, slamSide, standing } from './sovereignFight.ts';
 import type { SkyPillar } from './sovereignFight.ts';
 import { screechBeak } from './sovereignSprite.ts';
-import { VF, lungeReach, venomHurt, venomWeak } from './venomFang.ts';
+import { VF, lungeAim, venomHurt, venomWeak } from './venomFang.ts';
 
 // ───────────────────────────── shared move builders ─────────────────────────────
 
@@ -148,6 +148,9 @@ const impact = (b: BossEntity, c: BossCtx, shake: number, color: string) => {
   c.debris(b.x, c.arena.floor - 8, color);
 };
 
+/** the Shadow Prowler's pounce (s): the crouch, and the leap (long and high, so there is time to run out from under it) */
+export const POUNCE = { tell: 0.75, act: 1.0 };
+
 // ───────────────────────────── 1. Venom Fang: emerald boa ─────────────────────────────
 
 /** the two little snakes he calls down from the canopy (phase 2), where a hero has room to deal with them */
@@ -215,8 +218,13 @@ const VENOM: BossDef = {
       rec: 2.6,
       pose: 'lunge',
       interruptible: false,
+      // (aimed at you: the floor flash follows you through the wind-up and the head comes down at your feet, so the opening is in reach
+      // wherever you dodged: bossFair.test.ts)
       onTell: (b, c) => {
-        b.ai!.d.reach = lungeReach(b.facing, c.arena.left, c.arena.right);
+        b.ai!.d.reach = lungeAim(b, c.px, c.arena.left, c.arena.right);
+      },
+      tellTick: (b, c) => {
+        b.ai!.d.reach = lungeAim(b, c.px, c.arena.left, c.arena.right);
       },
       tick: (b, c) => {
         b.ai!.hurt = venomHurt(b, c.arena.floor, 0);
@@ -415,20 +423,38 @@ const PROWLER: BossDef = {
   },
   moves: {
     // a quick crouch, then a long pounce to where you were standing. From the second phase the landing sends a wave along the floor
-    pounce: leapMove({
-      // (0.55 until QA: in the dark a pounce took two hearts unseen; the crouch now lasts long enough to read, and he is lit over the dark)
-      tell: 0.65,
-      act: 0.7,
-      // (the openings are timed to be reached: bossFair.test.ts)
-      rec: 2.3,
-      height: 230,
-      min: 260,
-      onLand: (b, c) => {
-        impact(b, c, 0.55, '#7c3aed');
-        if (b.phase < 2) return;
-        for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2 + 10), d, b.phase >= 3 ? 360 : 280, '#a78bfa', '#3b0764', true);
-      },
-    }),
+    // (2026-10-26, QA: a double jump on the spot was hit, and standing still was not. He picks his spot as the crouch BEGINS, a moonlit
+    // ring marks it (bossCues.ts), and he lands on it: getting out of the ring is the dodge, and there is time for it after a 0.8 s
+    // reaction. Jumping straight up into a leaping cat still meets him: bossTells.test.ts)
+    pounce: (() => {
+      const m = leapMove({
+        // (0.55 until QA: in the dark a pounce took two hearts unseen; the crouch now lasts long enough to read)
+        tell: POUNCE.tell,
+        act: POUNCE.act,
+        // (the openings are timed to be reached from outside the ring: bossFair.test.ts)
+        rec: 2.7,
+        height: 230,
+        min: 260,
+        onLand: (b, c) => {
+          impact(b, c, 0.55, '#7c3aed');
+          if (b.phase < 2) return;
+          for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2 + 10), d, b.phase >= 3 ? 360 : 280, '#a78bfa', '#3b0764', true);
+        },
+      });
+      const leap = m.onAct!;
+      m.onTell = (b, c) => {
+        const half = b.width / 2;
+        b.ai!.d.aim = Math.max(c.arena.left + half, Math.min(c.arena.right - half, c.px));
+      };
+      m.onAct = (b, c) => {
+        leap(b, c);
+        const br = b.ai!;
+        br.d.x1 = br.d.aim ?? br.d.x1;
+        b.facing = br.d.x1 >= b.x ? 1 : -1;
+      };
+      m.guide = 'He crouches and marks a spot, then pounces on it. Get out of the ring!';
+      return m;
+    })(),
     // vanishes and comes out right behind you for a slash. He comes out behind you, so with a moon pool at your back the light will
     // not let him appear: he is caught, stunned and wide open
     shadowStep: {
@@ -488,7 +514,7 @@ const PROWLER: BossDef = {
     },
     // a lightning dash from one end of the arena to the other, low enough to jump
     streak: (() => {
-      const m = chargeMove({ tell: 0.65, maxT: 1.2, rec: 2.5, speed: 800, phase: 2, min: 300 });
+      const m = chargeMove({ tell: 0.65, maxT: 1.2, rec: 2.7, speed: 800, phase: 2, min: 300 });
       const base = m.tick!;
       m.tick = (b, c, dt, t) => {
         base(b, c, dt, t);
@@ -496,9 +522,10 @@ const PROWLER: BossDef = {
         b.ai!.hurt = [{ x: b.x - b.width / 2, y: c.arena.floor - 108, w: b.width, h: 108 }];
       };
       // he skids to a stop facing the fence he ran at, so the tail he is weak at swings out toward the middle, where you are
-      m.recHoldFacing = true;
+      // (2026-10-26, QA: a hero who jumped the dash stood at his head, the tail out of reach) he turns his back on you, wherever you are
+      m.recFaceAway = true;
       // and he backs off the fence toward you, tail lashing, so a dash that ended far away still brings the tail to you
-      m.recStep = { speed: 300, stop: 260 };
+      m.recStep = { speed: 340, stop: 260 };
       return m;
     })(),
   },

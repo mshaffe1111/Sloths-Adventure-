@@ -20,6 +20,9 @@ export const VF = {
   S: 0.68,
   /** the head's front stops this far short of the far fence (room to stand in front of it) */
   inset: 12,
+  /** the lunge's head stops this far past the hero (lungeAim), and never less than this far out from the coils */
+  aimPast: 90,
+  aimMin: 100,
   /** the rear-back at the start of the wind-up (s): the head draws up and back, hissing */
   rear: 0.6,
   /** the lunge (s): the dive and the slide along the floor */
@@ -88,6 +91,21 @@ function reared(): { x: number; y: number } {
 /** where the head's front ends up after a lunge (world x), for a boss at bx facing f in an arena */
 export function lungeReach(f: number, left: number, right: number): number {
   return f < 0 ? left + VF.inset : right - VF.inset;
+}
+
+/**
+ * Where the head's front lies after the lunge, aimed at the hero (2026-10-26, QA: the dazed head lay by the tree at the far left while
+ * Pokey dodged up on the right, and it closed before he got there): just past him, so the head comes down at his feet wherever he
+ * got off the floor. A hero on the floor is still swept (the head passes under him on the way), and one by the far fence or up the wall
+ * tree gets the full length as before. It never stops short of a proper lunge out from the coils.
+ */
+export function lungeAim(b: BossEntity, px: number, left: number, right: number): number {
+  const f = b.facing < 0 ? -1 : 1;
+  const startTip = b.x + f * (floorFoot().x + flatHead('strike').ahead + 20);
+  const far = lungeReach(f, left, right);
+  const past = px + f * VF.aimPast;
+  const least = startTip + f * VF.aimMin;
+  return f < 0 ? Math.max(far, Math.min(least, past)) : Math.min(far, Math.max(least, past));
 }
 
 /** the point where the neck meets the floor during a lunge (local), and the first tip position */

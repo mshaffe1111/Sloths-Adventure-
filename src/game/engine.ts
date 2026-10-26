@@ -113,7 +113,7 @@ import { EASY_OPEN_MUL, bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazar
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { hitLabel, hitsLeft } from './bossHits.ts';
-import { drawBossOverDark } from './bossCues.ts';
+import { drawBossOverDark, drawPounceRing } from './bossCues.ts';
 import { prowlerGlow } from './lairProwler.ts';
 import { baseScale, bossViewWidth, bossViewX } from './bossCamera.ts';
 import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar } from './sovereignFight.ts';
@@ -4546,6 +4546,7 @@ export class GameEngine {
     if (this.boss && (!this.boss.defeated || this.bossDef?.ending) && this.bossDef) {
       const floor = this.currentStage.arena?.floor ?? 560;
       drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, floor);
+      drawPounceRing(ctx, this.boss, this.bossDef, floor, this.gameTime);
       if (this.skyPillars && !this.boss.defeated && this.bossDef.stompSpot) drawBackCue(ctx, this.boss, this.bossDef.stompSpot, floor, this.gameTime);
       if (this.skyPillars && !this.boss.defeated) drawScreechCue(ctx, this.boss, floor, this.gameTime, (this.bossDef.moves.screech?.tell ?? 1) * (this.bossCtx?.tellMul ?? 1));
     }
@@ -4637,21 +4638,8 @@ export class GameEngine {
 
     drawZoneEffects(ctx, this.currentStage.zones, { x: this.camera.x, y: this.camera.y, w: this.camera.viewportWidth, h: this.camera.viewportHeight }, this.gameTime);
 
-    // Render Floating Combat Texts
-    ctx.textAlign = 'center';
-    ctx.font = 'bold 15px Fredoka, sans-serif';
-    {
-      // kept inside the view: upright, the screen is narrow and a pop-up beside Pokey ran off the edge ("00 HIBISCUS!", "OMBO! +200")
-      const cam = this.camera;
-      this.floatingTexts.forEach((ft) => {
-        const half = ctx.measureText(ft.text).width / 2 + 6;
-        const x0 = cam.x + half, x1 = cam.x + cam.viewportWidth - half;
-        const x = x0 > x1 ? cam.x + cam.viewportWidth / 2 : Math.max(x0, Math.min(x1, ft.x));
-        const y = Math.max(cam.y + 22, Math.min(cam.y + cam.viewportHeight - 8, ft.y));
-        ctx.fillStyle = ft.color;
-        ctx.fillText(ft.text, x, y);
-      });
-    }
+    // Render Floating Combat Texts (in 3-10's dark they come after the Prowler is drawn back over it, so he never hides them)
+    if (!(lair === 'prowler' && prowlerGlow() < 0.98)) this.drawPopups(ctx);
     // (when the app has Dot say the hints, it draws them: this canvas banner is only the fallback)
     if (this.stageHint && !this.callbacks.onGuide) {
       const h = this.stageHint;
@@ -4685,6 +4673,7 @@ export class GameEngine {
       ctx.save();
       ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
       drawBossOverDark(ctx, this.boss, this.bossDef, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560, this.gameTime, (1 - prowlerGlow()) / (1 - 0.16));
+      this.drawPopups(ctx);
       ctx.restore();
     }
     else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
@@ -4887,6 +4876,40 @@ export class GameEngine {
       ctx.fillStyle = `rgba(255, 255, 255, ${(this.respawnFlash / 0.6) * 0.7})`;
       ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
     }
+  }
+
+  /**
+   * The floating words over the fight (in the world). Kept inside the view (upright, the screen is narrow and a pop-up beside Pokey ran
+   * off the edge: "00 HIBISCUS!", "OMBO! +200"), outlined so they read over a boss's body, and stacked: a word that would land on one
+   * already drawn this frame goes up above it (2026-10-26, QA: fast hits piled their pop-ups on top of each other).
+   */
+  private drawPopups(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 15px Fredoka, sans-serif';
+    ctx.lineJoin = 'round';
+    const cam = this.camera;
+    const placed: Array<{ x0: number; x1: number; y: number }> = [];
+    // (newest last, so the newest climbs above the older ones)
+    for (const ft of this.floatingTexts) {
+      const half = ctx.measureText(ft.text).width / 2 + 6;
+      const x0 = cam.x + half, x1 = cam.x + cam.viewportWidth - half;
+      const x = x0 > x1 ? cam.x + cam.viewportWidth / 2 : Math.max(x0, Math.min(x1, ft.x));
+      let y = Math.max(cam.y + 22, Math.min(cam.y + cam.viewportHeight - 8, ft.y));
+      for (let k = 0; k < 6; k++) {
+        const hit = placed.find((q) => x - half < q.x1 && x + half > q.x0 && Math.abs(y - q.y) < 17);
+        if (!hit) break;
+        y = hit.y - 18;
+      }
+      y = Math.max(cam.y + 22, y);
+      placed.push({ x0: x - half, x1: x + half, y });
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(20, 14, 24, 0.7)';
+      ctx.strokeText(ft.text, x, y);
+      ctx.fillStyle = ft.color;
+      ctx.fillText(ft.text, x, y);
+    }
+    ctx.restore();
   }
 
   // --- Juice Helpers ---
