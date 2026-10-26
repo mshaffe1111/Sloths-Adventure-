@@ -75,3 +75,19 @@
 - Venom Fang: the stump and the swing platform are the easy spots to wait. From the far coils I got there just as the daze
   ran out. Once I'm at the top of the tree, don't lift and push up again. That hopped me off, and the lunge caught me on the ground.
 - Dot's bubble moves around (top left, sometimes bottom left). Don't count on that corner being clear.
+
+## 2026-10-26 (bosses, sideways, new phone)
+
+- Gold on his back while he's facing me: don't go over his head from the front. That cost me a whole life. Wait for him
+  to turn, or for the gold to move to his chest, or come at him from the side he isn't facing.
+- "TOO TOUGH! HIT THE GLOW" means I punched the wrong spot. When the glow is high on his back, a little hop doesn't
+  reach it. Go big at once (long flick, then a second flick), because the opening is gone by the second try.
+- A double jump over a dash isn't a sure thing. I still lost a heart under him. Better to be out of his line before he comes.
+- Ring under me with my back to the wall: there's nowhere to run. Don't let him corner me against the edge. Keep to the middle.
+- After a pounce he lands where I was, and the gold is usually right beside me. Turn toward it (a short slide), then
+  three or four quick taps. That's two hits per opening.
+- Running a long way doesn't lose him in the dark. He follows. Watch the eyes, not the distance.
+- Upright, the whole fight is squeezed into the bottom strip and Dot's bubble lands right on it. I can't tell which way
+  to run. If I turn the phone, turn it back before the next attack.
+- Venom Fang: from up the tree I never got to his head in time. A hop onto the swinging platform, then a short walk off
+  the end and a few punches, worked much better.
