@@ -887,10 +887,18 @@
 /* a lesson card: only the card itself takes touches. A thumb put down beside it lands on the game's touch layer, so it is already
    steering when "Got it!" is pressed (on the dimmed screen it was a touch on something about to vanish, and did nothing afterwards) */
 .lc-scrim { z-index: 60; pointer-events: none; }
-/* a very short landscape screen (about 270-320 css px tall): the HUD and Dot's talk box shrink, or they covered the whole stage */
-@media (max-height: 320px) {
+/* a short landscape screen (a phone held sideways, 430 css px tall or less): the HUD shrinks and the hearts and lives share one row,
+   or the HUD covered nearly half the stage (4-D, Dot's flight, at 740x360). Engine.renderDot puts Dot's panel under .hud-left */
+@media (orientation: landscape) and (max-height: 430px) {
+  .game-hud { padding-top: max(6px, env(safe-area-inset-top)); }
+  .game-hud > * { zoom: 0.8; }
+  .game-hud .hud-left { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .way { zoom: 0.86; top: calc(env(safe-area-inset-top, 0px) + 86px); }
+}
+/* very short (about 270-340 css px tall) */
+@media (orientation: landscape) and (max-height: 340px) {
   .game-hud > * { zoom: 0.68; }
-  .way { zoom: 0.78; top: calc(env(safe-area-inset-top, 0px) + 58px); }
+  .way { zoom: 0.78; top: calc(env(safe-area-inset-top, 0px) + 80px); }
 }
 .lc-scrim .lc { pointer-events: auto; }
 .lc { width: min(100%, 460px); display: flex; flex-direction: column; gap: 10px; max-height: 94%; overflow: hidden; }

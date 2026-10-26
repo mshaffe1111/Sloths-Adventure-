@@ -227,7 +227,7 @@ export class DotRun {
   /**
    * Draw the stage. `ctx` is scaled to world units (zoom and device pixels); `shake` is the camera's shake this frame.
    */
-  draw(ctx: CanvasRenderingContext2D, cam: Camera, dpr: number, zoom: number, cssW: number, cssH: number, shake: { x: number; y: number }, hudAt: { x: number; y: number }) {
+  draw(ctx: CanvasRenderingContext2D, cam: Camera, dpr: number, zoom: number, cssW: number, cssH: number, shake: { x: number; y: number }, hudAt: { x: number; y: number; scale?: number }) {
     const fl = this.fl;
     const t = this.clock;
     const vw = cam.viewportWidth;

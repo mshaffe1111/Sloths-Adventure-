@@ -710,13 +710,16 @@ export function drawDotMoment(ctx: CanvasRenderingContext2D, vw: number, vh: num
  * Her panel (css px, under the hearts): the nectar bar, the tally of scratches (nine slots, the story's number; past nine it just
  * counts on), and the silk found.
  */
-export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: number, cssH: number, t: number, at: { x: number; y: number }) {
+export function drawDotHud(ctx: CanvasRenderingContext2D, fl: DotFlight, cssW: number, cssH: number, t: number, at: { x: number; y: number; scale?: number }) {
   const portrait = cssH > cssW;
-  const x = at.x;
-  const y = at.y;
+  // drawn at (0, 0) and moved into place, so a short screen can shrink the whole panel (at.scale)
+  const x = 0;
+  const y = 0;
   const w = portrait ? 150 : 168;
   const h = 50;
   ctx.save();
+  ctx.translate(at.x, at.y);
+  if (at.scale && at.scale !== 1) ctx.scale(at.scale, at.scale);
   ctx.fillStyle = 'rgba(10, 30, 22, 0.62)';
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
   ctx.lineWidth = 1;

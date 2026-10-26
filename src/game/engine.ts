@@ -4476,12 +4476,30 @@ export class GameEngine {
     this.markWayDodge(dt);
   }
 
+  private hudLeftAt = -1e9;
+  private hudLeftY = -1;
+  /** where the HUD's hearts and lives end (css px from the top), looked up twice a second; -1 when there is no HUD (tests) */
+  private hudLeftBottom(): number {
+    const now = performance.now();
+    if (now - this.hudLeftAt < 500) return this.hudLeftY;
+    this.hudLeftAt = now;
+    const el = typeof document !== 'undefined' ? document.querySelector?.('.game-hud .hud-left') : null;
+    const r = el?.getBoundingClientRect();
+    const top = this.canvas.getBoundingClientRect?.().top ?? 0;
+    this.hudLeftY = r && r.height > 0 ? r.bottom - top : -1;
+    return this.hudLeftY;
+  }
+
   private renderDot(ctx: CanvasRenderingContext2D, dpr: number) {
     const shakeMag = this.camera.trauma * this.camera.trauma * 14;
     const shake = { x: (Math.random() - 0.5) * shakeMag, y: (Math.random() - 0.5) * shakeMag };
     // her panel: held sideways it sits under the hearts and lives (GameHUD.tsx), left; upright, the top is full (the stage card, Dot's banner), so it sits bottom left
     const portrait = this.viewCssH > this.viewCssW;
-    const hudAt = { x: 12, y: portrait ? this.viewCssH - 66 : this.viewCssH < 430 ? 112 : 124 };
+    // a short landscape screen has the compact HUD (index.css): her panel shrinks too and sits right under the hearts and lives
+    const compact = !portrait && this.viewCssH <= 430;
+    const scale = compact ? (this.viewCssH <= 340 ? 0.72 : 0.84) : 1;
+    const under = this.hudLeftBottom();
+    const hudAt = { x: 12, y: portrait ? this.viewCssH - 66 : under > 0 ? under + 8 : this.viewCssH < 430 ? 112 : 124, scale };
     this.dotRun!.draw(ctx, this.camera, dpr, this.zoom, this.viewCssW, this.viewCssH, shake, hudAt);
     // the floating words (a scratch, the silk), in the world
     ctx.save();

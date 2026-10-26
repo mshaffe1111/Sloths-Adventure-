@@ -86,7 +86,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
     <div className={`game-hud fixed inset-0 pointer-events-none z-[35] select-none font-game transition-opacity duration-500 ${bossEntering ? 'opacity-0' : 'opacity-100'}  pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pt-[max(1rem,env(safe-area-inset-top))] sm:pl-[max(1.25rem,env(safe-area-inset-left))] sm:pr-[max(1.25rem,env(safe-area-inset-right))]`}>
       <div className={isBoss ? 'flex items-start justify-between gap-2 sm:gap-4' : 'grid grid-cols-[1fr_auto_1fr] max-[520px]:grid-cols-[auto_minmax(0,1fr)] items-start gap-2 sm:gap-4'}>
         {/* LEFT: hearts and lives */}
-        <div className="flex flex-col items-start gap-1.5 max-[520px]:row-span-2">
+        <div className="hud-left flex flex-col items-start gap-1.5 max-[520px]:row-span-2">
           {!isBoss && (
           <div className="hud-glass flex gap-[3px] sm:gap-1 rounded-2xl px-2 py-1.5 sm:px-3 sm:py-2" role="img" aria-label={`Health: ${hp} of ${maxHp} hearts`}>
             {Array.from({ length: maxHp }).map((_, i) => {
