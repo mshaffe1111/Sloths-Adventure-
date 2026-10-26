@@ -30,6 +30,8 @@ export class FrameGovernor {
   private wentUp = false;
   /** set when the screen has been steady long enough for a sharper picture; the caller takes it with `takeUp` */
   private up = false;
+  /** the last window's average frame gap (ms), for the control test's 'quality' line */
+  lastAvg = 0;
 
   /** true once (then cleared) when the picture may step back up a notch */
   takeUp(): boolean {
@@ -64,6 +66,7 @@ export class FrameGovernor {
     this.ms += gap;
     if (this.ms < GOV_WINDOW_MS) return false;
     const avg = this.ms / this.frames;
+    this.lastAvg = avg;
     this.frames = 0;
     this.ms = 0;
     if (avg > GOV_SLOW_MS) {

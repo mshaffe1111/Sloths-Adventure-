@@ -2,6 +2,7 @@ import React from 'react';
 import type { CoachStep } from '../game/touchCoach.ts';
 import type { ControlStyle } from '../game/controlPrefs.ts';
 import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
+import { useBlinkWatch } from './blinkWatch.ts';
 
 /**
  * The first-stage lesson, drawn over the game (see game/touchCoach.ts for when each step shows). It takes no touches, so nothing it covers stops
@@ -21,6 +22,7 @@ const TEXT: Record<ControlStyle, Record<Exclude<CoachStep, null>, { title: strin
 };
 
 export const CoachOverlay: React.FC<{ step: CoachStep; style: ControlStyle }> = ({ step, style }) => {
+  useBlinkWatch('coach', step);
   if (!step) return null;
   const t = TEXT[style][step];
   return (

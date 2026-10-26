@@ -1,6 +1,7 @@
 import React from 'react';
 import { takeNewlyOpened } from '../game/movesJournal.ts';
 import { guideShowMs } from '../game/wayside.ts';
+import { useBlinkWatch } from './blinkWatch.ts';
 
 /**
  * "New page in your journal": while a stage is being played, any journal page that has just opened (a lesson card, a tip from Dot, a
@@ -70,6 +71,7 @@ export const JournalToast: React.FC<{ active: boolean; guide?: { text: string; m
     return () => window.clearInterval(id);
   }, [active, next]);
 
+  useBlinkWatch('journal', note?.n);
   if (!note) return null;
   const one = note.titles.length === 1;
   return (

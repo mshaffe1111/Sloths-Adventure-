@@ -13,11 +13,15 @@ export function trackAtlas(img: HTMLImageElement, url: string, onReady: () => vo
   const t0 = typeof performance !== 'undefined' ? performance.now() : 0;
   const entry: Held | null = forget ? { img, forget, gone: false } : null;
   if (entry) held.add(entry);
+  const name = url.split('/').pop()?.split('?')[0] ?? '';
+  // (sheets load the first time something draws with them: asked for in the middle of a stage, that thing is a stand-in, or nothing,
+  // until the sheet arrives; the control test notes it, once per sheet per stage, as a likely flicker)
+  if (recorder.on) recorder.blank(name, 'wait');
   const ready = () => {
     if (entry?.gone) return;
     perfNote(`sheet ready: ${url.split('/').pop()} (${Math.round(performance.now() - t0)} ms to load and decode)`);
     // (the control test notes each sheet as it arrives, so a stall can be matched to the picture that caused it)
-    lastSheet.name = url.split('/').pop()?.split('?')[0] ?? '';
+    lastSheet.name = name;
     lastSheet.at = performance.now();
     if (recorder.on) recorder.event('sheet', `${lastSheet.name} ${Math.round(performance.now() - t0)}ms`);
     onReady();
@@ -29,6 +33,7 @@ export function trackAtlas(img: HTMLImageElement, url: string, onReady: () => vo
   img.onerror = () => {
     if (entry) held.delete(entry);
     if (entry?.gone) return;
+    if (recorder.on) recorder.blank(name, 'fail');
     setTimeout(onFail, 4000);
   };
   img.src = url;

@@ -1,4 +1,5 @@
 import { lastSheet } from './atlasLoader.ts';
+import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
@@ -595,12 +596,30 @@ export class GameEngine {
 
     this.resizeCanvas();
     window.addEventListener('resize', this.handleResize);
-
+    // the control test: the phone took the canvas's memory away (the picture goes blank until it is given back)
+    // (the stand-in canvas of the engine tests has no events)
+    canvas.addEventListener?.('contextlost', this.onContextLost);
+    canvas.addEventListener?.('contextrestored', this.onContextRestored);
   }
+
+  private onContextLost = () => recorder.glitch('contextlost', `x${Math.round(this.player?.x ?? 0)} q${this.quality} ${this.canvas.width}x${this.canvas.height}`);
+  private onContextRestored = () => recorder.glitch('contextrestored', `x${Math.round(this.player?.x ?? 0)}`);
 
   private handleResize = () => {
     this.resizeCanvas();
+    // the control test: the screen changed (turned, a bar came or went, full screen): noted once it has settled (a turn sends several)
+    if (recorder.on) {
+      clearTimeout(this.screenTimer);
+      this.screenTimer = setTimeout(() => recorder.glitch('screen', this.screenLine()), 400);
+    }
   };
+  private screenTimer: ReturnType<typeof setTimeout> | undefined;
+  /** the window, how the phone is held, the pixel ratio, and the canvas's own size in pixels (what it is drawn at) */
+  private screenLine(): string {
+    const w = Math.round(window.innerWidth), h = Math.round(window.innerHeight);
+    const o = (typeof screen !== 'undefined' && screen.orientation?.type) || (w >= h ? 'landscape' : 'portrait');
+    return `${w}x${h} ${o.replace('-primary', '').replace('-secondary', '2')} dpr${window.devicePixelRatio} canvas ${this.canvas.width}x${this.canvas.height} q${this.quality}`;
+  }
 
   /** device pixels per css pixel to draw at: sharp by default, lighter when the screen is struggling */
   private renderDpr(): number {
@@ -611,8 +630,13 @@ export class GameEngine {
 
   /** the screen cannot keep up: the sparkle goes first (bloom, rim light, wind, then all of the polish), and only then the resolution */
   private stepQuality() {
-    if (polishEnabled() && polishTier() < 2) setPolishTier(polishTier() + 1);
-    else if (this.quality < 2) {
+    // (the control test: each change of picture, with the governor's last window: LOG_EVENTS.md 'quality')
+    const avg = `avg ${Math.round(this.gov.lastAvg)}ms`;
+    if (polishEnabled() && polishTier() < 2) {
+      if (recorder.on) recorder.glitch('quality', `polish ${polishTier()}→${polishTier() + 1} slow ${avg}`);
+      setPolishTier(polishTier() + 1);
+    } else if (this.quality < 2) {
+      if (recorder.on) recorder.glitch('quality', `q${this.quality}→${this.quality + 1} slow ${avg}`);
       this.quality++;
       noteStepDown(this.quality, performance.now());
       this.resizeCanvas();
@@ -631,6 +655,7 @@ export class GameEngine {
     this.viewCssW = w;
     this.viewCssH = h;
     this.applyZoom();
+    this.camCut = true;
   }
 
   /**
@@ -664,6 +689,7 @@ export class GameEngine {
   public start() {
     if (this.isRunning) return;
     this.isRunning = true;
+    recorder.stage(this, true);
     this.lastTime = performance.now();
     this.lastRenderTime = this.lastTime;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
@@ -739,6 +765,10 @@ export class GameEngine {
       this.animFrameId = null;
     }
     window.removeEventListener('resize', this.handleResize);
+    this.canvas.removeEventListener?.('contextlost', this.onContextLost);
+    this.canvas.removeEventListener?.('contextrestored', this.onContextRestored);
+    clearTimeout(this.screenTimer);
+    recorder.stage(this, false);
     sound.setLowHealth(false);
   }
 
@@ -776,6 +806,7 @@ export class GameEngine {
           const u0 = pl ? performance.now() : 0;
           this.update(sdt);
           if (pl) tUpd = performance.now() - u0;
+          if (recorder.on) this.watchGlitches(now);
         }
       }
 
@@ -788,6 +819,7 @@ export class GameEngine {
       else if (!this.isPaused && this.quality === 2) this.gov.feed(elapsed);
       // steady for a while at a lightened picture: back up a notch (it used to stay low for good after one slow start)
       if (!this.isPaused && this.quality > 0 && this.gov.takeUp()) {
+        if (recorder.on) recorder.glitch('quality', `q${this.quality}→${this.quality - 1} steady avg ${Math.round(this.gov.lastAvg)}ms`);
         this.quality--;
         noteStepUp(this.quality, performance.now());
         this.resizeCanvas();
@@ -797,6 +829,7 @@ export class GameEngine {
     } catch (err) {
       // one bad frame must not freeze the game; a frame that fails over and over ends the stage cleanly
       console.error('frame error', err);
+      if (recorder.on) recorder.error(err, 'frame');
       if (++this.failStreak >= 20) {
         this.stop();
         this.callbacks.onFatal?.();
@@ -814,22 +847,86 @@ export class GameEngine {
   private frameWinAt = 0;
   private recordFrames(elapsed: number, now: number) {
     if (!this.frameWinAt) this.frameWinAt = now;
+    // a gap that spans the page being hidden (another app, the lock button) is time away, not a freeze ('hidden' / 'shown' say so)
+    if (now - elapsed <= recorder.shownAt) return;
     if (!this.isPaused) this.frameWin.push(elapsed);
     // a hitch long enough to see (over 100 ms): noted on its own, with where he was and the last picture sheet to arrive (an atlas
     // decoding mid-play is the usual cause), so a stall can be tied to what caused it
-    if (!this.isPaused && elapsed > 100) recorder.event('stall', `${Math.round(elapsed)}ms x${Math.round(this.player.x)} q${this.quality}${lastSheet.name && now - lastSheet.at < 1500 ? ` after ${lastSheet.name}` : ''}`);
+    if (!this.isPaused && elapsed > 100) recorder.glitch('stall', `${Math.round(elapsed)}ms x${Math.round(this.player.x)} q${this.quality}${lastSheet.name && now - lastSheet.at < 1500 ? ` after ${lastSheet.name}` : ''}`);
     if (now - this.frameWinAt < 5000) return;
     // memory (Chrome and Android only: iPhones don't report it), and how many live things the game is carrying, so the QA team can see
     // memory climbing the longer someone plays
     const mem = (performance as Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } }).memory;
     recorder.event('mem', `${mem ? `${Math.round(mem.usedJSHeapSize / 2 ** 20)}/${Math.round(mem.totalJSHeapSize / 2 ** 20)}MB ` : ''}parts ${this.particles.length} foes ${this.enemies.length} items ${this.collectibles.length}`);
     const f = this.frameWin.sort((a, b) => a - b);
-    this.frameWin = [];
     this.frameWinAt = now;
-    if (f.length < 5) return;
+    if (f.length < 5) {
+      f.length = 0;
+      return;
+    }
     const total = f.reduce((a, b) => a + b, 0);
     const p90 = f[Math.floor(f.length * 0.9)];
-    recorder.event('fps', `${(1000 * f.length / total).toFixed(1)}fps p90 ${Math.round(p90)}ms max ${Math.round(f[f.length - 1])}ms q${this.quality} ${this.canvas.width}x${this.canvas.height} | ${sound.report()}`);
+    // stutter: frames over 50 ms (a missed beat at 30 fps), and how uneven the frame times were (sd: a few ms is even pacing)
+    const sp = frameSpread(f, 50);
+    recorder.event('fps', `${(1000 * f.length / total).toFixed(1)}fps p90 ${Math.round(p90)}ms max ${Math.round(f[f.length - 1])}ms q${this.quality} ${this.canvas.width}x${this.canvas.height} slow ${sp.over} sd ${sp.sd.toFixed(1)}ms${recorder.longTasks >= 0 ? ` lt ${recorder.longTasks}` : ''} | ${sound.report()}`);
+    if (recorder.longTasks > 0) recorder.longTasks = 0;
+    f.length = 0;
+  }
+
+  /**
+   * The control test, every frame the world moved: the camera jumping (more than 120 px in a frame, outside a respawn, a resize or a
+   * teleport), the camera or Pokey shaking back and forth in a few pixels (outside an intended screen shake), and his state see-sawing in
+   * one spot (standing / falling at an edge). Nothing is allocated unless a line is logged (glitchWatch.ts, LOG_EVENTS.md).
+   */
+  private camCut = true;
+  private camGraceUntil = 0;
+  private camPrevX = NaN;
+  private camPrevY = NaN;
+  private pPrevX = NaN;
+  private pPrevY = NaN;
+  private jitCX = new JitterWatch(6, 12, 1000, 0.5);
+  private jitCY = new JitterWatch(6, 12, 1000, 0.5);
+  private jitPX = new JitterWatch(6, 12, 1000, 0.5);
+  private jitPY = new JitterWatch(6, 12, 1000, 0.5);
+  private flip = new FlipFlopWatch(6, 24, 1000);
+  private watchGlitches(now: number) {
+    const c = this.camera;
+    const p = this.player;
+    const st = p.climbing ? 'c' : p.isVineSwinging ? 's' : p.hanging ? 'h' : p.grounded ? (p.ducking ? 'k' : 'g') : 'a';
+    // a teleport (a door, a respawn): the view is allowed to catch up
+    if (Math.abs(p.x - this.pPrevX) > 300 || Math.abs(p.y - this.pPrevY) > 300) this.camCut = true;
+    this.pPrevX = p.x;
+    this.pPrevY = p.y;
+    if (this.camCut) {
+      this.camCut = false;
+      this.camGraceUntil = now + 600;
+      this.jitCX.reset();
+      this.jitCY.reset();
+      this.jitPX.reset();
+      this.jitPY.reset();
+      this.flip.reset();
+    }
+    const dx = c.x - this.camPrevX;
+    const dy = c.y - this.camPrevY;
+    this.camPrevX = c.x;
+    this.camPrevY = c.y;
+    if (now > this.camGraceUntil && (dx > 120 || dx < -120 || dy > 120 || dy < -120)) {
+      recorder.glitch('camjump', `dx${Math.round(dx)} dy${Math.round(dy)} x${Math.round(p.x)} y${Math.round(p.y)} ${st}`);
+    }
+    // (the screen shake is drawn on top of the camera, not in it; a shaking moment is still left out, as intended)
+    if (c.trauma < 0.01) {
+      if (this.jitCX.feed(c.x, now)) this.logJitter('cam-x', this.jitCX, st);
+      if (this.jitCY.feed(c.y, now)) this.logJitter('cam-y', this.jitCY, st);
+    } else {
+      this.jitCX.reset();
+      this.jitCY.reset();
+    }
+    if (this.jitPX.feed(p.x, now)) this.logJitter('pokey-x', this.jitPX, st);
+    if (this.jitPY.feed(p.y, now)) this.logJitter('pokey-y', this.jitPY, st);
+    if (this.flip.feed(st, p.x, now)) recorder.glitch('flipflop', `${this.flip.a}↔${this.flip.b} n${this.flip.changes} x${Math.round(p.x)} y${Math.round(p.y)}`);
+  }
+  private logJitter(axis: string, w: JitterWatch, st: string) {
+    recorder.glitch('jitter', `${axis} n${w.turns} span${w.span.toFixed(1)} x${Math.round(this.player.x)} y${Math.round(this.player.y)} ${st}`);
   }
 
   /** what the game was doing, for the frame-time check (only built when a freeze is logged or a timeline line is due) */
@@ -3870,6 +3967,7 @@ export class GameEngine {
     this.graceMoves = this.input.moves;
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * 0.45);
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * 0.55);
+    this.camCut = true;
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
