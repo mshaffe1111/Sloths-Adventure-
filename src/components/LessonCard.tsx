@@ -3,6 +3,7 @@ import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { GestureGlyph } from './GestureGlyph.tsx';
 import { LESSONS, lessonInputMode, type LessonId } from '../game/lessons.ts';
 import { arrowText } from './icons/arrowText.tsx';
+import { useBlinkWatch } from './blinkWatch.ts';
 
 /**
  * A first-time lesson: the game has paused itself, Pokey tells you what you are looking at, and you press the button when ready.
@@ -12,6 +13,7 @@ export const LessonCard: React.FC<{ id: LessonId; onClose: () => void }> = ({ id
   const lesson = LESSONS[id];
   const mode = lessonInputMode();
   const [ready, setReady] = React.useState(false);
+  useBlinkWatch('lesson', id);
   React.useEffect(() => {
     const t = window.setTimeout(() => setReady(true), 650);
     return () => window.clearTimeout(t);
