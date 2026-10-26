@@ -1,13 +1,13 @@
 /**
  * World 5's pieces in the real engine (realPlay.ts), each the way a player meets it: standing still wraps him (a heart in 5-2, only a
  * fright in 5-1's gentle lesson), a wiggle keeps it off, a soft chair tugs, a cake makes him slow, a thread's hum wakes the sleeping
- * spiders (who crouch before they come), and a punch knocks the Butler's tray away.
+ * spiders (who crouch before they come), a punch knocks the Butler's tray away, and a closing orchid holds him only while it is open.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { G } from './protoStage.ts';
-import { BUTLER, onScreen, SIT, SPIDER5, W5_TEACH, type GateState, type W5Extras } from './w5Kit.ts';
+import { BUTLER, ORCHID, onScreen, SIT, SPIDER5, W5_TEACH, type GateState, type W5Extras } from './w5Kit.ts';
 
 const w5Of = (sim: RealPlay) => (sim.stage as unknown as { proto: { w5: W5Extras } }).proto.w5;
 /** stand him at x on the ground, take one step (so the stage has seen him move), and let go */
@@ -158,4 +158,30 @@ test("5-2: walking into the Butler's held-out tray is eating its cake (sleepy), 
   for (let i = 0; i < 50; i++) sim2.frame({ right: true, press: i === 6, jump: i > 6 && i < 22 });
   assert.ok(sim2.p.x > b.x + 40, 'past him');
   assert.equal(sim2.e.w5.asleep, 0, 'jumped clean over the tray');
+});
+
+test('5-3: an open orchid holds him and gives up the flowers in its cup; it shivers, then shuts and drops him to the grass; a shut cup gives nothing', () => {
+  const sim = new RealPlay('5-3', 1);
+  const o = w5Of(sim).orchids![0];
+  const at = (s: number) => 60 + ((((s - o.offset) % o.period) + o.period) % o.period);
+  const cup = () => sim.collectibles.filter((c) => o.petalIds!.includes(c.id));
+  // open: he stands on it, and walking across it picks the cup
+  sim.t = at(0.1);
+  sim.stand(o.x - o.w / 2 + 14, o.y);
+  for (let i = 0; i < 20; i++) sim.frame({ right: i < 8 });
+  assert.ok(cup().every((c) => c.collected), 'the cup picked while open');
+  // through the closing shiver it still holds him; shut, he drops to the grass under it
+  sim.t = at(o.open + 0.1);
+  sim.stand(o.x, o.y);
+  for (let i = 0; i < 15; i++) sim.frame();
+  assert.ok(Math.abs(sim.p.y - o.y) < 2 && sim.p.grounded, 'held while it shivers');
+  for (let i = 0; i < 36; i++) sim.frame();
+  assert.ok(Math.abs(sim.p.y - G) < 2, `shut, it dropped him to the grass (y ${Math.round(sim.p.y)})`);
+  // a shut cup: passing through where it was picks nothing
+  const sim2 = new RealPlay('5-3', 1);
+  const o2 = w5Of(sim2).orchids![0];
+  sim2.t = 60 + ((((o2.open + ORCHID.tell + 0.2 - o2.offset) % o2.period) + o2.period) % o2.period);
+  sim2.fly(o2.x - 40, o2.y - 10, 0, 0, 0);
+  for (let i = 0; i < 6; i++) sim2.frame({ right: true });
+  assert.ok(sim2.collectibles.filter((c) => o2.petalIds!.includes(c.id)).every((c) => !c.collected), 'nothing from a shut cup');
 });

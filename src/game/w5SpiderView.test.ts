@@ -3,7 +3,7 @@
  * hearts to them in 5-1 and 5-2, and every one of their crouches, the warning, had happened off the screen: the spiders roused 430 px
  * away either way, while upright the view shows only about 80 px behind Pokey and under 300 ahead).
  *
- * The real engine with its real camera (realPlay.ts) at each phone size, upright and sideways, playing 5-1 and 5-2 the way QA's run did:
+ * The real engine with its real camera (realPlay.ts) at each phone size, upright and sideways, playing 5-1, 5-2 and 5-3 the way QA's run did:
  * holding right and hopping every 1.5 s, from the start to the shrine (a fall goes back to the flag, as in the game). Every heart a spider
  * takes must come after a crouch that was fully on the screen for at least 0.6 s.
  */
@@ -91,7 +91,7 @@ function playThrough(id: string, w: number, h: number, every = 1.5, phase = 0.5)
   return { hits, rushes, reached: p.x >= end - 60, x: Math.round(p.x), end };
 }
 
-for (const id of ['5-1', '5-2']) {
+for (const id of ['5-1', '5-2', '5-3']) {
   test(`${id}: every spider hit, upright and sideways, comes after a crouch on screen for ${WARN} s or more`, () => {
     assert.ok(SPIDER5.tell >= WARN);
     let all = 0;
@@ -102,7 +102,9 @@ for (const id of ['5-1', '5-2']) {
         const run = playThrough(id, w, h, every, 0.5);
         assert.ok(run.reached, `${id} ${w}x${h}: the run stopped at x ${run.x} of ${Math.round(run.end)}`);
         // (still a threat at every size: they come, and a player who never fights them back is caught)
-        assert.ok(run.rushes > 5 && run.hits.length > 0, `${id} ${w}x${h}: ${run.rushes} rushes, ${run.hits.length} hits`);
+        // (5-3's spiders are a reminder among the orchids, a few of them: they come, but a quick hop can clear every one)
+        if (id === '5-3') assert.ok(run.rushes >= 2, `${id} ${w}x${h}: ${run.rushes} rushes`);
+        else assert.ok(run.rushes > 5 && run.hits.length > 0, `${id} ${w}x${h}: ${run.rushes} rushes, ${run.hits.length} hits`);
         all += run.hits.length;
         for (const hit of run.hits) {
           if (hit.warned < WARN) bad.push(`${w}x${h} hop ${every} s: spider ${hit.id} at ${hit.t.toFixed(1)} s (dx ${hit.dx}) warned ${hit.warned.toFixed(2)} s`);

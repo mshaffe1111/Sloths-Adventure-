@@ -30,7 +30,8 @@ const STEP_LINES = [W5_STEP_HELP, W5_STEP_HELP_PAD, W5_STEP_HELP_KEYS];
 const WALL_LINES = [stuckLine('screen'), stuckLine('pad'), stuckLine('keys')];
 
 type Built = ReturnType<typeof buildProtoStage> & { w5info: W5Info; proto: { w5: W5Extras } };
-const build = (id: '5-1' | '5-2', s: number) => buildProtoStage(levelConfig(id), s, HAND_STAGES[id]) as Built;
+type Id = '5-1' | '5-2' | '5-3';
+const build = (id: Id, s: number) => buildProtoStage(levelConfig(id), s, HAND_STAGES[id]) as Built;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
 // (a phone: the lines in their touch words, lessons.ts lessonInputMode)
 try {
@@ -59,7 +60,7 @@ interface Said { text: string; x: number; t: number }
  * walks into the Butler's tray. Each frame keeps when it was, where he was, whether an animal was at hand (dotGuideWatch.ts inDanger:
  * no new line but a warning starts then) and the moves done so far (the queue's move counter).
  */
-function holdRight(id: '5-1' | '5-2', seed: number, untilX: number) {
+function holdRight(id: Id, seed: number, untilX: number) {
   forgetTips(id);
   const sim = new RealPlay(id, seed);
   const w5 = (sim.stage as unknown as { proto: { w5: W5Extras } }).proto.w5;
@@ -161,14 +162,14 @@ interface Lesson {
   /** a move the line teaches: a player who has already done it this stage is not told (dotGuide.ts, QA v189) */
   move?: 'double';
 }
-function lessonsOf(id: '5-1' | '5-2', st: Built): Lesson[] {
+function lessonsOf(id: Id, st: Built): Lesson[] {
   const w = st.proto.w5;
   const out: Lesson[] = [];
   const dl = st.w5info.doubleLesson;
   if (dl) out.push({ name: 'the second jump', text: (id === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double).old, at: dl.edge, move: 'double' });
   const tl = st.w5info.tallLesson;
   if (tl) out.push({ name: 'the tall stumps', text: (id === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall).old, at: tl.at, move: 'double' });
-  if (id === '5-1') {
+  if (id === '5-1' || id === '5-3') {
     // the first awake spider: its line before it can notice him (and, once it is on screen, crouch)
     const sp = st.enemies.filter((e) => e.type === 'spider').sort((a, b) => a.x - b.x)[0];
     out.push({ name: 'the jumping spider', text: W5_TEACH.spider, at: sp.x, reach: SPIDER5.sense });
@@ -185,10 +186,15 @@ function lessonsOf(id: '5-1' | '5-2', st: Built): Lesson[] {
     out.push({ name: 'the cakes', text: W5_TEACH.cake, at: cake });
     out.push({ name: 'the Butler', text: W5_TEACH.butler, at: Math.min(...w.butlers!.map((b) => b.x)) - 46 });
   }
+  if (id === '5-3') {
+    // the closing orchids: the line before the first bloom's lip, the first cake before it
+    out.push({ name: 'the closing orchids', text: W5_TEACH.orchid, at: Math.min(...st.w5info.orchids.map((o) => o.x0)) });
+    out.push({ name: 'the cakes', text: W5_TEACH.cake, at: Math.min(...w.cakes!.map((c) => c.x)) });
+  }
   return out;
 }
 
-for (const id of ['5-1', '5-2'] as const) {
+for (const id of ['5-1', '5-2', '5-3'] as const) {
   test(`${id}: holding right from the start, every first-time line comes before its thing is within reach (old look and new)`, () => {
     const problems: string[] = [];
     for (const seed of process.env.W5_ORDER_SEEDS === '16' ? SEEDS : SEEDS.slice(0, 4)) {
@@ -360,8 +366,8 @@ test('World 5: jumping again and again at a step, the stuck-helper speaks, and t
   }
 });
 
-test('5-1 and 5-2: the hearts at the flags float at walking height, and walking under one at 4 of 5 hearts picks it up', () => {
-  for (const id of ['5-1', '5-2'] as const) {
+test('5-1, 5-2 and 5-3: the hearts at the flags float at walking height, and walking under one at 4 of 5 hearts picks it up', () => {
+  for (const id of ['5-1', '5-2', '5-3'] as const) {
     for (const s of SEEDS) {
       const st = build(id, s);
       const hearts = st.collectibles.filter((c) => c.type === 'heart');
@@ -417,5 +423,96 @@ test('5-2 upright at 320x782: the first cakes come into view with time to hop th
     if (process.env.W5_ORDER_DEBUG) console.log('cakes seen', seed, leads.join(', '));
     const said = sentAt(sim.said, W5_TEACH.cake);
     assert.ok(said && said.x < first[0].x - 400, `seed ${seed}: the cakes' line came at ${said?.x}, the first cake at ${first[0].x}`);
+  }
+});
+
+/** 5-3's orchids: the first one alone over the grass, then two over the grass, then the rows over the soft pits */
+test('5-3: the first orchid is alone over the grass, one plain hop up from a stump, before any row over a pit; nothing needs a second jump', () => {
+  for (const s of SEEDS) {
+    const st = build('5-3', s);
+    const inf = st.w5info;
+    assert.ok(validateStage(st).ok, `seed ${s}`);
+    const first = inf.orchids[0];
+    assert.equal(first.piece, 'lesson', `seed ${s}`);
+    // (one plain hop up from a plain stump beside it: 1-1's first stepping stone)
+    const stump = st.platforms.find((p) => p.style === 'moss_stone' && p.y + p.height === G && p.x + p.width <= first.x0 && first.x0 - (p.x + p.width) < 60);
+    assert.ok(stump && G - stump.y <= 50 && stump.y - first.y <= 75 && first.ground === G, `seed ${s}: the first orchid ${G - first.y} px up, its stump ${stump ? G - stump.y : 'none'}`);
+    // (grass right under it: a miss is a drop to the path)
+    assert.ok(st.platforms.some((p) => p.y === G && p.x <= first.x0 && p.x + p.width >= first.x1), `seed ${s}: no grass under the first orchid`);
+    // the next orchids are a beat later: the lesson is on its own
+    assert.ok(inf.orchids[1].x0 - first.x1 > 500, `seed ${s}: the second orchid ${inf.orchids[1].x0 - first.x1} px after the first`);
+    // the steps over the grass come before the first row over a pit
+    const firstRow = inf.rows[0];
+    for (const o of inf.orchids.filter((q) => q.x0 < firstRow.edge)) assert.ok(o.ground === G && o.piece !== 'row', `seed ${s}: an orchid over a pit before the first row`);
+    // nothing here needs the second jump
+    assert.ok(inf.gaps.every((g) => !g.double) && inf.stumps.every((q) => q.h <= 100), `seed ${s}`);
+  }
+});
+
+test('5-3 in the real engine: a row of orchids crossed with plain jumps, starting as the first one opens, never into the pit', () => {
+  for (const seed of [1, 38, 75]) {
+    const st = build('5-3', seed);
+    const w5 = st.proto.w5;
+    for (const row of st.w5info.rows.slice(0, 3)) {
+      const sim = new RealPlay('5-3', seed);
+      const o0 = w5.orchids!.find((o) => Math.abs(o.x - (st.w5info.orchids[row.orchids[0]].x0 + st.w5info.orchids[row.orchids[0]].x1) / 2) < 2)!;
+      sim.stand(row.edge - 60, G);
+      // (he has just walked up and the first one is opening: he goes as it opens, as Dot says)
+      sim.t = 60 + ((((0.85 - o0.offset - 0.4) % o0.period) + o0.period) % o0.period);
+      let hold = 0, deep = false;
+      for (let i = 0; i < 30 * 8 && !(sim.p.grounded && sim.p.x > row.far + 30); i++) {
+        const p = sim.p;
+        let press = false;
+        if (p.grounded && hold <= 0) {
+          const floor = sim.platforms.some((q) => !q.broken && Math.abs(q.y - p.y) < 3 && q.x <= p.x + 30 && q.x + q.width >= p.x + 30);
+          if (!floor) {
+            press = true;
+            hold = 9;
+          }
+        }
+        sim.frame({ right: true, press, jump: hold > 0 });
+        hold--;
+        assert.ok(!sim.p.isDoubleJumping, `seed ${seed}: one jump at a time`);
+        if (sim.p.y > G + 40) deep = true;
+      }
+      assert.ok(!deep, `seed ${seed}: fell into the pit at the row at ${row.edge} (x ${Math.round(sim.p.x)})`);
+      assert.ok(sim.p.x > row.far + 30 && Math.abs(sim.p.y - G) < 2, `seed ${seed}: the row at ${row.edge} not crossed (x ${Math.round(sim.p.x)}, y ${Math.round(sim.p.y)})`);
+    }
+  }
+});
+
+test('5-3 upright (320x782, 390x844) and short (640x320): waiting at a row its first orchid is in view, and on each orchid the next', () => {
+  for (const [vw, vh] of [[320, 782], [390, 844], [640, 320]] as const) {
+    const st = build('5-3', 1);
+    const sim = new RealPlay('5-3', 1);
+    const e = sim.e;
+    delete e.updateCamera;
+    e.viewCssW = vw;
+    e.viewCssH = vh;
+    e.introT = 99;
+    e.applyZoom();
+    const w5 = st.proto.w5;
+    const inView = (o: { x0: number; x1: number; y: number }) => {
+      const cam = e.camera;
+      // (the whole bloom, and the cup above it)
+      return o.x0 >= cam.x && o.x1 <= cam.x + cam.viewportWidth && o.y - 70 >= cam.y && o.y + 20 <= cam.y + cam.viewportHeight;
+    };
+    for (const row of st.w5info.rows.slice(0, 4)) {
+      sim.stand(row.edge - 160, G);
+      for (let i = 0; i < 30 * 2 && sim.p.x < row.edge - 40; i++) sim.frame({ right: true });
+      for (let i = 0; i < 40; i++) sim.frame();
+      const first = st.w5info.orchids[row.orchids[0]];
+      assert.ok(inView(first), `${vw}x${vh}: waiting at ${row.edge}, the orchid at ${first.x0} is off the screen (view ${Math.round(e.camera.x)}..${Math.round(e.camera.x + e.camera.viewportWidth)})`);
+      for (let k = 0; k + 1 < row.orchids.length; k++) {
+        const o = st.w5info.orchids[row.orchids[k]];
+        const ko = w5.orchids!.find((q) => Math.abs(q.x - (o.x0 + o.x1) / 2) < 2)!;
+        sim.t = 60 + ((((0.1 - ko.offset) % ko.period) + ko.period) % ko.period);
+        sim.stand((o.x0 + o.x1) / 2, o.y);
+        for (let i = 0; i < 24; i++) sim.frame();
+        const next = st.w5info.orchids[row.orchids[k + 1]];
+        assert.ok(Math.abs(sim.p.y - o.y) < 2, `${vw}x${vh}: he stands on the orchid at ${o.x0}`);
+        assert.ok(inView(next), `${vw}x${vh}: on the orchid at ${o.x0}, the next at ${next.x0} is off the screen (view ${Math.round(e.camera.x)}..${Math.round(e.camera.x + e.camera.viewportWidth)})`);
+      }
+    }
   }
 });
