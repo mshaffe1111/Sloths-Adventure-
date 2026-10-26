@@ -10,7 +10,18 @@ then on, `mem` frozen at the same numbers, as a paused stage would be); about 2.
 (158 s, leaving the menu); then 22 s of touches read as gestures (167 to 189 s) with Pokey not moving; then the page went
 away (`hidden` at 191.7 s). So the stage never came back from the pause after the Trophies / Jungle Cards screens.
 Repro to try: start a stage, open the Menu, open Trophies, then Jungle Cards (go back and forth), close the menu, and steer.
-Not logged: no `err` line. The early `blank` wait below may or may not be related.
+Matt's fuller steps: Menu → Trophies; looked at all three tabs, scrolling (kill counts); opened a memory to watch again
+("Tap to watch again"), skipped it; back up; Resume → froze.
+**Likely root cause (QA read of the code, build 17145ea):** App.tsx's effect (about line 345) stops the engine and sets
+`engineRef.current = null` whenever the screen becomes one of the story screens, including `'memory'` ("letting go of the engine
+frees that stage's world"). TrophyRoom's `onReplayMemory` (App.tsx about line 1040) sets the screen to `'memory'` even when the
+Trophy Room was opened from the PAUSE menu (`trophyFrom === 'paused'`). After the memory (finish or skip) it returns to the
+Trophy Room, whose Back goes to `'paused'`, but the stage's engine is gone, so Resume resumes nothing. That's a frozen screen
+whose touches are still read by the input layer, which is exactly the log. The page closing afterwards may be the browser
+killing a stuck tab, or Matt leaving.
+Fix ideas: don't free the engine for a memory replayed from the pause menu (play it over the paused stage), or have Back
+restart the stage from its last flag when the engine was released. Repro: start a stage, Menu → Trophies → Library → a seen
+memory "Tap to watch again" → Skip → Back → Resume.
 QA couldn't reproduce it in a quick headless pass (current dev build, 1-1 upright: Menu, Trophies, Jungle Journal, Library, Badges,
 Back, Jungle Cards, Back, Resume, then steering: the game resumed and Pokey ran). Differences from Matt's case: a real Android
 phone, about 2.5 minutes inside those screens, the control-test stage, the 15:52 build. A guess worth checking: the Trophy Room
