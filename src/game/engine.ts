@@ -3222,9 +3222,11 @@ export class GameEngine {
     const inp = this.input.state;
     const id = chooseMove(want, !p.grounded, this.lastPunch, this.chainTimer > 0);
     const move = MOVES[id];
-    if (inp.left && !inp.right) p.facing = -1;
+    // a flicked kick goes the way the thumb flicked, even against the way the other thumb steers (QA, World 5: running right with a
+    // spider rushing from behind, a kick flicked left at it went right, the way he was steering, whiffed, and the spider bit)
+    if (face) p.facing = face > 0 ? 1 : -1;
+    else if (inp.left && !inp.right) p.facing = -1;
     else if (inp.right && !inp.left) p.facing = 1;
-    else if (face) p.facing = face > 0 ? 1 : -1; // a flicked kick goes the way the thumb flicked
     if (id === 'mega') this.megaCooldown = 1.0;
     if (id === 'kick') this.kickTurn = this.kickChain > 0 ? this.kickTurn + 1 : 0;
     this.chainTimer = 0;
@@ -5981,10 +5983,13 @@ export class GameEngine {
     const p = this.player;
     const id = this.currentStage.config.id;
     const s = this.input.state;
+    const cam = this.camera;
     const out = this.w5!.step(dt, {
       t: this.gameTime,
       player: p,
       steer: s.left && !s.right ? -1 : s.right && !s.left ? 1 : 0,
+      // (the spiders crouch only in full view: the real view at every orientation, viewportWidth being the CSS width over the zoom)
+      view: { x0: cam.x, x1: cam.x + cam.viewportWidth, y0: cam.y, y1: cam.y + cam.viewportHeight },
       platforms: this.platforms,
       collectibles: this.collectibles,
       enemies: this.enemies,

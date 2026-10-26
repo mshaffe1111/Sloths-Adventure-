@@ -8,7 +8,8 @@
 import {
   BUTLER, CAKE, chairPull, COCOON, hitCocoon, humReaches, inSteam, newButler, newCocoon, newGate, newSit, orchidAt, potAt, punchReachesCocoon,
   admiring, seatedIn, silkSpeed, sitDrowsy, sleepySpeed, SIT, spoutOf, stepButler, stepGate, stepSit, TEAPOT, THREAD, threadTouched,
-  touchesCake, trayAt, W5_TEACH, type ButlerState, type CocoonState, type GateState, type SitState, type W5Extras,
+  touchesCake, trayAt, W5_TEACH, onScreen, SPIDER5, type ButlerState, type CocoonState, type GateState, type SitState, type ViewBox,
+  type W5Extras,
 } from './w5Kit.ts';
 import {
   carvingBox, drawBlossom, drawButler, drawCake, drawCard, drawCarving, drawChair, drawCocoon, drawDoily, drawFern, drawFlyingTray, drawOrchid,
@@ -27,6 +28,8 @@ export interface W5Host {
   player: Player;
   /** the way he is steering (-1 left, 1 right, 0 neither) */
   steer: -1 | 0 | 1;
+  /** what the camera shows (world units): a spider crouches only in full view of it (w5Kit SPIDER5.edge) */
+  view?: ViewBox;
   platforms: Platform[];
   collectibles: Collectible[];
   enemies: Enemy[];
@@ -280,7 +283,9 @@ export class W5Play {
       if (heard) h.tip(said(W5_TEACH.hummed), W5_TEACH.hummed, 2.6);
     });
 
-    // the spiders: asleep, or watching; once roused, a crouch (the warning), then the rush (the engine's spider brain)
+    // the spiders: asleep, or watching; once roused, a crouch (the warning), then the rush (the engine's spider brain). It crouches
+    // only in full view on the screen, and a crouch or a rush that leaves the screen is called off, so every rush is warned where it is
+    // seen, upright and sideways (QA 2026-10-26: upright on a 320 px phone every crouch had been off the screen)
     for (const s of w5.spiders ?? []) {
       const e = h.enemies.find((q) => q.id === s.id);
       const g = this.gates.get(s.id);
@@ -288,7 +293,10 @@ export class W5Play {
       const dx = p.x - e.x;
       const dy = p.y - (e.y + 12);
       if (!g.dozing && ahead(e.x, e.y, 600)) h.tip(said(W5_TEACH.spider), W5_TEACH.spider, 3.6);
-      const next = stepGate(g, { dx, dy, alarm: alarms.has(s.id), hunting: (e.alertT ?? 0) > 0, grounded: p.grounded }, dt);
+      const v = h.view;
+      const seen = !v || onScreen(v, e.x, e.y, e.width, e.height, SPIDER5.edge);
+      const shown = !v || onScreen(v, e.x, e.y, e.width, e.height);
+      const next = stepGate(g, { dx, dy, alarm: alarms.has(s.id), hunting: (e.alertT ?? 0) > 0, grounded: p.grounded, seen, shown }, dt);
       if (next.phase === 'windup' && g.phase === 'calm') {
         e.facing = dx >= 0 ? 1 : -1;
         h.float('!', e.x, e.y - 34, '#fb7185');

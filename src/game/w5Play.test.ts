@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { G } from './protoStage.ts';
-import { BUTLER, SIT, SPIDER5, W5_TEACH, type W5Extras } from './w5Kit.ts';
+import { BUTLER, onScreen, SIT, SPIDER5, W5_TEACH, type GateState, type W5Extras } from './w5Kit.ts';
 
 const w5Of = (sim: RealPlay) => (sim.stage as unknown as { proto: { w5: W5Extras } }).proto.w5;
 /** stand him at x on the ground, take one step (so the stage has seen him move), and let go */
@@ -78,28 +78,42 @@ test('5-2: walking into a cake makes him sleepy and slow for a few seconds', () 
   assert.ok(sim.said.some((s) => s.text === W5_TEACH.cake), 'the cakes were taught before the first one');
 });
 
-test("5-2: a thread's hum wakes the sleeping spiders; each crouches for its warning before it comes", () => {
+test("5-2: a thread's hum wakes the sleeping spiders; each in view crouches for its warning before it comes, one off the screen once it is in view", () => {
   const sim = new RealPlay('5-2', 1);
   const w5 = w5Of(sim);
   const sleepers = new Set(w5.spiders!.filter((s) => s.doze).map((s) => s.id));
+  type Bug = { id: number; x: number; y: number; width: number; height: number };
   // the first thread with sleepers in reach of its hum
-  const th = w5.threads!.find((t) => sim.e.enemies.some((e: { id: number; x: number }) => sleepers.has(e.id) && Math.abs(e.x - (t.x0 + t.x1) / 2) < 680))!;
+  const th = w5.threads!.find((t) => sim.e.enemies.some((e: Bug) => sleepers.has(e.id) && Math.abs(e.x - (t.x0 + t.x1) / 2) < 680))!;
   assert.ok(th, 'a thread guards sleeping spiders');
-  const gates = sim.e.w5.gates as Map<number, { phase: string }>;
-  const near = sim.e.enemies.filter((e: { id: number; x: number }) => sleepers.has(e.id) && Math.abs(e.x - (th.x0 + th.x1) / 2) < 680);
+  const gates = sim.e.w5.gates as Map<number, GateState>;
+  const near: Bug[] = sim.e.enemies.filter((e: Bug) => sleepers.has(e.id) && Math.abs(e.x - (th.x0 + th.x1) / 2) < 680);
   for (const e of near) assert.equal(gates.get(e.id)!.phase, 'calm');
   sim.stand(th.x0 - 60, G);
-  for (let i = 0; i < 20 && !near.some((e: { id: number }) => gates.get(e.id)!.phase !== 'calm'); i++) sim.frame({ right: true });
-  for (const e of near) assert.equal(gates.get(e.id)!.phase, 'windup', `spider ${e.id} woke`);
+  for (let i = 0; i < 20 && near.every((e) => gates.get(e.id)!.dozing); i++) sim.frame({ right: true });
+  const cam = sim.e.camera;
+  const view = { x0: cam.x, x1: cam.x + cam.viewportWidth, y0: cam.y, y1: cam.y + cam.viewportHeight };
+  const seen = near.filter((e) => onScreen(view, e.x, e.y, e.width, e.height, SPIDER5.edge));
+  const unseen = near.filter((e) => !seen.includes(e));
+  assert.ok(seen.length > 0 && unseen.length > 0, 'the hum reaches spiders on the screen and off it');
+  for (const e of near) assert.equal(gates.get(e.id)!.dozing, false, `spider ${e.id} woke`);
+  for (const e of seen) assert.equal(gates.get(e.id)!.phase, 'windup', `spider ${e.id}, on the screen, crouches`);
+  // (off the screen, behind him: it does not crouch where he cannot see it)
+  for (const e of unseen) assert.equal(gates.get(e.id)!.phase, 'calm', `spider ${e.id}, off the screen, waits`);
   // the warning: still for SPIDER5.tell
-  const xs = near.map((e: { x: number }) => e.x);
+  const xs = seen.map((e) => e.x);
   for (let i = 0; i < Math.floor((SPIDER5.tell - 0.1) * 30); i++) sim.frame();
-  near.forEach((e: { id: number; x: number }, k: number) => {
+  seen.forEach((e, k) => {
     assert.equal(gates.get(e.id)!.phase, 'windup');
     assert.equal(e.x, xs[k], 'it has not moved yet');
   });
   sim.wait(0.3);
-  for (const e of near) assert.equal(gates.get(e.id)!.phase, 'go');
+  for (const e of seen) assert.equal(gates.get(e.id)!.phase, 'go');
+  // the one the hum woke off the screen crouches as soon as it is in view (150 px off: a sleeper would wake only at a bump)
+  const far = unseen[0];
+  sim.stand(far.x + 150, G);
+  sim.frame();
+  assert.equal(gates.get(far.id)!.phase, 'windup', 'the woken spider comes once it is seen');
   assert.ok(sim.said.some((s) => s.text === W5_TEACH.thread), 'the threads were taught');
 });
 

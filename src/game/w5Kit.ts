@@ -16,7 +16,8 @@
  *   silk lines    swing on them like lianas (the liana system: a Vine with `silk`).
  *   carvings      Meeca's shaky hairpin letters on the trunks; the game draws the words, so they are crisp.
  *   the Butler    a waistcoated spider holding out a tray with a cake on it: punch the tray away (walk into it and he has eaten).
- *   spiders       World 5's jumping spiders crouch for a moment (SPIDER5.tell) before they rush, so the first rush is always warned.
+ *   spiders       World 5's jumping spiders crouch for a moment (SPIDER5.tell) before they rush, so the first rush is always warned, and
+ *                 they crouch only in full view on the screen (SPIDER5.edge), so the warning is always seen.
  *
  * Pure (no canvas, no engine): the stage builder, the engine (w5Play.ts) and the tests agree on what each one is doing.
  */
@@ -371,7 +372,29 @@ export const SPIDER5 = {
   doze: 64,
   sense: 430,
   dy: 170,
+  /**
+   * how far inside the edges of the screen (world px) its whole body must be before it may crouch. It notices him from 430 px either
+   * way, but upright on a narrow phone the view shows only about 80 px behind him and under 300 ahead: QA (2026-10-26, 320 x 782) saw
+   * every crouch happen off the screen, so the rush was the first thing the player saw. Now it crouches only where he can see it.
+   */
+  edge: 30,
+  /** a rush that has been off the screen this long (s) is given up: it must crouch again in view before it can come again */
+  lose: 0.4,
+  /** an awake spider that heard a hum while off the screen still comes if it is in view within this long (s) */
+  called: 4,
 } as const;
+
+/** what the camera shows (world units): its left and right, top and bottom */
+export interface ViewBox {
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
+}
+
+/** is a body (middle x, y; w by h) on the screen, at least `inset` px inside every edge of the view? */
+export const onScreen = (v: ViewBox, x: number, y: number, w: number, h: number, inset = 0): boolean =>
+  x - w / 2 >= v.x0 + inset && x + w / 2 <= v.x1 - inset && y - h / 2 >= v.y0 + inset && y + h / 2 <= v.y1 - inset;
 
 export type GatePhase = 'calm' | 'windup' | 'go';
 export interface GateState {
@@ -379,25 +402,49 @@ export interface GateState {
   t: number;
   /** still asleep (until something wakes it, then it stays awake) */
   dozing: boolean;
+  /** seconds left in which a hum it heard off the screen still brings it, once it is in view */
+  called: number;
+  /** seconds its rush has been off the screen */
+  lost: number;
 }
-export const newGate = (doze = false): GateState => ({ phase: 'calm', t: 0, dozing: doze });
+export const newGate = (doze = false): GateState => ({ phase: 'calm', t: 0, dozing: doze, called: 0, lost: 0 });
+const CALM: GateState = { phase: 'calm', t: 0, dozing: false, called: 0, lost: 0 };
 
 /**
  * one frame of a spider's gate (the engine's own spider brain runs only once the gate is open, `go`): `dx`, `dy` from the spider to him;
  * `alarm` a thread hummed within reach; `hunting` the spider's own brain still has him in mind (it falls calm once that runs out);
- * `grounded` he is on his feet (a sleeping spider wakes only if he walks right into it, never at a hop over it)
+ * `grounded` he is on his feet (a sleeping spider wakes only if he walks right into it, never at a hop over it).
+ *
+ * The screen: `seen`, its whole body is on the screen and SPIDER5.edge inside its edges (only then may it crouch, so the warning is
+ * always where he can see it; nothing rouses it from out of sight, ahead or behind); `shown`, its whole body is on the screen at all (a
+ * crouch that leaves the screen is called off, so every rush comes after a whole crouch in view; a rush that stays off the screen
+ * SPIDER5.lose is given up). Both default to true (no screen: the rules alone).
  */
-export function stepGate(g: GateState, inp: { dx: number; dy: number; alarm: boolean; hunting: boolean; grounded?: boolean }, dt: number): GateState {
+export function stepGate(
+  g: GateState,
+  inp: { dx: number; dy: number; alarm: boolean; hunting: boolean; grounded?: boolean; seen?: boolean; shown?: boolean },
+  dt: number,
+): GateState {
   const t = g.t + dt;
+  const seen = inp.seen !== false;
+  const shown = inp.shown !== false;
   if (g.phase === 'calm') {
     const bumped = g.dozing ? inp.grounded !== false && Math.abs(inp.dy) < 40 && Math.abs(inp.dx) < SPIDER5.doze : Math.abs(inp.dy) < SPIDER5.dy && Math.abs(inp.dx) < SPIDER5.sense;
-    if (inp.alarm || bumped) return { phase: 'windup', t: 0, dozing: false };
-    return { ...g, t };
+    const called = inp.alarm ? SPIDER5.called : Math.max(0, g.called - dt);
+    if (seen && (inp.alarm || bumped || (!g.dozing && called > 0))) return { ...CALM, phase: 'windup' };
+    // (a hum heard off the screen wakes it; it comes once it is in view)
+    if (inp.alarm) return { ...g, t, dozing: false, called };
+    return { ...g, t, called };
   }
-  if (g.phase === 'windup') return t >= SPIDER5.tell ? { phase: 'go', t: 0, dozing: false } : { ...g, t };
+  if (g.phase === 'windup') {
+    if (!shown) return CALM;
+    return t >= SPIDER5.tell ? { ...CALM, phase: 'go' } : { ...g, t };
+  }
+  const lost = shown ? 0 : g.lost + dt;
+  if (lost >= SPIDER5.lose) return CALM;
   // (a moment in before it can lose interest, so a rush is never cut off the frame it starts)
-  if (!inp.hunting && t > 1) return { phase: 'calm', t: 0, dozing: false };
-  return { ...g, t };
+  if (!inp.hunting && t > 1) return CALM;
+  return { ...g, t, lost };
 }
 
 // ───────────────────────────── don't admire the silk ─────────────────────────────

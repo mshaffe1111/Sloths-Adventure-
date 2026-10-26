@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   admiring, anyCakeEaten, BUTLER, CAKE, CAKE_KEY, chairPull, CHAIR, COCOON, hitCocoon, humReaches, inSteam, loadCakes, newButler, newCocoon,
-  newGate, newSit, newTeapot, orchidAt, orchidFair, orchidTiming, ORCHID, parseCakes, potAt, potFair, punchReachesCocoon, queenCakeLine,
+  newGate, newSit, newTeapot, onScreen, orchidAt, orchidFair, orchidTiming, ORCHID, parseCakes, potAt, potFair, punchReachesCocoon, queenCakeLine,
   recordCake, seatedIn, shakyLetters, silkLine, silkSpeed, SIT, sitDrowsy, sleepySpeed, SPIDER5, spoutOf, stepButler, stepGate, stepSit,
   TEAPOT, threadTouched, touchesCake, trayAt, W5_TEACH, type GateState, type Orchid, type SitInput, type SitState,
 } from './w5Kit.ts';
@@ -191,6 +191,45 @@ test('the spiders: a crouch of at least 0.6 s before any rush; a sleeping one wa
   const woke = stepGate(newGate(true), { dx: 600, dy: 0, alarm: true, hunting: false }, DT);
   assert.equal(woke.phase, 'windup');
   assert.equal(woke.dozing, false, 'once woken it stays awake');
+});
+
+test('the spiders crouch only in full view on the screen; a crouch that leaves it is called off, and a rush off it is given up', () => {
+  const near = { dx: 120, dy: 0, alarm: false, hunting: true, grounded: true };
+  // in sight of him, but not (fully, well inside the edge) on the screen: it waits, ahead or behind
+  assert.equal(stepGate(newGate(), { ...near, seen: false, shown: true }, DT).phase, 'calm');
+  assert.equal(stepGate(newGate(), { ...near, dx: -120, seen: false, shown: false }, DT).phase, 'calm');
+  // asleep: walked into off the screen, it sleeps on
+  const bump = stepGate(newGate(true), { ...near, dx: 30, seen: false }, DT);
+  assert.equal(bump.phase, 'calm');
+  assert.equal(bump.dozing, true);
+  // a hum off the screen wakes it; it comes when it is in view (even past its sight) within SPIDER5.called, and not after
+  let g = stepGate(newGate(true), { ...near, dx: 600, alarm: true, seen: false }, DT);
+  assert.deepEqual([g.phase, g.dozing], ['calm', false]);
+  assert.equal(stepGate(g, { ...near, dx: 600, seen: true }, DT).phase, 'windup');
+  for (let i = 0; i < Math.round((SPIDER5.called + 0.2) / DT); i++) g = stepGate(g, { ...near, dx: 600, seen: false }, DT);
+  assert.equal(stepGate(g, { ...near, dx: 600, seen: true }, DT).phase, 'calm');
+  // a crouch that leaves the screen is called off: the next rush needs a whole new crouch in view
+  g = stepGate(newGate(), { ...near, seen: true, shown: true }, DT);
+  assert.equal(g.phase, 'windup');
+  g = stepGate(g, { ...near, seen: false, shown: false }, DT);
+  assert.equal(g.phase, 'calm');
+  // a rush that stays off the screen is given up; a moment off it is not
+  g = { phase: 'go', t: 0, dozing: false, called: 0, lost: 0 };
+  g = stepGate(g, { ...near, shown: false }, SPIDER5.lose / 2);
+  g = stepGate(g, { ...near, shown: true }, DT);
+  g = stepGate(g, { ...near, shown: false }, SPIDER5.lose / 2);
+  assert.equal(g.phase, 'go');
+  g = stepGate(g, { ...near, shown: false }, SPIDER5.lose / 2 + DT);
+  assert.equal(g.phase, 'calm');
+});
+
+test('onScreen: the whole body inside the view, and `inset` px inside every edge', () => {
+  const v = { x0: 100, x1: 468, y0: 0, y1: 900 };
+  assert.ok(onScreen(v, 200, 500, 34, 22));
+  assert.ok(!onScreen(v, 110, 500, 34, 22), 'half off the left edge');
+  assert.ok(onScreen(v, 118, 500, 34, 22) && !onScreen(v, 118, 500, 34, 22, SPIDER5.edge), 'on, but at the very edge');
+  assert.ok(onScreen(v, 100 + 17 + SPIDER5.edge, 500, 34, 22, SPIDER5.edge));
+  assert.ok(!onScreen(v, 460, 500, 34, 22, SPIDER5.edge));
 });
 
 test('closing orchids: open, then a shiver it can still be stood on through, then shut; they close earlier further into the world, always fairly', () => {
