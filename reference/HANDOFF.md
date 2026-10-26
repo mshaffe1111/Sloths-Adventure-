@@ -58,6 +58,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
   - Light: lovely golden afternoon at 5-1, getting duskier as the orchids close, to misty violet twilight by the Queen's garden (World 8 is the night world, so World 5 must not read as night from the start). New backdrops per mood, plus the council-table arena.
   - Mechanics are Dot's five rules: don't sit (stillness makes him drowsy, silk creeps, soft chairs tug), don't eat (cakes look like pickups but bring sleep), don't drink (warm teapots' sleepy steam), don't touch the silk (threads hum and spiders turn), don't admire the silk.
   - Meeca's bonus stage after 5-5: you play Meeca slipping her guards and carving the warnings on the move; in 5-6 Pokey finds the carvings the player made; it ends with Pell gently recapturing her (sets up his blanket note).
+  - The cakes: tempting trap pickups that make Pokey sleepy. The game tracks whether you ate any in World 5. Eat none and the Queen says "Nobody has ever not eaten the cake" (plus a badge); eat some and she says a line like "You ate the cake, darling. Everyone does."
   - The boss arena is the old council's long table (ten chairs and Iron-Claw's head chair), which the tea scene then uses.
 - **Bosses.** Every weak-spot opening needs a clear tell, and must stay open at least as long as the time to reach it plus 0.8 s to react plus 0.6 s to hit (bossFair.test.ts, sovereignEngine.test.ts). Fight length depends on the player's skill; there is no minimum for bosses.
 
