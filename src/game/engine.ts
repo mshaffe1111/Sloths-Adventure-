@@ -130,6 +130,7 @@ import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
 import { newLookOn } from './newLook.ts';
+import { dotHelp } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
 
 /** the banner that dodges Pokey (markWayDodge): on for everyone since Matt approved it (2026-10-24); `?waydodge=0` turns it off */
@@ -508,6 +509,8 @@ export class GameEngine {
     // moves the stage lends him (the control test's rope), and the test's mix, logged so the run can be built again
     for (const s of this.proto?.grant ?? []) this.skills.add(s);
     if (this.proto?.mix) recorder.event('mix', this.proto.mix);
+    // which look this stage plays with, and Dot's help setting, so the QA team can compare first-timers with the new HUD and Dot on and off
+    recorder.event('look', `newLook ${this.newLook ? 1 : 0} help ${dotHelp()}`);
     this.ring = { state: 'idle', wave: 0, ids: [] };
     this.ringDrops = [];
     this.chase = this.proto?.chase ? newChase(this.proto.chase) : null;

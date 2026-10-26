@@ -91,6 +91,7 @@ blank 80, camjump 40, blink 30, jitter 40, flipflop 40. Any other name: 50.
 | `rules` | `refined` or `old` touch rules |
 | `difficulty` | the difficulty picked |
 | `mix` | the test stage's layout seed (`?mix=<seed>` rebuilds it) |
+| `look` | at each stage start: `newLook 1` or `newLook 0` (the New HUD and Dot beta on or off) and `help teach`, `help reminders` or `help quiet` (Dot's help setting) |
 | `section` | the stretch of the test stage Pokey entered (from builds after 2026-10-26: only once he is 40 px into it and has stayed 0.5 s, and not while still swinging, so a swing over the line no longer flips it back and forth; `src/game/sectionTrack.ts`) |
 | `checkpoint` | checkpoint reached (its x) |
 | `hurt` | hit (hearts left) |
