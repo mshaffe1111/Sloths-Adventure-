@@ -49,3 +49,17 @@
 - 3-10: when the gold sits on his back end but his face points at you, don't run or jump at him. Going at his face or over his head both cost me hearts. Wait for him to turn or stop, then go.
 - 3-10: when he stands up and roars, don't just run flat out. I took a hit running away. Watch for the ring, then jump out of it.
 - 3-10: when he gets "caught in the moon" he's stunned for a good while with the gold on his chest. That's the big opening, so run straight in and tap-tap.
+
+## 2026-10-26 (session 15, boss gate retest, upright with a turn sideways)
+
+### Bosses
+- General: the camera slides around a lot in boss fights upright, so where something sits on the screen isn't where it sits in the arena. Don't aim a long slide off an old picture; take a fresh look first.
+- General: taps you fire at the end of a string can still land a beat later. Don't panic-tap after "NOW!" goes away, but don't be surprised if the count drops one more.
+- General: a run-in, six taps, then a held flick plus a second flick steering away is a good rhythm. It kept me alive even when I couldn't see well.
+- 1-10 (snake): red eyes and a puff of breath means the floor lunge is coming. Be off the ground before it, not during it. Running along the floor beside his mouth is how I got bitten twice.
+- 1-10: don't hold the thumb up at the top of the tree. You don't stay there; you get flung off and land somewhere you didn't pick. Climb a short way and let go.
+- 1-10: touching his coils hurts. When you jump to a hanging ledge near him, steer less: too much and you sail past it into his body.
+- 1-10: from the far side of his body, a long run back to his head arrives just as he wakes. Don't count on that hit.
+- 1-10: the little snakes: a kick (flick sideways) gets rid of them when they're close; a jump-and-drop onto them doesn't always land.
+- 3-10 (panther): he walks right over you sometimes. If the gold crosshair turns up on his side right where you stand, just tap; it counts.
+- 3-10: when he stands up tall the gold goes on his chest. One short slide in, then tap. If the count doesn't drop, nudge once more and tap again.
