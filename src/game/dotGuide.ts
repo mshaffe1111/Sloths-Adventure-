@@ -121,7 +121,16 @@ export interface TickEnv {
   danger: boolean;
   /** how many times a move has been done in this run of the stage */
   moveCount(m: MoveId): number;
+  /** he is swinging on a liana: a tip about a gap in the ground waits (heldBack) */
+  swinging?: boolean;
 }
+
+/**
+ * a line that must wait for now: a tip about jumping a gap in the ground while he swings on a liana. Its jump cannot be done from there,
+ * so it held the screen all through the swing and the swing's own tips never came (QA, 1-6 new look, 2026-10-26). It waits in the queue
+ * (until its usual wait runs out) and may come once he is off the vine.
+ */
+const heldBack = (l: GuideLine, env?: TickEnv): boolean => !!env?.swinging && l.topic === 'gap' && l.move === 'jump';
 
 export type GuideEvent =
   | { type: 'start'; show: Showing }
@@ -183,9 +192,10 @@ export class GuideQueue {
     this.endedAt = -1e9;
   }
 
-  private best(now: number): Waiting | null {
+  private best(now: number, env?: TickEnv): Waiting | null {
     let best: Waiting | null = null;
     for (const w of this.waiting) {
+      if (heldBack(w.line, env)) continue;
       if (!best || PRIORITY[w.line.kind] > PRIORITY[best.line.kind] || (PRIORITY[w.line.kind] === PRIORITY[best.line.kind] && w.seq < best.seq)) best = w;
     }
     void now;
@@ -209,15 +219,16 @@ export class GuideQueue {
       let why: 'done' | 'read' | 'cap' | 'yield' | null = null;
       if (l.move) {
         if (env.moveCount(l.move) > cur.base) why = 'done';
+        else if (heldBack(l, env)) why = 'yield';
         else if (age >= GUIDE.moveCapMs) why = 'cap';
         else if (age >= readMs(l.text)) {
-          const b = this.best(now);
+          const b = this.best(now, env);
           if (b && PRIORITY[b.line.kind] > PRIORITY[l.kind]) why = 'yield';
         }
       } else if (age >= showFor(l)) why = 'read';
       else if (l.kind === 'story' && age >= GUIDE.storyYieldMs) {
         // a story aside gives way to teaching that is waiting (research D3), after a fair look; it comes back later, in full
-        const b = this.best(now);
+        const b = this.best(now, env);
         if (b && PRIORITY[b.line.kind] > PRIORITY.struggle && !this.yielded.has(l.key)) why = 'yield';
       }
       if (!why) return cur;
@@ -230,7 +241,7 @@ export class GuideQueue {
         this.waiting.push({ line: l, until: now + Math.max(GUIDE.backMs, waitFor(l)), seq: ++this.seq });
       }
     }
-    const b = this.best(now);
+    const b = this.best(now, env);
     if (!b) return null;
     const gap = b.line.kind === 'story' ? GUIDE.storyGapMs : isUrgent(b.line) ? 0 : GUIDE.breathMs;
     if (now - this.endedAt < gap) return null;

@@ -16,14 +16,19 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay, type Pad } from './realPlay.ts';
 import { TouchGestures, TUNING, type GestureSink } from './touchGestures.ts';
-import { inSweetSpot, SWING_LAND, swingLanding } from './physics.ts';
+import { inSweetSpot, LEAN_HOP, SWING_LAND, swingLanding, timedLaunch } from './physics.ts';
 import { lessonDotLine, pickLesson, type LessonId, type LessonScene } from './lessons.ts';
 import { landingAhead } from './cameraFollow.ts';
+import { GuideQueue } from './dotGuide.ts';
 import type { Platform, Vine } from './types.ts';
 
 // ───────────────────────────── 1. the automatic landing ─────────────────────────────
 
-type Mode = 'pump' | 'pumpDown' | 'off' | 'offDown' | 'toward';
+/**
+ * pump: a steer held the way the swing goes (a thumb pumping it); holdLeft / holdRight: a steer held one way the whole time (QA's
+ * rig, "steer left"); off: hands off; downToward: down and toward the ledge at once (getting off). `Down` modes climb down as well.
+ */
+type Mode = 'pump' | 'pumpDown' | 'pumpLate' | 'pumpLateDown' | 'off' | 'offDown' | 'holdLeft' | 'holdRight' | 'downToward';
 
 /** the first liana on a stage (1-6's first, over the soft moss) and the raised ledge left of it, where he came from */
 function firstVine(r: RealPlay): { v: Vine; ledge: Platform } {
@@ -32,21 +37,37 @@ function firstVine(r: RealPlay): { v: Vine; ledge: Platform } {
   return { v, ledge };
 }
 
+const lagged = new WeakMap<RealPlay, number[]>();
+function lateOmega(r: RealPlay): number {
+  const h = lagged.get(r) ?? [];
+  h.push(r.p.swingAngularVelocity ?? 0);
+  lagged.set(r, h);
+  return h[Math.max(0, h.length - 11)];
+}
+
+/** this frame's hands for a mode */
+function hands(r: RealPlay, mode: Mode, toward: -1 | 1): Pad {
+  const om = r.p.swingAngularVelocity ?? 0;
+  const pad: Pad = {};
+  if (mode === 'pump' || mode === 'pumpDown') pad[om >= 0 ? 'right' : 'left'] = true;
+  // (a thumb that pumps a beat behind the swing: it turns round a third of a second after the swing does)
+  if (mode === 'pumpLate' || mode === 'pumpLateDown') pad[lateOmega(r) >= 0 ? 'right' : 'left'] = true;
+  if (mode === 'holdLeft') pad.left = true;
+  if (mode === 'holdRight') pad.right = true;
+  if (mode === 'downToward') pad[toward < 0 ? 'left' : 'right'] = true;
+  if (mode.endsWith('Down') || mode === 'downToward') pad.down = true;
+  return pad;
+}
+
 /**
- * swing on `v` for `secs` seconds: pumping (a steer held the way the swing goes, as a thumb pumping it does), hands off, or steering
- * toward the ledge; `Down` modes also climb down the whole time (from `len`). Returns how it ended, and how often the old rule (feet
- * within 14 px of a platform top on the way down) would have set him down meanwhile.
+ * swing on `v` for `secs` seconds in a mode, from `len`. Returns how it ended, and how often the old rule (feet within 14 px of a
+ * platform top on the way down) would have set him down meanwhile.
  */
 function swingFor(r: RealPlay, v: Vine, mode: Mode, len: number, secs: number, toward: -1 | 1 = -1) {
   r.swing(v, { angle: 0, omega: 2.5, len });
   let oldRule = 0;
   for (let i = 0; i < Math.round(secs * 30); i++) {
-    const om = r.p.swingAngularVelocity ?? 0;
-    const pad: Pad = {};
-    if (mode === 'pump' || mode === 'pumpDown') pad[om >= 0 ? 'right' : 'left'] = true;
-    if (mode === 'toward') pad[toward < 0 ? 'left' : 'right'] = true;
-    if (mode === 'pumpDown' || mode === 'offDown') pad.down = true;
-    r.frame(pad);
+    r.frame(hands(r, mode, toward));
     const p = r.p;
     if (!p.isVineSwinging) return { swinging: false, t: i / 30, oldRule };
     if (r.platforms.some((q) => p.x >= q.x - 10 && p.x <= q.x + q.width + 10 && Math.abs(p.y - q.y) < 14 && p.vy >= 0)) oldRule++;
@@ -54,10 +75,10 @@ function swingFor(r: RealPlay, v: Vine, mode: Mode, len: number, secs: number, t
   return { swinging: true, t: secs, oldRule };
 }
 
-test('1-6: pumping, hands off or climbing down a liana beside the raised ledge never sets him down on its corner', () => {
+test('1-6: pumping, a steer held either way, hands off or climbing down a liana beside the raised ledge never sets him down on it', () => {
   let oldWould = 0;
   for (const seed of [1, 2, 3, 4]) {
-    for (const mode of ['pump', 'pumpDown', 'off', 'offDown'] as Mode[]) {
+    for (const mode of ['pump', 'pumpDown', 'off', 'offDown', 'holdLeft', 'holdRight', 'pumpLate', 'pumpLateDown'] as Mode[]) {
       const r = new RealPlay('1-6', seed);
       const { v } = firstVine(r);
       // (at full length his feet pass within a few px of the ledge's corner; the Down modes climb down to it, as the QA bot did)
@@ -65,17 +86,54 @@ test('1-6: pumping, hands off or climbing down a liana beside the raised ledge n
       const out = swingFor(r, v, mode, len, 12);
       oldWould += out.oldRule;
       assert.ok(out.swinging, `1-6 seed ${seed} ${mode}: let go of the liana after ${out.t.toFixed(2)} s at x${Math.round(r.p.x)} y${Math.round(r.p.y)}`);
-      assert.equal(Math.round(r.p.swingLength ?? 0), Math.round(v.bottomY - v.topY), `seed ${seed} ${mode}: he is at the vine's full length`);
     }
   }
   assert.ok(oldWould > 0, 'the old landing rule would have set him down in these swings (the test covers the case QA found)');
 });
 
-test('1-6: steering toward the ledge while the swing carries him past it still puts him on it, and he stays there', () => {
+/** 1-6 from its start: run to the first liana and jump for it (the real grab) */
+function grabFirst(seed: number) {
+  const r = new RealPlay('1-6', seed);
+  const { v, ledge } = firstVine(r);
+  for (let i = 0; i < 30 * 8 && !r.p.isVineSwinging; i++) r.frame({ right: true, press: r.p.grounded && r.p.x > ledge.x + ledge.width - 40, jump: !r.p.grounded });
+  assert.ok(r.p.isVineSwinging, `seed ${seed}: he caught the first liana`);
+  return { r, v, ledge };
+}
+
+test("QA's v192 repro: grab on 1-6, steer down 400 ms, then steer right, then left (pumping): he stays on the liana", () => {
+  for (const seed of [1, 2, 3, 4]) {
+    for (const [first, then] of [['right', 'left'], ['left', 'right']] as const) {
+      for (const holdMs of [700, 950, 1200]) {
+        const { r, v } = grabFirst(seed);
+        const run = (pad: Pad, ms: number) => {
+          for (let i = 0; i < Math.round(ms / 33); i++) {
+            r.frame(pad);
+            assert.ok(r.p.isVineSwinging, `seed ${seed} ${first}/${then} ${holdMs} ms: let go at x${Math.round(r.p.x)} y${Math.round(r.p.y)} (${JSON.stringify(pad)})`);
+          }
+        };
+        run({ down: true }, 400);
+        const low = r.p.swingLength ?? 0;
+        for (let k = 0; k < 4; k++) {
+          run({ [first]: true }, holdMs);
+          run({ [then]: true }, holdMs);
+        }
+        // and the long climb all the way down, then the same
+        run({ down: true }, 3000);
+        assert.ok(Math.round(r.p.swingLength ?? 0) === Math.round(v.bottomY - v.topY), `seed ${seed}: climbed down from ${Math.round(low)}`);
+        for (let k = 0; k < 4; k++) {
+          run({ [first]: true }, holdMs);
+          run({ [then]: true }, holdMs);
+        }
+      }
+    }
+  }
+});
+
+test('1-6: holding down and toward the ledge as the swing carries him past it puts him on it, and he stays there', () => {
   for (const seed of [1, 2, 3, 4]) {
     const r = new RealPlay('1-6', seed);
     const { v, ledge } = firstVine(r);
-    const out = swingFor(r, v, 'toward', v.bottomY - v.topY, 6);
+    const out = swingFor(r, v, 'downToward', v.bottomY - v.topY, 6);
     assert.ok(!out.swinging && out.t < 2.5, `seed ${seed}: still swinging after ${out.t.toFixed(2)} s`);
     r.wait(1);
     const p = r.p;
@@ -98,10 +156,10 @@ test("the control test's swing stretch: pumping its lianas at full length never 
       const [x0, x1] = beats[0];
       const lianas = probe.vines.filter((v) => v.vineType !== 'tree_climb' && v.x >= x0 && v.x <= x1).map((v) => v.id);
       for (const id of lianas) {
-        for (const mode of ['pump', 'pumpDown'] as Mode[]) {
+        for (const mode of ['pump', 'pumpDown', 'holdLeft', 'holdRight'] as Mode[]) {
           const r = new RealPlay('1-2', 1);
           const v = r.vines.find((q) => q.id === id)!;
-          const out = swingFor(r, v, mode, mode === 'pump' ? v.bottomY - v.topY : 250, 8);
+          const out = swingFor(r, v, mode, mode === 'pumpDown' ? 250 : v.bottomY - v.topY, 8);
           if (!out.swinging) {
             // the only landing allowed while pumping: a floor under the vine he climbed down onto
             const on = r.platforms.find((q) => Math.abs(r.p.y - q.y) < 1 && r.p.x >= q.x - 10 && r.p.x <= q.x + q.width + 10);
@@ -129,17 +187,23 @@ test('a floor under the vine is still landed on as he climbs down onto it, pumpi
   }
 });
 
-test('swingLanding: a ledge beside the vine only when he steers toward it or the swing is at the end of its stroke', () => {
+test('swingLanding: a ledge beside the vine only on down-and-toward, or hands off a while at the end of the stroke; a steer alone never', () => {
   const left = { x: 500, width: 380 };
   const fast = { angle: -0.45, omega: 2.1 };
   const slow = { angle: -0.78, omega: 0.4 };
-  assert.equal(swingLanding(fast, 1070, left, 1, 5), null, 'pumping away from it');
-  assert.equal(swingLanding(fast, 1070, left, 0, 5), null, 'hands off, the swing sweeping past its corner');
-  assert.equal(swingLanding(fast, 1070, left, -1, 5), 'land', 'steering toward it');
-  assert.equal(swingLanding(fast, 1070, left, -1, -30), 'step', 'steering toward it, a little above it: steps off onto it');
-  assert.equal(swingLanding(fast, 1070, left, -1, -SWING_LAND.reach - 1), null, 'too far above');
-  assert.equal(swingLanding(slow, 1070, left, 0, 5), 'land', 'hands off at the end of the stroke');
-  assert.equal(swingLanding(fast, 1070, { x: 900, width: 300 }, 1, 5), 'land', 'a floor under the vine, pumping');
+  const h = (steer: -1 | 0 | 1, down = false, idle = steer ? 0 : 1, held = down ? 1 : 0) => ({ steer, down, idle, held });
+  assert.equal(swingLanding(fast, 1070, left, h(1), 5), null, 'pumping away from it');
+  assert.equal(swingLanding(fast, 1070, left, h(-1), 5), null, 'a steer toward it (half of every pump)');
+  assert.equal(swingLanding(slow, 1070, left, h(-1), 5), null, 'a steer toward it at the end of the stroke');
+  assert.equal(swingLanding(slow, 1070, left, h(-1), -30), null, 'nor a step off');
+  assert.equal(swingLanding(fast, 1070, left, h(0), 5), null, 'hands off, the swing sweeping past its corner');
+  assert.equal(swingLanding(fast, 1070, left, h(-1, true), 5), 'land', 'down and toward it');
+  assert.equal(swingLanding(fast, 1070, left, h(-1, true), -30), 'step', 'down and toward it, a little above it: steps off onto it');
+  assert.equal(swingLanding(fast, 1070, left, h(-1, true), -SWING_LAND.reach - 1), null, 'too far above');
+  assert.equal(swingLanding(fast, 1070, left, h(-1, true, 0, 0.2), -10), null, 'down and toward only just pressed together (a pumping thumb drifting down)');
+  assert.equal(swingLanding(slow, 1070, left, h(0), 5), 'land', 'hands off a while, at the end of the stroke');
+  assert.equal(swingLanding(slow, 1070, left, h(0, false, 0.1), 5), null, 'between two pumping strokes');
+  assert.equal(swingLanding(fast, 1070, { x: 900, width: 300 }, h(1), 5), 'land', 'a floor under the vine, pumping');
 });
 
 // ───────────────────────────── 2. a flick leaps the way it leans ─────────────────────────────
@@ -304,6 +368,108 @@ test('leaping off a trunk follows the flick too', () => {
   }
 });
 
+/**
+ * the real touch rules driving the real engine: one thumb on the glass of a phone `w` wide, its intents fed to the game a frame at a
+ * time (as TouchController.tsx does), 33 ms of finger per frame
+ */
+function thumbOn(r: RealPlay, w: number) {
+  const held = { left: false, right: false, up: false, down: false };
+  let press = false;
+  const sink: GestureSink = {
+    move: (d) => { held.left = d === 'left'; held.right = d === 'right'; },
+    duck: (on) => { held.down = on; },
+    jumpPress: (lean) => { press = true; r.input.state.jumpLean = lean ?? 0; },
+    jumpRelease: () => {},
+    punch: () => {},
+    kick: () => {},
+    mega: () => {},
+    climb: (d) => { held.up = d < 0; held.down = d > 0; },
+    feedback: () => {},
+  };
+  const g = new TouchGestures(sink, () => w, {
+    assist: () => true, air: () => false, refined: () => true, kickNear: () => false,
+    onVine: () => r.p.isVineSwinging || r.p.climbing, onSwing: () => !!r.p.isVineSwinging, onRope: () => false,
+  });
+  let now = 10000;
+  let fx = 0;
+  let fy = 0;
+  const frame = () => {
+    r.frame({ left: held.left, right: held.right, up: held.up, down: held.down, press });
+    press = false;
+  };
+  return {
+    down(x: number, y: number) { fx = x; fy = y; g.down(1, x, y, now); },
+    /** slide by (dx, dy) over `ms`, the game running alongside */
+    slide(dx: number, dy: number, ms: number) {
+      const n = Math.max(1, Math.round(ms / 11));
+      const [x0, y0] = [fx, fy];
+      for (let k = 1; k <= n; k++) {
+        now += ms / n;
+        g.move(1, x0 + (dx * k) / n, y0 + (dy * k) / n, now);
+        if (k % 3 === 0) frame();
+      }
+      fx = x0 + dx;
+      fy = y0 + dy;
+    },
+    up() { now += 11; g.up(1, fx, fy, now); frame(); },
+    wait(frames: number) { for (let i = 0; i < frames; i++) { now += 33; g.tick(now); frame(); } },
+  };
+}
+
+test("QA's v192 repro: after a pump to the right, lift, then a one-thumb flick up and left (35 degrees): he goes LEFT, at any moment of the swing, upright and sideways", () => {
+  for (const [view, v] of Object.entries(VIEWS)) {
+    for (const seed of [1, 2]) {
+      for (let phase = 0; phase < 57; phase += 4) {
+        const { r } = grabFirst(seed);
+        const t = thumbOn(r, v.w);
+        const th = v.thumbs[0];
+        // the pump to the right, then the thumb comes off
+        t.down(th.x, th.y);
+        t.slide(110, 0, 420);
+        t.up();
+        // a moment later in the swing (a different one each time), the flick
+        t.wait(phase);
+        const x0 = r.p.x;
+        t.down(th.x, th.y);
+        t.slide(-Math.sin(rad(35)) * 110, -Math.cos(rad(35)) * 110, 110);
+        t.up();
+        const what = `${view} seed ${seed} phase ${phase}: swinging ${r.p.isVineSwinging} vx ${Math.round(r.p.vx)} facing ${r.p.facing} x ${Math.round(x0)} -> ${Math.round(r.p.x)}`;
+        // (a press a beat before the sweet spot to the left waits for it: give it that long)
+        for (let i = 0; i < 12 && r.p.isVineSwinging; i++) t.wait(1);
+        assert.ok(!r.p.isVineSwinging, `${what}: he let go`);
+        assert.ok(r.p.vx <= -LEAN_HOP + 1 && r.p.facing === -1, what);
+        // and he goes on left: never thrown back right against the flick
+        const xAt = r.p.x;
+        t.wait(10);
+        assert.ok(r.p.x < xAt, `${what}: then drifted right to x${Math.round(r.p.x)}`);
+      }
+    }
+  }
+});
+
+test('on the liana, a plain flick straight up still climbs it (no let-go), upright and sideways', () => {
+  for (const [view, v] of Object.entries(VIEWS)) {
+    const { r } = grabFirst(1);
+    const len0 = r.p.swingLength ?? 0;
+    const t = thumbOn(r, v.w);
+    t.down(v.thumbs[0].x, v.thumbs[0].y);
+    t.slide(4, -110, 110);
+    t.wait(10);
+    assert.ok(r.p.isVineSwinging && (r.p.swingLength ?? 0) < len0 - 20, `${view}: swinging ${r.p.isVineSwinging}, length ${Math.round(len0)} -> ${Math.round(r.p.swingLength ?? 0)}`);
+  }
+});
+
+test('timedLaunch: out of the sweet spot a leaning flick hops that way; without a lean he goes the way the vine carries him, as before', () => {
+  const goingRight = { angle: 0.1, omega: 2.4, len: 300 };
+  assert.ok(!inSweetSpot(goingRight, -1));
+  assert.ok(timedLaunch(goingRight, -1).vx > 0, 'no lean: carried right');
+  const l = timedLaunch(goingRight, -1, true);
+  assert.ok(!l.sweet && l.vx === -LEAN_HOP && l.vy < 0, JSON.stringify(l));
+  // a lean the way the vine is going keeps the vine's speed
+  const goingLeft = { angle: -0.9, omega: -0.5, len: 300 };
+  assert.ok(timedLaunch(goingLeft, -1, true).vx <= -LEAN_HOP);
+});
+
 // ───────────────────────────── 3. the swing lesson comes before he needs it ─────────────────────────────
 
 const none: ReadonlySet<LessonId> = new Set();
@@ -401,4 +567,35 @@ test('the look across a gap shows the liana over it, not the floor of the drop u
   assert.ok(land.x0 <= 1072 && land.x1 >= 1072, `the box ${JSON.stringify(land)} is round the liana`);
   // with no liana, the far ledge or the floor is shown as before
   assert.ok(landingAhead(860, 1, ledge, [ledge, moss, far]));
+});
+
+// ───────────────────────────── 5. on the liana, Dot's swing tips come before a ground-gap tip ─────────────────────────────
+
+test("QA's v192 new-look repro: a gap tip from before the vine waits while he swings, and the swing's tips come through", () => {
+  const counts: Record<string, number> = {};
+  const env = (swinging: boolean) => ({ danger: false, swinging, moveCount: (m: string) => counts[m] ?? 0 });
+  const gap = lessonDotLine('gap', 'screen')!;
+  const grab = lessonDotLine('swing', 'screen')!;
+  assert.equal(gap.text, 'Flick up just before the edge.');
+  assert.ok(gap.move === 'jump' && gap.topic === 'gap' && grab.move === 'grab' && grab.next?.move === 'leap');
+  const q = new GuideQueue();
+  // the gap tip (from x 550) is up, and he does not jump that gap: it stays, as a move tip does
+  q.push(gap, 0);
+  assert.equal(q.tick(0, env(false))?.line.key, gap.key);
+  assert.equal(q.tick(2900, env(false))?.line.key, gap.key);
+  // he catches the liana (the grab line done), so the swing's next line, letting go, is queued: the gap tip steps aside at once
+  q.push(grab.next!, 3000);
+  assert.equal(q.tick(3000, env(true)), null);
+  assert.equal(q.tick(3700, env(true))?.line.key, grab.next!.key);
+  // and all through the swing (a pump, more), it is the swing's line, never the gap's
+  for (let t = 3700; t <= 18000; t += 100) {
+    const cur = q.tick(t, env(true));
+    assert.ok(!cur || cur.line.key !== gap.key, `at ${t} ms on the liana Dot says "${cur?.line.text}"`);
+  }
+  // swinging, a gap tip never starts, even with nothing else to say
+  const q2 = new GuideQueue();
+  q2.push(gap, 0);
+  for (let t = 0; t <= 5000; t += 100) assert.equal(q2.tick(t, env(true)), null);
+  // and back on the ground it may come again
+  assert.equal(q2.tick(5100, env(false))?.line.key, gap.key);
 });
