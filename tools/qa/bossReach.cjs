@@ -7,7 +7,8 @@
  *   node tools/qa/server.cjs <port> <dev build url> <out dir>          (once, in the background)
  *   node tools/qa/bossReach.cjs <port> <stage> <land|port> <refuge> [persona] [openings]
  *
- * Refuges: 1-10 tree | stump | coils; 3-10 ledge (a low shelf) | floor. This is a measuring tool: it reads the fight's state through
+ * Refuges: 1-10 tree | stump | coils; 3-10 ledge (a low shelf) | floor | flee (runs from every wind-up and roar). Every heart lost
+ * is printed with what hurt him and what the boss was doing (the engine's bossHurtLog). This is a measuring tool: it reads the fight's state through
  * the harness's `eval` (a blind tester never does).
  */
 const http = require('http');
@@ -28,7 +29,7 @@ const act = (...steps) => call({ cmd: 'do', steps, noshot: true });
 const STATE = `(() => { const e = __engine(); const b = e.boss, br = b.ai, p = e.player, a = e.currentStage.arena;
   return { t: e.gameTime, px: p.x, py: p.y, climbing: !!p.climbing, grounded: !!p.grounded, swinging: !!p.isVineSwinging, hp: p.hp, lives: e.lives,
     left: a.left, right: a.right, floor: a.floor, on: e.standingOnId, bx: b.x, bw: b.width, f: b.facing, bhp: b.hp, st: br.state, mv: br.move, bt: br.t,
-    reach: br.d.reach, entrance: !!e.entrance, plats: e.platforms.filter((q) => q.y < a.floor - 10 && q.x < a.right && q.x + q.width > a.left).map((q) => [q.id, q.x, q.x + q.width, q.y]) }; })()`;
+    reach: br.d.reach, entrance: !!e.entrance, hurts: e.bossHurtLog.length, lastHurt: e.bossHurtLog[e.bossHurtLog.length - 1] ?? null, plats: e.platforms.filter((q) => q.y < a.floor - 10 && q.x < a.right && q.x + q.width > a.left).map((q) => [q.id, q.x, q.x + q.width, q.y]) }; })()`;
 const peek = async () => JSON.parse((await call({ cmd: 'eval', text: STATE })).text);
 
 let steering = 'none';
@@ -78,6 +79,11 @@ async function toRefuge(s) {
     if (Math.abs(s.px - x) > 20) return steer(s.px > x ? 'left' : 'right', 100), false;
     return steer('lift', 100), true;
   }
+  if (refuge === 'flee') {
+    // run away from him as soon as he starts anything (a crouch, a roar), for a second
+    const away = s.px < s.bx ? 'left' : 'right';
+    if (s.st === 'tell' || s.st === 'roar' || s.st === 'act') return steer(away, 100), true;
+  }
   return steer('lift', 100), true;
 }
 
@@ -108,8 +114,14 @@ function spot(s) {
   let lastOpen = false;
   let openMove = '';
   let openFrom = {};
+  let hurts = 0;
   for (let i = 0; i < 3000 && out.length < Number(want); i++) {
     s = await peek();
+    if (s.hurts > hurts) {
+      hurts = s.hurts;
+      const h = s.lastHurt;
+      console.log(`  HURT at ${h.t.toFixed(1)} s by ${h.by}: he was in ${h.state} ${h.move ?? ''} (${h.bt.toFixed(2)} s in)`);
+    }
     if (s.bhp <= 0) break;
     // (an opening: the recovery after a move that leaves one, or a stun; 1-10 opens only after the lunge)
     const open = (s.st === 'rec' && (stage !== '1-10' || s.mv === 'sweep')) || s.st === 'stun';

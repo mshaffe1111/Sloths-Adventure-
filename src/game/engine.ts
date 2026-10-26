@@ -2927,14 +2927,18 @@ export class GameEngine {
       for (const z of hz) this.dbgHurt.push(z.r);
     }
     const pb = this.pBox();
-    for (const r of boxes) {
+    const bodyN = boxes.length - br.hurt.length;
+    for (let i = 0; i < boxes.length; i++) {
+      const r = boxes[i];
       if (checkAABBCollision(...pb, r.x, r.y, r.w, r.h)) {
+        if (p.invincibleTimer <= 0) this.noteBossHurt(i < bodyN ? 'body' : 'strike', br.state, br.move, br.t);
         this.damagePlayer(1, b.x);
         break;
       }
     }
     for (const { r, h } of hz) {
       if (!checkAABBCollision(...pb, r.x, r.y, r.w, r.h)) continue;
+      if (h.dmg > 0 && p.invincibleTimer <= 0 && this.stompGrace <= 0) this.noteBossHurt('hazard:' + h.kind, br.state, br.move, br.t);
       if (h.eff === 'slow') {
         if (this.slowTimer <= 0) this.addFloatingText('STUCK!', p.x, p.y - 50, '#e2e8f0');
         this.slowTimer = Math.max(this.slowTimer, h.kind === 'puddle' ? 0.4 : 2.5);
@@ -2948,6 +2952,16 @@ export class GameEngine {
     }
 
     this.reportBoss();
+  }
+
+  /**
+   * What hurt Pokey in a boss fight, and what the boss was doing (the last 40): read by the fairness tests (bossTells.test.ts) and by
+   * tools/qa/bossReach.cjs through the harness, so every heart lost can be traced to an attack and its wind-up (QA gate: "unwarned hits?")
+   */
+  readonly bossHurtLog: Array<{ t: number; by: string; state: string; move: string | null; bt: number }> = [];
+  private noteBossHurt(by: string, state: string, move: string | null, bt: number) {
+    this.bossHurtLog.push({ t: this.gameTime, by, state, move, bt });
+    if (this.bossHurtLog.length > 40) this.bossHurtLog.shift();
   }
 
   private stepBossDeath(b: BossEntity, def: BossDef, dt: number) {
@@ -3013,6 +3027,17 @@ export class GameEngine {
     } else if (p.x > arena.right - 14) {
       p.x = arena.right - 14;
       if (p.vx > 0) p.vx = 0;
+    }
+    // a boss whose body is a heap at one fence (Venom's coils) is a wall: no getting behind it, where no attack reaches (QA gate)
+    if (this.bossDef?.blockBody) {
+      const face = b.x + (b.facing < 0 ? -1 : 1) * (b.width / 2 + 10);
+      if (b.facing < 0 && p.x > face) {
+        p.x = face;
+        if (p.vx > 0) p.vx = 0;
+      } else if (b.facing > 0 && p.x < face) {
+        p.x = face;
+        if (p.vx < 0) p.vx = 0;
+      }
     }
     // pull back just far enough that both of them fit
     const w = this.viewCssW;
