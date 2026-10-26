@@ -101,7 +101,12 @@ async function open(stage, v, flag = 0, layout = 1) {
 async function screenText() {
   return page.evaluate(() => {
     const t = (document.body.innerText || '').split('\n').map((s) => s.trim()).filter(Boolean);
-    return `[game time ${Math.round(performance.now() / 1000)} s] ` + [...new Set(t)].slice(0, 40).join(' | ');
+    // what the HUD shows as pictures, by the words a screen reader says ("Health: 3 of 5 hearts", "Lives: 3"): a blind tester can
+    // then tell it was hit without spending a screenshot (Steph, 2026-10-26)
+    const said = [...document.querySelectorAll('[role="img"][aria-label], [role="progressbar"][aria-label]')]
+      .filter((el) => el.getAttribute('aria-hidden') !== 'true' && el.getClientRects().length)
+      .map((el) => el.getAttribute('aria-label') + (el.getAttribute('role') === 'progressbar' ? ` ${el.getAttribute('aria-valuenow')}%` : ''));
+    return `[game time ${Math.round(performance.now() / 1000)} s] ` + (said.length ? `{${[...new Set(said)].join(' · ')}} ` : '') + [...new Set(t)].slice(0, 40).join(' | ');
   });
 }
 
@@ -135,7 +140,9 @@ async function steerTo(dir) {
   const to = { right: [reach, 0], left: [-reach, 0], none: [0, 0], up: [0, -55], down: [0, 55] }[dir];
   if (!to) throw new Error(`unknown steer "${dir}" (right, left, up, down, none)`);
   const [dx, dy] = to;
-  const tx = steer.ax + dx, ty = steer.ay + dy + (persona && (dir === 'left' || dir === 'right') ? (rand() - 0.5) * 24 : 0);
+  // up and down slide straight from where the thumb is now: a thumb steering left that then climbs goes up, not back up-and-right
+  // toward where it first touched (that read as steering right at the top of a tree, and ran him off it: QA lead, 2026-10-26)
+  const tx = dir === 'up' || dir === 'down' ? steer.x : steer.ax + dx, ty = steer.ay + dy + (persona && (dir === 'left' || dir === 'right') ? (rand() - 0.5) * 24 : 0);
   // a thumb slides over about a tenth of a second, not in one jump
   for (let k = 1; k <= 4; k++) {
     steer.x = Math.round(steer.x + (tx - steer.x) / (5 - k));
