@@ -49,6 +49,10 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 - **QA stays a separate session, playing blind.** The QA team doesn't know how stages are built, so it plays like a player would. This session builds and fixes; the QA team tests; they talk by message. Give QA small batches with a clear note of what changed and what to retest. A short gate pass comes before each deploy, and the full persona runs after.
 - **One building session.** Keep the building work in one session (it summarizes itself when long); don't split it across new sessions, since catching up costs Matt tokens and splitting confuses who's doing what.
 - **Helpers.** Matt is fine with more than 6 helpers at a time for important work when his tokens allow. Slow down when he says tokens are tight.
+- **HUD and tutorial revamp: Matt's picks (2026-10-26, from the mock-up review https://claude.ai/artifact/Aopein5VvpCQaNoNXzRrBa).**
+  - HUD: option B, the hanging vine (hearts and petals hang from a vine, Menu is a leaf), with option D's behaviour: things bloom into view when something happens (a petal picked up, a life lost) and stay small otherwise.
+  - Dot: option C, perched. She sits on the scenery near the thing she's teaching, and a glowing ring and arrow point at it.
+  - Finger guides: still to choose.
 - **Bosses.** Every weak-spot opening needs a clear tell, and must stay open at least as long as the time to reach it plus 0.8 s to react plus 0.6 s to hit (bossFair.test.ts, sovereignEngine.test.ts). Fight length depends on the player's skill; there is no minimum for bosses.
 
 ### Design rules for stages (check every stage against these)
