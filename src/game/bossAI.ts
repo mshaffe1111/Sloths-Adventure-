@@ -176,6 +176,8 @@ export interface BossCtx {
   dropHeart?: (x: number) => void;
   /** every warning lasts this many times as long (Easy: difficulty.ts); 1 when unset */
   tellMul?: number;
+  /** every opening (recovery, stun) lasts this many times as long (Easy); 1 when unset */
+  openMul?: number;
 }
 
 export interface MoveDef {
@@ -211,6 +213,15 @@ export interface MoveDef {
   stunAfter?: (b: BossEntity) => number;
   /** what to show when it crashes */
   crashText?: string;
+  /**
+   * In the recovery the boss lurches toward the player at `speed` px/s until its middle is `stop` px from him, so the opening comes to a
+   * hero who dodged well out of the way (bossFair.test.ts: every opening must be reachable in time)
+   */
+  recStep?: { speed: number; stop: number };
+  /** in the recovery it keeps facing the way the attack left it (the weak point is behind it, toward the player) */
+  recHoldFacing?: boolean;
+  /** stunned after this move, it reels round toward the player the same way (a crash at the far fence still comes back to him) */
+  stunStep?: { speed: number; stop: number };
 }
 
 export interface BossDef {
@@ -328,6 +339,27 @@ export function weakOpen(b: BossEntity, def?: BossDef): boolean {
   const st = b.ai?.state;
   if (st === 'rec' && def?.openAfter) return !!b.ai?.move && def.openAfter.includes(b.ai.move);
   return st === 'rec' || st === 'stun';
+}
+
+/** Easy (difficulty.ts): every opening lasts this many times as long */
+export const EASY_OPEN_MUL = 1.25;
+
+/** seconds left in the opening (0 when it is not open) */
+export function openLeft(b: BossEntity, def: BossDef, openMul = 1): number {
+  const br = b.ai;
+  if (!br || !weakOpen(b, def)) return 0;
+  if (br.state === 'stun') return Math.max(0, br.hold - br.t);
+  const m = br.move ? def.moves[br.move] : null;
+  return m ? Math.max(0, m.rec * openMul - br.t) : 0;
+}
+
+/** the attack is about to end in an opening (its last `lead` seconds): the weak point warms up so the opening is seen coming */
+export function opensSoon(b: BossEntity, def: BossDef, lead = 0.4): boolean {
+  const br = b.ai;
+  if (!br || br.state !== 'act' || !br.move) return false;
+  const m = def.moves[br.move];
+  if (!m || (def.openAfter && !def.openAfter.includes(br.move))) return false;
+  return br.t >= m.act - lead;
 }
 
 /** the body only hurts while the boss is winding up or attacking, so walking up to hit it in its opening is safe */
@@ -478,7 +510,7 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
       if (stun > 0) {
         br.state = 'stun';
         br.t = 0;
-        br.hold = stun;
+        br.hold = stun * (c.openMul ?? 1);
         b.isAttacking = false;
         br.hurt = [];
         c.text(m?.crashText ?? 'CRASH!', b.x, b.y - b.height, '#fde047');
@@ -495,11 +527,17 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
     }
 
     case 'rec': {
-      face(b, c);
+      if (!m?.recHoldFacing) face(b, c);
       // flyers settle back toward their hover height while they recover
       br.air += ((def.hover ?? 0) * 0.35 - br.air) * Math.min(1, dt * 2.5);
       if (br.air < 1) br.air = 0;
-      if (m && br.t >= m.rec) {
+      if (m?.recStep) {
+        const dx = c.px - b.x;
+        const go = Math.abs(dx) - m.recStep.stop;
+        if (go > 0) b.x += Math.sign(dx) * Math.min(go, m.recStep.speed * dt);
+        clampToArena(b, c);
+      }
+      if (m && br.t >= m.rec * (c.openMul ?? 1)) {
         const again = phase >= 3 && def.chain && c.rnd() < def.chain;
         if (again) {
           br.state = 'idle';
@@ -516,6 +554,14 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
     case 'stun': {
       br.air += (0 - br.air) * Math.min(1, dt * 6);
       if (br.air < 1) br.air = 0;
+      // (only a crash after the move: a stagger from two heavy blows leaves him where he was hit)
+      if (m?.stunStep && br.d.crashed) {
+        face(b, c);
+        const dx = c.px - b.x;
+        const go = Math.abs(dx) - m.stunStep.stop;
+        if (go > 0) b.x += Math.sign(dx) * Math.min(go, m.stunStep.speed * dt);
+        clampToArena(b, c);
+      }
       if (br.t >= br.hold) {
         br.state = 'idle';
         br.t = 0;
@@ -549,7 +595,7 @@ export function interruptBoss(b: BossEntity, def: BossDef, c: BossCtx): boolean 
   br.breakCd = 5;
   br.state = 'stun';
   br.t = 0;
-  br.hold = 1.1;
+  br.hold = 1.1 * (c.openMul ?? 1);
   br.hurt = [];
   b.telegraphTimer = 0;
   b.isAttacking = false;

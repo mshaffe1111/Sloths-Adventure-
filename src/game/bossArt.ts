@@ -5,7 +5,8 @@
 import type { BossEntity } from './types.ts';
 import type { BossHazard } from './bossAI.ts';
 import type { BossDef, MoveDef } from './bossAI.ts';
-import { weakOpen, weakRect } from './bossAI.ts';
+import { EASY_OPEN_MUL, openLeft, opensSoon, weakOpen, weakRect } from './bossAI.ts';
+import { isEasy } from './difficulty.ts';
 import { drawBossEntity } from './vectorArt.ts';
 import { demoPlayer, drawMilo } from './miloVariants.ts';
 import { queenSprite } from './queenSprite.ts';
@@ -1207,11 +1208,18 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
   const rad = Math.min(r.w, r.h) * 0.5;
   ctx.save();
   if (!open) {
-    ctx.globalAlpha = 0.28 + 0.1 * Math.sin(time * 3);
-    ctx.fillStyle = def.color;
+    // the last moments of an attack that ends in an opening: the ember swells and brightens, so the opening is seen coming
+    const soon = opensSoon(b, def);
+    ctx.globalAlpha = soon ? 0.6 + 0.3 * Math.sin(time * 24) : 0.28 + 0.1 * Math.sin(time * 3);
+    ctx.fillStyle = soon ? '#fde047' : def.color;
     ctx.beginPath();
-    ctx.arc(cx, cy, rad * 0.22, 0, Math.PI * 2);
+    ctx.arc(cx, cy, rad * (soon ? 0.45 : 0.22), 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
+    return;
+  }
+  // the last half second of the opening it flickers: time to get clear
+  if (openLeft(b, def, isEasy() ? EASY_OPEN_MUL : 1) < 0.5 && Math.sin(time * 40) < -0.2) {
     ctx.restore();
     return;
   }

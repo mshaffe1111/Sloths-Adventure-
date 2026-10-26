@@ -105,7 +105,7 @@ import {
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
 import { drawEntrance, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
 import { drawLairBack, drawLairFront, drawLairObjects, drawLairWorld, lairOwnsScene } from './lairArt.ts';
-import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
+import { EASY_OPEN_MUL, bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { maxHearts } from './secret.ts';
@@ -2341,6 +2341,7 @@ export class GameEngine {
           sound.playWhoosh();
         },
         tellMul: isEasy() ? 1.3 : 1,
+        openMul: isEasy() ? EASY_OPEN_MUL : 1,
         dropHeart: (x) => {
           const a = this.currentStage.arena;
           if (!a) return;
@@ -2469,7 +2470,15 @@ export class GameEngine {
 
     const prevPhase = b.phase;
     const prevState = br.state;
+    const wasOpen = weakOpen(b, def);
     stepBoss(b, def, c, dt);
+    // the opening begins: a chime, and for a giant with a glowing spot a NOW! over it (a crash already says DIZZY!, CAUGHT! ...), so the
+    // moment is heard and seen wherever the eye is
+    if (!wasOpen && weakOpen(b, def) && b.phase === prevPhase) {
+      sound.playCheckpoint();
+      const wr = def.weak ? weakRect(b, def, c.arena.floor) : null;
+      if (wr && br.state === 'rec') this.addFloatingText('NOW!', wr.x + wr.w / 2, wr.y - 18, '#fde047');
+    }
 
     if (b.phase !== prevPhase) {
       def.onPhase?.(b.phase, b, c);
@@ -2992,7 +3001,7 @@ export class GameEngine {
     if (def?.openCap && b.ai?.state === 'rec' && b.ai.move) {
       const br = b.ai;
       br.d.taken = (br.d.taken ?? 0) + dmg;
-      const rec = def.moves[br.move!]?.rec ?? 0;
+      const rec = (def.moves[br.move!]?.rec ?? 0) * (this.bossCtx?.openMul ?? 1);
       // he has had enough: a moment to see the hit land, then he drags his head away
       if (br.d.taken >= def.openCap) br.t = Math.max(br.t, rec - 0.35);
     }

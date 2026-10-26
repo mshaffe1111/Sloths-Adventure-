@@ -257,11 +257,15 @@ const CROC: BossDef = {
   // twelve hits, two hit points a hit
   hp: 24,
   hits: 12,
+  // an opening after a move takes a jab, a cross and a hook (two segments), then he pulls back; a crash into the wall is not capped
+  openCap: 4,
   // his one weak point is the head. It is low, so the trick is not reaching it but being there in the opening: right after a move
   // (the jaws are held open on recovery) or while he is dizzy. Measured from the painted frames: the head sits at 160 / 150 in the
   // recovery pose (hurt) and at 150 / 45 in the stagger, where it hangs almost to the mud
-  weak: { dx: 160, dy: 150, w: 160, h: 110 },
-  weakStun: { dx: 150, dy: 45, w: 170, h: 90 },
+  // (2026-10-26, the fairness pass: bossFair.test.ts) the open jaws reach down to a punch from the floor, and the stunned head up to one
+  // from the low boardwalk by each fence, which stays dry when the river floods
+  weak: { dx: 160, dy: 115, w: 160, h: 150 },
+  weakStun: { dx: 150, dy: 56, w: 170, h: 112 },
   aimText: 'TOO TOUGH! HIT THE JAWS',
   arenaW: 1400,
   lair: 'croc',
@@ -292,12 +296,15 @@ const CROC: BossDef = {
   },
   moves: {
     // rears back with the jaws wide, then rolls across the whole arena. Crashing into the wall leaves him dizzy
-    deathRoll: chargeMove({ tell: 1.2, maxT: 2.3, rec: 1.0, speed: 560, stun: 2.1, text: 'DIZZY!', min: 220 }),
+    // (dizzy, he reels round and staggers back toward you, so a crash at the far fence is not out of reach)
+    deathRoll: { ...chargeMove({ tell: 1.2, maxT: 2.3, rec: 1.0, speed: 560, stun: 2.6, text: 'DIZZY!', min: 220 }), stunStep: { speed: 200, stop: 235 } },
     // a low spinning sweep of the tail on both sides: jump it
     tailWhip: {
       tell: 0.7,
       act: 0.4,
-      rec: 1.1,
+      // the whip spins him round, and he lurches on toward you with his jaws open: the opening comes to you
+      rec: 1.8,
+      recStep: { speed: 260, stop: 235 },
       max: 340,
       pose: 'whip',
       tick: (b, c) => {
@@ -308,7 +315,8 @@ const CROC: BossDef = {
     mudSurge: {
       tell: 0.95,
       act: 0.15,
-      rec: 1.3,
+      rec: 1.8,
+      recStep: { speed: 260, stop: 235 },
       phase: 2,
       pose: 'slam',
       onAct: (b, c) => {
@@ -323,7 +331,8 @@ const CROC: BossDef = {
     geysers: {
       tell: 1.0,
       act: 0.3,
-      rec: 1.3,
+      rec: 1.8,
+      recStep: { speed: 260, stop: 235 },
       phase: 2,
       pose: 'roar',
       onTell: (b, c) => {
@@ -364,6 +373,8 @@ const PROWLER: BossDef = {
   // fourteen hits, two hit points a hit
   hp: 28,
   hits: 14,
+  // an opening after a move takes a jab, a cross and a hook (two segments), then he pulls back; a stun in the moonlight is not capped
+  openCap: 4,
   // He has no one weak point. Where it opens depends on what he has just done, and the glow shows where: the glowing eyes after a shadow
   // step (he is right at you), the throat after the claw combo, the arched back after a pounce (jump onto it), the tail after the dash
   // (it swings round toward you), and the belly when he is stunned. The ember while he is covered sits on the head
@@ -397,7 +408,8 @@ const PROWLER: BossDef = {
     pounce: leapMove({
       tell: 0.55,
       act: 0.7,
-      rec: 0.85,
+      // (the openings are timed to be reached: bossFair.test.ts)
+      rec: 1.8,
       height: 230,
       min: 260,
       onLand: (b, c) => {
@@ -411,7 +423,7 @@ const PROWLER: BossDef = {
     shadowStep: {
       tell: 0.55,
       act: 0.3,
-      rec: 0.9,
+      rec: 1.7,
       pose: 'fade',
       crashText: 'CAUGHT IN THE MOON!',
       stunAfter: () => 2.1,
@@ -451,7 +463,9 @@ const PROWLER: BossDef = {
     clawCombo: {
       tell: 0.5,
       act: 1.0,
-      rec: 1.05,
+      // the last slash overreaches and he stumbles on after you, throat open
+      rec: 2.0,
+      recStep: { speed: 260, stop: 150 },
       max: 330,
       pose: 'bite',
       tick: (b, c, dt, t) => {
@@ -463,13 +477,15 @@ const PROWLER: BossDef = {
     },
     // a lightning dash from one end of the arena to the other, low enough to jump
     streak: (() => {
-      const m = chargeMove({ tell: 0.65, maxT: 1.2, rec: 1.0, speed: 800, phase: 2, min: 300 });
+      const m = chargeMove({ tell: 0.65, maxT: 1.2, rec: 2.1, speed: 800, phase: 2, min: 300 });
       const base = m.tick!;
       m.tick = (b, c, dt, t) => {
         base(b, c, dt, t);
-        // he is flat out, so the box that hurts is lower than his resting height
-        b.ai!.hurt = [{ x: b.x - b.width / 2, y: c.arena.floor - 140, w: b.width, h: 140 }];
+        // he is flat out, so the box that hurts is lower than his resting height: under the low shelves, and under a double jump
+        b.ai!.hurt = [{ x: b.x - b.width / 2, y: c.arena.floor - 108, w: b.width, h: 108 }];
       };
+      // he skids to a stop facing the fence he ran at, so the tail he is weak at swings out toward the middle, where you are
+      m.recHoldFacing = true;
       return m;
     })(),
   },
