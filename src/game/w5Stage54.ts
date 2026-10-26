@@ -384,7 +384,7 @@ export function buildW5Stage54(config: LevelConfig, seed: number): GeneratedStag
     E.push({
       id, type: 'spider', x: r(Math.max(sx, lo + 20)), y: G - 12, vx: 0, vy: 0, width: 34, height: 22, hp: 1, maxHp: 1, facing: -1, hitW: 60,
       patrolMinX: r(lo), patrolMaxX: r(hi), attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0,
-      defeated: false, koTimer: 0, behaviorTimer: 0, edgeMinX: r(lo), edgeMaxX: r(hi), noThread: true,
+      defeated: false, koTimer: 0, behaviorTimer: 0, edgeMinX: r(lo), edgeMaxX: r(hi), noThread: true, stompable: true,
     } as Enemy);
     spiders.push({ id });
     info.spiders.push(id);

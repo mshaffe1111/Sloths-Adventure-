@@ -338,19 +338,24 @@ test("5-5: the cocoons read: at his head, wriggling, eyes looking out, and Dot's
   }
 });
 
-test('5-5 in the real engine: walking on from the rest branch while the pouch scene plays, no spider rouses and no heart is lost', () => {
-  // (QA, v198: he took two or three hits reading the scene as he went on. While it plays the garden holds its breath)
+test('5-5 in the real engine: the pouch scene plays on the calm stretch only: walked on past it, it waits, and the spiders after it are spiders', () => {
+  // (QA, v198: he took two or three hits reading the scene as he went on, and sideways it played over the pit jumps. It is the rest
+  // branch's scene: it plays there and in the quiet garden after it, up to the flag, and nowhere past it)
   for (const seed of [1, 38, 75]) {
     forgetTips();
     const sim = new RealPlay('5-5', seed);
     sim.safe = false;
     const w5 = w5Of(sim);
     const rest = w5.rest!;
+    assert.ok(rest.calm! > rest.x1 + 400, `seed ${seed}: a calm stretch after the branch`);
+    // (nothing that bites on it)
+    assert.ok(!sim.stage.enemies.some((e) => e.x > rest.x0 - 200 && e.x < rest.calm! + 200), `seed ${seed}: a spider on the calm stretch`);
     sim.stand(rest.x0 - 200, G);
     const hp = sim.p.hp;
     const gates = (sim.e as Record<string, any>).w5.gates as Map<number, { phase: string }>;
-    let hold = 0, jab = 0, playedTo = 0, roused = '';
-    for (let i = 0; i < 30 * 200 && (i < 60 || sim.e.w5.restPlaying(sim.e.gameTime)); i++) {
+    let hold = 0, jab = 0, roused = '';
+    const before = sim.said.length;
+    for (let i = 0; i < 30 * 60 && sim.p.x < rest.calm! + 1800; i++) {
       const p = sim.p;
       let press = false;
       const ahead = (x: number, lo: number, hi: number) => x - p.x > lo && x - p.x < hi;
@@ -369,16 +374,18 @@ test('5-5 in the real engine: walking on from the rest branch while the pouch sc
       // (he keeps walking: a still moment would bring the silk, which is the stage's rule and not what this is about)
       sim.e.w5.calm();
       if (sim.e.w5.restPlaying(sim.e.gameTime)) {
-        playedTo = sim.p.x;
         for (const [id, g] of gates) if (g.phase !== 'calm' && !roused) roused = `spider ${id} ${g.phase} at x ${Math.round(sim.p.x)}`;
         assert.equal(sim.p.hp, hp, `seed ${seed}: a heart lost at x ${Math.round(sim.p.x)} while the scene plays`);
+        assert.ok(sim.p.x <= rest.calm! + 12, `seed ${seed}: the scene plays at x ${Math.round(sim.p.x)}, past its calm stretch`);
       }
     }
     assert.equal(roused, '', `seed ${seed}`);
-    // (the scene played over a long stretch, past spiders and a humming thread)
-    const passed = sim.stage.enemies.filter((e) => e.x < playedTo).length;
-    assert.ok(passed >= 2, `seed ${seed}: the scene played to x ${Math.round(playedTo)}, past ${passed} spiders`);
-    // once it is over, they are spiders again: one that sees him crouches and comes
+    const lines = new Set(W5_POUCH.map((l) => l.text));
+    const sceneSaid = sim.said.slice(before).filter((s) => lines.has(s.text));
+    assert.ok(sceneSaid.length >= 1, `seed ${seed}: the scene began`);
+    for (const s of sceneSaid) assert.ok(s.x >= rest.x0 && s.x <= rest.calm!, `seed ${seed}: "${s.text}" said at x ${Math.round(s.x)}`);
+    assert.ok(sceneSaid.length < W5_POUCH.length, `seed ${seed}: running straight through, the scene waited`);
+    // once past it, they are spiders again: one that sees him crouches and comes
     const sp = sim.e.enemies.find((e: { x: number; defeated: boolean }) => !e.defeated && e.x > sim.p.x + 300)!;
     sim.stand(sp.x - 320, sp.y);
     let woke = false;
@@ -386,6 +393,6 @@ test('5-5 in the real engine: walking on from the rest branch while the pouch sc
       sim.frame({ right: i < 6 });
       woke = gates.get(sp.id)?.phase !== 'calm';
     }
-    assert.ok(woke, `seed ${seed}: after the scene the spider at ${sp.x} never stirred`);
+    assert.ok(woke, `seed ${seed}: past the calm stretch the spider at ${sp.x} never stirred`);
   }
 });

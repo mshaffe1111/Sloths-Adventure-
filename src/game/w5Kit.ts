@@ -758,6 +758,8 @@ export interface RestBranch {
   x0: number;
   x1: number;
   y: number;
+  /** where its calm stretch ends (the flag after the quiet garden past it): the pouch scene plays only up to here */
+  calm?: number;
 }
 
 /** is he standing on the rest branch? */

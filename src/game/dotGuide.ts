@@ -106,6 +106,9 @@ export const GUIDE = {
   historyN: 3,
   /** a story aside has had a fair look (and counts as heard) after this long, and may give way to teaching (ms) */
   storyYieldMs: 2000,
+  /** a line of a scene (GuideLine.scene) has been heard once it has been up this share of its reading time: only then may it give
+   *  way (to teaching that is waiting) or be cut without being said again */
+  sceneHeard: 0.7,
   /** a line sent back by an interruption may wait this long to be said again */
   backMs: 30000,
   /** every line is up at least this long (a move done at once, or a sender taking it down, waits for it) */
@@ -214,8 +217,9 @@ export class GuideQueue {
     const cur = this.cur;
     if (cur && isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind]) {
       this.events.push({ type: 'end', show: cur, why: 'cut' });
-      // (it goes back in front of everything of its own priority, to be said again in full)
-      this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
+      // (it goes back in front of everything of its own priority, to be said again in full; a scene's line that was mostly read
+      // counts as heard, and the scene goes on)
+      if (!(cur.line.scene && now - cur.startedAt >= readMs(cur.line.text) * GUIDE.sceneHeard)) this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
       this.cur = null;
       this.begin(line, now, 0);
       return;
@@ -310,7 +314,7 @@ export class GuideQueue {
           if (b && PRIORITY[b.line.kind] > PRIORITY[l.kind]) why = 'yield';
         }
       } else if (age >= showFor(l)) why = 'read';
-      else if (l.kind === 'story' && age >= GUIDE.storyYieldMs) {
+      else if (l.kind === 'story' && age >= (l.scene ? readMs(l.text) * GUIDE.sceneHeard : GUIDE.storyYieldMs)) {
         // a story aside gives way to teaching that is waiting (research D3), after a fair look; it comes back later, in full
         // (a line of a scene may give way again: the scene's lines come one after another over a long stretch, and a tip about a thing
         // coming up waited a whole line of it out behind one that had given way once already. 5-5's soft chairs, v198)
@@ -334,7 +338,9 @@ export class GuideQueue {
         this.waiting.push({ line: l, until: now + GUIDE.backMs, seq: ++this.seq, base: cur.base });
       }
       // a move tip that stepped aside comes back after the more important line, if it is still wanted then
-      if (why === 'yield' && (l.kind !== 'story' || l.scene || !this.yielded.has(l.key))) {
+      // (a line of a scene that gives way has been mostly read: it counts as heard and is not said again. "Somebody I'm scared of."
+      // came twice in 5-5's pouch scene, QA v198, once in its turn and again after a tip it had stepped aside for)
+      if (why === 'yield' && (l.kind !== 'story' || (!l.scene && !this.yielded.has(l.key)))) {
         this.yielded.add(l.key);
         this.waiting.push({ line: l, until: now + Math.max(GUIDE.backMs, waitFor(l)), seq: ++this.seq, base: l.move ? cur.base : undefined });
       }

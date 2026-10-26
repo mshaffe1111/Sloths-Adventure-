@@ -97,6 +97,10 @@ export const W5_HARVEST_SHARE = 0.62;
 // ── 5-5 Caught in Silk ──
 /** 5-5's goal: creatures freed (the stage hangs half again as many cocoons, the ones in the high web on top) */
 export const COCOON_GOAL_55 = 12;
+/** how far a wrapped chair (or any silk-wrapped visitor in the scenery) keeps from a hanging cocoon (px, middle to middle, past its half) */
+export const W5_CLEAR_OF_COCOON = 240;
+/** the scenery that is a silk-wrapped visitor (furniture, a lump), kept clear of the cocoons */
+const WRAPPED_LOOKS = new Set(['wrappedChair', 'wrappedStool', 'silkLump', 'wrappedCup', 'wrappedCup2', 'cocoon']);
 /** how far over the ground a cocoon's bottom hangs: his fist (40 px up) lands by its middle (w5Kit COCOON.mid, 34 px over its bottom) */
 export const COCOON_UP = 18;
 /** a quick player's seconds at a cocoon: stop, three punches, on */
@@ -233,6 +237,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       defeated: false, koTimer: 0, behaviorTimer: 0, edgeMinX: r(x0), edgeMaxX: r(x1),
       // (on the ground, not hanging on a thread: drawn as the painted jumping spider, w5Creatures.ts and spiderSprite.ts)
       noThread: true,
+      // (a clean stomp beats it: QA v198, a stomp on one cost a heart, the spider's kind being unstompable on its thread elsewhere)
+      stompable: true,
     } as Enemy);
     spiders.push({ id, ...(doze ? { doze: true } : {}) });
     info.spiders.push(id);
@@ -812,8 +818,12 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       for (let i = 0; i < n; i++) {
         run(R.r(280, 340));
         cocoon(x, G);
-        // (a wrapped visitor lying in the grass nearby: somebody already let out, or not yet)
-        if (R.chance(0.35)) scenery(R.chance(0.5) ? 'cocoon' : 'cocoonTorn', x + R.r(90, 130), R.r(70, 90));
+        // (a cocoon lying in the grass nearby, burst open: somebody already let out. Never a whole one: it cannot be punched, and a
+        // shut cocoon lying there asked to be, QA v198. The roll is kept so the rest of the stage is laid out as before)
+        if (R.chance(0.35)) {
+          R.chance(0.5);
+          scenery('cocoonTorn', x + R.r(90, 130), R.r(70, 90));
+        }
       }
       run(R.r(200, 260));
       row(x0 + 140, x - 120, G - 34, Math.max(2, n), 'orchid');
@@ -894,11 +904,13 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     beat('Rest: the pouch', () => {
       // (early in the stage: the scene is long, and it plays out as he goes on, well before the shrine)
       restBranch();
-      // the calm after it: the scene goes on as he walks, with cocoons to free and nothing that bites
+      // the calm after it: the scene goes on as he walks here, with cocoons to free and nothing that bites
       rest(R.r(380, 440), false);
       cocoonRow(2);
       rest(R.r(560, 640), false);
       flag();
+      // (the scene plays here only, the branch and the calm garden after it, up to that flag: never over the pits beyond. QA v198)
+      if (rest55) rest55.calm = checkpoints[checkpoints.length - 1].x;
     });
     beat('Develop: cocoons along the high road, a spider by them', () => {
       gap();
@@ -960,6 +972,13 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   const past = (px: number) => px > exitX + PAST_SHRINE;
   for (let i = C.length - 1; i >= 0; i--) if (past(C[i].x)) C.splice(i, 1);
   for (let i = cocoons55.length - 1; i >= 0; i--) if (past(cocoons55[i].x)) cocoons55.splice(i, 1);
+  // (5-5: the guests who sat, wrapped where they sat, are kept well away from where the cocoons hang, so a silk bundle by a cocoon is
+  // never one that cannot be opened: both QA bots punched a wrapped chair beside one, v198)
+  if (plan === '5-5') {
+    const nearCocoon = (px: number, w = 0) => cocoons55.some((c) => Math.abs(c.x - px) < W5_CLEAR_OF_COCOON + w / 2);
+    for (let i = chairs.length - 1; i >= 0; i--) if (chairs[i].wrapped && nearCocoon(chairs[i].x, 84)) chairs.splice(i, 1);
+    for (let i = decor.length - 1; i >= 0; i--) if (WRAPPED_LOOKS.has(decor[i].n) && nearCocoon(decor[i].x, decor[i].w)) decor.splice(i, 1);
+  }
   // (5-5: no petal at or past the shrine's door, where touching the shrine ends the stage before it can be picked)
   if (plan === '5-5') for (let i = C.length - 1; i >= 0; i--) if (C[i].type === 'flower' && C[i].x > exitX - 40) C.splice(i, 1);
   for (const list of [cakes, butlers, chairs, threads, orchids] as Array<Array<{ x?: number; x0?: number }>>) {

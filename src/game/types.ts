@@ -162,6 +162,8 @@ export interface Enemy {
   height: number;
   /** how wide its drawing is, when that is wider than its body (World 5's jumping spider, legs out): a strike can land across it */
   hitW?: number;
+  /** landing on it from above beats it, though its kind cannot be stomped elsewhere (World 5's jumping spider on the ground) */
+  stompable?: boolean;
   hp: number;
   maxHp: number;
   facing: 1 | -1;
