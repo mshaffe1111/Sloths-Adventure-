@@ -51,6 +51,9 @@ let views = VIEWS;
 
 async function open(stage, v, flag = 0, layout = 1) {
   if (page) await page.close().catch(() => {});
+  // a size of its own ("740x360"): that screen, as the phone is held then
+  const sized = /^(\d+)x(\d+)$/.exec(v || '');
+  if (sized) { views = { ...views, [v]: { width: Number(sized[1]), height: Number(sized[2]) } }; }
   view = views[v] ? v : 'land';
   // (a phone: touch screen, mobile browser, so the game shows and reads its touch controls)
   const ctx = await browser.newContext({ viewport: views[view], deviceScaleFactor: 1, isMobile: true, hasTouch: true });
@@ -73,6 +76,16 @@ async function open(stage, v, flag = 0, layout = 1) {
   if (flag > 0) {
     const ok = await page.evaluate((n) => {
       const e = window.__engine();
+      // Dot's netting flight has no flags: her flowers are her checkpoints, so start at the Nth flower she would drink at
+      const dot = e.dotRun;
+      if (dot) {
+        const fls = [...dot.fl.stage.flowers].sort((a, b) => a.x - b.x);
+        const f = fls[Math.min(n, fls.length) - 1];
+        if (!f) return 0;
+        dot.fl.checkpoint = { x: f.x + (f.face > 0 ? 34 : -34), y: f.y };
+        dot.fl.respawn();
+        return fls.length;
+      }
       // flags in stage order (some stages run downhill or back left), and placing him there costs no life
       const cps = e.currentStage.checkpoints ?? [];
       const cp = cps[Math.min(n, cps.length) - 1];
@@ -108,6 +121,9 @@ const W = () => views[view].width, H = () => views[view].height;
 let actionAt = null;
 const points = () => [...(steer ? [{ x: steer.x, y: steer.y, id: 1 }] : []), ...(actionAt ? [{ x: actionAt.x, y: actionAt.y, id: 2 }] : [])];
 const touch = (type) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: points() });
+// CDP's touchEnd lifts the points it is GIVEN, so a lift names only the finger leaving the glass (it used to send the fingers still
+// down: lifting the action thumb lifted the steering thumb and left the action finger stuck; found by the World 4 session)
+const liftFinger = (pt) => cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [pt] });
 const frames = async (ms) => { for (let t = 0; t < ms; t += 33) await page.clock.runFor(Math.min(33, ms - t)); };
 async function steerTo(dir) {
   if (!steer) {
@@ -152,8 +168,9 @@ async function action(kind, dir, holdMs) {
   const tapMs = persona ? Math.max(25, draw(persona.tapMs, 60)) : 60;
   await frames(kind === 'tap' ? tapMs : kind === 'hold' ? holdMs : 20);
   if (kind === 'flick' && holdMs) await frames(holdMs);
+  const up = { x: actionAt.x, y: actionAt.y, id: 2 };
   actionAt = null;
-  await touch('touchEnd');
+  await liftFinger(up);
   await frames(33);
 }
 
@@ -164,7 +181,7 @@ async function step(s) {
   if (what === 'wait') return frames(Number(msStr || 500));
   // touch: "steer right 800" (the thumb stays down until "lift"), "tap", "flick up", "flickhold up 600", "hold 700", "lift"
   if (what === 'steer') { await steerTo(a); return frames(Number(b || 0)); }
-  if (what === 'lift') { if (steer) { steer = null; await touch('touchEnd'); } return frames(33); }
+  if (what === 'lift') { if (steer) { const up = { x: steer.x, y: steer.y, id: 1 }; steer = null; await liftFinger(up); } return frames(33); }
   if (what === 'tap') return action('tap');
   if (what === 'flick') return action('flick', a);
   if (what === 'flickhold') return action('flick', a, Number(b || 500));
@@ -206,8 +223,22 @@ async function handle(cmd) {
     const b = page.locator('button', { hasText: new RegExp(`^\\s*${cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') });
     if (!(await b.count())) return { error: `no button "${cmd.text}" on screen`, text: await screenText() };
     // a player lifts their thumbs off the glass to press a button: the bot's fingers must not stay down under the card
-    if (steer || actionAt) { steer = null; actionAt = null; await touch('touchEnd'); }
+    if (actionAt) { const up = { x: actionAt.x, y: actionAt.y, id: 2 }; actionAt = null; await liftFinger(up); }
+    if (steer) { const up = { x: steer.x, y: steer.y, id: 1 }; steer = null; await liftFinger(up); }
     await b.first().click();
+    await page.clock.runFor(300);
+    return { shot: await shot(), text: await screenText() };
+  }
+  if (cmd.cmd === 'press') {
+    // press a button with a second finger while the steering thumb stays on the glass (a two-thumb player answering a card)
+    const b = page.locator('button', { hasText: new RegExp(`^\\s*${cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') });
+    if (!(await b.count())) return { error: `no button "${cmd.text}" on screen`, text: await screenText() };
+    const r = await b.first().boundingBox();
+    const pt = { x: r.x + r.width / 2, y: r.y + r.height / 2, id: 3 };
+    const held = points();
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [...held, pt] });
+    await page.clock.runFor(80);
+    await liftFinger(pt);
     await page.clock.runFor(300);
     return { shot: await shot(), text: await screenText() };
   }
@@ -218,7 +249,20 @@ async function handle(cmd) {
     for (let k = 0; k < 8; k++) { await page.clock.runFor(33); paths.push(await shot(`burst${k}`)); }
     return { shots: paths, text: await screenText() };
   }
+  if (cmd.cmd === 'eval') {
+    // a look under the hood (not something a player can do): the value of a JS expression in the page, e.g. "__engine().input.state"
+    const v = await page.evaluate((src) => { try { return JSON.stringify((0, eval)(src)); } catch (e) { return 'threw ' + e.message; } }, cmd.text);
+    return { text: String(v).slice(0, 2000) };
+  }
+  if (cmd.cmd === 'die') {
+    // lose a life on the spot (as from a fall), to reach the retry and game-over screens quickly
+    await page.evaluate(() => window.__engine().loseLife('pit'));
+    await page.clock.runFor(2500);
+    return { shot: await shot(), text: await screenText() };
+  }
   if (cmd.cmd === 'perf') {
+    // (rubbish collected first: listeners on screens already thrown away still count until then, and look like a leak)
+    await cdp.send('HeapProfiler.collectGarbage').catch(() => {});
     const m = Object.fromEntries((await cdp.send('Performance.getMetrics')).metrics.map((x) => [x.name, x.value]));
     const canv = await page.evaluate(() => document.querySelectorAll('canvas').length);
     return { text: `memory in use ${(m.JSHeapUsedSize / 1048576).toFixed(1)} MB of ${(m.JSHeapTotalSize / 1048576).toFixed(1)} MB, page objects ${m.Nodes}, canvases ${canv}, listeners ${m.JSEventListeners}` };

@@ -1,5 +1,6 @@
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
+import { DOT_STAGE_ID, dotGeneratedStage } from './dotFlightStage.ts';
 import { ctestEnabled, ctestSeed } from './playRecorder.ts';
 
 /** the stage the control test replaces (no story scene before it); its layout is a new mix each run (playRecorder.ts ctestSeed) */
@@ -25,6 +26,7 @@ import { PICKUP_APART, swingLandings, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
+import { PILLAR } from './sovereignFight.ts';
 import { SECRET_GATE_LEVEL } from './secret.ts';
 import { addJumpTrails } from './jumpTrails.ts';
 import { fixPickups } from './flowerReach.ts';
@@ -65,6 +67,15 @@ export interface GeneratedStage {
   zones?: import('./zones.ts').Zone[];
   /** the two-lane forks of the stage (see LaneFork): each lane is checked on its own by the validator and timed on its own by stageTime.ts */
   lanes?: LaneFork[];
+  /**
+   * 4-7: warm air rising out of the mist (the same objects as proto.w4.updrafts): an open leaf in it rises to its top, so the validator
+   * lets him ride one up and drift off it onto a ledge (a ledge only the warm air reaches)
+   */
+  updrafts?: Array<{ x0: number; x1: number; top: number; bottom: number }>;
+  /** 4-7: a fall this far below the ground he last stood on is a fall into the mist (w4Play deepFall), so the validator joins no drop deeper */
+  deepFall?: number;
+  /** Dot's netting flight (dotFlightStage.ts): she flies it, there is no ground, and the engine hands the stage to dotFlightRun.ts */
+  dot?: import('./dotFlightStage.ts').DotStage;
   /** what the generator built (for tests and debugging) */
   meta?: {
     attempt: number;
@@ -2561,6 +2572,10 @@ function buildBoss(gen: Gen): GeneratedStage {
     for (const v of def.vines ?? []) {
       gen.V.push({ id: gen.vid++, x: left + v.dx, topY: floor - v.top, bottomY: floor - v.bottom, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true });
     }
+    // the Sky Sovereign's rock pillars: walls with a top to stand on (sovereignFight.ts; the engine cracks and breaks them)
+    if (def.pillars) {
+      PILLAR.at.forEach((dx, i) => gen.plat({ x: left + dx - PILLAR.w / 2, y: floor - PILLAR.h, width: PILLAR.w, height: PILLAR.h, type: 'solid', pillar: i }, 'ledge'));
+    }
   } else {
     for (const b of [{ x: left + 70, y: 440, w: 200 }, { x: right - 270, y: 440, w: 200 }, { x: (left + right) / 2 - 130, y: 340, w: 260 }]) {
       gen.plat({ x: b.x, y: b.y, width: b.w, height: 26, type: 'solid'}, 'ledge');
@@ -2569,7 +2584,7 @@ function buildBoss(gen: Gen): GeneratedStage {
 
   const maxHp = def.hp ?? bossMaxHp(cfg.worldIndex);
   const boss: BossEntity = {
-    id: 1, type: 'boss', x: right - Math.max(160, def.w / 2 + 40), y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
+    id: 1, type: 'boss', x: def.startDx !== undefined ? left + def.startDx : right - Math.max(160, def.w / 2 + 40), y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
     facing: -1, patrolMinX: left, patrolMaxX: right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
     specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote, dialogueDefeat: 'Nooo! Defeated by a sloth...!',
@@ -2578,6 +2593,8 @@ function buildBoss(gen: Gen): GeneratedStage {
   if (perchList.length) {
     // a heart on the first ledge and one on the last, where a hero who has been hurt can reach them
     for (const pc of new Set([perchList[0], perchList[perchList.length - 1]])) gen.item('heart', left + pc.dx + pc.w / 2, floor - pc.up - 44);
+    // and one on top of the last rock pillar
+    if (def.pillars) gen.item('heart', left + PILLAR.at[PILLAR.at.length - 1], floor - PILLAR.h - 44);
   } else {
     gen.item('heart', left + 170, 400);
     gen.item('heart', right - 170, 400);
@@ -2744,6 +2761,8 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
 export function generateStage(config: LevelConfig): GeneratedStage {
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, ctestSeed(), 'ctest');
+  // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
+  if (config.id === DOT_STAGE_ID) return dotGeneratedStage(config, layoutVariant ?? 1);
   // the stages built the new way (planned and rolled, protoStage.ts), behind the New stages switch
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]);
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24

@@ -1,9 +1,10 @@
-import { countWord } from './stagePlan.ts';
+import { lastSheet } from './atlasLoader.ts';
+import { goalLine } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
-import { liftY } from './lift.ts';
+import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { isEasy } from './difficulty.ts';
@@ -30,11 +31,12 @@ import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
-import { lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
+import { cardSafe, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
+import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, easeAssist, inSweetSpot, newAirDrive, setTimedSwing, swingGrab, swingStep, timedLaunch } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingStep, timedLaunch, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
-import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
+import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
@@ -43,6 +45,7 @@ import { renderScenery, renderOverlay, setCanopy, setWeatherAvoid, lookFor } fro
 import { polishEnabled, polishTier, setPolishTier, pskip, rigFor, drawGroundShadow, drawBackGlow, drawLit, drawBloom, type Rig } from './polish.ts';
 import { setSceneSeed, rollSceneSeed, getSceneSeed } from './sceneSeed.ts';
 import { drawEagleSprite } from './eagleSprite.ts';
+import { sovereignSprite } from './sovereignSprite.ts';
 import { startDive, stepDive, stepGlide } from './harpyDive.ts';
 import { drawJennifurSprite, jennifurSpriteReady } from './jennifurSprite.ts';
 import { drawSnakeSprite } from './snakeSprite.ts';
@@ -61,8 +64,12 @@ import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } 
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
-import { W4Play } from './w4Play.ts';
-import { camAnchor, camLook, CAM, snapCam } from './cameraFollow.ts';
+import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
+import { DotRun } from './dotFlightRun.ts';
+import { FALLS } from './waterfalls.ts';
+import { drawNest } from './w4Nests.ts';
+import { drawW4Bush } from './w4Art.ts';
+import { camAnchor, camLook, CAM, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, type Box } from './cameraFollow.ts';
 import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -73,6 +80,7 @@ import {
   drawHazardEntity,
   drawGirlfriendDaisy,
   drawCollectible,
+  pickupName,
 } from './vectorArt.ts';
 import {
   checkAABBCollision,
@@ -83,6 +91,7 @@ import {
   atExitDoor,
   atSealedDoor,
   ascentProgress,
+  SHRINE_STOP,
 } from './rules.ts';
 import { InputEngine } from './inputEngine.ts';
 import { sound } from './audio.ts';
@@ -100,9 +109,15 @@ import {
 import { drawJaguar, drawBoa, drawCaiman, drawTayra } from './predators.ts';
 import { drawEntrance, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
 import { drawLairBack, drawLairFront, drawLairObjects, drawLairWorld, lairOwnsScene } from './lairArt.ts';
-import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
+import { EASY_OPEN_MUL, bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
+import { hitLabel, hitsLeft } from './bossHits.ts';
+import { drawBossOverDark } from './bossCues.ts';
+import { prowlerGlow } from './lairProwler.ts';
+import { baseScale, bossViewWidth, bossViewX } from './bossCamera.ts';
+import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar } from './sovereignFight.ts';
+import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
@@ -128,6 +143,8 @@ const FIND_SEARCH_SECONDS = 0.9;
 const REGROW_SECONDS = 3;
 /** how near a flower must be to pick it while swinging on a vine (34 on foot) */
 const SWING_PICK = 56;
+/** a Jump or a direction let go this short a time before a pause still counts as held when play carries on (seconds) */
+const HELD_RECENT = 0.35;
 /** how fast Pokey pushes a hollow log (px/s): slower than a walk, so it reads as effort */
 const PUSH_SPEED = 120;
 
@@ -279,6 +296,11 @@ export class GameEngine {
   private zzzTimer = 0;
   /** World 4: the push the wind adds to the hero this frame, px/s */
   private windV = 0;
+  /** 4-10, the Sky Sovereign: her rock pillars (sovereignFight.ts), the shove of her screech (fading) and the push of her gust, px/s */
+  private skyPillars: SkyPillar[] | null = null;
+  private bossShove = 0;
+  private bossGust = 0;
+  private chimeT = 0;
   /** Worlds 5 and 6: what webs and the mudflat do to run speed and jump this frame (1 = nothing) */
   private dragSpeed = 1;
   private dragJump = 1;
@@ -294,6 +316,8 @@ export class GameEngine {
   private camLookX: number = CAM.lookAhead;
   /** World 4's rocks, fern, falls, chimes, knots and capuchins for this run (w4Play.ts) */
   private w4: W4Play | null = null;
+  /** Dot's netting flight (dotFlightRun.ts): while it is set, she is the player and it runs the stage */
+  private dotRun: DotRun | null = null;
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
@@ -345,6 +369,10 @@ export class GameEngine {
   private lessonQuietUntil = 0;
   private lessonFrame = 0;
   private lessonSeen: Set<LessonId> | null = null;
+  /** a lesson that came due while stopping was not safe (mid-air, mid-swing, a foe at hand): it opens once he is safe (cardSafe) */
+  private lessonWaiting: { id: LessonId; at: number } | null = null;
+  /** finds picked up while stopping was not safe: the reader opens once he is (the same rule as the lesson cards) */
+  private findsWaiting: string[] = [];
   private coyoteTimer: number = 0;
   private jumpBufferTimer: number = 0;
   /** what carries him through the air on a touch screen (see jumpHelp.ts): the way he was going when he left the ground, until he lands or pushes back */
@@ -409,6 +437,9 @@ export class GameEngine {
   private sweetGlint = 0;
   /** 0..1: the golden glow round him while he is in the sweet spot (eased in and out) */
   private sweetGlow = 0;
+  /** the swing's last moment in its sweet spot (for a press to let go a beat late), and a press made a beat early that is waiting for it */
+  private sweetSnap: (SwingState & { dir: -1 | 1; at: number }) | null = null;
+  private swingLeapWait = 0;
   private lastReleasedVineId: number = -1;
   private wasQuotaMet: boolean = false;
   private treeClimbAudioTimer: number = 0;
@@ -451,6 +482,8 @@ export class GameEngine {
     assignTerritories(this.enemies, this.platforms, (e) => e.y + (isPredator(e.type) ? FEET[e.type] : 0));
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
+    this.skyPillars = this.bossDef?.pillars && this.currentStage.arena ? makePillars(this.currentStage.arena.left) : null;
+    setSovereignPillars(this.skyPillars);
     // Easy (difficulty.ts): a guardian takes about two thirds as many hits, each hit worth the same, and warns a little longer (tellMul)
     if (this.boss && this.bossDef?.hits && isEasy()) {
       const per = this.boss.maxHp / this.bossDef.hits;
@@ -480,8 +513,9 @@ export class GameEngine {
     // the clip sheets of the creatures in this stage start loading now, not as each one first comes on screen
     warmCreatureAnims(new Set(this.enemies.flatMap((e) => (e.type === 'turtle' && e.royal ? ['guard'] : [e.type]))));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
-    this.pushLogs = this.platforms.filter((pl) => !!pl.push);
+    this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
+    if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
@@ -503,6 +537,9 @@ export class GameEngine {
       perfNote(`stage ${config.id} started`);
     }
     this.checkpoint = { x: this.currentStage.spawnX, y: this.currentStage.spawnY };
+    this.camLedge = null;
+    this.camLand = null;
+    this.bestDropY = -Infinity;
 
     // Initialize Hero Sloth
     this.player = {
@@ -606,7 +643,9 @@ export class GameEngine {
     if (!w || !h) return;
     const levelH = this.currentStage?.config.levelHeight ?? 900;
     const portrait = h > w;
-    let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
+    // (a stage may show more of the world than usual: 4-7, where the next ledge is far across and far below)
+    const wide = this.proto?.w4?.view;
+    let base = portrait ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
     base = Math.max(0.5, Math.min(1.8, base));
     const t = Math.min(1, this.introT / INTRO_ZOOM_SECS);
     const ease = 1 - Math.pow(1 - t, 3);
@@ -646,23 +685,50 @@ export class GameEngine {
     sound.playRelicFound();
     this.spawnSparkBurst(c.x, c.y, '#fde68a');
     this.addFloatingText(`FOUND: ${FIND_BY_ID[c.findId ?? '']?.title ?? 'a find'}`, c.x, c.y - 34, '#fde68a');
-    if (c.findId) this.callbacks.onFind?.(c.findId);
+    // the app stops the stage to show it: that waits until he is standing or holding on, like a lesson card (lessonTick)
+    if (c.findId) this.findsWaiting.push(c.findId);
   }
 
   public pause() {
+    if (!this.isPaused) {
+      // in mid-air, remember what his thumb was holding a moment ago: pressing the Menu button takes it off the glass first, and play
+      // should carry on the way it was going (a glide stays open) rather than drop him (see resume)
+      const p = this.player;
+      const air = !p.grounded && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
+      this.pauseHeld = air ? { jump: this.gameTime - this.heldJumpAt < HELD_RECENT, dir: this.gameTime - this.heldDirAt < HELD_RECENT ? this.heldDir : 0 } : null;
+    }
     this.isPaused = true;
   }
 
   public resume() {
+    const was = this.isPaused;
     this.isPaused = false;
     this.lastTime = performance.now();
     this.lastRenderTime = this.lastTime;
     this.acc = 0;
+    // paused in mid-air: hold what he held until a fresh touch or key takes over, or he lands (inputEngine.ts carry)
+    const h = this.pauseHeld;
+    this.pauseHeld = null;
+    if (was && h && (h.jump || h.dir)) {
+      this.input.carry(h.jump, h.dir);
+      this.carryLeft = 1.5;
+    }
   }
+  /** what his thumb held just before a pause in mid-air, and how long resume() may keep holding it */
+  private pauseHeld: { jump: boolean; dir: -1 | 0 | 1 } | null = null;
+  private carryLeft = 0;
+  private heldJumpAt = -1e9;
+  private heldDirAt = -1e9;
+  private heldDir: -1 | 0 | 1 = 0;
+  /** the respawn pause on steering lasts until the first fresh input (InputEngine.moves) */
+  private graceMoves = -1;
 
   public stop() {
     // (the banner goes back to its usual place for whatever comes next)
-    if (typeof document !== 'undefined') delete document.documentElement.dataset.wayLow;
+    if (typeof document !== 'undefined') {
+      delete document.documentElement.dataset.wayLow;
+      delete document.documentElement.dataset.wayBoss;
+    }
     this.wayLow = false;
     this.isRunning = false;
     if (this.animFrameId !== null) {
@@ -746,9 +812,14 @@ export class GameEngine {
   private recordFrames(elapsed: number, now: number) {
     if (!this.frameWinAt) this.frameWinAt = now;
     if (!this.isPaused) this.frameWin.push(elapsed);
-    // a freeze long enough to feel: noted on its own, with where he was
-    if (!this.isPaused && elapsed > 250) recorder.event('stall', `${Math.round(elapsed)}ms x${Math.round(this.player.x)} q${this.quality}`);
+    // a hitch long enough to see (over 100 ms): noted on its own, with where he was and the last picture sheet to arrive (an atlas
+    // decoding mid-play is the usual cause), so a stall can be tied to what caused it
+    if (!this.isPaused && elapsed > 100) recorder.event('stall', `${Math.round(elapsed)}ms x${Math.round(this.player.x)} q${this.quality}${lastSheet.name && now - lastSheet.at < 1500 ? ` after ${lastSheet.name}` : ''}`);
     if (now - this.frameWinAt < 5000) return;
+    // memory (Chrome and Android only: iPhones don't report it), and how many live things the game is carrying, so the QA team can see
+    // memory climbing the longer someone plays
+    const mem = (performance as Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } }).memory;
+    recorder.event('mem', `${mem ? `${Math.round(mem.usedJSHeapSize / 2 ** 20)}/${Math.round(mem.totalJSHeapSize / 2 ** 20)}MB ` : ''}parts ${this.particles.length} foes ${this.enemies.length} items ${this.collectibles.length}`);
     const f = this.frameWin.sort((a, b) => a - b);
     this.frameWin = [];
     this.frameWinAt = now;
@@ -779,6 +850,25 @@ export class GameEngine {
     }
     if (this.stepEntrance(dt)) return;
     this.input.update(dt);
+    if (this.dotRun) return this.stepDot(dt);
+    {
+      // what his thumb holds, for a pause in mid-air (pause / resume)
+      const inp = this.input.state;
+      if (inp.jumpHeld) this.heldJumpAt = this.gameTime;
+      const d = inp.left ? -1 : inp.right ? 1 : 0;
+      if (d) {
+        this.heldDir = d;
+        this.heldDirAt = this.gameTime;
+      }
+      if (this.carryLeft > 0) {
+        const pl = this.player;
+        this.carryLeft -= dt;
+        if (!this.input.carrying || this.carryLeft <= 0 || pl.grounded || pl.climbing || pl.isVineSwinging || pl.hanging) {
+          this.carryLeft = 0;
+          this.input.dropCarry();
+        }
+      }
+    }
 
     const p = this.player;
     const groundedBefore = p.grounded;
@@ -789,6 +879,7 @@ export class GameEngine {
     if (this.refined) {
       this.input.kickNear = this.somethingToKick();
       this.input.onVine = p.climbing || !!p.isVineSwinging;
+      this.input.onSwing = !!p.isVineSwinging;
     }
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
@@ -1029,6 +1120,8 @@ export class GameEngine {
 
     this.respawnFlash = Math.max(0, this.respawnFlash - dt);
     this.inputGrace = Math.max(0, this.inputGrace - dt);
+    // the pause on steering after a respawn is for a thumb still held from before the fall: a fresh touch or key counts at once
+    if (this.inputGrace > 0 && this.graceMoves >= 0 && this.input.moves !== this.graceMoves) this.inputGrace = 0;
 
     // --- Camera Trauma Shake Decay ---
     this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.2);
@@ -1065,7 +1158,8 @@ export class GameEngine {
           break;
         }
       } else {
-        if (Math.abs(p.x - v.x) < 48 && p.y >= v.topY - 15 && p.y <= v.bottomY + 30) {
+        // (the timed swing's catch, physics.ts TIMED.grabX: 60 px, Easy's 76; the stage checks assume it, and it used to be a fixed 48 here)
+        if (canGrabSwing(p.x, p.y, v)) {
           nearSwingVine = v;
           break;
         }
@@ -1134,7 +1228,9 @@ export class GameEngine {
         this.input.state.jumpPressed = false;
         p.y = nearTreeVine.topY - 12;
         p.vy = -190;
-        p.vx = (this.input.state.left ? -1 : this.input.state.right ? 1 : p.facing) * 160;
+        // (with only up held, toward the side with more ledge at the top: he used to vault the way he faced, and walking back to a trunk
+        // (4-3's, after the water threw him back) he faced away from the shelf and vaulted off its short end)
+        p.vx = (this.input.state.left ? -1 : this.input.state.right ? 1 : this.vaultSide(nearTreeVine, p.facing)) * 160;
         p.grounded = true;
         p.jumpsLeft = 2;
         sound.playJump();
@@ -1198,6 +1294,8 @@ export class GameEngine {
         p.isVineSwinging = true;
         p.climbing = false;
         p.swingVineId = nearSwingVine.id;
+        this.sweetSnap = null;
+        this.swingLeapWait = 0;
         {
           const sw = swingGrab({ x: p.x, y: p.y, vx: p.vx, vy: p.vy }, nearSwingVine);
           p.swingLength = sw.len;
@@ -1229,6 +1327,15 @@ export class GameEngine {
           const climb = this.input.state.up ? -1 : this.input.state.down ? 1 : 0;
           const r = swingStep(sw, nearSwingVine, dt, p.facing, climb);
           const sweet = inSweetSpot(sw, p.facing);
+          if (sweet) this.sweetSnap = { angle: sw.angle, omega: sw.omega, len: sw.len, dir: p.facing, at: this.gameTime };
+          // a press a beat early waits for the sweet spot, then lets go (physics.ts RELEASE)
+          if (this.swingLeapWait > 0) {
+            this.swingLeapWait -= dt;
+            if (sweet || this.swingLeapWait <= 0) {
+              this.swingLeapWait = -1; // (-1: this press has waited already, so it lets go now whatever the swing is doing)
+              this.input.state.jumpPressed = true;
+            }
+          }
           this.sweetGlow += ((sweet ? 1 : 0) - this.sweetGlow) * Math.min(1, dt * 14);
           this.sweetGlint -= dt;
           if (sweet && this.sweetGlint <= 0) {
@@ -1261,7 +1368,8 @@ export class GameEngine {
           p.jumpsLeft = 2;
         }
         // --- NATURAL SWING EXIT 2: HEROIC TARZAN LEAP (Jump button Pressed) ---
-        else if (this.input.state.jumpPressed) {
+        // (a press a beat before the sweet spot is held until he reaches it, below)
+        else if (this.input.state.jumpPressed && !this.holdLeapForSweet(p.facing)) {
           p.isVineSwinging = false;
           nearSwingVine.isSwingingVine = false;
           this.input.state.jumpPressed = false;
@@ -1282,10 +1390,15 @@ export class GameEngine {
           {
             // let go in the sweet spot: the leap toward the next vine. Anywhere else he flies off the way the vine was carrying him.
             const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100 };
-            const l = timedLaunch(sw, releaseDir as 1 | -1);
+            // a press a beat after the sweet spot, while still out in front (the forward end of the swing): the leap it would have given
+            const snap = this.sweetSnap;
+            const call = releaseCall(sw, releaseDir as 1 | -1, snap && snap.dir === releaseDir ? this.gameTime - snap.at : Infinity);
+            const l = timedLaunch(call === 'late' && snap ? snap : sw, releaseDir as 1 | -1);
             p.vx = l.vx;
             p.vy = l.vy;
             this.launched = l.sweet;
+            this.swingLeapWait = 0;
+            this.sweetSnap = null;
           }
           p.jumpsLeft = 2; // Full air control - player can double jump mid-air!
           p.isDoubleJumping = false;
@@ -1424,8 +1537,9 @@ export class GameEngine {
         p.vy += gravity * dt;
         if (p.vy > PHYS.maxFall) p.vy = PHYS.maxFall;
         // Leaf Glide: holding Jump while falling opens the leaf and slows the fall
-        const lift = this.currentStage.config.worldIndex === 9 && ventLift(this.currentStage.zones, p.x, p.y - 32, this.gameTime);
-        const glideCap = glideStep(this.glide, { has: this.skills.has('glide'), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
+        const lift = (this.currentStage.config.worldIndex === 9 && ventLift(this.currentStage.zones, p.x, p.y - 32, this.gameTime)) || !!this.w4?.inUpdraft(p.x, p.y - 32);
+        // (pouring water folds the leaf: World 4's falls cannot be glided through, w4Play.ts inPour)
+        const glideCap = glideStep(this.glide, { has: this.skills.has('glide') && !this.w4?.inPour(p.x, p.y), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
         p.vy = glideBrake(p.vy, glideCap, dt);
         if (lift && this.glide.on) {
           p.vy = glideLift(p.vy, dt);
@@ -1438,7 +1552,7 @@ export class GameEngine {
         if (this.glide.on) this.statGlideSec += dt;
         if (p.grounded) this.glideOpen = 0;
 
-        p.x += (p.vx + this.windV) * dt;
+        p.x += (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
         p.y += p.vy * dt;
       }
     }
@@ -1450,7 +1564,7 @@ export class GameEngine {
 
       // Clamp horizontal level bounds (safely stops player right at the victory shrine altar)
       const maxX = this.currentStage.exitTotemX > 0 && this.currentStage.config.objectiveType !== 'ascent'
-        ? this.currentStage.exitTotemX + 35
+        ? this.currentStage.exitTotemX + SHRINE_STOP
         : this.currentStage.config.levelWidth - 20;
       p.x = Math.max(20, Math.min(maxX, p.x));
 
@@ -1458,10 +1572,12 @@ export class GameEngine {
       p.pushing = false;
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
         const half = 19;
-        const prevX = p.x - p.vx * dt;
+        const prevX = p.x - (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
         for (const plat of this.platforms) {
           if (plat.broken || plat.type !== 'solid' || plat.height < 50) continue;
-          if (p.y <= plat.y + 6) continue; // standing on, or above, the top
+          // (not when he stands on it or above its top, nor when he is wholly under it: a boulder up on a shelf, World 4, is no wall to him
+          // on the ground under the shelf, and he cannot push it from below)
+          if (!blockBeside(p.y, p.height, plat)) continue;
           if (p.x + half <= plat.x || p.x - half >= plat.x + plat.width) continue;
           const fromLeft = prevX + half <= plat.x + 2;
           const fromRight = prevX - half >= plat.x + plat.width - 2;
@@ -1516,63 +1632,64 @@ export class GameEngine {
       const playerFeet = p.y;
       const playerPrevFeet = p.y - p.vy * dt;
 
-      for (const plat of p.hanging ? [] : this.platforms) {
-        if (plat.broken) continue;
+      // every floor his feet meet this frame (in stage order)
+      const floors = (p.hanging ? [] : this.platforms).filter((plat) => {
+        if (plat.broken) return false;
         // a log is only there between its banks; the part hidden under a bank is not standable
-        if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) continue;
-
+        if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) return false;
         // Check if player is horizontally within platform (generous width tolerance)
         // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
         // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
         const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26 + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
-        if (p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width) {
-          // Check landing from above
-          if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) {
-            p.y = plat.y;
-            const landV = p.vy; // how hard he came down: the squash below follows it
-            p.vy = 0;
-            p.grounded = true;
-            this.standingOnId = plat.id;
-            p.jumpsLeft = 2; // Restore double jump capability on landing
-            p.isDoubleJumping = false;
-            p.somersaultAngle = 0;
+        if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) return false;
+        // Check landing from above
+        return p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y;
+      });
+      // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
+      // so a lift never rises without him
+      const plat = pickFloor(floors, p.x);
+      if (plat) {
+        p.y = plat.y;
+        const landV = p.vy; // how hard he came down: the squash below follows it
+        p.vy = 0;
+        p.grounded = true;
+        this.standingOnId = plat.id;
+        p.jumpsLeft = 2; // Restore double jump capability on landing
+        p.isDoubleJumping = false;
+        p.somersaultAngle = 0;
 
-            // Jump Buffering: If jump was tapped just before landing, instantly jump!
-            if (this.jumpBufferTimer > 0) {
-              this.jumpBufferTimer = 0;
-              p.vy = -PHYS.jumpV;
-              p.grounded = false;
-              p.jumpsLeft = 1;
-              p.squashX = 0.82;
-              p.squashY = 1.28;
-              this.takeOff(false);
-              sound.playJump();
-              this.spawnJumpDust(p.x, p.y);
-              break;
-            }
+        // Jump Buffering: If jump was tapped just before landing, instantly jump!
+        if (this.jumpBufferTimer > 0) {
+          this.jumpBufferTimer = 0;
+          p.vy = -PHYS.jumpV;
+          p.grounded = false;
+          p.jumpsLeft = 1;
+          p.squashX = 0.82;
+          p.squashY = 1.28;
+          this.takeOff(false);
+          sound.playJump();
+          this.spawnJumpDust(p.x, p.y);
+        } else {
+          // Squash on landing: a hop settles lightly, a long drop flattens him more
+          if (p.squashY > 0.9) {
+            const hard = Math.max(0, Math.min(1, landV / PHYS.maxFall));
+            p.squashX = 1.1 + 0.15 * hard;
+            p.squashY = 0.9 - 0.17 * hard;
+          }
 
-            // Squash on landing: a hop settles lightly, a long drop flattens him more
-            if (p.squashY > 0.9) {
-              const hard = Math.max(0, Math.min(1, landV / PHYS.maxFall));
-              p.squashX = 1.1 + 0.15 * hard;
-              p.squashY = 0.9 - 0.17 * hard;
-            }
+          // Bouncy mushroom interaction
+          if (plat.type === 'bouncy') this.bounceOff();
 
-            // Bouncy mushroom interaction
-            if (plat.type === 'bouncy') this.bounceOff();
-
-            // Fragile branch interaction
-            if (plat.type === 'fragile') {
-              if (plat.fragileTimer === undefined) {
-                plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
-                if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
-                  this.zoneHinted.crumble = true;
-                  this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
-                }
+          // Fragile branch interaction
+          if (plat.type === 'fragile') {
+            if (plat.fragileTimer === undefined) {
+              plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+              if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
+                this.zoneHinted.crumble = true;
+                this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
               }
             }
-            break;
           }
         }
       }
@@ -1615,8 +1732,8 @@ export class GameEngine {
         if (!cp.reached && Math.abs(p.x - cp.x) < 70 && p.y > cp.y - 150 && p.y < cp.y + 40) {
           cp.reached = true;
           recorder.event('checkpoint', Math.round(cp.x));
-          // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right)
-          const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : cp.x > this.checkpoint.x;
+          // a flag touched while backtracking never replaces a later one (a tall climb goes up, a run goes right, a descent goes down)
+          const further = this.currentStage.config.objectiveType === 'ascent' ? cp.y < this.checkpoint.y : this.proto?.w4?.descent ? cp.y > this.checkpoint.y : cp.x > this.checkpoint.x;
           if (further) this.checkpoint = { x: cp.x, y: cp.y };
           this.addFloatingText('CHECKPOINT!', cp.x, cp.y - 90, '#fde047');
           this.spawnSparkBurst(cp.x, cp.y - 40, '#fde047');
@@ -1713,7 +1830,7 @@ export class GameEngine {
               e.isAttacking = false;
               e.dive = undefined;
             } else {
-              this.damagePlayer(1);
+              this.damagePlayer(1, e.x - (e.dive?.vx ?? 0) * 0.1);
               e.swoopPhase = 'hover';
               e.hoverTimer = 1.0;
               e.isAttacking = false;
@@ -1788,7 +1905,7 @@ export class GameEngine {
         const shaken = this.gameTime < (this.harmlessUntil.get(e.id) ?? -1);
         for (const h of shaken ? [] : step.hurt) {
           if (checkAABBCollision(...this.pBox(), h.x, h.y, h.w, h.h)) {
-            this.damagePlayer(1);
+            this.damagePlayer(1, e.x);
             break;
           }
         }
@@ -1799,7 +1916,7 @@ export class GameEngine {
         if (step.ev.notice) this.addFloatingText('?', e.x, e.y - 30, '#fde047');
         for (const h of step.hurt) {
           if (checkAABBCollision(...this.pBox(), h.x, h.y, h.w, h.h)) {
-            this.damagePlayer(1);
+            this.damagePlayer(1, e.x);
             break;
           }
         }
@@ -1807,7 +1924,7 @@ export class GameEngine {
         // Poison frog hopping
         e.animTimer += dt;
         if (checkAABBCollision(...this.pBox(), e.x - 12, e.y - 10, 24, 20)) {
-          this.damagePlayer(1);
+          this.damagePlayer(1, e.x);
         }
       }
     }
@@ -1833,6 +1950,8 @@ export class GameEngine {
     if (p.activePowerUp === 'magnet') {
       for (const c of this.collectibles) {
         if (c.collected || c.type === 'cage' || c.type === 'exit_totem' || c.type === 'thorn_gate' || c.type === 'find' || c.hidden) continue;
+        // (a heart he cannot take yet is not dragged along after him)
+        if (c.type === 'heart' && p.hp >= p.maxHp) continue;
         const dist = distance2D(p.x, p.y - 20, c.x, c.y);
         if (dist < 260 && dist > 10) {
           const pullSpeed = 460 * dt;
@@ -1844,9 +1963,14 @@ export class GameEngine {
 
     // the hand-built stage's one-time hints (protoStage.ts)
     if (this.proto) {
-      for (const h of this.proto.hints) {
-        if (h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY) || (h.aboveY !== undefined && p.y > h.aboveY)) continue;
+      // (a line that waits for his depth waits for him to stand down there: a fall into 4-7's mist, past the ledges below, used up
+      // the lines meant for them)
+      // (several passed in one frame, as when a run starts from a later flag: only the last is said, and only it counts as heard, so a
+      // line nobody saw is not lost for good)
+      const due = this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && (p.y < h.belowY || !p.grounded)) || (h.aboveY !== undefined && p.y > h.aboveY) || (h.beforeX !== undefined && p.x > h.beforeX)));
+      for (const h of due) {
         h.shown = true;
+        if (h !== due[due.length - 1]) continue;
         // said once per stage on this device: not again on a replay or a retry (tipMemory.ts)
         const id = `tip:${h.text}`;
         if (tipHeard(this.currentStage.config.id, id)) continue;
@@ -1899,6 +2023,15 @@ export class GameEngine {
         // a Hush Fern: crouch beside it for a moment and it gives something up; stand up and the search slowly fades
         const close = Math.abs(p.x - c.x) < 54 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
         c.near = close && !p.ducking;
+        // the stage's opening line says one plant here looks different; beside it, the first time, Dot says what to do with it
+        if (!close && !p.ducking && p.grounded && Math.abs(p.x - c.x) < 150 && Math.abs(p.y - (c.y + 26)) < 26) {
+          const stageId = this.currentStage.config.id;
+          if (!tipHeard(stageId, 'fern:near')) {
+            markTipHeard(stageId, 'fern:near');
+            const mode = lessonInputMode();
+            this.guide(mode === 'screen' ? 'That fern looks different! Stand beside it and slide your thumb down to crouch and search it' : 'That fern looks different! Stand beside it and hold down to crouch and search it', 4.2);
+          }
+        }
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
         else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
         if ((c.search ?? 0) >= 1) this.collectFind(c);
@@ -1945,6 +2078,14 @@ export class GameEngine {
       // swinging, he cannot steer to a flower the way he can running, so the reach is wider (the control test: flowers along the
       // vines were the hardest thing to line up, 2026-10-23)
       if (dist < (p.isVineSwinging ? SWING_PICK : 34)) {
+        // a heart is for when he is hurt: at full health it stays where it is, for later (the heart card says so)
+        if (c.type === 'heart' && p.hp >= p.maxHp) {
+          if (!this.zoneHinted.fullHeart) {
+            this.zoneHinted.fullHeart = true;
+            this.addFloatingText('FULL HEALTH! SAVE IT FOR LATER', c.x, c.y - 30, '#fda4af', 1.6);
+          }
+          continue;
+        }
         c.collected = true;
 
         if (c.type === 'flower' || c.type === 'leaf' || c.type === 'fruit') {
@@ -1961,11 +2102,9 @@ export class GameEngine {
 
           const pColor = c.type === 'flower' ? '#f43f5e' : '#4ade80';
           this.spawnSparkBurst(c.x, c.y, pColor);
-          const txt = c.botanicalVariant === 'orchid' ? '+100 ORCHID!'
-            : c.botanicalVariant === 'monstera' ? '+100 MONSTERA!'
-            : c.botanicalVariant === 'hibiscus' ? '+100 HIBISCUS!'
-            : c.botanicalVariant === 'fern' ? '+100 FERN!'
-            : '+100 FLORA!';
+          // named for what is drawn (vectorArt.ts pickupName), not the variant the drawing never used
+          const cfg = this.currentStage.config;
+          const txt = `+100 ${pickupName(c, cfg.worldIndex, cfg.miniIndex)}!`;
           this.addFloatingText(txt, c.x, c.y - 20, pColor);
 
           if (this.comboCount > 1) {
@@ -2062,7 +2201,6 @@ export class GameEngine {
     // when he is most of the way along and still well short, so nobody reaches a sealed door by surprise
     if (isQuotaType && !quotaMet) {
       const need = this.currentStage.config.targetCount - currentProgress;
-      const word = countWord(this.currentStage.config.worldIndex, objType) || 'more';
       const along = p.x / Math.max(1, this.currentStage.exitTotemX);
       if (!this.goalSaid.start && this.gameTime > 0.3 && !this.stageHint) {
         this.goalSaid.start = true;
@@ -2070,13 +2208,14 @@ export class GameEngine {
         const gid = `goal:${this.currentStage.config.targetCount}`;
         if (!tipHeard(this.currentStage.config.id, gid)) {
           markTipHeard(this.currentStage.config.id, gid);
-          // (the verb fits the goal: "Collect 14 predators" was what a beat-the-animals stage used to say)
-          const verb = objType === 'purge' || objType === 'gauntlet' ? 'Defeat' : objType === 'rescue' ? 'Free' : objType === 'relic_hunt' ? 'Find' : 'Collect';
-          this.guide(`${verb} ${this.currentStage.config.targetCount} ${word} to open the sanctuary`, 4);
+          // (the words fit the goal and the number: stagePlan.ts goalLine)
+          const line = goalLine('start', this.currentStage.config.worldIndex, objType, this.currentStage.config.targetCount);
+          if (line) this.guide(line, 4);
         }
       } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
         this.goalSaid.late = true;
-        this.guide(`Still ${need} ${word} to find before the sanctuary opens`, 4);
+        const line = goalLine('late', this.currentStage.config.worldIndex, objType, need);
+        if (line) this.guide(line, 4);
       }
     }
 
@@ -2107,9 +2246,9 @@ export class GameEngine {
           this.barrierMsgCooldown = 1.2;
           const remaining = this.currentStage.config.targetCount - currentProgress;
           // the same word the counter at the top uses, so the two always agree
-          const word = countWord(this.currentStage.config.worldIndex, objType);
+          const line = goalLine('sealed', this.currentStage.config.worldIndex, objType, remaining);
           // in the banner the stage hints use (the small red floating text was hard to read on the bright doorway)
-          if (!this.stageHint) this.guide(word ? `Sealed: ${remaining} more ${word} needed` : 'Finish the goal to open the sanctuary', 3);
+          if (!this.stageHint) this.guide(line || 'Finish the goal to open the sanctuary', 3);
           }
         }
       }
@@ -2148,6 +2287,8 @@ export class GameEngine {
       );
 
       this.callbacks.onStageStats?.(this.buildStats(true, stars));
+      // a find still waiting for a safe moment is handed over now, so it is never lost
+      for (const fid of this.findsWaiting.splice(0)) this.callbacks.onFind?.(fid);
       recorder.event('finish', Math.round(p.cheerAt ?? this.gameTime));
       this.callbacks.onVictory(stars, Math.round(p.cheerAt ?? this.gameTime), this.runScore);
     }
@@ -2186,6 +2327,11 @@ export class GameEngine {
     if (objType === 'ascent') {
       this.bestClimbY = Math.min(this.bestClimbY, p.y);
       distanceRatio = ascentProgress(this.currentStage.spawnY, this.currentStage.exitTotemY, this.bestClimbY);
+    } else if (this.proto?.w4?.descent) {
+      // down the cliff, back and forth (4-7): how far down he has got (left or right says nothing about how far on he is)
+      this.bestDropY = Math.max(this.bestDropY, p.grounded ? p.y : -Infinity);
+      const span = Math.max(1, this.currentStage.exitTotemY - this.currentStage.spawnY);
+      distanceRatio = Math.max(0, Math.min(1, (this.bestDropY - this.currentStage.spawnY) / span));
     } else {
       const totalDist = Math.max(1, (this.currentStage.exitTotemX || this.currentStage.config.levelWidth) - 140);
       const distTraveled = Math.max(0, p.x - 140);
@@ -2223,12 +2369,16 @@ export class GameEngine {
     const p = this.player;
     const w = this.viewCssW, h = this.viewCssH;
     if (!w || !h) return;
+    const boss = this.markWayBoss(w, h);
     // the banner's slot (index.css .way): its top, and about two lines of height below it
-    const slot = w <= 520 ? 132 : h <= 430 ? 110 : 96;
+    const slot = boss ? 64 : w <= 520 ? 132 : h <= 430 ? 110 : 96;
     const bandTop = slot - 12, bandBot = slot + 88;
-    const head = (p.y - 125 - this.camera.y) * this.zoom;
-    const feet = (p.y + 10 - this.camera.y) * this.zoom;
-    const under = feet > bandTop && head < bandBot;
+    // (Dot is smaller than Pokey: her own body and the note under her. Upright, her nectar panel is at the bottom of the screen and
+    // her camera keeps her well below the banner, so there the banner never moves down over the panel: QA, 2026-10-25)
+    const dot = this.dotRun;
+    const head = ((dot ? dot.fl.y - 34 : p.y - 125) - this.camera.y) * this.zoom;
+    const feet = ((dot ? dot.fl.y + 40 : p.y + 10) - this.camera.y) * this.zoom;
+    const under = feet > bandTop && head < bandBot && !(dot && h > w);
     if (under) {
       this.wayClearT = 0;
       if (!this.wayLow) {
@@ -2242,6 +2392,30 @@ export class GameEngine {
         delete document.documentElement.dataset.wayLow;
       }
     }
+  }
+
+  /**
+   * A boss fight: Dot's banner keeps off the boss plate and off the boss herself (her weak spot shows on her body). Upright it sits at
+   * the bottom (under the arena floor); held sideways it sits under the plate, narrow, on the half of the screen away from the boss
+   * (index.css :root[data-way-boss]). Returns whether a fight is on.
+   */
+  private markWayBoss(w: number, h: number): boolean {
+    const root = document.documentElement.dataset;
+    const b = this.boss && !this.boss.defeated ? this.boss : null;
+    if (!b) {
+      if (root.wayBoss) delete root.wayBoss;
+      return false;
+    }
+    const r = hurtRect(b);
+    const sx = (r.x + r.w / 2 - this.camera.x) * this.zoom;
+    let side = root.wayBoss;
+    if (h > w) side = 'low';
+    else if (side !== 'l' && side !== 'r') side = sx > w / 2 ? 'l' : 'r';
+    // (it changes sides only once she is well over on its half, so it does not flick to and fro while she hovers in the middle)
+    else if (side === 'l' && sx < w * 0.38) side = 'r';
+    else if (side === 'r' && sx > w * 0.62) side = 'l';
+    if (root.wayBoss !== side) root.wayBoss = side;
+    return true;
   }
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */
@@ -2328,11 +2502,20 @@ export class GameEngine {
           sound.playWhoosh();
         },
         tellMul: isEasy() ? 1.3 : 1,
+        openMul: isEasy() && this.bossDef?.openCue ? EASY_OPEN_MUL : 1,
         dropHeart: (x) => {
           const a = this.currentStage.arena;
           if (!a) return;
           this.collectibles.push({ id: 80000 + this.minionSeq++, type: 'heart', x, y: a.floor - 40, collected: false, bobPhase: 0 });
           this.spawnSparkBurst(x, a.floor - 60, '#fda4af');
+        },
+        onPillar: (pl, broke) => this.pillarSlammed(pl, broke),
+        guide: (key, line) => {
+          const id = this.currentStage.config.id;
+          if (tipHeard(id, 'boss:' + key)) return false;
+          markTipHeard(id, 'boss:' + key);
+          this.guide(line, 3.6);
+          return true;
         },
         crackPerches: (phase) => {
           for (const pl of this.platforms) {
@@ -2345,6 +2528,7 @@ export class GameEngine {
       };
     }
     const c = this.bossCtx;
+    c.pillars = this.skyPillars ?? undefined;
     c.px = p.x;
     c.py = p.y;
     c.pGrounded = p.grounded;
@@ -2354,6 +2538,73 @@ export class GameEngine {
     for (const e of this.enemies) if (e.id >= 9000 && !e.defeated) alive++;
     c.minionsAlive = alive;
     return c;
+  }
+
+  /** 4-10: her dive or swoop hit a rock pillar. It shakes and cracks; the slam that breaks it knocks its top off and leaves a stump */
+  private pillarSlammed(pl: SkyPillar, broke: boolean) {
+    const i = this.skyPillars?.indexOf(pl) ?? -1;
+    const plat = this.platforms.find((q) => q.pillar === i);
+    if (!plat) return;
+    const floor = plat.y + plat.height;
+    for (let k = 0; k < (broke ? 5 : 2); k++) this.spawnDebrisBurst(pl.x + (Math.random() - 0.5) * pl.w, plat.y + Math.random() * plat.height, '#a8a29e');
+    if (broke) {
+      plat.y = floor - PILLAR.stump;
+      plat.height = PILLAR.stump;
+      sound.playHitImpact(true, 'armor');
+      this.camera.trauma = Math.max(this.camera.trauma, 0.8);
+    }
+  }
+
+  /**
+   * 4-10: what the Sky Sovereign's screech and gust do to him (sovereignFight.ts), and her feathers stopping on the rocks. A screech's front
+   * shoves him once as it passes (not behind a rock; crouched, much less); the gust pushes him while it blows (the leaf rides it).
+   */
+  private stepSkyFight(b: BossEntity, c: BossCtx, dt: number) {
+    const p = this.player;
+    const floor = c.arena.floor;
+    const ps = this.skyPillars ?? [];
+    this.bossShove = fadeShove(this.bossShove, dt);
+    let gust = 0;
+    const bodyTop = playerHurtRect(p).y;
+    const free = !p.climbing && !p.isVineSwinging && !p.hanging;
+    for (const h of this.hazards) {
+      if (h.kind !== 'push') continue;
+      const src = h.src ?? h.x;
+      const dir: 1 | -1 = h.dir >= 0 ? 1 : -1;
+      if (h.look === 'screech') {
+        if (h.shoved || (p.x - src) * dir < 0 || (h.x - p.x) * dir < 0) continue;
+        h.shoved = true;
+        const v = free ? screechShove({ ps, srcX: src, dir, px: p.x, bodyTop, floor, ducking: p.ducking, grounded: p.grounded }) : 0;
+        if (v !== 0) {
+          this.bossShove = v;
+          this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, 0.35));
+          this.addFloatingText(p.ducking && p.grounded ? 'HOLD ON!' : 'BLOWN BACK!', p.x, p.y - 80, '#bae6fd');
+        } else if (free) this.addFloatingText('SAFE BEHIND THE ROCK!', p.x, p.y - 80, '#bbf7d0');
+      } else if (h.look === 'gust' && free) {
+        gust = gustPush({ ps, srcX: src, dir, phase: b.phase, px: p.x, bodyTop, floor, grounded: p.grounded, gliding: this.glide.on });
+      }
+    }
+    this.bossGust = gust;
+    // the chimes ring while she winds up her wingbeats (sovereignArt.ts swings them)
+    const br = b.ai;
+    if (br?.move === 'wingGust' && br.state === 'tell') {
+      this.chimeT -= dt;
+      if (this.chimeT <= 0) {
+        this.chimeT = 0.32;
+        sound.playVineGrab();
+      }
+    } else this.chimeT = 0;
+    // her feathers do not go through rock
+    for (const h of this.hazards) {
+      if (h.kind !== 'bolt' || h.life <= 0) continue;
+      for (const pl of ps) {
+        if (Math.abs(h.x - pl.x) < pl.w / 2 + h.w / 2 && h.y > floor - pl.h - h.h / 2) {
+          h.life = 0;
+          this.spawnSparkBurst(h.x, h.y, '#fde68a');
+          break;
+        }
+      }
+    }
   }
 
   /** a summoned animal joins the fight */
@@ -2456,7 +2707,16 @@ export class GameEngine {
 
     const prevPhase = b.phase;
     const prevState = br.state;
+    const wasOpen = weakOpen(b, def);
     stepBoss(b, def, c, dt);
+    // the opening begins: a chime, and for a giant with a glowing spot a NOW! over it (a crash already says DIZZY!, CAUGHT! ...), so the
+    // moment is heard and seen wherever the eye is
+    if (def.openCue && !wasOpen && weakOpen(b, def) && b.phase === prevPhase) {
+      sound.playCheckpoint();
+      // (Venom's head is placed by weakAt: it gets its NOW! too)
+      const wr = def.weak || def.weakAt ? weakRect(b, def, c.arena.floor) : null;
+      if (wr && br.state === 'rec') this.addFloatingText('NOW!', wr.x + wr.w / 2, wr.y - 18, '#fde047');
+    }
 
     if (b.phase !== prevPhase) {
       def.onPhase?.(b.phase, b, c);
@@ -2477,8 +2737,11 @@ export class GameEngine {
         this.addFloatingText('PHASE 2: SPEED UP!', b.x, b.y - b.height, '#f97316');
       }
     }
-    if (br.state === 'tell' && prevState !== 'tell') sound.playPredator('jaguar', 0);
-    if (br.state === 'act' && prevState !== 'act') sound.playWhoosh();
+    if (br.state === 'tell' && prevState !== 'tell') sound.playPredator(def.tellCall ?? 'jaguar', 0);
+    if (br.state === 'act' && prevState !== 'act') {
+      if (br.move === 'screech') sound.playEagleScreech();
+      else sound.playWhoosh();
+    }
     if (br.state === 'stun' && prevState !== 'stun') this.hitstopTimer = Math.max(this.hitstopTimer, 0.08);
 
     stepHazards(this.hazards, c.arena, dt, {
@@ -2489,9 +2752,11 @@ export class GameEngine {
       },
     });
 
+    if (this.skyPillars) this.stepSkyFight(b, c, dt);
+
     // ---- what hurts Pokey ----
     const boxes: Rect[] = [];
-    if (bodyHurts(b)) boxes.push({ x: b.x - b.width / 2, y: b.y - b.height / 2, w: b.width, h: b.height });
+    if (bodyHurts(b, def)) boxes.push({ x: b.x - b.width / 2, y: b.y - b.height / 2, w: b.width, h: b.height });
     for (const r of br.hurt) boxes.push(r);
     const hz: Array<{ r: Rect; h: BossHazard }> = [];
     for (const h of this.hazards) {
@@ -2505,7 +2770,7 @@ export class GameEngine {
     const pb = this.pBox();
     for (const r of boxes) {
       if (checkAABBCollision(...pb, r.x, r.y, r.w, r.h)) {
-        this.damagePlayer(1);
+        this.damagePlayer(1, b.x);
         break;
       }
     }
@@ -2517,7 +2782,7 @@ export class GameEngine {
         if (h.kind !== 'puddle') h.spent = true;
       }
       if (h.dmg > 0 && p.invincibleTimer <= 0 && this.stompGrace <= 0) {
-        this.damagePlayer(h.dmg);
+        this.damagePlayer(h.dmg, h.x);
         if (h.kind === 'glob' || h.kind === 'bolt' || h.kind === 'web') h.spent = true;
         if (h.kind === 'bolt' || h.kind === 'glob') h.life = 0;
       }
@@ -2528,18 +2793,33 @@ export class GameEngine {
 
   private stepBossDeath(b: BossEntity, def: BossDef, dt: number) {
     const br = b.ai!;
+    const end = def.ending;
+    const prevT = br.t;
     br.t += dt;
-    br.air += (0 - br.air) * Math.min(1, dt * 5);
+    br.air += (0 - br.air) * Math.min(1, dt * (end ? 2.6 : 5));
     b.y = (this.currentStage.arena?.floor ?? 560) - b.height / 2 - br.air;
-    if (Math.random() < dt * 14) this.spawnDebrisBurst(b.x + (Math.random() - 0.5) * def.w, b.y + (Math.random() - 0.5) * def.h, '#fde68a');
-    if (br.t > 0.2) this.camera.trauma = Math.max(this.camera.trauma, 0.35);
-    if (br.t >= 2.0) {
+    if (end) {
+      // a guardian who is beaten, not killed (Meeca's note: be kind to them): she comes down to rest, folds her wings and stays. Feathers
+      // drift off her, the shaking stops, and Dot calls it over
+      if (Math.random() < dt * 5) this.spawnSparkBurst(b.x + (Math.random() - 0.5) * def.w, b.y - def.h * 0.3, '#f1e4cc');
+      if (br.t < 0.6) this.camera.trauma = Math.max(this.camera.trauma, 0.3);
+      if (prevT < 1.2 && br.t >= 1.2) {
+        this.addFloatingText(end.text, b.x, b.y - b.height * 0.45, '#fde68a', 2.2);
+        if (end.line) this.guide(end.line, 3.2);
+      }
+    } else {
+      if (Math.random() < dt * 14) this.spawnDebrisBurst(b.x + (Math.random() - 0.5) * def.w, b.y + (Math.random() - 0.5) * def.h, '#fde68a');
+      if (br.t > 0.2) this.camera.trauma = Math.max(this.camera.trauma, 0.35);
+    }
+    if (br.t >= (end ? 3.4 : 2.0)) {
       b.defeated = true;
       this.daisyRescued = true;
       sound.playBossVictory();
-      this.camera.trauma = 0.9;
-      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : 'VICTORY! MEECA IS SAVED!', b.x, b.y - 70, '#ec4899');
-      this.spawnDebrisBurst(b.x, b.y, '#dc2626');
+      this.camera.trauma = end ? 0.3 : 0.9;
+      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : end ? 'VICTORY!' : 'VICTORY! MEECA IS SAVED!', b.x, b.y - 70, '#ec4899');
+      if (!end) this.spawnDebrisBurst(b.x, b.y, '#dc2626');
+      this.bossShove = 0;
+      this.bossGust = 0;
     }
     this.reportBoss();
   }
@@ -2583,17 +2863,17 @@ export class GameEngine {
     const portrait = h > w;
     // in a tall narrow window the arena is wider than the screen: the boss makes its entrance close enough to be seen
     if (portrait && b.ai?.state === 'roar' && b.ai.roarReason === 'enter') b.x = Math.min(b.x, p.x + 540);
-    let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
-    base = Math.max(0.5, Math.min(1.8, base));
-    const baseViewW = w / base;
-    const need = this.bossDef?.frameArena && !portrait ? arena.right - arena.left + 120 : Math.abs(p.x - b.x) + 440 + Math.max(0, b.width - 140) * 0.6;
-    // upright, the hero stays a readable size: the view never opens wider than ~720 units (the boss's head, the part you hit, is on the hero's side)
-    const widest = portrait ? Math.max(baseViewW, 720) : arena.right - arena.left + 200;
-    const want = Math.max(baseViewW, Math.min(need, widest));
+    const baseViewW = w / baseScale({ w, h, levelH, worldViewH: WORLD_VIEW_H, portraitViewW: PORTRAIT_VIEW_W });
+    const def = this.bossDef;
+    const want = bossViewWidth({
+      w, h, levelH, px: p.x, bx: b.x, bw: b.width, bh: b.height, air: b.ai?.air ?? 0, arenaW: arena.right - arena.left,
+      frameArena: def?.frameArena, frameAir: def?.frameAir, floorAt: def?.floorAt, worldViewH: WORLD_VIEW_H, portraitViewW: PORTRAIT_VIEW_W,
+    });
     // the killing blow pushes the camera in
     const target = Math.max(0.4, (baseViewW / want) * (this.slowMoLeft > 0 ? 1.3 : 1));
     const prev = this.bossZoom;
-    this.bossZoom += (target - this.bossZoom) * Math.min(1, dt * 2.2);
+    // (a sky boss climbs fast: the view keeps up with her)
+    this.bossZoom += (target - this.bossZoom) * Math.min(1, dt * (this.bossDef?.frameAir ? 3.6 : 2.2));
     if (Math.abs(this.bossZoom - prev) > 0.001) this.applyZoom();
   }
 
@@ -2948,7 +3228,8 @@ export class GameEngine {
         this.spawnSparkBurst(cp.x, cp.y, '#e2e8f0');
         if (this.clangCd <= 0) {
           this.clangCd = 0.45;
-          this.addFloatingText('CLANG!', b.x, b.y - b.height * 0.7, '#cbd5e1');
+          if (def?.openCue && wr) this.addFloatingText('NOT YET!', cp.x, cp.y - 30, '#cbd5e1');
+          else this.addFloatingText('CLANG!', b.x, b.y - b.height * 0.7, '#cbd5e1');
         }
         return;
       }
@@ -2957,7 +3238,8 @@ export class GameEngine {
       if (!broke) {
         // it shrugged it off (poise held): the blow still counts, but for half
         // (a covered weak point takes nothing: the glow is the only time it hurts)
-        const chip = def?.weak ? 0 : Math.max(1, Math.ceil(m.bossDamage / 2));
+        // (Venom's head is placed by weakAt, not weak: it counts as covered too, so a blow mid-lunge took hits off unseen)
+        const chip = wr ? 0 : Math.max(1, Math.ceil(m.bossDamage / 2));
         b.hp = Math.max(0, b.hp - chip);
         b.hitFlashTimer = 0.1;
         this.hitstopTimer = Math.max(this.hitstopTimer, 0.05);
@@ -2965,7 +3247,9 @@ export class GameEngine {
         this.spawnSparkBurst(cp.x, cp.y, '#fde68a');
         if (this.clangCd <= 0) {
           this.clangCd = 0.45;
-          this.addFloatingText('RATTLED!', b.x, b.y - b.height * 0.7, '#fde68a');
+          // (a boss with announced openings says the head is not open yet, at the spot that was hit)
+          if (def?.openCue && wr) this.addFloatingText('NOT YET!', cp.x, cp.y - 30, '#fde68a');
+          else this.addFloatingText('RATTLED!', b.x, b.y - b.height * 0.7, '#fde68a');
         }
         if (b.hp <= 0) this.startBossDeath(b);
         return;
@@ -2975,11 +3259,13 @@ export class GameEngine {
     let dmg = m.bossDamage;
     const crit = vul === 'stunned';
     if (crit) dmg = Math.ceil(dmg * 1.5);
+    const leftBefore = hitsLeft(b.hp, b.maxHp, this.bossHits);
     b.hp = Math.max(0, b.hp - dmg);
+    this.capStun(b, dmg);
     if (def?.openCap && b.ai?.state === 'rec' && b.ai.move) {
       const br = b.ai;
       br.d.taken = (br.d.taken ?? 0) + dmg;
-      const rec = def.moves[br.move!]?.rec ?? 0;
+      const rec = (def.moves[br.move!]?.rec ?? 0) * (this.bossCtx?.openMul ?? 1);
       // he has had enough: a moment to see the hit land, then he drags his head away
       if (br.d.taken >= def.openCap) br.t = Math.max(br.t, rec - 0.35);
     }
@@ -2993,8 +3279,64 @@ export class GameEngine {
     this.comboResetTimer = 2.0;
     const pts = calculateHitScore('boss', m.kind === 'mega', this.comboCount) * (m.kind === 'kick' ? 2 : 1);
     this.runScore += pts;
-    this.addFloatingText(crit ? `CRITICAL! +${pts}` : `BOSS HIT! +${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
+    if (def?.openCue && wr) {
+      // what came off the bar (half a hit, one, two), over the spot that was hit
+      this.addFloatingText(hitLabel(leftBefore, hitsLeft(b.hp, b.maxHp, this.bossHits), crit, pts), wr.x + wr.w / 2, wr.y - 12, crit ? '#fb923c' : '#facc15');
+    } else this.addFloatingText(crit ? `CRITICAL! +${pts}` : `BOSS HIT! +${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
     if (b.hp <= 0) this.startBossDeath(b);
+  }
+
+  /** a boss with a stun cap (the Sovereign) shakes off a daze once it has taken that much: a moment to see the hit land, then up */
+  private capStun(b: BossEntity, dmg: number) {
+    const br = b.ai;
+    const cap = this.bossDef?.stunCap;
+    if (!cap || !br || br.state !== 'stun') return;
+    br.d.stunTaken = (br.d.stunTaken ?? 0) + dmg;
+    if (br.d.stunTaken >= cap) br.t = Math.max(br.t, br.hold - 0.4);
+  }
+
+  /**
+   * Landing on a stunned boss's back from above (its `stompSpot`: the Sovereign's, after she slams into a rock). A stomp is a hit; floating
+   * down onto it on the leaf is a big one. Returns true when he landed on it.
+   */
+  private stompBoss(vyNow: number, prevFeet: number): boolean {
+    const b = this.boss;
+    const def = this.bossDef;
+    const arena = this.currentStage.arena;
+    const k = def?.stompSpot;
+    if (!b || !def || !k || !arena || b.defeated || b.ai?.state !== 'stun' || vyNow <= 0) return false;
+    const p = this.player;
+    const cx = b.x + b.facing * k.dx;
+    const top = arena.floor - b.ai.air - k.dy - k.h / 2;
+    if (Math.abs(p.x - cx) > k.w / 2 + 14 || prevFeet > top + k.h * 0.6 || p.y < top - 6 || p.y > top + k.h + 20) return false;
+    const leaf = this.glide.on || this.glideOpen > 0.3;
+    const dmg = leaf ? 4 : 2;
+    b.hp = Math.max(0, b.hp - dmg);
+    this.capStun(b, dmg);
+    p.vy = leaf ? -680 : -600;
+    p.grounded = false;
+    p.jumpsLeft = Math.max(p.jumpsLeft, 1);
+    p.isDoubleJumping = false;
+    p.squashX = 1.3;
+    p.squashY = 0.7;
+    p.bounce = { kind: leaf ? 'big' : 'stomp', t: 0 };
+    this.launched = true;
+    this.fallVy = 0;
+    this.stompGrace = 0.5;
+    b.hitFlashTimer = 0.15;
+    this.hitstopTimer = Math.max(this.hitstopTimer, leaf ? 0.12 : 0.08);
+    this.camera.trauma = Math.min(1, this.camera.trauma + (leaf ? 0.5 : 0.35));
+    sound.playHitImpact(true, bossMaterial(this.currentStage.config.worldIndex));
+    this.spawnDebrisBurst(p.x, top, '#fde68a');
+    this.comboCount++;
+    this.comboResetTimer = 2.0;
+    const pts = calculateHitScore('boss', leaf, this.comboCount) * (leaf ? 2 : 1);
+    this.runScore += pts;
+    this.statStomps++;
+    recorder.event('stomp', 'boss');
+    this.addFloatingText(`${leaf ? 'LEAF DIVE!' : 'ON HER BACK!'} +${pts}`, b.x, b.y - b.height * 0.7, leaf ? '#86efac' : '#facc15');
+    if (b.hp <= 0) this.startBossDeath(b);
+    return true;
   }
 
   /** the last hit: the boss does not vanish, it falls apart */
@@ -3158,6 +3500,7 @@ export class GameEngine {
     const vyNow = p.grounded ? this.fallVy : p.vy;
     const prevFeet = p.grounded ? this.fallFeet : p.y - p.vy * dt;
     const diving = this.input.state.down;
+    if (this.stompBoss(vyNow, prevFeet)) return;
     for (const e of this.enemies) {
       if (e.defeated) continue;
       const r = stompTest({ x: p.x, y: p.y, vy: vyNow }, prevFeet, e, diving);
@@ -3314,7 +3657,9 @@ export class GameEngine {
       if (this.ropeCooldown > 0 || p.grounded || p.climbing || p.isVineSwinging || this.isGameOver) return false;
       const handY = p.y - HAND_REACH;
       for (const r of this.ropes) {
-        if (p.x < r.x0 - 8 || p.x > r.x1 + 8) continue;
+        // (from beside a post, over the ledge it stands on, counts: a jump straight up next to the post catches the rope's end, and he
+        // is slid onto it. Play-testers jumped up beside the post and missed, by a body's width)
+        if (p.x < r.x0 - ROPE_GRAB || p.x > r.x1 + ROPE_GRAB) continue;
         const ry = ropeYAt(r, p.x);
         // his hands are on the rope: rising through it, or falling past it with Up held
         if (handY > ry - 12 && handY < ry + 30 && (p.vy < 40 || inp.up || this.upIntent > 0)) {
@@ -3324,6 +3669,7 @@ export class GameEngine {
       }
       if (!rope) return false;
       // grab
+      p.x = Math.max(rope.x0, Math.min(rope.x1, p.x));
       this.ropeId = rope.id;
       p.hanging = true;
       p.climbing = false;
@@ -3394,7 +3740,8 @@ export class GameEngine {
     return true;
   }
 
-  private damagePlayer(amount: number) {
+  /** a hit: one heart (or `amount`), a flinch and a knock back AWAY from `fromX`, where the hit came from (his back, when it is not known) */
+  private damagePlayer(amount: number, fromX?: number) {
     const p = this.player;
     if (this.isGameOver || p.invincibleTimer > 0 || this.stompGrace > 0) return;
 
@@ -3406,11 +3753,14 @@ export class GameEngine {
     p.squashY = 0.7; // hurt flinch
     this.letGoOfRope(0.6);
     p.vy = -PHYS.hurtKnockV;     // small knockup
-    p.vx = -p.facing * 180;
+    // away from what hit him: it used to push him away from where he FACED, so a hit from behind threw him back into the foe, which
+    // hit him again as soon as the 1.2 s of safety ran out (play-testers, 2026-10-25)
+    p.vx = knockDir(p.x, p.facing, fromX) * 180;
     this.airDrive = newAirDrive();
     this.camera.trauma = Math.min(1.0, this.camera.trauma + 0.5);
     sound.playPlayerHurt();
-    this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
+    // (the hit that costs a life says so at the respawn instead: two lots of words on one spot were unreadable)
+    if (p.hp > 0) this.addFloatingText(`-${amount} HP`, p.x, p.y - 45, '#ef4444');
 
     if (p.hp <= 0 && !this.isGameOver) {
       this.loseLife('hurt');
@@ -3446,6 +3796,8 @@ export class GameEngine {
       return;
     }
     this.respawnAtCheckpoint(reason);
+    // Dot's flight: she says a life went (QA, 2026-10-25: losing one came with no line)
+    this.dotRun?.lostLife(this.lives);
   }
 
   /**
@@ -3473,6 +3825,8 @@ export class GameEngine {
     this.flightClear = false;
     this.drowsyShow = 0;
     this.windV = 0;
+    this.bossShove = 0;
+    this.bossGust = 0;
     this.dragSpeed = 1;
     this.dragJump = 1;
     // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
@@ -3503,18 +3857,19 @@ export class GameEngine {
     p.invincibleTimer = 2.0;
     this.respawnFlash = 0.6;
     this.inputGrace = 0.35;
+    this.graceMoves = this.input.moves;
     this.camera.x = Math.max(0, p.x - this.camera.viewportWidth * 0.45);
     this.camera.y = Math.max(0, p.y - this.camera.viewportHeight * 0.55);
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
-    this.addFloatingText(
-      reason === 'hurt' ? 'TRY AGAIN!' : 'OH NO!',
-      p.x,
-      p.y - 60,
-      '#fca5a5'
-    );
-    if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 84, '#fde68a');
+    // above his head, one line over the other with room between (at his head they sat on top of him and of each other), and up long
+    // enough to read; any older words still rising there go first
+    this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
+    this.addFloatingText(reason === 'hurt' ? 'TRY AGAIN!' : 'OH NO!', p.x, p.y - 112, '#fca5a5', 1.4);
+    if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 88, '#fde68a', 1.4);
+    // Dot's flight: she comes back at the last flower she drank at
+    if (this.dotRun) this.dotRun.fl.respawn();
   }
 
   /**
@@ -3678,20 +4033,51 @@ export class GameEngine {
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
     this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + this.camLookX;
     this.camera.targetY = this.camAnchorY - vh * 0.55;
+    // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
+    const look = this.w4?.look(p.x, p.y);
+    if (look) {
+      // (a knot, on a wide view: kept 110 px in from the left edge, clear of Dot's banner across the middle of the screen)
+      const lx = look.leftX !== undefined && vw > vh * 1.3 ? look.leftX - 110 : look.x - vw / 2;
+      this.camera.targetX += (lx - this.camera.targetX) * look.u;
+      this.camera.targetY += (look.y - vh / 2 - this.camera.targetY) * look.u;
+      // (never so far that he leaves the view: his feet stay above the bottom tenth)
+      this.camera.targetY = Math.max(this.camera.targetY, p.y - vh * 0.9);
+    }
+    // near the end of a ledge with a gap ahead, the view shows the far side too (cameraFollow.ts landingAhead)
+    if (!look && !this.chase?.active && !this.currentStage.arena) {
+      const land = this.landingToShow(dt);
+      if (land) {
+        const v = showBoth(this.camera.targetX, this.camera.targetY, p.x, p.y, land, vw, vh);
+        this.camera.targetX = v.x;
+        this.camera.targetY = v.y;
+      }
+    }
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
       const arenaWide = this.bossDef?.frameArena && vw >= this.currentStage.arena.right - this.currentStage.arena.left;
-      let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : (p.x + bs.x) / 2 - vw / 2;
+      // (while the weak point glows, frame it rather than his middle: Venom's dazed head lies far from his coils, off a phone held upright)
+      const def = this.bossDef;
+      const wr = def?.openCue && weakOpen(bs, def) ? weakRect(bs, def, this.currentStage.arena.floor) : null;
+      const fx = wr ? wr.x + wr.w / 2 : bs.x;
+      let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : bossViewX(p.x, fx, vw);
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
     }
 
+    // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
+    // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
+    const band = (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
+    const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : this.camAnchorY;
+    this.camera.targetY = Math.min(this.camera.targetY, underHud(refY, band));
+
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * 6.5);
     this.camera.x += (this.camera.targetX - this.camera.x) * smoothFactor;
     this.camera.y += (this.camera.targetY - this.camera.y) * smoothFactor;
+    // (standing, never even for a moment while the view eases)
+    if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
 
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));
@@ -3700,38 +4086,172 @@ export class GameEngine {
     this.camera.y = Math.max(this.currentStage.arena ? Math.min(0, maxY) : 0, Math.min(maxY, this.camera.y));
   }
 
+  /** the ledge he last stood on, the landing the view is showing, and how long it is kept once he has left the ground (s) */
+  /** a stage down a cliff (w4.descent): the lowest ledge he has stood on, for its progress bar */
+  private bestDropY = -Infinity;
+  /** 4-7: the height the mist under the ledges starts at (eased after the ledge he stands on) */
+  private abyssLip = NaN;
+  private camLedge: Platform | null = null;
+  private camLand: Box | null = null;
+  private camLandKeep = 0;
+  /**
+   * The landing the view should show as well as him. A stage that runs along a set path (4-7 down the cliff: w4.route) shows the next
+   * ledge on it wherever it is, above, across or straight below; any other stage, the nearest ledge or vine across the gap when he
+   * stands near the end of his ledge. In the air it keeps the one he set off for a little while, so the jump ends where he saw it.
+   */
+  private landingToShow(dt: number): Box | null {
+    const p = this.player;
+    if (p.grounded && this.standingOnId >= 0) {
+      if (this.camLedge?.id !== this.standingOnId) this.camLedge = this.platforms.find((q) => q.id === this.standingOnId) ?? null;
+    }
+    // swinging on a vine: where the swing will throw him, the way he faces (the way he lets go, physics.ts TIMED): the next vine or
+    // ledge past this one (QA, 1-8 upright: the landing branch was off screen, and the bot let go blind)
+    const sv = p.isVineSwinging ? this.nearSwingVine : null;
+    if (sv) {
+      const hang = { x: sv.x, width: 0, y: sv.topY + (p.swingLength ?? 100) + 30 };
+      this.camLand = landingAhead(sv.x, p.facing, hang, this.platforms, this.vines.filter((v) => v !== sv));
+      this.camLandKeep = 1.2;
+      return this.camLand;
+    }
+    if (p.climbing || p.hanging) {
+      this.camLand = null;
+      return null;
+    }
+    const ledge = this.camLedge;
+    const route = this.proto?.w4?.route;
+    if (route && ledge) {
+      const i = route.indexOf(ledge.id);
+      const next = i >= 0 && i + 1 < route.length ? this.platforms.find((q) => q.id === route[i + 1]) : undefined;
+      if (!next) return null;
+      // a crossing too wide for one view (upright the view is only 620 wide): warm air in the gap is the first landing, shown from the
+      // edge; once he is out over it, the ledge past it (Matt, 2026-10-26: every stage works upright too)
+      const dirN = Math.sign(next.x + next.width / 2 - (ledge.x + ledge.width / 2)) || p.facing;
+      const gapA = dirN > 0 ? ledge.x + ledge.width : next.x + next.width, gapB = dirN > 0 ? next.x : ledge.x;
+      const across = (this.proto?.w4?.updrafts ?? []).find((u) => u.x0 >= gapA - 10 && u.x1 <= gapB + 10 && u.top < ledge.y + 40 && u.bottom > ledge.y);
+      if (across && gapB - gapA > this.camera.viewportWidth * 0.75 && (dirN > 0 ? p.x < across.x0 : p.x > across.x1)) {
+        return { x0: across.x0, x1: across.x1, y0: Math.min(across.top, ledge.y - 100), y1: ledge.y + 40 };
+      }
+      // (the near end of it, or the part right under him when it runs under his ledge: a turn)
+      const x = Math.max(next.x + 40, Math.min(next.x + next.width - 40, p.x));
+      const far = Math.hypot(x - p.x, next.y - p.y);
+      if (far > this.camera.viewportWidth * 1.2) return null;
+      return landingBox(x, next.y, Math.sign(next.x + next.width / 2 - p.x) || p.facing);
+    }
+    if (p.grounded && ledge && Math.abs(p.y - ledge.y) < 4) {
+      this.camLand = landingAhead(p.x, p.facing, ledge, this.platforms, this.vines);
+      this.camLandKeep = 1.2;
+    } else if (!p.grounded) {
+      this.camLandKeep -= dt;
+      if (this.camLandKeep <= 0) this.camLand = null;
+    }
+    return this.camLand;
+  }
+
+  /** a press to let go a beat before the swing's sweet spot: keep it and let go when he gets there (true = held, he swings on) */
+  private holdLeapForSweet(facing: -1 | 1): boolean {
+    if (this.swingLeapWait !== 0) {
+      // already waited once: this is that press, let go now
+      if (this.swingLeapWait < 0) this.swingLeapWait = 0;
+      return false;
+    }
+    const p = this.player;
+    const dir = (this.input.state.right ? 1 : this.input.state.left ? -1 : facing) as -1 | 1;
+    const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100 };
+    if (releaseCall(sw, dir, Infinity) !== 'early') return false;
+    this.swingLeapWait = RELEASE.early;
+    this.input.state.jumpPressed = false;
+    return true;
+  }
+
   /** look for the first of something new ahead of the hero a few times a second; when one is there, stop and let the app explain it */
   private lessonTick() {
-    if (this.lessonOpen || this.isGameOver || this.gameTime < 2.5 || this.gameTime < this.lessonQuietUntil) return;
+    if (this.lessonOpen || this.isGameOver) return;
     if ((this.lessonFrame = (this.lessonFrame + 1) % 6) !== 0) return;
+    // a find picked up a moment ago: its reader opens as soon as stopping is safe (before any lesson), and a lesson leaves it a breather
+    if (this.findsWaiting.length) {
+      if (!this.safeToStop()) return;
+      const fid = this.findsWaiting.shift()!;
+      this.lessonQuietUntil = Math.max(this.lessonQuietUntil, this.gameTime + 3);
+      this.callbacks.onFind?.(fid);
+      return;
+    }
+    if (this.gameTime < 2.5 || this.gameTime < this.lessonQuietUntil) return;
     const st = this.currentStage;
-    // not in a boss arena or the secret stage, and not mid-fight, mid-hurt or in the middle of something
+    // not in a boss arena or the secret stage, and not in the middle of an entrance
     if (st.arena || st.config.secret || this.boss || this.entrance) return;
-    const p = this.player;
-    if (p.invincibleTimer > 0 || p.isVineSwinging || p.hanging) return;
     if (!lessonsOn()) return;
     const seen = (this.lessonSeen ??= lessonsSeen());
+    // a card that came due while he was busy keeps a while (after that, the next one of its kind brings it back)
+    if (this.lessonWaiting && (seen.has(this.lessonWaiting.id) || this.gameTime - this.lessonWaiting.at > 8)) this.lessonWaiting = null;
+    const p = this.player;
     const cam = this.camera;
-    const id = pickLesson(
-      {
-        px: p.x,
-        py: p.y,
-        view: { x0: cam.x, x1: cam.x + cam.viewportWidth, y0: cam.y, y1: cam.y + cam.viewportHeight },
-        enemies: this.enemies,
-        collectibles: this.collectibles,
-        vines: this.vines,
-        platforms: this.platforms,
-        checkpoints: st.checkpoints ?? [],
-        rivers: st.rivers ?? [],
-      },
-      seen,
-    );
+    const id =
+      this.lessonWaiting?.id ??
+      pickLesson(
+        {
+          px: p.x,
+          py: p.y,
+          view: { x0: cam.x, x1: cam.x + cam.viewportWidth, y0: cam.y, y1: cam.y + cam.viewportHeight },
+          enemies: this.enemies,
+          collectibles: this.collectibles,
+          vines: this.vines,
+          platforms: this.platforms,
+          checkpoints: st.checkpoints ?? [],
+          rivers: st.rivers ?? [],
+          ropes: this.skills.has('shimmy') ? this.ropes : [],
+        },
+        seen,
+      );
     if (!id) return;
+    // only when stopping cannot hurt him: standing or holding on, not hurt, no foe at hand, nothing falling on him (lessons.ts cardSafe)
+    if (!this.safeToStop()) {
+      this.lessonWaiting ??= { id, at: this.gameTime };
+      return;
+    }
+    this.lessonWaiting = null;
     seen.add(id);
     markLessonSeen(id);
     this.lessonOpen = true;
     this.pause();
     this.callbacks.onLesson?.(id);
+  }
+
+  /** is it safe to stop the stage for a card right now? (lessons.ts cardSafe) */
+  private safeToStop(): boolean {
+    const p = this.player;
+    let foeDx = Infinity;
+    let foeDy = Infinity;
+    for (const e of this.enemies) {
+      if (e.defeated) continue;
+      const dx = e.x - p.x;
+      const dy = e.y - p.y;
+      if (Math.abs(dy) < 400 && Math.abs(dx) < Math.abs(foeDx)) {
+        foeDx = dx;
+        foeDy = dy;
+      }
+    }
+    let hazard = Infinity;
+    for (const h of this.hazards) hazard = Math.min(hazard, Math.hypot(h.x - p.x, h.y - p.y));
+    // World 4's falling rocks: one warning or falling just above him
+    for (const r of this.proto?.w4?.rocks ?? []) {
+      if (Math.abs(r.x - p.x) > 140) continue;
+      const ph = rockAt(r, this.gameTime).phase;
+      if (ph === 'warn' || ph === 'fall') hazard = 0;
+    }
+    // standing on a branch that has started to crumble
+    if (p.grounded) {
+      for (const pl of this.platforms) {
+        if (pl.type === 'fragile' && pl.fragileTimer !== undefined && !pl.broken && p.x >= pl.x - 4 && p.x <= pl.x + pl.width + 4 && Math.abs(p.y - pl.y) < 6) hazard = 0;
+      }
+    }
+    return cardSafe({
+      grounded: p.grounded && Math.abs(p.vy) < 1,
+      holding: (p.climbing || !!p.hanging) && !p.isVineSwinging,
+      hurt: p.invincibleTimer > 0,
+      foeDx,
+      foeDy,
+      hazard,
+    });
   }
 
   /** the app has closed a lesson card: carry on, and leave a few seconds before the next one */
@@ -3778,6 +4298,11 @@ export class GameEngine {
 
     // Clean viewport clearing to prevent any screen flicker or ghosting
     ctx.clearRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
+    if (this.dotRun) {
+      this.renderDot(ctx, dpr);
+      ctx.restore();
+      return;
+    }
 
     // Apply Screen Shake (Trauma squared for punchy feel)
     const shakeMag = this.camera.trauma * this.camera.trauma * 16;
@@ -3791,6 +4316,12 @@ export class GameEngine {
     // up in the trees the backdrop is the canopy: all of 1-8's long branch, and 1-4's climb fading over to it as he goes up
     setCanopy(this.proto?.chase ? 1 : this.proto && this.currentStage.config.objectiveType === 'ascent' ? (this.currentStage.spawnY - this.player.y - 1200) / 2600 : 0);
     if (!ownScene) renderScenery(ctx, world.id, this.camera.x, this.camera.y, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
+    // 4-7: under the ledges is a long drop into the mist, never the painted ground (w4Play drawAbyss)
+    if (this.proto?.w4?.deepFall !== undefined) {
+      const lipY = this.camLedge?.y ?? this.player.y;
+      this.abyssLip = Number.isFinite(this.abyssLip) && Math.abs(this.abyssLip - lipY) < 2000 ? this.abyssLip + (lipY - this.abyssLip) * 0.12 : lipY;
+      drawAbyss(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.abyssLip - this.camera.y, this.gameTime);
+    }
     const lairView = { x: this.camera.x, y: this.camera.y, vw: this.camera.viewportWidth, vh: this.camera.viewportHeight };
     if (lair && this.currentStage.arena) drawLairBack(ctx, lair, lairView, this.currentStage.arena, this.gameTime, this.boss?.x ?? this.currentStage.arena.right, this.boss?.phase ?? 1);
 
@@ -3822,6 +4353,8 @@ export class GameEngine {
       ctx.restore();
     }
 
+    // World 4's pieces that stand back behind the ground (4-3's pool basins)
+    this.w4?.drawUnder(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
     else renderWorldObjects(
@@ -3874,7 +4407,14 @@ export class GameEngine {
       const l = this.vineLash.get(i);
       drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : this.player.x >= v.x ? 1 : -1, this.gameTime);
     }
-    this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.currentStage.zones ?? [], this.platforms);
+    // 4-7: in the air, a shadow on the ledge he is coming down to
+    if (this.proto?.w4?.deepFall !== undefined && !this.player.grounded && !this.player.climbing) {
+      const p = this.player;
+      let under = Infinity;
+      for (const q of this.platforms) if (!q.broken && q.y >= p.y && q.y < under && p.x > q.x && p.x < q.x + q.width && q.y - p.y < this.proto.w4.deepFall) under = q.y;
+      if (under < Infinity) drawLandingShadow(ctx, p.x, p.y, under);
+    }
+    this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
     for (const z of this.currentStage.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights) continue;
@@ -3913,6 +4453,8 @@ export class GameEngine {
       }
       // World 2's painted reed cages, and the little one hopping home once it is free
       if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime)) return;
+      // 4-8's eaglets in their nests, the netting over them, and their parents (w4Nests.ts)
+      if (item.type === 'cage' && item.critter === 'eaglet') return drawNest(ctx, item, this.gameTime);
       drawCollectible(ctx, item, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.config.miniIndex);
     });
 
@@ -3996,12 +4538,22 @@ export class GameEngine {
     });
 
     // Render Boss
-    if (this.boss && !this.boss.defeated && this.bossDef) {
-      drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560);
+    if (this.skyPillars && this.currentStage.arena) {
+      const a = this.currentStage.arena;
+      const ang = chimeAngle(this.boss && !this.boss.defeated ? this.boss : null, this.gameTime);
+      for (const dx of CHIME_POSTS) drawChimePost(ctx, a.left + dx, a.floor, ang);
+    }
+    if (this.boss && (!this.boss.defeated || this.bossDef?.ending) && this.bossDef) {
+      const floor = this.currentStage.arena?.floor ?? 560;
+      drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, floor);
+      if (this.skyPillars && !this.boss.defeated && this.bossDef.stompSpot) drawBackCue(ctx, this.boss, this.bossDef.stompSpot, floor, this.gameTime);
+      if (this.skyPillars && !this.boss.defeated) drawScreechCue(ctx, this.boss, floor, this.gameTime, (this.bossDef.moves.screech?.tell ?? 1) * (this.bossCtx?.tellMul ?? 1));
     }
 
     // Leaf Glide: he floats on a small leaf under his feet (it spreads when the glide starts and is gone after he lands)
-    if (this.glideOpen > 0.02) {
+    // (never once he stands or holds on: the frame he landed used to still draw it open under his feet)
+    const gl = this.player;
+    if (this.glideOpen > 0.02 && !gl.grounded && !gl.climbing && !gl.isVineSwinging && !gl.hanging) {
       const gp = this.player;
       const lean = Math.max(-1, Math.min(1, gp.vx / 285));
       const fade = this.glide.left < 0.3 ? 0.4 + this.glide.left * 2 : 1;
@@ -4088,10 +4640,18 @@ export class GameEngine {
     // Render Floating Combat Texts
     ctx.textAlign = 'center';
     ctx.font = 'bold 15px Fredoka, sans-serif';
-    this.floatingTexts.forEach((ft) => {
-      ctx.fillStyle = ft.color;
-      ctx.fillText(ft.text, ft.x, ft.y);
-    });
+    {
+      // kept inside the view: upright, the screen is narrow and a pop-up beside Pokey ran off the edge ("00 HIBISCUS!", "OMBO! +200")
+      const cam = this.camera;
+      this.floatingTexts.forEach((ft) => {
+        const half = ctx.measureText(ft.text).width / 2 + 6;
+        const x0 = cam.x + half, x1 = cam.x + cam.viewportWidth - half;
+        const x = x0 > x1 ? cam.x + cam.viewportWidth / 2 : Math.max(x0, Math.min(x1, ft.x));
+        const y = Math.max(cam.y + 22, Math.min(cam.y + cam.viewportHeight - 8, ft.y));
+        ctx.fillStyle = ft.color;
+        ctx.fillText(ft.text, x, y);
+      });
+    }
     // (when the app has Dot say the hints, it draws them: this canvas banner is only the fallback)
     if (this.stageHint && !this.callbacks.onGuide) {
       const h = this.stageHint;
@@ -4120,6 +4680,13 @@ export class GameEngine {
     // 3. Render Foreground Foliage (Framing screen edges)
     setWeatherAvoid(this.player.x - this.camera.x, this.player.y - 28 - this.camera.y);
     if (lair) drawLairFront(ctx, lair, lairView, this.gameTime);
+    // 3-10's last phase: the cave goes dark, so the Prowler (faintly, and lit as he winds up) and his eyes are drawn back over it
+    if (lair === 'prowler' && this.boss && this.bossDef && !this.boss.defeated && prowlerGlow() < 0.98) {
+      ctx.save();
+      ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
+      drawBossOverDark(ctx, this.boss, this.bossDef, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560, this.gameTime, (1 - prowlerGlow()) / (1 - 0.16));
+      ctx.restore();
+    }
     else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     if (rig && this.quality === 0 && polishTier() === 0) drawBloom(ctx, rig, this.camera.viewportWidth, this.camera.viewportHeight);
     drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.drowsyShow, this.gameTime);
@@ -4211,6 +4778,115 @@ export class GameEngine {
     }
 
     ctx.restore(); // end DPR transform
+  }
+
+  // --- Dot's netting flight (dotFlightRun.ts does the work; these hand it the engine's input, hearts, camera and canvas) ---
+  private startDot(st: import('./dotFlightStage.ts').DotStage) {
+    this.dotRun = new DotRun(st, {
+      stageId: this.currentStage.config.id,
+      guide: (text, seconds) => this.guide(text, seconds),
+      float: (text, x, y, color) => this.addFloatingText(text, x, y, color, 1.2),
+      loseHeart: () => {
+        const p = this.player;
+        if (this.isGameOver) return;
+        this.statHeartsLost++;
+        p.hp = Math.max(0, p.hp - 1);
+        recorder.event('hurt', p.hp);
+        if (p.hp <= 0) this.loseLife('hurt');
+      },
+      score: (n) => (this.runScore += n),
+      shake: (n) => (this.camera.trauma = Math.min(1, this.camera.trauma + n)),
+      win: () => {
+        if (this.isGameOver) return;
+        this.isGameOver = true;
+        const p = this.player;
+        const stars = calculateLevelStars(this.gameTime, 0, p.hp / p.maxHp, 1, this.statLivesLost);
+        this.callbacks.onStageStats?.(this.buildStats(true, stars));
+        this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
+      },
+    });
+  }
+
+  private stepDot(dt: number) {
+    const run = this.dotRun!;
+    const p = this.player;
+    // the touch recogniser reads these: a short slide up flaps while she has a flap in hand; nothing is ever a kick or a climb
+    this.input.airJumpReady = run.fl.canFlap();
+    this.input.kickNear = false;
+    this.input.onVine = false;
+    this.input.megaReady = true;
+    if (!this.isGameOver || run.fl.through) run.step(dt, this.input.state);
+    this.checkpoint = { ...run.fl.checkpoint };
+    // her flowers are the stage's checkpoints: the ones up to hers are reached (Continue after a game over comes back to hers)
+    for (const cp of this.currentStage.checkpoints ?? []) if (!cp.reached && cp.x <= run.fl.checkpoint.x + 1) cp.reached = true;
+    p.x = run.fl.x;
+    p.y = run.fl.y + 22;
+    p.vx = run.fl.vx;
+    p.vy = run.fl.vy;
+    p.facing = run.fl.face;
+    // the moment at the gap: the view closes in a touch
+    const z = 1 + 0.12 * run.moment();
+    if (Math.abs(z - this.bossZoom) > 0.002) {
+      this.bossZoom = z;
+      this.applyZoom();
+    }
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.life -= dt;
+      if (ft.life <= 0) this.floatingTexts.splice(i, 1);
+      else ft.y -= 35 * dt;
+    }
+    if (this.stageHint && (this.stageHint.life -= dt) <= 0) this.stageHint = null;
+    this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
+    run.camera(this.camera, dt);
+    this.callbacks.onProgressUpdate(run.fl.through ? 1 : 0, 1, this.runScore, p.hp, run.ratio(), null, 0);
+    this.markWayDodge(dt);
+  }
+
+  private hudLeftAt = -1e9;
+  private hudLeftY = -1;
+  /** where the HUD's hearts and lives end (css px from the top), looked up twice a second; -1 when there is no HUD (tests) */
+  private hudLeftBottom(): number {
+    const now = performance.now();
+    if (now - this.hudLeftAt < 500) return this.hudLeftY;
+    this.hudLeftAt = now;
+    const el = typeof document !== 'undefined' ? document.querySelector?.('.game-hud .hud-left') : null;
+    const r = el?.getBoundingClientRect();
+    const top = this.canvas.getBoundingClientRect?.().top ?? 0;
+    this.hudLeftY = r && r.height > 0 ? r.bottom - top : -1;
+    return this.hudLeftY;
+  }
+
+  private renderDot(ctx: CanvasRenderingContext2D, dpr: number) {
+    const shakeMag = this.camera.trauma * this.camera.trauma * 14;
+    const shake = { x: (Math.random() - 0.5) * shakeMag, y: (Math.random() - 0.5) * shakeMag };
+    // her panel: held sideways it sits under the hearts and lives (GameHUD.tsx), left; upright, the top is full (the stage card, Dot's banner), so it sits bottom left
+    const portrait = this.viewCssH > this.viewCssW;
+    // a short landscape screen has the compact HUD (index.css): her panel shrinks too and sits right under the hearts and lives
+    const compact = !portrait && this.viewCssH <= 430;
+    const scale = compact ? (this.viewCssH <= 340 ? 0.72 : 0.84) : 1;
+    const under = this.hudLeftBottom();
+    const hudAt = { x: 12, y: portrait ? this.viewCssH - 66 : under > 0 ? under + 8 : this.viewCssH < 430 ? 112 : 124, scale };
+    this.dotRun!.draw(ctx, this.camera, dpr, this.zoom, this.viewCssW, this.viewCssH, shake, hudAt);
+    // the floating words (a scratch, the silk), in the world
+    ctx.save();
+    const snap = dpr * this.zoom;
+    ctx.translate(-snapCam(this.camera.x, snap), -snapCam(this.camera.y, snap));
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 15px Fredoka, sans-serif';
+    for (const ft of this.floatingTexts) {
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(30, 20, 30, 0.6)';
+      ctx.strokeText(ft.text, ft.x, ft.y);
+      ctx.fillStyle = ft.color;
+      ctx.fillText(ft.text, ft.x, ft.y);
+    }
+    ctx.restore();
+    if (this.respawnFlash > 0) {
+      this.respawnFlash = Math.max(0, this.respawnFlash - 1 / 30);
+      ctx.fillStyle = `rgba(255, 255, 255, ${(this.respawnFlash / 0.6) * 0.7})`;
+      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
+    }
   }
 
   // --- Juice Helpers ---
@@ -4510,33 +5186,37 @@ export class GameEngine {
     const id = this.currentStage.config.id;
     // World 3's watcher is the eyes in the dark: a low growl, and ferns to hide in
     const grotto = this.currentStage.config.worldIndex === 3;
+    // World 4's watcher is the Sky Sovereign (4-5), and the water of a pouring fall hides him from her as well as a bush does
+    const cliffs = this.currentStage.config.worldIndex === 4;
+    const water = !!this.w4?.behindFall(p.x, p.y);
     const cry = (phase: 0 | 2) => (grotto ? sound.playPredator('jaguar', phase) : sound.playEagleScreech());
     const hide = grotto ? 'fern' : 'bush';
     if (ev.warned) {
       cry(0);
       // every pass is called out, not only the first: a word over his head and a buzz on a phone (many play with the sound off)
-      this.addFloatingText(`HIDE! ${hide === 'fern' ? 'INTO A FERN' : 'INTO A BUSH'}`, p.x, p.y - 96, '#fbbf24');
+      this.addFloatingText(cliffs ? 'HIDE! WATER OR BUSH' : `HIDE! ${hide === 'fern' ? 'INTO A FERN' : 'INTO A BUSH'}`, p.x, p.y - 96, '#fbbf24');
       this.input.triggerHaptic(120);
       if (!tipHeard(id, 'watch:hide')) {
         markTipHeard(id, 'watch:hide');
-        this.guide(lessonInputMode() === 'screen' ? `Here it comes! Slide down inside a ${hide} to hide` : `Here it comes! Hold down inside a ${hide} to hide`, 3);
+        const duck = lessonInputMode() === 'screen' ? `Slide down inside a ${hide}` : `Hold down inside a ${hide}`;
+        this.guide(cliffs ? `Here she comes! Stand behind a waterfall, or ${duck.toLowerCase()}` : `Here it comes! ${duck} to hide`, 3);
       }
     }
     const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
     if (this.watch.phase === 'pass') {
       const sx = shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
-      if (sees(this.watch, sx, bushes, me)) {
+      if (!water && sees(this.watch, sx, bushes, me)) {
         this.watch.seen = true;
         this.watchFrom = { x: sx, y: this.camera.y + 125 };
         cry(2);
         if (!tipHeard(id, 'watch:seen')) {
           markTipHeard(id, 'watch:seen');
-          this.guide(grotto ? 'It saw you! Get into a fern before it reaches you' : 'It saw you! Get into a bush before its shadow reaches you', 3.2);
+          this.guide(grotto ? 'It saw you! Get into a fern before it reaches you' : cliffs ? 'She saw you! Get behind the water or into a bush, quick' : 'It saw you! Get into a bush before its shadow reaches you', 3.2);
         }
       }
-      // the strike: unless he made it into a bush in time
+      // the strike: unless he made it into a bush (or behind the water) in time
       if (this.watch.seen && before < WATCH.dive && this.watch.diveT >= WATCH.dive) {
-        if (hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
+        if (water || hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
         else this.damagePlayer(1);
       }
     }
@@ -4631,8 +5311,26 @@ export class GameEngine {
     ctx.translate(e.x, e.y);
     ctx.scale(scale, scale);
     ctx.translate(-e.x, -e.y);
-    if (!drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
+    if (!(this.currentStage.config.worldIndex === 4 && this.drawSovereignWatch(ctx, e)) && !drawEagleSprite(ctx, e, this.gameTime)) drawHarpyEagle(ctx, e, this.gameTime);
     ctx.restore();
+  }
+
+  /**
+   * World 4's watcher is the Sky Sovereign herself, in her painted boss frames (sovereignSprite.ts): beating her wings while she
+   * circles far off, screaming with her wings up at the edge of the view, gliding wide over the cliffs, plunging when she has seen him.
+   * False until her atlas has loaded (the eagle stands in).
+   */
+  private drawSovereignWatch(ctx: CanvasRenderingContext2D, e: Enemy): boolean {
+    const flap = ['down', 'glide', 'up', 'glide'][Math.floor(this.gameTime * 6.5) % 4];
+    const name = e.swoopPhase === 'telegraph' ? 'alert' : e.swoopPhase === 'swoop' ? (e.isAttacking ? 'talon' : 'diveplunge') : this.watch.phase === 'pass' ? 'glide' : flap;
+    // (she flies a little lower than the eagle, below the stage card in landscape, and comes down to him when she dives)
+    const low = 50 * (e.swoopPhase === 'swoop' ? 1 - Math.min(1, this.watch.diveT / WATCH.dive) : 1);
+    ctx.save();
+    ctx.translate(e.x, e.y + 36 + low);
+    ctx.scale(e.facing < 0 ? -1 : 1, 1);
+    const ok = sovereignSprite.still(ctx, name);
+    ctx.restore();
+    return ok;
   }
 
   /** the eagle's shadow on the ground under x (the surface nearest below the middle of the view) */
@@ -4788,8 +5486,18 @@ export class GameEngine {
           this.input.triggerHaptic(120);
         }
       },
+      fellOff: () => {
+        if (this.isGameOver) return;
+        sound.playPlayerHurt();
+        this.loseLife('pit');
+      },
+      // 4-9 The Aerie: a guard blown off its ledge while he is close counts toward the stage's goal
+      defeat: () => {
+        p.enemiesDefeated++;
+      },
       sfx: (kind) => {
-        if (kind === 'rock') sound.playHitImpact();
+        if (kind === 'cry') sound.playEagleScreech();
+        else if (kind === 'rock') sound.playHitImpact();
         else if (kind === 'chime') sound.playVineGrab();
         else if (kind === 'monkey') sound.playPredator('tayra', 0);
         else if (kind === 'frond') sound.playShrineUnlocked();
@@ -4798,6 +5506,10 @@ export class GameEngine {
       },
     });
     this.dragSpeed *= out.speed;
+    // thrown back by pouring water: his steering comes back a moment later, so the knock reads as a knock
+    if (out.knocked) this.inputGrace = Math.max(this.inputGrace, FALLS.stagger);
+    // a freed eaglet's parent beating its wings over the nest (4-8): a tailwind on top of the gust lanes
+    this.windV += out.wind;
   }
 
   /** how awake a sleeping light is: 0 asleep, rising to 1 over GLOW_REACH.fade once it wakes */
@@ -4814,6 +5526,8 @@ export class GameEngine {
       const b = bushes[i];
       if (!this.onScreen(b.x + b.w / 2, b.y, 400)) continue;
       const inside = p.x > b.x && p.x < b.x + b.w && (b.hanging ? !!p.hanging && p.y > b.y : Math.abs(p.y - b.y) < 12);
+      // (World 4 has its own painted cover: w4Art.ts)
+      if (this.w4 && !b.hanging && drawW4Bush(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       if (b.kind === 'grotto' ? drawW3Fern(ctx, b, inside, this.bushRustle.get(i) ?? 0, this.gameTime) : drawBushArt(ctx, { ...b, kind: b.kind }, inside, this.bushRustle.get(i) ?? 0, this.gameTime)) continue;
       // before the sheet loads: a plain green mound
       const h = b.kind === 'grotto' ? w3FernHeight(b.w) : bushHeight({ ...b, kind: b.kind });
@@ -4864,6 +5578,21 @@ export class GameEngine {
       maxLife: life,
       scale: 1,
     });
+  }
+
+  /** which way off a trunk's top has more ledge to land on (within 200 px), so a vault with only up held lands on it; a tie keeps `facing` */
+  private vaultSide(v: Vine, facing: 1 | -1): 1 | -1 {
+    const reach = (dir: 1 | -1) => {
+      let d = 0;
+      while (d < 200) {
+        const x = v.x + dir * (d + 10);
+        if (!this.platforms.some((q) => !q.broken && q.type !== 'bouncy' && x >= q.x && x <= q.x + q.width && q.y >= v.topY - 16 && q.y <= v.topY + 30)) break;
+        d += 10;
+      }
+      return d;
+    };
+    const l = reach(-1), r = reach(1);
+    return l === r ? facing : r > l ? 1 : -1;
   }
 
   private spawnSparkBurst(x: number, y: number, color: string) {

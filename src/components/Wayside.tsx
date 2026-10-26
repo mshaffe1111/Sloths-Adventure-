@@ -3,7 +3,7 @@ import type { LevelConfig } from '../game/types.ts';
 import { DotFace } from './DotFace.tsx';
 import { SpeakerMark } from './SpeakerMark.tsx';
 import { restFace } from '../game/dotSprite.ts';
-import { GAP_MS, HURT_WINDOW_MS, dotPresent, dueLine, hidesFern, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayFlag, type WayLine } from '../game/wayside.ts';
+import { GAP_MS, HURT_WINDOW_MS, dotPresent, dueLine, guideShowMs, hidesFern, markShown, showMs, wasShown, waysideApplies, waysideEnabled, type WayFlag, type WayLine } from '../game/wayside.ts';
 import { findForStage, loadFinds } from '../game/finds.ts';
 
 interface Props {
@@ -36,6 +36,8 @@ const WayDot: React.FC<{ text: string; hurt: boolean }> = ({ text, hurt }) => {
 const TICK_MS = 200;
 /** a line counts as heard (and is not repeated on a replay) once it has been up this long */
 const HEARD_MS = 1500;
+/** a line cut short by Dot's guiding comes back, but a line comes up at most this often in one run of a stage */
+const MAX_TRIES = 2;
 
 interface Run {
   played: number;
@@ -46,6 +48,8 @@ interface Run {
   H: boolean;
   F: boolean;
   cur: null | { flag: WayFlag; left: number; seen: number; marked: boolean };
+  /** how many times each line has come up in this run: one Dot cut short comes back once, never again after that */
+  tries: Record<WayFlag, number>;
   n: number;
   /** the guiding line being said, and the last one taken from the engine */
   guide: null | { text: string; left: number; ms: number; n: number };
@@ -53,7 +57,6 @@ interface Run {
 }
 
 /** a guiding line stays up at least as long as a story line of its length, and no longer than this */
-const GUIDE_MAX_MS = 6500;
 
 /**
  * The story while you play: one small line at a time from Dot, Pokey or the petal, a few per stage (see game/wayside.ts).
@@ -73,6 +76,7 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) =>
     H: wasShown(world, mini, 'H'),
     F: wasShown(world, mini, 'F'),
     cur: null,
+    tries: { L: 0, H: 0, F: 0 },
     n: 0,
     guide: null,
     // a line from before this run of the stage is not said again
@@ -89,7 +93,7 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) =>
       run.cur = null;
       setLine(null);
     }
-    const ms = Math.min(GUIDE_MAX_MS, Math.max(guide.ms, showMs(guide.text)));
+    const ms = guideShowMs(guide.text, guide.ms);
     run.guide = { text: guide.text, left: ms, ms, n: guide.n };
     setGuideShown({ text: guide.text, ms, n: guide.n });
   }, [guide, run]);
@@ -156,6 +160,12 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) =>
         shownF: run.F,
       });
       if (!due) return;
+      // (said twice in this run already, cut short both times: it waits for the next run)
+      if (run.tries[due.flag] >= MAX_TRIES) {
+        run[due.flag] = true;
+        return;
+      }
+      run.tries[due.flag] += 1;
       if (due.flag === 'H') run.hurtAt = -1;
       run.cur = { flag: due.flag, left: showMs(due.line.text), seen: 0, marked: false };
       run.n += 1;

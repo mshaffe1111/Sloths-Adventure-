@@ -13,7 +13,7 @@ import { ctestEnabled } from './playRecorder.ts';
 export type LessonId =
   | 'foe' | 'nostomp' | 'eagle' | 'tough'
   | 'gap' | 'climb' | 'swing' | 'bounce' | 'crumble' | 'moving' | 'water'
-  | 'fruit' | 'heart' | 'cage' | 'idol' | 'power' | 'checkpoint' | 'shrine';
+  | 'fruit' | 'heart' | 'cage' | 'idol' | 'power' | 'checkpoint' | 'shrine' | 'rope';
 
 export type InputMode = 'screen' | 'pad' | 'keys';
 
@@ -143,6 +143,21 @@ export const LESSONS: Record<LessonId, Lesson> = {
       keys: [{ how: 'Jump into the vine', what: 'Grab on' }, { how: 'A D or ← →', what: 'Swing harder' }, { how: 'Space', what: 'Let go and leap' }],
     },
   },
+  rope: {
+    id: 'rope',
+    title: 'A rope to hang from!',
+    face: 'face_calm',
+    intro: 'Stand by the post at its end and jump straight up: Pokey grabs the rope and hangs on by himself. Creep along it to the far ledge.',
+    lines: {
+      screen: [
+        { glyph: 'up', how: 'Flick up beside the post', what: 'Grab on', sub: 'then let go of the glass: he keeps hanging' },
+        { glyph: 'run', how: 'Slide left or right', what: 'Creep along', sub: 'at the far end he steps off onto the ledge' },
+        { glyph: 'down', how: 'Slide down', what: 'Let go', sub: 'only over something to land on' },
+      ],
+      pad: [{ how: 'Jump beside the post', what: 'Grab on' }, { how: 'Pad ← →', what: 'Creep along' }, { how: 'Pad down', what: 'Let go' }],
+      keys: [{ how: 'Jump beside the post', what: 'Grab on' }, { how: 'A D or ← →', what: 'Creep along' }, { how: 'S or ↓', what: 'Let go' }],
+    },
+  },
   bounce: {
     id: 'bounce',
     title: 'A bouncy mushroom!',
@@ -182,8 +197,8 @@ export const LESSONS: Record<LessonId, Lesson> = {
     id: 'heart',
     title: 'A heart!',
     face: 'face_happy',
-    intro: 'Touch it to heal one heart. Hearts are how much a hit can cost you before you lose a life.',
-    lines: same([{ how: 'Just touch it', what: 'Heals a heart' }]),
+    intro: 'When you are hurt, touch it to heal one heart. At full health it stays where it is, waiting for when you need it.',
+    lines: same([{ how: 'Touch it when you are hurt', what: 'Heals a heart', sub: 'at full health you cannot pick it up' }]),
   },
   cage: {
     id: 'cage',
@@ -214,8 +229,8 @@ export const LESSONS: Record<LessonId, Lesson> = {
     id: 'checkpoint',
     title: 'A checkpoint!',
     face: 'face_happy',
-    intro: 'Run past it and the game remembers. If you lose a life, you start again from here, not the beginning.',
-    lines: same([{ how: 'Just run past it', what: 'Saves your place' }]),
+    intro: 'You just passed a flag, and the game remembers. If you lose a life, you start again from here, not the beginning.',
+    lines: same([{ how: 'Run past a flag', what: 'Saves your place' }]),
   },
   shrine: {
     id: 'shrine',
@@ -289,8 +304,11 @@ export interface LessonScene {
   collectibles: { type: string; x: number; y: number; collected: boolean }[];
   vines: { x: number; topY: number; bottomY: number; vineType?: string }[];
   platforms: { x: number; y: number; width: number; type: string; broken?: boolean }[];
-  checkpoints: { x: number; y: number }[];
+  /** the flags; `reached` once he has run past one (the checkpoint card comes on the flag, not on the way to it) */
+  checkpoints: { x: number; y: number; reached?: boolean }[];
   rivers: { x0: number; x1: number }[];
+  /** shimmy ropes (their ends, and their height), when the stage has them and he can use them */
+  ropes?: { x0: number; x1: number; g0: number; g1: number }[];
 }
 
 /** how far ahead of the hero something has to be before it is "here", and how far above or below */
@@ -321,6 +339,8 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
   }
   if (want('climb') && s.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - s.px) <= NEAR.climb && s.py >= v.topY - 40 && s.py <= v.bottomY + 90 && onScreen(v.x, s.py))) return 'climb';
   if (want('swing') && s.vines.some((v) => v.vineType !== 'tree_climb' && near(v.x, (v.topY + v.bottomY) / 2, NEAR.thing))) return 'swing';
+  // a rope: one of its ends (where its post stands, on a ledge) close by, at about his height
+  if (want('rope') && (s.ropes ?? []).some((r) => near(r.x0, r.g0, NEAR.climb + 60) || near(r.x1, r.g1, NEAR.climb + 60))) return 'rope';
   for (const p of s.platforms) {
     if (p.broken) continue;
     const cx = p.x + p.width / 2;
@@ -335,7 +355,35 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
   if (want('heart') && col(['heart', 'super_heart'])) return 'heart';
   if (want('idol') && col(['relic'])) return 'idol';
   if (want('fruit') && col(['fruit', 'flower', 'leaf'])) return 'fruit';
-  if (want('checkpoint') && s.checkpoints.some((c) => near(c.x, c.y, NEAR.thing))) return 'checkpoint';
+  if (want('checkpoint') && s.checkpoints.some((c) => c.reached && near(c.x, c.y, NEAR.thing))) return 'checkpoint';
   if (want('shrine') && col(['exit_totem'])) return 'shrine';
   return null;
+}
+
+// ───────────────────────────── when a card may open ─────────────────────────────
+
+/**
+ * A card pauses the stage, and closing it takes the thumb off the glass. So a card only opens when that is harmless: standing on
+ * something, or holding a trunk or a rope (which he keeps hold of with no thumb), not hurt, with no animal or falling thing close
+ * enough to hit him the moment play carries on. Until then the card waits (engine.ts lessonTick). The play-testers lost lives to cards
+ * that opened mid-glide, mid-jump, mid-climb and with a snake already touching him (2026-10-25).
+ */
+export interface CardSafety {
+  grounded: boolean;
+  /** on a trunk, a ladder or a rope: he stays put there with no input (a swinging vine does not count: it keeps swinging) */
+  holding: boolean;
+  /** still blinking from a hit */
+  hurt: boolean;
+  /** the nearest animal still in the fight, px (Infinity for none) */
+  foeDx: number;
+  foeDy: number;
+  /** something already on its way to him: a rock, a spit, a dropping thorn (px to the nearest; Infinity for none) */
+  hazard: number;
+}
+export const CARD_SAFE = { foeDx: 190, foeDy: 150, hazard: 240 } as const;
+
+export function cardSafe(s: CardSafety): boolean {
+  if (s.hurt || !(s.grounded || s.holding)) return false;
+  if (Math.abs(s.foeDx) < CARD_SAFE.foeDx && Math.abs(s.foeDy) < CARD_SAFE.foeDy) return false;
+  return s.hazard >= CARD_SAFE.hazard;
 }

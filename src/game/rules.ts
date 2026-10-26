@@ -208,6 +208,13 @@ export function calculateHitScore(
  * Is Pokey actually at the sanctuary door? The door stands on the ground at (x, y): about 92px wide and 134px tall.
  * His body has to overlap it. Being level with it somewhere else on the screen, past it, or on another floor does not count.
  */
+/**
+ * In a stage that runs to the right (not a climb), the engine stops him this far past the shrine (exitTotemX + SHRINE_STOP), so a pickup
+ * further than PAST_SHRINE beyond it (his reach, less a little) can never be picked up. The stage builders and the level check keep to it.
+ */
+export const SHRINE_STOP = 35;
+export const PAST_SHRINE = 60;
+
 export function atExitDoor(p: { x: number; y: number }, doorX: number, doorGroundY: number): boolean {
   const feet = p.y;
   const head = p.y - 38;

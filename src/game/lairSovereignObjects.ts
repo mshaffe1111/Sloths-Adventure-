@@ -12,6 +12,7 @@
  */
 import type { Platform, TreeStructure, Vine } from './types.ts';
 import { sovereignStorm } from './lairSovereign.ts';
+import { drawSkyPillar } from './sovereignArt.ts';
 
 interface Cam {
   x: number;
@@ -475,14 +476,19 @@ export function drawSovereignObjects(ctx: CanvasRenderingContext2D, platforms: P
     drawRope(ctx, v, cam, time);
   }
   for (const p of platforms) {
-    if (p.height >= 50 && !p.broken) {
+    if (p.height >= 50 && !p.broken && p.pillar === undefined) {
       ctx.save();
       drawCliffFloor(ctx, p, cam, time);
       ctx.restore();
     }
   }
+  // the rock pillars of the fight (sovereignArt.ts), cracked by her slams
   for (const p of platforms) {
-    if (p.height >= 50 || p.broken || p.x + p.width < left - 200 || p.x > right + 200) continue;
+    if (p.pillar === undefined || p.x + p.width < left || p.x > right) continue;
+    drawSkyPillar(ctx, p, time, sovereignStorm());
+  }
+  for (const p of platforms) {
+    if (p.height >= 50 || p.pillar !== undefined || p.broken || p.x + p.width < left - 200 || p.x > right + 200) continue;
     ctx.save();
     if (p.type === 'moving') drawHangingPlanks(ctx, p, cam, time);
     else drawStoneLedge(ctx, p, time);

@@ -1,0 +1,75 @@
+{
+ "tag": "dotstage",
+ "loras": [
+  [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ ],
+ "items": [
+  {
+   "name": "dotst-back-near-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background, seen from a hummingbird's height among giant flowers: huge red heliconia, hanging pink fuchsia and orange trumpet flowers climbing up through a dark iron netting strung across a misty mountain gorge, golden sunrise light breaking through the mist in rays, a faint rainbow in the spray, dew sparkling on strands of spider silk, soft glowing petals drifting, warm, bright and magical, no characters, no text, no interface",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-back-near-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background, seen from a hummingbird's height among giant flowers: huge red heliconia, hanging pink fuchsia and orange trumpet flowers climbing up through a dark iron netting strung across a misty mountain gorge, golden sunrise light breaking through the mist in rays, a faint rainbow in the spray, dew sparkling on strands of spider silk, soft glowing petals drifting, warm, bright and magical, no characters, no text, no interface",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-back-near-33",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background, seen from a hummingbird's height among giant flowers: huge red heliconia, hanging pink fuchsia and orange trumpet flowers climbing up through a dark iron netting strung across a misty mountain gorge, golden sunrise light breaking through the mist in rays, a faint rainbow in the spray, dew sparkling on strands of spider silk, soft glowing petals drifting, warm, bright and magical, no characters, no text, no interface",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-back-far-11",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background, a far misty mountain gorge at sunrise seen from high in the air, layers of pale blue cliffs fading into golden mist, a tiny dark tower on the highest peak far away, a long dark iron netting line crossing the valley, a soft rainbow, tiny birds far off, pastel and airy, no characters, no text, no interface",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-back-far-22",
+   "prompt": "slothadv style, painted storybook illustration, a wide side-scrolling game background, a far misty mountain gorge at sunrise seen from high in the air, layers of pale blue cliffs fading into golden mist, a tiny dark tower on the highest peak far away, a long dark iron netting line crossing the valley, a soft rainbow, tiny birds far off, pastel and airy, no characters, no text, no interface",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-nectar-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a big red heliconia flower glowing with golden nectar, the same red heliconia flower drained and drooping, a hanging pink fuchsia blossom glowing with nectar, a long vine of orange trumpet flowers, an open purple passionflower, a cluster of tiny bright blue flowers",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-nectar-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a big red heliconia flower glowing with golden nectar, the same red heliconia flower drained and drooping, a hanging pink fuchsia blossom glowing with nectar, a long vine of orange trumpet flowers, an open purple passionflower, a cluster of tiny bright blue flowers",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-bits-11",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a single large sparkling dewdrop, a long strand of glistening spider silk with dew beads, a floating dandelion seed puff, a cluster of sharp iron thorns on an iron strand, a folded paper note tied with a pink ribbon, a soft tuft of white downy feather",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-bits-33",
+   "prompt": "slothadv style, painted storybook illustration, a sheet of six separate game props for a 2D side-scrolling game, seen from the side, on a flat solid magenta background (#FF00FF), arranged in a 3 by 2 grid with plenty of empty magenta space around each, no shadows on the background, no text, no characters: a single large sparkling dewdrop, a long strand of glistening spider silk with dew beads, a floating dandelion seed puff, a cluster of sharp iron thorns on an iron strand, a folded paper note tied with a pink ribbon, a soft tuft of white downy feather",
+   "seed": 33,
+   "w": 1536,
+   "h": 1024
+  }
+ ]
+}

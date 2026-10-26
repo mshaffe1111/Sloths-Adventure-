@@ -1,6 +1,9 @@
 import { perfNote } from './perfLog.ts';
 import { recorder } from './playRecorder.ts';
 
+/** the last picture sheet to finish loading, and when (performance.now()): the control test names it on a stall that follows */
+export const lastSheet = { name: '', at: 0 };
+
 /**
  * Loads a painted sprite atlas. The picture is decoded before the sprite counts as ready, so the first draw
  * never stalls on a big decode, and a failed fetch is retried a few seconds later instead of leaving the
@@ -14,7 +17,9 @@ export function trackAtlas(img: HTMLImageElement, url: string, onReady: () => vo
     if (entry?.gone) return;
     perfNote(`sheet ready: ${url.split('/').pop()} (${Math.round(performance.now() - t0)} ms to load and decode)`);
     // (the control test notes each sheet as it arrives, so a stall can be matched to the picture that caused it)
-    if (recorder.on) recorder.event('sheet', `${url.split('/').pop()?.split('?')[0]} ${Math.round(performance.now() - t0)}ms`);
+    lastSheet.name = url.split('/').pop()?.split('?')[0] ?? '';
+    lastSheet.at = performance.now();
+    if (recorder.on) recorder.event('sheet', `${lastSheet.name} ${Math.round(performance.now() - t0)}ms`);
     onReady();
   };
   img.onload = () => {

@@ -258,7 +258,7 @@ export function dotPresent(world: number, mini: number): boolean {
   return !(world === 6 && mini >= 6) && world !== 7 && world !== 10;
 }
 
-/** does this stage hide a find in a Hush Fern (a keepsake in stage 5, a book in stage 8)? */
+/** does this stage hide a find in a Hush Fern (a keepsake in stage 5 (3 in World 4), a book in stage 8)? */
 export function hidesFern(world: number, mini: number): boolean {
   const f = findForStage(world, mini);
   return !!f && f.kind !== 'note';
@@ -276,6 +276,11 @@ export function fernLine(world: number, mini: number): WayLine | undefined {
 }
 
 /** how long a line stays up: long enough to read it twice at a glance */
+/** the longest a guiding line from Dot stays up (ms) */
+export const GUIDE_MAX_MS = 6500;
+/** how long a guiding line handed over for `ms` stays up: long enough to read, never longer than GUIDE_MAX_MS (Wayside, JournalToast) */
+export const guideShowMs = (text: string, ms: number): number => Math.min(GUIDE_MAX_MS, Math.max(ms, showMs(text)));
+
 export function showMs(text: string): number {
   return Math.min(7600, 2800 + text.length * 50);
 }

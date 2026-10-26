@@ -40,7 +40,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine },
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing },
     );
   }
   const G = gestures.current;
@@ -64,8 +64,12 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   // switching away mid-touch: the recogniser forgets its fingers too
   useEffect(() => {
     inputEngine.onFocusLost = () => G.cancelAll();
+    // the game dropped every held input (a new stage): forget the fingers too, or a thumb still on the glass would think it was steering
+    // while nothing moved, and the next slide the same way did nothing (the recogniser only speaks when its direction changes)
+    inputEngine.onCleared = () => G.cancelAll();
     return () => {
       inputEngine.onFocusLost = null;
+      inputEngine.onCleared = null;
     };
   }, [G, inputEngine]);
 

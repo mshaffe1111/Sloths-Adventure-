@@ -8,5 +8,9 @@
   "w4p-pools-11": {"cave": 0, "poolFull": 1, "poolEmpty": 2, "ribbonLog": 3, "channelFall": 4, "brokenLog": 7},
   "w4p-pools-33": {"cave2": 0, "poolLog": 3, "logJam": 4},
   "w4-capuchin2-44": {"capRunPetal": 0, "capWalk": 1, "capNest": 2, "capStartled": 3, "capSitBranch": 4, "capGuard": 5},
-  "w4-capuchin2-11": {"capHoldPetal": 0, "capPoint": 1, "capFists": 2, "capEat": 3, "capScreech": 4, "capHang": 5, "capWorried": 6}
+  "w4-capuchin2-11": {"capHoldPetal": 0, "capPoint": 1, "capFists": 2, "capEat": 3, "capScreech": 4, "capHang": 5, "capWorried": 6},
+  "w4p-cover-11": {"coverMossRock": 2, "coverRustle": 3, "coverStump": 1, "coverFern": 4, "coverWide": 5, "coverHollow": 6},
+  "w4p-fruit-11": {"fruitTree4": 0, "fruitTree1": 1, "orange": 2, "fruitCliff": 3, "orangeEaten": 4, "fruitBare": 5},
+  "w4p-falllip-11": {"lipTrickle": {"i": 0, "rows": [0, 222]}, "lipPour": {"i": 1, "rows": [0, 222]}, "ledgeTrickle": 2, "caveFall": 3},
+  "w4p-nests-11": {"nestEaglet": 0, "eagletFly": 1, "nestPillar": 2, "nestEmpty": 3, "nestTorn": 4}
 }

@@ -36,6 +36,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 - **Honest.** Honest pushback when it's warranted, no apologies, and research before saying something is wrong.
 - **Show first.** Show significant screen changes, new icons and new looks (a mock-up, screenshots, a preview video) before building them in.
 - **Phone first.** It's a phone/tablet game: touch only, every stage playable in portrait and landscape, and all hint text describes touch.
+- **Portrait AND landscape, always (Matt, 2026-10-26).** Every check, screenshot, mock-up, helper brief and QA gate pass covers both orientations, plus short landscape (about 640x320) for HUD work. Never assume landscape: Matt and Steph play upright; Jen and Brycen play sideways. It applies to everything built, not only checks: stages, menus, the world map, story cutscenes, cards, pop-ups, the HUD, boss arenas and new art. Each is designed for both from the start, not fitted to the second orientation afterwards. A check done in one orientation only is not done. QA persona bots play in their own person's orientation, and every gate pass also runs the other one.
 - **Testers are live.** Experiments default off, and nothing half-finished goes to `main`.
 - **After every round of changes**: rebuild and republish the test link in place (§6), and tell him what changed.
 - **Pushing:**
@@ -44,6 +45,15 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
   - he merges it himself.
 - **Background jobs.** While they run, keep doing useful work (checking, screenshots, the next piece) rather than waiting.
 - **Money.** Hugging Face compute is fine to spend on quality ("a couple of dollars here and there"). Say roughly what a job costs before launching big ones.
+- **Release rhythm (2026-10-26).** Work a couple of stages at a time: build them, have the QA team test them, fix and retest, then deploy. Then do the next couple. Never hold a deploy for a whole world.
+- **QA stays a separate session, playing blind.** The QA team doesn't know how stages are built, so it plays like a player would. This session builds and fixes; the QA team tests; they talk by message. Give QA small batches with a clear note of what changed and what to retest. A short gate pass comes before each deploy, and the full persona runs after.
+- **One building session.** Keep the building work in one session (it summarizes itself when long); don't split it across new sessions, since catching up costs Matt tokens and splitting confuses who's doing what.
+- **Helpers.** Matt is fine with more than 6 helpers at a time for important work when his tokens allow. Slow down when he says tokens are tight.
+- **HUD and tutorial revamp: Matt's picks (2026-10-26, from the mock-up review https://claude.ai/artifact/Aopein5VvpCQaNoNXzRrBa).**
+  - HUD: option B, the hanging vine (hearts and petals hang from a vine, Menu is a leaf), with option D's behaviour: things bloom into view when something happens (a petal picked up, a life lost) and stay small otherwise.
+  - Dot: option C, perched. She sits on the scenery near the thing she's teaching, and a glowing ring and arrow point at it.
+  - Finger guides: still to choose.
+- **Bosses.** Every weak-spot opening needs a clear tell, and must stay open at least as long as the time to reach it plus 0.8 s to react plus 0.6 s to hit (bossFair.test.ts, sovereignEngine.test.ts). Fight length depends on the player's skill; there is no minimum for bosses.
 
 ### Design rules for stages (check every stage against these)
 
@@ -81,6 +91,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 | **World 1 and World 3 hand-built stages** (1-1 to 1-9, 3-1 to 3-9) | `src/game/protoStage.ts` |
 | **World 2 hand-built stages** (2-1 to 2-9) | `src/game/w2Stages.ts`, art in `w2PropsData.ts` |
 | World 3 art and decor | `src/game/w3Art.ts`, `w3PropsData.ts` |
+| **Dot's netting flight** (`4-D`, the extra stage after 4-5 that opens 4-6; Dot is the player, on Pokey's controls: flick = flap, tap or thumb held = hover) | `src/game/dotFlightStage.ts` (the stage and its flight check), `dotFlight.ts` (her rules), `dotFlightRun.ts` (in the engine), `dotFlightArt.ts`; slotted by `extraStages.ts` with the New stages switch; tests `dotFlight*.test.ts` |
 | **Worlds 4-10** (still the procedural generator: planned, rolled, validated) | `src/game/stageGenerator.ts`, `levelSeeds.ts`, `levelCheck.ts`; run `npx tsx scripts/check-levels.ts [4]` |
 | Stage-length and layout checks | `scripts/measure-stages.ts`, `scripts/seed-levels.ts`, tests such as `w2Stages.test.ts`, `w3Stages.test.ts`, `protoStage.test.ts`, `levels.test.ts` |
 | Abilities (rope/shimmy, glide) and when they unlock | `src/game/skills.ts` |
@@ -96,6 +107,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 | Worlds 2-10 ground and climbing kits | `src/assets/kits/w2.webp` … `w10.webp` | `kitAtlasData.ts`; `platformKit.ts`, `drawKit.ts` |
 | World 2 props (river, village, court, cages, boughs) | `src/assets/props/w2-props.webp` | `w2PropsData.ts` |
 | World 3 props (grotto, ferns, thorn vine, sinkhole, ring) | `src/assets/props/w3-props.webp` | `w3PropsData.ts` |
+| Dot's netting flight (nectar flowers, dew, silk, puffs, thorns, the letter, netting pieces) and its four sunrise paintings | `src/assets/props/dot-props.webp`, `src/assets/backdrops/dot-*.webp` | `dotPropsData.ts`; cut and packed by `tools/art/dotstage/` |
 | Stage backgrounds (three strips per world) | `src/assets/backdrops/w<N>-far/mid/near.webp` | `scenery.ts`, `soil.ts`, `terrain.ts` |
 | Boss lairs | `src/assets/lairs/` | `lairKit.ts`, `lairProwler.ts` |
 | Matt's original prop sheets (World 1) | `reference/prop-sheets/` | — |
@@ -113,6 +125,7 @@ The cutting and packing scripts are in `tools/art/` (`w2art/`, `w3*/`, `packprop
 | Golden snake (the game's snake) | `goldSnake.ts` (`?snake=classic` brings back the old one) |
 | Enemy brains and timings | `predatorAI.ts` (`TURTLE`, `GUARD`, …) |
 | Bosses / guardians | `bossDefs.ts`, `bossArt.ts`, `<boss>Sprite.ts`; boss sheets in `reference/boss-sheets/` |
+| The Sky Sovereign's fight (4-10): rock pillars, screech, gust, her ending | rules `sovereignFight.ts`, moves in `bossDefs.ts` (SOVEREIGN), look `sovereignArt.ts`, reach timing for Matt's opening rule `sovereignReach.ts`, tests `sovereign.test.ts`; her two screech poses are packed into her atlas by `tools/art/w4/sovscreech/pack_screech.py` |
 
 ### Story
 

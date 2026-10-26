@@ -155,46 +155,60 @@ function drawCloud(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof
   ctx.restore();
 }
 
+/**
+ * the band of a gust lane that its streaks and leaves are drawn in: the air he swings and leaps through, from just above the ground up
+ * to about the height of a leap off a vine, never the whole lane up to the sky (drawn over the backdrop up there, the streaks flattened
+ * the scene's depth: the 4-4 play test, 2026-10-25)
+ */
+export const GUST_BAND = 360;
+export function gustBand(z: Pick<Zone, 'top' | 'bottom' | 'baseY'>): { top: number; bottom: number } {
+  return { top: Math.max(z.top, z.baseY - GUST_BAND), bottom: Math.min(z.bottom, z.baseY + 10) };
+}
+
 function drawGust(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof zoneState>, t: number) {
   const w = z.x1 - z.x0;
-  const h = z.bottom - z.top;
-  const level = st.phase === 'active' ? st.strength : st.phase === 'warn' ? 0.15 + 0.5 * st.u : 0.05;
+  const band = gustBand(z);
+  const h = band.bottom - band.top;
+  // (between gusts the lane is clear: the chimes say when the next one is coming)
+  const level = st.phase === 'active' ? st.strength : st.phase === 'warn' ? 0.1 + 0.4 * st.u : 0;
   ctx.save();
   ctx.beginPath();
-  ctx.rect(z.x0, z.top, w, h);
+  ctx.rect(z.x0, band.top, w, h);
   ctx.clip();
   ctx.lineCap = 'round';
-  // streaks racing along the lane, longer and faster the harder it blows
-  const n = Math.max(14, Math.round((w * h) / 2600));
+  // streaks racing along the band, longer and faster the harder it blows: light and thin, fading out toward the band's top and bottom
+  const n = level > 0 ? Math.max(8, Math.round((w * h) / 5200)) : 0;
   const speed = z.force * (st.phase === 'active' ? 2.6 : 1.1);
   for (let i = 0; i < n; i++) {
     const sx = hash(i * 2.1 + z.x0 * 0.01);
     const sy = hash(i * 5.3 + z.x1 * 0.01);
-    const len = 46 + sx * 90 * (0.4 + level);
+    const len = 40 + sx * 80 * (0.4 + level);
     const travel = (t * speed * (0.7 + sy * 0.6) + sx * (w + 200)) % (w + 200);
     const x = z.dir === 1 ? z.x0 - 100 + travel : z.x1 + 100 - travel;
-    const y = z.top + 20 + sy * (h - 40) + Math.sin(t * 2 + i) * 4;
-    ctx.strokeStyle = i % 3 === 0 ? `rgba(240, 253, 250, ${0.7 * level * (0.5 + sy * 0.5)})` : `rgba(15, 118, 110, ${0.55 * level * (0.5 + sy * 0.5)})`;
-    ctx.lineWidth = 2 + sy * 2.4;
+    const y = band.top + 14 + sy * (h - 28) + Math.sin(t * 2 + i) * 4;
+    const fade = Math.sin(Math.PI * Math.min(1, Math.max(0, (y - band.top) / h)));
+    const a = level * fade * (0.5 + sy * 0.5);
+    ctx.strokeStyle = i % 3 === 0 ? `rgba(240, 253, 250, ${0.42 * a})` : `rgba(204, 251, 241, ${0.26 * a})`;
+    ctx.lineWidth = 1.5 + sy * 1.6;
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.quadraticCurveTo(x + z.dir * len * 0.5, y - 5 * Math.sin(t * 3 + i), x + z.dir * len, y);
     ctx.stroke();
   }
   // leaves tumbling with it
-  const leaves = Math.round(w / 60) + 3;
+  const leaves = level > 0 ? Math.round(w / 90) + 2 : 0;
   for (let i = 0; i < leaves; i++) {
     const sx = hash(i * 9.9 + z.x0 * 0.02);
     const sy = hash(i * 3.7 + z.x1 * 0.02);
     const travel = (t * speed * (0.55 + sy * 0.4) + sx * (w + 160)) % (w + 160);
     const x = z.dir === 1 ? z.x0 - 80 + travel : z.x1 + 80 - travel;
-    const y = z.top + 40 + sy * (h - 80) + Math.sin(t * 3.4 + i * 2) * 14;
+    const y = band.top + 30 + sy * (h - 60) + Math.sin(t * 3.4 + i * 2) * 14;
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(t * (2 + sx * 3) * z.dir + i);
-    ctx.fillStyle = `rgba(${i % 2 ? '134, 239, 172' : '74, 222, 128'}, ${Math.min(1, 0.15 + level)})`;
+    ctx.fillStyle = `rgba(${i % 2 ? '134, 239, 172' : '74, 222, 128'}, ${Math.min(0.85, 0.1 + level * 0.75)})`;
     ctx.beginPath();
-    ctx.ellipse(0, 0, 11, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, 10, 4.5, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
@@ -203,7 +217,7 @@ function drawGust(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof 
   if (st.phase !== 'idle') {
     const a = st.phase === 'warn' ? 0.3 + 0.5 * Math.abs(Math.sin(st.u * Math.PI * 6)) : 0.85 * st.strength;
     const cx = (z.x0 + z.x1) / 2;
-    const cy = z.top + 34;
+    const cy = gustBand(z).top + 34;
     ctx.save();
     ctx.strokeStyle = `rgba(255, 255, 255, ${a})`;
     ctx.shadowColor = 'rgba(15, 23, 42, 0.8)';

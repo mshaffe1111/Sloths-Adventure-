@@ -36,6 +36,10 @@ export interface FindDef {
 
 /** the stage of each world (1..9) that hides each kind of find; stage 7 hides the Thorn Gate in World 7 and stage 10 is the boss */
 export const FIND_STAGE: Record<FindKind, number> = { note: 2, keepsake: 5, book: 8 };
+/** a world whose stages hide a find somewhere else, by design (World 4: the ribbon is behind the falls in 4-3, Waterfall Steps) */
+export const FIND_STAGE_IN: Record<number, Partial<Record<FindKind, number>>> = { 4: { keepsake: 3 } };
+/** the stage of world `world` that hides each kind of find */
+export const findStage = (world: number, kind: FindKind): number => FIND_STAGE_IN[world]?.[kind] ?? FIND_STAGE[kind];
 
 export const FINDS: FindDef[] = [
   // ───────────── World 1: Emerald Canopy ─────────────
@@ -301,7 +305,7 @@ export function allFound(found: string[]): boolean {
 /** the find that hides in this stage, if there is one */
 export function findForStage(world: number, mini: number): FindDef | null {
   for (const kind of Object.keys(FIND_STAGE) as FindKind[]) {
-    if (FIND_STAGE[kind] === mini) return FIND_BY_ID[`w${world}_${kind}`] ?? null;
+    if (findStage(world, kind) === mini) return FIND_BY_ID[`w${world}_${kind}`] ?? null;
   }
   return null;
 }

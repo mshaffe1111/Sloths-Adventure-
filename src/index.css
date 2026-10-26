@@ -514,12 +514,12 @@
 /* a phone on its side: the plate is one short block (name and bar, the hearts beside the bar), so it clears the Menu button and the guide's bubble */
 @media (max-height: 520px) and (orientation: landscape) {
   .boss-hud { width: min(23rem, 45vw); display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 8px; row-gap: 3px; }
-  .boss-hud-name { grid-column: 1; grid-row: 1; }
+  .boss-hud-name { grid-column: 1 / -1; grid-row: 1; }
   .boss-hud-title { font-size: 17px; }
   .boss-hud-count { font-size: 11px; }
   .boss-hud-bar { grid-column: 1; grid-row: 2; padding: 3px; }
   .boss-hud-segs { height: 12px; }
-  .boss-hud-hearts { grid-column: 2; grid-row: 1 / span 2; align-self: end; padding: 4px 8px; gap: 3px; }
+  .boss-hud-hearts { grid-column: 2; grid-row: 2; align-self: center; padding: 4px 8px; gap: 3px; }
   .boss-heart { width: 19px; height: 19px; }
 }
 
@@ -685,6 +685,13 @@
 .clr-card.lost { grid-template-columns: 256px minmax(0, 1fr); }
 @media (max-width: 640px) and (min-height: 521px) { .clr-card.lost { grid-template-columns: 1fr; gap: 8px; } .clr-card.lost .clr-hero { display: flex; margin-top: -4px; } .clr-sec:not(.one) .clr-btn2 { flex-direction: column; gap: 2px; font-size: 13px; line-height: 1.1; padding: 6px 4px; } }
 @media (max-height: 520px) { .clr-card.lost { grid-template-columns: 150px minmax(0, 1fr); } }
+/* the Continue button: one line where it fits; on a narrow screen "Continue" over a smaller "from checkpoint", the flag beside both */
+.clr-go { white-space: nowrap; }
+.clr-go svg { flex: none; }
+@media (max-width: 520px) {
+  .clr-go-t { display: flex; flex-direction: column; align-items: center; line-height: 1.02; }
+  .clr-go-s { font-size: 0.66em; }
+}
 
 /* ---------- Skills: the new-skill card and the pause menu's Skills row (approved mockups 5 and 6) ---------- */
 .sk-card { max-width: 780px; }
@@ -877,7 +884,23 @@
 @keyframes coach-in { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%); } }
 
 /* a first-time lesson card (the game is paused behind it) */
-.lc-scrim { z-index: 60; }
+/* a lesson card: only the card itself takes touches. A thumb put down beside it lands on the game's touch layer, so it is already
+   steering when "Got it!" is pressed (on the dimmed screen it was a touch on something about to vanish, and did nothing afterwards) */
+.lc-scrim { z-index: 60; pointer-events: none; }
+/* a short landscape screen (a phone held sideways, 430 css px tall or less): the HUD shrinks and the hearts and lives share one row,
+   or the HUD covered nearly half the stage (4-D, Dot's flight, at 740x360). Engine.renderDot puts Dot's panel under .hud-left */
+@media (orientation: landscape) and (max-height: 430px) {
+  .game-hud { padding-top: max(6px, env(safe-area-inset-top)); }
+  .game-hud > * { zoom: 0.8; }
+  .game-hud .hud-left { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .way { zoom: 0.86; top: calc(env(safe-area-inset-top, 0px) + 86px); }
+}
+/* very short (about 270-340 css px tall) */
+@media (orientation: landscape) and (max-height: 340px) {
+  .game-hud > * { zoom: 0.68; }
+  .way { zoom: 0.78; top: calc(env(safe-area-inset-top, 0px) + 80px); }
+}
+.lc-scrim .lc { pointer-events: auto; }
 .lc { width: min(100%, 460px); display: flex; flex-direction: column; gap: 10px; max-height: 94%; overflow: hidden; }
 .lc-head { display: flex; align-items: center; gap: 12px; }
 .lc-face { display: inline-flex; flex: none; }
@@ -909,6 +932,16 @@
 @media (max-width: 520px) { .way { top: calc(env(safe-area-inset-top, 0px) + 132px); } }
 @media (max-height: 430px) and (min-width: 521px) { .way { top: calc(env(safe-area-inset-top, 0px) + 110px); padding: 6px 12px 6px 7px; } .way-text { font-size: 13.5px; } }
 /* while Pokey is in the banner's band, it waits at the bottom of the screen instead (engine.ts markWayDodge) */
+/* a boss fight (Engine.markWayBoss): the banner never sits on the boss plate or on the boss. Upright it goes under the arena floor;
+   held sideways it goes under the plate, narrow, on the half away from her */
+:root[data-way-boss='low'] .way { top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); }
+:root[data-way-boss='l'] .way, :root[data-way-boss='r'] .way { top: calc(env(safe-area-inset-top, 0px) + 64px); max-width: min(42vw, 380px); zoom: 1; }
+:root[data-way-boss='l'] .way { margin-inline: max(12px, env(safe-area-inset-left)) auto; }
+:root[data-way-boss='r'] .way { margin-inline: auto max(12px, env(safe-area-inset-right)); }
+@media (orientation: landscape) and (max-height: 340px) {
+  :root[data-way-boss='l'] .way, :root[data-way-boss='r'] .way { top: calc(env(safe-area-inset-top, 0px) + 56px); max-width: min(56vw, 440px); padding: 5px 10px 5px 6px; }
+  :root[data-way-boss] .way-text { font-size: 12.5px; }
+}
 :root[data-way-low] .way { top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); }
 @media (prefers-reduced-motion: reduce) { .way { animation-name: way-fade; } @keyframes way-fade { 0% { opacity: 0; } 7% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } } }
 

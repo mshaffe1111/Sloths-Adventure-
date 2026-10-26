@@ -42,6 +42,7 @@ import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
 import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
+import { DOT_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -460,11 +461,12 @@ export default function App() {
     }
   }, []);
 
-  // dev only: jump straight into any level (for testing and screenshots)
+  // dev only: jump straight into any level (for testing and screenshots); `layout` picks a roll (the designed one when left out)
   if (import.meta.env.DEV && typeof window !== 'undefined') {
-    (window as unknown as { __play?: (id: string) => void }).__play = (id: string) => {
+    (window as unknown as { __play?: (id: string, layout?: number) => void }).__play = (id: string, layout?: number) => {
       const lvl = id === THORNBARK_LEVEL.id ? THORNBARK_LEVEL : allLevels.find((l) => l.id === id);
       if (lvl) {
+        if (layout !== undefined) setLayoutVariant(layout);
         setActiveLevel(lvl);
         launchEngine(lvl);
       }
@@ -626,7 +628,8 @@ export default function App() {
             // the first stage is cleared: Dot arrives with Meeca's first note
             storyAfterClear.current = true;
             setScreen('world_story');
-          } else if (lvl.miniIndex === 5 && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
+          } else if ((lvl.id === DOT_STAGE_ID || (lvl.miniIndex === 5 && !(lvl.worldIndex === 4 && newStagesOn()))) && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
+            // (in World 4 the halfway scene waits for Dot's own flight after 4-5: she arrives with the note and nine scratches)
             // halfway through a world, Dot catches up with a note from Meeca
             setScreen('world_mid');
           } else {
@@ -1051,13 +1054,14 @@ export default function App() {
               id={lessonId}
               onClose={() => {
                 setLessonId(null);
-                // fingers that were down while the card opened must not keep running him once play carries on
-                inputEngineRef.current?.clearAll();
+                // no clearing of the controls here: a thumb lifted while the card was up has already let go of what it held, and one
+                // still on the glass keeps doing what it was (clearing it left the recogniser thinking it steered while nothing moved,
+                // so the next touch did nothing; and it dropped a held jump in mid-air)
                 engineRef.current?.lessonClosed();
               }}
             />
           )}
-          <JournalToast active={screen === 'playing' && !coachStep && !lessonId && !reading} />
+          <JournalToast active={screen === 'playing' && !coachStep && !lessonId && !reading} guide={guideLine} />
           {inputEngineRef.current && (
             <ControlSwitch inputEngine={inputEngineRef.current} />
           )}

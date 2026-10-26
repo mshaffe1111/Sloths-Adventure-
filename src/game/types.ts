@@ -279,8 +279,12 @@ export interface Platform {
   lily?: boolean;
   /** World 2's rope-and-basket lift (a 'moving' platform that rides up and down: lift.ts) */
   lift?: import('./lift.ts').LiftInfo;
-  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge (w4Play.ts) */
-  art?: 'lift' | 'steps' | 'porch' | 'frond';
+  /** drawn by a painted piece instead of the platform look: the lift's basket, a step of the carved steps, a porch deck (riverArt.ts), World 4's fern bridge, a pushed boulder and a pool's floating log (w4Play.ts) */
+  art?: 'lift' | 'steps' | 'porch' | 'frond' | 'boulder' | 'poolLog';
+  /** one of the Sky Sovereign's rock pillars in 4-10 (sovereignFight.ts): its index. It is a wall with a top to stand on; it cracks, and broken it is a stump */
+  pillar?: number;
+  /** a knot of wood standing at the end of a high branch (4-6): a little wall, so he cannot walk off it into a very long fall */
+  lip?: boolean;
 }
 
 /**
@@ -343,6 +347,8 @@ export interface Vine {
   treeId?: number;
   isSwingingVine?: boolean;
   swingAngle?: number;
+  /** a climbing vine hanging down a cliff (4-8's knotted vines), not a tree's trunk: its stage draws it (w4Play.ts), not the kapok art */
+  rope?: boolean;
 }
 
 /** A rope stretched across a gap. Pokey can hang from it and shimmy along it once he has learned the skill (see rope.ts). */
@@ -379,8 +385,11 @@ export interface Collectible {
   search?: number;
   /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
-  /** World 2's reed cages: the little one inside (Matt's sheet: a baby capybara, duckling or otter), and when it was freed (game time) */
-  critter?: 'capy' | 'duck' | 'otter';
+  /**
+   * World 2's reed cages: the little one inside (Matt's sheet: a baby capybara, duckling or otter), and when it was freed (game time).
+   * 'eaglet': World 4's nests on the cliff (4-8), a chick caught in old netting (w4Nests.ts draws it)
+   */
+  critter?: 'capy' | 'duck' | 'otter' | 'eaglet';
   freedAt?: number;
 }
 

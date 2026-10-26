@@ -1,7 +1,9 @@
 import React from 'react';
+import { DOT_STAGE_ID } from '../game/extraStages.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { countWord } from '../game/stagePlan.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
+import { DotFace } from './DotFace.tsx';
 import { BossHud } from './BossHud.tsx';
 
 interface GameHUDProps {
@@ -82,10 +84,10 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   const power = activePowerUp ? POWER_UPS[activePowerUp] : null;
 
   return (
-    <div className={`fixed inset-0 pointer-events-none z-[35] select-none font-game transition-opacity duration-500 ${bossEntering ? 'opacity-0' : 'opacity-100'}  pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pt-[max(1rem,env(safe-area-inset-top))] sm:pl-[max(1.25rem,env(safe-area-inset-left))] sm:pr-[max(1.25rem,env(safe-area-inset-right))]`}>
+    <div className={`game-hud fixed inset-0 pointer-events-none z-[35] select-none font-game transition-opacity duration-500 ${bossEntering ? 'opacity-0' : 'opacity-100'}  pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pt-[max(1rem,env(safe-area-inset-top))] sm:pl-[max(1.25rem,env(safe-area-inset-left))] sm:pr-[max(1.25rem,env(safe-area-inset-right))]`}>
       <div className={isBoss ? 'flex items-start justify-between gap-2 sm:gap-4' : 'grid grid-cols-[1fr_auto_1fr] max-[520px]:grid-cols-[auto_minmax(0,1fr)] items-start gap-2 sm:gap-4'}>
         {/* LEFT: hearts and lives */}
-        <div className="flex flex-col items-start gap-1.5 max-[520px]:row-span-2">
+        <div className="hud-left flex flex-col items-start gap-1.5 max-[520px]:row-span-2">
           {!isBoss && (
           <div className="hud-glass flex gap-[3px] sm:gap-1 rounded-2xl px-2 py-1.5 sm:px-3 sm:py-2" role="img" aria-label={`Health: ${hp} of ${maxHp} hearts`}>
             {Array.from({ length: maxHp }).map((_, i) => {
@@ -99,9 +101,16 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           </div>
           )}
           <div className="hud-glass flex items-center gap-1.5 rounded-full py-[3px] pl-[3px] pr-3" role="img" aria-label={`Lives: ${lives}`}>
-            <span className="rounded-full overflow-hidden bg-amber-200 w-[26px] h-[26px] sm:w-[30px] sm:h-[30px] flex items-center justify-center">
-              <HeroFaceIcon size={26} face="face_happy" />
-            </span>
+            {levelConfig.id === DOT_STAGE_ID ? (
+              // Dot's own stage: her lives, her face
+              <span className="rounded-full overflow-hidden bg-sky-200 w-[26px] h-[26px] sm:w-[30px] sm:h-[30px] flex items-end justify-center">
+                <DotFace size={30} face="closed" />
+              </span>
+            ) : (
+              <span className="rounded-full overflow-hidden bg-amber-200 w-[26px] h-[26px] sm:w-[30px] sm:h-[30px] flex items-center justify-center">
+                <HeroFaceIcon size={26} face="face_happy" />
+              </span>
+            )}
             <span className="text-base sm:text-lg font-semibold tabular-nums leading-none">&times; {lives}</span>
           </div>
         </div>
@@ -158,7 +167,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                     <>
                       <span className="tabular-nums">{distPercent}% there</span>
                       <span className={distPercent >= 85 ? 'text-amber-300 font-semibold animate-pulse' : ''}>
-                        {distPercent >= 85 ? 'Sanctuary ahead!' : GOAL_TEXT[levelConfig.objectiveType]}
+                        {levelConfig.id === DOT_STAGE_ID ? (distPercent >= 85 ? 'The gap ahead!' : 'Fly to the gap') : distPercent >= 85 ? 'Sanctuary ahead!' : GOAL_TEXT[levelConfig.objectiveType]}
                       </span>
                     </>
                   ) : (

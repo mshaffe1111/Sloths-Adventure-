@@ -2,6 +2,7 @@ import type { WorldInfo, LevelConfig, ObjectiveType } from './types.ts';
 import { testUnlockOn } from './testUnlock.ts';
 import { targetSeconds } from './stageTime.ts';
 import { STAGE_PLAN, stageSpec } from './stagePlan.ts';
+import { withExtraStages } from './extraStages.ts';
 
 export const WORLDS_DATA: WorldInfo[] = [
   {
@@ -417,11 +418,13 @@ export function generateAllLevels(): LevelConfig[] {
     });
   });
 
+  // the extra stages between a world's own (extraStages.ts: Dot's netting flight after 4-5), with the New stages switch
+  const all = withExtraStages(levels);
   // a stage is open once the one before it has been cleared (this has to be rebuilt on every load: only results are saved)
   const openAll = testUnlockOn(); // the tester's switch (see testUnlock.ts)
-  for (let i = 1; i < levels.length; i++) {
-    if (openAll || levels[i - 1].completed) levels[i].unlocked = true;
+  for (let i = 1; i < all.length; i++) {
+    if (openAll || all[i - 1].completed) all[i].unlocked = true;
   }
 
-  return levels;
+  return all;
 }

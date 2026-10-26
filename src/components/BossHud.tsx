@@ -3,11 +3,10 @@ import React, { useEffect, useRef, useState } from 'react';
 const HEART_PATH =
   'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
 
-/** how many segments a boss bar has: about one per hit, so the bar itself says how long the fight still is */
-export function bossSegmentCount(maxHp: number, hits?: number): number {
-  if (hits && hits > 0) return Math.max(6, Math.min(40, Math.round(hits)));
-  return Math.max(10, Math.min(28, Math.round(maxHp / 4)));
-}
+import { bossSegmentCount } from '../game/bossHits.ts';
+
+// (the counting lives in bossHits.ts, so the bar and the "what came off" pop over a hit always agree)
+export { bossSegmentCount };
 
 interface BossHudProps {
   name: string;

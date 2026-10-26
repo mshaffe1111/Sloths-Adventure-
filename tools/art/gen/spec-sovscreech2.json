@@ -1,0 +1,41 @@
+{
+ "tag": "sovscreech2",
+ "items": [
+  {
+   "name": "sov-screech-perch-rough-1",
+   "images": [
+    "idle",
+    "sov-screech-perch-3"
+   ],
+   "seed": 1,
+   "prompt": "Redraw the eagle from picture 2, keeping its exact pose (perched on its branch, head thrown back, beak wide open, screeching), but paint it in exactly the style of picture 1: the same rough painted storybook texture, the same dark grey and white feather colours, the same heavy black outlines, the same feathered crest and yellow talons, the same lighting. Side view facing right, whole body in frame, on the same flat plain grey background as picture 1. One eagle only."
+  },
+  {
+   "name": "sov-screech-perch-rough-2",
+   "images": [
+    "idle",
+    "sov-screech-perch-3"
+   ],
+   "seed": 2,
+   "prompt": "Redraw the eagle from picture 2, keeping its exact pose (perched on its branch, head thrown back, beak wide open, screeching), but paint it in exactly the style of picture 1: the same rough painted storybook texture, the same dark grey and white feather colours, the same heavy black outlines, the same feathered crest and yellow talons, the same lighting. Side view facing right, whole body in frame, on the same flat plain grey background as picture 1. One eagle only."
+  },
+  {
+   "name": "sov-screech-air-rough-1",
+   "images": [
+    "idle",
+    "sov-screech-air-1"
+   ],
+   "seed": 1,
+   "prompt": "Redraw the eagle from picture 2, keeping its exact pose (in the air with both huge wings spread, beak wide open, screeching, talons out), but paint it in exactly the style of picture 1: the same rough painted storybook texture, the same dark grey and white feather colours, the same heavy black outlines, the same feathered crest and yellow talons, the same lighting. Side view facing right, whole body in frame, on the same flat plain grey background as picture 1. One eagle only."
+  },
+  {
+   "name": "sov-screech-air-rough-2",
+   "images": [
+    "idle",
+    "sov-screech-air-1"
+   ],
+   "seed": 2,
+   "prompt": "Redraw the eagle from picture 2, keeping its exact pose (in the air with both huge wings spread, beak wide open, screeching, talons out), but paint it in exactly the style of picture 1: the same rough painted storybook texture, the same dark grey and white feather colours, the same heavy black outlines, the same feathered crest and yellow talons, the same lighting. Side view facing right, whole body in frame, on the same flat plain grey background as picture 1. One eagle only."
+  }
+ ]
+}

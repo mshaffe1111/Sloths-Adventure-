@@ -1,0 +1,45 @@
+{
+ "tag": "dotstage-mock",
+ "loras": [
+  [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ],
+  [
+   "mshaffe111/dot-qwen-lora",
+   "dot_qwen_v1.safetensors",
+   0.9
+  ]
+ ],
+ "items": [
+  {
+   "name": "dotst-mock-sip-11",
+   "prompt": "dothummingbird, slothadv style, a wide 2D side-scrolling game scene seen from the side, a tiny emerald-green hummingbird with a magenta throat hovering with blurred wings, sipping nectar from a huge glowing red heliconia flower, giant flowers growing up through a dark iron netting across a misty gorge, golden sunrise breaking through the mist, a faint rainbow, a trail of glowing nectar flowers leading ahead, bright and magical, no text, no interface",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-mock-sip-22",
+   "prompt": "dothummingbird, slothadv style, a wide 2D side-scrolling game scene seen from the side, a tiny emerald-green hummingbird with a magenta throat hovering with blurred wings, sipping nectar from a huge glowing red heliconia flower, giant flowers growing up through a dark iron netting across a misty gorge, golden sunrise breaking through the mist, a faint rainbow, a trail of glowing nectar flowers leading ahead, bright and magical, no text, no interface",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-mock-dart-11",
+   "prompt": "dothummingbird, slothadv style, a wide 2D side-scrolling game scene seen from the side, a tiny emerald-green hummingbird with a magenta throat darting fast through a small torn gap in a huge dark iron netting overgrown with flowering vines, a folded paper note in her beak, a trail of glowing petals leading through the gap, motion streaks, sunrise light through mist, dramatic and joyful, no text, no interface",
+   "seed": 11,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dotst-mock-dart-22",
+   "prompt": "dothummingbird, slothadv style, a wide 2D side-scrolling game scene seen from the side, a tiny emerald-green hummingbird with a magenta throat darting fast through a small torn gap in a huge dark iron netting overgrown with flowering vines, a folded paper note in her beak, a trail of glowing petals leading through the gap, motion streaks, sunrise light through mist, dramatic and joyful, no text, no interface",
+   "seed": 22,
+   "w": 1536,
+   "h": 1024
+  }
+ ]
+}

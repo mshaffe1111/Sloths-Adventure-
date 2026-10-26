@@ -24,6 +24,14 @@ export interface PatienceSpot {
   platformId?: number;
   /** mist: the ledges it hides (platform ids), solid all along but only seen while the mist is down */
   hides?: number[];
+  /**
+   * mist: the band of mist this spot settles, across the whole stage (heights: top above bottom). With a band the mist is one bank
+   * drawn over everything in it (ledges, trunks), so it does not give the hidden ledges away; without one, a puff over each hidden ledge.
+   * `x0`/`x1` (4-9): the band covers only that stretch of the stage (fading out past its ends), not the whole width
+   */
+  area?: { top: number; bottom: number; x0?: number; x1?: number };
+  /** mist: where the view drifts to while he stands here (the middle of the way it shows him), so the whole way fits on a phone */
+  view?: { x: number; y: number };
   /** frond: which way it unrolls from the spot (+1: across to the right of x1, -1: to the left of x0) */
   dir?: 1 | -1;
 }

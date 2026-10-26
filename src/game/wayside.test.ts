@@ -198,12 +198,13 @@ test('a saved game carries what was heard, but the switch stays on the device', 
 // ---- the Hush Fern hint ----
 import { dotPresent, fernLine, hidesFern } from './wayside.ts';
 
-test('only the stages that hide a fern (a keepsake in 5, a book in 8) get the hint, and it never says where', () => {
+test('only the stages that hide a fern (a keepsake in 5, or 3 in World 4; a book in 8) get the hint, and it never says where', () => {
   for (let w = 1; w <= 10; w++) {
     for (let m = 1; m <= 9; m++) {
       const line = fernLine(w, m);
-      assert.equal(!!line, m === 5 || m === 8, `${w}-${m}`);
-      assert.equal(hidesFern(w, m), m === 5 || m === 8);
+      const fern = m === (w === 4 ? 3 : 5) || m === 8;
+      assert.equal(!!line, fern, `${w}-${m}`);
+      assert.equal(hidesFern(w, m), fern);
       if (line) {
         assert.ok(!/crouch|duck|hold|down|where|under|behind|left|right/i.test(line.text), `${w}-${m}: gives nothing away: ${line.text}`);
         assert.equal(line.who === 'Dot', dotPresent(w, m), `${w}-${m}: Dot speaks only while he is with Pokey`);
@@ -229,4 +230,13 @@ test('where Dot is away, the thought is Pokey\'s own', () => {
   assert.equal(fernLine(7, 5)?.who, 'Pokey');
   assert.equal(fernLine(6, 8)?.who, 'Pokey');
   assert.equal(fernLine(8, 5)?.who, 'Dot');
+});
+
+import { GUIDE_MAX_MS, guideShowMs } from './wayside.ts';
+
+test("a guiding line stays up long enough to read (the journal note waits that long too), and never past the cap", () => {
+  const line = 'That vine is tied up out of reach. Walk up to the knot and wait there';
+  assert.equal(guideShowMs(line, 1000), Math.min(GUIDE_MAX_MS, showMs(line)));
+  assert.ok(guideShowMs(line, 1000) > 1000);
+  assert.equal(guideShowMs('Hi', 99999), GUIDE_MAX_MS);
 });
