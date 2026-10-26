@@ -6,6 +6,7 @@ chosen sequences into the game's sheet: src/assets/enemies/<c>-anim.webp + src/g
     --loops prints the best loop of each source sequence (outline match), to choose frames.
     --derim seq,seq cuts a pale "sticker" outline (an edit's, carried into its clip) off those sequences' frames: pale, nearly grey
     pixels joined to the transparent outside, within a few pixels of it, stopping at the dark outline.
+    --defringe gives every part-transparent edge pixel the colour of the nearest solid one (no grey line on a dark ground).
     --ground sets every frame's anchor height to its own feet (its lowest solid row), so a clip that drifts in depth stays on the line.
     --k K --units U adds <C>_K (world units per old px: draw a frame at K / ANIM_UP) and <C>_UNITS (his standing height) to the data.
     env W (default 2048) sheet width, Q (default 80) WebP quality, OUTDIR (default the game) where to write.
@@ -79,15 +80,31 @@ def derim(im, band=5):
     return Image.fromarray(a.astype(np.uint8), 'RGBA')
 
 
+def defringe(im):
+    """the key's soft edge keeps a little of the grey background in its colour (a thin light line round a figure on a dark dusk
+    ground): every part-transparent pixel takes the colour of the nearest solid one, its alpha unchanged"""
+    from scipy import ndimage
+    a = np.asarray(im).copy()
+    solid = a[..., 3] >= 250
+    if not solid.any():
+        return im
+    _, (iy, ix) = ndimage.distance_transform_edt(~solid, return_indices=True)
+    soft = (a[..., 3] > 0) & ~solid
+    a[..., :3][soft] = a[iy[soft], ix[soft], :3]
+    return Image.fromarray(a, 'RGBA')
+
+
 SEL = json.loads(sys.argv[4])
 DERIM = set((opt('--derim') or '').split(',')) - {''}
+DEFRINGE = '--defringe' in sys.argv
 frames, out_seqs = {}, {}
 for seq, (srcseq, idxs) in SEL.items():
     names = []
     for i in idxs:
         n = f'{seq}_{i:02d}'
         im = crop(f'{srcseq}_{i:02d}')
-        frames[n] = (derim(im) if seq in DERIM else im, fr[f'{srcseq}_{i:02d}'])
+        im = derim(im) if seq in DERIM else im
+        frames[n] = (defringe(im) if DEFRINGE else im, fr[f'{srcseq}_{i:02d}'])
         names.append(n)
     out_seqs[seq] = names
 Wd, pad = int(os.environ.get('W', '2048')), 2

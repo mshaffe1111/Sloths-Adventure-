@@ -24,6 +24,7 @@ import { DOZER_ATLAS_SIZE, DOZER_ATLAS_URL, DOZER_FRAMES } from './dozerAtlasDat
 import { PELL_ANIM, PELL_ANIM_SIZE, PELL_ANIM_UP, PELL_ANIM_URL, PELL_K, PELL_SEQ, PELL_UNITS } from './pellAnimData.ts';
 import { BLANKET_UNITS, MEECA_BLANKET_FRAMES, MEECA_BLANKET_SIZE, MEECA_BLANKET_UP, MEECA_BLANKET_URL } from './meecaBlanketData.ts';
 import { MEECA_UNITS } from './jennifurSprite.ts';
+import { SOLDIER_ANIM, SOLDIER_ANIM_SIZE, SOLDIER_ANIM_UP, SOLDIER_ANIM_URL, SOLDIER_K, SOLDIER_SEQ } from './soldierAnimData.ts';
 
 /** width and height of a WebP file, from its header */
 export function webpSize(path: string): { w: number; h: number } {
@@ -148,4 +149,16 @@ test('the blanket stills: the folded blanket and Meeca wrapped in it, at her sta
   assert.ok(Math.abs(frames.meeca_blanket.ay / MEECA_BLANKET_UP - MEECA_STAND_H) < 0.05 * MEECA_STAND_H);
   const k = MEECA_UNITS / MEECA_STAND_H / MEECA_BLANKET_UP;
   assert.ok(Math.abs(frames.blanket.w * k - BLANKET_UNITS) < 2);
+});
+
+test("the General's soldiers (Meeca's stage): two variants, each with a march, an idle and a look back, bigger than Pell", () => {
+  const want = ['a', 'b'].flatMap((v) => ['march', 'idle', 'turn', 'hold', 'back'].map((m) => `${m}_${v}`));
+  checkSheet('soldier', SOLDIER_ANIM_URL, SOLDIER_ANIM_SIZE, SOLDIER_ANIM, SOLDIER_SEQ, want);
+  for (const s of want) assert.ok(SOLDIER_SEQ[s].length >= 6, `${s} is a real animation (${SOLDIER_SEQ[s].length} frames)`);
+  for (const v of ['a', 'b']) assert.ok(SOLDIER_SEQ[`turn_${v}`].length / 12 >= 0.6, `soldier ${v}: the turn is a readable warning`);
+  anchoredOnGround('soldier', SOLDIER_ANIM, SOLDIER_SEQ);
+  // a different build from Pell's at a glance: they stand taller (same scale, the same cel pixels as his)
+  const tall = (frames: Record<string, AnimFrame>, names: readonly string[], k: number) => Math.max(...heights(frames, names, k));
+  const pell = tall(PELL_ANIM, PELL_SEQ.idle, PELL_K / PELL_ANIM_UP);
+  for (const v of ['a', 'b']) assert.ok(tall(SOLDIER_ANIM, SOLDIER_SEQ[`idle_${v}`], SOLDIER_K / SOLDIER_ANIM_UP) > pell, `soldier ${v} stands taller than Pell`);
 });
