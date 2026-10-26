@@ -3,7 +3,21 @@
 QA's running list from Matt's test-link sessions (Matt, 2026-10-26: Matt plays, QA reads the logs; send to the coders in one
 batch only when Matt says "send").
 
-## 1. Game froze at the start of a stage (Matt reported it as a crash) [blocker]
+## 1. Game froze, then the site crashed, after leaving the pause menu's Trophies / Jungle Cards [blocker]
+Matt's account: he opened the menu early in the stage, looked at the new medals (trophies), the Jungle Cards and so on, left the
+menu, and the game froze and then the site crashed. The log fits that: the game paused about 2 s in (no position or fps lines from
+then on, `mem` frozen at the same numbers, as a paused stage would be); about 2.5 minutes later a 106 ms long task tagged "menu"
+(158 s, leaving the menu); then 22 s of touches read as gestures (167 to 189 s) with Pokey not moving; then the page went
+away (`hidden` at 191.7 s). So the stage never came back from the pause after the Trophies / Jungle Cards screens.
+Repro to try: start a stage, open the Menu, open Trophies, then Jungle Cards (go back and forth), close the menu, and steer.
+Not logged: no `err` line. The early `blank` wait below may or may not be related.
+QA couldn't reproduce it in a quick headless pass (current dev build, 1-1 upright: Menu, Trophies, Jungle Journal, Library, Badges,
+Back, Jungle Cards, Back, Resume, then steering: the game resumed and Pokey ran). Differences from Matt's case: a real Android
+phone, about 2.5 minutes inside those screens, the control-test stage, the 15:52 build. A guess worth checking: the Trophy Room
+and Jungle Cards pull in many card pictures, and on a phone that could run out of graphics memory and get the page killed (the
+log's `mem` only counts script memory, 18 MB, so it wouldn't show). Do those screens release their pictures when closed?
+
+Earlier read of the same log, kept for the details:
 - Session `Matt 20261026-1558-mpcz`, build 2026-10-26T15:52:40, Android 498x1034 upright, control-test stage (mix: Bounce,
   Push the log, Snakes, Snapping turtles, Hide from the eagle, Lily pads), help "reminders".
 - What the log shows:
