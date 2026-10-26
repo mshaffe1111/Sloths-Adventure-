@@ -4,6 +4,7 @@ import { buildProtoStage, EXPERT_SECONDS, G, HAND_STAGES, stageSeconds } from '.
 import { validateStage } from './levelCheck.ts';
 import { reachJump } from './physics.ts';
 import { ROCK, rockFits } from './rockfall.ts';
+import { DT, RealPlay } from './realPlay.ts';
 import type { LevelConfig } from './types.ts';
 
 const cfg = (id: string, type: LevelConfig['objectiveType']): LevelConfig =>
@@ -131,5 +132,45 @@ test('4-2: the second twist rides the leaf on a high wind and turns the wind hal
     const c = chimeOf(back.i);
     assert.ok(c.y < G && st.platforms.some((p) => p.style === 'moss_stone' && p.y === c.y && p.x <= c.x && p.x + p.width >= c.x + 20), `seed ${s}: the turning chimes are not on a stone`);
     assert.ok(hintAt(/The wind turns halfway across/) < turn.z.x0, `seed ${s}: the turn is not taught`);
+  }
+});
+
+test('4-2 in the real engine: a short flick off the lesson perches drops him in a soft pit, two hops out either way, back up the trunk in seconds', () => {
+  for (const s of SEEDS.slice(0, 4)) {
+    const sim = new RealPlay('4-2', s);
+    const st = sim.stage as typeof sim.stage & { proto: { beats: Array<[number, number, string]> } };
+    const [b0, b1] = st.proto.beats.find((b) => b[2].startsWith('Learn'))!;
+    // the lesson's two drops: a trunk, its perch branch out to the edge, the pit
+    const perches = sim.platforms.filter((p) => p.style === 'branch' && p.x > b0 && p.x < b1 && sim.vines.some((v) => v.vineType === 'tree_climb' && v.x > p.x && v.x < p.x + p.width));
+    assert.equal(perches.length, 2, `seed ${s}`);
+    for (const perch of perches) {
+      const edge = perch.x + perch.width;
+      const tree = sim.vines.find((v) => v.vineType === 'tree_climb' && v.x > perch.x && v.x < edge)!;
+      // a quick flick from the perch's end, lifted at once: no leaf, a short hop
+      sim.stand(edge - 30, perch.y);
+      for (let f = 0; f < 60 && !(f > 4 && sim.p.grounded); f++) sim.frame({ right: true, jump: f < 2, press: f === 1 });
+      assert.ok(sim.p.grounded && !sim.died && sim.p.y > G + 60, `seed ${s}: the short hop did not land in the pit (${Math.round(sim.p.x)}, ${Math.round(sim.p.y)})`);
+      const pit = { x: sim.p.x, y: sim.p.y };
+      // out either way with plain jumps, steering at the wall and jumping each time he lands
+      for (const dir of [-1, 1] as const) {
+        sim.stand(pit.x, pit.y);
+        let t = 0;
+        for (; t < 120 && !(sim.p.grounded && sim.p.y === G); t++) {
+          const press = sim.p.grounded && t % 4 === 0;
+          sim.frame({ left: dir < 0, right: dir > 0, jump: press || (!sim.p.grounded && sim.p.vy < 0), press });
+          if (!sim.p.grounded) sim.p.jumpsLeft = 0; // (plain jumps only)
+        }
+        assert.ok(sim.p.y === G && !sim.died, `seed ${s}: no way out of the pit to the ${dir < 0 ? 'near' : 'far'} side with plain jumps`);
+        assert.ok(dir < 0 ? sim.p.x <= edge : sim.p.x > edge, `seed ${s}: out on the wrong side`);
+        if (dir < 0) {
+          // and back to the trunk and up it to the perch in a few seconds
+          let c = 0;
+          for (; c < 90 && Math.abs(sim.p.x - tree.x) > 10; c++) sim.frame({ left: sim.p.x > tree.x, right: sim.p.x < tree.x });
+          for (let k = 0; k < 150 && !(sim.p.grounded && sim.p.y === perch.y); k++, c++) sim.frame({ up: true });
+          assert.ok(sim.p.y === perch.y, `seed ${s}: not back on the perch`);
+          assert.ok((t + c) * DT < 6, `seed ${s}: ${((t + c) * DT).toFixed(1)} s from the pit back to the perch`);
+        }
+      }
+    }
   }
 });
