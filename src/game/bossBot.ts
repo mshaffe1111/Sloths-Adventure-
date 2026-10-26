@@ -327,8 +327,18 @@ export class BossBot {
     return { x: ok ? px : Math.max(s.x - 30, Math.min(s.x + s.w + 30, x)), ok, face };
   }
 
+  /** note, for the opening under way, when the bot noticed it and when it stood where a hit lands (the fairness numbers) */
+  private mark(s: Rect, ok: boolean) {
+    const o = this.sim.cur;
+    const spot = this.sim.open ? this.sim.spot : null;
+    if (!o || !spot || s !== spot && (s.x !== spot.x || s.y !== spot.y)) return;
+    if (o.seen < 0) o.seen = this.sim.t - o.t0;
+    if (ok && o.reach < 0) o.reach = this.sim.t - o.t0 - o.seen;
+  }
+
   private goHit(pad: Pad, s: Rect, ledge: Ledge | null) {
     const p = this.p;
+    this.mark(s, false);
     if (p.climbing || (p.grounded && (this.on?.id ?? -1) !== (ledge?.id ?? -1))) {
       this.goStand(pad, s.x + s.w / 2, ledge);
       return;
@@ -336,6 +346,7 @@ export class BossBot {
     const feet = ledge ? this.live(ledge).y : this.floor;
     if (p.grounded && this.groundReach(s, feet)) {
       const h = this.hitX(s, GROUND);
+      this.mark(s, h.ok);
       if (h.ok) {
         if (h.face > 0) pad.right = true;
         else pad.left = true;
@@ -362,6 +373,7 @@ export class BossBot {
     else pad.left = true;
     this.airControl(pad);
     const inY = p.y + AIR.y0 < s.y + s.h - 8 && p.y + AIR.y1 > s.y + 8;
+    if (h.ok && inY) this.mark(s, true);
     if (h.ok && inY && !this.kicked) {
       this.kicked = true;
       this.queued.push({ at: this.sim.t + this.o.tapLag * 0.5, what: 'punch' });

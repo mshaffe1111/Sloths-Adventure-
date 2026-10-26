@@ -1219,7 +1219,7 @@ function drawWeakPoint(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDe
     return;
   }
   // the last half second of the opening it flickers: time to get clear
-  if (openLeft(b, def, isEasy() ? EASY_OPEN_MUL : 1) < 0.5 && Math.sin(time * 40) < -0.2) {
+  if (def.openCue && openLeft(b, def, isEasy() && def.openCue ? EASY_OPEN_MUL : 1) < 0.5 && Math.sin(time * 40) < -0.2) {
     ctx.restore();
     return;
   }

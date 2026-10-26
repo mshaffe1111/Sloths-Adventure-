@@ -10,7 +10,7 @@ import { headlessScreen } from './bossPlayDom.ts';
 import { GameEngine } from './engine.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { reloadDifficulty, DIFFICULTY_KEY } from './difficulty.ts';
-import { EASY_OPEN_MUL, openLeft, weakOpen, weakRect } from './bossAI.ts';
+import { EASY_OPEN_MUL, openLeft, opensSoon, weakOpen, weakRect } from './bossAI.ts';
 import type { BossDef } from './bossAI.ts';
 import type { BossEntity, InputState, LevelConfig, PlayerState } from './types.ts';
 
@@ -91,6 +91,15 @@ export interface Opening {
   full: number;
   /** it was cut short by a new phase or the last hit, not by its own end */
   cut: boolean;
+  /** seconds from the bot noticing it to standing where a hit lands (bossBot.ts; -1: never got there) */
+  reach: number;
+  /** seconds from it opening to the bot noticing it */
+  seen: number;
+  /** the weak point was warming up (the warning glow) in the frame before it opened */
+  warned: boolean;
+  /** frames it was open, and frames of those the glowing spot was wholly off the screen */
+  frames: number;
+  offscreen: number;
 }
 
 /** the engine's private parts this harness reads and sets (a test seam: the names are the engine's own) */
@@ -108,7 +117,7 @@ export class BossPlay {
   /** the boss went down */
   won = false;
   lost = false;
-  private cur: Opening | null = null;
+  cur: Opening | null = null;
   private hp0 = 0;
 
   constructor(readonly id: string, readonly easy = false, screen: { w: number; h: number } = { w: 844, h: 390 }) {
@@ -198,12 +207,20 @@ export class BossPlay {
   }
 
   /** note the openings as they come and go */
+  private soon = false;
   private watch() {
     const b = this.boss;
+    const soon = opensSoon(b, this.def);
     const open = this.open && !this.beaten;
+    if (open && this.cur) {
+      const c = this.e.camera;
+      const s = this.spot!;
+      this.cur.frames++;
+      if (!(s.x + s.w > c.x && s.x < c.x + c.viewportWidth && s.y + s.h > c.y && s.y < c.y + c.viewportHeight)) this.cur.offscreen++;
+    }
     if (open && !this.cur) {
       const st = b.ai!.state as 'rec' | 'stun';
-      this.cur = { move: st === 'stun' ? `${b.ai!.move ?? '?'}:stun` : b.ai!.move ?? '?', state: st, t0: this.t, dur: 0, px: this.p.x, py: this.p.y, spot: { ...this.spot! }, taken: 0, firstHit: -1, full: openLeft(b, this.def, this.easy ? EASY_OPEN_MUL : 1) + DT, cut: false };
+      this.cur = { move: st === 'stun' ? `${b.ai!.move ?? '?'}:stun` : b.ai!.move ?? '?', state: st, t0: this.t, dur: 0, px: this.p.x, py: this.p.y, spot: { ...this.spot! }, taken: 0, firstHit: -1, full: openLeft(b, this.def, this.easy ? EASY_OPEN_MUL : 1) + DT, cut: false, reach: -1, seen: -1, warned: this.soon, frames: 0, offscreen: 0 };
       this.hp0 = b.hp;
     } else if (open && this.cur) {
       // a recovery that turns into a stun (or the other way) is still one opening
@@ -218,6 +235,7 @@ export class BossPlay {
       this.openings.push(this.cur);
       this.cur = null;
     }
+    this.soon = soon;
   }
 
   /** stand still for this many seconds */

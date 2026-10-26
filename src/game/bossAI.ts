@@ -286,6 +286,9 @@ export interface BossDef {
   openAfter?: string[];
   /** damage one opening can take: after that he pulls back (so each opening is one clear win, not a free-for-all) */
   openCap?: number;
+  /** the opening is announced: the weak point warms up in the attack's last moments, a chime and a NOW! when it opens, and it flickers
+   *  as it closes (bossArt.ts, engine.ts; the fairness pass: bossFair.test.ts) */
+  openCue?: boolean;
   /** the guide's lines for this fight: at the start, and at each new phase (said once per device) */
   guide?: { start?: string; 2?: string; 3?: string };
   /** where the floor sits in the view (0..1 from the top; the usual 0.7 leaves a band of earth under a low fight) */
@@ -356,7 +359,7 @@ export function openLeft(b: BossEntity, def: BossDef, openMul = 1): number {
 /** the attack is about to end in an opening (its last `lead` seconds): the weak point warms up so the opening is seen coming */
 export function opensSoon(b: BossEntity, def: BossDef, lead = 0.4): boolean {
   const br = b.ai;
-  if (!br || br.state !== 'act' || !br.move) return false;
+  if (!br || !def.openCue || br.state !== 'act' || !br.move) return false;
   const m = def.moves[br.move];
   if (!m || (def.openAfter && !def.openAfter.includes(br.move))) return false;
   return br.t >= m.act - lead;

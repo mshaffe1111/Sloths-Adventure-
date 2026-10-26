@@ -363,7 +363,7 @@ test('a shadow step that comes out in a moon pool is caught and stunned; one in 
   const caught = run(left + PROWLER_POOLS[1] - (half + 20));
   assert.ok(inMoonPool(caught.x, left));
   assert.ok(caught.ai!.d.crashed, 'caught by the light');
-  assert.equal(prowler.moves.shadowStep.stunAfter!(caught), 2.1);
+  assert.equal(prowler.moves.shadowStep.stunAfter!(caught), 2.7); // (2.1 until the fairness pass: bossFair.test.ts)
   assert.ok(half > 0);
   // the hero in the shadows in the middle: he comes out in the dark and is not caught
   const free = run(left + 750);

@@ -176,6 +176,7 @@ const VENOM: BossDef = {
   hp: 12,
   hits: 6,
   openCap: 4,
+  openCue: true,
   weakAt: (b, floor) => venomWeak(b, floor),
   openAfter: ['sweep'],
   aimText: 'HIT HIS HEAD WHEN IT IS DOWN!',
@@ -259,6 +260,7 @@ const CROC: BossDef = {
   hits: 12,
   // an opening after a move takes a jab, a cross and a hook (two segments), then he pulls back; a crash into the wall is not capped
   openCap: 4,
+  openCue: true,
   // his one weak point is the head. It is low, so the trick is not reaching it but being there in the opening: right after a move
   // (the jaws are held open on recovery) or while he is dizzy. Measured from the painted frames: the head sits at 160 / 150 in the
   // recovery pose (hurt) and at 150 / 45 in the stagger, where it hangs almost to the mud
@@ -303,8 +305,8 @@ const CROC: BossDef = {
       tell: 0.7,
       act: 0.4,
       // the whip spins him round, and he lurches on toward you with his jaws open: the opening comes to you
-      rec: 1.8,
-      recStep: { speed: 260, stop: 235 },
+      rec: 2.3,
+      recStep: { speed: 340, stop: 235 },
       max: 340,
       pose: 'whip',
       tick: (b, c) => {
@@ -315,8 +317,8 @@ const CROC: BossDef = {
     mudSurge: {
       tell: 0.95,
       act: 0.15,
-      rec: 1.8,
-      recStep: { speed: 260, stop: 235 },
+      rec: 2.4,
+      recStep: { speed: 340, stop: 235 },
       phase: 2,
       pose: 'slam',
       onAct: (b, c) => {
@@ -331,8 +333,8 @@ const CROC: BossDef = {
     geysers: {
       tell: 1.0,
       act: 0.3,
-      rec: 1.8,
-      recStep: { speed: 260, stop: 235 },
+      rec: 2.4,
+      recStep: { speed: 340, stop: 235 },
       phase: 2,
       pose: 'roar',
       onTell: (b, c) => {
@@ -375,6 +377,7 @@ const PROWLER: BossDef = {
   hits: 14,
   // an opening after a move takes a jab, a cross and a hook (two segments), then he pulls back; a stun in the moonlight is not capped
   openCap: 4,
+  openCue: true,
   // He has no one weak point. Where it opens depends on what he has just done, and the glow shows where: the glowing eyes after a shadow
   // step (he is right at you), the throat after the claw combo, the arched back after a pounce (jump onto it), the tail after the dash
   // (it swings round toward you), and the belly when he is stunned. The ember while he is covered sits on the head
@@ -409,7 +412,7 @@ const PROWLER: BossDef = {
       tell: 0.55,
       act: 0.7,
       // (the openings are timed to be reached: bossFair.test.ts)
-      rec: 1.8,
+      rec: 2.3,
       height: 230,
       min: 260,
       onLand: (b, c) => {
@@ -423,10 +426,10 @@ const PROWLER: BossDef = {
     shadowStep: {
       tell: 0.55,
       act: 0.3,
-      rec: 1.7,
+      rec: 2.5,
       pose: 'fade',
       crashText: 'CAUGHT IN THE MOON!',
-      stunAfter: () => 2.1,
+      stunAfter: () => 2.7,
       // the first time, say what the light is for
       onTell: (b, c) => {
         if (prowlerHinted.has(b)) return;
@@ -464,7 +467,7 @@ const PROWLER: BossDef = {
       tell: 0.5,
       act: 1.0,
       // the last slash overreaches and he stumbles on after you, throat open
-      rec: 2.0,
+      rec: 2.5,
       recStep: { speed: 260, stop: 150 },
       max: 330,
       pose: 'bite',
@@ -477,7 +480,7 @@ const PROWLER: BossDef = {
     },
     // a lightning dash from one end of the arena to the other, low enough to jump
     streak: (() => {
-      const m = chargeMove({ tell: 0.65, maxT: 1.2, rec: 2.1, speed: 800, phase: 2, min: 300 });
+      const m = chargeMove({ tell: 0.65, maxT: 1.2, rec: 2.5, speed: 800, phase: 2, min: 300 });
       const base = m.tick!;
       m.tick = (b, c, dt, t) => {
         base(b, c, dt, t);
@@ -486,6 +489,8 @@ const PROWLER: BossDef = {
       };
       // he skids to a stop facing the fence he ran at, so the tail he is weak at swings out toward the middle, where you are
       m.recHoldFacing = true;
+      // and he backs off the fence toward you, tail lashing, so a dash that ended far away still brings the tail to you
+      m.recStep = { speed: 300, stop: 260 };
       return m;
     })(),
   },
