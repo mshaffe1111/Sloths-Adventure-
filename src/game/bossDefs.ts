@@ -190,6 +190,11 @@ const VENOM: BossDef = {
   hits: 6,
   openCap: 4,
   openCue: true,
+  // (QA gate: said at the third phase while she stood on open ground) said when Pokey first stands on the cracking stump
+  crackTip: "The stump is cracking now. Don't stay on it too long!",
+  // his coils never hurt by touch: only the lunge's head and neck do, after the rear-back (QA gate: a heart lost standing against
+  // the coils while he sat up)
+  bodyGrace: 99,
   // (2026-10-26, QA: the first lunge came 1.2 s after Dot's tip, before it could be read) he sizes you up first, and he hisses as
   // he rears back
   firstIdle: 3.2,
@@ -208,7 +213,6 @@ const VENOM: BossDef = {
     // (short: four lines of it covered the treetop it sends you to, sideways)
     start: 'When he rears back, get off the ground: the tree, the stump or the vine. Then punch his head!',
     2: 'Little snakes! Punch them, and keep an eye on Venom Fang.',
-    3: "The stump is cracking now. Don't stay on it too long!",
   },
   // three ways off the floor: the vine up the wall tree by the left fence, the stump (a double jump), and the liana in the middle
   climbs: [20],
@@ -235,6 +239,7 @@ const VENOM: BossDef = {
       act: VF.act,
       rec: 3.8,
       pose: 'lunge',
+      softBody: true,
       interruptible: false,
       // (aimed at you: the floor flash follows you through the wind-up and the head comes down at your feet, so the opening is in reach
       // wherever you dodged: bossFair.test.ts)
@@ -262,6 +267,7 @@ const VENOM: BossDef = {
       phase: 2,
       weight: 0.7,
       pose: 'roar',
+      softBody: true,
       interruptible: false,
       when: (_b, c) => c.minionsAlive === 0,
       onAct: (_b, c) => {

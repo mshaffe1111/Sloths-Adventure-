@@ -269,7 +269,9 @@ test('3-10: the dash is taught, its path glows, and a double jump as he comes cl
       for (let i = 0; i < 120 && state() !== 'rec'; i++) {
         if (state() === 'tell' && tellAt < 0) tellAt = sim.t;
         let pad = {};
-        if (kind === 'double' && tellAt >= 0 && sim.t - tellAt >= after) {
+        // (the first dash, which Dot names, winds up longer: count from where a later one's wind-up would have begun)
+        const extra = ((br.d.firstMul ?? 1) - 1) * sim.def.moves.streak.tell;
+        if (kind === 'double' && tellAt >= 0 && sim.t - tellAt >= after + extra) {
           if (step === 0) {
             pad = { press: true };
             step = 1;
