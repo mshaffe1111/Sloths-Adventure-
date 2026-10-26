@@ -425,30 +425,48 @@ export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0
  * ledge beside it, and it set him down there in the middle of a pump, which players read as the vine letting go (QA, 2026-10-26). So:
  *  - a platform under the vine's hanging point, his feet within 14 px of its top (he climbed down onto it, and they would otherwise
  *    sink into it): 'land', as before;
- *  - a ledge out to one side: when he steers toward it (against the swing, which on the way down carries him away from it), from up to
- *    `reach` px above its top ('step' when he is above it: he steps off and drops onto it); or with no steer held, his feet within
- *    14 px, near the end of the swing's stroke (`apexOmega`), where the swing slows and turns. Never while he pumps the swing away from
- *    it, nor as the swing sweeps him past its corner.
+ *  - a ledge out to one side: when he holds down and toward it together for `heldS`, from up to `reach` px above its top ('step' when he is above
+ *    it: he steps off and drops onto it); or with his thumb off the steering for `idleS`, his feet within 14 px, near the end of the
+ *    swing's stroke (`apexOmega`), where the swing slows and turns.
+ * A sideways steer on its own is never getting off: a thumb pumping the swing holds toward the ledge for half of every stroke, and the
+ * first version, which stepped off on a steer toward it, stepped QA's pumping bot off at the first pump after a climb down (v192).
  * `dy`: his feet below the platform's top (px; negative = above it).
  */
 export const SWING_LAND = {
   /** rad/s: slower than this is the end of a stroke (a full timed swing peaks at about 2.6 rad/s on Normal, 2.2 on Easy) */
   apexOmega: 1.0,
-  /** px above a ledge's top that steering toward it steps off onto it */
+  /** px above a ledge's top that holding down and toward it steps off onto it */
   reach: 40,
+  /** seconds with no steer held before a hands-off landing (a pumping thumb passes through no steer between strokes) */
+  idleS: 0.3,
+  /**
+   * seconds down and the same sideways steer must be held together, against the swing's motion, to get off that way: a thumb pumping
+   * the swing turns round with it every stroke (a beat late at most, about a third of a second), and its count starts again
+   */
+  heldS: 0.5,
 };
+export interface SwingHands {
+  /** the sideways steer held */
+  steer: -1 | 0 | 1;
+  /** down is held (climbing down) */
+  down: boolean;
+  /** seconds since a sideways steer was last held */
+  idle: number;
+  /** seconds down and this same steer have been held together against the swing (engine.ts swingDownHeld) */
+  held: number;
+}
 export function swingLanding(
   s: { angle: number; omega: number },
   vineX: number,
   plat: { x: number; width: number },
-  steer: -1 | 0 | 1,
+  hands: SwingHands,
   dy: number,
 ): 'land' | 'step' | null {
   if (dy >= 14) return null;
   if (vineX >= plat.x - 10 && vineX <= plat.x + plat.width + 10) return dy > -14 ? 'land' : null;
   const side = plat.x + plat.width / 2 < vineX ? -1 : 1;
-  if (steer === side) return dy > -14 ? 'land' : dy > -SWING_LAND.reach ? 'step' : null;
-  if (steer !== 0) return null;
+  if (hands.steer === side && hands.down && hands.held >= SWING_LAND.heldS) return dy > -14 ? 'land' : dy > -SWING_LAND.reach ? 'step' : null;
+  if (hands.steer !== 0 || hands.idle < SWING_LAND.idleS) return null;
   return dy > -14 && Math.abs(s.omega) < SWING_LAND.apexOmega ? 'land' : null;
 }
 
@@ -462,8 +480,12 @@ export function inSweetSpot(s: SwingState, dir: -1 | 1): boolean {
 /**
  * Letting go. In the sweet spot it is the old Tarzan leap toward `dir` (forward and up, enough to reach the next vine). Anywhere else he
  * simply flies off the way the vine was carrying him, with a small hop: on the backswing he goes backward, at the top he drops.
+ * `leaned`: the flick that let go leaned toward `dir` (touchGestures.ts leanSlant). Then, out of the sweet spot, he still hops that way
+ * (at least `LEAN_HOP`), never the way the vine was going against the flick: a flick up and left on a swing going right flew him right
+ * (QA, 1-6 v192).
  */
-export function timedLaunch(s: SwingState, dir: -1 | 1): { vx: number; vy: number; sweet: boolean } {
+export const LEAN_HOP = 130;
+export function timedLaunch(s: SwingState, dir: -1 | 1, leaned = false): { vx: number; vy: number; sweet: boolean } {
   const tang = s.omega * s.len;
   const vx = Math.cos(s.angle) * tang;
   const vy = -Math.sin(s.angle) * tang;
@@ -472,7 +494,8 @@ export function timedLaunch(s: SwingState, dir: -1 | 1): { vx: number; vy: numbe
     return { ...l, sweet: true };
   }
   // anywhere else he only lets go: a small hop off the vine with part of its speed, never a fling up the screen or back the way he came
-  return { vx: Math.max(-300, Math.min(300, vx * 0.6)), vy: Math.max(vy * 0.6, -260) - 120, sweet: false };
+  const hopVx = leaned ? dir * Math.min(300, Math.max(LEAN_HOP, dir * vx * 0.6)) : Math.max(-300, Math.min(300, vx * 0.6));
+  return { vx: hopVx, vy: Math.max(vy * 0.6, -260) - 120, sweet: false };
 }
 
 /**

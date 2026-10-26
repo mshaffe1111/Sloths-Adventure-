@@ -448,6 +448,10 @@ export class GameEngine {
   private climbAssist = 0;
   /** same for a liana: the jump press that caught it is not also the leap off it */
   private swingGrace = 0;
+  /** seconds since a sideways steer was last held on the swing (physics.ts swingLanding: a hands-off landing) */
+  private swingIdle = 0;
+  /** down and a sideways steer held together on the swing, and for how long (getting off onto a ledge beside it) */
+  private swingDownHeld: { dir: number; t: number } = { dir: 0, t: 0 };
   /** seconds until the next sweet-spot glint on a swinging vine */
   private sweetGlint = 0;
   /** 0..1: the golden glow round him while he is in the sweet spot (eased in and out) */
@@ -1436,6 +1440,8 @@ export class GameEngine {
         p.isDoubleJumping = false;
         p.somersaultAngle = 0;
         this.swingGrace = 0.25;
+        this.swingIdle = 0;
+        this.swingDownHeld = { dir: 0, t: 0 };
         this.input.state.jumpPressed = false;
         this.jumpBufferTimer = 0;
         sound.playVineGrab();
@@ -1443,6 +1449,15 @@ export class GameEngine {
 
       if (p.isVineSwinging && nearSwingVine) {
         this.swingGrace = Math.max(0, this.swingGrace - dt);
+        this.swingIdle = this.input.state.left || this.input.state.right ? 0 : this.swingIdle + dt;
+        {
+          const st = this.input.state;
+          const dir = st.down ? (st.left ? -1 : st.right ? 1 : 0) : 0;
+          // (only the time it is held against the swing counts, kept while the swing comes back its way: a thumb pumping the swing
+          // turns round with it every stroke and starts again, a thumb holding to get off adds up over a swing or so)
+          const against = dir !== 0 && dir !== Math.sign(p.swingAngularVelocity || 0);
+          this.swingDownHeld = dir !== 0 && dir === this.swingDownHeld.dir ? { dir, t: this.swingDownHeld.t + (against ? dt : 0) } : { dir, t: 0 };
+        }
         if (this.swingGrace > 0) this.input.state.jumpPressed = false;
         p.grounded = false;
         p.somersaultAngle = 0;
@@ -1520,7 +1535,7 @@ export class GameEngine {
             // a press a beat after the sweet spot, while still out in front (the forward end of the swing): the leap it would have given
             const snap = this.sweetSnap;
             const call = releaseCall(sw, releaseDir as 1 | -1, snap && snap.dir === releaseDir ? this.gameTime - snap.at : Infinity);
-            const l = timedLaunch(call === 'late' && snap ? snap : sw, releaseDir as 1 | -1);
+            const l = timedLaunch(call === 'late' && snap ? snap : sw, releaseDir as 1 | -1, this.input.state.jumpLean === releaseDir);
             p.vx = l.vx;
             p.vy = l.vy;
             this.launched = l.sweet;
@@ -1541,11 +1556,12 @@ export class GameEngine {
         // beside it, and it set him down there in the middle of a pump, which read as the vine letting go, QA 2026-10-26)
         else {
           const steer = this.input.state.right ? 1 : this.input.state.left ? -1 : 0;
+          const hands = { steer: steer as -1 | 0 | 1, down: this.input.state.down, idle: this.swingIdle, held: this.swingDownHeld.t };
           for (const plat of this.platforms) {
             if (p.x >= plat.x - 10 && p.x <= plat.x + plat.width + 10 && p.vy >= 0 && p.y < plat.y + 14 && p.y > plat.y - SWING_LAND.reach) {
-              const how = swingLanding({ angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0 }, nearSwingVine.x, plat, steer, p.y - plat.y);
+              const how = swingLanding({ angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0 }, nearSwingVine.x, plat, hands, p.y - plat.y);
               if (how === 'step') {
-                // steering toward a ledge just below his feet: he steps off and drops onto it
+                // down and toward a ledge just below his feet: he steps off and drops onto it
                 p.isVineSwinging = false;
                 nearSwingVine.isSwingingVine = false;
                 p.vx = (plat.x + plat.width / 2 < nearSwingVine.x ? -1 : 1) * 140;

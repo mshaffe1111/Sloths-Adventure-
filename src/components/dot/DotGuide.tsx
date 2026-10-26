@@ -529,7 +529,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
 
       // the queue
       const danger = !v.flight && (inDanger(v) || v.boss || v.chase);
-      run.queue.tick(run.clock, { danger, moveCount: (m) => run.moves.count(m) });
+      run.queue.tick(run.clock, { danger, moveCount: (m) => run.moves.count(m), swinging: run.view.swinging });
       for (const ev of run.queue.drain()) {
         if (ev.type === 'start') {
           noteSaid(ev.show.line);
