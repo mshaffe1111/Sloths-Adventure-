@@ -2,18 +2,21 @@
 and `screechAir` (hovering, wings spread wide, beak open, talons out).
 
     python3 -I tools/art/w4/sovscreech/pack_screech.py [--perch sov-screech-perch-final.png] [--air sov-screech-air-final.png]
-                                                       [--flip-perch] [--flip-air] [--perch-h 145] [--air-h 145]
+                                                       [--flip-perch] [--flip-air] [--perch-h 122] [--air-h 124]
                                                        [--perch-ay 0.94] [--perch-beak X,Y] [--air-beak X,Y]
 
-The frames in the game (2026-10-26) were packed from the finals with --air-beak 138,81 (the guess picks a wing tip there).
+The frames in the game (2026-10-26, second pass) were packed from the finals with the defaults and --air-beak 116,63 (the guess
+picks a wing tip there). The finals are stills/sov-screech-perch-3.png and stills/sov-screech-air-1.png on the HF repo.
 
 The sources are PNGs on flat grey (#808080) like her other pose sources, facing RIGHT (pass --flip-* for one facing left). For each:
   - the grey is keyed out from the edges inwards (only grey joined to the border goes, so grey feathers inside her stay), with a
     soft edge, and the result is trimmed;
   - it is scaled to her other frames' size, judged by her head and body (not the box: the poses are taller than her others, the
-    perch one upright and the air one with the wings raised): both 145 px tall by default, which on the drafts of 2026-10-25 put
-    her head the size it is in `idle` and `alert`, so she does not grow or shrink when she screams (check, and pass --perch-h /
-    --air-h for a final that is framed differently);
+    perch one upright and the air one with the wings raised): 122 / 124 px tall by default, which on the finals puts her head and
+    body the size they are in `idle` and `alert` (145 left her head half as big again), so she does not grow when she screams;
+  - it is roughened to her sheet frames' finish (`roughen`, --no-rough to skip): point-sampled down from twice the size for the
+    same crunchy feather edges, sharpened, a little less colour (--sat), a hard alpha edge, and the generation's black outline
+    shaved off (--erode px);
   - its colours are pulled to her painted frames' tone (the mean and spread of each channel), with a little grain (--grain, or
     --no-tone to keep the source colours): the generations are cleaner and lighter than her sheet;
   - the anchor is set like her other frames: the perch pose on its feet (`--perch-ay`, a share of its height: the feet on the
@@ -96,6 +99,26 @@ def match_tone(im: Image.Image, ref: Image.Image, grain: float) -> Image.Image:
     return Image.fromarray(out.astype(np.uint8), 'RGBA')
 
 
+def roughen(im: Image.Image, w: int, h: int, sat: float, erode: int) -> Image.Image:
+    """make a clean generation read like her painted frames: drawn at twice the size and taken down by point sampling (the crunchy,
+    aliased feather edges her sheet frames have), sharpened, its colour a little flatter, and the generation's dark outline shaved
+    off (`erode` px of the edge: her other frames have no black contour)"""
+    from PIL import ImageFilter
+    big = im.resize((w * 2, h * 2), Image.LANCZOS)
+    small = big.resize((w, h), Image.NEAREST)
+    rgb = small.convert('RGB').filter(ImageFilter.UnsharpMask(radius=1.2, percent=120, threshold=2))
+    a = np.asarray(rgb).astype(np.float32)
+    grey = a.mean(axis=2, keepdims=True)
+    a = grey + (a - grey) * sat
+    al = np.asarray(small.getchannel('A')).astype(np.float32)
+    al = np.where(al > 110, 255.0, 0.0)  # hard edge like the sheet frames
+    for _ in range(erode):
+        al = np.minimum.reduce([al, np.roll(al, 1, 0), np.roll(al, -1, 0), np.roll(al, 1, 1), np.roll(al, -1, 1)])
+    out = Image.fromarray(np.dstack([np.clip(a, 0, 255), al]).astype(np.uint8), 'RGBA')
+    box = out.getchannel('A').getbbox()
+    return out.crop(box) if box else out
+
+
 def beak_guess(im: Image.Image) -> tuple[int, int]:
     """the beak of a right-facing pose: the rightmost solid pixel in the top 45% of the frame"""
     al = np.asarray(im.getchannel('A'))
@@ -113,8 +136,11 @@ def main():
     ap.add_argument('--air', default=str(H / 'sov-screech-air-final.png'))
     ap.add_argument('--flip-perch', action='store_true')
     ap.add_argument('--flip-air', action='store_true')
-    ap.add_argument('--perch-h', type=int, default=145)
-    ap.add_argument('--air-h', type=int, default=145)
+    ap.add_argument('--perch-h', type=int, default=122)
+    ap.add_argument('--air-h', type=int, default=124)
+    ap.add_argument('--no-rough', action='store_true', help='plain resize, keep the generation\'s clean edges and outline')
+    ap.add_argument('--sat', type=float, default=0.8, help='colour kept by the roughening (1 = all)')
+    ap.add_argument('--erode', type=int, default=1)
     ap.add_argument('--perch-ay', type=float, default=0.94)
     ap.add_argument('--perch-beak')
     ap.add_argument('--air-beak')
@@ -135,7 +161,8 @@ def main():
         if flip:
             im = im.transpose(Image.FLIP_LEFT_RIGHT)
         k = (o.perch_h if name == 'screechPerch' else o.air_h) / im.height
-        im = im.resize((max(1, round(im.width * k)), max(1, round(im.height * k))), Image.LANCZOS)
+        tw, th = max(1, round(im.width * k)), max(1, round(im.height * k))
+        im = im.resize((tw, th), Image.LANCZOS) if o.no_rough else roughen(im, tw, th, o.sat, o.erode)
         if not o.no_tone:
             im = match_tone(im, base, o.grain)
         given = o.perch_beak if name == 'screechPerch' else o.air_beak

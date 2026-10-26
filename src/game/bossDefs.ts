@@ -555,8 +555,22 @@ const skyGround = (b: BossEntity, c: BossCtx) => {
   return g;
 };
 
+/** her low hover in an opening (bossAI settles a flyer to 35% of her hover), and onto the rock under her if there is one */
+export const SKY_LOW = 150 * 0.35;
+/** in the opening after a move she settles there quickly, so the glowing spot holds still while he gets to it */
+const skySettle = (b: BossEntity, c: BossCtx, dt: number) => {
+  const br = b.ai!;
+  br.air += (Math.max(skyGround(b, c), SKY_LOW) - br.air) * Math.min(1, dt * 6);
+  if (br.air < 1) br.air = 0;
+};
+
 /** how long into the dive's wind-up the mark follows him before it locks */
 export const DIVE_LOCK = 0.45;
+/** the beak lunge: she commits to where he is this far into its wind-up, and it reaches this high (a double jump clears it) */
+export const RAKE_COMMIT = 0.42;
+export const RAKE_TOP = 140;
+/** the sky sweep pulls up this far past him */
+export const SWEEP_PAST = 300;
 
 /** where she comes down after a screech: off the rock she screamed from (on his side of it), or where she is; never on a rock */
 export function screechLanding(b: BossEntity, c: BossCtx): number {
@@ -596,19 +610,28 @@ const SOVEREIGN: BossDef = {
   // sixteen hits, two hit points a hit
   hp: 32,
   hits: 16,
-  // Three openings, each long enough to get to (Matt, 2026-10-26: reach it from where you dodged, plus 0.8 s to react and 0.6 s to hit;
-  // sovereign.test.ts checks every one with the real run and jump): slammed into a rock (or, once the rocks are gone, crashed on the
-  // floor) her head lies low (weakStun) and her back can be landed on (stompSpot); after a screech she comes down hoarse, her head low
-  // (the beak pose). Every other move is only to dodge. The ember while she is covered sits on the head
+  // She has no one weak point: it opens where her last move left her, and the glow shows where. Every opening is long enough to get to
+  // (Matt, 2026-10-26: reach it from where you dodged, plus 0.8 s to react and 0.6 s to hit; sovereign.test.ts checks every one with the
+  // real run and jump). Slammed into a rock (or, once the rocks are gone, crashed on the floor) her head lies low (weakStun) and her back
+  // can be landed on (stompSpot); after a screech she comes down hoarse, her head low. The white chest after the feather volley (wings
+  // flung wide), the talons after the sweep, the back between her wings after the snatch, the head, low, after the beak lunge, and her
+  // heaving breast after the gust. The ember while she is covered sits on the head
   weak: { dx: 40, dy: 150, w: 120, h: 110 },
   weakByMove: {
+    featherVolley: { dx: 16, dy: 102, w: 120, h: 120 },
+    skySweep: { dx: 68, dy: 24, w: 150, h: 100 },
+    snatch: { dx: -20, dy: 140, w: 160, h: 100 },
+    talonRake: { dx: 133, dy: 102, w: 130, h: 120 },
     screech: { dx: 133, dy: 102, w: 130, h: 120 },
+    wingGust: { dx: 56, dy: 64, w: 140, h: 100 },
   },
   weakStun: { dx: 94, dy: 102, w: 130, h: 120 },
-  openAfter: ['screech'],
+  // (not after a dive that pulls up on open floor: the rocks are the way in)
+  openAfter: ['featherVolley', 'skySweep', 'snatch', 'talonRake', 'screech', 'wingGust'],
   // each slam is one clear win: two hits on the head, or the leaf onto her back (so the rocks carry most of the fight, not all of it)
   stunCap: 4,
-  openCap: 4,
+  // (and the opening after any other move is one hit: the glow is a chance, the rocks are the plan)
+  openCap: 1,
   // her humped back in the stunned crouch: land on it from a rock or a ledge
   stompSpot: { dx: -45, dy: 168, w: 170, h: 56 },
   aimText: 'TOO TOUGH! HIT THE GLOW',
@@ -732,8 +755,10 @@ const SOVEREIGN: BossDef = {
     featherVolley: {
       tell: 0.85,
       act: 0.7,
-      rec: 1.2,
+      rec: 2.9,
       min: 180,
+      // (near enough that the opening it leaves can be reached: sovereign.test.ts)
+      max: 440,
       pose: 'spit',
       guide: 'Feathers! Duck behind a rock!',
       onAct: (b, c) => {
@@ -756,28 +781,31 @@ const SOVEREIGN: BossDef = {
           for (let i = -1; i <= 1; i++) aimed(c, b.x, b.y, ang + i * 0.28, 360, '#fde68a', '#92400e').look = 'feather';
         }
       },
+      recTick: skySettle,
     },
     // she drops to the floor beside you and lunges with her beak. The head is low and open when it is over. She stops short of a rock
     talonRake: {
       tell: 0.85,
       act: 0.55,
-      rec: 1.3,
+      rec: 2.3,
       min: 230,
-      max: 600,
+      max: 480,
       pose: 'lunge',
       guide: 'She\'s landing to bite! Jump out of the way!',
-      // (not from over a rock: she lands on the floor for this one)
-      when: (b, c) => skyGround(b, c) === 0,
+      // (not from over a rock: she lands on the floor for this one, and only with open floor between them, so she ends by him)
+      when: (b, c) => skyGround(b, c) === 0 && !standing(c.pillars).some((p) => (p.x - b.x) * (c.px - p.x) > 0),
       tellTick: (b, c, dt) => {
         const br = b.ai!;
         br.air += (0 - br.air) * Math.min(1, dt * 5);
         if (br.air < 1) br.air = 0;
+        // she picks her spot halfway through the wind-up (when she stops turning to follow him): backing off after that is a dodge
+        if (br.d.aimX === undefined && br.t >= RAKE_COMMIT) br.d.aimX = c.px;
       },
       onAct: (b, c) => {
         const br = b.ai!;
         br.d.dir = b.facing;
-        // how far she goes: to a beak's reach from you, never through the fence or a rock
-        let go = Math.max(60, Math.min(330, Math.abs(c.px - b.x) - 150));
+        // how far she goes: to a beak's reach from where she aimed, never through the fence or a rock
+        let go = Math.max(60, Math.min(330, Math.abs((br.d.aimX ?? c.px) - b.x) - 150));
         for (const p of standing(c.pillars)) {
           const ahead = (p.x - b.x) * br.d.dir;
           if (ahead > 0) go = Math.min(go, Math.max(0, ahead - p.w / 2 - b.width / 2 - 6));
@@ -790,7 +818,8 @@ const SOVEREIGN: BossDef = {
         const u = Math.min(1, t / 0.36);
         b.x = br.d.x0 + br.d.dir * br.d.go * (1 - (1 - u) * (1 - u));
         br.air = 0;
-        br.hurt = [bodyBox(b), frontBox(b, c, 150, 170, 6)];
+        // (the beak comes in low: a double jump clears it)
+        br.hurt = [{ ...bodyBox(b), h: RAKE_TOP, y: c.arena.floor - RAKE_TOP }, frontBox(b, c, 150, RAKE_TOP, 6)];
         if (u >= 1 && !br.d.slammed) {
           br.d.slammed = 1;
           c.shake(0.45);
@@ -798,6 +827,7 @@ const SOVEREIGN: BossDef = {
           c.debris(b.x + br.d.dir * (b.width / 2 + 60), c.arena.floor - 10, '#a16207');
         }
       },
+      recTick: skySettle,
     },
     // she rears back (crest up, the air shimmering at her beak) and screeches: a wave rolls out the way she faces and shoves him hard
     // (sovereignFight.ts SCREECH). Behind a rock he is in cover; crouched on the ground he is pushed much less. Near a rock she lands on
@@ -860,20 +890,21 @@ const SOVEREIGN: BossDef = {
         b.facing = c.px >= b.x ? 1 : -1;
       },
     },
-    // a long, high pass across the whole arena, her talons raking the height of the ledges and the rock tops. Stay on the floor
+    // a long, high pass over him, her talons raking the height of the ledges and the rock tops. Stay on the floor
     skySweep: {
       tell: 0.85,
       act: 1.5,
-      rec: 1.0,
+      rec: 2.5,
       phase: 2,
       pose: 'fly',
       guide: 'Stay down on the ground! She\'s raking the ledges!',
       onAct: (b, c) => {
         const br = b.ai!;
-        br.d.dir = b.x < (c.arena.left + c.arena.right) / 2 ? 1 : -1;
+        // over him and on past him (so the opening after it is near where he stood, not the far side of the arena)
+        br.d.dir = c.px >= b.x ? 1 : -1;
         b.facing = br.d.dir > 0 ? 1 : -1;
       },
-      tick: (b, c, dt) => {
+      tick: (b, c, dt, t) => {
         const br = b.ai!;
         // she skims just over the rock tops: clear of a hero standing on the floor, but not one in the air or on a ledge or a rock
         br.air += (150 - br.air) * Math.min(1, dt * 8);
@@ -881,14 +912,18 @@ const SOVEREIGN: BossDef = {
         br.hurt = [bodyBox(b)];
         const half = b.width / 2;
         if (b.x <= c.arena.left + half + 2 || b.x >= c.arena.right - half - 2) br.t = 1.5;
+        // she pulls up once she is SWEEP_PAST beyond him
+        if (t > 0.3 && (b.x - c.px) * br.d.dir >= SWEEP_PAST) br.t = 1.5;
       },
+      recTick: skySettle,
     },
     // a swoop onto the marked spot with her talons out, which ends with her pulling up again: her back is what is open. Low by a rock,
     // she clips it, the same as a dive
     snatch: {
-      tell: 0.9,
+      // (the mark locks as early as the dive's, leaving as long to step off it)
+      tell: 1.1,
       act: 0.7,
-      rec: 1.2,
+      rec: 2.2,
       phase: 2,
       min: 200,
       pose: 'fly',
@@ -897,14 +932,14 @@ const SOVEREIGN: BossDef = {
       stunTick: skyStunTick,
       crashText: '',
       onTell: (b, c) => {
-        skyMark(c, b, 130, 0.9);
+        skyMark(c, b, 130, 1.1);
       },
       tellTick: (b, c, dt) => {
         const br = b.ai!;
         br.air += (230 - br.air) * Math.min(1, dt * 3);
-        trackMark(b, c, br.d.h0, dt, 0.5, 300);
+        trackMark(b, c, br.d.h0, dt, DIVE_LOCK, 300);
         const h = c.hazards.find((x) => x.id === br.d.h0);
-        if (h && br.t > 0.5) aimPillars(c, h.x);
+        if (h && br.t > DIVE_LOCK) aimPillars(c, h.x);
       },
       onAct: (b, c) => {
         const br = b.ai!;
@@ -932,15 +967,17 @@ const SOVEREIGN: BossDef = {
       onEnd: (_b, c) => {
         for (const q of c.pillars ?? []) q.aimed = false;
       },
+      recTick: skySettle,
     },
     // her wingbeats blow a gust lane down the arena (the chimes ring first): it pushes him away from her, rock is cover, and the leaf
     // rides it a long way. From the storm it blows harder and longer, and in the last phase two feathers ride it (duck the high one)
     wingGust: {
       tell: 1.1,
       act: 2.4,
-      rec: 1.2,
+      rec: 3.4,
       phase: 2,
       min: 160,
+      max: 420,
       pose: 'roar',
       interruptible: false,
       guide: 'Hear the chimes? Wind\'s coming. Hold jump and ride it on your leaf!',
@@ -976,6 +1013,7 @@ const SOVEREIGN: BossDef = {
         br.air = (br.d.low ?? 120) + Math.sin(t * 14) * 6;
         if (t >= br.d.last) br.t = Math.max(br.t, 2.4);
       },
+      recTick: skySettle,
     },
   },
 };

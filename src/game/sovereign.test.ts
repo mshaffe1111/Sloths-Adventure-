@@ -10,8 +10,8 @@ import { SOVEREIGN_FRAMES } from './sovereignAtlasData.ts';
 import { generateStage } from './stageGenerator.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { validateStage } from './levelCheck.ts';
-import { SAFE } from './physics.ts';
-import { DIVE_LOCK, screechLanding } from './bossDefs.ts';
+import { PHYS, SAFE } from './physics.ts';
+import { DIVE_LOCK, RAKE_COMMIT, SKY_LOW, SWEEP_PAST, screechLanding } from './bossDefs.ts';
 import { heroReach, openingNeeds, type ReachGoal, type Rock } from './sovereignReach.ts';
 import { HUD_SHARE, bossViewWidth, bossViewX } from './bossCamera.ts';
 
@@ -286,7 +286,7 @@ test('the gust blows him away from her, rock is cover, the leaf rides it further
 // ───────────────────────────── openings: long enough to get to (Matt, 2026-10-26) ─────────────────────────────
 
 /** her, at rest in a state, for measuring where an opening is */
-function posed(state: 'stun' | 'rec', x: number, facing: 1 | -1, move: string, air = 0): BossEntity {
+function posed(state: 'stun' | 'rec' | 'act', x: number, facing: 1 | -1, move: string, air = 0): BossEntity {
   const b = makeBoss(x);
   b.facing = facing;
   b.ai!.state = state;
@@ -383,6 +383,59 @@ function openings(): Opening[] {
       }
     }
   }
+  // the moves that leave her open: she is where the move left her, settled to her low hover (or on the rock under her), facing him; he
+  // is where dodging it leaves him. With the rocks whole and with every rock a stump
+  const lowAt = (ps: SkyPillar[], x: number) => Math.max(SKY_LOW, ...standing(ps).filter((p) => Math.abs(x - p.x) < p.w / 2 + 70).map((p) => p.h));
+  const gustPushed = GUST.force[2] * GUST.ground * GUST.last[2];
+  for (const broke of [false, true]) {
+    const ps = makePillars(ARENA.left);
+    if (broke) for (const p of ps) { slamPillar(p); slamPillar(p); }
+    const rocks = rocksOf(ps);
+    const half = sov.w / 2;
+    const clampX = (x: number) => Math.max(ARENA.left + half, Math.min(ARENA.right - half, x));
+    const inRock = (x: number) => ps.find((p) => Math.abs(x - p.x) < p.w / 2 + 19);
+    const moveOpen = (m: string, bx: number, from: number, how: string) => {
+      if (from < ARENA.left + 14 || from > ARENA.right - 14) return;
+      const onRock = inRock(from);
+      const fromUp = onRock ? onRock.h : 0;
+      const b = posed('rec', bx, from >= bx ? 1 : -1, m, lowAt(ps, bx));
+      out.push({ name: `${m}, ${broke ? 'stumps' : 'rocks whole'}, she is at ${Math.round(bx - ARENA.left)}, he ${how} at ${Math.round(from - ARENA.left)}`, open: sov.moves[m].rec, from, b, box: up(weakRect(b, sov, FLOOR)!), reach: heroReach(from, fromUp, { kind: 'punch', box: up(weakRect(b, sov, FLOOR)!) }, rocks) });
+    };
+    for (let bx = ARENA.left + half; bx <= ARENA.right - half; bx += 75) {
+      for (const side of [-1, 1] as const) {
+        // the feathers: thrown from her range, he dodged where he stood or behind a rock
+        for (const d of [sov.moves.featherVolley.min!, sov.prefer, sov.moves.featherVolley.max!]) moveOpen('featherVolley', bx, bx + side * d, `dodged feathers ${d} away`);
+        // the gust: from her range, and blown on along the ground for the whole of it (the strongest, longest one)
+        for (const d of [sov.moves.wingGust.min!, sov.prefer, sov.moves.wingGust.max!]) moveOpen('wingGust', bx, bx + side * (d + gustPushed), `blown from ${d} away`);
+        // the snatch: she ends on the mark, and he stepped off it (or ran on further)
+        // (a mark by a rock slams her into it instead: that is the stun, measured above)
+        if (!pillarFor(ps, bx)) for (const d of [75 + 19 + 10, 200]) moveOpen('snatch', bx, bx + side * d, `stepped ${d} off the mark`);
+      }
+    }
+    // the sweep: over him wherever he stands, pulling up SWEEP_PAST beyond him (or at the fence)
+    for (let px = ARENA.left + 40; px <= ARENA.right - 40; px += 60) {
+      for (const dir of [-1, 1] as const) moveOpen('skySweep', clampX(px + dir * SWEEP_PAST), px, 'ducked under her');
+    }
+    // the beak lunge: from her range she lunges to a beak's reach of him (stopped short by a rock); he jumped up where he stood or
+    // backed off a stride
+    for (let px = ARENA.left + 40; px <= ARENA.right - 40; px += 60) {
+      for (const side of [-1, 1] as const) {
+        for (const d0 of [sov.moves.talonRake.min!, 400, sov.moves.talonRake.max!]) {
+          const bx0 = px - side * d0;
+          if (bx0 < ARENA.left + half || bx0 > ARENA.right - half) continue;
+          const b = posed('act', bx0, side, 'talonRake');
+          const { ctx } = makeCtx(px, ps);
+          if (!sov.moves.talonRake.when!(b, ctx)) continue;
+          sov.moves.talonRake.onAct!(b, ctx);
+          const bx = clampX(bx0 + side * b.ai!.d.go);
+          moveOpen('talonRake', bx, px, `jumped from a lunge from ${d0}`);
+          moveOpen('talonRake', bx, px + side * 100, `backed off a lunge from ${d0}`);
+          // (or ran back from the moment she stopped turning, through the rest of the wind-up and the lunge)
+          moveOpen('talonRake', bx, px + side * Math.round(PHYS.maxRun * (sov.moves.talonRake.tell - RAKE_COMMIT + 0.36)), `ran back from a lunge from ${d0}`);
+        }
+      }
+    }
+  }
   opened = out;
   return out;
 }
@@ -392,6 +445,14 @@ test('every opening stays open long enough to get there from where he dodged, se
   const tight = [...all].sort((a, z) => a.open - openingNeeds(a.reach) - (z.open - openingNeeds(z.reach)))[0];
   t.diagnostic(`${all.length} openings; the tightest: ${tight.name}, open ${tight.open} s for a ${tight.reach.toFixed(2)} s reach`);
   assert.ok(all.length > 50, `${all.length} openings`);
+  // the measured window for each kind of opening: how long it is open, and the most any of its cases needs
+  const kinds = new Map<string, { open: number; need: number; name: string }>();
+  for (const o of all) {
+    const k = o.name.startsWith('rock') ? 'rock slam' : o.name.split(/[ ,]/)[0];
+    const w = kinds.get(k);
+    if (!w || openingNeeds(o.reach) - o.open > w.need - w.open) kinds.set(k, { open: o.open, need: openingNeeds(o.reach), name: o.name });
+  }
+  for (const [k, w] of kinds) t.diagnostic(`${k}: open ${w.open.toFixed(2)} s, needs ${w.need.toFixed(2)} s at most (${w.name})`);
   for (const o of all) {
     assert.ok(Number.isFinite(o.reach), `${o.name}: can be reached at all`);
     assert.ok(o.open >= openingNeeds(o.reach), `${o.name}: open ${o.open} s, needs ${openingNeeds(o.reach).toFixed(2)} s (reach ${o.reach.toFixed(2)} s)`);
@@ -402,9 +463,14 @@ test('every opening stays open long enough to get there from where he dodged, se
   const b = posed('stun', p.x - PILLAR.rest, 1, 'diveBomb');
   const leaf = heroReach(p.x, PILLAR.h, { kind: 'stomp', box: backBox(b), leaf: true }, rocksOf(ps));
   assert.ok(PILLAR.stun >= openingNeeds(leaf), `the leaf from the rock top: ${leaf.toFixed(2)} s`);
-  // the screech is the only other move that opens her up (the rest are only to dodge); Easy changes no opening's length
-  assert.ok(weakOpen(posed('rec', 1000, 1, 'screech'), sov), 'the screech leaves her open');
-  for (const m of Object.keys(sov.moves)) if (m !== 'screech') assert.equal(weakOpen(posed('rec', 1000, 1, m), sov), false, `${m} only to dodge`);
+  // every move but the dive opens her up after it (a dive that pulls up on open floor leaves nothing: the rocks are the way in), and
+  // every opening was measured above
+  for (const m of Object.keys(sov.moves)) {
+    assert.equal(weakOpen(posed('rec', 1000, 1, m), sov), m !== 'diveBomb', m);
+    if (m !== 'diveBomb') assert.ok(all.some((o) => o.name.startsWith(m) || o.name.startsWith(m === 'screech' ? 'screech' : m)), `${m} measured`);
+  }
+  // each opening glows only after a wind-up he can see coming (0.8 s or more)
+  for (const m of Object.keys(sov.moves)) assert.ok(sov.moves[m].tell >= 0.8, `${m} warns first`);
 });
 
 test('the camera shows her, the opening and Pokey, in portrait (400x720) and landscape (844x390)', () => {
