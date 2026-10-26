@@ -115,6 +115,7 @@ The cutting and packing scripts are in `tools/art/` (`w2art/`, `w3*/`, `packprop
 | Golden snake (the game's snake) | `goldSnake.ts` (`?snake=classic` brings back the old one) |
 | Enemy brains and timings | `predatorAI.ts` (`TURTLE`, `GUARD`, …) |
 | Bosses / guardians | `bossDefs.ts`, `bossArt.ts`, `<boss>Sprite.ts`; boss sheets in `reference/boss-sheets/` |
+| The Sky Sovereign's fight (4-10): rock pillars, screech, gust, her ending | rules `sovereignFight.ts`, moves in `bossDefs.ts` (SOVEREIGN), look `sovereignArt.ts`, reach timing for Matt's opening rule `sovereignReach.ts`, tests `sovereign.test.ts`; her two screech poses are packed into her atlas by `tools/art/w4/sovscreech/pack_screech.py` |
 
 ### Story
 

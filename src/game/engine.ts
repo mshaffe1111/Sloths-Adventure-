@@ -108,6 +108,9 @@ import { drawLairBack, drawLairFront, drawLairObjects, drawLairWorld, lairOwnsSc
 import { bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazards, vulnerability, weakOpen, weakRect } from './bossAI.ts';
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
+import { baseScale, bossViewWidth, bossViewX } from './bossCamera.ts';
+import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar } from './sovereignFight.ts';
+import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
 import { BRANCH_TILE, drawLeafCover, drawPushLog, drawSeed, markSeedFound, seedFound, type ProtoExtras } from './protoStage.ts';
 import { CHEER_SECONDS, hasClip, heroClipsEnabled, heroClipsLive, resetHeroClips, warmHeroClips } from './heroClips.ts';
@@ -284,6 +287,11 @@ export class GameEngine {
   private zzzTimer = 0;
   /** World 4: the push the wind adds to the hero this frame, px/s */
   private windV = 0;
+  /** 4-10, the Sky Sovereign: her rock pillars (sovereignFight.ts), the shove of her screech (fading) and the push of her gust, px/s */
+  private skyPillars: SkyPillar[] | null = null;
+  private bossShove = 0;
+  private bossGust = 0;
+  private chimeT = 0;
   /** Worlds 5 and 6: what webs and the mudflat do to run speed and jump this frame (1 = nothing) */
   private dragSpeed = 1;
   private dragJump = 1;
@@ -458,6 +466,8 @@ export class GameEngine {
     assignTerritories(this.enemies, this.platforms, (e) => e.y + (isPredator(e.type) ? FEET[e.type] : 0));
     this.boss = this.currentStage.boss;
     if (this.boss) this.bossDef = bossDefForLevel(config);
+    this.skyPillars = this.bossDef?.pillars && this.currentStage.arena ? makePillars(this.currentStage.arena.left) : null;
+    setSovereignPillars(this.skyPillars);
     // Easy (difficulty.ts): a guardian takes about two thirds as many hits, each hit worth the same, and warns a little longer (tellMul)
     if (this.boss && this.bossDef?.hits && isEasy()) {
       const per = this.boss.maxHp / this.bossDef.hits;
@@ -1448,7 +1458,7 @@ export class GameEngine {
         if (this.glide.on) this.statGlideSec += dt;
         if (p.grounded) this.glideOpen = 0;
 
-        p.x += (p.vx + this.windV) * dt;
+        p.x += (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
         p.y += p.vy * dt;
       }
     }
@@ -1468,7 +1478,7 @@ export class GameEngine {
       p.pushing = false;
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
         const half = 19;
-        const prevX = p.x - p.vx * dt;
+        const prevX = p.x - (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
         for (const plat of this.platforms) {
           if (plat.broken || plat.type !== 'solid' || plat.height < 50) continue;
           // (not when he stands on it or above its top, nor when he is wholly under it: a boulder up on a shelf, World 4, is no wall to him
@@ -2347,6 +2357,14 @@ export class GameEngine {
           this.collectibles.push({ id: 80000 + this.minionSeq++, type: 'heart', x, y: a.floor - 40, collected: false, bobPhase: 0 });
           this.spawnSparkBurst(x, a.floor - 60, '#fda4af');
         },
+        onPillar: (pl, broke) => this.pillarSlammed(pl, broke),
+        guide: (key, line) => {
+          const id = this.currentStage.config.id;
+          if (tipHeard(id, 'boss:' + key)) return false;
+          markTipHeard(id, 'boss:' + key);
+          this.guide(line, 3.6);
+          return true;
+        },
         crackPerches: (phase) => {
           for (const pl of this.platforms) {
             if (pl.crackFrom === undefined || pl.crackFrom > phase || pl.type === 'fragile') continue;
@@ -2358,6 +2376,7 @@ export class GameEngine {
       };
     }
     const c = this.bossCtx;
+    c.pillars = this.skyPillars ?? undefined;
     c.px = p.x;
     c.py = p.y;
     c.pGrounded = p.grounded;
@@ -2367,6 +2386,73 @@ export class GameEngine {
     for (const e of this.enemies) if (e.id >= 9000 && !e.defeated) alive++;
     c.minionsAlive = alive;
     return c;
+  }
+
+  /** 4-10: her dive or swoop hit a rock pillar. It shakes and cracks; the slam that breaks it knocks its top off and leaves a stump */
+  private pillarSlammed(pl: SkyPillar, broke: boolean) {
+    const i = this.skyPillars?.indexOf(pl) ?? -1;
+    const plat = this.platforms.find((q) => q.pillar === i);
+    if (!plat) return;
+    const floor = plat.y + plat.height;
+    for (let k = 0; k < (broke ? 5 : 2); k++) this.spawnDebrisBurst(pl.x + (Math.random() - 0.5) * pl.w, plat.y + Math.random() * plat.height, '#a8a29e');
+    if (broke) {
+      plat.y = floor - PILLAR.stump;
+      plat.height = PILLAR.stump;
+      sound.playHitImpact(true, 'armor');
+      this.camera.trauma = Math.max(this.camera.trauma, 0.8);
+    }
+  }
+
+  /**
+   * 4-10: what the Sky Sovereign's screech and gust do to him (sovereignFight.ts), and her feathers stopping on the rocks. A screech's front
+   * shoves him once as it passes (not behind a rock; crouched, much less); the gust pushes him while it blows (the leaf rides it).
+   */
+  private stepSkyFight(b: BossEntity, c: BossCtx, dt: number) {
+    const p = this.player;
+    const floor = c.arena.floor;
+    const ps = this.skyPillars ?? [];
+    this.bossShove = fadeShove(this.bossShove, dt);
+    let gust = 0;
+    const bodyTop = playerHurtRect(p).y;
+    const free = !p.climbing && !p.isVineSwinging && !p.hanging;
+    for (const h of this.hazards) {
+      if (h.kind !== 'push') continue;
+      const src = h.src ?? h.x;
+      const dir: 1 | -1 = h.dir >= 0 ? 1 : -1;
+      if (h.look === 'screech') {
+        if (h.shoved || (p.x - src) * dir < 0 || (h.x - p.x) * dir < 0) continue;
+        h.shoved = true;
+        const v = free ? screechShove({ ps, srcX: src, dir, px: p.x, bodyTop, floor, ducking: p.ducking, grounded: p.grounded }) : 0;
+        if (v !== 0) {
+          this.bossShove = v;
+          this.camera.trauma = Math.min(1, Math.max(this.camera.trauma, 0.35));
+          this.addFloatingText(p.ducking && p.grounded ? 'HOLD ON!' : 'BLOWN BACK!', p.x, p.y - 80, '#bae6fd');
+        } else if (free) this.addFloatingText('SAFE BEHIND THE ROCK!', p.x, p.y - 80, '#bbf7d0');
+      } else if (h.look === 'gust' && free) {
+        gust = gustPush({ ps, srcX: src, dir, phase: b.phase, px: p.x, bodyTop, floor, grounded: p.grounded, gliding: this.glide.on });
+      }
+    }
+    this.bossGust = gust;
+    // the chimes ring while she winds up her wingbeats (sovereignArt.ts swings them)
+    const br = b.ai;
+    if (br?.move === 'wingGust' && br.state === 'tell') {
+      this.chimeT -= dt;
+      if (this.chimeT <= 0) {
+        this.chimeT = 0.32;
+        sound.playVineGrab();
+      }
+    } else this.chimeT = 0;
+    // her feathers do not go through rock
+    for (const h of this.hazards) {
+      if (h.kind !== 'bolt' || h.life <= 0) continue;
+      for (const pl of ps) {
+        if (Math.abs(h.x - pl.x) < pl.w / 2 + h.w / 2 && h.y > floor - pl.h - h.h / 2) {
+          h.life = 0;
+          this.spawnSparkBurst(h.x, h.y, '#fde68a');
+          break;
+        }
+      }
+    }
   }
 
   /** a summoned animal joins the fight */
@@ -2491,7 +2577,10 @@ export class GameEngine {
       }
     }
     if (br.state === 'tell' && prevState !== 'tell') sound.playPredator('jaguar', 0);
-    if (br.state === 'act' && prevState !== 'act') sound.playWhoosh();
+    if (br.state === 'act' && prevState !== 'act') {
+      if (br.move === 'screech') sound.playEagleScreech();
+      else sound.playWhoosh();
+    }
     if (br.state === 'stun' && prevState !== 'stun') this.hitstopTimer = Math.max(this.hitstopTimer, 0.08);
 
     stepHazards(this.hazards, c.arena, dt, {
@@ -2502,9 +2591,11 @@ export class GameEngine {
       },
     });
 
+    if (this.skyPillars) this.stepSkyFight(b, c, dt);
+
     // ---- what hurts Pokey ----
     const boxes: Rect[] = [];
-    if (bodyHurts(b)) boxes.push({ x: b.x - b.width / 2, y: b.y - b.height / 2, w: b.width, h: b.height });
+    if (bodyHurts(b, def)) boxes.push({ x: b.x - b.width / 2, y: b.y - b.height / 2, w: b.width, h: b.height });
     for (const r of br.hurt) boxes.push(r);
     const hz: Array<{ r: Rect; h: BossHazard }> = [];
     for (const h of this.hazards) {
@@ -2541,18 +2632,33 @@ export class GameEngine {
 
   private stepBossDeath(b: BossEntity, def: BossDef, dt: number) {
     const br = b.ai!;
+    const end = def.ending;
+    const prevT = br.t;
     br.t += dt;
-    br.air += (0 - br.air) * Math.min(1, dt * 5);
+    br.air += (0 - br.air) * Math.min(1, dt * (end ? 2.6 : 5));
     b.y = (this.currentStage.arena?.floor ?? 560) - b.height / 2 - br.air;
-    if (Math.random() < dt * 14) this.spawnDebrisBurst(b.x + (Math.random() - 0.5) * def.w, b.y + (Math.random() - 0.5) * def.h, '#fde68a');
-    if (br.t > 0.2) this.camera.trauma = Math.max(this.camera.trauma, 0.35);
-    if (br.t >= 2.0) {
+    if (end) {
+      // a guardian who is beaten, not killed (Meeca's note: be kind to them): she comes down to rest, folds her wings and stays. Feathers
+      // drift off her, the shaking stops, and Dot calls it over
+      if (Math.random() < dt * 5) this.spawnSparkBurst(b.x + (Math.random() - 0.5) * def.w, b.y - def.h * 0.3, '#f1e4cc');
+      if (br.t < 0.6) this.camera.trauma = Math.max(this.camera.trauma, 0.3);
+      if (prevT < 1.2 && br.t >= 1.2) {
+        this.addFloatingText(end.text, b.x, b.y - b.height * 0.45, '#fde68a', 2.2);
+        if (end.line) this.guide(end.line, 3.2);
+      }
+    } else {
+      if (Math.random() < dt * 14) this.spawnDebrisBurst(b.x + (Math.random() - 0.5) * def.w, b.y + (Math.random() - 0.5) * def.h, '#fde68a');
+      if (br.t > 0.2) this.camera.trauma = Math.max(this.camera.trauma, 0.35);
+    }
+    if (br.t >= (end ? 3.4 : 2.0)) {
       b.defeated = true;
       this.daisyRescued = true;
       sound.playBossVictory();
-      this.camera.trauma = 0.9;
-      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : 'VICTORY! MEECA IS SAVED!', b.x, b.y - 70, '#ec4899');
-      this.spawnDebrisBurst(b.x, b.y, '#dc2626');
+      this.camera.trauma = end ? 0.3 : 0.9;
+      this.addFloatingText(this.currentStage.config.secret ? 'THORNBARK IS FREE!' : end ? 'VICTORY!' : 'VICTORY! MEECA IS SAVED!', b.x, b.y - 70, '#ec4899');
+      if (!end) this.spawnDebrisBurst(b.x, b.y, '#dc2626');
+      this.bossShove = 0;
+      this.bossGust = 0;
     }
     this.reportBoss();
   }
@@ -2596,17 +2702,17 @@ export class GameEngine {
     const portrait = h > w;
     // in a tall narrow window the arena is wider than the screen: the boss makes its entrance close enough to be seen
     if (portrait && b.ai?.state === 'roar' && b.ai.roarReason === 'enter') b.x = Math.min(b.x, p.x + 540);
-    let base = portrait ? Math.max(w / PORTRAIT_VIEW_W, h / levelH) : h / WORLD_VIEW_H;
-    base = Math.max(0.5, Math.min(1.8, base));
-    const baseViewW = w / base;
-    const need = this.bossDef?.frameArena && !portrait ? arena.right - arena.left + 120 : Math.abs(p.x - b.x) + 440 + Math.max(0, b.width - 140) * 0.6;
-    // upright, the hero stays a readable size: the view never opens wider than ~720 units (the boss's head, the part you hit, is on the hero's side)
-    const widest = portrait ? Math.max(baseViewW, 720) : arena.right - arena.left + 200;
-    const want = Math.max(baseViewW, Math.min(need, widest));
+    const baseViewW = w / baseScale({ w, h, levelH, worldViewH: WORLD_VIEW_H, portraitViewW: PORTRAIT_VIEW_W });
+    const def = this.bossDef;
+    const want = bossViewWidth({
+      w, h, levelH, px: p.x, bx: b.x, bw: b.width, bh: b.height, air: b.ai?.air ?? 0, arenaW: arena.right - arena.left,
+      frameArena: def?.frameArena, frameAir: def?.frameAir, floorAt: def?.floorAt, worldViewH: WORLD_VIEW_H, portraitViewW: PORTRAIT_VIEW_W,
+    });
     // the killing blow pushes the camera in
     const target = Math.max(0.4, (baseViewW / want) * (this.slowMoLeft > 0 ? 1.3 : 1));
     const prev = this.bossZoom;
-    this.bossZoom += (target - this.bossZoom) * Math.min(1, dt * 2.2);
+    // (a sky boss climbs fast: the view keeps up with her)
+    this.bossZoom += (target - this.bossZoom) * Math.min(1, dt * (this.bossDef?.frameAir ? 3.6 : 2.2));
     if (Math.abs(this.bossZoom - prev) > 0.001) this.applyZoom();
   }
 
@@ -2989,6 +3095,7 @@ export class GameEngine {
     const crit = vul === 'stunned';
     if (crit) dmg = Math.ceil(dmg * 1.5);
     b.hp = Math.max(0, b.hp - dmg);
+    this.capStun(b, dmg);
     if (def?.openCap && b.ai?.state === 'rec' && b.ai.move) {
       const br = b.ai;
       br.d.taken = (br.d.taken ?? 0) + dmg;
@@ -3008,6 +3115,59 @@ export class GameEngine {
     this.runScore += pts;
     this.addFloatingText(crit ? `CRITICAL! +${pts}` : `BOSS HIT! +${pts}`, b.x, b.y - b.height * 0.7, crit ? '#fb923c' : '#facc15');
     if (b.hp <= 0) this.startBossDeath(b);
+  }
+
+  /** a boss with a stun cap (the Sovereign) shakes off a daze once it has taken that much: a moment to see the hit land, then up */
+  private capStun(b: BossEntity, dmg: number) {
+    const br = b.ai;
+    const cap = this.bossDef?.stunCap;
+    if (!cap || !br || br.state !== 'stun') return;
+    br.d.stunTaken = (br.d.stunTaken ?? 0) + dmg;
+    if (br.d.stunTaken >= cap) br.t = Math.max(br.t, br.hold - 0.4);
+  }
+
+  /**
+   * Landing on a stunned boss's back from above (its `stompSpot`: the Sovereign's, after she slams into a rock). A stomp is a hit; floating
+   * down onto it on the leaf is a big one. Returns true when he landed on it.
+   */
+  private stompBoss(vyNow: number, prevFeet: number): boolean {
+    const b = this.boss;
+    const def = this.bossDef;
+    const arena = this.currentStage.arena;
+    const k = def?.stompSpot;
+    if (!b || !def || !k || !arena || b.defeated || b.ai?.state !== 'stun' || vyNow <= 0) return false;
+    const p = this.player;
+    const cx = b.x + b.facing * k.dx;
+    const top = arena.floor - b.ai.air - k.dy - k.h / 2;
+    if (Math.abs(p.x - cx) > k.w / 2 + 14 || prevFeet > top + k.h * 0.6 || p.y < top - 6 || p.y > top + k.h + 20) return false;
+    const leaf = this.glide.on || this.glideOpen > 0.3;
+    const dmg = leaf ? 4 : 2;
+    b.hp = Math.max(0, b.hp - dmg);
+    this.capStun(b, dmg);
+    p.vy = leaf ? -680 : -600;
+    p.grounded = false;
+    p.jumpsLeft = Math.max(p.jumpsLeft, 1);
+    p.isDoubleJumping = false;
+    p.squashX = 1.3;
+    p.squashY = 0.7;
+    p.bounce = { kind: leaf ? 'big' : 'stomp', t: 0 };
+    this.launched = true;
+    this.fallVy = 0;
+    this.stompGrace = 0.5;
+    b.hitFlashTimer = 0.15;
+    this.hitstopTimer = Math.max(this.hitstopTimer, leaf ? 0.12 : 0.08);
+    this.camera.trauma = Math.min(1, this.camera.trauma + (leaf ? 0.5 : 0.35));
+    sound.playHitImpact(true, bossMaterial(this.currentStage.config.worldIndex));
+    this.spawnDebrisBurst(p.x, top, '#fde68a');
+    this.comboCount++;
+    this.comboResetTimer = 2.0;
+    const pts = calculateHitScore('boss', leaf, this.comboCount) * (leaf ? 2 : 1);
+    this.runScore += pts;
+    this.statStomps++;
+    recorder.event('stomp', 'boss');
+    this.addFloatingText(`${leaf ? 'LEAF DIVE!' : 'ON HER BACK!'} +${pts}`, b.x, b.y - b.height * 0.7, leaf ? '#86efac' : '#facc15');
+    if (b.hp <= 0) this.startBossDeath(b);
+    return true;
   }
 
   /** the last hit: the boss does not vanish, it falls apart */
@@ -3171,6 +3331,7 @@ export class GameEngine {
     const vyNow = p.grounded ? this.fallVy : p.vy;
     const prevFeet = p.grounded ? this.fallFeet : p.y - p.vy * dt;
     const diving = this.input.state.down;
+    if (this.stompBoss(vyNow, prevFeet)) return;
     for (const e of this.enemies) {
       if (e.defeated) continue;
       const r = stompTest({ x: p.x, y: p.y, vy: vyNow }, prevFeet, e, diving);
@@ -3486,6 +3647,8 @@ export class GameEngine {
     this.flightClear = false;
     this.drowsyShow = 0;
     this.windV = 0;
+    this.bossShove = 0;
+    this.bossGust = 0;
     this.dragSpeed = 1;
     this.dragJump = 1;
     // planks that crumbled since the checkpoint come back, or a respawn could leave a gap nobody can cross
@@ -3705,7 +3868,7 @@ export class GameEngine {
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
       const arenaWide = this.bossDef?.frameArena && vw >= this.currentStage.arena.right - this.currentStage.arena.left;
-      let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : (p.x + bs.x) / 2 - vw / 2;
+      let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : bossViewX(p.x, bs.x, vw);
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
@@ -4026,8 +4189,16 @@ export class GameEngine {
     });
 
     // Render Boss
-    if (this.boss && !this.boss.defeated && this.bossDef) {
-      drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560);
+    if (this.skyPillars && this.currentStage.arena) {
+      const a = this.currentStage.arena;
+      const ang = chimeAngle(this.boss && !this.boss.defeated ? this.boss : null, this.gameTime);
+      for (const dx of CHIME_POSTS) drawChimePost(ctx, a.left + dx, a.floor, ang);
+    }
+    if (this.boss && (!this.boss.defeated || this.bossDef?.ending) && this.bossDef) {
+      const floor = this.currentStage.arena?.floor ?? 560;
+      drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, floor);
+      if (this.skyPillars && !this.boss.defeated && this.bossDef.stompSpot) drawBackCue(ctx, this.boss, this.bossDef.stompSpot, floor, this.gameTime);
+      if (this.skyPillars && !this.boss.defeated) drawScreechCue(ctx, this.boss, floor, this.gameTime, (this.bossDef.moves.screech?.tell ?? 1) * (this.bossCtx?.tellMul ?? 1));
     }
 
     // Leaf Glide: he floats on a small leaf under his feet (it spreads when the glide starts and is gone after he lands)

@@ -20,6 +20,8 @@ import { drakeSprite } from './drakeSprite.ts';
 import { ironclawSprite } from './ironclawSprite.ts';
 import { golemSprite } from './golemSprite.ts';
 import { thornbarkSprite } from './thornbarkSprite.ts';
+import { drawW4 } from './w4Art.ts';
+import { drawSkyPush } from './sovereignArt.ts';
 
 /** the bosses that have a painted version */
 const PAINTED: Record<number, PaintedBoss> = { 1: venomRig, 2: crocSprite, 3: prowlerSprite, 4: sovereignSprite, 5: queenSprite, 6: reaverSprite, 7: golemSprite, 8: monarchSprite, 9: drakeSprite, 10: ironclawSprite };
@@ -242,7 +244,8 @@ export function drawBossFighter(ctx: CanvasRenderingContext2D, b: BossEntity, de
   }
   const dir = b.facing;
   let alpha = br.alpha;
-  if (br.state === 'dying') alpha *= 1 - clamp01((br.t - 1.0) / 0.6);
+  // (a guardian with an ending of its own is beaten, not killed: it stays, at rest)
+  if (br.state === 'dying' && !def.ending) alpha *= 1 - clamp01((br.t - 1.0) / 0.6);
 
   // shadow stays on the ground however high a flyer is
   const sh = Math.max(0.35, 1 - air / 380);
@@ -411,8 +414,13 @@ export function drawHazards(ctx: CanvasRenderingContext2D, list: BossHazard[], t
         else drawColumn(ctx, h, time);
         break;
       case 'drop':
-        if (h.warn > 0) drawMarker(ctx, h, time, 0.8);
-        else drawDrop(ctx, h, time);
+        if (h.warn > 0) {
+          drawMarker(ctx, h, time, 0.8);
+          if (h.look === 'rock') drawGrit(ctx, h, time);
+        } else drawDrop(ctx, h, time);
+        break;
+      case 'push':
+        drawSkyPush(ctx, h, time);
         break;
       case 'puddle':
         drawPuddle(ctx, h, time);
@@ -441,6 +449,24 @@ export function drawHazards(ctx: CanvasRenderingContext2D, list: BossHazard[], t
     }
     ctx.restore();
   }
+}
+
+/** grit trickling down over the spot a stone is about to fall on (World 4's warning), thickening as it comes */
+function drawGrit(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
+  const u = 1 - h.warn / Math.max(0.01, h.warnMax || 1);
+  const top = h.floorY - 520;
+  const span = 520;
+  const n = 6 + Math.round(12 * u);
+  ctx.save();
+  ctx.globalAlpha = 0.6 + 0.4 * u;
+  for (let k = 0; k < n; k++) {
+    const gx = h.x - 14 + ((k * 7 + h.seed) % 28);
+    const gy = top + ((time * 380 + k * (span / n) + h.seed * 3) % span);
+    const sz = 3 + (k % 3) * 2;
+    ctx.fillStyle = k % 2 ? '#a8a29e' : '#78716c';
+    ctx.fillRect(gx, gy, sz, sz);
+  }
+  ctx.restore();
 }
 
 /** a pulsing mark on the floor: something lands or erupts here very soon */
@@ -501,6 +527,23 @@ function drawMarker(ctx: CanvasRenderingContext2D, h: BossHazard, time: number, 
 
 function drawColumn(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const age = h.maxLife - h.life;
+  if (h.look === 'shards') {
+    // stone bursting off a rock pillar where she slammed into it (4-10)
+    const u = clamp01(age / Math.max(0.05, h.maxLife));
+    const pieces = ['shardA', 'shardB', 'shardC', 'shardD'] as const;
+    for (let k = 0; k < 10; k++) {
+      const a = -Math.PI * (0.1 + 0.8 * ((k * 0.37 + h.seed) % 1));
+      const r = 30 + u * (90 + (k % 3) * 40);
+      const x = h.x + Math.cos(a) * r * (h.w / 150);
+      const y = h.floorY - h.h * 0.55 + Math.sin(a) * r * 0.8 + u * u * 60;
+      if (!drawW4(ctx, pieces[k % 4], x, y, 22, { rot: u * (k - 5), alpha: 1 - u * 0.6 })) {
+        ctx.fillStyle = k % 2 ? '#a8a29e' : '#57534e';
+        ctx.globalAlpha = 1 - u * 0.6;
+        ctx.fillRect(x - 6, y - 6, 12, 12);
+      }
+    }
+    return;
+  }
   const rise = ease(clamp01(age / Math.min(0.14, h.maxLife * 0.4)));
   const fade = clamp01(h.life / Math.min(0.2, h.maxLife * 0.5));
   const H = h.h * rise;
@@ -764,6 +807,8 @@ function drawMiniBat(ctx: CanvasRenderingContext2D, flap: number, s: number, c1:
 
 function drawDrop(ctx: CanvasRenderingContext2D, h: BossHazard, time: number) {
   const s = h.w;
+  // a stone from a broken pillar (4-10): World 4's painted rock, tumbling
+  if (h.look === 'rock' && drawW4(ctx, (Math.round(h.seed) % 2) ? 'rockMoss' : 'rock', h.x, h.y + s * 0.55, s * 1.25, { rot: time * 5 + h.seed })) return;
   ctx.translate(h.x, h.y);
   // a faint ground shadow so you can see where it is going to land
   ctx.save();

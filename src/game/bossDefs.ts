@@ -24,6 +24,9 @@ import {
 } from './bossAI.ts';
 import type { BossCtx, BossDef, MoveDef } from './bossAI.ts';
 import { inMoonPool } from './prowlerPools.ts';
+import { GUST, PILLAR, SCREECH, pillarFor, rockShower, slamPillar, slamSide, standing } from './sovereignFight.ts';
+import type { SkyPillar } from './sovereignFight.ts';
+import { screechBeak } from './sovereignSprite.ts';
 import { VF, lungeReach, venomHurt, venomWeak } from './venomFang.ts';
 
 // ───────────────────────────── shared move builders ─────────────────────────────
@@ -481,11 +484,104 @@ const PROWLER: BossDef = {
  * The painted eagle drawn 2.3 times its old size is 1.96 world units to a painted pixel (wings spread she is nearly 500 wide). Weak spots
  * are measured off the frames of the pose she holds in each opening: dx is forward of the body's middle and dy the height above her feet
  * (her feet hang `air` above the floor, which weakRect adds).
+ *
+ * World 4's finale: the fight uses what the world taught. The rock pillars (sovereignFight.ts) are the main way to open her up: stand by
+ * one, step off the red mark, and her dive slams into the rock. Two slams break a pillar; its top falls in a shower of stones (grit
+ * first) and a stump is left. Her screech shoves Pokey (a pillar is cover, crouching helps), her wingbeats blow a gust lane with the
+ * chimes ringing first (the leaf rides it), and at 35% the storm breaks.
  */
+
+/** her dive or swoop has hit a standing pillar: the rock cracks or breaks, she is stunned beside it, and Dot says what to do */
+function skySlam(b: BossEntity, c: BossCtx, p: SkyPillar, markX: number) {
+  const br = b.ai!;
+  const side = slamSide(p, markX, br.d.fromX ?? b.x);
+  const broke = slamPillar(p);
+  br.d.crashed = 1;
+  br.d.slam = 1;
+  br.d.slamStun = broke ? PILLAR.stunBreak : PILLAR.stun;
+  const half = b.width / 2;
+  br.d.restX = Math.max(c.arena.left + half, Math.min(c.arena.right - half, p.x + side * PILLAR.rest));
+  br.d.restFace = -side;
+  b.facing = side > 0 ? -1 : 1;
+  br.air = Math.min(br.air, PILLAR.h);
+  for (const q of c.pillars ?? []) q.aimed = false;
+  // stone bursts from the rock where the mark was: standing on the mark (or on the rock's top) is what gets him hurt
+  // (a short burst, a little inside the mark's edge: a hero who has stepped off it and comes straight back for her head is not caught)
+  const lo = Math.min(markX - 62, p.x - p.w / 2);
+  const hi = Math.max(markX + 62, p.x + p.w / 2);
+  const shards = makeHazard({ kind: 'column', x: (lo + hi) / 2, y: c.arena.floor - (PILLAR.h + 70) / 2, floorY: c.arena.floor, w: hi - lo, h: PILLAR.h + 70, life: 0.14, maxLife: 0.14, color: '#a8a29e', color2: '#44403c' });
+  shards.look = 'shards';
+  c.hazards.push(shards);
+  c.shake(broke ? 1 : 0.8);
+  c.thud(true);
+  c.debris(p.x, c.arena.floor - PILLAR.h * 0.7, '#a8a29e');
+  c.text(broke ? 'THE ROCK BREAKS!' : 'INTO THE ROCK!', p.x, c.arena.floor - PILLAR.h - 120, '#fde047');
+  c.onPillar?.(p, broke, side);
+  if (broke) {
+    for (const r of rockShower(p, side, c.arena, b.phase)) {
+      const d = dropAt(c, r.x, r.warn, 44, '#a8a29e', '#57534e');
+      d.look = 'rock';
+    }
+  }
+  // Dot: the first slam is taught; then the break (stones coming), the leaf onto her back, and the last rock
+  const g = c.guide;
+  if (g) {
+    if (!standing(c.pillars).length) g('slam:last', 'That was the last rock. Now when she dives, she hits the ground!');
+    else if (broke) g('slam:break', 'The rock broke! Watch for the grit, stones are coming down!');
+    if (!g('slam:first', 'She hit the rock! Her head, quick, hit her head!')) g('slam:leaf', 'From up on a rock, hold jump and float down onto her back!');
+  }
+}
+
+/** after a slam she slides off the rock and lies beside it, her head toward it */
+const skyStunTick = (b: BossEntity, _c: BossCtx, dt: number) => {
+  const br = b.ai!;
+  if (br.d.restX === undefined) return;
+  b.x += (br.d.restX - b.x) * Math.min(1, dt * 9);
+  b.facing = br.d.restFace > 0 ? 1 : -1;
+};
+
+/** a red mark on the floor that follows him for a moment, then locks */
+const skyMark = (c: BossCtx, b: BossEntity, w: number, warn: number) => {
+  const h = makeHazard({ kind: 'mark', x: c.px, y: c.arena.floor - 3, floorY: c.arena.floor, w, h: 6, warn, warnMax: warn, life: warn + 0.15, maxLife: warn + 0.15, color: '#ef4444', color2: '#7f1d1d' });
+  c.hazards.push(h);
+  addMark(c, b, h, 0);
+  return h;
+};
+
+/** the top of a standing rock under her feet (she lands on it rather than sinking into it), or 0 */
+const skyGround = (b: BossEntity, c: BossCtx) => {
+  let g = 0;
+  for (const p of standing(c.pillars)) if (Math.abs(b.x - p.x) < p.w / 2 + 70) g = Math.max(g, p.h);
+  return g;
+};
+
+/** how long into the dive's wind-up the mark follows him before it locks */
+export const DIVE_LOCK = 0.45;
+
+/** where she comes down after a screech: off the rock she screamed from (on his side of it), or where she is; never on a rock */
+export function screechLanding(b: BossEntity, c: BossCtx): number {
+  const toward = c.px >= b.x ? 1 : -1;
+  const rocks = standing(c.pillars);
+  const clear = (p: SkyPillar) => p.w / 2 + 76;
+  let x = b.x;
+  const under = rocks.find((p) => Math.abs(x - p.x) < clear(p));
+  if (under) x = under.x + toward * clear(under);
+  const other = rocks.find((p) => Math.abs(x - p.x) < clear(p));
+  if (other) x = other.x + (x >= other.x ? 1 : -1) * clear(other);
+  const half = b.width / 2;
+  return Math.max(c.arena.left + half, Math.min(c.arena.right - half, x));
+}
+
+/** light up the pillar the mark is on, so the lure reads */
+const aimPillars = (c: BossCtx, x: number) => {
+  const hit = pillarFor(c.pillars, x);
+  for (const q of c.pillars ?? []) q.aimed = q === hit;
+};
+
 const SOVEREIGN: BossDef = {
   world: 4,
   name: 'Sky Sovereign',
-  // a giant of the air: she hangs above the arena, so the fight is about where you stand under her and when you climb up to her
+  // a giant of the air: she hangs above the arena, so the fight is about where you stand under her and luring her into the rocks
   scale: 2.3,
   w: 250,
   h: 190,
@@ -493,36 +589,50 @@ const SOVEREIGN: BossDef = {
   speed: [70, 95, 125],
   prefer: 330,
   hover: 150,
-  gap: [1.3, 0.95, 0.7],
-  chain: 0.35,
+  gap: [1.5, 1.15, 0.85],
+  chain: 0.3,
   color: '#f59e0b',
   color2: '#78350f',
   // sixteen hits, two hit points a hit
   hp: 32,
   hits: 16,
-  // She has no one weak point. It opens where her last move left her open, and the glow shows where: the head after a crash, the white
-  // chest after the feather volley (her wings are flung wide), the talons after the low sweep, the back between her wings after the snatch
-  // (jump onto it from a ledge) and the head, low, after the beak lunge. The ember while she is covered sits on the head
+  // Three openings, each long enough to get to (Matt, 2026-10-26: reach it from where you dodged, plus 0.8 s to react and 0.6 s to hit;
+  // sovereign.test.ts checks every one with the real run and jump): slammed into a rock (or, once the rocks are gone, crashed on the
+  // floor) her head lies low (weakStun) and her back can be landed on (stompSpot); after a screech she comes down hoarse, her head low
+  // (the beak pose). Every other move is only to dodge. The ember while she is covered sits on the head
   weak: { dx: 40, dy: 150, w: 120, h: 110 },
   weakByMove: {
-    featherVolley: { dx: 16, dy: 102, w: 120, h: 120 },
-    skySweep: { dx: 68, dy: 24, w: 150, h: 100 },
-    snatch: { dx: -20, dy: 140, w: 160, h: 100 },
-    talonRake: { dx: 133, dy: 102, w: 130, h: 120 },
+    screech: { dx: 133, dy: 102, w: 130, h: 120 },
   },
   weakStun: { dx: 94, dy: 102, w: 130, h: 120 },
+  openAfter: ['screech'],
+  // each slam is one clear win: two hits on the head, or the leaf onto her back (so the rocks carry most of the fight, not all of it)
+  stunCap: 4,
+  openCap: 4,
+  // her humped back in the stunned crouch: land on it from a rock or a ledge
+  stompSpot: { dx: -45, dy: 168, w: 170, h: 56 },
   aimText: 'TOO TOUGH! HIT THE GLOW',
   arenaW: 1500,
   lair: 'sovereign',
   entrance: { eye: [255, 196, 80], dark: [8, 6, 26] },
-  // the Cloud Aerie: a low shelf at each side, a high ledge hung in the middle (it drifts) and a rope between the middle and the right
-  perches: [
-    { dx: 170, up: 115, w: 250 },
-    { dx: 520, up: 195, w: 230, moving: { range: 90, speed: 0.9 } },
-    { dx: 1100, up: 115, w: 230 },
-  ],
-  vines: [{ dx: 900, top: 340, bottom: 110 }],
-  // at 35% the storm breaks: thunderheads roll in over each cliff edge (warned first). The ledges and the open middle stay clear
+  pillars: true,
+  // she starts between the middle rock and the right one, where her wings clear both
+  startDx: 1030,
+  frameAir: true,
+  floorAt: 0.8,
+  opener: 'diveBomb',
+  groundAt: skyGround,
+  // the Cloud Aerie: three rock pillars (sovereignFight.ts, built by the stage), a high ledge between the first two and a rope
+  perches: [{ dx: 470, up: 200, w: 220 }],
+  vines: [{ dx: 1030, top: 340, bottom: 120 }],
+  guide: {
+    start: 'Pokey, see those rocks? She can\'t see them when she dives. Use them.',
+    2: 'She\'s mad now. Listen for the chimes!',
+    3: 'The storm\'s coming in! Keep away from the edges!',
+  },
+  ending: { text: 'SHE\'S DONE FIGHTING', line: 'Pokey. That\'s enough. She\'s done.' },
+  // at 35% the storm breaks: thunderheads roll in over each cliff edge (warned first). The rocks and the open middle stay clear, and her
+  // gusts blow harder and longer (GUST)
   onPhase: (phase, _b, c) => {
     if (phase !== 3) return;
     for (const dir of [1, -1] as const) {
@@ -537,57 +647,95 @@ const SOVEREIGN: BossDef = {
     c.shake(0.55);
   },
   moves: {
-    // climbs out of reach, then falls on the marked spot. The crash leaves her stunned on the floor
+    // she climbs over him, a red mark follows him and locks, and she falls on it. With the mark on a rock she slams into the rock (stunned,
+    // head open, the rock cracks); on open floor she only scrapes the ground and pulls up, until every rock is down: then she crashes
     diveBomb: {
-      tell: 0.95,
-      act: 1.1,
+      tell: 1.1,
+      act: 1.3,
       rec: 0.8,
+      weight: 1.6,
       pose: 'fly',
-      stunAfter: () => 1.9,
-      crashText: 'GROUNDED!',
+      // only her talons hurt as she comes down (the mark's width), not the whole spread of her wings
+      softBody: true,
+      guide: 'Stand by a rock. When the red mark\'s on you, step off it!',
+      stunAfter: (b) => b.ai!.d.slamStun ?? PILLAR.crash,
+      stunTick: skyStunTick,
+      crashText: (b) => (b.ai!.d.slam ? '' : 'GROUNDED!'),
       onTell: (b, c) => {
-        const h = makeHazard({ kind: 'mark', x: c.px, y: c.arena.floor - 3, floorY: c.arena.floor, w: 150, h: 6, warn: 0.95, warnMax: 0.95, life: 1.0, maxLife: 1.0, color: '#ef4444', color2: '#7f1d1d' });
-        c.hazards.push(h);
-        addMark(c, b, h, 0);
+        skyMark(c, b, 150, 1.1);
       },
       tellTick: (b, c, dt) => {
         const br = b.ai!;
-        br.air += (400 - br.air) * Math.min(1, dt * 4);
-        trackMark(b, c, br.d.h0, dt, 0.55, 320);
-        // she flies over the mark as she climbs
+        // she climbs (not out of the camera's reach: it pulls back for her, frameAir) and flies over the mark as it follows him
+        br.air += (250 - br.air) * Math.min(1, dt * 4);
+        // the mark locks early (DIVE_LOCK), leaving most of a second to step off it
+        trackMark(b, c, br.d.h0, dt, DIVE_LOCK, 320);
         const h = c.hazards.find((x) => x.id === br.d.h0);
         if (h) b.x += Math.max(-540 * dt, Math.min(540 * dt, h.x - b.x));
         b.facing = (h ? h.x : c.px) >= b.x ? 1 : -1;
+        if (h && br.t > DIVE_LOCK) aimPillars(c, h.x);
       },
       onAct: (b, c) => {
-        const h = c.hazards.find((x) => x.id === b.ai!.d.h0);
-        b.ai!.d.tx = h ? h.x : c.px;
+        const br = b.ai!;
+        const h = c.hazards.find((x) => x.id === br.d.h0);
+        br.d.tx = h ? h.x : c.px;
+        br.d.fromX = b.x;
+        const p = pillarFor(c.pillars, br.d.tx);
+        br.d.pi = p ? (c.pillars ?? []).indexOf(p) : -1;
+        aimPillars(c, br.d.tx);
       },
       tick: (b, c, dt) => {
         const br = b.ai!;
+        if (br.d.crashed) return;
+        if (br.d.pulled) {
+          // a miss on open floor: back up to her height, nothing open
+          br.air = Math.min(b.ai!.air + 520 * dt, 150);
+          if (br.air >= 150) br.t = Math.max(br.t, 1.3);
+          return;
+        }
+        const p = br.d.pi >= 0 ? (c.pillars ?? [])[br.d.pi] : undefined;
+        const bottom = p && !p.broken ? p.h : 0;
         const dx = br.d.tx - b.x;
         // she is over the mark by the time she lands, however far off she started
-        const need = Math.abs(dx) / Math.max(0.05, br.air / 1300);
+        const need = Math.abs(dx) / Math.max(0.05, (br.air - bottom) / 1300);
         const sp = Math.max(760, need) * dt;
         b.x += Math.max(-sp, Math.min(sp, dx));
         br.air -= 1300 * dt;
         b.facing = dx >= 0 ? 1 : -1;
-        br.hurt = [bodyBox(b)];
-        if (br.air <= 0 && !br.d.crashed) {
-          br.air = 0;
-          br.d.crashed = 1;
-          impact(b, c, 1.0, '#a16207');
-          for (const d of [-1, 1] as const) floorWave(c, b.x + d * 120, d, b.phase >= 3 ? 340 : 290, '#fbbf24', '#92400e').look = 'feather';
+        br.hurt = [{ x: b.x - 70, y: c.arena.floor - br.air - 70, w: 140, h: 90 }];
+        if (p && !p.broken && br.air <= p.h + 8) {
+          skySlam(b, c, p, br.d.tx);
+          return;
         }
+        if (br.air > 0) return;
+        br.air = 0;
+        if (standing(c.pillars).length) {
+          // the rocks are the way in: on open floor her talons only scrape the ground
+          br.d.pulled = 1;
+          c.shake(0.4);
+          c.thud(false);
+          c.debris(b.x, c.arena.floor - 8, '#a16207');
+          c.text('SHE PULLS UP!', b.x, c.arena.floor - 250, '#e2e8f0');
+          c.guide?.('dive:miss', 'Not out in the open, Pokey. By a rock!');
+          for (const q of c.pillars ?? []) q.aimed = false;
+          return;
+        }
+        // (no shock waves: the opening is for getting to her head, not for jumping over things)
+        br.d.crashed = 1;
+        impact(b, c, 1.0, '#a16207');
+      },
+      onEnd: (_b, c) => {
+        for (const q of c.pillars ?? []) q.aimed = false;
       },
     },
-    // a fan of razor feathers. She flings her wings wide to throw them, and that leaves her chest open
+    // a fan of razor feathers. She flings her wings wide to throw them, and that leaves her chest open. A rock stops them
     featherVolley: {
-      tell: 0.65,
+      tell: 0.85,
       act: 0.7,
       rec: 1.2,
       min: 180,
       pose: 'spit',
+      guide: 'Feathers! Duck behind a rock!',
       onAct: (b, c) => {
         const fire = (n: number) => {
           const ang = Math.atan2(c.py - 30 - b.y, c.px - b.x);
@@ -609,14 +757,17 @@ const SOVEREIGN: BossDef = {
         }
       },
     },
-    // she drops to the floor beside you and lunges with her beak. The head is low and open when it is over
+    // she drops to the floor beside you and lunges with her beak. The head is low and open when it is over. She stops short of a rock
     talonRake: {
-      tell: 0.75,
+      tell: 0.85,
       act: 0.55,
       rec: 1.3,
       min: 230,
       max: 600,
       pose: 'lunge',
+      guide: 'She\'s landing to bite! Jump out of the way!',
+      // (not from over a rock: she lands on the floor for this one)
+      when: (b, c) => skyGround(b, c) === 0,
       tellTick: (b, c, dt) => {
         const br = b.ai!;
         br.air += (0 - br.air) * Math.min(1, dt * 5);
@@ -625,8 +776,13 @@ const SOVEREIGN: BossDef = {
       onAct: (b, c) => {
         const br = b.ai!;
         br.d.dir = b.facing;
-        // how far she goes: to a beak's reach from you, never through the fence
-        br.d.go = Math.max(60, Math.min(330, Math.abs(c.px - b.x) - 150));
+        // how far she goes: to a beak's reach from you, never through the fence or a rock
+        let go = Math.max(60, Math.min(330, Math.abs(c.px - b.x) - 150));
+        for (const p of standing(c.pillars)) {
+          const ahead = (p.x - b.x) * br.d.dir;
+          if (ahead > 0) go = Math.min(go, Math.max(0, ahead - p.w / 2 - b.width / 2 - 6));
+        }
+        br.d.go = go;
         br.d.x0 = b.x;
       },
       tick: (b, c, dt, t) => {
@@ -643,13 +799,75 @@ const SOVEREIGN: BossDef = {
         }
       },
     },
-    // a long, high pass across the whole arena, her talons raking the height of the ledges. Stay on the floor and keep your head down
+    // she rears back (crest up, the air shimmering at her beak) and screeches: a wave rolls out the way she faces and shoves him hard
+    // (sovereignFight.ts SCREECH). Behind a rock he is in cover; crouched on the ground he is pushed much less. Near a rock she lands on
+    // top of it to scream
+    screech: {
+      tell: 1.0,
+      act: 0.9,
+      rec: 2.9,
+      // (close enough that the opening after it can be reached: sovereign.test.ts)
+      min: 160,
+      max: 420,
+      pose: 'roar',
+      interruptible: false,
+      guide: 'She\'s going to screech! Get behind a rock, or crouch down!',
+      onTell: (b, c) => {
+        const br = b.ai!;
+        // a rock close by: she lands on it. Otherwise she hovers low
+        let perch: SkyPillar | null = null;
+        for (const p of standing(c.pillars)) if (Math.abs(p.x - b.x) < 170 && (!perch || Math.abs(p.x - b.x) < Math.abs(perch.x - b.x))) perch = p;
+        br.d.perchX = perch ? perch.x : b.x;
+        br.d.perchAir = perch ? perch.h : 105;
+        br.d.perched = perch ? 1 : 0;
+      },
+      tellTick: (b, c, dt) => {
+        const br = b.ai!;
+        b.x += (br.d.perchX - b.x) * Math.min(1, dt * 5);
+        br.air += (br.d.perchAir - br.air) * Math.min(1, dt * 6);
+      },
+      onAct: (b, c) => {
+        const br = b.ai!;
+        const dir = b.facing;
+        const beak = b.x + dir * screechBeak(!!br.d.perched).fwd;
+        const h = makeHazard({
+          kind: 'push', x: beak, y: c.arena.floor - SCREECH.top / 2, floorY: c.arena.floor, w: 70, h: SCREECH.top, vx: dir * SCREECH.speed,
+          life: SCREECH.range / SCREECH.speed, maxLife: SCREECH.range / SCREECH.speed, dmg: 0, dir, src: beak, color: '#e0f2fe', color2: '#7dd3fc',
+        });
+        h.look = 'screech';
+        c.hazards.push(h);
+        br.d.dir = dir;
+        c.shake(0.5);
+        c.roar();
+      },
+      tick: (b) => {
+        const br = b.ai!;
+        b.facing = br.d.dir > 0 ? 1 : -1;
+        br.air = br.d.perchAir;
+      },
+      // screamed hoarse: she comes down to the floor (off the rock, toward him) with her head low, and that is the opening
+      onEnd: (b, c) => {
+        const br = b.ai!;
+        br.d.landX = screechLanding(b, c);
+        c.text('SHE\'S HOARSE!', b.x, c.arena.floor - 300, '#fde047');
+        c.guide?.('screech:open', 'She screamed herself hoarse! Get her head while it\'s down!');
+      },
+      recTick: (b, c, dt) => {
+        const br = b.ai!;
+        b.x += (br.d.landX - b.x) * Math.min(1, dt * 7);
+        br.air += (skyGround(b, c) - br.air) * Math.min(1, dt * 7);
+        if (br.air < 1) br.air = 0;
+        b.facing = c.px >= b.x ? 1 : -1;
+      },
+    },
+    // a long, high pass across the whole arena, her talons raking the height of the ledges and the rock tops. Stay on the floor
     skySweep: {
-      tell: 0.8,
+      tell: 0.85,
       act: 1.5,
       rec: 1.0,
       phase: 2,
       pose: 'fly',
+      guide: 'Stay down on the ground! She\'s raking the ledges!',
       onAct: (b, c) => {
         const br = b.ai!;
         br.d.dir = b.x < (c.arena.left + c.arena.right) / 2 ? 1 : -1;
@@ -657,48 +875,106 @@ const SOVEREIGN: BossDef = {
       },
       tick: (b, c, dt) => {
         const br = b.ai!;
-        // she skims at the height where her feet clear a hero standing on the floor, but not one in the air or on a ledge
-        br.air += (118 - br.air) * Math.min(1, dt * 8);
+        // she skims just over the rock tops: clear of a hero standing on the floor, but not one in the air or on a ledge or a rock
+        br.air += (150 - br.air) * Math.min(1, dt * 8);
         b.x += br.d.dir * 640 * dt;
         br.hurt = [bodyBox(b)];
         const half = b.width / 2;
         if (b.x <= c.arena.left + half + 2 || b.x >= c.arena.right - half - 2) br.t = 1.5;
       },
     },
-    // a swoop onto the marked spot with her talons out, which ends with her pulling up again: no crash, so her back is what is open
+    // a swoop onto the marked spot with her talons out, which ends with her pulling up again: her back is what is open. Low by a rock,
+    // she clips it, the same as a dive
     snatch: {
-      tell: 0.85,
+      tell: 0.9,
       act: 0.7,
       rec: 1.2,
       phase: 2,
       min: 200,
       pose: 'fly',
+      guide: 'Another red mark! A rock works on this one too!',
+      stunAfter: (b) => b.ai!.d.slamStun ?? 0,
+      stunTick: skyStunTick,
+      crashText: '',
       onTell: (b, c) => {
-        const h = makeHazard({ kind: 'mark', x: c.px, y: c.arena.floor - 3, floorY: c.arena.floor, w: 130, h: 6, warn: 0.85, warnMax: 0.85, life: 0.9, maxLife: 0.9, color: '#ef4444', color2: '#7f1d1d' });
-        c.hazards.push(h);
-        addMark(c, b, h, 0);
+        skyMark(c, b, 130, 0.9);
       },
       tellTick: (b, c, dt) => {
         const br = b.ai!;
         br.air += (230 - br.air) * Math.min(1, dt * 3);
         trackMark(b, c, br.d.h0, dt, 0.5, 300);
+        const h = c.hazards.find((x) => x.id === br.d.h0);
+        if (h && br.t > 0.5) aimPillars(c, h.x);
       },
       onAct: (b, c) => {
         const br = b.ai!;
         const h = c.hazards.find((x) => x.id === br.d.h0);
         br.d.tx = h ? h.x : c.px;
         br.d.x0 = b.x;
+        br.d.fromX = b.x;
         br.d.a0 = br.air;
         b.facing = br.d.tx >= b.x ? 1 : -1;
       },
       tick: (b, c, dt, t) => {
         const br = b.ai!;
+        if (br.d.crashed) return;
         const u = Math.min(1, t / 0.7);
         // down fast, a beat at the bottom, and up again
         const reach = Math.min(1, u / 0.5);
         b.x = br.d.x0 + (br.d.tx - br.d.x0) * (reach * reach * (3 - 2 * reach));
         br.air = u < 0.5 ? br.d.a0 + (6 - br.d.a0) * (u / 0.5) : 6 + (150 - 6) * ((u - 0.5) / 0.5);
         br.hurt = [bodyBox(b)];
+        if (u < 0.55) {
+          const p = pillarFor(c.pillars, br.d.tx);
+          if (p && Math.abs(b.x - p.x) < PILLAR.reach && br.air <= p.h + 8) skySlam(b, c, p, br.d.tx);
+        }
+      },
+      onEnd: (_b, c) => {
+        for (const q of c.pillars ?? []) q.aimed = false;
+      },
+    },
+    // her wingbeats blow a gust lane down the arena (the chimes ring first): it pushes him away from her, rock is cover, and the leaf
+    // rides it a long way. From the storm it blows harder and longer, and in the last phase two feathers ride it (duck the high one)
+    wingGust: {
+      tell: 1.1,
+      act: 2.4,
+      rec: 1.2,
+      phase: 2,
+      min: 160,
+      pose: 'roar',
+      interruptible: false,
+      guide: 'Hear the chimes? Wind\'s coming. Hold jump and ride it on your leaf!',
+      tellTick: (b, c, dt) => {
+        const br = b.ai!;
+        br.air += (Math.max(120, skyGround(b, c) + 10) - br.air) * Math.min(1, dt * 4);
+        br.d.low = Math.max(120, skyGround(b, c) + 10);
+      },
+      onAct: (b, c) => {
+        const br = b.ai!;
+        const dir = b.facing;
+        const last = GUST.last[Math.max(0, Math.min(2, b.phase - 1))];
+        br.d.dir = dir;
+        br.d.last = last;
+        const mid = (c.arena.left + c.arena.right) / 2;
+        const h = makeHazard({
+          kind: 'push', x: mid, y: c.arena.floor - GUST.top / 2, floorY: c.arena.floor, w: c.arena.right - c.arena.left, h: GUST.top, vx: 0,
+          life: last, maxLife: last, dmg: 0, dir, src: b.x, color: '#e0f2fe', color2: '#99f6e4',
+        });
+        h.look = 'gust';
+        c.hazards.push(h);
+        if (b.phase >= 3) {
+          for (const [k, up] of [[0, 34], [1, 96]] as const) {
+            const f = bolt(c, b.x + dir * 140, c.arena.floor - up, dir, 300, '#fde68a', '#92400e', 20);
+            f.x -= dir * k * 220;
+            f.look = 'feather';
+          }
+        }
+      },
+      tick: (b, _c, _dt, t) => {
+        const br = b.ai!;
+        b.facing = br.d.dir > 0 ? 1 : -1;
+        br.air = (br.d.low ?? 120) + Math.sin(t * 14) * 6;
+        if (t >= br.d.last) br.t = Math.max(br.t, 2.4);
       },
     },
   },
@@ -1922,7 +2198,7 @@ export const BOSS_TIPS: Record<number, string> = {
   1: 'Venom Fang sweeps his head along the floor. When he rears back and the floor flashes, get off the ground. Then punch his head while he is dazed.',
   2: 'Crocus Rex rolls the length of the arena and crashes into the wall. Jump the tail sweep and hit him while he is dizzy.',
   3: 'The Shadow Prowler vanishes and reappears behind you. Watch for the fade, then turn and strike.',
-  4: 'The Sky Sovereign is a giant of the air. Step off the red mark and let her crash. Then hit whatever glows: her head, her chest, her talons, or her back.',
+  4: 'The Sky Sovereign is a giant of the air. Stand by a rock pillar, step off the red mark, and her dive slams into the rock. Then hit her head, or float down onto her back. Get behind a rock when she screeches.',
   5: 'The Tarantula Queen is a giant of the hollow. Jump her venom jet and step out of the web and cocoon marks. Then hit whatever glows: abdomen, fangs, eyes, or chest.',
   6: 'The Marsh Reaver is a giant of the blackwater. Jump his low spear sweep and the mud waves, duck the high swipe, then hit whatever glows: back, neck, head, or flank.',
   7: 'The Stone Idol Golem is a giant of the ruins. Jump his spinning hammer, slip the crystal rift, then hit whatever glows: chest, head, back, or belly.',
