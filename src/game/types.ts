@@ -436,6 +436,11 @@ export interface InputState {
   up: boolean;
   down: boolean;
   jumpPressed: boolean;
+  /**
+   * which way the touch flick behind this jump press leaned (-1 left, 1 right), when it leaned 20 degrees or more off straight up
+   * (touchGestures.ts); 0 or unset for a straight-up flick, a key or the pad. Letting go of a vine or a trunk leaps that way.
+   */
+  jumpLean?: -1 | 0 | 1;
   jumpHeld: boolean;
   punchPressed: boolean;
   kickPressed: boolean;

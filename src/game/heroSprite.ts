@@ -270,7 +270,7 @@ export function drawHeroSprite(ctx: CanvasRenderingContext2D, p: PlayerState, ti
   load();
   events.track(p, time);
   // holding a vine: Matt's vine-swing pictures, his hands round the real liana (heroVine.ts)
-  if (p.isVineSwinging && drawVineHang(ctx, p)) return true;
+  if (p.isVineSwinging && drawVineHang(ctx, p, 1, time)) return true;
   // the standard hero (heroStandard.ts), when switched on and loaded, draws every pose it has a frame for
   const stdImg = standardAtlas();
   // a moving clip (heroClips.ts, test): when one fits this moment it draws in the standard hero's place

@@ -43,7 +43,7 @@ const SETTLE = 0.5;
  * Draw him hanging from the vine. The swing puts his feet at the end of `swingLength` along the vine (p.x, p.y); his hands are a body's
  * length further up the vine, and the picture turns about them. False until the sheet has loaded (the standard pose draws instead).
  */
-export function drawVineHang(ctx: CanvasRenderingContext2D, p: PlayerState, alpha = 1): boolean {
+export function drawVineHang(ctx: CanvasRenderingContext2D, p: PlayerState, alpha = 1, time = performance.now() / 1000): boolean {
   load();
   if (!ready || !img) return false;
   const a = p.swingAngle ?? 0;
@@ -56,7 +56,9 @@ export function drawVineHang(ctx: CanvasRenderingContext2D, p: PlayerState, alph
   // of the way in under the hands, the way a hanging body does (the pictures drew it leaning out to one side of the vine)
   ctx.rotate(p.facing * (f.phi + SETTLE * (f.psi - f.phi)) - a);
   ctx.scale(p.facing, 1);
-  if (p.invincibleTimer > 0 && Math.floor(performance.now() / 42) % 2 === 0) ctx.globalAlpha *= 0.55;
+  // the hurt blink, on the game's clock like every other pose (heroSprite.ts): it ran on the wall clock here, so it kept flickering
+  // under a pause or a lesson and fell out of step with the 30 fps frames, and a still frame could catch him half see-through on the vine
+  if (p.invincibleTimer > 0 && Math.floor(time * 24) % 2 === 0) ctx.globalAlpha *= 0.55;
   if (alpha < 1) ctx.globalAlpha *= alpha;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';

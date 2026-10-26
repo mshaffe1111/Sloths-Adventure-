@@ -265,7 +265,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
 
   // a first-time lesson: one of Dot's lines (the engine did not stop for it)
   useEffect(() => {
-    const l = lessonId ? lessonDotLine(lessonId) : undefined;
+    // (already on the vine or the trunk: the lesson starts after its "grab it" step)
+    const l = lessonId ? lessonDotLine(lessonId, undefined, run.view.swinging || run.view.climbing || run.view.hanging) : undefined;
     if (l) run.say(l);
   }, [lessonId, run]);
 

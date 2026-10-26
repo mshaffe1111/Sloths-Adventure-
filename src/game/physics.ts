@@ -419,6 +419,39 @@ export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0
   };
 }
 
+/**
+ * The automatic landing from a swing (engine.ts NATURAL SWING EXIT 3), checked while his feet are over a platform on the way down. Does
+ * it set him down on it? Only when he plausibly wants off. On 1-6, climbing down a liana lowered his feet past the corner of the raised
+ * ledge beside it, and it set him down there in the middle of a pump, which players read as the vine letting go (QA, 2026-10-26). So:
+ *  - a platform under the vine's hanging point, his feet within 14 px of its top (he climbed down onto it, and they would otherwise
+ *    sink into it): 'land', as before;
+ *  - a ledge out to one side: when he steers toward it (against the swing, which on the way down carries him away from it), from up to
+ *    `reach` px above its top ('step' when he is above it: he steps off and drops onto it); or with no steer held, his feet within
+ *    14 px, near the end of the swing's stroke (`apexOmega`), where the swing slows and turns. Never while he pumps the swing away from
+ *    it, nor as the swing sweeps him past its corner.
+ * `dy`: his feet below the platform's top (px; negative = above it).
+ */
+export const SWING_LAND = {
+  /** rad/s: slower than this is the end of a stroke (a full timed swing peaks at about 2.6 rad/s on Normal, 2.2 on Easy) */
+  apexOmega: 1.0,
+  /** px above a ledge's top that steering toward it steps off onto it */
+  reach: 40,
+};
+export function swingLanding(
+  s: { angle: number; omega: number },
+  vineX: number,
+  plat: { x: number; width: number },
+  steer: -1 | 0 | 1,
+  dy: number,
+): 'land' | 'step' | null {
+  if (dy >= 14) return null;
+  if (vineX >= plat.x - 10 && vineX <= plat.x + plat.width + 10) return dy > -14 ? 'land' : null;
+  const side = plat.x + plat.width / 2 < vineX ? -1 : 1;
+  if (steer === side) return dy > -14 ? 'land' : dy > -SWING_LAND.reach ? 'step' : null;
+  if (steer !== 0) return null;
+  return dy > -14 && Math.abs(s.omega) < SWING_LAND.apexOmega ? 'land' : null;
+}
+
 /** is this the moment to let go toward `dir`? (moving that way, between just behind straight down and most of the way up the front) */
 export function inSweetSpot(s: SwingState, dir: -1 | 1): boolean {
   const moving = Math.sign(s.omega) === dir && Math.abs(s.omega) > 0.2;
