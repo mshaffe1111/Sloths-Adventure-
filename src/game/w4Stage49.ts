@@ -34,6 +34,7 @@ import { FALLS, type Waterfall } from './waterfalls.ts';
 import type { Omen, Updraft } from './w4Play.ts';
 import type { Zone } from './zones.ts';
 import type { Collectible, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
+import { PAST_SHRINE } from './rules.ts';
 
 /** the aerie's goal: guards blown off their ledges (the stage holds more than this, and every one stands on the way) */
 export const GUARD_GOAL_49 = 8;
@@ -600,6 +601,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
   const exitX = r(x - 220);
   end();
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: y - 30, collected: false, bobPhase: 0 });
+  for (let i = C.length - 1; i >= 0; i--) if (C[i].x > exitX + PAST_SHRINE) C.splice(i, 1);
   info.flagSeconds.push(expert);
 
   // shift down: the top terrace 420 px under the top of the stage; every terrace runs down to one foot, 160 px under the lowest floor
