@@ -133,6 +133,9 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     x1 = Math.max(x1, sx + 20);
     E.push({
       id, type: 'spider', x: r(sx), y: G - 12, vx: 0, vy: 0, width: 34, height: 22, hp: 1, maxHp: 1, facing: doze ? 1 : -1,
+      // (its painted legs reach about 30 px out either side of its middle: a punch or kick that lands on them lands, crouched or
+      // rushing. With only its 34 px body, a tap at a crouching spider about 85 px off whiffed though the fist was on its legs: QA v195)
+      hitW: 60,
       patrolMinX: r(x0), patrolMaxX: r(x1), attackCooldown: 1.2, telegraphTimer: 0, isAttacking: false, animTimer: 0, hitFlashTimer: 0,
       defeated: false, koTimer: 0, behaviorTimer: 0, edgeMinX: r(x0), edgeMaxX: r(x1),
       // (on the ground, not hanging on a thread: drawn as the painted jumping spider, w5Creatures.ts and spiderSprite.ts)

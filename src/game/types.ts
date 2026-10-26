@@ -160,6 +160,8 @@ export interface Enemy {
   vy: number;
   width: number;
   height: number;
+  /** how wide its drawing is, when that is wider than its body (World 5's jumping spider, legs out): a strike can land across it */
+  hitW?: number;
   hp: number;
   maxHp: number;
   facing: 1 | -1;

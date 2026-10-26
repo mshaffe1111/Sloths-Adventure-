@@ -2114,6 +2114,8 @@ export class GameEngine {
         if (this.w5?.spiderHeld(e)) continue;
         const step = stepSpider(e, { x: p.x, y: p.y }, dt);
         if (step.ev.notice) this.addFloatingText('?', e.x, e.y - 30, '#fde047');
+        // it ran onto a punch or kick already thrown at it: the blow wins, never a trade (QA v195: a heart lost on the frame he beat it)
+        if (this.ranOntoBlow(e)) continue;
         for (const h of step.hurt) {
           if (checkAABBCollision(...this.pBox(), h.x, h.y, h.w, h.h)) {
             this.damagePlayer(1, e.x);
@@ -3355,6 +3357,27 @@ export class GameEngine {
         this.addFloatingText('CRACK!', c.x, c.y - 20, '#fef08a');
       }
     }
+  }
+
+  /**
+   * A spider rushing in this frame, after the strike was tested: if it has run into the reach of a punch or kick he has already thrown
+   * (winding up or striking), the blow lands now, before it can bite. The strike is tested before the animals move, so a spider stepping
+   * into a fist a frame from landing used to bite first and be beaten the frame after: a trade for a well-timed tap. True when it was hit.
+   */
+  private ranOntoBlow(e: Enemy): boolean {
+    const a = this.atk;
+    if (!a || a.hits.has(e.id)) return false;
+    const m = a.move;
+    const ph = phaseAt(m, a.t);
+    if (ph !== 'startup' && ph !== 'active') return false;
+    const p = this.player;
+    const box = moveBox(m, ph === 'startup' ? m.startup : a.t, { x: p.x, y: p.y, facing: p.facing });
+    if (!box) return false;
+    const hr = hurtRect(e);
+    if (!rectsOverlap(box, hr)) return false;
+    a.hits.add(e.id);
+    this.hitEnemy(e, m, box, hr, a);
+    return true;
   }
 
   private hitEnemy(e: Enemy, m: MoveSpec, box: Rect, hr: Rect, a: NonNullable<GameEngine['atk']>) {
