@@ -13,6 +13,7 @@
  * petal, the Butler a head taller than him. Colours from the sheets: rose and lilac velvet, cream silk, china white with gold rims.
  */
 import { shakyLetters, type Carving } from './w5Kit.ts';
+import { drawButlerPose, type ButlerPose } from './w5Creatures.ts';
 import { drawScratch, drawW5, drawW5Box, drawW5Orchid, steamPuff, w5ArtReady, w5Height, w5Width, type W5Piece as ArtPiece } from './w5Art.ts';
 
 export type W5Piece =
@@ -930,7 +931,9 @@ export function drawCocoon(ctx: CanvasRenderingContext2D, x: number, b: number, 
 // ───────────────────────────── the Butler (a stand-in until his clips land) ─────────────────────────────
 
 /** the Butler, feet at (x, b), facing `dir`: lavender fuzz, big eyes, a striped waistcoat and a bow tie, holding his tray */
-export function drawButler(ctx: CanvasRenderingContext2D, x: number, b: number, dir: 1 | -1, tray: { x: number; y: number; out: number }, cake: boolean, t: number, bow = 0) {
+export function drawButler(ctx: CanvasRenderingContext2D, x: number, b: number, dir: 1 | -1, tray: { x: number; y: number; out: number }, cake: boolean, t: number, bow = 0, pose?: ButlerPose) {
+  // the trained Butler (w5Creatures.ts): his poses carry their own tray and cake, so nothing more is drawn over him
+  if (pose && !atlas?.frames.butler && drawButlerPose(ctx, x, b, dir, pose, t, bow)) return;
   if (!drawW5Art(ctx, tray.out > 0.5 ? 'butlerOffer' : 'butler', x, b, 84, { flip: dir < 0 })) {
     ctx.save();
     ctx.translate(x, b);

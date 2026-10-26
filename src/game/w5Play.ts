@@ -16,6 +16,7 @@ import {
   drawW5Light, drawWrappedChair, takeAt,
 } from './w5Look.ts';
 import { w5ArtReady, type W5Piece as ArtPiece } from './w5Art.ts';
+import { drawW5Spider, warmW5Butler, warmW5Spider, type ButlerPose } from './w5Creatures.ts';
 import { W5_FRAMES } from './w5PropsData.ts';
 import { drawAura } from './readable.ts';
 import type { Collectible, Enemy, Platform, PlayerState as Player, Vine } from './types.ts';
@@ -90,6 +91,9 @@ export class W5Play {
     });
     // the painted props: start the sheet now (stagePreload.ts has usually decoded it already); the stand-ins cover the moment until then
     w5ArtReady();
+    // and the trained creatures this stage holds (World 5 sheets, let go with the world): the spider's clips, the Butler's poses
+    if (w5.spiders?.length) warmW5Spider();
+    if (w5.butlers?.length) warmW5Butler();
   }
 
   /** everything about him back to fresh (a respawn, or the test harness placing him somewhere new) */
@@ -373,7 +377,9 @@ export class W5Play {
       const st = this.butlers[i];
       const tray = trayAt(b, st);
       const bow = st.phase === 'knocked' ? Math.max(0, 1 - st.t / 0.8) : 0;
-      drawButler(ctx, b.x, b.y, b.dir, st.phase === 'knocked' ? { ...tray, out: -1 } : tray, st.cake && st.phase !== 'knocked', t, bow);
+      // his pose: lifting the tray as Pokey comes (the tell), holding it right out (the attack), the tray punched away (hurt, then dazed)
+      const pose: ButlerPose = st.phase === 'offer' ? (st.t < BUTLER.tell ? 'tell' : 'attack') : st.phase === 'knocked' ? (st.t < 0.35 ? 'hurt' : 'defeated') : 'idle';
+      drawButler(ctx, b.x, b.y, b.dir, st.phase === 'knocked' ? { ...tray, out: -1 } : tray, st.cake && st.phase !== 'knocked', t, bow, pose);
     });
     (w5.threads ?? []).forEach((th, i) => {
       if (!vis(th.x0)) return;
@@ -480,6 +486,16 @@ export class W5Play {
       return drawShrineArt(ctx, c.x, c.y + 30, t, false);
     }
     return false;
+  }
+
+  /**
+   * A World 5 jumping spider from its trained clips (w5Creatures.ts), crouching through its warning before it rushes. False for a spider
+   * that is not World 5's, or a pose the clips do not hold: the engine then draws the painted stills or the vector spider.
+   */
+  drawSpider(ctx: CanvasRenderingContext2D, e: Enemy, t: number, playerX: number): boolean {
+    const g = this.gates.get(e.id);
+    if (!g) return false;
+    return drawW5Spider(ctx, e, t, playerX, g.phase === 'windup' ? Math.min(1, g.t / 0.7) : null);
   }
 
   /** a checkpoint as the painted lace pennant (its pole's foot at the flag's spot); false leaves the engine's plain flag */

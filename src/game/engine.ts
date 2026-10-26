@@ -4918,7 +4918,8 @@ export class GameEngine {
         } else if (enemy.type === 'frog') {
           if (!drawFrogSprite(ctx, enemy, this.gameTime)) drawHazardEntity(ctx, enemy, this.gameTime);
         } else if (enemy.type === 'spider') {
-          if (!drawSpiderSprite(ctx, enemy, this.gameTime, this.player.x)) drawHazardEntity(ctx, enemy, this.gameTime);
+          // (World 5's jumping spiders: their trained clips, w5Play.ts)
+          if (!this.w5?.drawSpider(ctx, enemy, this.gameTime, this.player.x) && !drawSpiderSprite(ctx, enemy, this.gameTime, this.player.x)) drawHazardEntity(ctx, enemy, this.gameTime);
         } else {
           drawHazardEntity(ctx, enemy, this.gameTime);
         }
