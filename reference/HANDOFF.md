@@ -52,6 +52,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 - **HUD and tutorial revamp: Matt's picks (2026-10-26, from the mock-up review https://claude.ai/artifact/Aopein5VvpCQaNoNXzRrBa).**
   - HUD: option B, the hanging vine (hearts and petals hang from a vine, Menu is a leaf), with option D's behaviour: things bloom into view when something happens (a petal picked up, a life lost) and stay small otherwise.
   - Dot: option C, perched. She sits on the scenery near the thing she's teaching, and a glowing ring and arrow point at it.
+  - Dot's lines: Matt approved the shortened set (476 lines, review page https://claude.ai/artifact/PsV3hZSb7NgoDf1spAzAp2): tips 8 words or fewer that name the thumb move, story 12 or fewer, touch words only. They play in the new look; the old text stays when it is off.
   - Finger guides: none. No thumb or finger picture: Dot perched with her ring and arrow is the guide, and her words say the gesture ("Flick up to jump.").
 - **Bosses.** Every weak-spot opening needs a clear tell, and must stay open at least as long as the time to reach it plus 0.8 s to react plus 0.6 s to hit (bossFair.test.ts, sovereignEngine.test.ts). Fight length depends on the player's skill; there is no minimum for bosses.
 
