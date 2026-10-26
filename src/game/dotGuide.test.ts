@@ -153,12 +153,70 @@ test('a story aside waits 8 s after the last line; a line waiting too long is dr
   assert.equal(q.tick(end + GUIDE.storyGapMs, env())?.line.key, 's');
 
   const q2 = new GuideQueue();
-  q2.push(line('tip', 'teach', 'Jump the little gaps', { move: 'jump', waitMs: 3000 }), 0);
+  q2.push(line('note', 'info', 'Something shiny, far away', { waitMs: 3000 }), 0);
   // in danger the whole time it could have started
   q2.tick(0, env({}, true));
   q2.tick(3100, env({}, false));
   assert.equal(q2.cur, null);
   assert.equal(q2.size, 0);
+});
+
+test('a move tip is never dropped unseen: it waits until its move is done, however long, and is not needed after that (QA v189)', () => {
+  const q = new GuideQueue();
+  q.push(line('tip', 'teach', 'Jump onto the mushroom to bounce high.', { move: 'bounce', waitMs: 3000 }), 0);
+  // in danger for a long time: still waiting
+  for (let t = 0; t <= 20000; t += 500) q.tick(t, env({}, true));
+  assert.equal(q.size, 1);
+  assert.equal(q.tick(20500, env())?.line.key, 'tip');
+  // a jump is not a bounce: it stays up
+  assert.equal(q.tick(22000, env({ jump: 3 }))?.line.key, 'tip');
+  // a move done while it waits: it is not needed any more
+  const q2 = new GuideQueue();
+  q2.push(line('tip2', 'teach', 'Jump the little gaps', { move: 'jump' }), 0);
+  q2.tick(0, env({}, true));
+  q2.tick(500, env({ jump: 1 }, true));
+  assert.equal(q2.size, 0);
+  // stepped aside for a more important line, it comes back
+  const q3 = new GuideQueue();
+  q3.push(line('tip3', 'teach', 'Jump the little gaps', { move: 'jump' }), 0);
+  q3.tick(0, env());
+  q3.push(line('must', 'must', 'Sealed: finish the goal first'), 9000);
+  const seen = run(q3, 9000, 60000);
+  assert.ok(seen.includes('must'));
+  assert.ok(seen.lastIndexOf('tip3') > seen.indexOf('must'), 'the tip came back after the must line');
+  // and one that hit its 20 s cap comes back once more
+  const q4 = new GuideQueue();
+  q4.push(line('tip4', 'teach', 'Jump the little gaps', { move: 'jump' }), 0);
+  const s4 = run(q4, 0, 80000);
+  const firstEnd = s4.indexOf(null);
+  assert.ok(firstEnd >= GUIDE.moveCapMs / 100, 'up for its full 20 s');
+  assert.ok(s4.slice(firstEnd).includes('tip4'), 'it came back');
+});
+
+test('every line is up at least 1.5 s, even when its move is done at once or its sender takes it down (QA v189)', () => {
+  const q = new GuideQueue();
+  q.push(line('punch', 'teach', "Tap to punch it when it's close.", { move: 'punch' }), 0);
+  q.tick(0, env());
+  // the punch comes 0.2 s later: the line stays until 1.5 s
+  assert.equal(q.tick(200, env({ punch: 1 }))?.line.key, 'punch');
+  assert.equal(q.tick(GUIDE.minShowMs - 100, env({ punch: 1 }))?.line.key, 'punch');
+  assert.equal(q.tick(GUIDE.minShowMs, env({ punch: 1 })), null);
+  const ended = q.drain().find((e) => e.type === 'end');
+  assert.equal(ended?.type === 'end' && ended.why, 'done');
+  // taken down by its sender after 0.3 s: still up until 1.5 s
+  const q2 = new GuideQueue();
+  q2.push(line('c', 'teach', 'Slide your thumb to run.', { source: 'coach' }), 0);
+  q2.tick(0, env());
+  q2.clear((l) => l.key === 'c', 300);
+  assert.equal(q2.cur?.line.key, 'c');
+  assert.equal(q2.tick(1000, env())?.line.key, 'c');
+  assert.equal(q2.tick(GUIDE.minShowMs, env()), null);
+  // (unless it is taken down at once, as when the player turns tips off)
+  const q3 = new GuideQueue();
+  q3.push(line('d', 'teach', 'Slide your thumb to run.'), 0);
+  q3.tick(0, env());
+  q3.clear(() => true, 100, true);
+  assert.equal(q3.cur, null);
 });
 
 test('the same line is never queued twice, and the engine can take its line down when the moment has passed', () => {
@@ -171,6 +229,9 @@ test('the same line is never queued twice, and the engine can take its line down
   assert.equal(q.size, 0);
   assert.equal(q.cur?.line.key, 'x');
   q.clear((l) => l.kind === 'danger', 500);
+  // (up at least 1.5 s first)
+  assert.equal(q.cur?.line.key, 'x');
+  q.tick(20 + GUIDE.minShowMs, env());
   assert.equal(q.cur, null);
 });
 

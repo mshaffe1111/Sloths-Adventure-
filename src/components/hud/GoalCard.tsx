@@ -10,6 +10,7 @@ import React from 'react';
 import type { GoalInfo } from './goalInfo.ts';
 import { GoalPic } from './hudArt.tsx';
 import { readMs, type HudMode, type LaneRect } from './hudLayout.ts';
+import { fillStyle, useHudArt } from './painted.tsx';
 
 /** stages whose full card has been shown this session (a retry gets the short one) */
 const SEEN = new Set<string>();
@@ -41,6 +42,7 @@ export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, 
   const [phase, setPhase] = React.useState<Phase>('in');
   const [to, setTo] = React.useState<{ x: number; y: number } | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
+  const art = useHudArt();
   const reduced = React.useMemo(() => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
 
   const going = React.useRef(false);
@@ -95,11 +97,21 @@ export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, 
 
   const port = mode === 'port';
   const short = mode === 'short';
-  const w = Math.min(lane.w, port ? 340 : short ? 300 : 360);
+  const tiny = short && typeof window !== 'undefined' && window.innerHeight <= 350;
+  // painted (painted.tsx): the wood-and-parchment card at its own shape, its words on the parchment (about x 13-86%, y 19-85%); the
+  // one-second retry version on the goal plate. The drawn stand-in until the sheet has loaded.
+  const pw = art ? Math.min(lane.w, quick ? (tiny ? 124 : 150) : port ? 300 : short ? (tiny ? (window.innerHeight <= 300 ? 210 : 240) : 280) : 330) : 0;
+  const ph = art ? Math.round((pw * (quick ? 210 : 667)) / (quick ? 540 : 900)) : 0;
+  const w = art ? pw : Math.min(lane.w, port ? 340 : short ? 300 : 360);
   const x = lane.x + (lane.w - w) / 2;
   const top = lane.y + (short ? 0 : 4);
   // the threads go up to the top of the screen sideways (the card hangs from the canopy); upright they are short, clear of the HUD row
   const style: React.CSSProperties = { left: x, top, width: w, ['--th' as string]: `${port ? 10 : top + 4}px` };
+  if (art) {
+    Object.assign(style, fillStyle(quick ? 'goalPlate' : 'goalCard'), { height: ph, ['--pw' as string]: `${w}px` });
+    if (!quick) Object.assign(style, { paddingTop: Math.round(ph * 0.19), paddingBottom: Math.round(ph * 0.15), paddingLeft: Math.round(w * 0.13), paddingRight: Math.round(w * 0.14) });
+  }
+  const thread = art ? fillStyle('tendril') : undefined;
   if (phase === 'shrink') {
     style.transform = reduced || !to ? undefined : `translate(${to.x}px, ${to.y}px) scale(.14)`;
     style.opacity = 0;
@@ -109,9 +121,9 @@ export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, 
   const words = info.line.replace(/^This stage:\s*/, '');
 
   return (
-    <div ref={ref} className={`vh-card ${quick ? 'quick' : ''} ${phase}`} style={style} role="status" aria-live="polite" aria-label={info.line}>
-      <span className="vh-card-thread l" aria-hidden="true" />
-      <span className="vh-card-thread r" aria-hidden="true" />
+    <div ref={ref} className={`vh-card ${quick ? 'quick' : ''} ${phase}${art ? ' painted' : ''}`} style={style} role="status" aria-live="polite" aria-label={info.line} data-hud-keepout="">
+      <span className="vh-card-thread l" aria-hidden="true" style={thread} />
+      <span className="vh-card-thread r" aria-hidden="true" style={thread} />
       {quick ? (
         <div className="vh-card-row">
           <GoalPic icon={info.icon} size={icon - 6} />

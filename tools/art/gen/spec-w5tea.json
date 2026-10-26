@@ -1,0 +1,53 @@
+{
+ "tag": "w5tea",
+ "script": "tools/art/w5/w5gpu.py",
+ "flavor": "rtx-pro-6000",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "w5-queen-sit-s3",
+   "src": "stills/w5q-sit-N1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant hairy dark brown tarantula with orange bands and orange eyes holds one front leg out in a gracious welcoming gesture, gently sweeps it toward an unseen chair, then lowers it politely, side view facing right, she stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480,
+   "flip": true,
+   "tone": "stills/w5q-idle.png"
+  },
+  {
+   "name": "w5-queen-pour-s3",
+   "src": "stills/w5q-pour-L1.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant hairy dark brown tarantula with orange bands and orange eyes holds a small china teapot in her front legs and slowly tilts it to pour, then sets it level again, side view facing right, she stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480,
+   "flip": true
+  },
+  {
+   "name": "w5-meeca-carve-s3",
+   "src": "stills/w5m-carve-N2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a young girl sloth in a pink vest with a race bib, green shorts and a pink headband stands at a tree trunk and scratches letters into its bark with a tiny hairpin, her arm moving in quick small strokes, glancing back over her shoulder, side view facing right, she stays in place",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w5-meeca-carve-s11",
+   "src": "stills/w5m-carve-N2.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a young girl sloth in a pink vest with a race bib, green shorts and a pink headband stands at a tree trunk and scratches letters into its bark with a tiny hairpin, her arm moving in quick small strokes, glancing back over her shoulder, side view facing right, she stays in place",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  }
+ ]
+}

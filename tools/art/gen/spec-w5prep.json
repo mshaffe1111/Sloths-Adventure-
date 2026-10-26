@@ -1,0 +1,13 @@
+{"tag": "w5prep", "script": "tools/art/w5/w5cpu.py", "flavor": "cpu-upgrade", "tasks": [
+ {"do": "sheet", "clip": "ra-spider-walk_0-s3"}, {"do": "sheet", "clip": "ra-spider-walk_0-s11"},
+ {"do": "sheet", "clip": "ra-spider-idle_a-s3"}, {"do": "sheet", "clip": "ra-spider-idle_a-s11"},
+ {"do": "sheet", "clip": "ra-spider-prep-s3"}, {"do": "sheet", "clip": "ra-spider-prep-s11"},
+ {"do": "sheet", "clip": "ra-spider-hurt-s3"}, {"do": "sheet", "clip": "ra-spider-hurt-s11"},
+ {"do": "packall", "creature": "spider", "up": 1.6, "out": "spider-all", "seqs": {
+   "walk3": ["ra-spider-walk_0-s3", "all"], "walk11": ["ra-spider-walk_0-s11", "all"],
+   "idle3": ["ra-spider-idle_a-s3", "all"], "idle11": ["ra-spider-idle_a-s11", "all"],
+   "prep3": ["ra-spider-prep-s3", "all"], "prep11": ["ra-spider-prep-s11", "all"],
+   "hurt3": ["ra-spider-hurt-s3", "all"], "hurt11": ["ra-spider-hurt-s11", "all"]}},
+ {"do": "starts", "atlas": "queen", "tag": "w5q", "frames": ["idle", "walk_0", "idle2", "screech", "stomp", "crush", "webslam", "cocoon", "hurt", "dizzy", "dead", "block"]},
+ {"do": "starts", "atlas": "meeca", "tag": "w5m", "frames": ["idle", "climb_2", "climb_4", "walk_6", "pickup"]}
+]}

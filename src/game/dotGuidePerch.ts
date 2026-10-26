@@ -361,16 +361,143 @@ export function dangerRects(v: GuideView, out: Rect[]): Rect[] {
   return out;
 }
 
-/** where she hovers beside Pokey: behind his shoulder, on the side he is not facing (screen px, her middle) */
+/** how far in front of him his punch reaches (world px), so she never hovers there */
+export const PUNCH_REACH = 90;
+
+/**
+ * Where she hovers beside Pokey (screen px, her middle): behind his shoulder, on the side he is not facing. Never on his body or in
+ * front of him where his punch goes: with his back to the screen's edge she hovers above his head instead, a little behind. Never on a
+ * score pop-up ("+100 FLOWER!"): she rises above it (QA, v189: at the first snake in 1-3 she hovered on him, in front of his punch, over
+ * the pop-up).
+ */
 export function hoverSpot(v: GuideView): { x: number; y: number } {
   const p = pokeyRect(v, 0);
   const cx = (p.x0 + p.x1) / 2;
+  const half = (p.x1 - p.x0) / 2;
+  const top = guideSafeArea(v.cssW, v.cssH).rect.y0 + 20;
   // (his painting is wider than his body box: keep clear of his arms)
-  const off = (p.x1 - p.x0) / 2 + 52;
+  const off = half + 52;
   let x = cx - v.facing * off;
-  // at the screen's edge with his back to it: the other shoulder
-  if (x < 28 || x > v.cssW - 28) x = cx + v.facing * off;
-  return { x, y: Math.max(guideSafeArea(v.cssW, v.cssH).rect.y0 + 20, p.y0 - 14) };
+  let y = Math.max(top, p.y0 - 14);
+  if (x < 28 || x > v.cssW - 28) {
+    // his back is to the edge: above his head (clear of his ears and hat), on his back half
+    x = Math.max(28, Math.min(v.cssW - 28, cx - v.facing * half * 0.6));
+    y = Math.max(top, p.y0 - 62);
+  }
+  // keep off his body and his punch reach (she is about 26 px either side of her middle)
+  const reach = PUNCH_REACH * v.zoom;
+  const no = { x0: v.facing > 0 ? p.x0 - 8 : p.x0 - reach, y0: p.y0 - 30, x1: v.facing > 0 ? p.x1 + reach : p.x1 + 8, y1: p.y1 };
+  if (x + 26 > no.x0 && x - 26 < no.x1 && y + 20 > no.y0 && y - 20 < no.y1) y = Math.max(top, no.y0 - 24);
+  // and off the score pop-ups, which float up from where a pickup was
+  for (let i = 0; i < v.popups.length; i++) {
+    const q = v.popups[i];
+    const sx = toScreenX(v, q.x);
+    const sy = toScreenY(v, q.y);
+    if (Math.abs(sx - x) < 70 && Math.abs(sy - y) < 44) y = Math.max(top, sy - 48);
+  }
+  return { x, y };
+}
+
+/**
+ * The landings ahead of him (screen px): the near part of each platform ahead that he will jump onto, and the air just above it where
+ * he lands. Her bubble keeps off them (QA, v189: in 1-3 it covered the mossy block he had to jump to, for 6 s). Not the ground he
+ * stands on.
+ */
+export function landingRects(v: GuideView, out: Rect[]): Rect[] {
+  const z = v.zoom;
+  const front = v.facing > 0 ? v.px + v.pw : v.px;
+  const range = (v.cssW * 0.7) / z;
+  for (let i = 0; i < v.platforms.length; i++) {
+    const q = v.platforms[i];
+    if (q.broken) continue;
+    // (the one under his feet)
+    if (q.x <= v.px + v.pw && q.x + q.width >= v.px && Math.abs(q.y - v.py) < 8) continue;
+    const near = v.facing > 0 ? q.x : q.x + q.width;
+    const ahead = (near - front) * v.facing;
+    if (ahead < -40 || ahead > range) continue;
+    if (q.y > v.py + 160 || q.y < v.py - 320) continue;
+    // the near 220 px of it: where he lands
+    const a = v.facing > 0 ? Math.max(q.x, front) : Math.max(q.x, Math.min(q.x + q.width, front) - 220);
+    const b = Math.min(q.x + q.width, a + 220);
+    if (b <= a) continue;
+    out.push({ x0: toScreenX(v, a), y0: toScreenY(v, q.y) - 80 * z, x1: toScreenX(v, b), y1: toScreenY(v, q.y) + 14 * z });
+  }
+  return out;
+}
+
+/** a boss's open weak spot on screen, grown by `m` (its NOW! marker sits just above it), or null while it is closed */
+export function weakSpotRect(v: GuideView, m = 30): Rect | null {
+  if (!v.weakOn) return null;
+  const x = toScreenX(v, v.weakX);
+  const y = toScreenY(v, v.weakY);
+  return { x0: x - m, y0: y - m - 36, x1: x + v.weakW * v.zoom + m, y1: y + v.weakH * v.zoom + m };
+}
+
+/** the score pop-ups on screen, as boxes to keep her bubble off */
+export function popupRects(v: GuideView, out: Rect[]): Rect[] {
+  for (let i = 0; i < v.popups.length; i++) {
+    const q = v.popups[i];
+    const x = toScreenX(v, q.x);
+    const y = toScreenY(v, q.y);
+    out.push({ x0: x - 70, y0: y - 60, x1: x + 70, y1: y + 16 });
+  }
+  return out;
+}
+
+/**
+ * In a boss fight her bubble keeps out of the arena's middle (QA v189, 1-10 upright: it covered the hanging ledge and the space the
+ * boss rears into): a corner band, on the side away from the boss. Upright the top band under the boss bar, else the bottom band above
+ * the thumb zones; sideways the top band. Off Pokey, the open weak spot and its NOW!, and the ledges (`hard`). Dot hovers by the bubble's
+ * inner corner, off Pokey. Returns the bubble (tail toward her) and her spot.
+ */
+export function cornerBubble(v: GuideView, w: number, h: number, safe: SafeArea, hard: readonly Rect[]): { bub: BubblePlace; dot: { x: number; y: number } } {
+  const r = safe.rect;
+  // the boss (or else the biggest animal on screen), or the arena middle
+  let bx = Number.isFinite(v.bossX) ? toScreenX(v, v.bossX) : v.cssW / 2;
+  let big = Number.isFinite(v.bossX) ? Infinity : 0;
+  for (const e of v.enemies) {
+    if (e.defeated) continue;
+    const s = (e.width ?? 60) * (e.height ?? 50);
+    if (s > big) {
+      big = s;
+      bx = toScreenX(v, e.x);
+    }
+  }
+  const away = bx > v.cssW / 2 ? 'left' : 'right';
+  const near = away === 'left' ? 'right' : 'left';
+  const port = v.cssH > v.cssW;
+  const xs = (side: 'left' | 'right') => (side === 'left' ? r.x0 : r.x1 - w);
+  const top = r.y0;
+  // (the bottom band: above the thumb zones, which take the bottom quarter upright)
+  const bottom = Math.min(r.y1, v.cssH * 0.76) - h - 34;
+  const spots: { x: number; y: number; up: boolean }[] = [
+    { x: xs(away), y: top, up: false },
+    ...(port ? [{ x: xs(away), y: bottom, up: true }] : []),
+    { x: xs(near), y: top, up: false },
+    ...(port ? [{ x: xs(near), y: bottom, up: true }] : []),
+  ];
+  const pk = pokeyRect(v, 10);
+  let best: { bub: BubblePlace; dot: { x: number; y: number } } | null = null;
+  let bestCost = Infinity;
+  for (const s of spots) {
+    const box = { x0: s.x, y0: s.y, x1: s.x + w, y1: s.y + h };
+    let cost = 0;
+    for (const k of safe.keepOut) cost += overlap(box, k) * 3;
+    for (const k of hard) cost += overlap(box, k) * 12;
+    // her spot: under (or over) the bubble's inner corner; if that is on Pokey, the outer corner
+    const inner = s.x === r.x0 ? s.x + w - 24 : s.x + 24;
+    const outer = s.x === r.x0 ? s.x + 24 : s.x + w - 24;
+    const dy = s.up ? s.y - 30 : s.y + h + 30;
+    const dbox = (x: number) => ({ x0: x - 28, y0: dy - 22, x1: x + 28, y1: dy + 22 });
+    const dx = overlap(dbox(inner), pk) === 0 ? inner : outer;
+    cost += overlap(dbox(dx), pk) * 12;
+    if (cost < bestCost) {
+      bestCost = cost;
+      best = { bub: { x: s.x, y: s.y, tail: s.up ? 't' : 'b', at: dx - s.x, cost }, dot: { x: dx, y: dy } };
+      if (cost === 0) break;
+    }
+  }
+  return best!;
 }
 
 /** which sides to try for a bubble when she hovers beside him: upright above him (toward his back), sideways behind him at head height */
@@ -378,4 +505,28 @@ export function hoverOrder(v: GuideView): ('above' | 'below' | 'left' | 'right')
   const back = v.facing > 0 ? 'left' : 'right';
   const front = v.facing > 0 ? 'right' : 'left';
   return v.cssH > v.cssW ? ['above', back, 'below', front] : [back, 'above', 'below', front];
+}
+
+// ───────────────────────────── her pose on the perch ─────────────────────────────
+
+export type PerchPoseName = 'perch' | 'pointFwd' | 'pointUp' | 'pointDown' | 'talk' | 'talkSmall';
+/** her beak while she says a line: open, half open, closed between words */
+const TALK_SEQ: readonly PerchPoseName[] = ['talkSmall', 'talk', 'talkSmall', 'perch', 'talk', 'talkSmall', 'talk', 'perch'];
+const TALK_FPS = 8;
+
+/**
+ * Which painted pose she sits in (game/dotPerchAtlasData.ts). While a line is up she talks first (about a quarter second a word, at
+ * most 2.6 s), then points at the thing it is about: ahead, up or down, from where it is; a move tip that stays up has her say it again
+ * every 6 s. With no line up, or nothing to point at once she has said it, she just sits.
+ *   since: ms of play the line has been up (-1: no line);  words: its length;  stays: a move tip (it stays until done)
+ *   tdx, tdy: from her middle to the target (screen px), tdx null with no target;  now: a clock for the beak (ms)
+ */
+export function perchPoseFor(since: number, words: number, stays: boolean, tdx: number | null, tdy: number, now: number): PerchPoseName {
+  if (since < 0) return 'perch';
+  const talkMs = Math.min(2600, 600 + 260 * words);
+  const t = stays ? since % 6000 : since;
+  if (t < talkMs) return TALK_SEQ[Math.floor((now / 1000) * TALK_FPS) % TALK_SEQ.length];
+  if (tdx === null) return 'perch';
+  const s = tdy / (Math.hypot(tdx, tdy) || 1);
+  return s < -0.55 ? 'pointUp' : s > 0.55 ? 'pointDown' : 'pointFwd';
 }

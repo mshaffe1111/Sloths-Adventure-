@@ -122,7 +122,7 @@ import { bossDefForLevel } from './bossDefs.ts';
 import { hitLabel, hitsLeft } from './bossHits.ts';
 import { drawBossOverDark, drawGroundCues } from './bossCues.ts';
 import { prowlerGlow } from './lairProwler.ts';
-import { baseScale, bossViewWidth, bossViewX } from './bossCamera.ts';
+import { baseScale, bossViewWidth, bossViewX, keepInView } from './bossCamera.ts';
 import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar } from './sovereignFight.ts';
 import { CHIME_POSTS, chimeAngle, drawBackCue, drawChimePost, drawScreechCue, setSovereignPillars } from './sovereignArt.ts';
 import { maxHearts } from './secret.ts';
@@ -160,6 +160,12 @@ const PUSH_SPEED = 120;
 
 const WORLD_VIEW_H = 540;
 /** world units across a portrait screen */
+/**
+ * In the air against a wall too tall to catch the lip of, he slides down it: his drawing stands this far off the face, so his reaching paw
+ * is not planted on it and it does not read as a grab that ought to hold (QA, 2026-10-26: a first-timer kept trying to climb 1-1's stones
+ * by their sides). Only the picture moves; the lip catch, his body and every reach stay as they were.
+ */
+const WALL_OFF = 9;
 const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
 const INTRO_ZOOM_FROM = 0.9; // a gentle dolly: the old 0.78 opened on a wide shot full of dark ground, so every stage began noticeably darker
@@ -1755,6 +1761,7 @@ export class GameEngine {
 
       // --- Solid ground blocks: walls you cannot walk through (Mario-style) ---
       p.pushing = false;
+      let wallSide = 0;
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
         const half = 19;
         const prevX = p.x - (p.vx + this.windV + this.bossShove + this.bossGust) * dt;
@@ -1795,8 +1802,12 @@ export class GameEngine {
           p.x = fromLeft ? plat.x - half : plat.x + plat.width + half;
           if (fromLeft && p.vx > 0) p.vx = 0;
           if (fromRight && p.vx < 0) p.vx = 0;
+          // in the air below the lip: he cannot hold on, so he is drawn a little off the face (wallOff), not with a paw on it
+          if (!p.grounded) wallSide = fromLeft ? 1 : -1;
         }
       }
+      // (eased, so meeting a wall and leaving it never pops the drawing sideways)
+      this.wallOff += (-wallSide * WALL_OFF - this.wallOff) * Math.min(1, dt * 18);
 
       // Mushrooms spring you up when you run into them, not only when you land on them
       if (!p.climbing && !p.isVineSwinging && !p.hanging) {
@@ -1870,6 +1881,8 @@ export class GameEngine {
           if (plat.type === 'fragile') {
             if (plat.fragileTimer === undefined) {
               plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+              // a boss's cracking ledge: Dot says so the first time he stands on one
+              if (plat.crackFrom !== undefined && this.bossDef?.crackTip) this.bossCtx?.guide?.('crack', this.bossDef.crackTip);
               if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
                 this.zoneHinted.crumble = true;
                 this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
@@ -2859,6 +2872,15 @@ export class GameEngine {
     this.camera.trauma = Math.max(0, this.camera.trauma - dt * 1.6);
     this.bossFrame(dt);
     this.updateCamera(dt);
+    // the new look: Dot says the fight's opening tip during the entrance, before the boss wakes, so her bubble is gone by the time it
+    // moves (QA v189, 1-10 upright: it filled the arena for 10-21 s of the fight). The old look keeps saying it as the fight starts.
+    if (this.newLook && en.t >= en.total * 0.45) {
+      const start = def.guide?.start;
+      if (start && !tipHeard(this.currentStage.config.id, 'boss:start')) {
+        markTipHeard(this.currentStage.config.id, 'boss:start');
+        this.guide(start, 5);
+      }
+    }
     if (en.t >= en.total) {
       this.entrance = null;
       this.entranceDone = true;
@@ -3003,6 +3025,8 @@ export class GameEngine {
   readonly bossHurtLog: Array<{ t: number; by: string; state: string; move: string | null; bt: number }> = [];
   private noteBossHurt(by: string, state: string, move: string | null, bt: number) {
     this.bossHurtLog.push({ t: this.gameTime, by, state, move, bt });
+    // (and in the play log, for the QA team: tools/playtesters/LOG_EVENTS.md `bossHurt`)
+    recorder.event('bossHurt', `${by} ${state} ${move ?? '-'} ${bt.toFixed(2)}`);
     if (this.bossHurtLog.length > 40) this.bossHurtLog.shift();
   }
 
@@ -3094,6 +3118,7 @@ export class GameEngine {
     const want = bossViewWidth({
       w, h, levelH, px: p.x, bx: b.x, bw: b.width, bh: b.height, air: b.ai?.air ?? 0, arenaW: arena.right - arena.left,
       frameArena: def?.frameArena, frameAir: def?.frameAir, floorAt: def?.floorAt, worldViewH: WORLD_VIEW_H, portraitViewW: PORTRAIT_VIEW_W,
+      minW: def?.frameRefuges ? def.frameRefuges[1] - def.frameRefuges[0] + 30 : undefined,
     });
     // the killing blow pushes the camera in
     const target = Math.max(0.4, (baseViewW / want) * (this.slowMoLeft > 0 ? 1.3 : 1));
@@ -3687,6 +3712,8 @@ export class GameEngine {
   /** Dot's stuck-helper (stuckHelper.ts): jumping again and again at a wall only the second jump climbs gets the second jump explained */
   private stuck = new StuckWatch();
   private wallWasAhead = false;
+  /** how far (px, signed) his drawing stands off a wall he is sliding down in the air (WALL_OFF): it never moves his body */
+  private wallOff = 0;
   private watchForStuck() {
     const p = this.player;
     // (no stage tips in a boss fight: Dot's lines there are the fight's own)
@@ -4322,6 +4349,9 @@ export class GameEngine {
       const wr = def?.openCue && weakOpen(bs, def) ? weakRect(bs, def, this.currentStage.arena.floor) : null;
       const fx = wr ? wr.x + wr.w / 2 : bs.x;
       let tx = arenaWide ? (this.currentStage.arena.left + this.currentStage.arena.right) / 2 - vw / 2 : bossViewX(p.x, fx, vw);
+      // (upright, a boss that lists its refuges keeps them in the view: the tree, stump and vine you dodge Venom from)
+      const fr = def?.frameRefuges;
+      if (fr && !arenaWide && this.viewCssH > this.viewCssW) tx = keepInView(tx, vw, this.currentStage.arena.left + fr[0], this.currentStage.arena.left + fr[1]);
       tx = Math.max(p.x + 70 - vw, Math.min(p.x - 70, tx));
       this.camera.targetX = tx;
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
@@ -4551,6 +4581,20 @@ export class GameEngine {
     out.collectibles = this.collectibles;
     out.hazards = this.hazards;
     out.bushes = this.proto?.bushes ?? out.bushes;
+    out.popups = this.floatingTexts;
+    // (a boss's open weak spot, for Dot to keep her bubble off: copied into the view, no new object)
+    const bs = this.boss;
+    const bd = this.bossDef;
+    const ar = this.currentStage.arena;
+    const wr = bs && bd && ar && !bs.defeated && weakOpen(bs, bd) ? weakRect(bs, bd, ar.floor) : null;
+    out.weakOn = !!wr;
+    out.bossX = bs && !bs.defeated ? bs.x : NaN;
+    if (wr) {
+      out.weakX = wr.x;
+      out.weakY = wr.y;
+      out.weakW = wr.w;
+      out.weakH = wr.h;
+    }
     return out;
   }
 
@@ -4937,6 +4981,11 @@ export class GameEngine {
     } else if (!this.player.isVineSwinging) this.sweetGlow = 0;
     // Render Hero Sloth
     heroClipsLive(true);
+    const shiftOff = Math.abs(this.wallOff) > 0.3;
+    if (shiftOff) {
+      ctx.save();
+      ctx.translate(this.wallOff, 0);
+    }
     if (rig) {
       const hp = this.player;
       drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));
@@ -4944,6 +4993,7 @@ export class GameEngine {
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else drawHeroSloth(ctx, this.player, this.gameTime);
+    if (shiftOff) ctx.restore();
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);

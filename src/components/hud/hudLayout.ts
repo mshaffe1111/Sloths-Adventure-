@@ -54,6 +54,8 @@ export interface HudGeo {
 
 /** `h` (the screen's height) only matters in short landscape: the smallest sizes are for the very short screens (about 640x320) */
 export function hudGeo(mode: HudMode, h = 390): HudGeo {
+  // (the very short screens, about 780x288: the band shrinks again so more of the stage shows under it, QA v189)
+  if (mode === 'short' && h <= 300) return { mode, gutter: 8, heart: 16, step: 20, vineY: 8, num: 16, menu: 36, menuHit: 44, band: 34, bossH: 34 };
   if (mode === 'short' && h <= 350) return { mode, gutter: 10, heart: 18, step: 23, vineY: 9, num: 18, menu: 40, menuHit: 46, band: 40, bossH: 38 };
   if (mode === 'short') return { mode, gutter: 12, heart: 20, step: 26, vineY: 10, num: 19, menu: 42, menuHit: 46, band: 44, bossH: 42 };
   if (mode === 'land') return { mode, gutter: 14, heart: 22, step: 28, vineY: 12, num: 20, menu: 44, menuHit: 48, band: 48, bossH: 48 };
@@ -82,22 +84,32 @@ export interface CentreGeo {
   slot: number;
   /** where its vine runs, from the counter's top */
   vineY: number;
+  /** the painted plate's height (it hangs 7 px under the vine); its width follows what it holds */
+  plate: number;
   /** the whole counter's height, vine to the bottom of its plate */
   height: number;
 }
+/** the painted goal plate (hud-goal-plate, 540 x 210): its ends keep their shape, the middle stretches for a wider count */
+export const PLATE_ASPECT = 540 / 210;
+/** the room the plate's rounded ends and curls take beside what it holds, as a share of its height */
+export const PLATE_ENDS = 0.8;
+const cgeo = (icon: number, num: number, slot: number, vineY: number, plate: number): CentreGeo => ({ icon, num, slot, vineY, plate, height: vineY + 7 + plate });
 export function centreGeo(mode: HudMode, h = 390): CentreGeo {
-  if (mode === 'short' && h <= 350) return { icon: 30, num: 25, slot: 21, vineY: 8, height: 48 };
-  if (mode === 'short') return { icon: 34, num: 28, slot: 24, vineY: 9, height: 54 };
-  return { icon: 40, num: 32, slot: 28, vineY: 11, height: 62 };
+  if (mode === 'short' && h <= 300) return cgeo(24, 20, 18, 7, 36);
+  if (mode === 'short' && h <= 350) return cgeo(27, 22, 21, 8, 44);
+  if (mode === 'short') return cgeo(31, 25, 24, 9, 52);
+  if (mode === 'land') return cgeo(36, 29, 28, 11, 58);
+  return cgeo(33, 27, 26, 11, 52);
 }
 
 /** the counter's width: 'count' (icon and "13/33"), 'slots' (one per item), 'distance' (the trail), or 0 for 'none' */
 export function counterW(c: CentreGeo, kind: 'count' | 'slots' | 'distance' | 'none', target = 30): number {
   if (kind === 'none') return 0;
-  if (kind === 'distance') return c.icon >= 40 ? 190 : c.icon >= 34 ? 170 : 150;
-  if (kind === 'slots') return target * (c.slot + 4) + 24;
+  const ends = Math.round(c.plate * PLATE_ENDS);
+  if (kind === 'distance') return (c.icon >= 36 ? 150 : c.icon >= 31 ? 130 : 112) + ends;
+  if (kind === 'slots') return target * (c.slot + 4) + ends;
   const dg = String(Math.max(1, Math.round(target))).length;
-  return Math.round(c.icon + 12 + c.num * (0.6 * dg + 0.42 * (dg + 1)) + 26);
+  return Math.max(Math.round(c.plate * PLATE_ASPECT), Math.round(c.icon + 6 + c.num * (0.6 * dg + 0.42 * (dg + 1)) + ends));
 }
 
 export interface CentrePlace extends LaneRect {

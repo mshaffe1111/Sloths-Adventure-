@@ -126,3 +126,125 @@ test('3-10: everything that hurts when the pounce lands is inside the ring, and 
     }
   }
 });
+
+test("3-10 on a fresh phone: Dot's first-time tips are said (the opening, and each move the first time), and the new look keeps them", async () => {
+  const { swapLine } = await import('./dotLines.ts');
+  const sim = new BossPlay('3-10');
+  sim.skipEntrance();
+  // every move once
+  const seen = new Set<string>();
+  for (let i = 0; i < 30 * 120 && seen.size < Object.keys(sim.def.moves).length; i++) {
+    sim.frame(i % 40 < 20 ? { left: true } : { right: true });
+    if (sim.boss.ai!.state === 'tell' && sim.boss.ai!.move) seen.add(sim.boss.ai!.move);
+    if (i === 30 * 20) sim.boss.hp = Math.floor(sim.boss.maxHp * 0.6);
+  }
+  const said = sim.guides.map((g) => g.text);
+  const want = [sim.def.guide!.start!, ...Object.entries(sim.def.moves).filter(([k, m]) => m.guide && seen.has(k)).map(([, m]) => m.guide!)];
+  assert.ok(want.length >= 2, `tips to check: ${want.length}`);
+  for (const w of want) {
+    assert.ok(said.includes(w), `never said: "${w}"`);
+    // the new look says Matt's words for a line, or the line itself; it never cuts a boss tip
+    const sw = swapLine(w, '3-10');
+    assert.ok(!sw || sw.text, `the new look cuts "${w}"`);
+  }
+});
+
+test('1-10 upright: the tree, the stump and the vine stay in view through every lunge', () => {
+  const sim = new BossPlay('1-10', false, { w: 390, h: 844 });
+  sim.skipEntrance();
+  const a = sim.arena;
+  const c = sim.e.camera as { x: number; viewportWidth: number };
+  let lunges = 0;
+  let quiet = 0;
+  // Pokey goes to different spots through the fight (by the tree, the stump, the middle, near the coils)
+  const spots = [a.left + 40, a.left + 400, a.left + 800, a.left + 1100];
+  for (let i = 0; i < 30 * 40; i++) {
+    const x = spots[Math.floor(i / 150) % spots.length];
+    sim.frame(Math.abs(sim.p.x - x) > 20 ? (sim.p.x < x ? { right: true } : { left: true }) : {});
+    const st = sim.boss.ai!.state;
+    // (not just after he is hurt or comes back from a lost life: the view snaps to him then and eases back)
+    if ((sim.p as { invincibleTimer: number }).invincibleTimer > 0) quiet = 30;
+    if (quiet > 0) quiet--;
+    else if ((st === 'tell' || st === 'act') && sim.boss.ai!.move === 'sweep' && sim.boss.ai!.t > 0.4) {
+      lunges++;
+      const v0 = c.x, v1 = c.x + c.viewportWidth;
+      for (const dx of [20, 330, 660]) assert.ok(a.left + dx > v0 && a.left + dx < v1, `refuge at ${dx} out of view (${Math.round(v0 - a.left)}..${Math.round(v1 - a.left)}) with Pokey at ${Math.round(sim.p.x - a.left)}`);
+    }
+  }
+  assert.ok(lunges > 10);
+});
+
+test('3-10: a hero near him who dodges LEFT out of the ring to the wall still meets his back when he lands (QA repro), both ways up', () => {
+  for (const screen of [{ w: 844, h: 390 }, { w: 390, h: 844 }]) {
+    const sim = new BossPlay('3-10', false, screen);
+    sim.skipEntrance();
+    const moves = { ...sim.def.moves };
+    for (const k of Object.keys(sim.def.moves)) if (k !== 'pounce') delete (sim.def.moves as Record<string, unknown>)[k];
+    try {
+      const br = sim.boss.ai!;
+      const state = (): string => br.state;
+      let checked = 0;
+      // walk right toward him; at each crouch, steer left for 1 s; read his facing when he has landed
+      let mode: 'right' | 'left' | 'none' = 'right';
+      let leftAt = 0;
+      for (let i = 0; i < 30 * 40 && checked < 3; i++) {
+        if (state() === 'tell' && mode !== 'left' && mode !== 'none') {
+          mode = 'left';
+          leftAt = sim.t;
+        }
+        if (mode === 'left' && sim.t - leftAt > 1) mode = 'none';
+        const was = state();
+        sim.frame(mode === 'right' ? { right: true } : mode === 'left' ? { left: true } : {});
+        if (was === 'act' && state() === 'rec') {
+          checked++;
+          assert.ok(Math.sign(sim.p.x - sim.boss.x) !== sim.boss.facing, `he landed at ${Math.round(sim.boss.x)} facing ${sim.boss.facing}, Pokey at ${Math.round(sim.p.x)}`);
+        }
+        if (state() === 'idle' && mode === 'none') mode = 'right';
+      }
+      assert.ok(checked >= 2, `pounces checked: ${checked}`);
+    } finally {
+      Object.assign(sim.def.moves, moves);
+    }
+  }
+});
+
+test("1-10: his coils never hurt by touch, and Dot's cracking-stump line waits until Pokey stands on the cracking stump", () => {
+  const sim = new BossPlay('1-10');
+  sim.skipEntrance();
+  const b = sim.boss;
+  for (const mv of Object.keys(sim.def.moves)) {
+    for (const [state, t] of [['tell', 0.8], ['act', 0.2], ['rec', 0.2], ['idle', 0]] as const) {
+      assert.equal(bodyHurts({ ...b, ai: { ...b.ai!, state, move: mv, t } } as BossEntity, sim.def), false, `${mv} ${state}`);
+    }
+  }
+  assert.equal(sim.def.guide?.[3], undefined, 'no cracking line at the phase change');
+  // into phase 3, on open ground: nothing said about the stump
+  b.hp = Math.floor(b.maxHp * 0.3);
+  for (let i = 0; i < 90; i++) sim.frame();
+  const crack = sim.def.crackTip!;
+  assert.ok(!sim.guides.some((g) => g.text === crack), 'said while on open ground');
+  // up on the stump: said
+  const stump = (sim.e.platforms as Array<{ x: number; y: number; width: number; crackFrom?: number }>).find((p) => p.crackFrom !== undefined)!;
+  sim.p.x = stump.x + stump.width / 2;
+  sim.p.y = stump.y - 30;
+  sim.p.vy = 0;
+  for (let i = 0; i < 30; i++) sim.frame();
+  assert.ok(sim.guides.some((g) => g.text === crack), 'not said on the cracking stump');
+});
+
+test("3-10: a move's first wind-up, when Dot names it, runs long enough to read her line before it strikes", () => {
+  const sim = new BossPlay('3-10');
+  sim.skipEntrance();
+  const moves = { ...sim.def.moves };
+  for (const k of Object.keys(sim.def.moves)) if (k !== 'pounce') delete (sim.def.moves as Record<string, unknown>)[k];
+  try {
+    for (let i = 0; i < 30 * 30 && sim.tells.length < 3; i++) sim.frame(i % 60 < 30 ? { left: true } : { right: true });
+    const [first, second] = sim.tells;
+    assert.ok(first.dur >= 1.5, `the first pounce winds up for ${first.dur.toFixed(2)} s`);
+    assert.ok(Math.abs(second.dur - sim.def.moves.pounce.tell) < 0.1, `later ones for ${second.dur.toFixed(2)} s`);
+    const tip = sim.guides.find((g) => /ring/.test(g.text))!;
+    assert.ok(tip && tip.t <= first.t0 + 0.05, 'the tip comes as the wind-up begins');
+  } finally {
+    Object.assign(sim.def.moves, moves);
+  }
+});
