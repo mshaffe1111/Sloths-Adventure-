@@ -239,6 +239,9 @@ export class GameEngine {
   /** a giant's entrance while it plays (the fight and the player wait) */
   private entrance: { t: number; total: number; roared: boolean; named: boolean } | null = null;
   private entranceDone = false;
+  /** the line on screen is one of the boss fight's (bossCtx.guide) */
+  private bossGuideUp = false;
+  private guideN = 0;
   /** real seconds of slow motion still to play (the last hit on a giant) */
   private slowMoLeft = 0;
   private bossSig = '';
@@ -2515,6 +2518,7 @@ export class GameEngine {
           if (tipHeard(id, 'boss:' + key)) return false;
           markTipHeard(id, 'boss:' + key);
           this.guide(line, 3.6);
+          this.bossGuideUp = true;
           return true;
         },
         crackPerches: (phase) => {
@@ -2708,7 +2712,12 @@ export class GameEngine {
     const prevPhase = b.phase;
     const prevState = br.state;
     const wasOpen = weakOpen(b, def);
+    const guideWas = this.bossGuideUp;
+    const guideN = this.guideN;
     stepBoss(b, def, c, dt);
+    // Dot's fight line belongs to the moment it was said: when a new move begins (or a life is lost) it goes, so "get her head" never
+    // hangs over the next attack
+    if (guideWas && this.bossGuideUp && br.state === 'tell' && prevState !== 'tell' && this.guideN === guideN) this.clearGuide();
     // the opening begins: a chime, and for a giant with a glowing spot a NOW! over it (a crash already says DIZZY!, CAUGHT! ...), so the
     // moment is heard and seen wherever the eye is
     if (def.openCue && !wasOpen && weakOpen(b, def) && b.phase === prevPhase) {
@@ -3784,6 +3793,7 @@ export class GameEngine {
 
   private loseLife(reason: 'water' | 'pit' | 'hurt') {
     recorder.event('lostLife', reason);
+    if (this.bossGuideUp) this.clearGuide();
     this.lives -= 1;
     this.statLivesLost++;
     this.callbacks.onLivesChange?.(this.lives, this.maxLives);
@@ -5564,7 +5574,16 @@ export class GameEngine {
   /** a guiding line: kept as the stage hint (one at a time), and handed to the app for Dot to say */
   private guide(text: string, seconds: number) {
     this.stageHint = { text, life: seconds };
+    this.bossGuideUp = false;
+    this.guideN++;
     this.callbacks.onGuide?.(text, seconds);
+  }
+
+  /** take Dot's line down now (an empty line clears it: Wayside.tsx) */
+  private clearGuide() {
+    this.stageHint = null;
+    this.bossGuideUp = false;
+    this.callbacks.onGuide?.('', 0);
   }
 
   private addFloatingText(text: string, x: number, y: number, color: string, life = 0.8) {

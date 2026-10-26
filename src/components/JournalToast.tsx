@@ -45,7 +45,7 @@ export const JournalToast: React.FC<{ active: boolean; guide?: { text: string; m
 
   // Dot starts a line: a note on screen steps aside (it comes back after her) and the queue waits until she is done
   React.useEffect(() => {
-    if (!guide) return;
+    if (!guide || !guide.text) return;
     // (as long as her line is actually up: Wayside keeps a line long enough to read, longer than the engine asked for)
     const ms = guideShowMs(guide.text, guide.ms);
     holdUntil.current = performance.now() + ms + 400;
