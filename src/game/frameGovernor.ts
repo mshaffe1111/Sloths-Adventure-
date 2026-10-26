@@ -72,6 +72,9 @@ export class FrameGovernor {
     if (avg > GOV_SLOW_MS) {
       this.warm = GOV_SETTLE_MS;
       this.steady = 0;
+      // a step up offered while already at full quality is never taken (the caller only asks below full), so drop it here; kept, it
+      // sent the picture straight back up the frame after this step down, and down again (the control test's 'quality' lines)
+      this.up = false;
       if (this.wentUp) this.upBlocked = true;
       return true;
     }
