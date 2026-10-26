@@ -120,7 +120,7 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
   const edge = f > 0 ? ledge.x + ledge.width : ledge.x;
   const toEdge = (edge - px) * f;
   if (toEdge > AHEAD.near || toEdge < -40) return null;
-  let best: { x: number; y: number; score: number } | null = null;
+  let best: { x: number; y: number; score: number; under?: boolean } | null = null;
   for (const q of plats) {
     if (q === ledge || q.broken || q.width <= 0) continue;
     const dy = q.y - ledge.y;
@@ -134,7 +134,8 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     // the ledge carries straight on: no gap to look across
     if (gap < 24 && Math.abs(dy) < 40) return null;
     const score = gap + Math.abs(dy) * 0.4;
-    if (!best || score < best.score) best = { x: a + f * 10, y: q.y, score };
+    // (`under`: the floor of the drop itself, starting right at his edge, well below: 1-6's soft moss under its first liana)
+    if (!best || score < best.score) best = { x: a + f * 10, y: q.y, score, under: gap < 24 && dy >= 40 };
   }
   for (const v of vines) {
     const gap = (v.x - edge) * f;
@@ -142,7 +143,9 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     // (where he would catch it: about his own height, on the part of it that hangs)
     const y = Math.max(v.topY + 40, Math.min(v.bottomY, ledge.y - 60));
     const score = gap + Math.abs(y - ledge.y) * 0.4;
-    if (!best || score < best.score) best = { x: v.x, y: y + 60, score };
+    // a vine across the gap is the way over it, before the floor of the drop under it (which scored nearer: upright, the view showed
+    // the moss below the gap and left the liana he was jumping for off screen, QA 2026-10-26)
+    if (!best || best.under || score < best.score) best = { x: v.x, y: y + 60, score };
   }
   return best ? landingBox(best.x, best.y, f) : null;
 }

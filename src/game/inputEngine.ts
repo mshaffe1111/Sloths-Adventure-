@@ -99,6 +99,7 @@ export class InputEngine {
       this.state.up = true;
       if (!this.state.jumpHeld || isUpTwice) {
         this.state.jumpPressed = true;
+        this.state.jumpLean = 0;
         this.jumpBufferTimer = 0.16;
       }
       this.state.jumpHeld = true;
@@ -192,6 +193,7 @@ export class InputEngine {
     this.state.up = false;
     this.state.down = false;
     this.state.jumpPressed = false;
+    this.state.jumpLean = 0;
     this.state.jumpHeld = false;
     this.state.punchPressed = false;
     this.state.kickPressed = false;
@@ -233,8 +235,10 @@ export class InputEngine {
    * - Jump pressing up
    * - Double jump pressing up twice
    */
-  public triggerTouchUp() {
+  public triggerTouchUp(lean: -1 | 0 | 1 = 0) {
     this.fresh();
+    // (the flick's lean: letting go of a vine or a trunk leaps the way it leaned, engine.ts leapDir)
+    this.state.jumpLean = lean;
     if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
     this.upReleaseTimer = undefined;
     this.touchUpAt = performance.now();
@@ -352,6 +356,7 @@ export class InputEngine {
           this.state.up = true;
           if (!prev.up) {
             this.state.jumpPressed = true;
+            this.state.jumpLean = 0;
             this.jumpBufferTimer = 0.16;
           }
           this.state.jumpHeld = true;

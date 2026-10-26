@@ -36,7 +36,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingStep, timedLaunch, type SwingState } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, timedLaunch, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -379,6 +379,8 @@ export class GameEngine {
   /** first-time lessons: one open at a time, and a breather after each */
   private lessonOpen = false;
   private lessonQuietUntil = 0;
+  /** when the last lesson (or find) was shown or closed: the swing's lesson needs only a second's breather after it */
+  private lessonAt = -1e9;
   private lessonFrame = 0;
   private lessonSeen: Set<LessonId> | null = null;
   /** a lesson that came due while stopping was not safe (mid-air, mid-swing, a foe at hand): it opens once he is safe (cardSafe) */
@@ -1375,7 +1377,8 @@ export class GameEngine {
         this.vineCooldownTimer = 0.42; // Prevent immediate re-grab!
         this.lastReleasedVineId = nearTreeVine.id;
 
-        const jumpDir = this.input.state.left ? -1 : this.input.state.right ? 1 : p.facing;
+        // (the way a leaning flick leaned first: leapDir)
+        const jumpDir = this.leapDir(p.facing);
         p.facing = jumpDir as 1 | -1;
         p.vx = jumpDir * 330;
         p.vy = -PHYS.treeLeapV;
@@ -1493,21 +1496,18 @@ export class GameEngine {
         }
         // --- NATURAL SWING EXIT 2: HEROIC TARZAN LEAP (Jump button Pressed) ---
         // (a press a beat before the sweet spot is held until he reaches it, below)
-        else if (this.input.state.jumpPressed && !this.holdLeapForSweet(p.facing)) {
+        else if (this.input.state.jumpPressed && !this.holdLeapForSweet(this.leapDir(p.facing))) {
           p.isVineSwinging = false;
           nearSwingVine.isSwingingVine = false;
           this.input.state.jumpPressed = false;
           this.vineCooldownTimer = 0.50; // Guaranteed window to fly free from the vine!
           this.lastReleasedVineId = nearSwingVine.id;
 
-          // Prioritize active player steer direction, then physical swing momentum
-          const releaseDir = this.input.state.right
-            ? 1
-            : this.input.state.left
-            ? -1
-            : this.refined
-            ? p.facing // refined: always the way he faces, toward the next vine (the swing's side threw testers backward)
-            : (Math.sin(p.swingAngle) > 0.05 ? 1 : Math.sin(p.swingAngle) < -0.05 ? -1 : p.facing);
+          // the way a leaning flick leaned, then the held steer, then (refined) the way he faces, toward the next vine (the swing's side
+          // threw testers backward); the old rules fall back to the side of the swing he is on
+          const releaseDir = this.leapDir(
+            this.refined ? p.facing : (Math.sin(p.swingAngle) > 0.05 ? 1 : Math.sin(p.swingAngle) < -0.05 ? -1 : p.facing),
+          );
 
           p.facing = releaseDir as 1 | -1;
           // Forward boost + heroic upward arc (capped so a big swing cannot rocket you off the map)
@@ -1534,15 +1534,35 @@ export class GameEngine {
           this.spawnSparkBurst(p.x, p.y, '#34d399');
         }
         // --- NATURAL SWING EXIT 3: AUTOMATIC PLATFORM LANDING ---
+        // (only when he plausibly wants off: swingLanding. On 1-6, climbing down a liana lowered his feet past the corner of the ledge
+        // beside it, and it set him down there in the middle of a pump, which read as the vine letting go, QA 2026-10-26)
         else {
+          const steer = this.input.state.right ? 1 : this.input.state.left ? -1 : 0;
           for (const plat of this.platforms) {
-            if (p.x >= plat.x - 10 && p.x <= plat.x + plat.width + 10) {
-              if (Math.abs(p.y - plat.y) < 14 && p.vy >= 0) {
+            if (p.x >= plat.x - 10 && p.x <= plat.x + plat.width + 10 && p.vy >= 0 && p.y < plat.y + 14 && p.y > plat.y - SWING_LAND.reach) {
+              const how = swingLanding({ angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0 }, nearSwingVine.x, plat, steer, p.y - plat.y);
+              if (how === 'step') {
+                // steering toward a ledge just below his feet: he steps off and drops onto it
+                p.isVineSwinging = false;
+                nearSwingVine.isSwingingVine = false;
+                p.vx = (plat.x + plat.width / 2 < nearSwingVine.x ? -1 : 1) * 140;
+                p.vy = 40;
+                this.vineCooldownTimer = 0.40;
+                this.lastReleasedVineId = nearSwingVine.id;
+                break;
+              }
+              if (how === 'land') {
                 p.isVineSwinging = false;
                 nearSwingVine.isSwingingVine = false;
                 p.grounded = true;
                 p.y = plat.y;
                 p.vy = 0;
+                // (on the ledge, not on the 10 px of air beside it, and not carried straight back off the edge he just reached)
+                if (p.x < plat.x + 6 || p.x > plat.x + plat.width - 6) {
+                  p.x = Math.max(plat.x + 6, Math.min(plat.x + plat.width - 6, p.x));
+                  const off = p.x < plat.x + plat.width / 2 ? -1 : 1;
+                  if (Math.sign(p.vx) === off) p.vx = 0;
+                }
                 this.vineCooldownTimer = 0.40;
                 this.lastReleasedVineId = nearSwingVine.id;
                 this.spawnJumpDust(p.x, p.y);
@@ -4186,8 +4206,10 @@ export class GameEngine {
       this.camera.targetY = Math.max(this.camera.targetY, p.y - vh * 0.9);
     }
     // near the end of a ledge with a gap ahead, the view shows the far side too (cameraFollow.ts landingAhead)
+    let landShown: Box | null = null;
     if (!look && !this.chase?.active && !this.currentStage.arena) {
       const land = this.landingToShow(dt);
+      landShown = land;
       if (land) {
         const v = showBoth(this.camera.targetX, this.camera.targetY, p.x, p.y, land, vw, vh);
         this.camera.targetX = v.x;
@@ -4216,7 +4238,10 @@ export class GameEngine {
 
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * 6.5);
-    this.camera.x += (this.camera.targetX - this.camera.x) * smoothFactor;
+    // (a landing still outside the view, as when he turns round at the end of a ledge and jumps at once for the vine he now faces, is
+    // panned to twice as fast, so it is on screen as he leaves the ledge for it, QA 2026-10-26)
+    const behind = !!landShown && (landShown.x0 < this.camera.x || landShown.x1 > this.camera.x + vw);
+    this.camera.x += (this.camera.targetX - this.camera.x) * (behind ? Math.min(1, dt * 13) : smoothFactor);
     this.camera.y += (this.camera.targetY - this.camera.y) * smoothFactor;
     // (standing, never even for a moment while the view eases)
     if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
@@ -4289,15 +4314,25 @@ export class GameEngine {
     return this.camLand;
   }
 
-  /** a press to let go a beat before the swing's sweet spot: keep it and let go when he gets there (true = held, he swings on) */
-  private holdLeapForSweet(facing: -1 | 1): boolean {
+  /**
+   * which way letting go of a vine or a trunk leaps: the way the touch flick behind the press leaned, when it leaned 20 degrees or more
+   * (touchGestures.ts leanSlant: one thumb flicking up and LEFT at the end of a pump to the right used to leap right, with the steer
+   * still held right, and a flick up and right while he faced left threw him backward, QA 2026-10-26); then the held steer; then `fallback`
+   */
+  private leapDir(fallback: -1 | 1): -1 | 1 {
+    const s = this.input.state;
+    if (s.jumpLean) return s.jumpLean;
+    return s.right ? 1 : s.left ? -1 : fallback;
+  }
+
+  /** a press to let go a beat before the swing's sweet spot toward `dir`: keep it and let go when he gets there (true = held, he swings on) */
+  private holdLeapForSweet(dir: -1 | 1): boolean {
     if (this.swingLeapWait !== 0) {
       // already waited once: this is that press, let go now
       if (this.swingLeapWait < 0) this.swingLeapWait = 0;
       return false;
     }
     const p = this.player;
-    const dir = (this.input.state.right ? 1 : this.input.state.left ? -1 : facing) as -1 | 1;
     const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100 };
     if (releaseCall(sw, dir, Infinity) !== 'early') return false;
     this.swingLeapWait = RELEASE.early;
@@ -4314,10 +4349,14 @@ export class GameEngine {
       if (!this.safeToStop()) return;
       const fid = this.findsWaiting.shift()!;
       this.lessonQuietUntil = Math.max(this.lessonQuietUntil, this.gameTime + 3);
+      this.lessonAt = this.gameTime;
       this.callbacks.onFind?.(fid);
       return;
     }
-    if (this.gameTime < 2.5 || this.gameTime < this.lessonQuietUntil) return;
+    if (this.gameTime < 2.5) return;
+    // (the breather after a lesson: the swing's lesson cuts it short, see below)
+    const quiet = this.gameTime < this.lessonQuietUntil;
+    if (quiet && this.gameTime - this.lessonAt < 1) return;
     const st = this.currentStage;
     // not in a boss arena or the secret stage, and not in the middle of an entrance
     if (st.arena || st.config.secret || this.boss || this.entrance) return;
@@ -4327,26 +4366,30 @@ export class GameEngine {
     if (this.lessonWaiting && (seen.has(this.lessonWaiting.id) || this.gameTime - this.lessonWaiting.at > 8)) this.lessonWaiting = null;
     const p = this.player;
     const cam = this.camera;
-    const id =
-      this.lessonWaiting?.id ??
-      pickLesson(
-        {
-          px: p.x,
-          py: p.y,
-          view: { x0: cam.x, x1: cam.x + cam.viewportWidth, y0: cam.y, y1: cam.y + cam.viewportHeight },
-          enemies: this.enemies,
-          collectibles: this.collectibles,
-          vines: this.vines,
-          platforms: this.platforms,
-          checkpoints: st.checkpoints ?? [],
-          rivers: st.rivers ?? [],
-          ropes: this.skills.has('shimmy') ? this.ropes : [],
-        },
-        seen,
-      );
-    if (!id) return;
-    // only when stopping cannot hurt him: standing or holding on, not hurt, no foe at hand, nothing falling on him (lessons.ts cardSafe)
-    if (!this.safeToStop()) {
+    const picked = pickLesson(
+      {
+        px: p.x,
+        py: p.y,
+        view: { x0: cam.x, x1: cam.x + cam.viewportWidth, y0: cam.y, y1: cam.y + cam.viewportHeight },
+        enemies: this.enemies,
+        collectibles: this.collectibles,
+        vines: this.vines,
+        platforms: this.platforms,
+        checkpoints: st.checkpoints ?? [],
+        rivers: st.rivers ?? [],
+        ropes: this.skills.has('shimmy') ? this.ropes : [],
+      },
+      seen,
+    );
+    // a swinging vine within reach is taught now, ahead of a card still waiting and after only a short breather from the last lesson:
+    // grabbing, pumping and letting go are all needed the moment he jumps for it (QA, 1-6, 2026-10-26: a gap card just before the vine
+    // left the swing's lesson waiting until after his first let-go)
+    const id = picked === 'swing' ? picked : this.lessonWaiting?.id ?? picked;
+    if (!id || (quiet && id !== 'swing')) return;
+    // only when stopping cannot hurt him: standing or holding on, not hurt, no foe at hand, nothing falling on him (lessons.ts cardSafe).
+    // The swing's lesson may also come on the vine: a liana keeps swinging with no thumb, and a lesson that waited for him to land came
+    // only after his first let-go, when grabbing, pumping and letting go had all been needed already (QA, 1-6, 2026-10-26)
+    if (!this.safeToStop(id === 'swing')) {
       this.lessonWaiting ??= { id, at: this.gameTime };
       return;
     }
@@ -4356,6 +4399,7 @@ export class GameEngine {
     // the new look: no card and no pause; the lesson is one of Dot's lines, said in play (dotGuide.ts)
     if (this.newLook) {
       this.lessonQuietUntil = this.gameTime + 6;
+      this.lessonAt = this.gameTime;
       this.callbacks.onLesson?.(id);
       return;
     }
@@ -4414,7 +4458,8 @@ export class GameEngine {
   }
 
   /** is it safe to stop the stage for a card right now? (lessons.ts cardSafe) */
-  private safeToStop(): boolean {
+  /** `swinging`: a swinging vine counts as holding on (for the swing's own lesson) */
+  private safeToStop(swinging = false): boolean {
     const p = this.player;
     let foeDx = Infinity;
     let foeDy = Infinity;
@@ -4443,7 +4488,7 @@ export class GameEngine {
     }
     return cardSafe({
       grounded: p.grounded && Math.abs(p.vy) < 1,
-      holding: (p.climbing || !!p.hanging) && !p.isVineSwinging,
+      holding: ((p.climbing || !!p.hanging) && !p.isVineSwinging) || (swinging && !!p.isVineSwinging),
       hurt: p.invincibleTimer > 0,
       foeDx,
       foeDy,
@@ -4456,6 +4501,7 @@ export class GameEngine {
     if (!this.lessonOpen) return;
     this.lessonOpen = false;
     this.lessonQuietUntil = this.gameTime + 4;
+    this.lessonAt = this.gameTime;
     this.resume();
   }
 
