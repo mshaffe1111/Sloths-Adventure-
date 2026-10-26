@@ -75,6 +75,8 @@ export interface EvalContext {
   thornHeart: boolean;
   /** the stage that just ended, when this evaluation follows one */
   stage?: StageStats;
+  /** no cake has been eaten in World 5 in this game (w5Kit.ts anyCakeEaten) */
+  cakeFree?: boolean;
 }
 
 export interface BadgeDef {
@@ -216,6 +218,8 @@ export const BADGES: BadgeDef[] = [
   { id: 'naturalist', name: 'Naturalist', desc: `Meet all ${PREDATORS.length} predators of the jungle`, tier: 'gold', icon: 'book', test: (c) => PREDATORS.every((p) => c.store.seen.includes(p)), progress: (c) => count(PREDATORS.filter((p) => c.store.seen.includes(p)).length, PREDATORS.length) },
   { id: 'thorn_finder', name: 'Thorn Finder', desc: 'Find the secret gate', tier: 'silver', icon: 'key', test: (c) => c.gateFound },
   { id: 'thorn_heart', name: 'Heart of Thorns', desc: 'Free Thornbark and earn the Thorn Heart', tier: 'gold', icon: 'thornHeart', test: (c) => c.thornHeart },
+  // World 5: "Nobody has ever not eaten the cake." Beat the Tarantula Queen without eating one, in the whole world (w5Kit.ts)
+  { id: 'not_one_crumb', name: 'Not One Crumb', desc: 'Beat the Tarantula Queen without eating a single cake in World 5', tier: 'gold', icon: 'shield', test: (c) => !!c.stage?.win && c.stage.id === '5-10' && c.cakeFree === true },
   { id: 'jungle_hero', name: 'Jungle Hero', desc: 'Defeat General Iron-Claw and finish the game', tier: 'gold', icon: 'medal', test: (c) => bossDone(c.levels, 10) },
 ];
 

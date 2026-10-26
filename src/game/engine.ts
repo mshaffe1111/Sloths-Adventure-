@@ -67,6 +67,8 @@ import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLeve
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
+import { W5Play } from './w5Play.ts';
+import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
@@ -329,6 +331,8 @@ export class GameEngine {
   private camLookX: number = CAM.lookAhead;
   /** World 4's rocks, fern, falls, chimes, knots and capuchins for this run (w4Play.ts) */
   private w4: W4Play | null = null;
+  /** World 5's stillness and silk, chairs, cakes, teapots, threads, sheets, orchids and cocoons for this run (w5Play.ts) */
+  private w5: W5Play | null = null;
   /** Dot's netting flight (dotFlightRun.ts): while it is set, she is the player and it runs the stage */
   private dotRun: DotRun | null = null;
   private zoneHinted: Record<string, boolean> = {};
@@ -532,6 +536,7 @@ export class GameEngine {
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
+    this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
@@ -1159,6 +1164,7 @@ export class GameEngine {
       this.stepGlowworms(dt, zones);
       if (this.proto?.thorns) this.stepThornVines();
       if (this.w4) this.stepW4(dt);
+      if (this.w5) this.stepW5(dt);
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -2059,6 +2065,8 @@ export class GameEngine {
       } else if (e.type === 'spider') {
         // a spiderling waits, then rushes in short bursts with a pause between (the pause is the moment to stomp it)
         e.animTimer += dt;
+        // World 5's spiders sleep, or crouch before they rush (w5Play.ts): held, it stands still and harmless this frame
+        if (this.w5?.spiderHeld(e)) continue;
         const step = stepSpider(e, { x: p.x, y: p.y }, dt);
         if (step.ev.notice) this.addFloatingText('?', e.x, e.y - 30, '#fde047');
         for (const h of step.hurt) {
@@ -2136,6 +2144,8 @@ export class GameEngine {
     // --- Collectibles Pickup & Objectives ---
     for (const c of this.collectibles) {
       if (c.collected) continue;
+      // a petal in a shut orchid (World 5) waits for it to open
+      if (this.w5?.shut(c)) continue;
 
       if (c.type === 'cage') {
         // Cage is freed when punched (handled in executePunchHitbox)
@@ -4661,6 +4671,7 @@ export class GameEngine {
       if (under < Infinity) drawLandingShadow(ctx, p.x, p.y, under);
     }
     this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
+    this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
     for (const z of this.currentStage.zones ?? []) {
       if (z.kind !== 'dark' || !z.lights) continue;
@@ -4693,6 +4704,7 @@ export class GameEngine {
     // Render Collectibles
     this.collectibles.forEach((item) => {
       if (!this.onScreen(item.x, item.y, 260)) return;
+      if (this.w5?.shut(item)) return;
       if (item.type === 'seed') {
         if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
         return;
@@ -4851,6 +4863,7 @@ export class GameEngine {
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     this.w4?.drawFront(ctx, this.platforms, this.gameTime);
+    this.w5?.drawFront(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight });
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
       for (const cv of this.proto.covers) {
@@ -4924,7 +4937,8 @@ export class GameEngine {
     }
     else renderOverlay(ctx, world.id, this.camera.x, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime, this.quality > 0);
     if (rig && this.quality === 0 && polishTier() === 0) drawBloom(ctx, rig, this.camera.viewportWidth, this.camera.viewportHeight);
-    drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.drowsyShow, this.gameTime);
+    this.w5?.drawLight(ctx, this.camera.viewportWidth, this.camera.viewportHeight, this.gameTime);
+    drawDrowsyVeil(ctx, this.camera.viewportWidth, this.camera.viewportHeight, Math.max(this.drowsyShow, this.w5?.veil ?? 0), this.gameTime);
     if (this.darkShow > 0.01) {
       const cx0 = this.camera.x;
       const cy0 = this.camera.y;
@@ -5796,6 +5810,54 @@ export class GameEngine {
     if (out.knocked) this.inputGrace = Math.max(this.inputGrace, FALLS.stagger);
     // a freed eaglet's parent beating its wings over the nest (4-8): a tailwind on top of the gust lanes
     this.windV += out.wind;
+  }
+
+  /**
+   * World 5 (w5Play.ts): the stillness and its silk, the soft chairs' tug, the cakes and the Butler, the teapots, the humming threads and
+   * the spiders they wake, the sheets, the orchids and the cocoons. Sleepy (a cake, the steam) or silk-stuck, he walks slower; a chair's
+   * tug is a push like the wind's.
+   */
+  private stepW5(dt: number) {
+    const p = this.player;
+    const id = this.currentStage.config.id;
+    const s = this.input.state;
+    const out = this.w5!.step(dt, {
+      t: this.gameTime,
+      player: p,
+      steer: s.left && !s.right ? -1 : s.right && !s.left ? 1 : 0,
+      platforms: this.platforms,
+      collectibles: this.collectibles,
+      enemies: this.enemies,
+      punch: p.punching && (p.attackU ?? 1) < 0.6 ? { x: p.x + p.facing * 40, y: p.y - 40 } : null,
+      swing: this.swingId,
+      hurt: (dir) => {
+        this.damagePlayer(1);
+        if (dir) p.vx = dir * 200;
+      },
+      tip: (key, text, seconds) => {
+        if (tipHeard(id, key)) return;
+        markTipHeard(id, key);
+        this.guide(text, seconds);
+      },
+      float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
+      rescue: () => {
+        p.crittersRescued++;
+      },
+      ate: () => {
+        recordCake(id);
+      },
+      sfx: (kind) => {
+        if (kind === 'hum') sound.playVineGrab();
+        else if (kind === 'wrap') sound.playPlayerHurt();
+        else if (kind === 'cake') sound.playFruitPickup();
+        else if (kind === 'tray') sound.playHitImpact();
+        else if (kind === 'crack') sound.playPunch();
+        else if (kind === 'free') sound.playCritterRescued();
+        else sound.playWhoosh();
+      },
+    });
+    this.dragSpeed *= out.speed;
+    if (p.grounded) this.windV += out.pull;
   }
 
   /** how awake a sleeping light is: 0 asleep, rising to 1 over GLOW_REACH.fade once it wakes */
