@@ -89,6 +89,14 @@ export const Wayside: React.FC<Props> = ({ level, active, ratio, hp, guide }) =>
   useEffect(() => {
     if (!guide || guide.n <= run.lastGuide) return;
     run.lastGuide = guide.n;
+    // (an empty line takes the one on screen down: the moment it was for has passed)
+    if (!guide.text) {
+      if (run.guide) {
+        run.guide = null;
+        setGuideShown(null);
+      }
+      return;
+    }
     if (run.cur) {
       run.cur = null;
       setLine(null);

@@ -75,6 +75,8 @@ export interface BossHazard {
   seed: number;
   /** what it looks like: 'web' | 'lava' | 'rock' | 'spike' | 'fire' | 'feather' | 'spear' | 'club' | 'mud' | 'venom' | '' */
   look: string;
+  /** a mark that has stopped following him (it says so: GET OFF!) */
+  locked?: boolean;
 }
 
 let hazardId = 1;
@@ -301,6 +303,8 @@ export interface BossDef {
   puppet?: 'thornbark';
   /** the weak point worked out from the pose (a head that travels far from the body), instead of the fixed boxes above */
   weakAt?: (b: BossEntity, floor: number) => { x: number; y: number; w: number; h: number } | null;
+  /** how far into a wind-up the body starts to hurt (default 0.3 s): a hero beside it when it begins has this long to step clear */
+  bodyGrace?: number;
   /** only the recovery after these moves opens the weak point (the others leave it covered) */
   openAfter?: string[];
   /** damage one opening can take: after that he pulls back (so each opening is one clear win, not a free-for-all) */
@@ -413,7 +417,7 @@ export function bodyHurts(b: BossEntity, def?: BossDef): boolean {
   if (!br) return false;
   if (br.move && def?.moves[br.move]?.softBody && br.state === 'act') return false;
   // the first moment of a wind-up is grace, so a hero standing in the boss when it begins can step out (or be pushed out) first
-  return br.state === 'act' || (br.state === 'tell' && br.t > 0.3);
+  return br.state === 'act' || (br.state === 'tell' && br.t > (def?.bodyGrace ?? 0.3));
 }
 
 let fixedFacing = false;
