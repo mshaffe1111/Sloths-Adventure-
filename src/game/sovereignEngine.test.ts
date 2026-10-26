@@ -20,7 +20,7 @@ import type { BossDef } from './bossAI.ts';
 import type { BossEntity, InputState, LevelConfig, PlayerState } from './types.ts';
 import { heroReach, openingNeeds, OPENING_RULE } from './sovereignReach.ts';
 import { pillarFor, type SkyPillar } from './sovereignFight.ts';
-import { DIVE_LOCK, RAKE_COMMIT } from './bossDefs.ts';
+import { DIVE_LOCK, RAKE_COMMIT, SKY_COME } from './bossDefs.ts';
 
 const DT = 1 / 30;
 
@@ -83,6 +83,8 @@ interface Opening {
   cut: boolean;
   /** where she was when it opened */
   bx: number;
+  /** how close she settled to a standing rock in it (from her middle to the rock's edge; Infinity with no rock standing) */
+  rockGap?: number;
   /** he was hurt (or lost a life and stood up at the flag) during the move that opened it: he did not dodge it */
   hit: boolean;
 }
@@ -231,6 +233,7 @@ function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: nu
         cur.reach = heroReach(cur.px, cur.up, { kind: 'punch', box: at(0), boxAt: at }, rocksNow);
       }
       track = [];
+      cur.rockGap = Math.min(Infinity, ...ps.filter((q) => !q.broken).map((q) => Math.abs(b().x - q.x) - q.w / 2));
       cur.cut = br.state === 'roar' || br.state === 'dying' || b().hp <= 0;
       openings.push(cur);
       cur = null;
@@ -414,6 +417,10 @@ test('in the real engine every opening stays open for the reach from where he st
   t.diagnostic(`${allHits.length} hits: ${[...kindsHit].map(([k, n]) => `${k} ${n}`).join(', ')}`);
   for (const h of unwarned.slice(0, 10)) t.diagnostic(`UNWARNED at ${h.t.toFixed(1)}: ${h.what}, ${h.warn.toFixed(2)} s`);
   assert.equal(unwarned.length, 0, `${unwarned.length} hits with under 0.6 s of warning`);
+  // she never settles in an opening with a rock under her, wings included (QA, 2026-10-26)
+  const onRock = all.filter((x) => x.state === 'rec' && !x.hit && (x.rockGap ?? Infinity) < SKY_COME.clear - 1);
+  for (const x of onRock.slice(0, 5)) t.diagnostic(`ON A ROCK ${x.move} at ${x.t0.toFixed(1)}: ${Math.round(x.rockGap!)} px from a rock`);
+  assert.equal(onRock.length, 0, `${onRock.length} openings with a rock under her`);
   const bad = all.filter((x) => !x.hit && !(x.dur + DT >= openingNeeds(x.reach)));
   for (const x of bad.slice(0, 12)) t.diagnostic(`SHORT ${x.hit ? '(he was hit) ' : ''}${x.move} at ${x.t0.toFixed(1)}: open ${x.dur.toFixed(2)} needs ${openingNeeds(x.reach).toFixed(2)}, he ${Math.round(x.px)} (${Math.round(x.up)} up), she ${Math.round(x.bx)}`);
   assert.ok(hitBy.length <= all.length * 0.1, `${hitBy.length} of ${all.length} openings came after a move that hit him`);
@@ -503,15 +510,44 @@ test("in the real engine Dot's fight line goes when the next attack begins or a 
     for (let k = 0; k < 30 * 90 && e.lives > 0 && b.ai!.state !== 'dying'; k++) {
       const n0 = said;
       const fromFight = line !== '' && e.bossGuideUp;
+      const warnedIn = e.bossGuideIn;
       frame({});
       if (said > n0 && line) lines++;
       // a new attack began: the line from before it is down (unless this attack brought its own)
       if (b.ai!.state === 'tell' && prev !== 'tell' && fromFight && said === n0) assert.fail(`"${line}" is still up as ${b.ai!.move} begins`);
+      // a warning said in a wind-up goes when that attack is over ("stay down" once the sweep has passed)
+      if (prev === 'act' && b.ai!.state !== 'act' && fromFight && warnedIn === 'tell' && said === n0) assert.fail(`"${line}" is still up after ${b.ai!.move} ended`);
       if (e.lives < lives) lostAt = k;
       if (lostAt === k && fromFight) assert.equal(line, '', 'a lost life takes her line down');
       lives = e.lives;
       prev = b.ai!.state;
     }
     assert.ok(lines >= 3, `${lines} lines`);
+  }
+});
+
+test('in the real engine a 0.35 s step off the dive mark once it says GET OFF! clears it, by a rock and on open floor, upright and sideways', (t) => {
+  for (const [name, screen] of [['landscape', LAND], ['portrait', PORT]] as const) {
+    for (const [where, dx, dir] of [['by the middle rock', 840 - 60, -1], ['open floor, left', 600, -1], ['open floor, right', 600, 1]] as const) {
+      const { e, frame } = makeGame(screen);
+      for (let i = 0; (e.entrance || !e.entranceDone) && i < 30 * 40; i++) frame({});
+      const A = e.currentStage.arena as { left: number; right: number; floor: number };
+      const b = e.boss as BossEntity;
+      e.bossDef.opener = 'diveBomb';
+      b.ai!.recent = [];
+      b.ai!.state = 'idle';
+      b.ai!.idle = 0;
+      e.player.x = A.left + dx;
+      const hp0 = e.player.hp;
+      let n = 0;
+      // he stands still while it forms, then steps the moment it locks
+      while (!((b.ai!.state as string) === 'tell' && b.ai!.move === 'diveBomb' && (b.ai!.d.h0 !== undefined) && b.ai!.t > DIVE_LOCK) && n++ < 30 * 4) frame({});
+      const locked = (e.hazards ?? []).find((h: { kind: string }) => h.kind === 'mark');
+      assert.ok(locked?.locked, `${name}, ${where}: the mark says GET OFF!`);
+      for (let k = 0; k < Math.round(0.35 / DT); k++) frame(dir > 0 ? { right: true } : { left: true });
+      for (let k = 0; k < 30 * 2.5; k++) frame({});
+      t.diagnostic(`${name}, ${where}: stepped ${Math.round(Math.abs(e.player.x - locked.x))} px off the mark, ${e.player.hp < hp0 ? 'hit' : 'clear'}`);
+      assert.equal(e.player.hp, hp0, `${name}, ${where}: a short step cleared it`);
+    }
   }
 });

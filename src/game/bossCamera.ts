@@ -6,6 +6,9 @@
 /** the share of the screen's height the bar at the top covers (the boss bar and the hearts) */
 export const HUD_SHARE = 0.19;
 
+/** a sky boss's painted top (wings raised) above her feet, in her own heights (measured off the Sovereign's dive at 844x390) */
+export const SKY_TOP = 1.0;
+
 export interface BossViewIn {
   /** the screen, css px, and the level's height */
   w: number;
@@ -42,11 +45,13 @@ export function bossViewWidth(o: BossViewIn): number {
     // a sky boss (the Sovereign): her head reaches ~230 past her middle, so both ends of her and the hero fit; and the view also opens
     // far enough up to show her when she climbs, under the bar at the top of the screen
     need = Math.max(need, Math.max(o.px, o.bx + 230) - Math.min(o.px, o.bx - 230) + 140);
-    const above = o.air + o.bh * 0.65 + 40;
+    // (her painted top, wings raised, is about her own height above her feet: SKY_TOP, plus a little air under the bar)
+    const above = o.air + o.bh * SKY_TOP + 20;
     need = Math.max(need, (above / ((o.floorAt ?? 0.7) - HUD_SHARE)) * (o.w / o.h));
   }
   // upright, the hero stays a readable size: the view never opens wider than ~720 units (a sky boss, whose openings are spread wider, 860)
-  const widest = portrait ? Math.max(baseViewW, o.frameAir ? 860 : 720) : o.arenaW + 200;
+  // (sideways, a sky boss may open a little wider than the arena so she stays under the bar on a long, low phone)
+  const widest = portrait ? Math.max(baseViewW, o.frameAir ? 860 : 720) : o.arenaW + (o.frameAir ? 320 : 200);
   return Math.max(baseViewW, Math.min(need, widest));
 }
 

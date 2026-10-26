@@ -11,9 +11,9 @@ import { generateStage } from './stageGenerator.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { validateStage } from './levelCheck.ts';
 import { PHYS, SAFE } from './physics.ts';
-import { DIVE_LOCK, RAKE_COMMIT, SKY_LOW, SWEEP_PAST, screechLanding } from './bossDefs.ts';
+import { DIVE_LOCK, RAKE_COMMIT, SKY_CLIMB, SKY_LOW, SWEEP_PAST, screechLanding } from './bossDefs.ts';
 import { heroReach, openingNeeds, type ReachGoal, type Rock } from './sovereignReach.ts';
-import { HUD_SHARE, bossViewWidth, bossViewX } from './bossCamera.ts';
+import { HUD_SHARE, SKY_TOP, bossViewWidth, bossViewX } from './bossCamera.ts';
 
 const sov = bossDefFor(4);
 const ARENA = { left: 760, right: 2260, floor: 560 };
@@ -489,6 +489,21 @@ test('the camera shows her, the opening and Pokey, in portrait (400x720) and lan
       assert.ok(o.box.x >= x0 - 1 && o.box.x + o.box.w <= x1 + 1, `${tag}: the opening in view (${Math.round(o.box.x)}..${Math.round(o.box.x + o.box.w)} vs ${Math.round(x0)}..${Math.round(x1)})`);
       assert.ok(o.box.y + o.box.h <= shown, `${tag}: the opening under the bar`);
       assert.ok(o.b.x >= x0 && o.b.x <= x1, `${tag}: her body in view`);
+    }
+  }
+});
+
+test('the camera keeps her under the boss bar and the hearts at the top of her climb, upright and sideways, on short and long phones', () => {
+  const fa = sov.floorAt ?? 0.7;
+  for (const [w, h] of [[400, 720], [320, 782], [844, 390], [918, 370], [640, 320]]) {
+    for (let bx = ARENA.left + 125; bx <= ARENA.right - 125; bx += 100) {
+      for (const d of [-500, -150, 150, 500]) {
+        const px = Math.max(ARENA.left + 20, Math.min(ARENA.right - 20, bx + d));
+        const vw = bossViewWidth({ w, h, levelH: 900, px, bx, bw: sov.w, bh: sov.h, air: SKY_CLIMB, arenaW: ARENA.right - ARENA.left, frameAir: sov.frameAir, floorAt: fa, worldViewH: 540, portraitViewW: 440 });
+        const vh = (vw * h) / w;
+        // her painted top, wings up, under the bar
+        assert.ok(SKY_CLIMB + sov.h * SKY_TOP <= vh * (fa - HUD_SHARE), `${w}x${h}: her top ${SKY_CLIMB + sov.h * SKY_TOP} vs ${Math.round(vh * (fa - HUD_SHARE))} shown`);
+      }
     }
   }
 });
