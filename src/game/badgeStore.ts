@@ -1,5 +1,5 @@
 /** Where the Trophy Room keeps its record: one small JSON entry in the browser's storage (and in save files). */
-import { emptyStore, type BadgeStore } from './badges.ts';
+import { emptyCounters, emptyStore, type BadgeCounters, type BadgeStore } from './badges.ts';
 
 export const BADGE_KEY = 'sloth_badges';
 export const COSMETIC_KEY = 'sloth_cosmetic';
@@ -21,15 +21,9 @@ export function parseBadgeStore(raw: string | null): BadgeStore {
       earned: rec(o.earned),
       kills: rec(o.kills),
       seen: Array.isArray(o.seen) ? o.seen.filter((s: unknown) => typeof s === 'string' && /^[a-z0-9_]{1,40}$/.test(s)).slice(0, 40) : [],
-      counters: {
-        stomps: num(o.counters?.stomps),
-        bestCombo: num(o.counters?.bestCombo),
-        glide: num(o.counters?.glide),
-        shimmy: num(o.counters?.shimmy),
-        flora: num(o.counters?.flora),
-        streak: num(o.counters?.streak),
-        bestStreak: num(o.counters?.bestStreak),
-      },
+      // (counters added later are missing from older saves: they start at zero)
+      counters: Object.fromEntries(Object.keys(emptyCounters()).map((k) => [k, num(o.counters?.[k])])) as unknown as BadgeCounters,
+      quiet: Array.isArray(o.quiet) ? o.quiet.filter((s: unknown) => typeof s === 'string' && /^\d{1,2}-[0-9A-Z]{1,2}$/.test(s)).slice(0, 200) : [],
     };
   } catch {
     return emptyStore();

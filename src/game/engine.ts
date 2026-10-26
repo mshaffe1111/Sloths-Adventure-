@@ -10,7 +10,7 @@ import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
-import { isEasy } from './difficulty.ts';
+import { difficulty, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
 
@@ -387,6 +387,10 @@ export class GameEngine {
   private statMaxCombo = 0;
   private statGlideSec = 0;
   private statShimmySec = 0;
+  /** vines grabbed to swing on, and punches and kicks that landed on an animal or a guardian */
+  private statSwings = 0;
+  private statPunches = 0;
+  private statKicks = 0;
   private statKills: Record<string, number> = {};
   private statSeen = new Set<string>();
   private seenCheck = 0;
@@ -1485,6 +1489,7 @@ export class GameEngine {
         p.isVineSwinging = true;
         p.climbing = false;
         p.swingVineId = nearSwingVine.id;
+        this.statSwings++;
         this.sweetSnap = null;
         this.swingLeapWait = 0;
         {
@@ -3500,6 +3505,8 @@ export class GameEngine {
     a.connected = true;
     const cp = contactPoint(box, hr);
     const kick = m.kind === 'kick';
+    if (kick) this.statKicks++;
+    else this.statPunches++;
 
     // weight: the game freezes a moment, the screen shakes, and the blow sounds like what it hit
     this.hitstopTimer = Math.max(this.hitstopTimer, res.killed ? m.hitstop * 1.5 : m.hitstop);
@@ -3627,8 +3634,13 @@ export class GameEngine {
     this.hitstopTimer = Math.max(this.hitstopTimer, m.hitstop + 0.02);
     this.camera.trauma = Math.min(1, this.camera.trauma + 0.4);
     sound.playHitImpact(true, bossMaterial(world));
-    if (m.kind === 'kick') this.spawnKickHitBurst(cp.x, cp.y);
-    else this.spawnClawHitSparks(cp.x, cp.y, true);
+    if (m.kind === 'kick') {
+      this.statKicks++;
+      this.spawnKickHitBurst(cp.x, cp.y);
+    } else {
+      this.statPunches++;
+      this.spawnClawHitSparks(cp.x, cp.y, true);
+    }
     this.comboCount++;
     this.comboResetTimer = 2.0;
     const pts = calculateHitScore('boss', m.kind === 'mega', this.comboCount) * (m.kind === 'kick' ? 2 : 1);
@@ -3740,6 +3752,15 @@ export class GameEngine {
       id: this.currentStage.config.id,
       glideSec: this.statGlideSec,
       shimmySec: this.statShimmySec,
+      swings: this.statSwings,
+      punches: this.statPunches,
+      kicks: this.statKicks,
+      freed: this.player.crittersRescued,
+      ...(this.w5 ? this.w5.tally(this.collectibles, win) : {}),
+      ...(this.dotRun ? { scratches: this.dotRun.fl.scratches } : {}),
+      ...(this.mc ? { caught: this.mc.catches.length } : {}),
+      difficulty: difficulty(),
+      quiet: dotHelp() === 'quiet',
       kills: { ...this.statKills },
       seen: Array.from(this.statSeen),
     };

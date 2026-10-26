@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { BADGES, REWARDS, evaluate, rewardsUnlocked, type BadgeDef, type BadgeStore, type LevelRecord } from '../game/badges.ts';
+import { BADGES, REWARDS, TIER_NAME, TIER_POINTS, TOTAL_POINTS, evaluate, pointsOf, rewardsUnlocked, type BadgeDef, type BadgeStore, type EvalContext, type LevelRecord } from '../game/badges.ts';
 import type { CosmeticChoice } from '../game/badgeStore.ts';
 import { GUARDIAN_ENTRIES, PREDATOR_ENTRIES, PREDATOR_ORDER } from '../game/journal.ts';
 import type { Coat } from '../game/heroTint.ts';
@@ -8,7 +8,6 @@ import { CoatPreview } from './CoatPreview.tsx';
 import { CreaturePic } from './CreaturePic.tsx';
 import { Icon } from './icons/index.tsx';
 import { Crest } from './icons/Crest.tsx';
-import { guardianWorld } from './icons/badgeIcons.ts';
 import { BONUS_FIND, FINDS, allFound, type FindDef } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
@@ -33,22 +32,46 @@ interface Props {
   onReplayMemory?: (id: MemoryId) => void;
 }
 
-const SECTIONS: Array<{ title: string; match: (b: BadgeDef) => boolean }> = [
-  { title: 'In a stage', match: (b) => ['first_steps', 'perfect_stage', 'flawless', 'untouchable', 'green_thumb', 'speedy_sloth', 'stomp_chain', 'combo_10'].includes(b.id) },
-  { title: 'Hard feats', match: (b) => ['untouched_guardian', 'pest_control', 'sky_stomper', 'lightning_round', 'garden_keeper', 'combo_20'].includes(b.id) },
-  { title: 'The long game', match: (b) => /^(predators|stomps|stars|cleared|glide|shimmy|flora|perfect|streak)_/.test(b.id) },
-  { title: 'Guardians', match: (b) => b.id.startsWith('guardian_') },
-  { title: 'World masters', match: (b) => b.id.startsWith('world_master_') },
-  { title: 'Secrets and story', match: (b) => ['naturalist', 'thorn_finder', 'thorn_heart', 'jungle_hero'].includes(b.id) },
-];
+const fmt = (n: number) => n.toLocaleString('en-US');
+const unitLabel = (b: BadgeDef, have: number, need: number) =>
+  b.unit === 'h' ? `${have} of ${need} h` : b.unit === 'min' ? `${have} of ${need} min` : `${fmt(have)} of ${fmt(need)}`;
+
+/** one medal in the grid: the painted medal, its name, how it is earned, its points and (for a counter) a progress bar */
+const MedalCell: React.FC<{ b: BadgeDef; got: boolean; ctx: EvalContext }> = ({ b, got, ctx }) => {
+  const p = !got ? b.progress?.(ctx) : undefined;
+  return (
+    <div className={`tr-badge ${got ? 'got' : ''}`}>
+      <BadgeMedal badge={b} earned={got} size={60} />
+      <div className="tr-bt">
+        <div className="tr-bn">{b.name}</div>
+        <div className="tr-bd">{b.desc}</div>
+        {p && p.need > 1 && (
+          <div className="tr-pg" aria-label={unitLabel(b, p.have, p.need)}>
+            <div className="tr-pgbar">
+              <i style={{ width: `${Math.min(100, (p.have / p.need) * 100)}%` }} />
+            </div>
+            <span>{unitLabel(b, p.have, p.need)}</span>
+          </div>
+        )}
+        <div className={`tr-pts tr-pts-${b.tier}`}>
+          {got ? <Icon name="check" size={11} /> : null}
+          {TIER_POINTS[b.tier]} pts
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, onOpenFind, memories = [], onReplayMemory }) => {
   const [tab, setTab] = useState<'badges' | 'journal' | 'library'>(initialTab);
-  const ctx = useMemo(() => ({ store, levels, gateFound, thornHeart }), [store, levels, gateFound, thornHeart]);
+  const ctx = useMemo<EvalContext>(() => ({ store, levels, gateFound, thornHeart, finds }), [store, levels, gateFound, thornHeart, finds]);
   const earnedIds = useMemo(() => new Set(evaluate(ctx)), [ctx]);
   const earnedCount = earnedIds.size;
-  const unlocked = rewardsUnlocked(earnedCount);
+  const points = pointsOf(earnedIds);
+  const unlocked = rewardsUnlocked(points);
   const unlockedIds = new Set(unlocked.map((r) => r.id));
+  const plat = BADGES.find((b) => b.tier === 'platinum')!;
+  const platGot = earnedIds.has(plat.id);
 
   const metCount = PREDATOR_ORDER.filter((p) => store.seen.includes(p)).length;
   const bossDone = (w: number) => levels.some((l) => l.worldIndex === w && l.miniIndex === 10 && l.completed);
@@ -65,17 +88,17 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
           <div className="tr-titles">
             <h1 className="tr-h1">Trophy Room</h1>
             <div className="tr-sub">
-              {earnedCount} of {BADGES.length} badges earned
+              <b className="tr-points">{fmt(points)}</b> of {fmt(TOTAL_POINTS)} points · {earnedCount} of {BADGES.length} medals
             </div>
           </div>
         </div>
-        <div className="tr-bar">
-          <i style={{ width: `${(earnedCount / BADGES.length) * 100}%` }} />
+        <div className="tr-bar" role="progressbar" aria-valuemin={0} aria-valuemax={TOTAL_POINTS} aria-valuenow={points} aria-label="Medal points">
+          <i style={{ width: `${(points / TOTAL_POINTS) * 100}%` }} />
         </div>
 
         <div className="tr-tabs" role="tablist">
           <button type="button" role="tab" aria-selected={tab === 'badges'} className={tab === 'badges' ? 'on' : ''} onClick={() => setTab('badges')}>
-            Badges
+            Medals
           </button>
           <button type="button" role="tab" aria-selected={tab === 'journal'} className={tab === 'journal' ? 'on' : ''} onClick={() => setTab('journal')}>
             Jungle Journal
@@ -87,6 +110,23 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
 
         {tab === 'badges' && (
           <>
+            <div className={`tr-plat ${platGot ? 'got' : ''}`}>
+              <BadgeMedal badge={plat} earned={platGot} size={96} />
+              <div className="tr-plat-t">
+                <div className="tr-plat-k">Platinum · {TIER_POINTS.platinum} points</div>
+                <div className="tr-plat-n">{plat.name}</div>
+                <div className="tr-bd">{plat.desc}</div>
+                <ul className="tr-plat-parts">
+                  {plat.parts!(ctx).map((q) => (
+                    <li key={q.label} className={q.done || platGot ? 'done' : ''}>
+                      <Icon name={q.done || platGot ? 'check' : 'lock'} size={12} />
+                      {q.label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
             <div className="tr-sec">Rewards for Pokey</div>
             <div className="tr-rewards">
               {REWARDS.map((r) => {
@@ -106,35 +146,28 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                       {!got && <span className="tr-lockmark"><Icon name="lock" size={18} /></span>}
                     </div>
                     <b>{r.name}</b>
-                    <small>{got ? (worn ? 'Wearing' : 'Tap to wear') : `${r.need} badges`}</small>
+                    <small>{got ? (worn ? 'Wearing' : 'Tap to wear') : `${fmt(r.need)} points`}</small>
                   </button>
                 );
               })}
             </div>
 
-            {SECTIONS.map((sec) => (
-              <React.Fragment key={sec.title}>
-                <div className="tr-sec">{sec.title}</div>
-                <div className="tr-grid">
-                  {BADGES.filter(sec.match).map((b) => {
-                    const got = earnedIds.has(b.id);
-                    const p = !got ? b.progress?.(ctx) : undefined;
-                    return (
-                      <div key={b.id} className={`tr-badge ${got ? 'got' : ''}`}>
-                        <BadgeMedal icon={b.icon} tier={b.tier} earned={got} world={guardianWorld(b.id)} />
-                        <div className="tr-bn">{b.name}</div>
-                        <div className="tr-bd">{b.desc}</div>
-                        {p && p.have > 0 && (
-                          <div className="tr-pg">
-                            {p.have}/{p.need}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </React.Fragment>
-            ))}
+            {(['gold', 'silver', 'bronze'] as const).map((tier) => {
+              const list = BADGES.filter((b) => b.tier === tier);
+              const got = list.filter((b) => earnedIds.has(b.id)).length;
+              return (
+                <React.Fragment key={tier}>
+                  <div className={`tr-sec tr-sec-${tier}`}>
+                    {TIER_NAME[tier]} <small>· {TIER_POINTS[tier]} points each · {got} of {list.length}</small>
+                  </div>
+                  <div className="tr-grid">
+                    {list.map((b) => (
+                      <MedalCell key={b.id} b={b} got={earnedIds.has(b.id)} ctx={ctx} />
+                    ))}
+                  </div>
+                </React.Fragment>
+              );
+            })}
           </>
         )}
 

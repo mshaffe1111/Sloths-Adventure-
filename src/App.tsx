@@ -291,8 +291,8 @@ export default function App() {
   const failsRef = useRef<Record<string, number>>({});
   const [, bumpFails] = useState(0);
   const badgeCount = React.useMemo(
-    () => evaluate({ store: badgeStore, levels: allLevels, gateFound: secretFound, thornHeart }).length,
-    [badgeStore, allLevels, secretFound, thornHeart],
+    () => evaluate({ store: badgeStore, levels: allLevels, gateFound: secretFound, thornHeart, finds: foundIds }).length,
+    [badgeStore, allLevels, secretFound, thornHeart, foundIds],
   );
   useEffect(() => {
     // after a stage ends (the result is saved by now), or when the saved game changes: hand out whatever is newly earned
@@ -300,7 +300,7 @@ export default function App() {
     if (stats && screen !== 'victory' && screen !== 'game_over' && screen !== 'boss_defeat') return;
     pendingStats.current = null;
     const base = stats ? recordStage(badgeStore, stats) : badgeStore;
-    const r = award(base, { levels: allLevels, gateFound: secretFound, thornHeart, stage: stats ?? undefined, cakeFree: !anyCakeEaten() }, Date.now());
+    const r = award(base, { levels: allLevels, gateFound: secretFound, thornHeart, finds: foundIds, stage: stats ?? undefined, cakeFree: !anyCakeEaten() }, Date.now());
     const changed = !!stats || r.fresh.length > 0;
     if (!changed) return;
     setBadgeStore(r.store);
@@ -502,6 +502,11 @@ export default function App() {
       setActiveLevel(lvl);
       setScreen(scr as never);
     };
+  }
+
+  // dev only: show the new-medal toast for these medal ids (for screenshots)
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    (window as unknown as { __medals?: (ids: string[]) => void }).__medals = (ids: string[]) => setFreshBadges(BADGES.filter((b) => ids.includes(b.id)));
   }
 
   // the next stage's sheets, got ready behind a card: the stage-cleared card (only for a next stage in this same world, so the sheets
