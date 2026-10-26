@@ -72,7 +72,7 @@ import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, CAM, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, camRun, CAM, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, type Box } from './cameraFollow.ts';
 import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -327,6 +327,9 @@ export class GameEngine {
   /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
   private camAnchorY = NaN;
   private camLookX: number = CAM.lookAhead;
+  /** how much of the run lead the view is taking (cameraFollow.ts camRun) */
+  private camRunK = 0;
+  private camRunSlow = 0;
   /** World 4's rocks, fern, falls, chimes, knots and capuchins for this run (w4Play.ts) */
   private w4: W4Play | null = null;
   /** Dot's netting flight (dotFlightRun.ts): while it is set, she is the player and it runs the stage */
@@ -4069,6 +4072,8 @@ export class GameEngine {
     this.camera.targetX = this.camera.x;
     this.camera.targetY = this.camera.y;
     this.camAnchorY = NaN;
+    this.camRunK = 0;
+    this.camRunSlow = 0;
     // above his head, one line over the other with room between (at his head they sat on top of him and of each other), and up long
     // enough to read; any older words still rising there go first
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
@@ -4234,10 +4239,14 @@ export class GameEngine {
 
     // Look-ahead tracking: eased across when he turns, and a height that ignores hops and swings (cameraFollow.ts: the screen jiggled)
     this.camLookX = camLook(this.camLookX, p.facing, dt);
+    // (and at a run, on a narrow view, it leads further: cameraFollow.ts runLead; it follows the look-ahead's side, so a turn eases it over)
+    this.camRunK = camRun(this.camRunK, p.vx, p.facing, dt);
+    this.camRunSlow = camRun(this.camRunSlow, p.vx, p.facing, dt, RUN.settle);
+    const runX = runOffset(vw, this.camRunK, this.camRunSlow, dt) * (this.camLookX / CAM.lookAhead);
     const sv = p.isVineSwinging ? this.nearSwingVine : null;
     this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
     // in the chase the view looks well ahead, so what is coming is seen in time (and the break behind is just in view)
-    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + this.camLookX;
+    this.camera.targetX = this.chase?.active ? p.x - vw * 0.3 : p.x - vw * 0.45 + this.camLookX + runX;
     this.camera.targetY = this.camAnchorY - vh * 0.55;
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
@@ -4281,7 +4290,7 @@ export class GameEngine {
     this.camera.targetY = Math.min(this.camera.targetY, underHud(refY, band));
 
     // Smooth damp camera
-    const smoothFactor = Math.min(1, dt * 6.5);
+    const smoothFactor = Math.min(1, dt * RUN.follow);
     // (a landing still outside the view, as when he turns round at the end of a ledge and jumps at once for the vine he now faces, is
     // panned to twice as fast, so it is on screen as he leaves the ledge for it, QA 2026-10-26)
     const behind = !!landShown && (landShown.x0 < this.camera.x || landShown.x1 > this.camera.x + vw);
