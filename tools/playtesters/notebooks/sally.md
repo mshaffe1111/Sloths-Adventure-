@@ -31,3 +31,21 @@
   and when they drop, stop at the next cover and wait longer before moving.
 - A lookout animal: tap a few times near it before walking past. I never saw the fruit, so I'm not sure it worked.
 - Sideways shows more of what's ahead on the ground (good for spotting cover), but the top bar hides the sky.
+
+## 2026-10-26 (third session, small phone upright, one finger, new top bar and Dot the bird switched on)
+- Double jump: flick up, wait about a quarter second, flick up again, THEN slide forward. Two flicks back to back
+  too fast only gives one hop. Waiting a third of a second for the second flick also works.
+- A plain hop only clears knee-high steps. Anything as tall as Pokey needs the double jump.
+- When a ledge hangs out over you, jumping from right under it bumps your head and you drop. Take a small step back
+  first, or jump straight up and only slide forward after the second flick.
+- Up-right flick (up and over) is a good one-finger way to hop forward onto low rocks and stumps.
+- Snakes: walk until you're nearly touching, let go, then tap three times. Tapping from too far just punches air,
+  and the snake bites while you're doing it. Two taps wasn't always enough.
+- Hearts can drop while you walk along flat ground and you won't see why. Look at the vine of hearts top left every
+  few slides, and slow down when the ground is full of plants.
+- Dot the bird: when she talks, stop and read. Her tips stay up until you do the thing. If she says "This way, try
+  over here", go where her arrow is, not where you were trying.
+- The big counter at the top tells you how many you have out of how many. Keep an eye on it after every few steps.
+- Ropes: jumping at a rope from the low ground didn't catch it for me. Try from the ledge right next to the post.
+- In the Menu you can make Dot quiet. Then she stops teaching, so only do that once you know the moves.
+- Sideways the screen is short: things above you (snakes on logs) are easier to see, but it's harder to see the ground.
