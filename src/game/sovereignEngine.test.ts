@@ -18,7 +18,7 @@ import { weakOpen, weakRect } from './bossAI.ts';
 import type { BossDef } from './bossAI.ts';
 import type { BossEntity, InputState, LevelConfig, PlayerState } from './types.ts';
 import { heroReach, openingNeeds, OPENING_RULE } from './sovereignReach.ts';
-import type { SkyPillar } from './sovereignFight.ts';
+import { pillarFor, type SkyPillar } from './sovereignFight.ts';
 import { DIVE_LOCK, RAKE_COMMIT } from './bossDefs.ts';
 
 const DT = 1 / 30;
@@ -80,6 +80,10 @@ interface Opening {
   /** the quickest he could get there from where he stood, against the spot as it was once he had seen it */
   reach: number;
   cut: boolean;
+  /** where she was when it opened */
+  bx: number;
+  /** he was hurt (or lost a life and stood up at the flag) during the move that opened it: he did not dodge it */
+  hit: boolean;
 }
 
 function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: number; seconds: number; seed?: number }) {
@@ -121,11 +125,18 @@ function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: nu
       e.update(sdt);
     }
   };
-  // the entrance is a cut scene
-  for (let i = 0; (e.entrance || !e.entranceDone) && i < 30 * 40; i++) frame({});
-  if (o.hpShare) b().hp = Math.round(b().maxHp * o.hpShare);
+  // (her choices come from the fight's dice: seeded here, so a run is the same every time)
   let rs = (o.seed ?? 1) >>> 0;
   const rnd = () => ((rs = (rs * 1664525 + 1013904223) >>> 0) / 4294967296);
+  const seedDice = () => {
+    if (e.bossCtx) e.bossCtx.rnd = rnd;
+  };
+  // the entrance is a cut scene
+  for (let i = 0; (e.entrance || !e.entranceDone) && i < 30 * 40; i++) {
+    seedDice();
+    frame({});
+  }
+  if (o.hpShare) b().hp = Math.round(b().maxHp * o.hpShare);
 
   const openings: Opening[] = [];
   let cur: Opening | null = null;
@@ -142,6 +153,9 @@ function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: nu
   const t0 = e.gameTime;
   let lastMove = '';
   let lastTell = 0;
+  let tellAt = 0;
+  let hurtAt = -99;
+  let hopping = 0;
   while (e.gameTime - t0 < o.seconds && !won && !b().defeated && b().ai?.state !== 'dying' && e.lives > 0) {
     const br = b().ai!;
     const P = p();
@@ -150,6 +164,7 @@ function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: nu
     const ps: SkyPillar[] = e.skyPillars ?? [];
     const stand = ps.filter((q) => !q.broken);
     const now = e.gameTime;
+    if (br.state === 'tell' && br.t <= DT + 1e-6) tellAt = now;
     if (br.state === 'tell') {
       lastMove = br.move ?? '';
       lastTell = (def().moves[lastMove]?.tell ?? 0) * (e.bossCtx?.tellMul ?? 1);
@@ -157,7 +172,7 @@ function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: nu
     // ── the openings, as they come and go ──
     const open = weakOpen(b(), def()) && br.state !== 'dying';
     if (open && !cur) {
-      cur = { move: br.state === 'stun' ? `${br.move}:slam` : br.move ?? '?', state: br.state, t0: now, dur: 0, px: P.x, up, tell: lastTell, reach: -1, cut: false };
+      cur = { move: br.state === 'stun' ? `${br.move}:slam` : br.move ?? '?', state: br.state, t0: now, dur: 0, px: P.x, up, tell: lastTell, reach: -1, cut: false, bx: b().x, hit: hurtAt >= tellAt };
       openSince = now;
     }
     if (open && cur && cur.reach < 0 && now - cur.t0 >= OPENING_RULE.react) {
@@ -208,11 +223,18 @@ function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: nu
       const mk = (e.hazards ?? []).find((h: { kind: string }) => h.kind === 'mark');
       if (mk) lastMark = { x: mk.x, w: mk.w };
       if (lastMark && (br.state === 'act' || br.t > DIVE_LOCK + 0.3)) {
-        if (Math.abs(P.x - lastMark.x) < lastMark.w / 2 + 50) {
-          const q = [...stand].sort((a, z) => Math.abs(a.x - lastMark!.x) - Math.abs(z.x - lastMark!.x))[0];
-          let dir = q ? Math.sign(lastMark.x - q.x) || 1 : Math.sign((A().left + A().right) / 2 - P.x) || 1;
-          if (lastMark.x + dir * 220 > A().right - 30 || lastMark.x + dir * 220 < A().left + 30) dir = -dir;
-          tx = lastMark.x + dir * (lastMark.w / 2 + 80);
+        // what bursts where she lands: the mark, and the rock it touches (bossDefs.ts skySlam); out of it on the near side, or the far
+        // side when the near one is the fence or the storm (over the rock if need be)
+        const rock = pillarFor(ps, lastMark.x);
+        const lo = Math.min(lastMark.x - 65, rock ? rock.x - rock.w / 2 : Infinity);
+        const hi = Math.max(lastMark.x + 65, rock ? rock.x + rock.w / 2 : -Infinity);
+        if (P.x + 19 > lo - 12 && P.x - 19 < hi + 12) {
+          const edge = b().phase >= 3 ? 178 : 30;
+          // (on the mark: away from the rock; already off it to one side: on out that side)
+          let dir: number = Math.abs(P.x - lastMark.x) > 40 ? Math.sign(P.x - lastMark.x) : rock ? Math.sign(lastMark.x - rock.x) || 1 : 1;
+          const to = (d: number) => (d < 0 ? lo - 50 : hi + 50);
+          if (to(dir) > A().right - edge || to(dir) < A().left + edge) dir = -dir;
+          tx = to(dir);
         }
       } else if (br.state === 'tell') {
         const q = [...stand].sort((a, z) => Math.abs(a.x - P.x) - Math.abs(z.x - P.x))[0];
@@ -221,7 +243,19 @@ function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: nu
     } else if (br.state === 'tell' || br.state === 'act') {
       lastMark = null;
       if (br.move === 'screech' && P.grounded) pad.down = true;
-      if (br.move === 'talonRake' && (br.state === 'act' || br.t > RAKE_COMMIT + 0.3)) tx = P.x + Math.sign(P.x - b().x || 1) * 200;
+      if (br.move === 'talonRake' && (br.state === 'act' || br.t > RAKE_COMMIT + 0.3)) {
+        const away = Math.sign(P.x - b().x || 1);
+        // back out of the bite, or with a rock at his back, double jump over it (it reaches RAKE_TOP)
+        const walled = ps.some((q) => q.h > 0 && (q.x - P.x) * away > 0 && (q.x - P.x) * away < q.w / 2 + 170);
+        if (!walled) tx = P.x + away * 200;
+        else if ((br.state === 'act' || br.t > (def().moves.talonRake.tell ?? 1) - 0.3) && P.grounded && now - lastJump > 0.4) {
+          pad.press = true;
+          lastJump = now;
+        } else if (!P.grounded && (P.jumpsLeft ?? 0) > 0 && now - lastJump > 0.2) {
+          pad.press = true;
+          lastJump = now;
+        } else if (!P.grounded) pad.jump = true;
+      }
       if (br.state === 'act' && br.move !== 'diveBomb' && Math.abs(P.x - b().x) < b().width / 2 + 20) tx = b().x + Math.sign(P.x - b().x || 1) * (b().width / 2 + 60);
     } else if (!open) {
       lastMark = null;
@@ -232,7 +266,7 @@ function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: nu
     // falling stones: out from under them
     for (const h of e.hazards ?? []) if (h.kind === 'drop' && Math.abs(tx - h.x) < h.w / 2 + 30) tx = h.x + Math.sign(P.x - h.x || 1) * (h.w / 2 + 45);
     // the storm at the edges
-    tx = Math.max(A().left + (b().phase >= 3 ? 230 : 30), Math.min(A().right - (b().phase >= 3 ? 230 : 30), tx));
+    tx = Math.max(A().left + (b().phase >= 3 ? 195 : 30), Math.min(A().right - (b().phase >= 3 ? 195 : 30), tx));
     if (Math.abs(tx - P.x) > 10) {
       if (tx > P.x) pad.right = true;
       else pad.left = true;
@@ -243,12 +277,23 @@ function fight(o: { screen: { w: number; h: number }; hit: boolean; hpShare?: nu
         if (P.grounded && up < q.h - 20 && ahead > 0 && ahead < q.w / 2 + 45 && Math.abs(tx - P.x) > ahead - q.w / 2 && now - lastJump > 0.4 && br.move !== 'skySweep') {
           pad.press = true;
           lastJump = now;
+          hopping = q.h;
         }
       }
+      // (a whole rock is taller than one jump: the second jump on the way up)
+      if (!P.grounded && hopping > 100 && up < hopping + 10 && (P.jumpsLeft ?? 0) > 0 && now - lastJump > 0.2 && now - lastJump < 0.5) {
+        pad.press = true;
+        hopping = 0;
+      }
+      if (P.grounded && now - lastJump > 0.2) hopping = 0;
       if (!P.grounded && now - lastJump < 0.6) pad.jump = true;
     }
+    seedDice();
     frame(pad);
-    if (p().hp < lastHp || e.lives < lastLives) hurts++;
+    if (p().hp < lastHp || e.lives < lastLives) {
+      hurts++;
+      hurtAt = e.gameTime;
+    }
     lastHp = p().hp;
     lastLives = e.lives;
   }
@@ -261,24 +306,38 @@ const PORT = { w: 400, h: 720 };
 
 test('in the real engine every opening stays open for the reach from where he stood, plus 0.8 s to see it and 0.6 s to hit, after a wind-up', (t) => {
   const all: Opening[] = [];
-  for (const [share, seed] of [[1, 1], [0.6, 2], [0.3, 3], [0.3, 4]] as const) {
+  let dodged = 0;
+  // every phase, several fights each (her moves are dice rolls: different fights put him in different places)
+  const runs: Array<[number, number]> = [];
+  const n = Number(process.env.SOV_FIGHTS ?? 8);
+  for (let k = 0; k < n; k++) for (const share of [1, 0.6, 0.3]) runs.push([share, 1 + k * 3 + Math.round(share * 10)]);
+  for (const [share, seed] of runs) {
     const r = fight({ screen: LAND, hit: false, hpShare: share, seconds: 75, seed });
     all.push(...r.openings.filter((x) => !x.cut));
+    dodged += r.openings.filter((x) => !x.cut && !x.hit).length;
   }
   const kinds = new Map<string, { n: number; open: number; need: number }>();
   for (const x of all) {
     const k = kinds.get(x.move) ?? { n: 0, open: Infinity, need: 0 };
     k.n++;
     k.open = Math.min(k.open, x.dur);
-    k.need = Math.max(k.need, openingNeeds(x.reach));
+    if (!x.hit) k.need = Math.max(k.need, openingNeeds(x.reach));
     kinds.set(x.move, k);
   }
   for (const [k, w] of kinds) t.diagnostic(`${k}: ${w.n} times, open at least ${w.open.toFixed(2)} s, needs at most ${w.need.toFixed(2)} s`);
   // every kind of opening came up
-  for (const m of ['diveBomb:slam', 'featherVolley', 'talonRake', 'screech', 'skySweep', 'snatch', 'wingGust']) assert.ok(kinds.has(m), `${m} came up (${[...kinds.keys()].join(', ')})`);
-  for (const x of all) {
+  for (const m of ['diveBomb:slam', 'featherVolley', 'talonRake', 'screech', 'skySweep', 'snatch', 'wingGust']) assert.ok(all.some((x) => x.move === m && !x.hit), `${m} came up after he dodged it (${[...kinds.keys()].join(', ')})`);
+  // Matt's rule is about where he stands once he has dodged what opened it. A move that hit him knocked him back (or he stood up again
+  // at the flag), so that opening is not one he was in place for; those are few, and are left out of the timing
+  const hitBy = all.filter((x) => x.hit);
+  t.diagnostic(`${all.length} openings, ${hitBy.length} after a move that hit him (${[...new Set(hitBy.map((x) => x.move))].map((m) => `${m} ${hitBy.filter((x) => x.move === m).length}`).join(", ")})`);
+  assert.ok(hitBy.length <= all.length * 0.1, `${hitBy.length} of ${all.length} openings came after a move that hit him`);
+  assert.equal(dodged, all.length - hitBy.length);
+  const bad = all.filter((x) => !x.hit && !(x.dur + DT >= openingNeeds(x.reach)));
+  for (const x of bad.slice(0, 12)) t.diagnostic(`SHORT ${x.hit ? '(he was hit) ' : ''}${x.move} at ${x.t0.toFixed(1)}: open ${x.dur.toFixed(2)} needs ${openingNeeds(x.reach).toFixed(2)}, he ${Math.round(x.px)} (${Math.round(x.up)} up), she ${Math.round(x.bx)}`);
+  for (const x of all.filter((o) => !o.hit)) {
     assert.ok(Number.isFinite(x.reach), `${x.move} at ${x.t0.toFixed(1)} s: he could get to it at all (from ${Math.round(x.px)}, ${Math.round(x.up)} up)`);
-    assert.ok(x.dur + DT >= openingNeeds(x.reach), `${x.move} at ${x.t0.toFixed(1)} s: open ${x.dur.toFixed(2)} s, needs ${openingNeeds(x.reach).toFixed(2)} s`);
+    assert.ok(x.dur + DT >= openingNeeds(x.reach), `${x.move} at ${x.t0.toFixed(1)} s: open ${x.dur.toFixed(2)} s, needs ${openingNeeds(x.reach).toFixed(2)} s (he was at ${Math.round(x.px)}, ${Math.round(x.up)} up; she at ${Math.round(x.bx)})`);
     assert.ok(x.tell >= 0.8, `${x.move}: it opened after a ${x.tell} s wind-up`);
   }
 });

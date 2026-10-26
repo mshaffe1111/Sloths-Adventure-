@@ -589,7 +589,8 @@ const skySettle = (b: BossEntity, c: BossCtx, dt: number) => {
 export const DIVE_LOCK = 0.45;
 /** the beak lunge: she commits to where he is this far into its wind-up, and it reaches this high (a double jump clears it) */
 export const RAKE_COMMIT = 0.42;
-export const RAKE_TOP = 140;
+export const RAKE_TOP = 120;
+export const RAKE_PAST = 40;
 /** the sky sweep pulls up this far past him */
 export const SWEEP_PAST = 300;
 
@@ -776,7 +777,7 @@ const SOVEREIGN: BossDef = {
     featherVolley: {
       tell: 0.85,
       act: 0.7,
-      rec: 2.9,
+      rec: 3.1,
       min: 180,
       // (near enough that the opening it leaves can be reached: sovereign.test.ts)
       max: 440,
@@ -806,9 +807,10 @@ const SOVEREIGN: BossDef = {
     },
     // she drops to the floor beside you and lunges with her beak. The head is low and open when it is over. She stops short of a rock
     talonRake: {
-      tell: 0.85,
+      // (long enough after she commits to back out of the bite: the lunge reaches 150 past her beak)
+      tell: 1.0,
       act: 0.55,
-      rec: 2.3,
+      rec: 2.5,
       min: 230,
       max: 480,
       pose: 'lunge',
@@ -825,8 +827,9 @@ const SOVEREIGN: BossDef = {
       onAct: (b, c) => {
         const br = b.ai!;
         br.d.dir = b.facing;
-        // how far she goes: to a beak's reach from where she aimed, never through the fence or a rock
-        let go = Math.max(60, Math.min(330, Math.abs((br.d.aimX ?? c.px) - b.x) - 150));
+        // how far she goes: the beak ends RAKE_PAST beyond where she aimed (a stride back clears it), never through the fence or a rock
+        const tip = b.width / 2 - 14 + 150;
+        let go = Math.max(0, Math.min(330, Math.abs((br.d.aimX ?? c.px) - b.x) - tip + RAKE_PAST));
         for (const p of standing(c.pillars)) {
           const ahead = (p.x - b.x) * br.d.dir;
           if (ahead > 0) go = Math.min(go, Math.max(0, ahead - p.w / 2 - b.width / 2 - 6));
@@ -840,7 +843,10 @@ const SOVEREIGN: BossDef = {
         b.x = br.d.x0 + br.d.dir * br.d.go * (1 - (1 - u) * (1 - u));
         br.air = 0;
         // (the beak comes in low: a double jump clears it)
-        br.hurt = [{ ...bodyBox(b), h: RAKE_TOP, y: c.arena.floor - RAKE_TOP }, frontBox(b, c, 150, RAKE_TOP, 6)];
+        // (the beak reaches out as she lunges, 150 past her at the end of it: not the whole length on the first frame, which caught a
+        // hero who had backed off out of reach)
+        // (and it snaps back once the lunge is done: a hero who jumped it is not caught coming down)
+        br.hurt = u < 1 ? [{ ...bodyBox(b), h: RAKE_TOP, y: c.arena.floor - RAKE_TOP }, frontBox(b, c, 40 + 110 * u, RAKE_TOP, 6)] : [bodyBox(b)];
         if (u >= 1 && !br.d.slammed) {
           br.d.slammed = 1;
           c.shake(0.45);
@@ -949,6 +955,8 @@ const SOVEREIGN: BossDef = {
       min: 200,
       pose: 'fly',
       guide: 'Another red mark! A rock works on this one too!',
+      // only her talons hurt as she swoops (the mark's width), as in the dive
+      softBody: true,
       stunAfter: (b) => b.ai!.d.slamStun ?? 0,
       stunTick: skyStunTick,
       crashText: '',
@@ -979,7 +987,8 @@ const SOVEREIGN: BossDef = {
         const reach = Math.min(1, u / 0.5);
         b.x = br.d.x0 + (br.d.tx - br.d.x0) * (reach * reach * (3 - 2 * reach));
         br.air = u < 0.5 ? br.d.a0 + (6 - br.d.a0) * (u / 0.5) : 6 + (150 - 6) * ((u - 0.5) / 0.5);
-        br.hurt = [bodyBox(b)];
+        // only her talons hurt (the mark's width), as in the dive: stepping off the mark is the dodge, not outrunning her wings
+        br.hurt = [{ x: b.x - 65, y: c.arena.floor - br.air - 90, w: 130, h: 90 }];
         if (u < 0.55) {
           const p = pillarFor(c.pillars, br.d.tx);
           if (p && Math.abs(b.x - p.x) < PILLAR.reach && br.air <= p.h + 8) skySlam(b, c, p, br.d.tx);
