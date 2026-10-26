@@ -10,7 +10,8 @@ interface Props {
   ratio: number;
   hp: number;
   /** a guiding line from the engine (a stage tip, the goal, a reminder, the sealed door); `n` counts up with each new one */
-  guide?: { text: string; ms: number; n: number } | null;
+  /** `passed`: the moment of this line has passed (he is past its spot): take it down if it is still up or waiting */
+  guide?: { text: string; ms: number; n: number; passed?: boolean } | null;
   /** what Dot's guide needs besides */
   dot: Pick<DotGuideProps, 'engine' | 'playing' | 'coachStep' | 'coachStyle' | 'lessonId' | 'count'>;
 }

@@ -196,7 +196,7 @@ export default function App() {
   const [currentCount, setCurrentCount] = useState<number>(0);
   const [targetCount, setTargetCount] = useState<number>(1);
   /** the guiding line Dot is saying (a stage tip, the goal, the sealed door): from the engine, shown by Wayside */
-  const [guideLine, setGuideLine] = useState<{ text: string; ms: number; n: number } | null>(null);
+  const [guideLine, setGuideLine] = useState<{ text: string; ms: number; n: number; passed?: boolean } | null>(null);
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
@@ -576,7 +576,7 @@ export default function App() {
         try {
         engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
           onFatal: () => setScreen('world_map'),
-          onGuide: (text, seconds) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1 })),
+          onGuide: (text, seconds, passed) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) })),
           onStageStats: (s) => {
             pendingStats.current = s;
             setLastStats(s);

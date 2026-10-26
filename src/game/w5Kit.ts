@@ -144,8 +144,14 @@ export interface Cake {
 }
 
 export const CAKE = {
-  /** half its size (px), seconds of sleep, and the share of his speed left while asleep on his feet */
-  half: 13,
+  /**
+   * half its touch box (px), seconds of sleep, and the share of his speed left while asleep on his feet. The box is a little inside the
+   * painted cake (about 31 by 41 px, w5Look.ts drawCake), and his reach for it a little inside his body: a hop that looks clear of it
+   * is (QA 5-2, 2026-10-26: three cakes eaten on hops she thought had cleared them).
+   */
+  half: 11,
+  /** half his body's width, for touching a cake (his body is 26 px wide) */
+  reach: 10,
   sleepy: 4.5,
   slow: 0.5,
 } as const;
@@ -153,7 +159,7 @@ export const CAKE = {
 /** does his body (feet at px, py) touch the cake? */
 export function touchesCake(c: { x: number; y: number }, px: number, py: number, ducking = false): boolean {
   const h = ducking ? 24 : 38;
-  return Math.abs(c.x - px) < 13 + CAKE.half && c.y + CAKE.half > py - h && c.y - CAKE.half < py;
+  return Math.abs(c.x - px) < CAKE.reach + CAKE.half && c.y + CAKE.half > py - h && c.y - CAKE.half < py;
 }
 
 /** the share of his speed left with `left` seconds of sleepiness to go: slow, easing back over the last second */
