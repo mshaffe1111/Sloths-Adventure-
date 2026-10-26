@@ -6,7 +6,7 @@
  * when it says a line and shows the new ones; a cut line is not said at all.
  */
 import { DOT_LINES, type DotLineKind, type DotLineRow } from './dotLinesData.ts';
-import { W5_DOT_LINES, W5_THING_TIPS } from './w5Lines.ts';
+import { W5_DOT_LINES, W5_SCENE_IDS, W5_SPEAKERS, W5_THING_TIPS } from './w5Lines.ts';
 import type { GuideKind, GuideLine, GuideWho, MoveId, TopicId } from './dotGuide.ts';
 import { GUIDE, classifyLine, topicOf } from './dotGuide.ts';
 
@@ -134,6 +134,9 @@ export function targetTopic(target: string | null): TopicId | undefined {
   if (/mushroom/.test(s)) return 'mushroom';
   if (/crumbl|shaky/.test(s)) return 'crumble';
   if (/bird|eagle|spider|ant|big animal|foe|snake|guard|monkey|prowler|jaguar/.test(s)) return 'foe';
+  // (World 5's cocoons and closing orchids: rung where they are, GuideView.w5. The orchid's tip rang Pokey: QA, 5-3, v198)
+  if (/cocoon/.test(s)) return 'cocoon';
+  if (/orchid/.test(s)) return 'orchid';
   return topicOf(s);
 }
 
@@ -164,6 +167,8 @@ export function gestureMove(gesture: string | null, topic: TopicId | undefined):
   }
 }
 
+/** how long a line of a scene played in a stage (5-5's pouch scene) may wait its turn (ms) */
+export const SCENE_WAIT_MS = 150000;
 /** a tip about a new thing rather than a new move (dotGuide.ts GuideLine.thing): World 5's first-time tips */
 /** how long a thing's tip stays up at most (ms): read, then gone, done or not */
 export const THING_CAP_MS = 6000;
@@ -194,9 +199,14 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     kind = 'info';
     move = undefined;
   }
-  const who: GuideWho = o.dot === false ? 'Pokey' : 'Dot';
+  // (a scene's line says who speaks it: 5-5's pouch scene is Pokey, Dot and the narrator in turn, w5Lines.ts)
+  const who: GuideWho = (sw && W5_SPEAKERS.get(sw.line.id)) ?? (o.dot === false ? 'Pokey' : 'Dot');
+  const scene = !!sw && W5_SCENE_IDS.has(sw.line.id);
   const key = `engine:${sw?.line.id ?? text}`;
-  const then: GuideLine | undefined = sw?.then ? { key: `${key}:then`, text: sw.then, kind: kind === 'teach' ? 'info' : kind, who, topic, source: 'engine' } : undefined;
+  // (World 5's let-go on the silk follows the grab at once, with no breath: a quick thumb let go in the first sweet spot, and the line
+  // came after it, QA v198 sideways. It is said while he swings, before he needs it)
+  const thenNow = sw?.line.id === 'w5.silk';
+  const then: GuideLine | undefined = sw?.then ? { key: `${key}:then`, text: sw.then, kind: thenNow ? 'must' : kind === 'teach' ? 'info' : kind, who, topic, source: 'engine' } : undefined;
   return {
     key,
     text: said,
@@ -208,6 +218,10 @@ export function engineGuideLine(text: string, stageId: string, o: { boss?: boole
     // (a thing's tip is taught once per thing, whatever moves this phone has seen: "Just reminders" still says it the first time)
     skill: thing ? sw!.line.id : kind === 'teach' && move ? `move:${move}` : c.skill,
     ...(thing ? { thing: true } : {}),
+    // (a scene's lines are sent one after another, and may wait behind tips and the moments a spider is near: they keep their place)
+    ...(scene ? { scene: true, waitMs: SCENE_WAIT_MS } : {}),
+    // (the goal's "Still {n}" line: its number as it is when read, dotGuide.ts countedText)
+    ...(sw?.line.id === 'goal.late' ? { counted: true } : {}),
     // (the engine's own time is for its old, longer words: the reading time of the new ones is the floor)
     ms: sw || o.boss ? undefined : o.ms,
     // a boss fight's warning or tip goes when its attack ends (the engine says so), or after about 6 s

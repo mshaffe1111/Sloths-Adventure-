@@ -11,6 +11,7 @@
 import { headlessCanvas } from './headlessDom.ts';
 import { GameEngine } from './engine.ts';
 import { generateAllLevels } from './worldsData.ts';
+import { EXTRA_STAGES } from './extraStages.ts';
 import { setLayoutVariant } from './stageGenerator.ts';
 import { newAirDrive } from './physics.ts';
 import { newGlide } from './glide.ts';
@@ -33,6 +34,8 @@ export interface Pad {
   punch?: boolean;
   /** a kick this frame: the way a touch flick throws it (-1 left, 1 right), or 0 as a key or button does (the way he steers or faces) */
   kick?: -1 | 0 | 1;
+  /** a thumb held still on the glass (Meeca's stage carves while it is) */
+  hold?: boolean;
 }
 
 /** the pad, with the real input's jump buffer: a press waits 0.16 s to be used (inputEngine.ts) */
@@ -79,7 +82,8 @@ class FakeInput {
 
 const levels = generateAllLevels();
 export const levelConfig = (id: string): LevelConfig => {
-  const c = levels.find((l) => l.id === id);
+  // (the extra stages, 4-D and 5-M, are only in the list in a browser: extraStages.ts)
+  const c = levels.find((l) => l.id === id) ?? EXTRA_STAGES.map((e) => e.config()).find((l) => l.id === id);
   if (!c) throw new Error(`no stage ${id}`);
   return { ...c, unlocked: true };
 };
@@ -102,6 +106,8 @@ export class RealPlay {
   died = false;
   /** every line Dot said (the stage hints and the World 4 tips), in order, with where he was */
   readonly said: Array<{ text: string; x: number; y: number; t: number }> = [];
+  /** every line the engine said had passed (taken down, up or waiting: StageHint.passX, a scene walked away from), in order */
+  readonly passed: Array<{ text: string; t: number }> = [];
   /** keep him from being hurt (default) */
   safe = true;
 
@@ -110,12 +116,16 @@ export class RealPlay {
     const noop = () => {};
     const e = new GameEngine(headlessCanvas(), levelConfig(id), this.input as never, {
       onProgressUpdate: noop, onVictory: noop, onDefeat: noop, onGameOver: noop,
+      // (a line whose moment has passed: noted, so the tests can take it down as Dot's guide does)
+      onGuide: (text: string, _s: number, passed?: boolean) => {
+        if (passed) this.passed.push({ text, t: this.e?.gameTime ?? 0 });
+      },
     } as never) as unknown as Engine;
     setLayoutVariant(null);
     this.e = e;
     this.stage = e.currentStage;
     // (World 5's spiders crouch only in full view on the screen, w5Kit SPIDER5.edge: there the camera is play, not paint, and runs)
-    for (const m of COSMETIC) if (!(m === 'updateCamera' && e.w5)) e[m] = noop;
+    for (const m of COSMETIC) if (!(m === 'updateCamera' && (e.w5 || e.mc))) e[m] = noop;
     const guide = e.guide.bind(e);
     e.guide = (text: string, seconds: number) => {
       this.said.push({ text, x: e.player.x, y: e.player.y, t: e.gameTime });
@@ -229,6 +239,7 @@ export class RealPlay {
     s.down = !!pad.down;
     s.up = !!pad.up || !!pad.jump || !!pad.press;
     s.jumpHeld = !!pad.jump || !!pad.press;
+    s.hold = !!pad.hold;
     if (pad.press) {
       s.jumpPressed = true;
       this.input.jumpBuffer = 0.16;
@@ -243,7 +254,7 @@ export class RealPlay {
       this.input.kickBuffer = 0.14;
     }
     if (this.safe) this.p.invincibleTimer = Math.max(this.p.invincibleTimer, 1e9);
-    if (this.placed && this.e.w5) {
+    if (this.placed && (this.e.w5 || this.e.mc)) {
       const c = this.e.camera;
       c.x = c.targetX = Math.max(0, this.p.x - c.viewportWidth * 0.45);
       c.y = c.targetY = Math.max(0, this.p.y - c.viewportHeight * 0.55);

@@ -14,13 +14,24 @@ import { levelConfig } from './realPlay.ts';
 import { GuideQueue, type MoveId } from './dotGuide.ts';
 import { engineGuideLine, swapLine } from './dotLines.ts';
 import { START_AFTER_MS, stageLine } from './wayside.ts';
+import { fernLine } from './wayside.ts';
 import { DANGER } from './dotGuideWatch.ts';
-import { SPIDER5, W5_TEACH, type W5Extras } from './w5Kit.ts';
+import { CAKE, SPIDER5, W5_TEACH, type W5Extras } from './w5Kit.ts';
+import { W5_FRAMES } from './w5PropsData.ts';
+import { CARD_READ_ZOOM, cardScale } from './w5Play.ts';
 import { W5_HINTS, W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
-import { W5_HEART_UP, W5_PLAIN_STUMPS, type W5Info } from './w5Stages.ts';
+import { W5_POUCH } from './w5Lines.ts';
+import { W5_FIRST_TALL, W5_HEART_UP, W5_PLAIN_STUMPS, type W5Info } from './w5Stages.ts';
 import { stuckLine } from './stuckHelper.ts';
-import { reachJump } from './physics.ts';
+import { inSweetSpot, reachJump } from './physics.ts';
+import type { W54Info } from './w5Stage54.ts';
 import { validateStage } from './levelCheck.ts';
+import { LESSON_DOT, lessonDotLine, type LessonId } from './lessons.ts';
+import { countedText } from './dotGuide.ts';
+import { findTarget } from './dotGuidePerch.ts';
+import { emptyGuideView, type GuideView } from './dotGuideView.ts';
+import { goalLine } from './stagePlan.ts';
+import { generateAllLevels } from './worldsData.ts';
 
 /** "within reach": this close (px) ahead of him, a thing can be touched or must be jumped now */
 const REACH = 250;
@@ -29,8 +40,9 @@ const CARD_MS = 1500;
 const STEP_LINES = [W5_STEP_HELP, W5_STEP_HELP_PAD, W5_STEP_HELP_KEYS];
 const WALL_LINES = [stuckLine('screen'), stuckLine('pad'), stuckLine('keys')];
 
-type Built = ReturnType<typeof buildProtoStage> & { w5info: W5Info; proto: { w5: W5Extras } };
-const build = (id: '5-1' | '5-2', s: number) => buildProtoStage(levelConfig(id), s, HAND_STAGES[id]) as Built;
+type Built = ReturnType<typeof buildProtoStage> & { w5info: W5Info; w54info?: W54Info; proto: { w5: W5Extras } };
+type Id = '5-1' | '5-2' | '5-3' | '5-4';
+const build = (id: Id, s: number) => buildProtoStage(levelConfig(id), s, HAND_STAGES[id]) as Built;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
 // (a phone: the lines in their touch words, lessons.ts lessonInputMode)
 try {
@@ -49,7 +61,7 @@ function forgetTips(id: string) {
   }
 }
 
-interface Frame { t: number; x: number; danger: boolean; moves: Record<'jump' | 'double' | 'run', number> }
+interface Frame { t: number; x: number; danger: boolean; moves: Record<'jump' | 'double' | 'run' | 'punch', number> }
 interface Said { text: string; x: number; t: number }
 
 /**
@@ -59,13 +71,35 @@ interface Said { text: string; x: number; t: number }
  * walks into the Butler's tray. Each frame keeps when it was, where he was, whether an animal was at hand (dotGuideWatch.ts inDanger:
  * no new line but a warning starts then) and the moves done so far (the queue's move counter).
  */
-function holdRight(id: '5-1' | '5-2', seed: number, untilX: number) {
+function holdRight(id: Id, seed: number, untilX: number, o: { lessons?: boolean; stroll?: number } = {}) {
   forgetTips(id);
   const sim = new RealPlay(id, seed);
   const w5 = (sim.stage as unknown as { proto: { w5: W5Extras } }).proto.w5;
-  const gaps = (sim.stage as unknown as { w5info: W5Info }).w5info.gaps;
+  const gaps = (sim.stage as unknown as { w5info?: W5Info }).w5info?.gaps ?? [];
   const frames: Frame[] = [];
-  const moves = { jump: 0, double: 0, run: 0 };
+  const moves = { jump: 0, double: 0, run: 0, punch: 0 };
+  // the first-time lessons, as the engine sends them (engine.ts lessonTick: the harness turns it off). A phone that has had every
+  // lesson but the flag's, as QA's did on v198: its line ("A flag! Fall, and you start again here.") came as the cocoons did
+  const lessons: Array<{ id: LessonId; t: number; x: number }> = [];
+  if (o.lessons) {
+    const e = sim.e as Record<string, any>;
+    const proto = Object.getPrototypeOf(e);
+    e.lessonSeen = new Set(Object.keys(LESSON_DOT).filter((k) => k !== 'checkpoint'));
+    e.lessonTick = proto.lessonTick;
+    // (the harness keeps him from harm with a long blink: a lesson waits for a hurt player, so it is read as unhurt here)
+    e.safeToStop = function (this: Record<string, any>, sw?: boolean) {
+      const it = this.player.invincibleTimer;
+      this.player.invincibleTimer = 0;
+      try {
+        return proto.safeToStop.call(this, sw);
+      } finally {
+        this.player.invincibleTimer = it;
+      }
+    };
+    e.callbacks.onLesson = (lid: LessonId) => lessons.push({ id: lid, t: sim.t, x: sim.p.x });
+  }
+  const cocoonState = () => ((sim.e as Record<string, any>).w5?.cocoons ?? []) as Array<{ freed: boolean }>;
+  let jab = 0;
   let ran = 0, lastX = sim.p.x, hold = 0, second = false, wasDbl = false, needs2 = false;
   const inWay = (x: number, lo: number, hi: number) => x - sim.p.x > lo && x - sim.p.x < hi;
   for (let i = 0; i < 30 * 200 && sim.p.x < untilX; i++) {
@@ -87,10 +121,24 @@ function holdRight(id: '5-1' | '5-2', seed: number, untilX: number) {
         const far = !floor && gaps.some((g) => g.double && inWay(g.edge, -10, 90) && Math.abs(p.y - G) < 3);
         needs2 = tall || far;
       }
+    } else if (p.isVineSwinging) {
+      // (on a silk line, 5-4: let go well inside the sweet spot, on the way forward, as a first-timer's thumb does once shown)
+      const s = { angle: p.swingAngle ?? 0, omega: p.swingAngularVelocity ?? 0, len: p.swingLength ?? 100 };
+      if (hold <= 0 && inSweetSpot(s, 1) && s.angle > 0.25) {
+        press = true;
+        hold = 6;
+      }
     } else if (needs2 && !second && p.vy > -80 && hold <= 4) {
       press = true;
       second = true;
       hold = 6;
+    }
+    // (a shut cocoon right in front of him, 5-5: a tap to punch it, as Dot says, and another every half second while it holds)
+    const shut = cocoonState();
+    const jabNow = jab-- <= 0 && p.grounded && (w5.cocoons ?? []).some((c, i) => !shut[i]?.freed && inWay(c.x, 20, 80) && Math.abs(c.y + 18 - p.y) < 40);
+    if (jabNow) {
+      jab = 14;
+      moves.punch++;
     }
     if (p.grounded && Math.abs(p.vx) > 60) {
       ran += Math.abs(p.x - lastX);
@@ -100,7 +148,9 @@ function holdRight(id: '5-1' | '5-2', seed: number, untilX: number) {
       }
     }
     lastX = p.x;
-    sim.frame({ right: true, press, jump: hold > 0 });
+    // (a stroll: the thumb off the glass now and then, as a player reading her lines goes; about walking pace, half his run)
+    const right = !o.stroll || (i % 10) / 10 < o.stroll || !p.grounded;
+    sim.frame({ right, press, jump: hold > 0, punch: jabNow });
     if (sim.p.isDoubleJumping && !wasDbl) moves.double++;
     wasDbl = !!sim.p.isDoubleJumping;
     hold--;
@@ -109,7 +159,7 @@ function holdRight(id: '5-1' | '5-2', seed: number, untilX: number) {
       || (!q.grounded && !q.climbing && q.vy > DANGER.fallVy);
     frames.push({ t: sim.t, x: q.x, danger, moves: { ...moves } });
   }
-  return { sim, frames, said: sim.said as Said[] };
+  return { sim, frames, said: sim.said as Said[], lessons };
 }
 
 /**
@@ -161,17 +211,35 @@ interface Lesson {
   /** a move the line teaches: a player who has already done it this stage is not told (dotGuide.ts, QA v189) */
   move?: 'double';
 }
-function lessonsOf(id: '5-1' | '5-2', st: Built): Lesson[] {
+function lessonsOf(id: Id, st: Built): Lesson[] {
   const w = st.proto.w5;
   const out: Lesson[] = [];
-  const dl = st.w5info.doubleLesson;
+  const dl = st.w5info?.doubleLesson;
   if (dl) out.push({ name: 'the second jump', text: (id === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double).old, at: dl.edge, move: 'double' });
-  const tl = st.w5info.tallLesson;
+  const tl = st.w5info?.tallLesson;
   if (tl) out.push({ name: 'the tall stumps', text: (id === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall).old, at: tl.at, move: 'double' });
-  if (id === '5-1') {
+  if (id === '5-1' || id === '5-3') {
     // the first awake spider: its line before it can notice him (and, once it is on screen, crouch)
     const sp = st.enemies.filter((e) => e.type === 'spider').sort((a, b) => a.x - b.x)[0];
     out.push({ name: 'the jumping spider', text: W5_TEACH.spider, at: sp.x, reach: SPIDER5.sense });
+  }
+  if (id === '5-4') {
+    // the first silk line, Dot's fifth rule and the first sheet, two lines in a row, the Seamstress, the high bridge, the first spider
+    const inf = st.w54info!;
+    const sheet0 = w.sheets![0];
+    const seam = w.sheets![inf.seamSheet];
+    const two = inf.chains.find((c) => c.vines.length >= 2 && !c.high)!;
+    const high = inf.chains.find((c) => c.high)!;
+    const step = st.platforms.find((q) => q.id === high.start)!.x - 110;
+    const sp = st.enemies.filter((e) => e.type === 'spider').sort((a, b) => a.x - b.x)[0];
+    out.push({ name: 'the silk line', text: W5_TEACH.silk, at: inf.firstLine.x });
+    out.push({ name: "Dot's fifth rule", text: W5_HINTS.s54admire.old, at: sheet0.x0 });
+    out.push({ name: 'the silk sheet', text: W5_TEACH.sheet, at: sheet0.x0 });
+    out.push({ name: 'two silk lines', text: W5_HINTS.s54chain.old, at: two.edge });
+    out.push({ name: 'the Seamstress', text: W5_TEACH.seamstress, at: seam.x0 });
+    out.push({ name: 'the high bridge', text: W5_HINTS.s54high.old, at: step });
+    out.push({ name: 'the jumping spider', text: W5_TEACH.spider, at: sp.x, reach: SPIDER5.sense });
+    return out;
   }
   const chair = (w.chairs ?? []).filter((c) => !c.wrapped).sort((a, b) => a.x - b.x)[0];
   if (chair) out.push({ name: 'the soft chairs', text: W5_TEACH.chair, at: chair.x });
@@ -185,10 +253,15 @@ function lessonsOf(id: '5-1' | '5-2', st: Built): Lesson[] {
     out.push({ name: 'the cakes', text: W5_TEACH.cake, at: cake });
     out.push({ name: 'the Butler', text: W5_TEACH.butler, at: Math.min(...w.butlers!.map((b) => b.x)) - 46 });
   }
+  if (id === '5-3') {
+    // the closing orchids: the line before the first bloom's lip, the first cake before it
+    out.push({ name: 'the closing orchids', text: W5_TEACH.orchid, at: Math.min(...st.w5info.orchids.map((o) => o.x0)) });
+    out.push({ name: 'the cakes', text: W5_TEACH.cake, at: Math.min(...w.cakes!.map((c) => c.x)) });
+  }
   return out;
 }
 
-for (const id of ['5-1', '5-2'] as const) {
+for (const id of ['5-1', '5-2', '5-3', '5-4'] as const) {
   test(`${id}: holding right from the start, every first-time line comes before its thing is within reach (old look and new)`, () => {
     const problems: string[] = [];
     for (const seed of process.env.W5_ORDER_SEEDS === '16' ? SEEDS : SEEDS.slice(0, 4)) {
@@ -360,8 +433,8 @@ test('World 5: jumping again and again at a step, the stuck-helper speaks, and t
   }
 });
 
-test('5-1 and 5-2: the hearts at the flags float at walking height, and walking under one at 4 of 5 hearts picks it up', () => {
-  for (const id of ['5-1', '5-2'] as const) {
+test('5-1, 5-2 and 5-3: the hearts at the flags float at walking height, and walking under one at 4 of 5 hearts picks it up', () => {
+  for (const id of ['5-1', '5-2', '5-3'] as const) {
     for (const s of SEEDS) {
       const st = build(id, s);
       const hearts = st.collectibles.filter((c) => c.type === 'heart');
@@ -418,4 +491,430 @@ test('5-2 upright at 320x782: the first cakes come into view with time to hop th
     const said = sentAt(sim.said, W5_TEACH.cake);
     assert.ok(said && said.x < first[0].x - 400, `seed ${seed}: the cakes' line came at ${said?.x}, the first cake at ${first[0].x}`);
   }
+});
+
+// ───────────────────────────── 5-5 Caught in Silk ─────────────────────────────
+
+/** 5-5's first-time lines, each with the x of the first thing it is about (the cocoons, the spiders, the threads, the chairs, the silk) */
+function lessons55(st: Built): Lesson[] {
+  const w = st.proto.w5;
+  const out: Lesson[] = [];
+  const first = (xs: number[]) => Math.min(...xs);
+  out.push({ name: 'the cocoons', text: W5_TEACH.cocoon, at: first(w.cocoons!.map((c) => c.x)) });
+  const awake = st.enemies.filter((e) => !(w.spiders ?? []).some((s) => s.id === e.id && s.doze));
+  out.push({ name: 'the jumping spider', text: W5_TEACH.spider, at: first(awake.map((e) => e.x)), reach: SPIDER5.sense });
+  out.push({ name: 'the threads', text: W5_TEACH.thread, at: first(w.threads!.map((t) => t.x0)) });
+  const silk = st.vines.find((v) => v.silk)!;
+  out.push({ name: 'the silk line', text: W5_TEACH.silk, at: silk.x });
+  const chair = (w.chairs ?? []).filter((c) => !c.wrapped).sort((a, b) => a.x - b.x)[0];
+  if (chair) out.push({ name: 'the soft chairs', text: W5_TEACH.chair, at: chair.x });
+  return out;
+}
+
+/**
+ * the new look for 5-5: as newLookShown, with the line its fern brings at the start (wayside.ts fernLine: it hides the keepsake), and
+ * `tail` seconds more at the end, standing at the shrine (sealed: a player who has run past the cocoons goes back for them)
+ */
+function newLookShown55(run: ReturnType<typeof holdRight>, tail = 0): Map<string, { x: number; t: number }> {
+  const q = new GuideQueue();
+  const shown = new Map<string, { x: number; t: number }>();
+  const lines = run.said.map((s) => ({ s, l: engineGuideLine(s.text, '5-5', { dot: true }) }));
+  const t0 = run.frames[0].t;
+  const ms = (t: number) => (t - t0) * 1000;
+  const fern = fernLine(5, 5)!;
+  let fernDue = true;
+  let k = 0, kl = 0, kp = 0;
+  for (const f of run.frames) {
+    if (fernDue && ms(f.t) >= START_AFTER_MS) {
+      fernDue = false;
+      q.push({ key: 'story:F', text: swapLine(fern.text)?.text ?? fern.text, kind: 'info', who: 'Dot', source: 'story', waitMs: 60000 }, ms(f.t));
+    }
+    while (k < lines.length && lines[k].s.t <= f.t + 1e-6) {
+      const l = lines[k].l;
+      if (l) q.push(l, ms(lines[k].s.t));
+      k++;
+    }
+    // (a lesson the engine sent: its Dot line, as DotGuide.tsx queues it)
+    while (kl < run.lessons.length && run.lessons[kl].t <= f.t + 1e-6) {
+      const l = lessonDotLine(run.lessons[kl].id, 'screen');
+      if (l) q.push(l, ms(run.lessons[kl].t));
+      kl++;
+    }
+    // (a line the engine says has passed goes, up or waiting, as DotGuide.tsx passedLine takes it down: the pouch scene walked away from)
+    while (kp < run.sim.passed.length && run.sim.passed[kp].t <= f.t + 1e-6) {
+      const l = engineGuideLine(run.sim.passed[kp].text, '5-5', { dot: true });
+      if (l) q.clear((w) => w.key === l.key, ms(run.sim.passed[kp].t));
+      kp++;
+    }
+    q.tick(ms(f.t), { danger: f.danger, hold: ms(f.t) < CARD_MS, moveCount: (m: MoveId) => (f.moves as Record<string, number>)[m] ?? 0 });
+    for (const ev of q.drain()) {
+      if (process.env.W5_ORDER_DEBUG === '3') console.log('   ev', ev.type, f.t.toFixed(1), Math.round(f.x), ev.show.line.key.slice(0, 40), ev.type === 'end' ? ev.why : '', f.danger ? 'DANGER' : '');
+      if (ev.type === 'start' && !shown.has(ev.show.line.key)) shown.set(ev.show.line.key, { x: f.x, t: f.t });
+    }
+  }
+  const last = run.frames[run.frames.length - 1];
+  for (let t = last.t; t < last.t + tail; t += 1 / 30) {
+    q.tick(ms(t), { danger: false, moveCount: (m: MoveId) => (last.moves as Record<string, number>)[m] ?? 0 });
+    for (const ev of q.drain()) if (ev.type === 'start' && !shown.has(ev.show.line.key)) shown.set(ev.show.line.key, { x: last.x, t });
+  }
+  return shown;
+}
+
+test('5-5: holding right from the start, every first-time line comes before its thing is within reach, the pouch scene and all', () => {
+  const problems: string[] = [];
+  for (const seed of process.env.W5_ORDER_SEEDS === '16' ? SEEDS : SEEDS.slice(0, 4)) {
+    const st = buildProtoStage(levelConfig('5-5'), seed, HAND_STAGES['5-5']) as Built;
+    const ls = lessons55(st);
+    // (on to the shrine: the pouch scene, from the rest branch on, plays out over most of the stage)
+    const run = holdRight('5-5' as '5-1', seed, st.exitTotemX - 100, { lessons: true });
+    // (he has run past every cocoon: the shrine is sealed, and he has a minute there, going back for them)
+    const shown = newLookShown55(run, 60);
+    if (process.env.W5_ORDER_DEBUG) {
+      console.log('5-5', seed, 'ended at', Math.round(run.sim.p.x), Math.round(run.sim.p.y), 't', run.sim.t.toFixed(1), ls.map((l) => `${l.name}@${l.at}`).join(', '));
+      for (const s of run.said) console.log('  said', s.t.toFixed(1), Math.round(s.x), s.text.slice(0, 50), '| new:', shown.get(keyOf('5-5', s.text))?.x.toFixed(0), shown.get(keyOf('5-5', s.text))?.t.toFixed(1));
+    }
+    for (const l of ls) {
+      const s = sentAt(run.said, l.text);
+      if (!s) {
+        problems.push(`seed ${seed}: ${l.name}: never said`);
+        continue;
+      }
+      const reach = l.reach ?? REACH;
+      if (s.x > l.at - reach) problems.push(`seed ${seed}: ${l.name}: sent at x ${Math.round(s.x)}, ${Math.round(l.at - s.x)} px before it`);
+      const n = shown.get(keyOf('5-5', l.text));
+      if (!n) problems.push(`seed ${seed}: ${l.name}: never shown`);
+      else if (n.x > l.at - reach) problems.push(`seed ${seed}: ${l.name}: shown at x ${Math.round(n.x)}, ${Math.round(l.at - n.x)} px before it`);
+    }
+    // the pouch scene: it plays only on the rest branch's calm stretch (QA v198: it played on over the pits), in its order. Running
+    // straight through, he hears its start; the rest waits for a player who rests there (w5Stage55.test.ts)
+    const rest = st.proto.w5.rest!;
+    const sent = W5_POUCH.map((l) => sentAt(run.said, l.text));
+    if (!sent[0]) problems.push(`seed ${seed}: the pouch scene never began`);
+    sent.forEach((s, i) => {
+      if (s && (s.x < rest.x0 || s.x > rest.calm!)) problems.push(`seed ${seed}: the pouch scene's line ${i} sent at x ${Math.round(s.x)}, off its calm stretch ${rest.x0}..${rest.calm}`);
+    });
+    const starts = W5_POUCH.map((l) => shown.get(keyOf('5-5', l.text))?.t ?? -1);
+    for (let i = 1; i < starts.length; i++) if (starts[i] >= 0 && starts[i - 1] >= 0 && starts[i] < starts[i - 1]) problems.push(`seed ${seed}: pouch line ${i} before line ${i - 1}`);
+  }
+  assert.deepEqual(problems, []);
+});
+
+test("5-5, strolling in at a reader's pace or running: the cocoons' line is up before the first cocoon is in reach, ahead of the flag's and the fern's", () => {
+  // (QA, v198, an expert at 320x782 upright: "A flag! Fall, and you start again here." held the screen from x 2699 to 3344, and the
+  // cocoons' line came only at 3625, beside the third cocoon, after he had walked past two. It waited behind the flag's line.)
+  const problems: string[] = [];
+  for (const seed of SEEDS.slice(0, 4)) {
+    const st = buildProtoStage(levelConfig('5-5'), seed, HAND_STAGES['5-5']) as Built;
+    const first = Math.min(...st.proto.w5.cocoons!.map((c) => c.x));
+    for (const stroll of [0.3, 0.5, 0]) {
+      const run = holdRight('5-5' as '5-1', seed, first + 300, { lessons: true, stroll });
+      const shown = newLookShown55(run);
+      const n = shown.get(keyOf('5-5', W5_TEACH.cocoon));
+      const pace = `${stroll ? `strolling (${stroll})` : 'running'}`;
+      if (!run.lessons.some((l) => l.id === 'checkpoint')) problems.push(`seed ${seed} ${pace}: the flag's lesson never came (the model is off)`);
+      if (!n) problems.push(`seed ${seed} ${pace}: the cocoons' line never shown`);
+      else if (n.x > first - REACH) problems.push(`seed ${seed} ${pace}: the cocoons' line shown at x ${Math.round(n.x)}, ${Math.round(first - n.x)} px before the first cocoon`);
+      // (and he got past the first: it is tied across the path, and punched open)
+      if (run.sim.p.x < first) problems.push(`seed ${seed} ${pace}: held at the first cocoon (x ${Math.round(run.sim.p.x)})`);
+    }
+  }
+  assert.deepEqual(problems, []);
+});
+
+// ───────────────────────────── QA 2 (Sally, 5-1 and 5-2 on v196, 320x782 upright) ─────────────────────────────
+
+test('5-1 in the real engine: the first tall stump after the lesson is climbed by a standing double flick, however quick the second flick, and not by one jump', () => {
+  for (const seed of SEEDS.slice(0, 6)) {
+    const tl = build('5-1', seed).w5info.tallLesson!;
+    assert.equal(tl.h, W5_FIRST_TALL, `seed ${seed}`);
+    const flick = (dx: number, k: number, one = false) => {
+      const sim = new RealPlay('5-1', seed);
+      // (a thumb on the glass: the default jump help, jumpHelp.ts, leans a second jump taken with nothing steering)
+      (sim.input as unknown as { source: string }).source = 'gesture';
+      sim.stand(tl.at - dx, G);
+      sim.p.facing = 1;
+      sim.frame();
+      for (let i = 0; i < 60; i++) {
+        // (a flick holds the jump at least 220 ms, MIN_TOUCH_JUMP_HOLD_MS: 7 frames)
+        if (one) sim.frame({ press: i === 0, jump: i < 30, right: true });
+        else sim.frame({ press: i === 0 || i === k, jump: i < 7 || (i >= k && i < k + 7) });
+        if (i > 2 && sim.p.grounded) return Math.abs(sim.p.y - (G - W5_FIRST_TALL)) < 2;
+      }
+      return false;
+    };
+    // right next to it, or a step back; the second flick 67 ms to a third of a second after the first
+    for (const dx of [24, 60]) for (const k of [2, 3, 4, 6, 8, 10]) assert.ok(flick(dx, k), `seed ${seed}: from ${dx} px, second flick ${k} frames on`);
+    // (and it is the second jump's: one held jump, steering onto it, does not reach its top)
+    assert.ok(!flick(24, 0, true), `seed ${seed}: one jump climbed it`);
+  }
+});
+
+test('5-1 and 5-2: the second jump\'s tip and the tall stump\'s go once he is on the ground past their spot, done or not', () => {
+  for (const id of ['5-1', '5-2'] as const) {
+    forgetTips(id);
+    const sim = new RealPlay(id, 1);
+    const st = sim.stage as unknown as Built;
+    const passed: Array<{ text: string; x: number }> = [];
+    (sim.e as unknown as { callbacks: { onGuide: (t: string, s: number, p?: boolean) => void } }).callbacks.onGuide = (text, _s, p) => {
+      if (p) passed.push({ text, x: sim.p.x });
+    };
+    const dl = st.w5info.doubleLesson!;
+    const gap = st.w5info.gaps.find((g) => g.edge === dl.edge)!;
+    const tl = st.w5info.tallLesson;
+    const end = Math.max(gap.far, tl?.at ?? 0) + 400;
+    // a first-timer who never jumps twice: one hop at each face and edge, so he drops into the soft pit and climbs out of it
+    sim.stand(dl.hint - 40, G);
+    let hold = 0;
+    for (let i = 0; i < 30 * 120 && sim.p.x < end; i++) {
+      const p = sim.p;
+      const face = sim.platforms.some((q) => q.type === 'solid' && q.x - p.x > 0 && q.x - p.x < 70 && q.y < p.y - 12 && q.y > p.y - 220 && q.y + q.height > p.y - 4);
+      const floor = sim.platforms.some((q) => Math.abs(q.y - p.y) < 3 && q.x <= p.x + 40 && q.x + q.width >= p.x + 40);
+      const press = p.grounded && hold <= 0 && (face || !floor);
+      if (press) hold = 9;
+      sim.frame({ right: true, press, jump: hold > 0 });
+      hold--;
+      assert.ok(!sim.p.isDoubleJumping);
+    }
+    const tip = (id === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double).old;
+    const gone = passed.find((q) => q.text === tip);
+    assert.ok(gone, `${id}: the wide gap's tip was never taken down (${passed.map((q) => q.text).join(' | ')})`);
+    assert.ok(gone.x >= gap.far + 60 && gone.x < gap.far + 400, `${id}: taken down at ${Math.round(gone.x)}, the gap's far side at ${gap.far}`);
+    if (tl && tl.at < end - 400) {
+      const tt = passed.find((q) => q.text === (id === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall).old);
+      assert.ok(tt && tt.x > tl.at, `${id}: the tall stump's tip`);
+    }
+    // the new look: that clears the line from Dot's queue, up or waiting, once it has had its minimum time (DotGuide.tsx passedLine)
+    const q = new GuideQueue();
+    const l = engineGuideLine(tip, id, { dot: true })!;
+    const env = { danger: false, moveCount: () => 0 };
+    q.push(l, 0);
+    q.tick(1000, env);
+    assert.equal(q.cur?.line.key, l.key);
+    q.clear((x) => x.key === engineGuideLine(gone.text, id, { dot: true })!.key, 3000);
+    assert.equal(q.cur, null, `${id}: still up after he passed the gap`);
+  }
+});
+
+test('World 5 cakes: the touch box is inside the painted cake, and in the real engine a hop or a double jump over each one, taken in time, never eats it', () => {
+  // the painted cake (w5Look.ts drawCake, drawn 34 at the pickup: 1.2 times as tall, each take's own width)
+  const ph = 34 * 1.2;
+  for (const f of [W5_FRAMES.cakeIcon, W5_FRAMES.cakeIcon2]) {
+    const pw = (ph * f.w) / f.h;
+    assert.ok(2 * CAKE.half < pw - 4 && 2 * CAKE.half < ph - 4, `the box ${2 * CAKE.half} px, the painting ${pw.toFixed(0)} by ${ph.toFixed(0)}`);
+  }
+  assert.ok(CAKE.reach < 13, 'his reach for a cake is inside his body');
+  for (const dbl of [false, true]) {
+    for (const lead of [60, 80, 100, 120]) {
+      const sim = new RealPlay('5-2', 1);
+      (sim.input as unknown as { source: string }).source = 'gesture';
+      const e = sim.e as unknown as { proto: { w5: W5Extras }; w5: { eaten: boolean[]; sleepy: number } };
+      const all = e.proto.w5.cakes!;
+      const cakes = all.filter((c) => c.y > G - 60).sort((a, b) => a.x - b.x);
+      sim.stand(cakes[0].x - 500, G);
+      let hold = 0, f = -1;
+      for (let i = 0; i < 30 * 240 && sim.p.x < cakes[cakes.length - 1].x + 200; i++) {
+        const p = sim.p;
+        let press = false;
+        if (p.grounded) {
+          const c = cakes.some((q) => q.x - p.x > 0 && q.x - p.x <= lead && !e.w5.eaten[all.indexOf(q)]);
+          const floor = sim.platforms.some((q) => Math.abs(q.y - p.y) < 3 && q.x <= p.x + 40 && q.x + q.width >= p.x + 40);
+          const face = sim.platforms.some((q) => q.type === 'solid' && q.x - p.x > 0 && q.x - p.x < 70 && q.y < p.y - 12 && q.y > p.y - 220 && q.y + q.height > p.y - 4);
+          if ((c || !floor || face) && hold <= 0) {
+            press = true;
+            hold = 7;
+            f = 0;
+          }
+        } else if (dbl && f === 6) press = true;
+        sim.frame({ right: true, press, jump: hold > 0 || (dbl && f >= 6 && f < 13) });
+        if (f >= 0) f++;
+        hold--;
+        // (awake again at once: this measures the hops, not the sleepy walk)
+        e.w5.sleepy = 0;
+      }
+      const ate = cakes.filter((c) => e.w5.eaten[all.indexOf(c)]).map((c) => c.x);
+      assert.deepEqual(ate, [], `${dbl ? 'double jump' : 'hop'} from ${lead} px`);
+    }
+  }
+});
+
+/** 5-3's orchids: the first one alone over the grass, then two over the grass, then the rows over the soft pits */
+test('5-3: the first orchid is alone on clear grass, one plain hop up from the path, before any row over a pit; nothing needs a second jump', () => {
+  for (const s of SEEDS) {
+    const st = build('5-3', s);
+    const inf = st.w5info;
+    assert.ok(validateStage(st).ok, `seed ${s}`);
+    const first = inf.orchids[0];
+    assert.equal(first.piece, 'lesson', `seed ${s}`);
+    // (one plain hop up from the path itself, and nothing on the grass before it to get caught behind: QA v200)
+    assert.ok(G - first.y <= 96 && first.ground === G, `seed ${s}: the first orchid ${G - first.y} px up`);
+    const inTheWay = st.platforms.filter((p) => p.y < G && p.y + p.height >= G - 4 && p.x < first.x1 + 40 && p.x + p.width > first.x0 - 600);
+    assert.deepEqual(inTheWay.map((p) => p.x), [], `seed ${s}: something on the grass before the first orchid`);
+    // (grass right under it: a miss is a drop to the path)
+    assert.ok(st.platforms.some((p) => p.y === G && p.x <= first.x0 && p.x + p.width >= first.x1), `seed ${s}: no grass under the first orchid`);
+    // the next orchids are a beat later: the lesson is on its own
+    assert.ok(inf.orchids[1].x0 - first.x1 > 500, `seed ${s}: the second orchid ${inf.orchids[1].x0 - first.x1} px after the first`);
+    // the steps over the grass come before the first row over a pit
+    const firstRow = inf.rows[0];
+    for (const o of inf.orchids.filter((q) => q.x0 < firstRow.edge)) assert.ok(o.ground === G && o.piece !== 'row', `seed ${s}: an orchid over a pit before the first row`);
+    // nothing here needs the second jump
+    assert.ok(inf.gaps.every((g) => !g.double) && inf.stumps.every((q) => q.h <= 100), `seed ${s}`);
+  }
+});
+
+test('5-3 in the real engine: a row of orchids crossed with plain jumps, starting as the first one opens, never into the pit', () => {
+  for (const seed of [1, 38, 75]) {
+    const st = build('5-3', seed);
+    const w5 = st.proto.w5;
+    for (const row of st.w5info.rows.slice(0, 3)) {
+      const sim = new RealPlay('5-3', seed);
+      const o0 = w5.orchids!.find((o) => Math.abs(o.x - (st.w5info.orchids[row.orchids[0]].x0 + st.w5info.orchids[row.orchids[0]].x1) / 2) < 2)!;
+      sim.stand(row.edge - 60, G);
+      // (he has just walked up and the first one is opening: he goes as it opens, as Dot says)
+      sim.t = o0.period * 10 + ((((0.85 - o0.offset - 0.4) % o0.period) + o0.period) % o0.period);
+      let hold = 0, deep = false;
+      for (let i = 0; i < 30 * 8 && !(sim.p.grounded && sim.p.x > row.far + 30); i++) {
+        const p = sim.p;
+        let press = false;
+        if (p.grounded && hold <= 0) {
+          const floor = sim.platforms.some((q) => !q.broken && Math.abs(q.y - p.y) < 3 && q.x <= p.x + 30 && q.x + q.width >= p.x + 30);
+          if (!floor) {
+            press = true;
+            hold = 9;
+          }
+        }
+        sim.frame({ right: true, press, jump: hold > 0 });
+        hold--;
+        assert.ok(!sim.p.isDoubleJumping, `seed ${seed}: one jump at a time`);
+        if (sim.p.y > G + 40) deep = true;
+      }
+      assert.ok(!deep, `seed ${seed}: fell into the pit at the row at ${row.edge} (x ${Math.round(sim.p.x)})`);
+      assert.ok(sim.p.x > row.far + 30 && Math.abs(sim.p.y - G) < 2, `seed ${seed}: the row at ${row.edge} not crossed (x ${Math.round(sim.p.x)}, y ${Math.round(sim.p.y)})`);
+    }
+  }
+});
+
+test('5-2: the cakes\' line is followed by one cake on its own, with room to try it, and the pair comes after', () => {
+  for (const seed of SEEDS) {
+    const st = build('5-2', seed);
+    const cakes = st.proto.w5.cakes!.filter((c) => c.y > G - 60).map((c) => c.x).sort((a, b) => a - b);
+    assert.ok(cakes[1] - cakes[0] > 700, `seed ${seed}: the second cake ${cakes[1] - cakes[0]} px after the first`);
+    assert.ok(cakes[2] - cakes[1] < 400, `seed ${seed}: then a pair`);
+  }
+});
+
+test('5-1: the table card is as large on the screen sideways and short as upright at 320x782, where it reads', () => {
+  const sim = new RealPlay('5-1', 1);
+  const e = sim.e as unknown as { viewCssW: number; viewCssH: number; introT: number; zoom: number; applyZoom(): void; camera: { viewportWidth: number } };
+  e.introT = 99;
+  for (const [w, h] of [[320, 782], [844, 390], [640, 320], [782, 288]]) {
+    e.viewCssW = w;
+    e.viewCssH = h;
+    e.applyZoom();
+    const s = cardScale(e.zoom);
+    assert.ok(15 * e.zoom * s >= 15 * CARD_READ_ZOOM - 0.01, `${w}x${h}: the words ${(15 * e.zoom * s).toFixed(1)} px`);
+    assert.ok(184 * s < e.camera.viewportWidth * 0.8, `${w}x${h}: the card fits across`);
+  }
+});
+
+test('5-2: the rules\' second half names the silk, in 8 words or fewer', () => {
+  const then = W5_HINTS.s52rules.then;
+  assert.match(then, /silk/);
+  assert.ok(then.trim().split(/\s+/).length <= 8, then);
+});
+
+test('5-3 upright (320x782, 390x844) and short (640x320): waiting at a row its first orchid is in view, and on each orchid the next', () => {
+  for (const [vw, vh] of [[320, 782], [390, 844], [640, 320]] as const) {
+    const st = build('5-3', 1);
+    const sim = new RealPlay('5-3', 1);
+    const e = sim.e;
+    delete e.updateCamera;
+    e.viewCssW = vw;
+    e.viewCssH = vh;
+    e.introT = 99;
+    e.applyZoom();
+    const w5 = st.proto.w5;
+    const inView = (o: { x0: number; x1: number; y: number }) => {
+      const cam = e.camera;
+      // (the whole bloom, and the cup above it)
+      return o.x0 >= cam.x && o.x1 <= cam.x + cam.viewportWidth && o.y - 70 >= cam.y && o.y + 20 <= cam.y + cam.viewportHeight;
+    };
+    for (const row of st.w5info.rows.slice(0, 4)) {
+      sim.stand(row.edge - 160, G);
+      for (let i = 0; i < 30 * 2 && sim.p.x < row.edge - 40; i++) sim.frame({ right: true });
+      for (let i = 0; i < 40; i++) sim.frame();
+      const first = st.w5info.orchids[row.orchids[0]];
+      assert.ok(inView(first), `${vw}x${vh}: waiting at ${row.edge}, the orchid at ${first.x0} is off the screen (view ${Math.round(e.camera.x)}..${Math.round(e.camera.x + e.camera.viewportWidth)})`);
+      for (let k = 0; k + 1 < row.orchids.length; k++) {
+        const o = st.w5info.orchids[row.orchids[k]];
+        const ko = w5.orchids!.find((q) => Math.abs(q.x - (o.x0 + o.x1) / 2) < 2)!;
+        sim.t = ko.period * 10 + ((((0.1 - ko.offset) % ko.period) + ko.period) % ko.period);
+        sim.stand((o.x0 + o.x1) / 2, o.y);
+        for (let i = 0; i < 24; i++) sim.frame();
+        const next = st.w5info.orchids[row.orchids[k + 1]];
+        assert.ok(Math.abs(sim.p.y - o.y) < 2, `${vw}x${vh}: he stands on the orchid at ${o.x0}`);
+        assert.ok(inView(next), `${vw}x${vh}: on the orchid at ${o.x0}, the next at ${next.x0} is off the screen (view ${Math.round(e.camera.x)}..${Math.round(e.camera.x + e.camera.viewportWidth)})`);
+      }
+    }
+  }
+});
+
+// ───────────────────────────── QA 4 (the expert at 320x782 upright, 5-3 and 5-5 on v198) ─────────────────────────────
+
+/** the engine's view for Dot's guide, at a phone's size, with him standing at x */
+function guideViewAt(sim: RealPlay, x: number, y: number, w: number, h: number): GuideView {
+  const e = sim.e as Record<string, any>;
+  delete e.updateCamera;
+  e.viewCssW = w;
+  e.viewCssH = h;
+  e.introT = 99;
+  e.applyZoom();
+  sim.stand(x, y);
+  sim.p.facing = 1;
+  for (let i = 0; i < 40; i++) sim.frame();
+  return e.guideView(emptyGuideView()) as GuideView;
+}
+
+test("5-3: Dot's ring for the first closing orchid's tip is on the orchid, not on Pokey, upright and sideways", () => {
+  const l = engineGuideLine(W5_TEACH.orchid, '5-3', { dot: true })!;
+  assert.equal(l.text, 'Quick! Flick up before the orchid shuts!');
+  assert.equal(l.topic, 'orchid', 'the tip is about the orchid');
+  assert.equal(l.move, 'jump');
+  for (const seed of [1, 38, 75]) {
+    const st = build('5-3', seed);
+    const first = st.w5info.orchids[0];
+    const cx = (first.x0 + first.x1) / 2;
+    for (const [w, h] of [[320, 782], [390, 844], [844, 390], [640, 320]] as const) {
+      // (where the tip comes: walking up to it, the orchid ahead of him on the screen)
+      const v = guideViewAt(new RealPlay('5-3', seed), first.x0 - 150, G, w, h);
+      const t = findTarget(l.topic, v);
+      assert.ok(t, `seed ${seed} ${w}x${h}: nothing rung`);
+      // (on the bloom: its ledge is its top petals, its middle a little under them)
+      assert.ok(Math.abs(t.x - cx) < 4 && t.y > first.y - 30 && t.y < first.y + 110, `seed ${seed} ${w}x${h}: the ring at (${Math.round(t.x)}, ${Math.round(t.y)}), the orchid at (${cx}, ${first.y}), Pokey at ${Math.round(v.px)}`);
+    }
+  }
+});
+
+test("the goal's \"Still {n}\" line says the count as it is when it is read, not as it was when it was sent (5-3, and every goal)", () => {
+  // (QA, 5-3 on v198: the HUD said 51/116 while Dot said "Still 68 flowers to collect!". The line waits its turn in her queue, and he
+  // picks more up meanwhile)
+  const cfg = levelConfig('5-3');
+  const sent = goalLine('late', cfg.worldIndex, cfg.objectiveType ?? 'harvest', 68);
+  const l = engineGuideLine(sent, '5-3', { dot: true })!;
+  assert.equal(l.text, 'Still 68 flowers to collect!');
+  assert.equal(l.counted, true);
+  assert.equal(countedText(l.text, 116 - 51), 'Still 65 flowers to collect!');
+  // every stage with a count says it the same way, so the fix holds game-wide (DotGuide.tsx puts the count in as it shows the line)
+  const seen = new Set<string>();
+  for (const c of generateAllLevels()) {
+    const t = goalLine('late', c.worldIndex, c.objectiveType ?? '', 9);
+    if (!t || seen.has(t)) continue;
+    seen.add(t);
+    const g = engineGuideLine(t, c.id, { dot: true });
+    if (!g) continue;
+    assert.ok(g.counted, `${c.id}: "${g.text}" is not counted`);
+    assert.match(countedText(g.text, 3), /\b3\b/, c.id);
+  }
+  assert.ok(seen.size >= 3);
+  // and a "Still {n}" line is the only one counted
+  assert.ok(!engineGuideLine(W5_TEACH.cocoon, '5-5', { dot: true })!.counted);
 });

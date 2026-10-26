@@ -6,7 +6,7 @@ env SPEC = jobs/<spec>.json in the bucket, with any of:
         Qwen-Image-Edit-2509 with the game's own frames as the reference, optionally with the character's trained model
         (mshaffe111/<queen|meeca>-qwen-lora) loaded into the edit model -> stills/<name>.png, plus a numbered contact sheet
         stills/w5c-edits-<tag>.jpg.
-  "clips": [{"name", "src": bucket path of the start picture, "prompt", "seed", "w", "h", "flip"?, "tone"?}], "motion": {...}
+  "clips": [{"name", "src": bucket path of the start picture, "prompt", "seed", "w", "h", "flip"?, "tone"?, "clean"?}], "motion": {...}
         Wan 2.2 I2V with the motion model, exactly as gen/gen_clips.py -> clips/<name>.zip (49 PNG frames) and a numbered contact
         sheet stills/w5c-sheet-<name>.jpg.
   env PART, PARTS split the clips between jobs (the edits run in part 0); SPEC may list several specs, comma separated.
@@ -112,9 +112,46 @@ def figure(a):
     return np.sqrt(((a - np.median(bd, 0)) ** 2).sum(-1)) > 30
 
 
+def clean_start(im, halo=None, shadow=False, rim=False):
+    """an edit's lantern glow and ground shadow, painted onto the flat grey, would key as a pale disc and a dark smudge under the feet:
+    both are flooded from the open background and painted back to its grey. halo [x0, y0, x1, y1]: the box round the lantern, where a
+    lighter, not too bright, not too coloured pixel joined to the grey is glow (the lit glass inside the lantern's dark frame stays);
+    shadow: in the lowest fifth of the figure, a darker neutral pixel joined to the grey is the shadow (dark outlines and fur stay);
+    rim: a pale, nearly grey pixel joined to the grey anywhere is a sticker outline (the dark outline inside it stays)."""
+    try:
+        from scipy import ndimage
+    except ImportError:
+        subprocess.run([sys.executable, '-m', 'pip', 'install', '--break-system-packages', '-q', 'scipy'], check=True)
+        from scipy import ndimage
+    a = np.asarray(im.convert('RGB')).astype(np.float32)
+    bd = np.concatenate([a[:6].reshape(-1, 3), a[-6:].reshape(-1, 3), a[:, :6].reshape(-1, 3), a[:, -6:].reshape(-1, 3)])
+    bg = np.median(bd, 0)
+    lum, sat, bl = a.mean(-1), a.max(-1) - a.min(-1), bg.mean()
+    soft = np.zeros(lum.shape, bool)
+    inb = np.zeros(lum.shape, bool)
+    if halo:
+        x0, y0, x1, y1 = halo
+        inb[y0:y1, x0:x1] = True
+        soft |= inb & (lum > bl + 1.5) & (lum < bl + 62) & (sat < 85)
+    if rim:  # a pale "sticker" outline some edits draw round the figure, outside its dark outline
+        soft |= (sat < 45) & (lum > bl + 1.5) & (lum < 240)
+    if shadow:
+        ys = np.nonzero((np.abs(a - bg).max(-1) > 30).any(1))[0]
+        band = np.zeros(lum.shape, bool); band[int(ys.max() - 0.2 * (ys.max() - ys.min())):] = True
+        soft |= band & (lum < bl - 1.5) & (lum > bl - 45) & (sat < 22)
+    flat = np.abs(a - bg).max(-1) < 6
+    lab, _ = ndimage.label(flat | soft)
+    keep = np.unique(lab[flat & ~inb])
+    a[np.isin(lab, keep[keep > 0]) & soft] = bg
+    return Image.fromarray(a.clip(0, 255).astype(np.uint8))
+
+
 def fix_start(im, c):
     """"flip": mirror a start picture that came out facing left (the game's frames face right); "tone": pull the figure's colours to
-    the mean and spread of another picture's figure (an edit drifts lighter or more orange than the painted atlas)"""
+    the mean and spread of another picture's figure (an edit drifts lighter or more orange than the painted atlas); "clean":
+    {"halo": [box], "shadow": true} paints an edit's lantern glow and ground shadow back to the grey (clean_start)"""
+    if c.get('clean'):
+        im = clean_start(im, **c['clean'])
     if c.get('flip'):
         im = im.transpose(Image.FLIP_LEFT_RIGHT)
     if c.get('tone'):
@@ -125,7 +162,7 @@ def fix_start(im, c):
             s, sr = a[..., ch][m], r[..., ch][mr]
             a[..., ch][m] = (s - s.mean()) / max(1.0, s.std()) * sr.std() + sr.mean()
         im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
-    if c.get('flip') or c.get('tone'):
+    if c.get('flip') or c.get('tone') or c.get('clean'):
         put(f"stills/{c['name']}-start.png", png(im))
     return im
 

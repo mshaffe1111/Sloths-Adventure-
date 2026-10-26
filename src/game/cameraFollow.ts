@@ -222,3 +222,15 @@ export function showBoth(tx: number, ty: number, px: number, py: number, land: B
   const h = heroBox(px, py);
   return { x: fit(tx, land.x0, land.x1, P.l, P.r, h.x0, h.x1, Q.l, Q.r, vw), y: fit(ty, land.y0, land.y1, P.t, P.b, h.y0, h.y1, Q.t, Q.b, vh) };
 }
+
+/**
+ * how far in from either side of the view his middle is always kept (px of world): his body and a little room. The camera's aim already
+ * keeps him in view (showBoth's heroPad); this is for the eased camera, which trails the aim (QA v200, 5-4 upright at 320 x 782:
+ * swinging back on a long silk line, he went out past the left edge while the camera caught up)
+ */
+export const HERO_KEEP = 44;
+/** the camera's left edge, moved just enough to keep his middle (at px) HERO_KEEP px inside a view `vw` wide (or centred, if narrower) */
+export function keepHeroX(camX: number, px: number, vw: number): number {
+  const keep = Math.min(HERO_KEEP, vw / 2);
+  return Math.max(px + keep - vw, Math.min(px - keep, camX));
+}

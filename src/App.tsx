@@ -13,6 +13,7 @@ import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
 import { LessonCard } from './components/LessonCard.tsx';
 import { Wayside } from './components/Wayside.tsx';
+import { MeecaWords } from './components/MeecaWords.tsx';
 import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
 import type { CoachStep } from './game/touchCoach.ts';
@@ -41,7 +42,8 @@ import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
 import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
-import { DOT_STAGE_ID, newStagesOn } from './game/extraStages.ts';
+import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
+import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -196,10 +198,12 @@ export default function App() {
   const [currentCount, setCurrentCount] = useState<number>(0);
   const [targetCount, setTargetCount] = useState<number>(1);
   /** the guiding line Dot is saying (a stage tip, the goal, the sealed door): from the engine, shown by Wayside */
-  const [guideLine, setGuideLine] = useState<{ text: string; ms: number; n: number } | null>(null);
+  const [guideLine, setGuideLine] = useState<{ text: string; ms: number; n: number; passed?: boolean } | null>(null);
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
+  /** Meeca's stage: its title card or its ending is up, so the HUD steps aside */
+  const [cinematic, setCinematic] = useState(false);
   const [bossInfo, setBossInfo] = useState<{ name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null>(null);
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
@@ -229,6 +233,7 @@ export default function App() {
   const launchSeq = useRef(0);
   /** a stage is being played right now (stagePreload.ts then draws nothing on the canvas) */
   const inPlay = useCallback(() => !!engineRef.current?.inPlay(), []);
+  const meecaEngine = useCallback(() => engineRef.current, []);
   // the first-stage lesson (see game/touchCoach.ts): which step is showing, and for which kind of touch controls
   const [coachStep, setCoachStep] = useState<CoachStep>(null);
   // a first-time lesson card (the stage has paused itself; see game/lessons.ts)
@@ -576,7 +581,7 @@ export default function App() {
         try {
         engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
           onFatal: () => setScreen('world_map'),
-          onGuide: (text, seconds) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1 })),
+          onGuide: (text, seconds, passed) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) })),
           onStageStats: (s) => {
             pendingStats.current = s;
             setLastStats(s);
@@ -593,6 +598,7 @@ export default function App() {
             setPowerUpTimer(curPowerTimer ?? 0);
           },
           onBossUpdate: (info) => setBossInfo(info),
+          onCinematic: (on) => setCinematic(on),
           onCoach: (st) => setCoachStep(st),
           onLesson: (id) => setLessonId(id),
           onFind: (id) => {
@@ -646,8 +652,9 @@ export default function App() {
               // the first stage is cleared: Dot arrives with Meeca's first note
               storyAfterClear.current = true;
               setScreen('world_story');
-            } else if ((lvl.id === DOT_STAGE_ID || (lvl.miniIndex === 5 && !(lvl.worldIndex === 4 && newStagesOn()))) && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
-              // (in World 4 the halfway scene waits for Dot's own flight after 4-5: she arrives with the note and nine scratches)
+            } else if (midSceneAfter(lvl, { dotStageId: DOT_STAGE_ID, newStages: newStagesOn() }) && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
+              // (in World 4 the halfway scene waits for Dot's own flight after 4-5: she arrives with the note and nine scratches; World 5's
+              // plays inside 5-5, at the rest branch: midScene.ts)
               // halfway through a world, Dot catches up with a note from Meeca
               setScreen('world_mid');
             } else {
@@ -1064,7 +1071,7 @@ export default function App() {
             bossPhase={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.phase : undefined}
             bossHits={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hits : undefined}
             bossAccent={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.color : undefined}
-            bossEntering={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.entering : undefined}
+            bossEntering={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.entering : activeLevel.id === MEECA_STAGE_ID ? cinematic : undefined}
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
             lives={lives}
@@ -1072,7 +1079,10 @@ export default function App() {
             runKey={runId}
           />
           <PerfReadout stageId={activeLevel.id} />
-          <Wayside
+          {/* (Meeca's stage has no Dot: her own thoughts are drawn in the stage, meecaPlay.ts) */}
+          {/* (Meeca's stage draws its words on the canvas: the same words in the page, for screen readers and QA's bots) */}
+          {activeLevel.id === MEECA_STAGE_ID && <MeecaWords engine={meecaEngine} />}
+          {activeLevel.id !== MEECA_STAGE_ID && <Wayside
             key={`${activeLevel.id}-${runId}`}
             level={activeLevel}
             active={screen === 'playing' && !coachStep && !lessonId && !reading}
@@ -1081,7 +1091,7 @@ export default function App() {
             guide={guideLine}
             // Dot's guide: it reads the stage itself and takes the coach and lessons as her lines
             dot={{ engine: () => engineRef.current, playing: screen === 'playing' && !reading, coachStep, coachStyle, lessonId, count: { cur: currentCount, target: targetCount } }}
-          />
+          />}
           {screen === 'playing' && lessonId && (
             <LessonCard
               id={lessonId}

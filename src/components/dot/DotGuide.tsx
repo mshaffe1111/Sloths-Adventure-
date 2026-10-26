@@ -5,7 +5,7 @@ import type { CoachStep } from '../../game/touchCoach.ts';
 import type { ControlStyle } from '../../game/controlPrefs.ts';
 import { lessonDotLine, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
-import { GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
+import { countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
 import { SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markSkillSeen, markSkipOffered, offersSkip, seenSkills, skipTips } from '../../game/dotGuideHelp.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game/dotGuideView.ts';
@@ -59,7 +59,7 @@ export interface DotGuideProps {
   playing: boolean;
   ratio: number;
   hp: number;
-  guide?: { text: string; ms: number; n: number } | null;
+  guide?: { text: string; ms: number; n: number; passed?: boolean } | null;
   coachStep?: CoachStep;
   coachStyle?: ControlStyle;
   lessonId?: LessonId | null;
@@ -209,6 +209,12 @@ class GuideRun {
     const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms });
     if (l) this.say(l);
   }
+
+  /** the engine says he is past the spot an engine line was about (StageHint.passX): that line goes, done or not */
+  passedLine(text: string): void {
+    const l = engineGuideLine(text, this.stageId, { dot: this.dot });
+    if (l) this.queue.clear((q) => q.key === l.key, this.clock);
+  }
 }
 
 const storyKey = (f: WayFlag) => `story:${f}`;
@@ -280,6 +286,11 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   useEffect(() => {
     if (!guide || guide.n <= run.lastGuide) return;
     run.lastGuide = guide.n;
+    // (a move tip about a spot he is now past: it goes, up or waiting, done or not)
+    if (guide.passed) {
+      run.passedLine(guide.text);
+      return;
+    }
     if (!guide.text) {
       // (in a boss fight every line of hers belongs to an attack: its end takes it down)
       run.queue.clear((l) => l.source === 'engine' && (l.kind === 'danger' || run.view.boss), run.clock);
@@ -554,7 +565,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       const my = p.mode === 'perch' ? spot.y - 22 : spot.y;
       const order = p.mode === 'perch' ? (['above', 'left', 'right', 'below'] as const) : hoverOrder(v);
       hardNow(p);
-      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18);
+      // (Pokey himself, never under it while anywhere else is free: QA v200 upright)
+      p.bub = placeBubble(spot.x, my, run.bw, run.bh, safe, rects, order, frame ? frame.w / 2 + 6 : 28, run.hard, frame ? frame.h / 2 : 18, pokeyRect(v, 4));
       if (p.mode === 'perch' && (p.bub.cost ?? 0) > 0) {
         // no room for her bubble beside this perch without covering Pokey, an animal or the HUD: she hovers beside him instead
         const h = hoverSpot(v);
@@ -861,7 +873,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
         landingRects(v, rects);
         popupRects(v, rects);
         hardNow();
-        p.bub = placeBubble(p.sx, p.sy, run.bw, run.bh, safe, rects, ['above', v.facing > 0 ? 'left' : 'right', 'below'], 26, run.hard);
+        p.bub = placeBubble(p.sx, p.sy, run.bw, run.bh, safe, rects, ['above', v.facing > 0 ? 'left' : 'right', 'below'], 26, run.hard, 26, pokeyRect(v, 4));
       }
       if (bub && cur && p?.bub && there && run.measuredN === cur.n) {
         let bx = p.mode === 'perch' ? run.dsx + p.bubDx : p.bub.x;
@@ -1102,6 +1114,8 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       const cnt = latest.current.count;
       if (!run.goalDone && cnt && cnt.target > 1 && cnt.cur >= cnt.target && QUOTA.has(latest.current.level.objectiveType ?? '')) {
         run.goalDone = true;
+        // (a "Still {n}" line still waiting, or up, is old news now)
+        q.clear((l) => !!l.counted, run.clock, true);
         const t = dotText('goal.done');
         if (t) run.say({ key: 'goal:done', text: t, kind: 'goal', who: run.dot ? 'Dot' : 'Pokey', topic: 'exit', source: 'engine' });
       }
@@ -1176,7 +1190,7 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           {art ? <span ref={tailRef} className="dg-ptail" aria-hidden="true" style={pieceStyle('tail', TAIL_W)} /> : <span className="dg-tail b" />}
           {tag && <span className={`dg-tag ${tag === 'Pokey' ? 'pokey' : ''}`}>{tag}</span>}
           <div className="dg-bub-body">
-            <p>{l.text}</p>
+            <p>{l.counted && props.count ? countedText(l.text, props.count.target - props.count.cur) : l.text}</p>
             {run.skipN === show!.n && (
               <button
                 type="button"

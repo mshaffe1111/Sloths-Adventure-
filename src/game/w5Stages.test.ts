@@ -6,24 +6,29 @@ import { reachJump } from './physics.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { findForStage } from './finds.ts';
 import { levelConfig } from './realPlay.ts';
-import { TABLE_CARD, type W5Extras } from './w5Kit.ts';
+import { ORCHID, orchidAt, orchidFair, TABLE_CARD, type W5Extras } from './w5Kit.ts';
 import { W5_HINTS } from './w5Lines.ts';
-import type { W5Info } from './w5Stages.ts';
+import { W5_HARVEST_SHARE, W5_LESSON_ORCHID, W5_ORCHID, type W5Info } from './w5Stages.ts';
+import { w5BackdropStem } from './w5Backdrop.ts';
+import { W5_FRAMES } from './w5PropsData.ts';
+import { stageSpec } from './stagePlan.ts';
 
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
 type Built = ReturnType<typeof buildProtoStage> & { w5info: W5Info };
-const build = (id: '5-1' | '5-2', s: number) => buildProtoStage(levelConfig(id), s, HAND_STAGES[id]) as Built;
+const build = (id: '5-1' | '5-2' | '5-3', s: number) => buildProtoStage(levelConfig(id), s, HAND_STAGES[id]) as Built;
 const w5 = (st: Built) => st.proto.w5 as W5Extras;
 const hinted = (st: Built, old: string) => st.proto.hints.find((h) => h.text === old);
 
-test('5-1 and 5-2 are hand-built (behind the New stages switch, as World 4), and their lengths differ', () => {
+test('5-1, 5-2 and 5-3 are hand-built, and their lengths differ', () => {
   assert.equal(HAND_STAGES['5-1'], '5-1');
   assert.equal(HAND_STAGES['5-2'], '5-2');
-  for (const id of ['5-1', '5-2']) assert.ok(STAGE_SECONDS[id] >= 150 && STAGE_SECONDS[id] <= 300, id);
+  assert.equal(HAND_STAGES['5-3'], '5-3');
+  for (const id of ['5-1', '5-2', '5-3']) assert.ok(STAGE_SECONDS[id] >= 150 && STAGE_SECONDS[id] <= 300, id);
   assert.notEqual(stageSeconds('5-1'), stageSeconds('5-2'));
+  assert.notEqual(stageSeconds('5-3'), stageSeconds('5-2'));
 });
 
-for (const id of ['5-1', '5-2'] as const) {
+for (const id of ['5-1', '5-2', '5-3'] as const) {
   test(`${id}: every roll can be finished, has one exit, runs its full length, needs no pickup moved, and keeps nothing past the shrine`, () => {
     for (const s of SEEDS) {
       const st = build(id, s);
@@ -40,6 +45,7 @@ for (const id of ['5-1', '5-2'] as const) {
       for (const c of x.chairs ?? []) assert.ok(c.x <= lim, `seed ${s}: a chair past the shrine`);
       for (const t of x.threads ?? []) assert.ok(t.x0 <= lim, `seed ${s}: a thread past the shrine`);
       for (const b of x.butlers ?? []) assert.ok(b.x <= lim, `seed ${s}: a butler past the shrine`);
+      for (const o of x.orchids ?? []) assert.ok(o.x <= lim, `seed ${s}: an orchid past the shrine`);
       for (const e of st.enemies) assert.ok(e.patrolMaxX <= lim, `seed ${s}: a spider past the shrine`);
     }
   });
@@ -126,5 +132,74 @@ test("5-2: Dot's rules, the threads and their sleeping spiders, the cakes, the B
     const note = st.collectibles.find((c) => c.type === 'find');
     assert.ok(note && note.findId === 'w5_note' && note.hidden === false, `seed ${s}: Pell's blanket note in plain sight`);
     assert.equal(findForStage(5, 2)?.id, 'w5_note');
+  }
+});
+
+test("5-3: the closing orchids: a harvest from their cups, closing sooner as it goes on, fair, over grass or a soft pit, in the gold light", () => {
+  assert.equal(stageSpec(5, 3)?.type, 'harvest');
+  assert.equal(stageSpec(5, 3)?.name, 'Closing Orchids');
+  // (gold, the other take from 5-2's)
+  assert.notEqual(w5BackdropStem('5-3'), w5BackdropStem('5-2'));
+  assert.equal(findForStage(5, 3), null, 'no World 5 find is set in 5-3');
+  for (const s of SEEDS) {
+    const st = build('5-3', s);
+    const x = w5(st);
+    const inf = st.w5info;
+    assert.ok(!x.gentle && x.mood === 'gold' && x.petals);
+    const orchids = x.orchids!;
+    assert.ok(orchids.length >= 20 && inf.rows.length >= 6, `seed ${s}: ${orchids.length} orchids, ${inf.rows.length} rows`);
+    // every orchid: fair (open long enough, never shut for long), a ledge while open or shivering, none while shut; its cup's flowers in it
+    let lastOpen = Infinity;
+    for (const o of orchids) {
+      assert.ok(orchidFair(o) && o.open >= ORCHID.minOpen, `seed ${s}: the orchid at ${o.x}: ${JSON.stringify({ period: o.period, open: o.open })}`);
+      const pl = st.platforms.find((p) => p.id === o.platformId)!;
+      assert.ok(pl && pl.art === 'orchid' && pl.y === o.y && Math.abs(pl.x + pl.width / 2 - o.x) <= 1, `seed ${s}`);
+      assert.ok(orchidAt(o, -o.offset + 0.01).solid && !orchidAt(o, -o.offset + o.open + ORCHID.tell + 0.05).solid);
+      for (const id of o.petalIds!) {
+        const c = st.collectibles.find((q) => q.id === id)!;
+        assert.ok(c.type === 'flower' && Math.abs(c.x - o.x) < o.w / 2 && o.y - c.y === 34, `seed ${s}: a cup flower out of its cup at ${o.x}`);
+      }
+      // closing earlier as the stage goes on (the lesson is the longest open, the last the shortest)
+      assert.ok(o.open <= lastOpen + 1e-9 || o === orchids[0], `seed ${s}: the orchid at ${o.x} open ${o.open} s after one open ${lastOpen} s`);
+      lastOpen = o.open;
+      // over the grass (one hop up) or a soft pit (a mossy floor): a miss is a drop, never a fall
+      const ground = o.stem!;
+      assert.ok(st.platforms.some((p) => p.y === ground && p.x <= o.x - o.w / 2 && p.x + p.width >= o.x + o.w / 2), `seed ${s}: nothing under the orchid at ${o.x}`);
+    }
+    // (the lesson keeps a longer, gentler beat of its own; the stage's closing earlier starts after it)
+    assert.ok(orchids[0].lesson && orchids[0].open === W5_LESSON_ORCHID.open && orchids[0].period === W5_LESSON_ORCHID.period, `seed ${s}: the lesson's beat`);
+    assert.ok(orchids[1].open >= W5_ORCHID.openFirst - 0.2, `seed ${s}: the first steps open ${orchids[1].open} s`);
+    assert.ok(orchids[orchids.length - 1].open <= W5_ORCHID.openFirst - 0.7, `seed ${s}: the last orchid open ${orchids[orchids.length - 1].open} s`);
+    // each row: a plain hop from the bank, bloom to bloom, and off the last; they close one after another down the row
+    for (const row of inf.rows) {
+      const os = row.orchids.map((k) => inf.orchids[k]);
+      const hops = [os[0].x0 - row.edge, ...os.slice(1).map((o, i) => o.x0 - os[i].x1), row.far - os[os.length - 1].x1];
+      for (const h of hops) assert.ok(h > 40 && h <= reachJump(0, false) * 0.7, `seed ${s}: a ${Math.round(h)} px hop in the row at ${row.edge}`);
+      assert.ok(st.platforms.some((p) => p.y > G && p.x <= row.edge && p.x + p.width >= row.far), `seed ${s}: no soft floor under the row at ${row.edge}`);
+      const ks = row.orchids.map((k) => orchids[k]);
+      for (let i = 1; i < ks.length; i++) {
+        const d = ((ks[i - 1].offset - ks[i].offset) % ks[i].period + ks[i].period) % ks[i].period;
+        assert.ok(Math.abs(d - W5_ORCHID.lag) < 0.02, `seed ${s}: the row at ${row.edge} does not close in turn`);
+      }
+    }
+    // the quota: a share of the flowers, more than the path alone holds (the cups are what the stage is for), and plenty to spare
+    const flowers = st.collectibles.filter((c) => c.type === 'flower');
+    const cups = new Set(inf.cupFlowers);
+    assert.equal(st.config.targetCount, Math.round(flowers.length * W5_HARVEST_SHARE));
+    assert.ok(flowers.filter((c) => !cups.has(c.id)).length < st.config.targetCount, `seed ${s}: the path alone meets the quota`);
+    assert.ok(flowers.length >= st.config.targetCount * 1.5, `seed ${s}`);
+    // a spider or two, awake (a reminder, not a lesson), a cake now and then (each alone), the guests who sat, and a soft chair
+    const spiders = st.enemies.filter((e) => e.type === 'spider');
+    assert.ok(spiders.length >= 3 && x.spiders!.every((sp) => !sp.doze), `seed ${s}`);
+    const cakes = x.cakes!.slice().sort((a, b) => a.x - b.x);
+    assert.ok(cakes.length >= 2 && cakes.length <= 6, `seed ${s}: ${cakes.length} cakes`);
+    for (let i = 1; i < cakes.length; i++) assert.ok(cakes[i].x - cakes[i - 1].x > 1000, `seed ${s}: two cakes together`);
+    assert.ok(x.chairs!.filter((c) => c.wrapped).length >= 2 && x.chairs!.some((c) => !c.wrapped), `seed ${s}`);
+    assert.equal((x.threads ?? []).length + (x.butlers ?? []).length, 0);
+    // the painted World 5 props among the bushes: orchids, sprouts, mossy roots
+    assert.ok(x.decor!.filter((d) => d.n in W5_FRAMES).length >= 5, `seed ${s}`);
+    // the stage's lines
+    for (const h of [W5_HINTS.s53start, W5_HINTS.s53sooner, W5_HINTS.s53end]) assert.ok(hinted(st, h.old), `seed ${s}: ${h.text}`);
+    assert.ok(hinted(st, W5_HINTS.s53start.old)!.x > orchids[0].x, 'the story\'s line after he has seen the first one close');
   }
 });

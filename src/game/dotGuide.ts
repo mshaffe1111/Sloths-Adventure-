@@ -16,7 +16,9 @@
  *     when it's close" closed on the very punch it asked for, before it could be read);
  *   - an info line stays 1.5 s + 0.5 s a word, at least 4 s; nothing closes on a tap (a tap is a punch);
  *   - no line starts while Pokey is in danger, unless it is the danger warning itself;
- *   - a story aside waits 8 s after the last line; anything else waits a short breath.
+ *   - a story aside waits 8 s after the last line; anything else waits a short breath;
+ *   - a plain information line steps aside, after a fair look, for a tip about a thing coming up now (World 5's cocoons, cakes), and
+ *     comes back once after it.
  */
 import type { GlyphKind } from '../components/GestureGlyph.tsx';
 
@@ -27,7 +29,9 @@ export type MoveId = 'run' | 'jump' | 'double' | 'grab' | 'climb' | 'leap' | 'gl
 /** the kind of thing a line is about, for the ring and arrow (dotGuideTarget.ts) */
 export type TopicId =
   | 'vine' | 'trunk' | 'rope' | 'log' | 'foe' | 'gap' | 'ledge' | 'petal' | 'cage' | 'bush' | 'fern' | 'mushroom'
-  | 'crumble' | 'moving' | 'water' | 'heart' | 'power' | 'relic' | 'flag' | 'exit' | 'controls';
+  | 'crumble' | 'moving' | 'water' | 'heart' | 'power' | 'relic' | 'flag' | 'exit' | 'controls'
+  // (World 5's pieces Dot points at: GuideView.w5)
+  | 'cocoon' | 'orchid' | 'seamstress';
 export type GuideWho = 'Dot' | 'Pokey' | 'Petal';
 
 export interface GuideLine {
@@ -61,6 +65,17 @@ export interface GuideLine {
    * (QA, 5-2, 2026-10-26: the cake, thread and tray tips were dropped unseen because she had already jumped and punched.)
    */
   thing?: boolean;
+  /**
+   * one line of a scene played in a stage (5-5's pouch scene, w5Lines.ts W5_POUCH): a story line, but the next one follows after a
+   * breath, not a story aside's long wait, so the people in it talk to each other
+   */
+  scene?: boolean;
+  /**
+   * it names how many of the goal are still to get ("Still 65 flowers to collect!"): the number is put in as it is when the line is on
+   * screen (countedText), not as it was when the engine sent it. The line can wait its turn a while, and he picks more up meanwhile:
+   * the HUD said 51/116 as Dot said "Still 68" (QA, 5-3, v198)
+   */
+  counted?: boolean;
   /** where it came from: an engine line can be taken down by the engine ("the moment has passed") */
   source: 'engine' | 'lesson' | 'coach' | 'story' | 'journal' | 'struggle';
 }
@@ -91,6 +106,9 @@ export const GUIDE = {
   historyN: 3,
   /** a story aside has had a fair look (and counts as heard) after this long, and may give way to teaching (ms) */
   storyYieldMs: 2000,
+  /** a line of a scene (GuideLine.scene) has been heard once it has been up this share of its reading time: only then may it give
+   *  way (to teaching that is waiting) or be cut without being said again */
+  sceneHeard: 0.7,
   /** a line sent back by an interruption may wait this long to be said again */
   backMs: 30000,
   /** every line is up at least this long (a move done at once, or a sender taking it down, waits for it) */
@@ -104,6 +122,11 @@ export const GUIDE = {
 const waitFor = (l: GuideLine) => l.waitMs ?? GUIDE.waitMs[l.kind];
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]+/g, '').replace(/\s+/g, ' ').trim();
 const sameWords = (a: string, b: string) => norm(a) === norm(b);
+
+/** a counted line's words with the number still needed now (its first number swapped for `need`) */
+export function countedText(text: string, need: number): string {
+  return text.replace(/\d+/, String(Math.max(0, Math.round(need))));
+}
 
 export function wordCount(text: string): number {
   const m = text.trim().match(/\S+/g);
@@ -194,8 +217,9 @@ export class GuideQueue {
     const cur = this.cur;
     if (cur && isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind]) {
       this.events.push({ type: 'end', show: cur, why: 'cut' });
-      // (it goes back in front of everything of its own priority, to be said again in full)
-      this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
+      // (it goes back in front of everything of its own priority, to be said again in full; a scene's line that was mostly read
+      // counts as heard, and the scene goes on)
+      if (!(cur.line.scene && now - cur.startedAt >= readMs(cur.line.text) * GUIDE.sceneHeard)) this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
       this.cur = null;
       this.begin(line, now, 0);
       return;
@@ -290,10 +314,18 @@ export class GuideQueue {
           if (b && PRIORITY[b.line.kind] > PRIORITY[l.kind]) why = 'yield';
         }
       } else if (age >= showFor(l)) why = 'read';
-      else if (l.kind === 'story' && age >= GUIDE.storyYieldMs) {
+      else if (l.kind === 'story' && age >= (l.scene ? readMs(l.text) * GUIDE.sceneHeard : GUIDE.storyYieldMs)) {
         // a story aside gives way to teaching that is waiting (research D3), after a fair look; it comes back later, in full
+        // (a line of a scene may give way again: the scene's lines come one after another over a long stretch, and a tip about a thing
+        // coming up waited a whole line of it out behind one that had given way once already. 5-5's soft chairs, v198)
         const b = this.best(now, env);
-        if (b && PRIORITY[b.line.kind] > PRIORITY.struggle && !this.yielded.has(l.key)) why = 'yield';
+        if (b && PRIORITY[b.line.kind] > PRIORITY.struggle && (!this.yielded.has(l.key) || l.scene)) why = 'yield';
+      } else if (l.kind === 'info' && age >= GUIDE.thingYieldMs && !this.yielded.has(l.key)) {
+        // a plain information line ("A flag! Fall, and you start again here.", the fern's hint) gives way to a tip about a thing that is
+        // coming up now, after a fair look, and comes back once, in full: it held the screen while he walked past the first two cocoons
+        // and the cocoon's tip waited behind it (QA, 5-5, v198)
+        const b = this.best(now, env);
+        if (b?.line.thing && b.line.kind === 'teach') why = 'yield';
       }
       if (!why) return cur;
       this.events.push({ type: 'end', show: cur, why });
@@ -306,14 +338,16 @@ export class GuideQueue {
         this.waiting.push({ line: l, until: now + GUIDE.backMs, seq: ++this.seq, base: cur.base });
       }
       // a move tip that stepped aside comes back after the more important line, if it is still wanted then
-      if (why === 'yield' && (l.kind !== 'story' || !this.yielded.has(l.key))) {
+      // (a line of a scene that gives way has been mostly read: it counts as heard and is not said again. "Somebody I'm scared of."
+      // came twice in 5-5's pouch scene, QA v198, once in its turn and again after a tip it had stepped aside for)
+      if (why === 'yield' && (l.kind !== 'story' || (!l.scene && !this.yielded.has(l.key)))) {
         this.yielded.add(l.key);
         this.waiting.push({ line: l, until: now + Math.max(GUIDE.backMs, waitFor(l)), seq: ++this.seq, base: l.move ? cur.base : undefined });
       }
     }
     const b = this.best(now, env);
     if (!b) return null;
-    const gap = b.line.kind === 'story' ? GUIDE.storyGapMs : isUrgent(b.line) ? 0 : GUIDE.breathMs;
+    const gap = b.line.kind === 'story' && !b.line.scene ? GUIDE.storyGapMs : isUrgent(b.line) ? 0 : GUIDE.breathMs;
     if (now - this.endedAt < gap) return null;
     if (env.hold) return null;
     if (env.danger && !isUrgent(b.line)) return null;

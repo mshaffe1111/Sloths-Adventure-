@@ -10,7 +10,9 @@ env SPEC = a spec in the bucket (jobs/<spec>.json, its "tasks"), or TASKS_B64 = 
   {"do": "starts", "atlas": "queen", "frames": [...], "tag": "w5q"}
         start pictures for Wan/edit jobs from the game's own atlas frames, exactly as reanim/extract.py makes them (4x Real-ESRGAN anime
         6B, on a 1024 square of flat grey at 80%), -> stills/<tag>-<frame>.png, and their meta (start px = old px * f + (ox, oy))
-        -> stills/<tag>-meta.json. "atlas": "meeca" cuts from src/assets/characters/meeca-standard.webp.
+        -> stills/<tag>-meta.json. "atlas": "meeca" cuts from src/assets/characters/meeca-standard.webp; "atlas": "cels:<prefix>" cuts a
+        story-cel figure (src/game/storyCelData.ts; "cels:lp" is Lieutenant Pell) with its anchor found from its feet; "as": "pell" names
+        its meta keys, "flip": [frames] mirrors poses that look left, "dehalo": {frame: [x0, y0, x1, y1]} cuts a lit lantern's glow.
   {"do": "packall", "creature": c, "up": 1.6, "key": "default"|"tight", "seqs": {seq: [clip, [frames] | "all"]}, "meta": {...}?,
    "out": name}
         runs the repo's own reanim/pack.py on the clips and writes xfer/<out>-anim.webp (+ .b64.txt) and xfer/<out>AnimData.ts.
@@ -123,6 +125,19 @@ def upscale(im):
 
 def atlas_frames(name):
     import re
+    if name.startswith('cels:'):
+        # a story-cel figure (Lieutenant Pell is "cels:lp"): src/game/storyCelData.ts frames, which carry no anchor, so starts() finds it
+        # from the cut-out's feet (cel_anchor)
+        pre = name[5:]
+        src = gh('src/game/storyCelData.ts').read_text()
+        sheets = ['cels-pokey', 'cels-pair', 'cels-folk']
+        fr, ims = {}, {}
+        for m in re.finditer(r"'%s\.(\w+)': \{ a: (\d), x: (\d+), y: (\d+), w: (\d+), h: (\d+)" % re.escape(pre), src):
+            a = int(m.group(2))
+            if a not in ims:
+                ims[a] = Image.open(gh(f'src/assets/characters/{sheets[a]}.webp')).convert('RGBA')
+            fr[m.group(1)] = dict(zip(('x', 'y', 'w', 'h'), (float(v) for v in m.groups()[2:])), a=a)
+        return ims, fr
     if name == 'meeca':
         src = gh('src/game/meecaStandardData.ts').read_text()
         img = gh('src/assets/characters/meeca-standard.webp')
@@ -135,15 +150,54 @@ def atlas_frames(name):
     return Image.open(img).convert('RGBA'), fr
 
 
+def cel_anchor(crop):
+    """a cut-out with no anchor (a story cel): the middle of its lowest rows, on its lowest solid row (its feet on the ground line)"""
+    al = np.asarray(crop.getchannel('A')) > 128
+    ys = np.nonzero(al.any(1))[0]
+    top, low = ys.min(), ys.max()
+    cols = np.nonzero(al[max(0, low - int(0.06 * (low - top))):low + 1].any(0))[0]
+    return float(cols.min() + cols.max()) / 2, float(low + 1)
+
+
+def dehalo(crop, box, lum_min=135):
+    """the painted glow round a lit lantern (Pell's cels) is solid in the cut-out and would key as a pale disc: flood from the transparent
+    outside through pale, grey halo pixels inside box [x0, y0, x1, y1] (cel px), stopping at the lantern's dark outline. The game draws
+    its own glow."""
+    from scipy import ndimage
+    a = np.asarray(crop).astype(np.float32)
+    rgb, al = a[..., :3], a[..., 3].copy()
+    lum, sat = rgb.mean(-1), rgb.max(-1) - rgb.min(-1)
+    x0, y0, x1, y1 = box
+    inb = np.zeros(al.shape, bool); inb[y0:y1, x0:x1] = True
+    halo_like = inb & (lum > lum_min) & (sat < 70) & (al > 0)
+    outside = al < 128
+    lab, _ = ndimage.label(outside | halo_like)
+    keep = np.unique(lab[outside])
+    halo = np.isin(lab, keep[keep > 0]) & halo_like
+    near = ndimage.binary_dilation(halo, iterations=1) & inb & ~halo & (lum > lum_min - 25) & (sat < 70)
+    al[halo] = 0
+    al[near] *= 0.35
+    return Image.fromarray(np.dstack([rgb, al]).astype(np.uint8), 'RGBA')
+
+
 def starts(t):
     atlas, fr = atlas_frames(t['atlas'])
     tag = t['tag']
+    who = t.get('as', t['atlas'])  # the meta keys' creature name ("pell" for "cels:lp")
     meta = {}
     thumbs = []
     for n in t['frames']:
-        f = fr[n]
+        f = dict(fr[n])
         x, y, w, h = (int(f[k]) for k in ('x', 'y', 'w', 'h'))
-        crop = atlas.crop((x, y, x + w, y + h))
+        crop = (atlas[f.pop('a')] if isinstance(atlas, dict) else atlas).crop((x, y, x + w, y + h))
+        if n in t.get('dehalo', {}):
+            crop = dehalo(crop, t['dehalo'][n])
+        if n in t.get('flip', []):  # a pose that looks left (the game's frames face right)
+            crop = crop.transpose(Image.FLIP_LEFT_RIGHT)
+            if 'ax' in f:
+                f['ax'] = w - f['ax']
+        if 'ax' not in f:
+            f['ax'], f['ay'] = cel_anchor(crop)
         big = upscale(crop)
         upf = big.width / w
         s = 819 / max(big.size)
@@ -154,7 +208,7 @@ def starts(t):
         c2 = c2.convert('RGB')
         b = io.BytesIO(); c2.save(b, 'PNG')
         put(f'stills/{tag}-{n}.png', b.getvalue())
-        meta[f'{t["atlas"]}-{n}'] = dict(creature=t['atlas'], frame=n, **f, f=upf * s, ox=ox, oy=oy)
+        meta[f'{who}-{n}'] = dict(creature=who, frame=n, **f, f=upf * s, ox=ox, oy=oy)
         thumbs.append(c2.resize((256, 256), Image.LANCZOS))
         print('START', tag, n, flush=True)
     up_text(json.dumps(meta, indent=1), f'stills/{tag}-meta.json')

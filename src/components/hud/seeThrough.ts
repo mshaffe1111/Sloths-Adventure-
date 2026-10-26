@@ -9,6 +9,11 @@
  */
 import type { GuideView } from '../../game/dotGuideView.ts';
 
+/** how see-through a faded piece is (hud.css .vh-see), and the goal counter's floor: it is read at a glance, so it never fades past
+ *  this (hud.css .vh-goal.vh-see; QA v198, 5-5 sideways: faded over a log the counter was nearly unreadable) */
+export const FADE_OPACITY = 0.3;
+export const GOAL_MIN_OPACITY = 0.62;
+
 export interface FadePiece {
   el: Element;
   x0: number;

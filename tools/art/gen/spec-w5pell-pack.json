@@ -1,0 +1,8 @@
+{"tag": "w5pellpack", "script": "tools/art/w5/w5cpu.py", "flavor": "cpu-upgrade", "tasks": [
+ {"do": "packall", "creature": "pell", "up": 1.6, "key": "tight", "out": "pell-all",
+  "meta_from": {"pell-march": ["stills/w5p-meta.json", "pell-lantern_walk"], "pell-idle": ["stills/w5p-meta.json", "pell-lantern_look"],
+                "pell-look": ["stills/w5p-meta.json", "pell-lantern_look"], "pell-catch": ["stills/w5p-meta.json", "pell-lantern_look"]},
+  "meta": {"pell-offer": {"creature": "pell", "frame": "offer", "ax": 89.98, "ay": 166.43, "f": 5.54, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0}},
+  "seqs": {"march": ["w5-pell-march-s3", "all"], "idle": ["w5-pell-idle-s3", "all"], "look": ["w5-pell-look-s3", "all"],
+           "catch": ["w5-pell-catch-s11", "all"], "offer": ["w5-pell-offer-s3", "all"]}}
+]}

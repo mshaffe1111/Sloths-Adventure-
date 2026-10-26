@@ -312,7 +312,7 @@ export type StompResult = null | { kind: 'stomp'; damage: number } | { kind: 'bo
  */
 export function stompTest(p: { x: number; y: number; vy: number }, prevFeet: number, e: Enemy, diving = false): StompResult {
   const tr = TRAITS[e.type];
-  if (tr.stomp === false) return null;
+  if (tr.stomp === false && !e.stompable) return null;
   // any downward motion counts (the top of a hop onto a low snake falls slowly: 40 px/s used to be required)
   if (p.vy <= 0) return null;
   const head = headRect(e);

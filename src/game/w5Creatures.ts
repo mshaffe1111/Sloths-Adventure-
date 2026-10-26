@@ -1,10 +1,10 @@
 /**
  * w5Creatures — World 5's trained creature art on the stage (2026-10-26): the jumping spider's clips (spider-anim.webp: walk, idle,
  * crouch and hurt; its attack, dizzy and knocked-out stay the single painted frames of spiderSprite.ts) and the Butler's pose sheet
- * (butler-poses.webp: idle, move, tell, attack, hurt, defeated). The Dangler, Seamstress, Orchid Mantis and Dozer moth sheets are not in
- * 5-1 or 5-2, so nothing loads them yet.
+ * (butler-poses.webp: idle, move, tell, attack, hurt, defeated), and the Seamstress's pose sheet (seamstress-poses.webp, 5-4: a stand-in
+ * until her trained clips come). The Dangler, Orchid Mantis and Dozer moth sheets are in no stage yet, so nothing loads them.
  *
- * Both are World 5 sheets: they start loading when a World 5 stage that holds the creature starts (W5Play's constructor, and
+ * All are World 5 sheets: they start loading when a World 5 stage that holds the creature starts (W5Play's constructor, and
  * stageSheets.ts STAGE_ANIMS for the spider's clips), and are let go when play moves to another world (atlasLoader.ts). Every draw
  * returns false until its sheet is in, and the caller draws what it drew before (the spider's painted stills or its vector rig, the
  * Butler's stand-in), so nothing ever disappears.
@@ -15,6 +15,8 @@ import { makeCreatureAnim } from './creatureAnim.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { SPIDER_ANIM, SPIDER_ANIM_UP, SPIDER_ANIM_URL, SPIDER_SEQ } from './spiderAnimData.ts';
 import { BUTLER_ATLAS_URL, BUTLER_FRAMES } from './butlerAtlasData.ts';
+import { SEAMSTRESS_ATLAS_URL, SEAMSTRESS_FRAMES } from './seamstressAtlasData.ts';
+import { SEAMSTRESS } from './w5Kit.ts';
 
 // ───────────────────────────── the jumping spider ─────────────────────────────
 
@@ -109,4 +111,131 @@ export function drawButlerPose(ctx: CanvasRenderingContext2D, x: number, b: numb
   ctx.drawImage(butlerImg!, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
   ctx.restore();
   return true;
+}
+
+// ───────────────────────────── the Seamstress ─────────────────────────────
+
+let seamImg: HTMLImageElement | null = null;
+let seamReady = false;
+function loadSeam() {
+  if (seamImg || typeof Image === 'undefined') return;
+  const im = new Image();
+  seamImg = im;
+  trackAtlas(im, SEAMSTRESS_ATLAS_URL, () => { seamReady = true; }, () => { seamImg = null; }, () => { seamImg = null; seamReady = false; });
+}
+
+/** start the Seamstress's poses loading (a World 5 stage where she knits, as it starts); true once they are in */
+export function warmW5Seamstress(): boolean {
+  loadSeam();
+  return seamReady && !!seamImg;
+}
+
+export type SeamPose = 'idle' | 'tell' | 'attack';
+
+/**
+ * which still of her sheet each pose draws. Knitting is the standing still with her needles and her knitting in her hands (the sheet's
+ * "hurt" still, eyes on her work): the sheet's own idle still sits her on a disc of web with the lace spread round her, and upright at
+ * 320 x 782 that read as "a webbed chair and a lace cloth", no character at all (QA v200)
+ */
+export const SEAM_STILL: Record<SeamPose, keyof typeof SEAMSTRESS_FRAMES> = { idle: 'hurt', tell: 'tell', attack: 'attack' };
+/** the dark edge round her (source px of the sheet), so her pink reads against the pink and lilac of the dusk and her own silk */
+const SEAM_EDGE = 5;
+const seamEdged = new Map<string, HTMLCanvasElement>();
+/** a still of hers with a dark plum edge all round, made once */
+function edgedStill(name: keyof typeof SEAMSTRESS_FRAMES): HTMLCanvasElement | null {
+  const got = seamEdged.get(name);
+  if (got) return got;
+  if (typeof document === 'undefined' || !seamImg) return null;
+  const f = SEAMSTRESS_FRAMES[name];
+  const e = SEAM_EDGE;
+  const c = document.createElement('canvas');
+  c.width = f.w + 2 * e;
+  c.height = f.h + 2 * e;
+  const g = c.getContext('2d');
+  if (!g) return null;
+  // (the silhouette, spread round by the edge's width, then darkened, then the still itself on top)
+  for (let a = 0; a < 16; a++) {
+    const r = (a * Math.PI) / 8;
+    g.drawImage(seamImg, f.x, f.y, f.w, f.h, e + Math.cos(r) * e, e + Math.sin(r) * e, f.w, f.h);
+  }
+  g.globalCompositeOperation = 'source-in';
+  g.fillStyle = '#2b1426';
+  g.fillRect(0, 0, c.width, c.height);
+  g.globalCompositeOperation = 'source-over';
+  g.drawImage(seamImg, f.x, f.y, f.w, f.h, e, e, f.w, f.h);
+  seamEdged.set(name, c);
+  return c;
+}
+
+/** how far her head is from her feet's middle across (world px, the way she faces): her stills are anchored at the feet, off centre */
+export const seamHeadDx = (pose: SeamPose): number => {
+  const f = SEAMSTRESS_FRAMES[SEAM_STILL[pose]];
+  return ((f.w * 0.45 - f.ax) * SEAMSTRESS.h) / SEAMSTRESS_FRAMES[SEAM_STILL.idle].h;
+};
+/** how tall her still for this pose stands, at the scale she is drawn (world px): the tell's raised needles stand over her head */
+export const seamTop = (pose: SeamPose): number => (SEAMSTRESS.h * SEAMSTRESS_FRAMES[SEAM_STILL[pose]].h) / SEAMSTRESS_FRAMES[SEAM_STILL.idle].h;
+
+/**
+ * The Seamstress from her pose sheet, feet at (x, b), facing `dir`: knitting (idle: her lace spread on the ground before her), looking up
+ * with her needles raised (the tell, `u` 0..1 through it: she rises a little), casting the lace (attack). Until the sheet is in, a plain
+ * stand-in of the same size: a pink fuzzy body in a lace apron, round glasses, dark legs and her needles.
+ */
+export function drawSeamstress(ctx: CanvasRenderingContext2D, x: number, b: number, dir: 1 | -1, pose: SeamPose, t: number, u = 0): void {
+  const h = SEAMSTRESS.h;
+  ctx.save();
+  ctx.translate(x, b);
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.beginPath();
+  ctx.ellipse(0, 1, 34, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.scale(dir, 1);
+  if (warmW5Seamstress()) {
+    const name = SEAM_STILL[pose];
+    const f = SEAMSTRESS_FRAMES[name];
+    // (every pose at the knitting pose's scale, so she keeps her size; a little lift through the tell, a breath as she knits)
+    const k = h / SEAMSTRESS_FRAMES[SEAM_STILL.idle].h;
+    ctx.translate(0, -u * 4);
+    if (pose === 'idle') ctx.scale(1, 1 + Math.sin(t * 2.4) * 0.012);
+    const edged = edgedStill(name);
+    const e = SEAM_EDGE;
+    if (edged) ctx.drawImage(edged, (-f.ax - e) * k, (-f.ay - e) * k, edged.width * k, edged.height * k);
+    else ctx.drawImage(seamImg!, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
+    ctx.restore();
+    return;
+  }
+  ctx.strokeStyle = '#3b2430';
+  ctx.lineWidth = 4;
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 4; i++) {
+    const a = -0.9 + i * 0.6;
+    ctx.beginPath();
+    ctx.moveTo(Math.sin(a) * 18, -h * 0.35);
+    ctx.quadraticCurveTo(Math.sin(a) * 40, -h * 0.5, Math.sin(a) * 46, 0);
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#f9a8d4';
+  ctx.beginPath();
+  ctx.ellipse(0, -h * 0.42, h * 0.3, h * 0.34, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff7ed';
+  ctx.beginPath();
+  ctx.ellipse(h * 0.04, -h * 0.32, h * 0.18, h * 0.2, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fbcfe8';
+  ctx.beginPath();
+  ctx.arc(h * 0.06, -h * 0.8 - u * 4, h * 0.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#3b2430';
+  ctx.lineWidth = 2;
+  for (const ex of [0, 0.14]) {
+    ctx.beginPath();
+    ctx.arc(h * (ex + 0.02), -h * 0.82 - u * 4, h * 0.06, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = '#c0c0c8';
+  ctx.beginPath();
+  ctx.moveTo(h * 0.2, -h * 0.45);
+  ctx.lineTo(h * 0.42, -h * (pose === 'tell' ? 1.02 : 0.62));
+  ctx.stroke();
+  ctx.restore();
 }

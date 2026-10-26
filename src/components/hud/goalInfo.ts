@@ -4,12 +4,13 @@
  */
 import { relicArt } from '../../game/stagePlan.ts';
 import { stageFlowers } from '../../game/flowerSprites.ts';
+import { MEECA_STAGE_ID } from '../../game/extraStages.ts';
 
 /** the picture for the goal: a painted pickup (src/assets/pickups), a flower from the flower sheet, or a drawn stand-in */
 export type GoalIcon =
   | { kind: 'pickup'; name: string }
   | { kind: 'flower'; num: number }
-  | { kind: 'drawn'; name: 'idol' | 'foe' | 'cage' | 'door' };
+  | { kind: 'drawn'; name: 'idol' | 'foe' | 'cage' | 'door' | 'carving' };
 
 export interface GoalInfo {
   /** 'count': a quota (counter or slots); 'distance': get to the end (the trail); 'boss': the boss bar is the goal; 'none' */
@@ -24,6 +25,11 @@ export interface GoalInfo {
   slotIcon: (i: number) => GoalIcon;
   /** the noun for the counter's accessible label ("petals") */
   noun: string;
+  /**
+   * a collect or rescue stage: the counter also shows, small and light, how far along the stage he is (QA v200, 5-3 and 5-5 upright:
+   * the goal count alone gave no sense of how much was left)
+   */
+  far?: boolean;
 }
 
 interface Cfg {
@@ -59,6 +65,11 @@ function words(world: number, type: string): { verb: string; one: string; many: 
 export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
   const type = cfg.objectiveType;
   const w = cfg.worldIndex;
+  if (cfg.id === MEECA_STAGE_ID) {
+    // Meeca's stage counts her warnings: a scrap of bark with "M." scratched on it, "1/5" (the approved mock-ups)
+    const icon: GoalIcon = { kind: 'drawn', name: 'carving' };
+    return { kind: 'count', line: `This stage: carve ${cfg.targetCount} warnings`, sub: 'for Pokey to find', icon, slotIcon: () => icon, noun: 'warnings' };
+  }
   if (type === 'boss_lair') {
     const icon: GoalIcon = { kind: 'drawn', name: 'foe' };
     return { kind: 'boss', line: '', sub: '', icon, slotIcon: () => icon, noun: '' };
@@ -97,5 +108,5 @@ export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
     icon = { kind: 'drawn', name: 'foe' };
     slotIcon = () => icon;
   }
-  return { kind: 'count', line, sub: 'to open the sanctuary', icon, slotIcon, noun: g.many };
+  return { kind: 'count', line, sub: 'to open the sanctuary', icon, slotIcon, noun: g.many, far: type === 'harvest' || type === 'rescue' };
 }

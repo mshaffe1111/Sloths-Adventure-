@@ -3,7 +3,7 @@
  * hearts to them in 5-1 and 5-2, and every one of their crouches, the warning, had happened off the screen: the spiders roused 430 px
  * away either way, while upright the view shows only about 80 px behind Pokey and under 300 ahead).
  *
- * The real engine with its real camera (realPlay.ts) at each phone size, upright and sideways, playing 5-1 and 5-2 the way QA's run did:
+ * The real engine with its real camera (realPlay.ts) at each phone size, upright and sideways, playing 5-1, 5-2 and 5-3 the way QA's run did:
  * holding right and hopping every 1.5 s, from the start to the shrine (a fall goes back to the flag, as in the game). Every heart a spider
  * takes must come after a crouch that was fully on the screen for at least 0.6 s.
  */
@@ -72,7 +72,9 @@ function playThrough(id: string, w: number, h: number, every = 1.5, phase = 0.5)
     const stuck = r.t - bestAt > 2;
     const k = (i - hopAt + hopEvery * 1000) % hopEvery;
     const press = k === 0 || (stuck && k === 9);
-    r.frame({ right: true, press, jump: k < 16 });
+    // (5-5's first cocoon is tied across the path: a tap or two to punch it open, as Dot says, when he is up against it)
+    const blocked = (w5.cocoons ?? []).some((c, ci) => c.block && !e.w5.cocoons[ci].freed && c.x - p.x > 0 && c.x - p.x < 60 && p.grounded);
+    r.frame({ right: true, press: press && !blocked, jump: k < 16 && !blocked, punch: blocked && i % 14 === 0 });
     if (p.x > best + 20) {
       best = p.x;
       bestAt = r.t;
@@ -91,7 +93,7 @@ function playThrough(id: string, w: number, h: number, every = 1.5, phase = 0.5)
   return { hits, rushes, reached: p.x >= end - 60, x: Math.round(p.x), end };
 }
 
-for (const id of ['5-1', '5-2']) {
+for (const id of ['5-1', '5-2', '5-3']) {
   test(`${id}: every spider hit, upright and sideways, comes after a crouch on screen for ${WARN} s or more`, () => {
     assert.ok(SPIDER5.tell >= WARN);
     let all = 0;
@@ -102,7 +104,9 @@ for (const id of ['5-1', '5-2']) {
         const run = playThrough(id, w, h, every, 0.5);
         assert.ok(run.reached, `${id} ${w}x${h}: the run stopped at x ${run.x} of ${Math.round(run.end)}`);
         // (still a threat at every size: they come, and a player who never fights them back is caught)
-        assert.ok(run.rushes > 5 && run.hits.length > 0, `${id} ${w}x${h}: ${run.rushes} rushes, ${run.hits.length} hits`);
+        // (5-3's spiders are a reminder among the orchids, a few of them: they come, but a quick hop can clear every one)
+        if (id === '5-3') assert.ok(run.rushes >= 2, `${id} ${w}x${h}: ${run.rushes} rushes`);
+        else assert.ok(run.rushes > 5 && run.hits.length > 0, `${id} ${w}x${h}: ${run.rushes} rushes, ${run.hits.length} hits`);
         all += run.hits.length;
         for (const hit of run.hits) {
           if (hit.warned < WARN) bad.push(`${w}x${h} hop ${every} s: spider ${hit.id} at ${hit.t.toFixed(1)} s (dx ${hit.dx}) warned ${hit.warned.toFixed(2)} s`);
@@ -209,4 +213,22 @@ test('5-1: a punch or kick thrown at a rushing spider before it bites wins, neve
   }
   assert.deepEqual(trades, []);
   assert.ok(wins > 20, `${wins} clean wins`);
+});
+
+// ── 5-5 Caught in Silk: its awake spiders, and the sleepers a thread's hum wakes, upright and sideways ──
+test(`5-5: every spider hit, upright and sideways, comes after a crouch on screen for ${WARN} s or more`, () => {
+  const bad: string[] = [];
+  let rushes = 0;
+  for (const [w, h] of VIEWS) {
+    for (const every of [1.5, 1.1]) {
+      const run = playThrough('5-5', w, h, every, 0.5);
+      assert.ok(run.reached, `5-5 ${w}x${h}: the run stopped at x ${run.x} of ${Math.round(run.end)}`);
+      // (none rouses while the pouch scene plays, w5Play.ts: after it they come again, in every run)
+      assert.ok(run.rushes >= 1, `5-5 ${w}x${h} hop ${every} s: no spider rushed at all`);
+      rushes += run.rushes;
+      for (const hit of run.hits) if (hit.warned < WARN) bad.push(`${w}x${h} hop ${every} s: spider ${hit.id} at ${hit.t.toFixed(1)} s (dx ${hit.dx}) warned ${hit.warned.toFixed(2)} s`);
+    }
+  }
+  assert.ok(rushes >= 8, `${rushes} rushes: they still come`);
+  assert.deepEqual(bad, []);
 });

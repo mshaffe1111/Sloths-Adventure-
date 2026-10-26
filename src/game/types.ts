@@ -162,6 +162,8 @@ export interface Enemy {
   height: number;
   /** how wide its drawing is, when that is wider than its body (World 5's jumping spider, legs out): a strike can land across it */
   hitW?: number;
+  /** landing on it from above beats it, though its kind cannot be stomped elsewhere (World 5's jumping spider on the ground) */
+  stompable?: boolean;
   hp: number;
   maxHp: number;
   facing: 1 | -1;
@@ -454,6 +456,11 @@ export interface InputState {
   layerSwitchPressed: boolean;
   touchJoystickAngle: number | null; // 0..360 deg or null
   touchJoystickMagnitude: number;    // 0..1
+  /**
+   * a thumb held still on the glass (TouchController.tsx), the hold key (L or Shift), the Pad's punch button or a pad's bumper held down:
+   * Meeca's stage carves while it is held (meecaPlay.ts). Unset = not held.
+   */
+  hold?: boolean;
 }
 
 export interface MissionProgress {

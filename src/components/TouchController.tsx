@@ -14,6 +14,10 @@ import { refinedControls } from '../game/refinedControls.ts';
  * Both thumbs work at once, so you can run with one and jump or punch with the other.
  */
 
+/** a finger counts as held still after this long within this far of where it went down */
+const HOLD_STILL_MS = 160;
+const HOLD_STILL_PX = 20;
+
 interface TouchControllerProps {
   inputEngine: InputEngine;
 }
@@ -44,11 +48,19 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     );
   }
   const G = gestures.current;
+  // a thumb held still (Meeca carves while one is: meecaPlay.ts): each finger's start, and whether it has stayed put
+  const still = useRef(new Map<number, { x: number; y: number; t: number; still: boolean }>());
+  const holdCheck = (now: number) => {
+    let on = false;
+    for (const f of still.current.values()) if (f.still && now - f.t >= HOLD_STILL_MS) on = true;
+    inputEngine.setHold('touch', on);
+  };
 
   // holds and undecided fingers need a clock even when the finger is perfectly still
   useEffect(() => {
     const id = window.setInterval(() => {
       if (G.active) G.tick(performance.now());
+      if (still.current.size) holdCheck(performance.now());
     }, 30);
     return () => window.clearInterval(id);
   }, [G]);
@@ -76,7 +88,11 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
   // safety net: when every finger is up, nothing may stay held
   useEffect(() => {
     const onEnd = (e: TouchEvent) => {
-      if (e.touches.length === 0) G.cancelAll();
+      if (e.touches.length === 0) {
+        G.cancelAll();
+        still.current.clear();
+        inputEngine.setHold('touch', false);
+      }
     };
     window.addEventListener('touchend', onEnd);
     window.addEventListener('touchcancel', onEnd);
@@ -101,6 +117,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       const t = e.changedTouches[i];
       recorder.touch('d', t.identifier, t.clientX, t.clientY, now, Math.max((t as unknown as { radiusX?: number }).radiusX || 0, (t as unknown as { radiusY?: number }).radiusY || 0));
       G.down(t.identifier, t.clientX, t.clientY, now);
+      still.current.set(t.identifier, { x: t.clientX, y: t.clientY, t: now, still: true });
     }
   };
   const onMove = (e: React.TouchEvent) => {
@@ -109,7 +126,10 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       const t = e.changedTouches[i];
       recorder.touch('m', t.identifier, t.clientX, t.clientY, now);
       G.move(t.identifier, t.clientX, t.clientY, now);
+      const f = still.current.get(t.identifier);
+      if (f && Math.hypot(t.clientX - f.x, t.clientY - f.y) > HOLD_STILL_PX) f.still = false;
     }
+    holdCheck(now);
   };
   // a cancelled touch (a system gesture took it) is not a lift: it must not punch, kick or jump
   const onCancel = (e: React.TouchEvent) => {
@@ -117,7 +137,9 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     for (let i = 0; i < e.changedTouches.length; i++) {
       recorder.touch('c', e.changedTouches[i].identifier, 0, 0, now);
       G.cancelFinger(e.changedTouches[i].identifier, now);
+      still.current.delete(e.changedTouches[i].identifier);
     }
+    holdCheck(now);
   };
   const onEnd = (e: React.TouchEvent) => {
     const now = stamp(e);
@@ -125,7 +147,9 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       const t = e.changedTouches[i];
       recorder.touch('u', t.identifier, t.clientX, t.clientY, now);
       G.up(t.identifier, t.clientX, t.clientY, now);
+      still.current.delete(t.identifier);
     }
+    holdCheck(now);
   };
 
   return (

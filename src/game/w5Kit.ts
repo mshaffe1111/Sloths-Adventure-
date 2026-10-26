@@ -43,7 +43,19 @@ export const SIT = {
   slow: 0.35,
   /** seconds after a wrap before stillness counts again (the silk has just burst off) */
   cool: 1.2,
+  /**
+   * seconds of standing still before Dot first says so (W5_TEACH.still): well before the silk can start at `drowse`, so the rule is
+   * taught before it ever catches him (QA v198: the silk grabbed him "silently", its line only after the first catch)
+   */
+  notice: 1,
+  /** the silk a jump sheds at once (a jump is a wiggle: it is never swallowed by the silk) */
+  jump: 0.4,
+  /** with more silk than this on him, pulling against it shows (WOBBLE) */
+  showTug: 0.08,
 } as const;
+
+/** how he wobbles in the silk while he pulls against it (W5Play.wobble): world px, more the thicker it is; how quick; how long after */
+export const WOBBLE = { px: 1.5, perSilk: 3.5, rate: 38, hold: 0.3 } as const;
 
 export interface SitState {
   /** seconds he has stood still (scaled by the chair and the sheet) */
@@ -144,8 +156,14 @@ export interface Cake {
 }
 
 export const CAKE = {
-  /** half its size (px), seconds of sleep, and the share of his speed left while asleep on his feet */
-  half: 13,
+  /**
+   * half its touch box (px), seconds of sleep, and the share of his speed left while asleep on his feet. The box is a little inside the
+   * painted cake (about 31 by 41 px, w5Look.ts drawCake), and his reach for it a little inside his body: a hop that looks clear of it
+   * is (QA 5-2, 2026-10-26: three cakes eaten on hops she thought had cleared them).
+   */
+  half: 11,
+  /** half his body's width, for touching a cake (his body is 26 px wide) */
+  reach: 10,
   sleepy: 4.5,
   slow: 0.5,
 } as const;
@@ -153,7 +171,7 @@ export const CAKE = {
 /** does his body (feet at px, py) touch the cake? */
 export function touchesCake(c: { x: number; y: number }, px: number, py: number, ducking = false): boolean {
   const h = ducking ? 24 : 38;
-  return Math.abs(c.x - px) < 13 + CAKE.half && c.y + CAKE.half > py - h && c.y - CAKE.half < py;
+  return Math.abs(c.x - px) < CAKE.reach + CAKE.half && c.y + CAKE.half > py - h && c.y - CAKE.half < py;
 }
 
 /** the share of his speed left with `left` seconds of sleepiness to go: slow, easing back over the last second */
@@ -382,6 +400,12 @@ export const SPIDER5 = {
   lose: 0.4,
   /** an awake spider that heard a hum while off the screen still comes if it is in view within this long (s) */
   called: 4,
+  /**
+   * a rush is one way: once he is this far (px) past the spider's middle, behind where it was rushing, the rush is over, and it must
+   * crouch again in view before it comes back the other way. It used to turn and chase on the same rush, biting him from behind with
+   * no warning of its own, at the edge of the screen he had his back to (QA v198, 5-1 and 5-2 at 320 x 782)
+   */
+  past: 4,
 } as const;
 
 /** what the camera shows (world units): its left and right, top and bottom */
@@ -406,6 +430,8 @@ export interface GateState {
   called: number;
   /** seconds its rush has been off the screen */
   lost: number;
+  /** the way its rush goes (toward where he was as it crouched: +1 right, -1 left; 0 or unset, either way) */
+  dir?: -1 | 0 | 1;
 }
 export const newGate = (doze = false): GateState => ({ phase: 'calm', t: 0, dozing: doze, called: 0, lost: 0 });
 const CALM: GateState = { phase: 'calm', t: 0, dozing: false, called: 0, lost: 0 };
@@ -431,15 +457,19 @@ export function stepGate(
   if (g.phase === 'calm') {
     const bumped = g.dozing ? inp.grounded !== false && Math.abs(inp.dy) < 40 && Math.abs(inp.dx) < SPIDER5.doze : Math.abs(inp.dy) < SPIDER5.dy && Math.abs(inp.dx) < SPIDER5.sense;
     const called = inp.alarm ? SPIDER5.called : Math.max(0, g.called - dt);
-    if (seen && (inp.alarm || bumped || (!g.dozing && called > 0))) return { ...CALM, phase: 'windup' };
+    if (seen && (inp.alarm || bumped || (!g.dozing && called > 0))) return { ...CALM, phase: 'windup', dir: inp.dx >= 0 ? 1 : -1 };
     // (a hum heard off the screen wakes it; it comes once it is in view)
     if (inp.alarm) return { ...g, t, dozing: false, called };
     return { ...g, t, called };
   }
   if (g.phase === 'windup') {
     if (!shown) return CALM;
-    return t >= SPIDER5.tell ? { ...CALM, phase: 'go' } : { ...g, t };
+    // (he got past it while it crouched: it crouches again, facing him, the whole warning over)
+    if (g.dir && g.dir * inp.dx < -SPIDER5.past) return CALM;
+    return t >= SPIDER5.tell ? { ...CALM, phase: 'go', dir: g.dir } : { ...g, t };
   }
+  // (he got past it: the rush is spent, and coming back needs a crouch of its own)
+  if (g.dir && g.dir * inp.dx < -SPIDER5.past) return CALM;
   const lost = shown ? 0 : g.lost + dt;
   if (lost >= SPIDER5.lose) return CALM;
   // (a moment in before it can lose interest, so a rush is never cut off the frame it starts)
@@ -467,6 +497,73 @@ export const inSheet = (s: SilkSheet, px: number, py: number): boolean => px >= 
 export const admiring = (s: SilkSheet, px: number, py: number, vx: number, grounded: boolean): boolean =>
   grounded && inSheet(s, px, py) && Math.abs(vx) < SHEET.pace;
 
+// ───────────────────────────── the Seamstress ─────────────────────────────
+
+/**
+ * The Queen's seamstress, a pink lace-aproned spider knitting one of the silk sheets (5-4: her first, gentle appearance). She does not
+ * walk or bite. She knits; but let him linger in front of her sheet, admiring it, and she looks up (the tell: she lifts her needles,
+ * SEAMSTRESS.tell, with a "!" over her) and casts a length of lace onto him: more silk on him at once, never a wrap by itself. Moving on
+ * past her sheet during the tell calls it off, and she goes back to her knitting.
+ */
+export interface Seamstress {
+  /** her feet (on the ground at the end of her sheet), facing her work */
+  x: number;
+  y: number;
+  dir: 1 | -1;
+  /** the sheet she is knitting (an index into W5Extras.sheets) */
+  sheet: number;
+}
+
+export const SEAMSTRESS = {
+  /** seconds of his lingering at her sheet before she looks up; her tell (World 5's rule: every attack warned at least 0.6 s) */
+  watch: 0.5,
+  tell: 0.8,
+  /** seconds the cast takes (the lace flying), and her rest after it before she will look up again */
+  cast: 0.5,
+  rest: 2.5,
+  /** the silk her lace puts on him, and the most it can leave on him (her lace alone never wraps him: the stillness does) */
+  lace: 0.4,
+  most: 0.85,
+  /**
+   * how tall she stands knitting (world units): a head over Pokey, so she reads as a figure upright and sideways (she was 96, the Butler's
+   * height, and upright at 320 x 782 she was lost among the sheet's lace, QA v200); her tell stands taller (w5Creatures seamTop)
+   */
+  h: 124,
+} as const;
+
+export type SeamPhase = 'knit' | 'tell' | 'cast' | 'rest';
+export interface SeamState {
+  phase: SeamPhase;
+  t: number;
+  /** seconds he has lingered at her sheet (knitting) */
+  watched: number;
+}
+export const newSeam = (): SeamState => ({ phase: 'knit', t: 0, watched: 0 });
+
+/**
+ * one frame of the Seamstress: `lingering` he is admiring her sheet (w5Kit admiring); `seen` she is in full view on the screen (she
+ * only looks up where he can see her do it). `cast` is true on the frame her lace lands on him.
+ */
+export function stepSeam(st: SeamState, inp: { lingering: boolean; seen: boolean }, dt: number): { st: SeamState; cast: boolean } {
+  const t = st.t + dt;
+  if (st.phase === 'knit') {
+    const watched = inp.lingering ? st.watched + dt : 0;
+    if (watched >= SEAMSTRESS.watch && inp.seen) return { st: { phase: 'tell', t: 0, watched: 0 }, cast: false };
+    return { st: { phase: 'knit', t, watched }, cast: false };
+  }
+  if (st.phase === 'tell') {
+    // (he moved on, or she is off the screen: called off, back to her knitting)
+    if (!inp.lingering || !inp.seen) return { st: newSeam(), cast: false };
+    if (t >= SEAMSTRESS.tell) return { st: { phase: 'cast', t: 0, watched: 0 }, cast: true };
+    return { st: { ...st, t }, cast: false };
+  }
+  if (st.phase === 'cast') return { st: t >= SEAMSTRESS.cast ? { phase: 'rest', t: 0, watched: 0 } : { ...st, t }, cast: false };
+  return { st: t >= SEAMSTRESS.rest ? newSeam() : { ...st, t }, cast: false };
+}
+
+/** the silk on him after her lace lands */
+export const laced = (silk: number): number => Math.max(silk, Math.min(SEAMSTRESS.most, silk + SEAMSTRESS.lace));
+
 // ───────────────────────────── closing orchids ─────────────────────────────
 
 /**
@@ -483,6 +580,10 @@ export interface Orchid {
   offset: number;
   platformId?: number;
   petalIds?: number[];
+  /** the ground its stem grows from (default: 260 px under the bloom) */
+  stem?: number;
+  /** the stage's first, its lesson: the stillness waits along its stretch (w5Play.ts) */
+  lesson?: boolean;
 }
 
 export const ORCHID = {
@@ -525,6 +626,11 @@ export const orchidFair = (o: Orchid): boolean => o.open >= ORCHID.minOpen && o.
 export interface Cocoon {
   x: number;
   y: number;
+  /**
+   * tied across the path: he cannot walk or hop past it until it is punched open (the first cocoon of 5-5, so nobody walks past the
+   * stage's whole idea without knowing someone is inside: QA, v198)
+   */
+  block?: boolean;
 }
 
 export const COCOON = {
@@ -533,7 +639,23 @@ export const COCOON = {
   reach: 72,
   /** its middle is this far above its bottom */
   mid: 34,
+  /** a cocoon tied across the path holds him this far short of it (px, his x to its x): where a standing punch lands on its middle */
+  stop: 42,
+  /** and holds him at any height up to this far over it (no hopping past: its guy-lines and thread are in the way) */
+  stopUp: 320,
 } as const;
+
+/**
+ * a cocoon tied across the path (Cocoon.block) and still shut: where he may go no further, coming from the left at (x, y). Null when
+ * it does not hold him (open, or he is not at it).
+ */
+export function cocoonStop(c: Cocoon, freed: boolean, x: number, y: number): number | null {
+  if (!c.block || freed) return null;
+  const at = c.x - COCOON.stop;
+  if (x <= at || x > c.x + 30) return null;
+  if (y < c.y - COCOON.stopUp || y > c.y + 40) return null;
+  return at;
+}
 
 export interface CocoonState {
   hits: number;
@@ -625,10 +747,28 @@ export interface W5Extras {
   cocoons?: Cocoon[];
   carvings?: Carving[];
   spiders?: W5Spider[];
+  /** the Seamstress, knitting a sheet (5-4) */
+  seamstresses?: Seamstress[];
   decor?: W5Decor[];
   /** petals drifting down through the light (a lovely stage) */
   petals?: boolean;
+  /** 5-5: the rest branch where the orchids hang in rows, and the pouch scene played on it (w5Play.ts, w5Lines.ts W5_POUCH) */
+  rest?: RestBranch;
 }
+
+// ───────────────────────────── 5-5: the rest branch ─────────────────────────────
+
+/** a branch to rest on, [x0, x1] at height y: a story beat plays when he comes to it, and standing on it then is no danger */
+export interface RestBranch {
+  x0: number;
+  x1: number;
+  y: number;
+  /** where its calm stretch ends (the flag after the quiet garden past it): the pouch scene plays only up to here */
+  calm?: number;
+}
+
+/** is he standing on the rest branch? */
+export const onRest = (r: RestBranch, px: number, py: number, grounded: boolean): boolean => grounded && px >= r.x0 && px <= r.x1 && Math.abs(py - r.y) < 3;
 
 // ───────────────────────────── what Dot says the first time ─────────────────────────────
 
@@ -637,6 +777,7 @@ export interface W5Extras {
  * tip). The new look swaps each for Matt's short line (w5Lines.ts: 8 words or fewer, naming the thumb move).
  */
 export const W5_TEACH = {
+  still: 'Don\'t stop here, Pokey, don\'t even slow down. The silk creeps up on anyone who stands still. Slide on, keep moving',
   sit: 'Don\'t stand still here, Pokey! The silk creeps up on you. Keep moving, or slide left and right to shake it off',
   wrapped: 'Wrapped up! Never stand still for long here. Slide your thumb to wiggle free',
   wrapGentle: 'Wake up, Pokey! That silk nearly had you. Keep moving',
@@ -653,4 +794,6 @@ export const W5_TEACH = {
   cocoon: 'Somebody\'s wrapped up in that cocoon! Tap to punch it open and set them free',
   silk: 'A silk line, like a vine. Flick up into it to swing',
   spider: 'A jumping spider! It crouches before it rushes. Tap to punch it, or jump on it',
+  seamstress: 'That\'s the Seamstress, knitting her silk. Don\'t stand there watching her. Slide on past before she looks up',
+  laced: 'She saw you looking, and now there\'s lace all over you! Slide left and right to shake it off',
 } as const;

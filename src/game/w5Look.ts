@@ -14,6 +14,7 @@
  */
 import { shakyLetters, type Carving } from './w5Kit.ts';
 import { drawButlerPose, type ButlerPose } from './w5Creatures.ts';
+import { W5_FRAMES } from './w5PropsData.ts';
 import { drawScratch, drawW5, drawW5Box, drawW5Orchid, steamPuff, w5ArtReady, w5Height, w5Width, type W5Piece as ArtPiece } from './w5Art.ts';
 
 export type W5Piece =
@@ -52,7 +53,9 @@ export const PAINTED: Partial<Record<W5Piece, readonly ArtPiece[]>> = {
   table: ['teaTable'],
   chair: ['armchairRose', 'armchairRose2'],
   chairLilac: ['armchairLilac', 'armchairLilac2'],
-  wrappedChair: ['wrappedArmchair', 'wrappedChair', 'wrappedArmchair2', 'wrappedChair2'],
+  // (only the two takes whose wooden frame and tan cloth show through the silk: the all-white ones, a big wrapped bundle on the seat,
+  // read as cocoons, and both QA bots stopped to punch them, v198. A chair back, legs and wood: furniture, a guest who sat)
+  wrappedChair: ['wrappedArmchair2', 'wrappedChair2'],
   wrappedStool: ['wrappedStool'],
   cake: ['cakeIcon', 'cakeIcon2'],
   cakePlate: ['cakePlate', 'cakePlate2'],
@@ -291,8 +294,15 @@ export function drawCup(ctx: CanvasRenderingContext2D, x: number, b: number, fli
 }
 
 /** the card, big enough to read, with the words in careful handwriting (drawn over its painted paper when there is one) */
-export function drawCard(ctx: CanvasRenderingContext2D, x: number, y: number, text: string, alpha: number) {
-  if (alpha <= 0.01) return;
+/**
+ * The table's card, its middle at (x, y), `scale` times its size (its bottom kept where it was). `room`: the view's free band (under the
+ * HUD, `top`, to the view's `bottom`): when it does not fit above the table there (a short landscape screen), it pops up under the
+ * ground instead, its top at `below`. Returns where it was drawn (for Dot's bubble to keep clear of), or null.
+ */
+export function drawCard(
+  ctx: CanvasRenderingContext2D, x: number, y: number, text: string, alpha: number, scale = 1, room?: { top: number; below: number; bottom: number },
+): { x0: number; y0: number; x1: number; y1: number } | null {
+  if (alpha <= 0.01) return null;
   ctx.save();
   ctx.globalAlpha *= alpha;
   ctx.font = 'italic 600 15px Georgia, serif';
@@ -308,6 +318,15 @@ export function drawCard(ctx: CanvasRenderingContext2D, x: number, y: number, te
   }
   if (cur) lines.push(cur);
   const h = 18 * lines.length + 22;
+  // (the words are laid out at 1, then scaled)
+  const sh = scale * h;
+  let cy = y + (h / 2) * (1 - scale);
+  if (room && cy - sh / 2 < room.top) cy = Math.min(room.below + sh / 2, room.bottom - sh / 2 - 6);
+  const box = { x0: x - 92 * scale, y0: cy - sh / 2, x1: x + 92 * scale, y1: cy + sh / 2 };
+  ctx.translate(x, cy);
+  ctx.scale(scale, scale);
+  x = 0;
+  y = 0;
   if (!drawW5Art(ctx, 'card', x, y + h / 2, 184)) {
     rr(ctx, x - 92, y - h / 2, 184, h, 6);
     ctx.fillStyle = '#fff8e8';
@@ -325,6 +344,7 @@ export function drawCard(ctx: CanvasRenderingContext2D, x: number, y: number, te
   ctx.textBaseline = 'middle';
   lines.forEach((l, i) => ctx.fillText(l, x, y - h / 2 + 20 + i * 18));
   ctx.restore();
+  return box;
 }
 
 // ───────────────────────────── cakes and the pot ─────────────────────────────
@@ -841,50 +861,195 @@ export function drawSilkSheet(ctx: CanvasRenderingContext2D, x0: number, x1: num
   ctx.restore();
 }
 
-/** silk creeping up Pokey (feet at x, y): wraps of thread from the ground up, `silk` 0..1 of the way */
+/**
+ * silk creeping up Pokey (feet at x, y), `silk` 0..1 of the way: a pale veil over him as it thickens, strands tying him to the ground,
+ * and wraps of thread from the ground up, each with a dark edge so it reads in the golden light. QA v198 could not see it on him (the
+ * thin white loops were lost against his fur and the gold), so being stuck seemed to come from nowhere.
+ */
 export function drawSilkOnPokey(ctx: CanvasRenderingContext2D, x: number, y: number, silk: number, t: number) {
   if (silk <= 0.02) return;
   ctx.save();
+  const k = Math.min(1, silk);
+  // the veil: his body goes pale and lilac under the silk
+  ctx.globalAlpha = 0.18 + 0.32 * k;
+  ctx.fillStyle = '#f5f0ff';
+  ctx.beginPath();
+  ctx.ellipse(x, y - 4 - 25 * k, 21, 6 + 25 * k, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // the strands tying him down: from his sides out to the ground, taut, with a glint running along them
+  for (let i = 0; i < 4; i++) {
+    const side = i % 2 ? 1 : -1;
+    const top = y - 8 - (i < 2 ? 18 : 34) * k;
+    const foot = x + side * (26 + i * 7);
+    ctx.globalAlpha = Math.min(1, k * 2.4) * 0.9;
+    ctx.strokeStyle = 'rgba(70, 50, 90, 0.5)';
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(x + side * 9, top);
+    ctx.lineTo(foot, y + 1);
+    ctx.stroke();
+    ctx.strokeStyle = '#fdfaff';
+    ctx.lineWidth = 1.3;
+    ctx.stroke();
+    const g = (t * 0.9 + i * 0.27) % 1;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(x + side * 9 + (foot - x - side * 9) * g, top + (y + 1 - top) * g, 1.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // the wraps, from his feet up
   const n = Math.ceil(silk * 7);
   for (let i = 0; i < n; i++) {
     const u = i / 7;
     const yy = y - 4 - u * 50;
     const a = Math.min(1, silk * 7 - i);
-    ctx.globalAlpha = 0.85 * a;
+    const rx = 18 - Math.abs(u - 0.5) * 6;
+    const rot = Math.sin(i * 1.9 + t * 0.4) * 0.35;
+    ctx.globalAlpha = 0.95 * a;
+    ctx.strokeStyle = 'rgba(70, 50, 90, 0.55)';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.ellipse(x, yy, rx, 5, rot, 0, Math.PI * 2);
+    ctx.stroke();
     ctx.strokeStyle = '#fdfaff';
     ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.ellipse(x, yy, 18 - Math.abs(u - 0.5) * 6, 5, Math.sin(i * 1.9 + t * 0.4) * 0.35, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.strokeStyle = 'rgba(150, 130, 170, 0.6)';
-    ctx.lineWidth = 1;
     ctx.stroke();
   }
   ctx.restore();
 }
 
-/** a cocoon hanging with its bottom at (x, b): someone wrapped inside; `shake` after a hit, `cracks` hits so far, `open` freed */
-export function drawCocoon(ctx: CanvasRenderingContext2D, x: number, b: number, shake: number, cracks: number, open: boolean, t: number) {
+/**
+ * How a hanging cocoon reads among the orchids, stumps and grass (QA, 5-5 at 320x782, v198: it did not): the painted cocoon is drawn
+ * with its body where his fist lands (its middle COCOON_MID over its hang point, at his head; the sheet's piece hangs its body high on a
+ * long thread, above his head), a dark halo round it against the pale garden, a wriggle every couple of seconds and a peephole with two
+ * eyes looking out at him, blinking. The first one of the stage is tied across the path by two silk guy-lines (it stops him until it is
+ * punched open: w5Play.ts).
+ */
+export const COCOON_LOOK = {
+  /** the painted piece's height (the sheet's 273 px tall piece: thread, body and its loose tail) */
+  h: 170,
+  /** where its body's middle is in the piece, from its top (0..1), shut and torn open */
+  mid: 0.385,
+  midOpen: 0.56,
+  /** the body's middle sits this far over the point it hangs from (w5Kit COCOON.mid) */
+  over: 34,
+  /** a wriggle this often (s), lasting this long */
+  every: 2.6,
+  wriggle: 0.6,
+  /** the halo round it */
+  halo: 'rgba(42, 18, 66, 0.92)',
+  haloBlur: 12,
+} as const;
+
+/** how much it is wriggling at `t` (0..1): a short squirm every COCOON_LOOK.every seconds, each cocoon on its own beat */
+export function cocoonWriggle(t: number, x: number): number {
+  const u = (((t + x * 0.0137) % COCOON_LOOK.every) + COCOON_LOOK.every) % COCOON_LOOK.every;
+  return u < COCOON_LOOK.wriggle ? Math.sin((Math.PI * u) / COCOON_LOOK.wriggle) : 0;
+}
+
+/**
+ * a cocoon hanging with its bottom at (x, b): someone wrapped inside; `shake` after a hit, `cracks` hits so far, `open` freed. `o.look`:
+ * which way the eyes look (toward Pokey); `o.block`: tied across the path (the first of the stage); `o.floor`: the ground under it
+ */
+export function drawCocoon(ctx: CanvasRenderingContext2D, x: number, b: number, shake: number, cracks: number, open: boolean, t: number, o: { look?: number; block?: boolean; floor?: number } = {}) {
   const jig = shake > 0 ? Math.sin(t * 40) * 3 * shake : Math.sin(t * 1.3 + x) * 0.8;
   if (drawW5Art(ctx, open ? 'cocoonOpen' : 'cocoon', x + jig, b, 46)) return;
   // the painted cocoon on its thread (torn open once he is free), the cracks of each punch scored over it
-  if (paint(ctx, open ? 'cocoonOpen' : 'cocoon', x + jig, b, { h: 153 })) {
-    if (!open && cracks > 0) {
-      ctx.save();
-      ctx.strokeStyle = INK;
-      ctx.lineWidth = 2.2;
+  const L = COCOON_LOOK;
+  const piece = paintedFor(open ? 'cocoonOpen' : 'cocoon', x);
+  if (piece && w5ArtReady() && !atlas?.frames[open ? 'cocoonOpen' : 'cocoon']) {
+    // (both pieces at the one scale: the shut one L.h tall)
+    const k = L.h / W5_FRAMES.cocoonHanging.h;
+    const fr = W5_FRAMES[piece];
+    const h = fr.h * k;
+    const w = fr.w * k;
+    const mid = b - L.over;
+    // (drawn lower than the piece's own bottom: its body at his head, the loose tail below it hidden under the ground)
+    const bottom = mid + h * (1 - (open ? L.midOpen : L.mid));
+    const floor = o.floor ?? b + 18;
+    const wr = open ? 0 : cocoonWriggle(t, x);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x - 200, bottom - h - 400, 400, floor - (bottom - h - 400));
+    ctx.clip();
+    if (o.block && !open) {
+      // tied across the path: two silk guy-lines from its middle down to the ground either side, a tuft where each is stuck
       ctx.lineCap = 'round';
-      for (let k = 0; k < cracks; k++) {
-        const cx = x + jig - 8 + k * 7, cy = b - 22 - k * 13;
-        ctx.beginPath();
-        ctx.moveTo(cx - 4, cy + 5);
-        ctx.lineTo(cx + 2, cy - 2);
-        ctx.lineTo(cx - 2, cy - 8);
-        ctx.lineTo(cx + 4, cy - 13);
-        ctx.stroke();
+      for (const [c, lw] of [['rgba(42, 18, 66, 0.55)', 4.5], ['#fbf6ff', 2.2]] as const) {
+        ctx.strokeStyle = c;
+        ctx.lineWidth = lw;
+        for (const s of [-1, 1]) {
+          ctx.beginPath();
+          ctx.moveTo(x + jig + s * 10, mid + 14);
+          ctx.quadraticCurveTo(x + s * 30, mid + 30, x + s * 46, floor - 1);
+          ctx.stroke();
+        }
       }
-      ctx.restore();
+      ctx.fillStyle = '#fbf6ff';
+      for (const s of [-1, 1]) {
+        ctx.beginPath();
+        ctx.ellipse(x + s * 46, floor - 2, 7, 3.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
+    // the wriggle: a sway about where its thread is tied, and a squirm of the body
+    const top = bottom - h;
+    ctx.translate(x + jig, top);
+    ctx.rotate(Math.sin(t * 15) * 0.05 * wr);
+    ctx.translate(0, mid - top);
+    const sq = Math.sin(t * 21) * 0.06 * wr;
+    ctx.scale(1 + sq, 1 - sq * 0.6);
+    ctx.translate(0, top - mid);
+    // a dark halo against the pale orchids and grass
+    ctx.shadowColor = L.halo;
+    ctx.shadowBlur = L.haloBlur;
+    drawW5(ctx, piece, 0, bottom - top, w);
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
+    const my = mid - top;
+    if (!open) {
+      // a peephole torn in the silk, and two eyes looking out of it at him (they blink now and then)
+      const look = Math.max(-1, Math.min(1, o.look ?? 0));
+      ctx.fillStyle = '#2a1838';
+      ctx.beginPath();
+      ctx.ellipse(0, my - 12, 15, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      const blink = ((t + x * 0.007) % 3.3) < 0.14;
+      for (const ex of [-6, 6]) {
+        if (blink) {
+          ctx.strokeStyle = '#fdfaff';
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.moveTo(ex - 3.5, my - 12);
+          ctx.lineTo(ex + 3.5, my - 12);
+          ctx.stroke();
+          continue;
+        }
+        ctx.fillStyle = '#fdfaff';
+        ctx.beginPath();
+        ctx.arc(ex, my - 12, 4.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#1b0f24';
+        ctx.beginPath();
+        ctx.arc(ex + look * 1.6, my - 11.5, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      if (cracks > 0) {
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        for (let k = 0; k < cracks; k++) {
+          const cx = -8 + k * 7, cy = my + 22 - k * 13;
+          ctx.beginPath();
+          ctx.moveTo(cx - 4, cy + 5);
+          ctx.lineTo(cx + 2, cy - 2);
+          ctx.lineTo(cx - 2, cy - 8);
+          ctx.lineTo(cx + 4, cy - 13);
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
     return;
   }
   ctx.save();
