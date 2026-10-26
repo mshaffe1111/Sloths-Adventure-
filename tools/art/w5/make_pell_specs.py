@@ -2,10 +2,14 @@
 General's soldiers, the blanket and Meeca in it.
 
     python3 -I tools/art/w5/make_pell_specs.py            -> tools/art/gen/spec-w5pell-edits.json + spec-w5pell-clips.json (GPU)
-    python3 -I tools/art/w5/make_pell_specs.py --clips2   -> tools/art/gen/spec-w5pell2.json  (GPU: clips from the picked edits)
+    python3 -I tools/art/w5/make_pell_specs.py --round2   -> spec-w5pell2-edits.json + spec-w5pell2-clips.json (GPU)
+    python3 -I tools/art/w5/make_pell_specs.py --round3   -> spec-w5pell3-edits.json (GPU: the soldiers' plain faces)
+    python3 -I tools/art/w5/make_pell_specs.py --round4   -> spec-w5pell4-clips.json (GPU: the soldiers' clips)
 
-Order: spec-w5pell-starts (CPU, w5cpu.py: Pell's start pictures from his story cels, with the lantern glow cut) -> spec-w5pell (GPU,
-2 parts) -> pick edits -> spec-w5pell2 (GPU) -> spec-w5pell-pack (CPU). Clip names are "w5-<who>-<move>-s<seed>"; the pack spec maps
+Order (2026-10-26): spec-w5pell-starts (CPU, w5cpu.py: Pell's start pictures from his story cels, with the lantern glow cut) ->
+spec-w5pell-edits + -clips (GPU) -> pick -> round 2 (Pell's blanket offer and catch takes) -> round 3 -> round 4 -> spec-w5pell-pack
+and spec-w5soldier-pack (CPU, every frame) -> repack.py picks the frames into the game's sheets. Clip names are
+"w5-<who>-<move>-s<seed>"; the pack spec maps
 each "<who>-<move>" to its start picture's meta (meta_from / meta). Pell has no character model, so every edit runs without one: the
 model-free edits of Meeca kept her on-model where her own model drifted (meeca_carve.py).
 """
