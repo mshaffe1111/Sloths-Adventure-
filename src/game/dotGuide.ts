@@ -54,6 +54,13 @@ export interface GuideLine {
   capMs?: number;
   /** how long it may wait in the queue before it is old news (ms) */
   waitMs?: number;
+  /**
+   * a tip about a new THING, not a new move (World 5's threads, cakes, the Butler's tray): "Flick up over the cakes" teaches the cake,
+   * and a player who has jumped a hundred times still needs it. It is said even when its move was done earlier in the stage, waits in
+   * the queue by time as a plain line does, and once up stays until the move is done again (or its reading time, if it has no move).
+   * (QA, 5-2, 2026-10-26: the cake, thread and tray tips were dropped unseen because she had already jumped and punched.)
+   */
+  thing?: boolean;
   /** where it came from: an engine line can be taken down by the engine ("the moment has passed") */
   source: 'engine' | 'lesson' | 'coach' | 'story' | 'journal' | 'struggle';
 }
@@ -90,6 +97,8 @@ export const GUIDE = {
   minShowMs: 1500,
   /** a boss fight's warning or tip is up at most this long (it belongs to one attack; QA v189: one stayed 20 s of a 26 s fight) */
   bossLineMs: 6000,
+  /** a tip about a thing (GuideLine.thing) has had a fair look after this long, and gives way to the next thing's tip (ms) */
+  thingYieldMs: 3000,
 } as const;
 
 const waitFor = (l: GuideLine) => l.waitMs ?? GUIDE.waitMs[l.kind];
@@ -246,7 +255,7 @@ export class GuideQueue {
     const skipped: GuideLine[] = [];
     this.waiting = this.waiting.filter((w) => {
       const m = w.line.move;
-      if (!m) return now <= w.until;
+      if (!m || w.line.thing) return now <= w.until;
       if (w.base === undefined || w.base < 0) {
         if (env.moveCount(m) > 0) {
           if (w.line.next) skipped.push(w.line.next);
@@ -266,6 +275,9 @@ export class GuideQueue {
       if (this.clearCur) {
         if (shown) why = 'cleared';
       } else if (l.capMs !== undefined && age >= Math.max(GUIDE.minShowMs, l.capMs)) {
+        why = 'read';
+      } else if (l.thing && age >= GUIDE.thingYieldMs && this.best(now, env)?.line.kind === 'teach') {
+        // (a tip about a thing he has had a fair look at gives way to the next thing's: that one is coming up now)
         why = 'read';
       } else if (l.move) {
         if (env.moveCount(l.move) > cur.base) {

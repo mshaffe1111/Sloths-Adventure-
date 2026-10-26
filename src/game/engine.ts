@@ -7,6 +7,7 @@ import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState }
 import { recorder } from './playRecorder.ts';
 import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
+import { W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { SectionTrack } from './sectionTrack.ts';
 import { isEasy } from './difficulty.ts';
@@ -202,6 +203,10 @@ export interface GameEngineCallbacks {
   onLesson?: (id: LessonId) => void;
   onBossUpdate?: (info: { name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null) => void;
 }
+
+/** World 5's low steps for the stuck-helper (px above his feet: a face one jump climbs), and how long the stillness waits after it speaks */
+export const STEP_FACE = { min: 30, max: 100 } as const;
+const STUCK_HOLD = 7;
 
 export class GameEngine {
   private canvas: HTMLCanvasElement;
@@ -3712,6 +3717,12 @@ export class GameEngine {
   /** Dot's stuck-helper (stuckHelper.ts): jumping again and again at a wall only the second jump climbs gets the second jump explained */
   private stuck = new StuckWatch();
   private wallWasAhead = false;
+  /**
+   * World 5's second watch, for a step ONE jump climbs: a first-timer hopping straight up beside it with the thumb lifted lands where
+   * he began, again and again (QA, 5-1, 2026-10-26). There the help is to keep sliding forward through the flick.
+   */
+  private stuckStep = new StuckWatch();
+  private stepWasAhead = false;
   /** how far (px, signed) his drawing stands off a wall he is sliding down in the air (WALL_OFF): it never moves his body */
   private wallOff = 0;
   private watchForStuck() {
@@ -3722,18 +3733,29 @@ export class GameEngine {
     const air = !p.grounded && !p.climbing && !p.isVineSwinging;
     if (this.stuck.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.wallWasAhead })) {
       this.guide(stuckLine(lessonInputMode()), 6);
+      // (in World 5 the stillness waits while she says it: her help is read, not the silk's warning over it)
+      this.w5?.holdStill(STUCK_HOLD);
       recorder.event('stuckHelp', Math.round(p.x));
     }
+    if (this.w5) {
+      if (p.grounded) this.stepWasAhead = this.wallAhead(STEP_FACE.min, STEP_FACE.max);
+      if (this.stuckStep.tick({ grounded: !air, x: p.x, y: p.y, doubleJumping: !!p.isDoubleJumping, wallAhead: this.stepWasAhead })) {
+        const mode = lessonInputMode();
+        this.guide(mode === 'pad' ? W5_STEP_HELP_PAD : mode === 'keys' ? W5_STEP_HELP_KEYS : W5_STEP_HELP, 6);
+        this.w5.holdStill(STUCK_HOLD);
+        recorder.event('stuckStepHelp', Math.round(p.x));
+      }
+    }
   }
-  /** a solid face just in front of him, standing on the ground, taller than one jump climbs */
-  private wallAhead(): boolean {
+  /** a solid face just in front of him, standing on the ground, taller than one jump climbs (or, given, between `lo` and `hi` px tall) */
+  private wallAhead(lo = 100, hi = 320): boolean {
     const p = this.player;
     const f = p.facing >= 0 ? 1 : -1;
     for (const q of this.platforms) {
       if (q.type !== 'solid' || q.broken) continue;
       const near = f > 0 ? q.x - p.x : p.x - (q.x + q.width);
       if (near < 0 || near > 90) continue;
-      if (q.y < p.y - 100 && q.y > p.y - 320 && q.y + q.height >= p.y - 12) return true;
+      if (q.y < p.y - lo && q.y > p.y - hi && q.y + q.height >= p.y - 12) return true;
     }
     return false;
   }

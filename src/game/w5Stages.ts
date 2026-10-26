@@ -6,18 +6,23 @@
  *   1. START    the first tree, with Meeca's carving: POKEY. DON'T SIT. M. (cut with a hairpin as they marched her past).
  *   2. LEARN    the little table in the middle of the path, set for two, with its card ("Do sit. The pot is warm. It is always warm.")
  *               and two soft chairs that tug: the stillness is taught gently here (a wrap is only a fright: W5Extras.gentle).
- *   3. DEVELOP  the open garden: soft jumps, stumps, a high road of petals, and the jumping spider (it crouches, then rushes).
+ *   3. DEVELOP  the open garden: soft jumps, stumps, a high road of petals, and the jumping spider (it crouches, then rushes). Everything
+ *               up to the first wide gap is one plain jump high (1-1's stepping-stone numbers); the second jump is taught at that gap,
+ *               the first place that needs it (QA, 2026-10-26).
  *   4. TWIST    the guests who sat: silk-wrapped chairs along the way, soft chairs at the lip of the jumps, spiders in pairs.
  *   5. FINISH   the ideas again in new pairs, a flag after each, until a quick player has had about 2:45 (STAGE_SECONDS).
  *
  * 5-2 Don't Sit (stealth, gold): "POKEY. DON'T SIT. Stay hidden and keep moving."
- *   1. START    Dot's rules: don't sit, don't eat, don't drink, don't touch the silk, don't admire the silk.
- *   2. LEARN    the humming threads: strung low across the way, they hum at a touch, and the sleeping spiders near them wake and come.
- *               A sleeping spider wakes only if he walks right into it: hop over it.
+ *   1. START    Dot's rules: don't sit, don't eat, don't drink, don't touch the silk, don't admire the silk (with room to say them
+ *               before anything they are about comes near, for a player who runs from the first moment).
+ *   2. LEARN    the sleeping spiders first (one lies alone, to be hopped: it wakes only if he walks right into it), then the humming
+ *               threads: strung low across the way, they hum at a touch, and the sleeping spiders near them wake and come. Each is
+ *               taught before the first one he could touch (QA, 2026-10-26).
  *   3. DEVELOP  the cakes: tiny cakes among the petals that make him sleepy; then the first Butler, holding out a tray with a cake on
  *               it (punch the tray away, or jump over him).
  *   4. TWIST    soft chairs among the threads ("You'd be a very still chair"), and Pell's blanket note in plain sight on a pink bell.
- *   5. TWIST    everything at once: threads before the jumps, cakes on the high road, sleeping spiders under it, the Butler again.
+ *   5. TWIST    everything at once: threads before the jumps (the wide one with a reminder of the second jump), cakes on the high
+ *               road, sleeping spiders under it, the Butler again.
  *   6. FINISH   new pairs until about 3:20 (STAGE_SECONDS).
  *
  * Every drop is a soft pit (a mossy floor and a step back up the far side): a miss costs a climb, never a life. The hearts are lost to
@@ -46,6 +51,16 @@ const GAP1: [number, number] = [130, 165];
 const GAP2: [number, number] = [205, 250];
 /** how far a spider's patch keeps from a flag or the spawn (levelCheck.ts SAFE_APPROACH is 200) */
 const SAFE_GAP = 230;
+/**
+ * Stumps before the second jump is taught: 1-1's stepping-stone numbers (protoStage.ts stumps: the first 50 px, the rest 50, 60 or 70),
+ * an easy single hop. 5-1's old 60 to 88 px stumps came before the lesson and a first-timer was stuck at them for 20 s (QA, 2026-10-26).
+ */
+export const W5_PLAIN_STUMPS = { first: 50, steps: [50, 60, 70] } as const;
+/** after it: one jump high (60 to 88, under SAFE.rise1), or (`tall`) two */
+const STUMP_H: [number, number] = [60, 88];
+const TALL_H: [number, number] = [125, 145];
+/** how far before a gap's edge Dot's line about it is said (px): room to say it before he is near it, for a player at full run */
+const GAP_TELL = 760;
 
 /** what the tests read back about the stage (ids and x's) */
 export interface W5Info {
@@ -57,6 +72,10 @@ export interface W5Info {
   highRoads: Array<{ step: number; road: number }>;
   /** enemy ids of the spiders */
   spiders: number[];
+  /** the stumps (x, height, whether the second jump was taught by then) */
+  stumps: Array<{ x: number; h: number; taught: boolean }>;
+  /** where the second jump is taught (5-1) or reminded (5-2): the x of its line and of the gap's edge */
+  doubleLesson?: { hint: number; edge: number };
 }
 
 export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): GeneratedStage & { proto: ProtoExtras; w5info: W5Info } {
@@ -78,7 +97,10 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   const carvings: Carving[] = [];
   const spiders: W5Spider[] = [];
   const decor: W5Decor[] = [];
-  const info: W5Info = { plan, flagSeconds: [0], gaps: [], highRoads: [], spiders: [] };
+  const info: W5Info = { plan, flagSeconds: [0], gaps: [], highRoads: [], spiders: [], stumps: [] };
+  /** has the second jump been taught? (in 5-1, at its first wide gap; 5-2 comes after 5-1, and reminds at its first) */
+  let doubleTaught = plan !== '5-1';
+  let doubleSaid = false;
   let pid = 1, cid = 1, eid = 1;
   let expert = 0;
   const r = Math.round;
@@ -192,8 +214,17 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   }
   /** a jump over a soft pit (two jumps' worth when `double`), petals in an arc over it */
   function gap(double = false) {
+    const x0 = x;
     run(R.r(140, 220));
     const edge = x;
+    if (double && !doubleSaid) {
+      // the first gap only the second jump crosses: 5-1 teaches it here (the first place that needs it), 5-2 reminds
+      doubleSaid = true;
+      doubleTaught = true;
+      const at = Math.min(x0 + 20, edge - GAP_TELL);
+      hint(at, plan === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double);
+      info.doubleLesson = { hint: r(at), edge: r(edge) };
+    }
     const w = r(R.r(...(double ? GAP2 : GAP1)));
     // (never wider than the jump reaches, with room to spare: a real thumb makes every one)
     const far = edge + Math.min(w, r(reachJump(0, double) * (double ? 0.8 : 0.94)));
@@ -207,10 +238,15 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   }
   /** stumps to hop: one jump high, or (taller) two */
   function stumps(n: number, tall = false) {
+    // (nothing a second jump is needed for before it is taught)
+    if (tall && !doubleTaught) throw new Error(`${plan}: tall stumps before the second jump is taught`);
     for (let i = 0; i < n; i++) {
       run(R.r(120, 180));
       const w = R.r(130, 190);
-      const h = tall && i % 2 === 1 ? R.r(125, 145) : R.r(60, 88);
+      const h = !doubleTaught
+        ? info.stumps.length === 0 ? W5_PLAIN_STUMPS.first : R.pick(W5_PLAIN_STUMPS.steps)
+        : tall && i % 2 === 1 ? R.r(...TALL_H) : R.r(...STUMP_H);
+      info.stumps.push({ x: r(x), h: r(h), taught: doubleTaught });
       block(x, x + w, h);
       flower(x + w / 2, G - h - 34, 'hibiscus');
       run(w);
@@ -313,7 +349,9 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       // (the words at his eye level: the camera keeps the ground low in the view)
       carvings.push({ x: tx, y: G - 196, lines: ['POKEY.', 'DON\'T', 'SIT.', 'M.'], size: 32, trunk: { ground: G, w: 128, h: 470 } });
       hint(tx - 220, W5_HINTS.s51carving);
-      rest(R.r(1100, 1250));
+      // (room for the first lines to be said before the table's soft chairs tug: a player who runs from the first moment has the goal
+      // card and the opening line before the chairs' tip can come; QA, 2026-10-26)
+      rest(R.r(1950, 2100));
       flag();
     });
     beat('Learn: the table set for two', () => {
@@ -336,10 +374,13 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       stumps(2);
       spiderRun(1, R.r(900, 1000));
       gap();
+      flag();
+      // the second jump, taught at the first gap that needs it, with room after the flag for its line to be said on its own and read
+      rest(R.r(450, 550));
+      gap(true);
       hint(x + 60, W5_HINTS.s51petals);
       highRoad(R.r(560, 680));
       flag();
-      gap(true);
       spiderRun(2, R.r(1100, 1250));
       stumps(3, true);
       flag();
@@ -384,36 +425,46 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     beat('Start: the rules', () => {
       hint(60, W5_HINTS.s52rules);
       carvings.push({ x: 380, y: G - 128, lines: ['DON\'T', 'SIT.'], size: 32, trunk: { ground: G, w: 112, h: 420 } });
-      // (room for the rules to be said before the first thread comes into view)
-      rest(R.r(1300, 1450));
+      // (room for the rules to be said, and read, before the first sleeper or thread comes near: a player who runs from the first
+      // moment has the goal card, then the rules, then their second half, before the sleeping spiders' line; QA, 2026-10-26)
+      rest(R.r(1700, 1850));
       flag();
     });
-    beat('Learn: the humming threads', () => {
-      threadTrap(0, false);
-      hint(x + 40, W5_HINTS.s52doze);
-      rest(R.r(240, 300), false);
-      run(R.r(160, 200));
+    beat('Learn: the sleeping spiders, then the humming threads', () => {
+      // the first sleeper lies on its own, to be hopped (it wakes only if he walks into it); Dot's line comes well before it
+      rest(R.r(300, 360), false);
+      hint(x, W5_HINTS.s52doze);
+      run(R.r(900, 980));
       spider(x, x - 160, x + 200, true);
       run(R.r(300, 360));
-      expert += 560 / RUN;
+      expert += 1300 / RUN;
+      // then the first thread, alone (its line comes as it comes into view, w5Play.ts), and a thread with sleepers beyond it
+      rest(R.r(240, 300), false);
+      threadTrap(0, false);
       threadTrap(2);
       flag();
       gap();
+      // (a breath after the landing: the thread is seen, and hopped, not landed on)
+      rest(R.r(220, 280), false);
       threadTrap(1);
       rest(R.r(260, 320));
       flag();
     });
     beat('Develop: the cakes and the Butler', () => {
+      // (each new thing with room before it: its line is said, and read, before he is at it, whatever was said just before; QA, 2026-10-26)
+      rest(R.r(450, 550));
       cakeRow(2);
       gap();
       cakeRow(3);
       flag();
+      rest(R.r(450, 550));
       butler();
       rest(R.r(300, 360));
       stumps(2);
       flag();
     });
     beat('Twist: the chairs and the note', () => {
+      rest(R.r(400, 480));
       hint(x + 60, W5_HINTS.s52chair);
       chairWalk(2, 3);
       threadTrap(1);
@@ -431,6 +482,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     beat('Twist: all at once', () => {
       hint(x + 60, W5_HINTS.s52all);
       threadTrap(1);
+      // (a breath past the sleeper before the wide gap: the second jump's reminder is said with no spider at hand)
+      rest(R.r(450, 550));
       gap(true);
       highRoad(R.r(560, 660), (x0, x1, y) => {
         cakes.push({ x: r((x0 + x1) / 2), y: r(y - 34) });
