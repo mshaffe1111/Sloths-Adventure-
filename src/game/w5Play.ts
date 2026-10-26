@@ -45,7 +45,8 @@ export interface W5Host {
   tip(key: string, text: string, seconds: number): void;
   /** the warning on screen has had its moment (the wrap came): take it down, so the next line need not wait behind it */
   clearTip?(): void;
-  float(text: string, x: number, y: number, color: string): void;
+  /** a floating word in the world (`life` seconds: the engine's pop-up time when not given) */
+  float(text: string, x: number, y: number, color: string, life?: number): void;
   sfx(kind: 'hum' | 'wrap' | 'cake' | 'puff' | 'tray' | 'free' | 'crack'): void;
   /** a creature freed from a cocoon (a rescue stage counts it) */
   rescue?(): void;
@@ -60,6 +61,14 @@ const BUTLER_SEE = 1100;
 /** an awake spider's first-time line comes this far ahead (it notices him from SPIDER5.sense, 430 px): time to say it before */
 const SPIDER_SEE = 1300;
 const said = (key: string) => `tip:${key}`;
+/** what a cake or the tray did to him stays up this long (s): the engine's 0.8 s pop-up was gone before it was read */
+export const W5_POP_LIFE = 1.6;
+type W5Box = { x0: number; y0: number; x1: number; y1: number };
+/** the table card is drawn at least as large on the screen as at this zoom (upright at 320 x 782, where it reads), up to this scale */
+export const CARD_READ_ZOOM = 0.87;
+const CARD_MAX_SCALE = 1.8;
+/** how many times its size the table card (and World 5's pop-up words, engine.ts drawPopups) is drawn at this zoom */
+export const cardScale = (zoom: number): number => Math.max(1, Math.min(CARD_MAX_SCALE, CARD_READ_ZOOM / zoom));
 
 export class W5Play {
   private sit: SitState = newSit();
@@ -77,6 +86,8 @@ export class W5Play {
   private gates = new Map<number, GateState>();
   private cocoons: Array<CocoonState & { swing: number }>;
   private orchidOf = new Map<number, number>();
+  /** where the table card was drawn last frame (world), for Dot's bubble to keep clear of; null when it is not up */
+  private cardBox: W5Box | null = null;
   private orchidPlat = new Map<number, Platform>();
   private pull = 0;
   private seated = -1;
@@ -255,7 +266,8 @@ export class W5Play {
       this.butlers[i] = out.st;
       if (out.knocked) {
         this.trayFly[i] = { x: tray.x, y: tray.y, vx: b.dir * 260, vy: -380, at: h.t };
-        h.float('TRAY AWAY!', tray.x, tray.y - 40, '#fde68a');
+        // (said plainly, and long enough to read: QA 5-2, 2026-10-26, the tap at the tray scored but nothing said what it had done)
+        h.float('TRAY AWAY!', tray.x, tray.y - 30, '#fef08a', W5_POP_LIFE);
         h.sfx('tray');
       }
       if (out.ate) this.ateCake(h, doze);
@@ -358,7 +370,7 @@ export class W5Play {
     doze(CAKE.sleepy);
     h.ate?.();
     h.sfx('cake');
-    h.float('SLEEPY AND SLOW...', p.x, p.y - 96, '#ddd6fe');
+    h.float('SLEEPY AND SLOW...', p.x, p.y - 96, '#ddd6fe', W5_POP_LIFE);
     h.tip(said(W5_TEACH.ate), W5_TEACH.ate, 3.2);
   }
 
@@ -400,7 +412,7 @@ export class W5Play {
     (w5.orchids ?? []).forEach((o) => {
       if (!vis(o.x)) return;
       const s = orchidAt(o, t);
-      drawOrchid(ctx, o.x, o.y, o.w, s.open, s.phase === 'closing' ? 1 : 0, t, o.y + 260);
+      drawOrchid(ctx, o.x, o.y, o.w, s.open, s.phase === 'closing' ? 1 : 0, t, o.stem ?? o.y + 260);
     });
     (w5.cocoons ?? []).forEach((c, i) => {
       if (!vis(c.x)) return;
@@ -429,7 +441,8 @@ export class W5Play {
   }
 
   /** over Pokey: the silk creeping up him, the spiders' marks, the card when he is at the table, a flying tray, the falling petals */
-  drawFront(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number; y0: number; y1: number }) {
+  /** `zoom`: the view's (css px a world px); `hud`: the bottom of the HUD band along the top, in the world */
+  drawFront(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number; y0: number; y1: number; zoom?: number; hud?: number }) {
     const w5 = this.w5;
     const p = this.player;
     for (const d of w5.decor ?? []) if (d.front && d.x > view.x0 - d.w && d.x < view.x1 + d.w) this.decor(ctx, d, t);
@@ -462,12 +475,19 @@ export class W5Play {
       }
       ctx.restore();
     }
+    let card: W5Box | null = null;
     if (p) {
       for (const tb of w5.tables ?? []) {
         const d = Math.abs(p.x - tb.x);
-        if (d < 320) drawCard(ctx, tb.x, tb.y - 170, tb.card, Math.min(1, (320 - d) / 120));
+        // (as large on the screen as upright at 320 x 782 shows it, where it reads: sideways and short the view is zoomed out, and at
+        // 782 x 288 its words were too small to read; QA 5-1, 2026-10-26)
+        const s = cardScale(view.zoom ?? CARD_READ_ZOOM);
+        // (on a short landscape screen there is no room for it between the HUD and the table: it pops up in the ground under the table)
+        const room = { top: view.hud ?? view.y0, below: tb.y + 40, bottom: view.y1 };
+        if (d < 320) card = drawCard(ctx, tb.x, tb.y - 170, tb.card, Math.min(1, (320 - d) / 120), s, room) ?? card;
       }
     }
+    this.cardBox = card;
     this.trayFly.forEach((f) => {
       if (f && f.y < view.y1 + 200) drawFlyingTray(ctx, f.x, f.y, (t - f.at) * 12);
     });
@@ -557,6 +577,8 @@ export class W5Play {
       const b = carvingBox(c);
       if (b.x1 > view.x0 && b.x0 < view.x1) out.push(b);
     }
+    // (and the table's card while it is up: Dot's bubble does not cover it)
+    if (this.cardBox) out.push(this.cardBox);
   }
 
   // ───────────────────────────── 5-5: the rest branch and its scene, the silk lines' first line, the freed creatures ─────────────────────────────

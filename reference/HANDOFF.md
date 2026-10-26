@@ -62,7 +62,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
     - You play Meeca, marched through the sanctuary at dusk with Pell as her guard. She can't fight: she slips out of line, carves on the move (hold on a trunk, her hairpin), and gets back before she's missed. Getting caught is gentle: she's walked back into line, with no hearts lost.
     - It opens on her finishing the 5-1 carving the player already read. What you carve shows up in 5-6, where you carved it, for Pokey to find.
     - It ends with Pell catching her gently and the blanket ("It is not from the General"), the moment from her hidden note.
-    - What makes it different: no Dot (the tips are Meeca's own thoughts), her Heartbloom song as the music, dusk light, about 2.5–3 min, and her own page in the journal after. Mock-ups go to Matt before it's built.
+    - What makes it different: no Dot (the tips are Meeca's own thoughts), her Heartbloom song as the music, dusk light, about 2.5–3 min, and her own page in the journal after. Matt approved the mock-ups (2026-10-26). The General's soldiers are sloths in olive uniform, like Pell (Matt, 2026-10-26).
   - The cakes: tempting trap pickups that make Pokey sleepy. The game tracks whether you ate any in World 5. Eat none and the Queen says "Nobody has ever not eaten the cake" (plus a badge); eat some and she says a line like "You ate the cake, darling. Everyone does."
   - Enemies (Matt chose all of them, reuse elsewhere where they fit): the jumping spider (made); the Dangler (orb weaver drops on its thread; brushing the thread drops it); the Butler (waistcoated spider offering cakes); the Seamstress (weaves silk sheets, wraps you if you stand still); the Orchid Mantis (disguised as an orchid, snaps); Dozer moths (sleepy powder slows Pokey). Style: the Queen's household (Butler, Seamstress) polite-creepy tea-party (waistcoats, lace); wild ones painted nature; all with big readable eyes.
   - Concept art approved (Matt liked all of it: https://claude.ai/artifact/VA9J1DoYfS7eBZKQXYjiMk; raw art in the private HF repo mshaffe111/slothadv-w5art). Mix and match: both backdrop takes per mood alternate stage to stage; the arena table take for the fight, the webs take for the intro and tea scene; both prop takes mixed as placed; extra creature takes become variants (a head butler for 5-9, Dangler colours). Reuse the art elsewhere where it fits (Matt: "it feels like a waste" otherwise).
@@ -222,7 +222,6 @@ Everything is in `tools/README.md` and `tools/art/`. In short:
 - **Waiting on Matt** (from the gallery):
   - which new creature designs to keep;
   - which leaf glide (plain leaf or parachute);
-  - what animal the General's soldiers are;
   - what goes into the game first.
 
 ---

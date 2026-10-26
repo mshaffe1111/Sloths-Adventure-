@@ -291,8 +291,15 @@ export function drawCup(ctx: CanvasRenderingContext2D, x: number, b: number, fli
 }
 
 /** the card, big enough to read, with the words in careful handwriting (drawn over its painted paper when there is one) */
-export function drawCard(ctx: CanvasRenderingContext2D, x: number, y: number, text: string, alpha: number) {
-  if (alpha <= 0.01) return;
+/**
+ * The table's card, its middle at (x, y), `scale` times its size (its bottom kept where it was). `room`: the view's free band (under the
+ * HUD, `top`, to the view's `bottom`): when it does not fit above the table there (a short landscape screen), it pops up under the
+ * ground instead, its top at `below`. Returns where it was drawn (for Dot's bubble to keep clear of), or null.
+ */
+export function drawCard(
+  ctx: CanvasRenderingContext2D, x: number, y: number, text: string, alpha: number, scale = 1, room?: { top: number; below: number; bottom: number },
+): { x0: number; y0: number; x1: number; y1: number } | null {
+  if (alpha <= 0.01) return null;
   ctx.save();
   ctx.globalAlpha *= alpha;
   ctx.font = 'italic 600 15px Georgia, serif';
@@ -308,6 +315,15 @@ export function drawCard(ctx: CanvasRenderingContext2D, x: number, y: number, te
   }
   if (cur) lines.push(cur);
   const h = 18 * lines.length + 22;
+  // (the words are laid out at 1, then scaled)
+  const sh = scale * h;
+  let cy = y + (h / 2) * (1 - scale);
+  if (room && cy - sh / 2 < room.top) cy = Math.min(room.below + sh / 2, room.bottom - sh / 2 - 6);
+  const box = { x0: x - 92 * scale, y0: cy - sh / 2, x1: x + 92 * scale, y1: cy + sh / 2 };
+  ctx.translate(x, cy);
+  ctx.scale(scale, scale);
+  x = 0;
+  y = 0;
   if (!drawW5Art(ctx, 'card', x, y + h / 2, 184)) {
     rr(ctx, x - 92, y - h / 2, 184, h, 6);
     ctx.fillStyle = '#fff8e8';
@@ -325,6 +341,7 @@ export function drawCard(ctx: CanvasRenderingContext2D, x: number, y: number, te
   ctx.textBaseline = 'middle';
   lines.forEach((l, i) => ctx.fillText(l, x, y - h / 2 + 20 + i * 18));
   ctx.restore();
+  return box;
 }
 
 // ───────────────────────────── cakes and the pot ─────────────────────────────

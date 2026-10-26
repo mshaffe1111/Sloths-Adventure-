@@ -7,7 +7,9 @@
  *      hop off it at different heights, catch a liana and let go at different moments, grab a rope and drop or jump off it. Wherever a
  *      move ends (standing on a ledge, on a trunk, a rope or a liana) is somewhere he can get to, and the moves from there are tried in
  *      turn, until nothing new turns up. A ledge is walked out both ways (to its ends, or to a wall) the first time he stands on it.
- *   2. World 4's pieces are worked the way the stage teaches them: standing still under a knot (Dot frees the vine) and on a frond's spot
+ *   2. World 5's closing orchids (5-3) are moved from and onto while they are open: a player waits at the edge for them, so each move
+ *      starts at a moment when the orchids near it stay open longest (prepareTime), and an orchid shut just then is still somewhere to go.
+ *      World 4's pieces are worked the way the stage teaches them: standing still under a knot (Dot frees the vine) and on a frond's spot
  *      (the bridge unrolls) once those spots are reached; a boulder is pushed into its channel (the fall dries) only once everything that
  *      can be reached without it has been, so a pool's log is ridden before its fall is stopped.
  *   3. Every collectible still lying there is tried from the places near it: touched for a flower, a heart or a seed, punched open for a
@@ -22,6 +24,7 @@ import { DT, RealPlay, type Pad } from './realPlay.ts';
 import { PHYS, reachGlide, reachJump, inSweetSpot, swingStep } from './physics.ts';
 import { HANG_DROP, ropeYAt } from './rope.ts';
 import type { Collectible, Platform, Vine } from './types.ts';
+import { ORCHID, orchidAt, type Orchid } from './w5Kit.ts';
 
 export type NodeKind = 'p' | 'v' | 'r' | 'l' | 'b';
 /** where a move can start: a stretch of a platform, a trunk, a rope, a liana (as caught), a mushroom (where he bounced) */
@@ -244,7 +247,7 @@ export class RealReach {
     while (this.pending.length) {
       const q = this.pending.shift()!;
       const fp = this.platformById(q.fromId), tp = this.platformById(q.id);
-      if (!fp || !tp || tp.broken) continue;
+      if (!fp || !tp || (tp.broken && tp.art !== 'orchid')) continue;
       const from = this.standAnchor(fp, q.fromX);
       const to = this.standAnchor(tp, q.x);
       this.add(to, from.key);
@@ -647,7 +650,8 @@ export class RealReach {
     const sim = this.sim;
     const out: Target[] = [];
     for (const pl of sim.platforms) {
-      if (pl.broken) continue;
+      // (a closing orchid shut just now opens again: it is still somewhere to get to)
+      if (pl.broken && pl.art !== 'orchid') continue;
       if (pl.type === 'bouncy') {
         if (!this.reached.has(`b${pl.id}`)) out.push({ key: `b${pl.id}`, kind: 'b', x0: pl.x, x1: pl.x + pl.width, y: pl.y, id: pl.id });
         continue;
@@ -683,7 +687,7 @@ export class RealReach {
     const open = t.kind !== 'c' && this.stillOpen(t);
     let i = 0;
     for (const m of this.moves(a, t).filter((q) => !this.opts.single || q.dbl === undefined).slice(0, limit)) {
-      this.prepareTime(a);
+      this.prepareTime(a, t);
       const f0 = this.frames;
       const r = this.run(a, m, t);
       if (r.died) this.deaths.add(a.key);
@@ -704,13 +708,17 @@ export class RealReach {
   }
 
   /** the moment to move: a calm spell in any wind nearby, the eaglets asleep (a player can wait for these) */
-  private prepareTime(a: Anchor) {
+  private prepareTime(a: Anchor, target?: Target) {
     const sim = this.sim;
     const x = a.kind === 'p' ? (a.a! + a.b!) / 2 : a.x ?? sim.p.x;
     const zones = (sim.stage.zones ?? []).filter((z) => z.kind === 'wind' && z.x0 < x + 1200 && z.x1 > x - 1200);
     const nests: Array<{ x: number; every: number; offset: number }> = sim.w4?.w4?.nests?.filter((n: { x: number }) => Math.abs(n.x - x) < 900) ?? [];
     const surges: Array<{ surge: { pour: number; ease: number; quiet: number; offset: number } }> = (sim.w4?.w4?.falls ?? []).filter((w: { surge?: unknown; plug?: unknown; x: number }) => w.surge && !w.plug && Math.abs(w.x - x) < 900);
-    if (!zones.length && !nests.length && !surges.length) return;
+    // World 5's closing orchids near where the move starts or ends (w5Kit orchidAt: open, then closing, still a ledge)
+    const ax0 = a.kind === 'p' ? a.a! : x, ax1 = a.kind === 'p' ? a.b! : x;
+    const near = (ox: number) => (ox > ax0 - 420 && ox < ax1 + 420) || (!!target && ox > target.x0 - 300 && ox < target.x1 + 300);
+    const orchids: Array<{ x: number; period: number; open: number; offset: number; platformId?: number }> = (sim.e.w5?.w5?.orchids ?? []).filter((o: { x: number }) => near(o.x));
+    if (!zones.length && !nests.length && !surges.length && !orchids.length) return;
     // how long it stays calm from t: until the next gust blows (its warning is still calm), until the eaglets next stir
     const calmFor = (t: number) => {
       let m = 4;
@@ -730,6 +738,12 @@ export class RealReach {
         const c = (((t + q.offset) % T) + T) % T;
         m = Math.min(m, c >= q.pour + q.ease * 0.7 ? T - c : 0);
       }
+      // an orchid: how long it still holds him (open, then the closing shiver)
+      for (const o of orchids) {
+        const c = (((t + o.offset) % o.period) + o.period) % o.period;
+        const hold = o.open + ORCHID.tell;
+        m = Math.min(m, c < hold ? hold - c : 0);
+      }
       return m;
     };
     let best = sim.t;
@@ -744,6 +758,11 @@ export class RealReach {
       }
     }
     sim.t = best;
+    // (and the orchids are as they are at that moment from the very first frame of the move)
+    for (const o of orchids) {
+      const pl = o.platformId !== undefined ? this.platformById(o.platformId) : undefined;
+      if (pl) pl.broken = !orchidAt(o as Orchid, best).solid;
+    }
   }
 
   // ───────────── World 4's pieces ─────────────
