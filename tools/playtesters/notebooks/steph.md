@@ -22,3 +22,11 @@
 - When Dot says stand still under something, really stand still with your thumb off. Moving even a bit seems to cancel it.
 - Jumping off a high shelf with a double flick sends you way up and the top bar can hide you for a moment. Keep steering where you want to land.
 - Rushing with long slides blows past nests and pickups. In nest stages, go in shorter slides and look up.
+
+## 2026-10-26 (session 12, bosses, upright)
+
+### Bosses
+- General: the real opening is a big bright gold crosshair with "NOW!". Punching anything else just says "NOT YET!" or "TOO TOUGH". Openings are short, so stay close enough to reach one in under a second. Don't park far away where you're safe.
+- 1-10 (snake): Dot's tip shows up before his first lunge, and he takes a few seconds to start, so read it. When he rears back, get off the ground; climbing beats jumping for me. Drop straight down and tap-tap his head while he's dazed. What got me: I dodged to the far side of him and couldn't run back to his head before he woke up. Dodge so you land on his head's side.
+- 3-10 (panther): even in the dark you can see him. He's a faint ghost while he prowls and lights up when he's about to do something. The low crouch means a pounce is coming. Jump early, because a double jump right at the pounce still clipped me. When he stands up and roars, the gold mark goes on his chest: run in and tap fast, it gives a lot of hits. Later the mark can sit on his back end, not his head. Punching his face does nothing, so go to where the gold is right away.
+- 4-10 (bird): stand by a rock and step off her red mark. When she hits the rock, her head is open: face her with a tiny nudge, then tap-tap. When she lands to bite, a held flick plus a second flick gets you clear. Once she's mad, stay low when she rakes, and hide by a rock or crouch for the screech. After the screech her head is open, but I was too far away and missed it. Be ready to run at her the moment the screech ends.

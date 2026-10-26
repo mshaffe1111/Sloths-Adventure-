@@ -38,3 +38,23 @@
     for a moment; wait for her to show before the next move.
   - The yellow bar is nectar. Flowers refill it. Don't burn it flapping for nothing.
 - "Continue from checkpoint" after running out of lives may put me back at the very start, not the last flower.
+
+## 2026-10-26 (session 5, bosses, sideways)
+
+### Bosses
+
+- General: the real opening is a bright gold crosshair, often with "NOW!". Until it shows, hits just say "NOT YET!".
+  Get close BEFORE it opens; openings don't last long, and walking in from far away I got there too late.
+- Stack hits fast: one jump-punch, then a punch or two more while it's still gold. Two or three hits per opening is normal.
+- A journal card can pop up mid-fight and eat the moment. Expect to miss that opening.
+- Sky Sovereign (4-10): a long fight with lots of hits. Do what Dot says right away: step off the red mark when she
+  dives, crouch or get behind cover for the screech and the feathers, stay on the ground when she rakes up high.
+  After she crashes or screams herself hoarse, her head and chest glow. Jump-punch then. I lost hearts by standing
+  still out in the open while waiting. Keep near cover between openings, and when the chest lights up, go at once:
+  if anything is in the way, I didn't make it in time.
+- Venom Fang (1-10): when he rears back, get up off the ground (a double jump to something high works), then run
+  straight to his head once it's "DAZED". Punch fast, three or four taps. The little snakes die to one punch.
+- Shadow Prowler (3-10): he crouches low with his eyes glowing before a pounce, so that's the moment to jump.
+  When the lights go out he glows green and is still easy to see. Being up high didn't save me from a pounce:
+  better to jump over him at the right moment than to sit and wait. Double jumping over him can leave you standing
+  on his back for a second; just walk off. The glow opens just after a pounce or when he's caught in the light.
