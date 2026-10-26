@@ -151,6 +151,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
       inputEngine.triggerTouchKick(0);
       inputEngine.triggerHaptic(25);
     } else {
+      inputEngine.setHold('pad', true);
       s.megaFired = false;
       window.clearTimeout(s.megaTimer);
       s.megaTimer = window.setTimeout(() => {
@@ -166,6 +167,7 @@ export const PadController: React.FC<Props> = ({ inputEngine, side }) => {
     const s = st.current;
     if (b === 'jump') jumpSet('btn', false);
     else if (b === 'punch') {
+      inputEngine.setHold('pad', false);
       window.clearTimeout(s.megaTimer);
       if (!s.megaFired) {
         inputEngine.triggerTouchPunch();

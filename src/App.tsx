@@ -41,7 +41,7 @@ import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
 import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
-import { DOT_STAGE_ID, newStagesOn } from './game/extraStages.ts';
+import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
@@ -200,6 +200,8 @@ export default function App() {
   const [distanceRatio, setDistanceRatio] = useState<number>(0);
   const [activePowerUp, setActivePowerUp] = useState<'speed' | 'invincible' | 'magnet' | null>(null);
   const [powerUpTimer, setPowerUpTimer] = useState<number>(0);
+  /** Meeca's stage: its title card or its ending is up, so the HUD steps aside */
+  const [cinematic, setCinematic] = useState(false);
   const [bossInfo, setBossInfo] = useState<{ name: string; hp: number; maxHp: number; phase: number; hits?: number; color?: string; entering?: boolean } | null>(null);
   const [lives, setLives] = useState<number>(3);
   const [isMuted, setIsMuted] = useState<boolean>(sound.isMuted);
@@ -593,6 +595,7 @@ export default function App() {
             setPowerUpTimer(curPowerTimer ?? 0);
           },
           onBossUpdate: (info) => setBossInfo(info),
+          onCinematic: (on) => setCinematic(on),
           onCoach: (st) => setCoachStep(st),
           onLesson: (id) => setLessonId(id),
           onFind: (id) => {
@@ -1064,7 +1067,7 @@ export default function App() {
             bossPhase={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.phase : undefined}
             bossHits={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.hits : undefined}
             bossAccent={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.color : undefined}
-            bossEntering={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.entering : undefined}
+            bossEntering={activeLevel.objectiveType === 'boss_lair' ? bossInfo?.entering : activeLevel.id === MEECA_STAGE_ID ? cinematic : undefined}
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
             lives={lives}
@@ -1072,7 +1075,8 @@ export default function App() {
             runKey={runId}
           />
           <PerfReadout stageId={activeLevel.id} />
-          <Wayside
+          {/* (Meeca's stage has no Dot: her own thoughts are drawn in the stage, meecaPlay.ts) */}
+          {activeLevel.id !== MEECA_STAGE_ID && <Wayside
             key={`${activeLevel.id}-${runId}`}
             level={activeLevel}
             active={screen === 'playing' && !coachStep && !lessonId && !reading}
@@ -1081,7 +1085,7 @@ export default function App() {
             guide={guideLine}
             // Dot's guide: it reads the stage itself and takes the coach and lessons as her lines
             dot={{ engine: () => engineRef.current, playing: screen === 'playing' && !reading, coachStep, coachStyle, lessonId, count: { cur: currentCount, target: targetCount } }}
-          />
+          />}
           {screen === 'playing' && lessonId && (
             <LessonCard
               id={lessonId}

@@ -57,6 +57,15 @@ export class InputEngine {
   /** what resume() put back as held (carry): taken away again at the first fresh input */
   private carried: { jump: boolean; dir: -1 | 0 | 1 } | null = null;
   private padPrev = { left: false, right: false, up: false, down: false, punch: false, kick: false, mega: false };
+  /** who is holding (state.hold is any of them) */
+  private holds = { touch: false, keys: false, pad: false, gamepad: false };
+  /** a hold, from one of the ways of playing (a still thumb, the hold key, the Pad's button, a pad's bumper) */
+  public setHold(from: 'touch' | 'keys' | 'pad' | 'gamepad', on: boolean) {
+    if (this.holds[from] === on) return;
+    this.holds[from] = on;
+    if (on) this.fresh();
+    this.state.hold = this.holds.touch || this.holds.keys || this.holds.pad || this.holds.gamepad;
+  }
   private touchUpAt = 0;
   private upReleaseTimer: number | undefined;
 
@@ -124,6 +133,7 @@ export class InputEngine {
 
     // Mega punch / dash (KeyL, Shift)
     if (key === 'KeyL' || key === 'ShiftLeft' || key === 'ShiftRight') {
+      this.setHold('keys', true);
       this.state.megaPunchPressed = true;
       this.megaBufferTimer = 0.14;
       this.state.layerSwitchPressed = true;
@@ -140,6 +150,7 @@ export class InputEngine {
       this.state.jumpHeld = false;
     }
     if (key === 'ArrowDown' || key === 'KeyS') this.state.down = false;
+    if (key === 'KeyL' || key === 'ShiftLeft' || key === 'ShiftRight') this.setHold('keys', false);
   };
 
   private handleBlur = () => {
@@ -202,6 +213,8 @@ export class InputEngine {
     this.state.layerSwitchPressed = false;
     this.state.touchJoystickAngle = null;
     this.state.touchJoystickMagnitude = 0;
+    this.holds = { touch: false, keys: false, pad: false, gamepad: false };
+    this.state.hold = false;
     if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
     this.upReleaseTimer = undefined;
     this.jumpBufferTimer = 0;
@@ -378,6 +391,7 @@ export class InputEngine {
           this.megaBufferTimer = 0.14;
           this.state.layerSwitchPressed = true;
         }
+        if (now.mega !== prev.mega) this.setHold('gamepad', now.mega);
         this.padPrev = now;
       }
     } catch {}

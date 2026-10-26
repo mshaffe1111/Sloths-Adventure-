@@ -21,8 +21,8 @@ const entryLimit = (k: string) => (k === 'sloth_badges' ? MAX_BADGE_ENTRY_CHARS 
 
 /** the entries that make up a game */
 const ALLOWED: RegExp[] = [
-  /^sloth_lvl_(\d{1,2}|S)-\d{1,2}$/, // per-stage result
-  /^sloth_layout_(\d{1,2}|S)-\d{1,2}$/, // the layout a stage was first played with (it stays the same)
+  /^sloth_lvl_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // per-stage result (and the extra stages, extraStages.ts: Dot's flight 4-D, Meeca's 5-M)
+  /^sloth_layout_(\d{1,2}|S)-(\d{1,2}|[DM])$/, // the layout a stage was first played with (it stays the same)
   /^sloth_story_[wmn]\d{1,2}$/, // world intro seen (w), the scene halfway through the world (m), World 1's first note after 1-1 (n)
   /^sloth_way_\d{1,2}-\d{1,2}$/, // which in-stage asides have been heard (so a new game hears them again; the on/off switch is a device setting, not here)
   /^sloth_secret_gate$/,
@@ -36,6 +36,7 @@ const ALLOWED: RegExp[] = [
   /^sloth_cosmetic$/, // which reward Pokey wears
   /^sloth_difficulty$/, // Easy or Normal, picked at New Game (difficulty.ts)
   /^sloth_w5_cakes$/, // whether any cake was eaten in World 5 (w5Kit.ts: the Queen's line, and the badge for eating none)
+  /^sloth_w5_carved$/, // what Meeca carved in her stage, and where (meecaCarved.ts: 5-6 shows it to Pokey)
   // sloth_lessons, sloth_coach_done, sloth_hint_v3 and sloth_howto_seen are NOT here on purpose: a help message is shown once per device,
   // and starting a new game (or loading a save) must not bring them back for someone who already knows how to play
 ];
