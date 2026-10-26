@@ -8,7 +8,8 @@
  * beat, and stretches where the netting sways and its holes move. Spider silk is the secret, three pieces hidden in pockets.
  *
  * The beats, always in this order (CLAUDE.md: learn, develop, twist, finish):
- *   1. LEARN    fly (open air), flap (a fence of netting to rise over), the first nectar flower (hover and drink), the first walls
+ *   1. LEARN    fly and flap (the first line teaches both), a fence of netting to rise over, the first nectar flower (hover and
+ *               drink), all over a catch net so nothing can hurt her until both are taught; then the first walls with holes
  *   2. DEVELOP  thorn strands by the holes and a hanging thorn slalom; dandelion puffs over a small hole, with a silk pocket behind
  *   3. TWIST    gusts through the holes (the petals fly first), a downdraft over thorns, the swaying netting, a long climb
  *   4. FINISH   the pieces mixed up to the stage's length (STAGE_SECONDS), then the folded-letter gap: slow motion, the note, the light
@@ -20,6 +21,7 @@
 import type { LevelConfig } from './types.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import { stream } from './protoStage.ts';
+import { DOT_PROP_FRAMES } from './dotPropsData.ts';
 
 export { DOT_STAGE_ID, dotStageConfig } from './extraStages.ts';
 /** the stage's height: the netting overhead hangs to TOP, the mist of the gorge begins at MIST (below it she has fallen) */
@@ -38,7 +40,8 @@ export const DOT = {
   /** pulled down this hard (px/s²) and never faster than `fall`; flying along at speed holds her up a little (`cruiseFall`) */
   g: 620,
   fall: 210,
-  cruiseFall: 120,
+  /** (gentler than it was: sliding along with one thumb, she sank too fast to keep up with flicks; QA, 2026-10-26) */
+  cruiseFall: 85,
   /** a flap: straight up at this speed. Three in hand, one back each `regen` s, never two within `gap` s: she climbs, she can't rocket */
   flapV: 340,
   flaps: 3,
@@ -55,8 +58,7 @@ export const DOT = {
   flapCost: 3.5,
   hoverCost: 3.5,
   sip: 150,
-  /** how near the flower's mouth her body must be to drink, and how much one flower holds before it droops (and regrows) */
-  sipReach: 46,
+  /** how much one flower holds before it droops (and regrows); she drinks anywhere in its bloom (`drinkBox`) */
   flowerHolds: 120,
   regrow: 6,
   /** out of energy: no flap, no hover, she sinks at this and steers at this share of her speed */
@@ -64,10 +66,44 @@ export const DOT = {
   tiredMul: 0.75,
 } as const;
 
+/** how high one flap lifts her (px): straight up at flapV against the pull down */
+export const FLAP_RISE = (DOT.flapV * DOT.flapV) / (2 * DOT.g);
+/** how far from a thorn strand's line it scratches her (dotFlight.ts) */
+export const THORN_REACH = DOT.R + 5;
+
 /** the stage's length for a quick, sure player (s): STAGE_SECONDS['4-D'] in protoStage.ts is this number */
 export const DOT_STAGE_SECONDS = 200;
 
 export type NectarKind = 'heli' | 'fuchsia' | 'trumpet' | 'passion' | 'blue';
+
+/**
+ * Each nectar flower's painted bloom about its mouth (x, y): the piece, its width, where the mouth sits in it (fractions), and whether
+ * it hangs from a vine overhead. The art draws it so (dotFlightArt.ts) and she drinks anywhere in and around it (`drinkBox`).
+ */
+export const BLOOM: Record<NectarKind, { piece: keyof typeof DOT_PROP_FRAMES; w: number; ax: number; ay: number; hang: boolean }> = {
+  heli: { piece: 'heliGlow', w: 124, ax: 0.56, ay: 0.4, hang: false },
+  fuchsia: { piece: 'fuchsia', w: 96, ax: 0.5, ay: 0.7, hang: true },
+  trumpet: { piece: 'trumpet', w: 116, ax: 0.26, ay: 0.82, hang: true },
+  passion: { piece: 'passion', w: 112, ax: 0.5, ay: 0.44, hang: false },
+  blue: { piece: 'blueCluster', w: 108, ax: 0.5, ay: 0.36, hang: false },
+};
+/**
+ * Where she drinks at a flower: the whole painted bloom and a generous margin round it (QA, 2026-10-25: hovering just under a head
+ * didn't drink, and a first-timer tapped away beside the stem until empty). The stalk side gets the most room.
+ */
+export function drinkBox(f: { x: number; y: number; kind: NectarKind }): { x0: number; x1: number; y0: number; y1: number } {
+  const b = BLOOM[f.kind];
+  const fr = DOT_PROP_FRAMES[b.piece];
+  const h = (b.w * fr.h) / fr.w;
+  const pad = DOT.R + 12;
+  const top = f.y - h * b.ay;
+  return {
+    x0: f.x - b.w * b.ax - pad,
+    x1: f.x + b.w * (1 - b.ax) + pad,
+    y0: top - (b.hang ? pad : pad + 6),
+    y1: top + h + (b.hang ? pad + 6 : pad + 34),
+  };
+}
 
 export interface Opening {
   /** the top of the hole and its height (px) */
@@ -93,6 +129,8 @@ export interface NetPanel {
   y: number;
   w: number;
   h: number;
+  /** the catch net strung under the start (she rests on it) until her flap and hover are taught: drawn as a sagging net, not a panel */
+  catch?: boolean;
 }
 /** an iron thorn strand: a segment, touching it is a heart and a scratch */
 export interface Thorn {
@@ -204,9 +242,27 @@ export function dotGeneratedStage(config: LevelConfig, seed: number): GeneratedS
     spawnY: st.spawn.y,
     exitTotemX: st.letter.x,
     exitTotemY: st.letter.y,
+    // every flower is a checkpoint (dotFlight.ts `reach`): a life lost, or Continue after a game over, brings her back to the last
+    // one she got to (QA, 2026-10-26: with none, Continue started the flight over)
+    checkpoints: [...st.flowers].sort((a, b) => a.x - b.x).map((f) => ({ ...flowerCheckpoint(f), reached: false })),
     dot: st,
   };
 }
+
+/**
+ * The smallest hole with thorns along its edges: the room between the thorns' reach is two flaps' rise and a little, so a flap from
+ * the middle of it (and a tap's hover) goes through clean (QA, 2026-10-25: the first one was tighter than one flap, and clipped).
+ */
+export const EDGED_HOLE = Math.ceil(2 * FLAP_RISE + 2 * THORN_REACH + 8 + 12);
+
+/** the way between the first slalom's thorns: room for a flap from its middle and a slide's sink besides */
+export const SLALOM_FIRST = Math.ceil(2 * FLAP_RISE + 2 * THORN_REACH + 90);
+
+/** the top of the catch net under the lesson */
+export const CATCH_Y = 770;
+
+/** where she comes back at a flower: hanging at its mouth */
+export const flowerCheckpoint = (f: { x: number; y: number; face: -1 | 1 }) => ({ x: f.x + (f.face > 0 ? 34 : -34), y: f.y });
 
 /** how fast a quick player crosses open air (a little under flat out: she weaves) */
 const CRUISE = 195;
@@ -299,11 +355,12 @@ export function buildDotStage(seed = 1): DotStage {
   beat('Start: the note', () => {
     y = spawn.y;
     route.push({ x: spawn.x, y: spawn.y, k: 'go' });
+    // (the first line teaches the flap as well as the flying: holding a direction alone, she sinks; QA, 2026-10-25)
     hint(
       60,
-      "Meeca's note, safe in my satchel. Now out through the netting. Slide your thumb left or right and I fly. I know the way. Mostly.",
-      "Meeca's note, safe in my satchel. Now out through the netting. Push the pad left or right and I fly. I know the way. Mostly.",
-      "Meeca's note, safe in my satchel. Now out through the netting. Left and right arrows and I fly. I know the way. Mostly.",
+      "Meeca's note, safe in my satchel. Slide your thumb left or right and I fly. Flick up and I flap, or I sink. There's a catch net under me, for now.",
+      "Meeca's note, safe in my satchel. Push the pad left or right and I fly. Press Jump and I flap, or I sink. There's a catch net under me, for now.",
+      "Meeca's note, safe in my satchel. Left and right arrows and I fly. Space and I flap, or I sink. There's a catch net under me, for now.",
     );
     dewLine(340, 500, 760, 470, 5);
     giant(520, 0.55);
@@ -315,9 +372,9 @@ export function buildDotStage(seed = 1): DotStage {
     const top = R.r(410, 450);
     hint(
       x - 180,
-      "Flick up and I flap. Flick again to climb. After three my wings want a little rest. They're wings, not miracles.",
-      'Press Jump and I flap. Again to climb. After three my wings want a little rest. They\'re wings, not miracles.',
-      "Space and I flap. Again to climb. After three my wings want a little rest. They're wings, not miracles.",
+      "Over the fence: flick up to flap, again to climb. After three my wings want a little rest. They're wings, not miracles.",
+      'Over the fence: press Jump to flap, again to climb. After three my wings want a little rest. They\'re wings, not miracles.',
+      "Over the fence: Space to flap, again to climb. After three my wings want a little rest. They're wings, not miracles.",
     );
     advance(260);
     dewLine(x - 200, 470, x + 40, top - 70, 5);
@@ -330,9 +387,9 @@ export function buildDotStage(seed = 1): DotStage {
   beat('Learn: nectar and hover', () => {
     hint(
       x - 200,
-      'Nectar! Tap, tap, tap and I hover right here and drink. Or flick up and keep your thumb down. Hovering is half the job.',
-      'Nectar! Press Punch, again and again, and I hover right here and drink. Or hold Jump after a flap. Hovering is half the job.',
-      'Nectar! Tap J and I hover right here and drink. Or hold Space after a flap. Hovering is half the job.',
+      "Nectar! Fly me into the flower's head and hover there: tap, tap, tap. Or flick up and keep your thumb down. I drink while I hover in it.",
+      "Nectar! Fly me into the flower's head and hover there: press Punch again and again. Or hold Jump after a flap. I drink while I hover in it.",
+      "Nectar! Fly me into the flower's head and hover there: tap J. Or hold Space after a flap. I drink while I hover in it.",
     );
     flower(x, y + 10, { stalk: true, kind: 'heli' });
     extra += 1.5; // the first sip, read slowly
@@ -343,7 +400,10 @@ export function buildDotStage(seed = 1): DotStage {
     hint(x - 260, "That's the General's netting. Floor to cloud. Iron doesn't cut, it just bonks. Find a hole and go through.");
     giant(x - 120, 0.6);
     const h1 = R.r(150, 170);
-    wall([{ y: holeY(h1, 160), h: h1 }], 0, 56, 0.4);
+    const first = wall([{ y: holeY(h1, 160), h: h1 }], 0, 56, 0.4);
+    // the catch net: strung low under the whole lesson, from the start to this first wall with a hole, so nothing can hurt her (the
+    // mist is beneath it) until the flap and the hover are taught (QA, 2026-10-25: she sank into the mist before the flap line showed)
+    panels.push({ id: id++, x: 0, y: CATCH_Y, w: first.x, h: 26, catch: true });
     advance(R.r(400, 470));
     dewLine(x - 330, y, x - 60, y, 3);
     const h2 = R.r(120, 140);
@@ -362,22 +422,25 @@ export function buildDotStage(seed = 1): DotStage {
 
   // ---------------- 2. DEVELOP ----------------
   beat('Develop: iron thorns', () => {
-    hint(x - 280, "Iron thorns. Every one I touch is a scratch, and I'm counting. Somebody has to count.");
+    hint(x - 280, "Iron thorns. Each one I touch costs a heart. The hearts are what matter; the scratches are just my tally. Somebody has to count.");
     flower(x - 120, Math.min(MIST - 180, Math.max(TOP + 140, y)), { stalk: true });
     // thorns jutting from a wall's hole, top and bottom edges (the middle of the hole stays clear)
     advance(R.r(200, 260));
-    const h = R.r(130, 150);
+    // (tall enough that one flap from the middle of the room between the thorns doesn't reach the top ones: `EDGED_HOLE`)
+    const h = R.r(EDGED_HOLE + 4, EDGED_HOLE + 16);
     const wl = wall([{ y: holeY(h, 200), h }], 0, 60, 0.7);
     const o = wl.openings[0];
     thorns.push({ id: id++, x0: wl.x - 20, y0: o.y + 3, x1: wl.x + wl.w + 18, y1: o.y + 6 });
     thorns.push({ id: id++, x0: wl.x - 18, y0: o.y + o.h - 5, x1: wl.x + wl.w + 20, y1: o.y + o.h - 2 });
     advance(R.r(320, 380));
-    // the slalom: strands hanging from overhead and rising from the mist, the way between them weaving up and down
+    // the slalom: strands hanging from overhead and rising from the mist, the way between them weaving up and down. The first one is
+    // gentle: a wide way through, weaving only a little, so a flick that rises a whole flap too far, or a slide that sinks, still
+    // gets through (QA, 2026-10-26: a one-thumb player lost all three lives and 14 scratches in here)
     let up = R.chance(0.5);
     const n = R.i(4, 5);
     for (let i = 0; i < n; i++) {
-      const gapMid = up ? R.r(330, 400) : R.r(520, 590);
-      const gapH = R.r(220, 250);
+      const gapMid = up ? R.r(400, 430) : R.r(490, 520);
+      const gapH = R.r(SLALOM_FIRST, SLALOM_FIRST + 20);
       thornDown(x, gapMid - gapH / 2);
       thornUp(x + R.r(-10, 10), gapMid + gapH / 2);
       dewLine(x - 40, gapMid, x + 40, gapMid, 2);
@@ -517,8 +580,8 @@ export function buildDotStage(seed = 1): DotStage {
       } else if (k === 2) {
         downdraft(false);
       } else if (k === 3) {
-        // a hole with thorns along its edges, smaller than before
-        const h = R.r(115, 130);
+        // a hole with thorns along its edges (the same height as the first: a flap from its middle clears them)
+        const h = R.r(EDGED_HOLE, EDGED_HOLE + 10);
         const wl = wall([{ y: holeY(h, 220), h }], 0, 58, 0.8);
         const o = wl.openings[0];
         thorns.push({ id: id++, x0: wl.x - 20, y0: o.y + 3, x1: wl.x + wl.w + 20, y1: o.y + 5 });
@@ -637,6 +700,8 @@ export function segDist(px: number, py: number, t: { x0: number; y0: number; x1:
 export const THORN_CLEAR = 10;
 /** the share of a full tank the hardest stretch between two flowers may need */
 export const ENERGY_SHARE = 0.75;
+/** flaps a second a first-timer makes, flapping steadily (QA, 2026-10-25) */
+export const BUSY_FLAPS = 1.1;
 /** energy spent per second flying along, holding her height (a flap every so often against the pull down) */
 export function holdCostPerSec(): number {
   // flying along she sinks at cruiseFall at most. A flap throws her up at flapV; the pull brings her back to sinking at cruiseFall, a
@@ -693,6 +758,28 @@ export function checkFlight(st: DotStage): { ok: boolean; problems: FlightProble
       }
     }
   }
+  // a hole with thorns along its edges: the room between their reach takes a flap from its middle, or a tap's hover, without a touch
+  for (const w of st.walls) {
+    const edge = st.thorns.filter((t) => Math.min(t.x0, t.x1) < w.x + w.w && Math.max(t.x0, t.x1) > w.x && Math.abs(t.y0 - t.y1) < 20);
+    if (!edge.length) continue;
+    for (const o of w.openings) {
+      const over = edge.filter((t) => Math.max(t.y0, t.y1) < o.y + o.h / 2 && Math.min(t.y0, t.y1) > o.y - 20);
+      const under = edge.filter((t) => Math.min(t.y0, t.y1) > o.y + o.h / 2 && Math.max(t.y0, t.y1) < o.y + o.h + 20);
+      if (!over.length || !under.length) continue;
+      const room = Math.min(...under.map((t) => Math.min(t.y0, t.y1))) - Math.max(...over.map((t) => Math.max(t.y0, t.y1))) - 2 * THORN_REACH;
+      if (room / 2 < FLAP_RISE + 4) bad(`wall ${w.id}: a flap from the middle of its thorned hole reaches the thorns (room ${Math.round(room)} px)`, w.x);
+    }
+  }
+  // the lesson: the catch net under it, from the start to beyond where the flap and the hover are taught, and no thorn before it ends
+  const flapAt = st.hints.find((h) => /flap/i.test(h.text))?.x ?? Infinity;
+  const hoverAt = st.hints.find((h) => /hover/i.test(h.text))?.x ?? Infinity;
+  const net = st.panels.find((p) => p.catch);
+  if (!net || net.x > st.spawn.x - 100 || net.x + net.w < Math.max(flapAt, hoverAt) + 200) bad('the start has no catch net under the flap and hover lessons', 0);
+  else {
+    if (net.y < st.spawn.y + 150 || net.y > MIST - 60) bad('the catch net is in the wrong place', net.x);
+    if (st.thorns.some((t) => Math.min(t.x0, t.x1) < net.x + net.w)) bad('a thorn over the catch net', net.x);
+    if (st.gusts.some((g) => g.x0 < net.x + net.w)) bad('a gust over the catch net', net.x);
+  }
   // every route point clear of thorns, inside the band, outside the netting and the panels
   const inWall = (px: number, py: number, r: number) =>
     st.walls.some((w) => px > w.x - r && px < w.x + w.w + r && !w.openings.some((o) => !o.sway && py - r >= o.y && py + r <= o.y + o.h));
@@ -744,18 +831,24 @@ export function checkFlight(st: DotStage): { ok: boolean; problems: FlightProble
   }
 
   // energy: from each flower to the next along the route (and from the start, and to the gap), what a quick run spends, against the tank
+  // and a first-timer who flaps steadily the whole way (QA, 2026-10-25: about one flap a second, full to "running low" in 18 s) at
+  // two-thirds the pace still gets to the next flower with some left
   let worst = 0;
   let spent = 0;
+  let busy = 0;
   for (let i = 1; i < st.route.length; i++) {
     const a = st.route[i - 1];
     const b = st.route[i];
     const dx = Math.abs(b.x - a.x);
     const t = dx / CRUISE;
     spent += t * holdCostPerSec() + climbCost(a.y - b.y) + (b.hover ?? 0) * DOT.hoverCost;
+    busy += (t + (b.hover ?? 0)) * 1.5 * BUSY_FLAPS * DOT.flapCost;
     if (b.k === 'flower' || b.k === 'finish') {
       worst = Math.max(worst, spent);
       if (spent > DOT.energy * ENERGY_SHARE) bad(`the stretch to x ${b.x} needs ${Math.round(spent)} energy`, b.x);
+      if (busy > DOT.energy * 0.85) bad(`the stretch to x ${b.x} drains a steady flapper (${Math.round(busy)} energy)`, b.x);
       spent = 0;
+      busy = 0;
     }
   }
 
