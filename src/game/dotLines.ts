@@ -3,7 +3,7 @@
  *
  * The game still sends its old words (the engine's tips, the story asides, the goal), so everything keyed by them keeps working: the
  * "already heard" memory (tipMemory.ts) and the journal pages a hint opens both match the OLD text. Dot's guide looks the old words up here
- * when it says a line and shows the new ones; a cut line is not said at all. With the new look off, nothing here is used.
+ * when it says a line and shows the new ones; a cut line is not said at all.
  */
 import { DOT_LINES, type DotLineKind, type DotLineRow } from './dotLinesData.ts';
 import { W5_DOT_LINES, W5_THING_TIPS } from './w5Lines.ts';

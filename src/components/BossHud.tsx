@@ -21,7 +21,7 @@ interface BossHudProps {
   /** the world's accent colour for the bar */
   accent?: string;
   /**
-   * the new HUD (beta, newLook): the bar hangs on the vine with the world's colour, Pokey's hearts stay in their corner (not drawn
+   * the HUD: the bar hangs on the vine with the world's colour, Pokey's hearts stay in their corner (not drawn
    * here), and the name shrinks to fit before it is cut short
    */
   vine?: boolean;

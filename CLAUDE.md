@@ -12,7 +12,7 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
 
 - **Pushing**: push only when Matt says "push". Then open the PR with `gh api …/pulls` (GraphQL is blocked) and give him the PR link. He merges it himself. Then check the deploy run succeeded (HANDOFF §7).
 - **Test link**: after every round of changes, rebuild and republish Matt's test link in place (`python3 tools/testlink/build.py`, then the Artifact tool; HANDOFF §6).
-- **Testers are live**: experiments default off.
+- **New replaces old (Matt, 2026-10-26)**: once something new is tested and passes QA, it replaces the old code outright in the next release. No on/off switches; the old path is deleted. Nothing untested or half-finished goes to `main`.
 - **Show first**: show big screen changes as screenshots, a mock-up or a preview video before building them in.
 - **Talking to Matt**: ask him one multiple-choice question at a time. Explain in plain spoken terms, give honest pushback, no apologies.
 - **Phone game**:

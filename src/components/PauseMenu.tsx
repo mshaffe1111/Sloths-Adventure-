@@ -1,7 +1,6 @@
 import React from 'react';
 import { sound } from '../game/audio.ts';
-import { COARSE, Icon, OrchSfxToggle, ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle, DifficultySetting, DotHelpSetting, NewLookToggle } from './menuParts.tsx';
-import { stageNewLook } from '../game/dotGuide.ts';
+import { COARSE, Icon, OrchSfxToggle, ControlsSetting, FullscreenSetting, AssistSetting, WaysideToggle, PerfToggle, DifficultySetting, DotHelpSetting } from './menuParts.tsx';
 import { HowToTile } from './HowToTile.tsx';
 
 export { COARSE, Icon, OrchSfxToggle };
@@ -228,10 +227,9 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
       <DifficultySetting />
       <ControlsSetting />
       <AssistSetting />
-      {/* the new look's rows: Dot's help and what she said (only while this stage uses it), and the beta switch itself */}
-      {stageNewLook() && <DotHelpSetting />}
+      {/* Dot's help and what she said */}
+      <DotHelpSetting />
       <WaysideToggle />
-      <NewLookToggle />
       <PerfToggle />
       <OrchSfxToggle />
     </div>

@@ -7,7 +7,6 @@ import { arrowText } from './icons/arrowText.tsx';
 import { GestureGlyph, type GlyphKind } from './GestureGlyph.tsx';
 import { lessonInputMode, type InputMode } from '../game/lessons.ts';
 import type { SkillId } from '../game/skills.ts';
-import { stageNewLook } from '../game/dotGuide.ts';
 import { dotText } from '../game/dotLines.ts';
 
 /**
@@ -52,8 +51,8 @@ export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }>
   }, []);
   const mode = modeNow();
   const touch = mode === 'screen' ? TOUCH[skill.id] : null;
-  // the new look: Matt's approved lines for the card (words carry the gesture; there is no thumb picture)
-  const fresh = stageNewLook() && mode === 'screen' ? { blurb: dotText(`skill.${skill.id}.blurb`), controls: dotText(`skill.${skill.id}.controls`), note: dotText(`skill.${skill.id}.note`) } : null;
+  // on touch, Matt's approved lines for the card (words carry the gesture; there is no thumb picture)
+  const fresh = mode === 'screen' ? { blurb: dotText(`skill.${skill.id}.blurb`), controls: dotText(`skill.${skill.id}.controls`), note: dotText(`skill.${skill.id}.note`) } : null;
   const heroH = Math.round(Math.max(120, Math.min(250, (typeof window !== 'undefined' ? window.innerHeight : 700) * 0.36)));
 
   return (

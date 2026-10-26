@@ -134,7 +134,6 @@ import { drawBossFighter, drawHazards } from './bossArt.ts';
 import { drawAura } from './readable.ts';
 import { FrameGovernor, startQuality, noteStepDown, noteStepUp } from './frameGovernor.ts';
 import { perfEnabled, perfLog, perfNote } from './perfLog.ts';
-import { newLookOn } from './newLook.ts';
 import { dotHelp } from './dotGuideHelp.ts';
 import type { GuideView } from './dotGuideView.ts';
 
@@ -249,8 +248,6 @@ export class GameEngine {
   private paintKit = false;
   private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
   private pushSoundT = 0;
-  /** the new HUD and Dot (beta, newLook.ts), fixed for the stage */
-  private newLook = newLookOn();
   /** a hint that rides above Pokey for a few seconds */
   private stageHint: { text: string; life: number } | null = null;
 
@@ -541,8 +538,8 @@ export class GameEngine {
     // moves the stage lends him (the control test's rope), and the test's mix, logged so the run can be built again
     for (const s of this.proto?.grant ?? []) this.skills.add(s);
     if (this.proto?.mix) recorder.event('mix', this.proto.mix);
-    // which look this stage plays with, and Dot's help setting, so the QA team can compare first-timers with the new HUD and Dot on and off
-    recorder.event('look', `newLook ${this.newLook ? 1 : 0} help ${dotHelp()}`);
+    // Dot's help setting, so the QA team can compare first-timers by it
+    recorder.event('look', `help ${dotHelp()}`);
     this.ring = { state: 'idle', wave: 0, ids: [] };
     this.ringDrops = [];
     this.chase = this.proto?.chase ? newChase(this.proto.chase) : null;
@@ -2416,11 +2413,8 @@ export class GameEngine {
         // the first time this stage is played on this device only (the yellow counter says it after that)
         const gid = `goal:${this.currentStage.config.targetCount}`;
         if (!tipHeard(this.currentStage.config.id, gid)) {
+          // (the HUD's stage-start goal card says it, so Dot does not: hud/GoalCard.tsx)
           markTipHeard(this.currentStage.config.id, gid);
-          // (the words fit the goal and the number: stagePlan.ts goalLine)
-          const line = goalLine('start', this.currentStage.config.worldIndex, objType, this.currentStage.config.targetCount);
-          // (with the new HUD the stage-start goal card says it, so Dot does not: hud/GoalCard.tsx)
-          if (line && !this.newLook) this.guide(line, 4);
         }
       } else if (this.goalSaid.start && !this.goalSaid.late && along > 0.7 && need > this.currentStage.config.targetCount * 0.25 && !this.stageHint) {
         this.goalSaid.late = true;
@@ -2433,8 +2427,8 @@ export class GameEngine {
     const exitItem = this.collectibles.find((c) => c.type === 'exit_totem');
     if (exitItem) {
       exitItem.isLocked = !isExitUnlocked;
-      // the new HUD (beta): a sealed door shows how many are still missing
-      exitItem.missing = this.newLook && isQuotaType ? Math.max(0, this.currentStage.config.targetCount - currentProgress) : undefined;
+      // a sealed door shows how many are still missing
+      exitItem.missing = isQuotaType ? Math.max(0, this.currentStage.config.targetCount - currentProgress) : undefined;
     }
 
     if (this.barrierMsgCooldown > 0) this.barrierMsgCooldown -= dt;
@@ -2879,9 +2873,9 @@ export class GameEngine {
     this.camera.trauma = Math.max(0, this.camera.trauma - dt * 1.6);
     this.bossFrame(dt);
     this.updateCamera(dt);
-    // the new look: Dot says the fight's opening tip during the entrance, before the boss wakes, so her bubble is gone by the time it
-    // moves (QA v189, 1-10 upright: it filled the arena for 10-21 s of the fight). The old look keeps saying it as the fight starts.
-    if (this.newLook && en.t >= en.total * 0.45) {
+    // Dot says the fight's opening tip during the entrance, before the boss wakes, so her bubble is gone by the time it moves (QA
+    // v189, 1-10 upright: it filled the arena for 10-21 s of the fight)
+    if (en.t >= en.total * 0.45) {
       const start = def.guide?.start;
       if (start && !tipHeard(this.currentStage.config.id, 'boss:start')) {
         markTipHeard(this.currentStage.config.id, 'boss:start');
@@ -4570,19 +4564,12 @@ export class GameEngine {
     this.lessonWaiting = null;
     seen.add(id);
     markLessonSeen(id);
-    // the new look: no card and no pause; the lesson is one of Dot's lines, said in play (dotGuide.ts)
-    if (this.newLook) {
-      this.lessonQuietUntil = this.gameTime + 6;
-      this.lessonAt = this.gameTime;
-      this.callbacks.onLesson?.(id);
-      return;
-    }
-    this.lessonOpen = true;
-    this.pause();
+    // no card and no pause: the lesson is one of Dot's lines, said in play (dotGuide.ts)
+    this.lessonQuietUntil = this.gameTime + 6;
+    this.lessonAt = this.gameTime;
     this.callbacks.onLesson?.(id);
   }
 
-  // (the new look is `newLook` above, fixed for the stage; Dot's guide reads the stage each frame from guideView)
   /** what Dot's guide needs to see, filled into `out` in place (nothing is allocated: it runs every frame) */
   public guideView(out: GuideView): GuideView {
     const p = this.player;

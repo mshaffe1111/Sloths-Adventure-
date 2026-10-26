@@ -37,7 +37,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 - **Show first.** Show significant screen changes, new icons and new looks (a mock-up, screenshots, a preview video) before building them in.
 - **Phone first.** It's a phone/tablet game: touch only, every stage playable in portrait and landscape, and all hint text describes touch.
 - **Portrait AND landscape, always (Matt, 2026-10-26).** Every check, screenshot, mock-up, helper brief and QA gate pass covers both orientations, plus short landscape (about 640x320) for HUD work. Never assume landscape: Matt and Steph play upright; Jen and Brycen play sideways. It applies to everything built, not only checks: stages, menus, the world map, story cutscenes, cards, pop-ups, the HUD, boss arenas and new art. Each is designed for both from the start, not fitted to the second orientation afterwards. A check done in one orientation only is not done. QA persona bots play in their own person's orientation, and every gate pass also runs the other one.
-- **Testers are live.** Experiments default off, and nothing half-finished goes to `main`.
+- **New replaces old, no switches (Matt, 2026-10-26).** Testers play the live game. Once something new is tested and passes QA, it replaces the old code outright in the next release: no on/off switch, no beta setting, no old path kept alongside. The old code is deleted. Anything not yet passed stays off `main` (it lives on the work branch and the test link). This replaces the old "experiments default off" rule.
 - **After every round of changes**: rebuild and republish the test link in place (§6), and tell him what changed.
 - **Pushing:**
   - push to GitHub only when he says "push";

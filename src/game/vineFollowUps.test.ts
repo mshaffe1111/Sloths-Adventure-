@@ -506,7 +506,7 @@ test('the new look: the swing lesson said while he is already on the vine starts
  * 1-6 from the start, a fresh player (no lesson seen yet), the real camera upright or sideways: run to the first liana, jump for it,
  * swing, let go in the sweet spot. When did the swing lesson come, and when did he first let go?
  */
-function firstSwing(seed: number, w: number, h: number, newLook: boolean) {
+function firstSwing(seed: number, w: number, h: number) {
   const r = new RealPlay('1-6', seed);
   const e = r.e;
   // the camera and the lessons run here (realPlay.ts skips them as cosmetic)
@@ -516,15 +516,12 @@ function firstSwing(seed: number, w: number, h: number, newLook: boolean) {
   e.viewCssH = h;
   e.applyZoom();
   e.lessonSeen = new Set();
-  e.newLook = newLook;
   r.safe = false;
   r.p.invincibleTimer = 0;
   const shown: Array<{ id: string; t: number }> = [];
   e.pause = () => {};
   e.callbacks.onLesson = (id: string) => {
     shown.push({ id, t: e.gameTime });
-    // the old look's card is read and closed at once
-    if (e.lessonOpen) e.lessonClosed();
   };
   const { ledge } = firstVine(r);
   let letGoAt = -1;
@@ -542,12 +539,12 @@ function firstSwing(seed: number, w: number, h: number, newLook: boolean) {
   return { swing: shown.find((s) => s.id === 'swing')?.t ?? Infinity, grabAt, letGoAt, shown };
 }
 
-test('1-6, a fresh player: "A swinging vine!" (old look) and its Dot lines (new look) come before his first let-go, upright and sideways', () => {
+test('1-6, a fresh player: the swing lesson (Dot\'s lines) comes before his first let-go, upright and sideways', () => {
   for (const seed of [1, 2, 3, 4]) {
     for (const [view, w, h] of [['upright', 412, 915], ['sideways', 915, 412]] as const) {
-      for (const newLook of [false, true]) {
-        const o = firstSwing(seed, w, h, newLook);
-        const what = `seed ${seed} ${view} ${newLook ? 'new look' : 'old look'}: ${o.shown.map((s) => `${s.id}@${s.t.toFixed(1)}`).join(' ')}, grab ${o.grabAt.toFixed(1)}, let go ${o.letGoAt.toFixed(1)}`;
+      {
+        const o = firstSwing(seed, w, h);
+        const what = `seed ${seed} ${view}: ${o.shown.map((s) => `${s.id}@${s.t.toFixed(1)}`).join(' ')}, grab ${o.grabAt.toFixed(1)}, let go ${o.letGoAt.toFixed(1)}`;
         assert.ok(o.letGoAt > 0, `${what}: never let go`);
         assert.ok(o.swing < o.letGoAt, what);
         // (and within a second of the grab at the latest: pumping and letting go are needed from then on)
