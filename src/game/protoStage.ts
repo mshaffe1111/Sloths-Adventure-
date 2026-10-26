@@ -78,6 +78,11 @@ export interface StageHint {
   aboveY?: number;
   /** only while Pokey is left of this x (a line about something he has already gone by is not said late, from further on) */
   beforeX?: number;
+  /**
+   * a move tip about one spot (a wide gap, a tall stump): once he stands on the ground past this x the moment has passed, and the line
+   * goes, done or not (engine.ts; QA 5-1, 2026-10-26: "Wide gap!" stayed up from the gap on to the next stumps)
+   */
+  passX?: number;
 }
 /** leaves drawn in front of a hidden nook; they part when Pokey comes close */
 export interface LeafCover { x: number; y: number; w: number; h: number }

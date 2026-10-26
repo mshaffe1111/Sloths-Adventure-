@@ -18,7 +18,8 @@ interface Props {
   ratio: number;
   hp: number;
   /** a guiding line from the engine (a stage tip, the goal, a reminder, the sealed door); `n` counts up with each new one */
-  guide?: { text: string; ms: number; n: number } | null;
+  /** `passed`: the moment of this line has passed (he is past its spot): take it down if it is still up or waiting */
+  guide?: { text: string; ms: number; n: number; passed?: boolean } | null;
   /** what the new look's guide needs besides (newLook.ts): without it, or with the new look off, this is today's banner */
   dot?: Pick<DotGuideProps, 'engine' | 'playing' | 'coachStep' | 'coachStyle' | 'lessonId' | 'count'>;
 }
@@ -103,7 +104,14 @@ const WaysideBanner: React.FC<Props> = ({ level, active, ratio, hp, guide }) => 
   useEffect(() => {
     if (!guide || guide.n <= run.lastGuide) return;
     run.lastGuide = guide.n;
-    // (an empty line takes the one on screen down: the moment it was for has passed)
+    // (an empty line takes the one on screen down: the moment it was for has passed; a passed one takes down only its own line)
+    if (guide.passed) {
+      if (run.guide?.text === guide.text) {
+        run.guide = null;
+        setGuideShown(null);
+      }
+      return;
+    }
     if (!guide.text) {
       if (run.guide) {
         run.guide = null;

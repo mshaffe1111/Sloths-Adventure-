@@ -10,7 +10,7 @@ import { stageNewLook } from '../game/dotGuide.ts';
  * open together (the first foe opens Kick, Mega punch and Stomp) share one note. It waits while a card or the menu is up, and while
  * Dot is speaking: her line can sit at the bottom of the screen too, and the note used to cover it (`guide`: her latest line).
  */
-export const JournalToast: React.FC<{ active: boolean; guide?: { text: string; ms: number; n: number } | null }> = ({ active, guide }) => {
+export const JournalToast: React.FC<{ active: boolean; guide?: { text: string; ms: number; n: number; passed?: boolean } | null }> = ({ active, guide }) => {
   const [note, setNote] = React.useState<{ titles: string[]; n: number } | null>(null);
   const queue = React.useRef<string[][]>([]);
   const showing = React.useRef(false);
@@ -47,7 +47,7 @@ export const JournalToast: React.FC<{ active: boolean; guide?: { text: string; m
 
   // Dot starts a line: a note on screen steps aside (it comes back after her) and the queue waits until she is done
   React.useEffect(() => {
-    if (!guide || !guide.text) return;
+    if (!guide || !guide.text || guide.passed) return;
     // (as long as her line is actually up: Wayside keeps a line long enough to read, longer than the engine asked for)
     const ms = guideShowMs(guide.text, guide.ms);
     holdUntil.current = performance.now() + ms + 400;

@@ -18,7 +18,7 @@
  *   2. LEARN    the sleeping spiders first (one lies alone, to be hopped: it wakes only if he walks right into it), then the humming
  *               threads: strung low across the way, they hum at a touch, and the sleeping spiders near them wake and come. Each is
  *               taught before the first one he could touch (QA, 2026-10-26).
- *   3. DEVELOP  the cakes: tiny cakes among the petals that make him sleepy; then the first Butler, holding out a tray with a cake on
+ *   3. DEVELOP  the cakes: one tiny cake on its own (they make him sleepy), then a pair; then the first Butler, holding out a tray with a cake on
  *               it (punch the tray away, or jump over him).
  *   4. TWIST    soft chairs among the threads ("You'd be a very still chair"), and Pell's blanket note in plain sight on a pink bell.
  *   5. TWIST    everything at once: threads before the jumps (the wide one with a reminder of the second jump), cakes on the high
@@ -59,6 +59,12 @@ export const W5_PLAIN_STUMPS = { first: 50, steps: [50, 60, 70] } as const;
 /** after it: one jump high (60 to 88, under SAFE.rise1), or (`tall`) two */
 const STUMP_H: [number, number] = [60, 88];
 const TALL_H: [number, number] = [118, 138];
+/**
+ * The first stump only the second jump climbs, after the lesson: no single jump lands on it (one reaches about 120 px with the ledge's
+ * help), and a double flick from right next to it lands on top however quick the second flick (from 67 ms on: at 135 px a quick double
+ * flick bumped the lip and a first-timer needed 4 tries, QA 5-1, 2026-10-26). The later ones climb back up to TALL_H.
+ */
+export const W5_FIRST_TALL = 125;
 /** how far up the hearts at the flags float: walking height (the engine picks up within 34 px of his middle, 20 px above his feet) */
 export const W5_HEART_UP = 34;
 /** how far before a gap's edge Dot's line about it is said (px): room to say it before he is near it, for a player at full run */
@@ -79,8 +85,8 @@ export interface W5Info {
   stumps: Array<{ x: number; h: number; taught: boolean }>;
   /** where the second jump is taught (5-1) or reminded (5-2): the x of its line and of the gap's edge */
   doubleLesson?: { hint: number; edge: number };
-  /** the reminder before the first stump only the second jump climbs: the x of its line and of that stump */
-  tallLesson?: { hint: number; at: number };
+  /** the reminder before the first stump only the second jump climbs: the x of its line and of that stump, and its height */
+  tallLesson?: { hint: number; at: number; h?: number };
 }
 
 export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): GeneratedStage & { proto: ProtoExtras; w5info: W5Info } {
@@ -151,7 +157,14 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       flower(x0 + (x1 - x0) * t, yTop + 60 * (1 - Math.sin(Math.PI * t)), v);
     }
   };
-  const hint = (x: number, h: W5Hint) => hints.push({ x: r(x), text: h.old, pad: h.pad ?? h.old, keys: h.keys ?? h.old });
+  const hint = (x: number, h: W5Hint) => {
+    const sh: StageHint = { x: r(x), text: h.old, pad: h.pad ?? h.old, keys: h.keys ?? h.old };
+    hints.push(sh);
+    return sh;
+  };
+  /** the move tips about one spot (a wide gap, a tall stump): taken down once he is past it, done or not (QA, 2026-10-26: "Wide gap!"
+   *  stayed up from 5-1 17% to 26%, long after the gap) */
+  const PASS_BY = 80;
   /** a jumping spider on the ground the cursor is on, pacing [x0, x1]; `doze`: asleep until a thread hums or he walks into it */
   const spider = (sx: number, x0: number, x1: number, doze = false) => {
     const id = 500 + eid++;
@@ -226,6 +239,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     const x0 = x;
     run(R.r(140, 220));
     const edge = x;
+    let tell: StageHint | null = null;
     if (double && !doubleSaid) {
       // the first gap only the second jump crosses: 5-1 teaches it here (the first place that needs it), 5-2 reminds
       doubleSaid = true;
@@ -233,12 +247,13 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       // (5-2's reminder comes well ahead, at the start of its beat: its stage's story aside, once it has given way, is read to the end
       // when it comes back, and it must not be what is on screen as he reaches the gap)
       const at = Math.min(x0 + 20, edge - (plan === '5-1' ? GAP_TELL : GAP_TELL_52));
-      hint(at, plan === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double);
+      tell = hint(at, plan === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double);
       info.doubleLesson = { hint: r(at), edge: r(edge) };
     }
     const w = r(R.r(...(double ? GAP2 : GAP1)));
     // (never wider than the jump reaches, with room to spare: a real thumb makes every one)
     const far = edge + Math.min(w, r(reachJump(0, double) * (double ? 0.8 : 0.94)));
+    if (tell) tell.passX = r(far + PASS_BY);
     close();
     softPit(edge, far);
     arc(edge + 10, far - 10, G - (double ? 170 : 128), double ? 4 : 3);
@@ -251,20 +266,30 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   function stumps(n: number, tall = false) {
     // (nothing a second jump is needed for before it is taught)
     if (tall && !doubleTaught) throw new Error(`${plan}: tall stumps before the second jump is taught`);
+    let tell: StageHint | null = null;
     if (tall && n > 1 && !tallSaid) {
       // the first stump only the second jump climbs: a reminder before it (QA, 2026-10-26: the help came only after 3 to 5 tries)
       tallSaid = true;
-      hint(x - 120, plan === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall);
+      tell = hint(x - 120, plan === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall);
       info.tallLesson = { hint: r(x - 120), at: 0 };
     }
     for (let i = 0; i < n; i++) {
       run(R.r(120, 180));
       const w = R.r(130, 190);
-      const h = !doubleTaught
+      const isTall = tall && i % 2 === 1;
+      // (the first tall one after the lesson is the fair one: W5_FIRST_TALL; the rest climb as World 5 does)
+      const firstTall = isTall && !!info.tallLesson && !info.tallLesson.at;
+      // (the roll is made either way, so the rest of the stage is laid out as before)
+      const rolled = !doubleTaught
         ? info.stumps.length === 0 ? W5_PLAIN_STUMPS.first : R.pick(W5_PLAIN_STUMPS.steps)
-        : tall && i % 2 === 1 ? R.r(...TALL_H) : R.r(...STUMP_H);
+        : isTall ? R.r(...TALL_H) : R.r(...STUMP_H);
+      const h = firstTall ? W5_FIRST_TALL : rolled;
       info.stumps.push({ x: r(x), h: r(h), taught: doubleTaught });
-      if (info.tallLesson && !info.tallLesson.at && h > 100) info.tallLesson.at = r(x);
+      if (firstTall) {
+        info.tallLesson!.at = r(x);
+        info.tallLesson!.h = r(h);
+        if (tell) tell.passX = r(x + w + PASS_BY);
+      }
       block(x, x + w, h);
       flower(x + w / 2, G - h - 34, 'hibiscus');
       run(w);
@@ -471,10 +496,13 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     });
     beat('Develop: the cakes and the Butler', () => {
       // (each new thing with room before it: its line is said, and read, before he is at it, whatever was said just before; QA, 2026-10-26)
+      // the first cake on its own, with room to try a hop over it, and the pair after (QA, 5-2, 2026-10-26: the line was followed at
+      // once by two cakes)
       rest(R.r(450, 550));
-      cakeRow(2);
+      cakeRow(1);
+      rest(R.r(320, 400));
       gap();
-      cakeRow(3);
+      cakeRow(2);
       flag();
       rest(R.r(450, 550));
       butler();

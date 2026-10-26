@@ -38,7 +38,7 @@ export const W5_HINTS = {
   s52rules: {
     stage: '5-2', kind: 'info',
     old: 'Rules. Don\'t sit. Don\'t eat anything. Don\'t drink anything. Don\'t touch the silk. Don\'t admire the silk. It takes it as a compliment',
-    text: 'Rules: don\'t sit, eat, drink, or touch the silk.', then: 'And don\'t admire it. It takes it as a compliment.',
+    text: 'Rules: don\'t sit, eat, drink, or touch the silk.', then: 'And don\'t admire the silk. It loves compliments.',
   },
   // (before the first sleeper and the first thread: a sleeper wakes if he walks into it, and a thread's hum wakes them all)
   s52doze: {

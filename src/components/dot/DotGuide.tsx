@@ -59,7 +59,7 @@ export interface DotGuideProps {
   playing: boolean;
   ratio: number;
   hp: number;
-  guide?: { text: string; ms: number; n: number } | null;
+  guide?: { text: string; ms: number; n: number; passed?: boolean } | null;
   coachStep?: CoachStep;
   coachStyle?: ControlStyle;
   lessonId?: LessonId | null;
@@ -209,6 +209,12 @@ class GuideRun {
     const l = engineGuideLine(text, this.stageId, { boss: v.boss, flight: v.flight, dot: this.dot, ms });
     if (l) this.say(l);
   }
+
+  /** the engine says he is past the spot an engine line was about (StageHint.passX): that line goes, done or not */
+  passedLine(text: string): void {
+    const l = engineGuideLine(text, this.stageId, { dot: this.dot });
+    if (l) this.queue.clear((q) => q.key === l.key, this.clock);
+  }
 }
 
 const storyKey = (f: WayFlag) => `story:${f}`;
@@ -280,6 +286,11 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   useEffect(() => {
     if (!guide || guide.n <= run.lastGuide) return;
     run.lastGuide = guide.n;
+    // (a move tip about a spot he is now past: it goes, up or waiting, done or not)
+    if (guide.passed) {
+      run.passedLine(guide.text);
+      return;
+    }
     if (!guide.text) {
       // (in a boss fight every line of hers belongs to an attack: its end takes it down)
       run.queue.clear((l) => l.source === 'engine' && (l.kind === 'danger' || run.view.boss), run.clock);
