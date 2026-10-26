@@ -180,6 +180,10 @@ const VENOM: BossDef = {
   hits: 6,
   openCap: 4,
   openCue: true,
+  // (2026-10-26, QA: the first lunge came 1.2 s after Dot's tip, before it could be read) he sizes you up first, and he hisses as
+  // he rears back
+  firstIdle: 3.2,
+  tellCall: 'boa',
   weakAt: (b, floor) => venomWeak(b, floor),
   openAfter: ['sweep'],
   aimText: 'HIT HIS HEAD WHEN IT IS DOWN!',
@@ -412,7 +416,8 @@ const PROWLER: BossDef = {
   moves: {
     // a quick crouch, then a long pounce to where you were standing. From the second phase the landing sends a wave along the floor
     pounce: leapMove({
-      tell: 0.55,
+      // (0.55 until QA: in the dark a pounce took two hearts unseen; the crouch now lasts long enough to read, and he is lit over the dark)
+      tell: 0.65,
       act: 0.7,
       // (the openings are timed to be reached: bossFair.test.ts)
       rec: 2.3,

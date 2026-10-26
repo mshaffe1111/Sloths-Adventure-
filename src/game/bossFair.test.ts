@@ -12,6 +12,8 @@ import { BossPlay } from './bossPlay.ts';
 import { BossBot, TACTICS, seeded } from './bossBot.ts';
 
 const REACT = 0.8;
+/** the longest a fight may go with neither a wind-up nor an opening starting (s): the longest opening plus a breath */
+const IDLE_MAX = 6;
 const HIT = 0.6;
 const LAND = { w: 844, h: 390 };
 const PORT = { w: 390, h: 844 };
@@ -37,6 +39,14 @@ for (const id of ['1-10', '2-10', '3-10']) {
         const { sim, r } = fight(id, easy, screen, seed);
         assert.ok(r.won, `${id} ${easy ? 'Easy' : 'Normal'} seed ${seed}: lost (boss hp ${sim.boss.hp}, ${r.seconds.toFixed(0)} s)`);
         assert.ok(sim.openings.length > 0);
+        // he never stands about: a wind-up or an opening at least every IDLE_MAX s (QA saw 17 s of nothing in the dark), and every
+        // wind-up starts where the camera shows him
+        const beats = [...sim.tells.map((t) => t.t0), ...sim.openings.map((o) => o.t0)].sort((x, y) => x - y);
+        for (let i = 1; i < beats.length; i++) {
+          assert.ok(beats[i] - beats[i - 1] <= IDLE_MAX, `${id} ${view}: ${(beats[i] - beats[i - 1]).toFixed(1)} s with no attack and no opening (from ${beats[i - 1].toFixed(1)} s)`);
+        }
+        const unseen = sim.tells.filter((t) => !t.onScreen);
+        assert.ok(unseen.length <= sim.tells.length * 0.1, `${id} ${view}: ${unseen.length} of ${sim.tells.length} wind-ups began off screen (${unseen.map((t) => t.move).join(', ')})`);
         // the camera shows the glowing spot while it is open (a boss far across the arena may take a moment to come into view)
         const frames = sim.openings.reduce((n, o) => n + o.frames, 0);
         const off = sim.openings.reduce((n, o) => n + o.offscreen, 0);
