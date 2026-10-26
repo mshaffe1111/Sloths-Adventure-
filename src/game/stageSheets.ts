@@ -31,6 +31,7 @@ export const STAGE_ANIMS: Record<string, readonly string[]> = {
   '3-9': ['jaguar', 'ocelot'],
   '5-1': ['spider'],
   '5-2': ['spider'],
+  '5-3': ['spider'],
 };
 
 export interface SheetSwitches {

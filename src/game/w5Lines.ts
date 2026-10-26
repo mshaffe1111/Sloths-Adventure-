@@ -1,6 +1,6 @@
 /**
  * World 5's lines for Dot: the first-time teaching tips for each piece of play (w5Kit W5_TEACH, said by w5Play.ts where the piece first
- * comes into view) and the stage hints of 5-1 and 5-2 (w5Stages.ts), each in the old look's words and in Matt's new-look style
+ * comes into view) and the stage hints of 5-1, 5-2 and 5-3 (w5Stages.ts), each in the old look's words and in Matt's new-look style
  * (tips 8 words or fewer that name the thumb move, story lines 12 or fewer, touch words only). dotLines.ts adds these rows to the
  * approved set, so the new look swaps them in the same way; the old look keeps the old words.
  */
@@ -9,7 +9,7 @@ import { W5_TEACH } from './w5Kit.ts';
 
 /** a stage hint: where it is said, its words for the screen, the pad and the keys (old look), and its new-look line */
 export interface W5Hint {
-  stage: '5-1' | '5-2';
+  stage: '5-1' | '5-2' | '5-3';
   kind: DotLineRow[3];
   old: string;
   pad?: string;
@@ -62,6 +62,18 @@ export const W5_HINTS = {
   s52chair: { stage: '5-2', kind: 'story', old: 'Don\'t even think about sitting. You\'d be a chair, Pokey. You\'d be, forever, a very still chair', text: 'You\'d be a chair. Forever, a very still chair.' },
   s52all: { stage: '5-2', kind: 'info', old: 'Threads, cakes and chairs, all at once. Slow and steady, but never still', text: 'Slow and steady. But never, ever still.' },
   s52end: { stage: '5-2', kind: 'info', old: 'Nearly out of the garden. Keep moving', text: 'Nearly out. Keep moving.' },
+  // ── 5-3 Closing Orchids ──
+  // (the story's "barely afternoon, and the orchids were already closing": said at the start, before the first orchid)
+  s53start: {
+    stage: '5-3', kind: 'info', old: 'It\'s barely afternoon, Pokey, and the orchids are closing already. Get the flowers before they shut',
+    text: 'Barely afternoon, and they\'re closing already.',
+  },
+  // (halfway on: the orchids stay open for less of their beat from here, the stage's "closing early")
+  s53sooner: {
+    stage: '5-3', kind: 'info', old: 'They\'re shutting sooner and sooner. Go the moment one opens, and don\'t stand there waiting',
+    text: 'They shut sooner now. Go when one opens.',
+  },
+  s53end: { stage: '5-3', kind: 'info', old: 'The last of the orchids. Nearly through, Pokey', text: 'The last orchids. Nearly through.' },
 } as const satisfies Record<string, W5Hint>;
 
 /**
@@ -87,7 +99,7 @@ const TEACH_ROWS: DotLineRow[] = [
   ['w5.thread', '', 'guide', 'move', T.thread, 'Flick up over the threads. Spiders listen.', null, 'flick-up', 'thread'],
   ['w5.hummed', '', 'guide', 'info', T.hummed, 'It hummed! Spiders coming!', null, null, 'spider'],
   ['w5.sheet', '', 'guide', 'move', T.sheet, 'Slide straight past the silk. Don\'t look.', null, 'slide', 'silk sheet'],
-  ['w5.orchid', '', 'guide', 'move', T.orchid, 'Flick up while the orchid is open.', null, 'flick-up', 'orchid'],
+  ['w5.orchid', '', 'guide', 'move', T.orchid, 'Quick! Flick up before the orchid shuts!', null, 'flick-up', 'orchid'],
   ['w5.cocoon', '', 'guide', 'move', T.cocoon, 'Tap the cocoon to punch it open.', null, 'tap', 'cocoon'],
   ['w5.silk', '', 'guide', 'move', T.silk, 'Flick up into the silk to swing.', null, 'flick-up', 'vine'],
   ['w5.spider', '', 'guide', 'move', T.spider, 'Tap to punch the spider, or stomp it.', null, 'tap', 'spider'],

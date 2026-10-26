@@ -489,6 +489,8 @@ export interface Orchid {
   offset: number;
   platformId?: number;
   petalIds?: number[];
+  /** the ground its stem grows from (default: 260 px under the bloom) */
+  stem?: number;
 }
 
 export const ORCHID = {

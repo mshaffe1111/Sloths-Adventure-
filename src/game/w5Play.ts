@@ -406,7 +406,7 @@ export class W5Play {
     (w5.orchids ?? []).forEach((o) => {
       if (!vis(o.x)) return;
       const s = orchidAt(o, t);
-      drawOrchid(ctx, o.x, o.y, o.w, s.open, s.phase === 'closing' ? 1 : 0, t, o.y + 260);
+      drawOrchid(ctx, o.x, o.y, o.w, s.open, s.phase === 'closing' ? 1 : 0, t, o.stem ?? o.y + 260);
     });
     (w5.cocoons ?? []).forEach((c, i) => {
       if (!vis(c.x)) return;
