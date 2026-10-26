@@ -51,3 +51,29 @@ Earlier read of the same log, kept for the details:
   at 2.0 s, but recovered and played on (16 sections, 2 finishes). Same wait, different outcome: a race in the
   "wait for sheet" path?
 - To check: what clears the blank/wait state, and can it miss a sheet that finished loading before the wait began?
+
+## 2. Boss 2-10 (the caiman) hurts by touch during its wind-ups [major]
+- Session `Matt 20261026-1430-2up4` (build 11:16), from the new `bossHurt` log: 8 hearts in the fight. 6 were `body` (touching him),
+  4 of those during a `tell`: `body tell deathRoll 0.50`, `body tell tailWhip 0.33`, `body tell tailWhip 0.32`,
+  `body tell geysers 0.33`, plus `body act deathRoll 0.50/0.68`. Only one was a `strike` (tailWhip act 0.03) and one a geyser column.
+- The "no touch damage, only attacks after their wind-up" fix was done for 1-10 and 3-10; 2-10 still hurts by contact, mostly while
+  he is winding up, so the hit comes before the move it warns about.
+
+## 3. Camera jumps back and forth about 130 px when Pokey turns [major, looks like shake]
+- 55 `camjump` lines today, 47 on Matt's 498x1034 upright phone. Each is about 130 px sideways with no vertical change, and they
+  come in back-and-forth pairs at the same spot, e.g. `dx-121 x13680`, `dx135 x13724`, `dx-131 x13729` (Sleeping snake).
+- Worst: 21 in one section, `Twist: the swing frames` (Matt 2up4): every swing changes direction, and the camera's look-ahead flips
+  with it, snapping the view about 130 px each way. Also 8 in `Develop again: higher and wider` and 3 in `Learn: swing over soft moss`.
+- Suggest: ease the look-ahead when the facing flips (and hold it steady while swinging), instead of snapping it.
+
+## 4. Sally drowned 12 times at "Push the log" and stopped there [major, teaching]
+- Session `Sally 20261026-1150-jz2z` (320x782): the mix with Push the log (seed 571060) started twice; 12 lives lost to water in the
+  "Push the log" section, then the session ended there. Matt also drowned twice at "Puzzle: the fallen log" (c3ho).
+- By the "player or game" check she isn't a beginner (0.68 hits a section overall), so this spot is the game: what to do (push the log
+  into the water first, then cross) isn't getting across, or the push is too fiddly on a small phone. Worth a Dot line before it,
+  and a look at whether the log can be pushed from where a player stands.
+
+## 5. Small phone (Sally, 320x782): many short freezes mid-stage [minor/perf]
+- 45 mid-stage freezes over 100 ms on Sally's phone (worst 264 ms at River logs; 165 ms at Sleeping snake and Push the log),
+  against 1 on Matt's upright phone. Her "Finish" section shows 42 choppy windows at about 24 fps (frames 57-67 ms).
+- Memory is fine on every session (flat, or a slow climb to 30-32 MB over 20+ minutes).
