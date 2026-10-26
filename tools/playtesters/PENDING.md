@@ -19,6 +19,9 @@ Trophy Room was opened from the PAUSE menu (`trophyFrom === 'paused'`). After th
 Trophy Room, whose Back goes to `'paused'`, but the stage's engine is gone, so Resume resumes nothing. That's a frozen screen
 whose touches are still read by the input layer, which is exactly the log. The page closing afterwards may be the browser
 killing a stuck tab, or Matt leaving.
+Skipping doesn't matter (Matt, confirmed in the code): the stage is released the moment the memory starts, so watching it to
+the end breaks it the same way. The real bug: playing any memory or scene while a stage is open unloads that stage, and the
+game later goes back to it as if it were still there.
 Fix ideas: don't free the engine for a memory replayed from the pause menu (play it over the paused stage), or have Back
 restart the stage from its last flag when the engine was released. Repro: start a stage, Menu → Trophies → Library → a seen
 memory "Tap to watch again" → Skip → Back → Resume.
