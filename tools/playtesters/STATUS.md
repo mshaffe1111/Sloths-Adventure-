@@ -23,6 +23,10 @@ others take hits, that's the player, and it says who learned it later. If skille
 gets through, it asks whether it can be done at all. Worlds 1-4 stay held to the first-timer standard (the 0.8 s
 reaction + 0.6 s margin on boss openings).
 
+**Keep runs lean** (Matt, 2026-10-26): his usage is limited. Use the Matt bot (upright) and the Jen bot (sideways) for most gates,
+one run each per promotion, not repeat runs. Do quick checks by state (`eval`, `unseen-hits.cjs`, `boss-openings.cjs`) where that is
+enough, and bring in other personas only when a check needs them.
+
 **How work moves**
 - The coding team promotes a fix or a new stage: it rebuilds Matt's test link, pushes `ccr-0d59a91c-oy3imz`, and sends QA a promotion note with a retest list.
 - QA builds from the pushed branch, retests every item, and replies pass or fail on each, plus anything new.
