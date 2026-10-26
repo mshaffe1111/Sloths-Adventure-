@@ -8,6 +8,7 @@ import { recorder } from './playRecorder.ts';
 import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
+import { SectionTrack } from './sectionTrack.ts';
 import { isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
@@ -980,6 +981,7 @@ export class GameEngine {
       this.input.kickNear = this.somethingToKick();
       this.input.onVine = p.climbing || !!p.isVineSwinging;
       this.input.onSwing = !!p.isVineSwinging;
+      this.input.onRope = !!p.hanging;
     }
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
@@ -3115,6 +3117,8 @@ export class GameEngine {
     return false;
   }
 
+  /** which stretch the recorder says he is in (it changes only once he is well into the next one) */
+  private sectionTrack = new SectionTrack();
   /** the control-test recorder: where Pokey is, what he is doing and which stretch of the test he is on */
   private recordPokey() {
     const p = this.player;
@@ -3124,8 +3128,8 @@ export class GameEngine {
     // what the controls are holding (touch, pad or keys alike)
     const held = (st.left ? 'L' : '') + (st.right ? 'R' : '') + (st.up ? 'U' : '') + (st.down ? 'D' : '');
     if (held) s += '/' + held;
-    let section = '';
-    if (this.proto) for (const b of this.proto.beats) if (p.x >= b[0] && p.x < b[1]) section = b[2];
+    // (with hysteresis: swinging over the line between two stretches no longer flips the label back and forth, sectionTrack.ts)
+    const section = this.proto ? this.sectionTrack.update(this.proto.beats, p.x, this.gameTime, !!p.isVineSwinging) : '';
     recorder.pokey(p.x, p.y, p.vx, p.vy, s, section);
   }
 
@@ -4911,6 +4915,7 @@ export class GameEngine {
     this.input.airJumpReady = run.fl.canFlap();
     this.input.kickNear = false;
     this.input.onVine = false;
+    this.input.onRope = false;
     this.input.megaReady = true;
     if (!this.isGameOver || run.fl.through) run.step(dt, this.input.state);
     this.checkpoint = { ...run.fl.checkpoint };
