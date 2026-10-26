@@ -50,6 +50,8 @@ export const LONG_DROP_VIEW = { land: 640, port: 620 };
 export const DRAFT_HOVER = 36;
 /** a ledge the warm air is needed for sits this far under where he hangs at the top of it (an easy drift down onto it) */
 const DRAFT_LAND = 90;
+/** a turn's step half way down: how far it reaches out past the ledge over it, and back under it (px) */
+export const TURN_STEP = { out: 200, back: 60 } as const;
 
 /** what the tests read back about the warm air: which updraft (index into proto.w4.updrafts) is which */
 export interface DraftInfo {
@@ -62,7 +64,7 @@ export interface DraftInfo {
   from?: number;
 }
 
-export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage & { proto: ProtoExtras; drafts47: DraftInfo[] } {
+export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage & { proto: ProtoExtras; drafts47: DraftInfo[]; steps47: number[] } {
   const R = stream(seed);
   const P: Platform[] = [];
   const C: Collectible[] = [];
@@ -104,6 +106,8 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
   let tier = 0;
   /** where the flag stands on the ledge a turn has just dropped him onto */
   let turnFlag = 0;
+  /** the steps half way down the turns (their ids) */
+  const steps: number[] = [];
   /** a line about the ledge he is on (see hint) */
   const say = (text: string, pad = text, keys = text) => hint(dir > 0 ? cur.x + 100 : 0, text, pad, keys, tier > 0 ? cur.y - 60 : undefined);
   let lastFlag = -Infinity;
@@ -163,7 +167,8 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
    * of the cliff.
    */
   function drop(o: { leaf: boolean; rock?: boolean; draft?: boolean; long?: boolean; deep?: boolean; plunge?: boolean }) {
-    let dy = Math.round(o.plunge ? R.r(345, 360) : o.deep ? R.r(330, 355) : R.r(120, 190));
+    // (the deep ones fit the view sideways under him with his head kept under the HUD: about 330 px below his feet, w4LongDrop.test.ts)
+    let dy = Math.round(o.plunge ? R.r(318, 332) : o.deep ? R.r(312, 332) : R.r(120, 190));
     let gap: number;
     if (o.leaf) {
       // (a deeper drop when the window between a jump and the leaf is too narrow at this height)
@@ -273,23 +278,33 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
   }
 
   /**
-   * a switchback: walk off the end of this ledge and drop straight down onto the one under it, which runs back under this one, and
-   * turn round. `cave`: it is a cave in the cliff, with a flag, a rest.
+   * a switchback: walk off the end of this ledge onto a step half way down, turn round, walk off the step's back end and drop onto the
+   * ledge under them both, which runs back under this one. `cave`: it is a cave in the cliff, with a flag, a rest.
+   * (One drop of 520+ straight down no longer fits the view sideways now that Pokey is kept under the HUD (Matt, 2026-10-26: the look
+   * down pushed him behind the Menu pill); two drops of half that each show their landing before he goes.)
    */
   function turn(cave: boolean) {
     const e = edgeOf(cur);
     // (the lower cave drops further: the climbs under it rise back up toward the ledges over it)
     const dy = r(R.r(520, 570)) + (cave && tier > 0 ? 80 : 0);
-    const w = r(R.r(620, 700));
+    const w = r(R.r(680, 760));
     const out = 300;
     const far = e + dir * out;
-    const t = dir > 0 ? ledge(far - w, far, cur.y + dy) : ledge(far, far + w, cur.y + dy);
-    // a trail of petals down the way he falls when he walks off the end (the arc of a walk off at a run), so the turn is shown, not
-    // guessed; he lands on them going back the other way
-    for (const u of [0.25, 0.42, 0.58]) drift.add(flower(e + dir * RUN * u * 0.85, cur.y - 34 + 1250 * u * u, 'orchid'));
-    // (the flag where he lands: a walk off at a run comes down about 180 px out, and he goes back past this on his way)
-    turnFlag = r(e + dir * 40);
-    expert += cur.width / RUN + out / RUN + 0.8 + w / RUN;
+    const top = cur;
+    const sy = top.y + r(dy / 2);
+    // the step: under the end of this ledge (a walk off at a run comes down about 180 px out) and a little back under it
+    const step = dir > 0 ? ledge(e - TURN_STEP.back, e + TURN_STEP.out, sy) : ledge(e - TURN_STEP.out, e + TURN_STEP.back, sy);
+    steps.push(step.id);
+    const back = e - dir * TURN_STEP.back;
+    const t = dir > 0 ? ledge(far - w, far, top.y + dy) : ledge(far, far + w, top.y + dy);
+    // a trail of petals down each half (off the end onto the step, then off the step's back end), so the turn is shown, not guessed
+    drift.add(flower(e + dir * 45, top.y - 34 + (sy - top.y) * 0.3, 'orchid'));
+    drift.add(flower(e + dir * 95, top.y - 34 + (sy - top.y) * 0.7, 'orchid'));
+    drift.add(flower(back - dir * 45, sy - 34 + (t.y - sy) * 0.3, 'orchid'));
+    drift.add(flower(back - dir * 95, sy - 34 + (t.y - sy) * 0.7, 'orchid'));
+    // (the flag where he lands off the step, on his way back)
+    turnFlag = r(back - dir * 60);
+    expert += top.width / RUN + 0.6 + (TURN_STEP.out + TURN_STEP.back) / RUN + 0.6 + 0.4 + w / RUN;
     dir = dir > 0 ? -1 : 1;
     tier++;
     cur = t;
@@ -327,7 +342,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     }
   });
   beat('Rest: the cave', () => {
-    hint(cur.x + 60, 'A cave in the cliff below! Walk off the end and drop straight down into it');
+    hint(cur.x + 60, 'A cave in the cliff below! Walk off the end onto the step, turn round, and drop down into it');
     turn(true);
     flag(turnFlag);
     say('A rest in the cave. The path turns back here: glide the other way now');
@@ -346,7 +361,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     }
   });
   beat('Twist: up on the warm air', () => {
-    say('The path turns back here! Walk off the end and drop straight down onto the ledge below, then glide the other way');
+    say('The path turns back here! Walk off the end onto the step below, turn round, and drop to the ledge under it');
     turn(false);
     flag(turnFlag);
     drop({ leaf: true, deep: true });
@@ -363,7 +378,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     }
   });
   beat('Rest: the lower cave', () => {
-    say('Another cave below. Walk off the end, drop down into it and rest');
+    say('Another cave below. Walk off the end onto the step, turn round, drop down into it and rest');
     turn(true);
     flag(turnFlag);
   });
@@ -401,7 +416,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     flag();
   });
   beat('Develop: the long crossing', () => {
-    say('Another turn! Walk off the end, drop straight down, and back the other way');
+    say('Another turn! Walk off the end onto the step, turn round, and drop again');
     turn(false);
     flag(turnFlag);
     drop({ leaf: true });
@@ -486,5 +501,6 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: W } },
     proto: { hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups, w4: { rocks, updrafts, deepFall: LONG_DROP_FALL, decor, descent: true, route: P.map((p) => p.id), view: LONG_DROP_VIEW } },
     drafts47: drafts,
+    steps47: steps,
   };
 }

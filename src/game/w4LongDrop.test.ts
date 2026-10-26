@@ -6,6 +6,7 @@ import { rockFits } from './rockfall.ts';
 import { glideBrake, glideLift, glideStep, newGlide } from './glide.ts';
 import { PHYS, reachGlide, reachJump } from './physics.ts';
 import { buildLongDrop, DRAFT_HOVER, FLAG_LEDGE, leafReach, LONG_DROP_VIEW, type DraftInfo } from './w4LongDrop.ts';
+import { HERO_HEAD, HUD_BAND } from './cameraFollow.ts';
 import type { LevelConfig, Platform } from './types.ts';
 import type { Updraft } from './w4Play.ts';
 
@@ -87,10 +88,11 @@ test('4-7: the path runs back and forth across the cliff, every flag lower than 
 test('4-7: no short cut: a drop that skips ledges is deeper than a fall into the mist', () => {
   for (const s of SEEDS) {
     const st = build(s);
-    const P = st.platforms;
-    for (const a of P) {
-      for (const b of P) {
-        if (b.id <= a.id + 2) continue;
+    // (a turn's step half way down is not a ledge skipped: it and the ledge under it are one turn)
+    const P = st.platforms.filter((p) => !st.steps47.includes(p.id));
+    for (const [ia, a] of P.entries()) {
+      for (const [ib, b] of P.entries()) {
+        if (ib <= ia + 2) continue;
         const drop = b.y - a.y;
         if (drop > 670) continue;
         const gap = Math.max(0, b.x - (a.x + a.width), a.x - (b.x + b.width));
@@ -275,12 +277,11 @@ test('4-7 teaches the drop before the first edge, the slip off an edge, and ever
     assert.ok(first && first.x < st.platforms[0].x + st.platforms[0].width - 600, `seed ${s}: the mist is not explained before the first edge`);
     assert.ok(said(/back to the last flag/));
     assert.ok(said(/Slipped off an edge\? Flick up/), `seed ${s}`);
-    // every turn (a ledge straight under the end of the one before) has a line, and a trail of petals down to it
-    const turns = st.platforms.filter((b, i) => i > 0 && b.y - st.platforms[i - 1].y > 450 && b.x < st.platforms[i - 1].x + st.platforms[i - 1].width && b.x + b.width > st.platforms[i - 1].x);
+    // every turn (a step half way down under the end of a ledge, then the ledge under both) has a line, and a trail of petals down to it
+    const turns = st.steps47.map((id) => { const i = st.platforms.findIndex((p) => p.id === id); return { a: st.platforms[i - 1], t: st.platforms[i + 1] }; });
     assert.ok(turns.length >= 4);
     for (const re of [/cave in the cliff below/, /path turns back here! Walk off/, /Another cave below/, /Another turn!/]) assert.ok(said(re), `seed ${s}: no ${re}`);
-    for (const t of turns) {
-      const a = st.platforms[st.platforms.indexOf(t) - 1];
+    for (const { a, t } of turns) {
       const trail = st.collectibles.filter((c) => c.type === 'flower' && c.y > a.y && c.y < t.y - 30 && Math.abs(c.x - (a.x + a.width / 2)) < a.width / 2 + 260);
       assert.ok(trail.length >= 3, `seed ${s}: no petal trail down the turn to ledge ${t.id}`);
     }
@@ -303,4 +304,25 @@ test('4-7 runtime: a lower flag counts as further on, whatever its x; a flag onl
   // and left to right is not the order: the tiers run back and forth
   const byX = [...st.checkpoints!].sort((a, b) => a.x - b.x);
   assert.notDeepEqual(byX.map((c) => c.y), order.map((c) => c.y));
+});
+
+test('4-7: every drop\'s landing fits the view under him, sideways and upright, with his head kept under the HUD (turns go by a step)', () => {
+  // (Matt, 2026-10-26: Pokey stays under the top bar; the look down gives way first, so each drop must fit what is left under him)
+  const views = [
+    { name: 'sideways', vh: LONG_DROP_VIEW.land, zoom: 390 / LONG_DROP_VIEW.land, band: HUD_BAND.land },
+    { name: 'upright', vh: (LONG_DROP_VIEW.port * 720) / 400, zoom: 400 / LONG_DROP_VIEW.port, band: HUD_BAND.port },
+  ];
+  for (const s of SEEDS) {
+    const st = build(s);
+    const P = st.platforms;
+    assert.ok(st.steps47.length >= 4, `seed ${s}: ${st.steps47.length} turns`);
+    for (let i = 1; i < P.length; i++) {
+      const a = P[i - 1], b = P[i];
+      for (const v of views) {
+        const feet = v.band / v.zoom + HERO_HEAD;
+        // (the ledge top, with a little room under it at the bottom of the screen)
+        assert.ok(b.y - a.y + feet <= v.vh * 0.97, `seed ${s} ${v.name}: ledge ${a.id} to ${b.id} drops ${b.y - a.y}, past the bottom of the view (${Math.round(v.vh * 0.97 - feet)} fits)`);
+      }
+    }
+  }
 });
