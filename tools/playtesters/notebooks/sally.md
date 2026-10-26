@@ -49,3 +49,14 @@
 - Ropes: jumping at a rope from the low ground didn't catch it for me. Try from the ledge right next to the post.
 - In the Menu you can make Dot quiet. Then she stops teaching, so only do that once you know the moves.
 - Sideways the screen is short: things above you (snakes on logs) are easier to see, but it's harder to see the ground.
+
+## 2026-10-26 (World 5, first go, new look on)
+- A short flick up only gets Pokey onto a knee-high block. For anything taller, flick up, wait a quarter second, then flick up again in the air, and only then slide toward the ledge. Sliding sideways during the first jump tends to bump the edge and drop back down.
+- A held flick goes higher but not further; for a wide gap do the held flick, then a second flick in the air while sliding.
+- If you slide into a step and stop moving, you're just pushed against it. Lift your thumb and flick up; wiggling left and right does nothing.
+- Spiders that sleep are fine to pass if you hop over the thin threads. If one wakes, stand still, face it and tap two or three times as it lands next to you. Tapping too early, while it's still far off, misses.
+- Spiders often come from behind after you hop over them. After any landing, turn round with a tiny slide and tap once or twice before going on.
+- Don't stand still in World 5. After a few seconds silk wraps your feet. One flick up gets you out.
+- Cakes put Pokey to sleep for a bit (little z over his head). Jump over anything sitting on the ground that looks like food.
+- Dot's speech box sits low on a small phone and can cover Pokey. Wait it out before a tricky jump.
+- "Skip tips" is safe to press: Pokey doesn't jump or punch when you press it.
