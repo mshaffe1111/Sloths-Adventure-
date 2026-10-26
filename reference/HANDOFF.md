@@ -146,6 +146,14 @@ The cutting and packing scripts are in `tools/art/` (`w2art/`, `w3*/`, `packprop
 | Bosses / guardians | `bossDefs.ts`, `bossArt.ts`, `<boss>Sprite.ts`; boss sheets in `reference/boss-sheets/` |
 | The Sky Sovereign's fight (4-10): rock pillars, screech, gust, her ending | rules `sovereignFight.ts`, moves in `bossDefs.ts` (SOVEREIGN), look `sovereignArt.ts`, reach timing for Matt's opening rule `sovereignReach.ts`, tests `sovereign.test.ts`; her two screech poses are packed into her atlas by `tools/art/w4/sovscreech/pack_screech.py` |
 
+### Medals (the Trophy Room)
+
+| What | Where |
+|---|---|
+| **The medals** (rebuilt 2026-10-26 for a longer game: 100 medals, 38 bronze at 20 points, 35 silver at 40, 26 gold at 90 and one platinum at 500, exactly 5,000 points; nothing about finishing quickly; the coats unlock at 250, 750, 1,500 and 2,500 points) | rules and counters `src/game/badges.ts` (the save record `badgeStore.ts`; tests `badges.test.ts` check the 5,000), the screen `src/components/TrophyRoom.tsx` (points, platinum on top, medals by tier with progress bars), the medal `BadgeMedal.tsx`, the toast `BadgeToast.tsx` |
+| What the engine reports for them | `buildStats` in `engine.ts` (swings, punches, kicks, friends freed, difficulty, Dot on Quiet, 4-D scratches, 5-M catches) and `W5Play.tally` in `w5Play.ts` (cakes avoided, orchid petals, silk shaken off) |
+| The painted medals (four tier medallions and 33 emblems, Qwen-Image with the style model, job medals-0) | `src/assets/medals/medals.webp` + `src/game/medalAtlasData.ts`; made by `tools/art/medals/` (`make_spec.py`, `medals_gpu.py`, `picks.json`, `pack.py`) |
+
 ### Story
 
 | What | Where |

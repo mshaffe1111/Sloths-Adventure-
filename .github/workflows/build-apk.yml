@@ -1,11 +1,14 @@
 name: Build Sloths Adventure Android APK
 
+# One `push` key only: GitHub rejects a workflow that lists it twice (the runs failed at once, with no step run)
 on:
   push:
     branches: [ "main" ]
-  push:
     tags: [ "v*" ]
   workflow_dispatch:
+
+permissions:
+  contents: write # the tagged-release step attaches the APK
 
 jobs:
   build-apk:
@@ -15,14 +18,14 @@ jobs:
       - name: Checkout Sloths-Adventure Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      # (the same Node and install as the site's publish workflow: the project has bun.lock, no package-lock.json, so no npm ci or npm cache)
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: 22
 
       - name: Install Game Dependencies
-        run: npm ci
+        run: npm install --no-audit --no-fund --legacy-peer-deps
 
       - name: Build Vite Web Game (Outputs to dist/)
         run: npm run build
@@ -38,7 +41,7 @@ jobs:
 
       - name: Initialize Capacitor Android (Auto-Wrap)
         run: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install --no-audit --no-fund --legacy-peer-deps @capacitor/core @capacitor/cli @capacitor/android
           npx cap init "Sloths Adventure" "com.mshaffe1111.slothadventure" --web-dir dist
           npx cap add android
           npx cap sync android

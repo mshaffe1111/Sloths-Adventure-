@@ -99,3 +99,5 @@ w5pell4-0 6adf6eff3fb22a235dd1e914
 w5pell4-1 6adf6f0041e90535df757525
 w5pellpack-0 6adf6f1f3fb22a235dd1e92a
 w5soldierpack-0 6adf733c3fb22a235dd1eb9d
+medals-0 6adfa3143fb22a235dd20425
+medals2-0 6adfab1a41e90535df758ca6
