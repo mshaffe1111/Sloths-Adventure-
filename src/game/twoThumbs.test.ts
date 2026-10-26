@@ -112,7 +112,7 @@ test('one thumb: two quick flicks up give two jumps, however close together', ()
   }
 });
 
-test('on a vine: straight up climbs; up and forward (27 degrees over, as the swing card says) leaps off', () => {
+test('on a vine: straight up climbs; up and forward (27 to 50 degrees over, as the swing card says) leaps off; mostly sideways steers', () => {
   const deg = (a: number) => (a * Math.PI) / 180;
   // near-vertical: a climb, never a jump
   for (const a of [0, 8, 14]) {
@@ -123,21 +123,38 @@ test('on a vine: straight up climbs; up and forward (27 degrees over, as the swi
     assert.ok(t.log.includes('climb:-1'), `${a} degrees climbs: ${t.log.join(' ')}`);
   }
   // clearly forward: the leap
-  for (const a of [27, 40, 60]) {
+  for (const a of [27, 40, 48]) {
     const t = rig({ vine: true, swing: true });
     t.down(1, 120, 520);
     t.drag(1, 120, 520, 120 + Math.sin(deg(a)) * 80, 520 - Math.cos(deg(a)) * 80, 90, 4);
     assert.equal(t.count('jump'), 1, `${a} degrees: ${t.log.join(' ')}`);
   }
+  // more sideways than that: steering the swing, never a let-go (Matt's pumping thumb let go 90 times, 2026-10-26)
+  for (const a of [53, 60, 75]) {
+    const t = rig({ vine: true, swing: true });
+    t.down(1, 120, 520);
+    t.drag(1, 120, 520, 120 + Math.sin(deg(a)) * 80, 520 - Math.cos(deg(a)) * 80, 90, 4);
+    assert.equal(t.count('jump'), 0, `${a} degrees: ${t.log.join(' ')}`);
+  }
   assert.ok(TUNING.vineLeapSlant < Math.tan(deg(27)) && TUNING.vineLeapSlant > Math.tan(deg(14)));
+  assert.ok(TUNING.vineLeapMaxSlant >= Math.tan(deg(48)) && TUNING.vineLeapMaxSlant <= Math.tan(deg(50.5)));
 });
 
-test('on a swinging vine: a quick sideways flick leaps that way (either thumb); a slow pumping slide does not', () => {
-  // one thumb: the flick right
+test('on a swinging vine: the steering thumb sideways only steers, however quick; the other thumb\'s sideways flick leaps', () => {
+  // one thumb: a quick stroke right steers the swing right and does not let go (Matt, 2026-10-26: it let go of the liana while he
+  // pumped for petals; letting go is a flick up and forward)
   let t = rig({ vine: true, swing: true });
   t.flick(1, 120, 520, 80, 0, 60);
-  assert.equal(t.count('jump'), 1, t.log.join(' '));
-  assert.ok(t.log.includes('move:right'), 'it leaps the way it flicked');
+  assert.equal(t.count('jump'), 0, t.log.join(' '));
+  assert.ok(t.log.includes('move:right'), 'it steers the way it went');
+  // quick strokes back and forth, too
+  t = rig({ vine: true, swing: true });
+  t.down(1, 120, 520);
+  for (let k = 0; k < 4; k++) {
+    t.drag(1, 120, 520, 220, 510, 90, 4);
+    t.drag(1, 220, 510, 120, 520, 90, 4);
+  }
+  assert.equal(t.count('jump'), 0, t.log.join(' '));
   // the steering thumb pumps slowly left and right: never a leap
   t = rig({ vine: true, swing: true });
   t.down(1, 120, 520);
@@ -235,11 +252,11 @@ test('swing, driven by the real gestures: pump with slides, then flick at the fo
         t.drag(1, fx, 520, nx, 520, 33, 1);
         fx = nx;
       } else if (s.angle > TIMED.sweetTo && s.omega > 0) {
-        // the forward end: flick toward the next vine
+        // the forward end: flick toward the next vine (the other thumb sideways, or the steering thumb up and forward)
         if (twoThumbs) t.flick(2, 310, 450, 80, 0, 60);
         else {
-          t.drag(1, fx, 520, fx + 90, 516, 60, 3);
-          fx += 90;
+          t.drag(1, fx, 520, fx + 50, 440, 60, 3);
+          fx += 50;
         }
       } else t.wait(33);
       if (t.count('jump') > before) {

@@ -32,8 +32,10 @@ export class InputEngine {
   public kickNear = true;
   /** the engine says he is climbing a trunk or swinging on a vine (the refined touch rules climb there instead of jumping) */
   public onVine = false;
-  /** the engine says he is on a swinging vine (not a trunk): a quick sideways flick there lets go and leaps that way */
+  /** the engine says he is on a swinging vine (not a trunk): the other thumb's quick sideways flick there lets go and leaps that way */
   public onSwing = false;
+  /** the engine says he is hanging from a shimmy rope: the steering thumb's sideways creep there never hops off or drops */
+  public onRope = false;
   /** the engine says, every frame: a mega punch can start (it is not cooling down), so a held thumb only announces one that will happen */
   public megaReady = true;
   private jumpBufferTimer = 0;

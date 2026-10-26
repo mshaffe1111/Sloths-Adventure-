@@ -98,8 +98,16 @@ export const TUNING = {
    * (35 degrees), so a thumb flicking "up and forward" the way the swing card says, about 27 degrees over, climbed instead (2026-10-25)
    */
   vineLeapSlant: 0.36,
-  /** on a swinging vine, a sideways move at least this fast (px per ms, over the last ~150 ms) is a flick that leaps; a slide to pump is slower */
-  swingFlickSpeed: 0.7,
+  /**
+   * … and go no more than this far sideways for each px it rises (1.2 is 50 degrees over): a mostly sideways or downward slide on a vine,
+   * a liana or a rope steers and never lets go. A thumb pumping a swing left and right bows up at the end of each stroke, and those bows
+   * (and a quick sideways stroke, which used to be a leap of its own on a swing) let go of the liana 90 times in Matt's swing-stage test,
+   * 2026-10-26: "Jump accidentally a lot when I'm trying to collect petals." Steph's flicks up and forward lean 5 to 41 degrees (p10 to
+   * p90), and her quickest ones about 47: 45 degrees lost three of her 48 real let-goes, 50 loses none.
+   */
+  vineLeapMaxSlant: 1.2,
+  /** the leap's rise must happen within this long (ms): a slow creep up and over is climbing, not a flick */
+  vineLeapMs: 160,
   /** a second jump that has just fired locks the next for this long (the engine needs a frame to know it was used) */
   airLockMs: 160,
   /**
@@ -130,8 +138,13 @@ export interface GestureEnv {
    * jump and down is never a duck (Jen's index finger on a vine kept making him jump). Only a diagonal slide up jumps off.
    */
   onVine?(): boolean;
-  /** he is on a swinging vine (not a trunk): with refined controls a quick sideways flick there lets go and leaps that way */
+  /** he is on a swinging vine (not a trunk): with refined controls the other thumb's quick sideways flick there lets go and leaps that way */
   onSwing?(): boolean;
+  /**
+   * he is hanging from a shimmy rope. With refined controls the steering thumb's sideways slide there only creeps along it: a hop off
+   * needs a slide that is clearly up, and a drop a slide that is clearly down (a long sideways creep that drifted used to do both)
+   */
+  onRope?(): boolean;
 }
 
 type Role = 'mover' | 'pending' | 'action' | 'ignored';
@@ -186,6 +199,21 @@ export class TouchGestures {
   /** refined controls are on and he is on a vine or trunk: vertical slides climb */
   private vine(): boolean {
     return !!this.env?.refined?.() && !!this.env.onVine?.();
+  }
+  /** refined controls are on and he is hanging from a rope */
+  private rope(): boolean {
+    return !!this.env?.refined?.() && !!this.env.onRope?.();
+  }
+  /**
+   * the finger's movement over its last moments (up to ~150 ms): how far across and down, over how long, and `sx`, how far it travelled
+   * sideways in all (a thumb pumping left and right turns round at the top of its stroke, so across and back can add up to nothing)
+   */
+  private recent(f: Finger): { mx: number; my: number; ms: number; sx: number } {
+    const h = f.hist;
+    let sx = 0;
+    for (let i = 1; i < h.length; i++) sx += Math.abs((h[i].x ?? f.x) - (h[i - 1].x ?? f.x));
+    sx += Math.abs(f.x - (h[h.length - 1].x ?? f.x));
+    return { mx: f.x - (h[0].x ?? f.x), my: f.y - h[0].y, ms: Math.max(1, this.now - h[0].t), sx };
   }
   private climbDir: -1 | 0 | 1 = 0;
   private setClimb(d: -1 | 0 | 1) {
@@ -420,9 +448,13 @@ export class TouchGestures {
     // downward push to duck, and once ducking, easing the thumb back up or out sideways lets the hero run again.
     const running = this.heldDir !== 'none';
     const startDy = running ? TUNING.duckDy * 1.45 : TUNING.duckDy;
+    // on a rope a duck is letting go: it takes a thumb that is moving clearly down now, not one creeping along that has drifted low
+    const rope = this.rope();
+    const rc = rope ? this.recent(f) : null;
+    const ropeDown = !rc || (rc.my > 0 && rc.my >= rc.sx);
     const wantDuck = this.duckOn
       ? dy > TUNING.duckDy * 0.6 && !(running && Math.abs(dx) > dy)
-      : dy > startDy && dy > Math.abs(dx) * (running ? 1 : 0.6);
+      : dy > startDy && dy > Math.abs(dx) * (running ? 1 : 0.6) && ropeDown;
     if (wantDuck !== this.duckOn) {
       this.duckOn = wantDuck;
       this.sink.duck(wantDuck);
@@ -435,7 +467,9 @@ export class TouchGestures {
     // in the air with a second jump to spare, a shorter slide is enough
     const air = this.canAir();
     const jdy = air ? TUNING.airJumpDy : TUNING.jumpDy;
-    if (dyJ < -jdy && !f.jumped && (vUp >= 0.15 || dyJ < -jdy * 2)) {
+    // (on a rope a jump is letting go: the thumb must be moving clearly up now, not sweeping along it with a bow in the stroke)
+    const ropeUp = !rc || (rc.my < 0 && rc.sx <= -rc.my * TUNING.vineLeapMaxSlant);
+    if (dyJ < -jdy && !f.jumped && (vUp >= 0.15 || dyJ < -jdy * 2) && ropeUp) {
       this.fireJump(f, air);
     } else if (dy > -TUNING.jumpDy * 0.4 && f.jumped) {
       f.jumped = false;
@@ -467,11 +501,11 @@ export class TouchGestures {
 
   /**
    * On a vine or trunk (refined): the finger is a joystick for climbing. Above where it was planted = climb up, below = climb down, held
-   * as long as it stays there; the anchor follows the finger so moving back the other way turns round at once. A slide up that leans
-   * over by more than about 20 degrees is a jump, the way Pokey leaves a vine (near-vertical always climbs), and on a swinging vine so is
-   * a quick flick sideways.
+   * as long as it stays there; the anchor follows the finger so moving back the other way turns round at once. A quick slide up that
+   * leans over by 20 to 50 degrees is a jump, the way Pokey leaves a vine (near-vertical always climbs). Sideways is steering, on a trunk
+   * and on a swinging liana alike: a slide left or right pumps the swing, however quick, and never lets go (it used to be a leap on a
+   * swing when it was quick, and Matt's thumb, pumping for petals, let go of the liana again and again, 2026-10-26).
    */
-  private swingLeapAt = -1e9;
   private vineSteer(f: Finger) {
     if (this.duckOn) {
       this.duckOn = false;
@@ -486,20 +520,11 @@ export class TouchGestures {
       f.ay = f.y + reach;
       dy = -reach;
     }
-    // the last ~120 ms of movement: a diagonal flick up jumps off
-    const h0 = f.hist[0];
-    const mx = f.x - (h0.x ?? f.x);
-    const my = f.y - h0.y;
-    if (!f.jumped && my < -TUNING.jumpDy && Math.abs(mx) >= Math.abs(my) * TUNING.vineLeapSlant) {
-      this.setClimb(0);
-      this.fireJump(f, false);
-      return;
-    }
-    // on a swinging vine, a quick flick sideways is a leap that way too (testers flicked toward the next vine and kept swinging)
-    // (one leap per flick: the rest of the same sweep must not jump again in the air)
-    if (!f.jumped && this.now - this.swingLeapAt > 350 && this.env?.onSwing?.() && Math.abs(mx) >= TUNING.flickPx && Math.abs(mx) >= Math.abs(my) * 1.2 && Math.abs(mx) / Math.max(1, f.hist[f.hist.length - 1].t - h0.t) >= TUNING.swingFlickSpeed) {
-      this.swingLeapAt = this.now;
-      this.setDir(mx < 0 ? 'left' : 'right');
+    // the last ~150 ms of movement: a quick flick up and over (not straight up, not mostly sideways) jumps off
+    // (the slant is measured on all the sideways travel in that time, so a pumping stroke that turns round as it bows up is not a flick)
+    const { mx, my, ms, sx } = this.recent(f);
+    const rise = -my;
+    if (!f.jumped && rise > TUNING.jumpDy && ms <= TUNING.vineLeapMs && Math.abs(mx) >= rise * TUNING.vineLeapSlant && sx <= rise * TUNING.vineLeapMaxSlant) {
       this.setClimb(0);
       this.fireJump(f, false);
       return;
