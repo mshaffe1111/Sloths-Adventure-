@@ -49,6 +49,8 @@ function personaViews(p) {
   return { port: { width: w, height: h }, land: { width: h, height: Math.round(w * 0.9) }, short: VIEWS.short };
 }
 let views = VIEWS;
+// the game's dev handle: App's getter, or (while a stage starts) the engine itself, as engine.ts also sets it
+const ENGINE = "(typeof __engine === 'function' ? __engine() : __engine)";
 
 // one phone for a run of stages: what the game saved (lessons seen, Dot's help, the beta switch) carries from stage to stage, as for
 // a real player. `fresh` (and `persona`) start a new phone with nothing saved.
@@ -81,7 +83,7 @@ async function open(stage, v, flag = 0, layout = 1) {
   // a later flag to start from, the way a play-tester is handed a checkpoint select (the stage itself is untouched)
   if (flag > 0) {
     const ok = await page.evaluate((n) => {
-      const e = window.__engine();
+      const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
       // flags in stage order (some stages run downhill or back left), and placing him there costs no life
       const cps = e.currentStage.checkpoints ?? [];
       const cp = cps[Math.min(n, cps.length) - 1];
@@ -255,7 +257,7 @@ async function handle(cmd) {
   if (cmd.cmd === 'probe') {
     // QA lead only, not in the tester brief (testers play blind): run N ms and report how high he got, to check a tester's report
     const ms = Number(cmd.ms || 1200);
-    const read = () => page.evaluate(() => { const p = window.__engine().player; return { x: Math.round(p.x), y: Math.round(p.y), g: p.grounded, dj: !!p.isDoubleJumping, jl: p.jumpsLeft, vine: !!p.climbing, swing: !!p.isVineSwinging }; });
+    const read = () => page.evaluate(() => { const p = (typeof window.__engine === 'function' ? window.__engine() : window.__engine).player; return { x: Math.round(p.x), y: Math.round(p.y), g: p.grounded, dj: !!p.isDoubleJumping, jl: p.jumpsLeft, vine: !!p.climbing, swing: !!p.isVineSwinging }; });
     const s0 = await read();
     let minY = s0.y, dj = s0.dj;
     for (let t = 0; t < ms; t += 33) { await page.clock.runFor(33); const r = await read(); minY = Math.min(minY, r.y); dj = dj || r.dj; }
@@ -264,17 +266,18 @@ async function handle(cmd) {
   }
   if (cmd.cmd === 'eval') {
     // QA lead only, never in a tester brief: read the game's state to check what a tester reported (the World 4 session's rig has the same)
-    return { text: JSON.stringify(await page.evaluate(cmd.text)) };
+    // (`__engine` is App's getter, but engine.ts also sets it to the engine itself while a stage starts: take either)
+    return { text: JSON.stringify(await page.evaluate(cmd.text.replace(/__engine\(\)/g, ENGINE))) };
   }
   if (cmd.cmd === 'jumptrace') {
     // QA lead only: every time something presses jump, where it came from (installed once; each call returns and clears the list)
     const out = await page.evaluate(() => {
-      const st = window.__engine().input.state;
+      const st = (typeof window.__engine === 'function' ? window.__engine() : window.__engine).input.state;
       if (!window.__jt) {
         window.__jt = [];
         let v = st.jumpPressed;
         Object.defineProperty(st, 'jumpPressed', { configurable: true, get: () => v, set: (n) => {
-          if (n && !v) { const p = window.__engine().player; window.__jt.push({ x: Math.round(p.x), y: Math.round(p.y), swing: !!p.isVineSwinging, from: new Error().stack.split('\n').slice(2, 6).map((s) => s.trim()).join(' < ') }); }
+          if (n && !v) { const p = (typeof window.__engine === 'function' ? window.__engine() : window.__engine).player; window.__jt.push({ x: Math.round(p.x), y: Math.round(p.y), swing: !!p.isVineSwinging, from: new Error().stack.split('\n').slice(2, 6).map((s) => s.trim()).join(' < ') }); }
           v = n;
         } });
       }

@@ -18,12 +18,12 @@ async function trial(browser, gap, steering) {
   await page.clock.runFor(3000);
   // close any card
   for (let i = 0; i < 4; i++) { const b = page.locator('button', { hasText: /Got it/ }); if (await b.count()) { await page.clock.runFor(1200); await b.first().click(); await page.clock.runFor(300); } }
-  const st = () => page.evaluate(() => { const e = window.__engine(); const p = e.player; return { y: Math.round(p.y), g: p.grounded, dj: !!p.isDoubleJumping, jl: p.jumpsLeft, paused: e.isPaused }; });
+  const st = () => page.evaluate(() => { const e = (typeof window.__engine === 'function' ? window.__engine() : window.__engine); const p = e.player; return { y: Math.round(p.y), g: p.grounded, dj: !!p.isDoubleJumping, jl: p.jumpsLeft, paused: e.isPaused }; });
   const pts = [];
   let steer = null, act = null;
   const send = (type) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: [...(steer ? [{ x: steer.x, y: steer.y, id: 1 }] : []), ...(act ? [{ x: act.x, y: act.y, id: 2 }] : [])] });
   if (steering) { steer = { x: 70, y: 520 }; await send('touchStart'); for (let k = 0; k < 4; k++) { steer.x += 18; await send('touchMove'); await page.clock.runFor(25); } await page.clock.runFor(300); }
-  await page.evaluate(() => { const i = window.__engine().input; window.__log = []; for (const m of ['triggerTouchUp','releaseTouchUp','triggerTouchKick','triggerTouchPunch','triggerTouchMega','triggerTouchDuck','triggerTouchMove','triggerTouchClimb']) { const f = i[m].bind(i); i[m] = (...a) => { window.__log.push(m.replace('triggerTouch','').replace('releaseTouch','rel') + (a.length ? '(' + a.join(',') + ')' : '')); return f(...a); }; } });
+  await page.evaluate(() => { const i = (typeof window.__engine === 'function' ? window.__engine() : window.__engine).input; window.__log = []; for (const m of ['triggerTouchUp','releaseTouchUp','triggerTouchKick','triggerTouchPunch','triggerTouchMega','triggerTouchDuck','triggerTouchMove','triggerTouchClimb']) { const f = i[m].bind(i); i[m] = (...a) => { window.__log.push(m.replace('triggerTouch','').replace('releaseTouch','rel') + (a.length ? '(' + a.join(',') + ')' : '')); return f(...a); }; } });
   const s0 = await st();
   async function flick() { act = { x: 310, y: 450 }; await send('touchStart'); for (let k = 0; k < 3; k++) { await page.clock.runFor(20); act.y -= 27; await send('touchMove'); } await page.clock.runFor(20); const up = { x: act.x, y: act.y, id: 2 }; act = null; await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [up] }); }
   await flick();

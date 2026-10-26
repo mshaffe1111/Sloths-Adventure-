@@ -21,7 +21,7 @@ const VIEWS = { port: { width: 400, height: 720 }, land: { width: 844, height: 3
   for (let i = 0; i < secs * 30; i++) {
     await page.clock.runFor(33); t += 1 / 30;
     const s = await page.evaluate(() => {
-      const e = window.__engine();
+      const e = (typeof window.__engine === 'function' ? window.__engine() : window.__engine);
       if (e.isPaused && e.lessonClosed) e.lessonClosed();
       const btn = [...document.querySelectorAll('button')].find((x) => /Got it/.test(x.textContent) && !x.disabled); if (btn) btn.click();
       const p = e.player; p.invincibleTimer = 5; p.hp = Math.max(p.hp, 3);
