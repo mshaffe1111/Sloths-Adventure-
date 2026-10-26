@@ -214,6 +214,8 @@ const VENOM: BossDef = {
   climbTop: 270,
   // his coils sit right against the right fence: the gap behind them was a hiding place the head could never reach (QA gate)
   startDx: 1300 - 125 - 2,
+  // and they are a wall: no squeezing in behind them, nor up the fence tree back there (QA gate: Steph ended up there, out of reach)
+  blockBody: true,
   perches: [{ dx: 330, up: 130, w: 150, crack: 3 }, { dx: 36, up: 272, w: 96, noHeart: true }],
   vines: [{ dx: 660, top: 440, bottom: 165 }],
   onPhase: (phase, _b, c) => {
@@ -452,22 +454,28 @@ const PROWLER: BossDef = {
         rec: 3.1,
         height: POUNCE.height,
         min: 260,
-        onLand: (b, c) => {
-          impact(b, c, 0.55, '#7c3aed');
-          if (b.phase < 2) return;
-          // the ripples start at the ring's edge after a beat, so a hero who got out of the ring sees them come and jumps them
-          for (const d of [-1, 1] as const) {
-            const w = floorWave(c, b.x + d * POUNCE.ring, d, b.phase >= 3 ? 360 : 280, '#a78bfa', '#3b0764', true);
-            w.warn = w.warnMax = 0.3;
-          }
-        },
+        // (no floor ripples any more: QA gate, they crossed a hero running back in for the opening, which must be safe)
+        onLand: (b, c) => impact(b, c, 0.55, '#7c3aed'),
       });
       const leap = m.onAct!;
       const fly = m.tick!;
       m.tick = (b, c, dt, t) => {
         fly(b, c, dt, t);
-        if (t < POUNCE.act * POUNCE.strikeFrom) b.ai!.hurt = [];
+        const br = b.ai!;
+        if (t < POUNCE.act * POUNCE.strikeFrom) {
+          br.hurt = [];
+          return;
+        }
+        // nothing outside the ring ever hurts: what hurts is cut to the ring, less Pokey's half-width and a margin (QA gate: a heart
+        // lost just past the ring's edge)
+        const lo = br.d.aim - POUNCE.ring + 35;
+        const hi = br.d.aim + POUNCE.ring - 35;
+        br.hurt = br.hurt
+          .map((h) => ({ ...h, x: Math.max(lo, h.x), w: Math.min(hi, h.x + h.w) - Math.max(lo, h.x) }))
+          .filter((h) => h.w > 0);
       };
+      // he lands, then turns his back on you, his arched back the glowing spot (QA gate: he faced Pokey with the spot behind him)
+      m.recFaceAway = true;
       m.softBody = true;
       m.onTell = (b, c) => {
         const half = b.width / 2;
@@ -485,7 +493,8 @@ const PROWLER: BossDef = {
     // vanishes and comes out right behind you for a slash. He comes out behind you, so with a moon pool at your back the light will
     // not let him appear: he is caught, stunned and wide open
     shadowStep: {
-      tell: 0.55,
+      // (0.55 until the QA gate: every attack winds up for at least 0.6 s)
+      tell: 0.7,
       act: 0.3,
       // (2.5 until the QA gate: from a low shelf over him, by touch, the first hit came at up to 2.56 s)
       rec: 3.2,
@@ -501,7 +510,7 @@ const PROWLER: BossDef = {
       },
       tellTick: (b) => {
         const br = b.ai!;
-        br.alpha = Math.max(0.08, 1 - (br.t / 0.55) * 0.95);
+        br.alpha = Math.max(0.08, 1 - (br.t / 0.7) * 0.95);
       },
       onAct: (b, c) => {
         const br = b.ai!;
@@ -527,7 +536,7 @@ const PROWLER: BossDef = {
     },
     // three slashes while stepping forward (four in the last phase)
     clawCombo: {
-      tell: 0.5,
+      tell: 0.7,
       act: 1.0,
       // the last slash overreaches and he stumbles on after you, throat open
       // (2.5 until the QA gate: by touch the first hit came at up to 2.43 s)

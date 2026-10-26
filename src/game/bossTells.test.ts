@@ -71,7 +71,7 @@ test('3-10: his body never hurts by touch, before a move or during one: only his
       assert.equal(bodyHurts(as, sim.def), false, `${mv} ${state}`);
     }
   }
-  assert.ok(sim.def.moves.streak.tell >= 0.6, 'the dash rears up for long enough to read');
+  for (const [mv, m] of Object.entries(sim.def.moves)) assert.ok(m.tell >= 0.6, `${mv} winds up for only ${m.tell} s`);
 });
 
 test('3-10: everything that hurts when the pounce lands is inside the ring, and nothing hurts before he comes down onto it', () => {
@@ -102,16 +102,17 @@ test('3-10: everything that hurts when the pounce lands is inside the ring, and 
           for (const h of br.hurt) {
             hurtFrames++;
             assert.ok(br.t >= POUNCE.act * POUNCE.strikeFrom - 0.04, `hurts at ${br.t.toFixed(2)} s, on the way`);
-            assert.ok(h.x >= br.d.aim - POUNCE.ring && h.x + h.w <= br.d.aim + POUNCE.ring, `a box at ${Math.round(h.x - br.d.aim)}..${Math.round(h.x + h.w - br.d.aim)} from the ring's middle`);
+            assert.ok(h.x >= br.d.aim - POUNCE.ring + 30 && h.x + h.w <= br.d.aim + POUNCE.ring - 30, `a box at ${Math.round(h.x - br.d.aim)}..${Math.round(h.x + h.w - br.d.aim)} from the ring's middle`);
           }
         }
         if (state() === 'rec') break;
       }
       assert.ok(hurtFrames > 0, 'the landing hurts');
-      // the ripples start at the ring's edge, after a warning beat
-      const waves = (sim.e.hazards as Array<{ kind: string; x: number; warn: number }>).filter((h) => h.kind === 'shock');
-      assert.equal(waves.length, 2);
-      for (const w of waves) assert.ok(Math.abs(Math.abs(w.x - br.d.aim) - POUNCE.ring) < 2 && w.warn > 0);
+      // no ripples cross a hero coming back in for the opening, and he turns his back on him to show the glowing spot
+      assert.equal((sim.e.hazards as Array<{ kind: string }>).filter((h) => h.kind === 'shock').length, 0);
+      for (let i = 0; i < 5; i++) sim.frame();
+      assert.equal(state(), 'rec');
+      assert.ok(Math.sign(sim.p.x - b.x) !== b.facing, 'he lands facing away from the hero');
       // sideways, the top of the leap stays below the boss bar (the top ~80 world px of the view)
       if (screen.w > screen.h) {
         // (in screen px: the painted cat stands about 180 world px tall in the leap; the bar takes the top 60 px of the screen)

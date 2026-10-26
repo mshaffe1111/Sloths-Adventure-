@@ -187,3 +187,28 @@ test('every window covers the slowest first hit measured by touch, plus 0.6 s to
     assert.ok(win >= worst + 0.6, `${id} ${mv}: open ${win} s < ${worst} + 0.6`);
   }
 });
+
+test('1-10: his coils are a wall (no getting behind them, nor up the fence tree there), and holding up at the treetop is a safe perch', () => {
+  for (const screen of [{ w: 844, h: 390 }, { w: 390, h: 844 }]) {
+    // into the coils, and up: he stops at their face and never climbs the fence tree behind them
+    const sim = new BossPlay('1-10', false, screen);
+    sim.skipEntrance();
+    const b = sim.boss;
+    const face = b.x - b.width / 2;
+    sim.p.x = face - 120;
+    for (let i = 0; i < 30 * 4; i++) {
+      sim.frame({ right: true, up: i > 30 });
+      assert.ok(sim.p.x <= face + 2, `he got to ${Math.round(sim.p.x - face)} px into the coils`);
+      assert.ok(!sim.p.climbing, 'he climbed something behind the coils');
+    }
+    // the treetop: up the wall vine and keep holding up for 4 s; he ends up on the cradle at the top and stays there
+    const t = new BossPlay('1-10', false, screen);
+    t.skipEntrance();
+    const a = t.arena;
+    t.p.x = a.left + 20;
+    for (let i = 0; i < 30 * 4; i++) t.frame({ up: true });
+    const feet = a.floor - t.p.y;
+    assert.ok(t.p.grounded && feet > 250, `after holding up he is ${Math.round(feet)} px up (grounded ${t.p.grounded})`);
+    assert.ok(t.p.x < a.left + 160, `and at ${Math.round(t.p.x - a.left)} px from the left fence`);
+  }
+});

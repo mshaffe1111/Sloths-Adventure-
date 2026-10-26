@@ -45,6 +45,13 @@ for (const id of ['1-10', '2-10', '3-10']) {
         for (let i = 1; i < beats.length; i++) {
           assert.ok(beats[i] - beats[i - 1] <= IDLE_MAX, `${id} ${view}: ${(beats[i] - beats[i - 1]).toFixed(1)} s with no attack and no opening (from ${beats[i - 1].toFixed(1)} s)`);
         }
+        // every heart lost came from an attack he wound up for at least 0.6 s, and never while he was open (QA gate: "unwarned hits?").
+        // (The croc keeps his own rules: his mud waves run on through his recovery, to be jumped, and a winding-up croc bites.)
+        for (const h of id === '2-10' ? [] : (sim.e.bossHurtLog as Array<{ t: number; by: string; state: string; move: string | null }>)) {
+          assert.notEqual(h.by, 'body', `${id} ${view}: hurt by touching his body at ${h.t.toFixed(1)} s (${h.state} ${h.move})`);
+          assert.ok(h.state !== 'rec' && h.state !== 'stun', `${id} ${view}: hurt while he was open, at ${h.t.toFixed(1)} s (${h.by})`);
+          if (h.move && h.state === 'act') assert.ok(sim.def.moves[h.move].tell >= 0.6, `${id} ${view}: ${h.move} winds up for ${sim.def.moves[h.move].tell} s`);
+        }
         const unseen = sim.tells.filter((t) => !t.onScreen);
         assert.ok(unseen.length <= sim.tells.length * 0.1, `${id} ${view}: ${unseen.length} of ${sim.tells.length} wind-ups began off screen (${unseen.map((t) => t.move).join(', ')})`);
         // the camera shows the glowing spot while it is open (a boss far across the arena may take a moment to come into view)

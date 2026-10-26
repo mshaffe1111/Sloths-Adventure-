@@ -22,7 +22,7 @@ export const VF = {
   inset: 12,
   /** the lunge's head stops this far past the hero (lungeAim), and never less than this far out from the coils */
   aimPast: 90,
-  aimMin: 100,
+  aimMin: 0,
   /** the rear-back at the start of the wind-up (s): the head draws up and back, hissing */
   rear: 0.6,
   /** the lunge (s): the dive and the slide along the floor */

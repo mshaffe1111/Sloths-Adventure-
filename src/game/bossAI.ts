@@ -293,6 +293,8 @@ export interface BossDef {
   perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number }; /** a bounce mushroom (70 wide; `up` is its top) */ kind?: 'bouncy'; /** from this phase on it cracks under a hero who stays on it */ crack?: number; /** no heart is put on it */ noHeart?: boolean }>;
   /** climbing vines down the inside of the wall (x from the left fence): a way off the floor */
   climbs?: number[];
+  /** its body is a wall Pokey cannot pass (a heap against a fence: behind it no attack could reach him) */
+  blockBody?: boolean;
   /** how high those vines reach above the floor (430 when unset) */
   climbTop?: number;
   /** swinging lianas of its own: x from the left fence, and the height of the top and the bottom above the floor */
