@@ -53,7 +53,9 @@ export interface W5Host {
 /** how far ahead (px) a piece is "coming into view" for its first-time line */
 const SEE = 560;
 /** the Butler is seen from further off (he stands tall with his tray): his line has time to come even after another */
-const BUTLER_SEE = 820;
+const BUTLER_SEE = 1100;
+/** an awake spider's first-time line comes this far ahead (it notices him from SPIDER5.sense, 430 px): time to say it before */
+const SPIDER_SEE = 1300;
 const said = (key: string) => `tip:${key}`;
 
 export class W5Play {
@@ -292,7 +294,8 @@ export class W5Play {
       if (!e || !g || e.defeated) continue;
       const dx = p.x - e.x;
       const dy = p.y - (e.y + 12);
-      if (!g.dozing && ahead(e.x, e.y, 600)) h.tip(said(W5_TEACH.spider), W5_TEACH.spider, 3.6);
+      // (its line well before it can see him and crouch: QA, 2026-10-26, the tip came on the frame of the first bite)
+      if (!g.dozing && ahead(e.x, e.y, SPIDER_SEE)) h.tip(said(W5_TEACH.spider), W5_TEACH.spider, 3.6);
       const v = h.view;
       const seen = !v || onScreen(v, e.x, e.y, e.width, e.height, SPIDER5.edge);
       const shown = !v || onScreen(v, e.x, e.y, e.width, e.height);

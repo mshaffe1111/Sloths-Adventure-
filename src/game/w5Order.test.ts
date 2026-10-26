@@ -2,7 +2,7 @@
  * World 5's teaching order (QA, a blind first-timer at 320x782, 2026-10-26). Played in the real engine (realPlay.ts) by a player who
  * holds right from the very first frame, hopping only what is in the way: every first-time line about a thing comes before that thing
  * is within his reach, in the old look (the banner shows an engine line the moment it is sent) and in the new one (the line goes
- * through Dot's queue, dotGuide.ts, as components/dot/DotGuide.tsx queues it: the goal card first, a story aside in the way, no line
+ * through Dot's queue, dotGuide.ts, as components/dot/DotGuide.tsx queues it: the goal card first, the stage's story aside, no line
  * starting with an animal at hand). And the steps: nothing before the second jump is taught needs more than one plain jump (1-1's
  * stepping-stone numbers), and the stuck-helper still speaks at a step in World 5, over the silk's warning.
  */
@@ -12,11 +12,12 @@ import { RealPlay } from './realPlay.ts';
 import { G, buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { levelConfig } from './realPlay.ts';
 import { GuideQueue, type MoveId } from './dotGuide.ts';
-import { engineGuideLine } from './dotLines.ts';
+import { engineGuideLine, swapLine } from './dotLines.ts';
+import { START_AFTER_MS, stageLine } from './wayside.ts';
 import { DANGER } from './dotGuideWatch.ts';
-import { W5_TEACH, type W5Extras } from './w5Kit.ts';
+import { SPIDER5, W5_TEACH, type W5Extras } from './w5Kit.ts';
 import { W5_HINTS, W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
-import { W5_PLAIN_STUMPS, type W5Info } from './w5Stages.ts';
+import { W5_HEART_UP, W5_PLAIN_STUMPS, type W5Info } from './w5Stages.ts';
 import { stuckLine } from './stuckHelper.ts';
 import { reachJump } from './physics.ts';
 import { validateStage } from './levelCheck.ts';
@@ -113,7 +114,7 @@ function holdRight(id: '5-1' | '5-2', seed: number, untilX: number) {
 
 /**
  * The new look: the engine's lines through Dot's queue, as the app queues them, frame by frame. The goal card holds the queue for its
- * first moments, and a story aside (the stage's lead-in) is pushed first, in the way. Returns when each line first went up (x, t).
+ * first moments, and the stage's story aside (wayside.ts) comes when it is due. Returns when each line first went up (x, t).
  */
 function newLookShown(id: string, run: ReturnType<typeof holdRight>): Map<string, { x: number; t: number }> {
   const q = new GuideQueue();
@@ -121,9 +122,16 @@ function newLookShown(id: string, run: ReturnType<typeof holdRight>): Map<string
   const lines = run.said.map((s) => ({ s, l: engineGuideLine(s.text, id, { dot: true }) }));
   const t0 = run.frames[0].t;
   const ms = (t: number) => (t - t0) * 1000;
-  q.push({ key: 'story:L', text: 'Dot\'s lead-in to the stage, a story aside in the way', kind: 'story', who: 'Dot', source: 'story' }, 0);
+  // the stage's own story aside (wayside.ts), queued as the app queues it once it is due
+  const [world, mini] = id.split('-').map(Number);
+  const way = stageLine(world, mini);
+  let wayDue = !!way;
   let k = 0;
   for (const f of run.frames) {
+    if (way && wayDue && ms(f.t) >= START_AFTER_MS && way.at === 'start') {
+      wayDue = false;
+      q.push({ key: 'story:L', text: swapLine(way.text)?.text ?? way.text, kind: 'story', who: 'Dot', source: 'story', waitMs: 60000 }, ms(f.t));
+    }
     while (k < lines.length && lines[k].s.t <= f.t + 1e-6) {
       const l = lines[k].l;
       if (l) q.push(l, ms(lines[k].s.t));
@@ -143,11 +151,28 @@ const sentAt = (said: Said[], text: string) => said.find((s) => s.text === text)
 const keyOf = (id: string, text: string) => engineGuideLine(text, id, { dot: true })!.key;
 
 /** the first-time lines of a stage, each with the x of the first thing it is about */
-function lessonsOf(id: '5-1' | '5-2', st: Built): Array<{ name: string; text: string; at: number }> {
+interface Lesson {
+  name: string;
+  text: string;
+  /** where the thing is */
+  at: number;
+  /** how far before it the line must be up (default REACH) */
+  reach?: number;
+  /** a move the line teaches: a player who has already done it this stage is not told (dotGuide.ts, QA v189) */
+  move?: 'double';
+}
+function lessonsOf(id: '5-1' | '5-2', st: Built): Lesson[] {
   const w = st.proto.w5;
-  const out: Array<{ name: string; text: string; at: number }> = [];
+  const out: Lesson[] = [];
   const dl = st.w5info.doubleLesson;
-  if (dl) out.push({ name: 'the second jump', text: (id === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double).old, at: dl.edge });
+  if (dl) out.push({ name: 'the second jump', text: (id === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double).old, at: dl.edge, move: 'double' });
+  const tl = st.w5info.tallLesson;
+  if (tl) out.push({ name: 'the tall stumps', text: (id === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall).old, at: tl.at, move: 'double' });
+  if (id === '5-1') {
+    // the first awake spider: its line before it can notice him (and, once it is on screen, crouch)
+    const sp = st.enemies.filter((e) => e.type === 'spider').sort((a, b) => a.x - b.x)[0];
+    out.push({ name: 'the jumping spider', text: W5_TEACH.spider, at: sp.x, reach: SPIDER5.sense });
+  }
   const chair = (w.chairs ?? []).filter((c) => !c.wrapped).sort((a, b) => a.x - b.x)[0];
   if (chair) out.push({ name: 'the soft chairs', text: W5_TEACH.chair, at: chair.x });
   if (id === '5-2') {
@@ -181,10 +206,13 @@ for (const id of ['5-1', '5-2'] as const) {
           problems.push(`seed ${seed}: ${l.name}: never said`);
           continue;
         }
-        if (s.x > l.at - REACH) problems.push(`seed ${seed}: ${l.name}: said at x ${Math.round(s.x)}, ${Math.round(l.at - s.x)} px before it (old look)`);
+        const reach = l.reach ?? REACH;
+        if (s.x > l.at - reach) problems.push(`seed ${seed}: ${l.name}: said at x ${Math.round(s.x)}, ${Math.round(l.at - s.x)} px before it (old look)`);
         const n = shown.get(keyOf(id, l.text));
-        if (!n) problems.push(`seed ${seed}: ${l.name}: never shown in the new look`);
-        else if (n.x > l.at - REACH) problems.push(`seed ${seed}: ${l.name}: shown at x ${Math.round(n.x)}, ${Math.round(l.at - n.x)} px before it (new look)`);
+        // (a move tip for a move already done this stage is rightly not said in the new look)
+        const done = l.move && (run.frames.find((f) => f.t >= s.t)?.moves[l.move] ?? 0) > 0;
+        if (!n && !done) problems.push(`seed ${seed}: ${l.name}: never shown in the new look`);
+        else if (n && n.x > l.at - reach) problems.push(`seed ${seed}: ${l.name}: shown at x ${Math.round(n.x)}, ${Math.round(l.at - n.x)} px before it (new look)`);
       }
     }
     assert.deepEqual(problems, []);
@@ -238,7 +266,7 @@ test('the new look says a tip about a new thing even when its move was done earl
 
 test("Matt's line rules: World 5's new tips are 8 words or fewer, and the cake and the Butler say what they do", () => {
   const words = (s: string) => s.trim().split(/\s+/).length;
-  for (const text of [W5_TEACH.cake, W5_TEACH.ate, W5_TEACH.butler, W5_HINTS.s52doze.old, W5_HINTS.s51double.old, W5_HINTS.s52double.old, W5_STEP_HELP, W5_HINTS.s52rules.old]) {
+  for (const text of [W5_TEACH.cake, W5_TEACH.ate, W5_TEACH.butler, W5_HINTS.s52doze.old, W5_HINTS.s51double.old, W5_HINTS.s52double.old, W5_HINTS.s51tall.old, W5_HINTS.s52tall.old, W5_STEP_HELP, W5_HINTS.s52rules.old]) {
     const l = engineGuideLine(text, '5-2', { dot: true }) ?? engineGuideLine(text, '5-1', { dot: true })!;
     assert.ok(words(l.text) <= 8 || l.key.endsWith('rules'), `"${l.text}" is ${words(l.text)} words`);
   }
@@ -280,11 +308,15 @@ test('5-1 in the real engine: each stump before the lesson climbed with one plai
     for (const q of st.w5info.stumps.filter((s) => !s.taught)) {
       const sim = new RealPlay('5-1', seed);
       sim.stand(q.x - 180, G);
-      let landed = false;
+      let landed = false, held = 0;
       for (let i = 0; i < 60 && !landed; i++) {
-        const near = q.x - sim.p.x < 70 && sim.p.grounded && sim.p.y === G;
-        sim.frame({ right: true, press: near, jump: near || !sim.p.grounded });
-        if (sim.p.grounded && Math.abs(sim.p.y - (G - q.h)) < 2) landed = true;
+        const near = q.x - sim.p.x < 70 && sim.p.grounded && sim.p.y === G && held === 0;
+        if (near) held = 7;
+        sim.frame({ right: true, press: near, jump: held > 0 });
+        held = Math.max(0, held - 1);
+        // (up on it, or over it and on the ground past it: either way the one jump got him past the step)
+        if (sim.p.grounded && (Math.abs(sim.p.y - (G - q.h)) < 2 || sim.p.x > q.x + 60)) landed = true;
+        assert.ok(!sim.p.isDoubleJumping, 'one jump only');
       }
       assert.ok(landed, `seed ${seed}: the ${q.h} px stump at ${q.x}, one jump`);
     }
@@ -300,6 +332,8 @@ test('World 5: jumping again and again at a step, the stuck-helper speaks, and t
     for (const [q, line] of [[low, W5_STEP_HELP], ...(tall ? [[tall, stuckLine('keys')]] : [])] as Array<[{ x: number; h: number }, string]>) {
       const sim = new RealPlay(id, 1);
       sim.safe = false;
+      // (the harness turns the stuck-helper off as cosmetic, realPlay.ts: here it is what is tested)
+      delete (sim.e as Record<string, unknown>).watchForStuck;
       // he walks up to it, and hops straight up beside it (the thumb lifted), pausing between hops as a puzzled player does
       sim.stand(q.x - 120, G);
       for (let i = 0; i < 40 && q.x - sim.p.x > 30; i++) sim.frame({ right: true });
@@ -323,5 +357,65 @@ test('World 5: jumping again and again at a step, the stuck-helper speaks, and t
       assert.equal(sim.p.hp, hp, `${id}: no heart lost while she says it`);
       assert.equal(sim.e.w5.silk, 0, `${id}: no silk on him while she says it`);
     }
+  }
+});
+
+test('5-1 and 5-2: the hearts at the flags float at walking height, and walking under one at 4 of 5 hearts picks it up', () => {
+  for (const id of ['5-1', '5-2'] as const) {
+    for (const s of SEEDS) {
+      const st = build(id, s);
+      const hearts = st.collectibles.filter((c) => c.type === 'heart');
+      assert.ok(hearts.length >= 3, `${id} seed ${s}`);
+      for (const h of hearts) assert.ok(G - h.y <= W5_HEART_UP + 1, `${id} seed ${s}: a heart ${G - h.y} px up at ${h.x}`);
+    }
+    const sim = new RealPlay(id, 1);
+    const h = sim.collectibles.find((c) => c.type === 'heart')!;
+    sim.stand(h.x - 160, G);
+    sim.p.hp = sim.p.maxHp - 1;
+    for (let i = 0; i < 30; i++) sim.frame({ right: true });
+    assert.ok(h.collected, `${id}: walked under the heart at ${h.x} and it was not picked up`);
+  }
+});
+
+test('5-2 upright at 320x782: the first cakes come into view with time to hop them, after their line, and a hop over one lands clear of the next', () => {
+  for (const seed of SEEDS.slice(0, 4)) {
+    const st = build('5-2', seed);
+    const cakes = st.proto.w5.cakes!.slice().sort((a, b) => a.x - b.x);
+    for (let i = 1; i < cakes.length; i++) if (Math.abs(cakes[i].y - cakes[i - 1].y) < 2) assert.ok(cakes[i].x - cakes[i - 1].x >= 290, `seed ${seed}: cakes ${cakes[i].x - cakes[i - 1].x} px apart`);
+    forgetTips('5-2');
+    const sim = new RealPlay('5-2', seed);
+    const e = sim.e;
+    // (the real camera, at the phone's size: realPlay.ts turns it off)
+    delete e.updateCamera;
+    e.viewCssW = 320;
+    e.viewCssH = 782;
+    e.introT = 99;
+    e.applyZoom();
+    const first = cakes.slice(0, 2);
+    const seenAt = new Map<number, number>();
+    const leads: string[] = [];
+    for (let i = 0; i < 30 * 80 && sim.p.x < first[1].x - 40; i++) {
+      const p = sim.p;
+      // (hold right; hop what is in the way, as the order test's player does, but not the cakes: this measures how long each is seen first)
+      const face = sim.platforms.some((q) => q.type === 'solid' && q.x - p.x > 0 && q.x - p.x < 70 && q.y < p.y - 12 && q.y > p.y - 220 && q.y + q.height > p.y - 4);
+      const floor = sim.platforms.some((q) => Math.abs(q.y - p.y) < 3 && q.x <= p.x + 40 && q.x + q.width >= p.x + 40);
+      const foe = (e.enemies as Array<{ defeated: boolean; x: number }>).some((q) => !q.defeated && q.x - p.x > 30 && q.x - p.x < 110);
+      const thread = st.proto.w5.threads!.some((t) => t.x0 - p.x > 40 && t.x0 - p.x < 100);
+      sim.frame({ right: true, press: p.grounded && (face || !floor || foe || thread), jump: !p.grounded && p.vy < 0 });
+      const x1 = e.camera.x + e.camera.viewportWidth;
+      for (const c of first) if (!seenAt.has(c.x) && c.x + 17 < x1) seenAt.set(c.x, sim.t);
+      for (const c of first) {
+        const at = seenAt.get(c.x);
+        if (at !== undefined && at >= 0 && sim.p.x >= c.x - 70) {
+          leads.push(`${c.x}: ${(sim.t - at).toFixed(2)} s`);
+          assert.ok(sim.t - at >= 0.7, `seed ${seed}: the cake at ${c.x} was on screen ${(sim.t - at).toFixed(2)} s before he had to hop it`);
+          seenAt.set(c.x, -1);
+        }
+      }
+    }
+    assert.equal(leads.length, 2, `seed ${seed}: ${leads.join(', ')}`);
+    if (process.env.W5_ORDER_DEBUG) console.log('cakes seen', seed, leads.join(', '));
+    const said = sentAt(sim.said, W5_TEACH.cake);
+    assert.ok(said && said.x < first[0].x - 400, `seed ${seed}: the cakes' line came at ${said?.x}, the first cake at ${first[0].x}`);
   }
 });

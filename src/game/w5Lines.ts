@@ -45,6 +45,15 @@ export const W5_HINTS = {
     stage: '5-2', kind: 'move', old: 'Spiders, asleep on their webs. Let\'s keep it that way. Hop right over them',
     text: 'Sleeping spiders. Flick up over them. Shh.', gesture: 'flick-up', target: 'spider',
   },
+  // (before the first stump only the second jump climbs, in each stage)
+  s51tall: {
+    stage: '5-1', kind: 'move', old: 'A tall stump. Flick up, then flick up again in the air to climb it', pad: 'A tall stump. Jump, then press Jump again in the air',
+    keys: 'A tall stump. Jump, then press Space again in the air', text: 'Tall stump! Flick up again midair.', gesture: 'double-jump', target: 'top of the stump',
+  },
+  s52tall: {
+    stage: '5-2', kind: 'move', old: 'Tall stumps again. Flick up, then flick up again in the air to climb them', pad: 'Tall stumps again. Jump, then press Jump again in the air',
+    keys: 'Tall stumps again. Jump, then press Space again in the air', text: 'Tall stumps. Flick up again midair.', gesture: 'double-jump', target: 'top of the stump',
+  },
   // (5-2's first wide gap: the second jump again, a reminder)
   s52double: {
     stage: '5-2', kind: 'move', old: 'Another wide gap. Flick up again in the air to jump twice', pad: 'Another wide gap. Press Jump again in the air',

@@ -154,11 +154,11 @@ export function stream(seed: number) {
  * up over the flag, so a player who has been knocked about through the middle of a stage can top up before what comes next.
  * Returns the next free pickup id.
  */
-export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: number }>, cid: number): number {
+export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: number }>, cid: number, up = 60): number {
   const sorted = [...flags].sort((a, b) => a.x - b.x || b.y - a.y);
   sorted.forEach((f, i) => {
     if (i % 2 === 0) return;
-    const hx = f.x + 70, hy = f.y - 60;
+    const hx = f.x + 70, hy = f.y - up;
     // never on top of another pickup
     if (C.some((c) => Math.hypot(c.x - hx, c.y - hy) < 40)) return;
     C.push({ id: cid++, type: 'heart', x: hx, y: hy, collected: false, bobPhase: hx * 0.01 });

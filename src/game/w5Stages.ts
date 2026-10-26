@@ -58,9 +58,12 @@ const SAFE_GAP = 230;
 export const W5_PLAIN_STUMPS = { first: 50, steps: [50, 60, 70] } as const;
 /** after it: one jump high (60 to 88, under SAFE.rise1), or (`tall`) two */
 const STUMP_H: [number, number] = [60, 88];
-const TALL_H: [number, number] = [125, 145];
+const TALL_H: [number, number] = [118, 138];
+/** how far up the hearts at the flags float: walking height (the engine picks up within 34 px of his middle, 20 px above his feet) */
+export const W5_HEART_UP = 34;
 /** how far before a gap's edge Dot's line about it is said (px): room to say it before he is near it, for a player at full run */
 const GAP_TELL = 760;
+const GAP_TELL_52 = 2400;
 
 /** what the tests read back about the stage (ids and x's) */
 export interface W5Info {
@@ -76,6 +79,8 @@ export interface W5Info {
   stumps: Array<{ x: number; h: number; taught: boolean }>;
   /** where the second jump is taught (5-1) or reminded (5-2): the x of its line and of the gap's edge */
   doubleLesson?: { hint: number; edge: number };
+  /** the reminder before the first stump only the second jump climbs: the x of its line and of that stump */
+  tallLesson?: { hint: number; at: number };
 }
 
 export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): GeneratedStage & { proto: ProtoExtras; w5info: W5Info } {
@@ -101,6 +106,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   /** has the second jump been taught? (in 5-1, at its first wide gap; 5-2 comes after 5-1, and reminds at its first) */
   let doubleTaught = plan !== '5-1';
   let doubleSaid = false;
+  let tallSaid = false;
   let pid = 1, cid = 1, eid = 1;
   let expert = 0;
   const r = Math.round;
@@ -221,7 +227,9 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
       // the first gap only the second jump crosses: 5-1 teaches it here (the first place that needs it), 5-2 reminds
       doubleSaid = true;
       doubleTaught = true;
-      const at = Math.min(x0 + 20, edge - GAP_TELL);
+      // (5-2's reminder comes well ahead, at the start of its beat: its stage's story aside, once it has given way, is read to the end
+      // when it comes back, and it must not be what is on screen as he reaches the gap)
+      const at = Math.min(x0 + 20, edge - (plan === '5-1' ? GAP_TELL : GAP_TELL_52));
       hint(at, plan === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double);
       info.doubleLesson = { hint: r(at), edge: r(edge) };
     }
@@ -240,6 +248,12 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   function stumps(n: number, tall = false) {
     // (nothing a second jump is needed for before it is taught)
     if (tall && !doubleTaught) throw new Error(`${plan}: tall stumps before the second jump is taught`);
+    if (tall && n > 1 && !tallSaid) {
+      // the first stump only the second jump climbs: a reminder before it (QA, 2026-10-26: the help came only after 3 to 5 tries)
+      tallSaid = true;
+      hint(x - 120, plan === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall);
+      info.tallLesson = { hint: r(x - 120), at: 0 };
+    }
     for (let i = 0; i < n; i++) {
       run(R.r(120, 180));
       const w = R.r(130, 190);
@@ -247,6 +261,7 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
         ? info.stumps.length === 0 ? W5_PLAIN_STUMPS.first : R.pick(W5_PLAIN_STUMPS.steps)
         : tall && i % 2 === 1 ? R.r(...TALL_H) : R.r(...STUMP_H);
       info.stumps.push({ x: r(x), h: r(h), taught: doubleTaught });
+      if (info.tallLesson && !info.tallLesson.at && h > 100) info.tallLesson.at = r(x);
       block(x, x + w, h);
       flower(x + w / 2, G - h - 34, 'hibiscus');
       run(w);
@@ -323,7 +338,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
     run(R.r(180, 240));
     const x0 = x;
     for (let i = 0; i < n; i++) {
-      run(R.r(170, 230));
+      // (far enough apart that a hop over one lands well before the next, with time to see it: upright the view ahead is short)
+      run(R.r(300, 360));
       cakes.push({ x: r(x), y: G - 34 });
       flower(x - 85, G - 34, 'orchid');
     }
@@ -532,7 +548,8 @@ export function buildW5Stage(config: LevelConfig, seed: number, plan: W5Plan): G
   info.flagSeconds.push(expert);
 
   const W = Math.ceil(x + 20);
-  cid = heartsAtFlags(C, checkpoints, cid);
+  // (the hearts at the flags at walking height, as the petals are: 60 px up, a first-timer ran under them at 4 of 5 hearts; QA, 2026-10-26)
+  cid = heartsAtFlags(C, checkpoints, cid, W5_HEART_UP);
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: [] }, C);
   const cfg: LevelConfig = { ...config, levelWidth: W, levelHeight: Math.max(config.levelHeight, 900) };
   const w5: W5Extras = {
