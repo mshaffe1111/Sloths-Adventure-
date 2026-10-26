@@ -163,7 +163,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
    * of the cliff.
    */
   function drop(o: { leaf: boolean; rock?: boolean; draft?: boolean; long?: boolean; deep?: boolean; plunge?: boolean }) {
-    let dy = Math.round(o.plunge ? R.r(360, 410) : o.deep ? R.r(340, 390) : R.r(120, 190));
+    let dy = Math.round(o.plunge ? R.r(345, 360) : o.deep ? R.r(330, 355) : R.r(120, 190));
     let gap: number;
     if (o.leaf) {
       // (a deeper drop when the window between a jump and the leaf is too narrow at this height)
@@ -278,7 +278,8 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
    */
   function turn(cave: boolean) {
     const e = edgeOf(cur);
-    const dy = r(R.r(520, 570));
+    // (the lower cave drops further: the climbs under it rise back up toward the ledges over it)
+    const dy = r(R.r(520, 570)) + (cave && tier > 0 ? 80 : 0);
     const w = r(R.r(620, 700));
     const out = 300;
     const far = e + dir * out;

@@ -69,8 +69,20 @@ export const AHEAD = {
   /** the part of the view the landing is kept in, clear of the HUD along the top (fractions of the view) */
   pad: { l: 0.02, r: 0.98, t: 0.2, b: 0.92 },
   /** and the part Pokey is kept in: he may go higher, between the HUD's corners, so a deep drop's landing fits under him */
-  heroPad: { l: 0.02, r: 0.98, t: 0.07, b: 0.9 },
+  heroPad: { l: 0.02, r: 0.98, t: 0.17, b: 0.9 },
 } as const;
+
+/**
+ * The band along the top of the screen the HUD covers (css px): the hearts, lives, Menu and score pills and the stage's progress card.
+ * Measured 2026-10-26: they reach 106 px down sideways (844 x 390) and 128 px upright (400 x 720); a little room is added. Pokey's head
+ * is kept under it in every stage: the look across or down a drop gives way first (Matt, 2026-10-26: in 4-7 the look down pushed him
+ * half behind the Menu pill).
+ */
+export const HUD_BAND = { land: 112, port: 140 } as const;
+/** how far his head is over his feet (px of world) */
+export const HERO_HEAD = 104;
+/** the lowest the view's top may sit (its largest y) for his head, feet at feetY, to stay under a HUD band `band` px of world tall */
+export const underHud = (feetY: number, band: number): number => feetY - HERO_HEAD - band;
 
 /** a ledge's top */
 export interface Ledge {
@@ -95,7 +107,7 @@ export interface Box {
 /** what to show of a landing at (x, y): the first of the ledge past it, and the space over it he comes down through. (Upright the
  *  view is only 440 wide: a 300 px gap, Pokey and this much of the far side are about all that fit) */
 export const landingBox = (x: number, y: number, facing: number): Box =>
-  facing >= 0 ? { x0: x - 20, x1: x + 40, y0: y - 80, y1: y + 12 } : { x0: x - 40, x1: x + 20, y0: y - 80, y1: y + 12 };
+  facing >= 0 ? { x0: x - 20, x1: x + 40, y0: y - 80, y1: y + 4 } : { x0: x - 40, x1: x + 20, y0: y - 80, y1: y + 4 };
 /** Pokey's own room (his feet at px, py) */
 export const heroBox = (px: number, py: number): Box => ({ x0: px - 28, x1: px + 28, y0: py - 104, y1: py + 12 });
 

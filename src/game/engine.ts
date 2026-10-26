@@ -65,7 +65,7 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
-import { camAnchor, camLook, CAM, snapCam, landingAhead, landingBox, showBoth, type Box } from './cameraFollow.ts';
+import { camAnchor, camLook, CAM, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, type Box } from './cameraFollow.ts';
 import { warmCreatureAnims } from './creatureAnim.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
@@ -3721,10 +3721,18 @@ export class GameEngine {
       this.camera.targetY = Math.min(this.camera.targetY, this.currentStage.arena.floor - vh * (this.bossDef?.floorAt ?? 0.7));
     }
 
+    // his head stays under the HUD along the top, whatever the view wanted (cameraFollow.ts HUD_BAND): measured from the ground he
+    // stands on (in the air, the height the camera keeps level with), so a hop does not drag the view up after him
+    const band = (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom;
+    const refY = p.grounded || !Number.isFinite(this.camAnchorY) ? p.y : this.camAnchorY;
+    this.camera.targetY = Math.min(this.camera.targetY, underHud(refY, band));
+
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * 6.5);
     this.camera.x += (this.camera.targetX - this.camera.x) * smoothFactor;
     this.camera.y += (this.camera.targetY - this.camera.y) * smoothFactor;
+    // (standing, never even for a moment while the view eases)
+    if (p.grounded) this.camera.y = Math.min(this.camera.y, underHud(p.y, band));
 
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));

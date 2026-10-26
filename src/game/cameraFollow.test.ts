@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { AHEAD, CAM, camAnchor, camLook, heroBox, landingAhead, landingBox, showBoth, snapCam, type Box } from './cameraFollow.ts';
+import { AHEAD, CAM, camAnchor, camLook, HERO_HEAD, heroBox, HUD_BAND, landingAhead, landingBox, showBoth, snapCam, underHud, type Box } from './cameraFollow.ts';
 
 const VH = 720;
 
@@ -85,9 +85,9 @@ test('at the end of a ledge, the view shows the far side of the gap, upright and
   const p1 = plain(1040, 700, s.vw, s.vh, -1);
   const v1 = showBoth(p1.x, p1.y, 1040, 700, left, s.vw, s.vh);
   assert.ok(inView(left, v1, s.vw, s.vh) && heroIn(1040, 700, v1, s.vw, s.vh));
-  // 4-7's deepest drop (410 down, 470 across) in its wider view (w4LongDrop LONG_DROP_VIEW: 640 of world tall sideways, 620 wide upright)
+  // 4-7's deepest drop (360 down, 470 across) in its wider view (w4LongDrop LONG_DROP_VIEW: 640 of world tall sideways, 620 wide upright)
   for (const [vw, vh] of [[1385, 640], [620, 1116]]) {
-    const deep = landingBox(1470, 1110, 1);
+    const deep = landingBox(1470, 1060, 1);
     const p2 = plain(990, 700, vw, vh);
     const v2 = showBoth(p2.x, p2.y, 990, 700, deep, vw, vh);
     assert.ok(inView(deep, v2, vw, vh) && heroIn(990, 700, v2, vw, vh), `4-7's deep drop is off screen in ${vw} x ${vh}`);
@@ -139,6 +139,34 @@ test('no look across where there is no gap, or he is still far from the end', ()
   const land: Box = { x0: 1700, x1: 1840, y0: 620, y1: 724 };
   const p0 = plain(960, 700, vw, vh);
   assert.ok(heroIn(960, 700, showBoth(p0.x, p0.y, 960, 700, land, vw, vh), vw, vh));
+});
+
+test("Pokey's head stays under the HUD band, in every stage and both ways up; the look across or down gives way first", () => {
+  // (css size, and world px per css px: the usual stage, and 4-7's wider view)
+  const phones = [
+    { name: 'sideways', w: 844, h: 390, band: HUD_BAND.land, zooms: [390 / 540, 390 / 640] },
+    { name: 'upright', w: 400, h: 720, band: HUD_BAND.port, zooms: [400 / 440, 400 / 620] },
+  ];
+  assert.ok(HUD_BAND.land >= 106 && HUD_BAND.port >= 128, 'the band is shorter than the HUD measured');
+  for (const ph of phones) {
+    for (const zoom of ph.zooms) {
+      const vw = ph.w / zoom, vh = ph.h / zoom;
+      const band = ph.band / zoom;
+      const px = 960, py = 700;
+      const headCss = (camY: number) => (py - HERO_HEAD - camY) * zoom;
+      // the plain view already keeps him well under it: the clamp changes nothing there
+      const p0 = plain(px, py, vw, vh);
+      assert.equal(Math.min(p0.y, underHud(py, band)), p0.y, `${ph.name} at ${zoom.toFixed(2)}: the plain view puts his head under the HUD`);
+      // a turn: the next ledge 560 straight down (4-7), and a deep drop off the end of a ledge
+      for (const land of [landingBox(px, py + 560, 1), landingAhead(px, 1, { x: 0, y: py, width: 1000 }, [{ x: 0, y: py, width: 1000 }, { x: 1300, y: py + 520, width: 300 }])!]) {
+        const v = showBoth(p0.x, p0.y, px, py, land, vw, vh);
+        const y = Math.min(v.y, underHud(py, band));
+        assert.ok(headCss(y) >= ph.band - 0.5, `${ph.name} at ${zoom.toFixed(2)}: his head is ${Math.round(headCss(y))} px down, under the HUD (${ph.band})`);
+        // (and the look still goes as far down as the clamp lets it)
+        assert.ok(y >= p0.y, `${ph.name}: the look down went up`);
+      }
+    }
+  }
 });
 
 test('the camera snaps to whole device pixels', () => {
