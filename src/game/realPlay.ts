@@ -162,6 +162,8 @@ export class RealPlay {
       atk: null, atkQueue: null, standingOnId: -1, isGameOver: false,
     });
     if (e.w4) e.w4.groundY = NaN;
+    // (World 5: no silk, sleep or stillness carried over from the last move)
+    if (e.w5) e.w5.calm();
     this.input.clearAll();
     this.died = false;
   }

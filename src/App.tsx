@@ -35,6 +35,7 @@ import { FIND_BY_ID, allFound, loadFinds, saveFinds, withFind } from './game/fin
 import { THORNBARK_LEVEL, gateFound, hasThornHeart, markGateFound, markThornHeart, maxHearts } from './game/secret.ts';
 import { warmHeroAtlas } from './game/heroSprite.ts';
 import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
+import { anyCakeEaten } from './game/w5Kit.ts';
 import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
 import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { BadgeToast } from './components/BadgeToast.tsx';
@@ -298,7 +299,7 @@ export default function App() {
     if (stats && screen !== 'victory' && screen !== 'game_over' && screen !== 'boss_defeat') return;
     pendingStats.current = null;
     const base = stats ? recordStage(badgeStore, stats) : badgeStore;
-    const r = award(base, { levels: allLevels, gateFound: secretFound, thornHeart, stage: stats ?? undefined }, Date.now());
+    const r = award(base, { levels: allLevels, gateFound: secretFound, thornHeart, stage: stats ?? undefined, cakeFree: !anyCakeEaten() }, Date.now());
     const changed = !!stats || r.fresh.length > 0;
     if (!changed) return;
     setBadgeStore(r.store);

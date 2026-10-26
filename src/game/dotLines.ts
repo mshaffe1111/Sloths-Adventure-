@@ -6,6 +6,7 @@
  * when it says a line and shows the new ones; a cut line is not said at all. With the new look off, nothing here is used.
  */
 import { DOT_LINES, type DotLineKind, type DotLineRow } from './dotLinesData.ts';
+import { W5_DOT_LINES } from './w5Lines.ts';
 import type { MoveId, TopicId } from './dotGuide.ts';
 import { topicOf } from './dotGuide.ts';
 
@@ -24,7 +25,8 @@ export interface DotLine {
 
 const toLine = (r: DotLineRow): DotLine => ({ id: r[0], stage: r[1], surface: r[2], kind: r[3], old: r[4], text: r[5], then: r[6], gesture: r[7], target: r[8] });
 
-export const ALL_DOT_LINES: readonly DotLine[] = DOT_LINES.map(toLine);
+// (World 5's lines are written alongside its stages, w5Lines.ts, and join the approved set here)
+export const ALL_DOT_LINES: readonly DotLine[] = [...DOT_LINES, ...W5_DOT_LINES].map(toLine);
 const BY_ID = new Map(ALL_DOT_LINES.map((l) => [l.id, l]));
 
 /** a line by its id ('lesson.swing.grab', 'help.kickAir'), or undefined */

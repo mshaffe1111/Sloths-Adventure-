@@ -38,14 +38,15 @@ import { buildWaterfallSteps } from './w4Stage43.ts';
 import type { CliffNest, NestKind } from './w4Nests.ts';
 import { buildLongDrop } from './w4LongDrop.ts';
 import { buildAerie } from './w4Stage49.ts';
+import { buildW5Stage } from './w5Stages.ts';
 import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -102,6 +103,8 @@ export interface ProtoExtras {
   watch?: import('./watcher.ts').WatchZone[];
   /** World 4's rocks, patience spots, falls and pools, chimes, Dot's knots, capuchins and fruit (w4Play.ts) */
   w4?: import('./w4Play.ts').W4Extras;
+  /** World 5's chairs, cakes, teapots, threads, sheets, orchids, cocoons, carvings and spiders (w5Kit.ts, run by w5Play.ts) */
+  w5?: import('./w5Kit.ts').W5Extras;
   /** World 3's sleeping thorn vines (3-5: thornVine.ts) */
   thorns?: import('./thornVine.ts').ThornVine[];
   /** World 3's painted dressing: stalactites, glowworm threads, ferns, the grotto mouth (protoStage.ts, drawn by w3Art.ts) */
@@ -221,6 +224,8 @@ export const STAGE_SECONDS: Record<string, number> = {
   '4-8': 180,
   '4-9': 300, // the Aerie: the long climb before the Sky Sovereign
   '4-D': 200, // Dot's netting flight, after 4-5 (dotFlightStage.ts DOT_STAGE_SECONDS)
+  '5-1': 165, // the loveliest place: a sprint through the gold garden, with the table and the first chairs (w5Stages.ts)
+  '5-2': 200, // don't sit: the threads, the cakes and the Butler
 };
 export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_SECONDS;
 /** 4-8's length (STAGE_SECONDS: about three minutes for a quick player) */
@@ -242,6 +247,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   if (plan === '4-6') return buildKapok(config, seed, false, false, false, true);
   if (plan === '4-7') return buildLongDrop(config, seed);
   if (plan === '4-9') return buildAerie(config, seed);
+  if (plan === '5-1' || plan === '5-2') return buildW5Stage(config, seed, plan);
   if (plan === '1-8') return buildLongBranch(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];

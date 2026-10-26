@@ -35,6 +35,7 @@ const ALLOWED: RegExp[] = [
   /^sloth_memories$/, // the flashbacks seen
   /^sloth_cosmetic$/, // which reward Pokey wears
   /^sloth_difficulty$/, // Easy or Normal, picked at New Game (difficulty.ts)
+  /^sloth_w5_cakes$/, // whether any cake was eaten in World 5 (w5Kit.ts: the Queen's line, and the badge for eating none)
   // sloth_lessons, sloth_coach_done, sloth_hint_v3 and sloth_howto_seen are NOT here on purpose: a help message is shown once per device,
   // and starting a new game (or loading a save) must not bring them back for someone who already knows how to play
 ];
