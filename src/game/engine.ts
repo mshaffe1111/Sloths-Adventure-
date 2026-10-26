@@ -34,7 +34,7 @@ import { lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, ty
 import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, easeAssist, inSweetSpot, newAirDrive, setTimedSwing, swingGrab, swingStep, timedLaunch } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
-import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
+import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
 import { learnedSkills, type SkillId } from './skills.ts';
 import { newGlide, glideStep, glideBrake, glideLift, drawGlideLeaf } from './glide.ts';
@@ -1857,9 +1857,12 @@ export class GameEngine {
 
     // the hand-built stage's one-time hints (protoStage.ts)
     if (this.proto) {
-      for (const h of this.proto.hints) {
-        if (h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY) || (h.aboveY !== undefined && p.y > h.aboveY)) continue;
+      // (several passed in one frame, as when a run starts from a later flag: only the last is said, and only it counts as heard, so a
+      // line nobody saw is not lost for good)
+      const due = this.proto.hints.filter((h) => !(h.shown || p.x < h.x || (h.belowY !== undefined && p.y < h.belowY) || (h.aboveY !== undefined && p.y > h.aboveY)));
+      for (const h of due) {
         h.shown = true;
+        if (h !== due[due.length - 1]) continue;
         // said once per stage on this device: not again on a replay or a retry (tipMemory.ts)
         const id = `tip:${h.text}`;
         if (tipHeard(this.currentStage.config.id, id)) continue;
@@ -1912,6 +1915,15 @@ export class GameEngine {
         // a Hush Fern: crouch beside it for a moment and it gives something up; stand up and the search slowly fades
         const close = Math.abs(p.x - c.x) < 54 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
         c.near = close && !p.ducking;
+        // the stage's opening line says one plant here looks different; beside it, the first time, Dot says what to do with it
+        if (!close && !p.ducking && p.grounded && Math.abs(p.x - c.x) < 150 && Math.abs(p.y - (c.y + 26)) < 26) {
+          const stageId = this.currentStage.config.id;
+          if (!tipHeard(stageId, 'fern:near')) {
+            markTipHeard(stageId, 'fern:near');
+            const mode = lessonInputMode();
+            this.guide(mode === 'screen' ? 'That fern looks different! Stand beside it and slide your thumb down to crouch and search it' : 'That fern looks different! Stand beside it and hold down to crouch and search it', 4.2);
+          }
+        }
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
         else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
         if ((c.search ?? 0) >= 1) this.collectFind(c);
@@ -3327,7 +3339,9 @@ export class GameEngine {
       if (this.ropeCooldown > 0 || p.grounded || p.climbing || p.isVineSwinging || this.isGameOver) return false;
       const handY = p.y - HAND_REACH;
       for (const r of this.ropes) {
-        if (p.x < r.x0 - 8 || p.x > r.x1 + 8) continue;
+        // (from beside a post, over the ledge it stands on, counts: a jump straight up next to the post catches the rope's end, and he
+        // is slid onto it. Play-testers jumped up beside the post and missed, by a body's width)
+        if (p.x < r.x0 - ROPE_GRAB || p.x > r.x1 + ROPE_GRAB) continue;
         const ry = ropeYAt(r, p.x);
         // his hands are on the rope: rising through it, or falling past it with Up held
         if (handY > ry - 12 && handY < ry + 30 && (p.vy < 40 || inp.up || this.upIntent > 0)) {
@@ -3337,6 +3351,7 @@ export class GameEngine {
       }
       if (!rope) return false;
       // grab
+      p.x = Math.max(rope.x0, Math.min(rope.x1, p.x));
       this.ropeId = rope.id;
       p.hanging = true;
       p.climbing = false;
@@ -3746,6 +3761,7 @@ export class GameEngine {
         platforms: this.platforms,
         checkpoints: st.checkpoints ?? [],
         rivers: st.rivers ?? [],
+        ropes: this.skills.has('shimmy') ? this.ropes : [],
       },
       seen,
     );
@@ -3850,6 +3866,8 @@ export class GameEngine {
       ctx.restore();
     }
 
+    // World 4's pieces that stand back behind the ground (4-3's pool basins)
+    this.w4?.drawUnder(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     // Render In-World Trees, Vines and Platforms
     if (ownScene && lair) drawLairObjects(ctx, lair, this.platforms, this.vines, this.currentStage.trees, this.camera, this.gameTime);
     else renderWorldObjects(

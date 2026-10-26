@@ -29,10 +29,25 @@ test('catching up while it teases makes it drop the petal; a punch does too', ()
 test('a thief nobody catches ends up in its den, still holding the petal', () => {
   const s = newCapuchin(thief);
   stepThief(thief, s, 400, 700, false, dt);
-  for (let i = 0; i < 30 * 30; i++) stepThief(thief, s, 0, 700, false, dt);
+  // (he follows, but never quite reaches it)
+  for (let i = 0; i < 30 * 30; i++) stepThief(thief, s, s.x - 200, 700, false, dt);
   assert.equal(s.x, 1400);
   assert.equal(s.carrying, true);
   assert.equal(s.mode, 'tease');
+});
+
+test('at a post it waits for him to come in sight before it teases and runs on, so it always stops where he can catch it', () => {
+  const s = newCapuchin(thief);
+  stepThief(thief, s, 400, 700, false, dt);
+  for (let i = 0; i < 60 && s.mode === 'flee'; i++) stepThief(thief, s, 400, 700, false, dt);
+  // far behind (lost on a stair): it sits at its post however long he takes
+  for (let i = 0; i < 30 * 20; i++) stepThief(thief, s, 800 - CAP.wait - 100, 700, false, dt);
+  assert.equal(s.mode, 'tease');
+  assert.equal(s.post, 0);
+  // he comes in sight: it teases a while, and touching it then (from a jump, too) makes it drop the petal
+  for (let i = 0; i < Math.floor(CAP.tease * 30) - 5; i++) stepThief(thief, s, 800 - CAP.wait + 50, 700, false, dt);
+  assert.equal(s.post, 0);
+  assert.equal(stepThief(thief, s, 800 - CAP.catch + 8, 700 - CAP.catchUp + 10, false, dt).dropped, true);
 });
 
 test('it runs faster than he walks, so he catches it at a post, not on the way', () => {

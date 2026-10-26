@@ -84,6 +84,13 @@ export interface W4Extras {
   cliffNests?: CliffNest[];
   /** 4-9: the Sovereign overhead (her shadow, a feather) */
   omens?: Omen[];
+  /**
+   * 4-6: the forest floor (its height) and the trunk by the start that climbs back up from it (x): back on the floor after a fall,
+   * far from that trunk, Dot says which way the climb starts again (and a trail of petals on the floor leads there)
+   */
+  floor?: { y: number; trunkX: number };
+  /** the stage's own hint about the rocks (4-3): said when the first rock he meets starts its warning, if the stage has not said it yet */
+  rockTip?: string;
 }
 
 /** what the engine lends World 4 each frame */
@@ -130,6 +137,8 @@ const sideFade = (b: { x0?: number; x1?: number }, x?: number) => {
   return k * k * (3 - 2 * k);
 };
 const KNOT_DROP = 0.8;
+/** how far a terrace's pool basin sits down behind the terrace's top edge (px), so it stands back from the path in front of it */
+const POOL_SET_BACK = 14;
 /** a guard on its feet leaps up and shoves him back if he tries to jump over it: it reaches this far above its feet (px) */
 export const GUARD_LEAP = 200;
 /** 4-9: a guard blown off its ledge counts for the goal when he is this close to it (px): any further, and he could not get past it */
@@ -151,6 +160,13 @@ export class W4Play {
   private fruit: Array<{ state: 'hang' | 'fall' | 'ground' | 'gone'; x: number; y: number; vy: number; at: number }>;
   private chimeRang: number[];
   private rockHit = new Set<string>();
+  /**
+   * a rock on the ground ahead has shown its warning to him (its shadow and grit, with Dot's line the first time): until then no rock
+   * that falls to the ground hurts him, so the first one he meets can never hit before it was warned
+   */
+  private rockWarned = false;
+  /** 4-6: he has been well up off the forest floor (so being back on it is a fall, not the start) */
+  private wasUp = false;
   /** the height of the ground he last stood on (deepFall) */
   private groundY = NaN;
   /** the view drawBack last drew (drawFront culls by it) */
@@ -165,6 +181,8 @@ export class W4Play {
   private splashAt = -9;
 
   constructor(private readonly w4: W4Extras, platforms: Platform[], private readonly vines: Vine[]) {
+    // (start loading World 4's pieces now, so the painted ones are up before the first nest or boulder is on screen)
+    w4ArtReady();
     this.patience = (w4.patience ?? []).map(() => newPatience());
     this.flow = (w4.falls ?? []).map(() => 1);
     this.fallSide = (w4.falls ?? []).map(() => -1);
@@ -212,6 +230,15 @@ export class W4Play {
       }
     }
 
+    // 4-6: back down on the forest floor after a fall, away from the one trunk that climbs up from it: Dot points the way
+    if (w4.floor) {
+      if (p.y < w4.floor.y - 600) this.wasUp = true;
+      else if (this.wasUp && p.grounded && Math.abs(p.y - w4.floor.y) < 4 && Math.abs(p.x - w4.floor.trunkX) > 350) {
+        const way = p.x > w4.floor.trunkX ? 'left' : 'right';
+        h.tip('w4:floor', `Back on the ground! Follow the petals ${way}, to the trunk by the start, and climb back up`, 4.2);
+      }
+    }
+
     // falling rocks: the shadow warns, the rock falls, and it hurts only if it reaches him
     (w4.rocks ?? []).forEach((r, i) => {
       if (Math.abs(r.x - p.x) > 900) return;
@@ -222,6 +249,13 @@ export class W4Play {
         this.rockHit.add(cycle + 's');
         if (Math.abs(r.x - p.x) < 700) h.sfx('rock');
       }
+      // the warning, shown to him: a rock on the ground he is on (or nearly), not far ahead, while it is in its warning. The first time,
+      // Dot says what it means (the stage's own hint, said here if it was not said already)
+      if (!r.air && s.phase === 'warn' && Math.abs(r.x - p.x) < 520 && Math.abs(r.land - p.y) < 160) {
+        this.rockWarned = true;
+        if (w4.rockTip) h.tip(`tip:${w4.rockTip}`, w4.rockTip, 3.6);
+      }
+      if (!r.air && !this.rockWarned) return;
       if (!this.rockHit.has(cycle) && p.invincibleTimer <= 0 && rockHits(r, h.t, p.x, p.y, 64)) {
         this.rockHit.add(cycle);
         h.hurt(p.x >= r.x ? 1 : -1);
@@ -277,9 +311,19 @@ export class W4Play {
     // the falls: plugged by their boulder, or pouring on their own rhythm; the pools follow them, and the logs float on the pools
     const platX = (id: number) => h.platforms.find((q) => q.id === id)?.x;
     (w4.falls ?? []).forEach((w, i) => {
+      // past the top of a plug fall's stair (only a stopped fall lets him there): its boulder is in its slot, and it stays dry
+      if (w.plug && w.past && p.grounded && p.x > w.past.x && p.y <= w.past.y && !plugged(w, platX)) {
+        const b = h.platforms.find((q) => q.id === w.plug!.platformId);
+        if (b) b.x = w.plug.atX;
+        this.flow[i] = 0;
+      }
       const before = this.flow[i];
       this.flow[i] = stepFlow(w, before, plugged(w, platX), h.t, dt);
-      if (before > FALLS.trickle && this.flow[i] <= FALLS.trickle && Math.abs(w.x - p.x) < 900) h.sfx('splash');
+      if (before > FALLS.trickle && this.flow[i] <= FALLS.trickle && Math.abs(w.x - p.x) < 900) {
+        h.sfx('splash');
+        // a boulder he has just rolled in: say it worked (the water is a long way down from the shelf, and easy to miss)
+        if (w.plug && Math.abs(w.x - p.x) < 700) h.tip('w4:plugged', 'That stopped the water! Now the steps under it are dry: climb them', 3.4);
+      }
       // pouring water is a wall: it throws him back out the side he came in from (waterfalls.ts fallWall); out of it, that side is
       // simply the side he is on
       if (!inColumn(w, p.x, p.y)) this.fallSide[i] = p.x < w.x + w.width / 2 ? -1 : 1;
@@ -378,7 +422,7 @@ export class W4Play {
         if (ev.grabbed) {
           if (petal) petal.collected = true;
           h.sfx('monkey');
-          h.tip('w4:thief', 'Hey! That monkey took a petal! Catch it when it stops to tease you', 3.2);
+          h.tip('w4:thief', 'Hey! That monkey took a petal! Run after it, and touch it when it stops to tease you', 3.4);
         }
         if (ev.dropped) {
           if (petal) {
@@ -438,6 +482,18 @@ export class W4Play {
     return { speed, wind: w4.cliffNests?.length ? nestWind(h.collectibles, p.x, p.y, p.grounded, h.t) : 0, knocked };
   }
 
+  /**
+   * under the ground (before the stage's platforms are painted): the pool basins that stand on a terrace (4-3). He walks along the
+   * terrace in front of a basin, so its foot sits behind the terrace's top edge and it reads as standing back against the cliff, not
+   * as something he is walking through.
+   */
+  drawUnder(ctx: CanvasRenderingContext2D, view: { x0: number; x1: number }) {
+    (this.w4.pools ?? []).forEach((pool, i) => {
+      if (!pool.art || pool.art.cx < view.x0 - pool.art.w || pool.art.cx > view.x1 + pool.art.w) return;
+      drawPool(ctx, pool.art.cx, pool, this.pool[i], { ...pool.art, b: pool.art.b + POOL_SET_BACK });
+    });
+  }
+
   /** behind Pokey: the falls, the pools, the chimes, the rock shadows and rocks, the fern, the knots and Dot, the monkeys, the fruit */
   drawBack(ctx: CanvasRenderingContext2D, t: number, view: { x0: number; x1: number; y0?: number; y1?: number }, zones: readonly Zone[], platforms: Platform[]) {
     const w4 = this.w4;
@@ -453,8 +509,8 @@ export class W4Play {
     const treePainted = (w4.fruit ?? []).map((tree, i) => near(tree.x) && drawFruitTree(ctx, tree, this.fruit[i].state === 'hang'));
     (w4.pools ?? []).forEach((pool, i) => {
       const fall = (w4.falls ?? []).find((w) => w.id === pool.fedBy);
-      if (pool.art && near(pool.art.cx)) drawPool(ctx, pool.art.cx, pool, this.pool[i], pool.art);
-      else if (fall && near(fall.x)) drawPool(ctx, fall.x + fall.width / 2, pool, this.pool[i]);
+      // (a basin painted where the stage says stands back on its terrace, behind the ground: drawUnder)
+      if (!pool.art && fall && near(fall.x)) drawPool(ctx, fall.x + fall.width / 2, pool, this.pool[i]);
       const log = pool.art ? platforms.find((q) => q.id === pool.platformId && q.art === 'poolLog') : undefined;
       if (log && near(log.x)) drawFloatLog(ctx, log, t);
     });
@@ -476,7 +532,9 @@ export class W4Play {
     (w4.falls ?? []).forEach((w, i) => {
       const b = w.plug ? platforms.find((q) => q.id === w.plug!.platformId) : undefined;
       if (!b || !near(w.x)) return;
-      drawSpout(ctx, b, w, this.flow[i], t);
+      // (a fall whose stream runs along a painted channel, 4-3, has its spout in that painting, and plugged it simply runs dry: 4-8's
+      // spout high on the cliff, with the water landing on the boulder and running back along the shelf, would say it still flows)
+      if (!(w4.decor ?? []).some((d) => d.wet === w.id)) drawSpout(ctx, b, w, this.flow[i], t);
       if (!drawW4(ctx, 'boulderMoss', b.x + b.width / 2, b.y + b.height + 8, b.width * 1.3)) {
         ctx.save();
         ctx.fillStyle = '#78716c';
@@ -509,6 +567,11 @@ export class W4Play {
     (w4.nests ?? []).forEach((n, i) => near(n.x) && drawNest(ctx, n, t, t - this.nestBlow[i].at));
     // the mist bank over everything in it (ledges and trunks alike), behind Pokey so he can always be seen in it
     if (view.y0 !== undefined && view.y1 !== undefined) this.drawMistBank(ctx, t, { x0: view.x0, x1: view.x1, y0: view.y0, y1: view.y1 });
+    // the places that settle the mist: a soft glow on the ledge, over the mist, so he can tell which ledges to stand still on
+    (w4.patience ?? []).forEach((s, i) => {
+      if (s.kind !== 'mist' || !s.area || !near((s.x0 + s.x1) / 2, s.x1 - s.x0)) return;
+      drawSettleGlow(ctx, s, mistReveal(this.patience[i]), t);
+    });
   }
 
   /**
@@ -663,6 +726,39 @@ export class W4Play {
 }
 
 // ───────────────────────────── drawing ─────────────────────────────
+
+/**
+ * a mist spot's glow (4-6, 4-9): a soft pale light along the ledge where standing still settles the mist, breathing slowly, with a few
+ * motes rising; it fades as the mist settles (he has found it), and comes back as the mist rises again
+ */
+function drawSettleGlow(ctx: CanvasRenderingContext2D, s: PatienceSpot, reveal: number, t: number) {
+  const a = (1 - reveal) * (0.55 + 0.2 * Math.sin(t * 2.2 + s.x0 * 0.01));
+  if (a <= 0.02) return;
+  const cx = (s.x0 + s.x1) / 2, half = (s.x1 - s.x0) / 2 + 20;
+  ctx.save();
+  ctx.translate(cx, s.y - 4);
+  ctx.scale(1, 0.22);
+  const g = ctx.createRadialGradient(0, 0, 4, 0, 0, half);
+  g.addColorStop(0, `rgba(254, 249, 195, ${0.7 * a})`);
+  g.addColorStop(0.6, `rgba(253, 230, 138, ${0.32 * a})`);
+  g.addColorStop(1, 'rgba(253, 230, 138, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.arc(0, 0, half, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+  ctx.save();
+  ctx.fillStyle = `rgba(254, 249, 195, ${0.8 * a})`;
+  for (let k = 0; k < 5; k++) {
+    const u = (t * 0.45 + k * 0.2) % 1;
+    const mx = cx + (((k * 53) % 100) / 100 - 0.5) * (half * 1.4);
+    ctx.globalAlpha = Math.sin(u * Math.PI);
+    ctx.beginPath();
+    ctx.arc(mx, s.y - 6 - u * 46, 2.4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+}
 
 /** a fall: its water, then the painted lip it pours over */
 function drawFall(ctx: CanvasRenderingContext2D, w: Waterfall, flow: number, t: number) {
@@ -997,12 +1093,38 @@ function drawRock(ctx: CanvasRenderingContext2D, r: RockDrop, t: number) {
     return;
   }
   if ((s.phase === 'warn' || s.phase === 'fall') && !r.air) {
-    // the shadow on the ground grows as the rock comes
-    const u = s.phase === 'warn' ? s.u * 0.6 : 0.6 + 0.4 * s.u;
-    ctx.fillStyle = `rgba(15,23,42,${0.15 + 0.4 * u})`;
+    // the shadow on the ground grows as the rock comes: plain from the first moment of the warning (dark, and as wide as the rock),
+    // with a pale ring round it so it reads on dark rock as well as pale
+    const u = s.phase === 'warn' ? 0.35 + 0.35 * s.u : 0.7 + 0.3 * s.u;
+    ctx.fillStyle = `rgba(255, 251, 235, ${0.4 + 0.3 * u})`;
     ctx.beginPath();
-    ctx.ellipse(r.x, r.land - 2, 10 + 26 * u, 4 + 6 * u, 0, 0, Math.PI * 2);
+    ctx.ellipse(r.x, r.land - 2, 30 + 24 * u, 10 + 6 * u, 0, 0, Math.PI * 2);
     ctx.fill();
+    ctx.fillStyle = `rgba(15,23,42,${0.5 + 0.4 * u})`;
+    ctx.beginPath();
+    ctx.ellipse(r.x, r.land - 2, 24 + 22 * u, 7 + 6 * u, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  if (s.phase === 'warn' && !r.air) {
+    // grit pattering down onto the spot, through the last stretch above it (in view on a phone held either way, however far up the
+    // rock lets go), and little stones hopping where it lands
+    const span = Math.min(260, r.land - r.top);
+    const n = 8 + Math.round(10 * s.u);
+    ctx.strokeStyle = 'rgba(30, 27, 24, 0.85)';
+    ctx.lineWidth = 1.5;
+    for (let k = 0; k < n; k++) {
+      const gx = r.x - 14 + ((k * 7) % 28);
+      const gy = r.land - span + ((t * 330 + k * (span / n)) % span);
+      const sz = 5 + (k % 3) * 2;
+      ctx.fillStyle = k % 2 ? '#d6d3d1' : '#78716c';
+      ctx.fillRect(gx, gy, sz, sz);
+      ctx.strokeRect(gx, gy, sz, sz);
+    }
+    for (let k = 0; k < 3; k++) {
+      const h = Math.abs(Math.sin(t * 9 + k * 2.1)) * (4 + 4 * s.u);
+      ctx.fillStyle = '#d6d3d1';
+      ctx.fillRect(r.x - 18 + k * 16, r.land - 7 - h, 6, 6);
+    }
   }
   if (s.phase === 'warn') {
     ctx.fillStyle = '#9ca3af';
@@ -1396,10 +1518,11 @@ function drawPaintedNest(ctx: CanvasRenderingContext2D, n: Nest, phase: NestPhas
 
 /** the stand-in nest: two chicks, asleep (heads tucked), one stirring (a head up), both looking about, flapping in a flurry */
 function drawStandInNest(ctx: CanvasRenderingContext2D, phase: NestPhase, u: number, blowing: boolean, t: number) {
-  // the chicks: white down, dark beaks; heads tucked asleep, up when they look
+  // (a stand-in until the painted nest loads, made to read as the same bird: one big grey harpy eaglet with a pale face, in a deep nest,
+  // so the eaglets never look like two different birds on two screens)
   const chick = (dx: number, up: number, eyes: boolean, flap: number) => {
-    ctx.fillStyle = '#f8fafc';
-    ctx.strokeStyle = '#94a3b8';
+    ctx.fillStyle = '#94a3b8';
+    ctx.strokeStyle = '#334155';
     ctx.lineWidth = 2;
     if (flap) {
       for (const side of [-1, 1]) {
@@ -1445,21 +1568,23 @@ function drawStandInNest(ctx: CanvasRenderingContext2D, phase: NestPhase, u: num
   };
   const flap = blowing ? 0.5 * Math.sin(t * 40) : 0;
   const up1 = phase === 'look' ? 1 : phase === 'stir' ? Math.min(1, u * 3) : 0;
-  const up2 = phase === 'look' ? Math.min(1, u * 4) : 0;
-  chick(-16, up1, phase !== 'sleep', flap);
-  chick(14, up2, phase === 'look', flap);
-  // the nest: a bowl of woven sticks in front of them
+  ctx.save();
+  ctx.translate(0, -26);
+  ctx.scale(1.5, 1.5);
+  chick(-4, up1, phase !== 'sleep', flap);
+  ctx.restore();
+  // the nest: a deep bowl of woven sticks in front of it
   ctx.fillStyle = '#7c5a36';
   ctx.beginPath();
-  ctx.ellipse(0, -12, 54, 18, 0, 0, Math.PI);
+  ctx.ellipse(0, -30, 56, 30, 0, 0, Math.PI);
   ctx.closePath();
   ctx.fill();
   ctx.strokeStyle = '#4a3420';
   ctx.lineWidth = 3;
   for (let k = 0; k < 7; k++) {
     ctx.beginPath();
-    ctx.moveTo(-50 + k * 14, -14 + (k % 2) * 5);
-    ctx.lineTo(-36 + k * 14, -2 - (k % 2) * 5);
+    ctx.moveTo(-50 + k * 14, -30 + (k % 2) * 8);
+    ctx.lineTo(-36 + k * 14, -6 - (k % 2) * 8);
     ctx.stroke();
   }
 }

@@ -14,6 +14,8 @@ export const HAND_REACH = 70;
 export const ROPE_RISE = 146;
 /** the rope's ends reach this far over the ledges, so letting go at an end drops him onto solid ground */
 export const ROPE_OVERLAP = 44;
+/** how far past a rope's end (over the ledge, beside its post) a jump still catches it (px); he is slid onto the rope's end */
+export const ROPE_GRAB = 40;
 /** the shortest gap worth a rope: wider than a double jump can clear (313 px at best), with margin */
 export const ROPE_MIN_GAP = 370;
 

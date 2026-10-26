@@ -41,6 +41,15 @@ export const WET = { rise: 130, tread: 130, margin: 110 } as const;
 /** the pushable boulder */
 export const BOULDER = { w: 96, h: 88 } as const;
 /**
+ * a pool's log: how far over the terrace it floats with the pool full and lies once it drains, how far under the ledge it floats at its
+ * highest (a double jump straight up), and how far the ledge reaches out over the log's near end (so that jump is straight up, and plain)
+ */
+export const POOL = { full: 150, empty: 30, ledge: 140, over: 70 } as const;
+/** seconds a rock's shadow and grit show before it falls (4-1's are 1.4: here they come back on long terraces, warned well ahead) */
+export const ROCK_WARN = 2.0;
+/** Dot on the rocks: the stage's hint at the first rock, and said again by w4Play when a rock first warns near him, if it was missed */
+export const ROCK_TIP = 'Rocks coming loose again! Stop before the shadow, and go once it has fallen';
+/**
  * A surge's water is a wall while it pours (waterfalls.ts fallWall): caught on its stair when it comes back, he is washed down to its
  * foot. So its quiet spell is long enough for a player to climb from the foot of the water to the next dry spot (the cave behind it,
  * or out of the water at the top): a moment to start and the walk in, and a double jump for each wet step (s).
@@ -169,11 +178,11 @@ export function buildWaterfallSteps(
     const x0 = x;
     rest(len);
     const rx = r(x0 + len * R.r(0.45, 0.6));
-    const rock: RockDrop = { x: rx, top: y - 460, land: y, every: Math.round(R.r(4.6, 5.6) * 10) / 10, warn: 1.4, offset: Math.round(R.r(0, 5) * 10) / 10 };
+    const rock: RockDrop = { x: rx, top: y - 460, land: y, every: Math.round(R.r(4.6, 5.6) * 10) / 10, warn: ROCK_WARN, offset: Math.round(R.r(0, 5) * 10) / 10 };
     if (!rockFits(rock)) return;
     // (no flower where the rock lands: he should not be tempted to stand there)
     for (let i = C.length - 1; i >= 0; i--) if (C[i].type === 'flower' && Math.abs(C[i].x - rx) < ROCK.radius + 50 && Math.abs(C[i].y - (y - 34)) < 4) C.splice(i, 1);
-    if (!rocksSaid) hint(x0 + 20, 'Rocks coming loose again! Stop before the shadow, and go once it has fallen');
+    if (!rocksSaid) hint(x0 + 20, ROCK_TIP);
     rocksSaid = true;
     rocks.push(rock);
     expert += 1.6;
@@ -266,17 +275,20 @@ export function buildWaterfallSteps(
       const bx = r(n0 + nw + 20);
       const bw = 300;
       // the log floats a double jump up off the terrace while the pool is full, and lies in the bottom of the basin once it drains
-      const fullY = y0 - 150;
-      const emptyY = y0 - 60;
-      const ledgeY = r(fullY - 140);
-      const ledge = shelf(n0, n0 + nw, ledgeY);
-      row(ledge.x + 60, ledge.x + ledge.width - 120, ledgeY - 34, 2, 'orchid');
+      const fullY = y0 - POOL.full;
+      const emptyY = y0 - POOL.empty;
+      const ledgeY = r(fullY - POOL.ledge);
+      // the ledge reaches out over the log's near end, so from the log at its highest the way up is a double jump straight up
+      const ledge = shelf(n0, bx + 55 + POOL.over, ledgeY);
+      row(ledge.x + 60, n0 + nw - 120, ledgeY - 34, 2, 'orchid');
       // the basin stands on the terrace (painted behind him), and the log floats on its water (drawn by w4Play; it rides up and down
       // with the pool)
       const log: Platform = { id: pid++, x: bx + 55, y: fullY, width: 170, height: 30, type: 'solid', style: 'log', art: 'poolLog' };
       P.push(log);
       logId = log.id;
-      flower(log.x + log.width / 2, fullY - 40, 'hibiscus');
+      // a petal on the log, and one on the ledge right over its near end: where to jump to, straight up from there
+      flower(log.x + log.width / 2 + 30, fullY - 40, 'hibiscus');
+      flower(log.x + POOL.over / 2, ledgeY - 34, 'hibiscus');
       // (the fall pours into the far end of the basin, clear of the log)
       x = bx + bw - 50;
       c0 = r(x);
@@ -286,6 +298,7 @@ export function buildWaterfallSteps(
       flower(treeX, ledgeY - 220, 'hibiscus');
       pools.push({ fedBy: fid, platformId: log.id, fullY, emptyY, art: { cx: log.x + log.width / 2, b: y0 + 6, w: bw } });
       hint(x0 + 40, 'This fall fills the pool, and the log floats on it. Ride the log up before you stop the water!');
+      hint(bx - 40, 'Stand on the near end of the log, under the ledge, and double jump straight up');
       expert += (bx - x0) / RUN + 1.4 + 1.2 + (ledgeY - shelfY) / CLIMB + 0.8;
     }
     // the shelf, its channel and the boulder
@@ -298,7 +311,8 @@ export function buildWaterfallSteps(
     P.push(boulder);
     // the stone channel the stream runs in, pouring off the end of the shelf (it runs dry once the boulder is in)
     decor.push({ n: 'channelFall', x: c0 - 50, b: shelfY + 96, w: 190, wet: fid });
-    if (kind === 'tree') hint(treeX - 120, 'Slide into the boulder to roll it into the stream', 'Hold the pad into the boulder to roll it into the stream', 'Hold right into the boulder to roll it into the stream', shelfY + 10);
+    // (the boulder is pushed by walking into it from beside it on its shelf, physics.ts blockBeside: Dot says exactly that)
+    if (kind === 'tree') hint(treeX - 120, 'A boulder! Walk right into it and keep going: you push it along the shelf into the stream', 'A boulder! Walk right into it and keep holding right: you push it along the shelf into the stream', 'A boulder! Walk right into it and keep holding right: you push it along the shelf into the stream', shelfY + 10);
     if (kind === 'pool') hint(treeX - 120, 'Now roll the boulder in, and watch the pool', 'Now roll the boulder in, and watch the pool', 'Now roll the boulder in, and watch the pool', shelfY + 10);
     expert += (c0 - BOULDER.w - bX) / PUSH + 1.2;
     // the water, and the stair it pours over
@@ -311,7 +325,8 @@ export function buildWaterfallSteps(
     end();
     for (const p of P) if (p.x >= c0 + WET.margin - 1 && p.x < c0 + WET.margin + n * WET.tread - 1 && p.y < y0 && p.y > topY) steps.push(p.id);
     up(WET.rise, 0);
-    falls.push({ id: fid, x: c0, width: WET.margin + n * WET.tread, top: shelfY, bottom: y0, plug: { platformId: boulder.id, atX: c0 - BOULDER.w } });
+    // (standing on the terrace past the top of its stair, he got by it: a run started from a later flag finds it stopped, as it was)
+    falls.push({ id: fid, x: c0, width: WET.margin + n * WET.tread, top: shelfY, bottom: y0, plug: { platformId: boulder.id, atX: c0 - BOULDER.w }, past: { x: r(x + 40), y: r(y + 10) } });
     info.push({ fallId: fid, kind: kind === 'pool' ? 'pool' : 'plug', steps, shelf: top.id, ...(logId !== undefined ? { log: logId } : {}) });
     fid++;
     expert += 1 + n * 0.6;
@@ -369,7 +384,7 @@ export function buildWaterfallSteps(
     const mx = r(x);
     const sitY = y;
     const petal = flower(mx + 46, sitY - 30, 'hibiscus');
-    hint(x0 + 40, 'Another monkey! This one runs up behind the falling water. Follow it in the quiet, and catch it in the cave');
+    hint(x0 + 40, 'Another monkey! This one runs up behind the falling water. Follow it in the quiet, and touch it in the cave');
     const path: Array<{ x: number; y: number }> = [];
     run(R.r(380, 440));
     path.push({ x: r(x - 60), y: r(y) });
@@ -397,15 +412,17 @@ export function buildWaterfallSteps(
     const nw = r(R.r(300, 340));
     const bx = r(n0 + nw + 20);
     const bw = 300;
-    const fullY = y0 - 150;
-    const emptyY = y0 - 60;
-    const ledgeY = r(fullY - 140);
+    const fullY = y0 - POOL.full;
+    const emptyY = y0 - POOL.empty;
+    const ledgeY = r(fullY - POOL.ledge);
     const lipY = r(ledgeY - 260);
-    const ledge = shelf(n0, n0 + nw, ledgeY);
-    row(ledge.x + 60, ledge.x + ledge.width - 120, ledgeY - 34, 2, 'orchid');
+    // (as in the pool: the ledge reaches out over the log's near end, a double jump straight up from the log at its highest)
+    const ledge = shelf(n0, bx + 30 + POOL.over, ledgeY);
+    row(ledge.x + 60, n0 + nw - 120, ledgeY - 34, 2, 'orchid');
     const log: Platform = { id: pid++, x: bx + 30, y: fullY, width: 160, height: 30, type: 'solid', style: 'log', art: 'poolLog' };
     P.push(log);
-    flower(log.x + log.width / 2, fullY - 40, 'hibiscus');
+    flower(log.x + log.width / 2 + 30, fullY - 40, 'hibiscus');
+    flower(log.x + POOL.over / 2, ledgeY - 34, 'hibiscus');
     // the tree from the ledge up to the shelf over the pool, which stops short of the falling water
     const treeX = r(n0 + 70);
     trunk(treeX, ledgeY, lipY);
@@ -425,6 +442,7 @@ export function buildWaterfallSteps(
     tides.push({ fallId: fid, log: log.id, ledge: ledge.id, lip: lip.id, top: lipY });
     fid++;
     hint(x0 + 40, 'This pool only fills while its fall pours. Stand on the log and let the water lift you');
+    hint(bx - 40, 'Wait on the near end of the log, under the ledge. When the water lifts it all the way, double jump straight up');
     hint(treeX - 120, 'The water pours over the gap ahead. Cross when it goes quiet', 'The water pours over the gap ahead. Cross when it goes quiet', 'The water pours over the gap ahead. Cross when it goes quiet', lipY + 10);
     const cycle = surge.pour + surge.ease + surge.quiet;
     // to the log, wait for the water to lift it, up to the ledge, up the tree, along the shelf, wait for the quiet, across
@@ -441,7 +459,7 @@ export function buildWaterfallSteps(
     const mx = r(x);
     const sitY = y;
     const petal = flower(mx + 46, sitY - 30, 'hibiscus');
-    hint(x0 + 40, 'A monkey, by that petal! If it grabs it, catch it when it stops to tease you');
+    hint(x0 + 40, 'A monkey, by that petal! If it grabs it, run after it and touch it when it stops to tease you');
     const path: Array<{ x: number; y: number }> = [];
     let walked = mx - x0;
     const along = (len: number) => {
@@ -594,6 +612,7 @@ export function buildWaterfallSteps(
     w.top += shift;
     w.bottom += shift;
     for (const q of w.shelter ?? []) q.y += shift;
+    if (w.past) w.past.y += shift;
   }
   for (const pl of pools) { pl.fullY += shift; pl.emptyY += shift; if (pl.art) pl.art.b += shift; }
   for (const m of monkeys) { m.y += shift; for (const q of m.path ?? []) q.y += shift; }
@@ -622,7 +641,7 @@ export function buildWaterfallSteps(
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: W } },
     proto: {
       hints: hints.sort((a, b) => a.x - b.x), covers: [], beats, movedPickups,
-      w4: { falls, pools, monkeys, decor, rocks },
+      w4: { falls, pools, monkeys, decor, rocks, rockTip: ROCK_TIP },
     },
     falls43: info,
     tides43: tides,

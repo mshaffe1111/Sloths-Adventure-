@@ -354,3 +354,67 @@ test('the high mist in play: standing at the foot shows the ledge halfway but no
     }
   }
 });
+
+test('4-6: no high branch ends in a long fall: each end over a drop of more than a few hops has a knot of wood (a little wall) at it', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const lips = st.platforms.filter((p) => p.lip);
+    assert.ok(lips.length >= 10, `seed ${s}: only ${lips.length} lips`);
+    for (const l of lips) {
+      // a wall (the engine's solid blocks: 50 px tall or more), low enough to hop over, standing on the end of its branch
+      assert.ok(l.height >= 50 && l.height < 100 && l.type === 'solid', `seed ${s}`);
+      assert.ok(st.platforms.some((p) => p.height === 24 && Math.abs(p.y - (l.y + l.height)) < 1 && (Math.abs(p.x - l.x) < 1 || Math.abs(p.x + p.width - (l.x + l.width)) < 1)), `seed ${s}: a lip on no branch end`);
+    }
+    // the branches across the tree, by the nests (where play-testers walked off into a ten-second fall): every end is caught or walled
+    const beat = st.proto.beats.find((b) => b[2] === 'Test: across the tree')!;
+    const across = st.platforms.filter((p) => p.height === 24 && p.width >= 150 && p.y <= beat[0] + 1 && p.y >= beat[1] - 1);
+    assert.ok(across.length >= 3, `seed ${s}`);
+    for (const p of across) {
+      for (const side of [-1, 1]) {
+        const end = side < 0 ? p.x : p.x + p.width;
+        const walled = lips.some((l) => Math.abs(l.y + l.height - p.y) < 1 && Math.abs((side < 0 ? l.x : l.x + l.width) - end) < 1);
+        const x = end + side * 60;
+        const under = st.platforms.filter((q) => q !== p && q.y > p.y && q.x <= x + 19 && q.x + q.width >= x - 19);
+        const drop = under.length ? Math.min(...under.map((q) => q.y)) - p.y : Infinity;
+        assert.ok(walled || drop < 600, `seed ${s}: branch ${p.id}'s ${side < 0 ? 'left' : 'right'} end drops ${drop} px`);
+      }
+    }
+  }
+});
+
+test('4-6: back on the forest floor, a trail of petals leads to the one trunk up from it, and Dot points the way', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const floor = st.platforms[0];
+    const help = st.proto.w4!.floor!;
+    assert.equal(help.y, floor.y);
+    assert.ok(st.vines.some((v) => v.x === help.trunkX && Math.abs(v.bottomY + 6 - floor.y) < 1), `seed ${s}: no trunk up from the floor at ${help.trunkX}`);
+    const trail = st.collectibles.filter((c) => c.type === 'flower' && Math.abs(c.y - (floor.y - 34)) < 1 && c.x > help.trunkX);
+    assert.ok(trail.length >= 6, `seed ${s}: only ${trail.length} petals on the floor`);
+  }
+  // in play: once he has been up the tree, landing on the floor far from the trunk gets Dot's line, and which way to go
+  const st = build(1);
+  const help = st.proto.w4!.floor!;
+  const player = { x: help.trunkX + 1200, y: help.y - 2000, vx: 0, vy: 0, grounded: false, invincibleTimer: 0 } as unknown as Player;
+  const tips: string[] = [];
+  const h = { t: 0, player, platforms: st.platforms, vines: st.vines, collectibles: st.collectibles, zones: [], punch: null, hidden: false, hurt: () => {}, tip: (_k: string, text: string) => tips.push(text), float: () => {}, screech: () => {}, sfx: () => {} } as W4Host;
+  const w = new W4Play(st.proto.w4!, st.platforms, st.vines);
+  w.step(1 / 30, h);
+  player.y = help.y;
+  player.grounded = true;
+  w.step(1 / 30, h);
+  assert.ok(tips.some((t) => /Back on the ground/.test(t) && /left/.test(t)), `no line on the floor (${tips.join(' / ')})`);
+});
+
+test('4-6: the ledge halfway up the high mist settles the mist from anywhere on it', () => {
+  for (const s of SEEDS) {
+    const st = build(s);
+    const spots = st.proto.w4!.patience!.filter((m) => m.kind === 'mist');
+    // the two ledges halfway (the 7th and 9th spots): the spot is the whole ledge, less a little at each end
+    for (const m of [spots[6], spots[8]]) {
+      const ledge = st.platforms.find((p) => p.height === 24 && p.y === m.y && p.x <= m.x0 && p.x + p.width >= m.x1)!;
+      assert.ok(ledge, `seed ${s}`);
+      assert.ok(m.x0 - ledge.x <= 15 && ledge.x + ledge.width - m.x1 <= 15, `seed ${s}: only ${m.x1 - m.x0} px of a ${ledge.width} px ledge settles the mist`);
+    }
+  }
+});

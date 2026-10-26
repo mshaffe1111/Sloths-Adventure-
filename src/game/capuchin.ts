@@ -40,10 +40,15 @@ export const CAP = {
   snatch: 150,
   /** how fast it runs (px/s): quicker than his walk, so he catches it at the posts, not on the way */
   run: 260,
-  /** seconds it teases at each post before running on */
-  tease: 2.2,
-  /** he catches it within this distance (px) */
-  catch: 46,
+  /** seconds it teases at each post before running on (long enough to catch it up after a stair: play-testers kept arriving as it left) */
+  tease: 3.2,
+  /** he catches it by touching it: his middle within this far of its middle sideways (px), his feet within `catchUp` above its feet or
+   * `catchDown` below them (so touching it from a jump, or from the step under its post, counts as well) */
+  catch: 58,
+  catchUp: 90,
+  catchDown: 30,
+  /** at a post it waits until he is this close (px sideways) before its teasing clock starts */
+  wait: 460,
   /** lookout: seconds it stares before screeching, once it sees him (time to duck back into a bush) */
   stare: 0.9,
   /** seconds after a screech before it can screech again */
@@ -94,6 +99,10 @@ const go = (s: CapState, mode: CapMode): void => {
 
 // ───────────────────────────── thief ─────────────────────────────
 
+/** is he touching it? (his middle x and feet y against its middle and feet) */
+export const caught = (s: { x: number; y: number }, px: number, py: number): boolean =>
+  Math.abs(px - s.x) < CAP.catch && py > s.y - CAP.catchUp && py < s.y + CAP.catchDown;
+
 /**
  * One frame of a thief. `px, py` = his middle x and feet y; `punched` = his punch landed on it this frame.
  * Returns `grabbed` the frame it takes the petal and `dropped` the frame it lets go of it (the engine puts the petal back where it fell).
@@ -112,7 +121,7 @@ export function stepThief(c: Capuchin, s: CapState, px: number, py: number, punc
     return {};
   }
   if (s.mode === 'dropped') return {};
-  if (s.carrying && (punched || near < CAP.catch)) {
+  if (s.carrying && (punched || caught(s, px, py))) {
     s.carrying = false;
     go(s, 'dropped');
     return { dropped: true };
@@ -131,7 +140,9 @@ export function stepThief(c: Capuchin, s: CapState, px: number, py: number, punc
     }
     return {};
   }
-  // teasing at a post: it waits for him, then runs on (and at its den it stays put, holding the petal)
+  // teasing at a post: it waits for him to come in sight (its teasing clock only runs while he is within CAP.wait), teases a while,
+  // then runs on (and at its den it stays put, holding the petal). So it always stops where he can see it, long enough to catch
+  if (s.mode === 'tease' && Math.abs(px - s.x) > CAP.wait) s.t = 0;
   if (s.mode === 'tease' && s.t >= CAP.tease && s.post < path.length - 1) {
     s.post++;
     go(s, 'flee');
