@@ -91,3 +91,18 @@
   to run. If I turn the phone, turn it back before the next attack.
 - Venom Fang: from up the tree I never got to his head in time. A hop onto the swinging platform, then a short walk off
   the end and a few punches, worked much better.
+
+## 2026-10-26 (new phone, new HUD and Dot, sideways and a squat screen)
+
+- Tall blocks: steering while I flick makes Pokey grab the side of the block and slide back down. What works is a
+  straight double jump (flick, a short beat, flick), then steering only once he's near the top. Same with the beta on or off.
+- Standing tucked under an overhang, my jumps bonk my head. Step out into the open first, then jump.
+- Gliding: a running jump where I keep the thumb on the glass after the flick (a long flickhold) carries me right over a pit.
+  Short holds just drop me in. Start the hold a step before the edge.
+- Wind chimes swinging and leaves blowing toward me means headwind. A glide into it falls short. Wait a good few seconds
+  for the chimes to hang still, then go.
+- Dot's tips wait until I actually do the move. If her line won't go away, I haven't done the thing yet, so read it again.
+- When I'm stuck a while, Dot puts a ring on where to go. Look for the ring before trying the same jump again.
+- Her bubble can sit right on top of a ledge or the thing I'm aiming for. If I can't see the top of something, wait a beat
+  for her to move or the line to finish.
+- New HUD: pickups near the top edge can hide behind the hearts or the Menu leaf, mostly on a squat screen. Check those corners.
