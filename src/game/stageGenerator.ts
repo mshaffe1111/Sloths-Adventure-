@@ -26,6 +26,7 @@ import { PICKUP_APART, swingLandings, validateStage } from './levelCheck.ts';
 import { LEVEL_ATTEMPTS } from './levelSeeds.ts';
 import { bossMaxHp, newBrain } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
+import { PILLAR } from './sovereignFight.ts';
 import { SECRET_GATE_LEVEL } from './secret.ts';
 import { addJumpTrails } from './jumpTrails.ts';
 import { fixPickups } from './flowerReach.ts';
@@ -2571,6 +2572,10 @@ function buildBoss(gen: Gen): GeneratedStage {
     for (const v of def.vines ?? []) {
       gen.V.push({ id: gen.vid++, x: left + v.dx, topY: floor - v.top, bottomY: floor - v.bottom, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true });
     }
+    // the Sky Sovereign's rock pillars: walls with a top to stand on (sovereignFight.ts; the engine cracks and breaks them)
+    if (def.pillars) {
+      PILLAR.at.forEach((dx, i) => gen.plat({ x: left + dx - PILLAR.w / 2, y: floor - PILLAR.h, width: PILLAR.w, height: PILLAR.h, type: 'solid', pillar: i }, 'ledge'));
+    }
   } else {
     for (const b of [{ x: left + 70, y: 440, w: 200 }, { x: right - 270, y: 440, w: 200 }, { x: (left + right) / 2 - 130, y: 340, w: 260 }]) {
       gen.plat({ x: b.x, y: b.y, width: b.w, height: 26, type: 'solid'}, 'ledge');
@@ -2579,7 +2584,7 @@ function buildBoss(gen: Gen): GeneratedStage {
 
   const maxHp = def.hp ?? bossMaxHp(cfg.worldIndex);
   const boss: BossEntity = {
-    id: 1, type: 'boss', x: right - Math.max(160, def.w / 2 + 40), y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
+    id: 1, type: 'boss', x: def.startDx !== undefined ? left + def.startDx : right - Math.max(160, def.w / 2 + 40), y: floor - def.h / 2, vx: 0, vy: 0, width: def.w, height: def.h, hp: maxHp, maxHp,
     facing: -1, patrolMinX: left, patrolMaxX: right, attackCooldown: 0, telegraphTimer: 0, isAttacking: false,
     animTimer: 0, hitFlashTimer: 0, defeated: false, koTimer: 0, behaviorTimer: 0, phase: 1, phaseMax: 3,
     specialAttackTimer: 0, shieldActive: false, dialogueIntro: world.bossQuote, dialogueDefeat: 'Nooo! Defeated by a sloth...!',
@@ -2588,6 +2593,8 @@ function buildBoss(gen: Gen): GeneratedStage {
   if (perchList.length) {
     // a heart on the first ledge and one on the last, where a hero who has been hurt can reach them
     for (const pc of new Set([perchList[0], perchList[perchList.length - 1]])) gen.item('heart', left + pc.dx + pc.w / 2, floor - pc.up - 44);
+    // and one on top of the last rock pillar
+    if (def.pillars) gen.item('heart', left + PILLAR.at[PILLAR.at.length - 1], floor - PILLAR.h - 44);
   } else {
     gen.item('heart', left + 170, 400);
     gen.item('heart', right - 170, 400);

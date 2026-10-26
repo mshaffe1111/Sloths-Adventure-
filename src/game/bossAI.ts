@@ -15,6 +15,7 @@
 import type { BossEntity } from './types.ts';
 import type { Rect } from './fight.ts';
 import type { LairKind } from './lairArt.ts';
+import type { SkyPillar } from './sovereignFight.ts';
 
 // ───────────────────────────── hazards ─────────────────────────────
 
@@ -29,6 +30,7 @@ export type HazardKind =
   | 'bolt' // a fast straight projectile
   | 'web' // projectile that sticks you (slows, no damage)
   | 'strip' // a lair hazard along the floor that grows from an arena edge (rising lava) and stays
+  | 'push' // a shove, not a blow: the Sovereign's screech rolling out (moves) or the gust of her wings (stays); the engine pushes him
   | 'mark'; // a warning marker only (nothing hurts)
 
 export interface BossHazard {
@@ -66,6 +68,9 @@ export interface BossHazard {
   /** a 'strip' grows from `ox` (the arena edge) towards the middle, `dir` says which way, up to `growTo` wide */
   growTo?: number;
   growRate?: number;
+  /** a 'push': where it came from (her beak or her wings), and the hero it has already shoved (a screech shoves once) */
+  src?: number;
+  shoved?: boolean;
   /** drawing seed so two of the same thing do not look identical */
   seed: number;
   /** what it looks like: 'web' | 'lava' | 'rock' | 'spike' | 'fire' | 'feather' | 'spear' | 'club' | 'mud' | 'venom' | '' */
@@ -101,7 +106,7 @@ export function makeHazard(h: Partial<BossHazard> & { kind: HazardKind; x: numbe
 
 /** the box that hurts the player, or null while the hazard is only a warning */
 export function hazardBox(h: BossHazard): Rect | null {
-  if (h.warn > 0 || h.spent || h.kind === 'mark') return null;
+  if (h.warn > 0 || h.spent || h.kind === 'mark' || h.kind === 'push') return null;
   if (h.kind === 'drop' && h.life <= 0) return null;
   return { x: h.x - h.w / 2, y: h.y - h.h / 2, w: h.w, h: h.h };
 }
@@ -176,6 +181,12 @@ export interface BossCtx {
   dropHeart?: (x: number) => void;
   /** every warning lasts this many times as long (Easy: difficulty.ts); 1 when unset */
   tellMul?: number;
+  /** the Sky Sovereign's rock pillars (sovereignFight.ts), when the arena has them */
+  pillars?: SkyPillar[];
+  /** a pillar was slammed (it cracked, or broke): the engine shakes the rock, cracks it or knocks the top off */
+  onPillar?: (p: SkyPillar, broke: boolean, side: -1 | 1) => void;
+  /** Dot says this, once per device (the key keeps it from repeating on a replay). True when she says it now */
+  guide?: (key: string, line: string) => boolean;
 }
 
 export interface MoveDef {
@@ -209,8 +220,16 @@ export interface MoveDef {
   onEnd?: (b: BossEntity, c: BossCtx) => void;
   /** after this move, the boss is stunned instead of recovering (it crashed into something) */
   stunAfter?: (b: BossEntity) => number;
+  /** every tick of the recovery after this move, after the usual settling (she comes down to the floor, hoarse) */
+  recTick?: (b: BossEntity, c: BossCtx, dt: number) => void;
+  /** her body does not hurt while she does this one: only its own hurt boxes do (talons, not wingtips) */
+  softBody?: boolean;
+  /** every tick of the stun that follows this move (she slides off the rock she hit) */
+  stunTick?: (b: BossEntity, c: BossCtx, dt: number) => void;
+  /** Dot's line the first time this move is wound up (once per device) */
+  guide?: string;
   /** what to show when it crashes */
-  crashText?: string;
+  crashText?: string | ((b: BossEntity) => string);
 }
 
 export interface BossDef {
@@ -283,6 +302,25 @@ export interface BossDef {
   frameArena?: boolean;
   /** stays facing the way it starts (a boss coiled at one end of its lair) */
   faceFixed?: boolean;
+  /** the lowest a flyer may settle at here (a rock under her: she lands on top of it, never sinks into it); 0 = the floor */
+  groundAt?: (b: BossEntity, c: BossCtx) => number;
+  /** the first move of the fight is always this one (so it is the one taught first) */
+  opener?: string;
+  /** damage one stun can take: after that it shakes the daze off (so each crash is one clear win) */
+  stunCap?: number;
+  /** while it is stunned, landing on this box from above (its back) is a stomp: dx forward of the body's middle, dy above its feet */
+  stompSpot?: { dx: number; dy: number; w: number; h: number };
+  /** the arena has the Sky Sovereign's rock pillars (sovereignFight.ts) */
+  pillars?: boolean;
+  /** where it starts, px from the left fence (the usual is near the right fence) */
+  startDx?: number;
+  /** the camera also keeps it in view when it flies high (a sky boss): it pulls back to fit its height */
+  frameAir?: boolean;
+  /**
+   * how the fight ends: it is beaten, not killed. It comes down to rest and stays there, calm (never fades away), with this said over
+   * it and Dot's line (the kindness rule: Meeca asked Pokey to be kind to the guardians)
+   */
+  ending?: { text: string; line?: string };
 }
 
 /** boss hit points: 41 in world 1, 122 in world 10 (a jab does 1, a hook or kick 2) */
@@ -331,9 +369,10 @@ export function weakOpen(b: BossEntity, def?: BossDef): boolean {
 }
 
 /** the body only hurts while the boss is winding up or attacking, so walking up to hit it in its opening is safe */
-export function bodyHurts(b: BossEntity): boolean {
+export function bodyHurts(b: BossEntity, def?: BossDef): boolean {
   const br = b.ai;
   if (!br) return false;
+  if (br.move && def?.moves[br.move]?.softBody && br.state === 'act') return false;
   // the first moment of a wind-up is grace, so a hero standing in the boss when it begins can step out (or be pushed out) first
   return br.state === 'act' || (br.state === 'tell' && br.t > 0.3);
 }
@@ -346,6 +385,7 @@ function face(b: BossEntity, c: BossCtx) {
 
 function pickMove(b: BossEntity, def: BossDef, c: BossCtx, phase: number): string {
   const br = b.ai!;
+  if (def.opener && !br.recent.length && def.moves[def.opener]) return def.opener;
   const dist = Math.abs(c.px - b.x);
   const names = Object.keys(def.moves);
   const eligible = names.filter((n) => {
@@ -389,6 +429,7 @@ function startMove(b: BossEntity, def: BossDef, c: BossCtx, name: string) {
   face(b, c);
   b.telegraphTimer = m.tell * (c.tellMul ?? 1);
   b.isAttacking = false;
+  if (m.guide) c.guide?.('move:' + name, m.guide);
   m.onTell?.(b, c);
 }
 
@@ -481,7 +522,8 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
         br.hold = stun;
         b.isAttacking = false;
         br.hurt = [];
-        c.text(m?.crashText ?? 'CRASH!', b.x, b.y - b.height, '#fde047');
+        const ct = typeof m?.crashText === 'function' ? m.crashText(b) : m?.crashText;
+        if (ct !== '') c.text(ct ?? 'CRASH!', b.x, b.y - b.height, '#fde047');
         break;
       }
       if (br.t >= m.act) {
@@ -497,8 +539,10 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
     case 'rec': {
       face(b, c);
       // flyers settle back toward their hover height while they recover
-      br.air += ((def.hover ?? 0) * 0.35 - br.air) * Math.min(1, dt * 2.5);
+      const g = def.groundAt?.(b, c) ?? 0;
+      br.air += (Math.max(g, (def.hover ?? 0) * 0.35) - br.air) * Math.min(1, dt * 2.5);
       if (br.air < 1) br.air = 0;
+      m?.recTick?.(b, c, dt);
       if (m && br.t >= m.rec) {
         const again = phase >= 3 && def.chain && c.rnd() < def.chain;
         if (again) {
@@ -514,7 +558,9 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
     }
 
     case 'stun': {
-      br.air += (0 - br.air) * Math.min(1, dt * 6);
+      m?.stunTick?.(b, c, dt);
+      const g = def.groundAt?.(b, c) ?? 0;
+      br.air += (g - br.air) * Math.min(1, dt * 6);
       if (br.air < 1) br.air = 0;
       if (br.t >= br.hold) {
         br.state = 'idle';
@@ -623,7 +669,7 @@ export function stepHazards(list: BossHazard[], arena: Arena, dt: number, ev: Ha
         }
         continue;
       }
-    } else if (h.kind === 'shock' || h.kind === 'wave' || h.kind === 'bolt') {
+    } else if (h.kind === 'shock' || h.kind === 'wave' || h.kind === 'bolt' || h.kind === 'push') {
       h.x += h.vx * dt;
       h.y += h.vy * dt;
       if (h.x < arena.left - 80 || h.x > arena.right + 80) h.life = 0;
