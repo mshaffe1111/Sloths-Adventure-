@@ -123,3 +123,22 @@
   ring around me and missed two openings. What finally worked: keep the thumb down sliding to the bottom, push toward
   where I want to go, and flick up that way while the thumb is still down. A straight hop onto the vine and one clean
   up-and-over flick off works first time; fiddling on it is what gets me stuck.
+
+## 2026-10-26 (world 5, sideways, then a squat screen)
+
+- Sticky webs: one long slide that switches left/right doesn't shake it off. Short separate slides do: slide, lift, slide
+  the other way, lift, five or six times.
+- Climbing out of a dip: a straight double jump (flick, a real beat, flick), then steer once he's near the top. Steering
+  early just stands him on the inner step and he drops back.
+- Ledge lips: when he ends up hanging on the side of a ledge, neither pushing up, an up-and-over flick nor a double jump
+  pulled him on for me. Back away a full step first and jump from the open.
+- Closing flowers: they snap shut as I come near and open again a few seconds later. Wait for one to open and jump
+  straight onto it from the side; walking under one first is too late. On top, a straight double flick reaches the
+  pickups above.
+- Silk lines swing like vines: hop into it, slide the way I'm going for a beat, then flick up-and-over. One go each time.
+- Hanging cocoons: a plain punch from the ground misses. Stand right under it, then a long flick and punches while
+  rising. Wrapped bundles on the ground didn't open for me; don't waste time on those.
+- Walking with punches every second step keeps the small spiders off, but ones that come from behind still bite. A
+  short slide back turns me round to punch.
+- Cakes slow me for a few seconds. Wait it out before any jump that matters.
+- Story bubbles in later stages can sit right on top of Pokey. If I can't see him, stop and let it finish.
