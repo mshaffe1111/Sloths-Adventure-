@@ -11,6 +11,9 @@ import {
   touchesCake, trayAt, W5_TEACH, onScreen, SPIDER5, laced, newSeam, SEAMSTRESS, stepSeam, type ButlerState, type CocoonState,
   type GateState, type SeamState, type SitState, type ViewBox, type W5Extras,
 } from './w5Kit.ts';
+import { onRest } from './w5Kit.ts';
+import { W5_POUCH } from './w5Lines.ts';
+import { readMs } from './dotGuide.ts';
 import {
   carvingBox, drawBlossom, drawButler, drawCake, drawCard, drawCarving, drawChair, drawCocoon, drawDoily, drawFern, drawFlyingTray, drawOrchid,
   drawPennant, drawPiece, drawPinkBell, drawShrineArt, drawSilkOnPokey, drawSilkSheet, drawSleepyOnPokey, drawSteam, drawTeaTable, drawTeapot, drawThread,
@@ -126,6 +129,7 @@ export class W5Play {
     if (w5.spiders?.length) warmW5Spider();
     if (w5.butlers?.length) warmW5Butler();
     if (w5.seamstresses?.length) warmW5Seamstress();
+    this.silks = vines.filter((v) => v.silk);
   }
 
   /**
@@ -186,6 +190,7 @@ export class W5Play {
       this.pendingTip = null;
       h.tip(pt.key, pt.text, pt.seconds);
     }
+    this.stepRest(h);
     this.enemies = h.enemies;
     this.player = p;
     // back at a flag (or placed there): a fresh start, no silk carried over
@@ -400,6 +405,7 @@ export class W5Play {
         h.float('z', p.x + p.facing * 16, p.y - 66, '#ddd6fe');
       }
     }
+    this.stepSilks(h);
     this.veil = Math.max(sitDrowsy(this.sit) * 0.8, this.sleepy > 0 ? 0.55 * Math.min(1, this.sleepy) : 0);
     return { speed: sleepySpeed(this.sleepy) * silkSpeed(this.sit.silk), pull };
   }
@@ -483,6 +489,7 @@ export class W5Play {
       // (it glows like a pickup on purpose: that is the trap)
       drawCake(ctx, c.x, c.y + Math.sin(t * 3 + c.x * 0.02) * 3, 34, t, true, true);
     });
+    this.drawFreed(ctx, t, vis);
   }
 
   /** over Pokey: the silk creeping up him, the spiders' marks, the card when he is at the table, a flying tray, the falling petals */
@@ -649,6 +656,82 @@ export class W5Play {
       if (sm.x + 60 > view.x0 && sm.x - 60 < view.x1) out.push({ x0: sm.x - 60, y0: sm.y - SEAMSTRESS.h - 50, x1: sm.x + 60, y1: sm.y });
     }
   }
+
+  // ───────────────────────────── 5-5: the rest branch and its scene, the silk lines' first line, the freed creatures ─────────────────────────────
+
+  /** the silk lines in the stage (Vines with `silk`) */
+  private silks: Vine[] = [];
+  /** the pouch scene's place in its lines: the next to say, when, and when the last one has been read */
+  private scene: { i: number; next: number; end: number } | null = null;
+
+  /**
+   * The rest branch (5-5): when he comes to it, the pouch scene plays (w5Lines.ts W5_POUCH), one line at a time, each after the one
+   * before has had its reading time (the guide queues them in order if something comes between). While the scene plays, standing on the
+   * branch is resting, not sitting: the stillness does not count there (Pokey stood, because the note said so). Off the branch, it does.
+   */
+  private stepRest(h: W5Host) {
+    const rest = this.w5.rest;
+    if (!rest) return;
+    const p = h.player;
+    const sc = (this.scene ??= { i: -1, next: 0, end: 0 });
+    if (sc.i < 0 && p.x >= rest.x0 + 30) {
+      sc.i = 0;
+      sc.next = h.t;
+    }
+    while (sc.i >= 0 && sc.i < W5_POUCH.length && h.t >= sc.next) {
+      const l = W5_POUCH[sc.i];
+      h.tip(`scene:${l.id}`, l.text, readMs(l.text) / 1000);
+      sc.i++;
+      const wait = readMs(l.text) / 1000 + SCENE_BREATH;
+      sc.next = h.t + (W5_POUCH[sc.i]?.after ?? wait);
+      sc.end = h.t + wait;
+    }
+    if (this.restPlaying(h.t) && onRest(rest, p.x, p.y, p.grounded)) this.holdStill(0.25);
+  }
+
+  /** the pouch scene has started and is not yet over (its last line still being read) */
+  restPlaying(t: number): boolean {
+    const sc = this.scene;
+    return !!sc && sc.i >= 0 && (sc.i < W5_POUCH.length || t < sc.end);
+  }
+
+  /** a silk line's first-time line, as it comes into view (it swings like a vine: the liana system) */
+  private stepSilks(h: W5Host) {
+    const p = h.player;
+    for (const v of this.silks) {
+      if (v.x > p.x - 40 && v.x - p.x < SEE && Math.abs((v.topY + v.bottomY) / 2 - p.y) < 400) h.tip(said(W5_TEACH.silk), W5_TEACH.silk, 3.6);
+    }
+  }
+
+  /** a creature just freed from a cocoon: a pale moth that flutters up and away (2.4 s) */
+  private drawFreed(ctx: CanvasRenderingContext2D, t: number, vis: (x: number, pad?: number) => boolean) {
+    (this.w5.cocoons ?? []).forEach((c, i) => {
+      const st = this.cocoons[i];
+      if (!st?.freed || st.since > 2.4 || !vis(c.x)) return;
+      const u = st.since / 2.4;
+      const x = c.x + Math.sin(u * 7 + c.x) * 18 + u * 70;
+      const y = c.y - 60 - u * 220;
+      const flap = Math.abs(Math.sin(t * 22));
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, (1 - u) * 3);
+      ctx.translate(x, y);
+      ctx.scale(1.7, 1.7);
+      ctx.fillStyle = '#ede9fe';
+      ctx.strokeStyle = '#5b4a6e';
+      ctx.lineWidth = 1.5;
+      for (const sgn of [-1, 1]) {
+        ctx.beginPath();
+        ctx.ellipse(sgn * 7 * (0.4 + 0.6 * flap), -2, 8 * (0.4 + 0.6 * flap), 6, sgn * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#5b4a6e';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 2.2, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
 }
 
 /** the Seamstress's lace flying from her needles (fx, fy) to him (tx, ty): `u` how far it has got, `a` how much of it is still to see */
@@ -680,6 +763,8 @@ function drawLaceThrow(ctx: CanvasRenderingContext2D, fx: number, fy: number, tx
   }
   ctx.restore();
 }
+/** a breath between one line of a scene and the next (a little over dotGuide.ts GUIDE.breathMs) */
+const SCENE_BREATH = 0.8;
 
 /** World 5's cocoon reach, for the stage builder (a cocoon must hang where a standing punch lands: COCOON.mid above his fist) */
 export const COCOON_HANG = COCOON.mid;

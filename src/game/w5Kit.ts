@@ -702,7 +702,21 @@ export interface W5Extras {
   decor?: W5Decor[];
   /** petals drifting down through the light (a lovely stage) */
   petals?: boolean;
+  /** 5-5: the rest branch where the orchids hang in rows, and the pouch scene played on it (w5Play.ts, w5Lines.ts W5_POUCH) */
+  rest?: RestBranch;
 }
+
+// ───────────────────────────── 5-5: the rest branch ─────────────────────────────
+
+/** a branch to rest on, [x0, x1] at height y: a story beat plays when he comes to it, and standing on it then is no danger */
+export interface RestBranch {
+  x0: number;
+  x1: number;
+  y: number;
+}
+
+/** is he standing on the rest branch? */
+export const onRest = (r: RestBranch, px: number, py: number, grounded: boolean): boolean => grounded && px >= r.x0 && px <= r.x1 && Math.abs(py - r.y) < 3;
 
 // ───────────────────────────── what Dot says the first time ─────────────────────────────
 

@@ -40,6 +40,38 @@ export function dotStageConfig(): LevelConfig {
 /** the extra stages, each with the id of the stage it follows */
 export const EXTRA_STAGES: Array<{ after: string; config: () => LevelConfig }> = [{ after: '4-5', config: dotStageConfig }];
 
+// ── Meeca's stage, after 5-5 (planned: being designed, not built) ──
+export const MEECA_STAGE_ID = '5-M';
+
+/**
+ * Meeca's own stage, right after 5-5 and required (Matt, 2026-10-26; HANDOFF "World 5 decisions"): it opens on a "Three days earlier"
+ * card, after 5-5's pouch scene, and you play Meeca marched through the sanctuary at dusk. Its slot in World 5's list is kept here, the
+ * way Dot's flight sits after 4-5. When its builder exists, move this entry into EXTRA_STAGES (and 5-5's clear then opens it, as 4-D's
+ * opens 4-6); until then the list goes 5-5, 5-6 as before.
+ */
+export function meecaStageConfig(): LevelConfig {
+  return {
+    worldIndex: 5,
+    miniIndex: 12,
+    id: MEECA_STAGE_ID,
+    name: "Meeca's Stage",
+    objectiveType: 'sprint',
+    targetCount: 1,
+    timeLimit: 0,
+    levelWidth: 24000,
+    levelHeight: 1000,
+    description: 'Three days earlier. Marched through the sanctuary at dusk, Meeca carves on the move.',
+    unlocked: false,
+    completed: false,
+    stars: 0,
+    highScore: 0,
+    bestTime: 0,
+  };
+}
+
+/** extra stages planned but not built yet: each one's place (the stage it follows) is kept, and it joins EXTRA_STAGES once built */
+export const PLANNED_STAGES: Array<{ after: string; config: () => LevelConfig }> = [{ after: '5-5', config: meecaStageConfig }];
+
 /** put the extra stages into the list after the stages they follow (with their saved results), when the switch is on */
 export function withExtraStages(levels: LevelConfig[], on = newStagesOn()): LevelConfig[] {
   if (!on) return levels;

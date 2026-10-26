@@ -14,11 +14,13 @@ import { levelConfig } from './realPlay.ts';
 import { GuideQueue, type MoveId } from './dotGuide.ts';
 import { engineGuideLine, swapLine } from './dotLines.ts';
 import { START_AFTER_MS, stageLine } from './wayside.ts';
+import { fernLine } from './wayside.ts';
 import { DANGER } from './dotGuideWatch.ts';
 import { CAKE, SPIDER5, W5_TEACH, type W5Extras } from './w5Kit.ts';
 import { W5_FRAMES } from './w5PropsData.ts';
 import { CARD_READ_ZOOM, cardScale } from './w5Play.ts';
 import { W5_HINTS, W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
+import { W5_POUCH } from './w5Lines.ts';
 import { W5_FIRST_TALL, W5_HEART_UP, W5_PLAIN_STUMPS, type W5Info } from './w5Stages.ts';
 import { stuckLine } from './stuckHelper.ts';
 import { inSweetSpot, reachJump } from './physics.ts';
@@ -452,6 +454,97 @@ test('5-2 upright at 320x782: the first cakes come into view with time to hop th
     const said = sentAt(sim.said, W5_TEACH.cake);
     assert.ok(said && said.x < first[0].x - 400, `seed ${seed}: the cakes' line came at ${said?.x}, the first cake at ${first[0].x}`);
   }
+});
+
+// ───────────────────────────── 5-5 Caught in Silk ─────────────────────────────
+
+/** 5-5's first-time lines, each with the x of the first thing it is about (the cocoons, the spiders, the threads, the chairs, the silk) */
+function lessons55(st: Built): Lesson[] {
+  const w = st.proto.w5;
+  const out: Lesson[] = [];
+  const first = (xs: number[]) => Math.min(...xs);
+  out.push({ name: 'the cocoons', text: W5_TEACH.cocoon, at: first(w.cocoons!.map((c) => c.x)) });
+  const awake = st.enemies.filter((e) => !(w.spiders ?? []).some((s) => s.id === e.id && s.doze));
+  out.push({ name: 'the jumping spider', text: W5_TEACH.spider, at: first(awake.map((e) => e.x)), reach: SPIDER5.sense });
+  out.push({ name: 'the threads', text: W5_TEACH.thread, at: first(w.threads!.map((t) => t.x0)) });
+  const silk = st.vines.find((v) => v.silk)!;
+  out.push({ name: 'the silk line', text: W5_TEACH.silk, at: silk.x });
+  const chair = (w.chairs ?? []).filter((c) => !c.wrapped).sort((a, b) => a.x - b.x)[0];
+  if (chair) out.push({ name: 'the soft chairs', text: W5_TEACH.chair, at: chair.x });
+  return out;
+}
+
+/**
+ * the new look for 5-5: as newLookShown, with the line its fern brings at the start (wayside.ts fernLine: it hides the keepsake), and
+ * `tail` seconds more at the end, standing at the shrine (sealed: a player who has run past the cocoons goes back for them)
+ */
+function newLookShown55(run: ReturnType<typeof holdRight>, tail = 0): Map<string, { x: number; t: number }> {
+  const q = new GuideQueue();
+  const shown = new Map<string, { x: number; t: number }>();
+  const lines = run.said.map((s) => ({ s, l: engineGuideLine(s.text, '5-5', { dot: true }) }));
+  const t0 = run.frames[0].t;
+  const ms = (t: number) => (t - t0) * 1000;
+  const fern = fernLine(5, 5)!;
+  let fernDue = true;
+  let k = 0;
+  for (const f of run.frames) {
+    if (fernDue && ms(f.t) >= START_AFTER_MS) {
+      fernDue = false;
+      q.push({ key: 'story:F', text: swapLine(fern.text)?.text ?? fern.text, kind: 'info', who: 'Dot', source: 'story', waitMs: 60000 }, ms(f.t));
+    }
+    while (k < lines.length && lines[k].s.t <= f.t + 1e-6) {
+      const l = lines[k].l;
+      if (l) q.push(l, ms(lines[k].s.t));
+      k++;
+    }
+    q.tick(ms(f.t), { danger: f.danger, hold: ms(f.t) < CARD_MS, moveCount: (m: MoveId) => (f.moves as Record<string, number>)[m] ?? 0 });
+    for (const ev of q.drain()) if (ev.type === 'start' && !shown.has(ev.show.line.key)) shown.set(ev.show.line.key, { x: f.x, t: f.t });
+  }
+  const last = run.frames[run.frames.length - 1];
+  for (let t = last.t; t < last.t + tail; t += 1 / 30) {
+    q.tick(ms(t), { danger: false, moveCount: (m: MoveId) => (last.moves as Record<string, number>)[m] ?? 0 });
+    for (const ev of q.drain()) if (ev.type === 'start' && !shown.has(ev.show.line.key)) shown.set(ev.show.line.key, { x: last.x, t });
+  }
+  return shown;
+}
+
+test('5-5: holding right from the start, every first-time line comes before its thing is within reach, the pouch scene and all', () => {
+  const problems: string[] = [];
+  for (const seed of process.env.W5_ORDER_SEEDS === '16' ? SEEDS : SEEDS.slice(0, 4)) {
+    const st = buildProtoStage(levelConfig('5-5'), seed, HAND_STAGES['5-5']) as Built;
+    const ls = lessons55(st);
+    // (on to the shrine: the pouch scene, from the rest branch on, plays out over most of the stage)
+    const run = holdRight('5-5' as '5-1', seed, st.exitTotemX - 100);
+    // (he has run past every cocoon: the shrine is sealed, and he has a minute there, going back for them)
+    const shown = newLookShown55(run, 60);
+    if (process.env.W5_ORDER_DEBUG) {
+      console.log('5-5', seed, 'ended at', Math.round(run.sim.p.x), Math.round(run.sim.p.y), 't', run.sim.t.toFixed(1), ls.map((l) => `${l.name}@${l.at}`).join(', '));
+      for (const s of run.said) console.log('  said', s.t.toFixed(1), Math.round(s.x), s.text.slice(0, 50), '| new:', shown.get(keyOf('5-5', s.text))?.x.toFixed(0), shown.get(keyOf('5-5', s.text))?.t.toFixed(1));
+    }
+    for (const l of ls) {
+      const s = sentAt(run.said, l.text);
+      if (!s) {
+        problems.push(`seed ${seed}: ${l.name}: never said`);
+        continue;
+      }
+      const reach = l.reach ?? REACH;
+      if (s.x > l.at - reach) problems.push(`seed ${seed}: ${l.name}: sent at x ${Math.round(s.x)}, ${Math.round(l.at - s.x)} px before it`);
+      const n = shown.get(keyOf('5-5', l.text));
+      if (!n) problems.push(`seed ${seed}: ${l.name}: never shown`);
+      else if (n.x > l.at - reach) problems.push(`seed ${seed}: ${l.name}: shown at x ${Math.round(n.x)}, ${Math.round(l.at - n.x)} px before it`);
+    }
+    // the pouch scene: every line sent at the rest branch or after, in its order, and every one of them shown in the end
+    const rest = st.proto.w5.rest!;
+    const sent = W5_POUCH.map((l) => sentAt(run.said, l.text));
+    sent.forEach((s, i) => {
+      if (!s) problems.push(`seed ${seed}: the pouch scene's line ${i} never sent`);
+      else if (s.x < rest.x0) problems.push(`seed ${seed}: the pouch scene's line ${i} before the rest branch`);
+    });
+    const starts = W5_POUCH.map((l) => shown.get(keyOf('5-5', l.text))?.t ?? -1);
+    if (starts.some((t) => t < 0)) problems.push(`seed ${seed}: pouch lines never shown: ${starts.map((t, i) => (t < 0 ? i : '')).join(' ')}`);
+    for (let i = 1; i < starts.length; i++) if (starts[i] >= 0 && starts[i - 1] >= 0 && starts[i] < starts[i - 1]) problems.push(`seed ${seed}: pouch line ${i} before line ${i - 1}`);
+  }
+  assert.deepEqual(problems, []);
 });
 
 // ───────────────────────────── QA 2 (Sally, 5-1 and 5-2 on v196, 320x782 upright) ─────────────────────────────
