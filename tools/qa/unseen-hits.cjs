@@ -1,5 +1,5 @@
 // QA lead check (World 5 jumping spiders): run a stage holding right (hopping now and then); on every heart lost, say where the
-// and whether it was on screen while it crouched (its tell). Hearts are refilled after each hit so the run keeps going.
+// nearest foe was, which side, and whether it was on screen while it crouched (its tell). Hearts are refilled after each hit.
 //   node tools/qa/unseen-hits.cjs <port> <stage> <view> [seconds]
 const http = require('http');
 const [port, stage, view = 'port', secs = '120'] = process.argv.slice(2);
