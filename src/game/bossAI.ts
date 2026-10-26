@@ -75,6 +75,8 @@ export interface BossHazard {
   seed: number;
   /** what it looks like: 'web' | 'lava' | 'rock' | 'spike' | 'fire' | 'feather' | 'spear' | 'club' | 'mud' | 'venom' | '' */
   look: string;
+  /** a mark that has stopped following him (it says so: GET OFF!) */
+  locked?: boolean;
 }
 
 let hazardId = 1;
@@ -239,6 +241,8 @@ export interface MoveDef {
   recStep?: { speed: number; stop: number };
   /** in the recovery it keeps facing the way the attack left it (the weak point is behind it, toward the player) */
   recHoldFacing?: boolean;
+  /** in the recovery it turns its back on the player (a weak point at the tail is then toward him) */
+  recFaceAway?: boolean;
   /** stunned after this move, it reels round toward the player the same way (a crash at the far fence still comes back to him) */
   stunStep?: { speed: number; stop: number };
 }
@@ -286,9 +290,17 @@ export interface BossDef {
   /** the fenced arena is this wide (the usual 1,080 is too small for a giant) */
   arenaW?: number;
   /** this boss's own ledges (the usual three branches are the same everywhere): x from the left fence, height above the floor */
-  perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number }; /** a bounce mushroom (70 wide; `up` is its top) */ kind?: 'bouncy'; /** from this phase on it cracks under a hero who stays on it */ crack?: number }>;
+  perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number }; /** a bounce mushroom (70 wide; `up` is its top) */ kind?: 'bouncy'; /** from this phase on it cracks under a hero who stays on it */ crack?: number; /** no heart is put on it */ noHeart?: boolean }>;
   /** climbing vines down the inside of the wall (x from the left fence): a way off the floor */
   climbs?: number[];
+  /** Dot's line when Pokey first stands on one of its cracking ledges (said then, not when they start to crack) */
+  crackTip?: string;
+  /** upright, keep this stretch of the arena in view (x from the left fence): where its attacks are dodged from */
+  frameRefuges?: [number, number];
+  /** its body is a wall Pokey cannot pass (a heap against a fence: behind it no attack could reach him) */
+  blockBody?: boolean;
+  /** how high those vines reach above the floor (430 when unset) */
+  climbTop?: number;
   /** swinging lianas of its own: x from the left fence, and the height of the top and the bottom above the floor */
   vines?: Array<{ dx: number; top: number; bottom: number }>;
   /** this boss has its own lair look (see lairArt.ts) */
@@ -301,6 +313,8 @@ export interface BossDef {
   puppet?: 'thornbark';
   /** the weak point worked out from the pose (a head that travels far from the body), instead of the fixed boxes above */
   weakAt?: (b: BossEntity, floor: number) => { x: number; y: number; w: number; h: number } | null;
+  /** how far into a wind-up the body starts to hurt (default 0.3 s): a hero beside it when it begins has this long to step clear */
+  bodyGrace?: number;
   /** only the recovery after these moves opens the weak point (the others leave it covered) */
   openAfter?: string[];
   /** damage one opening can take: after that he pulls back (so each opening is one clear win, not a free-for-all) */
@@ -386,6 +400,9 @@ export function weakOpen(b: BossEntity, def?: BossDef): boolean {
   return st === 'rec' || st === 'stun';
 }
 
+/** a move's first wind-up (when Dot's tip for it is said) lasts this many times as long */
+export const FIRST_TELL_MUL = 2.2;
+
 /** Easy (difficulty.ts): every opening lasts this many times as long */
 export const EASY_OPEN_MUL = 1.25;
 
@@ -413,7 +430,7 @@ export function bodyHurts(b: BossEntity, def?: BossDef): boolean {
   if (!br) return false;
   if (br.move && def?.moves[br.move]?.softBody && br.state === 'act') return false;
   // the first moment of a wind-up is grace, so a hero standing in the boss when it begins can step out (or be pushed out) first
-  return br.state === 'act' || (br.state === 'tell' && br.t > 0.3);
+  return br.state === 'act' || (br.state === 'tell' && br.t > (def?.bodyGrace ?? 0.3));
 }
 
 let fixedFacing = false;
@@ -468,7 +485,14 @@ function startMove(b: BossEntity, def: BossDef, c: BossCtx, name: string) {
   face(b, c);
   b.telegraphTimer = m.tell * (c.tellMul ?? 1);
   b.isAttacking = false;
-  if (m.guide) c.guide?.('move:' + name, m.guide);
+  // the first time, Dot names it, and the wind-up runs long enough for her line to be read before it strikes (QA gate: the pounce
+  // tip came up with the hit)
+  // (for the bosses with announced openings, 1-10 to 3-10; the others keep their timing)
+  const said = m.guide ? c.guide?.('move:' + name, m.guide) : false;
+  if (said && def.openCue) {
+    br.d.firstMul = FIRST_TELL_MUL;
+    b.telegraphTimer *= FIRST_TELL_MUL;
+  }
   m.onTell?.(b, c);
 }
 
@@ -534,7 +558,7 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
 
     case 'tell': {
       if (!m) break;
-      const tell = m.tell * (c.tellMul ?? 1);
+      const tell = m.tell * (c.tellMul ?? 1) * (br.d.firstMul ?? 1);
       b.telegraphTimer = Math.max(0, tell - br.t);
       // it keeps watching you for the first half of the windup, then commits
       if (br.t < tell * 0.5) face(b, c);
@@ -576,7 +600,8 @@ export function stepBoss(b: BossEntity, def: BossDef, c: BossCtx, dt: number): v
     }
 
     case 'rec': {
-      if (!m?.recHoldFacing) face(b, c);
+      if (m?.recFaceAway) b.facing = c.px >= b.x ? -1 : 1;
+      else if (!m?.recHoldFacing) face(b, c);
       // flyers settle back toward their hover height while they recover
       const g = def.groundAt?.(b, c) ?? 0;
       br.air += (Math.max(g, (def.hover ?? 0) * 0.35) - br.air) * Math.min(1, dt * 2.5);

@@ -108,6 +108,8 @@ export class DotFlight {
     return !this.through && this.energy > 0 && this.flaps >= 1 && this.sinceFlap >= DOT.gap;
   }
 
+  /** how many times she has been brought back (the control test's recorder notes each: dotRecord.ts) */
+  respawns = 0;
   /** the flower her checkpoint is at (its x; the start is -1) */
   cpX = -1;
   /** this flower is her checkpoint now, unless she already has a later one */
@@ -120,6 +122,7 @@ export class DotFlight {
 
   /** back at her checkpoint (the last flower she reached), full of nectar, hanging still until the player moves */
   respawn() {
+    this.respawns++;
     this.x = this.checkpoint.x;
     this.y = this.checkpoint.y;
     this.vx = 0;

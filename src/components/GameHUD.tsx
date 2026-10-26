@@ -5,6 +5,8 @@ import { countWord } from '../game/stagePlan.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { DotFace } from './DotFace.tsx';
 import { BossHud } from './BossHud.tsx';
+import { newLookOn } from '../game/newLook.ts';
+import { VineHud } from './hud/VineHud.tsx';
 
 interface GameHUDProps {
   levelConfig: LevelConfig;
@@ -29,6 +31,10 @@ interface GameHUDProps {
   activePowerUp?: 'speed' | 'invincible' | 'magnet' | null;
   powerUpTimer?: number;
   lives?: number;
+  /** where Pokey is on the screen (CSS px), for the new HUD's pickup flight */
+  heroPoint?: () => { x: number; y: number } | null;
+  /** a new number each time the stage (re)starts: the new HUD plays its short goal card again */
+  runKey?: number;
 }
 
 const HEART_PATH =
@@ -54,7 +60,13 @@ const POWER_UPS = {
  *   left: hearts and lives   |   middle: Menu and score   |   right: ONE card with the stage name and how far you are
  * Sound, restart, trophies and cards live in the Menu (which pauses the game).
  */
-export const GameHUD: React.FC<GameHUDProps> = ({
+export const GameHUD: React.FC<GameHUDProps> = (props) => {
+  // the new HUD and Dot (beta): the hanging vine (hud/VineHud.tsx). Off, this HUD stays exactly as it was.
+  if (newLookOn()) return <VineHud {...props} />;
+  return <ClassicHUD {...props} />;
+};
+
+const ClassicHUD: React.FC<GameHUDProps> = ({
   levelConfig,
   hp,
   maxHp,

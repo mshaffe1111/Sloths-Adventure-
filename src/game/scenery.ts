@@ -14,7 +14,8 @@ import { getScratch } from './scratch.ts';
 import { composeClusters } from './placement.ts';
 import { warmFloraArt, sceneryFlowers, paintShrub } from './paintedScenery.ts';
 import { isRich } from './rainforest.ts';
-import { canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted } from './paintedBackdrops.ts';
+import { backdropStage, canopyFor, paintedFor, peekPainted, onPaintedReady, hasPainted } from './paintedBackdrops.ts';
+import { w5Mood, type W5Mood } from './w5Backdrop.ts';
 import { paintBiomeMid } from './biomes.ts';
 import { hasKit, paintNearPlant, paintFrontClump, paintFrontHang } from './envKit.ts';
 import { polishEnabled, polishTier, pskip, rigFor, polishBack, polishFront, swayWeight, swayAmount, gustAt, type LayerName, type Rig } from './polish.ts';
@@ -118,22 +119,24 @@ export const LOOKS: Record<number, Look> = {
     water: { top: '#a8bcc4', bottom: '#4a5e6a', foam: '#ffffff' },
     vine: { main: '#2aa07a', leaf: '#7fe8b8', flower: '#ff6a8a' },
   },
-  // 5 — Orchid Sanctuary: magenta dawn, petals
+  // 5 — Orchid Sanctuary: a lovely golden afternoon (5-1 to 5-3, and the world's face on the map). The light goes down through the
+  // world as the orchids close: W5_MOOD_LOOKS below has the dusk (5-4 to 5-6) and the misty violet twilight (5-7 to 5-9), w5Backdrop.ts
+  // says which stage plays in which. Warm honey sky, gold haze, sunlit moss and warm earth, amber pond water, matched to the gold strips.
   5: {
-    sky: ['#c64fd6', '#ee7fc0', '#ffb88a', '#ffe6a6'],
-    sun: { x: 0.3, y: 0.42, r: 64, core: '#fff7d0', glow: '#ffc890' },
-    clouds: { top: '#ffd2ea', bottom: '#e082c8', n: 5 },
-    far: 'orchid', farCols: ['#b06ab8', '#8a4aa0', '#ffd8f0'], haze: '#ffc6d8',
-    hills: ['#b066c0', '#7e3fa0', '#4a2a7a'],
-    trunk: ['#7a4a7a', '#3a1e3e'], crowns: ['#d05fd0', '#9a4fd8', '#ff7ab8', '#58c878'],
+    sky: ['#f2b36e', '#f8cd8e', '#ffe2b2', '#fff1d4'],
+    sun: { x: 0.24, y: 0.3, r: 70, core: '#fff8dc', glow: '#ffd290' },
+    clouds: { top: '#fff1dc', bottom: '#f4c494', n: 4 },
+    far: 'orchid', farCols: ['#d9a878', '#b98a5e', '#fff0d2'], haze: '#ffe2b8',
+    hills: ['#b9a45e', '#8f8048', '#5f5a34'],
+    trunk: ['#8e6a48', '#3e2a1c'], crowns: ['#f0a8c4', '#e6c0e8', '#f8cc8c', '#7cb860'],
     trees: ['umbrella', 'jungle', 'palm', 'willow'],
-    leaves: ['#3fbf6a', '#a05ad8', '#ff7ab8', '#1f9a5a'], flora: ['#ff4fb8', '#ffffff', '#ffb02e', '#b46aff'],
-    rays: '#ffd0f0', rayA: 0.2, weather: 'petals', grade: ['#ff5ac8', 0.07],
-    // dim violet moss and plum earth, to sit inside the painted backdrop's fading violet light (it was candy magenta)
-    ground: { cap: '#7c76a4', capHi: '#bdb6dc', capDark: '#3c3860', dirt: '#4c3e5c', dirtDark: '#1e1830', stone: '#aaa2c4', outline: '#160f24', kind: 'grass' },
-    // dim violet water under the closing orchids, to match the painted backdrop
-    water: { top: '#7a6a9a', bottom: '#2a2046', foam: '#ece4fa' },
-    vine: { main: '#8a3fb0', leaf: '#ff8ad8', flower: '#ffffff' },
+    leaves: ['#6aa84a', '#a8b850', '#f0a0c0', '#3f8a4a'], flora: ['#ff8ac0', '#ffffff', '#ffc040', '#e0a8ff'],
+    rays: '#ffe2a0', rayA: 0.22, weather: 'petals', grade: ['#ffb45a', 0.06],
+    // sunlit moss and warm honey earth, to sit inside the gold strips' afternoon (it was a dim violet for the old backdrop)
+    ground: { cap: '#8c9c4c', capHi: '#cdd08a', capDark: '#56642e', dirt: '#6e5236', dirtDark: '#2e2014', stone: '#cbb78e', outline: '#24170c', kind: 'grass' },
+    // a still pond catching the gold
+    water: { top: '#a9a46e', bottom: '#4a4a2c', foam: '#fff4d8' },
+    vine: { main: '#6a8a3a', leaf: '#b8d878', flower: '#ffb8d8' },
   },
   // 6 — Deep Mangrove: chartreuse swamp haze, fireflies
   6: {
@@ -218,6 +221,41 @@ export const LOOKS: Record<number, Look> = {
 
 // ───────────────────────────── seeded variants ─────────────────────────────
 
+/**
+ * World 5's light by stage (Matt, 2026-10-26): the gold above is 5-1 to 5-3; these turn the screen tint, the water and the drawn ground
+ * duskier as the orchids close (5-4 to 5-6, and Meeca's bonus stage), then to a misty violet twilight (5-7 to 5-9: still a lit sky,
+ * never night, World 8 is the night). Which stage is which comes from w5Backdrop.ts (w5Mood), the same as the painted strips.
+ */
+export const W5_MOOD_LOOKS: Record<W5Mood, Partial<Look>> = {
+  gold: {},
+  dusk: {
+    sky: ['#c98a7c', '#e0a28c', '#efc0a2', '#f6d8bc'],
+    sun: { x: 0.2, y: 0.46, r: 74, core: '#ffe8c8', glow: '#f0a080' },
+    clouds: { top: '#f6d2c0', bottom: '#c98a90', n: 4 },
+    farCols: ['#a8848c', '#86687a', '#f2d2c8'], haze: '#ecc8bc',
+    hills: ['#8e8470', '#6c6458', '#4a4440'],
+    crowns: ['#e8a0b8', '#c0a0d0', '#f0b890', '#6aa060'],
+    leaves: ['#5e9a4c', '#9a9a58', '#e898b0', '#3a7a48'],
+    rays: '#ffc8a0', rayA: 0.16, grade: ['#e08a70', 0.07],
+    ground: { cap: '#7a8656', capHi: '#bcbc94', capDark: '#4a5236', dirt: '#5e463a', dirtDark: '#281a18', stone: '#bba292', outline: '#1e1212', kind: 'grass' },
+    water: { top: '#93807a', bottom: '#3a2c30', foam: '#f8e4dc' },
+  },
+  twilight: {
+    sky: ['#7e6cb4', '#a48ccc', '#cab4de', '#e6dcf0'],
+    sun: { x: 0.18, y: 0.5, r: 60, core: '#f4ecff', glow: '#c0a8e8' },
+    clouds: { top: '#e4daf4', bottom: '#9a88c4', n: 4 },
+    farCols: ['#7a6ea6', '#5e5488', '#e2d8f4'], haze: '#d6cae8',
+    hills: ['#6e7076', '#545866', '#3a3c50'],
+    crowns: ['#c8a0d8', '#a898d8', '#e0b0c8', '#5a8a68'],
+    leaves: ['#4e8a5a', '#7a84a0', '#d0a0c8', '#2f6a50'],
+    rays: '#e0d0ff', rayA: 0.12, grade: ['#8a74c8', 0.08],
+    ground: { cap: '#6e7a70', capHi: '#b0b8b4', capDark: '#3e4646', dirt: '#4c4450', dirtDark: '#1e1a26', stone: '#a8a2b8', outline: '#14101c', kind: 'grass' },
+    water: { top: '#7a729a', bottom: '#2a2646', foam: '#ece6fa' },
+  },
+};
+/** the light of the World 5 stage being played (gold off the stages: the map, a story, another world's stage) */
+const w5MoodNow = (): W5Mood => w5Mood(backdropStage() ?? '') ?? 'gold';
+
 interface Mood {
   tint: string;
   amt: number;
@@ -237,7 +275,7 @@ const WORLD_MOODS: Record<number, string[]> = {
   2: ['golden', 'vivid', 'rose', 'mist'],
   3: ['vivid', 'cool', 'rose'],
   4: ['mist', 'cool', 'vivid'],
-  5: ['vivid', 'rose', 'golden', 'mist'],
+  5: ['vivid', 'golden', 'vivid'],
   6: ['mist', 'golden', 'vivid'],
   7: ['golden', 'vivid', 'mist', 'cool'],
   8: ['vivid', 'cool', 'rose'],
@@ -249,9 +287,12 @@ function tintAll(c: string, m: Mood): string {
   return m.amt > 0 ? mixToHex(c, m.tint, m.amt) : c;
 }
 
-function makeVariant(base: Look, world: number, seed: number): Look {
+/** the rolls each World 5 light may take (the gold stays gold; the dusk may blush; the twilight may mist) */
+const W5_ROLLS: Record<W5Mood, string[]> = { gold: ['vivid', 'golden', 'vivid'], dusk: ['vivid', 'rose', 'golden'], twilight: ['vivid', 'mist', 'cool'] };
+
+function makeVariant(base: Look, world: number, seed: number, w5?: W5Mood): Look {
   const r = rng(world * 8191 + seed * 31 + 7);
-  const moods = WORLD_MOODS[world] ?? ['vivid'];
+  const moods = (w5 && W5_ROLLS[w5]) || (WORLD_MOODS[world] ?? ['vivid']);
   const m = MOODS[moods[(r() * moods.length) | 0]];
   const T = (c: string) => tintAll(c, m);
   const L = (c: string) => (m.lift ? mixToHex(c, '#ffffff', m.lift) : c);
@@ -282,10 +323,12 @@ onSceneSeedChange(() => looks.clear());
 export function lookFor(worldId: number): Look {
   const world = LOOKS[worldId] ? worldId : 1;
   const seed = getSceneSeed();
-  const key = `${world}:${seed}`;
+  // (World 5 follows the stage's light: gold, dusk, twilight)
+  const mood = world === 5 ? w5MoodNow() : null;
+  const key = mood ? `${world}:${seed}:${mood}` : `${world}:${seed}`;
   let v = looks.get(key);
   if (!v) {
-    v = makeVariant(LOOKS[world], world, seed);
+    v = makeVariant(mood ? { ...LOOKS[5], ...W5_MOOD_LOOKS[mood] } : LOOKS[world], world, seed, mood ?? undefined);
     looks.set(key, v);
   }
   return v;
@@ -1427,7 +1470,8 @@ function lanePool(ctx: CanvasRenderingContext2D, look: Look, world: number, vw: 
 }
 
 function ensure(world: number): LayerSet {
-  const key = `${world}:${getSceneSeed()}:${bakeScale}`;
+  // (World 5's layers are baked in the stage's light, so a change of light is a fresh set)
+  const key = `${world}:${getSceneSeed()}${world === 5 ? `:${w5MoodNow()}` : ''}:${bakeScale}`;
   const hit = sets.get(key);
   if (hit) {
     // keep recently used sets at the end so the oldest is the one to evict

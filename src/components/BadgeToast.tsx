@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { BadgeDef } from '../game/badges.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
 import { guardianWorld } from './icons/badgeIcons.ts';
+import { useBlinkWatch } from './blinkWatch.ts';
 
 /**
  * "New badge!" slides in over whatever screen is showing, then goes away by itself.
@@ -29,6 +30,7 @@ export const BadgeToast: React.FC<{ badges: BadgeDef[]; onDone: () => void }> = 
     return () => window.clearTimeout(t);
   }, [badges, i, group]);
 
+  useBlinkWatch('badge', group ? 'group' : badges[i]?.id);
   if (group) {
     const names = badges.slice(0, 3).map((b) => b.name).join(', ');
     return (

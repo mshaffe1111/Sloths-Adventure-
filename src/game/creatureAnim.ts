@@ -43,6 +43,10 @@ export function warmCreatureAnims(names: Iterable<string>) {
   for (const n of names) ALL.get(n)?.ready();
 }
 
+/** a creature's clip sheet address, by its name (undefined for a creature with no clips) */
+export const creatureAnimUrl = (name: string): string | undefined => URLS.get(name);
+const URLS = new Map<string, string>();
+
 export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>, seqs: Record<string, readonly string[]>, up: number): CreatureAnim {
   let img: HTMLImageElement | null = null;
   let loaded = false;
@@ -84,6 +88,9 @@ export function makeCreatureAnim(url: string, frames: Record<string, AnimFrame>,
     },
   };
   const name = /([a-z0-9]+)-anim[^/]*$/.exec(url.split('?')[0])?.[1];
-  if (name) ALL.set(name, anim);
+  if (name) {
+    ALL.set(name, anim);
+    URLS.set(name, url);
+  }
   return anim;
 }

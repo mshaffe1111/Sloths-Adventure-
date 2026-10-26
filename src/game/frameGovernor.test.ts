@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { FrameGovernor, GOV_MAX_GAP_MS } from './frameGovernor.ts';
+import { FrameGovernor, GOV_MAX_GAP_MS, GOV_UP_WINDOWS, GOV_WARMUP_MS, GOV_WINDOW_MS } from './frameGovernor.ts';
 
 function run(g: FrameGovernor, gap: number, ms: number): number {
   let steps = 0;
@@ -75,4 +75,15 @@ test('steady frames after a step down bring the sharper picture back, once; slow
   let again = 0;
   for (let t = 0; t < 30_000; t += 33.4) { g.feed(33.4); if (g.takeUp()) again++; }
   assert.equal(again, 0, 'no see-sawing');
+});
+
+test('a step up offered at full quality does not undo the next step down', () => {
+  const g = new FrameGovernor();
+  // warm up, then steady windows at full quality: a step up is offered but never taken (the engine only asks below full quality)
+  for (let t = 0; t < GOV_WARMUP_MS + GOV_WINDOW_MS * (GOV_UP_WINDOWS + 1); t += 33) g.feed(33);
+  // the phone slows: one step down
+  let down = false;
+  for (let t = 0; t < GOV_WINDOW_MS * 3 && !down; t += 60) down = g.feed(60);
+  assert.ok(down);
+  assert.equal(g.takeUp(), false);
 });

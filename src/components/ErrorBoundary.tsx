@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from './icons/index.tsx';
+import { recorder } from '../game/playRecorder.ts';
 
 /** If a screen ever throws, show a way out instead of a blank dark page. Progress is already saved in storage. */
 export class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
@@ -9,8 +10,14 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
     return { failed: true };
   }
 
-  componentDidCatch(error: unknown) {
+  componentDidCatch(error: unknown, info?: React.ErrorInfo) {
     console.error('screen crashed', error);
+    // (the control test: a screen that crashed is in the log, with where it was thrown and the component it was in, sent at once)
+    if (recorder.on) {
+      const comp = /(?:at|in) ([A-Z][\w$]*)/.exec(info?.componentStack ?? '')?.[1];
+      recorder.error(error, comp ? `ui:${comp}` : 'ui');
+      void recorder.flush(false);
+    }
   }
 
   render() {

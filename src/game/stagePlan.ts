@@ -181,6 +181,8 @@ function GOAL_WORDS(world: number, type: string): { verb: string; one: string; m
     const w = ({ 3: ['keepsake', 'keepsakes'], 5: ['message', 'messages'], 9: ['thread', 'threads'] } as Record<number, string[]>)[world] ?? ['relic', 'relics'];
     return { verb: 'Find', one: w[0], many: w[1] };
   }
+  // (4-9 The Aerie counts the capuchin guards, and its counter says "guards": the goal says the same)
+  if (type === 'gauntlet' && world === 4) return { verb: 'Defeat', one: 'guard', many: 'guards' };
   if (type === 'purge' || type === 'gauntlet') return { verb: 'Defeat', one: 'predator', many: 'predators' };
   if (type === 'rescue') return { verb: 'Free', one: 'animal', many: 'animals' };
   return null;

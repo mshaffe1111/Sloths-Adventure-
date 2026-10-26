@@ -63,7 +63,7 @@ export const WAYSIDE: Record<number, WorldWay> = {
       9: dot('start', 'I\'m too small to be worth the chase. Best thing about me, honestly.'),
     },
     hurt: [
-      hDot('Recipient down! Wait. Recipient up. Good. Carry on.'),
+      hDot("Pokey's down! Wait... up again. Good. Carry on."),
       hDot('Meeca would know what to say here. I only have "ow." So. Ow.'),
       hDot('Ow! That one was yours, but I felt it.'),
     ],

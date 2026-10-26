@@ -31,6 +31,8 @@ export interface Pad {
   /** a new jump press this frame (it is held too) */
   press?: boolean;
   punch?: boolean;
+  /** a kick this frame: the way a touch flick throws it (-1 left, 1 right), or 0 as a key or button does (the way he steers or faces) */
+  kick?: -1 | 0 | 1;
 }
 
 /** the pad, with the real input's jump buffer: a press waits 0.16 s to be used (inputEngine.ts) */
@@ -47,6 +49,7 @@ class FakeInput {
   onFocusLost = null;
   jumpBuffer = 0;
   punchBuffer = 0;
+  kickBuffer = 0;
   update(dt: number) {
     if (this.jumpBuffer > 0) {
       this.jumpBuffer -= dt;
@@ -56,7 +59,10 @@ class FakeInput {
       this.punchBuffer -= dt;
       if (this.punchBuffer <= 0) this.state.punchPressed = false;
     } else this.state.punchPressed = false;
-    this.state.kickPressed = false;
+    if (this.kickBuffer > 0) {
+      this.kickBuffer -= dt;
+      if (this.kickBuffer <= 0) this.state.kickPressed = false;
+    } else this.state.kickPressed = false;
     this.state.megaPunchPressed = false;
     this.state.layerSwitchPressed = false;
   }
@@ -65,6 +71,9 @@ class FakeInput {
     Object.assign(this.state, { left: false, right: false, up: false, down: false, jumpPressed: false, jumpHeld: false, punchPressed: false });
     this.jumpBuffer = 0;
     this.punchBuffer = 0;
+    this.kickBuffer = 0;
+    this.state.kickPressed = false;
+    this.state.kickDir = 0;
   }
 }
 
@@ -105,7 +114,8 @@ export class RealPlay {
     setLayoutVariant(null);
     this.e = e;
     this.stage = e.currentStage;
-    for (const m of COSMETIC) e[m] = noop;
+    // (World 5's spiders crouch only in full view on the screen, w5Kit SPIDER5.edge: there the camera is play, not paint, and runs)
+    for (const m of COSMETIC) if (!(m === 'updateCamera' && e.w5)) e[m] = noop;
     const guide = e.guide.bind(e);
     e.guide = (text: string, seconds: number) => {
       this.said.push({ text, x: e.player.x, y: e.player.y, t: e.gameTime });
@@ -162,9 +172,14 @@ export class RealPlay {
       atk: null, atkQueue: null, standingOnId: -1, isGameOver: false,
     });
     if (e.w4) e.w4.groundY = NaN;
+    // (World 5: no silk, sleep or stillness carried over from the last move)
+    if (e.w5) e.w5.calm();
     this.input.clearAll();
     this.died = false;
+    this.placed = true;
   }
+  /** he was just put somewhere: on a stage whose camera runs, the view cuts to him on the next frame (as at a flag) */
+  private placed = false;
 
   /** stand him at (x, y): his feet on the top of a platform there */
   stand(x: number, y: number) {
@@ -222,7 +237,18 @@ export class RealPlay {
       s.punchPressed = true;
       this.input.punchBuffer = 0.12;
     }
+    if (pad.kick !== undefined) {
+      s.kickPressed = true;
+      s.kickDir = pad.kick;
+      this.input.kickBuffer = 0.14;
+    }
     if (this.safe) this.p.invincibleTimer = Math.max(this.p.invincibleTimer, 1e9);
+    if (this.placed && this.e.w5) {
+      const c = this.e.camera;
+      c.x = c.targetX = Math.max(0, this.p.x - c.viewportWidth * 0.45);
+      c.y = c.targetY = Math.max(0, this.p.y - c.viewportHeight * 0.55);
+    }
+    this.placed = false;
     this.e.update(DT);
   }
 

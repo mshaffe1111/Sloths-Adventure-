@@ -236,8 +236,10 @@ const FEET: Partial<Record<EnemyType, number>> = { ocelot: 19, jaguar: 24, boa: 
 /** the drawn body, as a rect (no generosity) */
 export function bodyRect(e: Enemy): Rect {
   const feet = FEET[e.type];
-  if (feet !== undefined) return { x: e.x - e.width / 2, y: e.y + feet - e.height, w: e.width, h: e.height };
-  return { x: e.x - e.width / 2, y: e.y - e.height / 2, w: e.width, h: e.height };
+  // (an animal drawn wider than its body, legs out, is struck across its drawing: a punch that visibly lands on its legs lands)
+  const w = Math.max(e.width, e.hitW ?? 0);
+  if (feet !== undefined) return { x: e.x - w / 2, y: e.y + feet - e.height, w, h: e.height };
+  return { x: e.x - w / 2, y: e.y - e.height / 2, w, h: e.height };
 }
 
 /** where a strike can land on this animal: its body, a little generous so a swing that looks like a hit is one */

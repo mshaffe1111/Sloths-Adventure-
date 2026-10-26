@@ -512,6 +512,33 @@ function drawMarker(ctx: CanvasRenderingContext2D, h: BossHazard, time: number, 
   ctx.beginPath();
   ctx.ellipse(h.x, fl - 3, rw * (1.3 - 0.3 * u), 9 * (1.3 - 0.3 * u), 0, 0, Math.PI * 2);
   ctx.stroke();
+  // a locked mark says so: arrows out of it both ways and GET OFF! over it (a mark that follows him has none)
+  if (h.kind === 'mark' && h.locked) {
+    ctx.globalAlpha = strength * (0.75 + 0.25 * pulse);
+    ctx.strokeStyle = '#ffffff';
+    ctx.fillStyle = '#ffffff';
+    ctx.lineWidth = 4;
+    for (const d of [-1, 1]) {
+      const x0 = h.x + d * (rw + 10);
+      ctx.beginPath();
+      ctx.moveTo(x0, fl - 14);
+      ctx.lineTo(x0 + d * 26, fl - 14);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x0 + d * 36, fl - 14);
+      ctx.lineTo(x0 + d * 24, fl - 23);
+      ctx.lineTo(x0 + d * 24, fl - 5);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.font = '800 22px Fredoka, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = '#7f1d1d';
+    ctx.strokeText('GET OFF!', h.x, fl - 48);
+    ctx.fillStyle = '#fee2e2';
+    ctx.fillText('GET OFF!', h.x, fl - 48);
+  }
   // chevrons pointing at where it lands or erupts
   ctx.strokeStyle = '#ffffff';
   ctx.lineWidth = 3;

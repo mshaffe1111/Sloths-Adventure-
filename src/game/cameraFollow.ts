@@ -11,6 +11,7 @@
  *
  * Pure: the engine feeds it each frame (engine.ts updateCamera); the tests check the rules.
  */
+import { PHYS } from './physics.ts';
 
 export const CAM = {
   /** in the air, how far above / below the anchor he may go (fractions of the view's height) before the camera follows */
@@ -48,6 +49,60 @@ export function camAnchor(prev: number, p: CamSubject, vh: number): number {
 export function camLook(prev: number, facing: number, dt: number): number {
   const want = (facing < 0 ? -1 : 1) * CAM.lookAhead;
   return prev + (want - prev) * Math.min(1, dt * CAM.lookRate);
+}
+
+// ───── the lead at a run, on a narrow view (QA, 2026-10-26: upright on a 320 x 782 phone a first-timer running right in 1-3 lost two
+// hearts to snakes he never saw) ─────
+//
+// The camera eases after its aim (RUN.follow), so at a full run it trails about 34 px behind, and the view ahead of him shrinks by that
+// much. Upright the view is only 340-440 px of world wide: on 1-3 at 320 x 782 a snake came on screen 0.70 s before it bit. Now, at a
+// run, the view leads further, so it shows RUN.ahead px ahead of him (about 1.2 s of running), except that his middle never comes
+// nearer the edge behind him than RUN.back of the view: on the narrowest phones that is what limits it (0.8 s or more on 320-400 px
+// wide phones, cameraLead.test.ts). Sideways the plain view already shows far more than RUN.ahead, so nothing changes there (the lead
+// is 0 for any view over about 515 px of world). The lead grows with his speed over a third of a second or so and fades as quickly
+// as the camera catches him up (and the last few px over a couple of seconds), so a stop brings the view to rest, not past him and back.
+
+export const RUN = {
+  /** px of world the view shows ahead of him at a full run (his middle to the view's edge) */
+  ahead: 340,
+  /** the nearest his middle comes to the edge of the view behind him (fraction of its width) */
+  back: 0.16,
+  /** how fast the lead grows with his speed, and fades when he slows (per second) */
+  rate: 3,
+  drop: 15,
+  /** and how fast the part of it past the camera's trail fades (runOffset) */
+  settle: 0.8,
+  /** the camera's own easing after its aim (engine.ts updateCamera, per second) */
+  follow: 6.5,
+} as const;
+
+/** how far behind its aim the camera trails at a steady speed (px/s), easing at RUN.follow a frame at a time */
+export const camLag = (speed: number, dt: number): number => speed * (1 / RUN.follow - dt);
+
+/** the extra lead (px of world, on top of CAM.lookAhead) a view `vw` wide takes at a full run: 0 when the plain view already shows enough */
+export function runLead(vw: number, dt = 1 / 30): number {
+  // where his middle sits across the view at a full run with no extra: 45% across less the look-ahead, plus the camera's trail
+  const plain = vw * 0.45 - CAM.lookAhead + camLag(PHYS.maxRun, dt);
+  const want = Math.max(vw * RUN.back, vw - RUN.ahead);
+  return Math.max(0, plain - want);
+}
+
+/** how much of the run lead to take this frame (0 to 1), easing toward his speed the way he faces (vx in px/s); `drop` is how fast it
+ *  fades when he slows */
+export function camRun(prev: number, vx: number, facing: number, dt: number, drop: number = RUN.drop): number {
+  const want = Math.min(1, Math.max(0, (vx * (facing < 0 ? -1 : 1)) / PHYS.maxRun));
+  return prev + (want - prev) * Math.min(1, dt * (want > prev ? RUN.rate : drop));
+}
+
+/**
+ * The run lead this frame (px of world, the way he faces): the part that makes up for the camera's trail behind him fades as fast as
+ * the trail does when he stops (`fast`, from camRun with RUN.drop), and the rest slowly (`slow`, with RUN.settle), so a stop brings
+ * the view to rest and then lets it drift the last few px back over a couple of seconds instead of swinging it back at once.
+ */
+export function runOffset(vw: number, fast: number, slow: number, dt = 1 / 30): number {
+  const lead = runLead(vw, dt);
+  const trail = Math.min(lead, camLag(PHYS.maxRun, dt));
+  return trail * fast + (lead - trail) * slow;
 }
 
 /** a camera position snapped to whole device pixels (`scale`: device px per world px), so the world steps by one device pixel, not three */
@@ -120,7 +175,7 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
   const edge = f > 0 ? ledge.x + ledge.width : ledge.x;
   const toEdge = (edge - px) * f;
   if (toEdge > AHEAD.near || toEdge < -40) return null;
-  let best: { x: number; y: number; score: number } | null = null;
+  let best: { x: number; y: number; score: number; under?: boolean } | null = null;
   for (const q of plats) {
     if (q === ledge || q.broken || q.width <= 0) continue;
     const dy = q.y - ledge.y;
@@ -134,7 +189,8 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     // the ledge carries straight on: no gap to look across
     if (gap < 24 && Math.abs(dy) < 40) return null;
     const score = gap + Math.abs(dy) * 0.4;
-    if (!best || score < best.score) best = { x: a + f * 10, y: q.y, score };
+    // (`under`: the floor of the drop itself, starting right at his edge, well below: 1-6's soft moss under its first liana)
+    if (!best || score < best.score) best = { x: a + f * 10, y: q.y, score, under: gap < 24 && dy >= 40 };
   }
   for (const v of vines) {
     const gap = (v.x - edge) * f;
@@ -142,7 +198,9 @@ export function landingAhead(px: number, facing: number, ledge: Ledge, plats: re
     // (where he would catch it: about his own height, on the part of it that hangs)
     const y = Math.max(v.topY + 40, Math.min(v.bottomY, ledge.y - 60));
     const score = gap + Math.abs(y - ledge.y) * 0.4;
-    if (!best || score < best.score) best = { x: v.x, y: y + 60, score };
+    // a vine across the gap is the way over it, before the floor of the drop under it (which scored nearer: upright, the view showed
+    // the moss below the gap and left the liana he was jumping for off screen, QA 2026-10-26)
+    if (!best || best.under || score < best.score) best = { x: v.x, y: y + 60, score };
   }
   return best ? landingBox(best.x, best.y, f) : null;
 }

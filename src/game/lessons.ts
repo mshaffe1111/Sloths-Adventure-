@@ -9,6 +9,8 @@
 import { controlStyle } from './controlPrefs.ts';
 import type { GlyphKind } from '../components/GestureGlyph.tsx';
 import { ctestEnabled } from './playRecorder.ts';
+import type { GuideLine, TopicId } from './dotGuide.ts';
+import { dotLine, gestureMove, targetTopic } from './dotLines.ts';
 
 export type LessonId =
   | 'foe' | 'nostomp' | 'eagle' | 'tough'
@@ -313,6 +315,12 @@ export interface LessonScene {
 
 /** how far ahead of the hero something has to be before it is "here", and how far above or below */
 export const NEAR = { foe: 400, thing: 340, climb: 170, dy: 230 } as const;
+/**
+ * a swinging vine is "here" by the part of it he can catch: anywhere along it, down to a hand's reach (`below`) under its end, and
+ * `grabX` px either side of it (physics.ts TIMED.grabX). It used to be measured to the vine's middle, which on a tall liana is more
+ * than 230 px above the ground beside it, so the lesson waited until he was already swinging (QA, 1-6, 2026-10-26)
+ */
+export const SWING_SPAN = { grabX: 60, below: 30 } as const;
 
 const NO_STOMP = new Set(['spider', 'ant_hazard']);
 const TOUGH = new Set(['jaguar', 'boa', 'caiman', 'harpy']);
@@ -330,15 +338,18 @@ export function pickLesson(s: LessonScene, seen: ReadonlySet<LessonId>): LessonI
     if (NO_STOMP.has(e.type) && want('nostomp')) return 'nostomp';
     if (TOUGH.has(e.type) && want('tough')) return 'tough';
   }
+  // (a swinging vine before the gap: the gap it hangs over is crossed by the vine, and the lesson that crossing needs is the swing's)
+  if (want('swing') && s.vines.some((v) => v.vineType !== 'tree_climb' && near(v.x, Math.max(v.topY, Math.min(v.bottomY + SWING_SPAN.below, s.py)), NEAR.thing + SWING_SPAN.grabX))) return 'swing';
   if (want('gap')) {
     const ps = s.platforms.filter((p) => !p.broken && p.type !== 'drift' && Math.abs(p.y - s.py) <= 120 && p.x + p.width >= s.px - 60).sort((a, b) => a.x - b.x);
     for (let i = 0; i + 1 < ps.length; i++) {
       const edge = ps[i].x + ps[i].width;
+      // (not a gap a swinging vine hangs over: that one is crossed on the vine, and its lesson is the swing's)
+      if (s.vines.some((v) => v.vineType !== 'tree_climb' && v.x > edge && v.x < ps[i + 1].x)) continue;
       if (ps[i + 1].x - edge > 60 && edge >= s.px && edge - s.px <= NEAR.thing && onScreen(edge, s.py)) return 'gap';
     }
   }
   if (want('climb') && s.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - s.px) <= NEAR.climb && s.py >= v.topY - 40 && s.py <= v.bottomY + 90 && onScreen(v.x, s.py))) return 'climb';
-  if (want('swing') && s.vines.some((v) => v.vineType !== 'tree_climb' && near(v.x, (v.topY + v.bottomY) / 2, NEAR.thing))) return 'swing';
   // a rope: one of its ends (where its post stands, on a ledge) close by, at about his height
   if (want('rope') && (s.ropes ?? []).some((r) => near(r.x0, r.g0, NEAR.climb + 60) || near(r.x1, r.g1, NEAR.climb + 60))) return 'rope';
   for (const p of s.platforms) {
@@ -386,4 +397,78 @@ export function cardSafe(s: CardSafety): boolean {
   if (s.hurt || !(s.grounded || s.holding)) return false;
   if (Math.abs(s.foeDx) < CARD_SAFE.foeDx && Math.abs(s.foeDy) < CARD_SAFE.foeDy) return false;
   return s.hazard >= CARD_SAFE.hazard;
+}
+
+// ───────────────────────────── the new look: a lesson is one of Dot's lines ─────────────────────────────
+
+/**
+ * With the new look (newLook.ts) a lesson does not stop the stage for a card: it becomes Dot's lines, said where they are needed, with her
+ * ring on the thing (dotGuide.ts). The words are Matt's approved lines (dotLines.ts, by id); a move lesson stays until the move is done,
+ * and the next line of the lesson follows it (grab the vine, then leap off it). The fuller wording stays in Pokey's Journal. The approved
+ * lines are for a touch screen; a pad or a keyboard gets a short line of its own.
+ */
+export const LESSON_DOT: Record<LessonId, { ids: string[]; topic: TopicId; pad?: string; keys?: string; padHeld?: string; keysHeld?: string }> = {
+  foe: { ids: ['lesson.foe.punch'], topic: 'foe', pad: 'Press Punch when it\'s close.', keys: 'Press J to punch it when it\'s close.' },
+  nostomp: { ids: ['lesson.nostomp'], topic: 'foe', pad: 'Punch this one. Don\'t stomp it.', keys: 'Press J. Don\'t stomp this one.' },
+  eagle: { ids: ['lesson.eagle.duck'], topic: 'foe', pad: 'Pad down to duck its dive.', keys: 'Press S to duck its dive.' },
+  tough: { ids: ['lesson.tough'], topic: 'foe' },
+  gap: { ids: ['lesson.gap.jump'], topic: 'gap', pad: 'Push the pad, then Jump.', keys: 'Run, then Space to jump the gap.' },
+  climb: { ids: ['lesson.climb.grab', 'lesson.climb.up'], topic: 'trunk', pad: 'Jump at the trunk, hold Pad up.', keys: 'Jump at the trunk, hold W.' },
+  swing: {
+    ids: ['lesson.swing.grab', 'lesson.swing.leap'], topic: 'vine', pad: 'Jump into the vine to grab it.', keys: 'Jump into the vine to grab it.',
+    // (already on the vine: the stage hints' words for letting go, protoStage.ts)
+    padHeld: 'Press Jump as you swing forward.', keysHeld: 'Press Space as you swing forward.',
+  },
+  rope: { ids: ['lesson.rope.grab', 'lesson.rope.creep'], topic: 'rope', pad: 'Jump by the post to grab on.', keys: 'Jump by the post to grab on.' },
+  bounce: { ids: ['lesson.bounce'], topic: 'mushroom' },
+  crumble: { ids: ['lesson.crumble'], topic: 'crumble' },
+  moving: { ids: ['lesson.moving'], topic: 'moving' },
+  water: { ids: ['lesson.water'], topic: 'gap' },
+  fruit: { ids: ['lesson.fruit'], topic: 'petal' },
+  heart: { ids: ['lesson.heart'], topic: 'heart' },
+  cage: { ids: ['lesson.cage'], topic: 'cage', pad: 'Press Punch beside the cage.', keys: 'Press J beside the cage.' },
+  idol: { ids: ['lesson.idol'], topic: 'relic' },
+  power: { ids: ['lesson.power'], topic: 'power' },
+  checkpoint: { ids: ['lesson.checkpoint'], topic: 'flag' },
+  shrine: { ids: ['lesson.shrine'], topic: 'exit' },
+};
+
+/** one approved line as a guide line (a move line stays until its move; `next`: what follows it once done) */
+function lessonStep(lesson: LessonId, ids: string[], i: number, mode: InputMode): GuideLine | undefined {
+  const d = LESSON_DOT[lesson];
+  const l = dotLine(ids[i]);
+  if (!l || !l.text) return i + 1 < ids.length ? lessonStep(lesson, ids, i + 1, mode) : undefined;
+  const topic = targetTopic(l.target) ?? d.topic;
+  // (the first line of a lesson on a pad or keyboard: its own words, and nothing after it; the approved lines name touch gestures)
+  const own = mode === 'pad' ? d.pad : mode === 'keys' ? d.keys : undefined;
+  const move = l.kind === 'move' ? (/\.leap$/.test(l.id) ? 'leap' : gestureMove(l.gesture, topic)) : undefined;
+  return {
+    key: `lesson:${lesson}:${i}`,
+    text: mode !== 'screen' && i === 0 ? own ?? l.text : l.text,
+    kind: l.kind === 'move' ? 'teach' : 'info',
+    who: 'Dot',
+    move,
+    topic: i === 0 ? d.topic : topic,
+    gesture: l.gesture ?? undefined,
+    skill: `lesson:${lesson}${i ? `:${i}` : ''}`,
+    source: 'lesson',
+    waitMs: 9000,
+    next: mode === 'screen' && i + 1 < ids.length ? lessonStep(lesson, ids, i + 1, mode) : undefined,
+  };
+}
+
+/**
+ * the lesson as Dot's line(s), for the way this player is controlling the game. `holding`: he already has hold of the thing (the swing's
+ * lesson can come once he is on the vine, engine.ts lessonTick), so a first "grab it" step is skipped: it would wait for a grab that has
+ * happened already
+ */
+export function lessonDotLine(id: LessonId, mode: InputMode = lessonInputMode(), holding = false): GuideLine | undefined {
+  const d = LESSON_DOT[id];
+  if (holding && /\.grab$/.test(d.ids[0]) && d.ids.length > 1) {
+    if (mode === 'screen') return lessonStep(id, d.ids, 1, mode);
+    const own = mode === 'pad' ? d.padHeld : d.keysHeld;
+    const l = lessonStep(id, d.ids, 1, 'screen');
+    if (own && l) return { ...l, text: own, next: undefined };
+  }
+  return lessonStep(id, d.ids, 0, mode);
 }

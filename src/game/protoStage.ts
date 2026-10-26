@@ -38,14 +38,15 @@ import { buildWaterfallSteps } from './w4Stage43.ts';
 import type { CliffNest, NestKind } from './w4Nests.ts';
 import { buildLongDrop } from './w4LongDrop.ts';
 import { buildAerie } from './w4Stage49.ts';
+import { buildW5Stage } from './w5Stages.ts';
 import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
-export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9';
-export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9' };
+export type StagePlan = 'proto' | 'ctest' | '1-1' | '1-2' | '1-3' | '1-4' | '1-5' | '1-7' | '1-8' | '1-9' | '3-1' | '3-2' | '3-3' | '3-4' | '3-5' | '3-6' | '3-7' | '3-8' | '3-9' | '4-1' | '4-2' | '4-3' | '4-4' | '4-5' | '4-6' | '4-7' | '4-8' | '4-9' | '5-1' | '5-2';
+export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1': '1-1', '1-2': '1-2', '1-3': '1-3', '1-4': '1-4', '1-5': '1-5', '1-6': 'proto', '1-7': '1-7', '1-8': '1-8', '1-9': '1-9', '3-1': '3-1', '3-2': '3-2', '3-3': '3-3', '3-4': '3-4', '3-5': '3-5', '3-6': '3-6', '3-7': '3-7', '3-8': '3-8', '3-9': '3-9', '4-1': '4-1', '4-2': '4-2', '4-3': '4-3', '4-4': '4-4', '4-5': '4-5', '4-6': '4-6', '4-7': '4-7', '4-8': '4-8', '4-9': '4-9', '5-1': '5-1', '5-2': '5-2' };
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
@@ -102,6 +103,8 @@ export interface ProtoExtras {
   watch?: import('./watcher.ts').WatchZone[];
   /** World 4's rocks, patience spots, falls and pools, chimes, Dot's knots, capuchins and fruit (w4Play.ts) */
   w4?: import('./w4Play.ts').W4Extras;
+  /** World 5's chairs, cakes, teapots, threads, sheets, orchids, cocoons, carvings and spiders (w5Kit.ts, run by w5Play.ts) */
+  w5?: import('./w5Kit.ts').W5Extras;
   /** World 3's sleeping thorn vines (3-5: thornVine.ts) */
   thorns?: import('./thornVine.ts').ThornVine[];
   /** World 3's painted dressing: stalactites, glowworm threads, ferns, the grotto mouth (protoStage.ts, drawn by w3Art.ts) */
@@ -151,11 +154,11 @@ export function stream(seed: number) {
  * up over the flag, so a player who has been knocked about through the middle of a stage can top up before what comes next.
  * Returns the next free pickup id.
  */
-export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: number }>, cid: number): number {
+export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: number }>, cid: number, up = 60): number {
   const sorted = [...flags].sort((a, b) => a.x - b.x || b.y - a.y);
   sorted.forEach((f, i) => {
     if (i % 2 === 0) return;
-    const hx = f.x + 70, hy = f.y - 60;
+    const hx = f.x + 70, hy = f.y - up;
     // never on top of another pickup
     if (C.some((c) => Math.hypot(c.x - hx, c.y - hy) < 40)) return;
     C.push({ id: cid++, type: 'heart', x: hx, y: hy, collected: false, bobPhase: hx * 0.01 });
@@ -167,6 +170,8 @@ export function heartsAtFlags(C: Collectible[], flags: Array<{ x: number; y: num
 const HOLLOW_Y = 710;
 /** the step out of a soft pit: the pit is 130 deep and one jump rises about 108, so 55 up and then 75 up, each an easy single jump */
 const PIT_STEP = 55;
+/** the width of a step at a soft pit's near wall (4-2's lesson drops: the way back up to try the leaf again) */
+const BACK_STEP = 70;
 /**
  * the deepest a soft pit between two walls may be: in the engine (30 fps) a second jump and the lip hoist climb a 190 px wall from a
  * standstill and a plain jump 122 px (realPlay.test.ts measures it), so a gap deeper than this, with margin, gets its floor raised to
@@ -176,6 +181,28 @@ export const PIT_ESCAPE = 170;
 export const PIT_CLIMB = 100;
 /** the tallest stump one jump from the ground climbs with room to spare */
 const STUMP_REACH = 90;
+/** before the second jump is taught (1-1's stepping stones): how far below a stone's lower side a gap's floor sits, an easy single hop */
+export const PLAIN_CLIMB = 75;
+/** 1-1's practice shelf for the second jump: this far past the start of the twist (the tip is said at 60), and this high above the path */
+export const PRACTICE_AT = 220;
+export const PRACTICE_H = 150;
+/**
+ * Stepping-stone heights in an order where each stone stands at most STUMP_REACH above the one before (the bank counts as 0), so one
+ * plain jump climbs every one. Picks, in turn, the first height in the rolled order that fits (the smallest when none does): it uses no
+ * dice, so the rest of the roll is untouched, and an order that already fits is kept as it is.
+ */
+export function plainOrder(heights: readonly number[]): number[] {
+  const left = [...heights];
+  const out: number[] = [];
+  let prev = 0;
+  while (left.length) {
+    let i = left.findIndex((h) => h - prev <= STUMP_REACH);
+    if (i < 0) i = left.indexOf(Math.min(...left));
+    prev = left.splice(i, 1)[0];
+    out.push(prev);
+  }
+  return out;
+}
 /** how high a double jump lifts him (computed once from the physics) */
 const RISE = maxRise();
 
@@ -221,6 +248,8 @@ export const STAGE_SECONDS: Record<string, number> = {
   '4-8': 180,
   '4-9': 300, // the Aerie: the long climb before the Sky Sovereign
   '4-D': 200, // Dot's netting flight, after 4-5 (dotFlightStage.ts DOT_STAGE_SECONDS)
+  '5-1': 165, // the loveliest place: a sprint through the gold garden, with the table and the first chairs (w5Stages.ts)
+  '5-2': 200, // don't sit: the threads, the cakes and the Butler
 };
 export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_SECONDS;
 /** 4-8's length (STAGE_SECONDS: about three minutes for a quick player) */
@@ -242,6 +271,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   if (plan === '4-6') return buildKapok(config, seed, false, false, false, true);
   if (plan === '4-7') return buildLongDrop(config, seed);
   if (plan === '4-9') return buildAerie(config, seed);
+  if (plan === '5-1' || plan === '5-2') return buildW5Stage(config, seed, plan);
   if (plan === '1-8') return buildLongBranch(config, seed);
   const R = stream(seed);
   const P: Platform[] = [];
@@ -297,13 +327,17 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
    * than a second jump climbs out of the pit is a pit with no way out (the real engine stranded him there, realReach.ts), so its floor
    * is raised to a plain jump under its lower side
    */
-  const pitFloors = (edge: number, stones: Platform[], far: number) => {
+  const pitFloors = (edge: number, stones: Platform[], far: number, plain = false) => {
     const sides = [{ x0: edge, x1: edge, top: G }, ...stones.map((q) => ({ x0: q.x, x1: q.x + q.width, top: q.y })), { x0: far, x1: far, top: G }];
     for (let i = 0; i + 1 < sides.length; i++) {
       const lower = Math.max(sides[i].top, sides[i + 1].top);
-      if (HOLLOW_Y - lower <= PIT_ESCAPE) continue;
-      const floor = lower + PIT_CLIMB;
-      P.push({ id: pid++, x: sides[i].x1, y: floor, width: sides[i + 1].x0 - sides[i].x1, height: HOLLOW_Y + 10 - floor, type: 'solid', style: 'moss_stone' });
+      // `plain`: before the second jump is taught (1-1), every gap's floor is one easy hop under its lower side, so a miss is a hop back
+      // up and another go, never a wall only the second jump climbs (QA, 2026-10-26: first-timers were stuck in 1-1's first stone pit)
+      if (HOLLOW_Y - lower <= (plain ? STUMP_REACH : PIT_ESCAPE)) continue;
+      const floor = lower + (plain ? PLAIN_CLIMB : PIT_CLIMB);
+      const w = sides[i + 1].x0 - sides[i].x1;
+      if (plain && w <= 0) continue;
+      P.push({ id: pid++, x: sides[i].x1, y: floor, width: w, height: HOLLOW_Y + 10 - floor, type: 'solid', style: 'moss_stone' });
     }
   };
   const block = (x0: number, x1: number, h: number) => {
@@ -659,8 +693,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
    * stepping stones: mossy pillars standing in a soft pit, at the heights given (px above the ground), each gap a share of what a jump
    * between those heights can reach (`share` of a single jump, or of a double jump when `dbl`). Lands on open ground after the last.
    */
-  function pillars(heights: number[], share: [number, number], dbl = false) {
+  function pillars(heights: number[], share: [number, number], dbl = false, plain = false) {
     const x0 = x;
+    if (plain) heights = plainOrder(heights);
     run(R.r(140, 200));
     const edge = x;
     close();
@@ -682,7 +717,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     }
     const far = Math.round(px + reachJump(prevTop - G, dbl) * R.r(share[0], share[1]));
     softPit(edge, far);
-    pitFloors(edge, stones, far);
+    pitFloors(edge, stones, far, plain);
     open(far);
     run(R.r(160, 240));
     expert += (x - x0) / RUN + 0.6 * heights.length;
@@ -747,16 +782,24 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       flag();
     });
     beat('Test: the stepping stones', () => {
+      // (the second jump is not taught yet: every stone is one plain jump up, and every gap between them a hop deep: `plain`)
       hint(x + 60, 'Hop from stone to stone', 'Hop from stone to stone', 'Hop from stone to stone');
-      pillars([60, 120, 60], [0.5, 0.62]);
+      pillars([60, 120, 60], [0.5, 0.62], false, true);
       rest(R.r(250, 350));
-      pillars(R.shuffle([40, 100, 140, 80]), [0.55, 0.68]);
+      pillars(R.shuffle([40, 100, 140, 80]), [0.55, 0.68], false, true);
       mushroomCache();
-      pillars([90, 30, 120, 60], [0.58, 0.7]);
+      pillars([90, 30, 120, 60], [0.58, 0.7], false, true);
       flag();
     });
     beat('Twist: the second jump', () => {
       hint(x + 60, 'Flick up again in the air to jump twice', 'Press Jump again in the air', 'Press Space again in the air');
+      // somewhere safe to try it first, right after the tip: a shelf over flat ground that only the second jump reaches (a miss just
+      // lands him back on the path), before the gaps that need it (no dice here, so the rest of the roll is unchanged)
+      const sx = x + PRACTICE_AT;
+      branch(sx, sx + 160, G - PRACTICE_H);
+      row(sx + 40, sx + 120, G - PRACTICE_H - 34, 2, 'hibiscus');
+      run(PRACTICE_AT + 160 + 140);
+      expert += (PRACTICE_AT + 300) / RUN;
       const two = reachJump(0, true);
       for (const w of [two * 0.62, two * 0.72, two * 0.82]) {
         run(R.r(220, 300));
@@ -2352,7 +2395,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
    * the leaf, taught: up a trunk to a perch that ends at the edge of a soft pit, and a gap a double jump still crosses (from the perch
    * or from the ground: the leaf makes it easy, it is never needed). Petals trail down the way the leaf drifts.
    */
-  function leafDrop(share: number) {
+  function leafDrop(share: number, back = false) {
     const x0 = x;
     run(R.r(280, 340));
     const tX = x - 130;
@@ -2365,6 +2408,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const gap = Math.round(reachJump(0, true) * share);
     const far = edge + gap;
     softPit(edge, far);
+    // `back` (the lesson's drops): a step at the near wall too, so a glide that falls short is two hops back up and the trunk again, a
+    // few seconds, not a wall only the second jump climbs (QA, 2026-10-26: a short flick dropped a tester in 4-2's first pit, 6 tries out)
+    if (back) P.push({ id: pid++, x: edge, y: HOLLOW_Y - PIT_STEP, width: BACK_STEP, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
     for (let i = 1; i <= 4; i++) {
       const u = i / 5;
       flower(Math.round(edge + gap * u), Math.round(perchY - 10 + (G - 70 - perchY) * u * u), 'orchid');
@@ -2504,9 +2550,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     });
     beat('Learn: the leaf', () => {
       hint(x + 40, 'Your leaf! Flick up, then keep your thumb on the glass as you fall', 'Your leaf! Hold Jump as you fall', 'Your leaf! Hold Space as you fall');
-      leafDrop(0.72);
+      leafDrop(0.72, true);
       rest(R.r(240, 320));
-      leafDrop(0.86);
+      leafDrop(0.86, true);
       flag();
     });
     beat('Develop: the chimes', () => {

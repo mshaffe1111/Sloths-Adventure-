@@ -11,6 +11,8 @@ import { drawCel, warmCels } from './storyCels.ts';
 
 export type W2Piece = keyof typeof W2_FRAMES;
 
+/** the sheet's address (stagePreload.ts decodes it before a World 2 stage starts) */
+export const W2_PROPS_URL = new URL('../assets/props/w2-props.webp', import.meta.url).href;
 let img: HTMLImageElement | null = null;
 let ready = false;
 function load() {
@@ -19,7 +21,7 @@ function load() {
   img = im;
   trackAtlas(
     im,
-    new URL('../assets/props/w2-props.webp', import.meta.url).href,
+    W2_PROPS_URL,
     () => {
       ready = true;
     },

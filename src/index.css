@@ -881,6 +881,14 @@
 .coach-demo { position: absolute; left: 8vw; bottom: calc(env(safe-area-inset-bottom, 0px) + 16%); opacity: .95; }
 .coach-nice .coach-card { border-color: rgba(134,239,172,.8); }
 .coach-nice .coach-text b { color: #bbf7d0; }
+/* sideways, a third of the way down is where Pokey is (QA v194, 640x320: "Nice jump!" hid him mid-jump): the card goes small at the
+   bottom centre, in the ground under his feet, between the thumb corners */
+@media (orientation: landscape) {
+  .coach-card { top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 10px); width: min(48vw, 360px); gap: 10px; padding: 7px 12px; }
+  .coach-glyph svg { width: 44px; height: auto; }
+  /* (the moving thumb sits above the card, still on his back side) */
+  .coach-demo { bottom: calc(env(safe-area-inset-bottom, 0px) + 30%); }
+}
 @keyframes coach-in { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%); } }
 
 /* a first-time lesson card (the game is paused behind it) */

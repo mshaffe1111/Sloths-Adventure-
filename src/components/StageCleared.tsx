@@ -6,6 +6,7 @@ import { getStageClue } from './stageClue.ts';
 import type { StageStats } from '../game/badges.ts';
 import { ClrChips, ClrRibbon, useShortScreen, type ChipSpec } from './ClrParts.tsx';
 import { praiseFor, totalKills } from './stageSummary.ts';
+import './hud/cleared.css';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
@@ -85,7 +86,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
         </g>
       </svg>
 
-      <div className="clr-card" role="dialog" aria-label="Stage cleared">
+      <div className="clr-card clr-won" role="dialog" aria-label="Stage cleared">
         <ClrRibbon title={secret ? 'THORNBARK IS FREE!' : 'STAGE CLEARED!'} />
 
         <div className="clr-hero">

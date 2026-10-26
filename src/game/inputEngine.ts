@@ -32,8 +32,10 @@ export class InputEngine {
   public kickNear = true;
   /** the engine says he is climbing a trunk or swinging on a vine (the refined touch rules climb there instead of jumping) */
   public onVine = false;
-  /** the engine says he is on a swinging vine (not a trunk): a quick sideways flick there lets go and leaps that way */
+  /** the engine says he is on a swinging vine (not a trunk): the other thumb's quick sideways flick there lets go and leaps that way */
   public onSwing = false;
+  /** the engine says he is hanging from a shimmy rope: the steering thumb's sideways creep there never hops off or drops */
+  public onRope = false;
   /** the engine says, every frame: a mega punch can start (it is not cooling down), so a held thumb only announces one that will happen */
   public megaReady = true;
   private jumpBufferTimer = 0;
@@ -97,6 +99,7 @@ export class InputEngine {
       this.state.up = true;
       if (!this.state.jumpHeld || isUpTwice) {
         this.state.jumpPressed = true;
+        this.state.jumpLean = 0;
         this.jumpBufferTimer = 0.16;
       }
       this.state.jumpHeld = true;
@@ -190,6 +193,7 @@ export class InputEngine {
     this.state.up = false;
     this.state.down = false;
     this.state.jumpPressed = false;
+    this.state.jumpLean = 0;
     this.state.jumpHeld = false;
     this.state.punchPressed = false;
     this.state.kickPressed = false;
@@ -231,8 +235,10 @@ export class InputEngine {
    * - Jump pressing up
    * - Double jump pressing up twice
    */
-  public triggerTouchUp() {
+  public triggerTouchUp(lean: -1 | 0 | 1 = 0) {
     this.fresh();
+    // (the flick's lean: letting go of a vine or a trunk leaps the way it leaned, engine.ts leapDir)
+    this.state.jumpLean = lean;
     if (this.upReleaseTimer !== undefined) window.clearTimeout(this.upReleaseTimer);
     this.upReleaseTimer = undefined;
     this.touchUpAt = performance.now();
@@ -350,6 +356,7 @@ export class InputEngine {
           this.state.up = true;
           if (!prev.up) {
             this.state.jumpPressed = true;
+            this.state.jumpLean = 0;
             this.jumpBufferTimer = 0.16;
           }
           this.state.jumpHeld = true;

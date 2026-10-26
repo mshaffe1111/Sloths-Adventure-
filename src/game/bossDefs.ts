@@ -27,7 +27,7 @@ import { inMoonPool } from './prowlerPools.ts';
 import { GUST, PILLAR, SCREECH, pillarFor, rockShower, slamPillar, slamSide, standing } from './sovereignFight.ts';
 import type { SkyPillar } from './sovereignFight.ts';
 import { screechBeak } from './sovereignSprite.ts';
-import { VF, lungeReach, venomHurt, venomWeak } from './venomFang.ts';
+import { VF, lungeAim, venomHurt, venomWeak } from './venomFang.ts';
 
 // ───────────────────────────── shared move builders ─────────────────────────────
 
@@ -148,6 +148,16 @@ const impact = (b: BossEntity, c: BossCtx, shake: number, color: string) => {
   c.debris(b.x, c.arena.floor - 8, color);
 };
 
+/**
+ * The Shadow Prowler's pounce: the crouch and the leap (s), how high it arcs (kept under the boss bar on a phone held sideways), the
+ * ring marking the landing (half-width), and the share of the leap after which he hurts: only coming down, onto the ring, so the ring
+ * is the whole of the danger (QA gate: hits 40 px outside it, from his body on the way and the ripples at once)
+ */
+/** how high the Prowler's dash hurts: flat out he is this low, so a jump (even a single one, at its top) clears him (QA gate) */
+export const DASH_HIGH = 70;
+
+export const POUNCE = { tell: 0.75, act: 1.0, height: 140, ring: 270, strikeFrom: 0.75 };
+
 // ───────────────────────────── 1. Venom Fang: emerald boa ─────────────────────────────
 
 /** the two little snakes he calls down from the canopy (phase 2), where a hero has room to deal with them */
@@ -180,6 +190,11 @@ const VENOM: BossDef = {
   hits: 6,
   openCap: 4,
   openCue: true,
+  // (QA gate: said at the third phase while she stood on open ground) said when Pokey first stands on the cracking stump
+  crackTip: "The stump is cracking now. Don't stay on it too long!",
+  // his coils never hurt by touch: only the lunge's head and neck do, after the rear-back (QA gate: a heart lost standing against
+  // the coils while he sat up)
+  bodyGrace: 99,
   // (2026-10-26, QA: the first lunge came 1.2 s after Dot's tip, before it could be read) he sizes you up first, and he hisses as
   // he rears back
   firstIdle: 3.2,
@@ -189,18 +204,28 @@ const VENOM: BossDef = {
   aimText: 'HIT HIS HEAD WHEN IT IS DOWN!',
   faceFixed: true,
   frameArena: true,
-  floorAt: 0.84,
+  // (0.84 until the QA gate: sideways, Pokey at the treetop sat under Dot's bubble and the lives badge)
+  floorAt: 0.92,
   arenaW: 1300,
   lair: 'venom',
   entrance: { eye: [190, 242, 100], dark: [1, 6, 3] },
   guide: {
-    start: 'When he rears back, get off the ground! Climb the tree, jump on the stump or grab the vine. Then punch his head.',
+    // (short: four lines of it covered the treetop it sends you to, sideways)
+    start: 'When he rears back, get off the ground: the tree, the stump or the vine. Then punch his head!',
     2: 'Little snakes! Punch them, and keep an eye on Venom Fang.',
-    3: "The stump is cracking now. Don't stay on it too long!",
   },
   // three ways off the floor: the vine up the wall tree by the left fence, the stump (a double jump), and the liana in the middle
   climbs: [20],
-  perches: [{ dx: 330, up: 130, w: 150, crack: 3 }],
+  // (2026-10-26, QA gate: from the top of a 430 vine the climb down took ~1.9 s and the daze was over; pushing on at the top hopped him
+  // off onto the floor under the lunge) the vine stops at 270, well clear of the lunge, and a root cradle at its top catches the hop
+  climbTop: 270,
+  // his coils sit right against the right fence: the gap behind them was a hiding place the head could never reach (QA gate)
+  startDx: 1300 - 125 - 2,
+  // and they are a wall: no squeezing in behind them, nor up the fence tree back there (QA gate: Steph ended up there, out of reach)
+  blockBody: true,
+  // upright, the tree, the stump and the vine stay in the view through every lunge (QA gate: the tree slid off the left edge)
+  frameRefuges: [10, 680],
+  perches: [{ dx: 330, up: 130, w: 150, crack: 3 }, { dx: 36, up: 272, w: 96, noHeart: true }],
   vines: [{ dx: 660, top: 440, bottom: 165 }],
   onPhase: (phase, _b, c) => {
     c.dropHeart?.(c.arena.left + 405);
@@ -212,11 +237,17 @@ const VENOM: BossDef = {
     sweep: {
       tell: 1.2,
       act: VF.act,
-      rec: 2.6,
+      rec: 3.8,
       pose: 'lunge',
+      softBody: true,
       interruptible: false,
+      // (aimed at you: the floor flash follows you through the wind-up and the head comes down at your feet, so the opening is in reach
+      // wherever you dodged: bossFair.test.ts)
       onTell: (b, c) => {
-        b.ai!.d.reach = lungeReach(b.facing, c.arena.left, c.arena.right);
+        b.ai!.d.reach = lungeAim(b, c.px, c.arena.left, c.arena.right);
+      },
+      tellTick: (b, c) => {
+        b.ai!.d.reach = lungeAim(b, c.px, c.arena.left, c.arena.right);
       },
       tick: (b, c) => {
         b.ai!.hurt = venomHurt(b, c.arena.floor, 0);
@@ -236,6 +267,7 @@ const VENOM: BossDef = {
       phase: 2,
       weight: 0.7,
       pose: 'roar',
+      softBody: true,
       interruptible: false,
       when: (_b, c) => c.minionsAlive === 0,
       onAct: (_b, c) => {
@@ -385,6 +417,16 @@ const PROWLER: BossDef = {
   // an opening after a move takes a jab, a cross and a hook (two segments), then he pulls back; a stun in the moonlight is not capped
   openCap: 4,
   openCue: true,
+  // (QA gate: a heart lost on a low ledge over his head while he faded, and one tapping beside him as a move began) his body never
+  // hurts by touch: only his strikes do, each after its wind-up
+  // the floor a little lower on the screen, so the top of a pounce stays under the boss bar on a phone held sideways (QA gate)
+  floorAt: 0.84,
+  // (QA gate: on a fresh phone Dot said nothing all fight) the first-time tips
+  guide: {
+    start: 'He hides in the dark. Stand by a moon pool, dodge, and hit him where he glows!',
+    3: 'The glowcaps are out! Watch for his eyes and the rings on the floor.',
+  },
+  bodyGrace: 99,
   // He has no one weak point. Where it opens depends on what he has just done, and the glow shows where: the glowing eyes after a shadow
   // step (he is right at you), the throat after the claw combo, the arched back after a pounce (jump onto it), the tail after the dash
   // (it swings round toward you), and the belly when he is stunned. The ember while he is covered sits on the head
@@ -410,34 +452,77 @@ const PROWLER: BossDef = {
   // at 35% the glowcaps go dark: only the moon pools still shine
   onPhase: (phase, _b, c) => {
     if (phase !== 3) return;
-    c.text('THE GLOWCAPS GO DARK!', c.arena.left + 330, c.arena.floor - 270, '#7dffe0');
+    // (between the fighters, not by the left fence where it hugged the screen's edge)
+    c.text('THE GLOWCAPS GO DARK!', (c.px + _b.x) / 2, c.arena.floor - 250, '#7dffe0');
     c.shake(0.5);
   },
   moves: {
     // a quick crouch, then a long pounce to where you were standing. From the second phase the landing sends a wave along the floor
-    pounce: leapMove({
-      // (0.55 until QA: in the dark a pounce took two hearts unseen; the crouch now lasts long enough to read, and he is lit over the dark)
-      tell: 0.65,
-      act: 0.7,
-      // (the openings are timed to be reached: bossFair.test.ts)
-      rec: 2.3,
-      height: 230,
-      min: 260,
-      onLand: (b, c) => {
-        impact(b, c, 0.55, '#7c3aed');
-        if (b.phase < 2) return;
-        for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2 + 10), d, b.phase >= 3 ? 360 : 280, '#a78bfa', '#3b0764', true);
-      },
-    }),
+    // (2026-10-26, QA: a double jump on the spot was hit, and standing still was not. He picks his spot as the crouch BEGINS, a moonlit
+    // ring marks it (bossCues.ts), and he lands on it: getting out of the ring is the dodge, and there is time for it after a 0.8 s
+    // reaction. Jumping straight up into a leaping cat still meets him: bossTells.test.ts)
+    pounce: (() => {
+      const m = leapMove({
+        // (0.55 until QA: in the dark a pounce took two hearts unseen; the crouch now lasts long enough to read)
+        tell: POUNCE.tell,
+        act: POUNCE.act,
+        // (the openings are timed to be reached from outside the ring: bossFair.test.ts)
+        rec: 3.6,
+        height: POUNCE.height,
+        min: 260,
+        // (no floor ripples any more: QA gate, they crossed a hero running back in for the opening, which must be safe)
+        onLand: (b, c) => impact(b, c, 0.55, '#7c3aed'),
+      });
+      const leap = m.onAct!;
+      const fly = m.tick!;
+      m.tick = (b, c, dt, t) => {
+        fly(b, c, dt, t);
+        const br = b.ai!;
+        // landed: already turned away from you (the recovery keeps it so)
+        if (t >= POUNCE.act - 1e-6) b.facing = c.px >= b.x ? -1 : 1;
+        if (t < POUNCE.act * POUNCE.strikeFrom) {
+          br.hurt = [];
+          return;
+        }
+        // nothing outside the ring ever hurts: what hurts is cut to the ring, less Pokey's half-width and a margin (QA gate: a heart
+        // lost just past the ring's edge)
+        const lo = br.d.aim - POUNCE.ring + 35;
+        const hi = br.d.aim + POUNCE.ring - 35;
+        br.hurt = br.hurt
+          .map((h) => ({ ...h, x: Math.max(lo, h.x), w: Math.min(hi, h.x + h.w) - Math.max(lo, h.x) }))
+          .filter((h) => h.w > 0);
+      };
+      // he lands, then turns his back on you, his arched back the glowing spot (QA gate: he faced Pokey with the spot behind him)
+      m.recFaceAway = true;
+      m.softBody = true;
+      m.onTell = (b, c) => {
+        // never so near a fence that a hero there cannot get out of it: at a fence he is left just outside the ring (QA gate: a ring
+        // came down on Steph at the left tree, and running left only met the wall)
+        const keep = POUNCE.ring + 40;
+        b.ai!.d.aim = Math.max(c.arena.left + keep, Math.min(c.arena.right - keep, c.px));
+      };
+      m.onAct = (b, c) => {
+        leap(b, c);
+        const br = b.ai!;
+        br.d.x1 = br.d.aim ?? br.d.x1;
+        b.facing = br.d.x1 >= b.x ? 1 : -1;
+      };
+      m.guide = 'He crouches and marks a spot, then pounces on it. Get out of the ring!';
+      return m;
+    })(),
     // vanishes and comes out right behind you for a slash. He comes out behind you, so with a moon pool at your back the light will
     // not let him appear: he is caught, stunned and wide open
     shadowStep: {
-      tell: 0.55,
+      // (0.55 until the QA gate: every attack winds up for at least 0.6 s)
+      tell: 0.7,
       act: 0.3,
-      rec: 2.5,
+      // (2.5 until the QA gate: from a low shelf over him, by touch, the first hit came at up to 2.56 s)
+      rec: 3.2,
       pose: 'fade',
+      softBody: true,
+      guide: 'He fades away to come out behind you. With a moon pool at your back, the light catches him!',
       crashText: 'CAUGHT IN THE MOON!',
-      stunAfter: () => 2.7,
+      stunAfter: () => 3.0,
       // the first time, say what the light is for
       onTell: (b, c) => {
         if (prowlerHinted.has(b)) return;
@@ -446,7 +531,7 @@ const PROWLER: BossDef = {
       },
       tellTick: (b) => {
         const br = b.ai!;
-        br.alpha = Math.max(0.08, 1 - (br.t / 0.55) * 0.95);
+        br.alpha = Math.max(0.08, 1 - (br.t / 0.7) * 0.95);
       },
       onAct: (b, c) => {
         const br = b.ai!;
@@ -472,13 +557,15 @@ const PROWLER: BossDef = {
     },
     // three slashes while stepping forward (four in the last phase)
     clawCombo: {
-      tell: 0.5,
+      tell: 0.7,
       act: 1.0,
       // the last slash overreaches and he stumbles on after you, throat open
-      rec: 2.5,
+      // (2.5 until the QA gate: by touch the first hit came at up to 2.43 s)
+      rec: 3.1,
       recStep: { speed: 260, stop: 150 },
       max: 330,
       pose: 'bite',
+      softBody: true,
       tick: (b, c, dt, t) => {
         const br = b.ai!;
         b.x += b.facing * 80 * dt;
@@ -488,17 +575,23 @@ const PROWLER: BossDef = {
     },
     // a lightning dash from one end of the arena to the other, low enough to jump
     streak: (() => {
-      const m = chargeMove({ tell: 0.65, maxT: 1.2, rec: 2.5, speed: 800, phase: 2, min: 300 });
+      // (tell 0.65 until the QA gate: the rear-up read as too quick; and his body no longer hurts over the low box below)
+      const m = chargeMove({ tell: 0.8, maxT: 1.2, rec: 2.7, speed: 800, phase: 2, min: 300 });
+      m.softBody = true;
+      m.guide = 'He rears up to dash along the floor! Double jump over him as he comes, or get up on a shelf.';
       const base = m.tick!;
       m.tick = (b, c, dt, t) => {
         base(b, c, dt, t);
-        // he is flat out, so the box that hurts is lower than his resting height: under the low shelves, and under a double jump
-        b.ai!.hurt = [{ x: b.x - b.width / 2, y: c.arena.floor - 108, w: b.width, h: 108 }];
+        // he is flat out, so the box that hurts is lower than his resting height: under the low shelves, and under a jump
+        // (108 and his full length until the QA gate: a double jump over him still cost a heart; now a double jump as he comes
+        // clears him, Dot says so the first time, and the floor streak shows his path: bossTells.test.ts)
+        b.ai!.hurt = [{ x: b.x - b.width / 2 + 60, y: c.arena.floor - DASH_HIGH, w: b.width - 120, h: DASH_HIGH }];
       };
       // he skids to a stop facing the fence he ran at, so the tail he is weak at swings out toward the middle, where you are
-      m.recHoldFacing = true;
+      // (2026-10-26, QA: a hero who jumped the dash stood at his head, the tail out of reach) he turns his back on you, wherever you are
+      m.recFaceAway = true;
       // and he backs off the fence toward you, tail lashing, so a dash that ended far away still brings the tail to you
-      m.recStep = { speed: 300, stop: 260 };
+      m.recStep = { speed: 340, stop: 260 };
       return m;
     })(),
   },
@@ -531,13 +624,16 @@ function skySlam(b: BossEntity, c: BossCtx, p: SkyPillar, markX: number) {
   b.facing = side > 0 ? -1 : 1;
   br.air = Math.min(br.air, PILLAR.h);
   for (const q of c.pillars ?? []) q.aimed = false;
-  // stone bursts from the rock where the mark was: standing on the mark (or on the rock's top) is what gets him hurt
-  // (a short burst, a little inside the mark's edge: a hero who has stepped off it and comes straight back for her head is not caught)
-  const lo = Math.min(markX - 62, p.x - p.w / 2);
-  const hi = Math.max(markX + 62, p.x + p.w / 2);
-  const shards = makeHazard({ kind: 'column', x: (lo + hi) / 2, y: c.arena.floor - (PILLAR.h + 70) / 2, floorY: c.arena.floor, w: hi - lo, h: PILLAR.h + 70, life: 0.14, maxLife: 0.14, color: '#a8a29e', color2: '#44403c' });
-  shards.look = 'shards';
-  c.hazards.push(shards);
+  // stone bursts from the rock where the mark was: standing on the mark (or on the rock's top) is what gets him hurt. Only inside the
+  // mark's own footprint, the one GET OFF! showed (MARK_BURST, a little inside its edge), so a short step off it clears it, whichever
+  // way; and up on the rock's top
+  const burst = (x: number, w: number, y0: number, h: number) => {
+    const sh = makeHazard({ kind: 'column', x, y: c.arena.floor - y0 - h / 2, floorY: c.arena.floor, w, h, life: 0.14, maxLife: 0.14, color: '#a8a29e', color2: '#44403c' });
+    sh.look = 'shards';
+    c.hazards.push(sh);
+  };
+  burst(markX, MARK_BURST * 2, 0, PILLAR.h + 70);
+  burst(p.x, p.w, p.h, 70);
   c.shake(broke ? 1 : 0.8);
   c.thud(true);
   c.debris(p.x, c.arena.floor - PILLAR.h * 0.7, '#a8a29e');
@@ -590,12 +686,44 @@ const skySettle = (b: BossEntity, c: BossCtx, dt: number) => {
   if (br.air < 1) br.air = 0;
 };
 
+/**
+ * In an opening she comes to him (Matt's rule: an opening has to be reachable from wherever he took cover, by a rock or back at the
+ * chimes): she drifts toward him at SKY_COME.speed until her middle is SKY_COME.stop from him. She may fly over a rock on the way but
+ * never stops over one (her weak spot would sit up on the rock top): then she stops short of it. Returns her new x.
+ */
+export const SKY_COME = { speed: 240, stop: 150, clear: 90 } as const;
+export function skyApproach(x: number, c: BossCtx, dt: number): number {
+  const dir = c.px >= x ? 1 : -1;
+  let to = Math.abs(c.px - x) > SKY_COME.stop ? c.px - dir * SKY_COME.stop : x;
+  // (she may fly over a rock on the way, but she never settles with one under her, wings included: short of it, on her side, even
+  // when that means backing off one)
+  for (const p of standing(c.pillars)) {
+    const clear = p.w / 2 + SKY_COME.clear;
+    if (Math.abs(to - p.x) < clear) to = p.x + (x >= p.x ? 1 : -1) * clear;
+  }
+  const half = 125;
+  to = Math.max(c.arena.left + half, Math.min(c.arena.right - half, to));
+  if (Math.abs(to - x) < 0.5) return x;
+  return x + Math.sign(to - x) * Math.min(Math.abs(to - x), SKY_COME.speed * dt);
+}
+const skyOpening = (b: BossEntity, c: BossCtx, dt: number) => {
+  skySettle(b, c, dt);
+  b.x = skyApproach(b.x, c, dt);
+};
+
 /** how long into the dive's wind-up the mark follows him before it locks */
 export const DIVE_LOCK = 0.45;
 /** the beak lunge: she commits to where he is this far into its wind-up, and it reaches this high (a double jump clears it) */
 export const RAKE_COMMIT = 0.42;
 export const RAKE_TOP = 120;
 export const RAKE_PAST = 40;
+/** the highest she climbs (the dive's and the snatch's wind-ups): the camera keeps her under the bar at this (bossCamera.ts) */
+export const SKY_CLIMB = 220;
+/** what hurts where a dive lands: this far either side of the mark's middle (the 150-wide mark, a little inside its edge) */
+export const MARK_BURST = 60;
+/** her feathers fly level this high above the floor (their middle; 14 tall): over a crouched hero (24 tall), into a standing one (38) */
+export const FEATHER_LANE = 34;
+export const FEATHER_GAP = 0.1;
 /** the sky sweep pulls up this far past him */
 export const SWEEP_PAST = 300;
 
@@ -657,10 +785,12 @@ const SOVEREIGN: BossDef = {
   openAfter: ['featherVolley', 'skySweep', 'snatch', 'talonRake', 'screech', 'wingGust'],
   // each slam is one clear win: two hits on the head, or the leaf onto her back (so the rocks carry most of the fight, not all of it)
   stunCap: 4,
-  // (and the opening after any other move is one hit: the glow is a chance, the rocks are the plan)
-  openCap: 1,
+  // (and the opening after any other move takes two hits too: Matt, 2026-10-26, fight length is down to skill, not grinding)
+  openCap: 4,
   // her humped back in the stunned crouch: land on it from a rock or a ledge
   stompSpot: { dx: -45, dy: 168, w: 170, h: 56 },
+  // a hero hitting her head as she gets up is standing in her: her body hurts only 0.6 s into her next wind-up (a readable warning)
+  bodyGrace: 0.6,
   aimText: 'TOO TOUGH! HIT THE GLOW',
   arenaW: 1500,
   lair: 'sovereign',
@@ -700,7 +830,7 @@ const SOVEREIGN: BossDef = {
     // she climbs over him, a red mark follows him and locks, and she falls on it. With the mark on a rock she slams into the rock (stunned,
     // head open, the rock cracks); on open floor she only scrapes the ground and pulls up, until every rock is down: then she crashes
     diveBomb: {
-      tell: 1.1,
+      tell: 1.2,
       act: 1.3,
       rec: 0.8,
       weight: 1.6,
@@ -712,18 +842,21 @@ const SOVEREIGN: BossDef = {
       stunTick: skyStunTick,
       crashText: (b) => (b.ai!.d.slam ? '' : 'GROUNDED!'),
       onTell: (b, c) => {
-        skyMark(c, b, 150, 1.1);
+        skyMark(c, b, 150, 1.2);
       },
       tellTick: (b, c, dt) => {
         const br = b.ai!;
         // she climbs (not out of the camera's reach: it pulls back for her, frameAir) and flies over the mark as it follows him
-        br.air += (250 - br.air) * Math.min(1, dt * 4);
-        // the mark locks early (DIVE_LOCK), leaving most of a second to step off it
+        br.air += (SKY_CLIMB - br.air) * Math.min(1, dt * 4);
+        // the mark locks early (DIVE_LOCK) and says GET OFF!, leaving three quarters of a second to step off it
         trackMark(b, c, br.d.h0, dt, DIVE_LOCK, 320);
         const h = c.hazards.find((x) => x.id === br.d.h0);
         if (h) b.x += Math.max(-540 * dt, Math.min(540 * dt, h.x - b.x));
         b.facing = (h ? h.x : c.px) >= b.x ? 1 : -1;
-        if (h && br.t > DIVE_LOCK) aimPillars(c, h.x);
+        if (h && br.t > DIVE_LOCK) {
+          aimPillars(c, h.x);
+          h.locked = true;
+        }
       },
       onAct: (b, c) => {
         const br = b.ai!;
@@ -752,7 +885,8 @@ const SOVEREIGN: BossDef = {
         b.x += Math.max(-sp, Math.min(sp, dx));
         br.air -= 1300 * dt;
         b.facing = dx >= 0 ? 1 : -1;
-        br.hurt = [{ x: b.x - 70, y: c.arena.floor - br.air - 70, w: 140, h: 90 }];
+        // (only over the mark: she gets there before she is low, and her talons never sweep beside it)
+        br.hurt = [{ x: br.d.tx - MARK_BURST, y: c.arena.floor - br.air - 70, w: MARK_BURST * 2, h: 90 }];
         if (p && !p.broken && br.air <= p.h + 8) {
           skySlam(b, c, p, br.d.tx);
           return;
@@ -778,7 +912,8 @@ const SOVEREIGN: BossDef = {
         for (const q of c.pillars ?? []) q.aimed = false;
       },
     },
-    // a fan of razor feathers. She flings her wings wide to throw them, and that leaves her chest open. A rock stops them
+    // a stream of razor feathers skimming the floor. She drops low and flings her wings wide to throw them, and that leaves her chest
+    // open. They fly at FEATHER_LANE: crouch under them, hop over them, or get behind a rock (it stops them)
     featherVolley: {
       tell: 0.85,
       act: 0.7,
@@ -787,28 +922,27 @@ const SOVEREIGN: BossDef = {
       // (near enough that the opening it leaves can be reached: sovereign.test.ts)
       max: 440,
       pose: 'spit',
-      guide: 'Feathers! Duck behind a rock!',
-      onAct: (b, c) => {
-        const fire = (n: number) => {
-          const ang = Math.atan2(c.py - 30 - b.y, c.px - b.x);
-          const half = (n - 1) / 2;
-          for (let i = 0; i < n; i++) {
-            const h = aimed(c, b.x + b.facing * 50, b.y, ang + (i - half) * 0.2, 330, '#fde68a', '#92400e');
-            h.look = 'feather';
-          }
-        };
-        fire(b.phase >= 2 ? 7 : 5);
-        b.ai!.d.second = b.phase >= 3 ? 1 : 0;
+      guide: 'Feathers! Crouch down, or duck behind a rock!',
+      tellTick: (b, c, dt) => {
+        const br = b.ai!;
+        // down to skim the floor, so the feathers come from her wings at his height
+        br.air += (Math.max(skyGround(b, c) + 10, 40) - br.air) * Math.min(1, dt * 5);
+      },
+      onAct: (b) => {
+        b.ai!.d.n = b.phase >= 2 ? 6 : 4;
+        b.ai!.d.dir = b.facing;
       },
       tick: (b, c) => {
         const br = b.ai!;
-        if (br.d.second && br.t > 0.38 && !br.d.fired2) {
-          br.d.fired2 = 1;
-          const ang = Math.atan2(c.py - 30 - b.y, c.px - b.x);
-          for (let i = -1; i <= 1; i++) aimed(c, b.x, b.y, ang + i * 0.28, 360, '#fde68a', '#92400e').look = 'feather';
+        b.facing = br.d.dir > 0 ? 1 : -1;
+        // one feather every FEATHER_GAP s, all along the lane
+        while ((br.d.fired ?? 0) < br.d.n && br.t >= (br.d.fired ?? 0) * FEATHER_GAP) {
+          br.d.fired = (br.d.fired ?? 0) + 1;
+          const h = bolt(c, b.x + b.facing * 90, c.arena.floor - FEATHER_LANE, b.facing, 360, '#fde68a', '#92400e', 14);
+          h.look = 'feather';
         }
       },
-      recTick: skySettle,
+      recTick: skyOpening,
     },
     // she drops to the floor beside you and lunges with her beak. The head is low and open when it is over. She stops short of a rock
     talonRake: {
@@ -859,7 +993,7 @@ const SOVEREIGN: BossDef = {
           c.debris(b.x + br.d.dir * (b.width / 2 + 60), c.arena.floor - 10, '#a16207');
         }
       },
-      recTick: skySettle,
+      recTick: skyOpening,
     },
     // she rears back (crest up, the air shimmering at her beak) and screeches: a wave rolls out the way she faces and shoves him hard
     // (sovereignFight.ts SCREECH). Behind a rock he is in cover; crouched on the ground he is pushed much less. Near a rock she lands on
@@ -916,6 +1050,8 @@ const SOVEREIGN: BossDef = {
       },
       recTick: (b, c, dt) => {
         const br = b.ai!;
+        // down off the rock first, then she staggers on toward him (skyApproach)
+        if (br.t > 0.4) br.d.landX = skyApproach(br.d.landX, c, dt);
         b.x += (br.d.landX - b.x) * Math.min(1, dt * 7);
         br.air += (skyGround(b, c) - br.air) * Math.min(1, dt * 7);
         if (br.air < 1) br.air = 0;
@@ -947,13 +1083,13 @@ const SOVEREIGN: BossDef = {
         // she pulls up once she is SWEEP_PAST beyond him
         if (t > 0.3 && (b.x - c.px) * br.d.dir >= SWEEP_PAST) br.t = 1.5;
       },
-      recTick: skySettle,
+      recTick: skyOpening,
     },
     // a swoop onto the marked spot with her talons out, which ends with her pulling up again: her back is what is open. Low by a rock,
     // she clips it, the same as a dive
     snatch: {
       // (the mark locks as early as the dive's, leaving as long to step off it)
-      tell: 1.1,
+      tell: 1.2,
       act: 0.7,
       rec: 2.2,
       phase: 2,
@@ -966,14 +1102,17 @@ const SOVEREIGN: BossDef = {
       stunTick: skyStunTick,
       crashText: '',
       onTell: (b, c) => {
-        skyMark(c, b, 130, 1.1);
+        skyMark(c, b, 130, 1.2);
       },
       tellTick: (b, c, dt) => {
         const br = b.ai!;
-        br.air += (230 - br.air) * Math.min(1, dt * 3);
+        br.air += (SKY_CLIMB - br.air) * Math.min(1, dt * 3);
         trackMark(b, c, br.d.h0, dt, DIVE_LOCK, 300);
         const h = c.hazards.find((x) => x.id === br.d.h0);
-        if (h && br.t > DIVE_LOCK) aimPillars(c, h.x);
+        if (h && br.t > DIVE_LOCK) {
+          aimPillars(c, h.x);
+          h.locked = true;
+        }
       },
       onAct: (b, c) => {
         const br = b.ai!;
@@ -993,7 +1132,7 @@ const SOVEREIGN: BossDef = {
         b.x = br.d.x0 + (br.d.tx - br.d.x0) * (reach * reach * (3 - 2 * reach));
         br.air = u < 0.5 ? br.d.a0 + (6 - br.d.a0) * (u / 0.5) : 6 + (150 - 6) * ((u - 0.5) / 0.5);
         // only her talons hurt (the mark's width), as in the dive: stepping off the mark is the dodge, not outrunning her wings
-        br.hurt = [{ x: b.x - 65, y: c.arena.floor - br.air - 90, w: 130, h: 90 }];
+        br.hurt = [{ x: br.d.tx - (MARK_BURST - 5), y: c.arena.floor - br.air - 90, w: (MARK_BURST - 5) * 2, h: 90 }];
         if (u < 0.55) {
           const p = pillarFor(c.pillars, br.d.tx);
           if (p && Math.abs(b.x - p.x) < PILLAR.reach && br.air <= p.h + 8) skySlam(b, c, p, br.d.tx);
@@ -1002,7 +1141,7 @@ const SOVEREIGN: BossDef = {
       onEnd: (_b, c) => {
         for (const q of c.pillars ?? []) q.aimed = false;
       },
-      recTick: skySettle,
+      recTick: skyOpening,
     },
     // her wingbeats blow a gust lane down the arena (the chimes ring first): it pushes him away from her, rock is cover, and the leaf
     // rides it a long way. From the storm it blows harder and longer, and in the last phase two feathers ride it (duck the high one)
@@ -1048,7 +1187,7 @@ const SOVEREIGN: BossDef = {
         br.air = (br.d.low ?? 120) + Math.sin(t * 14) * 6;
         if (t >= br.d.last) br.t = Math.max(br.t, 2.4);
       },
-      recTick: skySettle,
+      recTick: skyOpening,
     },
   },
 };

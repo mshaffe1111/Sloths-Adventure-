@@ -35,6 +35,7 @@ import { FIND_BY_ID, allFound, loadFinds, saveFinds, withFind } from './game/fin
 import { THORNBARK_LEVEL, gateFound, hasThornHeart, markGateFound, markThornHeart, maxHearts } from './game/secret.ts';
 import { warmHeroAtlas } from './game/heroSprite.ts';
 import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStats, recordStage } from './game/badges.ts';
+import { anyCakeEaten } from './game/w5Kit.ts';
 import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
 import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { BadgeToast } from './components/BadgeToast.tsx';
@@ -43,6 +44,7 @@ import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/C
 import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 import { DOT_STAGE_ID, newStagesOn } from './game/extraStages.ts';
+import { preloadStage, readyToStart } from './game/stagePreload.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -225,6 +227,10 @@ export default function App() {
   const engineRef = useRef<GameEngine | null>(null);
   /** the short wait before a new engine is built (launchEngine): a second start inside it cancels the first, so two engines never run */
   const launchTimer = useRef(0);
+  /** counts launches: a launch still waiting for its sheets is dropped when another starts or a menu comes up meanwhile */
+  const launchSeq = useRef(0);
+  /** a stage is being played right now (stagePreload.ts then draws nothing on the canvas) */
+  const inPlay = useCallback(() => !!engineRef.current?.inPlay(), []);
   // the first-stage lesson (see game/touchCoach.ts): which step is showing, and for which kind of touch controls
   const [coachStep, setCoachStep] = useState<CoachStep>(null);
   // a first-time lesson card (the stage has paused itself; see game/lessons.ts)
@@ -293,7 +299,7 @@ export default function App() {
     if (stats && screen !== 'victory' && screen !== 'game_over' && screen !== 'boss_defeat') return;
     pendingStats.current = null;
     const base = stats ? recordStage(badgeStore, stats) : badgeStore;
-    const r = award(base, { levels: allLevels, gateFound: secretFound, thornHeart, stage: stats ?? undefined }, Date.now());
+    const r = award(base, { levels: allLevels, gateFound: secretFound, thornHeart, stage: stats ?? undefined, cakeFree: !anyCakeEaten() }, Date.now());
     const changed = !!stats || r.fresh.length > 0;
     if (!changed) return;
     setBadgeStore(r.store);
@@ -339,6 +345,7 @@ export default function App() {
     if (['title', 'world_map', 'story_cutscene', 'world_story', 'world_mid', 'boss_intro', 'boss_defeat', 'ending_story', 'memory'].includes(screen)) {
       engineRef.current?.stop();
       engineRef.current = null;
+      launchSeq.current++;
     }
   }, [screen]);
 
@@ -496,6 +503,14 @@ export default function App() {
     };
   }
 
+  // the next stage's sheets, got ready behind a card: the stage-cleared card (only for a next stage in this same world, so the sheets
+  // of the stage just played are kept for a replay), a world's story or a boss intro (the stage about to start)
+  useEffect(() => {
+    if (screen === 'victory' && nextStage && nextStage.worldIndex === activeLevel.worldIndex && !ctestEnabled()) void preloadStage(nextStage, canvasRef.current, inPlay);
+    else if (screen === 'world_story' || screen === 'boss_intro') void preloadStage(activeLevel, canvasRef.current, inPlay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen, activeLevel.id]);
+
   // World 8's flashback (the promise) plays inside its world card: it counts as seen once that card opens
   useEffect(() => {
     if (screen === 'world_story' && activeLevel.worldIndex === 8) markMemorySeen('promise');
@@ -548,112 +563,118 @@ export default function App() {
     setDistanceRatio(0);
     setScreen('playing');
 
-    // Slight delay to allow canvas element mounting
-    launchTimer.current = window.setTimeout(() => {
-      if (!canvasRef.current || !inputEngineRef.current) return;
-      // The input engine outlives each stage, so drop any direction left over from the last one.
-      inputEngineRef.current.clearAll();
+    // the stage's picture sheets, loaded and decoded behind the menu (stagePreload.ts): what is still on its way gets a moment more,
+    // so the first frames of play are not the browser decoding a 10 to 20 MB sheet (QA's 376 to 472 ms freezes as a stage began)
+    const seq = ++launchSeq.current;
+    void readyToStart(lvl, canvasRef.current, inPlay).then(() => {
+      if (seq !== launchSeq.current) return;
+      // Slight delay to allow canvas element mounting
+      launchTimer.current = window.setTimeout(() => {
+        if (!canvasRef.current || !inputEngineRef.current) return;
+        // The input engine outlives each stage, so drop any direction left over from the last one.
+        inputEngineRef.current.clearAll();
 
-      let engine: GameEngine;
-      try {
-      engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
-        onFatal: () => setScreen('world_map'),
-        onGuide: (text, seconds) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1 })),
-        onStageStats: (s) => {
-          pendingStats.current = s;
-          setLastStats(s);
-        },
-        onProgressUpdate: (current, target, curScore, curHp, distRatio, curPowerUp, curPowerTimer) => {
-          setCurrentCount(current);
-          setTargetCount(target);
-          setScore(curScore);
-          setHp(curHp);
-          if (distRatio !== undefined) {
-            setDistanceRatio(distRatio);
-          }
-          setActivePowerUp(curPowerUp ?? null);
-          setPowerUpTimer(curPowerTimer ?? 0);
-        },
-        onBossUpdate: (info) => setBossInfo(info),
-        onCoach: (st) => setCoachStep(st),
-        onLesson: (id) => setLessonId(id),
-        onFind: (id) => {
-          // a new note, book or keepsake: keep it, pause the stage and show it. One already in the Library just gives its line of text.
-          const known = loadFinds();
-          if (known.includes(id) || !FIND_BY_ID[id]) return;
-          const next = withFind(known, id);
-          saveFinds(next);
-          setFoundIds(next);
-          engineRef.current?.pause();
-          pausedForFind.current = true;
-          setReadingCompletes(allFound(next));
-          setReading(id);
-        },
-        onSecret: () => {
-          // the Thorn Gate: a moment to see it open, then the Hollow
-          markGateFound();
-          setSecretFound(true);
-          window.setTimeout(() => startLevel(THORNBARK_LEVEL), 1100);
-        },
-        onVictory: (stars, timeSec, finalScore) => {
-          delete failsRef.current[lvl.id];
-          setStarsEarned(stars);
-          setClearTime(timeSec);
-          setScore(finalScore);
+        let engine: GameEngine;
+        try {
+        engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
+          onFatal: () => setScreen('world_map'),
+          onGuide: (text, seconds) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1 })),
+          onStageStats: (s) => {
+            pendingStats.current = s;
+            setLastStats(s);
+          },
+          onProgressUpdate: (current, target, curScore, curHp, distRatio, curPowerUp, curPowerTimer) => {
+            setCurrentCount(current);
+            setTargetCount(target);
+            setScore(curScore);
+            setHp(curHp);
+            if (distRatio !== undefined) {
+              setDistanceRatio(distRatio);
+            }
+            setActivePowerUp(curPowerUp ?? null);
+            setPowerUpTimer(curPowerTimer ?? 0);
+          },
+          onBossUpdate: (info) => setBossInfo(info),
+          onCoach: (st) => setCoachStep(st),
+          onLesson: (id) => setLessonId(id),
+          onFind: (id) => {
+            // a new note, book or keepsake: keep it, pause the stage and show it. One already in the Library just gives its line of text.
+            const known = loadFinds();
+            if (known.includes(id) || !FIND_BY_ID[id]) return;
+            const next = withFind(known, id);
+            saveFinds(next);
+            setFoundIds(next);
+            engineRef.current?.pause();
+            pausedForFind.current = true;
+            setReadingCompletes(allFound(next));
+            setReading(id);
+          },
+          onSecret: () => {
+            // the Thorn Gate: a moment to see it open, then the Hollow
+            markGateFound();
+            setSecretFound(true);
+            window.setTimeout(() => startLevel(THORNBARK_LEVEL), 1100);
+          },
+          onVictory: (stars, timeSec, finalScore) => {
+            delete failsRef.current[lvl.id];
+            setStarsEarned(stars);
+            setClearTime(timeSec);
+            setScore(finalScore);
 
-          // the control test is over at its shrine: thank the tester (nothing is saved, and the game does not go on to 1-3)
-          if (ctestEnabled() && lvl.id === CTEST_STAGE_ID) {
-            setCtestDone(lvl);
-            return;
-          }
+            // the control test is over at its shrine: thank the tester (nothing is saved, and the game does not go on to 1-3)
+            if (ctestEnabled() && lvl.id === CTEST_STAGE_ID) {
+              setCtestDone(lvl);
+              return;
+            }
 
-          if (lvl.secret) {
-            // Thornbark beaten: the Thorn Heart, no stage to unlock
-            markThornHeart();
-            setThornHeart(true);
-            setMaxHp(maxHearts());
-            setScreen('boss_defeat');
-            return;
-          }
+            if (lvl.secret) {
+              // Thornbark beaten: the Thorn Heart, no stage to unlock
+              markThornHeart();
+              setThornHeart(true);
+              setMaxHp(maxHearts());
+              setScreen('boss_defeat');
+              return;
+            }
 
-          // Save progression
-          saveLevelProgress(lvl.id, stars, finalScore, timeSec);
-          // a cleared stage rolls a fresh layout next time (until then a retry keeps the one being learned)
-          forgetLayout(lvl.id);
+            // Save progression
+            saveLevelProgress(lvl.id, stars, finalScore, timeSec);
+            // a cleared stage rolls a fresh layout next time (until then a retry keeps the one being learned)
+            forgetLayout(lvl.id);
 
-          if (lvl.objectiveType === 'boss_lair') {
-            // Boss defeated: play the defeat scene first
-            setScreen('boss_defeat');
-          } else if (lvl.worldIndex === 1 && lvl.miniIndex === 1 && WORLD_STORIES[1] && !hasSeenFirstNote()) {
-            // the first stage is cleared: Dot arrives with Meeca's first note
-            storyAfterClear.current = true;
-            setScreen('world_story');
-          } else if ((lvl.id === DOT_STAGE_ID || (lvl.miniIndex === 5 && !(lvl.worldIndex === 4 && newStagesOn()))) && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
-            // (in World 4 the halfway scene waits for Dot's own flight after 4-5: she arrives with the note and nine scratches)
-            // halfway through a world, Dot catches up with a note from Meeca
-            setScreen('world_mid');
-          } else {
-            setScreen('victory');
-          }
-        },
-        onLivesChange: (l) => setLives(l),
-        onDefeat: (finalScore) => {
-          failsRef.current[lvl.id] = (failsRef.current[lvl.id] ?? 0) + 1;
-          bumpFails((n) => n + 1);
-          setScore(finalScore);
-          setScreen('game_over');
-        },
-      });
-      } catch (err) {
-        console.error('could not start the stage', err);
-        setScreen('world_map');
-        return;
-      }
+            if (lvl.objectiveType === 'boss_lair') {
+              // Boss defeated: play the defeat scene first
+              setScreen('boss_defeat');
+            } else if (lvl.worldIndex === 1 && lvl.miniIndex === 1 && WORLD_STORIES[1] && !hasSeenFirstNote()) {
+              // the first stage is cleared: Dot arrives with Meeca's first note
+              storyAfterClear.current = true;
+              setScreen('world_story');
+            } else if ((lvl.id === DOT_STAGE_ID || (lvl.miniIndex === 5 && !(lvl.worldIndex === 4 && newStagesOn()))) && WORLD_MID[lvl.worldIndex] && !hasSeenMidStory(lvl.worldIndex)) {
+              // (in World 4 the halfway scene waits for Dot's own flight after 4-5: she arrives with the note and nine scratches)
+              // halfway through a world, Dot catches up with a note from Meeca
+              setScreen('world_mid');
+            } else {
+              setScreen('victory');
+            }
+          },
+          onLivesChange: (l) => setLives(l),
+          onDefeat: (finalScore) => {
+            failsRef.current[lvl.id] = (failsRef.current[lvl.id] ?? 0) + 1;
+            bumpFails((n) => n + 1);
+            setScore(finalScore);
+            setScreen('game_over');
+          },
+        });
+        } catch (err) {
+          console.error('could not start the stage', err);
+          setScreen('world_map');
+          return;
+        }
 
-      engineRef.current?.stop();
-      engineRef.current = engine;
-      engine.start();
-    }, 20);
+        engineRef.current?.stop();
+        engineRef.current = engine;
+        engine.start();
+      }, 20);
+    });
   }, []);
 
   const saveLevelProgress = (id: string, stars: number, lvlScore: number, bestTime: number) => {
@@ -715,6 +736,9 @@ export default function App() {
   useEffect(() => {
     if (screen === 'title') leaveWideMode();
   }, [screen]);
+
+  // the new HUD (beta) flies a pickup from Pokey into its counter
+  const heroPoint = useCallback(() => engineRef.current?.heroScreenPoint() ?? null, []);
 
   const pauseGame = () => {
     engineRef.current?.pause();
@@ -984,6 +1008,7 @@ export default function App() {
           selectedWorldId={selectedWorldId}
           onSelectWorld={(wId) => setSelectedWorldId(wId)}
           onSelectLevel={(lvl) => startLevel(lvl)}
+          onPick={(lvl) => void preloadStage(lvl, canvasRef.current, inPlay)}
           onBackToTitle={() => setScreen('title')}
           secretFound={secretFound}
           thornHeart={thornHeart}
@@ -1045,10 +1070,21 @@ export default function App() {
             activePowerUp={activePowerUp}
             powerUpTimer={powerUpTimer}
             lives={lives}
+            heroPoint={heroPoint}
+            runKey={runId}
           />
           {screen === 'playing' && <CoachOverlay step={coachStep} style={coachStyle} />}
           <PerfReadout stageId={activeLevel.id} />
-          <Wayside key={`${activeLevel.id}-${runId}`} level={activeLevel} active={screen === 'playing' && !coachStep && !lessonId && !reading} ratio={distanceRatio} hp={hp} guide={guideLine} />
+          <Wayside
+            key={`${activeLevel.id}-${runId}`}
+            level={activeLevel}
+            active={screen === 'playing' && !coachStep && !lessonId && !reading}
+            ratio={distanceRatio}
+            hp={hp}
+            guide={guideLine}
+            // the new look's Dot guide (newLook.ts): it reads the stage itself and takes the coach and lessons as her lines
+            dot={{ engine: () => engineRef.current, playing: screen === 'playing' && !reading, coachStep, coachStyle, lessonId, count: { cur: currentCount, target: targetCount } }}
+          />
           {screen === 'playing' && lessonId && (
             <LessonCard
               id={lessonId}

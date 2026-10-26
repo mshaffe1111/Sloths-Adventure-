@@ -1,0 +1,172 @@
+/* The new HUD (beta, behind newLook): the hanging vine. Layout numbers live in hudLayout.ts; what shows when in bloom.ts. */
+
+.vh { position: fixed; inset: 0; z-index: 35; pointer-events: none; user-select: none; -webkit-user-select: none; transition: opacity .5s ease; }
+.vh.entering { opacity: 0; }
+.vh-probe { position: absolute; visibility: hidden; width: 0; height: 0; padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); }
+.vh-left { position: absolute; left: env(safe-area-inset-left, 0px); top: env(safe-area-inset-top, 0px); width: 640px; height: 200px; }
+.vh-right { position: absolute; right: env(safe-area-inset-right, 0px); top: env(safe-area-inset-top, 0px); width: 320px; height: 200px; }
+.vh img, .vh-card img { max-width: none; }
+.vh-shade { position: absolute; left: calc(-20px - env(safe-area-inset-left, 0px)); top: calc(-16px - env(safe-area-inset-top, 0px)); pointer-events: none;
+  background: radial-gradient(ellipse at 18% 0%, rgba(10, 22, 8, .46), rgba(10, 22, 8, .18) 48%, transparent 72%); padding-top: env(safe-area-inset-top, 0px); box-sizing: content-box; }
+
+.vh-thread { position: absolute; width: 2px; background: #4a3218; box-shadow: 0 0 0 .5px rgba(255, 240, 200, .25); }
+.vh-hang { position: absolute; transform-origin: 50% 0; transform: rotate(var(--tilt, 0deg)) scale(var(--s, 1)); transition: transform .38s cubic-bezier(.3, 1.6, .5, 1), filter .3s ease, opacity .2s ease; }
+.vh-hang svg, .vh-hang img { display: block; }
+
+/* numbers: warm cream with a dark-brown outline, on a small soft plate so they read on bright scenes (4-D's mist) */
+.vh-num { position: absolute; font-family: var(--font-heading); font-weight: 700; color: #FFF3D6; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill;
+  text-shadow: 0 2px 0 rgba(30, 15, 5, .4); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; font-feature-settings: 'liga' 0, 'calt' 0;
+  padding: 3px 7px 4px; margin: -3px -7px -4px; border-radius: 12px; background: radial-gradient(ellipse at 50% 55%, rgba(28, 18, 8, .58), rgba(28, 18, 8, .32) 55%, rgba(28, 18, 8, 0) 78%);
+  display: inline-flex; align-items: baseline; gap: 1px; transform-origin: 0 50%; transition: transform .38s cubic-bezier(.3, 1.6, .5, 1), color .3s ease, filter .3s ease; }
+.vh-num small { -webkit-text-stroke-width: 3px; }
+.vh-num svg { align-self: center; margin-left: 4px; }
+.vh-tag, .vh-delta { font-family: var(--font-heading); font-weight: 700; font-size: 15px; line-height: 1; color: #ffd65a; -webkit-text-stroke: 3px #3a2414; paint-order: stroke fill; white-space: nowrap; }
+.vh-tag { position: absolute; animation: vh-rise .9s ease-out both; }
+.vh-delta.bad { color: #ff9a9a; }
+.vh-delta { position: static; padding: 0; margin: 0 0 0 2px; background: none; }
+
+/* hearts: always on, small; they bloom when one is lost or won back */
+.vh-hearts .vh-heart { --s: 1; }
+.vh-hearts.bloom .vh-heart { --s: 1.32; }
+.vh-heart-lost { filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 8px #ff8a8a); }
+.vh-heart.won svg { filter: drop-shadow(0 0 6px #ffe0e0) drop-shadow(0 0 3px #fff); }
+
+/* the goal counter: top centre, the biggest piece. Always on; it blooms when a pickup lands, glows once at the milestones, and
+   turns gold (with a tick) when met */
+.vh-centre { position: fixed; z-index: 35; pointer-events: none; }
+.vh-cplate { position: absolute; left: 0; right: 0; display: flex; align-items: center; justify-content: center; padding: 0 12px; box-sizing: border-box;
+  border-radius: 18px; border: 2px solid rgba(58, 36, 20, .85); transform-origin: 50% 0;
+  background: radial-gradient(ellipse at 50% 35%, rgba(52, 36, 18, .72), rgba(24, 15, 6, .74) 70%);
+  box-shadow: inset 0 1px 0 rgba(255, 236, 190, .22), inset 0 0 0 1.5px rgba(255, 240, 200, .08), 0 2px 0 rgba(30, 15, 5, .45), 0 0 12px 2px rgba(20, 12, 4, .3);
+  transition: transform .38s cubic-bezier(.3, 1.6, .5, 1), filter .3s ease, box-shadow .3s ease; }
+.vh-cplate svg, .vh-cplate img { display: block; }
+.vh-goal-icon { display: flex; filter: drop-shadow(0 2px 0 rgba(30, 15, 5, .55)); transform: rotate(-6deg); }
+.vh-cnum { font-family: var(--font-heading); font-weight: 700; color: #FFF3D6; -webkit-text-stroke: 5px #3a2414; paint-order: stroke fill;
+  text-shadow: 0 2px 0 rgba(30, 15, 5, .45); line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; font-feature-settings: 'liga' 0, 'calt' 0;
+  display: inline-flex; align-items: baseline; transition: color .3s ease; }
+.vh-cnum small { -webkit-text-stroke-width: 4px; color: #f3dfb4; }
+.vh-goal.bloom .vh-cplate { transform: scale(1.14); box-shadow: inset 0 1px 0 rgba(255, 236, 190, .3), 0 2px 0 rgba(30, 15, 5, .45), 0 0 16px 4px rgba(255, 220, 120, .45); }
+.vh-goal.bloom .vh-cnum { color: #ffe9a8; }
+.vh-goal.glow .vh-cplate { filter: drop-shadow(0 0 10px #ffe98a) drop-shadow(0 0 3px #fff); }
+.vh-goal.met .vh-cnum, .vh-goal.met .vh-cnum small { color: #ffd65a; }
+.vh-goal.met .vh-cplate { border-color: #b98a1c; }
+.vh-slots { display: flex; gap: 4px; align-items: center; }
+.vh-slot { display: flex; align-items: center; justify-content: center; transition: transform .35s cubic-bezier(.3, 1.6, .5, 1); }
+.vh-slot:not(.on) > * { filter: brightness(0) opacity(.6) drop-shadow(0 0 1.2px rgba(255, 243, 214, 1)) drop-shadow(0 0 .5px rgba(255, 243, 214, 1)); }
+.vh-slot.on > * { filter: drop-shadow(0 1.5px 0 rgba(30, 15, 5, .6)); }
+.vh-goal.slots.bloom .vh-cplate { transform: scale(1.08); }
+
+/* the painted pieces (painted.tsx), once their sheet has loaded: the log-slice plate, the small number plates, the tendrils */
+.vh-cplate.painted { border: 0; border-radius: 0; background: none; box-shadow: none; isolation: isolate; padding: 0; filter: drop-shadow(0 2px 1.5px rgba(20, 10, 0, .45)); }
+.vh-cplate.painted .vh-plate-art { z-index: -1; }
+.vh-goal.bloom .vh-cplate.painted { box-shadow: none; filter: drop-shadow(0 2px 1.5px rgba(20, 10, 0, .45)) drop-shadow(0 0 9px rgba(255, 220, 120, .6)); }
+.vh-goal.glow .vh-cplate.painted { filter: drop-shadow(0 0 10px #ffe98a) drop-shadow(0 0 3px #fff); }
+.vh-goal.met .vh-cplate.painted { filter: drop-shadow(0 2px 1.5px rgba(20, 10, 0, .45)) drop-shadow(0 0 5px rgba(255, 214, 90, .9)); }
+.vh-tendril { pointer-events: none; }
+/* play shows through: a piece with a pickup, a platform top, an animal or Pokey under it fades (seeThrough.ts); only the Menu takes touches */
+.vh-see:not(.hidden) { opacity: .3 !important; }
+.vh-centre, .vh-menu, .vh-boss { transition: opacity .2s ease; }
+.vh-nplate { position: relative; display: flex; align-items: center; justify-content: center; gap: 3px; box-sizing: border-box; filter: drop-shadow(0 2px 1px rgba(20, 10, 0, .4)); }
+.vh-nplate.lives { padding: 0 4px 1px 14px; }
+.vh-nplate.lives > :first-child { flex: none; }
+.vh-nplate .vh-num { position: static; padding: 0; margin: 0; background: none; -webkit-text-stroke-width: 3.5px; }
+.vh-plate.vh-nplate { padding: 6px 12px 7px 20px; border-radius: 0; background-color: transparent; }
+.vh-menu.painted .vh-menu-leaf { transform: rotate(-4deg); transform-origin: 40% 0; filter: drop-shadow(0 3px 2px rgba(20, 10, 0, .45)); }
+
+/* the distance trail: a thin vine line, Pokey's face moving along it, the sanctuary door at the end */
+.vh-trail-box { position: relative; display: block; }
+.vh-trail { position: absolute; height: 7px; border-radius: 4px; background: rgba(30, 20, 8, .62); border: 1.5px solid #3a2414; box-shadow: 0 1px 0 rgba(255, 240, 200, .2); }
+.vh-trail-fill { display: block; height: 100%; border-radius: 3px; background: linear-gradient(180deg, #cfe58c, #6f8f34); }
+.vh-trail-face { position: absolute; display: flex; border-radius: 50%; background: #e7b773; border: 2px solid #3a2414; overflow: hidden; }
+.vh-trail-door { position: absolute; filter: drop-shadow(0 1px 0 rgba(30, 15, 5, .5)); }
+
+/* the pieces that only show when they change */
+.vh-lives, .vh-score, .vh-stage, .vh-power { transition: opacity .35s ease, visibility 0s linear 0s; }
+.vh-lives.hidden, .vh-score.hidden, .vh-stage.hidden, .vh-power.hidden { opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s linear .45s; }
+.vh-lives.bloom .vh-hang, .vh-power.bloom .vh-pod { animation: vh-pop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+.vh-score.bloom .vh-plate, .vh-stage.bloom { animation: vh-drop .45s cubic-bezier(.3, 1.5, .5, 1) both; }
+.vh-medal-wrap { display: flex; align-items: center; gap: 5px; }
+.vh-medal-wrap .vh-num { position: static; }
+.vh-medal { display: flex; flex: none; border-radius: 50%; border: 3px solid #3a2414; background: radial-gradient(circle at 45% 35%, #ffe6b0, #e0a85a); overflow: hidden; align-items: flex-end; justify-content: center; box-shadow: 0 2px 0 rgba(30, 15, 5, .45); }
+.vh-score { position: absolute; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+.vh-score .vh-num { padding: 0; margin: 0; background: none; }
+.vh-plate { display: flex; align-items: center; gap: 4px; padding: 4px 9px 4px 6px; border-radius: 14px; background: radial-gradient(ellipse at 50% 55%, rgba(28, 18, 8, .6), rgba(28, 18, 8, .35) 60%, rgba(28, 18, 8, .05) 90%); }
+.vh-stage { position: absolute; font: 700 13px/1 var(--font-ui); letter-spacing: .02em; color: #fff3d6; padding: 5px 10px; border-radius: 10px; background: rgba(28, 18, 8, .66); border: 1.5px solid #3a2414; white-space: nowrap; box-shadow: 0 2px 0 rgba(30, 15, 5, .4); }
+.vh-pod { display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2.5px solid #3a2414; box-shadow: 0 2px 0 rgba(30, 15, 5, .45); }
+.vh-pod-in { width: 70%; height: 70%; border-radius: 50%; background: #3f5a1c; border: 2px solid #3a2414; display: flex; align-items: center; justify-content: center; }
+.vh-pod-label { font-size: 14px; transition: opacity .35s ease; }
+.vh-power.small .vh-pod-label, .vh-power.quiet .vh-pod-label { opacity: 0; }
+.vh-power.small .vh-pod { --s: .9; }
+
+/* the Menu: a hanging leaf, with a touch box of at least 44 pt */
+.vh-menu { position: absolute; pointer-events: auto; padding: 0; margin: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.vh-menu-leaf { transform: rotate(180deg); }
+.vh-menu-lines { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -38%); display: flex; }
+.vh-menu:active { transform: scale(.94); }
+.vh-menu:focus-visible { outline: 3px solid #ffd65a; outline-offset: 2px; border-radius: 12px; }
+
+/* a pickup on its way to the counter (moved by the compositor) */
+.vh-fly-layer { position: fixed; inset: 0; z-index: 36; pointer-events: none; overflow: hidden; }
+.vh-fly { position: absolute; left: 0; top: 0; width: 28px; height: 30px; margin: -15px 0 0 -14px; will-change: transform; }
+.vh-fly img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 6px #fff3b0) drop-shadow(0 0 2px #fff); }
+.vh-fly.spark { background: radial-gradient(circle, #fffbe6 0 18%, rgba(255, 230, 140, .75) 32%, transparent 64%); }
+
+/* the stage-start goal card: painted parchment hung on two threads (a stand-in: the game has no parchment plate art yet) */
+.vh-card { position: fixed; z-index: 36; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 9px 16px 11px;
+  border-radius: 13px 16px 12px 15px; color: #2b1a0e; transform-origin: 50% 40%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(255, 252, 238, .7), transparent 60%), linear-gradient(176deg, #fdf0cf 0%, #f6e2b0 52%, #ead093 100%);
+  border: 2.5px solid #3a2414; box-shadow: inset 0 0 0 3px rgba(255, 250, 235, .4), inset 0 -7px 12px rgba(160, 110, 40, .22), 0 3px 0 rgba(58, 36, 20, .45), 0 8px 18px rgba(0, 0, 0, .3);
+  transition: transform .45s cubic-bezier(.55, 0, .8, .2), opacity .45s ease-in; animation: vh-card-in .42s cubic-bezier(.2, 1.4, .4, 1) backwards; }
+.vh-card-thread { position: absolute; bottom: 100%; width: 2px; height: var(--th, 12px); margin-bottom: 2px; background: #4a3218; box-shadow: 0 0 0 .5px rgba(255, 240, 200, .3); }
+.vh-card-thread::after { content: ''; position: absolute; left: -2px; bottom: -3px; width: 6px; height: 6px; border-radius: 50%; background: #4a3218; }
+.vh-card-thread.l { left: 18%; }
+.vh-card-thread.r { right: 18%; }
+.vh-card-label { font: 700 11.5px/1 var(--font-ui); letter-spacing: .08em; text-transform: uppercase; color: #7a4e26; }
+.vh-card-row { display: flex; align-items: center; gap: 11px; }
+.vh-card-row > :first-child { flex: none; filter: drop-shadow(0 2px 0 rgba(58, 36, 20, .45)); }
+.vh-card-text { display: flex; flex-direction: column; min-width: 0; }
+.vh-card-pre { font: 600 13px/1.15 var(--font-read); color: #6b4a2a; }
+.vh-card-big { font: 700 21px/1.12 var(--font-heading); color: #2b1a0e; }
+.vh-card-sub { font: 600 13.5px/1.2 var(--font-read); color: #5a3c20; }
+.vh-card.quick { padding: 6px 14px 7px; width: auto !important; min-width: 120px; }
+.vh-card.quick .vh-card-big { font-size: 22px; font-variant-numeric: tabular-nums; }
+.vh-short .vh-card { padding: 6px 13px 7px; gap: 3px; }
+.vh-short .vh-card-big { font-size: 17px; }
+.vh-short .vh-card-pre, .vh-short .vh-card-sub { font-size: 12px; }
+.vh-short .vh-card-label { font-size: 10.5px; }
+/* painted (painted.tsx): the wood-and-parchment card, its words centred on the parchment; the retry version on the goal plate */
+.vh-card.painted { border: 0; border-radius: 0; box-shadow: none; background-color: transparent; justify-content: center; text-align: left; gap: 4px;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, .35)); }
+.vh-card.painted .vh-card-thread { width: 7px; margin-left: -2.5px; margin-bottom: -6px; background-color: transparent; box-shadow: none; }
+.vh-card.painted .vh-card-thread::after { display: none; }
+.vh-card.painted .vh-card-label { color: #7a5230; }
+.vh-card.painted.quick { width: var(--pw) !important; min-width: 0; padding: 0 0 2px; flex-direction: row; justify-content: center; }
+.vh-card.painted.quick .vh-card-big { color: #FFF3D6; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill; text-shadow: 0 2px 0 rgba(30, 15, 5, .45); }
+.vh-short .vh-card.painted.quick .vh-card-big { font-size: 19px; }
+
+/* a boss fight: the bar hangs top centre in the world's colour; the hearts stay in their corner */
+.vh-boss { position: fixed; z-index: 35; }
+.boss-hud.vine { display: flex !important; flex-direction: column; width: 100%; gap: 3px; }
+.boss-hud.vine .boss-hud-name { text-shadow: none; padding: 0 4px; min-width: 0; }
+.boss-hud.vine .boss-hud-title { min-width: 0; font-size: 18px; letter-spacing: .08em; color: #FFF3D6; -webkit-text-stroke: 4px #3a2414; paint-order: stroke fill; text-shadow: 0 2px 0 rgba(30, 15, 5, .4); }
+.boss-hud.vine .boss-hud-count { font-family: var(--font-heading); font-size: 15px; letter-spacing: .02em; text-transform: none; color: #ffd65a; -webkit-text-stroke: 3px #3a2414; paint-order: stroke fill; display: inline-flex; align-items: center; gap: 3px; }
+.boss-hud.vine .boss-hud-bar { padding: 3px; border-radius: 9px; background: rgba(24, 30, 10, .86); border: 2.5px solid #3a2414;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--boss-accent) 60%, #5f7f2c), 0 3px 0 rgba(30, 15, 5, .45), 0 5px 12px rgba(0, 0, 0, .35); }
+.boss-hud.vine .boss-hud-segs { height: 13px; }
+.vh-boss-leaf { position: absolute; }
+.vh-short .boss-hud.vine .boss-hud-title { font-size: 15px; -webkit-text-stroke-width: 3.5px; }
+.vh-short .boss-hud.vine .boss-hud-segs { height: 10px; }
+.vh-short .boss-hud.vine .boss-hud-count { font-size: 15px; }
+
+@keyframes vh-pop { 0% { --s: .4; opacity: 0; } 60% { --s: 1.18; opacity: 1; } 100% { --s: 1; } }
+@keyframes vh-drop { 0% { transform: translateY(-8px) scale(.7); opacity: 0; } 65% { transform: translateY(1px) scale(1.08); opacity: 1; } 100% { transform: none; } }
+@keyframes vh-rise { 0% { transform: translateY(4px); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(-6px); opacity: 0; } }
+@keyframes vh-card-in { 0% { transform: translateY(-14px) scale(.85); opacity: 0; } 100% { transform: none; opacity: 1; } }
+@property --s { syntax: '<number>'; inherits: true; initial-value: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vh *, .vh-card { animation: none !important; transition-duration: .01s !important; }
+  .vh-goal.bloom .vh-cnum { color: #ffd65a; }
+  .vh-goal.bloom .vh-cplate { transform: none; }
+  .vh-hearts.bloom .vh-heart { --s: 1.12; }
+}

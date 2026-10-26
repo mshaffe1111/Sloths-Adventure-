@@ -19,13 +19,15 @@ export type DotPiece = keyof typeof DOT_PROP_FRAMES;
 
 let img: HTMLImageElement | null = null;
 let ready = false;
+/** the sheet's address (stagePreload.ts decodes it before her flight starts) */
+export const DOT_PROPS_URL = new URL('../assets/props/dot-props.webp', import.meta.url).href;
 function load() {
   if (img || typeof Image === 'undefined') return;
   const im = new Image();
   img = im;
-  trackAtlas(im, new URL('../assets/props/dot-props.webp', import.meta.url).href, () => { ready = true; }, () => { img = null; }, () => { img = null; ready = false; });
+  trackAtlas(im, DOT_PROPS_URL, () => { ready = true; }, () => { img = null; }, () => { img = null; ready = false; });
 }
-const BACK_URL: Record<BackName, string> = {
+export const BACK_URL: Record<BackName, string> = {
   far1: new URL('../assets/backdrops/dot-far-1.webp', import.meta.url).href,
   far2: new URL('../assets/backdrops/dot-far-2.webp', import.meta.url).href,
   near1: new URL('../assets/backdrops/dot-near-1.webp', import.meta.url).href,
@@ -52,6 +54,13 @@ export function warmDotFlight(st: DotStage) {
   load();
   warmDot();
   for (const [, n] of st.backs) back(n);
+}
+
+/** her pieces, her frames and every painting her flight can use (each stage roll uses all four), before the stage starts */
+export function warmDotSheets() {
+  load();
+  warmDot();
+  for (const n of Object.keys(BACK_URL) as BackName[]) back(n);
 }
 
 /**

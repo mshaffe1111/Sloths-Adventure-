@@ -15,7 +15,8 @@ const t = (() => {
 })();
 export default defineConfig({
   base: './',
-  define: { __BUILD_TIME__: JSON.stringify(t) },
+  // the new HUD and Dot (beta) is on by default here, off on the real game (src/game/newLook.ts)
+  define: { __BUILD_TIME__: JSON.stringify(t), __NEW_LOOK_DEFAULT__: 'true' },
   plugins: [react(), tailwindcss()],
   build: { outDir: 'tools/testlink/dist', emptyOutDir: true },
 });

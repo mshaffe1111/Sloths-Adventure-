@@ -27,7 +27,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
         // each decision also goes to the control-test recorder (it does nothing unless the test is running)
         move: (d) => { recorder.intent('move', d); inputEngine.triggerTouchMove(d); },
         duck: (on) => { recorder.intent('duck', on ? 1 : 0); inputEngine.triggerTouchDuck(on); },
-        jumpPress: () => { recorder.intent('jump'); inputEngine.triggerTouchUp(); },
+        jumpPress: (lean) => { recorder.intent('jump'); inputEngine.triggerTouchUp(lean ?? 0); },
         jumpRelease: () => { recorder.intent('jumpUp'); inputEngine.releaseTouchUp(); },
         punch: () => { recorder.intent('punch'); inputEngine.triggerTouchPunch(); },
         kick: (dir) => { recorder.intent('kick', dir ?? 0); inputEngine.triggerTouchKick(dir ?? 0); },
@@ -40,7 +40,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing },
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing, onRope: () => inputEngine.onRope },
     );
   }
   const G = gestures.current;

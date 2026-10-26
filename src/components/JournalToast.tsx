@@ -1,6 +1,8 @@
 import React from 'react';
 import { takeNewlyOpened } from '../game/movesJournal.ts';
 import { guideShowMs } from '../game/wayside.ts';
+import { useBlinkWatch } from './blinkWatch.ts';
+import { stageNewLook } from '../game/dotGuide.ts';
 
 /**
  * "New page in your journal": while a stage is being played, any journal page that has just opened (a lesson card, a tip from Dot, a
@@ -45,7 +47,7 @@ export const JournalToast: React.FC<{ active: boolean; guide?: { text: string; m
 
   // Dot starts a line: a note on screen steps aside (it comes back after her) and the queue waits until she is done
   React.useEffect(() => {
-    if (!guide) return;
+    if (!guide || !guide.text) return;
     // (as long as her line is actually up: Wayside keeps a line long enough to read, longer than the engine asked for)
     const ms = guideShowMs(guide.text, guide.ms);
     holdUntil.current = performance.now() + ms + 400;
@@ -57,8 +59,10 @@ export const JournalToast: React.FC<{ active: boolean; guide?: { text: string; m
     if (showing.current) later(next, ms + 400);
   }, [guide?.n]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // the new look: the note is one of the guide's lines instead (components/dot/DotGuide.tsx takes the new pages)
+  const off = stageNewLook();
   React.useEffect(() => {
-    if (!active) return;
+    if (!active || off) return;
     const check = () => {
       const fresh = takeNewlyOpened();
       if (!fresh.length) return;
@@ -68,9 +72,10 @@ export const JournalToast: React.FC<{ active: boolean; guide?: { text: string; m
     check();
     const id = window.setInterval(check, 1500);
     return () => window.clearInterval(id);
-  }, [active, next]);
+  }, [active, next, off]);
 
-  if (!note) return null;
+  useBlinkWatch('journal', note?.n);
+  if (!note || off) return null;
   const one = note.titles.length === 1;
   return (
     <div className="jr-toast" key={note.n} role="status" aria-live="polite">

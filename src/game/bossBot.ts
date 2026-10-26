@@ -540,11 +540,12 @@ export const prowlerTactic: Tactic = (bot) => {
     const near = bot.ledges.map((l) => bot.live(l)).sort((l1, l2) => Math.abs((l1.x0 + l1.x1) / 2 - p.x) - Math.abs((l2.x0 + l2.x1) / 2 - p.x))[0];
     return { kind: 'stand', x: Math.max(near.x0 + 30, Math.min(near.x1 - 30, p.x)), ledge: near };
   }
-  if (bl.state === 'tell' && bl.move === 'pounce') {
-    // run from where he will land
+  if ((bl.state === 'tell' || bl.state === 'act') && bl.move === 'pounce' && br.move === 'pounce' && (br.state === 'tell' || br.state === 'act')) {
+    // out of the ring he will land on (it is marked from the start of the crouch)
+    const aim = br.d.aim ?? p.x;
     const away = p.x < b.x ? -1 : 1;
-    let x = p.x + away * 320;
-    if (x < a.left + 30 || x > a.right - 30) x = p.x - away * 320;
+    let x = aim + away * 340;
+    if (x < a.left + 30 || x > a.right - 30) x = aim - away * 340;
     return { kind: 'stand', x, ledge: null };
   }
   if (bl.state === 'tell' && bl.move === 'clawCombo') {

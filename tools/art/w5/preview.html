@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>World 5 art preview</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #1a1420; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #tag { position: fixed; left: 8px; top: 6px; font: 600 12px system-ui, sans-serif; color: #fff; text-shadow: 0 1px 2px #000; }
+</style>
+</head>
+<body>
+<!-- dev only (npx vite, then /tools/art/w5/preview.html?stage=5-1&x=0, or ?arena=table): World 5's backdrops with the kit and the
+     props placed, the way a stage would draw them. tools/art/w5/shots.mjs takes the screenshots. Not part of the build. -->
+<canvas id="c"></canvas>
+<div id="tag"></div>
+<script type="module" src="./preview.ts"></script>
+</body>
+</html>

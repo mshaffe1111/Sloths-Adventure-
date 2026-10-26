@@ -27,8 +27,9 @@ export interface Rock {
 }
 
 export type ReachGoal =
-  /** a jab lands on this box (x across, y and h up from the floor) */
-  | { kind: 'punch'; box: Box }
+  /** a jab lands on this box (x across, y and h up from the floor); `boxAt`, when given, is where the box is t s after he sets off (a
+   * boss that comes to him), and `box` is only where it starts */
+  | { kind: 'punch'; box: Box; boxAt?: (t: number) => Box }
   /** his feet come down on this box from above (a stomp; with the leaf open if `leaf`) */
   | { kind: 'stomp'; box: Box; leaf?: boolean };
 
@@ -50,8 +51,8 @@ interface Body {
 
 const overlap = (a0: number, a1: number, b0: number, b1: number) => a0 < b1 && a1 > b0;
 
-function reached(b: Body, goal: ReachGoal, prevY: number): boolean {
-  const g = goal.box;
+function reached(b: Body, goal: ReachGoal, prevY: number, t: number): boolean {
+  const g = goal.kind === 'punch' && goal.boxAt ? goal.boxAt(t) : goal.box;
   if (goal.kind === 'punch') {
     // facing the box (he turns at once), the jab reaches it
     const right = g.x + g.w / 2 >= b.x;
@@ -78,7 +79,8 @@ function trial(fromX: number, fromUp: number, goal: ReachGoal, rocks: readonly R
   let doubled = false;
   for (let f = 0; f * DT <= maxT; f++) {
     const prevY = b.y;
-    const dx = aimX - b.x;
+    const mv = goal.kind === 'punch' && goal.boxAt ? goal.boxAt(f * DT) : null;
+    const dx = (mv ? mv.x + mv.w / 2 : aimX) - b.x;
     const dir = Math.abs(dx) < 3 ? 0 : dx > 0 ? 1 : -1;
     if (b.grounded) {
       b.glideLeft = GLIDE.maxTime;
@@ -140,13 +142,14 @@ function trial(fromX: number, fromUp: number, goal: ReachGoal, rocks: readonly R
       b.vy = 0;
       b.grounded = true;
     } else if (b.y > floor + 0.5) b.grounded = false;
-    if (reached(b, goal, prevY)) return (f + 1) * DT;
+    if (reached(b, goal, prevY, (f + 1) * DT)) return (f + 1) * DT;
   }
   return Infinity;
 }
 
 /** the quickest way there: running, and up to two jumps (each maybe doubled), leaf held on the way down */
 export function heroReach(fromX: number, fromUp: number, goal: ReachGoal, rocks: readonly Rock[] = [], maxT = 4): number {
+  // (he heads for where the box is when he sets off; a box that comes to him only shortens it)
   const aim = goal.box.x + goal.box.w / 2;
   let best = trial(fromX, fromUp, goal, rocks, [-1, -1, -1, -1], aim, maxT);
   const waits = [0, 2, 4, 6, 8, 10, 12, 15, 18, 22, 26, 30];

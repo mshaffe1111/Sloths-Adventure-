@@ -1,0 +1,22 @@
+{"tag": "w5pack", "script": "tools/art/w5/w5cpu.py", "flavor": "cpu-upgrade", "tasks": [
+ {"do": "packall", "creature": "queen", "up": 2.0, "out": "queen-pick",
+  "meta_from": {"queen-idle": ["stills/w5q-meta.json", "queen-idle"], "queen-skitter": ["stills/w5q-meta.json", "queen-walk_0"],
+                "queen-silk": ["stills/w5q-meta.json", "queen-idle2"], "queen-slam": ["stills/w5q-meta.json", "queen-stomp"],
+                "queen-net": ["stills/w5q-meta.json", "queen-screech"], "queen-hurt": ["stills/w5q-meta.json", "queen-hurt"],
+                "queen-stunned": ["stills/w5q-meta.json", "queen-dizzy"], "queen-defeat": ["stills/w5q-meta.json", "queen-hurt"]},
+  "meta": {"queen-sit": {"creature": "queen", "frame": "sit", "ax": 112.24, "ay": 176.14, "f": 4.178571428571429, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0},
+           "queen-pour": {"creature": "queen", "frame": "pour", "ax": 128.51, "ay": 173.26, "f": 4.178571428571429, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0}},
+  "seqs": {"idle": ["w5-queen-idle-s3", [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32]],
+           "skitter": ["w5-queen-skitter-s3", [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]],
+           "silk": ["w5-queen-silk-s3", [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41]],
+           "slam": ["w5-queen-slam-s3", [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]],
+           "net": ["w5-queen-net-s3", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]],
+           "hurt": ["w5-queen-hurt-s3", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]],
+           "stunned": ["w5-queen-stunned-s3", [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40]],
+           "defeat": ["w5-queen-defeat-s3", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]],
+           "sit": ["w5-queen-sit-s3", [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]],
+           "pour": ["w5-queen-pour-s3", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]]}},
+ {"do": "packall", "creature": "meeca", "up": 1.0, "out": "meeca-pick",
+  "meta": {"meeca-carve": {"creature": "meeca", "frame": "carve", "ax": 130.06, "ay": 258.66, "f": 3.4292682926829268, "ox": 0, "oy": 0, "w": 0, "h": 0, "x": 0, "y": 0}},
+  "seqs": {"carve": ["w5-meeca-carve-s3", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]]}}
+]}

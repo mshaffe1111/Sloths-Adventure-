@@ -17,10 +17,12 @@
  *   ['u', t, finger, x, y]         lifted               ['c', t, finger]         cancelled by the system
  *   ['i', t, intent, arg?]         what the rules decided (move, duck, jump, jumpUp, punch, kick, mega)
  *   ['p', t, x, y, vx, vy, state]  Pokey (state: g ground, a air, c climb, s swing, h hang, k duck, plus the move he is throwing)
- *   ['e', t, what, detail?]        a moment
+ *   ['e', t, what, detail?]        a moment, or a glitch the game noticed (errors, freezes, screen changes, stutter, flicker and
+ *                                  jitter: every name and its fields are in tools/playtesters/LOG_EVENTS.md, for the QA team)
  */
 import { BUILD_TIME } from './version.ts';
 import { controlStyle, padSide, subscribeControls } from './controlPrefs.ts';
+import { BlinkWatch, ErrSeen, errLine, errWhere, RateLimiter } from './glitchWatch.ts';
 
 export const COLLECTOR =
   'https://script.google.com/macros/s/AKfycbxS0Yk2y7S7Ket_n7VwIpk3aKFGKVueZHi5XXn8XhvuyMy7PxcTIwJ5wJu9iKg0HzGZ/exec';
@@ -111,6 +113,20 @@ class PlayRecorder {
   private lastP = '';
   private lastPT = -1e9;
   private section = '';
+  /** glitch lines: each kind at most once a second and up to a cap a session (glitchWatch.ts) */
+  private limiter = new RateLimiter();
+  private errSeen = new ErrSeen(3);
+  private blinks = new BlinkWatch();
+  private blanks = new Set<string>();
+  /** a stage is being played (the engine runs): a sheet asked for now is drawn as a stand-in until it arrives */
+  playing = false;
+  /** when the page last came back into view (performance.now()), so a frame gap across a hidden spell is not taken for a freeze */
+  shownAt = -1;
+  private hiddenAt = -1;
+  /** long tasks (50 ms or more) seen since the engine last read them for its 'fps' line (-1: this browser does not report them) */
+  longTasks = -1;
+  /** Pokey's x when last noted, for lines that come from outside the game (long tasks) */
+  private lastX = 0;
 
   start(who: string) {
     if (this.on) return;
@@ -135,8 +151,150 @@ class PlayRecorder {
     const bye = () => void this.flush(true);
     window.addEventListener('pagehide', bye);
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') bye();
+      // hidden and back (another app, the lock button, the notification shade): noted with the time away, so the gap is not a freeze
+      const now = performance.now();
+      if (document.visibilityState === 'hidden') {
+        this.hiddenAt = now;
+        this.glitch('hidden', `x${this.lastX}`);
+        bye();
+      } else {
+        this.shownAt = now;
+        this.glitch('shown', this.hiddenAt >= 0 ? `away ${((now - this.hiddenAt) / 1000).toFixed(1)}s` : 'away ?');
+      }
     });
+    this.watchPage();
+  }
+
+  /** errors, long tasks and full screen, from the page itself (only once the control test has started) */
+  private watchPage() {
+    window.addEventListener('error', (e) => {
+      // (a picture or script that failed to load arrives here too, as an event on that element with no message)
+      const el = e.target as Element | null;
+      if (!e.message && el && el !== (window as unknown as Element) && 'tagName' in el) {
+        const src = (el as HTMLImageElement).src || (el as HTMLScriptElement).src || '';
+        this.error(`load failed: <${el.tagName.toLowerCase()}> ${src.split('/').pop()?.split('?')[0] ?? ''}`, 'res');
+        return;
+      }
+      this.error(e.error ?? e.message, 'js', e.filename, e.lineno, e.colno);
+    }, true);
+    window.addEventListener('unhandledrejection', (e) => this.error(e.reason, 'promise'));
+    try {
+      if (typeof PerformanceObserver !== 'undefined' && PerformanceObserver.supportedEntryTypes?.includes('longtask')) {
+        this.longTasks = 0;
+        // (Chrome and Android only: a stretch of 50 ms or more the page could not answer a touch or draw a frame. Each one is counted
+        // for the 'fps' line; one of 100 ms or more, a freeze you feel, gets a line of its own)
+        new PerformanceObserver((list) => {
+          for (const en of list.getEntries()) {
+            this.longTasks++;
+            if (en.duration >= 100) this.glitch('long', `${Math.round(en.duration)}ms x${this.lastX}${this.playing ? '' : ' menu'}`);
+          }
+        }).observe({ type: 'longtask', buffered: false });
+      }
+    } catch {
+      /* no long-task timing here */
+    }
+    const fs = () => {
+      const d = document as Document & { webkitFullscreenElement?: Element | null };
+      this.glitch('fullscreen', `${d.fullscreenElement || d.webkitFullscreenElement ? 'on' : 'off'} ${window.innerWidth}x${window.innerHeight}`);
+    };
+    document.addEventListener('fullscreenchange', fs);
+    document.addEventListener('webkitfullscreenchange', fs);
+  }
+
+  /**
+   * A glitch line: kept at most once a second for each kind, up to that kind's cap a session (glitchWatch.ts CAPS), so a phone in
+   * trouble cannot flood the log. A line kept after some were dropped ends with "+n" (how many were dropped since the last one).
+   */
+  glitch(kind: string, detail: string) {
+    if (!this.on) return;
+    const now = performance.now();
+    const dropped = this.limiter.allow(kind, now);
+    if (dropped < 0) this.hold(kind, detail, now);
+    else this.emit(kind, detail, dropped, now);
+  }
+  private emit(kind: string, detail: string, dropped: number, now: number) {
+    this.push(['e', this.now(now), kind, dropped > 0 ? `${detail} +${dropped}` : detail]);
+    if (this.limiter.capped) {
+      this.push(['e', this.now(now), 'capped', this.limiter.capped]);
+      this.limiter.capped = '';
+    }
+  }
+  /**
+   * A line that came too soon after the last of its kind is held, and the latest one held goes in when the second is up (so the last
+   * word of a burst is kept: the size a turning screen settled on, a second error thrown with the first). "+n" counts the rest.
+   */
+  private held = new Map<string, { detail: string; at: number }>();
+  private hold(kind: string, detail: string, now: number) {
+    if (this.limiter.full(kind)) return;
+    const waiting = this.held.has(kind);
+    this.held.set(kind, { detail, at: now });
+    if (waiting) return;
+    window.setTimeout(() => {
+      const h = this.held.get(kind);
+      this.held.delete(kind);
+      if (!h || !this.on) return;
+      const n = this.limiter.allow(kind, performance.now());
+      // (stamped with when it happened, so it can sit a little out of order; the held line was itself counted as dropped)
+      if (n >= 0) this.emit(kind, h.detail, n - 1, h.at);
+    }, this.limiter.wait(kind, now) + 5);
+  }
+
+  /** an error (`where`: js, promise, frame, screen, res): the message and file:line, the same message at most three times a session */
+  error(err: unknown, where: string, file?: string, line?: number, col?: number) {
+    if (!this.on) return;
+    const at = file ? { file, line, col } : errWhere(err);
+    const text = errLine(err, at.file, at.line, at.col, 150);
+    if (!this.errSeen.take(text)) return;
+    this.glitch('err', `${where} ${text}`);
+  }
+
+  /** a stage starts (its engine), or ends: the picture sheets noted as missing start over, once per sheet per stage */
+  private stageOwner: object | null = null;
+  stage(owner: object, on: boolean) {
+    if (on) {
+      this.stageOwner = owner;
+      this.playing = true;
+      this.blanks.clear();
+    } else if (this.stageOwner === owner) {
+      this.stageOwner = null;
+      this.playing = false;
+    }
+  }
+
+  /**
+   * A picture sheet asked for during play that is not there yet (`wait`), or that failed to load (`fail`): whatever needs it is drawn as
+   * a stand-in (or not at all) until it arrives. Once per sheet per stage; the ones asked for within a second share a line (the start of
+   * a stage asks for several at once).
+   */
+  blank(sheet: string, why: 'wait' | 'fail') {
+    if (!this.on || !this.playing) return;
+    const key = `${why} ${sheet.replace(/\.(webp|png|jpe?g)$/, '')}`;
+    if (this.blanks.has(key)) return;
+    this.blanks.add(key);
+    this.blankQueue.push(key);
+    if (!this.blankTimer) this.blankTimer = window.setTimeout(() => this.flushBlanks(), 1000);
+  }
+  private blankQueue: string[] = [];
+  private blankTimer = 0;
+  private flushBlanks() {
+    this.blankTimer = 0;
+    const q = this.blankQueue;
+    this.blankQueue = [];
+    let line = '';
+    let n = 0;
+    for (const k of q) {
+      if (line.length + k.length > 140) break;
+      line += (line ? ', ' : '') + k;
+      n++;
+    }
+    if (q.length > n) line += ` +${q.length - n} sheets`;
+    this.glitch('blank', `${line} x${this.lastX}`);
+  }
+
+  /** a HUD piece or an overlay was shown (mounted, or a new line in it): more than 4 times in 2 s is a blink */
+  shown(name: string) {
+    if (!this.on) return;
+    if (this.blinks.shown(name, performance.now())) this.glitch('blink', `${name} x${this.lastX}`);
   }
 
   private now(stamp?: number): number {
@@ -177,6 +335,7 @@ class PlayRecorder {
   /** Pokey, once a tick: kept ten times a second, and at once whenever what he is doing changes */
   pokey(x: number, y: number, vx: number, vy: number, state: string, section: string) {
     if (!this.on) return;
+    this.lastX = Math.round(x);
     if (section && section !== this.section) {
       this.section = section;
       this.event('section', section);
