@@ -544,8 +544,8 @@ export const prowlerTactic: Tactic = (bot) => {
     // out of the ring he will land on (it is marked from the start of the crouch)
     const aim = br.d.aim ?? p.x;
     const away = p.x < b.x ? -1 : 1;
-    let x = aim + away * 300;
-    if (x < a.left + 30 || x > a.right - 30) x = aim - away * 300;
+    let x = aim + away * 340;
+    if (x < a.left + 30 || x > a.right - 30) x = aim - away * 340;
     return { kind: 'stand', x, ledge: null };
   }
   if (bl.state === 'tell' && bl.move === 'clawCombo') {

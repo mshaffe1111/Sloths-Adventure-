@@ -41,12 +41,12 @@ function run(id: string, screen: { w: number; h: number }, tactic: Tactic, seed:
 }
 
 // Venom: the hero waits at one refuge all fight and leaves it only to hit the dazed head
-const refuge = (where: 'tree' | 'stump' | 'coils'): Tactic => (bot) => {
+const refuge = (where: 'tree' | 'stump' | 'coils' | 'cradle'): Tactic => (bot) => {
   const a = bot.sim.arena;
   if ((bot.belief.state === 'rec' || bot.belief.state === 'stun') && bot.sim.open) return { kind: 'hit', spot: bot.sim.spot! };
   if (where === 'tree') return { kind: 'climb', x: a.left + 20, y: a.floor - 260 };
-  if (where === 'stump') {
-    const l = bot.ledgeAt(330);
+  if (where === 'stump' || where === 'cradle') {
+    const l = bot.ledgeAt(where === 'stump' ? 330 : 36);
     return { kind: 'stand', x: (l.x0 + l.x1) / 2, ledge: l };
   }
   // the far side: right by the coils, hopping the head as it comes
@@ -57,7 +57,7 @@ const refuge = (where: 'tree' | 'stump' | 'coils'): Tactic => (bot) => {
 
 for (const [view, screen] of VIEWS) {
   test(`1-10 ${view}: the dazed head comes down where the hero dodged, so it is in reach from every refuge`, () => {
-    for (const where of ['tree', 'stump', 'coils'] as const) {
+    for (const where of ['tree', 'cradle', 'stump', 'coils'] as const) {
       const { sim, r } = run('1-10', screen, refuge(where), 1);
       assert.ok(r.won, `${where}: not won`);
       checkOpenings(sim, `1-10 ${view} from the ${where}`);
@@ -148,4 +148,42 @@ test("3-10: the pounce lands on the ring marked as he crouches: standing still i
   assert.equal(go(null), true, 'standing in the ring is hit');
   assert.equal(go(0.9), false, 'running out 0.9 s after the crouch began gets clear');
   assert.ok(POUNCE.tell >= 0.6);
+});
+
+test('1-10: no hiding place the head cannot reach, a short way down the tree, and a cradle at its top', () => {
+  const sim = new BossPlay('1-10');
+  sim.skipEntrance();
+  const a = sim.arena;
+  const b = sim.boss;
+  // the coils sit against the right fence: no room to stand behind them (QA gate: the gap there left the head 600 px away)
+  assert.ok(a.right - (b.x + b.width / 2) < 20, `${Math.round(a.right - (b.x + b.width / 2))} px behind the coils`);
+  const vine = (sim.e.vines as Array<{ x: number; topY: number; vineType: string }>).find((v) => v.vineType === 'tree_climb' && Math.abs(v.x - (a.left + 20)) < 2);
+  assert.ok(vine, 'the wall vine');
+  assert.ok(a.floor - vine.topY <= 280, `the vine reaches ${a.floor - vine.topY} up (the climb down from there must fit the daze)`);
+  // pushing on at the top hops him off: a ledge right there catches him, off the floor the lunge sweeps
+  const top = (sim.e.platforms as Array<{ x: number; y: number; width: number }>).find((p) => p.x <= vine.x + 40 && p.x + p.width >= vine.x + 60 && Math.abs(p.y - vine.topY) < 20);
+  assert.ok(top, 'a cradle at the top of the vine');
+  // Dot's first tip fits her bubble in three lines
+  assert.ok(sim.def.guide!.start!.length <= 100, sim.def.guide!.start!);
+});
+
+/**
+ * The slowest first hit measured BY TOUCH (tools/qa/bossReach.cjs: Steph's thumbs upright, Jen's sideways, a 0.8 s pause before going,
+ * getting down the tree or off a shelf included; 2026-10-26), in seconds from the opening. Each window must leave 0.6 s after it.
+ */
+const TOUCH_WORST: Array<[string, string, number]> = [
+  ['1-10', 'sweep', 3.14],
+  ['3-10', 'shadowStep', 2.56],
+  ['3-10', 'shadowStep:stun', 2.3],
+  ['3-10', 'clawCombo', 2.43],
+  ['3-10', 'pounce', 2.18],
+];
+test('every window covers the slowest first hit measured by touch, plus 0.6 s to hit', () => {
+  for (const [id, mv, worst] of TOUCH_WORST) {
+    const sim = new BossPlay(id);
+    const [name, stun] = mv.split(':');
+    const m = sim.def.moves[name];
+    const win = stun ? m.stunAfter!(sim.boss) : m.rec;
+    assert.ok(win >= worst + 0.6, `${id} ${mv}: open ${win} s < ${worst} + 0.6`);
+  }
 });

@@ -216,6 +216,8 @@ async function handle(cmd) {
   if (!page) throw new Error('no stage open: start one first');
   if (cmd.cmd === 'do') {
     for (const s of cmd.steps) await step(s);
+    // (a measuring script, not a blind tester, may skip the picture: `noshot`)
+    if (cmd.noshot) return { text: '' };
     return { shot: await shot(), text: await screenText() };
   }
   if (cmd.cmd === 'click') {

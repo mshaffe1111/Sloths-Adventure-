@@ -290,9 +290,11 @@ export interface BossDef {
   /** the fenced arena is this wide (the usual 1,080 is too small for a giant) */
   arenaW?: number;
   /** this boss's own ledges (the usual three branches are the same everywhere): x from the left fence, height above the floor */
-  perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number }; /** a bounce mushroom (70 wide; `up` is its top) */ kind?: 'bouncy'; /** from this phase on it cracks under a hero who stays on it */ crack?: number }>;
+  perches?: Array<{ dx: number; up: number; w: number; moving?: { range: number; speed: number }; /** a bounce mushroom (70 wide; `up` is its top) */ kind?: 'bouncy'; /** from this phase on it cracks under a hero who stays on it */ crack?: number; /** no heart is put on it */ noHeart?: boolean }>;
   /** climbing vines down the inside of the wall (x from the left fence): a way off the floor */
   climbs?: number[];
+  /** how high those vines reach above the floor (430 when unset) */
+  climbTop?: number;
   /** swinging lianas of its own: x from the left fence, and the height of the top and the bottom above the floor */
   vines?: Array<{ dx: number; top: number; bottom: number }>;
   /** this boss has its own lair look (see lairArt.ts) */

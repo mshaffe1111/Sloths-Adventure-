@@ -148,8 +148,12 @@ const impact = (b: BossEntity, c: BossCtx, shake: number, color: string) => {
   c.debris(b.x, c.arena.floor - 8, color);
 };
 
-/** the Shadow Prowler's pounce (s): the crouch, and the leap (long and high, so there is time to run out from under it) */
-export const POUNCE = { tell: 0.75, act: 1.0 };
+/**
+ * The Shadow Prowler's pounce: the crouch and the leap (s), how high it arcs (kept under the boss bar on a phone held sideways), the
+ * ring marking the landing (half-width), and the share of the leap after which he hurts: only coming down, onto the ring, so the ring
+ * is the whole of the danger (QA gate: hits 40 px outside it, from his body on the way and the ripples at once)
+ */
+export const POUNCE = { tell: 0.75, act: 1.0, height: 140, ring: 270, strikeFrom: 0.75 };
 
 // ───────────────────────────── 1. Venom Fang: emerald boa ─────────────────────────────
 
@@ -192,18 +196,25 @@ const VENOM: BossDef = {
   aimText: 'HIT HIS HEAD WHEN IT IS DOWN!',
   faceFixed: true,
   frameArena: true,
-  floorAt: 0.84,
+  // (0.84 until the QA gate: sideways, Pokey at the treetop sat under Dot's bubble and the lives badge)
+  floorAt: 0.92,
   arenaW: 1300,
   lair: 'venom',
   entrance: { eye: [190, 242, 100], dark: [1, 6, 3] },
   guide: {
-    start: 'When he rears back, get off the ground! Climb the tree, jump on the stump or grab the vine. Then punch his head.',
+    // (short: four lines of it covered the treetop it sends you to, sideways)
+    start: 'When he rears back, get off the ground: the tree, the stump or the vine. Then punch his head!',
     2: 'Little snakes! Punch them, and keep an eye on Venom Fang.',
     3: "The stump is cracking now. Don't stay on it too long!",
   },
   // three ways off the floor: the vine up the wall tree by the left fence, the stump (a double jump), and the liana in the middle
   climbs: [20],
-  perches: [{ dx: 330, up: 130, w: 150, crack: 3 }],
+  // (2026-10-26, QA gate: from the top of a 430 vine the climb down took ~1.9 s and the daze was over; pushing on at the top hopped him
+  // off onto the floor under the lunge) the vine stops at 270, well clear of the lunge, and a root cradle at its top catches the hop
+  climbTop: 270,
+  // his coils sit right against the right fence: the gap behind them was a hiding place the head could never reach (QA gate)
+  startDx: 1300 - 125 - 2,
+  perches: [{ dx: 330, up: 130, w: 150, crack: 3 }, { dx: 36, up: 272, w: 96, noHeart: true }],
   vines: [{ dx: 660, top: 440, bottom: 165 }],
   onPhase: (phase, _b, c) => {
     c.dropHeart?.(c.arena.left + 405);
@@ -215,7 +226,7 @@ const VENOM: BossDef = {
     sweep: {
       tell: 1.2,
       act: VF.act,
-      rec: 2.6,
+      rec: 3.8,
       pose: 'lunge',
       interruptible: false,
       // (aimed at you: the floor flash follows you through the wind-up and the head comes down at your feet, so the opening is in reach
@@ -393,6 +404,11 @@ const PROWLER: BossDef = {
   // an opening after a move takes a jab, a cross and a hook (two segments), then he pulls back; a stun in the moonlight is not capped
   openCap: 4,
   openCue: true,
+  // (QA gate: a heart lost on a low ledge over his head while he faded, and one tapping beside him as a move began) his body never
+  // hurts by touch: only his strikes do, each after its wind-up
+  // the floor a little lower on the screen, so the top of a pounce stays under the boss bar on a phone held sideways (QA gate)
+  floorAt: 0.84,
+  bodyGrace: 99,
   // He has no one weak point. Where it opens depends on what he has just done, and the glow shows where: the glowing eyes after a shadow
   // step (he is right at you), the throat after the claw combo, the arched back after a pounce (jump onto it), the tail after the dash
   // (it swings round toward you), and the belly when he is stunned. The ember while he is covered sits on the head
@@ -418,7 +434,8 @@ const PROWLER: BossDef = {
   // at 35% the glowcaps go dark: only the moon pools still shine
   onPhase: (phase, _b, c) => {
     if (phase !== 3) return;
-    c.text('THE GLOWCAPS GO DARK!', c.arena.left + 330, c.arena.floor - 270, '#7dffe0');
+    // (between the fighters, not by the left fence where it hugged the screen's edge)
+    c.text('THE GLOWCAPS GO DARK!', (c.px + _b.x) / 2, c.arena.floor - 250, '#7dffe0');
     c.shake(0.5);
   },
   moves: {
@@ -432,16 +449,26 @@ const PROWLER: BossDef = {
         tell: POUNCE.tell,
         act: POUNCE.act,
         // (the openings are timed to be reached from outside the ring: bossFair.test.ts)
-        rec: 2.7,
-        height: 230,
+        rec: 3.1,
+        height: POUNCE.height,
         min: 260,
         onLand: (b, c) => {
           impact(b, c, 0.55, '#7c3aed');
           if (b.phase < 2) return;
-          for (const d of [-1, 1] as const) floorWave(c, b.x + d * (b.width / 2 + 10), d, b.phase >= 3 ? 360 : 280, '#a78bfa', '#3b0764', true);
+          // the ripples start at the ring's edge after a beat, so a hero who got out of the ring sees them come and jumps them
+          for (const d of [-1, 1] as const) {
+            const w = floorWave(c, b.x + d * POUNCE.ring, d, b.phase >= 3 ? 360 : 280, '#a78bfa', '#3b0764', true);
+            w.warn = w.warnMax = 0.3;
+          }
         },
       });
       const leap = m.onAct!;
+      const fly = m.tick!;
+      m.tick = (b, c, dt, t) => {
+        fly(b, c, dt, t);
+        if (t < POUNCE.act * POUNCE.strikeFrom) b.ai!.hurt = [];
+      };
+      m.softBody = true;
       m.onTell = (b, c) => {
         const half = b.width / 2;
         b.ai!.d.aim = Math.max(c.arena.left + half, Math.min(c.arena.right - half, c.px));
@@ -460,10 +487,12 @@ const PROWLER: BossDef = {
     shadowStep: {
       tell: 0.55,
       act: 0.3,
-      rec: 2.5,
+      // (2.5 until the QA gate: from a low shelf over him, by touch, the first hit came at up to 2.56 s)
+      rec: 3.2,
       pose: 'fade',
+      softBody: true,
       crashText: 'CAUGHT IN THE MOON!',
-      stunAfter: () => 2.7,
+      stunAfter: () => 3.0,
       // the first time, say what the light is for
       onTell: (b, c) => {
         if (prowlerHinted.has(b)) return;
@@ -501,10 +530,12 @@ const PROWLER: BossDef = {
       tell: 0.5,
       act: 1.0,
       // the last slash overreaches and he stumbles on after you, throat open
-      rec: 2.5,
+      // (2.5 until the QA gate: by touch the first hit came at up to 2.43 s)
+      rec: 3.1,
       recStep: { speed: 260, stop: 150 },
       max: 330,
       pose: 'bite',
+      softBody: true,
       tick: (b, c, dt, t) => {
         const br = b.ai!;
         b.x += b.facing * 80 * dt;
@@ -514,7 +545,9 @@ const PROWLER: BossDef = {
     },
     // a lightning dash from one end of the arena to the other, low enough to jump
     streak: (() => {
-      const m = chargeMove({ tell: 0.65, maxT: 1.2, rec: 2.7, speed: 800, phase: 2, min: 300 });
+      // (tell 0.65 until the QA gate: the rear-up read as too quick; and his body no longer hurts over the low box below)
+      const m = chargeMove({ tell: 0.8, maxT: 1.2, rec: 2.7, speed: 800, phase: 2, min: 300 });
+      m.softBody = true;
       const base = m.tick!;
       m.tick = (b, c, dt, t) => {
         base(b, c, dt, t);
