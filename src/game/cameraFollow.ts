@@ -45,9 +45,9 @@ export function camAnchor(prev: number, p: CamSubject, vh: number): number {
   return prev;
 }
 
-/** the look-ahead this frame: easing toward `facing` x CAM.lookAhead */
-export function camLook(prev: number, facing: number, dt: number): number {
-  const want = (facing < 0 ? -1 : 1) * CAM.lookAhead;
+/** the look-ahead this frame: easing toward `facing` x `look` (CAM.lookAhead, or less on a narrow upright phone: framing) */
+export function camLook(prev: number, facing: number, dt: number, look: number = CAM.lookAhead): number {
+  const want = (facing < 0 ? -1 : 1) * look;
   return prev + (want - prev) * Math.min(1, dt * CAM.lookRate);
 }
 
@@ -76,14 +76,77 @@ export const RUN = {
   follow: 6.5,
 } as const;
 
+// ───── the framing by the screen's shape (QA, 2026-10-26) ─────
+//
+// Upright on a narrow phone (320 x 782, 390 x 844) the view is only 340-440 px of world wide, and the look-ahead put his middle only
+// 48-81 css px from the edge behind him: a spider coming up behind him in 5-5 had its "!" and the "-1 HP" squeezed into the left edge.
+// There his middle now stays FRAME.back of the view from the edge behind him standing or walking (the look-ahead is cut to fit), and
+// FRAME.runBack at a full run, as long as the view ahead keeps FRAME.keepAhead (keepStand standing): on a 390 x 844 phone that is
+// 28-30% behind him, where it was 20-23%; on a 320 x 782 one, whose view is only 368 px of world, the way ahead needs nearly all of it,
+// so there it is 18-22% (it was 16-20%).
+// Sideways on a squat screen (640 x 320, 782 x 288) the hearts row and the pills take a far bigger share of the height, and with his
+// feet 55% down the bottom 45% was dirt, so ledges and pickups crowded up under the hearts. There his feet sit FRAME.shortFeetAt down
+// the view instead: less dirt, more sky and path; the HUD band still keeps his head clear (HUD_BAND). A boss arena keeps its own
+// floor framing (bossDefs floorAt), which already sits as low or lower.
+// Every other screen keeps the plain framing.
+
+export const FRAME = {
+  /** where his middle sits across the plain view before the look-ahead, and his feet down it (fractions of the view) */
+  across: 0.45,
+  feetAt: 0.55,
+  /** upright and narrower than this (css px): the margins behind him below */
+  uprightMaxW: 600,
+  /** the nearest his middle comes to the edge behind him there, standing or walking, and at a full run (fractions of the view's width) */
+  back: 0.3,
+  runBack: 0.28,
+  /**
+   * but the view ahead of his middle never drops under these (px of world), at a full run and standing: a snake ahead is on screen 0.8 s
+   * before it bites (cameraLead.test.ts) and a World 5 spider ahead crouches in full view in time (w5SpiderView.test.ts). On the
+   * narrowest phones (a 320 x 782 view is only 368 px of world) the margin behind gives way first. (Standing, a little less: the run
+   * lead adds the rest as he sets off, and a stop lets the view settle back only the difference, slowly)
+   */
+  keepAhead: 305,
+  keepStand: 285,
+  /** sideways and this short or shorter (css px): his feet this far down the view */
+  shortMaxH: 340,
+  shortFeetAt: 0.68,
+} as const;
+
+/** the framing for one screen shape */
+export interface Framing {
+  /** the look-ahead (px of world) */
+  look: number;
+  /** the nearest his middle comes to the edge behind him at a full run (fraction of the view's width) */
+  back: number;
+  /** how far down the view his feet sit (fraction of its height) */
+  feetAt: number;
+}
+type RunFrame = Pick<Framing, 'look' | 'back'>;
+
+const PLAIN: Framing = { look: CAM.lookAhead, back: RUN.back, feetAt: FRAME.feetAt };
+
+/** the framing on a screen `cssW` x `cssH` (css px) that shows a view `vw` px of world wide */
+export function framing(cssW: number, cssH: number, vw: number): Framing {
+  const upright = cssH > cssW && cssW < FRAME.uprightMaxW;
+  const short = cssW > cssH && cssH <= FRAME.shortMaxH;
+  if (!upright && !short) return PLAIN;
+  return {
+    look: upright ? Math.min(CAM.lookAhead, Math.max(vw * (FRAME.across - FRAME.back), FRAME.keepStand - (1 - FRAME.across) * vw)) : CAM.lookAhead,
+    back: upright ? FRAME.runBack : RUN.back,
+    feetAt: short ? FRAME.shortFeetAt : FRAME.feetAt,
+  };
+}
+
 /** how far behind its aim the camera trails at a steady speed (px/s), easing at RUN.follow a frame at a time */
 export const camLag = (speed: number, dt: number): number => speed * (1 / RUN.follow - dt);
 
-/** the extra lead (px of world, on top of CAM.lookAhead) a view `vw` wide takes at a full run: 0 when the plain view already shows enough */
-export function runLead(vw: number, dt = 1 / 30): number {
+/** the extra lead (px of world, on top of the look-ahead) a view `vw` wide takes at a full run: 0 when the plain view already shows
+ *  enough. `f`: that view's look-ahead and the nearest he may come to the edge behind him (framing; by default CAM.lookAhead, RUN.back) */
+export function runLead(vw: number, dt = 1 / 30, f: RunFrame = PLAIN): number {
   // where his middle sits across the view at a full run with no extra: 45% across less the look-ahead, plus the camera's trail
-  const plain = vw * 0.45 - CAM.lookAhead + camLag(PHYS.maxRun, dt);
-  const want = Math.max(vw * RUN.back, vw - RUN.ahead);
+  const plain = vw * FRAME.across - f.look + camLag(PHYS.maxRun, dt);
+  // (a margin behind him wider than RUN.back gives way on the narrowest views, so the view ahead never drops under FRAME.keepAhead)
+  const want = Math.max(vw * RUN.back, Math.min(vw * f.back, vw - FRAME.keepAhead), vw - RUN.ahead);
   return Math.max(0, plain - want);
 }
 
@@ -99,8 +162,8 @@ export function camRun(prev: number, vx: number, facing: number, dt: number, dro
  * the trail does when he stops (`fast`, from camRun with RUN.drop), and the rest slowly (`slow`, with RUN.settle), so a stop brings
  * the view to rest and then lets it drift the last few px back over a couple of seconds instead of swinging it back at once.
  */
-export function runOffset(vw: number, fast: number, slow: number, dt = 1 / 30): number {
-  const lead = runLead(vw, dt);
+export function runOffset(vw: number, fast: number, slow: number, dt = 1 / 30, f: RunFrame = PLAIN): number {
+  const lead = runLead(vw, dt, f);
   const trail = Math.min(lead, camLag(PHYS.maxRun, dt));
   return trail * fast + (lead - trail) * slow;
 }
