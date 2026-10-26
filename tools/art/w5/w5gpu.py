@@ -6,10 +6,10 @@ env SPEC = jobs/<spec>.json in the bucket, with any of:
         Qwen-Image-Edit-2509 with the game's own frames as the reference, optionally with the character's trained model
         (mshaffe111/<queen|meeca>-qwen-lora) loaded into the edit model -> stills/<name>.png, plus a numbered contact sheet
         stills/w5c-edits-<tag>.jpg.
-  "clips": [{"name", "src": bucket path of the start picture, "prompt", "seed", "w", "h"}], "motion": {...}
+  "clips": [{"name", "src": bucket path of the start picture, "prompt", "seed", "w", "h", "flip"?, "tone"?}], "motion": {...}
         Wan 2.2 I2V with the motion model, exactly as gen/gen_clips.py -> clips/<name>.zip (49 PNG frames) and a numbered contact
         sheet stills/w5c-sheet-<name>.jpg.
-  "part"/"parts" in env PART, PARTS split the clips between jobs.
+  env PART, PARTS split the clips between jobs (the edits run in part 0); SPEC may list several specs, comma separated.
 """
 import base64, io, json, os, subprocess, sys, time, zipfile
 from pathlib import Path
@@ -21,7 +21,9 @@ from huggingface_hub import hf_hub_download
 
 tok = os.environ['HF_TOKEN']
 OUT = Path(os.environ.get('OUT', '/out'))
-SPEC = json.loads((OUT / os.environ['SPEC']).read_text())
+SPEC = {}
+for _s in os.environ['SPEC'].split(','):  # several specs merge: e.g. the edits and the clips in one job, so the job loads once
+    SPEC.update(json.loads((OUT / _s).read_text()))
 PART, PARTS = int(os.environ.get('PART', '0')), int(os.environ.get('PARTS', '1'))
 TAG = SPEC.get('tag', 'w5')
 LORAS = {'queen': ('mshaffe111/queen-qwen-lora', 'queen_qwen_v1.safetensors'), 'meeca': ('mshaffe111/meeca-qwen-lora', 'meeca_qwen_v1.safetensors')}
@@ -104,6 +106,30 @@ def prep(im, w, h):
     return im.resize((w, h), Image.LANCZOS)
 
 
+def figure(a):
+    """pixels that are not the flat grey of the picture's border"""
+    bd = np.concatenate([a[:6].reshape(-1, 3), a[-6:].reshape(-1, 3), a[:, :6].reshape(-1, 3), a[:, -6:].reshape(-1, 3)])
+    return np.sqrt(((a - np.median(bd, 0)) ** 2).sum(-1)) > 30
+
+
+def fix_start(im, c):
+    """"flip": mirror a start picture that came out facing left (the game's frames face right); "tone": pull the figure's colours to
+    the mean and spread of another picture's figure (an edit drifts lighter or more orange than the painted atlas)"""
+    if c.get('flip'):
+        im = im.transpose(Image.FLIP_LEFT_RIGHT)
+    if c.get('tone'):
+        a = np.asarray(im).astype(np.float32)
+        r = np.asarray(Image.open(OUT / c['tone']).convert('RGB')).astype(np.float32)
+        m, mr = figure(a), figure(r)
+        for ch in range(3):
+            s, sr = a[..., ch][m], r[..., ch][mr]
+            a[..., ch][m] = (s - s.mean()) / max(1.0, s.std()) * sr.std() + sr.mean()
+        im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
+    if c.get('flip') or c.get('tone'):
+        put(f"stills/{c['name']}-start.png", png(im))
+    return im
+
+
 def clips(cl, motion):
     from diffusers import WanImageToVideoPipeline
     pipe = WanImageToVideoPipeline.from_pretrained('Wan-AI/Wan2.2-I2V-A14B-Diffusers', torch_dtype=torch.bfloat16).to('cuda')
@@ -120,7 +146,7 @@ def clips(cl, motion):
         name, w, h = c['name'], c.get('w', 832), c.get('h', 480)
         t1 = time.time()
         try:
-            img = prep(Image.open(OUT / c['src']).convert('RGB'), w, h)
+            img = prep(fix_start(Image.open(OUT / c['src']).convert('RGB'), c), w, h)
             frames = pipe(image=img, prompt=c['prompt'], negative_prompt=c.get('neg', neg), height=h, width=w,
                           num_frames=c.get('frames', 49), guidance_scale=3.5, num_inference_steps=30,
                           generator=torch.Generator('cuda').manual_seed(c.get('seed', 7))).frames[0]

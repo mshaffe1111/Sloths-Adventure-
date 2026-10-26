@@ -24,14 +24,6 @@
    "h": 480
   },
   {
-   "name": "w5-queen-idle-s11",
-   "src": "stills/w5q-idle.png",
-   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant hairy dark brown tarantula with orange bands and orange eyes stands in place, breathing slowly, shifting her legs a little and twitching her fangs, side view facing right, she stays in the middle of the frame",
-   "seed": 11,
-   "w": 832,
-   "h": 480
-  },
-  {
    "name": "w5-queen-skitter-s3",
    "src": "stills/w5q-walk_0.png",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant hairy dark brown tarantula with orange bands and orange eyes scuttles in place with a quick eight-legged walking cycle, a smooth walking cycle, side view facing right, she stays in the middle of the frame",
@@ -108,14 +100,6 @@
    "src": "stills/w5q-dizzy.png",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant hairy dark brown tarantula with orange bands and orange eyes sways dazedly in place, her legs wobbling and her head lolling, side view facing right, she stays in the middle of the frame",
    "seed": 3,
-   "w": 832,
-   "h": 480
-  },
-  {
-   "name": "w5-queen-stunned-s11",
-   "src": "stills/w5q-dizzy.png",
-   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a giant hairy dark brown tarantula with orange bands and orange eyes sways dazedly in place, her legs wobbling and her head lolling, side view facing right, she stays in the middle of the frame",
-   "seed": 11,
    "w": 832,
    "h": 480
   },

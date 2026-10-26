@@ -17,13 +17,13 @@ MOTION = {'high': ['mshaffe111/slothadv-motion-lora', 'slothadv_motion_v1_high_n
           'low': ['mshaffe111/slothadv-motion-lora', 'slothadv_motion_v1_low_noise.safetensors'], 'scale': 1.0}
 # move: (start frame, what she does, seeds, size)
 QUEEN = {
-    'idle': ('idle', 'stands in place, breathing slowly, shifting her legs a little and twitching her fangs', (3, 11), (832, 480)),
+    'idle': ('idle', 'stands in place, breathing slowly, shifting her legs a little and twitching her fangs', (3,), (832, 480)),
     'skitter': ('walk_0', 'scuttles in place with a quick eight-legged walking cycle, a smooth walking cycle', (3, 11), (832, 480)),
     'silk': ('idle2', 'slowly rears back and lifts her front legs, holds still, then lunges forward and spits a thick strand of white silk', (3, 11), (832, 480)),
     'slam': ('stomp', 'holds her two front legs raised high, then slams them down hard onto the ground', (3, 11), (832, 576)),
     'net': ('screech', 'rears up tall with her front legs spread wide above her head, holds, then flings them forward as if throwing a net', (3, 11), (832, 576)),
     'hurt': ('hurt', 'jolts back from a hit, legs flinching, then steadies herself', (3,), (832, 480)),
-    'stunned': ('dizzy', 'sways dazedly in place, her legs wobbling and her head lolling', (3, 11), (832, 480)),
+    'stunned': ('dizzy', 'sways dazedly in place, her legs wobbling and her head lolling', (3,), (832, 480)),
     'defeat': ('hurt', 'is beaten: she slumps down, her legs curl up underneath her and she lies still', (3, 11), (832, 480)),
 }
 
@@ -43,9 +43,15 @@ def queen():
 def tea(sit, pour, carve):
     cl = []
     for s in (3, 11):
+        if s == 11:  # one take each of her gestures (the budget), two of the carving
+            cl.append(clip(f'w5-meeca-carve-s{s}', carve, M + 'a young girl sloth in a pink vest with a race bib, green shorts and a pink headband stands at a tree trunk and scratches letters into its bark with a tiny hairpin, her arm moving in quick small strokes, glancing back over her shoulder, side view facing right, she stays in place', s, (704, 704)))
+            continue
         cl.append(clip(f'w5-queen-sit-s{s}', sit, M + Q + 'holds one front leg out in a gracious welcoming gesture, gently sweeps it toward an unseen chair, then lowers it politely' + END, s, (832, 480)))
         cl.append(clip(f'w5-queen-pour-s{s}', pour, M + Q + 'holds a small china teapot in her front legs and slowly tilts it to pour, then sets it level again' + END, s, (832, 480)))
-        cl.append(clip(f'w5-meeca-carve-s{s}', carve, M + 'a young girl sloth in a pink vest with a race bib, green shorts and a pink headband scratches letters into an unseen surface in front of her with a tiny hairpin, her arm moving in quick small strokes, glancing back over her shoulder, side view facing right, she stays in the middle of the frame', s, (704, 704)))
+        cl.append(clip(f'w5-meeca-carve-s{s}', carve, M + 'a young girl sloth in a pink vest with a race bib, green shorts and a pink headband stands at a tree trunk and scratches letters into its bark with a tiny hairpin, her arm moving in quick small strokes, glancing back over her shoulder, side view facing right, she stays in place', s, (704, 704)))
+    for c in cl:  # her edits came out facing left and a little warmer than her painted sheet
+        if '-queen-' in c['name']:  # (the pour keeps its colours: the white teapot would be pulled dark)
+            c.update(flip=True, **({} if '-pour-' in c['name'] else {'tone': 'stills/w5q-idle.png'}))
     (G / 'spec-w5tea.json').write_text(json.dumps({'tag': 'w5tea', 'script': 'tools/art/w5/w5gpu.py', 'flavor': 'rtx-pro-6000',
                                                     'motion': MOTION, 'clips': cl}, indent=1))
     print(len(cl), 'tea and carve clips')

@@ -18,6 +18,8 @@ env SPEC = a spec in the bucket (jobs/<spec>.json, its "tasks"), or TASKS_B64 = 
         is merged in; clips made by w5gpu.py are read from the bucket's clips/. A clip's meta key is its name minus the
         leading 3 characters and the -s<seed> (pack.py start_of), so name clips "<tg>-<creature>-<frame>-s<seed>".
   {"do": "xfer", "path": "stills/x.png"}                 base64 of any repo file -> xfer/<basename>.b64.txt
+  {"do": "carry", "files": [bucket paths], "out": "xfer/x.carrier.png"}  files packed into one lossless PNG (unpack_carrier.py)
+  packall also writes xfer/<out>.carrier.png holding the sheet and its data file.
 The repo's tools come from GitHub (the game repo is public): tools/art/reanim/pack.py, meta.json and tools/art/train/clips.py.
 """
 import base64, hashlib, io, json, os, subprocess, sys, urllib.request, zipfile
@@ -104,7 +106,7 @@ UPSCALER = None
 def upscale(im):
     global UPSCALER
     if UPSCALER is None:
-        subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'torch', '--index-url', 'https://download.pytorch.org/whl/cpu'], check=True)
+        subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'torch', 'torchvision', '--index-url', 'https://download.pytorch.org/whl/cpu'], check=True)
         subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'spandrel'], check=True)
         pth = W / 'anime6b.pth'
         urllib.request.urlretrieve('https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth', pth)
@@ -188,6 +190,26 @@ def packall(t):
     out = t.get('out', c)
     up_bin_as_text((W / f'src/assets/enemies/{c}-anim.webp').read_bytes(), f'{out}-anim.webp')
     up_text((W / f'src/game/{c}AnimData.ts').read_text(), f'xfer/{out}AnimData.ts')
+    put(f'xfer/{out}.carrier.png', carrier([(f'{out}-anim.webp', (W / f'src/assets/enemies/{c}-anim.webp').read_bytes()),
+                                             (f'{out}AnimData.ts', (W / f'src/game/{c}AnimData.ts').read_bytes())]))
+
+
+def carrier(files):
+    """several files packed losslessly into one greyscale PNG (hf_fs `attach` brings a picture back byte for byte; `unpack_carrier.py`
+    reads it): a JSON header line [[name, size], ...] then the bytes, one per pixel, 2048 wide"""
+    head = json.dumps([[n, len(b)] for n, b in files]).encode() + b'\n'
+    data = head + b''.join(b for _, b in files)
+    w = 2048
+    h = (len(data) + w - 1) // w
+    arr = np.zeros(w * h, np.uint8)
+    arr[:len(data)] = np.frombuffer(data, np.uint8)
+    b = io.BytesIO(); Image.fromarray(arr.reshape(h, w), 'L').save(b, 'PNG', optimize=False, compress_level=9)
+    return b.getvalue()
+
+
+def carry(t):
+    """{"do": "carry", "files": [bucket paths], "out": "xfer/<name>.carrier.png"}"""
+    put(t['out'], carrier([(Path(f).name, (OUT / f).read_bytes()) for f in t['files']]))
 
 
 def xfer(t):
@@ -197,7 +219,7 @@ def xfer(t):
 
 for t in TASKS:
     try:
-        {'sheet': lambda t: sheet(t['clip']), 'starts': starts, 'packall': packall, 'xfer': xfer}[t['do']](t)
+        {'sheet': lambda t: sheet(t['clip']), 'starts': starts, 'packall': packall, 'xfer': xfer, 'carry': carry}[t['do']](t)
     except Exception as e:
         import traceback; traceback.print_exc()
         print('FAILED', json.dumps(t)[:200], repr(e)[:300], flush=True)

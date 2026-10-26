@@ -1,6 +1,7 @@
 """Train the five new World 5 creature models (Matt's picks, 2026-10-26): the Dangler, the Butler, the Seamstress, the Orchid Mantis and
 the Dozer moths. One Qwen-Image LoRA each, the same recipe as the *-qwen-lora character models (queen_qwen_v1, meeca_qwen_v1).
-NOT RUN YET: the concept sheets need Matt's approval first. The spec is tools/art/gen/spec-w5creatures-train.json.
+Matt approved all five (every take) on 2026-10-26; they were trained on HF by w5train.py (spec tools/art/gen/spec-w5creatures-train.json,
+written by make_train_spec.py). This launcher is the local route for a retrain with a write token.
 
     python3 -I tools/art/w5/train_w5creatures.py SPEC --cut [names...]     cut each approved sheet into its poses, with a numbered preview
     python3 -I tools/art/w5/train_w5creatures.py SPEC --build [names...]   the training set: <name>NNN.png on flat grey + caption .txt
@@ -24,6 +25,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 from scipy import ndimage
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from w5lib import config, pieces_in_row, sheet_mask  # noqa: E402,F401
 
 H = Path(__file__).resolve().parent
 ROOT = H.parents[2]
@@ -114,70 +117,6 @@ def build(c):
     print(c['name'], k, 'pictures,', len(small), 'to upscale ->', items)
     if k < 8:
         print('  fewer than 8 poses: the model will be weak; cut more poses or ask for a fuller sheet')
-
-
-def config(c):
-    prompts = '\n'.join(f'          - "{p}"' for p in c['samples'])
-    return f'''---
-job: extension
-config:
-  name: "{c['lora_name']}"
-  process:
-    - type: 'sd_trainer'
-      training_folder: "/out"
-      device: cuda:0
-      network:
-        type: "lora"
-        linear: {c.get('rank', 32)}
-        linear_alpha: {c.get('rank', 32)}
-      save:
-        dtype: float16
-        save_every: 500
-        max_step_saves_to_keep: 6
-      datasets:
-        - folder_path: "/data/{c['name']}"
-          caption_ext: "txt"
-          caption_dropout_rate: 0.05
-          shuffle_tokens: false
-          cache_latents_to_disk: true
-          resolution: [ 768, 1024 ]
-      train:
-        batch_size: 1
-        cache_text_embeddings: true
-        steps: {c.get('steps', 1500)}
-        gradient_accumulation: 1
-        train_unet: true
-        train_text_encoder: false
-        gradient_checkpointing: true
-        noise_scheduler: "flowmatch"
-        optimizer: "adamw8bit"
-        lr: 1e-4
-        dtype: bf16
-      model:
-        name_or_path: "Qwen/Qwen-Image"
-        arch: "qwen_image"
-        quantize: true
-        qtype: "qfloat8"
-        quantize_te: true
-        qtype_te: "qfloat8"
-        low_vram: false
-      sample:
-        sampler: "flowmatch"
-        sample_every: 500
-        sample_start_step: 0
-        width: 1024
-        height: 1024
-        prompts:
-{prompts}
-        neg: ""
-        seed: 42
-        walk_seed: true
-        guidance_scale: 3
-        sample_steps: 25
-meta:
-  name: "[name]"
-  version: '1.0'
-'''
 
 
 def command(c):

@@ -1,0 +1,5 @@
+{"tag": "w5starts", "script": "tools/art/w5/w5cpu.py", "flavor": "cpu-upgrade", "tasks": [
+ {"do": "carry", "files": ["xfer/spider-allAnimData.ts"], "out": "xfer/spider-all-data.carrier.png"},
+ {"do": "starts", "atlas": "queen", "tag": "w5q", "frames": ["idle", "walk_0", "idle2", "screech", "stomp", "crush", "webslam", "cocoon", "hurt", "dizzy", "dead", "block"]},
+ {"do": "starts", "atlas": "meeca", "tag": "w5m", "frames": ["idle", "climb_2", "climb_4", "walk_6", "pickup"]}
+]}
