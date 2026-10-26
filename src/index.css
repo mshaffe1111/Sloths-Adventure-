@@ -838,6 +838,8 @@
 
 /* ---------- thumb gesture pictures (How to Play, and the first-stage lesson) ---------- */
 .cg { display: block; flex: none; border-radius: 12px; background: rgba(0,0,0,.28); }
+/* the control test's move tiles: the moving thumb on dark green, so it reads on the cream tile */
+.ct-tile .cg { background: #1f4a33; }
 .cg-bare { background: none; filter: drop-shadow(0 2px 6px rgba(0,0,0,.55)); }
 .cg-path { stroke: rgba(255,232,150,.55); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-dasharray: 1 7; }
 .cg-head { stroke-dasharray: none; stroke: rgba(255,232,150,.8); }
