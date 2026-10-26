@@ -73,6 +73,16 @@ async function open(stage, v, flag = 0, layout = 1) {
   if (flag > 0) {
     const ok = await page.evaluate((n) => {
       const e = window.__engine();
+      // Dot's netting flight has no flags: her flowers are her checkpoints, so start at the Nth flower she would drink at
+      const dot = e.dotRun;
+      if (dot) {
+        const fls = [...dot.fl.stage.flowers].sort((a, b) => a.x - b.x);
+        const f = fls[Math.min(n, fls.length) - 1];
+        if (!f) return 0;
+        dot.fl.checkpoint = { x: f.x + (f.face > 0 ? 34 : -34), y: f.y };
+        dot.fl.respawn();
+        return fls.length;
+      }
       // flags in stage order (some stages run downhill or back left), and placing him there costs no life
       const cps = e.currentStage.checkpoints ?? [];
       const cp = cps[Math.min(n, cps.length) - 1];

@@ -3,6 +3,7 @@ import { DOT_STAGE_ID } from '../game/extraStages.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { countWord } from '../game/stagePlan.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
+import { DotFace } from './DotFace.tsx';
 import { BossHud } from './BossHud.tsx';
 
 interface GameHUDProps {
@@ -100,9 +101,16 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           </div>
           )}
           <div className="hud-glass flex items-center gap-1.5 rounded-full py-[3px] pl-[3px] pr-3" role="img" aria-label={`Lives: ${lives}`}>
-            <span className="rounded-full overflow-hidden bg-amber-200 w-[26px] h-[26px] sm:w-[30px] sm:h-[30px] flex items-center justify-center">
-              <HeroFaceIcon size={26} face="face_happy" />
-            </span>
+            {levelConfig.id === DOT_STAGE_ID ? (
+              // Dot's own stage: her lives, her face
+              <span className="rounded-full overflow-hidden bg-sky-200 w-[26px] h-[26px] sm:w-[30px] sm:h-[30px] flex items-end justify-center">
+                <DotFace size={30} face="closed" />
+              </span>
+            ) : (
+              <span className="rounded-full overflow-hidden bg-amber-200 w-[26px] h-[26px] sm:w-[30px] sm:h-[30px] flex items-center justify-center">
+                <HeroFaceIcon size={26} face="face_happy" />
+              </span>
+            )}
             <span className="text-base sm:text-lg font-semibold tabular-nums leading-none">&times; {lives}</span>
           </div>
         </div>

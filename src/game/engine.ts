@@ -2241,9 +2241,12 @@ export class GameEngine {
     // the banner's slot (index.css .way): its top, and about two lines of height below it
     const slot = w <= 520 ? 132 : h <= 430 ? 110 : 96;
     const bandTop = slot - 12, bandBot = slot + 88;
-    const head = (p.y - 125 - this.camera.y) * this.zoom;
-    const feet = (p.y + 10 - this.camera.y) * this.zoom;
-    const under = feet > bandTop && head < bandBot;
+    // (Dot is smaller than Pokey: her own body and the note under her. Upright, her nectar panel is at the bottom of the screen and
+    // her camera keeps her well below the banner, so there the banner never moves down over the panel: QA, 2026-10-25)
+    const dot = this.dotRun;
+    const head = ((dot ? dot.fl.y - 34 : p.y - 125) - this.camera.y) * this.zoom;
+    const feet = ((dot ? dot.fl.y + 40 : p.y + 10) - this.camera.y) * this.zoom;
+    const under = feet > bandTop && head < bandBot && !(dot && h > w);
     if (under) {
       this.wayClearT = 0;
       if (!this.wayLow) {
@@ -3461,6 +3464,8 @@ export class GameEngine {
       return;
     }
     this.respawnAtCheckpoint(reason);
+    // Dot's flight: she says a life went (QA, 2026-10-25: losing one came with no line)
+    this.dotRun?.lostLife(this.lives);
   }
 
   /**
@@ -4284,6 +4289,8 @@ export class GameEngine {
     this.input.megaReady = true;
     if (!this.isGameOver || run.fl.through) run.step(dt, this.input.state);
     this.checkpoint = { ...run.fl.checkpoint };
+    // her flowers are the stage's checkpoints: the ones up to hers are reached (Continue after a game over comes back to hers)
+    for (const cp of this.currentStage.checkpoints ?? []) if (!cp.reached && cp.x <= run.fl.checkpoint.x + 1) cp.reached = true;
     p.x = run.fl.x;
     p.y = run.fl.y + 22;
     p.vx = run.fl.vx;
