@@ -123,7 +123,9 @@ async function steerTo(dir) {
     await frames(33);
   }
   const reach = persona ? 50 + rand() * 40 : 70;
-  const [dx, dy] = { right: [reach, 0], left: [-reach, 0], none: [0, 0], up: [0, -55], down: [0, 55] }[dir] ?? [0, 0];
+  const to = { right: [reach, 0], left: [-reach, 0], none: [0, 0], up: [0, -55], down: [0, 55] }[dir];
+  if (!to) throw new Error(`unknown steer "${dir}" (right, left, up, down, none)`);
+  const [dx, dy] = to;
   const tx = steer.ax + dx, ty = steer.ay + dy + (persona && (dir === 'left' || dir === 'right') ? (rand() - 0.5) * 24 : 0);
   // a thumb slides over about a tenth of a second, not in one jump
   for (let k = 1; k <= 4; k++) {
@@ -143,7 +145,9 @@ async function action(kind, dir, holdMs) {
     const len = persona ? draw(persona.flickPx, 80) : 80;
     const ms = persona ? Math.max(30, Math.min(260, len / Math.max(0.2, draw(persona.flickPxPerMs, 1.3)))) : 60;
     const lean = persona ? ((rand() < 0.5 ? -1 : 1) * draw(persona.jumpFlickOffVerticalDeg, 0) * Math.PI) / 180 : 0;
-    const base = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[dir] ?? [0, -1];
+    // up-right / up-left lean 35 degrees off straight up: the up-forward flick that leaves a vine
+    const base = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0], 'up-right': [0.574, -0.819], 'up-left': [-0.574, -0.819] }[dir ?? 'up'];
+    if (!base) throw new Error(`unknown flick "${dir}" (up, down, left, right, up-right, up-left)`);
     const ux = base[0] * Math.cos(lean) - base[1] * Math.sin(lean), uy = base[0] * Math.sin(lean) + base[1] * Math.cos(lean);
     const n = Math.max(3, Math.round(ms / 20));
     for (let k = 1; k <= n; k++) {
@@ -220,12 +224,29 @@ async function handle(cmd) {
   if (cmd.cmd === 'probe') {
     // QA lead only, not in the tester brief (testers play blind): run N ms and report how high he got, to check a tester's report
     const ms = Number(cmd.ms || 1200);
-    const read = () => page.evaluate(() => { const p = window.__engine().player; return { x: Math.round(p.x), y: Math.round(p.y), g: p.grounded, dj: !!p.isDoubleJumping, jl: p.jumpsLeft }; });
+    const read = () => page.evaluate(() => { const p = window.__engine().player; return { x: Math.round(p.x), y: Math.round(p.y), g: p.grounded, dj: !!p.isDoubleJumping, jl: p.jumpsLeft, vine: !!p.climbing, swing: !!p.isVineSwinging }; });
     const s0 = await read();
     let minY = s0.y, dj = s0.dj;
     for (let t = 0; t < ms; t += 33) { await page.clock.runFor(33); const r = await read(); minY = Math.min(minY, r.y); dj = dj || r.dj; }
     const s1 = await read();
     return { text: JSON.stringify({ start: s0, end: s1, rise: s0.y - minY, sawDoubleJump: dj }) };
+  }
+  if (cmd.cmd === 'jumptrace') {
+    // QA lead only: every time something presses jump, where it came from (installed once; each call returns and clears the list)
+    const out = await page.evaluate(() => {
+      const st = window.__engine().input.state;
+      if (!window.__jt) {
+        window.__jt = [];
+        let v = st.jumpPressed;
+        Object.defineProperty(st, 'jumpPressed', { configurable: true, get: () => v, set: (n) => {
+          if (n && !v) { const p = window.__engine().player; window.__jt.push({ x: Math.round(p.x), y: Math.round(p.y), swing: !!p.isVineSwinging, from: new Error().stack.split('\n').slice(2, 6).map((s) => s.trim()).join(' < ') }); }
+          v = n;
+        } });
+      }
+      const r = window.__jt.splice(0);
+      return r;
+    });
+    return { text: JSON.stringify(out) };
   }
   if (cmd.cmd === 'burst') {
     // eight frames in a row in one strip: flicker, jitter and things popping in and out show up side by side

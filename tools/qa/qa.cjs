@@ -15,7 +15,7 @@
  * Each prints the screenshot's path and the words on screen. Keys: left right up down jump punch kick mega, joined with + to press
  * together, then how long to hold them (ms of game time, default 120).
  * Touch (the phone's real controls): "steer right 800" puts the left thumb down and slides it (it stays down, so the next steps run
- * while steering; "steer none" stops, "steer up"/"steer down" climb), "lift" takes it off, "tap" (right thumb), "flick up|down|left|right",
+ * while steering; "steer none" stops, "steer up"/"steer down" climb), "lift" takes it off, "tap" (right thumb), "flick up|down|left|right|up-right|up-left",
  * "flickhold up 600" (flick, then keep the thumb on the glass), "hold 700". The game stands still between commands.
  */
 const http = require('http');

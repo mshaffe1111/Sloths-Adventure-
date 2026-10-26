@@ -24,7 +24,7 @@ node tools/qa/qa.cjs {PORT} click "Got it!"           (press a button on screen 
 node tools/qa/qa.cjs {PORT} look | turn | burst | perf
 ```
 - `steer right|left|up|down|none <ms>`: your steering thumb goes down and slides; it stays down until `lift`. Up/down climbs.
-- `tap` punches. `flick up` jumps (`flickhold up 400` for a higher jump). `flick left|right` kicks. `hold 700` is a mega.
+- `tap` punches. `flick up` jumps (`flickhold up 400` for a higher jump). `flick left|right` kicks. `flick up-right|up-left` is an up-and-over flick (it leaves a vine). `hold 700` is a mega.
 - The game stands still between commands. Several steps in one `do` run back to back, like real play.
 - `burst` takes eight frames in a row (for flicker). `perf` gives memory. `turn` flips the phone.
 - The clock only moves inside a command. A card's "Got it!" turns on after about a second of game time, so `do "wait 1200"` before you `click` it.
