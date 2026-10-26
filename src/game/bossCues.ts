@@ -9,7 +9,7 @@ import type { BossEntity } from './types.ts';
 import type { BossDef } from './bossAI.ts';
 import { weakOpen } from './bossAI.ts';
 import { drawBossFighter } from './bossArt.ts';
-import { POUNCE } from './bossDefs.ts';
+import { DASH_HIGH, POUNCE } from './bossDefs.ts';
 
 /** how much of him is drawn back over the dark (0..1): `dark` is how dark the lair is (0 lit, 1 fully dark) */
 export function darkReveal(b: BossEntity, def: BossDef, dark: number): number {
@@ -21,12 +21,12 @@ export function darkReveal(b: BossEntity, def: BossDef, dark: number): number {
 }
 
 /** the boss drawn back over the dark, and his eyes (world space: call it inside the camera transform) */
-export function drawBossOverDark(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, world: number, floor: number, time: number, dark: number) {
+export function drawBossOverDark(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, world: number, floor: number, time: number, dark: number, arena?: { left: number; right: number }) {
   const k = darkReveal(b, def, dark);
   const br = b.ai;
   if (k <= 0 || !br) return;
   drawBossFighter(ctx, { ...b, ai: { ...br, alpha: br.alpha * k } }, def, time, world, floor);
-  drawPounceRing(ctx, b, def, floor, time, dark);
+  drawGroundCues(ctx, b, def, floor, time, dark, arena);
   // the eyes: two glints at the head, flaring as he winds up (the same spot as his glowing-eyes weak point after a shadow step)
   const winding = br.state === 'tell';
   const f = b.facing < 0 ? -1 : 1;
@@ -103,4 +103,52 @@ export function drawPounceRing(ctx: CanvasRenderingContext2D, b: BossEntity, def
     ctx.stroke();
   }
   ctx.restore();
+}
+
+/**
+ * The dash's path: from the moment he rears up, a hot streak along the floor from his feet to the fence he will run at, with arrows
+ * racing along it, so the roar reads as "a dash is coming along the ground here: jump it or get up high" (QA gate: a low lunge with
+ * only the roar first). Drawn for the Shadow Prowler only.
+ */
+export function drawDashLine(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, floor: number, time: number, left: number, right: number, alpha = 1) {
+  const br = b.ai;
+  if (def.lair !== 'prowler' || !br || br.move !== 'streak' || br.state !== 'tell') return;
+  const f = b.facing < 0 ? -1 : 1;
+  const x0 = b.x + f * (b.width / 2 - 20);
+  const x1 = f > 0 ? right - 10 : left + 10;
+  const u = Math.min(1, br.t / 0.3);
+  const xe = x0 + (x1 - x0) * u;
+  ctx.save();
+  ctx.globalAlpha = alpha * (0.85 + 0.15 * Math.sin(time * 22));
+  const g = ctx.createLinearGradient(0, floor - DASH_HIGH, 0, floor);
+  g.addColorStop(0, 'rgba(255, 90, 90, 0.05)');
+  g.addColorStop(1, 'rgba(255, 90, 90, 0.8)');
+  ctx.fillStyle = g;
+  ctx.fillRect(Math.min(x0, xe), floor - DASH_HIGH, Math.abs(xe - x0), DASH_HIGH);
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 7;
+  ctx.shadowColor = '#ff6b6b';
+  ctx.shadowBlur = 14;
+  ctx.beginPath();
+  ctx.moveTo(x0, floor - 3);
+  ctx.lineTo(xe, floor - 3);
+  ctx.stroke();
+  // arrows racing the way he will go
+  ctx.lineWidth = 6;
+  const gap = 90;
+  const off = ((time * 420) % gap) * f;
+  for (let x = x0 + off; f > 0 ? x < xe : x > xe; x += f * gap) {
+    ctx.beginPath();
+    ctx.moveTo(x - f * 12, floor - 34);
+    ctx.lineTo(x, floor - 22);
+    ctx.lineTo(x - f * 12, floor - 10);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/** every cue drawn on the ground under a fight: the pounce's ring and the dash's path */
+export function drawGroundCues(ctx: CanvasRenderingContext2D, b: BossEntity, def: BossDef, floor: number, time: number, alpha = 1, arena?: { left: number; right: number }) {
+  drawPounceRing(ctx, b, def, floor, time, alpha);
+  if (arena) drawDashLine(ctx, b, def, floor, time, arena.left, arena.right, alpha);
 }

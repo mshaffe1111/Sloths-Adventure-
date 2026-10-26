@@ -116,7 +116,7 @@ import { EASY_OPEN_MUL, bodyHurts, hazardBox, interruptBoss, stepBoss, stepHazar
 import type { BossCtx, BossDef, BossHazard } from './bossAI.ts';
 import { bossDefForLevel } from './bossDefs.ts';
 import { hitLabel, hitsLeft } from './bossHits.ts';
-import { drawBossOverDark, drawPounceRing } from './bossCues.ts';
+import { drawBossOverDark, drawGroundCues } from './bossCues.ts';
 import { prowlerGlow } from './lairProwler.ts';
 import { baseScale, bossViewWidth, bossViewX } from './bossCamera.ts';
 import { fadeShove, gustPush, makePillars, PILLAR, screechShove, type SkyPillar } from './sovereignFight.ts';
@@ -4817,7 +4817,7 @@ export class GameEngine {
     if (this.boss && (!this.boss.defeated || this.bossDef?.ending) && this.bossDef) {
       const floor = this.currentStage.arena?.floor ?? 560;
       drawBossFighter(ctx, this.boss, this.bossDef, this.gameTime, this.currentStage.config.worldIndex, floor);
-      drawPounceRing(ctx, this.boss, this.bossDef, floor, this.gameTime);
+      drawGroundCues(ctx, this.boss, this.bossDef, floor, this.gameTime, 1, this.currentStage.arena ?? undefined);
       if (this.skyPillars && !this.boss.defeated && this.bossDef.stompSpot) drawBackCue(ctx, this.boss, this.bossDef.stompSpot, floor, this.gameTime);
       if (this.skyPillars && !this.boss.defeated) drawScreechCue(ctx, this.boss, floor, this.gameTime, (this.bossDef.moves.screech?.tell ?? 1) * (this.bossCtx?.tellMul ?? 1));
     }
@@ -4943,7 +4943,7 @@ export class GameEngine {
     if (lair === 'prowler' && this.boss && this.bossDef && !this.boss.defeated && prowlerGlow() < 0.98) {
       ctx.save();
       ctx.translate(-snapCam(this.camera.x, snap) + shakeX, -snapCam(this.camera.y, snap) + shakeY);
-      drawBossOverDark(ctx, this.boss, this.bossDef, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560, this.gameTime, (1 - prowlerGlow()) / (1 - 0.16));
+      drawBossOverDark(ctx, this.boss, this.bossDef, this.currentStage.config.worldIndex, this.currentStage.arena?.floor ?? 560, this.gameTime, (1 - prowlerGlow()) / (1 - 0.16), this.currentStage.arena ?? undefined);
       this.drawPopups(ctx);
       ctx.restore();
     }

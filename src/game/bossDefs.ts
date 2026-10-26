@@ -153,6 +153,9 @@ const impact = (b: BossEntity, c: BossCtx, shake: number, color: string) => {
  * ring marking the landing (half-width), and the share of the leap after which he hurts: only coming down, onto the ring, so the ring
  * is the whole of the danger (QA gate: hits 40 px outside it, from his body on the way and the ripples at once)
  */
+/** how high the Prowler's dash hurts: flat out he is this low, so a jump (even a single one, at its top) clears him (QA gate) */
+export const DASH_HIGH = 70;
+
 export const POUNCE = { tell: 0.75, act: 1.0, height: 140, ring: 270, strikeFrom: 0.75 };
 
 // ───────────────────────────── 1. Venom Fang: emerald boa ─────────────────────────────
@@ -451,7 +454,7 @@ const PROWLER: BossDef = {
         tell: POUNCE.tell,
         act: POUNCE.act,
         // (the openings are timed to be reached from outside the ring: bossFair.test.ts)
-        rec: 3.1,
+        rec: 3.6,
         height: POUNCE.height,
         min: 260,
         // (no floor ripples any more: QA gate, they crossed a hero running back in for the opening, which must be safe)
@@ -462,6 +465,8 @@ const PROWLER: BossDef = {
       m.tick = (b, c, dt, t) => {
         fly(b, c, dt, t);
         const br = b.ai!;
+        // landed: already turned away from you (the recovery keeps it so)
+        if (t >= POUNCE.act - 1e-6) b.facing = c.px >= b.x ? -1 : 1;
         if (t < POUNCE.act * POUNCE.strikeFrom) {
           br.hurt = [];
           return;
@@ -478,8 +483,10 @@ const PROWLER: BossDef = {
       m.recFaceAway = true;
       m.softBody = true;
       m.onTell = (b, c) => {
-        const half = b.width / 2;
-        b.ai!.d.aim = Math.max(c.arena.left + half, Math.min(c.arena.right - half, c.px));
+        // never so near a fence that a hero there cannot get out of it: at a fence he is left just outside the ring (QA gate: a ring
+        // came down on Steph at the left tree, and running left only met the wall)
+        const keep = POUNCE.ring + 40;
+        b.ai!.d.aim = Math.max(c.arena.left + keep, Math.min(c.arena.right - keep, c.px));
       };
       m.onAct = (b, c) => {
         leap(b, c);
@@ -557,11 +564,14 @@ const PROWLER: BossDef = {
       // (tell 0.65 until the QA gate: the rear-up read as too quick; and his body no longer hurts over the low box below)
       const m = chargeMove({ tell: 0.8, maxT: 1.2, rec: 2.7, speed: 800, phase: 2, min: 300 });
       m.softBody = true;
+      m.guide = 'He rears up to dash along the floor! Double jump over him as he comes, or get up on a shelf.';
       const base = m.tick!;
       m.tick = (b, c, dt, t) => {
         base(b, c, dt, t);
-        // he is flat out, so the box that hurts is lower than his resting height: under the low shelves, and under a double jump
-        b.ai!.hurt = [{ x: b.x - b.width / 2, y: c.arena.floor - 108, w: b.width, h: 108 }];
+        // he is flat out, so the box that hurts is lower than his resting height: under the low shelves, and under a jump
+        // (108 and his full length until the QA gate: a double jump over him still cost a heart; now a double jump as he comes
+        // clears him, Dot says so the first time, and the floor streak shows his path: bossTells.test.ts)
+        b.ai!.hurt = [{ x: b.x - b.width / 2 + 60, y: c.arena.floor - DASH_HIGH, w: b.width - 120, h: DASH_HIGH }];
       };
       // he skids to a stop facing the fence he ran at, so the tail he is weak at swings out toward the middle, where you are
       // (2026-10-26, QA: a hero who jumped the dash stood at his head, the tail out of reach) he turns his back on you, wherever you are

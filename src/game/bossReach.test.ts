@@ -176,7 +176,8 @@ const TOUCH_WORST: Array<[string, string, number]> = [
   ['3-10', 'shadowStep', 2.56],
   ['3-10', 'shadowStep:stun', 2.3],
   ['3-10', 'clawCombo', 2.43],
-  ['3-10', 'pounce', 2.18],
+  // (from just outside the ring after dodging left, so he landed with his back to Pokey: the jump onto his back)
+  ['3-10', 'pounce', 2.94],
 ];
 test('every window covers the slowest first hit measured by touch, plus 0.6 s to hit', () => {
   for (const [id, mv, worst] of TOUCH_WORST) {
@@ -211,4 +212,86 @@ test('1-10: his coils are a wall (no getting behind them, nor up the fence tree 
     assert.ok(t.p.grounded && feet > 250, `after holding up he is ${Math.round(feet)} px up (grounded ${t.p.grounded})`);
     assert.ok(t.p.x < a.left + 160, `and at ${Math.round(t.p.x - a.left)} px from the left fence`);
   }
+});
+
+test('3-10: a ring never comes down where a hero at the fence cannot get out of it, and he lands with his back to a hero who dodged either way', () => {
+  for (const [side, screen] of [[-1, { w: 640, h: 320 }], [1, { w: 390, h: 844 }]] as const) {
+    const sim = new BossPlay('3-10', false, screen);
+    sim.skipEntrance();
+    const b = sim.boss;
+    const a = sim.arena;
+    const br = b.ai!;
+    for (let i = 0; i < 20; i++) sim.frame();
+    const moves = { ...sim.def.moves };
+    for (const k of Object.keys(sim.def.moves)) if (k !== 'pounce') delete (sim.def.moves as Record<string, unknown>)[k];
+    try {
+      // the hero at a fence, the boss across the arena
+      sim.p.x = side < 0 ? a.left + 14 : a.right - 14;
+      b.x = side < 0 ? a.right - 300 : a.left + 300;
+      br.state = 'idle';
+      br.idle = 0.05;
+      br.recent = ['streak'];
+      const state = (): string => br.state;
+      const hp0 = sim.p.hp;
+      for (let i = 0; i < 150 && state() !== 'rec'; i++) sim.frame();
+      assert.ok(Math.abs(br.d.aim - sim.p.x) > POUNCE.ring + 13, `the ring's middle is ${Math.round(Math.abs(br.d.aim - sim.p.x))} px from a hero at the fence`);
+      assert.equal(sim.p.hp, hp0, 'a hero standing at the fence was hit');
+      assert.ok(Math.sign(sim.p.x - b.x) !== b.facing, 'he landed facing the hero');
+    } finally {
+      Object.assign(sim.def.moves, moves);
+    }
+  }
+});
+
+test('3-10: the dash is taught, its path glows, and a double jump as he comes clears it (standing still does not)', () => {
+  const tries = (kind: 'stand' | 'double', after: number) => {
+    const sim = new BossPlay('3-10');
+    sim.skipEntrance();
+    const b = sim.boss;
+    const a = sim.arena;
+    const br = b.ai!;
+    for (let i = 0; i < 10; i++) sim.frame();
+    const moves = { ...sim.def.moves };
+    for (const k of Object.keys(sim.def.moves)) if (k !== 'streak') delete (sim.def.moves as Record<string, unknown>)[k];
+    try {
+      b.hp = Math.floor(b.maxHp * 0.6);
+      for (let i = 0; i < 45; i++) sim.frame();
+      sim.p.x = a.left + 700;
+      b.x = a.right - 250;
+      br.state = 'idle';
+      br.idle = 0.05;
+      br.recent = ['pounce'];
+      const state = (): string => br.state;
+      const hp0 = sim.p.hp;
+      let tellAt = -1;
+      let step = 0;
+      let t2 = 0;
+      for (let i = 0; i < 120 && state() !== 'rec'; i++) {
+        if (state() === 'tell' && tellAt < 0) tellAt = sim.t;
+        let pad = {};
+        if (kind === 'double' && tellAt >= 0 && sim.t - tellAt >= after) {
+          if (step === 0) {
+            pad = { press: true };
+            step = 1;
+            t2 = sim.t;
+          } else if (step === 1 && sim.p.vy > -140 && sim.t - t2 > 0.1) step = 2;
+          else if (step === 2) {
+            pad = { press: true };
+            step = 3;
+          } else pad = { jump: true };
+        }
+        sim.frame(pad);
+      }
+      return sim.p.hp < hp0;
+    } finally {
+      Object.assign(sim.def.moves, moves);
+    }
+  };
+  assert.equal(tries('stand', 0), true, 'standing in his path is hit');
+  // a window of at least 0.3 s to time the double jump in, as he comes 550 px away
+  const ok = [0.8, 0.9, 1.0, 1.1].filter((t) => !tries('double', t));
+  assert.ok(ok.length >= 3, `the double jump clears it only when pressed at ${ok.join(', ')} s into the wind-up`);
+  const sim = new BossPlay('3-10');
+  assert.match(sim.def.moves.streak.guide ?? '', /double jump/i);
+  assert.ok(sim.def.moves.streak.tell >= 0.6);
 });
