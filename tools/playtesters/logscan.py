@@ -16,7 +16,8 @@ secHurt=collections.Counter(); secLife=collections.defaultdict(collections.Count
 secVisits=collections.Counter(); stalls=collections.defaultdict(list); fpsBad=collections.defaultdict(list)
 stuck=[]; duckOn=collections.Counter(); kicks=collections.Counter(); mins=collections.Counter(); jumps=collections.Counter()
 stallAfter=collections.Counter(); memRuns=[]; other=collections.defaultdict(list)
-KNOWN={'look','section','hurt','lostLife','quit','stall','fps','mem','checkpoint','sheet','stomp','finish','mix','survey','start','rules','playAgain','difficulty','stuckHelp'}
+bossHurt=collections.Counter()  # (by, move) for each boss-fight heart: 'strike act pounce 0.96' (bossHurt, 2026-10-26 on)
+KNOWN={'bossHurt','look','section','hurt','lostLife','quit','stall','fps','mem','checkpoint','sheet','stomp','finish','mix','survey','start','rules','playAgain','difficulty','stuckHelp'}
 for f in sorted(glob.glob(D+'/*.json')):
     s=json.load(open(f)); who=s['player']; dev=s['device'].split(';')[0]+' '+s['device'].split(';')[1].strip().split(' ')[0]
     lines=[l for part in s['parts'] if isinstance(part,list) for l in part]
@@ -42,6 +43,8 @@ for f in sorted(glob.glob(D+'/*.json')):
             elif e=='mem':
                 m=re.match(r'([\d.]+)/([\d.]+)\s*MB',d)
                 if m: mem.append((t,float(m.group(1))))
+            elif e=='bossHurt':
+                w=d.split(); bossHurt[(w[0] if w else '?', w[2] if len(w)>2 else '?', w[1] if len(w)>1 else '?')]+=1
             elif e not in KNOWN:
                 other[e].append((dev,who,sec,d[:60]))
             elif e=='fps':
@@ -68,6 +71,8 @@ for dev,v in stalls.items():
 print('### Freezes that followed an atlas sheet finishing loading:', stallAfter.most_common(10))
 print('### Memory per session (MB per minute of play, start -> end, peak, minutes): climbers first')
 for r in sorted(memRuns,reverse=True)[:12]: print(f'  {r[0]:+6.2f} MB/min  {r[1]:14s} {r[2]:28s} {r[3]} -> {r[4]} MB, peak {r[5]}, {r[6]} min')
+print('### Boss hearts by cause (by, move, state): "body" or a strike outside "act" is a hit with no wind-up to see')
+for (by,mv,st),n in bossHurt.most_common(15): print(f'  {n:3d}  {by:14s} {mv:14s} {st}'+('   <- check: no wind-up' if by=='body' or (by=='strike' and st!='act') else ''))
 print('### Other events (new recorder kinds): count, where')
 for k,v in sorted(other.items(),key=lambda kv:-len(kv[1])):
     print(f'  {k:10s} {len(v):4d}  sections {collections.Counter(a[2] for a in v).most_common(4)}  devices {collections.Counter(a[0] for a in v).most_common(3)}  e.g. {v[0][3]!r}')
