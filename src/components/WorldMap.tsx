@@ -277,7 +277,8 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                   <Crest world={lvl.worldIndex} size={size} locked={!open} className="map-crest" />
                 ) : (
                   <>
-                    {!open ? <Icon name="lock" size={Math.round(size * 0.5)} /> : <span>{lvl.miniIndex}</span>}
+                    {/* an extra stage between the world's own (extraStages.ts: Dot's netting flight) shows its flier, not a number */}
+                    {!open ? <Icon name="lock" size={Math.round(size * 0.5)} /> : lvl.miniIndex > 10 ? <Icon name="hummingbird" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
                     <span className="map-tbadge" style={{ width: badgePx, height: badgePx }} title={type.label}>
                       <Icon name={type.icon} size={Math.round(badgePx * 0.78)} />
                     </span>

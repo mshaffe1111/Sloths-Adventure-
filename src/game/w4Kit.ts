@@ -57,6 +57,12 @@ export const DOT_HELP = {
   reach: 40,
 } as const;
 
+/**
+ * what Dot says about a knot, the same wherever it is heard: the stage's lesson as he comes up to the first one (protoStage.ts) and her
+ * line once he is on its spot (w4Play.ts). Asking, flying up and picking take DOT_HELP's 2.6 s, and the vine drops in under a second.
+ */
+export const KNOT_TEACH = "That vine is tied up too high! Stand still on the glowing spot beside it, and I'll fly up and untie it. It takes me about three seconds";
+
 export type KnotPhase = 'tied' | 'flying' | 'picking' | 'free';
 
 export interface KnotState {
@@ -83,3 +89,49 @@ export function stepKnot(k: KnotState, asking: boolean, dt: number): KnotState {
 /** is he standing in the knot's spot? */
 export const underKnot = (k: DotKnot, px: number, feetY: number): boolean =>
   px >= k.x0 && px <= k.x1 && Math.abs(feetY - k.ground) <= DOT_HELP.reach;
+
+/** the middle of a knot's spot, where its glowing mark is painted on the ground */
+export const knotSpotX = (k: DotKnot): number => (k.x0 + k.x1) / 2;
+
+/** how long the mark under a freed knot takes to fade away (s) */
+export const KNOT_MARK_FADE = 0.5;
+
+/** how bright the knot's mark on the ground is (0 = gone): it glows while the knot is tied or Dot is at it, and fades once it is free */
+export function knotMark(st: KnotState, sinceFree: number): number {
+  if (st.phase === 'free') return Math.max(0, 1 - sinceFree / KNOT_MARK_FADE);
+  return 1;
+}
+
+/**
+ * where Dot is while she helps (null when she is not out): hovering by his head as he waits on the spot, then flying up in an arc to
+ * the knot, then pecking at it from beside it. `face` is the way she looks (toward the knot).
+ */
+export function dotAtKnot(k: DotKnot, st: KnotState, t: number): { x: number; y: number; face: -1 | 1; pecking: boolean } | null {
+  const sx = knotSpotX(k);
+  const face: -1 | 1 = k.x <= sx ? -1 : 1;
+  // beside the knot, on his side of it
+  const px = k.x - face * 26;
+  const py = k.y + 4;
+  const hx = sx + face * 22;
+  const hy = k.ground - 92;
+  if (st.phase === 'tied') {
+    if (st.t <= 0) return null;
+    // she comes out and hovers by his head while he keeps still
+    const u = Math.min(1, st.t / DOT_HELP.ask);
+    return { x: hx, y: hy + 14 * (1 - u) + Math.sin(t * 6) * 3, face, pecking: false };
+  }
+  if (st.phase === 'flying') {
+    const u = Math.min(1, st.t / DOT_HELP.fly);
+    const e = u * u * (3 - 2 * u);
+    // an arc: up first, then across to the knot
+    const x = hx + (px - hx) * e;
+    const y = hy + (py - hy) * Math.sin((e * Math.PI) / 2) - 30 * Math.sin(e * Math.PI);
+    return { x, y, face, pecking: false };
+  }
+  if (st.phase === 'picking') {
+    // darting in to peck at the knot and back, a few times a second
+    const peck = Math.max(0, Math.sin(st.t * 16));
+    return { x: px + face * 8 * peck, y: py + Math.sin(t * 9) * 2, face, pecking: true };
+  }
+  return null;
+}

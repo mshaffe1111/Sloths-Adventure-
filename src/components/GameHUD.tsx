@@ -1,4 +1,5 @@
 import React from 'react';
+import { DOT_STAGE_ID } from '../game/extraStages.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { countWord } from '../game/stagePlan.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
@@ -82,7 +83,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   const power = activePowerUp ? POWER_UPS[activePowerUp] : null;
 
   return (
-    <div className={`fixed inset-0 pointer-events-none z-[35] select-none font-game transition-opacity duration-500 ${bossEntering ? 'opacity-0' : 'opacity-100'}  pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pt-[max(1rem,env(safe-area-inset-top))] sm:pl-[max(1.25rem,env(safe-area-inset-left))] sm:pr-[max(1.25rem,env(safe-area-inset-right))]`}>
+    <div className={`game-hud fixed inset-0 pointer-events-none z-[35] select-none font-game transition-opacity duration-500 ${bossEntering ? 'opacity-0' : 'opacity-100'}  pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:pt-[max(1rem,env(safe-area-inset-top))] sm:pl-[max(1.25rem,env(safe-area-inset-left))] sm:pr-[max(1.25rem,env(safe-area-inset-right))]`}>
       <div className={isBoss ? 'flex items-start justify-between gap-2 sm:gap-4' : 'grid grid-cols-[1fr_auto_1fr] max-[520px]:grid-cols-[auto_minmax(0,1fr)] items-start gap-2 sm:gap-4'}>
         {/* LEFT: hearts and lives */}
         <div className="flex flex-col items-start gap-1.5 max-[520px]:row-span-2">
@@ -158,7 +159,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
                     <>
                       <span className="tabular-nums">{distPercent}% there</span>
                       <span className={distPercent >= 85 ? 'text-amber-300 font-semibold animate-pulse' : ''}>
-                        {distPercent >= 85 ? 'Sanctuary ahead!' : GOAL_TEXT[levelConfig.objectiveType]}
+                        {levelConfig.id === DOT_STAGE_ID ? (distPercent >= 85 ? 'The gap ahead!' : 'Fly to the gap') : distPercent >= 85 ? 'Sanctuary ahead!' : GOAL_TEXT[levelConfig.objectiveType]}
                       </span>
                     </>
                   ) : (

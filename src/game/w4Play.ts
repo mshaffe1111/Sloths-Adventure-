@@ -9,13 +9,14 @@
  * The falling water itself stays drawn here, because it has to pour, ease and dry; only the lip it pours over is painted.
  */
 import { drawDotFrame, flyFrame } from './dotSprite.ts';
+import { sovereignSprite } from './sovereignSprite.ts';
 import { drawW4, w4ArtReady, w4Height, type W4Piece } from './w4Art.ts';
 import { NEST, nearNest, nestAt, nestCycle, type Nest, type NestPhase } from './eaglet.ts';
 import { capBlocks, newCapuchin, stepGuard, stepLookout, stepThief, type CapState, type Capuchin } from './capuchin.ts';
 import { frondSolid, isStill, mistReveal, newPatience, onSpot, stepPatience, type PatienceSpot, type PatienceState } from './patience.ts';
 import { ROCK, rockAt, rockHits, type RockDrop } from './rockfall.ts';
-import { FALLS, fallPush, inFall, plugged, poolLogY, stepFlow, stepPool, type Pool, type Waterfall } from './waterfalls.ts';
-import { chimeLean, DOT_HELP, newKnot, stepKnot, underKnot, type Chime, type DotKnot, type KnotState } from './w4Kit.ts';
+import { FALLS, fallPush, fallWall, inColumn, inFall, plugged, poolLogY, stepFlow, stepPool, type Pool, type Waterfall } from './waterfalls.ts';
+import { chimeLean, dotAtKnot, DOT_HELP, KNOT_TEACH, knotMark, knotSpotX, newKnot, stepKnot, underKnot, type Chime, type DotKnot, type KnotState } from './w4Kit.ts';
 import { zoneState, type Zone } from './zones.ts';
 import { nestWind, type CliffNest } from './w4Nests.ts';
 import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
@@ -36,6 +37,18 @@ export interface Updraft {
   top: number;
   bottom: number;
 }
+
+/**
+ * a sign of the Sky Sovereign overhead (4-9, the climb to her aerie), played once when he first passes x: she glides high across the
+ * view while her shadow races along the ledge at y, or one of her feathers drifts down from above him to settle on that ledge
+ */
+export interface Omen {
+  x: number;
+  y: number;
+  kind: 'shadow' | 'feather';
+}
+/** an omen's length (s): the shadow's pass, and the feather's drift down (it lies on the ledge a while after) */
+export const OMEN = { shadow: 3.2, feather: 6, rest: 8 } as const;
 
 /** a painted World 4 piece standing in the scene, behind Pokey (a channel along a shelf, a cave): bottom middle at (x, b), `w` wide */
 export interface W4Decor {
@@ -69,6 +82,8 @@ export interface W4Extras {
   decor?: W4Decor[];
   /** 4-8's nests on the cliff (w4Nests.ts): which cage each one is and the puzzle around it; a freed chick's parent blows a tailwind */
   cliffNests?: CliffNest[];
+  /** 4-9: the Sovereign overhead (her shadow, a feather) */
+  omens?: Omen[];
 }
 
 /** what the engine lends World 4 each frame */
@@ -89,9 +104,11 @@ export interface W4Host {
   float(text: string, x: number, y: number, color: string): void;
   /** a lookout called the Sovereign */
   screech(x: number): void;
-  sfx(kind: 'rock' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash' | 'gust'): void;
+  sfx(kind: 'rock' | 'chime' | 'monkey' | 'frond' | 'knot' | 'splash' | 'gust' | 'cry'): void;
   /** he fell into the mist (deepFall) */
   fellOff?(): void;
+  /** 4-9: a guard he was close to was blown off its ledge (the aerie's goal counts them) */
+  defeat?(x: number, y: number): void;
 }
 
 const FRUIT_BACK = 9;
@@ -100,11 +117,23 @@ const MIST_THICK = 0.9;
 const MIST_HAZE = 0.12;
 const MIST_EDGE = 70;
 const CLEAR_EDGE = 24;
+/** a band over one stretch of the stage (4-9) thins out over this far past each end (px) */
+const MIST_SIDE = 260;
 /** how far y is outside a band of mist (0 inside it) */
 const bandGap = (b: { top: number; bottom: number }, y: number) => (y < b.top ? b.top - y : y > b.bottom ? y - b.bottom : 0);
+/** how much of a band reaches x (1 over its stretch, fading out past its ends; a band across the whole stage reaches everywhere) */
+const sideFade = (b: { x0?: number; x1?: number }, x?: number) => {
+  if (b.x0 === undefined || b.x1 === undefined) return 1;
+  if (x === undefined) return 0;
+  const out = x < b.x0 ? b.x0 - x : x > b.x1 ? x - b.x1 : 0;
+  const k = Math.max(0, 1 - out / MIST_SIDE);
+  return k * k * (3 - 2 * k);
+};
 const KNOT_DROP = 0.8;
 /** a guard on its feet leaps up and shoves him back if he tries to jump over it: it reaches this far above its feet (px) */
 export const GUARD_LEAP = 200;
+/** 4-9: a guard blown off its ledge counts for the goal when he is this close to it (px): any further, and he could not get past it */
+export const BLOWN_NEAR = 1000;
 
 /** where a knotted vine ends while it is tied: at its knot, never shorter than a rolled-up bundle at its top, never longer than itself */
 export const tiedBottom = (topY: number, bottomY: number, knotY: number): number => Math.min(bottomY, Math.max(topY + 24, knotY));
@@ -128,16 +157,24 @@ export class W4Play {
   private view = { x0: -Infinity, x1: Infinity };
   /** each nest: the last look that blew him back, and when its latest flurry started and which way it pushes */
   private nestBlow: Array<{ cycle: number; at: number; dir: number }>;
+  /** 4-9: the guards that have been blown off their ledges while he was close (each counts once), and when each omen began */
+  private blownOff = new Set<number>();
+  private omenAt: number[];
+  /** each fall: the side he is on (-1 left, 1 right), kept while he is in its water: the side he came in from, that it throws him out of */
+  private fallSide: Array<-1 | 1>;
+  private splashAt = -9;
 
   constructor(private readonly w4: W4Extras, platforms: Platform[], private readonly vines: Vine[]) {
     this.patience = (w4.patience ?? []).map(() => newPatience());
     this.flow = (w4.falls ?? []).map(() => 1);
+    this.fallSide = (w4.falls ?? []).map(() => -1);
     this.pool = (w4.pools ?? []).map(() => 1);
     this.knots = (w4.knots ?? []).map(() => newKnot());
     this.monkeys = (w4.monkeys ?? []).map((m) => newCapuchin(m));
     this.fruit = (w4.fruit ?? []).map((f) => ({ state: 'hang', x: f.x, y: f.y, vy: 0, at: 0 }));
     this.chimeRang = (w4.chimes ?? []).map(() => -9);
     this.nestBlow = (w4.nests ?? []).map(() => ({ cycle: -1, at: -9, dir: 1 }));
+    this.omenAt = (w4.omens ?? []).map(() => NaN);
     // a frond's bridge is not there until it unrolls
     for (const s of w4.patience ?? []) {
       const pl = s.kind === 'frond' ? platforms.find((q) => q.id === s.platformId) : undefined;
@@ -155,14 +192,16 @@ export class W4Play {
   }
 
   /**
-   * one frame. Returns how much of his walking speed is left (pouring water slows a wade), and any push the stage's own winds give him
-   * on top of the gust lanes (a freed eaglet's parent beating its wings: px/s, + to the right)
+   * one frame. Returns how much of his walking speed is left (shallow water slows a wade), any push the stage's own winds give him on
+   * top of the gust lanes (a freed eaglet's parent beating its wings: px/s, + to the right), and whether pouring water threw him back
+   * this frame (the engine takes his steering for a moment, FALLS.stagger, so the knock reads)
    */
-  step(dt: number, h: W4Host): { speed: number; wind: number } {
+  step(dt: number, h: W4Host): { speed: number; wind: number; knocked: boolean } {
     const p = h.player;
     const w4 = this.w4;
     this.clock = h.t;
     let speed = 1;
+    let knocked = false;
 
     // into the mist: well below the last ledge, with nothing under him, is a fall
     if (w4.deepFall !== undefined) {
@@ -241,6 +280,23 @@ export class W4Play {
       const before = this.flow[i];
       this.flow[i] = stepFlow(w, before, plugged(w, platX), h.t, dt);
       if (before > FALLS.trickle && this.flow[i] <= FALLS.trickle && Math.abs(w.x - p.x) < 900) h.sfx('splash');
+      // pouring water is a wall: it throws him back out the side he came in from (waterfalls.ts fallWall); out of it, that side is
+      // simply the side he is on
+      if (!inColumn(w, p.x, p.y)) this.fallSide[i] = p.x < w.x + w.width / 2 ? -1 : 1;
+      else if (!w.veil && !p.climbing && !p.hanging && !p.isVineSwinging) {
+        const hit = fallWall(w, this.flow[i], this.fallSide[i], p, dt);
+        if (hit) {
+          p.x = hit.x;
+          p.vx = hit.vx;
+          p.vy = hit.vy;
+          knocked = true;
+          if (!hit.washed && h.t - this.splashAt > 0.6) {
+            this.splashAt = h.t;
+            h.sfx('splash');
+          }
+          h.tip(w.surge ? 'w4:surge' : 'w4:fall', w.surge ? 'Too strong to climb! Wait in the cave for the water to ease' : 'The water pushes you back. Can you stop it at the top?', 3.4);
+        }
+      }
       if (!inFall(w, p.x, p.y, 64)) return;
       // a curtain of water to hide behind (4-5): it hides him and leaves him be
       if (w.veil) h.tip('w4:veil', 'Behind the water nobody can see you. Wait here while she goes by', 3.2);
@@ -274,7 +330,7 @@ export class W4Play {
     (w4.knots ?? []).forEach((k, i) => {
       const was = this.knots[i];
       const asking = underKnot(k, p.x, p.y) && still;
-      if (was.phase === 'tied' && underKnot(k, p.x, p.y)) h.tip('w4:knot', 'That vine is tied up too high! Stand still under it and I will fly up', 3.2);
+      if (was.phase === 'tied' && underKnot(k, p.x, p.y)) h.tip('w4:knot', KNOT_TEACH, 3.6);
       const now: KnotState & { freedAt?: number } = stepKnot(was, asking, dt);
       if (now.phase === 'free' && was.phase !== 'free') {
         now.freedAt = h.t;
@@ -354,7 +410,16 @@ export class W4Play {
         const gust = z ? zoneState(z, h.t).phase === 'active' ? z.dir * zoneState(z, h.t).strength : 0 : 0;
         if (stepGuard(m, s, gust, dt).knocked) {
           h.sfx('monkey');
-          h.float('WHOOOA!', s.x, s.y - 60, '#99f6e4');
+          if (!m.blowOff) h.float('WHOOOA!', s.x, s.y - 60, '#99f6e4');
+          else {
+            // (4-9) blown clean off the ledge: it counts for the goal, once, if he was near enough to get past it
+            h.float('OFF THE LEDGE!', s.x, s.y - 60, '#99f6e4');
+            if (Math.abs(p.x - s.x) < BLOWN_NEAR && !this.blownOff.has(i)) {
+              this.blownOff.add(i);
+              h.defeat?.(s.x, s.y);
+            }
+            if (Math.abs(p.x - s.x) < 400) h.tip('w4:blowOff', 'Now! Run past before it climbs back up', 2.6);
+          }
         }
         if (capBlocks(m, s, p.x) && p.y < s.y + 40 && p.y > s.y - GUARD_LEAP) {
           // a guard on its feet will not let him by: he bumps back off it (and a jump over it meets it leaping up at him)
@@ -364,7 +429,13 @@ export class W4Play {
         }
       }
     });
-    return { speed, wind: w4.cliffNests?.length ? nestWind(h.collectibles, p.x, p.y, p.grounded, h.t) : 0 };
+    // the Sovereign overhead (4-9): each omen plays once, the first time he passes it
+    (w4.omens ?? []).forEach((o, i) => {
+      if (!Number.isNaN(this.omenAt[i]) || p.x < o.x) return;
+      this.omenAt[i] = h.t;
+      if (o.kind === 'shadow') h.sfx('cry');
+    });
+    return { speed, wind: w4.cliffNests?.length ? nestWind(h.collectibles, p.x, p.y, p.grounded, h.t) : 0, knocked };
   }
 
   /** behind Pokey: the falls, the pools, the chimes, the rock shadows and rocks, the fern, the knots and Dot, the monkeys, the fruit */
@@ -429,18 +500,29 @@ export class W4Play {
       drawFruit(ctx, f.x, f.y);
     });
     (w4.monkeys ?? []).forEach((m, i) => near(this.monkeys[i].x) && drawMonkey(ctx, m, this.monkeys[i], t));
+    (w4.omens ?? []).forEach((o, i) => {
+      const since = t - this.omenAt[i];
+      if (!(since >= 0)) return;
+      if (o.kind === 'shadow' && since < OMEN.shadow) drawSovereignPass(ctx, view, o, since / OMEN.shadow);
+      else if (o.kind === 'feather' && since < OMEN.feather + OMEN.rest) drawFeather(ctx, o, since);
+    });
     (w4.nests ?? []).forEach((n, i) => near(n.x) && drawNest(ctx, n, t, t - this.nestBlow[i].at));
     // the mist bank over everything in it (ledges and trunks alike), behind Pokey so he can always be seen in it
     if (view.y0 !== undefined && view.y1 !== undefined) this.drawMistBank(ctx, t, { x0: view.x0, x1: view.x1, y0: view.y0, y1: view.y1 });
   }
 
-  /** the mist's thickness at height y (0 clear .. 1 thick): the bands it covers, less what standing still has settled */
-  mistAt(y: number): number {
+  /**
+   * the mist's thickness at height y (0 clear .. 1 thick): the bands it covers, less what standing still has settled. A band that only
+   * spans part of the stage (4-9, `area.x0/x1`) counts only when x is given, and fades out past its ends.
+   */
+  mistAt(y: number, x?: number): number {
     let mist = 0, clear = 0;
     (this.w4.patience ?? []).forEach((s, i) => {
       if (s.kind !== 'mist' || !s.area) return;
+      const side = sideFade(s.area, x);
+      if (side <= 0) return;
       const gap = bandGap(s.area, y);
-      mist = Math.max(mist, 1 - gap / MIST_EDGE);
+      mist = Math.max(mist, (1 - gap / MIST_EDGE) * side);
       // (what it settles ends more sharply than the bank does, so a settled spot shows nothing of the next column up)
       clear = Math.max(clear, Math.max(0, 1 - gap / CLEAR_EDGE) * mistReveal(this.patience[i]));
     });
@@ -448,8 +530,29 @@ export class W4Play {
   }
 
   private drawMistBank(ctx: CanvasRenderingContext2D, t: number, v: { x0: number; x1: number; y0: number; y1: number }) {
-    const bands = (this.w4.patience ?? []).filter((s) => s.kind === 'mist' && s.area).map((s) => s.area!);
-    if (!bands.length) return;
+    const spots = (this.w4.patience ?? []).map((s, i) => ({ s, i })).filter(({ s }) => s.kind === 'mist' && s.area);
+    // the bands across the whole stage (4-6) are one bank; a band over one stretch (4-9) is a bank of its own, over that stretch
+    const across = spots.filter(({ s }) => s.area!.x0 === undefined || s.area!.x1 === undefined).map(({ s }) => s.area!);
+    if (across.length) this.drawBank(ctx, t, v, across, (y) => this.mistAt(y), v.x0 - 20, v.x1 + 20);
+    for (const { s, i } of spots) {
+      const a = s.area!;
+      if (a.x0 === undefined || a.x1 === undefined) continue;
+      const x0 = Math.max(v.x0 - 20, a.x0 - MIST_SIDE), x1 = Math.min(v.x1 + 20, a.x1 + MIST_SIDE);
+      if (x1 <= x0) continue;
+      const reveal = mistReveal(this.patience[i]);
+      const at = (y: number) => {
+        const gap = bandGap(a, y);
+        return Math.max(0, 1 - gap / MIST_EDGE) * (1 - Math.max(0, 1 - gap / CLEAR_EDGE) * reveal);
+      };
+      this.drawBank(ctx, t, v, [a], at, x0, x1, a);
+    }
+  }
+
+  /** one bank of mist over [xa, xb]: a wash of fog as thick as `at` says at each height, with drifting puffs on top */
+  private drawBank(
+    ctx: CanvasRenderingContext2D, t: number, v: { x0: number; x1: number; y0: number; y1: number },
+    bands: Array<{ top: number; bottom: number }>, at: (y: number) => number, xa: number, xb: number, ends?: { x0?: number; x1?: number },
+  ) {
     const top = Math.max(v.y0, Math.min(...bands.map((b) => b.top)) - MIST_EDGE);
     const bottom = Math.min(v.y1, Math.max(...bands.map((b) => b.bottom)) + MIST_EDGE);
     if (bottom <= top) return;
@@ -460,24 +563,45 @@ export class W4Play {
     for (let k = 0; k <= stops; k++) {
       const y = top + ((bottom - top) * k) / stops;
       const inside = Math.max(0, ...bands.map((b) => 1 - bandGap(b, y) / MIST_EDGE));
-      const a = Math.min(1, MIST_THICK * this.mistAt(y) + MIST_HAZE * inside);
+      const a = Math.min(1, MIST_THICK * at(y) + MIST_HAZE * inside);
       g.addColorStop(k / stops, `rgba(223,231,238,${a.toFixed(3)})`);
     }
     ctx.fillStyle = g;
-    ctx.fillRect(v.x0 - 20, top, v.x1 - v.x0 + 40, bottom - top);
+    if (!ends || ends.x0 === undefined || ends.x1 === undefined) ctx.fillRect(xa, top, xb - xa, bottom - top);
+    else {
+      // a band over one stretch: solid over the stretch, thinning out over MIST_SIDE past each end
+      const STRIPS = 20;
+      const w = MIST_SIDE / STRIPS;
+      const lo = Math.max(xa, ends.x0), hi = Math.min(xb, ends.x1);
+      if (hi > lo) ctx.fillRect(lo, top, hi - lo, bottom - top);
+      for (let k = 0; k < STRIPS; k++) {
+        const q = 1 - (k + 0.5) / STRIPS;
+        ctx.globalAlpha = q * q * (3 - 2 * q);
+        const l = ends.x0 - (k + 1) * w, rr = ends.x1 + k * w;
+        if (l + w > xa && l < xb) ctx.fillRect(Math.max(xa, l), top, Math.min(xb, l + w) - Math.max(xa, l), bottom - top);
+        if (rr + w > xa && rr < xb) ctx.fillRect(Math.max(xa, rr), top, Math.min(xb, rr + w) - Math.max(xa, rr), bottom - top);
+      }
+      ctx.globalAlpha = 1;
+    }
     // drifting puffs on top, so it reads as mist rather than a wall
     const gx = 170, gy = 64;
+    const span = ends && ends.x0 !== undefined && ends.x1 !== undefined ? { x0: ends.x0, x1: ends.x1 } : null;
     for (let y = Math.floor(top / gy) * gy; y < bottom + gy; y += gy) {
       // (as thin as the mist is anywhere across a puff, so none shows as a disc where the mist has settled or at its edges)
-      const m = Math.min(this.mistAt(y - 34), this.mistAt(y), this.mistAt(y + 34));
+      const m = Math.min(at(y - 34), at(y), at(y + 34));
       if (m <= 0.03) continue;
       const row = Math.round(y / gy);
       const drift = (t * (14 + (Math.abs(row) % 3) * 6) + Math.abs(row) * 53) % gx;
       ctx.fillStyle = row % 2 ? '#f8fafc' : '#cbd5e1';
       ctx.globalAlpha = 0.4 * m * m;
-      for (let x = Math.floor(v.x0 / gx) * gx - gx; x < v.x1 + gx; x += gx) {
+      for (let x = Math.floor(xa / gx) * gx - gx; x < xb + gx; x += gx) {
+        const px = x + drift;
+        // (past the ends of a stretch the puffs thin out with the bank)
+        const side = span ? sideFade(span, px) : 1;
+        if (side <= 0.02) continue;
+        ctx.globalAlpha = 0.4 * m * m * side;
         ctx.beginPath();
-        ctx.ellipse(x + drift, y + Math.sin(t * 0.5 + x * 0.01) * 6, 120, 34, 0, 0, Math.PI * 2);
+        ctx.ellipse(px, y + Math.sin(t * 0.5 + x * 0.01) * 6, 120, 34, 0, 0, Math.PI * 2);
         ctx.fill();
       }
     }
@@ -485,8 +609,8 @@ export class W4Play {
   }
 
   /** standing still on a mist spot, the view drifts over to the way up it is showing him: where to look, and how much (0..1) */
-  look(px: number, feetY: number): { x: number; y: number; u: number } | null {
-    let best: { x: number; y: number; u: number } | null = null;
+  look(px: number, feetY: number): { x: number; y: number; u: number; leftX?: number } | null {
+    let best: { x: number; y: number; u: number; leftX?: number } | null = null;
     (this.w4.patience ?? []).forEach((s, i) => {
       if (s.kind !== 'mist' || !s.area || !onSpot(s, px, feetY)) return;
       const u = Math.min(1, this.patience[i].level * 2);
@@ -498,7 +622,10 @@ export class W4Play {
       const st = this.knots[i];
       if (!underKnot(k, px, feetY) || (st.phase === 'free' && (st.freedAt === undefined || this.clock - st.freedAt > 1.2))) return;
       const u = st.phase === 'tied' ? Math.min(1, st.t / DOT_HELP.ask) : 1;
-      if (u > 0 && (!best || u > best.u)) best = { x: k.x, y: (k.y + feetY) / 2, u };
+      // (aimed a little below the knot rather than halfway down to him: held upright, Dot's speech bubble covers the top of the screen,
+      // and the knot and her flight up to it must show below it; the engine keeps his feet in view. Held sideways there is no room
+      // under the bubble, so `leftX`: the view puts the knot near its left edge, beside the bubble in the middle)
+      if (u > 0 && (!best || u > best.u)) best = { x: k.x, y: Math.min((k.y + feetY) / 2, k.y + 60), u, leftX: k.x };
     });
     return best;
   }
@@ -985,24 +1112,96 @@ function drawFrond(ctx: CanvasRenderingContext2D, s: PatienceSpot, st: PatienceS
   ctx.restore();
 }
 
-function drawKnot(ctx: CanvasRenderingContext2D, k: DotKnot, st: KnotState, t: number) {
+function drawKnot(ctx: CanvasRenderingContext2D, k: DotKnot, st: KnotState & { freedAt?: number }, t: number) {
   ctx.save();
+  // the spot he waits on: a soft glow on the ground with Dot's little landing mark in it, and a ring round it that fills as he keeps still
+  const mark = knotMark(st, st.freedAt === undefined ? 0 : t - st.freedAt);
+  if (mark > 0) {
+    const cx = knotSpotX(k);
+    const rx = Math.max(34, (k.x1 - k.x0) / 2 + 16);
+    const gy = k.ground - 2;
+    const pulse = 0.75 + 0.25 * Math.sin(t * 3.2);
+    const lit = st.phase === 'tied' ? Math.min(1, st.t / DOT_HELP.ask) : 1;
+    ctx.globalAlpha = mark;
+    const g = ctx.createRadialGradient(cx, gy, 2, cx, gy, rx);
+    g.addColorStop(0, `rgba(190, 255, 220, ${0.7 * pulse + 0.25 * lit})`);
+    g.addColorStop(0.6, `rgba(110, 231, 183, ${0.38 * pulse + 0.2 * lit})`);
+    g.addColorStop(1, 'rgba(110, 231, 183, 0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(cx, gy, rx, 15, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // the landing mark: three little strokes, like a hummingbird's footprint
+    ctx.strokeStyle = `rgba(236, 253, 245, ${0.7 + 0.3 * lit})`;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    for (const a of [-0.55, 0, 0.55]) {
+      ctx.beginPath();
+      ctx.moveTo(cx, gy + 3);
+      ctx.lineTo(cx + Math.sin(a) * 11, gy + 3 - Math.cos(a) * 7);
+      ctx.stroke();
+    }
+    // its rim, faint, so the spot reads as a place to stand; and how long he has kept still: the ring fills, and stays full while she
+    // is up there
+    ctx.strokeStyle = `rgba(167, 243, 208, ${0.35 + 0.2 * pulse})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(cx, gy, rx - 6, 10, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    if (lit > 0) {
+      ctx.strokeStyle = 'rgba(236, 253, 245, 0.9)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(cx, gy, rx - 6, 10, 0, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * lit);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
   if (st.phase !== 'free') {
+    // the knot: it shakes while she picks at it, and comes loose a strand at a time
+    const shake = st.phase === 'picking' ? Math.sin(t * 40) * 2.5 : 0;
+    const left = st.phase === 'picking' ? 1 - 0.5 * Math.min(1, st.t / DOT_HELP.pick) : 1;
     ctx.strokeStyle = '#7c4a1e';
     ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.arc(k.x, k.y, 10, 0, Math.PI * 2);
+    ctx.arc(k.x + shake, k.y, 10, 0, Math.PI * 2 * left);
     ctx.stroke();
+    if (st.phase === 'picking') {
+      // bits of fibre flicking off
+      ctx.strokeStyle = '#a16207';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 3; i++) {
+        const u = (st.t * 2.4 + i / 3) % 1;
+        const a = i * 2.1 + 0.6;
+        ctx.globalAlpha = 1 - u;
+        ctx.beginPath();
+        ctx.moveTo(k.x + Math.cos(a) * (12 + u * 20), k.y + Math.sin(a) * 8 + u * 26);
+        ctx.lineTo(k.x + Math.cos(a) * (18 + u * 20), k.y + Math.sin(a) * 8 + u * 30);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
   }
-  // Dot on her way up, then picking at it
-  if (st.phase === 'flying' || st.phase === 'picking') {
-    const u = st.phase === 'flying' ? Math.min(1, st.t / DOT_HELP.fly) : 1;
-    const dx = k.x - 30 + Math.sin(t * 10) * (st.phase === 'picking' ? 6 : 0);
-    const dy = k.ground - 90 + (k.y - (k.ground - 90)) * u;
-    if (!drawDotFrame(ctx, flyFrame(t), dx, dy, 0.5, 1)) {
+  // Dot: out by his head while he waits, flying up to the knot, then pecking it loose
+  const d = dotAtKnot(k, st, t);
+  if (d) {
+    if (st.phase === 'flying') {
+      // a faint trail behind her, so the flight reads
+      const back = dotAtKnot(k, { phase: 'flying', t: Math.max(0, st.t - 0.12) }, t);
+      if (back) {
+        ctx.strokeStyle = 'rgba(167, 243, 208, 0.5)';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(back.x, back.y);
+        ctx.lineTo(d.x, d.y);
+        ctx.stroke();
+      }
+    }
+    if (!drawDotFrame(ctx, flyFrame(t), d.x, d.y, 0.6, d.face, d.pecking ? 0.25 : 0)) {
       ctx.fillStyle = '#10b981';
       ctx.beginPath();
-      ctx.arc(dx, dy, 10, 0, Math.PI * 2);
+      ctx.arc(d.x, d.y, 11, 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -1124,6 +1323,10 @@ function drawMonkey(ctx: CanvasRenderingContext2D, m: Capuchin, s: CapState, t: 
   const moving = s.mode === 'flee' || s.mode === 'lured' || s.mode === 'pace';
   const left = m.job === 'guard' ? s.dir < 0 : s.mode === 'flee' ? (m.path?.[s.post]?.x ?? s.x) < s.x : s.mode === 'lured' ? (s.fruit?.x ?? s.x) < s.x : false;
   const bob = moving ? Math.abs(Math.sin(t * 14)) * 3 : 0;
+  if (s.mode === 'blown' && m.blowOff) {
+    drawBlownOff(ctx, m, s);
+    return;
+  }
   if (s.mode === 'blown') {
     if (drawW4(ctx, 'capStartled', s.x + s.t * 300, s.y - s.t * 60, 64, { rot: s.t * 8, alpha: Math.max(0, 1 - s.t / 0.8) })) return;
   } else if (drawW4(ctx, monkeyPose(m, s), s.x, s.y - bob, 70, { flip: left })) {
@@ -1334,4 +1537,153 @@ function drawStandInNest(ctx: CanvasRenderingContext2D, phase: NestPhase, u: num
     ctx.lineTo(-36 + k * 14, -2 - (k % 2) * 5);
     ctx.stroke();
   }
+}
+
+/**
+ * 4-9: a guard blown off its ledge. It is flung up and over the way the gust blows and drops out of sight below the ledge, then, just
+ * before it is back on its feet, it hauls itself up over the edge at its post.
+ */
+function drawBlownOff(ctx: CanvasRenderingContext2D, m: Capuchin, s: CapState) {
+  const back = m.blowOff ?? 0;
+  const dir = s.fell ?? 1;
+  const climb = 0.7;
+  if (s.t < 1.1) {
+    const k = s.t;
+    const x = s.x + dir * 230 * k;
+    const y = s.y - 200 * k + 380 * k * k;
+    const a = Math.max(0, Math.min(1, (1.1 - k) / 0.35));
+    if (drawW4(ctx, 'capStartled', x, y, 64, { rot: dir * k * 9, alpha: a, flip: dir < 0 })) return;
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.translate(x, y - 20);
+    ctx.rotate(dir * k * 9);
+    ctx.fillStyle = '#3b2416';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 14, 16, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#f5e6c8';
+    ctx.beginPath();
+    ctx.arc(6, -18, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    return;
+  }
+  if (s.t < back - climb) return;
+  // hauling itself up over the edge of the ledge, at its post
+  const u = Math.min(1, (s.t - (back - climb)) / climb);
+  const y = m.y + 46 * (1 - u);
+  if (drawW4(ctx, 'capHang', m.x, y + 10, 62, { alpha: Math.min(1, u * 2.5) })) return;
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, u * 2.5);
+  ctx.fillStyle = '#3b2416';
+  ctx.beginPath();
+  ctx.ellipse(m.x, y - 16, 14, 16, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#f5e6c8';
+  ctx.beginPath();
+  ctx.arc(m.x + 6, y - 36, 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+/**
+ * 4-9: the Sovereign passing high overhead: she glides across the top of the view (her painted glide frame, small with the height;
+ * a dark silhouette until her atlas has loaded), and her shadow sweeps along the ledge he stands on, under her
+ */
+function drawSovereignPass(ctx: CanvasRenderingContext2D, view: { x0: number; x1: number; y0?: number; y1?: number }, o: Omen, u: number) {
+  const span = view.x1 - view.x0;
+  const x = view.x0 - 220 + (span + 440) * u;
+  const y0 = view.y0 ?? o.y - 400, y1 = view.y1 ?? o.y + 100;
+  // (below the stage card and the hearts; held upright, below Dot's line at the top of the screen too)
+  const tall = y1 - y0 > span;
+  const y = y0 + (tall ? (y1 - y0) * 0.4 : Math.max(130, (y1 - y0) * 0.3)) + Math.sin(u * Math.PI) * 16;
+  const fade = Math.min(1, Math.sin(Math.PI * u) * 2.5);
+  if (fade <= 0.01) return;
+  // her shadow on the ledge: a long dark oval racing ahead of where he stands
+  ctx.save();
+  ctx.fillStyle = `rgba(8, 12, 8, ${(0.42 * fade).toFixed(3)})`;
+  ctx.beginPath();
+  ctx.ellipse(x, o.y - 3, 110, 15, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = `rgba(8, 12, 8, ${(0.25 * fade).toFixed(3)})`;
+  ctx.beginPath();
+  ctx.ellipse(x, o.y - 3, 170, 24, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+  // her, gliding
+  const size = Math.max(0.42, Math.min(0.6, span / 1500));
+  ctx.save();
+  ctx.globalAlpha = 0.92 * fade;
+  ctx.translate(x, y);
+  ctx.scale(size, size);
+  const ok = sovereignSprite.still(ctx, 'glide');
+  ctx.restore();
+  if (ok) return;
+  ctx.save();
+  ctx.globalAlpha = 0.8 * fade;
+  ctx.fillStyle = '#1c1917';
+  ctx.translate(x, y);
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 40, 11, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(40, -4, 12, 9, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-14, -4);
+  ctx.quadraticCurveTo(-40, -50, -110, -60);
+  ctx.quadraticCurveTo(-60, -20, -26, 4);
+  ctx.moveTo(14, -4);
+  ctx.quadraticCurveTo(30, -50, 90, -66);
+  ctx.quadraticCurveTo(50, -22, 20, 4);
+  ctx.fill();
+  ctx.restore();
+}
+
+/** 4-9: one of the Sovereign's feathers, drifting down from high above him, rocking as it falls, and lying on the ledge a while */
+function drawFeather(ctx: CanvasRenderingContext2D, o: Omen, since: number) {
+  const u = Math.min(1, since / OMEN.feather);
+  const fall = 520;
+  const y = o.y - 14 - fall * (1 - u);
+  const x = o.x + 120 + Math.sin(since * 1.7) * 46 * (1 - u) - 60 * u;
+  const rot = u < 1 ? Math.sin(since * 1.7 + 0.6) * 0.7 : 1.45;
+  const a = since > OMEN.feather + OMEN.rest - 1 ? Math.max(0, OMEN.feather + OMEN.rest - since) : 1;
+  ctx.save();
+  ctx.globalAlpha = a;
+  ctx.translate(x, y);
+  ctx.rotate(rot);
+  // the vane: dark brown, barred, a pale tip; the quill down its middle
+  ctx.fillStyle = '#4a3423';
+  ctx.strokeStyle = '#1c1917';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(0, -30);
+  ctx.quadraticCurveTo(12, -12, 6, 22);
+  ctx.lineTo(0, 26);
+  ctx.lineTo(-6, 22);
+  ctx.quadraticCurveTo(-12, -12, 0, -30);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#e7e5e4';
+  ctx.beginPath();
+  ctx.moveTo(0, -30);
+  ctx.quadraticCurveTo(7, -22, 6, -16);
+  ctx.lineTo(-6, -16);
+  ctx.quadraticCurveTo(-7, -22, 0, -30);
+  ctx.fill();
+  ctx.strokeStyle = '#2b1d14';
+  ctx.lineWidth = 2;
+  for (let k = 0; k < 3; k++) {
+    ctx.beginPath();
+    ctx.moveTo(-8, -6 + k * 9);
+    ctx.lineTo(8, -2 + k * 9);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = '#f5f5f4';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(0, -28);
+  ctx.lineTo(0, 34);
+  ctx.stroke();
+  ctx.restore();
 }

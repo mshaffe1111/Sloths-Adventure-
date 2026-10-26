@@ -3,7 +3,7 @@ import { markTipHeard, tipHeard } from './tipMemory.ts';
 import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
-import { liftY } from './lift.ts';
+import { liftY, pickFloor } from './lift.ts';
 import { StuckWatch, stuckLine } from './stuckHelper.ts';
 import { KICK_NEAR_PX, refinedControls } from './refinedControls.ts';
 import { isEasy } from './difficulty.ts';
@@ -33,7 +33,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingStep, timedLaunch, type SwingState } from './physics.ts';
+import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingStep, timedLaunch, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -64,6 +64,8 @@ import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLeve
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { W4Play } from './w4Play.ts';
+import { DotRun } from './dotFlightRun.ts';
+import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
 import { camAnchor, camLook, CAM, snapCam } from './cameraFollow.ts';
@@ -301,6 +303,8 @@ export class GameEngine {
   private camLookX: number = CAM.lookAhead;
   /** World 4's rocks, fern, falls, chimes, knots and capuchins for this run (w4Play.ts) */
   private w4: W4Play | null = null;
+  /** Dot's netting flight (dotFlightRun.ts): while it is set, she is the player and it runs the stage */
+  private dotRun: DotRun | null = null;
   private zoneHinted: Record<string, boolean> = {};
   /** true while rising from a mushroom/vine launch (those must not be cut short like a jump) */
   private launched = false;
@@ -496,6 +500,7 @@ export class GameEngine {
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
+    if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
       ? this.platforms.filter((pl) => !pl.push && !pl.chase && !pl.crown && !pl.art)
       : this.platforms;
@@ -817,6 +822,7 @@ export class GameEngine {
     }
     if (this.stepEntrance(dt)) return;
     this.input.update(dt);
+    if (this.dotRun) return this.stepDot(dt);
     {
       // what his thumb holds, for a pause in mid-air (pause / resume)
       const inp = this.input.state;
@@ -1538,7 +1544,9 @@ export class GameEngine {
         const prevX = p.x - p.vx * dt;
         for (const plat of this.platforms) {
           if (plat.broken || plat.type !== 'solid' || plat.height < 50) continue;
-          if (p.y <= plat.y + 6) continue; // standing on, or above, the top
+          // (not when he stands on it or above its top, nor when he is wholly under it: a boulder up on a shelf, World 4, is no wall to him
+          // on the ground under the shelf, and he cannot push it from below)
+          if (!blockBeside(p.y, p.height, plat)) continue;
           if (p.x + half <= plat.x || p.x - half >= plat.x + plat.width) continue;
           const fromLeft = prevX + half <= plat.x + 2;
           const fromRight = prevX - half >= plat.x + plat.width - 2;
@@ -1593,63 +1601,64 @@ export class GameEngine {
       const playerFeet = p.y;
       const playerPrevFeet = p.y - p.vy * dt;
 
-      for (const plat of p.hanging ? [] : this.platforms) {
-        if (plat.broken) continue;
+      // every floor his feet meet this frame (in stage order)
+      const floors = (p.hanging ? [] : this.platforms).filter((plat) => {
+        if (plat.broken) return false;
         // a log is only there between its banks; the part hidden under a bank is not standable
-        if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) continue;
-
+        if (plat.type === 'drift' && plat.drift && (p.x < plat.drift.x0 || p.x > plat.drift.x1)) return false;
         // Check if player is horizontally within platform (generous width tolerance)
         // How far the player's CENTRE may hang past a ledge and still count as standing on it. It was 0.48 (21 px), which left
         // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
         const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26 + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
-        if (p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width) {
-          // Check landing from above
-          if (p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y) {
-            p.y = plat.y;
-            const landV = p.vy; // how hard he came down: the squash below follows it
-            p.vy = 0;
-            p.grounded = true;
-            this.standingOnId = plat.id;
-            p.jumpsLeft = 2; // Restore double jump capability on landing
-            p.isDoubleJumping = false;
-            p.somersaultAngle = 0;
+        if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) return false;
+        // Check landing from above
+        return p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y;
+      });
+      // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
+      // so a lift never rises without him
+      const plat = pickFloor(floors, p.x);
+      if (plat) {
+        p.y = plat.y;
+        const landV = p.vy; // how hard he came down: the squash below follows it
+        p.vy = 0;
+        p.grounded = true;
+        this.standingOnId = plat.id;
+        p.jumpsLeft = 2; // Restore double jump capability on landing
+        p.isDoubleJumping = false;
+        p.somersaultAngle = 0;
 
-            // Jump Buffering: If jump was tapped just before landing, instantly jump!
-            if (this.jumpBufferTimer > 0) {
-              this.jumpBufferTimer = 0;
-              p.vy = -PHYS.jumpV;
-              p.grounded = false;
-              p.jumpsLeft = 1;
-              p.squashX = 0.82;
-              p.squashY = 1.28;
-              this.takeOff(false);
-              sound.playJump();
-              this.spawnJumpDust(p.x, p.y);
-              break;
-            }
+        // Jump Buffering: If jump was tapped just before landing, instantly jump!
+        if (this.jumpBufferTimer > 0) {
+          this.jumpBufferTimer = 0;
+          p.vy = -PHYS.jumpV;
+          p.grounded = false;
+          p.jumpsLeft = 1;
+          p.squashX = 0.82;
+          p.squashY = 1.28;
+          this.takeOff(false);
+          sound.playJump();
+          this.spawnJumpDust(p.x, p.y);
+        } else {
+          // Squash on landing: a hop settles lightly, a long drop flattens him more
+          if (p.squashY > 0.9) {
+            const hard = Math.max(0, Math.min(1, landV / PHYS.maxFall));
+            p.squashX = 1.1 + 0.15 * hard;
+            p.squashY = 0.9 - 0.17 * hard;
+          }
 
-            // Squash on landing: a hop settles lightly, a long drop flattens him more
-            if (p.squashY > 0.9) {
-              const hard = Math.max(0, Math.min(1, landV / PHYS.maxFall));
-              p.squashX = 1.1 + 0.15 * hard;
-              p.squashY = 0.9 - 0.17 * hard;
-            }
+          // Bouncy mushroom interaction
+          if (plat.type === 'bouncy') this.bounceOff();
 
-            // Bouncy mushroom interaction
-            if (plat.type === 'bouncy') this.bounceOff();
-
-            // Fragile branch interaction
-            if (plat.type === 'fragile') {
-              if (plat.fragileTimer === undefined) {
-                plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
-                if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
-                  this.zoneHinted.crumble = true;
-                  this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
-                }
+          // Fragile branch interaction
+          if (plat.type === 'fragile') {
+            if (plat.fragileTimer === undefined) {
+              plat.fragileTimer = plat.crumbleAfter ?? 1.1; // generous 1.1s before breaking (ruin tiles set their own)
+              if (plat.crumbleAfter !== undefined && !this.zoneHinted.crumble) {
+                this.zoneHinted.crumble = true;
+                this.addFloatingText('IT CRUMBLES! KEEP MOVING', p.x, p.y - 80, '#fdba74');
               }
             }
-            break;
           }
         }
       }
@@ -3605,6 +3614,8 @@ export class GameEngine {
     this.floatingTexts = this.floatingTexts.filter((ft) => Math.abs(ft.x - p.x) > 160 || Math.abs(ft.y - p.y) > 220);
     this.addFloatingText(reason === 'hurt' ? 'TRY AGAIN!' : 'OH NO!', p.x, p.y - 112, '#fca5a5', 1.4);
     if (reason !== 'hurt') this.addFloatingText(`${this.lives} ${this.lives === 1 ? 'LIFE' : 'LIVES'} LEFT`, p.x, p.y - 88, '#fde68a', 1.4);
+    // Dot's flight: she comes back at the last flower she drank at
+    if (this.dotRun) this.dotRun.fl.respawn();
   }
 
   /**
@@ -3771,7 +3782,9 @@ export class GameEngine {
     // 4-6's mist (w4Play.ts): standing still on a mist spot, the view drifts over to the way up the settling mist is showing him
     const look = this.w4?.look(p.x, p.y);
     if (look) {
-      this.camera.targetX += (look.x - vw / 2 - this.camera.targetX) * look.u;
+      // (a knot, on a wide view: kept 110 px in from the left edge, clear of Dot's banner across the middle of the screen)
+      const lx = look.leftX !== undefined && vw > vh * 1.3 ? look.leftX - 110 : look.x - vw / 2;
+      this.camera.targetX += (lx - this.camera.targetX) * look.u;
       this.camera.targetY += (look.y - vh / 2 - this.camera.targetY) * look.u;
       // (never so far that he leaves the view: his feet stay above the bottom tenth)
       this.camera.targetY = Math.max(this.camera.targetY, p.y - vh * 0.9);
@@ -3948,6 +3961,11 @@ export class GameEngine {
 
     // Clean viewport clearing to prevent any screen flicker or ghosting
     ctx.clearRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
+    if (this.dotRun) {
+      this.renderDot(ctx, dpr);
+      ctx.restore();
+      return;
+    }
 
     // Apply Screen Shake (Trauma squared for punchy feel)
     const shakeMag = this.camera.trauma * this.camera.trauma * 16;
@@ -4393,6 +4411,95 @@ export class GameEngine {
     }
 
     ctx.restore(); // end DPR transform
+  }
+
+  // --- Dot's netting flight (dotFlightRun.ts does the work; these hand it the engine's input, hearts, camera and canvas) ---
+  private startDot(st: import('./dotFlightStage.ts').DotStage) {
+    this.dotRun = new DotRun(st, {
+      stageId: this.currentStage.config.id,
+      guide: (text, seconds) => this.guide(text, seconds),
+      float: (text, x, y, color) => this.addFloatingText(text, x, y, color, 1.2),
+      loseHeart: () => {
+        const p = this.player;
+        if (this.isGameOver) return;
+        this.statHeartsLost++;
+        p.hp = Math.max(0, p.hp - 1);
+        recorder.event('hurt', p.hp);
+        if (p.hp <= 0) this.loseLife('hurt');
+      },
+      score: (n) => (this.runScore += n),
+      shake: (n) => (this.camera.trauma = Math.min(1, this.camera.trauma + n)),
+      win: () => {
+        if (this.isGameOver) return;
+        this.isGameOver = true;
+        const p = this.player;
+        const stars = calculateLevelStars(this.gameTime, 0, p.hp / p.maxHp, 1, this.statLivesLost);
+        this.callbacks.onStageStats?.(this.buildStats(true, stars));
+        this.callbacks.onVictory(stars, Math.round(this.gameTime), this.runScore);
+      },
+    });
+  }
+
+  private stepDot(dt: number) {
+    const run = this.dotRun!;
+    const p = this.player;
+    // the touch recogniser reads these: a short slide up flaps while she has a flap in hand; nothing is ever a kick or a climb
+    this.input.airJumpReady = run.fl.canFlap();
+    this.input.kickNear = false;
+    this.input.onVine = false;
+    this.input.megaReady = true;
+    if (!this.isGameOver || run.fl.through) run.step(dt, this.input.state);
+    this.checkpoint = { ...run.fl.checkpoint };
+    p.x = run.fl.x;
+    p.y = run.fl.y + 22;
+    p.vx = run.fl.vx;
+    p.vy = run.fl.vy;
+    p.facing = run.fl.face;
+    // the moment at the gap: the view closes in a touch
+    const z = 1 + 0.12 * run.moment();
+    if (Math.abs(z - this.bossZoom) > 0.002) {
+      this.bossZoom = z;
+      this.applyZoom();
+    }
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.life -= dt;
+      if (ft.life <= 0) this.floatingTexts.splice(i, 1);
+      else ft.y -= 35 * dt;
+    }
+    if (this.stageHint && (this.stageHint.life -= dt) <= 0) this.stageHint = null;
+    this.camera.trauma = Math.max(0, this.camera.trauma - dt * 2.5);
+    run.camera(this.camera, dt);
+    this.callbacks.onProgressUpdate(run.fl.through ? 1 : 0, 1, this.runScore, p.hp, run.ratio(), null, 0);
+    this.markWayDodge(dt);
+  }
+
+  private renderDot(ctx: CanvasRenderingContext2D, dpr: number) {
+    const shakeMag = this.camera.trauma * this.camera.trauma * 14;
+    const shake = { x: (Math.random() - 0.5) * shakeMag, y: (Math.random() - 0.5) * shakeMag };
+    // her panel: held sideways it sits under the hearts and lives (GameHUD.tsx), left; upright, the top is full (the stage card, Dot's banner), so it sits bottom left
+    const portrait = this.viewCssH > this.viewCssW;
+    const hudAt = { x: 12, y: portrait ? this.viewCssH - 66 : this.viewCssH < 430 ? 112 : 124 };
+    this.dotRun!.draw(ctx, this.camera, dpr, this.zoom, this.viewCssW, this.viewCssH, shake, hudAt);
+    // the floating words (a scratch, the silk), in the world
+    ctx.save();
+    const snap = dpr * this.zoom;
+    ctx.translate(-snapCam(this.camera.x, snap), -snapCam(this.camera.y, snap));
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 15px Fredoka, sans-serif';
+    for (const ft of this.floatingTexts) {
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(30, 20, 30, 0.6)';
+      ctx.strokeText(ft.text, ft.x, ft.y);
+      ctx.fillStyle = ft.color;
+      ctx.fillText(ft.text, ft.x, ft.y);
+    }
+    ctx.restore();
+    if (this.respawnFlash > 0) {
+      this.respawnFlash = Math.max(0, this.respawnFlash - 1 / 30);
+      ctx.fillStyle = `rgba(255, 255, 255, ${(this.respawnFlash / 0.6) * 0.7})`;
+      ctx.fillRect(0, 0, this.camera.viewportWidth, this.camera.viewportHeight);
+    }
   }
 
   // --- Juice Helpers ---
@@ -4997,8 +5104,13 @@ export class GameEngine {
         sound.playPlayerHurt();
         this.loseLife('pit');
       },
+      // 4-9 The Aerie: a guard blown off its ledge while he is close counts toward the stage's goal
+      defeat: () => {
+        p.enemiesDefeated++;
+      },
       sfx: (kind) => {
-        if (kind === 'rock') sound.playHitImpact();
+        if (kind === 'cry') sound.playEagleScreech();
+        else if (kind === 'rock') sound.playHitImpact();
         else if (kind === 'chime') sound.playVineGrab();
         else if (kind === 'monkey') sound.playPredator('tayra', 0);
         else if (kind === 'frond') sound.playShrineUnlocked();
@@ -5007,6 +5119,8 @@ export class GameEngine {
       },
     });
     this.dragSpeed *= out.speed;
+    // thrown back by pouring water: his steering comes back a moment later, so the knock reads as a knock
+    if (out.knocked) this.inputGrace = Math.max(this.inputGrace, FALLS.stagger);
     // a freed eaglet's parent beating its wings over the nest (4-8): a tailwind on top of the gust lanes
     this.windV += out.wind;
   }

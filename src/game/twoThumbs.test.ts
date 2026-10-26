@@ -83,6 +83,24 @@ test('two thumbs: steering held, a flick up, then a second flick in the air is t
   }
 });
 
+test('two thumbs: a flick held on the glass (the leaf), then another flick, is the double jump', () => {
+  for (const hold of [100, 300, 600]) {
+    const t = rig();
+    t.down(1, 70, 520);
+    t.drag(1, 70, 520, 142, 520, 200);
+    // flick up and keep the thumb down
+    t.down(2, 310, 450);
+    t.drag(2, 310, 450, 310, 369, 60, 3);
+    t.world.air = true;
+    t.wait(hold);
+    t.up(2, 310, 369);
+    t.wait(60);
+    t.flick(2, 310, 450, 0, -81);
+    assert.equal(t.count('jump'), 2, `held ${hold}: ${t.log.join(' ')}`);
+    assert.equal(t.lastMove(), 'move:right', `held ${hold}: ${t.log.join(' ')}`);
+  }
+});
+
 test('one thumb: two quick flicks up give two jumps, however close together', () => {
   for (const gap of [0, 40, 80, 150]) {
     const t = rig();

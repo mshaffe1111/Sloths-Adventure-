@@ -884,7 +884,15 @@
 @keyframes coach-in { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%); } }
 
 /* a first-time lesson card (the game is paused behind it) */
-.lc-scrim { z-index: 60; }
+/* a lesson card: only the card itself takes touches. A thumb put down beside it lands on the game's touch layer, so it is already
+   steering when "Got it!" is pressed (on the dimmed screen it was a touch on something about to vanish, and did nothing afterwards) */
+.lc-scrim { z-index: 60; pointer-events: none; }
+/* a very short landscape screen (about 270-320 css px tall): the HUD and Dot's talk box shrink, or they covered the whole stage */
+@media (max-height: 320px) {
+  .game-hud > * { zoom: 0.68; }
+  .way { zoom: 0.78; top: calc(env(safe-area-inset-top, 0px) + 58px); }
+}
+.lc-scrim .lc { pointer-events: auto; }
 .lc { width: min(100%, 460px); display: flex; flex-direction: column; gap: 10px; max-height: 94%; overflow: hidden; }
 .lc-head { display: flex; align-items: center; gap: 12px; }
 .lc-face { display: inline-flex; flex: none; }
