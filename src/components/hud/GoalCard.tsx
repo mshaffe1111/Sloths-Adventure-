@@ -1,0 +1,135 @@
+/**
+ * The stage-start goal card (new HUD, beta): a short parchment card at the top centre ("This stage: collect 33 petals"), hung on two
+ * threads. After its reading time (about 3-4 s), or on the player's first touch or key, it shrinks into the goal counter, so the
+ * player sees where the goal lives. It never waits for a tap (a tap is a punch). On a retry of the same stage only a one-second
+ * version plays: the icon and "0/16" sliding into the counter.
+ *
+ * While it is up, <html> carries `data-hud-card="1"`, so Dot's lines can wait for it (the two share the top-centre lane).
+ */
+import React from 'react';
+import type { GoalInfo } from './goalInfo.ts';
+import { GoalPic } from './hudArt.tsx';
+import { readMs, type HudMode, type LaneRect } from './hudLayout.ts';
+
+/** stages whose full card has been shown this session (a retry gets the short one) */
+const SEEN = new Set<string>();
+/** for the tests and the screenshot tool: forget which cards were seen */
+export function forgetGoalCards() {
+  SEEN.clear();
+}
+/** true while a goal card is on screen (Dot's lines may wait for it) */
+export function goalCardUp(): boolean {
+  return typeof document !== 'undefined' && document.documentElement.dataset.hudCard === '1';
+}
+
+interface Props {
+  stageId: string;
+  /** "1-5 · More Petals" */
+  label: string;
+  info: GoalInfo;
+  target: number;
+  lane: LaneRect;
+  mode: HudMode;
+  /** the counter it shrinks into */
+  counter: React.RefObject<HTMLElement | null>;
+}
+
+type Phase = 'in' | 'hold' | 'shrink' | 'done';
+
+export const GoalCard: React.FC<Props> = ({ stageId, label, info, target, lane, mode, counter }) => {
+  const quick = React.useMemo(() => SEEN.has(stageId), [stageId]);
+  const [phase, setPhase] = React.useState<Phase>('in');
+  const [to, setTo] = React.useState<{ x: number; y: number } | null>(null);
+  const ref = React.useRef<HTMLDivElement>(null);
+  const reduced = React.useMemo(() => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, []);
+
+  const going = React.useRef(false);
+  const shrink = React.useCallback(() => {
+    if (going.current) return;
+    going.current = true;
+    const me = ref.current?.getBoundingClientRect();
+    const c = counter.current?.getBoundingClientRect();
+    if (me && c) setTo({ x: c.left + c.width / 2 - (me.left + me.width / 2), y: c.top + c.height / 2 - (me.top + me.height / 2) });
+    setPhase('shrink');
+  }, [counter]);
+
+  React.useEffect(() => {
+    SEEN.add(stageId);
+    const root = document.documentElement;
+    root.dataset.hudCard = '1';
+    // (the reading time of its main line, 1.5 s + 0.5 s a word: about 4 s, never past 4.5 s)
+    const hold = quick ? 900 : Math.min(4500, readMs(info.line, 3000));
+    const t0 = window.setTimeout(() => setPhase('hold'), 30);
+    const t1 = window.setTimeout(shrink, hold);
+    // the first move (a touch anywhere, or a key) sends it to the counter, once it has been seen for a moment
+    let armed = false;
+    const t2 = window.setTimeout(() => (armed = true), quick ? 200 : 900);
+    const onMove = () => {
+      if (armed) shrink();
+    };
+    const opts = { capture: true, passive: true } as const;
+    window.addEventListener('pointerdown', onMove, opts);
+    window.addEventListener('touchstart', onMove, opts);
+    window.addEventListener('keydown', onMove, opts);
+    return () => {
+      window.clearTimeout(t0);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.removeEventListener('pointerdown', onMove, opts);
+      window.removeEventListener('touchstart', onMove, opts);
+      window.removeEventListener('keydown', onMove, opts);
+      delete root.dataset.hudCard;
+    };
+  }, [stageId, quick, info.line, shrink]);
+
+  React.useEffect(() => {
+    if (phase !== 'shrink') return;
+    const t = window.setTimeout(() => {
+      setPhase('done');
+      delete document.documentElement.dataset.hudCard;
+    }, reduced ? 200 : 480);
+    return () => window.clearTimeout(t);
+  }, [phase, reduced]);
+
+  if (phase === 'done' || info.kind === 'none' || info.kind === 'boss') return null;
+
+  const port = mode === 'port';
+  const short = mode === 'short';
+  const w = Math.min(lane.w, port ? 340 : short ? 300 : 360);
+  const x = lane.x + (lane.w - w) / 2;
+  const top = lane.y + (short ? 0 : 4);
+  // the threads go up to the top of the screen sideways (the card hangs from the canopy); upright they are short, clear of the HUD row
+  const style: React.CSSProperties = { left: x, top, width: w, ['--th' as string]: `${port ? 10 : top + 4}px` };
+  if (phase === 'shrink') {
+    style.transform = reduced || !to ? undefined : `translate(${to.x}px, ${to.y}px) scale(.14)`;
+    style.opacity = 0;
+  }
+  const icon = short ? 34 : 42;
+  const count = info.kind === 'count';
+  const words = info.line.replace(/^This stage:\s*/, '');
+
+  return (
+    <div ref={ref} className={`vh-card ${quick ? 'quick' : ''} ${phase}`} style={style} role="status" aria-live="polite" aria-label={info.line}>
+      <span className="vh-card-thread l" aria-hidden="true" />
+      <span className="vh-card-thread r" aria-hidden="true" />
+      {quick ? (
+        <div className="vh-card-row">
+          <GoalPic icon={info.icon} size={icon - 6} />
+          <span className="vh-card-big">{count ? `0/${target}` : words}</span>
+        </div>
+      ) : (
+        <>
+          <div className="vh-card-label">{label}</div>
+          <div className="vh-card-row">
+            <GoalPic icon={info.icon} size={icon} />
+            <div className="vh-card-text">
+              <span className="vh-card-pre">This stage:</span>
+              <span className="vh-card-big">{words}</span>
+              {info.sub && !short && <span className="vh-card-sub">{info.sub}</span>}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};

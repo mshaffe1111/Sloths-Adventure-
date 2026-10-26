@@ -1423,7 +1423,7 @@ export function drawCollectible(
     case 'exit_totem': {
       // the sanctuary door stands still (it must not bob with the pickups); see sanctuaryDoor.ts
       ctx.translate(0, -bobY);
-      drawSanctuaryDoor(ctx, time, !!item.isLocked);
+      drawSanctuaryDoor(ctx, time, !!item.isLocked, item.missing);
       break;
     }
   }

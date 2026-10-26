@@ -1,0 +1,28 @@
+/*
+ * The stage-cleared card on a short screen held sideways (about 640x320, 360 px tall or less): the bottom row of buttons used to
+ * fall off the screen. Here the stars and the praise share a row, and Next sits beside Previous / Play again / World map, so the
+ * whole card fits with nothing to scroll. (Scoped to the stage-cleared card; the Game Over card keeps its own layout.)
+ */
+@media (max-height: 360px) and (orientation: landscape) {
+  .clr-scrim:has(> .clr-card.clr-won) { padding: 24px 10px 6px; align-items: flex-start; }
+  .clr-scrim > .clr-card.clr-won { padding: 26px 14px 8px; border-width: 9px; border-radius: 22px; gap: 10px; grid-template-columns: 104px minmax(0, 1fr); }
+  .clr-scrim > .clr-card.clr-won .clr-ribbon { height: 42px; top: -19px; width: min(330px, 80%); }
+  .clr-scrim > .clr-card.clr-won .clr-ribbon h2 { font-size: 19px; }
+  .clr-scrim > .clr-card.clr-won .clr-hero::before { width: 100px; height: 100px; margin-left: -50px; }
+  .clr-scrim > .clr-card.clr-won .clr-main { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.65fr); column-gap: 10px; row-gap: 6px; align-items: center; }
+  .clr-scrim > .clr-card.clr-won .clr-main > * { grid-column: 1 / -1; }
+  .clr-scrim > .clr-card.clr-won .clr-main > :first-child { grid-column: 1; }
+  .clr-scrim > .clr-card.clr-won .clr-main > .clr-praise { grid-column: 2; align-items: flex-start; text-align: left; margin: 0; }
+  .clr-scrim > .clr-card.clr-won .clr-praise b { font-size: 19px; }
+  .clr-scrim > .clr-card.clr-won .clr-stars svg { width: 28px; height: 28px; }
+  .clr-scrim > .clr-card.clr-won .clr-stars svg:nth-child(2) { width: 36px; height: 36px; }
+  .clr-scrim > .clr-card.clr-won .clr-chips { margin: 0; }
+  .clr-scrim > .clr-card.clr-won .clr-clue { padding: 4px 10px; }
+  .clr-scrim > .clr-card.clr-won .clr-clue h3 { font-size: 13px; }
+  .clr-scrim > .clr-card.clr-won .clr-clue p { font-size: 12px; line-height: 1.25; }
+  .clr-scrim > .clr-card.clr-won .clr-main > .pm-go { grid-column: 1; min-height: 44px; font-size: 16px; gap: 6px; padding: 0 8px; white-space: nowrap; }
+  .clr-scrim > .clr-card.clr-won .clr-main > .pm-go svg { width: 18px; height: 18px; }
+  .clr-scrim > .clr-card.clr-won .clr-main > .clr-sec { grid-column: 2; gap: 6px; }
+  .clr-scrim > .clr-card.clr-won .clr-btn2 { min-height: 44px; font-size: 13px; gap: 4px; padding: 0 4px; white-space: nowrap; }
+  .clr-scrim > .clr-card.clr-won .clr-btn2 svg { width: 15px; height: 15px; flex: none; }
+}
