@@ -19,7 +19,8 @@ import { SPIDER5, W5_TEACH, type W5Extras } from './w5Kit.ts';
 import { W5_HINTS, W5_STEP_HELP, W5_STEP_HELP_KEYS, W5_STEP_HELP_PAD } from './w5Lines.ts';
 import { W5_HEART_UP, W5_PLAIN_STUMPS, type W5Info } from './w5Stages.ts';
 import { stuckLine } from './stuckHelper.ts';
-import { reachJump } from './physics.ts';
+import { inSweetSpot, reachJump } from './physics.ts';
+import type { W54Info } from './w5Stage54.ts';
 import { validateStage } from './levelCheck.ts';
 
 /** "within reach": this close (px) ahead of him, a thing can be touched or must be jumped now */
@@ -29,8 +30,9 @@ const CARD_MS = 1500;
 const STEP_LINES = [W5_STEP_HELP, W5_STEP_HELP_PAD, W5_STEP_HELP_KEYS];
 const WALL_LINES = [stuckLine('screen'), stuckLine('pad'), stuckLine('keys')];
 
-type Built = ReturnType<typeof buildProtoStage> & { w5info: W5Info; proto: { w5: W5Extras } };
-const build = (id: '5-1' | '5-2', s: number) => buildProtoStage(levelConfig(id), s, HAND_STAGES[id]) as Built;
+type Built = ReturnType<typeof buildProtoStage> & { w5info: W5Info; w54info?: W54Info; proto: { w5: W5Extras } };
+type W5Id = '5-1' | '5-2' | '5-4';
+const build = (id: W5Id, s: number) => buildProtoStage(levelConfig(id), s, HAND_STAGES[id]) as Built;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
 // (a phone: the lines in their touch words, lessons.ts lessonInputMode)
 try {
@@ -59,11 +61,11 @@ interface Said { text: string; x: number; t: number }
  * walks into the Butler's tray. Each frame keeps when it was, where he was, whether an animal was at hand (dotGuideWatch.ts inDanger:
  * no new line but a warning starts then) and the moves done so far (the queue's move counter).
  */
-function holdRight(id: '5-1' | '5-2', seed: number, untilX: number) {
+function holdRight(id: W5Id, seed: number, untilX: number) {
   forgetTips(id);
   const sim = new RealPlay(id, seed);
   const w5 = (sim.stage as unknown as { proto: { w5: W5Extras } }).proto.w5;
-  const gaps = (sim.stage as unknown as { w5info: W5Info }).w5info.gaps;
+  const gaps = (sim.stage as unknown as { w5info?: W5Info }).w5info?.gaps ?? [];
   const frames: Frame[] = [];
   const moves = { jump: 0, double: 0, run: 0 };
   let ran = 0, lastX = sim.p.x, hold = 0, second = false, wasDbl = false, needs2 = false;
@@ -86,6 +88,13 @@ function holdRight(id: '5-1' | '5-2', seed: number, untilX: number) {
         const tall = sim.platforms.some((q) => q.type === 'solid' && !q.broken && inWay(q.x, 0, 90) && q.y < p.y - 95 && q.y > p.y - 220 && q.y + q.height > p.y - 4);
         const far = !floor && gaps.some((g) => g.double && inWay(g.edge, -10, 90) && Math.abs(p.y - G) < 3);
         needs2 = tall || far;
+      }
+    } else if (p.isVineSwinging) {
+      // (on a silk line, 5-4: let go well inside the sweet spot, on the way forward, as a first-timer's thumb does once shown)
+      const s = { angle: p.swingAngle ?? 0, omega: p.swingAngularVelocity ?? 0, len: p.swingLength ?? 100 };
+      if (hold <= 0 && inSweetSpot(s, 1) && s.angle > 0.25) {
+        press = true;
+        hold = 6;
       }
     } else if (needs2 && !second && p.vy > -80 && hold <= 4) {
       press = true;
@@ -161,17 +170,35 @@ interface Lesson {
   /** a move the line teaches: a player who has already done it this stage is not told (dotGuide.ts, QA v189) */
   move?: 'double';
 }
-function lessonsOf(id: '5-1' | '5-2', st: Built): Lesson[] {
+function lessonsOf(id: W5Id, st: Built): Lesson[] {
   const w = st.proto.w5;
   const out: Lesson[] = [];
-  const dl = st.w5info.doubleLesson;
+  const dl = st.w5info?.doubleLesson;
   if (dl) out.push({ name: 'the second jump', text: (id === '5-1' ? W5_HINTS.s51double : W5_HINTS.s52double).old, at: dl.edge, move: 'double' });
-  const tl = st.w5info.tallLesson;
+  const tl = st.w5info?.tallLesson;
   if (tl) out.push({ name: 'the tall stumps', text: (id === '5-1' ? W5_HINTS.s51tall : W5_HINTS.s52tall).old, at: tl.at, move: 'double' });
   if (id === '5-1') {
     // the first awake spider: its line before it can notice him (and, once it is on screen, crouch)
     const sp = st.enemies.filter((e) => e.type === 'spider').sort((a, b) => a.x - b.x)[0];
     out.push({ name: 'the jumping spider', text: W5_TEACH.spider, at: sp.x, reach: SPIDER5.sense });
+  }
+  if (id === '5-4') {
+    // the first silk line, Dot's fifth rule and the first sheet, two lines in a row, the Seamstress, the high bridge, the first spider
+    const inf = st.w54info!;
+    const sheet0 = w.sheets![0];
+    const seam = w.sheets![inf.seamSheet];
+    const two = inf.chains.find((c) => c.vines.length >= 2 && !c.high)!;
+    const high = inf.chains.find((c) => c.high)!;
+    const step = st.platforms.find((q) => q.id === high.start)!.x - 110;
+    const sp = st.enemies.filter((e) => e.type === 'spider').sort((a, b) => a.x - b.x)[0];
+    out.push({ name: 'the silk line', text: W5_TEACH.silk, at: inf.firstLine.x });
+    out.push({ name: "Dot's fifth rule", text: W5_HINTS.s54admire.old, at: sheet0.x0 });
+    out.push({ name: 'the silk sheet', text: W5_TEACH.sheet, at: sheet0.x0 });
+    out.push({ name: 'two silk lines', text: W5_HINTS.s54chain.old, at: two.edge });
+    out.push({ name: 'the Seamstress', text: W5_TEACH.seamstress, at: seam.x0 });
+    out.push({ name: 'the high bridge', text: W5_HINTS.s54high.old, at: step });
+    out.push({ name: 'the jumping spider', text: W5_TEACH.spider, at: sp.x, reach: SPIDER5.sense });
+    return out;
   }
   const chair = (w.chairs ?? []).filter((c) => !c.wrapped).sort((a, b) => a.x - b.x)[0];
   if (chair) out.push({ name: 'the soft chairs', text: W5_TEACH.chair, at: chair.x });
@@ -188,7 +215,7 @@ function lessonsOf(id: '5-1' | '5-2', st: Built): Lesson[] {
   return out;
 }
 
-for (const id of ['5-1', '5-2'] as const) {
+for (const id of ['5-1', '5-2', '5-4'] as const) {
   test(`${id}: holding right from the start, every first-time line comes before its thing is within reach (old look and new)`, () => {
     const problems: string[] = [];
     for (const seed of process.env.W5_ORDER_SEEDS === '16' ? SEEDS : SEEDS.slice(0, 4)) {

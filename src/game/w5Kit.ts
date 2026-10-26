@@ -467,6 +467,70 @@ export const inSheet = (s: SilkSheet, px: number, py: number): boolean => px >= 
 export const admiring = (s: SilkSheet, px: number, py: number, vx: number, grounded: boolean): boolean =>
   grounded && inSheet(s, px, py) && Math.abs(vx) < SHEET.pace;
 
+// ───────────────────────────── the Seamstress ─────────────────────────────
+
+/**
+ * The Queen's seamstress, a pink lace-aproned spider knitting one of the silk sheets (5-4: her first, gentle appearance). She does not
+ * walk or bite. She knits; but let him linger in front of her sheet, admiring it, and she looks up (the tell: she lifts her needles,
+ * SEAMSTRESS.tell, with a "!" over her) and casts a length of lace onto him: more silk on him at once, never a wrap by itself. Moving on
+ * past her sheet during the tell calls it off, and she goes back to her knitting.
+ */
+export interface Seamstress {
+  /** her feet (on the ground at the end of her sheet), facing her work */
+  x: number;
+  y: number;
+  dir: 1 | -1;
+  /** the sheet she is knitting (an index into W5Extras.sheets) */
+  sheet: number;
+}
+
+export const SEAMSTRESS = {
+  /** seconds of his lingering at her sheet before she looks up; her tell (World 5's rule: every attack warned at least 0.6 s) */
+  watch: 0.5,
+  tell: 0.8,
+  /** seconds the cast takes (the lace flying), and her rest after it before she will look up again */
+  cast: 0.5,
+  rest: 2.5,
+  /** the silk her lace puts on him, and the most it can leave on him (her lace alone never wraps him: the stillness does) */
+  lace: 0.4,
+  most: 0.85,
+  /** how tall she stands (world units): about the Butler's height */
+  h: 96,
+} as const;
+
+export type SeamPhase = 'knit' | 'tell' | 'cast' | 'rest';
+export interface SeamState {
+  phase: SeamPhase;
+  t: number;
+  /** seconds he has lingered at her sheet (knitting) */
+  watched: number;
+}
+export const newSeam = (): SeamState => ({ phase: 'knit', t: 0, watched: 0 });
+
+/**
+ * one frame of the Seamstress: `lingering` he is admiring her sheet (w5Kit admiring); `seen` she is in full view on the screen (she
+ * only looks up where he can see her do it). `cast` is true on the frame her lace lands on him.
+ */
+export function stepSeam(st: SeamState, inp: { lingering: boolean; seen: boolean }, dt: number): { st: SeamState; cast: boolean } {
+  const t = st.t + dt;
+  if (st.phase === 'knit') {
+    const watched = inp.lingering ? st.watched + dt : 0;
+    if (watched >= SEAMSTRESS.watch && inp.seen) return { st: { phase: 'tell', t: 0, watched: 0 }, cast: false };
+    return { st: { phase: 'knit', t, watched }, cast: false };
+  }
+  if (st.phase === 'tell') {
+    // (he moved on, or she is off the screen: called off, back to her knitting)
+    if (!inp.lingering || !inp.seen) return { st: newSeam(), cast: false };
+    if (t >= SEAMSTRESS.tell) return { st: { phase: 'cast', t: 0, watched: 0 }, cast: true };
+    return { st: { ...st, t }, cast: false };
+  }
+  if (st.phase === 'cast') return { st: t >= SEAMSTRESS.cast ? { phase: 'rest', t: 0, watched: 0 } : { ...st, t }, cast: false };
+  return { st: t >= SEAMSTRESS.rest ? newSeam() : { ...st, t }, cast: false };
+}
+
+/** the silk on him after her lace lands */
+export const laced = (silk: number): number => Math.max(silk, Math.min(SEAMSTRESS.most, silk + SEAMSTRESS.lace));
+
 // ───────────────────────────── closing orchids ─────────────────────────────
 
 /**
@@ -625,6 +689,8 @@ export interface W5Extras {
   cocoons?: Cocoon[];
   carvings?: Carving[];
   spiders?: W5Spider[];
+  /** the Seamstress, knitting a sheet (5-4) */
+  seamstresses?: Seamstress[];
   decor?: W5Decor[];
   /** petals drifting down through the light (a lovely stage) */
   petals?: boolean;
@@ -653,4 +719,6 @@ export const W5_TEACH = {
   cocoon: 'Somebody\'s wrapped up in that cocoon! Tap to punch it open and set them free',
   silk: 'A silk line, like a vine. Flick up into it to swing',
   spider: 'A jumping spider! It crouches before it rushes. Tap to punch it, or jump on it',
+  seamstress: 'That\'s the Seamstress, knitting her silk. Don\'t stand there watching her. Slide on past before she looks up',
+  laced: 'She saw you looking, and now there\'s lace all over you! Slide left and right to shake it off',
 } as const;
