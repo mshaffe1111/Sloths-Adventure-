@@ -43,7 +43,7 @@ import './dotGuide.css';
 warmDot();
 
 /**
- * Dot's guide, the new look (newLook.ts; Matt's pick C, 2026-10-26). The one teaching surface in play: every line (stage tips, the
+ * Dot's guide (Matt's pick C, 2026-10-26). The one teaching surface in play: every line (stage tips, the
  * lessons, the first-stage coach, the goal, story asides, journal notes, struggle help) goes through one queue (game/dotGuide.ts), one at
  * a time. Dot flies in on a sparkle trail and perches on the scenery near the thing she is teaching, with a glowing ring and an arrow on
  * it; her parchment bubble sits beside her, on screen and clear of the HUD, the thumbs, the animals and Pokey. For the controls, or

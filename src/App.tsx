@@ -11,9 +11,7 @@ import { forgetLayout, layoutForEntry } from './game/layoutMemory.ts';
 import { learnedSkills, newlyLearned, type SkillDef, type SkillId } from './game/skills.ts';
 import { SkillLearned } from './components/SkillLearned.tsx';
 import { GameHUD } from './game/../components/GameHUD.tsx';
-import { CoachOverlay } from './components/CoachOverlay.tsx';
 import { LessonCard } from './components/LessonCard.tsx';
-import { JournalToast } from './components/JournalToast.tsx';
 import { Wayside } from './components/Wayside.tsx';
 import type { LessonId } from './game/lessons.ts';
 import { controlStyle, subscribeControls, type ControlStyle } from './game/controlPrefs.ts';
@@ -1073,7 +1071,6 @@ export default function App() {
             heroPoint={heroPoint}
             runKey={runId}
           />
-          {screen === 'playing' && <CoachOverlay step={coachStep} style={coachStyle} />}
           <PerfReadout stageId={activeLevel.id} />
           <Wayside
             key={`${activeLevel.id}-${runId}`}
@@ -1082,7 +1079,7 @@ export default function App() {
             ratio={distanceRatio}
             hp={hp}
             guide={guideLine}
-            // the new look's Dot guide (newLook.ts): it reads the stage itself and takes the coach and lessons as her lines
+            // Dot's guide: it reads the stage itself and takes the coach and lessons as her lines
             dot={{ engine: () => engineRef.current, playing: screen === 'playing' && !reading, coachStep, coachStyle, lessonId, count: { cur: currentCount, target: targetCount } }}
           />
           {screen === 'playing' && lessonId && (
@@ -1097,7 +1094,6 @@ export default function App() {
               }}
             />
           )}
-          <JournalToast active={screen === 'playing' && !coachStep && !lessonId && !reading} guide={guideLine} />
           {inputEngineRef.current && (
             <ControlSwitch inputEngine={inputEngineRef.current} />
           )}

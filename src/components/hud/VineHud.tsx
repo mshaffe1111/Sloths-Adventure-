@@ -1,5 +1,5 @@
 /**
- * The new HUD (beta, behind `newLook`): Matt's pick B, the hanging vine, with D's bloom-on-change (2026-10-26).
+ * The HUD: Matt's pick B, the hanging vine, with D's bloom-on-change (2026-10-26).
  *
  *   top-left:   a vine with the hearts hanging on threads. Lives, the power-up and the stage name hang lower down, and only show
  *               when they change.

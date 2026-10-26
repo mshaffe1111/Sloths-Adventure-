@@ -399,10 +399,10 @@ export function cardSafe(s: CardSafety): boolean {
   return s.hazard >= CARD_SAFE.hazard;
 }
 
-// ───────────────────────────── the new look: a lesson is one of Dot's lines ─────────────────────────────
+// ───────────────────────────── a lesson is one of Dot's lines ─────────────────────────────
 
 /**
- * With the new look (newLook.ts) a lesson does not stop the stage for a card: it becomes Dot's lines, said where they are needed, with her
+ * A lesson does not stop the stage for a card: it becomes Dot's lines, said where they are needed, with her
  * ring on the thing (dotGuide.ts). The words are Matt's approved lines (dotLines.ts, by id); a move lesson stays until the move is done,
  * and the next line of the lesson follows it (grab the vine, then leap off it). The fuller wording stays in Pokey's Journal. The approved
  * lines are for a touch screen; a pad or a keyboard gets a short line of its own.

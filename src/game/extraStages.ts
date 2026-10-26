@@ -3,22 +3,17 @@
  * (secret.ts, miniIndex 11). The first is Dot's netting flight, right after 4-5 (Matt, 2026-10-25): cleared, it opens 4-6.
  * Meeca's bonus stage after 5-5 is planned the same way.
  *
- * They come with the New stages switch the hand-built stages use (protoStage.ts protoStageEnabled: on since 2026-10-24, `?proto=0`
- * turns it off), and are never in the list outside a browser, so the generator's own tests see the hundred stages they always did.
+ * They come with the hand-built stages (protoStage.ts protoStageEnabled: the game's stages since 2026-10-24, no switch since
+ * 2026-10-26), and are never in the list outside a browser, so the generator's own tests see the hundred stages they always did.
  * This file stays light (no stage code), because worldsData.ts builds the stage list from it.
  */
 import type { LevelConfig } from './types.ts';
 
 export const DOT_STAGE_ID = '4-D';
 
-/** the same switch as protoStageEnabled (protoStage.ts) */
+/** in a browser, as protoStageEnabled (protoStage.ts): the generator's own tests see the hundred stages they always did */
 export function newStagesOn(): boolean {
-  if (typeof location === 'undefined') return false;
-  try {
-    return !/[?&]proto=0\b/.test(location.search);
-  } catch {
-    return true;
-  }
+  return typeof location !== 'undefined';
 }
 
 /** Dot's netting flight, as a stage in World 4's list */

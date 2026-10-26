@@ -34,7 +34,7 @@ export const STAGE_ANIMS: Record<string, readonly string[]> = {
 };
 
 export interface SheetSwitches {
-  /** the hand-built stages are on (protoStage.ts protoStageEnabled: everyone, unless ?proto=0) */
+  /** the hand-built stages are on (protoStage.ts protoStageEnabled: everyone) */
   hand: boolean;
   /** the painted platforms are on (protoArt.ts paintedKitEnabled: everyone, unless ?paint=0) */
   paint: boolean;

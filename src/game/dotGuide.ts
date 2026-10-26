@@ -1,5 +1,5 @@
 /**
- * Dot's guide (the new look, newLook.ts): ONE teaching surface. Her stage tips, the lessons, the first-stage coach, the goal, the story
+ * Dot's guide: ONE teaching surface. Her stage tips, the lessons, the first-stage coach, the goal, the story
  * asides and the journal notes all go through this one queue, so there is only ever one line on screen and none is cut short by another
  * (today the goal line got 1.1 s before a tip replaced it). Pure logic: the clock is handed in (milliseconds of play), so tests drive it.
  *
@@ -397,17 +397,4 @@ export function topicOf(t: string): TopicId | undefined {
   if (/netting|cage|chick/.test(s)) return 'cage';
   if (/gap|edge|ledge|stump|stone/.test(s)) return 'gap';
   return undefined;
-}
-
-// ───────────────────────────── which look this run of the stage uses ─────────────────────────────
-
-/** fixed when a run of a stage starts (Wayside mounts), so a switch flipped in the pause menu takes effect from the next stage or retry */
-let stageLook = false;
-export function beginStageLook(on: boolean): boolean {
-  stageLook = on;
-  return on;
-}
-/** the old teaching surfaces (coach card, lesson card, journal note) stand down while this is on: Dot's guide says it all */
-export function stageNewLook(): boolean {
-  return stageLook;
 }

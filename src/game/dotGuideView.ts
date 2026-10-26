@@ -1,5 +1,5 @@
 /**
- * What Dot's guide reads from the stage each frame (the new look, newLook.ts): where the camera is, where Pokey is and what he is doing,
+ * What Dot's guide reads from the stage each frame : where the camera is, where Pokey is and what he is doing,
  * and the things on screen she may perch on or point at. The engine fills one of these in place (GameEngine.guideView), so reading it
  * every frame allocates nothing; the arrays are the engine's own, read-only here.
  */

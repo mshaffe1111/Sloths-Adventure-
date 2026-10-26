@@ -50,15 +50,10 @@ export const HAND_STAGES: Record<string, Exclude<StagePlan, 'ctest'>> = { '1-1':
 
 /** the hand-built 1-6 is played instead of the generated one (saved on the device; ?proto=1 also turns it on) */
 export function protoStageEnabled(): boolean {
-  // the stages rebuilt from the stage plan are the game's stages since 2026-10-24 (Matt tested them): `?proto=0` plays the old ones.
+  // the stages rebuilt from the stage plan are the game's stages since 2026-10-24 (Matt tested them; no switch since 2026-10-26).
   // Outside a browser (the generator's own tests) the generated stages are what is being checked, so they are built there; the
   // hand-built stages have their own tests (stage1x.test.ts, protoStage.test.ts), which call buildProtoStage directly.
-  if (typeof location === 'undefined') return false;
-  try {
-    return !/[?&]proto=0\b/.test(location.search);
-  } catch {
-    return true;
-  }
+  return typeof location !== 'undefined';
 }
 /** ground height, the water line, and the height of a bank of earth */
 export const G = 580;

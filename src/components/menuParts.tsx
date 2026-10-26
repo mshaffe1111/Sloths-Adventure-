@@ -10,39 +10,7 @@ import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, ty
 import { DIFFICULTY_LABEL, difficulty, setDifficulty, subscribeDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { DOT_HELP_LABEL, dotHelp, setDotHelp, type DotHelp } from '../game/dotGuideHelp.ts';
 import { dotSaid } from '../game/dotGuide.ts';
-import { newLookOn, setNewLook } from '../game/newLook.ts';
 import { DotFace } from './DotFace.tsx';
-
-/** the new look (newLook.ts): the switch itself, a beta, off for players and on in Matt's test link. It starts from the next stage. */
-export const NewLookToggle: React.FC = () => {
-  const [on, setOn] = React.useState(() => newLookOn());
-  return (
-    <div className="pm-sound">
-      <div className="pm-sound-h">
-        <span className="flex items-center gap-2">
-          <Icon color="#86efac" size={22}>
-            <path d="M12 3c4 3 6 6 6 9a6 6 0 0 1-12 0c0-3 2-6 6-9z" />
-            <path d="M12 21v-8" />
-          </Icon>
-          New HUD and Dot (beta)
-        </span>
-        <button
-          type="button"
-          className="pm-mute pm-polish"
-          aria-pressed={on}
-          onClick={() => {
-            const v = !on;
-            setNewLook(v);
-            setOn(v);
-          }}
-        >
-          {on ? 'On' : 'Off'}
-        </button>
-      </div>
-      <small className="pm-polish-note">Try the hanging-vine HUD, and Dot perched by the thing she is teaching. It starts from the next stage or retry.</small>
-    </div>
-  );
-};
 
 /** "Dot's help" (the new look): Teach me / Just reminders / Quiet, with her last three lines under it */
 export const DotHelpSetting: React.FC = () => {
