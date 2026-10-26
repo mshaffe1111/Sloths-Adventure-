@@ -716,7 +716,10 @@ export class GameEngine {
 
   public stop() {
     // (the banner goes back to its usual place for whatever comes next)
-    if (typeof document !== 'undefined') delete document.documentElement.dataset.wayLow;
+    if (typeof document !== 'undefined') {
+      delete document.documentElement.dataset.wayLow;
+      delete document.documentElement.dataset.wayBoss;
+    }
     this.wayLow = false;
     this.isRunning = false;
     if (this.animFrameId !== null) {
@@ -2331,8 +2334,9 @@ export class GameEngine {
     const p = this.player;
     const w = this.viewCssW, h = this.viewCssH;
     if (!w || !h) return;
+    const boss = this.markWayBoss(w, h);
     // the banner's slot (index.css .way): its top, and about two lines of height below it
-    const slot = w <= 520 ? 132 : h <= 430 ? 110 : 96;
+    const slot = boss ? 64 : w <= 520 ? 132 : h <= 430 ? 110 : 96;
     const bandTop = slot - 12, bandBot = slot + 88;
     // (Dot is smaller than Pokey: her own body and the note under her. Upright, her nectar panel is at the bottom of the screen and
     // her camera keeps her well below the banner, so there the banner never moves down over the panel: QA, 2026-10-25)
@@ -2353,6 +2357,30 @@ export class GameEngine {
         delete document.documentElement.dataset.wayLow;
       }
     }
+  }
+
+  /**
+   * A boss fight: Dot's banner keeps off the boss plate and off the boss herself (her weak spot shows on her body). Upright it sits at
+   * the bottom (under the arena floor); held sideways it sits under the plate, narrow, on the half of the screen away from the boss
+   * (index.css :root[data-way-boss]). Returns whether a fight is on.
+   */
+  private markWayBoss(w: number, h: number): boolean {
+    const root = document.documentElement.dataset;
+    const b = this.boss && !this.boss.defeated ? this.boss : null;
+    if (!b) {
+      if (root.wayBoss) delete root.wayBoss;
+      return false;
+    }
+    const r = hurtRect(b);
+    const sx = (r.x + r.w / 2 - this.camera.x) * this.zoom;
+    let side = root.wayBoss;
+    if (h > w) side = 'low';
+    else if (side !== 'l' && side !== 'r') side = sx > w / 2 ? 'l' : 'r';
+    // (it changes sides only once she is well over on its half, so it does not flick to and fro while she hovers in the middle)
+    else if (side === 'l' && sx < w * 0.38) side = 'r';
+    else if (side === 'r' && sx > w * 0.62) side = 'l';
+    if (root.wayBoss !== side) root.wayBoss = side;
+    return true;
   }
 
   /** landings, footsteps and the music's intensity (calm while exploring, fuller near danger) */

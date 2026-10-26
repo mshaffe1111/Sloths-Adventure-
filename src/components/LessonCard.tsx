@@ -68,7 +68,7 @@ export const LessonCard: React.FC<{ id: LessonId; onClose: () => void }> = ({ id
               const t = e.changedTouches[0];
               const r = e.currentTarget.getBoundingClientRect();
               if (t && (t.clientX < r.left || t.clientX > r.right || t.clientY < r.top || t.clientY > r.bottom)) return;
-              e.preventDefault(); // (and no click after it: it would close the next card too)
+              if (e.cancelable) e.preventDefault(); // (and no click after it: it would close the next card too)
               onClose();
             }}
             disabled={!ready}

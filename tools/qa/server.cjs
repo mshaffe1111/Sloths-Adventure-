@@ -229,12 +229,30 @@ async function handle(cmd) {
     await page.clock.runFor(300);
     return { shot: await shot(), text: await screenText() };
   }
+  if (cmd.cmd === 'press') {
+    // press a button with a second finger while the steering thumb stays on the glass (a two-thumb player answering a card)
+    const b = page.locator('button', { hasText: new RegExp(`^\\s*${cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') });
+    if (!(await b.count())) return { error: `no button "${cmd.text}" on screen`, text: await screenText() };
+    const r = await b.first().boundingBox();
+    const pt = { x: r.x + r.width / 2, y: r.y + r.height / 2, id: 3 };
+    const held = points();
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [...held, pt] });
+    await page.clock.runFor(80);
+    await liftFinger(pt);
+    await page.clock.runFor(300);
+    return { shot: await shot(), text: await screenText() };
+  }
   if (cmd.cmd === 'look') return { shot: await shot(), text: await screenText() };
   if (cmd.cmd === 'burst') {
     // eight frames in a row in one strip: flicker, jitter and things popping in and out show up side by side
     const paths = [];
     for (let k = 0; k < 8; k++) { await page.clock.runFor(33); paths.push(await shot(`burst${k}`)); }
     return { shots: paths, text: await screenText() };
+  }
+  if (cmd.cmd === 'eval') {
+    // a look under the hood (not something a player can do): the value of a JS expression in the page, e.g. "__engine().input.state"
+    const v = await page.evaluate((src) => { try { return JSON.stringify((0, eval)(src)); } catch (e) { return 'threw ' + e.message; } }, cmd.text);
+    return { text: String(v).slice(0, 2000) };
   }
   if (cmd.cmd === 'die') {
     // lose a life on the spot (as from a fall), to reach the retry and game-over screens quickly

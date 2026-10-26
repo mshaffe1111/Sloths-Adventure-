@@ -514,12 +514,12 @@
 /* a phone on its side: the plate is one short block (name and bar, the hearts beside the bar), so it clears the Menu button and the guide's bubble */
 @media (max-height: 520px) and (orientation: landscape) {
   .boss-hud { width: min(23rem, 45vw); display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 8px; row-gap: 3px; }
-  .boss-hud-name { grid-column: 1; grid-row: 1; }
+  .boss-hud-name { grid-column: 1 / -1; grid-row: 1; }
   .boss-hud-title { font-size: 17px; }
   .boss-hud-count { font-size: 11px; }
   .boss-hud-bar { grid-column: 1; grid-row: 2; padding: 3px; }
   .boss-hud-segs { height: 12px; }
-  .boss-hud-hearts { grid-column: 2; grid-row: 1 / span 2; align-self: end; padding: 4px 8px; gap: 3px; }
+  .boss-hud-hearts { grid-column: 2; grid-row: 2; align-self: center; padding: 4px 8px; gap: 3px; }
   .boss-heart { width: 19px; height: 19px; }
 }
 
@@ -932,6 +932,16 @@
 @media (max-width: 520px) { .way { top: calc(env(safe-area-inset-top, 0px) + 132px); } }
 @media (max-height: 430px) and (min-width: 521px) { .way { top: calc(env(safe-area-inset-top, 0px) + 110px); padding: 6px 12px 6px 7px; } .way-text { font-size: 13.5px; } }
 /* while Pokey is in the banner's band, it waits at the bottom of the screen instead (engine.ts markWayDodge) */
+/* a boss fight (Engine.markWayBoss): the banner never sits on the boss plate or on the boss. Upright it goes under the arena floor;
+   held sideways it goes under the plate, narrow, on the half away from her */
+:root[data-way-boss='low'] .way { top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); }
+:root[data-way-boss='l'] .way, :root[data-way-boss='r'] .way { top: calc(env(safe-area-inset-top, 0px) + 64px); max-width: min(42vw, 380px); zoom: 1; }
+:root[data-way-boss='l'] .way { margin-inline: max(12px, env(safe-area-inset-left)) auto; }
+:root[data-way-boss='r'] .way { margin-inline: auto max(12px, env(safe-area-inset-right)); }
+@media (orientation: landscape) and (max-height: 340px) {
+  :root[data-way-boss='l'] .way, :root[data-way-boss='r'] .way { top: calc(env(safe-area-inset-top, 0px) + 56px); max-width: min(56vw, 440px); padding: 5px 10px 5px 6px; }
+  :root[data-way-boss] .way-text { font-size: 12.5px; }
+}
 :root[data-way-low] .way { top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); }
 @media (prefers-reduced-motion: reduce) { .way { animation-name: way-fade; } @keyframes way-fade { 0% { opacity: 0; } 7% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } } }
 
