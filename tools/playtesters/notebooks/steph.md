@@ -63,3 +63,14 @@
 - 1-10: the little snakes: a kick (flick sideways) gets rid of them when they're close; a jump-and-drop onto them doesn't always land.
 - 3-10 (panther): he walks right over you sometimes. If the gold crosshair turns up on his side right where you stand, just tap; it counts.
 - 3-10: when he stands up tall the gold goes on his chest. One short slide in, then tap. If the count doesn't drop, nudge once more and tap again.
+
+## 2026-10-26 (session 16, World 5 first look, sideways with a short go upright)
+- Spiders here take more than one tap, and a tap string often whiffs. A flick kick toward them first, then a string of taps, works better than nudging up close and tapping. Nudging and tapping right beside one is where most of my hits came from.
+- When the ground under a spider glows red or orange it's about to rush. Kick it straight away or hop clear. Don't stand there lining up.
+- Threads on the floor: start the held flick a short slide before the thread, not right on top of it. Jumping late, I still clipped one and it hummed.
+- Long slides eat things you can't see yet. The sleepy cakes slow you right down. Slide left-right-left-right quickly to shake it off, then give it a beat before running again.
+- Tall steps: back off a little, short slide in, held flick, then wait a moment longer than feels right before the second flick, and keep steering. If Dot pipes up about flicking twice, the second flick was too early.
+- Hearts float about head-high. Running under them doesn't grab them; a little hop does.
+- Sideways you see a good way ahead. Upright you see only two or three body-lengths ahead, so go in short slides upright.
+- Turning the phone mid-stage is safe. Nothing resets.
+- Down to one heart, don't keep pushing in long slides. Both lives I lost came from one more hit at one heart, not from falls.
