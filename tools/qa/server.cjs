@@ -21,7 +21,8 @@ fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'server.pid'), String(process.pid));
 
 const KEYS = { left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', down: 'ArrowDown', jump: 'Space', punch: 'KeyJ', kick: 'KeyK', mega: 'KeyL' };
-const VIEWS = { land: { width: 844, height: 390 }, port: { width: 400, height: 720 } };
+// short: a squat sideways screen (about 640x320) for HUD and layout checks (Matt's standing rule, 2026-10-26)
+const VIEWS = { land: { width: 844, height: 390 }, port: { width: 400, height: 720 }, short: { width: 640, height: 320 } };
 let browser, page, cdp, shotN = 0, view = 'land';
 /** the steering thumb (left side) while it is down: where it went down, and where it is now */
 let steer = null;
@@ -45,16 +46,22 @@ function personaViews(p) {
   const m = dev.match(/(\d+)x(\d+)/);
   if (!m) return VIEWS;
   const w = Number(m[1]), h = Number(m[2]);
-  return { port: { width: w, height: h }, land: { width: h, height: Math.round(w * 0.9) } };
+  return { port: { width: w, height: h }, land: { width: h, height: Math.round(w * 0.9) }, short: VIEWS.short };
 }
 let views = VIEWS;
 
+// one phone for a run of stages: what the game saved (lessons seen, Dot's help, the beta switch) carries from stage to stage, as for
+// a real player. `fresh` (and `persona`) start a new phone with nothing saved.
+let ctx = null;
+// the "New HUD and Dot (beta)" switch: null leaves the build's default, true/false sets it the way the pause menu does
+let beta = null;
 async function open(stage, v, flag = 0, layout = 1) {
   if (page) await page.close().catch(() => {});
   view = views[v] ? v : 'land';
   // (a phone: touch screen, mobile browser, so the game shows and reads its touch controls)
-  const ctx = await browser.newContext({ viewport: views[view], deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+  if (!ctx) ctx = await browser.newContext({ viewport: views[view], deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   page = await ctx.newPage();
+  await page.setViewportSize(views[view]);
   page.on('pageerror', (e) => errors.push('page error: ' + e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push('console error: ' + m.text().slice(0, 200)));
   cdp = await ctx.newCDPSession(page);
@@ -67,6 +74,8 @@ async function open(stage, v, flag = 0, layout = 1) {
   await page.clock.pauseAt(T0 + 1000);
   await page.goto(url + (url.includes('?') ? '&' : '?') + `layout=${layout}`);
   await page.clock.runFor(3500);
+  // (the game reads the switch when a stage starts: newLook.ts)
+  if (beta !== null) await page.evaluate((on) => localStorage.setItem('sloth_new_look', on ? '1' : '0'), beta);
   await page.evaluate((id) => window.__play(id), stage);
   await page.clock.runFor(3000);
   // a later flag to start from, the way a play-tester is handed a checkpoint select (the stage itself is untouched)
@@ -198,7 +207,16 @@ async function handle(cmd) {
     const level = Math.min(Number(cmd.level || 0), curve.length);
     if (level > 0) Object.assign(persona, curve[level - 1]);
     const at = level > 0 ? `, thumbs as in their session ${level} of ${curve.length}` : '';
+    if (ctx) { await ctx.close().catch(() => {}); ctx = null; page = null; }
     return { text: `playing as ${persona.name}: phone ${views.port.width}x${views.port.height} upright, ${views.land.width}x${views.land.height} sideways${at}` };
+  }
+  if (cmd.cmd === 'fresh') {
+    if (ctx) { await ctx.close().catch(() => {}); ctx = null; page = null; }
+    return { text: 'a new phone: nothing saved' };
+  }
+  if (cmd.cmd === 'beta') {
+    beta = cmd.on === 'on' ? true : cmd.on === 'off' ? false : null;
+    return { text: `New HUD and Dot (beta): ${beta === null ? "the build's default" : cmd.on}, from the next start` };
   }
   if (cmd.cmd === 'start') {
     const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0), Number(cmd.layout || 1));
@@ -211,7 +229,13 @@ async function handle(cmd) {
   }
   if (cmd.cmd === 'click') {
     // press a button on screen by its words (a lesson card's "Got it!", a menu)
-    const b = page.locator('button', { hasText: new RegExp(`^\\s*${cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`, 'i') });
+    const words = cmd.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    let b = page.locator('button', { hasText: new RegExp(`^\\s*${words}\\s*$`, 'i') });
+    // (a button with only a picture, like the Menu leaf, goes by the name a screen reader says; menu choices can be radios or switches)
+    for (const role of ['button', 'radio', 'switch', 'checkbox', 'tab']) {
+      if (await b.count()) break;
+      b = page.getByRole(role, { name: new RegExp(`^\\s*${words}`, 'i') });
+    }
     if (!(await b.count())) return { error: `no button "${cmd.text}" on screen`, text: await screenText() };
     // a player lifts their thumbs off the glass to press a button: the bot's fingers must not stay down under the card
     if (actionAt) { const up = { x: actionAt.x, y: actionAt.y, id: 2 }; actionAt = null; await liftFinger(up); }

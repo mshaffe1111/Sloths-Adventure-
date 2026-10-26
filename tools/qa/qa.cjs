@@ -3,12 +3,15 @@
  *
  *   node tools/qa/qa.cjs <port> persona jen [N]             play with that tester's phone size and thumbs (tools/playtesters/personas);
  *                                                         N = their thumbs as in their Nth real session (they got better)
- *   node tools/qa/qa.cjs <port> start 4-8 [land|port] [flag] [layout]  open a stage, phone held sideways (land) or upright (port),
+ *   node tools/qa/qa.cjs <port> start 4-8 [land|port|short] [flag] [layout]  open a stage, phone held sideways (land) or upright (port),
+ *     (short: a squat 640x320 sideways screen, for HUD checks; the phone keeps what the game saved from stage to stage)
  *                                                         optionally from its Nth flag
  *   node tools/qa/qa.cjs <port> do "right 800" "jump" "right+jump 300" "wait 1000"
  *   node tools/qa/qa.cjs <port> click "Got it!"           press a button on screen by its words
  *   node tools/qa/qa.cjs <port> look                      just a screenshot
  *   node tools/qa/qa.cjs <port> turn                      turn the phone the other way up
+ *   node tools/qa/qa.cjs <port> fresh                     a new phone, nothing saved (a first-time player)
+ *   node tools/qa/qa.cjs <port> beta on|off               the New HUD and Dot (beta) switch, from the next start
  *   node tools/qa/qa.cjs <port> burst                     eight frames in a row (to catch flicker and jitter)
  *   node tools/qa/qa.cjs <port> perf                      how much memory the page is using
  *
@@ -26,6 +29,7 @@ const body =
   : cmd === 'click' ? { cmd, text: rest.join(' ') }
   : cmd === 'persona' ? { cmd, name: rest[0], level: rest[1] }
   : cmd === 'probe' ? { cmd, ms: rest[0] }
+  : cmd === 'beta' ? { cmd, on: rest[0] }
   : { cmd };
 const req = http.request({ host: '127.0.0.1', port: Number(port), method: 'POST', path: '/' }, (res) => {
   let s = '';
