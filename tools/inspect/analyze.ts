@@ -14,10 +14,14 @@ export const WIN_FLAG = 0.28;
 /** two windows of one stage this close are "the same pattern twice" */
 export const REPEAT_FLAG = 0.08;
 
-export interface Dead { t0: number; t1: number; x0: number; x1: number; y0: number; y1: number; sec: number }
+export interface Dead {
+  t0: number; t1: number; x0: number; x1: number; y0: number; y1: number; sec: number;
+  /** the seconds it counts for (less than `sec` where a light rule keeps him busy: World 5's silk) */
+  counted: number;
+}
 
 /** stretches with no beat for longer than `gap` seconds (the start to the first beat and the last beat to the shrine count too) */
-export function deadTime(beats: Beat[], total: number, gap: number, samples: Sample[]): { list: Dead[]; total: number; longest: number } {
+export function deadTime(beats: Beat[], total: number, gap: number, samples: Sample[], light?: (d: Dead) => number): { list: Dead[]; total: number; raw: number; longest: number } {
   const list: Dead[] = [];
   let end = 0;
   let endBase = 0;
@@ -30,7 +34,9 @@ export function deadTime(beats: Beat[], total: number, gap: number, samples: Sam
   const push = (t0: number, t1: number, b0: number, b1: number) => {
     if (t1 - t0 > gap) {
       const p0 = at(b0), p1 = at(b1);
-      list.push({ t0, t1, x0: p0.x, x1: p1.x, y0: p0.y, y1: p1.y, sec: t1 - t0 });
+      const d: Dead = { t0, t1, x0: p0.x, x1: p1.x, y0: p0.y, y1: p1.y, sec: t1 - t0, counted: t1 - t0 };
+      if (light) d.counted = d.sec * light(d);
+      list.push(d);
     }
   };
   for (const b of beats) {
@@ -38,7 +44,7 @@ export function deadTime(beats: Beat[], total: number, gap: number, samples: Sam
     if (b.t + b.dur + b.act > end) { end = b.t + b.dur + b.act; endBase = b.base + b.act; }
   }
   push(end, total, endBase, samples.length ? samples[samples.length - 1].base : 0);
-  return { list, total: list.reduce((s, d) => s + d.sec, 0), longest: list.reduce((m, d) => Math.max(m, d.sec), 0) };
+  return { list, total: list.reduce((s, d) => s + d.counted, 0), raw: list.reduce((s, d) => s + d.sec, 0), longest: list.reduce((m, d) => Math.max(m, d.sec), 0) };
 }
 
 export interface Burst { t0: number; t1: number; beats: number; rest: number | null; ok: boolean }

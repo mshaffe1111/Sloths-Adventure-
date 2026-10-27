@@ -67,7 +67,7 @@ Then publish with the Artifact tool: `url` = the link above, `file_path` = `tool
 
 ## tools/inspect/: the stage inspector
 
-Reads every stage's layout (read-only use of `src/game`) and reports beats along the main route, dead time, rests, look-alike stages, goal shares and length. Writes `tools/inspect/out/report.json` and `report.html` (git ignores `out/`); `--html <path>` and `--seed <n>` change the defaults.
+Reads every stage's layout (read-only use of `src/game`) and reports beats along the main route, dead time, rests, look-alike stages, goal shares, length, jump difficulty and noisy-thumb bot success per jump (an edge-level model, not an engine run). Writes `tools/inspect/out/report.json` and `report.html` (git ignores `out/`); `--html <path>` and `--seed <n>` change the defaults.
 
 ```
 npx tsx tools/inspect/inspect.ts --worlds 1-5
