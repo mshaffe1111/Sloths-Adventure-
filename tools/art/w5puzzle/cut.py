@@ -1,18 +1,20 @@
 """Cut Matt's Gemini sheets for Meeca's puzzle stage into one transparent PNG per cell.
 
-    python3 tools/art/w5puzzle/cut.py   -> tools/art/w5puzzle/cut/<sheet>-NN.png and cut/contact.png
+    python3 tools/art/w5puzzle/cut.py [w5puzzle|w6]   -> tools/art/<folder>/cut/<sheet>-NN.png and cut/contact.png
 
 Each sheet is a fixed grid on a flat key colour (magenta, or green for the tea sheet). A cell is cropped with a small inset
 (Gemini draws thin grid lines on some sheets), the key colour is removed with a soft edge and de-spilled, specks are dropped,
 and the cut is trimmed to its pixels.
 """
 import os
+import sys
 import numpy as np
 from PIL import Image
 from scipy import ndimage
 
-D = os.path.dirname(os.path.abspath(__file__))
-SHEETS = {  # name: (cols, rows, key)
+ART = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FOLDERS = {}
+FOLDERS['w5puzzle'] = SHEETS = {  # name: (cols, rows, key)
     'flicker': (4, 4, 'magenta'),  # these two have nothing pink on them, so pink tint is removed (see cut_cell)
     'pieces': (4, 4, 'magenta'),
     'tea': (3, 3, 'green'),
@@ -21,8 +23,11 @@ SHEETS = {  # name: (cols, rows, key)
     'butler': (4, 4, 'green'),
     'camp': (4, 4, 'magenta'),
 }
+# World 6: nothing in the swamp is pink, so every sheet has the pink tint removed (it shows in the dark openings)
+FOLDERS['w6'] = {'kit': (4, 4, 'magenta'), 'water': (4, 4, 'magenta'), 'caiman-items': (4, 4, 'magenta'),
+                 'runners': (4, 4, 'magenta')}
 INSET = 6
-DEPINK = {'flicker', 'pieces'}
+DEPINK = {'flicker', 'pieces', 'kit', 'water', 'caiman-items', 'runners'}
 
 
 def keyness(rgb, key):
@@ -65,13 +70,17 @@ def cut_cell(rgb, key, depink=False):
         alpha = np.where(pink & (alpha < 0.9), alpha * 0.5, alpha)
     rgba = np.dstack([out, alpha * 255]).astype(np.uint8)
     ys, xs = np.nonzero(alpha > 0.02)
+    if len(ys) == 0:
+        return None
     return Image.fromarray(rgba[ys.min():ys.max() + 1, xs.min():xs.max() + 1])
 
 
 def main():
+    folder = sys.argv[1] if len(sys.argv) > 1 else 'w5puzzle'
+    D = os.path.join(ART, folder)
     os.makedirs(os.path.join(D, 'cut'), exist_ok=True)
     tiles = []
-    for name, (cols, rows, key) in SHEETS.items():
+    for name, (cols, rows, key) in FOLDERS[folder].items():
         im = np.asarray(Image.open(os.path.join(D, 'raw', name + '.jpg')).convert('RGB')).astype(np.float32)
         h, w = im.shape[:2]
         cw, ch = w / cols, h / rows
