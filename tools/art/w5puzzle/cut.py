@@ -1,6 +1,8 @@
 """Cut Matt's Gemini sheets for Meeca's puzzle stage into one transparent PNG per cell.
 
-    python3 tools/art/w5puzzle/cut.py [w5puzzle|w6]   -> tools/art/<folder>/cut/<sheet>-NN.png and cut/contact.png
+    python3 tools/art/w5puzzle/cut.py [w5puzzle|w6|w1to4]   -> tools/art/<folder>/cut/<sheet>-NN.png and cut/contact.png
+
+Matt's sheets are kept in git under reference/prop-sheets/<folder>/ (tools/ ignores pictures); the cuts are rebuilt.
 
 Each sheet is a fixed grid on a flat key colour (magenta, or green for the tea sheet). A cell is cropped with a small inset
 (Gemini draws thin grid lines on some sheets), the key colour is removed with a soft edge and de-spilled, specks are dropped,
@@ -13,6 +15,7 @@ from PIL import Image
 from scipy import ndimage
 
 ART = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REF = os.path.join(os.path.dirname(os.path.dirname(ART)), 'reference', 'prop-sheets')
 FOLDERS = {}
 FOLDERS['w5puzzle'] = SHEETS = {  # name: (cols, rows, key)
     'flicker': (4, 4, 'magenta'),  # these two have nothing pink on them, so pink tint is removed (see cut_cell)
@@ -85,7 +88,7 @@ def main():
     os.makedirs(os.path.join(D, 'cut'), exist_ok=True)
     tiles = []
     for name, (cols, rows, key) in FOLDERS[folder].items():
-        im = np.asarray(Image.open(os.path.join(D, 'raw', name + '.jpg')).convert('RGB')).astype(np.float32)
+        im = np.asarray(Image.open(os.path.join(REF, folder, name + '.jpg')).convert('RGB')).astype(np.float32)
         h, w = im.shape[:2]
         cw, ch = w / cols, h / rows
         for r in range(rows):
