@@ -1,0 +1,90 @@
+{
+ "surf": {
+  "n": 8,
+  "cols": 8,
+  "w": 344,
+  "h": 140,
+  "ax": 180.1,
+  "ay": 77.6,
+  "fps": 8,
+  "loop": true,
+  "clip": "w6-pokey-surf-surf-11-s3",
+  "frames": [
+   12,
+   15,
+   18,
+   21,
+   24,
+   28,
+   31,
+   35
+  ],
+  "water": 272,
+  "k": 0.4848
+ },
+ "under": {
+  "n": 8,
+  "cols": 8,
+  "w": 361,
+  "h": 140,
+  "ax": 175.4,
+  "ay": 69.9,
+  "fps": 8,
+  "loop": true,
+  "clip": "w6-pokey-under-under-44-s11",
+  "frames": [
+   22,
+   25,
+   28,
+   31,
+   34,
+   37,
+   40,
+   43
+  ],
+  "water": null,
+  "k": 0.4494
+ },
+ "tread": {
+  "n": 6,
+  "cols": 8,
+  "w": 120,
+  "h": 211,
+  "ax": 54.2,
+  "ay": 100.3,
+  "fps": 6,
+  "loop": true,
+  "clip": "w6-pokey-tread-tread-22-s3",
+  "frames": [
+   18,
+   21,
+   24,
+   27,
+   31,
+   35
+  ],
+  "water": 335,
+  "k": 0.3448
+ },
+ "first": {
+  "n": 6,
+  "cols": 8,
+  "w": 178,
+  "h": 210,
+  "ax": 91.2,
+  "ay": 118.6,
+  "fps": 6,
+  "loop": false,
+  "clip": "w6-pokey-first-first-11-s11",
+  "frames": [
+   3,
+   7,
+   10,
+   16,
+   19,
+   23
+  ],
+  "water": 390,
+  "k": 0.3448
+ }
+}

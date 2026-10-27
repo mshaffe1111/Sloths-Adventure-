@@ -1,0 +1,125 @@
+{
+ "tag": "swim-stills",
+ "stills": {
+  "lora": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors",
+   1.0
+  ],
+  "neg": "water, waves, ripples, splash, splashes, droplets, bubbles, pool, sea, ocean, river, lake, floor, ground, shadow, scenery, text, watermark, blurry, photo, 3d render, cropped, cut off, extra limbs, extra arms, extra animals, facing left",
+  "items": [
+   {
+    "name": "surf-11",
+    "prompt": "pokeysloth swimming a front crawl stroke, his body stretched out level as if lying on his belly, head and shoulders lifted and looking ahead, his near arm reaching far forward over his head, the other arm pulled back along his side, legs stretched out straight behind him, calm determined face, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 11,
+    "w": 1248,
+    "h": 720
+   },
+   {
+    "name": "surf-22",
+    "prompt": "pokeysloth swimming a front crawl stroke, his body stretched out level as if lying on his belly, head and shoulders lifted and looking ahead, his near arm reaching far forward over his head, the other arm pulled back along his side, legs stretched out straight behind him, calm determined face, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 22,
+    "w": 1248,
+    "h": 720
+   },
+   {
+    "name": "surf-33",
+    "prompt": "pokeysloth swimming a front crawl stroke, his body stretched out level as if lying on his belly, head and shoulders lifted and looking ahead, his near arm reaching far forward over his head, the other arm pulled back along his side, legs stretched out straight behind him, calm determined face, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 33,
+    "w": 1248,
+    "h": 720
+   },
+   {
+    "name": "surf-44",
+    "prompt": "pokeysloth swimming a front crawl stroke, his body stretched out level as if lying on his belly, head and shoulders lifted and looking ahead, his near arm reaching far forward over his head, the other arm pulled back along his side, legs stretched out straight behind him, calm determined face, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 44,
+    "w": 1248,
+    "h": 720
+   },
+   {
+    "name": "under-11",
+    "prompt": "pokeysloth swimming underwater holding his breath, cheeks puffed out round, eyes open wide, body stretched long and level, both arms reaching straight forward together ready to pull, legs stretched straight out behind him, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 11,
+    "w": 1248,
+    "h": 720
+   },
+   {
+    "name": "under-22",
+    "prompt": "pokeysloth swimming underwater holding his breath, cheeks puffed out round, eyes open wide, body stretched long and level, both arms reaching straight forward together ready to pull, legs stretched straight out behind him, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 22,
+    "w": 1248,
+    "h": 720
+   },
+   {
+    "name": "under-33",
+    "prompt": "pokeysloth swimming underwater holding his breath, cheeks puffed out round, eyes open wide, body stretched long and level, both arms reaching straight forward together ready to pull, legs stretched straight out behind him, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 33,
+    "w": 1248,
+    "h": 720
+   },
+   {
+    "name": "under-44",
+    "prompt": "pokeysloth swimming underwater holding his breath, cheeks puffed out round, eyes open wide, body stretched long and level, both arms reaching straight forward together ready to pull, legs stretched straight out behind him, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 44,
+    "w": 1248,
+    "h": 720
+   },
+   {
+    "name": "tread-11",
+    "prompt": "pokeysloth treading water, body upright, head up, calm happy smile, both paws paddling in front of his chest, legs bent below him kicking gently, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 11,
+    "w": 1024,
+    "h": 1024
+   },
+   {
+    "name": "tread-22",
+    "prompt": "pokeysloth treading water, body upright, head up, calm happy smile, both paws paddling in front of his chest, legs bent below him kicking gently, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 22,
+    "w": 1024,
+    "h": 1024
+   },
+   {
+    "name": "tread-33",
+    "prompt": "pokeysloth treading water, body upright, head up, calm happy smile, both paws paddling in front of his chest, legs bent below him kicking gently, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 33,
+    "w": 1024,
+    "h": 1024
+   },
+   {
+    "name": "tread-44",
+    "prompt": "pokeysloth treading water, body upright, head up, calm happy smile, both paws paddling in front of his chest, legs bent below him kicking gently, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 44,
+    "w": 1024,
+    "h": 1024
+   },
+   {
+    "name": "first-11",
+    "prompt": "pokeysloth startled, eyes wide and mouth open in surprise, flailing both arms up wildly, legs kicking, body upright as if he has just dropped into deep water, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 11,
+    "w": 1024,
+    "h": 1024
+   },
+   {
+    "name": "first-22",
+    "prompt": "pokeysloth startled, eyes wide and mouth open in surprise, flailing both arms up wildly, legs kicking, body upright as if he has just dropped into deep water, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 22,
+    "w": 1024,
+    "h": 1024
+   },
+   {
+    "name": "first-33",
+    "prompt": "pokeysloth startled, eyes wide and mouth open in surprise, flailing both arms up wildly, legs kicking, body upright as if he has just dropped into deep water, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 33,
+    "w": 1024,
+    "h": 1024
+   },
+   {
+    "name": "first-44",
+    "prompt": "pokeysloth startled, eyes wide and mouth open in surprise, flailing both arms up wildly, legs kicking, body upright as if he has just dropped into deep water, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 44,
+    "w": 1024,
+    "h": 1024
+   }
+  ]
+ }
+}
