@@ -165,7 +165,6 @@ test("5-4's lines: in Dot's voice and Matt's rules (tips 8 words or fewer that n
   // the silk is named, never "it" alone (QA: "And don't admire it" named nothing)
   assert.match(engineGuideLine(W5_TEACH.sheet, '5-4')!.text, /silk/);
   assert.match(W5_HINTS.s54admire.text, /admire the silk/);
-  assert.match(W5_HINTS.s52rules.then!, /admire the silk/);
   // the silk line's tip, then how to let go
   const silk = engineGuideLine(W5_TEACH.silk, '5-4', { dot: true })!;
   assert.match(silk.text, /silk/);

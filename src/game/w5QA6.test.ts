@@ -348,7 +348,7 @@ test('the Seamstress reads as a figure: a head over Pokey, knitting standing up 
 
 // ───────────────────────────── 7. 5-M's words in the page ─────────────────────────────
 
-test("5-M: the words on its canvas are there to read: the \"Three days earlier\" card, then her thought clouds", () => {
+test("5-M: the words on its canvas are there to read: the \"On the March North\" card, then her thought clouds", () => {
   const sim = new RealPlay('5-M', 1);
   const mc = (sim.e as Engine).mc;
   sim.frame();

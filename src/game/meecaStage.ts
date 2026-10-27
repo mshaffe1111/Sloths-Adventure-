@@ -1,10 +1,10 @@
 /**
  * meecaStage — Meeca's stage (5-M), the stage right after 5-5 that every player plays (Matt, 2026-10-26: "big in how it relates to the
- * game", not big in size). Three days earlier, at dusk: you play Meeca, marched through the Orchid Sanctuary in the General's column,
+ * game", not big in size). On the march north, at dusk: you play Meeca, marched through the Orchid Sanctuary in the General's column,
  * with Lieutenant Pell walking just ahead of her place. She cannot fight. She slips out of line while the guards' backs are turned,
  * cuts a warning into a trunk with her hairpin (hold a thumb on the trunk), and gets back into line before they look round.
  *
- *   0. OPENING  the "Three days earlier" card over the first tree: she finishes "POKEY. DON'T SIT. M." (the carving Pokey reads on the
+ *   0. OPENING  the "On the March North" card over the first tree: she finishes "POKEY. DON'T SIT. M." (the carving Pokey reads on the
  *               first tree of 5-1) while the column's lanterns go on ahead and wait. Then back to her place in line.
  *   1. LEARN    marching in line: Pell's ring fills while his back is turned, and he looks back down the line (the tell, never a
  *               catch while she is in her place). The column halts by the second tree: his back turned, she slips out and carves

@@ -39,7 +39,7 @@ export const W5_HINTS = {
   s52rules: {
     stage: '5-2', kind: 'info',
     old: 'Rules. Don\'t sit. Don\'t eat anything. Don\'t drink anything. Don\'t touch the silk. Don\'t admire the silk. It takes it as a compliment',
-    text: 'Rules: don\'t sit, eat, drink, or touch the silk.', then: 'And don\'t admire the silk. It loves compliments.',
+    text: 'Don\'t sit. That\'s the one on the tree.',
   },
   // (before the first sleeper and the first thread: a sleeper wakes if he walks into it, and a thread's hum wakes them all)
   s52doze: {
@@ -61,7 +61,7 @@ export const W5_HINTS = {
     keys: 'Another wide gap. Press Space again in the air', text: 'Another wide one. Flick up again midair.', gesture: 'double-jump', target: 'far side of the gap',
   },
   s52chair: { stage: '5-2', kind: 'story', old: 'Don\'t even think about sitting. You\'d be a chair, Pokey. You\'d be, forever, a very still chair', text: 'You\'d be a chair. Forever, a very still chair.' },
-  s52all: { stage: '5-2', kind: 'info', old: 'Threads, cakes and chairs, all at once. Slow and steady, but never still', text: 'Slow and steady. But never, ever still.' },
+  s52all: { stage: '5-2', kind: 'info', old: 'Threads, cakes and chairs, all at once. Slow and steady, but never still', text: 'Keep going. Don\'t stop anywhere soft.' },
   s52end: { stage: '5-2', kind: 'info', old: 'Nearly out of the garden. Keep moving', text: 'Nearly out. Keep moving.' },
   // ── 5-3 Closing Orchids ──
   // (the story's "barely afternoon, and the orchids were already closing": said at the start, before the first orchid)
@@ -168,7 +168,7 @@ export interface W5SceneLine {
  *   - "They stopped to rest on a branch where the orchids hung in rows" (13 words) loses "on a branch" (the branch is the picture);
  *   - Dot's long line (26 words) is said in three bubbles, every word kept, the last trailing off as she stops;
  *   - "Dot let go of the pouch. A minute later her wing was back on it." (14) is two, the second a while after the first.
- * Meeca's own stage comes right after 5-5 and opens on "Three days earlier" (Matt, 2026-10-26; meecaStage.ts, extraStages.ts).
+ * Meeca's own stage comes right after 5-5 and opens on "On the March North" (Matt, 2026-10-26; meecaStage.ts, extraStages.ts).
  */
 export const W5_POUCH: readonly W5SceneLine[] = [
   { id: 'n1', who: 'Petal', text: 'They stopped to rest where the orchids hung in rows.' },

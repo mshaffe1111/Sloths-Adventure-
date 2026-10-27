@@ -70,7 +70,7 @@ const MORNING = chapter({ name: 'PROLOGUE · THE SLOWEST MORNING', w: 1, m: 'day
   GEN('Three.', 'P:urgent@.3 G!@.8<'),
   M('Pokey! Pokey, help me! Follow the petals! Follow the petals, Pokey!', 'P:urgent@.2 MW:scaredwave@.88^.7*.5', { p: { particles: 'petals' } }),
   GEN('Him? Save you? He\'s too slow. He was always too slow. He\'ll never make it.', 'P:worried@.24 G!@.8<', { i: 0.6, p: { zoom: 1.2, focusX: 0.55 } }),
-  D('Pokey. Pokey, look at me. Somebody has to see where they take her, and I\'m the fast one. I\'ll follow them, I\'ll find out where they\'re going, and I\'ll come straight back for you. Straight back. Do you hear me? Don\'t you go anywhere without me.',
+  D('Pokey. Pokey, look at me. Look at me. I\'m the fast one. I\'ll follow them. I\'ll see where. And I\'ll come straight back. Straight back, do you hear me? Don\'t you go anywhere without me.',
     'P:worried@.2 D:yelp@.5^.3', { cue: 'chase', i: 0.6, p: WIDE }),
   N('And she was gone.', 'P:sad@.3', { cue: 'sorrow', i: 0.4 }),
 ]);

@@ -816,10 +816,11 @@ test('5-1: the table card is as large on the screen sideways and short as uprigh
   }
 });
 
-test('5-2: the rules\' second half names the silk, in 8 words or fewer', () => {
-  const then = W5_HINTS.s52rules.then;
-  assert.match(then, /silk/);
-  assert.ok(then.trim().split(/\s+/).length <= 8, then);
+test('5-2: the rules tip names only the rule on the tree (the others come with their carvings), in 8 words or fewer', () => {
+  const text = W5_HINTS.s52rules.text;
+  assert.match(text, /sit/i);
+  assert.doesNotMatch(text, /silk|eat|drink/i);
+  assert.ok(text.trim().split(/\s+/).length <= 8, text);
 });
 
 test('5-3 upright (320x782, 390x844) and short (640x320): waiting at a row its first orchid is in view, and on each orchid the next', () => {

@@ -161,6 +161,7 @@ The cutting and packing scripts are in `tools/art/` (`w2art/`, `w3*/`, `packprop
 | Prologue, worlds, bosses, memories, finale | `src/game/storyIntro.ts`, `storyWorlds.ts`, `storyBosses.ts`, `storyChapters.ts`, `storyMemories.ts`, `storyFinale.ts` |
 | Voice and character rules (read before writing any line) | `reference/VOICE.md` |
 | The rewrite, world by world | `reference/STORY-REWRITE.md` |
+| The story review Matt approved (2026-10-27): what was fixed, and the drafts still to build with the stages (Flicker, Meeca's escape, World 10 together) | `reference/STORY-REVIEW-2026-10-27.md` |
 | Story pictures and moving plates | `src/assets/story/`, `storyArt.ts`, `livePlateData.ts`, `src/assets/story/live/` |
 | Story reader (a standalone page for reading the script) | `story-reader.html`, `vite.reader.config.ts`, `scripts/story/` |
 

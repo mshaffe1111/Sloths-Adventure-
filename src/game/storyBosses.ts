@@ -30,7 +30,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Venom Fang', text: 'Ssloth. What are you doing on my branch?', boss: 'calm' },
       { speaker: 'Pokey', text: 'I\'m going to get Meeca back.', pokey: 'determined' },
       { speaker: 'Venom Fang', text: 'You\'re going to take her from him? From the General. Up there. I was told to stop anyone who followed her. I pictured a soldier. A hawk, maybe. I did not picture this.', boss: 'calm' },
-      { speaker: 'Venom Fang', text: 'You\'ll have to get through me, ssloth. Take all the time you need. Someone has to.' },
+      { speaker: 'Venom Fang', text: 'You\'ll have to get through me, ssloth. Take all the time you need.' },
       { speaker: 'Pokey', text: 'I usually do.', sting: 'laugh' },
     ],
     defeat: [
@@ -77,7 +77,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
   4: {
     intro: [
       { speaker: 'Sky Sovereign', text: 'Nothing climbs my cliffs. State your business, sloth, and keep it short. I was mid-dive.' },
-      { speaker: 'Pokey', text: 'I\'m going to get Meeca back. She came through here with a column of soldiers.', pokey: 'determined' },
+      { speaker: 'Pokey', text: 'I\'m going to get Meeca back.', pokey: 'determined' },
       { speaker: 'Sky Sovereign', text: 'I saw her. She waved. I have orders concerning whatever follows her. You\'re the one who went off the ledge in the gorge. Nothing climbs out of that gorge. How?', boss: 'calm' },
       { speaker: 'Pokey', text: 'Slowly.', sting: 'laugh' },
       { speaker: 'Sky Sovereign', text: 'The cat says you outwaited him. Cats lie.' },
@@ -86,9 +86,9 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Sky Sovereign', text: 'Enough. I am on the ground. I am never on the ground. The owls will be talking about this for a year.' },
       { speaker: 'Pokey', text: 'I won\'t tell anybody.' },
       { speaker: 'Dot', text: 'I\'m telling everybody.', sting: 'laugh' },
-      { speaker: 'Sky Sovereign', text: 'The cliff is yours. I am relieved, if you must know. Do not repeat that. And I did not cut your ledge. I will not have it said that I did.', boss: 'calm' },
+      { speaker: 'Sky Sovereign', text: 'The cat did not lie, then. The cliff is yours. I am relieved, if you must know. Do not repeat that. And I did not cut your ledge. I will not have it said that I did.', boss: 'calm' },
       { speaker: 'Pokey', text: 'I know. I heard who did.' },
-      { speaker: 'Sky Sovereign', text: 'Good. Take the wind lane to the orchids, and mind the next collar. The General\'s hand is on every one of them, and it does not ask.', boss: 'calm' },
+      { speaker: 'Sky Sovereign', text: 'Good. Take the wind lane to the orchids, and watch the next collar. The General\'s hand is on every one of them, and it does not ask.', boss: 'calm' },
     ],
     tip: 'Sky Sovereign dives from above. Dodge sideways, then punch her as she pulls out of the dive.',
   },
@@ -98,7 +98,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'I can\'t stay. My friend\'s in a tower.' },
       { speaker: 'Dot', text: 'There\'s a doily, Pokey. Nothing good has ever had a doily.' },
       { speaker: 'Tarantula Queen', text: 'The eagle sent word a sloth was coming, so I set the table. A week ago. I thought, he\'ll be along any minute, darling. And then I thought, no. No, he won\'t.', boss: 'calm' },
-      { speaker: 'Pokey', text: 'Sorry I\'m late. Somebody carved me a note about your chairs.', sting: 'laugh' },
+      { speaker: 'Pokey', text: 'Sorry I\'m late.', sting: 'laugh' },
     ],
     defeat: [
       { speaker: 'Tarantula Queen', text: 'My webs. Fifty years of silk, and a sloth walks straight through it. Well. It was only silk, darling.' },
@@ -115,9 +115,9 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'I\'m taller upside down.', sting: 'laugh' },
     ],
     defeat: [
-      { speaker: 'Marsh Reaver', text: 'You waded in at LUNCH and WON. Nobody wins at lunch. The runners are going to sing about this.' },
+      { speaker: 'Marsh Reaver', text: 'You waded in at LUNCH and won. Nobody wins at lunch. The runners are going to sing about this.' },
       { speaker: 'Pokey', text: 'Your lunch is getting cold.' },
-      { speaker: 'Marsh Reaver', text: 'It is cold NOW. Hrmph. Keep your feet. The ruins are past the reeds, and the third root is a crocodile. GO.', boss: 'calm', sting: 'laugh' },
+      { speaker: 'Marsh Reaver', text: 'It is cold now. Hrmph. Keep your feet. The ruins are past the reeds, and the third root is a crocodile. Go.', boss: 'calm', sting: 'laugh' },
     ],
     tip: 'The Reaver smashes the ground to send out mud waves. Jump on the beat, duck the spear thrust, then punch him while he recovers.',
   },
@@ -164,7 +164,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Magma Drake', text: 'No. Of course not. Then we will see what it can do.' },
     ],
     defeat: [
-      { speaker: 'Magma Drake', text: 'My fire. A hundred years I kept that going, and the first visitor puts it out. I suppose that is what visitors are for.' },
+      { speaker: 'Magma Drake', text: 'My fire. A hundred years I kept that going, and the first visitor puts it out.' },
       { speaker: 'Pokey', text: 'You sound terrible. Drink some water.' },
       { speaker: 'Magma Drake', text: 'Will you come back? After. Bring tea. Two cups.', boss: 'calm', cue: 'tender', intensity: 0.4 },
       { speaker: 'Pokey', text: 'Maybe. If you tidy.', sting: 'laugh' },
@@ -178,7 +178,7 @@ export const BOSS_STORIES: Record<number, BossStory> = {
       { speaker: 'Pokey', text: 'Still here, sir. I\'ve come for Meeca. Where\'s Dot?', pokey: 'determined', cue: 'resolve', intensity: 0.5 },
       { speaker: 'General Iron-Claw', text: 'I do not know where your bird is, and I find that I mind. You did not hurry once, boy. I watched for it. Slow gets people killed.', cue: 'war', intensity: 0.7 },
       { speaker: 'Pokey', text: 'I know it does, sir. My folks went out in a storm when I was little. The warning came late. Tonight I found out whose warning it was. She\'s my best friend, sir. She\'s been late my whole life. She came back every time.', cue: 'hush', intensity: 0.3 },
-      { speaker: 'General Iron-Claw', text: 'Then you know what it costs. I have buried what late costs. I will not bury another.', sting: 'blow' },
+      { speaker: 'General Iron-Claw', text: 'Then you know what it costs. I buried her because help was late. Not again.', sting: 'blow' },
     ],
     defeat: [
       { speaker: 'General Iron-Claw', text: 'You climbed every step. Why did you not turn back?', cue: 'hush', intensity: 0.2 },
@@ -229,17 +229,17 @@ export function bossPanels(world: number, kind: 'intro' | 'defeat', bossName: st
 /** The secret boss: the Jungle Guardian, twisted by thorns. After the fight he is himself again. */
 export function thornbarkPanels(kind: 'intro' | 'defeat'): StoryPanel[] {
   const intro: BossLine[] = [
-    { speaker: 'Thornbark', text: 'Grrr... the thorns... they whisper... Leave this hollow, little sloth...' },
-    { speaker: 'Pokey', text: 'You were the Jungle Guardian. Meeca\'s grandma told me about you. The thorns did this to you, didn\'t they?' },
+    { speaker: 'Thornbark', text: 'The thorns... they whisper... Leave this hollow, little sloth...' },
+    { speaker: 'Pokey', text: 'Meeca\'s grandma told me about you. The thorns did this, didn\'t they?' },
     { speaker: 'Thornbark', text: 'I would not kneel. The others did. I would not. The thorns grew through me... to teach me...', boss: 'calm' },
-    { speaker: 'Thornbark', text: 'I cannot stop them... they want you gone. RUN... or FIGHT.' },
+    { speaker: 'Thornbark', text: 'I cannot stop them... they want you gone. Run. Please.' },
   ];
   const defeat: BossLine[] = [
     { speaker: 'Thornbark', text: 'The thorns... they are gone. I can think again. A sloth. They sent... a sloth. No. Nobody sent you.' },
-    { speaker: 'Pokey', text: 'I didn\'t beat them. I just kept coming back until they got tired of me. It\'s my best skill.' },
+    { speaker: 'Pokey', text: 'I didn\'t beat them. I just kept coming back until they got tired of me.' },
     { speaker: 'Pokey', text: 'You were right, you know. Not to kneel.' },
     { speaker: 'Thornbark', text: 'Nobody has said that. Not in nine years. Nine of them knelt. I am the one who would not. The keeper before her sat among my roots for fifty years, humming. Your Meeca hums the same song. Tell her an old tree is listening.' },
-    { speaker: 'Thornbark', text: 'Take this Thorn Heart. It was a heart before the thorns grew around it. Go and bring your Meeca home.' },
+    { speaker: 'Thornbark', text: 'Take this Thorn Heart. Go and bring your Meeca home.' },
   ];
   const lines = kind === 'intro' ? intro : defeat;
   const beats: Beat[] = lines.map((line, i) => {

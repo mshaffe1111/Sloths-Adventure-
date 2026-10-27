@@ -137,7 +137,7 @@ test("5-M: Meeca's words: thoughts of 8 words or fewer naming the thumb move, wa
   assert.ok(MEECA_ENDING.some((l) => l.text === 'Please do not thank me. It is embarrassing.'));
   for (const l of MEECA_ENDING) assert.ok(wordsIn(l.text) <= 12, l.text);
   assert.deepEqual(MEECA_CARD.sub, ['The Orchid Sanctuary, at dusk.', 'You are Meeca.']);
-  assert.deepEqual(MEECA_CARD.title, ['Three days', 'earlier']);
+  assert.deepEqual(MEECA_CARD.title, ['On the March', 'North']);
 });
 
 test('5-M: what she carves is kept with the game (a save file carries it, a new game clears it) for 5-6 to show', () => {
