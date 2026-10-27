@@ -580,15 +580,15 @@ export const SFX: Record<string, Fx> = {
     noise(core, { t: t + 0.04, type: 'bandpass', f0: 3000, q: 1, peak: 0.04, dec: 0.15, dst: d, pink: true });
   },
 
-  /** bark under claws */
+  /** bark under claws: one soft grip per hand. It plays over and over while he climbs, so it is a gentle rustle with no
+   *  pitched thunk or hard click: the old one, five times a second, sounded like the audio skipping (an iPhone tester had to
+   *  turn the sound off, 2026-10-27) */
   climb(core) {
     const t = core.ctx.currentTime;
     const d = out(core, 0.05);
-    smp(core, d, t, 'woodL', { gain: 0.6, rate: 1.5 + Math.random() * 0.4, sat: 2 });
-    smp(core, d, t + 0.01, 'leather', { gain: 0.3, rate: 1.3, lp: 3000 });
-    noise(core, { t, type: 'bandpass', f0: pick([700, 900, 1100]), q: 1.6, peak: 0.12, dec: 0.06, dst: d });
-    tone(core, { t, f0: pick([130, 150, 170]), f1: 80, dec: 0.07, peak: 0.15, dst: d });
-    noise(core, { t: t + 0.07, type: 'bandpass', f0: pick([800, 1000]), q: 1.6, peak: 0.08, dec: 0.05, dst: d });
+    smp(core, d, t, 'leather', { gain: 0.32, rate: 0.9 + Math.random() * 0.25, lp: 2200 });
+    smp(core, d, t + 0.015, 'woodL', { gain: 0.16, rate: 1.05 + Math.random() * 0.2, lp: 1800 });
+    noise(core, { t, type: 'bandpass', f0: pick([600, 750, 900]), q: 0.9, peak: 0.05, dec: 0.12, attack: 0.02, dst: d, pink: true });
   },
 
   /** a shrine wakes: a big open chord of bells, a deep drum and a long shimmer */
@@ -1066,7 +1066,7 @@ export type SfxName = keyof typeof SFX;
 /** loudness trims measured offline so that frequent sounds sit low and big moments sit high without clipping */
 const TRIMS: Record<string, number> = {
   jump: 1.45, doubleJump: 0.67, glide: 1.0, punch: 0.32, megaPunch: 0.42, kick: 0.35, whoosh: 0.41, hit: 0.85, flower: 1.45, fruit: 0.75, heart: 0.75, superHeart: 0.5,
-  power: 0.55, vine: 0.58, climb: 1.23, shrine: 0.45, relic: 0.45, hurt: 0.76, eagle: 2.0, roar: 0.75, land: 0.83, step: 0.88, checkpoint: 0.55, oneUp: 0.55,
+  power: 0.55, vine: 0.58, climb: 0.7, shrine: 0.45, relic: 0.45, hurt: 0.76, eagle: 2.0, roar: 0.75, land: 0.83, step: 0.88, checkpoint: 0.55, oneUp: 0.55,
 };
 
 

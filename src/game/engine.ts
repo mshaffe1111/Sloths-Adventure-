@@ -1402,15 +1402,16 @@ export class GameEngine {
       // Climb Up / Down
       if (this.input.state.up || this.climbAssist > 0) {
         p.y = Math.max(nearTreeVine.topY - 4, p.y - 220 * dt);
+        // one soft grip per hand, a little uneven like real hands (every 0.18 s sounded like the audio skipping on an iPhone)
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
-          this.treeClimbAudioTimer = 0.18;
+          this.treeClimbAudioTimer = 0.36 + Math.random() * 0.12;
         }
       } else if (this.input.state.down) {
         p.y = Math.min(nearTreeVine.bottomY + 4, p.y + 220 * dt);
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
-          this.treeClimbAudioTimer = 0.18;
+          this.treeClimbAudioTimer = 0.36 + Math.random() * 0.12;
         }
       }
 
