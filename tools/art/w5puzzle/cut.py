@@ -13,13 +13,16 @@ from scipy import ndimage
 
 D = os.path.dirname(os.path.abspath(__file__))
 SHEETS = {  # name: (cols, rows, key)
-    'flicker': (4, 4, 'magenta'),
+    'flicker': (4, 4, 'magenta'),  # these two have nothing pink on them, so pink tint is removed (see cut_cell)
     'pieces': (4, 4, 'magenta'),
     'tea': (3, 3, 'green'),
     'beetle': (4, 4, 'magenta'),
     'meeca-carry': (4, 4, 'magenta'),
+    'butler': (4, 4, 'green'),
+    'camp': (4, 4, 'magenta'),
 }
 INSET = 6
+DEPINK = {'flicker', 'pieces'}
 
 
 def keyness(rgb, key):
@@ -29,7 +32,7 @@ def keyness(rgb, key):
     return np.clip((g - np.maximum(r, b)) / 255.0, 0, 1)
 
 
-def cut_cell(rgb, key):
+def cut_cell(rgb, key, depink=False):
     k = keyness(rgb, key)
     alpha = np.clip((0.42 - k) / 0.22, 0, 1)  # soft edge between "clearly key" and "clearly object"
     solid = alpha > 0.5
@@ -48,9 +51,10 @@ def cut_cell(rgb, key):
         out[..., 0] = np.minimum(out[..., 0], np.maximum(cap, out[..., 0] * (1 - (1 - alpha) * 0.6)))
         out[..., 2] = np.minimum(out[..., 2], np.maximum(cap, out[..., 2] * (1 - (1 - alpha) * 0.6)))
     else:
-        cap = np.maximum(out[..., 0], out[..., 2]) + 30
+        # green spills onto thin dark parts (the Butler's legs): never let green rise far above the other two channels
+        cap = np.maximum(out[..., 0], out[..., 2]) + 6
         out[..., 1] = np.minimum(out[..., 1], cap)
-    if key == 'magenta':
+    if depink:
         # magenta shows through Flicker's clear wings and the soft glows as a pink tint: turn pink-tinted pixels
         # into a pale neutral (nothing on these sheets is meant to be pink), and fade the faint ones into the glow edge
         r, g, b = out[..., 0], out[..., 1], out[..., 2]
@@ -75,7 +79,7 @@ def main():
             for c in range(cols):
                 x0, y0 = int(c * cw) + INSET, int(r * ch) + INSET
                 x1, y1 = int((c + 1) * cw) - INSET, int((r + 1) * ch) - INSET
-                cell = cut_cell(im[y0:y1, x0:x1], key)
+                cell = cut_cell(im[y0:y1, x0:x1], key, depink=name in DEPINK)
                 idx = r * cols + c + 1
                 if cell is None:
                     print('empty', name, idx)
