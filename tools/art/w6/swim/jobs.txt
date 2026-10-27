@@ -1,0 +1,7 @@
+swim-stills-0 6adff35541e90535df75b3f0 created 2026-10-27T00:41:57Z
+swim-stills-0 finished 00:47:57Z (6.0 min)
+swim-clips-0 6adff54f3fb22a235dd23924 created 2026-10-27T00:50:23Z
+swim-clips-1 6adff5513fb22a235dd23928 created 2026-10-27T00:50:25Z
+swim-clips-0 finished 01:12:27Z (22.1 min)
+swim-clips-1 finished 01:12:24Z (22.0 min)
+total GPU time 50.1 min on rtx-pro-6000 at ~$2.75/h = ~$2.30

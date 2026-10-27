@@ -1,0 +1,102 @@
+{
+ "tag": "swim-clips",
+ "motion": {
+  "high": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_high_noise.safetensors"
+  ],
+  "low": [
+   "mshaffe111/slothadv-motion-lora",
+   "slothadv_motion_v1_low_noise.safetensors"
+  ],
+  "scale": 1.0
+ },
+ "clips": [
+  {
+   "name": "w6-pokey-surf-surf-11-s3",
+   "src": "stills/surf-11.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps swims in place with a slow steady arm-over-arm crawl stroke, one long arm reaching forward over his head and pulling down and back while the other comes over, a smooth repeating swimming cycle, his head and shoulders held level, side view facing right, he stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6-pokey-surf-surf-11-s11",
+   "src": "stills/surf-11.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps swims in place with a slow steady arm-over-arm crawl stroke, one long arm reaching forward over his head and pulling down and back while the other comes over, a smooth repeating swimming cycle, his head and shoulders held level, side view facing right, he stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6-pokey-surf-surf-11-s29",
+   "src": "stills/surf-11.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps swims in place with a slow steady arm-over-arm crawl stroke, one long arm reaching forward over his head and pulling down and back while the other comes over, a smooth repeating swimming cycle, his head and shoulders held level, side view facing right, he stays in the middle of the frame",
+   "seed": 29,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6-pokey-under-under-44-s3",
+   "src": "stills/under-44.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps glides in place as if underwater with puffed cheeks, both arms sweeping forward and pulling back to his sides in a smooth breaststroke, legs kicking gently behind him, body stretched long and level, a smooth repeating swimming cycle, side view facing right, he stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6-pokey-under-under-44-s11",
+   "src": "stills/under-44.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps glides in place as if underwater with puffed cheeks, both arms sweeping forward and pulling back to his sides in a smooth breaststroke, legs kicking gently behind him, body stretched long and level, a smooth repeating swimming cycle, side view facing right, he stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6-pokey-under-under-11-s3",
+   "src": "stills/under-11.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps glides in place as if underwater with puffed cheeks, both arms sweeping forward and pulling back to his sides in a smooth breaststroke, legs kicking gently behind him, body stretched long and level, a smooth repeating swimming cycle, side view facing right, he stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "w6-pokey-tread-tread-22-s3",
+   "src": "stills/tread-22.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps treads water in place, gently bobbing up and down, his paws paddling in small circles in front of his chest and his legs kicking slowly, calm and content, a smooth repeating cycle, side view facing right, he stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704,
+   "erase": {
+    "y0": 860
+   }
+  },
+  {
+   "name": "w6-pokey-tread-tread-22-s11",
+   "src": "stills/tread-22.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps treads water in place, gently bobbing up and down, his paws paddling in small circles in front of his chest and his legs kicking slowly, calm and content, a smooth repeating cycle, side view facing right, he stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704,
+   "erase": {
+    "y0": 860
+   }
+  },
+  {
+   "name": "w6-pokey-first-first-11-s3",
+   "src": "stills/first-11.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps flails his arms wildly in surprise for a moment, then calms down, smiles proudly and paddles steadily with both paws, side view facing right, he stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "w6-pokey-first-first-11-s11",
+   "src": "stills/first-11.png",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a friendly brown three-toed sloth with a leather satchel strap and wrist wraps flails his arms wildly in surprise for a moment, then calms down, smiles proudly and paddles steadily with both paws, side view facing right, he stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  }
+ ]
+}
