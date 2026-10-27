@@ -65,6 +65,15 @@ python3 tools/testlink/build.py "what this build adds"
 
 Then publish with the Artifact tool: `url` = the link above, `file_path` = `tools/testlink/dist/index.html`, `root` = `tools/testlink`, `files` = the map in `tools/testlink/filesmap.json`. `build.py`'s header explains the 511-file limit and how to clear old files.
 
+## tools/inspect/: the stage inspector
+
+Reads every stage's layout (read-only use of `src/game`) and reports beats along the main route, dead time, rests, look-alike stages, goal shares and length. Writes `tools/inspect/out/report.json` and `report.html` (git ignores `out/`); `--html <path>` and `--seed <n>` change the defaults.
+
+```
+npx tsx tools/inspect/inspect.ts --worlds 1-5
+npx tsx --test tools/inspect/analyze.test.ts
+```
+
 ## tools/control-test-collector.gs
 
 This is the Google Apps Script behind the touch-control test (`#ctest`). It writes testers' recordings into Matt's Google Sheet. The real key lives only in Matt's deployed script and in the page, and is not repeated here.
