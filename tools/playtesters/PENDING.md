@@ -3,16 +3,6 @@
 QA's running list from Matt's test-link sessions (Matt, 2026-10-26: Matt plays, QA reads the logs; send to the coders in one
 batch only when Matt says "send").
 
-## TOP: Test-site recording stopped arriving (2026-10-26 evening) [blocker]
-- The "Sloths control tests" sheet's last row is 1971: `Matt 20261026-2225-rfe3`, 6:25 to 6:48 PM Matt's time (build 15:52).
-- Matt then played about 30 minutes (around 10:15 to 10:48 PM his time) on the recording link, trying different places. Nothing
-  arrived: still 1971 rows at 10:50 PM.
-- It worked all day (Matt's sessions g2v6, avzi, 65nr, 2up4, 5dmf, mpcz, c3ho, rfe3; Sally's jdg7, jz2z and her 52-minute Sasa
-  session with 158 chunks). Today was by far the busiest day, so a Google Apps Script daily quota on the collector
-  (`doPost` executions or URL calls) is the first suspect. Next: the recorder no longer sending in the newest test-link build.
-- To check: the Apps Script project's Executions page (errors, "Service invoked too many times"), and in a phone's browser
-  console whether the POSTs to the collector go out. QA can't reach script.google.com from its machine.
-
 ## 0. The game ran at 1-3 frames a second for a whole 52-minute session (Sally, "Sasa") [blocker]
 - Session `Sasa 20261026-1813-8brs`, build 15:52, Android 320x649 upright (dpr 3.375), control-test stage.
 - Median frame rate by 5 minutes: 3.4, 1.5, 2.0, 1.5, 1.5, 2.2, 2.2, 1.6, 1.9, 1.6, 1.5 fps (frames 400-700 ms). The first `fps` line was
