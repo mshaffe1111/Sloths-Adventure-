@@ -2,7 +2,8 @@
  * The inspector's HTML report: one self-contained page (no scripts, no network except two optional Google fonts), readable on a phone
  * and in light or dark. Written for Matt, so every label is plain English.
  */
-import type { InspectOutput, StageReport, PairReport } from './inspect.ts';
+import type { InspectOutput, StageReport, PairReport, Hotspot } from './inspect.ts';
+import type { JumpReport } from './jumps.ts';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
@@ -19,7 +20,7 @@ const LETTER: Record<string, string> = {
 };
 
 /** a stage's pairs, strongest first: "strong" when both measures agree, or one 20-second stretch is all but identical */
-export const strong = (p: PairReport) => (p.cos > 0.78 && p.win < 0.15) || p.win <= 0.05;
+export const strong = (p: PairReport) => p.why.length === 2;
 
 function strip(s: StageReport, gap: number): string {
   const T = Math.max(1, s.time.inspector);
@@ -34,13 +35,18 @@ function strip(s: StageReport, gap: number): string {
   });
   let dead = '';
   for (const d of s.dead.normal.list) dead += `<rect x="${x(d.t0)}" y="0" width="${((d.sec / T) * W).toFixed(1)}" height="40" fill="var(--dead)" fill-opacity="0.85"><title>${sec(d.sec)} with nothing to do (x ${Math.round(d.x0)} to ${Math.round(d.x1)})</title></rect>`;
+  let marks = '';
+  for (const h of s.hotspots) {
+    const cx = (h.t / T) * W;
+    marks += `<path d="M${(cx - 7).toFixed(1)} 48 L${(cx + 7).toFixed(1)} 48 L${cx.toFixed(1)} 58 Z" fill="${h.who === 'KID' ? 'var(--hotk)' : 'var(--hota)'}"><title>${h.who === 'KID' ? 'Kid' : 'Adult'} bot makes this jump ${Math.round((h.rate ?? 0) * 100)}% of the time (x ${h.x})</title></path>`;
+  }
   let ticks = '';
   for (let t = 30; t < T; t += 30) ticks += `<line x1="${x(t)}" x2="${x(t)}" y1="40" y2="46" stroke="var(--muted)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>`;
   const secs = s.sections
     .map((q) => `<span class="sec" style="left:${((q.t0 / T) * 100).toFixed(2)}%;width:${(((q.t1 - q.t0) / T) * 100).toFixed(2)}%" title="${esc(q.name)}">${esc(q.name.split(':')[0])}</span>`)
     .join('');
   return `<div class="strip" role="img" aria-label="Stage timeline: green where beats are close together, red where more than ${gap} seconds pass with nothing to do">
-    <svg viewBox="0 0 ${W} 46" preserveAspectRatio="none"><rect x="0" y="0" width="${W}" height="40" fill="var(--track)"/>${rects}${dead}${ticks}</svg>
+    <svg viewBox="0 0 ${W} ${s.hotspots.length ? 58 : 46}" preserveAspectRatio="none" style="height:${s.hotspots.length ? 58 : 46}px"><rect x="0" y="0" width="${W}" height="40" fill="var(--track)"/>${rects}${dead}${ticks}${marks}</svg>
     ${secs ? `<div class="secs">${secs}</div>` : ''}
     <div class="axis"><span>start</span><span>${mmss(T)} shrine</span></div>
   </div>`;
@@ -62,6 +68,54 @@ function chip(v: string): string {
   const cls = v === 'in band' ? 'ok' : v === 'no target' || v === 'no count' ? 'mid' : 'bad';
   const words: Record<string, string> = { 'in band': 'on target', 'too easy': 'asks for less than the target', 'too hard': 'asks for more than the target', impossible: 'more than the stage holds', 'no target': 'no target set', 'no count': '' };
   return words[v] ? `<span class="chip ${cls}">${words[v]}</span>` : '';
+}
+
+const WHY: Record<string, string> = {
+  'too far': 'too far (over 85% of what the jump can do)', 'narrow landing': 'narrow landing', 'double-jump window': 'tight second-flick window',
+  'take-off spot': 'small take-off spot', timing: 'timing (a hazard or animal on a cycle)',
+};
+const pctI = (r: number | null) => (r === null ? 'n/a' : `${Math.round(r * 100)}%`);
+function hardness(j: JumpReport): string {
+  const parts = j.why.map((w) => WHY[w] ?? w);
+  const top = Object.entries(j.fails).sort((a, b) => b[1] - a[1])[0];
+  if (top) parts.push(`most misses: ${top[0]}`);
+  return parts.join('; ') || 'nothing stands out';
+}
+function jumpLine(j: JumpReport): string {
+  return `x ${j.x}: ${j.gap} px across, ${j.rise >= 0 ? `${j.rise} up` : `${-j.rise} down`}, lands on ${j.landW} px, ${Math.round(j.reach * 100)}% of reach${j.dbl ? `, double jump${j.dblNeeded ? ' (needed)' : ''}${j.dblWindow !== null ? `, second flick window ${j.dblWindow.toFixed(2)} s` : ''}` : ''}${j.timing ? `, ${esc(j.timing.what)} safe ${j.timing.safe.toFixed(1)} of ${j.timing.cycle.toFixed(1)} s` : ''}`;
+}
+function jumpBlock(s: StageReport): string {
+  const J = s.jumps;
+  if (!J.normal.length && !s.hotspots.length) return '<p class="small muted">No jumps on the route the bots can fly (logs, swings, glides and bounces are not simulated).</p>';
+  const need2 = J.normal.filter((j) => j.dblNeeded).length;
+  const minRate = (l: JumpReport[]) => Math.min(1, ...l.filter((j) => j.rate !== null).map((j) => j.rate as number));
+  const hot = s.hotspots.map((h) => `<li><b class="${h.who === 'KID' ? 'hk' : 'ha'}">${h.who === 'KID' ? 'Kid' : 'Adult'} ${pctI(h.rate)}</b> at x ${h.x} (${mmss(h.t)}): ${esc(hardness(h))}${h.miss === 'fall' ? ', <b>a miss costs a life</b>' : ''}</li>`).join('');
+  return `<div class="jumps">
+    <dl class="kv">
+      <dt>Jumps</dt><dd>${J.normal.length} on the route${need2 ? `, ${need2} need a double jump` : ''}; ${J.over80} over 80% of reach (${J.over80Easy} on Easy)</dd>
+      <dt>Bots</dt><dd>adult makes every jump at least ${pctI(minRate(J.normal))} of the time on Normal; kid at least ${pctI(minRate(J.easy))} on Easy</dd>
+      ${J.tightestTiming ? `<dt>Tightest timing</dt><dd>${esc(J.tightestTiming.what)} at x ${J.tightestTiming.x}: safe ${J.tightestTiming.safe.toFixed(1)} s of every ${J.tightestTiming.cycle.toFixed(1)} s</dd>` : ''}
+    </dl>
+    ${hot ? `<p class="small"><b>Hotspots</b></p><ul class="hot">${hot}</ul>` : ''}
+    ${J.tightest.length ? `<details><summary>Tightest five jumps</summary><ul class="small">${J.tightest.map((j) => `<li>${jumpLine(j)}; adult ${pctI(j.rate)}</li>`).join('')}</ul></details>` : ''}
+  </div>`;
+}
+
+function hist(values: number[], at: number, flip: boolean, label: string): string {
+  // ten bins over 0..1 (a window distance is shown as how alike: 1 - distance)
+  const v = values.map((x) => (flip ? 1 - x : x));
+  const bins = new Array(10).fill(0);
+  for (const x of v) bins[Math.min(9, Math.max(0, Math.floor(x * 10)))]++;
+  const max = Math.max(1, ...bins);
+  const thr = flip ? 1 - at : at;
+  const W = 300, H = 90;
+  const bars = bins.map((n, i) => {
+    const h = (n / max) * (H - 22);
+    const hot = (i + 1) / 10 > thr;
+    return `<rect x="${i * 30 + 2}" y="${H - 16 - h}" width="26" height="${h}" fill="${hot ? 'var(--dead)' : 'var(--busy)'}" fill-opacity="${hot ? 0.85 : 0.55}"><title>${n} pairs ${(i / 10).toFixed(1)}-${((i + 1) / 10).toFixed(1)}</title></rect><text x="${i * 30 + 15}" y="${H - 18 - h}" text-anchor="middle" font-size="9" fill="var(--muted)">${n || ''}</text>`;
+  }).join('');
+  const tx = thr * W;
+  return `<figure class="hist"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}">${bars}<line x1="${tx}" x2="${tx}" y1="4" y2="${H - 14}" stroke="var(--fg)" stroke-dasharray="3 3"/><text x="2" y="${H - 2}" font-size="9" fill="var(--muted)">0%</text><text x="${W - 2}" y="${H - 2}" font-size="9" fill="var(--muted)" text-anchor="end">100% alike</text></svg><figcaption>${esc(label)}: flagged right of the dashed line (${Math.round(thr * 100)}%)</figcaption></figure>`;
 }
 
 function card(s: StageReport, out: InspectOutput): string {
@@ -86,18 +140,20 @@ function card(s: StageReport, out: InspectOutput): string {
   </header>
   <p class="goaltext">${esc(s.goalText)}</p>
   <div class="stats">
-    <div><span class="lab">Play time</span><span class="val">${mmss(s.time.inspector)}</span><span class="sub">quick player, this tool${s.time.designer ? `; ${mmss(s.time.designer)} stage's own estimate` : ''}${s.time.typical ? `; ${mmss(s.time.typical)} first-timer model` : ''}</span></div>
+    <div><span class="lab">Play time</span><span class="val ${s.time.quickUnder ? 'badt' : ''}">${mmss(s.time.inspector)}</span><span class="sub">quick player (this tool)${s.time.quickUnder ? ' <b class="badt">under 2:00</b>' : ''}; game's own estimate ${s.time.designer ? mmss(s.time.designer) : s.time.typical ? `${mmss(s.time.typical)} (first-timer model)` : 'n/a'}</span></div>
     <div><span class="lab">Beats</span><span class="val">${s.beatCount}</span><span class="sub">${s.beatsPerMin.toFixed(0)} a minute</span></div>
-    <div><span class="lab">Dead time</span><span class="val ${dn.total > 60 ? 'badt' : ''}">${sec(dn.total)}</span><span class="sub">${dn.count} gaps over 2 s; longest ${sec(dn.longest)}</span></div>
+    <div><span class="lab">Dead time</span><span class="val ${dn.total > 60 ? 'badt' : ''}">${sec(dn.total)}</span><span class="sub">${dn.count} gaps over 2 s; longest ${sec(dn.longest)}${s.silk ? `; ${sec(dn.raw)} before the silk halves it` : ''}</span></div>
     <div><span class="lab">On Easy</span><span class="val">${sec(de.total)}</span><span class="sub">${de.count} gaps over 3 s; longest ${sec(de.longest)}</span></div>
   </div>
   ${strip(s, out.thresholds.normal)}
   <div class="mix">${mix}</div>
+  ${jumpBlock(s)}
   <dl class="kv">
     <dt>Rest after bursts</dt><dd>${rest.bursts.length ? `${rest.bursts.length} burst${rest.bursts.length === 1 ? '' : 's'} of action; ${rest.noRest ? `<b class="badt">${rest.noRest} with no rest</b> (no second of plain walking before the next beat)` : 'each one is followed by at least a second of plain walking'}` : 'no bursts (beats never bunch up)'}</dd>
     <dt>Most like</dt><dd>${sim ? `<a href="#s${sim.id}">${sim.id} ${esc(simName)}</a>: mix ${Math.round(sim.cos * 100)}% alike, closest 20 s stretch ${Math.round((1 - sim.win) * 100)}% alike ${sim.flagged ? `<span class="chip ${pair && strong(pair) ? 'bad' : 'mid'}">${pair && strong(pair) ? 'very alike' : 'flagged'}</span>` : ''}` : 'n/a'}</dd>
     <dt>Repeats inside</dt><dd>${s.repeats.length ? `${s.repeats.length}${s.repeats.length >= 5 ? '+' : ''} near-identical 20 s stretches, e.g. ${mmss(s.repeats[0].ta)} and ${mmss(s.repeats[0].tb)}: <code>${esc(s.repeats[0].s)}</code>` : 'none'}</dd>
-    <dt>Route</dt><dd>${routeNote}${s.stops.asked ? `; visits ${s.stops.asked - s.stops.skipped} of ${s.stops.asked} places the goal sends him` : ''}</dd>
+    <dt>Route</dt><dd>${s.routes.used === 'pickups' ? 'the way along the pickups' : 'the quickest way'}${s.routes.pickups.time !== s.routes.quick.time || s.routes.pickups.beats !== s.routes.quick.beats ? ` (quickest: ${mmss(s.routes.quick.time)}, ${sec(s.routes.quick.dead)} dead; along the pickups: ${mmss(s.routes.pickups.time)}, ${sec(s.routes.pickups.dead)} dead)` : ''}; ${routeNote}${s.stops.asked ? `; visits ${s.stops.asked - s.stops.skipped} of ${s.stops.asked} places the goal sends him` : ''}</dd>
+    ${s.silk ? `<dt>Silk</dt><dd>World 5's rule (stand still and the silk creeps up) keeps him moving: quiet seconds here count half, except on the rest branch</dd>` : ''}
     ${off ? `<dt>Off the route</dt><dd>${off}</dd>` : ''}
   </dl>
   ${goalLine(s)}
@@ -113,6 +169,7 @@ export function renderReport(out: InspectOutput): string {
   const maxDead = Math.max(1, ...worst.map((s) => s.time.inspector));
   const flagged = out.pairs.filter((p) => p.flagged).sort((a, b) => Number(strong(b)) - Number(strong(a)) || a.win - b.win || b.cos - a.cos);
   const strongPairs = flagged.filter(strong);
+  const hotAll: Array<Hotspot & { id: string }> = st.flatMap((x) => x.hotspots.map((h) => ({ ...h, id: x.id }))).sort((a, b) => (a.rate ?? 0) - (b.rate ?? 0));
   const goals = st.filter((s) => s.goal.word);
   const off = goals.filter((s) => s.goal.verdict !== 'in band' && s.goal.verdict !== 'no target');
   const totalDead = st.reduce((t, s) => t + s.dead.normal.total, 0);
@@ -132,7 +189,7 @@ export function renderReport(out: InspectOutput): string {
 :root {
   --bg: #f4f6f1; --panel: #ffffff; --fg: #1c2a22; --muted: #5d6b62; --line: #d8dfd6;
   --accent: #2f6b4f; --busy: #2f8a57; --dead: #c2452d; --track: #e6ebe3; --warn: #a86a12;
-  --okbg: #dcefe2; --badbg: #f8dcd5; --midbg: #efe8d6;
+  --okbg: #dcefe2; --badbg: #f8dcd5; --midbg: #efe8d6; --hotk: #7a3fb0; --hota: #1f4f8f;
   --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -140,11 +197,11 @@ export function renderReport(out: InspectOutput): string {
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #121a15; --panel: #1a241e; --fg: #e3ebe4; --muted: #9aa99f; --line: #2c3a31;
   --accent: #7fc89f; --busy: #4fbf7d; --dead: #ef6b4f; --track: #233029; --warn: #e2a64a;
-  --okbg: #1f3a2a; --badbg: #4a2219; --midbg: #3a3320; color-scheme: dark } }
+  --okbg: #1f3a2a; --badbg: #4a2219; --midbg: #3a3320; --hotk: #c49bf0; --hota: #8fb8f2; color-scheme: dark } }
 :root[data-theme="dark"] {
   --bg: #121a15; --panel: #1a241e; --fg: #e3ebe4; --muted: #9aa99f; --line: #2c3a31;
   --accent: #7fc89f; --busy: #4fbf7d; --dead: #ef6b4f; --track: #233029; --warn: #e2a64a;
-  --okbg: #1f3a2a; --badbg: #4a2219; --midbg: #3a3320; color-scheme: dark }
+  --okbg: #1f3a2a; --badbg: #4a2219; --midbg: #3a3320; --hotk: #c49bf0; --hota: #8fb8f2; color-scheme: dark }
 * { box-sizing: border-box }
 body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--body); margin: 0 }
 .wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px }
@@ -199,6 +256,11 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: 
 .sw { display: inline-block; width: 22px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 4px }
 .letters { display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; font-size: 13.5px; margin: 6px 0 0 }
 .letters b { font-family: var(--mono) }
+.jumps { display: grid; gap: 6px }
+.hot { margin: 0; padding-left: 18px; font-size: 13px; display: grid; gap: 3px }
+.hk { color: var(--hotk) } .ha { color: var(--hota) }
+.hists { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px }
+.hist { margin: 0 } .hist svg { width: 100%; height: auto; display: block } .hist figcaption { font-size: 12px; color: var(--muted) }
 </style>
 <div class="wrap">
 <header>
@@ -211,7 +273,9 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: 
   <div class="tiles">
     <div class="tile"><b>${st.length}</b><span>stages inspected (${out.skipped.length} skipped)</span></div>
     <div class="tile"><b>${Math.round((totalDead / totalTime) * 100)}%</b><span>of play time is in a quiet stretch over 2 s</span></div>
-    <div class="tile"><b>${strongPairs.length}</b><span>pairs of stages that are very alike (${flagged.length} flagged in all)</span></div>
+    <div class="tile"><b>${flagged.length}</b><span>pairs of stages flagged as alike (${strongPairs.length} very alike)</span></div>
+    <div class="tile"><b>${hotAll.length}</b><span>jump hotspots for the bots (${hotAll.filter((h) => h.who === 'KID').length} kid, ${hotAll.filter((h) => h.who === 'ADULT').length} adult)</span></div>
+    <div class="tile"><b>${st.filter((x) => x.time.quickUnder).length}</b><span>stages a quick player finishes in under 2:00</span></div>
     <div class="tile"><b>${off.length} of ${goals.length}</b><span>counted goals off Matt's target share</span></div>
   </div>
 </section>
@@ -225,7 +289,11 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: 
     <li><b>Dead time</b> is any stretch over 2 s with no beat (3 s on Easy, measured on the Easy version of the stage). The start and the walk to the shrine count.</li>
     <li><b>Rest</b>: a burst is beats less than 1.5 s apart that add up to some weight (two animals, or a swing and two jumps). After each, the card looks for at least a second of plain walking on still ground before the next beat.</li>
     <li><b>Alike</b>: each stage becomes a string of letters (below). "Mix alike" compares which three-letter runs a stage is made of, whatever its length. "Best 20 s alike" finds the two 20-second stretches that are closest. A pair is flagged when the mix is over 78% alike or a 20 s stretch is over 72% alike; "very alike" when both are high or one stretch is all but identical.</li>
-    <li><b>Blind spots</b>: the inspector reads one roll of each hand-built stage (seed ${out.seed}); other rolls differ in detail. It does not see Dot's lines, the story, music, how hard a jump feels, or the silk that creeps up while he stands still in World 5. Optional detours off the route are not counted.</li>
+    <li><b>Which route</b>: two ways are traced, the quickest and the one along the pickups (it stops under every petal and flower on a ledge, which is how the designed path, the branches and stepping stones, shows). The busier one (more beats a minute) is used, unless it takes over half as long again. Both are on each card.</li>
+    <li><b>World 5's silk</b>: standing still lets the silk creep up, so even a quiet stretch keeps him moving. Its quiet seconds count half toward dead time (not on 5-5's rest branch).</li>
+    <li><b>Jump difficulty</b>: every jump on the route is flown with the game's own air physics (physics.ts) and jump rules (the cut when the thumb lifts, the second jump, the grace after leaving a ledge, the wider landing on Easy and early stages). "Reach" is the share of the most a clean jump (or double jump) can do, across or up. The second-flick window is how long the second flick can come and still land, from where the bot aims to take off. Timing windows are the safe part of a hazard's cycle, or of an animal's walk past the landing.</li>
+    <li><b>Bots</b>: ${out.bots.trials} tries per jump. Kid (Easy): presses ${Math.round(out.bots.kid.react * 1000)} ms late on average (spread ${Math.round(out.bots.kid.reactSd * 1000)} ms) plus ${out.bots.kid.lateFrames[0]}-${out.bots.kid.lateFrames[1]} frames for the flick to register; thumb-down time spread ${Math.round(out.bots.kid.holdSd * 1000)} ms; ${Math.round(out.bots.kid.short * 100)}% of flicks short (30% less height); steering reacts late by the same and drifts off now and then. Adult (Normal): ${Math.round(out.bots.adult.react * 1000)} ms (spread ${Math.round(out.bots.adult.reactSd * 1000)}), ${out.bots.adult.lateFrames[0]}-${out.bots.adult.lateFrames[1]} frames, ${Math.round(out.bots.adult.holdSd * 1000)} ms, ${Math.round(out.bots.adult.short * 100)}% short. Each bot aims for the middle of the take-off spots that work on the ledge, and takes a double jump wherever that works better for it. This is a model of one jump at a time, not a run of the game: no animals, wind or ceilings in the air, and the thumb is timing noise, not finger paths through the touch rules.</li>
+    <li><b>Blind spots</b>: the inspector reads one roll of each hand-built stage (seed ${out.seed}); other rolls differ in detail. It does not see Dot's lines, the story or music. The bots do not fly swings, river logs, moving platforms, mushroom bounces or leaf glides, and do not model how a gesture is recognised (a second flick that the touch rules miss). Optional detours off the route are not counted.</li>
   </ul>
   <div class="letters">${Object.entries(LETTER).map(([l, d]) => `<b>${l}</b><span>${esc(d)}</span>`).join('')}</div>
   </details>
@@ -241,9 +309,18 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: 
 
 <section>
   <h2>Stages that feel alike</h2>
-  <p class="small muted">Only stages in the same world are compared. Very alike first.</p>
-  <div class="panel tw"><table>${pairHead}<tbody>${strongPairs.map(pairRow).join('') || '<tr><td colspan="4">None.</td></tr>'}</tbody></table></div>
-  ${flagged.length > strongPairs.length ? `<details class="panel"><summary>${flagged.length - strongPairs.length} more flagged pairs</summary><div class="tw"><table>${pairHead}<tbody>${flagged.filter((p) => !strong(p)).map(pairRow).join('')}</tbody></table></div></details>` : ''}
+  <p class="small muted">Only stages in the same world are compared. The flag lines are set from how alike the ${out.pairs.length} pairs usually are: a pair flags when its mix is in the top twentieth or one 20-second stretch is in the closest twentieth (the first guess, 78% and 72%, flagged ${out.thresholds.firstFlags} pairs, mostly World 2's river crossings, which every stage there shares by design). Both measures high: very alike.</p>
+  <div class="panel hists">${hist(out.dist.cos, out.thresholds.cosine, false, 'Mix alike, every pair')}${hist(out.dist.win, out.thresholds.window, true, 'Closest 20 s alike, every pair')}</div>
+  <div class="panel tw"><table>${pairHead}<tbody>${flagged.map((p) => pairRow(p).replace('<td><a', `<td>${strong(p) ? '<span class="chip bad">very alike</span> ' : ''}<a`)).join('') || '<tr><td colspan="4">None.</td></tr>'}</tbody></table></div>
+</section>
+
+<section>
+  <h2>Hardest jumps for the bots</h2>
+  <p class="small muted">Each jump on the route flown ${out.bots.trials} times by two noisy-thumb bots: a kid on Easy and an adult on Normal. A hotspot is a jump the kid makes less than ${Math.round(out.bots.kidHot * 100)}% of the time, or the adult less than ${Math.round(out.bots.adultHot * 100)}%. This is a model of one jump at a time, not a run of the game.</p>
+  <div class="panel tw"><table><thead><tr><th>Stage</th><th>Bot</th><th class="num">Makes it</th><th>The jump</th><th>What makes it hard</th></tr></thead><tbody>
+  ${hotAll.slice(0, 15).map((h) => `<tr><td><a href="#s${h.id}">${h.id}</a></td><td>${h.who === 'KID' ? 'Kid, Easy' : 'Adult, Normal'}</td><td class="num"><b>${pctI(h.rate)}</b></td><td class="small">${jumpLine(h)}${h.miss === 'fall' ? '; a miss costs a life' : ''}</td><td class="small">${esc(hardness(h))}</td></tr>`).join('') || '<tr><td colspan="5">No hotspots.</td></tr>'}
+  </tbody></table></div>
+  <p class="small muted">${hotAll.length} hotspots in all (${hotAll.filter((h) => h.who === 'KID').length} for the kid, ${hotAll.filter((h) => h.who === 'ADULT').length} for the adult) across ${out.stages.reduce((t, x) => t + x.jumps.normal.length, 0)} jumps on Normal routes.</p>
 </section>
 
 <section>
@@ -257,7 +334,7 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: 
 ${out.skipped.length ? `<section><h2>Not inspected</h2><div class="panel"><dl class="kv">${out.skipped.map((k) => `<dt>${k.id} ${esc(k.name)}</dt><dd>${esc(k.why)}</dd>`).join('')}</dl></div></section>` : ''}
 
 <section class="panel">
-  <div class="legend"><span><i class="sw" style="background:var(--busy)"></i>beats close together (darker is busier)</span><span><i class="sw" style="background:var(--dead)"></i>over 2 s with nothing to do</span><span><i class="sw" style="background:var(--track)"></i>a beat, then a short walk</span><span class="muted">Ticks every 30 s. Labels under the strip are the stage's own sections.</span></div>
+  <div class="legend"><span><i class="sw" style="background:var(--busy)"></i>beats close together (darker is busier)</span><span><i class="sw" style="background:var(--dead)"></i>over 2 s with nothing to do</span><span><i class="sw" style="background:var(--track)"></i>a beat, then a short walk</span><span><svg width="14" height="10" viewBox="0 0 14 10" style="vertical-align:middle"><path d="M0 0 L14 0 L7 10 Z" fill="var(--hotk)"/></svg> kid hotspot</span><span><svg width="14" height="10" viewBox="0 0 14 10" style="vertical-align:middle"><path d="M0 0 L14 0 L7 10 Z" fill="var(--hota)"/></svg> adult hotspot</span><span class="muted">Ticks every 30 s. Labels under the strip are the stage's own sections.</span></div>
 </section>
 
 ${worlds.map((w) => `<section><h2>World ${w}</h2><div class="grid">${st.filter((s) => s.world === w).map((s) => card(s, out)).join('')}</div></section>`).join('')}
