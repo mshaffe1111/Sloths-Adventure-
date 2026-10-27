@@ -14,6 +14,7 @@ Every pose and animation sheet Matt supplies lives here, so nothing he draws is 
 - `slomatt/standard-set/` the nine-sheet standard set (4x4 on flat grey, 144 frames at ~240 px, one category per sheet), the format new sheets follow.
 - `story/` the eighteen story sheets (2026-10-21) the cutscenes are built from; the game's `src/assets/characters/cels-*.webp` atlases are cut from them (cell by cell, keyed from the grey), see below.
 - `jennifur/` her emotion sheets.
+- `pokey-swim/` Pokey's World 6 swimming (2026-10-27, generated with the HF pipeline, not yet in the game): cut-out frames of the surface crawl, underwater glide, tread-water idle and first-swim moment, with `meta.json` (frames, size, waterline anchor, fps). Made by `tools/art/w6/swim/`.
 - `slomatt-and-jennifur/` the shared sheets, including one with walk, jump, punch, kick, hurt and defeat drawn for both.
 
 ## What the six action-study sheets add to the game
