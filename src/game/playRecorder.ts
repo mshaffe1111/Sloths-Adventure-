@@ -7,7 +7,9 @@
  *   - what Pokey did: where he is and what he is doing, ten times a second and whenever that changes;
  *   - moments: hurt, lost a life, checkpoint, which stretch of the test stage he is in, finished.
  * It records no camera, microphone, location, contacts or anything else. The device line is the screen size, how the
- * phone is held, and the kind of device (phone, tablet; iPhone, Android), nothing that names it.
+ * phone is held, the kind of device (phone, tablet; iPhone, Android), the browser and its version, the app it is opened inside
+ * and whether it is framed or on the home screen (deviceInfo.ts); once a run, an 'env' moment adds the system version, the graphics
+ * chip, memory, cores, language and screen settings. Kinds and versions only: nothing that names a person or a phone.
  *
  * Every 20 seconds (and when the page is hidden or closed) the log so far goes to Matt's Google Sheet through the
  * collector (an Apps Script web app that only appends rows), one row per part, gzipped and base64'd to fit a cell.
@@ -23,6 +25,7 @@
 import { BUILD_TIME } from './version.ts';
 import { controlStyle, padSide, subscribeControls } from './controlPrefs.ts';
 import { BlinkWatch, ErrSeen, errLine, errWhere, RateLimiter } from './glitchWatch.ts';
+import { browserShort, envDetail } from './deviceInfo.ts';
 
 export const COLLECTOR =
   'https://script.google.com/macros/s/AKfycbxS0Yk2y7S7Ket_n7VwIpk3aKFGKVueZHi5XXn8XhvuyMy7PxcTIwJ5wJu9iKg0HzGZ/exec';
@@ -79,7 +82,8 @@ function deviceLine(): string {
     : /iPhone/.test(ua) ? 'iPhone' : /Android/.test(ua) ? (/Mobile/.test(ua) ? 'Android phone' : 'Android tablet')
     : /Windows/.test(ua) ? 'Windows' : /Mac/.test(ua) ? 'Mac' : 'other';
   const touch = navigator.maxTouchPoints > 0 ? `touch ${navigator.maxTouchPoints}` : 'no touch';
-  return `${os}; ${w}x${h} ${held}; screen ${screen.width}x${screen.height}; dpr ${window.devicePixelRatio}; ${touch}`;
+  // (the browser goes last, so the parts the QA team already reads keep their places)
+  return `${os}; ${w}x${h} ${held}; screen ${screen.width}x${screen.height}; dpr ${window.devicePixelRatio}; ${touch}; ${browserShort()}`;
 }
 
 /** gzip + base64 where the browser can (most since 2023), else the plain text; the first characters say which */
@@ -145,6 +149,7 @@ class PlayRecorder {
     this.on = true;
     const controls = () => (controlStyle() === 'pad' ? `pad on the ${padSide()}` : 'screen gestures');
     this.push(['e', 0, 'start', `${window.innerWidth}x${window.innerHeight}; ${controls()}`]);
+    this.push(['e', 0, 'env', envDetail()]);
     // a tester who switches to the thumb pad (or back) part way through
     subscribeControls(() => this.event('controls', controls()));
     this.timer = window.setInterval(() => void this.flush(false), FLUSH_MS);
