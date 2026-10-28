@@ -396,6 +396,11 @@ export interface Collectible {
   /** Pokey stands close but is not crouching: draws the hint */
   near?: boolean;
   /**
+   * 3-7's "Which fern?" (a hidden relic among ferns that look and rustle alike): no "hold down" over it when he is beside it, so the
+   * carved stones in the mushroom's light are what tell the right fern, not walking past it
+   */
+  riddle?: boolean;
+  /**
    * World 2's reed cages: the little one inside (Matt's sheet: a baby capybara, duckling or otter), and when it was freed (game time).
    * 'eaglet': World 4's nests on the cliff (4-8), a chick caught in old netting (w4Nests.ts draws it)
    */

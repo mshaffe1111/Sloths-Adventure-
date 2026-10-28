@@ -357,6 +357,8 @@ export class GameEngine {
   private glowWake = new Map<number, number>();
   /** World 3's thorn vines: a lash under way (by vine index: when it saw him, which way, whether it has landed), and the cycle it was in */
   private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
+  /** and the noise (its game time) each vine last struck at (3-5's pebble lure: once per noise) */
+  private vineStruck = new Map<number, number>();
   /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
   private camAnchorY = NaN;
   private camLookX: number = CAM.lookAhead;
@@ -600,6 +602,7 @@ export class GameEngine {
     this.glowStill = 0;
     this.glowWake.clear();
     this.vineLash.clear();
+    this.vineStruck.clear();
     resetHeroClips();
     warmHeroClips();
     // the clip sheets of the creatures in this stage start loading now, not as each one first comes on screen
@@ -2358,7 +2361,8 @@ export class GameEngine {
       if (c.type === 'relic' && c.hidden) {
         // World 3: one of Grandma's things in a fern (Dot hid them very fast, because there were boots): crouch beside it, like a Hush Fern
         const close = Math.abs(p.x - c.x) < 64 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
-        c.near = close && !p.ducking;
+        // (3-7's riddle fern says nothing when he is beside it: the stones in the light tell it)
+        c.near = close && !p.ducking && !c.riddle;
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
         else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
         if ((c.search ?? 0) >= 1) {
@@ -6272,14 +6276,41 @@ export class GameEngine {
       }
       const lash = this.vineLash.get(i);
       if (lash && this.gameTime - lash.at > VINE.windup + VINE.out) this.vineLash.delete(i);
-      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging }, this.listens(v.x, v.bud))) {
+      // a vine that hears the kit's noise while it looks (a pebble landing, a bell: noise.ts) strikes at the noise, once, and then
+      // listens to it, seeing nobody (3-5's pebble lure: the vine strikes the clack while he slips past)
+      const ear = this.kit ? heard(this.kit.noises, v.x, v.bud, this.gameTime) : null;
+      if (ear && ph.phase === 'look' && !this.vineLash.has(i) && this.vineStruck.get(i) !== ear.t) {
+        this.vineStruck.set(i, ear.t);
+        this.vineLash.set(i, { at: this.gameTime, dir: ear.x >= v.x ? 1 : -1, landed: true, cycle });
+        sound.playWhoosh();
+      }
+      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging }, !!ear)) {
         // something flying past is struck at once (a leap is through its reach in half a second); on the ground it winds up first
-        this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
+        // (an awake vine swats him back the way he came)
+        this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: v.awake ? (p.facing >= 0 ? -1 : 1) : p.x >= v.x ? 1 : -1, landed: false, cycle });
         sound.playWhoosh();
       }
       const l = this.vineLash.get(i);
       if (l && !l.landed && this.gameTime - l.at >= VINE.windup) {
         l.landed = true;
+        if (v.awake && inReach(v, p.x, p.y) && !p.isVineSwinging) {
+          // the awake vine (3-5's pebble lure): a swat back out of its reach, never a heart (a puzzle never costs a life)
+          p.vx = l.dir * 430;
+          p.vy = -PHYS.hurtKnockV;
+          p.grounded = false;
+          p.squashX = 1.3;
+          p.squashY = 0.7;
+          this.airDrive = newAirDrive();
+          // (his steering comes back a moment later, so the swat reads as a swat and carries him out of its reach)
+          this.inputGrace = Math.max(this.inputGrace, 0.5);
+          this.graceMoves = -1;
+          this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+          if (!tipHeard(id, 'vine:awake')) {
+            markTipHeard(id, 'vine:awake');
+            this.guide("Swatted! This old vine doesn't sleep. It turns to any little sound, though", 3.6);
+          }
+          continue;
+        }
         // (caught the next liana before it landed: he is out of its sight again)
         if (inReach(v, p.x, p.y) && p.invincibleTimer <= 0 && !p.isVineSwinging) {
           const flying = !p.grounded;

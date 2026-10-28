@@ -757,10 +757,14 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     if (z.kind === 'dark') {
       // every gap in the dark must have fireflies close enough to light it
       const solids = plats.filter((p) => p.type === 'solid' && p.x < z.x1 && p.x + p.width > z.x0).sort((a, b) => a.x - b.x);
+      // (a gap is open ground between the furthest anything has reached so far and the next piece: a stone standing on a floor that runs
+      // on past it leaves no gap)
+      let reach = solids.length ? solids[0].x + solids[0].width : 0;
       for (let i = 1; i < solids.length; i++) {
-        const gap = solids[i].x - (solids[i - 1].x + solids[i - 1].width);
+        const gap = solids[i].x - reach;
+        const mid = reach + gap / 2;
+        reach = Math.max(reach, solids[i].x + solids[i].width);
         if (gap <= 24) continue;
-        const mid = solids[i - 1].x + solids[i - 1].width + gap / 2;
         if (!(z.lights ?? []).some((l) => Math.abs(l.x - mid) <= 120 && l.r >= 150)) errors.push(`${at}: a ${Math.round(gap)}px gap at x=${Math.round(mid)} has no light on it`);
       }
     }
@@ -799,8 +803,10 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     const under = plats
       .filter((p) => p.type === 'solid' && p.x < z.x1 && p.x + p.width > z.x0 && p.y > z.top && p.y < z.bottom + 20)
       .sort((a, b) => a.x - b.x);
+    let reach = under.length ? under[0].x + under[0].width : 0;
     for (let i = 1; i < under.length && z.kind !== 'crumble' && z.kind !== 'dark'; i++) {
-      const gap = under[i].x - (under[i - 1].x + under[i - 1].width);
+      const gap = under[i].x - reach;
+      reach = Math.max(reach, under[i].x + under[i].width);
       if (gap <= 24) continue;
       if (gap > SAFE.gap1) errors.push(`${at}: a ${Math.round(gap)}px gap is wider than a plain jump`);
       if (z.kind === 'wind' && z.dir === -1 && gap + z.force * 0.7 > SAFE.gap2) errors.push(`${at}: a headwind of ${z.force} makes the ${Math.round(gap)}px gap too far even for a double jump`);
