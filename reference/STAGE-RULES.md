@@ -103,6 +103,14 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   shared files you touch; the lead session merges and checks.
 - **Small-phone slowness** was the browser (an in-app browser drawing in software), not our code; the recordings now name the
   browser and graphics chip (`deviceInfo.ts`). Look there first.
+- **A harmless lesson held a dangerous one back** (2026-10-28): no lesson comes before 2.5 s, and the petals' lesson at 2.6 s gave a
+  six-second breather that kept the gap's lesson back past 1-8's first gap and 2-2's first river. A lesson fires only 340 px short of
+  its thing, and Dot takes a moment to fly in: give the first hazard of a stage its own stage tip well before it, and prove the
+  opening with `stageStart.test.ts` (real engine, real damage, both orientations).
+- **What Dot teaches must count** (2-5, 2026-10-28): "Kick the shell!" sent the snapper sliding, it came back out dizzy, and the goal
+  stayed at 0/17. Every way a tip teaches to beat an animal has to count toward the goal; check it in the real engine.
+- **Dot's queue repeated a cut tip** (1-7, 2026-10-28): every time the eagle's warning cut her move tip, the tip went back in the
+  queue and was said again, about every 11 s for the whole stage. Count how often each line is said (`tools/inspect/dotPace.ts`).
 
 ## 7. Where things are
 
