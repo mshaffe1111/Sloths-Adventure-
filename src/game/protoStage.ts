@@ -1549,13 +1549,15 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   };
 
   /** a wide branch over soft moss with one boa coiled in the middle of it: the way on is across the branch, past the guard */
-  function guardBranch() {
+  function guardBranch(low = false) {
     const x0 = x;
-    run(R.r(180, 240));
+    run(low ? R.r(120, 170) : R.r(180, 240));
     // a stump up to the branch, the branch over a soft pit, and the far side
+    // (`low`, World 1's rebuilt 1-9: the branch one plain jump over the stump and under 100 over the ground, where the kid bot
+    // missed a 120 px jump up from the floor, 2026-10-28)
     block(x, x + 100, 60);
     run(160);
-    const y = G - Math.round(R.r(115, 130));
+    const y = low ? G - R.i(92, 100) : G - Math.round(R.r(115, 130));
     const w = Math.round(R.r(520, 600));
     const edge = x;
     close();
@@ -1575,7 +1577,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   /** a rope over a soft pit to a far bank where a boa waits, with room to land before it */
   function ropeGuard() {
     const x0 = x;
-    ropeGap(false, false);
+    ropeGap(false, false, true);
     // ropeGap leaves him past the far edge: the guard stands a little on
     boa(x + R.r(120, 180), G);
     run(R.r(380, 460));
@@ -1599,7 +1601,10 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const ww = Math.round(R.r(480, 560));
     block(wx, wx + ww, 230);
     row(wx + 60, wx + ww - 60, G - 264, 3, 'orchid');
-    x = wx + ww + R.r(160, 220);
+    x = wx + ww + R.r(110, 150);
+    // (down off the high ground onto a dip to jump: no empty walk after it)
+    dip();
+    run(R.r(200, 260));
     expert += (x - x0) / RUN + (G - perchY) / CLIMB + 5;
     pieces.push({ k: 'kapok', x0, x1: x });
   }
@@ -1650,13 +1655,15 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     // 1-9 The Boa's Branches: fighting on the move. The boa's guards coil on the branches you have to cross: read the warning (it rears),
     // step out of the lunge, punch it while it recovers. Then guards past ropes and up trunks, and a ring where snakes drop from the
     // canopy until every one is down. A snake asleep on a high branch guards a seed.
+    // (Rebuilt 2026-10-28: the guards' branches one plain jump up from their stumps, rocks and dips between the fights, and a quicker
+    // run on after the high ground and the ring.)
     beat('Learn: one guard at a time', () => {
-      rest(R.r(600, 750));
+      rest(R.r(380, 420));
       hint(x + 40, 'A guard! Wait for it to rear and strike, then tap to punch it', 'A guard! Wait for it to rear and strike, then press Punch', 'A guard! Wait for it to rear and strike, then press J to punch');
-      guardBranch();
-      rest(R.r(250, 350));
-      guardBranch();
-      snakes();
+      guardBranch(true);
+      busy(1);
+      guardBranch(true);
+      snakeWalk(1);
       flag();
     });
     beat('Test: guards along the way', () => {
@@ -1664,26 +1671,27 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       trunkGuard();
       flag();
       sleepingGuard();
-      snakes();
-      guardBranch();
+      snakeWalk(1);
+      guardBranch(true);
       flag();
     });
     beat('Twist: the ring', () => {
       hint(x + 60, 'Snakes from above! Clear them all to open the way', 'Snakes from above! Clear them all to open the way', 'Snakes from above! Clear them all to open the way');
       snakeRing();
+      dip();
       flag();
     });
     beat('Finish', () => {
       let n = 0;
       while (expert < EXPERT_SECONDS - 10 && n < 12) {
         const k = n % 3;
-        if (k === 0) guardBranch();
-        else if (k === 1) { rest(R.r(250, 350)); snakes(); }
+        if (k === 0) guardBranch(true);
+        else if (k === 1) { busy(1); snakeWalk(2); }
         else trunkGuard();
         n++;
         if (n % 2 === 0) flag();
       }
-      rest(R.r(700, 900));
+      homeRun();
     });
   }
 
