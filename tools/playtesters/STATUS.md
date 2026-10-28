@@ -27,6 +27,8 @@ reaction + 0.6 s margin on boss openings).
 one is needed, uses the Steph bot. One run each per promotion, not repeat runs. Do quick checks by state (`eval`, `unseen-hits.cjs`, `boss-openings.cjs`) where that is
 enough, and bring in other personas only when a check needs them.
 
+**Checklist** (Matt, 2026-10-28): every finding is tagged with its rule number from `QA-CHECKLIST.md`.
+
 **How work moves**
 - The coding team promotes a fix or a new stage: it rebuilds Matt's test link, pushes `ccr-0d59a91c-oy3imz`, and sends QA a promotion note with a retest list.
 - QA builds from the pushed branch, retests every item, and replies pass or fail on each, plus anything new.
