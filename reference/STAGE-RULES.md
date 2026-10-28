@@ -168,6 +168,12 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   a bubble goes beside the speaker; check upright screenshots with the bubble up.
 - **Lines that queue fall behind**: a 4 s reading floor let story lines pile up until they described a room she had left. A line
   that is stale (she has walked on ~500 px) is dropped, not queued.
+- **The inspector's quick route walks through things standing on a bank** (2026-10-28, World 1's variety pass): a rock or stump drawn as
+  a block on top of one long bank is not in the quick route's way, so its hop never counts, and a stage read as quiet where it is busy
+  (1-1's opening, 1-9's ring). World 1's rocks and stumps now stand down into the ground with the bank broken around them (logHop,
+  lowStumps). And soft pits read as two hops (a drop in, a hop out), never a jump; ropes the same before Shimmy Rope. Variety (era's
+  action 3-grams) only moves when the letters change: bounces up walls, branches 240 up (no floor within 200: a jump), climbs that are
+  the only way on, snakes, the eagle. Rearranging hops among hops changes nothing it can see.
 - **One length number lies**: the time model and a real-engine bot disagree by about a minute on Meeca's stage (model 5:09-5:17,
   bot 4:16-4:25; the bot never hesitates). Give both, and say which one the target is on.
 
