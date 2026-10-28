@@ -37,6 +37,8 @@ import { BADGES, award, evaluate, type BadgeDef, type BadgeStore, type StageStat
 import { anyCakeEaten } from './game/w5Kit.ts';
 import { loadBadgeStore, saveBadgeStore, loadCosmetic, saveCosmetic, type CosmeticChoice } from './game/badgeStore.ts';
 import { TrophyRoom } from './components/TrophyRoom.tsx';
+import { inAppOf } from './game/deviceInfo.ts';
+import { markSlowTipShown, slowTipShown, slowTipText } from './game/slowTip.ts';
 import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
@@ -258,6 +260,14 @@ export default function App() {
   const [badgeStore, setBadgeStore] = useState<BadgeStore>(() => loadBadgeStore());
   const [cosmetic, setCosmetic] = useState<CosmeticChoice>(() => loadCosmetic());
   const [freshBadges, setFreshBadges] = useState<BadgeDef[]>([]);
+  // the one-time tip for a phone that can't keep up (slowTip.ts): opened inside an app's own browser, or far too slow in play
+  const [slowTip, setSlowTip] = useState<string | null>(() =>
+    typeof navigator !== 'undefined' && inAppOf(navigator.userAgent) && !slowTipShown() ? slowTipText(navigator.userAgent) : null,
+  );
+  const closeSlowTip = () => {
+    markSlowTipShown();
+    setSlowTip(null);
+  };
   const [trophyFrom, setTrophyFrom] = useState<'title' | 'world_map' | 'paused'>('title');
   /** which tab the Trophy Room opens on (the pause menu's Jungle Cards go straight to the creature journal) */
   const [trophyTab, setTrophyTab] = useState<'badges' | 'journal' | 'library'>('badges');
@@ -596,6 +606,9 @@ export default function App() {
         try {
         engine = new GameEngine(canvasRef.current, lvl, inputEngineRef.current, {
           onFatal: () => setScreen('world_map'),
+          onSlowDevice: () => {
+            if (!slowTipShown()) setSlowTip(slowTipText(navigator.userAgent));
+          },
           onGuide: (text, seconds, passed) => setGuideLine((g) => ({ text, ms: seconds * 1000, n: (g?.n ?? 0) + 1, ...(passed ? { passed } : {}) })),
           onStageStats: (s) => {
             pendingStats.current = s;
@@ -1073,6 +1086,18 @@ export default function App() {
 
       {/* held back while the stage-cleared and new-skill cards are up: it covered their title ribbons and buttons */}
       {freshBadges.length > 0 && screen !== 'victory' && <BadgeToast badges={freshBadges} onDone={() => setFreshBadges([])} />}
+
+      {slowTip && (
+        <div className="tr-toast slow-tip" role="status" aria-live="polite">
+          <div>
+            <div className="tr-toast-k">A tip for smooth play</div>
+            <div className="tr-toast-d">{slowTip}</div>
+          </div>
+          <button type="button" className="ui-pill-gold slow-tip-ok" onClick={closeSlowTip}>
+            OK
+          </button>
+        </div>
+      )}
 
       {/* Active Game HUD (Only in playing or paused) */}
       {(screen === 'playing' || screen === 'paused') && (

@@ -1,3 +1,4 @@
+import { SlowWatch } from './slowTip.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
@@ -198,6 +199,8 @@ export interface GameEngineCallbacks {
   onLivesChange?: (lives: number, maxLives: number) => void;
   /** the game loop failed over and over: the app should leave the stage */
   onFatal?: () => void;
+  /** the picture is at its lightest and still under 10 frames a second for a while: the app may show the one-time tip (slowTip.ts) */
+  onSlowDevice?: () => void;
   /** a guiding line (a stage tip, the goal, a reminder, the sealed door): the app has Dot say it (Wayside.tsx) */
   onGuide?: (text: string, seconds: number, passed?: boolean) => void;
   onBossEncounter?: (boss: BossEntity) => void;
@@ -330,6 +333,7 @@ export class GameEngine {
    * screen genuinely cannot keep up (the simulation itself never changes).
    */
   private quality = startQuality(typeof performance !== 'undefined' ? performance.now() : 0);
+  private slowWatch = new SlowWatch();
   private gov = new FrameGovernor();
 
   private hitstopTimer: number = 0;
@@ -941,6 +945,11 @@ export class GameEngine {
       // judge the real frame gap: too slow for a moment -> a lighter picture (never while a menu holds the game, or once at the lightest)
       if (!this.isPaused && (this.quality < 2 || (polishEnabled() && polishTier() < 2)) && this.gov.feed(elapsed)) this.stepQuality();
       else if (!this.isPaused && this.quality === 2) this.gov.feed(elapsed);
+      // at the lightest picture and still under 10 frames a second for a while: the browser itself is the trouble (slowTip.ts)
+      if (!this.isPaused && this.slowWatch.feed(elapsed, this.gov.lastAvg, this.quality === 2 && !(polishEnabled() && polishTier() < 2))) {
+        if (recorder.on) recorder.glitch('slowtip', `avg ${Math.round(this.gov.lastAvg)}ms`);
+        this.callbacks.onSlowDevice?.();
+      }
       // steady for a while at a lightened picture: back up a notch (it used to stay low for good after one slow start)
       if (!this.isPaused && this.quality > 0 && this.gov.takeUp()) {
         if (recorder.on) recorder.glitch('quality', `q${this.quality}→${this.quality - 1} steady avg ${Math.round(this.gov.lastAvg)}ms`);
