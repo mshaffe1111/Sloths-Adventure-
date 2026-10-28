@@ -73,9 +73,8 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 ## Open decisions for Matt (ask one at a time)
 
-1. Generator: about 30 sections per world: OK?
-2. Generator: 5-8 generated or hand-built?
-3. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
+1. Generator: 5-8 generated or hand-built?
+2. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
 
 ## Decided today (also on the Docs roadmap)
 
@@ -88,7 +87,7 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
 - Generator: 16 checked layouts shipped per stage (Matt 2026-10-28). Easy falls land soft on land; over water a fall still
-  costs a life on Easy, with a clear warning before the water (Matt chose B, 2026-10-28).
+  costs a life on Easy, with a clear warning before the water (Matt chose B, 2026-10-28). About 30 sections per world (Matt chose A).
 - Variety pass for Worlds 1-4, all four at once. Push (release PR #41). Flicker's animations for the whole game. The polish pass
   on the title and every menu. Jungle Cards updated to today's creatures.
 - Dot toned down. All research in the repo; one rulebook; the lead checks every helper's work before merging.
