@@ -275,7 +275,7 @@ export const sunkenLawn: SectionTemplate = {
   difficulty: 6,
   weight: 2,
   pieces: [
-    bank('near', [200, 260], { kind: 'start' }),
+    bank('near', [150, 190], { kind: 'start' }),
     up('lip', 'near', 40, [120, 150]),
     down('yardA', 'lip', 92, [420, 480]),
     hop('yardB', 'yardA', [340, 400], [0.45, 0.65], true),
@@ -393,7 +393,7 @@ export const pitLawn: SectionTemplate = {
   pieces: [
     bank('near', [240, 300], { kind: 'start' }),
     leap('far', 'near', [520, 600], [0.6, 0.85]),
-    hop('far2', 'far', [320, 380], [0.45, 0.65], true),
+    hop('far2', 'far', [260, 300], [0.45, 0.65], true),
   ],
   entry: { piece: 'near', kind: 'ground' },
   exit: { piece: 'far2', kind: 'ground' },
