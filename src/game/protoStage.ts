@@ -1161,7 +1161,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     for (let k = 0; k < n; k++) {
       // (`snakes`, 1-3 on: a snake on every second branch, which is wider for it: punch it or hop it, a miss is a drop to the ground)
       const guard = snakes && k % 2 === 1;
-      const w = Math.round(guard ? R.r(260, 300) : R.r(170, 230));
+      const w = Math.round(guard ? R.r(240, 270) : R.r(170, 230));
       branch(bx, bx + w, y);
       if (guard) snake(bx + w / 2, y, w - 100);
       else row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
