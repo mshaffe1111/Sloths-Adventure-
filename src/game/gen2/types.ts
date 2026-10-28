@@ -301,7 +301,11 @@ export interface StageBudget {
   threat: number;
   enemyShare: number;
   /** the stage's goal (config.targetCount) and the items to lay for it (a margin over the goal) */
-  quota: { goal: number; lay: number };
+  /**
+   * the stage's goal (config.targetCount, the designed number: it is never changed to what was laid), what levelCheck holds this
+   * difficulty to (`check`: Easy's purge/gauntlet goal is easyMode's round(0.6 x goal); otherwise the goal), and what to lay for it
+   */
+  quota: { goal: number; check: number; lay: number };
   pit: PitKind;
   /** the longest quiet stretch (s) outside a rest (§2 dead time: ~2 s Normal, ~3 s Easy) and the walk speed it is measured at */
   quiet: number;
@@ -406,6 +410,9 @@ export interface WorldKit {
   emit?: Record<string, PropEmitter>;
   /** the world's scenery drawer: where the chosen decor set's items go (World 5: proto.w5.decor); default sink.extras.decor */
   decorate?: (items: Array<{ n: string; x: number; y: number; w: number; set: string }>, out: StageSink) => void;
+  /** called for every creature the stage lays (a socket's or a purge's top-up): where the world registers its own (World 5: a
+   *  sleeping spider into proto.w5.spiders with `doze`, from a creature tagged 'sleeper') */
+  spawn?: (e: Enemy, c: CreatureDef, out: StageSink) => void;
 }
 
 /** a local repair the validation pass made (D3) */
