@@ -129,13 +129,13 @@ test('2-4: the first crossings on the vines cost no life, the rest are deep, and
     const open = st.rivers!.filter((r) => r.open);
     assert.ok(open[0].safe && open[1].safe && open.slice(2).every((r) => !r.safe), `seed ${s}`);
     assert.ok(open.length >= 6, `seed ${s}: ${open.length} vine crossings`);
-    // an island: a vine crossing that ends where a log river begins, a short bank apart
-    assert.ok(open.some((r) => st.rivers!.some((q) => !q.open && q.x0 > r.x1 && q.x0 - r.x1 < 520)), `seed ${s}: vines then logs`);
+    // an island: a vine crossing that ends where a log river begins, a short bank apart (long enough to catch his breath on)
+    assert.ok(open.some((r) => st.rivers!.some((q) => !q.open && q.x0 > r.x1 && q.x0 - r.x1 < 700)), `seed ${s}: vines then logs`);
     assert.ok(st.vines.every((v) => v.vineType === 'swing_liana'));
   }
 });
 
-test('2-8: cages on reed islands in water that rises over them (and stops under the banks); a cage up a post, high and dry', () => {
+test('2-8: reed cages hung on pulleys off the islands, in water that rises over them (and stops under the banks); stones thrown across', () => {
   for (const s of SEEDS) {
     const st = buildW2Stage(cfg('2-8'), s, '2-8');
     const cages = st.collectibles.filter((c) => c.type === 'cage');
@@ -155,8 +155,17 @@ test('2-8: cages on reed islands in water that rises over them (and stops under 
       while (floodLevel(r.flood!, r.surfaceY, t) > ISLAND_TOP - 8) t += 0.1;
       assert.ok(t >= 15, `seed ${s}: islands under after ${t.toFixed(1)} s`);
     }
-    const high = cages.find((c) => c.y < 450);
-    assert.ok(high && st.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - high.x) < 160), `seed ${s}: the post cage`);
+    // every cage hangs on a pulley off a reed island, its stones on that island or (the twist) on the island before it
+    const rooms = st.kit!.rooms;
+    for (const c of cages) {
+      const room = rooms.find((r) => r.pieces.some((p) => p.kind === 'lift' && p.cage === c.id));
+      assert.ok(room, `seed ${s}: cage ${c.id} hangs on a pulley`);
+      const isl = st.platforms.find((p) => p.id === room!.left.on)!;
+      assert.equal(isl.y, ISLAND_TOP, `seed ${s}: its stones are on a reed island`);
+    }
+    assert.ok(rooms.filter((r) => r.ground.length >= 2).length >= 2, `seed ${s}: stones across the water`);
+    // the first basins teach it: one stone, and a fall costs nothing
+    assert.ok(rooms[0].tips?.enter && floods[0].safe, `seed ${s}: taught`);
   }
 });
 
