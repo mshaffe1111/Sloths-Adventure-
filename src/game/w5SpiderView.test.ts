@@ -59,7 +59,9 @@ function playThrough(id: string, w: number, h: number, every = 1.5, phase = 0.5)
     hurt(amount, fromX);
     if (e.statHeartsLost === lost) return;
     const s = spiders().find((q) => !q.defeated && q.x === fromX);
-    if (s) hits.push({ id: s.id, t: r.t, warned: warned.get(s.id) ?? -1, dx: Math.round(p.x - s.x) });
+    // (a hit in the very frame the rush starts, before the check below has seen the gate open: the crouch just finished is its warning)
+    const now = s && gates.get(s.id)?.phase === 'go' && prev.get(s.id) === 'windup' ? (shown.get(s.id) ?? 0) * DT : undefined;
+    if (s) hits.push({ id: s.id, t: r.t, warned: now ?? warned.get(s.id) ?? -1, dx: Math.round(p.x - s.x) });
     // (never down to no hearts: the run goes on to the end)
     p.hp = p.maxHp;
   };
