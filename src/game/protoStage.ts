@@ -2648,7 +2648,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       sporeRest(R.r(440, 500));
       if (v.develop === 0) w3Order(() => sporeGap(), () => w3Stones(R.shuffle([40, 100, 140, 80]), [0.55, 0.68]), () => sporeGap(true));
       else if (v.develop === 1) w3Order(() => deepRun(3, 1), () => sporeGap(true), () => deepRun(3, 1));
-      else w3Order(() => chain(2, false, 'gorge'), () => sporeGap(true), () => chain(3, false, 'gorge'));
+      else w3Order(() => chain(2, false, 'gorge'), () => sporeGap(true), () => chain(2, false, 'gorge'));
       flag();
     });
     beat('Twist: the dark', () => {
@@ -2657,13 +2657,13 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       glowDark(R.r(1000, 1100), 0, { rocks: true });
       if (v.twist === 0) { sporeGap(); glowDark(R.r(1250, 1400), 1, { rocks: true }); sporeGap(true); }
       else if (v.twist === 1) { deepRun(3, 1); glowDark(R.r(1250, 1400), 2, { rocks: true }); }
-      else { chain(3, false, 'gorge'); glowDark(R.r(1150, 1300), 1, { }); chain(2, false, 'gorge'); }
+      else { chain(2, false, 'gorge'); glowDark(R.r(1150, 1300), 1, { }); chain(2, false, 'gorge'); }
       flag();
     });
     beat('Finish', () => {
       // (each version leans on one thing, drawn from a shuffle bag: lianas over the stream, the spores and the dark, or the deep)
       const kits: Array<Array<() => void>> = [
-        [() => chain(3, false, 'gorge'), () => { chain(2, false, 'gorge'); busy(1); }, () => highRoadOver(), () => { chain(2, false, 'gorge'); busy(1); }],
+        [() => chain(2, false, 'gorge'), () => { chain(2, false, 'gorge'); busy(1); }, () => highRoadOver(), () => { chain(2, false, 'gorge'); busy(1); }],
         [() => { sporeRest(R.r(440, 500)); sporeGap(true); }, () => glowDark(R.r(1100, 1250), 1, { rocks: true }), () => { sporeGap(true); sporeGap(); }, () => glowDark(R.r(1000, 1150), 2, { rocks: true })],
         [() => deepRun(4, 2), () => w3Stones(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]), () => deepRun(3, 1), () => { busy(1); stumps(); }],
       ];
@@ -2705,7 +2705,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flag();
       if (v.develop === 0) bushRow(3, [620, 720], ['grotto'], [5, 6.2], true);
       else if (v.develop === 1) { const x0 = x; glowDark(R.r(1300, 1450), 1, { ferns: true, rocks: true }); ZONES.push({ x0, x1: x, calm: [6, 7.2] }); expert += 3; }
-      else { chain(3, false, 'gorge'); bushRow(3, [560, 660], ['grotto'], [5.4, 6.4], true); }
+      else { chain(2, false, 'gorge'); bushRow(3, [560, 660], ['grotto'], [5.4, 6.4], true); }
       flag();
     });
     beat('Twist: the eyes in the dark', () => {
@@ -2736,7 +2736,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const kits: Array<Array<() => void>> = [
         [ferns, ferns, () => { busy(1); ferns(); }],
         [dark, () => { glowDark(R.r(1200, 1350), 1, { rocks: true }); deepRun(2, 1, false); }, dark],
-        [() => { chain(2, false, 'gorge'); climbTree(true); }, () => chain(3, false, 'gorge'), () => { climbTree(true); chain(2, false, 'gorge'); }],
+        [() => { chain(2, false, 'gorge'); climbTree(true); }, () => chain(2, false, 'gorge'), () => { climbTree(true); chain(2, false, 'gorge'); }],
       ];
       w3Finish(EXPERT_SECONDS + 34, kits[v.finish], 1);
       homeRun();
@@ -2773,24 +2773,24 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     beat('Develop: on the shelves', () => {
       prowlShelves(3, G - 130);
       busy(1);
-      if (v.develop === 0) { stumps(); prowlShelves(4, G - 115, true); }
+      if (v.develop === 0) { stumps(); prowlShelves(4, G - 150); }
       else if (v.develop === 1) { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot']); }
-      else { deepRun(3, 1); prowlShelves(3, G - 115, true); }
+      else { deepRun(3, 1); prowlShelves(3, G - 150); }
       flag();
     });
     beat('Twist: the big one', () => {
       hint(x + 40, 'A jaguar! Three hits, and jump when it crouches to pounce');
       prowlFloor(['jaguar']);
       if (v.twist === 0) { sporeGap(true); prowlFloor(['ocelot', 'jaguar']); }
-      else if (v.twist === 1) { busy(1); prowlShelves(3, G - 110, true); }
+      else if (v.twist === 1) { busy(1); prowlShelves(3, G - 140); }
       else { sporeRest(R.r(440, 500)); sporeGap(); prowlFloor(['ocelot', 'jaguar']); }
       flag();
     });
     beat('Finish', () => {
       const kits: Array<Array<() => void>> = [
-        [() => prowlShelves(R.i(3, 4), G - Math.round(R.r(105, 120)), true), () => prowlShelves(3, G - 110, true), () => { busy(1); prowlFloor(['ocelot', 'ocelot']); }],
+        [() => prowlShelves(R.i(3, 4), G - Math.round(R.r(105, 120)), true), () => prowlShelves(3, G - 140), () => { busy(1); prowlFloor(['ocelot', 'ocelot']); }],
         [() => { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot']); }, () => { glowDark(R.r(1000, 1100), 0, { rocks: true }); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot', 'ocelot']); }, () => { sporeRest(R.r(440, 500)); glowDark(R.r(1000, 1100), 1, { rocks: true }); }],
-        [() => { chain(3, false, 'gorge'); prowlFloor(['ocelot', 'ocelot']); }, () => { chain(4, false, 'gorge'); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot']); }, () => { chain(3, false, 'gorge'); chain(2, false, 'gorge'); }],
+        [() => { chain(2, false, 'gorge'); prowlFloor(['ocelot', 'ocelot']); }, () => { chain(2, false, 'gorge'); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot']); }, () => { chain(2, false, 'gorge'); chain(2, false, 'gorge'); }],
       ];
       w3Finish(EXPERT_SECONDS + 6, kits[v.finish], 2, () => placed() < Math.ceil(PROWLER_GOAL_33 * 1.5));
       homeRun();
@@ -2968,7 +2968,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     beat('Develop: a row of them', () => {
       if (v.develop === 0) vineRow(4, [3.6, 4.6], [340, 420]);
       else if (v.develop === 1) { deepRun(3, 1); vineRow(3, [3.6, 4.6], [340, 420], true, true); }
-      else { chain(3, false, 'gorge'); vineRow(3, [3.6, 4.6], [340, 420]); }
+      else { chain(2, false, 'gorge'); vineRow(3, [3.6, 4.6], [340, 420]); }
       flag();
       // the keepsake: the medal, in a Hush Fern on a quiet stretch
       const keep = findForStage(config.worldIndex, config.miniIndex);
@@ -2985,7 +2985,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flag();
       if (v.develop === 0) vineRow(4, [3.6, 4.4], [360, 430], true);
       else if (v.develop === 1) vineRow(3, [3.6, 4.4], [360, 430], true, true);
-      else chain(3, false, 'gorge');
+      else chain(2, false, 'gorge');
       flag();
     });
     beat('Twist: vines in the dark', () => {
@@ -3009,7 +3009,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const kits: Array<Array<() => void>> = [
         [() => vineRow(R.i(3, 4), [3.4, 4.2], [340, 420], true, true), () => busy(2), () => vineRow(4, [3.2, 4], [330, 400])],
         [() => deepRun(4, 1), () => { sporeGap(true); vineRow(2, [3.4, 4.2], [340, 420], true, true); }, () => deepRun(5, 2)],
-        [() => chain(3, false, 'gorge'), () => { chain(2, false, 'gorge'); vineRow(2, [3.4, 4.2], [340, 420]); }, () => chain(4, false, 'gorge')],
+        [() => chain(2, false, 'gorge'), () => { chain(2, false, 'gorge'); vineRow(2, [3.4, 4.2], [340, 420]); }, () => chain(2, false, 'gorge')],
       ];
       w3Finish(EXPERT_SECONDS + 18, kits[v.finish], 2);
       homeRun();
@@ -3066,7 +3066,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const kits: Array<Array<() => void>> = [
         [() => fernPatch(R.i(3, 4), true), () => { busy(1); lowStumps(); run(R.r(110, 140)); busy(1); }, () => fernPatch(4, true), () => highRoadOver()],
         [() => { const x0 = x; deepRun(4, 1); onHigh(x0); }, () => fernPatch(3, true), () => { const x0 = x; deepRun(5, 2); onHigh(x0); }],
-        [() => chain(3, false, 'gorge'), () => fernPatch(3, true), () => { chain(4, false, 'gorge'); fernPatch(3, true); }],
+        [() => chain(2, false, 'gorge'), () => fernPatch(3, true), () => { chain(2, false, 'gorge'); fernPatch(3, true); }],
       ];
       w3Finish(EXPERT_SECONDS + 4, kits[v.finish], 2, () => thingsPlaced < GRANDMA_GOAL_36 + 3);
       homeRun();
@@ -3224,7 +3224,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       watchedFerns(2, [6.5, 7.5]);
       flag();
       if (v.develop === 0) { sporeRest(R.r(520, 600)); watchedFerns(3, [5.8, 6.8]); }
-      else if (v.develop === 1) { chain(3, false, 'gorge'); climbTree(true); chain(2, false, 'gorge'); }
+      else if (v.develop === 1) { chain(2, false, 'gorge'); climbTree(true); chain(2, false, 'gorge'); }
       else { deepRun(3, 1); fernPatch(3, true); deepRun(3, 1); }
       flag();
     });
@@ -3248,7 +3248,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       whichFern();
       flag();
       const kits: Array<Array<() => void>> = [
-        [() => { chain(3, false, 'gorge'); climbTree(true); }, () => { chain(2, false, 'gorge'); vineFerns(2, [3.8, 4.6], [380, 450]); }, () => { climbTree(true); chain(2, false, 'gorge'); fernPatch(3, true); }],
+        [() => { chain(2, false, 'gorge'); climbTree(true); }, () => { chain(2, false, 'gorge'); vineFerns(2, [3.8, 4.6], [380, 450]); }, () => { climbTree(true); chain(2, false, 'gorge'); fernPatch(3, true); }],
         [() => watchedFerns(R.i(2, 3), [5.2, 6.2]), () => bushRow(3, [560, 660], ['grotto'], [4.6, 5.6], true), () => watchedFerns(3, [5, 6])],
         [() => { deepRun(4, 1); fernPatch(3, true); }, () => deepRun(5, 2), () => { deepRun(3, 1); w3Stones([50, 100, 70], [0.5, 0.6]); }],
       ];
@@ -3438,7 +3438,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Finish', () => {
       const kits: Array<Array<() => void>> = [
-        [() => { prowlTree(); prowlTree(); }, () => { chain(3, false, 'gorge'); prowlTree(); }, () => { prowlTree(); prowlFloor(['ocelot']); }],
+        [() => { prowlTree(); prowlTree(); }, () => { chain(2, false, 'gorge'); prowlTree(); }, () => { prowlTree(); prowlFloor(['ocelot']); }],
         [() => { deepRun(4, 1); prowlFloor(['ocelot', 'ocelot']); }, () => { prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot', 'ocelot']); deepRun(3, 1); }, () => deepRun(5, 2)],
         [() => { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot', 'ocelot']); }, () => { vineRow(3, [4, 4.8], [360, 430], true, true); prowlFloor(['ocelot']); }, () => { sporeRest(R.r(440, 500)); sporeGap(true); prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot']); }],
       ];
