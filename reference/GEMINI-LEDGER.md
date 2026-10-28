@@ -30,10 +30,10 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 
 | # | Recommendation | Status | Where / what is next |
 |---|---|---|---|
-| C1 | Shuffle bags instead of plain random for pieces and props | built (gen2/variety.ts), not yet used by stages | `ShuffleBag`, `pickWeighted` (2026-10-28). Next: W1-5 section variants and decor sets drawn from a bag per world; Gen chunk picks from a bag. |
+| C1 | Shuffle bags instead of plain random for pieces and props | built (gen2/variety.ts), not yet used by stages | `ShuffleBag`, `pickWeighted` (2026-10-28). Next: W1-5 section variants and decor sets drawn from a bag per world; Gen chunk picks from a bag. World 4 (2026-10-28, `w4Sections.ts` W4Roll.bag): each 4-2, 4-4, 4-5, 4-8, 4-9 finish draws its pieces from a bag weighted by the roll's theme. |
 | C2 | Poisson spacing: a minimum gap between same-kind pieces, a maximum gap with nothing (no barren stretches) | PART; spacing built (gen2/variety.ts), not yet used by stages | the maximum gap is enforced as dead time. `poissonPlace` (2026-10-28) does both gaps at placement time. Next: add the minimum gap to the validator. |
-| C3 | Sockets inside rooms with 3 variations each (3^4 = 81 per room) | NOT | Next: the main tool for W1-5 variety. |
-| C4 | Cooldown: no chunk twice within 2 levels; no sub-block twice in a world | built (gen2/variety.ts), not yet used by stages | `CooldownQueue` (last 14 ids), `WorldOnce` (2026-10-28). Next: the gen2 pipeline picks chunks and decor sets through them. |
+| C3 | Sockets inside rooms with 3 variations each (3^4 = 81 per room) | NOT | Next: the main tool for W1-5 variety. World 4 (2026-10-28): two or three versions of the Develop/Twist sections per stage, picked by the roll (`w4Sections.ts`); 200 rolls 74-95% alike after (was 89-99.8%), 4-7 still 99.8% (see STAGE-RULES §6). |
+| C4 | Cooldown: no chunk twice within 2 levels; no sub-block twice in a world | built (gen2/variety.ts), not yet used by stages | `CooldownQueue` (last 14 ids), `WorldOnce` (2026-10-28). Next: the gen2 pipeline picks chunks and decor sets through them. World 4 (2026-10-28): `W4Roll.pick` keeps a roll's neighbouring sections off the version id it just used. |
 | C5 | Expressive range analysis: 200-1,000 rolls, metric heatmaps, diversity D_sim >= 0.35 | NOT -> being built | `tools/inspect/era.ts` (helper, 2026-10-28). Measured by hand on 3 rolls: 0.87-1.00 alike. |
 | C6 | Weighted action strings (W 0.2, h 0.5, J 1, V 2, C 2.2, P 2.8, S 3) | IN | `tools/inspect/beats.ts` weights. |
 | C7 | 3-gram cosine across stages (reject > 0.78 adjacent) and 18-beat sliding windows (reject < 0.28) | IN | inspector `similar`, `windows` (window threshold set from our data). |

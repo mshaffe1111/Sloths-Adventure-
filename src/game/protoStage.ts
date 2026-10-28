@@ -3493,7 +3493,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     type Piece42 = 'drop' | 'gust' | 'pillars' | 'high' | 'stones' | 'gustLeaf';
     const theme = roll.theme('finish', ['leaf', 'gusts', 'ground'] as const);
     const counts: Record<typeof theme, Record<Piece42, number>> = {
-      leaf: { drop: 2, gust: 0, pillars: 1, high: 0, stones: 0, gustLeaf: 2 },
+      // (the leaf's climbs are slow: two of them to a bag was 28-39 quiet seconds a finish, so the leaf shares it with pillars and gusts)
+      leaf: { drop: 1, gust: 1, pillars: 2, high: 0, stones: 0, gustLeaf: 1 },
       gusts: { drop: 0, gust: 2, pillars: 0, high: 1, stones: 2, gustLeaf: 0 },
       ground: { drop: 1, gust: 1, pillars: 2, high: 2, stones: 0, gustLeaf: 0 },
     };
