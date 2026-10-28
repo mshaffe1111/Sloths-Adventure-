@@ -155,11 +155,12 @@ Round 1 = items 1-7 (~$30-32 of the $40 cap). Round 2 = items 10-15 in that orde
 | 6ae264773fb22a235dd496b9 | boss batch 2 starts | rtx-pro-6000 | 0.4 | 0.02 |
 | 6ae264cc41e90535df77ca2e | water signs + side-on prop retries, 12 stills | rtx-pro-6000 | 5.1 | 0.23 |
 | 6ae264b441e90535df77ca10 | moving lair plates, 6 clips | rtx-pro-6000 | 21.5 | 0.98 |
-| 6ae2647f3fb22a235dd496c8 | boss batch 2, 16 clips | rtx-pro-6000 | running | |
-| 6ae264813fb22a235dd496cd | boss batch 2, 16 clips | rtx-pro-6000 | running | |
-| 6ae2648341e90535df77c9bb | boss batch 2, 16 clips | rtx-pro-6000 | running | |
+| 6ae2647f3fb22a235dd496c8 | boss batch 2, 16 clips | rtx-pro-6000 | 66.9 | 3.07 |
+| 6ae264813fb22a235dd496cd | boss batch 2, 16 clips | rtx-pro-6000 | 66.5 | 3.05 |
+| 6ae2648341e90535df77c9bb | boss batch 2, 16 clips | rtx-pro-6000 | 66.3 | 3.04 |
+| 6ae2754341e90535df77d9a7 | previews of every clip for the gallery | cpu-upgrade | ~10 | ~0.01 |
 
 Painted logo: cancelled by Matt before it ran, $0.
 
-Finished jobs total: **$45.49** (round 1 enemies + Flicker $35.6, the title pair $5.0 inside the same cap, round 2 so far $4.9).
-Boss batch 2 is expected at ~$10.5, for ~$56 in all; the cap is $65.
+Total: **$54.65** (round 1 enemies + Flicker $35.6; the title pair $5.0, inside the same cap; round 2 $14.1).
+Under the $65 cap; new jobs stop at $60 (coordinator), the rest kept for re-runs after Matt's gallery review.

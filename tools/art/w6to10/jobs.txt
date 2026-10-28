@@ -43,3 +43,4 @@ w6to10-starts2       6ae264773fb22a235dd496b9  rtx-pro-6000 21:09- starts for bo
 w6to10-bosses2-0/1/2 6ae2647f3fb22a235dd496c8 / 6ae264813fb22a235dd496cd / 6ae2648341e90535df77c9bb  rtx-pro-6000 21:09- boss batch 2: 4 more moves x 6 guardians x 2 seeds = 48 clips
 w6to10-plates        6ae264b441e90535df77ca10  rtx-pro-6000 21:10- moving lair plates, 6 clips, no motion model
 w6to10-stills2       6ae264cc41e90535df77ca2e  rtx-pro-6000 21:10- water's-edge signs (W5 + jungle, 3 takes each) and side-on prop retries
+w6to10-preview-all   6ae2754341e90535df77d9a7  cpu-upgrade  22:20- previews of every clip for the gallery
