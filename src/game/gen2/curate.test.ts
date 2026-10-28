@@ -10,8 +10,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import '../headlessDom.ts';
-import { validateStage } from '../levelCheck.ts';
-import { buildGen2Stage } from './pipeline.ts';
+import { buildGen2Stage, checkStage } from './pipeline.ts';
 import { closingSections, curateStage, distance, failsOf, pickSpread, plainReason, renderReport, renderTable, resolveStage, sharedWith, toEntry, type RollMeasure, type SideMeasure } from '../../../tools/gen2/curate.ts';
 
 const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, ...o });
@@ -53,7 +52,10 @@ test('a small run on the toy world ships rolls that pass levelCheck on both sett
   assert.ok(r.picks.length >= 2, `${r.picks.length} picked; dropped ${JSON.stringify(r.dropped)}`);
   for (const m of r.picks) {
     assert.ok(m.bots && m.band, 'the bots ran on every pick');
-    for (const difficulty of ['normal', 'easy'] as const) assert.deepEqual(validateStage(buildGen2Stage({ config: stage.config, kit: stage.kit, seed: m.seed, difficulty })).errors, []);
+    for (const difficulty of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: stage.config, kit: stage.kit, seed: m.seed, difficulty });
+      assert.deepEqual(checkStage(st, st.gen2.budget).errors, []);
+    }
   }
   const entry = toEntry(r, { waive: ['quiet', 'dead'], rolls: 6 }, '2026-10-28');
   assert.deepEqual(entry.waived, ['quiet', 'dead']);

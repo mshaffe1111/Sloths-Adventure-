@@ -28,10 +28,9 @@ import '../../src/game/headlessDom.ts';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { buildGen2Stage } from '../../src/game/gen2/pipeline.ts';
+import { buildGen2Stage, checkStage } from '../../src/game/gen2/pipeline.ts';
 import type { Gen2Stage, WorldKit } from '../../src/game/gen2/types.ts';
 import type { Gen2StageSeeds, Gen2Seed } from '../../src/game/gen2/seeds.ts';
-import { validateStage } from '../../src/game/levelCheck.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 import { actionTokens, cosine, deadTime, EASY_GAP, NORMAL_GAP, profile, tokenString, type Dead } from '../inspect/analyze.ts';
 import { stageScore } from '../inspect/bands.ts';
@@ -129,7 +128,8 @@ function silkLight(st: Stage): ((d: Dead) => number) | undefined {
 
 function measureSide(st: Gen2Stage, type: string, setting: Setting) {
   const s = st as unknown as Stage;
-  const res = validateStage(st);
+  // (as this difficulty plays it: an Easy purge or gauntlet is held to its play-time goal, pipeline.ts checkStage)
+  const res = checkStage(st, st.gen2.budget);
   const R = pickRoute(type, s);
   const { br, samples } = R.used;
   const dn = deadTime(br.beats, br.total, setting === 'easy' ? EASY_GAP : NORMAL_GAP, samples, silkLight(s));

@@ -1,14 +1,13 @@
 /**
  * The guard on the curated seeds (DESIGN.md B8): every seed a stage ships still builds, on Normal and on Easy, with the entry's `recent`,
- * into a stage that passes levelCheck (puzzleCheck through it), on the layout the curation checked. All of the first stage's seeds,
- * two of every other's (spread through its list), so the suite stays quick. The same guard runs on the toy world's table
+ * into a stage that passes levelCheck (puzzleCheck through it; an Easy purge or gauntlet at its play-time goal, pipeline.ts
+ * checkStage), on the layout the curation checked. All of the first stage's seeds, two of every other's (spread through its list), so the suite stays quick. The same guard runs on the toy world's table
  * (tools/gen2/toySeeds.ts), the curation tool's own proof, so it holds before World 5's real sections ship.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import '../headlessDom.ts';
-import { validateStage } from '../levelCheck.ts';
-import { buildGen2Stage } from './pipeline.ts';
+import { buildGen2Stage, checkStage } from './pipeline.ts';
 import { GEN2_SEEDS, type Gen2StageSeeds } from './seeds.ts';
 import { resolveStage } from '../../../tools/gen2/curate.ts';
 import { TOY_SEEDS } from '../../../tools/gen2/toySeeds.ts';
@@ -27,7 +26,7 @@ async function guard(table: Record<string, Gen2StageSeeds>, what: string) {
       const s = e.seeds[i];
       for (const difficulty of ['normal', 'easy'] as const) {
         const st = buildGen2Stage({ config: stage.config, kit: stage.kit, seed: s.seed, difficulty, recent: e.recent });
-        assert.deepEqual(validateStage(st).errors, [], `${what} ${key} seed ${s.seed} (${difficulty})`);
+        assert.deepEqual(checkStage(st, st.gen2.budget).errors, [], `${what} ${key} seed ${s.seed} (${difficulty})`);
         if (difficulty === 'normal') {
           assert.equal(st.gen2.seed, s.layoutSeed, `${what} ${key} seed ${s.seed}: it built from another roll than the one checked`);
           assert.equal(st.gen2.plan.map((p) => `${p.template}${p.mirrored ? '~' : ''}`).join(' '), s.sections, `${what} ${key} seed ${s.seed}: the sections changed since curation (re-run tools/gen2/curate.ts)`);
