@@ -365,43 +365,80 @@ export interface SwingVine {
   x: number;
   topY: number;
   bottomY: number;
+  /** this vine's own swing (the self-swing, below): radians either side; 0 hangs still. Default `TIMED.amp` */
+  swingAmp?: number;
+  /** seconds for one swing there and back. Default `TIMED.period` (Normal 1.9, Easy 2.2) */
+  swingPeriod?: number;
+  /**
+   * where in its swing it is at clock 0, as a share of a period (0..1). Default 0: every vine of a stage swings together, in step. Measured
+   * on every chain of lianas in Worlds 1-10 (2026-10-28): in step, the next vine is still out ahead as he leaps and swings back to meet him
+   * (the shortest chain's catch window 14 frames, the old model's 6); half a swing apart, it swings away from him (0 frames on 12 chains).
+   */
+  swingPhase?: number;
 }
 
 export interface SwingState {
   angle: number;
   omega: number;
   len: number;
-}
-
-/** Can a body at (x, y) grab this liana? */
-export function canGrabSwing(x: number, y: number, v: SwingVine): boolean {
-  return Math.abs(x - v.x) < TIMED.grabX && y >= v.topY - 15 && y <= v.bottomY + 30;
-}
-
-/** Start swinging from the body's actual position and velocity (no teleport). */
-export function swingGrab(b: AirBody, v: SwingVine): SwingState {
-  const dx = b.x - v.x;
-  const dy = Math.max(b.y - v.topY, SWING.minLen * 0.6);
-  const len = Math.max(SWING.minLen, Math.min(v.bottomY - v.topY - 10, Math.hypot(dx, dy)));
-  const angle = Math.max(-SWING.maxAngle, Math.min(SWING.maxAngle, Math.atan2(dx, dy)));
-  const omega = (b.vx * Math.cos(angle) - b.vy * Math.sin(angle)) / len;
-  return { angle, omega, len };
+  /**
+   * the vine's swing clock (seconds) at this state. A state made without one (a test's or a check's "he is here, moving this way")
+   * takes the moment of the vine's swing that matches it on its first step (swingClockAt).
+   */
+  t?: number;
 }
 
 /**
- * The timed swing (Matt, 2026-10-24): a vine swings by itself, at the same height and the same rhythm every time, and the only thing
- * the player decides is WHEN to let go. Holding a direction no longer pumps it and sliding up no longer shortens it (together they let
- * Pokey whip himself almost to the top of the screen). `TIMED` holds the numbers; Easy (difficulty.ts) widens the sweet spot and slows
- * the rhythm a little. Pure and shared by the engine, the stage builder and the reachability checks, so they always agree.
+ * Can a body at (x, y) grab this liana? At clock `t` the vine hangs at its swing's angle there, and he catches it within `TIMED.grabX` of
+ * the line it makes; with no clock it is the line it swings through hanging straight down (the checks' "a jump timed for the vine":
+ * a ledge jump can always wait for the vine to come past).
+ */
+export function canGrabSwing(x: number, y: number, v: SwingVine, t?: number): boolean {
+  const a = t === undefined ? 0 : vineAngle(v, t);
+  if (a === 0) return Math.abs(x - v.x) < TIMED.grabX && y >= v.topY - 15 && y <= v.bottomY + 30;
+  const dx = x - v.x;
+  const dy = y - v.topY;
+  const along = dx * Math.sin(a) + dy * Math.cos(a);
+  const across = dx * Math.cos(a) - dy * Math.sin(a);
+  return Math.abs(across) < TIMED.grabX && along >= -15 && along <= v.bottomY - v.topY + 30;
+}
+
+/**
+ * Catch a liana. With the vine's clock `t` (the engine's), he takes hold of it where it is: the vine is never pulled about by the catch,
+ * his hands go onto it at his height. With no clock (the checks, the tests), the vine is taken to be where he meets it, moving the way he
+ * moves (a jump timed for the vine).
+ */
+export function swingGrab(b: AirBody, v: SwingVine, t?: number): SwingState {
+  const dx = b.x - v.x;
+  const dy = Math.max(b.y - v.topY, SWING.minLen * 0.6);
+  const most = Math.max(SWING.minLen, v.bottomY - v.topY - 10);
+  if (t !== undefined) {
+    const angle = vineAngle(v, t);
+    const along = dx * Math.sin(angle) + dy * Math.cos(angle);
+    return { angle, omega: vineOmega(v, t), len: Math.max(SWING.minLen, Math.min(most, along)), t };
+  }
+  const len = Math.max(SWING.minLen, Math.min(most, Math.hypot(dx, dy)));
+  const amp = vineAmp(v);
+  const angle = Math.max(-amp, Math.min(amp, Math.atan2(dx, dy)));
+  const omega = (b.vx * Math.cos(angle) - b.vy * Math.sin(angle)) / len;
+  const at = swingClockAt(v, angle, omega);
+  return { angle: vineAngle(v, at), omega: vineOmega(v, at), len, t: at };
+}
+
+/**
+ * The self-swing (Matt, 2026-10-28, a hotfix after an iPhone tester's "the vines swing wildly"; Donkey Kong Country's ropes): every
+ * swinging vine swings on its own, all the time, with or without him on it: a fixed swing (`swingAmp` either side, one `swingPeriod`
+ * there and back) worked out from the game's clock, never pushed by forces, so no frame rate, stall or thumb can change it. On it, up and
+ * down climb (his grip moves along the vine, the swing does not change), left and right only turn him the way he will leap, and the one
+ * choice is when to let go: he leaves with the vine's speed at his grip (the leap, timedLaunch).
+ * `TIMED` holds the default numbers; Easy (difficulty.ts) widens the sweet spot and slows the rhythm a little. Pure and shared by the
+ * engine, the stage builders and the reach checks, so they always agree.
  */
 export const TIMED = {
   /** seconds for one full swing there and back, whatever the vine's length */
   period: 1.9,
   /** how far the swing goes either side of hanging straight down (radians, about 46 degrees) */
   amp: 0.8,
-  /** how fast a grab that is too small or too big settles to `amp` (rad/s^2 of push, and the share of speed taken off per second) */
-  settle: 3.2,
-  trim: 2.5,
   /** the sweet spot: moving toward the next vine, between these angles past straight down (radians; negative = still behind it) */
   sweetFrom: -0.12,
   sweetTo: 0.72,
@@ -417,6 +454,28 @@ export function setTimedSwing(easy: boolean) {
   TIMED.grabX = easy ? 76 : 60;
 }
 
+export const vineAmp = (v: SwingVine): number => v.swingAmp ?? TIMED.amp;
+export const vinePeriod = (v: SwingVine): number => v.swingPeriod ?? TIMED.period;
+/** the vine's angle (radians, + = its foot out to the right) at swing clock `t` */
+export function vineAngle(v: SwingVine, t: number): number {
+  const a = vineAmp(v);
+  return a === 0 ? 0 : a * Math.sin(2 * Math.PI * (t / vinePeriod(v) + (v.swingPhase ?? 0)));
+}
+/** how fast it turns (rad/s) at swing clock `t` */
+export function vineOmega(v: SwingVine, t: number): number {
+  const T = vinePeriod(v);
+  return vineAmp(v) * ((2 * Math.PI) / T) * Math.cos(2 * Math.PI * (t / T + (v.swingPhase ?? 0)));
+}
+/** the swing clock (0 .. one period) at which the vine is at `angle`, turning the way `omega` turns (+ when it is still) */
+export function swingClockAt(v: SwingVine, angle: number, omega: number): number {
+  const a = vineAmp(v);
+  const T = vinePeriod(v);
+  const s = a === 0 ? 0 : Math.asin(Math.max(-1, Math.min(1, angle / a)));
+  const ph = omega >= 0 ? s : Math.PI - s;
+  const u = ph / (2 * Math.PI) - (v.swingPhase ?? 0);
+  return (((u % 1) + 1) % 1) * T;
+}
+
 /** how big a swing is (radians either side) from where it is and how fast it moves, on the timed rhythm */
 export function timedAmp(angle: number, omega: number): number {
   const w = (2 * Math.PI) / TIMED.period;
@@ -425,22 +484,16 @@ export function timedAmp(angle: number, omega: number): number {
 }
 
 /**
- * One step of a swing. `steer` is only a hint for which way to start a swing from a dead hang (the way he faces); `climb` is ignored:
- * the vine keeps the length it was grabbed at.
+ * One step of a swing: the vine's clock moves on `dt` and the vine is where its self-swing puts it then (nothing he does changes it).
+ * `steer` is not used (left and right only turn him); `climb` moves his grip along it: up (-1) shortens his hold, down (+1) lets him
+ * slide lower (straight up or down on a vine always climbs it, a stage rule).
  */
 export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0 | 1, climb: -1 | 0 | 1 = 0) {
-  const w = (2 * Math.PI) / TIMED.period;
-  s.omega += -w * w * Math.sin(s.angle) * dt;
-  const amp = timedAmp(s.angle, s.omega);
-  if (amp < TIMED.amp - 0.01) {
-    const dir = Math.abs(s.omega) > 0.05 ? Math.sign(s.omega) : steer || 1;
-    s.omega += dir * TIMED.settle * dt;
-  } else if (amp > TIMED.amp + 0.02) {
-    s.omega *= 1 - Math.min(0.5, TIMED.trim * dt);
-  }
-  s.angle = Math.max(-1.05, Math.min(1.05, s.angle + s.omega * dt));
-  // straight up or down on a vine always climbs it (a stage rule): up shortens his hold, down lets him slide lower. The timed swing
-  // keeps its rhythm at any length, so climbing never spoils the sweet spot (lost in the timed swing of 2026-10-24, restored 10-25)
+  void steer;
+  if (s.t === undefined) s.t = swingClockAt(v, s.angle, s.omega);
+  s.t += dt;
+  s.angle = vineAngle(v, s.t);
+  s.omega = vineOmega(v, s.t);
   s.len += climb * SWING.climb * dt;
   s.len = Math.max(SWING.minLen, Math.min(v.bottomY - v.topY, s.len));
   const tang = s.omega * s.len;

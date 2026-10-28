@@ -1,6 +1,11 @@
 /**
  * protoCheck — the physics checks the planned-stage builder (protoStage.ts) runs on every piece it rolls, using the same physics as the
  * engine (physics.ts). A piece whose numbers fail is rolled again, so a stage never reaches a player with a swing that cannot be made.
+ *
+ * The vines swing on their own (physics.ts, the self-swing), all on one clock. A jump from a ledge can wait for the vine, so it is
+ * checked against the line the vine swings through hanging straight down (canGrabSwing with no clock); a leap from one vine to the next
+ * cannot choose the next vine's moment, so it is checked against where the next vine's swing has it when he gets there (the swing's
+ * clock carried through the flight).
  */
 import { PHYS, airStep, canGrabSwing, inSweetSpot, swingGrab, swingStep, timedLaunch, type AirBody } from './physics.ts';
 import type { Platform, Vine } from './types.ts';
@@ -73,7 +78,7 @@ export function catchWindow(A: Vine, B: Vine, wind = 0): number {
         airStep(c, DT, 1);
         c.x += wind * DT;
         t += DT;
-        if (canGrabSwing(c.x, c.y, B)) hit = true;
+        if (canGrabSwing(c.x, c.y, B, s.t! + t)) hit = true;
       }
       if (hit) break;
     }
@@ -90,10 +95,10 @@ function arriveFrom(A: Vine, B: Vine, wind = 0) {
     if (Math.sin(s.angle) <= 0.2) continue;
     const l = timedLaunch(s, 1);
     const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
-    for (let i = 0; i < 60; i++) {
+    for (let i = 1; i <= 60; i++) {
       airStep(c, DT, 1);
       c.x += wind * DT;
-      if (canGrabSwing(c.x, c.y, B)) return swingGrab(c, B);
+      if (canGrabSwing(c.x, c.y, B, s.t! + i * DT)) return swingGrab(c, B, s.t! + i * DT);
     }
   }
   return null;
@@ -146,7 +151,7 @@ export function earlyCatch(A: Vine, B: Vine, at = 0.5, wind = 0): boolean {
         airStep(c, DT, 1);
         c.x += wind * DT;
         t += DT;
-        if (canGrabSwing(c.x, c.y, B)) hit = true;
+        if (canGrabSwing(c.x, c.y, B, s.t! + t)) hit = true;
       }
       if (!hit) return false;
     }
@@ -168,10 +173,10 @@ export function leapBand(A: Vine, B: Vine, cx: number, reach: number): [number, 
     const l = timedLaunch(s, 1);
     const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
     let a = Infinity, b = -Infinity, hit = false;
-    for (let i = 0; i < 60 && !hit; i++) {
+    for (let i = 1; i <= 60 && !hit; i++) {
       airStep(c, DT, 1);
       if (Math.abs(c.x - cx) < reach) { a = Math.min(a, c.y); b = Math.max(b, c.y); }
-      if (canGrabSwing(c.x, c.y, B)) hit = true;
+      if (canGrabSwing(c.x, c.y, B, s.t! + i * DT)) hit = true;
     }
     if (hit && a < Infinity) { lo = Math.min(lo, a); hi = Math.max(hi, b); }
   }

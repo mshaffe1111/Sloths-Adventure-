@@ -1072,7 +1072,8 @@ export class FirstTimerRun {
       this.climbStill = 0;
       return this.decide(fdir, 'single', true, side(fdir));
     }
-    // on a liana: pump the way on, let go on the swing forward
+    // on a liana: the vine swings itself (physics.ts, the self-swing), so he only holds the way on (that just turns him) and lets go as
+    // it swings forward: a moment to pick in each swing, never a pump
     if (p.isVineSwinging) {
       this.swingT += DT;
       const a = p.swingAngle ?? 0, om = p.swingAngularVelocity ?? 0;

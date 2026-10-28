@@ -352,7 +352,12 @@ export interface Vine {
   vineType?: 'tree_climb' | 'swing_liana';
   treeId?: number;
   isSwingingVine?: boolean;
+  /** where its swing has it now (radians; the engine sets it every frame from the vines' clock: physics.ts vineAngle) */
   swingAngle?: number;
+  /** its own swing (physics.ts, the self-swing): radians either side (0 hangs still), seconds there and back, share of a period at clock 0 */
+  swingAmp?: number;
+  swingPeriod?: number;
+  swingPhase?: number;
   /** a climbing vine hanging down a cliff (4-8's knotted vines), not a tree's trunk: its stage draws it (w4Play.ts), not the kapok art */
   rope?: boolean;
   /** a silk line in World 5 (w5Kit.ts silkLine): it swings like a liana and is drawn as shining silk (terrain.ts) */

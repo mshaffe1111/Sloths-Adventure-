@@ -67,10 +67,21 @@ function swingFor(r: RealPlay, v: Vine, mode: Mode, len: number, secs: number, t
   r.swing(v, { angle: 0, omega: 2.5, len });
   let oldRule = 0;
   for (let i = 0; i < Math.round(secs * 30); i++) {
+    const a0 = r.p.swingAngle ?? 0, l0 = r.p.swingLength ?? len;
     r.frame(hands(r, mode, toward));
     const p = r.p;
     if (!p.isVineSwinging) return { swinging: false, t: i / 30, oldRule };
-    if (r.platforms.some((q) => p.x >= q.x - 10 && p.x <= q.x + q.width + 10 && Math.abs(p.y - q.y) < 14 && p.vy >= 0)) oldRule++;
+    // (the old rule, on the swing's path through the frame as well as where the frame left him: the band it caught is a hair wide, and
+    // the swing's fixed rhythm, physics.ts, steps over it at 30 frames a second)
+    const a1 = p.swingAngle ?? 0, l1 = p.swingLength ?? len;
+    for (let k = 1; k <= 8; k++) {
+      const a = a0 + ((a1 - a0) * k) / 8, l = l0 + ((l1 - l0) * k) / 8;
+      const x = v.x + Math.sin(a) * l, y = v.topY + Math.cos(a) * l;
+      if (p.vy >= 0 && r.platforms.some((q) => x >= q.x - 10 && x <= q.x + q.width + 10 && Math.abs(y - q.y) < 14)) {
+        oldRule++;
+        break;
+      }
+    }
   }
   return { swinging: true, t: secs, oldRule };
 }
@@ -547,8 +558,9 @@ test('1-6, a fresh player: the swing lesson (Dot\'s lines) comes before his firs
         const what = `seed ${seed} ${view}: ${o.shown.map((s) => `${s.id}@${s.t.toFixed(1)}`).join(' ')}, grab ${o.grabAt.toFixed(1)}, let go ${o.letGoAt.toFixed(1)}`;
         assert.ok(o.letGoAt > 0, `${what}: never let go`);
         assert.ok(o.swing < o.letGoAt, what);
-        // (and within a second of the grab at the latest: pumping and letting go are needed from then on)
-        assert.ok(o.swing <= o.grabAt + 1, what);
+        // (and within a second of the grab at the latest, or of the first moment any lesson may come, 2.5 s in, engine.ts lessonTick:
+        // the vines swing on their own now, physics.ts, and the first one can swing out to meet a player who runs straight at it)
+        assert.ok(o.swing <= Math.max(o.grabAt, 2.5) + 1, what);
       }
     }
   }

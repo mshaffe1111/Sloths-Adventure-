@@ -87,10 +87,11 @@ export function wholeSwing(A: Vine, o: { to?: Vine; land?: Platform }, from = WH
       const l = timedLaunch(s, 1);
       const c: AirBody = { x: at.x, y: at.y, vx: l.vx, vy: l.vy };
       let ok = false;
-      for (let i = 0; i < 90 && !ok; i++) {
+      for (let i = 1; i <= 90 && !ok; i++) {
         const py = c.y;
         airStep(c, DT, 1);
-        if (o.to && canGrabSwing(c.x, c.y, o.to)) ok = true;
+        // (the next line swings on the same clock: where it is when he gets there, physics.ts the self-swing)
+        if (o.to && canGrabSwing(c.x, c.y, o.to, s.t! + i * DT)) ok = true;
         const L = o.land;
         if (L && c.vy >= 0 && py <= L.y + 14 && c.y >= L.y && c.x > L.x + 10 && c.x < L.x + L.width) ok = true;
         if (c.y > 900) break;

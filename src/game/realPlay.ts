@@ -14,7 +14,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { EXTRA_STAGES } from './extraStages.ts';
 import { KIT_STAGE_ID, kitStageConfig } from './kitStage.ts';
 import { setLayoutVariant } from './stageGenerator.ts';
-import { newAirDrive } from './physics.ts';
+import { newAirDrive, swingClockAt, vineAngle, vineOmega } from './physics.ts';
 import { newGlide } from './glide.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, InputState, LevelConfig, Platform, PlayerState, Rope, Vine } from './types.ts';
@@ -219,19 +219,36 @@ export class RealPlay {
     this.e.ropeId = r.id;
   }
 
-  /** swinging on a liana in a given swing state (as caught: see `swingState`) */
-  swing(v: Vine, s: { angle: number; omega: number; len: number }) {
+  /**
+   * swinging on a liana in a given swing state (as caught: see `swingState`). The vines swing on their own clock (physics.ts, the
+   * self-swing): a state with its clock (`t`) sets the clock back to it; one without sets the clock to the moment the vine is at that
+   * angle, turning that way (every vine of the stage moves with it, as in the game).
+   */
+  swing(v: Vine, s: { angle: number; omega: number; len: number; t?: number }) {
     this.settle();
     const p = this.p;
+    const t = s.t ?? swingClockAt(v, s.angle, s.omega);
+    this.e.vineClock = t;
+    const angle = vineAngle(v, t);
+    const omega = vineOmega(v, t);
+    for (const q of this.vines) if (q.vineType !== 'tree_climb') q.swingAngle = vineAngle(q, t);
     Object.assign(p, {
-      x: v.x + Math.sin(s.angle) * s.len, y: v.topY + Math.cos(s.angle) * s.len, grounded: false, isVineSwinging: true, swingVineId: v.id,
-      swingAngle: s.angle, swingAngularVelocity: s.omega, swingLength: s.len,
+      x: v.x + Math.sin(angle) * s.len, y: v.topY + Math.cos(angle) * s.len, grounded: false, isVineSwinging: true, swingVineId: v.id,
+      swingAngle: angle, swingAngularVelocity: omega, swingLength: s.len,
     });
   }
 
-  swingState(): { angle: number; omega: number; len: number } {
+  swingState(): { angle: number; omega: number; len: number; t: number } {
     const p = this.p;
-    return { angle: p.swingAngle ?? 0, omega: p.swingAngularVelocity ?? 0, len: p.swingLength ?? 100 };
+    return { angle: p.swingAngle ?? 0, omega: p.swingAngularVelocity ?? 0, len: p.swingLength ?? 100, t: this.e.vineClock };
+  }
+
+  /** the vines' swing clock (physics.ts vineAngle) */
+  get vineClock(): number {
+    return this.e.vineClock;
+  }
+  set vineClock(t: number) {
+    this.e.vineClock = t;
   }
 
   /** one frame with these controls */

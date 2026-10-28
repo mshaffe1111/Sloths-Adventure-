@@ -67,17 +67,19 @@ test('timed swing: whatever is held, the vine settles to the same height and rhy
   const v = { x: 0, topY: 0, bottomY: 420 };
   for (const hold of [1, -1] as const) {
     const s = { angle: 0, omega: 0, len: 380 };
-    let maxA = 0, minA = 0, flips = 0, prev = 0;
+    let maxA = 0, minA = 0, prev = 0;
+    const turns: number[] = [];
     for (let f = 0; f < 60 * 10; f++) {
       swingStep(s, v, 1 / 60, hold, 0);
       if (f > 60 * 5) {
         maxA = Math.max(maxA, s.angle); minA = Math.min(minA, s.angle);
-        if (prev && Math.sign(s.omega) !== prev) flips++;
+        if (prev && Math.sign(s.omega) !== prev) turns.push(f / 60);
       }
       prev = Math.sign(s.omega);
     }
     assert.ok(Math.abs(maxA - TIMED.amp) < 0.06 && Math.abs(-minA - TIMED.amp) < 0.06, `swings both ways to ${TIMED.amp}: ${minA.toFixed(2)}..${maxA.toFixed(2)}`);
-    const period = (2 * 5) / flips; // 5 s watched, two turns per swing
+    // (the time between the first and last turn watched: two turns a swing; a count of turns in a fixed 5 s depends on where it starts)
+    const period = (2 * (turns[turns.length - 1] - turns[0])) / (turns.length - 1);
     assert.ok(Math.abs(period - TIMED.period) < 0.15, `period ${period.toFixed(2)} s, wanted ${TIMED.period}`);
   }
 });
