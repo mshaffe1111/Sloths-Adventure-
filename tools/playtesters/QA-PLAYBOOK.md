@@ -115,3 +115,6 @@ Matt's weekly usage is tight. QA manages it:
   stone-plate rooms, one-jump soft pits, new Jungle Cards, Dot's punch tip fixed. Coders ask: random Worlds 1-4 stages, 2-3 plays
   each, once live. Known, skip: 4-2 Easy tight jump in some versions, 1-8 dull stretch, long World 2 walks, difficulty not yet
   climbing by world, World 4 repeats. Rule 6 look-alike notes on Worlds 1-4 are back on. Wait for Matt's go and scale.
+- PR #43 live (main 762ca32): carved title and menus, new Jungle Cards, variety round 2 for Worlds 1, 2, 4, the Dot punch-tip fix.
+  Coders ask: title and menus on real phones (frame rate, both orientations), W1/W2/W4 replays on different rolls. The v219
+  replay run (1-7, 2-6, 3-1, 4-5 x2) was on PR #42; recheck anything it finds on #43 before reporting.
