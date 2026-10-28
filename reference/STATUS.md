@@ -8,7 +8,9 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
-## On the work branch, not live yet (pushed for safe keeping; draft PR #41 tracks it, not a release)
+## Live since PR #41 (2026-10-28): Meeca's stage rebuilt, Easy jump gate, batch 2, W1-2 props, measuring tools, gen2 core
+
+## On the work branch before PR #41 (now live) (pushed for safe keeping; draft PR #41 tracks it, not a release)
 
 - QA batch 2 + Dot toned down + Gemini jump forgiveness in every world (merged 8ed2c53, fast gate 77/77; cloud full check running).
 - World 1-4 art placed (merged 2026-10-28, fast gate passed): every sheet cell used except World 1's nest doors and petal bundle,
@@ -61,7 +63,7 @@ World 4; Easy bursts 6-8 s with 2 s rests.
 
 ## Release
 
-- PR #41 marked ready 2026-10-28 on Matt's "push" (test link v216). Waiting on Matt's merge; then check the deploy and the APK. QA
+- PR #41 merged and LIVE 2026-10-28 18:37 (test link v216): site published (pages run success), APK built (run 40746802703). QA
   session (session_01NC7oJLxL2g1UhhBcGkZBBA) told what to test on the live build.
 - Flicker: the art run lists every state he needs for the whole game and makes them in round 1 (Matt 2026-10-28).
 
