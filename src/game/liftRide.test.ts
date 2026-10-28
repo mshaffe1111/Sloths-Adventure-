@@ -77,7 +77,8 @@ test('a player standing in a lift is carried through a full down-and-up cycle, i
 
 test('2-7: every roll of the stage, every lift carries him up and down', () => {
   const cfg = { worldIndex: 2, miniIndex: 7, id: '2-7', name: '2-7', objectiveType: 'sprint', targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0 } as LevelConfig;
-  for (let s = 1; s < 600; s += 37) assert.ok(rideAll(`2-7 seed ${s}`, buildW2Stage(cfg, s, '2-7').platforms) >= 3);
+  // (two lifts at least on every roll: the ride back down became a drop off the high ground's end in the variety pass, 2026-10-28)
+  for (let s = 1; s < 600; s += 37) assert.ok(rideAll(`2-7 seed ${s}`, buildW2Stage(cfg, s, '2-7').platforms) >= 2);
 });
 
 test('pickFloor: in the basket when it sits flush on the path, on the path or the rock once his middle leaves it', () => {

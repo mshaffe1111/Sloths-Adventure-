@@ -65,6 +65,8 @@ export interface W2Kit {
   sandbar(dirA: 1 | -1, dirB: 1 | -1, speed: number, logW: number, opts?: { safe?: boolean; flowers?: number; tag?: string }): void;
   island(len: number): void;
   postUp(): void;
+  /** off the end of high ground, down to the bank */
+  dropDown(): void;
   channels(n: number, opts?: { safe?: boolean; flowers?: boolean }): void;
   heart(x: number, y: number): void;
   goldenSeed(x: number, y: number): void;
@@ -170,7 +172,7 @@ export function buildW2Sections(plan: Exclude<W2Plan, '2-6'>, k: W2Kit, picks: W
 
 /** a river with him (two logs) or back at him (closer logs, coming toward him) */
 const narrow = (k: W2Kit, dir: 1 | -1, speed: number, o: { safe?: boolean; flowers?: number } = {}) =>
-  dir === 1 ? k.river(1, speed, 2, 120, o) : k.river(-1, speed, 2, 108, { ...o, gap: 80 });
+  dir === 1 ? k.river(1, speed + 4, 2, 108, o) : k.river(-1, speed, 2, 108, { ...o, gap: 80 });
 
 /** a short burst's rest: a little more bank than a breath, a second or so to breathe after a burst of hops (Gemini's rest pad) */
 const pause = (k: W2Kit) => k.rest(k.R.r(300, 340), false);
@@ -226,12 +228,17 @@ class Crossings {
     const sp = (this.o.speed ?? 62) + Math.min(14, this.n * 1.5);
     const fl = this.o.flowers;
     const n = this.n++;
-    if (kind === 'with') k.river(1, sp, 2, 120, fl ? { flowers: 6 } : {});
+    // (shorter logs on a quicker river: the ride on a 120 px log at 62-70 px/s was a hair over two seconds with nothing to do, the dead
+    // time on 2-2's rolls)
+    // (and every other one a narrow river, one log's ride: hop on, hop off)
+    if (kind === 'with') k.river(1, sp + 6, n % 2 ? 1 : 2, 106, fl ? { flowers: n % 2 ? 3 : 6 } : {});
     else if (kind === 'back') k.river(-1, sp - 4, 2, 108, { gap: 80, ...(fl ? { flowers: 6 } : {}) });
-    else if (kind === 'wide') k.river(1, sp + 2, 3, 122, fl ? { flowers: 6 } : {});
+    // (a three-log river is a long ride with nothing to do: over two seconds standing on a log, the dead time on 2-1 and 2-2's rolls.
+    // The wide river is two logs at a lick instead)
+    else if (kind === 'wide') k.river(1, sp + 8, 2, 122, fl ? { flowers: 6 } : {});
     else if (kind === 'high') {
       // flowers high over the river too: a double jump from a log reaches the top row
-      const r = k.river(1, sp + 4, 3, 124, { flowers: 5 });
+      const r = k.river(1, sp + 8, 2, 110, { flowers: 5 });
       k.arc(r.x0 + 70, r.x1 - 70, k.LOG_Y - 170, 4, 'orchid', 30);
     }
     else if (kind === 'sandbar') k.sandbar(n % 2 ? -1 : 1, n % 2 ? 1 : -1, sp, 116, fl ? { flowers: 4 } : {});
@@ -248,15 +255,17 @@ class Crossings {
       k.river(n % 2 ? -1 : 1, sp, 2, n % 2 ? 108 : 120, n % 2 ? { gap: 80 } : {});
     } else if (kind === 'frames') k.swingRiver(n % 3 === 2 ? 3 : 2, { frames: true });
     else if (kind === 'porches') {
-      k.stairs(Math.round(k.R.r(110, 130)), true);
+      // (the porches along the bank, at its own height: the carved steps up and down either side were four and more seconds of plain
+      // walking, every roll of 2-7, 2026-10-28; the steps stay in the Learn)
       k.porchRun(3, true);
-      k.stairs(Math.round(k.G - k.bankY), false);
     } else {
-      // up by the basket, along the high road (a snake on it, then porches out over the water at its height), and down again
+      // up by the basket, along the high road (a snake on it, then porches out over the water at its height), and a drop off its end
+      // (the ride down had nothing to do in it: with the walk on, five seconds and more, 2026-10-28. The rise stays past a double jump:
+      // at 150-170 px the kid bot jumped for the top instead of riding, and missed)
       k.lift(true);
-      k.guardedHigh(k.R.r(300, 340));
+      k.guardedHigh(k.R.r(240, 280));
       k.porchRun(2, true);
-      k.lift(false);
+      k.dropDown();
     }
   }
   /** a golden seed over a short stretch of bank: the top of a double jump from its middle */
@@ -277,7 +286,8 @@ class Crossings {
   private tooSoon(kind: Kind): boolean {
     return !!TEACH[kind] && !this.told.has(SAME[kind] ?? kind) && this.k.x - this.taughtAt < 3200;
   }
-  step(kind: Kind, i: number, among: readonly Kind[] = []) {
+  /** `walked`: he has just walked a bank (a fight's, a gate's): no more bank before the crossing */
+  step(kind: Kind, i: number, among: readonly Kind[] = [], walked = false) {
     // (a new kind right after another's tip waits: a kind already met comes first, if the roll has one)
     if (this.tooSoon(kind)) {
       const known = among.find((kd) => kd !== kind && !this.tooSoon(kd) && kd !== 'post');
@@ -287,7 +297,7 @@ class Crossings {
     const after = this.last;
     this.last = kind;
     const x0 = this.k.x;
-    if (kind !== 'snake' && kind !== 'post' && after !== 'lift') {
+    if (kind !== 'snake' && kind !== 'post' && after !== 'lift' && after !== 'snake' && !walked) {
       if (i % 3 === 2) pause(this.k);
       else this.k.breath();
     }
@@ -310,7 +320,9 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
   // every bank, mooring posts up the high banks); all of it quicker at the end, a breath of bank between each crossing, to the village.
   '2-1': (k, flavour, rng) => {
     const { R } = k;
-    const withIt = (speed: number, o: { safe?: boolean; tag?: string } = {}) => k.river(1, speed, 2, 120, o);
+    // (deep water's logs a little shorter and quicker than the teaching ones: a long ride is a stretch with nothing to do)
+    let narrows = 0;
+    const withIt = (speed: number, o: { safe?: boolean; tag?: string } = {}) => (o.safe ? k.river(1, speed, 2, 120, o) : k.river(1, speed + 6, narrows++ % 2 ? 1 : 2, 106, o));
     const back = (speed: number) => k.river(-1, speed, 2, 108, { gap: 80 });
     k.open(0, k.G - 150);
     k.beat(flavour === 'creek' ? 'Learn: the creek and the logs' : 'Learn: the logs drift', () => {
@@ -334,13 +346,13 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       }
       k.hint(k.x + 20, 'The logs drift with the river. Hop on and ride!');
       // the teaching rivers: slow water, two logs' worth, and a miss is only a splash
-      k.river(1, 52, 2, 130, { safe: true, tag: 'learn' });
+      k.river(1, 56, 2, 124, { safe: true, tag: 'learn' });
       k.hint(k.x - 120, 'Missed? Splash! Try again from the bank.');
       k.breath();
-      withIt(55, { safe: true, tag: 'learn' });
+      withIt(60, { safe: true, tag: 'learn' });
       k.breath();
-      // a wider one, three logs: ride one the whole way, or hop along them (still safe)
-      k.river(1, 58, 3, 124, { safe: true, tag: 'learn' });
+      // a third, quicker (still safe; two logs: a three-log river was a long ride with nothing to do)
+      k.river(1, 64, 2, 120, { safe: true, tag: 'learn' });
       k.flag();
     });
     if (flavour === 'deep') {
@@ -477,7 +489,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       }
       // (a short bank to the village: the walk through it is the stage's easy walk out, and with a long bank before it the two came to
       // over four seconds with nothing to do, every roll)
-      k.rest(R.r(60, 100), false);
+      k.breath();
       k.heart(k.x - 60, k.G - 60);
       // the village: its jetty out over the last river's bank, the sign, the mailbox, round doors in the bank
       k.villageEnd();
@@ -543,7 +555,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
         k.hint(k.x - 750, 'Flick up when a log drifts close.');
         k.river(1, 60, 2, 124, { flowers: 6, safe: true, tag: 'learn' });
         k.breath();
-        k.river(1, 62, 3, 124, { flowers: 6, safe: true, tag: 'learn' });
+        k.river(1, 62, 2, 124, { flowers: 6, safe: true, tag: 'learn' });
         cross.know('with');
       }
       k.flag();
@@ -746,12 +758,13 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     /** a long bank with snappers spread along it, each on its own patch, clear of the flags at either end */
     const snapperBank = (n: number, spacing: [number, number]) => {
       const x0b = k.x;
-      k.run(R.r(160, 200));
+      // (a short walk in and out: the long banks either side of the snappers were the dead time on 2-5's rolls)
+      k.run(R.r(110, 140));
       for (let i = 0; i < n; i++) {
         k.run(R.r(spacing[0], spacing[1]));
         k.turtle(k.x);
       }
-      k.run(R.r(340, 380));
+      k.run(R.r(220, 250));
       k.row(x0b + 120, k.x - 120, k.G - 34, Math.max(2, Math.round((k.x - x0b) / 200)), 'hibiscus');
       k.addExpert((k.x - x0b) / 285 + n * 1.6);
       k.mark(`snappers${n}`, x0b);
@@ -807,7 +820,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       k.hint(200, 'Snappers! Hit one from behind, or jump on it.');
       k.run(R.r(120, 160));
       k.turtle(k.x, k.G, 100);
-      k.run(R.r(380, 440));
+      k.run(R.r(260, 300));
       k.addExpert(3);
       k.hint(k.x - 200, 'Head-on, it hides. Kick the shell!');
       snapperBank(2, [300, 360]);
@@ -863,7 +876,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       porches: ['porches', 'porches', 'with', 'porches'],
       lifts: ['lift', 'lift', 'snake', 'lift'],
       swings: ['frames', 'frames', 'frames', 'back'],
-      logs: ['with', 'back', 'sandbar', 'wide', 'back'],
+      logs: ['with', 'back', 'snake', 'sandbar', 'back'],
     };
     const cross = new Crossings(k, { speed: 66 });
     cross.know('porches');
@@ -877,7 +890,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       // the first porches: over the water, but a splash only puts him back on the steps
       k.porchRun(3, true, undefined, true);
       k.patientDoor(k.x - 60);
-      k.stairs(Math.round(k.G - k.bankY), false);
+      k.dropDown();
       k.flag();
       k.piece('mailbox', k.x - 40, k.G + 2, 54);
     });
@@ -901,7 +914,8 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       const lf = k.lift(true);
       k.goldenSeed(lf.sx + 48, lf.top - 175);
       k.porchRun(2, true);
-      k.stairs(Math.round(k.G - k.bankY), false);
+      // (down off the high ground's end: a drop, not the carved steps' long walk)
+      k.dropDown();
       k.flag();
     });
     k.beat('Finish: the end of the round', () => {
@@ -911,8 +925,9 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
         cross.step(turns.next(), n, turns.kinds);
         if (++n % 2 === 0) k.flag();
       }
-      // (a short bank to the village: its walk is the easy walk out)
-      k.rest(R.r(60, 100), false);
+      // (a short bank to the village with a low rise in it: its walk is the easy walk out, and the two together were over four seconds
+      // with nothing to do on some rolls)
+      k.breath();
       k.heart(k.x - 60, k.G - 60);
       k.villageEnd();
     });
@@ -999,7 +1014,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     /** a stretch of bank with guards (and snappers between them) spread along it, clear of the flags at either end */
     const guardBank = (n: number, spacing: [number, number], snappers = 0) => {
       const x0g = k.x;
-      k.run(R.r(160, 200));
+      k.run(R.r(110, 140));
       for (let i = 0; i < n; i++) {
         k.run(R.r(spacing[0], spacing[1]));
         k.guard(k.x);
@@ -1008,8 +1023,8 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
           k.turtle(k.x);
         }
       }
-      k.run(R.r(270, 300));
-      k.row(x0g + 120, k.x - 120, k.G - 34, Math.max(2, Math.round((k.x - x0g) / 220)), 'hibiscus');
+      k.run(R.r(200, 230));
+      k.row(x0g + 100, k.x - 100, k.G - 34, Math.max(2, Math.round((k.x - x0g) / 220)), 'hibiscus');
       k.addExpert((k.x - x0g) / 285 + n * 2.4 + snappers * 1.6);
       k.mark(`guards${n}`, x0g);
     };
@@ -1039,12 +1054,14 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
         k.breath();
         // another of the court's gates: its bell, and a guard past it within earshot (a bell nobody hears is no puzzle: puzzleCheck)
         const g = k.bellGate({});
-        k.run(R.r(200, 240));
-        k.guard(Math.max(k.x, g.bellX + 480), k.G, 100);
-        k.run(R.r(260, 300));
+        // (the guard well within the bell's earshot, noise.ts NOISE.hear 520 px, and close past the gate: a long walk either side of
+        // him was the dead time on the gates' rolls)
+        k.run(R.r(130, 160));
+        k.guard(Math.max(k.x, g.bellX + 420), k.G, 100);
+        k.run(R.r(200, 230));
         k.addExpert(4);
-      } else if (t === 'porches' && k.expert > k.EXPERT_SECONDS - 24) cross.step('with', n);
-      else cross.step(t, n, kinds[flavour].filter((x): x is Kind => x !== 'gate'));
+      } else if (t === 'porches' && k.expert > k.EXPERT_SECONDS - 24) cross.step('with', n, [], true);
+      else cross.step(t, n, kinds[flavour].filter((x): x is Kind => x !== 'gate'), true);
     };
     k.beat('Learn: the court bell, one guard', () => {
       k.run(R.r(120, 150));
@@ -1092,7 +1109,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     });
     k.beat('Finish: to the king', () => {
       let n = 0;
-      while (k.expert < k.EXPERT_SECONDS - 2 && n < 12) {
+      while (k.expert < k.EXPERT_SECONDS + 8 && n < 14) {
         k.breath();
         const c = k.x;
         // (the court's guards by the roll too: rows of four on the porches' court, pairs by the ponds, one at each gate, and snappers
