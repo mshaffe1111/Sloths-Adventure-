@@ -11,7 +11,7 @@
  *                  blanket, and the night sheet of her new poses and the stage's props, meecaNightArt.ts), and Pell's and the soldiers'
  *                  clip sheets (meecaArt.ts)
  *   kit-pieces     the puzzle kit's pieces and Pokey's carry poses (puzzleArt.ts), for a stage with puzzle rooms (the test room, 'kit',
- *                  World 2's W2_PUZZLES and World 3's W3_PUZZLES)
+ *                  World 1's rooms, World 2's W2_PUZZLES, World 3's W3_PUZZLES) and every World 3 and 4 stage (its dressing, artDress.ts)
  *   anim:<name>    a creature's clip sheet (creatureAnim.ts), for the hand-built stages that hold one (STAGE_ANIMS)
  *
  * A generated stage's creatures are rolled with the stage, so they are not known ahead: their clip sheets still start loading as the
@@ -42,6 +42,9 @@ export const STAGE_ANIMS: Record<string, readonly string[]> = {
   '5-5': ['spider'],
 };
 
+/** World 1's stages with puzzle rooms (protoStage.ts: the squirrels' lift, the seesaw, the acorn meadow) */
+const W1_ROOMS: ReadonlySet<string> = new Set(['1-4', '1-6', '1-7']);
+
 export interface SheetSwitches {
   /** the hand-built stages are on (protoStage.ts protoStageEnabled: everyone) */
   hand: boolean;
@@ -70,6 +73,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
   if (built) for (const a of STAGE_ANIMS[cfg.id] ?? []) out.push(`anim:${a}`);
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
-  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id))) out.push('kit-pieces');
+  // (World 1's rooms: 1-4's lift, 1-6's seesaw, 1-7's acorns; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
+  // in as their dressing, artDress.ts)
+  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
   return out;
 }

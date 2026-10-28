@@ -128,6 +128,7 @@ and the mistakes we already paid for). The short list:
 | Worlds 2-10 ground and climbing kits | `src/assets/kits/w2.webp` … `w10.webp` | `kitAtlasData.ts`; `platformKit.ts`, `drawKit.ts` |
 | World 2 props (river, village, court, cages, boughs) | `src/assets/props/w2-props.webp` | `w2PropsData.ts` |
 | World 3 props (grotto, ferns, thorn vine, sinkhole, ring) | `src/assets/props/w3-props.webp` | `w3PropsData.ts` |
+| Matt's World 1-4 puzzle sheets (`reference/prop-sheets/w1to4/`: the kit pieces, Pokey's carry and use poses, every world's state frames) | `src/assets/props/puzzle-kit.webp` | `puzzleAtlasData.ts`, packed by `tools/art/w5puzzle/packkit.py`; drawn by `puzzlePlay.ts` per world (`KitWorld.world`: W1 branch gate, W2 pulley post / winch / river stones / swinging bell, W3 stone plates / fern door / tangled vine, W4 rope net / rope-lift plank / anchor peg / gust crack) and as World 3-4 dressing (`artDress.ts`: floor sets, 3-7's riddle ferns and fern door, far or broken rope bridges); looks rotate by the roll with a cooldown (`artRoll.ts`). Where every cell is used: `artDress.test.ts` checks every piece is drawn; follow-ups there (World 1 nest door and petal bundle, World 2 trough) |
 | Dot's netting flight (nectar flowers, dew, silk, puffs, thorns, the letter, netting pieces) and its four sunrise paintings | `src/assets/props/dot-props.webp`, `src/assets/backdrops/dot-*.webp` | `dotPropsData.ts`; cut and packed by `tools/art/dotstage/` |
 | Stage backgrounds (three strips per world) | `src/assets/backdrops/w<N>-far/mid/near.webp` | `scenery.ts`, `soil.ts`, `terrain.ts` |
 | Boss lairs | `src/assets/lairs/` | `lairKit.ts`, `lairProwler.ts` |
@@ -197,6 +198,8 @@ npx vite --port=4301 --host=127.0.0.1 --strictPort      # dev server
 npx tsc --noEmit -p .                                     # type check
 npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts   # what CI runs
 npx vite build                                            # what the deploy runs; no file in dist/assets may exceed 4 MiB
+npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer   # stage inspector + kid/adult bots + the first-timer bot (pre-QA pass, §6)
+npx tsx --test tools/inspect/*.test.ts                    # the inspector's own tests (not in CI)
 ```
 
 - **Tests**: run them with `npx tsx --test …`, as CI does; that way everything passes. Plain `node --test` reports one failure in `touchCoach.test.ts`. That isn't a bug: Node's built-in TypeScript stripping can't read a class parameter property in code the test imports. Under tsx it passes 6/6.
@@ -252,6 +255,19 @@ Matt plays every round here before anything is pushed.
    - `files`: the map
 3. The artifact holds at most 511 files. If a publish is refused, list its files (Artifact list, scope `files`) and map every path that's not in the new build to `null`.
 4. Tell Matt in a line what the round changed. For animation or look changes, also send a short preview video (`tools/art/reanim/preview_anim.py`) or screenshots.
+
+### Pre-QA pass (before the test link goes to the QA testers)
+
+Matt, 2026-10-28: "before we turn it over to the QA-ers, we're doing a first pass". Our own bots play first:
+
+1. Run the inspector on the worlds that changed, with the first-timer bot: `npx tsx tools/inspect/inspect.ts --worlds N --firsttimer`
+   (`--stages 1-7,2-2` for single stages; `--seed 2` for another roll). It writes `tools/inspect/out/report.html` and `report.json`.
+   About 10 minutes for Worlds 1-4 (2-3 a world); `--ft-trials 1 --ft-windows 0` is about three times as fast.
+2. Read the kid/adult jump hotspots and the section "First-timer bot: the pre-QA pass" (worst findings first; each names the
+   `reference/STAGE-RULES.md` rule it breaks: Opening seconds, Plain walk, 1-7's eagle, Dot pacing, plus the Gemini gates).
+3. Fix what it flags (anything hurting in the first 5 s, harm before its tip, plain-walk loops and stuck spots, Dot's pacing), re-run,
+   and only then republish the test link for the QA testers. If a finding is the bot's own limit (it never backs up for a run-up, and
+   takes World 2's lily pads as a first-timer does), say so in the round's note instead.
 
 ---
 

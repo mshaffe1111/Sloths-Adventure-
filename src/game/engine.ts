@@ -3,7 +3,7 @@ import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
-import { hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
+import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
 import { liftY, pickFloor } from './lift.ts';
@@ -36,10 +36,10 @@ import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
-import { cardSafe, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
+import { cardSafe, HARMLESS_LESSONS, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, timedLaunch, type SwingState } from './physics.ts';
+import { ASSIST, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, timedLaunch, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -67,7 +67,7 @@ import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
-import { heard } from './noise.ts';
+import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
@@ -75,6 +75,7 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
+import { drawKitDecor } from './puzzleArt.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
@@ -386,6 +387,13 @@ export class GameEngine {
   private w4: W4Play | null = null;
   /** World 5's stillness and silk, chairs, cakes, teapots, threads, sheets, orchids and cocoons for this run (w5Play.ts) */
   private w5: W5Play | null = null;
+  /**
+   * World 5's step and lip help (a plain flick at a one-jump step lands on it, a jump into a face carries over its lip, the lip's hoist
+   * puts a foot on the ledge) is on here too: every stage of every world (QA 2026-10-28, build 39fc3db: a plain walk stopped
+   * dead at 1-7's and 1-9's waist-high steps and dips, and only an up-and-over flick got out; reference/STAGE-RULES.md: rules learned
+   * in one world apply to every world). Not Meeca's stage (its own helper's), the boss arenas or Dot's flight.
+   */
+  private stepHelp = false;
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
   private kitHostObj: KitHost | null = null;
@@ -466,12 +474,16 @@ export class GameEngine {
   /** when the last lesson (or find) was shown or closed: the swing's lesson needs only a second's breather after it */
   private lessonAt = -1e9;
   private lessonFrame = 0;
+  /** the last lesson said (a harmless one, such as the petals', does not hold back the lesson for a danger ahead: HARMLESS_LESSONS) */
+  private lessonLast: LessonId | null = null;
   private lessonSeen: Set<LessonId> | null = null;
   /** a lesson that came due while stopping was not safe (mid-air, mid-swing, a foe at hand): it opens once he is safe (cardSafe) */
   private lessonWaiting: { id: LessonId; at: number } | null = null;
   /** finds picked up while stopping was not safe: the reader opens once he is (the same rule as the lesson cards) */
   private findsWaiting: string[] = [];
   private coyoteTimer: number = 0;
+  /** the jump forgiveness for the difficulty (physics.ts FORGIVE): coyote time, jump buffer, ledge landing */
+  private forgive: (typeof FORGIVE)['normal' | 'easy'] = FORGIVE.normal;
   private jumpBufferTimer: number = 0;
   /** what carries him through the air on a touch screen (see jumpHelp.ts): the way he was going when he left the ground, until he lands or pushes back */
   private airDrive = newAirDrive();
@@ -573,6 +585,7 @@ export class GameEngine {
     // Generate Stage data
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
+    this.forgive = isEasy() ? FORGIVE.easy : FORGIVE.normal;
     this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config))) : withGoals(generateStage(config));
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
@@ -624,8 +637,10 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
+    // (every world, the generated stages too, Gemini G4: not Meeca's stage, the boss arenas or Dot's flight)
+    this.stepHelp = !!this.w5 || (!this.proto?.meeca && !this.currentStage.arena && !this.currentStage.dot);
     // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
-    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
+    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
     this.plainVines = this.vines.filter((v) => !v.kit);
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
@@ -1129,6 +1144,8 @@ export class GameEngine {
     if (this.mc) this.input.kickNear = !!this.kit?.holding;
     // (and at a trunk, a finger tracing a circle is carving, not steering: the touch controls ask)
     if (this.mc) (this.input as { carveSpot?: boolean }).carveSpot = this.mc.carveSpot;
+    // inside a bush a watcher's stretch hides him in: a slide down there hides him even mid-run (touchGestures.ts inCover)
+    this.input.inCover = !!this.proto?.watch && p.grounded && (this.proto.bushes ?? []).some((b) => !b.secret && !b.hanging && p.x > b.x + 10 && p.x < b.x + b.w - 10 && Math.abs(p.y - b.y) < 10);
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
     // the glide leaf is gone the moment he lands or grabs anything
@@ -1781,7 +1798,9 @@ export class GameEngine {
 
         const assist = this.assistNow();
         if (p.grounded) {
-          this.coyoteTimer = PHYS.coyote + ASSIST.coyote * assist;
+          // (133 ms on Normal, 167 on Easy, on every stage; the early-stage help adds on top: physics.ts FORGIVE)
+          // (and a hair over, so a press on the frame that reaches it, 4 frames at 30 fps for 133 ms, still counts)
+          this.coyoteTimer = this.forgive.coyote + ASSIST.coyote * assist + 0.001;
         } else {
           this.coyoteTimer = Math.max(0, this.coyoteTimer - dt);
         }
@@ -1818,7 +1837,7 @@ export class GameEngine {
             sound.playDoubleJump();
             this.spawnDoubleJumpBurst(p.x, p.y);
           } else {
-            this.jumpBufferTimer = PHYS.buffer + ASSIST.buffer * assist;
+            this.jumpBufferTimer = this.forgive.buffer + ASSIST.buffer * assist;
             this.input.state.jumpPressed = false;
           }
         }
@@ -1886,10 +1905,10 @@ export class GameEngine {
           const fromRight = prevX - half >= plat.x + plat.width - 2;
           // World 5: a body a little way over the edge already (he came over the corner in the air, a foot short of standing) with his
           // feet just under the top is at the lip too. He used to slide down inside the face to the foot of it
-          const lipL = !!this.w5 && !fromLeft && !fromRight && p.x + half - plat.x <= LIP_IN && p.x < plat.x + plat.width / 2;
-          const lipR = !!this.w5 && !fromLeft && !fromRight && plat.x + plat.width - (p.x - half) <= LIP_IN && p.x >= plat.x + plat.width / 2;
+          const lipL = this.stepHelp && !fromLeft && !fromRight && p.x + half - plat.x <= LIP_IN && p.x < plat.x + plat.width / 2;
+          const lipR = this.stepHelp && !fromLeft && !fromRight && plat.x + plat.width - (p.x - half) <= LIP_IN && p.x >= plat.x + plat.width / 2;
           if (!fromLeft && !fromRight && !lipL && !lipR) continue;
-          if (p.y <= plat.y + 26 && p.vy >= -120) {
+          if (p.y <= plat.y + this.forgive.mantle && p.vy >= -120) {
             // caught the lip of the ledge: hoist up onto it
             p.y = plat.y;
             p.vy = 0;
@@ -1897,7 +1916,7 @@ export class GameEngine {
             // it, about 8 px) never took him, so he hung in the air at the corner, dropped and was hoisted again, frame after frame, or
             // slid down inside the face: QA's sideways player at the soft pits' lips of 5-3, 5-4 and 5-5 "ends up hanging on its side"
             // (v198). Now the hoist puts a foot on the ledge, and he stands there.
-            if (this.w5) p.x = fromLeft || lipL ? Math.max(p.x, plat.x - half + LIP_IN) : Math.min(p.x, plat.x + plat.width + half - LIP_IN);
+            if (this.stepHelp) p.x = fromLeft || lipL ? Math.max(p.x, plat.x - half + LIP_IN) : Math.min(p.x, plat.x + plat.width + half - LIP_IN);
             continue;
           }
           if (lipL || lipR) continue;
@@ -1930,7 +1949,7 @@ export class GameEngine {
       // World 5, by touch: jumping into a face carries him on into it until he is over its top, unless the thumb steers away. One thumb
       // steers to the face, lifts and flicks: the face stopped him dead, and with the thumb off the glass he rose past its top and came
       // straight back down beside it (QA v198: the same flick worked one try and not the next, by whether the thumb was still on).
-      if (wallSide !== 0 && this.w5 && this.touchHelp() !== 'off') {
+      if (wallSide !== 0 && this.stepHelp && this.touchHelp() !== 'off') {
         const steerNow = this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
         if (steerNow !== -wallSide && !this.input.state.down) this.airDrive = { drive: wallSide as -1 | 1, lean: true };
       }
@@ -1966,13 +1985,30 @@ export class GameEngine {
         // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
         const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26 + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
-        if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) return false;
+        if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) {
+          // ledge-landing forgiveness (physics.ts FORGIVE.landPx, every stage): falling onto it from above, a foot that misses its edge
+          // by a few px still lands, nudged on. Never for walking off an edge (his feet were not above its top) nor a drifting log
+          if (plat.type === 'drift' || !(playerPrevFeet < plat.y - 2)) return false;
+          const missL = plat.x - (p.x + p.width * side);
+          const missR = p.x - p.width * side - (plat.x + plat.width);
+          // (and only for a jump carrying him toward it that fell a little short: a hop straight up beside a step is not caught here,
+          // the step help is for that, STEP_UP, and World 5's stuck-helper waits for a player hopping in place)
+          if (Math.max(missL, missR) > this.forgive.landPx || (missL > 0 ? p.vx : -p.vx) < 30) return false;
+        }
         // Check landing from above
         return p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y;
       });
       // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
       // so a lift never rises without him
       const plat = pickFloor(floors, p.x);
+      if (plat && plat.type !== 'drift') {
+        // (caught by the ledge-landing forgiveness: on with a foot, as far as the usual tolerance needs)
+        const side = 0.26 + ASSIST.landSide * assist;
+        const missL = plat.x - (p.x + p.width * side);
+        const missR = p.x - p.width * side - (plat.x + plat.width);
+        if (missL >= 0) p.x += missL + 1;
+        else if (missR >= 0) p.x -= missR + 1;
+      }
       if (plat) {
         p.y = plat.y;
         const landV = p.vy; // how hard he came down: the squash below follows it
@@ -2202,7 +2238,15 @@ export class GameEngine {
         // attack: telegraph -> committed attack -> vulnerable recovery
         // a snapper hears the puzzle kit's noise (noise.ts) and goes to it
         if (e.type === 'turtle') e.lureX = this.kit ? heard(this.kit.noises, e.x, e.y, this.gameTime)?.x : undefined;
+        const slid = e.type === 'turtle' && !e.royal && e.state === 'slide';
         const step = stepPredator(e, { x: p.x, y: p.y, facing: p.facing, ducking: p.ducking }, dt);
+        // a kicked snapper's shell that slides to a stop is out of the fight, and counts (2-5's goal): Dot says "Kick the shell!", and a
+        // shell that did as she said came back dizzy, then walking, and the goal stayed at 0 (QA 2026-10-28: "predators 0/17")
+        if (slid && e.state === 'dizzy') {
+          e.hp = 0;
+          this.knockOut(e, (e.slideDir ?? 1) as 1 | -1, 'BONK!');
+          continue;
+        }
         // the tree snake has no call of its own: it hisses like the boa
         // (the night harpy chitters and thumps like the tayra)
         const call = e.type === 'snake' ? 'boa' : e.type === 'harpy' ? 'tayra' : e.type === 'turtle' ? 'caiman' : e.type;
@@ -3838,6 +3882,7 @@ export class GameEngine {
       heartsLost: this.statHeartsLost,
       floraTotal,
       floraCollected,
+      ...(this.currentStage.config.objectiveType === 'harvest' ? { floraGoal: { cur: this.player.fruitsCollected, target: this.currentStage.config.targetCount } } : {}),
       timeSec: this.gameTime,
       timeLimit: this.currentStage.config.timeLimit,
       maxStompChain: this.statMaxStompChain,
@@ -4794,7 +4839,9 @@ export class GameEngine {
     // grabbing, pumping and letting go are all needed the moment he jumps for it (QA, 1-6, 2026-10-26: a gap card just before the vine
     // left the swing's lesson waiting until after his first let-go)
     const id = picked === 'swing' ? picked : this.lessonWaiting?.id ?? picked;
-    if (!id || (quiet && id !== 'swing')) return;
+    // (nor is a danger's lesson held back by the breather after a harmless one: the petals' lesson at 2.6 s held the gap's back for six
+    // seconds, past the first gap of 1-8 and 2-2's first river, QA 2026-10-28)
+    if (!id || (quiet && id !== 'swing' && !(this.lessonLast && HARMLESS_LESSONS.has(this.lessonLast) && !HARMLESS_LESSONS.has(id)))) return;
     // only when stopping cannot hurt him: standing or holding on, not hurt, no foe at hand, nothing falling on him (lessons.ts cardSafe).
     // The swing's lesson may also come on the vine: a liana keeps swinging with no thumb, and a lesson that waited for him to land came
     // only after his first let-go, when grabbing, pumping and letting go had all been needed already (QA, 1-6, 2026-10-26)
@@ -4808,6 +4855,7 @@ export class GameEngine {
     // no card and no pause: the lesson is one of Dot's lines, said in play (dotGuide.ts)
     this.lessonQuietUntil = this.gameTime + 6;
     this.lessonAt = this.gameTime;
+    this.lessonLast = id;
     this.callbacks.onLesson?.(id);
   }
 
@@ -4939,7 +4987,7 @@ export class GameEngine {
     // World 5: a plain flick up with the thumb off the glass, standing right at a step one jump climbs, lands on it. One thumb lifts
     // to flick, so he jumped straight up beside the step and came down where he began: in the soft pits' dips QA's one-thumb player
     // stayed stuck, and only an up-and-right flick now and then got out (v198, 2026-10-26). A one-step ledge takes one ordinary jump.
-    if (!second && steer === 0 && this.w5) {
+    if (!second && steer === 0 && this.stepHelp) {
       const lean = inp.jumpLean ?? 0;
       const face: -1 | 1 = this.player.facing >= 0 ? 1 : -1;
       // (the way the flick leaned first; then, with no step that way, the way he faces. A thumb's flick leans 20 to 40 degrees either
@@ -5045,6 +5093,8 @@ export class GameEngine {
       ctx.restore();
     }
 
+    // Matt's World 3 and 4 puzzle sheets set in behind the ground (artDress.ts: World 4's far rope bridge, the broken one's ends)
+    if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.player.x, true);
     // World 4's pieces that stand back behind the ground (4-3's pool basins)
     this.w4?.drawUnder(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     // Render In-World Trees, Vines and Platforms
@@ -5091,6 +5141,8 @@ export class GameEngine {
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
+    // Matt's World 3 and 4 puzzle sheets set in as dressing (artDress.ts)
+    if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.player.x);
     // World 3's sleeping thorn vines (thornVine.ts)
     for (let i = 0; i < (this.proto?.thorns?.length ?? 0); i++) {
       const v = this.proto!.thorns![i];
@@ -5099,7 +5151,9 @@ export class GameEngine {
       const l = this.vineLash.get(i);
       // (listening to the kit's noise, it looks toward the noise: noise.ts)
       const ear = this.kit ? heard(this.kit.noises, v.x, v.bud, this.gameTime) : null;
-      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : ear ? (ear.x >= v.x ? 1 : -1) : this.player.x >= v.x ? 1 : -1, this.gameTime);
+      // (struck at it, it hangs tangled while it listens: harmless, it sees nobody then)
+      const knot = ear && !l && this.vineStruck.get(i) === ear.t ? Math.max(0, ear.t + NOISE.dur - this.gameTime) : -1;
+      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : ear ? (ear.x >= v.x ? 1 : -1) : this.player.x >= v.x ? 1 : -1, this.gameTime, knot);
     }
     // 4-7: in the air, a shadow on the ledge he is coming down to
     if (this.proto?.w4?.deepFall !== undefined && !this.player.grounded && !this.player.climbing) {
@@ -6073,6 +6127,11 @@ export class GameEngine {
   }
 
   /** step the watching eagle and its dive (1-7) */
+  /** the eagle caught him out in the open on its last pass (Dot calls the next warning too) */
+  private watchCaught = false;
+  /** how many of the watcher's later warnings Dot has said this stage (watchCaught) */
+  private watchVoiced = 0;
+
   private updateWatch(dt: number) {
     const p = this.player;
     const bushes = this.proto?.bushes ?? [];
@@ -6096,7 +6155,14 @@ export class GameEngine {
         markTipHeard(id, 'watch:hide');
         const duck = lessonInputMode() === 'screen' ? `Slide down inside a ${hide}` : `Hold down inside a ${hide}`;
         this.guide(cliffs ? `Here she comes! Stand behind a waterfall, or ${duck.toLowerCase()}` : `Here it comes! ${duck} to hide`, 3);
+      } else if (this.watchVoiced < 3 && !hidden(bushes, { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging }) && (this.watch.passes <= 2 || this.watchCaught)) {
+        // (three times a stage at most: the first-timer bot heard it six times in 1-7; the sign over his head stays every pass)
+        this.watchVoiced++;
+        // (the sign over his head was in the world only: Dot says it too, for the next two passes and after any pass that caught him,
+        // when he is out in the open. QA 2026-10-28)
+        this.guide(cliffs ? 'Hide! Water or a bush!' : `Hide! Into a ${hide}!`, 2.4);
       }
+      this.watchCaught = false;
     }
     const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
     if (this.watch.phase === 'pass') {
@@ -6113,7 +6179,14 @@ export class GameEngine {
       // the strike: unless he made it into a bush (or behind the water) in time
       if (this.watch.seen && before < WATCH.dive && this.watch.diveT >= WATCH.dive) {
         if (water || hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
-        else this.damagePlayer(1);
+        else if (harmlessPass(this.watch)) {
+          // (the first pass only warns: it pulls up short of him)
+          this.addFloatingText('TOO CLOSE!', p.x, p.y - 80, '#fbbf24');
+          this.watchCaught = true;
+        } else {
+          this.damagePlayer(1);
+          this.watchCaught = true;
+        }
       }
     }
     // a bush rustles while he moves in it
@@ -6177,7 +6250,10 @@ export class GameEngine {
     } else if (w.phase === 'warn') {
       // it turns for its run: at the edge, flaring, and its shadow starts to show there
       const u = w.t / WATCH.warn;
-      e.x = w.dir === 1 ? cam.x - 40 + 60 * u : cam.x + cam.viewportWidth + 40 - 60 * u;
+      // (in from the edge to well inside the view, all of it on screen by the screech's end: upright, it sat half off the edge with
+      // only its "!" showing, QA 2026-10-28)
+      const inX = Math.min(130, cam.viewportWidth * 0.2);
+      e.x = w.dir === 1 ? cam.x - 40 + (40 + inX) * Math.min(1, u * 1.6) : cam.x + cam.viewportWidth + 40 - (40 + inX) * Math.min(1, u * 1.6);
       e.y = cam.y + 125;
       e.facing = w.dir;
       e.swoopPhase = 'telegraph';
@@ -6190,10 +6266,14 @@ export class GameEngine {
         // the dive: from where it saw him down to him, then back up and away
         const u = Math.min(1, w.diveT / WATCH.dive);
         const k = u < 1 ? u * u : 1;
-        e.x = this.watchFrom.x + (this.player.x - this.watchFrom.x) * k;
-        e.y = this.watchFrom.y + (this.player.y - 40 - this.watchFrom.y) * k;
+        // (the harmless first pass pulls up short of him; and after a strike it climbs away on its way, never sitting on him: QA
+        // 2026-10-28, 1-7, "the eagle sits on Pokey when it hits")
+        const short = harmlessPass(w) ? 70 : 0;
+        const away = Math.max(0, Math.min(1, (w.diveT - WATCH.dive) / 0.7));
+        e.x = this.watchFrom.x + (this.player.x - this.watchFrom.x) * k + w.dir * 320 * away;
+        e.y = this.watchFrom.y + (this.player.y - 40 - short - this.watchFrom.y) * k - 300 * away * away;
         e.swoopPhase = 'swoop';
-        e.isAttacking = u > 0.6;
+        e.isAttacking = u > 0.6 && away === 0 && !short;
       } else {
         e.x = sx;
         e.y = cam.y + 125;

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { praiseFor, totalKills, tuckeredLine } from './stageSummary.ts';
+import { floraChip, praiseFor, totalKills, tuckeredLine } from './stageSummary.ts';
 import type { StageStats } from '../game/badges.ts';
 
 const base: StageStats = {
@@ -33,4 +33,10 @@ test('the game-over line is steady for a stage and varies across stages', () => 
   const seen = new Set<string>();
   for (let w = 1; w <= 10; w++) for (let m = 1; m <= 9; m++) seen.add(tuckeredLine(`${w}-${m}`));
   assert.ok(seen.size >= 4);
+});
+
+test('out of lives: a gather stage counts its flowers against the goal, as the HUD bar does (QA 2-2: bar 107, card "1/122")', () => {
+  assert.equal(floraChip({ ...base, floraTotal: 122, floraCollected: 1, floraGoal: { cur: 1, target: 107 } }), '1/107');
+  assert.equal(floraChip({ ...base, floraTotal: 10, floraCollected: 4 }), '4/10');
+  assert.equal(floraChip({ ...base, floraTotal: 0, floraCollected: 0 }), null);
 });

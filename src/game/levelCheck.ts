@@ -31,6 +31,8 @@ import {
   reachBounceGlide,
   reachGlide,
   reachJump,
+  reachJumpHeld,
+  EASY_HOLD,
   reachMin,
   SWING,
   swingGrab,
@@ -82,6 +84,14 @@ const ext = (p: Platform): [number, number] =>
       : [p.x, p.x + p.width];
 
 const dxTo = (x0: number, x1: number, x: number) => (x < x0 ? x0 - x : x > x1 ? x - x1 : 0);
+
+/**
+ * Gemini G8: an Easy stage is finishable with a ~70% hold on every jump (no gap or step needs a full one). The stage given is the
+ * Easy one (easyMode.ts easyStage); its errors, empty when it passes.
+ */
+export function easyHoldCheck(easy: GeneratedStage): string[] {
+  return validateStage(easy, { hold: EASY_HOLD }).errors;
+}
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
 export function jumpOK(a: Platform, b: Platform, allowDouble = true): { ok: boolean; gap: number } {
@@ -243,6 +253,11 @@ export interface CheckOptions {
    * stand and no jump or climb crosses it. Given, the stage's puzzle rooms are not checked again (this is one of their layouts).
    */
   walls?: readonly KitWall[];
+  /**
+   * a jump rises only this share of a full one (Easy: EASY_HOLD, a ~70% hold, Gemini G8): an Easy stage must be finishable without a
+   * full-hold jump anywhere (easyHoldCheck). Unset: the full jump, as on Normal
+   */
+  hold?: number;
 }
 
 /** the graph a check walked: every piece of ground (a platform, less what a boulder or pouring water covers), the links, what was reached */
@@ -442,7 +457,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
         if (gap > leftReach) continue;
         const dy = a.y - b.y;
         if (-dy > deep) continue;
-        const f = a.type === 'bouncy' ? reachBounce : reachJump;
+        const f = a.type === 'bouncy' ? reachBounce : opts.hold ? (d: number, dbl: boolean) => reachJumpHeld(d, dbl, opts.hold) : reachJump;
         let r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
         if (allowGlide && !(r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK)) {
           const fg = a.type === 'bouncy' ? reachBounceGlide : reachGlide;

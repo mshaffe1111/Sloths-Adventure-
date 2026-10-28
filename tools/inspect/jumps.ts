@@ -4,15 +4,16 @@
  * Each jump is flown with physics.ts's own airStep at the engine's 60 Hz step, with the engine's jump rules copied from engine.ts:
  * launch at PHYS.jumpV; while the thumb is still down the ascent is not cut (a lift with the body still rising faster than PHYS.cutV
  * cuts it to cutV); the second jump adds to the first (secondJumpV) at doubleV * (1 + ASSIST.doubleJump * assist); a jump pressed
- * after running off a ledge still works within the coyote time (PHYS.coyote + ASSIST.coyote * assist); he lands when his feet come
- * down through the top within catchDrop (14 + ASSIST.catchDrop * assist) and his middle is within (0.26 + ASSIST.landSide * assist)
- * of his 44 px width past an end. Easy keeps assist at 1 the whole game; Normal eases it from 1 at 1-1 to 0 at 3-5.
+ * after running off a ledge still works within the coyote time (FORGIVE[difficulty].coyote + ASSIST.coyote * assist); he lands when
+ * his feet come down through the top within catchDrop (14 + ASSIST.catchDrop * assist) and his middle is within (0.26 +
+ * ASSIST.landSide * assist) of his 44 px width past an end, or, carried toward it, his foot up to FORGIVE[difficulty].landPx short of
+ * it (the ledge-landing forgiveness). Easy keeps assist at 1 the whole game; Normal eases it from 1 at 1-1 to 0 at 3-5.
  *
  * The bots are an edge-level Monte Carlo, not a run of the engine: one jump at a time, from a full run, with no animals, wind or
  * ceilings in the air, and a thumb modelled as timing noise (when the jump lands on the ledge, how long the thumb stays down, when the
  * second flick comes) rather than as finger paths through touchGestures.ts.
  */
-import { PHYS, ASSIST, airStep, secondJumpV, easeAssist, type AirBody } from '../../src/game/physics.ts';
+import { PHYS, ASSIST, FORGIVE, airStep, secondJumpV, easeAssist, type AirBody } from '../../src/game/physics.ts';
 import { idleTime, isStatic } from '../../src/game/zones.ts';
 import { NEST } from '../../src/game/eaglet.ts';
 import { TEAPOT } from '../../src/game/w5Kit.ts';
@@ -22,6 +23,8 @@ import type { Route, Seg } from './route.ts';
 import type { Stage } from './stages.ts';
 
 const DT = 1 / 60;
+/** the jump forgiveness of the difficulty being flown (set by inspectJumps) */
+let FORG: (typeof FORGIVE)['normal' | 'easy'] = FORGIVE.normal;
 const FRAME30 = 1 / 30;
 const WIDTH = 44;
 /** half his body for walls (LAND_HALF), and his height */
@@ -114,7 +117,7 @@ function fly(e: JumpEdge, assist: number, inp: Inputs): Outcome {
   const by = B.y - A.y;
   const side = 0.26 + ASSIST.landSide * assist;
   const catchDrop = 14 + ASSIST.catchDrop * assist;
-  const coyote = PHYS.coyote + ASSIST.coyote * assist;
+  const coyote = FORG.coyote + ASSIST.coyote * assist + 0.001;
   const v2 = PHYS.doubleV * (1 + ASSIST.doubleJump * assist);
   // a block 50 px or taller is a wall at his feet (physics.ts blockBeside): a step up stops him at its foot, and he cannot pass its side
   const wall = B.height >= 50 && B.y < A.y - 6;
@@ -152,7 +155,9 @@ function fly(e: JumpEdge, assist: number, inp: Inputs): Outcome {
     t += DT;
     if (b.vy >= 0) {
       const onB = b.x + WIDTH * side > b0 && b.x - WIDTH * side < b1;
-      if (onB && py <= by + catchDrop && b.y >= by) return 'ok';
+      // (or a foot a little short of its near end, carried toward it: the ledge-landing forgiveness, engine.ts)
+      const nearB = !onB && b.x + WIDTH * side + FORG.landPx > b0 && b.x < b0 && b.vx > 30 && py < by - 2;
+      if ((onB || nearB) && py <= by + catchDrop && b.y >= by) return 'ok';
       const onA = b.x - WIDTH * side < aHi && b.x + WIDTH * side > aLo;
       if (onA && py <= catchDrop && b.y >= 0 && A !== B) return 'back';
     }
@@ -172,7 +177,7 @@ interface Feasible { lo: number; hi: number; dbl: boolean; tD: (s: number) => [n
 function feasible(e: JumpEdge, assist: number, allowDbl: boolean): { one: Feasible | null; two: Feasible | null } {
   const f = frame(e);
   const sMin = Math.max(f.aLo, -420 - (f.offEdge ? 0 : e.to.width));
-  const sMax = f.offEdge ? (PHYS.coyote + ASSIST.coyote * assist) * PHYS.maxRun : 0;
+  const sMax = f.offEdge ? (FORG.coyote + ASSIST.coyote * assist) * PHYS.maxRun : 0;
   const clean = (s: number, tD: number) => fly(e, assist, { s, v0: PHYS.jumpV, hold: 1, tD, hold2: 9, drift: null, lag: 0 }) === 'ok';
   const run = (ok: (s: number) => boolean): [number, number] | null => {
     let best: [number, number] | null = null;
@@ -367,6 +372,7 @@ export function inspectJumps(stage: Stage, route: Route, easy: boolean, persona:
   const c = stage.config;
   const mission = (c.worldIndex - 1) * 10 + c.miniIndex;
   const assist = easy ? 1 : easeAssist(mission);
+  FORG = easy ? FORGIVE.easy : FORGIVE.normal;
   const out: JumpReport[] = [];
   routeJumps(route).forEach((e, i) => {
     const pit = !stage.platforms.some((q) => q !== e.from && q !== e.to && !q.broken && q.x < Math.max(e.x, e.to.x + e.to.width / 2) && q.x + q.width > Math.min(e.x, e.to.x + e.to.width / 2) && q.y > Math.max(e.from.y, e.to.y) && q.y < Math.max(e.from.y, e.to.y) + 220);

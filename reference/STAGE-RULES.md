@@ -1,7 +1,8 @@
 # How to build a stage: the rulebook
 
 **Read this before building, rebuilding or checking any stage, puzzle room or generator rule.** It brings together Matt's rules,
-what we took from his Gemini research (`reference/GEMINI-PCG-RESEARCH.md`, the full notes), and every mistake we have already paid
+what we took from his Gemini research (`reference/GEMINI-PCG-RESEARCH.md`, the full notes; `reference/GEMINI-LEDGER.md`, every
+recommendation with its status in the game and what is next), and every mistake we have already paid
 for, so nobody repeats them. If a brief from the lead session disagrees with this file, ask; if you learn a new lesson the hard way,
 add it to section 6 in the same commit.
 
@@ -25,6 +26,27 @@ Last updated 2026-10-28.
 - **New replaces old.** A rebuilt stage replaces the old one outright: no switch, the old code is deleted.
 - **Show first.** Big screen changes are shown to Matt (screenshots, mock-ups) before they are built in.
 - **Story.** Stage names, story beats and goal text stay as approved. Any new line is marked "(new, needs Matt's approval)".
+
+## 1b. The game gets harder as it goes (Matt, 2026-10-28)
+
+- **Each world sits in its own difficulty band, and the bands climb world by world.** Inside a world, stages can go up and down
+  (a breather after a hard stage is fine, a world's last stages are usually its hardest), but no stage may leave its world's band:
+  World 2's stage 8 must never be as hard as a World 4 stage. Bands may overlap their neighbours a little, never by a whole world.
+  Later on, players are expected to lose lives and replay stages several times: that is how games are. Never flatten the climb.
+- **Easy is gentler, never empty.** Easy still asks for double jumps, timing, enemies and the tougher moves at some point; they are
+  just easier versions: wider landings, more forgiving timing, longer warnings, fewer enemies at once. Don't remove a move from
+  Easy; soften it.
+- **"Too hard" from QA is checked, not obeyed.** Sort each report into one of two:
+  - **Unfair (fix it):** hurt in the opening seconds; hurt before the tip that teaches it; a hit from off screen with no tell; a
+    jump that needs a timing window under 167 ms on Normal / 300 ms on Easy, or a full-hold jump on Easy; a plain walk that gets
+    stuck; a ledge reached but slid off; the controls not doing what the thumb did; a puzzle that costs a life; a goal that can't
+    be met fairly.
+  - **Hard but fair (keep it):** a move that was taught, now asked with tighter timing, in combination, or with an enemy, later in
+    the game. Report it to Matt as intended difficulty, with the numbers, instead of changing it.
+- **The bands are measured:** per stage, the first-timer bot's lives lost and the noisy bots' hardest-jump success; each world's
+  spread is its band. A world whose band sits below the one before it, or a stage outside its world's band (above the next world's
+  middle, or below the previous world's), is a bug. Gemini's floor still holds for every stage: the Normal bot clears each jump at
+  least 70% of the time in Worlds 1-5 and 50% in Worlds 6-10; the Easy kid at least 85% everywhere.
 
 ## 2. The numbers a stage must meet (from the Gemini research, tuned for us)
 
@@ -60,7 +82,8 @@ Last updated 2026-10-28.
   drawn is a bug (check with a grep over `puzzleAtlasData.ts` keys and the stage atlases).
 - **State frames matter:** a pressed plate shows pressed, a rung bell swings, a struck vine shows tangled, a lit lantern glows.
 - **Rotate looks by the roll:** where a world has several props or decor sets for one job, the layout roll picks among them (a retry
-  keeps the look, a fresh roll changes it), with a cooldown so the same set isn't used in two stages in a row.
+  keeps the look, a fresh roll changes it), with a cooldown so the same set isn't used in two stages in a row. `artRoll.ts` `rollLook` does it (stages take turns between two halves of the looks, the roll picks within the half); `artDress.ts`
+  is World 3-4's dressing from Matt's puzzle sheets (pictures only: no platform, pickup or piece moves).
 - Each world goes through the day: its far backdrops change across its stages (`stageBackdrops.ts`).
 - New art comes from Matt's Gemini sheets: give him copy-paste prompts with the reference to attach (key colour: magenta, or green
   when the subject wears pink), then cut with `tools/art/w5puzzle/cut.py` and check the cuts on a dark background.
@@ -74,7 +97,9 @@ test link, the QA testers or a release until the lead has re-run them, on more t
 2. The stage inspector on the worlds you changed: `npx tsx tools/inspect/inspect.ts --worlds N` (dead time, rests, sameness, goals,
    length, kid and adult bots). **Check more than one roll** (`--seed 1/2/3`), and the 200-roll tool `tools/inspect/era.ts` when a
    stage's layout code changed: a fix that only holds on seed 1 is not a fix.
-3. The first-timer bot (`--firsttimer`, Easy and Normal): opening seconds, tips before hazards, stuck spots, Dot pacing.
+3. The first-timer bot, Easy and Normal: `npx tsx tools/inspect/inspect.ts --worlds N --firsttimer` (`--stages 1-7,2-2` for a few
+   stages). It checks §2's "Opening seconds" and "Plain walk" rows, §6's eagle and Dot-pacing lessons and the Gemini gates (survival
+   per jump, minimum input window, peak stress, backtracking), and names the rule each finding breaks (HANDOFF §6, "Pre-QA pass").
 4. The puzzle validator and the real-engine play-through tests for every room.
 5. The full suite: `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts`.
 6. `npx vite build` (nothing over 4 MiB). Before committing: `git checkout -- dev-dist; rm -f dev-dist/registerSW.js`.
@@ -102,6 +127,14 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   shared files you touch; the lead session merges and checks.
 - **Small-phone slowness** was the browser (an in-app browser drawing in software), not our code; the recordings now name the
   browser and graphics chip (`deviceInfo.ts`). Look there first.
+- **A harmless lesson held a dangerous one back** (2026-10-28): no lesson comes before 2.5 s, and the petals' lesson at 2.6 s gave a
+  six-second breather that kept the gap's lesson back past 1-8's first gap and 2-2's first river. A lesson fires only 340 px short of
+  its thing, and Dot takes a moment to fly in: give the first hazard of a stage its own stage tip well before it, and prove the
+  opening with `stageStart.test.ts` (real engine, real damage, both orientations).
+- **What Dot teaches must count** (2-5, 2026-10-28): "Kick the shell!" sent the snapper sliding, it came back out dizzy, and the goal
+  stayed at 0/17. Every way a tip teaches to beat an animal has to count toward the goal; check it in the real engine.
+- **Dot's queue repeated a cut tip** (1-7, 2026-10-28): every time the eagle's warning cut her move tip, the tip went back in the
+  queue and was said again, about every 11 s for the whole stage. Count how often each line is said (`tools/inspect/dotPace.ts`).
 - **Meeca's bank stopped at trail height** beside a pit, so she walked under it and fell out of the stage (2026-10-28). A wall
   beside a pit reaches the pit's floor, not just the trail.
 - **Kit anchors slid** (Meeca's stage): pieces sit at 0..1 along a platform, so widening a platform after placing them moved every
@@ -120,3 +153,16 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   starting with 5-7..5-9). Stage names and goals: `stagePlan.ts`. The validator: `levelCheck.ts`. Stage length: `stageTime.ts`.
 - The inspector: `tools/inspect/` (README in `tools/README.md`). Matt's art sheets: `reference/prop-sheets/`. Story:
   `reference/STORY-REVIEW-2026-10-27.md`, `reference/VOICE.md`. Everything else: `reference/HANDOFF.md`.
+
+## 8. Quick start for a stage helper (so you don't have to hunt)
+
+1. `git merge ccr-0d59a91c-oy3imz` in your worktree. Read this file, then the ledger rows your brief names.
+2. Baseline: `npx tsx tools/inspect/inspect.ts --worlds N --seed 1 --json /tmp/before1.json` (and `--seed 2`, `--seed 3`).
+3. The stage you change: its builder in `protoStage.ts` (search `plan === 'N-M'` or `HAND_STAGES`), or `w2Stages.ts` for World 2;
+   its tests: `src/game/stage*.test.ts`, `w2Stages.test.ts`, `w3Puzzles.test.ts`, `w4Puzzles.test.ts`, `protoStage.test.ts`.
+4. A puzzle room: copy the shape of an existing one (1-6 seesaw in protoStage.ts, 2-3 cage lift in w2Stages.ts, 4-6 shutter) and
+   its proof test (validator + real engine).
+5. Screenshots: `NODE_ENV=development npx vite build`, `npx vite preview --port 4301`, then Playwright with `window.__play(id, layout)`
+   and `window.__engine()` to place Pokey (see `tools/art/w1to4/shots.mjs`).
+6. Before reporting: the checks in §5, on seeds 1-3; update the ledger rows you changed; add any lesson to §6.
+

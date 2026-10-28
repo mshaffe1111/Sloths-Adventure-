@@ -43,7 +43,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing, onRope: () => inputEngine.onRope },
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing, onRope: () => inputEngine.onRope, inCover: () => inputEngine.inCover },
     );
   }
   const G = gestures.current;

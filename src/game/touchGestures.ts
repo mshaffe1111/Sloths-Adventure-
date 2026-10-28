@@ -190,6 +190,12 @@ export interface GestureEnv {
    * needs a slide that is clearly up, and a drop a slide that is clearly down (a long sideways creep that drifted used to do both)
    */
   onRope?(): boolean;
+  /**
+   * he stands inside a bush or fern that hides him from a watcher (1-7's eagle, 3-2's eyes, 4-5's Sovereign). There a slide down hides
+   * him even while the thumb is still running: QA's thumb ran into the bush and slid down without lifting, and only a lift and a fresh
+   * slide down ducked (2026-10-28). The running duck's stricter slant (meant to keep a rolling thumb from stopping him dead) is off there.
+   */
+  inCover?(): boolean;
 }
 
 type Role = 'mover' | 'pending' | 'action' | 'ignored';
@@ -628,9 +634,12 @@ export class TouchGestures {
     let across = 0;
     for (let i = 1; i < f.trail.length; i++) across += Math.abs(f.trail[i].x - f.trail[i - 1].x);
     const downNow = f.y - f.trail[0].y >= across * (running ? TUNING.duckSlantRun : TUNING.duckSlant);
+    const cover = !!this.env?.inCover?.();
     const wantDuck = this.duckOn
-      ? dy > TUNING.duckDy * 0.6 && !(running && Math.abs(dx) > dy)
-      : dy > startDy && dy > Math.abs(dx) * (running ? 1 : 0.6) && ropeDown && downNow;
+      ? dy > TUNING.duckDy * 0.6 && !(running && Math.abs(dx) > dy && !cover)
+      : cover
+        ? dy > TUNING.duckDy * 0.8 && dy > Math.abs(dx) * 0.6
+        : dy > startDy && dy > Math.abs(dx) * (running ? 1 : 0.6) && ropeDown && downNow;
     if (wantDuck !== this.duckOn) {
       this.duckOn = wantDuck;
       this.sink.duck(wantDuck);

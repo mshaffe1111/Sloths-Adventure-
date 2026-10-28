@@ -7,7 +7,7 @@ import { lessonDotLine, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
 import { countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
-import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markSkillSeen, markSkipOffered, offersSkip, seenSkills, skipTapCounts, skipTips } from '../../game/dotGuideHelp.ts';
+import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, knownMoveTip, markMoveDone, markSkillSeen, markSkipOffered, movesDone, offersSkip, seenSkills, skipTapCounts, skipTips } from '../../game/dotGuideHelp.ts';
 import { recorder } from '../../game/playRecorder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game/dotGuideView.ts';
 import {
@@ -118,7 +118,11 @@ interface Plan {
 /** everything one run of a stage keeps: the queue, the watches, the story bookkeeping and Dot's flight */
 class GuideRun {
   view: GuideView = emptyGuideView();
-  queue = new GuideQueue();
+  /** Worlds 1-4 have Dot toned down (dotGuide.ts CALM); not Dot's own flight */
+  queue: GuideQueue;
+  /** the moves this phone did in earlier stages (a stage tip for one is not said again), and those marked so far */
+  movesBefore = movesDone();
+  movesMarked = new Set<string>();
   moves = new MoveWatch();
   struggle = new StruggleWatch();
   clock = 0;
@@ -174,6 +178,8 @@ class GuideRun {
   skipN = -1;
   /** the move counter, for the queue (made once: no new function each frame) */
   countMove = (m: MoveId): number => this.moves.count(m);
+  /** a move tip's thing is nowhere in view (made once) */
+  gone = (l: GuideLine): boolean => !!l.topic && GONE_TOPICS.has(l.topic) && !findTarget(l.topic, this.view);
   /** when she last landed (ms of play): she says her line from then */
   landedAt = 0;
   lastBx = 16;
@@ -189,11 +195,14 @@ class GuideRun {
     this.H = wasShown(this.world, this.mini, 'H');
     this.F = wasShown(this.world, this.mini, 'F');
     this.lastGuide = guideN;
+    this.queue = new GuideQueue(CALM_WORLDS.has(this.world) && !/-D$/.test(level.id));
   }
 
   /** queue a line if Dot's help lets it through */
   say(l: GuideLine): void {
     if (!helpAllows(l, this.help, this.seen, this.storyOn)) return;
+    // (toned down: not a stage tip for a move already done in an earlier stage)
+    if (this.queue.calm && knownMoveTip(l, this.movesBefore)) return;
     this.queue.push(l, this.clock);
   }
 
@@ -219,6 +228,11 @@ class GuideRun {
 }
 
 const storyKey = (f: WayFlag) => `story:${f}`;
+/** the worlds where Dot is toned down (Matt, 2026-10-28) */
+const CALM_WORLDS = new Set([1, 2, 3, 4]);
+/** a move tip about one of these is over once none of them is in view (dotGuide.ts CALM.goneMs) */
+const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
+const MOVE_IDS: MoveId[] = ['run', 'jump', 'double', 'grab', 'climb', 'leap', 'glide', 'punch', 'kick', 'crouch', 'push', 'bounce'];
 /** the goals with a count to fill */
 const QUOTA = new Set(['harvest', 'relic_hunt', 'purge', 'gauntlet', 'rescue']);
 
@@ -689,7 +703,14 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
       // (no line starts while the stage-start goal card is up: the two share the top-centre lane, QA v189)
       const cardUp = document.documentElement.dataset.hudCard === '1';
       const danger = !v.flight && (inDanger(v) || v.boss || v.chase);
-      run.queue.tick(run.clock, { danger, hold: cardUp, moveCount: run.countMove, swinging: run.view.swinging });
+      run.queue.tick(run.clock, { danger, hold: cardUp, moveCount: run.countMove, swinging: run.view.swinging, gone: run.gone });
+      // (the moves he has done, kept for later stages)
+      if (run.queue.calm && run.movesMarked.size < MOVE_IDS.length) {
+        for (const m of MOVE_IDS) if (!run.movesMarked.has(m) && run.moves.count(m) > 0) {
+          run.movesMarked.add(m);
+          markMoveDone(m);
+        }
+      }
       for (const ev of run.queue.drain()) {
         if (ev.type === 'start') {
           noteSaid(ev.show.line);
