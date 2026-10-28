@@ -114,6 +114,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 | **Worlds 4-10** (still the procedural generator: planned, rolled, validated) | `src/game/stageGenerator.ts`, `levelSeeds.ts`, `levelCheck.ts`; run `npx tsx scripts/check-levels.ts [4]` |
 | Stage-length and layout checks | `scripts/measure-stages.ts`, `scripts/seed-levels.ts`, tests such as `w2Stages.test.ts`, `w3Stages.test.ts`, `protoStage.test.ts`, `levels.test.ts` |
 | Abilities (rope/shimmy, glide) and when they unlock | `src/game/skills.ts` |
+| **Gemini's research on building, checking and varying stages** (read it before building stages, the inspector, the puzzle kit or the generator) | `reference/GEMINI-PCG-RESEARCH.md`: what we took from it at the top, then Matt's four pasted parts word for word (dead time, sameness, noisy-thumb bots, expressive range over 200 rolls, jump forgiveness at 30 fps, puzzle rooms, variety cooldowns) |
 | Secret levels plan | `reference/SECRET-LEVELS.md` (Under the Ruins, World 7) |
 | Physics and controls | `physics.ts`, touch handling in `src/game/` (search for `touch`), lessons in `lessons.ts` |
 | Pickups, hearts, checkpoints, flowers | `pickups.ts`, `flowerReach.ts`, `wayside.ts` |
