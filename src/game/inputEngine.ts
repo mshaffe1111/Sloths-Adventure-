@@ -1,8 +1,16 @@
 import type { InputState } from './types.ts';
+import { isEasy } from './difficulty.ts';
+import { FORGIVE } from './physics.ts';
 import { parseTouchVector } from './rules.ts';
 
 /** a touch jump is held at least this long: a jump stops rising the moment the press is let go, and the level builder assumes a full jump (about 216 ms of rising), so a flick must give a full one, not the three-quarters a 130 ms press gave */
 export const MIN_TOUCH_JUMP_HOLD_MS = 220;
+
+/**
+ * how long a jump press is kept for the engine (s): the difficulty's jump buffer plus one frame, so the engine's own buffer
+ * (engine.ts, physics.ts FORGIVE.buffer) starts from the frame it reads the press. One rule for both (Gemini G2): 133 ms Normal, 200 Easy.
+ */
+export const pressKeep = (): number => (isEasy() ? FORGIVE.easy.buffer : FORGIVE.normal.buffer) + 1 / 30;
 
 export class InputEngine {
   public state: InputState = {
@@ -111,7 +119,7 @@ export class InputEngine {
       if (!this.state.jumpHeld || isUpTwice) {
         this.state.jumpPressed = true;
         this.state.jumpLean = 0;
-        this.jumpBufferTimer = 0.16;
+        this.jumpBufferTimer = pressKeep();
       }
       this.state.jumpHeld = true;
     }
@@ -260,7 +268,7 @@ export class InputEngine {
     this.state.up = true;
     this.state.jumpPressed = true;
     this.state.jumpHeld = true;
-    this.jumpBufferTimer = 0.16;
+    this.jumpBufferTimer = pressKeep();
   }
 
   /** climbing on a vine or trunk by touch: hold up or down with no jump (refined controls) */
@@ -372,7 +380,7 @@ export class InputEngine {
           if (!prev.up) {
             this.state.jumpPressed = true;
             this.state.jumpLean = 0;
-            this.jumpBufferTimer = 0.16;
+            this.jumpBufferTimer = pressKeep();
           }
           this.state.jumpHeld = true;
         } else if (prev.up) {

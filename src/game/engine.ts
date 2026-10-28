@@ -39,7 +39,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, HARMLESS_LESSONS, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, timedLaunch, type SwingState } from './physics.ts';
+import { ASSIST, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, timedLaunch, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -384,7 +384,7 @@ export class GameEngine {
   private w5: W5Play | null = null;
   /**
    * World 5's step and lip help (a plain flick at a one-jump step lands on it, a jump into a face carries over its lip, the lip's hoist
-   * puts a foot on the ledge) is on here too: every hand-built stage, Worlds 1-5 (QA 2026-10-28, build 39fc3db: a plain walk stopped
+   * puts a foot on the ledge) is on here too: every stage of every world (QA 2026-10-28, build 39fc3db: a plain walk stopped
    * dead at 1-7's and 1-9's waist-high steps and dips, and only an up-and-over flick got out; reference/STAGE-RULES.md: rules learned
    * in one world apply to every world). Not Meeca's stage (its own helper's), the boss arenas or Dot's flight.
    */
@@ -477,6 +477,8 @@ export class GameEngine {
   /** finds picked up while stopping was not safe: the reader opens once he is (the same rule as the lesson cards) */
   private findsWaiting: string[] = [];
   private coyoteTimer: number = 0;
+  /** the jump forgiveness for the difficulty (physics.ts FORGIVE): coyote time, jump buffer, ledge landing */
+  private forgive: (typeof FORGIVE)['normal' | 'easy'] = FORGIVE.normal;
   private jumpBufferTimer: number = 0;
   /** what carries him through the air on a touch screen (see jumpHelp.ts): the way he was going when he left the ground, until he lands or pushes back */
   private airDrive = newAirDrive();
@@ -578,6 +580,7 @@ export class GameEngine {
     // Generate Stage data
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
+    this.forgive = isEasy() ? FORGIVE.easy : FORGIVE.normal;
     this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config))) : withGoals(generateStage(config));
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
@@ -629,7 +632,8 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
-    this.stepHelp = !!this.w5 || (!!this.proto && !this.proto.meeca && !this.currentStage.arena && !this.currentStage.dot);
+    // (every world, the generated stages too, Gemini G4: not Meeca's stage, the boss arenas or Dot's flight)
+    this.stepHelp = !!this.w5 || (!this.proto?.meeca && !this.currentStage.arena && !this.currentStage.dot);
     this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles }) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
@@ -1782,7 +1786,9 @@ export class GameEngine {
 
         const assist = this.assistNow();
         if (p.grounded) {
-          this.coyoteTimer = PHYS.coyote + ASSIST.coyote * assist;
+          // (133 ms on Normal, 167 on Easy, on every stage; the early-stage help adds on top: physics.ts FORGIVE)
+          // (and a hair over, so a press on the frame that reaches it, 4 frames at 30 fps for 133 ms, still counts)
+          this.coyoteTimer = this.forgive.coyote + ASSIST.coyote * assist + 0.001;
         } else {
           this.coyoteTimer = Math.max(0, this.coyoteTimer - dt);
         }
@@ -1819,7 +1825,7 @@ export class GameEngine {
             sound.playDoubleJump();
             this.spawnDoubleJumpBurst(p.x, p.y);
           } else {
-            this.jumpBufferTimer = PHYS.buffer + ASSIST.buffer * assist;
+            this.jumpBufferTimer = this.forgive.buffer + ASSIST.buffer * assist;
             this.input.state.jumpPressed = false;
           }
         }
@@ -1890,7 +1896,7 @@ export class GameEngine {
           const lipL = this.stepHelp && !fromLeft && !fromRight && p.x + half - plat.x <= LIP_IN && p.x < plat.x + plat.width / 2;
           const lipR = this.stepHelp && !fromLeft && !fromRight && plat.x + plat.width - (p.x - half) <= LIP_IN && p.x >= plat.x + plat.width / 2;
           if (!fromLeft && !fromRight && !lipL && !lipR) continue;
-          if (p.y <= plat.y + 26 && p.vy >= -120) {
+          if (p.y <= plat.y + this.forgive.mantle && p.vy >= -120) {
             // caught the lip of the ledge: hoist up onto it
             p.y = plat.y;
             p.vy = 0;
@@ -1967,13 +1973,30 @@ export class GameEngine {
         // Pokey standing in mid-air with most of his body off the cliff. 0.26 (about 11 px) keeps a foot on the ledge.
         const side = plat.type === 'drift' ? DRIFT_CATCH.side : 0.26 + ASSIST.landSide * assist;
         const catchDrop = plat.type === 'drift' ? DRIFT_CATCH.drop : 14 + ASSIST.catchDrop * assist;
-        if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) return false;
+        if (!(p.x + p.width * side > plat.x && p.x - p.width * side < plat.x + plat.width)) {
+          // ledge-landing forgiveness (physics.ts FORGIVE.landPx, every stage): falling onto it from above, a foot that misses its edge
+          // by a few px still lands, nudged on. Never for walking off an edge (his feet were not above its top) nor a drifting log
+          if (plat.type === 'drift' || !(playerPrevFeet < plat.y - 2)) return false;
+          const missL = plat.x - (p.x + p.width * side);
+          const missR = p.x - p.width * side - (plat.x + plat.width);
+          // (and only for a jump carrying him toward it that fell a little short: a hop straight up beside a step is not caught here,
+          // the step help is for that, STEP_UP, and World 5's stuck-helper waits for a player hopping in place)
+          if (Math.max(missL, missR) > this.forgive.landPx || (missL > 0 ? p.vx : -p.vx) < 30) return false;
+        }
         // Check landing from above
         return p.vy >= 0 && playerPrevFeet <= plat.y + catchDrop && playerFeet >= plat.y;
       });
       // two at the same height (a basket flush on the path at its bottom stop): the one under his middle, a moving one first (lift.ts),
       // so a lift never rises without him
       const plat = pickFloor(floors, p.x);
+      if (plat && plat.type !== 'drift') {
+        // (caught by the ledge-landing forgiveness: on with a foot, as far as the usual tolerance needs)
+        const side = 0.26 + ASSIST.landSide * assist;
+        const missL = plat.x - (p.x + p.width * side);
+        const missR = p.x - p.width * side - (plat.x + plat.width);
+        if (missL >= 0) p.x += missL + 1;
+        else if (missR >= 0) p.x -= missR + 1;
+      }
       if (plat) {
         p.y = plat.y;
         const landV = p.vy; // how hard he came down: the squash below follows it

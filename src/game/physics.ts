@@ -21,14 +21,27 @@ export const PHYS = {
   gravUp: 1900,
   gravDown: 2500,
   maxFall: 950,
-  coyote: 0.1,
-  buffer: 0.12,
   bounceV: 830,    // mushroom bounce
   treeLeapV: 600,
   treeHopV: 330,
   vineReleaseV: 560,
   hurtKnockV: 420,
 } as const;
+
+/**
+ * Jump forgiveness for 30 fps touch, by difficulty, on every stage (Matt's Gemini research, reference/GEMINI-PCG-RESEARCH.md part 3,
+ * and reference/GEMINI-LEDGER.md G1-G4; Matt 2026-10-28: "people may not be able to jump short, do long jumps"). Timed in seconds of
+ * game time, never frames, so a dropped frame eats none of it. The early-stage help (ASSIST) still adds on top on the first stages.
+ *   coyote:  he may still jump this long after walking off a ledge (s)
+ *   buffer:  a jump pressed this long before he lands fires as he lands (s); the touch input keeps a press as long, plus a frame
+ *   landPx:  a falling foot that misses an edge by up to this much lands on it, nudged on (px)
+ *   mantle:  the lip's hoist takes him onto a face whose top is up to this far over his feet (px); generous already, so unchanged
+ */
+export const FORGIVE = {
+  normal: { coyote: 0.133, buffer: 0.133, landPx: 8, mantle: 26 },
+  easy: { coyote: 0.167, buffer: 0.2, landPx: 12, mantle: 26 },
+} as const;
+export type Forgive = (typeof FORGIVE)['normal' | 'easy'];
 
 /**
  * How much extra help the early stages give, 0..1: full on stage 1-1, easing away to nothing by stage 25 (world 3-5). It is a ramp, not a switch,
