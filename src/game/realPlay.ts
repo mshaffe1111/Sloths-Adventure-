@@ -35,8 +35,10 @@ export interface Pad {
   punch?: boolean;
   /** a kick this frame: the way a touch flick throws it (-1 left, 1 right), or 0 as a key or button does (the way he steers or faces) */
   kick?: -1 | 0 | 1;
-  /** a thumb held still on the glass (Meeca's stage carves while it is) */
+  /** the hold key held (Meeca's stage carves while it is) */
   hold?: boolean;
+  /** a finger traced this far round a circle this frame (radians: Meeca's carving, circleTrace.ts) */
+  circle?: number;
 }
 
 /** the pad, with the real input's jump buffer: a press waits 0.16 s to be used (inputEngine.ts) */
@@ -241,6 +243,7 @@ export class RealPlay {
     s.up = !!pad.up || !!pad.jump || !!pad.press;
     s.jumpHeld = !!pad.jump || !!pad.press;
     s.hold = !!pad.hold;
+    s.circle = (s.circle ?? 0) + (pad.circle ?? 0);
     if (pad.press) {
       s.jumpPressed = true;
       this.input.jumpBuffer = 0.16;
@@ -255,7 +258,7 @@ export class RealPlay {
       this.input.kickBuffer = 0.14;
     }
     if (this.safe) this.p.invincibleTimer = Math.max(this.p.invincibleTimer, 1e9);
-    if (this.placed && (this.e.w5 || this.e.mc)) {
+    if (this.placed && this.e.w5) {
       const c = this.e.camera;
       c.x = c.targetX = Math.max(0, this.p.x - c.viewportWidth * 0.45);
       c.y = c.targetY = Math.max(0, this.p.y - c.viewportHeight * 0.55);

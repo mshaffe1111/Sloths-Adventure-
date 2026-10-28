@@ -1,6 +1,6 @@
 # Status board (the lead session keeps this current; see reference/LEAD-PLAYBOOK.md)
 
-Last updated: 2026-10-28 (after release PR #40).
+Last updated: 2026-10-28 (Hugging Face art run started).
 
 ## Live (main)
 
@@ -10,6 +10,7 @@ Last updated: 2026-10-28 (after release PR #40).
 
 ## On the work branch, not live yet (pushed for safe keeping; draft PR #41 tracks it, not a release)
 
+- QA batch 2 + Dot toned down + Gemini jump forgiveness in every world (merged 8ed2c53, fast gate 77/77; cloud full check running).
 - World 1-4 art placed (merged 2026-10-28, fast gate passed): every sheet cell used except World 1's nest doors and petal bundle,
   World 2's trough and pink net (follow-up after QA batch 2 lands), and 4 World 5 beetle frames. Looks rotate by roll (artRoll.ts).
 - Generator variety tools (merged 2026-10-28): src/game/gen2/variety.ts (ShuffleBag, CooldownQueue, WorldOnce, poissonPlace,
@@ -25,12 +26,14 @@ Last updated: 2026-10-28 (after release PR #40).
 
 | Helper | Job | Owns | Started |
 |---|---|---|---|
-| QA batch 2 | Worlds 1-2 fixes: 2-2 opening drowning (+ no stage hurts in its opening seconds), 1-7 eagle, 2-5 opening hit and predator count, dips/lips that stop a plain walk, lingering tips, fight-count progress bars, 2-2 flower totals, lives shown from the start, 1-7 polish; Dot toned down (W1-4); jump forgiveness engine-wide by difficulty (ledger G1-G4, G8) | W1-2 stage code, Dot's lines, engine movement, levelCheck | 2026-10-28 |
+| QA batch 2 -> Easy jumps | (batch 2 merged 8ed2c53) next piece: Easy never needs a full-hold jump (G8 as a failing rule; fix 1-1, 1-2, 1-4, 1-8, 3-3, 4-3), re-run the first-timer bot | jump spots, levelCheck | 2026-10-28 |
+| Art -> World 1-2 follow-up | 1-4 nest door, petal bundles as room rewards, branch gate in a World 1 room, 2-2 trough; no route changes | W1-2 art and dressing | 2026-10-28 |
 | 200-roll tool | Expressive range: 200 rolls per stage of Worlds 1-5, heatmaps, diversity vs 0.35, rule failures across rolls (ledger C5) | tools/inspect/era.ts (new files) | 2026-10-28 |
 | Generator: architect | The new generator's written design for Matt (World 5's 5-7..5-9 first, then Worlds 6-10), its data shapes and the six-pass skeleton | src/game/gen2/ (types, pipeline, design doc) | 2026-10-28 |
 | Pacing measures | Inspector: action density, rhythm-group length, tension curve per stage, the difficulty-band chart per world | tools/inspect/pacing.ts, bands.ts (new files) | 2026-10-28 |
 | Worlds 3-4 gap list | Measure only: 3 rolls, the first-timer bot, art use; per-stage gaps and variety ideas, so the W3-4 variety pass starts tonight | nothing (read-only) | 2026-10-28 |
 | Meeca's stage | "On the March North": camp, Flicker, five puzzle rooms (tea channel in room 4), the approved ending; night strips in code; replaces 5-M outright | Meeca/5-M files, W5 night strips | 2026-10-28 |
+| Hugging Face art run (Matt 2026-10-28) | Enemies first, hardest first (bosses, new creature models, animated clips), then what the game still needs, then art and props: reference/ART-PLAN.md inventory with costs, Matt has ~$70 left: plan to $65 ($40 enemies, ~$25 what's left to finish then art and props, ~$5 spare), results in a gallery for Matt's pick (show first, nothing into src/ yet) | reference/ART-PLAN.md, tools/art/ new folder + new specs (branch art-hf) | 2026-10-28 |
 
 ## Budget
 
@@ -64,7 +67,7 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 | Session | Job | Branch | Started |
 |---|---|---|---|
-| session_01FhBbYPCMx5mTFQdQmEtqey | Full check of the work branch: tsc, full suite, build, inspector + first-timer bot on Worlds 1-4 seeds 1-3, timed | reads ccr-0d59a91c-oy3imz, pushes nothing | 2026-10-28 17:40 UTC |
+| session_01FhBbYPCMx5mTFQdQmEtqey | Full check of the work branch at 8ed2c53+ (redirected after the batch-2 merge): tsc, full suite, build, inspector + first-timer bot on Worlds 1-4 seeds 1-3, timed | reads ccr-0d59a91c-oy3imz, pushes nothing | 2026-10-28 17:40 UTC |
 
 ## Two tracks (Matt, 2026-10-28)
 

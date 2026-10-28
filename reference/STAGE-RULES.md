@@ -135,6 +135,16 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   stayed at 0/17. Every way a tip teaches to beat an animal has to count toward the goal; check it in the real engine.
 - **Dot's queue repeated a cut tip** (1-7, 2026-10-28): every time the eagle's warning cut her move tip, the tip went back in the
   queue and was said again, about every 11 s for the whole stage. Count how often each line is said (`tools/inspect/dotPace.ts`).
+- **Meeca's bank stopped at trail height** beside a pit, so she walked under it and fell out of the stage (2026-10-28). A wall
+  beside a pit reaches the pit's floor, not just the trail.
+- **Kit anchors slid** (Meeca's stage): pieces sit at 0..1 along a platform, so widening a platform after placing them moved every
+  piece on it. Settle platform widths first, then anchor.
+- **Words that cover the speaker**: a thought bubble with no room above fell back below her head and hid her. With no room above,
+  a bubble goes beside the speaker; check upright screenshots with the bubble up.
+- **Lines that queue fall behind**: a 4 s reading floor let story lines pile up until they described a room she had left. A line
+  that is stale (she has walked on ~500 px) is dropped, not queued.
+- **One length number lies**: the time model and a real-engine bot disagree by about a minute on Meeca's stage (model 5:09-5:17,
+  bot 4:16-4:25; the bot never hesitates). Give both, and say which one the target is on.
 
 ## 7. Where things are
 

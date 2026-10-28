@@ -65,7 +65,7 @@ export type PieceSpec =
   | { kind: 'source'; id: string; variant: ItemVariant; at: Anchor; look?: 'tree' | 'pile' }
   | { kind: 'plate'; id: string; at: Anchor; w?: number; need?: number }
   /** `look`: the wall over the door: the root wall (World 1's, the default) or bundled reeds (World 2's court) */
-  | { kind: 'gate'; id: string; at: Anchor; open: Wire; latch?: boolean; h?: number; look?: 'roots' | 'reeds' }
+  | { kind: 'gate'; id: string; at: Anchor; open: Wire; latch?: boolean; h?: number; look?: 'roots' | 'reeds' | 'woven' | 'butler' }
   | { kind: 'lever'; id: string; at: Anchor; on?: boolean }
   | { kind: 'basket'; id: string; at: Anchor; mouth: number; need?: number; drop?: number }
   /** `by`: the basket whose weight raises it (a counterweight), or any piece whose output winds it up while on (a pinwheel); `hold`: it
@@ -73,7 +73,8 @@ export type PieceSpec =
    * cage collectible's id). A cage's lift has no plank to stand on: the cage hangs on the rope where the plank would be, and lifted all
    * the way up its floor drops open and the little one is free (puzzlePlay.ts) */
   | { kind: 'lift'; id: string; at: Anchor; w: number; rise: number; by: string; hold?: boolean; cage?: number }
-  | { kind: 'beetle'; id: string; at: Anchor; sight?: number }
+  /** `waitNear`: it dozes, not looking about, until he comes this close (px): a cake left by it is eaten while he is there to see */
+  | { kind: 'beetle'; id: string; at: Anchor; sight?: number; waitNear?: number }
   | { kind: 'reset'; id: string; at: Anchor }
   /** a plank on a pivot at `at` (its ends' tops at the anchor's height when down): weight on one end lowers it and raises the other into a
    * step `rise` px up. `w`: the whole plank; `rest`: which end is down when the weights are even (-1 the left, 1 the right, 0 level) */
@@ -92,19 +93,63 @@ export type PieceSpec =
   | { kind: 'sluice'; id: string; at: Anchor; river: number; open: Wire; opened?: Flow; shut?: Flow }
   /** a creature that trades (World 4's capuchin on its stump): offered a `wants` (a tap by it while carrying one) it takes it and drops
    * the thing it holds (the item whose `with` is this trader's id) */
-  | { kind: 'trader'; id: string; at: Anchor; wants: ItemVariant };
+  | { kind: 'trader'; id: string; at: Anchor; wants: ItemVariant }
+  // ── phase 2b (Meeca's stage, 2026-10-28): the trap chair, the sapling, the silk line, the knot and its ladder, the teapot, the light
+  // that follows him (Flicker), the moonflower ──
+  /** a soft armchair: its seat (`seat` px up) is a step anyone would use, but sat on it holds you in silk until you wiggle free (slide one
+   * way and the other, CHAIR.wiggles times), and pops you off the way you came. Never a way up */
+  | { kind: 'chair'; id: string; at: Anchor; seat?: number }
+  /** a young sapling rooted at `at`, `h` tall (its climb is the stage's vine `vine`, a kit vine): climbed to the top, it bends over
+   * under him and sets him down at `to`, and stays bent (a bridge) */
+  | { kind: 'sapling'; id: string; at: Anchor; to: Anchor; h: number; vine: number }
+  /** a shining silk line hanging like a vine (the kit vine `vine`): whoever grabs it is held a moment, then dropped. Never a way up */
+  | { kind: 'silk'; id: string; at: Anchor; vine: number }
+  /** a silk knot (a rolled ladder's tie): a thrown thing that hits it snaps it, for good (its output) */
+  | { kind: 'knot'; id: string; at: Anchor }
+  /** a vine ladder rolled up at `at` (the top of a bank): it unrolls down the kit vine `vine`, and can be climbed, once `open` is on */
+  | { kind: 'ladder'; id: string; at: Anchor; vine: number; open: Wire }
+  /** a teapot on its stand: a tap by it tips it over, for good; its tea runs down the trough (`trough`: the points it runs through, to
+   * the basket's mouth) into the basket `into`, weighing `weight` there */
+  | { kind: 'teapot'; id: string; at: Anchor; into: string; weight?: number; trough?: Anchor[] }
+  /** a light that goes with him through the room (Flicker, the firefly): radius `r`, over his head */
+  | { kind: 'glow'; id: string; r: number }
+  /** a moonflower bud: a light that reaches it opens it (its output, for good), and open it lights `r` px round it */
+  | { kind: 'moonflower'; id: string; at: Anchor; r: number };
 export type PieceKind = PieceSpec['kind'];
+
+/** a line said in a room: Dot's words (a plain string), or a line with its speaker (Meeca's stage: her thoughts, the Butler, Flicker) */
+export type TipLine = string | { who: 'meeca' | 'butler' | 'flicker'; text: string };
+/** the words of a line */
+export const tipText = (l: TipLine): string => (typeof l === 'string' ? l : l.text);
 
 /** what Dot says in a room, the first time each moment comes (said once per stage: the engine remembers it) */
 export interface RoomTips {
   /** coming into the room (it explains the locked way on) */
-  enter?: string;
+  enter?: TipLine;
   /** the first time he holds something here */
-  hold?: string;
+  hold?: TipLine;
   /** the room's way on opens */
-  open?: string;
+  open?: TipLine;
   /** the beetle fell asleep off every plate (the room needs starting again: the post) */
   stuck?: string;
+  // ── phase 2b's moments (each the first time it comes) ──
+  /** a beetle that was waiting fell asleep where it ate (it shows what a cake does) */
+  slept?: TipLine;
+  /** sat in the trap chair, and held */
+  chair?: TipLine;
+  /** caught on the silk line */
+  silk?: TipLine;
+  /** a tap by the Butler: polite (the first time, and every time after) */
+  polite?: TipLine;
+  polite2?: TipLine;
+  /** after his steam, sleepy */
+  yawn?: TipLine;
+  /** the teapot tipped over */
+  tipped?: TipLine;
+  /** a sapling's climb, the first time he stands at its foot */
+  climb?: TipLine;
+  /** the first light the room's glow finds (a hidden step) */
+  lit?: TipLine;
 }
 
 export interface RoomSpec {
@@ -174,6 +219,42 @@ export const KIT = {
   tradeReach: 90,
 } as const;
 
+/** phase 2b's numbers */
+export const CHAIR = {
+  /** the seat's height over the floor, and its width */
+  seat: 62,
+  w: 74,
+  /** a wiggle is a change of the way he slides; this many and he is free */
+  wiggles: 4,
+  /** he sinks in for this long before the wiggling counts (s) */
+  sink: 0.55,
+  /** popped free: thrown off the way he came */
+  popVx: 230,
+  popVy: -360,
+} as const;
+export const SILK = {
+  /** caught on it, he hangs this long (s), then drops */
+  hold: 1.25,
+  /** and shakes it off this long (s), standing */
+  shake: 0.8,
+} as const;
+export const SAPLING = {
+  /** he is this near its top (px) when it starts to bend */
+  near: 46,
+  /** the bend takes this long (s) */
+  bend: 1.25,
+} as const;
+export const TEA = {
+  /** the pot tips, then the tea runs down the trough this long (s) before the basket is full */
+  run: 1.1,
+  /** the weight of a basket of tea */
+  weight: 1,
+} as const;
+/** a silk knot's box a thrown thing snaps (world: puzzlePlay.ts and puzzleCheck.ts fly at the same) */
+export const knotBox = (k: { x: number; y: number }) => ({ x0: k.x - 20, x1: k.x + 20, y0: k.y - 44, y1: k.y + 10 });
+/** Flicker hovers this far over his feet, a little ahead */
+export const GLOW = { up: 92, ahead: 26 } as const;
+
 /** the throws: up (the jump intent: up and a little forward) and forward (the kick intent), from his hands */
 export const THROW = {
   up: { vx: 100, vy: -820 },
@@ -218,11 +299,15 @@ export function addKitPlatforms(platforms: Platform[], kit: KitExtras): void {
   const byId = new Map(platforms.map((p) => [p.id, p]));
   kit.rooms.forEach((room, ri) => {
     room.pieces.forEach((pc) => {
-      if (pc.kind !== 'gate' && pc.kind !== 'lift' && pc.kind !== 'seesaw' && pc.kind !== 'ledge') return;
+      if (pc.kind !== 'gate' && pc.kind !== 'lift' && pc.kind !== 'seesaw' && pc.kind !== 'ledge' && pc.kind !== 'chair') return;
       if (platforms.some((p) => p.id === kitPlatId(ri, pc.id, 0))) throw new Error(`room ${room.id}: ${pc.id}'s platform id is taken (rename the piece)`);
       const at = anchorAt(pc.at, byId);
       if (!at) throw new Error(`room ${room.id}: ${pc.id} sits on platform ${pc.at.on}, which is not there`);
-      if (pc.kind === 'seesaw') {
+      if (pc.kind === 'chair') {
+        // (the whole chair is one soft block: its top is the seat)
+        const seat = pc.seat ?? CHAIR.seat;
+        platforms.push({ id: kitPlatId(ri, pc.id, 0), x: at.x - CHAIR.w / 2, y: at.y - seat, width: CHAIR.w, height: seat, type: 'solid', art: 'kit' });
+      } else if (pc.kind === 'seesaw') {
         // its two ends, each half the plank, as they stand at rest
         const w = pc.w ?? KIT.seesawW;
         const [dl, dr] = seesawDy(pc.rest ?? -1, pc.rise ?? KIT.seesawRise);

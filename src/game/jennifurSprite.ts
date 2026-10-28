@@ -89,12 +89,15 @@ function isEnabled() {
   return v;
 }
 
+/** her standard sheet (walk, run, jump, climb, the moods) */
+export const MEECA_STANDARD_URL = new URL('../assets/characters/meeca-standard.webp', import.meta.url).href;
+
 function active() {
   if (!isEnabled() || typeof Image === 'undefined') return false;
   if (!atlas) {
     const img = new Image();
     atlas = img;
-    trackAtlas(img, new URL('../assets/characters/meeca-standard.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
+    trackAtlas(img, MEECA_STANDARD_URL, () => { ready = true; }, () => { atlas = null; });
   }
   return ready;
 }

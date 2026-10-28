@@ -23,7 +23,38 @@ interface PauseMenuProps {
   trophyTotal: number;
   /** the skills Pokey has learned so far */
   skills: Set<SkillId>;
+  /** Meeca's stage: ask Flicker for a hint, a step at a time (null when he cannot be asked now) */
+  onAskHint?: () => string | null;
 }
+
+/**
+ * Meeca's stage: "Ask Flicker". Hints only when asked, in steps, and never the answer (Matt, 2026-10-27): each tap gives the room's next
+ * step of help, said in his bubble when play resumes, and shown here.
+ */
+const HintTile: React.FC<{ ask: () => string | null }> = ({ ask }) => {
+  const [said, setSaid] = React.useState<string | null>(null);
+  const [none, setNone] = React.useState(false);
+  return (
+    <button
+      type="button"
+      className="pm-tile pm-hint"
+      onClick={() => {
+        const h = ask();
+        setSaid(h);
+        setNone(!h);
+      }}
+    >
+      <Icon color="#d9f99d">
+        <circle cx="12" cy="10" r="5" />
+        <path d="M9.5 17h5M10.5 20h3" />
+      </Icon>
+      <span>
+        <b>Ask Flicker</b>
+        <small aria-live="polite">{said ? `"${said}"` : none ? 'Flicker is not here yet.' : 'A hint, not the answer'}</small>
+      </span>
+    </button>
+  );
+};
 
 
 /** music and effects volume (saved on the device) */
@@ -124,7 +155,7 @@ export const Sliders: React.FC = () => {
 };
 
 /** The pause menu: opens when the player taps Menu (the game is paused behind it). */
-export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenMap, trophyCount, trophyTotal, skills }) => (
+export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onToggleMute, onResume, onRestart, onOpenTrophies, onOpenCards, onOpenMap, trophyCount, trophyTotal, skills, onAskHint }) => (
   <div className="pm-scrim select-none">
     <div className="pm-card" role="dialog" aria-label="Menu">
       <div className="pm-head">
@@ -146,6 +177,7 @@ export const PauseMenu: React.FC<PauseMenuProps> = ({ levelConfig, isMuted, onTo
       </button>
 
       <div className="pm-tiles">
+        {onAskHint && <HintTile ask={onAskHint} />}
         <button type="button" className="pm-tile" onClick={onRestart} title={COARSE ? undefined : 'R'}>
           <Icon color="#6ee7b7">
             <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />

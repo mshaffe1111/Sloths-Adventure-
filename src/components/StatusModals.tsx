@@ -45,6 +45,8 @@ interface StatusModalsProps {
   onOpenTitle: () => void;
   onOpenTrophies: () => void;
   onOpenCards: () => void;
+  /** Meeca's stage: ask Flicker for a hint (null when he cannot be asked now) */
+  onAskHint?: () => string | null;
   onViewStory?: () => void;
   onStartBossFight?: () => void;
 }
@@ -64,6 +66,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
   trophyCount,
   trophyTotal,
   skills,
+  onAskHint,
   onToggleMute,
   onResume,
   onRestart,
@@ -93,6 +96,7 @@ export const StatusModals: React.FC<StatusModalsProps> = ({
         trophyCount={trophyCount}
         trophyTotal={trophyTotal}
         skills={skills}
+        onAskHint={onAskHint}
       />
     );
   }

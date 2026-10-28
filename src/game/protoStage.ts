@@ -263,7 +263,7 @@ export const STAGE_SECONDS: Record<string, number> = {
   '5-2': 200, // don't sit: the threads, the cakes and the Butler
   '5-3': 175, // closing orchids: a harvest from the orchids' cups as they open and shut, closing sooner as it goes on
   '5-4': 170, // silk bridges: the first dusk, the silk lines and the sheets (w5Stage54.ts)
-  '5-M': 165, // Meeca's stage, after 5-5: the column at dusk, five warnings carved, the blanket (meecaStage.ts MEECA_STAGE_SECONDS)
+  '5-M': 315, // Meeca's stage, the first of World 5: the night camp, five puzzle rooms, the clearing (meecaStage.ts meecaSeconds: 5:00 to 5:30)
   '5-5': 190, // caught in silk: the cocoons, the pouch scene at the rest branch, the silk line up to the high web
 };
 export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_SECONDS;
