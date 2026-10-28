@@ -395,9 +395,9 @@ export default function App() {
     else sound.setAmbient(null);
   }, [screen, activeLevel, musicSalt]);
 
-  // Check URL parameters (?autostart=1)
+  // Check URL parameters (?autostart=1); the same keys after # work too, since a shared Claude link passes on only the # part
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(`${window.location.search.slice(1)}&${window.location.hash.slice(1)}`);
     if (params.get('autostart') === '1') {
       // ?level=5-10 jumps straight to that stage (handy for checking a boss)
       const wanted = params.get('level');
