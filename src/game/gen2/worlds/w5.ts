@@ -25,8 +25,9 @@ import type { Enemy } from '../../types.ts';
 import type { CreatureDef, FilledSocket, PropDef, PropEmitter, PropPair, StageSink, WorldKit, WorldManifest } from '../types.ts';
 import { W5_SECTIONS } from './w5Sections.ts';
 
-/** World 5's ground, its bank's depth, and how deep a soft pit's floor lies under its lips (w5Stages.ts: HOLLOW_Y 710 - G) */
-export const W5_GROUND = { y: G, bankH: 90, pitDepth: 130 } as const;
+/** World 5's ground, its bank's depth, and how deep a soft pit's floor lies under its lips: 110 (w5Stages.ts lays 130), so the stitcher
+ *  lays one wide step out of an Easy pit, not two narrow ones the kid bot aims for (33 px steps cost it 15% on a 99 px pit) */
+export const W5_GROUND = { y: G, bankH: 90, pitDepth: 110 } as const;
 
 // ───────────────────────────── the ids (5-9's arena builder and the sections use these) ─────────────────────────────
 

@@ -30,6 +30,8 @@ const thread = (id: string, on: string, t: Socket['t'], o: Opt = {}) => prop(id,
 const cake = (id: string, on: string, t: Socket['t'], o: Opt = {}) => prop(id, on, t, ['treat'], { easy: 'drop', ...o });
 const chair = (id: string, on: string, t: Socket['t'], o: Opt = {}) => prop(id, on, t, ['seat'], o);
 const flag = (on: string, t: Socket['t']): Socket => ({ id: 'flag', role: 'flag', on, t });
+/** a petal on a stump's top (a reward for the hop) */
+const stumpPetal = (on: string): Socket => petals(`p-${on}`, on, 0.5, 1);
 
 const LIVE: Phase[] = ['sho', 'ten', 'ketsu'];
 const HOT: Phase[] = ['ten', 'ketsu'];
@@ -50,14 +52,15 @@ const garden: SectionTemplate = {
   archetypes: 'any',
   phases: ['start', 'rest', 'goal', 'ki'],
   difficulty: 1,
-  pieces: [bank('bank', [700, 900])],
+  pieces: [bank('bank', [640, 800]), stump('st', 'bank', [0.24, 0.32], [45, 55])],
   entry: { piece: 'bank', kind: 'ground' },
   exit: { piece: 'bank', kind: 'ground' },
   exitDy: 0,
   sockets: [
-    petals('petals', 'bank', [0.35, 0.55], 3, 240),
-    flag('bank', 0.82),
-    chair('chair', 'bank', [0.15, 0.25], { chance: 0.5, phases: ['ki', 'rest'] }),
+    petals('st', 'st', 0.5, 1),
+    petals('petals', 'bank', [0.5, 0.56], 2, 100),
+    chair('chair', 'bank', [0.64, 0.7], { phases: ['ki', 'rest', 'goal'] }),
+    flag('bank', 0.86),
   ],
   mirrorable: true,
 };
@@ -70,14 +73,17 @@ const lawn: SectionTemplate = {
   phases: ['start', 'rest', 'ki'],
   difficulty: 2,
   uses: ['orchid'],
-  pieces: [bank('bank', [820, 1000])],
+  pieces: [bank('bank', [760, 900]), stump('a', 'bank', [0.14, 0.2], [45, 55]), stump('b', 'bank', [0.82, 0.88], [50, 60])],
   entry: { piece: 'bank', kind: 'ground' },
   exit: { piece: 'bank', kind: 'ground' },
   exitDy: 0,
   sockets: [
-    petals('petals', 'bank', [0.15, 0.25], 2, 120),
-    prop('orchid', 'bank', [0.45, 0.55], ['orchid'], { chance: 0.7, phases: ['rest', 'ki'] }),
-    flag('bank', 0.85),
+    petals('a', 'a', 0.5, 1),
+    // (the orchid is a bonus: its cup over the grass; the inspector's route stays on the grass, so the stumps and the chair are the beats)
+    prop('orchid', 'bank', [0.4, 0.46], ['orchid'], { chance: 0.7, phases: ['rest', 'ki'] }),
+    chair('chair', 'bank', [0.58, 0.64], { phases: ['rest', 'ki'] }),
+    flag('bank', 0.72),
+    petals('b', 'b', 0.5, 1),
   ],
   mirrorable: true,
 };
@@ -94,16 +100,17 @@ const teaTable: SectionTemplate = {
   difficulty: 2,
   teaches: 'pot',
   maxPerStage: 1,
-  pieces: [bank('bank', [950, 1100])],
+  pieces: [bank('bank', [950, 1100]), stump('st', 'bank', [0.38, 0.42], [45, 55], [100, 120])],
   entry: { piece: 'bank', kind: 'ground' },
   exit: { piece: 'bank', kind: 'ground' },
   exitDy: 0,
   sockets: [
-    petals('petals', 'bank', 0.08, 2, 100),
+    petals('petals', 'bank', 0.06, 2, 80),
+    petals('st', 'st', 0.5, 1),
     { id: 'table', role: 'source', on: 'bank', t: [0.18, 0.22] },
     { id: 'pot', role: 'receptor', on: 'bank', t: [0.58, 0.64], link: 'table', allow: ['teapot'] },
     petals('after', 'bank', 0.8, 2, 100),
-    chair('chair', 'bank', [0.9, 0.94], { chance: 0.5 }),
+    chair('chair', 'bank', [0.9, 0.94]),
   ],
   mirrorable: false,
   extraSeconds: 2,
@@ -149,6 +156,7 @@ const threadHop: SectionTemplate = {
     sleeper('s1', 'bank', [0.52, 0.58]),
     petals('row', 'bank', 0.66, 2, 100),
     sleeper('s2', 'bank', [0.8, 0.86], { phases: LIVE, chance: 0.7 }),
+    chair('chair', 'bank', [0.92, 0.96], { phases: ['ki'] }),
   ],
   mirrorable: true,
 };
@@ -161,17 +169,17 @@ const cakePath: SectionTemplate = {
   phases: ['ki', 'sho', 'ten'],
   difficulty: 3,
   uses: ['cake'],
-  pieces: [bank('bank', [820, 1000])],
+  pieces: [bank('bank', [880, 1000]), stump('st', 'bank', [0.52, 0.58], [50, 70])],
   entry: { piece: 'bank', kind: 'ground' },
   exit: { piece: 'bank', kind: 'ground' },
   exitDy: 0,
   sockets: [
-    petals('lead', 'bank', 0.12, 2, 90),
+    petals('lead', 'bank', 0.1, 2, 90),
     // (the first stays on Easy: Easy still shows what a cake is; the second is Normal's)
-    prop('c1', 'bank', [0.3, 0.34], ['treat'], { easy: 'keep' }),
-    petals('mid', 'bank', 0.5, 2, 110),
-    cake('c2', 'bank', [0.68, 0.72], { phases: LIVE }),
-    sleeper('foe', 'bank', [0.88, 0.92], { phases: HOT, chance: 0.5 }),
+    prop('c1', 'bank', [0.28, 0.32], ['treat'], { easy: 'keep' }),
+    petals('st', 'st', 0.5, 1),
+    cake('c2', 'bank', [0.8, 0.84], { phases: LIVE }),
+    sleeper('foe', 'bank', [0.93, 0.96], { phases: HOT, chance: 0.5 }),
   ],
   mirrorable: true,
 };
@@ -206,15 +214,17 @@ const orchidHop: SectionTemplate = {
   phases: ['ki', 'sho'],
   difficulty: 3,
   uses: ['orchid'],
-  pieces: [bank('bank', [850, 1000])],
+  pieces: [bank('bank', [850, 1000]), stump('st', 'bank', [0.5, 0.56], [50, 65])],
   entry: { piece: 'bank', kind: 'ground' },
   exit: { piece: 'bank', kind: 'ground' },
   exitDy: 0,
   sockets: [
     petals('lead', 'bank', 0.1, 2, 90),
+    stumpPetal('st'),
     prop('o1', 'bank', [0.32, 0.38], ['orchid']),
     prop('o2', 'bank', [0.7, 0.76], ['orchid'], { chance: 0.8 }),
-    sleeper('foe', 'bank', [0.9, 0.94], { phases: ['sho'], chance: 0.5 }),
+    chair('chair', 'bank', [0.86, 0.9]),
+    sleeper('foe', 'bank', [0.95, 0.97], { phases: ['sho'], chance: 0.5 }),
   ],
   mirrorable: true,
 };
@@ -228,16 +238,17 @@ const softGap: SectionTemplate = {
   difficulty: 4,
   pieces: [
     bank('near', [320, 420]),
-    { key: 'far', shape: 'bank', w: [640, 800], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.55, 0.85] }, landing: true },
+    { key: 'far', shape: 'bank', w: [680, 820], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.6, 0.9] }, landing: true },
+    stump('st', 'far', [0.36, 0.42], [50, 70]),
   ],
   entry: { piece: 'near', kind: 'ground' },
   exit: { piece: 'far', kind: 'ground' },
   exitDy: 0,
   sockets: [
     petals('near', 'near', 0.4, 2, 90),
-    petals('far', 'far', 0.25, 2, 100),
-    awake('foe', 'far', [0.6, 0.78], { phases: LIVE }),
-    cake('cake', 'far', [0.9, 0.95], { phases: ['ki'], chance: 0.6, easy: 'keep' }),
+    stumpPetal('st'),
+    awake('foe', 'far', [0.72, 0.84], { phases: LIVE }),
+    cake('cake', 'far', [0.8, 0.86], { phases: ['ki'], easy: 'keep' }),
   ],
   mirrorable: false,
 };
@@ -256,9 +267,10 @@ const rise: SectionTemplate = {
   sockets: [
     petals('a', 'a', 0.35, 2, 100),
     cake('cake', 'a', [0.72, 0.78], { phases: LIVE, chance: 0.6 }),
-    petals('b', 'b', 0.18, 1),
-    awake('foe', 'b', [0.55, 0.75], { phases: LIVE, chance: 0.8 }),
-    thread('thread', 'b', [0.9, 0.95], { phases: ['ki'] }),
+    petals('b', 'b', 0.16, 1),
+    thread('thread', 'b', [0.36, 0.42]),
+    awake('foe', 'b', [0.7, 0.82], { phases: LIVE, chance: 0.8 }),
+    chair('chair', 'b', [0.78, 0.84], { phases: ['ki'] }),
   ],
   mirrorable: false,
 };
@@ -277,10 +289,11 @@ const drop: SectionTemplate = {
   exitDy: 65,
   sockets: [
     petals('a', 'a', 0.4, 2, 100),
-    chair('chair', 'a', [0.75, 0.8], { chance: 0.5 }),
+    chair('chair', 'a', [0.7, 0.76]),
     thread('thread', 'b', [0.2, 0.26]),
     sleeper('s1', 'b', [0.5, 0.58]),
-    petals('b', 'b', 0.8, 2, 100),
+    petals('b', 'b', 0.72, 2, 80),
+    cake('cake', 'b', [0.88, 0.92], { phases: LIVE, chance: 0.6 }),
   ],
   mirrorable: false,
 };
@@ -332,12 +345,17 @@ const highRoad: SectionTemplate = {
   exit: { piece: 'bank', kind: 'ground' },
   exitDy: 0,
   sockets: [
+    // (up on the road: a cake among its petals and a thread at its far end, as 5-2's high roads, so the road is no quiet stroll)
     petals('road', 'road', 0.5, 4, 360),
+    cake('rc', 'road', [0.3, 0.34], { phases: LIVE }),
+    thread('rt', 'road', [0.7, 0.76]),
+    // (down below: the thread and its sleepers, then an awake spider or a soft chair)
     thread('thread', 'bank', [0.28, 0.32]),
     sleeper('s1', 'bank', [0.44, 0.5]),
     sleeper('s2', 'bank', [0.6, 0.64], { phases: HOT, chance: 0.6 }),
-    awake('foe', 'bank', [0.8, 0.86], { phases: HOT, chance: 0.6 }),
-    petals('after', 'bank', 0.92, 1),
+    chair('chair', 'bank', [0.74, 0.78], { phases: ['sho'] }),
+    awake('foe', 'bank', [0.82, 0.88], { phases: HOT, chance: 0.7 }),
+    petals('after', 'bank', 0.94, 1),
   ],
   mirrorable: false,
 };
@@ -356,7 +374,7 @@ const butler: SectionTemplate = {
   exitDy: 0,
   sockets: [
     petals('lead', 'bank', 0.08, 2, 90),
-    chair('chair', 'bank', [0.2, 0.24], { chance: 0.6 }),
+    chair('chair', 'bank', [0.18, 0.22]),
     { id: 'stand', role: 'source', on: 'bank', t: [0.36, 0.4] },
     { id: 'butler', role: 'receptor', on: 'bank', t: [0.66, 0.7], link: 'stand', allow: ['butler'] },
     petals('after', 'bank', 0.88, 2, 90),
@@ -373,16 +391,16 @@ const sheetWalk: SectionTemplate = {
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: ['sheet'],
-  pieces: [bank('bank', [1000, 1150])],
+  pieces: [bank('bank', [1000, 1150]), stump('st', 'bank', [0.74, 0.8], [50, 70])],
   entry: { piece: 'bank', kind: 'ground' },
   exit: { piece: 'bank', kind: 'ground' },
   exitDy: 0,
   sockets: [
     petals('lead', 'bank', 0.1, 2, 90),
-    prop('sheet', 'bank', [0.42, 0.46], ['sheet']),
-    cake('cake', 'bank', [0.72, 0.75], { phases: ['sho'], chance: 0.6 }),
-    thread('thread', 'bank', [0.8, 0.84], { phases: HOT }),
-    sleeper('foe', 'bank', [0.94, 0.97], { phases: HOT, chance: 0.5 }),
+    prop('sheet', 'bank', [0.36, 0.4], ['sheet']),
+    cake('cake', 'bank', [0.62, 0.65], { phases: ['sho'], chance: 0.7 }),
+    stumpPetal('st'),
+    thread('thread', 'bank', [0.9, 0.94], { phases: HOT }),
   ],
   mirrorable: true,
 };
@@ -397,7 +415,7 @@ const threadGap: SectionTemplate = {
   uses: ['thread'],
   pieces: [
     bank('near', [440, 540]),
-    { key: 'far', shape: 'bank', w: [700, 880], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.6, 0.85] }, landing: true },
+    { key: 'far', shape: 'bank', w: [700, 880], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.7, 0.92] }, landing: true },
   ],
   entry: { piece: 'near', kind: 'ground' },
   exit: { piece: 'far', kind: 'ground' },
@@ -408,6 +426,7 @@ const threadGap: SectionTemplate = {
     petals('far', 'far', 0.2, 2, 90),
     awake('foe', 'far', [0.58, 0.75]),
     sleeper('s2', 'far', [0.9, 0.94], { phases: ['ketsu'], chance: 0.6 }),
+    chair('chair', 'far', [0.88, 0.92], { phases: ['sho', 'ten'] }),
   ],
   mirrorable: false,
 };
@@ -428,9 +447,10 @@ const sleeperRow: SectionTemplate = {
     thread('thread', 'bank', [0.14, 0.18]),
     sleeper('s1', 'bank', [0.36, 0.4]),
     petals('low', 'low', 0.5, 3, 200),
+    cake('lc', 'low', [0.62, 0.68], { phases: LIVE }),
     sleeper('s2', 'bank', [0.54, 0.58]),
     sleeper('s3', 'bank', [0.72, 0.76], { phases: HOT, chance: 0.7 }),
-    chair('chair', 'bank', [0.9, 0.94], { chance: 0.5 }),
+    chair('chair', 'bank', [0.88, 0.92]),
   ],
   mirrorable: true,
 };
@@ -445,7 +465,7 @@ const potGap: SectionTemplate = {
   uses: ['pot'],
   pieces: [
     bank('near', [520, 620]),
-    { key: 'far', shape: 'bank', w: [620, 800], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.5, 0.8] }, landing: true },
+    { key: 'far', shape: 'bank', w: [620, 800], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.6, 0.85] }, landing: true },
   ],
   entry: { piece: 'near', kind: 'ground' },
   exit: { piece: 'far', kind: 'ground' },
@@ -476,7 +496,7 @@ const potPair: SectionTemplate = {
     petals('lead', 'bank', 0.08, 2, 90),
     prop('p1', 'bank', [0.24, 0.28], ['pot']),
     cake('cake', 'bank', [0.47, 0.5], { phases: HOT }),
-    prop('p2', 'bank', [0.7, 0.74], ['pot'], { easy: 'drop' }),
+    prop('p2', 'bank', [0.7, 0.74], ['pot']),
     petals('after', 'bank', 0.9, 2, 90),
   ],
   mirrorable: true,
@@ -519,7 +539,7 @@ const doubleGap: SectionTemplate = {
   uses: ['double'],
   pieces: [
     bank('near', [320, 420]),
-    { key: 'far', shape: 'bank', w: [700, 860], place: { kind: 'pit', after: 'near', jump: 'double', share: [0.55, 0.8] }, landing: true },
+    { key: 'far', shape: 'bank', w: [700, 860], place: { kind: 'pit', after: 'near', jump: 'double', share: [0.65, 0.9] }, landing: true },
   ],
   entry: { piece: 'near', kind: 'ground' },
   exit: { piece: 'far', kind: 'ground' },
@@ -616,7 +636,7 @@ const stumpGap: SectionTemplate = {
   pieces: [
     bank('near', [520, 620]),
     stump('st', 'near', [0.3, 0.4], [60, 85]),
-    { key: 'far', shape: 'bank', w: [700, 860], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.65, 0.88] }, landing: true },
+    { key: 'far', shape: 'bank', w: [700, 860], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.75, 0.95] }, landing: true },
   ],
   entry: { piece: 'near', kind: 'ground' },
   exit: { piece: 'far', kind: 'ground' },
