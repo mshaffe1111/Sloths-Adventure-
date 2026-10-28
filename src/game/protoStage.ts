@@ -3861,7 +3861,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // costs a life, so World 4 asks more than World 3 here)
     const roll = new W4Roll(seed, '4-2');
     const flavour = roll.theme('finish', ['leaf', 'gusts', 'vines'] as const);
+    // (round 3: every flavour swings a liana over a real drop at each break, World 4 sitting above World 3: a miss is a life)
     const sig = () => {
+      swings(1);
+      w4Breath();
       if (flavour === 'leaf') leafDrop(R.r(0.8, 0.88));
       else if (flavour === 'gusts') gustGap(R.chance(0.5) ? 1 : -1);
       else swings(2);
@@ -3909,8 +3912,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     type Piece42 = 'drop' | 'gust' | 'pillars' | 'high' | 'stones' | 'gustLeaf' | 'vines';
     const counts: Record<typeof flavour, Record<Piece42, number>> = {
       // (the leaf's climbs are slow: two of them to a bag was 28-39 quiet seconds a finish, so the leaf shares it with pillars and gusts)
-      leaf: { drop: 2, gust: 0, pillars: 1, high: 0, stones: 0, gustLeaf: 2, vines: 0 },
-      gusts: { drop: 0, gust: 2, pillars: 0, high: 1, stones: 2, gustLeaf: 0, vines: 0 },
+      leaf: { drop: 2, gust: 0, pillars: 1, high: 0, stones: 0, gustLeaf: 2, vines: 1 },
+      gusts: { drop: 0, gust: 2, pillars: 0, high: 1, stones: 2, gustLeaf: 0, vines: 1 },
       vines: { drop: 0, gust: 1, pillars: 1, high: 0, stones: 0, gustLeaf: 0, vines: 3 },
     };
     const bag = roll.bag<Piece42>(['drop', 'gust', 'pillars', 'high', 'stones', 'gustLeaf', 'vines'], (k) => counts[flavour][k]);
@@ -3973,10 +3976,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       let k = Math.floor(len / 300);
       while (k-- > 0) {
         run(Math.max(70, (end - x) / (k + 2) - 60));
-        // (the runs between the places to hide are the roll's ground too: hops, or wide leaps under her eye)
-        if (w4Fill !== 'hops' && (w4Fill === 'leaps' || R.chance(0.5)) && end - x > 420) leap(R.r(0.58, 0.66));
-        else if (R.chance(0.5)) logHop();
-        else dip();
+        // (only rocks under her eye, 2026-10-28: down in a dip or a leap's pit no bush is at his level, and her pass caught him there;
+        // the dips and leaps stay out of her sight, in the breaths between her stretches)
+        logHop();
       }
       if (x < end) run(end - x);
     }
@@ -4737,7 +4739,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (round 2, 2026-10-28: a flavour for the whole stage from the roll. After the leaf is taught and after the two-at-once, one of its
     // own pieces, and the finish leans to it: the capuchin guards, Dot's knots, a crosswind gorge (4-4's, a miss is a life), or the leaf)
     const flavour = roll.theme('finish', ['guards', 'knots', 'gorges', 'leaf'] as const);
+    // (round 3: every flavour crosses two windy lianas over a real drop at each break: a miss is a life)
     const sig = () => {
+      swings(2, true);
+      between();
       if (flavour === 'guards') guardNest(false, false);
       else if (flavour === 'knots') knotNest(R.chance(0.5));
       else if (flavour === 'gorges') swings(2, true);
@@ -4803,10 +4808,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const capuchin = roll.pick(['trade', 'guard'] as const);
     type Piece48 = 'gust' | 'pillars' | 'high' | 'nest' | 'knot' | 'drop' | 'gustLeaf' | 'guard' | 'gorge' | 'glide';
     const counts: Record<typeof flavour, Record<Piece48, number>> = {
-      guards: { gust: 1, pillars: 0, high: 0, nest: 0, knot: 0, drop: 0, gustLeaf: 0, guard: 2, gorge: 0, glide: 0 },
-      knots: { gust: 0, pillars: 1, high: 0, nest: 1, knot: 2, drop: 0, gustLeaf: 0, guard: 0, gorge: 0, glide: 0 },
+      guards: { gust: 1, pillars: 0, high: 0, nest: 0, knot: 0, drop: 0, gustLeaf: 0, guard: 2, gorge: 1, glide: 0 },
+      knots: { gust: 0, pillars: 1, high: 0, nest: 1, knot: 2, drop: 0, gustLeaf: 0, guard: 0, gorge: 1, glide: 0 },
       gorges: { gust: 1, pillars: 0, high: 0, nest: 0, knot: 0, drop: 0, gustLeaf: 0, guard: 0, gorge: 3, glide: 0 },
-      leaf: { gust: 0, pillars: 1, high: 0, nest: 0, knot: 0, drop: 1, gustLeaf: 1, guard: 0, gorge: 0, glide: 2 },
+      leaf: { gust: 0, pillars: 1, high: 0, nest: 0, knot: 0, drop: 1, gustLeaf: 1, guard: 0, gorge: 1, glide: 2 },
     };
     const bag = roll.bag<Piece48>(['gust', 'pillars', 'high', 'nest', 'knot', 'drop', 'gustLeaf', 'guard', 'gorge', 'glide'], (k) => counts[flavour][k]);
     beat('Finish', () => {
