@@ -29,7 +29,15 @@ test('1-6: every roll keeps the plan: the beats, an exit, two golden seeds, the 
     assert.deepEqual(st.proto.beats.map((b) => b[2].split(':')[0]), ['Start', 'Learn', 'Develop', 'Puzzle', 'Twist', 'Develop again', 'Finish'], `seed ${s}`);
     assert.equal(st.collectibles.filter((c) => c.type === 'exit_totem').length, 1, `seed ${s}`);
     assert.equal(st.collectibles.filter((c) => c.type === 'seed').length, 2, `seed ${s}`);
-    assert.equal(st.platforms.filter((p) => p.push).length, 1, `seed ${s}`);
+    // the fallen log, and one log in each of the three seesaw rooms (2026-10-28: the seesaw is 1-6's second puzzle)
+    const logs = st.platforms.filter((p) => p.push);
+    assert.equal(logs.length, 4, `seed ${s}`);
+    assert.equal(st.kit!.rooms.length, 3, `seed ${s}`);
+    const inRoom = (p: (typeof logs)[number]) => st.kit!.rooms.some((r) => {
+      const a = st.platforms.find((q) => q.id === r.left.on)!, b = st.platforms.find((q) => q.id === r.right.on)!;
+      return p.x >= a.x + a.width * r.left.at - 1 && p.x <= b.x + b.width * r.right.at + (r.right.dx ?? 0) + 1;
+    });
+    assert.ok(!inRoom(logs[0]) && logs.slice(1).every(inRoom), `seed ${s}: the first log is the fallen kapok's, the rest the seesaws'`);
     const xs = st.checkpoints!.map((c) => c.x);
     assert.deepEqual([...xs].sort((a, b) => a - b), xs);
     assert.ok(xs.length >= 8, `seed ${s}: ${xs.length} flags`);

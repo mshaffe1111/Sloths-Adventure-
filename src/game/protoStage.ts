@@ -43,6 +43,7 @@ import { buildW5Stage54 } from './w5Stage54.ts';
 import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
+import { addKitPlatforms, type Anchor, type KitExtras, type RoomSpec } from './puzzleKit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
@@ -292,6 +293,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   let MIX: string | undefined;
   const BUSHES: Bush[] = [];
   const ZONES: WatchZone[] = [];
+  /** World 1's puzzle rooms (the shared puzzle kit, puzzleKit.ts): the seesaw (1-6) and the acorns (1-7) */
+  const ROOMS: RoomSpec[] = [];
   let RING: ProtoExtras['ring'];
   const T: TreeStructure[] = [];
   const E: Enemy[] = [];
@@ -440,7 +443,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
    * vines over a gap. `soft`: a mossy floor below (a teaching swing). Rolled again until the jump grabs the first vine, every vine
    * catches the next, and the last one lands on the bank beyond.
    */
-  function chain(n: number, soft: boolean, kind: PieceKind) {
+  function chain(n: number, soft: boolean, kind: PieceKind, rocks = false) {
     const x0 = x;
     run(R.r(150, 260));
     const edge = x;
@@ -463,6 +466,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       // build it
       close();
       if (soft) softPit(edge, farX);
+      // (`rocks`: 1-6's teaching swings have mossy rocks on the moss below, to hop for whoever missed a vine and crosses down there)
+      if (soft && rocks) for (let rx = edge + 170; rx < farX - 200; rx += 300) { P.push({ id: pid++, x: Math.round(rx), y: HOLLOW_Y - 52, width: 100, height: 52, type: 'solid', style: 'moss_stone' }); flower(rx + 50, HOLLOW_Y - 86, 'orchid'); }
       for (let k = 0; k < n; k++) {
         liana(xs[k], vs[k].topY, vs[k].bottomY);
         arc(k === 0 ? edge + 10 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 4);
@@ -514,7 +519,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
    * the fallen kapok: a wall too tall to jump, and a hollow log to push against it. Pushed the other way, against the mossy rock,
    * the log reaches a hidden nook with a golden seed. After the wall, a stretch of high canopy and a drop back to the ground.
    */
-  function logPuzzle() {
+  function logPuzzle(busyTop = false) {
     const x0 = x;
     run(R.r(140, 220));
     const rock = block(x, x + 90, 50);
@@ -534,11 +539,140 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const plateau = R.r(520, 820);
     bank(wallX, wallX + plateau, G - 230);
     row(wallX + 80, wallX + plateau - 80, G - 264, Math.round(plateau / 130));
+    // (`busyTop`, 1-6 since 2026-10-28: a mossy rock to hop on the high canopy, a petal on it)
+    if (busyTop) {
+      const rx = Math.round(wallX + plateau * 0.32);
+      P.push({ id: pid++, x: rx, y: G - 230 - 52, width: 100, height: 52, type: 'solid', style: 'moss_stone' });
+      flower(rx + 50, G - 230 - 86, 'hibiscus');
+    }
     checkpoints.push({ x: wallX + 140, y: G - 230, reached: false });
     if (R.chance(0.6)) snake(wallX + plateau * R.r(0.55, 0.75), G - 230, 110);
     open(wallX + plateau);
     run(R.r(160, 240));
     expert += (logX - x0) / RUN + (wallX - 55 - LOG.w - logX) / PUSH + 2.5 + (x - wallX) / RUN;
+    pieces.push({ k: 'log', x0, x1: x });
+  }
+
+  // ----- 1-6's seesaw (the puzzle kit, puzzleKit.ts), 2026-10-28: a plank on a pivot over a shallow pit. Weight on one end lowers it and
+  // raises the other into a step. The hollow log (taught just before, at the fallen kapok) outweighs Pokey: pushed onto one end it holds
+  // that end down while he climbs the other. Each room is narrow (a seesaw, a log and a bank: about 700 px) and tall (the bank 270 up),
+  // so it fits an upright phone as well as a sideways one, and a miss is a hop out of a 60 px pit: never a life.
+  /** a spot on a platform as a kit anchor (0..1 along its top) */
+  const onP = (p: Platform, ax: number, dy = 0): Anchor => ({ on: p.id, at: (ax - p.x) / p.width, ...(dy ? { dy } : {}) });
+  const SEE = { w: 320, rise: 110, pit: 60, logW: 140, logH: 60, bank: 270 } as const;
+  /** the bank Pokey is on, from where it started to the cursor, ended here and returned (the kit anchors its pieces on it) */
+  const endBank = (): Platform => {
+    const p = bank(bankFrom, x);
+    bankFrom = x;
+    return p;
+  };
+  /** a mossy rock to hop on a high bank's top, `at` of the way along, with a petal on it */
+  const topRock = (p: Platform, at: number) => {
+    const rx = Math.round(p.x + p.width * at - 50);
+    P.push({ id: pid++, x: rx, y: p.y - 52, width: 100, height: 52, type: 'solid', style: 'moss_stone' });
+    flower(rx + 50, p.y - 86, 'orchid');
+  };
+  /** a high bank (`h` px up) from x0 to x1: its face too tall to jump, its top the way on */
+  const cliff = (x0: number, x1: number, h: number): Platform => {
+    const p: Platform = { id: pid++, x: Math.round(x0), y: G - h, width: Math.round(x1 - x0), height: h + BANK_H, type: 'solid', style: 'log' };
+    P.push(p);
+    return p;
+  };
+  /**
+   * `demo`: the seesaw shows itself first. A hollow log lies wedged on its near end (it cannot be moved), so the far end stands up as a
+   * step to a ledge of petals: hop up the plank and the log holds it. Nothing has to be done here; the way on is the floor past it.
+   * `learn`: the same seesaw with the log beside it on the floor and a bank too high to jump past it. Push the log onto the near end and
+   * the far end is a step up to the bank (the second jump from its top).
+   */
+  function seesawRoom(demo: boolean) {
+    const x0 = x;
+    run(R.r(150, 190));
+    const logX = Math.round(x);
+    if (!demo) run(SEE.logW + R.r(120, 150));
+    const floor = endBank();
+    const edge = x;
+    const pivot = edge + SEE.w / 2;
+    const pit = bank(edge, edge + SEE.w, G + SEE.pit, 'moss_stone');
+    const id = `seesaw${ROOMS.length}`;
+    const kit: RoomSpec['pieces'] = [
+      { kind: 'reset', id: `post${ROOMS.length}`, at: onP(floor, Math.max(floor.x + 20, demo ? edge - 120 : logX - 60)) },
+      { kind: 'seesaw', id, at: onP(pit, pivot, -SEE.pit), w: SEE.w, rise: SEE.rise, rest: -1 },
+    ];
+    if (demo) {
+      // the log, wedged on the near end for good (its push range is its own width), and the petal ledge over the raised far end
+      P.push({ id: pid++, x: pivot - 150, y: G - SEE.logH, width: SEE.logW, height: SEE.logH, type: 'solid', style: 'log', push: { min: pivot - 150, max: pivot - 10 } });
+      const ledge = branch(pivot + 40, pivot + 210, G - SEE.rise - 95);
+      row(ledge.x + 30, ledge.x + ledge.width - 30, ledge.y - 34, 3, 'hibiscus');
+      ROOMS.push({
+        id: `seesaw-show-${ROOMS.length}`,
+        left: onP(floor, edge - 150), right: { on: pit.id, at: 1, dx: 40 }, above: 420, below: SEE.pit + 10,
+        pieces: kit, exit: id, beyond: { on: ledge.id, at: 0.5 }, ground: [floor.id, pit.id],
+        tips: { enter: 'The log holds that end down. Hop up the other end!' },
+      });
+      open(edge + SEE.w);
+      run(R.r(260, 320));
+      expert += (x - x0) / RUN + 2;
+      pieces.push({ k: 'log', x0, x1: x });
+      return;
+    }
+    P.push({ id: pid++, x: logX, y: G - SEE.logH, width: SEE.logW, height: SEE.logH, type: 'solid', style: 'log', push: { min: floor.x + 20, max: pivot - 10 } });
+    const top = cliff(edge + SEE.w, edge + SEE.w + R.r(440, 520), SEE.bank);
+    row(top.x + 70, top.x + 150, top.y - 34, 2, 'orchid');
+    topRock(top, 0.62);
+    ROOMS.push({
+      id: `seesaw-${ROOMS.length}`,
+      left: onP(floor, logX - 80), right: { on: top.id, at: 0, dx: 60 }, above: 420, below: SEE.pit + 10,
+      pieces: kit, exit: id, beyond: { on: top.id, at: 0.3 }, ground: [floor.id, pit.id],
+      tips: { enter: 'Too high! Push the log onto the near end.' },
+    });
+    // down off the far end of the bank onto the floor again
+    open(top.x + top.width);
+    run(R.r(240, 300));
+    expert += (x - x0) / RUN + (SEE.logW + 160) / PUSH + 4;
+    pieces.push({ k: 'log', x0, x1: x });
+  }
+  /**
+   * the twist: the seesaw's far end rests down, and the log lies past it, on the far side. Cross the seesaw, get round the log, and push
+   * it back onto the far end: now the near end stays up, a step to the branch overhead that leads on over the bank. (A bank 260 up
+   * closes the floor beyond; from the log's top the branch and the bank are out of reach, so only the raised near end gets him there.)
+   */
+  function seesawTwist() {
+    const x0 = x;
+    run(R.r(220, 260));
+    const floor = endBank();
+    const edge = x;
+    const pivot = edge + SEE.w / 2;
+    // (a stump at the foot of the near end: a short hop up onto it, then onto the raised end; the log is a low one, so from its top the
+    // branch is out of reach even with the second jump)
+    const rise = 100, high = 260, logH = 50;
+    block(edge - 110, edge - 10, 40);
+    const pit = bank(edge, edge + SEE.w, G + SEE.pit, 'moss_stone');
+    const farFloor = bank(edge + SEE.w, edge + SEE.w + 270);
+    const logX = farFloor.x + 30;
+    P.push({ id: pid++, x: logX, y: G - logH, width: SEE.logW, height: logH, type: 'solid', style: 'log', push: { min: pivot + 10, max: farFloor.x + farFloor.width } });
+    const top = cliff(farFloor.x + farFloor.width, farFloor.x + farFloor.width + R.r(400, 480), high);
+    // the branch over it all, from above the near end to the bank's top, in two with a gap to jump over the far floor
+    const mid = Math.round(farFloor.x + 150);
+    const over = branch(edge - 30, mid, G - high);
+    const over2 = branch(mid + 80, top.x + 10, G - high);
+    row(over.x + 60, over.x + over.width - 50, over.y - 34, 3, 'hibiscus');
+    flower(over2.x + over2.width / 2, over2.y - 34, 'hibiscus');
+    row(top.x + 60, top.x + 130, top.y - 34, 2, 'orchid');
+    topRock(top, 0.6);
+    const id = `seesaw${ROOMS.length}`;
+    ROOMS.push({
+      id: `seesaw-twist-${ROOMS.length}`,
+      left: onP(floor, edge - 190), right: { on: top.id, at: 0, dx: 60 }, above: 440, below: SEE.pit + 10,
+      pieces: [
+        { kind: 'reset', id: `post${ROOMS.length}`, at: onP(floor, edge - 160) },
+        { kind: 'seesaw', id, at: onP(pit, pivot, -SEE.pit), w: SEE.w, rise, rest: 1 },
+      ],
+      exit: id, beyond: { on: top.id, at: 0.4 }, ground: [floor.id, pit.id, farFloor.id],
+      tips: { enter: "The log's on the far side. Push it back onto the far end!" },
+    });
+    open(top.x + top.width);
+    run(R.r(240, 300));
+    expert += (x - x0) / RUN + 14;
     pieces.push({ k: 'log', x0, x1: x });
   }
 
@@ -1208,7 +1342,10 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const far = Math.round(edge + R.r(380, 430));
     softPit(edge, far);
     // (`tight`: a mossy rock to hop on the moss below, for whoever crosses down there)
-    if (tight) P.push({ id: pid++, x: Math.round((edge + far) / 2 - 50), y: HOLLOW_Y - 40, width: 100, height: 40, type: 'solid', style: 'moss_stone' });
+    if (tight) {
+      P.push({ id: pid++, x: Math.round((edge + far) / 2 - 50), y: HOLLOW_Y - 52, width: 100, height: 52, type: 'solid', style: 'moss_stone' });
+      flower((edge + far) / 2, HOLLOW_Y - 86, 'orchid');
+    }
     ROPES.push({ id: ROPES.length + 1, x0: edge - 44, x1: far + 44, y: G - 146, g0: G, g1: G, required: false });
     if (bonus) row(edge + 60, far - 60, G - 146 + 86 - 40, 3, 'hibiscus');
     open(far);
@@ -1895,29 +2032,34 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   }
 
   if (plan === 'proto') {
-  beat('Start', () => rest(R.r(600, 800)));
+  // (Rebuilt 2026-10-28: shorter rests with something to do in them, mossy rocks on the moss under the teaching swings, and the seesaw
+  // after the fallen log: shown, then learned, and twisted later; see seesawRoom and seesawTwist)
+  beat('Start', () => rest(R.r(380, 430)));
   beat('Learn: swing over soft moss', () => {
     hint(x + 120, 'Flick up into the vine to grab it', 'Jump into the vine to grab it', 'Jump into the vine to grab it');
-    chain(1, true, 'hollow');
-    rest(R.r(300, 500));
+    chain(1, true, 'hollow', true);
+    busy(1);
     hint(x + 40, 'Flick up again as you swing forward', 'Press Jump as you swing forward', 'Press Space as you swing forward');
-    chain(2, true, 'hollow');
-    rest(R.r(250, 400));
-    chain(R.i(2, 3), true, 'hollow');
+    chain(2, true, 'hollow', true);
+    busy(1);
+    chain(R.i(2, 3), true, 'hollow', true);
     stumps();
     flag();
   });
   beat('Develop: the gorge and the tall kapok', () => {
     chain(R.i(2, 3), false, 'gorge');
-    mixed(() => snakes(), () => rest(R.r(300, 500)));
+    mixed(() => snakeWalk(1), () => busy(1));
     flag();
     kapok();
     chain(3, false, 'gorge');
     flag();
   });
   beat('Puzzle: the fallen log', () => {
-    rest(R.r(200, 320));
-    logPuzzle();
+    rest(R.r(160, 220));
+    logPuzzle(true);
+    // the seesaw: shown (a log already holds one end down), then the real thing (push the log onto it yourself)
+    seesawRoom(true);
+    seesawRoom(false);
     flag();
   });
   beat('Twist: the canopy road', () => {
@@ -1927,8 +2069,11 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     flag();
   });
   beat('Develop again: higher and wider', () => {
-    mixed(() => stumps(), () => snakes());
+    mixed(() => stumps(), () => snakeWalk(1));
     kapok();
+    flag();
+    // the seesaw, turned about: the log on the far side, pushed back onto the far end
+    seesawTwist();
     flag();
     chain(R.i(3, 4), false, 'gorge');
     flag();
@@ -1938,7 +2083,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       () => chain(R.i(3, 4), false, 'gorge'),
       () => kapok(),
       () => highRun(),
-      () => { stumps(); snakes(); },
+      () => { stumps(); snakeWalk(1); },
       () => canopy(false),
     ];
     let last = -1, count = 0;
@@ -1948,13 +2093,13 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       last = k;
       kit[k]();
       if (++count % 2 === 0) flag();
-      rest(R.r(150, 320));
+      busy(1);
     }
   });
   beat('Finish: the long swing home', () => {
-    rest(R.r(250, 400));
+    busy(1);
     chain(4, false, 'gorge');
-    rest(R.r(700, 900));
+    homeRun();
     // the walk to the shrine makes up any last seconds the dice left short
     if (expert < EXPERT_SECONDS) rest((EXPERT_SECONDS - expert) * RUN + 60);
   });
@@ -3539,10 +3684,14 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   const width = Math.ceil(x + 20);
   const cfg: LevelConfig = { ...config, levelWidth: width, levelHeight: Math.max(config.levelHeight, 900), ...(plan === '1-2' ? { targetCount: PETAL_GOAL_12 } : plan === '1-3' ? { targetCount: SNAKE_GOAL_13 } : plan === '1-5' ? { targetCount: PETAL_GOAL_15 } : plan === '1-9' ? { targetCount: GUARD_GOAL_19 } : plan === '3-3' ? { targetCount: PROWLER_GOAL_33 } : plan === '3-6' ? { targetCount: GRANDMA_GOAL_36 } : plan === '3-7' ? { targetCount: GRANDMA_GOAL_37 } : plan === '3-9' ? { targetCount: PROWLER_GOAL_39 } : plan === '4-8' ? { targetCount: NEST_GOAL_48 } : {}) };
   cid = heartsAtFlags(C, checkpoints, cid);
+  // the puzzle rooms' own platforms (a seesaw's two ends, a gate's door): added once, here, so the game and the check see the same ground
+  const kit: KitExtras | undefined = ROOMS.length ? { rooms: ROOMS } : undefined;
+  if (kit) addKitPlatforms(P, kit);
   // every flower where he can get it (nothing tucked under a branch, nothing out of reach: flowerReach.ts)
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES, waterY: WATER }, C);
   return {
     config: cfg,
+    ...(kit ? { kit } : {}),
     trees: T,
     platforms: P,
     vines: V,
