@@ -67,6 +67,9 @@ Last updated 2026-10-28.
 
 ## 5. The checks, in order, before anything goes to Matt or the QA testers
 
+The lead session runs these itself on every helper's branch before merging it. A helper's report is not proof: nothing reaches the
+test link, the QA testers or a release until the lead has re-run them, on more than one roll, and read the screenshots.
+
 1. `npx tsc --noEmit -p .`
 2. The stage inspector on the worlds you changed: `npx tsx tools/inspect/inspect.ts --worlds N` (dead time, rests, sameness, goals,
    length, kid and adult bots). **Check more than one roll** (`--seed 1/2/3`), and the 200-roll tool `tools/inspect/era.ts` when a
