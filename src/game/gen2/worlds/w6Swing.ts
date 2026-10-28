@@ -180,11 +180,11 @@ const firstSwing: SectionTemplate = {
   archetypes: ['vine_runner', 'sprint'],
   phases: ['ki', 'sho'],
   difficulty: 3,
-  pieces: [bank('a', [220, 280]), liana('l1', 'a'), perch('b', 'l1', [380, 460])],
+  pieces: [bank('a', [200, 240]), liana('l1', 'a'), perch('b', 'l1', [240, 290]), up('knee', 'b', 40, [110, 140]), down('c', 'knee', 40, [180, 220])],
   entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'b', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
-  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.3, 2, 100), scenery('lilies', 'b', [0.7, 0.85], 0.5)],
+  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.4, 2, 80), petals('knee', 'knee', 0.5, 1), scenery('lilies', 'c', [0.5, 0.8], 0.5)],
   weight: 2,
   mirrorable: false,
 };
@@ -432,16 +432,16 @@ const darkSteps: SectionTemplate = {
   pieces: [
     bank('a', [180, 220]),
     up('b', 'a', 55, [130, 160]),
-    up('c', 'b', 55, [150, 180]),
-    hop('d', 'c', [160, 200], [0.3, 0.38], false),
-    down('e', 'd', 55, [130, 160]),
-    down('e2', 'e', 55, [130, 160]),
-    hop('f', 'e2', [200, 240], [0.3, 0.38], false),
+    hop('c', 'b', [140, 170], [0.3, 0.38], false),
+    up('d', 'c', 55, [130, 160]),
+    hop('e', 'd', [150, 180], [0.3, 0.38], false),
+    down('f', 'e', 55, [110, 130]),
+    down('g', 'f', 55, [180, 220]),
   ],
   entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'f', kind: 'ground' },
+  exit: { piece: 'g', kind: 'ground' },
   exitDy: 0,
-  sockets: [darkTip('a'), ...darkEnds('a', 'f'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.5, 1), petals('f', 'f', 0.4, 1)],
+  sockets: [darkTip('a'), ...darkEnds('a', 'g'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.5, 1)],
   weight: 2,
   mirrorable: true,
 };
@@ -473,13 +473,36 @@ const darkLong: SectionTemplate = {
   mirrorable: true,
 };
 
+/** a root wall in the dark: a hop, the climbing vine up it in the firefly's light, down the far side, a hop out */
+const darkClimb: SectionTemplate = {
+  id: 'w6s-dark-climb',
+  name: 'the dark root wall (run)',
+  archetypes: ['sprint'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  teaches: W6_DARK,
+  weight: 2,
+  pieces: [
+    bank('a', [180, 220]),
+    hop('b', 'a', [220, 260], [0.3, 0.38], false),
+    ...climbWall('v', 'b', 'wall', 220, [200, 240]),
+    down('c', 'wall', 220, [160, 200]),
+    hop('d', 'c', [220, 260], [0.3, 0.38], false),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'd', kind: 'ground' },
+  exitDy: 0,
+  sockets: [darkTip('a'), ...darkEnds('a', 'd'), petals('b', 'b', 0.4, 1), petals('wall', 'wall', 0.5, 2, 90), petals('d', 'd', 0.5, 1)],
+  mirrorable: false,
+};
+
 // ───────────────────────────── the set ─────────────────────────────
 
 /** World 6's swing-stage sections: the root ground, the swings and climbs, the dark roots */
 export const W6_SWING_SECTIONS: readonly SectionTemplate[] = [
   rootIsland, rootKnees, perchSteps, watchedRoot, humpRun,
   firstSwing, swingPair, swingChain, swingClimb, vineWall, swingWatch, kneesSwing, swingHunter,
-  darkRoots, darkSteps, darkLong,
+  darkRoots, darkSteps, darkLong, darkClimb,
 ];
 
 /**
