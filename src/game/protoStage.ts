@@ -4582,6 +4582,15 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   /** 4-6: the mist's spots, one at the foot of each hidden column, and the eagle nests above it */
   const mistSpots: PatienceSpot[] = [];
   const nests: Nest[] = [];
+  /**
+   * World 4's two climbs take a theme from the roll (w4Sections.ts, the variety pass 2026-10-28: 200 rolls were 89-90% alike): 4-1 up
+   * the wide ledges by hops (its rocks), by more ropes, or the two in turn; 4-6 across the tree by ropes, by hops, or both. The zigzag's
+   * own dice are untouched (the roll has its own stream), and 1-4 and 3-4 climb as before.
+   */
+  const w4Climb = cliff || mist ? (() => {
+    const t = new W4Roll(seed, cliff ? '4-1' : '4-6').theme('climb', ['hops', 'ropes', 'turns'] as const);
+    return { theme: t, hopsAt: (n: number) => (t === 'hops' ? n % 4 !== 1 : t === 'ropes' ? n % 3 === 2 : n % 2 === 0) };
+  })() : null;
   /** where he stands now, and which way the climb is heading across the tree */
   let cur: Platform;
   /** the one trunk up from the floor (4-6 marks the way back to it) */
@@ -4627,8 +4636,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const group: number[] = [];
     for (let k = 0; k < n; k++) {
       const w = Math.round(wide ? R.r(280, 330) : R.r(180, 240));
-      const rise = Math.round(R.r(20, 60));
-      const gap = Math.round(reachJump(rise, false) * R.r(0.4, 0.55));
+      // (4-1's wide ledges, 2026-10-28: World 4 sits above World 3, so its first climb asks longer, higher hops between them, still
+      // well inside one jump; the band chart had 4-1 at World 2's level)
+      const rise = Math.round(R.r(20, 60) + (wide && cliff ? 25 : 0));
+      const gap = Math.round(reachJump(rise, false) * (R.r(0.4, 0.55) + (wide && cliff ? 0.14 : 0)));
       const at = (d: 1 | -1) => (d === 1 ? cur.x + cur.width + gap : cur.x - gap - w);
       const fits = (d: 1 | -1) => (d === 1 ? W - KAPOK_MARGIN - (cur.x + cur.width) : cur.x - KAPOK_MARGIN) >= gap + w && !blocked(at(d), at(d) + w, cur.y - rise);
       if (!fits(dir)) {
@@ -4795,7 +4806,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     while (expert < (mist ? stageSeconds('4-6') - MIST_LEAVES - PINWHEEL_AGAIN : EXPERT_SECONDS - 32) && n < 30) {
       // (4-1, 2026-10-28: the cliff climbs mostly by hops up wide ledges, where its rocks come loose, and a rope now and then: 4-6's
       // climb is the tree's ropes. The stage inspector found the two alike on every measure)
-      if (cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
+      if (w4Climb ? w4Climb.hopsAt(n) : n % 3 === 2) hops(R.i(2, 3), cliff);
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
       // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
@@ -4833,7 +4844,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const x0 = cur.x + cur.width;
     // (the branch he is on joins it: it is not in the way)
     const clear = (y: number) => !P.some((p) => p !== P[0] && p !== cur && p.x < x0 + span + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130);
-    if (!clear(cur.y) || !clear(cur.y - RISE) || !clear(cur.y - RISE / 2)) return false;
+    // (and nothing close under the lift's notch: from a branch there the kid bot jumped 157 px up into it, a double jump onto 100 px
+    // that it made 54-65% of the time, on 4 of 10 rolls, 2026-10-28)
+    if (!clear(cur.y) || !clear(cur.y - RISE) || !clear(cur.y - RISE / 2) || !clear(cur.y + 250)) return false;
     dir = 1;
     const y = cur.y;
     const floor = ledge(x0, x0 + FLOOR, y);
