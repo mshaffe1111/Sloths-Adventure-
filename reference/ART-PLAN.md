@@ -117,10 +117,49 @@ per job. CPU jobs (start pictures, sheets) cost cents.
 
 Round 1 = items 1-7 (~$30-32 of the $40 cap). Round 2 = items 10-15 in that order with what is left, stopping at $65 total.
 
-## 3. Cost ledger (exact: job durations x $2.75/h)
+## 3. Cost ledger (exact: job durations x $2.75/h; CPU jobs at cpu-upgrade cost cents and are listed for completeness)
 
 | Job id | What | Flavor | Minutes | $ |
 |---|---|---|---|---|
-| (filled in as jobs finish) | | | | |
+| 6ae2376e3fb22a235dd45b9c | starts (cancelled at once: "1h30m" read as 1 s) | cpu-upgrade | 0 | 0.00 |
+| 6ae2377c3fb22a235dd45ba6 | guardians' starts on CPU (cancelled: Real-ESRGAN too slow) | cpu-upgrade | 9 | ~0.01 |
+| 6ae2383a3fb22a235dd45d1a | W5 creatures' starts on CPU (cancelled, redone on GPU) | cpu-upgrade | 12 | ~0.01 |
+| 6ae2399641e90535df779658 | starts on L4 (cancelled while waiting for hardware) | l4x1 | 0 | 0.00 |
+| 6ae239c53fb22a235dd45f5f | starts, failed (old torch, no Blackwell kernels) | rtx-pro-6000 | 3.6 | 0.16 |
+| 6ae23aac3fb22a235dd460ea | starts, failed (pip PEP 668) | rtx-pro-6000 | 0.3 | 0.01 |
+| 6ae23aca3fb22a235dd46116 | guardians' 56 starts | rtx-pro-6000 | 0.6 | 0.03 |
+| 6ae23b0441e90535df779883 | W5 creatures' 16 starts | rtx-pro-6000 | 0.4 | 0.02 |
+| 6ae23a3f41e90535df779750 | Iron-Claw, 20 clips | rtx-pro-6000 | 89.1 | 4.08 |
+| 6ae23a4141e90535df779754 | Golem, 20 clips | rtx-pro-6000 | 81.7 | 3.74 |
+| 6ae23a4341e90535df77975c | Drake, 20 clips | rtx-pro-6000 | 75.3 | 3.45 |
+| 6ae23a4541e90535df779760 | Reaver, 20 clips | rtx-pro-6000 | 85.2 | 3.91 |
+| 6ae23a4741e90535df779766 | Thornbark, 20 clips | rtx-pro-6000 | 79.4 | 3.64 |
+| 6ae23a493fb22a235dd4602f | Monarch, 16 clips | rtx-pro-6000 | 79.7 | 3.65 |
+| 6ae23b0741e90535df779887 | W5 creatures, 16 clips | rtx-pro-6000 | 69.9 | 3.21 |
+| 6ae23b083fb22a235dd4617c | W5 creatures, 16 clips | rtx-pro-6000 | 70.0 | 3.21 |
+| 6ae23b523fb22a235dd461f2 | round 2 stills, 54 (lairs, times of day, collars off, collar, props) | rtx-pro-6000 | 23.9 | 1.10 |
+| 6ae23b5441e90535df7798e9 | round 2 stills, 54 | rtx-pro-6000 | 23.8 | 1.09 |
+| 6ae2404041e90535df779f4e | Flicker, 14 clips | rtx-pro-6000 | 68.3 | 3.13 |
+| 6ae240423fb22a235dd46891 | Flicker, 14 clips | rtx-pro-6000 | 68.5 | 3.14 |
+| 6ae24c6b3fb22a235dd47573 + 250bf/250c1/25cbb/26425 | clip previews and checks (5 jobs) | cpu-upgrade | ~9 | ~0.01 |
+| 6ae2509e41e90535df77b060 | title pair, 4 clips | rtx-pro-6000 | 20.6 | 0.94 |
+| 6ae250a141e90535df77b066 | title pair, 4 clips | rtx-pro-6000 | 20.4 | 0.94 |
+| 6ae250a33fb22a235dd47b6b | title pair, 4 clips | rtx-pro-6000 | 20.6 | 0.94 |
+| 6ae253633fb22a235dd47f4f | title idles retry (no motion model), 4 | rtx-pro-6000 | 18.7 | 0.86 |
+| 6ae253643fb22a235dd47f54 | title idles retry (motion 0.5), 2 | rtx-pro-6000 | 11.0 | 0.51 |
+| 6ae2539a41e90535df77b471 | re-runs of broken clips, 8 | rtx-pro-6000 | 35.9 | 1.64 |
+| 6ae2578541e90535df77ba26 | title frames sharpened (Real-ESRGAN) | rtx-pro-6000 | 3.7 | 0.17 |
+| 6ae25cdf3fb22a235dd48cd5 | title pair redo (end pinned), 2 | rtx-pro-6000 | 7.4 | 0.34 |
+| 6ae25ce141e90535df77c0de | title pair redo, no motion model, 2 | rtx-pro-6000 | 6.6 | 0.30 |
+| 6ae25f963fb22a235dd490ac | pair redo sharpened | rtx-pro-6000 | 0.9 | 0.04 |
+| 6ae264773fb22a235dd496b9 | boss batch 2 starts | rtx-pro-6000 | 0.4 | 0.02 |
+| 6ae264cc41e90535df77ca2e | water signs + side-on prop retries, 12 stills | rtx-pro-6000 | 5.1 | 0.23 |
+| 6ae264b441e90535df77ca10 | moving lair plates, 6 clips | rtx-pro-6000 | 21.5 | 0.98 |
+| 6ae2647f3fb22a235dd496c8 | boss batch 2, 16 clips | rtx-pro-6000 | running | |
+| 6ae264813fb22a235dd496cd | boss batch 2, 16 clips | rtx-pro-6000 | running | |
+| 6ae2648341e90535df77c9bb | boss batch 2, 16 clips | rtx-pro-6000 | running | |
 
-Running total: $0.00
+Painted logo: cancelled by Matt before it ran, $0.
+
+Finished jobs total: **$45.49** (round 1 enemies + Flicker $35.6, the title pair $5.0 inside the same cap, round 2 so far $4.9).
+Boss batch 2 is expected at ~$10.5, for ~$56 in all; the cap is $65.
