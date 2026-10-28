@@ -25,6 +25,12 @@ export interface ThornVine {
   look: number;
   /** seconds into the cycle at game time 0 (neighbours are staggered) */
   offset: number;
+  /**
+   * 3-5's awake vine (the puzzle kit's pebble lure, 2026-10-28): it never sleeps (sleep and stir 0: always looking), so the only way past
+   * is a noise it turns to (a pebble thrown past it, a bell). Its lash swats him back out of its reach without costing a heart: a puzzle
+   * never costs a life.
+   */
+  awake?: boolean;
 }
 
 export type VinePhase = 'sleep' | 'stir' | 'look';

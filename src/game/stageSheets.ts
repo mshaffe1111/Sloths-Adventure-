@@ -9,13 +9,13 @@
  *   dot            Dot's flight (4-D): her pieces, her frames and the four paintings behind the netting (dotFlightArt.ts)
  *   Meeca's stage (5-M): World 5's kit and dressing, and Pell's and the soldiers' clip sheets (meecaArt.ts)
  *   kit-pieces     the puzzle kit's pieces and Pokey's carry poses (puzzleArt.ts), for a stage with puzzle rooms (the test room, 'kit',
- *                  and World 2's W2_PUZZLES)
+ *                  World 2's W2_PUZZLES and World 3's W3_PUZZLES)
  *   anim:<name>    a creature's clip sheet (creatureAnim.ts), for the hand-built stages that hold one (STAGE_ANIMS)
  *
  * A generated stage's creatures are rolled with the stage, so they are not known ahead: their clip sheets still start loading as the
  * stage starts (engine.ts warmCreatureAnims), as before.
  */
-import { HAND_STAGES } from './protoStage.ts';
+import { HAND_STAGES, W3_PUZZLES } from './protoStage.ts';
 import { W2_PUZZLES, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID } from './extraStages.ts';
 import { CTEST_STAGE_ID } from './stageGenerator.ts';
@@ -64,8 +64,10 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
     if (w !== 1 && hasKit) out.push(`kit:${w}`);
   }
   if (built && w >= 2 && w <= 5) out.push(`w${w}-props`);
+  // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
+  if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
   if (built) for (const a of STAGE_ANIMS[cfg.id] ?? []) out.push(`anim:${a}`);
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
-  if (built && W2_PUZZLES.has(cfg.id)) out.push('kit-pieces');
+  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id))) out.push('kit-pieces');
   return out;
 }
