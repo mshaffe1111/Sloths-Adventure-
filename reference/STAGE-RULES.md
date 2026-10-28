@@ -205,6 +205,14 @@ test link, the QA testers or a release until the lead has re-run them, on more t
 - **The level check follows a swing from a ledge to a ledge, never from vine to vine** (2026-10-28): a chain of lianas over a real
   drop reads as unfinishable (4-4 is not judged by the check for that reason). Where a stage is checked, a swing over a drop is one
   liana from bank to bank (World 4's `swings`, windChain with one vine), as many in a row as you like.
+- **A high way the floor walks under is scenery** (Meeca's stage, 2026-10-28, Matt: "climbing is unneeded because you can just run
+  straight across the bottom"): her trees, logs and stepping stumps all had the path going on under them. A climb, a branch or a log
+  only counts when the floor beneath it goes nowhere: a gully deeper than a second jump (260 px) with stairs back at its near end, or a
+  wall. Prove it per section: with everything above the path taken away and the trunks off, the validator must not reach the end, and in
+  the engine a plain walk must stop (`tools/inspect/meecaPace.ts`, `meecaStage.test.ts`, `meecaReal.test.ts`).
+- **Skills come from the save, not the hero** (2026-10-28): Meeca ran on Pokey's skill set, so anyone who had cleared 4-1 could open
+  Pokey's leaf as her and glide over her gullies, and the validator (World 5: glide guaranteed) agreed. She has no leaf now
+  (`meecaPlay.ts` filter) and her check walks her as at 4-6 (`meecaCheckStage`). Any stage played as someone else: check what it inherits.
 
 ## 7. Where things are
 

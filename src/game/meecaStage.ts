@@ -283,7 +283,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
       steps.push({ kind: 'plat', id: g2.id });
       return g2.x + g2.width;
     },
-    // a fallen tree over a gully: a stump step up onto it, a snag on it to hop, and off its far end onto the bank
+    // a fallen tree over a gully, broken in two: a stump step up onto it, a hop up onto its higher half, and off its end onto the bank
     fallen: (x, steps) => {
       const g0 = gbank(x, x + 260);
       steps.push({ kind: 'plat', id: g0.id });
@@ -293,13 +293,10 @@ export function buildMeecaStage(seed = 1): MeecaStage {
       const ly = G - R.i(140, 150);
       const len = R.i(460, 540);
       const lx = x + 230;
-      const snagX = lx + R.i(200, len - 220);
-      const a = log(lx, snagX, ly);
+      const breakX = lx + R.i(200, len - 220);
+      const a = log(lx, breakX, ly);
       steps.push({ kind: 'plat', id: a.id });
-      const snag = log(snagX, snagX + 50, ly - R.i(40, 50));
-      snag.height = 30 + (ly - snag.y);
-      steps.push({ kind: 'plat', id: snag.id });
-      const b = log(snagX + 50, lx + len, ly);
+      const b = log(breakX, lx + len, ly - R.i(40, 50));
       steps.push({ kind: 'plat', id: b.id });
       const farX = lx + len - 90;
       gully(g0.x + g0.width, farX);
