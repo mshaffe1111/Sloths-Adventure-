@@ -5,3 +5,4 @@ swim-clips-1 6adff5513fb22a235dd23928 created 2026-10-27T00:50:25Z
 swim-clips-0 finished 01:12:27Z (22.1 min)
 swim-clips-1 finished 01:12:24Z (22.0 min)
 total GPU time 50.1 min on rtx-pro-6000 at ~$2.75/h = ~$2.30
+swim-first2-stills-0 6adffd633fb22a235dd23e7d created 2026-10-27T01:24:51Z (second pass at the first-swim moment, Matt's go-ahead, cap $1.50 extra)
