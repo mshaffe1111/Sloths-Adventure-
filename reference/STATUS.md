@@ -8,7 +8,17 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
-## Running now (2026-10-28 ~18:30 ET)
+## Release PR #43 (opened 2026-10-28 ~18:45 ET, Matt: "everything that's in the merge right now can go through, I've tested it")
+
+- ccr at b080ec1: polish, W1 r2, W2 r2, W4 r2, gen2 core, the Dot fix. Gate: tsc clean, suite 1622 pass 0 fail (2 to-dos), build ok.
+  After Matt merges: check the deploy run and the APK, tell QA.
+- Next: the vine HOTFIX (Matt: "hot fix, deployed sooner than later"): self-swinging vines (helper a72c2052ca6c361b1, branch
+  vine-fix) as its own small PR. Preview video to Matt first.
+
+## Running now (2026-10-28 ~18:45 ET)
+
+- Vine hotfix: self-swinging vines (Donkey Kong Jr./DKC style: the vine swings on its own, up/down climbs, left/right only turns,
+  timing the jump-off is the skill). Release window Easy >=300 ms, Normal >=167 ms.
 
 - Meeca's stage layout rebuild (Matt: "90% dead time; climbing unneeded, you can run along the bottom; I like the puzzles"): cloud
   session_01FhBbYNdrb48mkEg3GEPojL, branch meeca-layout. Rooms, story and ending unchanged.
@@ -26,7 +36,9 @@ Last updated: 2026-10-28 (Hugging Face art run started).
   real-phone check (headless: title 13-16 fps for ~12 s after arrival, World Map slow under 4x CPU throttle; a lite mode exists).
 - World 1 round 2 (every rule break across 200 rolls fixed), World 4 round 2. Suite 1618 pass 0 fail; build ok.
 - PR #42 is LIVE (site published, APK built 2026-10-28 ~17:55 ET).
-- Art: $45.49 spent; boss batch 2 running (~$56 after); gallery due ~19:15 ET; stop new jobs at $60.
+- Art run DONE: $54.65 of $65 (about $5 kept for re-runs). Gallery tools/art/gallery-w5-10/index.html in the art-hf worktree
+  (images git-ignored; rebuild steps in the helper's report), to publish for Matt's picks. Broken: Reaver walk, Iron-Claw jump, Drake
+  leap/claw, Monarch flying loops, Flicker's travelling moves (first halves only), collars-off Queen/General. Plan + ledger: ART-PLAN.md.
 
 ## Release PR #42 (opened 2026-10-28 ~17:50 ET on Matt's "merge and get this pushed out"; test link v219 is this build)
 
