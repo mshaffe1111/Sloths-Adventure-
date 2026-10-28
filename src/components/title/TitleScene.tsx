@@ -272,7 +272,15 @@ function loadLog() {
 interface LiveCast {
   cast: Cast;
   segs: Segment[];
-  pics: Record<string, HTMLImageElement | null | undefined>;
+  pics: Record<string, Pic | null | undefined>;
+}
+/** a sheet held decoded: a big animation sheet drawn straight from an <img> is decoded again and again once memory is tight */
+type Pic = HTMLImageElement | ImageBitmap;
+function loadSheet(url: string, done: (pic: Pic | null) => void) {
+  loadImage(url, (im) => {
+    if (!im || typeof createImageBitmap !== 'function') return done(im);
+    createImageBitmap(im).then(done, () => done(im));
+  });
 }
 let pokey: LiveCast | null = null;
 let meeca: LiveCast | null = null;
@@ -287,15 +295,16 @@ function ensure(live: LiveCast, sheet: string): boolean {
   const src = live.cast.sheets[sheet];
   if (typeof src !== 'string') return false;
   live.pics[sheet] = null;
-  loadImage(src, (im) => {
+  loadSheet(src, (im) => {
     if (live.pics[sheet] === null) live.pics[sheet] = im ?? undefined;
+    else if (im && 'close' in im) im.close();
   });
   return false;
 }
 /** the moment they share: when it plays (on the same clock as their timelines), and its sheet (fetched a few seconds before) */
 let pairWins: Array<[number, number]> = [];
-let pairPic: HTMLImageElement | null | undefined;
-function pairFrame(t: number): { pic: HTMLImageElement; f: ClipFrame } | null {
+let pairPic: Pic | null | undefined;
+function pairFrame(t: number): { pic: Pic; f: ClipFrame } | null {
   if (!pokey || !meeca) return null;
   if (!pairWins.length) {
     const c = PAIR_LAUGH.clip;
@@ -305,13 +314,15 @@ function pairFrame(t: number): { pic: HTMLImageElement; f: ClipFrame } | null {
   const u = ((t % total) + total) % total;
   const w = pairWins.find(([s, e]) => u >= s - 3 && u < e);
   if (!w) {
+    if (pairPic && 'close' in pairPic) pairPic.close();
     pairPic = undefined;
     return null;
   }
   if (pairPic === undefined) {
     pairPic = null;
-    loadImage(PAIR_LAUGH.url, (im) => {
+    loadSheet(PAIR_LAUGH.url, (im) => {
       if (pairPic === null) pairPic = im ?? undefined;
+      else if (im && 'close' in im) im.close();
     });
   }
   if (u < w[0] || !pairPic) return null;
@@ -327,7 +338,7 @@ function loadCasts() {
   ensure(meeca, MEECA_CAST.idle);
 }
 /** the frame to draw at time t (the idle's, while a moment's sheet is still on its way); fetches what comes next, lets go of the rest */
-function castFrame(live: LiveCast, t: number): { pic: HTMLImageElement; f: ClipFrame } | null {
+function castFrame(live: LiveCast, t: number): { pic: Pic; f: ClipFrame } | null {
   const { cast, segs } = live;
   const at = frameAt(cast, segs, t);
   const total = segs.length ? segs[segs.length - 1].end : 1;
@@ -336,7 +347,13 @@ function castFrame(live: LiveCast, t: number): { pic: HTMLImageElement; f: ClipF
   const soon = new Set<string>([cast.idle]);
   for (const sg of segs) if (sg.end > u && sg.start < u + 3) soon.add(cast.clips[sg.clip]?.sheet ?? cast.idle);
   for (const sh of soon) ensure(live, sh);
-  for (const k of Object.keys(live.pics)) if (!soon.has(k) && live.pics[k]) live.pics[k] = undefined;
+  for (const k of Object.keys(live.pics)) {
+    const pk = live.pics[k];
+    if (!soon.has(k) && pk) {
+      if ('close' in pk) pk.close();
+      live.pics[k] = undefined;
+    }
+  }
   const clip = cast.clips[at.clip];
   const pic = clip && live.pics[clip.sheet];
   if (clip && pic) return { pic, f: clip.frames[at.frame] };
@@ -474,6 +491,7 @@ export const TitleScene = React.forwardRef<
     const pairLight = document.createElement('canvas');
     // the log and its ferns, in the world's light (made again only when the light or the size changes)
     const logLayer = { key: '', back: document.createElement('canvas'), front: document.createElement('canvas') };
+    const shade = document.createElement('canvas');
 
     let box: DOMRect | null = null;
     let boxAt = 0;
@@ -482,6 +500,11 @@ export const TitleScene = React.forwardRef<
     const t0 = performance.now();
     const FADE = reduced ? 1.6 : 3.2;
 
+    // a slow device: if the scene's own drawing takes too long for two seconds running, it draws at the screen's own pixels and leaves
+    // out the light shafts, the near mist and the canopy (it stays that way for this visit)
+    let cost = 0;
+    let lite = false;
+    let slowSince = 0;
     const draw = (now: number) => {
       raf = requestAnimationFrame(draw);
       const cv = cvRef.current;
@@ -497,9 +520,10 @@ export const TitleScene = React.forwardRef<
       if (now - last < 1000 / fps - 3) return;
       last = now;
       if (!ready) return;
+      const began = performance.now();
 
       const w = cv.clientWidth || window.innerWidth, h = cv.clientHeight || window.innerHeight;
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const dpr = lite ? 1 : Math.min(2, window.devicePixelRatio || 1);
       if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
         cv.width = Math.round(w * dpr);
         cv.height = Math.round(h * dpr);
@@ -617,7 +641,7 @@ export const TitleScene = React.forwardRef<
         if (s.mid) strip(s.mid, s.mid.naturalWidth, s.mid.naturalHeight, reduced ? 2 : 6, -h * 0.02, h * 1.04, reduced ? 0 : Math.sin(t * 0.35) * 0.005);
         c.restore();
         // light from the canopy (brighter as the title reveals itself)
-        if (s.beam) {
+        if (s.beam && !lite) {
           c.save();
           camera(0.6);
           c.globalCompositeOperation = 'screen';
@@ -721,7 +745,7 @@ export const TitleScene = React.forwardRef<
         const k = H / POKEY_CAST.height;
         const apart = (PAIR_LAUGH.meecaFeet[0] - PAIR_LAUGH.pokeyFeet[0]) * k;
         const pair = pairFrame(t);
-        const paintLit = (pic: HTMLImageElement, f: ClipFrame, fx: number, fy: number, x: number) => {
+        const paintLit = (pic: Pic, f: ClipFrame, fx: number, fy: number, x: number) => {
           // the world's light over the frame, made in a small picture of its own (warm from above, the undergrowth's shade at the feet)
           if (lightCv.width < f.w || lightCv.height < f.h) {
             lightCv.width = Math.max(lightCv.width, f.w);
@@ -768,7 +792,7 @@ export const TitleScene = React.forwardRef<
       }
 
       // ---- the air in front: the near mist, fireflies, butterflies, leaves ----
-      if (showing.mist && !reduced) {
+      if (showing.mist && !reduced && !lite) {
         c.save();
         camera(1.15);
         c.globalAlpha = 0.12 * light;
@@ -808,7 +832,7 @@ export const TitleScene = React.forwardRef<
       }
 
       // ---- in front of the camera: the dark canopy over the top, big soft leaves at the corners, one drifting past now and then ----
-      if (showing.canopy) {
+      if (showing.canopy && !lite) {
         c.save();
         camera(1.5);
         c.globalAlpha = light * 0.9;
@@ -848,10 +872,46 @@ export const TitleScene = React.forwardRef<
         }
         c.restore();
       }
+      // the title's shade: a warm glow behind the name, the edges a touch darker, the undergrowth's shade under the buttons (made once
+      // per size, a single picture drawn over the frame; it was a CSS layer over the canvas, which cost far more to draw)
+      if (!backdrop) {
+        const key = `${cv.width}x${cv.height}`;
+        if (shade.dataset.k !== key) {
+          shade.dataset.k = key;
+          shade.width = Math.max(2, Math.round(w / 2));
+          shade.height = Math.max(2, Math.round(h / 2));
+          const g = shade.getContext('2d')!;
+          const sw = shade.width, shh = shade.height;
+          g.clearRect(0, 0, sw, shh);
+          const warm = g.createRadialGradient(sw / 2, shh * 0.14, 0, sw / 2, shh * 0.14, Math.max(sw, shh) * 0.42);
+          warm.addColorStop(0, 'rgba(255,226,150,.2)');
+          warm.addColorStop(1, 'rgba(255,226,150,0)');
+          g.fillStyle = warm;
+          g.fillRect(0, 0, sw, shh);
+          const edge = g.createRadialGradient(sw / 2, shh * 0.46, Math.min(sw, shh) * 0.42, sw / 2, shh * 0.46, Math.hypot(sw, shh) * 0.55);
+          edge.addColorStop(0, 'rgba(4,12,8,0)');
+          edge.addColorStop(1, 'rgba(4,12,8,.42)');
+          g.fillStyle = edge;
+          g.fillRect(0, 0, sw, shh);
+          const foot = g.createLinearGradient(0, shh, 0, shh * 0.6);
+          foot.addColorStop(0, 'rgba(8,18,11,.7)');
+          foot.addColorStop(1, 'rgba(8,18,11,0)');
+          g.fillStyle = foot;
+          g.fillRect(0, 0, sw, shh);
+        }
+        c.drawImage(shade, 0, 0, w, h);
+      }
       // the dark the reveal comes out of
       if (light < 1) {
         c.fillStyle = `rgba(11,26,19,${(1 - light) * 0.85})`;
         c.fillRect(0, 0, w, h);
+      }
+      cost = cost * 0.9 + (performance.now() - began) * 0.1;
+      if (!lite && st.arriveAt !== null && now - st.arriveAt > 2000) {
+        if (cost > 26) {
+          if (!slowSince) slowSince = now;
+          else if (now - slowSince > 1500) lite = true;
+        } else slowSince = 0;
       }
     };
     raf = requestAnimationFrame(draw);

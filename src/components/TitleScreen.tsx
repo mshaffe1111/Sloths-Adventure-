@@ -164,7 +164,6 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   return (
     <div className={`gx2 select-none gx2-${phase}${cold ? '' : ' gx2-back'}${named ? ' gx2-named' : ''}${covered ? ' gx2-covered' : ''}`}>
       <TitleScene ref={scene} worlds={SHOWCASE} hold={13} stageSelector=".gx2-stage" dim={covered} />
-      <div className="gx2-shade" />
 
       <div className="gx2-ui">
         <div className="gx2-top">
