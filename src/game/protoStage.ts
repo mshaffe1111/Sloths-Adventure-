@@ -5429,11 +5429,13 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     ];
     // (2026-10-28: one on a ledge of each run of hops up the wide ledges first, then spread up the whole climb, about ten in all: the
     // climb is mostly those hops now, and the rocks are its beat)
-    const every = Math.max(1, Math.floor(ledges.length / 12));
+    // (round 2, 2026-10-28: a roll whose climb is by hops is the rockfall flavour, a rock over every wide ledge it can, up to sixteen)
+    const rockFlavour = w4Climb?.theme === 'hops';
+    const every = rockFlavour ? 1 : Math.max(1, Math.floor(ledges.length / 12));
     const inGroup = (g: number[]) => [g[Math.floor(g.length / 2)], ...g].map((id) => ledges.find((p) => p.id === id)).filter((p): p is Platform => !!p);
     const order = [...hopGroups.map(inGroup), ...ledges.filter((_, k) => k % every === 0).map((p) => [p])];
     for (const tries of order) {
-      if (rocks.length >= 10) break;
+      if (rocks.length >= (rockFlavour ? 16 : 10)) break;
       for (const p of tries) {
         if (rocks.some((q) => q.land === p.y)) continue;
         const busy = climbsAt(p);
