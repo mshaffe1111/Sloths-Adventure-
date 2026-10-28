@@ -4207,7 +4207,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         hint(nb.x - 200, 'Something shiny, far out past that nest...');
         end = sx + 120;
       }
-      x = end + R.r(240, 280);
+      // dips of soft moss in the floor under the nest's branch and on past it: down off the branch it was four and a half quiet
+      // seconds to the next thing (2026-10-28, the 200-roll tool)
+      x = Math.max(x, nb.x + 40);
+      while (x < end - 60) {
+        run(R.r(260, 330));
+        dip();
+      }
+      x = Math.max(x, end + R.r(240, 280));
       expert += (tX - x0) / RUN + 1 + (nb.x - perch.x - perch.width) / 330 + FREE + 0.8 + (x - nb.x - nb.width) / RUN;
       pieces.push({ k: 'canopy', x0, x1: x });
     }
@@ -4263,7 +4270,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
      */
     const between = () => {
       const x0 = x;
-      busy(1, ['log', 'dip'], R.r(200, 240));
+      busy(1, W4_FILL[w4Fill], R.r(200, 240));
       if (x - x0 < 440) rest(440 - (x - x0));
     };
 
@@ -4283,25 +4290,36 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       between();
       hint(x + 40, 'Water pours between you and that nest. Climb up and keep sliding into the boulder to roll it under the water', 'Water pours between you and that nest. Climb up and hold the pad into the boulder to roll it under the water', 'Water pours between you and that nest. Climb up and hold right into the boulder to roll it under the water');
       fallNest();
-      rest(R.r(200, 260));
-      flag();
-    });
-    beat('Develop: the guard', () => {
-      hint(x + 40, 'A capuchin guards that nest! When the chimes ring, the wind will knock it over');
-      guardNest(false, false);
-      rest(R.r(200, 260));
-      flag();
       between();
-      knotNest(true);
-      rest(R.r(200, 260));
       flag();
     });
+    // (2026-10-28, the variety pass: 200 rolls of 4-8 were 98% alike. The Develop and the first Twist come in either order inside, the
+    // capuchins near the end come in either order (the trade, a mango for the pulley's stone; a guard on a tied-up ledge), the cliff path after
+    // it draws from a bag leaning to the roll's theme: the open cliff, more nests, or the leaf, w4Sections.ts)
+    const roll = new W4Roll(seed, '4-8');
+    const develop = roll.pick(['guardFirst', 'knotFirst'] as const);
+    beat('Develop: the guard', () => {
+      const guard = () => {
+        hint(x + 40, 'A capuchin guards that nest! When the chimes ring, the wind will knock it over');
+        guardNest(false, false);
+        between();
+        flag();
+      };
+      const high = () => {
+        knotNest(true);
+        between();
+        flag();
+      };
+      if (develop === 'guardFirst') { guard(); between(); high(); }
+      else { high(); guard(); }
+    });
+    const twist = roll.pick(['glideFirst', 'fallFirst'] as const);
     beat('Twist: by leaf', () => {
+      if (twist === 'fallFirst') { fallNest(); between(); }
       hint(x + 40, 'That nest is too far to jump to. Climb up, jump, and keep your thumb on the glass to open your leaf', 'That nest is too far to jump to. Climb up, jump, and hold Jump to open your leaf', 'That nest is too far to jump to. Climb up, jump, and hold Space to open your leaf');
       glideNest(false, false);
       between();
-      fallNest();
-      rest(R.r(200, 260));
+      if (twist === 'glideFirst') { fallNest(); between(); }
       flag();
     });
     beat('Twist: two at once', () => {
@@ -4323,25 +4341,47 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       R.shuffle(combos).forEach((f, i) => {
         if (i) between();
         f();
-        rest(R.r(200, 260));
+        between();
         flag();
       });
     });
+    const capuchin = roll.pick(['trade', 'guard'] as const);
+    type Piece48 = 'gust' | 'pillars' | 'high' | 'nest' | 'knot' | 'drop' | 'gustLeaf';
+    const theme = roll.theme('finish', ['cliff', 'nests', 'leaf'] as const);
+    const counts: Record<typeof theme, Record<Piece48, number>> = {
+      cliff: { gust: 2, pillars: 1, high: 1, nest: 0, knot: 0, drop: 0, gustLeaf: 0 },
+      nests: { gust: 1, pillars: 0, high: 0, nest: 1, knot: 1, drop: 0, gustLeaf: 0 },
+      leaf: { gust: 0, pillars: 1, high: 0, nest: 0, knot: 0, drop: 2, gustLeaf: 1 },
+    };
+    const bag = roll.bag<Piece48>(['gust', 'pillars', 'high', 'nest', 'knot', 'drop', 'gustLeaf'], (k) => counts[theme][k]);
     beat('Finish', () => {
       between();
       guardNest(false, false);
       between();
       flag();
-      // the capuchin's trade, once: a nest up on a terrace that only Dot's knot pulley reaches, and a capuchin holding its stone
+      // the capuchin's trade, once: a nest up on a terrace that only Dot's knot pulley reaches, and a capuchin holding its stone. By the
+      // roll, a second capuchin guards a ledge tied up under Dot's knot, before the trade or after it
+      const guardKnot = () => {
+        hint(x + 40, 'A guard up a tied-up vine. Dot first, then wait for the chimes');
+        guardNest(true, false);
+        between();
+        flag();
+      };
+      if (capuchin === 'guard') guardKnot();
       tradeNest();
       flag();
+      if (capuchin === 'trade') guardKnot();
       // the cliff path on toward the shrine, until a quick player has had about three minutes, then the last nest
       let n = 0;
       while (expert < W48_SECONDS - 20 && n < 24) {
-        const k = n % 3;
-        if (k === 0) gustGap(1);
-        else if (k === 1) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
-        else highRoadOver();
+        const k = bag.draw()!;
+        if (k === 'gust') gustGap(R.chance(0.5) ? 1 : -1);
+        else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+        else if (k === 'high') highRoadOver();
+        else if (k === 'nest') plainNest();
+        else if (k === 'knot') knotNest(R.chance(0.5));
+        else if (k === 'drop') leafDrop(R.r(0.78, 0.88));
+        else gustLeaf();
         w4Breath();
         n++;
         if (n % 2 === 0) flag();
