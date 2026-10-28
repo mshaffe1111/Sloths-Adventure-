@@ -3837,6 +3837,7 @@ export class GameEngine {
       heartsLost: this.statHeartsLost,
       floraTotal,
       floraCollected,
+      ...(this.currentStage.config.objectiveType === 'harvest' ? { floraGoal: { cur: this.player.fruitsCollected, target: this.currentStage.config.targetCount } } : {}),
       timeSec: this.gameTime,
       timeLimit: this.currentStage.config.timeLimit,
       maxStompChain: this.statMaxStompChain,

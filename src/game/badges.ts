@@ -46,6 +46,8 @@ export interface StageStats {
   /** flowers, leaves and fruit in the stage, and how many were picked up */
   floraTotal: number;
   floraCollected: number;
+  /** a gather stage's goal as the HUD counts it (picked so far, of the goal), so a card says what the HUD bar said */
+  floraGoal?: { cur: number; target: number };
   timeSec: number;
   timeLimit: number;
   /** longest stomp chain and combo this stage */
