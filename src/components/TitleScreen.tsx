@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { PaintedVista } from './PaintedVista.tsx';
-import { FullscreenButton, LogoWord, Ribbon, TitlePair } from './gameUi.tsx';
+import { TitleScene, type TitleSceneHandle } from './title/TitleScene.tsx';
+import { FullscreenButton, LogoWord, Ribbon } from './gameUi.tsx';
 import { homeScreenTipDue, markHomeScreenTip } from '../game/fullscreen.ts';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
@@ -12,6 +12,7 @@ import { UpdateLink } from './UpdateControls.tsx';
 import { Icon } from './icons/index.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
+import { bootDone, bootProgress, bootShowing, fontsReady, waitForAll } from '../game/boot.ts';
 
 /** every biome takes a turn behind the logo */
 const SHOWCASE = [1, 2, 4, 6, 3, 8, 5, 7, 9, 10];
@@ -49,6 +50,14 @@ interface TitleScreenProps {
   badgeCount?: number;
 }
 
+/**
+ * How the title comes on (2026-10-28). The first time, the splash (index.html) stays up until the fonts, the first painting and both
+ * sloths are all here, then fades as the whole title arrives together: the painting settles in, the letters of the logo drop one by
+ * one, the ribbon unfurls, the two of them hop onto their log and the buttons come up in turn. Coming back to it later, the same
+ * entrance plays, quicker. Leaving it, the buttons and the logo step away before the next screen comes on.
+ */
+type Phase = 'wait' | 'arrive' | 'leave';
+
 export const TitleScreen: React.FC<TitleScreenProps> = ({
   onStartGame,
   onOpenMap,
@@ -74,6 +83,39 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   /** a brand-new player gets the short how-to once, right before the first stage */
   const [intro, setIntro] = useState(false);
   const updated = formatBuildTime(BUILD_TIME);
+
+  // ---- the entrance ----
+  const scene = useRef<TitleSceneHandle>(null);
+  const [phase, setPhase] = useState<Phase>('wait');
+  const [cold] = useState(() => bootShowing());
+  useEffect(() => {
+    let live = true;
+    const go = () => {
+      if (!live) return;
+      bootDone();
+      scene.current?.arrive();
+      setPhase('arrive');
+    };
+    void waitForAll({
+      checks: [() => !!scene.current?.ready()],
+      promises: [fontsReady()],
+      // the first time, as long as the splash may wait; coming back, everything is already here
+      ms: cold ? 15000 : 1500,
+      onProgress: (p) => bootProgress(0.3 + 0.7 * p),
+    }).then(go);
+    return () => {
+      live = false;
+    };
+  }, [cold]);
+  const leaving = useRef(false);
+  /** step away (the logo and the buttons go), then go on to the next screen */
+  const leave = (then: () => void) => {
+    if (leaving.current) return;
+    leaving.current = true;
+    const reduced = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    setPhase('leave');
+    window.setTimeout(then, reduced ? 60 : 240);
+  };
 
   // the credit's secret: ten taps in a row on "Shaffer" open (or close again) every stage and world, for testing
   const tapRun = useRef({ n: 0, at: 0 });
@@ -112,21 +154,21 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
     if (!resume && !howToSeen()) {
       markHowToSeen();
       setIntro(true);
-    } else onStartGame();
+    } else leave(onStartGame);
   };
+  const covered = saveOpen || newOpen || menuOpen || howOpen || intro;
 
   return (
-    <div className="gx2 select-none">
-      <PaintedVista worlds={SHOWCASE} hold={14} pan={9} />
+    <div className={`gx2 select-none gx2-${phase}${cold ? '' : ' gx2-back'}`}>
+      <TitleScene ref={scene} worlds={SHOWCASE} hold={13} stageSelector=".gx2-stage" dim={covered} />
       <div className="gx2-shade" />
-      <TitlePair stageSelector=".gx2-stage" />
 
       <div className="gx2-ui">
         <div className="gx2-top">
-          <span className="gx-leaf-tag">10 Worlds · 100 Stages</span>
+          <span className="gx2-tag">10 Worlds · 100 Stages</span>
           <div className="gx2-top-r">
             {!isInstalled && onInstallDesktop && (
-              <button type="button" onClick={onInstallDesktop} className="gx-leaf-tag" title="Install the game as an app">
+              <button type="button" onClick={onInstallDesktop} className="gx-plank gx-plank-sm" title="Install the game as an app">
                 Install app
               </button>
             )}
@@ -138,10 +180,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               aria-label={isMuted ? 'Sound off' : waiting ? 'Tap for sound' : 'Sound on'}
               title={isMuted ? 'Sound off' : waiting ? 'Tap for sound' : 'Sound on'}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M4 9v6h4l5 4V5L8 9z" />
-                {isMuted ? <path d="M17 9l5 6M22 9l-5 6" /> : <path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />}
-              </svg>
+              <Icon name={isMuted ? 'mute' : 'speaker'} size={22} />
             </button>
             <FullscreenButton />
           </div>
@@ -149,12 +188,16 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
 
         <div className="gx2-logo">
           <LogoWord />
+          <span className="gx2-glint g1" aria-hidden="true" />
+          <span className="gx2-glint g2" aria-hidden="true" />
+          <span className="gx2-glint g3" aria-hidden="true" />
           <Ribbon text="RAINFOREST ADVENTURES" />
         </div>
         <div className="gx2-stage" aria-hidden="true" />
 
         <div className="gx2-post">
-          <button type="button" data-start="true" onClick={start} className="gx-sign gx2-sign">
+          <button type="button" data-start="true" onClick={start} className="gx-sign gx2-sign" style={{ ['--i' as string]: 0 }}>
+            <span className="gx-shine" aria-hidden="true" />
             <span className="gx-sign-t">{resume ? 'CONTINUE' : 'START ADVENTURE'}</span>
             {resume && (
               <span className="gx-sign-s">
@@ -163,32 +206,34 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             )}
           </button>
           <div className="gx2-planks">
-            <button type="button" onClick={onOpenMap} className="gx-plank">
-              <Icon name="map" size={18} />
+            <button type="button" onClick={() => leave(onOpenMap)} className="gx-plank" style={{ ['--i' as string]: 1 }}>
+              <Icon name="map" size={20} />
               World Map
             </button>
-            <button type="button" onClick={onViewStory} className="gx-plank">
-              <Icon name="scroll" size={18} />
+            <button type="button" onClick={() => leave(onViewStory)} className="gx-plank" style={{ ['--i' as string]: 2 }}>
+              <Icon name="scroll" size={20} />
               Story
             </button>
-            <button type="button" onClick={() => setHowOpen(true)} className="gx-plank">
-              <Icon name="bulb" size={18} />
+            <button type="button" onClick={() => setHowOpen(true)} className="gx-plank" style={{ ['--i' as string]: 3 }}>
+              <Icon name="bulb" size={20} />
               How to Play
             </button>
-            <button type="button" onClick={() => setMenuOpen(true)} className="gx-plank" aria-label="Menu" data-menu="true">
-              <Icon name="leaf" size={18} />
+            <button type="button" onClick={() => setMenuOpen(true)} className="gx-plank" aria-label="Menu" data-menu="true" style={{ ['--i' as string]: 4 }}>
+              <Icon name="gear" size={20} />
               Menu
             </button>
           </div>
           <div className="gx-tags">
-            <button type="button" onClick={onOpenTrophies} className="gx-leaf-tag">
-              <Icon name="trophy" size={14} />
+            <button type="button" onClick={() => leave(onOpenTrophies)} className="gx-plank gx-plank-sm" style={{ ['--i' as string]: 5 }}>
+              <Icon name="trophy" size={16} />
               Trophies{badgeCount ? ` · ${badgeCount}` : ''}
             </button>
-            <button type="button" onClick={() => setSaveOpen(true)} className="gx-leaf-tag">
+            <button type="button" onClick={() => setSaveOpen(true)} className="gx-plank gx-plank-sm" style={{ ['--i' as string]: 6 }}>
+              <Icon name="save" size={16} />
               Save / Load
             </button>
-            <button type="button" onClick={() => setNewOpen(true)} className="gx-leaf-tag">
+            <button type="button" onClick={() => setNewOpen(true)} className="gx-plank gx-plank-sm" style={{ ['--i' as string]: 7 }}>
+              <Icon name="leaf" size={16} />
               New Game
             </button>
           </div>
@@ -226,7 +271,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           </span>
           <button
             type="button"
-            className="gx-leaf-tag"
+            className="gx-plank gx-plank-sm"
             onClick={() => {
               markHomeScreenTip();
               setFsTip(false);
@@ -257,7 +302,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           intro
           onClose={() => {
             setIntro(false);
-            onStartGame();
+            leave(onStartGame);
           }}
         />
       )}

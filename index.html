@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Sloths Rainforest Adventures</title>
     <meta name="description" content="Help Pokey the sloth climb, swing and sneak through 10 rainforest worlds and 100 stages to rescue Meeca, the sloth he loves." />
-    <meta name="theme-color" content="#0e3b28" />
+    <meta name="theme-color" content="#0b1a13" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -16,10 +16,98 @@
     <meta property="og:description" content="Help Pokey the sloth climb, swing and sneak through 10 rainforest worlds and 100 stages to rescue Meeca, the sloth he loves." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!--
+      The opening splash (2026-10-28): it is in the page itself, so the very first thing drawn is the jungle's dark green and the logo,
+      never a white page. Everything the title needs (the fonts, World 1's painting, Pokey's and Meeca's sheets) starts downloading
+      here at once, alongside the game's script, and the splash stays up until the title has all of it (src/game/boot.ts), so the
+      title arrives in one piece. The fonts are the same files the game's style sheet uses, so nothing is fetched twice.
+    -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/src/assets/fonts/rammetto-one-latin-400-normal.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/src/assets/fonts/cherry-bomb-one-latin-400-normal.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/src/assets/fonts/baloo-2-latin-800-normal.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/src/assets/fonts/outfit-latin-700-normal.woff2" />
+    <link rel="preload" as="image" href="/src/assets/backdrops/w1-mid.webp" />
+    <link rel="preload" as="image" href="/src/assets/backdrops/w1-near.webp" />
+    <link rel="preload" as="image" href="/src/assets/hero/hero-standard.webp" />
+    <link rel="preload" as="image" href="/src/assets/characters/meeca-standard.webp" />
+    <link rel="preload" as="image" href="/src/assets/title/log.webp" />
+    <style>
+      @font-face { font-family: 'Rammetto One'; font-style: normal; font-weight: 400; font-display: block; src: url('/src/assets/fonts/rammetto-one-latin-400-normal.woff2') format('woff2'); }
+      @font-face { font-family: 'Baloo 2'; font-style: normal; font-weight: 800; font-display: block; src: url('/src/assets/fonts/baloo-2-latin-800-normal.woff2') format('woff2'); }
+      html, body { margin: 0; height: 100%; background: #0b1a13; }
+      #boot { position: fixed; inset: 0; z-index: 9999; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4vh;
+        background: radial-gradient(120% 75% at 50% 32%, #2b5532 0%, #163420 48%, #0b1a13 100%); color: #fff6df; transition: opacity .7s ease, visibility 0s linear .7s; }
+      #boot.done { opacity: 0; visibility: hidden; pointer-events: none; }
+      #boot-bg { position: absolute; inset: -4%; width: 108%; height: 108%; object-fit: cover; opacity: 0; filter: blur(6px) saturate(1.05) brightness(.62); transform: scale(1.06); transition: opacity 1.2s ease, transform 8s ease-out; }
+      #boot-bg.in { opacity: 1; transform: scale(1.02); }
+      #boot::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 38%, rgba(255, 224, 150, .22), transparent 58%), radial-gradient(ellipse at 50% 50%, transparent 52%, rgba(4, 12, 8, .65) 100%); }
+      .boot-logo { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(10px) scale(.96); transition: opacity .6s ease, transform .9s cubic-bezier(.2, 1.4, .4, 1); }
+      .boot-fonts .boot-logo { opacity: 1; transform: none; }
+      .boot-word { margin: 0; display: flex; font-family: 'Rammetto One', sans-serif; font-weight: 400; font-size: clamp(54px, min(15vh, 16vw), 112px); line-height: .9; letter-spacing: -.035em; }
+      .boot-word span { display: inline-block; background: linear-gradient(180deg, #fff6b0 0%, #ffd83c 34%, #ffab1f 72%, #f07d10 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+        -webkit-text-stroke: clamp(5px, 1vh, 9px) #3b1a06; paint-order: stroke fill; filter: drop-shadow(0 6px 0 #3b1a06) drop-shadow(0 14px 18px rgba(0, 0, 0, .45)); }
+      .boot-sub { margin-top: 1.4vh; font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(13px, 2.2vh, 19px); letter-spacing: .14em; color: #fff1cf; text-shadow: 0 2px 0 #5e1216, 0 0 12px rgba(0, 0, 0, .5); }
+      .boot-vine { position: relative; z-index: 1; width: min(62vw, 300px); height: 46px; }
+      .boot-vine svg { width: 100%; height: 100%; overflow: visible; }
+      .boot-vine .track { fill: none; stroke: rgba(255, 246, 223, .14); stroke-width: 5; stroke-linecap: round; }
+      .boot-vine .grow { fill: none; stroke: #7cc35a; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--p, .04)); transition: stroke-dashoffset .5s ease; filter: drop-shadow(0 0 6px rgba(160, 240, 120, .45)); }
+      .boot-vine .lf { fill: #8fd26a; stroke: #2c5a1f; stroke-width: 1.4; transform-box: fill-box; transform-origin: 50% 100%; transform: scale(0); transition: transform .5s cubic-bezier(.2, 1.6, .4, 1); }
+      .boot-vine .lf.on { transform: scale(1); }
+      .boot-vine .tip { animation: boot-sway 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 100%; }
+      @keyframes boot-sway { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(10deg); } }
+      @media (prefers-reduced-motion: reduce) { .boot-vine .tip { animation: none; } #boot-bg { transition: opacity .6s ease; } }
+    </style>
   </head>
   <body>
+    <div id="boot" aria-hidden="true">
+      <img id="boot-bg" src="/src/assets/backdrops/w1-far.webp" alt="" decoding="async" onload="this.classList.add('in')" />
+      <div class="boot-logo">
+        <h1 class="boot-word"><span style="transform:translateY(4px) rotate(-7deg)">S</span><span style="transform:translateY(-2px) rotate(-3deg)">L</span><span style="transform:translateY(-5px) rotate(1deg)">O</span><span style="transform:translateY(-3px) rotate(-2deg)">T</span><span style="transform:translateY(1px) rotate(3deg)">H</span><span style="transform:translateY(5px) rotate(7deg)">S</span></h1>
+        <div class="boot-sub">RAINFOREST ADVENTURES</div>
+      </div>
+      <div class="boot-vine">
+        <svg viewBox="0 0 300 46">
+          <path class="track" d="M6 30 C 56 10, 96 44, 150 26 S 246 12, 294 28" />
+          <path class="grow" pathLength="1" d="M6 30 C 56 10, 96 44, 150 26 S 246 12, 294 28" />
+          <path class="lf" data-at=".12" d="M42 21 c -8 -4 -10 -12 -4 -18 c 6 4 8 12 4 18 z" />
+          <path class="lf" data-at=".3" d="M95 30 c 6 -6 14 -6 18 0 c -6 4 -12 4 -18 0 z" />
+          <path class="lf" data-at=".5" d="M150 26 c -6 -6 -6 -14 0 -18 c 5 5 5 12 0 18 z" />
+          <path class="lf" data-at=".68" d="M204 18 c 7 -3 14 0 16 6 c -7 2 -13 0 -16 -6 z" />
+          <path class="lf" data-at=".86" d="M256 18 c -8 -3 -11 -11 -6 -17 c 6 3 9 11 6 17 z" />
+          <path class="lf on tip" d="M8 28 c -2 -9 3 -16 11 -17 c 1 8 -3 15 -11 17 z" />
+        </svg>
+      </div>
+    </div>
+    <script>
+      // the splash's own little API (src/game/boot.ts drives it): set(p) grows the vine, done() fades it away. It also lets itself go after
+      // 20 s whatever happens, so a stuck download can never hold the game behind it.
+      (function () {
+        var el = document.getElementById('boot');
+        var p = 0;
+        var leaves = el.querySelectorAll('.lf[data-at]');
+        function set(v) {
+          p = Math.max(p, Math.min(1, v || 0));
+          el.style.setProperty('--p', String(Math.max(0.04, p)));
+          for (var i = 0; i < leaves.length; i++) if (p >= +leaves[i].getAttribute('data-at')) leaves[i].classList.add('on');
+        }
+        function done() {
+          if (el.classList.contains('done')) return;
+          set(1);
+          el.classList.add('done');
+          setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 900);
+        }
+        window.__boot = { set: set, done: done, t0: Date.now() };
+        // the logo shows once its letters are here (never in a stand-in font)
+        try {
+          Promise.all([document.fonts.load("400 60px 'Rammetto One'"), document.fonts.load("800 20px 'Baloo 2'")]).then(function () { el.classList.add('boot-fonts'); });
+        } catch (e) { el.classList.add('boot-fonts'); }
+        setTimeout(function () { el.classList.add('boot-fonts'); }, 4000);
+        setTimeout(done, 20000);
+        // the script is on its way: creep the vine a little so the page feels alive while it downloads
+        var creep = setInterval(function () { if (p < 0.3) set(p + 0.012); else clearInterval(creep); }, 250);
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

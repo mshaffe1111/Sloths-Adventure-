@@ -49,6 +49,7 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
+import { bootDone } from './game/boot.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -409,6 +410,11 @@ export default function App() {
     else if (screen === 'story_cutscene') sound.setAmbient('gentle_breeze');
     else sound.setAmbient(null);
   }, [screen, activeLevel, musicSalt]);
+
+  // the opening splash waits for the title's pictures; any other first screen (a link straight into a stage) lets it go at once
+  useEffect(() => {
+    if (screen !== 'title') bootDone();
+  }, [screen]);
 
   // Check URL parameters (?autostart=1); the same keys after # work too, since a shared Claude link passes on only the # part
   useEffect(() => {
