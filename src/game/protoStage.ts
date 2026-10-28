@@ -4020,6 +4020,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   /** 4-1: the fern frond at the cliff top, and Dot's knot pulley on the way up */
   let spot: PatienceSpot | undefined;
   const pulley: KnotPulley = { tips: KNOT_PULLEY_TIPS, plats: [] };
+  /** 4-1: each run of hops up the wide ledges (a rock comes loose on one ledge of each, where there is room for it) */
+  const hopGroups: number[][] = [];
   /** 4-6: the gust lane of the pinwheel lift (its shutter shuts it), the stage's only zone */
   const gusts: Zone[] = [];
   /** 4-6: the mist's spots, one at the foot of each hidden column, and the eagle nests above it */
@@ -4067,6 +4069,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   };
   /** a few short hops along and up branches (`wide`: 4-1's wide ledges, where the rocks come loose) */
   const hops = (n: number, wide = false) => {
+    const group: number[] = [];
     for (let k = 0; k < n; k++) {
       const w = Math.round(wide ? R.r(280, 330) : R.r(180, 240));
       const rise = Math.round(R.r(20, 60));
@@ -4081,7 +4084,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       cur = ledge(nx0, nx0 + w, cur.y - rise);
       flower(nx0 + w / 2, cur.y - 34, 'orchid');
       expert += (gap + w) / RUN + 0.5;
+      if (wide) group.push(cur.id);
     }
+    if (group.length) hopGroups.push(group);
   };
   const flag = () => checkpoints.push({ x: Math.round(cur.x + cur.width / 2), y: cur.y, reached: false });
   const beat = (name: string, f: () => void) => {
@@ -4591,7 +4596,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       }
       flag();
     }
-    hops(2);
+    // (4-1: up the cliff's wide ledges, where its rocks come loose)
+    hops(2, cliff);
     // the crown: a wide branch with the shrine on it
     if (room() < 620) dir = dir === 1 ? -1 : 1;
     const tX = Math.round(dir === 1 ? cur.x + cur.width - 60 : cur.x + 60);
@@ -4685,26 +4691,36 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   // always stop beside one to wait). One rock to a ledge, never on the first ledges (the climb is learned first) or the top.
   const rocks: RockDrop[] = [];
   if (cliff) {
-    const ledges = P.filter((p) => p !== P[0] && p !== crown && p.y < P[0].y - 600 && p.y > crown.y + 500 && p.width >= 260 && p.id !== spot?.platformId && !pulley.plats.includes(p.id)).sort((a, b) => b.y - a.y);
+    // (and since 2026-10-28 up to the last hops under the crown, 300 under it: the frond's ledge and the crown stay quiet)
+    const ledges = P.filter((p) => p !== P[0] && p !== crown && p.y < P[0].y - 600 && p.y > crown.y + 300 && p.width >= 260 && p.id !== spot?.platformId && !pulley.plats.includes(p.id)).sort((a, b) => b.y - a.y);
     const climbsAt = (p: Platform) => [
       ...V.filter((v) => v.topY <= p.y + 10 && v.bottomY >= p.y - 10).map((v) => v.x),
       ...ROPES.filter((r) => r.g0 === p.y || r.g1 === p.y).flatMap((r) => [r.x0, r.x1]),
     ];
-    // (2026-10-28: spread up the whole climb, about ten: the climb is mostly the wide ledges' hops now, and the rocks are its beat)
+    // (2026-10-28: one on a ledge of each run of hops up the wide ledges first, then spread up the whole climb, about ten in all: the
+    // climb is mostly those hops now, and the rocks are its beat)
     const every = Math.max(1, Math.floor(ledges.length / 12));
-    for (let k = 0; k < ledges.length && rocks.length < 10; k += every) {
-      const p = ledges[k];
-      const busy = climbsAt(p);
-      const rx = [0.5, 0.38, 0.62].map((u) => Math.round(p.x + p.width * u)).find((rx) => busy.every((bx) => Math.abs(bx - rx) > ROCK.radius + 90));
-      if (rx === undefined) continue;
-      // it falls from the underside of whatever ledge hangs over this one, or from high above
-      const over = P.filter((q) => q.y < p.y - 60 && q.x < rx + ROCK.radius && q.x + q.width > rx - ROCK.radius).reduce((m, q) => Math.max(m, q.y + 24), p.y - 460);
-      const r: RockDrop = { x: rx, top: over, land: p.y, every: Math.round(R.r(4.6, 5.6) * 10) / 10, warn: 1.4, offset: Math.round(R.r(0, 5) * 10) / 10 };
-      if (!rockFits(r)) continue;
-      if (!rocks.length) hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', p.y + 10);
-      rocks.push(r);
-      expert += 1.6;
+    const inGroup = (g: number[]) => [g[Math.floor(g.length / 2)], ...g].map((id) => ledges.find((p) => p.id === id)).filter((p): p is Platform => !!p);
+    const order = [...hopGroups.map(inGroup), ...ledges.filter((_, k) => k % every === 0).map((p) => [p])];
+    for (const tries of order) {
+      if (rocks.length >= 10) break;
+      for (const p of tries) {
+        if (rocks.some((q) => q.land === p.y)) continue;
+        const busy = climbsAt(p);
+        const rx = [0.5, 0.38, 0.62].map((u) => Math.round(p.x + p.width * u)).find((rx) => busy.every((bx) => Math.abs(bx - rx) > ROCK.radius + 90));
+        if (rx === undefined) continue;
+        // it falls from the underside of whatever ledge hangs over this one, or from high above
+        const over = P.filter((q) => q.y < p.y - 60 && q.x < rx + ROCK.radius && q.x + q.width > rx - ROCK.radius).reduce((m, q) => Math.max(m, q.y + 24), p.y - 460);
+        const r: RockDrop = { x: rx, top: over, land: p.y, every: Math.round(R.r(4.6, 5.6) * 10) / 10, warn: 1.4, offset: Math.round(R.r(0, 5) * 10) / 10 };
+        if (!rockFits(r)) continue;
+        rocks.push(r);
+        expert += 1.6;
+        break;
+      }
     }
+    // (Dot names the first one he comes to: the lowest)
+    const firstRock = rocks.reduce<RockDrop | undefined>((a, q) => (!a || q.land > a.land ? q : a), undefined);
+    if (firstRock) hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', firstRock.land + 10);
   }
 
   // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
