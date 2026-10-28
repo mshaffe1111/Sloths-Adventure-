@@ -38,7 +38,7 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 | C6 | Weighted action strings (W 0.2, h 0.5, J 1, V 2, C 2.2, P 2.8, S 3) | IN | `tools/inspect/beats.ts` weights. |
 | C7 | 3-gram cosine across stages (reject > 0.78 adjacent) and 18-beat sliding windows (reject < 0.28) | IN | inspector `similar`, `windows` (window threshold set from our data). |
 | C8 | Horizontal mirroring of rooms | NOT | Next: cheap variety for symmetric sections; keep painted light from the upper left. |
-| C9 | Three standard connector heights (tiles) / relative anchor frames (pixels) | PART | pieces placed relative to platforms (puzzle kit anchors); no connector system yet. Next: Gen. |
+| C9 | Three standard connector heights (tiles) / relative anchor frames (pixels) | PART; designed, phase 2 | W1-5: pieces placed relative to platforms (puzzle kit anchors). Gen2 (2026-10-28, `src/game/gen2/DESIGN.md` B3): sections are local-space prefabs with entry/exit anchor frames, stitched exit -> entry with a join sized from the jump envelope, under a vertical corridor clamp; works end to end on a test world (`pipeline.ts layStage`). Next: World 5's sections (phase 2). |
 | C10 | Offline seed curation: score thousands of seeds, ship the best | NOT | Next: with C5's tool, pick each stage's best rolls to ship. |
 
 ## D. Making every level beatable (Part 1 §3, Part 2 §1, Part 3 §1)
@@ -47,7 +47,7 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 |---|---|---|---|
 | D1 | Kinematic reachability from the jump physics | IN | `levelCheck.ts` uses `physics.ts`. |
 | D2 | Safety margin by difficulty: required jumps under 65% of max on Easy, 82% on Normal | PART | one margin (`SAFE`) for both difficulties. Next: per-difficulty margins. |
-| D3 | A full path search (states, inventory) before play; self-repair a failing jump | PART | `levelCheck.ts` + re-roll (LEVEL_ATTEMPTS); no local self-repair. |
+| D3 | A full path search (states, inventory) before play; self-repair a failing jump | PART; designed, phase 2 | `levelCheck.ts` + re-roll (LEVEL_ATTEMPTS) for the live stages. Gen2 (2026-10-28, DESIGN.md B5, `pipeline.ts checkAndRepair`): local repair before a re-roll (a stone in the failing seam, a stray pickup or animal out, one section swapped at its slot, a section failing twice banned), tested. Next: in play with phase 2's stages. |
 | D4 | Puzzles checked as symbolic zones (carry walk, throw arc, lure path), not tile by tile | IN | `puzzleCheck.ts`. |
 | D5 | Softlock guarantee: a lost item respawns at its source | IN | puzzle kit sources and the reset post. |
 | D6 | Free-form geometry: sockets bound to a platform id + t along it + normal offset | IN | puzzle kit anchors `{on, at, dx}`. |
@@ -100,8 +100,8 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 | # | Recommendation | Status | Where / what is next |
 |---|---|---|---|
 | I1 | A 9-card mission deck per world: stage 1 onboarding, 5 signature, 9 mastery; others shuffled | NO (shuffling) / IN (fixed order) | Matt's story fixes the order; we kept the archetype idea in `stagePlan.ts` and skipped per-playthrough shuffling. |
-| I2 | The 6-pass pipeline (budget, graph, chunks, sockets, validate and repair, dress) | NOT | the plan for the new generator (5-7..5-9 first, then Worlds 6-10). |
-| I3 | JSON world manifests and chunk templates | NOT | with I2. |
+| I2 | The 6-pass pipeline (budget, graph, chunks, sockets, validate and repair, dress) | designed, phase 2 | `src/game/gen2/DESIGN.md` and `pipeline.ts` (2026-10-28): all six passes typed and working end to end on a four-section test world (levelCheck + puzzleCheck pass on every seed tried, deterministic, different per seed, Easy = Normal's plan under Easy's rules, the clock met). Next: World 5's 5-7..5-9 building blocks (phase 2), then World 6. |
+| I3 | JSON world manifests and chunk templates | designed, phase 2 | `gen2/types.ts` WorldManifest, SectionTemplate, Socket (data; one emitter file of code per world); `gen2/toyWorld.ts` is the example. Next: `gen2/worlds/w5.ts`. |
 
 ## J. Camera for puzzle rooms (Part 3 §6 / Part 4)
 
