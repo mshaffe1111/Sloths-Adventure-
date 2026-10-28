@@ -36,7 +36,6 @@ const STAGES = generateAllLevels().filter((c) => c.worldIndex <= 4 && c.objectiv
  * the line when its stage passes, so the guard holds it from then on.
  */
 const KNOWN: Record<string, string> = {
-  '3-1': "some rolls of the sprint are just under 2:00 on this tool's quick route (?layout=72140: 116 s; the stage's own estimate says 2:30)",
 };
 
 for (const c of STAGES) {

@@ -52,8 +52,12 @@ test('3-2: the mushroom rooms: a ledge there only in the glow, the way up out of
   for (const s of SEEDS) {
     const st = build('3-2', s);
     const rooms = st.kit!.rooms;
-    assert.deepEqual(rooms.map((r) => r.id.replace(/-\d+$/, '')), ['glow', 'glowHigh'], `seed ${s}`);
+    // (the variety pass: the glow room always teaches first; the finish's room is the high glow room, or on some rolls the stone plates)
+    const names = rooms.map((r) => r.id.replace(/-\d+$/, ''));
+    assert.equal(names[0], 'glow', `seed ${s}`);
+    assert.ok(names.slice(1).every((n) => ['glowHigh', 'plate', 'platesTwo'].includes(n)) && names.length >= 2, `seed ${s}: ${names}`);
     rooms.forEach((r, ri) => {
+      if (!r.id.startsWith('glow')) return;
       const src = anchorAt(piece(r, 'source')[0].at, st.platforms)!;
       const patch = [{ x: src.x, y: src.y - ITEM.mushroom.r, r: ITEM.mushroom.light! }];
       const lit = (id: string) => {
@@ -87,10 +91,13 @@ test('3-5: an awake vine never sleeps, and sees whatever moves in its reach unle
   for (const s of SEEDS) {
     const st = build('3-5', s);
     const rooms = st.kit!.rooms;
-    assert.deepEqual(rooms.map((r) => r.id.replace(/-\d+$/, '')), ['vineBell', 'pebbles', 'pebblesTwo'], `seed ${s}`);
+    // (the variety pass: after the pebbles, two awake vines or World 3's two stone plates)
+    const names = rooms.map((r) => r.id.replace(/-\d+$/, ''));
+    assert.deepEqual(names.slice(0, 2), ['vineBell', 'pebbles'], `seed ${s}`);
+    assert.ok(['pebblesTwo', 'platesTwo'].includes(names[2]) && names.length === 3, `seed ${s}: ${names}`);
     const awake = (st.proto.thorns ?? []).filter((v) => v.awake);
-    assert.equal(awake.length, 4, `seed ${s}`);
-    for (const r of rooms) {
+    assert.equal(awake.length, names[2] === 'pebblesTwo' ? 4 : 2, `seed ${s}`);
+    for (const r of rooms.filter((q) => !q.id.startsWith('plates'))) {
       const b = roomBox(r, st.platforms);
       const mine = awake.filter((v) => v.x > b.x0 && v.x < b.x1);
       assert.equal(mine.length, r.id.startsWith('pebblesTwo') ? 2 : 1, `seed ${s}: ${r.id}`);
@@ -111,8 +118,10 @@ test('3-7: which fern? one stone by the ferns is the twin of the one by the door
   for (const s of SEEDS) {
     const st = build('3-7', s);
     const rooms = st.kit!.rooms;
-    assert.deepEqual(rooms.map((r) => r.id.replace(/-\d+$/, '')), ['whichFern', 'whichFern'], `seed ${s}`);
-    for (const r of rooms) {
+    const riddles = rooms.filter((r) => r.id.startsWith('whichFern'));
+    assert.equal(riddles.length, 2, `seed ${s}`);
+    assert.ok(rooms.every((r) => /^(whichFern|plate)-/.test(r.id)), `seed ${s}`);
+    for (const r of riddles) {
       const src = anchorAt(piece(r, 'source')[0].at, st.platforms)!;
       const patch = [{ x: src.x, y: src.y - ITEM.mushroom.r, r: ITEM.mushroom.light! }];
       const marks = piece(r, 'mark').map((m) => ({ ...m, ...anchorAt(m.at, st.platforms)! }));
@@ -145,6 +154,11 @@ test('3-7: which fern? one stone by the ferns is the twin of the one by the door
 // ───────────────────────────── in the real engine ─────────────────────────────
 
 const kitOf = (r: RealPlay) => r.e.kit as KitPlay;
+/** the first layout of a stage whose roll has a room of this kind (the rooms vary with the roll: w3Sections.ts) */
+const withRoom = (id: W3, prefix: string) => {
+  for (let s = 1; s < 400; s++) if (build(id, s).kit?.rooms.some((q) => q.id.startsWith(`${prefix}-`))) return s;
+  throw new Error(`no roll of ${id} has a ${prefix} room`);
+};
 const roomRun = (r: RealPlay, prefix: string) => kitOf(r).rooms.find((q) => q.spec.id.startsWith(`${prefix}-`))!;
 const walkTo = (r: RealPlay, x: number, max = 600) => {
   for (let i = 0; i < max && Math.abs(r.p.x - x) > 8; i++) r.frame(r.p.x < x ? { right: true } : { left: true });
@@ -180,7 +194,7 @@ test('3-2 in play: the little ledge by the patch is there in its glow; the mushr
 });
 
 test('3-2 in play: the high room\'s last ledge stays dark from the floor, and lights once the mushroom is thrown up onto the stone', () => {
-  const r = new RealPlay('3-2', 1);
+  const r = new RealPlay('3-2', withRoom('3-2', 'glowHigh'));
   const room = roomRun(r, 'glowHigh');
   const way = room.ledges[0];
   const stone = r.platforms.find((p) => p.id === room.spec.ground[1])!;
@@ -253,7 +267,7 @@ test('3-5 in play: the awake vine swats him back out of its reach and costs no h
 });
 
 test('3-5 in play: one pebble between the two awake vines is heard by both, and he walks past the pair', () => {
-  const r = new RealPlay('3-5', 1);
+  const r = new RealPlay('3-5', withRoom('3-5', 'pebblesTwo'));
   r.safe = false;
   const room = roomRun(r, 'pebblesTwo');
   const vs = r.e.proto.thorns.filter((v: { awake?: boolean; x: number }) => v.awake && v.x > room.box.x0 && v.x < room.box.x1);
@@ -294,4 +308,52 @@ test('3-7 in play: beside the right fern nothing says so; the stones show in the
   r.stand(thing.x, G);
   for (let i = 0; i < 90 && !thing.collected; i++) r.frame({ down: true });
   assert.ok(thing.collected, 'Grandma\'s thing, found');
+});
+
+// ───────────────────────────── World 3's stone plates (the variety pass, 2026-10-28) ─────────────────────────────
+
+test('World 3 stone plates: a root gate a plate holds open, a pebble heap by the door; fails without the pebbles, and on some rolls of 3-2, 3-5 and 3-7', () => {
+  let seen = 0;
+  for (const id of ['3-2', '3-5', '3-7'] as W3[]) {
+    for (let s = 1; s < 60; s++) {
+      const st = build(id, s);
+      for (const [ri, r] of (st.kit?.rooms ?? []).entries()) {
+        if (!/^plates?(Two)?-/.test(r.id)) continue;
+        seen++;
+        assert.deepEqual(roomErrors(st, r.id), [], `${id} seed ${s}`);
+        const plates = piece(r, 'plate');
+        assert.equal(plates.length, r.id.startsWith('platesTwo') ? 2 : 1);
+        assert.equal(piece(r, 'gate')[0].look, 'roots');
+        // without the pebbles nothing holds the plate down once he steps off it to go through
+        const t = build(id, s);
+        t.kit!.rooms[ri].pieces = t.kit!.rooms[ri].pieces.filter((p) => p.kind !== 'item');
+        assert.ok(roomErrors(t, r.id).length > 0, `${id} seed ${s}: ${r.id} opens with no pebble`);
+      }
+    }
+  }
+  assert.ok(seen >= 6, `only ${seen} plate rooms in 180 rolls`);
+});
+
+test('World 3 stone plate in play: a pebble set on the plate holds the roots open, and he walks through; stepping off without one shuts them', () => {
+  const r = new RealPlay('3-2', withRoom('3-2', 'plate'));
+  const room = roomRun(r, 'plate');
+  const gate = room.gates[0];
+  const plate = room.plates[0];
+  // standing on the plate opens the roots; stepping off shuts them
+  r.stand(room.sources[0].x - 60, G);
+  walkTo(r, plate.x);
+  r.wait(0.6);
+  assert.ok(plate.down, 'pressed under him');
+  walkTo(r, plate.x - 120);
+  r.wait(0.6);
+  assert.ok(!plate.down, 'up again once he steps off');
+  pickUp(r, room.sources[0].x);
+  assert.ok(kitOf(r).holding, 'a pebble in hand');
+  walkTo(r, plate.x - 10);
+  face(r, 1);
+  r.frame({ punch: true });
+  r.wait(0.8);
+  assert.ok(plate.down, 'the pebble holds it down');
+  for (let i = 0; i < 150; i++) r.frame({ right: true });
+  assert.ok(r.p.x > gate.x + 30, `through the roots (${Math.round(r.p.x - gate.x)})`);
 });
