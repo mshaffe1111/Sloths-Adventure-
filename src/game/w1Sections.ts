@@ -89,7 +89,7 @@ export interface W1Kit {
   // ----- climbs (1-4 on), creaking branches (1-5 on)
   climbTree: (tight?: boolean) => void;
   /** a wall too tall to jump with a trunk beside it: up the trunk, across its branch onto the high ground (1-5 on) */
-  climbWall: () => void;
+  climbWall: (guard?: boolean) => void;
   fernTree: () => void;
   glideLookout: () => void;
   creakRun: () => void;
@@ -610,16 +610,24 @@ const SECTIONS: Record<W1Stage, Table> = {
   // way over walls, or snakes on the high branches a mushroom bounces him up to. The ring is every roll's twist; the sleeping guard
   // keeps its seed in every roll.
   '1-9': {
-    rhythms: ['branch', 'climb', 'leap'],
+    rhythms: ['branch', 'climb', 'leap', 'ground'],
+    start: [
+      { id: 'branch', beat: 'branch', build: (k) => { k.busy(1); k.guardBranch(true); k.snakeWalk(1); } },
+      { id: 'trunk', beat: 'climb', build: (k) => { k.busy(1); k.trunkGuard(); k.snakeWalk(2); } },
+      { id: 'high', beat: 'leap', build: (k) => { k.busy(1); k.highLeaps(4, false, true, true); } },
+      { id: 'wall', beat: 'ground', build: (k) => { k.bounceWall(true, false); k.snakeWalk(2); } },
+    ],
     develop: [
       { id: 'branches', beat: 'branch', build: (k) => { k.ropeGuard(); k.guardBranch(true); k.flag(); k.sleepingGuard(); k.snakeWalk(1); k.guardBranch(true); } },
-      { id: 'trunks', beat: 'climb', build: (k) => { k.trunkGuard(); k.snakeWalk(1); k.flag(); k.sleepingGuard(); k.trunkGuard(); k.snakeWalk(2); } },
+      { id: 'trunks', beat: 'climb', build: (k) => { k.trunkGuard(); k.snakeWalk(1); k.flag(); k.sleepingGuard(); k.climbWall(true); k.trunkGuard(); k.snakeWalk(1); } },
       { id: 'leaps', beat: 'leap', build: (k) => { k.highLeaps(4, false, true, true); k.guardBranch(true); k.flag(); k.sleepingGuard(); k.highLeaps(5, false, true, true); } },
+      { id: 'walls', beat: 'ground', build: (k) => { k.bounceWall(true, false); k.snakeWalk(2); k.flag(); k.sleepingGuard(); k.bounceWall(true, false); k.snakeWalk(2); k.ropeGuard(); } },
     ],
     twist: [
       { id: 'ringBranch', beat: 'branch', build: (k) => { k.snakeRing(); k.dip(); k.guardBranch(true); } },
-      { id: 'ringClimb', beat: 'climb', build: (k) => { k.snakeRing(); k.trunkGuard(); } },
+      { id: 'ringClimb', beat: 'climb', build: (k) => { k.snakeRing(); k.climbWall(true); k.snakeWalk(1); } },
       { id: 'ringLeap', beat: 'leap', build: (k) => { k.snakeRing(); k.highLeaps(3, true, true); } },
+      { id: 'ringWall', beat: 'ground', build: (k) => { k.snakeRing(); k.bounceWall(true, false); k.snakeWalk(2); } },
     ],
     finish: [
       {
@@ -630,10 +638,11 @@ const SECTIONS: Record<W1Stage, Table> = {
         ], 2, 12),
       },
       {
-        id: 'trunks', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+        // (climbs take longer than fights: this flavour runs a little past two minutes, so it still holds enough to fight)
+        id: 'trunks', beat: 'climb', build: (k) => fillTo(k, k.EXPERT + 8, null, [
+          (k) => { k.climbWall(true); k.snakeWalk(1); },
           (k) => { k.trunkGuard(); k.snakeWalk(1); },
-          (k) => { k.snakeWalk(1); k.trunkGuard(); },
-          (k) => { k.climbWall(); k.snakeWalk(2); },
+          (k) => { k.climbWall(true); k.trunkGuard(); },
         ], 2, 12),
       },
       {
@@ -641,6 +650,13 @@ const SECTIONS: Record<W1Stage, Table> = {
           (k) => k.highLeaps(5, false, true, true),
           (k) => k.highLeaps(4, true, true, true),
           (k) => { k.bounceWall(true, false); k.guardBranch(true); },
+        ], 2, 12),
+      },
+      {
+        id: 'walls', beat: 'ground', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.bounceWall(true, false); k.snakeWalk(2); },
+          (k) => { k.bounceWall(true); k.snakeWalk(3); },
+          (k) => { k.bounceWall(true, false); k.ropeGuard(); },
         ], 2, 12),
       },
     ],
@@ -665,10 +681,10 @@ export function w1Chase(seed: number): ChasePiece[] {
 const KAPOK: Record<string, { steps: Array<'hops' | 'rope'>; snakes: number }> = {
   // the old rhythm: two ropes, then hops
   ropes: { steps: ['rope', 'rope', 'hops'], snakes: 0.4 },
-  // hops along and up the branches, a rope now and then
-  hops: { steps: ['hops', 'rope', 'hops', 'rope', 'rope'], snakes: 0.3 },
-  // rope and hops in turn, and a snake on most wide branches
-  snakes: { steps: ['rope', 'hops'], snakes: 0.8 },
+  // hops along and up the branches between the ropes, and no snakes
+  hops: { steps: ['hops', 'rope', 'hops', 'rope', 'rope'], snakes: 0 },
+  // rope and hops in turn, and a snake on every wide branch
+  snakes: { steps: ['rope', 'hops'], snakes: 1 },
 };
 /** this roll's run of hops and ropes up 1-4's kapok, and the chance of a snake on a wide branch */
 export function w1Kapok(seed: number): { steps: Array<'hops' | 'rope'>; snakes: number } {

@@ -1181,7 +1181,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * a wall of earth too tall to jump, and a trunk beside it: climb up to the branch at its top and across onto the high ground, then down
    * off its far end onto a dip (1-9's trunkGuard without its guard; the climb is taught in 1-4)
    */
-  function climbWall() {
+  function climbWall(guard = false) {
     const x0 = x;
     run(R.r(220, 280));
     const tX = x - 120;
@@ -1195,6 +1195,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const ww = Math.round(R.r(300, 380));
     block(wx, wx + ww, 230);
     row(wx + 50, wx + ww - 50, G - 264, 4, 'orchid');
+    // (`guard`, 1-9: a snake on the high ground, seen from the branch before he steps across)
+    if (guard) snake(wx + ww * 0.6, G - 230, ww * 0.5);
     x = wx + ww + R.r(90, 120);
     dip();
     run(R.r(160, 220));
@@ -1202,7 +1204,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     pieces.push({ k: 'kapok', x0, x1: x });
   }
   const w1: W1Kit = {
-    climbWall: () => climbWall(),
+    climbWall: (g) => climbWall(g),
     bounceWall: (f, r) => bounceWall(f, r), highLeaps: (n, d, f, sn) => highLeaps(n, d, f, sn),
     R, G, EXPERT: EXPERT_SECONDS,
     get x() { return x; },
@@ -2022,9 +2024,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       busy(2, ['log'], R.r(120, 160));
       hint(x + 40, 'A guard! Wait for it to rear and strike, then tap to punch it', 'A guard! Wait for it to rear and strike, then press Punch', 'A guard! Wait for it to rear and strike, then press J to punch');
       guardBranch(true);
-      busy(1);
-      guardBranch(true);
-      snakeWalk(1);
+      // (then the second guard and a snake, in this roll's flavour: w1Sections.ts)
+      section('start');
       flag();
     });
     beat('Test: guards along the way', () => {
