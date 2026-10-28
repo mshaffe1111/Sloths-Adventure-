@@ -580,10 +580,14 @@ export function placeRoom(room: LocalRoomSpec, uid: string, idOf: (key: string) 
   const a = (l: LocalAnchor): Anchor => ({ ...l, on: idOf(l.on) });
   const name = (id: string) => `${uid}-${id}`;
   const wire = (w: Wire): Wire => (typeof w === 'string' ? name(w) : 'all' in w ? { all: w.all.map(wire) } : 'any' in w ? { any: w.any.map(wire) } : { not: wire(w.not) });
+  // (every field of PieceSpec that names another piece, and every one that is an anchor or a list of them: puzzleKit.ts)
+  const REFS = ['source', 'for', 'with', 'by', 'into'] as const;
+  const ANCHORS = ['at', 'to'] as const;
   const pieces = room.pieces.map((p) => {
     const q = { ...p, id: name(p.id) } as Record<string, unknown>;
-    if ('at' in p && p.at) q.at = a(p.at);
-    for (const k of ['source', 'for', 'with', 'by'] as const) if (typeof q[k] === 'string') q[k] = name(q[k] as string);
+    for (const k of ANCHORS) if (q[k] && typeof q[k] === 'object') q[k] = a(q[k] as LocalAnchor);
+    if (Array.isArray(q.trough)) q.trough = (q.trough as LocalAnchor[]).map(a);
+    for (const k of REFS) if (typeof q[k] === 'string') q[k] = name(q[k] as string);
     if ('open' in p && p.open !== undefined) q.open = wire(p.open);
     return q as unknown as PieceSpec;
   });

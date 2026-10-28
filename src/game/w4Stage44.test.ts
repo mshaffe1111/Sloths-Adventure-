@@ -131,8 +131,8 @@ test('4-4: Dot frees the knotted vine, and it is the only way across its gorge; 
   for (const s of SEEDS) {
     const st = build(s);
     const knots = st.proto.w4?.knots ?? [];
-    // the Develop beat's knot, the two knots in the wind (Twist again) and the secret's
-    assert.equal(knots.length, 4, `seed ${s}: ${knots.length} knots`);
+    // the Develop beat's knot, the two knots in the wind (Twist again) and the secret's; a roll whose finish leans to the knots has more
+    assert.ok(knots.length >= 4, `seed ${s}: ${knots.length} knots`);
     const secret = secretKnot(st);
     assert.ok(secret, `seed ${s}`);
     for (const main of knots.filter((k) => k !== secret)) {
@@ -343,7 +343,11 @@ test('4-4: the first gust lane blows softer over a mossy floor, and the later on
     const lanes = (st.zones ?? []).filter((z) => z.kind === 'wind').sort((a, b) => a.x0 - b.x0);
     assert.ok(lanes[0].force < lanes[lanes.length - 1].force && lanes[0].force >= 100, `seed ${s}: first gust ${lanes[0].force}`);
     // a miss in the first gorge drops onto its mossy floor (a climb back, not a life)
-    assert.ok(st.platforms.some((p) => p.y > G + 60 && p.x <= lanes[0].x0 && p.x + p.width >= lanes[0].x1), `seed ${s}: no soft floor under the first gorge`);
+    // (the floor rises a low step halfway along each gap, so it is a few pieces: together they cover the lane, 2026-10-28)
+    const floor = st.platforms.filter((p) => p.y > G + 60 && p.x < lanes[0].x1 && p.x + p.width > lanes[0].x0).sort((a, b) => a.x - b.x);
+    let to = lanes[0].x0;
+    for (const p of floor) if (p.x <= to + 1) to = Math.max(to, p.x + p.width);
+    assert.ok(to >= lanes[0].x1, `seed ${s}: no soft floor under the first gorge`);
     for (const z of lanes.slice(3)) assert.equal(z.force, 140, `seed ${s}: a later gust at ${z.force}`);
   }
 });

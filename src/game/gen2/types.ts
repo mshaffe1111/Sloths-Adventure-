@@ -216,7 +216,9 @@ export interface LocalAnchor {
   dx?: number;
   dy?: number;
 }
-type Localize<P> = P extends { at: Anchor } ? Omit<P, 'at'> & { at: LocalAnchor } : P extends { at?: Anchor } ? Omit<P, 'at'> & { at?: LocalAnchor } : P;
+/** every anchor of a piece (its `at`, a sapling's `to`, a teapot's `trough` points) on the section's pieces by key */
+type LocalField<T> = T extends Anchor ? LocalAnchor : T extends readonly Anchor[] ? LocalAnchor[] : T;
+type Localize<P> = P extends unknown ? { [K in keyof P]: LocalField<P[K]> } : never;
 export type LocalPieceSpec = Localize<PieceSpec>;
 export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond' | 'ground' | 'pieces'> {
   left: LocalAnchor;

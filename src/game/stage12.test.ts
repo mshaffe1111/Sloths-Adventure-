@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildProtoStage, EXPERT_SECONDS, G, PETAL_GOAL_12 } from './protoStage.ts';
 import { badPickups } from './flowerReach.ts';
+import { w1Pick } from './w1Sections.ts';
 import type { LevelConfig } from './types.ts';
 
 const cfg = {
@@ -35,16 +36,24 @@ test('1-2: every petal can be reached, and the floor runs the whole way (nothing
     assert.deepEqual(badPickups({ platforms: st.platforms, vines: st.vines, waterY: st.waterY }, st.collectibles).map((c) => `${Math.round(c.x)},${Math.round(c.y)}`), [], `seed ${s}`);
     assert.ok(st.platforms.every((p) => p.y < (st.waterY ?? 730)), `seed ${s}`);
     for (let x = 0; x < st.exitTotemX; x += 20) {
-      assert.ok(st.platforms.some((p) => p.x <= x && p.x + p.width >= x && p.y >= G - 200), `seed ${s}: no floor at x ${x}`);
+      // (or a wall standing on the ground, that a mushroom bounces him up: w1Sections.ts bounceWall, highLeaps)
+      assert.ok(st.platforms.some((p) => p.x <= x && p.x + p.width >= x && (p.y >= G - 200 || p.y + p.height >= G)), `seed ${s}: no floor at x ${x}`);
     }
   }
 });
 
-test('1-2: the twist swaps the trail between the branches and the floor: three mushrooms up', () => {
+test('1-2: the twist swaps the trail between the branches and the floor (three mushrooms up, two, or the stairs: w1Sections.ts)', () => {
+  const seen = new Set<string>();
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-2');
     const tw = st.proto.beats.find((b) => b[2].startsWith('Twist'))!;
+    const v = w1Pick('1-2', s).twist!;
+    seen.add(v);
     const ups = st.platforms.filter((p) => p.type === 'bouncy' && p.x >= tw[0] && p.x <= tw[1]).length;
-    assert.equal(ups, 3, `seed ${s}`);
+    const high = st.platforms.filter((p) => p.y <= G - 160 && p.x >= tw[0] && p.x <= tw[1] && p.style === 'branch').length;
+    const dips = st.platforms.filter((p) => p.y > G && p.style === 'moss_stone' && p.x >= tw[0] && p.x <= tw[1]).length;
+    assert.equal(ups, v === 'split' ? 3 : v === 'highLow' ? 2 : 0, `seed ${s} (${v})`);
+    assert.ok(high >= 3 && dips >= 2, `seed ${s} (${v}): ${high} branches up high, ${dips} pieces of soft moss low`);
   }
+  assert.equal(seen.size, 3, 'all three twists turn up');
 });

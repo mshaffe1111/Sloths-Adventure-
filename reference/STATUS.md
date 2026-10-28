@@ -62,6 +62,13 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 | session_01FhBbYJbmE5kU47zP8gtSsr | World 3 | variety-w3 |
 | session_01FhBbYNv8Pbizpa68Y6hdjv | World 4 | variety-w4 |
 
+| session_01FhBbYMcZS6AocKxX16zojF | gen2 A+B: World 5 manifest + 5-7 sections | gen2-w5 |
+| session_01FhBbYPF9t6BWgk8Bx6vo9h | gen2 D: 5-9 arena + two puzzle rooms | gen2-w5-arena |
+| session_01FhBbYKW3x7bTGysk8cMXNu | gen2 F: curate.ts + seeds.ts (16 per stage) | gen2-curate |
+
+Local: the architect on gen2 piece E (sub-blocks) + the Easy water rule (pipeline.ts, types.ts). Step G (hook-up, old 5-7..5-9 deleted)
+is the lead's, after all pieces pass.
+
 Band targets given (Normal middle on bands.ts): World 1 ~20, 2 ~30, 3 ~40, 4 ~50. Pacing: Normal 0.6 actions/s in World 1 rising to 0.75 in
 World 4; Easy bursts 6-8 s with 2 s rests.
 
@@ -79,10 +86,12 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 ## Open decisions for Matt (ask one at a time)
 
-1. Generator: 5-8 generated or hand-built?
-2. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
-3. Naturalist medal: still the 11 predators, or all 18 journal cards (the 7 new "met on the road" ones too)?
-4. Pell's and the soldiers' journal tips read right?
+1. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
+2. Naturalist medal: still the 11 predators, or all 18 journal cards (the 7 new "met on the road" ones too)?
+3. Pell's and the soldiers' journal tips read right?
+
+Pending for the architect when it resumes: commit c912bc3 finished (full suite + build), then the gauntlet/purge top-up in fillSockets
+(quota + 2 on Normal) and Easy's quota at round(0.6 x targetCount) (5-9 builder found 5-9 lays 16-26 of 26 animals).
 
 ## Decided today (also on the Docs roadmap)
 
@@ -96,8 +105,10 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
 - Title logo: carved into bark, carved in stroke by stroke on the first title of a session (chips, gold glow), shown carved after;
   the ribbon is deleted (Matt 2026-10-28). Title pair get real animation clips from the motion model (no code twitching).
+- Dot's water warning (gen2, Easy repeats it after 12 s): "Careful, water! Flick up and over." (Matt chose C).
+- Usage warning on Matt's weekly limit (2026-10-28 ~16:20 ET, resets Nov 4 2:00 AM ET): Matt chose to keep everything running (C).
 - Generator: 16 checked layouts shipped per stage (Matt 2026-10-28). Easy falls land soft on land; over water a fall still
-  costs a life on Easy, with a clear warning before the water (Matt chose B, 2026-10-28). About 30 sections per world (Matt chose A).
+  costs a life on Easy, with a clear warning before the water (Matt chose B, 2026-10-28). About 30 sections per world (Matt chose A). 5-8 stays hand-built; the generator does 5-7 and 5-9 (Matt chose A).
 - Variety pass for Worlds 1-4, all four at once. Push (release PR #41). Flicker's animations for the whole game. The polish pass
   on the title and every menu. Jungle Cards updated to today's creatures.
 - Dot toned down. All research in the repo; one rulebook; the lead checks every helper's work before merging.
