@@ -382,6 +382,13 @@ export class GameEngine {
   private w4: W4Play | null = null;
   /** World 5's stillness and silk, chairs, cakes, teapots, threads, sheets, orchids and cocoons for this run (w5Play.ts) */
   private w5: W5Play | null = null;
+  /**
+   * World 5's step and lip help (a plain flick at a one-jump step lands on it, a jump into a face carries over its lip, the lip's hoist
+   * puts a foot on the ledge) is on here too: every hand-built stage, Worlds 1-5 (QA 2026-10-28, build 39fc3db: a plain walk stopped
+   * dead at 1-7's and 1-9's waist-high steps and dips, and only an up-and-over flick got out; reference/STAGE-RULES.md: rules learned
+   * in one world apply to every world). Not Meeca's stage (its own helper's), the boss arenas or Dot's flight.
+   */
+  private stepHelp = false;
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
   private kitHostObj: KitHost | null = null;
@@ -622,6 +629,7 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
+    this.stepHelp = !!this.w5 || (!!this.proto && !this.proto.meeca && !this.currentStage.arena && !this.currentStage.dot);
     this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles }) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
@@ -1877,8 +1885,8 @@ export class GameEngine {
           const fromRight = prevX - half >= plat.x + plat.width - 2;
           // World 5: a body a little way over the edge already (he came over the corner in the air, a foot short of standing) with his
           // feet just under the top is at the lip too. He used to slide down inside the face to the foot of it
-          const lipL = !!this.w5 && !fromLeft && !fromRight && p.x + half - plat.x <= LIP_IN && p.x < plat.x + plat.width / 2;
-          const lipR = !!this.w5 && !fromLeft && !fromRight && plat.x + plat.width - (p.x - half) <= LIP_IN && p.x >= plat.x + plat.width / 2;
+          const lipL = this.stepHelp && !fromLeft && !fromRight && p.x + half - plat.x <= LIP_IN && p.x < plat.x + plat.width / 2;
+          const lipR = this.stepHelp && !fromLeft && !fromRight && plat.x + plat.width - (p.x - half) <= LIP_IN && p.x >= plat.x + plat.width / 2;
           if (!fromLeft && !fromRight && !lipL && !lipR) continue;
           if (p.y <= plat.y + 26 && p.vy >= -120) {
             // caught the lip of the ledge: hoist up onto it
@@ -1888,7 +1896,7 @@ export class GameEngine {
             // it, about 8 px) never took him, so he hung in the air at the corner, dropped and was hoisted again, frame after frame, or
             // slid down inside the face: QA's sideways player at the soft pits' lips of 5-3, 5-4 and 5-5 "ends up hanging on its side"
             // (v198). Now the hoist puts a foot on the ledge, and he stands there.
-            if (this.w5) p.x = fromLeft || lipL ? Math.max(p.x, plat.x - half + LIP_IN) : Math.min(p.x, plat.x + plat.width + half - LIP_IN);
+            if (this.stepHelp) p.x = fromLeft || lipL ? Math.max(p.x, plat.x - half + LIP_IN) : Math.min(p.x, plat.x + plat.width + half - LIP_IN);
             continue;
           }
           if (lipL || lipR) continue;
@@ -1921,7 +1929,7 @@ export class GameEngine {
       // World 5, by touch: jumping into a face carries him on into it until he is over its top, unless the thumb steers away. One thumb
       // steers to the face, lifts and flicks: the face stopped him dead, and with the thumb off the glass he rose past its top and came
       // straight back down beside it (QA v198: the same flick worked one try and not the next, by whether the thumb was still on).
-      if (wallSide !== 0 && this.w5 && this.touchHelp() !== 'off') {
+      if (wallSide !== 0 && this.stepHelp && this.touchHelp() !== 'off') {
         const steerNow = this.input.state.left ? -1 : this.input.state.right ? 1 : 0;
         if (steerNow !== -wallSide && !this.input.state.down) this.airDrive = { drive: wallSide as -1 | 1, lean: true };
       }
@@ -4942,7 +4950,7 @@ export class GameEngine {
     // World 5: a plain flick up with the thumb off the glass, standing right at a step one jump climbs, lands on it. One thumb lifts
     // to flick, so he jumped straight up beside the step and came down where he began: in the soft pits' dips QA's one-thumb player
     // stayed stuck, and only an up-and-right flick now and then got out (v198, 2026-10-26). A one-step ledge takes one ordinary jump.
-    if (!second && steer === 0 && this.w5) {
+    if (!second && steer === 0 && this.stepHelp) {
       const lean = inp.jumpLean ?? 0;
       const face: -1 | 1 = this.player.facing >= 0 ? 1 : -1;
       // (the way the flick leaned first; then, with no step that way, the way he faces. A thumb's flick leans 20 to 40 degrees either
