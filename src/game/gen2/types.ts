@@ -67,6 +67,10 @@ export interface PropDef {
   minApart: number;
   /** a prop that hurts or slows (a cake, a teapot's steam): Easy drops it from sockets marked `easy: 'drop'` */
   hazard?: boolean;
+  /** what it costs from a section's threat budget, in the creatures' units (a teapot's steam, the Butler: a prop that acts like an
+   *  animal). A socket it would fill holds it only while the section has that much threat left, and it spends it, the way a creature
+   *  does, in socket order. Default 0: scenery costs nothing */
+  threat?: number;
   /** counts as an action beat for dead time (§2): jumping a thread, dodging steam. Scenery does not */
   beat?: boolean;
   /** the looks it can wear (art keys), rotated by the roll (artRoll.ts rollLook) */
@@ -104,7 +108,8 @@ export interface WorldManifest {
   ground: { y: number; bankH: number; style: NonNullable<Platform['style']> };
   /** a fall: soft pits (a mossy floor and a step out: a miss costs a climb), water (a life), or nothing (a life) */
   pit: PitKind;
-  /** how deep a soft pit's floor lies under its lips (px) */
+  /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
+   *  plain hop under the far lip (pipeline pitSteps: every dip has a one-jump way out, every step a tread a thumb can land on) */
   pitDepth: number;
   /** the vertical corridor clamp (Part 3 §1): the route's ground stays between these world y's; inside `soft` px of an edge the
    *  selector leans toward sections that drift back */
@@ -119,6 +124,9 @@ export interface WorldManifest {
   flowers: NonNullable<Collectible['botanicalVariant']>[];
   /** the world's building blocks */
   sections: SectionTemplate[];
+  /** the share of the sections one roll favours (its theme: pipeline THEME); default THEME.share once the world holds THEME.from
+   *  sections or more, else 1 (every roll draws from them all) */
+  themeShare?: Range;
   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
   handBuilt: string[];
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
@@ -290,6 +298,8 @@ export interface StageBudget {
   band: readonly [number, number];
   /** 0..1: where D sits in the band (what the sections' difficulty is matched against) */
   heat: number;
+  /** the typical player's target, the fast player's floor (stageTime fastFloor, and never under what keeps the inspector's quick
+   *  player at 2:00: pipeline QUICK) and the typical player's ceiling */
   seconds: { target: number; fastFloor: number; max: number };
   /** the jump margin (D2, Part 1 §3): the widest required gap is this share of the physical reach */
   margin: number;
@@ -449,6 +459,8 @@ export interface Gen2Meta {
   graph: MissionGraph;
   sections: Array<Pick<PlacedSection, 'uid' | 'template' | 'node' | 'phase' | 'tension' | 'mirrored' | 'x0' | 'x1' | 'seconds'>>;
   fills: FilledSocket[];
+  /** the sections the roll's theme favoured (pipeline THEME; absent when it favoured them all) */
+  theme?: string[];
   /** the decor sets the roll chose, by job */
   looks: Record<string, string>;
   /** the time model's seconds (typical and fast players) */

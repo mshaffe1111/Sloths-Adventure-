@@ -8,6 +8,18 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
+## Running now (2026-10-28 ~18:30 ET)
+
+- Meeca's stage layout rebuild (Matt: "90% dead time; climbing unneeded, you can run along the bottom; I like the puzzles"): cloud
+  session_01FhBbYNdrb48mkEg3GEPojL, branch meeca-layout. Rooms, story and ending unchanged.
+- World 6 on gen2 (Matt: start World 6 levels; bosses later, all together): cloud session_01FhBbYNSMYfaErWSvnYgapx (gen2-w6: manifest +
+  ground/water/mudflat/purge/gauntlet sections) and session_01FhBbYLaFVRQ535P9f6Pssg (gen2-w6-swing: lianas, dark roots, the
+  raise/lower-water room). 6-8 Stilt Climb hand-built later; 6-10 boss later. gen2 core helper (local, gen2-core): liana/vine pieces,
+  water/tide zones, dark zone.
+- gen2 hook-up (step G) for 5-7 and 5-9: local helper, branch gen2-hook.
+- World 3 round 2, World 4 round 3 (cloud). World 1 archived; World 2 done (archive after the next release).
+- Promo video brief given to Matt for his own agent (20-25 s, points testers at the live game).
+
 ## On the work branch, test link v220 (2026-10-28 ~18:30 ET)
 
 - The polish pass merged: splash, carved title, Pokey and Meeca's painted clips, the shared menu kit, stage wipes. Needs Matt's
