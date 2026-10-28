@@ -266,7 +266,9 @@ test('4-3: every new thing is taught where it first appears, and the rocks are f
     assert.ok(said(/Rocks/)!.x < Math.min(...rocks.map((r) => r.x)), `seed ${s}`);
     for (const r of rocks) {
       assert.ok(rockFits(r) && r.warn >= 1, `seed ${s}`);
-      for (const v of st.vines) assert.ok(Math.abs(v.x - r.x) > 120 || v.bottomY < r.land - 20, `seed ${s}: a rock falls where he climbs`);
+      // (round 4, Matt 2026-10-28 "Harder, still safe": a grit-warned rock may come down a tree's trunk, knocking him off it, the climb
+      // again; the terrace rocks keep clear of every climb)
+      if (!r.air) for (const v of st.vines) assert.ok(Math.abs(v.x - r.x) > 120 || v.bottomY < r.land - 20, `seed ${s}: a rock falls where he climbs`);
       for (const w of falls) assert.ok(r.x < w.x - 60 || r.x > w.x + w.width + 60, `seed ${s}: a rock falls in the water`);
     }
   }

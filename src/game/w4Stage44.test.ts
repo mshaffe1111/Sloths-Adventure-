@@ -191,7 +191,11 @@ test('4-4: the secret seed sits on a branch no jump reaches, behind leaves, and 
     assert.ok(k.x0 > v.x && k.x1 - v.x < 130, `seed ${s}: the spot is not beside the vine`);
     assert.ok(st.proto.covers.some((c) => seeds[0].x > c.x && seeds[0].x < c.x + c.w && seeds[0].y > c.y && seeds[0].y < c.y + c.h), `seed ${s}: the seed is not behind leaves`);
     // the floor runs on under it
-    assert.ok(st.platforms.some((p) => p.y === G && p.x < k.x0 && p.x + p.width > ledge.x + ledge.width), `seed ${s}`);
+    // (the floor, or a mossy rock sunk into it, all the way: World 4's rocks break the bank around them, 2026-10-28)
+    const ground = st.platforms.filter((p) => p.y <= G && p.y >= G - 50 && p.x + p.width > k.x0 && p.x < ledge.x + ledge.width).sort((a, b) => a.x - b.x);
+    let to = k.x0;
+    for (const p of ground) if (p.x <= to + 1) to = Math.max(to, p.x + p.width);
+    assert.ok(to >= ledge.x + ledge.width, `seed ${s}`);
   }
 });
 

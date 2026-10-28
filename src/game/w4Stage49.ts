@@ -218,6 +218,16 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     y -= r(h);
     trunk(tX, y0, y);
     for (let i = 0; i < 3; i++) flower(tX, y0 - 80 - ((h - 140) * i) / 2, 'hibiscus');
+    // (round 4, Matt 2026-10-28 "Harder, still safe": once Dot has taught the rocks, every tree has one coming down past its trunk
+    // from the cliff above, grit trickling first; a hit knocks him off the trunk, the climb again, never a life)
+    // (and only after the grit is taught, over the drop: these are grit-warned rocks too)
+    if (rocksSaid && info.glides.some((g) => g.rock !== undefined)) {
+      const rk: RockDrop = { x: Math.round(tX), top: Math.round(y - 260), land: Math.round(y0), every: Math.round(R.r(5.4, 6.2) * 10) / 10, warn: 1.6, offset: Math.round(R.r(0, 5) * 10) / 10, air: true };
+      if (rockFits(rk)) {
+        rocks.push(rk);
+        expert += 1.2;
+      }
+    }
     run(R.r(180, 220));
     expert += (x - x0) / RUN + h / CLIMB + 1;
   }
