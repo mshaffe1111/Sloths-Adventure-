@@ -54,6 +54,9 @@ Last updated 2026-10-28.
 |---|---|---|
 | Dead time | No quiet stretch over about 4 s (deliberate rest before a set piece aside); aim ~2 s gaps on Normal, ~3 s on Easy. Only jumps, timing choices, enemies, vines and puzzle steps count as action; petals on flat ground never do (a petal arc over a gap counts half). | inspector `deadTime` |
 | Rests | A short safe rest after every burst of action. | inspector `restCheck` |
+| Pacing | Gemini's density table (Part 2 §4), per difficulty. Action density 0.75-1.15 actions/s Normal, 0.35-0.55 Easy, 1.1-1.4 a chase; bursts (rhythm groups) 10-14 s with 8-12 actions Normal, 6-8 s with 3-4 Easy, 15-20 s a chase; rest pads between bursts 1.0-1.2 s Normal, 2.0-2.5 s Easy, 0.8 s a chase; no walk with no action over 2.0 s Normal, 3.0 s Easy, 1.2 s a chase. | inspector `pacing.ts` (each card's pacing block) |
+| Tension | Aim: a sawtooth across the stage (Part 1 §4): build, a breather in the middle, the climax near the end, an easy walk out. Not flat, not front-loaded. | inspector `pacing.ts` (tension in 9 parts) |
+| Difficulty bands | §1b, measured: a 0-100 score per stage and setting (first-timer lives lost a minute, the noisy bot's hardest jumps, peak stress, the narrowest input window, dead time, length); each world's spread is its band. | inspector `bands.ts` (the band chart) |
 | Sameness | No two stages of a world alike: cosine of weighted action 3-grams under ~0.78, and no matching 20-second stretch. | inspector `similar` |
 | Variety across rolls | Two rolls of the same stage must really differ: diversity (mean 1 - cosine between rolls) about 0.35 or more. Today most hand stages are 0.87-1.00 alike between rolls: that is the next big job. | `tools/inspect/era.ts` over 200 rolls |
 | Opening seconds | Nothing can hurt in the first ~3-5 s of plain walking; the first tip comes before the first hazard it teaches. | first-timer bot |
@@ -94,7 +97,12 @@ test link, the QA testers or a release until the lead has re-run them, on more t
 
 1. `npx tsc --noEmit -p .`
 2. The stage inspector on the worlds you changed: `npx tsx tools/inspect/inspect.ts --worlds N` (dead time, rests, sameness, goals,
-   length, kid and adult bots). **Check more than one roll** (`--seed 1/2/3`), and the 200-roll tool `tools/inspect/era.ts` when a
+   length, kid and adult bots). It also flags, per stage and setting, **pacing** off Gemini's table (§2 "Pacing": action density, burst
+   length and actions per burst, slack rest pads, walks with no action over the limit; §2 "Tension": a flat, front-loaded or
+   climax-less curve), and the **difficulty bands** (§1b): a world whose band sits below the one before, a stage above the next
+   world's middle or below the previous world's, and Gemini's per-jump floors (Normal bot 70% in Worlds 1-5, 50% in 6-10; Easy kid
+   85%). Run the bands with `--firsttimer` (step 3) and over the worlds either side of the one you changed: without the first-timer
+   they score on the inspector's numbers alone, and a world is only judged against its neighbours in the same run. **Check more than one roll** (`--seed 1/2/3`), and the 200-roll tool `tools/inspect/era.ts` when a
    stage's layout code changed: a fix that only holds on seed 1 is not a fix.
 3. The first-timer bot, Easy and Normal: `npx tsx tools/inspect/inspect.ts --worlds N --firsttimer` (`--stages 1-7,2-2` for a few
    stages). It checks §2's "Opening seconds" and "Plain walk" rows, §6's eagle and Dot-pacing lessons and the Gemini gates (survival

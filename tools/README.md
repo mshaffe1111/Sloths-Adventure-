@@ -94,6 +94,18 @@ npx tsx --test tools/inspect/firsttimer.test.ts
 FT_TRACE=1 ...   # every jump the bot tries, on stderr;  FT_FRAMES=16.8,18.7 ...   # every frame in that stretch of play
 ```
 
+**Pacing and difficulty bands** (`pacing.ts`, `bands.ts`; every run). Pacing measures, per stage and setting on the inspector's own
+route and beats, action density, rhythm groups (bursts and their actions), rest pads, the longest walk with no action and a tension
+curve in 9 parts, against Gemini's event density table and sawtooth (STAGE-RULES §2 "Pacing", "Tension"); a pacing block on each card
+and a worst-first list. Bands score every stage 0-100 per setting (first-timer lives lost a minute, the noisy bots' hardest jumps, peak
+stress, the narrowest input window, dead time, length; with `--firsttimer`, else the inspector's parts alone), chart each world's band
+and flag STAGE-RULES §1b (a world below the one before, a stage above the next world's middle or below the previous one's, the per-jump
+floors). Both go into `report.json` (`stages[].pacing`, `bands`).
+
+```
+npx tsx --test tools/inspect/pacing.test.ts tools/inspect/bands.test.ts
+```
+
 ## tools/control-test-collector.gs
 
 This is the Google Apps Script behind the touch-control test (`#ctest`). It writes testers' recordings into Matt's Google Sheet. The real key lives only in Matt's deployed script and in the page, and is not repeated here.
