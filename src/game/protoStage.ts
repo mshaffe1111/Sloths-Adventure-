@@ -2256,7 +2256,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   /** a gap with a cloud on both sides of it: jump it while the air is clear */
   function sporeGap(deep = false) {
     const x0 = x;
-    run(R.r(300, 360));
+    // (over the stream the way up to it and away from it is shorter: the 300 px walks either side read as quiet stretches)
+    run(deep ? R.r(220, 260) : R.r(300, 360));
     const edge = x;
     close();
     // (`deep`, 2026-10-28: over the stream, no moss below: a miss costs a life, so the gap stays well inside a jump)
@@ -2264,7 +2265,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     if (!deep) softPit(edge, far);
     arc(edge - 30, far + 30, G - 110, deep ? 3 : 4);
     open(far);
-    run(R.r(300, 360));
+    // (a flag may follow: it stands 80 short of the end, clear of the cloud's far edge)
+    run(deep ? R.r(260, 290) : R.r(300, 360));
     sporeZone(edge - 150, far + 150, [edge - 110, far + 100]);
     expert += (x - x0) / RUN + 3;
     pieces.push({ k: 'stumps', x0, x1: x });
@@ -2283,7 +2285,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       if (!opts.rocks || len < 420) return run(len);
       const s0 = x;
       // (the last stretch has no stop at its end to keep clear: a second stone on the way out of the dark)
-      for (const at of last ? [0.22, 0.62] : [0.3]) {
+      // (a long stretch gets two, 2026-10-28: one stone in 600 px of dark left 2-3 s quiet walks either side of it)
+      for (const at of last ? (len >= 700 ? [0.18, 0.48, 0.78] : [0.22, 0.62]) : len >= 600 ? [0.25, 0.6] : [0.3]) {
         run(s0 + len * at - x);
         logHop(R.i(34, 44));
         hops++;
@@ -2783,7 +2786,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         expert += 4;
       };
       // (the ferns' finish: rows a little closer, the eyes quicker)
-      const ferns = () => bushRow(4, [460, 560], ['grotto'], [4.2, 5.2], true);
+      const ferns = () => bushRow(3, [640, 720], ['grotto'], [4.4, 5.4], true);
       const kits: Array<Array<() => void>> = [
         [ferns, ferns, () => { busy(1); ferns(); }],
         [() => deepRun(4, 1), () => { dark(); deepRun(3, 1); }, () => deepRun(5, 2)],
