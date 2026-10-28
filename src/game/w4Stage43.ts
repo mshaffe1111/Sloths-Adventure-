@@ -163,14 +163,14 @@ export function buildWaterfallSteps(
   /** a cliff too tall to jump, and a tree at its foot to climb it */
   function treeUp(h: number) {
     const x0 = x;
-    run(R.r(260, 320));
+    run(R.r(200, 240));
     const tX = x - 50;
     const y0 = y;
     end();
     y -= Math.round(h);
     trunk(tX, y0, y);
     for (let i = 0; i < 3; i++) flower(tX, y0 - 80 - ((h - 140) * i) / 2, 'hibiscus');
-    run(R.r(240, 300));
+    run(R.r(180, 220));
     expert += (x - x0) / RUN + h / CLIMB + 1;
   }
   /** a long terrace where a rock comes loose from the cliff above (taught in 4-1): stop short of the shadow, go once it has fallen */
@@ -191,14 +191,24 @@ export function buildWaterfallSteps(
   /** a terrace and a dry stair, or a tree up a tall cliff, at random (with `rock`, the terrace may have a falling rock) */
   function terrace(rock = false) {
     if (R.chance(0.5)) {
-      if (rock && R.chance(0.6)) rockRest(R.r(460, 560));
-      else rest(R.r(260, 360));
+      if (rock && R.chance(0.6)) rockRest(R.r(400, 460));
+      else rest(R.r(180, 240));
       stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
     } else {
       treeUp(R.r(300, 360));
     }
   }
 
+  /**
+   * between two pieces (2026-10-28, the stage inspector: the old 200-300 px of flat terrace after each piece and the long walks in were
+   * three to six quiet seconds): one dry step up, and a breath on the terrace above it
+   */
+  function breath() {
+    // (a little terrace first: a piece may end where the next one starts, at the top of a wet stair)
+    rest(R.r(110, 140));
+    stairs(1, R.r(84, 96), R.r(200, 230));
+    rest(R.r(150, 190));
+  }
   /**
    * a fall over a wet stair, stopped with a boulder. The water pours from the end of a shelf above the stair, where the stream runs
    * along a channel; roll the boulder along the channel into the slot at its end and the fall dries up.
@@ -219,7 +229,7 @@ export function buildWaterfallSteps(
     let treeX: number;
     let logId: number | undefined;
     if (kind === 'tree') {
-      run(R.r(300, 380));
+      run(R.r(240, 280));
       treeX = r(x + 40);
       c0 = r(treeX + R.r(400, 440));
       trunk(treeX, y0, shelfY);
@@ -227,7 +237,7 @@ export function buildWaterfallSteps(
       hint(x0 + 40, 'The water pushes you back down! Climb the tree, and stop it at the top', 'The water pushes you back down! Climb the tree, and stop it at the top', 'The water pushes you back down! Climb the tree, and stop it at the top');
       expert += (treeX - x0) / RUN + (y0 - shelfY) / CLIMB + 0.8;
     } else if (kind === 'hops') {
-      run(R.r(280, 340));
+      run(R.r(230, 270));
       const hx = r(x);
       // five rock ledges beside the fall, back and forth, each a plain jump above the last; the shelf is one more jump up
       const k = 5;
@@ -242,7 +252,7 @@ export function buildWaterfallSteps(
       hint(x0 + 40, 'Another fall over the steps. Hop up the ledges beside it, and stop this one too');
       expert += (hx - x0) / RUN + k * 0.9 + 0.6;
     } else if (kind === 'surge') {
-      run(R.r(280, 340));
+      run(R.r(230, 270));
       const s0 = r(x);
       run(WET.margin);
       for (let i = 0; i < n + 1; i++) {
@@ -269,7 +279,7 @@ export function buildWaterfallSteps(
       hint(x0 + 40, 'This one comes and goes as well. Climb up beside it in a quiet spell, to the boulder above the next fall');
       expert += (s0 - x0) / RUN + (surge.pour + surge.ease + surge.quiet) / 2 + (n + 1) * 0.6 + 0.6 + 140 / RUN + 1.5;
     } else {
-      run(R.r(260, 320));
+      run(R.r(220, 260));
       // the ledge the log reaches, the pool and its log, then the floor the water covers in front of the steps
       const n0 = x;
       const nw = R.r(300, 340);
@@ -339,7 +349,7 @@ export function buildWaterfallSteps(
    */
   function surgeFall(keepsake = true): { x: number; y: number } {
     const x0 = x, y0 = y;
-    run(R.r(320, 380));
+    run(R.r(260, 300));
     const c0 = r(x);
     run(WET.margin);
     const surge = { pour: Math.round(R.r(3.4, 3.9) * 10) / 10, ease: 1.5, quiet: quietFor(3, Math.round(R.r(3.0, 3.4) * 10) / 10), offset: Math.round(R.r(0, 8) * 10) / 10 };
@@ -381,19 +391,19 @@ export function buildWaterfallSteps(
    */
   function thiefFalls() {
     const x0 = x;
-    run(R.r(300, 360));
+    run(R.r(250, 290));
     const mx = r(x);
     const sitY = y;
     const petal = flower(mx + 46, sitY - 30, 'hibiscus');
     hint(x0 + 40, 'Another monkey! This one runs up behind the falling water. Follow it in the quiet, and touch it in the cave');
     const path: Array<{ x: number; y: number }> = [];
-    run(R.r(380, 440));
+    run(R.r(330, 370));
     path.push({ x: r(x - 60), y: r(y) });
     expert += (x - x0) / RUN;
     const cave = surgeFall(false);
     path.push(cave);
     const x1 = x;
-    run(R.r(320, 380));
+    run(R.r(280, 320));
     path.push({ x: r(x - 80), y: r(y) });
     monkeys.push({ job: 'thief', x: mx, y: sitY, petalId: petal.id, path });
     expert += (x - x1) / RUN + 2.5;
@@ -408,7 +418,7 @@ export function buildWaterfallSteps(
   const tides: Array<{ fallId: number; log: number; ledge: number; lip: number; top: number }> = [];
   function tidePool() {
     const x0 = x, y0 = y;
-    run(R.r(260, 320));
+    run(R.r(220, 260));
     const n0 = x;
     const nw = r(R.r(300, 340));
     const bx = r(n0 + nw + 20);
@@ -456,7 +466,8 @@ export function buildWaterfallSteps(
    */
   function thief() {
     const x0 = x;
-    run(R.r(320, 380));
+    // (2026-10-28: the walks between its posts a little shorter, still longer than his reach, so it runs and he follows)
+    run(R.r(260, 300));
     const mx = r(x);
     const sitY = y;
     const petal = flower(mx + 46, sitY - 30, 'hibiscus');
@@ -467,16 +478,16 @@ export function buildWaterfallSteps(
       run(len);
       walked += len;
     };
-    along(R.r(420, 480));
+    along(R.r(360, 400));
     path.push({ x: r(x - 60), y: r(y) });
     stairs(2, R.r(88, 98), R.r(200, 230));
-    along(R.r(300, 360));
+    along(R.r(280, 320));
     path.push({ x: r(x - 80), y: r(y) });
     stairs(3, R.r(88, 98), R.r(200, 230));
-    along(R.r(320, 380));
+    along(R.r(280, 320));
     path.push({ x: r(x - 80), y: r(y) });
     stairs(2, R.r(88, 98), R.r(200, 230));
-    along(R.r(380, 440));
+    along(R.r(320, 360));
     path.push({ x: r(x - 100), y: r(y) });
     monkeys.push({ job: 'thief', x: mx, y: sitY, petalId: petal.id, path });
     // (the stairs count themselves) catching it at a post takes a moment or two
@@ -489,7 +500,7 @@ export function buildWaterfallSteps(
    */
   function surgePair() {
     const x0 = x, y0 = y;
-    run(R.r(320, 380));
+    run(R.r(260, 300));
     const pour = Math.round(R.r(3.4, 3.8) * 10) / 10, ease = 1.5, quiet = quietFor(3, Math.round(R.r(3.0, 3.4) * 10) / 10);
     const cycle = pour + ease + quiet;
     const off = Math.round(R.r(0, 8) * 10) / 10;
@@ -528,66 +539,66 @@ export function buildWaterfallSteps(
 
   // ======================= the stage =======================
   beat('Start: the wet steps', () => {
-    rest(R.r(560, 660));
+    rest(R.r(300, 340));
     hint(100, 'Climb the wet steps beside the great waterfall!');
     stairs(3, R.r(84, 96), R.r(200, 240));
-    rest(R.r(300, 380));
+    rest(R.r(160, 190));
     flag();
     treeUp(R.r(300, 340));
-    rest(R.r(200, 260));
+    breath();
   });
   beat('Learn: the boulder', () => {
     plugFall('tree');
-    rest(R.r(220, 280));
+    breath();
     flag();
   });
   beat('Develop: the thief', () => {
     thief();
     flag();
-    rest(R.r(200, 260));
+    breath();
   });
   beat('Develop: the high shelf', () => {
     plugFall('hops');
-    rest(R.r(220, 280));
+    breath();
     flag();
   });
   beat('Twist: the pool and the log', () => {
     plugFall('pool');
-    rest(R.r(220, 280));
+    breath();
     flag();
-    rockRest(R.r(480, 560));
+    rockRest(R.r(420, 480));
     terrace();
-    rest(R.r(200, 260));
+    breath();
   });
   beat('Twist: the surge', () => {
     hint(x + 40, 'This fall comes and goes on its own. Climb when it goes quiet, and wait in the cave behind it for the next quiet');
     surgeFall();
-    rest(R.r(240, 300));
+    breath();
     flag();
   });
   beat('Develop: the thief behind the falls', () => {
     thiefFalls();
     flag();
     terrace();
-    rest(R.r(200, 260));
+    breath();
     flag();
   });
   beat('Twist: the tide pool', () => {
     tidePool();
-    rest(R.r(240, 300));
+    breath();
     flag();
-    rockRest(R.r(480, 560));
+    rockRest(R.r(420, 480));
   });
   beat('Twist: the boulder up the surge', () => {
     plugFall('surge');
-    rest(R.r(220, 280));
+    breath();
     flag();
     terrace(true);
   });
   beat('Finish: to the shrine', () => {
     terrace(true);
     surgePair();
-    rest(R.r(240, 300));
+    breath();
     flag();
     let n = 0;
     while (expert < stageSeconds('4-3') + 4 && n < 24) {
@@ -595,7 +606,9 @@ export function buildWaterfallSteps(
       n++;
       if (n % 3 === 0) flag();
     }
-    rest(R.r(500, 600));
+    // (a last step up, and the shrine a short walk on)
+    breath();
+    rest(R.r(260, 300));
   });
   const exitX = r(x - 200);
   end();
