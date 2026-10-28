@@ -10,7 +10,8 @@
  */
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
-import { jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage } from './levelCheck.ts';
+import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
+import { EASY_HOLD } from './physics.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
 /** a drop is this deep (or has no floor at all) before a far jump over it gets a stone */
@@ -74,6 +75,118 @@ export function easyStones(stage: Stage): Platform[] {
   return out;
 }
 
+/** a step Easy adds in front of a ledge too high for a ~70% hold (px wide), and a catch ledge's width */
+const STEP_W = 72;
+const CATCH_W = 90;
+
+/**
+ * Easy never needs a full-hold jump (Gemini G8, STAGE-RULES §1b: soften the jump, don't remove it). The level check walks the stage
+ * twice, with the full jump and with a ~70% hold (levelCheck.ts); every ledge the first reaches and the second does not is softened
+ * where it is, from the place he jumps for it: a gap gets a wider landing (the ledge reaches toward him), and a rise too high for the
+ * held jump gets a step halfway up in front of it (or, across a gap or onto a ledge over his head, a catch ledge halfway). The jump is
+ * still there; only its margin is Easy's. `frozen`: boulders left where they stand (see easyStage). Returns how many were softened.
+ */
+export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>): number {
+  const allowDbl = doubleAllowed(stage.config);
+  let full: CheckGraph | null = null;
+  let held: CheckGraph | null = null;
+  validateStage(stage, { frozen, inspect: (g) => (full = g) });
+  validateStage(stage, { frozen, hold: EASY_HOLD, inspect: (g) => (held = g) });
+  const F = full as CheckGraph | null;
+  const H = held as CheckGraph | null;
+  if (!F || !H) return 0;
+  // where he can stand: everywhere the full jump gets him (so a run of jumps is softened in one go, not one a pass), and the pieces
+  // of ground the held walk reached at their own size (it splits a ground around a fall that still pours)
+  const fullIds = new Set(F.plats.filter((p) => F.seen.has(F.key(p))).map((p) => p.id));
+  const heldPieces = H.plats.filter((p) => H.seen.has(H.key(p)));
+  const heldIds = new Set(heldPieces.map((p) => p.id));
+  const heldSet = new Set(heldPieces);
+  const at = [...stage.platforms.filter((p) => fullIds.has(p.id)), ...heldPieces];
+  // (a ledge Easy may widen: plain ground, not a pushed log, a painted piece or a pad)
+  const widenable = (p: Platform) => (p.type === 'solid' || p.type === 'fragile') && !p.push && !p.art && !p.lily && !p.crown;
+  let id = Math.max(0, ...stage.platforms.map((p) => p.id)) + 1;
+  let n = 0;
+  for (const B of [...stage.platforms]) {
+    if (B.broken || heldIds.has(B.id) || !fullIds.has(B.id) || B.type === 'drift' || B.type === 'moving' || B.push) continue;
+    // the place he jumps for it from, where the full jump reaches it and the held one does not
+    let best: { A: Platform; gap: number; side: 1 | -1 | 0; room: number; rank: number } | null = null;
+    for (const A of at) {
+      if (A.id === B.id || A.type === 'drift' || A.type === 'moving' || A.type === 'bouncy' || A.y - B.y > 320 || B.y - A.y > 400) continue;
+      const side: 1 | -1 | 0 = B.x >= A.x + A.width - 2 ? 1 : B.x + B.width <= A.x + 2 ? -1 : 0;
+      const gap = side === 1 ? B.x - (A.x + A.width) : side === -1 ? A.x - (B.x + B.width) : 0;
+      if (gap > 460 || !jumpOK(A, B, allowDbl).ok) continue;
+      const room = heldMaxGap(A, B, allowDbl);
+      const fromHeld = heldSet.has(A);
+      // (from a place the held walk gets him, the held jump reaches it: it needs nothing)
+      if (room >= Math.max(0, gap) && fromHeld) {
+        best = null;
+        break;
+      }
+      if (room >= Math.max(0, gap)) continue;
+      // (soften toward where he comes from: a place the held walk gets him first, else the side toward the stage's start)
+      const rank = (fromHeld ? 0 : 10000) + (side === -1 ? 5000 : 0) + gap;
+      if (!best || rank < best.rank) best = { A, gap: Math.max(0, gap), side, room, rank };
+    }
+    if (!best) continue;
+    const { A, gap, side, room } = best;
+    const others = stage.platforms.filter((q) => q !== B && q.id !== A.id && !q.broken);
+    if (room >= 0 && side !== 0 && widenable(B)) {
+      // a wider landing: the ledge reaches toward him, as far as the held jump needs (and never past the gap)
+      const d = Math.min(Math.max(0, gap - 4), Math.ceil(gap - room) + 6);
+      // (the strip it grows by must be clear: nothing standing up through its top there)
+      const s0 = side === 1 ? B.x - d : B.x + B.width;
+      const clash = others.some((q) => q.x < s0 + d && q.x + q.width > s0 && q.y < B.y && q.y + q.height > B.y + 4);
+      if (d > 0 && !clash) {
+        if (side === 1) B.x -= d;
+        B.width += d;
+        n++;
+        continue;
+      }
+    }
+    const rise = A.y - B.y;
+    if (rise <= 0) continue;
+    const top = Math.round(A.y - rise / 2);
+    let add: Platform;
+    if (side !== 0 && gap <= 12) {
+      // a step halfway up, on his ground in front of the face
+      const sx = side === 1 ? B.x - STEP_W : B.x + B.width;
+      add = { id, x: Math.round(sx), y: top, width: STEP_W, height: A.y - top + 10, type: 'solid', style: 'moss_stone' };
+      if (others.some((q) => q !== A && overlaps(add, q, -2) && q.y < A.y - 2)) continue;
+    } else {
+      // a catch ledge halfway up: halfway across a gap, or beside a ledge over his head (on the side he comes from)
+      const cx = side === 1 ? A.x + A.width + gap / 2 : side === -1 ? B.x + B.width + gap / 2 : B.x - CATCH_W / 2 - 10;
+      add = { id, x: Math.round(cx - CATCH_W / 2), y: top, width: CATCH_W, height: 24, type: 'solid', style: 'branch' };
+      if (others.some((q) => q !== A && overlaps(add, q, 6))) {
+        if (side !== 0) continue;
+        add.x = Math.round(B.x + B.width + 10);
+        if (others.some((q) => q !== A && overlaps(add, q, 6))) continue;
+      }
+    }
+    id++;
+    stage.platforms.push(add);
+    n++;
+  }
+  return n;
+}
+
+/**
+ * the boulders the full jump's walk rolls into a fall's slot and the held jump's does not: walked again with those left where they
+ * stand, both walks see the fall pouring, and the way up behind it (4-3) is compared as it is first walked. Empty when there are none.
+ */
+function heldBoulders(stage: Stage): ReadonlySet<number> | undefined {
+  const pushes = stage.platforms.filter((p) => p.push);
+  if (!pushes.length) return undefined;
+  let F: CheckGraph | null = null;
+  let H: CheckGraph | null = null;
+  validateStage(stage, { inspect: (g) => (F = g) });
+  validateStage(stage, { hold: EASY_HOLD, inspect: (g) => (H = g) });
+  const f = F as CheckGraph | null;
+  const h = H as CheckGraph | null;
+  if (!f || !h) return undefined;
+  const out = new Set(pushes.filter((b) => h.boulderX(b.id) === b.x && f.boulderX(b.id) !== b.x).map((b) => b.id));
+  return out.size ? out : undefined;
+}
+
 /** which animals stay on Easy: the first of each kind, then every other one */
 export function easyKeep(enemies: Enemy[]): Set<Enemy> {
   const keep = new Set<Enemy>();
@@ -127,6 +240,12 @@ export function easyStage(stage: Stage): Stage {
 
   // far jumps
   if (!climb && !chase) stage.platforms.push(...easyStones(stage));
+  // and no jump that needs a full hold (a hand-built stage; again while it softens something, as one jump can open the way to the
+  // next). A boulder only the full jump's walk rolls is also left where it stands: the way up behind it is walked while its fall still
+  // pours (4-3), and only the full jump reached it
+  if (stage.proto) {
+    for (let i = 0; i < 3; i++) if (easyHoldSoften(stage, heldBoulders(stage)) + easyHoldSoften(stage) === 0) break;
+  }
 
   // fewer animals, and a beat-the-animals goal that asks for fewer
   const keep = easyKeep(stage.enemies);
