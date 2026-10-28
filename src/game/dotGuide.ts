@@ -121,6 +121,23 @@ export const GUIDE = {
   thingYieldMs: 3000,
 } as const;
 
+/**
+ * Dot toned down (Matt, 2026-10-28: "a little repetitive at times and comes in a little too soon. Tone her down a little."), for
+ * Worlds 1-4 (a queue made with `calm`). Rules that stay: the first appearance of every mechanic is taught, and the locked exit is
+ * always explained (a must line is never held back by any of these, nor is a warning just before a danger).
+ *   - startMs: nothing in a stage's first seconds; the stage starts are built so nothing can hurt before then (stageStart.test.ts);
+ *   - gapMs: at least this long from one line's start to the next's, for everything but a warning, the locked exit, a lesson's next
+ *     step, a first-time lesson and a tip for a move (those need only the usual breath: a tip comes before its thing, and its thing
+ *     will not wait; in 2-2 a 2.5 s gap after the opening aside kept the first river's tip back past the river);
+ *   - repeatMax: the same words at most this many times a stage (a reminder once), and never again once he has done the move they ask
+ *     for since they were said;
+ *   - moveCapMs: a move tip goes after this long if its move is not done (it does not come back), or sooner once the thing it is about
+ *     has been out of view goneMs (QA 2026-10-28, 1-7: "Flick up into the trunk to grab it" stayed 30 s with no trunk in reach).
+ * A first-time lesson may also come in over a plain information or story line already up (that line comes back once, after it): a
+ * stage's opening words held the gap's lesson back past 2-2's first river.
+ */
+export const CALM = { startMs: 2500, gapMs: 10000, repeatMax: 2, moveCapMs: 12000, goneMs: 2500 } as const;
+
 const waitFor = (l: GuideLine) => l.waitMs ?? GUIDE.waitMs[l.kind];
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]+/g, '').replace(/\s+/g, ' ').trim();
 const sameWords = (a: string, b: string) => norm(a) === norm(b);
@@ -170,6 +187,8 @@ export interface TickEnv {
   moveCount(m: MoveId): number;
   /** he is swinging on a liana: a tip about a gap in the ground waits (heldBack) */
   swinging?: boolean;
+  /** (a calm queue) the thing this move tip is about is nowhere in view (a trunk, a vine, a rope, a log): the tip has had its moment */
+  gone?(l: GuideLine): boolean;
   /** no line starts at all, not even an urgent one (the stage-start goal card is up: they share the top-centre lane) */
   hold?: boolean;
 }
@@ -186,6 +205,15 @@ export type GuideEvent =
   | { type: 'end'; show: Showing; why: 'done' | 'read' | 'cap' | 'yield' | 'cut' | 'cleared' };
 
 export class GuideQueue {
+  /** `calm`: Dot toned down (CALM), as Worlds 1-4 have her */
+  constructor(readonly calm = false) {}
+  /** (calm) when the last line started, and the words said this stage: how often, and the move count when last said */
+  private startedAt = -1e9;
+  private heard = new Map<string, { n: number; base: number }>();
+  /** (calm) since when the showing move tip's thing has been out of view (-1: in view) */
+  private goneSince = -1;
+  /** (calm) a line is a first-time lesson's, or the next step of one: it is never held back by the gap */
+  private static lessonish = (l: GuideLine) => l.source === 'lesson' || l.source === 'coach';
   private waiting: Waiting[] = [];
   private seq = 0;
   private n = 0;
@@ -217,11 +245,15 @@ export class GuideQueue {
   push(line: GuideLine, now: number): void {
     if (!line.text || this.has(line.key, line.text)) return;
     const cur = this.cur;
-    if (cur && isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind]) {
+    // (calm: a first-time lesson comes in over a plain information or story line, which goes back to be said again: see CALM)
+    const lessonCut = this.calm && line.source === 'lesson' && line.kind === 'teach' && !!cur && (cur.line.kind === 'info' || cur.line.kind === 'story') && now >= CALM.startMs;
+    if (cur && ((isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind]) || lessonCut)) {
       this.events.push({ type: 'end', show: cur, why: 'cut' });
       // (it goes back in front of everything of its own priority, to be said again in full; a scene's line that was mostly read
       // counts as heard, and the scene goes on)
-      if (!(cur.line.scene && now - cur.startedAt >= readMs(cur.line.text) * GUIDE.sceneHeard)) this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
+      // (calm: a plain line that a first-time lesson cut after it had been up its minimum time counts as heard, and is not said again)
+      const heard = (cur.line.scene && now - cur.startedAt >= readMs(cur.line.text) * GUIDE.sceneHeard) || (lessonCut && now - cur.startedAt >= GUIDE.minShowMs);
+      if (!heard) this.waiting.push({ line: cur.line, until: now + Math.max(GUIDE.backMs, waitFor(cur.line)), seq: -++this.seq, base: cur.line.move ? cur.base : undefined });
       this.cur = null;
       this.begin(line, now, 0);
       return;
@@ -267,6 +299,10 @@ export class GuideQueue {
 
   private begin(line: GuideLine, now: number, base: number): void {
     this.cur = { line, startedAt: now, base, n: ++this.n };
+    this.startedAt = now;
+    this.goneSince = -1;
+    const k = norm(line.text);
+    this.heard.set(k, { n: (this.heard.get(k)?.n ?? 0) + 1, base });
     this.history = [line, ...this.history.filter((h) => h.key !== line.key)].slice(0, GUIDE.historyN);
     this.events.push({ type: 'start', show: this.cur });
   }
@@ -280,6 +316,14 @@ export class GuideQueue {
     // (the next step of a lesson still comes, in its place)
     const skipped: GuideLine[] = [];
     this.waiting = this.waiting.filter((w) => {
+      // (calm) words said often enough this stage, or a move tip whose move he has done since it was said, are not said again
+      if (this.calm && !isUrgent(w.line)) {
+        const h = this.heard.get(norm(w.line.text));
+        if (h && (h.n >= CALM.repeatMax || (w.line.move && env.moveCount(w.line.move) > h.base))) {
+          if (w.line.next) skipped.push(w.line.next);
+          return false;
+        }
+      }
       const m = w.line.move;
       if (!m || w.line.thing) return now <= w.until;
       if (w.base === undefined || w.base < 0) {
@@ -306,10 +350,16 @@ export class GuideQueue {
         // (a tip about a thing he has had a fair look at gives way to the next thing's: that one is coming up now)
         why = 'read';
       } else if (l.move) {
+        const gone = this.calm && !!env.gone?.(l);
+        if (!gone) this.goneSince = -1;
+        else if (this.goneSince < 0) this.goneSince = now;
         if (env.moveCount(l.move) > cur.base) {
           if (shown) why = 'done';
         } else if (heldBack(l, env)) {
           if (shown) why = 'yield';
+        } else if (this.calm && shown && (age >= CALM.moveCapMs || (gone && now - this.goneSince >= CALM.goneMs))) {
+          // (calm: its moment has passed; it does not come back, and a lesson's next step does not follow it)
+          why = 'cap';
         } else if (age >= GUIDE.moveCapMs) why = 'cap';
         else if (age >= readMs(l.text)) {
           const b = this.best(now, env);
@@ -335,7 +385,7 @@ export class GuideQueue {
       this.clearCur = false;
       this.endedAt = now;
       // a move tip that ran out of time without its move comes back once more, later (it waits for the move as any other does)
-      if (why === 'cap' && l.move && !this.capped.has(l.key)) {
+      if (why === 'cap' && l.move && !this.capped.has(l.key) && !this.calm) {
         this.capped.add(l.key);
         this.waiting.push({ line: l, until: now + GUIDE.backMs, seq: ++this.seq, base: cur.base });
       }
@@ -353,6 +403,12 @@ export class GuideQueue {
     if (now - this.endedAt < gap) return null;
     if (env.hold) return null;
     if (env.danger && !isUrgent(b.line)) return null;
+    if (this.calm && !isUrgent(b.line)) {
+      // (calm) nothing in the stage's first seconds; then the gaps between lines
+      if (now < CALM.startMs) return null;
+      const teach = GuideQueue.lessonish(b.line) || b.line.kind === 'teach';
+      if (!teach && now - this.startedAt < CALM.gapMs) return null;
+    }
     this.waiting.splice(this.waiting.indexOf(b), 1);
     this.begin(b.line, now, b.line.move ? env.moveCount(b.line.move) : 0);
     return this.cur;

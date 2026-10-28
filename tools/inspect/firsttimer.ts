@@ -35,6 +35,10 @@ import { engineGuideLine } from '../../src/game/dotLines.ts';
 import { lessonDotLine, type LessonId } from '../../src/game/lessons.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../src/game/dotGuideWatch.ts';
 import { emptyGuideView, type GuideView } from '../../src/game/dotGuideView.ts';
+import { findTarget } from '../../src/game/dotGuidePerch.ts';
+
+/** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
+const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
 import type { Platform } from '../../src/game/types.ts';
 import { findRoute } from './route.ts';
 import { sampleRoute } from './beats.ts';
@@ -261,7 +265,8 @@ export interface Shown {
 
 /** Dot's guide for one run: the game's queue, fed what the engine, the lessons and the struggle watch send */
 class DotShadow {
-  readonly queue = new GuideQueue();
+  /** (Worlds 1-4 have Dot toned down, as the app has her: dotGuide.ts CALM, components/dot/DotGuide.tsx) */
+  readonly queue: GuideQueue;
   readonly moves = new MoveWatch();
   readonly struggle = new StruggleWatch();
   clock = 0;
@@ -271,7 +276,10 @@ class DotShadow {
   private alive = { x: 0, y: 0, foe: false, falling: false };
   private restart = true;
   private prevJR = 0;
-  constructor(readonly stageId: string) {}
+  constructor(readonly stageId: string) {
+    const w = Number(stageId.split('-')[0]);
+    this.queue = new GuideQueue(w >= 1 && w <= 4 && !/-D$/.test(stageId));
+  }
   private say(l: GuideLine | null | undefined) {
     if (l) this.queue.push(l, this.clock);
   }
@@ -324,7 +332,7 @@ class DotShadow {
     }
     this.prevLives = v.lives;
     const danger = !v.flight && (inDanger(v) || v.boss || v.chase);
-    this.queue.tick(this.clock, { danger, hold: t < 1, moveCount: (m) => this.moves.count(m), swinging: v.swinging });
+    this.queue.tick(this.clock, { danger, hold: t < 1, moveCount: (m) => this.moves.count(m), swinging: v.swinging, gone: (l) => !!l.topic && GONE_TOPICS.has(l.topic) && !findTarget(l.topic, v) });
     for (const ev of this.queue.drain()) {
       const l = ev.show.line;
       if (ev.type === 'start') {

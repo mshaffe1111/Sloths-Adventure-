@@ -65,7 +65,8 @@ function walkRight(id: string, view: readonly [number, number]): Start {
   e.lessonTick = proto.lessonTick.bind(e);
   e.updateCamera = proto.updateCamera.bind(e);
   e.resizeCanvas();
-  const q = new GuideQueue();
+  // (Worlds 1-4 have Dot toned down: nothing in a stage's first 2.5 s, dotGuide.ts CALM)
+  const q = new GuideQueue(true);
   let clock = 0;
   const said: Array<{ text: string; lesson?: LessonId }> = [];
   const cb = e.callbacks;
