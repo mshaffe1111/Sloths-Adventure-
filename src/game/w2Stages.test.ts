@@ -52,7 +52,10 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
         const vines = st.vines.filter((v) => v.vineType === 'swing_liana' && v.x > r.x0 && v.x < r.x1);
         const porches = st.platforms.filter((p) => p.art === 'porch' && p.x > r.x0 && p.x < r.x1);
         const islands = st.platforms.filter((p) => p.y === ISLAND_TOP && p.x > r.x0 && p.x < r.x1);
-        assert.ok(r.open ? vines.length >= 2 || porches.length >= 2 : r.flood ? islands.length >= 2 : r.speed === 0 ? pads.length >= 3 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
+        // (still water is crossed on lily pads or stepping stones, or it is a pool a hop across: a hanging cage's; 2-2's ferry has one raft)
+        const stones = st.platforms.filter((p) => p.style === 'moss_stone' && p.x >= r.x0 && p.x + p.width <= r.x1);
+        const still = pads.length >= 3 || stones.length >= 3 || r.x1 - r.x0 <= 180;
+        assert.ok(r.open ? vines.length >= 2 || porches.length >= 2 : r.flood ? islands.length >= 2 : r.speed === 0 ? still : r.raft ? logs.length === 1 : logs.length >= 2, `${plan} seed ${s}: river at ${r.x0}`);
       }
     }
   }
@@ -62,8 +65,10 @@ test('2-1: the first rivers cost no life (a splash puts him back on the bank); t
   for (const s of SEEDS) {
     const st = buildW2Stage(cfg('2-1'), s, '2-1');
     const rv = st.rivers!;
-    assert.ok(rv[0].safe && rv[1].safe, `seed ${s}: the teaching rivers`);
-    assert.ok(rv.slice(2).every((r) => !r.safe), `seed ${s}: only the first two are safe`);
+    assert.ok(rv[0].safe && rv[1].safe && rv[2].safe, `seed ${s}: the teaching rivers`);
+    assert.ok(rv.slice(3).every((r) => !r.safe), `seed ${s}: only the first three are safe`);
+    // (2-1 is the logs' stage: no puzzle rooms, no cages)
+    assert.equal(st.kit, undefined);
     // the safe river puts him back on the bank he jumped from
     assert.ok(st.platforms.some((p) => p.type === 'solid' && p.x <= rv[0].safe!.backX && p.x + p.width >= rv[0].safe!.backX && p.y === rv[0].safe!.backY));
     assert.ok(rv.some((r) => r.dir === -1), `seed ${s}: a river against the current`);
@@ -84,18 +89,37 @@ test('2-2: about one and a half times the flowers the crown needs, the note on t
   }
 });
 
-test('2-3: three cages, one of each little one: by the bank, on an island, and up the mooring post', () => {
+test('2-3: five little ones, each in a reed cage hung on a pulley over the water, lifted out by stones in its counter-basket', () => {
   for (const s of SEEDS) {
     const st = buildW2Stage(cfg('2-3'), s, '2-3');
     const cages = st.collectibles.filter((c) => c.type === 'cage');
     assert.equal(cages.length, CAGES_23);
     assert.equal(st.config.targetCount, CAGES_23);
     assert.deepEqual(new Set(cages.map((c) => c.critter)), new Set(['capy', 'duck', 'otter']), `seed ${s}`);
-    // the island cage stands between two rivers, the post cage high above the bank, reached by its climbing rope
-    const rv = st.rivers!;
-    assert.ok(cages.some((c) => rv.some((r, i) => i + 1 < rv.length && c.x > r.x1 && c.x < rv[i + 1].x0)), `seed ${s}: the island`);
-    const high = cages.find((c) => c.y < 400)!;
-    assert.ok(high && st.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - high.x) < 160), `seed ${s}: the post`);
+    const rooms = st.kit!.rooms;
+    assert.equal(rooms.length, CAGES_23, `seed ${s}: a room for each cage`);
+    for (const c of cages) {
+      // every cage hangs on a lift that a counter-basket raises (no cage to punch open in 2-3)
+      const room = rooms.find((r) => r.pieces.some((p) => p.kind === 'lift' && p.cage === c.id));
+      assert.ok(room, `seed ${s}: cage ${c.id} hangs on a pulley`);
+      const lift = room!.pieces.find((p) => p.kind === 'lift')!;
+      assert.ok(lift.kind === 'lift' && room!.pieces.some((p) => p.kind === 'basket' && p.id === lift.by), `seed ${s}: its counter-basket`);
+      assert.equal(room!.exit, lift.id);
+      assert.ok(room!.pieces.some((p) => p.kind === 'source' && p.variant === 'stone'), `seed ${s}: a pile of river stones`);
+    }
+    // the first is taught: one stone lifts it, and a splash there costs nothing
+    const first = rooms[0];
+    const basket = first.pieces.find((p) => p.kind === 'basket')!;
+    assert.ok(basket.kind === 'basket' && (basket.need ?? 1) <= 2 && first.tips?.enter && first.tips?.hold, `seed ${s}: the teaching room`);
+    assert.ok(st.rivers!.filter((r) => r.speed === 0 && r.x1 - r.x0 <= 180)[0].safe, `seed ${s}: the first pool is safe`);
+    assert.equal(st.enemies.filter((e) => Math.abs(e.x - (st.rivers!.find((r) => r.safe)!.x0)) < 700).length, 0, `seed ${s}: no animal by the first cage`);
+    // a heavy one (two stones), one with the stones across the water, one with its basket hung high
+    const baskets = rooms.map((r) => r.pieces.find((p) => p.kind === 'basket')!).map((b) => (b.kind === 'basket' ? b : null)!);
+    assert.ok(baskets.some((b) => (b.need ?? 1) >= 4), `seed ${s}: two stones`);
+    assert.ok(baskets.some((b) => b.mouth >= 200), `seed ${s}: a high basket`);
+    assert.ok(rooms.some((r) => r.ground.length >= 2), `seed ${s}: the stones across the water`);
+    // and the mooring posts up onto the high banks
+    assert.ok(st.vines.filter((v) => v.vineType === 'tree_climb').length >= 3, `seed ${s}: the posts`);
   }
 });
 
