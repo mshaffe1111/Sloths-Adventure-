@@ -33,7 +33,7 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 | Pacing measures | Inspector: action density, rhythm-group length, tension curve per stage, the difficulty-band chart per world | tools/inspect/pacing.ts, bands.ts (new files) | 2026-10-28 |
 | Worlds 3-4 gap list | Measure only: 3 rolls, the first-timer bot, art use; per-stage gaps and variety ideas, so the W3-4 variety pass starts tonight | nothing (read-only) | 2026-10-28 |
 | Meeca's stage | "On the March North": camp, Flicker, five puzzle rooms (tea channel in room 4), the approved ending; night strips in code; replaces 5-M outright | Meeca/5-M files, W5 night strips | 2026-10-28 |
-| Hugging Face art run (Matt 2026-10-28) | Enemies first, hardest first (bosses, new creature models, animated clips), then what the game still needs, then art and props: reference/ART-PLAN.md inventory with costs, first round capped at $40, results in a gallery for Matt's pick (show first, nothing into src/ yet) | reference/ART-PLAN.md, tools/art/ new folder + new specs (branch art-hf) | 2026-10-28 |
+| Hugging Face art run (Matt 2026-10-28) | Enemies first, hardest first (bosses, new creature models, animated clips), then what the game still needs, then art and props: reference/ART-PLAN.md inventory with costs, Matt has ~$70 left: plan to $65 ($40 enemies, ~$25 what's left to finish then art and props, ~$5 spare), results in a gallery for Matt's pick (show first, nothing into src/ yet) | reference/ART-PLAN.md, tools/art/ new folder + new specs (branch art-hf) | 2026-10-28 |
 
 ## Budget
 
@@ -43,7 +43,7 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 ## Open decisions for Matt
 
-- How much Hugging Face balance is left (sets the size of the art rounds after the first $40).
+- (none right now)
 
 ## Decided today (also on the Docs roadmap)
 
