@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { GhostOnExit } from './fx/exitGhost.ts';
 import { browserStore, buildSave, parseSave, applySave, saveFileName, type SaveFile } from '../game/saveFile.ts';
 import { Icon } from './icons/index.tsx';
 
@@ -100,6 +101,7 @@ export const SaveLoadDialog: React.FC<Props> = ({ onClose, onLoaded }) => {
 
   return (
     <div className="ui-scrim" role="dialog" aria-modal="true" aria-label="Save and load" onClick={onClose}>
+      <GhostOnExit />
       <div className="ui-panel ui-saveload" onClick={(e) => e.stopPropagation()}>
         <div className="ui-panel-head">
           <div>
