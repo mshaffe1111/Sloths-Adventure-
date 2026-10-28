@@ -21,6 +21,11 @@ import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
 import { W5_PROPS_URL, w5ArtReady } from './w5Art.ts';
 import { KIT_ART_URL, kitArtReady } from './puzzleArt.ts';
+import { NIGHT_ART_URL, nightArtReady } from './meecaNightArt.ts';
+import { jennifurSpriteReady, MEECA_STANDARD_URL } from './jennifurSprite.ts';
+import { MEECA_CARVE_URL } from './meecaCarveData.ts';
+import { MEECA_BLANKET_URL } from './meecaBlanketData.ts';
+import { warmMeecaArt } from './meecaArt.ts';
 import { preloadBackdrop } from './paintedBackdrops.ts';
 import { stageSheets } from './stageSheets.ts';
 import { DOT_STAGE_ID } from './extraStages.ts';
@@ -54,6 +59,13 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'kit-pieces') {
       kitArtReady();
       urls.push(KIT_ART_URL);
+    } else if (k === 'meeca-night') {
+      nightArtReady();
+      urls.push(NIGHT_ART_URL);
+    } else if (k === 'meeca') {
+      jennifurSpriteReady();
+      warmMeecaArt();
+      urls.push(MEECA_STANDARD_URL, MEECA_CARVE_URL, MEECA_BLANKET_URL);
     } else if (k === 'dot') {
       warmDotSheets();
       urls.push(DOT_PROPS_URL, DOT_ATLAS_URL, ...Object.values(BACK_URL));

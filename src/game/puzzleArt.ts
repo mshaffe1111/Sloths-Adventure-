@@ -70,3 +70,86 @@ export function handOf(n: KitArtName, x: number, bottom: number, facing: 1 | -1)
   if (f.hx === undefined || f.hy === undefined) return null;
   return { x: x + (f.hx - f.ax) * f.k * facing, y: bottom - (f.h - f.hy) * f.k };
 }
+
+/**
+ * A piece of Matt's World 1-4 puzzle sheets set in a stage as dressing (artDress.ts): drawn behind Pokey, it is never ground or a wall.
+ *   far    drawn as far off (0..1): it drifts with the view as the backdrop does, faded into the haze (World 4's far rope bridge)
+ *   open   a door: drawn as `n` (shut) until he comes within `near` px, then as `open` (3-7's fern stone door rolls aside as he comes in)
+ *   half   only the left or the right half of the frame (the two ends of World 4's broken rope bridge, each on its own side of a gap)
+ */
+export interface KitDecor {
+  n: KitArtName;
+  x: number;
+  /** the bottom of the piece */
+  b: number;
+  scale?: number;
+  w?: number;
+  flip?: boolean;
+  alpha?: number;
+  far?: number;
+  open?: KitArtName;
+  near?: number;
+  half?: 'left' | 'right';
+  /** drawn behind the ground (a far piece always is) */
+  under?: boolean;
+  /**
+   * tied to a puzzle room (its id): `open` shows once the room's way on has opened, not as he comes near (1-4's squirrels' nest door);
+   * `rise`: shut until then, then drawn up out of the way and faded (1-6's branch gate); `pop`: nothing until he is through the room,
+   * then it rises from its spot and fades (the petal bundle, each World 1 room's reward)
+   */
+  room?: string;
+  rise?: boolean;
+  pop?: boolean;
+}
+
+/** how far a room is (puzzlePlay.ts roomDone): seconds since its way on opened, and since he got through it */
+export type RoomDone = (id: string) => { solved?: number; arrived?: number };
+
+/** the dressing in view (the view's box in the world, and where Pokey is): `under` the pieces behind the ground, else the rest */
+export function drawKitDecor(
+  ctx: CanvasRenderingContext2D, items: readonly KitDecor[], view: { x0: number; x1: number; y0: number; y1: number }, px: number, under = false, done?: RoomDone,
+) {
+  if (!kitArtReady()) return;
+  const cx = (view.x0 + view.x1) / 2;
+  const cy = (view.y0 + view.y1) / 2;
+  for (const d of items) {
+    if (!!(d.under || d.far) !== under) continue;
+    const sz = d.w ? { w: d.w, h: (kitSize(d.n).h * d.w) / kitSize(d.n).w } : kitSize(d.n, d.scale);
+    const x = d.far ? d.x + (cx - d.x) * d.far : d.x;
+    const b = d.far ? d.b + (cy - d.b) * d.far : d.b;
+    if (x + sz.w < view.x0 - 40 || x - sz.w > view.x1 + 40 || b < view.y0 - 40 || b - sz.h > view.y1 + 40) continue;
+    const state = d.room ? done?.(d.room) ?? {} : {};
+    let b2 = b;
+    let alpha = d.alpha ?? 1;
+    if (d.pop) {
+      // the reward: up out of its spot and gone in 2.6 s
+      const u = state.arrived;
+      if (u === undefined || u > 2.6) continue;
+      b2 = b - 30 - u * 34;
+      alpha *= Math.min(1, u / 0.25) * Math.min(1, (2.6 - u) / 0.8);
+    }
+    if (d.rise && state.solved !== undefined) {
+      const u = Math.min(1, state.solved / 0.8);
+      if (u >= 1) continue;
+      b2 = b - u * sz.h * 1.1;
+      alpha *= 1 - u;
+    }
+    const isOpen = d.room ? state.solved !== undefined : Math.abs(px - d.x) < (d.near ?? 260);
+    const n = d.open && isOpen ? d.open : d.n;
+    const o: KitDrawOpts = { flip: d.flip, alpha, ...(d.w ? { w: sz.w, h: sz.h } : { scale: d.scale }) };
+    if (!d.half) {
+      drawKitArt(ctx, n, x, b2, o);
+      continue;
+    }
+    // (cut down the frame's middle: the half on the near side of the gap only)
+    const f = KIT_ART[n];
+    const mid = d.w ? x : x + (f.w / 2 - f.ax) * (sz.w / f.w);
+    ctx.save();
+    ctx.beginPath();
+    if (d.half === 'left') ctx.rect(mid - sz.w * 2, b - sz.h * 2, sz.w * 2, sz.h * 3);
+    else ctx.rect(mid, b - sz.h * 2, sz.w * 2, sz.h * 3);
+    ctx.clip();
+    drawKitArt(ctx, n, x, b, o);
+    ctx.restore();
+  }
+}

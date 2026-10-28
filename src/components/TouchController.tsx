@@ -4,19 +4,18 @@ import { TouchGestures } from '../game/touchGestures.ts';
 import { jumpHelp } from '../game/jumpHelp.ts';
 import { recorder } from '../game/playRecorder.ts';
 import { refinedControls } from '../game/refinedControls.ts';
+import { CircleTrace } from '../game/circleTrace.ts';
 
 /**
  * The whole screen is the controller. There are no buttons.
  *
  *  A slow slide steers from anywhere; a quick flick is a kick or a jump; a tap punches (or jumps, with nothing close: touchGestures.ts); a hold is a mega.
+ *  In Meeca's stage, standing at a trunk, a finger tracing a circle carves (circleTrace.ts): only there, so it never fights the rest.
  *  The rules (and the forgiveness) live in game/touchGestures.ts.
  *
  * Both thumbs work at once, so you can run with one and jump or punch with the other.
  */
 
-/** a finger counts as held still after this long within this far of where it went down */
-const HOLD_STILL_MS = 160;
-const HOLD_STILL_PX = 20;
 
 interface TouchControllerProps {
   inputEngine: InputEngine;
@@ -44,23 +43,17 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       },
       () => window.innerWidth,
       // jump help (game/jumpHelp.ts): the recogniser asks whether it is on, and whether he is in the air with a second jump to spare
-      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing, onRope: () => inputEngine.onRope },
+      { assist: () => jumpHelp() !== 'off', air: () => inputEngine.airJumpReady, megaReady: () => inputEngine.megaReady, refined: refinedControls, kickNear: () => inputEngine.kickNear, onVine: () => inputEngine.onVine, onSwing: () => inputEngine.onSwing, onRope: () => inputEngine.onRope, inCover: () => inputEngine.inCover },
     );
   }
   const G = gestures.current;
-  // a thumb held still (Meeca carves while one is: meecaPlay.ts): each finger's start, and whether it has stayed put
-  const still = useRef(new Map<number, { x: number; y: number; t: number; still: boolean }>());
-  const holdCheck = (now: number) => {
-    let on = false;
-    for (const f of still.current.values()) if (f.still && now - f.t >= HOLD_STILL_MS) on = true;
-    inputEngine.setHold('touch', on);
-  };
+  // a finger tracing a circle at a carving spot (Meeca's stage): once it is a circle it is the carving's, not the slide's
+  const trace = useRef(new CircleTrace());
 
   // holds and undecided fingers need a clock even when the finger is perfectly still
   useEffect(() => {
     const id = window.setInterval(() => {
       if (G.active) G.tick(performance.now());
-      if (still.current.size) holdCheck(performance.now());
     }, 30);
     return () => window.clearInterval(id);
   }, [G]);
@@ -90,8 +83,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     const onEnd = (e: TouchEvent) => {
       if (e.touches.length === 0) {
         G.cancelAll();
-        still.current.clear();
-        inputEngine.setHold('touch', false);
+        trace.current.clear();
       }
     };
     window.addEventListener('touchend', onEnd);
@@ -117,7 +109,7 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
       const t = e.changedTouches[i];
       recorder.touch('d', t.identifier, t.clientX, t.clientY, now, Math.max((t as unknown as { radiusX?: number }).radiusX || 0, (t as unknown as { radiusY?: number }).radiusY || 0));
       G.down(t.identifier, t.clientX, t.clientY, now);
-      still.current.set(t.identifier, { x: t.clientX, y: t.clientY, t: now, still: true });
+      trace.current.down(t.identifier, t.clientX, t.clientY);
     }
   };
   const onMove = (e: React.TouchEvent) => {
@@ -125,11 +117,16 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       recorder.touch('m', t.identifier, t.clientX, t.clientY, now);
+      if (inputEngine.carveSpot) {
+        const was = trace.current.circling(t.identifier);
+        const rad = trace.current.move(t.identifier, t.clientX, t.clientY);
+        // (the moment it becomes a circle, the slide it started as lets go: no walk, no jump, no kick when it lifts)
+        if (!was && trace.current.circling(t.identifier)) G.cancelFinger(t.identifier, now);
+        if (rad > 0) inputEngine.addCircle(rad);
+        if (trace.current.circling(t.identifier)) continue;
+      }
       G.move(t.identifier, t.clientX, t.clientY, now);
-      const f = still.current.get(t.identifier);
-      if (f && Math.hypot(t.clientX - f.x, t.clientY - f.y) > HOLD_STILL_PX) f.still = false;
     }
-    holdCheck(now);
   };
   // a cancelled touch (a system gesture took it) is not a lift: it must not punch, kick or jump
   const onCancel = (e: React.TouchEvent) => {
@@ -137,19 +134,17 @@ export const TouchController: React.FC<TouchControllerProps> = ({ inputEngine })
     for (let i = 0; i < e.changedTouches.length; i++) {
       recorder.touch('c', e.changedTouches[i].identifier, 0, 0, now);
       G.cancelFinger(e.changedTouches[i].identifier, now);
-      still.current.delete(e.changedTouches[i].identifier);
+      trace.current.up(e.changedTouches[i].identifier);
     }
-    holdCheck(now);
   };
   const onEnd = (e: React.TouchEvent) => {
     const now = stamp(e);
     for (let i = 0; i < e.changedTouches.length; i++) {
       const t = e.changedTouches[i];
       recorder.touch('u', t.identifier, t.clientX, t.clientY, now);
-      G.up(t.identifier, t.clientX, t.clientY, now);
-      still.current.delete(t.identifier);
+      if (!trace.current.circling(t.identifier)) G.up(t.identifier, t.clientX, t.clientY, now);
+      trace.current.up(t.identifier);
     }
-    holdCheck(now);
   };
 
   return (

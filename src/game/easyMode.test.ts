@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage } from './stageGenerator.ts';
-import { validateStage, jumpOK } from './levelCheck.ts';
+import { validateStage, jumpOK, easyHoldCheck } from './levelCheck.ts';
 import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { easyStage } from './easyMode.ts';
@@ -33,6 +33,22 @@ test('easy: every hand-built stage is still a good stage on Easy', () => {
     if (!hand && !w2) continue;
     const build = () => (hand ? buildProtoStage(cfg, 1, hand) : buildW2Stage(cfg, 1, w2));
     check(cfg.id, build(), easyStage(build()));
+  }
+});
+
+test('easy: no stage needs a full-hold jump on Easy, on rolls 1-3 (Gemini G8, a ~70% hold climbs and crosses all of it)', () => {
+  for (const seed of [1, 2, 3]) {
+    for (const cfg of levels) {
+      if (cfg.objectiveType === 'boss_lair') continue;
+      const hand = HAND_STAGES[cfg.id];
+      const w2 = W2_STAGES[cfg.id];
+      // (a generated stage is the same on every roll)
+      if (!hand && !w2 && seed > 1) continue;
+      const easy = easyStage(hand ? buildProtoStage(cfg, seed, hand) : w2 ? buildW2Stage(cfg, seed, w2) : generateStage(cfg));
+      const full = errs(validateStage(easy));
+      const added = [...errs({ ok: false, errors: easyHoldCheck(easy) })].filter((e) => !full.has(e));
+      assert.deepEqual(added, [], `${cfg.id} roll ${seed}: only a full-hold jump reaches it on Easy: ${added.join('; ')}`);
+    }
   }
 });
 

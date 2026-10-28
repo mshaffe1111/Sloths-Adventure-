@@ -3,7 +3,7 @@ import type { LevelConfig } from '../game/types.ts';
 import type { StageStats } from '../game/badges.ts';
 import { HeroPose } from './HeroPose.tsx';
 import { ClrChips, ClrRibbon, type ChipSpec } from './ClrParts.tsx';
-import { totalKills, tuckeredLine } from './stageSummary.ts';
+import { floraChip, totalKills, tuckeredLine } from './stageSummary.ts';
 import { shouldOfferHelp } from '../game/assist.ts';
 
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
@@ -34,7 +34,9 @@ export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, 
   const heroH = Math.round(Math.max(offerHelp ? 64 : 90, Math.min(170, (typeof window !== 'undefined' ? window.innerHeight : 700) * (offerHelp ? 0.14 : 0.24))));
   const chips: ChipSpec[] = [{ label: 'Score', value: score.toLocaleString(), colour: '#fde68a' }];
   if (stats && stats.timeSec > 0) chips.push({ label: 'Time', value: fmtTime(stats.timeSec) });
-  if (stats && stats.floraTotal > 0) chips.push({ label: 'Flowers', value: `${stats.floraCollected}/${stats.floraTotal}` });
+  // (on a gather stage, of the goal, as the HUD's bar counts it: stageSummary.ts floraChip)
+  const flora = floraChip(stats);
+  if (flora) chips.push({ label: 'Flowers', value: flora });
   if (stats && totalKills(stats) > 0) chips.push({ label: 'Foes', value: String(totalKills(stats)) });
 
 

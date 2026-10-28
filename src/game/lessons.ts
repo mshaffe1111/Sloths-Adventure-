@@ -322,6 +322,9 @@ export const NEAR = { foe: 400, thing: 340, climb: 170, dy: 230 } as const;
  */
 export const SWING_SPAN = { grabX: 60, below: 30 } as const;
 
+/** lessons about something that cannot hurt him: the breather after one of them does not hold back a lesson about a danger ahead */
+export const HARMLESS_LESSONS: ReadonlySet<LessonId> = new Set<LessonId>(['fruit', 'heart', 'idol', 'power', 'checkpoint', 'shrine', 'cage']);
+
 const NO_STOMP = new Set(['spider', 'ant_hazard']);
 const TOUGH = new Set(['jaguar', 'boa', 'caiman', 'harpy']);
 

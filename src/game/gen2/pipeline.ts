@@ -1,0 +1,1089 @@
+/**
+ * gen2/pipeline — the new stage generator's six passes (DESIGN.md), deterministic from a seed:
+ *
+ *   1 planBudget      what the stage must be: seconds, D(world, stage) in the world's band, margins, threat, quotas (Easy vs Normal)
+ *   2 missionGraph    the stage's beats from its archetype: a Kishotenketsu sawtooth of nodes, each a share of the clock
+ *   3 layStage        sections picked per node (shuffle bag + cooldown + corridor clamp) and stitched exit anchor -> entry anchor,
+ *                     every seam and every inner jump sized from the jump envelope (maxGap): beatable by construction
+ *   4 fillSockets     sockets filled: linked source/receptor pairs first, props, creatures by threat budget and Poisson spacing,
+ *                     pickups, flags, Dot's tips, quota items, petal arcs over the jumps
+ *   5 checkAndRepair  levelCheck (+ puzzleCheck through it); local repair first (a stone in a seam, a stray pickup or animal taken
+ *                     out, one section swapped), a whole re-roll only when that fails; then the time model (stageTime.ts)
+ *   6 dress           the world's decor sets, rotated by the roll (artRoll.ts), the beats for the inspector
+ *
+ * The result is a GeneratedStage (what the engine already plays) with the hand-built stages' proto extras, and `gen2` (what was built).
+ * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
+ */
+import { rollLook } from '../artRoll.ts';
+import { jumpOK, SAFE_APPROACH, validateStage } from '../levelCheck.ts';
+import { DOUBLE_RISE, JUMP_RISE, reachJump, TAKEOFF_SLACK } from '../physics.ts';
+import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
+import type { ProtoExtras, StageHint } from '../protoStage.ts';
+import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, walkSpeed } from '../stageTime.ts';
+import type { Collectible, Enemy, LevelConfig, Platform } from '../types.ts';
+import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, type RoutePiece } from './variety.ts';
+import {
+  EASY_ENEMY_SHARE,
+  EASY_LANDING,
+  MARGIN,
+  QUIET,
+  type Archetype,
+  type BuildRequest,
+  type CreatureDef,
+  type Difficulty,
+  type FilledSocket,
+  type Gen2Meta,
+  type Gen2Stage,
+  type LocalAnchor,
+  type LocalRoomSpec,
+  type MissionGraph,
+  type MissionNode,
+  type Move,
+  type Phase,
+  type PlacedSection,
+  type PlanSlot,
+  type PortKind,
+  type Range,
+  type Repair,
+  type Rng,
+  type SectionTemplate,
+  type Socket,
+  type StageBudget,
+  type StageSink,
+  type WorldKit,
+  type WorldManifest,
+} from './types.ts';
+
+// ───────────────────────────── seeded numbers ─────────────────────────────
+
+/** a seeded stream (mulberry32) from a seed and any salts: the same numbers give the same stream */
+export function rngFor(seed: number, ...salts: number[]): Rng {
+  let a = (Math.imul(seed | 0, 0x9e3779b1) ^ 0x2545f491) >>> 0;
+  for (const s of salts) a = (Math.imul(a ^ (s | 0), 0x85ebca77) + 0x6d2b79f5) >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+/** a number from a Range */
+export const roll = (rng: Rng, r: Range): number => (typeof r === 'number' ? r : r[0] + (r[1] - r[0]) * rng());
+const mid = (r: Range): number => (typeof r === 'number' ? r : (r[0] + r[1]) / 2);
+const R = Math.round;
+
+// ───────────────────────────── the jump envelope ─────────────────────────────
+
+/**
+ * The widest gap a required jump may have (px between the edges), for a target `dyUp` px higher (negative: lower), with one jump or
+ * two: `margin` of the physical reach (Gemini D2: 0.65 Easy, 0.82 Normal), and never more than what levelCheck accepts (its 0.97 and
+ * the 70 px take-off slack), so a gap laid from it always validates. -1 when no jump of that kind gets that high.
+ */
+export function maxGap(dyUp: number, dbl: boolean, margin: number): number {
+  const phys = reachJump(dyUp, dbl);
+  if (phys < 0) return -1;
+  const accept = Math.max(reachJump(dyUp, false), reachJump(dyUp, true)) * 0.97 - TAKEOFF_SLACK - 4;
+  return Math.max(-1, Math.min(margin * phys, accept));
+}
+/** the highest a required rise may be (px): `share` of a jump's height (one jump or two) */
+export const riseLimit = (dbl: boolean, share: number): number => share * (dbl ? DOUBLE_RISE : JUMP_RISE);
+
+// ───────────────────────────── pass 1: the budget ─────────────────────────────
+
+/**
+ * Each world's difficulty band (§1b), in D units: Gemini's D_base from 10 (World 1) to 65 (World 10), the band from 1.5 under it to
+ * 7.5 over it. Neighbours overlap by about 3 (less than a world); the next world's middle (D_base + 9.1) stays above this world's top.
+ */
+export function bandFor(world: number): readonly [number, number] {
+  const base = 10 + ((world - 1) * 55) / 9;
+  return [base - 1.5, base + 7.5];
+}
+/** where each stage (1-9) sits in its world's band: up and down (a breather after a hard one), the last the hardest; stage 1 sits
+ *  just under the last of the world before (F2) */
+export const STAGE_HEAT = [0.05, 0.3, 0.45, 0.35, 0.6, 0.5, 0.75, 0.65, 1.0] as const;
+
+export function difficultyScore(world: number, stage: number, band = bandFor(world)): number {
+  return band[0] + (band[1] - band[0]) * STAGE_HEAT[Math.max(0, Math.min(8, stage - 1))];
+}
+
+export function planBudget(config: LevelConfig, manifest: WorldManifest, difficulty: Difficulty): StageBudget {
+  const archetype = config.objectiveType as Archetype;
+  if ((config.objectiveType as string) === 'boss_lair') throw new Error('gen2: the guardian lair is hand-built');
+  const band = manifest.band ?? bandFor(config.worldIndex);
+  const D = difficultyScore(config.worldIndex, config.miniIndex, band);
+  const heat = (D - band[0]) / (band[1] - band[0]);
+  const easy = difficulty === 'easy';
+  const target = targetSeconds(config.worldIndex, config.miniIndex, archetype);
+  const goal = config.targetCount;
+  const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : goal;
+  return {
+    id: config.id,
+    world: config.worldIndex,
+    stage: config.miniIndex,
+    archetype,
+    difficulty,
+    D,
+    band,
+    heat,
+    seconds: { target, fastFloor: fastFloor(config.worldIndex, config.miniIndex, archetype), max: Math.min(target * 1.1, 295) },
+    margin: MARGIN[difficulty],
+    riseShare: MARGIN[difficulty],
+    landingPad: easy ? EASY_LANDING : 0,
+    threat: 2 + 6 * heat,
+    enemyShare: easy ? EASY_ENEMY_SHARE : 1,
+    quota: { goal, lay },
+    // (Easy: a fall into a gap is a soft pit, never a life: Part 1 §3 "bottomless pits replaced")
+    pit: easy ? 'soft' : manifest.pit,
+    quiet: QUIET[difficulty],
+    walkSpeed: walkSpeed(MODEL_TYPICAL),
+    moves: ['walk', 'jump', ...manifest.moves.filter((m) => m !== 'walk' && m !== 'jump')] as Move[],
+  };
+}
+
+// ───────────────────────────── pass 2: the mission graph ─────────────────────────────
+
+/** the sawtooth every horizontal stage starts from (Gemini Part 1 §4: Ki 0.2-0.4, Sho 0.5-0.7, rest 0.1, Ten 0.6-0.85, Ketsu 0.95) */
+const SPINE: Array<Omit<MissionNode, 'id'>> = [
+  { role: 'start', phase: 'start', tension: 0.1, share: 0.04 },
+  { role: 'teach', phase: 'ki', tension: 0.3, share: 0.14 },
+  { role: 'develop', phase: 'sho', tension: 0.6, share: 0.18 },
+  { role: 'rest', phase: 'rest', tension: 0.1, share: 0.05, flag: true },
+  { role: 'twist', phase: 'ten', tension: 0.72, share: 0.2 },
+  { role: 'rest', phase: 'rest', tension: 0.1, share: 0.05, flag: true },
+  { role: 'twist', phase: 'ten', tension: 0.85, share: 0.14 },
+  { role: 'climax', phase: 'ketsu', tension: 0.95, share: 0.16, flag: true },
+  { role: 'goal', phase: 'goal', tension: 0, share: 0.04 },
+];
+/** what each archetype's sections should carry (a preference: the bag weighs them up, it never filters on them) */
+const WANT: Partial<Record<Archetype, string[]>> = {
+  stealth: ['cover'],
+  vine_runner: ['swing'],
+  harvest: ['pickups'],
+  purge: ['arena'],
+  gauntlet: ['arena'],
+  rescue: ['alcove'],
+  relic_hunt: ['alcove'],
+  sprint: ['run'],
+};
+
+/**
+ * The archetype's graph (Part 1 Pass 2, our stagePlan.ts kinds): the sawtooth, rewritten per kind. A rescue or a search spreads its
+ * quota items over the Sho/Ten/Ketsu nodes (in proportion to their share); a purge or gauntlet runs hotter; a gauntlet gets one more
+ * twist. TODO(phase 2): an ascent's graph runs up (flow 'up'), and rescue/search alcoves become real side branches.
+ */
+export function missionGraph(budget: StageBudget): MissionGraph {
+  const a = budget.archetype;
+  if (a === 'ascent') throw new Error('gen2: ascent stages run up (flow "up"): phase 2');
+  const nodes: MissionNode[] = SPINE.map((n, i) => ({ ...n, id: `n${i + 1}` }));
+  if (a === 'gauntlet') nodes.splice(7, 0, { id: 'n7b', role: 'twist', phase: 'ten', tension: 0.9, share: 0.08 });
+  const hot = a === 'purge' || a === 'gauntlet' ? 0.08 : 0;
+  const total = nodes.reduce((s, n) => s + n.share, 0);
+  for (const n of nodes) {
+    n.share /= total;
+    if (n.role !== 'rest' && n.role !== 'start' && n.role !== 'goal') n.tension = Math.min(1, n.tension + hot);
+    const want = WANT[a];
+    if (want && n.phase !== 'start' && n.phase !== 'goal') n.want = want;
+  }
+  if (a === 'rescue' || a === 'relic_hunt') {
+    const live = nodes.filter((n) => n.phase === 'sho' || n.phase === 'ten' || n.phase === 'ketsu');
+    const share = live.reduce((s, n) => s + n.share, 0);
+    let left = budget.quota.lay;
+    live.forEach((n, i) => {
+      const k = i === live.length - 1 ? left : Math.min(left, Math.round((budget.quota.lay * n.share) / share));
+      n.objectives = k;
+      left -= k;
+    });
+  }
+  return { archetype: a, flow: 'right', nodes };
+}
+
+// ───────────────────────────── pass 3: sections, stitched ─────────────────────────────
+
+
+interface LocalPiece {
+  key: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  shape: SectionTemplate['pieces'][number]['shape'];
+  style?: Platform['style'];
+  main: boolean;
+  landing: boolean;
+  /** an obstacle to hop (an `on` block): a beat */
+  hop: boolean;
+}
+interface LocalGap {
+  x0: number;
+  x1: number;
+  y: number;
+  pit: boolean;
+}
+/** a section laid out in its own space: its entry anchor at (0, 0) */
+export interface LocalLayout {
+  pieces: LocalPiece[];
+  gaps: LocalGap[];
+  entry: { piece: string; kind: PortKind };
+  exit: { piece: string; kind: PortKind; x: number; y: number };
+  width: number;
+  mirrored: boolean;
+}
+
+/**
+ * Lay one section out in its own space with the budget's rules: every jump inside it sized from the envelope (its `share` of
+ * maxGap for that rise), every rise clamped to the rise limit, Easy's landings widened. Mirrored, it is flipped left to right
+ * (its exit piece becomes its entry) and the sockets read 1 - t.
+ */
+export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mirrored = false): LocalLayout {
+  const by = new Map<string, LocalPiece>();
+  const out: LocalPiece[] = [];
+  const gaps: LocalGap[] = [];
+  const dblOK = budget.moves.includes('double');
+  const shareFor = (s: Range | undefined) => Math.min(1, s === undefined ? 0.5 + 0.3 * budget.heat + 0.1 * rng() : roll(rng, s));
+  for (const pc of tpl.pieces) {
+    let w = roll(rng, pc.w);
+    let x = 0;
+    let y = 0;
+    let h = pc.h ?? 24;
+    const pl = pc.place;
+    const ref = (k: string) => {
+      const p = by.get(k);
+      if (!p) throw new Error(`gen2 section ${tpl.id}: piece ${pc.key} refers to ${k}, which is not laid before it`);
+      return p;
+    };
+    if (pl.kind === 'start') {
+      x = 0;
+      y = 0;
+    } else if (pl.kind === 'walk') {
+      const a = ref(pl.after);
+      const dy = pl.dy === undefined ? 0 : roll(rng, pl.dy);
+      x = a.x + a.w;
+      y = a.y + Math.max(-riseLimit(false, budget.riseShare) * 0.9, dy);
+    } else if (pl.kind === 'jump' || pl.kind === 'double' || pl.kind === 'pit') {
+      const a = ref(pl.after);
+      const dbl = (pl.kind === 'pit' ? pl.jump === 'double' : pl.kind === 'double') && dblOK;
+      let dy = pl.kind === 'pit' || pl.dy === undefined ? 0 : roll(rng, pl.dy);
+      dy = Math.max(-riseLimit(dbl, budget.riseShare) * 0.95, dy);
+      const g = maxGap(-dy, dbl, budget.margin);
+      const share = shareFor(pl.share);
+      const gap = Math.max(60, R(share * (g > 0 ? g : 60)));
+      x = a.x + a.w + gap;
+      y = a.y + dy;
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' });
+    } else if (pl.kind === 'on') {
+      const a = ref(pl.on);
+      h = Math.min(roll(rng, pl.h), riseLimit(dblOK, budget.riseShare) * 0.95);
+      w = Math.min(w, a.w);
+      x = a.x + roll(rng, pl.at) * (a.w - w);
+      y = a.y - h;
+    } else if (pl.kind === 'over') {
+      const a = ref(pl.on);
+      x = a.x + roll(rng, pl.at) * a.w;
+      y = a.y + roll(rng, pl.dy);
+    }
+    const landing = !!pc.landing && pl.kind !== 'start';
+    if (landing) w += budget.landingPad;
+    const p: LocalPiece = { key: pc.key, x: R(x), y: R(y), w: R(w), h: R(h), shape: pc.shape, style: pc.style, main: pc.main ?? pl.kind !== 'over', landing, hop: pl.kind === 'on' };
+    by.set(pc.key, p);
+    out.push(p);
+  }
+  let entry = { ...tpl.entry };
+  let exitP = { ...tpl.exit };
+  const right = Math.max(...out.map((p) => p.x + p.w));
+  const left = Math.min(...out.map((p) => p.x));
+  if (mirrored) {
+    for (const p of out) p.x = right + left - (p.x + p.w);
+    for (const g of gaps) [g.x0, g.x1] = [right + left - g.x1, right + left - g.x0];
+    [entry, exitP] = [exitP, entry];
+  }
+  // (the entry anchor is the top-left of the entry piece: move everything so it sits at (0, 0))
+  const e = by.get(entry.piece)!;
+  const ox = e.x;
+  const oy = e.y;
+  for (const p of out) {
+    p.x -= ox;
+    p.y -= oy;
+  }
+  for (const g of gaps) {
+    g.x0 -= ox;
+    g.x1 -= ox;
+    g.y -= oy;
+  }
+  const xp = by.get(exitP.piece)!;
+  return { pieces: out, gaps, entry, exit: { ...exitP, x: xp.x + xp.w, y: xp.y }, width: right - left, mirrored };
+}
+
+/** everything pass 3 hands on */
+export interface Laid {
+  sections: PlacedSection[];
+  plan: PlanSlot[];
+  platforms: Platform[];
+  /** the gaps of the route (inner and seams), for the arcs and the repair */
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string }>;
+  spawn: { x: number; y: number; piece: Platform };
+  exit: { x: number; y: number; piece: Platform };
+  width: number;
+  bottom: number;
+  nextId: number;
+}
+
+export interface LayOptions {
+  /** follow this plan (Easy follows Normal's) instead of choosing */
+  plan?: PlanSlot[];
+  /** stretch (> 1) or shorten each node's seconds (the length repair) */
+  aim?: number;
+  /** slot -> sections not to use there (the swap repair) */
+  bans?: ReadonlyMap<number, ReadonlySet<string>>;
+  recent?: readonly string[];
+}
+
+/** the start runway (nothing can hurt in the first seconds) and the shrine's bank */
+const RUNWAY = 640;
+const SPAWN_X = 140;
+const SHRINE_BANK = 560;
+/** the plain-walk seconds at the start before any animal may stand (§2 "Opening seconds": 3-5 s) */
+const OPEN_SECONDS = 5;
+
+/** the seconds a section costs the typical first-timer (the time model's walk, its animals, its own extra) */
+function sectionSeconds(L: LocalLayout, tpl: SectionTemplate, budget: StageBudget): number {
+  const foes = tpl.sockets.filter((s) => s.role === 'enemy').reduce((s, k) => s + (k.chance ?? 1), 0) * budget.enemyShare;
+  return L.width / budget.walkSpeed + foes * MODEL_TYPICAL.fightGround + (tpl.extraSeconds ?? 0);
+}
+
+/**
+ * Pass 3. Each node is filled with sections until its share of the seconds is met. A candidate must fit the node's phase, the
+ * stage's archetype and moves, not use a mechanic before it is taught, keep its cap, and keep the route inside the corridor; the
+ * bag (ShuffleBag) and the cooldown (CooldownQueue) decide among the rest, weighted toward the node's tension (scaled into the band)
+ * and its wanted tags, and toward sections that drift back when the route nears the corridor's edge. Each slot rolls from its own
+ * stream, so a swap at one slot leaves the others' geometry as it was.
+ */
+export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit, seed: number, opt: LayOptions = {}): Laid {
+  const M = kit.manifest;
+  const byId = new Map(M.sections.map((t) => [t.id, t]));
+  const pickRng = rngFor(seed, 3);
+  const platforms: Platform[] = [];
+  let pid = 1;
+  const baseline = M.corridor.bottom + M.ground.bankH;
+  const mk = (x: number, y: number, w: number, shape: LocalPiece['shape'], h: number, style?: Platform['style']): Platform => {
+    const p: Platform = {
+      id: pid++,
+      x: R(x),
+      y: R(y),
+      width: R(w),
+      height: shape === 'bank' ? Math.max(M.ground.bankH, R(baseline - y)) : shape === 'branch' ? 24 : shape === 'stone' ? 22 : R(h),
+      type: shape === 'bouncy' ? 'bouncy' : 'solid',
+      style: style ?? (shape === 'bank' ? M.ground.style : shape === 'branch' ? 'branch' : 'moss_stone'),
+    };
+    platforms.push(p);
+    return p;
+  };
+  const gaps: Laid['gaps'] = [];
+  const pitUnder = (x0: number, x1: number, lipY: number, farY: number) => {
+    if (budget.pit !== 'soft' || x1 - x0 < 20) return;
+    const floor = Math.max(lipY, farY) + M.pitDepth;
+    mk(x0, floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
+    // steps out at the far wall's foot, each no higher than a plain hop (§2 "every dip has a one-jump way out")
+    const climb = floor - farY;
+    const n = Math.max(0, Math.ceil(climb / (riseLimit(false, budget.riseShare) * 0.85)) - 1);
+    const sw = Math.min(70, (x1 - x0) / (n + 1));
+    for (let k = 1; k <= n; k++) {
+      const top = floor - (climb * k) / (n + 1);
+      mk(x1 - sw * (n - k + 1), top, sw * (n - k + 1), 'block', floor - top, 'moss_stone');
+    }
+  };
+
+  // the runway
+  const runway = mk(0, M.ground.y, RUNWAY, 'bank', 0);
+  let cur = { x: RUNWAY, y: M.ground.y, kind: 'ground' as PortKind, piece: runway };
+  const sections: PlacedSection[] = [];
+  const plan: PlanSlot[] = [];
+  const cool = new CooldownQueue<string>(Math.max(1, Math.min(4, Math.floor(M.sections.length / 2))));
+  for (const id of opt.recent ?? []) cool.use(id);
+  const taught = new Set<string>(Object.entries(M.lessons ?? {}).filter(([, st]) => stageOrder(st) < stageOrder(budget.id)).map(([m]) => m));
+  const used = new Map<string, number>();
+  const aim = opt.aim ?? 1;
+  let slot = 0;
+  const bags = new Map<string, ShuffleBag<SectionTemplate>>();
+
+  const fits = (t: SectionTemplate, n: MissionNode, i: number) =>
+    t.phases.includes(n.phase) &&
+    (t.archetypes === 'any' || t.archetypes.includes(budget.archetype)) &&
+    (t.needs ?? []).every((m) => budget.moves.includes(m)) &&
+    (t.uses ?? []).every((m) => taught.has(m) || t.teaches === m) &&
+    (used.get(t.id) ?? 0) < (t.maxPerStage ?? Infinity) &&
+    !opt.bans?.get(i)?.has(t.id) &&
+    !opt.bans?.get(-1)?.has(t.id);
+
+  const choose = (n: MissionNode, i: number): SectionTemplate => {
+    const cands = M.sections.filter((t) => fits(t, n, i));
+    if (!cands.length) throw new Error(`gen2 ${budget.id}: no section fits node ${n.id} (${n.phase})`);
+    const want = (budget.band[0] + (budget.band[1] - budget.band[0]) * n.tension - budget.band[0]) / (budget.band[1] - budget.band[0]);
+    const room = M.corridor;
+    const lean = cur.y < room.top + room.soft ? 1 : cur.y > room.bottom - room.soft ? -1 : 0;
+    const weight = (t: SectionTemplate) => {
+      let w = (t.weight ?? 1) * Math.exp(-Math.abs(t.difficulty / 10 - want) * 4);
+      if (n.want?.some((tag) => t.sockets.some((s) => s.allow?.includes(tag)) || t.name.includes(tag))) w *= 3;
+      // (the corridor clamp, Part 3 §1: near the top lean to sections that go down, near the bottom to ones that go up; one that
+      // would leave the corridor is never picked)
+      const endY = cur.y + t.exitDy;
+      if (endY < room.top || endY > room.bottom) return 0;
+      if (lean !== 0) w *= Math.sign(t.exitDy) === lean ? 3 : t.exitDy === 0 ? 1 : 0.3;
+      return w;
+    };
+    // the node's bag holds its candidates by weight; the cooldown passes over the ones used just now
+    const key = `${n.phase}|${cands.map((c) => c.id).join(',')}`;
+    let bag = bags.get(key);
+    if (!bag) {
+      bag = new ShuffleBag(pickRng, cands, (t) => Math.max(1, Math.round(weight(t) * 3)));
+      bags.set(key, bag);
+    }
+    const tries: SectionTemplate[] = [];
+    for (let k = 0; k < bag.capacity; k++) {
+      const t = bag.draw()!;
+      if (weight(t) > 0) tries.push(t);
+      if (tries.length >= 3) break;
+    }
+    const pool = tries.length ? tries : cands.filter((t) => weight(t) > 0);
+    const t = cool.pick(pool.length ? pool : cands, (c) => c.id) ?? pickWeighted(pickRng, cands, weight)!;
+    return t;
+  };
+
+  for (const n of graph.nodes) {
+    let secs = 0;
+    const want = n.share * budget.seconds.target * aim;
+    let first = true;
+    // (the start and the goal are a single plain section each: the runway and the shrine's bank are laid by the stitcher)
+    // (following a plan, the node takes exactly the slots the plan gave it: Easy's sections are Normal's, whatever their seconds)
+    while (opt.plan ? opt.plan[slot]?.node === n.id : first || secs < want) {
+      first = false;
+      const i = slot++;
+      const fixed = opt.plan?.[i];
+      const tpl = fixed ? byId.get(fixed.template)! : choose(n, i);
+      const srng = rngFor(seed, 11, i, opt.bans?.get(i)?.size ?? 0);
+      const mirrored = fixed ? fixed.mirrored : tpl.mirrorable && srng() < 0.5;
+      const L = layLocal(tpl, budget, srng, mirrored);
+      // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
+      const jrng = rngFor(seed, 13, i);
+      let join: PlanSlot['join'];
+      if (fixed) join = fixed.join;
+      else if (cur.kind === 'ground' && L.entry.kind === 'ground') {
+        const quiet = n.phase === 'start' || n.phase === 'rest' || n.phase === 'goal' || (tpl.room && true);
+        const pitW = quiet ? 0 : n.tension * 1.2;
+        const r0 = jrng() * (1 + 0.6 + pitW);
+        join = r0 < 1 ? 'walk' : r0 < 1.6 ? 'step' : 'pit';
+      } else join = 'jump';
+      const j = jrng();
+      let dx = 0;
+      let dy = 0;
+      const lim1 = riseLimit(false, budget.riseShare);
+      if (join === 'step') {
+        // (up or down by a hop, leaning back toward the corridor's middle)
+        const middle = (M.corridor.top + M.corridor.bottom) / 2;
+        const dir = cur.y + L.exit.y > middle ? -1 : 1;
+        dy = dir * (20 + j * (lim1 * 0.8 - 20));
+      } else if (join === 'pit' || join === 'jump') {
+        if (join === 'jump') dy = -lim1 * 0.6 + j * (lim1 * 0.6 + 80);
+        const g = maxGap(-dy, false, budget.margin);
+        dx = Math.max(60, R((0.5 + 0.3 * budget.heat + 0.15 * jrng()) * g));
+      }
+      dy = Math.max(M.corridor.top - cur.y, Math.min(M.corridor.bottom - cur.y, dy));
+      const ox = cur.x + dx;
+      const oy = R(cur.y + dy);
+      const placed: PlacedSection = {
+        uid: `s${i + 1}`,
+        template: tpl.id,
+        node: n.id,
+        phase: n.phase,
+        tension: n.tension,
+        mirrored,
+        entry: { x: ox, y: oy },
+        exit: { x: ox + L.exit.x, y: oy + L.exit.y },
+        x0: ox,
+        x1: ox + L.width,
+        pieces: [],
+        seam: [],
+        sockets: [],
+        beats: [],
+        seconds: 0,
+      };
+      if (dx > 0) {
+        const before = platforms.length;
+        pitUnder(cur.x, ox, cur.y, oy);
+        placed.seam.push(...platforms.slice(before));
+      }
+      for (const lp of L.pieces) {
+        const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style);
+        placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
+      }
+      const pieceOf = (k: string) => placed.pieces.find((q) => q.key === k)!.platform;
+      const entryP = pieceOf(L.entry.piece);
+      if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
+      for (const g of L.gaps) {
+        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid };
+        gaps.push(g0);
+        if (g.pit) {
+          const before = platforms.length;
+          pitUnder(g0.x0, g0.x1, g0.y, g0.y);
+          placed.seam.push(...platforms.slice(before));
+        }
+      }
+      // the sockets, bound to their piece (t along its top, dn above it)
+      for (const s of tpl.sockets) {
+        const p = pieceOf(s.on);
+        const t0 = Math.max(0, Math.min(1, roll(srng, s.t)));
+        const t = mirrored ? 1 - t0 : t0;
+        placed.sockets.push({ socket: s, x: R(p.x + t * p.width), y: R(p.y - (s.dn ?? 0)), piece: p });
+      }
+      if (tpl.room) placed.room = placeRoom(tpl.room, placed.uid, (k) => pieceOf(k).id);
+      for (const g of L.gaps) placed.beats.push({ x: ox + g.x0, letter: 'J' });
+      for (const lp of L.pieces) if (lp.hop) placed.beats.push({ x: ox + lp.x, letter: 'h' });
+      placed.beats.sort((a, b) => a.x - b.x);
+      if (dx > 0) placed.beats.unshift({ x: cur.x, letter: 'J' });
+      else if (join === 'step') placed.beats.unshift({ x: cur.x, letter: 'h' });
+      placed.seconds = sectionSeconds(L, tpl, budget) + dx / budget.walkSpeed;
+      secs += placed.seconds;
+      sections.push(placed);
+      plan.push({ template: tpl.id, mirrored, node: n.id, join });
+      cool.use(tpl.id);
+      used.set(tpl.id, (used.get(tpl.id) ?? 0) + 1);
+      if (tpl.teaches) taught.add(tpl.teaches);
+      const exitP = pieceOf(L.exit.piece);
+      cur = { x: ox + L.exit.x, y: oy + L.exit.y, kind: L.exit.kind, piece: exitP };
+      if (n.phase === 'start' || n.phase === 'goal') break;
+    }
+  }
+  // the shrine's bank (a walk on from the last section)
+  const shrine = mk(cur.x, cur.y, SHRINE_BANK, 'bank', 0);
+  const exitX = R(shrine.x + 300);
+  return {
+    sections,
+    plan,
+    platforms,
+    gaps,
+    spawn: { x: SPAWN_X, y: runway.y, piece: runway },
+    exit: { x: exitX, y: shrine.y, piece: shrine },
+    width: R(shrine.x + shrine.width + 40),
+    bottom: baseline,
+    nextId: pid,
+  };
+}
+
+/** a stage id's place in the game ('5-7' -> 507), for lessons taught by an earlier stage */
+const stageOrder = (id: string) => {
+  const [w, s] = id.split('-').map(Number);
+  return (w || 0) * 100 + (s || 0);
+};
+
+/** a section's puzzle room in the world: its anchors on the placed platforms' ids, its piece ids (and their wires) made unique */
+export function placeRoom(room: LocalRoomSpec, uid: string, idOf: (key: string) => number): RoomSpec {
+  const a = (l: LocalAnchor): Anchor => ({ ...l, on: idOf(l.on) });
+  const name = (id: string) => `${uid}-${id}`;
+  const wire = (w: Wire): Wire => (typeof w === 'string' ? name(w) : 'all' in w ? { all: w.all.map(wire) } : 'any' in w ? { any: w.any.map(wire) } : { not: wire(w.not) });
+  const pieces = room.pieces.map((p) => {
+    const q = { ...p, id: name(p.id) } as Record<string, unknown>;
+    if ('at' in p && p.at) q.at = a(p.at);
+    for (const k of ['source', 'for', 'with', 'by'] as const) if (typeof q[k] === 'string') q[k] = name(q[k] as string);
+    if ('open' in p && p.open !== undefined) q.open = wire(p.open);
+    return q as unknown as PieceSpec;
+  });
+  return { ...room, id: name(room.id), left: a(room.left), right: a(room.right), beyond: a(room.beyond), ground: room.ground.map(idOf), pieces, exit: name(room.exit) };
+}
+
+// ───────────────────────────── pass 4: the sockets ─────────────────────────────
+
+const FLOWER_UP = 34;
+/** the least gap between two animals of a kind, and between any two interactive things (C2 R_min) */
+const SAME_CREATURE = 420;
+const ANY_APART = 120;
+
+export interface Filled {
+  enemies: Enemy[];
+  collectibles: Collectible[];
+  checkpoints: Array<{ x: number; y: number; reached: boolean }>;
+  hints: StageHint[];
+  fills: FilledSocket[];
+  barren: Array<[number, number]>;
+  extras: Record<string, unknown>;
+}
+
+/**
+ * Pass 4. In order: flags (rests, and wherever 35 s passed without one), Dot's tips (the first time a mechanic is met), linked
+ * source/receptor pairs (both or neither, A7), the other props (a bag per tag, a short cooldown so the same prop is not next to
+ * itself), creatures (paid from each section's threat budget: the budget times its tension, 60% on Easy; patches kept clear of
+ * the start's opening seconds and of every safe spot; then Poisson spacing over all of them), pickups, the quota items, and petal
+ * arcs over the jumps. Every roll is made whether or not Easy then drops the piece, so Easy and Normal stay on the same streams.
+ */
+export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink): Filled {
+  const M = kit.manifest;
+  const rng = rngFor(seed, 17);
+  const easy = budget.difficulty === 'easy';
+  const fills: FilledSocket[] = [];
+  const checkpoints: Filled['checkpoints'] = [];
+  const hints: StageHint[] = [];
+  const C = sink.collectibles;
+  const flower = (x: number, y: number) => {
+    if (C.some((c) => Math.hypot(c.x - x, c.y - y) < 40)) return;
+    C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: M.flowers[Math.floor(rng() * M.flowers.length)], x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
+  };
+  const tipsSaid = new Set<string>();
+  // (lessons from earlier stages need no tip here)
+  for (const [m, st] of Object.entries(M.lessons ?? {})) if (stageOrder(st) < stageOrder(budget.id)) tipsSaid.add(m);
+
+  // flags
+  let lastFlagT = 0;
+  let t = 0;
+  for (const s of laid.sections) {
+    t += s.seconds;
+    const flagSock = s.sockets.find((k) => k.socket.role === 'flag');
+    const due = t - lastFlagT > 35;
+    if ((s.phase === 'rest' || due) && s.phase !== 'goal') {
+      const at = flagSock ?? { x: s.exit.x - 80, y: s.exit.y, piece: s.pieces.find((p) => p.platform.y === s.exit.y && p.platform.x + p.platform.width >= s.exit.x - 1)?.platform };
+      if (at.piece && at.x - at.piece.x > 30 && at.x > (checkpoints.at(-1)?.x ?? SPAWN_X) + 600) {
+        checkpoints.push({ x: R(at.x), y: at.piece.y, reached: false });
+        lastFlagT = t;
+      }
+    }
+  }
+  const safe = [{ x: laid.spawn.x, y: laid.spawn.y }, ...checkpoints, { x: laid.exit.x, y: laid.exit.y }];
+  const openX = laid.spawn.x + OPEN_SECONDS * budget.walkSpeed;
+
+  // props and pairs
+  const propBag = new Map<string, ShuffleBag<string>>();
+  const propCool = new CooldownQueue<string>(2);
+  const props: Array<RoutePiece & { fill: FilledSocket }> = [];
+  const propFor = (s: Socket): string | null => {
+    const ok = M.props.filter((p) => !s.allow?.length || s.allow.some((a) => p.tags.includes(a)));
+    if (!ok.length) return null;
+    const key = ok.map((p) => p.id).join(',');
+    let bag = propBag.get(key);
+    if (!bag) propBag.set(key, (bag = new ShuffleBag(rng, ok.map((p) => p.id))));
+    const draws = [bag.draw()!, bag.draw()!];
+    return propCool.pick(draws) ?? draws[0];
+  };
+  const fillProp = (sec: PlacedSection, k: PlacedSection['sockets'][number], what: string | null) => {
+    const f: FilledSocket = { section: sec.uid, socket: k.socket.id, role: k.socket.role, what, x: k.x, y: k.y };
+    fills.push(f);
+    if (!what) return;
+    const def = M.props.find((p) => p.id === what)!;
+    props.push({ x: k.x, kind: what, fill: f });
+    kit.emit?.[what]?.(f, def, sink);
+    if (def.beat) sec.beats.push({ x: k.x, letter: 'S' });
+  };
+
+  // creatures
+  const creatureBag = new ShuffleBag<CreatureDef>(rng, M.creatures);
+  const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection }> = [];
+
+  for (const sec of laid.sections) {
+    // (Normal's threat on both difficulties, so the sockets roll alike; Easy's 60% is a count cut after the spacing, below)
+    let threat = budget.threat * sec.tension;
+    let objectives = 0;
+    for (const k of sec.sockets) {
+      const s = k.socket;
+      const r0 = rng();
+      const want = (s.chance ?? 1) > r0 && (!s.phases || s.phases.includes(sec.phase));
+      const dropOnEasy = easy && s.easy === 'drop';
+      if (s.role === 'tip') {
+        const m = s.allow?.[0];
+        if (m && !tipsSaid.has(m)) {
+          tipsSaid.add(m);
+          const text = M.tips?.[m] ?? m;
+          hints.push({ x: k.x, text, pad: text, keys: text });
+          fills.push({ section: sec.uid, socket: s.id, role: 'tip', what: m, x: k.x, y: k.y });
+        }
+      } else if (s.role === 'receptor') {
+        const src = sec.sockets.find((q) => q.socket.id === s.link);
+        const pair = src && M.pairs.find((p) => (!s.allow?.length || s.allow.includes(p.receptor)) && Math.abs(src.x - k.x) >= p.minApart && Math.abs(src.x - k.x) <= p.maxApart);
+        const ok = want && !!pair && !(dropOnEasy && M.props.find((p) => p.id === pair.receptor)?.hazard);
+        fillProp(sec, k, ok ? pair!.receptor : null);
+        if (src) fillProp(sec, src, ok ? pair!.source : null);
+      } else if (s.role === 'source') {
+        // (filled with its receptor, never alone)
+      } else if (s.role === 'prop') {
+        const what = propFor(s);
+        const def = what ? M.props.find((p) => p.id === what) : undefined;
+        fillProp(sec, k, want && def && !(dropOnEasy && def.hazard) ? what : null);
+      } else if (s.role === 'enemy') {
+        const pick = creatureBag.draw();
+        const c = [pick, ...M.creatures].find(
+          (cr) => cr && cr.threat <= Math.min(s.maxThreat ?? Infinity, threat) && (!s.allow?.length || s.allow.includes(cr.id) || cr.tags?.some((tg) => s.allow!.includes(tg))) && terrainOK(cr, k.piece),
+        );
+        if (!want || !c || (dropOnEasy && !c.easyFirst) || k.x < openX) continue;
+        const patch = patchFor(k.x, k.piece, safe, c.minGround);
+        if (!patch) continue;
+        threat -= c.threat;
+        const e = makeEnemy(c, k.x, k.piece.y, patch, sink.nextEnemyId(), easy && s.easy === 'soften');
+        const fill: FilledSocket = { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: k.x, y: k.y };
+        foes.push({ x: k.x, kind: c.id, e, fill, sec });
+      } else if (s.role === 'pickup') {
+        if (!want) continue;
+        const n = s.count ?? 1;
+        const span = Math.min(s.span ?? 0, k.piece.width - 40);
+        for (let i = 0; i < n; i++) {
+          const x = n === 1 ? k.x : k.x - span / 2 + (span * i) / (n - 1);
+          flower(Math.max(k.piece.x + 20, Math.min(k.piece.x + k.piece.width - 20, x)), k.piece.y - (s.dn ?? FLOWER_UP));
+        }
+        fills.push({ section: sec.uid, socket: s.id, role: 'pickup', what: 'flower', x: k.x, y: k.y });
+      } else if (s.role === 'objective') {
+        const wantN = graphObjectives(laid, sec);
+        if (objectives >= wantN) continue;
+        objectives++;
+        const type: Collectible['type'] = budget.archetype === 'rescue' ? 'cage' : 'relic';
+        C.push({ id: sink.nextCollectibleId(), type, x: k.x, y: k.piece.y - (s.dn ?? 30), collected: false, bobPhase: 0, ...(type === 'cage' ? { cageHp: 2 } : {}) });
+        fills.push({ section: sec.uid, socket: s.id, role: 'objective', what: type, x: k.x, y: k.y });
+      }
+    }
+  }
+  // Poisson spacing over the creatures, the props fixed first (C2): a minimum gap of a kind, any two apart, no long barren run
+  const minGap: Record<string, number> = {};
+  for (const c of M.creatures) minGap[c.id] = SAME_CREATURE;
+  for (const p of M.props) minGap[p.id] = p.minApart;
+  const beats: RoutePiece[] = laid.sections.flatMap((s) => s.beats.map((b) => ({ x: b.x, kind: `beat:${b.letter}` })));
+  const spaced = poissonPlace<RoutePiece>(foes, {
+    rng,
+    minGap,
+    minGapAny: ANY_APART,
+    maxGap: budget.quiet * budget.walkSpeed,
+    fixed: [...props, ...beats],
+    start: laid.spawn.x + OPEN_SECONDS * budget.walkSpeed,
+    end: laid.exit.x - 200,
+  });
+  const kept = new Set(spaced.placed);
+  // Easy's enemy budget (Part 1 §3: 60%): of each kind the first stays (the stage still shows what it teaches), then 60% of the rest,
+  // evenly. (Phase 2: the engine's easyStage leaves gen2's animals alone, so they are not cut twice.)
+  if (easy) {
+    const seen = new Map<string, number>();
+    for (const f of foes) {
+      if (!kept.has(f)) continue;
+      const k = seen.get(f.kind) ?? 0;
+      seen.set(f.kind, k + 1);
+      if (k > 0 && Math.floor(k * budget.enemyShare) === Math.floor((k - 1) * budget.enemyShare)) kept.delete(f);
+    }
+  }
+  for (const f of foes) {
+    if (!kept.has(f)) continue;
+    sink.enemies.push(f.e);
+    fills.push(f.fill);
+    f.sec.beats.push({ x: f.x, letter: 'C' });
+  }
+  // (rests are allowed to be quiet: only barren stretches outside them are reported)
+  const restSpans = laid.sections.filter((s) => s.phase === 'rest' || s.phase === 'start' || s.phase === 'goal').map((s) => [s.x0, s.x1] as const);
+  const barren = spaced.unfilled.filter((g) => !restSpans.some(([a, b]) => g.from >= a - 60 && g.to <= b + 60)).map((g) => [R(g.from), R(g.to)] as [number, number]);
+
+  // petal arcs over the jumps (half a beat each, E1), and a harvest's top-up to its laid count
+  for (const g of laid.gaps) {
+    if (g.x1 - g.x0 < 90 || rng() > 0.7) continue;
+    for (let i = 0; i < 3; i++) {
+      const tt = (i + 0.5) / 3;
+      flower(g.x0 + (g.x1 - g.x0) * tt, g.y - 70 - 50 * Math.sin(Math.PI * tt));
+    }
+  }
+  if (budget.archetype === 'harvest') {
+    const flowers = () => C.filter((c) => c.type === 'flower').length;
+    for (const s of laid.sections) {
+      for (const p of s.pieces) {
+        if (flowers() >= budget.quota.lay) break;
+        if (!p.main || p.platform.width < 200) continue;
+        for (let x = p.platform.x + 60; x < p.platform.x + p.platform.width - 60 && flowers() < budget.quota.lay; x += 90) flower(x, p.platform.y - FLOWER_UP);
+      }
+    }
+  }
+  return { enemies: sink.enemies, collectibles: C, checkpoints, hints, fills, barren, extras: sink.extras };
+}
+
+/** the quota items a section's node asks for, shared out among the node's sections in turn */
+function graphObjectives(laid: Laid, sec: PlacedSection): number {
+  const meta = laid as Laid & { objectives?: Map<string, number> };
+  return meta.objectives?.get(sec.uid) ?? 1;
+}
+
+const terrainOK = (c: CreatureDef, p: Platform) => (c.terrain === 'air' ? true : c.terrain === 'flat' ? p.width >= c.minGround : p.width >= c.minGround);
+
+/** the creature's patch on its piece: the stretch around x clear of every safe spot (levelCheck SAFE_APPROACH), or null if too short */
+function patchFor(x: number, p: Platform, safe: ReadonlyArray<{ x: number; y: number }>, minGround: number): [number, number] | null {
+  let lo = p.x + 24;
+  let hi = p.x + p.width - 24;
+  for (const s of safe) {
+    if (Math.abs(s.y - p.y) >= 400) continue;
+    const a = s.x - SAFE_APPROACH - 24;
+    const b = s.x + SAFE_APPROACH + 24;
+    if (b < lo || a > hi) continue;
+    if (x < a) hi = Math.min(hi, a);
+    else if (x > b) lo = Math.max(lo, b);
+    else return null;
+  }
+  return hi - lo >= minGround && x >= lo && x <= hi ? [R(lo), R(hi)] : null;
+}
+
+function makeEnemy(c: CreatureDef, x: number, top: number, patch: [number, number], id: number, soften: boolean): Enemy {
+  return {
+    id,
+    type: c.enemy,
+    x: R(x),
+    y: R(top - (c.footY ?? c.h / 2)),
+    vx: 0,
+    vy: 0,
+    width: c.w,
+    height: c.h,
+    hp: c.hp,
+    maxHp: c.hp,
+    facing: -1,
+    patrolMinX: patch[0],
+    patrolMaxX: patch[1],
+    attackCooldown: soften ? 1.8 : 1.2,
+    telegraphTimer: 0,
+    isAttacking: false,
+    animTimer: 0,
+    hitFlashTimer: 0,
+    defeated: false,
+    koTimer: 0,
+    behaviorTimer: 0,
+    ...c.extra,
+  } as Enemy;
+}
+
+// ───────────────────────────── pass 6: dressing ─────────────────────────────
+
+/** Pass 6: each decor job's set chosen by the roll with the stage cooldown (artRoll rollLook), laid along the main banks */
+export function dress(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink): Record<string, string> {
+  const M = kit.manifest;
+  const rng = rngFor(seed, 23);
+  const looks: Record<string, string> = {};
+  const jobs = [...new Set(M.decor.map((d) => d.job))];
+  jobs.forEach((job, ji) => {
+    const set = rollLook(M.decor.filter((d) => d.job === job), budget.stage, seed, ji + 1);
+    looks[job] = set.id;
+    const items: Array<{ n: string; x: number; y: number; w: number; set: string }> = [];
+    for (const s of laid.sections) {
+      for (const p of s.pieces) {
+        if (!p.main || p.platform.width < 160) continue;
+        for (let x = p.platform.x + roll(rng, set.every) / 2; x < p.platform.x + p.platform.width - 60; x += roll(rng, set.every)) {
+          const it = set.items[Math.floor(rng() * set.items.length)];
+          items.push({ n: it.n, x: R(x), y: p.platform.y, w: R(roll(rng, it.w)), set: set.id });
+        }
+      }
+    }
+    if (kit.decorate) kit.decorate(items, sink);
+    else ((sink.extras.decor ??= []) as unknown[]).push(...items);
+  });
+  sink.proto.beats = laid.sections.map((s) => [R(s.x0), R(s.x1), `${s.template}:${s.phase}`]);
+  return looks;
+}
+
+// ───────────────────────────── assembly, pass 5, the whole build ─────────────────────────────
+
+interface Built {
+  stage: Gen2Stage;
+  laid: Laid;
+}
+
+function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, seed: number, opt: LayOptions): Built {
+  const laid = layStage(budget, graph, req.kit, seed, opt);
+  // the quota items of each node, shared among its sections that have an objective socket
+  const objectives = new Map<string, number>();
+  for (const n of graph.nodes) {
+    if (!n.objectives) continue;
+    const secs = laid.sections.filter((s) => s.node === n.id && s.sockets.some((k) => k.socket.role === 'objective'));
+    secs.forEach((s, i) => objectives.set(s.uid, Math.floor(n.objectives! / secs.length) + (i < n.objectives! % secs.length ? 1 : 0)));
+  }
+  (laid as Laid & { objectives?: Map<string, number> }).objectives = objectives;
+  let pid = laid.nextId;
+  let cid = 1;
+  let eid = 500;
+  const proto: ProtoExtras = { hints: [], covers: [], beats: [] };
+  const sink: StageSink = {
+    platforms: laid.platforms,
+    enemies: [],
+    collectibles: [],
+    proto,
+    extras: {},
+    nextPlatformId: () => pid++,
+    nextCollectibleId: () => cid++,
+    nextEnemyId: () => eid++,
+  };
+  const filled = fillSockets(laid, budget, req.kit, seed, sink);
+  const looks = dress(laid, budget, req.kit, seed, sink);
+  proto.hints = filled.hints;
+  const rooms = laid.sections.flatMap((s) => (s.room ? [s.room] : []));
+  const platforms = laid.platforms;
+  if (rooms.length) addKitPlatforms(platforms, { rooms });
+  sink.collectibles.push({ id: sink.nextCollectibleId(), type: 'exit_totem', x: laid.exit.x, y: laid.exit.y - 30, collected: false, bobPhase: 0 });
+  const config: LevelConfig = { ...req.config, levelWidth: laid.width, levelHeight: Math.max(req.config.levelHeight, R(laid.bottom + 120)) };
+  const meta: Gen2Meta = {
+    seed,
+    plan: laid.plan,
+    rerolls: 0,
+    repairs: [],
+    budget,
+    graph,
+    sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
+    fills: filled.fills,
+    looks,
+    modelled: { typical: 0, fast: 0 },
+    errors: [],
+    barren: filled.barren,
+  };
+  const stage: Gen2Stage = {
+    config,
+    trees: [],
+    platforms,
+    vines: [],
+    ropes: [],
+    enemies: filled.enemies,
+    boss: null,
+    collectibles: sink.collectibles,
+    spawnX: laid.spawn.x,
+    spawnY: laid.spawn.y,
+    exitTotemX: laid.exit.x,
+    exitTotemY: laid.exit.y,
+    checkpoints: filled.checkpoints,
+    ...(budget.pit === 'water' ? { waterY: laid.bottom + 40 } : {}),
+    ...(rooms.length ? { kit: { rooms } } : {}),
+    proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
+    meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },
+    gen2: meta,
+  };
+  return { stage, laid };
+}
+
+/** what the validation pass decided */
+type Verdict = { ok: true } | { ok: false; swap?: number; reroll?: boolean };
+
+/**
+ * Pass 5: levelCheck (which runs puzzleCheck on the rooms), then local repair (D3, Part 1 Pass 5's "self-healing"):
+ *   a pickup the check finds out of reach, inside a platform, overlapping or past the shrine is taken out (never a quota item);
+ *   an animal too close to a safe spot is taken out;
+ *   an unreachable piece of the route: a stepping stone in the seam before the first section that cannot be reached;
+ *   still unreachable there, or a room that cannot be solved: that one section is swapped (the caller bans it at that slot);
+ *   anything else (a quota short): a whole re-roll.
+ */
+export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[], tried: Set<string>): Verdict {
+  const st = b.stage;
+  for (let it = 0; it < 8; it++) {
+    const res = validateStage(st);
+    if (res.ok) return { ok: true };
+    let fixed = false;
+    let unreachable = false;
+    for (const err of res.errors) {
+      let m = /^enemy #(\d+) stands too close/.exec(err);
+      if (m) {
+        st.enemies = st.enemies.filter((e) => e.id !== Number(m![1]));
+        repairs.push({ kind: 'stretch', note: `animal ${m[1]} taken out: too near a safe spot` });
+        fixed = true;
+        continue;
+      }
+      m = /^(flower|leaf|heart) #(\d+)/.exec(err);
+      if (m && /out of reach|inside platform|overlap|outside the walkable|past the shrine/.test(err)) {
+        const id = Number(m[2]);
+        if (budget.archetype !== 'harvest' || st.collectibles.filter((c) => c.type === 'flower').length > budget.quota.lay) {
+          st.collectibles = st.collectibles.filter((c) => c.id !== id);
+          fixed = true;
+          continue;
+        }
+      }
+      m = /^room (s\d+)-/.exec(err);
+      if (m) return { ok: false, swap: Number(m[1].slice(1)) - 1 };
+      if (/not reachable|is not on a reachable platform/.test(err)) unreachable = true;
+    }
+    if (unreachable) {
+      const reach = new Set(res.reachableIds);
+      const bad = b.laid.sections.findIndex((s) => s.pieces.some((p) => p.main && !reach.has(p.platform.id)));
+      if (bad < 0) return { ok: false, reroll: true };
+      const sec = b.laid.sections[bad];
+      const key = `stone:${sec.uid}`;
+      const seam = b.laid.gaps.find((g) => g.section === sec.uid && g.from && g.to);
+      // (a stone helps only when the way IN is what fails: the section's entry piece cannot be reached from the one before)
+      if (!tried.has(key) && seam?.from && seam.to && reach.has(seam.from.id) && !reach.has(seam.to.id)) {
+        tried.add(key);
+        const stone: Platform = { id: Math.max(...st.platforms.map((p) => p.id).filter((i) => i < 900000)) + 1, x: R((seam.x0 + seam.x1) / 2 - 42), y: R((seam.from.y + seam.to.y) / 2), width: 84, height: 22, type: 'solid', style: 'moss_stone' };
+        if (jumpOK(seam.from, stone, false).ok && jumpOK(stone, seam.to, false).ok) {
+          st.platforms.push(stone);
+          repairs.push({ kind: 'stone', section: sec.uid, note: `a stone in the seam before ${sec.template}` });
+          fixed = true;
+        }
+      }
+      if (!fixed) return { ok: false, swap: bad };
+    }
+    if (!fixed) return { ok: false, reroll: true };
+  }
+  return { ok: false, reroll: true };
+}
+
+/**
+ * Build one stage: passes 1-6, the repair loop and the length loop. Easy first lays Normal's plan (the section sequence), so the
+ * two difficulties are the same stage under different rules. Deterministic: the same request gives the same stage.
+ */
+export function buildGen2Stage(req: BuildRequest): Gen2Stage {
+  const M = req.kit.manifest;
+  if (M.handBuilt.includes(req.config.id)) throw new Error(`gen2: ${req.config.id} is hand-built`);
+  const budget = planBudget(req.config, M, req.difficulty);
+  const graph = missionGraph(budget);
+  let best: Gen2Stage | null = null;
+  const maxRerolls = req.maxRerolls ?? 6;
+  const failedAt = new Map<string, number>();
+  if (req.difficulty === 'easy') {
+    // Easy is Normal's stage under Easy's rules: Normal is built first (its repairs, swaps and length loop), and Easy lays exactly its
+    // plan from its seed. Easy's own repairs are only the local ones (a stone, a stray pickup or animal); its clock is held to the
+    // quick player's floor (fewer animals make the typical player's model shorter, not the stage)
+    const n = buildGen2Stage({ ...req, difficulty: 'normal' });
+    const repairs: Repair[] = [...n.gen2.repairs];
+    const b = assemble(req, budget, graph, n.gen2.seed, { plan: n.gen2.plan });
+    const v = checkAndRepair(b, budget, repairs, new Set());
+    const st = b.stage;
+    const fast = modelStage(st, MODEL_FAST).total;
+    st.gen2.modelled = { typical: Math.round(modelStage(st, MODEL_TYPICAL).total * 10) / 10, fast: Math.round(fast * 10) / 10 };
+    st.gen2.rerolls = n.gen2.rerolls;
+    st.gen2.repairs = repairs;
+    if (v.ok && fast >= budget.seconds.fastFloor) return st;
+    best = st;
+    st.gen2.errors = validateStage(st).errors;
+    repairs.push({ kind: 'reroll', note: "Easy could not lay Normal's plan: Easy plans its own (the curation report names the stage)" });
+  }
+  for (let rr = 0; rr <= maxRerolls; rr++) {
+    const seed = rr === 0 ? req.seed : req.seed * 1009 + rr * 7919;
+    const repairs: Repair[] = [];
+    const bans = new Map<number, Set<string>>([[-1, new Set([...failedAt].filter(([, n]) => n >= 2).map(([t]) => t))]]);
+    const tried = new Set<string>();
+    let aim = 1.0;
+    for (let it = 0; it < 10; it++) {
+      const b = assemble(req, budget, graph, seed, { aim, bans, recent: req.recent });
+      const v = checkAndRepair(b, budget, repairs, tried);
+      const st = b.stage;
+      st.gen2.rerolls = rr;
+      st.gen2.repairs = [...repairs];
+      if (!v.ok) {
+        st.gen2.errors = validateStage(st).errors;
+        if (!best) best = st;
+        if (v.swap !== undefined && b.laid.plan[v.swap]) {
+          const tpl = b.laid.plan[v.swap].template;
+          const set = bans.get(v.swap) ?? new Set<string>();
+          set.add(tpl);
+          bans.set(v.swap, set);
+          // (a section that failed at two slots is kept out of the whole stage: it is the section, not the seam, and the curation
+          // report names it for its author)
+          failedAt.set(tpl, (failedAt.get(tpl) ?? 0) + 1);
+          if (failedAt.get(tpl)! >= 2) bans.set(-1, new Set([...(bans.get(-1) ?? []), tpl]));
+          repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${tpl} swapped out` });
+          continue;
+        }
+        break;
+      }
+      // the clock (§1: at least 2 minutes for a quick player, every roll): the time model, typical and fast
+      const typical = modelStage(st, MODEL_TYPICAL).total;
+      const fast = modelStage(st, MODEL_FAST).total;
+      st.gen2.modelled = { typical: Math.round(typical * 10) / 10, fast: Math.round(fast * 10) / 10 };
+      const short = Math.min(typical / budget.seconds.target, fast / budget.seconds.fastFloor);
+      const over = typical / budget.seconds.max;
+      if ((short < 1 || over > 1) && it < 9) {
+        aim *= short < 1 ? Math.min(1.4, (1.03 / short)) : Math.max(0.75, 0.98 / over);
+        repairs.push({ kind: 'length', note: `aim ${aim.toFixed(2)} (typical ${typical.toFixed(0)} s, fast ${fast.toFixed(0)} s)` });
+        best = st;
+        continue;
+      }
+      return st;
+    }
+    repairs.push({ kind: 'reroll', note: `roll ${rr} failed` });
+  }
+  return best!;
+}

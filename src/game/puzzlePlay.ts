@@ -6,7 +6,7 @@
  * w5Play.ts), and reads the intents it took (engine.ts kitControls).
  */
 import {
-  anchorAt, BEETLE, evalWire, falseLeaves, flowRate, flyStep, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox,
+  anchorAt, BEETLE, CHAIR, evalWire, knotBox, GLOW, SAPLING, SILK, TEA, tipText, type TipLine, falseLeaves, flowRate, flyStep, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox,
   seesawDy, seesawTilt, setDownX, sluiceFlow, stepBeetle, stepFlow, throwStart, THROW, tradeTakes, useReach, isLit, type BeetleState, type Body,
   type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec, type ThrowKind, type Wire, wireIds,
 } from './puzzleKit.ts';
@@ -18,8 +18,11 @@ import { NOISE, prune, type Noise } from './noise.ts';
 import { zoneEffect, type Zone } from './zones.ts';
 import type { RiverZone } from './river.ts';
 import { drawW4 } from './w4Art.ts';
+import { rollLook } from './artRoll.ts';
 import { drawW2Cage } from './riverArt.ts';
-import type { Collectible, Platform, PlayerState as Player } from './types.ts';
+import { drawGlow, drawNightPiece } from './meecaNightArt.ts';
+import { drawW5 } from './w5Art.ts';
+import type { Collectible, Platform, PlayerState as Player, Vine } from './types.ts';
 
 /** what of the stage the kit's pieces reach beyond its platforms: the gust lanes a shutter shuts, the rivers a sluice runs, the reed cages
  * a lift hangs (World 2) */
@@ -27,6 +30,17 @@ export interface KitWorld {
   zones?: Zone[];
   rivers?: RiverZone[];
   collectibles?: Collectible[];
+  /** the stage's vines: a sapling's, a silk line's and a ladder's climbs are among them (kit vines) */
+  vines?: Vine[];
+  /** Easy's stuck watch counts only going back and forth and failed tries, not time in the room (Matt's research rule, 2026-10-28) */
+  noClock?: boolean;
+  /** the pieces in Meeca's night look (her stage: leaf plates, lantern-stake posts, the cake on its lace stool), and her own sheet draws
+   * her in the trap chair (so the kit draws the empty chair only) */
+  night?: boolean;
+  /** the world and the stage's number in it (1-9): the pieces wear that world's look (Matt's World 1-4 sheets), and where a world has
+   *  several looks for one job the stage's roll picks one (artRoll.ts) */
+  world?: number;
+  stage?: number;
 }
 
 export interface KitHost {
@@ -35,8 +49,12 @@ export interface KitHost {
   /** the platform he stands on (-1 none) */
   standingOn: number;
   easy: boolean;
-  /** a Dot line, once per stage (`key` remembers it) */
-  tip(key: string, text: string, seconds: number): void;
+  /** a Dot line, once per stage (`key` remembers it); Meeca's stage says it as her thought, or in the speaker's bubble */
+  tip(key: string, text: TipLine, seconds: number): void;
+  /** which way his thumb steers now (-1, 0, 1): a trap chair counts the wiggles */
+  steer?: number;
+  /** where the room's glow is (Meeca's stage: Flicker, who goes with her everywhere); unset, the kit's own follows him */
+  glowAt?(): { x: number; y: number } | null;
   float(text: string, x: number, y: number, color: string): void;
   /** a room's line whose moment has passed (he has left the room): taken down, up or still waiting */
   passTip?(text: string): void;
@@ -46,7 +64,8 @@ export interface KitHost {
   /** a hanging reed cage came all the way up and its floor dropped open: the little one in it is free (World 2) */
   freeCage?(c: Collectible): void;
 }
-export type KitSfx = 'pick' | 'drop' | 'throw' | 'land' | 'press' | 'gate' | 'lever' | 'munch' | 'lift' | 'reset' | 'lost' | 'ring' | 'tilt' | 'trade' | 'noise';
+export type KitSfx = 'pick' | 'drop' | 'throw' | 'land' | 'press' | 'gate' | 'lever' | 'munch' | 'lift' | 'reset' | 'lost' | 'ring' | 'tilt' | 'trade' | 'noise'
+  | 'sink' | 'wiggle' | 'pop' | 'stick' | 'snap' | 'unroll' | 'bend' | 'tip' | 'pour' | 'bloom' | 'sip';
 
 /** the intents the engine hands over this frame, and which the kit took (they are then not a punch, a jump or a kick) */
 export interface KitIntents {
@@ -56,6 +75,9 @@ export interface KitIntents {
   /** which way the side flick went (-1, 1), or 0 */
   sideDir: number;
 }
+
+/** what holds him now (a phase 2b trap or ride): the engine takes his steering, jumping and climbing away while it does */
+export type KitHold = 'chair' | 'pop' | 'silk' | 'shake' | 'bend' | 'sip' | null;
 
 type ItemMode = 'rest' | 'held' | 'fly' | 'basket' | 'wait' | 'gone' | 'trader';
 interface ItemRun {
@@ -99,9 +121,27 @@ interface ShutterRun { spec: Extract<PieceSpec, { kind: 'shutter' }>; x: number;
 interface PinwheelRun { spec: Extract<PieceSpec, { kind: 'pinwheel' }>; x: number; y: number; spin: boolean; ang: number }
 interface SluiceRun { spec: Extract<PieceSpec, { kind: 'sluice' }>; x: number; y: number; river: RiverZone | undefined; open: boolean; rate: number; rafts: Platform[] }
 interface TraderRun { spec: Extract<PieceSpec, { kind: 'trader' }>; x: number; y: number; plat: number; done: boolean; t: number }
+interface ChairRun { spec: Extract<PieceSpec, { kind: 'chair' }>; x: number; y: number; seat: Platform; state: 'empty' | 'sink' | 'held' | 'pop'; t: number; wig: number; lastDir: number; armed: boolean; back: -1 | 1; times: number }
+interface SaplingRun { spec: Extract<PieceSpec, { kind: 'sapling' }>; x: number; y: number; to: { x: number; y: number; plat: number }; vine: Vine | undefined; home: Vine | null; bent: boolean; bendT: number; told: boolean }
+interface SilkRun { spec: Extract<PieceSpec, { kind: 'silk' }>; x: number; y: number; vine: Vine | undefined; t: number; state: 'free' | 'held' | 'drop' | 'shake'; times: number }
+interface KnotRun { spec: Extract<PieceSpec, { kind: 'knot' }>; x: number; y: number; snapped: boolean; at: number }
+interface LadderRun { spec: Extract<PieceSpec, { kind: 'ladder' }>; x: number; y: number; vine: Vine | undefined; down: boolean; show: number }
+interface TeapotRun { spec: Extract<PieceSpec, { kind: 'teapot' }>; x: number; y: number; plat: number; tipped: boolean; t: number; full: boolean; path: Array<{ x: number; y: number }>; spills: number }
+interface GlowRun { spec: Extract<PieceSpec, { kind: 'glow' }>; x: number; y: number; on: boolean }
+interface MoonRun { spec: Extract<PieceSpec, { kind: 'moonflower' }>; x: number; y: number; open: boolean; show: number; at: number }
+
+/** where the bell hangs in Matt's belfry (from its top, a share of the frame's height) and how tall the bell is in it */
+const BELL_HANG = 0.37;
+const BELL_H = 0.4;
+/** the wheel on World 2's pulley post: its middle across and down the frame (shares) */
+const POST_WHEEL = { x: 0.66, y: 0.2 };
+/** Matt's anchor peg: its rock's top (atlas px from the frame's top), and the knot round it (shares across and down the frame) */
+const PEG_ROCK = 88;
+const PEG_KNOT = { x: 0.6, y: 0.32 };
 
 /** a bell's box a thrown thing knocks (world) */
 const bellBox = (b: { x: number; y: number }) => ({ x0: b.x - 26, x1: b.x + 26, y0: b.y - 110, y1: b.y - 20 });
+
 
 interface RoomRun {
   spec: RoomSpec;
@@ -126,6 +166,16 @@ interface RoomRun {
   pinwheels: PinwheelRun[];
   sluices: SluiceRun[];
   traders: TraderRun[];
+  chairs: ChairRun[];
+  saplings: SaplingRun[];
+  silks: SilkRun[];
+  knots: KnotRun[];
+  ladders: LadderRun[];
+  teapots: TeapotRun[];
+  glows: GlowRun[];
+  moons: MoonRun[];
+  /** the Butler's tea: how many cups he has poured her */
+  cups: number;
   ground: Set<number>;
   /** a count of every change of the puzzle's state (a plate, a gate, a lever, a basket, a beetle asleep, a thing picked up) */
   changes: number;
@@ -196,7 +246,7 @@ const SEESAW_PIVOT: Record<'seesawLevel' | 'seesawUpR' | 'seesawUpL', number> = 
 type Focus = { x: number; y: number; r: number; id?: string };
 
 /** Pokey's pose while he carries, throws or sets down (null: his own sprite) */
-type Pose = { kind: 'pick' | 'throw' | 'set'; t: number; dur: number } | null;
+type Pose = { kind: 'pick' | 'throw' | 'set'; t: number; dur: number } | { kind: 'use'; n: KitArtName; t: number; dur: number; facing: 1 | -1; at: { x: number; y: number } } | null;
 
 const ART_OF: Record<ItemVariant, KitArtName> = { acorn: 'acorn', stone: 'stone', pinecone: 'pinecone', cake: 'cake', pebble: 'pebble', mushroom: 'mushroom', mango: 'mango' };
 /** Pokey's carry poses are painted holding an acorn: carrying anything else, the same pose with the acorn painted out (packkit.py e*) */
@@ -204,6 +254,17 @@ const EMPTY_OF: Partial<Record<KitArtName, KitArtName>> = { p2: 'e2', p3: 'e3', 
 const PILE_OF: Partial<Record<ItemVariant, KitArtName>> = { acorn: 'acornPile', stone: 'stonePile', pebble: 'stonePile' };
 /** a reed cage's floor stands this far under its middle (the collectible's y: the cage's floor is its y + this, riverArt.ts) */
 const CAGE_FLOOR = 26;
+
+/** where a sapling's top is when it is bent `e` of the way over (0 upright, 1 down on its far end): it swings round its root */
+export function saplingTop(sp: { x: number; y: number; to: { x: number; y: number }; spec: { h: number } }, e: number): { x: number; y: number } {
+  const dx = sp.to.x - sp.x, dy = sp.y - sp.to.y;
+  const R = Math.hypot(dx, dy);
+  const a1 = Math.atan2(dx, dy);
+  const a = a1 * e;
+  // (upright it stands its own height; bent down it reaches its far end exactly)
+  const r = sp.spec.h + (R - sp.spec.h) * e;
+  return { x: sp.x + Math.sin(a) * r, y: sp.y - Math.cos(a) * r };
+}
 
 /** the stuck help (Easy): in the room this long with nothing changing, or turning about this often, or this many misses */
 export const STUCK = { calm: 20, turns: 8, turnsCalm: 6, fails: 2 } as const;
@@ -226,14 +287,30 @@ export class KitPlay {
   /** the noises made in the rooms (noise.ts), for the watchers to hear: the engine hands each the one it hears */
   readonly noises: Noise[] = [];
 
+  /** the world the pieces are drawn for, and the looks the stage's roll picked (artRoll.ts) */
+  private readonly look: { world: number; stone: KitArtName };
+  private readonly platforms: Platform[];
+
   constructor(kit: KitExtras, platforms: Platform[], world: KitWorld = {}) {
     const byId = new Map(platforms.map((p) => [p.id, p]));
+    this.platforms = platforms;
+    // (the layout roll, as the rooms stand: a retry of the same roll builds them in the same places, a fresh roll moves them)
+    const roll = kit.rooms.reduce((s, r) => s + Math.round(anchorAt(r.left, byId)?.x ?? 0), 0);
+    const w = world.world ?? 0;
+    this.look = {
+      world: w,
+      // World 2's thrown stones: Matt's river stone or the round grey one, by the roll (never the same look two stages running)
+      stone: w === 2 ? rollLook(['riverStone', 'stone'] as const, world.stage ?? 1, roll, 2) : 'stone',
+    };
     this.extraZones = (world.zones ?? []).filter((z) => z.kind === 'wind');
+    this.noClock = !!world.noClock;
+    this.night = !!world.night;
     kit.rooms.forEach((spec, ri) => {
       const at = (pc: PieceSpec) => ('at' in pc && pc.at ? anchorAt(pc.at, byId) : null);
       const room: RoomRun = {
         spec, ri, box: roomBox(spec, byId), beyond: anchorAt(spec.beyond, byId), items: [], plates: [], gates: [], levers: [], baskets: [], lifts: [], beetles: [], sources: [], resets: [],
         seesaws: [], bells: [], ledges: [], marks: [], shutters: [], pinwheels: [], sluices: [], traders: [],
+        chairs: [], saplings: [], silks: [], knots: [], ladders: [], teapots: [], glows: [], moons: [], cups: 0,
         ground: new Set([...spec.ground, ...kitGround(spec, ri)]), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, sparkle: false, told: new Set(),
       };
       for (const pc of spec.pieces) {
@@ -276,6 +353,29 @@ export class KitPlay {
           room.sluices.push({ spec: pc, x: a.x, y: a.y, river, open: false, rate: 1, rafts });
         }
         if (pc.kind === 'trader' && a) room.traders.push({ spec: pc, x: a.x, y: a.y, plat: pc.at.on, done: false, t: 0 });
+        const vineOf = (id: number) => world.vines?.find((v) => v.id === id);
+        if (pc.kind === 'chair' && a) {
+          const seat = byId.get(kitPlatId(ri, pc.id, 0));
+          if (seat) room.chairs.push({ spec: pc, x: a.x, y: a.y, seat, state: 'empty', t: 0, wig: 0, lastDir: 0, armed: true, back: -1, times: 0 });
+        }
+        if (pc.kind === 'sapling' && a) {
+          const to = anchorAt(pc.to, byId);
+          const vine = vineOf(pc.vine);
+          if (to) room.saplings.push({ spec: pc, x: a.x, y: a.y, to: { ...to, plat: pc.to.on }, vine, home: vine ? { ...vine } : null, bent: false, bendT: -1, told: false });
+        }
+        if (pc.kind === 'silk' && a) room.silks.push({ spec: pc, x: a.x, y: a.y, vine: vineOf(pc.vine), t: 0, state: 'free', times: 0 });
+        if (pc.kind === 'knot' && a) room.knots.push({ spec: pc, x: a.x, y: a.y, snapped: false, at: -9 });
+        if (pc.kind === 'ladder' && a) {
+          const vine = vineOf(pc.vine);
+          if (vine) vine.off = true;
+          room.ladders.push({ spec: pc, x: a.x, y: a.y, vine, down: false, show: 0 });
+        }
+        if (pc.kind === 'teapot' && a) {
+          const path = (pc.trough ?? []).map((q) => anchorAt(q, byId)).filter((q): q is { x: number; y: number } => !!q);
+          room.teapots.push({ spec: pc, x: a.x, y: a.y, plat: pc.at.on, tipped: false, t: 0, full: false, path, spills: 0 });
+        }
+        if (pc.kind === 'glow') room.glows.push({ spec: pc, x: 0, y: 0, on: false });
+        if (pc.kind === 'moonflower' && a) room.moons.push({ spec: pc, x: a.x, y: a.y, open: false, show: 0, at: -9 });
         if (pc.kind === 'beetle' && a) {
           const p = byId.get(pc.at.on)!;
           room.beetles.push({ spec: pc, home: a.x, span: { x0: p.x, x1: p.x + p.width }, told: false, st: { mode: 'idle', x: a.x, plat: pc.at.on, dir: -1, t: 0, food: -1 } });
@@ -336,8 +436,68 @@ export class KitPlay {
     if (td) return td.done;
     const ld = room.ledges.find((p) => p.spec.id === id);
     if (ld) return ld.lit;
+    const sp = room.saplings.find((p) => p.spec.id === id);
+    if (sp) return sp.bent;
+    const kn = room.knots.find((p) => p.spec.id === id);
+    if (kn) return kn.snapped;
+    const la = room.ladders.find((p) => p.spec.id === id);
+    if (la) return la.down;
+    const tp = room.teapots.find((p) => p.spec.id === id);
+    if (tp) return tp.tipped;
+    const mf = room.moons.find((p) => p.spec.id === id);
+    if (mf) return mf.open;
     return false;
   }
+
+  // ───────────────────────────── phase 2b: what holds him ─────────────────────────────
+
+  /** what holds him now (a trap chair, the silk line, a sapling bending under him, the Butler's steam): null when nothing does */
+  hold(): KitHold {
+    for (const room of this.rooms) {
+      for (const c of room.chairs) if (c.state === 'sink' || c.state === 'held') return 'chair';
+      for (const c of room.chairs) if (c.state === 'pop') return 'pop';
+      for (const sl of room.silks) if (sl.state === 'held') return 'silk';
+      for (const sl of room.silks) if (sl.state === 'shake') return 'shake';
+      for (const sp of room.saplings) if (sp.bendT >= 0) return 'bend';
+    }
+    return this.sipT > 0 ? 'sip' : null;
+  }
+  /** the Butler's sleepy steam: seconds of it left (he walks slower while it lasts) */
+  private sipT = 0;
+  /** how sleepy his steam has made him (0..1), for the veil */
+  sleepy(): number {
+    return Math.max(0, Math.min(1, this.sipT / 1.2));
+  }
+
+  /** the pose a phase 2b piece gives him now (Meeca's stage draws it from her sheet), or null */
+  heldPose(): { kind: 'chair' | 'chairHeld' | 'pop' | 'silk' | 'shake' | 'tip' | 'sip'; t: number; dir: number } | null {
+    for (const room of this.rooms) {
+      for (const c of room.chairs) {
+        if (c.state === 'sink') return { kind: 'chair', t: c.t, dir: 0 };
+        if (c.state === 'held') return { kind: 'chairHeld', t: c.t, dir: c.lastDir };
+        if (c.state === 'pop') return { kind: 'pop', t: c.t, dir: c.back };
+      }
+      for (const sl of room.silks) {
+        if (sl.state === 'held') return { kind: 'silk', t: sl.t, dir: 0 };
+        if (sl.state === 'shake') return { kind: 'shake', t: sl.t, dir: 0 };
+      }
+      for (const tp of room.teapots) if (tp.tipped && tp.t < 0.9) return { kind: 'tip', t: tp.t, dir: 0 };
+    }
+    if (this.sipT > 0) return { kind: 'sip', t: this.sipT, dir: 0 };
+    return null;
+  }
+  /** the room's carried thing, as Meeca's stage draws it in her hands: what it is, and the pick, throw or set-down under way */
+  heldThing(): { variant: ItemVariant; pose: 'pick' | 'throw' | 'set' | null; u: number } | null {
+    // (a use pose, pulling or cranking, is Pokey's: Meeca's own sheet draws her at a piece, so only carrying counts here)
+    const pose = this.pose?.kind === 'use' ? null : this.pose;
+    const it = this.held ? this.rooms[this.held.room].items[this.held.item] : null;
+    if (!it && !pose) return null;
+    let variant: ItemVariant | null = it?.variant ?? null;
+    if (!variant && pose) variant = this.lastVariant;
+    if (!variant) return null;
+    return { variant, pose: pose?.kind ?? null, u: pose ? pose.t / pose.dur : 0 };
+  }
+  private lastVariant: ItemVariant | null = null;
 
   /** the glowing things' light (World 3's mushroom), carried, lying, flying or in a basket: world middle and radius */
   lights(): Array<{ x: number; y: number; r: number }> {
@@ -350,6 +510,8 @@ export class KitPlay {
         const pos = it.mode === 'fly' ? { x: it.body.x, y: it.body.y } : it.mode === 'basket' && b ? { x: b.x, y: this.mouthY(room, b) + 20 } : { x: it.x, y: it.y };
         out.push({ x: pos.x, y: pos.y - it.r, r });
       }
+      for (const g of room.glows) if (g.on) out.push({ x: g.x, y: g.y, r: g.spec.r });
+      for (const m of room.moons) if (m.show > 0.02) out.push({ x: m.x, y: m.y - 40, r: m.spec.r * m.show });
     }
     return out;
   }
@@ -374,7 +536,7 @@ export class KitPlay {
       box: room.box,
       baskets: room.baskets.map((b) => ({ x: b.x, y: this.mouthY(room, b), half: KIT.mouthHalf })),
       // (a bell is knocked like a lever's handle: its index comes after the levers')
-      levers: [...room.levers.map((l) => ({ x0: l.x - 18, x1: l.x + 18, y0: l.y - 60, y1: l.y })), ...room.bells.map((b) => bellBox(b))],
+      levers: [...room.levers.map((l) => ({ x0: l.x - 18, x1: l.x + 18, y0: l.y - 60, y1: l.y })), ...room.bells.map((b) => bellBox(b)), ...room.knots.map((k) => knotBox(k))],
     };
   }
 
@@ -393,6 +555,8 @@ export class KitPlay {
     const took: KitIntents = { tap: false, up: false, side: false, sideDir: 0 };
     const p = h.player;
     const f: 1 | -1 = p.facing >= 0 ? 1 : -1;
+    // held by a trap or riding a bending sapling: nothing he does is a jump, a kick or a punch (the wiggle is his steering: step)
+    if (this.hold() && this.hold() !== 'sip') return { tap: inp.tap, up: inp.up, side: inp.side, sideDir: inp.sideDir };
     if (this.held) {
       const room = this.rooms[this.held.room];
       const it = room.items[this.held.item];
@@ -436,13 +600,29 @@ export class KitPlay {
           if (b) consider(b.x, this.mouthY(room, b), () => this.pickUp(room, ri, ii, h));
         }
       });
-      room.levers.forEach((l) => consider(l.x, l.y, () => this.pull(room, l, h)));
-      room.bells.forEach((b) => consider(b.x, b.y, () => this.ring(room, b, h)));
+      room.levers.forEach((l) => consider(l.x, l.y, () => {
+        this.pull(room, l, h);
+        // (Matt's poses: a crank turned on World 2's winch, a lever pushed everywhere else)
+        this.usePose(this.look.world === 2 ? 'p15' : 'p16', l.x, l.y, p, 0.55);
+      }));
+      room.bells.forEach((b) => consider(b.x, b.y, () => {
+        this.ring(room, b, h);
+        // (he rings it by its rope: the rope pull)
+        this.usePose('p14', b.x, b.y, p, 0.7);
+      }));
       // (a trader asked with empty hands: Dot says what it wants)
       room.traders.forEach((t) => {
         if (!t.done) consider(t.x, t.y, () => h.float(`IT WANTS A ${t.spec.wants.toUpperCase()}`, t.x, t.y - 120, '#fde68a'));
       });
       room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h, platforms)));
+      // a teapot: a tap by it tips it over (rude), for good
+      room.teapots.forEach((tp) => {
+        if (!tp.tipped) consider(tp.x, tp.y, () => this.tip(room, tp, h));
+      });
+      // the Butler in his arch: a tap by him is polite (another cup, and his sleepy steam), and gets nowhere
+      room.gates.forEach((g) => {
+        if (g.spec.look === 'butler') consider(g.x - KIT.gateW / 2, g.y, () => this.polite(room, g, h));
+      });
     });
     if (best) {
       (best as { go: () => void }).go();
@@ -451,8 +631,42 @@ export class KitPlay {
     return took;
   }
 
+  /** tip the teapot over: its tea runs down the trough into the basket (TEA.run), and the stains stay */
+  private tip(room: RoomRun, tp: TeapotRun, h: KitHost) {
+    tp.tipped = true;
+    tp.t = 0;
+    room.changes++;
+    h.sfx('tip');
+    this.told(room, 'tipped', h, 3.2);
+  }
+
+  /** polite to the Butler: he pours another cup, she drinks it (manners), and the steam makes her sleepy a moment. He stays put */
+  private polite(room: RoomRun, g: GateRun, h: KitHost) {
+    void g;
+    room.cups++;
+    room.fails++;
+    this.sipT = 2.4;
+    h.sfx('sip');
+    if (room.cups === 1) this.told(room, 'polite', h, 3.4);
+    else this.told(room, 'polite2', h, 3.4, true);
+    this.yawnAt = this.t + 1.8;
+    this.yawnRoom = room;
+  }
+  private yawnAt = -1;
+  private yawnRoom: RoomRun | null = null;
+
+  /** a room's line for a moment, the first time it comes (`again`: every time, though only once in a row) */
+  private told(room: RoomRun, key: keyof NonNullable<RoomSpec['tips']>, h: KitHost, seconds: number, again = false) {
+    const line = room.spec.tips?.[key];
+    if (!line) return;
+    if (room.told.has(key) && !again) return;
+    room.told.add(key);
+    h.tip(`kit:${room.spec.id}:${key}${again ? `:${room.cups}` : ''}`, line, seconds);
+  }
+
   private pickUp(room: RoomRun, ri: number, ii: number, h: KitHost) {
     const it = room.items[ii];
+    this.lastVariant = it.variant;
     it.mode = 'held';
     it.basket = -1;
     this.held = { room: ri, item: ii };
@@ -463,6 +677,36 @@ export class KitPlay {
       room.told.add('hold');
       h.tip(`kit:${room.spec.id}:hold`, room.spec.tips.hold, 4);
     }
+  }
+
+  /** when each room's way on first opened, and when he first got to the spot past it (kit time): for the dressing (artDress.ts) */
+  private done = new Map<string, { solved?: number; arrived?: number }>();
+  private watchDone(p: Player) {
+    for (const room of this.rooms) {
+      let d = this.done.get(room.spec.id);
+      if (d?.arrived !== undefined) continue;
+      if (!d) this.done.set(room.spec.id, (d = {}));
+      // (a room let on by a thing carried, 1-7's acorns, is done when he is through it)
+      const byItem = room.items.some((it) => it.spec.id === room.spec.exit);
+      if (d.solved === undefined && !byItem && this.output(room, room.spec.exit)) d.solved = this.t;
+      const b = room.beyond;
+      if (b && Math.abs(p.x - b.x) < 70 && Math.abs(p.y - b.y) < 90 && (byItem || d.solved !== undefined)) {
+        d.arrived = this.t;
+        d.solved ??= this.t;
+      }
+    }
+  }
+
+  /** a room's progress for the pictures dressing it: seconds since its way on opened and since he got through (undefined: not yet) */
+  roomDone(id: string): { solved?: number; arrived?: number } {
+    const d = this.done.get(id);
+    return { solved: d?.solved === undefined ? undefined : this.t - d.solved, arrived: d?.arrived === undefined ? undefined : this.t - d.arrived };
+  }
+
+  /** one of Matt's use poses (the rope pull, the crank, the push), facing the piece he works at (x, y) */
+  private usePose(n: KitArtName, x: number, y: number, p: Player, dur: number) {
+    if (this.held) return;
+    this.pose = { kind: 'use', n, t: 0, dur, facing: x >= p.x ? 1 : -1, at: { x, y } };
   }
 
   private pull(room: RoomRun, l: LeverRun, h: KitHost) {
@@ -497,6 +741,7 @@ export class KitPlay {
 
   private throwIt(room: RoomRun, it: ItemRun, kind: ThrowKind, f: 1 | -1, h: KitHost) {
     const p = h.player;
+    this.lastVariant = it.variant;
     it.body = throwStart(kind, p.x, p.y, f);
     it.thrown = true;
     it.mode = 'fly';
@@ -512,6 +757,7 @@ export class KitPlay {
 
   private setDown(room: RoomRun, it: ItemRun, f: 1 | -1, h: KitHost) {
     const p = h.player;
+    this.lastVariant = it.variant;
     const reach = useReach(h.easy);
     this.held = null;
     this.pose = { kind: 'set', t: 0, dur: 0.26 };
@@ -551,6 +797,13 @@ export class KitPlay {
     for (const t of room.traders) t.done = false;
     for (const l of room.lifts) if (l.basket < 0) l.unwind = true;
     for (const b of room.bells) b.rung = -Infinity;
+    // (a snapped knot stays snapped and a bent sapling bent; a spilt teapot is set up again, full, and its basket emptied: the stains stay)
+    for (const tp of room.teapots) {
+      if (tp.tipped) tp.spills++;
+      tp.tipped = false;
+      tp.full = false;
+      tp.t = 0;
+    }
     room.changes++;
     room.sparkle = false;
     h.sfx('reset');
@@ -620,10 +873,12 @@ export class KitPlay {
     this.inRoom = this.rooms.findIndex((r) => p.x >= r.box.x0 && p.x <= r.box.x1 && p.y >= r.box.y0 && p.y <= r.box.y1);
     // out of a room: its lines are old news (one still waiting must not come in the next room)
     // (one a frame: the app keeps only the engine's last line of a frame)
-    if (was >= 0 && was !== this.inRoom) for (const text of Object.values(this.rooms[was].spec.tips ?? {})) if (text) this.passing.push(text);
+    if (was >= 0 && was !== this.inRoom) for (const text of Object.values(this.rooms[was].spec.tips ?? {})) if (text) this.passing.push(tipText(text));
     const next = this.passing.shift();
     if (next) h.passTip?.(next);
     for (const room of this.rooms) this.stepRoom(room, dt, h, platforms);
+    if (this.sipT > 0) this.sipT = Math.max(0, this.sipT - dt);
+    this.watchDone(p);
     if (this.pan) {
       this.pan.t -= dt;
       if (this.pan.t <= 0) this.pan = null;
@@ -635,7 +890,8 @@ export class KitPlay {
       this.focusPt = f;
       this.guideThings.push(f);
     }
-    return this.held ? KIT.carrySpeed : 1;
+    // (carrying, he walks slower; sleepy from the Butler's steam, slower still for a moment)
+    return (this.held ? KIT.carrySpeed : 1) * (this.sipT > 0 ? 0.45 : 1);
   }
 
   private stepRoom(room: RoomRun, dt: number, h: KitHost, platforms: readonly Platform[]) {
@@ -699,6 +955,17 @@ export class KitPlay {
         for (const li of it.knocked) {
           if (it.flipped.has(li)) continue;
           it.flipped.add(li);
+          if (li >= room.levers.length + room.bells.length) {
+            const k = room.knots[li - room.levers.length - room.bells.length];
+            if (k && !k.snapped) {
+              k.snapped = true;
+              k.at = this.t;
+              room.changes++;
+              h.sfx('snap');
+              h.float('SNAP!', k.x, k.y - 60, '#f5f3ff');
+            }
+            continue;
+          }
           if (li >= room.levers.length) {
             const b = room.bells[li - room.levers.length];
             if (b) this.ring(room, b, h);
@@ -729,6 +996,8 @@ export class KitPlay {
     const walls = room.gates.filter((g) => !g.open).map((g) => g.x);
     for (const b of room.beetles) {
       const was = b.st.mode;
+      // (a beetle that waits for him dozes, not looking about, until he is close enough to see what it does)
+      if (b.spec.waitNear && b.st.mode === 'idle' && Math.abs(p.x - b.home) > b.spec.waitNear) continue;
       const foods: Array<{ idx: number; plat: number; x: number }> = [];
       room.items.forEach((it, i) => { if (it.mode === 'rest' && ITEM[it.variant].food) foods.push({ idx: i, plat: it.plat, x: it.x }); });
       const ate = stepBeetle(b.st, dt, foods, b.spec.sight ?? BEETLE.sight, b.span, walls);
@@ -743,7 +1012,8 @@ export class KitPlay {
         room.changes++;
         h.float('Zzz', b.st.x, (byId(b.st.plat)?.y ?? 0) - 70, '#ddd6fe');
         const onAny = room.plates.some((q) => q.plat === b.st.plat && onPlate(b.st.x, q.x, q.w));
-        if (!onAny && room.spec.tips?.stuck && !room.told.has('stuck')) {
+        if (b.spec.waitNear) this.told(room, 'slept', h, 3.2);
+        else if (!onAny && room.spec.tips?.stuck && !room.told.has('stuck')) {
           room.told.add('stuck');
           h.tip(`kit:${room.spec.id}:stuck`, room.spec.tips.stuck, 4);
         }
@@ -769,6 +1039,8 @@ export class KitPlay {
       let w = 0, n = 0;
       const bi = room.baskets.indexOf(b);
       for (const it of room.items) if (it.mode === 'basket' && it.basket === bi) { w += ITEM[it.variant].weight; n++; }
+      // (a teapot's tea in it weighs too: the lift wired to it rises)
+      for (const tp of room.teapots) if (tp.full && tp.spec.into === b.spec.id) w += tp.spec.weight ?? TEA.weight;
       if (w !== b.weight) room.changes++;
       b.weight = w;
       b.count = n;
@@ -847,11 +1119,12 @@ export class KitPlay {
       room.sparkle = false;
     } else if (inside) {
       if (landedQuiet) room.fails++;
-      room.calm += dt;
+      if (!this.noClock) room.calm += dt;
       const dir = p.vx > 60 ? 1 : p.vx < -60 ? -1 : 0;
       if (dir && room.lastDir && dir !== room.lastDir) room.turns++;
       if (dir) room.lastDir = dir;
-      const stuck = room.calm >= STUCK.calm || (room.turns >= STUCK.turns && room.calm >= STUCK.turnsCalm) || room.fails >= STUCK.fails;
+      // (without the clock, Matt's research rule: back and forth with nothing changing, or two failed tries)
+      const stuck = this.noClock ? room.turns >= STUCK.turns || room.fails >= STUCK.fails : room.calm >= STUCK.calm || (room.turns >= STUCK.turns && room.calm >= STUCK.turnsCalm) || room.fails >= STUCK.fails;
       if (stuck && !room.sparkle) {
         room.sparkle = h.easy;
         h.stuck?.(room.spec.id);
@@ -914,9 +1187,10 @@ export class KitPlay {
         l.lit = lit;
         l.plat.broken = !lit;
         room.changes++;
+        // (in Meeca's night the ledge's own glow and Flicker's line say it: no floating word over her dark room)
         if (lit && !room.told.has('lit')) {
           room.told.add('lit');
-          h.float('A LEDGE!', l.plat.x + l.plat.width / 2, l.plat.y - 40, '#a7f3d0');
+          if (!this.night) h.float('A LEDGE!', l.plat.x + l.plat.width / 2, l.plat.y - 40, '#a7f3d0');
         }
       }
       l.show += ((l.lit ? 1 : 0) - l.show) * Math.min(1, dt * 5);
@@ -953,6 +1227,172 @@ export class KitPlay {
       r.flowRate = sl.rate;
     }
     for (const t of room.traders) t.t += dt;
+    this.stepNight(room, dt, h);
+  }
+
+  /**
+   * Phase 2b's pieces, each frame (Meeca's stage): the trap chair holds whoever sits in it until they wiggle free, then pops them off
+   * the way they came; a sapling climbed to its top bends over under him and sets him down at its far end; the silk line holds whoever
+   * grabs it a moment, then drops them; a snapped knot lets its ladder unroll; a tipped teapot's tea runs down its trough into its
+   * basket; the glow goes with him; a moonflower opens in a light that reaches it.
+   */
+  private stepNight(room: RoomRun, dt: number, h: KitHost) {
+    const p = h.player;
+    const steer = h.steer ?? 0;
+    for (const c of room.chairs) {
+      c.t += dt;
+      const on = p.grounded && h.standingOn === c.seat.id;
+      if (c.state === 'empty') {
+        if (on && c.armed) {
+          c.state = 'sink';
+          c.t = 0;
+          c.wig = 0;
+          c.lastDir = 0;
+          c.times++;
+          c.back = p.x < c.x || p.facing > 0 ? -1 : 1;
+          room.changes++;
+          room.fails++;
+          h.sfx('sink');
+          this.told(room, 'chair', h, 3);
+        }
+        if (!on && Math.abs(p.x - c.x) > CHAIR.w / 2 + 24) c.armed = true;
+      }
+      if (c.state === 'sink' || c.state === 'held') {
+        Object.assign(p, { x: c.x, y: c.seat.y, vx: 0, vy: 0, grounded: true, ducking: false });
+        if (c.state === 'sink' && c.t >= CHAIR.sink) {
+          c.state = 'held';
+          c.t = 0;
+        }
+        if (c.state === 'held' && steer && steer !== c.lastDir) {
+          // a wiggle: each change of the way he slides
+          if (c.lastDir !== 0 || c.wig === 0) c.wig++;
+          c.lastDir = steer;
+          h.sfx('wiggle');
+          if (c.wig >= CHAIR.wiggles) {
+            c.state = 'pop';
+            c.t = 0;
+            c.armed = false;
+            h.sfx('pop');
+          }
+        }
+      } else if (c.state === 'pop') {
+        // thrown off the way he came, in an arc to the floor beside the chair
+        const u = Math.min(1, c.t / 0.5);
+        const x0 = c.x, x1 = c.x + c.back * (CHAIR.w / 2 + 34);
+        const y0 = c.seat.y, y1 = c.y;
+        Object.assign(p, { x: x0 + (x1 - x0) * u, y: y0 + (y1 - y0) * u - Math.sin(u * Math.PI) * 46, vx: 0, vy: 0, grounded: u >= 1, facing: -c.back as 1 | -1 });
+        if (u >= 1) {
+          c.state = 'empty';
+          c.t = 0;
+        }
+      }
+    }
+    for (const sp of room.saplings) {
+      const v = sp.vine;
+      if (!v) continue;
+      if (!sp.bent && sp.bendT < 0) {
+        if (!sp.told && p.grounded && Math.abs(p.x - sp.x) < 60 && Math.abs(p.y - sp.y) < 6) {
+          sp.told = true;
+          this.told(room, 'climb', h, 3);
+        }
+        if (p.climbing && Math.abs(p.x - v.x) < 3 && p.y <= v.topY + SAPLING.near && !this.held) {
+          sp.bendT = 0;
+          room.changes++;
+          h.sfx('bend');
+        }
+      }
+      if (sp.bendT >= 0) {
+        sp.bendT += dt;
+        const u = Math.min(1, sp.bendT / SAPLING.bend);
+        const e = u * u * (3 - 2 * u);
+        const top = saplingTop(sp, e);
+        // (he rides its top over: the climb goes with it, so the engine keeps him on it)
+        Object.assign(v, { x: top.x, topY: top.y - 6, bottomY: top.y + 40 });
+        Object.assign(p, { y: top.y + 2, vx: 0, vy: 0, climbing: true, grounded: false });
+        if (u >= 1) {
+          sp.bendT = -1;
+          sp.bent = true;
+          v.off = true;
+          Object.assign(p, { x: sp.to.x, y: sp.to.y, climbing: false, grounded: true, vx: 0, vy: 0 });
+          room.changes++;
+        }
+      }
+    }
+    for (const sl of room.silks) {
+      const v = sl.vine;
+      if (!v) continue;
+      sl.t += dt;
+      if (sl.state === 'free' && p.climbing && Math.abs(p.x - v.x) < 3 && p.y <= v.bottomY + 26) {
+        sl.state = 'held';
+        sl.t = 0;
+        sl.times++;
+        room.fails++;
+        h.sfx('stick');
+        this.told(room, 'silk', h, 3);
+      } else if (sl.state === 'held') {
+        Object.assign(p, { x: v.x, vx: 0, vy: 0, climbing: true, grounded: false });
+        if (sl.t >= SILK.hold) {
+          // it lets go of him: down he drops, and it cannot be caught again until he has shaken it off
+          sl.state = 'drop';
+          sl.t = 0;
+          v.off = true;
+          Object.assign(p, { climbing: false, vy: 0 });
+        }
+      } else if (sl.state === 'drop') {
+        if (p.grounded) {
+          sl.state = 'shake';
+          sl.t = 0;
+        }
+      } else if (sl.state === 'shake') {
+        Object.assign(p, { vx: 0 });
+        if (sl.t >= SILK.shake) {
+          sl.state = 'free';
+          v.off = false;
+        }
+      }
+    }
+    const out = (id: string) => this.output(room, id);
+    for (const la of room.ladders) {
+      if (!la.down && evalWire(la.spec.open, out)) {
+        la.down = true;
+        room.changes++;
+        h.sfx('unroll');
+      }
+      la.show = Math.min(1, la.show + (la.down ? dt / 0.9 : 0));
+      if (la.vine) la.vine.off = la.show < 0.85;
+    }
+    for (const tp of room.teapots) {
+      if (!tp.tipped) continue;
+      tp.t += dt;
+      if (!tp.full && tp.t >= TEA.run) {
+        tp.full = true;
+        room.changes++;
+        h.sfx('pour');
+      }
+    }
+    for (const g of room.glows) {
+      const at = h.glowAt?.();
+      const want = at ?? { x: p.x + p.facing * GLOW.ahead, y: p.y - GLOW.up };
+      g.x = at ? want.x : g.on ? g.x + (want.x - g.x) * Math.min(1, dt * 5) : want.x;
+      g.y = at ? want.y : g.on ? g.y + (want.y - g.y) * Math.min(1, dt * 5) : want.y;
+      g.on = true;
+    }
+    for (const m of room.moons) {
+      if (!m.open) {
+        const lit = this.lights().some((l) => !(Math.abs(l.x - m.x) < 1 && Math.abs(l.y - (m.y - 40)) < 1) && Math.hypot(l.x - m.x, l.y - (m.y - 40)) <= l.r);
+        if (lit) {
+          m.open = true;
+          m.at = this.t;
+          room.changes++;
+          h.sfx('bloom');
+        }
+      }
+      m.show = Math.min(1, m.show + (m.open ? dt / 1.6 : 0));
+    }
+    if (this.yawnAt >= 0 && this.t >= this.yawnAt && this.yawnRoom === room) {
+      this.yawnAt = -1;
+      this.told(room, 'yawn', h, 2.6, true);
+    }
   }
 
   /** the stage's gust lanes, for the pinwheels (a shut one is calm: zones.ts zoneState) */
@@ -961,6 +1401,8 @@ export class KitPlay {
   }
 
   private extraZones: Zone[] = [];
+  private noClock = false;
+  private night = false;
 
   /** is the room's sparkle on (Easy's stuck help) */
   sparkling(room: number): boolean {
@@ -993,6 +1435,18 @@ export class KitPlay {
     if (sh) return { x: sh.x, y: sh.y - 60, r: 50 };
     const td = room.traders.find((q) => q.spec.id === id);
     if (td) return { x: td.x, y: td.y - 70, r: 50 };
+    const sp = room.saplings.find((q) => q.spec.id === id);
+    if (sp) return sp.bent ? { x: sp.to.x, y: sp.to.y - 20, r: 40 } : { x: sp.x, y: sp.y - sp.spec.h * 0.6, r: 46 };
+    const kn = room.knots.find((q) => q.spec.id === id);
+    if (kn) return { x: kn.x, y: kn.y - 16, r: 30 };
+    const la = room.ladders.find((q) => q.spec.id === id);
+    if (la) return { x: la.x, y: la.y + 60, r: 50 };
+    const tp = room.teapots.find((q) => q.spec.id === id);
+    if (tp) return { x: tp.x, y: tp.y - 30, r: 36 };
+    const mf = room.moons.find((q) => q.spec.id === id);
+    if (mf) return { x: mf.x, y: mf.y - 50, r: 40 };
+    const ch = room.chairs.find((q) => q.spec.id === id);
+    if (ch) return { x: ch.x, y: ch.seat.y - 20, r: 40 };
     return null;
   }
 
@@ -1011,6 +1465,9 @@ export class KitPlay {
     let leaves: string[] = [];
     if (exit?.kind === 'gate') leaves = falseLeaves(exit.open, out);
     else if (exit?.kind === 'lift' && !out(exit.id)) leaves = out(exit.by) ? [] : [exit.by];
+    else if (exit?.kind === 'ladder') leaves = falseLeaves(exit.open, out);
+    // (a basket a teapot fills: the teapot is the step to take)
+    leaves = leaves.map((id) => room.teapots.find((tp) => tp.spec.into === id && !tp.tipped)?.spec.id ?? id);
     // (a part with a thing meant for it comes first: fetching that thing is the step to take; then the parts with none)
     leaves.sort((m, n) => Number(!room.items.some((it) => it.spec.for === m)) - Number(!room.items.some((it) => it.spec.for === n)));
     for (const leaf of leaves) {
@@ -1052,6 +1509,15 @@ export class KitPlay {
       const at = it.mode === 'wait' ? { x: it.home.x, y: it.home.y - 20 } : { x: it.x, y: it.y - it.r };
       return { x0: at.x - 40, x1: at.x + 40, y0: at.y - 40, y1: at.y + it.r + 12 };
     }
+    const la = room.ladders.find((q) => q.spec.id === id);
+    if (la?.vine) return { x0: la.x - 40, x1: la.x + 40, y0: la.vine.topY - 30, y1: la.vine.bottomY + 10 };
+    const tp = room.teapots.find((q) => q.spec.id === id);
+    if (tp) {
+      // the pot, its trough and the basket it runs to: the line from switch to lift
+      let b: CamBox = { x0: tp.x - 44, x1: tp.x + 44, y0: tp.y - 70, y1: tp.y + 8 };
+      for (const q of tp.path) b = unionBox(b, { x0: q.x - 20, x1: q.x + 20, y0: q.y - 20, y1: q.y + 20 });
+      return b;
+    }
     const bt = room.beetles.find((q) => q.spec.id === id);
     if (bt) {
       const gy = room.box.y1 - room.spec.below;
@@ -1076,10 +1542,13 @@ export class KitPlay {
           const pl = room.plates.find((q) => q.spec.id === pc.for);
           if (pl) for (const bt of room.beetles) if (pl.x >= bt.span.x0 && pl.x <= bt.span.x1) out.push(bt.spec.id);
         }
+        // (a teapot fills its basket; a knot thrown at is worked out by the ladder that reads it, below)
+        if (pc.kind === 'teapot') out.push(pc.into);
+        if (pc.kind === 'item' && pc.for) for (const k of room.knots) if (k.spec.id === pc.for) out.push(...room.ladders.filter((l) => wireIds(l.spec.open).includes(k.spec.id)).map((l) => l.spec.id));
         continue;
       }
       if (pc.kind === 'lift' && pc.by === id) out.push(pc.id);
-      if ((pc.kind === 'gate' || pc.kind === 'shutter' || pc.kind === 'sluice') && reads(pc.open)) out.push(pc.id);
+      if ((pc.kind === 'gate' || pc.kind === 'shutter' || pc.kind === 'sluice' || pc.kind === 'ladder') && reads(pc.open)) out.push(pc.id);
       if (pc.kind === 'item' && pc.with === id) out.push(pc.id);
     }
     return out;
@@ -1136,7 +1605,9 @@ export class KitPlay {
   drawBack(ctx: CanvasRenderingContext2D, view: { x0: number; x1: number }) {
     for (const room of this.rooms) {
       if (room.box.x1 < view.x0 - 200 || room.box.x0 > view.x1 + 200) continue;
-      for (const r of room.resets) this.drawPost(ctx, r);
+      this.drawNightBack(ctx, room);
+      for (const r of room.resets) if (!this.night || !drawNightPiece(ctx, room === this.rooms[this.inRoom] ? 'stakeLit' : 'stake', r.x, r.y + 3)) this.drawPost(ctx, r);
+      if (this.night) for (const r of room.resets) if (room === this.rooms[this.inRoom]) drawGlow(ctx, r.x + 14, r.y - 78, 60, 'rgba(255, 214, 140, A)', 0.8);
       for (const s of room.sources) this.drawSource(ctx, room, s);
       for (const pl of room.plates) {
         // the knot plate sits sunk in the ground, its knot just over the grass (pressed, it sinks a little further and glows)
@@ -1145,7 +1616,13 @@ export class KitPlay {
         ctx.beginPath();
         ctx.rect(pl.x - pw, pl.y - ph, pw * 2, ph + 8);
         ctx.clip();
-        const drew = drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph });
+        // (Meeca's night look is her leaf plate; World 3's is Matt's mossy stone plate, sunk among its rubble while held down)
+        const stoneP = this.look.world === 3;
+        const drew = this.night
+          ? drawNightPiece(ctx, pl.show > 0.5 ? 'leafPlateDown' : 'leafPlate', pl.x, pl.y + ph * 0.42 + pl.show * 4, { w: pw, h: ph * 0.62 })
+          : stoneP
+          ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
+          : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph });
         ctx.restore();
         if (!drew) {
           ctx.fillStyle = pl.down ? '#d9b24a' : '#8b6a3e';
@@ -1153,6 +1630,7 @@ export class KitPlay {
         }
       }
       for (const l of room.levers) {
+        if (this.look.world === 2 && this.drawWinch(ctx, room, l)) continue;
         if (!drawKitArt(ctx, l.show > 0.5 ? 'leverOn' : 'leverOff', l.x, l.y + 4)) {
           ctx.strokeStyle = '#6b4a2b';
           ctx.lineWidth = 6;
@@ -1162,7 +1640,7 @@ export class KitPlay {
           ctx.stroke();
         }
       }
-      for (const g of room.gates) this.drawGate(ctx, g);
+      for (const g of room.gates) this.drawGate(ctx, g, room);
       for (const m of room.marks) if (m.show > 0.02) drawKitArt(ctx, m.spec.look ?? 'fernStone', m.x, m.y + 3, { alpha: m.show });
       for (const l of room.ledges) this.drawLedge(ctx, l);
       for (const s of room.shutters) this.drawShutter(ctx, s);
@@ -1188,6 +1666,8 @@ export class KitPlay {
       for (const lf of room.lifts) this.drawLift(ctx, room, lf);
       room.baskets.forEach((b) => this.drawBasket(ctx, room, b));
       for (const b of room.beetles) this.drawBeetle(ctx, b);
+      this.drawNightMid(ctx, room);
+      this.drawKnots(ctx, room);
       for (const it of room.items) {
         if (it.mode !== 'rest') continue;
         // (on a plate it sits on the knot)
@@ -1216,6 +1696,24 @@ export class KitPlay {
     const pose = this.pose;
     if (!this.held && !pose) return false;
     if (p.climbing || p.isVineSwinging || p.hanging) return false;
+    if (pose?.kind === 'use') {
+      // ringing a bell by its rope (the rope from the belfry down to the rope in his hands), cranking a winch, pushing a lever
+      if (pose.n === 'p14') {
+        const f = KIT_ART.p14;
+        const handTop = p.y + 2 - f.h * f.k;
+        const ropeX = p.x + (f.w * 0.66 - f.ax) * f.k * pose.facing;
+        ctx.save();
+        ctx.strokeStyle = '#c9a66b';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(ropeX, handTop + 4);
+        ctx.lineTo(pose.at.x, pose.at.y - kitSize('bell').h * 0.66);
+        ctx.stroke();
+        ctx.restore();
+      }
+      drawKitArt(ctx, pose.n, p.x, p.y + 2, { flip: pose.facing < 0 });
+      return true;
+    }
     const f: 1 | -1 = p.facing >= 0 ? 1 : -1;
     const it = this.held ? this.rooms[this.held.room].items[this.held.item] : null;
     let n: KitArtName;
@@ -1234,13 +1732,18 @@ export class KitPlay {
     drawKitArt(ctx, pose2, p.x, p.y + 2, { flip: f < 0 });
     if (it && other) {
       const hand = handOf(pose2, p.x, p.y + 2, f);
-      if (hand) this.drawItem(ctx, it, hand.x, hand.y + kitSize(ART_OF[it.variant]).h * 0.5, 0);
+      if (hand) this.drawItem(ctx, it, hand.x, hand.y + kitSize(this.artOf(it.variant)).h * 0.5, 0);
     }
     return true;
   }
 
+  /** how a thing is painted in this world (World 2's stones are its river stones on some rolls) */
+  private artOf(v: ItemVariant): KitArtName {
+    return v === 'stone' ? this.look.stone : ART_OF[v];
+  }
+
   private drawItem(ctx: CanvasRenderingContext2D, it: ItemRun, x: number, y: number, rot: number, scale = 1) {
-    if (drawKitArt(ctx, ART_OF[it.variant], x, y + 2, { rot, scale })) return;
+    if (drawKitArt(ctx, this.artOf(it.variant), x, y + 2, { rot, scale })) return;
     ctx.save();
     ctx.fillStyle = it.variant === 'cake' ? '#f9a8d4' : it.variant === 'stone' ? '#94a3b8' : '#92400e';
     ctx.beginPath();
@@ -1270,6 +1773,15 @@ export class KitPlay {
     } else if (s.spec.variant === 'mango') {
       drawKitArt(ctx, 'mango', s.x - 40, s.y + 2, { scale: 0.9 });
       drawKitArt(ctx, 'mango', s.x - 62, s.y + 2, { scale: 0.8, flip: true });
+    } else if (s.spec.variant === 'cake' && this.night) {
+      // (her night: a plate of little cakes on a lace stool by the path)
+      drawW5(ctx, 'doilyStool', s.x - 40, s.y + 2, 78);
+      drawKitArt(ctx, 'cake', s.x - 52, s.y - 34, { scale: 0.62 });
+      drawKitArt(ctx, 'cake', s.x - 28, s.y - 34, { scale: 0.58, flip: true });
+    } else if (s.spec.variant === 'pinecone' && this.night) {
+      drawKitArt(ctx, 'pinecone', s.x - 38, s.y + 3, { scale: 0.8 });
+      drawKitArt(ctx, 'pinecone', s.x - 58, s.y + 3, { scale: 0.7, flip: true });
+      drawKitArt(ctx, 'pinecone', s.x - 48, s.y - 12, { scale: 0.65 });
     } else if (s.spec.variant === 'cake') {
       drawKitArt(ctx, 'cake', s.x - 40, s.y + 2, { scale: 0.75 });
       drawKitArt(ctx, 'cake', s.x - 62, s.y + 2, { scale: 0.65, flip: true });
@@ -1301,9 +1813,10 @@ export class KitPlay {
     ctx.restore();
   }
 
-  private drawGate(ctx: CanvasRenderingContext2D, g: GateRun) {
+  private drawGate(ctx: CanvasRenderingContext2D, g: GateRun, room: RoomRun) {
     const w = g.wall;
     const doorTop = g.door.y;
+    if (g.spec.look === 'butler') return this.drawButler(ctx, g, room);
     // the root wall over the door (it never opens), then the vine gate in it, shut or open (World 2's court: a wall of bundled reeds)
     if (g.spec.look === 'reeds') drawReedWall(ctx, w.x - 6, w.y, doorTop + 14, w.width + 12);
     else if (!drawWallArt(ctx, w.x - 6, w.y, doorTop + 14, w.width + 12)) {
@@ -1311,7 +1824,14 @@ export class KitPlay {
       ctx.fillRect(w.x, w.y, w.width, doorTop - w.y + 10);
     }
     const gw = KIT.gateW + 50;
-    if (!drawKitArt(ctx, g.show > 0.5 ? 'gateOpen' : 'gateShut', g.x, g.y + 4, { w: gw, h: KIT.doorH + 10 })) {
+    // World 1: Matt's branch gate, drawn up out of the way as it opens; World 3: Grandma's fern stone door, rolled aside
+    const lw = this.look.world;
+    const drew = !g.spec.look && lw === 1
+      ? g.show > 0.98 || drawKitArt(ctx, 'branchGate', g.x, g.y + 4 - g.show * (KIT.doorH + 20), { w: gw + 20, h: KIT.doorH + 14, alpha: 1 - g.show * 0.85 })
+      : !g.spec.look && lw === 3
+        ? drawKitArt(ctx, g.show > 0.5 ? 'fernDoorOpen' : 'fernDoorShut', g.x, g.y + 6, { w: gw + 40, h: KIT.doorH + 20 })
+        : drawKitArt(ctx, g.show > 0.5 ? 'gateOpen' : 'gateShut', g.x, g.y + 4, { w: gw, h: KIT.doorH + 10 });
+    if (!drew) {
       ctx.fillStyle = g.open ? 'rgba(92, 64, 32, 0.35)' : '#6b4a2b';
       ctx.fillRect(g.door.x, doorTop, g.door.width, KIT.doorH);
     }
@@ -1335,7 +1855,7 @@ export class KitPlay {
       ctx.stroke();
       ctx.restore();
       drawKitArt(ctx, 'winch', cx, top + 30, { scale: 0.6 });
-      if (!drawKitArt(ctx, 'liftPlank', cx, pl.y + 16, { w: pl.width + 12, h: 30 })) {
+      if (!this.drawPlank(ctx, pl)) {
         ctx.fillStyle = '#8b5a2b';
         ctx.fillRect(pl.x, pl.y, pl.width, 16);
       }
@@ -1358,6 +1878,8 @@ export class KitPlay {
       ctx.lineTo(b.x, top + 6);
       ctx.stroke();
       ctx.restore();
+      // (World 4: Dot's knot, the pulley's rope tied off round a peg in the rock above it)
+      if (this.look.world === 4) this.drawPeg(ctx, px, py);
       if (!drawKitArt(ctx, 'pulley', px, py + 52, { scale: 0.7 })) {
         ctx.fillStyle = '#6b4a2b';
         ctx.beginPath();
@@ -1365,7 +1887,7 @@ export class KitPlay {
         ctx.fill();
       }
     }
-    if (!drawKitArt(ctx, 'liftPlank', pl.x + pl.width / 2, pl.y + 16, { w: pl.width + 12, h: 30 })) {
+    if (!this.drawPlank(ctx, pl)) {
       ctx.fillStyle = '#8b5a2b';
       ctx.fillRect(pl.x, pl.y, pl.width, 16);
     }
@@ -1383,14 +1905,16 @@ export class KitPlay {
     const cageH = kitSize('cageShut').h;
     const wheelX = (b.x + cx) / 2;
     const wheelY = Math.min(b.y - b.spec.mouth - kitSize('basket2').h, l.baseY - l.spec.rise - cageH) - 40;
-    // the post, from the bank up to the pulley's arm
+    // Matt's pulley post (World 2's sheet), from the bank up to its wheel, the wheel where the ropes run (its hanging ropes are the game's)
+    const pp = kitSize('pulleyPost');
+    const postH = (b.y + 6 - wheelY) / (1 - POST_WHEEL.y);
+    const postW = (postH * pp.w) / pp.h;
+    const drewPost = drawKitArt(ctx, 'pulleyPost', wheelX - (POST_WHEEL.x - 0.5) * postW, b.y + 6, { w: postW, h: postH });
     ctx.save();
-    ctx.fillStyle = '#6b4a2b';
-    ctx.strokeStyle = '#2f1d0e';
-    ctx.lineWidth = 3;
-    const postX = wheelX - 34;
-    ctx.fillRect(postX - 9, wheelY - 18, 18, b.y - wheelY + 22);
-    ctx.strokeRect(postX - 9, wheelY - 18, 18, b.y - wheelY + 22);
+    if (!drewPost) {
+      ctx.fillStyle = '#6b4a2b';
+      ctx.fillRect(wheelX - 43, wheelY - 18, 18, b.y - wheelY + 22);
+    }
     ctx.strokeStyle = '#a07a4a';
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -1400,12 +1924,6 @@ export class KitPlay {
     ctx.lineTo(b.x, this.mouthY(room, b) - kitSize('basket2').h * 0.5);
     ctx.stroke();
     ctx.restore();
-    if (!drawKitArt(ctx, 'pulley', wheelX, wheelY + 60, { scale: 0.62 })) {
-      ctx.fillStyle = '#6b4a2b';
-      ctx.beginPath();
-      ctx.arc(wheelX, wheelY, 15, 0, Math.PI * 2);
-      ctx.fill();
-    }
     if (!c.collected) {
       // (the little one first, the bars over it)
       drawW2Cage(ctx, c, this.t, true);
@@ -1417,10 +1935,72 @@ export class KitPlay {
     } else drawKitArt(ctx, 'cageLifted', cx, floor + 30);
   }
 
+  /** a lift's plank: World 4's is the plank of Matt's rope lift, every other world's the plank of World 1's swing */
+  private drawPlank(ctx: CanvasRenderingContext2D, pl: Platform): boolean {
+    const cx = pl.x + pl.width / 2;
+    if (this.look.world === 4) return drawKitArt(ctx, 'ropeLift', cx, pl.y + 20, { w: pl.width + 16, h: 34 });
+    return drawKitArt(ctx, 'liftPlank', cx, pl.y + 16, { w: pl.width + 12, h: 30 });
+  }
+
+  /** Dot's knot (World 4): the pulley's rope tied off round Matt's anchor peg on the nearest rock over the pulley, and down to it */
+  private drawPeg(ctx: CanvasRenderingContext2D, px: number, py: number) {
+    let best: Platform | null = null;
+    for (const q of this.platforms) {
+      if (q.y > py + 70 || q.y < py - 260 || q.x > px + 220 || q.x + q.width < px - 220 || q.width < 60) continue;
+      if (!best || Math.abs(q.y - py) < Math.abs(best.y - py)) best = q;
+    }
+    if (!best) return;
+    const f = KIT_ART.anchorPeg;
+    const s = 0.62;
+    const x = Math.max(best.x + 40, Math.min(best.x + best.width - 40, px));
+    // (its rock's top level with the ledge's: the rest of its rock hangs over the ledge's face)
+    const bottom = best.y + (f.h - PEG_ROCK) * f.k * s;
+    if (!drawKitArt(ctx, 'anchorPeg', x, bottom, { scale: s })) return;
+    const kx = x + (f.w * PEG_KNOT.x - f.ax) * f.k * s;
+    const ky = bottom - f.h * f.k * s * (1 - PEG_KNOT.y);
+    ctx.save();
+    ctx.strokeStyle = '#a07a4a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(kx, ky);
+    ctx.lineTo(px, py + 4);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /**
+   * World 2's lever is a winch (Matt's sheet): wound, its rope runs taut to the sluice gate it holds up; let go, the rope hangs slack.
+   * Turning, it gives a little shake. False until the sheet has loaded.
+   */
+  private drawWinch(ctx: CanvasRenderingContext2D, room: RoomRun, l: LeverRun): boolean {
+    if (!kitArtReady()) return false;
+    const f = KIT_ART.winch2;
+    const sz = kitSize('winch2', 0.8);
+    const turning = l.show > 0.05 && l.show < 0.95;
+    const drumX = l.x + (f.w * 0.45 - f.ax) * f.k * 0.8;
+    const drumY = l.y + 4 - sz.h * 0.72;
+    const sl = room.sluices.find((q) => wireIds(q.spec.open).includes(l.spec.id));
+    if (sl) {
+      const tx = sl.x, ty = sl.y - 78;
+      ctx.save();
+      ctx.strokeStyle = '#c9a66b';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(drumX, drumY);
+      const sag = (1 - l.show) * 70;
+      ctx.quadraticCurveTo((drumX + tx) / 2, Math.max(drumY, ty) + sag, tx, ty);
+      ctx.stroke();
+      ctx.restore();
+    }
+    return drawKitArt(ctx, 'winch2', l.x, l.y + 4, { scale: 0.8, rot: turning ? Math.sin(this.t * 40) * 0.03 : 0 });
+  }
+
   private drawBasket(ctx: CanvasRenderingContext2D, room: RoomRun, b: BasketRun) {
     const my = this.mouthY(room, b);
     // (World 2's counter-basket, by a hanging cage: the rope basket of river stones)
     if (room.lifts.some((l) => l.cage && room.baskets[l.basket] === b) && drawKitArt(ctx, b.count > 0 ? 'basket2Full' : 'basket2', b.x, my + kitSize('basket2').h * 0.62)) return;
+    // (World 4: the cliff folk's rope net, full of the broken ledge's stones once he has put them in)
+    if (this.look.world === 4 && drawKitArt(ctx, b.count > 0 ? 'netFull' : 'net', b.x, my + kitSize('net').h * 0.42)) return;
     const sz = kitSize('basket');
     const bottom = my + sz.h * 0.55;
     if (!drawKitArt(ctx, b.count > 0 ? 'basketFull' : 'basket', b.x, bottom)) {
@@ -1464,7 +2044,21 @@ export class KitPlay {
   private drawBell(ctx: CanvasRenderingContext2D, b: BellRun) {
     const u = this.t - b.rung;
     const swing = u < 1.6 ? Math.sin(u * 16) * 0.12 * (1 - u / 1.6) : 0;
-    if (!drawKitArt(ctx, 'bell', b.x, b.y + 3, { rot: swing })) {
+    // rung, Matt's belfry stands still and the bell in it swings (his swinging bell, its ringing lines and all, turned each way in turn)
+    if (u < 1.6 && kitArtReady()) {
+      drawKitArt(ctx, 'bellFrame', b.x, b.y + 3);
+      const fr = kitSize('bellFrame');
+      const top = b.y + 3 - fr.h * (1 - BELL_HANG);
+      const k = (fr.h * BELL_H) / kitSize('bellRing').h;
+      const side = Math.sin(u * 16) >= 0 ? 1 : -1;
+      const a = Math.sin(u * 16) * 0.3 * (1 - u / 1.6);
+      ctx.save();
+      ctx.translate(b.x, top);
+      ctx.rotate(a);
+      // (the painting leans one way: mirrored for the swing the other way; hung by its loop at the top)
+      drawKitArt(ctx, 'bellRing', 0, kitSize('bellRing', k).h, { scale: k, flip: side < 0 });
+      ctx.restore();
+    } else if (!drawKitArt(ctx, 'bell', b.x, b.y + 3, { rot: swing })) {
       ctx.fillStyle = '#b45309';
       ctx.beginPath();
       ctx.arc(b.x, b.y - 60, 18, 0, Math.PI * 2);
@@ -1501,6 +2095,8 @@ export class KitPlay {
   }
 
   private drawShutter(ctx: CanvasRenderingContext2D, s: ShutterRun) {
+    // (behind it, the crack in the cliff the gusts blow out of: the shutter is what stops them)
+    drawKitArt(ctx, 'gustCrack', s.x - 6 * (s.zone?.dir ?? 1), s.y + 8, { scale: 0.82, alpha: 0.95, flip: (s.zone?.dir ?? 1) < 0 });
     if (!drawKitArt(ctx, s.open ? 'shutterOpen' : 'shutterShut', s.x, s.y + 3)) {
       ctx.fillStyle = s.open ? 'rgba(161, 98, 7, 0.4)' : '#a16207';
       ctx.fillRect(s.x - 50, s.y - 110, 100, 110);
@@ -1521,6 +2117,11 @@ export class KitPlay {
   }
 
   private drawSluice(ctx: CanvasRenderingContext2D, sl: SluiceRun) {
+    // World 2: Matt's trough from the sluice's foot out over the river, its water running once the sluice is open, dry while it is shut
+    if (this.look.world === 2 && sl.river) {
+      const toRight = (sl.river.x0 + sl.river.x1) / 2 >= sl.x;
+      drawKitArt(ctx, sl.open ? 'channel' : 'channelDry', sl.x + (toRight ? 92 : -92), sl.y + 20, { scale: 0.85, flip: toRight });
+    }
     if (!drawKitArt(ctx, sl.open ? 'sluiceOpen' : 'sluiceShut', sl.x, sl.y + 10)) {
       ctx.fillStyle = sl.open ? 'rgba(120, 80, 40, 0.4)' : '#7c5a32';
       ctx.fillRect(sl.x - 40, sl.y - 100, 80, 100);
@@ -1547,6 +2148,232 @@ export class KitPlay {
       const want = room.items.find((it) => it.variant === t.spec.wants);
       if (want) this.drawItem(ctx, want, t.x - 8, top - 30, 0, 0.8);
     }
+  }
+
+  // ───────────────────────────── phase 2b's pictures (Meeca's sheet: meeca-night.webp) ─────────────────────────────
+
+  /** the Butler in his low root arch: bowing, offering another cup, gasping at the spill, then fussing over it with his cloth */
+  private drawButler(ctx: CanvasRenderingContext2D, g: GateRun, room: RoomRun) {
+    const w = g.wall;
+    if (!drawWallArt(ctx, w.x - 6, w.y, g.door.y + 14, w.width + 12)) {
+      ctx.fillStyle = '#4a3420';
+      ctx.fillRect(w.x, w.y, w.width, g.door.y - w.y + 10);
+    }
+    drawW5(ctx, 'arch', g.x, g.y + 6, KIT.gateW + 70);
+    const tp = room.teapots.find((q) => q.tipped);
+    let n: 'bu1' | 'bu3' | 'bu5' | 'bu13' | 'bu14' | 'bu15' = 'bu1';
+    if (tp) n = tp.t < 1.6 ? 'bu5' : Math.floor(tp.t / 1.4) % 2 ? 'bu13' : 'bu14';
+    else if (this.sipT > 0 && room === this.rooms[this.inRoom]) n = 'bu3';
+    else if (room.cups > 1) n = Math.floor(this.t / 2.2) % 3 === 2 ? 'bu15' : 'bu1';
+    // (he faces her: she comes from the left)
+    if (!drawNightPiece(ctx, n, g.x + 6, g.y + 3, { flip: true })) {
+      ctx.fillStyle = '#c9c2e8';
+      ctx.beginPath();
+      ctx.arc(g.x, g.y - 70, 26, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  /** where the Butler stands (his bubble goes over him), or null */
+  butlerAt(): { x: number; y: number } | null {
+    for (const room of this.rooms) for (const g of room.gates) if (g.spec.look === 'butler') return { x: g.x, y: g.y };
+    return null;
+  }
+
+  /** behind everything else of the room: the troughs, the tea stains, the ladder, the sapling, the silk line, the moonflower */
+  private drawNightBack(ctx: CanvasRenderingContext2D, room: RoomRun) {
+    for (const tp of room.teapots) this.drawTrough(ctx, tp);
+    for (const sp of room.saplings) this.drawSapling(ctx, sp);
+    for (const sl of room.silks) this.drawSilk(ctx, sl);
+    for (const la of room.ladders) this.drawLadder(ctx, room, la);
+    for (const m of room.moons) this.drawMoon(ctx, m);
+  }
+
+  /** among the room's pieces: the empty chair, the teapot */
+  private drawNightMid(ctx: CanvasRenderingContext2D, room: RoomRun) {
+    for (const c of room.chairs) {
+      // (her own sheet draws her in it, chair and all, while it holds her)
+      if (this.night && (c.state === 'sink' || c.state === 'held')) continue;
+      if (!drawW5(ctx, 'armchairRose', c.x, c.y + 4, CHAIR.w + 18)) {
+        ctx.fillStyle = '#c98aa0';
+        ctx.fillRect(c.seat.x, c.seat.y, c.seat.width, c.seat.height);
+      }
+      if (!this.night && (c.state === 'sink' || c.state === 'held')) this.drawWrap(ctx, c.x, c.seat.y - 40, 36, c.t);
+    }
+    for (const tp of room.teapots) {
+      const tipped = tp.tipped;
+      // (its table: the Butler's, with the napkin)
+      drawW5(ctx, 'teaTableNapkin', tp.x - 6, tp.y - (tp.spec.at.dy ?? 0) + 4, 92);
+      if (!drawNightPiece(ctx, tipped ? 'teapotTipped' : 'teapot', tp.x, tp.y + 2)) {
+        ctx.fillStyle = '#f1ece2';
+        ctx.beginPath();
+        ctx.arc(tp.x, tp.y - 22, 22, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // its sleepy steam (World 5's "don't drink" teapot), while it stands
+      if (!tipped) {
+        ctx.save();
+        for (let i = 0; i < 3; i++) {
+          const u = (this.t * 0.5 + i / 3) % 1;
+          ctx.globalAlpha = 0.35 * (1 - u);
+          ctx.strokeStyle = '#e9e3ff';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          const sx = tp.x - 18 + i * 6;
+          ctx.moveTo(sx, tp.y - 44 - u * 50);
+          ctx.quadraticCurveTo(sx + 10, tp.y - 54 - u * 50, sx, tp.y - 64 - u * 50);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+  }
+
+  /** silk wrapped round whoever is in the chair (when no sheet of theirs shows it) */
+  private drawWrap(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, t: number) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(245, 245, 255, 0.8)';
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 6; i++) {
+      ctx.beginPath();
+      ctx.ellipse(x, y, r, r * 0.45, i * 0.9 + t * 0.4, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /** the trough from the pot to the basket, and the tea in it once the pot is tipped; the stains the spill leaves stay */
+  private drawTrough(ctx: CanvasRenderingContext2D, tp: TeapotRun) {
+    const pts = [{ x: tp.x - 20, y: tp.y - 14 }, ...tp.path];
+    for (let i = 0; i + 1 < pts.length; i++) {
+      const a = pts[i], b = pts[i + 1];
+      const len = Math.hypot(b.x - a.x, b.y - a.y);
+      ctx.save();
+      ctx.translate(a.x, a.y);
+      ctx.rotate(Math.atan2(b.y - a.y, b.x - a.x));
+      if (!drawNightPiece(ctx, i === pts.length - 2 ? 'troughEnd' : 'trough', len / 2, 16, { w: len + 18, h: 30 })) {
+        ctx.fillStyle = '#8a5a32';
+        ctx.fillRect(0, -6, len, 12);
+      }
+      // the tea running along it
+      if (tp.tipped) {
+        const u = Math.max(0, Math.min(1, (tp.t / TEA.run) * (pts.length - 1) - i));
+        if (u > 0) {
+          ctx.strokeStyle = 'rgba(176, 106, 40, 0.92)';
+          ctx.lineWidth = 6;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(0, 2);
+          ctx.lineTo(len * u, 2);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+    // the stains under the table (they stay: Pokey finds them in 5-6), and the stream from the spout while the basket fills
+    const floorY = tp.y - (tp.spec.at.dy ?? 0);
+    if (tp.spills > 0 || tp.tipped) drawNightPiece(ctx, 'stain', tp.x - 10, floorY + 2, { scale: 0.9, alpha: tp.spills > 0 ? 1 : Math.min(1, tp.t * 2) });
+    if (tp.spills > 1) drawNightPiece(ctx, 'stain', tp.x - 60, floorY + 2, { scale: 0.6, flip: true });
+    if (!tp.tipped) return;
+    const end = pts[pts.length - 1];
+    if (tp.t > TEA.run * 0.8 && tp.t < TEA.run + 0.9) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(176, 106, 40, 0.85)';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(end.x, end.y + 4);
+      ctx.lineTo(end.x + 2, end.y + 40);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  private drawSapling(ctx: CanvasRenderingContext2D, sp: SaplingRun) {
+    if (sp.bent) {
+      // the bridge it makes: the bent arch from its root to the far end
+      const dx = sp.to.x - sp.x, dy = sp.to.y - sp.y;
+      const len = Math.hypot(dx, dy);
+      ctx.save();
+      ctx.translate(sp.x, sp.y);
+      ctx.rotate(Math.atan2(dy, dx));
+      if (!drawNightPiece(ctx, 'saplingBent', len / 2, 8, { w: len + 20, h: Math.max(60, len * 0.36) })) {
+        ctx.strokeStyle = '#6b4a2b';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(len / 2, -len * 0.3, len, 0);
+        ctx.stroke();
+      }
+      ctx.restore();
+      return;
+    }
+    const u = sp.bendT >= 0 ? Math.min(1, sp.bendT / SAPLING.bend) : 0;
+    const top = saplingTop(sp, u * u * (3 - 2 * u));
+    const ang = Math.atan2(top.x - sp.x, sp.y - top.y);
+    const h = Math.hypot(top.x - sp.x, sp.y - top.y);
+    if (!drawNightPiece(ctx, 'sapling', sp.x, sp.y + 4, { rot: ang, h: h + 8, w: Math.max(40, (h + 8) * 0.27) })) {
+      ctx.strokeStyle = '#6b4a2b';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(sp.x, sp.y);
+      ctx.lineTo(top.x, top.y);
+      ctx.stroke();
+    }
+  }
+
+  /** the silk line: shining, swaying a little, a glint running down it */
+  private drawSilk(ctx: CanvasRenderingContext2D, sl: SilkRun) {
+    const v = sl.vine;
+    if (!v) return;
+    const sway = Math.sin(this.t * 1.3 + v.x * 0.01) * 3;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(230, 236, 255, 0.35)';
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.moveTo(v.x, v.topY - 40);
+    ctx.quadraticCurveTo(v.x + sway, (v.topY + v.bottomY) / 2, v.x + sway * 0.5, v.bottomY + 4);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(250, 252, 255, 0.95)';
+    ctx.lineWidth = 2.2;
+    ctx.stroke();
+    ctx.restore();
+    const u = (this.t * 0.6) % 1;
+    drawGlow(ctx, v.x + sway * u, v.topY + (v.bottomY - v.topY) * u, 14, 'rgba(240, 244, 255, A)', 0.9);
+  }
+
+  /** the vine ladder: rolled up and tied with its silk knot at the top of the bank, then unrolling down it once the knot snaps */
+  private drawLadder(ctx: CanvasRenderingContext2D, room: RoomRun, la: LadderRun) {
+    const v = la.vine;
+    const knot = room.knots[0];
+    if (la.show < 0.02) {
+      drawNightPiece(ctx, 'ladderRolled', la.x, la.y + 6, { scale: 0.9 });
+      return;
+    }
+    const top = v ? v.topY : la.y;
+    const full = v ? v.bottomY + 6 - top : 260;
+    const h = Math.max(20, full * la.show);
+    if (!drawNightPiece(ctx, 'ladder', la.x, top + h, { w: 46, h })) {
+      ctx.strokeStyle = '#4e7a3a';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(la.x - 18, top, 36, h);
+    }
+    if (knot?.snapped && this.t - knot.at < 2.5) drawNightPiece(ctx, 'knotSnapped', knot.x, knot.y + 6, { alpha: Math.max(0, 1 - (this.t - knot.at) / 2.5) });
+  }
+
+  /** the moonflower: a shut bud that gleams, opening in the light; open, a big soft light of its own */
+  private drawMoon(ctx: CanvasRenderingContext2D, m: MoonRun) {
+    const u = m.show;
+    if (u < 1) drawNightPiece(ctx, 'moonBud', m.x, m.y + 4, { alpha: 1 - u });
+    if (u > 0) {
+      drawGlow(ctx, m.x, m.y - 50, 60 + 220 * u, 'rgba(225, 232, 255, A)', 0.9 * u);
+      drawNightPiece(ctx, 'moonOpen', m.x, m.y + 4, { alpha: u, scale: 0.6 + 0.4 * u });
+    } else drawGlow(ctx, m.x, m.y - 60, 26, 'rgba(225, 232, 255, A)', 0.35 + 0.15 * Math.sin(this.t * 2));
+  }
+
+  /** the silk knot's gleam over the rolled ladder, until it snaps */
+  private drawKnots(ctx: CanvasRenderingContext2D, room: RoomRun) {
+    for (const k of room.knots) if (!k.snapped) drawGlow(ctx, k.x, k.y - 14, 22, 'rgba(240, 244, 255, A)', 0.5 + 0.2 * Math.sin(this.t * 3));
   }
 
   private drawBeetle(ctx: CanvasRenderingContext2D, b: BeetleRun) {

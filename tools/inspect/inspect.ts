@@ -1,7 +1,8 @@
 /**
  * Stage inspector, slice 1 (a development tool: never shipped, nothing in src/ imports it, and it only reads src/game).
  *
- *   npx tsx tools/inspect/inspect.ts --worlds 1-5 [--seed 1] [--html path/to/report.html]
+ *   npx tsx tools/inspect/inspect.ts --worlds 1-5 [--seed 1] [--html path/to/report.html] [--stages 1-7,2-2]
+ *   npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer [--ft-trials 2] [--ft-windows 12]   (the pre-QA pass: firsttimerReport.ts)
  *
  * For every stage of the worlds asked for it traces the main route from the spawn to the shrine (route.ts), lists the active beats
  * along it (beats.ts), and measures dead time, rests, how alike the stages of a world are, the goal against what the stage holds,
@@ -23,6 +24,9 @@ import {
 import { renderReport } from './report.ts';
 import { inspectJumps, ADULT, KID, TRIALS, type JumpReport, type Timing } from './jumps.ts';
 import { surfaceOf } from '../../src/game/stageMetrics.ts';
+import { runFirstTimerPass, type FirstTimerPass } from './firsttimerReport.ts';
+import { pacing, type MissAt, type Pacing } from './pacing.ts';
+import { computeBands, type BandsOutput } from './bands.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -40,6 +44,11 @@ function args() {
     seed: Number(get('--seed') ?? 1),
     html: get('--html') ?? path.join(here, 'out', 'report.html'),
     json: get('--json') ?? path.join(here, 'out', 'report.json'),
+    /** only these stage ids (comma list), within the worlds */
+    stages: get('--stages')?.split(',').filter(Boolean) ?? null,
+    firsttimer: a.includes('--firsttimer'),
+    ftTrials: Number(get('--ft-trials') ?? 2),
+    ftWindows: Number(get('--ft-windows') ?? 12),
   };
 }
 
@@ -95,6 +104,8 @@ export interface StageReport {
   offRoute: Record<string, number>;
   density: number[];
   sections: Array<{ name: string; t0: number; t1: number }>;
+  /** action density, rhythm groups, rest pads and the tension curve against Gemini's table (pacing.ts), on each setting's own stage */
+  pacing: { normal: Pacing; easy: Pacing };
 }
 
 export interface PairReport { world: number; a: string; b: string; cos: number; win: number; ta: number; tb: number; sa: string; sb: string; flagged: boolean; why: string[] }
@@ -215,7 +226,9 @@ function goalTargets(type: string, st: Stage): Array<{ x: number; y: number }> {
 
 function main() {
   const opt = args();
-  const { stages, skipped } = stageList(opt.worlds, opt.seed);
+  const listed = stageList(opt.worlds, opt.seed);
+  const stages = opt.stages ? listed.stages.filter((e) => opt.stages!.includes(e.id)) : listed.stages;
+  const skipped = listed.skipped;
   const reports: StageReport[] = [];
   const wins = new Map<string, Win[]>();
   const profs = new Map<string, ReturnType<typeof profile>>();
@@ -247,6 +260,12 @@ function main() {
     ].sort((a, b) => a.t - b.t);
     const timed = [...jN].filter((j) => j.timing).sort((a, b) => a.timing!.safe - b.timing!.safe);
     const rest = restCheck(br.beats, br.total, samples);
+    // (a jump beat's miss share: the bot's jump nearest its take-off)
+    const missAt = (js: JumpReport[]): MissAt => (x, y) => {
+      const j = js.find((q) => q.rate !== null && Math.abs(q.x - x) < 80 && Math.abs(q.y - y) < 120);
+      return j ? 1 - j.rate! : 0;
+    };
+    const secs = sections(st, samples, br.beats, br.total);
     const tokens = actionTokens(br.beats, br.total);
     const ws = windows(tokens, br.total);
     wins.set(e.id, ws);
@@ -298,7 +317,11 @@ function main() {
       counts: counts(st),
       offRoute: br.offRoute,
       density: density(br.beats, br.total),
-      sections: sections(st, samples, br.beats, br.total),
+      sections: secs,
+      pacing: {
+        normal: pacing(br.beats, br.total, 'normal', { chase: !!st.proto?.chase, missAt: missAt(jN), sections: secs }),
+        easy: pacing(ebr.beats, ebr.total, 'easy', { chase: !!easy.proto?.chase, missAt: missAt(jE), sections: sections(easy, eSamples, ebr.beats, ebr.total) }),
+      },
     });
     process.stderr.write(`${e.id} ${route.traced} ${br.total.toFixed(0)}s beats ${beatCount} dead ${dn.total.toFixed(0)}s (${Date.now() - t0} ms)\n`);
   }
@@ -331,7 +354,10 @@ function main() {
     if (best) r.similar = { id: best.a === r.id ? best.b : best.a, cos: best.cos, win: best.win, flagged: best.flagged };
   }
 
-  const out = { generated: new Date().toISOString(), seed: opt.seed, worlds: opt.worlds, weights: WEIGHT, thresholds: { normal: NORMAL_GAP, easy: EASY_GAP, cosine: cosAt, window: winAt, firstCosine: COS_FLAG, firstWindow: WIN_FLAG, firstFlags: oldFlags }, bots: { trials: TRIALS, kid: KID, adult: ADULT, kidHot: KID_HOT, adultHot: ADULT_HOT }, stages: reports, pairs, skipped, dist };
+  // the first-timer bot in the real engine, Easy and Normal (the pre-QA pass)
+  const firstTimer = opt.firsttimer ? runFirstTimerPass(stages.map((e) => ({ id: e.id, name: e.name, world: e.world })), opt.seed, { trials: opt.ftTrials, windows: opt.ftWindows, log: (m) => process.stderr.write(m) }) : undefined;
+  const bands = computeBands(reports, firstTimer);
+  const out = { firstTimer, bands, generated: new Date().toISOString(), seed: opt.seed, worlds: opt.worlds, weights: WEIGHT, thresholds: { normal: NORMAL_GAP, easy: EASY_GAP, cosine: cosAt, window: winAt, firstCosine: COS_FLAG, firstWindow: WIN_FLAG, firstFlags: oldFlags }, bots: { trials: TRIALS, kid: KID, adult: ADULT, kidHot: KID_HOT, adultHot: ADULT_HOT }, stages: reports, pairs, skipped, dist };
   fs.mkdirSync(path.dirname(opt.json), { recursive: true });
   fs.writeFileSync(opt.json, JSON.stringify(out, null, 1));
   fs.mkdirSync(path.dirname(opt.html), { recursive: true });
@@ -346,6 +372,10 @@ export type InspectOutput = {
   stages: StageReport[]; pairs: PairReport[]; skipped: Array<{ id: string; name: string; why: string }>;
   /** every same-world pair's two measures, for the distribution chart */
   dist: { cos: number[]; win: number[] };
+  /** the first-timer bot's pass (--firsttimer) */
+  firstTimer?: FirstTimerPass;
+  /** difficulty score per stage, each world's band and §1b's flags (bands.ts) */
+  bands: BandsOutput;
 };
 
 main();

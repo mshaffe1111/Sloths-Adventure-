@@ -75,6 +75,49 @@ npx tsx tools/inspect/inspect.ts --worlds 1-5
 npx tsx --test tools/inspect/analyze.test.ts
 ```
 
+**The first-timer bot** (`--firsttimer`, `firsttimer.ts`, `firsttimerReport.ts`; the pre-QA pass, HANDOFF §6) plays every stage in the
+REAL engine (`src/game/realPlay.ts`) the way a new player on a phone does, on Easy with a kid's thumb and on Normal with an adult's: it
+goes the way the stage leads, flicks a plain short jump only when stopped or at an edge (a double only where a single failed), climbs a
+trunk it touches, stands at a puzzle and is put past it, and heeds warnings and Dot's tips about a second after they are on screen. The
+thumb follows Matt's Gemini research (latency N(+90 ms, 65 ms) kid / N(+30, 30) adult, hold noise 80 / 35 ms, 8% / 3% of flicks cut to a
+2-frame tap, drift ~N(+4, 2) px/s with reversal dead time, log-normal late lift-off, 0.4 s hesitation and a 133-200 ms thumb swap before
+a tap). Dot is followed through the game's own guide queue. It reports, per stage and setting: harm in the first 5 s (and holding right
+from frame one), the first hit of each kind against the tip that teaches it, stuck spots (8 s without progress) and loops, hits and
+lives a minute, Dot's repeats, gaps under 10 s, lines up 20 s+ with their thing out of reach, re-teaching and long lines; and the
+Gemini gates (survival per jump 85% / 70%, minimum input window 300 / 167 ms measured in the engine, peak stress per burst 2.5 / 5.5,
+backtracking ratio). Every finding names the `reference/STAGE-RULES.md` rule it breaks. A table and a worst-first list go into
+`report.html`, everything into `report.json` (`firstTimer`).
+
+```
+npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer [--ft-trials 2] [--ft-windows 12] [--stages 1-7,2-2] [--seed 1]
+npx tsx --test tools/inspect/firsttimer.test.ts
+FT_TRACE=1 ...   # every jump the bot tries, on stderr;  FT_FRAMES=16.8,18.7 ...   # every frame in that stretch of play
+```
+
+**Pacing and difficulty bands** (`pacing.ts`, `bands.ts`; every run). Pacing measures, per stage and setting on the inspector's own
+route and beats, action density, rhythm groups (bursts and their actions), rest pads, the longest walk with no action and a tension
+curve in 9 parts, against Gemini's event density table and sawtooth (STAGE-RULES §2 "Pacing", "Tension"); a pacing block on each card
+and a worst-first list. Bands score every stage 0-100 per setting (first-timer lives lost a minute, the noisy bots' hardest jumps, peak
+stress, the narrowest input window, dead time, length; with `--firsttimer`, else the inspector's parts alone), chart each world's band
+and flag STAGE-RULES §1b (a world below the one before, a stage above the next world's middle or below the previous one's, the per-jump
+floors). Both go into `report.json` (`stages[].pacing`, `bands`).
+
+```
+npx tsx --test tools/inspect/pacing.test.ts tools/inspect/bands.test.ts
+```
+
+(`--seed` reaches the hand-built stages only: the inspector builds the generated ones, 5-6 to 5-9 and Worlds 6-10, from their designed attempt, so every seed shows the same layout there. The 200-roll tool below builds them the way the game does.)
+
+### The 200-roll tool (how much a stage changes from roll to roll)
+
+Gemini's expressive range analysis (`reference/GEMINI-PCG-RESEARCH.md` part 3, Smith & Whitehead 2010), with the thresholds of `reference/STAGE-RULES.md` §2. Every stage is built `--rolls` times through the game's own entry path (`setLayoutVariant` + `generateStage`, so the generated stages make their validator re-rolls; `eraRoll.ts`), and each roll is measured on the inspector's route and beats: quick-player length, dead time and the longest quiet stretch, beats a minute, the action mix, linearity, leniency, height range, the pieces, props and puzzle rooms it uses. Per stage: how many different layouts and action orders, the variety score (mean 1 - cosine of action 3-grams over every pair of rolls, target 0.35+) and the distance between the same 20 s of two rolls, two heat maps (straightness x forgiveness, length x quiet time), and the rolls that break a rule (under 2:00 / 1:40 for a climb, a quiet stretch over 4 s, quiet time over a fifth of the stage, the level check, looking like the same roll of another stage of the world, and on `--bots` rolls the kid and adult jump bots), with the worst rolls listed as `?layout=N` to replay. Runs the stages in worker processes (`--jobs`, default all cores): Worlds 1-5 x 200 rolls took 13 minutes on 4 cores (51 when other helpers had the machine busy), plus about 3 for the look-alike pass; `--rolls N` and `--stages` cut it down, `--raw file` keeps every roll and `--from file` redraws the report from it without rolling. Writes `tools/inspect/out/era.json` and `era.html`.
+
+```
+npx tsx tools/inspect/era.ts --worlds 1-5 --rolls 200 [--html out.html] [--json out.json] [--jobs 4] [--bots 10] [--look 25] [--stages 1-4,5-6] [--raw rolls.json | --from rolls.json]
+```
+
+`src/game/rollGuard.test.ts` (in the suite) samples 10 rolls of every World 1-4 stage and fails if one is under 2:00 or fails the level check.
+
 ## tools/control-test-collector.gs
 
 This is the Google Apps Script behind the touch-control test (`#ctest`). It writes testers' recordings into Matt's Google Sheet. The real key lives only in Matt's deployed script and in the page, and is not repeated here.

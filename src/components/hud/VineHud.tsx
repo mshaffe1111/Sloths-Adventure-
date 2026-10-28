@@ -1,7 +1,7 @@
 /**
  * The HUD: Matt's pick B, the hanging vine, with D's bloom-on-change (2026-10-26).
  *
- *   top-left:   a vine with the hearts hanging on threads. Lives, the power-up and the stage name hang lower down, and only show
+ *   top-left:   a vine with the hearts hanging on threads. Lives hang lower down (always, small); the power-up and the stage name too, and only show
  *               when they change.
  *   top centre: the goal counter, the biggest piece (Matt, 2026-10-26: "make the counter bigger and in the middle"): a plate on
  *               the canopy vine with the icon and the count (slots for small quotas, a little trail for distance stages). The

@@ -4,6 +4,9 @@
  */
 import type { InspectOutput, StageReport, PairReport, Hotspot } from './inspect.ts';
 import type { JumpReport } from './jumps.ts';
+import { renderFirstTimer } from './firsttimerReport.ts';
+import { renderPacingCard, renderPacingSummary } from './pacing.ts';
+import { renderBands } from './bands.ts';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
@@ -148,6 +151,7 @@ function card(s: StageReport, out: InspectOutput): string {
   ${strip(s, out.thresholds.normal)}
   <div class="mix">${mix}</div>
   ${jumpBlock(s)}
+  ${renderPacingCard(s.pacing)}
   <dl class="kv">
     <dt>Rest after bursts</dt><dd>${rest.bursts.length ? `${rest.bursts.length} burst${rest.bursts.length === 1 ? '' : 's'} of action; ${rest.noRest ? `<b class="badt">${rest.noRest} with no rest</b> (no second of plain walking before the next beat)` : 'each one is followed by at least a second of plain walking'}` : 'no bursts (beats never bunch up)'}</dd>
     <dt>Most like</dt><dd>${sim ? `<a href="#s${sim.id}">${sim.id} ${esc(simName)}</a>: mix ${Math.round(sim.cos * 100)}% alike, closest 20 s stretch ${Math.round((1 - sim.win) * 100)}% alike ${sim.flagged ? `<span class="chip ${pair && strong(pair) ? 'bad' : 'mid'}">${pair && strong(pair) ? 'very alike' : 'flagged'}</span>` : ''}` : 'n/a'}</dd>
@@ -189,7 +193,7 @@ export function renderReport(out: InspectOutput): string {
 :root {
   --bg: #f4f6f1; --panel: #ffffff; --fg: #1c2a22; --muted: #5d6b62; --line: #d8dfd6;
   --accent: #2f6b4f; --busy: #2f8a57; --dead: #c2452d; --track: #e6ebe3; --warn: #a86a12;
-  --okbg: #dcefe2; --badbg: #f8dcd5; --midbg: #efe8d6; --hotk: #7a3fb0; --hota: #1f4f8f;
+  --okbg: #dcefe2; --badbg: #f8dcd5; --midbg: #efe8d6; --hotk: #7a3fb0; --hota: #1f4f8f; --sn: #2a78d6; --se: #eb6834;
   --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -197,11 +201,11 @@ export function renderReport(out: InspectOutput): string {
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #121a15; --panel: #1a241e; --fg: #e3ebe4; --muted: #9aa99f; --line: #2c3a31;
   --accent: #7fc89f; --busy: #4fbf7d; --dead: #ef6b4f; --track: #233029; --warn: #e2a64a;
-  --okbg: #1f3a2a; --badbg: #4a2219; --midbg: #3a3320; --hotk: #c49bf0; --hota: #8fb8f2; color-scheme: dark } }
+  --okbg: #1f3a2a; --badbg: #4a2219; --midbg: #3a3320; --hotk: #c49bf0; --hota: #8fb8f2; --sn: #3987e5; --se: #d95926; color-scheme: dark } }
 :root[data-theme="dark"] {
   --bg: #121a15; --panel: #1a241e; --fg: #e3ebe4; --muted: #9aa99f; --line: #2c3a31;
   --accent: #7fc89f; --busy: #4fbf7d; --dead: #ef6b4f; --track: #233029; --warn: #e2a64a;
-  --okbg: #1f3a2a; --badbg: #4a2219; --midbg: #3a3320; --hotk: #c49bf0; --hota: #8fb8f2; color-scheme: dark }
+  --okbg: #1f3a2a; --badbg: #4a2219; --midbg: #3a3320; --hotk: #c49bf0; --hota: #8fb8f2; --sn: #3987e5; --se: #d95926; color-scheme: dark }
 * { box-sizing: border-box }
 body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--body); margin: 0 }
 .wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px }
@@ -261,6 +265,9 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: 
 .hk { color: var(--hotk) } .ha { color: var(--hota) }
 .hists { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px }
 .hist { margin: 0 } .hist svg { width: 100%; height: auto; display: block } .hist figcaption { font-size: 12px; color: var(--muted) }
+.pace { display: grid; gap: 6px } .pcols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px }
+.tens { display: block; width: 100%; height: 44px } .pl { margin: 4px 0 0; padding-left: 16px; font-size: 12.5px; display: grid; gap: 2px }
+.bands { display: block; width: 100%; max-width: 640px; height: auto; margin: 8px auto 0 }
 </style>
 <div class="wrap">
 <header>
@@ -298,6 +305,12 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: 
   <div class="letters">${Object.entries(LETTER).map(([l, d]) => `<b>${l}</b><span>${esc(d)}</span>`).join('')}</div>
   </details>
 </section>
+
+${renderFirstTimer(out.firstTimer)}
+
+${renderBands(out.bands)}
+
+${renderPacingSummary(st)}
 
 <section>
   <h2>Most dead time</h2>

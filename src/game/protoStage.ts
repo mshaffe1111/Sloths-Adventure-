@@ -43,6 +43,7 @@ import { buildW5Stage54 } from './w5Stage54.ts';
 import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
+import { dressStage } from './artDress.ts';
 import { addKitPlatforms, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
@@ -115,6 +116,8 @@ export interface ProtoExtras {
   thorns?: import('./thornVine.ts').ThornVine[];
   /** World 3's painted dressing: stalactites, glowworm threads, ferns, the grotto mouth (protoStage.ts, drawn by w3Art.ts) */
   w3decor?: import('./w3Art.ts').W3Decor[];
+  /** Matt's World 3 and 4 puzzle sheets set in as dressing once the stage is built (artDress.ts): pictures only */
+  kitDecor?: import('./puzzleArt.ts').KitDecor[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
   decor?: import('./riverArt.ts').W2Decor[];
   /** 2-6: the climbs are the village's ladders (riverArt.ts drawLadder), not trunks */
@@ -260,7 +263,7 @@ export const STAGE_SECONDS: Record<string, number> = {
   '5-2': 200, // don't sit: the threads, the cakes and the Butler
   '5-3': 175, // closing orchids: a harvest from the orchids' cups as they open and shut, closing sooner as it goes on
   '5-4': 170, // silk bridges: the first dusk, the silk lines and the sheets (w5Stage54.ts)
-  '5-M': 165, // Meeca's stage, after 5-5: the column at dusk, five warnings carved, the blanket (meecaStage.ts MEECA_STAGE_SECONDS)
+  '5-M': 315, // Meeca's stage, the first of World 5: the night camp, five puzzle rooms, the clearing (meecaStage.ts meecaSeconds: 5:00 to 5:30)
   '5-5': 190, // caught in silk: the cocoons, the pouch scene at the rest branch, the silk line up to the high web
 };
 export const stageSeconds = (id: string): number => STAGE_SECONDS[id] ?? EXPERT_SECONDS;
@@ -276,6 +279,17 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto'): GeneratedStage & { proto: ProtoExtras } {
+  const st = buildPlan(config, seed, plan);
+  // Worlds 3 and 4, and World 1's rooms: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
+  const w = config.worldIndex;
+  if ((w === 3 || w === 4) && /^[34]-[1-9]$/.test(plan) || (w === 1 && /^1-[467]$/.test(config.id))) {
+    const kd = dressStage({ world: w, stage: config.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, w3decor: st.proto.w3decor });
+    if (kd.length) st.proto.kitDecor = kd;
+  }
+  return st;
+}
+
+function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildKapok(config, seed, false, true);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
@@ -1738,26 +1752,28 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     // apart and shorter calms, then twisted onto a rope line with bushes hanging from it. One bush hides a way up to a secret path.
     // (Rebuilt 2026-10-28: a rock or two to hop between the bushes, and the finish opens with the acorn meadow, the kit's noise lure:
     // the squirrels' acorns thrown to draw the eagle off; then more of the same until a quick player needs two minutes.)
+    // (QA the same day, an expert took 16 hits: the calms between passes are longer, 9-11 s while it teaches and 6-8 s after, about
+    // half again; the meadow keeps its own, which its puzzle is built on, stage17.test.ts)
     beat('Start', () => {
       rest(R.r(380, 430));
       flag();
     });
     beat('Learn: hide in the bushes', () => {
       hint(x + 20, 'An eagle is watching. Slide down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide');
-      bushRow(5, [380, 470], ['tall', 'tall', 'wide'], [7.5, 9], true);
+      bushRow(5, [380, 470], ['tall', 'tall', 'wide'], [9, 11], true);
       flag();
     });
     beat('Test: farther apart', () => {
       hint(x + 40, 'Run when it has gone by', 'Run when it has gone by', 'Run when it has gone by');
-      bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [4.8, 6], true);
-      secretBush([4.8, 6]);
+      bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [6.5, 8], true);
+      secretBush([6.5, 8]);
       lowStumps();
-      bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [4.6, 5.6], true);
+      bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [6, 7.5], true);
       flag();
     });
     beat('Twist: the rope line', () => {
       hint(x + 60, 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by');
-      ropeBushes([4.6, 5.4]);
+      ropeBushes([6, 7]);
       flag();
     });
     beat('Finish: the acorn meadow', () => {
@@ -1766,8 +1782,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       let n = 0;
       // (a quick player who waits out the passes in the bushes: 1-7 runs long, three minutes, and the meadow is part of it)
       while (expert < EXPERT_SECONDS + 62 && n < 12) {
-        if (n % 2 === 0) bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [4.4, 5.4], true);
-        else ropeBushes([4.4, 5.2]);
+        if (n % 2 === 0) bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [6, 7.5], true);
+        else ropeBushes([6, 7]);
         n++;
         flag();
       }
@@ -1895,6 +1911,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     // run on after the high ground and the ring.)
     beat('Learn: one guard at a time', () => {
       rest(R.r(380, 420));
+      // (two rocks to hop before the first guard: the first-timer bot, jumping onto its stump, was bitten 3.5 s in, 2026-10-28)
+      busy(2, ['log'], R.r(120, 160));
       hint(x + 40, 'A guard! Wait for it to rear and strike, then tap to punch it', 'A guard! Wait for it to rear and strike, then press Punch', 'A guard! Wait for it to rear and strike, then press J to punch');
       guardBranch(true);
       busy(1);
@@ -5276,7 +5294,9 @@ function buildLongBranch(config: LevelConfig, seed: number): GeneratedStage & { 
 
   // ---- Learn: the long branch, calm
   beat('Learn: the long branch', () => {
-    sec(4);
+    // (seven sections before the first gap: over four seconds of running, so the gap's tip is up before he can fall. With four, a plain
+    // run fell in at 3.3 s: stageStart.test.ts)
+    sec(7);
     hint(300, 'This branch goes on and on');
     row(x - TILE * 3, x - 60, level - 34, 3, 'hibiscus');
     gap(one * 0.4);

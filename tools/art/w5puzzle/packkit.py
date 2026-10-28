@@ -30,10 +30,16 @@ REF = os.path.join(ROOT, 'reference', 'prop-sheets')
 # where the held thing is in each of Pokey's carry poses, in the 256 px cell of the sheet (measured by eye off the 1024 sheet)
 HANDS = {1: (215, 200), 2: (164, 130), 3: (143, 125), 4: (137, 35), 5: (155, 109), 6: (149, 109), 7: (153, 109), 8: (147, 109),
          9: (85, 68), 13: (175, 192)}
+# the painted crank (15) and plunger (16) in Pokey's use poses, in the 256 px cell (boxes of grey metal painted out: cell 'clear')
+DEVICE = {15: [(146, 122, 190, 178, 'grey')], 16: [(138, 130, 216, 153, 'grey'), (140, 150, 226, 230, 'grey')]}
 # (sheet folder, sheet, cell number 1.., name, scale, options)
 WANT = []
 for i in range(1, 17):
     opt = {'largest': i in (1, 10, 11, 12), 'hand': HANDS.get(i), 'game': 0.48}
+    # (his rope pull keeps its rope: the game hangs it from the bell. The crank and the push-lever poses lose their painted metal handle
+    # and post, so his hands go on the game's own winch and lever: puzzlePlay.ts usePose)
+    if i in DEVICE:
+        opt['clear'] = DEVICE[i]
     WANT.append(('w1to4', 'pokey-carry', i, f'p{i}', 0.75, opt))
 for i in range(1, 17):
     WANT.append(('w5puzzle', 'beetle', i, f'b{i}', 0.6, {'flip': i >= 9, 'game': 0.4}))
@@ -60,25 +66,90 @@ WANT += [
 for sheet, rows in {
     'w1-puzzle': [(1, 'seesawLevel', 0.9, 0.95), (2, 'seesawUpR', 0.9, 0.95), (3, 'seesawUpL', 0.9, 0.95), (12, 'nestDoorShut', 0.7, 0.62),
                   (13, 'nestDoorOpen', 0.7, 0.62), (15, 'petalBundle', 0.45, 0.3), (16, 'branchGate', 0.8, 0.7)],
-    'w2-puzzle': [(1, 'riverStone', 0.6, 0.45), (3, 'pulleyPost', 0.8, 0.8), (4, 'basket2', 0.7, 0.5), (5, 'basket2Full', 0.7, 0.5),
+    'w2-puzzle': [(1, 'riverStone', 0.6, 0.3), (3, 'pulleyPost', 0.8, 0.8, {'clear': [(106, 104, 256, 256, 'all')]}), (4, 'basket2', 0.7, 0.5), (5, 'basket2Full', 0.7, 0.5),
                   (6, 'cageShut', 0.7, 0.55), (7, 'cageLifted', 0.7, 0.55), (8, 'sluiceShut', 0.8, 0.62), (9, 'sluiceOpen', 0.8, 0.62),
-                  (10, 'channel', 0.8, 0.7), (11, 'bell', 0.6, 0.48), (12, 'bellRing', 0.5, 0.36), (13, 'winch2', 0.7, 0.55), (14, 'raft', 0.8, 0.7)],
+                  (10, 'channel', 0.8, 0.7), (10, 'channelDry', 0.8, 0.7, {'clear': [(0, 0, 256, 256, 'water')]}), (11, 'bell', 0.6, 0.48), (11, 'bellFrame', 0.6, 0.48, {'clear': [(96, 98, 164, 176, 'bronze')]}), (12, 'bellRing', 0.5, 0.36), (13, 'winch2', 0.7, 0.55), (14, 'raft', 0.8, 0.7)],
     'w3-puzzle': [(1, 'mushroom', 0.5, 0.36), (2, 'mushroomDim', 0.5, 0.36), (3, 'pebble', 0.35, 0.22), (4, 'fern1', 0.6, 0.5),
                   (5, 'fern2', 0.6, 0.5), (6, 'fern3', 0.6, 0.5), (7, 'fern4', 0.6, 0.5), (8, 'fernStone', 0.6, 0.5),
                   (9, 'fernDoorShut', 0.8, 0.7), (10, 'fernDoorOpen', 0.8, 0.7), (11, 'stonePlate', 0.6, 0.45), (12, 'stonePlateDown', 0.6, 0.45),
-                  (13, 'thornTangle', 0.6, 0.5), (14, 'crystal', 0.5, 0.4), (15, 'steppingStones', 0.8, 0.75), (16, 'pool', 0.8, 0.75)],
+                  (13, 'thornTangle', 0.6, 0.5), (14, 'crystal', 0.5, 0.4), (15, 'steppingStones', 0.8, 0.75), (16, 'pool', 0.8, 0.75),
+                  (17, 'thornLoose', 0.6, 0.5), (18, 'slabStones', 0.8, 0.75), (19, 'slab', 0.8, 0.75), (20, 'basin', 0.8, 0.75)],
     'w4-puzzle': [(1, 'shutterOpen', 0.8, 0.7), (2, 'shutterShut', 0.8, 0.7), (3, 'pinwheel', 0.7, 0.6), (4, 'pinwheelSpin', 0.7, 0.6),
-                  (5, 'winch', 0.7, 0.55), (6, 'ropeLift', 0.7, 0.6), (7, 'net', 0.7, 0.5), (8, 'netFull', 0.7, 0.5), (11, 'mango', 0.4, 0.26),
+                  (5, 'winch', 0.7, 0.55), (6, 'ropeLift', 0.7, 0.6, {'bottom': 0.42}), (7, 'net', 0.7, 0.5), (8, 'netFull', 0.7, 0.5), (11, 'mango', 0.4, 0.26),
                   (12, 'tradeStump', 0.6, 0.5), (13, 'gustCrack', 0.8, 0.8), (14, 'bridgeBroken', 0.8, 0.8), (15, 'bridge', 0.8, 0.8),
                   (16, 'anchorPeg', 0.7, 0.55)],
 }.items():
-    for idx, name, sc, game in rows:
-        WANT.append(('w1to4', sheet, idx, name, sc, {'game': game}))
+    for idx, name, sc, game, *more in rows:
+        WANT.append(('w1to4', sheet, idx, name, sc, {'game': game, **(more[0] if more else {})}))
 # Pokey's carry poses with the painted acorn taken out (and the hole painted over with what is round it), for carrying anything else:
 # the game draws the carried thing from this sheet in his hands (puzzlePlay.ts drawPokey)
 for i in (2, 3, 4, 5, 6, 7, 8, 9, 13):
     WANT.append(('w1to4', 'pokey-carry', i, f'e{i}', 0.75, {'hand': HANDS.get(i), 'game': 0.48, 'noacorn': HANDS[i]}))
 SHEETS = {**cut.FOLDERS['w1to4'], **cut.FOLDERS['w5puzzle']}
+
+
+def fill_hole(im, x0, y0, hole):
+    """paint over `hole` (a mask of the inset cell at x0, y0) from the outside in, as take_acorn does"""
+    cell = im[y0:y0 + hole.shape[0], x0:x0 + hole.shape[1]].copy()
+    known = ~hole
+    for _ in range(120):
+        if known.all():
+            break
+        ring = ndimage.binary_dilation(known) & ~known
+        acc = np.zeros_like(cell)
+        cnt = np.zeros(cell.shape[:2])
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if not dx and not dy:
+                    continue
+                k = np.roll(np.roll(known, dy, 0), dx, 1)
+                v = np.roll(np.roll(cell, dy, 0), dx, 1)
+                acc += v * k[..., None]
+                cnt += k
+        cell[ring] = acc[ring] / np.maximum(1, cnt[ring])[:, None]
+        known = known | ring
+    out = im.copy()
+    out[y0:y0 + cell.shape[0], x0:x0 + cell.shape[1]] = cell
+    return out
+
+
+def clear_boxes(im, x0, y0, x1, y1, boxes):
+    """take a painted part out of a cell (boxes in the cell's own px, from its corner): 'all' turns the box to the key colour, 'bronze'
+    turns its bell-bronze pixels to the key colour (the bell out of its belfry), 'grey' paints its grey metal over from round it (the
+    crank and the plunger out of Pokey's hands)"""
+    cell = im[y0:y1, x0:x1]
+    R, G, B = cell[..., 0], cell[..., 1], cell[..., 2]
+    yy, xx = np.mgrid[0:cell.shape[0], 0:cell.shape[1]]
+    xx, yy = xx + cut.INSET, yy + cut.INSET
+    key = np.clip((np.minimum(R, B) - G) / 255, 0, 1)
+    for bx0, by0, bx1, by1, mode in boxes:
+        box = (xx >= bx0) & (xx < bx1) & (yy >= by0) & (yy < by1)
+        if mode == 'all':
+            m = box
+        elif mode == 'water':
+            # the trough's water (pale blue and white): painted over from the wood round it; the stream falling off its end goes clear
+            luma = 0.3 * R + 0.59 * G + 0.11 * B
+            m = box & (key < 0.2) & (B > R + 12) & (luma > 110)
+            m = ndimage.binary_dilation(ndimage.binary_closing(m, iterations=2), iterations=2) & box
+        elif mode == 'bronze':
+            m = box & (key < 0.2) & (R - B > 35)
+            m = ndimage.binary_dilation(m, iterations=2) & box
+        else:
+            sat = np.max(cell, axis=2) - np.min(cell, axis=2)
+            m = box & (key < 0.2) & (sat < 48)
+            m = ndimage.binary_dilation(ndimage.binary_closing(m, iterations=2), iterations=2) & box
+        if mode in ('grey', 'water'):
+            im = fill_hole(im, x0, y0, m)
+            cell = im[y0:y1, x0:x1]
+            R, G, B = cell[..., 0], cell[..., 1], cell[..., 2]
+            key = np.clip((np.minimum(R, B) - G) / 255, 0, 1)
+        else:
+            im = im.copy()
+            im[y0:y1, x0:x1][m] = (255, 0, 255)
+            cell = im[y0:y1, x0:x1]
+            R, G, B = cell[..., 0], cell[..., 1], cell[..., 2]
+            key = np.clip((np.minimum(R, B) - G) / 255, 0, 1)
+    return im
 
 
 def take_acorn(im, x0, y0, hand):
@@ -130,6 +201,8 @@ def cell(folder, sheet, idx, opt):
     x1, y1 = int((c + 1) * cw) - cut.INSET, int((r + 1) * ch) - cut.INSET
     if opt.get('noacorn'):
         im = take_acorn(im, x0, y0, opt['noacorn'])
+    if opt.get('clear'):
+        im = clear_boxes(im, x0, y0, x1, y1, opt['clear'])
     k = cut.keyness(im[y0:y1, x0:x1], key)
     out = cut.cut_cell(im[y0:y1, x0:x1], key, depink=sheet in cut.DEPINK)
     # where the trimmed cut sits in the cell (cut_cell trims to alpha > 0.02 of the same mask)

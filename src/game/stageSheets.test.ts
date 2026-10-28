@@ -12,8 +12,8 @@ const on = { hand: true, paint: true, ctest: false };
 const levels = generateAllLevels();
 const lvl = (id: string) => levels.find((l) => l.id === id)!;
 
-test('4-2 gets World 4 ready: both kit sheets and the World 4 props, nothing else', () => {
-  assert.deepEqual(stageSheets(lvl('4-2'), on), ['kit:1', 'kit:4', 'w4-props']);
+test('4-2 gets World 4 ready: both kit sheets, the World 4 props and the puzzle sheets it is dressed with, nothing else', () => {
+  assert.deepEqual(stageSheets(lvl('4-2'), on), ['kit:1', 'kit:4', 'w4-props', 'kit-pieces']);
 });
 
 test('every hand-built World 3 stage gets the World 3 props and kit; 3-3 its cats too', () => {
@@ -21,7 +21,7 @@ test('every hand-built World 3 stage gets the World 3 props and kit; 3-3 its cat
     const s = stageSheets(lvl(`3-${m}`), on);
     assert.deepEqual(s.slice(0, 3), ['kit:1', 'kit:3', 'w3-props'], `3-${m}`);
   }
-  assert.deepEqual(stageSheets(lvl('3-3'), on).slice(3), ['anim:jaguar', 'anim:ocelot']);
+  assert.deepEqual(stageSheets(lvl('3-3'), on).slice(3), ['anim:jaguar', 'anim:ocelot', 'kit-pieces']);
 });
 
 test("Dot's flight gets her own sheets only (it draws no platforms)", () => {

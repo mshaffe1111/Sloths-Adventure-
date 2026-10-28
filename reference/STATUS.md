@@ -1,0 +1,155 @@
+# Status board (the lead session keeps this current; see reference/LEAD-PLAYBOOK.md)
+
+Last updated: 2026-10-28 (Hugging Face art run started).
+
+## Live (main)
+
+- PR #39 (2026-10-28): Worlds 1-2 rebuilt, iPhone sound fix, Worlds 1-4 groundwork.
+- PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
+  recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
+
+## On the work branch, not live yet (pushed for safe keeping; draft PR #41 tracks it, not a release)
+
+- QA batch 2 + Dot toned down + Gemini jump forgiveness in every world (merged 8ed2c53, fast gate 77/77; cloud full check running).
+- World 1-4 art placed (merged 2026-10-28, fast gate passed): every sheet cell used except World 1's nest doors and petal bundle,
+  World 2's trough and pink net (follow-up after QA batch 2 lands), and 4 World 5 beetle frames. Looks rotate by roll (artRoll.ts).
+- Generator variety tools (merged 2026-10-28): src/game/gen2/variety.ts (ShuffleBag, CooldownQueue, WorldOnce, poissonPlace,
+  pickWeighted), not yet used by stages.
+- The first-timer bot (merged 2026-10-28): `npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer` (~10 min). Known weak spots of
+  the bot: World 2 lily-pad rivers (its life counts there are pessimistic) and tall climbs (572-863 px 'stuck' in 1-4, 2-6, 3-4,
+  4-3, 4-6 may be the bot, not the stage): check by hand before acting on those.
+
+- Meeca's stage "On the March North" (merged 2026-10-28, suite 1537 pass): camp, Flicker, five rooms (tea channel in room 4), the
+  approved ending; replaces the old 5-M outright.
+- The measuring tools (merged 2026-10-28): pacing and difficulty bands in every inspector run (pacing.ts, bands.ts); the 200-roll
+  tool `tools/inspect/era.ts` and its guard test rollGuard.test.ts (1-4, 2-6, 3-1 marked to-do).
+- The new generator's core (merged 2026-10-28): src/game/gen2/DESIGN.md, types.ts, pipeline.ts, a toy world; all six passes run and
+  pass levelCheck; no real stage uses it yet (phase 2 waits on Matt's 4 answers below).
+- Easy never needs a full-hold jump (merged 2026-10-28, Gemini G8 now a gate in easyMode.test.ts): Easy widens the landing, adds a
+  step or a catch ledge where only a full hold reaches; the jump stays. Easy loads ~0.3-0.4 s slower on desktop (1-6 heaviest).
+- World 1-2 art follow-up (merged 2026-10-28): 1-4 nest door, petal bundles as room rewards, 1-6 branch gate, 2-2 trough; World 4's
+  anchor peg now drawn on most rolls (search fix). Still unused: World 2's pink fishing net (needs a re-paint), World 3's pressed stone
+  plate (no W3 room has a weight plate).
+- Known rule breaks for the variety pass (every roll): 1-3 Normal snake hit in the first 5 s; 4-7 opening life at 3.5 s; 4-5
+  Sovereign's first strike far from cover on seeds 2-3; 4-3 surge stair press window 67-133 ms; Dot's punch tip repeated in 4-7/4-4.
+- Gap files: reference/gaps/W3-4.md, PACING-BANDS-W1-5.md, ERA-W1-5.md. Headline: rolls 96-100% alike in Worlds 1-4 (target 65%);
+  the difficulty does not climb (World 3 below World 2, World 5 below World 4; World 2 partly inflated by the bot's lily-pad limit);
+  Normal 0.43-0.55 actions a second (Gemini 0.75-1.15); Easy has the same beats as Normal so it gets no rests.
+- Docs: GEMINI-PCG-RESEARCH.md, STAGE-RULES.md, GEMINI-LEDGER.md, LEAD-PLAYBOOK.md, this file.
+- Meeca's art sheets (meeca-poses, meeca-props) and their cuts.
+
+## Helpers running (each must pass LEAD-PLAYBOOK §4 before merging)
+
+| Helper | Job | Owns | Started |
+|---|---|---|---|
+| Hugging Face art run (Matt 2026-10-28) | Enemies first, hardest first (bosses, new creature models, animated clips), then what the game still needs, then art and props: reference/ART-PLAN.md inventory with costs, Matt has ~$70 left: plan to $65 ($40 enemies, ~$25 what's left to finish then art and props, ~$5 spare), results in a gallery for Matt's pick (show first, nothing into src/ yet) | reference/ART-PLAN.md, tools/art/ new folder + new specs (branch art-hf) | 2026-10-28 |
+
+| Journal cards (Matt 2026-10-28: "the enemy cards are the original enemies") | Jungle Cards match today's game: every creature spawned per world gets a card from its current atlas, old ones fixed, tips in touch words | journal.ts, creatureArt.ts, CreaturePic.tsx, TrophyRoom journal part (branch journal-cards) | 2026-10-28 |
+| Polish prototype (Matt 2026-10-28: "make it look like a highly polished start screen") | Loading -> title in one piece (no white flash, font swap or pop-in), living title scene, entrances, one button family, menus/cards/map/pause/cleared screens, stage start/end wipes; preview video first (show first) | TitleScreen, StartMenu, PauseMenu, menuParts, TrophyRoom styling, WorldMap, dialogs, CSS (branch polish-ui) | 2026-10-28 |
+
+## Cloud builders (variety pass, Matt 2026-10-28 "all four worlds now"; each pushes to its own branch, the lead merges after §4)
+
+| Session | World | Branch |
+|---|---|---|
+| session_01FhBbYNmSk5CrHi81ChVXeV | World 1 (+ layoutMemory: re-roll a roll too like the last) | variety-w1 |
+| session_01FhBbYLesoiunAyDUUtL2c6 | World 2 | variety-w2 |
+| session_01FhBbYJbmE5kU47zP8gtSsr | World 3 | variety-w3 |
+| session_01FhBbYNv8Pbizpa68Y6hdjv | World 4 | variety-w4 |
+
+Band targets given (Normal middle on bands.ts): World 1 ~20, 2 ~30, 3 ~40, 4 ~50. Pacing: Normal 0.6 actions/s in World 1 rising to 0.75 in
+World 4; Easy bursts 6-8 s with 2 s rests.
+
+## Release
+
+- PR #41 marked ready 2026-10-28 on Matt's "push" (test link v216). Waiting on Matt's merge; then check the deploy and the APK. QA
+  session (session_01NC7oJLxL2g1UhhBcGkZBBA) told what to test on the live build.
+- Flicker: the art run lists every state he needs for the whole game and makes them in round 1 (Matt 2026-10-28).
+
+## Budget
+
+Matt is on the Max plan (2026-10-28) and wants more helpers in parallel to finish sooner ("even twice as many"): run every
+separate job at once, never two on the same files. Still no duplicate or
+unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so and it drops to one world at a time.
+
+## Open decisions for Matt (ask one at a time)
+
+1. Generator: how many checked layouts to ship per stage (architect proposes 16).
+2. Generator: does every Easy fall land in a soft pit, even in World 6's water?
+3. Generator: about 30 sections per world: OK?
+4. Generator: 5-8 generated or hand-built?
+5. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
+
+## Decided today (also on the Docs roadmap)
+
+- The game gets harder world by world: each world has its own difficulty band and the bands climb; inside a world stages may go
+  up and down, but none leaves its world's band (World 2 stage 8 never as hard as World 4). Later deaths and replays are expected; Easy is gentler, never empty (still double jumps and the
+  tougher moves, softened); QA's "too hard" is sorted into unfair (fix) or hard but fair (keep). STAGE-RULES §1b.
+
+- Keep the whole puzzle room in view upright, even if Pokey shrinks to ~0.5x (not Gemini's 0.72x floor).
+- Meeca's Room 4 is the tea channel. World 5's night strips are made in code.
+- Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
+- QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
+- Variety pass for Worlds 1-4, all four at once. Push (release PR #41). Flicker's animations for the whole game. The polish pass
+  on the title and every menu. Jungle Cards updated to today's creatures.
+- Dot toned down. All research in the repo; one rulebook; the lead checks every helper's work before merging.
+
+## QA batches
+
+- Batch 1 (2026-10-28 morning): all fixed, live in PR #40.
+- Batch 2 (2026-10-28, Worlds 1-2 on build 39fc3db): 9 items, being fixed (helper "QA batch 2").
+- Asked of QA (2026-10-28): run the Matt bot through every stage of Worlds 3 and 4 on the live build; report on Matt's "send".
+
+## Cloud sessions (separate machines)
+
+| Session | Job | Branch | Started |
+|---|---|---|---|
+| ~~session_01FhBbYPCMx5mTFQdQmEtqey~~ (archived: it stopped before the suite; the lead ran the full gate here instead) | Full check of the work branch at 8ed2c53+ (redirected after the batch-2 merge): tsc, full suite, build, inspector + first-timer bot on Worlds 1-4 seeds 1-3, timed | reads ccr-0d59a91c-oy3imz, pushes nothing | 2026-10-28 17:40 UTC |
+
+## Two tracks (Matt, 2026-10-28)
+
+- **Today's code track:** the four original helpers (QA batch 2, art placement, the 200-roll tool, Meeca's stage) stay on bringing the
+  current game up to speed plus bug fixes: when one reports and passes the checks, the lead sends it its next piece of that track
+  (it keeps its context, which saves tokens) instead of starting a new helper.
+- **Generator track:** the architect, the variety tools and the pacing measures, then seed curation, the validator upgrades and
+  World 5's building blocks.
+
+## Waiting to start (they need another helper's result)
+
+- Seed curation (pick each stage's best rolls): needs the 200-roll tool.
+- Validator upgrades (per-difficulty jump margins D2, local self-repair D3, room-box size J3, co-visibility F7, min spacing C2): needs
+  QA batch 2 to land (it is in levelCheck.ts).
+- The generator's World 5 building blocks for 5-7..5-9: needs the architect's design and Matt's OK.
+
+## Queued next (in Matt's order; Matt chose 2026-10-28: the Worlds 1-4 pass starts right after step 1, before the rest of World 5)
+
+1. **Finish what is running** (the five helpers above): LEAD-PLAYBOOK §4 checks on each, the test link, then QA's Worlds 3-4 run
+   against the checklist. The jump-forgiveness change must land before any stage is re-tuned.
+2. **Measure Worlds 1-4, no building:** the 200-roll tool, the first-timer bot (Easy and Normal) and the inspector on seeds 1-3 over
+   every stage -> one gap list per stage against STAGE-RULES (roll sameness, rule failures across rolls, new-player hurts and stuck
+   spots, Dot pacing, unused art). Show Matt the list before building.
+3. **The variety pass**, Worlds 1+2 together, then 3+4 (at most two building helpers): two or three real versions of each stage's
+   main sections chosen per roll, a shuffle bag and cooldown for pieces and decor, mirroring where it fits, curated best rolls from
+   the 200-roll results (ledger C1, C3, C4, C8, C10); fix the step-2 gap list; place the remaining art (World 1 nest door, petal
+   bundle). Proof: rolls 0.65 alike or less (diversity >= 0.35) and no roll breaks a rule.
+4. **Easy truly easier, and pacing measured** across Worlds 1-4: wider landings, softer pits, fewer enemies, a per-difficulty
+   jump margin (ledger D2, F1); action rate, burst length, tension curve and minimum input window in the inspector (A6, E2-E4, F5).
+5. **QA and Matt:** a full QA sweep of each pair of worlds against the checklist, Matt on the test link, release on his "push".
+6. Then: the rest of World 5 (5-1..5-5 dead time, 5-6 "Where She Ran" hand-built), the new generator on 5-7..5-9 then Worlds 6-10,
+   Flicker's tiered hints (F6).
+
+## The current QA checklist (sent to the QA session 2026-10-28; keep in step with STAGE-RULES)
+
+Report each finding with the stage, the moment (s), upright or sideways, Easy or Normal, and the rule number below it breaks.
+1. Opening seconds: anything that can hurt in the first ~5 s of plain walking.
+2. Tip before hazard: a hit or a fall that comes before Dot's (or Flicker's) tip that teaches it.
+3. Plain walk: a step, lip or dip that stops a plain walk or plain jump; falling back into the same dip twice.
+4. Jumps: a jump that needs a perfect timing or a full hold on Easy; a ledge you clearly reached but slid off.
+5. Quiet stretches: more than ~4 s with nothing to do (only petals on flat ground counts as nothing).
+6. Look-alikes: a stretch that feels the same as another stage of the same world, or as the last time you played it.
+7. Puzzle rooms: can't see the piece and what it acts on together upright; a puzzle that costs a life; a hint that gives it away;
+   a room you can walk past without solving; a carried thing you can't carry without jumping.
+8. Dot: speaks in the first seconds, repeats a tip you already did, lines closer than ~10 s, lines over ~10 words, a tip left up 20 s+.
+9. Goals: a count that can't be met fairly on Normal (87.5% petals, all rescues, 75% predators); totals that disagree.
+10. Art: a prop that pops in late, a missing state (a pressed plate that doesn't look pressed, a bell that doesn't swing).
+11. Device: frame rate, freezes, and the Device column's browser part (an in-app browser, "framed", software drawing).
+12. Anything a 7-10-year-old would not understand or would find unfair.
