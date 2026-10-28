@@ -1518,8 +1518,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       run(R.r(150, 200));
       snake(x + 70, G, 120);
       flower(x + 70, G - 120, 'orchid');
-      // (and a short rest of plain ground before the next: a second or more)
-      run(R.r(320, 360));
+      // (and a short rest of plain ground before the next: about a second, Gemini's rest pad)
+      run(R.r(270, 300));
     }
     expert += (x - x0) / RUN + 1.5 * m;
     pieces.push({ k: 'snakes', x0, x1: x });
