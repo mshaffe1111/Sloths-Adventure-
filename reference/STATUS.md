@@ -60,7 +60,8 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - New/worse rule breaks across rolls: 1-8 quiet 200/200; W2 dead time (2-7, 2-9 200/200; 2-5 148; 2-2 131; 2-4 73); 1-7 dead 105; 1-1 seed 3
   67 ms window; 4-2 33 ms window; 4-6 kid hotspot 6/10.
 - Bands (Normal middle, seeds 1-3): W1 ~21, W2 ~44, W3 ~21 (W3 not merged yet), W4 ~22. The climb isn't there yet.
-- Test link held (not published with known regressions). Round 2 sent to the W1, W2, W4 builders (rule breaks first, then bands,
+- Test link v218 (2026-10-28 ~17:30 ET): Worlds 1-4 round 1 + gen2 core, with the known issues in its note (Matt: publish to his
+  test link as soon as the suite and build pass). Round 2 sent to the W1, W2, W4 builders (rule breaks first, then bands,
   then variety).
 
 ## Cloud builders (variety pass, Matt 2026-10-28 "all four worlds now"; each pushes to its own branch, the lead merges after §4)
