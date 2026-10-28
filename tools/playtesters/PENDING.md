@@ -165,3 +165,20 @@ Earlier read of the same log, kept for the details:
    didn't see it working. Worth checking with a first-timer that "round and round" reads as "draw circles".
 - Fine: 1-2 Easy (no full hold needed; 3 tries at the 9% log ledge, solved with an up-and-over flick); memory 17-38 MB everywhere.
 - Not a bug (rig): the bot's "stuck in a hairpin loop" on 5-M was the test rig having no circle gesture. Added `circle`.
+10. [5-M, Matt bot run 2 with the circle gesture: 319 s, never reached room 1's exit; 0 lives] What QA checked by state:
+   - Carving works: a circle traced at the first trunk marks it (marked 1). That first "M" is the trail mark, not one of the 5
+     warnings, so "{0 of 5 warnings}" correctly stays at 0. But nothing says so: the bot (and a kid) reads the "M" and the 0/5
+     counter as "my mark didn't count" (rule 12). Name the counter, or have Flicker say the first mark is just for finding the way.
+   - No real loop: the trail between camp and room 1 is one way, but its rolled sections look alike and Meeca walks slowly, so the
+     bot was sure it was going round in circles for ~3 minutes ("lost and circling" lands too well; rule 6/12). A landmark, or a
+     Flicker line on the second look-alike stretch, would help.
+   - Room 1 works by state: the chair holds her, "It's holding me! Wiggle, wiggle!" shows after ~3 s, left/right wiggles free her
+     (4 changes; lifted or not), up/down don't count; the sapling bends into a bridge onto the ledge and she reaches "Wait. Pokey
+     needs to know this one."
+   - [unverified lead, possibly UNFAIR] The bot ended "frozen, hunched with a red tint" near the sapling after 4 min, with nothing
+     moving her for 60 s+. The rose chair's hold looks like that; QA couldn't reproduce a freeze (the wiggle frees her every time),
+     but the wiggle line was gone from the screen by then. Consider keeping "Wiggle!" up while she's held.
+   - [unverified, UNFAIR if true, rule 4] Tall ledges on the trail: she gets level with the lip on a double hop and drops back
+     (about 6 tries at the first one, 2-3 at the next).
+   - [minor] "Webs eat plain steering" (both runs): only lifted hops move her through webby stretches; nothing teaches it.
+   - Not checked yet: rooms 2-5, the tea channel, the ending, puzzle framing upright (rule 7).

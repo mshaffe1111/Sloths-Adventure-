@@ -42,3 +42,12 @@
 - Two-step rock ledges: a lifted `flick up-right`, wait 200, `flick up-right` again (the double jump) beats any hold-flick run-in.
 - Vines and trunks are slow climbs: about 8 seconds of `steer up` to get to the top.
 - Pictures: I blew past 40 again in the first stage. Ration about 10 per stage and go by the % bar.
+
+## 2026-10-28, night run (v216, Meeca night stage, upright with a short sideways stretch, session 8)
+- On foot she's slower than ever. Two seconds of steering barely moves the screen, so don't count "same picture" as stuck until you've also tried going the other way.
+- Tall ledges, about one and a half Meecas high: the plain double hop (lift, `flick up-right`, wait 250, `flick up-right`) gets her level with the lip and then she drops back. Mix it up and keep at it: back off 400, run in 300 and double hop, or `flick up`, steer 150, `flick up`. One of them catches within about five goes. Budget for it.
+- The circle gesture (`circle 3 2000`) while standing at a trunk puts a scratch mark on it. Use it on the first tree you see so you can tell when you're back.
+- Woods that look the same probably are the same: a bit of steady running and you're at a ledge you already climbed. Spend a sideways picture to check before you burn time.
+- On a trunk wrapped in vine, stand right against it, `flick up`, then `steer up` about 6 s to reach the log on top. Don't steer up from a step away; nothing happens.
+- If she hunches over with a reddish tint and stops reacting, taps, shakes, holds and circles don't free her. Don't spend pictures waiting on it. Note the time and spot.
+- Pictures: about 15 went on the first tall ledge and the loop. Turn sideways once early on to get the lay of the land, then go by the words.
