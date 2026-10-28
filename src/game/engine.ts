@@ -3396,6 +3396,9 @@ export class GameEngine {
     const st = this.input.state;
     let s = p.climbing ? 'c' : p.isVineSwinging ? 's' : p.hanging ? 'h' : p.grounded ? (p.ducking ? 'k' : 'g') : 'a';
     if (p.attackMove) s += ':' + p.attackMove;
+    // Meeca's stage: the column carrying her in line, or Pell walking her back after a catch (QA read 0.8 s of her moving with no
+    // finger down as a loss of control: it was the march, meecaPlay.ts after(); the log now says so)
+    if (this.mc) s += this.mc.phase === 'caught' ? ':caught' : this.mc.inLine ? ':line' : '';
     // what the controls are holding (touch, pad or keys alike)
     const held = (st.left ? 'L' : '') + (st.right ? 'R' : '') + (st.up ? 'U' : '') + (st.down ? 'D' : '');
     if (held) s += '/' + held;

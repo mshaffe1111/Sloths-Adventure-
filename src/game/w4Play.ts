@@ -263,7 +263,13 @@ export class W4Play {
       if (!r.air && !this.rockWarned) return;
       if (!this.rockHit.has(cycle) && p.invincibleTimer <= 0 && rockHits(r, h.t, p.x, p.y, 64)) {
         this.rockHit.add(cycle);
-        h.hurt(p.x >= r.x ? 1 : -1);
+        // in the air (4-7's glides) a rock costs a heart, never the ledge: he keeps the way and the speed he was gliding. It knocked him
+        // back from the rock at 200 px/s, and with the thumb held still on the leaf (no steer to win it back) he drifted back over the
+        // drop and down into the mist: a heart turned into a life (QA: Matt, "Twist: falling rocks", 5 pit lives in 9 visits)
+        const air = !p.grounded;
+        const vx = p.vx;
+        h.hurt(air ? 0 : p.x >= r.x ? 1 : -1);
+        if (air) p.vx = vx;
         h.tip('w4:rockHit', 'Ouch! Stop before the shadow, and go once the rock has fallen', 3.2);
       }
     });
