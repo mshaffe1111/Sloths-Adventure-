@@ -183,9 +183,16 @@ key (`LocalRoomSpec`); `placeRoom` turns them into platform ids and makes piece 
 a safe spot is taken out; an unreachable route piece gets a stepping stone in the seam before it when that seam is the failing way
 in; still failing, or a room that cannot be solved, **that one section is swapped** (banned at its slot; a section that fails at two
 slots is banned from the stage and named for its author). Only then a whole re-roll (`seed * 1009 + n * 7919`, up to 6, the old
-`LEVEL_ATTEMPTS` role). Then **the clock**: `modelStage` typical and fast must reach the target and the floor and stay under the
-ceiling; if not, each node's seconds are scaled (`aim`) and the stage is laid again. Tested end to end (the swap test builds a world
-with a broken section).
+`LEVEL_ATTEMPTS` role). Then **the clock**: `modelStage` typical and fast must reach the target and the floor, **and Easy's quick
+player on the same plan must reach the floor too** (Easy has 60% of the animals, so it runs shorter), and typical stays under the
+ceiling. The first build chooses everything; after it **the plan is kept** and each change is local, so the loop converges (it used
+to re-pick everything after a changed node and swing between two plans either side of the window): short, one section is added,
+chosen fresh, just before the shrine's node (`growPlan`); long, the last section before it is taken off (`trimPlan`: never the
+start, a room, or a section teaching what a later one uses). Once it has grown it never trims (the floors are the rule, the ceiling
+is not: it ships long, and says so); once it has trimmed, a grow would undo it, so it goes back to the last stage that met the
+floors. A swap re-chooses only its slot. A purge or gauntlet keeps back three quarters of its goal's fights from the sections'
+share (the top-up lays them later), so its first plan lands near the clock. Tested end to end (the swap test builds a world with a
+broken section; 20 rolls all land in the window with Easy's quick player over the floor).
 
 ### B6. Pass 6: dressing (`dress`)
 
