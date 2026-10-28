@@ -10,6 +10,8 @@ Last updated: 2026-10-28 (after release PR #40).
 
 ## On the work branch, not live yet (pushed for safe keeping; draft PR #41 tracks it, not a release)
 
+- World 1-4 art placed (merged 2026-10-28, fast gate passed): every sheet cell used except World 1's nest doors and petal bundle,
+  World 2's trough and pink net (follow-up after QA batch 2 lands), and 4 World 5 beetle frames. Looks rotate by roll (artRoll.ts).
 - Generator variety tools (merged 2026-10-28): src/game/gen2/variety.ts (ShuffleBag, CooldownQueue, WorldOnce, poissonPlace,
   pickWeighted), not yet used by stages.
 - The first-timer bot (merged 2026-10-28): `npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer` (~10 min). Known weak spots of
@@ -25,7 +27,6 @@ Last updated: 2026-10-28 (after release PR #40).
 |---|---|---|---|
 | QA batch 2 | Worlds 1-2 fixes: 2-2 opening drowning (+ no stage hurts in its opening seconds), 1-7 eagle, 2-5 opening hit and predator count, dips/lips that stop a plain walk, lingering tips, fight-count progress bars, 2-2 flower totals, lives shown from the start, 1-7 polish; Dot toned down (W1-4); jump forgiveness engine-wide by difficulty (ledger G1-G4, G8) | W1-2 stage code, Dot's lines, engine movement, levelCheck | 2026-10-28 |
 | 200-roll tool | Expressive range: 200 rolls per stage of Worlds 1-5, heatmaps, diversity vs 0.35, rule failures across rolls (ledger C5) | tools/inspect/era.ts (new files) | 2026-10-28 |
-| Art placement | Every unused World 1-4 sheet piece placed (22 found); state frames; looks rotate by the roll with a cooldown; W1-2 drawing swaps only | puzzleArt, atlas, W3-4 decor | 2026-10-28 |
 | Generator: architect | The new generator's written design for Matt (World 5's 5-7..5-9 first, then Worlds 6-10), its data shapes and the six-pass skeleton | src/game/gen2/ (types, pipeline, design doc) | 2026-10-28 |
 | Pacing measures | Inspector: action density, rhythm-group length, tension curve per stage, the difficulty-band chart per world | tools/inspect/pacing.ts, bands.ts (new files) | 2026-10-28 |
 | Worlds 3-4 gap list | Measure only: 3 rolls, the first-timer bot, art use; per-stage gaps and variety ideas, so the W3-4 variety pass starts tonight | nothing (read-only) | 2026-10-28 |
