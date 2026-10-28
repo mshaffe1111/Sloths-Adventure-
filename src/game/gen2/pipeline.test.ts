@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, layLocal, maxGap, placeRoom, planBudget, rngFor, STAGE_HEAT } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, placeRoom, planBudget, rngFor, STAGE_HEAT, trimPlan } from './pipeline.ts';
 import { cfg, kit, manifest, pitHop } from './toyWorld.ts';
 import { MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
@@ -369,4 +369,33 @@ test("a purge or gauntlet lays its goal's animals: the top-up, Poisson-spaced, n
   // Easy's stage is held to Easy's goal: against Normal's it may well be short (it lays for 16 + 2, not 26 + 2)
   const e = buildGen2Stage({ config: cfg('5-9', 'gauntlet', 26), kit: stub, seed: 1, difficulty: 'easy' });
   if (e.enemies.length < 26) assert.match(validateStage(e).errors.join('\n'), /not enough enemies/);
+});
+
+test('the length loop converges: every roll lands in its window (or ships long, said so), and Easy\'s quick player makes the floor', () => {
+  const tgt = targetSeconds(5, 7, 'stealth');
+  const max = Math.min(tgt * 1.1, 295);
+  for (let seed = 1; seed <= 20; seed++) {
+    const n = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'normal' });
+    const e = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'easy' });
+    const t = modelStage(n, MODEL_TYPICAL).total;
+    const long = n.gen2.repairs.some((r) => /ships long/.test(r.note));
+    assert.ok(t >= tgt && (t <= max || long), `seed ${seed}: typical ${t.toFixed(0)} s outside [${tgt}, ${max.toFixed(0)}]`);
+    assert.ok(modelStage(n, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: Normal quick`);
+    assert.ok(modelStage(e, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: Easy quick ${modelStage(e, MODEL_FAST).total.toFixed(0)} s`);
+    assert.deepEqual(e.gen2.plan.map((p) => p.template), n.gen2.plan.map((p) => p.template), `seed ${seed}: Easy lays Normal's plan`);
+  }
+  // a change keeps the prefix: one section added (fresh) or taken off just before the shrine's node, nothing before it moves
+  const b = planBudget(cfg('5-7', 'stealth'), manifest, 'normal');
+  const graph = missionGraph(b);
+  const plan = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed: 4, difficulty: 'normal' }).gen2.plan;
+  const goal = graph.nodes.at(-1)!.id;
+  const g = growPlan(plan, graph);
+  assert.equal(g.plan.length, plan.length + 1);
+  assert.deepEqual(g.plan.slice(0, g.open), plan.slice(0, g.open));
+  assert.equal(g.plan[g.open + 1].node, goal);
+  const byId = new Map(manifest.sections.map((s) => [s.id, s]));
+  const t2 = trimPlan(plan, graph, byId)!;
+  const cut = t2.findIndex((p, i) => p !== plan[i]);
+  assert.equal(t2.length, plan.length - 1);
+  assert.ok(plan.slice(cut + 1).every((p) => p.node === goal || p.node === plan[cut].node), 'only the end is trimmed');
 });

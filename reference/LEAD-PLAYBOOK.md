@@ -61,6 +61,9 @@ A helper's report is not proof. Before merging:
 5. Remove a helper's worktree only when it is finished for good: a helper continued with SendMessage needs it (if removed, it
    must recreate it with `git worktree add`).
 6. Only then: the test link, then STATUS.md, then tell Matt in plain words with the honest flaws.
+7. **Matt's test link is his alone (Matt, 2026-10-28: "why can't I get the test link with the new merges... I'm the only one that sees
+   it").** Publish it as soon as a merge passes the type check, the full suite and the build, with the known issues in the round's
+   note; don't hold it for the inspector, the 200-roll tool or a second round. Those gates still hold for QA builds and releases.
 
 ## 5. The QA session
 

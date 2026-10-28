@@ -8,6 +8,12 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
+## Release PR #42 (opened 2026-10-28 ~17:50 ET on Matt's "merge and get this pushed out"; test link v219 is this build)
+
+Worlds 1-4 variety round 1, Jungle Cards, Dot's punch-tip fix, gen2 core (unused). Matt: from here, fixes go out as rolling releases
+(each round: test link, then a PR he merges). World 4: 4-3 and 4-7 treated as set pieces without the variety target; one last round
+for quiet stretches and difficulty (lead's recommendation A; Matt said keep tweaking and merging).
+
 ## Live since PR #41 (2026-10-28): Meeca's stage rebuilt, Easy jump gate, batch 2, W1-2 props, measuring tools, gen2 core
 
 ## On the work branch, not live yet
@@ -60,7 +66,8 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - New/worse rule breaks across rolls: 1-8 quiet 200/200; W2 dead time (2-7, 2-9 200/200; 2-5 148; 2-2 131; 2-4 73); 1-7 dead 105; 1-1 seed 3
   67 ms window; 4-2 33 ms window; 4-6 kid hotspot 6/10.
 - Bands (Normal middle, seeds 1-3): W1 ~21, W2 ~44, W3 ~21 (W3 not merged yet), W4 ~22. The climb isn't there yet.
-- Test link held (not published with known regressions). Round 2 sent to the W1, W2, W4 builders (rule breaks first, then bands,
+- Test link v218 (2026-10-28 ~17:30 ET): Worlds 1-4 round 1 + gen2 core, with the known issues in its note (Matt: publish to his
+  test link as soon as the suite and build pass). Round 2 sent to the W1, W2, W4 builders (rule breaks first, then bands,
   then variety).
 
 ## Cloud builders (variety pass, Matt 2026-10-28 "all four worlds now"; each pushes to its own branch, the lead merges after §4)
