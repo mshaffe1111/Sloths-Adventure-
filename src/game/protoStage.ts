@@ -936,10 +936,13 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
 
   // ----- World 1's open ground, rebuilt (2026-10-28, the stage inspector): something to do every second or two, never a long empty
   // walk and never only petals on flat ground, with a short plain rest after each burst. Gentle: nothing taller than one easy hop.
+  /** World 4's rocks are its painted mossy rock (art 'rock', sized to the rock: protoArt drawRockArt), not the kit's thin ledge */
+  const w4Rocks = config.worldIndex === 4;
   /** a mossy rock lying across the path, one easy hop high, a petal on top */
   function logHop(h = R.i(34, 46)) {
-    const w = Math.round(R.r(120, 170));
-    block(x, x + w, h);
+    const w = Math.round(w4Rocks ? R.r(84, 96) : R.r(120, 170));
+    const rk = block(x, x + w, h);
+    if (w4Rocks) rk.art = 'rock';
     flower(x + w / 2, G - h - 34, 'orchid');
     run(w);
     expert += w / RUN + 0.15;
@@ -3288,7 +3291,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     beat('Finish', () => {
       let n = 0;
       // (the builder's watched-stretch estimate runs long: to two minutes for a quick player it reaches 4-5's own length and more)
-      while (expert < stageSeconds('4-5') + 20 && n < 16) {
+      while (expert < stageSeconds('4-5') + 34 && n < 16) {
         const k = n % 3;
         if (k === 0) coverRow(3, [700, 860], R.shuffle<Cover>(['fall', 'wide', 'fall']), [4.6, 5.6]);
         else if (k === 1) lookoutRun(R.shuffle<Cover>(['fall', 'tall']), [400, 460], [4.8, 5.8]);
@@ -3711,7 +3714,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       const fx = x;
       run(FLOOR);
       const floor = endBank();
-      const well = bank(x, x + WELL, G + 60, 'moss_stone');
+      const well = bank(x, x + WELL, G + 60);
       const top = cliff(x + WELL, x + WELL + TOP, RISE);
       const n = ROOMS.length;
       ROOMS.push({

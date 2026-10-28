@@ -191,8 +191,9 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
    */
   function hopRest(after = R.r(150, 180)) {
     run(R.r(80, 110));
-    const w = r(R.r(120, 150));
-    P.push({ id: pid++, x: x, y: y - 40, width: w, height: 40, type: 'solid', style: 'moss_stone' });
+    // (the painted mossy rock, sized to it: art 'rock', protoArt drawRockArt)
+    const w = r(R.r(84, 96));
+    P.push({ id: pid++, x: x, y: y - 40, width: w, height: 40, type: 'solid', style: 'moss_stone', art: 'rock' });
     flower(x + w / 2, y - 74, 'orchid');
     run(w + after);
     expert += (95 + w + after) / RUN + 0.2;

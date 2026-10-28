@@ -307,7 +307,9 @@ export function drawLogArt(ctx: CanvasRenderingContext2D, p: Platform, moving: b
 /** the low mossy rock the log stops against */
 export function drawRockArt(ctx: CanvasRenderingContext2D, p: Platform): boolean {
   if (!protoArtReady()) return false;
-  stand(ctx, 'boulder', p.x + p.width / 2, p.y + p.height + 3, p.width * 1.15);
+  // (World 4's little rocks to hop, art 'rock': sized by their height, a little over it, so the painted top is where he stands)
+  const w = p.art === 'rock' ? ((p.height + 10) * frameOf('boulder').f.w) / frameOf('boulder').f.h : p.width * 1.15;
+  stand(ctx, 'boulder', p.x + p.width / 2, p.y + p.height + 3, w);
   return true;
 }
 
@@ -520,7 +522,7 @@ export function paintedPlatforms(platforms: Platform[]): Set<number> {
   for (const p of platforms) {
     if (p.push) out.add(p.id);
     else if (p.height < 50 && (p.style === 'branch' || (ownKit() && thinKit(p)))) out.add(p.id);
-    else if (p.height === 50 && p.style === 'moss_stone') out.add(p.id);
+    else if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') out.add(p.id);
   }
   return out;
 }
@@ -594,7 +596,7 @@ export function drawProtoScene(
   }
   for (const p of platforms) {
     if (!vis(p)) continue;
-    if (p.height === 50 && p.style === 'moss_stone') drawRockArt(ctx, p);
+    if ((p.height === 50 && p.style === 'moss_stone') || p.art === 'rock') drawRockArt(ctx, p);
   }
   for (const p of platforms) {
     if (!vis(p) || !p.push || p.art) continue; // (a pushed boulder is World 4's to paint: w4Play.ts)
