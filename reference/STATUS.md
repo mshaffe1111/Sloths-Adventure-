@@ -89,7 +89,6 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 1. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
 2. Naturalist medal: still the 11 predators, or all 18 journal cards (the 7 new "met on the road" ones too)?
 3. Pell's and the soldiers' journal tips read right?
-4. Dot's new water warning line for Easy (gen2 piece E) needs Matt's OK.
 
 Pending for the architect when it resumes: commit c912bc3 finished (full suite + build), then the gauntlet/purge top-up in fillSockets
 (quota + 2 on Normal) and Easy's quota at round(0.6 x targetCount) (5-9 builder found 5-9 lays 16-26 of 26 animals).
@@ -106,6 +105,7 @@ Pending for the architect when it resumes: commit c912bc3 finished (full suite +
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
 - Title logo: carved into bark, carved in stroke by stroke on the first title of a session (chips, gold glow), shown carved after;
   the ribbon is deleted (Matt 2026-10-28). Title pair get real animation clips from the motion model (no code twitching).
+- Dot's water warning (gen2, Easy repeats it after 12 s): "Careful, water! Flick up and over." (Matt chose C).
 - Usage warning on Matt's weekly limit (2026-10-28 ~16:20 ET, resets Nov 4 2:00 AM ET): Matt chose to keep everything running (C).
 - Generator: 16 checked layouts shipped per stage (Matt 2026-10-28). Easy falls land soft on land; over water a fall still
   costs a life on Easy, with a clear warning before the water (Matt chose B, 2026-10-28). About 30 sections per world (Matt chose A). 5-8 stays hand-built; the generator does 5-7 and 5-9 (Matt chose A).
