@@ -22,6 +22,7 @@ import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, walkSpeed } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Vine } from '../types.ts';
+import { tideCrossTime, type Zone } from '../zones.ts';
 import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import {
   EASY_ENEMY_SHARE,
@@ -29,6 +30,7 @@ import {
   LIANA,
   MARGIN,
   QUIET,
+  TIDE,
   versionKey,
   WATER_LINE,
   WATER_WARN,
@@ -316,6 +318,8 @@ interface LocalGap {
   x1: number;
   y: number;
   pit: boolean;
+  /** a section's water gap (the rule's `water`): nothing laid under it, whatever the world's falls */
+  water?: boolean;
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 export interface LocalLayout {
@@ -438,7 +442,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const gap = Math.max(60, R(share * (g > 0 ? g : 60)));
       x = a.x + a.w + gap;
       y = a.y + dy;
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit' });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: pl.kind === 'pit', ...(pl.water ? { water: true } : {}) });
     } else if (pl.kind === 'swing') {
       // a liana past `after`'s end, swinging by itself (its numbers rolled here, from the slot's stream: the same on Easy)
       const a = ref(pl.after);
@@ -461,7 +465,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       if (!band) throw new Error(`gen2 section ${tpl.id}: no perch past the liana ${pl.after} has a release window of ${LIANA.window[budget.difficulty]} s`);
       x = band[0] + share * (band[1] - band[0]);
       y = a.y + dy;
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, ...(pl.water ? { water: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);
@@ -522,7 +526,9 @@ export interface Laid {
   plan: PlanSlot[];
   platforms: Platform[];
   /** the gaps of the route (inner and seams), for the arcs and the repair */
-  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string }>;
+  gaps: Array<{ x0: number; x1: number; y: number; from?: Platform; to?: Platform; section?: string; water?: boolean }>;
+  /** the zones the sections lay (a tide, darkness) */
+  zones: Zone[];
   spawn: { x: number; y: number; piece: Platform };
   exit: { x: number; y: number; piece: Platform };
   /** the lianas and climbing vines the sections hang */
@@ -608,6 +614,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   };
   const gaps: Laid['gaps'] = [];
   const vines: Vine[] = [];
+  const zones: Zone[] = [];
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number) => {
     if (budget.pit !== 'soft' || x1 - x0 < 20) return;
     const out = pitSteps(x0, x1, lipY, farY, M.pitDepth, riseLimit(false, budget.riseShare) * PIT.hop);
@@ -780,9 +787,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
       for (const g of L.gaps) {
-        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid };
+        const g0 = { x0: ox + g.x0, x1: ox + g.x1, y: oy + g.y, section: placed.uid, ...(g.water ? { water: true } : {}) };
         gaps.push(g0);
-        if (g.pit) {
+        if (g.pit && !g.water) {
           const before = platforms.length;
           pitUnder(g0.x0, g0.x1, g0.y, g0.y);
           placed.seam.push(...platforms.slice(before));
@@ -796,6 +803,19 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         placed.sockets.push({ socket: s, x: R(p.x + t * p.width), y: R(p.y - (s.dn ?? 0)), piece: p });
       }
       if (tpl.room) placed.room = placeRoom(tpl.room, placed.uid, (k) => pieceOf(k).id);
+      // its zones, over its placed pieces (their numbers from the slot's stream, after everything else it rolls)
+      for (const z of tpl.zones ?? []) {
+        if (z.kind === 'tide') {
+          const mud = pieceOf(z.on);
+          const warn = Math.max(0.9, z.warn ?? TIDE.warn);
+          const active = Math.min(3, z.active ?? TIDE.active);
+          // (the low spell outlasts the walk across, with the rise to spare: levelCheck's rule, by construction)
+          const low = Math.max(2, roll(srng, z.low ?? TIDE.low), tideCrossTime(mud.width) - warn + 0.2);
+          const period = low + warn + active;
+          zones.push({ kind: 'tide', x0: mud.x, x1: mud.x + mud.width, top: mud.y - 210, bottom: mud.y + 14, baseY: mud.y, dir: -1, period, warn, active, offset: R(srng() * period * 10) / 10, force: z.force ?? TIDE.force });
+          placed.beats.push({ x: mud.x, letter: 'S' });
+        }
+      }
       for (const g of L.gaps) placed.beats.push({ x: ox + g.x0, letter: 'J' });
       for (const lp of L.pieces) if (lp.hop) placed.beats.push({ x: ox + lp.x, letter: 'h' });
       // (a swing or a climb is a world move)
@@ -826,6 +846,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     spawn: { x: SPAWN_X, y: runway.y, piece: runway },
     exit: { x: exitX, y: shrine.y, piece: shrine },
     vines,
+    zones,
     width: R(shrine.x + shrine.width + 40),
     bottom: baseline,
     nextId: pid,
@@ -949,7 +970,7 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     const due = t - lastFlagT > 35;
     if ((s.phase === 'rest' || due) && s.phase !== 'goal') {
       const at = flagSock ?? { x: s.exit.x - 80, y: s.exit.y, piece: s.pieces.find((p) => p.platform.y === s.exit.y && p.platform.x + p.platform.width >= s.exit.x - 1)?.platform };
-      if (at.piece && at.x - at.piece.x > 30 && at.x > (checkpoints.at(-1)?.x ?? SPAWN_X) + 600) {
+      if (at.piece && at.x - at.piece.x > 30 && at.x > (checkpoints.at(-1)?.x ?? SPAWN_X) + 600 && !flagInZone(laid.zones, at.x, at.piece.y)) {
         checkpoints.push({ x: R(at.x), y: at.piece.y, reached: false });
         lastFlagT = t;
       }
@@ -1039,6 +1060,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         const patch = patchFor(k.x, k.piece, safe, c.minGround);
         if (!patch) continue;
         threat -= c.threat;
+        // (nothing stands in a zone: levelCheck)
+        if (foeInZone(sink.zones, k.x, k.piece.y - (c.footY ?? c.h / 2))) continue;
         const e = makeEnemy(c, k.x, k.piece.y, patch, sink.nextEnemyId(), easy && s.easy === 'soften');
         const fill: FilledSocket = { section: sec.uid, socket: s.id, role: 'enemy', what: c.id, x: k.x, y: k.y };
         foes.push({ x: k.x, kind: c.id, e, fill, sec });
@@ -1089,7 +1112,8 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   }
   const byCreature = new Map(M.creatures.map((c) => [c.id, c]));
   for (const f of foes) {
-    if (!kept.has(f)) continue;
+    // (an emitter may have laid a zone since the socket was filled)
+    if (!kept.has(f) || foeInZone(sink.zones, f.e.x, f.e.y)) continue;
     sink.enemies.push(f.e);
     fills.push(f.fill);
     f.sec.beats.push({ x: f.x, letter: 'C' });
@@ -1126,12 +1150,13 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   // water (Matt, 2026-10-28): a fall into it costs a life on Easy too, so it is warned: Dot's line WATER_WARN.lead px before the lip
   // (gone once he is past it) and a sign at the edge (proto.gen2.waterWarnings, for the world's art). Normal warns at the first water
   // only (the teaching rule); Easy at every water gap once WATER_WARN.every seconds of walking passed since the last warning.
-  if (budget.pit === 'water') {
+  const wet = laid.gaps.filter((g) => budget.pit === 'water' || g.water);
+  if (wet.length) {
     const every = WATER_WARN.every * budget.walkSpeed;
     const text = M.tips?.water ?? WATER_LINE;
     const signs = (sink.extras.waterWarnings ??= []) as Array<{ x: number; y: number }>;
     let last = -Infinity;
-    for (const g of [...laid.gaps].sort((a, b) => a.x0 - b.x0)) {
+    for (const g of [...wet].sort((a, b) => a.x0 - b.x0)) {
       if (g.x1 - g.x0 < 20) continue;
       if (signs.length && (!easy || g.x0 - last < every)) continue;
       const x = R(Math.max(laid.spawn.x + 40, g.x0 - WATER_WARN.lead));
@@ -1141,8 +1166,14 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       last = g.x0;
     }
   }
-  return { enemies: sink.enemies, collectibles: C, checkpoints, hints, fills, barren, extras: sink.extras };
+  // (a flag an emitter's zone has come to cover is taken down: nothing stands in a zone)
+  const flags = checkpoints.filter((c) => !flagInZone(sink.zones, c.x, c.y));
+  return { enemies: sink.enemies, collectibles: C, checkpoints: flags, hints, fills, barren, extras: sink.extras };
 }
+
+/** levelCheck's zone rules: an animal inside a zone's box (30 px either side, 60 below), a flag inside it */
+const foeInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => x > z.x0 - 30 && x < z.x1 + 30 && y > z.top && y < z.bottom + 60);
+const flagInZone = (zones: readonly Zone[], x: number, y: number) => zones.some((z) => x >= z.x0 - 1 && x <= z.x1 + 1 && y > z.top && y < z.bottom);
 
 /** the quota items a section's node asks for, shared out among the node's sections in turn */
 function graphObjectives(laid: Laid, sec: PlacedSection): number {
@@ -1222,7 +1253,7 @@ function topUpFoes(
       for (const t of ts) {
         const x = R(p.x + t * p.width);
         const c = bag.draw()!;
-        if (x < openX || x > lastX || !terrainOK(c, p)) continue;
+        if (x < openX || x > lastX || !terrainOK(c, p) || foeInZone(sink.zones, x, p.y - (c.footY ?? c.h / 2))) continue;
         if (flags.some((f) => x <= f.x && f.x - x < FLAG_BEFORE)) continue;
         const run = freeRun(x, p);
         if (!run) continue;
@@ -1336,6 +1367,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     collectibles: [],
     proto,
     extras: {},
+    zones: [...laid.zones],
     nextPlatformId: () => pid++,
     nextCollectibleId: () => cid++,
     nextEnemyId: () => eid++,
@@ -1365,7 +1397,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     modelled: { typical: 0, fast: 0 },
     errors: [],
     barren: filled.barren,
-    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: budget.pit as PitKind })),
+    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: (g.water ? 'water' : budget.pit) as PitKind })),
   };
   const stage: Gen2Stage = {
     config,
@@ -1381,7 +1413,8 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     exitTotemX: laid.exit.x,
     exitTotemY: laid.exit.y,
     checkpoints: filled.checkpoints,
-    ...(budget.pit === 'water' ? { waterY: laid.bottom + 40 } : {}),
+    ...(budget.pit === 'water' || laid.gaps.some((g) => g.water) ? { waterY: laid.bottom + 40 } : {}),
+    ...(sink.zones.length ? { zones: sink.zones } : {}),
     ...(rooms.length ? { kit: { rooms } } : {}),
     proto: Object.assign(proto, Object.keys(filled.extras).length ? { gen2: filled.extras } : {}),
     meta: { attempt: seed, chunks: laid.sections.map((s) => s.template), width: laid.width, pieces: laid.sections.map((s) => ({ k: s.template, x0: R(s.x0), x1: R(s.x1), beat: s.phase })) },

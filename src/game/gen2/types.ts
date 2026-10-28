@@ -15,6 +15,7 @@ import type { Difficulty } from '../difficulty.ts';
 import type { Anchor, PieceSpec, RoomSpec } from '../puzzleKit.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras } from '../protoStage.ts';
+import type { Zone } from '../zones.ts';
 import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform, Vine } from '../types.ts';
 import type { Rng } from './variety.ts';
 
@@ -170,16 +171,18 @@ export interface LianaSwing {
  *                        ledge the swing started from. A chain of swings has a perch between every two: liana, land, liana, land
  *                        (levelCheck follows ledge -> liana -> ledge, never liana to liana)
  *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
+ * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
+ * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
  */
 export type PlaceRule =
   | { kind: 'start' }
   | { kind: 'walk'; after: string; dy?: Range }
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double'; share?: Range }
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double'; share?: Range; water?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
   | { kind: 'over'; on: string; at: Range; dy: Range }
   | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
-  | { kind: 'land'; after: string; dy?: Range; share?: Range }
+  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean }
   | { kind: 'climb'; on: string; at: Range; h: Range };
 
 export interface SectionPiece {
@@ -260,6 +263,19 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
   pieces: LocalPieceSpec[];
 }
 
+/**
+ * A zone a section lays over its own pieces (the engine's zones.ts Zone, placed by piece key):
+ *   tide   World 6's mudflat (6-4 Low Tide): the piece `on` is the mud, a bank on each side of it (levelCheck: its neighbours end and
+ *          start at its ends); the water rises on a timer and sweeps him back toward where he came from. `low` is the low spell (s,
+ *          default TIDE.low), never shorter than the walk across the mud takes (zones.ts tideCrossTime: the pipeline lengthens it);
+ *          `warn` (>= 0.9 s), `active` (<= 3 s) and `force` (px/s) default to TIDE's. Its beat on the clock is rolled per use
+ * Nothing stands or flies inside a zone (no animal, no flag: levelCheck), so creature sockets and flags inside one stay empty.
+ */
+export type SectionZone = { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number };
+
+/** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */
+export const TIDE = { low: [5.6, 7.0], warn: 1.8, active: 2.2, force: 190 } as const;
+
 /** how a section joins its neighbours: on the ground (a walk, a step or a pit between) or from a ledge (a jump) */
 export type PortKind = 'ground' | 'ledge';
 
@@ -301,6 +317,8 @@ export interface SectionTemplate {
    */
   subBlocks?: SubBlock[];
   room?: LocalRoomSpec;
+  /** zones it lays over its pieces (a tide over a mudflat, darkness over a hollow) */
+  zones?: SectionZone[];
   /** may be flipped left to right (a room never is: it reads left to right; painted light stays upper left) */
   mirrorable: boolean;
   /** how often the bag holds it (default 1) */
@@ -435,6 +453,9 @@ export interface StageSink {
   proto: ProtoExtras;
   /** the world's own extras (World 5: proto.w5), for its emitters */
   extras: Record<string, unknown>;
+  /** the stage's zones (zones.ts): the sections' own, and any an emitter lays (a prop's darkness over its span); no animal or flag
+   *  is left standing inside one */
+  zones: Zone[];
   nextPlatformId: () => number;
   nextCollectibleId: () => number;
   nextEnemyId: () => number;
@@ -495,7 +516,7 @@ export interface Gen2Meta {
   errors: string[];
   /** stretches longer than the dead-time cap with nothing interactive (poissonPlace's `unfilled`), [x0, x1] */
   barren: Array<[number, number]>;
-  /** the route's gaps and what a fall into each one ends in (soft: a climb out; water or void: a life) */
+  /** the route's gaps and what a fall into each one ends in (soft: a climb out; water or void: a life; a section's `water` gap is water) */
   falls?: Array<{ x0: number; x1: number; y: number; kind: PitKind }>;
 }
 

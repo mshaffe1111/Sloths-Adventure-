@@ -9,10 +9,11 @@ import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
 import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
-import { LIANA, MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
+import { LIANA, MARGIN, TIDE, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
 import { addKitPlatforms } from '../puzzleKit.ts';
 import { DOUBLE_RISE } from '../physics.ts';
+import { tideCrossTime, idleTime } from '../zones.ts';
 import { findRoute, type Route } from '../../../tools/inspect/route.ts';
 import { inspectJumps, KID } from '../../../tools/inspect/jumps.ts';
 import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
@@ -700,4 +701,69 @@ test('a liana swings by itself and its perch is sized from the release window (E
   // authoring mistakes are named
   const bad: SectionTemplate = { ...swingSec, pieces: [swingSec.pieces[0], { ...swingSec.pieces[2], place: { kind: 'land', after: 'near' } }] };
   assert.throws(() => layLocal(bad, planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, 'normal'), rngFor(1)), /lands from near, which is not a liana/);
+});
+
+test("World 6's water: a section's water gap is water on any world and setting (a life, warned), and a tide rises over a mudflat", () => {
+  const creek: SectionTemplate = {
+    id: 'toy-creek', name: 'creek', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 5, weight: 3,
+    pieces: [
+      { key: 'near', shape: 'bank', w: [300, 400], place: { kind: 'start' } },
+      { key: 'far', shape: 'bank', w: [500, 600], place: { kind: 'jump', after: 'near', share: [0.5, 0.7], water: true }, landing: true },
+    ],
+    entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: true,
+  };
+  const marsh: SectionTemplate = {
+    id: 'toy-marsh', name: 'mudflat', archetypes: 'any', phases: ['sho', 'ten'], difficulty: 4, weight: 3,
+    pieces: [
+      { key: 'bank', shape: 'bank', w: [300, 360], place: { kind: 'start' } },
+      { key: 'mud', shape: 'bank', w: [300, 380], place: { kind: 'walk', after: 'bank', dy: 60 } },
+      { key: 'out', shape: 'bank', w: [360, 420], place: { kind: 'walk', after: 'mud', dy: -60 } },
+    ],
+    entry: { piece: 'bank', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0,
+    sockets: [{ id: 'foe', role: 'enemy', on: 'mud', t: 0.5, maxThreat: 3 }, { id: 'p', role: 'pickup', on: 'mud', t: 0.5, dn: 34, count: 3, span: 160 }],
+    zones: [{ kind: 'tide', on: 'mud', low: [1, 2] }],
+    mirrorable: true,
+  };
+  // (an emitter may lay a zone too: the toy chair lays a web patch over its spot, through the sink)
+  const k: WorldKit = {
+    ...kit,
+    manifest: { ...manifest, sections: [...manifest.sections, creek, marsh] },
+    emit: { ...kit.emit, chair: (f, _p, out) => void out.zones.push({ kind: 'web', x0: f.x - 60, x1: f.x + 60, top: f.y - 130, bottom: f.y + 16, baseY: f.y, dir: 1, period: 1, warn: 0, active: 1, offset: 0, force: 0 }) },
+  };
+  let creeks = 0;
+  let tides = 0;
+  for (const seed of [1, 2, 3]) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: d });
+      const what = `seed ${seed} ${d}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      const wet = st.gen2.sections.filter((s) => s.template === 'toy-creek');
+      creeks += wet.length;
+      const falls = st.gen2.falls ?? [];
+      for (const s of wet) {
+        const f = falls.find((g) => g.x0 >= s.x0 && g.x1 <= s.x1)!;
+        assert.equal(f.kind, 'water', `${what}: the creek is water on a soft world`);
+        // nothing under it, and the water there to fall in
+        assert.ok(!st.platforms.some((p) => p.x >= f.x0 && p.x + p.width <= f.x1 && p.y > f.y), `${what}: a floor under the creek at ${f.x0}`);
+        assert.ok(st.waterY !== undefined);
+        const before = st.proto.hints.filter((h) => h.text === WATER_LINE && h.x < f.x0);
+        if (d === 'easy') assert.ok(before.length && f.x0 - before.at(-1)!.x <= WATER_WARN.every * st.gen2.budget.walkSpeed + WATER_WARN.lead + 1, `${what}: water at ${f.x0} unwarned`);
+        else assert.ok(before.length, `${what}: the first water is warned`);
+      }
+      // the world's own falls stay soft
+      assert.ok(falls.some((g) => g.kind === 'soft' && g.x1 - g.x0 >= 20));
+      // the tides: the low spell outlasts the walk across (lengthened from the section's 1-2 s), banks either side, nothing standing in it
+      for (const z of (st.zones ?? []).filter((z) => z.kind === 'tide')) {
+        tides++;
+        assert.ok(idleTime(z) + z.warn >= tideCrossTime(z.x1 - z.x0) && idleTime(z) >= 2 && z.active <= 3 && z.warn >= 0.9, `${what}: tide at ${z.x0}`);
+      }
+      for (const z of st.zones ?? []) {
+        assert.ok(!st.enemies.some((e) => e.x > z.x0 - 30 && e.x < z.x1 + 30 && e.y > z.top && e.y < z.bottom + 60), `${what}: an animal in the tide at ${z.x0}`);
+        assert.ok(!(st.checkpoints ?? []).some((c) => c.x >= z.x0 && c.x <= z.x1 && c.y > z.top && c.y < z.bottom), `${what}: a flag in the tide`);
+      }
+      const chairs = st.gen2.fills.filter((f) => f.what === 'chair').length;
+      assert.equal((st.zones ?? []).filter((z) => z.kind === 'web').length, chairs, `${what}: an emitter's zone reaches the stage`);
+    }
+  }
+  assert.ok(creeks > 0 && tides > 0, `${creeks} creeks, ${tides} tides`);
 });
