@@ -12,6 +12,7 @@ import { CHAIR, COCOON } from '../../src/game/w5Kit.ts';
 import { FALLS } from '../../src/game/waterfalls.ts';
 import { VINE } from '../../src/game/thornVine.ts';
 import { skillHeldAt } from '../../src/game/skills.ts';
+import { roomBox } from '../../src/game/puzzleKit.ts';
 import { RUN, type Route, type Seg } from './route.ts';
 import type { Stage } from './stages.ts';
 
@@ -183,6 +184,20 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     if (!p.push) continue;
     const i = firstIn(samples, { x0: p.push.min - 60, x1: p.push.max + 60, y0: p.y - 260, y1: p.y + p.height + 40 });
     if (i < 0) off('push logs and boulders'); else add(i, 'P', p.art === 'boulder' ? 'push the boulder' : 'push the hollow log', 2.0);
+  }
+  // the puzzle kit's rooms (puzzleKit.ts): a beat where the route comes into the room, as long as a quick player takes to solve it (a
+  // thing fetched and set down or thrown, a lever pulled, a bell rung, a trade, a lift ridden; a pushed log is its own beat above)
+  for (const room of stage.kit?.rooms ?? []) {
+    const box = roomBox(room, stage.platforms);
+    const i = firstIn(samples, { x0: box.x0 - 20, x1: box.x1 + 20, y0: box.y0, y1: box.y1 + 60 });
+    if (i < 0) { off('puzzle rooms'); continue; }
+    let dur = 1;
+    for (const pc of room.pieces) {
+      if (pc.kind === 'item' && !pc.with) dur += 2.2;
+      else if (pc.kind === 'lever' || pc.kind === 'bell' || pc.kind === 'trader' || pc.kind === 'seesaw') dur += 0.8;
+      else if (pc.kind === 'lift') dur += pc.rise / 120;
+    }
+    add(i, 'P', `puzzle room: ${room.id}`, dur);
   }
   const w4 = stage.proto?.w4;
   for (const s of w4?.patience ?? []) {
