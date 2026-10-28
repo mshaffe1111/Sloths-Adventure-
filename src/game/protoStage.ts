@@ -2336,7 +2336,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   function sporeGap(deep = false) {
     const x0 = x;
     // (over the stream the way up to it and away from it is shorter: the 300 px walks either side read as quiet stretches)
-    run(deep ? R.r(220, 260) : R.r(300, 360));
+    run(deep ? R.r(200, 240) : R.r(240, 280));
     const edge = x;
     close();
     // (`deep`, 2026-10-28: over the stream, no moss below: a miss costs a life, so the gap stays well inside a jump)
@@ -2346,7 +2346,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     arc(edge - 30, far + 30, G - 110, deep ? 3 : 4);
     open(far);
     // (a flag may follow: it stands 80 short of the end, clear of the cloud's far edge)
-    run(deep ? R.r(260, 290) : R.r(300, 360));
+    run(R.r(255, 280));
     sporeZone(edge - 150, far + 150, [edge - 110, far + 100]);
     expert += (x - x0) / RUN + 3;
     pieces.push({ k: 'stumps', x0, x1: x });
@@ -2362,11 +2362,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     let hops = 0;
     /** `rocks` (2026-10-28, the stage inspector): a grotto stone to hop in each long stretch of the dark, clear of where he stops */
     const go = (len: number, last = false) => {
-      if (!opts.rocks || len < 420) return run(len);
+      if (!opts.rocks || len < 300) return run(len);
       const s0 = x;
-      // (the last stretch has no stop at its end to keep clear: a second stone on the way out of the dark)
-      // (a long stretch gets two, 2026-10-28: one stone in 600 px of dark left 2-3 s quiet walks either side of it)
-      for (const at of last ? (len >= 700 ? [0.18, 0.48, 0.78] : [0.22, 0.62]) : len >= 600 ? [0.25, 0.6] : [0.3]) {
+      // (the last stretch has no stop at its end to keep clear: more stones on the way out of the dark)
+      // (round 2, 2026-10-28: a stone about every 300 px, still 30% of the stretch clear before the stop at its end; quiet walks in the
+      // dark were most of 3-1's and 3-2's dead time)
+      const k = Math.max(1, Math.round((len * (last ? 0.8 : 0.6)) / 300));
+      const ats = Array.from({ length: k }, (_, i) => (last ? 0.12 + (0.72 * (i + 0.5)) / k : 0.12 + (0.55 * (i + 0.5)) / k));
+      for (const at of ats) {
         run(s0 + len * at - x);
         logHop(R.i(34, 44));
         hops++;
@@ -2473,9 +2476,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const sh: [number, number] = deep ? [0.32, 0.4] : [0.45, 0.6];
     let bx = edge + Math.round(reachJump(G - y, false) * R.r(sh[0], sh[1]));
     let m = 0;
+    // (round 2, 2026-10-28: the first shelf a plain jump up from the floor, 95 px at most, and each next one at most 45 higher until the
+    // shelves reach their height: a 120-170 px climb from the floor straight onto the first shelf wanted the second jump, and the kid
+    // bot made it 81-84% of the time on Easy, under the 85% floor)
+    let prevTop = G;
     for (let k = 0; k < n; k++) {
       const w = Math.round(R.r(240, 300));
-      const top = y + Math.round(R.r(-20, 20));
+      const top = Math.round(Math.max(y + R.r(-10, 10), prevTop - (k === 0 ? 95 : 45)));
+      prevTop = top;
       branch(bx, bx + w, top);
       if (k !== 0 || n < 3) { prowler('ocelot', bx + w / 2, top, w - 100); m++; }
       else row(bx + 50, bx + w - 50, top - 34, 2, 'orchid');
@@ -2503,7 +2511,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    */
   function w3Stones(heights: number[], share: [number, number]) {
     const x0 = x;
-    run(R.r(140, 200));
+    run(R.r(100, 140));
     const edge = x;
     close();
     let px = edge, prevTop = G;
@@ -2522,7 +2530,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const far = Math.round(px + reachJump(prevTop - G, false) * R.r(share[0], share[1]));
     plainPit(edge, stones, far);
     open(far);
-    run(R.r(160, 220));
+    run(R.r(130, 170));
     expert += (x - x0) / RUN + 0.6 * heights.length;
     pieces.push({ k: 'stumps', x0, x1: x });
   }
@@ -2785,7 +2793,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // from World 2.)
     const v = W3P!;
     beat('Start: the grotto mouth', () => {
-      rest(R.r(420, 480));
+      rest(R.r(340, 380));  // (round 2: a shorter walk in, the opening was 2-3 quiet seconds)
       W3D.push({ n: 'grottoMouth', x: x - 140, b: G + 8, w: 320 });
       hint(x - 300, 'Into the grotto!');
       w3Start(v.start);
@@ -2818,8 +2826,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       // (each version leans on one thing, drawn from a shuffle bag: lianas over the stream, the spores and the dark, or the deep)
       const kits: Array<Array<() => void>> = [
         [() => w3Vines(), () => { w3Vines(); busy(1); }, () => highRoadOver(), () => { w3Vines(); busy(1); }],
-        [() => { sporeRest(R.r(440, 500)); sporeGap(true); }, () => glowDark(R.r(1100, 1250), 1, { rocks: true }), () => { sporeGap(true); sporeGap(); }, () => glowDark(R.r(1000, 1150), 2, { rocks: true })],
-        [() => deepRun(4, 2), () => w3Stones(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]), () => deepRun(3, 1), () => { busy(1); stumps(); }],
+        // (round 2: no long cloud to wait under here, it was most of the spore roll's quiet seconds: gaps in the spores, stones between)
+        [() => { sporeGap(true); w3Stones(R.shuffle([40, 80, 60]), [0.5, 0.6]); }, () => glowDark(R.r(1100, 1250), 1, { rocks: true }), () => { sporeGap(true); sporeGap(); }, () => { sporeGap(); deepRun(2, 1); }],
+        [() => deepRun(4, 2), () => w3Stones(R.shuffle([50, 110, 70, 130]), [0.5, 0.6]), () => deepRun(3, 1), () => busy(3, ['log', 'dip'])],
       ];
       w3Finish(EXPERT_SECONDS + 18, kits[v.finish], 3);
       homeRun();
@@ -2844,9 +2853,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       if (v.learn === 0) {
         glowDark(R.r(1150, 1300), 1, { rocks: true });
         busy(1);
-        glowDark(R.r(1600, 1800), 2, { rocks: true });
+        glowDark(R.r(1250, 1400), 1, { rocks: true });
       } else {
-        glowDark(R.r(1450, 1600), 2, { rocks: true });
+        glowDark(R.r(1200, 1350), 1, { rocks: true });
         w3Stones([50, 100, 70], [0.5, 0.6]);
       }
       flag();
@@ -2855,17 +2864,20 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Develop: something is watching', () => {
       hint(x + 20, 'Eyes in the dark! Slide down inside a fern to hide', 'Eyes in the dark! Hold down inside a fern to hide', 'Eyes in the dark! Hold down inside a fern to hide');
-      bushRow(4, [420, 520], ['grotto'], [7, 8.5], true);
+      // (round 2: rows with two stones between the ferns, 640 px and more apart: one stone in 420-520 px left 2-3 s quiet walks)
+      bushRow(3, [640, 700], ['grotto'], [7, 8.5], true);
       flag();
-      if (v.develop === 0) bushRow(3, [620, 720], ['grotto'], [5, 6.2], true);
+      if (v.develop === 0) bushRow(3, [640, 720], ['grotto'], [5, 6.2], true);
       else if (v.develop === 1) { const x0 = x; glowDark(R.r(1300, 1450), 1, { ferns: true, rocks: true }); ZONES.push({ x0, x1: x, calm: [6, 7.2] }); expert += 3; }
-      else { w3Vines(); bushRow(3, [560, 660], ['grotto'], [5.4, 6.4], true); }
+      else { w3Vines(); bushRow(3, [640, 700], ['grotto'], [5.4, 6.4], true); }
       flag();
     });
     beat('Twist: the eyes in the dark', () => {
       hint(x + 20, 'Stop inside a fern. The eyes cannot see you there, and the glowworms can');
       const x0 = x;
-      glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true });
+      // (the twist's own dark is shorter when a plate room or the roots follow it)
+      if (v.twist === 0) glowDark(R.r(1350, 1500), 2, { ferns: true, rocks: true });
+      else glowDark(R.r(1050, 1150), 1, { ferns: true, rocks: true });
       ZONES.push({ x0, x1: x, calm: [5.5, 6.8] });
       expert += 4;
       flag();
@@ -3454,7 +3466,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // stream with vines over the gaps, or the grotto dark between the chains.)
     const v = W3P!;
     beat('Start', () => {
-      rest(R.r(420, 480));
+      rest(R.r(340, 380));  // (round 2: a shorter walk in, the opening was 2-3 quiet seconds)
       hint(x - 320, 'Thorn vines hang between the lianas. Swing past without touching the thorns');
       w3Start(v.start);
       flag();
@@ -4859,7 +4871,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // World 3's note (Meeca, in plain sight: a Keeper's Bell) on the quiet floor just before the eyes
     const note = findForStage(config.worldIndex, config.miniIndex);
     const at = beats.find((b) => b[2].startsWith('Develop'));
-    if (note && note.kind === 'note' && at) C.push({ id: cid++, type: 'find', findId: note.id, hidden: false, x: Math.round(at[0] + 170), y: G - 26, collected: false, bobPhase: 0 });
+    if (note && note.kind === 'note' && at) C.push({ id: cid++, type: 'find', findId: note.id, hidden: false, x: Math.round(at[0] + 70), y: G - 26, collected: false, bobPhase: 0 });
   }
   // the walk to the shrine makes up any last seconds the dice left short
   if ((config.worldIndex === 3 || config.worldIndex === 4) && expert < EXPERT_SECONDS) rest((EXPERT_SECONDS - expert) * RUN + 60);
