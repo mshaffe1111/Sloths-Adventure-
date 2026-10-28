@@ -21,6 +21,8 @@ export interface AudioCoreOptions {
   reverbSeconds?: number;
   /** the music hall's reverberation time in seconds */
   hallSeconds?: number;
+  /** a phone: one light room built from short delays instead of the two big convolution rooms (see makeLightRoom) */
+  lightRoom?: boolean;
 }
 
 export class AudioCore {
@@ -69,7 +71,7 @@ export class AudioCore {
     makeup.gain.value = 1.25;
     const clip = c.createWaveShaper();
     clip.curve = softClipCurve();
-    clip.oversample = '2x';
+    clip.oversample = opts.lightRoom ? 'none' : '2x';
     // tone: a little less low-mid mud, a little more air
     const lowCut = c.createBiquadFilter();
     lowCut.type = 'lowshelf';
@@ -122,12 +124,18 @@ export class AudioCore {
 
     // ---- reverb
     this.reverbIn = c.createGain();
-    const conv = c.createConvolver();
-    conv.buffer = makeImpulse(c, opts.reverbSeconds ?? 2.1);
     const revOut = c.createGain();
     revOut.gain.value = 0.9;
-    this.reverbIn.connect(conv);
-    conv.connect(revOut);
+    let room: [AudioNode, AudioNode];
+    if (opts.lightRoom) {
+      room = makeLightRoom(c, 2.3);
+    } else {
+      const conv = c.createConvolver();
+      conv.buffer = makeImpulse(c, opts.reverbSeconds ?? 2.1);
+      room = [conv, conv];
+    }
+    this.reverbIn.connect(room[0]);
+    room[1].connect(revOut);
     revOut.connect(this.master);
 
     // ---- ping-pong delay (time follows the music tempo)
@@ -158,14 +166,23 @@ export class AudioCore {
     this.sends = { music: c.createGain(), sfx: c.createGain(), amb: c.createGain() };
     this.sends.sfx.connect(this.reverbIn);
     this.sends.amb.connect(this.reverbIn);
-    // the music has a hall of its own: a longer, darker room with the first reflections in it, so the orchestra sits on a stage instead of in a box
-    const hall = c.createConvolver();
-    hall.buffer = makeHall(c, opts.hallSeconds ?? 2.7);
-    const hallOut = c.createGain();
-    hallOut.gain.value = 0.85;
-    this.sends.music.connect(hall);
-    hall.connect(hallOut);
-    hallOut.connect(this.master);
+    // the music has a hall of its own: a longer, darker room with the first reflections in it, so the orchestra sits on a stage instead of in a box.
+    // A phone shares the light room instead: the two long convolution rooms were the heaviest work in the mix, and on a busy iPhone the whole sound
+    // came through only in short bursts as each effect started, with near silence between (a tester's climb on 1-1, 2026-10-28)
+    if (opts.lightRoom) {
+      const hallOut = c.createGain();
+      hallOut.gain.value = 0.85;
+      this.sends.music.connect(hallOut);
+      hallOut.connect(this.reverbIn);
+    } else {
+      const hall = c.createConvolver();
+      hall.buffer = makeHall(c, opts.hallSeconds ?? 2.7);
+      const hallOut = c.createGain();
+      hallOut.gain.value = 0.85;
+      this.sends.music.connect(hall);
+      hall.connect(hallOut);
+      hallOut.connect(this.master);
+    }
     this.musicEchoSend = c.createGain();
     this.musicEchoSend.connect(this.delayIn);
 
@@ -238,6 +255,38 @@ function makeNoise(ctx: BaseAudioContext, seconds: number, pink: boolean): Audio
     }
   }
   return buf;
+}
+
+/**
+ * A light room for phones: four feedback delays (a Schroeder comb bank) with a low-pass in each loop, so the tail darkens as it fades, two to each
+ * ear at different lengths so the sides differ. All of it runs on the sound thread in plain delays, gains and filters, a small fraction of what the
+ * convolution rooms cost. `seconds` is the time for the tail to fall 60 dB. Returns the room's input and output.
+ */
+function makeLightRoom(c: BaseAudioContext, seconds: number): [AudioNode, AudioNode] {
+  const input = c.createGain();
+  input.gain.value = 0.32;
+  const merger = c.createChannelMerger(2);
+  const tone = c.createBiquadFilter();
+  tone.type = 'highpass';
+  tone.frequency.value = 180;
+  input.connect(tone);
+  [0.0297, 0.0371, 0.0411, 0.0437].forEach((len, i) => {
+    const d = c.createDelay(0.1);
+    d.delayTime.value = len;
+    const lp = c.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 3400 - i * 300;
+    // no bump at the corner (a Web Audio low-pass's Q is in dB and peaks by default): any gain above 1 in a feedback loop rings up forever
+    lp.Q.value = -6;
+    const fb = c.createGain();
+    fb.gain.value = Math.pow(10, (-3 * len) / seconds);
+    tone.connect(d);
+    d.connect(lp);
+    lp.connect(fb);
+    fb.connect(d);
+    lp.connect(merger, 0, i % 2);
+  });
+  return [input, merger];
 }
 
 /** a small lush room: decorrelated stereo noise with an exponential tail that gets darker as it fades */
