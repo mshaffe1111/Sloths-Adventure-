@@ -389,10 +389,10 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     close();
     open(x, G - 20);
     // (wide enough to land a flick on: at 100-130 px a running flick from its foot carried him over it, plainWalk.test.ts)
-    run(R.r(170, 200));
+    run(R.r(160, 180));
     close();
     open(x, G);
-    run(R.r(20, 40));
+    run(R.r(5, 15));
     expert += (x - x0) / RUN;
     pieces.push({ k: 'rest', x0, x1: x });
   };
@@ -705,7 +705,8 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     piece('door', x, G + 6, 190, { flip: true });
     piece('chimney', x + 120, G - 72, 60);
     decor.push({ cel: 'tc.scroll', x: x + 220, b: G + 2, k: 0.42, flip: true });
-    run(270);
+    // (the shrine a little sooner: with the creek's last hop the walk in came to four seconds and more, 2026-10-28)
+    run(230);
     expert += (x - v0) / RUN;
   }
 
@@ -829,7 +830,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       cx += w;
     }
     open(cx);
-    run(R.r(145, 160));
+    run(R.r(110, 130));
     // (each channel is its own water: a moment to read it before the hop)
     expert += (x - x0c) / RUN + (n + 1) * 1.3;
     pieces.push({ k: 'channels', x0: x0c, x1: x });
