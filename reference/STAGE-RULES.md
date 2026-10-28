@@ -168,6 +168,11 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   a bubble goes beside the speaker; check upright screenshots with the bubble up.
 - **Lines that queue fall behind**: a 4 s reading floor let story lines pile up until they described a room she had left. A line
   that is stale (she has walked on ~500 px) is dropped, not queued.
+- **Variety one section at a time doesn't show** (World 2, 2026-10-28): three versions of each section, each picked on its own, still
+  read 0.83-0.95 alike on the 200-roll tool, because it compares the mix of things to do (action 3-grams) and every water crossing
+  reads the same (logs, pads, stones: a river and hops). What works: one version (a flavour) that carries through the whole stage, four
+  of them, differing in the heavy beats (animals, climbs and swings, puzzles), not only in the kind of crossing. Measure with
+  `tools/inspect/era.ts` while authoring, not after.
 - **One length number lies**: the time model and a real-engine bot disagree by about a minute on Meeca's stage (model 5:09-5:17,
   bot 4:16-4:25; the bot never hesitates). Give both, and say which one the target is on.
 

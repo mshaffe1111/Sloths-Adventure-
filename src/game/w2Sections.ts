@@ -111,11 +111,28 @@ export interface W2Picks {
   rng: Rng;
 }
 
+/**
+ * Which flavour each stage takes for a draw of 0..3. The draw is the layout number's own (the same for every stage of the world), and the
+ * tables pair the stages that share a world's ideas so that one roll never gives them the same kind of way across (the 200-roll tool
+ * compares each stage with the same roll of the others: "no two stages of a world alike", STAGE-RULES §2): 2-1 and 2-2 (logs, ponds,
+ * snakes, posts), 2-3 and 2-8 (the cages), 2-4 and 2-7 (swings and lifts), 2-5 and 2-9 (the animals).
+ */
+const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
+  '2-1': ['deep', 'creek', 'reeds', 'reeds'],
+  '2-2': ['snakes', 'posts', 'high', 'ponds'],
+  '2-3': ['posts', 'ponds', 'snakes', 'vines'],
+  '2-8': ['channels', 'reeds', 'logs', 'islands'],
+  '2-4': ['chains', 'islands', 'reeds', 'ponds'],
+  '2-7': ['porches', 'lifts', 'swings', 'logs'],
+  '2-5': ['banks', 'sandbars', 'ponds', 'creek'],
+  '2-9': ['porches', 'lilies', 'sandbars', 'gates'],
+};
+
 /** which versions a layout number gets: the stage's flavour and the bank's dressing (a retry with the same number gets the same) */
 export function w2Picks(plan: W2Plan, seed: number): W2Picks {
   const s = stream(seed * 131 + plan.charCodeAt(2) * 17 + 5);
-  const flavours = plan === '2-6' ? ['climb'] : W2_FLAVOURS[plan];
-  const flavour = new ShuffleBag(s.f, flavours).draw()!;
+  const draw = new ShuffleBag(stream(seed * 131 + 5).f, [0, 1, 2, 3]).draw()!;
+  const flavour = plan === '2-6' ? 'climb' : BY_DRAW[plan][draw];
   const look = new ShuffleBag(s.f, LOOKS).draw()!;
   return { flavour, look, rng: s.f };
 }
@@ -434,7 +451,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       let n = 0;
       // (the village's walk adds about 5 s; the last crossings come quicker: the climax before the walk out)
       // (the deep river's logs are crossed a little quicker than the estimate: a few seconds more of them)
-      while (k.expert < k.EXPERT_SECONDS + (flavour === 'deep' ? 26 : 18) && n < 16) {
+      while (k.expert < k.EXPERT_SECONDS + (flavour === 'deep' ? 34 : 18) && n < 18) {
         const late = k.expert > k.EXPERT_SECONDS - 6;
         const t = turns.next();
         if (t === 'snake') {
@@ -654,8 +671,8 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       k.breath();
       cage(order[3], 4);
       let n = 0;
-      const target = k.EXPERT_SECONDS + (flavour === 'ponds' ? -6 : 10);
-      while (k.expert < target && n < 8) {
+      const target = k.EXPERT_SECONDS + (flavour === 'ponds' ? 2 : 12);
+      while (k.expert < target && n < 14) {
         cross.step(turns.next(), n, turns.kinds);
         if (++n % 2 === 0) k.flag();
       }
@@ -1075,7 +1092,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     });
     k.beat('Finish: to the king', () => {
       let n = 0;
-      while (k.expert < k.EXPERT_SECONDS - 10 && n < 10) {
+      while (k.expert < k.EXPERT_SECONDS - 2 && n < 12) {
         k.breath();
         const c = k.x;
         // (the court's guards by the roll too: rows of four on the porches' court, pairs by the ponds, one at each gate, and snappers

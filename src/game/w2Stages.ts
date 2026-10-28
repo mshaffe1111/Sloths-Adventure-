@@ -553,9 +553,8 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     close();
     // (each step low enough to walk straight up, and a tread wide enough to stand on: at 28 px wide and 22 px high a small thumb hopping
     // them ran off a step before its flick came)
-    // (20 px a step: under the lip's hoist, 26 px, so still walked straight up, and each one a step up he feels: 16 px steps were a
-    // long walk with nothing to do, 2-7's quiet stretches, 2026-10-28)
-    const n = Math.max(3, Math.ceil(rise / 20));
+    // (16 px a step: at 20 px the kid bot hopped them and missed, 2-7 and 2-9 on 13 of 20 bot rolls, 2026-10-28)
+    const n = Math.max(3, Math.ceil(rise / 16));
     const r = rise / n;
     const tread = 34;
     const fromY = bankY;
