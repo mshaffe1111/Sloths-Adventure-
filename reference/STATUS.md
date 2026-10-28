@@ -57,6 +57,14 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - Batch 2 (2026-10-28, Worlds 1-2 on build 39fc3db): 9 items, being fixed (helper "QA batch 2").
 - Asked of QA (2026-10-28): run the Matt bot through every stage of Worlds 3 and 4 on the live build; report on Matt's "send".
 
+## Two tracks (Matt, 2026-10-28)
+
+- **Today's code track:** the four original helpers (QA batch 2, art placement, the 200-roll tool, Meeca's stage) stay on bringing the
+  current game up to speed plus bug fixes: when one reports and passes the checks, the lead sends it its next piece of that track
+  (it keeps its context, which saves tokens) instead of starting a new helper.
+- **Generator track:** the architect, the variety tools and the pacing measures, then seed curation, the validator upgrades and
+  World 5's building blocks.
+
 ## Waiting to start (they need another helper's result)
 
 - Seed curation (pick each stage's best rolls): needs the 200-roll tool.
