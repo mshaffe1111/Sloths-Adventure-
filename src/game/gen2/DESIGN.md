@@ -284,6 +284,20 @@ and a section's entry and exit are always ledges):
   engine's `tree_climb` vine; needs the `climb` move, inferred). An `over` piece on a vine with `at: 0` starts at the vine (its
   top `dy` above the vine's top): the ledge a climb leads to. Only the vine reaches a ledge higher than a double jump.
 
+**Water gaps**: a gap rule (`jump`, `double`, `pit`, `land`) with `water: true` is water whatever the world's `pit` (a creek in a soft
+world): nothing is laid under it, the stage gets its water line (`waterY`), `Gen2Meta.falls` calls it `'water'`, and a fall costs a
+life on Normal and on Easy alike (Matt's rule B), warned by Dot's "Careful, water! Flick up and over." (`WATER_WARN`: Normal at the
+first water, Easy again whenever 12 s of walking passed) with a sign's spot in `proto.gen2.waterWarnings`.
+
+**Zones** (`SectionTemplate.zones`, the engine's `zones.ts` Zone, placed by piece key; the stage's are `Gen2Stage.zones`):
+- `{ kind: 'tide', on, low?, warn?, active?, force? }` (6-4 Low Tide): the piece `on` is the mudflat, with a bank on each side (its
+  neighbours must end and start at its ends: `walk` pieces do). The water rises on a timer and sweeps him back; the low spell
+  (`TIDE.low` 5.6-7.0 s) is lengthened to outlast the walk across (`tideCrossTime`), warn >= 0.9 s, active <= 3 s; its beat on the
+  clock is rolled per use. 6-7's raising and lowering the water by hand is not in the engine (a puzzle piece to build).
+- `StageSink.zones`: every zone of the stage, the sections' own first; a world's emitter may push its own (a prop's patch).
+- Nothing stands in a zone (levelCheck): creature sockets and top-up animals inside one stay empty, and a flag inside one is not
+  raised (or is taken down when an emitter's zone comes to cover it).
+
 ---
 
 ## Part C. Matt's decisions (answered 2026-10-28)
