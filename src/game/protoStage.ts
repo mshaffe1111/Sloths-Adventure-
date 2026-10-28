@@ -43,6 +43,7 @@ import { buildW5Stage54 } from './w5Stage54.ts';
 import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
+import { dressStage } from './artDress.ts';
 import { addKitPlatforms, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
@@ -115,6 +116,8 @@ export interface ProtoExtras {
   thorns?: import('./thornVine.ts').ThornVine[];
   /** World 3's painted dressing: stalactites, glowworm threads, ferns, the grotto mouth (protoStage.ts, drawn by w3Art.ts) */
   w3decor?: import('./w3Art.ts').W3Decor[];
+  /** Matt's World 3 and 4 puzzle sheets set in as dressing once the stage is built (artDress.ts): pictures only */
+  kitDecor?: import('./puzzleArt.ts').KitDecor[];
   /** World 2's painted dressing: reeds, lily pads, the village's doors and signs, and its folk (w2Stages.ts, drawn by riverArt.ts) */
   decor?: import('./riverArt.ts').W2Decor[];
   /** 2-6: the climbs are the village's ladders (riverArt.ts drawLadder), not trunks */
@@ -276,6 +279,17 @@ export type PieceKind = 'rest' | 'hollow' | 'gorge' | 'kapok' | 'log' | 'canopy'
  * (protoCheck.ts) and rolled again if a swing or a landing would not work.
  */
 export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan = 'proto'): GeneratedStage & { proto: ProtoExtras } {
+  const st = buildPlan(config, seed, plan);
+  // Worlds 3 and 4: Matt's puzzle sheets set in as dressing (pictures only: artDress.ts)
+  const w = config.worldIndex;
+  if ((w === 3 || w === 4) && /^[34]-[1-9]$/.test(plan)) {
+    const kd = dressStage({ world: w, stage: config.miniIndex, seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, w3decor: st.proto.w3decor });
+    if (kd.length) st.proto.kitDecor = kd;
+  }
+  return st;
+}
+
+function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-4') return buildKapok(config, seed);
   if (plan === '3-4') return buildKapok(config, seed, false, true);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);

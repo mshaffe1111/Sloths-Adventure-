@@ -9,6 +9,7 @@
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { W3_FRAMES } from './w3PropsData.ts';
+import { drawKitArt, kitArtReady, kitSize } from './puzzleArt.ts';
 
 export type W3Piece = keyof typeof W3_FRAMES;
 
@@ -31,6 +32,11 @@ export interface W3Decor {
    * rustle too, so rustling tells nothing there): the number sets its beat
    */
   rustle?: number;
+  /**
+   * a fern painted as one of Matt's World 3 puzzle ferns instead of the grotto's own (3-7's "Which fern?": the three ferns of a hollow are
+   * all one kind, rolled with the stage, artDress.ts; the puzzle kit's sheet)
+   */
+  kit?: 'fern1' | 'fern3';
 }
 
 /** the sheet's address (stagePreload.ts decodes it before a World 3 stage starts) */
@@ -99,7 +105,7 @@ export function drawW3Decor(
       continue;
     }
     if (d.n === 'fern' && d.rustle !== undefined) {
-      drawW3Fern(ctx, { x: left, w: d.w, y: d.b - 6 }, false, thingTell(d.rustle, t), t);
+      drawW3Fern(ctx, { x: left, w: d.w, y: d.b - 6 }, false, thingTell(d.rustle, t), t, d.kit);
       continue;
     }
     blit(ctx, d.n, left, top, d.w, h, d.flip);
@@ -110,7 +116,18 @@ export function drawW3Decor(
 const thingTell = (id: number, t: number) => Math.max(0, Math.sin(t * 1.25 + id * 2.3) - 0.8) / 0.2;
 
 /** a fern to hide in (World 3's bushes): the still fern, or the rustling one while he moves inside it */
-export function drawW3Fern(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number }, inside: boolean, rustle: number, t: number): boolean {
+export function drawW3Fern(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number }, inside: boolean, rustle: number, t: number, kit?: 'fern1' | 'fern3'): boolean {
+  if (kit && kitArtReady()) {
+    // Matt's puzzle fern: shaken on its own (it has no rustling painting), a shiver and a little bounce as its leaves move
+    ctx.save();
+    if (inside) ctx.globalAlpha = 0.62;
+    ctx.translate(b.x + b.w / 2, b.y + 6);
+    ctx.transform(1, 0, Math.sin(t * 22) * 0.09 * rustle, 1 + Math.sin(t * 31) * 0.03 * rustle, 0, 0);
+    const sz = kitSize(kit);
+    drawKitArt(ctx, kit, 0, 0, { w: b.w, h: (b.w * sz.h) / sz.w });
+    ctx.restore();
+    return true;
+  }
   if (!w3ArtReady()) return false;
   const still = W3_FRAMES.fern;
   const h = (b.w * still.h) / still.w;
@@ -229,12 +246,42 @@ function drawThornSprite(
 }
 
 /**
+ * A vine that struck at a noise (3-5's lure: the bell, a pebble's clack) has tied itself in a knot round where it struck: Matt's tangled
+ * thorn vine, hanging from the roof, harmless (while it listens to the noise it sees nobody: thornVine.ts vineSees). In its last moments
+ * it works itself loose (his loose thorn vine), then it hangs as before. `left`: seconds it still listens.
+ */
+function drawTangled(ctx: CanvasRenderingContext2D, v: { x: number; top: number; bud: number }, left: number, t: number): boolean {
+  if (!kitArtReady()) return false;
+  const loose = left < 0.6;
+  const n = loose ? 'thornLoose' : 'thornTangle';
+  const sz = kitSize(n, 1.9);
+  const bottom = v.bud + 6;
+  const top = bottom - sz.h * 0.8;
+  ctx.save();
+  ctx.lineCap = 'round';
+  const sway = Math.sin(t * 0.7 + v.x * 0.01) * 2;
+  for (const [col, lw] of [['#0f1f10', 22], ['#3a6a34', 15], ['rgba(150, 200, 120, 0.35)', 3]] as const) {
+    ctx.strokeStyle = col;
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    ctx.moveTo(v.x, v.top);
+    ctx.quadraticCurveTo(v.x + sway, (v.top + top) / 2, v.x, top + 10);
+    ctx.stroke();
+  }
+  ctx.restore();
+  drawKitArt(ctx, n, v.x, bottom, { scale: 1.9, rot: Math.sin(t * 1.3 + v.x) * 0.04 });
+  return true;
+}
+
+/**
  * A sleeping thorn vine (thornVine.ts), drawn in shapes until Matt's sheet arrives: a thick twisted vine hanging from the roof, thorns
  * along it, and a drooping bud with eyes at its end. `phase` and `u` say what it is doing; `lash` (0..1, or -1) swings it out toward `dir`.
  */
 export function drawThornVine(
   ctx: CanvasRenderingContext2D, v: { x: number; top: number; bud: number; sleep?: number }, phase: 'sleep' | 'stir' | 'look', u: number, lash: number, dir: number, t: number,
+  knot = -1,
 ) {
+  if (knot >= 0 && drawTangled(ctx, v, knot, t)) return;
   if (w3ArtReady()) {
     drawThornSprite(ctx, v, phase, u, lash, dir, t);
     return;
