@@ -102,7 +102,8 @@ test('3-2: the eyes watch the ferns, and every fern in the dark stands where he 
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg('3-2'), s, '3-2');
     const ferns = st.proto.bushes ?? [];
-    assert.ok(ferns.length >= 8 && ferns.every((b) => b.kind === 'grotto'), `seed ${s}`);
+    // (7 at least since the variety pass: the first row is three ferns with two stones between each, so it is not a quiet walk)
+    assert.ok(ferns.length >= 7 && ferns.every((b) => b.kind === 'grotto'), `seed ${s}: ${ferns.length} ferns`);
     assert.ok((st.proto.watch ?? []).length >= 3, `seed ${s}`);
     // every watched stretch has somewhere to hide
     for (const w of st.proto.watch!) assert.ok(ferns.some((b) => b.x > w.x0 && b.x < w.x1), `seed ${s}: a watched stretch with no fern`);
