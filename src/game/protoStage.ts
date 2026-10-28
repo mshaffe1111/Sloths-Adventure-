@@ -3619,10 +3619,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
     P.push({ id: pid++, x: farX, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
     const xs = [edge - 60, ...cuts, farX + 60];
+    // (up a step and down again in turn, so a long pit's floor never climbs toward the bank)
     let fy = HOLLOW_Y;
     for (let k = 0; k + 1 < xs.length; k++) {
+      fy = k % 2 ? HOLLOW_Y - 30 : HOLLOW_Y;
       bank(xs[k], xs[k + 1], fy, 'moss_stone');
-      if (k + 2 < xs.length) fy -= 30;
     }
     P.push({ id: pid++, x: farX - 70, y: fy - PIT_STEP, width: 70, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
   };
@@ -3782,7 +3783,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     stone(head(), Math.round(R.r(50, 75)), Math.round(R.r(230, 260)));
     const lastS = stones[stones.length - 1];
     const far = lastS.x + lastS.width + head();
-    softPit(edge, far);
+    // (a stepped floor under the stones, round 3: the route walked the plain floor under them, 1900 px and seven quiet seconds)
+    steppedPit(edge, far, stones.map((q) => Math.round(q.x + q.width / 2)));
     pitFloors(edge, stones, far);
     const turn = Math.round(mid.x + mid.width * 0.45);
     gustZone(edge - 170, turn, 1, edge - 120);
@@ -4332,12 +4334,18 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     for (let tries = 0; tries < 12; tries++) {
       const top = Math.round(R.r(170, 210));
       const v: Vine = { id: -1, x: kx, topY: top, bottomY: G - 20, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true };
-      const by = Math.round(G - RISE - R.r(40, 60));
-      const bx = Math.round(kx + R.r(230, 290));
+      // (a little lower than it was, 40-60 to 26-34 over a jump's reach, and nearer, round 3: the level check's swing reaches it now)
+      const by = Math.round(G - RISE - R.r(26, 34));
+      const bx = Math.round(kx + R.r(220, 260));
       const ledge: Platform = { id: -99, x: bx, y: by, width: 150, height: 24, type: 'solid' };
       if ((landWindow(null, v, ledge) < 8 || jumpReaches(kx - 420, kx + 420, G, { ...v, bottomY: KNOT_Y })) && tries < 11) continue;
       const lv = liana(kx, top, G - 20);
-      W4K.push({ x: kx, y: KNOT_Y, x0: kx + 30, x1: kx + 110, ground: G, releases: { kind: 'vine', id: lv.id } });
+      // (a narrow dip of soft moss under the vine, round 3: the floor ends just short of it, so the level check sees the swing from
+      // that edge to the branch and counts the seed as reachable; over one floor running on under the vine it never did. Dot's spot is
+      // just past the dip, beside the vine, as before)
+      x = kx - 30;
+      dip(R.r(0.26, 0.28));
+      W4K.push({ x: kx, y: KNOT_Y, x0: Math.max(kx + 30, x + 6), x1: Math.max(kx + 110, x + 70), ground: G, releases: { kind: 'vine', id: lv.id } });
       branch(bx, bx + 150, by);
       goldenSeed(bx + 95, by - 34);
       covers.push({ x: bx - 30, y: by - 90, w: 210, h: 120 });
