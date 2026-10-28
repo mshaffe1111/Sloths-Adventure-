@@ -4161,13 +4161,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     };
     // (round 2, 2026-10-28: the finish's theme is a flavour for the whole stage: after the Develop and the Twist, out of her sight, one
     // of its own pieces, another row of cover under her eye, another lookout, or a crosswind gorge from 4-4)
-    const flavour = roll.theme('finish', ['cover', 'lookouts', 'gorges'] as const);
-    // (round 3: every flavour crosses two windy lianas over a real drop at each break, out of her sight: a miss is a life)
+    const flavour = roll.theme('finish', ['cover', 'lookouts', 'gorges', 'leaf'] as const);
+    // (round 5, 2026-10-28: each flavour's own pieces only: a windy gorge at every break in every flavour, round 3, made the rolls alike
+    // again. The gorges are out of her sight, over a real drop: a miss is a life; the leaf's drops are over soft moss)
     const sig = () => {
-      openCliff('gorge');
       if (flavour === 'cover') coverRow(3, [600, 720], R.shuffle<Cover>(['fall', 'wide', 'fern']), [5, 6]);
       else if (flavour === 'lookouts') lookoutRun(R.shuffle<Cover>(['fall', 'tall']), [400, 460], [5, 6]);
-      else openCliff('gorge');
+      else if (flavour === 'gorges') openCliff('gorge');
+      else openCliff('drop');
       w4Breath();
     };
     const develop = roll.pick(['lookFirst', 'rowFirst', 'climbBetween'] as const);
@@ -4214,9 +4215,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     type Piece45 = 'row' | 'look' | 'pair' | 'drop' | 'gust' | 'pillars' | 'high' | 'gorge';
     const counts: Record<typeof flavour, Record<Piece45, number>> = {
-      cover: { row: 3, look: 1, pair: 1, drop: 0, gust: 1, pillars: 0, high: 0, gorge: 1 },
-      lookouts: { row: 1, look: 2, pair: 2, drop: 0, gust: 0, pillars: 1, high: 0, gorge: 1 },
-      gorges: { row: 1, look: 1, pair: 0, drop: 0, gust: 0, pillars: 0, high: 0, gorge: 3 },
+      cover: { row: 4, look: 0, pair: 1, drop: 0, gust: 0, pillars: 0, high: 0, gorge: 0 },
+      lookouts: { row: 0, look: 3, pair: 2, drop: 0, gust: 0, pillars: 0, high: 0, gorge: 0 },
+      gorges: { row: 1, look: 0, pair: 0, drop: 0, gust: 0, pillars: 0, high: 0, gorge: 4 },
+      leaf: { row: 1, look: 0, pair: 0, drop: 3, gust: 0, pillars: 1, high: 1, gorge: 0 },
     };
     const bag = roll.bag<Piece45>(['row', 'look', 'pair', 'drop', 'gust', 'pillars', 'high', 'gorge'], (k) => counts[flavour][k]);
     beat('Finish', () => {
