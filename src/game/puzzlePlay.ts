@@ -86,7 +86,7 @@ interface LiftRun { spec: Extract<PieceSpec, { kind: 'lift' }>; plat: Platform; 
 interface BeetleRun { spec: Extract<PieceSpec, { kind: 'beetle' }>; st: BeetleState; home: number; span: { x0: number; x1: number }; told: boolean }
 interface SourceRun { spec: Extract<PieceSpec, { kind: 'source' }>; x: number; y: number; plat: number }
 interface ResetRun { spec: Extract<PieceSpec, { kind: 'reset' }>; x: number; y: number; plat: number }
-interface SeesawRun { spec: Extract<PieceSpec, { kind: 'seesaw' }>; x: number; y: number; w: number; rise: number; rest: -1 | 0 | 1; ends: [Platform, Platform]; tilt: -1 | 0 | 1; show: number }
+interface SeesawRun { spec: Extract<PieceSpec, { kind: 'seesaw' }>; x: number; y: number; foot: number; w: number; rise: number; rest: -1 | 0 | 1; ends: [Platform, Platform]; tilt: -1 | 0 | 1; show: number }
 interface BellRun { spec: Extract<PieceSpec, { kind: 'bell' }>; x: number; y: number; plat: number; rung: number }
 interface LedgeRun { spec: Extract<PieceSpec, { kind: 'ledge' }>; plat: Platform; lit: boolean; show: number }
 interface MarkRun { spec: Extract<PieceSpec, { kind: 'mark' }>; x: number; y: number; show: number }
@@ -189,7 +189,7 @@ export class KitPlay {
           const l = byId.get(kitPlatId(ri, pc.id, 0));
           const r = byId.get(kitPlatId(ri, pc.id, 1));
           const rest = pc.rest ?? -1;
-          if (l && r) room.seesaws.push({ spec: pc, x: a.x, y: a.y, w: pc.w ?? KIT.seesawW, rise: pc.rise ?? KIT.seesawRise, rest, ends: [l, r], tilt: rest, show: rest });
+          if (l && r) room.seesaws.push({ spec: pc, x: a.x, y: a.y, foot: byId.get(pc.at.on)?.y ?? a.y, w: pc.w ?? KIT.seesawW, rise: pc.rise ?? KIT.seesawRise, rest, ends: [l, r], tilt: rest, show: rest });
         }
         if (pc.kind === 'bell' && a) room.bells.push({ spec: pc, x: a.x, y: a.y, plat: pc.at.on, rung: -Infinity });
         if (pc.kind === 'ledge') {
@@ -1194,6 +1194,16 @@ export class KitPlay {
     // (the painted plank and its round pivot, stretched to the plank's length; its feet on the ground under the pivot)
     const sz = kitSize(n);
     const k = (s.w + 24) / sz.w;
+    // (over a pit, a post holds the pivot up from the ground under it)
+    if (s.foot > s.y + 12) {
+      ctx.save();
+      ctx.fillStyle = '#5b3a1e';
+      ctx.strokeStyle = '#2f1d0e';
+      ctx.lineWidth = 3;
+      ctx.fillRect(s.x - 13, s.y - 4, 26, s.foot - s.y + 8);
+      ctx.strokeRect(s.x - 13, s.y - 4, 26, s.foot - s.y + 8);
+      ctx.restore();
+    }
     if (!drawKitArt(ctx, n, s.x, s.y + 10, { scale: k })) {
       ctx.save();
       ctx.strokeStyle = '#8b5a2b';

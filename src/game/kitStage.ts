@@ -203,7 +203,7 @@ export function kitRooms2(g: KitGround2): RoomSpec[] {
       { kind: 'reset', id: 'post6', at: on(g.floorD, R.light + 24) },
       { kind: 'source', id: 'patch6', variant: 'mushroom', at: on(g.floorD, R.light + 120), look: 'pile' },
       { kind: 'item', id: 'shroom6', variant: 'mushroom', source: 'patch6', for: 'ledge6' },
-      { kind: 'mark', id: 'mark6', at: on(g.floorD, R.light + 330), look: 'fernStone' },
+      { kind: 'mark', id: 'mark6', at: on(g.floorD, R.light + 410), look: 'fernStone' },
       { kind: 'ledge', id: 'ledge6', at: on(g.floorD, R.light + 470, -125), w: 120 },
     ],
     exit: 'ledge6',
