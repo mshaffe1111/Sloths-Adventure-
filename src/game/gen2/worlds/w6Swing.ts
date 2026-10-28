@@ -13,7 +13,8 @@
  * crosses (a knee stepped onto and off, a hop over the water): a stump standing on a bank is walked past (STAGE-RULES §6). The liana sections (a chain of ledge -> liana -> ledge, never liana to liana: levelCheck follows a swing
  * from a ledge to a ledge) and the dark-root stretches lit by the firefly come once the gen2 core's liana piece and dark zone land.
  */
-import type { Difficulty, Phase, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
+import type { Zone } from '../../zones.ts';
+import type { Difficulty, Phase, PropDef, PropEmitter, SectionPiece, SectionTemplate, Socket, StageSink, WorldKit } from '../types.ts';
 import { withW6Rooms } from './w6Rooms.ts';
 
 // ───────────────────────────── the tags (World 6's manifest, gen2/worlds/w6.ts W6_TAG, names what these ask for) ─────────────────────────────
@@ -159,8 +160,12 @@ const humpRun: SectionTemplate = {
 // A liana section is never mirrored, and needs the swing move (the core infers it).
 
 const liana = (key: string, after: string): SectionPiece => ({ key, shape: 'liana', w: 0, place: { kind: 'swing', after } });
-/** the perch past a liana (`dy` from the swing's ledge), a landing (Easy widens it) */
-const perch = (key: string, after: string, w: SectionPiece['w'], dy: SectionPiece['w'] = 0): SectionPiece => bank(key, w, { kind: 'land', after, dy }, { landing: true });
+/**
+ * the perch past a liana (`dy` from the swing's ledge), a landing (Easy widens it). The gap under the swing is black water (core
+ * `water: true`): a soft pit there would let him walk under the liana and out the far side, and the swing would be optional (the lead,
+ * 2026-10-28; Matt on Meeca's stage). So the swing is the only way on, and a miss costs a life, warned by Dot first (WATER_WARN)
+ */
+const perch = (key: string, after: string, w: SectionPiece['w'], dy: SectionPiece['w'] = 0): SectionPiece => bank(key, w, { kind: 'land', after, dy, water: true }, { landing: true });
 /** a climbing vine at the end of `on`, `h` px tall, and the root wall it leads up onto (a whole bank: out of a double jump's reach) */
 const climbWall = (vine: string, on: string, wall: string, h: number, w: SectionPiece['w']): SectionPiece[] => [
   { key: vine, shape: 'vine', w: 0, place: { kind: 'climb', on, at: 1, h } },
@@ -303,12 +308,166 @@ const swingHunter: SectionTemplate = {
   mirrorable: false,
 };
 
+// ───────────────────────────── 6-6: the dark roots, and the firefly's light ─────────────────────────────
+//
+// "The roots go dark. Let the firefly light the way." A dark stretch is the engine's `dark` zone (zones.ts; World 8's darkness) over a
+// run of roots, laid by a pair of props at its ends (W6S_PROP darkFrom, darkTo: their emitters push the zone into StageSink.zones), with the
+// firefly's lights hanging over every gap (r 190) and a dimmer one every 420 px, so the dark is never total. Gaps in the dark are soft
+// (STAGE-RULES §6: a gap in the dark over water is a blind jump), a hop a third of a jump at most; nothing stands in the dark (the core
+// keeps animals and flags out of a zone). The first dark stretch of a stage says Dot's line before it (its tip socket).
+
+/** the dark's lesson key and Dot's line (new, needs Matt's approval) */
+export const W6_DARK = 'w6:dark';
+export const W6S_TIPS: Record<string, string> = { [W6_DARK]: 'The roots go dark. Stay in the firefly\'s light.' };
+
+/** the props that lay a dark stretch: its start, its end (with the firefly's lights), and a room's end (no lights: its firefly is the
+ *  room's own glow, puzzleKit 'glow') */
+export const W6S_PROP = { darkFrom: 'darkFrom', darkTo: 'darkTo', darkToBare: 'darkToBare' } as const;
+export const W6S_PROPS: PropDef[] = [
+  { id: W6S_PROP.darkFrom, tags: [W6S_PROP.darkFrom], w: 10, minApart: 0 },
+  { id: W6S_PROP.darkTo, tags: [W6S_PROP.darkTo], w: 10, minApart: 0 },
+  { id: W6S_PROP.darkToBare, tags: [W6S_PROP.darkToBare], w: 10, minApart: 0 },
+];
+/** the dark's box over its ground, and the firefly's lights: over a gap, and along the way */
+export const DARK_ZONE = { up: 800, down: 400, gapLight: 190, wayLight: 130, every: 420, lightUp: 90 } as const;
+
+/** a dark stretch's two ends, as sockets on its first and last pieces */
+export const darkEnds = (from: string, to: string, lights = true): Socket[] => [
+  { id: 'darkFrom', role: 'prop', on: from, t: 0, allow: [W6S_PROP.darkFrom], easy: 'keep' },
+  { id: 'darkTo', role: 'prop', on: to, t: 1, allow: [lights ? W6S_PROP.darkTo : W6S_PROP.darkToBare], easy: 'keep' },
+];
+
+/** the end of a dark stretch filled first, waiting for the other (in sink.extras: one at a time, a section's own two) */
+const OPEN = 'w6sDarkFrom';
+
+/** the ground under x (a piece whose top is within a step of the dark's ground): no ground, a gap the firefly hangs over */
+function groundAt(out: StageSink, x: number, y: number): boolean {
+  return out.platforms.some((p) => x >= p.x && x <= p.x + p.width && p.y >= y - 140 && p.y <= y + 40);
+}
+
+/** the dark stretch from the open start to `x1`, with the firefly's lights (or none) */
+function darkZone(out: StageSink, x0: number, y: number, x1: number, lights: boolean): Zone {
+  const L: NonNullable<Zone['lights']> = [];
+  if (lights) {
+    // (a light over the middle of every gap)
+    let gap0: number | null = null;
+    for (let x = x0; x <= x1; x += 10) {
+      const g = !groundAt(out, x, y);
+      if (g && gap0 === null) gap0 = x;
+      if (!g && gap0 !== null) {
+        L.push({ x: Math.round((gap0 + x) / 2), y: y - DARK_ZONE.lightUp, r: DARK_ZONE.gapLight });
+        gap0 = null;
+      }
+    }
+    // (and a dimmer one along the way where none is near)
+    for (let x = x0 + 200; x < x1 - 120; x += DARK_ZONE.every) if (!L.some((l) => Math.abs(l.x - x) < 220)) L.push({ x, y: y - DARK_ZONE.lightUp + 20, r: DARK_ZONE.wayLight });
+    L.sort((a, b) => a.x - b.x);
+  }
+  return { kind: 'dark', x0: Math.round(x0), x1: Math.round(x1), top: y - DARK_ZONE.up, bottom: y + DARK_ZONE.down, baseY: y, dir: 1, period: 1, warn: 0, active: 1, force: 0, offset: 0, lights: L };
+}
+
+/**
+ * The dark props' emitters: the first end filled remembers its spot, the second lays the dark between them (a mirrored section reads its
+ * sockets 1 - t, so its "end" comes first: either order works). The end socket says whether the firefly's lights hang in it.
+ */
+export const W6S_EMIT: Record<string, PropEmitter> = {
+  darkFrom: (f, _p, out) => darkEnd(out, f.x, f.y, null),
+  darkTo: (f, _p, out) => darkEnd(out, f.x, f.y, true),
+  darkToBare: (f, _p, out) => darkEnd(out, f.x, f.y, false),
+};
+function darkEnd(out: StageSink, x: number, y: number, lights: boolean | null) {
+  const open = out.extras[OPEN] as { x: number; y: number; lights: boolean | null } | undefined;
+  if (!open) {
+    out.extras[OPEN] = { x, y, lights };
+    return;
+  }
+  delete out.extras[OPEN];
+  const [a, b] = open.x <= x ? [open, { x, y, lights }] : [{ x, y, lights }, open];
+  if (b.x - a.x < 100) return;
+  out.zones.push(darkZone(out, a.x, a.y, b.x, (open.lights ?? lights) !== false));
+}
+
+const darkTip = (on: string): Socket => ({ id: 'tip-dark', role: 'tip', on, t: 0.1, allow: [W6_DARK] });
+
+/** a run of roots in the dark: knees and soft hops, the firefly over each gap */
+const darkRoots: SectionTemplate = {
+  id: 'w6s-dark-roots',
+  name: 'the dark roots (run)',
+  archetypes: ['sprint'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 5,
+  teaches: W6_DARK,
+  pieces: [
+    bank('a', [200, 240]),
+    hop('b', 'a', [180, 220], [0.3, 0.38], false),
+    up('k', 'b', 45, [120, 150]),
+    down('c', 'k', 45, [160, 200]),
+    hop('d', 'c', [180, 220], [0.3, 0.38], false),
+    hop('e', 'd', [240, 280], [0.3, 0.38], false),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'e', kind: 'ground' },
+  exitDy: 0,
+  sockets: [darkTip('a'), ...darkEnds('a', 'e'), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.4, 2, 80)],
+  mirrorable: true,
+};
+
+/** roots stepping up and down in the dark, a hop between */
+const darkSteps: SectionTemplate = {
+  id: 'w6s-dark-steps',
+  name: 'the dark root steps (run)',
+  archetypes: ['sprint'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  teaches: W6_DARK,
+  pieces: [
+    bank('a', [180, 220]),
+    up('b', 'a', 55, [130, 160]),
+    up('c', 'b', 55, [150, 180]),
+    hop('d', 'c', [160, 200], [0.3, 0.38], false),
+    down('e', 'd', 55, [130, 160]),
+    down('f', 'e', 55, [220, 260]),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'f', kind: 'ground' },
+  exitDy: 0,
+  sockets: [darkTip('a'), ...darkEnds('a', 'f'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.5, 1)],
+  mirrorable: true,
+};
+
+/** a long dark: knees, hops and a step, two runs of the firefly's light (the climax of 6-6) */
+const darkLong: SectionTemplate = {
+  id: 'w6s-dark-long',
+  name: 'the long dark (run)',
+  archetypes: ['sprint'],
+  phases: ['ten', 'ketsu'],
+  difficulty: 7,
+  teaches: W6_DARK,
+  maxPerStage: 1,
+  pieces: [
+    bank('a', [160, 200]),
+    hop('b', 'a', [150, 180], [0.3, 0.38], false),
+    hop('c', 'b', [150, 180], [0.3, 0.38], false),
+    up('k', 'c', 50, [110, 140]),
+    down('d', 'k', 50, [150, 180]),
+    hop('e', 'd', [160, 200], [0.3, 0.38], false),
+    up('f', 'e', 50, [120, 150]),
+    down('g', 'f', 50, [200, 240]),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'g', kind: 'ground' },
+  exitDy: 0,
+  sockets: [darkTip('a'), ...darkEnds('a', 'g'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('k', 'k', 0.5, 1), petals('e', 'e', 0.5, 1), petals('f', 'f', 0.5, 1)],
+  mirrorable: true,
+};
+
 // ───────────────────────────── the set ─────────────────────────────
 
-/** World 6's swing-stage sections: the root ground, the swings and climbs (the dark-root stretches join them with the core's dark zone) */
+/** World 6's swing-stage sections: the root ground, the swings and climbs, the dark roots */
 export const W6_SWING_SECTIONS: readonly SectionTemplate[] = [
   rootIsland, rootKnees, perchSteps, watchedRoot, humpRun,
   firstSwing, swingPair, swingChain, swingClimb, vineWall, swingWatch, kneesSwing, swingHunter,
+  darkRoots, darkSteps, darkLong,
 ];
 
 /**
@@ -317,6 +476,16 @@ export const W6_SWING_SECTIONS: readonly SectionTemplate[] = [
  */
 export function withW6Swing(kit: WorldKit, stage: number, difficulty: Difficulty = 'normal'): WorldKit {
   const k = withW6Rooms(kit, stage, difficulty);
-  const have = new Set(k.manifest.sections.map((s) => s.id));
-  return { ...k, manifest: { ...k.manifest, sections: [...k.manifest.sections, ...W6_SWING_SECTIONS.filter((s) => !have.has(s.id))] } };
+  const M = k.manifest;
+  const have = new Set(M.sections.map((s) => s.id));
+  return {
+    ...k,
+    emit: { ...W6S_EMIT, ...(k.emit ?? {}) },
+    manifest: {
+      ...M,
+      sections: [...M.sections, ...W6_SWING_SECTIONS.filter((s) => !have.has(s.id))],
+      props: [...M.props, ...W6S_PROPS.filter((p) => !M.props.some((q) => q.id === p.id))],
+      tips: { ...W6S_TIPS, ...(M.tips ?? {}) },
+    },
+  };
 }

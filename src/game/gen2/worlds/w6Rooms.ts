@@ -24,8 +24,8 @@
  * high to jump.
  *
  * What the kit has no art for yet (reported): the water itself (the kit's lift is drawn as a plank; the well wants black water rising
- * and falling with it, and the raft), the sluice wheel (a lever today), and the dark over the hollow (the engine's `dark` zone: gen2's
- * StageSink has no zones yet, so `W6_DARK_ROOMS` names the sections the hook-up darkens). Dot's lines are new: each needs Matt's approval.
+ * and falling with it, and the raft), the sluice wheel (a lever today), and the dark over the hollow is laid by
+ * w6Swing.ts's dark props (a `dark` zone with no lights: the room's firefly is the light). Dot's lines are new: each needs Matt's approval.
  */
 import type { Difficulty, LocalRoomSpec, SectionPiece, SectionTemplate, WorldKit } from '../types.ts';
 
@@ -293,7 +293,12 @@ export const darkRoom: SectionTemplate = {
   entry: { piece: 'floorE', kind: 'ground' },
   exit: { piece: 'out', kind: 'ground' },
   exitDy: 0,
-  sockets: [],
+  // (the dark over the hollow, floor E to the bank's far end: no lights of its own, the room's firefly is the light. w6Swing.ts's dark props
+  // lay it, so a kit holds them: withW6Swing)
+  sockets: [
+    { id: 'darkFrom', role: 'prop', on: 'floorE', t: 0, allow: ['darkFrom'], easy: 'keep' },
+    { id: 'darkTo', role: 'prop', on: 'bank', t: 1, allow: ['darkToBare'], easy: 'keep' },
+  ],
   room: darkRoomSpec,
   mirrorable: false,
 };
@@ -302,9 +307,6 @@ export const darkRoom: SectionTemplate = {
 
 /** World 6's puzzle-room sections */
 export const W6_ROOM_SECTIONS: readonly SectionTemplate[] = [waterRoom, darkRoom, seesawRoom];
-
-/** the sections the hook-up darkens (the engine's `dark` zone over each, with no lights of its own: the room's firefly is the light) */
-export const W6_DARK_ROOMS: readonly string[] = [darkRoom.id];
 
 /** each room's stage (STAGE-RULES §3: 2-3 puzzle moments a world; w6.ts W6_ROOM_STAGES): a stage's kit holds only its own */
 export const W6R_STAGE: Record<string, string> = { [seesawRoom.id]: '6-3', [darkRoom.id]: '6-6', [waterRoom.id]: '6-7' };
