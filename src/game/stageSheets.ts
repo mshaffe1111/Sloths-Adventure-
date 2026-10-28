@@ -64,6 +64,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
     if (w !== 1 && hasKit) out.push(`kit:${w}`);
   }
   if (built && w >= 2 && w <= 5) out.push(`w${w}-props`);
+  // (the control test's water stretches, River logs and Lily pads, are drawn with World 2's river; every mix has one of them)
+  if (built && sw.ctest && cfg.id === CTEST_STAGE_ID) out.push('w2-props');
   if (built) for (const a of STAGE_ANIMS[cfg.id] ?? []) out.push(`anim:${a}`);
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
   if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id))) out.push('kit-pieces');

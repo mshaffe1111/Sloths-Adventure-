@@ -88,7 +88,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
 import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
-import { warmCreatureAnims } from './creatureAnim.ts';
+import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
@@ -255,6 +255,8 @@ export class GameEngine {
   private collectibles: Collectible[];
   /** the hand-built stage's extras (protoStage.ts): logs to push, hints, leaves over secrets */
   private proto: ProtoExtras | null = null;
+  /** the stage's sheets still to arrive and be drawn once (sheetWarm.ts) */
+  private arrivals = new ArrivalWarm([]);
   /** the stretches of this stage, in order (the control test's end questions list them) */
   public stretchNames(): string[] {
     return (this.proto?.beats ?? []).map((b) => b[2]);
@@ -605,8 +607,10 @@ export class GameEngine {
     this.vineStruck.clear();
     resetHeroClips();
     warmHeroClips();
-    // the clip sheets of the creatures in this stage start loading now, not as each one first comes on screen
-    warmCreatureAnims(new Set(this.enemies.flatMap((e) => (e.type === 'turtle' && e.royal ? ['guard'] : [e.type]))));
+    // every sheet this stage can draw starts loading now (its creatures' clips: a snake's is the golden snake's; the eagle over a
+    // watched stretch, a ring's drop-ins, Pokey on a liana, the bushes), not as each first comes on screen; and each is drawn once the
+    // frame it arrives, not when he meets it (sheetWarm.ts: QA's 'blank wait' lines and the freezes after a sheet)
+    this.arrivals = new ArrivalWarm(warmStageSheets({ enemies: this.enemies, vines: this.vines, proto: this.proto }));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.passTips = [];
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
@@ -4958,6 +4962,8 @@ export class GameEngine {
     const ctx = this.ctx;
     const dpr = this.renderDpr();
     const world = WORLDS_DATA[this.currentStage.config.worldIndex - 1] || WORLDS_DATA[0];
+    // (a sheet of this stage's that has just arrived: drawn once into the corner, under this frame)
+    this.arrivals.frame(ctx);
 
     ctx.save();
     ctx.scale(dpr * this.zoom, dpr * this.zoom);

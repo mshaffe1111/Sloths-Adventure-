@@ -54,11 +54,17 @@ function load(w: number) {
 // Matt's second World 1 sheet set (2026-10-23): the kapok trunk with a hollow, a plain trunk, and the hiding bushes
 let img2: HTMLImageElement | null = null;
 let ready2 = false;
+/** the second sheet's address (sheetWarm.ts: a stage with bushes or hollow trunks asks for it as it starts) */
+export const PROTO2_URL = new URL('../assets/proto/props2-atlas.webp', import.meta.url).href;
 function load2() {
   if (img2 || typeof Image === 'undefined') return;
   const im = new Image();
   img2 = im;
-  trackAtlas(im, new URL('../assets/proto/props2-atlas.webp', import.meta.url).href, () => { ready2 = true; }, () => { img2 = null; }, () => { img2 = null; ready2 = false; });
+  trackAtlas(im, PROTO2_URL, () => { ready2 = true; }, () => { img2 = null; }, () => { img2 = null; ready2 = false; });
+}
+/** start loading the second sheet */
+export function warmProto2() {
+  load2();
 }
 /** a piece of the second sheet so it fills the box (x, y, w, h); false until it has loaded */
 function blit2(ctx: CanvasRenderingContext2D, n: keyof typeof PROTO2_FRAMES, x: number, y: number, w: number, h: number): boolean {
@@ -418,10 +424,21 @@ export function drawPerchArt(ctx: CanvasRenderingContext2D, trunkX: number, perc
   return true;
 }
 
-/** a bank of earth: the painted top edge repeated along it, the end caps where it drops away */
-export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean }, moss: boolean, viewBottom = 0): boolean {
+/**
+ * The repeats of a strip `tw` wide (overlapping 2) laid from `from` to `to` that a view from `x0` to `x1` shows: the first repeat's x and
+ * the end, so a long bank draws the few repeats on screen, not all of them (a 1-2 ground bank is 5,700 px: 34 repeats a frame, where a
+ * 320-wide phone shows 3 or 4). The repeats stay where they would be counted from `from`, so nothing shifts as the view moves.
+ */
+export function stripSpan(from: number, to: number, tw: number, x0 = -Infinity, x1 = Infinity): { start: number; end: number } {
+  const step = tw - 2;
+  const skip = Math.max(0, Math.floor((x0 - tw - from) / step));
+  return { start: from + skip * step, end: Math.min(to, x1) };
+}
+
+/** a bank of earth: the painted top edge repeated along it, the end caps where it drops away; `view`: only what is on screen */
+export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { left: boolean; right: boolean }, moss: boolean, viewBottom = 0, view?: { x0: number; x1: number }): boolean {
   if (!protoArtReady()) return false;
-  if (!moss) drawGroundFill(ctx, p, viewBottom);
+  if (!moss) drawGroundFill(ctx, p, viewBottom, view);
   const n: Name = moss ? 'mossStrip' : 'bank';
   const f = frameOf(n).f;
   const th = moss ? 46 : 110;
@@ -430,7 +447,8 @@ export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { 
   ctx.beginPath();
   ctx.rect(p.x - (open.left ? 26 : 0), p.y - 30, p.width + (open.left ? 26 : 0) + (open.right ? 26 : 0), th + 40);
   ctx.clip();
-  for (let x = p.x - (open.left ? 18 : 0); x < p.x + p.width + 18; x += tw - 2) blit(ctx, n, x, p.y - (moss ? 14 : 18), tw, th);
+  const { start, end } = stripSpan(p.x - (open.left ? 18 : 0), p.x + p.width + 18, tw, view?.x0, view?.x1);
+  for (let x = start; x < end; x += tw - 2) blit(ctx, n, x, p.y - (moss ? 14 : 18), tw, th);
   ctx.restore();
   if (!moss) {
     const cap = frameOf('bankEnd').f;
@@ -448,7 +466,7 @@ export function drawBankArt(ctx: CanvasRenderingContext2D, p: Platform, open: { 
 }
 
 /** a world with its own kit: the deep ground below the top band, in that world's earth or rock, all the way down */
-function drawGroundFill(ctx: CanvasRenderingContext2D, p: Platform, viewBottom: number) {
+function drawGroundFill(ctx: CanvasRenderingContext2D, p: Platform, viewBottom: number, view?: { x0: number; x1: number }) {
   const f = ownKit() ? KIT_FRAMES[kitWorld]?.fill : undefined;
   const img = imgs.get(kitWorld);
   if (!f || !img || !ready.has(kitWorld)) return;
@@ -463,8 +481,9 @@ function drawGroundFill(ctx: CanvasRenderingContext2D, p: Platform, viewBottom: 
   ctx.rect(p.x, top, p.width, bottom - top + 2);
   ctx.clip();
   // anchored to the world, not the platform, so neighbouring banks line up
-  const x0 = Math.floor(p.x / (tw - 2)) * (tw - 2);
-  for (let y = top; y < bottom; y += th - 2) for (let x = x0; x < p.x + p.width; x += tw - 2) ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, tw, th);
+  // (and only the columns on screen)
+  const { start, end } = stripSpan(Math.floor(p.x / (tw - 2)) * (tw - 2), p.x + p.width, tw, view?.x0, view?.x1);
+  for (let y = top; y < bottom; y += th - 2) for (let x = start; x < end; x += tw - 2) ctx.drawImage(img, f.x, f.y, f.w, f.h, x, y, tw, th);
   ctx.restore();
 }
 
@@ -554,7 +573,7 @@ export function drawProtoScene(
     // the high canopy: a wall face on the side that faces the yard
     const isWall = banks.some((q) => q !== p && Math.abs(q.x + q.width - p.x) < 2 && q.y - p.y > 150);
     if (isWall) drawWallArt(ctx, p.x, p.y, banks.find((q) => Math.abs(q.x + q.width - p.x) < 2)!.y + 6, 230);
-    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r') }, p.style === 'moss_stone', view.y1 ?? 0);
+    drawBankArt(ctx, p, { left: !touches('l') && !isWall, right: !touches('r') }, p.style === 'moss_stone', view.y1 ?? 0, view);
   }
   // the climb trunks: the painted kapok trunk with its vine, stacked from the ground up to the branch it reaches
   const tf = frameOf('trunk').f;

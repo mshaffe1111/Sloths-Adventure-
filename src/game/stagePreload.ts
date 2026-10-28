@@ -23,6 +23,9 @@ import { W5_PROPS_URL, w5ArtReady } from './w5Art.ts';
 import { KIT_ART_URL, kitArtReady } from './puzzleArt.ts';
 import { preloadBackdrop } from './paintedBackdrops.ts';
 import { stageSheets } from './stageSheets.ts';
+import { DOT_STAGE_ID } from './extraStages.ts';
+import { LEAVES_URL, warmLeaves } from './leafSprites.ts';
+import { HERO_VINE_URL, warmHeroVine } from './heroVine.ts';
 import { perfNote } from './perfLog.ts';
 import type { LevelConfig } from './types.ts';
 
@@ -87,6 +90,13 @@ export function preloadStage(cfg: Cfg, canvas: HTMLCanvasElement | null, live: (
   enterWorld(cfg.worldIndex);
   const keys = stageSheets(cfg, { hand: protoStageEnabled(), paint: paintedKitEnabled(), ctest: ctestEnabled() });
   const urls = start(keys);
+  // (and two small sheets nearly every stage draws: the falling leaves, and Pokey hanging from a liana; QA's 'blank wait leaves-atlas'
+  // a second into a stage, 'wait hero-vine' at the first swing)
+  if (cfg.id !== DOT_STAGE_ID) {
+    if (warmLeaves()) urls.push(LEAVES_URL);
+    warmHeroVine();
+    urls.push(HERO_VINE_URL);
+  }
   // (the stage's painted backdrop too: World 5's light changes stage to stage, so its strips are a fresh set to decode)
   preloadBackdrop(cfg.worldIndex, cfg.id);
   const t0 = performance.now();

@@ -94,9 +94,10 @@ export const heldSheets = (): number => held.size;
 
 /**
  * Every sheet asked for (by its address), so a stage about to start can wait for the ones it needs and have them decoded and drawn
- * once before play begins (stagePreload.ts). A browser may put off the real decode, and handing the picture to the graphics, until the
- * first time it is drawn: on a phone that first draw of a 10 to 20 MB sheet was a 376 to 472 ms freeze right as a stage began
- * (QA's control-test logs, 2026-10-26: 'stall ... after w3-props', 'after w4-props').
+ * once before play begins (stagePreload.ts), or, for one that arrives during play, the frame it arrives (sheetWarm.ts). A browser
+ * may put off the real decode, and handing the picture to the graphics, until the first time it is drawn: on a phone that first draw
+ * of a 10 to 20 MB sheet was a 376 to 472 ms freeze right as a stage began (QA's control-test logs, 2026-10-26: 'stall ... after
+ * w3-props', 'after w4-props').
  */
 interface Sheet {
   img: HTMLImageElement;
@@ -115,6 +116,9 @@ function dropSheet(url: string, s: Sheet) {
   if (sheets.get(url) === s) sheets.delete(url);
   settle(s);
 }
+
+/** whether the sheet at this address has been drawn once already (warmSheets) */
+export const sheetWarm = (url: string): boolean => !!sheets.get(url)?.warm;
 
 /** whether the sheet at this address has loaded and decoded */
 export const sheetReady = (url: string): boolean => !!sheets.get(url)?.ready;
@@ -149,12 +153,13 @@ export function whenSheetsReady(urls: readonly string[], ms: number): Promise<nu
 /**
  * Draw each of these sheets that is ready once, at its own size, into a corner of `ctx` (then clear that corner): the browser decodes it
  * in full and hands it to the graphics now, behind a menu, instead of on the first frame of play. Only the first time for each sheet.
- * Returns how many were drawn.
+ * Returns how many were drawn (at most `max`).
  */
-export function warmSheets(urls: readonly string[], ctx: CanvasRenderingContext2D | null): number {
+export function warmSheets(urls: readonly string[], ctx: CanvasRenderingContext2D | null, max = Infinity): number {
   if (!ctx) return 0;
   let n = 0;
   for (const u of urls) {
+    if (n >= max) break;
     const s = sheets.get(u);
     if (!s || !s.ready || s.warm) continue;
     const w = Math.min(4, s.img.naturalWidth || 4), h = Math.min(4, s.img.naturalHeight || 4);
