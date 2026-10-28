@@ -7,11 +7,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
-import { MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
+import { LIANA, MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
 import { addKitPlatforms } from '../puzzleKit.ts';
+import { DOUBLE_RISE } from '../physics.ts';
 import { findRoute, type Route } from '../../../tools/inspect/route.ts';
 import { inspectJumps, KID } from '../../../tools/inspect/jumps.ts';
 import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
@@ -623,4 +624,80 @@ test("Easy's animals are a subset of Normal's: the spacing is decided once, on N
       assert.deepEqual(checkStage(e, e.gen2.budget).errors, [], what);
     }
   }
+});
+
+/** World 6's hanging pieces on the toy world: a swing over a gap (a liana and the perch it lands on) and a climb to a high ledge */
+const swingSec: SectionTemplate = {
+  id: 'toy-swing', name: 'swing', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 5, weight: 4,
+  pieces: [
+    { key: 'near', shape: 'bank', w: [300, 400], place: { kind: 'start' } },
+    { key: 'rope', shape: 'liana', w: 0, place: { kind: 'swing', after: 'near' } },
+    { key: 'far', shape: 'bank', w: [500, 700], place: { kind: 'land', after: 'rope' } },
+  ],
+  entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0,
+  sockets: [{ id: 'p', role: 'pickup', on: 'far', t: 0.6, dn: 34 }], mirrorable: true,
+};
+const climbSec: SectionTemplate = {
+  id: 'toy-climb', name: 'climb', archetypes: 'any', phases: ['ki', 'sho', 'ten'], difficulty: 3, weight: 3,
+  pieces: [
+    { key: 'bank', shape: 'bank', w: [600, 700], place: { kind: 'start' } },
+    { key: 'trunk', shape: 'vine', w: 0, place: { kind: 'climb', on: 'bank', at: [0.7, 0.8], h: [240, 260] } },
+    { key: 'top', shape: 'branch', w: 260, place: { kind: 'over', on: 'trunk', at: 0, dy: 0 }, main: false },
+  ],
+  entry: { piece: 'bank', kind: 'ground' }, exit: { piece: 'bank', kind: 'ground' }, exitDy: 0,
+  sockets: [{ id: 'up', role: 'pickup', on: 'top', t: 0.6, dn: 34, count: 2, span: 100 }], mirrorable: true,
+};
+const hangWorld = (pit: 'soft' | 'void' = 'void', moves = [...manifest.moves, 'swing' as const, 'climb' as const]): WorldKit => ({
+  ...kit, manifest: { ...manifest, pit, moves, sections: [...manifest.sections, swingSec, climbSec] },
+});
+
+test('a liana swings by itself and its perch is sized from the release window (Easy 300 ms, Normal 167 ms); a vine climbs', () => {
+  // the section alone: the perch past the liana leaves at least the setting's window, and lies beyond any jump (the swing is the way)
+  for (const d of ['normal', 'easy'] as const) {
+    const b = planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, d);
+    for (let i = 1; i <= 5; i++) {
+      const L = layLocal(swingSec, b, rngFor(i));
+      const [near, rope, far] = ['near', 'rope', 'far'].map((k) => L.pieces.find((p) => p.key === k)!);
+      const swing = rope.hang!.swing!;
+      assert.ok(swing.amp >= LIANA.amp[0] && swing.amp <= LIANA.amp[1] && swing.period >= LIANA.period[0] && swing.period <= LIANA.period[1]);
+      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, swing, near.y, { x: far.x, y: far.y, w: far.w });
+      assert.ok(win >= LIANA.window[d], `${d} roll ${i}: a ${(win * 1000).toFixed(0)} ms release window`);
+      assert.ok(far.x - (near.x + near.w) > maxGap(0, true, 1), `${d} roll ${i}: a ${far.x - near.x - near.w} px gap a jump could cross`);
+      assert.equal(L.gaps.length, 1);
+    }
+    // (the same roll, the same liana on Easy and Normal: its swing is the stage's, only the perch moves)
+    const nb = planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, 'normal');
+    assert.deepEqual(layLocal(swingSec, b, rngFor(7)).pieces[1].hang, layLocal(swingSec, nb, rngFor(7)).pieces[1].hang);
+  }
+  // built, with nothing under the gaps (a void world on Normal: the swing is the only way over) and on Easy (soft floors)
+  let swings = 0;
+  let climbs = 0;
+  for (const seed of [1, 2, 3]) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: hangWorld(), seed, difficulty: d });
+      const what = `seed ${seed} ${d}`;
+      const res = validateStage(st);
+      assert.deepEqual(res.errors, [], what);
+      const lianas = ((st.proto as { gen2?: { lianas?: Array<{ vine: number; amp: number; period: number }> } }).gen2?.lianas ?? []);
+      const placed = st.gen2.sections.filter((s) => s.template === 'toy-swing');
+      assert.equal(lianas.length, placed.length, `${what}: every liana carries its swing`);
+      assert.ok(placed.every((s) => !s.mirrored), `${what}: a swing is never flipped`);
+      for (const l of lianas) assert.equal(st.vines.find((v) => v.id === l.vine)?.vineType, 'swing_liana');
+      swings += placed.length;
+      // every climb's high ledge is reached, and only a climb gets that high
+      for (const v of st.vines.filter((x) => x.vineType === 'tree_climb')) {
+        const top = st.platforms.find((p) => p.y === v.topY && (p.x === v.x || p.x + p.width === v.x))!;
+        assert.ok(top && res.reachableIds.includes(top.id), `${what}: the ledge over the vine at ${v.x}`);
+        assert.ok(v.bottomY - v.topY > DOUBLE_RISE, `${what}: a ${v.bottomY - v.topY} px climb a double jump could make`);
+        climbs++;
+      }
+    }
+  }
+  assert.ok(swings > 0 && climbs > 0, `${swings} swings, ${climbs} climbs`);
+  // a world whose player can't swing or climb never lays them
+  const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: hangWorld('void', manifest.moves), seed: 1, difficulty: 'normal' });
+  assert.ok(!st.gen2.sections.some((s) => s.template === 'toy-swing' || s.template === 'toy-climb') && st.vines.length === 0);
+  // authoring mistakes are named
+  const bad: SectionTemplate = { ...swingSec, pieces: [swingSec.pieces[0], { ...swingSec.pieces[2], place: { kind: 'land', after: 'near' } }] };
+  assert.throws(() => layLocal(bad, planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, 'normal'), rngFor(1)), /lands from near, which is not a liana/);
 });
