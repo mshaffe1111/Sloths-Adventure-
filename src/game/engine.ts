@@ -734,6 +734,8 @@ export class GameEngine {
       this.quality++;
       noteStepDown(this.quality, performance.now());
       this.resizeCanvas();
+      // (drawn again at once: resizing clears the canvas, and this runs after the frame was drawn, so the screen showed one black frame)
+      this.render();
     }
     perfNote(`slow: stepped down (quality ${this.quality}, polish ${polishEnabled() ? polishTier() : 'off'})`);
   }
@@ -938,6 +940,7 @@ export class GameEngine {
         this.quality--;
         noteStepUp(this.quality, performance.now());
         this.resizeCanvas();
+        this.render();
         perfNote(`steady: stepped up (quality ${this.quality})`);
       }
       this.failStreak = 0;
