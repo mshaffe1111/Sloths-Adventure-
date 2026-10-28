@@ -29,9 +29,10 @@ Last updated 2026-10-28.
 
 ## 1b. The game gets harder as it goes (Matt, 2026-10-28)
 
-- **Each world is harder than the last, and each stage a little harder than the one before** (a new world's first stage may dip
-  slightly to teach its new move, then the ramp resumes). Later on, players are expected to lose lives and replay stages several
-  times: that is how games are. Never flatten the curve to make it "easy".
+- **Each world sits in its own difficulty band, and the bands climb world by world.** Inside a world, stages can go up and down
+  (a breather after a hard stage is fine, a world's last stages are usually its hardest), but no stage may leave its world's band:
+  World 2's stage 8 must never be as hard as a World 4 stage. Bands may overlap their neighbours a little, never by a whole world.
+  Later on, players are expected to lose lives and replay stages several times: that is how games are. Never flatten the climb.
 - **Easy is gentler, never empty.** Easy still asks for double jumps, timing, enemies and the tougher moves at some point; they are
   just easier versions: wider landings, more forgiving timing, longer warnings, fewer enemies at once. Don't remove a move from
   Easy; soften it.
@@ -42,9 +43,10 @@ Last updated 2026-10-28.
     be met fairly.
   - **Hard but fair (keep it):** a move that was taught, now asked with tighter timing, in combination, or with an enemy, later in
     the game. Report it to Matt as intended difficulty, with the numbers, instead of changing it.
-- **The ramp is measured:** the first-timer bot's lives lost and the noisy bots' jump success should rise world by world (Gemini's
-  gate: the Normal bot clears each jump at least 70% of the time in Worlds 1-5, at least 50% in Worlds 6-10; the Easy kid at least
-  85% everywhere). A world that is easier than the one before it is a bug.
+- **The bands are measured:** per stage, the first-timer bot's lives lost and the noisy bots' hardest-jump success; each world's
+  spread is its band. A world whose band sits below the one before it, or a stage outside its world's band (above the next world's
+  middle, or below the previous world's), is a bug. Gemini's floor still holds for every stage: the Normal bot clears each jump at
+  least 70% of the time in Worlds 1-5 and 50% in Worlds 6-10; the Easy kid at least 85% everywhere.
 
 ## 2. The numbers a stage must meet (from the Gemini research, tuned for us)
 
