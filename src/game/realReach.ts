@@ -137,6 +137,8 @@ export class RealReach {
   private pending: Array<{ id: number; x: number; fromId: number; fromX: number }> = [];
   private openArea = new Map<number, Array<[number, number]>>();
   private drafts: Updraft[];
+  /** the puzzle kit's lift planks, stood aside (see the constructor) */
+  private liftPlanks = new Set<number>();
   trials = 0;
   frames = 0;
   /** stop a move once it has clearly missed (off while looking for traps: a fall into the water must be seen to the end) */
@@ -166,6 +168,20 @@ export class RealReach {
     (w5?.w5?.cocoons ?? []).forEach((c, i) => {
       if (c.block && w5?.cocoons?.[i]) w5.cocoons[i].freed = true;
     });
+    // (a puzzle kit room's lift starts solved: its plank stands aside and a trunk stands where it rises, from the ground under it to the
+    // top of the lift's climb. What is searched here is where he can get to; each room is worked through in the real engine in its own
+    // test, w4Puzzles.test.ts for World 4's)
+    const kit = (this.sim.e as unknown as { kit: { rooms: Array<{ lifts: Array<{ plat: Platform; baseY: number; spec: { rise: number; cage?: number } }> }> } | null }).kit;
+    for (const room of kit?.rooms ?? []) {
+      for (const l of room.lifts) {
+        if (l.spec.cage !== undefined) continue;
+        const cx = Math.round(l.plat.x + l.plat.width / 2);
+        const under = this.sim.platforms.filter((q) => q !== l.plat && q.type === 'solid' && !q.broken && q.x <= cx && q.x + q.width >= cx && q.y >= l.baseY).sort((a, b) => a.y - b.y)[0];
+        l.plat.broken = true;
+        this.liftPlanks.add(l.plat.id);
+        this.sim.vines.push({ id: 880000 + this.sim.vines.length, x: cx, topY: l.baseY - l.spec.rise - 2, bottomY: (under?.y ?? l.baseY) - 6, swaySpeed: 0, swayPhase: 0, vineType: 'tree_climb' });
+      }
+    }
     // the boulders stay where they are until they are pushed on purpose (pushBoulders)
     for (const pl of this.sim.platforms as Array<Platform & { pushSaved?: Platform['push'] }>) {
       if (pl.push) {
@@ -1067,7 +1083,8 @@ export class RealReach {
   /** the platform parts the engine stood on (for comparing with the level check: a platform buried under another counts as nothing) */
   buried(id: number): boolean {
     const pl = this.platformById(id);
-    return !pl || this.standable(pl).length === 0;
+    // (a solved puzzle room's lift plank, stood aside for its trunk, is not somewhere to get to)
+    return !pl || this.standable(pl).length === 0 || this.liftPlanks.has(id);
   }
 }
 
