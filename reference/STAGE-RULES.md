@@ -27,6 +27,25 @@ Last updated 2026-10-28.
 - **Show first.** Big screen changes are shown to Matt (screenshots, mock-ups) before they are built in.
 - **Story.** Stage names, story beats and goal text stay as approved. Any new line is marked "(new, needs Matt's approval)".
 
+## 1b. The game gets harder as it goes (Matt, 2026-10-28)
+
+- **Each world is harder than the last, and each stage a little harder than the one before** (a new world's first stage may dip
+  slightly to teach its new move, then the ramp resumes). Later on, players are expected to lose lives and replay stages several
+  times: that is how games are. Never flatten the curve to make it "easy".
+- **Easy is gentler, never empty.** Easy still asks for double jumps, timing, enemies and the tougher moves at some point; they are
+  just easier versions: wider landings, more forgiving timing, longer warnings, fewer enemies at once. Don't remove a move from
+  Easy; soften it.
+- **"Too hard" from QA is checked, not obeyed.** Sort each report into one of two:
+  - **Unfair (fix it):** hurt in the opening seconds; hurt before the tip that teaches it; a hit from off screen with no tell; a
+    jump that needs a timing window under 167 ms on Normal / 300 ms on Easy, or a full-hold jump on Easy; a plain walk that gets
+    stuck; a ledge reached but slid off; the controls not doing what the thumb did; a puzzle that costs a life; a goal that can't
+    be met fairly.
+  - **Hard but fair (keep it):** a move that was taught, now asked with tighter timing, in combination, or with an enemy, later in
+    the game. Report it to Matt as intended difficulty, with the numbers, instead of changing it.
+- **The ramp is measured:** the first-timer bot's lives lost and the noisy bots' jump success should rise world by world (Gemini's
+  gate: the Normal bot clears each jump at least 70% of the time in Worlds 1-5, at least 50% in Worlds 6-10; the Easy kid at least
+  85% everywhere). A world that is easier than the one before it is a bug.
+
 ## 2. The numbers a stage must meet (from the Gemini research, tuned for us)
 
 | What | Rule | How it is checked |

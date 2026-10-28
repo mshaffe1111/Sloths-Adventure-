@@ -50,6 +50,8 @@ A helper's report is not proof. Before merging:
 
 - QA gets a build only after §4 passed. With it goes: what changed, what to test, what to skip (known and being fixed), and the
   current QA checklist (STATUS.md keeps the latest copy).
+- A "too hard" report is sorted into unfair (fix) or hard but fair (keep, and tell Matt with the numbers): STAGE-RULES §1b. The
+  difficulty ramp is Matt's rule; the lead answers for it.
 - QA reports in one batch on Matt's "send". Each item goes onto STATUS.md, is checked against STAGE-RULES (a rule we already have
   that was broken = a §4 failure on our side: say so to Matt), and is fixed as one batch.
 - Matt's current instruction: one QA bot, random levels, to keep cost down; full sweeps only when Matt asks (e.g. a world rebuilt).
