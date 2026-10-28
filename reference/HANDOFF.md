@@ -201,6 +201,7 @@ npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts s
 npx vite build                                            # what the deploy runs; no file in dist/assets may exceed 4 MiB
 ```
 
+- **How much rolls change** (the 200-roll tool, Gemini's expressive range analysis): `npx tsx tools/inspect/era.ts --worlds 1-5 --rolls 200` builds every stage 200 times as the game does on entry and reports, per stage, how alike the rolls are (target: variety 0.35+), two heat maps, and how many rolls break a rule of `reference/STAGE-RULES.md` §2, with the worst rolls as `?layout=N` (`tools/README.md`). `src/game/rollGuard.test.ts` keeps a 10-roll sample of Worlds 1-4 honest in the suite.
 - **Tests**: run them with `npx tsx --test …`, as CI does; that way everything passes. Plain `node --test` reports one failure in `touchCoach.test.ts`. That isn't a bug: Node's built-in TypeScript stripping can't read a class parameter property in code the test imports. Under tsx it passes 6/6.
 - **Housekeeping**: running the dev server rewrites `dev-dist/`. Before committing: `git checkout -- dev-dist; rm -f dev-dist/registerSW.js`.
 - **Dev hooks** (dev server only):

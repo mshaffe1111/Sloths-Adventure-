@@ -69,8 +69,9 @@ Last updated 2026-10-28.
 
 1. `npx tsc --noEmit -p .`
 2. The stage inspector on the worlds you changed: `npx tsx tools/inspect/inspect.ts --worlds N` (dead time, rests, sameness, goals,
-   length, kid and adult bots). **Check more than one roll** (`--seed 1/2/3`), and the 200-roll tool `tools/inspect/era.ts` when a
-   stage's layout code changed: a fix that only holds on seed 1 is not a fix.
+   length, kid and adult bots). **Check more than one roll** (`--seed 1/2/3`), and when a stage's layout code changed, the 200-roll
+   tool: `npx tsx tools/inspect/era.ts --worlds N --rolls 200` (add `--stages 1-4` for one stage; `--html`/`--json` for where the report
+   goes). It counts the rolls that break the §2 numbers and lists the worst as `?layout=N`. A fix that only holds on seed 1 is not a fix.
 3. The first-timer bot (`--firsttimer`, Easy and Normal): opening seconds, tips before hazards, stuck spots, Dot pacing.
 4. The puzzle validator and the real-engine play-through tests for every room.
 5. The full suite: `npx tsx --test src/audio/*.test.ts src/game/*.test.ts src/components/*.test.ts src/components/**/*.test.ts`.

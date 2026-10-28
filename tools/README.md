@@ -75,6 +75,18 @@ npx tsx tools/inspect/inspect.ts --worlds 1-5
 npx tsx --test tools/inspect/analyze.test.ts
 ```
 
+(`--seed` reaches the hand-built stages only: the inspector builds the generated ones, 5-6 to 5-9 and Worlds 6-10, from their designed attempt, so every seed shows the same layout there. The 200-roll tool below builds them the way the game does.)
+
+### The 200-roll tool (how much a stage changes from roll to roll)
+
+Gemini's expressive range analysis (`reference/GEMINI-PCG-RESEARCH.md` part 3, Smith & Whitehead 2010), with the thresholds of `reference/STAGE-RULES.md` §2. Every stage is built `--rolls` times through the game's own entry path (`setLayoutVariant` + `generateStage`, so the generated stages make their validator re-rolls; `eraRoll.ts`), and each roll is measured on the inspector's route and beats: quick-player length, dead time and the longest quiet stretch, beats a minute, the action mix, linearity, leniency, height range, the pieces, props and puzzle rooms it uses. Per stage: how many different layouts and action orders, the variety score (mean 1 - cosine of action 3-grams over every pair of rolls, target 0.35+) and the distance between the same 20 s of two rolls, two heat maps (straightness x forgiveness, length x quiet time), and the rolls that break a rule (under 2:00 / 1:40 for a climb, a quiet stretch over 4 s, quiet time over a fifth of the stage, the level check, looking like the same roll of another stage of the world, and on `--bots` rolls the kid and adult jump bots), with the worst rolls listed as `?layout=N` to replay. Runs the stages in worker processes (`--jobs`, default all cores): Worlds 1-5 x 200 rolls took 13 minutes on 4 cores (51 when other helpers had the machine busy), plus about 3 for the look-alike pass; `--rolls N` and `--stages` cut it down, `--raw file` keeps every roll and `--from file` redraws the report from it without rolling. Writes `tools/inspect/out/era.json` and `era.html`.
+
+```
+npx tsx tools/inspect/era.ts --worlds 1-5 --rolls 200 [--html out.html] [--json out.json] [--jobs 4] [--bots 10] [--look 25] [--stages 1-4,5-6] [--raw rolls.json | --from rolls.json]
+```
+
+`src/game/rollGuard.test.ts` (in the suite) samples 10 rolls of every World 1-4 stage and fails if one is under 2:00 or fails the level check.
+
 ## tools/control-test-collector.gs
 
 This is the Google Apps Script behind the touch-control test (`#ctest`). It writes testers' recordings into Matt's Google Sheet. The real key lives only in Matt's deployed script and in the page, and is not repeated here.
