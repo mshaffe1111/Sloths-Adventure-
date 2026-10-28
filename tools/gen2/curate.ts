@@ -329,7 +329,8 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
 /**
  * A stage key to build: `toy-N` is the toy world (src/game/gen2/toyWorld.ts) with stage 5-N's config; `W-S` is the real stage with its
  * world's kit, found among src/game/gen2/worlds/w<W>*.ts's exports (the first WorldKit of that world that does not call the stage
- * hand-built; `--kit file.ts:exportName` picks one).
+ * hand-built: an exported kit, or an exported `...Kit(stage)` function called with the stage's number, World 5's `w5Kit`;
+ * `--kit file.ts:exportName` picks one).
  */
 export async function resolveStage(key: string, kitOverride?: string): Promise<CurateStage> {
   const { generateAllLevels } = await import('../../src/game/worldsData.ts');
@@ -342,19 +343,21 @@ export async function resolveStage(key: string, kitOverride?: string): Promise<C
     const { kit } = await import('../../src/game/gen2/toyWorld.ts');
     return { key, config: { ...config, unlocked: true }, kit, kitName: 'toyWorld.ts:kit' };
   }
-  const kits = await worldKits(config.worldIndex, kitOverride);
+  const kits = await worldKits(config.worldIndex, kitOverride, config.miniIndex);
   const found = kits.find((k) => !k.kit.manifest.handBuilt.includes(id) && k.kit.manifest.sections.length);
   if (!found) throw new Error(`curate: no gen2 kit of World ${config.worldIndex} builds ${id} (looked in src/game/gen2/worlds/w${config.worldIndex}*.ts)`);
   return { key, config: { ...config, unlocked: true }, kit: found.kit, kitName: found.name };
 }
 
 const isKit = (v: unknown): v is WorldKit => !!v && typeof v === 'object' && 'manifest' in v && !!(v as WorldKit).manifest?.sections;
+/** an export as a kit: the kit itself, or a `...Kit(stage)` maker called with the stage's number */
+const asKit = (name: string, v: unknown, stage: number): unknown => (typeof v === 'function' && /Kit$/.test(name) ? (v as (s: number) => unknown)(stage) : v);
 
-export async function worldKits(world: number, override?: string): Promise<Array<{ name: string; kit: WorldKit }>> {
+export async function worldKits(world: number, override?: string, stage = 1): Promise<Array<{ name: string; kit: WorldKit }>> {
   if (override) {
     const [file, name] = override.split(':');
     const mod = await import(pathToFileURL(path.resolve(file)).href);
-    const kit = mod[name ?? 'kit'];
+    const kit = asKit(name ?? 'kit', mod[name ?? 'kit'], stage);
     if (!isKit(kit)) throw new Error(`curate: ${override} is not a WorldKit`);
     return [{ name: `${path.basename(file)}:${name ?? 'kit'}`, kit }];
   }
@@ -363,7 +366,10 @@ export async function worldKits(world: number, override?: string): Promise<Array
   const out: Array<{ name: string; kit: WorldKit }> = [];
   for (const f of fs.readdirSync(dir).filter((n) => n.startsWith(`w${world}`) && n.endsWith('.ts') && !n.endsWith('.test.ts')).sort()) {
     const mod = await import(pathToFileURL(path.join(dir, f)).href);
-    for (const [name, v] of Object.entries(mod)) if (isKit(v) && v.manifest.world === world) out.push({ name: `${f}:${name}`, kit: v });
+    for (const [name, e] of Object.entries(mod)) {
+      const v = asKit(name, e, stage);
+      if (isKit(v) && v.manifest.world === world) out.push({ name: `${f}:${name}${v === e ? '' : `(${stage})`}`, kit: v });
+    }
   }
   return out;
 }
