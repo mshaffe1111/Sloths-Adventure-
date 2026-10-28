@@ -2669,9 +2669,23 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // window there was 133 ms on Normal, under the 167 ms floor)
     run(R.r(70, 100));
     expert += 0.3;
-    if (v === 0) busy(2, ['log', 'dip'], R.r(230, 270));
-    else if (v === 1) { lowStumps(); busy(2, ['log'], R.r(230, 270)); }
-    else { busy(1, ['log'], R.r(150, 190)); w3Stones([40, 70], [0.45, 0.55]); }
+    // (wide rocks, 190-230 px: on the narrow ones the first-timer's press window to land on top was 100-133 ms on some rolls, under the
+    // 167 ms floor, 2026-10-28)
+    const wideRock = (gap: number) => {
+      run(gap);
+      const w = Math.round(R.r(190, 230)), h = R.i(34, 42);
+      block(x, x + w, h);
+      flower(x + w / 2, G - h - 34, 'orchid');
+      run(w);
+      expert += (gap + w) / RUN + 0.15;
+    };
+    const x0 = x;
+    if (v === 0) { wideRock(R.r(90, 130)); run(R.r(200, 260)); dip(); }
+    else if (v === 1) { wideRock(R.r(90, 130)); wideRock(R.r(200, 260)); }
+    else { dip(); run(R.r(200, 260)); wideRock(R.r(60, 90)); }
+    run(R.r(230, 270));
+    expert += 0.6;
+    pieces.push({ k: 'rest', x0, x1: x });
   };
   /** World 3's finish: pieces drawn from a shuffle bag (C1) until a quick player has had the stage's time, a flag every `every` */
   const w3Finish = (target: number, kit: Array<() => void>, every = 2, more: () => boolean = () => false) => {
