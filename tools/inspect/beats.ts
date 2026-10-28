@@ -311,13 +311,16 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
   return { beats, total: moveTotal + delay, moveTotal, offRoute };
 }
 
-/** a quick player's time to work a puzzle room: a moment to read it, each thing fetched and put in its place, each lever, bell or sluice */
+/** a quick player's time to work a puzzle room: a moment to read it, each thing fetched and put in its place, each lever, bell or sluice, a
+ *  seesaw tipped, a lift ridden (a pushed log is its own beat) */
 export function roomSeconds(room: RoomSpec): number {
   let t = 1;
   for (const pc of room.pieces) {
     if (pc.kind === 'item' && !pc.with) t += 2.5;
     else if (pc.kind === 'lever' || pc.kind === 'bell') t += 1;
     else if (pc.kind === 'trader' || pc.kind === 'beetle') t += 1.5;
+    else if (pc.kind === 'seesaw') t += 0.8;
+    else if (pc.kind === 'lift') t += pc.rise / 120;
   }
   return t;
 }
