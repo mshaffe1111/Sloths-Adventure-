@@ -58,7 +58,8 @@ test('4-8: the goal is the nests, with one and a half times as many on the cliff
     assert.equal(nests[0].kind, 'plain');
     for (const k of KINDS.slice(1)) assert.ok(nests.filter((n) => n.kind === k && !n.also).length >= 2, `seed ${s}: fewer than two ${k} nests`);
     const pairs = new Set(nests.filter((n) => n.also).map((n) => [n.kind, n.also].sort().join('+')));
-    assert.deepEqual([...pairs].sort(), ['glide+guard', 'glide+knot', 'guard+knot'], `seed ${s}`);
+    // (round 5: the roll's flavour picks the pairs, at least one, from these three)
+    assert.ok(pairs.size >= 1 && [...pairs].every((p) => ['glide+guard', 'glide+knot', 'guard+knot'].includes(p)), `seed ${s}: ${[...pairs].join(', ')}`);
     const res = validateStage(st);
     for (const n of nests) {
       const c = cages.find((q) => q.id === n.cageId)!;
@@ -161,7 +162,9 @@ test('4-8: each idea is taught where it first comes, and the netting for every c
     assert.ok(hints.some((h) => /wings/.test(h.text) && h.x > first('plain')), `seed ${s}: the tailwind is not told`);
     // the pairs, each told where it comes
     for (const [pair, re] of [['glide+knot', /Dot first, then your leaf/], ['guard+knot', /tied up too/], ['glide+guard', /high perch/]] as const) {
-      const n = nests.find((q) => q.also && [q.kind, q.also].sort().join('+') === pair)!;
+      // (round 5: the roll's flavour picks which pairs come, so a pair may be missing; each one that comes is told)
+      const n = nests.find((q) => q.also && [q.kind, q.also].sort().join('+') === pair);
+      if (!n) continue;
       const h = hints.find((q) => re.test(q.text));
       assert.ok(h && h.x < n.x - 400 && h.x > n.x - 2200, `seed ${s}: the ${pair} nest is not told`);
     }

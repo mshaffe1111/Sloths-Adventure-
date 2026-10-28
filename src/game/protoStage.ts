@@ -4784,14 +4784,19 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // own pieces, and the finish leans to it: the capuchin guards, Dot's knots, a crosswind gorge (4-4's, a miss is a life), or the leaf)
     const flavour = roll.theme('finish', ['guards', 'knots', 'gorges', 'leaf'] as const);
     // (round 3: every flavour crosses two windy lianas over a real drop at each break: a miss is a life)
-    const sig = () => {
-      swings(3, true);
-      between();
+    // (round 5, 2026-10-28: each flavour's own pieces only, two at a break: three windy lianas at every break in every flavour, round 4,
+    // made the rolls alike again)
+    const sigOne = () => {
       if (flavour === 'guards') guardNest(false, false);
       else if (flavour === 'knots') knotNest(R.chance(0.5));
-      else if (flavour === 'gorges') swings(2, true);
+      else if (flavour === 'gorges') swings(3, true);
       else glideNest(false, false);
       between();
+    };
+    const sig = () => {
+      sigOne();
+      sigOne();
+      sigOne();
       flag();
     };
     const develop = roll.pick(['guardFirst', 'knotFirst'] as const);
@@ -4802,26 +4807,26 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         between();
         flag();
       };
-      // (the knot nest a hop higher, and with the gorges, two windy swings after it)
+      // (the knot nest a hop higher; round 5: or the flavour's own piece in its place, the gorges' windy lianas, the leaf's fall nest)
       const high = () => {
-        knotNest(true);
+        if (flavour === 'gorges') swings(3, true);
+        else if (flavour === 'leaf') fallNest();
+        else knotNest(true);
         between();
-        if (flavour === 'gorges') {
-          swings(2, true);
-          between();
-        }
         flag();
       };
       if (develop === 'guardFirst') { guard(); between(); high(); }
       else { high(); guard(); }
     });
     const twist = roll.pick(['glideFirst', 'fallFirst'] as const);
+    // (round 5: the boulder nest beside the leaf's is the flavour's own piece, except in the leaf's)
+    const twistMate = () => (flavour === 'leaf' ? fallNest() : sigOne());
     beat('Twist: by leaf', () => {
-      if (twist === 'fallFirst') { fallNest(); between(); }
+      if (twist === 'fallFirst') { twistMate(); between(); }
       hint(x + 40, 'That nest is too far to jump to. Climb up, jump, and keep your thumb on the glass to open your leaf', 'That nest is too far to jump to. Climb up, jump, and hold Jump to open your leaf', 'That nest is too far to jump to. Climb up, jump, and hold Space to open your leaf');
       glideNest(false, false);
       between();
-      if (twist === 'glideFirst') { fallNest(); between(); }
+      if (twist === 'glideFirst') { twistMate(); between(); }
       flag();
       sig();
     });
@@ -4841,7 +4846,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
           guardNest(false, true);
         },
       ];
-      R.shuffle(combos).forEach((f, i) => {
+      // (round 5: the roll's flavour picks the two: the guards two guard nests, the leaf the glides, the knots Dot first, the gorges one
+      // and three windy lianas)
+      const pickOf: Record<typeof flavour, number[]> = { guards: [1, 2], leaf: [0, 2], knots: [0, 1], gorges: [R.i(0, 2)] };
+      const chosen = R.shuffle(pickOf[flavour].map((k) => combos[k]));
+      if (flavour === 'gorges') chosen.push(() => swings(3, true));
+      chosen.forEach((f, i) => {
         if (i) between();
         f();
         between();
@@ -4852,14 +4862,15 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const capuchin = roll.pick(['trade', 'guard'] as const);
     type Piece48 = 'gust' | 'pillars' | 'high' | 'nest' | 'knot' | 'drop' | 'gustLeaf' | 'guard' | 'gorge' | 'glide';
     const counts: Record<typeof flavour, Record<Piece48, number>> = {
-      guards: { gust: 1, pillars: 0, high: 0, nest: 0, knot: 0, drop: 0, gustLeaf: 0, guard: 2, gorge: 1, glide: 0 },
-      knots: { gust: 0, pillars: 1, high: 0, nest: 1, knot: 2, drop: 0, gustLeaf: 0, guard: 0, gorge: 1, glide: 0 },
-      gorges: { gust: 1, pillars: 0, high: 0, nest: 0, knot: 0, drop: 0, gustLeaf: 0, guard: 0, gorge: 3, glide: 0 },
-      leaf: { gust: 0, pillars: 1, high: 0, nest: 0, knot: 0, drop: 1, gustLeaf: 1, guard: 0, gorge: 1, glide: 2 },
+      guards: { gust: 1, pillars: 0, high: 0, nest: 0, knot: 0, drop: 0, gustLeaf: 0, guard: 3, gorge: 0, glide: 0 },
+      knots: { gust: 0, pillars: 0, high: 0, nest: 1, knot: 3, drop: 0, gustLeaf: 0, guard: 0, gorge: 0, glide: 0 },
+      gorges: { gust: 0, pillars: 0, high: 0, nest: 0, knot: 0, drop: 0, gustLeaf: 0, guard: 0, gorge: 4, glide: 0 },
+      leaf: { gust: 0, pillars: 0, high: 0, nest: 0, knot: 0, drop: 2, gustLeaf: 1, guard: 0, gorge: 0, glide: 3 },
     };
     const bag = roll.bag<Piece48>(['gust', 'pillars', 'high', 'nest', 'knot', 'drop', 'gustLeaf', 'guard', 'gorge', 'glide'], (k) => counts[flavour][k]);
     beat('Finish', () => {
       between();
+      // (a guard nest on its own again: each puzzle comes at least twice on its own)
       guardNest(false, false);
       between();
       flag();
@@ -4871,10 +4882,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         between();
         flag();
       };
-      if (capuchin === 'guard') guardKnot();
+      // (round 5: the second capuchin, the guard up a tied vine, only in the guards' flavour; the others' own piece instead)
+      const second = () => (flavour === 'guards' ? guardKnot() : (sigOne(), flag()));
+      if (capuchin === 'guard') second();
       tradeNest();
       flag();
-      if (capuchin === 'trade') guardKnot();
+      if (capuchin === 'trade') second();
       // the cliff path on toward the shrine, until a quick player has had about three minutes, then the last nest
       let n = 0;
       while (expert < W48_SECONDS - 20 && n < 24) {
@@ -4892,6 +4905,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         w4Breath();
         n++;
         if (n % 2 === 0) flag();
+      }
+      // (every puzzle at least twice on its own whatever the flavour, and half as many nests again as the goal: the last one next)
+      const alone = (k: NestKind) => NESTS.filter((q) => q.kind === k && !q.also).length;
+      const more: Record<string, () => void> = { knot: () => knotNest(false), fall: fallNest, guard: () => guardNest(false, false), glide: () => glideNest(false, false) };
+      for (const k of ['knot', 'fall', 'guard'] as const) while (alone(k) < 2) { between(); more[k](); }
+      while (NESTS.length + 1 < Math.ceil(NEST_GOAL_48 * 1.5)) {
+        between();
+        knotNest(R.chance(0.5));
       }
       between();
       glideNest(true, false);
