@@ -47,7 +47,7 @@ import { dressStage } from './artDress.ts';
 import { w1Chase, w1Kapok, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { W4Roll } from './w4Sections.ts';
 import { buildSinkhole, w3Pick } from './w3Sections.ts';
-import { addKitPlatforms, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
+import { addKitPlatforms, roomBox, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
 /** every stage built the new way so far (behind the New stages switch): stage id -> its plan */
@@ -5747,14 +5747,20 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
    * World 4's climbs, harder but still safe (Matt, 2026-10-28, round 4: "Harder, still safe"): rocks coming loose down a trunk's own
    * column while he climbs it, from under the branch the trunk climbs to, warned by grit trickling down first (an `air` rock, as in 4-7).
    * A rock knocks him off the trunk: the climb again, never a life. From the climbs above `below` (the lesson's ledge rock comes first),
-   * every other trunk, up to `max`.
+   * every trunk after the first, up to `max`.
    */
   const climbRocks = (below: number, max: number): number => {
     const trunks = V.filter((v) => v.vineType === 'tree_climb' && v.bottomY - v.topY >= 200 && v.bottomY < below).sort((a, b) => b.bottomY - a.bottomY);
     let n = 0;
-    for (let k = 1; k < trunks.length && n < max; k += 2) {
+    for (let k = 1; k < trunks.length && n < max; k++) {
       const v = trunks[k];
       const perch = P.find((q) => Math.abs(q.y - (v.topY + 2)) < 4 && q.x <= v.x && q.x + q.width >= v.x);
+      // (never in or by a puzzle room: a puzzle never costs a life, nor a knock)
+      const land = v.bottomY + 6;
+      if (ROOMS.some((rm) => {
+        const b = roomBox(rm, P);
+        return v.x > b.x0 - 80 && v.x < b.x1 + 80 && land > b.y0 - 80 && land < b.y1 + 80;
+      })) continue;
       const top = (perch ? perch.y : v.topY) + 24;
       // (nothing else across its column between the branch and the foot, so it falls clean down the trunk)
       if (P.some((q) => q !== perch && q.x < v.x + 30 && q.x + q.width > v.x - 30 && q.y > top && q.y < v.bottomY - 4)) continue;
@@ -5799,7 +5805,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     }
     // (round 4: rocks down the trunks too, from above the lowest ledge rock: the ledge's lesson comes first)
     const ledgeFirst = rocks.reduce((m, q) => Math.max(m, q.land), -Infinity);
-    if (ledgeFirst > -Infinity) climbRocks(ledgeFirst, 6);
+    if (ledgeFirst > -Infinity) climbRocks(ledgeFirst, 10);
     // (Dot names the first one he comes to: the lowest; as he climbs up toward its ledge, a trunk's height below it, so the line is
     // up before he stands under the rock: at its own height it came after the first hit on some rolls, 2026-10-28)
     const firstRock = rocks.reduce<RockDrop | undefined>((a, q) => (!a || q.land > a.land ? q : a), undefined);
@@ -5839,7 +5845,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     for (let x = firstTrunkX + 260; x < W - KAPOK_MARGIN - 60; x += 300) flower(x, P[0].y - 34, 'hibiscus');
     // (round 4, harder but still safe: rocks down the trunks above the mist, Dot's 4-1 line when he first climbs toward one)
     const firstMist = mistSpots.reduce((m, q) => Math.max(m, q.y), -Infinity);
-    if (firstMist > -Infinity && climbRocks(firstMist - 200, 5)) {
+    if (firstMist > -Infinity && climbRocks(firstMist - 200, 9)) {
       const low = rocks.reduce((m, q) => Math.max(m, q.land), -Infinity);
       hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', low + 120);
     }

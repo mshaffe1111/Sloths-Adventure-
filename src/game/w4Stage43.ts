@@ -166,7 +166,6 @@ export function buildWaterfallSteps(
     expert += len / RUN;
   }
   /** a cliff too tall to jump, and a tree at its foot to climb it */
-  let treeRocks = 0;
   function treeUp(h: number) {
     const x0 = x;
     run(R.r(200, 240));
@@ -176,9 +175,9 @@ export function buildWaterfallSteps(
     y -= Math.round(h);
     trunk(tX, y0, y);
     for (let i = 0; i < 3; i++) flower(tX, y0 - 80 - ((h - 140) * i) / 2, 'hibiscus');
-    // (round 4, Matt 2026-10-28 "Harder, still safe": once Dot has taught the rocks, every other tree has one coming down past its trunk
+    // (round 4, Matt 2026-10-28 "Harder, still safe": once Dot has taught the rocks, every tree has one coming down past its trunk
     // from the cliff above, grit trickling first; a hit knocks him off the trunk, the climb again, never a life)
-    if (rocksSaid && treeRocks++ % 2 === 1) {
+    if (rocksSaid) {
       const rk: RockDrop = { x: Math.round(tX), top: Math.round(y - 260), land: Math.round(y0), every: Math.round(R.r(5.8, 6.6) * 10) / 10, warn: ROCK_WARN, offset: Math.round(R.r(0, 5) * 10) / 10, air: true };
       if (rockFits(rk)) {
         rocks.push(rk);
