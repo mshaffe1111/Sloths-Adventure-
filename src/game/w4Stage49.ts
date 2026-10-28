@@ -558,6 +558,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     guardPass(R.chance(0.5) ? 1 : -1, false);
     closeTops();
     flag();
+    hopRest();
     hint(x + 40, 'Water pours over that gap. Get up top and keep sliding into the boulder to roll it under the water', 'Water pours over that gap. Get up top and hold the pad into the boulder to roll it under the water', 'Water pours over that gap. Get up top and hold right into the boulder to roll it under the water');
     plugFall(R.chance(0.5));
     flag();
