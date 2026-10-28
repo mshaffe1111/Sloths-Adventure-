@@ -1,0 +1,61 @@
+{
+ "tag": "swim-first2-stills",
+ "stills": {
+  "lora": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors",
+   1.0
+  ],
+  "neg": "water, waves, ripples, splash, splashes, droplets, bubbles, pool, sea, ocean, river, lake, floor, ground, shadow, scenery, text, watermark, blurry, photo, 3d render, cropped, cut off, extra limbs, extra arms, extra animals, facing left, front view, three-quarter view, facing the viewer, looking at the camera, both eyes visible",
+  "items": [
+   {
+    "name": "first2a-11",
+    "prompt": "pokeysloth startled and panicking, eyes wide and mouth open in a gasp, both arms flung up and flailing above his head, legs kicking, body upright as if he has just dropped into deep water, seen in strict side profile exactly from the side, facing right, only his right side and one eye visible, leather satchel on its strap across his chest and bandage wraps on both wrists, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 11,
+    "w": 1024,
+    "h": 1024,
+    "neg": "water, waves, ripples, splash, splashes, droplets, bubbles, pool, sea, ocean, river, lake, floor, ground, shadow, scenery, text, watermark, blurry, photo, 3d render, cropped, cut off, extra limbs, extra arms, extra animals, facing left, front view, three-quarter view, facing the viewer, looking at the camera, both eyes visible"
+   },
+   {
+    "name": "first2a-22",
+    "prompt": "pokeysloth startled and panicking, eyes wide and mouth open in a gasp, both arms flung up and flailing above his head, legs kicking, body upright as if he has just dropped into deep water, seen in strict side profile exactly from the side, facing right, only his right side and one eye visible, leather satchel on its strap across his chest and bandage wraps on both wrists, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 22,
+    "w": 1024,
+    "h": 1024,
+    "neg": "water, waves, ripples, splash, splashes, droplets, bubbles, pool, sea, ocean, river, lake, floor, ground, shadow, scenery, text, watermark, blurry, photo, 3d render, cropped, cut off, extra limbs, extra arms, extra animals, facing left, front view, three-quarter view, facing the viewer, looking at the camera, both eyes visible"
+   },
+   {
+    "name": "first2a-33",
+    "prompt": "pokeysloth startled and panicking, eyes wide and mouth open in a gasp, both arms flung up and flailing above his head, legs kicking, body upright as if he has just dropped into deep water, seen in strict side profile exactly from the side, facing right, only his right side and one eye visible, leather satchel on its strap across his chest and bandage wraps on both wrists, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 33,
+    "w": 1024,
+    "h": 1024,
+    "neg": "water, waves, ripples, splash, splashes, droplets, bubbles, pool, sea, ocean, river, lake, floor, ground, shadow, scenery, text, watermark, blurry, photo, 3d render, cropped, cut off, extra limbs, extra arms, extra animals, facing left, front view, three-quarter view, facing the viewer, looking at the camera, both eyes visible"
+   },
+   {
+    "name": "first2b-11",
+    "prompt": "pokeysloth startled and splashing, eyes wide, mouth open, both arms slapping forward and down in a frantic paddle in front of his chest, legs kicking, body upright as if he has just dropped into deep water, seen in strict side profile exactly from the side, facing right, only his right side and one eye visible, leather satchel on its strap across his chest and bandage wraps on both wrists, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 11,
+    "w": 1024,
+    "h": 1024,
+    "neg": "water, waves, ripples, splash, splashes, droplets, bubbles, pool, sea, ocean, river, lake, floor, ground, shadow, scenery, text, watermark, blurry, photo, 3d render, cropped, cut off, extra limbs, extra arms, extra animals, facing left, front view, three-quarter view, facing the viewer, looking at the camera, both eyes visible"
+   },
+   {
+    "name": "first2b-22",
+    "prompt": "pokeysloth startled and splashing, eyes wide, mouth open, both arms slapping forward and down in a frantic paddle in front of his chest, legs kicking, body upright as if he has just dropped into deep water, seen in strict side profile exactly from the side, facing right, only his right side and one eye visible, leather satchel on its strap across his chest and bandage wraps on both wrists, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 22,
+    "w": 1024,
+    "h": 1024,
+    "neg": "water, waves, ripples, splash, splashes, droplets, bubbles, pool, sea, ocean, river, lake, floor, ground, shadow, scenery, text, watermark, blurry, photo, 3d render, cropped, cut off, extra limbs, extra arms, extra animals, facing left, front view, three-quarter view, facing the viewer, looking at the camera, both eyes visible"
+   },
+   {
+    "name": "first2b-33",
+    "prompt": "pokeysloth startled and splashing, eyes wide, mouth open, both arms slapping forward and down in a frantic paddle in front of his chest, legs kicking, body upright as if he has just dropped into deep water, seen in strict side profile exactly from the side, facing right, only his right side and one eye visible, leather satchel on its strap across his chest and bandage wraps on both wrists, side view facing right, full body in frame with space around him, painted storybook illustration, plain flat grey background",
+    "seed": 33,
+    "w": 1024,
+    "h": 1024,
+    "neg": "water, waves, ripples, splash, splashes, droplets, bubbles, pool, sea, ocean, river, lake, floor, ground, shadow, scenery, text, watermark, blurry, photo, 3d render, cropped, cut off, extra limbs, extra arms, extra animals, facing left, front view, three-quarter view, facing the viewer, looking at the camera, both eyes visible"
+   }
+  ]
+ }
+}

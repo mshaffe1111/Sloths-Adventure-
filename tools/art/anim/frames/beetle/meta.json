@@ -1,0 +1,97 @@
+{
+ "waddle": {
+  "n": 8,
+  "w": 237,
+  "h": 192,
+  "ax": 116.2,
+  "ay": 188.8,
+  "anchor": "ground",
+  "fps": 10,
+  "loop": true,
+  "clip": "anim-beetle-waddle-s11",
+  "frames": [
+   12,
+   15,
+   18,
+   21,
+   24,
+   27,
+   30,
+   33
+  ],
+  "k": 0.6174
+ },
+ "eat": {
+  "n": 13,
+  "w": 252,
+  "h": 193,
+  "ax": 119.6,
+  "ay": 191.0,
+  "anchor": "ground",
+  "fps": 10,
+  "loop": false,
+  "clip": "anim-beetle-eat-s3",
+  "frames": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   15,
+   18,
+   21,
+   23,
+   25,
+   26
+  ],
+  "k": 0.6216
+ },
+ "sleepy": {
+  "n": 11,
+  "w": 253,
+  "h": 211,
+  "ax": 118.5,
+  "ay": 207.5,
+  "anchor": "ground",
+  "fps": 8,
+  "loop": false,
+  "clip": "anim-beetle-sleepy-s3",
+  "frames": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   11,
+   12,
+   13,
+   15,
+   18
+  ],
+  "k": 0.6216
+ },
+ "sleep": {
+  "n": 7,
+  "w": 242,
+  "h": 163,
+  "ax": 113.9,
+  "ay": 160.8,
+  "anchor": "ground",
+  "fps": 6,
+  "loop": true,
+  "clip": "anim-beetle-sleep-s3",
+  "frames": [
+   24,
+   27,
+   30,
+   33,
+   36,
+   39,
+   42
+  ],
+  "k": 0.6061
+ }
+}
