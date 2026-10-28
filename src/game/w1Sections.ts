@@ -117,6 +117,7 @@ export interface W1Kit {
 type Build = (k: W1Kit) => void;
 interface Version {
   id: string;
+  /** (1-8's chase versions are patterns, built by protoStage.ts buildLongBranch: their build is never called) */
   build: Build;
   /** a pool body: no stage uses it twice (CooldownQueue) */
   pool?: string;
@@ -418,7 +419,15 @@ const SECTIONS: Record<W1Stage, Table> = {
       },
     ],
   },
-  '1-4': {},
+  // 1-4 Up the Kapok: the climb's middle is a run of hops and ropes (buildKapok); the roll picks their rhythm and how often a snake
+  // waits on a wide branch. The squirrels' lift rooms and the long rope are in every roll.
+  '1-4': {
+    finish: [
+      { id: 'ropes', build: () => {} },
+      { id: 'hops', build: () => {} },
+      { id: 'snakes', build: () => {} },
+    ],
+  },
   // 1-5 More Petals: everything so far, mixed. The roll's rhythm leans on one family of moves: climbs and ropes, fights, or bounces
   // and jumps (each version still asks for several moves, and the keepsake's fern tree and the creaking branches are in every roll).
   '1-5': {
@@ -565,7 +574,14 @@ const SECTIONS: Record<W1Stage, Table> = {
       },
     ],
   },
-  '1-8': {},
+  // 1-8 The Long Branch: the chase. Its middle is a run of chase pieces (buildLongBranch); the roll picks their rhythm.
+  '1-8': {
+    finish: [
+      { id: 'leaps', build: () => {} },
+      { id: 'swings', build: () => {} },
+      { id: 'climbs', build: () => {} },
+    ],
+  },
   // 1-9 The Boa's Branches: fighting on the move. The roll's rhythm: guards on the branches over the moss, guards up the trunks on the
   // way over walls, or snakes on the high branches a mushroom bounces him up to. The ring is every roll's twist; the sleeping guard
   // keeps its seed in every roll.
@@ -606,3 +622,31 @@ const SECTIONS: Record<W1Stage, Table> = {
     ],
   },
 };
+
+/** 1-8's chase pieces (protoStage.ts buildLongBranch): a gap, a gap for the second jump, a swing, a snake, a climb up or a drop down */
+export type ChasePiece = 'gap' | 'leap' | 'swing' | 'snake' | 'updown';
+const CHASE: Record<string, ChasePiece[]> = {
+  // the old order: every kind in turn
+  leaps: ['gap', 'leap', 'snake', 'leap', 'gap', 'swing', 'leap', 'updown'],
+  // swing after swing over the breaks, a snake between
+  swings: ['swing', 'gap', 'swing', 'snake', 'swing', 'leap', 'swing', 'updown'],
+  // up a trunk and down again, gaps and snakes between
+  climbs: ['updown', 'snake', 'gap', 'updown', 'leap', 'snake', 'updown', 'swing'],
+};
+/** this roll's run of chase pieces for 1-8 */
+export function w1Chase(seed: number): ChasePiece[] {
+  return CHASE[w1Pick('1-8', seed).finish ?? 'leaps'];
+}
+
+const KAPOK: Record<string, { steps: Array<'hops' | 'rope'>; snakes: number }> = {
+  // the old rhythm: two ropes, then hops
+  ropes: { steps: ['rope', 'rope', 'hops'], snakes: 0.4 },
+  // hops along and up the branches, a rope now and then
+  hops: { steps: ['hops', 'rope', 'hops', 'rope', 'rope'], snakes: 0.3 },
+  // rope and hops in turn, and a snake on most wide branches
+  snakes: { steps: ['rope', 'hops'], snakes: 0.8 },
+};
+/** this roll's run of hops and ropes up 1-4's kapok, and the chance of a snake on a wide branch */
+export function w1Kapok(seed: number): { steps: Array<'hops' | 'rope'>; snakes: number } {
+  return KAPOK[w1Pick('1-4', seed).finish ?? 'ropes'];
+}

@@ -44,7 +44,7 @@ import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { dressStage } from './artDress.ts';
-import { w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
+import { w1Chase, w1Kapok, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
 import { addKitPlatforms, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
@@ -4672,15 +4672,17 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     let n = 0;
     // (4-6 leaves room for the mist and the nests, which take a while: it is a longer stage, stageSeconds('4-6'))
     // (and since 2026-10-28 its pinwheel lift a second time: a shorter climb across the tree leaves it room, PINWHEEL_AGAIN)
+    // (1-4, the variety pass 2026-10-28: the roll's rhythm of hops and ropes, and how often a snake waits: w1Sections.ts w1Kapok)
+    const climb14 = squirrels ? w1Kapok(seed) : null;
     while (expert < (mist ? stageSeconds('4-6') - MIST_LEAVES - PINWHEEL_AGAIN : EXPERT_SECONDS - 32) && n < 30) {
       // (4-1, 2026-10-28: the cliff climbs mostly by hops up wide ledges, where its rocks come loose, and a rope now and then: 4-6's
       // climb is the tree's ropes. The stage inspector found the two alike on every measure)
-      if (cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
+      if (climb14 ? climb14.steps[n % climb14.steps.length] === 'hops' : cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
       // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
       // (the cliff has its falling rocks instead)
-      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      if (n >= 2 && cur.width >= 320 && R.chance(climb14?.snakes ?? 0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
@@ -5398,14 +5400,16 @@ function buildLongBranch(config: LevelConfig, seed: number): GeneratedStage & { 
     sec(3);
     snake(x - TILE * 1.5, TILE * 1.6);
     sec(2);
-    // more of the same, rolled, until even a quick player needs most of two minutes
+    // more of the same, in this roll's rhythm (w1Sections.ts w1Chase: leaps, swings, or climbs and drops), until even a quick player
+    // needs most of two minutes
+    const pattern = w1Chase(seed);
     let n = 0;
     while (expert < EXPERT_SECONDS - 22 && n < 40) {
-      const k = n % 5;
-      if (k === 0) { gap(one * R.r(0.45, 0.6)); sec(3); }
-      else if (k === 1) { gap(two * R.r(0.6, 0.72)); sec(3); row(x - TILE * 2, x - 60, level - 34, 2, 'orchid'); }
-      else if (k === 2) { swingGap(); sec(3); }
-      else if (k === 3) { sec(2); snake(x - TILE, TILE * 1.4); sec(2); }
+      const k = pattern[n % pattern.length];
+      if (k === 'gap') { gap(one * R.r(0.45, 0.6)); sec(3); }
+      else if (k === 'leap') { gap(two * R.r(0.6, 0.72)); sec(3); row(x - TILE * 2, x - 60, level - 34, 2, 'orchid'); }
+      else if (k === 'swing') { swingGap(); sec(3); }
+      else if (k === 'snake') { sec(2); snake(x - TILE, TILE * 1.4); sec(2); }
       else { if (level < G - 100) dropDown(Math.round(R.r(120, 160))); else climbUp(Math.round(R.r(180, 210))); sec(3); }
       n++;
       if (n % 3 === 0) flag();
