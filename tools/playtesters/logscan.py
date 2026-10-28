@@ -7,7 +7,8 @@ Reports freezes and choppy frame rates by device, the hardest sections (hurts, l
 (no progress for over 15 s while touching), and per-player gesture habits (ducks, kicks, jumps per minute).
 From the 2026-10-26 recorder on: memory over a session ('mem'), which atlas sheet a freeze followed ('stall ... after <sheet>'),
 and a count of any other event kinds (err, long, hidden, screen, quality, blank, camjump, blink, jitter, flipflop: see
-tools/playtesters/LOG_EVENTS.md once it lands) with where they happened.
+tools/playtesters/LOG_EVENTS.md) with where they happened. From 2026-10-28: each run's 'env' moment (browser, app, gpu, memory),
+listed per run, flagging software drawing.
 """
 import json,glob,collections,re,statistics,sys
 D=sys.argv[1]
@@ -16,8 +17,9 @@ secHurt=collections.Counter(); secLife=collections.defaultdict(collections.Count
 secVisits=collections.Counter(); stalls=collections.defaultdict(list); fpsBad=collections.defaultdict(list)
 stuck=[]; duckOn=collections.Counter(); kicks=collections.Counter(); mins=collections.Counter(); jumps=collections.Counter()
 stallAfter=collections.Counter(); memRuns=[]; other=collections.defaultdict(list)
+envs=[]  # (player, device browser part, env line): the run's browser, app, gpu (env, 2026-10-28 on)
 bossHurt=collections.Counter()  # (by, move) for each boss-fight heart: 'strike act pounce 0.96' (bossHurt, 2026-10-26 on)
-KNOWN={'bossHurt','look','section','hurt','lostLife','quit','stall','fps','mem','checkpoint','sheet','stomp','finish','mix','survey','start','rules','playAgain','difficulty','stuckHelp'}
+KNOWN={'env','bossHurt','look','section','hurt','lostLife','quit','stall','fps','mem','checkpoint','sheet','stomp','finish','mix','survey','start','rules','playAgain','difficulty','stuckHelp'}
 for f in sorted(glob.glob(D+'/*.json')):
     s=json.load(open(f)); who=s['player']; dev=s['device'].split(';')[0]+' '+s['device'].split(';')[1].strip().split(' ')[0]
     lines=[l for part in s['parts'] if isinstance(part,list) for l in part]
@@ -43,6 +45,7 @@ for f in sorted(glob.glob(D+'/*.json')):
             elif e=='mem':
                 m=re.match(r'([\d.]+)/([\d.]+)\s*MB',d)
                 if m: mem.append((t,float(m.group(1))))
+            elif e=='env': envs.append((who,'; '.join(s['device'].split(';')[6:]).strip(),d))
             elif e=='bossHurt':
                 w=d.split(); bossHurt[(w[0] if w else '?', w[2] if len(w)>2 else '?', w[1] if len(w)>1 else '?')]+=1
             elif e not in KNOWN:
@@ -158,3 +161,9 @@ if any(k!='?' for k in looks):
 print('### Per player per minute: duck-on, kicks, jumps')
 for w in mins:
     if mins[w]>2: print(f'  {w:14s} {mins[w]:6.1f} min  duck {duckOn[w]/mins[w]:5.1f}/min  kicks {kicks[w]/mins[w]:4.1f}/min  jumps {jumps[w]/mins[w]:5.1f}/min')
+
+if envs:
+    print('\n== Browser and graphics (env) ==  "(software)" = drawn with no graphics chip: expect 1-5 fps')
+    for who,brw,d in envs:
+        flag='  <-- SOFTWARE GPU' if '(software)' in d else ''
+        print(f'  {who:12} {brw[:40]:40} {d[:150]}{flag}')

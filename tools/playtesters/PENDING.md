@@ -111,7 +111,7 @@ Earlier read of the same log, kept for the details:
 - Meeca's stage: twice Pokey/Meeca kept moving with no finger down for 0.8 s+ ("Learn: the ring, then DON'T EAT. M.",
   "Develop: two rings, a fern, NO TEA. BE RUDE. M."). Probably the guards' march carrying her; if not, it's a loss of control.
 
-# Next batch (not sent yet)
+# Batch sent 2026-10-28 (section A, on Matt's "send")
 
 ## A. Matt bot on the rebuilt Worlds 1 and 2 (build 39fc3db, 2026-10-28; upright with short sideways stretches)
 - 1-7 finished (3:09, 2/3 stars, 16 hits, 3 lives lost); 1-9 4/19 predators at budget, 0 lives; 2-2 about 4%, 5 lives; 2-5 0/17, 2 lives.
