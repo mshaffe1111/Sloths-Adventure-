@@ -11,7 +11,8 @@
  *                  blanket, and the night sheet of her new poses and the stage's props, meecaNightArt.ts), and Pell's and the soldiers'
  *                  clip sheets (meecaArt.ts)
  *   kit-pieces     the puzzle kit's pieces and Pokey's carry poses (puzzleArt.ts), for a stage with puzzle rooms (the test room, 'kit',
- *                  World 1's rooms, World 2's W2_PUZZLES, World 3's W3_PUZZLES) and every World 3 and 4 stage (its dressing, artDress.ts)
+ *                  World 1's rooms, World 2's W2_PUZZLES, World 3's W3_PUZZLES, gen2's 5-9), every World 3 and 4 stage (its dressing,
+ *                  artDress.ts), and a gen2 stage with water (its warning sign is the kit's signpost until its own art lands)
  *   anim:<name>    a creature's clip sheet (creatureAnim.ts), for the hand-built stages that hold one (STAGE_ANIMS)
  *
  * A generated stage's creatures are rolled with the stage, so they are not known ahead: their clip sheets still start loading as the
@@ -23,6 +24,8 @@ import { DOT_STAGE_ID, MEECA_STAGE_ID } from './extraStages.ts';
 import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
 import { KIT_STAGE_ID } from './kitStage.ts';
+import { gen2Water, isGen2Stage } from './gen2/game.ts';
+import { W5_ROOM_STAGES } from './gen2/worlds/w5.ts';
 import type { LevelConfig } from './types.ts';
 
 /**
@@ -40,7 +43,13 @@ export const STAGE_ANIMS: Record<string, readonly string[]> = {
   '5-3': ['spider'],
   '5-4': ['spider'],
   '5-5': ['spider'],
+  // (the new generator's World 5 stages, gen2/game.ts: their jumping spiders in every shipped roll)
+  '5-7': ['spider'],
+  '5-9': ['spider'],
 };
+
+/** the gen2 stages that hold puzzle rooms (5-9's arena gates: the cake room, the tea room) */
+const GEN2_ROOMS: ReadonlySet<string> = new Set<string>(W5_ROOM_STAGES);
 
 /** World 1's stages with puzzle rooms (protoStage.ts: the squirrels' lift, the seesaw, the acorn meadow) */
 const W1_ROOMS: ReadonlySet<string> = new Set(['1-4', '1-6', '1-7']);
@@ -60,7 +69,8 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'kit-pieces', 'meeca', 'meeca-night', 'anim:pell', 'anim:soldier'];
   const w = cfg.worldIndex;
-  const built = !cfg.secret && ((sw.ctest && cfg.id === CTEST_STAGE_ID) || (sw.hand && (!!HAND_STAGES[cfg.id] || !!W2_STAGES[cfg.id])));
+  // (a gen2 stage is built like a hand-built one, with World 5's dressing, whatever the switch: gen2/game.ts)
+  const built = !cfg.secret && ((sw.ctest && cfg.id === CTEST_STAGE_ID) || (sw.hand && (!!HAND_STAGES[cfg.id] || !!W2_STAGES[cfg.id])) || isGen2Stage(cfg));
   const hasKit = w === 1 || !!KIT_FRAMES[w];
   const out: string[] = [];
   // (as engine.ts decides paintKit: a hand-built stage always, any other with a kit of its own when painting is on, never a boss lair)
@@ -75,6 +85,6 @@ export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'object
   // (World 2's puzzle rooms: the reed cages on their pulleys, the ferry's sluice, the court's bell)
   // (World 1's rooms: 1-4's lift, 1-6's seesaw, 1-7's acorns; every World 3 and 4 stage: their puzzle rooms, and Matt's puzzle sheets set
   // in as their dressing, artDress.ts)
-  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
+  if (built && (W2_PUZZLES.has(cfg.id) || W3_PUZZLES.has(cfg.id) || W1_ROOMS.has(cfg.id) || GEN2_ROOMS.has(cfg.id) || (isGen2Stage(cfg) && gen2Water(cfg.id)) || ((w === 3 || w === 4) && cfg.objectiveType !== 'boss_lair'))) out.push('kit-pieces');
   return out;
 }

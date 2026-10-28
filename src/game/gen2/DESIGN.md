@@ -226,7 +226,8 @@ greedily for **quality first, then the most different from those already picked*
 again (the sub-block commit kept every section without sub-blocks laid exactly as before, but changed which sockets pass 4 fills
 for a seed, so Easy and Normal fill alike: seeds curated before it must be curated again). It also rejects a set whose rolls share too many sections with the neighbouring stages' sets (C4 across
 stages). The picks go to `gen2/seeds.ts`: `GEN2_SEEDS['5-7'] = [ ... ]`; at play the layout variant chooses among them
-(`variant % n`): a retry keeps the roll, a fresh entry changes it, every shipped roll is verified.
+(`variant % n`): a retry keeps the roll, a fresh entry changes it, every shipped roll is verified. A stage whose sections include puzzle
+rooms ships them in at least half its set (`--rooms N`; the pipeline rolls rooms rarely, and the greedy pick never chose one).
 
 ### B9. A world's building blocks (authoring)
 
@@ -252,7 +253,7 @@ with its state frames, 2-3 decor sets per job, and the backdrops through the day
 | D. 5-9 arena + puzzle rooms | `gen2/worlds/w5Arena.ts` (arena gates, the 2 puzzle-room sections from the kit) | A |
 | E. Sub-blocks in layLocal, and Easy's water rule | `pipeline.ts`, `types.ts` (architect): **built** 2026-10-28 | none |
 | F. Curation tool | `tools/gen2/curate.ts`, `gen2/seeds.ts` | era.ts, the inspector |
-| G. Hook-up (lead, last) | one line in `stageGenerator.generateStage` (`if (GEN2[config.id]) return buildGen2Stage(...)`), `easyMode.easyStage` skipping stones and the animal cut for gen2 stages (it already gives hearts and the goal), the old 5-7..5-9 code deleted (new replaces old) | all |
+| G. Hook-up (lead, last) | one line in `stageGenerator.generateStage` (`if (GEN2[config.id]) return buildGen2Stage(...)`), `easyMode.easyStage` skipping stones and the animal cut for gen2 stages (it already gives hearts and the goal), the old 5-7..5-9 code deleted (new replaces old). **Built** 2026-10-28: `gen2/game.ts` (the stages, their kits, the roll a layout number plays), generateStage(config, difficulty) builds them on the difficulty played and runs the shared post-passes (a heart by every second flag, addJumpTrails, addFinds, fixPickups); easyStage leaves out the stones, the animal cut and the longer tell, caps a fight's goal at `quota.check`; layoutMemory never deals the roll just played; proven by `game.test.ts` and `gameReal.test.ts` (5-9's rooms in the real engine) | all |
 
 A+B, D and F run in parallel (cloud builders, branches `gen2-w5`, `gen2-w5-arena`, `gen2-curate`); E is done. Nothing reaches
 `main` until G passes the §5 checks on several rolls.

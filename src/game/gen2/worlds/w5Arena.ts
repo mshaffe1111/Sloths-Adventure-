@@ -822,7 +822,9 @@ export const cakeRoom: SectionTemplate = {
   difficulty: 4,
   teaches: 'lure',
   maxPerStage: 1,
-  weight: 2,
+  // (10: one of the two rooms comes up in about one 5-9 roll in six, and the curation ships a room in half its set; at 2 a room came
+  // up in one roll in thirty and the curated set held none)
+  weight: 10,
   // (fetch the cake, set it on the plate, wait for the beetle: about 14 s for a first-timer)
   extraSeconds: 14,
   pieces: [bank('floor', CAKE_W, { kind: 'start' })],
@@ -880,7 +882,9 @@ export const teaRoom: SectionTemplate = {
   difficulty: 6,
   teaches: 'teapot-lift',
   maxPerStage: 1,
-  weight: 2,
+  // (10: one of the two rooms comes up in about one 5-9 roll in six, and the curation ships a room in half its set; at 2 a room came
+  // up in one roll in thirty and the curated set held none)
+  weight: 10,
   // (onto the lift, tip the pot, ride up, over the arch: about 12 s for a first-timer)
   extraSeconds: 12,
   pieces: [
@@ -939,6 +943,9 @@ export function withArena(kit: WorldKit, stage = 9): WorldKit {
       props,
       sections: [...M.sections, ...[...W5_ARENA_SECTIONS, ...W5_ROOM_SECTIONS].filter((s) => !have.has(s.id))],
       tips: { ...W5A_TIPS, ...(M.tips ?? {}) },
+      // (5-9's garden gates give each roll its own theme (THEME above): the pipeline's roll-wide theme, a third to a half of the
+      // world's sections, stays off here, as it left a gated roll with only a few of its theme's lawns and some rolls with no gate)
+      themeShare: 1,
     },
   };
 }

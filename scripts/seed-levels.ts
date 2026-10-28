@@ -2,9 +2,12 @@
 import { writeFileSync } from 'node:fs';
 import { generateAllLevels } from '../src/game/worldsData.ts';
 import { findValidAttempt } from '../src/game/stageGenerator.ts';
+import { isGen2Stage } from '../src/game/gen2/game.ts';
 
 const out: Record<string, number> = {};
 for (const l of generateAllLevels()) {
+  // (the new generator's stages ship their own curated rolls: src/game/gen2/seeds.ts, tools/gen2/curate.ts)
+  if (isGen2Stage(l)) continue;
   const r = findValidAttempt(l);
   if (r.attempt < 0) throw new Error(`${l.id}: no valid layout found: ${r.errors.slice(0, 3).join('; ')}`);
   out[l.id] = r.attempt;

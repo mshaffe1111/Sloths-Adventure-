@@ -39,6 +39,18 @@ test('the pick is greedy max-min: the best roll first, then the farthest, and a 
   assert.equal(r.refused, 1);
 });
 
+test('a room quota: while the set holds fewer than n rolls with a puzzle room, the pick is made among those, the rooms in turn', () => {
+  const plain = [roll(1, { JJV: 1 }, 0.9, ['a', 'b']), roll(2, { CCP: 1 }, 0.8, ['c']), roll(3, { VVH: 1 }, 0.7, ['d'])];
+  const cake = [roll(4, { JJV: 1, R: 0.2 }, 0.3, ['a', 'room-cake']), roll(5, { CCP: 1, R: 0.2 }, 0.2, ['room-cake', 'c'])];
+  const tea = [roll(6, { VVH: 1, T: 0.2 }, 0.1, ['room-tea'])];
+  const pool = [...plain, ...cake, ...tea];
+  assert.deepEqual(pickSpread(pool, 3).picks.map((p) => p.seed), [1, 2, 3], 'no quota: the rooms lose on quality');
+  const { picks } = pickSpread(pool, 4, () => true, { n: 2, rooms: ['room-cake', 'room-tea'] });
+  assert.deepEqual(picks.slice(0, 2).map((p) => p.plan.find((t) => t.startsWith('room'))), ['room-cake', 'room-tea'], 'one of each room first');
+  assert.equal(picks[0].seed, 4, 'the better cake roll');
+  assert.ok(!picks.slice(2).some((p) => p.plan.some((t) => t.startsWith('room'))), 'then the plain spread');
+});
+
 test("the closing sections (the next stage's recent) and the share of sections two stages have in common", () => {
   const p = [roll(1, {}, 0.5, ['m', 'a', 'b~', 'c', 'd', 'm']), roll(2, {}, 0.5, ['m', 'b', 'c', 'e', 'f', 'm'])];
   assert.deepEqual(closingSections(p, 3), ['c', 'b', 'd']);

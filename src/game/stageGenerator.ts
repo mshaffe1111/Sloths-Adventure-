@@ -1,5 +1,8 @@
 import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
+import { buildGen2ForGame, isGen2Stage } from './gen2/game.ts';
+import { heartBy } from './easyMode.ts';
+import type { Difficulty } from './difficulty.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, dotGeneratedStage } from './dotFlightStage.ts';
 import { MEECA_STAGE_ID } from './extraStages.ts';
@@ -2766,7 +2769,12 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
   return found;
 }
 
-export function generateStage(config: LevelConfig): GeneratedStage {
+/**
+ * The stage the game plays for a level. `difficulty` matters only for the stages the new generator builds (gen2/game.ts: Easy is
+ * laid by the pipeline itself, the same stage under Easy's rules); every other stage is built once and made gentler by
+ * easyMode.easyStage, as before.
+ */
+export function generateStage(config: LevelConfig, difficulty: Difficulty = 'normal'): GeneratedStage {
   // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
   if (config.id === KIT_STAGE_ID) return buildKitStage(config);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
@@ -2778,6 +2786,15 @@ export function generateStage(config: LevelConfig): GeneratedStage {
   if (HAND_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildProtoStage(config, layoutVariant ?? 1, HAND_STAGES[config.id]);
   // World 2's hand-built stages (w2Stages.ts), three at a time from 2026-10-24
   if (W2_STAGES[config.id] && !config.secret && protoStageEnabled()) return buildW2Stage(config, layoutVariant ?? 1, W2_STAGES[config.id]);
+  // the new generator's stages (gen2/game.ts: 5-7 and 5-9): one of the curated rolls, then the shared passes below
+  if (isGen2Stage(config)) {
+    const stage = buildGen2ForGame(config, difficulty, layoutVariant ?? 1);
+    // (a heart by every second flag from the second on, as the hand-built stages have (protoStage.ts heartsAtFlags), set where it is
+    // clear of the stumps and pickups around the flag (easyMode.ts heartBy): a rolled stage's flag can stand beside anything)
+    let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
+    [...(stage.checkpoints ?? [])].sort((a, b) => a.x - b.x).forEach((cp, i) => i % 2 === 1 && heartBy(stage, cp, () => cid++));
+    return finishStage(stage, validateStage(stage).reachableIds);
+  }
   let attempt = LEVEL_ATTEMPTS[config.id];
   if (attempt === undefined) {
     // not a shipped level (or the seed table is stale): find a good layout now
@@ -2793,9 +2810,14 @@ export function generateStage(config: LevelConfig): GeneratedStage {
   // (the secret gate's stage gets two more platforms from addSecrets, which the stored answer does not know about: it is checked afresh)
   const acceptedIds = lastAccepted && lastAccepted.key === `${config.id}@${attempt}` && config.id !== SECRET_GATE_LEVEL ? lastAccepted.ids : undefined;
   lastAccepted = null;
+  return finishStage(stage, acceptedIds ?? validateStage(stage).reachableIds);
+}
+
+/** the passes every generated stage gets after its layout is checked (the old generator's and gen2's alike) */
+function finishStage<T extends GeneratedStage>(stage: T, reachableIds: number[]): T {
+  const config = stage.config;
   addSecrets(stage);
   // flower arcs over the gaps the route crosses that have none, then the finds: a fern is never put beside a trail (and no trail leads to one)
-  const reachableIds = acceptedIds ?? validateStage(stage).reachableIds;
   const beforeTrails = stage.collectibles.length;
   addJumpTrails(stage, reachableIds);
   capHarvest(stage, new Set(stage.collectibles.slice(beforeTrails).map((c) => c.id)));

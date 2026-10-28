@@ -7,6 +7,11 @@
  *     animals asks for fewer to match; the snake ring drops half as many;
  *   - every flag has a heart beside it, and a long stretch with no flag gets one.
  * Boss fights, the chase along the long branch and the climbs are left as they are.
+ *
+ * The new generator's stages (gen2/game.ts) are built for Easy by the pipeline itself (gen2/DESIGN.md B1, B4): its jumps are sized from
+ * Easy's margin with wider landings and soft pits, its animals are already Easy's share with the longer tell, and it lays a gauntlet's
+ * animals for Easy's lower bar (budget.quota.check, which caps the goal here). So for them this leaves out the stones, the animal cut
+ * and the longer tell (nothing is softened twice), and keeps what gen2 does not do: Easy's goal (`easyGoal`), the 70%-hold check, the flags and a heart at every flag.
  */
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
@@ -22,7 +27,7 @@ const STONE_H = 22;
 /** the longest run (px) with no flag before Easy adds one */
 const FLAG_EVERY = 1800;
 
-type Stage = GeneratedStage & { proto?: ProtoExtras };
+type Stage = GeneratedStage & { proto?: ProtoExtras; gen2?: { budget: { difficulty: string; quota: { check: number } } } };
 
 const still = (p: Platform) => !p.broken && p.type !== 'drift' && p.type !== 'moving' && !p.chase && !p.push;
 
@@ -204,8 +209,8 @@ const animalNear = (stage: Stage, x: number, y: number) =>
     return d < (e.type === 'eagle' ? 300 : SAFE_APPROACH) + 20;
   });
 
-/** a heart beside a flag, on the flag's own ledge and clear of everything, unless one is already close */
-function heartBy(stage: Stage, cp: { x: number; y: number }, next: () => number) {
+/** a heart beside a flag, on the flag's own ledge and clear of everything, unless one is already close (also gen2's Normal hearts) */
+export function heartBy(stage: Stage, cp: { x: number; y: number }, next: () => number) {
   if (stage.collectibles.some((c) => (c.type === 'heart' || c.type === 'super_heart') && Math.abs(c.x - cp.x) < 260 && Math.abs(c.y - cp.y) < 260)) return;
   const p = under(stage, cp);
   if (!p) return;
@@ -228,11 +233,14 @@ export function easyStage(stage: Stage): Stage {
   if (kind === 'boss_lair' || stage.boss) return stage;
   const climb = kind === 'ascent';
   const chase = !!stage.proto?.chase;
+  // (a gen2 stage is Easy's already, from the pipeline: generateStage(config, 'easy'); its Normal build cannot be made Easy here)
+  const gen2 = !!stage.gen2;
+  if (gen2 && stage.gen2!.budget.difficulty !== 'easy') throw new Error(`easyStage: ${stage.config.id} is a gen2 stage built for Normal; build it with generateStage(config, 'easy')`);
   // Easy keeps the stage's own lower bar (goals.ts raised Normal's to its share of what the stage holds)
   if (stage.easyGoal !== undefined) stage.config = { ...stage.config, targetCount: stage.easyGoal };
 
   // far jumps
-  if (!climb && !chase) stage.platforms.push(...easyStones(stage));
+  if (!climb && !chase && !gen2) stage.platforms.push(...easyStones(stage));
   // and no jump that needs a full hold (a hand-built stage; again while it softens something, as one jump can open the way to the
   // next). A boulder only the full jump's walk rolls is also left where it stands: the way up behind it is walked while its fall still
   // pours (4-3), and only the full jump reached it
@@ -250,15 +258,21 @@ export function easyStage(stage: Stage): Stage {
     }
   }
 
-  // fewer animals, and a beat-the-animals goal that asks for fewer
-  const keep = easyKeep(stage.enemies);
-  const before = stage.enemies.length;
-  stage.enemies = stage.enemies.filter((e) => keep.has(e));
-  if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
-    const target = Math.max(1, Math.min(stage.enemies.length, Math.round(stage.config.targetCount * 0.6)));
+  // fewer animals, and a beat-the-animals goal that asks for fewer (gen2 laid Easy's share already, with the longer tell)
+  if (!gen2) {
+    const keep = easyKeep(stage.enemies);
+    const before = stage.enemies.length;
+    stage.enemies = stage.enemies.filter((e) => keep.has(e));
+    if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
+      const target = Math.max(1, Math.min(stage.enemies.length, Math.round(stage.config.targetCount * 0.6)));
+      stage.config = { ...stage.config, targetCount: target };
+    }
+    for (const e of stage.enemies) e.attackCooldown = Math.max(e.attackCooldown, 0) * 1.5;
+  } else if ((kind === 'purge' || kind === 'gauntlet') && stage.enemies.length) {
+    // (gen2 laid a fight's animals for its Easy bar, budget.quota.check (0.6 of the designed goal): never more is asked)
+    const target = Math.max(1, Math.min(stage.config.targetCount, stage.gen2!.budget.quota.check, stage.enemies.length));
     stage.config = { ...stage.config, targetCount: target };
   }
-  for (const e of stage.enemies) e.attackCooldown = Math.max(e.attackCooldown, 0) * 1.5;
   const ring = stage.proto?.ring;
   if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
 

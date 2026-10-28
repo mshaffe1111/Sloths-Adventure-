@@ -77,7 +77,7 @@ function card(s: StageSummary, R: EraOutput['rules'], rolls: number) {
   const rooms = Object.entries(s.rooms).map(([k, n]) => `${esc(k)}${n < rolls ? ` (${n} rolls)` : ''}`).join(', ');
   const errs = Object.entries(s.errorKinds).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, n]) => `${esc(k)} (${n})`).join('; ');
   return `<section class="card" id="s${s.id}">
-  <h3>${esc(s.id)} ${esc(s.name)} <span class="sub">${esc(s.type.replace('_', ' '))}${s.source === 'generated' ? ', made by the old generator' : ''}</span></h3>
+  <h3>${esc(s.id)} ${esc(s.name)} <span class="sub">${esc(s.type.replace('_', ' '))}${s.source === 'generated' ? ', made by the old generator' : s.source === 'gen2' ? ', made by the new generator (its 16 curated rolls)' : ''}</span></h3>
   <p class="verdict ${v.cls}">${v.text}</p>
   <p class="sub">${s.distinct.geometry} different layouts out of ${rolls}; ${s.distinct.sequences} different orders of things to do (a run of the same move counted once)${s.distinct.pieces > 1 ? `; ${s.distinct.pieces} different orders of pieces` : '; the pieces always come in the same order'}. Variety score ${s.diversity.cosine.toFixed(2)} (target ${R.diversity}); the same 20 seconds of two rolls differ by ${s.diversity.window === null ? '-' : s.diversity.window.toFixed(2)}.</p>
   <div class="maps"><figure>${shapeMap(s)}<figcaption>Shape of each roll</figcaption></figure><figure>${timeMap(s)}<figcaption>Length and quiet time of each roll</figcaption></figure></div>

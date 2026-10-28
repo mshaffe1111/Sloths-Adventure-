@@ -3,7 +3,7 @@
  * writes the shipped table, src/game/gen2/seeds.ts.
  *
  *   npx tsx tools/gen2/curate.ts --stages 5-7,5-9 [--rolls 400] [--keep 16] [--out src/game/gen2/seeds.ts] [--waive quiet,dead]
- *     [--band 50-65] [--max-shared 0.7] [--json out.json] [--report out.md] [--salt 20261028]
+ *     [--band 50-65] [--max-shared 0.7] [--rooms 8] [--json out.json] [--report out.md] [--salt 20261028]
  *   npx tsx tools/gen2/curate.ts --stages toy-3,toy-4,toy-7 --rolls 400 --keep 16 --waive quiet,dead   (the toy world: tools/gen2/toySeeds.ts)
  *
  * For each stage: `--rolls` layout seeds (era.ts's rollVariants) are built through `buildGen2Stage` on Normal and on Easy (the same
@@ -91,6 +91,8 @@ export interface CurateOptions {
   /** the band score window (inspector parts only), on Normal; null: report only */
   band: [number, number] | null;
   maxShared: number;
+  /** how many shipped rolls must hold a puzzle room, when the stage's rolls can (default: half the set) */
+  rooms?: number;
   /** the previous world-neighbour's shipped closing sections (BuildRequest.recent) and its section set */
   recent: string[];
   neighbour: Set<string> | null;
@@ -252,20 +254,37 @@ export const sharedWith = (plan: string[], neighbour: Set<string>) => {
   return mine.size ? [...mine].filter((t) => neighbour.has(t)).length / mine.size : 0;
 };
 
+/** what the shipped set must hold: at least `n` rolls with one of the `rooms` (puzzle-room section ids), shared out among them in turn */
+export interface RoomQuota { n: number; rooms: readonly string[] }
+
+/** the puzzle-room sections a roll's plan holds */
+const roomsIn = (m: RollMeasure, rooms: readonly string[]) => m.plan.map((t) => t.replace(/~$/, '')).filter((t) => rooms.includes(t));
+
 /**
  * Greedy max-min: the best-quality roll first, then each time the roll whose nearest picked roll is farthest (quality breaks near
  * ties: within 0.02 the better roll wins). `accept` is the slow check (the bots); a roll it refuses is dropped and the next tried.
+ * With a room quota, while fewer than `quota.n` picks hold a puzzle room (and a roll with one is left), the pick is made among the
+ * rolls holding the room the set has least of (the same max-min), so a stage's rooms ship though the pipeline rolls them rarely.
  */
-export function pickSpread(pool: RollMeasure[], keep: number, accept: (m: RollMeasure) => boolean = () => true): { picks: RollMeasure[]; spread: Array<number | null>; refused: number } {
+export function pickSpread(pool: RollMeasure[], keep: number, accept: (m: RollMeasure) => boolean = () => true, quota: RoomQuota | null = null): { picks: RollMeasure[]; spread: Array<number | null>; refused: number } {
   const left = [...pool].sort((a, b) => b.quality - a.quality || a.seed - b.seed);
   const picks: RollMeasure[] = [];
   const spread: Array<number | null> = [];
   const near = new Map<RollMeasure, number>(left.map((m) => [m, Infinity]));
   let refused = 0;
   while (picks.length < keep && left.length) {
-    let best = 0;
+    // (the room quota: the candidates are the rolls with the room the picks hold least of, while the quota is short)
+    let cand = left.map((_, i) => i);
+    if (quota && quota.rooms.length && picks.filter((p) => roomsIn(p, quota.rooms).length).length < quota.n) {
+      const have = (r: string) => picks.filter((p) => roomsIn(p, [r]).length).length;
+      for (const r of [...quota.rooms].sort((a, b) => have(a) - have(b) || a.localeCompare(b))) {
+        const c = cand.filter((i) => roomsIn(left[i], [r]).length);
+        if (c.length) { cand = c; break; }
+      }
+    }
+    let best = cand[0];
     if (picks.length) {
-      for (let i = 1; i < left.length; i++) {
+      for (const i of cand) {
         const a = near.get(left[i])!, b = near.get(left[best])!;
         if (a > b + 0.02 || (Math.abs(a - b) <= 0.02 && left[i].quality > left[best].quality)) best = i;
       }
@@ -303,6 +322,11 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
   for (const m of measures) for (const f of m.fails) dropped[f] = (dropped[f] ?? 0) + 1;
   const pool = measures.filter((m) => !m.fails.length);
   const passed = pool.length;
+  // (a stage whose rolls can hold puzzle rooms ships them: half the set by default, `--rooms N`; the pipeline rolls them rarely)
+  const rooms = stage.kit.manifest.sections.filter((t) => t.room).map((t) => t.id);
+  const roomPool = pool.filter((m) => roomsIn(m, rooms).length).length;
+  const quota: RoomQuota | null = rooms.length && roomPool ? { n: Math.min(opt.rooms ?? Math.ceil(opt.keep / 2), roomPool), rooms } : null;
+  if (quota) opt.log(`  ${stage.key}: ${roomPool} passing rolls hold a puzzle room (${rooms.join(', ')}); the set ships at least ${quota.n}`);
   const { picks, spread, refused } = pickSpread(pool, opt.keep, (m) => {
     const b = botCheck(stage, m, opt.recent);
     m.bots = b;
@@ -318,7 +342,7 @@ export function curateStage(stage: CurateStage, opt: CurateOptions): CurateResul
       m.quality = Math.round((m.quality * 0.85 + 0.15 * worst) * 1000) / 1000;
     }
     return !why.length;
-  });
+  }, quota);
   let shared: number | null = null;
   if (opt.neighbour && picks.length) shared = picks.reduce((t, p) => t + sharedWith(p.plan, opt.neighbour!), 0) / picks.length;
   return { stage, measures, picks, spread, passed, dropped, botRejects: refused, diversity: { all: diversity(pool.length ? pool : measures), shipped: diversity(picks) }, shared, recent: opt.recent, seconds: (Date.now() - t0) / 1000 };
@@ -444,6 +468,7 @@ function args(argv: string[]) {
     waive: (get('--waive')?.split(',').filter(Boolean) ?? []) as Waivable[],
     band: band && band.length === 2 ? band : null,
     maxShared: Number(get('--max-shared') ?? 0.7),
+    rooms: get('--rooms') === undefined ? undefined : Math.max(0, Number(get('--rooms'))),
     kit: get('--kit'),
     out: get('--out') ?? (toy ? path.join(here, 'toySeeds.ts') : path.join(root, 'src', 'game', 'gen2', 'seeds.ts')),
     json: get('--json'),
@@ -535,6 +560,15 @@ async function main() {
   if (opt.json) fs.writeFileSync(opt.json, JSON.stringify(results.map((r) => ({ ...toEntry(r, opt, date), dropped: r.dropped, botRejects: r.botRejects, seconds: r.seconds, rolls: r.measures.map((m) => ({ seed: m.seed, q: m.quality, fails: m.fails, quick: r1(m.normal.quick), dead: r1(m.normal.dead), quiet: r1(m.normal.longestQuiet), a: m.action })) })), null, 1));
 }
 
+/** the report's words on the puzzle rooms: how many passing rolls hold one, and how many shipped (by room) */
+function roomLine(r: CurateResult): string {
+  const rooms = r.stage.kit.manifest.sections.filter((t) => t.room).map((t) => t.id);
+  if (!rooms.length) return '';
+  const pool = r.measures.filter((m) => !m.fails.length || m.bots);
+  const by = rooms.map((id) => `${id} ${r.picks.filter((p) => roomsIn(p, [id]).length).length}`).join(', ');
+  return ` Puzzle rooms: ${pool.filter((m) => roomsIn(m, rooms).length).length} of the passing rolls hold one; ${r.picks.filter((p) => roomsIn(p, rooms).length).length} shipped (${by}).`;
+}
+
 /** an earlier entry's closing sections, from its written plans */
 const closingSectionsOf = (e: Gen2StageSeeds) => closingSections(e.seeds.map((s) => ({ plan: s.sections.split(' ') }) as RollMeasure));
 
@@ -571,7 +605,7 @@ export function renderReport(results: CurateResult[], opt: Pick<CurateOptions, '
   for (const r of results) {
     const n = r.measures.length;
     out.push('', `## ${r.stage.key}: ${r.stage.config.objectiveType}, ${r.stage.kitName}`, '');
-    out.push(`${r.passed - r.botRejects} of ${n} rolls (${pct(r.passed - r.botRejects, n)}) passed every check (the jump bots ran only on the rolls about to be shipped: ${r.botRejects} refused). ${r.picks.length} shipped.${r.recent.length ? ` Built after the stage before's closing blocks: ${r.recent.join(', ')}.` : ''}${r.shared !== null ? ` Blocks shared with the stage before: ${pct(r.shared, 1)}.` : ''}`, '');
+    out.push(`${r.passed - r.botRejects} of ${n} rolls (${pct(r.passed - r.botRejects, n)}) passed every check (the jump bots ran only on the rolls about to be shipped: ${r.botRejects} refused). ${r.picks.length} shipped.${r.recent.length ? ` Built after the stage before's closing blocks: ${r.recent.join(', ')}.` : ''}${r.shared !== null ? ` Blocks shared with the stage before: ${pct(r.shared, 1)}.` : ''}${roomLine(r)}`, '');
     const drops = Object.entries(r.dropped).sort((a, b) => b[1] - a[1]);
     if (drops.length) {
       out.push('Why rolls were dropped (a roll can fail more than one check):', '', '| Reason | Rolls | Share |', '|---|---|---|');
