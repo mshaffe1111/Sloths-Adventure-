@@ -1580,11 +1580,23 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   const watched = (len: number, calm: number) => (len / RUN) * ((calm + 4) / calm);
 
   /** bushes along the ground, `gap` apart, petals between them (a run, a bush, a run...) */
-  function bushRow(n: number, gap: [number, number], kinds: Array<Bush['kind']>, calm: [number, number]) {
+  function bushRow(n: number, gap: [number, number], kinds: Array<Bush['kind']>, calm: [number, number], rocks = false) {
     const x0 = x;
     for (let k = 0; k < n; k++) {
       const g = R.r(gap[0], gap[1]);
-      if (k > 0) row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
+      if (k > 0 && !rocks) row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
+      // (`rocks`, World 1's rebuilt 1-7: a mossy rock or two to hop between the bushes, a petal on each: the run from bush to bush is
+      // a hop and a dash, not an empty walk)
+      if (rocks && (k > 0 || g >= 600)) {
+        const m = g >= 640 ? 2 : 1;
+        for (let j = 0; j < m; j++) {
+          const rw = Math.round(R.r(110, 140));
+          const rx = Math.round(x + (g * (j + 1)) / (m + 1) - rw / 2);
+          const rh = R.i(34, 44);
+          block(rx, rx + rw, rh);
+          flower(rx + rw / 2, G - rh - 34, 'orchid');
+        }
+      }
       run(g);
       const kind = kinds[k % kinds.length];
       bush(x - BUSH_W[kind] / 2, kind);
@@ -1612,6 +1624,12 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     goldenSeed(end - 40, perchY - 34);
     covers.push({ x: tX + 30, y: perchY - 90, w: end - tX, h: 110 });
     run(R.r(520, 620));
+    // (1-7's rebuild: a rock to hop past the end of the secret path, on the way to the next bush)
+    if (plan === '1-7') {
+      const rx = Math.max(end + 40, x - 160);
+      block(rx, rx + 120, 40);
+      flower(rx + 60, G - 74, 'orchid');
+    }
     ZONES.push({ x0, x1: x, calm });
     expert += watched(x - x0, (calm[0] + calm[1]) / 2);
     pieces.push({ k: 'rest', x0, x1: x });
@@ -1632,6 +1650,12 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     // hanging just under the rope (by a few vine strands): his body, hanging from his hands, is inside the bush
     for (const u of [0.26, 0.52, 0.78]) bush(edge + span * u - 52, 'tall', { w: 104, y: ry + 6, hanging: true });
     for (const u of [0.13, 0.39, 0.65, 0.9]) flower(edge + span * u, ry + HANG_DROP - 26, 'orchid');
+    // (and mossy rocks on the moss below, a petal on each, for whoever drops off the rope and crosses down there)
+    for (const u of [0.33, 0.66]) {
+      const rx = Math.round(edge + span * u - 50);
+      P.push({ id: pid++, x: rx, y: HOLLOW_Y - 52, width: 100, height: 52, type: 'solid', style: 'moss_stone' });
+      flower(rx + 50, HOLLOW_Y - 86, 'orchid');
+    }
     open(far);
     run(R.r(260, 340));
     ZONES.push({ x0, x1: x, calm });
@@ -1639,24 +1663,74 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     pieces.push({ k: 'snakes', x0, x1: x });
   }
 
+  /**
+   * the acorn meadow (1-7's puzzle, the shared kit's noise lure, 2026-10-28): open ground the eagle watches, too long to cross between
+   * two of its passes, with an acorn tree by the bush at each end of it. Carry an acorn out (hands full: no jumping), and when the eagle
+   * screeches, flick up to throw it and keep running: it lands behind him with a clack, the eagle circles over the noise instead of
+   * sweeping on, and he is past. The first stretch is short enough to cross without it (a bush at its end: the safe place to try the
+   * throw), the second is not. No rock or dip in the first part of each stretch (carrying, he cannot hop), a rock or two after it.
+   */
+  function acornMeadow(calm: [number, number]) {
+    const x0 = x;
+    run(R.r(260, 320));
+    bush(x - BUSH_W.wide / 2, 'wide');
+    const room = (len: number, first: boolean) => {
+      run(R.r(120, 150));
+      const oakX = x;
+      run(660);
+      const floor = endBank();
+      const n = ROOMS.length;
+      ROOMS.push({
+        id: `acorns-${n}`,
+        left: onP(floor, oakX - 150), right: onP(floor, oakX + 640), above: 380, below: 60,
+        pieces: [
+          { kind: 'reset', id: `post${n}`, at: onP(floor, oakX - 120) },
+          { kind: 'source', id: `oak${n}`, variant: 'acorn', at: onP(floor, oakX), look: 'tree' },
+          { kind: 'item', id: `acorn${n}`, variant: 'acorn', source: `oak${n}` },
+        ],
+        exit: `acorn${n}`, beyond: onP(floor, oakX + 620), ground: [floor.id],
+        ...(first ? { tips: { enter: 'The squirrels\' acorn tree! Carry one out with you.', hold: 'When it screeches, flick up to throw it. Keep running!' } } : {}),
+      });
+      flower(oakX + 300, G - 34, 'hibiscus');
+      // the rest of the stretch: a rock or two to hop once his hands are free, then the next bush
+      const rest = len - 660 - 140;
+      const m = rest > 700 ? 2 : 1;
+      for (let j = 0; j < m; j++) {
+        run(rest / (m + 1) - 70);
+        logHop(R.i(34, 42));
+      }
+      run(Math.max(120, rest / (m + 1) - 60));
+      bush(x - BUSH_W.tall / 2, 'tall');
+    };
+    // the first stretch: crossable in one calm (try the throw here, a bush waits at its end); the second: only with the acorn
+    room(Math.round(R.r(1300, 1420)), true);
+    room(Math.round(R.r(2050, 2200)), false);
+    run(R.r(260, 320));
+    ZONES.push({ x0, x1: x, calm });
+    expert += (x - x0) / RUN + 2 * 4 + watched(x - x0, (calm[0] + calm[1]) / 2) - (x - x0) / RUN;
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+
   if (plan === '1-7') {
     // 1-7 A Very Good Bush: hide from the eagle. Taught with long calms and big bushes close together, tested with the bushes farther
     // apart and shorter calms, then twisted onto a rope line with bushes hanging from it. One bush hides a way up to a secret path.
+    // (Rebuilt 2026-10-28: a rock or two to hop between the bushes, and the finish opens with the acorn meadow, the kit's noise lure:
+    // the squirrels' acorns thrown to draw the eagle off; then more of the same until a quick player needs two minutes.)
     beat('Start', () => {
-      rest(R.r(600, 750));
+      rest(R.r(380, 430));
       flag();
     });
     beat('Learn: hide in the bushes', () => {
       hint(x + 20, 'An eagle is watching. Slide down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide');
-      bushRow(5, [380, 470], ['tall', 'tall', 'wide'], [7.5, 9]);
+      bushRow(5, [380, 470], ['tall', 'tall', 'wide'], [7.5, 9], true);
       flag();
     });
     beat('Test: farther apart', () => {
       hint(x + 40, 'Run when it has gone by', 'Run when it has gone by', 'Run when it has gone by');
-      bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [4.8, 6]);
+      bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [4.8, 6], true);
       secretBush([4.8, 6]);
-      stumps();
-      bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [4.6, 5.6]);
+      lowStumps();
+      bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [4.6, 5.6], true);
       flag();
     });
     beat('Twist: the rope line', () => {
@@ -1664,15 +1738,18 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       ropeBushes([4.6, 5.4]);
       flag();
     });
-    beat('Finish', () => {
+    beat('Finish: the acorn meadow', () => {
+      acornMeadow([4.6, 5.4]);
+      flag();
       let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 12) {
-        if (n % 2 === 0) bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [4.4, 5.4]);
+      // (a quick player who waits out the passes in the bushes: 1-7 runs long, three minutes, and the meadow is part of it)
+      while (expert < EXPERT_SECONDS + 62 && n < 12) {
+        if (n % 2 === 0) bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [4.4, 5.4], true);
         else ropeBushes([4.4, 5.2]);
         n++;
         flag();
       }
-      rest(R.r(700, 900));
+      homeRun(['log']);
     });
   }
 
