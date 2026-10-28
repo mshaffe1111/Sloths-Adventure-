@@ -355,11 +355,14 @@ const asKit = (name: string, v: unknown, stage: number): unknown => (typeof v ==
 
 export async function worldKits(world: number, override?: string, stage = 1): Promise<Array<{ name: string; kit: WorldKit }>> {
   if (override) {
-    const [file, name] = override.split(':');
-    const mod = await import(pathToFileURL(path.resolve(file)).href);
+    // (a path, or a seed entry's `kit`: a file in src/game/gen2/worlds and its export, a maker's stage in brackets: "w5.ts:w5Kit(7)")
+    const [given, raw] = override.split(':');
+    const name = raw?.replace(/\(\d+\)$/, '');
+    const file = fs.existsSync(path.resolve(given)) ? path.resolve(given) : path.join(root, 'src', 'game', 'gen2', 'worlds', given);
+    const mod = await import(pathToFileURL(file).href);
     const kit = asKit(name ?? 'kit', mod[name ?? 'kit'], stage);
     if (!isKit(kit)) throw new Error(`curate: ${override} is not a WorldKit`);
-    return [{ name: `${path.basename(file)}:${name ?? 'kit'}`, kit }];
+    return [{ name: `${path.basename(file)}:${name ?? 'kit'}${kit === mod[name ?? 'kit'] ? '' : `(${stage})`}`, kit }];
   }
   const dir = path.join(root, 'src', 'game', 'gen2', 'worlds');
   if (!fs.existsSync(dir)) return [];

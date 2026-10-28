@@ -16,7 +16,8 @@ async function guard(table: Record<string, Gen2StageSeeds>, what: string) {
   const keys = Object.keys(table);
   for (const [k, key] of keys.entries()) {
     const e = table[key];
-    const stage = await resolveStage(key);
+    // (the kit the entry was curated with: World 5's arena stage builds from w5Arena.ts's kit, not w5.ts's)
+    const stage = await resolveStage(key, key.startsWith('toy-') ? undefined : e.kit);
     assert.equal(stage.config.id, e.stage, `${what} ${key}: the entry is for ${e.stage}`);
     assert.ok(e.seeds.length > 0, `${what} ${key}: no seeds`);
     assert.equal(new Set(e.seeds.map((s) => s.seed)).size, e.seeds.length, `${what} ${key}: a seed twice`);
