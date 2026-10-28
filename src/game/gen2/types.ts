@@ -262,9 +262,10 @@ export interface SectionTemplate {
   sockets: Socket[];
   /**
    * Spelunky's sub-blocks (A5): a stretch of the section with several authored versions, one rolled per use (2 sub-blocks of 3
-   * versions and 4 sockets of 3 fillings give 9 x 81 plays of one section). Each version's pieces follow the same place rules and
-   * may refer to the section's pieces laid before it. TODO(phase 2, pipeline layLocal): roll one version per sub-block (WorldOnce
-   * keeps a version from coming back within a world).
+   * versions and 4 sockets of 3 fillings give 9 x 81 plays of one section). Each version's pieces follow the same place rules; any
+   * piece (the section's or a version's) may refer to any other, and they are laid in the order their references allow. Every
+   * version of a sub-block must give the piece keys the rest of the section refers to. The roll picks by weight, and a version
+   * already used in this world (WorldOnce, preloaded from BuildRequest.usedVersions) waits until the others have had their turn.
    */
   subBlocks?: SubBlock[];
   room?: LocalRoomSpec;
@@ -420,7 +421,14 @@ export interface PlanSlot {
   mirrored: boolean;
   node: string;
   join: 'walk' | 'step' | 'pit' | 'jump';
+  /** the sub-block versions it rolled (sub-block id -> version id), so Easy lays the same ones */
+  versions?: Record<string, string>;
+  /** the slot's stream salt (a swap at this slot moved it): Easy rolls the slot's geometry from the same stream */
+  salt?: number;
 }
+
+/** a key for a sub-block version, as WorldOnce and BuildRequest.usedVersions hold it */
+export const versionKey = (template: string, subBlock: string, version: string): string => `${template}/${subBlock}/${version}`;
 
 export interface Gen2Meta {
   /** the seed the shipped layout was built from (the request's, or a re-roll's) */
@@ -442,6 +450,8 @@ export interface Gen2Meta {
   errors: string[];
   /** stretches longer than the dead-time cap with nothing interactive (poissonPlace's `unfilled`), [x0, x1] */
   barren: Array<[number, number]>;
+  /** the route's gaps and what a fall into each one ends in (soft: a climb out; water or void: a life) */
+  falls?: Array<{ x0: number; x1: number; y: number; kind: PitKind }>;
 }
 
 /** the result: the stage the engine plays (GeneratedStage, with the hand-built stages' proto extras), and what gen2 built */
@@ -458,6 +468,8 @@ export interface BuildRequest {
   maxRerolls?: number;
   /** the section ids the stage before this one shipped (its curated roll): kept out while others are left (C4, across stages) */
   recent?: string[];
+  /** the sub-block versions (versionKey) the world's earlier stages shipped: each waits until the others have had their turn (C4) */
+  usedVersions?: string[];
 }
 
 // ───────────────────────────── constants ─────────────────────────────
@@ -468,5 +480,13 @@ export const MARGIN = { easy: 0.65, normal: 0.82 } as const;
 export const EASY_LANDING = 48;
 /** Easy's enemy budget (Part 1 §3: 60%) */
 export const EASY_ENEMY_SHARE = 0.6;
+/**
+ * Water on Easy (Matt, 2026-10-28): Easy's falls on land are soft, but water still costs a life, with a clear warning before it.
+ * Dot's warning comes `lead` px before the water's lip (and a sign stands at the edge: Gen2Stage proto.gen2.waterWarnings); on Easy
+ * again at every water gap once `every` seconds of walking have passed since the last warning. Normal warns at the first water only.
+ */
+export const WATER_WARN = { lead: 480, every: 12 } as const;
+/** Dot's warning line, when the manifest has none (`tips.water`): Matt's words, approved 2026-10-28 */
+export const WATER_LINE = 'Careful, water! Flick up and over.';
 /** the quiet a stretch may have before it is dead time (§2 / E2) */
 export const QUIET = { easy: 3.0, normal: 2.0, rest: 4.0 } as const;
