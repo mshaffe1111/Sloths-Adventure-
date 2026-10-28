@@ -3,11 +3,9 @@
  * ribbon. Loaded after index.css, so it reskins the shared menu pieces too. The fonts are bundled so the game looks the same offline
  * (all SIL Open Font License, see src/assets/fonts).
  */
-@font-face { font-family: 'Rammetto One'; font-style: normal; font-weight: 400; font-display: swap; src: url('./assets/fonts/rammetto-one-latin-400-normal.woff2') format('woff2'); }
 @font-face { font-family: 'Cherry Bomb One'; font-style: normal; font-weight: 400; font-display: swap; src: url('./assets/fonts/cherry-bomb-one-latin-400-normal.woff2') format('woff2'); }
 @font-face { font-family: 'Baloo 2'; font-style: normal; font-weight: 800; font-display: swap; src: url('./assets/fonts/baloo-2-latin-800-normal.woff2') format('woff2'); }
 :root {
-  --font-logo: 'Rammetto One', 'Fredoka', sans-serif;
   --font-fun: 'Cherry Bomb One', 'Fredoka', sans-serif;
   --font-sub: 'Baloo 2', 'Fredoka', sans-serif;
   /* wood and parchment, used everywhere below */
@@ -78,7 +76,7 @@
   background: radial-gradient(ellipse 70% 38% at 50% 14%, rgba(255, 226, 150, .2), transparent 70%), radial-gradient(ellipse at 50% 46%, transparent 55%, rgba(4, 12, 8, .42) 100%), linear-gradient(to top, rgba(8, 18, 11, .7), rgba(8, 18, 11, 0) 40%); }
 .gx2-ui { position: relative; z-index: 2; height: 100%; box-sizing: border-box;
   padding: max(10px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(6px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
-  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto 1fr auto; grid-template-areas: 'top top' 'logo post' 'stage post' 'credit credit'; }
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto 1fr auto; grid-template-areas: 'top top' 'logo post' 'stage post' 'stage credit'; }
 .gx2-top { grid-area: top; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .gx2-top-r { display: flex; align-items: center; gap: 8px; }
 .gx2-tag { font-family: var(--font-sub); font-weight: 800; font-size: 12px; letter-spacing: .08em; color: #fff1cf; text-shadow: 0 1px 0 #2a1608;
@@ -89,30 +87,21 @@
 .gx2-credit { grid-area: credit; margin: 0; text-align: center; font-family: var(--font-ui); font-size: 11px; color: rgba(255, 240, 210, .78); text-shadow: 0 1px 3px rgba(0, 0, 0, .8); }
 .gx2-credit i { font-style: normal; opacity: .6; padding: 0 2px; }
 
-/* the word: puffy letters packed close, gold to orange, a thick brown edge */
-.gx2-word { margin: 0; display: flex; justify-content: center; line-height: .9; font-family: var(--font-logo); font-weight: 400;
-  font-size: clamp(56px, min(15vh, 10.5vw), 136px); letter-spacing: -.035em; }
-.gx2-word span { display: inline-block; position: relative; transform: translateY(var(--y, 0)) rotate(var(--r, 0deg));
-  background: linear-gradient(180deg, #fff6b0 0%, #ffd83c 34%, #ffab1f 72%, #f07d10 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
-  -webkit-text-stroke: clamp(5px, 1vh, 9px) #3b1a06; paint-order: stroke fill;
-  filter: drop-shadow(0 clamp(4px, .9vh, 8px) 0 #3b1a06) drop-shadow(0 12px 16px rgba(30, 10, 0, .45)); }
-/* little glints on the letters once they have landed */
+/* the name, carved into a mossy log (title/CarvedLogo.tsx): the canvas reaches a little below the log, for the chips and the leaves
+   that fall as it is carved, without taking that room from the layout */
+.gx2-carve { --lw: min(44vw, 430px); display: block; width: var(--lw); height: calc(var(--lw) * .62); margin-bottom: calc(var(--lw) * -.18); pointer-events: none; }
+/* little glints on the letters once they are carved */
 .gx2-glint { position: absolute; z-index: 3; width: 22px; height: 22px; pointer-events: none; opacity: 0;
   background: radial-gradient(circle, #fffbe6 0 18%, rgba(255, 246, 200, .0) 60%); clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
   filter: drop-shadow(0 0 4px rgba(255, 240, 170, .9)); }
 .gx2-glint::after { content: ''; position: absolute; inset: 0; background: #fffbe6; clip-path: inherit; transform: scale(.55); }
-.gx2-glint.g1 { left: 22%; top: 6%; }
-.gx2-glint.g2 { left: 57%; top: 2%; width: 16px; height: 16px; }
-.gx2-glint.g3 { left: 79%; top: 30%; width: 18px; height: 18px; }
+.gx2-glint.g1 { left: 24%; top: 26%; }
+.gx2-glint.g2 { left: 56%; top: 24%; width: 16px; height: 16px; }
+.gx2-glint.g3 { left: 79%; top: 36%; width: 18px; height: 18px; }
 @keyframes gx-glint { 0%, 100% { opacity: 0; transform: scale(0) rotate(0); } 6% { opacity: 1; transform: scale(1.15) rotate(45deg); } 13% { opacity: 0; transform: scale(0) rotate(90deg); } }
 
-/* the ribbon */
-.gx2-ribbon { width: clamp(250px, min(52vh, 36vw), 470px); height: auto; filter: drop-shadow(0 6px 6px rgba(40, 5, 5, .35)); overflow: visible; transform-origin: 50% 40%; }
-.gx2-word + .gx2-ribbon, .gx2-glint + .gx2-ribbon { margin-top: clamp(-18px, -2vh, -6px); }
-.gx2-ribbon-t { font-family: var(--font-sub); font-weight: 800; font-size: 27px; letter-spacing: 1px; fill: #fff6dc; stroke: #5e1216; stroke-width: 6px; paint-order: stroke fill; }
-
 /* the signpost: a pole behind, the sign and the planks nailed on a little off true */
-.gx2-post::before { content: ''; position: absolute; left: 50%; top: 8px; bottom: -40px; width: 22px; margin-left: -11px; z-index: -1; border-radius: 6px;
+.gx2-post::before { content: ''; position: absolute; left: 50%; top: 8px; bottom: -14px; width: 22px; margin-left: -11px; z-index: -1; border-radius: 6px;
   border: 3px solid #2a1608; background: repeating-linear-gradient(90deg, rgba(60, 30, 8, .25) 0 2px, transparent 2px 7px), linear-gradient(90deg, #6e4019, #a86d38 45%, #7a4a20);
   box-shadow: 4px 0 10px rgba(0, 0, 0, .35); }
 .gx2-sign { min-width: min(80vw, 330px); }
@@ -128,39 +117,24 @@
 
 /* ---- the entrance (TitleScreen.tsx): nothing shows until the splash goes, then it all arrives in order ---- */
 .gx2-wait .gx2-ui { visibility: hidden; }
-/* the reveal (with the scene's camera drawing back out of the dark, TitleScene.tsx): the letters slam down one by one, a burst of gold
-   light and a scatter of leaves and sparks as the word lands, the ribbon unfurls, then the buttons come up in turn */
-.gx2-arrive .gx2-top { animation: gx-down .6s ease calc(var(--t) * 1.9s) backwards; }
-.gx2-arrive .gx2-word span { animation: gx-letter .8s cubic-bezier(.22, 1.5, .45, 1) calc(var(--t) * (.8s + var(--i) * .07s)) backwards; }
-.gx2-arrive .gx2-ribbon { animation: gx-unfurl .75s cubic-bezier(.3, 1.35, .5, 1) calc(var(--t) * 1.4s) backwards; }
-.gx2-arrive .gx2-glint.g1 { animation: gx-glint 5.6s ease-out calc(var(--t) * 2s + .2s) infinite; }
-.gx2-arrive .gx2-glint.g2 { animation: gx-glint 5.6s ease-out calc(var(--t) * 2s + 2.1s) infinite; }
-.gx2-arrive .gx2-glint.g3 { animation: gx-glint 5.6s ease-out calc(var(--t) * 2s + 3.9s) infinite; }
-.gx2-arrive .gx2-sign, .gx2-arrive .gx2-planks > *, .gx2-arrive .gx-tags > * { animation: gx-rise .6s cubic-bezier(.2, 1.45, .4, 1) calc(var(--t) * (1.85s + var(--i, 0) * .065s)) backwards; }
-.gx2-arrive .gx2-credit { animation: gx-fade .8s ease calc(var(--t) * 2.5s) backwards; }
-.gx2-flash { position: absolute; z-index: -1; left: 50%; top: 34%; width: 130%; aspect-ratio: 1.6; translate: -50% -50%; pointer-events: none; opacity: 0; border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(255, 244, 190, .95) 0%, rgba(255, 210, 110, .55) 30%, rgba(255, 190, 80, 0) 68%); mix-blend-mode: screen; }
-.gx2-arrive .gx2-flash { animation: gx-flash 1.1s ease-out calc(var(--t) * 1.15s) backwards; }
-@keyframes gx-flash { 0% { opacity: 0; transform: scale(.25); } 22% { opacity: 1; } 100% { opacity: 0; transform: scale(1.5); } }
-.gx2-burst { position: absolute; z-index: 4; left: 50%; top: 36%; width: 0; height: 0; pointer-events: none; }
-.gx2-burst i { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; opacity: 0; }
-.gx2-burst i.lf { width: 16px; height: 10px; border-radius: 0 100% 0 100%; background: linear-gradient(135deg, #a9e36c, #3f8a2e); box-shadow: inset 0 0 0 1px rgba(29, 74, 27, .7); }
-.gx2-burst i.sp { width: 12px; height: 12px; background: #fff6c8; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); filter: drop-shadow(0 0 3px #ffd23a); }
-.gx2-arrive .gx2-burst i { animation: gx-burst 1.15s cubic-bezier(.15, .8, .3, 1) calc(var(--t) * 1.2s) backwards; }
-@keyframes gx-burst { 0% { opacity: 1; transform: rotate(var(--a)) translateX(10px) scale(.4); } 70% { opacity: 1; } 100% { opacity: 0; transform: rotate(var(--a)) translateX(var(--d)) translateY(26px) rotate(200deg) scale(1); } }
-@keyframes gx-letter { 0% { opacity: 0; transform: translateY(calc(var(--y, 0px) - 1.1em)) rotate(calc(var(--r, 0deg) * -2)) scale(.7, 1.15); } 40% { opacity: 1; } 70% { transform: translateY(calc(var(--y, 0px) + .04em)) rotate(var(--r, 0deg)) scale(1.06, .92); } 100% { transform: translateY(var(--y, 0px)) rotate(var(--r, 0deg)); } }
-@keyframes gx-unfurl { 0% { opacity: 0; clip-path: inset(0 47% 0 47%); transform: scaleX(.35); } 30% { opacity: 1; } 100% { clip-path: inset(-30% -10% -30% -10%); transform: none; } }
-@keyframes gx-rise { 0% { opacity: 0; transform: translateY(28px) rotate(var(--rot, 0deg)) scale(.92); } 60% { opacity: 1; } 100% { transform: rotate(var(--rot, 0deg)); } }
-@keyframes gx-down { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
-@keyframes gx-fade { from { opacity: 0; } to { opacity: 1; } }
+/* the reveal (with the scene's camera drawing back out of the dark, TitleScene.tsx): the name is carved into its log (CarvedLogo.tsx),
+   then the buttons come up in turn; the glints start once it is carved */
+/* (the buttons wait for the name: until it is carved they are not there; then they come up in turn) */
+.gx2-arrive:not(.gx2-named) .gx2-post, .gx2-arrive:not(.gx2-named) .gx2-top, .gx2-arrive:not(.gx2-named) .gx2-credit { visibility: hidden; }
+.gx2-named .gx2-top { animation: gx-down .6s ease .15s backwards; }
+.gx2-arrive .gx2-glint.g1 { animation: gx-glint 5.6s ease-out calc(var(--t) * 4s + .2s) infinite; }
+.gx2-arrive .gx2-glint.g2 { animation: gx-glint 5.6s ease-out calc(var(--t) * 4s + 2.1s) infinite; }
+.gx2-arrive .gx2-glint.g3 { animation: gx-glint 5.6s ease-out calc(var(--t) * 4s + 3.9s) infinite; }
+.gx2-named .gx2-sign, .gx2-named .gx2-planks > *, .gx2-named .gx-tags > * { animation: gx-rise .6s cubic-bezier(.2, 1.45, .4, 1) calc(var(--t) * var(--i, 0) * .07s) backwards; }
+.gx2-named .gx2-credit { animation: gx-fade .8s ease .7s backwards; }
 /* leaving: the logo lifts away, the buttons drop, then the next screen comes on */
 .gx2-leave .gx2-ui > * { transition: opacity .22s ease, transform .24s ease; opacity: 0; }
 .gx2-leave .gx2-logo, .gx2-leave .gx2-top { transform: translateY(-18px); }
 .gx2-leave .gx2-post { transform: translateY(22px); }
 .gx2-leave .ts-scene { transition: opacity .24s ease; opacity: .55; }
 @media (prefers-reduced-motion: reduce) {
-  .gx2-arrive .gx2-top, .gx2-arrive .gx2-word span, .gx2-arrive .gx2-ribbon, .gx2-arrive .gx2-sign, .gx2-arrive .gx2-planks > *, .gx2-arrive .gx-tags > *, .gx2-arrive .gx2-credit { animation: gx-fade .45s ease backwards; }
-  .gx2-arrive .gx2-glint, .gx-shine::before, .gx2-arrive .gx2-flash, .gx2-arrive .gx2-burst i { animation: none; }
+  .gx2-arrive .gx2-carve, .gx2-named .gx2-top, .gx2-named .gx2-sign, .gx2-named .gx2-planks > *, .gx2-named .gx-tags > *, .gx2-named .gx2-credit { animation: gx-fade .45s ease backwards; }
+  .gx2-arrive .gx2-glint, .gx-shine::before { animation: none; }
   .gx2-leave .gx2-ui > * { transform: none !important; }
 }
 
@@ -169,8 +143,7 @@
   .gx2-ui { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr auto auto; grid-template-areas: 'top' 'logo' 'stage' 'post' 'credit'; }
   .gx2-stage { min-height: 24vh; }
   .gx2-logo { margin-top: 2vh; }
-  .gx2-word { font-size: clamp(46px, 14vw, 80px); }
-  .gx2-ribbon { width: min(76vw, 330px); }
+  .gx2-carve { --lw: min(96vw, 430px); }
   .gx2-post { margin: 1vh 0 2vh; align-self: end; }
   .gx2-post::before { display: none; }
   .gx2-planks { width: min(92vw, 380px); }
@@ -181,14 +154,23 @@
 }
 /* a phone on its side: everything a size smaller */
 @media (max-height: 430px) and (orientation: landscape) {
-  .gx2-word { font-size: clamp(44px, 15vh, 72px); }
-  .gx2-ribbon { width: clamp(200px, 48vh, 290px); }
+  .gx2-carve { --lw: min(46vw, 96vh, 400px); }
   .gx2-planks .gx-plank { min-width: 128px; padding: 7px 12px; font-size: 13.5px; }
   .gx2-sign { min-width: 280px; padding: 8px 34px 7px; }
   .gx2-sign .gx-sign-t { font-size: 20px; }
   .gx2-post { gap: 8px; }
   .gx-token { width: 38px; height: 38px; }
   .gx2-tag { font-size: 11px; padding: 4px 10px; }
+}
+/* a small phone on its side (640 x 320 and so on): the boards a size smaller again, the small ones kept on one row */
+@media (max-height: 350px) and (orientation: landscape) {
+  .gx2-planks .gx-plank { min-width: 112px; padding: 5px 10px; font-size: 12.5px; }
+  .gx2-sign { min-width: 250px; padding: 6px 30px 5px; }
+  .gx2-sign .gx-sign-t { font-size: 18px; }
+  .gx-tags { flex-wrap: nowrap; gap: 6px; }
+  .gx-plank-sm { font-size: 11.5px; padding: 4px 9px 4px 8px; }
+  .gx2-post { gap: 6px; }
+  .gx2-credit { font-size: 10px; }
 }
 
 /* ───────── the menus (start menu and pause menu, MenuFrame.tsx): parchment in a wooden frame (2026-10-28) ───────── */

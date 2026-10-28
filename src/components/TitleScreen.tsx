@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { TitleScene, type TitleSceneHandle } from './title/TitleScene.tsx';
-import { FullscreenButton, LogoWord, Ribbon } from './gameUi.tsx';
+import { FullscreenButton } from './gameUi.tsx';
+import { CarvedLogo, carvedLogoReady } from './title/CarvedLogo.tsx';
 import { homeScreenTipDue, markHomeScreenTip } from '../game/fullscreen.ts';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { NewGameDialog } from './NewGameDialog.tsx';
@@ -13,12 +14,6 @@ import { Icon } from './icons/index.tsx';
 import type { SkillId } from '../game/skills.ts';
 import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
 import { bootDone, bootProgress, bootShowing, fontsReady, waitForAll } from '../game/boot.ts';
-
-/** the scatter as the logo lands: [angle, distance, kind] */
-const BURST: Array<[number, number, string]> = [
-  [-160, 120, 'lf'], [-130, 150, 'sp'], [-100, 110, 'lf'], [-70, 160, 'sp'], [-40, 130, 'lf'], [-15, 170, 'sp'],
-  [10, 140, 'lf'], [35, 165, 'sp'], [60, 120, 'lf'], [95, 150, 'sp'], [130, 115, 'lf'], [165, 140, 'sp'],
-];
 
 /** every biome takes a turn behind the logo */
 const SHOWCASE = [1, 2, 4, 6, 3, 8, 5, 7, 9, 10];
@@ -93,6 +88,8 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   // ---- the entrance ----
   const scene = useRef<TitleSceneHandle>(null);
   const [phase, setPhase] = useState<Phase>('wait');
+  /** the name has been carved: the buttons come up */
+  const [named, setNamed] = useState(false);
   const [cold] = useState(() => bootShowing());
   useEffect(() => {
     let live = true;
@@ -103,7 +100,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
       setPhase('arrive');
     };
     void waitForAll({
-      checks: [() => !!scene.current?.ready()],
+      checks: [() => !!scene.current?.ready(), carvedLogoReady],
       promises: [fontsReady()],
       // the first time, as long as the splash may wait; coming back, everything is already here
       ms: cold ? 15000 : 1500,
@@ -165,7 +162,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   const covered = saveOpen || newOpen || menuOpen || howOpen || intro;
 
   return (
-    <div className={`gx2 select-none gx2-${phase}${cold ? '' : ' gx2-back'}`}>
+    <div className={`gx2 select-none gx2-${phase}${cold ? '' : ' gx2-back'}${named ? ' gx2-named' : ''}`}>
       <TitleScene ref={scene} worlds={SHOWCASE} hold={13} stageSelector=".gx2-stage" dim={covered} />
       <div className="gx2-shade" />
 
@@ -193,18 +190,10 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
         </div>
 
         <div className="gx2-logo">
-          {/* the reveal: a burst of golden light and a scatter of leaves and sparks as the word lands */}
-          <span className="gx2-flash" aria-hidden="true" />
-          <span className="gx2-burst" aria-hidden="true">
-            {BURST.map(([a, d, k], i) => (
-              <i key={i} className={k} style={{ ['--a' as string]: `${a}deg`, ['--d' as string]: `${d}px` }} />
-            ))}
-          </span>
-          <LogoWord />
+          <CarvedLogo go={phase === 'arrive'} onName={() => setNamed(true)} />
           <span className="gx2-glint g1" aria-hidden="true" />
           <span className="gx2-glint g2" aria-hidden="true" />
           <span className="gx2-glint g3" aria-hidden="true" />
-          <Ribbon text="RAINFOREST ADVENTURES" />
         </div>
         <div className="gx2-stage" aria-hidden="true" />
 

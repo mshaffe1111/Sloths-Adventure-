@@ -28,7 +28,7 @@ export function bootShowing(): boolean {
 }
 
 /** the faces the title is set in: it waits for these, so its words never show in a stand-in font first */
-const FACES = ["400 40px 'Rammetto One'", "400 20px 'Cherry Bomb One'", "800 20px 'Baloo 2'", "700 16px 'Outfit'", "500 16px 'Outfit'"];
+const FACES = ["400 20px 'Cherry Bomb One'", "800 20px 'Baloo 2'", "700 16px 'Outfit'", "500 16px 'Outfit'"];
 
 /** resolves once the title's fonts are in (or after `ms`, so a font that never comes cannot hold the game) */
 export function fontsReady(ms = 6000): Promise<void> {
