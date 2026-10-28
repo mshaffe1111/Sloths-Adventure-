@@ -2935,21 +2935,27 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // opens an eye, freeze (or duck) until it dozes off again. World 3's keepsake, the medal, is in a Hush Fern along the way.
     // (Rebuilt 2026-10-28, the stage inspector and the puzzle kit: stones to hop between the rows, and the vine that is awake: a bell to
     // ring for it first, then pebbles to throw, then two of them at once.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts): vines over gaps in the stream, lianas,
+    // the spores; after the pebbles, two awake vines or World 3's stone plates.)
+    const v = W3P!;
     beat('Start', () => {
       rest(R.r(380, 440));
       hint(x - 300, 'Grandma said the old thorn vines were asleep...');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: one vine', () => {
       hint(x + 40, 'When a vine opens an eye, freeze! Move on when it sleeps');
       vineRow(1, [5, 6], [380, 420]);
       busy(1);
-      vineRow(2, [4.5, 5.5], [380, 440]);
+      if (v.learn === 0) vineRow(2, [4.5, 5.5], [380, 440]);
+      else { w3Stones([50, 100, 60], [0.5, 0.6]); vineRow(2, [4.5, 5.5], [380, 440]); }
       flag();
     });
     beat('Develop: a row of them', () => {
-      vineRow(4, [3.6, 4.6], [340, 420]);
+      if (v.develop === 0) vineRow(4, [3.6, 4.6], [340, 420]);
+      else if (v.develop === 1) { deepRun(3, 1); vineRow(3, [3.6, 4.6], [340, 420], true, true); }
+      else { chain(3, false, 'gorge'); vineRow(3, [3.6, 4.6], [340, 420]); }
       flag();
       // the keepsake: the medal, in a Hush Fern on a quiet stretch
       const keep = findForStage(config.worldIndex, config.miniIndex);
@@ -2964,35 +2970,35 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       // one of them is awake: the bell first
       lureRoom('bell');
       flag();
-      vineRow(4, [3.6, 4.4], [360, 430], true);
+      if (v.develop === 0) vineRow(4, [3.6, 4.4], [360, 430], true);
+      else if (v.develop === 1) vineRow(3, [3.6, 4.4], [360, 430], true, true);
+      else chain(3, false, 'gorge');
       flag();
     });
     beat('Twist: vines in the dark', () => {
       hint(x + 40, 'In the dark, standing still does two things');
       const z0 = x;
-      glowDark(R.r(1500, 1700), 1, { rocks: true });
+      glowDark(R.r(1500, 1700), 1, { rocks: true, deep: v.twist !== 2 });
       // the vines hang between the glowworms, clear of where the dark starts
       for (let vx = z0 + 640; vx < x - 420; vx += R.r(380, 460)) if (!P.some((pl) => pl.style === 'moss_stone' && vx > pl.x - 120 && vx < pl.x + pl.width + 120)) thornAt(vx, [3.6, 4.4]);
       expert += 3;
+      if (v.twist === 1) deepRun(3, 1);
+      else if (v.twist === 2) vineRow(3, [3.4, 4.2], [340, 420], true, true);
       flag();
     });
     beat('Finish', () => {
       lureRoom('pebble');
       flag();
-      busy(1);
-      vineRow(3, [3.4, 4.2], [340, 420], true);
+      // (after the pebbles: two awake vines, or the stone plates)
+      if (v.finish === 1) plateRoom(true);
+      else lureRoom('two');
       flag();
-      lureRoom('two');
-      flag();
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 18 && n < 16) {
-        const k = n % 3;
-        if (k === 0) vineRow(R.i(3, 4), [3.4, 4.2], [340, 420], true);
-        else if (k === 1) busy(2);
-        else sporeGap();
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => vineRow(R.i(3, 4), [3.4, 4.2], [340, 420], true, true), () => busy(2), () => vineRow(4, [3.2, 4], [330, 400])],
+        [() => deepRun(4, 1), () => { sporeGap(true); vineRow(2, [3.4, 4.2], [340, 420], true, true); }, () => deepRun(5, 2)],
+        [() => chain(3, false, 'gorge'), () => { chain(2, false, 'gorge'); vineRow(2, [3.4, 4.2], [340, 420]); }, () => chain(4, false, 'gorge')],
+      ];
+      w3Finish(EXPERT_SECONDS + 18, kits[v.finish], 2);
       homeRun();
     });
   }
@@ -3002,49 +3008,54 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // fern that rustles on its own. On the floor first, then up on the grotto's stones, past the spores, and in the dark.
     // (Rebuilt 2026-10-28, the stage inspector: the ferns stand on low stones, a hop from one to the next, and stones to hop on the way
     // between the patches, so the search is never an empty walk.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts); the stepping stones have a one-jump way
+    // out of every gap (w3Stones: the first-timer was stuck in them), and a thing on a stone over the stream on some rolls.)
+    const v = W3P!;
+    /** a thing in a fern on the highest stone built since x0 */
+    const onHigh = (x0: number) => {
+      const hi = P.filter((pl) => pl.style === 'moss_stone' && pl.x > x0 && pl.y < G - 50).sort((a, b) => a.y - b.y)[0];
+      if (hi) thingFern(hi.x + hi.width / 2, hi.y);
+    };
     beat('Start', () => {
       rest(R.r(380, 440));
       hint(x - 340, "Dot hid Grandma's things in the ferns. Crouch beside one that rustles", "Dot hid Grandma's things in the ferns. Hold down beside one that rustles", "Dot hid Grandma's things in the ferns. Hold down beside one that rustles");
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: the rustling fern', () => {
       fernPatch(3, true);
       busy(1);
-      fernPatch(4, true);
+      if (v.learn === 0) fernPatch(4, true);
+      else { w3Stones([50, 90, 60], [0.5, 0.6]); fernPatch(3, true); }
       flag();
     });
     beat('Develop: up high and past the spores', () => {
-      // on top of the stones: the highest pillar's top holds a fern
+      // on top of the stones: the highest one's top holds a fern
       const x0 = x;
-      pillars([60, 130, 90], [0.5, 0.62]);
-      const tops = P.filter((pl) => pl.style === 'moss_stone' && pl.x > x0 && pl.y < G - 100);
-      const hi = tops.sort((a, b) => a.y - b.y)[0];
-      if (hi) thingFern(hi.x + hi.width / 2, hi.y);
-      sporeRest(R.r(520, 600));
-      fernPatch(3, true);
+      if (v.develop === 0) { w3Stones([60, 130, 90], [0.5, 0.62]); onHigh(x0); sporeRest(R.r(520, 600)); fernPatch(3, true); }
+      else if (v.develop === 1) { sporeRest(R.r(440, 500)); sporeGap(true); w3Stones([50, 110, 80], [0.5, 0.62]); onHigh(x0); sporeGap(); }
+      else { deepRun(3, 1); onHigh(x0); fernPatch(3, true); deepRun(3, 1); }
       flag();
     });
     beat('Twist: ferns in the dark', () => {
       hint(x + 40, 'Ferns in the dark too. Stand still, and the glowworms help you look');
       const z0 = x;
-      const stops = glowDark(R.r(1500, 1700), 1, { rocks: true });
+      const stops = glowDark(R.r(1500, 1700), 1, { rocks: true, deep: v.twist !== 0 });
       // a fern by the first stop, and plain ones about, clear of the stones and the gap
       const clear = (fx: number) => !P.some((pl) => pl.style === 'moss_stone' && fx > pl.x - 140 && fx < pl.x + pl.width + 140);
       thingFern(stops[0] + 130, G);
       for (let fx = z0 + 640; fx < x - 400; fx += R.r(360, 440)) if (clear(fx)) plainFern(fx);
+      if (v.twist === 1) { sporeRest(R.r(440, 500)); sporeGap(true); }
+      else if (v.twist === 2) deepRun(4, 1);
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while ((expert < EXPERT_SECONDS + 4 || thingsPlaced < GRANDMA_GOAL_36 + 3) && n < 16) {
-        const k = n % 3;
-        if (k === 0) fernPatch(R.i(3, 4), true);
-        else if (k === 1) highRoadOver();
-        else { busy(1); lowStumps(); run(R.r(110, 140)); busy(1); }
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => fernPatch(R.i(3, 4), true), () => { busy(1); lowStumps(); run(R.r(110, 140)); busy(1); }, () => fernPatch(4, true), () => highRoadOver()],
+        [() => { const x0 = x; deepRun(4, 1); onHigh(x0); }, () => fernPatch(3, true), () => { const x0 = x; deepRun(5, 2); onHigh(x0); }],
+        [() => chain(3, false, 'gorge'), () => fernPatch(3, true), () => { chain(4, false, 'gorge'); fernPatch(3, true); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 4, kits[v.finish], 2, () => thingsPlaced < GRANDMA_GOAL_36 + 3);
       homeRun();
     });
   }
@@ -3174,18 +3185,21 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (Rebuilt 2026-10-28, the stage inspector and the puzzle kit: the real "which fern?", twice: in a dark hollow three ferns that look
     // and rustle alike, and Dot's marking stones beside them that only the glowing mushroom shows; the twin of the stone by the door
     // tells the fern. Stones to hop between the rows.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts): the eyes, the vines, or real jumps
+    // over the stream between the ferns; on some rolls World 3's stone plate after the dark.)
+    const v = W3P!;
     beat('Start', () => {
       rest(R.r(380, 440));
       hint(x - 340, 'More of Grandma\'s things. Crouch beside a fern that rustles', 'More of Grandma\'s things. Hold down beside a fern that rustles', 'More of Grandma\'s things. Hold down beside a fern that rustles');
-      busy(1);
-      fernPatch(3, true);
+      w3Start(v.start);
       flag();
     });
     beat('Learn: a fern under a vine', () => {
       hint(x - 200, 'Searching is keeping still. A vine that wakes leaves you be');
       vineFerns(2, [4.6, 5.4], [420, 480]);
       busy(1);
-      vineFerns(3, [4.2, 5], [400, 460]);
+      if (v.learn === 0) vineFerns(3, [4.2, 5], [400, 460]);
+      else { deepRun(3, 1); vineFerns(2, [4.2, 5], [400, 460]); }
       flag();
       // which fern? (Dot's stones, in the mushroom's light)
       busy(1, ['dip'], R.r(140, 180));
@@ -3196,14 +3210,15 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hint(x + 40, 'The eyes are back. Search between their looks, and hide in the next fern');
       watchedFerns(2, [6.5, 7.5]);
       flag();
-      sporeRest(R.r(520, 600));
-      watchedFerns(3, [5.8, 6.8]);
+      if (v.develop === 0) { sporeRest(R.r(520, 600)); watchedFerns(3, [5.8, 6.8]); }
+      else if (v.develop === 1) { chain(3, false, 'gorge'); chain(3, false, 'gorge'); }
+      else { deepRun(3, 1); fernPatch(3, true); deepRun(3, 1); }
       flag();
     });
     beat('Twist: ferns in the dark, under the vines', () => {
       hint(x + 40, 'In the dark, under a vine, crouching by a fern does three things at once');
       const z0 = x;
-      const stops = glowDark(R.r(1600, 1800), 2, { rocks: true, lead: true });
+      const stops = glowDark(R.r(1600, 1800), 2, { rocks: true, lead: true, deep: v.twist === 0 });
       // a vine over the first stop, with the fern that hides a thing under it; plain ferns about
       const vx = stops[0] + 150;
       thornAt(vx, [4.2, 5]);
@@ -3213,21 +3228,18 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       for (let fx = z0 + 900; fx < x - 500; fx += R.r(420, 520)) if (clear(fx)) plainFern(fx);
       expert += 3;
       flag();
+      if (v.twist === 1) { busy(1); plateRoom(false); flag(); }
     });
     beat('Finish', () => {
       busy(1, ['log'], R.r(140, 180));
       whichFern();
       flag();
-      let n = 0;
-      while ((expert < EXPERT_SECONDS + 14 || thingsPlaced < GRANDMA_GOAL_37 + 3) && n < 16) {
-        const k = n % 4;
-        if (k === 0) vineFerns(R.i(3, 4), [3.8, 4.6], [380, 450]);
-        else if (k === 1) fernPatch(R.i(3, 4), true);
-        else if (k === 2) watchedFerns(R.i(2, 3), [5.2, 6.2]);
-        else { busy(1); lowStumps(); run(R.r(110, 140)); busy(1); }
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => chain(4, false, 'gorge'), () => { chain(3, false, 'gorge'); vineFerns(2, [3.8, 4.6], [380, 450]); }, () => { chain(3, false, 'gorge'); fernPatch(3, true); }],
+        [() => watchedFerns(R.i(2, 3), [5.2, 6.2]), () => bushRow(3, [560, 660], ['grotto'], [4.6, 5.6], true), () => watchedFerns(3, [5, 6])],
+        [() => { deepRun(4, 1); fernPatch(3, true); }, () => deepRun(5, 2), () => { busy(1); lowStumps(); run(R.r(110, 140)); busy(1); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 14, kits[v.finish], 2, () => thingsPlaced < GRANDMA_GOAL_37 + 3);
       homeRun();
     });
   }
