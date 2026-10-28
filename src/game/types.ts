@@ -357,6 +357,13 @@ export interface Vine {
   rope?: boolean;
   /** a silk line in World 5 (w5Kit.ts silkLine): it swings like a liana and is drawn as shining silk (terrain.ts) */
   silk?: boolean;
+  /**
+   * a puzzle piece's climb (puzzleKit.ts: a sapling, a silk line, a vine ladder): the kit draws it and says what climbing it does, and
+   * the level check leaves it out (a room's own check puts it in when it is there: puzzleCheck.ts)
+   */
+  kit?: boolean;
+  /** not there now (a ladder still rolled up, a sapling bent over): it cannot be grabbed */
+  off?: boolean;
 }
 
 /** A rope stretched across a gap. Pokey can hang from it and shimmy along it once he has learned the skill (see rope.ts). */
@@ -468,6 +475,8 @@ export interface InputState {
    * Meeca's stage carves while it is held (meecaPlay.ts). Unset = not held.
    */
   hold?: boolean;
+  /** how far a finger has traced round a circle since the engine last took it (radians: Meeca carves with it, circleTrace.ts) */
+  circle?: number;
 }
 
 export interface MissionProgress {

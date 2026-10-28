@@ -83,8 +83,8 @@ import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
 import { recordCake } from './w5Kit.ts';
 import { DotRun } from './dotFlightRun.ts';
 import { MeecaPlay, type MeecaControls } from './meecaPlay.ts';
-import { MEECA_VIEW } from './meecaStage.ts';
-import { drawDuskGrade, drawMeecaBack, drawMeecaFront, drawMeecaHero, drawPellSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
+import { drawMeecaBack, drawMeecaFront, drawMeecaHero, drawNightGrade, drawSay, drawSceneBox, drawThought, drawTitleCard, warmMeecaArt, wordsBox } from './meecaArt.ts';
+import { tipText } from './puzzleKit.ts';
 import { DotLog } from './dotRecord.ts';
 import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
@@ -270,6 +270,10 @@ export class GameEngine {
   /** the hand-built stage's painted props: the platforms they draw, and their state */
   private paintedPlats: Platform[] = [];
   private swingVines: Vine[] = [];
+  /** the vines the scene paints (a puzzle piece's climb, a kit vine, is the kit's own to draw) */
+  private plainVines: Vine[] = [];
+  /** which way the thumb steered before a kit trap took the steering (a trap chair counts the wiggles) */
+  private kitSteer = 0;
   private paintKit = false;
   private protoScene: ProtoSceneState = { brokeAt: new Map(), movedAt: new Map() };
   private pushSoundT = 0;
@@ -635,7 +639,9 @@ export class GameEngine {
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
     // (every world, the generated stages too, Gemini G4: not Meeca's stage, the boss arenas or Dot's flight)
     this.stepHelp = !!this.w5 || (!this.proto?.meeca && !this.currentStage.arena && !this.currentStage.dot);
-    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex }) : null;
+    // (Meeca's stage: her night look, and Easy's stuck watch without a clock, Matt's research rule)
+    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex, vines: this.vines, ...(this.proto?.meeca ? { noClock: true, night: true } : {}) }) : null;
+    this.plainVines = this.vines.filter((v) => !v.kit);
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
@@ -796,7 +802,7 @@ export class GameEngine {
     const levelH = this.currentStage?.config.levelHeight ?? 900;
     const portrait = h > w;
     // (a stage may show more of the world than usual: 4-7, where the next ledge is far across and far below)
-    const wide = this.proto?.w4?.view ?? (this.proto?.meeca ? MEECA_VIEW : undefined);
+    const wide = this.proto?.w4?.view;
     let base = portrait ? Math.max(w / (wide?.port ?? PORTRAIT_VIEW_W), h / levelH) : h / (wide?.land ?? WORLD_VIEW_H);
     base = Math.max(0.5, Math.min(1.8, base));
     const t = Math.min(1, this.introT / INTRO_ZOOM_SECS);
@@ -1134,8 +1140,10 @@ export class GameEngine {
       this.input.onSwing = !!p.isVineSwinging;
       this.input.onRope = !!p.hanging;
     }
-    // (Meeca never kicks: a sideways flick is a run)
-    if (this.mc) this.input.kickNear = false;
+    // (Meeca never kicks: a sideways flick is a run, unless her hands are full: then it throws)
+    if (this.mc) this.input.kickNear = !!this.kit?.holding;
+    // (and at a trunk, a finger tracing a circle is carving, not steering: the touch controls ask)
+    if (this.mc) (this.input as { carveSpot?: boolean }).carveSpot = this.mc.carveSpot;
     // inside a bush a watcher's stretch hides him in: a slide down there hides him even mid-run (touchGestures.ts inCover)
     this.input.inCover = !!this.proto?.watch && p.grounded && (this.proto.bushes ?? []).some((b) => !b.secret && !b.hanging && p.x > b.x + 10 && p.x < b.x + b.w - 10 && Math.abs(p.y - b.y) < 10);
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
@@ -1301,6 +1309,8 @@ export class GameEngine {
       if (this.w4) this.stepW4(dt);
       if (this.w5) this.stepW5(dt);
       if (this.kit) this.stepKit(dt);
+      // (Meeca's stage: on tiptoe through the camp)
+      if (this.mc) this.dragSpeed *= this.mc.speedK();
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -1424,7 +1434,8 @@ export class GameEngine {
       }
 
       if (v.vineType === 'tree_climb') {
-        if (Math.abs(p.x - v.x) < (p.climbing ? 60 : 54) && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
+        if (v.off) continue;
+      if (Math.abs(p.x - v.x) < (p.climbing ? 60 : 54) && p.y >= v.topY - 12 && p.y <= v.bottomY + 25) {
           nearTreeVine = v;
           break;
         }
@@ -3480,7 +3491,7 @@ export class GameEngine {
     if (p.attackMove) s += ':' + p.attackMove;
     // Meeca's stage: the column carrying her in line, or Pell walking her back after a catch (QA read 0.8 s of her moving with no
     // finger down as a loss of control: it was the march, meecaPlay.ts after(); the log now says so)
-    if (this.mc) s += this.mc.phase === 'caught' ? ':caught' : this.mc.inLine ? ':line' : '';
+    if (this.mc) s += this.mc.phase !== 'play' && this.mc.phase !== 'last' ? `:${this.mc.phase}` : this.mc.carvingNow ? ':carve' : '';
     // what the controls are holding (touch, pad or keys alike)
     const held = (st.left ? 'L' : '') + (st.right ? 'R' : '') + (st.up ? 'U' : '') + (st.down ? 'D' : '');
     if (held) s += '/' + held;
@@ -3886,7 +3897,7 @@ export class GameEngine {
       freed: this.player.crittersRescued,
       ...(this.w5 ? this.w5.tally(this.collectibles, win) : {}),
       ...(this.dotRun ? { scratches: this.dotRun.fl.scratches } : {}),
-      ...(this.mc ? { caught: this.mc.catches.length } : {}),
+      ...(this.mc ? { hints: this.mc.hintsAsked } : {}),
       difficulty: difficulty(),
       quiet: dotHelp() === 'quiet',
       kills: { ...this.statKills },
@@ -5114,7 +5125,7 @@ export class GameEngine {
       drawLogComing(ctx, ex, d.baseY + LOG_DROP - 10, 1 - (d.width - travelled) / lead, this.gameTime);
     }
     this.drawRivers(ctx, world, true);
-    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.vines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
+    if (!(this.paintKit && drawProtoScene(ctx, this.platforms, this.currentStage.trees, this.proto?.ladders ? this.swingVines : this.plainVines, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y1: this.camera.y + this.camera.viewportHeight + 60 }, this.protoScene)))
       for (const lg of this.pushLogs) if (this.onScreen(lg.x + lg.width / 2, lg.y, 200)) drawPushLog(ctx, lg, this.gameTime);
     // 2-8: a rising river's water over the reed islands it has covered (the scene above paints the islands on top of the water)
     if (this.floodAt.size) this.drawRivers(ctx, world, true, true);
@@ -5350,16 +5361,17 @@ export class GameEngine {
       ctx.translate(drawOff, 0);
     }
     // carrying, throwing or setting down: Matt's carry poses (puzzlePlay.ts drawPokey)
-    const kitPose = !!this.kit && this.kit.drawPokey(ctx, this.player);
-    if (kitPose) { /* drawn */ }
+    // (Meeca's stage: her own sheet draws her carrying, in the chair and on the silk: meecaArt.ts meecaPose)
+    const kitPose = !!this.mc || (!!this.kit && this.kit.drawPokey(ctx, this.player));
+    if (this.mc) drawMeecaHero(ctx, this.player, this.mc, this.kit, this.gameTime);
+    else if (kitPose) { /* drawn */ }
     else if (rig) {
       const hp = this.player;
       drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));
       drawBackGlow(ctx, rig, hp.x, hp.y - 38, 78, 0.13);
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
-    } else if (this.mc) drawMeecaHero(ctx, this.player, this.mc, this.gameTime);
-    else if (!kitPose) drawHeroSloth(ctx, this.player, this.gameTime);
+    } else if (!kitPose) drawHeroSloth(ctx, this.player, this.gameTime);
     if (shiftOff) ctx.restore();
     this.kit?.drawFront(ctx, this.player, kitPose);
     heroClipsLive(false);
@@ -5368,7 +5380,7 @@ export class GameEngine {
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
     if (this.watchShadowAt) this.drawWatchShadow(ctx, this.watchShadowAt.x, this.watchShadowAt.a);
     this.w4?.drawFront(ctx, this.platforms, this.gameTime);
-    if (this.mc) drawMeecaFront(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
+    if (this.mc) drawMeecaFront(ctx, this.mc, this.player, this.gameTime);
     this.w5?.drawFront(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight, zoom: this.zoom, hud: this.camera.y + (this.viewCssH > this.viewCssW ? HUD_BAND.port : HUD_BAND.land) / this.zoom });
     // leaves in front of a hidden nook part as he comes near (protoStage.ts)
     if (this.proto) {
@@ -5552,7 +5564,11 @@ export class GameEngine {
   private startMeeca(st: import('./meecaStage.ts').MeecaStage) {
     const engine = this;
     warmMeecaArt();
+    // (the last path's dark has its own words: Flicker's)
+    this.zoneHinted.dark = true;
+    const kitOf = () => this.kit;
     this.mc = new MeecaPlay(st, {
+      kit: kitOf,
       stageId: this.currentStage.config.id,
       get view() {
         const c = engine.camera;
@@ -5574,13 +5590,17 @@ export class GameEngine {
       sfx: (kind) => {
         if (kind === 'scratch') sound.playTreeClimb();
         else if (kind === 'cut') sound.playRelicFound();
-        else if (kind === 'turn') sound.playWhoosh();
-        else if (kind === 'caught') sound.playLand(0.5);
+        else if (kind === 'blink') sound.playWhoosh();
         else if (kind === 'card') sound.playLevelStart();
-        else if (kind === 'next') sound.playStep();
+        else if (kind === 'next' || kind === 'step') sound.playStep();
         else if (kind === 'blanket') sound.playCheckpoint();
       },
     });
+  }
+
+  /** Meeca's stage: a hint from Flicker, asked for from the pause menu (null when he cannot be asked now) */
+  meecaHint(): string | null {
+    return this.mc?.canAsk ? this.mc.askHint() : null;
   }
 
   /** the words Meeca's stage has on the screen now (meecaPlay.ts screenWords), for the page's text; none on any other stage */
@@ -5588,7 +5608,7 @@ export class GameEngine {
     return this.mc?.screenWords() ?? [];
   }
 
-  /** Meeca's stage on top of the play, in CSS px: the dusk grade, her thought, Pell's words, the card, the story box, the fade */
+  /** Meeca's stage on top of the play, in CSS px: the night and its lights, her thought, the others' bubbles, the card, the story box, the fade */
   private renderMeecaScreen(ctx: CanvasRenderingContext2D, dpr: number) {
     const mc = this.mc!;
     const W = this.viewCssW || this.camera.viewportWidth * this.zoom;
@@ -5598,28 +5618,45 @@ export class GameEngine {
     const sy = (y: number) => (y - this.camera.y) * z;
     ctx.save();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    drawDuskGrade(ctx, W, H);
+    // the night, and the close lights that bring the colour back
+    const st = mc.st;
+    const lights: Array<{ x: number; y: number; r: number; c: string; a: number }> = [];
+    if (mc.flicker.on) lights.push({ x: sx(mc.flicker.x), y: sy(mc.flicker.y), r: 120 * z, c: 'rgba(220, 255, 170, A)', a: 0.45 * mc.flicker.show });
+    for (const c of st.camp) if (c.n === 'fire' || c.n === 'stakeLit') lights.push({ x: sx(c.x), y: sy(c.y - 40), r: 170 * z, c: 'rgba(255, 170, 90, A)', a: 0.4 });
+    if (mc.phase !== 'play') for (const x of st.clearing.stakes) lights.push({ x: sx(x + 14), y: sy(st.clearing.y - 78), r: 130 * z, c: 'rgba(255, 200, 120, A)', a: 0.35 });
+    for (const l of this.kit?.lights() ?? []) if (l.r > 400) lights.push({ x: sx(l.x), y: sy(l.y), r: Math.min(420, l.r * 0.4) * z, c: 'rgba(225, 232, 255, A)', a: 0.35 });
+    drawNightGrade(ctx, W, H, lights, Math.min(1, this.darkShow));
     // under the HUD's band at the top (the counter and the Menu)
     const top = H > W ? 96 : H <= 430 ? 66 : 84;
     const p = this.player;
+    let tb: { x: number; y: number; w: number; h: number } | null = null;
     if (mc.thought && mc.phase !== 'card') {
       const a = Math.min(1, (mc.t - mc.thought.at) / 0.2, (mc.thought.until - mc.t) / 0.3);
       const tr = mc.next;
       const wb = tr ? wordsBox(tr) : null;
-      drawThought(ctx, mc.thought.text, sx(p.x), sy(p.y - 92), W, H, top, Math.max(0, a), wb && { x0: sx(wb.x0), y0: sy(wb.y0), x1: sx(wb.x1), y1: sy(wb.y1) });
+      tb = drawThought(ctx, mc.thought.text, sx(p.x), sy(p.y - 92), W, H, top, Math.max(0, a), wb && { x0: sx(wb.x0), y0: sy(wb.y0), x1: sx(wb.x1), y1: sy(wb.y1) });
     }
-    if (mc.pellSay) {
-      const g = mc.guards[mc.pell];
-      drawPellSay(ctx, mc.pellSay.text, sx(g.x), sy(g.y - 132), W, top);
+    if (mc.bubble) {
+      const b = mc.bubble;
+      const a = Math.max(0, Math.min(1, (mc.t - b.at) / 0.2, (b.until - mc.t) / 0.3));
+      // (by the speaker: Flicker where he is; the Butler over his arch)
+      let bx = sx(mc.flicker.x);
+      let by = sy(mc.flicker.y - 26);
+      if (b.who === 'butler') {
+        const g = this.kit?.butlerAt();
+        if (g) {
+          bx = sx(g.x);
+          by = sy(g.y - 130);
+        }
+      }
+      drawSay(ctx, b.who, b.text, bx, by, W, H, top, a, tb);
     }
     const cardA = mc.phase === 'card' ? 1 : mc.cardOut >= 0 && mc.cardOut < 1 ? 1 - mc.cardOut : 0;
     drawTitleCard(ctx, W, H, cardA, mc.t);
-    if (mc.phase === 'ending' || mc.phase === 'done') {
-      if (mc.line >= 0) drawSceneBox(ctx, W, H, mc.line, Math.min(1, (mc.t - mc.lineAt) / 0.25 + 0.4), mc.t);
-      if (mc.fade > 0) {
-        ctx.fillStyle = `rgba(14, 6, 22, ${mc.fade})`;
-        ctx.fillRect(0, 0, W, H);
-      }
+    if (mc.sceneLine && mc.line >= 0) drawSceneBox(ctx, W, H, mc.scene, mc.line, Math.min(1, (mc.t - mc.lineAt) / 0.25 + 0.4), mc.t);
+    if (mc.fade > 0) {
+      ctx.fillStyle = 'rgba(8, 6, 22, ' + mc.fade + ')';
+      ctx.fillRect(0, 0, W, H);
     }
     ctx.restore();
   }
@@ -6498,13 +6535,17 @@ export class GameEngine {
       standingOn: -1,
       easy: isEasy(),
       tip: (key, text, seconds) => {
+        // (Meeca's stage: her own thoughts and the others' bubbles, never Dot's)
+        if (this.mc) return this.mc.kitLine(key, text, seconds);
         if (tipHeard(id, key)) return;
         markTipHeard(id, key);
-        this.guide(text, seconds);
+        this.guide(tipText(text), seconds);
       },
       float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
       passTip: (text) => this.callbacks.onGuide?.(text, 0, true),
       freeCage: (c) => this.freeCritter(c),
+      stuck: (room) => this.mc?.stuck(room),
+      glowAt: () => this.mc?.flickerAt() ?? null,
       sfx: (kind) => {
         if (kind === 'pick') sound.playVineGrab();
         else if (kind === 'drop' || kind === 'land') sound.playLand(kind === 'drop' ? 0.4 : 0.25);
@@ -6518,11 +6559,19 @@ export class GameEngine {
         else if (kind === 'noise') sound.playHitImpact(false);
         else if (kind === 'tilt') sound.playLand(0.3);
         else if (kind === 'trade') sound.playFruitPickup();
+        else if (kind === 'sink' || kind === 'stick') sound.playLand(0.35);
+        else if (kind === 'wiggle') sound.playStep();
+        else if (kind === 'pop' || kind === 'bend' || kind === 'unroll') sound.playWhoosh();
+        else if (kind === 'snap') sound.playPunch();
+        else if (kind === 'tip' || kind === 'pour') sound.playLand(0.5);
+        else if (kind === 'bloom') sound.playShrineUnlocked();
+        else if (kind === 'sip') sound.playFruitPickup();
       },
     });
     h.t = this.gameTime;
     h.player = this.player;
     h.standingOn = this.standingOnId;
+    h.steer = this.kitSteer;
     return h;
   }
 
@@ -6533,6 +6582,7 @@ export class GameEngine {
    */
   private kitControls() {
     const inp = this.input.state;
+    this.kitSteer = inp.left && !inp.right ? -1 : inp.right && !inp.left ? 1 : 0;
     const took = this.kit!.control({ tap: inp.punchPressed, up: inp.jumpPressed, side: inp.kickPressed, sideDir: inp.kickDir }, this.kitHost(), this.platforms);
     if (took.tap) inp.punchPressed = false;
     if (took.up) {
@@ -6551,6 +6601,23 @@ export class GameEngine {
       this.jumpBufferTimer = 0;
       this.atkQueue = null;
     }
+    // held by a trap (a soft chair, the silk line) or riding a sapling over: his steering, jumping and climbing are not his (the wiggle
+    // was counted from the steering first, kitSteer)
+    const hold = this.kit!.hold();
+    if (hold && hold !== 'sip') {
+      Object.assign(inp, { left: false, right: false, up: false, down: false, jumpPressed: false, jumpHeld: false, punchPressed: false, kickPressed: false, megaPunchPressed: false });
+      this.jumpBufferTimer = 0;
+      this.upIntent = 0;
+      this.climbAssist = 0;
+      this.atkQueue = null;
+    }
+    // Meeca cannot fight: what the kit did not take of a tap or a flick is nothing
+    if (this.mc) {
+      inp.punchPressed = false;
+      inp.kickPressed = false;
+      inp.megaPunchPressed = false;
+      this.atkQueue = null;
+    }
   }
 
   /** the most a puzzle room may pull back now, of the usual zoom (puzzleCamera.ts roomFloor: further upright than sideways) */
@@ -6561,6 +6628,8 @@ export class GameEngine {
   /** the puzzle rooms, each frame (puzzlePlay.ts): carrying, he walks slower; the room's framing eases in, and out again outside it */
   private stepKit(dt: number) {
     this.dragSpeed *= this.kit!.step(dt, this.kitHost(), this.platforms);
+    // (the Butler's sleepy steam: the drowsy veil, as World 5's teapots give it)
+    this.drowsy = Math.max(this.drowsy, this.kit!.sleepy());
     const cam = this.camera;
     const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom, this.roomFloorNow());
     const want = kf ? (kf.pan ? this.roomZoom : kf.zoom) : 1;

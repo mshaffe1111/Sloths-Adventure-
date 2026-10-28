@@ -312,9 +312,9 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   // each room is checked on its own, symbolically, that it can be solved (puzzleCheck.ts), on this graph with its gates shut as walls
   if (stage.kit?.rooms.length && !opts.walls) {
     const res = validateStage(kitSolved(stage), { ...opts, walls: [] });
-    const graphFor = (platforms: GeneratedStage['platforms'], walls: readonly KitWall[]) => {
+    const graphFor = (platforms: GeneratedStage['platforms'], walls: readonly KitWall[], vines?: GeneratedStage['vines']) => {
       let g: CheckGraph | null = null;
-      validateStage({ ...stage, platforms, kit: undefined }, { walls, inspect: (x) => { g = x; } });
+      validateStage({ ...stage, platforms, ...(vines ? { vines } : {}), kit: undefined }, { walls, inspect: (x) => { g = x; } });
       return g!;
     };
     res.errors.push(...checkRooms(stage, graphFor));
@@ -378,7 +378,9 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     }
     return false;
   };
-  const vines = stage.vines.filter((v) => v.x >= stripLo && v.x <= stripHi);
+  // (a puzzle piece's climb, a kit vine, is the kit's: a room's own check puts an unrolled ladder in, puzzleCheck.ts; a sapling and a
+  // silk line never are a plain climb)
+  const vines = stage.vines.filter((v) => v.x >= stripLo && v.x <= stripHi && !v.kit && !v.off);
   const waterY = stage.waterY ?? cfg.levelHeight + 100;
   let maxGapUsed = 0;
   let swingEdges = 0;

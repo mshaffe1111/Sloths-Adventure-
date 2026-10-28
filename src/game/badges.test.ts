@@ -99,13 +99,14 @@ test('hard single-stage feats need the right stage and a win', () => {
   assert.ok(!earnedNow({ floraTotal: 20, floraCollected: 20, heartsLost: 1 }).includes('garden_keeper'));
 });
 
-test("the story moments: Dot's flight without a scratch, Meeca's warnings without being caught, the Queen's cake", () => {
+test("the story moments: Dot's flight without a scratch, Meeca's warnings without a hint, the Queen's cake", () => {
   assert.ok(earnedNow({ id: '4-D', scratches: 0 }).includes('not_one_scratch'));
   assert.ok(!earnedNow({ id: '4-D', scratches: 1 }).includes('not_one_scratch'));
   assert.ok(!earnedNow({ id: '4-D' }).includes('not_one_scratch'), 'a stage that did not count scratches gives nothing');
   assert.ok(!earnedNow({ id: '4-D', scratches: 0, win: false }).includes('not_one_scratch'));
-  assert.ok(earnedNow({ id: '5-M', caught: 0 }).includes('unseen_carver'));
-  assert.ok(!earnedNow({ id: '5-M', caught: 2 }).includes('unseen_carver'));
+  assert.ok(earnedNow({ id: '5-M', hints: 0 }).includes('unseen_carver'));
+  assert.ok(!earnedNow({ id: '5-M', hints: 2 }).includes('unseen_carver'));
+  assert.ok(!earnedNow({ id: '5-M' }).includes('unseen_carver'), 'a stage that did not count hints gives nothing');
   assert.ok(award(emptyStore(), { ...base, stage: stage({ id: '5-10' }), cakeFree: true }, 1).fresh.some((b) => b.id === 'not_one_crumb'));
   assert.ok(!award(emptyStore(), { ...base, stage: stage({ id: '5-10' }), cakeFree: false }, 1).fresh.some((b) => b.id === 'not_one_crumb'));
 });

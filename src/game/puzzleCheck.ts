@@ -17,13 +17,13 @@
  * thing with no source can be lost (it would never come back).
  */
 import {
-  anchorAt, beetleSleepX, BEETLE, evalWire, flyAll, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox, seesawDy,
+  anchorAt, beetleSleepX, BEETLE, evalWire, flyAll, GLOW, ITEM, KIT, knotBox, TEA, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox, seesawDy,
   seesawTilt, THROW, throwStart, tradeTakes, useReach, type FlightWorld, type PieceSpec, type RoomSpec,
 } from './puzzleKit.ts';
 import { NOISE } from './noise.ts';
 import { hopLimit } from './river.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
-import type { Platform } from './types.ts';
+import type { Platform, Vine } from './types.ts';
 
 /** a wall that stands in the way (a shut gate's door, the root wall over a gate): as the level check takes pouring water */
 export interface KitWall {
@@ -39,7 +39,7 @@ export interface RoomGraph {
   adj: ReadonlyMap<string, ReadonlySet<string>>;
   key: (p: Platform) => string;
 }
-export type GraphFor = (platforms: Platform[], walls: readonly KitWall[]) => RoomGraph;
+export type GraphFor = (platforms: Platform[], walls: readonly KitWall[], vines?: Vine[]) => RoomGraph;
 
 /** his body's half width (as the level check cuts ground at a wall) */
 const BODY_HALF = 16;
@@ -57,8 +57,19 @@ export function kitSolved(stage: GeneratedStage): GeneratedStage {
   /** a seesaw's ends: each one stop reached at its raised height and its lowered one (the room's check says which it can be made) */
   const ends = new Map<number, { top: number; bottom: number }>();
   const ledges = new Set<number>();
+  const chairs = new Set<number>();
+  /** a bent sapling: one stop at its root and one at its far end (a lift), and the ladders unrolled */
+  const saplings: Platform[] = [];
+  const ladders = new Set<number>();
   const byId = new Map(stage.platforms.map((p) => [p.id, p]));
   kit.rooms.forEach((room, ri) => room.pieces.forEach((pc) => {
+    if (pc.kind === 'chair') chairs.add(kitPlatId(ri, pc.id, 0));
+    if (pc.kind === 'ladder') ladders.add(pc.vine);
+    if (pc.kind === 'sapling') {
+      const a = anchorAt(pc.at, byId);
+      const b = anchorAt(pc.to, byId);
+      if (a && b) saplings.push({ id: kitPlatId(ri, pc.id, 0), x: Math.min(a.x, b.x) - 30, y: a.y, width: Math.abs(b.x - a.x) + 60, height: 12, type: 'solid', lift: { top: b.y, bottom: a.y, speed: KIT.liftSpeed, wait: 0, phase: 0 } });
+    }
     if (pc.kind === 'gate') doors.add(kitPlatId(ri, pc.id, 0));
     if (pc.kind === 'lift') lifts.set(kitPlatId(ri, pc.id, 0), pc.rise);
     if (pc.kind === 'ledge') ledges.add(kitPlatId(ri, pc.id, 0));
@@ -69,12 +80,14 @@ export function kitSolved(stage: GeneratedStage): GeneratedStage {
   }));
   // (a lift is one stop reached at its bottom and its top, as World 2's basket lift is: levelCheck.ts joins the two; a hidden ledge is
   // lit once its room is solved)
-  const platforms = stage.platforms
-    .filter((p) => !doors.has(p.id))
+  const platforms = [...stage.platforms, ...saplings]
+    .filter((p) => !doors.has(p.id) && !chairs.has(p.id))
     .map((p) => (ledges.has(p.id) ? { ...p, broken: false } : p))
     .map((p) => (ends.has(p.id) ? { ...p, lift: { ...ends.get(p.id)!, speed: KIT.seesawSpeed, wait: 0, phase: 0 } } : p))
     .map((p) => (lifts.has(p.id) ? { ...p, lift: { top: p.y - lifts.get(p.id)!, bottom: p.y, speed: KIT.liftSpeed, wait: 0, phase: 0 } } : p));
-  return { ...stage, platforms, kit: undefined };
+  // (an unrolled ladder is a climb like any other; a silk line or a sapling's own climb never is)
+  const vines = stage.vines.map((v) => (ladders.has(v.id) ? { ...v, kit: false, off: false } : v));
+  return { ...stage, platforms, vines, kit: undefined };
 }
 
 /** check every room of the stage; the errors (none: every room can be solved, and nothing in one can be lost for good) */
@@ -109,9 +122,14 @@ interface State {
   traded: boolean[];
   /** per lift a wire winds with a ratchet (`hold`): wound all the way up */
   wound: boolean[];
+  /** phase 2b: per sapling bent, per knot snapped, per teapot tipped, per moonflower open */
+  bent: boolean[];
+  knots: boolean[];
+  tipped: boolean[];
+  moons: boolean[];
 }
 const keyOf = (s: State) =>
-  `${s.pid}:${s.rx}:${s.plate}|${s.items.join(',')}|${s.levers.map(Number).join('')}|${s.beetles.join(',')}|${s.latched.map(Number).join('')}|${s.logs.join(',')}|${s.traded.map(Number).join('')}|${s.wound.map(Number).join('')}`;
+  `${s.pid}:${s.rx}:${s.plate}|${s.items.join(',')}|${s.levers.map(Number).join('')}|${s.beetles.join(',')}|${s.latched.map(Number).join('')}|${s.logs.join(',')}|${s.traded.map(Number).join('')}|${s.wound.map(Number).join('')}|${s.bent.map(Number).join('')}${s.knots.map(Number).join('')}${s.tipped.map(Number).join('')}${s.moons.map(Number).join('')}`;
 
 /**
  * The watchers in a stage that hear the kit's noise (noise.ts): its thorn vines, its snapping turtles, its eagle's watched stretches.
@@ -151,6 +169,14 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   const pinwheels = kind('pinwheel');
   const sluices = kind('sluice');
   const traders = kind('trader');
+  const chairs = kind('chair');
+  const saplings = kind('sapling');
+  const knots = kind('knot');
+  const ladders = kind('ladder');
+  const teapots = kind('teapot');
+  const moons = kind('moonflower');
+  const glows = room.pieces.filter((q) => q.kind === 'glow') as Array<Extract<PieceSpec, { kind: 'glow' }>>;
+  const chairIds = new Set(chairs.map((c) => kitPlatId(ri, c.spec.id, 0)));
   const box = roomBox(room, byId);
   const ground = new Set([...room.ground, ...kitGround(room, ri)]);
   // the hollow logs he can push in the room (engine.ts: walking into one slides it along its ground, inside its push range)
@@ -187,6 +213,11 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     if (pw && !(stage.zones ?? []).some((z) => z.kind === 'wind' && pw.x >= z.x0 && pw.x <= z.x1 && pw.y - 70 >= z.top && pw.y - 70 <= z.bottom)) errors.add(`${name}: ${pw.spec.id} stands where no gust blows, so ${pc.id} never winds up`);
   }
   for (const it of room.pieces) if (it.kind === 'item' && it.with && !traders.some((t) => t.spec.id === it.with)) errors.add(`${name}: ${it.id} is held by ${it.with}, which is not in the room`);
+  for (const pc of room.pieces) {
+    if ((pc.kind === 'sapling' || pc.kind === 'silk' || pc.kind === 'ladder') && !stage.vines.some((v) => v.id === pc.vine && v.kit)) errors.add(`${name}: ${pc.id}'s climb (vine ${pc.vine}) is not a kit vine of the stage`);
+    if (pc.kind === 'teapot' && !baskets.some((b) => b.spec.id === pc.into)) errors.add(`${name}: ${pc.id} pours into ${pc.into}, which is not a basket in the room`);
+    if (pc.kind === 'sapling' && !anchorAt(pc.to, byId)) errors.add(`${name}: ${pc.id} bends to platform ${pc.to.on}, which is not there`);
+  }
   if (errors.size) return [...errors];
 
   // where each thing starts, and where a lost one comes back (its source); a thing with no source is gone when lost
@@ -238,6 +269,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   const basketWeight = (s: State, bi: number) => {
     let w = 0;
     s.items.forEach((l, k) => { if (l === `b${bi}`) w += ITEM[items[k].pc.variant].weight; });
+    teapots.forEach((tp, ti) => { if (s.tipped[ti] && tp.spec.into === baskets[bi].spec.id) w += tp.spec.weight ?? TEA.weight; });
     return w;
   };
   const levelOf = (s: State, li: number, o?: Map<string, boolean>) => {
@@ -277,6 +309,10 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       if (!r || !g) return;
       out.push({ x: g.x, y: (byId.get(g.plat)?.y ?? 0) - ITEM[items[k].pc.variant].r, r });
     });
+    // the glow that goes with him (Flicker), over where he stands; an open moonflower
+    const here = byId.get(s.pid);
+    if (here) for (const g of glows) out.push({ x: s.rx, y: here.y - GLOW.up, r: g.r });
+    moons.forEach((m, mi) => { if (s.moons[mi]) out.push({ x: m.x, y: m.y - 40, r: m.spec.r }); });
     return out;
   };
   const litOf = (s: State, li: number) => {
@@ -304,6 +340,10 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     seesaws.forEach((ss, i) => o.set(ss.spec.id, tiltOf(s, i) !== (ss.spec.rest ?? -1)));
     traders.forEach((t, i) => o.set(t.spec.id, s.traded[i]));
     ledges.forEach((l, i) => o.set(l.spec.id, litOf(s, i)));
+    saplings.forEach((sp, i) => o.set(sp.spec.id, s.bent[i]));
+    knots.forEach((k, i) => o.set(k.spec.id, s.knots[i]));
+    teapots.forEach((tp, i) => o.set(tp.spec.id, s.tipped[i]));
+    moons.forEach((m, i) => o.set(m.spec.id, s.moons[i]));
     // (a bell rings only for a moment: it is on only in the instant he rings it, long enough for a latching gate to latch: ringing)
     bells.forEach((b, i) => o.set(b.spec.id, ringing === i));
     // (a gate may listen to another gate, a pinwheel to a shutter, a lift to a pinwheel: settle a few times)
@@ -315,6 +355,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
         && !shutters.some((sh) => sh.spec.zone === zi && !w(sh.spec.id)))));
       lifts.forEach((l, i) => o.set(l.spec.id, levelOf(s, i, o) >= 1));
       gates.forEach((g, i) => o.set(g.spec.id, s.latched[i] || evalWire(g.spec.open, w)));
+      ladders.forEach((la) => o.set(la.spec.id, evalWire(la.spec.open, w)));
     }
     return o;
   };
@@ -327,7 +368,8 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     const lv = lifts.map((_, i) => levelOf(s, i, o));
     const tilts = seesaws.map((_, i) => tiltOf(s, i));
     const lit = ledges.map((_, i) => litOf(s, i));
-    const lk = `${open.map(Number).join('')}|${lv.join(',')}|${tilts.join(',')}|${lit.map(Number).join('')}|${s.logs.join(',')}`;
+    const down = ladders.map((la) => o.get(la.spec.id)!);
+    const lk = `${open.map(Number).join('')}|${lv.join(',')}|${tilts.join(',')}|${lit.map(Number).join('')}|${s.logs.join(',')}|${down.map(Number).join('')}`;
     const hit = layouts.get(lk);
     if (hit) return hit;
     const walls: KitWall[] = [];
@@ -337,9 +379,12 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       const door = byId.get(kitPlatId(ri, g.spec.id, 0))!;
       const wall = byId.get(kitPlatId(ri, g.spec.id, 1))!;
       kitIds.add(door.id);
-      kitIds.add(wall.id);
-      walls.push({ x: wall.x, width: wall.width, top: wall.y, bottom: wall.y + wall.height });
-      flightPlats.push(wall);
+      // (the Butler's root arch: its top is ground, the way over him; any other gate's wall over its door is only a wall)
+      if (g.spec.look !== 'butler') {
+        kitIds.add(wall.id);
+        walls.push({ x: wall.x, width: wall.width, top: wall.y, bottom: wall.y + wall.height });
+        flightPlats.push(wall);
+      }
       if (!open[i]) {
         walls.push({ x: door.x, width: door.width, top: door.y, bottom: door.y + door.height });
         flightPlats.push(door);
@@ -351,7 +396,8 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       const dy = seesawDy(tilts[i], ss.spec.rise ?? KIT.seesawRise);
       [0, 1].forEach((k) => endY.set(kitPlatId(ri, ss.spec.id, k), ss.y + dy[k]));
     });
-    const plats = stage.platforms.filter((p) => !kitIds.has(p.id) && !unlit.has(p.id)).map((p) => {
+    // (a trap chair's seat is never ground to stand on and go on from: it holds whoever sits, and pops them off the way they came)
+    const plats = stage.platforms.filter((p) => !kitIds.has(p.id) && !unlit.has(p.id) && !chairIds.has(p.id)).map((p) => {
       const li = lifts.findIndex((l) => kitPlatId(ri, l.spec.id, 0) === p.id);
       if (li >= 0) return { ...p, y: p.y - lifts[li].spec.rise * lv[li] };
       if (endY.has(p.id)) return { ...p, y: endY.get(p.id)!, broken: false };
@@ -364,7 +410,8 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       }
       return ledges.some((l) => kitPlatId(ri, l.spec.id, 0) === p.id) ? { ...p, broken: false } : p;
     });
-    const g = graphFor(plats, walls);
+    const lad = new Set(ladders.filter((_, i) => down[i]).map((la) => la.spec.vine));
+    const g = graphFor(plats, walls, stage.vines.filter((v) => !v.kit || lad.has(v.id)).map((v) => (lad.has(v.id) ? { ...v, kit: false, off: false } : v)));
     const piece = (pid: number, x: number) => g.plats.find((q) => (q.id === pid) && x >= q.x - 1 && x <= q.x + q.width + 1) ?? null;
     // walking with his hands full: along a piece, up a small step, off an edge onto whatever is below it
     const carry = new Map<string, Set<string>>();
@@ -392,7 +439,8 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       platforms: [...plats, ...flightPlats],
       box,
       baskets: mouths,
-      levers: levers.map((l) => ({ x0: l.x - 18, x1: l.x + 18, y0: l.y - 60, y1: l.y })),
+      // (a silk knot is knocked as a lever's handle is: its index comes after the levers', as puzzlePlay.ts does after the bells)
+      levers: [...levers.map((l) => ({ x0: l.x - 18, x1: l.x + 18, y0: l.y - 60, y1: l.y })), ...knots.map((k) => knotBox(k))],
     };
     const L: Layout = { g, plats, flight, piece, free: new Map(), carry, throws: new Map() };
     layouts.set(lk, L);
@@ -458,6 +506,11 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       lifts.forEach((l, i) => {
         if (l.spec.hold && !s.wound[i] && o2.get(l.spec.by) && s.pid === kitPlatId(ri, l.spec.id, 0)) { s.wound[i] = true; changed = true; }
       });
+      // a moonflower opens once a light reaches it, for good
+      moons.forEach((m, mi) => {
+        if (s.moons[mi]) return;
+        if (lightsOf(s).some((l) => Math.hypot(l.x - m.x, l.y - (m.y - 40)) <= l.r)) { s.moons[mi] = true; changed = true; }
+      });
       if (!changed) break;
     }
   };
@@ -471,6 +524,10 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     logs: logs.map((p) => p.x),
     traded: traders.map(() => false),
     wound: lifts.map(() => false),
+    bent: saplings.map(() => false),
+    knots: knots.map(() => false),
+    tipped: teapots.map(() => false),
+    moons: moons.map(() => false),
   };
   // he comes in at the room's left edge: the ground there
   {
@@ -500,6 +557,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   };
   const clone = (s: State): State => ({
     ...s, items: [...s.items], levers: [...s.levers], beetles: [...s.beetles], latched: [...s.latched], logs: [...s.logs], traded: [...s.traded], wound: [...s.wound],
+    bent: [...s.bent], knots: [...s.knots], tipped: [...s.tipped], moons: [...s.moons],
   });
 
   while (queue.length && !solved) {
@@ -550,6 +608,24 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
         ringing = bi;
         settle(t);
         ringing = -1;
+        push(t);
+      });
+      // climb a sapling rooted here to its top: it bends over under him and sets him down at its far end, for good
+      saplings.forEach((sp, si) => {
+        if (s.bent[si] || !onHere(sp.plat, sp.x)) return;
+        const to = anchorAt(sp.spec.to, byId)!;
+        const t = clone(s);
+        t.bent[si] = true;
+        t.pid = sp.spec.to.on;
+        t.rx = Math.round(to.x);
+        t.plate = -1;
+        push(t);
+      });
+      // tip a teapot over (a tap by it): its tea runs into its basket
+      teapots.forEach((tp, ti) => {
+        if (s.tipped[ti] || (!onHere(tp.plat, tp.x) && !inReach(tp.x, tp.y))) return;
+        const t = clone(s);
+        t.tipped[ti] = true;
         push(t);
       });
       // pull a lever here
@@ -666,7 +742,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       const t = clone(s);
       t.plate = -1;
       const rest = 'knocked' in out ? out.rest : out;
-      if ('knocked' in out) for (const li of out.knocked) t.levers[li] = !t.levers[li];
+      if ('knocked' in out) for (const li of out.knocked) { if (li < levers.length) t.levers[li] = !t.levers[li]; else t.knots[li - levers.length] = true; }
       t.items[held] = 'lost' in rest ? lose(held) : 'basket' in rest ? `b${rest.basket}` : groundLoc(held, rest.plat, rest.x);
       const k = keyOf(t);
       if (doneThrows.has(k)) continue;

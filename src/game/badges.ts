@@ -73,9 +73,9 @@ export interface StageStats {
   cakesAvoided?: number;
   orchidPetals?: number;
   silkShed?: number;
-  /** Dot's netting flight (4-D): her scratches; Meeca's stage (5-M): how many times she was caught */
+  /** Dot's netting flight (4-D): her scratches; Meeca's stage (5-M): how many hints she asked Flicker for */
   scratches?: number;
-  caught?: number;
+  hints?: number;
   /** the difficulty the stage was played on, and whether Dot's help was set to Quiet */
   difficulty?: 'easy' | 'normal';
   quiet?: boolean;
@@ -379,8 +379,10 @@ export const BADGES: BadgeDef[] = [
   one('thorn_finder', 'Thorn Finder', 'silver', 'key', 'key', 'Find the secret gate', (c) => c.gateFound),
   one('not_one_scratch', 'Not One Scratch', 'silver', 'bird', 'hummingbird', "Fly Dot through the General's netting (4-D) without a single scratch",
     (c) => won(c) && c.stage!.id === '4-D' && c.stage!.scratches === 0),
-  one('unseen_carver', 'Unseen Carver', 'silver', 'carving', 'stealth', "Carve all five of Meeca's warnings (5-M) without being caught once",
-    (c) => won(c) && c.stage!.id === '5-M' && c.stage!.caught === 0),
+  // (the stage was rebuilt as five puzzle rooms, 2026-10-28: nobody catches her until the end, so the medal is for working them out
+  // alone; its id stays, so a medal already won stays won)
+  one('unseen_carver', 'Her Own Way', 'silver', 'carving', 'stealth', "Carve all five of Meeca's warnings (5-M) without asking Flicker for a hint",
+    (c) => won(c) && c.stage!.id === '5-M' && c.stage!.hints === 0),
   one('quiet_wings', 'Quiet Wings', 'silver', 'moon', 'hummingbird', "Clear all ten stages of a world with Dot's help set to Quiet",
     (c) => quietWorld(c.store), { progress: (c) => count(quietBest(c.store), 10) }),
   one('journeys_end', "Journey's End", 'silver', 'flag', 'medal', 'Defeat General Iron-Claw and finish the game (Easy or Normal)',

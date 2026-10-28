@@ -262,16 +262,17 @@ test('5-5 in the real engine: every cocoon off the web is freed by three taps fr
   });
 });
 
-test("Meeca's stage sits after 5-5 in the stage list, as Dot's flight 4-D sits after 4-5", () => {
-  const m = EXTRA_STAGES.find((p) => p.after === '5-5')!;
-  assert.ok(m, 'an extra stage after 5-5');
+test("Meeca's stage is the first of World 5 (before 5-1), as Dot's flight 4-D sits after 4-5: the built stages keep their numbers", () => {
+  const m = EXTRA_STAGES.find((p) => p.after === '4-10')!;
+  assert.ok(m, 'an extra stage after 4-10');
   const c = m.config();
   assert.equal(c.worldIndex, 5);
   assert.equal(c.id, '5-M');
-  assert.ok(!PLANNED_STAGES.some((e) => e.after === '5-5'), 'built: no longer only planned');
-  const list = withExtraStages([levelConfig('5-4'), levelConfig('5-5'), levelConfig('5-6')], true);
-  assert.deepEqual(list.map((l) => l.id), ['5-4', '5-5', '5-M', '5-6']);
-  assert.equal(w5BackdropStem(c.id), 'w5dusk2', 'dusk, the other take from 5-5');
+  assert.equal(c.name, 'On the March North');
+  assert.ok(!PLANNED_STAGES.some((e) => e.after === '4-10'), 'built: no longer only planned');
+  const list = withExtraStages([levelConfig('4-10'), levelConfig('5-1'), levelConfig('5-2')], true);
+  assert.deepEqual(list.map((l) => l.id), ['4-10', '5-M', '5-1', '5-2']);
+  assert.equal(w5BackdropStem(c.id), 'w5night', 'the night she got away');
 });
 
 // ───────────────────────────── QA 4 (the expert at 320x782 upright, v198) ─────────────────────────────
