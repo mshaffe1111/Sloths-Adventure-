@@ -784,8 +784,10 @@ export interface Filled {
  * (paid from each section's threat budget: the budget times its tension, 60% on Easy; patches kept clear of
  * the start's opening seconds and of every safe spot; then Poisson spacing over all of them), pickups, the quota items, and petal
  * arcs over the jumps. Every roll is made whether or not Easy then drops the piece, so Easy and Normal stay on the same streams.
+ * `normalFoes` (Easy laying Normal's plan: keptFoes of Normal's stage): a creature socket holds only the creature Normal's spacing
+ * kept there, so Easy's animals are a subset of Normal's (Easy's own rules, spacing and 60% cut then drop from that list).
  */
-export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink): Filled {
+export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed: number, sink: StageSink, normalFoes?: ReadonlyMap<string, string>): Filled {
   const M = kit.manifest;
   const rng = rngFor(seed, 17);
   const easy = budget.difficulty === 'easy';
@@ -890,9 +892,14 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         fillProp(sec, k, paid && !(dropOnEasy && def!.hazard) ? what : null);
       } else if (s.role === 'enemy') {
         const pick = creatureBag.draw();
-        const c = [pick, ...M.creatures].find(
+        let c = [pick, ...M.creatures].find(
           (cr) => cr && cr.threat <= Math.min(s.maxThreat ?? Infinity, threat) && (!s.allow?.length || s.allow.includes(cr.id) || cr.tags?.some((tg) => s.allow!.includes(tg))) && terrainOK(cr, k.piece),
         );
+        // (Easy on Normal's plan: only what Normal kept at this socket, so Easy never keeps an animal Normal's spacing dropped)
+        if (normalFoes) {
+          const kept = normalFoes.get(`${sec.uid}/${s.id}`);
+          c = kept === undefined ? undefined : M.creatures.find((cr) => cr.id === kept);
+        }
         if (!want || !c || (dropOnEasy && !c.easyFirst) || k.x < openX) continue;
         const patch = patchFor(k.x, k.piece, safe, c.minGround);
         if (!patch) continue;
@@ -1168,7 +1175,13 @@ interface Built {
   laid: Laid;
 }
 
-function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, seed: number, opt: LayOptions): Built {
+/** the creatures a stage kept at its sockets (section uid/socket id -> creature id), after its spacing and its repairs: Easy's list */
+export function keptFoes(st: Gen2Stage): Map<string, string> {
+  const at = new Set(st.enemies.map((e) => e.x));
+  return new Map(st.gen2.fills.filter((f) => f.role === 'enemy' && f.socket !== 'topup' && f.what && at.has(R(f.x))).map((f) => [`${f.section}/${f.socket}`, f.what!]));
+}
+
+function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, seed: number, opt: LayOptions, normalFoes?: ReadonlyMap<string, string>): Built {
   const laid = layStage(budget, graph, req.kit, seed, opt);
   // the quota items of each node, shared among its sections that have an objective socket
   const objectives = new Map<string, number>();
@@ -1192,7 +1205,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     nextCollectibleId: () => cid++,
     nextEnemyId: () => eid++,
   };
-  const filled = fillSockets(laid, budget, req.kit, seed, sink);
+  const filled = fillSockets(laid, budget, req.kit, seed, sink, normalFoes);
   const looks = dress(laid, budget, req.kit, seed, sink);
   proto.hints = filled.hints;
   const rooms = laid.sections.flatMap((s) => (s.room ? [s.room] : []));
@@ -1338,7 +1351,8 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
     // quick player's floor (fewer animals make the typical player's model shorter, not the stage)
     const n = buildGen2Stage({ ...req, difficulty: 'normal' });
     const repairs: Repair[] = [...n.gen2.repairs];
-    const b = assemble(req, budget, graph, n.gen2.seed, { plan: n.gen2.plan });
+    // (and only the animals Normal kept: Easy's are a subset of Normal's)
+    const b = assemble(req, budget, graph, n.gen2.seed, { plan: n.gen2.plan }, keptFoes(n));
     const v = checkAndRepair(b, budget, repairs, new Set());
     const st = b.stage;
     const fast = modelStage(st, MODEL_FAST).total;
@@ -1414,7 +1428,7 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
       // on the same plan (Easy has fewer animals, so it runs shorter)
       const typical = modelStage(st, MODEL_TYPICAL).total;
       const fast = modelStage(st, MODEL_FAST).total;
-      const easyFast = modelStage(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }).stage, MODEL_FAST).total;
+      const easyFast = modelStage(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }, keptFoes(st)).stage, MODEL_FAST).total;
       st.gen2.modelled = { typical: Math.round(typical * 10) / 10, fast: Math.round(fast * 10) / 10 };
       const short = typical < budget.seconds.target || fast < budget.seconds.fastFloor || easyFast < easyBudget.seconds.fastFloor;
       const over = typical > budget.seconds.max;

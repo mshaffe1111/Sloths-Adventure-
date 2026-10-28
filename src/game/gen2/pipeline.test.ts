@@ -608,3 +608,19 @@ test("each roll's theme favours a third to a half of a big world's sections: rol
   // a world under THEME.from sections draws from them all, as it did (the toy world's pinned geometry test holds it)
   assert.equal(buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed: 1, difficulty: 'normal' }).gen2.theme, undefined);
 });
+
+test("Easy's animals are a subset of Normal's: the spacing is decided once, on Normal's plan, and Easy drops from that list", () => {
+  const sockets = (st: ReturnType<typeof buildGen2Stage>) => st.gen2.fills.filter((f) => f.role === 'enemy' && f.socket !== 'topup').map((f) => `${f.section}/${f.socket}=${f.what}`);
+  for (const [id, type, goal] of [['5-7', 'stealth', 1], ['5-4', 'purge', 12]] as const) {
+    for (let seed = 1; seed <= (type === 'stealth' ? 20 : 4); seed++) {
+      const n = buildGen2Stage({ config: cfg(id, type, goal), kit, seed, difficulty: 'normal' });
+      const e = buildGen2Stage({ config: cfg(id, type, goal), kit, seed, difficulty: 'easy' });
+      const what = `${id} seed ${seed}`;
+      assert.ok(e.enemies.length <= n.enemies.length, `${what}: Easy ${e.enemies.length} animals, Normal ${n.enemies.length}`);
+      const normal = new Set(sockets(n));
+      assert.deepEqual(sockets(e).filter((k) => !normal.has(k)), [], `${what}: Easy keeps an animal Normal dropped`);
+      assert.deepEqual(validateStage(e).errors.filter((x) => !/not enough enemies/.test(x)), [], what);
+      assert.deepEqual(checkStage(e, e.gen2.budget).errors, [], what);
+    }
+  }
+});
