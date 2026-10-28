@@ -525,8 +525,10 @@ export const TitleScene = React.forwardRef<
     stageSelector: string;
     /** a menu is open over the scene: it draws less often */
     dim?: boolean;
+    /** behind a menu screen (the Trophy Room, the map): the same painting, depth, air and drift, without the pair and the reveal */
+    backdrop?: boolean;
   }
->(({ worlds, hold = 13, stageSelector, dim = false }, ref) => {
+>(({ worlds, hold = 13, stageSelector, dim = false, backdrop = false }, ref) => {
   const cvRef = useRef<HTMLCanvasElement>(null);
   const dimRef = useRef(dim);
   dimRef.current = dim;
@@ -591,13 +593,15 @@ export const TitleScene = React.forwardRef<
       if (!cv || document.hidden) return;
       const st = state.current;
       const first = get(list[0]);
-      const ready = first.ready && !!pokey?.ready && loadMeeca() && logReady;
+      const ready = first.ready && (backdrop || (!!pokey?.ready && loadMeeca() && logReady));
       st.ready = ready;
       // the game's own pace: 30 frames a second (10 with a menu over it, 4 while the splash still covers it)
-      const fps = st.arriveAt === null ? 4 : dimRef.current ? 10 : 30;
+      // (a backdrop comes on by itself, and draws a little less often: the screen over it is what the player looks at)
+      if (backdrop && ready && st.arriveAt === null) st.arriveAt = now;
+      const fps = st.arriveAt === null ? 4 : dimRef.current ? 10 : backdrop ? 24 : 30;
       if (now - last < 1000 / fps - 3) return;
       last = now;
-      if (!ready || !pokey || !meeca) return;
+      if (!ready) return;
 
       const w = cv.clientWidth || window.innerWidth, h = cv.clientHeight || window.innerHeight;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -606,7 +610,7 @@ export const TitleScene = React.forwardRef<
         cv.height = Math.round(h * dpr);
         box = null;
       }
-      if (!box || now - boxAt > 600) {
+      if (!backdrop && (!box || now - boxAt > 600)) {
         box = document.querySelector(stageSelector)?.getBoundingClientRect() ?? null;
         boxAt = now;
       }
@@ -638,7 +642,7 @@ export const TitleScene = React.forwardRef<
       const b = box && box.width > 40 && box.height > 40 ? box : null;
       // (never drawn more than about twice the size of their painted frames: today's frames are small, and blown up further they go
       // soft; the art helper's sheets at 600 px and more let them grow to fill the box)
-      const sharp = (Math.min(pokey.cast.height, meeca.cast.height / 0.95) * 2.1) / dpr;
+      const sharp = pokey && meeca ? (Math.min(pokey.cast.height, meeca.cast.height / 0.95) * 2.1) / dpr : h;
       // (sideways the box runs to the bottom of the screen: the pair stand on the log with a band of its face showing under them)
       const H = Math.min(sharp, b ? (portrait ? Math.min(b.height * 0.9, w * 0.72) : Math.min(b.height / 1.6, b.width * 0.54)) : h * 0.3);
       const cx = b ? b.left + b.width / 2 : w / 2;
@@ -650,7 +654,7 @@ export const TitleScene = React.forwardRef<
       const groundY = logTop + logH * 0.86;
 
       // ---- the camera: the reveal draws back from close on the pair; then a slow drift from side to side ----
-      const reveal = reduced ? 1 : ease(arr / 2.8);
+      const reveal = reduced || backdrop ? 1 : ease(arr / 2.8);
       const zoom = 1 + 0.28 * (1 - reveal);
       const fx = cx, fy = feet - H * 0.55;
       const drift = reduced ? 0 : Math.sin((t * Math.PI * 2) / 38) * w * 0.03 + Math.sin((t * Math.PI * 2) / 71 + 1) * w * 0.014;
@@ -662,7 +666,7 @@ export const TitleScene = React.forwardRef<
         c.scale(z, z);
         c.translate(-fx + drift * (1 - depth), -fy + rise * (1 - depth * 0.5));
       };
-      const light = reduced ? Math.min(1, arr / 0.6) : ease(arr / 1.3);
+      const light = reduced || backdrop ? Math.min(1, arr / 0.6) : ease(arr / 1.3);
 
       if (light < 1 || !showing.far) {
         c.fillStyle = '#0b1a13';
@@ -772,7 +776,7 @@ export const TitleScene = React.forwardRef<
       } else paint(showing, 1, into / hold);
 
       // ---- the pair on their log ----
-      if (logImg) {
+      if (logImg && pokey && meeca && !backdrop) {
         c.save();
         camera(1);
         c.globalAlpha = light;
@@ -866,7 +870,7 @@ export const TitleScene = React.forwardRef<
       c.restore();
       if (!reduced) {
         const sc = Math.min(w, h) / 520;
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < (backdrop ? 1 : 2); i++) {
           const u = t * (0.035 + i * 0.012) + i * 0.47;
           const lap = u - Math.floor(u);
           const x = (i ? 1.1 - lap * 1.2 : -0.1 + lap * 1.2) * w;
@@ -934,8 +938,15 @@ export const TitleScene = React.forwardRef<
       // keep only the first world, so coming back to the title is instant and the next visit starts from it
       for (const k of [...cache.keys()]) if (k !== list[0]) cache.delete(k);
     };
-  }, [key, hold, stageSelector]);
+  }, [key, hold, stageSelector, backdrop]);
 
   return <canvas ref={cvRef} className="ts-scene" aria-hidden="true" />;
 });
 TitleScene.displayName = 'TitleScene';
+
+/** the title's living painting behind a menu screen: one world, its depth, its air and the slow drift (2026-10-28, the shared kit) */
+export const SceneBackdrop: React.FC<{ world: number; dim?: boolean }> = ({ world, dim }) => (
+  <div className="kit-backdrop" aria-hidden="true">
+    <TitleScene worlds={[world]} stageSelector="" backdrop dim={dim} />
+  </div>
+);

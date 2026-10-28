@@ -2,7 +2,9 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { testUnlockOn } from '../game/testUnlock.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { WORLDS_DATA } from '../game/worldsData.ts';
-import { VistaCanvas, WorldThumb, requestThumbs } from './VistaCanvas.tsx';
+import { WorldThumb, requestThumbs } from './VistaCanvas.tsx';
+import { SceneBackdrop } from './title/TitleScene.tsx';
+import { Plaque } from './KitParts.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { HeroPose } from './HeroPose.tsx';
 import { Icon } from './icons/index.tsx';
@@ -192,7 +194,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   return (
     <div className="fixed inset-0 z-40 bg-[#10241a] flex flex-col select-none font-game text-white overflow-hidden">
       <div key={activeWorldId} className="absolute inset-0 map-fade">
-        <VistaCanvas worlds={[activeWorldId]} pan={6} front={false} />
+        <SceneBackdrop world={activeWorldId} />
       </div>
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(8,20,13,.78) 0%, rgba(8,20,13,.12) 24%, rgba(8,20,13,.1) 52%, rgba(8,20,13,.82) 100%)' }} />
 
@@ -204,7 +206,9 @@ export const WorldMap: React.FC<WorldMapProps> = ({
         </button>
         <div className="text-center min-w-0 order-3 basis-full sm:order-none sm:basis-auto">
           <div className="ui-kicker">World {curWorld.id} of 10</div>
-          <h1 className="map-title truncate">{curWorld.name}</h1>
+          <Plaque as="h1" className="map-title">
+            {curWorld.name}
+          </Plaque>
         </div>
         <div className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
           {thornHeart && (

@@ -1081,6 +1081,7 @@ export default function App() {
 
       {screen === 'trophy' && (
         <TrophyRoom
+          world={activeLevel.worldIndex}
           store={badgeStore}
           levels={allLevels}
           gateFound={secretFound}

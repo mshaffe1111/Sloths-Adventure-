@@ -132,7 +132,8 @@ function chisel(g: CanvasRenderingContext2D, strokes: number[][], u: number, wg:
   // the groove itself, made on its own (its walls and floor are painted only inside it)
   const s = scratch.getContext('2d')!;
   s.setTransform(1, 0, 0, 1, 0, 0);
-  s.clearRect(0, 0, pw, ph);
+  // (the whole scratch, not just this letter's box: a bigger letter's leftovers past the box edge bleed in when it is drawn scaled)
+  s.clearRect(0, 0, scratch.width, scratch.height);
   s.setTransform(dpr, 0, 0, dpr, 0, 0);
   s.globalCompositeOperation = 'source-over';
   s.lineJoin = 'round';

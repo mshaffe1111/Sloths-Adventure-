@@ -11,6 +11,8 @@ import { BONUS_FIND, FINDS, allFound, type FindDef } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
 import { MEMORIES, MEMORY_ORDER, type MemoryId } from '../game/storyChapters.ts';
+import { SceneBackdrop } from './title/TitleScene.tsx';
+import { DotPerched, Plaque } from './KitParts.tsx';
 
 interface Props {
   store: BadgeStore;
@@ -29,6 +31,8 @@ interface Props {
   /** the flashbacks seen so far, and a way to watch one again */
   memories?: MemoryId[];
   onReplayMemory?: (id: MemoryId) => void;
+  /** the world whose painting lives behind the room (the one last played) */
+  world?: number;
 }
 
 const fmt = (n: number) => n.toLocaleString('en-US');
@@ -73,7 +77,7 @@ const MedalCell: React.FC<{ b: BadgeDef; got: boolean; ctx: EvalContext }> = ({ 
   );
 };
 
-export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, onOpenFind, memories = [], onReplayMemory }) => {
+export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, onOpenFind, memories = [], onReplayMemory, world = 1 }) => {
   const [tab, setTab] = useState<'badges' | 'journal' | 'library'>(initialTab);
   const ctx = useMemo<EvalContext>(() => ({ store, levels, gateFound, thornHeart, finds }), [store, levels, gateFound, thornHeart, finds]);
   const earnedIds = useMemo(() => new Set(evaluate(ctx)), [ctx]);
@@ -92,13 +96,18 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
 
   return (
     <div className="tr-screen" role="dialog" aria-label="Trophy Room">
+      <SceneBackdrop world={world} />
       <div className="tr-inner">
+        {/* Dot keeps the cards: perched on the panel's edge */}
+        <DotPerched size={74} className="tr-dot" />
         <div className="tr-head">
           <button type="button" className="ui-x" onClick={onBack} aria-label="Back">
             <Icon name="arrow" size={16} rotate={180} />
           </button>
           <div className="tr-titles">
-            <h1 className="tr-h1">Trophy Room</h1>
+            <Plaque as="h1" className="tr-h1">
+              Trophy Room
+            </Plaque>
             <div className="tr-sub">
               <b className="tr-points">{fmt(points)}</b> of {fmt(TOTAL_POINTS)} points · {earnedCount} of {BADGES.length} medals
             </div>

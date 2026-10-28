@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeroFaceIcon } from './HeroFaceIcon.tsx';
+import { PeekPokey, Plaque } from './KitParts.tsx';
 import { SKILLS, type SkillId } from '../game/skills.ts';
 import { SkillIcon } from './SkillIcon.tsx';
 import { Icon, type IconName } from './icons/index.tsx';
@@ -29,15 +29,15 @@ export const MenuFrame: React.FC<{
   useExitGhost(ref);
   return (
     <div ref={ref} className="pm-scrim select-none" onClick={onScrim}>
+      <div className="pm-wrap">
+      {/* Pokey looks over the top of the panel */}
+      <PeekPokey className="pm-peek" />
       <div className="pm-card" role="dialog" aria-label={label} onClick={(e) => e.stopPropagation()}>
         <div className="pm-head">
           <div className="pm-head-t">
-            <h2 className="pm-title">{title}</h2>
+            <Plaque className="pm-title">{title}</Plaque>
             <div className="pm-sub">{sub}</div>
           </div>
-          <span className="pm-face">
-            <HeroFaceIcon size={46} face="face_happy" />
-          </span>
         </div>
         <div className="pm-body">
           <div className="pm-main">
@@ -73,6 +73,7 @@ export const MenuFrame: React.FC<{
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
