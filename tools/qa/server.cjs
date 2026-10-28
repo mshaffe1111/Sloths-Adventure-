@@ -250,6 +250,22 @@ async function handle(cmd) {
     beta = cmd.on === 'on' ? true : cmd.on === 'off' ? false : null;
     return { text: `New HUD and Dot (beta): ${beta === null ? "the build's default" : cmd.on}, from the next start` };
   }
+  if (cmd.cmd === 'warp') {
+    // Meeca's stage (5-M) has no flags: put her just before puzzle room N (2-5) with the warnings before it carved, the way a
+    // tester is handed a room select (QA lead, 2026-10-28)
+    if (!page) throw new Error('no stage open: start 5-M first');
+    const r = await page.evaluate((n) => {
+      const e = typeof window.__engine === 'function' ? window.__engine() : window.__engine;
+      const room = e.kit?.rooms?.[n - 1], m = e.mc;
+      if (!room || !m) return 'warp works in 5-M only, rooms 2-5';
+      for (let i = 0; i < n; i++) m.cut[i] = 999;
+      m.marked = n;
+      const p = e.player; p.x = room.box.x0 - 260; p.y = 560; p.vx = 0; p.vy = 0;
+      return `before room ${n} (${room.spec.id}), ${n - 1} warnings carved`;
+    }, Number(cmd.room));
+    await page.clock.runFor(1000);
+    return { shot: await shot('warp'), text: r + ' | ' + (await screenText()) };
+  }
   if (cmd.cmd === 'difficulty') {
     difficulty = cmd.level === 'easy' || cmd.level === 'normal' ? cmd.level : null;
     return { text: `difficulty: ${difficulty ?? 'as saved'}, from the next start` };

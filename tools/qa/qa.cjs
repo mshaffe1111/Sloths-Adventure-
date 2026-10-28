@@ -13,6 +13,7 @@
  *   node tools/qa/qa.cjs <port> fresh                     a new phone, nothing saved (a first-time player)
  *   node tools/qa/qa.cjs <port> beta on|off               the New HUD and Dot (beta) switch, from the next start
  *   node tools/qa/qa.cjs <port> difficulty easy|normal    the game's Easy/Normal setting, from the next start
+ *   node tools/qa/qa.cjs <port> warp 2-5                   5-M only: start just before Meeca's puzzle room N
  *   node tools/qa/qa.cjs <port> burst                     eight frames in a row (to catch flicker and jitter)
  *   node tools/qa/qa.cjs <port> perf                      how much memory the page is using
  *
@@ -32,6 +33,7 @@ const body =
   : cmd === 'probe' ? { cmd, ms: rest[0] }
   : cmd === 'beta' ? { cmd, on: rest[0] }
   : cmd === 'difficulty' ? { cmd, level: rest[0] }
+  : cmd === 'warp' ? { cmd, room: rest[0] }
   : cmd === 'eval' ? { cmd, text: rest.join(' ') }
   : { cmd };
 const req = http.request({ host: '127.0.0.1', port: Number(port), method: 'POST', path: '/' }, (res) => {
