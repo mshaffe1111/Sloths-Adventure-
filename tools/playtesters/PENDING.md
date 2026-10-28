@@ -133,3 +133,16 @@ Earlier read of the same log, kept for the details:
 8. [minor] Lives aren't shown until the first one is lost.
 9. [polish] 1-7: the eagle sits on Pokey when it hits; Dot overlaps him; after the rope the camera leaves Pokey at the right edge;
    sideways at about 23% Dot was drawn inside the dirt.
+
+# Next batch (not sent yet)
+
+## B. Matt's own play, 2026-10-28 (sheet rows 2064-2194; build 11:59 ET release; Chrome 151, Android, Adreno 730, not software)
+1. [UNFAIR, out of band, rule 3/4] 2-2 (Normal, upright): Matt (expert) lost 14 lives, all water, and finished in 6:23. No hurts,
+   only drownings. Four in a row at the same spot (x 13475-13749, after the 256 s flag), three of them falling with no sideways
+   speed. The first five sent him back to the very start: there's no flag before x 3441 (172 s in). Matt blamed himself ("played
+   sloppy"), but an expert drowning 14 times in a World 2 stage is the stage, not him. Adds to batch A #1 (that was the first
+   second; this is the whole stage). Needs an earlier first flag, and a look at the gap near x 13600.
+2. [rule 10] 'blank wait' is still there on the release that was meant to load every sheet at the stage start: 63fc at 80 s
+   (goldsnake head/sleep/wake + snake atlas), 201 s (eagle atlas); oib0 at 179 s (goldsnake), 650 s (dot-perch atlas).
+3. [rule 11, fine] The new Device browser part and the 'env' moment both arrive and decode. Matt's tablet draws with its graphics
+   chip (Adreno 730), so his small stalls (110-210 ms, mostly in the first second of a stage) are not the software-drawing problem.
