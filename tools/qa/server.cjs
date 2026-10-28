@@ -57,6 +57,8 @@ const ENGINE = "(typeof __engine === 'function' ? __engine() : __engine)";
 let ctx = null;
 // the "New HUD and Dot (beta)" switch: null leaves the build's default, true/false sets it the way the pause menu does
 let beta = null;
+// Easy or Normal (the game's own setting, sloth_difficulty): null leaves what the phone has saved
+let difficulty = null;
 async function open(stage, v, flag = 0, layout = 1) {
   if (page) await page.close().catch(() => {});
   view = views[v] ? v : 'land';
@@ -74,6 +76,7 @@ async function open(stage, v, flag = 0, layout = 1) {
   const T0 = Date.UTC(2026, 9, 25, 12);
   await page.clock.install({ time: T0 });
   await page.clock.pauseAt(T0 + 1000);
+  if (difficulty) await page.addInitScript((d) => localStorage.setItem('sloth_difficulty', d), difficulty);
   await page.goto(url + (url.includes('?') ? '&' : '?') + `layout=${layout}`);
   await page.clock.runFor(3500);
   // (the game reads the switch when a stage starts: newLook.ts)
@@ -227,6 +230,10 @@ async function handle(cmd) {
   if (cmd.cmd === 'beta') {
     beta = cmd.on === 'on' ? true : cmd.on === 'off' ? false : null;
     return { text: `New HUD and Dot (beta): ${beta === null ? "the build's default" : cmd.on}, from the next start` };
+  }
+  if (cmd.cmd === 'difficulty') {
+    difficulty = cmd.level === 'easy' || cmd.level === 'normal' ? cmd.level : null;
+    return { text: `difficulty: ${difficulty ?? 'as saved'}, from the next start` };
   }
   if (cmd.cmd === 'start') {
     const flags = await open(cmd.stage, cmd.view, Number(cmd.flag || 0), Number(cmd.layout || 1));

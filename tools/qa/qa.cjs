@@ -12,6 +12,7 @@
  *   node tools/qa/qa.cjs <port> turn                      turn the phone the other way up
  *   node tools/qa/qa.cjs <port> fresh                     a new phone, nothing saved (a first-time player)
  *   node tools/qa/qa.cjs <port> beta on|off               the New HUD and Dot (beta) switch, from the next start
+ *   node tools/qa/qa.cjs <port> difficulty easy|normal    the game's Easy/Normal setting, from the next start
  *   node tools/qa/qa.cjs <port> burst                     eight frames in a row (to catch flicker and jitter)
  *   node tools/qa/qa.cjs <port> perf                      how much memory the page is using
  *
@@ -30,6 +31,7 @@ const body =
   : cmd === 'persona' ? { cmd, name: rest[0], level: rest[1] }
   : cmd === 'probe' ? { cmd, ms: rest[0] }
   : cmd === 'beta' ? { cmd, on: rest[0] }
+  : cmd === 'difficulty' ? { cmd, level: rest[0] }
   : cmd === 'eval' ? { cmd, text: rest.join(' ') }
   : { cmd };
 const req = http.request({ host: '127.0.0.1', port: Number(port), method: 'POST', path: '/' }, (res) => {
