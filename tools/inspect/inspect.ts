@@ -7,6 +7,7 @@
  * along it (beats.ts), and measures dead time, rests, how alike the stages of a world are, the goal against what the stage holds,
  * and the length. Writes tools/inspect/out/report.json and a self-contained HTML report (report.ts).
  */
+import { goalCounts } from '../../src/game/goals.ts';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -143,17 +144,8 @@ function silkLight(st: Stage): ((d: Dead) => number) | undefined {
 
 const BAND: Record<string, [number, number]> = { harvest: [0.85, 0.9], purge: [0.7, 0.8], gauntlet: [0.7, 0.8], rescue: [1, 1] };
 
-function counts(st: Stage) {
-  const c = (f: (t: string) => boolean) => st.collectibles.filter((x) => f(x.type)).length;
-  const ring = (st.proto?.ring?.waves ?? []).reduce((s, w) => s + w.length, 0);
-  const guards = (st.proto?.w4?.monkeys ?? []).filter((m) => m.job === 'guard' && m.blowOff).length;
-  return {
-    petals: c((t) => t === 'flower' || t === 'leaf'),
-    animals: st.enemies.length + ring + guards,
-    rescuable: c((t) => t === 'cage') + (st.proto?.w5?.cocoons?.length ?? 0),
-    relics: c((t) => t === 'relic'),
-  };
-}
+/** what the stage holds of what each goal counts: the game's own count (goals.ts), so the share shown is the one the game asks for */
+const counts = (st: Stage) => goalCounts(st);
 
 function goalCheck(e: StageEntry, st: Stage, easy: Stage, samples: ReturnType<typeof sampleRoute>): GoalCheck {
   const type = e.type;

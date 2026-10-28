@@ -10,6 +10,7 @@ import { buildProtoStage, HAND_STAGES, type ProtoExtras } from '../../src/game/p
 import { buildW2Stage, W2_STAGES } from '../../src/game/w2Stages.ts';
 import { generateStage, type GeneratedStage } from '../../src/game/stageGenerator.ts';
 import { easyStage } from '../../src/game/easyMode.ts';
+import { withGoals } from '../../src/game/goals.ts';
 import { stageSpec } from '../../src/game/stagePlan.ts';
 import type { LevelConfig } from '../../src/game/types.ts';
 
@@ -62,7 +63,8 @@ export function stageList(worlds: number[], seed: number): { stages: StageEntry[
       goalText: spec?.desc ?? c.description,
       source: hand ? 'hand' : 'generated',
       build: (easy) => {
-        const st = make({ ...c, unlocked: true });
+        // (the goal as the engine sets it: Normal's share of what the stage holds, goals.ts; Easy keeps the stage's own)
+        const st = withGoals(make({ ...c, unlocked: true }));
         return easy ? easyStage(st) : st;
       },
     });

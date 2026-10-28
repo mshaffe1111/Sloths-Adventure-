@@ -13,6 +13,7 @@ import { SectionTrack } from './sectionTrack.ts';
 import { difficulty, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
+import { withGoals } from './goals.ts';
 
 import type {
   LevelConfig,
@@ -66,6 +67,7 @@ import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
 import { heard } from './noise.ts';
+import { mayRegrow, regrowDelay } from './regrow.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
@@ -157,8 +159,6 @@ function wayDodgeOn(): boolean {
 /** How many world units tall the screen shows. */
 /** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
 const FIND_SEARCH_SECONDS = 0.9;
-/** seconds before a crumbled platform grows back */
-const REGROW_SECONDS = 3;
 /** how near a flower must be to pick it while swinging on a vine (34 on foot) */
 const SWING_PICK = 56;
 /** a Jump or a direction let go this short a time before a pause still counts as held when play carries on (seconds) */
@@ -546,7 +546,7 @@ export class GameEngine {
     // Generate Stage data
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
-    this.currentStage = isEasy() ? easyStage(generateStage(config)) : generateStage(config);
+    this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config))) : withGoals(generateStage(config));
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
@@ -2016,16 +2016,16 @@ export class GameEngine {
         plat.fragileTimer -= dt;
         if (plat.fragileTimer <= 0) {
           plat.broken = true;
-          plat.regrowAt = this.gameTime + REGROW_SECONDS;
+          plat.regrowAt = this.gameTime + regrowDelay(plat.id);
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
           sound.playHitImpact(true);
         }
       }
-      // a crumbled platform comes back a few seconds later (never while Pokey is where it would appear), so a stage can
-      // never be left with a gap nobody can cross: falling costs a little time, never the way on
+      // a crumbled platform is a penalty (regrow.ts): it comes back only after half a minute or so, and only off screen, so it never
+      // pops back in view (no stage needs one: falling costs time, never the way on)
       if (plat.broken && plat.type === 'fragile' && plat.regrowAt !== undefined && this.gameTime >= plat.regrowAt) {
-        const inside = p.x + 20 > plat.x && p.x - 20 < plat.x + plat.width && p.y > plat.y - 70 && p.y < plat.y + plat.height + 10;
-        if (!inside) {
+        const cam = this.camera;
+        if (mayRegrow(plat, this.gameTime, { x: cam.x, y: cam.y, w: cam.viewportWidth, h: cam.viewportHeight }, p)) {
           plat.broken = false;
           plat.fragileTimer = undefined;
           plat.regrowAt = undefined;
