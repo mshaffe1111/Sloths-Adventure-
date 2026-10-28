@@ -3962,6 +3962,69 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     beats.push([b0, cur.y, name]);
   };
 
+  // ---- 1-4's squirrels' lift (the shared puzzle kit, puzzleKit.ts: the counterweight basket and its lift), 2026-10-28
+  /** only the kapok of 1-4 has the squirrels' lift (the bank houses, the sinkhole and the cliffs climb as they did) */
+  const squirrels = !village && !grotto && !cliff && !mist;
+  const ROOMS: RoomSpec[] = [];
+  const onL = (p: Platform, ax: number, dy = 0): Anchor => ({ on: p.id, at: (ax - p.x) / p.width, ...(dy ? { dy } : {}) });
+  /**
+   * A wide branch with the squirrels' acorn stash on it, a basket hanging on a pulley by its end, and the lift's plank resting in a
+   * notch past it, flush with the branch. A ledge 260 up, too high to jump to, is where the plank goes. Put an acorn in the basket
+   * while he stands on the plank and the basket's weight winds the plank up with him. `high`: the basket hangs high over the plank
+   * (flick up to throw the acorn in); else low beside it (a tap sets it in). The branch joins on at the end of the one he is on.
+   * About 750 px across and 500 tall: an upright phone and a sideways one both show it. A miss is a hop: nothing here costs a life.
+   */
+  const liftRoom = (high: boolean): boolean => {
+    const FLOOR = 340, WELL = 100, HIGH = 320, RISE = 260;
+    const span = FLOOR + WELL + HIGH;
+    const fits = (d: 1 | -1) => {
+      const r = d === 1 ? W - KAPOK_MARGIN - (cur.x + cur.width) : cur.x - KAPOK_MARGIN;
+      if (r < span + 10) return false;
+      const x0 = d === 1 ? cur.x + cur.width : cur.x - span;
+      // (the branch he is on joins it: it is not in the way)
+      const clear = (y: number) => !P.some((p) => p !== P[0] && p !== cur && p.x < x0 + span + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130);
+      return clear(cur.y) && clear(cur.y - RISE) && clear(cur.y - RISE / 2);
+    };
+    // (always built going right: a room is come into at its left edge, as the check walks it, puzzleCheck.ts)
+    const d: 1 | 0 = fits(1) ? 1 : 0;
+    if (!d) return false;
+    dir = d;
+    const y = cur.y;
+    // laid out going right, mirrored going left: the branch, the notch, the ledge up there
+    const at = (u: number, w: number) => (d === 1 ? cur.x + cur.width + u : cur.x - u - w);
+    const floor = ledge(at(0, FLOOR), at(0, FLOOR) + FLOOR, y);
+    const well = ledge(at(FLOOR, WELL), at(FLOOR, WELL) + WELL, y + 60);
+    const up = ledge(at(FLOOR + WELL, HIGH), at(FLOOR + WELL, HIGH) + HIGH, y - RISE);
+    const near = (u: number) => (d === 1 ? floor.x + u : floor.x + floor.width - u);
+    const stashX = near(90);
+    const basketX = well.x - 40;
+    const n = ROOMS.length;
+    ROOMS.push({
+      id: `squirrel-lift-${n}`,
+      // (the left anchor is where he comes in, the branch's near end, whichever way the room faces: the check starts him there)
+      left: onL(floor, near(10)), right: { on: up.id, at: d === 1 ? 1 : 0 },
+      above: 420, below: 90,
+      pieces: [
+        { kind: 'reset', id: `post${n}`, at: onL(floor, near(30)) },
+        { kind: 'source', id: `stash${n}`, variant: 'acorn', at: onL(floor, stashX), look: 'pile' },
+        { kind: 'item', id: `acorn${n}`, variant: 'acorn', source: `stash${n}`, for: `basket${n}` },
+        { kind: 'basket', id: `basket${n}`, at: onL(floor, basketX), mouth: high ? 236 : 100, need: 1, drop: high ? 130 : 60 },
+        { kind: 'lift', id: `lift${n}`, at: { on: well.id, at: 0.5, dy: -60 }, w: WELL, rise: RISE, by: `basket${n}` },
+      ],
+      exit: `lift${n}`,
+      beyond: { on: up.id, at: 0.5 },
+      ground: [floor.id, well.id],
+      tips: high
+        ? { enter: 'The basket hangs high this time.', hold: 'Stand on the lift. Flick up to throw!' }
+        : { enter: "The squirrels' lift! Fill the basket to raise it.", hold: 'Stand on the lift. Tap to drop it in.' },
+    });
+    row(near(150), near(250), y - 34, 2, 'hibiscus');
+    row(up.x + 70, up.x + up.width - 70, up.y - 34, 3, 'orchid');
+    expert += (FLOOR + WELL) / RUN + 2.5 + (high ? 2 : 1) + RISE / 120 + HIGH / RUN;
+    cur = up;
+    return true;
+  };
+
   // ---- Learn: up two trunks from the floor
   cur = P[0];
   beat('Learn: up the trunk', () => {
@@ -4000,6 +4063,16 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     }
     climb(Math.round(R.r(270, 320)));
     flag();
+    // 1-4: the squirrels' lift, the first time (a tap sets the acorn in the low basket)
+    if (squirrels) {
+      // (built going right: when there is no room that way, hop back across the tree first, and up)
+      for (let k = 0; k < 4 && !liftRoom(false); k++) {
+        dir = -1;
+        hops(2);
+        climb(Math.round(R.r(260, 300)));
+      }
+      flag();
+    }
     hops(R.i(2, 3));
     climb(Math.round(R.r(260, 300)));
     // more of the same until even a quick climber needs most of two minutes (the twist and the crown add the rest)
@@ -4074,8 +4147,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     dir = cur.x + cur.width / 2 < W / 2 ? 1 : -1;
     hint('A long way across. Keep sliding', 'A long way across. Keep holding the way to go', 'A long way across. Keep holding the way to go', cur.y + 10);
     const gap = Math.min(Math.round(R.r(900, 1050)), Math.round(room() - 340));
+    const before = cur.y;
     rope(gap, 340, 6);
-    flag();
+    // (1-4: unless the climb's last flag already stands at this height, at the rope's near end)
+    if (!squirrels || !checkpoints.some((c) => Math.abs(c.y - before) < 1)) flag();
   });
 
   // ---- 4-6 after the mist: the nests, then the nests and the mist together, across the tree, and the high mist at the top
@@ -4293,6 +4368,15 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
       return;
     }
     climb(Math.round(R.r(280, 320)));
+    // 1-4: the squirrels' lift again, its basket hung high now (flick up to throw the acorn in)
+    if (squirrels) {
+      for (let k = 0; k < 4 && !liftRoom(true); k++) {
+        dir = -1;
+        hops(2);
+        climb(Math.round(R.r(260, 300)));
+      }
+      flag();
+    }
     hops(2);
     // the crown: a wide branch with the shrine on it
     if (room() < 620) dir = dir === 1 ? -1 : 1;
@@ -4460,6 +4544,9 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   C.push({ id: cid++, type: 'exit_totem', x: exitX, y: crown.y - 30, collected: false, bobPhase: 0 });
   cid = heartsAtFlags(C, checkpoints, cid);
 
+  // the lift rooms' own platforms (each lift's plank), added once the tree has been moved into place: placed from the branches they hang on
+  const kit: KitExtras | undefined = ROOMS.length ? { rooms: ROOMS } : undefined;
+  if (kit) addKitPlatforms(P, kit);
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: ROPES }, C);
   const cfg: LevelConfig = { ...config, levelWidth: W, levelHeight: H };
   return {
@@ -4477,6 +4564,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
+    ...(kit ? { kit } : {}),
     proto: {
       hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}),
       ...(cliff ? { w4: { rocks, patience: spot ? [spot] : [] } } : {}),
