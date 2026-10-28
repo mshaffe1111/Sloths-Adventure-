@@ -74,7 +74,10 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 
 ### Design rules for stages (check every stage against these)
 
-- **Crumbling platforms**: crumbling/breakaway platforms are never needed to finish a stage. They grow back after 3 s, so nobody can be left stuck.
+**The full rulebook is `reference/STAGE-RULES.md`** (the numbers each stage must meet, puzzle rooms, art use, the checks in order,
+and the mistakes we already paid for). The short list:
+
+- **Crumbling platforms**: crumbling/breakaway platforms are never needed to finish a stage. A broken one grows back after 30-35 s, only when it is off screen.
 - **Climbing**: on a vine or trunk, straight up or down always climbs; only a diagonal slide jumps off.
 - **Length**: every stage takes at least 2 minutes even for a quick player (5+ minutes is fine). Each stage is a little harder than the last, with an easy start to hook players.
 - **Teaching**: every new mechanic is taught where it first appears (lesson cards, `src/game/lessons.ts`). Dot, the hummingbird, is the in-stage guide for tips and goals, and never repeats a tip on replays.
@@ -114,6 +117,7 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 | **Worlds 4-10** (still the procedural generator: planned, rolled, validated) | `src/game/stageGenerator.ts`, `levelSeeds.ts`, `levelCheck.ts`; run `npx tsx scripts/check-levels.ts [4]` |
 | Stage-length and layout checks | `scripts/measure-stages.ts`, `scripts/seed-levels.ts`, tests such as `w2Stages.test.ts`, `w3Stages.test.ts`, `protoStage.test.ts`, `levels.test.ts` |
 | Abilities (rope/shimmy, glide) and when they unlock | `src/game/skills.ts` |
+| **Gemini's research on building, checking and varying stages** (read it before building stages, the inspector, the puzzle kit or the generator) | `reference/GEMINI-PCG-RESEARCH.md`: what we took from it at the top, then Matt's four pasted parts word for word (dead time, sameness, noisy-thumb bots, expressive range over 200 rolls, jump forgiveness at 30 fps, puzzle rooms, variety cooldowns) |
 | Secret levels plan | `reference/SECRET-LEVELS.md` (Under the Ruins, World 7) |
 | Physics and controls | `physics.ts`, touch handling in `src/game/` (search for `touch`), lessons in `lessons.ts` |
 | Pickups, hearts, checkpoints, flowers | `pickups.ts`, `flowerReach.ts`, `wayside.ts` |
