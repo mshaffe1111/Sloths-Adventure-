@@ -3863,7 +3863,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const flavour = roll.theme('finish', ['leaf', 'gusts', 'vines'] as const);
     // (round 3: every flavour swings a liana over a real drop at each break, World 4 sitting above World 3: a miss is a life)
     const sig = () => {
-      swings(1);
+      swings(2, true);
       w4Breath();
       if (flavour === 'leaf') leafDrop(R.r(0.8, 0.88));
       else if (flavour === 'gusts') gustGap(R.chance(0.5) ? 1 : -1);
@@ -3912,9 +3912,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     type Piece42 = 'drop' | 'gust' | 'pillars' | 'high' | 'stones' | 'gustLeaf' | 'vines';
     const counts: Record<typeof flavour, Record<Piece42, number>> = {
       // (the leaf's climbs are slow: two of them to a bag was 28-39 quiet seconds a finish, so the leaf shares it with pillars and gusts)
-      leaf: { drop: 2, gust: 0, pillars: 1, high: 0, stones: 0, gustLeaf: 2, vines: 1 },
-      gusts: { drop: 0, gust: 2, pillars: 0, high: 1, stones: 2, gustLeaf: 0, vines: 1 },
-      vines: { drop: 0, gust: 1, pillars: 1, high: 0, stones: 0, gustLeaf: 0, vines: 3 },
+      leaf: { drop: 2, gust: 0, pillars: 1, high: 0, stones: 0, gustLeaf: 2, vines: 2 },
+      gusts: { drop: 0, gust: 2, pillars: 0, high: 1, stones: 2, gustLeaf: 0, vines: 2 },
+      vines: { drop: 0, gust: 1, pillars: 1, high: 0, stones: 0, gustLeaf: 0, vines: 4 },
     };
     const bag = roll.bag<Piece42>(['drop', 'gust', 'pillars', 'high', 'stones', 'gustLeaf', 'vines'], (k) => counts[flavour][k]);
     beat('Finish', () => {
@@ -3927,7 +3927,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
         else if (k === 'high') highRoadOver();
         else if (k === 'stones') turnStones();
-        else if (k === 'vines') swings(R.i(2, 3));
+        else if (k === 'vines') swings(R.i(2, 3), true);
         else gustLeaf();
         w4Breath();
         n++;
@@ -4129,7 +4129,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (round 2, 2026-10-28: the finish's theme is a flavour for the whole stage: after the Develop and the Twist, out of her sight, one
     // of its own pieces, another row of cover under her eye, another lookout, or a crosswind gorge from 4-4)
     const flavour = roll.theme('finish', ['cover', 'lookouts', 'gorges'] as const);
+    // (round 3: every flavour crosses two windy lianas over a real drop at each break, out of her sight: a miss is a life)
     const sig = () => {
+      openCliff('gorge');
       if (flavour === 'cover') coverRow(3, [600, 720], R.shuffle<Cover>(['fall', 'wide', 'fern']), [5, 6]);
       else if (flavour === 'lookouts') lookoutRun(R.shuffle<Cover>(['fall', 'tall']), [400, 460], [5, 6]);
       else openCliff('gorge');
@@ -4178,8 +4180,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     type Piece45 = 'row' | 'look' | 'pair' | 'drop' | 'gust' | 'pillars' | 'high' | 'gorge';
     const counts: Record<typeof flavour, Record<Piece45, number>> = {
-      cover: { row: 3, look: 1, pair: 1, drop: 0, gust: 1, pillars: 0, high: 0, gorge: 0 },
-      lookouts: { row: 1, look: 2, pair: 2, drop: 0, gust: 0, pillars: 1, high: 0, gorge: 0 },
+      cover: { row: 3, look: 1, pair: 1, drop: 0, gust: 1, pillars: 0, high: 0, gorge: 1 },
+      lookouts: { row: 1, look: 2, pair: 2, drop: 0, gust: 0, pillars: 1, high: 0, gorge: 1 },
       gorges: { row: 1, look: 1, pair: 0, drop: 0, gust: 0, pillars: 0, high: 0, gorge: 3 },
     };
     const bag = roll.bag<Piece45>(['row', 'look', 'pair', 'drop', 'gust', 'pillars', 'high', 'gorge'], (k) => counts[flavour][k]);
@@ -4741,7 +4743,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const flavour = roll.theme('finish', ['guards', 'knots', 'gorges', 'leaf'] as const);
     // (round 3: every flavour crosses two windy lianas over a real drop at each break: a miss is a life)
     const sig = () => {
-      swings(2, true);
+      swings(3, true);
       between();
       if (flavour === 'guards') guardNest(false, false);
       else if (flavour === 'knots') knotNest(R.chance(0.5));
@@ -5740,7 +5742,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     // (2026-10-28: one on a ledge of each run of hops up the wide ledges first, then spread up the whole climb, about ten in all: the
     // climb is mostly those hops now, and the rocks are its beat)
     // (round 2, 2026-10-28: a roll whose climb is by hops is the rockfall flavour, a rock over every wide ledge it can, up to sixteen)
-    const rockFlavour = w4Climb?.theme === 'hops';
+    // (round 3: every 4-1 roll, World 4 sitting above World 3: the warning stays 1.4 s, so each rock is fair, there are just more)
+    const rockFlavour = !!w4Climb;
     const every = rockFlavour ? 1 : Math.max(1, Math.floor(ledges.length / 12));
     const inGroup = (g: number[]) => [g[Math.floor(g.length / 2)], ...g].map((id) => ledges.find((p) => p.id === id)).filter((p): p is Platform => !!p);
     const order = [...hopGroups.map(inGroup), ...ledges.filter((_, k) => k % every === 0).map((p) => [p])];

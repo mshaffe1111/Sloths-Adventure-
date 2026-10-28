@@ -566,8 +566,9 @@ export function buildWaterfallSteps(
   const theme = roll.theme('finish', ['trees', 'surges', 'rocks'] as const);
   const sig = () => {
     if (theme === 'trees') treeUp(R.r(330, 380));
-    // (the surges' own piece is the finish's: a surge after every part ran the stage a minute long and out of its taught order)
-    else if (theme === 'surges') stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
+    // (the surges' own piece is the finish's: a surge after every part ran the stage a minute long and out of its taught order; a
+    // rock terrace instead, round 3, World 4 sitting above World 3)
+    else if (theme === 'surges') rockRest(R.r(420, 480));
     else {
       rockRest(R.r(420, 480));
       stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));

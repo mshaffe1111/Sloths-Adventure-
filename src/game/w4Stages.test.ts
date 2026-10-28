@@ -94,7 +94,9 @@ test('4-2: every gust lane has its chimes, gusts blow both ways, and the leaf an
     for (const c of chimes) {
       const z = st.zones![c.zone];
       assert.equal(z.kind, 'wind', `seed ${s}: chimes that listen to a ${z.kind} zone`);
-      assert.ok(c.x >= z.x0 && c.x <= z.x1, `seed ${s}: chimes outside their lane`);
+      // (a crosswind over a liana keeps 4-4's rule: its chimes on the bank just before the lane, 2026-10-28)
+      const overVine = st.vines.some((v) => v.isSwingingVine && v.x > z.x0 && v.x < z.x1);
+      assert.ok(c.x >= z.x0 - (overVine ? 320 : 0) && c.x <= z.x1, `seed ${s}: chimes outside their lane`);
     }
     assert.ok(winds.some((z) => z.dir === 1) && winds.some((z) => z.dir === -1), `seed ${s}`);
     assert.ok(st.proto.hints.some((h) => /Your leaf/.test(h.text)), `seed ${s}`);
