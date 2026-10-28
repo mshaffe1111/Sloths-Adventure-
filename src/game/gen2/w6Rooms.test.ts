@@ -1,17 +1,18 @@
 /**
- * World 6's puzzle rooms (gen2/worlds/w6Rooms.ts): the validator (puzzleCheck.ts, through levelCheck) solves each on Normal and Easy and
- * fails it without its key piece; neither can be walked past; each fits an upright phone at half scale; and each is played through in
+ * World 6's three puzzle rooms (gen2/worlds/w6Rooms.ts): the validator (puzzleCheck.ts, through levelCheck) solves each on Normal and Easy and
+ * fails it without its key piece; none can be walked past; each fits an upright phone at half scale; and each is played through in
  * the real engine, upright and sideways, on Normal and Easy, with no heart or life lost:
  *   the water room   the door shut by high water; the wheel raises the raft with him on it; the stone from the shelf to the plate; the
  *                    door stays shut while the water is up; the wheel again, the water down, through
  *   the dark room    the steps dark until the firefly's light finds them; the hollow under them is soft with a step out; up the
  *                    steps in the light, onto the bank, and the moonflower opens
+ *   the seesaw room  one root-stone on the near end and the far end still tips down under him; two hold it up; up the root, onto the bank
  */
 import '../headlessDom.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage } from '../levelCheck.ts';
-import { KIT, kitPlatId, roomBox, type Anchor, type RoomSpec } from '../puzzleKit.ts';
+import { ITEM, KIT, kitPlatId, roomBox, type Anchor, type RoomSpec } from '../puzzleKit.ts';
 import { KitPlay } from '../puzzlePlay.ts';
 import { DOUBLE_RISE } from '../physics.ts';
 import { G } from '../protoStage.ts';
@@ -20,12 +21,12 @@ import { setDifficulty, type Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
 import type { SectionTemplate } from './types.ts';
 import { M6, roomStage, RUNWAY } from './w6Harness.ts';
-import { DARK, darkRoom, RAFT_RISE, W6_ROOM_SECTIONS, W6R_LESSONS, W6R_NEW_LINES, W6R_ROOM_HINTS, WATER, waterRoom, withW6Rooms } from './worlds/w6Rooms.ts';
+import { DARK, darkRoom, RAFT_RISE, SEESAW, seesawRoom, W6_ROOM_SECTIONS, W6R_NEW_LINES, W6R_ROOM_HINTS, W6R_STAGE, WATER, waterRoom, withW6Rooms } from './worlds/w6Rooms.ts';
 
 const words = (s: string) => s.split(/\s+/).filter(Boolean).length;
 
 /** each room's key pieces: without them its way on never opens */
-const KEY: Record<string, string[]> = { water: ['source', 'item'], dark: ['glow'] };
+const KEY: Record<string, string[]> = { water: ['source', 'item'], dark: ['glow'], seesaw: ['source', 'item'] };
 
 test('the rooms: the checker solves each, Normal and Easy; each fails without its key piece (and the water room without its wheel)', () => {
   for (const t of W6_ROOM_SECTIONS) {
@@ -36,12 +37,17 @@ test('the rooms: the checker solves each, Normal and Easy; each fails without it
       assert.ok(validateStage(bare).errors.some((e) => e.startsWith(`room s1-${t.room!.id}:`)), `${t.id} ${d}: solved without its key`);
     }
   }
+  // (one root-stone is too light: the seesaw's far end tips down under him)
+  for (const d of ['normal', 'easy'] as const) {
+    const one = roomStage(seesawRoom, d, (p) => p.id !== 's1-stone2');
+    assert.ok(validateStage(one).errors.some((e) => e.startsWith('room s1-seesaw:')), `${d}: solved with one stone`);
+  }
   // (with no wheel the raft never rises: the stone on the shelf is out of reach)
   const noWheel = roomStage(waterRoom, 'normal', (p) => p.kind !== 'lever');
   assert.ok(validateStage(noWheel).errors.some((e) => e.startsWith('room s1-water:')), 'solved without the wheel');
 });
 
-test('the rooms: neither can be walked past, each fits an upright phone, each has a post, none can hurt; Dot\'s lines are short', () => {
+test('the rooms: none can be walked past, each fits an upright phone, each has a post, none can hurt; Dot\'s lines are short', () => {
   for (const t of W6_ROOM_SECTIONS) {
     const st = roomStage(t, 'normal');
     const b = roomBox(st.room, st.platforms);
@@ -70,13 +76,17 @@ test('the rooms: neither can be walked past, each fits an upright phone, each ha
   for (const [a, b] of Object.values(W6R_ROOM_HINTS)) assert.ok(words(a) < 10 && words(b) < 10, `${a} / ${b}`);
 });
 
-test('the rooms join a kit once, each open only from its own stage on (6-7 the water room, 6-6 the dark hollow)', () => {
-  const kit = withW6Rooms({ manifest: M6 });
-  const twice = withW6Rooms(kit);
-  assert.equal(twice.manifest.sections.length, W6_ROOM_SECTIONS.length);
-  assert.equal(kit.manifest.lessons![waterRoom.uses![0]], W6R_LESSONS[waterRoom.uses![0]]);
-  // (lessons count from the stage after the one named: 6-6 for the water room means 6-7 on; the vine stages 6-1 and 6-3 never meet it)
-  assert.deepEqual([waterRoom.archetypes, darkRoom.archetypes], [['vine_runner'], ['sprint']]);
+test('each stage\'s kit holds its own room and no other (6-3 the seesaw, 6-6 the dark hollow, 6-7 the water room), once', () => {
+  for (let st = 1; st <= 9; st++) {
+    const kit = withW6Rooms(withW6Rooms({ manifest: M6 }, st), st);
+    const want = W6_ROOM_SECTIONS.filter((s) => W6R_STAGE[s.id] === `6-${st}`).map((s) => s.id);
+    assert.deepEqual(kit.manifest.sections.map((s) => s.id), want, `6-${st}`);
+  }
+  assert.deepEqual(Object.values(W6R_STAGE).sort(), ['6-3', '6-6', '6-7']);
+  assert.deepEqual([waterRoom.archetypes, darkRoom.archetypes, seesawRoom.archetypes], [['vine_runner'], ['sprint'], ['vine_runner']]);
+  // (one stone is too light to hold the near end under him; two are enough)
+  assert.ok(ITEM.stone.weight < KIT.pokeyWeight && 2 * ITEM.stone.weight > KIT.pokeyWeight);
+  assert.ok(SEESAW.bankUp > DOUBLE_RISE + 20 && SEESAW.bankUp - SEESAW.rise < DOUBLE_RISE - 20);
 });
 
 // ───────────────────────────── each room in the real engine ─────────────────────────────
@@ -253,6 +263,55 @@ for (const d of ['normal', 'easy'] as const) {
       walkTo(sim, at(st, 'moon') + 20);
       sim.wait(0.5);
       assert.ok(r.moons[0].open, 'the moonflower opened in his light');
+      assert.equal(sim.e.lives, lives);
+      assert.equal(sim.p.hp, hp);
+      setDifficulty('normal');
+    });
+
+    test(`the seesaw room in the real engine (${d}, ${name}): one stone tips under him, two hold the near end down, up the root and onto the bank`, () => {
+      const { sim, kit, st } = play(seesawRoom, d, w, h);
+      const lives = sim.e.lives;
+      const hp = sim.p.hp;
+      const r = kit.rooms[0];
+      const ss = r.seesaws[0];
+      const [near, far] = ss.ends;
+      const bank = st.platforms.find((p) => p.id === st.room.beyond.on)!;
+      const floorY = near.y;
+      assert.ok(far.y < floorY - SEESAW.rise + 4, 'at rest the far end stands up');
+      // one stone on the near end
+      walkTo(sim, at(st, 'pile') - 40);
+      face(sim, 1);
+      tap(sim);
+      assert.ok(kit.holding, 'a stone from the pile');
+      walkTo(sim, near.x + 20, 6);
+      face(sim, 1);
+      tap(sim);
+      sim.wait(0.5);
+      assert.ok(!kit.holding);
+      // up onto the far end: it tips down under him (one stone is lighter than he is)
+      assert.ok(stepTo(sim, far), 'onto the far end');
+      sim.wait(1);
+      assert.ok(far.y > floorY - 10, `one stone: the far end went down under him (${far.y}, the floor ${floorY})`);
+      // back over the near end to the floor, and the second stone
+      const floor = st.platforms.find((p) => p.id === st.room.left.on)!;
+      assert.ok(stepTo(sim, floor, -1), 'back to the floor');
+      walkTo(sim, at(st, 'pile') - 40);
+      face(sim, 1);
+      tap(sim);
+      assert.ok(kit.holding, 'the second stone from the pile');
+      sim.wait(1);
+      walkTo(sim, near.x + 30, 6);
+      face(sim, 1);
+      tap(sim);
+      sim.wait(0.8);
+      assert.ok(!kit.holding);
+      walkTo(sim, near.x + near.width - 30, 6);
+      sim.wait(0.5);
+
+      assert.ok(stepTo(sim, far), 'onto the far end again');
+      sim.wait(1);
+      assert.ok(far.y < floorY - SEESAW.rise + 4, `two stones: it holds him up (${far.y})`);
+      assert.ok(stepTo(sim, bank), `up onto the bank (${sim.p.x.toFixed(0)}, ${sim.p.y.toFixed(0)})`);
       assert.equal(sim.e.lives, lives);
       assert.equal(sim.p.hp, hp);
       setDifficulty('normal');

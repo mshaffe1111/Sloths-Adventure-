@@ -9,14 +9,19 @@
  *                    the well opens only with the stone on its plate AND the water down (high water swells the root door shut). So:
  *                    raise the water, ride the raft up, take the stone, drop down with it to the plate, climb out, lower the water,
  *                    through. Three steps (Normal's 2-3); the water never costs a life (the well's floor is ground: a dip, a hop out).
+ *   w6r-room-seesaw  6-3 "Root to Root" (Keep swinging. The water is watching). A root seesaw before a bank too high to jump: at rest
+ *                    its near end lies down level with the floor and its far end stands a step up, a step from the bank's top, but his
+ *                    own weight on the far end tips it down. One root-stone on the near end is too light to hold it (2 against his 3);
+ *                    two are enough. Carry both from the pile, walk up the plank, hop to the bank. (World 1 taught the seesaw.)
  *   w6r-room-dark    6-6 "Lights in the Roots" (The roots go dark. Let the firefly light the way). A dark root hollow under a bank too
  *                    high to jump; the root steps up out of it show only in the firefly's light (the kit's `glow` and `ledge`, Meeca's
  *                    last path, whose numbers her real-engine test proves). At the top a moonflower opens in his light and lights the
  *                    whole hollow. The hollow's floor is soft ground with a step out (never a life).
  *
- * Neither has an enemy socket, neither is mirrored (a room reads left to right), each is once a stage, and the pipeline keeps a room's
- * join quiet (no pit beside it). Each can't be walked past unsolved: the water room's root door stands on the floor and its wall is out
- * of a double jump's reach from anything he can stand on unaided; the dark room's bank is too high to jump.
+ * None has an enemy socket, none is mirrored (a room reads left to right), each is once a stage (and only in its own stage: W6R_STAGE),
+ * and the pipeline keeps a room's join quiet (no pit beside it). None can be walked past unsolved: the water room's root door stands on
+ * the floor and its wall is out of a double jump's reach from anything he can stand on unaided; the dark and seesaw rooms' banks are too
+ * high to jump.
  *
  * What the kit has no art for yet (reported): the water itself (the kit's lift is drawn as a plank; the well wants black water rising
  * and falling with it, and the raft), the sluice wheel (a lever today), and the dark over the hollow (the engine's `dark` zone: gen2's
@@ -25,9 +30,6 @@
 import type { LocalRoomSpec, SectionPiece, SectionTemplate, WorldKit } from '../types.ts';
 
 // ───────────────────────────── Dot's lines ─────────────────────────────
-
-/** the mechanics the rooms teach (Dot explains each locked way on as he comes in: STAGE-RULES §1) */
-export const W6R = { water: 'w6:water-room', dark: 'w6:dark-room' } as const;
 
 /**
  * The rooms' lines (under 10 words). All new: each needs Matt's approval before it ships (STAGE-RULES §1 "Story").
@@ -41,12 +43,16 @@ export const W6R_NEW_LINES: readonly string[] = [
   "Too high. Stay close to the firefly, Pokey.",
   'A step! It only shows in the light.',
   'A moonflower. Now we can see everything.',
+  "Too high. That root tips, though.",
+  'One stone is not enough. Try two.',
+  'It holds! Up the root you go.',
 ];
 
 /** the rooms' hints, asked for (Matt: only when asked, in steps, never the answer; under 10 words). New lines: each needs his approval */
 export const W6R_ROOM_HINTS: Record<string, readonly [string, string]> = {
   water: ['What floats when the water comes up?', 'The door hates high water.'],
   dark: ['The firefly goes where you go.', 'Walk slowly at the edge. Look up.'],
+  seesaw: ['Which end goes down when you stand there?', 'You are heavier than one stone.'],
 };
 
 // ───────────────────────────── helpers ─────────────────────────────
@@ -114,8 +120,6 @@ export const waterRoom: SectionTemplate = {
   id: 'w6r-room-water',
   name: 'puzzle room: raise the water, lower the water (the root well)',
   archetypes: ['vine_runner'],
-  // (6-7's own: open from 6-7 on (withW6Rooms' lesson), so 6-1 and 6-3 never meet it)
-  uses: [W6R.water],
   teaches: 'w6:raft',
   phases: ['sho', 'ten'],
   difficulty: 5,
@@ -134,6 +138,74 @@ export const waterRoom: SectionTemplate = {
   exitDy: 0,
   sockets: [],
   room: waterRoomSpec,
+  mirrorable: false,
+};
+
+// ───────────────────────────── 6-3: the root seesaw ─────────────────────────────
+
+/** the floor (the post, the pile), the dip the seesaw lies in, the high bank past it, the walk back down */
+export const SEESAW = {
+  floor: 300,
+  /** the dip under the plank (its ends' tops level with the floor when down: protoStage.ts 1-6's SEE.pit) */
+  dip: 60,
+  plank: 260,
+  /** the raised end over the floor, and the bank over the floor (out of a double jump's reach; a step from the raised end) */
+  rise: 110,
+  bankUp: 260,
+  bankW: 380,
+} as const;
+
+const sf = along('floor', SEESAW.floor);
+const sb = along('bank', SEESAW.bankW);
+
+export const seesawRoomSpec: LocalRoomSpec = {
+  id: 'seesaw',
+  left: sf(0),
+  right: sb(60),
+  above: 460,
+  below: SEESAW.dip + 10,
+  pieces: [
+    { kind: 'reset', id: 'post', at: sf(20) },
+    // (two root-stones from the pile: one weighs 2, Pokey 3; two hold the near end down under him)
+    { kind: 'source', id: 'pile', variant: 'stone', at: sf(130), look: 'pile' },
+    { kind: 'item', id: 'stone1', variant: 'stone', source: 'pile', for: 'root' },
+    { kind: 'item', id: 'stone2', variant: 'stone', source: 'pile', for: 'root' },
+    // (at rest the near end is down: what is carried walks straight onto it)
+    { kind: 'seesaw', id: 'root', at: { on: 'dip', at: 0.5, dy: -SEESAW.dip }, w: SEESAW.plank, rise: SEESAW.rise, rest: -1 },
+  ],
+  exit: 'root',
+  beyond: sb(120),
+  ground: ['floor', 'dip'],
+  tips: {
+    enter: 'Too high. That root tips, though.', // (new, needs Matt's approval)
+    hold: 'One stone is not enough. Try two.', // (new, needs Matt's approval)
+    open: 'It holds! Up the root you go.', // (new, needs Matt's approval)
+  },
+};
+
+export const seesawRoom: SectionTemplate = {
+  id: 'w6r-room-seesaw',
+  name: 'puzzle room: the root seesaw (two stones)',
+  archetypes: ['vine_runner'],
+  teaches: 'w6:two-stones',
+  phases: ['sho', 'ten'],
+  difficulty: 4,
+  maxPerStage: 1,
+  weight: 40,
+  // (one stone, the plank tips under him; the second; up and over: about 14 s for a first-timer)
+  extraSeconds: 14,
+  pieces: [
+    bank('floor', SEESAW.floor, { kind: 'start' }),
+    bank('dip', SEESAW.plank, { kind: 'walk', after: 'floor', dy: SEESAW.dip }),
+    // (the bank, a whole bank down to the ground past the dip: a wall beside a pit reaches the pit's floor)
+    bank('bank', SEESAW.bankW, { kind: 'over', on: 'dip', at: 1, dy: -(SEESAW.dip + SEESAW.bankUp) }, { main: true }),
+    bank('out', [240, 300], { kind: 'walk', after: 'bank', dy: SEESAW.bankUp }),
+  ],
+  entry: { piece: 'floor', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
+  exitDy: 0,
+  sockets: [],
+  room: seesawRoomSpec,
   mirrorable: false,
 };
 
@@ -188,7 +260,6 @@ export const darkRoom: SectionTemplate = {
   id: 'w6r-room-dark',
   name: 'puzzle room: the dark hollow (the firefly lights the steps)',
   archetypes: ['sprint'],
-  uses: [W6R.dark],
   teaches: 'w6:firefly-steps',
   phases: ['sho', 'ten'],
   difficulty: 4,
@@ -217,27 +288,21 @@ export const darkRoom: SectionTemplate = {
 // ───────────────────────────── the set ─────────────────────────────
 
 /** World 6's puzzle-room sections */
-export const W6_ROOM_SECTIONS: readonly SectionTemplate[] = [waterRoom, darkRoom];
+export const W6_ROOM_SECTIONS: readonly SectionTemplate[] = [waterRoom, darkRoom, seesawRoom];
 
 /** the sections the hook-up darkens (the engine's `dark` zone over each, with no lights of its own: the room's firefly is the light) */
 export const W6_DARK_ROOMS: readonly string[] = [darkRoom.id];
 
-/**
- * The stage each room belongs to (STAGE-RULES §3: 2-3 puzzle moments a world): open from that stage on (manifest.lessons), so an earlier
- * stage of the world never meets it. 6-7's water room, 6-6's dark hollow.
- */
-export const W6R_LESSONS: Record<string, string> = { [W6R.water]: '6-6', [W6R.dark]: '6-5' };
+/** each room's stage (STAGE-RULES §3: 2-3 puzzle moments a world; w6.ts W6_ROOM_STAGES): a stage's kit holds only its own */
+export const W6R_STAGE: Record<string, string> = { [seesawRoom.id]: '6-3', [darkRoom.id]: '6-6', [waterRoom.id]: '6-7' };
 
-/** World 6's kit with the rooms joined (the world's own manifest, gen2/worlds/w6.ts, stays as it is: the lead folds the lists together) */
-export function withW6Rooms(kit: WorldKit): WorldKit {
+/**
+ * World 6's kit for stage `stage` (6-3: 3) with that stage's room joined, none for a stage with no room (the world's own manifest,
+ * gen2/worlds/w6.ts, stays as it is: the lead folds the lists together)
+ */
+export function withW6Rooms(kit: WorldKit, stage: number): WorldKit {
   const M = kit.manifest;
   const have = new Set(M.sections.map((s) => s.id));
-  return {
-    ...kit,
-    manifest: {
-      ...M,
-      sections: [...M.sections, ...W6_ROOM_SECTIONS.filter((s) => !have.has(s.id))],
-      lessons: { ...W6R_LESSONS, ...(M.lessons ?? {}) },
-    },
-  };
+  const mine = W6_ROOM_SECTIONS.filter((s) => W6R_STAGE[s.id] === `6-${stage}` && !have.has(s.id));
+  return { ...kit, manifest: { ...M, sections: [...M.sections, ...mine] } };
 }

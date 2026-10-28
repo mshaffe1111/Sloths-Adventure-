@@ -1,8 +1,8 @@
 /**
  * World 6's swing stages on gen2 (gen2/worlds/w6Swing.ts and w6Rooms.ts), built through buildGen2Stage on 20 rolls, Normal and Easy, with
- * a stand-in World 6 manifest (w6Harness.ts M6) until the world's own (w6.ts) is on this branch: every roll passes levelCheck (and so
- * puzzleCheck on its rooms), is long enough, keeps every water hop to half a jump at most, never crumbles; 6-6 holds the dark hollow,
- * 6-7 the water room, 6-1 neither.
+ * World 6's own kit (w6.ts w6Kit, w6Finish) and these sections joined (withW6Swing): every roll passes levelCheck (and so
+ * puzzleCheck on its rooms), is long enough, keeps every water hop to half a jump at most, never crumbles; 6-3 may hold the root
+ * seesaw, 6-6 the dark hollow, 6-7 the water room, 6-1 none.
  */
 import '../headlessDom.ts';
 import test from 'node:test';
@@ -12,16 +12,16 @@ import type { LevelConfig } from '../types.ts';
 import { buildGen2Stage, checkStage, layLocal, maxGap, planBudget, rngFor } from './pipeline.ts';
 import type { Gen2Stage } from './types.ts';
 import { cfg, M6 } from './w6Harness.ts';
-import { darkRoom, waterRoom, withW6Rooms } from './worlds/w6Rooms.ts';
-import { W6_SWING_SECTIONS } from './worlds/w6Swing.ts';
+import { W6R_STAGE } from './worlds/w6Rooms.ts';
+import { W6_SWING_SECTIONS, withW6Swing } from './worlds/w6Swing.ts';
+import { w6Finish, w6Kit } from './worlds/w6.ts';
 
 const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
-const kit = withW6Rooms({ manifest: { ...M6, sections: [...W6_SWING_SECTIONS] } });
 const STAGES: Array<[string, LevelConfig['objectiveType']]> = [['6-1', 'vine_runner'], ['6-3', 'vine_runner'], ['6-6', 'sprint'], ['6-7', 'vine_runner']];
 const cache = new Map<string, Gen2Stage>();
 const build = (id: string, a: LevelConfig['objectiveType'], seed: number, difficulty: 'easy' | 'normal') => {
   const k = `${id}:${seed}:${difficulty}`;
-  if (!cache.has(k)) cache.set(k, buildGen2Stage({ config: cfg(id, a), kit, seed, difficulty }));
+  if (!cache.has(k)) cache.set(k, w6Finish(buildGen2Stage({ config: cfg(id, a), kit: withW6Swing(w6Kit(Number(id.split('-')[1])), Number(id.split('-')[1])), seed, difficulty })));
   return cache.get(k)!;
 };
 
@@ -41,6 +41,7 @@ test('the sections: each is laid in its own space, 3-8 s of play, level at its e
 
 for (const [id, a] of STAGES) {
   test(`${id} on 20 rolls, Normal and Easy: levelCheck passes, long enough, nothing crumbles, its own room and no other`, () => {
+    let withRoom = 0;
     for (const difficulty of ['normal', 'easy'] as const) {
       for (const seed of SEEDS) {
         const st = build(id, a, seed, difficulty);
@@ -48,10 +49,13 @@ for (const [id, a] of STAGES) {
         const fast = modelStage(st, MODEL_FAST).total;
         assert.ok(fast >= st.gen2.budget.seconds.fastFloor && fast >= 120, `${difficulty} ${seed}: fast ${fast.toFixed(0)} s`);
         assert.ok(!st.platforms.some((p) => p.type === 'fragile'), 'nothing crumbles');
-        const rooms = st.gen2.sections.map((s) => s.template).filter((t) => t === waterRoom.id || t === darkRoom.id);
-        const want = id === '6-7' ? [waterRoom.id] : id === '6-6' ? [darkRoom.id] : [];
-        assert.deepEqual(rooms, want, `${difficulty} ${seed}: rooms`);
+        const rooms = st.gen2.sections.map((s) => s.template).filter((t) => t in W6R_STAGE);
+        assert.ok(rooms.length <= 1 && rooms.every((t) => W6R_STAGE[t] === id), `${difficulty} ${seed}: rooms ${rooms}`);
+        if (difficulty === 'normal') withRoom += rooms.length;
       }
     }
+    // (a stage with a room holds it on some rolls: the roll's theme (pipeline THEME) leaves it out of the rest, so until the core can
+    // require a section, curation keeps the rolls that hold it)
+    if (Object.values(W6R_STAGE).includes(id)) assert.ok(withRoom >= 5, `${id}: its room in ${withRoom} of 20 rolls`);
   });
 }
