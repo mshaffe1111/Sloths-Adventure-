@@ -1,5 +1,7 @@
 # Pending for the coding team
 
+**Sent 2026-10-28 (Matt said "send"): items 0-7 below.** New findings go under a new heading.
+
 QA's running list from Matt's test-link sessions (Matt, 2026-10-26: Matt plays, QA reads the logs; send to the coders in one
 batch only when Matt says "send").
 
