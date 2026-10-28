@@ -70,6 +70,6 @@ export function stageList(worlds: number[], seed: number): { stages: StageEntry[
     });
   }
   if (worlds.includes(4)) skipped.push({ id: '4-D', name: "Dot's Netting Flight", why: 'Dot flies it: there is no ground, no jumps and no shrine, and its own flight code runs it (dotFlightStage.ts).' });
-  if (worlds.includes(5)) skipped.push({ id: '5-M', name: 'On the March North', why: "Meeca's stage: no shrine (it ends in a scene) and its carving and scenes live in meecaPlay.ts; its length is meecaStage.ts meecaSeconds (5:00 to 5:30 quick), its rooms are proven by meecaStage.test.ts and played by meecaReal.test.ts." });
+  if (worlds.includes(5)) skipped.push({ id: '5-M', name: 'On the March North', why: "Meeca's stage: no shrine (it ends in a scene) and its carving and scenes live in meecaPlay.ts; its length is meecaStage.ts meecaSeconds (3:20 to 4:20 quick), its rooms are proven by meecaStage.test.ts and played by meecaReal.test.ts; its dead time and floor are measured by tools/inspect/meecaPace.ts." });
   return { stages, skipped };
 }
