@@ -3925,7 +3925,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         const k = bag.draw()!;
         if (k === 'drop') leafDrop(R.r(0.78, 0.88));
         else if (k === 'gust') gustGap(R.chance(0.5) ? 1 : -1);
-        else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+        else if (k === 'pillars') busy(3, W4_FILL[w4Fill], R.r(200, 240));
         else if (k === 'high') highRoadOver();
         else if (k === 'stones') turnStones();
         else if (k === 'vines') swings(R.i(2, 3), true);
@@ -4123,7 +4123,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       // (a crosswind gorge, from 4-4, out of her sight: a miss is a life)
       else if (k === 'gorge') swings(2, true);
       else if (k === 'gust') gustGap(R.chance(0.5) ? 1 : -1);
-      else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+      // (not the shared pillars here, round 3: standing on one bank, the route walked through them, five to seven quiet seconds)
+      else if (k === 'pillars') busy(3, W4_FILL[w4Fill], R.r(200, 240));
       else highRoadOver();
       w4Breath();
     };
@@ -4166,13 +4167,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         pair();
         w4Breath();
         secretFall([5, 6]);
-        stumps();
+        // (World 4's hop ground, not the shared stumps on one bank: the route walked through them, round 3)
+        busy(3, W4_FILL[w4Fill], R.r(200, 240));
       } else {
         secretFall([5, 6]);
         w4Breath();
         pair();
         w4Breath();
-        pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+        busy(3, W4_FILL[w4Fill], R.r(200, 240));
       }
       flag();
       w4Breath();
@@ -4476,10 +4478,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
             // (a flag may follow: keep it clear of the rocks)
             rest(R.r(200, 260));
           } else if (k === 'gust') { gustGap(R.chance(0.5) ? 1 : -1); w4Breath(); }
-          else if (k === 'pillars') { pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]); w4Breath(); }
+          else if (k === 'pillars') { busy(3, W4_FILL[w4Fill], R.r(200, 240)); w4Breath(); }
           else if (k === 'high') { highRoadOver(); w4Breath(); }
           else if (k === 'leaf') { leafDrop(R.r(0.8, 0.88)); w4Breath(); }
-          else { w4Breath(); stumps(); }
+          else { w4Breath(); busy(3, W4_FILL[w4Fill], R.r(200, 240)); }
         }
         n++;
         if (n % 2 === 0) flag();
@@ -4839,7 +4841,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       while (expert < W48_SECONDS - 20 && n < 24) {
         const k = bag.draw()!;
         if (k === 'gust') gustGap(R.chance(0.5) ? 1 : -1);
-        else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+        else if (k === 'pillars') busy(3, W4_FILL[w4Fill], R.r(200, 240));
         else if (k === 'high') highRoadOver();
         else if (k === 'nest') plainNest();
         else if (k === 'knot') knotNest(R.chance(0.5));
