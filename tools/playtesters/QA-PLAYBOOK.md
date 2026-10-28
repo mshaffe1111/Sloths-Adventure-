@@ -110,4 +110,4 @@ Matt's weekly usage is tight. QA manages it:
   pulley, 4-6 wind shutter, 4-8 capuchin trade), against the checklist.
 - Retest when promoted: batch A items, and the earlier fixes (pause-menu memory freeze, no touch damage in boss tells, push-log wall,
   Skip tips 1.2 s, ducks, 4-7 rock glide, Meeca :line/:caught tags, camera easing, no 'blank wait').
-- Sheet last read through row 1971 plus the zwii/iq3h/lk5h/dmfc sessions.
+- Sheet last read through row 2194 (2026-10-28, Matt qlv8/63fc/oib0). Batch B (not sent) in PENDING.md.
