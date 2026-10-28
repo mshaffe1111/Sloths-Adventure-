@@ -7,9 +7,58 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, difficultyScore, layLocal, maxGap, placeRoom, planBudget, rngFor, STAGE_HEAT } from './pipeline.ts';
+import { bandFor, buildGen2Stage, chooseVersions, difficultyScore, layLocal, maxGap, placeRoom, planBudget, rngFor, STAGE_HEAT } from './pipeline.ts';
 import { cfg, kit, manifest, pitHop } from './toyWorld.ts';
-import { MARGIN } from './types.ts';
+import { MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
+import { WorldOnce } from './variety.ts';
+import { addKitPlatforms } from '../puzzleKit.ts';
+import type { GeneratedStage } from '../stageGenerator.ts';
+import type { Platform } from '../types.ts';
+
+test("a section's teapot room keeps its basket and its trough through placeRoom, and passes puzzleCheck", () => {
+  // (Meeca's tea room, meecaStage.ts, as a section's room on its own pieces by key: the pot pours down the trough into the basket,
+  // the basket raises the lift, and the Butler's arch is the wall the lift climbs over)
+  const G = 580;
+  const P: Platform[] = [
+    { id: 11, x: 0, y: G, width: 590, height: 90, type: 'solid' },
+    { id: 12, x: 590, y: G + 60, width: 110, height: 90, type: 'solid' },
+    { id: 13, x: 700, y: G, width: 500, height: 90, type: 'solid' },
+  ];
+  const ids: Record<string, number> = { floor: 11, well: 12, floor2: 13 };
+  const at = (on: string, x: number, dy?: number) => {
+    const p = P.find((q) => q.id === ids[on])!;
+    return { on, at: (x - p.x) / p.width, ...(dy ? { dy } : {}) };
+  };
+  const local: LocalRoomSpec = {
+    id: 'tea',
+    left: at('floor', 180), right: at('floor2', 820), above: 420, below: 90,
+    pieces: [
+      { kind: 'reset', id: 'post', at: at('floor', 200) },
+      { kind: 'basket', id: 'basket', at: at('floor', 370), mouth: 110, need: 1, drop: 70 },
+      { kind: 'teapot', id: 'pot', at: at('floor', 545, -110), into: 'basket', trough: [at('floor', 460, -122), at('floor', 378, -116)] },
+      { kind: 'lift', id: 'lift', at: { on: 'well', at: 0.5, dy: -60 }, w: 110, rise: 250, by: 'basket' },
+      { kind: 'gate', id: 'butler', at: at('floor2', 750), open: { any: [] }, h: 250, look: 'butler' },
+    ],
+    exit: 'lift',
+    beyond: at('floor2', 860),
+    ground: ['floor', 'well'],
+  };
+  const room = placeRoom(local, 's11', (k) => ids[k]);
+  const pot = room.pieces.find((p) => p.kind === 'teapot') as Extract<(typeof room.pieces)[number], { kind: 'teapot' }>;
+  assert.equal(pot.into, 's11-basket');
+  assert.deepEqual(pot.trough!.map((a) => a.on), [11, 11]);
+  const kitX = { rooms: [room] };
+  addKitPlatforms(P, kitX);
+  const st = {
+    config: { ...cfg('5-9', 'sprint'), levelWidth: 1200 }, trees: [], platforms: P, vines: [], ropes: [], enemies: [], boss: null,
+    collectibles: [{ id: 1, type: 'exit_totem', x: 1100, y: G - 30, collected: false, bobPhase: 0 }],
+    spawnX: 60, spawnY: G, exitTotemX: 1100, exitTotemY: G, kit: kitX,
+  } as GeneratedStage;
+  assert.deepEqual(validateStage(st).errors, []);
+  // (and the room really is the way on: without its teapot it cannot be opened)
+  st.kit!.rooms[0].pieces = st.kit!.rooms[0].pieces.filter((p) => p.kind !== 'teapot');
+  assert.match(validateStage(st).errors.join('\n'), /room s11-tea/);
+});
 
 const SEEDS = [1, 2, 3, 4, 5];
 const sig = (st: ReturnType<typeof buildGen2Stage>) => st.platforms.map((p) => `${p.x},${p.y},${p.width}`).join(';');
@@ -142,4 +191,137 @@ test('local repair before a re-roll: a section that cannot be crossed is swapped
   assert.deepEqual(validateStage(st).errors, []);
   assert.ok(st.gen2.repairs.some((r) => r.kind === 'swap'), JSON.stringify(st.gen2.repairs));
   assert.ok(!st.gen2.sections.some((s) => s.template === 'toy-broken'));
+});
+
+const fnv = (s: string) => {
+  let a = 2166136261;
+  for (let i = 0; i < s.length; i++) a = Math.imul(a ^ s.charCodeAt(i), 16777619) >>> 0;
+  return a.toString(16);
+};
+
+test("a world with no sub-blocks lays exactly what it laid before sub-blocks came in (the curated seeds' geometry holds)", () => {
+  // (if a change to passes 1-3 means to move these, the curated seeds in gen2/seeds.ts must be curated again: say so in its commit)
+  const want: Record<number, string> = { 1: 'eae60eaa', 2: 'a02e077e', 3: 'e7cf96f' };
+  for (const seed of [1, 2, 3]) {
+    const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'normal' });
+    assert.equal(fnv(st.platforms.map((p) => `${p.x},${p.y},${p.width},${p.height}`).join(';')), want[seed], `seed ${seed}`);
+  }
+});
+
+test('Easy rolls every socket the way Normal does (the same chance per socket, the same props), only its rules differ', () => {
+  for (const seed of [1, 2, 3]) {
+    const n = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'normal' });
+    const e = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'easy' });
+    const keyed = (st: typeof n, role: string) => st.gen2.fills.filter((f) => f.role === role && f.what && f.what !== 'cake').map((f) => `${f.section}/${f.socket}=${f.what}`).sort();
+    for (const role of ['pickup', 'prop', 'source', 'receptor']) assert.deepEqual(keyed(e, role), keyed(n, role), `seed ${seed} ${role}`);
+  }
+});
+
+/** a section with one sub-block of three versions; the section's far bank refers to the sub-block's `mid` (laid before it) */
+const garden: SectionTemplate = {
+  id: 'toy-garden',
+  name: 'garden',
+  archetypes: 'any',
+  phases: ['ki', 'sho', 'ten'],
+  difficulty: 3,
+  weight: 3,
+  pieces: [
+    { key: 'bank', shape: 'bank', w: [300, 400], place: { kind: 'start' } },
+    { key: 'far', shape: 'bank', w: [400, 500], place: { kind: 'walk', after: 'mid' } },
+  ],
+  subBlocks: [
+    {
+      id: 'middle',
+      versions: [
+        { id: 'flat', pieces: [{ key: 'mid', shape: 'bank', w: [300, 400], place: { kind: 'walk', after: 'bank' } }], sockets: [{ id: 'm', role: 'pickup', on: 'mid', t: 0.5, dn: 34 }] },
+        {
+          id: 'stump',
+          pieces: [
+            { key: 'mid', shape: 'bank', w: [300, 400], place: { kind: 'walk', after: 'bank' } },
+            { key: 'st', shape: 'block', w: 140, place: { kind: 'on', on: 'mid', at: 0.5, h: [50, 70] } },
+          ],
+          sockets: [{ id: 'm', role: 'pickup', on: 'st', t: 0.5, dn: 34 }],
+        },
+        { id: 'pit', pieces: [{ key: 'mid', shape: 'bank', w: [300, 400], place: { kind: 'pit', after: 'bank', jump: 'jump' }, landing: true }] },
+      ],
+    },
+  ],
+  entry: { piece: 'bank', kind: 'ground' },
+  exit: { piece: 'far', kind: 'ground' },
+  exitDy: 0,
+  sockets: [],
+  mirrorable: true,
+};
+const gardenKit: WorldKit = { ...kit, manifest: { ...manifest, sections: [...manifest.sections, garden] } };
+
+test('sub-blocks: one version rolled per use, every version taking its turn before one comes back, Easy laying Normal\'s', () => {
+  for (const seed of [1, 2, 3]) {
+    const n = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: gardenKit, seed, difficulty: 'normal' });
+    assert.deepEqual(validateStage(n).errors, [], `seed ${seed}`);
+    const uses = n.gen2.plan.filter((p) => p.template === 'toy-garden').map((p) => p.versions!.middle);
+    assert.ok(uses.length >= 3, `seed ${seed}: the garden was used ${uses.length} times`);
+    // (WorldOnce: the first three uses are the three versions, and the rotation goes on in turn)
+    assert.deepEqual([...uses.slice(0, 3)].sort(), ['flat', 'pit', 'stump']);
+    for (let i = 3; i < uses.length; i++) assert.equal(uses[i], uses[i - 3]);
+    const e = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: gardenKit, seed, difficulty: 'easy' });
+    assert.deepEqual(e.gen2.plan.map((p) => p.versions ?? null), n.gen2.plan.map((p) => p.versions ?? null));
+    assert.deepEqual(validateStage(e).errors, [], `seed ${seed} easy`);
+  }
+  // the versions the world's earlier stages used wait their turn
+  const st = buildGen2Stage({
+    config: cfg('5-7', 'stealth'), kit: gardenKit, seed: 1, difficulty: 'normal',
+    usedVersions: [versionKey('toy-garden', 'middle', 'flat'), versionKey('toy-garden', 'middle', 'stump')],
+  });
+  assert.equal(st.gen2.plan.find((p) => p.template === 'toy-garden')!.versions!.middle, 'pit');
+  // a version is laid with its own pieces and sockets, the section's piece after it follows it, and Easy widens its landing
+  const nb = planBudget(cfg('5-7', 'stealth'), manifest, 'normal');
+  const eb = planBudget(cfg('5-7', 'stealth'), manifest, 'easy');
+  const L = layLocal(garden, nb, rngFor(4), false, { versions: { middle: 'stump' } });
+  const mid = L.pieces.find((p) => p.key === 'mid')!;
+  const far = L.pieces.find((p) => p.key === 'far')!;
+  assert.ok(L.pieces.some((p) => p.key === 'st') && far.x === mid.x + mid.w && L.sockets.some((s) => s.on === 'st'));
+  const lp = layLocal(garden, nb, rngFor(4), false, { versions: { middle: 'pit' } });
+  const le = layLocal(garden, eb, rngFor(4), false, { versions: { middle: 'pit' } });
+  assert.ok(lp.gaps.length === 1 && le.pieces.find((p) => p.key === 'mid')!.w > lp.pieces.find((p) => p.key === 'mid')!.w);
+  // a mistake in a version is named
+  const bad: SectionTemplate = { ...garden, subBlocks: [{ id: 'middle', versions: [{ id: 'oops', pieces: [] }] }] };
+  assert.throws(() => layLocal(bad, nb, rngFor(1)), /far refers to mid, which is never laid/);
+  assert.throws(() => chooseVersions(garden, rngFor(1), new WorldOnce<string>(), { middle: 'nope' }), /no version nope/);
+  // a section with no sub-blocks draws nothing for them
+  assert.deepEqual(chooseVersions(pitHop, () => assert.fail('drew a number')), {});
+});
+
+test("water on Easy (Matt, 2026-10-28): land falls are soft on Easy, water still costs a life there, and it is warned first", () => {
+  // the pit rule by world and difficulty
+  const pitOf = (pit: 'soft' | 'water' | 'void', d: 'easy' | 'normal') => planBudget(cfg('5-7', 'stealth'), { ...manifest, pit }, d).pit;
+  assert.equal(pitOf('void', 'easy'), 'soft');
+  assert.equal(pitOf('void', 'normal'), 'void');
+  assert.equal(pitOf('soft', 'easy'), 'soft');
+  assert.equal(pitOf('water', 'easy'), 'water');
+  assert.equal(pitOf('water', 'normal'), 'water');
+  const wet: WorldKit = { ...kit, manifest: { ...manifest, pit: 'water' } };
+  const walk = planBudget(cfg('5-7', 'stealth'), manifest, 'easy').walkSpeed;
+  for (const seed of [1, 2, 3]) {
+    for (const d of ['easy', 'normal'] as const) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: wet, seed, difficulty: d });
+      assert.deepEqual(validateStage(st).errors, [], `seed ${seed} ${d}`);
+      assert.ok(st.waterY !== undefined, 'the water is there');
+      const falls = (st.gen2.falls ?? []).filter((f) => f.x1 - f.x0 >= 20);
+      assert.ok(falls.length > 3 && falls.every((f) => f.kind === 'water'));
+      // nothing under the water gaps: no soft floor laid on either difficulty
+      for (const f of falls) assert.ok(!st.platforms.some((p) => p.x >= f.x0 && p.x + p.width <= f.x1 && p.y > f.y + 60), `seed ${seed} ${d}: a floor in the water at ${f.x0}`);
+      const warns = st.proto.hints.filter((h) => h.text === WATER_LINE);
+      const signs = ((st.proto as { gen2?: { waterWarnings?: unknown[] } }).gen2?.waterWarnings ?? []).length;
+      assert.equal(signs, warns.length, 'a sign at the edge with every warning');
+      assert.ok(warns[0].x < falls[0].x0 && warns[0].passX! > falls[0].x1, 'the first water is warned before it');
+      if (d === 'normal') assert.equal(warns.length, 1, 'Normal warns once');
+      else {
+        assert.ok(warns.length >= 2, `seed ${seed}: Easy warned ${warns.length} times`);
+        for (const f of falls) {
+          const before = warns.filter((h) => h.x < f.x0);
+          assert.ok(before.length && f.x0 - before.at(-1)!.x <= WATER_WARN.every * walk + WATER_WARN.lead + 1, `seed ${seed}: water at ${f.x0} without a recent warning`);
+        }
+      }
+    }
+  }
 });

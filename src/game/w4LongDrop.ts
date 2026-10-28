@@ -37,6 +37,7 @@ export const leafReach = (dy: number): number => reachGlide(-dy, false);
 import { rockFits, type RockDrop } from './rockfall.ts';
 import { heartsAtFlags, stageSeconds, stream, type ProtoExtras, type StageHint } from './protoStage.ts';
 import type { Updraft, W4Decor } from './w4Play.ts';
+import { W4Roll } from './w4Sections.ts';
 
 const RUN = 285;
 /** a ledge with a flag is at least this wide: he comes back to it after a fall (see flag) */
@@ -151,8 +152,10 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
   // (2026-10-28, the stage inspector: the first ledge was 3.4 quiet seconds long; Dot's two lines still fit on it)
   // (to 1400: a plain run off the first edge fell into the mist at 3.5 s, before the jump tip had had its time; now it is past 5 s,
   // stageStart.test.ts and the first-timer bot)
-  let cur = ledge(120, 1400, 0);
-  row(380, 1340, -34, 7, 'hibiscus');
+  // (to 1250 again, 2026-10-28: the first drop is now a step down a plain walk off lands on, so the first fall into the mist is the
+  // second edge, past 5 s; and the 4.1 s of plain ledge before it was the stage's one quiet stretch over 4 s, on every roll)
+  let cur = ledge(120, 1250, 0);
+  row(380, 1190, -34, 6, 'hibiscus');
   /** which way the path runs: 1 right, -1 left */
   let dir: 1 | -1 = 1;
   /** the end of the ledge he is on, the way he is going */
@@ -169,11 +172,14 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
    * him up, it takes him back down past where he set off, so the next flag is lower again). `plunge`: the deepest drops, at the foot
    * of the cliff.
    */
-  function drop(o: { leaf: boolean; rock?: boolean; draft?: boolean; long?: boolean; deep?: boolean; plunge?: boolean }) {
+  function drop(o: { leaf: boolean; rock?: boolean; draft?: boolean; long?: boolean; deep?: boolean; plunge?: boolean; step?: boolean }) {
     // (the deep ones fit the view sideways under him with his head kept under the HUD: about 330 px below his feet, w4LongDrop.test.ts)
-    let dy = Math.round(o.plunge ? R.r(318, 332) : o.deep ? R.r(312, 332) : R.r(120, 190));
+    let dy = Math.round(o.plunge ? R.r(318, 332) : o.deep ? R.r(312, 332) : o.step ? R.r(140, 160) : R.r(120, 190));
     let gap: number;
-    if (o.leaf) {
+    // `step` (the very first drop, 2026-10-28): a step down that a plain walk off the edge lands on (a walk off at a run comes down about
+    // 95 px out from 150 px up), so holding the way on from the start never drops him into the mist before Dot's jump tip has had its time
+    if (o.step) gap = Math.round(R.r(40, 55));
+    else if (o.leaf) {
       // (a deeper drop when the window between a jump and the leaf is too narrow at this height)
       while (leafMax(dy) - jumpMax(dy) < 36 && dy < 300) dy += 20;
       gap = Math.round(jumpMax(dy) + (leafMax(dy) - jumpMax(dy)) * (o.plunge ? R.r(0.2, 0.5) : R.r(0.25, 0.7)));
@@ -325,7 +331,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
   });
   beat('Learn: little drops', () => {
     hint(cur.x + cur.width - 360, 'Jump the gaps! Flick up, and keep your thumb on the glass as you fall', 'Jump the gaps! Hold Jump as you fall', 'Jump the gaps! Hold Space as you fall');
-    for (let k = 0; k < 4; k++) drop({ leaf: false });
+    for (let k = 0; k < 4; k++) drop({ leaf: false, step: k === 0 });
     flag();
   });
   beat('Develop: only the leaf', () => {
@@ -403,19 +409,39 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
    * long crossings, the run out right past every ledge above, and the plunge
    */
   const restAfter = () => 4 + 2 * 12 + Math.max(2, (rightmost() - cur.x - 4200) / 800) * 4 + 4 * 4.3;
-  /** a stretch of mixed drops (with `crossings`, every fifth is a long crossing) */
-  const mixed = (k: number, crossings: boolean) => {
+  /**
+   * the two long mixed stretches (back across, and out past everything) each take a theme from the roll (w4Sections.ts, 2026-10-28: 200
+   * rolls of 4-7 were 99.8% alike): `rocks` a rock through nearly every glide, `air` up on the warm air and down again, `plain` the long
+   * ledges and deep plain drops, `crossings` the long crossings (only once they are taught), `mixed` the old blend. The cooldown keeps
+   * the second stretch off the first one's theme.
+   */
+  type Theme = 'rocks' | 'air' | 'plain' | 'crossings' | 'mixed' | 'steps';
+  const mixed = (k: number, theme: Theme) => {
     const m = k % 5;
-    if (m === 4 && crossings) across();
+    if (theme === 'rocks') drop({ leaf: true, rock: k % 3 !== 2 });
+    else if (theme === 'air') {
+      // (two deep drops to each ride up: the stretch still goes down about as fast as plain drops, so the tiers under it keep clear)
+      if (k % 3 === 1) climb();
+      else drop({ leaf: true, deep: true });
+    } else if (theme === 'plain') drop({ leaf: k % 3 !== 0, long: k % 3 === 1, deep: k % 3 === 2 });
+    else if (theme === 'crossings') {
+      if (k % 3 === 0) across();
+      else drop({ leaf: true, draft: k % 3 === 1 });
+    } else if (m === 4) across();
     else drop({ leaf: m !== 2, rock: m === 0 || m === 3, draft: m === 1 });
   };
+  const roll = new W4Roll(seed, '4-7');
+  const backTheme = roll.pick<Theme>(['rocks', 'air', 'steps']);
+  const allTheme = roll.pick<Theme>(['air', 'steps', 'mixed']);
   beat('Develop: back across', () => {
     let n = 0;
     while (soFar() + restAfter() < target && n < 12 && cur.x > 1600) {
-      mixed(n, false);
+      mixed(n, backTheme);
       n++;
       if (n % 2 === 0) flag();
     }
+    // (never end the stretch on a ride up: the turn under it must run deeper than a fall into the mist below the tier above)
+    if (backTheme === 'air' && n % 3 === 2) drop({ leaf: true, deep: true });
     flag();
   });
   beat('Develop: the long crossing', () => {
@@ -435,7 +461,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     const pastAll = rightmost() + 300;
     let n = 0;
     while ((cur.x + cur.width < pastAll || n < 2) && n < 30) {
-      mixed(n, true);
+      mixed(n, allTheme);
       n++;
       if (n % 2 === 0) flag();
     }
