@@ -15,7 +15,7 @@ import type { Difficulty } from '../difficulty.ts';
 import type { Anchor, PieceSpec, RoomSpec } from '../puzzleKit.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras } from '../protoStage.ts';
-import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform } from '../types.ts';
+import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform, Vine } from '../types.ts';
 import type { Rng } from './variety.ts';
 
 export type { Difficulty, Rng };
@@ -137,7 +137,18 @@ export interface WorldManifest {
 
 // ───────────────────────────── a section ─────────────────────────────
 
-export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy';
+/** a platform, or one of the two hanging pieces: a `liana` (a swing, placed by `swing`) and a `vine` (a climb, placed by `climb`) */
+export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine';
+
+/**
+ * A liana's own swing (Matt, 2026-10-28): it swings by itself, `amp` radians either side of hanging straight down, one there-and-back
+ * every `period` seconds on the game clock; the player can't pump it (up and down climb, left and right only turn), and a jump off it
+ * carries the vine's velocity at his grip, so letting go is a timing window (pipeline lianaRelease).
+ */
+export interface LianaSwing {
+  amp: number;
+  period: number;
+}
 
 /**
  * Where a piece goes, relative to another piece of the same section (never a fixed x, y), so the rolls can stretch a piece and the
@@ -148,7 +159,17 @@ export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy';
  *                        (pipeline maxGap: Easy 0.65, Normal 0.82 of the physical reach, never past what levelCheck accepts)
  *   pit                  a gap at the same height with a pit under it (soft: a floor and a step out); the jump kind decides its width
  *   on                   an obstacle standing on `on`'s top, `at` (0..1) along it, `h` px tall (a stump, a block)
- *   over                 a floating ledge over `on`, its left end `at` along it, its top `dy` above (negative) `on`'s top
+ *   over                 a floating ledge over `on`, its left end `at` along it, its top `dy` above (negative) `on`'s top (over a
+ *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
+ *   swing                a liana (shape 'liana') hanging past `after`'s end: its anchor `top` px above `after`'s top, `reach` px out
+ *                        from the end (what a running jump grabs), swinging by itself (`amp`, `period`: LianaSwing; rolled once per use,
+ *                        the same on Easy and Normal). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
+ *                        piece that lands from it
+ *   land                 a ledge past a liana (`after` names the liana): its near end at `share` of the band where letting go lands
+ *                        on it with a release window of at least LIANA.window (Easy 300 ms, Normal 167 ms), `dy` below (+) or above the
+ *                        ledge the swing started from. A chain of swings has a perch between every two: liana, land, liana, land
+ *                        (levelCheck follows ledge -> liana -> ledge, never liana to liana)
+ *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
  */
 export type PlaceRule =
   | { kind: 'start' }
@@ -156,7 +177,10 @@ export type PlaceRule =
   | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range }
   | { kind: 'pit'; after: string; jump: 'jump' | 'double'; share?: Range }
   | { kind: 'on'; on: string; at: Range; h: Range }
-  | { kind: 'over'; on: string; at: Range; dy: Range };
+  | { kind: 'over'; on: string; at: Range; dy: Range }
+  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
+  | { kind: 'land'; after: string; dy?: Range; share?: Range }
+  | { kind: 'climb'; on: string; at: Range; h: Range };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */
@@ -377,6 +401,8 @@ export interface PlacedSection {
   pieces: PlacedPiece[];
   /** platforms the stitcher laid before it (a pit's floor and walls, a helper stone) */
   seam: Platform[];
+  /** its hanging pieces (lianas and climbing vines), by key; a liana carries its own swing */
+  vines: Array<{ key: string; vine: Vine; swing?: LianaSwing }>;
   /** the sockets resolved to world points (filled in pass 4) */
   sockets: Array<{ socket: Socket; x: number; y: number; piece: Platform }>;
   room?: RoomSpec;
@@ -509,3 +535,16 @@ export const WATER_WARN = { lead: 480, every: 12 } as const;
 export const WATER_LINE = 'Careful, water! Flick up and over.';
 /** the quiet a stretch may have before it is dead time (§2 / E2) */
 export const QUIET = { easy: 3.0, normal: 2.0, rest: 4.0 } as const;
+/**
+ * Lianas (World 6): the release window a jump off one must leave onto the next perch (s: Easy 300 ms, Normal 167 ms, five frames at
+ * 30 fps), and the defaults of the `swing` place rule: the swing (LianaSwing amp in radians, period in seconds), how high above the
+ * ledge it hangs from, how far out from the ledge's end, and its length (it hangs to 30 px under the ledge at most)
+ */
+export const LIANA = {
+  window: { easy: 0.3, normal: 0.167 },
+  amp: [0.7, 0.85],
+  period: [1.8, 2.2],
+  top: [360, 420],
+  reach: [160, 190],
+  len: 410,
+} as const;

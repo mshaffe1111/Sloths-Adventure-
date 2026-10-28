@@ -261,6 +261,29 @@ A+B, D and F run in parallel (cloud builders, branches `gen2-w5`, `gen2-w5-arena
 (`PieceShape` gains `liana`), water pits (a life on Normal and on Easy, warned first on Easy), tide zones as props. Then Worlds 7-10 the same way, one
 world per helper team.
 
+### B11. World 6's pieces (the Deep Mangrove, 2026-10-28)
+
+**Hanging pieces** (`PieceShape` `'liana'` and `'vine'`; they become the engine's `Vine`s, not platforms; a socket never sits on one,
+and a section's entry and exit are always ledges):
+
+- `{ shape: 'liana', place: { kind: 'swing', after, top?, reach?, amp?, period? } }`: a liana hanging past `after`'s end, its anchor
+  `top` px above that ledge (default `LIANA.top` 360-420), `reach` px out from its end (160-190), down to 30 px under the ledge at
+  most (410 long). It **swings by itself** (Matt, 2026-10-28): `amp` radians either side, one there-and-back every `period` s
+  (`LianaSwing`, defaults 0.7-0.85 and 1.8-2.2 s), rolled once per use and the same on Easy and Normal; the player can't pump it.
+  Each placed liana's swing goes to the engine as `proto.gen2.lianas` (`{ vine, amp, period }`, by vine id) and sits on
+  `PlacedSection.vines`. A section with a liana needs the `swing` move (inferred) and is never mirrored.
+- `{ place: { kind: 'land', after: <the liana>, dy?, share? } }`: the perch past it. Its near end is `share` along the band of near
+  ends where letting go lands on it with a **release window** of at least `LIANA.window` (Easy 300 ms, Normal 167 ms), `dy` from
+  the swing's ledge. The window comes from one function, `lianaRelease(vine, swing, gripY, perch)` (he hangs at the ledge's height,
+  letting go carries the vine's velocity at his grip, steering toward the perch): when branch vine-fix changes the engine's swing,
+  this function follows it. Until then `lianaBand` also holds the band to what today's levelCheck links (`swingLandings`, 6 lines).
+  The gap from the swing's ledge to the perch is a pit (soft, water or void as the stage's falls are).
+- **Chains**: levelCheck follows ledge -> liana -> ledge, never liana -> liana, so a chain has a perch between every two swings
+  (liana, land, liana, land). levelCheck was not changed.
+- `{ shape: 'vine', place: { kind: 'climb', on, at, h } }`: a climbing vine standing on `on`, `at` along it, `h` px tall (the
+  engine's `tree_climb` vine; needs the `climb` move, inferred). An `over` piece on a vine with `at: 0` starts at the vine (its
+  top `dy` above the vine's top): the ledge a climb leads to. Only the vine reaches a ledge higher than a double jump.
+
 ---
 
 ## Part C. Matt's decisions (answered 2026-10-28)
