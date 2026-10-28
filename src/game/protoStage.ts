@@ -3664,7 +3664,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   function leafDrop(share: number, back = false) {
     const x0 = x;
     // (2026-10-28, the stage inspector: a shorter walk in and out, the breath between pieces is w4Breath's)
-    run(R.r(220, 260));
+    // (round 5: 220-260 to 170-200, and a shorter walk on: the leaf flavour's finish was a fifth quiet)
+    run(R.r(170, 200));
     const tX = x - 130;
     const perchY = Math.round(G - R.r(230, 270));
     trunk(tX, G, perchY);
@@ -3684,7 +3685,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flower(Math.round(edge + gap * u), Math.round(perchY - 10 + (G - 70 - perchY) * u * u), 'orchid');
     }
     open(far);
-    run(R.r(170, 210));
+    run(R.r(110, 140));
     expert += (tX - x0) / RUN + (G - perchY) / CLIMB + 1.2 + (x - edge) / RUN;
     pieces.push({ k: 'canopy', x0, x1: x });
   }
@@ -3889,15 +3890,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // and a drop, again and again), the gusts, or the vines (a chain of lianas over a drop, World 1's swing over a real fall: a miss
     // costs a life, so World 4 asks more than World 3 here)
     const roll = new W4Roll(seed, '4-2');
-    const flavour = roll.theme('finish', ['leaf', 'gusts', 'vines'] as const);
-    // (round 3: every flavour swings a liana over a real drop at each break, World 4 sitting above World 3: a miss is a life)
+    const flavour = roll.theme('finish', ['leaf', 'gusts', 'vines', 'ground'] as const);
+    // (round 5, 2026-10-28: each flavour's own pieces only, two at each break: a windy liana at every break in every flavour, round 3,
+    // made the rolls alike again. The vines' lianas are over a real drop: a miss is a life; the others' misses are soft moss)
     const sig = () => {
-      swings(2, true);
-      w4Breath();
-      if (flavour === 'leaf') leafDrop(R.r(0.8, 0.88));
-      else if (flavour === 'gusts') gustGap(R.chance(0.5) ? 1 : -1);
-      else swings(2);
-      w4Breath();
+      for (let k = 0; k < 2; k++) {
+        if (flavour === 'leaf') (k ? () => busy(2, W4_FILL[w4Fill], R.r(160, 200)) : () => leafDrop(R.r(0.8, 0.88)))();
+        else if (flavour === 'gusts') (k ? turnStones : () => gustGap(R.chance(0.5) ? 1 : -1))();
+        else if (flavour === 'vines') swings(2);
+        else (k ? highRoadOver : () => busy(3, W4_FILL[w4Fill], R.r(200, 240)))();
+        w4Breath();
+      }
     };
     beat('Develop: the chimes', () => {
       hint(x + 40, 'Hear the chimes? They ring before the wind blows. Jump with it behind you');
@@ -3940,10 +3943,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     type Piece42 = 'drop' | 'gust' | 'pillars' | 'high' | 'stones' | 'gustLeaf' | 'vines';
     const counts: Record<typeof flavour, Record<Piece42, number>> = {
-      // (the leaf's climbs are slow: two of them to a bag was 28-39 quiet seconds a finish, so the leaf shares it with pillars and gusts)
-      leaf: { drop: 2, gust: 0, pillars: 1, high: 0, stones: 0, gustLeaf: 2, vines: 2 },
-      gusts: { drop: 0, gust: 2, pillars: 0, high: 1, stones: 2, gustLeaf: 0, vines: 2 },
-      vines: { drop: 0, gust: 1, pillars: 1, high: 0, stones: 0, gustLeaf: 0, vines: 4 },
+      leaf: { drop: 3, gust: 0, pillars: 2, high: 0, stones: 0, gustLeaf: 1, vines: 0 },
+      gusts: { drop: 0, gust: 3, pillars: 0, high: 0, stones: 2, gustLeaf: 0, vines: 0 },
+      vines: { drop: 0, gust: 0, pillars: 1, high: 0, stones: 0, gustLeaf: 0, vines: 4 },
+      ground: { drop: 0, gust: 0, pillars: 3, high: 2, stones: 0, gustLeaf: 0, vines: 0 },
     };
     const bag = roll.bag<Piece42>(['drop', 'gust', 'pillars', 'high', 'stones', 'gustLeaf', 'vines'], (k) => counts[flavour][k]);
     beat('Finish', () => {
@@ -3956,7 +3959,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         else if (k === 'pillars') busy(3, W4_FILL[w4Fill], R.r(200, 240));
         else if (k === 'high') highRoadOver();
         else if (k === 'stones') turnStones();
-        else if (k === 'vines') swings(R.i(2, 3), true);
+        else if (k === 'vines') swings(R.i(2, 3));
         else gustLeaf();
         w4Breath();
         n++;
