@@ -7,11 +7,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, placeRoom, planBudget, rngFor, STAGE_HEAT, trimPlan } from './pipeline.ts';
-import { cfg, kit, manifest, pitHop } from './toyWorld.ts';
-import { MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease } from './pipeline.ts';
+import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
+import { LIANA, MARGIN, TIDE, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
 import { addKitPlatforms } from '../puzzleKit.ts';
+import { DOUBLE_RISE } from '../physics.ts';
+import { tideCrossTime, idleTime } from '../zones.ts';
+import { findRoute, type Route } from '../../../tools/inspect/route.ts';
+import { inspectJumps, KID } from '../../../tools/inspect/jumps.ts';
+import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
+import { actionTokens, cosine, profile } from '../../../tools/inspect/analyze.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { Platform } from '../types.ts';
 
@@ -200,8 +206,10 @@ const fnv = (s: string) => {
 };
 
 test("a world with no sub-blocks lays exactly what it laid before sub-blocks came in (the curated seeds' geometry holds)", () => {
-  // (if a change to passes 1-3 means to move these, the curated seeds in gen2/seeds.ts must be curated again: say so in its commit)
-  const want: Record<number, string> = { 1: 'eae60eaa', 2: 'a02e077e', 3: 'e7cf96f' };
+  // (if a change to passes 1-3 means to move these, the curated seeds in gen2/seeds.ts must be curated again: say so in its commit.
+  // Moved since: 2026-10-28's pit steps (pitSteps), which re-laid every soft pit's floor and steps and nothing else; then QUICK's
+  // fast floor, which grew seeds 1 and 2 by a section before the shrine)
+  const want: Record<number, string> = { 1: '7bb5ab7a', 2: 'adef3f92', 3: '1e084cdd' };
   for (const seed of [1, 2, 3]) {
     const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'normal' });
     assert.equal(fnv(st.platforms.map((p) => `${p.x},${p.y},${p.width},${p.height}`).join(';')), want[seed], `seed ${seed}`);
@@ -382,6 +390,12 @@ test('the length loop converges: every roll lands in its window (or ships long, 
     assert.ok(t >= tgt && (t <= max || long), `seed ${seed}: typical ${t.toFixed(0)} s outside [${tgt}, ${max.toFixed(0)}]`);
     assert.ok(modelStage(n, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: Normal quick`);
     assert.ok(modelStage(e, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: Easy quick ${modelStage(e, MODEL_FAST).total.toFixed(0)} s`);
+    // (and the inspector's quick player, what curation measures, is over 2:00 on both: QUICK)
+    for (const st of [n, e]) {
+      const q = pickRoute('stealth', st).quick.time;
+      assert.ok(q >= QUICK.seconds, `seed ${seed} ${st.gen2.budget.difficulty}: the inspector's quick player ${q.toFixed(0)} s`);
+      assert.ok(st.gen2.budget.seconds.fastFloor * QUICK.ratio >= QUICK.seconds - 1e-9);
+    }
     assert.deepEqual(e.gen2.plan.map((p) => p.template), n.gen2.plan.map((p) => p.template), `seed ${seed}: Easy lays Normal's plan`);
   }
   // a change keeps the prefix: one section added (fresh) or taken off just before the shrine's node, nothing before it moves
@@ -398,4 +412,358 @@ test('the length loop converges: every roll lands in its window (or ships long, 
   const cut = t2.findIndex((p, i) => p !== plan[i]);
   assert.equal(t2.length, plan.length - 1);
   assert.ok(plan.slice(cut + 1).every((p) => p.node === goal || p.node === plan[cut].node), 'only the end is trimmed');
+});
+
+test("a soft pit's way out is one plain jump at a time onto a tread a kid's thumb lands on, at any pitDepth (the kid bot at 85%+)", () => {
+  // the geometry, for every depth, width and lip height a stage lays: each rise at most a hop, each tread at least PIT.tread, room
+  // to stand before the first step, the floor never deeper than asked and never above the lower lip
+  for (const hop of [riseLimit(false, MARGIN.easy) * PIT.hop, riseLimit(false, MARGIN.normal) * PIT.hop]) {
+    for (const depth of [40, 99, 110, 130, 200, 320]) {
+      for (const w of [60, 99, 113, 145, 160, 203, 230, 400]) {
+        for (const farDy of [-40, 0, 60]) {
+          const lip = 580;
+          const far = lip + farDy;
+          const { floor, steps } = pitSteps(0, w, lip, far, depth, hop);
+          const what = `hop ${hop.toFixed(0)} depth ${depth} width ${w} far ${farDy}`;
+          const lower = Math.max(lip, far);
+          assert.ok(floor > lower && floor <= lower + depth + 1e-6, `${what}: floor ${floor - lower} under the lower lip`);
+          const tops = [floor, ...steps.map((s) => s.top), far];
+          for (let i = 1; i < tops.length; i++) assert.ok(tops[i - 1] - tops[i] <= hop + 1e-6, `${what}: a rise of ${(tops[i - 1] - tops[i]).toFixed(0)}`);
+          steps.forEach((s, i) => {
+            const tread = (steps[i + 1]?.x ?? w) - s.x;
+            assert.ok(tread >= PIT.tread - 1e-6 && s.x + s.w === w, `${what}: a ${tread.toFixed(0)} px tread`);
+          });
+          if (steps.length) assert.ok(steps[0].x >= PIT.floor - 1e-6, `${what}: no floor before the first step`);
+          // (deep enough to need steps and wide enough for them: the full depth)
+          if (w - PIT.floor >= PIT.tread * Math.ceil((lower + depth - far) / hop)) assert.ok(Math.abs(floor - lower - depth) < 1e-6, `${what}: raised`);
+        }
+      }
+    }
+  }
+  // built: Easy stages with narrow pits (World 5's) and double-jump pits wide enough for steps, at several depths; the kid bot flies
+  // every hop out of every pit (floor, steps, far bank) and every jump on the inspector's route
+  const narrow: SectionTemplate = {
+    ...pitHop, id: 'toy-narrowpit', teaches: undefined, uses: undefined, weight: 4, sockets: [],
+    pieces: [pitHop.pieces[0], { ...pitHop.pieces[1], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.5, 0.9] } }],
+  };
+  const wide: SectionTemplate = { ...narrow, id: 'toy-widepit', pieces: [pitHop.pieces[0], { ...pitHop.pieces[1], place: { kind: 'pit', after: 'near', jump: 'double', share: [0.7, 1] } }] };
+  let stepped = 0;
+  for (const depth of [99, 130, 250]) {
+    const k: WorldKit = { ...kit, manifest: { ...manifest, pitDepth: depth, sections: [...manifest.sections, narrow, wide] } };
+    for (const seed of [1, 2]) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'easy' });
+      const what = `depth ${depth} seed ${seed}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      const segs: Route['segs'] = [];
+      for (const f of st.gen2.falls ?? []) {
+        if (f.x1 - f.x0 < 20) continue;
+        const inside = st.platforms.filter((p) => p.x >= f.x0 && p.x + p.width <= f.x1 && p.y > f.y).sort((a, b) => b.y - a.y);
+        const far = st.platforms.find((p) => p.x === f.x1 && !inside.includes(p))!;
+        assert.ok(inside.length && far, `${what}: a soft floor under the pit at ${f.x0}`);
+        if (inside.length > 1) stepped++;
+        const chain = [...inside, far];
+        for (let i = 1; i < chain.length; i++) {
+          const [a, b] = [chain[i - 1], chain[i]];
+          segs.push({ kind: 'hop', x0: a.x + 10, y0: a.y, x1: b.x + 30, y1: b.y, dt: 0, from: a, plat: b });
+        }
+      }
+      const route: Route = { segs, traced: 'check', presumedHops: 0, addedLinks: 0, stops: 0, skippedStops: 0 };
+      for (const r of [...inspectJumps(st, route, true, KID), ...inspectJumps(st, findRoute(st), true, KID)]) {
+        if (r.rate === null) continue;
+        assert.ok(r.rate >= 0.85, `${what}: the kid bot makes the jump at ${r.x} (rise ${r.rise}, landing ${r.landW} px) ${(r.rate * 100).toFixed(0)}%`);
+      }
+    }
+  }
+  assert.ok(stepped > 0, 'some pits are deep and wide enough for steps');
+});
+
+test("a prop's threat is paid from its section's threat budget like a creature's (sockets in order); no threat, nothing changes", () => {
+  // a section with a teapot's socket before a spider's: a teapot that costs 3 leaves a Sho or early Ten section too little for a spider
+  const kettle: SectionTemplate = {
+    id: 'toy-kettle', name: 'kettle', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 5, weight: 3, uses: ['spider'],
+    pieces: [{ key: 'bank', shape: 'bank', w: [900, 1000], place: { kind: 'start' } }],
+    entry: { piece: 'bank', kind: 'ground' }, exit: { piece: 'bank', kind: 'ground' }, exitDy: 0,
+    sockets: [
+      { id: 'pot', role: 'prop', on: 'bank', t: 0.3, allow: ['steam'] },
+      { id: 'foe', role: 'enemy', on: 'bank', t: 0.7, maxThreat: 3 },
+    ],
+    mirrorable: true,
+  };
+  const worldWith = (pot?: number, bell?: number): WorldKit => ({
+    ...kit,
+    manifest: {
+      ...manifest,
+      sections: [...manifest.sections, kettle],
+      props: [
+        ...manifest.props.map((p) => (p.id === 'bell' && bell !== undefined ? { ...p, threat: bell } : p)),
+        { id: 'teapot', tags: ['steam'], w: 60, minApart: 300, beat: true, ...(pot !== undefined ? { threat: pot } : {}) },
+      ],
+    },
+  });
+  const build = (k: WorldKit, seed: number) => buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'normal' });
+  const fillsOf = (st: ReturnType<typeof build>) => st.gen2.fills.map((f) => `${f.section}/${f.socket}=${f.what}`).sort();
+  let lost = 0;
+  for (const seed of [1, 2, 3]) {
+    // (the default is 0: a world that gives no prop a threat builds exactly what it did)
+    const free = build(worldWith(), seed);
+    assert.deepEqual(fillsOf(build(worldWith(0, 0), seed)), fillsOf(free), `seed ${seed}: threat 0 is no threat`);
+    assert.equal(sig(build(worldWith(0, 0), seed)), sig(free));
+    // a prop dearer than any section's budget is never laid, and costs the creatures nothing
+    const dear = build(worldWith(99, 99), seed);
+    assert.ok(!dear.gen2.fills.some((f) => f.what === 'teapot' || f.what === 'bell' || f.what === 'pebbles'), `seed ${seed}: a 99-threat prop laid`);
+    assert.deepEqual(dear.gen2.fills.filter((f) => f.role === 'enemy').map((f) => `${f.section}/${f.socket}=${f.what}`), free.gen2.fills.filter((f) => f.role === 'enemy').map((f) => `${f.section}/${f.socket}=${f.what}`));
+    // a teapot of 3 and a bell of 1: every section holds no more threat, props and animals together, than its budget
+    const paid = build(worldWith(3, 1), seed);
+    assert.deepEqual(validateStage(paid).errors, [], `seed ${seed}`);
+    const cost: Record<string, number> = { teapot: 3, bell: 1, spider: 2 };
+    for (const s of paid.gen2.sections) {
+      const spent = paid.gen2.fills.filter((f) => f.section === s.uid && f.socket !== 'topup' && f.role !== 'tip' && f.what).reduce((t, f) => t + (cost[f.what!] ?? 0), 0);
+      assert.ok(spent <= paid.gen2.budget.threat * s.tension + 1e-9, `seed ${seed} ${s.uid}: ${spent} threat in a budget of ${(paid.gen2.budget.threat * s.tension).toFixed(1)}`);
+    }
+    // (and the teapots really spend it: kettles that hold a teapot hold fewer spiders than with a free one)
+    const spiders = (st: ReturnType<typeof build>) =>
+      st.gen2.fills.filter((f) => f.socket === 'foe' && f.what && st.gen2.fills.some((g) => g.section === f.section && g.socket === 'pot' && g.what === 'teapot')).length;
+    lost += spiders(free) - spiders(paid);
+    assert.ok(paid.gen2.fills.some((f) => f.what === 'teapot'), `seed ${seed}: no teapot laid`);
+  }
+  assert.ok(lost > 0, 'a teapot leaves less for the spiders');
+});
+
+test("each roll's theme favours a third to a half of a big world's sections: rolls differ more, every section still comes, no rule broken", () => {
+  // a toy world grown to 31 sections (World 5's size): meadows, stump runs, pit hops and spider walks of several makes
+  const big: SectionTemplate[] = [...manifest.sections];
+  for (let i = 0; i < 6; i++) big.push({ ...meadow, id: `toy-meadow${i}`, pieces: [{ ...meadow.pieces[0], w: [420 + 60 * i, 560 + 60 * i] }] });
+  for (let i = 0; i < 8; i++) {
+    big.push({
+      ...stumps, id: `toy-stumps${i}`, difficulty: 2 + (i % 4),
+      pieces: [
+        { ...stumps.pieces[0], w: [600 + 40 * i, 800 + 40 * i] },
+        { ...stumps.pieces[1], place: { kind: 'on', on: 'bank', at: [0.1, 0.25], h: [30 + 6 * i, 50 + 6 * i] } },
+        ...(i % 2 ? [] : [stumps.pieces[2]]),
+      ],
+      sockets: stumps.sockets.filter((k) => i % 2 === 0 || k.on !== 'b'),
+    });
+  }
+  for (let i = 0; i < 7; i++) {
+    big.push({
+      ...pitHop, id: `toy-pithop${i}`, teaches: undefined, difficulty: 4 + (i % 4),
+      pieces: [pitHop.pieces[0], { ...pitHop.pieces[1], place: { kind: 'pit', after: 'near', jump: i % 3 ? 'jump' : 'double', share: [0.5, 0.9] } }, ...(i % 2 ? [pitHop.pieces[2]] : [])],
+      sockets: pitHop.sockets.filter((k) => k.role !== 'tip' && (i % 2 === 1 || k.on !== 'road')),
+    });
+  }
+  for (let i = 0; i < 6; i++) {
+    big.push({
+      id: `toy-walk${i}`, name: 'spider walk', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 3 + i, uses: ['spider'],
+      pieces: [{ key: 'bank', shape: 'bank', w: [700, 900], place: { kind: 'start' } }, { key: 'up', shape: 'bank', w: [400, 500], place: { kind: 'walk', after: 'bank', dy: i % 2 ? -40 : 40 } }],
+      entry: { piece: 'bank', kind: 'ground' }, exit: { piece: 'up', kind: 'ground' }, exitDy: i % 2 ? -40 : 40,
+      sockets: [{ id: 'foe', role: 'enemy', on: 'bank', t: 0.6, maxThreat: 3 }, { id: 'p', role: 'pickup', on: 'up', t: 0.5, dn: 34, count: 2, span: 100 }],
+      mirrorable: true,
+    });
+  }
+  assert.ok(big.length >= 30 && big.length >= THEME.from);
+  const world = (themeShare?: number): WorldKit => ({ ...kit, manifest: { ...manifest, sections: big, ...(themeShare !== undefined ? { themeShare } : {}) } });
+  const ROLLS = 20;
+  const measure = (k: WorldKit) => {
+    const mixes: Array<Map<string, number>> = [];
+    const acts: Array<ReturnType<typeof profile>> = [];
+    const seen = new Set<string>();
+    let repeats = 0;
+    for (let seed = 1; seed <= ROLLS; seed++) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'normal' });
+      assert.deepEqual(validateStage(st).errors, [], `seed ${seed}`);
+      assert.deepEqual(st.gen2.errors, [], `seed ${seed}`);
+      const t = modelStage(st, MODEL_TYPICAL).total;
+      assert.ok(t >= targetSeconds(5, 7, 'stealth') && modelStage(st, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: ${t.toFixed(0)} s`);
+      const m = new Map<string, number>();
+      st.gen2.plan.forEach((p, i) => {
+        m.set(p.template, (m.get(p.template) ?? 0) + 1);
+        seen.add(p.template);
+        if (i && st.gen2.plan[i - 1].template === p.template) repeats++;
+      });
+      mixes.push(m);
+      const R = pickRoute('stealth', st).used;
+      acts.push(profile(actionTokens(R.br.beats, R.br.total)));
+      if (k.manifest.themeShare === undefined) {
+        const n = st.gen2.theme!.length / big.length;
+        assert.ok(n > 0.15 && n < 0.7, `seed ${seed}: the theme holds ${(n * 100).toFixed(0)}% of the sections`);
+      } else assert.equal(st.gen2.theme, undefined);
+    }
+    const cos = (a: Map<string, number>, b: Map<string, number>) => {
+      let d = 0, na = 0, nb = 0;
+      for (const [id, v] of a) (d += v * (b.get(id) ?? 0)), (na += v * v);
+      for (const v of b.values()) nb += v * v;
+      return d / Math.sqrt(na * nb);
+    };
+    let mix = 0, act = 0, n = 0;
+    for (let i = 0; i < ROLLS; i++) for (let j = i + 1; j < ROLLS; j++) (mix += 1 - cos(mixes[i], mixes[j])), (act += 1 - cosine(acts[i], acts[j])), n++;
+    return { mix: mix / n, act: act / n, seen, repeats };
+  };
+  const all = measure(world(1));
+  const themed = measure(world());
+  assert.ok(themed.mix > all.mix + 0.05, `the section mix: ${themed.mix.toFixed(3)} themed against ${all.mix.toFixed(3)}`);
+  assert.ok(themed.act > all.act, `the action 3-grams: ${themed.act.toFixed(3)} themed against ${all.act.toFixed(3)}`);
+  // every section the stealth stage can use comes in some roll (the carry room once per stage at most; the rest are open to it)
+  const usable = big.filter((t) => t.id !== 'toy-carry');
+  assert.deepEqual(usable.filter((t) => !themed.seen.has(t.id)).map((t) => t.id), [], 'sections no roll used');
+  // the cooldown still holds: no section twice running
+  assert.equal(themed.repeats, 0);
+  // a world under THEME.from sections draws from them all, as it did (the toy world's pinned geometry test holds it)
+  assert.equal(buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed: 1, difficulty: 'normal' }).gen2.theme, undefined);
+});
+
+test("Easy's animals are a subset of Normal's: the spacing is decided once, on Normal's plan, and Easy drops from that list", () => {
+  const sockets = (st: ReturnType<typeof buildGen2Stage>) => st.gen2.fills.filter((f) => f.role === 'enemy' && f.socket !== 'topup').map((f) => `${f.section}/${f.socket}=${f.what}`);
+  for (const [id, type, goal] of [['5-7', 'stealth', 1], ['5-4', 'purge', 12]] as const) {
+    for (let seed = 1; seed <= (type === 'stealth' ? 20 : 4); seed++) {
+      const n = buildGen2Stage({ config: cfg(id, type, goal), kit, seed, difficulty: 'normal' });
+      const e = buildGen2Stage({ config: cfg(id, type, goal), kit, seed, difficulty: 'easy' });
+      const what = `${id} seed ${seed}`;
+      assert.ok(e.enemies.length <= n.enemies.length, `${what}: Easy ${e.enemies.length} animals, Normal ${n.enemies.length}`);
+      const normal = new Set(sockets(n));
+      assert.deepEqual(sockets(e).filter((k) => !normal.has(k)), [], `${what}: Easy keeps an animal Normal dropped`);
+      assert.deepEqual(validateStage(e).errors.filter((x) => !/not enough enemies/.test(x)), [], what);
+      assert.deepEqual(checkStage(e, e.gen2.budget).errors, [], what);
+    }
+  }
+});
+
+/** World 6's hanging pieces on the toy world: a swing over a gap (a liana and the perch it lands on) and a climb to a high ledge */
+const swingSec: SectionTemplate = {
+  id: 'toy-swing', name: 'swing', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 5, weight: 4,
+  pieces: [
+    { key: 'near', shape: 'bank', w: [300, 400], place: { kind: 'start' } },
+    { key: 'rope', shape: 'liana', w: 0, place: { kind: 'swing', after: 'near' } },
+    { key: 'far', shape: 'bank', w: [500, 700], place: { kind: 'land', after: 'rope' } },
+  ],
+  entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0,
+  sockets: [{ id: 'p', role: 'pickup', on: 'far', t: 0.6, dn: 34 }], mirrorable: true,
+};
+const climbSec: SectionTemplate = {
+  id: 'toy-climb', name: 'climb', archetypes: 'any', phases: ['ki', 'sho', 'ten'], difficulty: 3, weight: 3,
+  pieces: [
+    { key: 'bank', shape: 'bank', w: [600, 700], place: { kind: 'start' } },
+    { key: 'trunk', shape: 'vine', w: 0, place: { kind: 'climb', on: 'bank', at: [0.7, 0.8], h: [240, 260] } },
+    { key: 'top', shape: 'branch', w: 260, place: { kind: 'over', on: 'trunk', at: 0, dy: 0 }, main: false },
+  ],
+  entry: { piece: 'bank', kind: 'ground' }, exit: { piece: 'bank', kind: 'ground' }, exitDy: 0,
+  sockets: [{ id: 'up', role: 'pickup', on: 'top', t: 0.6, dn: 34, count: 2, span: 100 }], mirrorable: true,
+};
+const hangWorld = (pit: 'soft' | 'void' = 'void', moves = [...manifest.moves, 'swing' as const, 'climb' as const]): WorldKit => ({
+  ...kit, manifest: { ...manifest, pit, moves, sections: [...manifest.sections, swingSec, climbSec] },
+});
+
+test('a liana swings by itself and its perch is sized from the release window (Easy 300 ms, Normal 167 ms); a vine climbs', () => {
+  // the section alone: the perch past the liana leaves at least the setting's window, and lies beyond any jump (the swing is the way)
+  for (const d of ['normal', 'easy'] as const) {
+    const b = planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, d);
+    for (let i = 1; i <= 5; i++) {
+      const L = layLocal(swingSec, b, rngFor(i));
+      const [near, rope, far] = ['near', 'rope', 'far'].map((k) => L.pieces.find((p) => p.key === k)!);
+      const swing = rope.hang!.swing!;
+      assert.ok(swing.amp >= LIANA.amp[0] && swing.amp <= LIANA.amp[1] && swing.period >= LIANA.period[0] && swing.period <= LIANA.period[1]);
+      const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, swing, near.y, { x: far.x, y: far.y, w: far.w });
+      assert.ok(win >= LIANA.window[d], `${d} roll ${i}: a ${(win * 1000).toFixed(0)} ms release window`);
+      assert.ok(far.x - (near.x + near.w) > maxGap(0, true, 1), `${d} roll ${i}: a ${far.x - near.x - near.w} px gap a jump could cross`);
+      assert.equal(L.gaps.length, 1);
+    }
+    // (the same roll, the same liana on Easy and Normal: its swing is the stage's, only the perch moves)
+    const nb = planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, 'normal');
+    assert.deepEqual(layLocal(swingSec, b, rngFor(7)).pieces[1].hang, layLocal(swingSec, nb, rngFor(7)).pieces[1].hang);
+  }
+  // built, with nothing under the gaps (a void world on Normal: the swing is the only way over) and on Easy (soft floors)
+  let swings = 0;
+  let climbs = 0;
+  for (const seed of [1, 2, 3]) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: hangWorld(), seed, difficulty: d });
+      const what = `seed ${seed} ${d}`;
+      const res = validateStage(st);
+      assert.deepEqual(res.errors, [], what);
+      const lianas = ((st.proto as { gen2?: { lianas?: Array<{ vine: number; amp: number; period: number }> } }).gen2?.lianas ?? []);
+      const placed = st.gen2.sections.filter((s) => s.template === 'toy-swing');
+      assert.equal(lianas.length, placed.length, `${what}: every liana carries its swing`);
+      assert.ok(placed.every((s) => !s.mirrored), `${what}: a swing is never flipped`);
+      for (const l of lianas) assert.equal(st.vines.find((v) => v.id === l.vine)?.vineType, 'swing_liana');
+      swings += placed.length;
+      // every climb's high ledge is reached, and only a climb gets that high
+      for (const v of st.vines.filter((x) => x.vineType === 'tree_climb')) {
+        const top = st.platforms.find((p) => p.y === v.topY && (p.x === v.x || p.x + p.width === v.x))!;
+        assert.ok(top && res.reachableIds.includes(top.id), `${what}: the ledge over the vine at ${v.x}`);
+        assert.ok(v.bottomY - v.topY > DOUBLE_RISE, `${what}: a ${v.bottomY - v.topY} px climb a double jump could make`);
+        climbs++;
+      }
+    }
+  }
+  assert.ok(swings > 0 && climbs > 0, `${swings} swings, ${climbs} climbs`);
+  // a world whose player can't swing or climb never lays them
+  const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: hangWorld('void', manifest.moves), seed: 1, difficulty: 'normal' });
+  assert.ok(!st.gen2.sections.some((s) => s.template === 'toy-swing' || s.template === 'toy-climb') && st.vines.length === 0);
+  // authoring mistakes are named
+  const bad: SectionTemplate = { ...swingSec, pieces: [swingSec.pieces[0], { ...swingSec.pieces[2], place: { kind: 'land', after: 'near' } }] };
+  assert.throws(() => layLocal(bad, planBudget(cfg('5-7', 'stealth'), hangWorld().manifest, 'normal'), rngFor(1)), /lands from near, which is not a liana/);
+});
+
+test("World 6's water: a section's water gap is water on any world and setting (a life, warned), and a tide rises over a mudflat", () => {
+  const creek: SectionTemplate = {
+    id: 'toy-creek', name: 'creek', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 5, weight: 3,
+    pieces: [
+      { key: 'near', shape: 'bank', w: [300, 400], place: { kind: 'start' } },
+      { key: 'far', shape: 'bank', w: [500, 600], place: { kind: 'jump', after: 'near', share: [0.5, 0.7], water: true }, landing: true },
+    ],
+    entry: { piece: 'near', kind: 'ground' }, exit: { piece: 'far', kind: 'ground' }, exitDy: 0, sockets: [], mirrorable: true,
+  };
+  const marsh: SectionTemplate = {
+    id: 'toy-marsh', name: 'mudflat', archetypes: 'any', phases: ['sho', 'ten'], difficulty: 4, weight: 3,
+    pieces: [
+      { key: 'bank', shape: 'bank', w: [300, 360], place: { kind: 'start' } },
+      { key: 'mud', shape: 'bank', w: [300, 380], place: { kind: 'walk', after: 'bank', dy: 60 } },
+      { key: 'out', shape: 'bank', w: [360, 420], place: { kind: 'walk', after: 'mud', dy: -60 } },
+    ],
+    entry: { piece: 'bank', kind: 'ground' }, exit: { piece: 'out', kind: 'ground' }, exitDy: 0,
+    sockets: [{ id: 'foe', role: 'enemy', on: 'mud', t: 0.5, maxThreat: 3 }, { id: 'p', role: 'pickup', on: 'mud', t: 0.5, dn: 34, count: 3, span: 160 }],
+    zones: [{ kind: 'tide', on: 'mud', low: [1, 2] }],
+    mirrorable: true,
+  };
+  // (an emitter may lay a zone too: the toy chair lays a web patch over its spot, through the sink)
+  const k: WorldKit = {
+    ...kit,
+    manifest: { ...manifest, sections: [...manifest.sections, creek, marsh] },
+    emit: { ...kit.emit, chair: (f, _p, out) => void out.zones.push({ kind: 'web', x0: f.x - 60, x1: f.x + 60, top: f.y - 130, bottom: f.y + 16, baseY: f.y, dir: 1, period: 1, warn: 0, active: 1, offset: 0, force: 0 }) },
+  };
+  let creeks = 0;
+  let tides = 0;
+  for (const seed of [1, 2, 3]) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: d });
+      const what = `seed ${seed} ${d}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      const wet = st.gen2.sections.filter((s) => s.template === 'toy-creek');
+      creeks += wet.length;
+      const falls = st.gen2.falls ?? [];
+      for (const s of wet) {
+        const f = falls.find((g) => g.x0 >= s.x0 && g.x1 <= s.x1)!;
+        assert.equal(f.kind, 'water', `${what}: the creek is water on a soft world`);
+        // nothing under it, and the water there to fall in
+        assert.ok(!st.platforms.some((p) => p.x >= f.x0 && p.x + p.width <= f.x1 && p.y > f.y), `${what}: a floor under the creek at ${f.x0}`);
+        assert.ok(st.waterY !== undefined);
+        const before = st.proto.hints.filter((h) => h.text === WATER_LINE && h.x < f.x0);
+        if (d === 'easy') assert.ok(before.length && f.x0 - before.at(-1)!.x <= WATER_WARN.every * st.gen2.budget.walkSpeed + WATER_WARN.lead + 1, `${what}: water at ${f.x0} unwarned`);
+        else assert.ok(before.length, `${what}: the first water is warned`);
+      }
+      // the world's own falls stay soft
+      assert.ok(falls.some((g) => g.kind === 'soft' && g.x1 - g.x0 >= 20));
+      // the tides: the low spell outlasts the walk across (lengthened from the section's 1-2 s), banks either side, nothing standing in it
+      for (const z of (st.zones ?? []).filter((z) => z.kind === 'tide')) {
+        tides++;
+        assert.ok(idleTime(z) + z.warn >= tideCrossTime(z.x1 - z.x0) && idleTime(z) >= 2 && z.active <= 3 && z.warn >= 0.9, `${what}: tide at ${z.x0}`);
+      }
+      for (const z of st.zones ?? []) {
+        assert.ok(!st.enemies.some((e) => e.x > z.x0 - 30 && e.x < z.x1 + 30 && e.y > z.top && e.y < z.bottom + 60), `${what}: an animal in the tide at ${z.x0}`);
+        assert.ok(!(st.checkpoints ?? []).some((c) => c.x >= z.x0 && c.x <= z.x1 && c.y > z.top && c.y < z.bottom), `${what}: a flag in the tide`);
+      }
+      const chairs = st.gen2.fills.filter((f) => f.what === 'chair').length;
+      assert.equal((st.zones ?? []).filter((z) => z.kind === 'web').length, chairs, `${what}: an emitter's zone reaches the stage`);
+    }
+  }
+  assert.ok(creeks > 0 && tides > 0, `${creeks} creeks, ${tides} tides`);
 });
