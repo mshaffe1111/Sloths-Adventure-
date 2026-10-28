@@ -20,6 +20,7 @@ import { gapFor, driftX, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type
 import type { W2Decor } from './riverArt.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
+import { SAFE_APPROACH } from './levelCheck.ts';
 import { addKitPlatforms, kitPlatId, type Anchor, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 import { buildW2Sections, w2Picks, type W2Kit, type W2Look, type W2Plan } from './w2Sections.ts';
@@ -69,9 +70,30 @@ const BANK_H = 90;
 export const SURFACE = G + surfaceBelowBank;
 const LOG_Y = G + LOG_DROP;
 
+/**
+ * 2-6 (World 1's climb, built up the bank houses: protoStage.ts buildKapok): no animal's patch within 200 px of a flag (levelCheck
+ * SAFE_APPROACH; 123 of 200 rolls had one, 2026-10-28). Its patrol is cut back to stop short of the flag; one standing too near to cut
+ * back loses the flag instead (the flags either side of it still hold).
+ */
+function clearFlags<S extends GeneratedStage>(st: S): S {
+  const away = SAFE_APPROACH + 8;
+  const flags = st.checkpoints ?? [];
+  for (const e of st.enemies) {
+    if (e.type === 'eagle') continue;
+    for (let i = flags.length - 1; i >= 0; i--) {
+      const f = flags[i];
+      if (Math.abs(e.y - f.y) >= 400) continue;
+      if (Math.abs(e.x - f.x) < away) flags.splice(i, 1);
+      else if (f.x < e.x) e.patrolMinX = Math.max(e.patrolMinX, f.x + away);
+      else e.patrolMaxX = Math.min(e.patrolMaxX, f.x - away);
+    }
+  }
+  return st;
+}
+
 export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
   // 2-6 Up the Bank Houses: World 1's climbing stage (1-4) built up the riverbank village instead of the kapok
-  if (plan === '2-6') return buildKapok(config, seed, true);
+  if (plan === '2-6') return clearFlags(buildKapok(config, seed, true));
   const R = stream(seed * 7 + 2);
   const P: Platform[] = [];
   const V: Vine[] = [];
@@ -258,6 +280,32 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     if (flowers && len > 260) row(x0 + 80, x - 80, bankY - 34, Math.max(2, Math.round(len / 170)), R.pick(['hibiscus', 'orchid'] as const));
     if (len > 300 && R.chance(0.6)) dress(R.r(x0 + 60, x - 60), bankY);
     pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  /**
+   * the plain bank before a stage's first danger (START_WALK and more): nothing can hurt, but a low step up onto a rise of the bank and
+   * back down again every couple of seconds, so the walk is never four seconds with nothing to do (each step 20 px, under the lip's hoist,
+   * 26 px, physics.ts FORGIVE: a plain walk carries him up it, STAGE-RULES §2 "Plain walk")
+   */
+  function startWalk(len: number) {
+    const x0 = x;
+    const y0 = bankY;
+    const step = 20;
+    let up = false;
+    run(Math.min(len, R.r(380, 440)));
+    while (x - x0 < len - 260) {
+      close();
+      up = !up;
+      open(x, y0 - (up ? step : 0));
+      run(Math.min(R.r(300, 380), Math.max(120, len - (x - x0) - 140)));
+    }
+    if (up) {
+      close();
+      open(x, y0);
+    }
+    run(Math.max(0, len - (x - x0)));
+    expert += len / RUN;
+    pieces.push({ k: 'start', x0, x1: x });
   }
 
   /**
@@ -481,7 +529,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       reeds(edge - 20, G + 6, R.chance(0.5));
       reeds(farX + 24, G + 6, R.chance(0.5));
       open(farX);
-      run(opts.island ?? R.r(140, 200));
+      run(opts.island ?? R.r(110, 160));
       expert += (edge - x0r) / RUN + (farX - edge) / 430 + 0.3 * n + (x - farX) / RUN;
       pieces.push({ k: `swing${n}`, x0: x0r, x1: x });
       return;
@@ -501,11 +549,13 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
    */
   function stairs(rise: number, up: boolean) {
     const x0s = x;
-    run(R.r(100, 120));
+    run(R.r(70, 90));
     close();
     // (each step low enough to walk straight up, and a tread wide enough to stand on: at 28 px wide and 22 px high a small thumb hopping
     // them ran off a step before its flick came)
-    const n = Math.max(3, Math.ceil(rise / 16));
+    // (20 px a step: under the lip's hoist, 26 px, so still walked straight up, and each one a step up he feels: 16 px steps were a
+    // long walk with nothing to do, 2-7's quiet stretches, 2026-10-28)
+    const n = Math.max(3, Math.ceil(rise / 20));
     const r = rise / n;
     const tread = 34;
     const fromY = bankY;
@@ -528,7 +578,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     const topY = up ? toY - 25 * ky : fromY - 25 * ky;
     decor.push({ n: 'steps', x: left + w / 2, b: topY + h, w, h, flip: up });
     open(ex, toY);
-    run(R.r(100, 120));
+    run(R.r(70, 90));
     expert += (x - x0s) / RUN + n * 0.08;
     pieces.push({ k: up ? 'stairsUp' : 'stairsDown', x0: x0s, x1: x });
   }
@@ -569,7 +619,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       path = bank(xs, px, G);
       open(px, G);
     }
-    run(tail ?? R.r(140, 200));
+    run(tail ?? R.r(110, 150));
     expert += (x - x0p) / RUN + n * 0.4;
     pieces.push({ k: water ? 'porchesWater' : 'porches', x0: x0p, x1: x });
     return { path, xs, px };
@@ -600,7 +650,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     });
     // flowers up the shaft: the ride collects them (the lower two: a jump from the path reaches them too)
     for (let i = 1; i <= 2; i++) flower(sx + W / 2, G - ((G - top) * i) / 4 - 40, 'hibiscus');
-    run(R.r(140, 160));
+    run(R.r(90, 110));
     expert += (x - x0l) / RUN + (G - top) / 95 + 2.4;
     pieces.push({ k: up ? 'liftUp' : 'liftDown', x0: x0l, x1: x });
     return { sx, top };
@@ -626,21 +676,21 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     const v0 = x;
     // the jetty reaches out over the last river, when the village's bank is where one ends
     if (rivers.some((r) => Math.abs(r.x1 - bankFrom) < 2)) piece('jetty', bankFrom - 50, SURFACE + 26, 210, { flip: true });
-    run(110);
+    run(90);
     piece('sign', x, G + 4, 132, { text: ['PLEASE BE', 'PATIENT'] });
-    run(110);
+    run(90);
     piece('mailbox', x, G + 2, 54);
-    run(100);
+    run(90);
     mailman(x, x + 300);
     piece('door', x + 60, G + 6, 210);
     piece('window', x + 230, G - 30, 82);
-    run(230);
+    run(200);
     piece('laundry', x, G + 4, 200);
-    run(170);
+    run(150);
     piece('door', x, G + 6, 190, { flip: true });
     piece('chimney', x + 120, G - 72, 60);
     decor.push({ cel: 'tc.scroll', x: x + 220, b: G + 2, k: 0.42, flip: true });
-    run(320);
+    run(270);
     expert += (x - v0) / RUN;
   }
 
@@ -742,6 +792,8 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     for (let i = 0; i <= n; i++) {
       const g = Math.round(one * R.r(0.34, 0.42));
       rivers.push({ x0: cx, x1: cx + g, surfaceY: SURFACE, dir: 1, speed: 0, ...(opts.safe ? { safe: { backX: cx - 50, backY: i ? ISLAND_TOP : G } } : {}) });
+      // (the flowers over each channel, where the hop goes)
+      if (opts.flowers) flower(cx + g / 2, ISLAND_TOP - 80, 'hibiscus');
       cx += g;
       if (i === n) break;
       const w = Math.round(R.r(150, 190));
@@ -767,12 +819,22 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     const px = x;
     const topY = G - 236;
     post(px, topY);
+    // flowers up the rope: the climb gathers them
+    flower(px, G - 90, 'orchid');
+    flower(px, G - 170, 'orchid');
     // (the shelf runs from px - 40 to px + 160; the high bank starts a hop past its end)
     run(160 + Math.round(R.r(46, 60)));
     close();
     open(x, G - 200);
-    // (longer than any jump: the only way over it is up the post)
-    run(R.r(340, 370));
+    // (too high to jump: the only way up is the post. A short stretch on top: at 340-370 px the walk from the post's top to the drop
+    // and on to the next crossing was over 4 s with nothing to do, 2026-10-28)
+    // (with a low step up along the top, 20 px, walked over: the climb and the walk on top had nothing else to do in them; and flowers
+    // up there, the climb's reward)
+    run(R.r(110, 130));
+    close();
+    open(x, G - 220);
+    run(R.r(110, 130));
+    row(x - 200, x - 40, G - 254, 3, 'orchid');
     // and a drop off its far end, back down to the water's level
     close();
     open(x, G);
@@ -999,11 +1061,12 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     get expert() { return expert; },
     addExpert: (s) => { expert += s; },
     run, open, beat, flag, hint, rest, breath, snakeBank, guardedRest, river, stones, lilyPond, swingRiver, stairs, porchRun, lift, guardedHigh,
-    mailman, patientDoor, villageEnd, floodBasin, cageRoom, ferryRoom, bellGate, bellGallery, sandbar, island, postUp, channels, heart, goldenSeed,
+    mailman, patientDoor, villageEnd, floodBasin, cageRoom, ferryRoom, bellGate, bellGallery, sandbar, island, postUp, channels, startWalk, heart, goldenSeed,
     piece: (n, px, b, w, extra) => piece(n as W2Decor['n'], px, b, w, extra as Partial<W2Decor>),
     row, arc, flower, turtle, guard, snake,
     mark: (k, x0) => pieces.push({ k, x0, x1: x }),
     nextCid: () => cid++,
+    enemies: () => E.length,
     noteId: () => {
       const note = findForStage(config.worldIndex, config.miniIndex);
       return note && note.kind === 'note' ? note.id : null;

@@ -23,7 +23,6 @@ const STAGES = generateAllLevels().filter((c) => c.worldIndex <= 4 && c.objectiv
 const KNOWN: Record<string, string> = {
   '1-4': 'some rolls of the climb are under 1:40 on a route with presumed hops (?layout=932513: 90 s; the stage clock says 2:20): replay to confirm',
   '3-1': "some rolls of the sprint are just under 2:00 on this tool's quick route (?layout=72140: 116 s; the stage's own estimate says 2:30)",
-  '2-6': 'some rolls put an animal within 200 px of a flag (levelCheck "too close to a safe spot")',
 };
 
 for (const c of STAGES) {
