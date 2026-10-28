@@ -558,7 +558,7 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       let n = 0;
       // (the estimate runs long on the logs and short on the pads: the flavours' own margins, so every roll is over 2:00 and none drags)
       const target = k.EXPERT_SECONDS + (flavour === 'high' ? 38 : flavour === 'ponds' ? -10 : flavour === 'snakes' ? 10 : 48);
-      while (k.expert < target && n < 12) {
+      while (k.expert < target && n < 16) {
         cross.step(turns.next(), n, turns.kinds);
         if (++n % 3 === 0) k.flag();
       }
@@ -710,8 +710,8 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     });
     k.beat('Finish', () => {
       let n = 0;
-      const target = k.EXPERT_SECONDS - 8 + (flavour === 'islands' ? 14 : 0);
-      while (k.expert < target && n < 12) {
+      const target = k.EXPERT_SECONDS - 2 + (flavour === 'islands' ? 10 : 0);
+      while (k.expert < target && n < 18) {
         cross.step(turns.next(), n, turns.kinds);
         if (++n % 2 === 0) k.flag();
       }
@@ -889,8 +889,8 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     });
     k.beat('Finish: the end of the round', () => {
       let n = 0;
-      const target = k.EXPERT_SECONDS - 10 + (flavour === 'logs' ? 26 : flavour === 'lifts' ? 8 : 14);
-      while (k.expert < target && n < 10) {
+      const target = k.EXPERT_SECONDS - 4 + (flavour === 'logs' ? 26 : flavour === 'lifts' ? 8 : 14);
+      while (k.expert < target && n < 16) {
         cross.step(turns.next(), n, turns.kinds);
         if (++n % 2 === 0) k.flag();
       }
