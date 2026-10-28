@@ -94,6 +94,8 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - Meeca's Room 4 is the tea channel. World 5's night strips are made in code.
 - Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
+- Title logo: carved into bark, carved in stroke by stroke on the first title of a session (chips, gold glow), shown carved after;
+  the ribbon is deleted (Matt 2026-10-28). Title pair get real animation clips from the motion model (no code twitching).
 - Generator: 16 checked layouts shipped per stage (Matt 2026-10-28). Easy falls land soft on land; over water a fall still
   costs a life on Easy, with a clear warning before the water (Matt chose B, 2026-10-28). About 30 sections per world (Matt chose A).
 - Variety pass for Worlds 1-4, all four at once. Push (release PR #41). Flicker's animations for the whole game. The polish pass
