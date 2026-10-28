@@ -365,8 +365,10 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     for (let i = 0; i + 1 < sides.length; i++) {
       const w = sides[i + 1].x0 - sides[i].x1;
       if (w <= 0) continue;
-      // (one easy hop under the lower side, and never more than 90 under the higher: a kid's short flick gets out either way)
-      const floor = Math.min(HOLLOW_Y, Math.max(sides[i].top, sides[i + 1].top) + PLAIN_CLIMB, Math.min(sides[i].top, sides[i + 1].top) + 90);
+      // (one easy hop, 75 at most, under the higher side, so under the lower one too: a kid's short flick gets out either way; never
+      // level with the ground, where it would read as a bank of its own)
+      let floor = Math.min(HOLLOW_Y, Math.min(sides[i].top, sides[i + 1].top) + PLAIN_CLIMB);
+      if (Math.abs(floor - G) < 4) floor = G + 4;
       P.push({ id: pid++, x: sides[i].x1, y: floor, width: w, height: HOLLOW_Y + 10 - floor, type: 'solid', style: 'moss_stone' });
     }
   };
@@ -625,9 +627,11 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       pieces: kit, exit: id, beyond: { on: top.id, at: 0.3 }, ground: [floor.id, pit.id],
       tips: { enter: 'Too high! Push the log onto the near end.' },
     });
-    // down off the far end of the bank onto the floor again
+    // down off the far end of the bank onto the floor again, and a dip to jump on the way on
     open(top.x + top.width);
-    run(R.r(240, 300));
+    run(R.r(110, 150));
+    dip();
+    run(R.r(330, 370));
     expert += (x - x0) / RUN + (SEE.logW + 160) / PUSH + 4;
     pieces.push({ k: 'log', x0, x1: x });
   }
@@ -671,7 +675,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       tips: { enter: "The log's on the far side. Push it back onto the far end!" },
     });
     open(top.x + top.width);
-    run(R.r(240, 300));
+    run(R.r(110, 150));
+    dip();
+    run(R.r(200, 240));
     expert += (x - x0) / RUN + 14;
     pieces.push({ k: 'log', x0, x1: x });
   }
@@ -857,7 +863,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   function pillars(heights: number[], share: [number, number], dbl = false, plain = false) {
     const x0 = x;
     if (plain) heights = plainOrder(heights);
-    run(R.r(140, 200));
+    // (`plain`, 1-1 since 2026-10-28: a quicker run up to the stones and away from them)
+    run(plain ? R.r(100, 140) : R.r(140, 200));
     const edge = x;
     close();
     let px = edge, prevTop = G;
@@ -876,14 +883,15 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       px += w;
       prevTop = top;
     }
-    const far = Math.round(px + reachJump(prevTop - G, dbl) * R.r(share[0], share[1]));
+    // (`plain`, 1-1: the last hop down onto the bank is a short one, whatever the stones' spacing)
+    const far = Math.round(px + reachJump(prevTop - G, dbl && !plain) * R.r(share[0], share[1]));
     if (plain) plainPit(edge, stones, far);
     else {
       softPit(edge, far);
       pitFloors(edge, stones, far, plain);
     }
     open(far);
-    run(R.r(160, 240));
+    run(plain ? R.r(130, 170) : R.r(160, 240));
     expert += (x - x0) / RUN + 0.6 * heights.length;
     pieces.push({ k: 'stumps', x0, x1: x });
   }
@@ -956,10 +964,10 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     expert += (far - edge) / RUN + 0.4;
   }
   /** `n` hops or dips (the kinds rolled from `kinds`) about a second apart, then plain ground to rest on (`restAfter` px) */
-  function busy(n: number, kinds: ReadonlyArray<'log' | 'dip' | 'leap'> = ['log', 'dip'], restAfter = R.r(280, 340)) {
+  function busy(n: number, kinds: ReadonlyArray<'log' | 'dip' | 'leap'> = ['log', 'dip'], restAfter = R.r(255, 295)) {
     const x0 = x;
     for (let k = 0; k < n; k++) {
-      const go = k ? R.r(200, 290) : R.r(110, 170);
+      const go = k ? R.r(200, 290) : R.r(90, 140);
       run(go);
       expert += go / RUN;
       const kind = R.pick(kinds);
@@ -977,7 +985,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
    */
   function lowStumps() {
     const x0 = x;
-    run(R.r(80, 130));
+    run(R.r(50, 90));
     const n = R.i(3, 4);
     let h = 0;
     for (let k = 0; k < n; k++) {
@@ -985,9 +993,10 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       const w = Math.round(R.r(130, 170));
       block(x, x + w, h);
       flower(x + w / 2, G - h - 34, 'orchid');
-      run(w + Math.round(R.r(70, 105)));
+      const g = Math.round(R.r(70, 105));
+      run(w + (k < n - 1 ? g : 0));
     }
-    run(R.r(20, 50));
+    run(R.r(40, 70));
     expert += (x - x0) / 240;
     pieces.push({ k: 'stumps', x0, x1: x });
   }
@@ -1018,9 +1027,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       logHop(R.i(30, 40));
     }
     x = Math.max(x, end) + R.r(90, 130);
-    // (where the road comes down, a dip to jump as he lands: no empty walk after it)
+    // (where the road comes down, a dip to jump as he lands, then a short rest)
     dip();
-    run(R.r(160, 220));
+    run(R.r(250, 280));
     expert += (x - x0) / RUN + 1.2;
     pieces.push({ k: 'highrun', x0, x1: x });
   }
@@ -1059,12 +1068,13 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     beat('Test: the stepping stones', () => {
       // (the second jump is not taught yet: every stone is one plain jump up, and every gap between them a hop deep: `plain`)
       hint(x + 60, 'Hop from stone to stone', 'Hop from stone to stone', 'Hop from stone to stone');
-      pillars([60, 120, 60], [0.5, 0.62], false, true);
+      // (the stones climb 60 at most from one to the next, and the first stands 60 up: the kid bot missed 80 and more, 2026-10-28)
+      pillars([60, 110, 60], [0.5, 0.62], false, true);
       busy(R.i(1, 2));
-      pillars(R.shuffle([40, 80, 110, 70]), [0.55, 0.68], false, true);
+      pillars(R.pick([[40, 80, 110, 70], [50, 100, 70, 40], [40, 90, 60, 100]]), [0.55, 0.68], false, true);
       mushroomCache();
       dip();
-      pillars([70, 30, 100, 60], [0.58, 0.7], false, true);
+      pillars([60, 30, 90, 60], [0.58, 0.7], false, true);
       flag();
     });
     beat('Twist: the second jump', () => {
@@ -1097,7 +1107,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       let n = 0;
       while (expert < EXPERT_SECONDS - 10 && n < 24) {
         const k = n % 3;
-        if (k === 0) pillars(R.shuffle([50, 80, 60, 70]), [0.55, 0.7], n > 2, true);
+        if (k === 0) pillars(R.pick([[50, 80, 60, 70], [60, 70, 50, 80], [50, 60, 80, 60]]), [0.55, 0.7], n > 2, true);
         else if (k === 1) highRoadOver();
         // (the second jump, practised: a wide gap or two of soft moss)
         else { busy(R.i(1, 2), ['leap', 'leap', 'log']); lowStumps(); }
@@ -1335,9 +1345,10 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   function ropeGap(guard: boolean, bonus: boolean, tight = false) {
     const x0 = x;
     // (`tight`: World 1's rebuilt stages run up to it and away from it quicker, 2026-10-28)
-    run(tight ? R.r(150, 210) : R.r(260, 340));
+    run(tight ? (guard ? R.r(400, 440) : R.r(150, 210)) : R.r(260, 340));
     const edge = x;
-    if (guard) snake(edge - 120, G, 140);
+    // (`tight` with a guard: it waits further back from the rope, so a second's rest lies between the fight and the jump down)
+    if (guard) snake(edge - (tight ? 330 : 120), G, 140);
     close();
     const far = Math.round(edge + R.r(380, 430));
     softPit(edge, far);
@@ -1363,7 +1374,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       run(R.r(150, 200));
       snake(x + 70, G, 120);
       flower(x + 70, G - 120, 'orchid');
-      run(R.r(250, 300));
+      // (and a short rest of plain ground before the next: a second or more)
+      run(R.r(320, 360));
     }
     expert += (x - x0) / RUN + 1.5 * m;
     pieces.push({ k: 'snakes', x0, x1: x });
