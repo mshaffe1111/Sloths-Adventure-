@@ -308,6 +308,10 @@ const CROC: BossDef = {
   weak: { dx: 160, dy: 115, w: 160, h: 150 },
   weakStun: { dx: 150, dy: 56, w: 170, h: 112 },
   aimText: 'TOO TOUGH! HIT THE JAWS',
+  // his body never hurts by touch, as in 1-10 and 3-10: only his strikes do, each after its wind-up (QA, Matt's 2up4: 6 of 8 hearts
+  // were touching him, 4 of them while he wound up a death roll, a tail whip or the geysers, so the hit came before the move it
+  // warned about). The rolling body and the whip carry their own strike boxes (bodyBox in their hurt) once the move begins
+  bodyGrace: 99,
   arenaW: 1400,
   lair: 'croc',
   entrance: { eye: [251, 191, 36], dark: [2, 5, 12] },
@@ -338,7 +342,7 @@ const CROC: BossDef = {
   moves: {
     // rears back with the jaws wide, then rolls across the whole arena. Crashing into the wall leaves him dizzy
     // (dizzy, he reels round and staggers back toward you, so a crash at the far fence is not out of reach)
-    deathRoll: { ...chargeMove({ tell: 1.2, maxT: 2.3, rec: 1.0, speed: 560, stun: 2.6, text: 'DIZZY!', min: 220 }), stunStep: { speed: 200, stop: 235 } },
+    deathRoll: { ...chargeMove({ tell: 1.2, maxT: 2.3, rec: 1.0, speed: 560, stun: 2.6, text: 'DIZZY!', min: 220 }), stunStep: { speed: 200, stop: 235 }, softBody: true },
     // a low spinning sweep of the tail on both sides: jump it
     tailWhip: {
       tell: 0.7,
@@ -348,6 +352,7 @@ const CROC: BossDef = {
       recStep: { speed: 340, stop: 235 },
       max: 340,
       pose: 'whip',
+      softBody: true,
       tick: (b, c) => {
         b.ai!.hurt = [...bothSides(b, c, 210, 62, 0), bodyBox(b)];
       },
@@ -360,6 +365,8 @@ const CROC: BossDef = {
       recStep: { speed: 340, stop: 235 },
       phase: 2,
       pose: 'slam',
+      // (the mud waves are the attack: standing against him while he slams does not hurt)
+      softBody: true,
       onAct: (b, c) => {
         impact(b, c, 0.7, '#7a5c2e');
         for (const d of [-1, 1] as const) {
@@ -376,6 +383,8 @@ const CROC: BossDef = {
       recStep: { speed: 340, stop: 235 },
       phase: 2,
       pose: 'roar',
+      // (the geysers are the attack, not his body)
+      softBody: true,
       onTell: (b, c) => {
         const xs = b.phase >= 3 ? [0, -280, 280, 560] : [0, -300, 300];
         xs.forEach((off, i) => {
@@ -789,8 +798,10 @@ const SOVEREIGN: BossDef = {
   openCap: 4,
   // her humped back in the stunned crouch: land on it from a rock or a ledge
   stompSpot: { dx: -45, dy: 168, w: 170, h: 56 },
-  // a hero hitting her head as she gets up is standing in her: her body hurts only 0.6 s into her next wind-up (a readable warning)
-  bodyGrace: 0.6,
+  // a hero hitting her head as she gets up is standing in her: her body never hurts during a wind-up (as in 1-10 to 3-10: a touch
+  // in the wind-up hit before the move it warned about); once a move begins, it and its strike boxes do (0.6 s into the wind-up
+  // until the 2-10 fix)
+  bodyGrace: 99,
   aimText: 'TOO TOUGH! HIT THE GLOW',
   arenaW: 1500,
   lair: 'sovereign',
@@ -1231,6 +1242,8 @@ const QUEEN: BossDef = {
   },
   weakStun: { dx: 108, dy: 64, w: 130, h: 100 },
   aimText: 'TOO TOUGH! HIT THE GLOW',
+  // her body never hurts during a wind-up, only once the move begins (the rule from 1-10 to 3-10; it was 0.3 s into every wind-up)
+  bodyGrace: 99,
   arenaW: 1600,
   lair: 'queen',
   entrance: { eye: [255, 90, 80], dark: [3, 8, 6] },
