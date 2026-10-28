@@ -58,7 +58,9 @@ A helper's report is not proof. Before merging:
    below, once per batch before the test link goes to QA and before every release): type check; the inspector on the changed worlds on seeds 1, 2 and 3; the first-timer bot; the
    200-roll tool when layout code changed; the puzzle validator and real-engine tests; the full suite; the build.
 4. Look at the screenshots, upright and sideways, myself.
-5. Only then: the test link, then STATUS.md, then tell Matt in plain words with the honest flaws.
+5. Remove a helper's worktree only when it is finished for good: a helper continued with SendMessage needs it (if removed, it
+   must recreate it with `git worktree add`).
+6. Only then: the test link, then STATUS.md, then tell Matt in plain words with the honest flaws.
 
 ## 5. The QA session
 
