@@ -19,3 +19,14 @@
 - If hearts drop and you saw nothing, a spider is behind you. Kick back (`flick left`) and punch every couple of steps; the "!" shows up right at the screen edge, so it's easy to miss.
 - Animal and flower stages don't fill up just from running right and punching. The things to collect sit up high, so plan to climb, and spend your pictures there.
 - Meeca's stage starts on a "Tap to begin" card, and none of the screen words show it. Tap first. Her thoughts don't come through as words, so spend pictures there early.
+
+## 2026-10-28 (Worlds 1-2 rebuilt, upright, session 8)
+- Hiding in a bush: stand inside it, LIFT, then steer down. Steering down while your thumb is still sliding right does nothing; Pokey just walks out the other side. You know it worked when sparkles show and Pokey goes dim.
+- Sneak stages: the bird hits you about every 3 seconds of open running. Hop bush to bush; don't do long 3-second slides in the open.
+- "Flick up into the trunk" means a short trunk/post right next to you, not the big trees in the background. Plain `flick up` standing next to it, then `steer up` to climb onto the rope above. Run-in hold-flicks overshoot it.
+- On a rope you creep: 4 seconds of steering gets you about a screen.
+- Waist-high grass steps still stop a plain walk dead. Lift, `flick up-right`, steer 300, lift, every time you see one. A high ledge out of a dip needs the run-in: back off 300, steer in 250, `flickhold up 400`, keep steering, second `flick up`.
+- Predators sneak up from behind. `flick left` to kick back, then tap. A step into a narrow gap between stumps traps you; two lifted `flick up-right`s get you out.
+- Water and drifting logs: never steer more than a moment on a log; it carries you. Wait on the bank, then lifted `flick up-right` hop to hop, one per second. Falling in costs a whole life, and you can lose all three in seconds.
+- Fight-count stages show no "how far along" bar, so you can't tell if you're moving. Spend a picture early to get your bearings.
+- Pictures go fast. Ration to about 8 per stage, or the last stages end up played blind.
