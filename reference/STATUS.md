@@ -10,6 +10,11 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 
 ## Live since PR #41 (2026-10-28): Meeca's stage rebuilt, Easy jump gate, batch 2, W1-2 props, measuring tools, gen2 core
 
+## On the work branch, not live yet
+
+- Jungle Cards match today's game (merged 2026-10-28, test link v217): 7 new cards in a "Met on the road" row, full-body art for
+  all 10 guardians, every tip rewritten in touch words, cards in journey order; one 255 KB card sheet.
+
 ## On the work branch before PR #41 (now live) (pushed for safe keeping; draft PR #41 tracks it, not a release)
 
 - QA batch 2 + Dot toned down + Gemini jump forgiveness in every world (merged 8ed2c53, fast gate 77/77; cloud full check running).
@@ -46,7 +51,6 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 |---|---|---|---|
 | Hugging Face art run (Matt 2026-10-28) | Enemies first, hardest first (bosses, new creature models, animated clips), then what the game still needs, then art and props: reference/ART-PLAN.md inventory with costs, Matt has ~$70 left: plan to $65 ($40 enemies, ~$25 what's left to finish then art and props, ~$5 spare), results in a gallery for Matt's pick (show first, nothing into src/ yet) | reference/ART-PLAN.md, tools/art/ new folder + new specs (branch art-hf) | 2026-10-28 |
 
-| Journal cards (Matt 2026-10-28: "the enemy cards are the original enemies") | Jungle Cards match today's game: every creature spawned per world gets a card from its current atlas, old ones fixed, tips in touch words | journal.ts, creatureArt.ts, CreaturePic.tsx, TrophyRoom journal part (branch journal-cards) | 2026-10-28 |
 | Polish prototype (Matt 2026-10-28: "make it look like a highly polished start screen") | Loading -> title in one piece (no white flash, font swap or pop-in), living title scene, entrances, one button family, menus/cards/map/pause/cleared screens, stage start/end wipes; preview video first (show first) | TitleScreen, StartMenu, PauseMenu, menuParts, TrophyRoom styling, WorldMap, dialogs, CSS (branch polish-ui) | 2026-10-28 |
 
 ## Cloud builders (variety pass, Matt 2026-10-28 "all four worlds now"; each pushes to its own branch, the lead merges after §4)
@@ -77,6 +81,8 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 1. Generator: 5-8 generated or hand-built?
 2. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
+3. Naturalist medal: still the 11 predators, or all 18 journal cards (the 7 new "met on the road" ones too)?
+4. Pell's and the soldiers' journal tips read right?
 
 ## Decided today (also on the Docs roadmap)
 
