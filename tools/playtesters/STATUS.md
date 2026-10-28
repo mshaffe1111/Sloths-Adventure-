@@ -27,6 +27,8 @@ reaction + 0.6 s margin on boss openings).
 one is needed, uses the Steph bot. One run each per promotion, not repeat runs. Do quick checks by state (`eval`, `unseen-hits.cjs`, `boss-openings.cjs`) where that is
 enough, and bring in other personas only when a check needs them.
 
+**Effort** (Matt, 2026-10-28): QA manages its usage. Bot stage runs use medium effort; log pulls, decoding, state checks and messages use low; high only for real reasoning (root-causing a bug, a hard player-or-game call).
+
 **Checklist** (Matt, 2026-10-28): every finding is tagged with its rule number from `QA-CHECKLIST.md`.
 
 **How work moves**
