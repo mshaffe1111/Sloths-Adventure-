@@ -26,19 +26,14 @@ import type { GeneratedStage } from '../stageGenerator.ts';
 import type { Gen2Stage } from './types.ts';
 import type { Difficulty } from '../difficulty.ts';
 import type { LevelConfig, Platform } from '../types.ts';
-import { buildGen2Stage, layLocal, placeRoom, planBudget, rngFor } from './pipeline.ts';
+import { buildGen2Stage, checkStage, layLocal, placeRoom, planBudget, rngFor } from './pipeline.ts';
 import type { SectionTemplate } from './types.ts';
 import { W5_MANIFEST } from './worlds/w5.ts';
 import { ARENA, cakeRoom, teaRoom, TEA_RISE, W5_ARENA_SECTIONS, W5_ROOM_SECTIONS, W5A_ROOM_HINTS, W5A_TIPS, w5ArenaKit } from './worlds/w5Arena.ts';
 
 const LEVEL = generateAllLevels().find((l) => l.id === '5-9')!;
-/**
- * 5-9's config for a test build. worldsData asks a gauntlet for 26 defeats, which gen2's threat budgets do not lay on every roll yet
- * (reported to the lead: a purge/gauntlet top-up in the pipeline, or the goal set from what was laid). The engine's own goal is withGoals'
- * 75% of the animals laid; here each roll must lay at least QUOTA (Easy: easyMode's 60% of it), checked by levelCheck itself.
- */
-const QUOTA = 14;
-const cfg = (d: Difficulty): LevelConfig => ({ ...LEVEL, unlocked: true, targetCount: d === 'easy' ? Math.round(QUOTA * 0.6) : QUOTA });
+/** 5-9's own config: the gauntlet's designed goal (worldsData: 26), which the pipeline's top-up lays for; Easy is held to easyMode's 60% */
+const cfg = (_d?: Difficulty): LevelConfig => ({ ...LEVEL, unlocked: true });
 const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
 const kit = w5ArenaKit();
 type Gen2Built = Gen2Stage;
@@ -51,14 +46,15 @@ test("5-9 on 20 seeds, Normal and Easy: levelCheck passes, 2:00+ for the quick p
   for (const seed of SEEDS) {
     for (const d of ['normal', 'easy'] as const) {
       const st = buildGen2Stage({ config: cfg(d), kit, seed, difficulty: d });
-      const res = validateStage(st);
+      const res = checkStage(st, st.gen2.budget);
       assert.deepEqual(res.errors, [], `seed ${seed} ${d}: ${res.errors.join('; ')}`);
+      assert.equal(st.config.targetCount, LEVEL.targetCount, 'the designed goal stays');
       const fast = modelStage(st, MODEL_FAST).total;
       assert.ok(fast >= 120 && fast >= fastFloor(5, 9, 'gauntlet'), `seed ${seed} ${d}: ${fast.toFixed(0)} s for the quick player`);
       assert.ok(st.gen2.sections.filter((s) => s.template.startsWith('w5a-')).length >= 6, `seed ${seed} ${d}: few arena sections`);
-      // (the goal asks for QUOTA; the roll lays a margin over it, before the shrine)
+      // (the goal, Normal's 26 or Easy's 60% of it, with a margin, all before the shrine)
       const before = st.enemies.filter((e) => e.x < st.exitTotemX).length;
-      assert.ok(before >= cfg(d).targetCount + 2, `seed ${seed} ${d}: ${before} animals before the shrine`);
+      assert.ok(before >= st.gen2.budget.quota.check + (d === 'normal' ? 2 : 0), `seed ${seed} ${d}: ${before} animals before the shrine`);
       if (d === 'normal') for (const r of st.kit?.rooms ?? []) rooms.set(r.id.replace(/^s\d+-/, ''), (rooms.get(r.id.replace(/^s\d+-/, '')) ?? 0) + 1);
       // (a puzzle moment, not a puzzle stage: one room a roll at most, STAGE-RULES §3)
       assert.ok((st.kit?.rooms ?? []).length <= 1, `seed ${seed} ${d}: ${(st.kit?.rooms ?? []).length} rooms`);
