@@ -100,3 +100,56 @@ test('1-6 in the real engine: the twist, the log pushed back onto the far end, a
   doubleJump(r, 1, 16);
   assert.ok(Math.abs(r.p.y - (G - 260)) < 3, `up on the branch over the bank (${Math.round(r.p.x)}, ${r.p.y})`);
 });
+
+/** the fallen kapok's push log (220 wide; the seesaw logs are 140) and the high canopy's face just past where it stops */
+const fallenLog = (platforms: Array<{ x: number; y: number; width: number; height: number; push?: { min: number; max: number } }>) => {
+  const log = platforms.find((p) => p.push && p.width === 220)!;
+  const wall = platforms.find((p) => !p.push && Math.abs(p.x - (log.push!.max + 55)) < 2 && p.y < G)!;
+  return { log, wall };
+};
+
+test("1-6's fallen log and the control test's 'Push the log': the canopy's face is solid to the ground (no walking under it into the water)", () => {
+  // (QA: Sally drowned 12 times at the control test's "Push the log", seed 571060, and Matt twice at 1-6's fallen log: the canopy was a
+  // 90 px bank floating 230 up, with open air under it, and the ground ended at its face)
+  const builds = [...SEEDS.map((s) => buildProtoStage(cfg, s)), buildProtoStage(cfg, 571060, 'ctest')];
+  for (const st of builds) {
+    const { log, wall } = fallenLog(st.platforms);
+    assert.ok(log && wall, 'the log and its wall');
+    assert.ok(wall.y + wall.height >= G + 20, `the face stops ${Math.round(G - wall.y - wall.height)} px above the ground`);
+    // Dot: how to push it, at the log; and at the wall's foot, that it is not a jump (neither says what to do with the log)
+    const texts = st.proto.hints.map((h) => h.text);
+    assert.ok(texts.includes('Keep sliding into the log to push it'));
+    const at = st.proto.hints.find((h) => h.text.startsWith('Too high to jump'))!;
+    assert.ok(at && at.x < wall.x && at.x > log.push!.max - 160, 'the wall line at its foot');
+    assert.ok(!/against|wall|onto/.test(at.text), 'it does not give the answer away');
+  }
+});
+
+test('1-6 in the real engine: the fallen log moves from a walk into it, the wall stops him, and the pushed log is the way up', () => {
+  for (const seed of [1, 38]) {
+    const r = new RealPlay('1-6', seed);
+    const { log, wall } = fallenLog(r.platforms);
+    const x0 = log.x;
+    // a natural approach: walking up to it and on into it (no stopping first)
+    r.stand(log.x - 200, G);
+    let moved = -1;
+    for (let i = 0; i < 30 * 8; i++) {
+      r.frame({ right: true });
+      if (moved < 0 && log.x > x0) moved = r.t;
+    }
+    assert.ok(moved > 0 && moved < 1.2, `seed ${seed}: the log first moved ${moved.toFixed(2)} s after he set off from 200 px back`);
+    assert.equal(Math.round(log.x + log.width), Math.round(log.push!.max), `seed ${seed}: pushed all the way`);
+    assert.ok(!r.died);
+    // past the log on the ground, on into the wall: it stops him, and he is never in the water
+    r.stand(log.x + log.width + 10, G);
+    for (let i = 0; i < 30 * 3; i++) r.frame({ right: true });
+    assert.ok(!r.died && r.p.grounded && r.p.y === G && r.p.x < wall.x, `seed ${seed}: at the wall's foot (${Math.round(r.p.x)}, ${r.p.y})`);
+    // and back up onto the log from there (a missed jump costs a hop), then up from the log to the canopy
+    for (let i = 0; i < 30; i++) r.frame(i === 0 ? { left: true, press: true } : { left: i < 12, jump: i < 14 });
+    r.wait(0.4);
+    assert.ok(Math.abs(r.p.y - log.y) < 3, `seed ${seed}: back on the log (${Math.round(r.p.x)}, ${r.p.y})`);
+    r.stand(log.x + log.width - 25, log.y);
+    doubleJump(r, 1);
+    assert.ok(Math.abs(r.p.y - wall.y) < 3 && r.p.x > wall.x, `seed ${seed}: up on the canopy (${Math.round(r.p.x)}, ${r.p.y})`);
+  }
+});

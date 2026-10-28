@@ -539,9 +539,14 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     row(logX + LOG.w + 40, wallX - 40, G - 34, 3);
     once('log', () => hint(logX - 160, 'Keep sliding into the log to push it', 'Hold the pad into the log to push it', 'Hold left or right into the log to push it'));
     close();
-    // the high canopy: 230 px up (a double jump tops out near 175, plus 26 for catching the lip)
+    // the high canopy: 230 px up (a double jump tops out near 175, plus 26 for catching the lip). Its face is solid down to the ground:
+    // as a 90 px bank floating 230 up, there was open air under it, and walking up to the wall carried him under it and off the end of
+    // the ground into the water (QA: Sally drowned 12 times at the control test's "Push the log", Matt twice at 1-6's fallen log)
     const plateau = R.r(520, 820);
-    bank(wallX, wallX + plateau, G - 230);
+    P.push({ id: pid++, x: wallX, y: G - 230, width: plateau, height: 230 + BANK_H, type: 'solid', style: 'log' });
+    // (said only at the wall's foot, so a player who went past the log and found the wall learns it is not a jump; the log's own line
+    // says how to push it, and neither says what to do with it)
+    once('logWall', () => hint(wallX - 100, 'Too high to jump, even twice. Look around!'));
     row(wallX + 80, wallX + plateau - 80, G - 264, Math.round(plateau / 130));
     // (`busyTop`, 1-6 since 2026-10-28: a mossy rock to hop on the high canopy, a petal on it)
     if (busyTop) {

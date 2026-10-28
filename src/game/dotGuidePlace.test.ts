@@ -4,7 +4,7 @@ import { emptyGuideView, type GuideView } from './dotGuideView.ts';
 import { MoveWatch } from './dotGuideWatch.ts';
 import { GUIDE, GuideQueue, type GuideLine, type MoveId } from './dotGuide.ts';
 import { BUBBLE_TAG_H, PUNCH_REACH, cornerBubble, fallbackSafeArea, hoverSpot, landingRects, perchPoseFor, placeBubble, pokeyRect, popupRects, weakSpotRect, type Rect } from './dotGuidePerch.ts';
-import { dotHelp, helpAllows, markSkipOffered, offersSkip, skipOffered, skipTips } from './dotGuideHelp.ts';
+import { SKIP_ARM_MS, dotHelp, helpAllows, markSkipOffered, offersSkip, skipOffered, skipTapCounts, skipTips } from './dotGuideHelp.ts';
 import { gestureMove } from './dotLines.ts';
 
 const overlaps = (a: Rect, b: Rect) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
@@ -154,6 +154,17 @@ test('Skip tips: offered on her very first tip only, once per device; tapping it
   assert.equal(skipOffered(s2), true);
   assert.equal(helpAllows({ kind: 'must' }, dotHelp(s2), none), true, 'a locked exit is still explained');
   assert.equal(helpAllows({ kind: 'teach', skill: 'move:jump' }, dotHelp(s2), none), false, 'tips are off');
+});
+
+test('Skip tips needs a deliberate tap: not in its first moments (a tap meant for the game), and only a touch that began on it', () => {
+  // (QA: Cheddarbob played on Quiet from his first second; Dot's first tip comes while the thumb is busy with the game)
+  assert.ok(SKIP_ARM_MS >= 1000);
+  assert.equal(skipTapCounts(200, true), false, 'a tap as the bubble comes up');
+  assert.equal(skipTapCounts(SKIP_ARM_MS - 1, true), false);
+  assert.equal(skipTapCounts(SKIP_ARM_MS + 500, false), false, 'a touch that came from elsewhere onto it');
+  assert.equal(skipTapCounts(SKIP_ARM_MS + 500, true), true);
+  // a key (Enter on the focused button) is always on purpose
+  assert.equal(skipTapCounts(100, false, true), true);
 });
 
 test('turning tips off takes the line down at once (no 1.5 s wait), and what Quiet would not say goes with it', () => {

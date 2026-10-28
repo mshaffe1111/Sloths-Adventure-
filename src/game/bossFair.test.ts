@@ -46,10 +46,14 @@ for (const id of ['1-10', '2-10', '3-10']) {
           assert.ok(beats[i] - beats[i - 1] <= IDLE_MAX, `${id} ${view}: ${(beats[i] - beats[i - 1]).toFixed(1)} s with no attack and no opening (from ${beats[i - 1].toFixed(1)} s)`);
         }
         // every heart lost came from an attack he wound up for at least 0.6 s, and never while he was open (QA gate: "unwarned hits?").
-        // (The croc keeps his own rules: his mud waves run on through his recovery, to be jumped, and a winding-up croc bites.)
-        for (const h of id === '2-10' ? [] : (sim.e.bossHurtLog as Array<{ t: number; by: string; state: string; move: string | null }>)) {
+        // (The croc's mud waves and geysers run on through his recovery, to be jumped; but since QA's 2up4 log he no longer bites by
+        // touch while he winds up: his body never hurts, as in 1-10 and 3-10.)
+        for (const h of sim.e.bossHurtLog as Array<{ t: number; by: string; state: string; move: string | null }>) {
           assert.notEqual(h.by, 'body', `${id} ${view}: hurt by touching his body at ${h.t.toFixed(1)} s (${h.state} ${h.move})`);
-          assert.ok(h.state !== 'rec' && h.state !== 'stun', `${id} ${view}: hurt while he was open, at ${h.t.toFixed(1)} s (${h.by})`);
+          if (!h.by.startsWith('hazard')) assert.notEqual(h.state, 'tell', `${id} ${view}: hurt during a wind-up at ${h.t.toFixed(1)} s (${h.by} ${h.move})`);
+          if (!(id === '2-10' && h.by.startsWith('hazard'))) {
+            assert.ok(h.state !== 'rec' && h.state !== 'stun', `${id} ${view}: hurt while he was open, at ${h.t.toFixed(1)} s (${h.by})`);
+          }
           if (h.move && h.state === 'act') assert.ok(sim.def.moves[h.move].tell >= 0.6, `${id} ${view}: ${h.move} winds up for ${sim.def.moves[h.move].tell} s`);
         }
         const unseen = sim.tells.filter((t) => !t.onScreen);

@@ -190,3 +190,29 @@ test('5-M: the order of her thoughts: each that teaches comes before the thing i
   for (let i = 0; i < 120 * 30 && b2.mc.done < 4; i++) b2.step();
   assert.deepEqual(b2.mc.saidAt.map((s) => s.id).filter((id) => id !== 'last'), []);
 });
+
+test('5-M: with no finger down she only moves in line (the column carries her) or when caught (Pell walks her back), never on her own', () => {
+  // (QA: twice she kept moving with no finger down for 0.8 s and more, in "Learn: the ring" and "Develop: two rings": the march)
+  const sim = onScreen(1, 844, 390);
+  const bot = new MeecaBot(sim);
+  const mc = bot.mc;
+  let tries = 0, outOfLine = 0;
+  for (let i = 0; i < 300 * 30 && mc.phase !== 'done' && tries < 30; i++) {
+    bot.step();
+    if (i % 60 !== 59 || mc.phase !== 'play') continue;
+    tries++;
+    // out of line first (a slide back, or a hop forward), then every finger off the glass for 1.5 s
+    if (mc.inLine) for (let k = 0; k < 10; k++) sim.frame(tries % 2 ? { left: true } : { right: true, press: k === 0, jump: k < 6 });
+    let lastX = sim.p.x;
+    for (let k = 0; k < 45; k++) {
+      sim.frame({});
+      const dx = Math.abs(sim.p.x - lastX);
+      lastX = sim.p.x;
+      // (after 0.8 s: a hop has landed and a run has braked)
+      if (k < 24 || mc.inLine || mc.phase !== 'play') continue;
+      outOfLine++;
+      assert.ok(dx < 0.5, `out of line with no finger down she moved ${dx.toFixed(1)} px in a frame at ${mc.t.toFixed(1)} s`);
+    }
+  }
+  assert.ok(outOfLine > 100, `only ${outOfLine} frames out of line were watched`);
+});
