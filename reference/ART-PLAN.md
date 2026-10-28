@@ -1,0 +1,86 @@
+# Art plan: Worlds 5-10 on Hugging Face (2026-10-28)
+
+Matt, 2026-10-28: "start getting the Hugging Face art set up ... Do enemies first, then anything that we need to finish up the game. Do
+the hardest stuff first, and then for the remaining amounts, use for art and props." Budget update the same day: about $70 left on the
+account; plan the whole run to **$65** (round 1 up to $40 on enemies, round 2 the rest), keep ~$5 spare.
+
+Show first: nothing here goes into `src/` yet. Results go to the gallery `tools/art/gallery-w5-10/index.html` for Matt to pick from.
+Scripts and specs: `tools/art/w6to10/` (job scripts, spec maker, fetch and sheet tools), `tools/art/gen/spec-w6to10-*.json`.
+
+## 1. Inventory: what Worlds 5-10 call for, and what exists
+
+Story: `reference/STORY-REWRITE.md` (World 5's tea table to the fortress gate); stages: `src/game/stagePlan.ts`; fights:
+`src/game/bossDefs.ts`; enemy mix per world: `stageGenerator.ts hardKind` (W6-10 use the World 1-4 jungle cast today: jaguar,
+ocelot, tayra, caiman, boa, frog, plus the harpy from W6).
+
+### Guardians (stage 10 of each world, plus the secret one)
+
+| World | Guardian | Art in the game now | Character model | Animated clips | What is missing |
+|---|---|---|---|---|---|
+| 5 | Tarantula Queen (Silk Hollow) | `queen-atlas` (25 painted poses) + `queen-anim` (idle, skitter, silk/slam/net tell+act, hurt, stunned, defeat, sit, pour) | `queen-qwen-lora` | yes (2026-10-26, not wired) | painted lair backdrop |
+| 6 | Marsh Reaver (giant otter, spear) | `reaver-atlas`, 17 poses (no walk: advances in three lunge frames) | `reaver-qwen-lora` | **none** | every move animated, tells, hurt/stun/defeat; painted lair |
+| 7 | Stone Idol Golem | `golem-atlas`, 32 poses | `golem-qwen-lora` | **none** | as above (awaken, march, slam, beam, quake, defeat to rubble) |
+| 8 | Night-Wing Monarch (giant bat) | `monarch-atlas`, 17 poses | `monarch-qwen-lora` | **none** | wingbeat, hover, screech, dive, hurt, fall; lair |
+| 9 | Magma Drake | `drake-atlas`, 19 poses (no walk) | `drake-qwen-lora` | **none** | walk, fire breath, tail spin, eruption stomp, leap, hurt/stun, petrify; lair |
+| 10 | General Iron-Claw (war look) | `ironclaw-atlas`, 37 poses | `ironclaw-qwen-lora` (+ `general` plain sloth) | **none** | the final fight's march, slam, slash, roar, stomp, hurt/stun, defeat; lair |
+| secret | Thornbark (7-7's hollow) | `thornbark-atlas`, 16 poses (`hollow.webp` lair exists) | `thornbark-qwen-lora` | **none** | march, gallop, roar, whip, slam, guard, the freed rest |
+
+Today all six W6-10 guardians cut between still poses. The Queen (W5) and the Sky Sovereign (W4) are the only guardians with clips.
+
+### Stage enemies
+
+| World | Called for by story / plan | Exists | Weak / missing |
+|---|---|---|---|
+| 5 (5-6..5-9) | spiders in silk, the Queen's garden guards | jumping spider clips packed, Butler (pose sheet + clips), Dangler, Seamstress, Orchid Mantis, Dozer moth (trained models + pose sheets, 2026-10-26) | Dangler/Seamstress/Mantis/Dozer are poses only (no clips); waiting on Matt's picks |
+| 6 | "hunters in the mangrove" with spears (6-5), the caiman root, flat-water things | otter runners (scamper, swim, jab) and caiman root (snap) clips (2026-10-28 `anim/`), mangrove crab + piranha designs with clips (overnight run) | crab/piranha designs await Matt's pick; no creature models for them |
+| 7 | "Stone Sentries" (7-5) | stone sentry design + clips (overnight run: idle, walk, jab, crumble) | awaits Matt's pick |
+| 8 | bat roosts (8-4), night hunters (8-8) | fruit bat + spectacled owl designs + clips (fly, swoop, hurt) | no perch/roost-sleep or wake clip; await pick |
+| 9 | ash-field hunters (9-6) | lava lizard + ember beetle designs + clips (walk, idle, spit/charge, hurt, flip) | await pick |
+| 10 | guards on the walls (10-7, 10-9) | the General's soldiers (sloths in olive, `soldier-anim`: march, idle, look; lanterns, no weapon), capybara `guard` (march, stand, tell, jab, after, hit) | soldiers have no attack, hurt or knocked-down; Matt has not said what the wall guards carry |
+
+The overnight run's ten creature designs (gallery https://claude.ai/artifact/J6iuizvLB1iC6Ge8whThe9) already have 3-4 clips each in
+`mshaffe111/slothadv-gen/clips/cr-*` and `m1k-*`: **not regenerated here** (Matt still has to pick the designs).
+
+### Backdrops and props (finish the game)
+
+- Lairs: only the Prowler (`lairs/prowler-lair.webp`) and Thornbark (`backdrops/hollow.webp`) have a painting (2560x1430); the
+  W5-W10 lairs are drawn in code (`lair*.ts`).
+- Stage backdrops: W6-W9 have one far/mid/near set each; World 5 has five times of day (`w5dusk1`, `w5gold2`, `w5twi1`...), and
+  STAGE-RULES §4 wants every world to go through the day, so W6-W9 lack 2+ far variants each.
+- Props: kits `src/assets/kits/w6-w10.webp` exist (Gemini); Matt's Gemini prompts for W2-W10 ground/climb kits are on the Art Still
+  Needed page. HF takes are an optional second source.
+
+## 2. Ranked plan (hardest first) with costs
+
+Unit costs, measured on this account (rtx-pro-6000, $2.75/h): a Wan 2.2 I2V clip with the motion model, 49 frames at 832x480, 30 steps,
+is **~4.4 min = ~$0.20** with the model load shared (anim run: 30 clips, 131 min, $6.00); 704x704 ~$0.25. A creature model (Qwen LoRA,
+800 steps) is ~1.2 h = **~$3.30** (`tools/art/w5/train_w5creatures.py`). A Qwen-Image still is ~1 min (~$0.05) plus a ~6 min load
+per job. CPU jobs (start pictures, sheets) cost cents.
+
+| # | What | Why it is hard | Jobs | Est. $ | Round |
+|---|---|---|---|---|---|
+| 1 | **General Iron-Claw** (W10 final guardian): idle, war march, charge, overhead slam, club slash, roar, stomp, hurt, stunned, defeat; 10 moves x 2 seeds | biggest fight, 37 poses, cape and club must hold together | 1 GPU | 4.4 | 1 |
+| 2 | **Stone Idol Golem** (W7): awaken, march, charge, hammer slam, roar, beam, quake stomp, hurt, stunned, crumble; 10 x 2 | grey stone (tight key), rubble defeat | 1 GPU | 4.4 | 1 |
+| 3 | **Magma Drake** (W9): idle, walk, fire breath, tail spin, eruption stomp, leap, roar, hurt, stunned, defeat; 10 x 2 | quadruped walk (no walk in the sheets), fire | 1 GPU | 4.4 | 1 |
+| 4 | **Marsh Reaver** (W6): idle, advance, spear thrust, swipe, vault smash, mud sling, roar, hurt, stunned, defeat; 10 x 2 | spear must stay one piece; grey-brown fur | 1 GPU | 4.4 | 1 |
+| 5 | **Thornbark** (secret): idle, march, gallop, roar, briar whip, overhead slam, claw flurry, leap, guard, freed rest; 10 x 2 | cape, banner pole, bone club | 1 GPU | 4.4 | 1 |
+| 6 | **Night-Wing Monarch** (W8): hover, fly, glide, screech, dive, hurt, fall, roost; 8 x 2 at 704x704 | a flyer: wings flicker and drift out of frame | 1 GPU | 4.2 | 1 |
+| 7 | Re-runs of broken boss clips (off-model, sliding, frozen) | | 1 GPU | 3-5 | 1 |
+| 8 | Creature models for Matt's picked W6-9 designs (crab, piranha, sentry, bat, owl, lizard, beetle) so their attacks and hurts can be posed on-model | needs Matt's picks first | 7 trainings | 23 | later |
+| 9 | W10 wall guards in combat (soldiers: baton/spear jab, hurt, knocked down) | needs Matt's call on what they carry | edit + clips | 3 | later |
+| 10 | **Painted lairs** W5-W10 (calm and enraged takes, 2560-wide painting like the Prowler's), style model | backdrops | 1 GPU | 2.5 | 2 |
+| 11 | **Times of day** for W6-W9 stage far backdrops (two new times each, 3 takes) | | (same job) | 1.5 | 2 |
+| 12 | The ten guardians with their collars off (ending), each from its own model | 10 model loads | 1 GPU | 3 | 2 |
+| 13 | W5's four posed creatures (Dangler, Seamstress, Mantis, Dozer) animated from their pose sheets: walk/idle/attack/hurt | | 1 GPU | 6.5 | 2 |
+| 14 | Night-roost and wake clips for the fruit bat, and the W6-W9 props in the style model | | 1 GPU | 2-4 | 2 |
+| 15 | Moving lair plates (a slow Wan loop of each new lair: mist, glow, embers) | | 1 GPU | 1.5 | 2 |
+
+Round 1 = items 1-7 (~$30-32 of the $40 cap). Round 2 = items 10-15 in that order with what is left, stopping at $65 total.
+
+## 3. Cost ledger (exact: job durations x $2.75/h)
+
+| Job id | What | Flavor | Minutes | $ |
+|---|---|---|---|---|
+| (filled in as jobs finish) | | | | |
+
+Running total: $0.00

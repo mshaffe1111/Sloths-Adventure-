@@ -1,0 +1,13 @@
+w6to10 jobs, 2026-10-28 (round 1 cap $40, whole run $65; ledger with exact minutes in reference/ART-PLAN.md section 3)
+w6to10-starts        6ae2376e3fb22a235dd45b9c  cpu-upgrade  cancelled at once (timeout given as "1h30m" read as 1 s; use "90m")
+w6to10-starts        6ae2377c3fb22a235dd45ba6  cpu-upgrade  17:57-18:06 cancelled: Real-ESRGAN on CPU is 1.5-3 min a frame (56 frames)
+w6to10-starts-w5c    6ae2383a3fb22a235dd45d1a  cpu-upgrade  18:00- the W5 creatures' 16 starts on CPU (left running)
+w6to10-starts-gpu    6ae2399641e90535df779658  l4x1         18:06- the six guardians' 56 starts, upscaled on the GPU (gpustarts.py)
+w6to10-starts-gpu    6ae2399641e90535df779658  l4x1         cancelled while waiting for hardware (no L4 free)
+w6to10-starts-gpu    6ae239c53fb22a235dd45f5f  rtx-pro-6000 18:07- the six guardians' 56 starts (pytorch image)
+w6to10-ironclaw      6ae23a3f41e90535df779750  rtx-pro-6000 18:09- 20 clips (bossgpu.py BOSS=ironclaw)
+w6to10-golem         6ae23a4141e90535df779754  rtx-pro-6000 18:09- 20 clips
+w6to10-drake         6ae23a4341e90535df77975c  rtx-pro-6000 18:09- 20 clips
+w6to10-reaver        6ae23a4541e90535df779760  rtx-pro-6000 18:09- 20 clips
+w6to10-thornbark     6ae23a4741e90535df779766  rtx-pro-6000 18:09- 20 clips
+w6to10-monarch       6ae23a493fb22a235dd4602f  rtx-pro-6000 18:09- 16 clips (704x704)
