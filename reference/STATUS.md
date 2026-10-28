@@ -44,6 +44,27 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 |---|---|---|---|
 | Hugging Face art run (Matt 2026-10-28) | Enemies first, hardest first (bosses, new creature models, animated clips), then what the game still needs, then art and props: reference/ART-PLAN.md inventory with costs, Matt has ~$70 left: plan to $65 ($40 enemies, ~$25 what's left to finish then art and props, ~$5 spare), results in a gallery for Matt's pick (show first, nothing into src/ yet) | reference/ART-PLAN.md, tools/art/ new folder + new specs (branch art-hf) | 2026-10-28 |
 
+| Journal cards (Matt 2026-10-28: "the enemy cards are the original enemies") | Jungle Cards match today's game: every creature spawned per world gets a card from its current atlas, old ones fixed, tips in touch words | journal.ts, creatureArt.ts, CreaturePic.tsx, TrophyRoom journal part (branch journal-cards) | 2026-10-28 |
+| Polish prototype (Matt 2026-10-28: "make it look like a highly polished start screen") | Loading -> title in one piece (no white flash, font swap or pop-in), living title scene, entrances, one button family, menus/cards/map/pause/cleared screens, stage start/end wipes; preview video first (show first) | TitleScreen, StartMenu, PauseMenu, menuParts, TrophyRoom styling, WorldMap, dialogs, CSS (branch polish-ui) | 2026-10-28 |
+
+## Cloud builders (variety pass, Matt 2026-10-28 "all four worlds now"; each pushes to its own branch, the lead merges after §4)
+
+| Session | World | Branch |
+|---|---|---|
+| session_01FhBbYNmSk5CrHi81ChVXeV | World 1 (+ layoutMemory: re-roll a roll too like the last) | variety-w1 |
+| session_01FhBbYLesoiunAyDUUtL2c6 | World 2 | variety-w2 |
+| session_01FhBbYJbmE5kU47zP8gtSsr | World 3 | variety-w3 |
+| session_01FhBbYNv8Pbizpa68Y6hdjv | World 4 | variety-w4 |
+
+Band targets given (Normal middle on bands.ts): World 1 ~20, 2 ~30, 3 ~40, 4 ~50. Pacing: Normal 0.6 actions/s in World 1 rising to 0.75 in
+World 4; Easy bursts 6-8 s with 2 s rests.
+
+## Release
+
+- PR #41 marked ready 2026-10-28 on Matt's "push" (test link v216). Waiting on Matt's merge; then check the deploy and the APK. QA
+  session (session_01NC7oJLxL2g1UhhBcGkZBBA) told what to test on the live build.
+- Flicker: the art run lists every state he needs for the whole game and makes them in round 1 (Matt 2026-10-28).
+
 ## Budget
 
 Matt is on the Max plan (2026-10-28) and wants more helpers in parallel to finish sooner ("even twice as many"): run every
@@ -52,12 +73,11 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 ## Open decisions for Matt (ask one at a time)
 
-1. Start the Worlds 1-4 variety pass now from the gap files (four builders, one per world).
-2. Generator: how many checked layouts to ship per stage (architect proposes 16).
-3. Generator: does every Easy fall land in a soft pit, even in World 6's water?
-4. Generator: about 30 sections per world: OK?
-5. Generator: 5-8 generated or hand-built?
-6. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
+1. Generator: how many checked layouts to ship per stage (architect proposes 16).
+2. Generator: does every Easy fall land in a soft pit, even in World 6's water?
+3. Generator: about 30 sections per world: OK?
+4. Generator: 5-8 generated or hand-built?
+5. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
 
 ## Decided today (also on the Docs roadmap)
 
@@ -69,6 +89,8 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - Meeca's Room 4 is the tea channel. World 5's night strips are made in code.
 - Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
+- Variety pass for Worlds 1-4, all four at once. Push (release PR #41). Flicker's animations for the whole game. The polish pass
+  on the title and every menu. Jungle Cards updated to today's creatures.
 - Dot toned down. All research in the repo; one rulebook; the lead checks every helper's work before merging.
 
 ## QA batches
