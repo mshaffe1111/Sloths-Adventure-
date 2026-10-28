@@ -479,5 +479,43 @@ const SECTIONS: Record<W1Stage, Table> = {
   '1-6': {},
   '1-7': {},
   '1-8': {},
-  '1-9': {},
+  // 1-9 The Boa's Branches: fighting on the move. The roll's rhythm: guards on the branches over the moss, guards up the trunks on the
+  // way over walls, or snakes on the high branches a mushroom bounces him up to. The ring is every roll's twist; the sleeping guard
+  // keeps its seed in every roll.
+  '1-9': {
+    rhythms: ['branch', 'climb', 'leap'],
+    develop: [
+      { id: 'branches', beat: 'branch', build: (k) => { k.ropeGuard(); k.guardBranch(true); k.flag(); k.sleepingGuard(); k.snakeWalk(1); k.guardBranch(true); } },
+      { id: 'trunks', beat: 'climb', build: (k) => { k.trunkGuard(); k.snakeWalk(1); k.flag(); k.sleepingGuard(); k.trunkGuard(); k.snakeWalk(2); } },
+      { id: 'leaps', beat: 'leap', build: (k) => { k.highLeaps(4, false, true, true); k.guardBranch(true); k.flag(); k.sleepingGuard(); k.highLeaps(5, false, true, true); } },
+    ],
+    twist: [
+      { id: 'ringBranch', beat: 'branch', build: (k) => { k.snakeRing(); k.dip(); k.guardBranch(true); } },
+      { id: 'ringClimb', beat: 'climb', build: (k) => { k.snakeRing(); k.trunkGuard(); } },
+      { id: 'ringLeap', beat: 'leap', build: (k) => { k.snakeRing(); k.highLeaps(3, true, true); } },
+    ],
+    finish: [
+      {
+        id: 'branches', beat: 'branch', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => k.guardBranch(true),
+          (k) => { k.snakeBranches(3, k.G - 130); k.busy(1); },
+          (k) => { k.guardBranch(true); k.snakeBranches(3, k.G - 140); },
+        ], 2, 12),
+      },
+      {
+        id: 'trunks', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.trunkGuard(); k.snakeWalk(1); },
+          (k) => { k.snakeWalk(1); k.trunkGuard(); },
+          (k) => { k.climbWall(); k.snakeWalk(2); },
+        ], 2, 12),
+      },
+      {
+        id: 'leaps', beat: 'leap', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => k.highLeaps(5, false, true, true),
+          (k) => k.highLeaps(4, true, true, true),
+          (k) => { k.bounceWall(true, false); k.guardBranch(true); },
+        ], 2, 12),
+      },
+    ],
+  },
 };

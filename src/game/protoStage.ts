@@ -1972,6 +1972,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const Rb = branch(r0 + W - 400, r0 + W - 140, ly);
     const Tp = branch(r0 + W / 2 - 160, r0 + W / 2 + 160, ty);
     row(Tp.x + 50, Tp.x + Tp.width - 50, ty - 34, 3, 'hibiscus');
+    // (two mossy rocks on the clearing's floor, a petal on each, clear of where the snakes drop and of the branches: something to hop on
+    // the way in and on the way to the wall, where the stage inspector found 4.5-5.5 s of plain walking in the ring on every roll,
+    // 2026-10-28; and one more past the wall)
+    // (each stands down into the ground, the bank broken around it, as World 1's other rocks: logHop)
+    for (const rx of [Math.round(r0 + 20), Math.round(r0 + W - 125)]) {
+      x = rx;
+      close();
+      block(rx, rx + 110, 40).height = 40 + BANK_H;
+      flower(rx + 55, G - 74, 'orchid');
+      open(rx + 110);
+    }
     const wall = block(r0 + W, r0 + W + 120, 330);
     const mid = (p: Platform) => p.x + p.width / 2;
     RING = {
@@ -1982,7 +1993,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       ],
     };
     x = r0 + W + 120;
-    run(R.r(260, 340));
+    if (w1Rocks) {
+      run(R.r(110, 140));
+      logHop();
+      run(R.r(120, 160));
+    } else run(R.r(260, 340));
     expert += (x - x0) / RUN + 16;
     pieces.push({ k: 'snakes', x0, x1: x });
   }
@@ -2005,30 +2020,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flag();
     });
     beat('Test: guards along the way', () => {
-      ropeGuard();
-      trunkGuard();
-      flag();
-      sleepingGuard();
-      snakeWalk(1);
-      guardBranch(true);
+      // (every version keeps the sleeping guard and its seed: w1Sections.ts)
+      section('develop');
       flag();
     });
     beat('Twist: the ring', () => {
       hint(x + 60, 'Snakes from above! Clear them all to open the way', 'Snakes from above! Clear them all to open the way', 'Snakes from above! Clear them all to open the way');
-      snakeRing();
-      dip();
+      section('twist');
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 12) {
-        const k = n % 3;
-        if (k === 0) guardBranch(true);
-        else if (k === 1) { busy(1); snakeWalk(2); }
-        else trunkGuard();
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      section('finish');
       homeRun();
     });
   }
