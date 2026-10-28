@@ -19,10 +19,12 @@
  *   light       morning (6-1 to 6-3), late morning (6-4 to 6-6), noon (6-7 on): "the Reaver eats lunch at noon", and at 6-9 the
  *               sun is straight down through the roots.
  *
- * Water: Matt's rule is soft falls on land and a life in water, on Easy too, with Dot's warning first (types.ts WATER_WARN). The
- * pipeline's pit kind is still one per world, so until the core's water pits land World 6's gaps are soft (a mud floor and a step out,
- * `pit: 'soft'`), and the sections keep every gap over what will be water to a third of a jump or so (STAGE-RULES §6: the first-timer
- * drowns at half a jump's reach), so switching them to water later changes no geometry.
+ * Water: Matt's rule is soft falls on land and a life in water, on Easy too, with Dot's warning first (types.ts WATER_WARN, which the
+ * pipeline lays for a water stage). The pipeline's pit kind is one per stage, so World 6 picks it by the story (w6Kit): the black water
+ * between the roots (6-1 to 6-3, 6-5, 6-7, 6-9: a fall costs a life) or the mud where there is land (6-4 Low Tide, the tide out; 6-6
+ * Lights in the Roots, as a dark zone keeps soft moss under its gaps: STAGE-RULES §6). The sections' gaps over water are a third of a
+ * jump (STAGE-RULES §6: the first-timer drowns at half a jump's reach); the wide and second-jump gaps are mud only (w6Ground
+ * W6_MUD_GAPS), so a water stage never holds them.
  *
  * Pure data and pure functions (no canvas, no engine), like w5.ts.
  */
@@ -31,8 +33,8 @@ import type { StageHint } from '../../protoStage.ts';
 import type { Enemy, Platform } from '../../types.ts';
 import type { Bush, WatchZone } from '../../watcher.ts';
 import { tideRecipes, type Zone } from '../../zones.ts';
-import type { CreatureDef, FilledSocket, PropDef, PropEmitter, PropPair, StageSink, WorldKit, WorldManifest } from '../types.ts';
-import { W6_GROUND_SECTIONS, W6_STAGE_ONLY } from './w6Ground.ts';
+import type { CreatureDef, FilledSocket, PitKind, PropDef, PropEmitter, PropPair, SectionTemplate, StageSink, WorldKit, WorldManifest } from '../types.ts';
+import { W6_GROUND_SECTIONS, W6_MUD_GAPS, W6_STAGE_ONLY, W6_STAGE_SKIP } from './w6Ground.ts';
 
 /** World 6's ground, its bank's depth, and how deep a soft pit's floor lies under its lips (one wide step out, as World 5's 110) */
 export const W6_GROUND = { y: G, bankH: 90, pitDepth: 110 } as const;
@@ -103,8 +105,9 @@ export const W6_LESSON = {
 
 /** the old generator's World 6 bodies (stageGenerator.ts caiman(), frog(), tayra(), ocelot(), jaguar(), harpy()): size, hp, feet */
 export const W6_CREATURES: CreatureDef[] = [
-  // lies on the bank and lunges; a stomp only bounces off (it takes a few hits). The world's own animal, so Easy keeps one (softened)
-  { id: W6_CREATURE.caiman, enemy: 'caiman', threat: 4, terrain: 'flat', minGround: 260, w: 84, h: 24, hp: 3, footY: 15, easyFirst: true, tags: ['caiman', W6_TAG.bank, 'topup'] },
+  // lies on the bank and lunges; a stomp only bounces off (it takes a few hits). Slow to turn, so it costs a cat's threat (3: it fits
+  // 6-2's hot sections). The world's own animal, so Easy keeps one (softened)
+  { id: W6_CREATURE.caiman, enemy: 'caiman', threat: 3, terrain: 'flat', minGround: 260, w: 84, h: 24, hp: 3, footY: 15, easyFirst: true, tags: ['caiman', W6_TAG.bank, 'topup'] },
   // sits still and hurts if touched: a stomp is its answer (cheap: the Ki sections' animal)
   { id: W6_CREATURE.frog, enemy: 'frog', threat: 1.5, terrain: 'flat', minGround: 120, w: 36, h: 24, hp: 1, footY: 14, tags: ['frog', W6_TAG.still, 'topup'] },
   // small and quick: it scurries the patch fast
@@ -151,6 +154,9 @@ export const W6_DECOR: WorldManifest['decor'] = [
 
 // ───────────────────────────── the manifest ─────────────────────────────
 
+/** the stages whose gaps are mud, not water: 6-4 Low Tide (the tide is out) and 6-6 Lights in the Roots (soft moss under gaps in the dark) */
+export const W6_SOFT_STAGES: readonly number[] = [4, 6];
+
 /** the stages of World 6 gen2 builds (6-8 Stilt Climb stays hand-built; 6-10 is the guardian's lair) */
 export const W6_GEN2_STAGES = ['6-1', '6-2', '6-3', '6-4', '6-5', '6-6', '6-7', '6-9'] as const;
 
@@ -180,8 +186,8 @@ export const W6_MANIFEST: WorldManifest = {
   // (World 6 swings over the black water: the swing builder's sections need swing; climb, rope and glide are learned by now)
   moves: ['double', 'punch', 'swing', 'climb', 'rope', 'glide'],
   ground: { y: W6_GROUND.y, bankH: W6_GROUND.bankH, style: 'log' },
-  // (soft until the core's water pits land: see the header)
-  pit: 'soft',
+  // (the black water: the mud stages are W6_SOFT_STAGES, see the header)
+  pit: 'water',
   pitDepth: W6_GROUND.pitDepth,
   // (the route's ground stays within a root step or two of the water line: high roads are `over` pieces above it)
   corridor: { top: G - 160, bottom: G + 80, soft: 60 },
@@ -336,11 +342,19 @@ export function w6Spawn(stage = 2): NonNullable<WorldKit['spawn']> {
 /** Dot's first-time line comes this far before the first animal of its kind (px): she flies in and talks before it can reach him */
 export const MEET_LEAD = 520;
 
-/** World 6's kit for one stage (its number sets the light, the tide's beat and the watcher's calm) */
+/** World 6's manifest for one stage: its pit (water, or mud in W6_SOFT_STAGES) and the sections it may hold */
+export function w6Manifest(stage: number, sections: readonly SectionTemplate[] = W6_MANIFEST.sections): WorldManifest {
+  const pit: PitKind = W6_SOFT_STAGES.includes(stage) ? 'soft' : 'water';
+  // (6-4's tide gates and flats are Low Tide's own, the themed stages leave the shared fillers out, and a water stage holds no mud gap:
+  // w6Ground W6_STAGE_ONLY, W6_STAGE_SKIP, W6_MUD_GAPS)
+  const keep = (s: SectionTemplate) =>
+    (!W6_STAGE_ONLY[s.id] || W6_STAGE_ONLY[s.id].includes(stage)) && !W6_STAGE_SKIP[s.id]?.includes(stage) && (pit === 'soft' || !W6_MUD_GAPS[s.id]);
+  return { ...W6_MANIFEST, pit, sections: sections.filter(keep) };
+}
+
+/** World 6's kit for one stage (its number sets the pit, the sections, the light, the tide's beat and the watcher's calm) */
 export function w6Kit(stage = 2): WorldKit {
-  // (6-4's tide gates and flats are Low Tide's own: w6Ground W6_STAGE_ONLY)
-  const sections = W6_MANIFEST.sections.filter((s) => !W6_STAGE_ONLY[s.id] || W6_STAGE_ONLY[s.id].includes(stage));
-  return { manifest: { ...W6_MANIFEST, sections }, emit: w6Emitters(stage), decorate: w6Decorate(stage), spawn: w6Spawn(stage) };
+  return { manifest: w6Manifest(stage), emit: w6Emitters(stage), decorate: w6Decorate(stage), spawn: w6Spawn(stage) };
 }
 
 /**
