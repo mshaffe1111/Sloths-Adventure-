@@ -199,7 +199,8 @@ test('2-7: steps up, porches, lifts up to ground a double jump cannot reach, swi
   for (const s of SEEDS) {
     const st = buildW2Stage({ ...cfg('2-5'), id: '2-7', miniIndex: 7, objectiveType: 'sprint' } as LevelConfig, s, '2-7');
     const lifts = st.platforms.filter((p) => p.lift);
-    assert.ok(lifts.length >= 3, `seed ${s}: ${lifts.length} lifts`);
+    // (every round rides the basket up at least twice; the ride back down became a drop off the high ground's end, 2026-10-28)
+    assert.ok(lifts.length >= 2, `seed ${s}: ${lifts.length} lifts`);
     // a lift going up climbs higher than any jump (so riding it is the way), and stops level with the ground at each end
     for (const l of lifts) {
       assert.ok(l.lift!.bottom === 580 && l.lift!.bottom - l.lift!.top >= 120, `seed ${s}: lift ${l.id}`);
