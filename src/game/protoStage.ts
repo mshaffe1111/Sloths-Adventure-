@@ -1163,7 +1163,32 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     expert += (x - x0) / RUN + 0.6 + n * (dbl ? 0.2 : 0.1) + (snakes ? 0.8 * Math.floor(n / 2) : 0);
     pieces.push({ k: 'highrun', x0, x1: x });
   }
+  /**
+   * a wall of earth too tall to jump, and a trunk beside it: climb up to the branch at its top and across onto the high ground, then down
+   * off its far end onto a dip (1-9's trunkGuard without its guard; the climb is taught in 1-4)
+   */
+  function climbWall() {
+    const x0 = x;
+    run(R.r(220, 280));
+    const tX = x - 120;
+    const perchY = G - 260;
+    trunk(tX, G, perchY);
+    for (let i = 0; i < 3; i++) flower(tX, G - 70 - i * 60, 'hibiscus');
+    const bEnd = tX + Math.round(R.r(250, 300));
+    branch(tX - 40, bEnd, perchY);
+    row(tX + 70, bEnd - 40, perchY - 34, 3, 'orchid');
+    const wx = bEnd + Math.round(R.r(90, 120));
+    const ww = Math.round(R.r(300, 380));
+    block(wx, wx + ww, 230);
+    row(wx + 50, wx + ww - 50, G - 264, 4, 'orchid');
+    x = wx + ww + R.r(90, 120);
+    dip();
+    run(R.r(160, 220));
+    expert += (x - x0) / RUN + (G - perchY) / CLIMB + 1;
+    pieces.push({ k: 'kapok', x0, x1: x });
+  }
   const w1: W1Kit = {
+    climbWall: () => climbWall(),
     bounceWall: (f, r) => bounceWall(f, r), highLeaps: (n, d, f, sn) => highLeaps(n, d, f, sn),
     R, G, EXPERT: EXPERT_SECONDS,
     get x() { return x; },
@@ -1647,31 +1672,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Test: a move for every group', () => {
       hint(x + 40, 'Every group of petals needs a different move', 'Every group of petals needs a different move', 'Every group of petals needs a different move');
-      mixed(
-        () => { logHop(); fernTree(); dipArc(); },
-        () => ropeGap(false, true, true),
-        () => doubleArcs(true),
-        () => { dipArc(); mushroomCache(); },
-        () => snakeLedge(),
-      );
+      // (every version climbs the tree with the keepsake in its fern: w1Sections.ts)
+      section('develop');
       flag();
     });
     beat('Twist: creaking branches', () => {
       hint(x + 60, 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving');
-      creakRun();
-      busy(1);
-      creakRun();
-      dipArc();
+      section('twist');
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      const pieceList = [() => ropeGap(false, true, true), () => { creakRun(); dipArc(); }, () => { logHop(); climbTree(true); dipArc(); }, () => snakeLedge(), () => doubleArcs(true)];
-      while (expert < EXPERT_SECONDS - 22 && n < 24) {
-        pieceList[n % pieceList.length]();
-        n++;
-        if (n % 3 === 0) flag();
-      }
+      section('finish');
       glideLookout();
       homeRun();
     });
