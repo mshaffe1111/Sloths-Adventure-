@@ -37,6 +37,10 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 ## Decided today (also on the Docs roadmap)
 
+- The game gets harder world by world: each world has its own difficulty band and the bands climb; inside a world stages may go
+  up and down, but none leaves its world's band (World 2 stage 8 never as hard as World 4). Later deaths and replays are expected; Easy is gentler, never empty (still double jumps and the
+  tougher moves, softened); QA's "too hard" is sorted into unfair (fix) or hard but fair (keep). STAGE-RULES §1b.
+
 - Keep the whole puzzle room in view upright, even if Pokey shrinks to ~0.5x (not Gemini's 0.72x floor).
 - Meeca's Room 4 is the tea channel. World 5's night strips are made in code.
 - Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
