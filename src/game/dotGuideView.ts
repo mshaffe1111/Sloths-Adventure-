@@ -52,6 +52,11 @@ export interface GuideW5 extends GuideThing {
   done?: boolean;
 }
 
+/** the puzzle part Dot points at in a puzzle room (puzzlePlay.ts guideThings): its middle and how big a ring it wants */
+export interface GuideKit extends GuideThing {
+  r: number;
+}
+
 export interface GuideView {
   /** a stage is running at all (false before the engine exists, and in Dot's own flight stage) */
   live: boolean;
@@ -102,6 +107,8 @@ export interface GuideView {
   bushes: readonly GuideBush[];
   /** World 5's cocoons and closing orchids (empty elsewhere) */
   w5: readonly GuideW5[];
+  /** in a puzzle room, the part of the puzzle that matters now (empty elsewhere) */
+  kit: readonly GuideKit[];
   /** the score pop-ups floating up ("+100 FLOWER!"): Dot keeps off them */
   popups: readonly GuideThing[];
   /** a boss's weak spot while it is open (world units; the NOW! marker sits on it): Dot's bubble never covers it */
@@ -158,6 +165,7 @@ export function emptyGuideView(): GuideView {
     collectibles: NONE,
     hazards: NONE,
     bushes: NONE,
+    kit: NONE,
     w5: NONE,
     popups: NONE,
     weakOn: false,

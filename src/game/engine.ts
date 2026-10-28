@@ -70,6 +70,8 @@ import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOW
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
+import { KitPlay, type KitHost } from './puzzlePlay.ts';
+import { ROOM_CAM, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
@@ -362,6 +364,11 @@ export class GameEngine {
   private w4: W4Play | null = null;
   /** World 5's stillness and silk, chairs, cakes, teapots, threads, sheets, orchids and cocoons for this run (w5Play.ts) */
   private w5: W5Play | null = null;
+  /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
+  private kit: KitPlay | null = null;
+  private kitHostObj: KitHost | null = null;
+  /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey and the puzzle part both fit (puzzleCamera.ts, never below 0.75) */
+  private roomZoom = 1;
   /** World 5: the vines the lessons may teach (not its silk lines, which its own tip teaches) */
   private lessonVines: Vine[] | null = null;
   /** the parts of World 5's stage Dot's bubble keeps off (Meeca's carvings), in world units, then on the page (guideKeepOut.ts) */
@@ -586,6 +593,7 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
+    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
@@ -753,7 +761,7 @@ export class GameEngine {
     // never show more height than the level has
     // (a boss fight in a tall, narrow window may show some sky above the arena rather than crop the fight to the level's height)
     const bossFight = !!this.currentStage?.arena && portrait;
-    this.zoom = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
+    this.zoom = Math.max(base * dolly * this.bossZoom * this.roomZoom, bossFight ? 0.4 : h / levelH);
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -1067,7 +1075,8 @@ export class GameEngine {
     // the touch recogniser reads this: in the air with a second jump to spare, a shorter slide up is that jump
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
     if (this.refined) {
-      this.input.kickNear = this.somethingToKick();
+      // (carrying, a flick toward is a throw: the touch rules keep it a kick, never a run)
+      this.input.kickNear = this.somethingToKick() || !!this.kit?.holding;
       this.input.onVine = p.climbing || !!p.isVineSwinging;
       this.input.onSwing = !!p.isVineSwinging;
       this.input.onRope = !!p.hanging;
@@ -1095,6 +1104,8 @@ export class GameEngine {
     }
 
     this.lessonTick();
+    // the puzzle kit reads the intents again (puzzlePlay.ts control): a tap by a piece uses it, and carrying, the jump and kick throw
+    if (this.kit) this.kitControls();
 
     if (this.coach && !this.coach.done) {
       this.coach.update(dt, p.x, this.coachWasGrounded && !p.grounded && p.vy < -200);
@@ -1224,6 +1235,7 @@ export class GameEngine {
       if (this.proto?.thorns) this.stepThornVines();
       if (this.w4) this.stepW4(dt);
       if (this.w5) this.stepW5(dt);
+      if (this.kit) this.stepKit(dt);
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -1358,6 +1370,11 @@ export class GameEngine {
           break;
         }
       }
+    }
+    // hands full (puzzlePlay.ts): no climbing a trunk, no catching a vine
+    if (this.kit?.holding) {
+      nearTreeVine = null;
+      nearSwingVine = null;
     }
     this.nearTreeVine = nearTreeVine;
     this.nearSwingVine = nearSwingVine;
@@ -1765,7 +1782,7 @@ export class GameEngine {
         // Leaf Glide: holding Jump while falling opens the leaf and slows the fall
         const lift = (this.currentStage.config.worldIndex === 9 && ventLift(this.currentStage.zones, p.x, p.y - 32, this.gameTime)) || !!this.w4?.inUpdraft(p.x, p.y - 32);
         // (pouring water folds the leaf: World 4's falls cannot be glided through, w4Play.ts inPour)
-        const glideCap = glideStep(this.glide, { has: this.skills.has('glide') && !this.w4?.inPour(p.x, p.y), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
+        const glideCap = glideStep(this.glide, { has: this.skills.has('glide') && !this.w4?.inPour(p.x, p.y) && !this.kit?.holding, airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
         p.vy = glideBrake(p.vy, glideCap, dt);
         if (lift && this.glide.on) {
           p.vy = glideLift(p.vy, dt);
@@ -4053,7 +4070,7 @@ export class GameEngine {
 
     if (!rope) {
       p.hanging = false;
-      if (this.ropeCooldown > 0 || p.grounded || p.climbing || p.isVineSwinging || this.isGameOver) return false;
+      if (this.ropeCooldown > 0 || p.grounded || p.climbing || p.isVineSwinging || this.isGameOver || this.kit?.holding) return false;
       const handY = p.y - HAND_REACH;
       for (const r of this.ropes) {
         // (from beside a post, over the ledge it stands on, counts: a jump straight up next to the post catches the rope's end, and he
@@ -4256,6 +4273,8 @@ export class GameEngine {
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
     this.respawnFlash = 0.6;
+    // what he was carrying goes back to its source
+    this.kit?.onRespawn();
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
@@ -4474,9 +4493,18 @@ export class GameEngine {
       // (never so far that he leaves the view: his feet stay above the bottom tenth)
       this.camera.targetY = Math.max(this.camera.targetY, p.y - vh * 0.9);
     }
+    // a puzzle room (puzzleCamera.ts): the view leans from him toward the part of the puzzle that matters now, or goes to a far gate
+    // that has just opened; outside every room this is nothing
+    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom) : null;
+    if (kf) {
+      const c = kf.pan ? { x: kf.x, y: kf.y } : roomLean(p.x, p.y - 45, kf.x, kf.y);
+      const v = kf.pan ? { x: c.x - vw / 2, y: c.y - vh / 2 } : roomView(c.x, c.y, vw, vh, p.x, p.y);
+      this.camera.targetX = v.x;
+      this.camera.targetY = v.y;
+    }
     // near the end of a ledge with a gap ahead, the view shows the far side too (cameraFollow.ts landingAhead)
     let landShown: Box | null = null;
-    if (!look && !this.chase?.active && !this.currentStage.arena) {
+    if (!look && !kf && !this.chase?.active && !this.currentStage.arena) {
       const land = this.landingToShow(dt);
       landShown = land;
       if (land) {
@@ -4727,6 +4755,7 @@ export class GameEngine {
     out.hazards = this.hazards;
     out.bushes = this.proto?.bushes ?? out.bushes;
     out.w5 = this.w5?.guideThings ?? NO_W5_THINGS;
+    out.kit = this.kit?.guideThings ?? NO_W5_THINGS;
     out.popups = this.floatingTexts;
     // (a boss's open weak spot, for Dot to keep her bubble off: copied into the view, no new object)
     const bs = this.boss;
@@ -4975,6 +5004,7 @@ export class GameEngine {
     }
     this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
+    this.kit?.drawBack(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.mc) drawMeecaBack(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     this.markKeepOuts();
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
@@ -5165,15 +5195,19 @@ export class GameEngine {
       ctx.save();
       ctx.translate(drawOff, 0);
     }
-    if (rig) {
+    // carrying, throwing or setting down: Matt's carry poses (puzzlePlay.ts drawPokey)
+    const kitPose = !!this.kit && this.kit.drawPokey(ctx, this.player);
+    if (kitPose) { /* drawn */ }
+    else if (rig) {
       const hp = this.player;
       drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));
       drawBackGlow(ctx, rig, hp.x, hp.y - 38, 78, 0.13);
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else if (this.mc) drawMeecaHero(ctx, this.player, this.mc, this.gameTime);
-    else drawHeroSloth(ctx, this.player, this.gameTime);
+    else if (!kitPose) drawHeroSloth(ctx, this.player, this.gameTime);
     if (shiftOff) ctx.restore();
+    this.kit?.drawFront(ctx, this.player, kitPose);
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
@@ -6216,6 +6250,77 @@ export class GameEngine {
     if (out.knocked) this.inputGrace = Math.max(this.inputGrace, FALLS.stagger);
     // a freed eaglet's parent beating its wings over the nest (4-8): a tailwind on top of the gust lanes
     this.windV += out.wind;
+  }
+
+  /** the puzzle kit's view of the engine this frame (one object, its fields kept up to date) */
+  private kitHost(): KitHost {
+    const id = this.currentStage.config.id;
+    const h = (this.kitHostObj ??= {
+      t: 0,
+      player: this.player,
+      standingOn: -1,
+      easy: isEasy(),
+      tip: (key, text, seconds) => {
+        if (tipHeard(id, key)) return;
+        markTipHeard(id, key);
+        this.guide(text, seconds);
+      },
+      float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
+      passTip: (text) => this.callbacks.onGuide?.(text, 0, true),
+      sfx: (kind) => {
+        if (kind === 'pick') sound.playVineGrab();
+        else if (kind === 'drop' || kind === 'land') sound.playLand(kind === 'drop' ? 0.4 : 0.25);
+        else if (kind === 'throw' || kind === 'lost') sound.playWhoosh();
+        else if (kind === 'press' || kind === 'lift') sound.playTreeClimb();
+        else if (kind === 'gate') sound.playShrineUnlocked();
+        else if (kind === 'lever') sound.playPunch();
+        else if (kind === 'munch') sound.playFruitPickup();
+        else if (kind === 'reset') sound.playCheckpoint();
+      },
+    });
+    h.t = this.gameTime;
+    h.player = this.player;
+    h.standingOn = this.standingOnId;
+    return h;
+  }
+
+  /**
+   * The puzzle kit's controls, from the intents as they are (touchGestures.ts and the input are untouched): a tap with a piece in reach
+   * in front of him uses it instead of punching; carrying, the jump intent throws up and forward, the kick intent throws forward and a
+   * tap sets it down, and none of them is ever a jump, a kick or a punch while his hands are full.
+   */
+  private kitControls() {
+    const inp = this.input.state;
+    const took = this.kit!.control({ tap: inp.punchPressed, up: inp.jumpPressed, side: inp.kickPressed, sideDir: inp.kickDir }, this.kitHost(), this.platforms);
+    if (took.tap) inp.punchPressed = false;
+    if (took.up) {
+      inp.jumpPressed = false;
+      this.upIntent = 0;
+    }
+    if (took.side) {
+      inp.kickPressed = false;
+      inp.kickDir = 0;
+    }
+    if (this.kit!.holding) {
+      inp.megaPunchPressed = false;
+      inp.jumpPressed = false;
+      inp.punchPressed = false;
+      inp.kickPressed = false;
+      this.jumpBufferTimer = 0;
+      this.atkQueue = null;
+    }
+  }
+
+  /** the puzzle rooms, each frame (puzzlePlay.ts): carrying, he walks slower; the room's framing eases in, and out again outside it */
+  private stepKit(dt: number) {
+    this.dragSpeed *= this.kit!.step(dt, this.kitHost(), this.platforms);
+    const cam = this.camera;
+    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom);
+    const want = kf ? (kf.pan ? this.roomZoom : kf.zoom) : 1;
+    const prev = this.roomZoom;
+    this.roomZoom += (want - this.roomZoom) * Math.min(1, dt * ROOM_CAM.ease);
+    if (Math.abs(want - this.roomZoom) < 0.002) this.roomZoom = want;
+    if (this.roomZoom !== prev) this.applyZoom();
   }
 
   /**

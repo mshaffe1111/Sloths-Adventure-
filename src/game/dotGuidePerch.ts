@@ -143,6 +143,9 @@ export function findTarget(topic: TopicId | undefined, v: GuideView): Target | n
     case 'flag':
       // (the flag is already behind him when its line comes: nothing to point at)
       break;
+    case 'puzzle':
+      for (const k of v.kit) consider(k.x, k.y, k.r);
+      break;
     case 'cocoon':
     case 'orchid':
     case 'seamstress':
