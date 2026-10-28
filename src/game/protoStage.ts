@@ -1032,7 +1032,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const n = R.i(3, 4);
     let h = 0;
     for (let k = 0; k < n; k++) {
-      h = k === 0 ? R.i(40, 50) : Math.max(36, Math.min(90, h + R.pick([40, 50, -30] as const)));
+      // (76 at most since 2026-10-28: a stump 90 up from the ground between them was a jump the kid bot made 81% of the time)
+      h = k === 0 ? R.i(40, 50) : Math.max(36, Math.min(76, h + R.pick([40, 50, -30] as const)));
       const w = Math.round(R.r(130, 170));
       // (each stump stands down into the ground, the bank broken around it: on one long bank under them the stage inspector's quick
       // route walked straight through them, and read World 1's openings as five quiet seconds, 2026-10-28)
@@ -1628,7 +1629,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   /** a lookout up a trunk, and far out over the floor a ledge only the Leaf Glide reaches, with a golden seed (back after World 4) */
   function glideLookout() {
     const x0 = x;
-    run(R.r(300, 360));
+    // (a dip on the way to the lookout: the walk to it was four quiet seconds after a high run, 2026-10-28)
+    run(R.r(140, 170));
+    dip();
+    run(R.r(170, 200));
     const tX = x - 120;
     const perchY = 300;
     trunk(tX, G, perchY);

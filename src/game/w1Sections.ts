@@ -323,7 +323,7 @@ const SECTIONS: Record<W1Stage, Table> = {
         // stones and dips: hops up the stones, low stumps, rocks and dips
         id: 'stoneRoad', beat: 'hop', build: (k) => fillTo(k, k.EXPERT - 10, null, [
           (k) => POOL.stones(k),
-          (k) => k.busy(3, ['log', 'dip', 'leap']),
+          (k) => k.busy(3, ['log', 'dip']),
           (k) => { k.lowStumps(); k.pillars(k.R.pick([[50, 80, 60, 70], [60, 70, 50, 80]]), [0.55, 0.68], false, true); },
         ]),
       },
@@ -385,7 +385,7 @@ const SECTIONS: Record<W1Stage, Table> = {
     start: [
       { id: 'walk', beat: 'ground', build: (k) => k.snakeWalk(2) },
       { id: 'wall', beat: 'walls', build: (k) => { k.snakeWalk(1); k.bounceWall(true, false); k.snakeWalk(2); } },
-      { id: 'branch', beat: 'branches', build: (k) => { k.snakeWalk(1); k.snakeBranches(2, k.G - 120); } },
+      { id: 'branch', beat: 'branches', build: (k) => { k.snakeWalk(1); k.snakeBranches(2, k.G - 100); } },
       { id: 'ledge', beat: 'mix', build: (k) => { k.snakeLedge(); k.busy(1); k.snakeLedge(); } },
     ],
     develop: [
@@ -486,13 +486,13 @@ const SECTIONS: Record<W1Stage, Table> = {
       {
         id: 'climbs', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 22, null, [
           (k) => k.climbWall(),
-          (k) => { k.climbWall(); k.ropeGap(false, true, true); },
+          (k) => { k.climbWall(); k.logHop(); k.climbTree(true); k.dipArc(); },
           (k) => { k.creakRun(); k.dipArc(); k.climbWall(); },
         ]),
       },
       {
         id: 'bounces', beat: 'bounce', build: (k) => fillTo(k, k.EXPERT - 22, null, [
-          (k) => { k.doubleArcs(true); k.bounceWall(true, false); },
+          (k) => { k.bounceWall(true, false); k.highLeaps(3, false, true); },
           (k) => k.highLeaps(5, true, true),
           (k) => k.highLeaps(4, false, true),
         ]),
@@ -577,14 +577,14 @@ const SECTIONS: Record<W1Stage, Table> = {
       {
         id: 'bushes', beat: 'bushes', build: (k) => fillTo(k, k.EXPERT + 62, null, [
           (k) => k.bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [6, 7.5], true),
-          (k) => k.ropeBushes([6, 7]),
+          (k) => { k.bushRow(2, [700, 820], ['wide', 'fern'], [6, 7.5], true); k.busy(2, ['log', 'dip'], k.R.r(180, 220)); },
           (k) => { k.bushRow(2, [720, 860], ['fern', 'tall'], [6, 7.5], true); k.lowStumps(); },
         ], 1, 12),
       },
       {
         // the eagle's stretches with a wall to bounce up between them, out of its sight
         id: 'rope', beat: 'rope', build: (k) => fillTo(k, k.EXPERT + 62, null, [
-          (k) => { k.ropeBushes([6, 7]); k.bounceWall(true, false); },
+          (k) => { k.bushRow(2, [700, 820], ['wide', 'tall'], [6, 7.5], true); k.bounceWall(true, false); },
           (k) => { k.bounceWall(true, false); k.bushRow(2, [720, 860], ['wide', 'tall'], [6, 7.5], true); k.bounceWall(true, false); },
           (k) => { k.bounceWall(true, false); k.bounceWall(true, false); },
         ], 1, 12),
