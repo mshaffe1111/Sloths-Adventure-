@@ -1946,7 +1946,7 @@ export class KitPlay {
   private drawPeg(ctx: CanvasRenderingContext2D, px: number, py: number) {
     let best: Platform | null = null;
     for (const q of this.platforms) {
-      if (q.y > py + 10 || q.y < py - 260 || q.x > px + 220 || q.x + q.width < px - 220 || q.width < 60) continue;
+      if (q.y > py + 70 || q.y < py - 260 || q.x > px + 220 || q.x + q.width < px - 220 || q.width < 60) continue;
       if (!best || Math.abs(q.y - py) < Math.abs(best.y - py)) best = q;
     }
     if (!best) return;
