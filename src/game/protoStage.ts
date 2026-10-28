@@ -3470,8 +3470,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     stone(tail(), Math.round(R.r(45, 65)), Math.round(R.r(140, 170)));
     stone(tail(), Math.round(R.r(70, 95)), Math.round(R.r(140, 170)));
     const mid = stone(tail(), Math.round(R.r(60, 85)), Math.round(R.r(230, 270)));
-    stone(head(), Math.round(R.r(80, 105)), Math.round(R.r(130, 160)));
-    stone(head(), Math.round(R.r(50, 75)), Math.round(R.r(130, 160)));
+    // (the two stones into the turned wind 130-160 to 230-260 wide, 2026-10-28: a running jump off the broad stone overshot a narrow one
+    // unless it was pressed within 33-100 ms, the first-timer bot; wide enough now to land a plain running jump on)
+    stone(head(), Math.round(R.r(80, 105)), Math.round(R.r(230, 260)));
+    stone(head(), Math.round(R.r(50, 75)), Math.round(R.r(230, 260)));
     const lastS = stones[stones.length - 1];
     const far = lastS.x + lastS.width + head();
     softPit(edge, far);

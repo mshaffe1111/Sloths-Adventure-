@@ -185,7 +185,12 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   it (only a separate floor piece, a dip or a step, makes a beat), and a falling rock that lands below the path (4-7's) is never met.
   So a glide stage is all J and V to it, and 4-7 stays 99.8% alike however its sections roll. Variety the tool counts needs versions
   with different kinds of action (vines, waits, puzzles, foes), not the same jumps in another order; a roll-wide "ground" theme (hops
-  or second-jump leaps between pieces) moved World 4 more than any single section did.
+  or second-jump leaps between pieces) moved World 4 more than any single section did. Round 2: a flavour carried through the whole
+  stage, with heavy pieces of its own after each section, moved 4-2, 4-5 and 4-9 to about half alike between flavours; stages made
+  of one move (4-3's wet steps, 4-7's glides) stay 0.93-0.99 whatever is added, because their many jumps dominate the 3-grams.
+- **The level check follows a swing from a ledge to a ledge, never from vine to vine** (2026-10-28): a chain of lianas over a real
+  drop reads as unfinishable (4-4 is not judged by the check for that reason). Where a stage is checked, a swing over a drop is one
+  liana from bank to bank (World 4's `swings`, windChain with one vine), as many in a row as you like.
 
 ## 7. Where things are
 
