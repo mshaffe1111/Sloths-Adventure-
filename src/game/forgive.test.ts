@@ -6,7 +6,8 @@
  *   G3 ledge landing: a jump toward a ledge that comes down with his foot 10 px short of it lands on Easy (12 px allowed) but not on
  *      Normal (8 px).
  *   G4 a jump into a 90 px face carries over its lip, in World 1 and in a generated world.
- *   G8 the validator: an Easy step that needs a full-hold jump fails easyHoldCheck; one a 70% hold climbs passes.
+ *   G8 the validator: an Easy step that needs a full-hold jump fails easyHoldCheck; one a 70% hold climbs passes; Easy softens the
+ *      first (a step halfway up in front of it, the rise still there) until it passes. Every Easy stage on rolls 1-3: easyMode.test.ts.
  */
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -14,6 +15,7 @@ import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
 import { ASSIST, FORGIVE, JUMP_RISE, reachJump, reachJumpHeld, EASY_HOLD } from './physics.ts';
 import { easyHoldCheck, validateStage } from './levelCheck.ts';
+import { easyHoldSoften } from './easyMode.ts';
 import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
 import { levelConfig } from './realPlay.ts';
 import type { Platform } from './types.ts';
@@ -149,10 +151,18 @@ test('G8 the validator: an Easy step that needs a full-hold jump fails; one a 70
     });
     return st;
   };
-  const hard = make(Math.round(0.85 * JUMP_RISE));
+  const HARD = Math.round(0.95 * JUMP_RISE); // (a face: the lip's hoist, levelCheck.ts HOLD_MANTLE, takes the held jump a little higher)
+  const hard = make(HARD);
   assert.ok(validateStage(hard).ok, `the full jump climbs it: ${validateStage(hard).errors.join('; ')}`);
   assert.ok(easyHoldCheck(hard).length > 0, 'a 70% hold does not');
   const fine = make(Math.round(0.5 * JUMP_RISE));
   assert.deepEqual(easyHoldCheck(fine), []);
   assert.equal(EASY_HOLD, 0.7);
+  // Easy softens the hard one: a step halfway up in front of the face, which is still there at its height
+  assert.equal(easyHoldSoften(hard), 1);
+  assert.deepEqual(easyHoldCheck(hard), []);
+  const [, face, step] = hard.platforms;
+  assert.equal(face.y, Y - HARD, 'the face keeps its height');
+  assert.ok(step && step.x + step.width <= face.x + 1 && step.y > face.y && step.y < Y, `a step in front of it, halfway up (${step?.y})`);
+  assert.equal(easyHoldSoften(fine), 0, 'nothing to soften on the easy one');
 });

@@ -78,23 +78,34 @@ export function easyStones(stage: Stage): Platform[] {
 /** a step Easy adds in front of a ledge too high for a ~70% hold (px wide), and a catch ledge's width */
 const STEP_W = 72;
 const CATCH_W = 90;
+interface HoldOut {
+  frozen?: ReadonlySet<number>;
+  reach?: readonly number[];
+}
 
 /**
  * Easy never needs a full-hold jump (Gemini G8, STAGE-RULES §1b: soften the jump, don't remove it). The level check walks the stage
  * twice, with the full jump and with a ~70% hold (levelCheck.ts); every ledge the first reaches and the second does not is softened
  * where it is, from the place he jumps for it: a gap gets a wider landing (the ledge reaches toward him), and a rise too high for the
  * held jump gets a step halfway up in front of it (or, across a gap or onto a ledge over his head, a catch ledge halfway). The jump is
- * still there; only its margin is Easy's. `frozen`: boulders left where they stand (see easyStage). Returns how many were softened.
+ * still there; only its margin is Easy's. `frozen`: boulders left where they stand; `out.frozen` (walked with none frozen): the
+ * boulders the full jump's walk rolls into a fall's slot and the held one's does not, to walk again with those left where they stand
+ * (see easyStage), and `out.reach` what the full jump reaches before any softening. Returns how many were softened.
  */
-export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>): number {
+export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>, out?: HoldOut): number {
   const allowDbl = doubleAllowed(stage.config);
   let full: CheckGraph | null = null;
   let held: CheckGraph | null = null;
-  validateStage(stage, { frozen, inspect: (g) => (full = g) });
+  const fullRes = validateStage(stage, { frozen, inspect: (g) => (full = g) });
   validateStage(stage, { frozen, hold: EASY_HOLD, inspect: (g) => (held = g) });
   const F = full as CheckGraph | null;
   const H = held as CheckGraph | null;
   if (!F || !H) return 0;
+  if (out && !frozen) {
+    const rolled = stage.platforms.filter((b) => b.push && H.boulderX(b.id) === b.x && F.boulderX(b.id) !== b.x).map((b) => b.id);
+    out.frozen = rolled.length ? new Set(rolled) : undefined;
+    out.reach = fullRes.reachableIds;
+  }
   // where he can stand: everywhere the full jump gets him (so a run of jumps is softened in one go, not one a pass), and the pieces
   // of ground the held walk reached at their own size (it splits a ground around a fall that still pours)
   const fullIds = new Set(F.plats.filter((p) => F.seen.has(F.key(p))).map((p) => p.id));
@@ -169,24 +180,6 @@ export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>): numb
   return n;
 }
 
-/**
- * the boulders the full jump's walk rolls into a fall's slot and the held jump's does not: walked again with those left where they
- * stand, both walks see the fall pouring, and the way up behind it (4-3) is compared as it is first walked. Empty when there are none.
- */
-function heldBoulders(stage: Stage): ReadonlySet<number> | undefined {
-  const pushes = stage.platforms.filter((p) => p.push);
-  if (!pushes.length) return undefined;
-  let F: CheckGraph | null = null;
-  let H: CheckGraph | null = null;
-  validateStage(stage, { inspect: (g) => (F = g) });
-  validateStage(stage, { hold: EASY_HOLD, inspect: (g) => (H = g) });
-  const f = F as CheckGraph | null;
-  const h = H as CheckGraph | null;
-  if (!f || !h) return undefined;
-  const out = new Set(pushes.filter((b) => h.boulderX(b.id) === b.x && f.boulderX(b.id) !== b.x).map((b) => b.id));
-  return out.size ? out : undefined;
-}
-
 /** which animals stay on Easy: the first of each kind, then every other one */
 export function easyKeep(enemies: Enemy[]): Set<Enemy> {
   const keep = new Set<Enemy>();
@@ -243,8 +236,18 @@ export function easyStage(stage: Stage): Stage {
   // and no jump that needs a full hold (a hand-built stage; again while it softens something, as one jump can open the way to the
   // next). A boulder only the full jump's walk rolls is also left where it stands: the way up behind it is walked while its fall still
   // pours (4-3), and only the full jump reached it
+  // (when the last pass changed nothing, its walk with the full jump is the stage's, for the flags below)
+  let reached: readonly number[] | undefined;
   if (stage.proto) {
-    for (let i = 0; i < 3; i++) if (easyHoldSoften(stage, heldBoulders(stage)) + easyHoldSoften(stage) === 0) break;
+    for (let i = 0; i < 3; i++) {
+      const out: HoldOut = {};
+      let n = easyHoldSoften(stage, undefined, out);
+      if (out.frozen) n += easyHoldSoften(stage, out.frozen);
+      if (!n) {
+        reached = out.reach;
+        break;
+      }
+    }
   }
 
   // fewer animals, and a beat-the-animals goal that asks for fewer
@@ -264,7 +267,7 @@ export function easyStage(stage: Stage): Stage {
   const next = () => cid++;
   const cps = (stage.checkpoints ??= []);
   if (!climb && !chase) {
-    const reach = new Set(validateStage(stage).reachableIds);
+    const reach = new Set(reached ?? validateStage(stage).reachableIds);
     const marks = [stage.spawnX, ...cps.map((c) => c.x), stage.exitTotemX].sort((a, b) => a - b);
     for (let i = 0; i + 1 < marks.length; i++) {
       const [x0, x1] = [marks[i], marks[i + 1]];
