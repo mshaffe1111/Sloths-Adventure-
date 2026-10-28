@@ -44,7 +44,7 @@ import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { dressStage } from './artDress.ts';
-import { w3Pick } from './w3Sections.ts';
+import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
@@ -292,7 +292,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
 
 function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-4') return buildKapok(config, seed);
-  if (plan === '3-4') return buildKapok(config, seed, false, true);
+  if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
   if (plan === '4-3') return buildWaterfallSteps(config, seed);
   if (plan === '4-6') return buildKapok(config, seed, false, false, false, true);
