@@ -19,6 +19,15 @@ Last updated: 2026-10-28 (Hugging Face art run started).
   the bot: World 2 lily-pad rivers (its life counts there are pessimistic) and tall climbs (572-863 px 'stuck' in 1-4, 2-6, 3-4,
   4-3, 4-6 may be the bot, not the stage): check by hand before acting on those.
 
+- Meeca's stage "On the March North" (merged 2026-10-28, suite 1537 pass): camp, Flicker, five rooms (tea channel in room 4), the
+  approved ending; replaces the old 5-M outright.
+- The measuring tools (merged 2026-10-28): pacing and difficulty bands in every inspector run (pacing.ts, bands.ts); the 200-roll
+  tool `tools/inspect/era.ts` and its guard test rollGuard.test.ts (1-4, 2-6, 3-1 marked to-do).
+- The new generator's core (merged 2026-10-28): src/game/gen2/DESIGN.md, types.ts, pipeline.ts, a toy world; all six passes run and
+  pass levelCheck; no real stage uses it yet (phase 2 waits on Matt's 4 answers below).
+- Gap files: reference/gaps/W3-4.md, PACING-BANDS-W1-5.md, ERA-W1-5.md. Headline: rolls 96-100% alike in Worlds 1-4 (target 65%);
+  the difficulty does not climb (World 3 below World 2, World 5 below World 4; World 2 partly inflated by the bot's lily-pad limit);
+  Normal 0.43-0.55 actions a second (Gemini 0.75-1.15); Easy has the same beats as Normal so it gets no rests.
 - Docs: GEMINI-PCG-RESEARCH.md, STAGE-RULES.md, GEMINI-LEDGER.md, LEAD-PLAYBOOK.md, this file.
 - Meeca's art sheets (meeca-poses, meeca-props) and their cuts.
 
@@ -28,11 +37,6 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 |---|---|---|---|
 | QA batch 2 -> Easy jumps | (batch 2 merged 8ed2c53) next piece: Easy never needs a full-hold jump (G8 as a failing rule; fix 1-1, 1-2, 1-4, 1-8, 3-3, 4-3), re-run the first-timer bot | jump spots, levelCheck | 2026-10-28 |
 | Art -> World 1-2 follow-up | 1-4 nest door, petal bundles as room rewards, branch gate in a World 1 room, 2-2 trough; no route changes | W1-2 art and dressing | 2026-10-28 |
-| 200-roll tool | Expressive range: 200 rolls per stage of Worlds 1-5, heatmaps, diversity vs 0.35, rule failures across rolls (ledger C5) | tools/inspect/era.ts (new files) | 2026-10-28 |
-| Generator: architect | The new generator's written design for Matt (World 5's 5-7..5-9 first, then Worlds 6-10), its data shapes and the six-pass skeleton | src/game/gen2/ (types, pipeline, design doc) | 2026-10-28 |
-| Pacing measures | Inspector: action density, rhythm-group length, tension curve per stage, the difficulty-band chart per world | tools/inspect/pacing.ts, bands.ts (new files) | 2026-10-28 |
-| Worlds 3-4 gap list | Measure only: 3 rolls, the first-timer bot, art use; per-stage gaps and variety ideas, so the W3-4 variety pass starts tonight | nothing (read-only) | 2026-10-28 |
-| Meeca's stage | "On the March North": camp, Flicker, five puzzle rooms (tea channel in room 4), the approved ending; night strips in code; replaces 5-M outright | Meeca/5-M files, W5 night strips | 2026-10-28 |
 | Hugging Face art run (Matt 2026-10-28) | Enemies first, hardest first (bosses, new creature models, animated clips), then what the game still needs, then art and props: reference/ART-PLAN.md inventory with costs, Matt has ~$70 left: plan to $65 ($40 enemies, ~$25 what's left to finish then art and props, ~$5 spare), results in a gallery for Matt's pick (show first, nothing into src/ yet) | reference/ART-PLAN.md, tools/art/ new folder + new specs (branch art-hf) | 2026-10-28 |
 
 ## Budget
@@ -41,9 +45,14 @@ Matt is on the Max plan (2026-10-28) and wants more helpers in parallel to finis
 separate job at once, never two on the same files. Still no duplicate or
 unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so and it drops to one world at a time.
 
-## Open decisions for Matt
+## Open decisions for Matt (ask one at a time)
 
-- (none right now)
+1. Start the Worlds 1-4 variety pass now from the gap files (four builders, one per world).
+2. Generator: how many checked layouts to ship per stage (architect proposes 16).
+3. Generator: does every Easy fall land in a soft pit, even in World 6's water?
+4. Generator: about 30 sections per world: OK?
+5. Generator: 5-8 generated or hand-built?
+6. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
 
 ## Decided today (also on the Docs roadmap)
 
@@ -67,7 +76,7 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 | Session | Job | Branch | Started |
 |---|---|---|---|
-| session_01FhBbYPCMx5mTFQdQmEtqey | Full check of the work branch at 8ed2c53+ (redirected after the batch-2 merge): tsc, full suite, build, inspector + first-timer bot on Worlds 1-4 seeds 1-3, timed | reads ccr-0d59a91c-oy3imz, pushes nothing | 2026-10-28 17:40 UTC |
+| ~~session_01FhBbYPCMx5mTFQdQmEtqey~~ (archived: it stopped before the suite; the lead ran the full gate here instead) | Full check of the work branch at 8ed2c53+ (redirected after the batch-2 merge): tsc, full suite, build, inspector + first-timer bot on Worlds 1-4 seeds 1-3, timed | reads ccr-0d59a91c-oy3imz, pushes nothing | 2026-10-28 17:40 UTC |
 
 ## Two tracks (Matt, 2026-10-28)
 
