@@ -3604,6 +3604,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     /** a place to hide, centred on the cursor */
     const cover = (kind: Cover) => (kind === 'fall' ? veil(x) : bush(x - BUSH_W[kind] / 2, kind));
     /**
+     * a bush at the end of her stretch: a pass that starts as he leaves it sweeps on past its end, and with the last cover 500-1200 px
+     * back it caught him in the open (2026-10-28, the first-timer bot: first strikes at 27-173 s)
+     */
+    const endCover = () => {
+      cover(R.pick(['tall', 'fern'] as const));
+      run(R.r(90, 120));
+    };
+    /**
      * `len` px of the cliff path with a mossy rock or a dip of soft moss every 300 px or so, about halfway between two places to hide
      * (2026-10-28, the stage inspector: the runs between the cover were up to twelve quiet seconds). Nothing here is tall enough to hide
      * behind, and none of it slows a run between two hiding places by more than a moment.
@@ -3632,6 +3640,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         cover(kinds[k % kinds.length]);
       }
       run(R.r(260, 340));
+      endCover();
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2);
       pieces.push({ k: 'rest', x0, x1: x });
@@ -3666,6 +3675,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       run(R.r(200, 240));
       lookout(sx0, mx, Math.min(x, mx + 1150), tx);
       run(R.r(160, 220));
+      endCover();
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 1.5;
       pieces.push({ k: 'rest', x0, x1: x });
@@ -3700,6 +3710,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hopRun(R.r(300, 360));
       lookout(fx + VEIL_W / 2, mB, Math.min(x, mB + 1150), tB, 1);
       run(R.r(160, 220));
+      endCover();
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 3;
       pieces.push({ k: 'rest', x0, x1: x });
@@ -3720,9 +3731,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       row(tX + 90, end - 90, perchY - 34, 3, 'hibiscus');
       goldenSeed(end - 40, perchY - 34);
       covers.push({ x: tX + VEIL_W / 2, y: perchY - 90, w: end - tX - VEIL_W / 2 + 20, h: 110 });
-      // (the path runs on under the branch: hops on it, clear of the trunk and the curtain)
+      // (the path runs on under the branch: hops on it, clear of the trunk and the curtain, to a bush at the end of her stretch: from
+      // the curtain to the next cover it was 1200 px, and her pass caught him in the open, 2026-10-28)
       run(R.r(120, 160));
       hopRun(R.r(400, 460));
+      cover(R.pick(['tall', 'fern'] as const));
+      run(R.r(120, 160));
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2);
       pieces.push({ k: 'rest', x0, x1: x });
@@ -5353,9 +5367,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         break;
       }
     }
-    // (Dot names the first one he comes to: the lowest)
+    // (Dot names the first one he comes to: the lowest; as he climbs up toward its ledge, a trunk's height below it, so the line is
+    // up before he stands under the rock: at its own height it came after the first hit on some rolls, 2026-10-28)
     const firstRock = rocks.reduce<RockDrop | undefined>((a, q) => (!a || q.land > a.land ? q : a), undefined);
-    if (firstRock) hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', firstRock.land + 10);
+    if (firstRock) hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', firstRock.land + 280);
   }
 
   // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
