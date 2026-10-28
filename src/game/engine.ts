@@ -2193,7 +2193,15 @@ export class GameEngine {
         // attack: telegraph -> committed attack -> vulnerable recovery
         // a snapper hears the puzzle kit's noise (noise.ts) and goes to it
         if (e.type === 'turtle') e.lureX = this.kit ? heard(this.kit.noises, e.x, e.y, this.gameTime)?.x : undefined;
+        const slid = e.type === 'turtle' && !e.royal && e.state === 'slide';
         const step = stepPredator(e, { x: p.x, y: p.y, facing: p.facing, ducking: p.ducking }, dt);
+        // a kicked snapper's shell that slides to a stop is out of the fight, and counts (2-5's goal): Dot says "Kick the shell!", and a
+        // shell that did as she said came back dizzy, then walking, and the goal stayed at 0 (QA 2026-10-28: "predators 0/17")
+        if (slid && e.state === 'dizzy') {
+          e.hp = 0;
+          this.knockOut(e, (e.slideDir ?? 1) as 1 | -1, 'BONK!');
+          continue;
+        }
         // the tree snake has no call of its own: it hisses like the boa
         // (the night harpy chitters and thumps like the tayra)
         const call = e.type === 'snake' ? 'boa' : e.type === 'harpy' ? 'tayra' : e.type === 'turtle' ? 'caiman' : e.type;
