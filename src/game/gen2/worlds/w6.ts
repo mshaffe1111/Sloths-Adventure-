@@ -246,23 +246,40 @@ function pieceAt(out: StageSink, x: number, y: number): Platform | undefined {
 const WATCH_MAX = 1400;
 
 /**
- * The stretch the watcher looks along: the piece under the spot and the pieces walked on from it either way with no gap between (a
- * knee root up and down: the same bank to the water), up to WATCH_MAX; a soft gap ends it (the next bank has its own watch)
+ * The stretch the watcher looks along: the piece under the spot and the pieces walked on from it onward with no gap between (a knee
+ * root up and down: the same bank to the water), up to WATCH_MAX; a gap ends it (the next bank has its own watch). It never reaches
+ * back (a watch stands at the start of its stretch), and w6Decorate clips it to the roots laid along it.
  */
 function watchedRun(out: StageSink, x: number, y: number): [number, number] | null {
   const p0 = pieceAt(out, x, y);
   if (!p0) return null;
   const banks = out.platforms.filter((p) => p.type !== 'fragile' && Math.abs(p.y - p0.y) <= 60);
-  let x0 = p0.x;
+  const x0 = p0.x;
   let x1 = p0.x + p0.width;
   for (let grown = true; grown && x1 - x0 < WATCH_MAX; ) {
     grown = false;
-    for (const p of banks) {
-      if (Math.abs(p.x + p.width - x0) <= 2 && p.x < x0) (x0 = Math.max(p.x, x1 - WATCH_MAX)), (grown = true);
-      else if (Math.abs(p.x - x1) <= 2 && p.x + p.width > x1) (x1 = Math.min(p.x + p.width, x0 + WATCH_MAX)), (grown = true);
-    }
+    for (const p of banks) if (Math.abs(p.x - x1) <= 2 && p.x + p.width > x1) (x1 = Math.min(p.x + p.width, x0 + WATCH_MAX)), (grown = true);
   }
   return [x0, x1];
+}
+
+/** a watched stretch runs this far past the last root along it (px): never into a stretch with nowhere to hide */
+const WATCH_PAST = 120;
+
+/**
+ * Each watched stretch clipped to the roots laid along it (pass 4 lays the watch before its roots, so this waits for pass 6): from its
+ * start to WATCH_PAST past its last root; one with no root in it is no watched stretch at all (being seen with nowhere to go is unfair)
+ */
+export function clipWatches(out: StageSink): void {
+  const zones = out.proto.watch;
+  if (!zones?.length) return;
+  const bushes = out.proto.bushes ?? [];
+  out.proto.watch = zones.flatMap((z) => {
+    const inside = bushes.filter((b) => b.x + b.w > z.x0 && b.x < z.x1);
+    if (!inside.length) return [];
+    const x1 = Math.min(z.x1, Math.max(...inside.map((b) => b.x + b.w)) + WATCH_PAST);
+    return [{ ...z, x1: R(x1) }];
+  });
 }
 
 /**
@@ -315,9 +332,10 @@ export function w6Emitters(stage: number): Record<W6PropId, PropEmitter> {
   };
 }
 
-/** the decorator (pass 6): the chosen decor sets into W6Extras.decor */
+/** the decorator (pass 6): the chosen decor sets into W6Extras.decor, and the watched stretches clipped to their roots (clipWatches) */
 export function w6Decorate(stage: number): NonNullable<WorldKit['decorate']> {
   return (items, out) => {
+    clipWatches(out);
     const decor = (w6Of(out, stage).decor ??= []);
     for (const it of items) decor.push({ n: it.n, x: it.x, b: it.y, w: it.w, ...(hash01(it.x, 11) < 0.5 ? { flip: true } : {}) });
   };

@@ -555,7 +555,7 @@ const longFlat = section({
   mirrorable: false,
 });
 
-const kneeRunK = knees('', 'a', 3, [200, 240], [32, 44]);
+const kneeRunK = knees('', 'a', 3, [170, 200], [32, 44]);
 /** knees: a run of three knees up and down, petals on top, a frog on one, a tayra at the end */
 const kneeRun = section({
   id: 'w6-knee-run',
@@ -570,8 +570,8 @@ const kneeRun = section({
   mirrorable: true,
 });
 
-const kneeFlatsK = knees('b', 'b', 2, [200, 240]);
-/** knees: knee roots, a short flat, knee roots again, frogs on the knees */
+const kneeFlatsK = knees('b', 'b', 1, [180, 210]);
+/** knees: a knee root, a short flat, another knee, frogs on the knees */
 const kneeFlats = section({
   id: 'w6-knee-flats',
   name: 'knee roots and flat run',
@@ -579,13 +579,13 @@ const kneeFlats = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: [W6_THEME.knees],
-  pieces: [bank('a', [220, 260]), up('k1', 'a', 36, [220, 260]), down('a2', 'k1', 36, [200, 240]), mud('mud', 'a2', [240, 280]), up('b', 'mud', 50, [200, 240]), ...kneeFlatsK.pieces],
+  pieces: [bank('a', [160, 200]), up('k1', 'a', 36, [200, 240]), down('a2', 'k1', 36, [200, 240]), mud('mud', 'a2', [240, 280]), up('b', 'mud', 50, [180, 220]), ...kneeFlatsK.pieces],
   last: kneeFlatsK.last,
-  sockets: [foe('frog', 'k1', 0.5, ['frog'], 1.5, { phases: LIVE, chance: 0.7 }), ...postAndTide('a2', 0.5, 'mud'), petals('mud', 'mud', 0.5, 2, 100), foe('frog2', 'bk2', 0.5, ['frog'], 1.5, { phases: HOT, chance: 0.6 }), petals('bk1', 'bk1', 0.5, 1)],
+  sockets: [foe('frog', 'k1', 0.5, ['frog'], 1.5, { phases: LIVE, chance: 0.7 }), ...postAndTide('a2', 0.5, 'mud'), petals('mud', 'mud', 0.5, 2, 100), foe('frog2', 'bk1', 0.5, ['frog'], 1.5, { phases: HOT, chance: 0.6 })],
   mirrorable: false,
 });
 
-const kneeHighK = knees('', 'top', 2, [170, 200], [30, 36], [140, 160]);
+const kneeHighK = knees('', 'top', 2, [160, 190], [30, 36], [140, 160]);
 /** knees: up a tall root (two steps), along its knees, and down */
 const kneeHigh = section({
   id: 'w6-knee-high',
@@ -594,7 +594,7 @@ const kneeHigh = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W6_THEME.knees],
-  pieces: [bank('a', [160, 200]), up('s', 'a', 40, [150, 170]), up('top', 's', 40, [180, 220]), ...kneeHighK.pieces, down('c', kneeHighK.last, 80, [260, 300])],
+  pieces: [bank('a', [160, 200]), up('s', 'a', 40, [150, 170]), up('top', 's', 40, [180, 220]), ...kneeHighK.pieces, down('c', kneeHighK.last, 80, [180, 220])],
   last: 'c',
   sockets: [petals('s', 's', 0.5, 1), foe('frog', 'top', 0.5, ['frog'], 1.5, { phases: LIVE }), petals('k1', 'k1', 0.5, 1), petals('k2', 'k2', 0.5, 1), foe('foe', 'c', [0.5, 0.7], ['tayra'], 2.5, { phases: HOT, chance: 0.6 })],
   mirrorable: true,
@@ -717,7 +717,7 @@ const sunkenYard = section({
   mirrorable: true,
 });
 
-const catKnees = knees('', 'b2', 2, [280, 320]);
+const catKnees = knees('', 'b2', 1, [280, 320]);
 /** cats: an ocelot on the bank, a mudflat at its foot, more cats over the knees past it */
 const catBanks = section({
   id: 'w6-cat-banks',
@@ -726,14 +726,14 @@ const catBanks = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W6_THEME.cats],
-  pieces: [bank('a', [200, 240]), up('m', 'a', 36, [160, 190]), down('b', 'm', 36, [320, 360]), mud('mud', 'b', [240, 280]), up('b2', 'mud', 50, [200, 240]), ...catKnees.pieces],
+  pieces: [bank('a', [200, 240]), up('m', 'a', 36, [160, 190]), down('b', 'm', 36, [300, 340]), mud('mud', 'b', [240, 280]), up('b2', 'mud', 50, [200, 240]), ...catKnees.pieces],
   last: catKnees.last,
-  sockets: [petals('m', 'm', 0.5, 1), foe('f1', 'b', [0.4, 0.5], ['ocelot'], 3), ...postAndTide('b', 0.9, 'mud'), petals('k1', 'k1', 0.5, 1), foe('f2', 'f2', [0.5, 0.6], ['ocelot', 'tayra'], 3, { phases: LIVE })],
+  sockets: [petals('m', 'm', 0.5, 1), foe('f1', 'b', [0.4, 0.5], ['ocelot'], 3), ...postAndTide('b', 0.9, 'mud'), petals('k1', 'k1', 0.5, 1), foe('f2', 'f1', [0.5, 0.6], ['ocelot', 'tayra'], 3, { phases: LIVE })],
   mirrorable: true,
 });
 
-const jagKnees = knees('', 'a', 3, [360, 400], [32, 44]);
-/** cats: the jaguar's roots, three knees, the big cat at the end */
+const jagKnees = knees('', 'a', 2, [360, 400], [32, 44]);
+/** cats: the jaguar's roots, two knees, the big cat at the end */
 const jaguarRoots = section({
   id: 'w6-jaguar-roots',
   name: 'jaguar roots arena',
@@ -743,7 +743,7 @@ const jaguarRoots = section({
   uses: [W6_THEME.cats],
   pieces: [bank('a', [260, 300]), ...jagKnees.pieces],
   last: jagKnees.last,
-  sockets: [petals('k1', 'k1', 0.5, 1), foe('f1', 'f1', [0.5, 0.6], ['ocelot', 'tayra'], 3), petals('k2', 'k2', 0.5, 1), foe('f2', 'f3', [0.5, 0.65], ['jaguar'], 5)],
+  sockets: [petals('k1', 'k1', 0.5, 1), foe('f1', 'f1', [0.5, 0.6], ['ocelot', 'tayra'], 3), petals('k2', 'k2', 0.5, 1), foe('f2', 'f2', [0.5, 0.65], ['jaguar'], 5)],
   mirrorable: true,
 });
 
