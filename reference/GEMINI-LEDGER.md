@@ -67,9 +67,9 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 |---|---|---|---|
 | F1 | Same layout, different rules per difficulty: margins, platform widths, hazards, enemy budget, quotas | PART | Easy: fewer boss hits, longer warnings, lower quotas, the sparkle. Not: wider landings, softer pits, a 60% enemy budget. |
 | F2 | Difficulty score D(world, stage) and a ramp inside each world (stage 1 of a world a little easier than the last of the one before) | PART | `easeAssist` ramps help out by stage 25; no difficulty score. |
-| F3 | Noisy-thumb bots: Easy kid N(+90 ms, 65 ms) reaction, jump-hold noise 80 ms, 0.4 s hesitation; Normal adult N(+30, 30), 35 ms; gate: survival 85% Easy / 70% Normal per jump | IN (bots) / PART (thumb model) | inspector kid/adult bots; the first-timer bot (helper, 2026-10-28) adds the full thumb model. |
-| F4 | Touch failure modes in the bot: thumb drift, late lift-off overshoot, 8% short-hop truncation, 133-200 ms thumb swap between jump and throw | PART -> being built | first-timer bot. Next: gate on them (e.g. no Easy gap needs a full-hold jump). |
-| F5 | Gates: minimum input window 300 ms Easy / 167 ms Normal; peak stress per burst 2.5 / 5.5; puzzle depth 1-2 / 2-4 steps; backtracking 1.0-1.25 / 1.15-1.6 | PART | puzzle depth by difficulty is in the kit rules; the others NOT. Next: add to the inspector. |
+| F3 | Noisy-thumb bots: Easy kid N(+90 ms, 65 ms) reaction, jump-hold noise 80 ms, 0.4 s hesitation; Normal adult N(+30, 30), 35 ms; gate: survival 85% Easy / 70% Normal per jump | IN | inspector kid/adult bots (route model, `jumps.ts`), and the first-timer bot in the real engine (`tools/inspect/firsttimer.ts`, `--firsttimer`, 2026-10-28) with exactly these numbers: press latency N(+90, 65) / N(+30, 30) ms, hold N(flick, 80) / N(flick, 35) ms, 0.4 s / 0.2 s before a tap. It reports survival per jump edge over its runs (edges tried 3+ times) against 85% / 70%. |
+| F4 | Touch failure modes in the bot: thumb drift, late lift-off overshoot, 8% short-hop truncation, 133-200 ms thumb swap between jump and throw | IN (bot) | first-timer bot: drift ~N(+4, 2) px/s capped at the game's 30 px re-anchor, with reversal dead time; log-normal late lift-off (1-4 frames kid, 0-2 adult) that runs him off small pads; 8% / 3% of flicks cut to 66 ms; 133-200 ms from a jump press to a tap (it never throws: puzzles are skipped). Next: gate on them (e.g. no Easy gap needs a full-hold jump, G8). |
+| F5 | Gates: minimum input window 300 ms Easy / 167 ms Normal; peak stress per burst 2.5 / 5.5; puzzle depth 1-2 / 2-4 steps; backtracking 1.0-1.25 / 1.15-1.6 | PART | puzzle depth by difficulty is in the kit rules. The first-timer bot reports the other three per stage and setting: the input window measured in the real engine (the press moved a frame at a time around his own take-off, running jumps between still ledges, up to 12 a stage), peak stress (the summed failure share of the jumps in one burst before a 2.0 s / 1.0 s rest), backtracking (the main route over the straight line; only too long is flagged). Not yet gates in the validator or the generator. |
 | F6 | Kids 7-10: hints under 8-12 words, grade 2-3 reading; stuck = back-and-forth or 2 failed tries, not a clock; 3-tier hints (sparkle at 15 s, a thought at 30 s, a demonstration at 50 s) | PART | Easy's silent sparkle when stuck is IN; Flicker's on-request tiered hints are planned, not built. |
 | F7 | First lesson rooms: zero lethal failure, can't be skipped, the room shows itself first; source and receptor within 8 tiles so an upright phone sees both | IN (W1-4 rooms) | STAGE-RULES §3; camera keyBox. Not yet enforced by the validator as a rule. |
 
@@ -83,7 +83,7 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 | G4 | Head-bonk nudge (8/12 px) and shin mantle (10/14 px): a jump into a face carries over its lip | IN | World 5's `STEP_UP` / face carry / `LIP_IN` now on every stage of every world (`engine.ts stepHelp`, not Meeca's stage, boss arenas or Dot's flight); the lip's hoist already takes him from 26 px under a top (`FORGIVE.mantle`, more than 10/14). Head-bonk: nothing to do, platforms are passed through from below (no ceilings). Tests `plainWalk.test.ts` (Worlds 1-2, three rolls), `forgive.test.ts` (World 1 and a generated World 6 stage). 2026-10-28. |
 | G5 | Pickup / lever magnet 1.25x Normal, 1.6x Easy | PART | the kit's tap reach is larger on Easy (`useReach`); check the ratio. |
 | G6 | Physics stable at 30 fps: Verlet or a 60 Hz substep so a stutter doesn't shorten jumps | NOT checked | Next: test jump height under 33 ms vs 45 ms frames; substep if they differ. |
-| G7 | A floating re-centring thumb slider halves reversal lag | PART | the touch rules move their anchor with the thumb in places (`touchGestures.ts`). Next: measure reversal lag in the first-timer bot. |
+| G7 | A floating re-centring thumb slider halves reversal lag | PART | the touch rules move their anchor with the thumb past 30 px (`touchGestures.ts` TUNING.reanchor). The first-timer bot models it (the drift stops building at 30 px; turning round costs the thumb's travel back, about 0.2-0.35 s kid / 0.1-0.2 s adult) and reports the turns and the seconds of no steer they cost per stage. Measured from real fingers: NOT yet. |
 | G8 | Variable jump: a tap is a short hop, a hold a full jump; no Easy gap may need a full hold | IN (check) | short hop IN (`cutV`); the check: `levelCheck.ts easyHoldCheck` validates an Easy stage with a ~70% hold (`physics.ts EASY_HOLD`, `reachJumpHeld`). Test `forgive.test.ts`. Not yet a gate: on rolls 1-3, Easy 1-1, 1-2, 1-4, 1-8, 3-3 and 4-3 have places only a full hold reaches (1-1 and 1-2 stumps and stones, the 1-4 climb, the 1-8 chase gaps, 4-3 steps); Worlds 2 and 5 pass. Next: size those for Easy. 2026-10-28. |
 
 ## H. Story and visual journey in generated stages (Part 2 §7)
@@ -107,7 +107,7 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 
 | # | Recommendation | Status | Where / what is next |
 |---|---|---|---|
-| J1 | Zoom floor 0.72-0.75x; protagonist at least 8-10% of the short screen side | PART | upright rooms may zoom out to the sideways scale (~0.5 screen px per world px on a 360-wide phone), below Gemini's floor. Next: measure Pokey's share of the screen and decide with Matt. |
+| J1 | Zoom floor 0.72-0.75x; protagonist at least 8-10% of the short screen side | NO | Matt decided (2026-10-28): the whole puzzle room stays in view upright, so Pokey may shrink to the sideways scale (~0.5 screen px per world px on a 360-wide phone). Rooms are still built narrow and tall so it rarely comes to that. |
 | J2 | Lean 35% toward the active part (source before pickup, receptor after) | IN | `puzzleCamera.ts`, keyBox. |
 | J3 | Puzzle rooms in a 500 x 750 px box (fits both orientations) | PART | narrow-and-tall rule; not checked by size. Next: the validator checks each room's box. |
 | J4 | A 0.8 s pan to a far gate, or a visible conduit between switch and gate | IN | first-open pan; troughs and ropes. |
@@ -115,7 +115,7 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 
 ## Summary (2026-10-28)
 
-Of 56 recommendations: **18 IN, 24 PART, 11 NOT, 3 NO** (B1 the engine switch, I1's per-playthrough shuffling, J5 the peek gesture). The biggest gaps:
+Of 56 recommendations: **18 IN, 23 PART, 11 NOT, 4 NO** (B1 the engine switch, I1's per-playthrough shuffling, J1 the zoom floor (Matt keeps the whole room in view), J5 the peek gesture). The biggest gaps:
 1. **Variety (C1, C3, C4, C8, C10):** rolls of a stage barely differ. Section variants, sockets, shuffle bags and cooldowns.
 2. **Movement forgiveness for every stage and both difficulties (G1-G4, G8).**
 3. **Difficulty-scaled rules (D2, E2, F1, F5)** so Easy is truly easier, not only fewer boss hits.

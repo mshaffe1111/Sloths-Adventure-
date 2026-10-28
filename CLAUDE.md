@@ -11,6 +11,8 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
 ## Rules that are easy to break
 
 - **Pushing**: push only when Matt says "push". Then open the PR with `gh api …/pulls` (GraphQL is blocked) and give him the PR link. He merges it himself. Then check the deploy run succeeded (HANDOFF §7).
+- **Helper effort (Matt, 2026-10-28):** the lead sets each helper's effort to balance Matt's tokens: low for following written steps, medium for measuring and small fixes, high for building stages, engine work and reviews; never xhigh or max unless Matt asks (`reference/LEAD-PLAYBOOK.md` §7).
+- **Safe-keeping pushes (Matt, 2026-10-28):** push the work branch whenever it holds work worth keeping (the container is temporary); that is not a release. A release (PR, merge, live site) still waits for Matt's "push".
 - **Test link**: after every round of changes, rebuild and republish Matt's test link in place (`python3 tools/testlink/build.py`, then the Artifact tool; HANDOFF §6).
 - **New replaces old (Matt, 2026-10-26)**: once something new is tested and passes QA, it replaces the old code outright in the next release. No on/off switches; the old path is deleted. Nothing untested or half-finished goes to `main`.
 - **Show first**: show big screen changes as screenshots, a mock-up or a preview video before building them in.
@@ -19,6 +21,7 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
   - touch controls only;
   - every stage works in portrait and landscape;
   - the loop is locked at 30 fps on purpose.
+- **Lead session: after a restart or a memory compression, read `reference/STATUS.md` (the live board: helpers running, open decisions, QA batches, what is live) and `reference/LEAD-PLAYBOOK.md` (how to brief, check and merge) first, and keep STATUS.md current every time something starts, reports or is decided.**
 - **Building or checking a stage, puzzle room or generator rule: read `reference/STAGE-RULES.md` first** (Matt's rules, the numbers every stage must meet from his Gemini research `reference/GEMINI-PCG-RESEARCH.md`, with every recommendation's status in `reference/GEMINI-LEDGER.md`, puzzle-room rules, using all the art, the checks in order, and the mistakes we already paid for). Pass it on in every helper brief.
 - **Stage rules**:
   - crumbling platforms are never required;
