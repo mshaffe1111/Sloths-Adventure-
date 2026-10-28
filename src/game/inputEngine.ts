@@ -57,6 +57,14 @@ export class InputEngine {
   /** what resume() put back as held (carry): taken away again at the first fresh input */
   private carried: { jump: boolean; dir: -1 | 0 | 1 } | null = null;
   private padPrev = { left: false, right: false, up: false, down: false, punch: false, kick: false, mega: false };
+  /** Meeca stands at a carving spot (the engine sets it each frame): only there does a finger tracing a circle carve (circleTrace.ts) */
+  public carveSpot = false;
+  /** a finger traced this far round a circle (radians): the engine takes it each frame (state.circle) */
+  public addCircle(rad: number) {
+    if (rad <= 0) return;
+    this.fresh();
+    this.state.circle = (this.state.circle ?? 0) + rad;
+  }
   /** who is holding (state.hold is any of them) */
   private holds = { touch: false, keys: false, pad: false, gamepad: false };
   /** a hold, from one of the ways of playing (a still thumb, the hold key, the Pad's button, a pad's bumper) */
