@@ -8,6 +8,14 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
+## On the work branch, test link v220 (2026-10-28 ~18:30 ET)
+
+- The polish pass merged: splash, carved title, Pokey and Meeca's painted clips, the shared menu kit, stage wipes. Needs Matt's
+  real-phone check (headless: title 13-16 fps for ~12 s after arrival, World Map slow under 4x CPU throttle; a lite mode exists).
+- World 1 round 2 (every rule break across 200 rolls fixed), World 4 round 2. Suite 1618 pass 0 fail; build ok.
+- PR #42 is LIVE (site published, APK built 2026-10-28 ~17:55 ET).
+- Art: $45.49 spent; boss batch 2 running (~$56 after); gallery due ~19:15 ET; stop new jobs at $60.
+
 ## Release PR #42 (opened 2026-10-28 ~17:50 ET on Matt's "merge and get this pushed out"; test link v219 is this build)
 
 Worlds 1-4 variety round 1, Jungle Cards, Dot's punch-tip fix, gen2 core (unused). Matt: from here, fixes go out as rolling releases
