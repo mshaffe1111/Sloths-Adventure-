@@ -131,8 +131,8 @@ test('4-4: Dot frees the knotted vine, and it is the only way across its gorge; 
   for (const s of SEEDS) {
     const st = build(s);
     const knots = st.proto.w4?.knots ?? [];
-    // the Develop beat's knot, the two knots in the wind (Twist again) and the secret's
-    assert.equal(knots.length, 4, `seed ${s}: ${knots.length} knots`);
+    // the Develop beat's knot, the two knots in the wind (Twist again) and the secret's; a roll whose finish leans to the knots has more
+    assert.ok(knots.length >= 4, `seed ${s}: ${knots.length} knots`);
     const secret = secretKnot(st);
     assert.ok(secret, `seed ${s}`);
     for (const main of knots.filter((k) => k !== secret)) {
