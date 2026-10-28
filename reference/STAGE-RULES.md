@@ -1,7 +1,8 @@
 # How to build a stage: the rulebook
 
 **Read this before building, rebuilding or checking any stage, puzzle room or generator rule.** It brings together Matt's rules,
-what we took from his Gemini research (`reference/GEMINI-PCG-RESEARCH.md`, the full notes), and every mistake we have already paid
+what we took from his Gemini research (`reference/GEMINI-PCG-RESEARCH.md`, the full notes; `reference/GEMINI-LEDGER.md`, every
+recommendation with its status in the game and what is next), and every mistake we have already paid
 for, so nobody repeats them. If a brief from the lead session disagrees with this file, ask; if you learn a new lesson the hard way,
 add it to section 6 in the same commit.
 
