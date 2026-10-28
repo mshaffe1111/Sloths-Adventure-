@@ -2263,6 +2263,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (`deep`, 2026-10-28: over the stream, no moss below: a miss costs a life, so the gap stays well inside a jump)
     const far = Math.round(edge + reachJump(0, false) * (deep ? R.r(0.44, 0.54) : R.r(0.55, 0.68)));
     if (!deep) softPit(edge, far);
+    else deepTip(edge);
     arc(edge - 30, far + 30, G - 110, deep ? 3 : 4);
     open(far);
     // (a flag may follow: it stands 80 short of the end, clear of the cloud's far edge)
@@ -2404,6 +2405,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const far = Math.round(bx + 20);
     // (`deep`, 2026-10-28: the shelves stand over the stream, a punch and a jump at once)
     if (!deep) softPit(edge, far);
+    else deepTip(edge);
     open(far);
     run(R.r(320, 380));
     expert += (x - x0) / RUN + 2.2 * m;
@@ -2445,6 +2447,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     expert += (x - x0) / RUN + 0.6 * heights.length;
     pieces.push({ k: 'stumps', x0, x1: x });
   }
+  /**
+   * Dot's line before the first real drop of a World 3 stage, whatever kind it is (stones over the stream, a gap in the spores, a liana
+   * chain, a vine over a gap): the first-timer drowned before it where the first drop was not a run of stones (new, needs Matt's approval)
+   */
+  const deepTip = (at: number) => once('deep', () => hint(at - 260, 'No moss down there. Jump true!'));
   /** a stone pillar standing up out of the deep (no floor under it: the water below costs a life) */
   const deepStone = (x0: number, w: number, top: number) => {
     const p: Platform = { id: pid++, x: Math.round(x0), y: Math.round(top), width: Math.round(w), height: WATER + 40 - Math.round(top), type: 'solid', style: 'moss_stone' };
@@ -2491,8 +2498,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     run(R.r(240, 300));
     expert += (x - x0) / RUN + 0.5 * n;
     pieces.push({ k: 'gorge', x0, x1: x });
-    // (new, needs Matt's approval: Dot's line before the first real drop of a World 3 stage)
-    once('deep', () => hint(edge - 200, 'No moss down there. Jump true!'));
+    deepTip(edge);
   }
   /**
    * World 3's stone plate (Matt's `stonePlate` / `stonePlateDown`, wired in the kit but never seen in a stage before): a root gate across
@@ -2614,6 +2620,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   const w3Vines = () => {
     if (!w3Chained) {
       w3Chained = true;
+      deepTip(x + 200);
       chain(2, false, 'gorge');
     } else rootClimb(3);
   };
@@ -2638,6 +2645,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       open(x + w);
       run(R.r(70, 100));
       // (a short gap over the stream past the foot: a third of a jump, the first-timer's flick clears it)
+      deepTip(x);
       close();
       open(x + Math.round(reachJump(0, false) * R.r(0.32, 0.38)));
       expert += h / CLIMB + 0.8 + w / RUN + 0.3;
@@ -2746,7 +2754,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         glowDark(R.r(1600, 1800), 2, { rocks: true });
       } else {
         glowDark(R.r(1450, 1600), 2, { rocks: true });
-        deepRun(3, 1);
+        w3Stones([50, 100, 70], [0.5, 0.6]);
       }
       flag();
       glowRoom(false);
@@ -2817,8 +2825,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Learn: a prowler', () => {
       hint(x - 200, 'A prowler! Punch it twice, or kick it');
-      // (a breath of floor after the tip: it is read before the first prowler is near)
-      rest(R.r(220, 260));
+      // (hops and stones after the tip, before the first prowler: Dot's lines come 10-12 s apart and the opening's footprints line comes
+      // first, so the first-timer met the ocelot at 7 s with the tip still queued, 2026-10-28)
+      busy(2, ['log', 'dip'], R.r(200, 240));
+      w3Stones([50, 90, 60], [0.5, 0.6]);
+      rest(R.r(160, 200));
       prowlFloor(['ocelot']);
       busy(1);
       if (v.learn === 0) prowlFloor(['ocelot', 'ocelot']);
@@ -2878,6 +2889,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         const far = edge + w;
         // (`deep`, 2026-10-28: the gap under the vine is over the stream: wait on the bank while it looks, jump while it sleeps)
         if (!deep) softPit(edge, far);
+        else deepTip(edge);
         thornAt((edge + far) / 2, sleep);
         open(far);
         // (the next vine is measured from this one, so the pocket between them stays as wide as the rest)
@@ -3269,7 +3281,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       vineFerns(2, [4.6, 5.4], [420, 480]);
       busy(1);
       if (v.learn === 0) vineFerns(3, [4.2, 5], [400, 460]);
-      else { deepRun(3, 1); vineFerns(2, [4.2, 5], [400, 460]); }
+      else { w3Stones([60, 110, 70], [0.5, 0.6]); vineFerns(2, [4.2, 5], [400, 460]); }
       flag();
       // which fern? (Dot's stones, in the mushroom's light)
       busy(1, ['dip'], R.r(140, 180));
@@ -3471,11 +3483,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Learn: two at once', () => {
       hint(x - 200, 'Two prowlers! Keep one in front of you');
-      rest(R.r(220, 260));
+      // (hops and stones after the tip, before the prowlers: see 3-3's)
+      busy(2, ['log', 'dip'], R.r(200, 240));
+      w3Stones([50, 90, 60], [0.5, 0.6]);
+      rest(R.r(160, 200));
       prowlFloor(['ocelot', 'ocelot']);
       busy(1);
       if (v.learn === 0) prowlTree();
-      else { deepRun(3, 1); prowlTree(); }
+      else { w3Stones([50, 100, 70], [0.5, 0.6]); prowlTree(); }
       flag();
     });
     beat('Develop: the jaguar, the vines and the dark', () => {
