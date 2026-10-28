@@ -12,6 +12,7 @@ import { headlessCanvas } from './headlessDom.ts';
 import { GameEngine } from './engine.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { EXTRA_STAGES } from './extraStages.ts';
+import { KIT_STAGE_ID, kitStageConfig } from './kitStage.ts';
 import { setLayoutVariant } from './stageGenerator.ts';
 import { newAirDrive } from './physics.ts';
 import { newGlide } from './glide.ts';
@@ -83,7 +84,7 @@ class FakeInput {
 const levels = generateAllLevels();
 export const levelConfig = (id: string): LevelConfig => {
   // (the extra stages, 4-D and 5-M, are only in the list in a browser: extraStages.ts)
-  const c = levels.find((l) => l.id === id) ?? EXTRA_STAGES.map((e) => e.config()).find((l) => l.id === id);
+  const c = levels.find((l) => l.id === id) ?? EXTRA_STAGES.map((e) => e.config()).find((l) => l.id === id) ?? (id === KIT_STAGE_ID ? kitStageConfig() : undefined);
   if (!c) throw new Error(`no stage ${id}`);
   return { ...c, unlocked: true };
 };

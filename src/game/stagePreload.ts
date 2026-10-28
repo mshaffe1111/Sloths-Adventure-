@@ -20,6 +20,7 @@ import { W2_PROPS_URL, riverArtReady } from './riverArt.ts';
 import { W3_PROPS_URL, w3ArtReady } from './w3Art.ts';
 import { W4_PROPS_URL, w4ArtReady } from './w4Art.ts';
 import { W5_PROPS_URL, w5ArtReady } from './w5Art.ts';
+import { KIT_ART_URL, kitArtReady } from './puzzleArt.ts';
 import { preloadBackdrop } from './paintedBackdrops.ts';
 import { stageSheets } from './stageSheets.ts';
 import { perfNote } from './perfLog.ts';
@@ -47,6 +48,9 @@ function start(keys: readonly string[]): string[] {
     } else if (k === 'w5-props') {
       w5ArtReady();
       urls.push(W5_PROPS_URL);
+    } else if (k === 'kit-pieces') {
+      kitArtReady();
+      urls.push(KIT_ART_URL);
     } else if (k === 'dot') {
       warmDotSheets();
       urls.push(DOT_PROPS_URL, DOT_ATLAS_URL, ...Object.values(BACK_URL));

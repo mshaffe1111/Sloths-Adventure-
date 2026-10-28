@@ -8,6 +8,7 @@
  *   w2/w3/w4/w5-props a hand-built World 2, 3, 4 or 5 stage's dressing (riverArt.ts, w3Art.ts, w4Art.ts, w5Art.ts)
  *   dot            Dot's flight (4-D): her pieces, her frames and the four paintings behind the netting (dotFlightArt.ts)
  *   Meeca's stage (5-M): World 5's kit and dressing, and Pell's and the soldiers' clip sheets (meecaArt.ts)
+ *   kit-pieces     the puzzle kit's pieces and Pokey's carry poses (puzzleArt.ts), for a stage with puzzle rooms (the test room, 'kit')
  *   anim:<name>    a creature's clip sheet (creatureAnim.ts), for the hand-built stages that hold one (STAGE_ANIMS)
  *
  * A generated stage's creatures are rolled with the stage, so they are not known ahead: their clip sheets still start loading as the
@@ -18,6 +19,7 @@ import { W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID } from './extraStages.ts';
 import { CTEST_STAGE_ID } from './stageGenerator.ts';
 import { KIT_FRAMES } from './kitAtlasData.ts';
+import { KIT_STAGE_ID } from './kitStage.ts';
 import type { LevelConfig } from './types.ts';
 
 /**
@@ -47,6 +49,8 @@ export interface SheetSwitches {
 }
 
 export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>, sw: SheetSwitches): string[] {
+  // the puzzle kit's test room: World 1's painted ground and the kit's pieces
+  if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces'];
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'anim:pell', 'anim:soldier'];
   const w = cfg.worldIndex;
