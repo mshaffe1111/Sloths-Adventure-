@@ -23,8 +23,8 @@ others take hits, that's the player, and it says who learned it later. If skille
 gets through, it asks whether it can be done at all. Worlds 1-4 stay held to the first-timer standard (the 0.8 s
 reaction + 0.6 s margin on boss openings).
 
-**Keep runs lean** (Matt, 2026-10-26): his usage is limited. Use the Matt bot (upright) and the Jen bot (sideways) for most gates,
-one run each per promotion, not repeat runs. Do quick checks by state (`eval`, `unseen-hits.cjs`, `boss-openings.cjs`) where that is
+**Keep runs lean** (Matt, 2026-10-26): his usage is limited. Stage tests use the Matt bot only (Matt, 2026-10-28); a second run, when
+one is needed, uses the Steph bot. One run each per promotion, not repeat runs. Do quick checks by state (`eval`, `unseen-hits.cjs`, `boss-openings.cjs`) where that is
 enough, and bring in other personas only when a check needs them.
 
 **How work moves**
