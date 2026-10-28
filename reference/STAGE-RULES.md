@@ -58,7 +58,7 @@ Last updated 2026-10-28.
 | Tension | Aim: a sawtooth across the stage (Part 1 §4): build, a breather in the middle, the climax near the end, an easy walk out. Not flat, not front-loaded. | inspector `pacing.ts` (tension in 9 parts) |
 | Difficulty bands | §1b, measured: a 0-100 score per stage and setting (first-timer lives lost a minute, the noisy bot's hardest jumps, peak stress, the narrowest input window, dead time, length); each world's spread is its band. | inspector `bands.ts` (the band chart) |
 | Sameness | No two stages of a world alike: cosine of weighted action 3-grams under ~0.78, and no matching 20-second stretch. | inspector `similar` |
-| Variety across rolls | Two rolls of the same stage must really differ: diversity (mean 1 - cosine between rolls) about 0.35 or more. Today most hand stages are 0.87-1.00 alike between rolls: that is the next big job. | `tools/inspect/era.ts` over 200 rolls |
+| Variety across rolls | Two rolls of the same stage must really differ: diversity (mean 1 - cosine between rolls) about 0.35 or more. Today most hand stages are 0.87-1.00 alike between rolls: that is the next big job. Set pieces with no variety target (the lead, 2026-10-28): 4-3 Waterfall Steps and 4-7 The Long Drop; every other rule still holds for them. | `tools/inspect/era.ts` over 200 rolls |
 | Opening seconds | Nothing can hurt in the first ~3-5 s of plain walking; the first tip comes before the first hazard it teaches. | first-timer bot |
 | Plain walk | No step, lip or dip that stops a plain walk dead; every dip has a one-jump way out; a jump into a face carries over its lip. | first-timer bot, kid bot |
 | Jump forgiveness (30 fps) | Coyote time ~133 ms Normal / 167 ms Easy; jump buffer ~133 / 200 ms; ledge-landing forgiveness; head-bonk and shin-mantle corner correction. | engine; first-timer bot |
@@ -186,6 +186,12 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   So a glide stage is all J and V to it, and 4-7 stays 99.8% alike however its sections roll. Variety the tool counts needs versions
   with different kinds of action (vines, waits, puzzles, foes), not the same jumps in another order; a roll-wide "ground" theme (hops
   or second-jump leaps between pieces) moved World 4 more than any single section did.
+  or second-jump leaps between pieces) moved World 4 more than any single section did. Round 2: a flavour carried through the whole
+  stage, with heavy pieces of its own after each section, moved 4-2, 4-5 and 4-9 to about half alike between flavours; stages made
+  of one move (4-3's wet steps, 4-7's glides) stay 0.93-0.99 whatever is added, because their many jumps dominate the 3-grams.
+- **The level check follows a swing from a ledge to a ledge, never from vine to vine** (2026-10-28): a chain of lianas over a real
+  drop reads as unfinishable (4-4 is not judged by the check for that reason). Where a stage is checked, a swing over a drop is one
+  liana from bank to bank (World 4's `swings`, windChain with one vine), as many in a row as you like.
 - **The first-timer drowns where the inspector's bots never miss** (World 3's variety pass, 2026-10-28): real gaps over water at half a
   jump's reach, a stone a little lower and close by, a second-jump gap, and every liana chain over water cost the first-timer 2-12 lives a
   minute, while the noisy route bots cleared the same jumps 98% of the time. It plays short flicks, never a run-up, and tries the second

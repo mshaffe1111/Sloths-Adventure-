@@ -175,6 +175,15 @@ export function buildWaterfallSteps(
     y -= Math.round(h);
     trunk(tX, y0, y);
     for (let i = 0; i < 3; i++) flower(tX, y0 - 80 - ((h - 140) * i) / 2, 'hibiscus');
+    // (round 4, Matt 2026-10-28 "Harder, still safe": once Dot has taught the rocks, every tree has one coming down past its trunk
+    // from the cliff above, grit trickling first; a hit knocks him off the trunk, the climb again, never a life)
+    if (rocksSaid) {
+      const rk: RockDrop = { x: Math.round(tX), top: Math.round(y - 260), land: Math.round(y0), every: Math.round(R.r(5.8, 6.6) * 10) / 10, warn: ROCK_WARN, offset: Math.round(R.r(0, 5) * 10) / 10, air: true };
+      if (rockFits(rk)) {
+        rocks.push(rk);
+        expert += 1.2;
+      }
+    }
     run(R.r(180, 220));
     expert += (x - x0) / RUN + h / CLIMB + 1;
   }
@@ -566,8 +575,9 @@ export function buildWaterfallSteps(
   const theme = roll.theme('finish', ['trees', 'surges', 'rocks'] as const);
   const sig = () => {
     if (theme === 'trees') treeUp(R.r(330, 380));
-    // (the surges' own piece is the finish's: a surge after every part ran the stage a minute long and out of its taught order)
-    else if (theme === 'surges') stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
+    // (the surges' own piece is the finish's: a surge after every part ran the stage a minute long and out of its taught order; a
+    // rock terrace instead, round 3, World 4 sitting above World 3)
+    else if (theme === 'surges') rockRest(R.r(420, 480));
     else {
       rockRest(R.r(420, 480));
       stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
