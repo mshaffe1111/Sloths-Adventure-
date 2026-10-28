@@ -757,7 +757,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       branch(x + gap, x + gap + 120, gy);
       goldenSeed(x + gap + 60, gy - 34);
       hint(x - 120, 'Something shiny, far away...');
-      x += gap + 120 + 420;
+      const end = x + gap + 120 + 420;
+      // (World 1: the floor on under the far ledge holds dips of moss to jump, as glideLookout's does: it was a 6-9 s empty walk, the
+      // stage inspector, 2026-10-28; never a rock, from whose top a double jump would reach the ledge the glide is for)
+      if (w1Rocks) while (end - x > 420) { run(R.r(180, 260)); dip(); }
+      x = Math.max(x, end);
     } else x += R.r(200, 300);
     // the forest floor under the whole road is one long safe bank (the bank before carries on under it)
     run(R.r(120, 200));
@@ -2244,11 +2248,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     flag();
   });
   beat('Develop: the gorge and the tall kapok', () => {
-    chain(R.i(2, 3), false, 'gorge');
-    mixed(() => snakeWalk(1), () => busy(1));
-    flag();
-    kapok();
-    chain(3, false, 'gorge');
+    // (the gorge and the kapok in this roll's order and rhythm: w1Sections.ts)
+    section('develop');
     flag();
   });
   beat('Puzzle: the fallen log', () => {
@@ -2260,9 +2261,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     flag();
   });
   beat('Twist: the canopy road', () => {
-    canopy(true);
-    flag();
-    highRun();
+    section('twist');
     flag();
   });
   beat('Develop again: higher and wider', () => {
@@ -2274,24 +2273,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     flag();
     chain(R.i(3, 4), false, 'gorge');
     flag();
-    // then more of the world's pieces, rolled from the kit, until even a quick, sure player needs the stage's minimum time
+    // then more of the world's pieces, in this roll's rhythm, until even a quick, sure player needs the stage's minimum time
     // (the finish adds about 10 s); a flag after every second piece
-    const kit: Array<() => void> = [
-      () => chain(R.i(3, 4), false, 'gorge'),
-      () => kapok(),
-      () => highRun(),
-      () => { stumps(); snakeWalk(1); },
-      () => canopy(false),
-    ];
-    let last = -1, count = 0;
-    while (expert < EXPERT_SECONDS - 10 && count < 16) {
-      let k = R.i(0, kit.length - 1);
-      if (k === last) k = (k + 1) % kit.length;
-      last = k;
-      kit[k]();
-      if (++count % 2 === 0) flag();
-      busy(1);
-    }
+    section('finish');
   });
   beat('Finish: the long swing home', () => {
     busy(1);

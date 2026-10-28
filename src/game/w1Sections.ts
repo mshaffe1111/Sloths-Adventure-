@@ -476,7 +476,45 @@ const SECTIONS: Record<W1Stage, Table> = {
       },
     ],
   },
-  '1-6': {},
+  // 1-6 (the 'proto' plan) Swinging Vines: the swing, the fallen log and its seesaws, the canopy road. The roll's rhythm leans on the
+  // gorge's vines, the climbs up the kapoks and the canopy, or the ground between them (hops, snakes, bounces). The puzzle rooms are
+  // in every roll; the twist is the canopy road with its glide seed, in one of three orders.
+  '1-6': {
+    rhythms: ['swing', 'climb', 'ground'],
+    develop: [
+      { id: 'gorge', beat: 'swing', build: (k) => { k.chain(k.R.i(2, 3), false); k.busy(1); k.flag(); k.kapok(); k.chain(3, false); } },
+      { id: 'kapoks', beat: 'climb', build: (k) => { k.kapok(); k.snakeWalk(1); k.flag(); k.climbWall(); k.kapok(); } },
+      { id: 'ground', beat: 'ground', build: (k) => { k.chain(2, false); k.snakeWalk(1); k.stumps(); k.flag(); k.kapok(); k.highLeaps(3, false, true); } },
+    ],
+    twist: [
+      { id: 'roadVines', beat: 'swing', build: (k) => { k.canopy(true); k.flag(); k.highRun(); } },
+      { id: 'roadKapok', beat: 'climb', build: (k) => { k.canopy(true); k.flag(); k.kapok(); k.canopy(false); } },
+      { id: 'roadGround', beat: 'ground', build: (k) => { k.canopy(true); k.flag(); k.busy(2); k.snakeWalk(1); } },
+    ],
+    finish: [
+      {
+        id: 'vines', beat: 'swing', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.chain(k.R.i(3, 4), false); k.busy(1); },
+          (k) => { k.highRun(); k.busy(1); },
+          (k) => { k.chain(3, false); k.highRun(); },
+        ], 2, 16),
+      },
+      {
+        id: 'climbs', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.kapok(); k.busy(1); },
+          (k) => { k.canopy(false); k.busy(1); },
+          (k) => { k.climbWall(); k.kapok(); },
+        ], 2, 16),
+      },
+      {
+        id: 'ground', beat: 'ground', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.stumps(); k.snakeWalk(1); k.busy(1); },
+          (k) => { k.highLeaps(4, false, true, true); k.busy(1); },
+          (k) => { k.snakeLedge(); k.bounceWall(true); },
+        ], 2, 16),
+      },
+    ],
+  },
   // 1-7 A Very Good Bush: hide from the eagle. The roll's rhythm: bush rows on the ground, the rope line with bushes on it, or open
   // stretches out of the eagle's sight (bounces and hops) between the watched ones. The secret bush and the acorn meadow are in every
   // roll; the finish runs a minute past the meadow.
