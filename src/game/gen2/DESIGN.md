@@ -1,6 +1,6 @@
 # The new stage generator (gen2)
 
-Written 2026-10-28. First job: World 5's stages 5-7, 5-8 and 5-9. Then Worlds 6-10 (each world's nine stages; stage 10 is the
+Written 2026-10-28. First job: World 5's stages 5-7 and 5-9 (5-8 stays hand-built, Matt 2026-10-28). Then Worlds 6-10 (each world's nine stages; stage 10 is the
 hand-built guardian, and each world's one signature stage stays hand-built). Built on Matt's Gemini research
 (`reference/GEMINI-PCG-RESEARCH.md`) and held to `reference/STAGE-RULES.md`.
 
@@ -24,9 +24,10 @@ builds a stage the way a person would build it out of Lego: from **building bloc
   before you ever see it. If one spot fails, the generator fixes just that spot (a stepping stone, or a different block there) instead
   of throwing the whole stage away.
 - **Easy and Normal are the same stage.** The same roll, the same blocks in the same order; Easy just plays it kinder: shorter jumps,
-  wider landings, every fall lands in a soft pit, fewer animals at once, gentler animals, no cakes on the path.
+  wider landings, a fall on land lands in a soft pit, fewer animals at once, gentler animals, no cakes on the path. Water still
+  costs a life on Easy (your call), so Dot warns before it and a sign stands at the edge.
 - **We ship only the best rolls.** A computer builds a few hundred rolls of each stage, scores them on our inspector, and we keep the
-  best dozen or so that also differ the most from each other. Every time you enter a stage you get one of those: always checked,
+  best 16 that also differ the most from each other. Every time you enter a stage you get one of those: always checked,
   always a little different.
 
 ```
@@ -86,8 +87,11 @@ Input: the stage's `LevelConfig`, the world's manifest, the difficulty. Output: 
 - **Margins** (D2): `margin` 0.65 Easy / 0.82 Normal of the physical reach (`physics.ts reachJump`), capped at what `levelCheck`
   accepts (its 0.97 and the 70 px take-off slack): `maxGap(dyUp, dbl, margin)`. Flat ground: one jump 114 px Easy / 143 Normal, two
   jumps 204 / 230. Rises: one jump 70 / 88 px, two 120 / 151 (`riseLimit`).
-- **Easy's rules**: `landingPad` +48 px on every landing (Gemini's "+2 tiles"); `pit` soft (a mossy floor and a step out; never a
-  life); `enemyShare` 0.6; a longer animal tell (`attackCooldown` x1.5 on `easy: 'soften'` sockets); `easy: 'drop'` sockets with a
+- **Easy's rules**: `landingPad` +48 px on every landing (Gemini's "+2 tiles"); a fall **on land** is soft (a mossy floor and a step
+  out; never a life), but **water still costs a life on Easy** (Matt, 2026-10-28), with a clear warning: Dot's line `WATER_WARN.lead`
+  (480) px before the lip, gone once he is past it, and a sign at the edge (`proto.gen2.waterWarnings`, for the world's art). Easy
+  warns at every water gap once 12 s of walking passed since the last warning; Normal warns at the first water only. The line is
+  `manifest.tips.water`, or `WATER_LINE`: "Careful, water! Flick up and over." (Matt, 2026-10-28); `enemyShare` 0.6; a longer animal tell (`attackCooldown` x1.5 on `easy: 'soften'` sockets); `easy: 'drop'` sockets with a
   hazard prop stay empty; `quiet` 3 s (Normal 2 s). Coyote time and the jump buffer stay the engine's (`physics.ts PHYS`, `ASSIST`;
   G1-G2 are an engine job, not the generator's).
 - **Threat**: `2 + 6 x heat` per section of tension 1, scaled by each node's tension.
@@ -100,8 +104,9 @@ Gemini's sawtooth: start 0.1, Ki 0.3, Sho 0.6, rest 0.1 (flag), Ten 0.72, rest 0
 Each node owns a share of the stage's seconds. Rewrites per archetype: stealth wants `cover` sections, vine runner `swing`, harvest
 `pickups`, purge/gauntlet run 0.08 hotter (a gauntlet gets one more twist), rescue/search spread their quota items over the Sho, Ten
 and Ketsu nodes. `want` tags weigh the bag; they never filter (a stage is never left with no candidate).
-TODO phase 2: an **ascent** (5-8) runs up (`flow: 'up'`: the same stitcher with the axes swapped, the corridor clamp on x, and the
-climb steps recorded in `meta.ascentChain` for `stageTime.ts`); rescue/search alcoves become real side branches.
+Deferred (Matt, 2026-10-28: 5-8 stays hand-built): an **ascent** would run up (`flow: 'up'`: the same stitcher with the axes swapped,
+the corridor clamp on x, the climb steps recorded in `meta.ascentChain` for `stageTime.ts`); until a world needs it, `missionGraph`
+refuses an ascent. TODO: rescue/search alcoves become real side branches.
 
 ### B3. Pass 3: sections and stitching (`layStage`, `layLocal`)
 
@@ -125,9 +130,22 @@ that `uses` a mechanic is open only once it was taught: by an earlier stage, `ma
 corridor lean. A `ShuffleBag` per node kind draws up to three; the `CooldownQueue` (length up to 4 inside a stage, preloaded with
 the previous stage's shipped sections, `BuildRequest.recent`: C4 across stages) takes the first not used just now. Mirroring: a
 `mirrorable` section flips with even odds (a room never does; painted light stays upper left). Each slot rolls its geometry from
-its own stream (`rngFor(seed, 11, slot)`), so swapping one section leaves the others' rolls alone.
+its own stream (`rngFor(seed, 11, slot, salt)`, the salt counting the swaps made at that slot), so swapping one section leaves the
+others' rolls alone.
 
-Easy lays **Normal's plan** (`Gen2Meta.plan`: section, flip, node, join per slot) from Normal's seed, with Easy's rules.
+**Sub-blocks** (A5, built 2026-10-28): a section's `subBlocks` each hold 2-3 authored versions (their own pieces and sockets). One
+version per sub-block is rolled per use (`chooseVersions`, from its own stream `rngFor(seed, 19, slot, salt)`): a weighted order,
+then the first version this world has not used yet (`WorldOnce`, preloaded from `BuildRequest.usedVersions`, the versions the
+world's earlier stages shipped, as `versionKey(section, subBlock, version)`), so every version has its turn before one comes back.
+The section's pieces and the version's are laid together, each as soon as the piece it names is laid, so a section piece may follow
+a version piece (every version must give the keys the rest names; a mistake throws with the section, the piece and the versions). A
+section with no sub-blocks draws nothing for them: its layout is exactly what it was (a test holds the toy world's geometry to the
+numbers from before sub-blocks).
+
+Easy lays **Normal's plan** (`Gen2Meta.plan`: section, flip, node, join, sub-block versions and slot salt per slot) from Normal's
+seed, with Easy's rules. Every draw is made whether or not the plan fixes its outcome (the flip, the join), and pass 4 rolls each
+socket's chance from its own stream (`rngFor(seed, 17, section, socket)`), each arc from its gap's, each flower's look from its spot,
+so Easy rolls every piece and socket from the same numbers as Normal (tested: the same sockets filled with the same props).
 
 ### B4. Pass 4: the sockets (`fillSockets`)
 
@@ -141,6 +159,14 @@ first 5 s of walking, §2 "Opening seconds"), then `poissonPlace` over all creat
 between two of a kind, 120 px between any two; stretches longer than the quiet cap with nothing to do are reported as `barren`).
 Easy then keeps the first of each kind and 60% of the rest. **Pickups** (rows on a surface), **quota items** (cages, relics: the
 node's count shared among its sections' `objective` sockets), **petal arcs** over the jumps (half a beat, E1), a harvest's top-up.
+**A purge's or gauntlet's top-up** (2026-10-28, for 5-9's goal of 26): the threat budgets alone lay too few animals for a goal
+that counts them, so, like a harvest's flowers, the world's creatures (those tagged `topup`, else every ground creature, from a
+bag; a world's `spawn` hook registers its own, e.g. World 5's sleeping spiders) are added on the widest main-route pieces, round
+by round (middles, then quarters, then eighths), Poisson-spaced against every animal and prop, never in the opening seconds, a
+rest, a room or within 400 px before a flag, never under a stump, until the goal + 2 stand before the shrine. Easy is held to
+easyMode's goal, round(0.6 x the goal) (`quota.check`, `checkStage`), and lays that + 2. The goal stays the designed number. If the
+animals don't fit, pass 5 lengthens the stage (never a re-roll), and a stage too long for the ceiling but no shorter than its
+animals allow ships long (the 2-minute floor is the rule; the ceiling is not).
 Every roll is drawn whether or not Easy keeps the piece, so the streams stay aligned. A prop reaches the engine through its
 world's **emitter** (`WorldKit.emit[propId]`): the manifest stays data, the one piece of code per world writes the extras the
 engine already plays (World 5: `proto.w5.chairs`, `cakes`, `threads`, `teapots`).
@@ -157,9 +183,16 @@ key (`LocalRoomSpec`); `placeRoom` turns them into platform ids and makes piece 
 a safe spot is taken out; an unreachable route piece gets a stepping stone in the seam before it when that seam is the failing way
 in; still failing, or a room that cannot be solved, **that one section is swapped** (banned at its slot; a section that fails at two
 slots is banned from the stage and named for its author). Only then a whole re-roll (`seed * 1009 + n * 7919`, up to 6, the old
-`LEVEL_ATTEMPTS` role). Then **the clock**: `modelStage` typical and fast must reach the target and the floor and stay under the
-ceiling; if not, each node's seconds are scaled (`aim`) and the stage is laid again. Tested end to end (the swap test builds a world
-with a broken section).
+`LEVEL_ATTEMPTS` role). Then **the clock**: `modelStage` typical and fast must reach the target and the floor, **and Easy's quick
+player on the same plan must reach the floor too** (Easy has 60% of the animals, so it runs shorter), and typical stays under the
+ceiling. The first build chooses everything; after it **the plan is kept** and each change is local, so the loop converges (it used
+to re-pick everything after a changed node and swing between two plans either side of the window): short, one section is added,
+chosen fresh, just before the shrine's node (`growPlan`); long, the last section before it is taken off (`trimPlan`: never the
+start, a room, or a section teaching what a later one uses). Once it has grown it never trims (the floors are the rule, the ceiling
+is not: it ships long, and says so); once it has trimmed, a grow would undo it, so it goes back to the last stage that met the
+floors. A swap re-chooses only its slot. A purge or gauntlet keeps back three quarters of its goal's fights from the sections'
+share (the top-up lays them later), so its first plan lands near the clock. Tested end to end (the swap test builds a world with a
+broken section; 20 rolls all land in the window with Easy's quick player over the floor).
 
 ### B6. Pass 6: dressing (`dress`)
 
@@ -188,14 +221,16 @@ Breadcrumbs: the petal rows and arcs; phase 2 runs the shared post-passes the ol
 
 `tools/gen2/curate.ts` (phase 2): for each stage, build 300-500 rolls on Normal and Easy, drop any that fails levelCheck or the
 clock, score the rest with the inspector (dead time, rests, bots' hotspots, peak stress) and the first-timer bot, then pick 12-16
-greedily for **quality first, then the most different from those already picked** (era.ts's 1 - cosine), so the shipped set's
-diversity is at least 0.35. It also rejects a set whose rolls share too many sections with the neighbouring stages' sets (C4 across
+greedily for **quality first, then the most different from those already picked** (era.ts's 1 - cosine): **16 per stage** (Matt,
+2026-10-28), with the shipped set's diversity at least 0.35. A change to passes 1-4 that moves what a seed builds means curating
+again (the sub-block commit kept every section without sub-blocks laid exactly as before, but changed which sockets pass 4 fills
+for a seed, so Easy and Normal fill alike: seeds curated before it must be curated again). It also rejects a set whose rolls share too many sections with the neighbouring stages' sets (C4 across
 stages). The picks go to `gen2/seeds.ts`: `GEN2_SEEDS['5-7'] = [ ... ]`; at play the layout variant chooses among them
 (`variant % n`): a retry keeps the roll, a fresh entry changes it, every shipped roll is verified.
 
 ### B9. A world's building blocks (authoring)
 
-About **28-35 sections per world**, each with **3-5 sockets**, many with 1-2 **sub-blocks** of 2-3 versions, half of them mirrorable.
+About **30 sections per world** (Matt, 2026-10-28), each with **3-5 sockets**, many with 1-2 **sub-blocks** of 2-3 versions, half of them mirrorable.
 Spread: about 6 start/rest, 8 Ki (each mechanic shown safely), 10 Sho/Ten, 5 Ketsu (combinations), 2-3 puzzle rooms, plus the
 stage-specific ones (5-9's arena gates). Each section is 3-8 seconds of play (600-1500 px). Rules for authors: a section starts and
 ends on its ports, never relies on a crumbling piece, keeps rises under the Normal rise limit (the pipeline clamps Easy), keeps its
@@ -207,31 +242,31 @@ with its state frames, 2-3 decor sets per job, and the backdrops through the day
 
 ### B10. Phased build plan, with parallel pieces
 
-**Phase 2: World 5's 5-7, 5-8, 5-9** (each piece its own files; interfaces are `types.ts`):
+**Phase 2: World 5's 5-7 and 5-9** (5-8 stays hand-built; each piece its own files; interfaces are `types.ts`):
 
 | Piece | Files | Needs |
 |---|---|---|
 | A. W5 manifest + emitters | `gen2/worlds/w5.ts` (creatures: spider, Butler; props: chair, cake, teapot, thread, sheet, orchid; pairs; decor sets from `w5Stages.ts`' garden) | types.ts |
 | B. W5 sections, ground and stealth (5-7) | `gen2/worlds/w5Sections.ts` (about 20: garden runs, stumps, high roads, threads, cakes, Butler, chairs, silk sheets) | A's prop ids |
-| C. Vertical flow for 5-8 | `pipeline.ts` `flow: 'up'` (architect) + `gen2/worlds/w5Climb.ts` (bloom-tree climb sections) | types.ts |
+| C. Vertical flow for 5-8 | **deferred** (Matt, 2026-10-28: 5-8 stays hand-built); built when a later world's climb needs it | - |
 | D. 5-9 arena + puzzle rooms | `gen2/worlds/w5Arena.ts` (arena gates, the 2 puzzle-room sections from the kit) | A |
-| E. Sub-blocks in layLocal | `pipeline.ts` (architect) | none |
+| E. Sub-blocks in layLocal, and Easy's water rule | `pipeline.ts`, `types.ts` (architect): **built** 2026-10-28 | none |
 | F. Curation tool | `tools/gen2/curate.ts`, `gen2/seeds.ts` | era.ts, the inspector |
 | G. Hook-up (lead, last) | one line in `stageGenerator.generateStage` (`if (GEN2[config.id]) return buildGen2Stage(...)`), `easyMode.easyStage` skipping stones and the animal cut for gen2 stages (it already gives hearts and the goal), the old 5-7..5-9 code deleted (new replaces old) | all |
 
-A, C, E and F start at once; B and D after A's ids (an hour). Nothing reaches `main` until G passes the §5 checks on several rolls.
+A+B, D and F run in parallel (cloud builders, branches `gen2-w5`, `gen2-w5-arena`, `gen2-curate`); E is done. Nothing reaches
+`main` until G passes the §5 checks on several rolls.
 
 **Phase 3: World 6** (the mangrove: swing-heavy, water pits): `gen2/worlds/w6*.ts`; pieces for lianas and roots as sockets/pieces
-(`PieceShape` gains `liana`), water pits (Normal: a life; Easy: soft), tide zones as props. Then Worlds 7-10 the same way, one
+(`PieceShape` gains `liana`), water pits (a life on Normal and on Easy, warned first on Easy), tide zones as props. Then Worlds 7-10 the same way, one
 world per helper team.
 
 ---
 
-## Part C. Decisions for Matt
+## Part C. Matt's decisions (answered 2026-10-28)
 
-1. **How many shipped rolls per stage**: 12 (every one hand-checked by screenshot) or 40 (more variety, spot-checked)? Proposed: 16.
-2. **Easy's falls**: every gap on Easy lands in a soft pit (never a life), as Gemini proposes. Keep, or let Easy keep water in the
-   worlds where water is the point (World 6)?
-3. **Section count**: about 30 sections per world is about two days of building and screenshots per world. Fewer means rolls repeat
-   sooner. Proposed: 30.
-4. **5-8 Up the Bloom Trees** is a climb: build it on gen2's new upward flow (phase 2, piece C), or keep it hand-built like 5-1..5-5?
+1. **Shipped rolls per stage**: 16 (B8).
+2. **Easy's falls**: soft on land; water still costs a life on Easy, with a clear warning before it (B1; `planBudget`, `fillSockets`,
+   tested). Dot's line, Matt's words: "Careful, water! Flick up and over." (`WATER_LINE`). The sign at the water's edge is on the art list; until then nothing draws it (gen2 only lays its spot, `proto.gen2.waterWarnings`; the hook-up draws a placeholder).
+3. **Sections per world**: about 30 (B9).
+4. **5-8 Up the Bloom Trees**: stays hand-built; the upward flow (piece C) is deferred (B2, B10).

@@ -168,8 +168,37 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   a bubble goes beside the speaker; check upright screenshots with the bubble up.
 - **Lines that queue fall behind**: a 4 s reading floor let story lines pile up until they described a room she had left. A line
   that is stale (she has walked on ~500 px) is dropped, not queued.
+- **The inspector's quick route walks through things standing on a bank** (2026-10-28, World 1's variety pass): a rock or stump drawn as
+  a block on top of one long bank is not in the quick route's way, so its hop never counts, and a stage read as quiet where it is busy
+  (1-1's opening, 1-9's ring). World 1's rocks and stumps now stand down into the ground with the bank broken around them (logHop,
+  lowStumps). And soft pits read as two hops (a drop in, a hop out), never a jump; ropes the same before Shimmy Rope. Variety (era's
+  action 3-grams) only moves when the letters change: bounces up walls, branches 240 up (no floor within 200: a jump), climbs that are
+  the only way on, snakes, the eagle. Rearranging hops among hops changes nothing it can see.
+- **Variety one section at a time doesn't show** (World 2, 2026-10-28): three versions of each section, each picked on its own, still
+  read 0.83-0.95 alike on the 200-roll tool, because it compares the mix of things to do (action 3-grams) and every water crossing
+  reads the same (logs, pads, stones: a river and hops). What works: one version (a flavour) that carries through the whole stage, four
+  of them, differing in the heavy beats (animals, climbs and swings, puzzles), not only in the kind of crossing. Measure with
+  `tools/inspect/era.ts` while authoring, not after.
 - **One length number lies**: the time model and a real-engine bot disagree by about a minute on Meeca's stage (model 5:09-5:17,
   bot 4:16-4:25; the bot never hesitates). Give both, and say which one the target is on.
+- **What the 200-roll tool can't see** (World 4 variety pass, 2026-10-28): its route walks straight along a floor past a rock lying on
+  it (only a separate floor piece, a dip or a step, makes a beat), and a falling rock that lands below the path (4-7's) is never met.
+  So a glide stage is all J and V to it, and 4-7 stays 99.8% alike however its sections roll. Variety the tool counts needs versions
+  with different kinds of action (vines, waits, puzzles, foes), not the same jumps in another order; a roll-wide "ground" theme (hops
+  or second-jump leaps between pieces) moved World 4 more than any single section did.
+- **The first-timer drowns where the inspector's bots never miss** (World 3's variety pass, 2026-10-28): real gaps over water at half a
+  jump's reach, a stone a little lower and close by, a second-jump gap, and every liana chain over water cost the first-timer 2-12 lives a
+  minute, while the noisy route bots cleared the same jumps 98% of the time. It plays short flicks, never a run-up, and tries the second
+  jump only where the first has failed (a death over water). Over water: gaps a third of a jump, never a lower stone, no second-jump gaps
+  (put those over soft moss), one liana chain a stage outside the vine stages; and measure the band with `--firsttimer`, not the bots.
+- **A gap in the dark over water is a blind jump**: before the glowworms wake the gap cannot be seen. Gaps in a dark zone keep soft moss
+  below (the first-timer drowned six times running in one).
+- **Variety is a different mix of actions, not a different order.** The 200-roll tool scores rolls by their bag of action 3-grams: two
+  versions of a section that use the same moves (hops and the dark, in another order) read 90-95% alike. A version has to lean on a move
+  the others don't (lianas or roots, real jumps, prowlers, the eyes), and the roll's sections should lean the same way (a theme), or the
+  stage still reads ~0.7 alike. A fixed piece in every roll (a climax, a teaching room) pulls the rolls back together.
+- **A climb detour is invisible**: a tree to climb up and back down beside the path was walked past by the quick route (quiet stretches,
+  short stages). Climbing counts only where the way on goes up it (a root up a wall too high to jump, `rootClimb`).
 
 ## 7. Where things are
 

@@ -44,6 +44,9 @@ import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { dressStage } from './artDress.ts';
+import { w1Chase, w1Kapok, w1Section, type Slot, type W1Kit, type W1Stage } from './w1Sections.ts';
+import { W4Roll } from './w4Sections.ts';
+import { buildSinkhole, w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
@@ -291,7 +294,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
 
 function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): GeneratedStage & { proto: ProtoExtras } {
   if (plan === '1-4') return buildKapok(config, seed);
-  if (plan === '3-4') return buildKapok(config, seed, false, true);
+  if (plan === '3-4') return buildSinkhole(config, seed);
   if (plan === '4-1') return buildKapok(config, seed, false, false, true);
   if (plan === '4-3') return buildWaterfallSteps(config, seed);
   if (plan === '4-6') return buildKapok(config, seed, false, false, false, true);
@@ -756,7 +759,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       branch(x + gap, x + gap + 120, gy);
       goldenSeed(x + gap + 60, gy - 34);
       hint(x - 120, 'Something shiny, far away...');
-      x += gap + 120 + 420;
+      const end = x + gap + 120 + 420;
+      // (World 1: the floor on under the far ledge holds dips of moss to jump, as glideLookout's does: it was a 6-9 s empty walk, the
+      // stage inspector, 2026-10-28; never a rock, from whose top a double jump would reach the ledge the glide is for)
+      if (w1Rocks) while (end - x > 420) { run(R.r(180, 260)); dip(); }
+      x = Math.max(x, end);
     } else x += R.r(200, 300);
     // the forest floor under the whole road is one long safe bank (the bank before carries on under it)
     run(R.r(120, 200));
@@ -959,13 +966,21 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   // walk and never only petals on flat ground, with a short plain rest after each burst. Gentle: nothing taller than one easy hop.
   /** World 4's rocks are its painted mossy rock (art 'rock', sized to the rock: protoArt drawRockArt), not the kit's thin ledge */
   const w4Rocks = config.worldIndex === 4;
+  const w1Rocks = config.worldIndex === 1;
   /** a mossy rock lying across the path, one easy hop high, a petal on top */
   function logHop(h = R.i(34, 46)) {
     const w = Math.round(w4Rocks ? R.r(84, 96) : R.r(120, 170));
+    // (World 1, 2026-10-28: the rock stands down into the ground, the bank broken around it, as 1-1's stumps: on one bank under it the
+    // stage inspector's quick route walked straight through it and counted the hop as a quiet walk)
+    // (never at the very edge of a dip just crossed: the rock would stand on the dip's way out, too high a hop from its step)
+    if (w1Rocks && x - bankFrom < 60) run(60);
+    if (w1Rocks) close();
     const rk = block(x, x + w, h);
+    if (w1Rocks) rk.height = h + BANK_H;
     if (w4Rocks) rk.art = 'rock';
     flower(x + w / 2, G - h - 34, 'orchid');
     run(w);
+    if (w1Rocks) open(x);
     expert += w / RUN + 0.15;
   }
   /** a little dip of soft moss to jump (a miss is a hop back out, never a life) */
@@ -1015,12 +1030,18 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     for (let k = 0; k < n; k++) {
       h = k === 0 ? R.i(40, 50) : Math.max(36, Math.min(90, h + R.pick([40, 50, -30] as const)));
       const w = Math.round(R.r(130, 170));
-      block(x, x + w, h);
+      // (each stump stands down into the ground, the bank broken around it: on one long bank under them the stage inspector's quick
+      // route walked straight through them, and read World 1's openings as five quiet seconds, 2026-10-28)
+      close();
+      block(x, x + w, h).height = h + BANK_H;
       flower(x + w / 2, G - h - 34, 'orchid');
       const g = Math.round(R.r(70, 105));
-      run(w + (k < n - 1 ? g : 0));
+      run(w);
+      open(x);
+      run(k < n - 1 ? g : 0);
     }
-    run(R.r(40, 70));
+    // (far enough on that a flag after them stands on the ground, not on the last stump)
+    run(R.r(100, 130));
     expert += (x - x0) / 240;
     pieces.push({ k: 'stumps', x0, x1: x });
   }
@@ -1068,6 +1089,138 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     expert += 4.2;
   }
 
+  // ----- World 1's section versions (w1Sections.ts, the variety pass 2026-10-28): the pieces above and below, handed to the versions
+  /** soft gaps of these widths, a run of ground after each (`arcs`: petals over each, where the jump goes) */
+  function gapRun(widths: number[], after: [number, number], arcs = false) {
+    const x0 = x;
+    widths.forEach((w, i) => {
+      run(i ? R.r(after[0], after[1]) : R.r(100, 140));
+      const edge = x;
+      close();
+      const far = Math.round(edge + w);
+      softPit(edge, far);
+      if (arcs) arc(edge - 40, far + 40, G - 150, 3, 'hibiscus');
+      else flower(edge + w / 2, G - 150, 'hibiscus');
+      open(far);
+    });
+    expert += (x - x0) / RUN + 0.4 * widths.length;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+  /** somewhere safe to try the second jump first, right after its tip: a shelf over flat ground that only the second jump reaches */
+  function practiceShelf() {
+    const sx = x + PRACTICE_AT;
+    branch(sx, sx + 160, G - PRACTICE_H);
+    row(sx + 40, sx + 120, G - PRACTICE_H - 34, 2, 'hibiscus');
+    run(PRACTICE_AT + 160 + 140);
+    expert += (PRACTICE_AT + 300) / RUN;
+  }
+  /**
+   * a wall too tall to jump, even twice, with a mushroom at its foot: bounce up onto it, run along its top (petals), drop off the far end.
+   * A miss is a bounce again; the face reaches the ground (nothing to walk under). `first` teaches the bounce before it is needed.
+   */
+  function bounceWall(first = false, rock = true) {
+    const x0 = x;
+    run(R.r(150, 210));
+    if (first) once('bounceWall', () => hint(x - 120, 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high'));
+    P.push({ id: pid++, x: Math.round(x), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+    run(70 + R.r(50, 70));
+    const h = R.i(225, 240);
+    close();
+    const top = cliff(x, x + (rock ? R.r(330, 400) : R.r(240, 290)), h);
+    row(top.x + 50, top.x + 110, top.y - 34, 2, 'hibiscus');
+    // (a mossy rock to hop on its top: the run along it is not an empty walk; a short top needs none)
+    if (rock) topRock(top, 0.62);
+    open(top.x + top.width);
+    // (where he comes down, a dip to jump as he lands: no empty walk to the next thing)
+    run(R.r(70, 100));
+    dip();
+    run(R.r(90, 130));
+    expert += (x - x0) / RUN + 0.6;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+  /**
+   * the high branches: a mushroom up to a run of branches 240 over the ground, short hops between them (a miss drops him onto the
+   * ground below, a walk back to the mushroom), and the run ends on the top of a wall that only the branches reach. `dbl`: the gaps
+   * want the second jump (across, never up)
+   */
+  function highLeaps(n: number, dbl = false, first = false, snakes = false) {
+    const x0 = x;
+    run(R.r(150, 210));
+    if (first) once('bounceWall', () => hint(x - 120, 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high'));
+    P.push({ id: pid++, x: Math.round(x), y: G - 30, width: 70, height: 30, type: 'bouncy' });
+    const y = G - R.i(236, 246);
+    let bx = x + 40;
+    const one = reachJump(0, false), two = reachJump(0, true);
+    for (let k = 0; k < n; k++) {
+      // (`snakes`, 1-3 on: a snake on every second branch, which is wider for it: punch it or hop it, a miss is a drop to the ground)
+      const guard = snakes && k % 2 === 1;
+      const w = Math.round(guard ? R.r(260, 300) : R.r(170, 230));
+      branch(bx, bx + w, y);
+      if (guard) snake(bx + w / 2, y, w - 100);
+      else row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
+      bx += w + Math.round(dbl ? two * R.r(0.6, 0.7) : one * R.r(0.4, 0.55));
+    }
+    // (the ground runs on under the branches, to the wall's foot)
+    x = bx;
+    close();
+    const top = cliff(bx, bx + R.r(150, 190), G - y);
+    flower(top.x + top.width / 2, top.y - 34, 'orchid');
+    open(top.x + top.width);
+    // (far enough on that a flag after it stands on the ground, not on the wall's top)
+    run(R.r(100, 130));
+    expert += (x - x0) / RUN + 0.6 + n * (dbl ? 0.2 : 0.1) + (snakes ? 0.8 * Math.floor(n / 2) : 0);
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+  /**
+   * a wall of earth too tall to jump, and a trunk beside it: climb up to the branch at its top and across onto the high ground, then down
+   * off its far end onto a dip (1-9's trunkGuard without its guard; the climb is taught in 1-4)
+   */
+  function climbWall() {
+    const x0 = x;
+    run(R.r(220, 280));
+    const tX = x - 120;
+    const perchY = G - 260;
+    trunk(tX, G, perchY);
+    for (let i = 0; i < 3; i++) flower(tX, G - 70 - i * 60, 'hibiscus');
+    const bEnd = tX + Math.round(R.r(250, 300));
+    branch(tX - 40, bEnd, perchY);
+    row(tX + 70, bEnd - 40, perchY - 34, 3, 'orchid');
+    const wx = bEnd + Math.round(R.r(90, 120));
+    const ww = Math.round(R.r(300, 380));
+    block(wx, wx + ww, 230);
+    row(wx + 50, wx + ww - 50, G - 264, 4, 'orchid');
+    x = wx + ww + R.r(90, 120);
+    dip();
+    run(R.r(160, 220));
+    expert += (x - x0) / RUN + (G - perchY) / CLIMB + 1;
+    pieces.push({ k: 'kapok', x0, x1: x });
+  }
+  const w1: W1Kit = {
+    climbWall: () => climbWall(),
+    bounceWall: (f, r) => bounceWall(f, r), highLeaps: (n, d, f, sn) => highLeaps(n, d, f, sn),
+    R, G, EXPERT: EXPERT_SECONDS,
+    get x() { return x; },
+    get expert() { return expert; },
+    hint: (hx, text, pad, keys) => hint(hx, text, pad ?? text, keys ?? pad ?? text),
+    flag: () => flag(), run: (n) => run(n), rest: (n) => rest(n),
+    logHop: (h) => logHop(h), dip: (s) => dip(s), leap: (s) => leap(s), busy: (n, kinds, r) => busy(n, kinds, r),
+    lowStumps: () => lowStumps(), stumps: () => stumps(), pillars: (h, s, d, p) => pillars(h, s, d, p),
+    gapRun: (w, a, arcs) => gapRun(w, a, arcs), practiceShelf: () => practiceShelf(),
+    reachOne: reachJump(0, false), reachTwo: reachJump(0, true),
+    mushroomCache: () => mushroomCache(), highRoadOver: () => highRoadOver(), homeRun: (kinds) => homeRun(kinds),
+    trailUp: (n) => trailUp(n), petalClimb: () => petalClimb(), petalPerch: () => petalPerch(), splitTrail: () => splitTrail(),
+    dipArc: () => dipArc(), doubleArcs: (t) => doubleArcs(t),
+    snakeBranches: (n, y) => snakeBranches(n, y), ropeGap: (g, b, t) => ropeGap(g, b, t), snakeWalk: (m) => snakeWalk(m), snakeLedge: () => snakeLedge(),
+    climbTree: (t) => climbTree(t), fernTree: () => fernTree(), glideLookout: () => glideLookout(), creakRun: () => creakRun(),
+    chain: (n, soft, rocks) => chain(n, soft, soft ? 'hollow' : 'gorge', rocks), kapok: () => kapok(), canopy: (g) => canopy(g), highRun: () => highRun(),
+    logPuzzle: (b) => logPuzzle(b), seesawRoom: (d) => seesawRoom(d), seesawTwist: () => seesawTwist(),
+    bushRow: (n, g, kinds, calm, rocks) => bushRow(n, g, kinds, calm, rocks), secretBush: (c) => secretBush(c), ropeBushes: (c) => ropeBushes(c), acornMeadow: (c) => acornMeadow(c),
+    guardBranch: (l) => guardBranch(l), ropeGuard: () => ropeGuard(), trunkGuard: () => trunkGuard(), sleepingGuard: () => sleepingGuard(), snakeRing: () => snakeRing(),
+  };
+  const w1Stage = (plan === 'proto' ? '1-6' : plan) as W1Stage;
+  /** this roll's version of one of the stage's sections (w1Sections.ts) */
+  const section = (slot: Slot) => w1Section(w1, w1Stage, slot, seed);
+
   if (plan === '1-1') {
     // 1-1 Into the Canopy: run and jump. Taught over soft moss, tested on stepping stones at three heights, and twisted at the end
     // into gaps only the second jump crosses. The touch coach teaches the gestures at the start (engine.ts), so the hints come later.
@@ -1090,54 +1243,23 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flag();
     });
     beat('Test: the stepping stones', () => {
-      // (the second jump is not taught yet: every stone is one plain jump up, and every gap between them a hop deep: `plain`)
       hint(x + 60, 'Hop from stone to stone', 'Hop from stone to stone', 'Hop from stone to stone');
       // (the stones climb 60 at most from one to the next, and the first stands 60 up: the kid bot missed 80 and more, 2026-10-28)
-      pillars([60, 110, 60], [0.5, 0.62], false, true);
-      busy(R.i(1, 2));
-      pillars(R.pick([[40, 80, 110, 70], [50, 100, 70, 40], [40, 90, 60, 100]]), [0.55, 0.68], false, true);
-      mushroomCache();
+      section('develop');
+      // (a dip before the twist's tip: the walk past its practice shelf follows)
+      run(R.r(60, 90));
       dip();
-      pillars([60, 30, 90, 60], [0.58, 0.7], false, true);
+      run(R.r(120, 160));
       flag();
     });
     beat('Twist: the second jump', () => {
       hint(x + 60, 'Flick up again in the air to jump twice', 'Press Jump again in the air', 'Press Space again in the air');
-      // somewhere safe to try it first, right after the tip: a shelf over flat ground that only the second jump reaches (a miss just
-      // lands him back on the path), before the gaps that need it (no dice here, so the rest of the roll is unchanged)
-      const sx = x + PRACTICE_AT;
-      branch(sx, sx + 160, G - PRACTICE_H);
-      row(sx + 40, sx + 120, G - PRACTICE_H - 34, 2, 'hibiscus');
-      run(PRACTICE_AT + 160 + 140);
-      expert += (PRACTICE_AT + 300) / RUN;
-      const two = reachJump(0, true);
-      [two * 0.62, two * 0.72, two * 0.82].forEach((w, i) => {
-        // (the first gap close after the practice shelf)
-        run(i ? R.r(220, 300) : R.r(100, 140));
-        const edge = x;
-        close();
-        const far = Math.round(edge + w);
-        softPit(edge, far);
-        flower(edge + w / 2, G - 150, 'hibiscus');
-        open(far);
-      });
-      run(R.r(200, 260));
-      // (the second jump across, never up: level stones far apart)
-      pillars([60, 70, 50], [0.6, 0.72], true, true);
+      section('twist');
       flag();
     });
     beat('Finish', () => {
-      // more of the same, rolled, until even a quick player needs two minutes
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 24) {
-        const k = n % 3;
-        if (k === 0) pillars(R.pick([[50, 80, 60, 70], [60, 70, 50, 80], [50, 60, 80, 60]]), [0.55, 0.7], n > 2, true);
-        else if (k === 1) highRoadOver();
-        // (the second jump, practised: a wide gap or two of soft moss)
-        else { busy(R.i(1, 2), ['leap', 'leap', 'log']); lowStumps(); }
-        n++;
-        if (n % 3 === 0) flag();
-      }
+      // more of the second jump and the stones, in this roll's rhythm, until even a quick player needs two minutes
+      section('finish');
       homeRun();
     });
   }
@@ -1307,32 +1429,24 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         open(far);
       }
       run(R.r(160, 220));
-      lowStumps();
+      // (then the petals up the stumps, or up a mushroom, in this roll's rhythm)
+      section('start');
       flag();
     });
     beat('Test: up to the branches', () => {
       hint(x + 60, 'The petals go up', 'The petals go up', 'The petals go up');
-      trailUp(false);
-      petalClimb();
-      trailUp(true);
+      // (every version climbs the stairs to the hidden shelf with World 1's note: w1Sections.ts)
+      section('develop');
       flag();
     });
     beat('Twist: high and low', () => {
       hint(x + 60, 'Stay on the petals, high or low', 'Stay on the petals, high or low', 'Stay on the petals, high or low');
-      splitTrail();
+      section('twist');
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 24) {
-        const k = n % 3;
-        // (the trail's own beat: up a mushroom to the petals and down again, where 1-1 hops along stones)
-        if (k === 1) splitTrail();
-        else if (k === 0) petalClimb();
-        else petalPerch();
-        n++;
-        if (n % 3 === 0) flag();
-      }
+      // (the trail's own beat, in this roll's rhythm: up a mushroom to the petals and down again, or up the stairs and along)
+      section('finish');
       homeRun(['dip']);
     });
     thinFinish(PETAL_GOAL_12);
@@ -1411,6 +1525,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (Rebuilt 2026-10-28: the walks between the snakes hold rocks to hop and dips, the stumps stay low, no tall double jumps.)
     beat('Learn: the sleeping snake', () => {
       rest(R.r(420, 470));
+      // (stumps and a rock before the first snake: the first-timer bot walked into it 2.5 s in, before Dot's tip, on every roll; nothing
+      // can hurt in the first five seconds, 2026-10-28)
+      lowStumps();
+      busy(1, ['log'], R.r(200, 240));
       const wx = x + 120;
       branch(wx, wx + 420, G - 90);
       snake(wx + 260, G - 90, 60, true);
@@ -1418,34 +1536,22 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hint(wx - 80, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
       run(R.r(600, 640));
       expert += 3;
-      snakeWalk(2);
+      // (then two more snakes, awake now, in this roll's rhythm: w1Sections.ts)
+      section('start');
       flag();
     });
     beat('Test: snakes on the branches', () => {
       hint(x + 60, 'Punch the snakes or hop over them', 'Punch the snakes or hop over them', 'Punch the snakes or hop over them');
-      snakeBranches(3, G - 130);
-      busy(1);
-      lowStumps();
-      snakeBranches(4, G - 150);
+      section('develop');
       flag();
     });
     beat('Twist: the rope guard', () => {
       hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
-      ropeGap(true, false, true);
-      snakeWalk(1);
-      ropeGap(true, true, true);
+      section('twist');
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 24) {
-        const k = n % 3;
-        if (k === 0) snakeBranches(R.i(3, 4), G - Math.round(R.r(120, 160)));
-        else if (k === 1) { busy(1); snakeWalk(2); }
-        else { lowStumps(); busy(1, ['dip']); }
-        n++;
-        if (n % 3 === 0) flag();
-      }
+      section('finish');
       // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
       ropeGap(false, true, true);
       homeRun();
@@ -1574,31 +1680,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Test: a move for every group', () => {
       hint(x + 40, 'Every group of petals needs a different move', 'Every group of petals needs a different move', 'Every group of petals needs a different move');
-      mixed(
-        () => { logHop(); fernTree(); dipArc(); },
-        () => ropeGap(false, true, true),
-        () => doubleArcs(true),
-        () => { dipArc(); mushroomCache(); },
-        () => snakeLedge(),
-      );
+      // (every version climbs the tree with the keepsake in its fern: w1Sections.ts)
+      section('develop');
       flag();
     });
     beat('Twist: creaking branches', () => {
       hint(x + 60, 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving');
-      creakRun();
-      busy(1);
-      creakRun();
-      dipArc();
+      section('twist');
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      const pieceList = [() => ropeGap(false, true, true), () => { creakRun(); dipArc(); }, () => { logHop(); climbTree(true); dipArc(); }, () => snakeLedge(), () => doubleArcs(true)];
-      while (expert < EXPERT_SECONDS - 22 && n < 24) {
-        pieceList[n % pieceList.length]();
-        n++;
-        if (n % 3 === 0) flag();
-      }
+      section('finish');
       glideLookout();
       homeRun();
     });
@@ -1765,10 +1857,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Test: farther apart', () => {
       hint(x + 40, 'Run when it has gone by', 'Run when it has gone by', 'Run when it has gone by');
-      bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [6.5, 8], true);
-      secretBush([6.5, 8]);
-      lowStumps();
-      bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [6, 7.5], true);
+      // (every version keeps the secret bush: w1Sections.ts)
+      section('develop');
       flag();
     });
     beat('Twist: the rope line', () => {
@@ -1779,14 +1869,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     beat('Finish: the acorn meadow', () => {
       acornMeadow([4.6, 5.4]);
       flag();
-      let n = 0;
       // (a quick player who waits out the passes in the bushes: 1-7 runs long, three minutes, and the meadow is part of it)
-      while (expert < EXPERT_SECONDS + 62 && n < 12) {
-        if (n % 2 === 0) bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [6, 7.5], true);
-        else ropeBushes([6, 7]);
-        n++;
-        flag();
-      }
+      section('finish');
       homeRun(['log']);
     });
   }
@@ -1888,6 +1972,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const Rb = branch(r0 + W - 400, r0 + W - 140, ly);
     const Tp = branch(r0 + W / 2 - 160, r0 + W / 2 + 160, ty);
     row(Tp.x + 50, Tp.x + Tp.width - 50, ty - 34, 3, 'hibiscus');
+    // (two mossy rocks on the clearing's floor, a petal on each, clear of where the snakes drop and of the branches: something to hop on
+    // the way in and on the way to the wall, where the stage inspector found 4.5-5.5 s of plain walking in the ring on every roll,
+    // 2026-10-28; and one more past the wall)
+    // (each stands down into the ground, the bank broken around it, as World 1's other rocks: logHop)
+    for (const rx of [Math.round(r0 + 20), Math.round(r0 + W - 125)]) {
+      x = rx;
+      close();
+      block(rx, rx + 110, 40).height = 40 + BANK_H;
+      flower(rx + 55, G - 74, 'orchid');
+      open(rx + 110);
+    }
     const wall = block(r0 + W, r0 + W + 120, 330);
     const mid = (p: Platform) => p.x + p.width / 2;
     RING = {
@@ -1898,7 +1993,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       ],
     };
     x = r0 + W + 120;
-    run(R.r(260, 340));
+    if (w1Rocks) {
+      run(R.r(110, 140));
+      logHop();
+      run(R.r(120, 160));
+    } else run(R.r(260, 340));
     expert += (x - x0) / RUN + 16;
     pieces.push({ k: 'snakes', x0, x1: x });
   }
@@ -1921,30 +2020,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flag();
     });
     beat('Test: guards along the way', () => {
-      ropeGuard();
-      trunkGuard();
-      flag();
-      sleepingGuard();
-      snakeWalk(1);
-      guardBranch(true);
+      // (every version keeps the sleeping guard and its seed: w1Sections.ts)
+      section('develop');
       flag();
     });
     beat('Twist: the ring', () => {
       hint(x + 60, 'Snakes from above! Clear them all to open the way', 'Snakes from above! Clear them all to open the way', 'Snakes from above! Clear them all to open the way');
-      snakeRing();
-      dip();
+      section('twist');
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 12) {
-        const k = n % 3;
-        if (k === 0) guardBranch(true);
-        else if (k === 1) { busy(1); snakeWalk(2); }
-        else trunkGuard();
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      section('finish');
       homeRun();
     });
   }
@@ -2164,11 +2250,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     flag();
   });
   beat('Develop: the gorge and the tall kapok', () => {
-    chain(R.i(2, 3), false, 'gorge');
-    mixed(() => snakeWalk(1), () => busy(1));
-    flag();
-    kapok();
-    chain(3, false, 'gorge');
+    // (the gorge and the kapok in this roll's order and rhythm: w1Sections.ts)
+    section('develop');
     flag();
   });
   beat('Puzzle: the fallen log', () => {
@@ -2180,9 +2263,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     flag();
   });
   beat('Twist: the canopy road', () => {
-    canopy(true);
-    flag();
-    highRun();
+    section('twist');
     flag();
   });
   beat('Develop again: higher and wider', () => {
@@ -2194,24 +2275,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     flag();
     chain(R.i(3, 4), false, 'gorge');
     flag();
-    // then more of the world's pieces, rolled from the kit, until even a quick, sure player needs the stage's minimum time
+    // then more of the world's pieces, in this roll's rhythm, until even a quick, sure player needs the stage's minimum time
     // (the finish adds about 10 s); a flag after every second piece
-    const kit: Array<() => void> = [
-      () => chain(R.i(3, 4), false, 'gorge'),
-      () => kapok(),
-      () => highRun(),
-      () => { stumps(); snakeWalk(1); },
-      () => canopy(false),
-    ];
-    let last = -1, count = 0;
-    while (expert < EXPERT_SECONDS - 10 && count < 16) {
-      let k = R.i(0, kit.length - 1);
-      if (k === last) k = (k + 1) % kit.length;
-      last = k;
-      kit[k]();
-      if (++count % 2 === 0) flag();
-      busy(1);
-    }
+    section('finish');
   });
   beat('Finish: the long swing home', () => {
     busy(1);
@@ -2253,16 +2319,20 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     expert += 2.5;
   }
   /** a gap with a cloud on both sides of it: jump it while the air is clear */
-  function sporeGap() {
+  function sporeGap(deep = false) {
     const x0 = x;
-    run(R.r(300, 360));
+    // (over the stream the way up to it and away from it is shorter: the 300 px walks either side read as quiet stretches)
+    run(deep ? R.r(220, 260) : R.r(300, 360));
     const edge = x;
     close();
-    const far = Math.round(edge + reachJump(0, false) * R.r(0.55, 0.68));
-    softPit(edge, far);
-    arc(edge - 30, far + 30, G - 110, 4);
+    // (`deep`, 2026-10-28: over the stream, no moss below: a miss costs a life, so the gap stays well inside a jump)
+    const far = Math.round(edge + reachJump(0, false) * (deep ? R.r(0.44, 0.54) : R.r(0.55, 0.68)));
+    if (!deep) softPit(edge, far);
+    else deepTip(edge);
+    arc(edge - 30, far + 30, G - 110, deep ? 3 : 4);
     open(far);
-    run(R.r(300, 360));
+    // (a flag may follow: it stands 80 short of the end, clear of the cloud's far edge)
+    run(deep ? R.r(260, 290) : R.r(300, 360));
     sporeZone(edge - 150, far + 150, [edge - 110, far + 100]);
     expert += (x - x0) / RUN + 3;
     pieces.push({ k: 'stumps', x0, x1: x });
@@ -2281,7 +2351,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       if (!opts.rocks || len < 420) return run(len);
       const s0 = x;
       // (the last stretch has no stop at its end to keep clear: a second stone on the way out of the dark)
-      for (const at of last ? [0.22, 0.62] : [0.3]) {
+      // (a long stretch gets two, 2026-10-28: one stone in 600 px of dark left 2-3 s quiet walks either side of it)
+      for (const at of last ? (len >= 700 ? [0.18, 0.48, 0.78] : [0.22, 0.62]) : len >= 600 ? [0.25, 0.6] : [0.3]) {
         run(s0 + len * at - x);
         logHop(R.i(34, 44));
         hops++;
@@ -2303,6 +2374,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       else go(seg);
       const edge = x;
       close();
+      // (the gaps in the dark always have soft moss below: before the glowworms wake he cannot see them, and a fall into the stream there
+      // would be a blind jump costing a life; the first-timer drowned in them six times running, 2026-10-28)
       const far = Math.round(edge + reachJump(0, false) * R.r(0.5, 0.66));
       softPit(edge, far);
       flower(edge + (far - edge) / 2, G - 110, 'orchid');
@@ -2377,12 +2450,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     pieces.push({ k: 'kapok', x0, x1: x });
   }
   /** limestone shelves over a soft pit with ocelots on them (punch them, or hop them) */
-  function prowlShelves(n: number, y: number) {
+  function prowlShelves(n: number, y: number, deep = false) {
     const x0 = x;
     run(R.r(160, 220));
     const edge = x;
     close();
-    let bx = edge + Math.round(reachJump(G - y, false) * R.r(0.45, 0.6));
+    // (`deep`: over the stream, lower shelves and shorter gaps: a first-timer's flick, not a full jump, 2026-10-28)
+    const sh: [number, number] = deep ? [0.32, 0.4] : [0.45, 0.6];
+    let bx = edge + Math.round(reachJump(G - y, false) * R.r(sh[0], sh[1]));
     let m = 0;
     for (let k = 0; k < n; k++) {
       const w = Math.round(R.r(240, 300));
@@ -2390,14 +2465,146 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       branch(bx, bx + w, top);
       if (k !== 0 || n < 3) { prowler('ocelot', bx + w / 2, top, w - 100); m++; }
       else row(bx + 50, bx + w - 50, top - 34, 2, 'orchid');
-      bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.55));
+      bx += w + Math.round(reachJump(0, false) * (deep ? R.r(0.32, 0.4) : R.r(0.4, 0.55)));
     }
     const far = Math.round(bx + 20);
-    softPit(edge, far);
+    // (`deep`, 2026-10-28: the shelves stand over the stream, a punch and a jump at once)
+    if (!deep) softPit(edge, far);
+    else deepTip(edge);
     open(far);
     run(R.r(320, 380));
     expert += (x - x0) / RUN + 2.2 * m;
     pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  // ----- World 3's harder ground (the variety pass, 2026-10-28: STAGE-RULES §1b, World 3 sits between World 2 and World 4) -----
+  /** the roll's picks for a World 3 stage: which version of each section, the mirror, the dressing (w3Sections.ts) */
+  const W3P = config.worldIndex === 3 ? w3Pick(plan, seed) : undefined;
+  /** the pieces of a section in the roll's order: as given, or the other way about on a mirrored roll (C8) */
+  const w3Order = (...fs: Array<() => void>) => (W3P?.mirror ? fs.reverse() : fs).forEach((f) => f());
+  /**
+   * World 3's stepping stones in a soft pit, with a one-jump way out of every gap (STAGE-RULES §2 "Plain walk"; the gap list: the
+   * first-timer was stuck 17-20 times a run in 3-1's stone pits, a 180-270 px face ahead and 130 px back). Every gap between two stones
+   * (or a stone and a bank) has its own mossy floor one easy hop under its higher side (plainPit, as 1-1's), so a miss is a hop back up.
+   */
+  function w3Stones(heights: number[], share: [number, number]) {
+    const x0 = x;
+    run(R.r(140, 200));
+    const edge = x;
+    close();
+    let px = edge, prevTop = G;
+    const stones: Platform[] = [];
+    for (const h of heights) {
+      const top = G - h;
+      px += Math.round(reachJump(prevTop - top, false) * R.r(share[0], share[1]));
+      const w = Math.round(R.r(120, 160));
+      const p: Platform = { id: pid++, x: px, y: top, width: w, height: HOLLOW_Y - top + 10, type: 'solid', style: 'moss_stone' };
+      P.push(p);
+      stones.push(p);
+      flower(px + w / 2, top - 34, 'orchid');
+      px += w;
+      prevTop = top;
+    }
+    const far = Math.round(px + reachJump(prevTop - G, false) * R.r(share[0], share[1]));
+    plainPit(edge, stones, far);
+    open(far);
+    run(R.r(160, 220));
+    expert += (x - x0) / RUN + 0.6 * heights.length;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+  /**
+   * Dot's line before the first real drop of a World 3 stage, whatever kind it is (stones over the stream, a gap in the spores, a liana
+   * chain, a vine over a gap): the first-timer drowned before it where the first drop was not a run of stones (new, needs Matt's approval)
+   */
+  const deepTip = (at: number) => once('deep', () => hint(at - 260, 'No moss down there. Jump true!'));
+  /** a stone pillar standing up out of the deep (no floor under it: the water below costs a life) */
+  const deepStone = (x0: number, w: number, top: number) => {
+    const p: Platform = { id: pid++, x: Math.round(x0), y: Math.round(top), width: Math.round(w), height: WATER + 40 - Math.round(top), type: 'solid', style: 'moss_stone' };
+    P.push(p);
+    return p;
+  };
+  /**
+   * the deep: a run of real jumps over the grotto's underground stream (no moss below: a miss costs a life). Stones stand up out of the
+   * water, some a step higher, some across a gap only the second jump crosses, each landing wide (160-210 px) and every gap well inside
+   * what the jump reaches (at most 40% of a single jump, 52% of a double: a press window well over the 167 ms floor). `n` stones; `dbl`: how many of the gaps want
+   * the second jump. Easy lays a stepping stone in each second-jump gap (easyMode.ts easyStones), so it stays a single jump there.
+   */
+  function deepRun(n: number, dbl = 1, rise = true) {
+    const x0 = x;
+    run(R.r(180, 240));
+    const edge = x;
+    close();
+    // which gaps want the second jump (never the first: the run starts with a plain one)
+    const want = new Set(R.shuffle(Array.from({ length: n }, (_, i) => i + 1)).slice(0, Math.min(dbl, n)));
+    let px = edge, prevTop = G;
+    for (let k = 0; k <= n; k++) {
+      const last = k === n;
+      // (`dbl`: where a second-jump gap was, a step up instead: the first-timer tries the second jump only where a single one has failed
+      // him, and over the stream that failure is a life; the second jump is World 3's over soft moss, as in 3-1's twist, 2026-10-28)
+      const up = !last && (want.has(k) || (rise && R.chance(0.4))) ? Math.round(R.r(30, 60)) : 0;
+      // (never a stone lower than the one before: a stone a little lower and close by was walked off rather than jumped, and the
+      // first-timer drowned ten times at one 80 px gap, 2026-10-28)
+      const top = last ? G : Math.max(G - 150, prevTop - up);
+      const two = false;
+      // (a first-timer's flick is short, so a gap over the stream is short too: a third of a full jump; the second-jump gaps half of a
+      // double jump, and the first-timer tries the second jump only where the first has failed him, 2026-10-28)
+      const gap = Math.round(reachJump(prevTop - top, two) * (two ? R.r(0.46, 0.52) : R.r(0.32, 0.4)));
+      px += Math.max(56, gap);
+      if (last) break;
+      const w = Math.round(R.r(160, 210));
+      deepStone(px, w, top);
+      flower(px + w / 2, top - 34, 'orchid');
+      // a petal arc over each second-jump gap (it shows the way across)
+      if (two) arc(px - gap + 10, px - 10, Math.min(prevTop, top) - 150, 3, 'hibiscus');
+      px += w;
+      prevTop = top;
+    }
+    open(px);
+    run(R.r(240, 300));
+    expert += (x - x0) / RUN + 0.5 * n;
+    pieces.push({ k: 'gorge', x0, x1: x });
+    deepTip(edge);
+  }
+  /**
+   * World 3's stone plate (Matt's `stonePlate` / `stonePlateDown`, wired in the kit but never seen in a stage before): a root gate across
+   * the way, a mossy stone plate in front of it, and a heap of pebbles by the door. Standing on the plate opens the roots, but stepping
+   * off to go through shuts them: a pebble set on the plate holds it down. `two` (the twist): two plates, both to be held down (a pebble
+   * each: two trips with his hands full, on a flat floor, since carrying he cannot jump). Nothing here hurts; a pebble lost rolls back to the heap.
+   */
+  function plateRoom(two: boolean) {
+    const x0 = x;
+    run(R.r(150, 190));
+    const door = x;
+    const before = endBank();
+    const span = two ? 800 : 600;
+    run(span);
+    const floor = endBank();
+    const n = ROOMS.length;
+    const parts: RoomSpec['pieces'] = [
+      { kind: 'reset', id: `post${n}`, at: onP(floor, door + 16) },
+      { kind: 'source', id: `heap${n}`, variant: 'pebble', at: onP(floor, door + 100), look: 'pile' },
+      { kind: 'item', id: `pebble${n}`, variant: 'pebble', source: `heap${n}`, for: `plateA${n}` },
+      { kind: 'plate', id: `plateA${n}`, at: onP(floor, door + 300) },
+    ];
+    const ground = [floor.id];
+    if (two) {
+      parts.push({ kind: 'item', id: `pebbleB${n}`, variant: 'pebble', source: `heap${n}`, for: `plateB${n}` });
+      parts.push({ kind: 'plate', id: `plateB${n}`, at: onP(floor, door + 580) });
+      parts.push({ kind: 'gate', id: `roots${n}`, at: onP(floor, door + 680), open: { all: [`plateA${n}`, `plateB${n}`] }, look: 'roots' });
+    } else parts.push({ kind: 'gate', id: `roots${n}`, at: onP(floor, door + 520), open: `plateA${n}`, look: 'roots' });
+    ROOMS.push({
+      id: `${two ? 'platesTwo' : 'plate'}-${n}`,
+      left: onP(before, door - 30), right: onP(floor, door + span - 10), above: 400, below: 60,
+      pieces: parts, exit: `roots${n}`, beyond: onP(floor, door + span - 30), ground,
+      tips: two
+        ? { enter: 'Two stone plates this time.', hold: 'One pebble each. Tap to set it down.' }
+        : { enter: 'Roots! That stone plate opens them. Stepping off shuts them.', hold: 'Pebbles are heavy enough. Tap to set it down.', open: 'Held open!' },
+    });
+    run(R.r(90, 130));
+    logHop(R.i(34, 44));
+    run(R.r(120, 160));
+    expert += (x - x0) / RUN + (two ? 8 : 5);
+    pieces.push({ k: 'log', x0, x1: x });
   }
 
   // ----- World 3's puzzle rooms (the shared puzzle kit, puzzleKit.ts; 2026-10-28) -----
@@ -2469,52 +2676,138 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     pieces.push({ k: 'log', x0, x1: x });
   }
 
+  /**
+   * lianas, World 3's way (the variety pass): one short chain over the stream in a stage, the first time; after that a root up a wall too
+   * high to jump (a tree to climb up and over was a detour the quick way walks past; the first-timer drowned three or four times at every liana chain over water, 2026-10-28: one is a World 3 test, more
+   * piled lives up far past World 3's band; 3-8, the vine stage, has its own chains)
+   */
+  let w3Chained = false;
+  const w3Vines = () => {
+    if (!w3Chained) {
+      w3Chained = true;
+      deepTip(x + 200);
+      chain(2, false, 'gorge');
+    } else rootClimb(3);
+  };
+  /**
+   * a wall of grotto rock too high to jump (250-300 up), and a root hanging down its face to climb (the way on goes up it, so it is not a
+   * detour); a rock to hop along its top, and down the far side with a short gap over the stream to jump as he lands. `n` walls, one after another. Nothing here costs a life.
+   */
+  function rootClimb(n: number) {
+    const x0 = x;
+    for (let k = 0; k < n; k++) {
+      run(R.r(180, 230));
+      close();
+      const h = Math.round(R.r(250, 300));
+      const w = Math.round(R.r(240, 320));
+      // (the root hangs just in front of the face, so he climbs it from the floor and steps off onto the top)
+      const top = cliff(x, x + w, h);
+      trunk(x - 34, G, G - h);
+      for (let i = 0; i < 2; i++) flower(x - 34, G - 80 - i * 70, 'hibiscus');
+      // (a rock to hop on the top, and a dip just past the foot of the far side: the climb is a burst, not a climb and a walk)
+      topRock(top, 0.55);
+      flower(top.x + 60, top.y - 34, 'orchid');
+      open(x + w);
+      run(R.r(70, 100));
+      // (a short gap over the stream past the foot: a third of a jump, the first-timer's flick clears it)
+      deepTip(x);
+      close();
+      open(x + Math.round(reachJump(0, false) * R.r(0.32, 0.38)));
+      expert += h / CLIMB + 0.8 + w / RUN + 0.3;
+    }
+    run(R.r(160, 200));
+    expert += (x - x0) / RUN;
+    pieces.push({ k: 'kapok', x0, x1: x });
+  }
+  /**
+   * the climax near the end of every World 3 stage (Gemini's sawtooth: the hardest stretch just before the walk out, STAGE-RULES §2
+   * "Tension"), whatever the roll: a run of stones over the stream, then a breath of floor. It also keeps each stage in World 3's band
+   * on every roll (a roll of only ferns and dark was World 2-easy, 2026-10-28)
+   */
+  const w3Climax = () => {
+    busy(1, ['log'], R.r(200, 240));
+    deepRun(4, 2);
+  };
+  /** World 3's openings (the variety pass): every one safe (soft moss under every dip), a hop or two in the first seconds */
+  const w3Start = (v: number) => {
+    // (a little more plain floor first: the first hop came 300 px from the spawn, before he was up to speed, and the first-timer's press
+    // window there was 133 ms on Normal, under the 167 ms floor)
+    run(R.r(70, 100));
+    expert += 0.3;
+    // (wide rocks, 190-230 px: on the narrow ones the first-timer's press window to land on top was 100-133 ms on some rolls, under the
+    // 167 ms floor, 2026-10-28)
+    const wideRock = (gap: number) => {
+      run(gap);
+      const w = Math.round(R.r(190, 230)), h = R.i(34, 42);
+      block(x, x + w, h);
+      flower(x + w / 2, G - h - 34, 'orchid');
+      run(w);
+      expert += (gap + w) / RUN + 0.15;
+    };
+    const x0 = x;
+    if (v === 0) { wideRock(R.r(90, 130)); run(R.r(200, 260)); dip(); }
+    else if (v === 1) { wideRock(R.r(90, 130)); wideRock(R.r(200, 260)); }
+    else { dip(); run(R.r(200, 260)); wideRock(R.r(60, 90)); }
+    run(R.r(230, 270));
+    expert += 0.6;
+    pieces.push({ k: 'rest', x0, x1: x });
+  };
+  /** World 3's finish: pieces drawn from a shuffle bag (C1) until a quick player has had the stage's time, a flag every `every` */
+  const w3Finish = (target: number, kit: Array<() => void>, every = 2, more: () => boolean = () => false) => {
+    const next = W3P!.bag(kit);
+    let n = 0;
+    while ((expert < target || more()) && n < 24) {
+      next()();
+      n++;
+      if (n % every === 0) flag();
+    }
+  };
+
   if (plan === '3-1') {
     // 3-1 Into the Grotto: follow the glowworm light down into the grotto. Run and hop on the grotto's stones, wait out the sleepy
     // spores, and in the twist meet the dark: stand still, and the glowworms wake.
-    // (Rebuilt 2026-10-28, the stage inspector: a hop or two on the way in, stones to hop in the dark and under the spores, the high road
-    // with stones on the floor below it, and a short run home: nowhere an empty walk.)
+    // (The variety pass, 2026-10-28: two or three versions of each section, picked by the roll (w3Sections.ts); the stone pits have a
+    // one-jump way out of every gap (w3Stones); from the Develop on, real jumps over the grotto's stream (deepRun), World 3's step up
+    // from World 2.)
+    const v = W3P!;
     beat('Start: the grotto mouth', () => {
       rest(R.r(420, 480));
       W3D.push({ n: 'grottoMouth', x: x - 140, b: G + 8, w: 320 });
       hint(x - 300, 'Into the grotto!');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: the grotto stones', () => {
-      stumps();
-      busy(1);
-      pillars([60, 120, 60], [0.5, 0.62]);
+      if (v.learn === 0) w3Order(() => stumps(), () => busy(1), () => w3Stones([60, 120, 60], [0.5, 0.62]));
+      else w3Order(() => w3Stones([50, 90, 130, 80], [0.5, 0.62]), () => highRoadOver());
       busy(1);
       flag();
     });
     beat('Develop: the sleepy spores', () => {
       hint(x + 40, 'Mushrooms puff sleepy spores. Wait for them to clear');
-      sporeRest(R.r(560, 640));
-      sporeGap();
-      pillars(R.shuffle([40, 100, 140, 80]), [0.55, 0.68]);
-      sporeGap();
+      sporeRest(R.r(440, 500));
+      if (v.develop === 0) w3Order(() => sporeGap(), () => w3Stones(R.shuffle([40, 100, 140, 80]), [0.55, 0.68]), () => sporeGap(true));
+      else if (v.develop === 1) w3Order(() => deepRun(3, 1), () => sporeGap(true), () => deepRun(3, 1));
+      else w3Order(() => w3Vines(), () => sporeGap(true), () => w3Vines());
       flag();
     });
     beat('Twist: the dark', () => {
       hint(x + 60, 'Too dark to see. Stand still and listen...');
-      // (the first dark is flat, two stones in it; then the spores between; then a dark with a gap)
+      // (the first dark is flat, stones in it; what comes round it changes with the roll: spores, the stream, or vines)
       glowDark(R.r(1000, 1100), 0, { rocks: true });
-      sporeGap();
-      glowDark(R.r(1250, 1400), 1, { rocks: true });
+      if (v.twist === 0) { sporeGap(); glowDark(R.r(1250, 1400), 1, { rocks: true }); sporeGap(true); }
+      else if (v.twist === 1) { deepRun(3, 1); glowDark(R.r(1250, 1400), 2, { rocks: true }); }
+      else { w3Vines(); glowDark(R.r(1150, 1300), 1, { }); w3Vines(); }
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 4 && n < 24) {
-        const k = n % 4;
-        if (k === 0) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
-        else if (k === 1) sporeGap();
-        else if (k === 2) highRoadOver();
-        else { busy(1); stumps(); }
-        n++;
-        if (n % 3 === 0) flag();
-      }
+      // (each version leans on one thing, drawn from a shuffle bag: lianas over the stream, the spores and the dark, or the deep)
+      const kits: Array<Array<() => void>> = [
+        [() => w3Vines(), () => { w3Vines(); busy(1); }, () => highRoadOver(), () => { w3Vines(); busy(1); }],
+        [() => { sporeRest(R.r(440, 500)); sporeGap(true); }, () => glowDark(R.r(1100, 1250), 1, { rocks: true }), () => { sporeGap(true); sporeGap(); }, () => glowDark(R.r(1000, 1150), 2, { rocks: true })],
+        [() => deepRun(4, 2), () => w3Stones(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]), () => deepRun(3, 1), () => { busy(1); stumps(); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 18, kits[v.finish], 3);
       homeRun();
     });
   }
@@ -2522,19 +2815,26 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   if (plan === '3-2') {
     // 3-2 Glowworm Path: something is watching. First the dark alone (stop and listen, and the glowworms light the gaps), then the eyes
     // alone (hide in the ferns while they look), then both: stop inside a fern, where the eyes cannot see him and the glowworms can.
-    // (Rebuilt 2026-10-28, the stage inspector: stones to hop in the dark and between the ferns, and the glowing mushroom, the puzzle
-    // kit's carried light, where no glowworm reaches: taught at the end of the dark, and in the finish the ledge too high for its light
-    // from the floor.)
+    // The glowing mushroom, the puzzle kit's carried light, where no glowworm reaches: taught at the end of the dark, and in the finish the
+    // ledge too high for its light from the floor (or, on some rolls, World 3's stone plates).
+    // (The variety pass, 2026-10-28: two or three versions of each section, picked by the roll (w3Sections.ts), and real jumps over the
+    // stream in the dark and between the ferns.)
+    const v = W3P!;
     beat('Start', () => {
       rest(R.r(380, 440));
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: stop and listen', () => {
       hint(x + 20, 'Too dark to see the way. Stand still and listen...');
-      glowDark(R.r(1150, 1300), 1, { rocks: true });
-      busy(1);
-      glowDark(R.r(1600, 1800), 2, { rocks: true });
+      if (v.learn === 0) {
+        glowDark(R.r(1150, 1300), 1, { rocks: true });
+        busy(1);
+        glowDark(R.r(1600, 1800), 2, { rocks: true });
+      } else {
+        glowDark(R.r(1450, 1600), 2, { rocks: true });
+        w3Stones([50, 100, 70], [0.5, 0.6]);
+      }
       flag();
       glowRoom(false);
       flag();
@@ -2543,7 +2843,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hint(x + 20, 'Eyes in the dark! Slide down inside a fern to hide', 'Eyes in the dark! Hold down inside a fern to hide', 'Eyes in the dark! Hold down inside a fern to hide');
       bushRow(4, [420, 520], ['grotto'], [7, 8.5], true);
       flag();
-      bushRow(3, [620, 720], ['grotto'], [5, 6.2], true);
+      if (v.develop === 0) bushRow(3, [620, 720], ['grotto'], [5, 6.2], true);
+      else if (v.develop === 1) { const x0 = x; glowDark(R.r(1300, 1450), 1, { ferns: true, rocks: true }); ZONES.push({ x0, x1: x, calm: [6, 7.2] }); expert += 3; }
+      else { w3Vines(); bushRow(3, [560, 660], ['grotto'], [5.4, 6.4], true); }
       flag();
     });
     beat('Twist: the eyes in the dark', () => {
@@ -2553,25 +2855,32 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       ZONES.push({ x0, x1: x, calm: [5.5, 6.8] });
       expert += 4;
       flag();
+      // (on some rolls World 3's stone plate here, Matt's pressed plate seen at last)
+      if (v.twist === 1) { busy(1); plateRoom(false); flag(); }
+      else if (v.twist === 2) { rootClimb(2); flag(); }
     });
     beat('Finish', () => {
       busy(1);
-      glowRoom(true);
+      if (v.finish === 2 && v.twist !== 1) plateRoom(true);
+      else glowRoom(true);
       flag();
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 34 && n < 12) {
-        if (n % 2 === 0) bushRow(3, [620, 760], ['grotto'], [4.6, 5.6], true);
-        else {
-          // (a breath of plain floor between the ferns' eyes and the dark's)
-          rest(R.r(110, 150));
-          const x0 = x;
-          glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true });
-          ZONES.push({ x0, x1: x, calm: [5, 6.2] });
-          expert += 4;
-        }
-        n++;
-        flag();
-      }
+      const dark = () => {
+        // (a breath of plain floor between the ferns' eyes and the dark's)
+        rest(R.r(110, 150));
+        const x0 = x;
+        glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true });
+        ZONES.push({ x0, x1: x, calm: [5, 6.2] });
+        expert += 4;
+      };
+      // (the ferns' finish: rows a little closer, the eyes quicker)
+      const ferns = () => bushRow(3, [640, 720], ['grotto'], [4.4, 5.4], true);
+      const kits: Array<Array<() => void>> = [
+        [ferns, ferns, () => { busy(1); ferns(); }],
+        [() => deepRun(4, 1), () => { dark(); deepRun(3, 1); }, () => deepRun(5, 2)],
+        [() => { w3Vines(); rootClimb(1); }, () => w3Vines(), () => { rootClimb(1); w3Vines(); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 34, kits[v.finish], 1);
+      w3Climax();
       homeRun();
     });
   }
@@ -2580,49 +2889,56 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // 3-3 Footprints in a Circle: drive off the prowlers circling in the dark. One ocelot on open ground to learn on, then ocelots on
     // the limestone shelves, then a jaguar (three hits, and it pounces), and in the finish, prowlers in the dark by glowworm light.
     // (Rebuilt 2026-10-28, the stage inspector: stones to hop between the fights, and the shelves are 3-3's own: where 3-9 climbs the
-    // trunks to fight on the branches, here every fight but the floor's is a jump up onto a shelf over a soft pit.)
+    // trunks to fight on the branches, here every fight but the floor's is a jump up onto a shelf.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts): shelves over the stream, fights in the
+    // dark, or fights between liana chains; the first prowler's tip well before it, 3-3's Easy ocelot hit before its tip was read.)
+    const v = W3P!;
     const placed = () => E.filter((e) => e.type === 'ocelot' || e.type === 'jaguar').length;
     beat('Start', () => {
       const x0 = x;
       rest(R.r(420, 480));
       prints(x0 + 200, x - 80);
       hint(x0 + 120, 'Footprints... a prowler is near');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: a prowler', () => {
-      hint(x + 40, 'A prowler! Punch it twice, or kick it');
+      hint(x - 200, 'A prowler! Punch it twice, or kick it');
+      // (hops and stones after the tip, before the first prowler: Dot's lines come 10-12 s apart and the opening's footprints line comes
+      // first, so the first-timer met the ocelot at 7 s with the tip still queued, 2026-10-28)
+      busy(2, ['log', 'dip'], R.r(200, 240));
+      w3Stones([50, 90, 60], [0.5, 0.6]);
+      rest(R.r(160, 200));
       prowlFloor(['ocelot']);
       busy(1);
-      prowlFloor(['ocelot', 'ocelot']);
+      if (v.learn === 0) prowlFloor(['ocelot', 'ocelot']);
+      else { w3Stones([60, 110, 70], [0.5, 0.6]); prowlFloor(['ocelot', 'ocelot']); }
       flag();
     });
     beat('Develop: on the shelves', () => {
       prowlShelves(3, G - 130);
       busy(1);
-      stumps();
-      prowlShelves(4, G - 150);
+      if (v.develop === 0) { stumps(); prowlShelves(4, G - 150); }
+      else if (v.develop === 1) { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot']); }
+      else { deepRun(3, 1); prowlShelves(3, G - 150); }
       flag();
     });
     beat('Twist: the big one', () => {
       hint(x + 40, 'A jaguar! Three hits, and jump when it crouches to pounce');
       prowlFloor(['jaguar']);
-      sporeGap();
-      prowlFloor(['ocelot', 'jaguar']);
+      if (v.twist === 0) { sporeGap(true); prowlFloor(['ocelot', 'jaguar']); }
+      else if (v.twist === 1) { busy(1); prowlShelves(3, G - 140); }
+      else { sporeRest(R.r(440, 500)); sporeGap(); prowlFloor(['ocelot', 'jaguar']); }
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while ((expert < EXPERT_SECONDS + 6 || placed() < Math.ceil(PROWLER_GOAL_33 * 1.5)) && n < 16) {
-        const k = n % 3;
-        if (k === 0) prowlShelves(R.i(3, 4), G - Math.round(R.r(120, 160)));
-        else if (k === 1) {
-          // the dark between the fights: wait for the glowworms, then on
-          glowDark(R.r(1150, 1300), 1, { rocks: true });
-        } else { busy(1); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot']); }
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => prowlShelves(R.i(3, 4), G - Math.round(R.r(105, 120)), true), () => prowlShelves(3, G - 140), () => { busy(1); prowlFloor(['ocelot', 'ocelot']); }],
+        [() => { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot']); }, () => { glowDark(R.r(1000, 1100), 0, { rocks: true }); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot', 'ocelot']); }, () => { sporeRest(R.r(440, 500)); glowDark(R.r(1000, 1100), 1, { rocks: true }); }],
+        [() => { w3Vines(); prowlFloor(['ocelot', 'ocelot']); }, () => { w3Vines(); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot']); }, () => { w3Vines(); w3Vines(); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 6, kits[v.finish], 2, () => placed() < Math.ceil(PROWLER_GOAL_33 * 1.5));
+      w3Climax();
       homeRun();
     });
   }
@@ -2636,7 +2952,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * a row of thorn vines, `spacing` apart: room to stand between two of them and freeze. `pits`: every other vine hangs over a soft pit,
    * hopped while it sleeps.
    */
-  function vineRow(n: number, sleep: [number, number], spacing: [number, number], pits = false) {
+  function vineRow(n: number, sleep: [number, number], spacing: [number, number], pits = false, deep = false) {
     const x0 = x;
     const e0 = expert;
     // (2026-10-28, the stage inspector: a grotto stone to hop on the way up to the row and on the way out of it, clear of every reach)
@@ -2650,7 +2966,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         const edge = x;
         close();
         const far = edge + w;
-        softPit(edge, far);
+        // (`deep`, 2026-10-28: the gap under the vine is over the stream: wait on the bank while it looks, jump while it sleeps)
+        if (!deep) softPit(edge, far);
+        else deepTip(edge);
         thornAt((edge + far) / 2, sleep);
         open(far);
         // (the next vine is measured from this one, so the pocket between them stays as wide as the rest)
@@ -2777,21 +3095,27 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // opens an eye, freeze (or duck) until it dozes off again. World 3's keepsake, the medal, is in a Hush Fern along the way.
     // (Rebuilt 2026-10-28, the stage inspector and the puzzle kit: stones to hop between the rows, and the vine that is awake: a bell to
     // ring for it first, then pebbles to throw, then two of them at once.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts): vines over gaps in the stream, lianas,
+    // the spores; after the pebbles, two awake vines or World 3's stone plates.)
+    const v = W3P!;
     beat('Start', () => {
       rest(R.r(380, 440));
       hint(x - 300, 'Grandma said the old thorn vines were asleep...');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: one vine', () => {
       hint(x + 40, 'When a vine opens an eye, freeze! Move on when it sleeps');
       vineRow(1, [5, 6], [380, 420]);
       busy(1);
-      vineRow(2, [4.5, 5.5], [380, 440]);
+      if (v.learn === 0) vineRow(2, [4.5, 5.5], [380, 440]);
+      else { w3Stones([50, 100, 60], [0.5, 0.6]); vineRow(2, [4.5, 5.5], [380, 440]); }
       flag();
     });
     beat('Develop: a row of them', () => {
-      vineRow(4, [3.6, 4.6], [340, 420]);
+      if (v.develop === 0) vineRow(4, [3.6, 4.6], [340, 420]);
+      else if (v.develop === 1) { deepRun(3, 1); vineRow(3, [3.6, 4.6], [340, 420], true, true); }
+      else { w3Vines(); vineRow(3, [3.6, 4.6], [340, 420]); }
       flag();
       // the keepsake: the medal, in a Hush Fern on a quiet stretch
       const keep = findForStage(config.worldIndex, config.miniIndex);
@@ -2806,7 +3130,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       // one of them is awake: the bell first
       lureRoom('bell');
       flag();
-      vineRow(4, [3.6, 4.4], [360, 430], true);
+      if (v.develop === 0) vineRow(4, [3.6, 4.4], [360, 430], true);
+      else if (v.develop === 1) vineRow(3, [3.6, 4.4], [360, 430], true, true);
+      else w3Vines();
       flag();
     });
     beat('Twist: vines in the dark', () => {
@@ -2816,25 +3142,23 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       // the vines hang between the glowworms, clear of where the dark starts
       for (let vx = z0 + 640; vx < x - 420; vx += R.r(380, 460)) if (!P.some((pl) => pl.style === 'moss_stone' && vx > pl.x - 120 && vx < pl.x + pl.width + 120)) thornAt(vx, [3.6, 4.4]);
       expert += 3;
+      if (v.twist === 1) deepRun(3, 1);
+      else if (v.twist === 2) { rootClimb(2); vineRow(2, [3.4, 4.2], [340, 420]); }
       flag();
     });
     beat('Finish', () => {
       lureRoom('pebble');
       flag();
-      busy(1);
-      vineRow(3, [3.4, 4.2], [340, 420], true);
+      // (after the pebbles: two awake vines, or the stone plates)
+      if (v.finish === 1) plateRoom(true);
+      else lureRoom('two');
       flag();
-      lureRoom('two');
-      flag();
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 18 && n < 16) {
-        const k = n % 3;
-        if (k === 0) vineRow(R.i(3, 4), [3.4, 4.2], [340, 420], true);
-        else if (k === 1) busy(2);
-        else sporeGap();
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => vineRow(R.i(3, 4), [3.4, 4.2], [340, 420], true, true), () => busy(2), () => vineRow(4, [3.2, 4], [330, 400])],
+        [() => deepRun(4, 1), () => { sporeGap(true); vineRow(2, [3.4, 4.2], [340, 420], true, true); }, () => deepRun(5, 2)],
+        [() => w3Vines(), () => { w3Vines(); vineRow(2, [3.4, 4.2], [340, 420]); }, () => w3Vines()],
+      ];
+      w3Finish(EXPERT_SECONDS + 18, kits[v.finish], 2);
       homeRun();
     });
   }
@@ -2844,27 +3168,33 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // fern that rustles on its own. On the floor first, then up on the grotto's stones, past the spores, and in the dark.
     // (Rebuilt 2026-10-28, the stage inspector: the ferns stand on low stones, a hop from one to the next, and stones to hop on the way
     // between the patches, so the search is never an empty walk.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts); the stepping stones have a one-jump way
+    // out of every gap (w3Stones: the first-timer was stuck in them), and a thing on a stone over the stream on some rolls.)
+    const v = W3P!;
+    /** a thing in a fern on the highest stone built since x0 */
+    const onHigh = (x0: number) => {
+      const hi = P.filter((pl) => pl.style === 'moss_stone' && pl.x > x0 && pl.y < G - 50).sort((a, b) => a.y - b.y)[0];
+      if (hi) thingFern(hi.x + hi.width / 2, hi.y);
+    };
     beat('Start', () => {
       rest(R.r(380, 440));
       hint(x - 340, "Dot hid Grandma's things in the ferns. Crouch beside one that rustles", "Dot hid Grandma's things in the ferns. Hold down beside one that rustles", "Dot hid Grandma's things in the ferns. Hold down beside one that rustles");
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: the rustling fern', () => {
       fernPatch(3, true);
       busy(1);
-      fernPatch(4, true);
+      if (v.learn === 0) fernPatch(4, true);
+      else { w3Stones([50, 90, 60], [0.5, 0.6]); fernPatch(3, true); }
       flag();
     });
     beat('Develop: up high and past the spores', () => {
-      // on top of the stones: the highest pillar's top holds a fern
+      // on top of the stones: the highest one's top holds a fern
       const x0 = x;
-      pillars([60, 130, 90], [0.5, 0.62]);
-      const tops = P.filter((pl) => pl.style === 'moss_stone' && pl.x > x0 && pl.y < G - 100);
-      const hi = tops.sort((a, b) => a.y - b.y)[0];
-      if (hi) thingFern(hi.x + hi.width / 2, hi.y);
-      sporeRest(R.r(520, 600));
-      fernPatch(3, true);
+      if (v.develop === 0) { w3Stones([60, 130, 90], [0.5, 0.62]); onHigh(x0); sporeRest(R.r(520, 600)); fernPatch(3, true); }
+      else if (v.develop === 1) { sporeRest(R.r(440, 500)); sporeGap(true); w3Stones([50, 110, 80], [0.5, 0.62]); onHigh(x0); sporeGap(); }
+      else { deepRun(3, 1); onHigh(x0); fernPatch(3, true); deepRun(3, 1); }
       flag();
     });
     beat('Twist: ferns in the dark', () => {
@@ -2875,18 +3205,18 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const clear = (fx: number) => !P.some((pl) => pl.style === 'moss_stone' && fx > pl.x - 140 && fx < pl.x + pl.width + 140);
       thingFern(stops[0] + 130, G);
       for (let fx = z0 + 640; fx < x - 400; fx += R.r(360, 440)) if (clear(fx)) plainFern(fx);
+      if (v.twist === 1) { sporeRest(R.r(440, 500)); sporeGap(true); }
+      else if (v.twist === 2) deepRun(4, 1);
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while ((expert < EXPERT_SECONDS + 4 || thingsPlaced < GRANDMA_GOAL_36 + 3) && n < 16) {
-        const k = n % 3;
-        if (k === 0) fernPatch(R.i(3, 4), true);
-        else if (k === 1) highRoadOver();
-        else { busy(1); lowStumps(); run(R.r(110, 140)); busy(1); }
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => fernPatch(R.i(3, 4), true), () => { busy(1); lowStumps(); run(R.r(110, 140)); busy(1); }, () => fernPatch(4, true), () => highRoadOver()],
+        [() => { const x0 = x; deepRun(4, 1); onHigh(x0); }, () => fernPatch(3, true), () => { const x0 = x; deepRun(5, 2); onHigh(x0); }],
+        [() => w3Vines(), () => fernPatch(3, true), () => { w3Vines(); fernPatch(3, true); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 4, kits[v.finish], 2, () => thingsPlaced < GRANDMA_GOAL_36 + 3);
+      w3Climax();
       homeRun();
     });
   }
@@ -3016,18 +3346,21 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (Rebuilt 2026-10-28, the stage inspector and the puzzle kit: the real "which fern?", twice: in a dark hollow three ferns that look
     // and rustle alike, and Dot's marking stones beside them that only the glowing mushroom shows; the twin of the stone by the door
     // tells the fern. Stones to hop between the rows.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts): the eyes, the vines, or real jumps
+    // over the stream between the ferns; on some rolls World 3's stone plate after the dark.)
+    const v = W3P!;
     beat('Start', () => {
       rest(R.r(380, 440));
       hint(x - 340, 'More of Grandma\'s things. Crouch beside a fern that rustles', 'More of Grandma\'s things. Hold down beside a fern that rustles', 'More of Grandma\'s things. Hold down beside a fern that rustles');
-      busy(1);
-      fernPatch(3, true);
+      w3Start(v.start);
       flag();
     });
     beat('Learn: a fern under a vine', () => {
       hint(x - 200, 'Searching is keeping still. A vine that wakes leaves you be');
       vineFerns(2, [4.6, 5.4], [420, 480]);
       busy(1);
-      vineFerns(3, [4.2, 5], [400, 460]);
+      if (v.learn === 0) vineFerns(3, [4.2, 5], [400, 460]);
+      else { w3Stones([60, 110, 70], [0.5, 0.6]); vineFerns(2, [4.2, 5], [400, 460]); }
       flag();
       // which fern? (Dot's stones, in the mushroom's light)
       busy(1, ['dip'], R.r(140, 180));
@@ -3038,8 +3371,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hint(x + 40, 'The eyes are back. Search between their looks, and hide in the next fern');
       watchedFerns(2, [6.5, 7.5]);
       flag();
-      sporeRest(R.r(520, 600));
-      watchedFerns(3, [5.8, 6.8]);
+      if (v.develop === 0) { sporeRest(R.r(520, 600)); watchedFerns(3, [5.8, 6.8]); }
+      else if (v.develop === 1) { w3Vines(); rootClimb(1); w3Vines(); }
+      else { deepRun(3, 1); fernPatch(3, true); deepRun(3, 1); }
       flag();
     });
     beat('Twist: ferns in the dark, under the vines', () => {
@@ -3055,21 +3389,20 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       for (let fx = z0 + 900; fx < x - 500; fx += R.r(420, 520)) if (clear(fx)) plainFern(fx);
       expert += 3;
       flag();
+      if (v.twist === 1) { busy(1); plateRoom(false); flag(); }
+      else if (v.twist === 2) { rootClimb(2); flag(); }
     });
     beat('Finish', () => {
       busy(1, ['log'], R.r(140, 180));
       whichFern();
       flag();
-      let n = 0;
-      while ((expert < EXPERT_SECONDS + 14 || thingsPlaced < GRANDMA_GOAL_37 + 3) && n < 16) {
-        const k = n % 4;
-        if (k === 0) vineFerns(R.i(3, 4), [3.8, 4.6], [380, 450]);
-        else if (k === 1) fernPatch(R.i(3, 4), true);
-        else if (k === 2) watchedFerns(R.i(2, 3), [5.2, 6.2]);
-        else { busy(1); lowStumps(); run(R.r(110, 140)); busy(1); }
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => { w3Vines(); rootClimb(1); }, () => { w3Vines(); vineFerns(2, [3.8, 4.6], [380, 450]); }, () => { rootClimb(1); w3Vines(); fernPatch(3, true); }],
+        [() => watchedFerns(R.i(2, 3), [5.2, 6.2]), () => bushRow(3, [560, 660], ['grotto'], [4.6, 5.6], true), () => watchedFerns(3, [5, 6])],
+        [() => { deepRun(4, 1); fernPatch(3, true); }, () => deepRun(5, 2), () => { deepRun(3, 1); w3Stones([50, 100, 70], [0.5, 0.6]); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 14, kits[v.finish], 2, () => thingsPlaced < GRANDMA_GOAL_37 + 3);
+      w3Climax();
       homeRun();
     });
   }
@@ -3103,10 +3436,13 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // in the forest, so the vines cannot see him there: ride the liana while the vine in the next gap looks, and leap while it sleeps.
     // The timed swing's gold ring says when to let go; the vine's eye says whether. World 3's photo album is in a fern on the way.
     // (Rebuilt 2026-10-28, the stage inspector: hops on the way in and between the chains, and a short run home.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts): longer chains, real jumps over the
+    // stream with vines over the gaps, or the grotto dark between the chains.)
+    const v = W3P!;
     beat('Start', () => {
       rest(R.r(420, 480));
       hint(x - 320, 'Thorn vines hang between the lianas. Swing past without touching the thorns');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: one vine in the gap', () => {
@@ -3114,11 +3450,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hint(x - 260, 'Hang on while the thorn vine looks. Let go while it sleeps');
       thornChain(2, true, [4.8, 5.6]);
       busy(1);
-      thornChain(2, true, [4.4, 5.2]);
+      if (v.learn === 0) thornChain(2, true, [4.4, 5.2]);
+      else { w3Stones([50, 100, 60], [0.5, 0.6]); thornChain(2, false, [4.4, 5.2]); }
       flag();
     });
     beat('Develop: a longer chain', () => {
-      thornChain(3, false, [4.2, 5]);
+      if (v.develop === 0) thornChain(3, false, [4.2, 5]);
+      else if (v.develop === 1) { deepRun(3, 1); thornChain(2, false, [4.2, 5]); }
+      else vineRow(3, [4, 4.8], [360, 430], true, true);
       flag();
       // the photo album, in a Hush Fern on a quiet stretch between the chains
       const book = findForStage(config.worldIndex, config.miniIndex);
@@ -3143,17 +3482,18 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       run(R.r(300, 360));
       expert += (x - landX) / RUN + 1.6;
       flag();
+      if (v.twist === 1) deepRun(4, 1);
+      else if (v.twist === 2) glowDark(R.r(1150, 1300), 1, { rocks: true });
+      else thornChain(2, false, [3.8, 4.6]);
+      flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 6 && n < 14) {
-        const k = n % 3;
-        if (k === 0) thornChain(R.i(3, 4), false, [3.6, 4.4]);
-        else if (k === 1) { busy(1); stumps(); }
-        else vineRow(R.i(2, 3), [3.6, 4.4], [360, 430]);
-        n++;
-        flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => thornChain(R.i(3, 4), false, [3.6, 4.4]), () => { busy(1); stumps(); }, () => thornChain(4, false, [3.4, 4.2])],
+        [() => vineRow(R.i(2, 3), [3.6, 4.4], [360, 430], true, true), () => { busy(1); stumps(); }, () => { vineRow(3, [3.4, 4.2], [340, 420]); thornChain(2, false, [3.6, 4.4]); }],
+        [() => deepRun(4, 1), () => thornChain(3, false, [3.6, 4.4]), () => deepRun(5, 2)],
+      ];
+      w3Finish(EXPERT_SECONDS + 14, kits[v.finish], 1);
       homeRun();
     });
   }
@@ -3176,6 +3516,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // a heart on the high shelf: the ring is a long fight
     C.push({ id: cid++, type: 'heart', x: Math.round(Tp.x + Tp.width / 2), y: ty - 80, collected: false, bobPhase: 0 });
     const wall = block(r0 + W, r0 + W + 120, 330);
+    // (2026-10-28, the variety pass: grotto stones on the ring's floor, one under the high shelf and one by the way out, so the walk
+    // across the cleared ring is not five quiet seconds)
+    for (const [rx, rh] of [[r0 + W / 2 - 60, 38], [r0 + W - 100, 40]] as const) { block(rx, rx + 90, rh); flower(rx + 45, G - rh - 34, 'orchid'); }
     const mid = (pl: Platform) => pl.x + pl.width / 2;
     RING = {
       x0: r0, x1: r0 + W, wallId: wall.id,
@@ -3205,48 +3548,55 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // the old vines and the dark between fights, and the ring, where they leap in out of the dark in waves until every one is down and
     // the way opens. (Rebuilt 2026-10-28, the stage inspector: World 3's last stage before the lair goes up the trunks to fight on the
     // branches and passes the sleeping vines again, where 3-3 fights on the limestone shelves: two different fights, not one twice.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts); real jumps over the stream; a hop just
+    // past the ring, where every roll had a 5 s quiet walk.)
+    const v = W3P!;
     const placed = () => E.filter((e) => e.type === 'ocelot' || e.type === 'jaguar').length;
     beat('Start', () => {
       const x0 = x;
       rest(R.r(420, 480));
       prints(x0 + 200, x - 80);
       hint(x0 + 120, 'Pawprints in a circle, and they all go one way...');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: two at once', () => {
-      hint(x + 40, 'Two prowlers! Keep one in front of you');
+      hint(x - 200, 'Two prowlers! Keep one in front of you');
+      // (hops and stones after the tip, before the prowlers: see 3-3's)
+      busy(2, ['log', 'dip'], R.r(200, 240));
+      w3Stones([50, 90, 60], [0.5, 0.6]);
+      rest(R.r(160, 200));
       prowlFloor(['ocelot', 'ocelot']);
       busy(1);
-      prowlTree();
+      if (v.learn === 0) prowlTree();
+      else { w3Stones([50, 100, 70], [0.5, 0.6]); prowlTree(); }
       flag();
     });
     beat('Develop: the jaguar, the vines and the dark', () => {
       prowlFloor(['jaguar', 'ocelot']);
       flag();
-      vineRow(2, [4.4, 5.2], [380, 440]);
-      prowlTree();
-      flag();
-      glowDark(R.r(1150, 1300), 1, { rocks: true });
-      prowlTree();
+      if (v.develop === 0) { prowlTree(); flag(); w3Vines(); prowlTree(); }
+      else if (v.develop === 1) { glowDark(R.r(1150, 1300), 1, { rocks: true }); vineRow(2, [4.4, 5.2], [380, 440]); flag(); vineRow(2, [4.4, 5.2], [380, 440], true, true); }
+      else { deepRun(4, 1); prowlFloor(['ocelot']); flag(); deepRun(3, 1); vineRow(2, [4.4, 5.2], [380, 440], true, true); }
       flag();
     });
     beat('Twist: the ring', () => {
+      if (v.twist === 1) { prowlTree(); flag(); }
+      else if (v.twist === 2) { glowDark(R.r(1000, 1100), 1, { rocks: true }); flag(); }
       hint(x + 60, 'The ring! They will come out of the dark. Drive them all off to open the way');
       prowlerRing();
+      // (out of the ring, a hop and a dip straight away: the walk on from the broken pillar was five quiet seconds on every roll)
+      busy(2, ['log', 'dip'], R.r(230, 270));
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while ((expert < EXPERT_SECONDS + 16 || placed() < Math.ceil(PROWLER_GOAL_39 * 1.4)) && n < 16) {
-        const k = n % 4;
-        if (k === 0) { prowlTree(); prowlFloor(['ocelot', 'ocelot']); }
-        else if (k === 1) { vineRow(2, [4, 4.8], [360, 430], true); prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot', 'ocelot']); }
-        else if (k === 2) { stumps(); prowlTree(); }
-        else { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot', 'ocelot']); }
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => { prowlTree(); prowlTree(); }, () => { w3Vines(); prowlTree(); }, () => { prowlTree(); prowlFloor(['ocelot']); }],
+        [() => { deepRun(4, 1); prowlFloor(['ocelot', 'ocelot']); }, () => { prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot', 'ocelot']); deepRun(3, 1); }, () => deepRun(5, 2)],
+        [() => { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot', 'ocelot']); }, () => { vineRow(3, [4, 4.8], [360, 430], true, true); prowlFloor(['ocelot']); }, () => { sporeRest(R.r(440, 500)); sporeGap(true); prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot']); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 16, kits[v.finish], 2, () => placed() < Math.ceil(PROWLER_GOAL_39 * 1.4));
+      w3Climax();
       homeRun();
     });
   }
@@ -3425,7 +3775,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * World 4's open ground between two pieces (2026-10-28, the stage inspector): a hop over a mossy rock or a dip of soft moss a moment
    * out, then plain ground a breath long. (The old 220-380 px of empty path either side of every piece was three to five quiet seconds.)
    */
-  const w4Breath = (restAfter = R.r(250, 290)) => busy(1, ['log', 'dip'], restAfter);
+  /**
+   * the roll's ground between World 4's pieces (w4Sections.ts, the variety pass 2026-10-28): mossy rocks and dips to hop, or wide gaps
+   * of soft moss for the second jump (a miss is a hop back out, never a life). Rolls that differ in this differ all
+   * through the stage, not only in one section.
+   */
+  const w4Fill = new W4Roll(seed, `${plan}/fill`).theme('fill', ['hops', 'leaps'] as const);
+  const W4_FILL: Record<typeof w4Fill, ReadonlyArray<'log' | 'dip' | 'leap'>> = { hops: ['log', 'dip'], leaps: ['leap'] };
+  const w4Breath = (restAfter = R.r(250, 290)) => busy(1, W4_FILL[w4Fill], restAfter);
 
   if (plan === '4-2') {
     // 4-2 First Glide: learn the leaf over soft moss, then the chimes and the gusts behind him, then the twist: gusts into his face,
@@ -3461,28 +3818,46 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       leafSecret();
       flag();
     });
+    // (2026-10-28, the variety pass: 200 rolls of 4-2 were 94% alike. The second twist's two crossings come in either order, and the
+    // finish draws from a bag leaning to the roll's theme, the leaf, the gusts or the stones and branches, w4Sections.ts)
+    const roll = new W4Roll(seed, '4-2');
+    const twist2 = roll.pick(['leafFirst', 'stonesFirst'] as const);
     beat('Twist again: the wind turns', () => {
       // the leaf and the gusts together: a high wind that carries the leaf far, then a crossing where the wind turns halfway over
-      hint(x + 40, 'Wind up high! Open your leaf as the chimes swing your way, and ride it far');
-      gustLeaf();
-      w4Breath();
-      flag();
-      hint(x + 40, 'The wind turns halfway across! The chimes on the big stone tell you the second gust');
-      turnStones();
-      w4Breath();
-      gustLeaf();
+      const high = () => {
+        hint(x + 40, 'Wind up high! Open your leaf as the chimes swing your way, and ride it far');
+        gustLeaf();
+        w4Breath();
+        flag();
+      };
+      const turn = () => {
+        hint(x + 40, 'The wind turns halfway across! The chimes on the big stone tell you the second gust');
+        turnStones();
+        w4Breath();
+      };
+      if (twist2 === 'leafFirst') { high(); turn(); gustLeaf(); }
+      else { turn(); flag(); high(); gustLeaf(); w4Breath(); }
       flag();
     });
+    type Piece42 = 'drop' | 'gust' | 'pillars' | 'high' | 'stones' | 'gustLeaf';
+    const theme = roll.theme('finish', ['leaf', 'gusts', 'ground'] as const);
+    const counts: Record<typeof theme, Record<Piece42, number>> = {
+      // (the leaf's climbs are slow: two of them to a bag was 28-39 quiet seconds a finish, so the leaf shares it with pillars and gusts)
+      leaf: { drop: 1, gust: 1, pillars: 2, high: 0, stones: 0, gustLeaf: 1 },
+      gusts: { drop: 0, gust: 2, pillars: 0, high: 1, stones: 2, gustLeaf: 0 },
+      ground: { drop: 1, gust: 1, pillars: 2, high: 2, stones: 0, gustLeaf: 0 },
+    };
+    const bag = roll.bag<Piece42>(['drop', 'gust', 'pillars', 'high', 'stones', 'gustLeaf'], (k) => counts[theme][k]);
     beat('Finish', () => {
       // 4-2 runs three minutes (STAGE_SECONDS); the run home (two hops and the shrine, about 4 s) closes it
       let n = 0;
       while (expert + 4.2 < stageSeconds('4-2') && n < 40) {
-        const k = n % 5;
-        if (k === 0) leafDrop(R.r(0.78, 0.88));
-        else if (k === 1) gustGap(R.chance(0.5) ? 1 : -1);
-        else if (k === 2) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
-        else if (k === 3) highRoadOver();
-        else if (R.chance(0.5)) turnStones();
+        const k = bag.draw()!;
+        if (k === 'drop') leafDrop(R.r(0.78, 0.88));
+        else if (k === 'gust') gustGap(R.chance(0.5) ? 1 : -1);
+        else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+        else if (k === 'high') highRoadOver();
+        else if (k === 'stones') turnStones();
         else gustLeaf();
         w4Breath();
         n++;
@@ -3499,6 +3874,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   // Punch the fruit down from the tree before its stretch and it goes off to eat (capuchin.ts), and sees nothing while it eats.
   const W4X: W4Extras = {};
   if (plan === '4-5') {
+    /** the roll's section versions (w4Sections.ts) */
+    const roll = new W4Roll(seed, '4-5');
     const FALLS4: Waterfall[] = (W4X.falls = []);
     const MONKEYS: Capuchin[] = (W4X.monkeys = []);
     const FRUIT: FruitTree[] = (W4X.fruit = []);
@@ -3521,7 +3898,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       let k = Math.floor(len / 300);
       while (k-- > 0) {
         run(Math.max(70, (end - x) / (k + 2) - 60));
-        if (R.chance(0.5)) logHop();
+        // (the runs between the places to hide are the roll's ground too: hops, or wide leaps under her eye)
+        if (w4Fill !== 'hops' && (w4Fill === 'leaps' || R.chance(0.5)) && end - x > 420) leap(R.r(0.58, 0.66));
+        else if (R.chance(0.5)) logHop();
         else dip();
       }
       if (x < end) run(end - x);
@@ -3533,7 +3912,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         const g = R.r(gap[0], gap[1]);
         if (k > 0) row(x + 80, x + g - 80, G - 34, Math.max(1, Math.round(g / 260)), 'orchid');
         if (k > 0) hopRun(g);
-        else run(g);
+        // (the first place to hide is a short run into the row: her first pass can come as he walks in, 2026-10-28)
+        else run(Math.min(g, R.r(160, 220)));
         cover(kinds[k % kinds.length]);
       }
       run(R.r(260, 340));
@@ -3553,7 +3933,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
      */
     function lookoutRun(kinds: Cover[], gap: [number, number], calm: [number, number]) {
       const x0 = x;
-      run(R.r(240, 300));
+      // a bush on the way in, short of the fruit tree: with it, no stretch of a lookout's run is more than ~700 px from a place to hide,
+      // so her pass always has cover within the 2 s warning (2026-10-28, the first-timer: her first strike at ~23 s, cover 680-1490 px off)
+      run(R.r(110, 150));
+      cover(R.pick(['tall', 'fern'] as const));
+      run(R.r(130, 170));
       const tx = x;
       const sx0 = tx + 110;
       const mx = sx0 + R.r(40, 80);
@@ -3577,7 +3961,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
      */
     function lookoutPair(calm: [number, number]) {
       const x0 = x;
-      run(R.r(240, 300));
+      // (a bush on the way in, as in lookoutRun)
+      run(R.r(110, 150));
+      cover(R.pick(['tall', 'fern'] as const));
+      run(R.r(130, 170));
       const tA = x;
       const a0 = tA + 110;
       const mA = a0 + R.r(40, 80);
@@ -3641,29 +4028,75 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       coverRow(4, [400, 480], ['fall'], [7, 8.5]);
       flag();
     });
+    // (2026-10-28, the variety pass: 200 rolls of 4-5 were 99.3% alike. The Develop and Twist each have versions, picked by the roll
+    // through w4Sections.ts, and the Finish draws its pieces from a bag weighted to the roll's own theme: under cover, among the lookouts,
+    // or the cliff's open climbs between them, the World 4 moves from 4-2 and 4-4 out of her sight)
+    const lookTip = () => hint(x + 20, 'A monkey lookout! If it sees you, it calls her. Tap to punch the fruit down, and it will go and eat', 'A monkey lookout! If it sees you, it calls her. Press Punch to knock the fruit down, and it will go and eat', 'A monkey lookout! If it sees you, it calls her. Press J to knock the fruit down, and it will go and eat');
+    /** out of her sight between two watched stretches: one of World 4's open-cliff pieces (all taught in 4-2), and a breath */
+    const openCliff = (k: 'drop' | 'gust' | 'pillars' | 'high') => {
+      if (k === 'drop') leafDrop(R.r(0.74, 0.86));
+      else if (k === 'gust') gustGap(R.chance(0.5) ? 1 : -1);
+      else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+      else highRoadOver();
+      w4Breath();
+    };
+    const develop = roll.pick(['lookFirst', 'rowFirst', 'climbBetween'] as const);
     beat('Develop: the lookout', () => {
-      hint(x + 20, 'A monkey lookout! If it sees you, it calls her. Tap to punch the fruit down, and it will go and eat', 'A monkey lookout! If it sees you, it calls her. Press Punch to knock the fruit down, and it will go and eat', 'A monkey lookout! If it sees you, it calls her. Press J to knock the fruit down, and it will go and eat');
-      lookoutRun(['fall', 'wide'], [380, 440], [6, 7.5]);
-      w4Breath();
-      coverRow(3, [640, 780], ['fall', 'fern', 'fall'], [5, 6.2]);
+      if (develop === 'rowFirst') {
+        coverRow(3, [560, 680], ['fall', 'fern', 'fall'], [5.5, 6.6]);
+        w4Breath();
+        lookTip();
+        lookoutRun(['fall', 'wide'], [380, 440], [6, 7.5]);
+      } else {
+        lookTip();
+        lookoutRun(['fall', 'wide'], [380, 440], [6, 7.5]);
+        w4Breath();
+        if (develop === 'climbBetween') openCliff(roll.pick(['drop', 'pillars'] as const));
+        coverRow(3, [640, 780], ['fall', 'fern', 'fall'], [5, 6.2]);
+      }
       flag();
     });
+    const twist = roll.pick(['pairFirst', 'secretFirst'] as const);
     beat('Twist: two lookouts', () => {
-      hint(x + 20, 'Two lookouts! Knock the second fruit down from behind the waterfall');
-      lookoutPair([5, 6]);
-      w4Breath();
-      secretFall([5, 6]);
-      stumps();
+      const pair = () => {
+        hint(x + 20, 'Two lookouts! Knock the second fruit down from behind the waterfall');
+        lookoutPair([5, 6]);
+      };
+      if (twist === 'pairFirst') {
+        pair();
+        w4Breath();
+        secretFall([5, 6]);
+        stumps();
+      } else {
+        secretFall([5, 6]);
+        w4Breath();
+        pair();
+        w4Breath();
+        pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+      }
       flag();
     });
+    type Piece45 = 'row' | 'look' | 'pair' | 'drop' | 'gust' | 'pillars' | 'high';
+    const theme = roll.theme('finish', ['cover', 'lookouts', 'cliff'] as const);
+    const counts: Record<typeof theme, Record<Piece45, number>> = {
+      cover: { row: 3, look: 1, pair: 1, drop: 0, gust: 1, pillars: 0, high: 0 },
+      lookouts: { row: 1, look: 2, pair: 2, drop: 0, gust: 0, pillars: 1, high: 0 },
+      cliff: { row: 1, look: 1, pair: 1, drop: 1, gust: 1, pillars: 1, high: 1 },
+    };
+    const bag = roll.bag<Piece45>(['row', 'look', 'pair', 'drop', 'gust', 'pillars', 'high'], (k) => counts[theme][k]);
     beat('Finish', () => {
       let n = 0;
       // (the builder's watched-stretch estimate runs long: to two minutes for a quick player it reaches 4-5's own length and more)
       while (expert < stageSeconds('4-5') + 34 && n < 16) {
-        const k = n % 3;
-        if (k === 0) coverRow(3, [700, 860], R.shuffle<Cover>(['fall', 'wide', 'fall']), [4.6, 5.6]);
-        else if (k === 1) lookoutRun(R.shuffle<Cover>(['fall', 'tall']), [400, 460], [4.8, 5.8]);
-        else lookoutPair([4.6, 5.6]);
+        const k = bag.draw()!;
+        if (k === 'row') coverRow(3, [700, 860], R.shuffle<Cover>(['fall', 'wide', 'fall']), [4.6, 5.6]);
+        else if (k === 'look') lookoutRun(R.shuffle<Cover>(['fall', 'tall']), [400, 460], [4.8, 5.8]);
+        else if (k === 'pair') lookoutPair([4.6, 5.6]);
+        else {
+          openCliff(k);
+          n++;
+          continue;
+        }
         w4Breath();
         n++;
         if (n % 2 === 0) flag();
@@ -3712,7 +4145,24 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       if (ok) ok = landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far) >= 8 && landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far, force) >= 8;
       if (!ok && tries < 15) continue;
       close();
-      if (soft) softPit(edge, farX);
+      if (soft) {
+        // a soft pit (softPit's walls and far step) whose mossy floor rises a low step halfway along each gap between the vines (where a
+        // leap is high in the air): a slip off the vines is a walk along the floor with a hop up or two, not four quiet seconds to the
+        // far wall (2026-10-28, the 200-roll tool: every roll of 4-4 opened on a 4.3-5.0 s quiet stretch along this floor)
+        const wallTop = G + BANK_H;
+        P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
+        P.push({ id: pid++, x: farX, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
+        const cuts = [edge - 60];
+        for (let k = 0; k + 1 < n; k++) cuts.push(Math.round((xs[k] + xs[k + 1]) / 2));
+        cuts.push(farX + 60);
+        let fy = HOLLOW_Y;
+        for (let k = 0; k + 1 < cuts.length; k++) {
+          bank(cuts[k], cuts[k + 1], fy, 'moss_stone');
+          if (k + 2 < cuts.length) fy -= 30;
+        }
+        // (the step out at the foot of the far wall, as softPit has it, from the floor's last piece)
+        P.push({ id: pid++, x: farX - 70, y: fy - PIT_STEP, width: 70, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
+      }
       for (let k = 0; k < n; k++) {
         liana(xs[k], vs[k].topY, vs[k].bottomY);
         arc(k === 0 ? edge + 10 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 4);
@@ -3834,10 +4284,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (on the vine he is safe, the wind only pushes him in the air). In the calm the second jump always makes it. Then Dot's knot, a vine tied up
     // out of reach that she frees when he stands still under it, and rocks coming loose over a landing. A second knot hides the seed.
     // (2026-10-28, the stage inspector: a short start, and a hop or a dip and a breath between the gorges instead of empty path)
+    // (2026-10-28, the variety pass: 200 rolls of 4-4 were 98% alike, and every roll opened on a 4.6-5.0 s quiet stretch. Now the
+    // start has a third hop, and the Develop, the Twists and the Finish have versions the roll picks (w4Sections.ts): the gorges in a
+    // different order, the knots on different gorges, and a finish that leans to the wind, to the knots, or to the open cliff of 4-2)
+    const roll = new W4Roll(seed, '4-4');
     beat('Start', () => {
-      rest(R.r(300, 340));
+      rest(R.r(260, 300));
       hint(x - 200, 'The wind blows across the gorges here. Listen for the chimes');
-      busy(2, ['log', 'dip'], R.r(170, 200));
+      busy(3, ['log', 'dip'], R.r(120, 150));
       flag();
     });
     beat('Learn: the wind behind you', () => {
@@ -3848,55 +4302,95 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       windChain(2, 1, true);
       flag();
     });
+    const develop = roll.pick(['knotLast', 'knotMiddle'] as const);
     beat('Develop: into the wind, and Dot\'s knot', () => {
-      hint(x + 40, 'See the chimes swinging back at you? That wind will blow in your face. Hang on to your vine until the wind dies down, then let go');
-      windChain(2, -1, true);
-      w4Breath();
+      const headwind = () => {
+        hint(x + 40, 'See the chimes swinging back at you? That wind will blow in your face. Hang on to your vine until the wind dies down, then let go');
+        windChain(2, -1, true);
+        w4Breath();
+      };
+      const knot = () => {
+        hint(x + 60, KNOT_TEACH);
+        knotChain(3);
+        w4Breath();
+      };
+      headwind();
       flag();
-      hint(x + 60, KNOT_TEACH);
-      knotChain(3);
-      w4Breath();
-      windChain(3, R.chance(0.5) ? 1 : -1, false);
+      if (develop === 'knotLast') {
+        windChain(3, R.chance(0.5) ? 1 : -1, false);
+        w4Breath();
+        knot();
+      } else {
+        knot();
+        windChain(3, R.chance(0.5) ? 1 : -1, false);
+      }
       flag();
     });
+    const twist = roll.pick(['rocksFirst', 'pairFirst'] as const);
     beat('Twist: rocks on the landing', () => {
-      hint(x + 40, 'Rocks fall on the next landing! Hang on until the shadow comes and the rock falls, then let go');
-      windChain(3, R.chance(0.5) ? 1 : -1, false, true);
-      flag();
+      const rocks = () => {
+        hint(x + 40, 'Rocks fall on the next landing! Hang on until the shadow comes and the rock falls, then let go');
+        windChain(3, R.chance(0.5) ? 1 : -1, false, true);
+        flag();
+      };
       // two gorges back to back, the wind each way
-      const d = R.chance(0.5) ? 1 : -1;
-      windChain(2, d, false);
-      windChain(2, d > 0 ? -1 : 1, false);
-      w4Breath();
-      flag();
+      const pair = () => {
+        const d = R.chance(0.5) ? 1 : -1;
+        windChain(2, d, false);
+        windChain(2, d > 0 ? -1 : 1, false);
+        w4Breath();
+        flag();
+      };
+      if (twist === 'rocksFirst') { rocks(); pair(); } else { pair(); rocks(); }
     });
+    const twist2 = roll.pick(['knotWind', 'rockWind'] as const);
     beat('Twist again: knots in the wind', () => {
       // what the stage taught, two at a time: Dot's knot over a gorge the gusts blow across (wait for Dot, then for the chimes), and
       // the wind in his face over a landing the rocks fall on (hang on through the gust and the rock both)
-      hint(x + 60, 'Another knot, and wind over the gorge! Stand still on the glowing spot while I untie it, about three seconds. Then let go when the chimes swing your way, and hang on while they swing back at you');
-      knotChain(4, R.chance(0.5) ? 1 : -1);
-      w4Breath();
-      flag();
-      hint(x + 40, 'Wind in your face and rocks on the landing: hang on for the gust and the rock both');
-      windChain(3, -1, false, true);
-      w4Breath();
-      flag();
+      const knotWind = () => {
+        hint(x + 60, 'Another knot, and wind over the gorge! Stand still on the glowing spot while I untie it, about three seconds. Then let go when the chimes swing your way, and hang on while they swing back at you');
+        knotChain(4, R.chance(0.5) ? 1 : -1);
+        w4Breath();
+        flag();
+      };
+      const rockWind = () => {
+        hint(x + 40, 'Wind in your face and rocks on the landing: hang on for the gust and the rock both');
+        windChain(3, -1, false, true);
+        w4Breath();
+        flag();
+      };
+      if (twist2 === 'knotWind') { knotWind(); rockWind(); } else { rockWind(); knotWind(); }
       knotChain(3, R.chance(0.5) ? 1 : -1);
       flag();
     });
+    type Piece44 = 'wind' | 'long' | 'knot' | 'rocks' | 'gust' | 'pillars' | 'high' | 'stumps';
+    const theme = roll.theme('finish', ['wind', 'knots', 'cliff'] as const);
+    const counts: Record<typeof theme, Record<Piece44, number>> = {
+      wind: { wind: 2, long: 2, knot: 0, rocks: 1, gust: 0, pillars: 0, high: 0, stumps: 1 },
+      knots: { wind: 1, long: 0, knot: 2, rocks: 1, gust: 0, pillars: 1, high: 0, stumps: 0 },
+      // (no gust lane over open ground here: 4-4's gusts blow across the lianas only)
+      cliff: { wind: 1, long: 0, knot: 0, rocks: 0, gust: 0, pillars: 2, high: 1, stumps: 1 },
+    };
+    const bag = roll.bag<Piece44>(['wind', 'long', 'knot', 'rocks', 'gust', 'pillars', 'high', 'stumps'], (k) => counts[theme][k]);
     beat('Finish', () => {
-      // 4-4 runs 170 s (STAGE_SECONDS); the run home (two hops and the shrine, about 4 s) closes it
+      // 4-4 runs 170 s (STAGE_SECONDS); the run home (two hops and the shrine, about 4 s) closes it. The secret knot comes second.
       let n = 0;
       while (expert + 4.2 < stageSeconds('4-4') && n < 30) {
-        const k = n % 3;
-        if (k === 0) {
-          windChain(R.i(2, 3), R.chance(0.5) ? 1 : -1, false, n === 3);
-          // (a flag follows: keep it clear of the rocks)
-          if (n === 3) rest(R.r(200, 260));
-        } else if (k === 1) {
-          if (n === 1) knotSecret();
+        if (n === 1) knotSecret();
+        else {
+          const k = bag.draw()!;
+          if (k === 'wind') windChain(R.i(2, 3), R.chance(0.5) ? 1 : -1, false);
+          else if (k === 'long') windChain(4, R.chance(0.5) ? 1 : -1, false);
+          else if (k === 'knot') { knotChain(3, R.chance(0.5) ? 1 : -1); w4Breath(); }
+          else if (k === 'rocks') {
+            windChain(3, R.chance(0.5) ? 1 : -1, false, true);
+            // (a flag may follow: keep it clear of the rocks)
+            rest(R.r(200, 260));
+          } else if (k === 'gust') { gustGap(R.chance(0.5) ? 1 : -1); w4Breath(); }
+          else if (k === 'pillars') { pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]); w4Breath(); }
+          else if (k === 'high') { highRoadOver(); w4Breath(); }
           else { w4Breath(); stumps(); }
-        } else windChain(R.i(3, 4), R.chance(0.5) ? 1 : -1, false);
+        }
         n++;
         if (n % 2 === 0) flag();
       }
@@ -4063,7 +4557,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         hint(nb.x - 200, 'Something shiny, far out past that nest...');
         end = sx + 120;
       }
-      x = end + R.r(240, 280);
+      // dips of soft moss in the floor under the nest's branch and on past it: down off the branch it was four and a half quiet
+      // seconds to the next thing (2026-10-28, the 200-roll tool)
+      x = Math.max(x, nb.x + 40);
+      while (x < end - 60) {
+        run(R.r(260, 330));
+        dip();
+      }
+      x = Math.max(x, end + R.r(240, 280));
       expert += (tX - x0) / RUN + 1 + (nb.x - perch.x - perch.width) / 330 + FREE + 0.8 + (x - nb.x - nb.width) / RUN;
       pieces.push({ k: 'canopy', x0, x1: x });
     }
@@ -4119,7 +4620,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
      */
     const between = () => {
       const x0 = x;
-      busy(1, ['log', 'dip'], R.r(200, 240));
+      busy(1, W4_FILL[w4Fill], R.r(200, 240));
       if (x - x0 < 440) rest(440 - (x - x0));
     };
 
@@ -4139,25 +4640,36 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       between();
       hint(x + 40, 'Water pours between you and that nest. Climb up and keep sliding into the boulder to roll it under the water', 'Water pours between you and that nest. Climb up and hold the pad into the boulder to roll it under the water', 'Water pours between you and that nest. Climb up and hold right into the boulder to roll it under the water');
       fallNest();
-      rest(R.r(200, 260));
-      flag();
-    });
-    beat('Develop: the guard', () => {
-      hint(x + 40, 'A capuchin guards that nest! When the chimes ring, the wind will knock it over');
-      guardNest(false, false);
-      rest(R.r(200, 260));
-      flag();
       between();
-      knotNest(true);
-      rest(R.r(200, 260));
       flag();
     });
+    // (2026-10-28, the variety pass: 200 rolls of 4-8 were 98% alike. The Develop and the first Twist come in either order inside, the
+    // capuchins near the end come in either order (the trade, a mango for the pulley's stone; a guard on a tied-up ledge), the cliff path after
+    // it draws from a bag leaning to the roll's theme: the open cliff, more nests, or the leaf, w4Sections.ts)
+    const roll = new W4Roll(seed, '4-8');
+    const develop = roll.pick(['guardFirst', 'knotFirst'] as const);
+    beat('Develop: the guard', () => {
+      const guard = () => {
+        hint(x + 40, 'A capuchin guards that nest! When the chimes ring, the wind will knock it over');
+        guardNest(false, false);
+        between();
+        flag();
+      };
+      const high = () => {
+        knotNest(true);
+        between();
+        flag();
+      };
+      if (develop === 'guardFirst') { guard(); between(); high(); }
+      else { high(); guard(); }
+    });
+    const twist = roll.pick(['glideFirst', 'fallFirst'] as const);
     beat('Twist: by leaf', () => {
+      if (twist === 'fallFirst') { fallNest(); between(); }
       hint(x + 40, 'That nest is too far to jump to. Climb up, jump, and keep your thumb on the glass to open your leaf', 'That nest is too far to jump to. Climb up, jump, and hold Jump to open your leaf', 'That nest is too far to jump to. Climb up, jump, and hold Space to open your leaf');
       glideNest(false, false);
       between();
-      fallNest();
-      rest(R.r(200, 260));
+      if (twist === 'glideFirst') { fallNest(); between(); }
       flag();
     });
     beat('Twist: two at once', () => {
@@ -4179,25 +4691,47 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       R.shuffle(combos).forEach((f, i) => {
         if (i) between();
         f();
-        rest(R.r(200, 260));
+        between();
         flag();
       });
     });
+    const capuchin = roll.pick(['trade', 'guard'] as const);
+    type Piece48 = 'gust' | 'pillars' | 'high' | 'nest' | 'knot' | 'drop' | 'gustLeaf';
+    const theme = roll.theme('finish', ['cliff', 'nests', 'leaf'] as const);
+    const counts: Record<typeof theme, Record<Piece48, number>> = {
+      cliff: { gust: 2, pillars: 1, high: 1, nest: 0, knot: 0, drop: 0, gustLeaf: 0 },
+      nests: { gust: 1, pillars: 0, high: 0, nest: 1, knot: 1, drop: 0, gustLeaf: 0 },
+      leaf: { gust: 0, pillars: 1, high: 0, nest: 0, knot: 0, drop: 2, gustLeaf: 1 },
+    };
+    const bag = roll.bag<Piece48>(['gust', 'pillars', 'high', 'nest', 'knot', 'drop', 'gustLeaf'], (k) => counts[theme][k]);
     beat('Finish', () => {
       between();
       guardNest(false, false);
       between();
       flag();
-      // the capuchin's trade, once: a nest up on a terrace that only Dot's knot pulley reaches, and a capuchin holding its stone
+      // the capuchin's trade, once: a nest up on a terrace that only Dot's knot pulley reaches, and a capuchin holding its stone. By the
+      // roll, a second capuchin guards a ledge tied up under Dot's knot, before the trade or after it
+      const guardKnot = () => {
+        hint(x + 40, 'A guard up a tied-up vine. Dot first, then wait for the chimes');
+        guardNest(true, false);
+        between();
+        flag();
+      };
+      if (capuchin === 'guard') guardKnot();
       tradeNest();
       flag();
+      if (capuchin === 'trade') guardKnot();
       // the cliff path on toward the shrine, until a quick player has had about three minutes, then the last nest
       let n = 0;
       while (expert < W48_SECONDS - 20 && n < 24) {
-        const k = n % 3;
-        if (k === 0) gustGap(1);
-        else if (k === 1) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
-        else highRoadOver();
+        const k = bag.draw()!;
+        if (k === 'gust') gustGap(R.chance(0.5) ? 1 : -1);
+        else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
+        else if (k === 'high') highRoadOver();
+        else if (k === 'nest') plainNest();
+        else if (k === 'knot') knotNest(R.chance(0.5));
+        else if (k === 'drop') leafDrop(R.r(0.78, 0.88));
+        else gustLeaf();
         w4Breath();
         n++;
         if (n % 2 === 0) flag();
@@ -4224,16 +4758,23 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   if (config.worldIndex === 3) {
     const darkAt = (px: number) => GZ.some((z) => z.kind === 'dark' && px > z.x0 - 80 && px < z.x1 + 80);
     for (const pc of pieces) {
-      if (pc.k !== 'rest' && pc.k !== 'snakes') continue;
+      // (over the stream and the chasms only the roof's pieces hang: nothing stands where there is no floor)
+      const roofOnly = pc.k === 'gorge';
+      if (pc.k !== 'rest' && pc.k !== 'snakes' && !roofOnly) continue;
       for (let cx = pc.x0 + R.r(80, 200); cx < pc.x1 - 80; cx += R.r(280, 460)) {
-        const kinds = plan === '3-2' ? (['stalagmites', 'mushrooms', 'clawRock', 'stalagmites'] as const) : (['stalagmites', 'mushrooms', 'fern', 'stalagmites', 'clawRock'] as const);
+        // (the variety pass: the set of floor pieces and hanging pieces rotates with the roll, w3Sections.ts W3_DECOR_SETS)
+        const set = W3P!.decor;
+        const kinds = plan === '3-2' ? set.floor.filter((n) => n !== 'fern') : set.floor;
         const k = R.pick(kinds);
-        const w = k === 'stalagmites' ? R.r(140, 200) : k === 'mushrooms' ? R.r(84, 110) : k === 'fern' ? R.r(140, 180) : R.r(100, 130);
+        const w = k === 'stalagmites' ? R.r(140, 200) : k === 'mushrooms' ? R.r(84, 110) : k === 'fern' ? R.r(140, 180) : k === 'pawprint' ? R.r(92, 110) : k === 'bones' ? R.r(100, 120) : R.r(100, 130);
         const busy = BUSHES.some((b) => cx > b.x - 60 && cx < b.x + b.w + 60) || C.some((c) => (c.hidden || c.type === 'find') && Math.abs(c.x - cx) < 170) || W3D.some((d) => d.n === 'fern' && Math.abs(d.x - cx) < 170);
-        if (!busy) W3D.push({ n: k, x: Math.round(cx), b: G + 8, w: Math.round(w), flip: R.chance(0.5) });
+        if (!busy && !roofOnly) W3D.push({ n: k, x: Math.round(cx), b: G + 8, w: Math.round(w), flip: R.chance(0.5) });
         if (R.chance(0.5)) {
-          const hangLit = !darkAt(cx) && R.chance(0.45);
-          W3D.push({ n: hangLit ? 'glowLit' : 'stalactite', x: Math.round(cx + R.r(-90, 90)), b: G - 480, w: Math.round(hangLit ? R.r(70, 90) : R.r(110, 150)), hang: true, flip: R.chance(0.5) });
+          // (a lit glowworm thread never hangs in the dark, where they sleep until he listens)
+          const hangs = set.hang.filter((n) => n !== 'glowLit' || !darkAt(cx));
+          const hn = R.pick(hangs.length ? hangs : ['stalactite' as const]);
+          const hw = hn === 'glowLit' ? R.r(70, 90) : hn === 'mossCurtain' ? R.r(160, 220) : R.r(110, 150);
+          W3D.push({ n: hn, x: Math.round(cx + R.r(-90, 90)), b: G - 480, w: Math.round(hw), hang: true, flip: R.chance(0.5) });
         }
       }
     }
@@ -4398,6 +4939,15 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
   /** 4-6: the mist's spots, one at the foot of each hidden column, and the eagle nests above it */
   const mistSpots: PatienceSpot[] = [];
   const nests: Nest[] = [];
+  /**
+   * World 4's two climbs take a theme from the roll (w4Sections.ts, the variety pass 2026-10-28: 200 rolls were 89-90% alike): 4-1 up
+   * the wide ledges by hops (its rocks), by more ropes, or the two in turn; 4-6 across the tree by ropes, by hops, or both. The zigzag's
+   * own dice are untouched (the roll has its own stream), and 1-4 and 3-4 climb as before.
+   */
+  const w4Climb = cliff || mist ? (() => {
+    const t = new W4Roll(seed, cliff ? '4-1' : '4-6').theme('climb', ['hops', 'ropes', 'turns'] as const);
+    return { theme: t, hopsAt: (n: number) => (t === 'hops' ? n % 4 !== 1 : t === 'ropes' ? n % 3 === 2 : n % 2 === 0) };
+  })() : null;
   /** where he stands now, and which way the climb is heading across the tree */
   let cur: Platform;
   /** the one trunk up from the floor (4-6 marks the way back to it) */
@@ -4608,15 +5158,17 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     let n = 0;
     // (4-6 leaves room for the mist and the nests, which take a while: it is a longer stage, stageSeconds('4-6'))
     // (and since 2026-10-28 its pinwheel lift a second time: a shorter climb across the tree leaves it room, PINWHEEL_AGAIN)
+    // (1-4, the variety pass 2026-10-28: the roll's rhythm of hops and ropes, and how often a snake waits: w1Sections.ts w1Kapok)
+    const climb14 = squirrels ? w1Kapok(seed) : null;
     while (expert < (mist ? stageSeconds('4-6') - MIST_LEAVES - PINWHEEL_AGAIN : EXPERT_SECONDS - 32) && n < 30) {
       // (4-1, 2026-10-28: the cliff climbs mostly by hops up wide ledges, where its rocks come loose, and a rope now and then: 4-6's
       // climb is the tree's ropes. The stage inspector found the two alike on every measure)
-      if (cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
+      if (climb14 ? climb14.steps[n % climb14.steps.length] === 'hops' : w4Climb ? w4Climb.hopsAt(n) : cliff ? n % 3 !== 1 : n % 3 === 2) hops(R.i(2, 3), cliff);
       else rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       // from the third run on, a snake now and then on a wide branch (the punch learned in 1-3 comes back)
       // (the sinkhole is a quiet climb toward the moonlight: nothing prowls on its shelves)
       // (the cliff has its falling rocks instead)
-      if (n >= 2 && cur.width >= 320 && R.chance(0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
+      if (n >= 2 && cur.width >= 320 && R.chance(climb14?.snakes ?? 0.4) && !grotto && !cliff && !mist) snake(cur.x + cur.width / 2, cur.y, cur.width - 140);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
@@ -5334,14 +5886,16 @@ function buildLongBranch(config: LevelConfig, seed: number): GeneratedStage & { 
     sec(3);
     snake(x - TILE * 1.5, TILE * 1.6);
     sec(2);
-    // more of the same, rolled, until even a quick player needs most of two minutes
+    // more of the same, in this roll's rhythm (w1Sections.ts w1Chase: leaps, swings, or climbs and drops), until even a quick player
+    // needs most of two minutes
+    const pattern = w1Chase(seed);
     let n = 0;
     while (expert < EXPERT_SECONDS - 22 && n < 40) {
-      const k = n % 5;
-      if (k === 0) { gap(one * R.r(0.45, 0.6)); sec(3); }
-      else if (k === 1) { gap(two * R.r(0.6, 0.72)); sec(3); row(x - TILE * 2, x - 60, level - 34, 2, 'orchid'); }
-      else if (k === 2) { swingGap(); sec(3); }
-      else if (k === 3) { sec(2); snake(x - TILE, TILE * 1.4); sec(2); }
+      const k = pattern[n % pattern.length];
+      if (k === 'gap') { gap(one * R.r(0.45, 0.6)); sec(3); }
+      else if (k === 'leap') { gap(two * R.r(0.6, 0.72)); sec(3); row(x - TILE * 2, x - 60, level - 34, 2, 'orchid'); }
+      else if (k === 'swing') { swingGap(); sec(3); }
+      else if (k === 'snake') { sec(2); snake(x - TILE, TILE * 1.4); sec(2); }
       else { if (level < G - 100) dropDown(Math.round(R.r(120, 160))); else climbUp(Math.round(R.r(180, 210))); sec(3); }
       n++;
       if (n % 3 === 0) flag();

@@ -8,7 +8,20 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
-## On the work branch, not live yet (pushed for safe keeping; draft PR #41 tracks it, not a release)
+## Release PR #42 (opened 2026-10-28 ~17:50 ET on Matt's "merge and get this pushed out"; test link v219 is this build)
+
+Worlds 1-4 variety round 1, Jungle Cards, Dot's punch-tip fix, gen2 core (unused). Matt: from here, fixes go out as rolling releases
+(each round: test link, then a PR he merges). World 4: 4-3 and 4-7 treated as set pieces without the variety target; one last round
+for quiet stretches and difficulty (lead's recommendation A; Matt said keep tweaking and merging).
+
+## Live since PR #41 (2026-10-28): Meeca's stage rebuilt, Easy jump gate, batch 2, W1-2 props, measuring tools, gen2 core
+
+## On the work branch, not live yet
+
+- Jungle Cards match today's game (merged 2026-10-28, test link v217): 7 new cards in a "Met on the road" row, full-body art for
+  all 10 guardians, every tip rewritten in touch words, cards in journey order; one 255 KB card sheet.
+
+## On the work branch before PR #41 (now live) (pushed for safe keeping; draft PR #41 tracks it, not a release)
 
 - QA batch 2 + Dot toned down + Gemini jump forgiveness in every world (merged 8ed2c53, fast gate 77/77; cloud full check running).
 - World 1-4 art placed (merged 2026-10-28, fast gate passed): every sheet cell used except World 1's nest doors and petal bundle,
@@ -44,8 +57,18 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 |---|---|---|---|
 | Hugging Face art run (Matt 2026-10-28) | Enemies first, hardest first (bosses, new creature models, animated clips), then what the game still needs, then art and props: reference/ART-PLAN.md inventory with costs, Matt has ~$70 left: plan to $65 ($40 enemies, ~$25 what's left to finish then art and props, ~$5 spare), results in a gallery for Matt's pick (show first, nothing into src/ yet) | reference/ART-PLAN.md, tools/art/ new folder + new specs (branch art-hf) | 2026-10-28 |
 
-| Journal cards (Matt 2026-10-28: "the enemy cards are the original enemies") | Jungle Cards match today's game: every creature spawned per world gets a card from its current atlas, old ones fixed, tips in touch words | journal.ts, creatureArt.ts, CreaturePic.tsx, TrophyRoom journal part (branch journal-cards) | 2026-10-28 |
 | Polish prototype (Matt 2026-10-28: "make it look like a highly polished start screen") | Loading -> title in one piece (no white flash, font swap or pop-in), living title scene, entrances, one button family, menus/cards/map/pause/cleared screens, stage start/end wipes; preview video first (show first) | TitleScreen, StartMenu, PauseMenu, menuParts, TrophyRoom styling, WorldMap, dialogs, CSS (branch polish-ui) | 2026-10-28 |
+
+## Variety pass round 1 result (lead's gate 2026-10-28 ~17:05 ET on the W1+W2+W4 merge: suite 1600 pass 0 fail, build ok)
+
+- Variety 0.35+ met: 1-1, 1-2, 1-5, 1-7, 2-2, 2-3, 2-4, 2-5, 2-7. Low: 1-4 .12, 1-6 .16, 1-8 .06, 1-9 .23, 2-6 .04, 2-8 .09,
+  2-9 .19, all of World 4 (.002-.23).
+- New/worse rule breaks across rolls: 1-8 quiet 200/200; W2 dead time (2-7, 2-9 200/200; 2-5 148; 2-2 131; 2-4 73); 1-7 dead 105; 1-1 seed 3
+  67 ms window; 4-2 33 ms window; 4-6 kid hotspot 6/10.
+- Bands (Normal middle, seeds 1-3): W1 ~21, W2 ~44, W3 ~21 (W3 not merged yet), W4 ~22. The climb isn't there yet.
+- Test link v218 (2026-10-28 ~17:30 ET): Worlds 1-4 round 1 + gen2 core, with the known issues in its note (Matt: publish to his
+  test link as soon as the suite and build pass). Round 2 sent to the W1, W2, W4 builders (rule breaks first, then bands,
+  then variety).
 
 ## Cloud builders (variety pass, Matt 2026-10-28 "all four worlds now"; each pushes to its own branch, the lead merges after §4)
 
@@ -56,12 +79,19 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 | session_01FhBbYJbmE5kU47zP8gtSsr | World 3 | variety-w3 |
 | session_01FhBbYNv8Pbizpa68Y6hdjv | World 4 | variety-w4 |
 
+| session_01FhBbYMcZS6AocKxX16zojF | gen2 A+B: World 5 manifest + 5-7 sections | gen2-w5 |
+| session_01FhBbYPF9t6BWgk8Bx6vo9h | gen2 D: 5-9 arena + two puzzle rooms | gen2-w5-arena |
+| session_01FhBbYKW3x7bTGysk8cMXNu | gen2 F: curate.ts + seeds.ts (16 per stage) | gen2-curate |
+
+Local: the architect on gen2 piece E (sub-blocks) + the Easy water rule (pipeline.ts, types.ts). Step G (hook-up, old 5-7..5-9 deleted)
+is the lead's, after all pieces pass.
+
 Band targets given (Normal middle on bands.ts): World 1 ~20, 2 ~30, 3 ~40, 4 ~50. Pacing: Normal 0.6 actions/s in World 1 rising to 0.75 in
 World 4; Easy bursts 6-8 s with 2 s rests.
 
 ## Release
 
-- PR #41 marked ready 2026-10-28 on Matt's "push" (test link v216). Waiting on Matt's merge; then check the deploy and the APK. QA
+- PR #41 merged and LIVE 2026-10-28 18:37 (test link v216): site published (pages run success), APK built (run 40746802703). QA
   session (session_01NC7oJLxL2g1UhhBcGkZBBA) told what to test on the live build.
 - Flicker: the art run lists every state he needs for the whole game and makes them in round 1 (Matt 2026-10-28).
 
@@ -73,11 +103,16 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 ## Open decisions for Matt (ask one at a time)
 
-1. Generator: how many checked layouts to ship per stage (architect proposes 16).
-2. Generator: does every Easy fall land in a soft pit, even in World 6's water?
-3. Generator: about 30 sections per world: OK?
-4. Generator: 5-8 generated or hand-built?
-5. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
+1. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
+2. Naturalist medal: still the 11 predators, or all 18 journal cards (the 7 new "met on the road" ones too)?
+3. Pell's and the soldiers' journal tips read right?
+
+Step G (lead's gen2 hook-up) must also: run heartsAtFlags and fixPickups on gen2 stages; make easyStage() skip gen2 stages (no double
+softening); one per-stage kit chooser (5-9 uses w5ArenaKit); judge World 5's band with the first-timer bot after hook-up (the
+inspector-only score can't show it: 5-7 reads ~21 before the first-timer); draw the water-warning sign (placeholder post until art).
+
+Pending for the architect when it resumes: commit c912bc3 finished (full suite + build), then the gauntlet/purge top-up in fillSockets
+(quota + 2 on Normal) and Easy's quota at round(0.6 x targetCount) (5-9 builder found 5-9 lays 16-26 of 26 animals).
 
 ## Decided today (also on the Docs roadmap)
 
@@ -89,6 +124,13 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - Meeca's Room 4 is the tea channel. World 5's night strips are made in code.
 - Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
+- Title screen direction approved by Matt (2026-10-28, from the idle videos: "I like the way that it's carved in").
+- Title logo: carved into bark, carved in stroke by stroke on the first title of a session (chips, gold glow), shown carved after;
+  the ribbon is deleted (Matt 2026-10-28). Title pair get real animation clips from the motion model (no code twitching).
+- Dot's water warning (gen2, Easy repeats it after 12 s): "Careful, water! Flick up and over." (Matt chose C).
+- Usage warning on Matt's weekly limit (2026-10-28 ~16:20 ET, resets Nov 4 2:00 AM ET): Matt chose to keep everything running (C).
+- Generator: 16 checked layouts shipped per stage (Matt 2026-10-28). Easy falls land soft on land; over water a fall still
+  costs a life on Easy, with a clear warning before the water (Matt chose B, 2026-10-28). About 30 sections per world (Matt chose A). 5-8 stays hand-built; the generator does 5-7 and 5-9 (Matt chose A).
 - Variety pass for Worlds 1-4, all four at once. Push (release PR #41). Flicker's animations for the whole game. The polish pass
   on the title and every menu. Jungle Cards updated to today's creatures.
 - Dot toned down. All research in the repo; one rulebook; the lead checks every helper's work before merging.

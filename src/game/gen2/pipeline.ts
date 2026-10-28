@@ -19,14 +19,20 @@ import { jumpOK, SAFE_APPROACH, validateStage } from '../levelCheck.ts';
 import { DOUBLE_RISE, JUMP_RISE, reachJump, TAKEOFF_SLACK } from '../physics.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
+import type { GeneratedStage } from '../stageGenerator.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds, walkSpeed } from '../stageTime.ts';
 import type { Collectible, Enemy, LevelConfig, Platform } from '../types.ts';
-import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, type RoutePiece } from './variety.ts';
+import { CooldownQueue, pickWeighted, poissonPlace, ShuffleBag, WorldOnce, type RoutePiece } from './variety.ts';
 import {
   EASY_ENEMY_SHARE,
   EASY_LANDING,
   MARGIN,
   QUIET,
+  versionKey,
+  WATER_LINE,
+  WATER_WARN,
+  type PitKind,
+  type SectionPiece,
   type Archetype,
   type BuildRequest,
   type CreatureDef,
@@ -116,7 +122,10 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
   const easy = difficulty === 'easy';
   const target = targetSeconds(config.worldIndex, config.miniIndex, archetype);
   const goal = config.targetCount;
-  const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : goal;
+  // (a purge or gauntlet on Easy is held to easyMode's goal, round(0.6 x the goal); its top-up lays 2 over what it is held to)
+  const fights = archetype === 'purge' || archetype === 'gauntlet';
+  const check = fights && easy ? Math.max(1, Math.round(goal * 0.6)) : goal;
+  const lay = archetype === 'harvest' ? Math.ceil(goal * 1.5) : archetype === 'rescue' || archetype === 'relic_hunt' ? goal + 1 : fights ? check + 2 : goal;
   return {
     id: config.id,
     world: config.worldIndex,
@@ -132,9 +141,10 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
     landingPad: easy ? EASY_LANDING : 0,
     threat: 2 + 6 * heat,
     enemyShare: easy ? EASY_ENEMY_SHARE : 1,
-    quota: { goal, lay },
-    // (Easy: a fall into a gap is a soft pit, never a life: Part 1 §3 "bottomless pits replaced")
-    pit: easy ? 'soft' : manifest.pit,
+    quota: { goal, check, lay },
+    // (Easy: a fall on land is a soft pit, never a life (Part 1 §3 "bottomless pits replaced"); water still costs a life on Easy, with
+    // a clear warning before it (Matt, 2026-10-28: fillSockets' water warnings)
+    pit: easy && manifest.pit !== 'water' ? 'soft' : manifest.pit,
     quiet: QUIET[difficulty],
     walkSpeed: walkSpeed(MODEL_TYPICAL),
     moves: ['walk', 'jump', ...manifest.moves.filter((m) => m !== 'walk' && m !== 'jump')] as Move[],
@@ -228,30 +238,100 @@ export interface LocalLayout {
   exit: { piece: string; kind: PortKind; x: number; y: number };
   width: number;
   mirrored: boolean;
+  /** the section's sockets and its rolled sub-block versions' sockets */
+  sockets: Socket[];
+  /** the sub-block versions rolled (sub-block id -> version id); empty for a section with none */
+  versions: Record<string, string>;
+}
+
+export interface LayLocalOptions {
+  /** the versions to lay (Easy lays Normal's); a sub-block not named here is rolled */
+  versions?: Readonly<Record<string, string>>;
+  /** the stream the versions are rolled from (default: the layout's own stream) */
+  pickRng?: Rng;
+  /** the versions this world has used: one not yet used is preferred, and the one laid is marked */
+  once?: WorldOnce<string>;
 }
 
 /**
- * Lay one section out in its own space with the budget's rules: every jump inside it sized from the envelope (its `share` of
- * maxGap for that rise), every rise clamped to the rise limit, Easy's landings widened. Mirrored, it is flipped left to right
- * (its exit piece becomes its entry) and the sockets read 1 - t.
+ * Pick one version of each of a section's sub-blocks: `fixed` first (Easy following Normal), otherwise a weighted order (each draw
+ * weighted by `weight`, without putting back) and the first in it this world has not used yet (WorldOnce: the one used longest ago
+ * when all have been). Draws nothing for a section with no sub-blocks, so such sections lay exactly as they did before.
  */
-export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mirrored = false): LocalLayout {
+export function chooseVersions(tpl: SectionTemplate, rng: Rng, once?: WorldOnce<string>, fixed?: Readonly<Record<string, string>>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const sb of tpl.subBlocks ?? []) {
+    if (!sb.versions.length) throw new Error(`gen2 section ${tpl.id}: sub-block ${sb.id} has no versions`);
+    const want = fixed?.[sb.id];
+    let v = want === undefined ? undefined : sb.versions.find((x) => x.id === want);
+    if (want !== undefined && !v) throw new Error(`gen2 section ${tpl.id}: sub-block ${sb.id} has no version ${want}`);
+    if (v) once?.use(versionKey(tpl.id, sb.id, v.id));
+    else {
+      const left = [...sb.versions];
+      const order: typeof left = [];
+      while (left.length) {
+        const p = pickWeighted(rng, left, (x) => x.weight ?? 1)!;
+        order.push(p);
+        left.splice(left.indexOf(p), 1);
+      }
+      v = once ? once.pick(order, (x) => versionKey(tpl.id, sb.id, x.id))! : order[0];
+    }
+    out[sb.id] = v.id;
+  }
+  return out;
+}
+
+/** a piece's reference to another piece of its section (the one it is placed after, on or over) */
+const refOf = (pc: SectionPiece): string | null => {
+  const pl = pc.place;
+  return pl.kind === 'start' ? null : pl.kind === 'on' || pl.kind === 'over' ? pl.on : pl.after;
+};
+
+/**
+ * Lay one section out in its own space with the budget's rules: every jump inside it sized from the envelope (its `share` of
+ * maxGap for that rise), every rise clamped to the rise limit, Easy's landings widened. Its sub-blocks' versions are rolled first
+ * (chooseVersions) and their pieces laid with the section's, each as soon as the piece it refers to is laid (in list order: the
+ * section's pieces, then each sub-block's version). Mirrored, it is flipped left to right (its exit piece becomes its entry) and
+ * the sockets read 1 - t.
+ */
+export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mirrored = false, lo: LayLocalOptions = {}): LocalLayout {
   const by = new Map<string, LocalPiece>();
   const out: LocalPiece[] = [];
   const gaps: LocalGap[] = [];
   const dblOK = budget.moves.includes('double');
   const shareFor = (s: Range | undefined) => Math.min(1, s === undefined ? 0.5 + 0.3 * budget.heat + 0.1 * rng() : roll(rng, s));
-  for (const pc of tpl.pieces) {
+  const versions = chooseVersions(tpl, lo.pickRng ?? rng, lo.once, lo.versions);
+  const chosen = (tpl.subBlocks ?? []).map((sb) => sb.versions.find((v) => v.id === versions[sb.id])!);
+  const all: SectionPiece[] = [...tpl.pieces, ...chosen.flatMap((v) => v.pieces)];
+  const sockets: Socket[] = [...tpl.sockets, ...chosen.flatMap((v) => v.sockets ?? [])];
+  const seenKey = new Set<string>();
+  for (const pc of all) {
+    if (seenKey.has(pc.key)) throw new Error(`gen2 section ${tpl.id}: two pieces named ${pc.key} (with versions ${JSON.stringify(versions)})`);
+    seenKey.add(pc.key);
+  }
+  const seenSock = new Set<string>();
+  for (const s of sockets) {
+    if (seenSock.has(s.id)) throw new Error(`gen2 section ${tpl.id}: two sockets named ${s.id} (with versions ${JSON.stringify(versions)})`);
+    seenSock.add(s.id);
+  }
+  // (each piece as soon as what it refers to is laid; with no sub-blocks and only backward references this is the list's order)
+  const pending = [...all];
+  while (pending.length) {
+    const at = pending.findIndex((q) => {
+      const k = refOf(q);
+      return k === null || by.has(k);
+    });
+    if (at < 0) {
+      const p0 = pending[0];
+      throw new Error(`gen2 section ${tpl.id}: piece ${p0.key} refers to ${refOf(p0)}, which is never laid (versions ${JSON.stringify(versions)})`);
+    }
+    const pc = pending.splice(at, 1)[0];
     let w = roll(rng, pc.w);
     let x = 0;
     let y = 0;
     let h = pc.h ?? 24;
     const pl = pc.place;
-    const ref = (k: string) => {
-      const p = by.get(k);
-      if (!p) throw new Error(`gen2 section ${tpl.id}: piece ${pc.key} refers to ${k}, which is not laid before it`);
-      return p;
-    };
+    const ref = (k: string) => by.get(k)!;
     if (pl.kind === 'start') {
       x = 0;
       y = 0;
@@ -298,7 +378,8 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     [entry, exitP] = [exitP, entry];
   }
   // (the entry anchor is the top-left of the entry piece: move everything so it sits at (0, 0))
-  const e = by.get(entry.piece)!;
+  const e = by.get(entry.piece);
+  if (!e) throw new Error(`gen2 section ${tpl.id}: its entry piece ${entry.piece} is not laid`);
   const ox = e.x;
   const oy = e.y;
   for (const p of out) {
@@ -310,8 +391,9 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     g.x1 -= ox;
     g.y -= oy;
   }
-  const xp = by.get(exitP.piece)!;
-  return { pieces: out, gaps, entry, exit: { ...exitP, x: xp.x + xp.w, y: xp.y }, width: right - left, mirrored };
+  const xp = by.get(exitP.piece);
+  if (!xp) throw new Error(`gen2 section ${tpl.id}: its exit piece ${exitP.piece} is not laid`);
+  return { pieces: out, gaps, entry, exit: { ...exitP, x: xp.x + xp.w, y: xp.y }, width: right - left, mirrored, sockets, versions };
 }
 
 /** everything pass 3 hands on */
@@ -331,11 +413,15 @@ export interface Laid {
 export interface LayOptions {
   /** follow this plan (Easy follows Normal's) instead of choosing */
   plan?: PlanSlot[];
+  /** slots of the plan chosen fresh (a swap, a section the length loop adds): their plan entry gives only the node */
+  open?: ReadonlySet<number>;
   /** stretch (> 1) or shorten each node's seconds (the length repair) */
   aim?: number;
   /** slot -> sections not to use there (the swap repair) */
   bans?: ReadonlyMap<number, ReadonlySet<string>>;
   recent?: readonly string[];
+  /** sub-block versions (versionKey) the world's earlier stages used */
+  usedVersions?: readonly string[];
 }
 
 /** the start runway (nothing can hurt in the first seconds) and the shrine's bank */
@@ -347,7 +433,7 @@ const OPEN_SECONDS = 5;
 
 /** the seconds a section costs the typical first-timer (the time model's walk, its animals, its own extra) */
 function sectionSeconds(L: LocalLayout, tpl: SectionTemplate, budget: StageBudget): number {
-  const foes = tpl.sockets.filter((s) => s.role === 'enemy').reduce((s, k) => s + (k.chance ?? 1), 0) * budget.enemyShare;
+  const foes = L.sockets.filter((s) => s.role === 'enemy').reduce((s, k) => s + (k.chance ?? 1), 0) * budget.enemyShare;
   return L.width / budget.walkSpeed + foes * MODEL_TYPICAL.fightGround + (tpl.extraSeconds ?? 0);
 }
 
@@ -400,9 +486,16 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const plan: PlanSlot[] = [];
   const cool = new CooldownQueue<string>(Math.max(1, Math.min(4, Math.floor(M.sections.length / 2))));
   for (const id of opt.recent ?? []) cool.use(id);
+  // (sub-block versions: none twice in a world while another is left, A5 / C4)
+  const once = new WorldOnce<string>();
+  for (const k of opt.usedVersions ?? []) once.use(k);
   const taught = new Set<string>(Object.entries(M.lessons ?? {}).filter(([, st]) => stageOrder(st) < stageOrder(budget.id)).map(([m]) => m));
   const used = new Map<string, number>();
-  const aim = opt.aim ?? 1;
+  // (a purge or gauntlet: most of its animals come from pass 4's top-up, which the sections' own seconds can't see; about three
+  // quarters of the goal's fights are kept back from the sections' share, so the first plan lands near the clock, not 30% over it)
+  const fightsArch = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+  const reserve = fightsArch ? budget.quota.lay * MODEL_TYPICAL.fightGround * 0.75 : 0;
+  const aim = (opt.aim ?? 1) * Math.max(0.4, (budget.seconds.target - reserve) / budget.seconds.target);
   let slot = 0;
   const bags = new Map<string, ShuffleBag<SectionTemplate>>();
 
@@ -458,21 +551,25 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     while (opt.plan ? opt.plan[slot]?.node === n.id : first || secs < want) {
       first = false;
       const i = slot++;
-      const fixed = opt.plan?.[i];
+      const fixed = opt.open?.has(i) ? undefined : opt.plan?.[i];
       const tpl = fixed ? byId.get(fixed.template)! : choose(n, i);
-      const srng = rngFor(seed, 11, i, opt.bans?.get(i)?.size ?? 0);
-      const mirrored = fixed ? fixed.mirrored : tpl.mirrorable && srng() < 0.5;
-      const L = layLocal(tpl, budget, srng, mirrored);
+      // (the slot's stream: salted by the swaps made at it; a plan carries Normal's salt so Easy rolls the slot as Normal did)
+      const salt = fixed ? fixed.salt ?? 0 : opt.bans?.get(i)?.size ?? 0;
+      const srng = rngFor(seed, 11, i, salt);
+      // (the flip is drawn whether or not a plan fixes it, so the geometry after it rolls from the same numbers on Easy and Normal)
+      const flip = tpl.mirrorable ? srng() : 1;
+      const mirrored = fixed ? fixed.mirrored : flip < 0.5;
+      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once });
       // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
       const jrng = rngFor(seed, 13, i);
       let join: PlanSlot['join'];
-      if (fixed) join = fixed.join;
-      else if (cur.kind === 'ground' && L.entry.kind === 'ground') {
+      // (drawn the same way with or without a plan, so the join's sizes below come from the same numbers on Easy and Normal)
+      if (cur.kind === 'ground' && L.entry.kind === 'ground') {
         const quiet = n.phase === 'start' || n.phase === 'rest' || n.phase === 'goal' || (tpl.room && true);
         const pitW = quiet ? 0 : n.tension * 1.2;
         const r0 = jrng() * (1 + 0.6 + pitW);
-        join = r0 < 1 ? 'walk' : r0 < 1.6 ? 'step' : 'pit';
-      } else join = 'jump';
+        join = fixed ? fixed.join : r0 < 1 ? 'walk' : r0 < 1.6 ? 'step' : 'pit';
+      } else join = fixed ? fixed.join : 'jump';
       const j = jrng();
       let dx = 0;
       let dy = 0;
@@ -516,7 +613,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         const p = mk(ox + lp.x, oy + lp.y, lp.w, lp.shape, lp.h, lp.style);
         placed.pieces.push({ key: lp.key, platform: p, main: lp.main, landing: lp.landing });
       }
-      const pieceOf = (k: string) => placed.pieces.find((q) => q.key === k)!.platform;
+      const pieceOf = (k: string) => {
+        const q = placed.pieces.find((pp) => pp.key === k);
+        if (!q) throw new Error(`gen2 section ${tpl.id}: nothing named ${k} is laid (versions ${JSON.stringify(L.versions)})`);
+        return q.platform;
+      };
       const entryP = pieceOf(L.entry.piece);
       if (dx > 0) gaps.push({ x0: cur.x, x1: ox, y: Math.min(cur.y, oy), from: cur.piece, to: entryP, section: placed.uid });
       for (const g of L.gaps) {
@@ -529,7 +630,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         }
       }
       // the sockets, bound to their piece (t along its top, dn above it)
-      for (const s of tpl.sockets) {
+      for (const s of L.sockets) {
         const p = pieceOf(s.on);
         const t0 = Math.max(0, Math.min(1, roll(srng, s.t)));
         const t = mirrored ? 1 - t0 : t0;
@@ -544,7 +645,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       placed.seconds = sectionSeconds(L, tpl, budget) + dx / budget.walkSpeed;
       secs += placed.seconds;
       sections.push(placed);
-      plan.push({ template: tpl.id, mirrored, node: n.id, join });
+      plan.push({ template: tpl.id, mirrored, node: n.id, join, ...(Object.keys(L.versions).length ? { versions: L.versions } : {}), ...(salt ? { salt } : {}) });
       cool.use(tpl.id);
       used.set(tpl.id, (used.get(tpl.id) ?? 0) + 1);
       if (tpl.teaches) taught.add(tpl.teaches);
@@ -580,10 +681,14 @@ export function placeRoom(room: LocalRoomSpec, uid: string, idOf: (key: string) 
   const a = (l: LocalAnchor): Anchor => ({ ...l, on: idOf(l.on) });
   const name = (id: string) => `${uid}-${id}`;
   const wire = (w: Wire): Wire => (typeof w === 'string' ? name(w) : 'all' in w ? { all: w.all.map(wire) } : 'any' in w ? { any: w.any.map(wire) } : { not: wire(w.not) });
+  // (every field of PieceSpec that names another piece, and every one that is an anchor or a list of them: puzzleKit.ts)
+  const REFS = ['source', 'for', 'with', 'by', 'into'] as const;
+  const ANCHORS = ['at', 'to'] as const;
   const pieces = room.pieces.map((p) => {
     const q = { ...p, id: name(p.id) } as Record<string, unknown>;
-    if ('at' in p && p.at) q.at = a(p.at);
-    for (const k of ['source', 'for', 'with', 'by'] as const) if (typeof q[k] === 'string') q[k] = name(q[k] as string);
+    for (const k of ANCHORS) if (q[k] && typeof q[k] === 'object') q[k] = a(q[k] as LocalAnchor);
+    if (Array.isArray(q.trough)) q.trough = (q.trough as LocalAnchor[]).map(a);
+    for (const k of REFS) if (typeof q[k] === 'string') q[k] = name(q[k] as string);
     if ('open' in p && p.open !== undefined) q.open = wire(p.open);
     return q as unknown as PieceSpec;
   });
@@ -624,7 +729,9 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const C = sink.collectibles;
   const flower = (x: number, y: number) => {
     if (C.some((c) => Math.hypot(c.x - x, c.y - y) < 40)) return;
-    C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: M.flowers[Math.floor(rng() * M.flowers.length)], x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
+    // (its look from its own spot, not the shared stream: a flower skipped for overlapping must not move every roll after it)
+    const look = M.flowers[Math.floor(rngFor(seed, 29, R(x), R(y))() * M.flowers.length)];
+    C.push({ id: sink.nextCollectibleId(), type: 'flower', botanicalVariant: look, x: R(x), y: R(y), collected: false, bobPhase: (x * 0.031) % 6.28 });
   };
   const tipsSaid = new Set<string>();
   // (lessons from earlier stages need no tip here)
@@ -675,13 +782,14 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
   const creatureBag = new ShuffleBag<CreatureDef>(rng, M.creatures);
   const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection }> = [];
 
-  for (const sec of laid.sections) {
+  for (const [si, sec] of laid.sections.entries()) {
     // (Normal's threat on both difficulties, so the sockets roll alike; Easy's 60% is a count cut after the spacing, below)
     let threat = budget.threat * sec.tension;
     let objectives = 0;
-    for (const k of sec.sockets) {
+    for (const [ki, k] of sec.sockets.entries()) {
       const s = k.socket;
-      const r0 = rng();
+      // (each socket's chance from its own stream: whatever Easy or Normal did with the sockets before it, it rolls the same)
+      const r0 = rngFor(seed, 17, si, ki)();
       const want = (s.chance ?? 1) > r0 && (!s.phases || s.phases.includes(sec.phase));
       const dropOnEasy = easy && s.easy === 'drop';
       if (s.role === 'tip') {
@@ -761,19 +869,27 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       if (k > 0 && Math.floor(k * budget.enemyShare) === Math.floor((k - 1) * budget.enemyShare)) kept.delete(f);
     }
   }
+  const byCreature = new Map(M.creatures.map((c) => [c.id, c]));
   for (const f of foes) {
     if (!kept.has(f)) continue;
     sink.enemies.push(f.e);
     fills.push(f.fill);
     f.sec.beats.push({ x: f.x, letter: 'C' });
+    kit.spawn?.(f.e, byCreature.get(f.kind)!, sink);
   }
-  // (rests are allowed to be quiet: only barren stretches outside them are reported)
+  const topped = topUpFoes(laid, budget, kit, seed, sink, safe, openX, [...foes.filter((f) => kept.has(f)), ...props]);
+  fills.push(...topped);
+  // (rests are allowed to be quiet: only barren stretches outside them are reported, and a top-up animal fills the stretch it is in)
   const restSpans = laid.sections.filter((s) => s.phase === 'rest' || s.phase === 'start' || s.phase === 'goal').map((s) => [s.x0, s.x1] as const);
-  const barren = spaced.unfilled.filter((g) => !restSpans.some(([a, b]) => g.from >= a - 60 && g.to <= b + 60)).map((g) => [R(g.from), R(g.to)] as [number, number]);
+  const barren = spaced.unfilled
+    .filter((g) => !restSpans.some(([a, b]) => g.from >= a - 60 && g.to <= b + 60))
+    .filter((g) => !topped.some((f) => f.x > g.from && f.x < g.to))
+    .map((g) => [R(g.from), R(g.to)] as [number, number]);
 
   // petal arcs over the jumps (half a beat each, E1), and a harvest's top-up to its laid count
-  for (const g of laid.gaps) {
-    if (g.x1 - g.x0 < 90 || rng() > 0.7) continue;
+  for (const [gi, g] of laid.gaps.entries()) {
+    const arc = rngFor(seed, 31, gi)() <= 0.7;
+    if (g.x1 - g.x0 < 90 || !arc) continue;
     for (let i = 0; i < 3; i++) {
       const tt = (i + 0.5) / 3;
       flower(g.x0 + (g.x1 - g.x0) * tt, g.y - 70 - 50 * Math.sin(Math.PI * tt));
@@ -787,6 +903,24 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
         if (!p.main || p.platform.width < 200) continue;
         for (let x = p.platform.x + 60; x < p.platform.x + p.platform.width - 60 && flowers() < budget.quota.lay; x += 90) flower(x, p.platform.y - FLOWER_UP);
       }
+    }
+  }
+  // water (Matt, 2026-10-28): a fall into it costs a life on Easy too, so it is warned: Dot's line WATER_WARN.lead px before the lip
+  // (gone once he is past it) and a sign at the edge (proto.gen2.waterWarnings, for the world's art). Normal warns at the first water
+  // only (the teaching rule); Easy at every water gap once WATER_WARN.every seconds of walking passed since the last warning.
+  if (budget.pit === 'water') {
+    const every = WATER_WARN.every * budget.walkSpeed;
+    const text = M.tips?.water ?? WATER_LINE;
+    const signs = (sink.extras.waterWarnings ??= []) as Array<{ x: number; y: number }>;
+    let last = -Infinity;
+    for (const g of [...laid.gaps].sort((a, b) => a.x0 - b.x0)) {
+      if (g.x1 - g.x0 < 20) continue;
+      if (signs.length && (!easy || g.x0 - last < every)) continue;
+      const x = R(Math.max(laid.spawn.x + 40, g.x0 - WATER_WARN.lead));
+      hints.push({ x, text, pad: text, keys: text, passX: R(g.x1 + 80) });
+      signs.push({ x: R(g.x0 - 40), y: R(g.y) });
+      fills.push({ section: g.section ?? '', socket: 'water', role: 'tip', what: 'water', x, y: R(g.y) });
+      last = g.x0;
     }
   }
   return { enemies: sink.enemies, collectibles: C, checkpoints, hints, fills, barren, extras: sink.extras };
@@ -814,6 +948,86 @@ function patchFor(x: number, p: Platform, safe: ReadonlyArray<{ x: number; y: nu
     else return null;
   }
   return hi - lo >= minGround && x >= lo && x <= hi ? [R(lo), R(hi)] : null;
+}
+
+/** a top-up animal keeps this far from a flag it stands before (px): never waiting right at the next checkpoint */
+const FLAG_BEFORE = 400;
+
+/**
+ * A purge's or gauntlet's top-up (like a harvest's): its goal counts animals (5-9: 26), and the threat budgets alone lay fewer. Adds
+ * the world's creatures (those tagged `topup`, else every ground creature, from a bag) on the widest main-route pieces, round by
+ * round (each piece's middle, then its quarters, then its eighths), until `budget.quota.lay` stand before the shrine: Normal the goal
+ * + 2, Easy easyMode's goal (round(0.6 x the goal)) + 2. Never in the opening seconds, a rest, the start, the shrine's stretch or a
+ * room; never within FLAG_BEFORE px before a flag nor within reach of a safe spot (patchFor); never under a stump standing on the
+ * piece; Poisson-spaced against every animal and prop already laid. The goal stays the designed number (config.targetCount).
+ */
+function topUpFoes(
+  laid: Laid,
+  budget: StageBudget,
+  kit: WorldKit,
+  seed: number,
+  sink: StageSink,
+  safe: ReadonlyArray<{ x: number; y: number }>,
+  openX: number,
+  fixed: readonly RoutePiece[],
+): FilledSocket[] {
+  if (budget.archetype !== 'purge' && budget.archetype !== 'gauntlet') return [];
+  const M = kit.manifest;
+  const lastX = laid.exit.x - 200;
+  const need = budget.quota.lay - sink.enemies.filter((e) => e.x <= lastX).length;
+  if (need <= 0) return [];
+  const tagged = M.creatures.filter((c) => c.terrain !== 'air' && c.tags?.includes('topup'));
+  const kinds = tagged.length ? tagged : M.creatures.filter((c) => c.terrain !== 'air');
+  if (!kinds.length) return [];
+  const bag = new ShuffleBag<CreatureDef>(rngFor(seed, 37), kinds);
+  const flags = safe.slice(1, -1);
+  const pieces = laid.sections
+    .filter((s) => s.phase !== 'start' && s.phase !== 'rest' && s.phase !== 'goal' && !s.room)
+    .flatMap((s) => s.pieces.filter((p) => p.main).map((p) => ({ s, p: p.platform })))
+    .sort((a, b) => b.p.width - a.p.width || a.p.x - b.p.x);
+  // (the stretch of a piece's top with nothing standing on it: a stump on a bank is a wall in a patrol)
+  const freeRun = (x: number, p: Platform): [number, number] | null => {
+    let lo = p.x;
+    let hi = p.x + p.width;
+    for (const q of laid.platforms) {
+      if (q === p || q.x >= p.x + p.width || q.x + q.width <= p.x || q.y >= p.y || q.y + q.height < p.y - 4) continue;
+      if (x >= q.x - 30 && x <= q.x + q.width + 30) return null;
+      if (q.x + q.width <= x) lo = Math.max(lo, q.x + q.width);
+      else hi = Math.min(hi, q.x);
+    }
+    return [lo, hi];
+  };
+  type Cand = RoutePiece & { c: CreatureDef; p: Platform; s: PlacedSection; patch: [number, number] };
+  const cands: Cand[] = [];
+  for (const ts of [[0.5], [0.25, 0.75], [0.125, 0.375, 0.625, 0.875]]) {
+    for (const { s, p } of pieces) {
+      for (const t of ts) {
+        const x = R(p.x + t * p.width);
+        const c = bag.draw()!;
+        if (x < openX || x > lastX || !terrainOK(c, p)) continue;
+        if (flags.some((f) => x <= f.x && f.x - x < FLAG_BEFORE)) continue;
+        const run = freeRun(x, p);
+        if (!run) continue;
+        const patch = patchFor(x, { ...p, x: run[0], width: run[1] - run[0] }, safe, c.minGround);
+        if (patch) cands.push({ x, kind: c.id, c, p, s, patch });
+      }
+    }
+  }
+  const minGap: Record<string, number> = {};
+  for (const c of M.creatures) minGap[c.id] = SAME_CREATURE;
+  const spaced = poissonPlace<RoutePiece>(cands, { rng: rngFor(seed, 41), minGap, minGapAny: ANY_APART, maxGap: Infinity, fixed });
+  const ok = new Set(spaced.placed);
+  const out: FilledSocket[] = [];
+  for (const k of cands) {
+    if (out.length >= need) break;
+    if (!ok.has(k)) continue;
+    const e = makeEnemy(k.c, k.x, k.p.y, k.patch, sink.nextEnemyId(), budget.difficulty === 'easy');
+    sink.enemies.push(e);
+    k.s.beats.push({ x: k.x, letter: 'C' });
+    kit.spawn?.(e, k.c, sink);
+    out.push({ section: k.s.uid, socket: 'topup', role: 'enemy', what: k.c.id, x: k.x, y: k.p.y });
+  }
+  return out;
 }
 
 function makeEnemy(c: CreatureDef, x: number, top: number, patch: [number, number], id: number, soften: boolean): Enemy {
@@ -923,6 +1137,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     modelled: { typical: 0, fast: 0 },
     errors: [],
     barren: filled.barren,
+    falls: laid.gaps.map((g) => ({ x0: R(g.x0), x1: R(g.x1), y: R(g.y), kind: budget.pit as PitKind })),
   };
   const stage: Gen2Stage = {
     config,
@@ -947,8 +1162,18 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
   return { stage, laid };
 }
 
+/**
+ * levelCheck on the stage as this difficulty will play it: an Easy purge or gauntlet is held to easyMode's goal (budget.quota.check,
+ * round(0.6 x the goal)), which the engine's easyStage sets at play; the stage itself keeps the designed goal in its config
+ */
+export function checkStage(st: GeneratedStage, budget: StageBudget): ReturnType<typeof validateStage> {
+  const cfg = st.config;
+  return validateStage(budget.quota.check === cfg.targetCount ? st : { ...st, config: { ...cfg, targetCount: budget.quota.check } });
+}
+
 /** what the validation pass decided */
-type Verdict = { ok: true } | { ok: false; swap?: number; reroll?: boolean };
+/** (`thin`: it passes, but a purge or gauntlet holds fewer animals than it lays for, its goal + 2: worth a longer stage if there is time) */
+type Verdict = { ok: true; thin?: boolean } | { ok: false; swap?: number; reroll?: boolean; short?: boolean };
 
 /**
  * Pass 5: levelCheck (which runs puzzleCheck on the rooms), then local repair (D3, Part 1 Pass 5's "self-healing"):
@@ -956,13 +1181,18 @@ type Verdict = { ok: true } | { ok: false; swap?: number; reroll?: boolean };
  *   an animal too close to a safe spot is taken out;
  *   an unreachable piece of the route: a stepping stone in the seam before the first section that cannot be reached;
  *   still unreachable there, or a room that cannot be solved: that one section is swapped (the caller bans it at that slot);
- *   anything else (a quota short): a whole re-roll.
+ *   a purge's or gauntlet's animals short of its goal: a longer stage (the caller adds a section);
+ *   anything else (another quota short): a whole re-roll.
  */
 export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[], tried: Set<string>): Verdict {
   const st = b.stage;
   for (let it = 0; it < 8; it++) {
-    const res = validateStage(st);
-    if (res.ok) return { ok: true };
+    const res = checkStage(st, budget);
+    if (res.ok) {
+      const fights = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+      const before = st.enemies.filter((e) => e.x <= st.exitTotemX - 200).length;
+      return fights && before < budget.quota.lay ? { ok: true, thin: true } : { ok: true };
+    }
     let fixed = false;
     let unreachable = false;
     for (const err of res.errors) {
@@ -1005,6 +1235,9 @@ export function checkAndRepair(b: Built, budget: StageBudget, repairs: Repair[],
       }
       if (!fixed) return { ok: false, swap: bad };
     }
+    // (a purge or gauntlet whose top-up found no room for the goal's animals: a longer stage, not a new roll)
+    const fights = budget.archetype === 'purge' || budget.archetype === 'gauntlet';
+    if (!fixed && fights && res.errors.some((e) => /^not enough enemies/.test(e))) return { ok: false, short: true };
     if (!fixed) return { ok: false, reroll: true };
   }
   return { ok: false, reroll: true };
@@ -1037,24 +1270,49 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
     st.gen2.repairs = repairs;
     if (v.ok && fast >= budget.seconds.fastFloor) return st;
     best = st;
-    st.gen2.errors = validateStage(st).errors;
+    st.gen2.errors = checkStage(st, budget).errors;
     repairs.push({ kind: 'reroll', note: "Easy could not lay Normal's plan: Easy plans its own (the curation report names the stage)" });
   }
+  // (the stage is the same on both difficulties, so Normal's build also holds Easy's quick player to the floor: Easy lays its plan)
+  const easyReq: BuildRequest = { ...req, difficulty: 'easy' };
+  const easyBudget = req.difficulty === 'easy' ? budget : planBudget(req.config, M, 'easy');
+  const byId = new Map(M.sections.map((t) => [t.id, t]));
   for (let rr = 0; rr <= maxRerolls; rr++) {
     const seed = rr === 0 ? req.seed : req.seed * 1009 + rr * 7919;
     const repairs: Repair[] = [];
     const bans = new Map<number, Set<string>>([[-1, new Set([...failedAt].filter(([, n]) => n >= 2).map(([t]) => t))]]);
     const tried = new Set<string>();
-    let aim = 1.0;
-    for (let it = 0; it < 10; it++) {
-      const b = assemble(req, budget, graph, seed, { aim, bans, recent: req.recent });
+    // The first build chooses everything; after it the plan is kept, and each change is local: a swap re-chooses one slot, and the
+    // length loop adds one freshly chosen section just before the shrine's node (growPlan) or takes the last one off (trimPlan). So
+    // the stage converges instead of re-picking everything after a changed node (it used to swing between two plans either side of
+    // the window). Once it has grown it never trims (the floors are the rule, the ceiling is not); once it has trimmed, a grow would
+    // undo it, so it goes back to the last stage that met the floors instead.
+    let plan: PlanSlot[] | undefined;
+    let open = new Set<number>();
+    let grew = false;
+    let lastMeeting: Gen2Stage | null = null;
+    for (let it = 0; it < 24; it++) {
+      const b = assemble(req, budget, graph, seed, { bans, recent: req.recent, usedVersions: req.usedVersions, plan, open });
       const v = checkAndRepair(b, budget, repairs, tried);
       const st = b.stage;
       st.gen2.rerolls = rr;
       st.gen2.repairs = [...repairs];
+      const grow = (note: string) => {
+        if (lastMeeting) return false;
+        const g = growPlan(b.laid.plan, graph);
+        plan = g.plan;
+        open = new Set([g.open]);
+        grew = true;
+        repairs.push({ kind: 'length', note });
+        return true;
+      };
       if (!v.ok) {
-        st.gen2.errors = validateStage(st).errors;
+        st.gen2.errors = checkStage(st, budget).errors;
         if (!best) best = st;
+        // (a trim that broke it: the stage before the trim passed)
+        if (lastMeeting) return lastMeeting;
+        // (the goal's animals need room: one more section; the goal itself stays as designed)
+        if (v.short && grow("room for the goal's animals: one more section")) continue;
         if (v.swap !== undefined && b.laid.plan[v.swap]) {
           const tpl = b.laid.plan[v.swap].template;
           const set = bans.get(v.swap) ?? new Set<string>();
@@ -1065,25 +1323,74 @@ export function buildGen2Stage(req: BuildRequest): Gen2Stage {
           failedAt.set(tpl, (failedAt.get(tpl) ?? 0) + 1);
           if (failedAt.get(tpl)! >= 2) bans.set(-1, new Set([...(bans.get(-1) ?? []), tpl]));
           repairs.push({ kind: 'swap', section: `s${v.swap + 1}`, note: `${tpl} swapped out` });
+          plan = b.laid.plan;
+          open = new Set([v.swap]);
           continue;
         }
         break;
       }
-      // the clock (§1: at least 2 minutes for a quick player, every roll): the time model, typical and fast
+      if (v.thin) {
+        if (grow('room for 2 animals over the goal: one more section')) continue;
+        return lastMeeting!;
+      }
+      // the clock (§1: at least 2 minutes for a quick player, every roll): the time model, typical and fast, and Easy's quick player
+      // on the same plan (Easy has fewer animals, so it runs shorter)
       const typical = modelStage(st, MODEL_TYPICAL).total;
       const fast = modelStage(st, MODEL_FAST).total;
+      const easyFast = modelStage(assemble(easyReq, easyBudget, graph, seed, { plan: b.laid.plan }).stage, MODEL_FAST).total;
       st.gen2.modelled = { typical: Math.round(typical * 10) / 10, fast: Math.round(fast * 10) / 10 };
-      const short = Math.min(typical / budget.seconds.target, fast / budget.seconds.fastFloor);
-      const over = typical / budget.seconds.max;
-      if ((short < 1 || over > 1) && it < 9) {
-        aim *= short < 1 ? Math.min(1.4, (1.03 / short)) : Math.max(0.75, 0.98 / over);
-        repairs.push({ kind: 'length', note: `aim ${aim.toFixed(2)} (typical ${typical.toFixed(0)} s, fast ${fast.toFixed(0)} s)` });
-        best = st;
-        continue;
+      const short = typical < budget.seconds.target || fast < budget.seconds.fastFloor || easyFast < easyBudget.seconds.fastFloor;
+      const over = typical > budget.seconds.max;
+      const clock = `typical ${typical.toFixed(0)} s, fast ${fast.toFixed(0)} s, Easy fast ${easyFast.toFixed(0)} s`;
+      if (short) {
+        if (grow(`one more section (${clock})`)) continue;
+        // (it had trimmed past the floors: back to the last stage that met them)
+        return lastMeeting!;
       }
+      if (over && !grew) {
+        const t = trimPlan(b.laid.plan, graph, byId);
+        if (t) {
+          lastMeeting = st;
+          plan = t;
+          open = new Set();
+          repairs.push({ kind: 'length', note: `one section fewer (${clock})` });
+          continue;
+        }
+      }
+      if (over) st.gen2.repairs.push({ kind: 'length', note: `ships long: no shorter meets the floors and the goal (${clock}, ceiling ${budget.seconds.max.toFixed(0)} s)` });
       return st;
     }
+    if (lastMeeting) return lastMeeting;
     repairs.push({ kind: 'reroll', note: `roll ${rr} failed` });
   }
   return best!;
+}
+
+/** the plan with one more slot, chosen fresh (its index is returned as `open`), at the end of the node before the shrine's */
+export function growPlan(plan: readonly PlanSlot[], graph: MissionGraph): { plan: PlanSlot[]; open: number } {
+  const goal = graph.nodes[graph.nodes.length - 1].id;
+  let at = plan.findIndex((p) => p.node === goal);
+  if (at < 0) at = plan.length;
+  const node = plan[at - 1]?.node ?? graph.nodes[graph.nodes.length - 2].id;
+  return { plan: [...plan.slice(0, at), { template: '', mirrored: false, node, join: 'walk' }, ...plan.slice(at)], open: at };
+}
+
+/**
+ * The plan less its last section before the shrine's node, from a node that keeps another (never the start, never a section that
+ * teaches what one after it uses, never a room); null when nothing can go
+ */
+export function trimPlan(plan: readonly PlanSlot[], graph: MissionGraph, byId: ReadonlyMap<string, SectionTemplate>): PlanSlot[] | null {
+  const goal = graph.nodes[graph.nodes.length - 1].id;
+  const start = graph.nodes[0].id;
+  let end = plan.findIndex((p) => p.node === goal);
+  if (end < 0) end = plan.length;
+  for (let i = end - 1; i >= 0; i--) {
+    const p = plan[i];
+    if (p.node === start || plan.filter((q) => q.node === p.node).length < 2) continue;
+    const t = byId.get(p.template);
+    if (!t || t.room) continue;
+    if (t.teaches && plan.slice(i + 1).some((q) => byId.get(q.template)?.uses?.includes(t.teaches!))) continue;
+    return [...plan.slice(0, i), ...plan.slice(i + 1)];
+  }
+  return null;
 }

@@ -71,8 +71,11 @@ test('4-3: each fall is a different idea, in order: plugs, the pool and its log,
   for (const s of SEEDS) {
     const st = build(s);
     const kinds = st.falls43.map((f) => f.kind);
-    // the lessons, then the thief up a surge, the tide pool, a surge stair up to a plug, and the two surges of the finish
-    assert.deepEqual(kinds.slice(0, 8), ['plug', 'plug', 'pool', 'surge', 'surge', 'tide', 'surge', 'plug'], `seed ${s}: ${kinds.join(',')}`);
+    // the lessons (two plugs, the pool, the surge); then, in the roll's order (w4Sections.ts), the thief up a surge, the tide pool and a
+    // surge stair up to a plug; then the surges of the finish
+    assert.deepEqual(kinds.slice(0, 4), ['plug', 'plug', 'pool', 'surge'], `seed ${s}: ${kinds.join(',')}`);
+    const mid = kinds.slice(4, 8).join(',');
+    assert.ok(['surge,tide,surge,plug', 'tide,surge,surge,plug', 'surge,plug,tide,surge', 'surge,surge,plug,tide', 'tide,surge,plug,surge', 'surge,plug,surge,tide'].includes(mid), `seed ${s}: ${kinds.join(',')}`);
     assert.ok(kinds.slice(8).length >= 2 && kinds.slice(8).every((k) => k === 'surge'), `seed ${s}: ${kinds.join(',')}`);
     const falls = st.proto.w4!.falls!;
     for (const f of st.falls43) {
@@ -209,9 +212,11 @@ test('4-3: the thief sits by a petal and runs off up the terraces, post to post,
     }
     // the second runs up behind a surge: one of its posts is the cave behind the water, on a step of that surge's stair
     const second = monkeys[1];
-    const surge = st.falls43[4];
+    // (its surge: the first surge after the lesson's one that the second thief's posts run up behind)
+    const fallOf = (f: FallInfo) => st.proto.w4!.falls!.find((q) => q.id === f.fallId)!;
+    const surge = st.falls43.slice(4).find((f) => f.kind === 'surge' && second.path!.some((q) => q.x > fallOf(f).x && q.x < fallOf(f).x + fallOf(f).width)) ?? st.falls43[4];
     assert.equal(surge.kind, 'surge');
-    const w = st.proto.w4!.falls!.find((q) => q.id === surge.fallId)!;
+    const w = fallOf(surge);
     const inCave = second.path!.find((q) => q.x > w.x && q.x < w.x + w.width);
     assert.ok(inCave, `seed ${s}: the second thief does not run behind the water`);
     const caveLedge = on(inCave!.x, inCave!.y)!;
@@ -305,8 +310,10 @@ test('4-3: the tide pool: the surge lifts the log to the only way up, and the fa
 test('4-3: the boulder up the surge: its shelf is reached only up the surge stair, and a slip off the shelf only costs a climb', () => {
   for (const s of SEEDS) {
     const st = build(s);
-    const stair = st.falls43[6];
-    const plugF = st.falls43[7];
+    // (the one plug after the lessons, and the surge stair just before it; their place in the stage is the roll's)
+    const at = st.falls43.findIndex((f, i) => i >= 4 && f.kind === 'plug');
+    const stair = st.falls43[at - 1];
+    const plugF = st.falls43[at];
     assert.equal(stair.kind, 'surge');
     assert.equal(plugF.kind, 'plug');
     const shelf = st.platforms.find((p) => p.id === plugF.shelf)!;

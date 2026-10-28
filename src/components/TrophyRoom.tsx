@@ -1,13 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { BADGES, REWARDS, TIER_NAME, TIER_POINTS, TOTAL_POINTS, evaluate, pointsOf, rewardsUnlocked, type BadgeDef, type BadgeStore, type EvalContext, type LevelRecord } from '../game/badges.ts';
 import type { CosmeticChoice } from '../game/badgeStore.ts';
-import { GUARDIAN_ENTRIES, PREDATOR_ENTRIES, PREDATOR_ORDER } from '../game/journal.ts';
+import { GUARDIAN_ENTRIES, PREDATOR_ENTRIES, PREDATOR_ORDER, ROAD_ENTRIES, predatorMet, roadMet } from '../game/journal.ts';
 import type { Coat } from '../game/heroTint.ts';
 import { BadgeMedal } from './BadgeMedal.tsx';
 import { CoatPreview } from './CoatPreview.tsx';
 import { CreaturePic } from './CreaturePic.tsx';
 import { Icon } from './icons/index.tsx';
-import { Crest } from './icons/Crest.tsx';
 import { BONUS_FIND, FINDS, allFound, type FindDef } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
@@ -73,7 +72,8 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
   const plat = BADGES.find((b) => b.tier === 'platinum')!;
   const platGot = earnedIds.has(plat.id);
 
-  const metCount = PREDATOR_ORDER.filter((p) => store.seen.includes(p)).length;
+  const metCount = PREDATOR_ORDER.filter((p) => predatorMet(p, store.seen, levels)).length;
+  const roadCount = ROAD_ENTRIES.filter((r) => roadMet(r, levels)).length;
   const bossDone = (w: number) => levels.some((l) => l.worldIndex === w && l.miniIndex === 10 && l.completed);
 
   const wear = (coat: Coat) => onChoice({ ...choice, coat: choice.coat === coat ? 'none' : coat });
@@ -174,13 +174,13 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
         {tab === 'journal' && (
           <>
             <div className="tr-sub tr-jsub">
-              {metCount} of {PREDATOR_ORDER.length} predators met · {GUARDIAN_ENTRIES.filter((g) => bossDone(g.world)).length} of 10 guardians beaten
+              {metCount} of {PREDATOR_ORDER.length} predators met · {roadCount} of {ROAD_ENTRIES.length} others · {GUARDIAN_ENTRIES.filter((g) => bossDone(g.world)).length} of {GUARDIAN_ENTRIES.length} guardians beaten
             </div>
             <div className="tr-sec">Predators</div>
             <div className="tr-grid tr-grid-j">
               {PREDATOR_ORDER.map((id) => {
                 const e = PREDATOR_ENTRIES[id];
-                const met = store.seen.includes(id);
+                const met = predatorMet(id, store.seen, levels);
                 const n = store.kills[id] ?? 0;
                 return (
                   <div key={id} className={`tr-card ${met ? '' : 'lock'}`}>
@@ -190,8 +190,27 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                     <div className="tr-cn">{met ? e.name : '???'}</div>
                     <div className="tr-ct">{met ? e.tip : 'Not met yet. Keep exploring.'}</div>
                     <div className="tr-cf">
-                      <span>{e.first ? `From World ${e.first}` : ''}</span>
+                      <span>From World {e.first}</span>
                       <b>{met ? `Defeated ×${n}` : <Icon name="lock" size={13} label="Not met yet" />}</b>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="tr-sec">Met on the road</div>
+            <div className="tr-grid tr-grid-j">
+              {ROAD_ENTRIES.map((r) => {
+                const met = roadMet(r, levels);
+                return (
+                  <div key={r.id} className={`tr-card ${met ? '' : 'lock'}`}>
+                    <div className="tr-cpic">
+                      <CreaturePic id={r.id} w={120} h={74} locked={!met} />
+                    </div>
+                    <div className="tr-cn">{met ? r.name : '???'}</div>
+                    <div className="tr-ct">{met ? r.tip : 'Not met yet. Keep exploring.'}</div>
+                    <div className="tr-cf">
+                      <span>From World {r.first}</span>
+                      <b>{met ? <Icon name="check" size={14} label="Met" /> : <Icon name="lock" size={13} label="Not met yet" />}</b>
                     </div>
                   </div>
                 );
@@ -204,7 +223,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 return (
                   <div key={g.world} className={`tr-card ${done ? '' : 'lock'}`}>
                     <div className="tr-cpic">
-                      <Crest world={g.world} size={72} locked={!done} />
+                      <CreaturePic id={g.art} w={120} h={74} locked={!done} />
                     </div>
                     <div className="tr-cn">{done ? g.name : '???'}</div>
                     <div className="tr-ct">{done ? `Guardian of World ${g.world}. Defeated.` : `Guardian of World ${g.world}. Beat the 10th stage to meet it.`}</div>

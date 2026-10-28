@@ -1098,7 +1098,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
           for (const en of v.enemies) if (!en.defeated && Math.abs(en.x - v.px) < 150 && Math.abs(en.y - v.py) < 160) foe = true;
           run.alive.x = v.px;
           run.alive.y = v.py;
-          run.alive.foe = foe || v.hurt;
+          // (an animal close by, not any hit: still blinking from a falling rock or a thorn is not a foe, and the punch tip after it
+          // made no sense; World 4's builder, 2026-10-28: 4-7 has nothing to punch)
+          run.alive.foe = foe;
           run.alive.falling = !v.grounded && v.vy > 400;
         }
         if (v.lives < run.prevLives) {

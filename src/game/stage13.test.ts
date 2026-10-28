@@ -43,7 +43,8 @@ test('1-3: every rope lies over a soft pit (crossable before the rope is learned
       assert.ok(st.platforms.some((p) => p.x <= mid && p.x + p.width >= mid && p.y > G), `seed ${s}: moss under the rope`);
     }
     assert.deepEqual(badPickups({ platforms: st.platforms, vines: st.vines, ropes: st.ropes, waterY: st.waterY }, st.collectibles).length, 0);
-    for (let x = 0; x < st.exitTotemX; x += 20) assert.ok(st.platforms.some((p) => p.x <= x && p.x + p.width >= x && p.y >= G - 200), `seed ${s}: no floor at ${x}`);
+    // (or a wall standing on the ground, that a mushroom bounces him up: w1Sections.ts bounceWall, highLeaps)
+    for (let x = 0; x < st.exitTotemX; x += 20) assert.ok(st.platforms.some((p) => p.x <= x && p.x + p.width >= x && (p.y >= G - 200 || p.y + p.height >= G)), `seed ${s}: no floor at ${x}`);
   }
 });
 
