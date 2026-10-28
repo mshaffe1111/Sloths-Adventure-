@@ -41,15 +41,22 @@ Last updated: 2026-10-28 (after release PR #40).
 - Batch 2 (2026-10-28, Worlds 1-2 on build 39fc3db): 9 items, being fixed (helper "QA batch 2").
 - Asked of QA (2026-10-28): run the Matt bot through every stage of Worlds 3 and 4 on the live build; report on Matt's "send".
 
-## Queued next (in Matt's order)
+## Queued next (in Matt's order; Matt chose 2026-10-28: the Worlds 1-4 pass starts right after step 1, before the rest of World 5)
 
-1. Merge and check the five helpers above (LEAD-PLAYBOOK §4), test link, then QA.
-2. Real variety for Worlds 1-5: two or three versions of each section chosen per roll, shuffle bags, cooldowns, mirroring, curated
-   best rolls (ledger C1, C3, C4, C8, C10), proven by the 200-roll tool. World by world.
-3. World 5 (5-1..5-5) dead time (5-2 69 s, 5-4 60 s, 5-5 55 s) and the rest of the World 5 plan; 5-6 hand-built "Where She Ran".
-4. The new generator, first on 5-7..5-9, then Worlds 6-10 (ledger I2-I3).
-5. Difficulty-scaled rules (ledger D2, E2, F1, F5) and pacing numbers in the inspector (A6, E3, E4).
-6. Flicker's tiered hints (F6). World 1-2 art placement follow-up (nest door, petal bundle) after QA batch 2 merges.
+1. **Finish what is running** (the five helpers above): LEAD-PLAYBOOK §4 checks on each, the test link, then QA's Worlds 3-4 run
+   against the checklist. The jump-forgiveness change must land before any stage is re-tuned.
+2. **Measure Worlds 1-4, no building:** the 200-roll tool, the first-timer bot (Easy and Normal) and the inspector on seeds 1-3 over
+   every stage -> one gap list per stage against STAGE-RULES (roll sameness, rule failures across rolls, new-player hurts and stuck
+   spots, Dot pacing, unused art). Show Matt the list before building.
+3. **The variety pass**, Worlds 1+2 together, then 3+4 (at most two building helpers): two or three real versions of each stage's
+   main sections chosen per roll, a shuffle bag and cooldown for pieces and decor, mirroring where it fits, curated best rolls from
+   the 200-roll results (ledger C1, C3, C4, C8, C10); fix the step-2 gap list; place the remaining art (World 1 nest door, petal
+   bundle). Proof: rolls 0.65 alike or less (diversity >= 0.35) and no roll breaks a rule.
+4. **Easy truly easier, and pacing measured** across Worlds 1-4: wider landings, softer pits, fewer enemies, a per-difficulty
+   jump margin (ledger D2, F1); action rate, burst length, tension curve and minimum input window in the inspector (A6, E2-E4, F5).
+5. **QA and Matt:** a full QA sweep of each pair of worlds against the checklist, Matt on the test link, release on his "push".
+6. Then: the rest of World 5 (5-1..5-5 dead time, 5-6 "Where She Ran" hand-built), the new generator on 5-7..5-9 then Worlds 6-10,
+   Flicker's tiered hints (F6).
 
 ## The current QA checklist (sent to the QA session 2026-10-28; keep in step with STAGE-RULES)
 
