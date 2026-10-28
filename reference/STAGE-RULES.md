@@ -62,6 +62,7 @@ Last updated 2026-10-28.
 | Opening seconds | Nothing can hurt in the first ~3-5 s of plain walking; the first tip comes before the first hazard it teaches. | first-timer bot |
 | Plain walk | No step, lip or dip that stops a plain walk dead; every dip has a one-jump way out; a jump into a face carries over its lip. | first-timer bot, kid bot |
 | Jump forgiveness (30 fps) | Coyote time ~133 ms Normal / 167 ms Easy; jump buffer ~133 / 200 ms; ledge-landing forgiveness; head-bonk and shin-mantle corner correction. | engine; first-timer bot |
+| Easy jumps | No Easy jump needs a full hold: every Easy stage is finishable with a ~70% hold (Gemini G8). Easy softens the place, it doesn't remove the jump: a wider landing, a step halfway up, or a catch ledge (`easyMode.ts easyHoldSoften`). | validator `easyHoldCheck`; gate `easyMode.test.ts`, rolls 1-3 |
 | Hotspots | No jump the kid bot (Easy, noisy thumb ~N(+90 ms, 65 ms) reaction) makes under 85% of the time, or the adult bot (Normal) under 70%. | inspector bots |
 | Goals | Enough reachable pickups and enemies that Normal's goal is fair, not a perfect run. | inspector `goal` |
 | Assets | No file over 4 MiB (the offline cache limit). | `npx vite build` |
@@ -158,6 +159,9 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   queue and was said again, about every 11 s for the whole stage. Count how often each line is said (`tools/inspect/dotPace.ts`).
 - **Meeca's bank stopped at trail height** beside a pit, so she walked under it and fell out of the stage (2026-10-28). A wall
   beside a pit reaches the pit's floor, not just the trail.
+- **Two walks of one stage compared by graph key** (G8, Easy): pouring water splits a ground into pieces, so a held walk's piece and
+  the full walk's ground never matched. Compare by platform id; and a boulder only the full walk rolls into a fall's slot is frozen
+  for both walks, or the full walk reaches places the held one never can (4-3).
 - **Kit anchors slid** (Meeca's stage): pieces sit at 0..1 along a platform, so widening a platform after placing them moved every
   piece on it. Settle platform widths first, then anchor.
 - **Words that cover the speaker**: a thought bubble with no room above fell back below her head and hid her. With no room above,

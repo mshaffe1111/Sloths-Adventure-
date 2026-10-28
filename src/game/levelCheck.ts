@@ -56,6 +56,12 @@ export interface CheckResult {
   reachableIds: number[];
 }
 
+/**
+ * The held jump's check (CheckOptions.hold): onto a face (a solid block 50 px or taller) the lip's hoist takes him from up to
+ * FORGIVE.mantle (26 px) under its top once his rise is spent (engine.ts); the check counts this much of it, to spare
+ */
+export const HOLD_MANTLE = 16;
+
 /** Fraction of the simulated maximum reach the validator still accepts. */
 const MARGIN = 0.97;
 
@@ -92,6 +98,19 @@ const dxTo = (x0: number, x1: number, x: number) => (x < x0 ? x0 - x : x > x1 ? 
 export function easyHoldCheck(easy: GeneratedStage): string[] {
   return validateStage(easy, { hold: EASY_HOLD }).errors;
 }
+
+/**
+ * the widest gap (px) a ~70% hold jumps from a to b at their heights (onto a face, with the lip's hoist, HOLD_MANTLE), as the Easy
+ * check counts it; below 0: not at any gap (the rise is too much for it)
+ */
+export function heldMaxGap(a: Platform, b: Platform, allowDouble: boolean): number {
+  const dy = a.y - b.y;
+  const dyJ = b.type === 'solid' && b.height >= 50 && dy > 0 ? Math.max(0, dy - HOLD_MANTLE) : dy;
+  const r = allowDouble ? Math.max(reachJumpHeld(dyJ, false), reachJumpHeld(dyJ, true)) : reachJumpHeld(dyJ, false);
+  return r < 0 ? -1 : r * MARGIN - TAKEOFF_SLACK;
+}
+/** the validator's rule for whether a double jump may be counted on a stage (it is taught by stage 6, 1-6) */
+export const doubleAllowed = (cfg: { worldIndex: number; miniIndex: number }) => (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6;
 
 /** Can the player get from platform a to platform b with jumps (and a double jump)? */
 export function jumpOK(a: Platform, b: Platform, allowDouble = true): { ok: boolean; gap: number } {
@@ -397,7 +416,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   const vid = (v: Vine) => `v${v.id}`;
 
   // a double jump is a tool the player may need from mission 6 on; before that every gap is a plain jump
-  const allowDouble = (cfg.worldIndex - 1) * 10 + cfg.miniIndex >= 6;
+  const allowDouble = doubleAllowed(cfg);
   // the leaf glide, from the stage everyone who gets there has learned it (skills.ts): it carries a falling jump much further
   const allowGlide = skillGuaranteedAt('glide', (cfg.worldIndex - 1) * 10 + cfg.miniIndex);
   // a drop deeper than this is a fall into the mist (4-7), never a way on (with room to spare)
@@ -458,7 +477,9 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
         const dy = a.y - b.y;
         if (-dy > deep) continue;
         const f = a.type === 'bouncy' ? reachBounce : opts.hold ? (d: number, dbl: boolean) => reachJumpHeld(d, dbl, opts.hold) : reachJump;
-        let r = allowDouble ? Math.max(f(dy, false), f(dy, true)) : f(dy, false);
+        // (the held jump: onto a face, the lip's hoist takes him the last few px, engine.ts FORGIVE.mantle; HOLD_MANTLE of its 26)
+        const dyJ = opts.hold && b.type === 'solid' && b.height >= 50 && dy > 0 ? Math.max(0, dy - HOLD_MANTLE) : dy;
+        let r = allowDouble ? Math.max(f(dyJ, false), f(dyJ, true)) : f(dyJ, false);
         if (allowGlide && !(r >= 0 && gap <= r * MARGIN - TAKEOFF_SLACK)) {
           const fg = a.type === 'bouncy' ? reachBounceGlide : reachGlide;
           r = Math.max(r, fg(dy, false), fg(dy, true));
