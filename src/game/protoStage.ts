@@ -19,7 +19,7 @@ import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
-import { JUMP_RISE, reachGlide, reachJump, SAFE } from './physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, reachGlide, reachJump, SAFE } from './physics.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
 import type { Bush, WatchZone } from './watcher.ts';
@@ -4910,6 +4910,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     // (the branch he is on joins it: it is not in the way)
     const clear = (y: number) => !P.some((p) => p !== P[0] && p !== cur && p.x < x0 + span + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130);
     if (!clear(cur.y) || !clear(cur.y - RISE) || !clear(cur.y - RISE / 2)) return false;
+    // (nor over a rope's end post close under the lift's notch: its knot of wood is a step up into the notch, a 150-170 px double jump
+    // onto 100 px that the kid bot missed half the time, 2026-10-28)
+    const wx = x0 + FLOOR + WELL / 2;
+    if (ROPES.some((r) => [[r.x0 + 44, r.g0], [r.x1 - 44, r.g1]].some(([ex, ey]) => Math.abs(ex - wx) < 170 && ey > cur.y && ey - cur.y < 300))) return false;
     dir = 1;
     const y = cur.y;
     const floor = ledge(x0, x0 + FLOOR, y);
@@ -5371,7 +5375,13 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         // he could jump up to the rope; the knot stops him at the post. Hanging, he passes over it, and he steps off the rope beyond it)
         const post = ROPES.some((q) => (side > 0 ? Math.abs(q.x0 + 44 - end) < 2 : Math.abs(q.x1 - 44 - end) < 2) && Math.abs(q.g0 - p.y) < 2);
         if (!post && Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < LIP.drop) continue;
-        P.push({ id: pid++, x: side < 0 ? end : end - LIP.w, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true });
+        // (never under a ledge a double jump off the knot's top would reach: under a mist column's top it was a step up past the hidden
+        // ledges, a 150 px jump straight up that the kid bot made 54-65% of the time, 2026-10-28. A fall here costs a climb, not a life)
+        // (a knot under a rope's post stays: the post needs it; the engine's walls are 50 px or taller, so it cannot be made lower)
+        const lx = side < 0 ? end : end - LIP.w;
+        const over = P.some((q) => q !== p && q.y < p.y && p.y - LIP.h - q.y < DOUBLE_RISE + 30 && q.x < lx + LIP.w + 60 && q.x + q.width > lx - 60);
+        if (over && !post) continue;
+        P.push({ id: pid++, x: lx, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true });
       }
     }
     for (let x = firstTrunkX + 260; x < W - KAPOK_MARGIN - 60; x += 300) flower(x, P[0].y - 34, 'hibiscus');
