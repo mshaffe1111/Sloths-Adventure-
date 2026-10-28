@@ -89,6 +89,12 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 1. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
 2. Naturalist medal: still the 11 predators, or all 18 journal cards (the 7 new "met on the road" ones too)?
 3. Pell's and the soldiers' journal tips read right?
+4. Usage: Matt's weekly limit shows a warning (2026-10-28 ~16:20 ET; resets Nov 4, 2:00 AM ET). Pause the generator (A), everything but
+   the World 1-4 merges (B), or keep going (C)? The architect is paused (WIP c912bc3) meanwhile.
+5. Dot's new water warning line for Easy (gen2 piece E) needs Matt's OK.
+
+Pending for the architect when it resumes: commit c912bc3 finished (full suite + build), then the gauntlet/purge top-up in fillSockets
+(quota + 2 on Normal) and Easy's quota at round(0.6 x targetCount) (5-9 builder found 5-9 lays 16-26 of 26 animals).
 
 ## Decided today (also on the Docs roadmap)
 
