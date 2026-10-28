@@ -15,8 +15,9 @@
  * Same seed, same stage; Easy and Normal share the seed AND the section sequence (Normal picks, Easy lays the same picks by its rules).
  */
 import { rollLook } from '../artRoll.ts';
-import { jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
-import { airStep, DOUBLE_RISE, JUMP_RISE, reachJump, SWING, TAKEOFF_SLACK, type AirBody } from '../physics.ts';
+import { doubleAllowed, jumpOK, SAFE_APPROACH, swingLandings, validateStage } from '../levelCheck.ts';
+import { airStep, DOUBLE_RISE, JUMP_RISE, reachGlide, reachJump, SWING, TAKEOFF_SLACK, type AirBody } from '../physics.ts';
+import { skillGuaranteedAt } from '../skills.ts';
 import { addKitPlatforms, type Anchor, type PieceSpec, type RoomSpec, type Wire } from '../puzzleKit.ts';
 import type { ProtoExtras, StageHint } from '../protoStage.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
@@ -140,15 +141,28 @@ export function lianaRelease(v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: Lia
   return best;
 }
 
+/**
+ * The widest gap levelCheck joins by a jump to a ledge `dyUp` px higher (negative: lower), on stage `world`-`stage`: a jump, a double
+ * jump from mission 6, and the leaf glide once every player has it (World 5 on: 457 px on the flat), as levelCheck reckons them (its
+ * 0.97 and the take-off slack). -1 when no jump gets that high. A swing's perch lies past it, or the swing is not needed.
+ */
+export function jumpLinkGap(dyUp: number, world: number, stage: number): number {
+  const mission = (world - 1) * 10 + stage;
+  let r = doubleAllowed({ worldIndex: world, miniIndex: stage }) ? Math.max(reachJump(dyUp, false), reachJump(dyUp, true)) : reachJump(dyUp, false);
+  if (skillGuaranteedAt('glide', mission)) r = Math.max(r, reachGlide(dyUp, false), reachGlide(dyUp, true));
+  return r < 0 ? -1 : r * 0.97 - TAKEOFF_SLACK;
+}
+
 /** release windows already flown, by their rounded numbers (a section's rolls repeat across a build's passes and its Easy twin) */
 const RELEASE_CACHE = new Map<string, number>();
 
 /**
  * Where the perch after a liana may start (its near end), relative to the liana's ledge: the band of near ends whose release window
  * is at least `need` (lianaRelease), and which the level check of today links too (levelCheck swingLandings, 6 lines or more: until
- * branch vine-fix changes it, both must hold), as [lo, hi]; null when none does. `from` is the ledge the swing starts from.
+ * branch vine-fix changes it, both must hold), as [lo, hi], never nearer than `min`; null when none does. `from` is the ledge the
+ * swing starts from.
  */
-export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number): [number, number] | null {
+export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vine, 'x' | 'topY' | 'bottomY'>, swing: LianaSwing, dy: number, w: number, need: number, min = -Infinity): [number, number] | null {
   const window = (x: number) => {
     const key = [R(v.x - from.x - from.w), R(v.topY - from.y), R(v.bottomY - from.y), R(x - from.x - from.w), R(dy), R(w), swing.amp.toFixed(3), swing.period.toFixed(3)].join(',');
     let r = RELEASE_CACHE.get(key);
@@ -159,7 +173,7 @@ export function lianaBand(from: { x: number; y: number; w: number }, v: Pick<Vin
   const linked = (x: number) => (swingLandings(near, { id: -1, x: v.x, topY: v.topY, bottomY: v.bottomY, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true }, 1, [near, { id: -2, x, y: from.y + dy, width: w, height: 90, type: 'solid' }], 1e9).get(-2) ?? 0) >= 6;
   let lo = -1;
   let hi = -1;
-  for (let x = R(v.x + 40); x <= v.x + 900; x += 20) {
+  for (let x = R(Math.max(v.x + 40, min)); x <= v.x + 900; x += 20) {
     if (window(x) >= need) {
       if (lo < 0) lo = x;
       hi = x;
@@ -320,6 +334,9 @@ interface LocalGap {
   pit: boolean;
   /** a section's water gap (the rule's `water`): nothing laid under it, whatever the world's falls */
   water?: boolean;
+  /** a gap under a liana (a `land` perch past it): its soft pit climbs back to the swing's ledge (`lips`: that ledge's top, the
+   *  perch's), never forward to the perch */
+  back?: { lips: [number, number] };
 }
 /** a section laid out in its own space: its entry anchor at (0, 0) */
 export interface LocalLayout {
@@ -342,6 +359,8 @@ export interface LayLocalOptions {
   pickRng?: Rng;
   /** the versions this world has used: one not yet used is preferred, and the one laid is marked */
   once?: WorldOnce<string>;
+  /** the world's soft pit depth (manifest.pitDepth): a perch past a liana keeps clear of the steps out of the pit under it */
+  pitDepth?: number;
 }
 
 /**
@@ -461,11 +480,21 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
       const a = ref(lv.hang.from!);
       const dy = pl.dy === undefined ? 0 : roll(rng, pl.dy);
       const share = shareFor(pl.share);
-      const band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, dy, w, LIANA.window[budget.difficulty]);
-      if (!band) throw new Error(`gen2 section ${tpl.id}: no perch past the liana ${pl.after} has a release window of ${LIANA.window[budget.difficulty]} s`);
+      // (past every jump: from the swing's ledge, and from every step of the soft pit under it, whose climb goes back to that ledge)
+      const perchY = a.y + dy;
+      let min = a.x + a.w + jumpLinkGap(-dy, budget.world, budget.stage) + 20;
+      if (budget.pit === 'soft' && !pl.water) {
+        const pit = backPit(a.x + a.w, a.x + a.w + 4000, a.y, perchY, lo.pitDepth ?? 0, riseLimit(false, budget.riseShare) * PIT.hop);
+        for (const st of [{ x: a.x + a.w, top: pit.floor, w: 0 }, ...pit.steps]) {
+          const g = jumpLinkGap(st.top - perchY, budget.world, budget.stage);
+          if (g >= 0) min = Math.max(min, st.x + st.w + g + 20);
+        }
+      }
+      const band = lianaBand({ x: a.x, y: a.y, w: a.w }, { x: lv.x, topY: lv.y, bottomY: lv.y + lv.h }, lv.hang.swing!, dy, w, LIANA.window[budget.difficulty], min);
+      if (!band) throw new Error(`gen2 section ${tpl.id}: no perch past the liana ${pl.after} both lies past every jump (${R(min - a.x - a.w)} px out) and has a release window of ${LIANA.window[budget.difficulty]} s`);
       x = band[0] + share * (band[1] - band[0]);
       y = a.y + dy;
-      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, ...(pl.water ? { water: true } : {}) });
+      gaps.push({ x0: a.x + a.w, x1: x, y: Math.min(a.y, y), pit: true, back: { lips: [a.y, y] }, ...(pl.water ? { water: true } : {}) });
     } else if (pl.kind === 'climb') {
       const a = ref(pl.on);
       if (pc.shape !== 'vine') throw new Error(`gen2 section ${tpl.id}: ${pc.key} climbs, so its shape is 'vine'`);
@@ -514,6 +543,7 @@ export function layLocal(tpl: SectionTemplate, budget: StageBudget, rng: Rng, mi
     g.x0 -= ox;
     g.x1 -= ox;
     g.y -= oy;
+    if (g.back) g.back.lips = [g.back.lips[0] - oy, g.back.lips[1] - oy];
   }
   const xp = by.get(exitP.piece);
   if (!xp) throw new Error(`gen2 section ${tpl.id}: its exit piece ${exitP.piece} is not laid`);
@@ -615,9 +645,16 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const gaps: Laid['gaps'] = [];
   const vines: Vine[] = [];
   const zones: Zone[] = [];
-  const pitUnder = (x0: number, x1: number, lipY: number, farY: number) => {
+  const pitUnder = (x0: number, x1: number, lipY: number, farY: number, back = false) => {
     if (budget.pit !== 'soft' || x1 - x0 < 20) return;
-    const out = pitSteps(x0, x1, lipY, farY, M.pitDepth, riseLimit(false, budget.riseShare) * PIT.hop);
+    const hop = riseLimit(false, budget.riseShare) * PIT.hop;
+    if (back) {
+      const out = backPit(x0, x1, lipY, farY, M.pitDepth, hop);
+      mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
+      for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
+      return;
+    }
+    const out = pitSteps(x0, x1, lipY, farY, M.pitDepth, hop);
     mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
     for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
   };
@@ -713,7 +750,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
       const flip = tpl.mirrorable ? srng() : 1;
       // (a section that swings is never flipped: its perch is sized for a swing toward it, the way the stage runs)
       const mirrored = fixed ? fixed.mirrored : flip < 0.5 && !hangsNeed(tpl).includes('swing');
-      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once });
+      const L = layLocal(tpl, budget, srng, mirrored, { versions: fixed?.versions, pickRng: rngFor(seed, 19, i, salt), once, pitDepth: M.pitDepth });
       // the join: on the ground a walk, a step or a pit; from or onto a ledge a jump, each sized from the envelope
       const jrng = rngFor(seed, 13, i);
       let join: PlanSlot['join'];
@@ -791,7 +828,8 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
         gaps.push(g0);
         if (g.pit && !g.water) {
           const before = platforms.length;
-          pitUnder(g0.x0, g0.x1, g0.y, g0.y);
+          if (g.back) pitUnder(g0.x0, g0.x1, oy + g.back.lips[0], oy + g.back.lips[1], true);
+          else pitUnder(g0.x0, g0.x1, g0.y, g0.y);
           placed.seam.push(...platforms.slice(before));
         }
       }
@@ -857,9 +895,11 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
 /**
  * A soft pit's way out (§2 "every dip has a one-jump way out"; Easy's jumps keep the kid bot at 85%+): each rise out at most `hop` of
  * the plain jump's rise limit, every step's tread at least `tread` px (a kid's thumb lands on it; the inspector calls a landing under
- * 90 px narrow) and at most `maxTread`, with `floor` px of floor left before the first step to stand on.
+ * 90 px narrow) and at most `maxTread`, with `floor` px of floor left before the first step to stand on. Under a liana the perch's face
+ * stands at least `face` px more than a double jump over the floor (the engine's hoist over a lip is 26 px), so a fall never walks
+ * or jumps out forward to the perch: the swing stays the way over.
  */
-export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60 } as const;
+export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60, face: 40 } as const;
 
 /**
  * Where a soft pit's floor and its steps go, for a gap [x0, x1] between a near lip at `lipY` and a far lip at `farY` (world y, down):
@@ -869,7 +909,7 @@ export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60 } as const;
  * the far bank is the way out. Steps are stacked blocks against the far wall, each running to x1 (`x`, `w`: the block; its tread is
  * the part not under the next one up).
  */
-export function pitSteps(x0: number, x1: number, lipY: number, farY: number, depth: number, hop: number): { floor: number; steps: Array<{ x: number; top: number; w: number }> } {
+export function pitSteps(x0: number, x1: number, lipY: number, farY: number, depth: number, hop: number, maxTread: number = PIT.maxTread): { floor: number; steps: Array<{ x: number; top: number; w: number }> } {
   const W = x1 - x0;
   const lower = Math.max(lipY, farY);
   const deep = lower + depth;
@@ -879,7 +919,7 @@ export function pitSteps(x0: number, x1: number, lipY: number, farY: number, dep
   // (never above the lower lip: the floor still catches a fall)
   const floor = Math.max(lower + 1, Math.min(deep, farY + hop * (n + 1)));
   const rise = (floor - farY) / (n + 1);
-  const tread = n ? Math.min(PIT.maxTread, (W - PIT.floor) / n) : 0;
+  const tread = n ? Math.min(maxTread, (W - PIT.floor) / n) : 0;
   const steps = [];
   for (let k = 1; k <= n; k++) steps.push({ x: x1 - tread * (n - k + 1), top: floor - rise * k, w: tread * (n - k + 1) });
   return { floor, steps };
@@ -889,6 +929,17 @@ export function pitSteps(x0: number, x1: number, lipY: number, farY: number, dep
 function hangsNeed(t: SectionTemplate): Move[] {
   const shapes = new Set([...t.pieces, ...(t.subBlocks ?? []).flatMap((b) => b.versions.flatMap((v) => v.pieces))].map((p) => p.shape));
   return [...(shapes.has('liana') ? (['swing'] as const) : []), ...(shapes.has('vine') ? (['climb'] as const) : [])];
+}
+
+/**
+ * The soft pit under a liana, from the swing's ledge (its top `lipY`, its end x0) to the perch (`farY`, at x1): deep enough that the
+ * perch's face stands PIT.face px more than a double jump over the floor, and its steps (PIT.tread each, the narrowest the rule allows,
+ * so the stair keeps back from the perch) climb back up the near wall to the swing's ledge: pitSteps laid toward the near lip, mirrored.
+ */
+export function backPit(x0: number, x1: number, lipY: number, farY: number, pitDepth: number, hop: number): { floor: number; steps: Array<{ x: number; top: number; w: number }> } {
+  const depth = Math.max(pitDepth, farY + DOUBLE_RISE + PIT.face - Math.max(lipY, farY));
+  const out = pitSteps(x0, x1, farY, lipY, depth, hop, PIT.tread);
+  return { floor: out.floor, steps: out.steps.map((s) => ({ ...s, x: x0 + x1 - (s.x + s.w) })) };
 }
 
 /** a stage id's place in the game ('5-7' -> 507), for lessons taught by an earlier stage */

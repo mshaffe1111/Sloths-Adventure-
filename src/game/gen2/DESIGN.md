@@ -277,7 +277,11 @@ and a section's entry and exit are always ledges):
   the swing's ledge. The window comes from one function, `lianaRelease(vine, swing, gripY, perch)` (he hangs at the ledge's height,
   letting go carries the vine's velocity at his grip, steering toward the perch): when branch vine-fix changes the engine's swing,
   this function follows it. Until then `lianaBand` also holds the band to what today's levelCheck links (`swingLandings`, 6 lines).
-  The gap from the swing's ledge to the perch is a pit (soft, water or void as the stage's falls are).
+  The gap from the swing's ledge to the perch is a pit (soft, water or void as the stage's falls are), and the perch lies past every
+  jump (`jumpLinkGap`: a jump, a double jump, and the leaf glide once every player has it, 457 px on the flat from World 5): the
+  swing is the way over, not a choice. **A soft pit under a liana climbs back** to the swing's ledge (`backPit`: steps of the
+  narrowest tread against the near wall), never forward: the perch's face stands more than a double jump (plus 40 px) over its
+  floor, and no step of it is within a jump of the perch. (Easy's falls stay soft: a miss costs a climb back and another go.)
 - **Chains**: levelCheck follows ledge -> liana -> ledge, never liana -> liana, so a chain has a perch between every two swings
   (liana, land, liana, land). levelCheck was not changed.
 - `{ shape: 'vine', place: { kind: 'climb', on, at, h } }`: a climbing vine standing on `on`, `at` along it, `h` px tall (the

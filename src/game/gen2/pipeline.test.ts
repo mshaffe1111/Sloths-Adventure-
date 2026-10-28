@@ -5,9 +5,9 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateStage } from '../levelCheck.ts';
+import { validateStage, type CheckGraph } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan, lianaRelease, jumpLinkGap } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
 import { LIANA, MARGIN, TIDE, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
@@ -663,7 +663,7 @@ test('a liana swings by itself and its perch is sized from the release window (E
       assert.ok(swing.amp >= LIANA.amp[0] && swing.amp <= LIANA.amp[1] && swing.period >= LIANA.period[0] && swing.period <= LIANA.period[1]);
       const win = lianaRelease({ x: rope.x, topY: rope.y, bottomY: rope.y + rope.h }, swing, near.y, { x: far.x, y: far.y, w: far.w });
       assert.ok(win >= LIANA.window[d], `${d} roll ${i}: a ${(win * 1000).toFixed(0)} ms release window`);
-      assert.ok(far.x - (near.x + near.w) > maxGap(0, true, 1), `${d} roll ${i}: a ${far.x - near.x - near.w} px gap a jump could cross`);
+      assert.ok(far.x - (near.x + near.w) > jumpLinkGap(0, 5, 7), `${d} roll ${i}: a ${far.x - near.x - near.w} px gap a jump or the glide could cross`);
       assert.equal(L.gaps.length, 1);
     }
     // (the same roll, the same liana on Easy and Normal: its swing is the stage's, only the perch moves)
@@ -766,4 +766,34 @@ test("World 6's water: a section's water gap is water on any world and setting (
     }
   }
   assert.ok(creeks > 0 && tides > 0, `${creeks} creeks, ${tides} tides`);
+});
+
+test("a soft pit under a liana climbs back to the swing's ledge, never forward to its perch (the swing stays the way over)", () => {
+  let pits = 0;
+  for (const seed of [1, 2, 3]) {
+    for (const d of ['normal', 'easy'] as const) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: hangWorld('soft'), seed, difficulty: d });
+      const what = `seed ${seed} ${d}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      // (the graph without the lianas: a swing from a step in the pit is still the swing; what must not be there is a walk or a jump)
+      let graph: CheckGraph | null = null;
+      validateStage({ ...st, vines: st.vines.filter((v) => v.vineType !== 'swing_liana') }, { inspect: (x) => (graph = x) });
+      const g = graph as unknown as CheckGraph;
+      for (const s of st.gen2.sections.filter((x) => x.template === 'toy-swing')) {
+        const f = (st.gen2.falls ?? []).find((q) => q.x0 >= s.x0 && q.x1 <= s.x1)!;
+        const inside = st.platforms.filter((p) => p.x >= f.x0 && p.x + p.width <= f.x1 && p.y > f.y);
+        const perch = st.platforms.find((p) => p.x === f.x1 && !inside.includes(p))!;
+        const ledge = st.platforms.find((p) => p.x + p.width === f.x0 && p.y <= f.y + 1)!;
+        assert.ok(inside.length && perch && ledge, `${what}: the pit under the liana at ${f.x0}`);
+        pits++;
+        const floor = Math.max(...inside.map((p) => p.y));
+        assert.ok(floor - perch.y > DOUBLE_RISE, `${what}: the perch's face is ${floor - perch.y} px over the floor`);
+        for (const p of inside) assert.ok(!g.adj.get(g.key(p))?.has(g.key(perch)), `${what}: the pit at ${f.x0} leads to the perch`);
+        assert.ok(inside.some((p) => g.adj.get(g.key(p))?.has(g.key(ledge))), `${what}: the pit at ${f.x0} has no way back to the swing's ledge`);
+        // (nor does a jump, a double jump or the glide reach the perch from the swing's ledge: the liana is the way)
+        assert.ok(!g.adj.get(g.key(ledge))?.has(g.key(perch)), `${what}: a jump crosses the swing at ${f.x0}`);
+      }
+    }
+  }
+  assert.ok(pits > 0);
 });
