@@ -89,7 +89,7 @@
 
 /* the name, carved into a mossy log (title/CarvedLogo.tsx): the canvas reaches a little below the log, for the chips and the leaves
    that fall as it is carved, without taking that room from the layout */
-.gx2-carve { --lw: min(44vw, 430px); display: block; width: var(--lw); height: calc(var(--lw) * .62); margin-bottom: calc(var(--lw) * -.18); pointer-events: none; }
+.gx2-carve { --lw: min(44vw, 430px); display: block; width: var(--lw); height: calc(var(--lw) * .6); margin-bottom: calc(var(--lw) * -.1); pointer-events: none; }
 /* little glints on the letters once they are carved */
 .gx2-glint { position: absolute; z-index: 3; width: 22px; height: 22px; pointer-events: none; opacity: 0;
   background: radial-gradient(circle, #fffbe6 0 18%, rgba(255, 246, 200, .0) 60%); clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
@@ -154,7 +154,7 @@
 }
 /* a phone on its side: everything a size smaller */
 @media (max-height: 430px) and (orientation: landscape) {
-  .gx2-carve { --lw: min(46vw, 96vh, 400px); }
+  .gx2-carve { --lw: min(42vw, 92vh, 360px); }
   .gx2-planks .gx-plank { min-width: 128px; padding: 7px 12px; font-size: 13.5px; }
   .gx2-sign { min-width: 280px; padding: 8px 34px 7px; }
   .gx2-sign .gx-sign-t { font-size: 20px; }

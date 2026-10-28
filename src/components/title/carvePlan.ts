@@ -128,6 +128,34 @@ export function cutSoFar(l: PlannedLetter, t: number): { strokes: number[][]; ti
 
 /** the title's two lines: the name, a quarter of a second a letter with a little overlap; then the subtitle, smaller and quicker */
 export const TITLE_LINES: CarveLine[] = [
-  { text: 'SLOTHS', perLetter: 0.27, overlap: 0.18, after: 0, gap: 1.5, space: 3 },
-  { text: 'RAINFOREST ADVENTURES', perLetter: 0.11, overlap: 0.35, after: 0.25, gap: 1.9, space: 3.4 },
+  { text: 'SLOTHS', perLetter: 0.27, overlap: 0.18, after: 0, gap: 2.4, space: 3 },
+  { text: 'RAINFOREST ADVENTURES', perLetter: 0.11, overlap: 0.35, after: 0.25, gap: 1.25, space: 3.4 },
 ];
+
+/** how far the log is drawn taller than it is painted, so both lines fit on its face */
+export const STRETCH = 2;
+/** a groove's width for each line, as a share of its letter height */
+export const GROOVE = [0.4, 0.3];
+
+/**
+ * The two lines laid out on the log's face (`top`, `h`, and the width they may use): the name as big as fits, the subtitle on its own
+ * line under it, both with room for their grooves (half a groove past each edge of a letter) and a margin all round.
+ */
+export function fitRows(plan: CarvePlan, top: number, h: number, width: number) {
+  const units = plan.widths;
+  let nameH = width / (units[0] / 6 + GROOVE[0]);
+  // (the subtitle may use a little more of the face's width than the name)
+  let subH = (width * 1.06) / (units[1] / 6 + GROOVE[1]);
+  subH = Math.min(subH, nameH * 0.42);
+  const need = (nH: number, sH: number) => nH * (1 + GROOVE[0]) + h * 0.07 + sH * (1 + GROOVE[1]) + h * 0.1;
+  const k = Math.min(1, (h * 0.97) / need(nameH, subH));
+  nameH *= k;
+  subH *= k;
+  const nameY = top + h * 0.05 + (nameH * GROOVE[0]) / 2;
+  const subY = nameY + nameH + (nameH * GROOVE[0]) / 2 + h * 0.07 + (subH * GROOVE[1]) / 2;
+  return [
+    { h: nameH, y: nameY, w: units[0] },
+    { h: subH, y: subY, w: units[1] },
+  ];
+}
+

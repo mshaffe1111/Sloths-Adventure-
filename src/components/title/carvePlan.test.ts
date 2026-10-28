@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CARVE_GLYPHS, TITLE_LINES, cutSoFar, planCarve } from './carvePlan.ts';
+import { CARVE_GLYPHS, GROOVE, STRETCH, TITLE_LINES, cutSoFar, fitRows, planCarve } from './carvePlan.ts';
 
 test('every letter of the title has its carved strokes', () => {
   for (const ln of TITLE_LINES) for (const ch of ln.text.replace(/ /g, '')) assert.ok(CARVE_GLYPHS[ch], ch);
@@ -39,4 +39,22 @@ test('a letter is cut stroke by stroke along its path: nothing before, part way 
   const third = cutSoFar(h, h.start + (h.end - h.start) * 0.4);
   assert.equal(third.strokes.length, 2);
   assert.deepEqual(third.strokes[0], h.strokes[0]);
+});
+
+test('both lines sit inside the log face with a margin, the subtitle on its own line and never squeezed', () => {
+  const p = planCarve(TITLE_LINES);
+  for (const W of [282, 354, 375, 430]) {
+    const sw = W * 0.96, sh = sw * (103 / 440) * STRETCH, sy = W * 0.03;
+    const top = sy + sh * 0.37, h = sh * 0.56, width = sw * 0.8;
+    const [name, sub] = fitRows(p, top, h, width);
+    for (const [r, gr] of [[name, GROOVE[0]], [sub, GROOVE[1]]] as const) {
+      const wPx = (r.w * r.h) / 6 + r.h * gr;
+      assert.ok(wPx <= width * (r === sub ? 1.06 : 1) + 0.01, `line fits across at ${W}: ${wPx.toFixed(1)} of ${width.toFixed(1)}`);
+      assert.ok(r.y - (r.h * gr) / 2 >= top, 'below the top of the face');
+      assert.ok(r.y + r.h + (r.h * gr) / 2 <= top + h + 0.01, `above the foot of the face at ${W}`);
+    }
+    assert.ok(sub.y > name.y + name.h, 'the subtitle has its own line');
+    assert.ok(sub.h >= W * 0.038, `the subtitle is readable at ${W}: ${sub.h.toFixed(1)} px`);
+    assert.ok(name.h * (1 + GROOVE[0]) >= W * 0.13, 'the name is bold');
+  }
 });

@@ -640,10 +640,10 @@ export const TitleScene = React.forwardRef<
       // soft; the art helper's sheets at 600 px and more let them grow to fill the box)
       const sharp = (Math.min(pokey.cast.height, meeca.cast.height / 0.95) * 2.1) / dpr;
       // (sideways the box runs to the bottom of the screen: the pair stand on the log with a band of its face showing under them)
-      const H = Math.min(sharp, b ? (portrait ? Math.min(b.height * 0.9, w * 0.72) : Math.min(b.height / 1.42, b.width * 0.54)) : h * 0.3);
+      const H = Math.min(sharp, b ? (portrait ? Math.min(b.height * 0.9, w * 0.72) : Math.min(b.height / 1.6, b.width * 0.54)) : h * 0.3);
       const cx = b ? b.left + b.width / 2 : w / 2;
       const logW = H * 1.95;
-      const feet = b ? b.bottom - (portrait ? H * 0.05 : logW * 0.457 * 0.42) : h * 0.7;
+      const feet = b ? b.bottom - (portrait ? H * 0.05 : logW * 0.457 * 0.6) : h * 0.7;
       const logH = logImg && logImg.naturalWidth ? (logW * logImg.naturalHeight) / logImg.naturalWidth : logW * 0.46;
       const logTop = feet - logH * LOG_TOP;
       const logX = cx - logW / 2;
