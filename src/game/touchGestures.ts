@@ -18,7 +18,10 @@
  * Jump help (jumpHelp.ts, on by default) adds, for the second jump:
  *   - in the air with a second jump to spare, a short, slow slide up is that jump;
  *   - the steering thumb itself can jump again with a short down-and-up wiggle, so one finger is enough;
- *   - a finger that is not steering and slides up (at any speed) is a jump, where it used to need a fast flick and otherwise did nothing.
+ *   - a finger that is not steering and slides up (at any speed) is a jump, where it used to need a fast flick and otherwise did nothing;
+ *   - a thumb put down in the air a moment ago (on either half) that goes mostly up is that jump on the same short rise (freshAirFlick);
+ *   - a thumb whose flick jumped and that stays on the glass jumps again on a sink and a flick up (airAgain).
+ * On a vine, a liana or a trunk, a whole touch that is one quick stroke up and over lets go when it lifts, however far over (vineFlickMs).
  *
  * Pure logic: times are passed in, outputs go to a sink. The unit tests drive it with scripted fingers.
  */
@@ -118,6 +121,18 @@ export const TUNING = {
   vineLeapMaxSlant: 1.2,
   /** the leap's rise must happen within this long (ms): a slow creep up and over is climbing, not a flick */
   vineLeapMs: 160,
+  /**
+   * on a vine, a liana or a trunk: a whole touch that is one quick stroke up and over, put down and lifted within this long (ms), lets go
+   * when it lifts, however far over it leans (only not straight up: vineLeapSlant). Matt's flicks off a liana (control test, 2026-10-26
+   * and 27, sideways phone) went 55 to 80 degrees over, e.g. 290 px across and 110 up in 200 ms, and lifted at once: every one was read as
+   * pumping the swing (over vineLeapMaxSlant), climbed him to the top of the vine instead, and he was stuck there "flicking wildly"
+   * (31 of them in three sessions). A thumb pumping a swing stays on the glass for half a second and more, and turns round.
+   */
+  vineFlickMs: 480,
+  /** … rising at least this far (px) … */
+  vineFlickRise: 30,
+  /** … at no less than this speed over the whole touch (px per ms) */
+  vineFlickSpeed: 0.4,
   /** a second jump that has just fired locks the next for this long (the engine needs a frame to know it was used) */
   airLockMs: 160,
   /**
@@ -205,6 +220,12 @@ interface Finger {
   lowY: number;
   lowX: number;
   riseT0: number;
+  /** all the sideways travel since it went down (a pumping stroke turns round; a flick goes one way) */
+  sx: number;
+  /** it went down while he was in the air with a second jump to spare (he may land before the flick is through) */
+  airDown: boolean;
+  /** where the thumb sank to after a jump (with tr): a consumed finger's wiggle measures its lean from here */
+  trX: number;
 }
 
 export class TouchGestures {
@@ -276,6 +297,7 @@ export class TouchGestures {
     f.jumped = true;
     f.pk = f.y;
     f.tr = f.y;
+    f.trX = f.x;
     if (air) this.lastAir = this.now;
     this.sink.feedback('jump');
     this.sink.jumpPress(lean);
@@ -298,7 +320,7 @@ export class TouchGestures {
   down(id: number, x: number, y: number, t: number) {
     this.now = t;
     if (this.fingers.has(id)) return;
-    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y, x }], tapT0: t, pk: y, tr: y, early: false, megaDone: false, lowY: y, lowX: x, riseT0: NaN };
+    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y, x }], tapT0: t, pk: y, tr: y, early: false, megaDone: false, lowY: y, lowX: x, riseT0: NaN, sx: 0, airDown: this.canAir(), trX: x };
     const m = this.mover();
     if (m) {
       // a second finger: ignore it if it is practically on top of the steering thumb
@@ -331,6 +353,7 @@ export class TouchGestures {
       f.lowX = x;
       f.riseT0 = NaN;
     }
+    f.sx += Math.abs(x - f.x);
     f.x = x;
     f.y = y;
     f.hist.push({ t, y, x });
@@ -374,6 +397,8 @@ export class TouchGestures {
     f.y = y;
     this.fingers.delete(id);
     if (f.role === 'mover') {
+      // a last look: a flick whose rise ended as it lifted (BEFORE the release below, so the jump it presses is released too)
+      if (!f.jumped && !f.ducked) this.moverFlickOnLift(f, t);
       const travel = Math.hypot(f.x - f.x0, f.y - f.y0);
       const nudge = this.heldDir !== 'none' && travel <= TUNING.nudgeTapPx && t - f.t0 <= TUNING.nudgeTapMs && Math.abs(f.x - f.x0) >= Math.abs(f.y - f.y0);
       const stillTap = !f.jumped && !f.ducked && ((this.heldDir === 'none' && travel <= TUNING.tapPx && t - f.tapT0 <= TUNING.tapMs) || nudge);
@@ -425,6 +450,61 @@ export class TouchGestures {
         Math.hypot(f.x0 - this.lastMoverUpX, f.y0 - this.lastMoverUpY) < 100;
       if (replant) return;
       this.tapAct();
+    }
+  }
+
+  /**
+   * A steering finger lifting: was the whole touch a flick that the moves alone did not catch?
+   *  - On a vine, a liana or a trunk: one quick stroke up and over (vineFlickMs) lets go, however far over it leans; straight up still
+   *    only climbs.
+   *  - In the air with a second jump to spare: a fresh touch that rose airUpPx, mostly up, is the second jump, as it is for any other
+   *    finger (judge). The steering thumb needed airJumpDy (28 px) there, and Matt's short second flicks (18 to 27 px up in a tenth of a
+   *    second, control test 2026-10-26) did nothing, or punched.
+   */
+  private moverFlickOnLift(f: Finger, t: number) {
+    const dx = f.x - f.x0;
+    const rise = f.y0 - f.y;
+    const el = Math.max(1, t - f.t0);
+    if (this.vine()) {
+      if (
+        el <= TUNING.vineFlickMs && rise >= TUNING.vineFlickRise && Math.abs(dx) >= rise * TUNING.vineLeapSlant &&
+        f.sx <= Math.abs(dx) * 1.3 && Math.hypot(dx, rise) / el >= TUNING.vineFlickSpeed
+      ) {
+        this.setClimb(0);
+        this.fireJump(f, false, this.leanOf(dx, rise));
+      }
+      return;
+    }
+    if (this.freshAirFlick(f, el, dx, rise)) this.fireJump(f, true, this.leanOf(dx, rise));
+  }
+
+  /** a steering finger put down in the air a moment ago that has risen a second jump's worth, mostly up (not a sideways steer) */
+  private freshAirFlick(f: Finger, el: number, dx: number, rise: number): boolean {
+    if (f.jumped || el > TUNING.flickLiftMs || this.vine() || this.rope()) return false;
+    if (!(this.canAir() || (f.airDown && this.now - this.lastAir > TUNING.airLockMs))) return false;
+    return rise >= TUNING.airUpPx && rise >= Math.abs(dx) * 0.85;
+  }
+
+  /**
+   * a finger (not the steering one) whose flick already jumped and that stays on the glass: sinking back a little and flicking up again
+   * is the second jump. It used to be spent until lifted, so a thumb that flicked twice without leaving the glass jumped once.
+   */
+  private airAgain(f: Finger) {
+    if (f.y < f.pk && f.tr - f.pk < TUNING.pumpDown) {
+      // still on the way up: the peak follows the thumb
+      f.pk = f.y;
+      f.tr = f.y;
+      f.trX = f.x;
+      return;
+    }
+    if (f.y > f.tr) {
+      f.tr = f.y;
+      f.trX = f.x;
+      return;
+    }
+    const up = f.tr - f.y;
+    if (this.canAir() && f.tr - f.pk >= TUNING.pumpDown && up >= TUNING.pumpUp && up >= Math.abs(f.x - f.trX) * 0.85) {
+      this.fireJump(f, true, this.leanOf(f.x - f.trX, up));
     }
   }
 
@@ -542,6 +622,11 @@ export class TouchGestures {
     // in the air with a second jump to spare, a shorter slide is enough
     const air = this.canAir();
     const jdy = air ? TUNING.airJumpDy : TUNING.jumpDy;
+    // (and a thumb put down in the air a moment ago that goes mostly up is a flick: the same short rise as any other finger's)
+    if (this.freshAirFlick(f, this.now - f.t0, f.x - f.x0, f.y0 - f.y)) {
+      this.fireJump(f, true, this.leanOf(f.x - f.x0, f.y0 - f.y));
+      return;
+    }
     // (on a rope a jump is letting go: the thumb must be moving clearly up now, not sweeping along it with a bow in the stroke)
     const ropeUp = !rc || (rc.my < 0 && rc.sx <= -rc.my * TUNING.vineLeapMaxSlant);
     // (and a quick flick up from wherever the thumb has drifted to is a jump too: a thumb steering for a while rolls down the glass,
@@ -624,7 +709,10 @@ export class TouchGestures {
 
   /** returns true if the finger did something this call */
   private judge(f: Finger, t: number, lifting: boolean): boolean {
-    if (f.consumed) return false;
+    if (f.consumed) {
+      if (f.jumped && !lifting) this.airAgain(f);
+      return false;
+    }
     const dx = f.x - f.x0;
     const dy = f.y - f.y0;
     const el = Math.max(1, t - f.t0);

@@ -325,3 +325,94 @@ test('a second thumb on the right never takes over the steering while the first 
 test('with jump help off the right half waits as before', () => {
   assert.ok(runStart(false, 600, 0.5) >= 200);
 });
+
+/**
+ * Matt's second jumps (control test 2026-10-26, Android sideways 1034 px, refined rules, one thumb on the LEFT half): a short flick up in
+ * the air, 18 to 32 px in a tenth of a second, did nothing or punched. A finger on the right half jumps on 16 px there (airUpPx), but a
+ * left-half finger steers from the moment it lands, and the steering thumb needed airJumpDy (28 px) with an upward speed, and had no last
+ * look when it lifted. The touches as logged (ms since down, screen x, y; the last is the lift). (A third, 41 px left and 27 up, leans
+57 degrees over: that is steering, on either half.)
+ */
+const MATT_SHORT_SECOND_FLICKS: [string, [number, number, number][]][] = [
+  ['1140736', [[0, 248, 837], [66, 255, 829], [83, 261, 822], [100, 266, 817], [108, 266, 817]]],
+  ['1140961', [[0, 248, 834], [108, 259, 816], [124, 259, 816]]],
+];
+/** he landed in the middle of this one (110 ms in): 32 px up, 2 short of a jump from the ground (jumpDy) */
+const MATT_FLICK_AS_HE_LANDS: [number, number, number][] = [[0, 164, 764], [99, 162, 753], [116, 162, 736], [132, 163, 732], [141, 163, 732]];
+
+function mattRig(world: { air: boolean }) {
+  const log: string[] = [];
+  const sink: GestureSink = {
+    move: (d) => log.push(`move:${d}`),
+    duck: (on) => log.push(`duck:${on}`),
+    jumpPress: () => log.push('jump'),
+    jumpRelease: () => log.push('jumpUp'),
+    punch: () => log.push('punch'),
+    kick: () => log.push('kick'),
+    mega: () => log.push('mega'),
+    climb: (d) => log.push(`climb:${d}`),
+    feedback: () => {},
+  };
+  const g = new TouchGestures(sink, () => 1034, { assist: () => true, air: () => world.air, refined: () => true, kickNear: () => false, onVine: () => false, onSwing: () => false, onRope: () => false });
+  return { g, log, count: (s: string) => log.filter((l) => l === s).length };
+}
+function replayAt(g: TouchGestures, samples: [number, number, number][], t0: number, at?: (ms: number) => void) {
+  g.down(1, samples[0][1], samples[0][2], t0);
+  for (let i = 1; i < samples.length; i++) {
+    const [ms, x, y] = samples[i];
+    at?.(ms);
+    if (i === samples.length - 1) g.up(1, x, y, t0 + ms);
+    else g.move(1, x, y, t0 + ms);
+  }
+}
+
+test("Matt's short second flicks on the steering half are the second jump, not nothing and not a punch", () => {
+  for (const [name, samples] of MATT_SHORT_SECOND_FLICKS) {
+    const t = mattRig({ air: true });
+    replayAt(t.g, samples, 5000);
+    assert.equal(t.count('jump'), 1, `${name}: ${t.log.join(' ')}`);
+    assert.equal(t.count('punch') + t.count('kick'), 0, `${name}: ${t.log.join(' ')}`);
+    assert.equal(t.count('jumpUp') >= 1, true, `${name}: released`);
+  }
+});
+
+test('a flick begun in the air still jumps if he lands before it is through', () => {
+  const world = { air: true };
+  const t = mattRig(world);
+  replayAt(t.g, MATT_FLICK_AS_HE_LANDS, 5000, (ms) => {
+    if (ms >= 110) world.air = false;
+  });
+  assert.equal(t.count('jump'), 1, t.log.join(' '));
+});
+
+test('in the air the shorter rise is only for a fresh touch going up: a sideways steer, or a thumb that has steered a while, is not a jump', () => {
+  // a thumb planted in the air that steers sideways, bowing up a little
+  let t = mattRig({ air: true });
+  replayAt(t.g, [[0, 200, 800], [40, 220, 796], [80, 245, 790], [120, 262, 788], [200, 270, 788]], 5000);
+  assert.equal(t.count('jump'), 0, t.log.join(' '));
+  // a thumb that has been steering for half a second drifts up 20 px
+  t = mattRig({ air: true });
+  replayAt(t.g, [[0, 200, 800], [100, 240, 800], [300, 280, 802], [500, 290, 800], [560, 292, 786], [620, 293, 780], [700, 293, 780]], 5000);
+  assert.equal(t.count('jump'), 0, t.log.join(' '));
+  // a tap in the air is still a punch
+  t = mattRig({ air: true });
+  replayAt(t.g, [[0, 200, 800], [60, 202, 797], [90, 202, 797]], 5000);
+  assert.equal(t.count('punch'), 1, t.log.join(' '));
+  assert.equal(t.count('jump'), 0, t.log.join(' '));
+});
+
+test('a right-half thumb that flicks up, stays on the glass, sinks a little and flicks again jumps twice', () => {
+  const world = { air: false };
+  const t = mattRig(world);
+  const x = 760;
+  let now = 5000;
+  t.g.down(1, x, 300, now);
+  for (let k = 1; k <= 6; k++) t.g.move(1, x + k, 300 - k * 12, (now += 12)); // a quick flick up: the jump
+  assert.equal(t.count('jump'), 1, t.log.join(' '));
+  world.air = true; // he is up, with the second jump to spare
+  for (let k = 1; k <= 5; k++) t.g.move(1, x + 6, 228 + k * 6, (now += 20)); // sinks back 30 px
+  for (let k = 1; k <= 4; k++) t.g.move(1, x + 8, 258 - k * 9, (now += 12)); // and flicks up again
+  assert.equal(t.count('jump'), 2, t.log.join(' '));
+  t.g.up(1, x + 8, 222, (now += 20));
+  assert.equal(t.count('punch') + t.count('kick'), 0, t.log.join(' '));
+});
