@@ -98,6 +98,16 @@ export const riseLimit = (dbl: boolean, share: number): number => share * (dbl ?
 // ───────────────────────────── pass 1: the budget ─────────────────────────────
 
 /**
+ * The inspector's quick player (tools/inspect eraRoll pickRoute: a fast thumb on the quickest way through; what curation and the
+ * length rule measure) needs at least `seconds` (STAGE-RULES §1, §2 "Length"). The pipeline can't run the inspector (it ships), so it
+ * holds the time model's fast player to `seconds / ratio`: the quick player runs at least `ratio` of the model's fast player.
+ * Measured 2026-10-28 over 100-400 rolls per stage and setting: lowest 0.851 (World 5's 5-7, Easy); 0.86-0.90 for the rest of 5-7,
+ * 5-9 and the toy world's 5-4 and 5-7, about 1.0 for a harvest. Re-measure when a world's sections change the mix (the pipeline
+ * test checks the quick route itself on the toy world).
+ */
+export const QUICK = { seconds: 120, ratio: 0.84 } as const;
+
+/**
  * Each world's difficulty band (§1b), in D units: Gemini's D_base from 10 (World 1) to 65 (World 10), the band from 1.5 under it to
  * 7.5 over it. Neighbours overlap by about 3 (less than a world); the next world's middle (D_base + 9.1) stays above this world's top.
  */
@@ -135,7 +145,8 @@ export function planBudget(config: LevelConfig, manifest: WorldManifest, difficu
     D,
     band,
     heat,
-    seconds: { target, fastFloor: fastFloor(config.worldIndex, config.miniIndex, archetype), max: Math.min(target * 1.1, 295) },
+    // (the fast player's floor is also what keeps the inspector's quick player over 2:00: QUICK)
+    seconds: { target, fastFloor: Math.max(fastFloor(config.worldIndex, config.miniIndex, archetype), QUICK.seconds / QUICK.ratio), max: Math.min(target * 1.1, 295) },
     margin: MARGIN[difficulty],
     riseShare: MARGIN[difficulty],
     landingPad: easy ? EASY_LANDING : 0,

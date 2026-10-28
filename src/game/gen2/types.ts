@@ -298,6 +298,8 @@ export interface StageBudget {
   band: readonly [number, number];
   /** 0..1: where D sits in the band (what the sections' difficulty is matched against) */
   heat: number;
+  /** the typical player's target, the fast player's floor (stageTime fastFloor, and never under what keeps the inspector's quick
+   *  player at 2:00: pipeline QUICK) and the typical player's ceiling */
   seconds: { target: number; fastFloor: number; max: number };
   /** the jump margin (D2, Part 1 §3): the widest required gap is this share of the physical reach */
   margin: number;

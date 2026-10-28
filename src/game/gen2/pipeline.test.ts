@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, rngFor, STAGE_HEAT, THEME, trimPlan } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, QUICK, rngFor, STAGE_HEAT, THEME, trimPlan } from './pipeline.ts';
 import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
 import { MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
@@ -205,8 +205,9 @@ const fnv = (s: string) => {
 
 test("a world with no sub-blocks lays exactly what it laid before sub-blocks came in (the curated seeds' geometry holds)", () => {
   // (if a change to passes 1-3 means to move these, the curated seeds in gen2/seeds.ts must be curated again: say so in its commit.
-  // Moved once since: 2026-10-28's pit steps (pitSteps), which re-laid every soft pit's floor and steps and nothing else)
-  const want: Record<number, string> = { 1: 'ef235b36', 2: '6f725f7d', 3: '1e084cdd' };
+  // Moved since: 2026-10-28's pit steps (pitSteps), which re-laid every soft pit's floor and steps and nothing else; then QUICK's
+  // fast floor, which grew seeds 1 and 2 by a section before the shrine)
+  const want: Record<number, string> = { 1: '7bb5ab7a', 2: 'adef3f92', 3: '1e084cdd' };
   for (const seed of [1, 2, 3]) {
     const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'normal' });
     assert.equal(fnv(st.platforms.map((p) => `${p.x},${p.y},${p.width},${p.height}`).join(';')), want[seed], `seed ${seed}`);
@@ -387,6 +388,12 @@ test('the length loop converges: every roll lands in its window (or ships long, 
     assert.ok(t >= tgt && (t <= max || long), `seed ${seed}: typical ${t.toFixed(0)} s outside [${tgt}, ${max.toFixed(0)}]`);
     assert.ok(modelStage(n, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: Normal quick`);
     assert.ok(modelStage(e, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: Easy quick ${modelStage(e, MODEL_FAST).total.toFixed(0)} s`);
+    // (and the inspector's quick player, what curation measures, is over 2:00 on both: QUICK)
+    for (const st of [n, e]) {
+      const q = pickRoute('stealth', st).quick.time;
+      assert.ok(q >= QUICK.seconds, `seed ${seed} ${st.gen2.budget.difficulty}: the inspector's quick player ${q.toFixed(0)} s`);
+      assert.ok(st.gen2.budget.seconds.fastFloor * QUICK.ratio >= QUICK.seconds - 1e-9);
+    }
     assert.deepEqual(e.gen2.plan.map((p) => p.template), n.gen2.plan.map((p) => p.template), `seed ${seed}: Easy lays Normal's plan`);
   }
   // a change keeps the prefix: one section added (fresh) or taken off just before the shrine's node, nothing before it moves
