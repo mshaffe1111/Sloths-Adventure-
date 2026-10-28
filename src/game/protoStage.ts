@@ -2612,7 +2612,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     if (!w3Chained) {
       w3Chained = true;
       chain(2, false, 'gorge');
-    } else rootClimb(2);
+    } else rootClimb(3);
   };
   /**
    * a wall of grotto rock too high to jump (250-300 up), and a root hanging down its face to climb (the way on goes up it, so it is not a
@@ -2621,33 +2621,39 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   function rootClimb(n: number) {
     const x0 = x;
     for (let k = 0; k < n; k++) {
-      run(R.r(160, 220));
+      run(R.r(180, 230));
       close();
       const h = Math.round(R.r(250, 300));
-      const w = Math.round(R.r(320, 440));
+      const w = Math.round(R.r(240, 320));
       // (the root hangs just in front of the face, so he climbs it from the floor and steps off onto the top)
-      run(60);
       const top = cliff(x, x + w, h);
       trunk(x - 34, G, G - h);
       for (let i = 0; i < 2; i++) flower(x - 34, G - 80 - i * 70, 'hibiscus');
       row(top.x + 90, top.x + w - 60, top.y - 34, Math.max(2, Math.round(w / 150)), 'orchid');
       open(x + w);
-      run(R.r(90, 130));
-      logHop(R.i(34, 44));
       expert += h / CLIMB + 0.8 + w / RUN;
     }
-    run(R.r(200, 260));
+    run(R.r(160, 200));
     expert += (x - x0) / RUN;
     pieces.push({ k: 'kapok', x0, x1: x });
   }
+  /**
+   * the climax near the end of every World 3 stage (Gemini's sawtooth: the hardest stretch just before the walk out, STAGE-RULES §2
+   * "Tension"), whatever the roll: a run of stones over the stream, then a breath of floor. It also keeps each stage in World 3's band
+   * on every roll (a roll of only ferns and dark was World 2-easy, 2026-10-28)
+   */
+  const w3Climax = () => {
+    busy(1, ['log'], R.r(200, 240));
+    deepRun(4, 2);
+  };
   /** World 3's openings (the variety pass): every one safe (soft moss under every dip), a hop or two in the first seconds */
   const w3Start = (v: number) => {
     // (a little more plain floor first: the first hop came 300 px from the spawn, before he was up to speed, and the first-timer's press
     // window there was 133 ms on Normal, under the 167 ms floor)
-    run(R.r(150, 190));
-    expert += 0.6;
+    run(R.r(70, 100));
+    expert += 0.3;
     if (v === 0) busy(2, ['log', 'dip'], R.r(230, 270));
-    else if (v === 1) { lowStumps(); busy(1, ['dip'], R.r(230, 270)); }
+    else if (v === 1) { lowStumps(); busy(2, ['log'], R.r(230, 270)); }
     else { busy(1, ['log'], R.r(150, 190)); w3Stones([40, 70], [0.45, 0.55]); }
   };
   /** World 3's finish: pieces drawn from a shuffle bag (C1) until a quick player has had the stage's time, a flag every `every` */
@@ -2755,6 +2761,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flag();
       // (on some rolls World 3's stone plate here, Matt's pressed plate seen at last)
       if (v.twist === 1) { busy(1); plateRoom(false); flag(); }
+      else if (v.twist === 2) { rootClimb(2); flag(); }
     });
     beat('Finish', () => {
       busy(1);
@@ -2773,10 +2780,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const ferns = () => bushRow(4, [460, 560], ['grotto'], [4.2, 5.2], true);
       const kits: Array<Array<() => void>> = [
         [ferns, ferns, () => { busy(1); ferns(); }],
-        [dark, () => { glowDark(R.r(1200, 1350), 1, { rocks: true }); deepRun(2, 1, false); }, dark],
+        [() => deepRun(4, 1), () => { dark(); deepRun(3, 1); }, () => deepRun(5, 2)],
         [() => { w3Vines(); rootClimb(1); }, () => w3Vines(), () => { rootClimb(1); w3Vines(); }],
       ];
       w3Finish(EXPERT_SECONDS + 34, kits[v.finish], 1);
+      w3Climax();
       homeRun();
     });
   }
@@ -2831,6 +2839,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         [() => { w3Vines(); prowlFloor(['ocelot', 'ocelot']); }, () => { w3Vines(); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot']); }, () => { w3Vines(); w3Vines(); }],
       ];
       w3Finish(EXPERT_SECONDS + 6, kits[v.finish], 2, () => placed() < Math.ceil(PROWLER_GOAL_33 * 1.5));
+      w3Climax();
       homeRun();
     });
   }
@@ -3034,7 +3043,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       for (let vx = z0 + 640; vx < x - 420; vx += R.r(380, 460)) if (!P.some((pl) => pl.style === 'moss_stone' && vx > pl.x - 120 && vx < pl.x + pl.width + 120)) thornAt(vx, [3.6, 4.4]);
       expert += 3;
       if (v.twist === 1) deepRun(3, 1);
-      else if (v.twist === 2) vineRow(3, [3.4, 4.2], [340, 420], true, true);
+      else if (v.twist === 2) { rootClimb(2); vineRow(2, [3.4, 4.2], [340, 420]); }
       flag();
     });
     beat('Finish', () => {
@@ -3107,6 +3116,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         [() => w3Vines(), () => fernPatch(3, true), () => { w3Vines(); fernPatch(3, true); }],
       ];
       w3Finish(EXPERT_SECONDS + 4, kits[v.finish], 2, () => thingsPlaced < GRANDMA_GOAL_36 + 3);
+      w3Climax();
       homeRun();
     });
   }
@@ -3291,6 +3301,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         [() => { deepRun(4, 1); fernPatch(3, true); }, () => deepRun(5, 2), () => { deepRun(3, 1); w3Stones([50, 100, 70], [0.5, 0.6]); }],
       ];
       w3Finish(EXPERT_SECONDS + 14, kits[v.finish], 2, () => thingsPlaced < GRANDMA_GOAL_37 + 3);
+      w3Climax();
       homeRun();
     });
   }
@@ -3481,6 +3492,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         [() => { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot', 'ocelot']); }, () => { vineRow(3, [4, 4.8], [360, 430], true, true); prowlFloor(['ocelot']); }, () => { sporeRest(R.r(440, 500)); sporeGap(true); prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot']); }],
       ];
       w3Finish(EXPERT_SECONDS + 16, kits[v.finish], 2, () => placed() < Math.ceil(PROWLER_GOAL_39 * 1.4));
+      w3Climax();
       homeRun();
     });
   }

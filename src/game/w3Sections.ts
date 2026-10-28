@@ -28,7 +28,7 @@ import type { ThornVine } from './thornVine.ts';
 /** how many versions each section of each stage has (a section with 1 is the same on every roll) */
 export const W3_VERSIONS: Record<string, { start: number; learn: number; develop: number; twist: number; finish: number }> = {
   '3-1': { start: 3, learn: 2, develop: 3, twist: 3, finish: 3 },
-  '3-2': { start: 3, learn: 2, develop: 3, twist: 2, finish: 3 },
+  '3-2': { start: 3, learn: 2, develop: 3, twist: 3, finish: 3 },
   '3-3': { start: 3, learn: 2, develop: 3, twist: 3, finish: 3 },
   '3-4': { start: 1, learn: 2, develop: 3, twist: 3, finish: 2 },
   '3-5': { start: 3, learn: 2, develop: 3, twist: 3, finish: 3 },
@@ -41,7 +41,7 @@ export const W3_VERSIONS: Record<string, { start: number; learn: number; develop
 /** the kind of stretch each version is, by stage and section: the stage's cooldown keeps one kind out of two sections */
 const KINDS: Record<string, Partial<Record<'develop' | 'twist' | 'finish', readonly string[]>>> = {
   '3-1': { develop: ['spore', 'abyss', 'vine'], twist: ['spore', 'abyss', 'vine'], finish: ['vine', 'spore', 'abyss'] },
-  '3-2': { develop: ['fern', 'dark', 'vine'], twist: ['dark', 'plate'], finish: ['fern', 'dark', 'vine'] },
+  '3-2': { develop: ['fern', 'dark', 'vine'], twist: ['dark', 'plate', 'vine'], finish: ['fern', 'abyss', 'vine'] },
   '3-3': { develop: ['shelf', 'dark', 'abyss'], twist: ['spore', 'shelf', 'floor'], finish: ['shelf', 'dark', 'vine'] },
   '3-4': { develop: ['rope', 'hops', 'thorn'], twist: ['rope', 'prowl', 'hops'] },
   '3-5': { develop: ['row', 'abyss', 'vine'], twist: ['dark', 'abyss', 'row'], finish: ['row', 'abyss', 'vine'] },
@@ -105,7 +105,7 @@ export function w3Pick(stage: string, seed: number): W3Pick {
     if (!ks) return one(n);
     const ids = Array.from({ length: n }, (_, i) => i);
     const allowed = sec === 'twist' ? ids.filter((i) => cool.allows(ks[i])) : ids;
-    const i = pickWeighted(rng, allowed.length ? allowed : ids, (i) => (ks[i] === theme ? 3 : 1)) ?? 0;
+    const i = pickWeighted(rng, allowed.length ? allowed : ids, (i) => (ks[i] === theme ? 6 : 1)) ?? 0;
     cool.use(ks[i]);
     return i;
   };
