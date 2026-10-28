@@ -255,6 +255,7 @@ const SECTIONS: Record<W1Stage, Table> = {
           k.lowStumps();
           k.busy(2, ['dip']);
           k.mushroomCache();
+          k.busy(1, ['dip', 'log']);
           POOL.stones(k);
         },
       },
@@ -263,6 +264,7 @@ const SECTIONS: Record<W1Stage, Table> = {
           k.pillars([60, 110, 60], [0.5, 0.62], false, true);
           POOL.hopDip(k);
           k.mushroomCache();
+          k.dip();
           k.lowStumps();
         },
       },
@@ -436,7 +438,8 @@ const SECTIONS: Record<W1Stage, Table> = {
       {
         id: 'everything', beat: 'fight', build: (k) => {
           const groups: Build[] = [
-            (k) => { k.logHop(); k.fernTree(); k.dipArc(); },
+            // (a dip first: right after the mushroom's cache, the fern tree's top was a way onto the cache)
+            (k) => { k.dipArc(); k.logHop(); k.fernTree(); k.dipArc(); },
             (k) => k.ropeGap(false, true, true),
             (k) => k.doubleArcs(true),
             (k) => { k.dipArc(); k.mushroomCache(); },
@@ -503,15 +506,15 @@ const SECTIONS: Record<W1Stage, Table> = {
     finish: [
       {
         id: 'vines', beat: 'swing', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.chain(k.R.i(3, 4), false); k.busy(1); },
-          (k) => { k.highRun(); k.busy(1); },
+          (k) => { k.chain(k.R.i(3, 4), false); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
+          (k) => { k.highRun(); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
           (k) => { k.chain(3, false); k.highRun(); },
         ], 2, 16),
       },
       {
         id: 'climbs', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.kapok(); k.busy(1); },
-          (k) => { k.canopy(false); k.busy(1); },
+          (k) => { k.kapok(); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
+          (k) => { k.canopy(false); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
           (k) => { k.climbWall(); k.kapok(); },
         ], 2, 16),
       },

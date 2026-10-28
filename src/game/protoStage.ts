@@ -493,7 +493,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         arc(k === 0 ? edge + 10 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 4);
       }
       open(farX);
-      run(R.r(120, 200));
+      run(R.r(90, 140));
       expert += (edge - x0) / RUN + (farX - edge) / SWING + 0.3 * n + (x - farX) / RUN;
       pieces.push({ k: kind, x0, x1: x });
       return;
@@ -528,7 +528,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       liana(vx, top, bottom);
       arc(perch.x + perch.width, gap, top + 90, 5);
       open(gap);
-      run(R.r(150, 220));
+      run(R.r(110, 150));
       expert += (trunkX - x0) / RUN + (G - perchY) / CLIMB + 1.2 + (gap - perch.x - perch.width) / SWING + (x - gap) / RUN;
       pieces.push({ k: 'kapok', x0, x1: x });
       return;
@@ -761,11 +761,13 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const end = x + gap + 120 + 420;
       // (World 1: the floor on under the far ledge holds dips of moss to jump, as glideLookout's does: it was a 6-9 s empty walk, the
       // stage inspector, 2026-10-28; never a rock, from whose top a double jump would reach the ledge the glide is for)
-      if (w1Rocks) while (end - x > 420) { run(R.r(180, 260)); dip(); }
+      if (w1Rocks) while (end - x > 260) { run(R.r(180, 260)); dip(); }
       x = Math.max(x, end);
-    } else x += R.r(200, 300);
+      // (and a rock where the road comes down to the floor: the walk on to what follows was four quiet seconds)
+      if (w1Rocks) logHop();
+    } else x += R.r(110, 170);
     // the forest floor under the whole road is one long safe bank (the bank before carries on under it)
-    run(R.r(120, 200));
+    run(R.r(90, 140));
     expert += (x - x0) / RUN + (G - y0) / CLIMB + 1 + 0.35 * n;
     pieces.push({ k: 'canopy', x0, x1: x });
   }
@@ -794,9 +796,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const eb = branch(endB.x, endB.x + endB.width, endB.y);
       row(eb.x + 40, eb.x + eb.width - 40, eb.y - 34, 2, 'hibiscus');
       // a trunk back up from the floor, for a missed vine
-      trunk(xs[Math.min(1, n - 1)] + 60, G, y0 + 40 > 420 ? 420 : y0 + 40);
-      branch(xs[Math.min(1, n - 1)] + 20, xs[Math.min(1, n - 1)] + 200, y0 + 40 > 420 ? 420 : y0 + 40);
-      x = eb.x + eb.width + R.r(150, 250);
+      // (out of a double jump's reach from the floor, 185 up at least: at 173 up the stage inspector's route jumped onto it and walked
+      // the floor under the whole run, 2026-10-28; the trunk is the way up to it)
+      const ry = Math.min(y0 + 40, 395);
+      trunk(xs[Math.min(1, n - 1)] + 60, G, ry);
+      branch(xs[Math.min(1, n - 1)] + 20, xs[Math.min(1, n - 1)] + 200, ry);
+      x = eb.x + eb.width + R.r(100, 150);
       expert += (tX - x0) / RUN + (G - y0) / CLIMB + 1 + (endB.x - start.x - start.width) / SWING + 0.3 * n + (x - endB.x) / RUN;
       pieces.push({ k: 'highrun', x0, x1: x });
       return;
@@ -926,7 +931,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   /** a mushroom that bounces Pokey up to a high branch nobody can jump to: a cache of petals and a golden seed (1-1's secret) */
   function mushroomCache() {
     const x0 = x;
-    run(R.r(180, 240));
+    run(R.r(120, 160));
     const mx = x;
     P.push({ id: pid++, x: mx, y: G - 30, width: 70, height: 30, type: 'bouncy' });
     // higher than a double jump reaches from the ground, so only the mushroom gets him there
@@ -934,7 +939,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     branch(mx - 40, mx + 230, by);
     row(mx + 10, mx + 200, by - 34, 4, 'hibiscus');
     goldenSeed(mx + 150, by - 70);
-    run(R.r(320, 380));
+    run(R.r(220, 260));
     expert += (x - x0) / RUN + 1.5;
     pieces.push({ k: 'rest', x0, x1: x });
   }
@@ -1112,6 +1117,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     row(sx + 40, sx + 120, G - PRACTICE_H - 34, 2, 'hibiscus');
     run(PRACTICE_AT + 160 + 140);
     expert += (PRACTICE_AT + 300) / RUN;
+    // (a rock just past it: nothing may stand under the shelf, and the walk from the tip to the first gap was 4-5 quiet seconds)
+    logHop();
   }
   /**
    * a wall too tall to jump, even twice, with a mushroom at its foot: bounce up onto it, run along its top (petals), drop off the far end.
@@ -1144,7 +1151,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    */
   function highLeaps(n: number, dbl = false, first = false, snakes = false) {
     const x0 = x;
-    run(R.r(150, 210));
+    run(R.r(110, 150));
     if (first) once('bounceWall', () => hint(x - 120, 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high'));
     P.push({ id: pid++, x: Math.round(x), y: G - 30, width: 70, height: 30, type: 'bouncy' });
     const y = G - R.i(236, 246);
@@ -1162,11 +1169,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (the ground runs on under the branches, to the wall's foot)
     x = bx;
     close();
-    const top = cliff(bx, bx + R.r(150, 190), G - y);
+    const top = cliff(bx, bx + R.r(120, 150), G - y);
     flower(top.x + top.width / 2, top.y - 34, 'orchid');
     open(top.x + top.width);
     // (far enough on that a flag after it stands on the ground, not on the wall's top)
-    run(R.r(100, 130));
+    run(R.r(95, 115));
     expert += (x - x0) / RUN + 0.6 + n * (dbl ? 0.2 : 0.1) + (snakes ? 0.8 * Math.floor(n / 2) : 0);
     pieces.push({ k: 'highrun', x0, x1: x });
   }
@@ -1306,7 +1313,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const e0 = x;
     dip(R.r(0.45, 0.55));
     arc(e0 - 30, x + 30, G - 110, 2, 'hibiscus');
-    run(R.r(280, 330));
+    run(R.r(200, 240));
     expert += (x - x0) / RUN + 2;
     pieces.push({ k: 'highrun', x0, x1: x });
   }
@@ -1376,7 +1383,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const e0 = x;
     dip(R.r(0.45, 0.55));
     arc(e0 - 20, x + 20, G - 110, 2, 'orchid');
-    run(R.r(260, 320));
+    run(R.r(190, 230));
     expert += (x - x0) / RUN + 1.2;
     pieces.push({ k: 'highrun', x0, x1: x });
   }
@@ -1403,7 +1410,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const e0 = x;
     dip(R.r(0.45, 0.55));
     arc(e0 - 20, x + 20, G - 110, 2, 'hibiscus');
-    run(R.r(260, 320));
+    run(R.r(190, 230));
     expert += (x - x0) / RUN + 2;
     pieces.push({ k: 'highrun', x0, x1: x });
   }
@@ -1605,11 +1612,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const tX = x - 150;
     const perchY = 300;
     trunk(tX, G, perchY);
-    branch(tX - 40, tX + 300, perchY);
+    // (a shorter branch since 2026-10-28: the walk out to the fern and back down read as four quiet seconds)
+    branch(tX - 40, tX + 220, perchY);
     for (let i = 0; i < 4; i++) flower(tX, G - 70 - i * 60, 'hibiscus');
-    row(tX + 60, tX + 160, perchY - 34, 2, 'orchid');
+    row(tX + 60, tX + 120, perchY - 34, 2, 'orchid');
     const keep = findForStage(config.worldIndex, config.miniIndex);
-    if (keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: tX + 250, y: perchY - 26, collected: false, bobPhase: 0 });
+    if (keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: tX + 180, y: perchY - 26, collected: false, bobPhase: 0 });
     run(R.r(170, 220));
     expert += (x - x0) / RUN + (2 * (G - perchY)) / CLIMB;
     pieces.push({ k: 'kapok', x0, x1: x });
@@ -1636,7 +1644,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // the floor on under the lookout and the far ledge: dips of moss to jump (never a rock: from on top of one a double jump would
     // reach the ledge the glide is for)
     x = tX + 240;
-    while (end - x > 420) {
+    while (end - x > 260) {
       run(R.r(180, 260));
       dip();
     }
@@ -1661,7 +1669,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     row(bx + w * 0.7, bx + w - 30, G - 124, 2, 'hibiscus');
     x = bx + w + Math.round(R.r(60, 100));
     dipArc();
-    run(R.r(260, 320));
+    run(R.r(190, 230));
     expert += (x - x0) / RUN + 1.6;
     pieces.push({ k: 'snakes', x0, x1: x });
   }
@@ -1715,7 +1723,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       // (`rocks`, World 1's rebuilt 1-7: a mossy rock or two to hop between the bushes, a petal on each: the run from bush to bush is
       // a hop and a dash, not an empty walk)
       if (rocks && (k > 0 || g >= 600)) {
-        const m = g >= 640 ? 2 : 1;
+        // (three in the longest runs, World 1's rebuilt 1-7 since 2026-10-28: two left two seconds of plain running between them)
+        const m = g >= 760 ? 3 : g >= 640 ? 2 : 1;
         for (let j = 0; j < m; j++) {
           const rw = Math.round(R.r(110, 140));
           const rx = Math.round(x + (g * (j + 1)) / (m + 1) - rw / 2);
@@ -5553,14 +5562,32 @@ function buildLongBranch(config: LevelConfig, seed: number): GeneratedStage & { 
   };
 
   // ---- Learn: the long branch, calm
+  /**
+   * a mossy knot on the branch, one easy hop high, in place of a stretch of it (its foot reaches the branch's underside: on top of a
+   * section the stage inspector's quick route walked through it). Only in the calm, before the branch starts to fall.
+   */
+  const knot = () => {
+    const w = Math.round(R.r(100, 120));
+    P.push({ id: pid++, x: Math.round(x), y: level - 36, width: w, height: 76, type: 'solid', style: 'moss_stone' });
+    flower(x + w / 2, level - 70, 'orchid');
+    x += w;
+    expert += w / RUN + 0.15;
+  };
   beat('Learn: the long branch', () => {
     // (seven sections before the first gap: over four seconds of running, so the gap's tip is up before he can fall. With four, a plain
-    // run fell in at 3.3 s: stageStart.test.ts)
-    sec(7);
+    // run fell in at 3.3 s: stageStart.test.ts. Since 2026-10-28 two mossy knots to hop among them, where the calm read as five quiet
+    // seconds on every roll)
+    sec(2);
+    knot();
+    sec(2);
+    knot();
+    sec(2);
     hint(300, 'This branch goes on and on');
     row(x - TILE * 3, x - 60, level - 34, 3, 'hibiscus');
     gap(one * 0.4);
-    sec(3);
+    sec(1);
+    knot();
+    sec(1);
     // World 1's book hides in a Hush Fern here, in the calm before the chase (stage 8 holds the book: finds.ts); nobody can crouch
     // and search once the branch is falling
     const book = findForStage(config.worldIndex, config.miniIndex);
@@ -5568,7 +5595,9 @@ function buildLongBranch(config: LevelConfig, seed: number): GeneratedStage & { 
     gap(one * 0.5);
     sec(3);
     flag();
-    sec(2);
+    sec(1);
+    knot();
+    sec(1);
   });
   const start = x;
 
