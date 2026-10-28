@@ -34,9 +34,9 @@ test('the sections: each is laid in its own space, 3-8 s of play, level at its e
     for (const k of s.sockets) assert.ok(keys.has(k.on), `${s.id}.${k.id} sits on a piece it has`);
     for (let r = 1; r <= 30; r++) {
       const L = layLocal(s, budget, rngFor(r));
-      // (a swing's gap is wider than any jump, by design: a liana section may run 330 px longer per liana for the same seconds)
+      // (a swing's gap is wider than any jump, by design: a liana section may run 370 px longer per liana: its gap lies past the leaf glide, 477 px or more)
       const lianas = L.pieces.filter((p) => p.shape === 'liana').length;
-      assert.ok(L.width >= 600 && L.width <= 1700 + 330 * lianas, `${s.id}: ${L.width} px`);
+      assert.ok(L.width >= 600 && L.width <= 1700 + 370 * lianas, `${s.id}: ${L.width} px`);
       assert.ok(Math.abs(L.exit.y - s.exitDy) <= 25, `${s.id}: exitDy ${s.exitDy}, laid ${L.exit.y}`);
       // (a hop over the water is half a jump at most, never under the core's 60 px; a gap a liana hangs over is the swing's, wider than any jump)
       const swung = (g: { x0: number; x1: number }) => L.pieces.some((p) => p.shape === 'liana' && p.x >= g.x0 - 1 && p.x <= g.x1 + 1);

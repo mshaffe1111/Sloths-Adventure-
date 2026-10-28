@@ -160,7 +160,9 @@ const humpRun: SectionTemplate = {
 // the way over. Chains keep a root perch between every two swings (levelCheck follows ledge -> liana -> ledge, never liana to liana).
 // A liana section is never mirrored, and needs the swing move (the core infers it).
 
-const liana = (key: string, after: string): SectionPiece => ({ key, shape: 'liana', w: 0, place: { kind: 'swing', after } });
+/** a liana past `after`'s end: its anchor 400-420 px up (the core's default is 360-420; a longer one throws him further, so its perch
+ *  can lie past the leaf glide's reach with the release window kept) */
+const liana = (key: string, after: string): SectionPiece => ({ key, shape: 'liana', w: 0, place: { kind: 'swing', after, top: [400, 420] } });
 /**
  * the perch past a liana (`dy` from the swing's ledge), a landing (Easy widens it). The gap under the swing is black water (core
  * `water: true`): a soft pit there would let him walk under the liana and out the far side, and the swing would be optional (the lead,
@@ -196,7 +198,7 @@ const swingPair: SectionTemplate = {
   archetypes: ['vine_runner', 'sprint'],
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
-  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('p1', 'l1', [180, 230], [0, 20]), liana('l2', 'p1'), perch('b', 'l2', [300, 380])],
+  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('p1', 'l1', [180, 230], [-15, 0]), liana('l2', 'p1'), perch('b', 'l2', [300, 380], [-10, 0])],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'b', kind: 'ground' },
   exitDy: 0,
@@ -215,11 +217,11 @@ const swingChain: SectionTemplate = {
   pieces: [
     bank('a', [160, 200]),
     liana('l1', 'a'),
-    perch('p1', 'l1', [210, 250], [0, 12]),
+    perch('p1', 'l1', [210, 250], [-10, 0]),
     liana('l2', 'p1'),
-    perch('p2', 'l2', [210, 250]),
+    perch('p2', 'l2', [210, 250], [-8, 0]),
     liana('l3', 'p2'),
-    perch('b', 'l3', [260, 320]),
+    perch('b', 'l3', [260, 320], [-7, 0]),
   ],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'b', kind: 'ground' },
@@ -284,14 +286,14 @@ const swingWatch: SectionTemplate = {
   mirrorable: false,
 };
 
-/** root knees to hop, then a swing down onto a lower root and a step back up */
+/** root knees to hop, then a swing onto a root, a step down and back up */
 const kneesSwing: SectionTemplate = {
   id: 'w6s-knees-swing',
-  name: 'knees, then a swing down',
+  name: 'knees, then a swing',
   archetypes: ['vine_runner', 'sprint'],
   phases: ['sho', 'ten'],
   difficulty: 5,
-  pieces: [bank('a', [150, 190]), hop('k1', 'a', [150, 180]), hop('k2', 'k1', [180, 220]), liana('l1', 'k2'), perch('b', 'l1', [220, 260], [30, 40]), up('c', 'b', 35, [240, 300])],
+  pieces: [bank('a', [130, 160]), hop('k1', 'a', [140, 170]), hop('k2', 'k1', [160, 190]), liana('l1', 'k2'), perch('b', 'l1', [190, 220]), down('b2', 'b', 35, [120, 150]), up('c', 'b2', 35, [180, 220])],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
@@ -316,10 +318,10 @@ const swingHunter: SectionTemplate = {
   mirrorable: false,
 };
 
-/** a swing down onto a low root (a pit's depth under the ledge), and a climbing vine back up the root wall past it */
+/** a swing onto a root, a drop onto a low root below it, and a climbing vine up the root wall past it */
 const swingDropClimb: SectionTemplate = {
   id: 'w6s-swing-drop-climb',
-  name: 'swing down, climb back up (run)',
+  name: 'swing, drop, climb the root wall (run)',
   archetypes: ['vine_runner', 'sprint'],
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
@@ -327,14 +329,15 @@ const swingDropClimb: SectionTemplate = {
   pieces: [
     bank('a', [180, 220]),
     liana('l1', 'a'),
-    perch('b', 'l1', [220, 260], [70, 80]),
-    ...climbWall('v', 'b', 'wall', 200, [200, 240]),
-    down('c', 'wall', 125, [200, 240]),
+    perch('b', 'l1', [200, 240]),
+    down('b2', 'b', 80, [140, 170]),
+    ...climbWall('v', 'b2', 'wall', 200, [200, 240]),
+    down('c', 'wall', 120, [200, 240]),
   ],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
-  sockets: [petals('a', 'a', 0.4, 1), petals('b', 'b', 0.5, 2, 80), petals('wall', 'wall', 0.5, 2, 90), foe('foe', 'c', [0.6, 0.85], SMALL, 2.5, { phases: ['ten', 'ketsu'], chance: 0.4 })],
+  sockets: [petals('a', 'a', 0.4, 1), petals('b', 'b', 0.5, 1), petals('b2', 'b2', 0.5, 1), petals('wall', 'wall', 0.5, 2, 90), foe('foe', 'c', [0.6, 0.85], SMALL, 2.5, { phases: ['ten', 'ketsu'], chance: 0.4 })],
   mirrorable: false,
 };
 
