@@ -555,6 +555,19 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
   // the knot, the second Twist's two, and the finish draws its pairs from a bag leaning to the roll's theme: the guards, the falls and
   // rocks, or the climbs)
   const roll = new W4Roll(seed, '4-9');
+  // (round 2, 2026-10-28: the finish's theme is a flavour for the whole stage: after the Develop and each Twist one of its own pieces,
+  // a guard to get past on the gust, a boulder fall, or a climb, so two rolls differ all the way up, not only at the top)
+  const theme = roll.theme('finish', ['guards', 'falls', 'climbs'] as const);
+  let mistSeen = false;
+  const sig = () => {
+    hopRest();
+    if (theme === 'guards') guardPass(R.chance(0.5) ? 1 : -1, true);
+    else if (theme === 'falls') plugFall(R.chance(0.5));
+    else if (mistSeen) mistClimb(false);
+    else treeUp(R.r(300, 330));
+    hopRest();
+    flag();
+  };
   beat('Develop: Dot and the boulder', () => {
     hopRest();
     hint(x + 60, 'Tied up again! Stand still under the knot, and I will fly up');
@@ -576,6 +589,8 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     };
     if (roll.pick(['plugFirst', 'secretFirst'] as const) === 'plugFirst') { plug(); secret(); }
     else { secret(); plug(); }
+    // (not a guard yet: the guards' order of teaching, a pass, a perch, then two together, holds)
+    if (theme !== 'guards') sig();
   });
   beat('Twist: over the drop', () => {
     hint(x + 60, 'Too far to jump. Jump, and keep your thumb on the glass to open your leaf', 'Too far to jump. Jump, and hold Jump to open your leaf', 'Too far to jump. Jump, and hold Space to open your leaf');
@@ -591,6 +606,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     hint(x + 40, 'A guard on the edge! When the wind blows it off, run, and glide with the gust behind you');
     guardPerch();
     flag();
+    if (theme !== 'guards') sig();
   });
   beat('Twist: the mist and the turning wind', () => {
     const mist = () => {
@@ -604,9 +620,10 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     };
     if (roll.pick(['mistFirst', 'pairFirst'] as const) === 'mistFirst') { mist(); pair(); }
     else { pair(); hopRest(); mist(); }
+    mistSeen = true;
+    sig();
   });
   type Piece49 = 'knot' | 'rocks' | 'plug' | 'climb' | 'glide' | 'pair';
-  const theme = roll.theme('finish', ['guards', 'falls', 'climbs'] as const);
   const counts: Record<typeof theme, Record<Piece49, number>> = {
     guards: { knot: 1, rocks: 2, plug: 1, climb: 1, glide: 0, pair: 2 },
     falls: { knot: 1, rocks: 1, plug: 2, climb: 0, glide: 2, pair: 0 },
@@ -642,6 +659,12 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
       hopRest();
       flag();
       n++;
+    }
+    // (and always more guards than the goal asks: a flavour light on guards adds them here)
+    while (monkeys.filter((m) => m.job === 'guard').length < GUARD_GOAL_49 + 2) {
+      guardPass(R.chance(0.5) ? 1 : -1, true);
+      hopRest();
+      flag();
     }
     // (the finish always holds a second boulder fall: the stage's falls come back once more before her aerie)
     if (!plugs) {

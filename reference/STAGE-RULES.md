@@ -199,6 +199,12 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   stage still reads ~0.7 alike. A fixed piece in every roll (a climax, a teaching room) pulls the rolls back together.
 - **A climb detour is invisible**: a tree to climb up and back down beside the path was walked past by the quick route (quiet stretches,
   short stages). Climbing counts only where the way on goes up it (a root up a wall too high to jump, `rootClimb`).
+  or second-jump leaps between pieces) moved World 4 more than any single section did. Round 2: a flavour carried through the whole
+  stage, with heavy pieces of its own after each section, moved 4-2, 4-5 and 4-9 to about half alike between flavours; stages made
+  of one move (4-3's wet steps, 4-7's glides) stay 0.93-0.99 whatever is added, because their many jumps dominate the 3-grams.
+- **The level check follows a swing from a ledge to a ledge, never from vine to vine** (2026-10-28): a chain of lianas over a real
+  drop reads as unfinishable (4-4 is not judged by the check for that reason). Where a stage is checked, a swing over a drop is one
+  liana from bank to bank (World 4's `swings`, windChain with one vine), as many in a row as you like.
 
 ## 7. Where things are
 

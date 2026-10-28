@@ -561,6 +561,20 @@ export function buildWaterfallSteps(
   // the order of the two Develop parts, of the three parts after the surge (each needs only what came before it), and the finish's
   // theme: terraces and trees, more surges, or the long terraces with their rocks)
   const roll = new W4Roll(seed, '4-3');
+  // (round 2, 2026-10-28: the finish's theme is a flavour for the whole stage. From the surge on, after every part, one of its own
+  // pieces on the way: a tree up a tall cliff, a dry stair (the surges come in the finish), or a long terrace with a rock coming loose)
+  const theme = roll.theme('finish', ['trees', 'surges', 'rocks'] as const);
+  const sig = () => {
+    if (theme === 'trees') treeUp(R.r(330, 380));
+    // (the surges' own piece is the finish's: a surge after every part ran the stage a minute long and out of its taught order)
+    else if (theme === 'surges') stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
+    else {
+      rockRest(R.r(420, 480));
+      stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
+    }
+    breath();
+    flag();
+  };
   const thiefPart = () => beat('Develop: the thief', () => {
     thief();
     flag();
@@ -586,6 +600,7 @@ export function buildWaterfallSteps(
     surgeFall();
     breath();
     flag();
+    sig();
   });
   const after: Array<() => void> = [
     () => beat('Develop: the thief behind the falls', () => {
@@ -609,8 +624,10 @@ export function buildWaterfallSteps(
     }),
   ];
   const order = [[0, 1, 2], [1, 0, 2], [2, 1, 0], [0, 2, 1], [1, 2, 0], [2, 0, 1]];
-  for (const i of order[Math.floor(roll.rng() * order.length)]) after[i]();
-  const theme = roll.theme('finish', ['terraces', 'surges', 'rocks'] as const);
+  for (const i of order[Math.floor(roll.rng() * order.length)]) {
+    after[i]();
+    sig();
+  }
   beat('Finish: to the shrine', () => {
     terrace(true);
     surgePair();
@@ -618,7 +635,8 @@ export function buildWaterfallSteps(
     flag();
     let n = 0;
     while (expert < stageSeconds('4-3') + 4 && n < 24) {
-      if (theme === 'surges' && n % 3 === 1) {
+      if (theme === 'trees' && n % 2 === 0) treeUp(R.r(330, 380));
+      else if (theme === 'surges' && n % 3 === 1) {
         surgeFall(false);
         breath();
       } else if (theme === 'rocks' && n % 2 === 0) {

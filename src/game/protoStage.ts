@@ -19,7 +19,7 @@ import { fixPickups } from './flowerReach.ts';
 import { PAST_SHRINE } from './rules.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
-import { JUMP_RISE, reachGlide, reachJump, SAFE } from './physics.ts';
+import { DOUBLE_RISE, JUMP_RISE, reachGlide, reachJump, SAFE } from './physics.ts';
 import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import { findForStage } from './finds.ts';
 import type { Bush, WatchZone } from './watcher.ts';
@@ -3769,8 +3769,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     stone(tail(), Math.round(R.r(45, 65)), Math.round(R.r(140, 170)));
     stone(tail(), Math.round(R.r(70, 95)), Math.round(R.r(140, 170)));
     const mid = stone(tail(), Math.round(R.r(60, 85)), Math.round(R.r(230, 270)));
-    stone(head(), Math.round(R.r(80, 105)), Math.round(R.r(130, 160)));
-    stone(head(), Math.round(R.r(50, 75)), Math.round(R.r(130, 160)));
+    // (the two stones into the turned wind 130-160 to 230-260 wide, 2026-10-28: a running jump off the broad stone overshot a narrow one
+    // unless it was pressed within 33-100 ms, the first-timer bot; wide enough now to land a plain running jump on)
+    stone(head(), Math.round(R.r(80, 105)), Math.round(R.r(230, 260)));
+    stone(head(), Math.round(R.r(50, 75)), Math.round(R.r(230, 260)));
     const lastS = stones[stones.length - 1];
     const far = lastS.x + lastS.width + head();
     softPit(edge, far);
@@ -3789,6 +3791,23 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * World 4's open ground between two pieces (2026-10-28, the stage inspector): a hop over a mossy rock or a dip of soft moss a moment
    * out, then plain ground a breath long. (The old 220-380 px of empty path either side of every piece was three to five quiet seconds.)
    */
+  // (4-4's crosswind and Dot's knots, declared ahead of 4-2, 4-5 and 4-8, whose flavours use them too)
+  /** Dot's knots (w4Kit.ts DotKnot) and the rocks coming loose over a landing (rockfall.ts) */
+  const W4K: DotKnot[] = [];
+  const W4R: RockDrop[] = [];
+  /** how hard a crosswind gust blows (px/s; the level check allows up to 160) */
+  const CROSS = 140;
+  /** the stage's very first gust lane blows softer (over its mossy floor), while he learns when to let go */
+  const FIRST_GUST = 110;
+  /**
+   * where a knotted vine ends while it is tied (w4Play.ts tiedBottom): its knot, low enough to be on screen above him while he waits
+   * there, and well out of reach of any jump (his hands would need to come within 30 px of it, and the double jump stops 35 short)
+   */
+  const KNOT_Y = Math.round(G - RISE - 66);
+  /** the spot where he waits for Dot ends this far short of the bank's edge (px): more than his body, so a step past it is still safe */
+  const KNOT_EDGE = 40;
+  /** and the knotted vine hangs this far (to 10 more) back from the edge, so the spot between them is wider than he is */
+  const KNOT_BACK = 112;
   /**
    * the roll's ground between World 4's pieces (w4Sections.ts, the variety pass 2026-10-28): mossy rocks and dips to hop, or wide gaps
    * of soft moss for the second jump (a miss is a hop back out, never a life). Rolls that differ in this differ all
@@ -3797,6 +3816,20 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   const w4Fill = new W4Roll(seed, `${plan}/fill`).theme('fill', ['hops', 'leaps'] as const);
   const W4_FILL: Record<typeof w4Fill, ReadonlyArray<'log' | 'dip' | 'leap'>> = { hops: ['log', 'dip'], leaps: ['leap'] };
   const w4Breath = (restAfter = R.r(250, 290)) => busy(1, W4_FILL[w4Fill], restAfter);
+  /**
+   * World 4's swings over a real drop (round 2 of the variety pass, 2026-10-28): `n` lianas, each alone over its own gap from bank to
+   * bank (the level check follows a swing from a ledge to a ledge, not from vine to vine), with a crosswind over each when `wind` (4-4's
+   * gusts, from 4-5 on). A miss is a life: World 4 asks more than World 3 here.
+   */
+  let swingWindSaid = plan === '4-4';
+  const swings = (n: number, wind = false) => {
+    // (the first windy swing of a stage says what its chimes mean: 4-4's own line)
+    if (wind && !swingWindSaid) hint(x + 40, 'The chimes swing the way the wind will blow. Let go when they swing your way, and the wind carries you over');
+    if (wind) swingWindSaid = true;
+    for (let k = 0; k < n; k++) {
+      windChain(1, R.chance(0.5) ? 1 : -1, false, false, CROSS, !wind);
+    }
+  };
 
   if (plan === '4-2') {
     // 4-2 First Glide: learn the leaf over soft moss, then the chimes and the gusts behind him, then the twist: gusts into his face,
@@ -3816,12 +3849,25 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       leafDrop(0.86, true);
       flag();
     });
+    // (the variety pass, round 2, 2026-10-28: a flavour from the roll that carries through the whole stage, w4Sections.ts. After the
+    // chimes, after the headwind and after the second twist comes one of its own pieces, and its finish leans to it: the leaf (a climb
+    // and a drop, again and again), the gusts, or the vines (a chain of lianas over a drop, World 1's swing over a real fall: a miss
+    // costs a life, so World 4 asks more than World 3 here)
+    const roll = new W4Roll(seed, '4-2');
+    const flavour = roll.theme('finish', ['leaf', 'gusts', 'vines'] as const);
+    const sig = () => {
+      if (flavour === 'leaf') leafDrop(R.r(0.8, 0.88));
+      else if (flavour === 'gusts') gustGap(R.chance(0.5) ? 1 : -1);
+      else swings(2);
+      w4Breath();
+    };
     beat('Develop: the chimes', () => {
       hint(x + 40, 'Hear the chimes? They ring before the wind blows. Jump with it behind you');
       gustGap(1);
       w4Breath();
       gustGap(1);
       flag();
+      sig();
     });
     beat('Twist: into the wind', () => {
       hint(x + 40, 'The chimes swing back at you: the wind will blow against you. Wait for it to drop');
@@ -3831,10 +3877,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       w4Breath();
       leafSecret();
       flag();
+      sig();
     });
     // (2026-10-28, the variety pass: 200 rolls of 4-2 were 94% alike. The second twist's two crossings come in either order, and the
     // finish draws from a bag leaning to the roll's theme, the leaf, the gusts or the stones and branches, w4Sections.ts)
-    const roll = new W4Roll(seed, '4-2');
     const twist2 = roll.pick(['leafFirst', 'stonesFirst'] as const);
     beat('Twist again: the wind turns', () => {
       // the leaf and the gusts together: a high wind that carries the leaf far, then a crossing where the wind turns halfway over
@@ -3852,16 +3898,16 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       if (twist2 === 'leafFirst') { high(); turn(); gustLeaf(); }
       else { turn(); flag(); high(); gustLeaf(); w4Breath(); }
       flag();
+      sig();
     });
-    type Piece42 = 'drop' | 'gust' | 'pillars' | 'high' | 'stones' | 'gustLeaf';
-    const theme = roll.theme('finish', ['leaf', 'gusts', 'ground'] as const);
-    const counts: Record<typeof theme, Record<Piece42, number>> = {
+    type Piece42 = 'drop' | 'gust' | 'pillars' | 'high' | 'stones' | 'gustLeaf' | 'vines';
+    const counts: Record<typeof flavour, Record<Piece42, number>> = {
       // (the leaf's climbs are slow: two of them to a bag was 28-39 quiet seconds a finish, so the leaf shares it with pillars and gusts)
-      leaf: { drop: 1, gust: 1, pillars: 2, high: 0, stones: 0, gustLeaf: 1 },
-      gusts: { drop: 0, gust: 2, pillars: 0, high: 1, stones: 2, gustLeaf: 0 },
-      ground: { drop: 1, gust: 1, pillars: 2, high: 2, stones: 0, gustLeaf: 0 },
+      leaf: { drop: 2, gust: 0, pillars: 1, high: 0, stones: 0, gustLeaf: 2, vines: 0 },
+      gusts: { drop: 0, gust: 2, pillars: 0, high: 1, stones: 2, gustLeaf: 0, vines: 0 },
+      vines: { drop: 0, gust: 1, pillars: 1, high: 0, stones: 0, gustLeaf: 0, vines: 3 },
     };
-    const bag = roll.bag<Piece42>(['drop', 'gust', 'pillars', 'high', 'stones', 'gustLeaf'], (k) => counts[theme][k]);
+    const bag = roll.bag<Piece42>(['drop', 'gust', 'pillars', 'high', 'stones', 'gustLeaf', 'vines'], (k) => counts[flavour][k]);
     beat('Finish', () => {
       // 4-2 runs three minutes (STAGE_SECONDS); the run home (two hops and the shrine, about 4 s) closes it
       let n = 0;
@@ -3872,6 +3918,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
         else if (k === 'high') highRoadOver();
         else if (k === 'stones') turnStones();
+        else if (k === 'vines') swings(R.i(2, 3));
         else gustLeaf();
         w4Breath();
         n++;
@@ -3903,6 +3950,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     /** a place to hide, centred on the cursor */
     const cover = (kind: Cover) => (kind === 'fall' ? veil(x) : bush(x - BUSH_W[kind] / 2, kind));
     /**
+     * a bush at the end of her stretch: a pass that starts as he leaves it sweeps on past its end, and with the last cover 500-1200 px
+     * back it caught him in the open (2026-10-28, the first-timer bot: first strikes at 27-173 s)
+     */
+    const endCover = () => {
+      cover(R.pick(['tall', 'fern'] as const));
+      run(R.r(90, 120));
+    };
+    /**
      * `len` px of the cliff path with a mossy rock or a dip of soft moss every 300 px or so, about halfway between two places to hide
      * (2026-10-28, the stage inspector: the runs between the cover were up to twelve quiet seconds). Nothing here is tall enough to hide
      * behind, and none of it slows a run between two hiding places by more than a moment.
@@ -3931,6 +3986,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         cover(kinds[k % kinds.length]);
       }
       run(R.r(260, 340));
+      endCover();
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2);
       pieces.push({ k: 'rest', x0, x1: x });
@@ -3965,6 +4021,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       run(R.r(200, 240));
       lookout(sx0, mx, Math.min(x, mx + 1150), tx);
       run(R.r(160, 220));
+      endCover();
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 1.5;
       pieces.push({ k: 'rest', x0, x1: x });
@@ -3999,6 +4056,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hopRun(R.r(300, 360));
       lookout(fx + VEIL_W / 2, mB, Math.min(x, mB + 1150), tB, 1);
       run(R.r(160, 220));
+      endCover();
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 3;
       pieces.push({ k: 'rest', x0, x1: x });
@@ -4019,9 +4077,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       row(tX + 90, end - 90, perchY - 34, 3, 'hibiscus');
       goldenSeed(end - 40, perchY - 34);
       covers.push({ x: tX + VEIL_W / 2, y: perchY - 90, w: end - tX - VEIL_W / 2 + 20, h: 110 });
-      // (the path runs on under the branch: hops on it, clear of the trunk and the curtain)
+      // (the path runs on under the branch: hops on it, clear of the trunk and the curtain, to a bush at the end of her stretch: from
+      // the curtain to the next cover it was 1200 px, and her pass caught him in the open, 2026-10-28)
       run(R.r(120, 160));
       hopRun(R.r(400, 460));
+      cover(R.pick(['tall', 'fern'] as const));
+      run(R.r(120, 160));
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2);
       pieces.push({ k: 'rest', x0, x1: x });
@@ -4047,11 +4108,22 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // or the cliff's open climbs between them, the World 4 moves from 4-2 and 4-4 out of her sight)
     const lookTip = () => hint(x + 20, 'A monkey lookout! If it sees you, it calls her. Tap to punch the fruit down, and it will go and eat', 'A monkey lookout! If it sees you, it calls her. Press Punch to knock the fruit down, and it will go and eat', 'A monkey lookout! If it sees you, it calls her. Press J to knock the fruit down, and it will go and eat');
     /** out of her sight between two watched stretches: one of World 4's open-cliff pieces (all taught in 4-2), and a breath */
-    const openCliff = (k: 'drop' | 'gust' | 'pillars' | 'high') => {
+    const openCliff = (k: 'drop' | 'gust' | 'pillars' | 'high' | 'gorge') => {
       if (k === 'drop') leafDrop(R.r(0.74, 0.86));
+      // (a crosswind gorge, from 4-4, out of her sight: a miss is a life)
+      else if (k === 'gorge') swings(2, true);
       else if (k === 'gust') gustGap(R.chance(0.5) ? 1 : -1);
       else if (k === 'pillars') pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
       else highRoadOver();
+      w4Breath();
+    };
+    // (round 2, 2026-10-28: the finish's theme is a flavour for the whole stage: after the Develop and the Twist, out of her sight, one
+    // of its own pieces, another row of cover under her eye, another lookout, or a crosswind gorge from 4-4)
+    const flavour = roll.theme('finish', ['cover', 'lookouts', 'gorges'] as const);
+    const sig = () => {
+      if (flavour === 'cover') coverRow(3, [600, 720], R.shuffle<Cover>(['fall', 'wide', 'fern']), [5, 6]);
+      else if (flavour === 'lookouts') lookoutRun(R.shuffle<Cover>(['fall', 'tall']), [400, 460], [5, 6]);
+      else openCliff('gorge');
       w4Breath();
     };
     const develop = roll.pick(['lookFirst', 'rowFirst', 'climbBetween'] as const);
@@ -4069,6 +4141,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         coverRow(3, [640, 780], ['fall', 'fern', 'fall'], [5, 6.2]);
       }
       flag();
+      w4Breath();
+      sig();
     });
     const twist = roll.pick(['pairFirst', 'secretFirst'] as const);
     beat('Twist: two lookouts', () => {
@@ -4089,15 +4163,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
       }
       flag();
+      w4Breath();
+      sig();
+      flag();
     });
-    type Piece45 = 'row' | 'look' | 'pair' | 'drop' | 'gust' | 'pillars' | 'high';
-    const theme = roll.theme('finish', ['cover', 'lookouts', 'cliff'] as const);
-    const counts: Record<typeof theme, Record<Piece45, number>> = {
-      cover: { row: 3, look: 1, pair: 1, drop: 0, gust: 1, pillars: 0, high: 0 },
-      lookouts: { row: 1, look: 2, pair: 2, drop: 0, gust: 0, pillars: 1, high: 0 },
-      cliff: { row: 1, look: 1, pair: 1, drop: 1, gust: 1, pillars: 1, high: 1 },
+    type Piece45 = 'row' | 'look' | 'pair' | 'drop' | 'gust' | 'pillars' | 'high' | 'gorge';
+    const counts: Record<typeof flavour, Record<Piece45, number>> = {
+      cover: { row: 3, look: 1, pair: 1, drop: 0, gust: 1, pillars: 0, high: 0, gorge: 0 },
+      lookouts: { row: 1, look: 2, pair: 2, drop: 0, gust: 0, pillars: 1, high: 0, gorge: 0 },
+      gorges: { row: 1, look: 1, pair: 0, drop: 0, gust: 0, pillars: 0, high: 0, gorge: 3 },
     };
-    const bag = roll.bag<Piece45>(['row', 'look', 'pair', 'drop', 'gust', 'pillars', 'high'], (k) => counts[theme][k]);
+    const bag = roll.bag<Piece45>(['row', 'look', 'pair', 'drop', 'gust', 'pillars', 'high', 'gorge'], (k) => counts[flavour][k]);
     beat('Finish', () => {
       let n = 0;
       // (the builder's watched-stretch estimate runs long: to two minutes for a quick player it reaches 4-5's own length and more)
@@ -4120,13 +4196,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   }
 
   // ----- 4-4 Crosswind: lianas over the gorges, and gusts blowing across them -----
-  /** Dot's knots (w4Kit.ts DotKnot) and the rocks coming loose over a landing (rockfall.ts) */
-  const W4K: DotKnot[] = [];
-  const W4R: RockDrop[] = [];
-  /** how hard a crosswind gust blows (px/s; the level check allows up to 160) */
-  const CROSS = 140;
-  /** the stage's very first gust lane blows softer (over its mossy floor), while he learns when to let go */
-  const FIRST_GUST = 110;
   /**
    * a crosswind gorge: a chain of lianas where every vine catches the next in the calm (chain()'s checks), with its first gap wide, and a
    * gust lane over the whole chain, its chimes on a post at the near edge. In the wide gap a plain leap in the calm falls about half the
@@ -4136,7 +4205,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * over the far bank's landing, so he waits on the last vine for the shadow. `force`: the first gorge's gusts are gentler (FIRST_GUST)
    * while the timing is learned.
    */
-  function windChain(n: number, dir: 1 | -1, soft: boolean, rock = false, force = CROSS) {
+  function windChain(n: number, dir: 1 | -1, soft: boolean, rock = false, force = CROSS, calm = false) {
     const x0 = x;
     run(R.r(200, 240));
     const edge = x;
@@ -4182,7 +4251,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         arc(k === 0 ? edge + 10 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 4);
       }
       // the lane: from just behind the first vine (where the first leap starts) to just short of the far bank, so no ground stands in it
-      gustZone(xs[0] - 50, farX - 10, dir, edge - 80, force);
+      // (`calm`: World 4's plain swings over a drop, `swings`: the same checked lianas with no gust lane)
+      if (!calm) gustZone(xs[0] - 50, farX - 10, dir, edge - 80, force);
       open(farX);
       if (rock) {
         const rx = Math.round(farX + R.r(80, 110));
@@ -4196,15 +4266,6 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     }
   }
 
-  /**
-   * where a knotted vine ends while it is tied (w4Play.ts tiedBottom): its knot, low enough to be on screen above him while he waits
-   * there, and well out of reach of any jump (his hands would need to come within 30 px of it, and the double jump stops 35 short)
-   */
-  const KNOT_Y = Math.round(G - RISE - 66);
-  /** the spot where he waits for Dot ends this far short of the bank's edge (px): more than his body, so a step past it is still safe */
-  const KNOT_EDGE = 40;
-  /** and the knotted vine hangs this far (to 10 more) back from the edge, so the spot between them is wider than he is */
-  const KNOT_BACK = 112;
   /**
    * Dot's knot: the gorge's first liana hangs over the end of the bank, tied up out of reach (it ends at its knot, w4Play.ts). Standing
    * still on its spot (glowing on the ground, w4Play.ts drawKnot), from the vine to a step short of the edge, sends Dot up to pick it
@@ -4302,6 +4363,16 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // start has a third hop, and the Develop, the Twists and the Finish have versions the roll picks (w4Sections.ts): the gorges in a
     // different order, the knots on different gorges, and a finish that leans to the wind, to the knots, or to the open cliff of 4-2)
     const roll = new W4Roll(seed, '4-4');
+    // (round 2, 2026-10-28: the finish's theme is a flavour for the whole stage. After the Develop and after each Twist comes one of its
+    // pieces: another windy gorge, another of Dot's knots, or the leaf from 4-2, up a trunk and out over a drop)
+    const flavour = roll.theme('finish', ['wind', 'knots', 'leaf'] as const);
+    const sig = () => {
+      if (flavour === 'wind') windChain(3, R.chance(0.5) ? 1 : -1, false);
+      // (no wind over a knot before the second twist teaches the two together)
+      else if (flavour === 'knots') knotChain(3);
+      else { w4Breath(); leafDrop(R.r(0.8, 0.88)); }
+      w4Breath();
+    };
     beat('Start', () => {
       rest(R.r(260, 300));
       hint(x - 200, 'The wind blows across the gorges here. Listen for the chimes');
@@ -4339,6 +4410,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         windChain(3, R.chance(0.5) ? 1 : -1, false);
       }
       flag();
+      sig();
     });
     const twist = roll.pick(['rocksFirst', 'pairFirst'] as const);
     beat('Twist: rocks on the landing', () => {
@@ -4356,6 +4428,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         flag();
       };
       if (twist === 'rocksFirst') { rocks(); pair(); } else { pair(); rocks(); }
+      sig();
     });
     const twist2 = roll.pick(['knotWind', 'rockWind'] as const);
     beat('Twist again: knots in the wind', () => {
@@ -4377,17 +4450,19 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       knotChain(3, R.chance(0.5) ? 1 : -1);
       flag();
     });
-    type Piece44 = 'wind' | 'long' | 'knot' | 'rocks' | 'gust' | 'pillars' | 'high' | 'stumps';
-    const theme = roll.theme('finish', ['wind', 'knots', 'cliff'] as const);
-    const counts: Record<typeof theme, Record<Piece44, number>> = {
-      wind: { wind: 2, long: 2, knot: 0, rocks: 1, gust: 0, pillars: 0, high: 0, stumps: 1 },
-      knots: { wind: 1, long: 0, knot: 2, rocks: 1, gust: 0, pillars: 1, high: 0, stumps: 0 },
+    type Piece44 = 'wind' | 'long' | 'knot' | 'rocks' | 'gust' | 'pillars' | 'high' | 'stumps' | 'leaf';
+    const counts: Record<typeof flavour, Record<Piece44, number>> = {
+      wind: { wind: 2, long: 2, knot: 0, rocks: 1, gust: 0, pillars: 0, high: 0, stumps: 1, leaf: 0 },
+      knots: { wind: 1, long: 0, knot: 3, rocks: 1, gust: 0, pillars: 0, high: 0, stumps: 0, leaf: 0 },
       // (no gust lane over open ground here: 4-4's gusts blow across the lianas only)
-      cliff: { wind: 1, long: 0, knot: 0, rocks: 0, gust: 0, pillars: 2, high: 1, stumps: 1 },
+      leaf: { wind: 1, long: 0, knot: 0, rocks: 0, gust: 0, pillars: 1, high: 0, stumps: 0, leaf: 3 },
     };
-    const bag = roll.bag<Piece44>(['wind', 'long', 'knot', 'rocks', 'gust', 'pillars', 'high', 'stumps'], (k) => counts[theme][k]);
+    const bag = roll.bag<Piece44>(['wind', 'long', 'knot', 'rocks', 'gust', 'pillars', 'high', 'stumps', 'leaf'], (k) => counts[flavour][k]);
     beat('Finish', () => {
       // 4-4 runs 170 s (STAGE_SECONDS); the run home (two hops and the shrine, about 4 s) closes it. The secret knot comes second.
+      // (the flavour's own piece first, out of the second twist's knots in the wind)
+      sig();
+      flag();
       let n = 0;
       while (expert + 4.2 < stageSeconds('4-4') && n < 30) {
         if (n === 1) knotSecret();
@@ -4403,6 +4478,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
           } else if (k === 'gust') { gustGap(R.chance(0.5) ? 1 : -1); w4Breath(); }
           else if (k === 'pillars') { pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]); w4Breath(); }
           else if (k === 'high') { highRoadOver(); w4Breath(); }
+          else if (k === 'leaf') { leafDrop(R.r(0.8, 0.88)); w4Breath(); }
           else { w4Breath(); stumps(); }
         }
         n++;
@@ -4661,6 +4737,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // capuchins near the end come in either order (the trade, a mango for the pulley's stone; a guard on a tied-up ledge), the cliff path after
     // it draws from a bag leaning to the roll's theme: the open cliff, more nests, or the leaf, w4Sections.ts)
     const roll = new W4Roll(seed, '4-8');
+    // (round 2, 2026-10-28: a flavour for the whole stage from the roll. After the leaf is taught and after the two-at-once, one of its
+    // own pieces, and the finish leans to it: the capuchin guards, Dot's knots, a crosswind gorge (4-4's, a miss is a life), or the leaf)
+    const flavour = roll.theme('finish', ['guards', 'knots', 'gorges', 'leaf'] as const);
+    const sig = () => {
+      if (flavour === 'guards') guardNest(false, false);
+      else if (flavour === 'knots') knotNest(R.chance(0.5));
+      else if (flavour === 'gorges') swings(2, true);
+      else glideNest(false, false);
+      between();
+      flag();
+    };
     const develop = roll.pick(['guardFirst', 'knotFirst'] as const);
     beat('Develop: the guard', () => {
       const guard = () => {
@@ -4669,9 +4756,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         between();
         flag();
       };
+      // (the knot nest a hop higher, and with the gorges, two windy swings after it)
       const high = () => {
         knotNest(true);
         between();
+        if (flavour === 'gorges') {
+          swings(2, true);
+          between();
+        }
         flag();
       };
       if (develop === 'guardFirst') { guard(); between(); high(); }
@@ -4685,6 +4777,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       between();
       if (twist === 'glideFirst') { fallNest(); between(); }
       flag();
+      sig();
     });
     beat('Twist: two at once', () => {
       // (the order is rolled; each says what it needs)
@@ -4708,16 +4801,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         between();
         flag();
       });
+      sig();
     });
     const capuchin = roll.pick(['trade', 'guard'] as const);
-    type Piece48 = 'gust' | 'pillars' | 'high' | 'nest' | 'knot' | 'drop' | 'gustLeaf';
-    const theme = roll.theme('finish', ['cliff', 'nests', 'leaf'] as const);
-    const counts: Record<typeof theme, Record<Piece48, number>> = {
-      cliff: { gust: 2, pillars: 1, high: 1, nest: 0, knot: 0, drop: 0, gustLeaf: 0 },
-      nests: { gust: 1, pillars: 0, high: 0, nest: 1, knot: 1, drop: 0, gustLeaf: 0 },
-      leaf: { gust: 0, pillars: 1, high: 0, nest: 0, knot: 0, drop: 2, gustLeaf: 1 },
+    type Piece48 = 'gust' | 'pillars' | 'high' | 'nest' | 'knot' | 'drop' | 'gustLeaf' | 'guard' | 'gorge' | 'glide';
+    const counts: Record<typeof flavour, Record<Piece48, number>> = {
+      guards: { gust: 1, pillars: 0, high: 0, nest: 0, knot: 0, drop: 0, gustLeaf: 0, guard: 2, gorge: 0, glide: 0 },
+      knots: { gust: 0, pillars: 1, high: 0, nest: 1, knot: 2, drop: 0, gustLeaf: 0, guard: 0, gorge: 0, glide: 0 },
+      gorges: { gust: 1, pillars: 0, high: 0, nest: 0, knot: 0, drop: 0, gustLeaf: 0, guard: 0, gorge: 3, glide: 0 },
+      leaf: { gust: 0, pillars: 1, high: 0, nest: 0, knot: 0, drop: 1, gustLeaf: 1, guard: 0, gorge: 0, glide: 2 },
     };
-    const bag = roll.bag<Piece48>(['gust', 'pillars', 'high', 'nest', 'knot', 'drop', 'gustLeaf'], (k) => counts[theme][k]);
+    const bag = roll.bag<Piece48>(['gust', 'pillars', 'high', 'nest', 'knot', 'drop', 'gustLeaf', 'guard', 'gorge', 'glide'], (k) => counts[flavour][k]);
     beat('Finish', () => {
       between();
       guardNest(false, false);
@@ -4745,6 +4839,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         else if (k === 'nest') plainNest();
         else if (k === 'knot') knotNest(R.chance(0.5));
         else if (k === 'drop') leafDrop(R.r(0.78, 0.88));
+        else if (k === 'guard') guardNest(false, false);
+        else if (k === 'gorge') swings(2, true);
+        else if (k === 'glide') glideNest(false, false);
         else gustLeaf();
         w4Breath();
         n++;
@@ -5216,6 +5313,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     // (the branch he is on joins it: it is not in the way)
     const clear = (y: number) => !P.some((p) => p !== P[0] && p !== cur && p.x < x0 + span + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130);
     if (!clear(cur.y) || !clear(cur.y - RISE) || !clear(cur.y - RISE / 2)) return false;
+    // (nor over a rope's end post close under the lift's notch: its knot of wood is a step up into the notch, a 150-170 px double jump
+    // onto 100 px that the kid bot missed half the time, 2026-10-28)
+    const wx = x0 + FLOOR + WELL / 2;
+    if (ROPES.some((r) => [[r.x0 + 44, r.g0], [r.x1 - 44, r.g1]].some(([ex, ey]) => Math.abs(ex - wx) < 170 && ey > cur.y && ey - cur.y < 300))) return false;
     dir = 1;
     const y = cur.y;
     const floor = ledge(x0, x0 + FLOOR, y);
@@ -5636,11 +5737,13 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     ];
     // (2026-10-28: one on a ledge of each run of hops up the wide ledges first, then spread up the whole climb, about ten in all: the
     // climb is mostly those hops now, and the rocks are its beat)
-    const every = Math.max(1, Math.floor(ledges.length / 12));
+    // (round 2, 2026-10-28: a roll whose climb is by hops is the rockfall flavour, a rock over every wide ledge it can, up to sixteen)
+    const rockFlavour = w4Climb?.theme === 'hops';
+    const every = rockFlavour ? 1 : Math.max(1, Math.floor(ledges.length / 12));
     const inGroup = (g: number[]) => [g[Math.floor(g.length / 2)], ...g].map((id) => ledges.find((p) => p.id === id)).filter((p): p is Platform => !!p);
     const order = [...hopGroups.map(inGroup), ...ledges.filter((_, k) => k % every === 0).map((p) => [p])];
     for (const tries of order) {
-      if (rocks.length >= 10) break;
+      if (rocks.length >= (rockFlavour ? 16 : 10)) break;
       for (const p of tries) {
         if (rocks.some((q) => q.land === p.y)) continue;
         const busy = climbsAt(p);
@@ -5655,9 +5758,10 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         break;
       }
     }
-    // (Dot names the first one he comes to: the lowest)
+    // (Dot names the first one he comes to: the lowest; as he climbs up toward its ledge, a trunk's height below it, so the line is
+    // up before he stands under the rock: at its own height it came after the first hit on some rolls, 2026-10-28)
     const firstRock = rocks.reduce<RockDrop | undefined>((a, q) => (!a || q.land > a.land ? q : a), undefined);
-    if (firstRock) hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', firstRock.land + 10);
+    if (firstRock) hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', firstRock.land + 280);
   }
 
   // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
@@ -5677,7 +5781,13 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
         // he could jump up to the rope; the knot stops him at the post. Hanging, he passes over it, and he steps off the rope beyond it)
         const post = ROPES.some((q) => (side > 0 ? Math.abs(q.x0 + 44 - end) < 2 : Math.abs(q.x1 - 44 - end) < 2) && Math.abs(q.g0 - p.y) < 2);
         if (!post && Math.max(dropAt(p, end + side * 30), dropAt(p, end + side * 80)) < LIP.drop) continue;
-        P.push({ id: pid++, x: side < 0 ? end : end - LIP.w, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true });
+        // (never under a ledge a double jump off the knot's top would reach: under a mist column's top it was a step up past the hidden
+        // ledges, a 150 px jump straight up that the kid bot made 54-65% of the time, 2026-10-28. A fall here costs a climb, not a life)
+        // (a knot under a rope's post stays: the post needs it; the engine's walls are 50 px or taller, so it cannot be made lower)
+        const lx = side < 0 ? end : end - LIP.w;
+        const over = P.some((q) => q !== p && q.y < p.y && p.y - LIP.h - q.y < DOUBLE_RISE + 30 && q.x < lx + LIP.w + 60 && q.x + q.width > lx - 60);
+        if (over && !post) continue;
+        P.push({ id: pid++, x: lx, y: p.y - LIP.h, width: LIP.w, height: LIP.h, type: 'solid', style: 'branch', lip: true });
       }
     }
     for (let x = firstTrunkX + 260; x < W - KAPOK_MARGIN - 60; x += 300) flower(x, P[0].y - 34, 'hibiscus');
