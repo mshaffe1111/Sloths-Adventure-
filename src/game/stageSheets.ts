@@ -49,8 +49,8 @@ export interface SheetSwitches {
 }
 
 export function stageSheets(cfg: Pick<LevelConfig, 'id' | 'worldIndex' | 'objectiveType' | 'secret'>, sw: SheetSwitches): string[] {
-  // the puzzle kit's test room: World 1's painted ground and the kit's pieces
-  if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces'];
+  // the puzzle kit's test room: World 1's painted ground, the kit's pieces, and World 4's sheet for the trade room's capuchin
+  if (cfg.id === KIT_STAGE_ID) return ['kit:1', 'kit-pieces', 'w4-props'];
   if (cfg.id === DOT_STAGE_ID) return ['dot'];
   if (cfg.id === MEECA_STAGE_ID) return ['kit:1', 'kit:5', 'w5-props', 'anim:pell', 'anim:soldier'];
   const w = cfg.worldIndex;

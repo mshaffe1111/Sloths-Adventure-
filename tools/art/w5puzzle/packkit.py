@@ -55,7 +55,69 @@ WANT += [
     ('w5puzzle', 'pieces', 4, 'gateShut', 1.0, {'game': 0.7}),
     ('w5puzzle', 'pieces', 5, 'gateOpen', 1.0, {'game': 0.7}),
 ]
+# phase 2a (2026-10-28): the rest of Matt's Worlds 1-4 puzzle sheets (cell numbers as cut.py w1to4 numbers them), for the seesaw, the bell,
+# the sluice, the carried light, the shutter and pinwheel, the trade, and the pieces the world helpers will build their rooms from
+for sheet, rows in {
+    'w1-puzzle': [(1, 'seesawLevel', 0.9, 0.95), (2, 'seesawUpR', 0.9, 0.95), (3, 'seesawUpL', 0.9, 0.95), (12, 'nestDoorShut', 0.7, 0.62),
+                  (13, 'nestDoorOpen', 0.7, 0.62), (15, 'petalBundle', 0.45, 0.3), (16, 'branchGate', 0.8, 0.7)],
+    'w2-puzzle': [(1, 'riverStone', 0.6, 0.45), (3, 'pulleyPost', 0.8, 0.8), (4, 'basket2', 0.7, 0.5), (5, 'basket2Full', 0.7, 0.5),
+                  (6, 'cageShut', 0.7, 0.55), (7, 'cageLifted', 0.7, 0.55), (8, 'sluiceShut', 0.8, 0.62), (9, 'sluiceOpen', 0.8, 0.62),
+                  (10, 'channel', 0.8, 0.7), (11, 'bell', 0.6, 0.48), (12, 'bellRing', 0.5, 0.36), (13, 'winch2', 0.7, 0.55), (14, 'raft', 0.8, 0.7)],
+    'w3-puzzle': [(1, 'mushroom', 0.5, 0.36), (2, 'mushroomDim', 0.5, 0.36), (3, 'pebble', 0.35, 0.22), (4, 'fern1', 0.6, 0.5),
+                  (5, 'fern2', 0.6, 0.5), (6, 'fern3', 0.6, 0.5), (7, 'fern4', 0.6, 0.5), (8, 'fernStone', 0.6, 0.5),
+                  (9, 'fernDoorShut', 0.8, 0.7), (10, 'fernDoorOpen', 0.8, 0.7), (11, 'stonePlate', 0.6, 0.45), (12, 'stonePlateDown', 0.6, 0.45),
+                  (13, 'thornTangle', 0.6, 0.5), (14, 'crystal', 0.5, 0.4), (15, 'steppingStones', 0.8, 0.75), (16, 'pool', 0.8, 0.75)],
+    'w4-puzzle': [(1, 'shutterOpen', 0.8, 0.7), (2, 'shutterShut', 0.8, 0.7), (3, 'pinwheel', 0.7, 0.6), (4, 'pinwheelSpin', 0.7, 0.6),
+                  (5, 'winch', 0.7, 0.55), (6, 'ropeLift', 0.7, 0.6), (7, 'net', 0.7, 0.5), (8, 'netFull', 0.7, 0.5), (11, 'mango', 0.4, 0.26),
+                  (12, 'tradeStump', 0.6, 0.5), (13, 'gustCrack', 0.8, 0.8), (14, 'bridgeBroken', 0.8, 0.8), (15, 'bridge', 0.8, 0.8),
+                  (16, 'anchorPeg', 0.7, 0.55)],
+}.items():
+    for idx, name, sc, game in rows:
+        WANT.append(('w1to4', sheet, idx, name, sc, {'game': game}))
+# Pokey's carry poses with the painted acorn taken out (and the hole painted over with what is round it), for carrying anything else:
+# the game draws the carried thing from this sheet in his hands (puzzlePlay.ts drawPokey)
+for i in (2, 3, 4, 5, 6, 7, 8, 9, 13):
+    WANT.append(('w1to4', 'pokey-carry', i, f'e{i}', 0.75, {'hand': HANDS.get(i), 'game': 0.48, 'noacorn': HANDS[i]}))
 SHEETS = {**cut.FOLDERS['w1to4'], **cut.FOLDERS['w5puzzle']}
+
+
+def take_acorn(im, x0, y0, hand):
+    """the painted acorn round the hand point (cell px), found by its dark chestnut colour, painted over from the outside in (each ring
+    of the hole takes the mean of its known neighbours: fur where it is inside him, the key colour where it stands out of him, so the
+    cut makes that part clear)"""
+    cell = im[y0:y0 + 256 - 2 * cut.INSET, x0:x0 + 256 - 2 * cut.INSET].copy()
+    hx, hy = hand[0] - cut.INSET, hand[1] - cut.INSET
+    R, G, B = cell[..., 0], cell[..., 1], cell[..., 2]
+    luma = 0.3 * R + 0.59 * G + 0.11 * B
+    key = np.clip((np.minimum(R, B) - G) / 255, 0, 1)
+    yy, xx = np.mgrid[0:cell.shape[0], 0:cell.shape[1]]
+    hole = (np.hypot(xx - hx, yy - hy) < 38) & (luma < 112) & (key < 0.2) & (R - B > 30)
+    hole = ndimage.binary_fill_holes(ndimage.binary_closing(hole, iterations=2))
+    lab, n = ndimage.label(hole)
+    if n:
+        sz = ndimage.sum(hole, lab, range(1, n + 1))
+        hole = lab == (np.argmax(sz) + 1)
+    hole = ndimage.binary_dilation(hole, iterations=2)
+    known = ~hole
+    for _ in range(80):
+        if known.all():
+            break
+        ring = ndimage.binary_dilation(known) & ~known
+        acc = np.zeros_like(cell)
+        cnt = np.zeros(cell.shape[:2])
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if not dx and not dy:
+                    continue
+                k = np.roll(np.roll(known, dy, 0), dx, 1)
+                v = np.roll(np.roll(cell, dy, 0), dx, 1)
+                acc += v * k[..., None]
+                cnt += k
+        cell[ring] = acc[ring] / np.maximum(1, cnt[ring])[:, None]
+        known = known | ring
+    out = im.copy()
+    out[y0:y0 + cell.shape[0], x0:x0 + cell.shape[1]] = cell
+    return out
 
 
 def cell(folder, sheet, idx, opt):
@@ -66,6 +128,8 @@ def cell(folder, sheet, idx, opt):
     r, c = (idx - 1) // cols, (idx - 1) % cols
     x0, y0 = int(c * cw) + cut.INSET, int(r * ch) + cut.INSET
     x1, y1 = int((c + 1) * cw) - cut.INSET, int((r + 1) * ch) - cut.INSET
+    if opt.get('noacorn'):
+        im = take_acorn(im, x0, y0, opt['noacorn'])
     k = cut.keyness(im[y0:y1, x0:x1], key)
     out = cut.cut_cell(im[y0:y1, x0:x1], key, depink=sheet in cut.DEPINK)
     # where the trimmed cut sits in the cell (cut_cell trims to alpha > 0.02 of the same mask)
@@ -120,6 +184,14 @@ cake = w5.crop((620, 1329, 620 + 112, 1329 + 147))
 cake = cake.crop(cake.getbbox())
 cake = cake.resize((round(cake.width * 0.6), round(cake.height * 0.6)), Image.LANCZOS)
 frames.append(('cake', cake, cake.width / 2, None, 0.3 / 0.6))
+
+# the acorn tree: World 1's painted trunk with its leafy branch (Matt's prop sheet, props-atlas.webp 'perch'); a fresh acorn drops out of
+# its leaves (puzzlePlay.ts drawSource): the leaves' middle is at lx across the frame (atlas px)
+w1 = Image.open(os.path.join(ROOT, 'src/assets/proto/props-atlas.webp')).convert('RGBA')
+tree = w1.crop((1047, 647, 1047 + 443, 647 + 368))
+tree = tree.crop(tree.getbbox())
+tree = tree.resize((round(tree.width * 0.7), round(tree.height * 0.7)), Image.LANCZOS)
+frames.append(('acornTree', tree, tree.width * 0.2, None, 300 / tree.height))
 
 W, PAD = 2048, 4
 order = sorted(frames, key=lambda f: -f[1].height)

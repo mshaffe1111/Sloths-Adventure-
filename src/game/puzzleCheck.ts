@@ -16,7 +16,12 @@
  * A room fails when no state lets him reach the platform past its way on (its gate never opens, or its lift never rises), or when a
  * thing with no source can be lost (it would never come back).
  */
-import { anchorAt, beetleSleepX, BEETLE, evalWire, flyAll, ITEM, KIT, kitPlatId, liftLevel, onPlate, plateDown, roomBox, THROW, throwStart, useReach, type FlightWorld, type PieceSpec, type RoomSpec } from './puzzleKit.ts';
+import {
+  anchorAt, beetleSleepX, BEETLE, evalWire, flyAll, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox, seesawDy,
+  seesawTilt, THROW, throwStart, tradeTakes, useReach, type FlightWorld, type PieceSpec, type RoomSpec,
+} from './puzzleKit.ts';
+import { NOISE } from './noise.ts';
+import { hopLimit } from './river.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Platform } from './types.ts';
 
@@ -49,13 +54,25 @@ export function kitSolved(stage: GeneratedStage): GeneratedStage {
   if (!kit) return stage;
   const doors = new Set<number>();
   const lifts = new Map<number, number>();
+  /** a seesaw's ends: each one stop reached at its raised height and its lowered one (the room's check says which it can be made) */
+  const ends = new Map<number, { top: number; bottom: number }>();
+  const ledges = new Set<number>();
+  const byId = new Map(stage.platforms.map((p) => [p.id, p]));
   kit.rooms.forEach((room, ri) => room.pieces.forEach((pc) => {
     if (pc.kind === 'gate') doors.add(kitPlatId(ri, pc.id, 0));
     if (pc.kind === 'lift') lifts.set(kitPlatId(ri, pc.id, 0), pc.rise);
+    if (pc.kind === 'ledge') ledges.add(kitPlatId(ri, pc.id, 0));
+    if (pc.kind === 'seesaw') {
+      const a = anchorAt(pc.at, byId);
+      if (a) for (const k of [0, 1]) ends.set(kitPlatId(ri, pc.id, k), { top: a.y - (pc.rise ?? KIT.seesawRise), bottom: a.y });
+    }
   }));
-  // (a lift is one stop reached at its bottom and its top, as World 2's basket lift is: levelCheck.ts joins the two)
+  // (a lift is one stop reached at its bottom and its top, as World 2's basket lift is: levelCheck.ts joins the two; a hidden ledge is
+  // lit once its room is solved)
   const platforms = stage.platforms
     .filter((p) => !doors.has(p.id))
+    .map((p) => (ledges.has(p.id) ? { ...p, broken: false } : p))
+    .map((p) => (ends.has(p.id) ? { ...p, lift: { ...ends.get(p.id)!, speed: KIT.seesawSpeed, wait: 0, phase: 0 } } : p))
     .map((p) => (lifts.has(p.id) ? { ...p, lift: { top: p.y - lifts.get(p.id)!, bottom: p.y, speed: KIT.liftSpeed, wait: 0, phase: 0 } } : p));
   return { ...stage, platforms, kit: undefined };
 }
@@ -86,8 +103,28 @@ interface State {
   /** per beetle: `a` awake where it started, `s<x>` asleep at x */
   beetles: string[];
   latched: boolean[];
+  /** per pushed log in the room: its left edge */
+  logs: number[];
+  /** per trader: it has traded */
+  traded: boolean[];
+  /** per lift a wire winds with a ratchet (`hold`): wound all the way up */
+  wound: boolean[];
 }
-const keyOf = (s: State) => `${s.pid}:${s.rx}:${s.plate}|${s.items.join(',')}|${s.levers.map(Number).join('')}|${s.beetles.join(',')}|${s.latched.map(Number).join('')}`;
+const keyOf = (s: State) =>
+  `${s.pid}:${s.rx}:${s.plate}|${s.items.join(',')}|${s.levers.map(Number).join('')}|${s.beetles.join(',')}|${s.latched.map(Number).join('')}|${s.logs.join(',')}|${s.traded.map(Number).join('')}|${s.wound.map(Number).join('')}`;
+
+/**
+ * The watchers in a stage that hear the kit's noise (noise.ts): its thorn vines, its snapping turtles, its eagle's watched stretches.
+ * (World 5's silk spiders join here once they listen.)
+ */
+function listeners(stage: GeneratedStage): Array<{ x: number; y: number }> {
+  const proto = (stage as { proto?: { thorns?: Array<{ x: number; bud: number }>; watch?: Array<{ x0: number; x1: number }> } }).proto;
+  const out: Array<{ x: number; y: number }> = [];
+  for (const v of proto?.thorns ?? []) out.push({ x: v.x, y: v.bud });
+  for (const e of stage.enemies) if (e.type === 'turtle') out.push({ x: e.x, y: e.y });
+  for (const z of proto?.watch ?? []) for (let x = z.x0; x <= z.x1; x += 200) out.push({ x, y: NaN });
+  return out;
+}
 
 function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: GraphFor): string[] {
   const errors = new Set<string>();
@@ -107,27 +144,65 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   const baskets = kind('basket');
   const lifts = kind('lift');
   const beetles = kind('beetle');
+  const seesaws = kind('seesaw');
+  const bells = kind('bell');
+  const ledges = kind('ledge');
+  const shutters = kind('shutter');
+  const pinwheels = kind('pinwheel');
+  const sluices = kind('sluice');
+  const traders = kind('trader');
   const box = roomBox(room, byId);
-  const ground = new Set(room.ground);
+  const ground = new Set([...room.ground, ...kitGround(room, ri)]);
+  // the hollow logs he can push in the room (engine.ts: walking into one slides it along its ground, inside its push range)
+  const logs = stage.platforms.filter((p) => p.push && p.type === 'solid' && !p.broken && p.x + p.width > box.x0 - 40 && p.x < box.x1 + 40);
+  const endIds = new Set(seesaws.flatMap((ss) => [kitPlatId(ri, ss.spec.id, 0), kitPlatId(ri, ss.spec.id, 1)]));
   const name = `room ${room.id}`;
   const beyond = anchorAt(room.beyond, byId);
   if (!beyond) return [`${name}: the spot past its way on is on platform ${room.beyond.on}, which is not there`];
 
   for (const pc of room.pieces) if ('at' in pc && pc.at && !byId.has(pc.at.on)) errors.add(`${name}: ${pc.id} sits on platform ${pc.at.on}, which is not there`);
   if (!room.pieces.some((p) => p.id === room.exit)) errors.add(`${name}: its way on (${room.exit}) is not one of its pieces`);
+  // phase 2a's pieces that reach out of the room: the gust lane a shutter shuts, the river a sluice runs, who hears a bell
+  for (const sh of shutters) if (stage.zones?.[sh.spec.zone]?.kind !== 'wind') errors.add(`${name}: ${sh.spec.id} shuts zone ${sh.spec.zone}, which is not a gust lane`);
+  for (const sl of sluices) {
+    const r = stage.rivers?.[sl.spec.river];
+    if (!r) { errors.add(`${name}: ${sl.spec.id} runs river ${sl.spec.river}, which is not there`); continue; }
+    // turned about, its logs must still be a hop apart the other way (river.ts hopLimit)
+    if ([sl.spec.opened ?? 'with', sl.spec.shut ?? 'still'].includes('against')) {
+      const ls = stage.platforms.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
+      const d = ls[0]?.drift;
+      if (d && ls.length >= 2) {
+        const gap = (d.x1 - d.x0 + d.width) / ls.length - d.width;
+        if (gap > hopLimit(d.dir === 1 ? -1 : 1)) errors.add(`${name}: ${sl.spec.id} turns the river about, and its logs are then too far apart to hop (${Math.round(gap)}px)`);
+      }
+    }
+  }
+  const ears = listeners(stage);
+  for (const b of bells) {
+    if (!ears.some((l) => Math.abs(l.x - b.x) <= NOISE.bellHear && (Number.isNaN(l.y) || Math.abs(l.y - b.y) <= NOISE.hearY))) errors.add(`${name}: ${b.spec.id} rings where no watcher can hear it`);
+  }
+  for (const pc of room.pieces) {
+    if (pc.kind !== 'lift' || baskets.some((b) => b.spec.id === pc.by)) continue;
+    const pw = pinwheels.find((w) => w.spec.id === pc.by);
+    if (pw && !(stage.zones ?? []).some((z) => z.kind === 'wind' && pw.x >= z.x0 && pw.x <= z.x1 && pw.y - 70 >= z.top && pw.y - 70 <= z.bottom)) errors.add(`${name}: ${pw.spec.id} stands where no gust blows, so ${pc.id} never winds up`);
+  }
+  for (const it of room.pieces) if (it.kind === 'item' && it.with && !traders.some((t) => t.spec.id === it.with)) errors.add(`${name}: ${it.id} is held by ${it.with}, which is not in the room`);
   if (errors.size) return [...errors];
 
   // where each thing starts, and where a lost one comes back (its source); a thing with no source is gone when lost
   const home = items.map(({ pc }) => {
     const src = pc.source ? sources.find((s) => s.spec.id === pc.source) : undefined;
     if (pc.source && !src) errors.add(`${name}: ${pc.id}'s source ${pc.source} is not in the room`);
-    const at = pc.at ? anchorAt(pc.at, byId) : src ? { x: src.x, y: src.y } : null;
-    const plat = pc.at?.on ?? src?.plat ?? -1;
-    return { at, plat, src };
+    const tr = pc.with ? traders.findIndex((t) => t.spec.id === pc.with) : -1;
+    const at = pc.at ? anchorAt(pc.at, byId) : src ? { x: src.x, y: src.y } : tr >= 0 ? { x: traders[tr].x, y: traders[tr].y } : null;
+    const plat = pc.at?.on ?? src?.plat ?? (tr >= 0 ? traders[tr].plat : -1);
+    return { at, plat, src, tr };
   });
   home.forEach((h, k) => { if (!h.at) errors.add(`${name}: ${items[k].pc.id} has no place to start`); });
   if (errors.size) return [...errors];
   const respawnLoc = (k: number): string => (home[k].src ? `g${home[k].src!.plat}:${Math.round(home[k].src!.x)}` : 'x');
+  // (a thing a trader dropped and he lost comes back by the trader's stump: puzzlePlay.ts byTrader)
+  const traderLoc = (k: number, side: 1 | -1 = -1): string => groundLoc(k, traders[home[k].tr].plat, traders[home[k].tr].x + side * 56);
 
   // the cells of ground between gates (a thing's x, but for food, is kept as its cell's middle: what matters is which side of each gate)
   const gateSpans = gates.map((g) => [g.x - KIT.gateW / 2 - BODY_HALF - 2, g.x + KIT.gateW / 2 + BODY_HALF + 2] as const);
@@ -165,9 +240,48 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     s.items.forEach((l, k) => { if (l === `b${bi}`) w += ITEM[items[k].pc.variant].weight; });
     return w;
   };
-  const levelOf = (s: State, li: number) => {
+  const levelOf = (s: State, li: number, o?: Map<string, boolean>) => {
     const bi = baskets.findIndex((b) => b.spec.id === lifts[li].spec.by);
-    return bi < 0 ? 0 : liftLevel(basketWeight(s, bi), baskets[bi].spec.need ?? 1);
+    // (wound by a wire, a pinwheel: up while it is on, or for good once wound with a ratchet)
+    if (bi < 0) return (lifts[li].spec.hold ? s.wound[li] : o?.get(lifts[li].spec.by) ?? false) ? 1 : 0;
+    return liftLevel(basketWeight(s, bi), baskets[bi].spec.need ?? 1);
+  };
+  /** which seesaw end a log stands on (its middle over the end), or null */
+  const logOn = (s: State, gi: number): { si: number; end: number } | null => {
+    const cx = s.logs[gi] + logs[gi].width / 2;
+    for (let si = 0; si < seesaws.length; si++) {
+      const w = seesaws[si].spec.w ?? KIT.seesawW;
+      if (cx >= seesaws[si].x - w / 2 && cx <= seesaws[si].x) return { si, end: 0 };
+      if (cx > seesaws[si].x && cx <= seesaws[si].x + w / 2) return { si, end: 1 };
+    }
+    return null;
+  };
+  const tiltOf = (s: State, si: number): -1 | 0 | 1 => {
+    const ss = seesaws[si];
+    const w = [0, 0];
+    [0, 1].forEach((k) => {
+      const id = kitPlatId(ri, ss.spec.id, k);
+      if (s.pid === id) w[k] += KIT.pokeyWeight;
+      s.items.forEach((l, j) => { const g = parseG(l); if (g && g.plat === id) w[k] += ITEM[items[j].pc.variant].weight; });
+      beetles.forEach((b) => { if (b.plat === id) w[k] += KIT.beetleWeight; });
+    });
+    logs.forEach((_, gi) => { const on = logOn(s, gi); if (on && on.si === si) w[on.end] += KIT.logWeight; });
+    return seesawTilt(w[0], w[1], ss.spec.rest ?? -1);
+  };
+  /** the glowing things lying still (or in a basket): what lights the hidden ledges (held ones light too in the game, but he walks only) */
+  const lightsOf = (s: State) => {
+    const out: Array<{ x: number; y: number; r: number }> = [];
+    s.items.forEach((l, k) => {
+      const r = ITEM[items[k].pc.variant].light;
+      const g = parseG(l);
+      if (!r || !g) return;
+      out.push({ x: g.x, y: (byId.get(g.plat)?.y ?? 0) - ITEM[items[k].pc.variant].r, r });
+    });
+    return out;
+  };
+  const litOf = (s: State, li: number) => {
+    const p = byId.get(kitPlatId(ri, ledges[li].spec.id, 0))!;
+    return ledgeLit(p.x, p.x + p.width, p.y, lightsOf(s));
   };
   const beetleX = (s: State, bi: number) => (s.beetles[bi][0] === 's' ? Number(s.beetles[bi].slice(1)) : beetles[bi].x);
   const plateWeight = (s: State, pi: number) => {
@@ -183,12 +297,24 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   };
   const outputs = (s: State): Map<string, boolean> => {
     const o = new Map<string, boolean>();
+    const w = (id: string) => o.get(id) ?? false;
     plates.forEach((p, i) => o.set(p.spec.id, plateDown(plateWeight(s, i), p.spec.need ?? 1)));
     levers.forEach((l, i) => o.set(l.spec.id, s.levers[i]));
     baskets.forEach((b, i) => o.set(b.spec.id, basketWeight(s, i) >= (b.spec.need ?? 1)));
-    lifts.forEach((l, i) => o.set(l.spec.id, levelOf(s, i) >= 1));
-    // (a gate may listen to another gate: settle twice)
-    for (let pass = 0; pass < 2; pass++) gates.forEach((g, i) => o.set(g.spec.id, s.latched[i] || evalWire(g.spec.open, (id) => o.get(id) ?? false)));
+    seesaws.forEach((ss, i) => o.set(ss.spec.id, tiltOf(s, i) !== (ss.spec.rest ?? -1)));
+    traders.forEach((t, i) => o.set(t.spec.id, s.traded[i]));
+    ledges.forEach((l, i) => o.set(l.spec.id, litOf(s, i)));
+    bells.forEach((b) => o.set(b.spec.id, false));
+    // (a gate may listen to another gate, a pinwheel to a shutter, a lift to a pinwheel: settle a few times)
+    for (let pass = 0; pass < 3; pass++) {
+      shutters.forEach((sh) => o.set(sh.spec.id, evalWire(sh.spec.open, w)));
+      sluices.forEach((sl) => o.set(sl.spec.id, evalWire(sl.spec.open, w)));
+      // a pinwheel spins once a gust lane blows on it: one no shutter holds shut (the lane's own rhythm brings the gust)
+      pinwheels.forEach((pw) => o.set(pw.spec.id, (stage.zones ?? []).some((z, zi) => z.kind === 'wind' && pw.x >= z.x0 && pw.x <= z.x1 && pw.y - 70 >= z.top && pw.y - 70 <= z.bottom
+        && !shutters.some((sh) => sh.spec.zone === zi && !w(sh.spec.id)))));
+      lifts.forEach((l, i) => o.set(l.spec.id, levelOf(s, i, o) >= 1));
+      gates.forEach((g, i) => o.set(g.spec.id, s.latched[i] || evalWire(g.spec.open, w)));
+    }
     return o;
   };
 
@@ -197,8 +323,10 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   const layouts = new Map<string, Layout>();
   const layoutOf = (s: State, o: Map<string, boolean>): Layout => {
     const open = gates.map((g) => o.get(g.spec.id)!);
-    const lv = lifts.map((_, i) => levelOf(s, i));
-    const lk = `${open.map(Number).join('')}|${lv.join(',')}`;
+    const lv = lifts.map((_, i) => levelOf(s, i, o));
+    const tilts = seesaws.map((_, i) => tiltOf(s, i));
+    const lit = ledges.map((_, i) => litOf(s, i));
+    const lk = `${open.map(Number).join('')}|${lv.join(',')}|${tilts.join(',')}|${lit.map(Number).join('')}|${s.logs.join(',')}`;
     const hit = layouts.get(lk);
     if (hit) return hit;
     const walls: KitWall[] = [];
@@ -216,9 +344,24 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
         flightPlats.push(door);
       }
     });
-    const plats = stage.platforms.filter((p) => !kitIds.has(p.id)).map((p) => {
+    const unlit = new Set(ledges.filter((_, i) => !lit[i]).map((l) => kitPlatId(ri, l.spec.id, 0)));
+    const endY = new Map<number, number>();
+    seesaws.forEach((ss, i) => {
+      const dy = seesawDy(tilts[i], ss.spec.rise ?? KIT.seesawRise);
+      [0, 1].forEach((k) => endY.set(kitPlatId(ri, ss.spec.id, k), ss.y + dy[k]));
+    });
+    const plats = stage.platforms.filter((p) => !kitIds.has(p.id) && !unlit.has(p.id)).map((p) => {
       const li = lifts.findIndex((l) => kitPlatId(ri, l.spec.id, 0) === p.id);
-      return li >= 0 ? { ...p, y: p.y - lifts[li].spec.rise * lv[li] } : p;
+      if (li >= 0) return { ...p, y: p.y - lifts[li].spec.rise * lv[li] };
+      if (endY.has(p.id)) return { ...p, y: endY.get(p.id)!, broken: false };
+      const gi = logs.indexOf(p);
+      if (gi >= 0) {
+        // a log pushed onto a seesaw's end stands on it, at the end's height
+        const on = logOn(s, gi);
+        const y = on ? endY.get(kitPlatId(ri, seesaws[on.si].spec.id, on.end))! - p.height : p.y;
+        return { ...p, x: s.logs[gi], y };
+      }
+      return ledges.some((l) => kitPlatId(ri, l.spec.id, 0) === p.id) ? { ...p, broken: false } : p;
     });
     const g = graphFor(plats, walls);
     const piece = (pid: number, x: number) => g.plats.find((q) => (q.id === pid) && x >= q.x - 1 && x <= q.x + q.width + 1) ?? null;
@@ -261,6 +404,8 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     const q = [from];
     while (q.length) {
       const n = q.pop()!;
+      // (a seesaw's end tips as he lands on it: the way on from there is found from the state with him on it, not this layout)
+      if (n !== from && endIds.has(pieceOfKey(L, n)?.id ?? -1)) continue;
       const nexts = hands === 'free' ? L.g.adj.get(n) : L.carry.get(n);
       for (const m of nexts ?? []) if (!seen.has(m)) { seen.add(m); q.push(m); }
     }
@@ -305,16 +450,24 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       });
       const o2 = outputs(s);
       gates.forEach((g, i) => { if (g.spec.latch && o2.get(g.spec.id) && !s.latched[i]) { s.latched[i] = true; changed = true; } });
+      // a ratchet lift (a pinwheel's winch) is counted wound up only with him on it: wound without him, it goes up out of his reach
+      // (the room's signpost unwinds it)
+      lifts.forEach((l, i) => {
+        if (l.spec.hold && !s.wound[i] && o2.get(l.spec.by) && s.pid === kitPlatId(ri, l.spec.id, 0)) { s.wound[i] = true; changed = true; }
+      });
       if (!changed) break;
     }
   };
 
   const start: State = {
     pid: -1, rx: 0, plate: -1,
-    items: items.map((_, k) => groundLoc(k, home[k].plat, home[k].at!.x)),
+    items: items.map((_, k) => (home[k].tr >= 0 ? `t${home[k].tr}` : groundLoc(k, home[k].plat, home[k].at!.x))),
     levers: levers.map((l) => !!l.spec.on),
     beetles: beetles.map(() => 'a'),
     latched: gates.map(() => false),
+    logs: logs.map((p) => p.x),
+    traded: traders.map(() => false),
+    wound: lifts.map(() => false),
   };
   // he comes in at the room's left edge: the ground there
   {
@@ -340,7 +493,9 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     seen.add(k);
     queue.push(s);
   };
-  const clone = (s: State): State => ({ ...s, items: [...s.items], levers: [...s.levers], beetles: [...s.beetles], latched: [...s.latched] });
+  const clone = (s: State): State => ({
+    ...s, items: [...s.items], levers: [...s.levers], beetles: [...s.beetles], latched: [...s.latched], logs: [...s.logs], traded: [...s.traded], wound: [...s.wound],
+  });
 
   while (queue.length && !solved) {
     const s = queue.shift()!;
@@ -380,10 +535,12 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       t.plate = pi;
       push(t);
     });
+    // (a lever on the ground beside his, in a tap's reach: the game's own rule, puzzlePlay.ts control)
+    const inReach = (x: number, y: number) => Math.max(0, here.x - x, x - (here.x + here.width)) <= reach2 && y >= here.y - KIT.up && y <= here.y + KIT.down;
     if (held < 0) {
       // pull a lever here
       levers.forEach((l, li) => {
-        if (!onHere(l.plat, l.x)) return;
+        if (!onHere(l.plat, l.x) && !inReach(l.x, l.y)) return;
         const t = clone(s);
         t.levers[li] = !t.levers[li];
         push(t);
@@ -400,6 +557,32 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
           push(t);
         });
       });
+      // push a log standing on his ground: to either end of its push range, or onto a seesaw's end in it (its middle over the end) that
+      // stands at the log's foot right now
+      logs.forEach((lg, gi) => {
+        const lx = s.logs[gi];
+        const lp = L.plats.find((q) => q.id === lg.id);
+        if (!lp || Math.abs(lp.y + lp.height - here.y) > 3 || lx + lg.width < here.x - 24 || lx > here.x + here.width + 24) return;
+        const lo = lg.push!.min, hi = lg.push!.max - lg.width;
+        const tos = new Set<number>([Math.round(lo), Math.round(hi)]);
+        seesaws.forEach((ss, si) => {
+          const w = ss.spec.w ?? KIT.seesawW;
+          for (const k of [0, 1]) {
+            const ey = L.plats.find((q) => q.id === kitPlatId(ri, ss.spec.id, k))?.y;
+            if (ey === undefined || Math.abs(ey - (lp.y + lp.height)) > 8) continue;
+            const mid = ss.x + (k ? w / 4 : -w / 4);
+            tos.add(Math.round(Math.max(lo, Math.min(hi, mid - lg.width / 2))));
+          }
+          void si;
+        });
+        for (const to of tos) {
+          if (to === lx) continue;
+          const t = clone(s);
+          t.logs[gi] = to;
+          t.plate = -1;
+          push(t);
+        }
+      });
       // pick a thing up here
       s.items.forEach((l, k) => {
         const g = parseG(l);
@@ -411,6 +594,18 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
       });
       continue;
     }
+    // carrying: offer it to a trader here that wants it: it takes it and drops what it holds (either side of its stump)
+    traders.forEach((tr, ti) => {
+      if (s.traded[ti] || !tradeTakes(tr.spec.wants, items[held].pc.variant) || !onHere(tr.plat, tr.x)) return;
+      for (const side of [-1, 1] as const) {
+        const t = clone(s);
+        t.traded[ti] = true;
+        t.items[held] = respawnLoc(held);
+        t.items.forEach((l, k) => { if (l === `t${ti}`) t.items[k] = groundLoc(k, tr.plat, tr.x + side * 56); });
+        t.plate = -1;
+        push(t);
+      }
+    });
     // carrying: set it down here (in front of him, on a plate here, by a beetle), or into a basket in reach
     const spots = new Set<number>([s.rx]);
     for (const pl of plates) if (onHere(pl.plat, pl.x)) spots.add(Math.round(pl.x));
@@ -467,6 +662,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   }
 
   function lose(k: number): string {
+    if (home[k].tr >= 0) return traderLoc(k);
     if (!home[k].src) errors.add(`${name}: ${items[k].pc.id} can be lost, and nothing brings it back (give it a source)`);
     return respawnLoc(k);
   }

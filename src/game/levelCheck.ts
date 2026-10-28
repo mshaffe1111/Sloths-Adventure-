@@ -14,6 +14,7 @@ import { maxRise } from './protoCheck.ts';
 import type { Waterfall } from './waterfalls.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
+import { hopLimit } from './river.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
@@ -728,7 +729,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
       const d = logs[0].drift!;
       const spacing = ((d.x1 - d.x0 + d.width) / logs.length);
       const gap = spacing - d.width;
-      const limit = d.dir === 1 ? 80 : 130;
+      const limit = hopLimit(d.dir);
       if (gap < 60) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
       if (gap > limit) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
     }

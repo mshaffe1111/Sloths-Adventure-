@@ -2,7 +2,7 @@ import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
-import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
+import { hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
 import { liftY, pickFloor } from './lift.ts';
@@ -64,7 +64,8 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { heard } from './noise.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
@@ -593,7 +594,7 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
-    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms) : null;
+    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers }) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
@@ -1133,7 +1134,8 @@ export class GameEngine {
     for (const plat of this.platforms) {
       if (plat.type !== 'drift' || !plat.drift || plat.broken) continue;
       const d = plat.drift;
-      const nx = driftX(d, this.gameTime);
+      // (a river a sluice runs keeps its own clock: puzzleKit.ts 'sluice')
+      const nx = driftX(d, logClock(this.currentStage.rivers, d, this.gameTime));
       // a log that wraps from one end of the river to the other must not drag its rider across the whole window
       const dx = Math.abs(nx - plat.x) > d.width * 2 ? 0 : nx - plat.x;
       plat.x = nx;
@@ -2141,6 +2143,8 @@ export class GameEngine {
       } else if (isPredator(e.type)) {
         // Ground animals (snake, ocelot, jaguar, boa, caiman, tayra, night harpy) each hunt in their own way (enemyBrain.ts), then
         // attack: telegraph -> committed attack -> vulnerable recovery
+        // a snapper hears the puzzle kit's noise (noise.ts) and goes to it
+        if (e.type === 'turtle') e.lureX = this.kit ? heard(this.kit.noises, e.x, e.y, this.gameTime)?.x : undefined;
         const step = stepPredator(e, { x: p.x, y: p.y, facing: p.facing, ducking: p.ducking }, dt);
         // the tree snake has no call of its own: it hisses like the boa
         // (the night harpy chitters and thumps like the tayra)
@@ -4325,7 +4329,7 @@ export class GameEngine {
           const span = 140;
           for (let k = Math.floor(a / span) - 1; k < b / span + 1; k++) {
             for (let row = 0; row < 3; row++) {
-              const sx = (((k * span + row * 47 + t * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
+              const sx = (((k * span + row * 47 + (r.flowT ?? t) * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
               const x = r.x0 + sx - span * 0.5;
               const y = wave(x) + 7 + row * 9;
               ctx.beginPath();
@@ -4963,7 +4967,7 @@ export class GameEngine {
     for (const pl of this.platforms) {
       const d = pl.drift;
       if (pl.type !== 'drift' || !d || pl.broken) continue;
-      const travelled = driftProgress(d, this.gameTime) * driftCycle(d) * d.speed;
+      const travelled = driftProgress(d, logClock(this.currentStage.rivers, d, this.gameTime)) * driftCycle(d) * d.speed;
       const lead = d.speed * 1.1;
       if (travelled > d.width || travelled < d.width - lead) continue;
       const ex = d.dir === 1 ? d.x0 + 18 : d.x1 - 18;
@@ -4993,7 +4997,9 @@ export class GameEngine {
       if (!this.onScreen(v.x, (v.top + v.bud) / 2, 400)) continue;
       const ph = vinePhase(v, this.gameTime);
       const l = this.vineLash.get(i);
-      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : this.player.x >= v.x ? 1 : -1, this.gameTime);
+      // (listening to the kit's noise, it looks toward the noise: noise.ts)
+      const ear = this.kit ? heard(this.kit.noises, v.x, v.bud, this.gameTime) : null;
+      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : ear ? (ear.x >= v.x ? 1 : -1) : this.player.x >= v.x ? 1 : -1, this.gameTime);
     }
     // 4-7: in the air, a shadow on the ledge he is coming down to
     if (this.proto?.w4?.deepFall !== undefined && !this.player.grounded && !this.player.climbing) {
@@ -5312,6 +5318,8 @@ export class GameEngine {
           lights.push({ x: l.x - cx0, y: l.y - cy0, r: u > 0.01 ? l.r * (0.35 + 0.65 * u) : 42 });
         }
       }
+      // the puzzle kit's glowing things (World 3's mushroom), carried or set down
+      for (const l of this.kit?.lights() ?? []) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
       // every flower and leaf glows a little, so a reward is never lost in the dark
       for (const c of this.collectibles) {
         if (c.collected || (c.type !== 'flower' && c.type !== 'leaf')) continue;
@@ -5916,6 +5924,23 @@ export class GameEngine {
     ctx.fillRect(fromLeft ? 0 : vw - width, 0, width, vh);
   }
 
+  /** does a watcher at (x, y) hear the puzzle kit's noise now (noise.ts) */
+  private listens(x: number, y: number): boolean {
+    return !!this.kit && !!heard(this.kit.noises, x, y, this.gameTime);
+  }
+
+  /**
+   * Where the watching eagle's shadow is: sweeping across the view (watcher.ts), or, when a noise in its watched stretch draws it
+   * (noise.ts), circling over the noise.
+   */
+  private shadowX(w: WatchState, camX: number, viewW: number): number {
+    const zones = this.proto?.watch ?? [];
+    for (const n of this.kit?.noises ?? []) {
+      if (w.phase === 'pass' && zoneAt(zones, n.x) && heard([n], n.x, n.y, this.gameTime)) return lureShadow(n.x, this.gameTime);
+    }
+    return plainShadowX(w, camX, viewW);
+  }
+
   /** step the watching eagle and its dive (1-7) */
   private updateWatch(dt: number) {
     const p = this.player;
@@ -5944,7 +5969,7 @@ export class GameEngine {
     }
     const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
     if (this.watch.phase === 'pass') {
-      const sx = shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
+      const sx = this.shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
       if (!water && sees(this.watch, sx, bushes, me)) {
         this.watch.seen = true;
         this.watchFrom = { x: sx, y: this.camera.y + 125 };
@@ -5994,7 +6019,7 @@ export class GameEngine {
         const k = u * u;
         this.watchEyes = { x: this.watchFrom.x + (this.player.x - this.watchFrom.x) * k, y: this.watchFrom.y + (this.player.y - 70 - this.watchFrom.y) * k, s: 1.3 + 0.5 * k, a: 1, narrow: 0.6 };
       } else {
-        const sx = shadowX(w, cam.x, cam.viewportWidth);
+        const sx = this.shadowX(w, cam.x, cam.viewportWidth);
         this.watchEyes = { x: sx, y: cam.y + 175, s: 1.3, a: 1, narrow: 0 };
         this.watchShadowAt = { x: sx, a: 0.5 };
       }
@@ -6028,7 +6053,7 @@ export class GameEngine {
       scale = 0.6 + 0.4 * u;
       this.watchShadowAt = { x: w.dir === 1 ? cam.x + 30 : cam.x + cam.viewportWidth - 30, a: 0.18 + 0.3 * u };
     } else {
-      const sx = shadowX(w, cam.x, cam.viewportWidth);
+      const sx = this.shadowX(w, cam.x, cam.viewportWidth);
       e.facing = w.dir;
       if (w.seen) {
         // the dive: from where it saw him down to him, then back up and away
@@ -6117,6 +6142,17 @@ export class GameEngine {
    */
   private stepGlowworms(dt: number, zones: readonly import('./zones.ts').Zone[] | undefined) {
     const p = this.player;
+    // a glowing mushroom's light wakes the glowworms it reaches, carried or set down (puzzleKit.ts ITEM.mushroom)
+    const lamps = this.kit?.lights() ?? [];
+    if (lamps.length) {
+      for (const z of zones ?? []) {
+        if (z.kind !== 'dark') continue;
+        for (const l of z.lights ?? []) {
+          if (!l.sleep || l.id === undefined || this.glowWake.has(l.id)) continue;
+          if (lamps.some((m) => Math.hypot(m.x - l.x, m.y - l.y) <= m.r + 40)) this.glowWake.set(l.id, this.gameTime);
+        }
+      }
+    }
     const dark = (zones ?? []).filter((z) => z.kind === 'dark' && z.lights?.some((l) => l.sleep) && p.x >= z.x0 - 120 && p.x <= z.x1 + 120);
     if (!dark.length) {
       this.glowStill = 0;
@@ -6164,7 +6200,7 @@ export class GameEngine {
       }
       const lash = this.vineLash.get(i);
       if (lash && this.gameTime - lash.at > VINE.windup + VINE.out) this.vineLash.delete(i);
-      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging })) {
+      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging }, this.listens(v.x, v.bud))) {
         // something flying past is struck at once (a leap is through its reach in half a second); on the ground it winds up first
         this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
         sound.playWhoosh();
@@ -6276,6 +6312,10 @@ export class GameEngine {
         else if (kind === 'lever') sound.playPunch();
         else if (kind === 'munch') sound.playFruitPickup();
         else if (kind === 'reset') sound.playCheckpoint();
+        else if (kind === 'ring') sound.playShrineUnlocked();
+        else if (kind === 'noise') sound.playHitImpact(false);
+        else if (kind === 'tilt') sound.playLand(0.3);
+        else if (kind === 'trade') sound.playFruitPickup();
       },
     });
     h.t = this.gameTime;
