@@ -14,6 +14,10 @@
  *   shrine  the last arch and its lanterns before the shrine
  * Every arena section carries the 'arena' tip socket, so whichever comes first says the line (it is said once a stage).
  *
+ * Each roll's garden gate opens one THEME (the humming lawns, the Butler's tea, the sunken yards and the spider pit, the leaping lawns,
+ * the orchid walk), and that theme's lawns, set-up and room follow it through the stage (GARDEN_GATES, THEME): two rolls lean different
+ * ways all through (the era tool's diversity over 60 rolls: 0.21 before the themes, 0.40 with them).
+ *
  * The two rooms (puzzle kit, STAGE-RULES §3; anchors on the section's own pieces by key; widths fixed, so nothing slides):
  *   w5a-room-cake  DON'T EAT: a beetle by the door eats a crumb and falls asleep as he comes in (the room shows the idea first); then
  *                  one plate before the gate, and cakes on a stool. He opens the gate standing on the plate, but it shuts as he steps
@@ -99,27 +103,67 @@ const hop = (key: string, after: string, w: SectionPiece['w'], share: SectionPie
 const leap = (key: string, after: string, w: SectionPiece['w'], share: SectionPiece['w'] = [0.6, 0.85]): SectionPiece =>
   bank(key, w, { kind: 'pit', after, jump: 'double', share }, { landing: true });
 
-/** start: the garden gate. An arch over a mound; Dot says why the shrine is shut, before any spider */
-export const gardenGate: SectionTemplate = {
-  id: 'w5a-gate-in',
-  name: 'the garden gate (arena gate)',
+/**
+ * 5-9's themes: each roll's garden gate opens onto one kind of trouble, and the lawns of that kind come only after it (the pipeline's
+ * teaching gate: a section that `uses` a theme is open once a section before it `teaches` it). So one roll is the humming lawns, the
+ * next the Butler's tea, the next the spider pits or the leaps or the orchids: the whole stage leans its own way, and two rolls differ
+ * all through, not only in the order of the same lawns. The plain lawns, the rests, the rooms and the Queen's garden come in any.
+ */
+export const THEME = {
+  threads: 'garden:threads',
+  tea: 'garden:tea',
+  pit: 'garden:pit',
+  leaps: 'garden:leaps',
+  orchids: 'garden:orchids',
+} as const;
+
+/** a garden gate opening onto one theme: the arch, Dot's line for the shut shrine, before any spider (STAGE-RULES §1) */
+const gate = (theme: keyof typeof THEME, name: string, pieces: SectionPiece[], exit: string, sockets: Socket[]): SectionTemplate => ({
+  id: `w5a-gate-in-${theme}`,
+  name: `the garden gate: ${name} (arena gate)`,
   archetypes: ['gauntlet'],
   phases: ['start'],
   difficulty: 1,
-  // (5-9's start, all but always: World 5's own garden starts are 'any', and this one carries the arena's line)
-  weight: 30,
-  pieces: [bank('lawn', [300, 360], { kind: 'start' }), up('mound', 'lawn', 40, [220, 260]), hop('lawn2', 'mound', [280, 340], [0.3, 0.45])],
-  entry: { piece: 'lawn', kind: 'ground' },
-  exit: { piece: 'lawn2', kind: 'ground' },
-  exitDy: -40,
-  sockets: [
-    tip('lawn', 0.15),
+  teaches: THEME[theme],
+  // (5-9's start, all but always: World 5's own garden starts are 'any', and the gates carry the arena's line)
+  weight: 6,
+  pieces,
+  entry: { piece: pieces[0].key, kind: 'ground' },
+  exit: { piece: exit, kind: 'ground' },
+  exitDy: 0,
+  sockets: [tip(pieces[0].key, 0.15), ...sockets],
+  mirrorable: false,
+});
+
+export const GARDEN_GATES: readonly SectionTemplate[] = [
+  gate('threads', 'the humming lawns', [bank('lawn', [300, 360], { kind: 'start' }), up('mound', 'lawn', 40, [220, 260]), down('lawn2', 'mound', 40, [300, 340])], 'lawn2', [
     prop('lamp', 'lawn', [0.55, 0.7], W5A_TAGS.lamp, { chance: 0.7 }),
     petals('petals', 'mound', 0.5, 3, 160),
-    prop('arch', 'lawn2', [0.45, 0.6], W5A_TAGS.gate),
-  ],
-  mirrorable: false,
-};
+    prop('arch', 'lawn2', [0.3, 0.45], W5A_TAGS.gate),
+    prop('thread', 'lawn2', [0.8, 0.9], W5A_TAGS.thread),
+  ]),
+  gate('tea', 'the tea lawns', [bank('lawn', [320, 380], { kind: 'start' }), hop('lawn2', 'lawn', [360, 420], [0.3, 0.45])], 'lawn2', [
+    prop('lamp', 'lawn', [0.5, 0.65], W5A_TAGS.lamp),
+    prop('arch', 'lawn2', [0.35, 0.5], W5A_TAGS.gate),
+    petals('petals', 'lawn2', [0.75, 0.85], 2, 80),
+  ]),
+  gate('pit', 'the sunken yards', [bank('lawn', [300, 360], { kind: 'start' }), down('dip', 'lawn', 40, [220, 260]), up('lawn2', 'dip', 40, [300, 340])], 'lawn2', [
+    prop('lamp', 'lawn', [0.5, 0.65], W5A_TAGS.lamp, { chance: 0.7 }),
+    petals('petals', 'dip', 0.5, 2, 100),
+    prop('arch', 'lawn2', [0.35, 0.5], W5A_TAGS.gate),
+  ]),
+  gate('leaps', 'the leaping lawns', [bank('lawn', [320, 380], { kind: 'start' }), leap('lawn2', 'lawn', [340, 400], [0.45, 0.6])], 'lawn2', [
+    prop('lamp', 'lawn', [0.45, 0.6], W5A_TAGS.lamp, { chance: 0.7 }),
+    prop('arch', 'lawn2', [0.4, 0.55], W5A_TAGS.gate),
+    petals('petals', 'lawn2', [0.8, 0.9], 2, 80),
+  ]),
+  gate('orchids', 'the orchid walk', [bank('lawn', [320, 380], { kind: 'start' }), hop('lawn2', 'lawn', [380, 440], [0.3, 0.45])], 'lawn2', [
+    prop('arch', 'lawn', [0.5, 0.65], W5A_TAGS.gate),
+    prop('orchid', 'lawn2', [0.55, 0.65], 'orchid'),
+  ]),
+];
+/** the first gate (tests and screenshots name it) */
+export const gardenGate = GARDEN_GATES[0];
 
 /** rest: a quiet lawn under the lanterns, one small hop, a flag (the breather between bursts) */
 export const lanternLawn: SectionTemplate = {
@@ -200,9 +244,10 @@ export const sleeperSteps: SectionTemplate = {
   id: 'w5a-sleeper-steps',
   name: 'arena: the sleepers on the steps',
   archetypes: ['gauntlet'],
+  uses: [THEME.threads],
   phases: ['ki', 'sho'],
   difficulty: 3,
-  weight: 2,
+  weight: 4,
   pieces: [
     bank('near', [200, 240], { kind: 'start' }),
     up('step', 'near', 40, [160, 200]),
@@ -217,7 +262,8 @@ export const sleeperSteps: SectionTemplate = {
     tip('near', 0.2),
     petals('ps', 'step2', 0.5, 1),
     sleeper('s1', 'yard', [0.45, 0.55]),
-    petals('py', 'yard2', [0.15, 0.2], 1),
+    prop('t1', 'yard', [0.15, 0.25], W5A_TAGS.thread),
+    prop('t2', 'yard2', [0.2, 0.3], W5A_TAGS.thread),
     sleeper('s2', 'yard2', [0.5, 0.6]),
   ],
   mirrorable: true,
@@ -239,14 +285,72 @@ export const archRest: SectionTemplate = {
   mirrorable: true,
 };
 
+/** Ki/Sho (tea): a soft chair by the way and a tiny cake, a hop, a sleeper on the lawn past them */
+export const chairLawn: SectionTemplate = {
+  id: 'w5a-chair-lawn',
+  name: 'arena: the chair and the cake',
+  archetypes: ['gauntlet'],
+  uses: [THEME.tea],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  weight: 4,
+  pieces: [bank('lawn', [380, 440], { kind: 'start' }), hop('lawn2', 'lawn', [360, 420], [0.4, 0.55], true), up('out', 'lawn2', 40, [200, 240])],
+  entry: { piece: 'lawn', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
+  exitDy: -40,
+  sockets: [
+    tip('lawn', 0.08),
+    prop('chair', 'lawn', [0.4, 0.5], W5A_TAGS.seat),
+    prop('cake', 'lawn', [0.8, 0.86], W5A_TAGS.treat, { easy: 'drop' }),
+    sleeper('s1', 'lawn2', [0.45, 0.55]),
+    prop('pot', 'out', [0.45, 0.55], W5A_TAGS.pot, { easy: 'drop' }),
+  ],
+  mirrorable: false,
+};
+
+/** Ki/Sho (leaps): a hop, then the first wide soft pit (the second jump), a sleeper past it */
+export const firstLeap: SectionTemplate = {
+  id: 'w5a-first-leap',
+  name: 'arena: the first leap',
+  archetypes: ['gauntlet'],
+  uses: [THEME.leaps],
+  phases: ['ki', 'sho'],
+  difficulty: 4,
+  weight: 4,
+  pieces: [bank('a', [240, 280], { kind: 'start' }), leap('b', 'a', [240, 280], [0.45, 0.6]), leap('c', 'b', [340, 380], [0.45, 0.65])],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [tip('a', 0.1), petals('pb', 'b', 0.5, 1), sleeper('s1', 'c', [0.55, 0.65])],
+  mirrorable: true,
+};
+
+/** Ki/Sho (orchids): two closing orchids over the grass with a hop between, a sleeper at the end */
+export const orchidLawn: SectionTemplate = {
+  id: 'w5a-orchid-lawn',
+  name: 'arena: the orchids on the lawn',
+  archetypes: ['gauntlet'],
+  uses: [THEME.orchids],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  weight: 4,
+  pieces: [bank('a', [360, 420], { kind: 'start' }), hop('b', 'a', [380, 440], [0.4, 0.55], true), hop('c', 'b', [300, 340], [0.4, 0.55], true)],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [tip('a', 0.06), prop('o1', 'a', [0.5, 0.6], 'orchid'), prop('o2', 'b', [0.3, 0.4], 'orchid'), sleeper('s1', 'b', [0.75, 0.85]), prop('o3', 'c', [0.45, 0.55], 'orchid')],
+  mirrorable: true,
+};
+
 /** Ki/Sho/Ten: over a mound, spiders on the yard, a hop out */
 export const stumpPair: SectionTemplate = {
   id: 'w5a-mound-pair',
   name: 'arena: spiders past the mound',
   archetypes: ['gauntlet'],
+  uses: [THEME.pit],
   phases: ['ki', 'sho', 'ten'],
   difficulty: 4,
-  weight: 2,
+  weight: 4,
   pieces: [
     bank('near', [180, 220], { kind: 'start' }),
     up('mound', 'near', 44, [160, 200]),
@@ -271,9 +375,10 @@ export const sunkenLawn: SectionTemplate = {
   id: 'w5a-sunken-lawn',
   name: 'arena: the sunken lawn',
   archetypes: ['gauntlet'],
+  uses: [THEME.pit],
   phases: ['sho', 'ten'],
   difficulty: 6,
-  weight: 2,
+  weight: 4,
   pieces: [
     bank('near', [150, 190], { kind: 'start' }),
     up('lip', 'near', 40, [120, 150]),
@@ -300,12 +405,13 @@ export const highRoadLawn: SectionTemplate = {
   id: 'w5a-high-road',
   name: 'arena: under the high road',
   archetypes: ['gauntlet'],
+  uses: [THEME.leaps],
   phases: ['sho', 'ten'],
   difficulty: 6,
-  weight: 2,
+  weight: 4,
   pieces: [
     bank('near', [260, 320], { kind: 'start' }),
-    hop('lawn', 'near', [560, 660], [0.5, 0.7], true),
+    leap('lawn', 'near', [560, 660], [0.5, 0.75]),
     { key: 'road', shape: 'branch', w: [240, 300], place: { kind: 'over', on: 'lawn', at: [0.3, 0.38], dy: [-150, -135] }, main: false },
     up('mound', 'lawn', 44, [160, 200]),
     down('out', 'mound', 44, [200, 240]),
@@ -329,9 +435,10 @@ export const threadLawn: SectionTemplate = {
   id: 'w5a-thread-lawn',
   name: 'arena: threads among the spiders',
   archetypes: ['gauntlet'],
+  uses: [THEME.threads],
   phases: ['sho', 'ten'],
   difficulty: 7,
-  weight: 2,
+  weight: 4,
   pieces: [
     bank('lawn', [220, 260], { kind: 'start' }),
     up('mound', 'lawn', 40, [160, 200]),
@@ -348,6 +455,8 @@ export const threadLawn: SectionTemplate = {
     sleeper('s1', 'yard', [0.12, 0.18]),
     foe('f1', 'yard', [0.5, 0.56]),
     sleeper('s2', 'far', [0.5, 0.6]),
+    prop('t2', 'yard', [0.3, 0.36], W5A_TAGS.thread),
+    prop('t3', 'far', [0.2, 0.3], W5A_TAGS.thread),
     foe('f2', 'yard', [0.9, 0.95], { chance: 0.6 }),
   ],
   mirrorable: true,
@@ -358,9 +467,10 @@ export const butlerLawn: SectionTemplate = {
   id: 'w5a-butler-lawn',
   name: "arena: the Butler's lawn",
   archetypes: ['gauntlet'],
+  uses: [THEME.tea],
   phases: ['ten', 'ketsu'],
   difficulty: 7,
-  weight: 2,
+  weight: 4,
   pieces: [
     bank('lawn', [300, 360], { kind: 'start' }),
     leap('yard', 'lawn', [560, 640], [0.5, 0.75]),
@@ -375,6 +485,7 @@ export const butlerLawn: SectionTemplate = {
     prop('butler', 'lawn', [0.5, 0.6], W5A_TAGS.host),
     foe('f1', 'yard', [0.3, 0.36]),
     sleeper('s1', 'yard', [0.62, 0.68]),
+    prop('cake', 'yard', [0.82, 0.88], W5A_TAGS.treat, { easy: 'drop' }),
     petals('pm', 'mound', 0.5, 1),
     sleeper('s2', 'out', [0.4, 0.5]),
     foe('f2', 'out', [0.8, 0.86], { chance: 0.6 }),
@@ -387,13 +498,14 @@ export const pitLawn: SectionTemplate = {
   id: 'w5a-pit-lawn',
   name: 'arena: across the soft pits',
   archetypes: ['gauntlet'],
+  uses: [THEME.leaps],
   phases: ['ten', 'ketsu'],
   difficulty: 8,
-  weight: 2,
+  weight: 4,
   pieces: [
     bank('near', [240, 300], { kind: 'start' }),
     leap('far', 'near', [520, 600], [0.6, 0.85]),
-    hop('far2', 'far', [260, 300], [0.45, 0.65], true),
+    leap('far2', 'far', [260, 300], [0.5, 0.7]),
   ],
   entry: { piece: 'near', kind: 'ground' },
   exit: { piece: 'far2', kind: 'ground' },
@@ -412,9 +524,10 @@ export const teapotLawn: SectionTemplate = {
   id: 'w5a-teapot-lawn',
   name: 'arena: steam and spiders',
   archetypes: ['gauntlet'],
+  uses: [THEME.tea],
   phases: ['ten', 'ketsu'],
   difficulty: 8,
-  weight: 2,
+  weight: 4,
   pieces: [
     bank('lawn', [300, 360], { kind: 'start' }),
     up('mound', 'lawn', 48, [200, 240]),
@@ -431,7 +544,8 @@ export const teapotLawn: SectionTemplate = {
     petals('pm', 'mound2', 0.5, 1),
     sleeper('s1', 'yard', [0.12, 0.18]),
     foe('f1', 'yard', [0.5, 0.56]),
-    sleeper('s2', 'yard', [0.88, 0.94]),
+    prop('chair', 'yard', [0.86, 0.92], W5A_TAGS.seat),
+    prop('cake', 'out', [0.4, 0.5], W5A_TAGS.treat, { easy: 'drop' }),
   ],
   mirrorable: true,
 };
@@ -478,9 +592,10 @@ export const teaLawn: SectionTemplate = {
   id: 'w5a-tea-lawn',
   name: 'arena: the tea lawn',
   archetypes: ['gauntlet'],
+  uses: [THEME.tea],
   phases: ['ten', 'ketsu'],
   difficulty: 9,
-  weight: 2,
+  weight: 4,
   pieces: [
     bank('lawn', [280, 340], { kind: 'start' }),
     leap('yard', 'lawn', [600, 680], [0.55, 0.8]),
@@ -496,8 +611,166 @@ export const teaLawn: SectionTemplate = {
     foe('f1', 'yard', [0.3, 0.36]),
     prop('cake', 'yard', [0.68, 0.72], W5A_TAGS.treat, { easy: 'drop' }),
     sleeper('s2', 'yard', [0.9, 0.95]),
-    petals('pm', 'mound', 0.5, 1),
+    prop('pot', 'out', [0.25, 0.35], W5A_TAGS.pot, { easy: 'drop' }),
     foe('f2', 'out', [0.6, 0.7], { chance: 0.8 }),
+  ],
+  mirrorable: true,
+};
+
+// ───────────────────────────── the gauntlet's set-ups ─────────────────────────────
+//
+// (each roll of 5-9 meets a different two or three of these in its twist and finish, at most one of each: so two rolls of the stage
+// play differently all through, not just in the order of the same lawns. Each is one kind of trouble, a dozen seconds of it)
+
+/** set-up: the humming lawn. Threads strung low across four lawns with sleepers by them: touch one and they wake and come */
+export const hummingLawn: SectionTemplate = {
+  id: 'w5a-setup-threads',
+  name: 'arena set-up: the humming lawn',
+  archetypes: ['gauntlet'],
+  uses: [THEME.threads],
+  phases: ['ten', 'ketsu'],
+  difficulty: 8,
+  weight: 4,
+  maxPerStage: 1,
+  pieces: [
+    bank('a', [360, 400], { kind: 'start' }),
+    hop('b', 'a', [360, 400], [0.4, 0.6], true),
+    hop('c', 'b', [380, 420], [0.4, 0.6], true),
+    hop('d', 'c', [360, 400], [0.4, 0.6], true),
+    hop('e', 'd', [300, 340], [0.4, 0.6], true),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'e', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    tip('a', 0.06),
+    prop('t1', 'a', [0.5, 0.6], W5A_TAGS.thread),
+    sleeper('s1', 'b', [0.45, 0.55]),
+    prop('t2', 'c', [0.25, 0.32], W5A_TAGS.thread),
+    sleeper('s2', 'c', [0.7, 0.8]),
+    prop('t3', 'd', [0.45, 0.55], W5A_TAGS.thread),
+    prop('t4', 'e', [0.2, 0.28], W5A_TAGS.thread),
+    foe('f1', 'e', [0.6, 0.7]),
+  ],
+  mirrorable: true,
+};
+
+/** set-up: the Butler's tea rounds. The table and its warm pot, a cake and a soft chair, then the Butler serving from his stand */
+export const teaRounds: SectionTemplate = {
+  id: 'w5a-setup-tea',
+  name: "arena set-up: the Butler's tea rounds",
+  archetypes: ['gauntlet'],
+  uses: [THEME.tea],
+  phases: ['ten', 'ketsu'],
+  difficulty: 8,
+  weight: 4,
+  maxPerStage: 1,
+  pieces: [
+    bank('lawn', [440, 500], { kind: 'start' }),
+    hop('lawn2', 'lawn', [420, 480], [0.45, 0.6], true),
+    up('mound', 'lawn2', 44, [200, 240]),
+    down('lawn3', 'mound', 44, [440, 500]),
+    hop('out', 'lawn3', [300, 340], [0.45, 0.6], true),
+  ],
+  entry: { piece: 'lawn', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    tip('lawn', 0.05),
+    { id: 'table', role: 'source', on: 'lawn', t: [0.15, 0.2] },
+    { id: 'pot', role: 'receptor', on: 'lawn', t: [0.82, 0.9], link: 'table', allow: ['teapot'] },
+    prop('cake', 'lawn2', [0.28, 0.34], W5A_TAGS.treat, { easy: 'drop' }),
+    prop('chair', 'lawn2', [0.72, 0.8], W5A_TAGS.seat),
+    { id: 'stand', role: 'source', on: 'mound', t: [0.45, 0.55] },
+    { id: 'butler', role: 'receptor', on: 'lawn3', t: [0.4, 0.5], link: 'stand', allow: ['butler'] },
+    prop('cake2', 'lawn3', [0.82, 0.88], W5A_TAGS.treat, { easy: 'drop' }),
+    sleeper('s1', 'out', [0.45, 0.55]),
+  ],
+  mirrorable: true,
+};
+
+/** set-up: the spider pit. Down into a sunken yard where the spiders wait, awake and asleep: fight through, hop out */
+export const spiderPit: SectionTemplate = {
+  id: 'w5a-setup-pit',
+  name: 'arena set-up: the spider pit',
+  archetypes: ['gauntlet'],
+  uses: [THEME.pit],
+  phases: ['ten', 'ketsu'],
+  difficulty: 9,
+  weight: 4,
+  maxPerStage: 1,
+  pieces: [
+    bank('near', [180, 220], { kind: 'start' }),
+    up('lip', 'near', 40, [120, 150]),
+    down('pit', 'lip', 92, [820, 900]),
+    up('far', 'pit', 52, [200, 240]),
+    hop('out', 'far', [300, 340], [0.45, 0.6], true),
+  ],
+  entry: { piece: 'near', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    tip('near', 0.2),
+    foe('f1', 'pit', [0.18, 0.24]),
+    sleeper('s1', 'pit', [0.42, 0.48]),
+    foe('f2', 'pit', [0.72, 0.78]),
+    sleeper('s2', 'pit', [0.92, 0.96], { chance: 0.7 }),
+    sleeper('s3', 'out', [0.5, 0.6]),
+  ],
+  mirrorable: true,
+};
+
+/** set-up: the leaping lawns. Wide soft pits one after another (the second jump each time), a spider waiting at the end */
+export const leapingLawns: SectionTemplate = {
+  id: 'w5a-setup-leaps',
+  name: 'arena set-up: the leaping lawns',
+  archetypes: ['gauntlet'],
+  uses: [THEME.leaps],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 8,
+  weight: 4,
+  maxPerStage: 1,
+  pieces: [
+    bank('a', [240, 280], { kind: 'start' }),
+    leap('b', 'a', [240, 280], [0.55, 0.8]),
+    leap('c', 'b', [240, 280], [0.55, 0.8]),
+    leap('d', 'c', [220, 260], [0.5, 0.7]),
+    leap('e', 'd', [320, 360], [0.55, 0.8]),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'e', kind: 'ground' },
+  exitDy: 0,
+  sockets: [tip('a', 0.1), petals('pb', 'b', 0.5, 1), petals('pc', 'c', 0.5, 1), petals('pd', 'd', 0.5, 1), foe('f1', 'e', [0.55, 0.65])],
+  mirrorable: true,
+};
+
+/** set-up: the orchid walk. Closing orchids over three lawns (hop up while one is open), a sleeper below, a spider at the end */
+export const orchidWalk: SectionTemplate = {
+  id: 'w5a-setup-orchids',
+  name: 'arena set-up: the orchid walk',
+  archetypes: ['gauntlet'],
+  uses: [THEME.orchids],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 7,
+  weight: 4,
+  maxPerStage: 1,
+  pieces: [
+    bank('a', [380, 440], { kind: 'start' }),
+    hop('b', 'a', [380, 440], [0.4, 0.55], true),
+    hop('c', 'b', [380, 440], [0.4, 0.55], true),
+    hop('d', 'c', [300, 340], [0.4, 0.55], true),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'd', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    tip('a', 0.06),
+    prop('o1', 'a', [0.5, 0.6], 'orchid'),
+    prop('o2', 'b', [0.45, 0.55], 'orchid'),
+    sleeper('s1', 'b', [0.85, 0.92], { chance: 0.7 }),
+    prop('o3', 'c', [0.5, 0.6], 'orchid'),
+    prop('o4', 'd', [0.3, 0.38], 'orchid'),
+    foe('f1', 'd', [0.7, 0.78]),
   ],
   mirrorable: true,
 };
@@ -543,6 +816,8 @@ export const cakeRoom: SectionTemplate = {
   id: 'w5a-room-cake',
   name: "puzzle room: don't eat (the cake plate)",
   archetypes: ['gauntlet'],
+  // (one room a roll: each comes with its own theme's gate)
+  uses: [THEME.orchids],
   phases: ['sho'],
   difficulty: 4,
   teaches: 'lure',
@@ -599,6 +874,8 @@ export const teaRoom: SectionTemplate = {
   id: 'w5a-room-tea',
   name: "puzzle room: don't drink (the Butler's arch)",
   archetypes: ['gauntlet'],
+  // (one room a roll: each comes with its own theme's gate)
+  uses: [THEME.tea],
   phases: ['ten'],
   difficulty: 6,
   teaches: 'teapot-lift',
@@ -623,7 +900,8 @@ export const teaRoom: SectionTemplate = {
 
 /** 5-9's building blocks: the gates, the beats that build to the arena, the arena */
 export const W5_ARENA_SECTIONS: readonly SectionTemplate[] = [
-  gardenGate, lanternLawn, orchidSteps, archRest, shrineGate, spiderLawn, sleeperSteps, stumpPair, sunkenLawn, highRoadLawn, threadLawn, butlerLawn, pitLawn, teapotLawn, queensGarden, teaLawn,
+  ...GARDEN_GATES, chairLawn, firstLeap, orchidLawn, lanternLawn, orchidSteps, archRest, shrineGate, spiderLawn, sleeperSteps, stumpPair, sunkenLawn, highRoadLawn, threadLawn, butlerLawn, pitLawn, teapotLawn, queensGarden, teaLawn,
+  hummingLawn, teaRounds, spiderPit, leapingLawns, orchidWalk,
 ];
 /** World 5's two puzzle-room sections */
 export const W5_ROOM_SECTIONS: readonly SectionTemplate[] = [cakeRoom, teaRoom];

@@ -21,7 +21,8 @@ import { fastFloor, MODEL_FAST, modelStage } from '../stageTime.ts';
 import { generateAllLevels } from '../worldsData.ts';
 import { findRoute } from '../../../tools/inspect/route.ts';
 import { findBeats, sampleRoute } from '../../../tools/inspect/beats.ts';
-import { deadTime, EASY_GAP, NORMAL_GAP } from '../../../tools/inspect/analyze.ts';
+import { actionTokens, cosine, deadTime, EASY_GAP, NORMAL_GAP, profile } from '../../../tools/inspect/analyze.ts';
+import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { Gen2Stage } from './types.ts';
 import type { Difficulty } from '../difficulty.ts';
@@ -29,7 +30,7 @@ import type { LevelConfig, Platform } from '../types.ts';
 import { buildGen2Stage, checkStage, layLocal, placeRoom, planBudget, rngFor } from './pipeline.ts';
 import type { SectionTemplate } from './types.ts';
 import { W5_MANIFEST } from './worlds/w5.ts';
-import { ARENA, cakeRoom, teaRoom, TEA_RISE, W5_ARENA_SECTIONS, W5_ROOM_SECTIONS, W5A_ROOM_HINTS, W5A_TIPS, w5ArenaKit } from './worlds/w5Arena.ts';
+import { ARENA, cakeRoom, GARDEN_GATES, teaRoom, TEA_RISE, W5_ARENA_SECTIONS, W5_ROOM_SECTIONS, W5A_ROOM_HINTS, W5A_TIPS, w5ArenaKit } from './worlds/w5Arena.ts';
 
 const LEVEL = generateAllLevels().find((l) => l.id === '5-9')!;
 /** 5-9's own config: the gauntlet's designed goal (worldsData: 26), which the pipeline's top-up lays for; Easy is held to easyMode's 60% */
@@ -51,7 +52,9 @@ test("5-9 on 20 seeds, Normal and Easy: levelCheck passes, 2:00+ for the quick p
       assert.equal(st.config.targetCount, LEVEL.targetCount, 'the designed goal stays');
       const fast = modelStage(st, MODEL_FAST).total;
       assert.ok(fast >= 120 && fast >= fastFloor(5, 9, 'gauntlet'), `seed ${seed} ${d}: ${fast.toFixed(0)} s for the quick player`);
-      assert.ok(st.gen2.sections.filter((s) => s.template.startsWith('w5a-')).length >= 6, `seed ${seed} ${d}: few arena sections`);
+      // (a garden gate opens its theme's lawns; a roll that starts on World 5's own garden is a plain one, rarer)
+      const gated = st.gen2.sections[0].template.startsWith('w5a-gate-in');
+      assert.ok(st.gen2.sections.filter((s) => s.template.startsWith('w5a-')).length >= (gated ? 6 : 3), `seed ${seed} ${d}: few arena sections`);
       // (the goal, Normal's 26 or Easy's 60% of it, with a margin, all before the shrine)
       const before = st.enemies.filter((e) => e.x < st.exitTotemX).length;
       assert.ok(before >= st.gen2.budget.quota.check + (d === 'normal' ? 2 : 0), `seed ${seed} ${d}: ${before} animals before the shrine`);
@@ -111,7 +114,7 @@ test('5-9: Dot explains the shut shrine once, before the first spider when the g
     assert.equal(lines.length, 1, `seed ${seed}: the shrine's line, once`);
     // (World 5's own garden starts are 'any' and may open a roll: then the line comes with the first arena section, and the engine still
     // explains the sealed shrine at its door, engine.ts goalLine 'sealed')
-    if (n.gen2.sections[0].template === 'w5a-gate-in') {
+    if (n.gen2.sections[0].template.startsWith('w5a-gate-in')) {
       gate++;
       const first = Math.min(...n.enemies.map((x) => x.patrolMinX));
       assert.ok(lines[0].x < first, `seed ${seed}: the line at ${lines[0].x}, the first spider at ${first}`);
@@ -129,6 +132,22 @@ test('5-9: Dot explains the shut shrine once, before the first spider when the g
   }
   assert.ok(gate >= SEEDS.length * 0.85, `the garden gate opened ${gate} of ${SEEDS.length} rolls`);
   assert.ok(shared >= SEEDS.length * 0.9, `Easy laid Normal's plan on ${shared} of ${SEEDS.length} rolls`);
+});
+
+test("5-9's rolls differ (the era tool's measure, as curation reads it): diversity 0.35+ over 20 rolls, every garden gate's theme comes up", () => {
+  const profs: Array<Map<string, number>> = [];
+  const gates = new Set<string>();
+  for (const seed of SEEDS) {
+    const st = buildGen2Stage({ config: cfg('normal'), kit, seed, difficulty: 'normal' });
+    gates.add(st.gen2.sections[0].template);
+    const R = pickRoute('gauntlet', st as unknown as GeneratedStage);
+    profs.push(profile(actionTokens(R.used.br.beats, R.used.br.total)));
+  }
+  let sum = 0;
+  let n = 0;
+  for (let i = 0; i < profs.length; i++) for (let j = i + 1; j < profs.length; j++) (sum += 1 - cosine(profs[i], profs[j])), n++;
+  assert.ok(sum / n >= 0.35, `diversity ${(sum / n).toFixed(3)}`);
+  for (const g of GARDEN_GATES) assert.ok(gates.has(g.id), `${g.id} never opened a roll`);
 });
 
 test("the arena's sections: every beat is ground the route crosses, each ends level with where it began, Dot's lines are short", () => {
