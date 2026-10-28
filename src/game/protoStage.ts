@@ -4637,10 +4637,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const group: number[] = [];
     for (let k = 0; k < n; k++) {
       const w = Math.round(wide ? R.r(280, 330) : R.r(180, 240));
-      // (4-1's wide ledges, 2026-10-28: World 4 sits above World 3, so its first climb asks longer, higher hops between them, still
-      // well inside one jump; the band chart had 4-1 at World 2's level)
-      const rise = Math.round(R.r(20, 60) + (wide && cliff ? 25 : 0));
-      const gap = Math.round(reachJump(rise, false) * (R.r(0.4, 0.55) + (wide && cliff ? 0.14 : 0)));
+      const rise = Math.round(R.r(20, 60));
+      const gap = Math.round(reachJump(rise, false) * R.r(0.4, 0.55));
       const at = (d: 1 | -1) => (d === 1 ? cur.x + cur.width + gap : cur.x - gap - w);
       const fits = (d: 1 | -1) => (d === 1 ? W - KAPOK_MARGIN - (cur.x + cur.width) : cur.x - KAPOK_MARGIN) >= gap + w && !blocked(at(d), at(d) + w, cur.y - rise);
       if (!fits(dir)) {
