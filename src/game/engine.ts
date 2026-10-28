@@ -74,7 +74,7 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
-import { ROOM_CAM, roomLean, roomView } from './puzzleCamera.ts';
+import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
@@ -368,8 +368,14 @@ export class GameEngine {
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
   private kitHostObj: KitHost | null = null;
-  /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey and the puzzle part both fit (puzzleCamera.ts, never below 0.75) */
+  /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey, the puzzle part and what it works all fit (puzzleCamera.ts:
+   * never below 0.75 sideways, further upright, roomFloor) */
   private roomZoom = 1;
+  /** the zoom a room pulls back from (css px per world px: the usual framing, applyZoom) */
+  private roomUsual = 1;
+  /** how far the room's framing is blended in (0 outside, 1 inside a room), and where it last aimed (the view's middle) */
+  private roomK = 0;
+  private roomAim: { x: number; y: number; pan: boolean } | null = null;
   /** World 5: the vines the lessons may teach (not its silk lines, which its own tip teaches) */
   private lessonVines: Vine[] | null = null;
   /** the parts of World 5's stage Dot's bubble keeps off (Meeca's carvings), in world units, then on the page (guideKeepOut.ts) */
@@ -762,7 +768,10 @@ export class GameEngine {
     // never show more height than the level has
     // (a boss fight in a tall, narrow window may show some sky above the arena rather than crop the fight to the level's height)
     const bossFight = !!this.currentStage?.arena && portrait;
-    this.zoom = Math.max(base * dolly * this.bossZoom * this.roomZoom, bossFight ? 0.4 : h / levelH);
+    // (a puzzle room pulls back from that, past the level's height if it must: upright a room never fit across a view the level's height
+    // tall; the extra is the sky over the level, updateCamera. Its floor is roomFloor, puzzleCamera.ts)
+    this.roomUsual = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
+    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom;
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -4518,13 +4527,23 @@ export class GameEngine {
     }
     // a puzzle room (puzzleCamera.ts): the view leans from him toward the part of the puzzle that matters now, or goes to a far gate
     // that has just opened; outside every room this is nothing
-    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom) : null;
+    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom, this.roomFloorNow()) : null;
     if (kf) {
-      const c = kf.pan ? { x: kf.x, y: kf.y } : roomLean(p.x, p.y - 45, kf.x, kf.y);
-      const v = kf.pan ? { x: c.x - vw / 2, y: c.y - vh / 2 } : roomView(c.x, c.y, vw, vh, p.x, p.y);
-      this.camera.targetX = v.x;
-      this.camera.targetY = v.y;
+      // (moved from the lean point just enough to keep the key box in: the stone, its basket and the cage it lifts, all at once)
+      const lean = roomLean(p.x, p.y - 45, kf.x, kf.y);
+      this.roomAim = { ...(kf.pan ? { x: kf.x, y: kf.y } : kf.box ? roomCentre(lean, kf.box, vw, vh) : lean), pan: kf.pan };
     }
+    // (the room's framing blends in over ROOM_CAM.blend s coming in, and out again leaving, from the last place it aimed: the aim no
+    // longer swaps at the room's edge, which swung the view 130 px at once)
+    this.roomK = Math.max(0, Math.min(1, this.roomK + (kf ? dt : -dt) / ROOM_CAM.blend));
+    const ra = this.roomAim;
+    if (ra && this.roomK > 0) {
+      const v = ra.pan ? { x: ra.x - vw / 2, y: ra.y - vh / 2 } : roomView(ra.x, ra.y, vw, vh, p.x, p.y);
+      const k = this.roomK * this.roomK * (3 - 2 * this.roomK);
+      this.camera.targetX += (v.x - this.camera.targetX) * k;
+      this.camera.targetY += (v.y - this.camera.targetY) * k;
+    }
+    if (this.roomK === 0) this.roomAim = null;
     // near the end of a ledge with a gap ahead, the view shows the far side too (cameraFollow.ts landingAhead)
     let landShown: Box | null = null;
     if (!look && !kf && !this.chase?.active && !this.currentStage.arena) {
@@ -4576,8 +4595,10 @@ export class GameEngine {
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));
     const maxY = this.currentStage.config.levelHeight - vh;
-    // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues)
-    this.camera.y = Math.max(this.currentStage.arena || this.mc ? Math.min(0, maxY) - (this.mc ? 600 : 0) : 0, Math.min(maxY, this.camera.y));
+    // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues), and so may a puzzle room
+    // pulled back further than the level is tall (upright): its foot stays the level's foot, the extra is sky over the top
+    const overTop = this.currentStage.arena || this.mc || this.roomZoom < 1;
+    this.camera.y = Math.max(overTop ? Math.min(0, maxY) - (this.mc ? 600 : 0) : 0, Math.min(maxY, this.camera.y));
   }
 
   /** the ledge he last stood on, the landing the view is showing, and how long it is kept once he has left the ground (s) */
@@ -6376,11 +6397,16 @@ export class GameEngine {
     }
   }
 
+  /** the most a puzzle room may pull back now, of the usual zoom (puzzleCamera.ts roomFloor: further upright than sideways) */
+  private roomFloorNow(): number {
+    return roomFloor(this.viewCssW, this.viewCssH, this.roomUsual);
+  }
+
   /** the puzzle rooms, each frame (puzzlePlay.ts): carrying, he walks slower; the room's framing eases in, and out again outside it */
   private stepKit(dt: number) {
     this.dragSpeed *= this.kit!.step(dt, this.kitHost(), this.platforms);
     const cam = this.camera;
-    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom);
+    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom, this.roomFloorNow());
     const want = kf ? (kf.pan ? this.roomZoom : kf.zoom) : 1;
     const prev = this.roomZoom;
     this.roomZoom += (want - this.roomZoom) * Math.min(1, dt * ROOM_CAM.ease);

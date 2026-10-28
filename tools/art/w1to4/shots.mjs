@@ -10,7 +10,7 @@ const SIZES = { upright: [390, 844], sideways: [844, 390] };
 // each room: how long to walk in from its door (s), and what to do there before the shot
 const ROOMS = [
   ['seesaw', 1.6, []],
-  ['bell', 1.2, []],
+  ['bell', 0.7, []], // (stopping by the pebbles, the bell still ahead of him: 1.2 s took him onto it, hiding it)
   ['light', 1.4, []],
   ['wind', 1.3, []],
   ['sluice', 1.2, []],
