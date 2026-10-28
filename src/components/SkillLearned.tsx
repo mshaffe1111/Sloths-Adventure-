@@ -83,7 +83,9 @@ export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }>
             <SkillIcon skill={skill.id} size={86} />
             <div>
               <span className="sk-kicker">YOU LEARNED</span>
-              <h3 className="sk-name">{skill.name}</h3>
+              <h3 className="sk-name kit-plaque">
+                <span>{skill.name}</span>
+              </h3>
             </div>
           </div>
           <p className="sk-blurb">{fresh?.blurb || touch?.blurb || skill.blurb}</p>

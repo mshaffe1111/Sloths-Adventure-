@@ -359,7 +359,7 @@
 .clr-btn2:hover:not(:disabled) { background: var(--gx-wood-grain), linear-gradient(180deg, #d39c60, #a56b38 52%, #7c4c22); }
 .clr-help { color: var(--gx-ink); background: rgba(240, 176, 74, .18); border-color: rgba(168, 90, 23, .5); }
 .sk-kicker { color: #b4541a; font-weight: 700; }
-.sk-name { font-family: var(--font-fun); font-weight: 400; color: #4a2a10; text-shadow: 0 1px 0 rgba(255, 255, 255, .6); }
+.sk-name { font-size: 30px; }
 .sk-blurb { color: var(--gx-ink); }
 .sk-chip { color: #fff4d8; background: var(--gx-wood-grain), linear-gradient(180deg, #5a3618, #452812); border: 2px solid #2a1608; }
 .sk-or { color: #f3d9a6; }
@@ -582,3 +582,7 @@
   .pm-skill b { font-size: 13px; }
   .tr-screen { -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent); }
 }
+
+/* the skill-learned card lifts in like every panel */
+.sk-card { animation: fx-card-in .45s cubic-bezier(.2, 1.25, .4, 1) both; }
+@media (prefers-reduced-motion: reduce) { .sk-card { animation: none; } }
