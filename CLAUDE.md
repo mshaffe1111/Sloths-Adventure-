@@ -6,6 +6,8 @@ Matt's phone-first side-scrolling sloth platformer. **Read Matt's handoff doc fi
 - how to test and release
 - where things stand
 
+**QA sessions** (bot playtesting, log analysis, reports to the coders): read `tools/playtesters/QA-PLAYBOOK.md` first and keep it current.
+
 Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
 
 ## Rules that are easy to break
