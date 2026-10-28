@@ -104,6 +104,8 @@ export const gardenGate: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['start'],
   difficulty: 1,
+  // (5-9's start, all but always: World 5's own garden starts are 'any', and this one carries the arena's line)
+  weight: 30,
   pieces: [bank('lawn', [300, 360], { kind: 'start' }), up('mound', 'lawn', 40, [220, 260]), hop('lawn2', 'mound', [280, 340], [0.3, 0.45])],
   entry: { piece: 'lawn', kind: 'ground' },
   exit: { piece: 'lawn2', kind: 'ground' },
@@ -124,6 +126,7 @@ export const lanternLawn: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['rest'],
   difficulty: 1,
+  weight: 2,
   pieces: [bank('lawn', [260, 320], { kind: 'start' }), hop('lawn2', 'lawn', [320, 380], [0.3, 0.45])],
   entry: { piece: 'lawn', kind: 'ground' },
   exit: { piece: 'lawn2', kind: 'ground' },
@@ -139,6 +142,7 @@ export const orchidSteps: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['rest'],
   difficulty: 1,
+  weight: 2,
   pieces: [bank('lawn', [220, 280], { kind: 'start' }), up('mound', 'lawn', 36, [200, 240]), down('lawn2', 'mound', 36, [280, 340])],
   entry: { piece: 'lawn', kind: 'ground' },
   exit: { piece: 'lawn2', kind: 'ground' },
@@ -169,14 +173,16 @@ export const spiderLawn: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['ki', 'sho'],
   difficulty: 3,
+  weight: 2,
   pieces: [
     bank('near', [200, 250], { kind: 'start' }),
     hop('lawn', 'near', [440, 520], [0.4, 0.6], true),
     up('mound', 'lawn', 48, [140, 180]),
     down('out', 'mound', 48, [270, 320]),
+    hop('out2', 'out', [160, 200], [0.35, 0.5], true),
   ],
   entry: { piece: 'near', kind: 'ground' },
-  exit: { piece: 'out', kind: 'ground' },
+  exit: { piece: 'out2', kind: 'ground' },
   exitDy: 0,
   sockets: [
     tip('near', 0.2),
@@ -187,6 +193,50 @@ export const spiderLawn: SectionTemplate = {
   mirrorable: true,
 };
 
+/** Ki/Sho: the sleepers' steps: up a step, a hop, down onto a lawn where two spiders doze (hop them, or wake them and fight) */
+export const sleeperSteps: SectionTemplate = {
+  id: 'w5a-sleeper-steps',
+  name: 'arena: the sleepers on the steps',
+  archetypes: ['gauntlet'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  weight: 2,
+  pieces: [
+    bank('near', [200, 240], { kind: 'start' }),
+    up('step', 'near', 40, [160, 200]),
+    hop('step2', 'step', [160, 200], [0.35, 0.5], true),
+    down('yard', 'step2', 40, [300, 340]),
+    hop('yard2', 'yard', [250, 290], [0.4, 0.55], true),
+  ],
+  entry: { piece: 'near', kind: 'ground' },
+  exit: { piece: 'yard2', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    tip('near', 0.2),
+    petals('ps', 'step2', 0.5, 1),
+    sleeper('s1', 'yard', [0.45, 0.55]),
+    petals('py', 'yard2', [0.15, 0.2], 1),
+    sleeper('s2', 'yard2', [0.5, 0.6]),
+  ],
+  mirrorable: true,
+};
+
+/** rest: under the arch, a hop over a soft dip, a flag */
+export const archRest: SectionTemplate = {
+  id: 'w5a-arch-rest',
+  name: 'the arch walk',
+  archetypes: ['gauntlet'],
+  phases: ['rest'],
+  difficulty: 1,
+  weight: 2,
+  pieces: [bank('lawn', [240, 300], { kind: 'start' }), hop('lawn2', 'lawn', [200, 240], [0.3, 0.45]), up('lawn3', 'lawn2', 36, [220, 260]), down('lawn4', 'lawn3', 36, [200, 240])],
+  entry: { piece: 'lawn', kind: 'ground' },
+  exit: { piece: 'lawn4', kind: 'ground' },
+  exitDy: 0,
+  sockets: [prop('arch', 'lawn', [0.4, 0.55], W5A_TAGS.gate), petals('petals', 'lawn3', 0.5, 2, 80), { id: 'flag', role: 'flag', on: 'lawn4', t: 0.6 }],
+  mirrorable: true,
+};
+
 /** Ki/Sho/Ten: over a mound, spiders on the yard, a hop out */
 export const stumpPair: SectionTemplate = {
   id: 'w5a-mound-pair',
@@ -194,6 +244,7 @@ export const stumpPair: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['ki', 'sho', 'ten'],
   difficulty: 4,
+  weight: 2,
   pieces: [
     bank('near', [180, 220], { kind: 'start' }),
     up('mound', 'near', 44, [160, 200]),
@@ -213,16 +264,18 @@ export const stumpPair: SectionTemplate = {
   mirrorable: true,
 };
 
-/** Sho/Ten: the sunken lawn (a step down into it, a soft pit across it, a hop back up), a spider each side of the pit, a tiny cake */
+/** Sho/Ten: the sunken lawn (over its lip and down into it, a soft pit across it, a hop back up), a spider each side of the pit, a tiny cake */
 export const sunkenLawn: SectionTemplate = {
   id: 'w5a-sunken-lawn',
   name: 'arena: the sunken lawn',
   archetypes: ['gauntlet'],
   phases: ['sho', 'ten'],
   difficulty: 6,
+  weight: 2,
   pieces: [
     bank('near', [200, 260], { kind: 'start' }),
-    down('yardA', 'near', 52, [420, 480]),
+    up('lip', 'near', 40, [120, 150]),
+    down('yardA', 'lip', 92, [420, 480]),
     hop('yardB', 'yardA', [340, 400], [0.45, 0.65], true),
     up('far', 'yardB', 52, [220, 280]),
   ],
@@ -247,6 +300,7 @@ export const highRoadLawn: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['sho', 'ten'],
   difficulty: 6,
+  weight: 2,
   pieces: [
     bank('near', [260, 320], { kind: 'start' }),
     hop('lawn', 'near', [560, 660], [0.5, 0.7], true),
@@ -275,8 +329,9 @@ export const threadLawn: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['sho', 'ten'],
   difficulty: 7,
+  weight: 2,
   pieces: [
-    bank('lawn', [280, 340], { kind: 'start' }),
+    bank('lawn', [220, 260], { kind: 'start' }),
     up('mound', 'lawn', 40, [160, 200]),
     down('yard', 'mound', 40, [560, 640]),
     hop('far', 'yard', [200, 260], [0.4, 0.6], true),
@@ -303,6 +358,7 @@ export const butlerLawn: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['ten', 'ketsu'],
   difficulty: 7,
+  weight: 2,
   pieces: [
     bank('lawn', [300, 360], { kind: 'start' }),
     hop('yard', 'lawn', [560, 640], [0.5, 0.7], true),
@@ -331,6 +387,7 @@ export const pitLawn: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['ten', 'ketsu'],
   difficulty: 8,
+  weight: 2,
   pieces: [
     bank('near', [240, 300], { kind: 'start' }),
     hop('far', 'near', [520, 600], [0.65, 0.85], true),
@@ -355,14 +412,16 @@ export const teapotLawn: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['ten', 'ketsu'],
   difficulty: 8,
+  weight: 2,
   pieces: [
     bank('lawn', [300, 360], { kind: 'start' }),
     up('mound', 'lawn', 48, [200, 240]),
     hop('mound2', 'mound', [160, 200], [0.4, 0.55], true),
     down('yard', 'mound2', 48, [560, 640]),
+    hop('out', 'yard', [180, 220], [0.35, 0.5], true),
   ],
   entry: { piece: 'lawn', kind: 'ground' },
-  exit: { piece: 'yard', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
   exitDy: 0,
   sockets: [
     tip('lawn', 0.08),
@@ -386,7 +445,7 @@ export const queensGarden: SectionTemplate = {
   maxPerStage: 1,
   weight: 2,
   pieces: [
-    bank('gate', [240, 280], { kind: 'start' }),
+    bank('gate', [170, 210], { kind: 'start' }),
     hop('yardA', 'gate', [600, 680], [0.45, 0.65], true),
     { key: 'road', shape: 'branch', w: [220, 280], place: { kind: 'over', on: 'yardA', at: [0.34, 0.42], dy: [-155, -140] }, main: false },
     up('mound', 'yardA', 48, [150, 190]),
@@ -419,6 +478,7 @@ export const teaLawn: SectionTemplate = {
   archetypes: ['gauntlet'],
   phases: ['ten', 'ketsu'],
   difficulty: 9,
+  weight: 2,
   pieces: [
     bank('lawn', [280, 340], { kind: 'start' }),
     hop('yard', 'lawn', [600, 680], [0.5, 0.7], true),
@@ -446,30 +506,30 @@ export const teaLawn: SectionTemplate = {
 /** the room's piece positions along a fixed-width floor, in px (the anchors are fractions of it: widths are settled first, §6) */
 const along = (on: string, w: number) => (px: number, dy?: number) => ({ on, at: px / w, ...(dy === undefined ? {} : { dy }) });
 
-/** DON'T EAT: the cake room. Floor 920 px; the room 760 x 500 (narrow enough for an upright phone at half scale) */
-const CAKE_W = 920;
+/** DON'T EAT: the cake room. Floor 800 px; the room 700 x 500 (narrow enough for an upright phone at half scale) */
+const CAKE_W = 800;
 const cf = along('floor', CAKE_W);
 export const cakeRoomSpec: LocalRoomSpec = {
   id: 'cake',
   left: cf(0),
-  right: cf(760),
+  right: cf(700),
   above: 420,
   below: 80,
   pieces: [
     { kind: 'reset', id: 'post', at: cf(20) },
     // (by the door a beetle dozes by a crumb of cake: as he comes in it wakes, eats it and falls asleep where it ate. The room shows
     // what a cake does before he carries one, STAGE-RULES §3)
-    { kind: 'item', id: 'crumb', variant: 'cake', at: cf(70) },
-    { kind: 'beetle', id: 'dozer', at: cf(130), waitNear: 190 },
-    { kind: 'source', id: 'stool', variant: 'cake', at: cf(370), look: 'pile' },
+    { kind: 'item', id: 'crumb', variant: 'cake', at: cf(65) },
+    { kind: 'beetle', id: 'dozer', at: cf(120), waitNear: 190 },
+    { kind: 'source', id: 'stool', variant: 'cake', at: cf(340), look: 'pile' },
     { kind: 'item', id: 'cake', variant: 'cake', source: 'stool', for: 'plate' },
-    { kind: 'plate', id: 'plate', at: cf(500) },
-    { kind: 'beetle', id: 'beetle', at: cf(610) },
+    { kind: 'plate', id: 'plate', at: cf(455) },
+    { kind: 'beetle', id: 'beetle', at: cf(560) },
     // (open only while the plate is down: standing on it himself, it shuts as he steps off)
-    { kind: 'gate', id: 'gate', at: cf(690), open: 'plate', look: 'woven' },
+    { kind: 'gate', id: 'gate', at: cf(635), open: 'plate', look: 'woven' },
   ],
   exit: 'gate',
-  beyond: cf(800),
+  beyond: cf(760),
   ground: ['floor'],
   tips: {
     enter: 'The plate opens the gate. One of you.', // (new, needs Matt's approval)
@@ -564,7 +624,7 @@ export const teaRoom: SectionTemplate = {
 
 /** 5-9's building blocks: the gates, the beats that build to the arena, the arena */
 export const W5_ARENA_SECTIONS: readonly SectionTemplate[] = [
-  gardenGate, lanternLawn, orchidSteps, shrineGate, spiderLawn, stumpPair, sunkenLawn, highRoadLawn, threadLawn, butlerLawn, pitLawn, teapotLawn, queensGarden, teaLawn,
+  gardenGate, lanternLawn, orchidSteps, archRest, shrineGate, spiderLawn, sleeperSteps, stumpPair, sunkenLawn, highRoadLawn, threadLawn, butlerLawn, pitLawn, teapotLawn, queensGarden, teaLawn,
 ];
 /** World 5's two puzzle-room sections */
 export const W5_ROOM_SECTIONS: readonly SectionTemplate[] = [cakeRoom, teaRoom];
