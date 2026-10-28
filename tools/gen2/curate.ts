@@ -3,7 +3,7 @@
  * writes the shipped table, src/game/gen2/seeds.ts.
  *
  *   npx tsx tools/gen2/curate.ts --stages 5-7,5-9 [--rolls 400] [--keep 16] [--out src/game/gen2/seeds.ts] [--waive quiet,dead]
- *     [--band 50-65] [--max-shared 0.7] [--json out.json] [--salt 20261028]
+ *     [--band 50-65] [--max-shared 0.7] [--json out.json] [--report out.md] [--salt 20261028]
  *   npx tsx tools/gen2/curate.ts --stages toy-3,toy-4,toy-7 --rolls 400 --keep 16 --waive quiet,dead   (the toy world: tools/gen2/toySeeds.ts)
  *
  * For each stage: `--rolls` layout seeds (era.ts's rollVariants) are built through `buildGen2Stage` on Normal and on Easy (the same
@@ -444,6 +444,7 @@ function args(argv: string[]) {
     kit: get('--kit'),
     out: get('--out') ?? (toy ? path.join(here, 'toySeeds.ts') : path.join(root, 'src', 'game', 'gen2', 'seeds.ts')),
     json: get('--json'),
+    report: get('--report'),
   };
 }
 
@@ -523,11 +524,66 @@ async function main() {
   const text = opt.toy ? renderTable(tableName, existing, HEADER_TOY, '../../src/game/gen2/seeds.ts') : shippedTable(existing);
   fs.writeFileSync(opt.out, text);
   log(`wrote ${path.relative(root, opt.out)}`);
+  if (opt.report) {
+    fs.mkdirSync(path.dirname(path.resolve(opt.report)), { recursive: true });
+    fs.writeFileSync(opt.report, renderReport(results, opt, date));
+    log(`wrote ${opt.report}`);
+  }
   if (opt.json) fs.writeFileSync(opt.json, JSON.stringify(results.map((r) => ({ ...toEntry(r, opt, date), dropped: r.dropped, botRejects: r.botRejects, seconds: r.seconds, rolls: r.measures.map((m) => ({ seed: m.seed, q: m.quality, fails: m.fails, quick: r1(m.normal.quick), dead: r1(m.normal.dead), quiet: r1(m.normal.longestQuiet), a: m.action })) })), null, 1));
 }
 
 /** an earlier entry's closing sections, from its written plans */
 const closingSectionsOf = (e: Gen2StageSeeds) => closingSections(e.seeds.map((s) => ({ plan: s.sections.split(' ') }) as RollMeasure));
+
+/** a drop reason in plain words, for the report */
+export function plainReason(k: string): string {
+  const side = k.startsWith('easy') ? 'Easy' : k.startsWith('normal') ? 'Normal' : '';
+  const what = k.replace(/^(normal|easy): /, '');
+  const words: Record<string, string> = {
+    levelCheck: 'the stage checker found a spot that cannot be done',
+    'quick player under 2:00': 'a quick player finishes in under 2 minutes',
+    'model fast under the floor': "the fast player's clock is under the stage's floor",
+    'model typical under the target': "the typical player's clock is under the stage's target",
+    'quiet over 4 s': 'a stretch of more than 4 seconds with nothing to do',
+    'dead time over a fifth': 'more than a fifth of the stage is quiet',
+    'kid bot: jumps under 85%': 'a jump the kid bot (Easy) makes less than 85% of the time',
+    'adult bot: jumps under 70%': 'a jump the adult bot (Normal) makes less than 70% of the time',
+    'band outside': 'its difficulty score is outside the band',
+    'shares too many sections with the stage before': 'too many of the same building blocks as the stage before',
+  };
+  const w = words[what] ?? Object.entries(words).find(([key]) => what.startsWith(key))?.[1] ?? what;
+  return side ? `${side}: ${w}` : w;
+}
+
+const pct = (a: number, b: number) => `${Math.round((100 * a) / Math.max(1, b))}%`;
+const cell = (v: number | null | undefined, d = 0) => (v === null || v === undefined ? '-' : v.toFixed(d));
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
+
+/** the run as a Markdown report: per stage the pass rate, why rolls were dropped, the variety, and the shipped rolls with their scores */
+export function renderReport(results: CurateResult[], opt: Pick<CurateOptions, 'rolls' | 'keep' | 'waive'>, date: string): string {
+  const out: string[] = [`# gen2 seed curation, ${date}`, ''];
+  out.push(`Each stage was built ${opt.rolls} times on Normal and on Easy. A roll is kept only if both settings pass every check; then the ${opt.keep} kept rolls most different from each other are shipped.${opt.waive.length ? ` Checks waived for this run: ${opt.waive.join(', ')}.` : ''}`, '');
+  out.push('| Stage | Rolls | Passed every check | Shipped | Variety, all passing (shipped) | Rule |', '|---|---|---|---|---|---|');
+  for (const r of results) out.push(`| ${r.stage.key} (${r.stage.config.objectiveType}) | ${r.measures.length} | ${r.passed - r.botRejects} (${pct(r.passed - r.botRejects, r.measures.length)}) | ${r.picks.length}/${opt.keep} | ${r.diversity.all.toFixed(2)} (${r.diversity.shipped.toFixed(2)}) | ${RULES.diversity} or more |`);
+  for (const r of results) {
+    const n = r.measures.length;
+    out.push('', `## ${r.stage.key}: ${r.stage.config.objectiveType}, ${r.stage.kitName}`, '');
+    out.push(`${r.passed - r.botRejects} of ${n} rolls (${pct(r.passed - r.botRejects, n)}) passed every check (the jump bots ran only on the rolls about to be shipped: ${r.botRejects} refused). ${r.picks.length} shipped.${r.recent.length ? ` Built after the stage before's closing blocks: ${r.recent.join(', ')}.` : ''}${r.shared !== null ? ` Blocks shared with the stage before: ${pct(r.shared, 1)}.` : ''}`, '');
+    const drops = Object.entries(r.dropped).sort((a, b) => b[1] - a[1]);
+    if (drops.length) {
+      out.push('Why rolls were dropped (a roll can fail more than one check):', '', '| Reason | Rolls | Share |', '|---|---|---|');
+      for (const [k, v] of drops) out.push(`| ${plainReason(k)} | ${v} | ${pct(v, n)} |`);
+      out.push('');
+    }
+    if (!r.picks.length) { out.push('Nothing shipped.'); continue; }
+    out.push('The shipped rolls (quick player: a fast thumb on the quickest way through; quiet: the longest stretch with nothing to do; worst jump: the share of tries the noisy bot makes; difficulty: bands.ts on the inspector\'s parts only, until the first-timer bot can play gen2 stages):', '');
+    out.push('| # | Seed | Quality | Different from the nearest | Quick player Normal / Easy | Quiet time Normal | Longest quiet Normal / Easy | Worst jump kid / adult | Difficulty Normal / Easy |', '|---|---|---|---|---|---|---|---|---|');
+    r.picks.forEach((m, i) => {
+      out.push(`| ${i + 1} | ${m.seed} | ${m.quality.toFixed(2)} | ${cell(r.spread[i], 2)} | ${mmss(m.normal.quick)} / ${mmss(m.easy.quick)} | ${cell(m.normal.dead)} s (${pct(m.normal.dead, m.normal.played)}) | ${cell(m.normal.longestQuiet, 1)} / ${cell(m.easy.longestQuiet, 1)} s | ${m.bots?.worstKid === null || !m.bots ? '-' : pct(m.bots.worstKid, 1)} / ${m.bots?.worstAdult === null || !m.bots ? '-' : pct(m.bots.worstAdult, 1)} | ${cell(m.band?.normal, 1)} / ${cell(m.band?.easy, 1)} |`);
+    });
+  }
+  return `${out.join('\n')}\n`;
+}
 
 function report(r: CurateResult, keep: number, log: (s: string) => void) {
   log(`${r.stage.key}: ${r.measures.length} rolled in ${r.seconds.toFixed(0)} s; ${r.passed} passed the filters, ${r.botRejects} refused by the bots/band; shipped ${r.picks.length}/${keep}`);

@@ -12,7 +12,7 @@ import { pathToFileURL } from 'node:url';
 import '../headlessDom.ts';
 import { validateStage } from '../levelCheck.ts';
 import { buildGen2Stage } from './pipeline.ts';
-import { closingSections, curateStage, distance, failsOf, pickSpread, renderTable, resolveStage, sharedWith, toEntry, type RollMeasure, type SideMeasure } from '../../../tools/gen2/curate.ts';
+import { closingSections, curateStage, distance, failsOf, pickSpread, plainReason, renderReport, renderTable, resolveStage, sharedWith, toEntry, type RollMeasure, type SideMeasure } from '../../../tools/gen2/curate.ts';
 
 const side = (o: Partial<SideMeasure> = {}): SideMeasure => ({ ok: true, errors: [], quick: 150, typical: 200, fast: 150, dead: 10, played: 150, longestQuiet: 3, perMin: 30, ...o });
 const roll = (seed: number, prof: Record<string, number>, quality = 0.5, plan: string[] = []): RollMeasure => ({
@@ -65,4 +65,10 @@ test('a small run on the toy world ships rolls that pass levelCheck on both sett
   const back = (await import(pathToFileURL(file).href)).T;
   assert.deepEqual(back['toy-7'], entry);
   fs.rmSync(dir, { recursive: true });
+  // the report Matt reads: the pass rate, every drop reason in plain words, one row per shipped roll
+  const md = renderReport([r], { rolls: 6, keep: 3, waive: ['quiet', 'dead'] }, '2026-10-28');
+  assert.match(md, /\| toy-7 \(stealth\) \| 6 \|/);
+  assert.equal(md.split('\n').filter((l) => /^\| \d+ \| \d+ \|/.test(l)).length, r.picks.length);
+  for (const k of Object.keys(r.dropped)) assert.ok(md.includes(plainReason(k)), k);
+  assert.equal(plainReason('easy: quiet over 4 s'), 'Easy: a stretch of more than 4 seconds with nothing to do');
 });
