@@ -31,10 +31,11 @@ test('1-1: nothing can cost a life: every drop lands on moss, every floor sits a
   for (const s of SEEDS) {
     const st = buildProtoStage(cfg, s, '1-1');
     assert.ok(st.platforms.every((p) => p.y < (st.waterY ?? 730)), `seed ${s}`);
-    // walk along: every x from start to exit has a floor under it (ground, a pillar or a moss pit)
+    // walk along: every x from start to exit has a floor under it (ground, a pillar or a moss pit, or a wall standing on the ground
+    // that a mushroom bounces him up: w1Sections.ts bounceWall, highLeaps)
     const exit = st.exitTotemX;
     for (let x = 0; x < exit; x += 20) {
-      assert.ok(st.platforms.some((p) => p.x <= x && p.x + p.width >= x && p.y >= G - 200), `seed ${s}: no floor at x ${x}`);
+      assert.ok(st.platforms.some((p) => p.x <= x && p.x + p.width >= x && (p.y >= G - 200 || p.y + p.height >= G)), `seed ${s}: no floor at x ${x}`);
     }
   }
 });
@@ -54,6 +55,9 @@ test('1-1: the stepping stones and the twist gaps are within a jump (a double ju
       // gaps with pillars inside are crossed stone by stone (checked by construction); plain gaps must be jumpable
       const stones = st.platforms.some((p) => p.style === 'moss_stone' && p.y < G && p.x > banks[i - 1].x + banks[i - 1].width && p.x < banks[i].x);
       if (stones) continue;
+      // (a wall from the ground between them, a mushroom's way up: no gap at all)
+      const wall = st.platforms.some((p) => p.y < G && p.y + p.height >= G && p.x <= banks[i - 1].x + banks[i - 1].width + 2 && p.x + p.width >= banks[i].x - 2);
+      if (wall) continue;
       assert.ok(gap < (inTwist ? two : one) * 0.9 || (!inTwist && gap < two * 0.9), `seed ${s}: gap ${gap} at ${banks[i].x}`);
     }
   }

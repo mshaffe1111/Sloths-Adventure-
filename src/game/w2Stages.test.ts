@@ -6,6 +6,7 @@ import { turtleGuard } from './predatorAI.ts';
 import type { Enemy } from './types.ts';
 import { EXPERT_SECONDS } from './protoStage.ts';
 import { validateStage } from './levelCheck.ts';
+import { w2Picks } from './w2Sections.ts';
 import type { LevelConfig } from './types.ts';
 
 const cfg = (id: W2Plan): LevelConfig =>
@@ -23,12 +24,14 @@ test('World 2 trio: every roll passes the reachability check, keeps its beats in
       // (the reachability check models a single liana from ledge to ledge, not a chain of them: 2-4's chains are checked as they are
       // built instead, with World 1's swing checks, protoCheck.ts, and its pickups by flowerReach.ts below)
       if (plan !== '2-4') {
-        // (2-7's vine crossings are chains too: a bridge stands in for each, checked by the swing tests, and the rest is checked here)
-        const bridged = plan === '2-7'
+        // (2-7's vine crossings are chains too, and so are the vines' rolls of 2-1..2-3: a bridge stands in for each, checked by the swing
+        // tests as they are built, and the rest is checked here)
+        const swings = (st.rivers ?? []).some((r) => r.open && st.vines.some((v) => v.x > r.x0 && v.x < r.x1));
+        const bridged = swings
           ? { ...st, platforms: [...st.platforms, ...(st.rivers ?? []).filter((r) => r.open && st.vines.some((v) => v.x > r.x0 && v.x < r.x1)).map((r, i) => ({ id: 90000 + i, x: r.x0, y: 580, width: r.x1 - r.x0, height: 20, type: 'solid' as const }))] }
           : st;
         const res = validateStage(bridged);
-        if (plan === '2-7') {
+        if (swings) {
           // the flowers along a swing are checked with the swings (flowerReach.ts), not from the stand-in bridge
           const spans = (st.rivers ?? []).filter((r) => r.open && st.vines.some((v) => v.x > r.x0 && v.x < r.x1));
           res.errors = res.errors.filter((e) => {
@@ -65,13 +68,15 @@ test('2-1: the first rivers cost no life (a splash puts him back on the bank); t
   for (const s of SEEDS) {
     const st = buildW2Stage(cfg('2-1'), s, '2-1');
     const rv = st.rivers!;
-    assert.ok(rv[0].safe && rv[1].safe && rv[2].safe, `seed ${s}: the teaching rivers`);
-    assert.ok(rv.slice(3).every((r) => !r.safe), `seed ${s}: only the first three are safe`);
+    // (the Learn's crossings, three or more by the roll's version, are the only safe ones)
+    const learn = rv.findIndex((r) => !r.safe);
+    assert.ok(learn >= 3, `seed ${s}: the teaching rivers`);
+    assert.ok(rv.slice(learn).every((r) => !r.safe), `seed ${s}: only the first ones are safe`);
     // (2-1 is the logs' stage: no puzzle rooms, no cages)
     assert.equal(st.kit, undefined);
     // the safe river puts him back on the bank he jumped from
     assert.ok(st.platforms.some((p) => p.type === 'solid' && p.x <= rv[0].safe!.backX && p.x + p.width >= rv[0].safe!.backX && p.y === rv[0].safe!.backY));
-    assert.ok(rv.some((r) => r.dir === -1), `seed ${s}: a river against the current`);
+    assert.ok(rv.some((r) => r.dir === -1 && r.speed > 0), `seed ${s}: a river against the current`);
     // the village at the end: the sign says it, and the mailman walks
     assert.ok(st.proto.decor!.some((d) => d.text?.join(' ') === 'PLEASE BE PATIENT'));
     assert.ok(st.proto.decor!.some((d) => d.cel?.startsWith('po.') && d.walk));
@@ -85,7 +90,9 @@ test('2-2: about one and a half times the flowers the crown needs, the note on t
     assert.equal(st.config.targetCount, FLOWER_GOAL_22);
     assert.ok(flowers >= FLOWER_GOAL_22 * 1.35 && flowers <= FLOWER_GOAL_22 * 1.9, `seed ${s}: ${flowers} flowers`);
     assert.equal(st.collectibles.filter((c) => c.type === 'find').length, 1, `seed ${s}: the note`);
-    assert.ok(st.rivers!.filter((r) => r.speed === 0).length >= 3, `seed ${s}: lily ponds`);
+    // (the lily ponds' roll is all still water; every roll has its ferry)
+    if (w2Picks('2-2', s).flavour === 'ponds') assert.ok(st.rivers!.filter((r) => r.speed === 0).length >= 6, `seed ${s}: lily ponds`);
+    assert.equal(st.rivers!.filter((r) => r.raft).length, 1, `seed ${s}: the ferry`);
   }
 });
 
@@ -118,8 +125,8 @@ test('2-3: five little ones, each in a reed cage hung on a pulley over the water
     assert.ok(baskets.some((b) => (b.need ?? 1) >= 4), `seed ${s}: two stones`);
     assert.ok(baskets.some((b) => b.mouth >= 200), `seed ${s}: a high basket`);
     assert.ok(rooms.some((r) => r.ground.length >= 2), `seed ${s}: the stones across the water`);
-    // and the mooring posts up onto the high banks
-    assert.ok(st.vines.filter((v) => v.vineType === 'tree_climb').length >= 3, `seed ${s}: the posts`);
+    // and the mooring posts up onto the high banks (the posts' roll; the others cross the reeds on lily pads, past snakes, or on vines)
+    if (w2Picks('2-3', s).flavour === 'posts') assert.ok(st.vines.filter((v) => v.vineType === 'tree_climb').length >= 3, `seed ${s}: the posts`);
   }
 });
 
@@ -202,7 +209,8 @@ test('2-7: steps up, porches, lifts up to ground a double jump cannot reach, swi
     assert.ok(lifts.some((l) => l.lift!.postRight && l.lift!.bottom - l.lift!.top > 200), `seed ${s}: a lift up past a double jump`);
     assert.ok(st.platforms.filter((p) => p.art === 'porch').length >= 6, `seed ${s}: porches`);
     assert.ok(st.platforms.some((p) => p.art === 'steps'), `seed ${s}: steps`);
-    assert.ok(st.proto.decor!.filter((d) => d.n === 'swingFrame').length >= 5, `seed ${s}: swing frames`);
+    // (every round crosses the river on the swing frames at least once; the swings' roll all the way)
+    assert.ok(st.proto.decor!.filter((d) => d.n === 'swingFrame').length >= (w2Picks('2-7', s).flavour === 'swings' ? 5 : 2), `seed ${s}: swing frames`);
     assert.ok(st.proto.decor!.some((d) => d.text?.join(' ') === 'PLEASE BE PATIENT'));
     assert.ok(st.proto.decor!.some((d) => d.cel?.startsWith('po.') && d.walk), `seed ${s}: the mailman`);
   }
