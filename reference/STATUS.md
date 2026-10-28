@@ -25,6 +25,13 @@ Last updated: 2026-10-28 (Hugging Face art run started).
   tool `tools/inspect/era.ts` and its guard test rollGuard.test.ts (1-4, 2-6, 3-1 marked to-do).
 - The new generator's core (merged 2026-10-28): src/game/gen2/DESIGN.md, types.ts, pipeline.ts, a toy world; all six passes run and
   pass levelCheck; no real stage uses it yet (phase 2 waits on Matt's 4 answers below).
+- Easy never needs a full-hold jump (merged 2026-10-28, Gemini G8 now a gate in easyMode.test.ts): Easy widens the landing, adds a
+  step or a catch ledge where only a full hold reaches; the jump stays. Easy loads ~0.3-0.4 s slower on desktop (1-6 heaviest).
+- World 1-2 art follow-up (merged 2026-10-28): 1-4 nest door, petal bundles as room rewards, 1-6 branch gate, 2-2 trough; World 4's
+  anchor peg now drawn on most rolls (search fix). Still unused: World 2's pink fishing net (needs a re-paint), World 3's pressed stone
+  plate (no W3 room has a weight plate).
+- Known rule breaks for the variety pass (every roll): 1-3 Normal snake hit in the first 5 s; 4-7 opening life at 3.5 s; 4-5
+  Sovereign's first strike far from cover on seeds 2-3; 4-3 surge stair press window 67-133 ms; Dot's punch tip repeated in 4-7/4-4.
 - Gap files: reference/gaps/W3-4.md, PACING-BANDS-W1-5.md, ERA-W1-5.md. Headline: rolls 96-100% alike in Worlds 1-4 (target 65%);
   the difficulty does not climb (World 3 below World 2, World 5 below World 4; World 2 partly inflated by the bot's lily-pad limit);
   Normal 0.43-0.55 actions a second (Gemini 0.75-1.15); Easy has the same beats as Normal so it gets no rests.
@@ -35,8 +42,6 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 
 | Helper | Job | Owns | Started |
 |---|---|---|---|
-| QA batch 2 -> Easy jumps | (batch 2 merged 8ed2c53) next piece: Easy never needs a full-hold jump (G8 as a failing rule; fix 1-1, 1-2, 1-4, 1-8, 3-3, 4-3), re-run the first-timer bot | jump spots, levelCheck | 2026-10-28 |
-| Art -> World 1-2 follow-up | 1-4 nest door, petal bundles as room rewards, branch gate in a World 1 room, 2-2 trough; no route changes | W1-2 art and dressing | 2026-10-28 |
 | Hugging Face art run (Matt 2026-10-28) | Enemies first, hardest first (bosses, new creature models, animated clips), then what the game still needs, then art and props: reference/ART-PLAN.md inventory with costs, Matt has ~$70 left: plan to $65 ($40 enemies, ~$25 what's left to finish then art and props, ~$5 spare), results in a gallery for Matt's pick (show first, nothing into src/ yet) | reference/ART-PLAN.md, tools/art/ new folder + new specs (branch art-hf) | 2026-10-28 |
 
 ## Budget
