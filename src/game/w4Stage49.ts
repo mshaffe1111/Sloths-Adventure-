@@ -185,6 +185,18 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     if (len > 260) row(x0 + 80, x - 80, y - 34, Math.max(2, r(len / 170)), R.pick(['orchid', 'hibiscus'] as const));
     expert += len / RUN;
   }
+  /**
+   * a mossy rock on the terrace, one easy hop high, a petal on it, and a breath of plain terrace past it: between two pieces
+   * (2026-10-28, the stage inspector: the plain walks between the pieces were up to seven quiet seconds)
+   */
+  function hopRest(after = R.r(150, 180)) {
+    run(R.r(80, 110));
+    const w = r(R.r(120, 150));
+    P.push({ id: pid++, x: x, y: y - 40, width: w, height: 40, type: 'solid', style: 'moss_stone' });
+    flower(x + w / 2, y - 74, 'orchid');
+    run(w + after);
+    expert += (95 + w + after) / RUN + 0.2;
+  }
   /** a few dry steps up, a flower on each */
   function stairs(n: number) {
     for (let i = 0; i < n; i++) {
@@ -197,14 +209,14 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
   /** a cliff too tall to jump, and a tree at its foot to climb it */
   function treeUp(h: number) {
     const x0 = x;
-    run(R.r(260, 320));
+    run(R.r(200, 240));
     const tX = x - 50;
     const y0 = y;
     end();
     y -= r(h);
     trunk(tX, y0, y);
     for (let i = 0; i < 3; i++) flower(tX, y0 - 80 - ((h - 140) * i) / 2, 'hibiscus');
-    run(R.r(240, 300));
+    run(R.r(180, 220));
     expert += (x - x0) / RUN + h / CLIMB + 1;
   }
   /** a long terrace where a rock comes loose from the cliff above (4-1): stop short of the shadow, go once it has fallen */
@@ -225,7 +237,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
   /** a little pit with a gust lane over it, its chimes on the near side (4-2): jump with the wind behind, or wait for it to drop */
   function gustPit(dir: 1 | -1) {
     const x0 = x;
-    run(R.r(320, 380));
+    run(R.r(260, 300));
     const E = x;
     end();
     const one = reachJump(0, false);
@@ -234,7 +246,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     block(E, E + gap, y + 130);
     open(E + gap, y);
     if (dir > 0) for (let i = 0; i < 3; i++) flower(E + gap / 2 + (i - 1) * 70, y - 130 + Math.abs(i - 1) * 30, 'hibiscus');
-    run(R.r(320, 380));
+    run(R.r(240, 280));
     lane(E - 170, E + gap + 110, dir, E - 120, y);
     expert += (x - x0) / RUN + (dir < 0 ? 3.2 : 1.2);
   }
@@ -246,7 +258,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
   function guardPass(dir: 1 | -1, lead = true, beside?: { rock?: boolean }) {
     const x0 = x;
     if (lead) stairs(2);
-    run(R.r(320, 380));
+    run(R.r(270, 310));
     const E = x;
     end();
     const L = r(R.r(AERIE.pass[0], AERIE.pass[1]));
@@ -266,7 +278,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
       if (rockFits(rock)) rocks.push(rock);
       expert += 1.6;
     }
-    run(R.r(300, 360));
+    run(R.r(190, 230));
     // (a quick player waits half a gust's cycle on average)
     expert += (E - x0) / RUN + (GUST.idle + GUST.warn + GUST.active) / 2 + (x - E) / RUN;
   }
@@ -278,7 +290,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
    */
   function glideGap(o: { rock?: boolean; draft?: boolean; runIn?: boolean; ledge?: Platform } = {}) {
     const x0 = x;
-    if (o.runIn !== false) run(R.r(320, 380));
+    if (o.runIn !== false) run(R.r(260, 300));
     const E = x;
     const A = y;
     end();
@@ -314,7 +326,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     }
     const near = o.ledge ?? P.find((p) => blocks.has(p) && p.y === A && p.x + p.width === E);
     open(E + gap, A + dy);
-    run(R.r(320, 380));
+    run(R.r(250, 290));
     end();
     const far = P[P.length - 1];
     g.from = near?.id ?? -1;
@@ -381,7 +393,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
    */
   function plugFall(rope: boolean) {
     const x0 = x;
-    run(R.r(320, 380));
+    run(R.r(260, 300));
     const tX = r(x);
     const yA = y;
     const sy = r(yA - R.r(230, 245));
@@ -403,7 +415,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     end();
     falls.push({ id: fid, x: shelfEnd - AERIE.lip, width: gap + AERIE.lip, top: sy - AERIE.head, bottom: yA, plug: { platformId: boulder.id, atX: shelfEnd - BW } });
     open(shelfEnd + gap, sy);
-    run(R.r(320, 380));
+    run(R.r(260, 300));
     end();
     info.falls.push({ fall: fid, shelf: sh.id, boulder: boulder.id, far: P[P.length - 1].id });
     fid++;
@@ -417,7 +429,8 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
    */
   function mistClimb(first: boolean) {
     const x0 = x;
-    run(R.r(580, 640));
+    // (long enough that a mossy rock before it stands clear of the mist's band: hopRest)
+    run(R.r(640, 680));
     const E = x;
     const foot = y;
     end();
@@ -458,7 +471,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
   function guardPair() {
     const x0 = x;
     stairs(2);
-    run(R.r(320, 380));
+    run(R.r(270, 310));
     const period = GUST.idle + GUST.warn + GUST.active;
     const off = R.r(0, period);
     const one = (dir: 1 | -1, offset: number, chimeBack: number, laneBack: number) => {
@@ -477,7 +490,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     one(1, off, 200, 260);
     run(R.r(300, 330));
     one(R.chance(0.5) ? 1 : -1, off + period / 2, 160, 220);
-    run(R.r(300, 360));
+    run(R.r(240, 280));
     expert += (x - x0) / RUN + period / 2 + 1;
   }
   /**
@@ -502,25 +515,29 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     covers.push({ x: sx - 30, y: ledge.y - 90, w: 200, h: 120 });
     info.secret = { perch: perch.id, ledge: ledge.id };
     hint(vx - 320, 'Another vine tied up, on a bare bit of cliff... what is it for?');
-    x = Math.max(x, sx + 140 + 760);
-    row(sx + 220, x - 120, y - 34, 4, 'orchid');
+    // the terrace runs on underneath, far enough that nothing past it is reached from up there: two mossy rocks to hop on it
+    const end0 = sx + 140 + 760;
+    x = Math.max(x, vx + 200);
     expert += (x - x0) / RUN;
+    while (end0 - x > 520) hopRest(R.r(160, 200));
+    hopRest(Math.max(120, end0 - x - 240));
   }
 
   // ======================= the stage =======================
   beat('Start: the aerie above', () => {
-    rest(R.r(700, 760));
+    // (Dot sees the aerie and the Sovereign's shadow sweeps over: a deliberate pause, then a hop and the steps)
+    rest(R.r(560, 600));
     hint(120, 'There, Pokey. Way up at the top of the cliffs, that heap of sticks. That is her aerie');
     omens.push({ kind: 'shadow', x: r(x), y });
     hint(x + 320, 'That was her. She is up there. Keep going, and keep low');
-    rest(R.r(320, 380));
+    hopRest(R.r(140, 180));
     stairs(3);
     rockRest(R.r(480, 560));
     flag();
     treeUp(R.r(300, 330));
     hint(x + 20, 'The chimes! They ring before the wind blows. Jump with it behind you');
     gustPit(1);
-    rest(R.r(200, 260));
+    hopRest();
     flag();
   });
   beat('Learn: off the ledge', () => {
@@ -533,6 +550,7 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     flag();
   });
   beat('Develop: Dot and the boulder', () => {
+    hopRest();
     hint(x + 60, 'Tied up again! Stand still under the knot, and I will fly up');
     knotWall(R.r(290, 320));
     hint(x + 20, 'And a guard at the top. Wait for the chimes');
@@ -542,16 +560,18 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     hint(x + 40, 'Water pours over that gap. Get up top and keep sliding into the boulder to roll it under the water', 'Water pours over that gap. Get up top and hold the pad into the boulder to roll it under the water', 'Water pours over that gap. Get up top and hold right into the boulder to roll it under the water');
     plugFall(R.chance(0.5));
     flag();
-    rest(R.r(200, 260));
+    hopRest();
     secretKnot();
     flag();
   });
   beat('Twist: over the drop', () => {
     hint(x + 60, 'Too far to jump. Jump, and keep your thumb on the glass to open your leaf', 'Too far to jump. Jump, and hold Jump to open your leaf', 'Too far to jump. Jump, and hold Space to open your leaf');
     glideGap();
+    hopRest(R.r(120, 160));
     hint(x + 40, 'Grit trickling down! A rock is coming through. Wait for it to pass, then glide');
     glideGap({ rock: true });
     flag();
+    hopRest(R.r(120, 160));
     hint(x + 40, 'Warm air rising out of the drop! Glide into it and it lifts you');
     glideGap({ draft: true, rock: R.chance(0.5) });
     flag();
@@ -586,16 +606,17 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
         else treeUp(R.r(300, 330));
         guardPass(R.chance(0.5) ? 1 : -1, true);
       }
-      rest(R.r(200, 260));
+      hopRest();
       flag();
       n++;
     }
-    // (the walk to the gate makes up any last seconds the dice left short)
-    if (expert < stageSeconds('4-9') - 9) rest((stageSeconds('4-9') - 9 - expert) * RUN + 60);
+    // (hops on the way to the gate make up any last seconds the dice left short)
+    for (let k = 0; k < 8 && expert < stageSeconds('4-9') - 9; k++) hopRest();
     stairs(3);
     omens.push({ kind: 'shadow', x: r(x), y });
     hint(x + 40, 'Her aerie is right above us, Pokey. I am staying right beside you. All the way up');
-    rest(R.r(800, 880));
+    // (the walk to her gate: a deliberate few quiet seconds before the fight)
+    rest(R.r(640, 680));
     if (expert < stageSeconds('4-9')) rest((stageSeconds('4-9') - expert) * RUN + 60);
   });
   const exitX = r(x - 220);
@@ -631,7 +652,8 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
   info.blocks = [...blocks].map((p) => p.id);
   const W = Math.ceil(x + 20);
   const H = foot + 40;
-  const spawnY = P[0].y;
+  // (the first terrace: a mossy rock on it may come before it in the list)
+  const spawnY = P.find((p) => blocks.has(p))!.y;
   cid = heartsAtFlags(C, checkpoints, cid);
   const movedPickups = fixPickups({ platforms: P, vines: V, ropes: [] }, C.filter((c) => !drift.has(c)));
   const cfg: LevelConfig = { ...config, levelWidth: W, levelHeight: H, targetCount: GUARD_GOAL_49 };
