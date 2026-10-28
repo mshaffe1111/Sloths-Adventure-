@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, chooseVersions, difficultyScore, layLocal, maxGap, placeRoom, planBudget, rngFor, STAGE_HEAT } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, placeRoom, planBudget, rngFor, STAGE_HEAT, trimPlan } from './pipeline.ts';
 import { cfg, kit, manifest, pitHop } from './toyWorld.ts';
 import { MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
@@ -324,4 +324,78 @@ test("water on Easy (Matt, 2026-10-28): land falls are soft on Easy, water still
       }
     }
   }
+});
+
+test("a purge or gauntlet lays its goal's animals: the top-up, Poisson-spaced, never early nor at a flag; Easy held to easyMode's goal", () => {
+  // a gauntlet stub world: the toy world's spider and a sleeping one, both for the top-up, and a spawn hook that keeps the sleepers
+  // the way World 5's code would (proto.w5.spiders with doze)
+  const sleeper = { ...manifest.creatures[0], id: 'sleeper', tags: ['topup', 'sleeper'] };
+  const stub: WorldKit = {
+    ...kit,
+    manifest: { ...manifest, creatures: [{ ...manifest.creatures[0], tags: ['topup'] }, sleeper] },
+    spawn: (e, c, out) => {
+      if (c.tags?.includes('sleeper')) ((out.extras.sleepers ??= []) as number[]).push(e.id);
+    },
+  };
+  const OPEN = 5 * 185;
+  for (const [k, id, type, goal] of [[stub, '5-9', 'gauntlet', 26], [kit, '5-4', 'purge', 12]] as const) {
+    for (const seed of [1, 2, 3]) {
+      for (const d of ['normal', 'easy'] as const) {
+        const st = buildGen2Stage({ config: cfg(id, type, goal), kit: k, seed, difficulty: d });
+        const check = d === 'easy' ? Math.round(goal * 0.6) : goal;
+        const what = `${id} seed ${seed} ${d}`;
+        assert.equal(st.config.targetCount, goal, `${what}: the goal stays the designed one`);
+        assert.equal(st.gen2.budget.quota.check, check);
+        assert.deepEqual(checkStage(st, st.gen2.budget).errors, [], what);
+        const before = st.enemies.filter((e) => e.x <= st.exitTotemX - 200);
+        assert.ok(before.length >= check + 2, `${what}: ${before.length} animals for a goal of ${check}`);
+        assert.ok(st.enemies.every((e) => e.patrolMinX > st.spawnX + OPEN), `${what}: an animal in the opening seconds`);
+        const tops = st.gen2.fills.filter((f) => f.socket === 'topup');
+        for (const f of tops) {
+          assert.ok(!(st.checkpoints ?? []).some((c) => f.x <= c.x && c.x - f.x < 400), `${what}: a top-up right before a flag at ${f.x}`);
+          const sec = st.gen2.sections.find((s) => s.uid === f.section)!;
+          assert.ok(sec.phase !== 'rest' && sec.phase !== 'start' && sec.phase !== 'goal' && sec.template !== 'toy-carry');
+        }
+        // (Poisson: any two animals at least 120 px apart)
+        const xs = [...st.enemies].sort((a, b) => a.x - b.x);
+        for (let i = 1; i < xs.length; i++) assert.ok(xs[i].x - xs[i - 1].x >= 120, `${what}: animals at ${xs[i - 1].x} and ${xs[i].x}`);
+        if (k === stub) {
+          const sleepers = ((st.proto as { gen2?: { sleepers?: number[] } }).gen2?.sleepers ?? []).length;
+          assert.ok(sleepers > 0 && sleepers < st.enemies.length, `${what}: sleepers and spiders both (${sleepers} of ${st.enemies.length})`);
+        }
+      }
+    }
+  }
+  // Easy's stage is held to Easy's goal: against Normal's it may well be short (it lays for 16 + 2, not 26 + 2)
+  const e = buildGen2Stage({ config: cfg('5-9', 'gauntlet', 26), kit: stub, seed: 1, difficulty: 'easy' });
+  if (e.enemies.length < 26) assert.match(validateStage(e).errors.join('\n'), /not enough enemies/);
+});
+
+test('the length loop converges: every roll lands in its window (or ships long, said so), and Easy\'s quick player makes the floor', () => {
+  const tgt = targetSeconds(5, 7, 'stealth');
+  const max = Math.min(tgt * 1.1, 295);
+  for (let seed = 1; seed <= 20; seed++) {
+    const n = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'normal' });
+    const e = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'easy' });
+    const t = modelStage(n, MODEL_TYPICAL).total;
+    const long = n.gen2.repairs.some((r) => /ships long/.test(r.note));
+    assert.ok(t >= tgt && (t <= max || long), `seed ${seed}: typical ${t.toFixed(0)} s outside [${tgt}, ${max.toFixed(0)}]`);
+    assert.ok(modelStage(n, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: Normal quick`);
+    assert.ok(modelStage(e, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: Easy quick ${modelStage(e, MODEL_FAST).total.toFixed(0)} s`);
+    assert.deepEqual(e.gen2.plan.map((p) => p.template), n.gen2.plan.map((p) => p.template), `seed ${seed}: Easy lays Normal's plan`);
+  }
+  // a change keeps the prefix: one section added (fresh) or taken off just before the shrine's node, nothing before it moves
+  const b = planBudget(cfg('5-7', 'stealth'), manifest, 'normal');
+  const graph = missionGraph(b);
+  const plan = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed: 4, difficulty: 'normal' }).gen2.plan;
+  const goal = graph.nodes.at(-1)!.id;
+  const g = growPlan(plan, graph);
+  assert.equal(g.plan.length, plan.length + 1);
+  assert.deepEqual(g.plan.slice(0, g.open), plan.slice(0, g.open));
+  assert.equal(g.plan[g.open + 1].node, goal);
+  const byId = new Map(manifest.sections.map((s) => [s.id, s]));
+  const t2 = trimPlan(plan, graph, byId)!;
+  const cut = t2.findIndex((p, i) => p !== plan[i]);
+  assert.equal(t2.length, plan.length - 1);
+  assert.ok(plan.slice(cut + 1).every((p) => p.node === goal || p.node === plan[cut].node), 'only the end is trimmed');
 });

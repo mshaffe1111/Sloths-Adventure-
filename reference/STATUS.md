@@ -53,6 +53,16 @@ Last updated: 2026-10-28 (Hugging Face art run started).
 
 | Polish prototype (Matt 2026-10-28: "make it look like a highly polished start screen") | Loading -> title in one piece (no white flash, font swap or pop-in), living title scene, entrances, one button family, menus/cards/map/pause/cleared screens, stage start/end wipes; preview video first (show first) | TitleScreen, StartMenu, PauseMenu, menuParts, TrophyRoom styling, WorldMap, dialogs, CSS (branch polish-ui) | 2026-10-28 |
 
+## Variety pass round 1 result (lead's gate 2026-10-28 ~17:05 ET on the W1+W2+W4 merge: suite 1600 pass 0 fail, build ok)
+
+- Variety 0.35+ met: 1-1, 1-2, 1-5, 1-7, 2-2, 2-3, 2-4, 2-5, 2-7. Low: 1-4 .12, 1-6 .16, 1-8 .06, 1-9 .23, 2-6 .04, 2-8 .09,
+  2-9 .19, all of World 4 (.002-.23).
+- New/worse rule breaks across rolls: 1-8 quiet 200/200; W2 dead time (2-7, 2-9 200/200; 2-5 148; 2-2 131; 2-4 73); 1-7 dead 105; 1-1 seed 3
+  67 ms window; 4-2 33 ms window; 4-6 kid hotspot 6/10.
+- Bands (Normal middle, seeds 1-3): W1 ~21, W2 ~44, W3 ~21 (W3 not merged yet), W4 ~22. The climb isn't there yet.
+- Test link held (not published with known regressions). Round 2 sent to the W1, W2, W4 builders (rule breaks first, then bands,
+  then variety).
+
 ## Cloud builders (variety pass, Matt 2026-10-28 "all four worlds now"; each pushes to its own branch, the lead merges after §4)
 
 | Session | World | Branch |
@@ -90,6 +100,10 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 2. Naturalist medal: still the 11 predators, or all 18 journal cards (the 7 new "met on the road" ones too)?
 3. Pell's and the soldiers' journal tips read right?
 
+Step G (lead's gen2 hook-up) must also: run heartsAtFlags and fixPickups on gen2 stages; make easyStage() skip gen2 stages (no double
+softening); one per-stage kit chooser (5-9 uses w5ArenaKit); judge World 5's band with the first-timer bot after hook-up (the
+inspector-only score can't show it: 5-7 reads ~21 before the first-timer); draw the water-warning sign (placeholder post until art).
+
 Pending for the architect when it resumes: commit c912bc3 finished (full suite + build), then the gauntlet/purge top-up in fillSockets
 (quota + 2 on Normal) and Easy's quota at round(0.6 x targetCount) (5-9 builder found 5-9 lays 16-26 of 26 animals).
 
@@ -103,6 +117,7 @@ Pending for the architect when it resumes: commit c912bc3 finished (full suite +
 - Meeca's Room 4 is the tea channel. World 5's night strips are made in code.
 - Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
+- Title screen direction approved by Matt (2026-10-28, from the idle videos: "I like the way that it's carved in").
 - Title logo: carved into bark, carved in stroke by stroke on the first title of a session (chips, gold glow), shown carved after;
   the ribbon is deleted (Matt 2026-10-28). Title pair get real animation clips from the motion model (no code twitching).
 - Dot's water warning (gen2, Easy repeats it after 12 s): "Careful, water! Flick up and over." (Matt chose C).
