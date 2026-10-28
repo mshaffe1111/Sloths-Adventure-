@@ -37,6 +37,17 @@ goes onto the Docs roadmap and, if it is a rule, into STAGE-RULES.md or CLAUDE.m
    rows you change and add a §6 lesson if you learn one"; don't push, don't publish the test link.
 4. Add it to STATUS.md (what, branch, files, started).
 
+## 3b. Cloud sessions (separate machines; Matt, 2026-10-28: "use extra as soon as possible so we run at capacity")
+
+- Use them for heavy runs (full test suites, the first-timer bot and the 200-roll tool over whole worlds) and for builders, so
+  this machine's 4 cores stop being the bottleneck. Start them with `create_session` (source = the repo, revision = the branch to
+  work from), tagged `sloths-helper`, with a self-contained brief (they have no memory of this session: point them at CLAUDE.md,
+  STAGE-RULES, the ledger, STATUS).
+- They cannot message back: read their final report with `list_events` (kinds assistant/result). A cloud builder pushes its work
+  to its own branch (never the work branch, never main, no PR); the lead merges it after the §4 checks like any other.
+- List every cloud session on STATUS.md (id, job, branch) and archive it once its result is merged.
+- Matt watches the cost; if he says it's burning too fast, scale back.
+
 ## 4. When a helper reports: the lead checks before anything moves
 
 A helper's report is not proof. Before merging:

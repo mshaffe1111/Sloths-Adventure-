@@ -60,6 +60,12 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - Batch 2 (2026-10-28, Worlds 1-2 on build 39fc3db): 9 items, being fixed (helper "QA batch 2").
 - Asked of QA (2026-10-28): run the Matt bot through every stage of Worlds 3 and 4 on the live build; report on Matt's "send".
 
+## Cloud sessions (separate machines)
+
+| Session | Job | Branch | Started |
+|---|---|---|---|
+| session_01FhBbYPCMx5mTFQdQmEtqey | Full check of the work branch: tsc, full suite, build, inspector + first-timer bot on Worlds 1-4 seeds 1-3, timed | reads ccr-0d59a91c-oy3imz, pushes nothing | 2026-10-28 17:40 UTC |
+
 ## Two tracks (Matt, 2026-10-28)
 
 - **Today's code track:** the four original helpers (QA batch 2, art placement, the 200-roll tool, Meeca's stage) stay on bringing the
