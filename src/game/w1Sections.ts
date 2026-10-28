@@ -477,7 +477,56 @@ const SECTIONS: Record<W1Stage, Table> = {
     ],
   },
   '1-6': {},
-  '1-7': {},
+  // 1-7 A Very Good Bush: hide from the eagle. The roll's rhythm: bush rows on the ground, the rope line with bushes on it, or open
+  // stretches out of the eagle's sight (bounces and hops) between the watched ones. The secret bush and the acorn meadow are in every
+  // roll; the finish runs a minute past the meadow.
+  '1-7': {
+    rhythms: ['bushes', 'rope', 'open'],
+    develop: [
+      {
+        id: 'bushes', beat: 'bushes', build: (k) => {
+          k.bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [6.5, 8], true); k.secretBush([6.5, 8]); k.lowStumps();
+          k.bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [6, 7.5], true);
+        },
+      },
+      {
+        id: 'rope', beat: 'rope', build: (k) => {
+          k.bushRow(2, [700, 820], ['wide', 'fern'], [6.5, 8], true); k.secretBush([6.5, 8]); k.bounceWall(true, false);
+          k.bushRow(2, [740, 880], ['tall', 'wide'], [6, 7.5], true); k.bounceWall(true, false);
+        },
+      },
+      {
+        id: 'open', beat: 'open', build: (k) => {
+          k.bushRow(2, [700, 820], ['wide', 'tall'], [6.5, 8], true); k.secretBush([6.5, 8]); k.highLeaps(4, false, true);
+          k.bushRow(2, [740, 880], ['fern', 'wide'], [6, 7.5], true); k.highLeaps(4, true, true);
+        },
+      },
+    ],
+    finish: [
+      {
+        id: 'bushes', beat: 'bushes', build: (k) => fillTo(k, k.EXPERT + 62, null, [
+          (k) => k.bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [6, 7.5], true),
+          (k) => k.ropeBushes([6, 7]),
+          (k) => { k.bushRow(2, [720, 860], ['fern', 'tall'], [6, 7.5], true); k.lowStumps(); },
+        ], 1, 12),
+      },
+      {
+        // the eagle's stretches with a wall to bounce up between them, out of its sight
+        id: 'rope', beat: 'rope', build: (k) => fillTo(k, k.EXPERT + 62, null, [
+          (k) => { k.ropeBushes([6, 7]); k.bounceWall(true, false); },
+          (k) => { k.bounceWall(true, false); k.bushRow(2, [720, 860], ['wide', 'tall'], [6, 7.5], true); k.bounceWall(true, false); },
+          (k) => { k.bounceWall(true, false); k.bounceWall(true, false); },
+        ], 1, 12),
+      },
+      {
+        id: 'open', beat: 'open', build: (k) => fillTo(k, k.EXPERT + 62, null, [
+          (k) => { k.bushRow(2, [720, 860], ['tall', 'fern'], [6, 7.5], true); k.highLeaps(5, false, true); },
+          (k) => { k.highLeaps(4, true, true); k.highLeaps(4, false, true); },
+          (k) => { k.highLeaps(5, true, true); k.bushRow(2, [720, 860], ['wide', 'tall'], [6, 7.5], true); },
+        ], 1, 12),
+      },
+    ],
+  },
   '1-8': {},
   // 1-9 The Boa's Branches: fighting on the move. The roll's rhythm: guards on the branches over the moss, guards up the trunks on the
   // way over walls, or snakes on the high branches a mushroom bounces him up to. The ring is every roll's twist; the sleeping guard

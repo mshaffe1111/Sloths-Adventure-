@@ -1034,7 +1034,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       open(x);
       run(k < n - 1 ? g : 0);
     }
-    run(R.r(40, 70));
+    // (far enough on that a flag after them stands on the ground, not on the last stump)
+    run(R.r(100, 130));
     expert += (x - x0) / 240;
     pieces.push({ k: 'stumps', x0, x1: x });
   }
@@ -1159,7 +1160,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const top = cliff(bx, bx + R.r(150, 190), G - y);
     flower(top.x + top.width / 2, top.y - 34, 'orchid');
     open(top.x + top.width);
-    run(R.r(40, 70));
+    // (far enough on that a flag after it stands on the ground, not on the wall's top)
+    run(R.r(100, 130));
     expert += (x - x0) / RUN + 0.6 + n * (dbl ? 0.2 : 0.1) + (snakes ? 0.8 * Math.floor(n / 2) : 0);
     pieces.push({ k: 'highrun', x0, x1: x });
   }
@@ -1849,10 +1851,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     });
     beat('Test: farther apart', () => {
       hint(x + 40, 'Run when it has gone by', 'Run when it has gone by', 'Run when it has gone by');
-      bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [6.5, 8], true);
-      secretBush([6.5, 8]);
-      lowStumps();
-      bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [6, 7.5], true);
+      // (every version keeps the secret bush: w1Sections.ts)
+      section('develop');
       flag();
     });
     beat('Twist: the rope line', () => {
@@ -1863,14 +1863,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     beat('Finish: the acorn meadow', () => {
       acornMeadow([4.6, 5.4]);
       flag();
-      let n = 0;
       // (a quick player who waits out the passes in the bushes: 1-7 runs long, three minutes, and the meadow is part of it)
-      while (expert < EXPERT_SECONDS + 62 && n < 12) {
-        if (n % 2 === 0) bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [6, 7.5], true);
-        else ropeBushes([6, 7]);
-        n++;
-        flag();
-      }
+      section('finish');
       homeRun(['log']);
     });
   }
