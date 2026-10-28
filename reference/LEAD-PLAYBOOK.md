@@ -61,6 +61,19 @@ check the deploy and the Android build, update STATUS.md and the roadmap, tell t
 
 ## 7. Keeping cost down
 
+**Effort levels (Matt, 2026-10-28: the lead sets each helper's effort to balance his tokens; he doesn't want to run out again).**
+
+| Effort | For | Examples |
+|---|---|---|
+| low | following written steps, no design choices | cutting art sheets, running the checks and reporting numbers, publishing, status notes |
+| medium | reading and measuring, small contained fixes | the step-2 gap list, a one-file bug fix, placing art where the brief says |
+| high | design and anything that interacts | building or rebuilding stages, puzzle rooms, engine movement, the generator, hard debugging, the lead's own reviews |
+| xhigh / max | never, unless Matt asks | |
+
+Make the notes do the thinking: a brief points at the exact files, rules and commands (STAGE-RULES §8 is the quick start), so a helper
+spends its tokens on the job, not on finding its way around. When a helper had to work something out that the next one will need,
+add it to the notes.
+
 - No duplicate work (§3.1). Reuse a running helper instead of a new one.
 - Check one roll only for a quick look; the full checks only at §4.
 - Don't re-read big files that are already summarised in STATUS.md or the rulebook.
