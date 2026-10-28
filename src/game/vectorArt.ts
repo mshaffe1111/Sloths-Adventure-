@@ -1166,7 +1166,9 @@ export function drawCollectible(
       if (item.hidden) {
         // World 3: one of Grandma's things, hidden in a fern (crouch beside it): the fern, and the search ring over it
         ctx.translate(0, -bobY);
-        if (!drawThingFern(ctx, item, time)) drawHushFern(ctx, item, time);
+        // (3-7's riddle fern is painted with the empty ones around it, w3Art.ts: here only the search ring)
+        if (item.riddle) drawSearchHint(ctx, item, time);
+        else if (!drawThingFern(ctx, item, time)) drawHushFern(ctx, item, time);
         else drawSearchHint(ctx, item, time);
         break;
       }
