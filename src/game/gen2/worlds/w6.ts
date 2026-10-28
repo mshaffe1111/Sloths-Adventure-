@@ -10,21 +10,21 @@
  *               it crouches, slides, then leaps and stomps). The Reaver's runners (the otters with spears, Matt's runners sheet) are
  *               not a creature yet: Matt picks new creature designs from the art gallery later.
  *   props       hiding roots and reeds (the stealth stages' cover: a root den, a reed bed), the watched water (the spear rising out
- *               of it: the watcher's rhythm, watcher.ts, over a stretch of bank), the tide on a mudflat (zones.ts 'tide': cross at
- *               low water) and the tide post that marks it, lily pads and snags (scenery).
- *   pairs       the tide post and its mudflat: a post with its marks always stands where the tide comes in.
+ *               of it: the watcher's rhythm, watcher.ts, over a stretch of bank), the tide post that marks a mudflat, lily pads and
+ *               snags (scenery). The tide itself is the mudflat section's own zone (SectionTemplate.zones, gen2 DESIGN B11).
+ *   pairs       none: the tide is laid with its mudflat by the section, and the post with it.
  *   decor       Matt's mangrove sheet (reference/prop-sheets/w6/kit.jpg, water.jpg): knee roots, root arches, the mangrove sprout and
  *               reeds along the banks; Spanish moss, hanging aerial roots, snags and mossy logs behind them; each job rotated by the
  *               roll (artRoll.ts rollLook). The sheets are not packed into an atlas yet: the art keys here name their cells.
  *   light       morning (6-1 to 6-3), late morning (6-4 to 6-6), noon (6-7 on): "the Reaver eats lunch at noon", and at 6-9 the
  *               sun is straight down through the roots.
  *
- * Water: Matt's rule is soft falls on land and a life in water, on Easy too, with Dot's warning first (types.ts WATER_WARN, which the
- * pipeline lays for a water stage). The pipeline's pit kind is one per stage, so World 6 picks it by the story (w6Kit): the black water
- * between the roots (6-1 to 6-3, 6-5, 6-7, 6-9: a fall costs a life) or the mud where there is land (6-4 Low Tide, the tide out; 6-6
- * Lights in the Roots, as a dark zone keeps soft moss under its gaps: STAGE-RULES §6). The sections' gaps over water are a third of a
- * jump (STAGE-RULES §6: the first-timer drowns at half a jump's reach); the wide and second-jump gaps are mud only (w6Ground
- * W6_MUD_GAPS), so a water stage never holds them.
+ * Water: Matt's rule is soft falls on land and a life in water, on Easy too, with Dot's warning first (types.ts WATER_WARN). The world's
+ * falls are soft (a mud floor and a step out: the stitcher's gaps between sections, the wide and second-jump gaps), and the creeks
+ * between the roots are the sections' own `water` gaps (the core's water gap, DESIGN B11): a third of a jump wide (STAGE-RULES §6: the
+ * first-timer drowns at half a jump), with a bank of 360 px or more between two of them (no glide trap: w6Ground `hop`). 6-4 Low Tide
+ * (the tide is out) and 6-6 Lights in the Roots (soft moss under gaps in the dark, STAGE-RULES §6) have no water: w6Manifest turns
+ * their creeks to mud (W6_SOFT_STAGES).
  *
  * Pure data and pure functions (no canvas, no engine), like w5.ts.
  */
@@ -32,9 +32,9 @@ import { G } from '../../protoStage.ts';
 import type { StageHint } from '../../protoStage.ts';
 import type { Enemy, Platform } from '../../types.ts';
 import type { Bush, WatchZone } from '../../watcher.ts';
-import { tideRecipes, type Zone } from '../../zones.ts';
-import type { CreatureDef, FilledSocket, PitKind, PropDef, PropEmitter, PropPair, SectionTemplate, StageSink, WorldKit, WorldManifest } from '../types.ts';
-import { W6_GROUND_SECTIONS, W6_MUD_GAPS, W6_STAGE_ONLY, W6_STAGE_SKIP } from './w6Ground.ts';
+import type { Zone } from '../../zones.ts';
+import type { CreatureDef, FilledSocket, PlaceRule, PropDef, PropEmitter, PropPair, SectionTemplate, StageSink, WorldKit, WorldManifest } from '../types.ts';
+import { W6_GROUND_SECTIONS, W6_STAGE_ONLY, W6_STAGE_SKIP } from './w6Ground.ts';
 
 /** World 6's ground, its bank's depth, and how deep a soft pit's floor lies under its lips (one wide step out, as World 5's 110) */
 export const W6_GROUND = { y: G, bankH: 90, pitDepth: 110 } as const;
@@ -58,8 +58,6 @@ export const W6_PROP = {
   reedHide: 'reedHide',
   /** the watched water: the spear rises and looks along the bank (watcher.ts WatchZone over the piece it stands on) */
   watch: 'watch',
-  /** the tide on a mudflat (zones.ts 'tide' over the piece it stands on) */
-  tide: 'tide',
   /** the post with the tide's marks on it (Matt's water sheet): always beside its mudflat */
   tidePost: 'tidePost',
   /** scenery at the water's edge */
@@ -130,16 +128,13 @@ export const W6_PROPS: PropDef[] = [
   { id: W6_PROP.reedHide, tags: [W6_TAG.hide, W6_TAG.cover], w: W6_HIDE_W.reedHide, minApart: 260, looks: ['reeds', 'seagrass'] },
   // (the watcher is the beat: its passes are what he waits out, in the roots)
   { id: W6_PROP.watch, tags: [W6_TAG.watch], w: 120, minApart: 500, hazard: true, beat: true },
-  { id: W6_PROP.tide, tags: [W6_TAG.tide], w: 300, minApart: 500, hazard: true, beat: true },
   { id: W6_PROP.tidePost, tags: [W6_TAG.post], w: 30, minApart: 400 },
   { id: W6_PROP.lilies, tags: [W6_TAG.scenery], w: 120, minApart: 300, looks: ['lilyPads', 'mudPuddle'] },
   { id: W6_PROP.snag, tags: [W6_TAG.scenery], w: 80, minApart: 400, looks: ['snag', 'snagHook', 'kneeRoot'] },
 ];
 
-export const W6_PAIRS: PropPair[] = [
-  // the post with the tide's marks always stands where the tide comes in, a few steps before the mud
-  { id: 'post-tide', source: W6_PROP.tidePost, receptor: W6_PROP.tide, minApart: 120, maxApart: 700 },
-];
+/** none: the tide post stands with its mudflat in the section that lays the tide (SectionTemplate.zones) */
+export const W6_PAIRS: PropPair[] = [];
 
 // ───────────────────────────── the decor ─────────────────────────────
 
@@ -186,8 +181,8 @@ export const W6_MANIFEST: WorldManifest = {
   // (World 6 swings over the black water: the swing builder's sections need swing; climb, rope and glide are learned by now)
   moves: ['double', 'punch', 'swing', 'climb', 'rope', 'glide'],
   ground: { y: W6_GROUND.y, bankH: W6_GROUND.bankH, style: 'log' },
-  // (the black water: the mud stages are W6_SOFT_STAGES, see the header)
-  pit: 'water',
+  // (falls on land are soft; the creeks are the sections' own water gaps: see the header)
+  pit: 'soft',
   pitDepth: W6_GROUND.pitDepth,
   // (the route's ground stays within a root step or two of the water line: high roads are `over` pieces above it)
   corridor: { top: G - 160, bottom: G + 80, soft: 60 },
@@ -213,8 +208,6 @@ export const w6Mood = (stage: number): W6Mood => (stage <= 3 ? 'morning' : stage
 /** World 6's own extras (in sink.extras.w6, so proto.gen2.w6): what the hook-up hands the drawing and the engine */
 export interface W6Extras {
   mood: W6Mood;
-  /** the tides (zones.ts Zone, kind 'tide'): the hook-up adds them to the stage's zones (w6Finish does, for the tests and the inspector) */
-  tides?: Zone[];
   posts?: Array<{ x: number; y: number }>;
   scenery?: Array<{ n: string; x: number; b: number; w: number; flip?: boolean }>;
   decor?: Array<{ n: string; x: number; b: number; w: number; flip?: boolean }>;
@@ -311,20 +304,6 @@ export function w6Emitters(stage: number): Record<W6PropId, PropEmitter> {
       const zones = (out.proto.watch ??= []);
       if (!zones.some((q) => q.x0 < z.x1 && z.x0 < q.x1)) zones.push(z);
     },
-    // the tide over the mudflat it stands on: the stage's beat (zones.ts tideRecipes), each mudflat on its own offset
-    tide: (f, _p, out) => {
-      const pc = pieceAt(out, f.x, f.y);
-      const x0 = pc ? pc.x : f.x - 150;
-      const x1 = pc ? pc.x + pc.width : f.x + 150;
-      const w6 = w6Of(out, stage);
-      const recipes = tideRecipes(stage);
-      const r = recipes[(w6.tides?.length ?? 0) % recipes.length];
-      const z: Zone = {
-        kind: 'tide', x0: R(x0), x1: R(x1), top: R(f.y - 210), bottom: R(f.y + 14), baseY: R(f.y), dir: r.dir, period: r.period, warn: r.warn,
-        active: r.active, force: r.force, offset: Math.round(hash01(f.x, 2) * r.period * 100) / 100,
-      };
-      (w6.tides ??= []).push(z);
-    },
     tidePost: (f, _p, out) => void (w6Of(out, stage).posts ??= []).push({ x: f.x, y: f.y }),
     lilies: (f, p, out) => void (w6Of(out, stage).scenery ??= []).push({ n: look(p, f.x, 3), x: f.x, b: f.y, w: R(100 + 40 * hash01(f.x, 4)) }),
     snag: (f, p, out) =>
@@ -360,31 +339,34 @@ export function w6Spawn(stage = 2): NonNullable<WorldKit['spawn']> {
 /** Dot's first-time line comes this far before the first animal of its kind (px): she flies in and talks before it can reach him */
 export const MEET_LEAD = 520;
 
-/** World 6's manifest for one stage: its pit (water, or mud in W6_SOFT_STAGES) and the sections it may hold */
-export function w6Manifest(stage: number, sections: readonly SectionTemplate[] = W6_MANIFEST.sections): WorldManifest {
-  const pit: PitKind = W6_SOFT_STAGES.includes(stage) ? 'soft' : 'water';
-  // (6-4's tide gates and flats are Low Tide's own, the themed stages leave the shared fillers out, and a water stage holds no mud gap:
-  // w6Ground W6_STAGE_ONLY, W6_STAGE_SKIP, W6_MUD_GAPS)
-  const keep = (s: SectionTemplate) =>
-    (!W6_STAGE_ONLY[s.id] || W6_STAGE_ONLY[s.id].includes(stage)) && !W6_STAGE_SKIP[s.id]?.includes(stage) && (pit === 'soft' || !W6_MUD_GAPS[s.id]);
-  return { ...W6_MANIFEST, pit, sections: sections.filter(keep) };
+/** a section with its water gaps turned to mud (a mud stage's creeks) */
+function muddy(s: SectionTemplate): SectionTemplate {
+  const dry = (pl: PlaceRule): PlaceRule => ('water' in pl && pl.water ? ({ ...pl, water: false } as PlaceRule) : pl);
+  if (!s.pieces.some((p) => 'water' in p.place && p.place.water)) return s;
+  return { ...s, pieces: s.pieces.map((p) => ({ ...p, place: dry(p.place) })) };
 }
 
-/** World 6's kit for one stage (its number sets the pit, the sections, the light, the tide's beat and the watcher's calm) */
+/** World 6's manifest for one stage: the sections it may hold, their creeks water (mud in W6_SOFT_STAGES) */
+export function w6Manifest(stage: number, sections: readonly SectionTemplate[] = W6_MANIFEST.sections): WorldManifest {
+  // (6-4's tide gates and flats are Low Tide's own, and the themed stages leave the shared fillers out: w6Ground W6_STAGE_ONLY,
+  // W6_STAGE_SKIP; a mud stage's creeks are mud)
+  const keep = (s: SectionTemplate) => (!W6_STAGE_ONLY[s.id] || W6_STAGE_ONLY[s.id].includes(stage)) && !W6_STAGE_SKIP[s.id]?.includes(stage);
+  const kept = sections.filter(keep);
+  return { ...W6_MANIFEST, sections: W6_SOFT_STAGES.includes(stage) ? kept.map(muddy) : kept };
+}
+
+/** World 6's kit for one stage (its number sets the water, the sections, the light and the watcher's calm) */
 export function w6Kit(stage = 2): WorldKit {
   return { manifest: w6Manifest(stage), emit: w6Emitters(stage), decorate: w6Decorate(stage), spawn: w6Spawn(stage) };
 }
 
 /**
- * The stage as the engine plays it: the tides the emitters laid (proto.gen2.w6.tides) joined to the stage's zones, where the engine,
- * the drawing and the inspector read them, and Dot's first-time line for each new animal MEET_LEAD px before the first of its kind
- * (fillSockets writes proto.hints after the spawn hook runs, so the lines are added here). The hook-up (DESIGN.md B10 piece G) calls
- * this after buildGen2Stage for a World 6 stage, until the core lays tide zones itself. Calling it twice changes nothing.
+ * The stage as the engine plays it: Dot's first-time line for each new animal MEET_LEAD px before the first of its kind (fillSockets
+ * writes proto.hints after the spawn hook runs, so the lines are added here). The hook-up (DESIGN.md B10 piece G) and the curation tool
+ * call this after buildGen2Stage for a World 6 stage. Calling it twice changes nothing.
  */
-export function w6Finish<S extends { zones?: Zone[]; spawnX?: number; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
+export function w6Finish<S extends { spawnX?: number; proto?: { hints?: StageHint[]; gen2?: Record<string, unknown> } }>(st: S): S {
   const w6 = st.proto?.gen2?.w6 as W6Extras | undefined;
-  const tides = w6?.tides ?? [];
-  if (tides.length) st.zones = [...(st.zones ?? []).filter((z) => !tides.includes(z)), ...tides];
   if (st.proto && w6?.meets?.length) {
     const hints = (st.proto.hints ??= []);
     const first = new Map<string, number>();

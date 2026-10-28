@@ -17,13 +17,11 @@ import type { Gen2Stage } from '../types.ts';
 import { pickRoute } from '../../../../tools/inspect/eraRoll.ts';
 import { actionTokens, cosine, deadTime, EASY_GAP, NORMAL_GAP, profile } from '../../../../tools/inspect/analyze.ts';
 import {
-  fillsOf,
   MEET_LEAD,
   W6_CREATURES,
   W6_GEN2_STAGES,
   W6_LESSON,
   W6_MANIFEST,
-  W6_PAIRS,
   W6_PROP,
   W6_PROPS,
   W6_SOFT_STAGES,
@@ -57,10 +55,9 @@ const hintX = (st: Gen2Stage, text: string) => st.proto.hints.filter((h) => h.te
 
 test('the manifest: ids unique, every socket asks for something the world has, every section laid in its own space', () => {
   const ids = (xs: Array<{ id: string }>) => new Set(xs.map((x) => x.id)).size === xs.length;
-  assert.ok(ids(W6_PROPS) && ids(W6_CREATURES) && ids(W6_GROUND_SECTIONS) && ids(W6_PAIRS));
+  assert.ok(ids(W6_PROPS) && ids(W6_CREATURES) && ids(W6_GROUND_SECTIONS));
   const tags = new Set([...W6_PROPS.flatMap((p) => p.tags), ...W6_PROPS.map((p) => p.id)]);
   const creatures = new Set(W6_CREATURES.flatMap((c) => [c.id, ...(c.tags ?? [])]));
-  for (const p of W6_PAIRS) assert.ok(W6_PROPS.some((q) => q.id === p.source) && W6_PROPS.some((q) => q.id === p.receptor), p.id);
   const themes = new Set<string>(Object.values(W6_THEME));
   const taughtBy = new Set(W6_GROUND_SECTIONS.flatMap((s) => (s.teaches ? [s.teaches] : [])));
   const budget = planBudget(cfgOf('6-5'), W6_MANIFEST, 'normal');
@@ -83,12 +80,14 @@ test('the manifest: ids unique, every socket asks for something the world has, e
     if (s.exitDy !== 0) assert.equal(s.mirrorable, false, s.id);
   }
   assert.ok(W6_GROUND_SECTIONS.length >= 15);
-  // the water stages hold no mud-only gap; the mud stages are mud
+  // the world's falls are soft; the creeks are water except in the mud stages; a wide or second-jump gap is never water
+  const wet = (s: { pieces: Array<{ key: string; place: object }> }) => s.pieces.filter((p) => (p.place as { water?: boolean }).water).map((p) => p.key);
+  for (const s of W6_GROUND_SECTIONS) for (const k of W6_MUD_GAPS[s.id] ?? []) assert.ok(!wet(s).includes(k), `${s.id}.${k}: a wide gap over water`);
+  assert.equal(W6_MANIFEST.pit, 'soft');
   for (const id of W6_GEN2_STAGES) {
     const n = Number(id.split('-')[1]);
-    const m = w6Manifest(n);
-    assert.equal(m.pit, W6_SOFT_STAGES.includes(n) ? 'soft' : 'water', id);
-    if (m.pit === 'water') assert.ok(!m.sections.some((s) => W6_MUD_GAPS[s.id]), `${id}: a mud gap over water`);
+    const creeks = w6Manifest(n).sections.flatMap(wet);
+    assert.ok(W6_SOFT_STAGES.includes(n) ? creeks.length === 0 : creeks.length > 0, `${id}: ${creeks.length} creek pieces`);
   }
 });
 
@@ -181,57 +180,60 @@ test('teaching: no animal in the opening seconds, and each thing is taught befor
   });
 });
 
-test('water costs a life (warned first on Easy), mud lands soft; the props reach the engine; pairs both or neither', () => {
-  let pairs = 0;
+test('the creeks cost a life (warned first on Easy), every other fall lands soft; the tides and props reach the engine', () => {
+  const creeks = new Map<string, number>();
   each((id, seed, difficulty) => {
     const st = build(id, seed, difficulty);
     const tag = `${id} ${difficulty} ${seed}`;
     const soft = W6_SOFT_STAGES.includes(st.config.miniIndex);
-    assert.equal(st.gen2.budget.pit, soft ? 'soft' : 'water', tag);
-    if (!soft) {
-      assert.ok(st.waterY !== undefined, tag);
-      // (Normal at the first water; Easy at every water gap 12 s of walking past the last warning: types.ts WATER_WARN)
+    const falls = [...(st.gen2.falls ?? [])].sort((a, c) => a.x0 - c.x0);
+    const water = falls.filter((f) => f.kind === 'water');
+    // (Matt's rule: on land a fall is soft, on Easy and Normal; only the creeks are water)
+    assert.ok(falls.every((f) => f.kind === 'soft' || f.kind === 'water'), tag);
+    if (soft) assert.equal(water.length, 0, `${tag}: water in a mud stage`);
+    else {
+      if (water.length) assert.ok(st.waterY !== undefined, `${tag}: creeks but no water line`);
+      creeks.set(id, (creeks.get(id) ?? 0) + water.length);
+      // (Normal at the first water; Easy again at a water gap 12 s of walking past the last warning: types.ts WATER_WARN)
       const signs = (gen2Of(st).waterWarnings ?? []).length;
       const normalSigns = (gen2Of(build(id, seed, 'normal')).waterWarnings ?? []).length;
-      assert.ok(difficulty === 'easy' ? signs >= normalSigns && signs >= 1 : signs === 1, `${tag}: ${signs} water warnings`);
-      assert.ok(!st.gen2.plan.some((p) => W6_MUD_GAPS[p.template]), `${tag}: a mud gap over water`);
-    }
-    const w6 = w6Of(st);
-    const n = (k: string) => st.gen2.fills.filter((f) => f.what === k && (f.role === 'prop' || f.role === 'receptor' || f.role === 'source')).length;
-    assert.equal(w6.tides?.length ?? 0, n(W6_PROP.tide), tag);
-    assert.equal((st.zones ?? []).filter((z) => z.kind === 'tide').length, n(W6_PROP.tide), `${tag}: w6Finish puts the tides in the zones`);
-    assert.equal(w6.posts?.length ?? 0, n(W6_PROP.tidePost), tag);
-    assert.equal(st.proto.bushes?.length ?? 0, n(W6_PROP.rootHide) + n(W6_PROP.reedHide), tag);
-    assert.ok((w6.decor?.length ?? 0) > 40, tag);
-    for (const s of st.gen2.sections) {
-      for (const p of W6_PAIRS) {
-        const src = st.gen2.fills.filter((f) => f.section === s.uid && f.what === p.source).length;
-        const rec = st.gen2.fills.filter((f) => f.section === s.uid && f.what === p.receptor && f.role === 'receptor').length;
-        assert.equal(src, rec, `${tag} ${s.uid}: ${p.id}`);
-        pairs += src;
-      }
-    }
-    if (!soft) {
-      // over water: no glide trap (two gaps within the leaf's reach, ~457 px: the route glides there and a first-timer who has not been
-      // told to glide drowns), no flag within 150 px before a lip (every respawn there went straight back in)
-      const falls = [...(st.gen2.falls ?? [])].sort((a, c) => a.x0 - c.x0);
-      for (let i = 0; i + 1 < falls.length; i++) assert.ok(falls[i + 1].x1 - falls[i].x0 > 470, `${tag}: a glide trap at ${falls[i].x0}`);
-      for (const c of st.checkpoints ?? []) assert.ok(!falls.some((f) => f.x0 - c.x >= 0 && f.x0 - c.x < 150), `${tag}: the flag at ${c.x} stands at the water's lip`);
+      const due = water.length ? 1 : 0;
+      assert.ok(difficulty === 'easy' ? signs >= normalSigns && signs >= due : signs === due, `${tag}: ${signs} water warnings, ${water.length} creeks`);
+      // over water: no glide trap (two creeks within the leaf's reach, ~457 px: the route glides there and a first-timer who has not
+      // been told to glide drowns), no flag within 150 px before a creek (every respawn there went straight back in)
+      for (let i = 0; i + 1 < water.length; i++) assert.ok(water[i + 1].x1 - water[i].x0 > 470, `${tag}: a glide trap at ${water[i].x0}`);
+      for (const c of st.checkpoints ?? []) assert.ok(!water.some((f) => f.x0 - c.x >= 0 && f.x0 - c.x < 150), `${tag}: the flag at ${c.x} stands at a creek`);
+      // (a creek is a third of a jump: STAGE-RULES §6)
+      for (const f of water) assert.ok(f.x1 - f.x0 <= 62, `${tag}: a creek ${f.x1 - f.x0} px wide at ${f.x0}`);
     }
     // (the opening: the gate has no gap at all)
     const gate = st.gen2.sections[0];
-    assert.ok(!(st.gen2.falls ?? []).some((f) => f.x0 < gate.x1), `${tag}: a gap in ${gate.template}`);
-    // every tide's low water outlasts the walk across its mud (zones.ts tideCrossTime), and every animal keeps to its patch
-    for (const z of w6.tides ?? []) assert.ok(z.period - z.warn - z.active >= (z.x1 - z.x0) / (285 * 0.78 * 0.8) + 1, `${tag}: a tide too quick for its mud`);
-    for (const e of st.enemies) assert.ok(e.edgeMinX === e.patrolMinX && e.edgeMaxX === e.patrolMaxX, tag);
+    assert.ok(!falls.some((f) => f.x0 < gate.x1), `${tag}: a gap in ${gate.template}`);
+    // every mudflat section lays its tide (the section's zone), its low water outlasting the walk across, its post beside it
+    const tides = (st.zones ?? []).filter((z) => z.kind === 'tide');
+    const want = st.gen2.sections.reduce((k, s) => k + (W6_GROUND_SECTIONS.find((q) => q.id === s.template)!.zones?.length ?? 0), 0);
+    assert.equal(tides.length, want, tag);
+    for (const z of tides) assert.ok(z.period - z.warn - z.active >= (z.x1 - z.x0) / (285 * 0.78 * 0.8) + 1, `${tag}: a tide too quick for its mud`);
+    if (id === '6-4') assert.ok(tides.length >= 6, `${tag}: ${tides.length} mudflats`);
+    const w6 = w6Of(st);
+    const n = (k: string) => st.gen2.fills.filter((f) => f.what === k && f.role === 'prop').length;
+    assert.equal(w6.posts?.length ?? 0, n(W6_PROP.tidePost), tag);
+    assert.ok(n(W6_PROP.tidePost) >= Math.min(tides.length, 1), `${tag}: no tide post`);
+    assert.equal(st.proto.bushes?.length ?? 0, n(W6_PROP.rootHide) + n(W6_PROP.reedHide), tag);
+    assert.ok((w6.decor?.length ?? 0) > 40, tag);
+    // nothing stands in a tide, and every animal keeps to its patch
+    for (const e of st.enemies) {
+      assert.ok(e.edgeMinX === e.patrolMinX && e.edgeMaxX === e.patrolMaxX, tag);
+      assert.ok(!tides.some((z) => e.x > z.x0 && e.x < z.x1 && e.y > z.top && e.y < z.bottom), `${tag}: an animal in the tide`);
+    }
   });
-  assert.ok(pairs >= 100, `the tide posts are laid with their tide (${pairs})`);
+  // (the water stages have creeks: a few a roll in a knee-root theme, many in the pools)
+  for (const [id, k] of creeks) assert.ok(k >= SEEDS.length * 2 * 3, `${id}: ${k} creeks over the rolls`);
   // calling w6Finish again changes nothing
-  const st = build('6-4', 1, 'normal');
-  const before = JSON.stringify([st.zones, st.proto.hints]);
+  const st = build('6-5', 1, 'normal');
+  const before = JSON.stringify(st.proto.hints);
   w6Finish(st);
-  assert.equal(JSON.stringify([st.zones, st.proto.hints]), before);
-  assert.ok(fillsOf(st.gen2.fills, W6_PROP.tide).length > 0);
+  assert.equal(JSON.stringify(st.proto.hints), before);
 });
 
 test('the inspector on 20 rolls: no quiet stretch over 4 s, under a fifth quiet, 2:00+ for its quick player, and the rolls differ (0.35+)', () => {

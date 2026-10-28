@@ -25,7 +25,7 @@
  * differ all through: the zones (the watcher, the tide: Z), the animals (C), the wide jumps (J) or the knee roots (h). The shared
  * sections weigh little (SHARED) so the theme carries the stage.
  */
-import type { Phase, SectionPiece, SectionTemplate, Socket } from '../types.ts';
+import type { Phase, SectionPiece, SectionTemplate, SectionZone, Socket } from '../types.ts';
 
 // ───────────────────────────── the themes ─────────────────────────────
 
@@ -77,13 +77,11 @@ const down = (key: string, after: string, dy: number, w: W): SectionPiece => ban
  * it before any glide tip, drowns (2026-10-28: 8-11 lives a minute on 6-2 with 300 px pools; World 3's water costs it 0.3)
  */
 const hop = (key: string, after: string, w: W, share: W = [0.3, 0.42], landing = false): SectionPiece =>
-  bank(key, w, { kind: 'pit', after, jump: 'jump', share }, landing ? { landing } : {});
+  bank(key, w, { kind: 'pit', after, jump: 'jump', share, water: true }, landing ? { landing } : {});
 /** a wide soft gap: the jump's own width (over 100 px on Normal, a real jump to the inspector); it stays mud (W6_MUD_GAPS) */
 const wide = (key: string, after: string, w: W, share: W = [0.76, 0.94]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share }, { landing: true });
 /** a wide soft gap crossed with the second jump: it stays mud (W6_MUD_GAPS) */
 const leap = (key: string, after: string, w: W, share: W = [0.5, 0.72]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'double', share }, { landing: true });
-/** a root road over `on`, off the main route: the high way past what is below */
-const road = (key: string, on: string, at: W, dy: W, w: W): SectionPiece => ({ key, shape: 'branch', w, place: { kind: 'over', on, at, dy }, main: false });
 /** n knee roots after `after`: up onto each and down off it to a flat of `flat` px (keys `${p}k1`, `${p}f1`, ...); the last flat's key */
 function knees(p: string, after: string, n: number, flat: W, dy: [number, number] = [30, 38], kneeW: W = [150, 175]): { pieces: SectionPiece[]; last: string } {
   const out: SectionPiece[] = [];
@@ -103,7 +101,10 @@ const hideAt = (id: string, on: string, t: Socket['t'] = 0.5) => prop(id, on, t,
 /** the watched water over the stretch `on` is part of (w6.ts covers the whole run); at its start, so it keeps out of the animals' way
  *  (the spacing pass holds every animal 120 px from any prop and any hop or gap) */
 const watch = (on: string, t: Socket['t'] = 0.03, id = 'watch') => prop(id, on, t, ['watch']);
-const tide = (id: string, on: string, t: Socket['t'] = 0.5) => prop(id, on, t, ['tide']);
+/** a tide over the mudflat `on` (the core's section zone, gen2 DESIGN B11): written as a socket here, made a zone by `section` */
+const tide = (id: string, on: string, t: Socket['t'] = 0.5) => prop(id, on, t, [TIDE_MARK]);
+/** the mark `section` turns into a tide zone (never a prop the world has: the test holds every prop socket to a real prop) */
+const TIDE_MARK = 'tide-zone';
 const scenery = (id: string, on: string, t: Socket['t'], chance = 0.6) => prop(id, on, t, ['scenery'], { chance });
 const flag = (on: string, t: Socket['t']): Socket => ({ id: 'flag', role: 'flag', on, t });
 const tip = (mechanic: string, on: string, t: Socket['t'] = 0.15, id = `tip-${mechanic}`): Socket => ({ id, role: 'tip', on, t, allow: [mechanic] });
@@ -111,8 +112,8 @@ const tip = (mechanic: string, on: string, t: Socket['t'] = 0.15, id = `tip-${me
 const foe = (id: string, on: string, t: Socket['t'], kinds: string[], max: number, o: Opt = {}): Socket => ({ id, role: 'enemy', on, t, allow: kinds, maxThreat: max, easy: 'soften', ...o });
 /** the post and its tide, linked (both or neither: w6.ts W6_PAIRS) */
 const postAndTide = (postOn: string, postT: Socket['t'], mudOn: string, mudT: Socket['t'] = 0.5, id = ''): Socket[] => [
-  { id: `post${id}`, role: 'source', on: postOn, t: postT },
-  { id: `tide${id}`, role: 'receptor', on: mudOn, t: mudT, link: `post${id}`, allow: ['tide'] },
+  prop(`post${id}`, postOn, postT, ['post'], { easy: 'keep' }),
+  tide(`tide${id}`, mudOn, mudT),
 ];
 /** a mudflat: a step down into the mud from `after`, and its key (the step out is the next piece's `up`) */
 const mud = (key: string, after: string, w: W): SectionPiece => down(key, after, 50, w);
@@ -129,7 +130,7 @@ const midOf = (w: W) => (typeof w === 'number' ? w : (w[0] + w[1]) / 2);
  */
 function safeFlag(pieces: SectionPiece[], sockets: Socket[], first: string, last: string, mirrorable: boolean): Socket {
   // (never on a mudflat: a flag never stands in the tide, levelCheck)
-  const mudflats = new Set(sockets.filter((k) => k.allow?.includes('tide')).map((k) => k.on));
+  const mudflats = new Set(sockets.filter((k) => k.allow?.includes(TIDE_MARK)).map((k) => k.on));
   const banks = pieces.filter((p) => p.main !== false && p.shape === 'bank' && !mudflats.has(p.key));
   const busy = new Set(sockets.filter((k) => k.role === 'enemy').map((k) => k.on));
   // (a gap after a bank: one of the section's own, or the stitcher's after its exit bank; and before it, which a flip puts ahead)
@@ -150,8 +151,11 @@ function safeFlag(pieces: SectionPiece[], sockets: Socket[], first: string, last
 /** the bones every section shares (and a safe flag, unless it names its own) */
 const section = (s: Omit<SectionTemplate, 'entry' | 'exit' | 'exitDy'> & { exitDy?: number; first?: string; last: string }): SectionTemplate => {
   const { first, last, exitDy, ...rest } = s;
-  const sockets = rest.sockets.some((k) => k.role === 'flag') ? rest.sockets : [...rest.sockets, safeFlag(rest.pieces, rest.sockets, first ?? rest.pieces[0].key, last, rest.mirrorable)];
-  return { ...rest, sockets, entry: { piece: first ?? s.pieces[0].key, kind: 'ground' }, exit: { piece: last, kind: 'ground' }, exitDy: exitDy ?? 0 };
+  // (each tide mark is the mudflat's tide zone: SectionTemplate.zones, always laid, its low spell stretched to the walk across)
+  const zones: SectionZone[] = rest.sockets.filter((k) => k.allow?.[0] === TIDE_MARK).map((k) => ({ kind: 'tide', on: k.on }));
+  const own = rest.sockets.filter((k) => k.allow?.[0] !== TIDE_MARK);
+  const flagged = own.some((k) => k.role === 'flag') ? own : [...own, safeFlag(rest.pieces, rest.sockets, first ?? rest.pieces[0].key, last, rest.mirrorable)];
+  return { ...rest, sockets: flagged, ...(zones.length ? { zones } : {}), entry: { piece: first ?? s.pieces[0].key, kind: 'ground' }, exit: { piece: last, kind: 'ground' }, exitDy: exitDy ?? 0 };
 };
 
 // ───────────────────────────── every stage: banks, knees, rests, the shrine's approach ─────────────────────────────
@@ -223,9 +227,9 @@ const stumpHop = section({
   phases: ['ki', 'sho', 'ten'],
   difficulty: 3,
   weight: SHARED,
-  pieces: [bank('a', [360, 400]), hop('b', 'a', [300, 340]), up('c', 'b', 38, [160, 190]), down('d', 'c', 38, [260, 300])],
+  pieces: [bank('a', [360, 400]), hop('b', 'a', [200, 240]), up('c', 'b', 38, [140, 160]), down('d', 'c', 38, [260, 300]), up('k', 'd', 30, [140, 160]), down('e', 'k', 30, [160, 200])],
   last: 'd',
-  sockets: [petals('a', 'a', 0.5, 2, 80), foe('frog', 'b', [0.5, 0.6], ['frog'], 1.5, { phases: LIVE, chance: 0.7 }), petals('c', 'c', 0.5, 1), foe('cat', 'd', [0.6, 0.75], CATS, 3, { phases: HOT, chance: 0.6 })],
+  sockets: [petals('a', 'a', 0.5, 2, 80), foe('frog', 'b', [0.5, 0.6], ['frog'], 1.5, { phases: LIVE, chance: 0.7 }), petals('c', 'c', 0.5, 1), foe('cat', 'd', [0.5, 0.6], CATS, 3, { phases: HOT, chance: 0.6 }), petals('k', 'k', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -237,9 +241,9 @@ const mudGap = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 4,
   weight: SHARED,
-  pieces: [bank('near', [360, 400]), hop('far', 'near', [300, 340], [0.32, 0.42], true), up('m', 'far', 36, [180, 220]), down('far2', 'm', 36, [280, 320])],
+  pieces: [bank('near', [360, 400]), hop('far', 'near', [200, 240], [0.32, 0.42], true), up('m', 'far', 36, [140, 160]), down('far2', 'm', 36, [280, 320]), up('k2', 'far2', 30, [140, 160]), down('far3', 'k2', 30, [160, 200])],
   last: 'far2',
-  sockets: [petals('near', 'near', 0.45, 2, 90), scenery('lilies', 'far', [0.2, 0.3]), petals('m', 'm', 0.5, 1), foe('foe', 'far2', [0.5, 0.65], ['ocelot', 'tayra', 'frog'], 3, { phases: LIVE })],
+  sockets: [petals('near', 'near', 0.45, 2, 90), scenery('lilies', 'far', [0.2, 0.3]), petals('m', 'm', 0.5, 1), foe('foe', 'far2', [0.5, 0.6], ['ocelot', 'tayra', 'frog'], 3, { phases: LIVE }), petals('k2', 'k2', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -251,7 +255,7 @@ const rise = section({
   phases: ['ki', 'sho', 'ten'],
   difficulty: 4,
   weight: SHARED,
-  pieces: [bank('a', [200, 240]), up('b', 'a', 48, [280, 320]), hop('c', 'b', [360, 400])],
+  pieces: [bank('a', [200, 240]), up('b', 'a', 48, [180, 220]), up('k', 'b', 30, [140, 160]), down('b2', 'k', 30, [200, 240]), hop('c', 'b2', [360, 400])],
   last: 'c',
   exitDy: -48,
   sockets: [petals('a', 'a', 0.5, 2, 90), scenery('snag', 'b', [0.3, 0.5]), foe('foe', 'c', [0.5, 0.7], ['ocelot', 'tayra'], 3, { phases: LIVE, chance: 0.8 })],
@@ -266,7 +270,7 @@ const drop = section({
   phases: ['ki', 'sho', 'ten'],
   difficulty: 4,
   weight: SHARED,
-  pieces: [bank('a', [180, 220]), up('k', 'a', 30, [150, 170]), down('b2', 'k', 78, [240, 280]), hop('c', 'b2', [360, 400])],
+  pieces: [bank('a', [180, 220]), up('k', 'a', 30, [150, 170]), down('b2', 'k', 78, [200, 240]), up('k2', 'b2', 30, [140, 160]), down('b3', 'k2', 30, [160, 200]), hop('c', 'b3', [360, 400])],
   last: 'c',
   exitDy: 48,
   sockets: [petals('a', 'a', 0.5, 2, 90), foe('frog', 'b2', 0.55, ['frog'], 1.5, { phases: LIVE, chance: 0.7 }), scenery('lilies', 'c', [0.2, 0.3]), foe('foe', 'c', [0.6, 0.8], CATS, 3, { phases: HOT, chance: 0.6 })],
@@ -282,24 +286,23 @@ const doubleGap = section({
   difficulty: 7,
   weight: SHARED,
   needs: ['double'],
-  pieces: [bank('near', [200, 240]), leap('far', 'near', [300, 340]), up('m', 'far', 36, [180, 220]), down('b', 'm', 36, [240, 280])],
+  pieces: [bank('near', [200, 240]), leap('far', 'near', [200, 240]), up('m', 'far', 36, [140, 160]), down('b', 'm', 36, [280, 320]), up('k', 'b', 30, [140, 160]), down('c', 'k', 30, [160, 200])],
   last: 'b',
   sockets: [petals('near', 'near', 0.5, 2, 90), petals('m', 'm', 0.5, 1), foe('foe', 'b', [0.5, 0.7], ['ocelot', 'tayra', 'frog'], 3, { phases: HOT, chance: 0.7 })],
   mirrorable: true,
 });
 
-/** a high road of roots over a bank of knees: up out of the way, or down among the animals */
-const roadKnees = knees('', 'b', 1, [260, 300]);
+/** knee roots on both sides of a creek, an animal on each bank (it was a root road: the quick route rode it past everything below) */
 const rootRoad = section({
   id: 'w6-root-road',
-  name: 'root road',
+  name: 'creek knees',
   archetypes: 'any',
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   weight: SHARED,
-  pieces: [bank('a', [200, 240]), up('m1', 'a', 36, [180, 220]), down('b', 'm1', 36, [380, 440]), road('road', 'b', [0.1, 0.2], [-100, -90], [320, 380]), ...roadKnees.pieces],
-  last: roadKnees.last,
-  sockets: [petals('m1', 'm1', 0.5, 1), petals('road', 'road', 0.5, 3, 240), foe('foe', 'b', [0.55, 0.7], ['ocelot', 'tayra', 'frog'], 3), petals('k1', 'k1', 0.5, 1), foe('foe2', 'f1', [0.5, 0.7], CATS, 5, { phases: HOT, chance: 0.6 })],
+  pieces: [bank('a', [200, 240]), up('m1', 'a', 36, [140, 160]), down('b', 'm1', 36, [380, 420]), hop('c', 'b', [380, 420]), up('k1', 'c', 30, [140, 160]), down('d', 'k1', 30, [180, 220])],
+  last: 'd',
+  sockets: [petals('m1', 'm1', 0.5, 1), foe('foe', 'b', [0.5, 0.6], ['ocelot', 'tayra', 'frog'], 3), scenery('lilies', 'c', [0.2, 0.3]), foe('foe2', 'c', [0.55, 0.65], [...CATS, 'frog'], 5, { phases: HOT, chance: 0.6 }), petals('k1', 'k1', 0.5, 1)],
   mirrorable: true,
 });
 
@@ -540,8 +543,8 @@ const twinFlats = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: [W6_THEME.flats],
-  pieces: [bank('a', [180, 220]), mud('mud1', 'a', [300, 340]), up('knee', 'mud1', 50, [200, 240]), mud('mud2', 'knee', [280, 320]), up('b', 'mud2', 50, [260, 300])],
-  last: 'b',
+  pieces: [bank('a', [180, 220]), mud('mud1', 'a', [300, 340]), up('knee', 'mud1', 50, [200, 240]), mud('mud2', 'knee', [280, 320]), up('b', 'mud2', 50, [200, 240]), up('k2', 'b', 30, [140, 160]), down('c', 'k2', 30, [200, 240])],
+  last: 'c',
   sockets: [...postAndTide('a', 0.6, 'mud1'), foe('frog', 'knee', 0.5, ['frog'], 1.5, { phases: LIVE, chance: 0.7 }), tide('tide2', 'mud2'), foe('foe', 'b', [0.55, 0.7], ['frog', 'tayra'], 2.5)],
   mirrorable: false,
 });
@@ -554,8 +557,8 @@ const tripleFlats = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W6_THEME.flats],
-  pieces: [bank('a', [180, 220]), mud('m1', 'a', [240, 280]), up('k1', 'm1', 50, [160, 200]), mud('m2', 'k1', [240, 280]), up('k2', 'm2', 50, [160, 200]), mud('m3', 'k2', [240, 280]), up('b', 'm3', 50, [240, 280])],
-  last: 'b',
+  pieces: [bank('a', [180, 220]), mud('m1', 'a', [220, 250]), up('k1', 'm1', 50, [140, 160]), mud('m2', 'k1', [220, 250]), up('k2', 'm2', 50, [140, 160]), mud('m3', 'k2', [220, 250]), up('b', 'm3', 50, [180, 220]), up('k3', 'b', 30, [140, 160]), down('c', 'k3', 30, [160, 180])],
+  last: 'c',
   sockets: [...postAndTide('a', 0.5, 'm1'), tide('t2', 'm2'), tide('t3', 'm3'), foe('frog', 'k1', 0.5, ['frog'], 1.5, { chance: 0.7 }), petals('k2', 'k2', 0.5, 1), foe('foe', 'b', [0.5, 0.7], ['tayra', 'frog'], 2.5, { phases: LIVE })],
   mirrorable: false,
 });
@@ -627,9 +630,9 @@ const channelJump = section({
   phases: ['ki', 'sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: [W6_THEME.channels],
-  pieces: [bank('a', [280, 320]), wide('b', 'a', [400, 460]), wide('c', 'b', [280, 320])],
+  pieces: [bank('a', [160, 200]), wide('b', 'a', [160, 190]), up('k', 'b', 32, [140, 160]), down('b2', 'k', 32, [320, 340]), wide('c', 'b2', [180, 220])],
   last: 'c',
-  sockets: [petals('a', 'a', 0.5, 2, 80), foe('caiman', 'b', [0.5, 0.6], ['caiman'], 3, { phases: LIVE }), scenery('lilies', 'c', [0.4, 0.6])],
+  sockets: [petals('a', 'a', 0.5, 2, 80), petals('k', 'k', 0.5, 1), foe('caiman', 'b2', [0.5, 0.6], ['caiman'], 3, { phases: LIVE }), scenery('lilies', 'c', [0.4, 0.6])],
   mirrorable: true,
 });
 
@@ -641,9 +644,9 @@ const channelFlat = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [W6_THEME.channels],
-  pieces: [bank('a', [240, 280]), wide('b', 'a', [260, 300]), mud('mud', 'b', [260, 300]), up('c', 'mud', 50, [380, 440])],
+  pieces: [bank('a', [160, 200]), wide('b', 'a', [200, 240]), mud('mud', 'b', [260, 300]), up('c', 'mud', 50, [160, 200]), up('k', 'c', 30, [140, 160]), down('d', 'k', 30, [320, 340])],
   last: 'c',
-  sockets: [petals('a', 'a', 0.5, 1), ...postAndTide('b', 0.5, 'mud'), petals('mud', 'mud', 0.5, 2, 120), foe('caiman', 'c', [0.55, 0.65], ['caiman'], 3, { phases: LIVE })],
+  sockets: [petals('a', 'a', 0.5, 1), ...postAndTide('b', 0.5, 'mud'), petals('mud', 'mud', 0.5, 2, 120), petals('k', 'k', 0.5, 1), foe('caiman', 'd', [0.55, 0.65], ['caiman'], 3, { phases: LIVE })],
   mirrorable: false,
 });
 
@@ -655,7 +658,7 @@ const channelRow = section({
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 7,
   uses: [W6_THEME.channels],
-  pieces: [bank('a', [220, 260]), wide('b', 'a', [220, 260]), wide('c', 'b', [220, 260]), wide('d', 'c', [300, 340])],
+  pieces: [bank('a', [160, 200]), wide('b', 'a', [150, 180]), up('k', 'b', 32, [140, 160]), down('b2', 'k', 32, [150, 180]), wide('c', 'b2', [160, 190]), wide('d', 'c', [260, 300])],
   last: 'd',
   sockets: [petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), foe('foe', 'd', [0.55, 0.7], ['frog', 'tayra'], 2.5, { phases: HOT, chance: 0.6 })],
   mirrorable: true,
