@@ -301,7 +301,7 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
     flag();
     if (pk.develop === 2) hint('Prowlers on the shelves! Punch, or hop past', 'Prowlers on the shelves! Punch, or hop past', 'Prowlers on the shelves! Punch, or hop past', cur.y + 10);
     let n = 0;
-    while (expert < 140 - 44 && n < 30) {
+    while (expert < 140 - 38 && n < 30) {
       if (pk.develop === 0) rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       else if (pk.develop === 1) hops(R.i(4, 5), true); else if (n % 2 === 0 && n > 0) {
         if (!prowlShelf()) hops(2, true);
