@@ -3,7 +3,7 @@
  * fails it without its key piece; none can be walked past; each fits an upright phone at half scale; and each is played through in
  * the real engine, upright and sideways, on Normal and Easy, with no heart or life lost:
  *   the water room   the door shut by high water; the wheel raises the raft with him on it; the stone from the shelf to the plate; the
- *                    door stays shut while the water is up; the wheel again, the water down, through
+ *                    door stays shut while the water is up; the wheel again, the water down, through (Easy: the plate alone opens it)
  *   the dark room    the steps dark until the firefly's light finds them; the hollow under them is soft with a step out; up the
  *                    steps in the light, onto the bank, and the moonflower opens
  *   the seesaw room  one root-stone on the near end and the far end still tips down under him; two hold it up; up the root, onto the bank
@@ -21,7 +21,7 @@ import { setDifficulty, type Difficulty } from '../difficulty.ts';
 import type { Platform } from '../types.ts';
 import type { SectionTemplate } from './types.ts';
 import { M6, roomStage, RUNWAY } from './w6Harness.ts';
-import { DARK, darkRoom, RAFT_RISE, SEESAW, seesawRoom, W6_ROOM_SECTIONS, W6R_NEW_LINES, W6R_ROOM_HINTS, W6R_STAGE, WATER, waterRoom, withW6Rooms } from './worlds/w6Rooms.ts';
+import { DARK, darkRoom, RAFT_RISE, SEESAW, seesawRoom, W6_ROOM_SECTIONS, W6R_NEW_LINES, W6R_ROOM_HINTS, W6R_STAGE, WATER, waterRoom, waterRoomEasy, withW6Rooms } from './worlds/w6Rooms.ts';
 
 const words = (s: string) => s.split(/\s+/).filter(Boolean).length;
 
@@ -31,9 +31,9 @@ const KEY: Record<string, string[]> = { water: ['source', 'item'], dark: ['glow'
 test('the rooms: the checker solves each, Normal and Easy; each fails without its key piece (and the water room without its wheel)', () => {
   for (const t of W6_ROOM_SECTIONS) {
     for (const d of ['normal', 'easy'] as const) {
-      const st = roomStage(t, d);
+      const st = roomStage(roomFor(t, d), d);
       assert.deepEqual(validateStage(st).errors, [], `${t.id} ${d}`);
-      const bare = roomStage(t, d, (p) => !KEY[t.room!.id].includes(p.kind));
+      const bare = roomStage(roomFor(t, d), d, (p) => !KEY[t.room!.id].includes(p.kind));
       assert.ok(validateStage(bare).errors.some((e) => e.startsWith(`room s1-${t.room!.id}:`)), `${t.id} ${d}: solved without its key`);
     }
   }
@@ -42,9 +42,15 @@ test('the rooms: the checker solves each, Normal and Easy; each fails without it
     const one = roomStage(seesawRoom, d, (p) => p.id !== 's1-stone2');
     assert.ok(validateStage(one).errors.some((e) => e.startsWith('room s1-seesaw:')), `${d}: solved with one stone`);
   }
-  // (with no wheel the raft never rises: the stone on the shelf is out of reach)
-  const noWheel = roomStage(waterRoom, 'normal', (p) => p.kind !== 'lever');
-  assert.ok(validateStage(noWheel).errors.some((e) => e.startsWith('room s1-water:')), 'solved without the wheel');
+  // (with no wheel the raft never rises: the stone on the shelf is out of reach, on Easy too)
+  for (const t of [waterRoom, waterRoomEasy]) {
+    const noWheel = roomStage(t, 'normal', (p) => p.kind !== 'lever');
+    assert.ok(validateStage(noWheel).errors.some((e) => e.startsWith('room s1-water:')), 'solved without the wheel');
+  }
+  // (Easy's room is the same section, its pieces in the same places; only the door's wire differs)
+  assert.equal(waterRoomEasy.id, waterRoom.id);
+  assert.deepEqual(waterRoomEasy.pieces, waterRoom.pieces);
+  assert.deepEqual(waterRoomEasy.room!.pieces.map((p) => p.id), waterRoom.room!.pieces.map((p) => p.id));
 });
 
 test('the rooms: none can be walked past, each fits an upright phone, each has a post, none can hurt; Dot\'s lines are short', () => {
@@ -91,9 +97,12 @@ test('each stage\'s kit holds its own room and no other (6-3 the seesaw, 6-6 the
 
 // ───────────────────────────── each room in the real engine ─────────────────────────────
 
+/** the room as this difficulty's kit holds it (Easy's water room: the door on the plate alone) */
+const roomFor = (t: SectionTemplate, d: Difficulty) => (d === 'easy' && t === waterRoom ? waterRoomEasy : t);
+
 function play(t: SectionTemplate, d: Difficulty, w: number, h: number) {
   setDifficulty(d);
-  const st = roomStage(t, d);
+  const st = roomStage(roomFor(t, d), d);
   const sim = new RealPlay('kit', 1);
   sim.bare(st.platforms);
   const e = sim.e;
@@ -212,17 +221,20 @@ for (const d of ['normal', 'easy'] as const) {
       assert.ok(!kit.holding);
       assert.equal(r.plates[0].down, true, 'the stone is on the plate');
       sim.wait(0.5);
-      assert.equal(door.open, false, 'the water is still up: the door stays shut');
-      // out of the well, the wheel again from floor A: the water drains, the raft sinks, the door opens
-      walkTo(sim, floorA.x + floorA.width + 30, 6);
-      assert.ok(stepTo(sim, floorA, -1), 'out of the well onto floor A');
-      walkTo(sim, at(st, 'sluice') - 30);
-      face(sim, 1);
-      tap(sim);
-      assert.equal(lever.on, false, 'the wheel back: the water drains');
-      sim.wait(RAFT_RISE / KIT.windSpeed + 1);
-      assert.ok(raft.level < 0.01, 'the raft is down');
-      assert.equal(door.open, true, 'water down, the stone on the plate: the door is open');
+      if (d === 'easy') assert.equal(door.open, true, "Easy: the stone on the plate opens the door (two steps)");
+      else {
+        assert.equal(door.open, false, 'the water is still up: the door stays shut');
+        // out of the well, the wheel again from floor A: the water drains, the raft sinks, the door opens
+        walkTo(sim, floorA.x + floorA.width + 30, 6);
+        assert.ok(stepTo(sim, floorA, -1), 'out of the well onto floor A');
+        walkTo(sim, at(st, 'sluice') - 30);
+        face(sim, 1);
+        tap(sim);
+        assert.equal(lever.on, false, 'the wheel back: the water drains');
+        sim.wait(RAFT_RISE / KIT.windSpeed + 1);
+        assert.ok(raft.level < 0.01, 'the raft is down');
+        assert.equal(door.open, true, 'water down, the stone on the plate: the door is open');
+      }
       // through: down into the well, across, up onto floor B, through the door
       walkTo(sim, at(st, 'plate') + 80);
       assert.ok(stepTo(sim, floor2), 'up onto floor B');

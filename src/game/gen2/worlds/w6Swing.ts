@@ -13,7 +13,7 @@
  * crosses (a knee stepped onto and off, a hop over the water): a stump standing on a bank is walked past (STAGE-RULES §6). The liana sections (a chain of ledge -> liana -> ledge, never liana to liana: levelCheck follows a swing
  * from a ledge to a ledge) and the dark-root stretches lit by the firefly come once the gen2 core's liana piece and dark zone land.
  */
-import type { Phase, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
+import type { Difficulty, Phase, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 import { withW6Rooms } from './w6Rooms.ts';
 
 // ───────────────────────────── the tags (World 6's manifest, gen2/worlds/w6.ts W6_TAG, names what these ask for) ─────────────────────────────
@@ -159,8 +159,8 @@ export const W6_SWING_SECTIONS: readonly SectionTemplate[] = [rootIsland, rootKn
  * World 6's kit for stage `stage` with the swing sections and that stage's puzzle room joined (the world's own manifest, gen2/worlds/w6.ts, stays as it is: the
  * lead folds the lists together, step G)
  */
-export function withW6Swing(kit: WorldKit, stage: number): WorldKit {
-  const k = withW6Rooms(kit, stage);
+export function withW6Swing(kit: WorldKit, stage: number, difficulty: Difficulty = 'normal'): WorldKit {
+  const k = withW6Rooms(kit, stage, difficulty);
   const have = new Set(k.manifest.sections.map((s) => s.id));
   return { ...k, manifest: { ...k.manifest, sections: [...k.manifest.sections, ...W6_SWING_SECTIONS.filter((s) => !have.has(s.id))] } };
 }

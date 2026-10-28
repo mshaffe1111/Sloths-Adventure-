@@ -21,7 +21,7 @@ const STAGES: Array<[string, LevelConfig['objectiveType']]> = [['6-1', 'vine_run
 const cache = new Map<string, Gen2Stage>();
 const build = (id: string, a: LevelConfig['objectiveType'], seed: number, difficulty: 'easy' | 'normal') => {
   const k = `${id}:${seed}:${difficulty}`;
-  if (!cache.has(k)) cache.set(k, w6Finish(buildGen2Stage({ config: cfg(id, a), kit: withW6Swing(w6Kit(Number(id.split('-')[1])), Number(id.split('-')[1])), seed, difficulty })));
+  if (!cache.has(k)) cache.set(k, w6Finish(buildGen2Stage({ config: cfg(id, a), kit: withW6Swing(w6Kit(Number(id.split('-')[1])), Number(id.split('-')[1]), difficulty), seed, difficulty })));
   return cache.get(k)!;
 };
 

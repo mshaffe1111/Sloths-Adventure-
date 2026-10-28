@@ -8,7 +8,7 @@
  *                    root shelf; turned off, the water drains and the raft sinks. Dot's root-stone waits on the shelf. The root door past
  *                    the well opens only with the stone on its plate AND the water down (high water swells the root door shut). So:
  *                    raise the water, ride the raft up, take the stone, drop down with it to the plate, climb out, lower the water,
- *                    through. Three steps (Normal's 2-3); the water never costs a life (the well's floor is ground: a dip, a hop out).
+ *                    through. Three steps (Normal's 2-3); Easy's door listens to the plate alone (two steps: waterRoomEasy). The water never costs a life (the well's floor is ground: a dip, a hop out).
  *   w6r-room-seesaw  6-3 "Root to Root" (Keep swinging. The water is watching). A root seesaw before a bank too high to jump: at rest
  *                    its near end lies down level with the floor and its far end stands a step up, a step from the bank's top, but his
  *                    own weight on the far end tips it down. One root-stone on the near end is too light to hold it (2 against his 3);
@@ -27,7 +27,7 @@
  * and falling with it, and the raft), the sluice wheel (a lever today), and the dark over the hollow (the engine's `dark` zone: gen2's
  * StageSink has no zones yet, so `W6_DARK_ROOMS` names the sections the hook-up darkens). Dot's lines are new: each needs Matt's approval.
  */
-import type { LocalRoomSpec, SectionPiece, SectionTemplate, WorldKit } from '../types.ts';
+import type { Difficulty, LocalRoomSpec, SectionPiece, SectionTemplate, WorldKit } from '../types.ts';
 
 // ───────────────────────────── Dot's lines ─────────────────────────────
 
@@ -43,6 +43,7 @@ export const W6R_NEW_LINES: readonly string[] = [
   "Too high. Stay close to the firefly, Pokey.",
   'A step! It only shows in the light.',
   'A moonflower. Now we can see everything.',
+  'That root door needs a weight on its plate.',
   "Too high. That root tips, though.",
   'One stone is not enough. Try two.',
   'It holds! Up the root you go.',
@@ -140,6 +141,18 @@ export const waterRoom: SectionTemplate = {
   room: waterRoomSpec,
   mirrorable: false,
 };
+
+/**
+ * Easy's water room (the lead, 2026-10-28: 1-2 step puzzles on Easy, STAGE-RULES §1): the same section, the same pieces in the same
+ * places, but the root door listens to the plate alone. Two steps: raise the water and ride the raft up to the stone, bring it down to
+ * the plate. (Lowering the water is Normal's third step.) The section id is the same, so Easy lays Normal's plan.
+ */
+export const waterRoomSpecEasy: LocalRoomSpec = {
+  ...waterRoomSpec,
+  pieces: waterRoomSpec.pieces.map((p) => (p.kind === 'gate' ? { ...p, open: 'plate' } : p)),
+  tips: { ...waterRoomSpec.tips, enter: 'That root door needs a weight on its plate.' }, // (new, needs Matt's approval)
+};
+export const waterRoomEasy: SectionTemplate = { ...waterRoom, room: waterRoomSpecEasy };
 
 // ───────────────────────────── 6-3: the root seesaw ─────────────────────────────
 
@@ -297,12 +310,13 @@ export const W6_DARK_ROOMS: readonly string[] = [darkRoom.id];
 export const W6R_STAGE: Record<string, string> = { [seesawRoom.id]: '6-3', [darkRoom.id]: '6-6', [waterRoom.id]: '6-7' };
 
 /**
- * World 6's kit for stage `stage` (6-3: 3) with that stage's room joined, none for a stage with no room (the world's own manifest,
- * gen2/worlds/w6.ts, stays as it is: the lead folds the lists together)
+ * World 6's kit for stage `stage` (6-3: 3) with that stage's room joined, none for a stage with no room, Easy's version of a room on Easy
+ * (waterRoomEasy: the same section id, so the plan is shared). The world's own manifest (gen2/worlds/w6.ts) stays as it is: the lead
+ * folds the lists together, and the hook-up passes the difficulty.
  */
-export function withW6Rooms(kit: WorldKit, stage: number): WorldKit {
+export function withW6Rooms(kit: WorldKit, stage: number, difficulty: Difficulty = 'normal'): WorldKit {
   const M = kit.manifest;
   const have = new Set(M.sections.map((s) => s.id));
-  const mine = W6_ROOM_SECTIONS.filter((s) => W6R_STAGE[s.id] === `6-${stage}` && !have.has(s.id));
+  const mine = W6_ROOM_SECTIONS.filter((s) => W6R_STAGE[s.id] === `6-${stage}` && !have.has(s.id)).map((s) => (difficulty === 'easy' && s === waterRoom ? waterRoomEasy : s));
   return { ...kit, manifest: { ...M, sections: [...M.sections, ...mine] } };
 }
