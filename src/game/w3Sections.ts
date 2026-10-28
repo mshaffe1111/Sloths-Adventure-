@@ -23,6 +23,7 @@ import { HANG_DROP, ROPE_RISE, ROPE_SPEED } from './rope.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, Rope, TreeStructure, Vine } from './types.ts';
 import type { W3Decor } from './w3Art.ts';
+import type { ThornVine } from './thornVine.ts';
 
 /** how many versions each section of each stage has (a section with 1 is the same on every roll) */
 export const W3_VERSIONS: Record<string, { start: number; learn: number; develop: number; twist: number; finish: number }> = {
@@ -42,7 +43,7 @@ const KINDS: Record<string, Partial<Record<'develop' | 'twist' | 'finish', reado
   '3-1': { develop: ['spore', 'abyss', 'vine'], twist: ['spore', 'abyss', 'vine'], finish: ['vine', 'spore', 'abyss'] },
   '3-2': { develop: ['fern', 'dark', 'vine'], twist: ['dark', 'plate'], finish: ['fern', 'dark', 'vine'] },
   '3-3': { develop: ['shelf', 'dark', 'abyss'], twist: ['spore', 'shelf', 'floor'], finish: ['shelf', 'dark', 'vine'] },
-  '3-4': { develop: ['rope', 'hops', 'prowl'], twist: ['rope', 'prowl', 'hops'] },
+  '3-4': { develop: ['rope', 'hops', 'thorn'], twist: ['rope', 'prowl', 'hops'] },
   '3-5': { develop: ['row', 'abyss', 'vine'], twist: ['dark', 'abyss', 'row'], finish: ['row', 'abyss', 'vine'] },
   '3-6': { develop: ['stones', 'spore', 'abyss'], twist: ['dark', 'spore', 'abyss'], finish: ['stones', 'abyss', 'vine'] },
   '3-7': { develop: ['eyes', 'vine', 'abyss'], twist: ['dark', 'plate'], finish: ['vine', 'eyes', 'abyss'] },
@@ -153,6 +154,7 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
   const E: Enemy[] = [];
   const C: Collectible[] = [];
   const ROPES: Rope[] = [];
+  const THORNS: ThornVine[] = [];
   const checkpoints: Array<{ x: number; y: number; reached: boolean }> = [];
   const hints: StageHint[] = [];
   const beats: Array<[number, number, string]> = [];
@@ -261,6 +263,23 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
     ocelot(cur.x + cur.width / 2, cur.y, w - 220);
     return true;
   };
+  /**
+   * a wide shelf with one of 3-5's old thorn vines hanging over its middle (taught there: freeze while it looks, go while it sleeps; its
+   * lash costs a heart), with room either side of its reach to stand and wait
+   */
+  const vineShelf = () => {
+    const w = Math.round(R.r(560, 640));
+    const fits = (d: 1 | -1) => (d === 1 ? W - SINK_MARGIN - (cur.x + cur.width) : cur.x - SINK_MARGIN) >= 380 + w;
+    if (!fits(dir)) turn();
+    if (!fits(dir)) return false;
+    // (the first thorn vine of World 3 is this stage's: Dot says how they work before the rope to the first one; new, needs Matt's approval)
+    if (!THORNS.length) hint('A thorn vine! Freeze while it looks, go while it sleeps', 'A thorn vine! Freeze while it looks, go while it sleeps', 'A thorn vine! Freeze while it looks, go while it sleeps', cur.y + 10);
+    rope(Math.round(R.r(380, 420)), w, 0);
+    const sl = R.r(3.4, 4.2);
+    THORNS.push({ x: Math.round(cur.x + w / 2), top: cur.y - 470, bud: cur.y - 112, reach: 105, sleep: sl, stir: 1.1, look: 1.7, offset: R.r(0, sl + 2.8) });
+    expert += 2;
+    return true;
+  };
   const flag = () => checkpoints.push({ x: Math.round(cur.x + cur.width / 2), y: cur.y, reached: false });
   const beat = (name: string, f: () => void) => {
     const b0 = cur ? cur.y : 0;
@@ -299,15 +318,15 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
     }
     climb(Math.round(R.r(270, 320)));
     flag();
-    if (pk.develop === 2) hint('Prowlers on the shelves! Punch, or hop past', 'Prowlers on the shelves! Punch, or hop past', 'Prowlers on the shelves! Punch, or hop past', cur.y + 10);
+    if (pk.develop === 0) hint('Prowlers on the shelves! Punch, or hop past', 'Prowlers on the shelves! Punch, or hop past', 'Prowlers on the shelves! Punch, or hop past', cur.y + 10);
     let n = 0;
     while (expert < 140 - 38 && n < 30) {
-      // (every version meets the sinkhole's ocelots now and then: on a wide shelf at a rope's far end)
-      if (n % 3 === 2 && prowlShelf()) { /* the prowler's shelf was this round's crossing */ }
-      else if (pk.develop === 0) rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
-      else if (pk.develop === 1) hops(R.i(4, 5), true); else if (n % 2 === 0 && n > 0) {
-        if (!prowlShelf()) hops(2, true);
-      } else hops(R.i(2, 3), n > 1);
+      // (ropes and roots, with an ocelot's shelf now and then; or wide hops; or 3-5's thorn vines hanging over the wide shelves)
+      // (the ropes and the thorn shelves meet 3-5's old vines too: World 3's climb is harder than World 1's and World 2's)
+      if (pk.develop === 0) {
+        if (!(n % 3 === 2 && prowlShelf()) && !(n % 3 === 1 && vineShelf())) rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
+      } else if (pk.develop === 1) hops(R.i(4, 5), true); else if (!vineShelf()) hops(2, true);
+      else if (n % 2 === 0) hops(2, true);
       climb(Math.round(R.r(260, 320)));
       n++;
       if (n % 2 === 0) flag();
@@ -326,6 +345,7 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
       const len = Math.min(Math.round(R.r(1100, 1300)), Math.round(room() - 430));
       if (len >= 700) {
         rope(Math.round(R.r(380, 420)), len, 0);
+        hint('Two prowlers on the long shelf! Punch, or hop past', 'Two prowlers on the long shelf! Punch, or hop past', 'Two prowlers on the long shelf! Punch, or hop past', cur.y + 10);
         ocelot(cur.x + len * 0.33, cur.y, 200);
         ocelot(cur.x + len * 0.7, cur.y, 200);
       } else hops(5, true);
@@ -361,6 +381,15 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
     const shelf = P.find((p) => p !== P[0] && Math.abs(p.y - f.y) < 1 && f.x >= p.x && f.x <= p.x + p.width);
     const moved = shelf && [shelf.x + 40, shelf.x + shelf.width - 40].map((x) => ({ x: Math.round(x), y: f.y, reached: false })).find((g) => !E.some((e) => near(e, g)));
     if (moved) checkpoints[i] = moved;
+    else checkpoints.splice(i, 1);
+  }
+  // (and no flag under a thorn vine's reach: it moves to the end of its shelf away from the vine)
+  for (let i = checkpoints.length - 1; i >= 0; i--) {
+    const f = checkpoints[i];
+    const t = THORNS.find((v) => Math.abs(v.bud + 112 - f.y) < 2 && Math.abs(v.x - f.x) < v.reach + 60);
+    if (!t) continue;
+    const shelf = P.find((p) => p !== P[0] && Math.abs(p.y - f.y) < 1 && f.x >= p.x && f.x <= p.x + p.width);
+    if (shelf) f.x = Math.round(Math.abs(shelf.x + 40 - t.x) > Math.abs(shelf.x + shelf.width - 40 - t.x) ? shelf.x + 40 : shelf.x + shelf.width - 40);
     else checkpoints.splice(i, 1);
   }
   const safe = [{ x: pk.mirror ? W - 200 : 200, y: 0 }, { x: crown.x + crown.width / 2, y: crown.y }];
@@ -401,6 +430,7 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
   for (const c of C) c.y += shift;
   for (const e of E) e.y += shift;
   for (const r of ROPES) { r.y += shift; r.g0 += shift; r.g1 += shift; }
+  for (const t of THORNS) { t.top += shift; t.bud += shift; }
   for (const cp of checkpoints) cp.y += shift;
   for (const h of hollows) h.y += shift;
   for (const h of hints) if (h.aboveY !== undefined) h.aboveY += shift;
@@ -427,6 +457,6 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
     exitTotemY: crown.y,
     checkpoints: checkpoints.sort((a, b) => b.y - a.y),
     meta: { attempt: seed, chunks: [], width: W, timing: { layoutSeconds: expert, decorSeconds: 0, route: H } },
-    proto: { hints, covers: [], beats, movedPickups, hollows, w3decor },
+    proto: { hints, covers: [], beats, movedPickups, hollows, w3decor, ...(THORNS.length ? { thorns: THORNS } : {}) },
   };
 }
