@@ -164,3 +164,20 @@ Painted logo: cancelled by Matt before it ran, $0.
 
 Total: **$54.65** (round 1 enemies + Flicker $35.6; the title pair $5.0, inside the same cap; round 2 $14.1).
 Under the $65 cap; new jobs stop at $60 (coordinator), the rest kept for re-runs after Matt's gallery review.
+
+## 4. Results (2026-10-28)
+
+Gallery for Matt's picks: `tools/art/gallery-w5-10/index.html` (built by `tools/art/w6to10/gallery.py` from the bucket's
+`w6to10/check/carrier-*.png` and `w6to10/stills/carrier-*.png`; 238 clip previews, 120 stills, 368 files, 16 MB, every file < 170 KB;
+the pictures are git-ignored, rebuild them with the command in gallery.py's header). My verdicts: `tools/art/w6to10/verdicts.json`.
+Title pair (delivered to the polish helper): packed sheets in the scratchpad `titleanim/`, made by titlegpu.py / titleup.py / titlepack.py.
+
+- Good: Thornbark (all 15 moves), Golem, Iron-Claw (most), Drake (most), Reaver's attacks, hurt, stun and defeat, the four W5
+  creatures, Flicker's in-place moves (talk, blink, glow, happy, sad, doze, smug, startled, worried, shrug, turn), the six painted
+  lairs and their moving plates, the times of day, the collar, the water sign.
+- Broken / weak: the Reaver will not walk (skipped for now); Iron-Claw's jump; Drake's leap shrink and claw (stands up like a person);
+  Monarch's flight loops flicker and shrink (takeoff broken; roost, screech, glide and fall are good); Flicker's travelling moves
+  (dart, lead, show) fly away from the camera; the Queen's and the General's "collars off" (the Queen's model gives her a woman's
+  face; the General's keeps his armour); the props side-on (style model draws them at an angle: use Matt's Gemini kit sheets).
+- Next $ (about $5 left before the $60 stop): re-run Monarch hover/fly with the motion model off or at 0.5 (the title idles showed
+  that cures size drift), and Flicker lead/dart with the last frame pinned to the first (pairgpu.py's fix), ~$2-3.

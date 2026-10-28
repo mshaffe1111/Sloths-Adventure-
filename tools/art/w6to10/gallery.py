@@ -60,7 +60,7 @@ def main(dirs):
         who, mv = parts[1], '-'.join(parts[2:-1])
         by.setdefault(who, {}).setdefault(mv, []).append(c)
     for n, p in files.items():
-        if n.startswith('w6t-'):
+        if n.startswith('w6t-') and n.endswith('.webp'):  # the strips are only for the check sheets
             shutil.copy(p, IMG / n)
     still_names = sorted(n[:-5] for n in files if n.endswith('.webp') and not n.startswith('w6t-'))
     for n in still_names:
@@ -120,6 +120,7 @@ section { background:var(--panel); border:1px solid var(--line); border-radius:1
 .sub { color:var(--muted); margin:2px 0 6px; font-size:14px; }
 .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap:10px; }
 .grid.wide { grid-template-columns:repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
+@media (max-width: 700px) { nav { position: static; } }
 .card { margin:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#7f7f7f; }
 .card img { display:block; width:100%; height:auto; }
 .card figcaption { background:var(--panel); padding:6px 8px; font-size:13px; display:flex; flex-direction:column; gap:2px; }
@@ -135,6 +136,8 @@ section { background:var(--panel); border:1px solid var(--line); border-radius:1
 <p class="lede">Made on Hugging Face on 28 October with the game's motion and style models: {n} clips and {s} stills. Nothing here is in the
 game yet. Every guardian clip starts from one of its own painted poses; attacks wind up, hold (the warning), then strike. Two takes of each
 move; green outline = my pick, red = broken (kept so you can see why). Tap a section to jump.</p>
+<p class="lede">Known gaps: the Marsh Reaver will not walk (he stands and sways; skipped for now). The style model will not draw props
+flat side-on, so those come from your Gemini kit sheets. The title pair (Pokey and Meeca) was done first and handed over separately.</p>
 <nav>{nav}</nav>
 {body}
 </main></body></html>
