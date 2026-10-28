@@ -89,3 +89,22 @@ Earlier read of the same log, kept for the details:
 - 45 mid-stage freezes over 100 ms on Sally's phone (worst 264 ms at River logs; 165 ms at Sleeping snake and Push the log),
   against 1 on Matt's upright phone. Her "Finish" section shows 42 choppy windows at about 24 fps (frames 57-67 ms).
 - Memory is fine on every session (flat, or a slow climb to 30-32 MB over 20+ minutes).
+
+## 6. First real outside players (Cheddarbob, Deville, 2026-10-27, both iPhones, both FINISHED the round)
+- Deville (iPhone 430x721, Dot "teach"): finished in about 2 min, 2 hearts lost, survey "hard: Nothing", one thumb, both hands.
+  Ran 22 fps for the first 15 s, then about 30 fps.
+- Cheddarbob (iPhone 393x658): finished in about 3 min, 2 hearts lost, survey "hard: Short hops", one finger, one hand.
+  - Choppy the whole session: 36 choppy 5-second windows, 16-21 fps (worst 16.1 fps, frames 63-70 ms, in "Double jumps"). The
+    frame rate slid from 21 to 18 fps over 3 minutes. A second small phone with poor frame rates (after Sally's 320-wide one).
+  - Started with Dot's help on "quiet" from the first second (`look help quiet` at 0 s): did he press "Skip tips" straight away?
+    If so, a first-timer got no teaching at all and still finished. Worth knowing how often that button is pressed.
+  - 279 duck toggles and 166 jumps in 3 minutes with one finger: many small slides read as duck on/off. Not harmful here, but noisy.
+- Both: `blank` "wait <sheet>" events at almost every new section (Canopy road, goldsnake, turtle, boa, eagle, hero-vine): art
+  arrives after the section starts, so things pop in. 35 such events in the newest 5 sessions across every device. Preload the
+  next section's sheets one section ahead.
+
+## 7. Matt's newest sessions (World 5 and Meeca, landscape, build 15:52)
+- "Twist: falling rocks": 5 lives lost to pits over 9 visits (Matt, the most skilled player); worth a look at whether the rocks
+  and the pits leave a fair line.
+- Meeca's stage: twice Pokey/Meeca kept moving with no finger down for 0.8 s+ ("Learn: the ring, then DON'T EAT. M.",
+  "Develop: two rings, a fern, NO TEA. BE RUDE. M."). Probably the guards' march carrying her; if not, it's a loss of control.
