@@ -4442,13 +4442,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       };
       headwind();
       flag();
-      if (develop === 'knotLast') {
-        windChain(3, R.chance(0.5) ? 1 : -1, false);
-        w4Breath();
+      // (round 5: the gorge beside the knot is the flavour's own piece, not another windy gorge in every roll)
+      // (the knots flavour's piece is a knot: it comes after the one Dot teaches)
+      if (develop === 'knotLast' && flavour !== 'knots') {
+        sig();
         knot();
       } else {
         knot();
-        windChain(3, R.chance(0.5) ? 1 : -1, false);
+        sig();
       }
       flag();
       sig();
@@ -4458,10 +4459,13 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const rocks = () => {
         hint(x + 40, 'Rocks fall on the next landing! Hang on until the shadow comes and the rock falls, then let go');
         windChain(3, R.chance(0.5) ? 1 : -1, false, true);
+        // (the flag clear of the rocks)
+        rest(R.r(200, 260));
         flag();
       };
       // two gorges back to back, the wind each way
       const pair = () => {
+        if (flavour !== 'wind') { sig(); flag(); return; }
         const d = R.chance(0.5) ? 1 : -1;
         windChain(2, d, false);
         windChain(2, d > 0 ? -1 : 1, false);
@@ -4488,15 +4492,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         flag();
       };
       if (twist2 === 'knotWind') { knotWind(); rockWind(); } else { rockWind(); knotWind(); }
-      knotChain(3, R.chance(0.5) ? 1 : -1);
+      // (round 5: the second knot in the wind is the knots flavour's own; the others go on with their flavour's piece)
+      if (flavour === 'knots') knotChain(3, R.chance(0.5) ? 1 : -1);
+      else sig();
       flag();
     });
     type Piece44 = 'wind' | 'long' | 'knot' | 'rocks' | 'gust' | 'pillars' | 'high' | 'stumps' | 'leaf';
     const counts: Record<typeof flavour, Record<Piece44, number>> = {
-      wind: { wind: 2, long: 2, knot: 0, rocks: 1, gust: 0, pillars: 0, high: 0, stumps: 1, leaf: 0 },
-      knots: { wind: 1, long: 0, knot: 3, rocks: 1, gust: 0, pillars: 0, high: 0, stumps: 0, leaf: 0 },
+      wind: { wind: 2, long: 2, knot: 0, rocks: 1, gust: 0, pillars: 0, high: 0, stumps: 0, leaf: 0 },
+      knots: { wind: 0, long: 0, knot: 3, rocks: 0, gust: 0, pillars: 0, high: 0, stumps: 0, leaf: 0 },
       // (no gust lane over open ground here: 4-4's gusts blow across the lianas only)
-      leaf: { wind: 1, long: 0, knot: 0, rocks: 0, gust: 0, pillars: 1, high: 0, stumps: 0, leaf: 3 },
+      leaf: { wind: 0, long: 0, knot: 0, rocks: 0, gust: 0, pillars: 1, high: 0, stumps: 0, leaf: 3 },
     };
     const bag = roll.bag<Piece44>(['wind', 'long', 'knot', 'rocks', 'gust', 'pillars', 'high', 'stumps', 'leaf'], (k) => counts[flavour][k]);
     beat('Finish', () => {
