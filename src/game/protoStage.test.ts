@@ -80,14 +80,15 @@ test('1-6: the far seed needs the Leaf Glide, and the treetop vines cannot be re
     const ledge = st.platforms.find((p) => p.height < 50 && seedC.x >= p.x && seedC.x <= p.x + p.width && Math.abs(p.y - (seedC.y + 34)) < 2)!;
     assert.ok(ledge, `seed ${s}: no ledge under the far seed`);
     assert.ok(G - ledge.y > rise + THIN + 10, `seed ${s}: reachable from the floor`);
-    // the branch it is jumped to from: the nearest branch to its left
-    const from = st.platforms.filter((p) => p.height < 50 && p.x + p.width < ledge.x).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+    // the branch it is jumped to from: the nearest branch to its left (not the floor of a dip of moss on the ground below: since
+    // 2026-10-28 the floor under the far ledge holds dips to jump, protoStage.ts canopy)
+    const from = st.platforms.filter((p) => p.height < 50 && p.y < G && p.x + p.width < ledge.x).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
     const gap = ledge.x - (from.x + from.width);
     const dy = from.y - ledge.y;
     assert.ok(gap > reachJump(dy, true) + 60, `seed ${s}: a double jump makes it (${Math.round(gap)})`);
     assert.ok(gap < reachGlide(dy, true) - 60, `seed ${s}: even the glide falls short`);
     // the next thing to the right is far enough away too (no jumping back to it)
-    const next = st.platforms.filter((p) => p.height < 50 && p.x > ledge.x + ledge.width).sort((a, b) => a.x - b.x)[0];
+    const next = st.platforms.filter((p) => p.height < 50 && p.y < G && p.x > ledge.x + ledge.width).sort((a, b) => a.x - b.x)[0];
     if (next) assert.ok(next.x - (ledge.x + ledge.width) > reachJump(next.y - ledge.y, true) + 40, `seed ${s}: a branch to the right is close`);
     for (const v of st.vines) {
       if (v.vineType !== 'swing_liana' || v.bottomY > 400) continue;
