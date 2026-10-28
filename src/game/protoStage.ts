@@ -4989,6 +4989,8 @@ const KAPOK_MARGIN = 90;
 const MIST_FOOT = 560;
 const MIST_LANE = 150;
 const MIST_STEP = 130;
+/** Dot's rock line in 4-1 and 4-6 (and said by w4Play when the first rock warns near him, if it was missed: w4.rockTip) */
+const ROCKS_LOOSE = 'Rocks are coming loose! Wait for the shadow, then go once it has fallen';
 const MIST_FILL = 3;
 const MIST_LEAVES = 160;
 /**
@@ -5835,7 +5837,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     // (Dot names the first one he comes to: the lowest; as he climbs up toward its ledge, a trunk's height below it, so the line is
     // up before he stands under the rock: at its own height it came after the first hit on some rolls, 2026-10-28)
     const firstRock = rocks.reduce<RockDrop | undefined>((a, q) => (!a || q.land > a.land ? q : a), undefined);
-    if (firstRock) hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', firstRock.land + 280);
+    if (firstRock) hint(ROCKS_LOOSE, ROCKS_LOOSE, ROCKS_LOOSE, firstRock.land + 280);
   }
 
   // 4-6: the ends of the branches high in the tree where a step too far drops him a very long way (the floor, or a ledge far below):
@@ -5873,7 +5875,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const firstMist = mistSpots.reduce((m, q) => Math.max(m, q.y), -Infinity);
     if (firstMist > -Infinity && climbRocks(firstMist - 200, 9)) {
       const low = rocks.reduce((m, q) => Math.max(m, q.land), -Infinity);
-      hint('Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', 'Rocks are coming loose! Wait for the shadow, then go once it has fallen', low + 120);
+      hint(ROCKS_LOOSE, ROCKS_LOOSE, ROCKS_LOOSE, low + 120);
     }
   }
 
@@ -5932,8 +5934,8 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     ...(gusts.length ? { zones: gusts } : {}),
     proto: {
       hints, covers: [], beats, movedPickups, hollows, ...(decor.length ? { decor } : {}), ...(w3decor.length ? { w3decor } : {}), ...(bankWall ? { bankWall, ladders: true } : {}),
-      ...(cliff ? { w4: { rocks, patience: spot ? [spot] : [] } } : {}),
-      ...(mist ? { w4: { patience: mistSpots, nests, floor: { y: floorY, trunkX: firstTrunkX }, ...(rocks.length ? { rocks } : {}) } } : {}),
+      ...(cliff ? { w4: { rocks, patience: spot ? [spot] : [], rockTip: ROCKS_LOOSE } } : {}),
+      ...(mist ? { w4: { patience: mistSpots, nests, floor: { y: floorY, trunkX: firstTrunkX }, ...(rocks.length ? { rocks, rockTip: ROCKS_LOOSE } : {}) } } : {}),
     },
   };
 }

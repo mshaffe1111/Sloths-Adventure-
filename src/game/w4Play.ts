@@ -260,7 +260,13 @@ export class W4Play {
         this.rockWarned = true;
         if (w4.rockTip) h.tip(`tip:${w4.rockTip}`, w4.rockTip, 3.6);
       }
-      if (!r.air && !this.rockWarned) return;
+      // (round 4's rocks down the climbs, 2026-10-28: an air rock in a stage with a rock tip is taught the same way, its grit warning near
+      // him says the tip, and it does not hurt before that: Dot's queue once held the stage's line back past the first climb rock)
+      if (r.air && w4.rockTip && s.phase === 'warn' && Math.abs(r.x - p.x) < 520 && p.y > r.top - 160 && p.y < r.land + 40) {
+        this.rockWarned = true;
+        h.tip(`tip:${w4.rockTip}`, w4.rockTip, 3.6);
+      }
+      if ((!r.air || w4.rockTip) && !this.rockWarned) return;
       if (!this.rockHit.has(cycle) && p.invincibleTimer <= 0 && rockHits(r, h.t, p.x, p.y, 64)) {
         this.rockHit.add(cycle);
         // in the air (4-7's glides) a rock costs a heart, never the ledge: he keeps the way and the speed he was gliding. It knocked him
