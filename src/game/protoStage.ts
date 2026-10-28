@@ -3772,8 +3772,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       flower(sx + w / 2, G - h - 34, 'orchid');
       return p;
     };
-    stone(tail(), Math.round(R.r(45, 65)), Math.round(R.r(140, 170)));
-    stone(tail(), Math.round(R.r(70, 95)), Math.round(R.r(140, 170)));
+    // (the two stones before the turn 140-170 to 230-260 wide too, round 3: the same running-jump overshoot, 33-67 ms windows)
+    stone(tail(), Math.round(R.r(45, 65)), Math.round(R.r(230, 260)));
+    stone(tail(), Math.round(R.r(70, 95)), Math.round(R.r(230, 260)));
     const mid = stone(tail(), Math.round(R.r(60, 85)), Math.round(R.r(230, 270)));
     // (the two stones into the turned wind 130-160 to 230-260 wide, 2026-10-28: a running jump off the broad stone overshot a narrow one
     // unless it was pressed within 33-100 ms, the first-timer bot; wide enough now to land a plain running jump on)
