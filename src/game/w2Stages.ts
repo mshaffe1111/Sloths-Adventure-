@@ -1249,8 +1249,9 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       // (no petals on it: the gap's lesson comes first, then the petals')
       rest(START_WALK, false);
       hint(180, 'Gather flowers for the river king’s crown!');
-      // (the first river's tip well before its edge: the lesson for it comes only 340 px short, and Dot takes a moment to fly in)
-      hint(x - 600, 'Flick up when a log drifts close.');
+      // (the first river's tip well before its edge, about 3 s of walking: the lesson for it comes only 340 px short, and Dot takes a
+      // moment to fly in)
+      hint(x - 750, 'Flick up when a log drifts close.');
       river(1, 60, 2, 124, { flowers: 6, safe: true, tag: 'learn' });
       breath();
       lilyPond(5);

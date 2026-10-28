@@ -133,8 +133,8 @@ export const GUIDE = {
  *     for since they were said;
  *   - moveCapMs: a move tip goes after this long if its move is not done (it does not come back), or sooner once the thing it is about
  *     has been out of view goneMs (QA 2026-10-28, 1-7: "Flick up into the trunk to grab it" stayed 30 s with no trunk in reach).
- * A first-time lesson may also come in over a plain information or story line already up (that line comes back once, after it): a
- * stage's opening words held the gap's lesson back past 2-2's first river.
+ * A first-time lesson may also come in over a plain information line already up, and any tip over a story aside (the line cut comes
+ * back once, after it): a stage's opening words held the gap's lesson back past 2-2's first river.
  */
 export const CALM = { startMs: 2500, gapMs: 10000, repeatMax: 2, moveCapMs: 12000, goneMs: 2500 } as const;
 
@@ -246,7 +246,8 @@ export class GuideQueue {
     if (!line.text || this.has(line.key, line.text)) return;
     const cur = this.cur;
     // (calm: a first-time lesson comes in over a plain information or story line, which goes back to be said again: see CALM)
-    const lessonCut = this.calm && line.source === 'lesson' && line.kind === 'teach' && !!cur && (cur.line.kind === 'info' || cur.line.kind === 'story') && now >= CALM.startMs;
+    // (and any tip comes in over a story aside: in 2-2 the opening aside held the first river's tip until he was at the water)
+    const lessonCut = this.calm && line.kind === 'teach' && !!cur && now >= CALM.startMs && (cur.line.kind === 'story' || (line.source === 'lesson' && cur.line.kind === 'info'));
     if (cur && ((isUrgent(line) && !isUrgent(cur.line) && PRIORITY[line.kind] > PRIORITY[cur.line.kind]) || lessonCut)) {
       this.events.push({ type: 'end', show: cur, why: 'cut' });
       // (it goes back in front of everything of its own priority, to be said again in full; a scene's line that was mostly read
