@@ -205,6 +205,16 @@ test link, the QA testers or a release until the lead has re-run them, on more t
 - **The level check follows a swing from a ledge to a ledge, never from vine to vine** (2026-10-28): a chain of lianas over a real
   drop reads as unfinishable (4-4 is not judged by the check for that reason). Where a stage is checked, a swing over a drop is one
   liana from bank to bank (World 4's `swings`, windChain with one vine), as many in a row as you like.
+- **"The vines swing wildly"** (iPhone tester, 2026-10-28). Not the frame rate: driven through the engine's 30 fps gate at 120 Hz,
+  60 Hz, uneven 8-50 ms frames and 100-250 ms stalls, with a thumb pumping, flicking or climbing, the old swing held 0.83-0.84 rad
+  every time. The arcs themselves were the trouble: ±47° at the 1.9 s rhythm, a swing that pushed itself back up to full size after
+  every catch, and his feet sweeping ±115 px on a short grip and ±230 px on a long one. Now every liana swings on its own (Matt:
+  Donkey Kong Country): its angle comes from the vines' clock (`physics.ts` `vineAngle`), never from forces, and is the same with or
+  without him on it. Up and down climb, left and right only turn him, letting go is the only choice. A catch takes the vine where it
+  is (no jolt). All lianas swing in step: measured on every chain in Worlds 1-10, in step the next vine swings back to meet him (the
+  smallest catch window 14 frames), while half a swing apart it swings away (0 frames on 12 chains). Any check of a leap from one vine
+  to the next must carry the swing's clock through the flight (`canGrabSwing(x, y, v, t)`, `protoCheck`); a jump from a ledge can wait
+  for the vine, so it is checked against the line the vine swings through hanging straight down. Proof: `vineSelfSwing.test.ts`.
 
 ## 7. Where things are
 

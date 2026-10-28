@@ -14,7 +14,7 @@ import { generateAllLevels } from './worldsData.ts';
 import { EXTRA_STAGES } from './extraStages.ts';
 import { KIT_STAGE_ID, kitStageConfig } from './kitStage.ts';
 import { setLayoutVariant } from './stageGenerator.ts';
-import { newAirDrive, swingClockAt, vineAngle, vineOmega } from './physics.ts';
+import { newAirDrive, swingClockAt, swingSetup, vineAmp, vineAngle, vineOmega } from './physics.ts';
 import { newGlide } from './glide.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, InputState, LevelConfig, Platform, PlayerState, Rope, Vine } from './types.ts';
@@ -238,9 +238,10 @@ export class RealPlay {
     });
   }
 
-  swingState(): { angle: number; omega: number; len: number; t: number } {
+  swingState(): { angle: number; omega: number; len: number; t: number; amp?: number } {
     const p = this.p;
-    return { angle: p.swingAngle ?? 0, omega: p.swingAngularVelocity ?? 0, len: p.swingLength ?? 100, t: this.e.vineClock };
+    const v = this.vines.find((q) => q.id === p.swingVineId);
+    return { angle: p.swingAngle ?? 0, omega: p.swingAngularVelocity ?? 0, len: p.swingLength ?? 100, t: this.e.vineClock, amp: v ? vineAmp(v) : undefined };
   }
 
   /** the vines' swing clock (physics.ts vineAngle) */
@@ -291,6 +292,7 @@ export class RealPlay {
   bare(platforms: Platform[], vines: Vine[] = [], ropes: Rope[] = []) {
     const e = this.e;
     Object.assign(e, { platforms, vines, ropes, collectibles: [], w4: null, proto: null });
+    swingSetup(vines);
     const st = e.currentStage as GeneratedStage;
     Object.assign(st, { zones: [], waterY: undefined, rivers: [], exitTotemX: 0, checkpoints: [], config: { ...st.config, levelHeight: 100000, levelWidth: 100000 } });
   }

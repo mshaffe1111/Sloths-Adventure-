@@ -39,7 +39,7 @@ import { controlStyle } from './controlPrefs.ts';
 import { cardSafe, HARMLESS_LESSONS, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
-import { ASSIST, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, timedLaunch, vineAngle, type SwingState } from './physics.ts';
+import { ASSIST, FORGIVE, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, swingSetup, timedLaunch, vineAmp, vineAngle, type SwingState } from './physics.ts';
 import { jumpHelp } from './jumpHelp.ts';
 import { HAND_REACH, HANG_DROP, ROPE_GRAB, ROPE_SPEED, ropeYAt } from './rope.ts';
 import { drawRopes } from './ropeArt.ts';
@@ -595,6 +595,8 @@ export class GameEngine {
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
+    // each liana's own swing: its size (neighbours' swings never meet) and its place in the swing (physics.ts swingSetup)
+    swingSetup(this.vines);
     this.ropes = this.currentStage.ropes ?? [];
     this.skills = learnedSkills(config.id);
     this.enemies = this.currentStage.enemies;
@@ -1434,9 +1436,12 @@ export class GameEngine {
     let nearTreeVine: Vine | null = null;
     let nearSwingVine: Vine | null = null;
 
-    for (const v of this.vines) {
-      // A liana we are already swinging on stays ours however far it carries us
-      if (p.isVineSwinging && v.id === p.swingVineId) {
+    // A liana we are already swinging on stays ours however far it carries us, and no other is in reach meanwhile: the lianas swing on
+    // their own (physics.ts), and a neighbour's swing can come within reach of him; it used to be taken for his own (the first match in
+    // the list), which threw him across to its swing
+    const own = p.isVineSwinging ? this.vines.find((v) => v.id === p.swingVineId) : undefined;
+    for (const v of own ? [own] : this.vines) {
+      if (own) {
         nearSwingVine = v;
         break;
       }
@@ -1633,7 +1638,7 @@ export class GameEngine {
 
         {
           // (the vine's own clock, a frame ago: the step moves it on to now, and the vine is where its swing puts it)
-          const sw: SwingState = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100, t: this.vineClock - dt };
+          const sw: SwingState = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100, t: this.vineClock - dt, amp: vineAmp(nearSwingVine) };
           if (this.input.state.right) p.facing = 1;
           if (this.input.state.left) p.facing = -1;
           // the self-swing (physics.ts TIMED): the vine swings itself at a steady height and rhythm; holding a direction only turns
@@ -1697,7 +1702,7 @@ export class GameEngine {
           // Forward boost + heroic upward arc (capped so a big swing cannot rocket you off the map)
           {
             // let go in the sweet spot: the leap toward the next vine. Anywhere else he flies off the way the vine was carrying him.
-            const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100 };
+            const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100, amp: vineAmp(nearSwingVine) };
             // a press a beat after the sweet spot, while still out in front (the forward end of the swing): the leap it would have given
             const snap = this.sweetSnap;
             const call = releaseCall(sw, releaseDir as 1 | -1, snap && snap.dir === releaseDir ? this.gameTime - snap.at : Infinity);
@@ -1725,7 +1730,7 @@ export class GameEngine {
           const hands = { steer: steer as -1 | 0 | 1, down: this.input.state.down, idle: this.swingIdle, held: this.swingDownHeld.t };
           for (const plat of this.platforms) {
             if (p.x >= plat.x - 10 && p.x <= plat.x + plat.width + 10 && p.vy >= 0 && p.y < plat.y + 14 && p.y > plat.y - SWING_LAND.reach) {
-              const how = swingLanding({ angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0 }, nearSwingVine.x, plat, hands, p.y - plat.y);
+              const how = swingLanding({ angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, amp: vineAmp(nearSwingVine) }, nearSwingVine.x, plat, hands, p.y - plat.y);
               if (how === 'step') {
                 // down and toward a ledge just below his feet: he steps off and drops onto it
                 p.isVineSwinging = false;
@@ -4788,7 +4793,8 @@ export class GameEngine {
       return false;
     }
     const p = this.player;
-    const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100 };
+    const own = this.vines.find((v) => v.id === p.swingVineId);
+    const sw = { angle: p.swingAngle || 0, omega: p.swingAngularVelocity || 0, len: p.swingLength || 100, amp: own ? vineAmp(own) : undefined };
     if (releaseCall(sw, dir, Infinity) !== 'early') return false;
     this.swingLeapWait = RELEASE.early;
     this.input.state.jumpPressed = false;

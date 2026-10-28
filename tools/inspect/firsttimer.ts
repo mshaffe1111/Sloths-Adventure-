@@ -39,6 +39,7 @@ import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
+import { TIMED, vineAmp } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { findRoute } from './route.ts';
 import { sampleRoute } from './beats.ts';
@@ -1076,8 +1077,10 @@ export class FirstTimerRun {
     // it swings forward: a moment to pick in each swing, never a pump
     if (p.isVineSwinging) {
       this.swingT += DT;
-      const a = p.swingAngle ?? 0, om = p.swingAngularVelocity ?? 0;
-      if (!this.pending && ((this.swingT > 1 && a * fdir > 0.3 && om * fdir > 0) || this.swingT > 7)) {
+      const own = this.sim.vines.find((q) => q.id === p.swingVineId);
+      // (how far forward, as a share of the vine's own swing: physics.ts swingSetup sizes each one)
+      const a = (p.swingAngle ?? 0) / Math.max(0.05, own ? vineAmp(own) : TIMED.amp), om = p.swingAngularVelocity ?? 0;
+      if (!this.pending && ((this.swingT > 1 && a * fdir > 0.4 && om * fdir > 0) || this.swingT > 7)) {
         this.swingT = 0;
         return this.decide(fdir, 'single', true, side(fdir));
       }

@@ -158,6 +158,8 @@ export class W4Play {
   private flow: number[];
   private pool: number[];
   private knots: Array<KnotState & { freedAt?: number }>;
+  /** a knotted vine's own swing (physics.ts swingSetup), kept while it hangs tied up and still */
+  private vineSwing = new Map<number, number>();
   /** the host's clock at the last step (s) */
   private clock = 0;
   private vineFull = new Map<number, number>();
@@ -212,7 +214,8 @@ export class W4Play {
       this.vineFull.set(v.id, v.bottomY);
       v.bottomY = tiedBottom(v.topY, v.bottomY, k.y);
       this.vineTied.set(v.id, v.bottomY);
-      // (tied up it hangs still: the self-swing, physics.ts, starts as Dot frees it)
+      // (tied up it hangs still: the self-swing, physics.ts, starts as Dot frees it, growing to the swing the stage gave it)
+      this.vineSwing.set(v.id, v.swingAmp ?? TIMED.amp);
       v.swingAmp = 0;
     }
   }
@@ -404,7 +407,7 @@ export class W4Play {
           const u = Math.min(1, (h.t - now.freedAt) / KNOT_DROP);
           v.bottomY = tied + (full - tied) * u * u;
           // its swing grows as it drops, from hanging still to the vine's own (the default) once it is down
-          v.swingAmp = u >= 1 ? undefined : TIMED.amp * u * u;
+          v.swingAmp = (this.vineSwing.get(v.id) ?? TIMED.amp) * u * u;
         }
       }
     });

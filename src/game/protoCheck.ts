@@ -5,9 +5,23 @@
  * The vines swing on their own (physics.ts, the self-swing), all on one clock. A jump from a ledge can wait for the vine, so it is
  * checked against the line the vine swings through hanging straight down (canGrabSwing with no clock); a leap from one vine to the next
  * cannot choose the next vine's moment, so it is checked against where the next vine's swing has it when he gets there (the swing's
- * clock carried through the flight).
+ * clock carried through the flight). A pair is checked at the swings the stage gives two vines side by side (physics.ts swingSetup: each
+ * swings only as far as keeps their swings apart, and the next one is `chainPhase` of a swing ahead).
  */
-import { PHYS, airStep, canGrabSwing, inSweetSpot, swingGrab, swingStep, timedLaunch, type AirBody } from './physics.ts';
+
+/**
+ * how far forward in its swing he is, as a share of the vine's swing (1: the front). The checks' moments were set in radians for the old
+ * swing of 0.8 either side (a sine of 0.5 there is 0.65 of the way to its front): they are shares of whatever the vine swings now.
+ */
+const share = (s: { angle: number; amp?: number }) => s.angle / Math.max(0.01, s.amp ?? TIMED.amp);
+
+/** A and B with the swings the stage would give them side by side (an author's own sizes kept) */
+function pair(A: Vine, B: Vine): [Vine, Vine] {
+  const a = { ...A }, b = { ...B };
+  swingSetup([a, b]);
+  return [a, b];
+}
+import { PHYS, TIMED, airStep, canGrabSwing, inSweetSpot, swingGrab, swingSetup, swingStep, timedLaunch, type AirBody } from './physics.ts';
 import type { Platform, Vine } from './types.ts';
 
 const DT = 1 / 30;
@@ -62,12 +76,16 @@ function enter(A: Vine): { s: ReturnType<typeof swingGrab> } {
  * seconds of a swing on A during which letting go (holding toward B, with the double jump if it helps) catches B. `wind` (px/s, + to the
  * right) is a gust blowing at full strength the whole flight, as the engine adds it in the air (zones.ts windPush): 0 is the calm.
  */
-export function catchWindow(A: Vine, B: Vine, wind = 0): number {
+export function catchWindow(A0: Vine, B0: Vine, wind = 0): number {
+  const [A, B1] = pair(A0, B0);
+  return catchWindowAt(A, B1, wind);
+}
+function catchWindowAt(A: Vine, B: Vine, wind: number): number {
   const { s } = enter(A);
   let ok = 0;
   for (let k = 0; k < 90; k++) {
     const r = swingStep(s, A, DT, 1, 0);
-    if (Math.sin(s.angle) <= 0.05) continue;
+    if (share(s) <= 0.0625) continue;
     const l = timedLaunch(s, 1);
     let hit = false;
     for (const tD of [99, 0.15, 0.3, 0.45]) {
@@ -88,30 +106,33 @@ export function catchWindow(A: Vine, B: Vine, wind = 0): number {
 }
 
 /** the swing state on B when he arrives from A (the first release of A that catches B), or null */
-function arriveFrom(A: Vine, B: Vine, wind = 0) {
+function arriveFrom(A0: Vine, B0: Vine, wind = 0) {
+  const [A, B1] = pair(A0, B0);
+  const B = B1;
   const { s } = enter(A);
   for (let k = 0; k < 90; k++) {
     const r = swingStep(s, A, DT, 1, 0);
-    if (Math.sin(s.angle) <= 0.2) continue;
+    if (share(s) <= 0.25) continue;
     const l = timedLaunch(s, 1);
     const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
     for (let i = 1; i <= 60; i++) {
       airStep(c, DT, 1);
       c.x += wind * DT;
-      if (canGrabSwing(c.x, c.y, B, s.t! + i * DT)) return swingGrab(c, B, s.t! + i * DT);
+      if (canGrabSwing(c.x, c.y, B, s.t! + i * DT)) return { s: swingGrab(c, B, s.t! + i * DT), B };
     }
   }
   return null;
 }
 
 /** how many release moments (30 Hz) of a swing on B land him on `to`; the swing is entered from A, or from a jump when A is null (`wind` as in catchWindow) */
-export function landWindow(A: Vine | null, B: Vine, to: Platform, wind = 0): number {
-  const sb = A ? arriveFrom(A, B, wind) : enter(B).s;
-  if (!sb) return -1;
+export function landWindow(A: Vine | null, B0: Vine, to: Platform, wind = 0): number {
+  const got = A ? arriveFrom(A, B0, wind) : { s: enter(B0).s, B: B0 };
+  if (!got) return -1;
+  const { s: sb, B } = got;
   let ok = 0;
   for (let k = 0; k < 90; k++) {
     const r = swingStep(sb, B, DT, 1, 0);
-    if (Math.sin(sb.angle) <= 0.05) continue;
+    if (share(sb) <= 0.0625) continue;
     const l = timedLaunch(sb, 1);
     let landed = false;
     for (const tD of [99, 0.2, 0.4]) {
@@ -137,11 +158,15 @@ export function landWindow(A: Vine | null, B: Vine, to: Platform, wind = 0): num
  * The let-go most players make: the moment the swing passes forward through `at` (sin of the angle). Does it catch B both when they
  * just let go and when they add the second jump on the way? (A next vine hung too low is flown clean over by an early, high leap.)
  */
-export function earlyCatch(A: Vine, B: Vine, at = 0.5, wind = 0): boolean {
+export function earlyCatch(A0: Vine, B0: Vine, at = 0.5, wind = 0): boolean {
+  const [A, B1] = pair(A0, B0);
+  return earlyCatchAt(A, B1, at, wind);
+}
+function earlyCatchAt(A: Vine, B: Vine, at: number, wind: number): boolean {
   const { s } = enter(A);
   for (let k = 0; k < 90; k++) {
     const r = swingStep(s, A, DT, 1, 0);
-    if (Math.sin(s.angle) < at || s.omega <= 0) continue;
+    if (share(s) < Math.asin(at) / 0.8 || s.omega <= 0) continue;
     const l = timedLaunch(s, 1);
     for (const tD of [99, 0.3]) {
       const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
@@ -164,7 +189,11 @@ export function earlyCatch(A: Vine, B: Vine, at = 0.5, wind = 0): boolean {
  * the band of heights his feet pass through within `reach` of x = cx, over every sweet-spot leap from A that catches B (3-8 hangs a
  * thorn vine there: its bud just above the band, its reach down through it). Null when no leap catches B.
  */
-export function leapBand(A: Vine, B: Vine, cx: number, reach: number): [number, number] | null {
+export function leapBand(A0: Vine, B0: Vine, cx: number, reach: number): [number, number] | null {
+  const [A, B1] = pair(A0, B0);
+  return leapBandAt(A, B1, cx, reach);
+}
+function leapBandAt(A: Vine, B: Vine, cx: number, reach: number): [number, number] | null {
   const { s } = enter(A);
   let lo = Infinity, hi = -Infinity;
   for (let k = 0; k < 150; k++) {

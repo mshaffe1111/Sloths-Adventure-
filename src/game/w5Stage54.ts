@@ -25,7 +25,7 @@ import { G, heartsAtFlags, stageSeconds, stream, type LeafCover, type ProtoExtra
 import type { GeneratedStage } from './stageGenerator.ts';
 import { findForStage } from './finds.ts';
 import { catchWindow, earlyCatch, jumpGrab, landWindow } from './protoCheck.ts';
-import { airStep, canGrabSwing, inSweetSpot, PHYS, swingGrab, swingStep, timedLaunch, type AirBody } from './physics.ts';
+import { airStep, canGrabSwing, swingSetup, inSweetSpot, PHYS, swingGrab, swingStep, timedLaunch, type AirBody } from './physics.ts';
 import { PAST_SHRINE } from './rules.ts';
 import { silkLine, type Chair, type Seamstress, type SilkSheet, type W5Decor, type W5Extras, type W5Spider } from './w5Kit.ts';
 import { W5_HINTS, type W5Hint } from './w5Lines.ts';
@@ -70,9 +70,17 @@ export const WHOLE_FROM = 0.05;
  * spacing. A press a beat before the bottom is held for the sweet spot's first moment, physics.ts RELEASE.early, and may still fall
  * short into the soft pit: a climb, and another go.)
  */
-export function wholeSwing(A: Vine, o: { to?: Vine; land?: Platform }, from = WHOLE_FROM): boolean {
+export function wholeSwing(A0: Vine, o: { to?: Vine; land?: Platform }, from = WHOLE_FROM): boolean {
+  // (the lines at the swings the stage gives them side by side: physics.ts swingSetup)
+  const A = { ...A0 };
+  const B = o.to ? { ...o.to } : undefined;
+  swingSetup(B ? [A, B] : [A]);
+  return wholeSwingAt(A, B, o.land, from);
+}
+function wholeSwingAt(A: Vine, to: Vine | undefined, land: Platform | undefined, from: number): boolean {
   const DT = 1 / 30;
   const len = A.bottomY - A.topY;
+  const o = { land };
   for (const k of [0.7, 0.95]) {
     const s = swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * k, len - 20), vx: 300, vy: 100 }, A);
     let seen = false;
@@ -83,7 +91,8 @@ export function wholeSwing(A: Vine, o: { to?: Vine; land?: Platform }, from = WH
         continue;
       }
       seen = true;
-      if (s.angle < from) continue;
+      // (`from` in radians of the old 0.8 swing: a share of the vine's swing now)
+      if (s.angle / Math.max(0.01, s.amp ?? 0.8) < from / 0.8) continue;
       const l = timedLaunch(s, 1);
       const c: AirBody = { x: at.x, y: at.y, vx: l.vx, vy: l.vy };
       let ok = false;
@@ -91,7 +100,7 @@ export function wholeSwing(A: Vine, o: { to?: Vine; land?: Platform }, from = WH
         const py = c.y;
         airStep(c, DT, 1);
         // (the next line swings on the same clock: where it is when he gets there, physics.ts the self-swing)
-        if (o.to && canGrabSwing(c.x, c.y, o.to, s.t! + i * DT)) ok = true;
+        if (to && canGrabSwing(c.x, c.y, to, s.t! + i * DT)) ok = true;
         const L = o.land;
         if (L && c.vy >= 0 && py <= L.y + 14 && c.y >= L.y && c.x > L.x + 10 && c.x < L.x + L.width) ok = true;
         if (c.y > 900) break;

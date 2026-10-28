@@ -11,10 +11,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
-import { airStep, PHYS, setTimedSwing, swingGrab, swingStep, timedLaunch, TIMED, vineAngle, type AirBody } from './physics.ts';
-import { catchWindow } from './protoCheck.ts';
+import { canGrabSwing, isChain, pressWindow, setTimedSwing, swingClearance, swingSetup, TIMED, vineAmp, vineAngle, type SwingVine } from './physics.ts';
 import { generateAllLevels } from './worldsData.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
+import { levelConfig } from './realPlay.ts';
+import { MEECA_STAGE_ID } from './extraStages.ts';
 import type { Platform, Vine } from './types.ts';
 
 type Timing = 'steady30' | 'hz120' | 'hz60' | 'jitter' | 'stalls';
@@ -60,12 +61,13 @@ function firstLiana(r: RealPlay): Vine {
 
 test('self-swing: under any frame timing and any thumb, the vine swings exactly its own swing for 20 s (never wider, never faster)', () => {
   setTimedSwing(false);
-  const wMax = TIMED.amp * ((2 * Math.PI) / TIMED.period);
   for (const kind of ['steady30', 'hz120', 'hz60', 'jitter', 'stalls'] as Timing[]) {
     for (const hands of ['off', 'pump', 'flick', 'mash', 'climb'] as Hands[]) {
       const r = new RealPlay('1-6', 1);
       const v = firstLiana(r);
       r.swing(v, { angle: 0, omega: 0.5, len: 160 });
+      const amp = vineAmp(v);
+      const wMax = amp * ((2 * Math.PI) / TIMED.period);
       let t = 0, k = 0, maxA = 0, maxW = 0;
       for (const dt of loopDts(kind, 2000)) {
         if (t >= 20) break;
@@ -81,7 +83,7 @@ test('self-swing: under any frame timing and any thumb, the vine swings exactly 
         maxA = Math.max(maxA, Math.abs(a));
         maxW = Math.max(maxW, Math.abs(r.p.swingAngularVelocity ?? 0));
       }
-      assert.ok(maxA <= TIMED.amp + 1e-9 && maxA > TIMED.amp - 0.02, `${kind} ${hands}: swings to ${maxA.toFixed(3)} rad (its swing: ${TIMED.amp})`);
+      assert.ok(maxA <= amp + 1e-9 && maxA > amp - 0.02, `${kind} ${hands}: swings to ${maxA.toFixed(3)} rad (its swing: ${amp})`);
       assert.ok(maxW <= wMax + 1e-9, `${kind} ${hands}: turns at up to ${maxW.toFixed(2)} rad/s (its swing: ${wMax.toFixed(2)})`);
     }
   }
@@ -108,7 +110,7 @@ test('self-swing: at a steady 30 fps, left and right change nothing (pumping, fl
   }
   // its rhythm: the turns come a half period apart
   const turns: number[] = [];
-  for (let k = 1; k + 1 < off.length; k++) if (Math.abs(off[k]) >= Math.abs(off[k - 1]) && Math.abs(off[k]) > Math.abs(off[k + 1]) && Math.abs(off[k]) > 0.5) turns.push(k / 30);
+  for (let k = 1; k + 1 < off.length; k++) if (Math.abs(off[k]) >= Math.abs(off[k - 1]) && Math.abs(off[k]) > Math.abs(off[k + 1]) && Math.abs(off[k]) > 0.2) turns.push(k / 30);
   const half = (turns[turns.length - 1] - turns[0]) / (turns.length - 1);
   assert.ok(Math.abs(half * 2 - TIMED.period) < 0.05, `a swing takes ${(half * 2).toFixed(2)} s (its swing: ${TIMED.period})`);
 });
@@ -136,7 +138,13 @@ test('self-swing: an empty liana swings on its own, a climbing vine hangs still,
     lo = Math.min(lo, v.swingAngle ?? 0);
     hi = Math.max(hi, v.swingAngle ?? 0);
   }
-  assert.ok(lo < -TIMED.amp + 0.05 && hi > TIMED.amp - 0.05, `the empty liana swings ${lo.toFixed(2)}..${hi.toFixed(2)}`);
+  // (over a whole swing)
+  for (let k = 60; k < 30 * TIMED.period + 2; k++) {
+    r.frame();
+    lo = Math.min(lo, v.swingAngle ?? 0);
+    hi = Math.max(hi, v.swingAngle ?? 0);
+  }
+  assert.ok(vineAmp(v) > 0.3 && lo < -vineAmp(v) + 0.02 && hi > vineAmp(v) - 0.02, `the empty liana swings ${lo.toFixed(2)}..${hi.toFixed(2)}`);
   if (trunk) assert.equal(trunk.swingAngle, undefined, 'a climbing vine has no swing');
   // jumps at the liana at many moments of its swing: the frame he catches it, the vine is where its swing has it (no pull)
   let caught = 0;
@@ -157,76 +165,78 @@ test('self-swing: an empty liana swings on its own, a climbing vine hangs still,
   assert.ok(caught >= 12, `caught at ${caught} of 24 moments of the swing`);
 });
 
-// ───────────────────────────── the release windows on the stages ─────────────────────────────
+// ───────────────────────────── the stages: swings apart, and always a way on ─────────────────────────────
 
-const DT = 1 / 30;
-/** ms of one swing on B (entered as a jump brings him in) in which letting go toward +x lands him on `to` (the second jump allowed) */
-function ledgeWindow(B: Vine, to: Platform): number {
-  const len = B.bottomY - B.topY;
-  const s = swingGrab({ x: B.x - 40, y: B.topY + Math.min(len * 0.7, len - 20), vx: 300, vy: 100 }, B);
-  const n = Math.round(TIMED.period / DT);
-  let ok = 0;
-  for (let k = 0; k < n; k++) {
-    const r = swingStep(s, B, DT, 1, 0);
-    const l = timedLaunch(s, 1);
-    let landed = false;
-    for (const tD of [99, 0.2, 0.4]) {
-      const c: AirBody = { x: r.x, y: r.y, vx: l.vx, vy: l.vy };
-      let t = 0, used = false;
-      for (let i = 0; i < 90 && !landed; i++) {
-        if (!used && t >= tD) {
-          c.vy = -PHYS.doubleV;
-          used = true;
-        }
-        const prevY = c.y;
-        airStep(c, DT, 1);
-        t += DT;
-        if (c.vy >= 0 && prevY <= to.y + 14 && c.y >= to.y && c.x > to.x + 10 && c.x < to.x + to.width) landed = true;
-        if (c.y > to.y + 400) break;
-      }
-      if (landed) break;
+/** to the next liana of a chain, at the phases the stage gives them */
+const chainWindow = (A: SwingVine, B: SwingVine) => pressWindow(A, (c, t) => canGrabSwing(c.x, c.y, B, t));
+/** to a ledge: landing on its top */
+const ledgeWindow = (A: SwingVine, to: Platform) => pressWindow(A, (c, _t, prevY) => c.vy >= 0 && prevY <= to.y + 14 && c.y >= to.y && c.x > to.x + 10 && c.x < to.x + to.width);
+
+/** every stage with swinging vines, on its first three rolls, as the engine gives them their swings */
+function vineStages(): Array<{ id: string; seed: number; vines: Vine[]; platforms: Platform[] }> {
+  const out: Array<{ id: string; seed: number; vines: Vine[]; platforms: Platform[] }> = [];
+  const configs = [...generateAllLevels().filter((c) => c.objectiveType !== 'boss_lair'), levelConfig(MEECA_STAGE_ID)];
+  for (const c of configs) {
+    for (const seed of [1, 2, 3]) {
+      setLayoutVariant(seed);
+      const st = generateStage({ ...c, unlocked: true });
+      setLayoutVariant(null);
+      if (!st.vines.some((v) => v.vineType !== 'tree_climb')) continue;
+      swingSetup(st.vines);
+      out.push({ id: c.id, seed, vines: st.vines, platforms: st.platforms });
     }
-    if (landed) ok++;
   }
-  return ok * DT * 1000;
+  return out;
 }
 
-test('self-swing: on every stage, letting go of a liana has a window of at least 167 ms on Normal and 300 ms on Easy, to the next liana or a ledge', () => {
-  const levels = generateAllLevels().filter((c) => c.objectiveType !== 'boss_lair');
+test('self-swing: neighbouring vines never swing into each other, nor into Pokey hanging on either, at any moment', () => {
+  let pairs = 0;
   const bad: string[] = [];
-  let chains = 0, ledges = 0;
-  try {
-    for (const easy of [false, true]) {
-      setTimedSwing(easy);
-      const need = easy ? 300 : 167;
-      for (const c of levels) {
-        for (const seed of [1, 2, 3]) {
-          setLayoutVariant(seed);
-          const st = generateStage({ ...c, unlocked: true });
-          setLayoutVariant(null);
-          const L = st.vines.filter((v) => v.vineType !== 'tree_climb' && !v.kit).sort((a, b) => a.x - b.x);
-          for (let i = 0; i < L.length; i++) {
-            const A = L[i], B = L[i + 1];
-            if (B && B.x - A.x < 560 && Math.abs(B.topY - A.topY) < 200) {
-              chains++;
-              // (catchWindow counts the good moments over 90 frames, a swing and a half: this is per swing)
-              const w = (catchWindow(A, B) * 1000 * TIMED.period) / (90 * DT);
-              if (w < need) bad.push(`${easy ? 'Easy' : 'Normal'} ${c.id} roll ${seed}: liana ${Math.round(A.x)} -> ${Math.round(B.x)} ${Math.round(w)} ms`);
-              continue;
-            }
-            const plats = st.platforms.filter((p) => p.x + p.width > A.x + 40 && p.x < A.x + 700 && p.y > A.topY && p.y < A.bottomY + 300 && p.type !== 'bouncy' && p.width > 30);
-            if (!plats.length) continue;
-            ledges++;
-            const best = Math.max(...plats.map((p) => ledgeWindow(A, p)));
-            if (best < need) bad.push(`${easy ? 'Easy' : 'Normal'} ${c.id} roll ${seed}: liana ${Math.round(A.x)} to a ledge ${Math.round(best)} ms`);
-          }
-        }
+  for (const st of vineStages()) {
+    const L = st.vines.filter((v) => v.vineType !== 'tree_climb');
+    for (let i = 0; i < L.length; i++) {
+      for (let j = i + 1; j < L.length; j++) {
+        const a = L[i], b = L[j];
+        if (!(a.topY < b.bottomY + 40 && b.topY < a.bottomY + 40) || Math.abs(a.x - b.x) > 1200) continue;
+        pairs++;
+        // (two vines an author hung close together, side by side or one under the other, both hang still: nothing swings to meet)
+        if (vineAmp(a) === 0 && vineAmp(b) === 0) continue;
+        if (swingClearance(a, b) < -1e-6) bad.push(`${st.id} roll ${st.seed}: vines at ${Math.round(a.x)} and ${Math.round(b.x)} ${swingClearance(a, b).toFixed(0)} px`);
       }
     }
-  } finally {
-    setTimedSwing(false);
-    setLayoutVariant(null);
   }
-  assert.ok(chains > 20 && ledges > 20, `checked ${chains} liana-to-liana and ${ledges} liana-to-ledge lets-go`);
+  assert.ok(pairs > 50, `${pairs} pairs side by side`);
   assert.deepEqual(bad, []);
 });
+
+for (const easy of [false, true]) {
+  test(`self-swing (${easy ? 'Easy' : 'Normal'}): every jump off a liana, to the next liana or to a ledge, has a window on every swing of at least ${easy ? 300 : 167} ms, at the phases the stage gives the vines`, () => {
+    const need = easy ? 300 : 167;
+    const bad: string[] = [];
+    let chains = 0, ledges = 0;
+    try {
+      setTimedSwing(easy);
+      for (const st of vineStages()) {
+        const L = st.vines.filter((v) => v.vineType !== 'tree_climb' && !v.kit).sort((a, b) => a.x - b.x);
+        for (let i = 0; i < L.length; i++) {
+          const A = L[i], B = L[i + 1];
+          if (B && isChain(A, B)) {
+            chains++;
+            const w = chainWindow(A, B);
+            if (w < need) bad.push(`${st.id} roll ${st.seed}: liana ${Math.round(A.x)} -> ${Math.round(B.x)} ${Math.round(w)} ms`);
+            continue;
+          }
+          const plats = st.platforms.filter((p) => p.x + p.width > A.x + 40 && p.x < A.x + 700 && p.y > A.topY && p.y < A.bottomY + 300 && p.type !== 'bouncy' && p.width > 30);
+          if (!plats.length) continue;
+          ledges++;
+          const best = Math.max(...plats.map((p) => ledgeWindow(A, p)));
+          if (best < need) bad.push(`${st.id} roll ${st.seed}: liana ${Math.round(A.x)} to a ledge ${Math.round(best)} ms`);
+        }
+      }
+    } finally {
+      setTimedSwing(false);
+    }
+    assert.ok(chains > 20 && ledges > 20, `checked ${chains} liana-to-liana and ${ledges} liana-to-ledge jumps`);
+    assert.deepEqual(bad, []);
+  });
+}
