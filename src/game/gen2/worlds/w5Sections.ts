@@ -265,7 +265,7 @@ const rise: SectionTemplate = {
   exit: { piece: 'b', kind: 'ground' },
   exitDy: -65,
   sockets: [
-    petals('a', 'a', 0.35, 2, 100),
+    chair('lead', 'a', [0.28, 0.34]),
     cake('cake', 'a', [0.72, 0.78], { phases: LIVE, chance: 0.6 }),
     petals('b', 'b', 0.16, 1),
     thread('thread', 'b', [0.36, 0.42]),
@@ -340,6 +340,8 @@ const highRoad: SectionTemplate = {
     bank('bank', [1150, 1300]),
     over('step', 'bank', [0.07, 0.09], -92, 150),
     over('road', 'step', [0.72, 0.74], [-90, -78], [460, 560]),
+    // (a low stump near the end: the walk out from under the road is never quiet, whoever the roll left out)
+    stump('tail', 'bank', [0.9, 0.93], [45, 55], [100, 120]),
   ],
   entry: { piece: 'bank', kind: 'ground' },
   exit: { piece: 'bank', kind: 'ground' },
@@ -354,8 +356,8 @@ const highRoad: SectionTemplate = {
     sleeper('s1', 'bank', [0.44, 0.5]),
     sleeper('s2', 'bank', [0.6, 0.64], { phases: HOT, chance: 0.6 }),
     chair('chair', 'bank', [0.74, 0.78], { phases: ['sho'] }),
-    awake('foe', 'bank', [0.82, 0.88], { phases: HOT, chance: 0.7 }),
-    petals('after', 'bank', 0.94, 1),
+    awake('foe', 'bank', [0.8, 0.84], { phases: HOT, chance: 0.7 }),
+    stumpPetal('tail'),
   ],
   mirrorable: false,
 };
@@ -396,7 +398,7 @@ const sheetWalk: SectionTemplate = {
   exit: { piece: 'bank', kind: 'ground' },
   exitDy: 0,
   sockets: [
-    petals('lead', 'bank', 0.1, 2, 90),
+    chair('lead', 'bank', [0.08, 0.12]),
     prop('sheet', 'bank', [0.36, 0.4], ['sheet']),
     cake('cake', 'bank', [0.62, 0.65], { phases: ['sho'], chance: 0.7 }),
     stumpPetal('st'),
@@ -620,7 +622,8 @@ const gauntlet: SectionTemplate = {
     { id: 'stand', role: 'source', on: 'bank', t: [0.38, 0.4] },
     { id: 'butler', role: 'receptor', on: 'bank', t: [0.56, 0.58], link: 'stand', allow: ['butler'] },
     chair('chair', 'bank', [0.72, 0.75], { chance: 0.7 }),
-    awake('foe', 'bank', [0.88, 0.93]),
+    awake('foe', 'bank', [0.84, 0.88]),
+    thread('tail', 'bank', [0.95, 0.97]),
   ],
   mirrorable: false,
   extraSeconds: 1,
@@ -646,7 +649,8 @@ const stumpGap: SectionTemplate = {
     cake('cake', 'near', [0.82, 0.86], { chance: 0.6 }),
     petals('far', 'far', 0.18, 2, 80),
     awake('foe', 'far', [0.48, 0.62]),
-    sleeper('s2', 'far', [0.86, 0.92], { chance: 0.6 }),
+    chair('chair', 'far', [0.76, 0.8]),
+    sleeper('s2', 'far', [0.9, 0.94], { chance: 0.6 }),
   ],
   mirrorable: false,
 };
@@ -734,13 +738,14 @@ const butlerGap: SectionTemplate = {
   uses: ['butler'],
   pieces: [
     bank('near', [480, 560]),
+    stump('st', 'near', [0.12, 0.16], [45, 55], [90, 110]),
     { key: 'far', shape: 'bank', w: [760, 900], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.6, 0.85] }, landing: true },
   ],
   entry: { piece: 'near', kind: 'ground' },
   exit: { piece: 'far', kind: 'ground' },
   exitDy: 0,
   sockets: [
-    petals('near', 'near', 0.15, 1),
+    stumpPetal('st'),
     { id: 'stand', role: 'source', on: 'near', t: [0.42, 0.48] },
     { id: 'butler', role: 'receptor', on: 'far', t: [0.36, 0.42], link: 'stand', allow: ['butler'] },
     petals('far', 'far', 0.62, 2, 80),

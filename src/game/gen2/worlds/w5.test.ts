@@ -74,13 +74,20 @@ test('5-7 on 20 rolls, Normal and Easy: every roll passes levelCheck and is long
 });
 
 test('Easy is the same stage as Normal under kinder rules: the same sections, fewer animals, no second cakes', () => {
+  let easyFoes = 0;
+  let normalFoes = 0;
   for (const seed of SEEDS) {
     const n = build(seed, 'normal');
     const e = build(seed, 'easy');
     assert.deepEqual(e.gen2.sections.map((s) => [s.template, s.mirrored]), n.gen2.sections.map((s) => [s.template, s.mirrored]), `seed ${seed}`);
-    assert.ok(e.enemies.length < n.enemies.length, `seed ${seed}: Easy ${e.enemies.length}, Normal ${n.enemies.length}`);
+    // (never more animals than Normal; the spacing pass runs on each setting's own geometry, so a roll can keep one Normal's spacing
+    // dropped and come out level: the 60% shows over the rolls, below)
+    assert.ok(e.enemies.length <= n.enemies.length, `seed ${seed}: Easy ${e.enemies.length}, Normal ${n.enemies.length}`);
+    easyFoes += e.enemies.length;
+    normalFoes += n.enemies.length;
     assert.ok(fillsOf(e.gen2.fills, W5_PROP.cake).length <= fillsOf(n.gen2.fills, W5_PROP.cake).length);
   }
+  assert.ok(easyFoes <= normalFoes * 0.8, `Easy ${easyFoes} animals over the rolls, Normal ${normalFoes}`);
 });
 
 test('teaching and the opening: no animal in the first seconds, and the first teapot is the tea table\'s, on its own', () => {
@@ -136,7 +143,7 @@ test('the props reach the engine as World 5 extras: pairs both or neither, every
     for (const e of st.enemies) {
       assert.equal(e.type, 'spider');
       assert.ok(listed.has(e.id), `seed ${seed}: spider ${e.id} not listed`);
-      assert.ok((e as { noThread?: boolean }).noThread && e.stompable && e.edgeMinX === e.patrolMinX && e.asleep === undefined);
+      assert.ok((e as { noThread?: boolean }).noThread && e.stompable && e.edgeMinX === e.patrolMinX);
     }
     assert.ok([...listed.values()].some((s) => s.doze), `seed ${seed}: some spiders doze`);
     assert.ok((w5.decor?.length ?? 0) > 40);

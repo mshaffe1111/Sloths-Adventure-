@@ -82,9 +82,10 @@ const spiderBody = { enemy: 'spider', terrain: 'flat', w: 34, h: 22, hp: 1, foot
 export const W5_CREATURES: CreatureDef[] = [
   // awake: it crouches for SPIDER5.tell (0.7 s) in full view, then rushes; the world's newest animal, so Easy keeps one (softened)
   { id: W5_CREATURE.spider, ...spiderBody, threat: 3, minGround: 220, easyFirst: true, tags: ['spider', W5_TAG.awake] },
-  // dozing: asleep until a thread hums within THREAD.alert or he walks right into it (a hop over it never wakes it). The `asleep` and
-  // `facing` marks are read back by the decorator (it lists it in W5Extras.spiders with `doze`) and cleared there.
-  { id: W5_CREATURE.sleeper, ...spiderBody, extra: { ...spiderBody.extra, asleep: true, facing: 1 }, threat: 1.5, minGround: 200, easyFirst: true, tags: ['spider', W5_TAG.doze] },
+  // dozing: asleep until a thread hums within THREAD.alert or he walks right into it (a hop over it never wakes it). `sleeper` marks it
+  // for w5Spawn (W5Extras.spiders with `doze`); `topup` makes it the one a gauntlet's or purge's top-up lays (a sleeper on the ground,
+  // never the Butler)
+  { id: W5_CREATURE.sleeper, ...spiderBody, extra: { ...spiderBody.extra, facing: 1 }, threat: 1.5, minGround: 200, easyFirst: true, tags: ['spider', W5_TAG.doze, 'sleeper', 'topup'] },
 ];
 
 // ───────────────────────────── the props ─────────────────────────────
@@ -237,33 +238,33 @@ export function w5Emitters(stage: number): Record<W5PropId, PropEmitter> {
   };
 }
 
-/**
- * The decorator (pass 6), and the last word on the stage's World 5 extras: the decor sets into W5Extras.decor, and every jumping
- * spider the sockets placed listed in W5Extras.spiders (w5Play.ts gates only the spiders it lists: the crouch in full view, the doze),
- * drawn on the ground (noThread) and kept on its patch (edgeMinX/MaxX), as w5Stages.ts spider() makes them.
- */
+/** the decorator (pass 6): the chosen decor sets into W5Extras.decor */
 export function w5Decorate(stage: number): NonNullable<WorldKit['decorate']> {
   return (items, out) => {
-    const w5 = w5Of(out, stage);
-    const decor = (w5.decor ??= []);
+    const decor = (w5Of(out, stage).decor ??= []);
     for (const it of items) decor.push({ n: it.n, x: it.x, b: it.y, w: it.w, ...(hash01(it.x, 11) < 0.5 ? { flip: true } : {}) });
-    const listed = new Set((w5.spiders ??= []).map((s) => s.id));
-    for (const e of out.enemies) {
-      if (e.type !== 'spider' || listed.has(e.id)) continue;
-      const doze = !!e.asleep;
-      delete e.asleep;
-      (e as Enemy & { noThread?: boolean }).noThread = true;
-      e.edgeMinX = e.patrolMinX;
-      e.edgeMaxX = e.patrolMaxX;
-      w5.spiders.push({ id: e.id, ...(doze ? { doze: true } : {}) });
-      listed.add(e.id);
-    }
+  };
+}
+
+/**
+ * Every jumping spider the stage lays (a socket's or a top-up's) listed in W5Extras.spiders (w5Play.ts gates only the spiders it lists:
+ * the crouch in full view, the doze), drawn on the ground (noThread) and kept on its patch (edgeMinX/MaxX), as w5Stages.ts spider()
+ * makes them. A creature tagged `sleeper` dozes.
+ */
+export function w5Spawn(stage: number): NonNullable<WorldKit['spawn']> {
+  return (e, c, out) => {
+    if (e.type !== 'spider') return;
+    const w5 = w5Of(out, stage);
+    (e as Enemy & { noThread?: boolean }).noThread = true;
+    e.edgeMinX = e.patrolMinX;
+    e.edgeMaxX = e.patrolMaxX;
+    (w5.spiders ??= []).push({ id: e.id, ...(c.tags?.includes('sleeper') ? { doze: true } : {}) });
   };
 }
 
 /** World 5's kit for one stage (its number sets the light and the orchids' beat) */
 export function w5Kit(stage = 7): WorldKit {
-  return { manifest: W5_MANIFEST, emit: w5Emitters(stage), decorate: w5Decorate(stage) };
+  return { manifest: W5_MANIFEST, emit: w5Emitters(stage), decorate: w5Decorate(stage), spawn: w5Spawn(stage) };
 }
 
 /** the filled sockets of one kind of prop, for tests and the curation tool */
