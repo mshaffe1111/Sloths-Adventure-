@@ -12,6 +12,7 @@ import { CHAIR, COCOON } from '../../src/game/w5Kit.ts';
 import { FALLS } from '../../src/game/waterfalls.ts';
 import { VINE } from '../../src/game/thornVine.ts';
 import { skillHeldAt } from '../../src/game/skills.ts';
+import { roomBox, type RoomSpec } from '../../src/game/puzzleKit.ts';
 import { RUN, type Route, type Seg } from './route.ts';
 import type { Stage } from './stages.ts';
 
@@ -246,6 +247,13 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     if (i < 0) off('orchids'); else add(i, 'P', 'closing orchid: time the jump', 0.6);
   }
 
+  // ---- puzzle rooms (puzzleKit.ts): one beat where the route first comes into a room, as long as a quick player takes to work it ----
+  for (const room of stage.kit?.rooms ?? []) {
+    const bx = roomBox(room, stage.platforms);
+    const i = firstIn(samples, bx);
+    if (i < 0) off('puzzle rooms'); else add(i, 'P', `puzzle room (${room.id})`, roomSeconds(room));
+  }
+
   // ---- stretches under timed pressure: a beat on entry and one each cycle while inside ----
   const span = (b: Box, every: number, letter: Letter, what: string, dur: number, label: string) => {
     const spans = spansIn(samples, b);
@@ -301,4 +309,15 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     return out;
   });
   return { beats, total: moveTotal + delay, moveTotal, offRoute };
+}
+
+/** a quick player's time to work a puzzle room: a moment to read it, each thing fetched and put in its place, each lever, bell or sluice */
+export function roomSeconds(room: RoomSpec): number {
+  let t = 1;
+  for (const pc of room.pieces) {
+    if (pc.kind === 'item' && !pc.with) t += 2.5;
+    else if (pc.kind === 'lever' || pc.kind === 'bell') t += 1;
+    else if (pc.kind === 'trader' || pc.kind === 'beetle') t += 1.5;
+  }
+  return t;
 }

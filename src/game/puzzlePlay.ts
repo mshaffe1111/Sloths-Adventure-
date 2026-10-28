@@ -18,12 +18,15 @@ import { NOISE, prune, type Noise } from './noise.ts';
 import { zoneEffect, type Zone } from './zones.ts';
 import type { RiverZone } from './river.ts';
 import { drawW4 } from './w4Art.ts';
-import type { Platform, PlayerState as Player } from './types.ts';
+import { drawW2Cage } from './riverArt.ts';
+import type { Collectible, Platform, PlayerState as Player } from './types.ts';
 
-/** what of the stage the kit's pieces reach beyond its platforms: the gust lanes a shutter shuts, the rivers a sluice runs */
+/** what of the stage the kit's pieces reach beyond its platforms: the gust lanes a shutter shuts, the rivers a sluice runs, the reed cages
+ * a lift hangs (World 2) */
 export interface KitWorld {
   zones?: Zone[];
   rivers?: RiverZone[];
+  collectibles?: Collectible[];
 }
 
 export interface KitHost {
@@ -40,6 +43,8 @@ export interface KitHost {
   sfx(kind: KitSfx): void;
   /** he is clearly stuck in a room (Flicker's on-request hints hook in here later; Easy's sparkle is the kit's own) */
   stuck?(room: string): void;
+  /** a hanging reed cage came all the way up and its floor dropped open: the little one in it is free (World 2) */
+  freeCage?(c: Collectible): void;
 }
 export type KitSfx = 'pick' | 'drop' | 'throw' | 'land' | 'press' | 'gate' | 'lever' | 'munch' | 'lift' | 'reset' | 'lost' | 'ring' | 'tilt' | 'trade' | 'noise';
 
@@ -82,7 +87,7 @@ interface PlateRun { spec: Extract<PieceSpec, { kind: 'plate' }>; x: number; y: 
 interface GateRun { spec: Extract<PieceSpec, { kind: 'gate' }>; x: number; y: number; door: Platform; wall: Platform; open: boolean; latched: boolean; show: number; panned: boolean; opened: boolean }
 interface LeverRun { spec: Extract<PieceSpec, { kind: 'lever' }>; x: number; y: number; plat: number; on: boolean; show: number }
 interface BasketRun { spec: Extract<PieceSpec, { kind: 'basket' }>; x: number; y: number; weight: number; count: number }
-interface LiftRun { spec: Extract<PieceSpec, { kind: 'lift' }>; plat: Platform; baseY: number; level: number; basket: number; unwind?: boolean }
+interface LiftRun { spec: Extract<PieceSpec, { kind: 'lift' }>; plat: Platform; baseY: number; level: number; basket: number; unwind?: boolean; cage?: Collectible }
 interface BeetleRun { spec: Extract<PieceSpec, { kind: 'beetle' }>; st: BeetleState; home: number; span: { x0: number; x1: number }; told: boolean }
 interface SourceRun { spec: Extract<PieceSpec, { kind: 'source' }>; x: number; y: number; plat: number }
 interface ResetRun { spec: Extract<PieceSpec, { kind: 'reset' }>; x: number; y: number; plat: number }
@@ -92,7 +97,7 @@ interface LedgeRun { spec: Extract<PieceSpec, { kind: 'ledge' }>; plat: Platform
 interface MarkRun { spec: Extract<PieceSpec, { kind: 'mark' }>; x: number; y: number; show: number }
 interface ShutterRun { spec: Extract<PieceSpec, { kind: 'shutter' }>; x: number; y: number; zone: Zone | undefined; open: boolean }
 interface PinwheelRun { spec: Extract<PieceSpec, { kind: 'pinwheel' }>; x: number; y: number; spin: boolean; ang: number }
-interface SluiceRun { spec: Extract<PieceSpec, { kind: 'sluice' }>; x: number; y: number; river: RiverZone | undefined; open: boolean; rate: number }
+interface SluiceRun { spec: Extract<PieceSpec, { kind: 'sluice' }>; x: number; y: number; river: RiverZone | undefined; open: boolean; rate: number; rafts: Platform[] }
 interface TraderRun { spec: Extract<PieceSpec, { kind: 'trader' }>; x: number; y: number; plat: number; done: boolean; t: number }
 
 /** a bell's box a thrown thing knocks (world) */
@@ -138,6 +143,9 @@ const ART_OF: Record<ItemVariant, KitArtName> = { acorn: 'acorn', stone: 'stone'
 /** Pokey's carry poses are painted holding an acorn: carrying anything else, the same pose with the acorn painted out (packkit.py e*) */
 const EMPTY_OF: Partial<Record<KitArtName, KitArtName>> = { p2: 'e2', p3: 'e3', p4: 'e4', p5: 'e5', p6: 'e6', p7: 'e7', p8: 'e8', p9: 'e9', p13: 'e13' };
 const PILE_OF: Partial<Record<ItemVariant, KitArtName>> = { acorn: 'acornPile', stone: 'stonePile', pebble: 'stonePile' };
+/** a reed cage's floor stands this far under its middle (the collectible's y: the cage's floor is its y + this, riverArt.ts) */
+const CAGE_FLOOR = 26;
+
 /** the stuck help (Easy): in the room this long with nothing changing, or turning about this often, or this many misses */
 export const STUCK = { calm: 20, turns: 8, turnsCalm: 6, fails: 2 } as const;
 
@@ -183,7 +191,10 @@ export class KitPlay {
         }
         if (pc.kind === 'lift') {
           const plat = byId.get(kitPlatId(ri, pc.id, 0));
-          if (plat) room.lifts.push({ spec: pc, plat, baseY: plat.y, level: 0, basket: -1 });
+          // (a hanging cage: built where it ends up, lifted; it starts down where the rope's end is)
+          const cage = pc.cage !== undefined ? world.collectibles?.find((c) => c.id === pc.cage && c.type === 'cage') : undefined;
+          if (cage && plat) cage.y = plat.y - CAGE_FLOOR;
+          if (plat) room.lifts.push({ spec: pc, plat, baseY: plat.y, level: 0, basket: -1, ...(cage ? { cage } : {}) });
         }
         if (pc.kind === 'seesaw' && a) {
           const l = byId.get(kitPlatId(ri, pc.id, 0));
@@ -199,7 +210,12 @@ export class KitPlay {
         if (pc.kind === 'mark' && a) room.marks.push({ spec: pc, x: a.x, y: a.y, show: 0 });
         if (pc.kind === 'shutter' && a) room.shutters.push({ spec: pc, x: a.x, y: a.y, zone: world.zones?.[pc.zone], open: false });
         if (pc.kind === 'pinwheel' && a) room.pinwheels.push({ spec: pc, x: a.x, y: a.y, spin: false, ang: 0 });
-        if (pc.kind === 'sluice' && a) room.sluices.push({ spec: pc, x: a.x, y: a.y, river: world.rivers?.[pc.river], open: false, rate: 1 });
+        if (pc.kind === 'sluice' && a) {
+          const river = world.rivers?.[pc.river];
+          // (2-2's ferry: its raft is painted as the raft it is, over the log the river draws)
+          const rafts = river?.raft ? platforms.filter((q) => q.type === 'drift' && q.drift && q.drift.x0 === river.x0 && q.drift.x1 === river.x1) : [];
+          room.sluices.push({ spec: pc, x: a.x, y: a.y, river, open: false, rate: 1, rafts });
+        }
         if (pc.kind === 'trader' && a) room.traders.push({ spec: pc, x: a.x, y: a.y, plat: pc.at.on, done: false, t: 0 });
         if (pc.kind === 'beetle' && a) {
           const p = byId.get(pc.at.on)!;
@@ -228,6 +244,11 @@ export class KitPlay {
   /** his hands are full */
   get holding(): boolean {
     return !!this.held;
+  }
+
+  /** is this reed cage hung on a lift (World 2): no punch breaks it, the lift frees it, and the kit draws it */
+  holdsCage(c: Collectible): boolean {
+    return this.rooms.some((r) => r.lifts.some((l) => l.cage === c));
   }
 
   /** a room's pieces' outputs, for its wires */
@@ -712,6 +733,15 @@ export class KitPlay {
         if (Math.floor(this.t * 3) !== Math.floor((this.t - dt) * 3)) h.sfx('lift');
         if (l.level >= 0.999 && before < 0.999) room.changes++;
       }
+      // a hanging cage rides the rope's end; all the way up, its floor drops open (once: the little one stays free)
+      const c = l.cage;
+      if (c && !c.collected) {
+        c.y = l.plat.y - CAGE_FLOOR;
+        if (l.level >= 0.999) {
+          h.freeCage?.(c);
+          if (!c.collected) c.collected = true;
+        }
+      }
     }
     // gates: open while their wire is; a latching one stays open. One closes only once nobody and nothing stands in its way.
     for (const g of room.gates) {
@@ -989,7 +1019,17 @@ export class KitPlay {
       for (const l of room.ledges) this.drawLedge(ctx, l);
       for (const s of room.shutters) this.drawShutter(ctx, s);
       for (const w of room.pinwheels) this.drawPinwheel(ctx, w);
-      for (const sl of room.sluices) this.drawSluice(ctx, sl);
+      for (const sl of room.sluices) {
+        this.drawSluice(ctx, sl);
+        if (!sl.rafts.length || !sl.river) continue;
+        // (only over the water: moored under a bank, the bank hides it)
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(sl.river.x0, sl.river.surfaceY - 400, sl.river.x1 - sl.river.x0, 600);
+        ctx.clip();
+        for (const r of sl.rafts) drawKitArt(ctx, 'raft', r.x + r.width / 2, r.y + 30 + Math.sin(this.t * 2.1 + r.id) * 1.5, { w: r.width * 1.12, h: r.width * 0.5 });
+        ctx.restore();
+      }
       for (const b of room.bells) this.drawBell(ctx, b);
       for (const s of room.seesaws) this.drawSeesaw(ctx, s);
       room.traders.forEach((t, ti) => this.drawTrader(ctx, room, t, ti));
@@ -1127,6 +1167,7 @@ export class KitPlay {
   private drawLift(ctx: CanvasRenderingContext2D, room: RoomRun, l: LiftRun) {
     const pl = l.plat;
     const b = room.baskets[l.basket];
+    if (l.cage && b) return this.drawCageLift(ctx, room, l, b);
     if (!b) {
       // a rope lift a pinwheel winds (World 4): the rope from the top of its climb to the plank, the plank on it
       const cx = pl.x + pl.width / 2;
@@ -1177,8 +1218,56 @@ export class KitPlay {
     }
   }
 
+  /**
+   * A reed cage on a rope over a pulley (World 2, Matt's sheet): the post on the bank, the pulley wheel at its top, one rope down to the
+   * cage over the water and one to the counter-basket on the bank. The little one shivers in the cage; lifted all the way up, the cage's
+   * floor hangs open under it (the engine draws the little one hopping home, riverArt.ts drawW2Cage).
+   */
+  private drawCageLift(ctx: CanvasRenderingContext2D, room: RoomRun, l: LiftRun, b: BasketRun) {
+    const c = l.cage!;
+    const cx = l.plat.x + l.plat.width / 2;
+    const floor = l.plat.y;
+    const cageH = kitSize('cageShut').h;
+    const wheelX = (b.x + cx) / 2;
+    const wheelY = Math.min(b.y - b.spec.mouth - kitSize('basket2').h, l.baseY - l.spec.rise - cageH) - 40;
+    // the post, from the bank up to the pulley's arm
+    ctx.save();
+    ctx.fillStyle = '#6b4a2b';
+    ctx.strokeStyle = '#2f1d0e';
+    ctx.lineWidth = 3;
+    const postX = wheelX - 34;
+    ctx.fillRect(postX - 9, wheelY - 18, 18, b.y - wheelY + 22);
+    ctx.strokeRect(postX - 9, wheelY - 18, 18, b.y - wheelY + 22);
+    ctx.strokeStyle = '#a07a4a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(wheelX + 12, wheelY + 6);
+    ctx.lineTo(cx, floor - cageH + 8);
+    ctx.moveTo(wheelX - 12, wheelY + 6);
+    ctx.lineTo(b.x, this.mouthY(room, b) - kitSize('basket2').h * 0.5);
+    ctx.stroke();
+    ctx.restore();
+    if (!drawKitArt(ctx, 'pulley', wheelX, wheelY + 60, { scale: 0.62 })) {
+      ctx.fillStyle = '#6b4a2b';
+      ctx.beginPath();
+      ctx.arc(wheelX, wheelY, 15, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (!c.collected) {
+      // (the little one first, the bars over it)
+      drawW2Cage(ctx, c, this.t, true);
+      if (!drawKitArt(ctx, 'cageShut', cx, floor + 8)) {
+        ctx.strokeStyle = '#a16207';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(cx - 30, floor - 90, 60, 90);
+      }
+    } else drawKitArt(ctx, 'cageLifted', cx, floor + 30);
+  }
+
   private drawBasket(ctx: CanvasRenderingContext2D, room: RoomRun, b: BasketRun) {
     const my = this.mouthY(room, b);
+    // (World 2's counter-basket, by a hanging cage: the rope basket of river stones)
+    if (room.lifts.some((l) => l.cage && room.baskets[l.basket] === b) && drawKitArt(ctx, b.count > 0 ? 'basket2Full' : 'basket2', b.x, my + kitSize('basket2').h * 0.62)) return;
     const sz = kitSize('basket');
     const bottom = my + sz.h * 0.55;
     if (!drawKitArt(ctx, b.count > 0 ? 'basketFull' : 'basket', b.x, bottom)) {

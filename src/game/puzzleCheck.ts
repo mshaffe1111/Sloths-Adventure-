@@ -486,6 +486,8 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   let solved = false;
   let opened = false;
   const exitSpec = room.pieces.find((p) => p.id === room.exit)!;
+  // (a room whose way on is a hanging cage's lift, World 2's reed cages, is solved only with the cage lifted all the way: freed)
+  const cageExit = exitSpec.kind === 'lift' && exitSpec.cage !== undefined;
   const push = (s: State) => {
     settle(s);
     const k = keyOf(s);
@@ -512,7 +514,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     const hw = LW.piece(s.pid, s.rx);
     const ways = hw ? reach(LW, LW.g.key(hw), held >= 0 ? 'carry' : 'free') : new Set<string>();
     // past the way on?
-    for (const n of ways) {
+    for (const n of cageExit && !o.get(exitSpec.id) ? [] : ways) {
       const p = pieceOfKey(LW, n);
       if (p && p.id === room.beyond.on && beyond.x >= p.x - 2 && beyond.x <= p.x + p.width + 2) solved = true;
     }
