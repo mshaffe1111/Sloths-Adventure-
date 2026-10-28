@@ -1,41 +1,89 @@
-/** Words for the Jungle Journal: one entry per creature the player can meet. */
+/**
+ * Words for the Jungle Journal: one card per creature the player can meet, as the game has it today (Matt, 2026-10-28: the cards
+ * still showed the first enemies). Tips are 12 words or fewer, in the touch words Dot uses (tap, flick, slide).
+ *
+ * Three kinds of card:
+ *   - predators: the engine's enemies, marked met by their type when one comes on screen (engine statSeen -> store.seen). The ids
+ *     are the saved ones (badges.ts PREDATORS) and never change.
+ *   - met on the road: the stage pieces that are not the engine's enemies (World 4's monkeys and eaglets, World 5's butler and
+ *     seamstress, the river king's guard, Pell and his soldiers). Nothing marks them met, so a card opens once a stage that holds
+ *     the creature has been cleared.
+ *   - guardians: one per world, opened by beating its 10th stage.
+ */
 import { GUARDIANS, PREDATORS, type PredatorId } from './badges.ts';
 
 export interface PredatorEntry {
   id: PredatorId;
   name: string;
   tip: string;
-  /** the first world it shows up in, when it is the same in every playthrough */
-  first?: number;
+  /** the first world it shows up in */
+  first: number;
+  /** stages where it is met without being one of the engine's enemies (the eagle that watches 1-7): cleared, it counts as met */
+  alsoIn?: readonly string[];
 }
 
 export const PREDATOR_ENTRIES: Record<PredatorId, PredatorEntry> = {
-  snake: { id: 'snake', name: 'Tree Snake', tip: 'Slithers along its patch. Stomp it from above.', first: 1 },
-  tayra: { id: 'tayra', name: 'Tayra', tip: 'Fast and low. Hop over its dash.', first: 4 },
-  ocelot: { id: 'ocelot', name: 'Ocelot', tip: 'Stalks, gathers itself, then springs. Hit it while it gathers.', first: 2 },
-  jaguar: { id: 'jaguar', name: 'Jaguar', tip: 'Crouches before it leaps. Dodge the leap, then strike as it lands.', first: 6 },
-  boa: { id: 'boa', name: 'Boa Constrictor', tip: 'A coiled ambusher with a long strike. Stay out of range or hit it first.', first: 3 },
-  eagle: { id: 'eagle', name: 'Harpy Eagle', tip: 'Dives from above. Strike it while it hovers.', first: 1 },
-  spider: { id: 'spider', name: 'Canopy Tarantula', tip: 'Patrols its web. Stomp it from above.' },
-  caiman: { id: 'caiman', name: 'Spectacled Caiman', tip: 'Slow and armoured, but it lunges. Heavy hits work best.', first: 2 },
-  turtle: { id: 'turtle', name: 'Snapping Turtle', tip: 'Hit it head-on and it hides in its shell. Get behind it, stomp it, or kick the shell and send it sliding.', first: 2 },
-  harpy: { id: 'harpy', name: 'Night Harpy', tip: 'Crouches, slides low, then leaps and stomps. Jump the slide, jump the shockwave, then strike while it is dizzy.', first: 6 },
-  frog: { id: 'frog', name: 'Poison Dart Frog', tip: 'Tiny and bold. Never touch it. Time your jump past.' },
+  snake: { id: 'snake', name: 'Golden Tree Snake', tip: 'Rears up, sways, then strikes. Tap to punch it after.', first: 1 },
+  boa: { id: 'boa', name: 'Boa Constrictor', tip: 'Coiled and watching. Let it strike, then punch it three times.', first: 1 },
+  eagle: { id: 'eagle', name: 'Harpy Eagle', tip: 'Circles, then dives. Slide down to duck, or hide in a bush.', first: 1, alsoIn: ['1-7'] },
+  turtle: { id: 'turtle', name: 'Snapping Turtle', tip: 'Head-on it hides. Flick sideways to kick the shell.', first: 2 },
+  ocelot: { id: 'ocelot', name: 'Ocelot', tip: 'Crouches, then pounces. Tap twice, or flick sideways to kick.', first: 3 },
+  jaguar: { id: 'jaguar', name: 'Jaguar', tip: 'Flick up when it crouches to leap. Three hits beat it.', first: 3 },
+  spider: { id: 'spider', name: 'Jumping Spider', tip: 'Crouches, then rushes. Tap to punch it first.', first: 5 },
+  tayra: { id: 'tayra', name: 'Tayra', tip: 'Stands up to sniff, then dashes low. Flick up over it.', first: 5 },
+  caiman: { id: 'caiman', name: 'Spectacled Caiman', tip: 'Lunges and snaps. Step back, then punch. Stomps just bounce off.', first: 6 },
+  harpy: { id: 'harpy', name: 'Night Harpy', tip: 'Slides low, then stomps. Flick up twice, punch it while dizzy.', first: 6 },
+  frog: { id: 'frog', name: 'Poison Dart Frog', tip: 'Poison! Never touch it. Flick up and hop right past.', first: 6 },
 };
 
-export const PREDATOR_ORDER = PREDATORS;
+/** the predator cards in the order the journey meets them (every saved id, once) */
+export const PREDATOR_ORDER: readonly PredatorId[] = [...PREDATORS].sort(
+  (a, b) => PREDATOR_ENTRIES[a].first - PREDATOR_ENTRIES[b].first || PREDATORS.indexOf(a) - PREDATORS.indexOf(b),
+);
+
+export interface RoadEntry {
+  /** its card picture (creatureArt.ts) and its key */
+  id: string;
+  name: string;
+  tip: string;
+  first: number;
+  /** the stages that hold it: any one cleared opens the card */
+  stages: readonly string[];
+}
+
+export const ROAD_ENTRIES: readonly RoadEntry[] = [
+  { id: 'royal_guard', name: "River King's Guard", tip: 'Head-on he blocks. Flick sideways to kick, or hit from behind.', first: 2, stages: ['2-9'] },
+  { id: 'capuchin', name: 'Capuchin Monkey', tip: 'Never hurts. Catch the thief, hide from lookouts, wait out guards.', first: 4, stages: ['4-3', '4-5', '4-8', '4-9'] },
+  { id: 'eaglet', name: 'Harpy Eaglets', tip: 'Go while they sleep. Lift your thumb and freeze when one peeks.', first: 4, stages: ['4-6'] },
+  { id: 'butler', name: 'The Butler', tip: 'Offers sleepy cake. Tap to punch the tray, or flick up over.', first: 5, stages: ['5-2', '5-M'] },
+  { id: 'seamstress', name: 'The Seamstress', tip: "Don't watch her knit. Slide on past before she looks up.", first: 5, stages: ['5-4'] },
+  { id: 'soldier', name: "Iron-Claw's Soldiers", tip: 'They march Meeca north. In camp they sleep: never wake them.', first: 5, stages: ['5-M'] },
+  { id: 'pell', name: 'Lieutenant Pell', tip: "Iron-Claw's lieutenant. He found Meeca when she stopped to look.", first: 5, stages: ['5-M'] },
+];
 
 export interface GuardianEntry {
   world: number;
   name: string;
-  /** art key in creatureArt.ts when the guardian has a full-body painted picture there (the round crest in components/icons/crests.ts covers all ten) */
-  art?: string;
+  /** its full-body painted picture in creatureArt.ts (every guardian has one: the frame its fight draws) */
+  art: string;
 }
-
-const ART: Record<number, string> = { 1: 'guardian_1', 2: 'guardian_2', 5: 'guardian_5' };
 
 export const GUARDIAN_ENTRIES: GuardianEntry[] = GUARDIANS.map((name, i) => ({
   world: i + 1,
   name,
-  art: ART[i + 1],
+  art: `guardian_${i + 1}`,
 }));
+
+/** the few things the journal reads from a stage record */
+interface Cleared {
+  id: string;
+  completed: boolean;
+}
+const cleared = (levels: readonly Cleared[], stages: readonly string[]) => levels.some((l) => l.completed && stages.includes(l.id));
+
+/** has the player met this predator? (seen on screen, or a stage that holds it in another way cleared) */
+export const predatorMet = (id: PredatorId, seen: readonly string[], levels: readonly Cleared[]): boolean =>
+  seen.includes(id) || cleared(levels, PREDATOR_ENTRIES[id].alsoIn ?? []);
+
+/** has the player met this one on the road? (a stage that holds it cleared) */
+export const roadMet = (e: RoadEntry, levels: readonly Cleared[]): boolean => cleared(levels, e.stages);
