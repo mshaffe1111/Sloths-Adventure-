@@ -103,8 +103,9 @@ test link, the QA testers or a release until the lead has re-run them, on more t
    climax-less curve), and the **difficulty bands** (§1b): a world whose band sits below the one before, a stage above the next
    world's middle or below the previous world's, and Gemini's per-jump floors (Normal bot 70% in Worlds 1-5, 50% in 6-10; Easy kid
    85%). Run the bands with `--firsttimer` (step 3) and over the worlds either side of the one you changed: without the first-timer
-   they score on the inspector's numbers alone, and a world is only judged against its neighbours in the same run. **Check more than one roll** (`--seed 1/2/3`), and the 200-roll tool `tools/inspect/era.ts` when a
-   stage's layout code changed: a fix that only holds on seed 1 is not a fix.
+   they score on the inspector's numbers alone, and a world is only judged against its neighbours in the same run. **Check more than one roll** (`--seed 1/2/3`), and when a stage's layout code changed, the 200-roll
+   tool: `npx tsx tools/inspect/era.ts --worlds N --rolls 200` (add `--stages 1-4` for one stage; `--html`/`--json` for where the report
+   goes). It counts the rolls that break the §2 numbers and lists the worst as `?layout=N`. A fix that only holds on seed 1 is not a fix.
 3. The first-timer bot, Easy and Normal: `npx tsx tools/inspect/inspect.ts --worlds N --firsttimer` (`--stages 1-7,2-2` for a few
    stages). It checks §2's "Opening seconds" and "Plain walk" rows, §6's eagle and Dot-pacing lessons and the Gemini gates (survival
    per jump, minimum input window, peak stress, backtracking), and names the rule each finding breaks (HANDOFF §6, "Pre-QA pass").
