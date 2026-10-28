@@ -973,14 +973,16 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (World 1, 2026-10-28: the rock stands down into the ground, the bank broken around it, as 1-1's stumps: on one bank under it the
     // stage inspector's quick route walked straight through it and counted the hop as a quiet walk)
     // (never at the very edge of a dip just crossed: the rock would stand on the dip's way out, too high a hop from its step)
-    if (w1Rocks && x - bankFrom < 60) run(60);
-    if (w1Rocks) close();
+    // (World 4 too, 2026-10-28: its mossy rocks on one bank read as four quiet seconds at 4-8's start and between 4-5's cover)
+    const sunk = w1Rocks || w4Rocks;
+    if (sunk && x - bankFrom < 60) run(60);
+    if (sunk) close();
     const rk = block(x, x + w, h);
-    if (w1Rocks) rk.height = h + BANK_H;
+    if (sunk) rk.height = h + BANK_H;
     if (w4Rocks) rk.art = 'rock';
     flower(x + w / 2, G - h - 34, 'orchid');
     run(w);
-    if (w1Rocks) open(x);
+    if (sunk) open(x);
     expert += w / RUN + 0.15;
   }
   /** a little dip of soft moss to jump (a miss is a hop back out, never a life) */
@@ -3607,6 +3609,23 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   // wind behind you or wait for it to drop. The leaf is taught here (learned on clearing 4-1) but no drop needs it before 4-7.
   const W4C: Chime[] = [];
   /** a gust lane over [x0, x1] (`dir` +1: behind him, -1: into his face), with its chimes on a post at `chimeX` */
+  /**
+   * World 4's soft pit with a stepped floor (softPit's walls and its step out at the far wall): the mossy floor rises a low step at each
+   * of `cuts`, so a walk along it (a slip off a vine, a glide that drops short) is a hop up or two, not three to five quiet seconds to
+   * the far wall (2026-10-28, the 200-roll tool: the route walks these floors where a player swings or glides over them)
+   */
+  const steppedPit = (edge: number, farX: number, cuts: number[]) => {
+    const wallTop = G + BANK_H;
+    P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
+    P.push({ id: pid++, x: farX, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
+    const xs = [edge - 60, ...cuts, farX + 60];
+    let fy = HOLLOW_Y;
+    for (let k = 0; k + 1 < xs.length; k++) {
+      bank(xs[k], xs[k + 1], fy, 'moss_stone');
+      if (k + 2 < xs.length) fy -= 30;
+    }
+    P.push({ id: pid++, x: farX - 70, y: fy - PIT_STEP, width: 70, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
+  };
   const gustZone = (x0: number, x1: number, dir: 1 | -1, chimeX: number, force = 120) => {
     GZ.push({ kind: 'wind', x0: Math.round(x0), x1: Math.round(x1), top: G - 560, bottom: G + 40, baseY: G, dir, period: 2.8 + 1.4 + 2.2, warn: 1.4, active: 2.2, force, offset: Math.round(R.r(0, 6.4) * 10) / 10 });
     W4C.push({ x: Math.round(chimeX), y: G, zone: GZ.length - 1 });
@@ -3628,7 +3647,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     close();
     const gap = Math.round(reachJump(0, true) * share);
     const far = edge + gap;
-    softPit(edge, far);
+    if (back) softPit(edge, far);
+    else steppedPit(edge, far, [Math.round(edge + gap / 2)]);
     // `back` (the lesson's drops): a step at the near wall too, so a glide that falls short is two hops back up and the trunk again, a
     // few seconds, not a wall only the second jump climbs (QA, 2026-10-26: a short flick dropped a tester in 4-2's first pit, 6 tries out)
     if (back) P.push({ id: pid++, x: edge, y: HOLLOW_Y - PIT_STEP, width: BACK_STEP, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
@@ -3712,7 +3732,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     close();
     const gap = Math.round(reachJump(0, true) * R.r(0.78, 0.86));
     const far = edge + gap;
-    softPit(edge, far);
+    steppedPit(edge, far, [Math.round((edge + far) / 2)]);
     // the petals ride the wind: two just off the perch, then a long high line out over the far bank, where the gust carries the leaf
     // (each one a double jump from the bank, so the wind and the leaf are never needed for them)
     for (let i = 1; i <= 2; i++) flower(edge + 70 * i, perchY + 12 * i, 'orchid');
@@ -3971,7 +3991,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         else run(Math.min(g, R.r(160, 220)));
         cover(kinds[k % kinds.length]);
       }
-      run(R.r(260, 340));
+      // (a hop on the way out of the row: from its last cover to the next piece's first hop was three quiet seconds, 2026-10-28)
+      hopRun(R.r(300, 360));
       endCover();
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2);
@@ -4004,9 +4025,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         hopRun(g);
         cover(kind);
       }
-      run(R.r(200, 240));
+      hopRun(R.r(300, 340));
       lookout(sx0, mx, Math.min(x, mx + 1150), tx);
-      run(R.r(160, 220));
+      run(R.r(100, 140));
       endCover();
       ZONES.push({ x0, x1: x, calm });
       expert += watched(x - x0, (calm[0] + calm[1]) / 2) + 1.5;
@@ -4214,24 +4235,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       if (ok) ok = landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far) >= 8 && landWindow(n > 1 ? vs[n - 2] : null, vs[n - 1], far, force) >= 8;
       if (!ok && tries < 15) continue;
       close();
-      if (soft) {
-        // a soft pit (softPit's walls and far step) whose mossy floor rises a low step halfway along each gap between the vines (where a
-        // leap is high in the air): a slip off the vines is a walk along the floor with a hop up or two, not four quiet seconds to the
-        // far wall (2026-10-28, the 200-roll tool: every roll of 4-4 opened on a 4.3-5.0 s quiet stretch along this floor)
-        const wallTop = G + BANK_H;
-        P.push({ id: pid++, x: edge - 60, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
-        P.push({ id: pid++, x: farX, y: wallTop, width: 60, height: HOLLOW_Y - wallTop + 4, type: 'solid', style: 'moss_stone' });
-        const cuts = [edge - 60];
-        for (let k = 0; k + 1 < n; k++) cuts.push(Math.round((xs[k] + xs[k + 1]) / 2));
-        cuts.push(farX + 60);
-        let fy = HOLLOW_Y;
-        for (let k = 0; k + 1 < cuts.length; k++) {
-          bank(cuts[k], cuts[k + 1], fy, 'moss_stone');
-          if (k + 2 < cuts.length) fy -= 30;
-        }
-        // (the step out at the foot of the far wall, as softPit has it, from the floor's last piece)
-        P.push({ id: pid++, x: farX - 70, y: fy - PIT_STEP, width: 70, height: PIT_STEP, type: 'solid', style: 'moss_stone' });
-      }
+      // (a soft pit whose floor rises a low step halfway along each gap between the vines: steppedPit)
+      if (soft) steppedPit(edge, farX, xs.slice(0, -1).map((vx, k) => Math.round((vx + xs[k + 1]) / 2)));
       for (let k = 0; k < n; k++) {
         liana(xs[k], vs[k].topY, vs[k].bottomY);
         arc(k === 0 ? edge + 10 : (xs[k - 1] + xs[k]) / 2, k === n - 1 ? farX - 10 : (xs[k] + xs[k + 1]) / 2, Math.min(G - 150, vs[k].topY + 200), 4);
@@ -4245,7 +4250,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         const r: RockDrop = { x: rx, top: G - 470, land: G, every: Math.round(R.r(5, 5.6) * 10) / 10, warn: 1.4, offset: Math.round(R.r(0, 5) * 10) / 10 };
         if (rockFits(r)) W4R.push(r);
         run(R.r(380, 440));
-      } else run(R.r(140, 200));
+        // (a shorter walk off the far bank: with the next piece's walk in, it was four quiet seconds, 2026-10-28)
+      } else run(R.r(90, 130));
       expert += (edge - x0) / RUN + (farX - edge) / SWING + 0.3 * n + 2.4 + (rock ? 2 : 0) + (x - farX) / RUN;
       pieces.push({ k: soft ? 'hollow' : 'gorge', x0, x1: x });
       return;
@@ -4329,6 +4335,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       goldenSeed(bx + 95, by - 34);
       covers.push({ x: bx - 30, y: by - 90, w: 210, h: 120 });
       hint(kx - 260, 'Another vine tied up in the trees... what is it for?');
+      // (a mossy rock on the floor under the branch, where the plain way on runs: past the vine it was four quiet seconds, 2026-10-28)
+      x = Math.max(x, kx + R.r(380, 420));
+      logHop();
       // (past the branch, a dip of soft moss on the floor, and a breath)
       x = Math.max(x, bx + 150 + 60);
       dip();
@@ -4470,6 +4479,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         n++;
         if (n % 2 === 0) flag();
       }
+      // (a hop after the last gorge: off its far bank it was four quiet seconds to the run home's first hop)
+      w4Breath();
       homeRun();
     });
   }
