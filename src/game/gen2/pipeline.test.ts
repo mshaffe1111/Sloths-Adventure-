@@ -7,11 +7,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, placeRoom, planBudget, rngFor, STAGE_HEAT, trimPlan } from './pipeline.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, rngFor, STAGE_HEAT, trimPlan } from './pipeline.ts';
 import { cfg, kit, manifest, pitHop } from './toyWorld.ts';
 import { MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
 import { addKitPlatforms } from '../puzzleKit.ts';
+import { findRoute, type Route } from '../../../tools/inspect/route.ts';
+import { inspectJumps, KID } from '../../../tools/inspect/jumps.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { Platform } from '../types.ts';
 
@@ -200,8 +202,9 @@ const fnv = (s: string) => {
 };
 
 test("a world with no sub-blocks lays exactly what it laid before sub-blocks came in (the curated seeds' geometry holds)", () => {
-  // (if a change to passes 1-3 means to move these, the curated seeds in gen2/seeds.ts must be curated again: say so in its commit)
-  const want: Record<number, string> = { 1: 'eae60eaa', 2: 'a02e077e', 3: 'e7cf96f' };
+  // (if a change to passes 1-3 means to move these, the curated seeds in gen2/seeds.ts must be curated again: say so in its commit.
+  // Moved once since: 2026-10-28's pit steps (pitSteps), which re-laid every soft pit's floor and steps and nothing else)
+  const want: Record<number, string> = { 1: 'ef235b36', 2: '6f725f7d', 3: '1e084cdd' };
   for (const seed of [1, 2, 3]) {
     const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed, difficulty: 'normal' });
     assert.equal(fnv(st.platforms.map((p) => `${p.x},${p.y},${p.width},${p.height}`).join(';')), want[seed], `seed ${seed}`);
@@ -398,4 +401,67 @@ test('the length loop converges: every roll lands in its window (or ships long, 
   const cut = t2.findIndex((p, i) => p !== plan[i]);
   assert.equal(t2.length, plan.length - 1);
   assert.ok(plan.slice(cut + 1).every((p) => p.node === goal || p.node === plan[cut].node), 'only the end is trimmed');
+});
+
+test("a soft pit's way out is one plain jump at a time onto a tread a kid's thumb lands on, at any pitDepth (the kid bot at 85%+)", () => {
+  // the geometry, for every depth, width and lip height a stage lays: each rise at most a hop, each tread at least PIT.tread, room
+  // to stand before the first step, the floor never deeper than asked and never above the lower lip
+  for (const hop of [riseLimit(false, MARGIN.easy) * PIT.hop, riseLimit(false, MARGIN.normal) * PIT.hop]) {
+    for (const depth of [40, 99, 110, 130, 200, 320]) {
+      for (const w of [60, 99, 113, 145, 160, 203, 230, 400]) {
+        for (const farDy of [-40, 0, 60]) {
+          const lip = 580;
+          const far = lip + farDy;
+          const { floor, steps } = pitSteps(0, w, lip, far, depth, hop);
+          const what = `hop ${hop.toFixed(0)} depth ${depth} width ${w} far ${farDy}`;
+          const lower = Math.max(lip, far);
+          assert.ok(floor > lower && floor <= lower + depth + 1e-6, `${what}: floor ${floor - lower} under the lower lip`);
+          const tops = [floor, ...steps.map((s) => s.top), far];
+          for (let i = 1; i < tops.length; i++) assert.ok(tops[i - 1] - tops[i] <= hop + 1e-6, `${what}: a rise of ${(tops[i - 1] - tops[i]).toFixed(0)}`);
+          steps.forEach((s, i) => {
+            const tread = (steps[i + 1]?.x ?? w) - s.x;
+            assert.ok(tread >= PIT.tread - 1e-6 && s.x + s.w === w, `${what}: a ${tread.toFixed(0)} px tread`);
+          });
+          if (steps.length) assert.ok(steps[0].x >= PIT.floor - 1e-6, `${what}: no floor before the first step`);
+          // (deep enough to need steps and wide enough for them: the full depth)
+          if (w - PIT.floor >= PIT.tread * Math.ceil((lower + depth - far) / hop)) assert.ok(Math.abs(floor - lower - depth) < 1e-6, `${what}: raised`);
+        }
+      }
+    }
+  }
+  // built: Easy stages with narrow pits (World 5's) and double-jump pits wide enough for steps, at several depths; the kid bot flies
+  // every hop out of every pit (floor, steps, far bank) and every jump on the inspector's route
+  const narrow: SectionTemplate = {
+    ...pitHop, id: 'toy-narrowpit', teaches: undefined, uses: undefined, weight: 4, sockets: [],
+    pieces: [pitHop.pieces[0], { ...pitHop.pieces[1], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.5, 0.9] } }],
+  };
+  const wide: SectionTemplate = { ...narrow, id: 'toy-widepit', pieces: [pitHop.pieces[0], { ...pitHop.pieces[1], place: { kind: 'pit', after: 'near', jump: 'double', share: [0.7, 1] } }] };
+  let stepped = 0;
+  for (const depth of [99, 130, 250]) {
+    const k: WorldKit = { ...kit, manifest: { ...manifest, pitDepth: depth, sections: [...manifest.sections, narrow, wide] } };
+    for (const seed of [1, 2]) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'easy' });
+      const what = `depth ${depth} seed ${seed}`;
+      assert.deepEqual(validateStage(st).errors, [], what);
+      const segs: Route['segs'] = [];
+      for (const f of st.gen2.falls ?? []) {
+        if (f.x1 - f.x0 < 20) continue;
+        const inside = st.platforms.filter((p) => p.x >= f.x0 && p.x + p.width <= f.x1 && p.y > f.y).sort((a, b) => b.y - a.y);
+        const far = st.platforms.find((p) => p.x === f.x1 && !inside.includes(p))!;
+        assert.ok(inside.length && far, `${what}: a soft floor under the pit at ${f.x0}`);
+        if (inside.length > 1) stepped++;
+        const chain = [...inside, far];
+        for (let i = 1; i < chain.length; i++) {
+          const [a, b] = [chain[i - 1], chain[i]];
+          segs.push({ kind: 'hop', x0: a.x + 10, y0: a.y, x1: b.x + 30, y1: b.y, dt: 0, from: a, plat: b });
+        }
+      }
+      const route: Route = { segs, traced: 'check', presumedHops: 0, addedLinks: 0, stops: 0, skippedStops: 0 };
+      for (const r of [...inspectJumps(st, route, true, KID), ...inspectJumps(st, findRoute(st), true, KID)]) {
+        if (r.rate === null) continue;
+        assert.ok(r.rate >= 0.85, `${what}: the kid bot makes the jump at ${r.x} (rise ${r.rise}, landing ${r.landW} px) ${(r.rate * 100).toFixed(0)}%`);
+      }
+    }
+  }
+  assert.ok(stepped > 0, 'some pits are deep and wide enough for steps');
 });

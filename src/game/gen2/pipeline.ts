@@ -467,16 +467,9 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   const gaps: Laid['gaps'] = [];
   const pitUnder = (x0: number, x1: number, lipY: number, farY: number) => {
     if (budget.pit !== 'soft' || x1 - x0 < 20) return;
-    const floor = Math.max(lipY, farY) + M.pitDepth;
-    mk(x0, floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
-    // steps out at the far wall's foot, each no higher than a plain hop (§2 "every dip has a one-jump way out")
-    const climb = floor - farY;
-    const n = Math.max(0, Math.ceil(climb / (riseLimit(false, budget.riseShare) * 0.85)) - 1);
-    const sw = Math.min(70, (x1 - x0) / (n + 1));
-    for (let k = 1; k <= n; k++) {
-      const top = floor - (climb * k) / (n + 1);
-      mk(x1 - sw * (n - k + 1), top, sw * (n - k + 1), 'block', floor - top, 'moss_stone');
-    }
+    const out = pitSteps(x0, x1, lipY, farY, M.pitDepth, riseLimit(false, budget.riseShare) * PIT.hop);
+    mk(x0, out.floor, x1 - x0, 'block', M.ground.bankH, 'moss_stone');
+    for (const s of out.steps) mk(s.x, s.top, s.w, 'block', out.floor - s.top, 'moss_stone');
   };
 
   // the runway
@@ -668,6 +661,37 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     bottom: baseline,
     nextId: pid,
   };
+}
+
+/**
+ * A soft pit's way out (§2 "every dip has a one-jump way out"; Easy's jumps keep the kid bot at 85%+): each rise out at most `hop` of
+ * the plain jump's rise limit, every step's tread at least `tread` px (a kid's thumb lands on it; the inspector calls a landing under
+ * 90 px narrow) and at most `maxTread`, with `floor` px of floor left before the first step to stand on.
+ */
+export const PIT = { hop: 0.85, tread: 100, maxTread: 140, floor: 60 } as const;
+
+/**
+ * Where a soft pit's floor and its steps go, for a gap [x0, x1] between a near lip at `lipY` and a far lip at `farY` (world y, down):
+ * the floor `depth` px under the lower lip, and steps up the far wall's foot, each rise at most `hop` px (one plain jump). A gap too
+ * narrow for the steps that depth needs (each PIT.tread wide, PIT.floor of floor before them) gets as many as fit, and its floor is
+ * raised to what they climb: a single-jump pit (60-145 px) has no room for a step, so its floor lies one hop under the far lip and
+ * the far bank is the way out. Steps are stacked blocks against the far wall, each running to x1 (`x`, `w`: the block; its tread is
+ * the part not under the next one up).
+ */
+export function pitSteps(x0: number, x1: number, lipY: number, farY: number, depth: number, hop: number): { floor: number; steps: Array<{ x: number; top: number; w: number }> } {
+  const W = x1 - x0;
+  const lower = Math.max(lipY, farY);
+  const deep = lower + depth;
+  const want = Math.max(0, Math.ceil((deep - farY) / hop - 1e-9) - 1);
+  const fit = Math.max(0, Math.floor((W - PIT.floor) / PIT.tread));
+  const n = Math.min(want, fit);
+  // (never above the lower lip: the floor still catches a fall)
+  const floor = Math.max(lower + 1, Math.min(deep, farY + hop * (n + 1)));
+  const rise = (floor - farY) / (n + 1);
+  const tread = n ? Math.min(PIT.maxTread, (W - PIT.floor) / n) : 0;
+  const steps = [];
+  for (let k = 1; k <= n; k++) steps.push({ x: x1 - tread * (n - k + 1), top: floor - rise * k, w: tread * (n - k + 1) });
+  return { floor, steps };
 }
 
 /** a stage id's place in the game ('5-7' -> 507), for lessons taught by an earlier stage */

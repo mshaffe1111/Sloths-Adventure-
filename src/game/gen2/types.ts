@@ -104,7 +104,8 @@ export interface WorldManifest {
   ground: { y: number; bankH: number; style: NonNullable<Platform['style']> };
   /** a fall: soft pits (a mossy floor and a step out: a miss costs a climb), water (a life), or nothing (a life) */
   pit: PitKind;
-  /** how deep a soft pit's floor lies under its lips (px) */
+  /** how deep a soft pit's floor lies under its lips at most (px): a pit too narrow for wide steps out is shallower, its floor one
+   *  plain hop under the far lip (pipeline pitSteps: every dip has a one-jump way out, every step a tread a thumb can land on) */
   pitDepth: number;
   /** the vertical corridor clamp (Part 3 §1): the route's ground stays between these world y's; inside `soft` px of an edge the
    *  selector leans toward sections that drift back */
