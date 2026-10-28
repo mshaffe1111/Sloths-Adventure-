@@ -37,11 +37,19 @@ function isEnabled(): boolean {
 
 let atlas: HTMLImageElement | null = null;
 let ready = false;
+/** the leaves' sheet (every stage's falling leaves: stagePreload.ts gets it ready before a stage starts) */
+export const LEAVES_URL = new URL('../assets/flora/leaves-atlas.webp', import.meta.url).href;
 function load() {
   if (atlas || typeof Image === 'undefined') return;
   const img = new Image();
   atlas = img;
-  trackAtlas(img, new URL('../assets/flora/leaves-atlas.webp', import.meta.url).href, () => { ready = true; }, () => { atlas = null; });
+  trackAtlas(img, LEAVES_URL, () => { ready = true; }, () => { atlas = null; });
+}
+/** start loading the leaves' sheet (when the painted leaves are on); whether they are */
+export function warmLeaves(): boolean {
+  if (!isEnabled()) return false;
+  load();
+  return true;
 }
 
 /** which leaf a mote is (stable for the mote), given its random number c */
