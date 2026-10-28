@@ -110,3 +110,26 @@ Earlier read of the same log, kept for the details:
   and the pits leave a fair line.
 - Meeca's stage: twice Pokey/Meeca kept moving with no finger down for 0.8 s+ ("Learn: the ring, then DON'T EAT. M.",
   "Develop: two rings, a fern, NO TEA. BE RUDE. M."). Probably the guards' march carrying her; if not, it's a loss of control.
+
+# Next batch (not sent yet)
+
+## A. Matt bot on the rebuilt Worlds 1 and 2 (build 39fc3db, 2026-10-28; upright with short sideways stretches)
+- 1-7 finished (3:09, 2/3 stars, 16 hits, 3 lives lost); 1-9 4/19 predators at budget, 0 lives; 2-2 about 4%, 5 lives; 2-5 0/17, 2 lives.
+1. [blocker, confirmed by QA] 2-2 drowns you in under a second. Fresh start, 2-2 upright, steer right: at +0.9 s Lives 3 → 2 ("−1"),
+   and only THEN does Dot say "Flick up just before the edge." The bot lost 3 lives by 0:07 and 2 more after Continue. The first gap
+   needs to be taught on dry ground (or have a soft landing) before the first water, with the tip before the edge, not after.
+2. [major] 1-7 bird: "It saw you! Slide down in a bush!" comes after the first hit. Steering down mid-slide doesn't hide (you must
+   lift, then steer down). The "HIDE! INTO A BUSH" sign is drawn in the world, so screen readers miss it. The bird swoops about every
+   3 s in the open, often from off screen (only an orange "!" at the right edge): 16 hits and 3 lives for an expert. Too hard for World 1.
+3. [major] 2-5: a heart lost in the first 2 s, before "One of these plants isn't like the others." Then 2 lives (probably the river).
+   Punching raised the score, but predators stayed 0/17 (unverified: the bot had no pictures left by then).
+4. [major] Waist-high grass steps and dips stop a plain walk dead (1-7 about 24%, 1-9 several: the dip before the high ledge, a narrow
+   gap between stumps, a low step). Only lifted up-and-over flicks or run-in hold jumps get out; in 1-9 it fell back into the same dip
+   3 times. Same family as the World 5 lips; please apply the same "jump into a face carries over" and one-jump steps to Worlds 1 and 2.
+5. [minor] Dot's tips linger: 1-7 "Flick up into the trunk to grab it" about 30 s with no trunk in reach, and "Slide your thumb up
+   to climb" about 40 s over open ground.
+6. [minor] Fight-count stages (1-9, 2-5) have no progress bar; players can't tell if they're moving forward.
+7. [minor] 2-2 flower totals: bar 107, game-over card "1/122".
+8. [minor] Lives aren't shown until the first one is lost.
+9. [polish] 1-7: the eagle sits on Pokey when it hits; Dot overlaps him; after the rope the camera leaves Pokey at the right edge;
+   sideways at about 23% Dot was drawn inside the dirt.
