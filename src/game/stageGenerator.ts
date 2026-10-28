@@ -81,6 +81,8 @@ export interface GeneratedStage {
   dot?: import('./dotFlightStage.ts').DotStage;
   /** puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): their pieces and wires, for a hand-built stage or the generator alike */
   kit?: import('./puzzleKit.ts').KitExtras;
+  /** the goal Easy keeps: the stage's own quota, before goals.ts raised it to Normal's share of what the stage holds */
+  easyGoal?: number;
   /** what the generator built (for tests and debugging) */
   meta?: {
     attempt: number;

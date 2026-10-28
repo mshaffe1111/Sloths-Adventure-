@@ -122,6 +122,8 @@ export function easyStage(stage: Stage): Stage {
   if (kind === 'boss_lair' || stage.boss) return stage;
   const climb = kind === 'ascent';
   const chase = !!stage.proto?.chase;
+  // Easy keeps the stage's own lower bar (goals.ts raised Normal's to its share of what the stage holds)
+  if (stage.easyGoal !== undefined) stage.config = { ...stage.config, targetCount: stage.easyGoal };
 
   // far jumps
   if (!climb && !chase) stage.platforms.push(...easyStones(stage));

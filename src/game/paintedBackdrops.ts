@@ -26,7 +26,7 @@ try {
   FILES = {};
 }
 
-import { w5BackdropStem } from './w5Backdrop.ts';
+import { FAR_ONLY, stageBackdropStem } from './stageBackdrops.ts';
 
 export interface PaintedSet {
   far: HTMLImageElement;
@@ -39,20 +39,29 @@ type Part = keyof PaintedSet;
 const PARTS: Part[] = ['far', 'mid', 'near'];
 
 function urlFor(stem: string, part: Part): string | null {
-  return FILES[`../assets/backdrops/${stem}-${part}.webp`] ?? null;
+  const own = FILES[`../assets/backdrops/${stem}-${part}.webp`];
+  if (own) return own;
+  // a far-only set (Worlds 1-4 through the day, stageBackdrops.ts) borrows its world's middle and near strips
+  if (part !== 'far' && FAR_ONLY.includes(stem)) return FILES[`../assets/backdrops/w${worldOf(stem)}-${part}.webp`] ?? null;
+  return null;
 }
 
-/** the strip set a stage plays in: its world's own (w<N>), or the stage's light in a world painted in several (World 5) */
+/** the strip set a stage plays in: its world's own (w<N>), or the stage's own light (World 5's moods, Worlds 1-4 through the day) */
 export function backdropStem(world: number, stageId: string | null): string {
-  const own = world === 5 && stageId ? w5BackdropStem(stageId) : null;
-  return own && urlFor(own, 'far') && urlFor(own, 'mid') ? own : `w${world}`;
+  const own = stageId ? stageBackdropStem(stageId) : null;
+  return own && worldOf(own) === world && urlFor(own, 'far') && urlFor(own, 'mid') ? own : `w${world}`;
 }
+
+/** a set that draws its world's own middle strip (its own set, or a far-only one), so the world's canopy strips go with it */
+const ownMid = (stem: string): boolean => stem === `w${worldOf(stem)}` || FAR_ONLY.includes(stem);
 
 let stage: string | null = null;
 /** the stem each world shows now: the last stage played in it picks it */
 const shown = new Map<number, string>();
 const stemFor = (world: number): string => shown.get(world) ?? `w${world}`;
-const worldOf = (stem: string): number => Number(/^w(\d+)/.exec(stem)?.[1] ?? 0);
+function worldOf(stem: string): number {
+  return Number(/^w(\d+)/.exec(stem)?.[1] ?? 0);
+}
 
 /**
  * A stage is starting (the engine, as it builds the stage): its world shows that stage's strips from now on. When that changes the
@@ -131,7 +140,7 @@ function trim(keep: string) {
     if (k === keep) continue;
     ready.delete(k);
     const w = worldOf(k);
-    if (k === `w${w}`) canopyReady.delete(w);
+    if (ownMid(k) && ![...ready.keys()].some((q) => worldOf(q) === w && ownMid(q))) canopyReady.delete(w);
     listeners.forEach((fn) => fn(w));
   }
 }
@@ -179,8 +188,9 @@ const canopyUrl = (world: number, part: 'mid' | 'near') => FILES[`../assets/back
 export function canopyFor(world: number): CanopySet | null {
   const hit = canopyReady.get(world);
   if (hit) return hit;
-  // the canopy strips go with the world's own: none for a world whose strips were dropped
-  if (!ready.has(`w${world}`) || stemFor(world) !== `w${world}`) return null;
+  // the canopy strips go with the world's own middle strip: none for a world whose strips were dropped, or a set with its own middle
+  const stem = stemFor(world);
+  if (!ready.has(stem) || !ownMid(stem)) return null;
   const mu = canopyUrl(world, 'mid'), nu = canopyUrl(world, 'near');
   if (!mu || !nu || canopyLoading.has(world) || canopyFailed.has(world) || typeof Image === 'undefined') return null;
   canopyLoading.add(world);
@@ -191,7 +201,7 @@ export function canopyFor(world: number): CanopySet | null {
   mid.src = mu;
   near.src = nu;
   Promise.all([mid, near].map((im) => (im.decode ? im.decode() : new Promise<void>((res, rej) => { im.onload = () => res(); im.onerror = rej; }))))
-    .then(() => { if (ready.has(`w${world}`)) canopyReady.set(world, { mid, near }); })
+    .then(() => { if (ready.has(stemFor(world)) && ownMid(stemFor(world))) canopyReady.set(world, { mid, near }); })
     .catch(() => { canopyFailed.add(world); /* the ground strips stay */ })
     .finally(() => canopyLoading.delete(world));
   return null;

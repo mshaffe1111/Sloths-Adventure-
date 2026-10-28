@@ -6,15 +6,25 @@
  * w5Play.ts), and reads the intents it took (engine.ts kitControls).
  */
 import {
-  anchorAt, BEETLE, evalWire, falseLeaves, flyStep, ITEM, KIT, kitPlatId, liftLevel, onPlate, plateDown, roomBox, setDownX, stepBeetle,
-  throwStart, THROW, useReach, type BeetleState, type Body, type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec,
-  type ThrowKind,
+  anchorAt, BEETLE, evalWire, falseLeaves, flowRate, flyStep, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox,
+  seesawDy, seesawTilt, setDownX, sluiceFlow, stepBeetle, stepFlow, throwStart, THROW, tradeTakes, useReach, isLit, type BeetleState, type Body,
+  type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec, type ThrowKind,
 } from './puzzleKit.ts';
 import { drawKitArt, handOf, kitArtReady, kitSize } from './puzzleArt.ts';
 import type { KitArtName } from './puzzleAtlasData.ts';
 import { drawWallArt } from './protoArt.ts';
 import { ROOM_CAM, roomZoom } from './puzzleCamera.ts';
+import { NOISE, prune, type Noise } from './noise.ts';
+import { zoneEffect, type Zone } from './zones.ts';
+import type { RiverZone } from './river.ts';
+import { drawW4 } from './w4Art.ts';
 import type { Platform, PlayerState as Player } from './types.ts';
+
+/** what of the stage the kit's pieces reach beyond its platforms: the gust lanes a shutter shuts, the rivers a sluice runs */
+export interface KitWorld {
+  zones?: Zone[];
+  rivers?: RiverZone[];
+}
 
 export interface KitHost {
   t: number;
@@ -31,7 +41,7 @@ export interface KitHost {
   /** he is clearly stuck in a room (Flicker's on-request hints hook in here later; Easy's sparkle is the kit's own) */
   stuck?(room: string): void;
 }
-export type KitSfx = 'pick' | 'drop' | 'throw' | 'land' | 'press' | 'gate' | 'lever' | 'munch' | 'lift' | 'reset' | 'lost';
+export type KitSfx = 'pick' | 'drop' | 'throw' | 'land' | 'press' | 'gate' | 'lever' | 'munch' | 'lift' | 'reset' | 'lost' | 'ring' | 'tilt' | 'trade' | 'noise';
 
 /** the intents the engine hands over this frame, and which the kit took (they are then not a punch, a jump or a kick) */
 export interface KitIntents {
@@ -42,7 +52,7 @@ export interface KitIntents {
   sideDir: number;
 }
 
-type ItemMode = 'rest' | 'held' | 'fly' | 'basket' | 'wait' | 'gone';
+type ItemMode = 'rest' | 'held' | 'fly' | 'basket' | 'wait' | 'gone' | 'trader';
 interface ItemRun {
   spec: Extract<PieceSpec, { kind: 'item' }>;
   variant: ItemVariant;
@@ -63,15 +73,30 @@ interface ItemRun {
   /** where it starts and where a lost one falls back to */
   home: { plat: number; x: number; y: number };
   fromSource: boolean;
+  /** in flight from a throw (it lands with a noise if it is a noisy thing), not from a set-down or a drop */
+  thrown: boolean;
+  /** the trader that holds it at the start (an index), or -1 */
+  trader: number;
 }
 interface PlateRun { spec: Extract<PieceSpec, { kind: 'plate' }>; x: number; y: number; plat: number; w: number; down: boolean; show: number }
 interface GateRun { spec: Extract<PieceSpec, { kind: 'gate' }>; x: number; y: number; door: Platform; wall: Platform; open: boolean; latched: boolean; show: number; panned: boolean; opened: boolean }
 interface LeverRun { spec: Extract<PieceSpec, { kind: 'lever' }>; x: number; y: number; plat: number; on: boolean; show: number }
 interface BasketRun { spec: Extract<PieceSpec, { kind: 'basket' }>; x: number; y: number; weight: number; count: number }
-interface LiftRun { spec: Extract<PieceSpec, { kind: 'lift' }>; plat: Platform; baseY: number; level: number; basket: number }
+interface LiftRun { spec: Extract<PieceSpec, { kind: 'lift' }>; plat: Platform; baseY: number; level: number; basket: number; unwind?: boolean }
 interface BeetleRun { spec: Extract<PieceSpec, { kind: 'beetle' }>; st: BeetleState; home: number; span: { x0: number; x1: number }; told: boolean }
 interface SourceRun { spec: Extract<PieceSpec, { kind: 'source' }>; x: number; y: number; plat: number }
 interface ResetRun { spec: Extract<PieceSpec, { kind: 'reset' }>; x: number; y: number; plat: number }
+interface SeesawRun { spec: Extract<PieceSpec, { kind: 'seesaw' }>; x: number; y: number; foot: number; w: number; rise: number; rest: -1 | 0 | 1; ends: [Platform, Platform]; tilt: -1 | 0 | 1; show: number }
+interface BellRun { spec: Extract<PieceSpec, { kind: 'bell' }>; x: number; y: number; plat: number; rung: number }
+interface LedgeRun { spec: Extract<PieceSpec, { kind: 'ledge' }>; plat: Platform; lit: boolean; show: number }
+interface MarkRun { spec: Extract<PieceSpec, { kind: 'mark' }>; x: number; y: number; show: number }
+interface ShutterRun { spec: Extract<PieceSpec, { kind: 'shutter' }>; x: number; y: number; zone: Zone | undefined; open: boolean }
+interface PinwheelRun { spec: Extract<PieceSpec, { kind: 'pinwheel' }>; x: number; y: number; spin: boolean; ang: number }
+interface SluiceRun { spec: Extract<PieceSpec, { kind: 'sluice' }>; x: number; y: number; river: RiverZone | undefined; open: boolean; rate: number }
+interface TraderRun { spec: Extract<PieceSpec, { kind: 'trader' }>; x: number; y: number; plat: number; done: boolean; t: number }
+
+/** a bell's box a thrown thing knocks (world) */
+const bellBox = (b: { x: number; y: number }) => ({ x0: b.x - 26, x1: b.x + 26, y0: b.y - 110, y1: b.y - 20 });
 
 interface RoomRun {
   spec: RoomSpec;
@@ -86,6 +111,14 @@ interface RoomRun {
   beetles: BeetleRun[];
   sources: SourceRun[];
   resets: ResetRun[];
+  seesaws: SeesawRun[];
+  bells: BellRun[];
+  ledges: LedgeRun[];
+  marks: MarkRun[];
+  shutters: ShutterRun[];
+  pinwheels: PinwheelRun[];
+  sluices: SluiceRun[];
+  traders: TraderRun[];
   ground: Set<number>;
   /** a count of every change of the puzzle's state (a plate, a gate, a lever, a basket, a beetle asleep, a thing picked up) */
   changes: number;
@@ -101,8 +134,10 @@ interface RoomRun {
 /** Pokey's pose while he carries, throws or sets down (null: his own sprite) */
 type Pose = { kind: 'pick' | 'throw' | 'set'; t: number; dur: number } | null;
 
-const ART_OF: Record<ItemVariant, KitArtName> = { acorn: 'acorn', stone: 'stone', pinecone: 'pinecone', cake: 'cake' };
-const PILE_OF: Partial<Record<ItemVariant, KitArtName>> = { acorn: 'acornPile', stone: 'stonePile' };
+const ART_OF: Record<ItemVariant, KitArtName> = { acorn: 'acorn', stone: 'stone', pinecone: 'pinecone', cake: 'cake', pebble: 'pebble', mushroom: 'mushroom', mango: 'mango' };
+/** Pokey's carry poses are painted holding an acorn: carrying anything else, the same pose with the acorn painted out (packkit.py e*) */
+const EMPTY_OF: Partial<Record<KitArtName, KitArtName>> = { p2: 'e2', p3: 'e3', p4: 'e4', p5: 'e5', p6: 'e6', p7: 'e7', p8: 'e8', p9: 'e9', p13: 'e13' };
+const PILE_OF: Partial<Record<ItemVariant, KitArtName>> = { acorn: 'acornPile', stone: 'stonePile', pebble: 'stonePile' };
 /** the stuck help (Easy): in the room this long with nothing changing, or turning about this often, or this many misses */
 export const STUCK = { calm: 20, turns: 8, turnsCalm: 6, fails: 2 } as const;
 
@@ -121,13 +156,18 @@ export class KitPlay {
   /** a room's lines still to take down, one a frame */
   private passing: string[] = [];
 
-  constructor(kit: KitExtras, platforms: Platform[]) {
+  /** the noises made in the rooms (noise.ts), for the watchers to hear: the engine hands each the one it hears */
+  readonly noises: Noise[] = [];
+
+  constructor(kit: KitExtras, platforms: Platform[], world: KitWorld = {}) {
     const byId = new Map(platforms.map((p) => [p.id, p]));
+    this.extraZones = (world.zones ?? []).filter((z) => z.kind === 'wind');
     kit.rooms.forEach((spec, ri) => {
       const at = (pc: PieceSpec) => ('at' in pc && pc.at ? anchorAt(pc.at, byId) : null);
       const room: RoomRun = {
         spec, ri, box: roomBox(spec, byId), items: [], plates: [], gates: [], levers: [], baskets: [], lifts: [], beetles: [], sources: [], resets: [],
-        ground: new Set(spec.ground), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, sparkle: false, told: new Set(),
+        seesaws: [], bells: [], ledges: [], marks: [], shutters: [], pinwheels: [], sluices: [], traders: [],
+        ground: new Set([...spec.ground, ...kitGround(spec, ri)]), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, sparkle: false, told: new Set(),
       };
       for (const pc of spec.pieces) {
         const a = at(pc);
@@ -145,6 +185,22 @@ export class KitPlay {
           const plat = byId.get(kitPlatId(ri, pc.id, 0));
           if (plat) room.lifts.push({ spec: pc, plat, baseY: plat.y, level: 0, basket: -1 });
         }
+        if (pc.kind === 'seesaw' && a) {
+          const l = byId.get(kitPlatId(ri, pc.id, 0));
+          const r = byId.get(kitPlatId(ri, pc.id, 1));
+          const rest = pc.rest ?? -1;
+          if (l && r) room.seesaws.push({ spec: pc, x: a.x, y: a.y, foot: byId.get(pc.at.on)?.y ?? a.y, w: pc.w ?? KIT.seesawW, rise: pc.rise ?? KIT.seesawRise, rest, ends: [l, r], tilt: rest, show: rest });
+        }
+        if (pc.kind === 'bell' && a) room.bells.push({ spec: pc, x: a.x, y: a.y, plat: pc.at.on, rung: -Infinity });
+        if (pc.kind === 'ledge') {
+          const plat = byId.get(kitPlatId(ri, pc.id, 0));
+          if (plat) room.ledges.push({ spec: pc, plat, lit: false, show: 0 });
+        }
+        if (pc.kind === 'mark' && a) room.marks.push({ spec: pc, x: a.x, y: a.y, show: 0 });
+        if (pc.kind === 'shutter' && a) room.shutters.push({ spec: pc, x: a.x, y: a.y, zone: world.zones?.[pc.zone], open: false });
+        if (pc.kind === 'pinwheel' && a) room.pinwheels.push({ spec: pc, x: a.x, y: a.y, spin: false, ang: 0 });
+        if (pc.kind === 'sluice' && a) room.sluices.push({ spec: pc, x: a.x, y: a.y, river: world.rivers?.[pc.river], open: false, rate: 1 });
+        if (pc.kind === 'trader' && a) room.traders.push({ spec: pc, x: a.x, y: a.y, plat: pc.at.on, done: false, t: 0 });
         if (pc.kind === 'beetle' && a) {
           const p = byId.get(pc.at.on)!;
           room.beetles.push({ spec: pc, home: a.x, span: { x0: p.x, x1: p.x + p.width }, told: false, st: { mode: 'idle', x: a.x, plat: pc.at.on, dir: -1, t: 0, food: -1 } });
@@ -154,13 +210,15 @@ export class KitPlay {
       for (const pc of spec.pieces) {
         if (pc.kind !== 'item') continue;
         const src = pc.source ? room.sources.find((s) => s.spec.id === pc.source) : undefined;
-        const a = pc.at ? anchorAt(pc.at, byId) : src ? { x: src.x, y: src.y } : null;
+        const ti = pc.with ? room.traders.findIndex((t) => t.spec.id === pc.with) : -1;
+        const tr = room.traders[ti];
+        const a = pc.at ? anchorAt(pc.at, byId) : src ? { x: src.x, y: src.y } : tr ? { x: tr.x, y: tr.y } : null;
         if (!a) continue;
-        const plat = pc.at?.on ?? src!.plat;
+        const plat = pc.at?.on ?? src?.plat ?? tr!.plat;
         const home = { plat, x: a.x, y: a.y };
         room.items.push({
-          spec: pc, variant: pc.variant, r: ITEM[pc.variant].r, mode: 'rest', plat, x: a.x, y: a.y, body: { x: 0, y: 0, vx: 0, vy: 0 }, acc: 0,
-          knocked: new Set(), flipped: new Set(), wait: 0, basket: -1, spin: 0, home, fromSource: !!src,
+          spec: pc, variant: pc.variant, r: ITEM[pc.variant].r, mode: tr ? 'trader' : 'rest', plat, x: a.x, y: a.y, body: { x: 0, y: 0, vx: 0, vy: 0 }, acc: 0,
+          knocked: new Set(), flipped: new Set(), wait: 0, basket: -1, spin: 0, home, fromSource: !!src, thrown: false, trader: ti,
         });
       }
       this.rooms.push(room);
@@ -184,7 +242,50 @@ export class KitPlay {
     if (g) return g.open;
     const lf = room.lifts.find((p) => p.spec.id === id);
     if (lf) return lf.level >= 0.999;
+    const ss = room.seesaws.find((p) => p.spec.id === id);
+    if (ss) return ss.tilt !== ss.rest;
+    const bl = room.bells.find((p) => p.spec.id === id);
+    if (bl) return this.t - bl.rung < NOISE.dur;
+    const sh = room.shutters.find((p) => p.spec.id === id);
+    if (sh) return sh.open;
+    const pw = room.pinwheels.find((p) => p.spec.id === id);
+    if (pw) return pw.spin;
+    const sl = room.sluices.find((p) => p.spec.id === id);
+    if (sl) return sl.open;
+    const td = room.traders.find((p) => p.spec.id === id);
+    if (td) return td.done;
+    const ld = room.ledges.find((p) => p.spec.id === id);
+    if (ld) return ld.lit;
     return false;
+  }
+
+  /** the glowing things' light (World 3's mushroom), carried, lying, flying or in a basket: world middle and radius */
+  lights(): Array<{ x: number; y: number; r: number }> {
+    const out: Array<{ x: number; y: number; r: number }> = [];
+    for (const room of this.rooms) {
+      for (const it of room.items) {
+        const r = ITEM[it.variant].light;
+        if (!r || it.mode === 'wait' || it.mode === 'gone' || it.mode === 'trader') continue;
+        const b = room.baskets[it.basket];
+        const pos = it.mode === 'fly' ? { x: it.body.x, y: it.body.y } : it.mode === 'basket' && b ? { x: b.x, y: this.mouthY(room, b) + 20 } : { x: it.x, y: it.y };
+        out.push({ x: pos.x, y: pos.y - it.r, r });
+      }
+    }
+    return out;
+  }
+
+  /** make a noise the watchers hear (noise.ts) */
+  private noise(x: number, y: number, from: Noise['from'], h: KitHost) {
+    this.noises.push({ x, y, t: h.t, r: from === 'bell' ? NOISE.bellHear : NOISE.hear, from });
+    h.sfx(from === 'bell' ? 'ring' : 'noise');
+  }
+
+  /** ring a bell: it swings, and the watchers near turn to it */
+  private ring(room: RoomRun, b: BellRun, h: KitHost) {
+    b.rung = this.t;
+    room.changes++;
+    this.noise(b.x, b.y - 60, 'bell', h);
+    h.float('DONG!', b.x, b.y - 130, '#fde68a');
   }
 
   private flightWorld(room: RoomRun, platforms: readonly Platform[]): FlightWorld {
@@ -192,7 +293,8 @@ export class KitPlay {
       platforms,
       box: room.box,
       baskets: room.baskets.map((b) => ({ x: b.x, y: this.mouthY(room, b), half: KIT.mouthHalf })),
-      levers: room.levers.map((l) => ({ x0: l.x - 18, x1: l.x + 18, y0: l.y - 60, y1: l.y })),
+      // (a bell is knocked like a lever's handle: its index comes after the levers')
+      levers: [...room.levers.map((l) => ({ x0: l.x - 18, x1: l.x + 18, y0: l.y - 60, y1: l.y })), ...room.bells.map((b) => bellBox(b))],
     };
   }
 
@@ -222,7 +324,9 @@ export class KitPlay {
         this.throwIt(room, it, 'fwd', d, h);
         took.side = true;
       } else if (inp.tap) {
-        this.setDown(room, it, f, h);
+        const tr = room.traders.find((t) => !t.done && Math.abs(t.x - p.x) <= KIT.tradeReach && Math.abs(t.y - p.y) <= KIT.up);
+        if (tr && tradeTakes(tr.spec.wants, it.variant)) this.trade(room, tr, it, h);
+        else this.setDown(room, it, f, h);
         took.tap = true;
       }
       // (a press of the other two while carrying is never a jump or a kick)
@@ -253,6 +357,11 @@ export class KitPlay {
         }
       });
       room.levers.forEach((l) => consider(l.x, l.y, () => this.pull(room, l, h)));
+      room.bells.forEach((b) => consider(b.x, b.y, () => this.ring(room, b, h)));
+      // (a trader asked with empty hands: Dot says what it wants)
+      room.traders.forEach((t) => {
+        if (!t.done) consider(t.x, t.y, () => h.float(`IT WANTS A ${t.spec.wants.toUpperCase()}`, t.x, t.y - 120, '#fde68a'));
+      });
       room.resets.forEach((r) => consider(r.x, r.y, () => this.resetRoom(room, h, platforms)));
     });
     if (best) {
@@ -282,9 +391,34 @@ export class KitPlay {
     h.sfx('lever');
   }
 
+  /** a trader takes the fruit he offers, and drops what it holds in front of it, toward him */
+  private trade(room: RoomRun, tr: TraderRun, it: ItemRun, h: KitHost) {
+    this.held = null;
+    this.pose = { kind: 'set', t: 0, dur: 0.26 };
+    it.mode = it.fromSource ? 'wait' : 'gone';
+    it.wait = KIT.respawn + 2;
+    tr.done = true;
+    tr.t = 0;
+    room.changes++;
+    h.sfx('trade');
+    h.float('!', tr.x, tr.y - 120, '#fde68a');
+    const ti = room.traders.indexOf(tr);
+    const dir = h.player.x >= tr.x ? 1 : -1;
+    for (const g of room.items) {
+      if (g.trader !== ti || g.mode !== 'trader') continue;
+      g.body = { x: tr.x + dir * 20, y: tr.y - 80, vx: dir * 140, vy: -260 };
+      g.mode = 'fly';
+      g.acc = 0;
+      g.thrown = false;
+      g.knocked = new Set();
+      g.flipped = new Set();
+    }
+  }
+
   private throwIt(room: RoomRun, it: ItemRun, kind: ThrowKind, f: 1 | -1, h: KitHost) {
     const p = h.player;
     it.body = throwStart(kind, p.x, p.y, f);
+    it.thrown = true;
     it.mode = 'fly';
     it.acc = 0;
     it.knocked = new Set();
@@ -318,6 +452,7 @@ export class KitPlay {
     const plateXs = room.plates.filter((q) => q.plat === h.standingOn).map((q) => q.x);
     const x = setDownX(p.x, f, plateXs, reach);
     it.body = { x, y: p.y - 4, vx: 0, vy: 0 };
+    it.thrown = false;
     it.mode = 'fly';
     it.acc = 0;
     it.knocked = new Set();
@@ -333,6 +468,9 @@ export class KitPlay {
     for (const b of room.beetles) b.st = { mode: 'idle', x: b.home, plat: b.st.plat, dir: -1, t: 0, food: -1 };
     for (const l of room.levers) l.on = !!l.spec.on;
     for (const g of room.gates) g.latched = false;
+    for (const t of room.traders) t.done = false;
+    for (const l of room.lifts) if (l.basket < 0) l.unwind = true;
+    for (const b of room.bells) b.rung = -Infinity;
     room.changes++;
     room.sparkle = false;
     h.sfx('reset');
@@ -340,7 +478,7 @@ export class KitPlay {
   }
 
   private home(it: ItemRun) {
-    it.mode = 'rest';
+    it.mode = it.trader >= 0 ? 'trader' : 'rest';
     it.plat = it.home.plat;
     it.x = it.home.x;
     it.y = it.home.y;
@@ -349,6 +487,13 @@ export class KitPlay {
 
   /** a lost thing: it comes back to its source a moment later (one with no source is gone until the room starts again) */
   private lose(room: RoomRun, it: ItemRun, h: KitHost) {
+    if (it.trader >= 0) {
+      // (what a trader dropped comes back by the trader's stump: the trade is never undone)
+      this.byTrader(room, it);
+      h.sfx('lost');
+      room.fails++;
+      return;
+    }
     it.mode = it.fromSource ? 'wait' : 'gone';
     it.wait = KIT.respawn;
     h.sfx('lost');
@@ -362,8 +507,22 @@ export class KitPlay {
     const it = room.items[this.held.item];
     it.mode = it.fromSource ? 'wait' : 'rest';
     it.wait = KIT.respawn;
-    if (!it.fromSource) this.home(it);
+    if (it.trader >= 0) this.byTrader(room, it);
+    else if (!it.fromSource) this.home(it);
     this.held = null;
+  }
+
+  /** a traded thing lying on the ground beside its trader */
+  private byTrader(room: RoomRun, it: ItemRun) {
+    const tr = room.traders[it.trader];
+    if (!tr?.done) {
+      this.home(it);
+      return;
+    }
+    it.mode = 'rest';
+    it.plat = tr.plat;
+    it.x = tr.x - 56;
+    it.y = tr.y;
   }
 
   // ───────────────────────────── each frame ─────────────────────────────
@@ -371,6 +530,7 @@ export class KitPlay {
   /** step every room; returns what carrying does to his run speed (1: nothing) */
   step(dt: number, h: KitHost, platforms: readonly Platform[]): number {
     this.t += dt;
+    prune(this.noises, h.t);
     const p = h.player;
     if (this.pose) {
       this.pose.t += dt;
@@ -416,6 +576,7 @@ export class KitPlay {
         it.y = p.y - 40;
         continue;
       }
+      if (it.mode === 'trader') continue;
       if (it.mode === 'wait') {
         it.wait -= dt;
         if (it.wait <= 0) {
@@ -444,7 +605,10 @@ export class KitPlay {
               it.y = byId(end.plat)?.y ?? it.body.y;
               h.sfx('land');
               landedQuiet = true;
+              // a thrown stone, pebble or acorn lands with a clack the watchers hear (noise.ts)
+              if (it.thrown && ITEM[it.variant].noisy) this.noise(it.x, it.y, 'land', h);
             } else this.lose(room, it, h);
+            it.thrown = false;
           } else if (end.kind === 'basket') {
             it.mode = 'basket';
             it.basket = end.idx;
@@ -455,6 +619,11 @@ export class KitPlay {
         for (const li of it.knocked) {
           if (it.flipped.has(li)) continue;
           it.flipped.add(li);
+          if (li >= room.levers.length) {
+            const b = room.bells[li - room.levers.length];
+            if (b) this.ring(room, b, h);
+            continue;
+          }
           const l = room.levers[li];
           l.on = !l.on;
           room.changes++;
@@ -525,11 +694,15 @@ export class KitPlay {
       b.count = n;
     }
     // lifts: the weight in the basket raises them; whoever stands on one rides it, and so does what lies on it
+    this.stepPieces(room, dt, h, platforms);
     for (const l of room.lifts) {
       const b = room.baskets[l.basket];
-      const want = b ? liftLevel(b.weight, b.spec.need ?? 1) : 0;
+      // (a ratchet lift winds only with him on its plank: wound up empty it would leave him below; puzzleCheck.ts counts it so too)
+      const on = !b && evalWire(l.spec.by, (id) => this.output(room, id)) && (!l.spec.hold || (p.grounded && h.standingOn === l.plat.id));
+      if (on || l.level <= 0) l.unwind = false;
+      const want = b ? liftLevel(b.weight, b.spec.need ?? 1) : on ? 1 : l.spec.hold && !l.unwind ? l.level : 0;
       const before = l.level;
-      const step = (KIT.liftSpeed / Math.max(1, l.spec.rise)) * dt;
+      const step = ((b ? KIT.liftSpeed : KIT.windSpeed) / Math.max(1, l.spec.rise)) * dt;
       l.level = Math.abs(want - l.level) <= step ? want : l.level + Math.sign(want - l.level) * step;
       if (l.level !== before) {
         const ny = l.baseY - l.spec.rise * l.level;
@@ -599,6 +772,107 @@ export class KitPlay {
     }
   }
 
+  /**
+   * Phase 2a's pieces, each frame: the seesaws tip toward the heavier end (Pokey, what lies on an end, a pushed log, a beetle asleep on
+   * it) and carry what stands on them; a glowing thing's light finds the hidden ledges (solid only while lit) and the marks; a shutter
+   * shuts its gust lane while its wire is off; a pinwheel spins in a gust; a sluice runs its river's clock with, against, or not at all.
+   */
+  private stepPieces(room: RoomRun, dt: number, h: KitHost, platforms: readonly Platform[]) {
+    const p = h.player;
+    const out = (id: string) => this.output(room, id);
+    for (const s of room.seesaws) {
+      const w = [0, 0];
+      s.ends.forEach((e, k) => {
+        if (p.grounded && h.standingOn === e.id) w[k] += KIT.pokeyWeight;
+        for (const it of room.items) if (it.mode === 'rest' && it.plat === e.id) w[k] += ITEM[it.variant].weight;
+        for (const b of room.beetles) if (b.st.plat === e.id) w[k] += KIT.beetleWeight;
+        for (const lg of platforms) {
+          if (!lg.push || lg.broken) continue;
+          const cx = lg.x + lg.width / 2;
+          if (cx >= e.x && cx <= e.x + e.width && Math.abs(lg.y + lg.height - e.y) <= 8) w[k] += KIT.logWeight;
+        }
+      });
+      const tilt = seesawTilt(w[0], w[1], s.rest);
+      if (tilt !== s.tilt) {
+        s.tilt = tilt;
+        room.changes++;
+        h.sfx('tilt');
+      }
+      const dys = seesawDy(s.tilt, s.rise);
+      s.ends.forEach((e, k) => {
+        const want = s.y + dys[k];
+        const step = KIT.seesawSpeed * dt;
+        const ny = Math.abs(want - e.y) <= step ? want : e.y + Math.sign(want - e.y) * step;
+        const dy = ny - e.y;
+        if (!dy) return;
+        // whatever stands on the end rides it: Pokey, a pushed log
+        for (const lg of platforms) {
+          if (!lg.push || lg.broken) continue;
+          const cx = lg.x + lg.width / 2;
+          if (cx >= e.x && cx <= e.x + e.width && Math.abs(lg.y + lg.height - e.y) <= 8) lg.y += dy;
+        }
+        e.y = ny;
+        if (p.grounded && h.standingOn === e.id) p.y += dy;
+      });
+      s.show += (s.tilt - s.show) * Math.min(1, dt * 10);
+    }
+    const lights = this.lights();
+    for (const l of room.ledges) {
+      const lit = ledgeLit(l.plat.x, l.plat.x + l.plat.width, l.plat.y, lights);
+      if (lit !== l.lit) {
+        // (it never goes out from under his feet: it fades only once he is off it)
+        if (!lit && p.grounded && h.standingOn === l.plat.id) continue;
+        l.lit = lit;
+        l.plat.broken = !lit;
+        room.changes++;
+        if (lit && !room.told.has('lit')) {
+          room.told.add('lit');
+          h.float('A LEDGE!', l.plat.x + l.plat.width / 2, l.plat.y - 40, '#a7f3d0');
+        }
+      }
+      l.show += ((l.lit ? 1 : 0) - l.show) * Math.min(1, dt * 5);
+    }
+    for (const m of room.marks) m.show += ((isLit(m.x, m.y - 40, lights) ? 1 : 0) - m.show) * Math.min(1, dt * 4);
+    for (const s of room.shutters) {
+      const open = evalWire(s.spec.open, out);
+      if (open !== s.open) {
+        s.open = open;
+        room.changes++;
+        h.sfx('gate');
+      }
+      if (s.zone) s.zone.shut = !open;
+    }
+    for (const w of room.pinwheels) {
+      const spin = zoneEffect(this.zones, 'wind', w.x, w.y - 70, h.t).strength >= KIT.spinAt;
+      if (spin !== w.spin) {
+        w.spin = spin;
+        room.changes++;
+      }
+      w.ang += dt * (w.spin ? 14 : 0);
+    }
+    for (const sl of room.sluices) {
+      const open = evalWire(sl.spec.open, out);
+      if (open !== sl.open) {
+        sl.open = open;
+        room.changes++;
+        h.sfx('gate');
+      }
+      const r = sl.river;
+      if (!r) continue;
+      sl.rate = stepFlow(sl.rate, flowRate(sluiceFlow(sl.spec, open)), dt);
+      r.flowT = (r.flowT ?? h.t) + dt * sl.rate;
+      r.flowRate = sl.rate;
+    }
+    for (const t of room.traders) t.t += dt;
+  }
+
+  /** the stage's gust lanes, for the pinwheels (a shut one is calm: zones.ts zoneState) */
+  private get zones(): Zone[] {
+    return this.extraZones;
+  }
+
+  private extraZones: Zone[] = [];
+
   /** is the room's sparkle on (Easy's stuck help) */
   sparkling(room: number): boolean {
     return !!this.rooms[room]?.sparkle;
@@ -620,6 +894,16 @@ export class KitPlay {
     if (lf) return { x: lf.plat.x + lf.plat.width / 2, y: lf.plat.y - 10, r: 50 };
     const it = room.items.find((q) => q.spec.id === id);
     if (it) return { x: it.x, y: it.y - it.r, r: 28 };
+    const ss = room.seesaws.find((q) => q.spec.id === id);
+    if (ss) return { x: ss.x, y: ss.y - 30, r: 60 };
+    const bl = room.bells.find((q) => q.spec.id === id);
+    if (bl) return { x: bl.x, y: bl.y - 60, r: 40 };
+    const ld = room.ledges.find((q) => q.spec.id === id);
+    if (ld) return { x: ld.plat.x + ld.plat.width / 2, y: ld.plat.y - 10, r: 50 };
+    const sh = room.shutters.find((q) => q.spec.id === id) ?? room.pinwheels.find((q) => q.spec.id === id) ?? room.sluices.find((q) => q.spec.id === id);
+    if (sh) return { x: sh.x, y: sh.y - 60, r: 50 };
+    const td = room.traders.find((q) => q.spec.id === id);
+    if (td) return { x: td.x, y: td.y - 70, r: 50 };
     return null;
   }
 
@@ -701,6 +985,14 @@ export class KitPlay {
         }
       }
       for (const g of room.gates) this.drawGate(ctx, g);
+      for (const m of room.marks) if (m.show > 0.02) drawKitArt(ctx, m.spec.look ?? 'fernStone', m.x, m.y + 3, { alpha: m.show });
+      for (const l of room.ledges) this.drawLedge(ctx, l);
+      for (const s of room.shutters) this.drawShutter(ctx, s);
+      for (const w of room.pinwheels) this.drawPinwheel(ctx, w);
+      for (const sl of room.sluices) this.drawSluice(ctx, sl);
+      for (const b of room.bells) this.drawBell(ctx, b);
+      for (const s of room.seesaws) this.drawSeesaw(ctx, s);
+      room.traders.forEach((t, ti) => this.drawTrader(ctx, room, t, ti));
       for (const lf of room.lifts) this.drawLift(ctx, room, lf);
       room.baskets.forEach((b) => this.drawBasket(ctx, room, b));
       for (const b of room.beetles) this.drawBeetle(ctx, b);
@@ -743,11 +1035,14 @@ export class KitPlay {
     else if (!p.grounded) n = 'p4';
     else if (Math.abs(p.vx) > 25) n = (['p5', 'p6', 'p7', 'p8'] as const)[Math.floor(p.walkCycle * 0.5) % 4];
     else n = 'p3';
-    drawKitArt(ctx, n, p.x, p.y + 2, { flip: f < 0 });
-    // his poses are painted holding an acorn: anything else is drawn in his hands, over it
-    if (it && it.variant !== 'acorn') {
-      const hand = handOf(n, p.x, p.y + 2, f);
-      if (hand) this.drawItem(ctx, it, hand.x, hand.y + kitSize(ART_OF[it.variant], 1.1).h * 0.5, 0, 1.1);
+    // his poses are painted holding an acorn: anything else is drawn in his hands in the same pose with the acorn painted out
+    const other = !!it && it.variant !== 'acorn';
+    if (other && n === 'p1') n = 'p2';
+    const pose2 = other ? EMPTY_OF[n] ?? n : n;
+    drawKitArt(ctx, pose2, p.x, p.y + 2, { flip: f < 0 });
+    if (it && other) {
+      const hand = handOf(pose2, p.x, p.y + 2, f);
+      if (hand) this.drawItem(ctx, it, hand.x, hand.y + kitSize(ART_OF[it.variant]).h * 0.5, 0);
     }
     return true;
   }
@@ -766,8 +1061,24 @@ export class KitPlay {
     // (a fresh one drops out of the canopy above onto the pile at the tree's foot: the forest painted behind is its tree)
     void room;
     const pile = PILE_OF[s.spec.variant];
+    if (s.spec.look === 'tree' && s.spec.variant === 'acorn' && kitArtReady()) {
+      // World 1's painted trunk and leafy branch, its leaves over the spot a fresh acorn falls to, two acorns hanging in them
+      const sz = kitSize('acornTree');
+      const tx = s.x - sz.w * 0.62;
+      drawKitArt(ctx, 'acornTree', tx, s.y + 6);
+      const ly = s.y - KIT.dropFrom + 18;
+      drawKitArt(ctx, 'acorn', s.x - 26, ly + Math.sin(this.t * 1.7) * 2, { scale: 0.75 });
+      drawKitArt(ctx, 'acorn', s.x + 18, ly + 22 + Math.sin(this.t * 1.3 + 1) * 2, { scale: 0.7 });
+    }
     if (pile) drawKitArt(ctx, pile, s.x - 44, s.y + 3, { scale: 0.7 });
-    else if (s.spec.variant === 'cake') {
+    else if (s.spec.variant === 'mushroom') {
+      // the dim mushrooms the glowing one grew among
+      drawKitArt(ctx, 'mushroomDim', s.x - 46, s.y + 3, { scale: 0.8 });
+      drawKitArt(ctx, 'mushroomDim', s.x - 70, s.y + 3, { scale: 0.6, flip: true });
+    } else if (s.spec.variant === 'mango') {
+      drawKitArt(ctx, 'mango', s.x - 40, s.y + 2, { scale: 0.9 });
+      drawKitArt(ctx, 'mango', s.x - 62, s.y + 2, { scale: 0.8, flip: true });
+    } else if (s.spec.variant === 'cake') {
       drawKitArt(ctx, 'cake', s.x - 40, s.y + 2, { scale: 0.75 });
       drawKitArt(ctx, 'cake', s.x - 62, s.y + 2, { scale: 0.65, flip: true });
     }
@@ -816,6 +1127,26 @@ export class KitPlay {
   private drawLift(ctx: CanvasRenderingContext2D, room: RoomRun, l: LiftRun) {
     const pl = l.plat;
     const b = room.baskets[l.basket];
+    if (!b) {
+      // a rope lift a pinwheel winds (World 4): the rope from the top of its climb to the plank, the plank on it
+      const cx = pl.x + pl.width / 2;
+      const top = l.baseY - l.spec.rise - 120;
+      ctx.save();
+      ctx.strokeStyle = '#a07a4a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(pl.x + 10, pl.y);
+      ctx.lineTo(cx, top);
+      ctx.lineTo(pl.x + pl.width - 10, pl.y);
+      ctx.stroke();
+      ctx.restore();
+      drawKitArt(ctx, 'winch', cx, top + 30, { scale: 0.6 });
+      if (!drawKitArt(ctx, 'liftPlank', cx, pl.y + 16, { w: pl.width + 12, h: 30 })) {
+        ctx.fillStyle = '#8b5a2b';
+        ctx.fillRect(pl.x, pl.y, pl.width, 16);
+      }
+      return;
+    }
     // the pulley over the two of them, and the ropes from it to the plank's ends and to the basket
     if (b) {
       const px = (b.x + pl.x + pl.width / 2) / 2;
@@ -854,6 +1185,122 @@ export class KitPlay {
       ctx.strokeStyle = '#a16207';
       ctx.lineWidth = 4;
       ctx.strokeRect(b.x - KIT.mouthHalf, my, KIT.mouthHalf * 2, 44);
+    }
+  }
+
+  private drawSeesaw(ctx: CanvasRenderingContext2D, s: SeesawRun) {
+    const [l, r] = s.ends;
+    const n: KitArtName = s.show < -0.5 ? 'seesawUpR' : s.show > 0.5 ? 'seesawUpL' : 'seesawLevel';
+    // (the painted plank and its round pivot, stretched to the plank's length; its feet on the ground under the pivot)
+    const sz = kitSize(n);
+    const k = (s.w + 24) / sz.w;
+    // (over a pit, a post holds the pivot up from the ground under it)
+    if (s.foot > s.y + 12) {
+      ctx.save();
+      ctx.fillStyle = '#5b3a1e';
+      ctx.strokeStyle = '#2f1d0e';
+      ctx.lineWidth = 3;
+      ctx.fillRect(s.x - 13, s.y - 4, 26, s.foot - s.y + 8);
+      ctx.strokeRect(s.x - 13, s.y - 4, 26, s.foot - s.y + 8);
+      ctx.restore();
+    }
+    if (!drawKitArt(ctx, n, s.x, s.y + 10, { scale: k })) {
+      ctx.save();
+      ctx.strokeStyle = '#8b5a2b';
+      ctx.lineWidth = 12;
+      ctx.beginPath();
+      ctx.moveTo(l.x, l.y + 6);
+      ctx.lineTo(r.x + r.width, r.y + 6);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  private drawBell(ctx: CanvasRenderingContext2D, b: BellRun) {
+    const u = this.t - b.rung;
+    const swing = u < 1.6 ? Math.sin(u * 16) * 0.12 * (1 - u / 1.6) : 0;
+    if (!drawKitArt(ctx, 'bell', b.x, b.y + 3, { rot: swing })) {
+      ctx.fillStyle = '#b45309';
+      ctx.beginPath();
+      ctx.arc(b.x, b.y - 60, 18, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    if (u < NOISE.dur) {
+      // the ring going out: soft arcs either side
+      ctx.save();
+      ctx.strokeStyle = `rgba(253, 230, 138, ${0.7 * (1 - u / NOISE.dur)})`;
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 3; i++) {
+        const rr = 30 + ((u * 90 + i * 40) % 120);
+        ctx.beginPath();
+        ctx.arc(b.x, b.y - 60, rr, -0.6, 0.6);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(b.x, b.y - 60, rr, Math.PI - 0.6, Math.PI + 0.6);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  private drawLedge(ctx: CanvasRenderingContext2D, l: LedgeRun) {
+    if (l.show < 0.02) return;
+    const pl = l.plat;
+    if (!drawKitArt(ctx, 'stonePlate', pl.x + pl.width / 2, pl.y + 26, { w: pl.width + 16, h: 44, alpha: l.show })) {
+      ctx.save();
+      ctx.globalAlpha *= l.show;
+      ctx.fillStyle = '#6b7f6a';
+      ctx.fillRect(pl.x, pl.y, pl.width, pl.height);
+      ctx.restore();
+    }
+  }
+
+  private drawShutter(ctx: CanvasRenderingContext2D, s: ShutterRun) {
+    if (!drawKitArt(ctx, s.open ? 'shutterOpen' : 'shutterShut', s.x, s.y + 3)) {
+      ctx.fillStyle = s.open ? 'rgba(161, 98, 7, 0.4)' : '#a16207';
+      ctx.fillRect(s.x - 50, s.y - 110, 100, 110);
+    }
+  }
+
+  private drawPinwheel(ctx: CanvasRenderingContext2D, w: PinwheelRun) {
+    if (drawKitArt(ctx, w.spin ? 'pinwheelSpin' : 'pinwheel', w.x, w.y + 3)) return;
+    ctx.save();
+    ctx.translate(w.x, w.y - 110);
+    ctx.rotate(w.ang);
+    ctx.fillStyle = '#a16207';
+    for (let i = 0; i < 4; i++) {
+      ctx.rotate(Math.PI / 2);
+      ctx.fillRect(0, -6, 34, 12);
+    }
+    ctx.restore();
+  }
+
+  private drawSluice(ctx: CanvasRenderingContext2D, sl: SluiceRun) {
+    if (!drawKitArt(ctx, sl.open ? 'sluiceOpen' : 'sluiceShut', sl.x, sl.y + 10)) {
+      ctx.fillStyle = sl.open ? 'rgba(120, 80, 40, 0.4)' : '#7c5a32';
+      ctx.fillRect(sl.x - 40, sl.y - 100, 80, 100);
+    }
+  }
+
+  private drawTrader(ctx: CanvasRenderingContext2D, room: RoomRun, t: TraderRun, ti: number) {
+    const stump = drawKitArt(ctx, 'tradeStump', t.x, t.y + 4);
+    const top = t.y - (stump ? kitSize('tradeStump').h * 0.62 : 30);
+    if (!stump) {
+      ctx.fillStyle = '#6b4a2b';
+      ctx.fillRect(t.x - 40, t.y - 30, 80, 30);
+    }
+    // the capuchin on its stump (World 4's own painting): holding its thing up until he brings the fruit, then eating it
+    const pose = t.done ? 'capEat' : 'capSitBranch';
+    if (!drawW4(ctx, pose, t.x, top + 6, 70, { flip: true })) {
+      ctx.fillStyle = '#3b2416';
+      ctx.beginPath();
+      ctx.arc(t.x, top - 30, 24, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    for (const it of room.items) if (it.trader === ti && it.mode === 'trader') this.drawItem(ctx, it, t.x + 18, top - 40 + Math.sin(this.t * 3) * 3, 0, 0.8);
+    if (t.done && t.t < 1.6) {
+      const want = room.items.find((it) => it.variant === t.spec.wants);
+      if (want) this.drawItem(ctx, want, t.x - 8, top - 30, 0, 0.8);
     }
   }
 

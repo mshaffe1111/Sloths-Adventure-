@@ -56,8 +56,10 @@ export function inReach(v: ThornVine, px: number, feetY: number): boolean {
 }
 
 /** does a vine that is looking see him? (moving within its reach) */
-export function vineSees(v: ThornVine, t: number, p: { x: number; y: number; vx: number; grounded: boolean; ducking?: boolean; swinging?: boolean }): boolean {
+export function vineSees(v: ThornVine, t: number, p: { x: number; y: number; vx: number; grounded: boolean; ducking?: boolean; swinging?: boolean }, listening = false): boolean {
   if (vinePhase(v, t).phase !== 'look') return false;
+  // a vine listening to the puzzle kit's noise (noise.ts: a stone landing, a bell) has turned toward it and sees nothing else
+  if (listening) return false;
   if (!inReach(v, p.x, p.y)) return false;
   if (p.ducking) return false;
   // a sloth hanging on a liana is the stillest thing in the forest, however it swings: an old vine does not see him there (3-8: wait

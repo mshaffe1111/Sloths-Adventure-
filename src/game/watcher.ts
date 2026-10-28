@@ -140,3 +140,11 @@ export function hidden(bushes: Bush[], p: HiderRef): boolean {
 export function sees(s: WatchState, shadow: number, bushes: Bush[], p: HiderRef): boolean {
   return s.phase === 'pass' && !s.seen && Math.abs(shadow - p.x) < WATCH.sight && !hidden(bushes, p);
 }
+
+/**
+ * The puzzle kit's noise (noise.ts): during a pass, an eagle that hears a noise in its watched stretch goes to it and circles over it
+ * instead of sweeping on, so its shadow sees only whoever stands at the noise. Where its shadow is (world x) at time t.
+ */
+export function lureShadow(noiseX: number, t: number): number {
+  return noiseX + Math.sin(t * 2.4) * 46;
+}

@@ -30,26 +30,66 @@ export interface Anchor {
 /** what a gate (or a lift) listens to: a piece's output by its id, or all / any / not of others */
 export type Wire = string | { all: Wire[] } | { any: Wire[] } | { not: Wire };
 
-export type ItemVariant = 'acorn' | 'stone' | 'pinecone' | 'cake';
-/** each carryable: how much it weighs on a plate or in a basket, its size (px, half its width), whether a beetle eats it */
-export const ITEM: Record<ItemVariant, { weight: number; r: number; food: boolean }> = {
-  acorn: { weight: 1, r: 15, food: false },
-  stone: { weight: 2, r: 17, food: false },
-  pinecone: { weight: 1, r: 16, food: false },
+export type ItemVariant = 'acorn' | 'stone' | 'pinecone' | 'cake' | 'pebble' | 'mushroom' | 'mango';
+export interface ItemInfo {
+  /** how much it weighs on a plate, in a basket or on a seesaw's end */
+  weight: number;
+  /** its size (px, half its width) */
+  r: number;
+  /** a lure beetle eats it */
+  food: boolean;
+  /** thrown, it lands with a noise the watchers turn to (noise.ts) */
+  noisy?: boolean;
+  /** it glows: the radius it lights (px), carried, set down or flying (World 3's mushroom) */
+  light?: number;
+  /** a fruit a trader takes (World 4's capuchin) */
+  fruit?: boolean;
+}
+/** each carryable */
+export const ITEM: Record<ItemVariant, ItemInfo> = {
+  acorn: { weight: 1, r: 15, food: false, noisy: true },
+  stone: { weight: 2, r: 17, food: false, noisy: true },
+  pinecone: { weight: 1, r: 16, food: false, noisy: true },
   // (too light to press a plate: the beetle that eats it is what presses one)
   cake: { weight: 0, r: 16, food: true },
+  pebble: { weight: 1, r: 11, food: false, noisy: true },
+  mushroom: { weight: 1, r: 16, food: false, light: 230 },
+  mango: { weight: 1, r: 15, food: false, fruit: true },
 };
 
+/** which way a sluice runs its river: with its own current, turned about, or stopped */
+export type Flow = 'with' | 'against' | 'still';
+
 export type PieceSpec =
-  | { kind: 'item'; id: string; variant: ItemVariant; at?: Anchor; source?: string; for?: string }
+  | { kind: 'item'; id: string; variant: ItemVariant; at?: Anchor; source?: string; for?: string; with?: string }
   | { kind: 'source'; id: string; variant: ItemVariant; at: Anchor; look?: 'tree' | 'pile' }
   | { kind: 'plate'; id: string; at: Anchor; w?: number; need?: number }
   | { kind: 'gate'; id: string; at: Anchor; open: Wire; latch?: boolean; h?: number }
   | { kind: 'lever'; id: string; at: Anchor; on?: boolean }
   | { kind: 'basket'; id: string; at: Anchor; mouth: number; need?: number; drop?: number }
-  | { kind: 'lift'; id: string; at: Anchor; w: number; rise: number; by: string }
+  /** `by`: the basket whose weight raises it (a counterweight), or any piece whose output winds it up while on (a pinwheel); `hold`: it
+   * stays where it was wound to when that goes off (a ratchet), instead of coming back down */
+  | { kind: 'lift'; id: string; at: Anchor; w: number; rise: number; by: string; hold?: boolean }
   | { kind: 'beetle'; id: string; at: Anchor; sight?: number }
-  | { kind: 'reset'; id: string; at: Anchor };
+  | { kind: 'reset'; id: string; at: Anchor }
+  /** a plank on a pivot at `at` (its ends' tops at the anchor's height when down): weight on one end lowers it and raises the other into a
+   * step `rise` px up. `w`: the whole plank; `rest`: which end is down when the weights are even (-1 the left, 1 the right, 0 level) */
+  | { kind: 'seesaw'; id: string; at: Anchor; w?: number; rise?: number; rest?: -1 | 0 | 1 }
+  /** a bell hanging at `at`: a tap in reach, or a thrown thing that hits it, rings it, and the watchers near turn to it (noise.ts) */
+  | { kind: 'bell'; id: string; at: Anchor }
+  /** a ledge in the dark that is there only in a glowing thing's light (World 3): `w` wide, its top at the anchor */
+  | { kind: 'ledge'; id: string; at: Anchor; w: number }
+  /** a mark (a carved fern stone) that shows only in a glowing thing's light: a sign of the way, nothing to stand on */
+  | { kind: 'mark'; id: string; at: Anchor; look?: 'fernStone' | 'crystal' }
+  /** a lever-wired shutter over a gust lane (World 4): the stage's zone `zone` (its index) blows only while the shutter is open */
+  | { kind: 'shutter'; id: string; at: Anchor; zone: number; open: Wire }
+  /** a pinwheel: it spins while a gust blows on it (its output), and wired to a lift it winds the lift up */
+  | { kind: 'pinwheel'; id: string; at: Anchor }
+  /** a lever-wired sluice gate on the stage's river `river` (its index, World 2): open, the river runs `opened`; shut, `shut` */
+  | { kind: 'sluice'; id: string; at: Anchor; river: number; open: Wire; opened?: Flow; shut?: Flow }
+  /** a creature that trades (World 4's capuchin on its stump): offered a `wants` (a tap by it while carrying one) it takes it and drops
+   * the thing it holds (the item whose `with` is this trader's id) */
+  | { kind: 'trader'; id: string; at: Anchor; wants: ItemVariant };
 export type PieceKind = PieceSpec['kind'];
 
 /** what Dot says in a room, the first time each moment comes (said once per stage: the engine remembers it) */
@@ -118,6 +158,17 @@ export const KIT = {
   liftSpeed: 120,
   /** a basket's mouth: half its width */
   mouthHalf: 30,
+  /** a seesaw's plank (px) and how high its raised end stands over its lowered one, and how fast it tips (px/s) */
+  seesawW: 240,
+  seesawRise: 72,
+  seesawSpeed: 260,
+  /** a pushed hollow log on a seesaw's end weighs this much (more than Pokey: it holds the end down while he walks the plank) */
+  logWeight: 5,
+  /** a pinwheel spins in a gust at least this strong, and a wound lift climbs this fast (px/s) */
+  spinAt: 0.3,
+  windSpeed: 70,
+  /** a trader takes the fruit when he is this close (px) */
+  tradeReach: 90,
 } as const;
 
 /** the throws: up (the jump intent: up and a little forward) and forward (the kick intent), from his hands */
@@ -164,11 +215,21 @@ export function addKitPlatforms(platforms: Platform[], kit: KitExtras): void {
   const byId = new Map(platforms.map((p) => [p.id, p]));
   kit.rooms.forEach((room, ri) => {
     room.pieces.forEach((pc) => {
-      if (pc.kind !== 'gate' && pc.kind !== 'lift') return;
+      if (pc.kind !== 'gate' && pc.kind !== 'lift' && pc.kind !== 'seesaw' && pc.kind !== 'ledge') return;
       if (platforms.some((p) => p.id === kitPlatId(ri, pc.id, 0))) throw new Error(`room ${room.id}: ${pc.id}'s platform id is taken (rename the piece)`);
       const at = anchorAt(pc.at, byId);
       if (!at) throw new Error(`room ${room.id}: ${pc.id} sits on platform ${pc.at.on}, which is not there`);
-      if (pc.kind === 'gate') {
+      if (pc.kind === 'seesaw') {
+        // its two ends, each half the plank, as they stand at rest
+        const w = pc.w ?? KIT.seesawW;
+        const [dl, dr] = seesawDy(pc.rest ?? -1, pc.rise ?? KIT.seesawRise);
+        const [l, r] = seesawHalves(at.x, w);
+        platforms.push({ id: kitPlatId(ri, pc.id, 0), x: l.x, y: at.y + dl, width: l.width, height: 18, type: 'solid', art: 'kit' });
+        platforms.push({ id: kitPlatId(ri, pc.id, 1), x: r.x, y: at.y + dr, width: r.width, height: 18, type: 'solid', art: 'kit' });
+      } else if (pc.kind === 'ledge') {
+        // (not there until a light finds it: the kit makes it solid while it is lit)
+        platforms.push({ id: kitPlatId(ri, pc.id, 0), x: at.x - pc.w / 2, y: at.y, width: pc.w, height: 22, type: 'solid', art: 'kit', broken: true });
+      } else if (pc.kind === 'gate') {
         const h = pc.h ?? KIT.gateH;
         platforms.push({ id: kitPlatId(ri, pc.id, 0), x: at.x - KIT.gateW / 2, y: at.y - KIT.doorH, width: KIT.gateW, height: KIT.doorH, type: 'solid', art: 'kit' });
         platforms.push({ id: kitPlatId(ri, pc.id, 1), x: at.x - KIT.gateW / 2, y: at.y - h, width: KIT.gateW, height: h - KIT.doorH, type: 'solid', art: 'kit' });
@@ -177,6 +238,16 @@ export function addKitPlatforms(platforms: Platform[], kit: KitExtras): void {
       }
     });
   });
+}
+
+/** the platforms the kit makes that a room's things may rest on without being listed in its `ground` (a seesaw's ends, a hidden ledge) */
+export function kitGround(room: RoomSpec, ri: number): number[] {
+  const out: number[] = [];
+  for (const pc of room.pieces) {
+    if (pc.kind === 'seesaw') out.push(kitPlatId(ri, pc.id, 0), kitPlatId(ri, pc.id, 1));
+    if (pc.kind === 'ledge') out.push(kitPlatId(ri, pc.id, 0));
+  }
+  return out;
 }
 
 /** a room's box in the world */
@@ -406,3 +477,52 @@ export function stepBeetle(b: BeetleState, dt: number, foods: ReadonlyArray<{ id
 
 /** where the beetle ends up asleep when it goes for food at `foodX` from `fromX` (the check's shortcut of stepBeetle) */
 export const beetleSleepX = (fromX: number, foodX: number): number => foodX - (foodX >= fromX ? 1 : -1) * BEETLE.mouth;
+
+// ───────────────────────────── phase 2a: seesaw, light, river, trade ─────────────────────────────
+
+/** which way a seesaw tips for these weights on its left and right ends: -1 left end down, 1 right end down, `rest` when they are even */
+export function seesawTilt(left: number, right: number, rest: -1 | 0 | 1 = -1): -1 | 0 | 1 {
+  if (left > right) return -1;
+  if (right > left) return 1;
+  return rest;
+}
+
+/** how far over its down height each end of a seesaw stands for a tilt (0 down, -rise up, -rise/2 level): [left, right] */
+export function seesawDy(tilt: -1 | 0 | 1, rise: number): [number, number] {
+  if (tilt === -1) return [0, -rise];
+  if (tilt === 1) return [-rise, 0];
+  return [-rise / 2, -rise / 2];
+}
+
+/** a seesaw's two ends as platforms' boxes (x, width) from its pivot: the left half and the right half */
+export function seesawHalves(pivotX: number, w: number): [{ x: number; width: number }, { x: number; width: number }] {
+  return [{ x: pivotX - w / 2, width: w / 2 }, { x: pivotX, width: w / 2 }];
+}
+
+/** is a point lit by any of these lights (a glowing thing's middle and the radius it lights) */
+export const isLit = (x: number, y: number, lights: ReadonlyArray<{ x: number; y: number; r: number }>): boolean =>
+  lights.some((l) => Math.hypot(l.x - x, l.y - y) <= l.r);
+
+/** a hidden ledge is lit when any light reaches some part of its top */
+export function ledgeLit(x0: number, x1: number, y: number, lights: ReadonlyArray<{ x: number; y: number; r: number }>): boolean {
+  return lights.some((l) => {
+    const cx = Math.max(x0, Math.min(x1, l.x));
+    return Math.hypot(cx - l.x, y - l.y) <= l.r;
+  });
+}
+
+/** how fast a sluice's river clock runs for a flow: 1 with the current, -1 turned about, 0 stopped */
+export const flowRate = (f: Flow): number => (f === 'with' ? 1 : f === 'against' ? -1 : 0);
+
+/** a sluice's flow for its wire's value */
+export const sluiceFlow = (spec: { opened?: Flow; shut?: Flow }, open: boolean): Flow => (open ? spec.opened ?? 'with' : spec.shut ?? 'still');
+
+/** a river clock running at its sluice's rate eases to a new rate rather than jerking (s to change over) */
+export const FLOW_EASE = 0.8;
+export function stepFlow(rate: number, want: number, dt: number): number {
+  const step = dt / FLOW_EASE * 2;
+  return Math.abs(want - rate) <= step ? want : rate + Math.sign(want - rate) * step;
+}
+
+/** does a trader take this thing: a fruit it wants */
+export const tradeTakes = (wants: ItemVariant, held: ItemVariant): boolean => wants === held;
