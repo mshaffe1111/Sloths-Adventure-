@@ -30,3 +30,15 @@
 - Water and drifting logs: never steer more than a moment on a log; it carries you. Wait on the bank, then lifted `flick up-right` hop to hop, one per second. Falling in costs a whole life, and you can lose all three in seconds.
 - Fight-count stages show no "how far along" bar, so you can't tell if you're moving. Spend a picture early to get your bearings.
 - Pictures go fast. Ration to about 8 per stage, or the last stages end up played blind.
+
+## 2026-10-28, later (v216: Meeca night stage, 2-2, Easy 1-2/3-3/4-3, upright, session 8)
+- As Meeca, plain steering through the ground webs gets you nowhere: she sticks and stands still while the thumb slides. Lifted `flick up-right` hops are the only reliable way to move through a webby stretch. If she freezes, `tap` once, then hop.
+- Meeca is slow on foot. Don't read "the picture didn't change" as a wall until you've hopped twice.
+- `hold 700` while standing under a dashed ring on a trunk carves her mark. Punching and steering up do nothing there.
+- If the trees start to look the same, you're going round in a loop. Mark the first one you see so you know when you're back. Spend a sideways picture (`turn`): it shows far more of the route than upright does.
+- Water: walking off a bank only splashes you back for free. Missing a lily pad costs a whole life and sends you right back to the start of the stage. Stop at the bank and look before the pads, every time.
+- On a log, hop off within a second. Waiting carries you back out.
+- Waterfall pushing you back means stop jumping into it. Look for a tree or vine you already passed, and climb it.
+- Two-step rock ledges: a lifted `flick up-right`, wait 200, `flick up-right` again (the double jump) beats any hold-flick run-in.
+- Vines and trunks are slow climbs: about 8 seconds of `steer up` to get to the top.
+- Pictures: I blew past 40 again in the first stage. Ration about 10 per stage and go by the % bar.

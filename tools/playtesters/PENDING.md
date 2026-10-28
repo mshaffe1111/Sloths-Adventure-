@@ -146,3 +146,22 @@ Earlier read of the same log, kept for the details:
    (goldsnake head/sleep/wake + snake atlas), 201 s (eagle atlas); oib0 at 179 s (goldsnake), 650 s (dot-perch atlas).
 3. [rule 11, fine] The new Device browser part and the 'env' moment both arrive and decode. Matt's tablet draws with its graphics
    chip (Adreno 730), so his small stalls (110-210 ms, mostly in the first second of a stage) are not the software-drawing problem.
+
+## C. Matt bot on v216 (release PR #41, c057964), 2026-10-28
+4. [UNFAIR, rule 2, World 2 out of band] 2-2 Normal upright, ~8%: the first lily pond. A missed pad costs a whole life and sends you
+   back to 2% then 0%, and Dot's "Hop the lily pads. The flowers show the way." comes after the first loss. Down to 1 life about 30 s
+   in. A bank splash is free, so the deadly pond is a surprise. Batch A #1 isn't fixed for the pads (bot; matches Matt's own 14 drownings, B1).
+5. [UNFAIR, rule 7] 4-3 Easy upright, 8%: Dot says "Climb the tree and stop it", but upright the tree is off screen to the left.
+   The bot spent 4 jumps (holds up to 700 ms) into the waterfall; only sideways was the tree visible. Ten seconds later Dot
+   near-repeats it ("The water pushes you back..."; rule 8: two water tips ~11 s apart).
+6. [UNFAIR, rule 2/4] 4-3 Easy, 14%: the dry steps after the plug need a double jump, and "Flick up again midair to jump twice"
+   comes after 2-3 failed tries.
+7. [minor, unverified] 3-3 Easy: "0 of 7 predators" never moved over 35% with taps scoring +1,000/+1,200 and Dot's "a prowler is
+   near"; either none was met or hits don't count.
+8. [minor, rule 8] 2-2 6%: "Run through flowers to pick them up." when 5 were already picked. 4-3: "Don't look at my tail. It's
+   molting season. That's a real season." is 12 words.
+9. [teaching, rule 12] 5-M: carving is a circle traced on the glass ("Hairpin. Good. Round and round." and a dashed ring). A
+   held finger does nothing (checked by state: hold 1.5 s, 0 marked; circle, 1 marked). The bot read the ring as "hold here" and
+   didn't see it working. Worth checking with a first-timer that "round and round" reads as "draw circles".
+- Fine: 1-2 Easy (no full hold needed; 3 tries at the 9% log ledge, solved with an up-and-over flick); memory 17-38 MB everywhere.
+- Not a bug (rig): the bot's "stuck in a hairpin loop" on 5-M was the test rig having no circle gesture. Added `circle`.

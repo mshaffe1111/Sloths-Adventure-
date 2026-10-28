@@ -187,18 +187,37 @@ async function action(kind, dir, holdMs) {
   await frames(33);
 }
 
+// "circle 3 2000": a finger traces 3 turns round a circle (radius 45 px) over 2 s, mid-screen, then lifts (Meeca's carving in 5-M,
+// circleTrace.ts: steady turning one way, so a line or a zigzag never counts)
+async function circle(turns, ms) {
+  const cx = Math.round(W() * 0.62), cy = Math.round(H() * 0.55), r = 45, n = Math.max(12, Math.round(turns * 24));
+  actionAt = { x: cx + r, y: cy };
+  await touch('touchStart');
+  for (let k = 1; k <= n; k++) {
+    const a = (2 * Math.PI * turns * k) / n;
+    actionAt = { x: Math.round(cx + r * Math.cos(a)), y: Math.round(cy + r * Math.sin(a)) };
+    await touch('touchMove');
+    await page.clock.runFor(ms / n);
+  }
+  const up = { x: actionAt.x, y: actionAt.y, id: 2 };
+  actionAt = null;
+  await liftFinger(up);
+  await frames(33);
+}
+
 /** "right+jump 400": hold those keys 400 ms of game time. "jump": a quick press. "wait 1000": hands off. */
 async function step(s) {
   const [what, a, b] = s.trim().split(/\s+/);
   const msStr = a;
   if (what === 'wait') return frames(Number(msStr || 500));
-  // touch: "steer right 800" (the thumb stays down until "lift"), "tap", "flick up", "flickhold up 600", "hold 700", "lift"
+  // touch: "steer right 800" (the thumb stays down until "lift"), "tap", "flick up", "flickhold up 600", "hold 700", "circle 3 2000", "lift"
   if (what === 'steer') { await steerTo(a); return frames(Number(b || 0)); }
   if (what === 'lift') { if (steer) { const up = { x: steer.x, y: steer.y, id: 1 }; steer = null; await liftFinger(up); } return frames(33); }
   if (what === 'tap') return action('tap');
   if (what === 'flick') return action('flick', a);
   if (what === 'flickhold') return action('flick', a, Number(b || 500));
   if (what === 'hold') return action('hold', null, Number(a || 700));
+  if (what === 'circle') return circle(Number(a || 2), Number(b || 1500));
   const keys = what.split('+').map((k) => KEYS[k]);
   if (keys.some((k) => !k)) throw new Error(`unknown key in "${s}" (keys: ${Object.keys(KEYS).join(', ')}, or wait / steer / lift / tap / flick / flickhold / hold)`);
   const ms = Number(msStr || 120);
