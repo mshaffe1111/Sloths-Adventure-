@@ -71,7 +71,7 @@ export interface W1Kit {
   /** a wall only a mushroom bounce gets him up (`first`: the bounce's tip comes first) */
   bounceWall: (first?: boolean, rock?: boolean) => void;
   /** a mushroom up to n branches 240 over the ground, ending on a wall's top only they reach (`dbl`: gaps for the second jump) */
-  highLeaps: (n: number, dbl?: boolean, first?: boolean) => void;
+  highLeaps: (n: number, dbl?: boolean, first?: boolean, snakes?: boolean) => void;
   highRoadOver: () => void;
   homeRun: (kinds?: ReadonlyArray<'log' | 'dip'>) => void;
   // ----- the petal trail (1-2 on)
@@ -373,7 +373,49 @@ const SECTIONS: Record<W1Stage, Table> = {
       },
     ],
   },
-  '1-3': {},
+  // 1-3 Branch Snakes: punching. The roll's rhythm: snakes up on the branches (punch or hop them over the moss), snakes on the
+  // ground between rocks and dips, or the two mixed with low ledges and bounces. Every twist starts at a rope with its guard.
+  '1-3': {
+    rhythms: ['branches', 'ground', 'mix'],
+    start: [
+      { id: 'walk', beat: 'ground', build: (k) => k.snakeWalk(2) },
+      { id: 'branch', beat: 'branches', build: (k) => { k.snakeWalk(1); k.snakeBranches(2, k.G - 120); } },
+      { id: 'ledge', beat: 'mix', build: (k) => { k.snakeLedge(); k.busy(1); k.snakeLedge(); } },
+    ],
+    develop: [
+      { id: 'branches', beat: 'branches', build: (k) => { k.snakeBranches(3, k.G - 130); k.busy(1); k.lowStumps(); k.snakeBranches(4, k.G - 150); } },
+      { id: 'ground', beat: 'ground', build: (k) => { k.snakeBranches(3, k.G - 130); k.snakeWalk(2); k.lowStumps(); k.snakeWalk(2); } },
+      { id: 'ledges', beat: 'mix', build: (k) => { k.snakeBranches(3, k.G - 130); k.snakeLedge(); k.busy(1); k.snakeLedge(); k.snakeBranches(3, k.G - 150); } },
+    ],
+    twist: [
+      { id: 'ropeBranches', beat: 'branches', build: (k) => { k.ropeGap(true, false, true); k.snakeBranches(3, k.G - 140); k.ropeGap(true, true, true); } },
+      { id: 'ropeWalk', beat: 'ground', build: (k) => { k.ropeGap(true, false, true); k.snakeWalk(1); k.ropeGap(true, true, true); } },
+      { id: 'ropeLedge', beat: 'mix', build: (k) => { k.ropeGap(true, false, true); k.bounceWall(true, false); k.snakeLedge(); k.ropeGap(true, true, true); } },
+    ],
+    finish: [
+      {
+        id: 'branches', beat: 'branches', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => k.snakeBranches(k.R.i(3, 4), k.G - Math.round(k.R.r(120, 160))),
+          (k) => { k.snakeBranches(3, k.G - 130); k.dip(); },
+          (k) => { k.lowStumps(); k.snakeBranches(4, k.G - 150); },
+        ]),
+      },
+      {
+        id: 'ground', beat: 'ground', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.busy(1); k.snakeWalk(2); },
+          (k) => { k.lowStumps(); k.snakeWalk(1); },
+          (k) => { k.snakeWalk(2); k.busy(1, ['dip']); },
+        ]),
+      },
+      {
+        id: 'ledges', beat: 'mix', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.bounceWall(true, false); k.snakeLedge(); k.snakeLedge(); },
+          (k) => k.highLeaps(5, false, true, true),
+          (k) => { k.highLeaps(4, true, true, true); k.snakeWalk(1); },
+        ]),
+      },
+    ],
+  },
   '1-4': {},
   '1-5': {},
   '1-6': {},

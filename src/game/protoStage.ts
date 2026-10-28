@@ -1136,7 +1136,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * ground below, a walk back to the mushroom), and the run ends on the top of a wall that only the branches reach. `dbl`: the gaps
    * want the second jump (across, never up)
    */
-  function highLeaps(n: number, dbl = false, first = false) {
+  function highLeaps(n: number, dbl = false, first = false, snakes = false) {
     const x0 = x;
     run(R.r(150, 210));
     if (first) once('bounceWall', () => hint(x - 120, 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high', 'Land on the mushroom to bounce up high'));
@@ -1145,9 +1145,12 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     let bx = x + 40;
     const one = reachJump(0, false), two = reachJump(0, true);
     for (let k = 0; k < n; k++) {
-      const w = Math.round(R.r(170, 230));
+      // (`snakes`, 1-3 on: a snake on every second branch, which is wider for it: punch it or hop it, a miss is a drop to the ground)
+      const guard = snakes && k % 2 === 1;
+      const w = Math.round(guard ? R.r(260, 300) : R.r(170, 230));
       branch(bx, bx + w, y);
-      row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
+      if (guard) snake(bx + w / 2, y, w - 100);
+      else row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
       bx += w + Math.round(dbl ? two * R.r(0.6, 0.7) : one * R.r(0.4, 0.55));
     }
     // (the ground runs on under the branches, to the wall's foot)
@@ -1157,11 +1160,11 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     flower(top.x + top.width / 2, top.y - 34, 'orchid');
     open(top.x + top.width);
     run(R.r(40, 70));
-    expert += (x - x0) / RUN + 0.6 + n * (dbl ? 0.2 : 0.1);
+    expert += (x - x0) / RUN + 0.6 + n * (dbl ? 0.2 : 0.1) + (snakes ? 0.8 * Math.floor(n / 2) : 0);
     pieces.push({ k: 'highrun', x0, x1: x });
   }
   const w1: W1Kit = {
-    bounceWall: (f, r) => bounceWall(f, r), highLeaps: (n, d, f) => highLeaps(n, d, f),
+    bounceWall: (f, r) => bounceWall(f, r), highLeaps: (n, d, f, sn) => highLeaps(n, d, f, sn),
     R, G, EXPERT: EXPERT_SECONDS,
     get x() { return x; },
     get expert() { return expert; },
@@ -1489,6 +1492,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // (Rebuilt 2026-10-28: the walks between the snakes hold rocks to hop and dips, the stumps stay low, no tall double jumps.)
     beat('Learn: the sleeping snake', () => {
       rest(R.r(420, 470));
+      // (stumps and a rock before the first snake: the first-timer bot walked into it 2.5 s in, before Dot's tip, on every roll; nothing
+      // can hurt in the first five seconds, 2026-10-28)
+      lowStumps();
+      busy(1, ['log'], R.r(200, 240));
       const wx = x + 120;
       branch(wx, wx + 420, G - 90);
       snake(wx + 260, G - 90, 60, true);
@@ -1496,34 +1503,22 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hint(wx - 80, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
       run(R.r(600, 640));
       expert += 3;
-      snakeWalk(2);
+      // (then two more snakes, awake now, in this roll's rhythm: w1Sections.ts)
+      section('start');
       flag();
     });
     beat('Test: snakes on the branches', () => {
       hint(x + 60, 'Punch the snakes or hop over them', 'Punch the snakes or hop over them', 'Punch the snakes or hop over them');
-      snakeBranches(3, G - 130);
-      busy(1);
-      lowStumps();
-      snakeBranches(4, G - 150);
+      section('develop');
       flag();
     });
     beat('Twist: the rope guard', () => {
       hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
-      ropeGap(true, false, true);
-      snakeWalk(1);
-      ropeGap(true, true, true);
+      section('twist');
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 24) {
-        const k = n % 3;
-        if (k === 0) snakeBranches(R.i(3, 4), G - Math.round(R.r(120, 160)));
-        else if (k === 1) { busy(1); snakeWalk(2); }
-        else { lowStumps(); busy(1, ['dip']); }
-        n++;
-        if (n % 3 === 0) flag();
-      }
+      section('finish');
       // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
       ropeGap(false, true, true);
       homeRun();
