@@ -124,6 +124,9 @@ export interface WorldManifest {
   flowers: NonNullable<Collectible['botanicalVariant']>[];
   /** the world's building blocks */
   sections: SectionTemplate[];
+  /** the share of the sections one roll favours (its theme: pipeline THEME); default THEME.share once the world holds THEME.from
+   *  sections or more, else 1 (every roll draws from them all) */
+  themeShare?: Range;
   /** the stages of the world gen2 must never build (the signature stage, the guardian's lair) */
   handBuilt: string[];
   /** mechanic -> the stage that teaches it first (a later stage takes it as known: no tip, and sections that use it are open) */
@@ -454,6 +457,8 @@ export interface Gen2Meta {
   graph: MissionGraph;
   sections: Array<Pick<PlacedSection, 'uid' | 'template' | 'node' | 'phase' | 'tension' | 'mirrored' | 'x0' | 'x1' | 'seconds'>>;
   fills: FilledSocket[];
+  /** the sections the roll's theme favoured (pipeline THEME; absent when it favoured them all) */
+  theme?: string[];
   /** the decor sets the roll chose, by job */
   looks: Record<string, string>;
   /** the time model's seconds (typical and fast players) */

@@ -7,13 +7,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
-import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, rngFor, STAGE_HEAT, trimPlan } from './pipeline.ts';
-import { cfg, kit, manifest, pitHop } from './toyWorld.ts';
+import { bandFor, buildGen2Stage, checkStage, chooseVersions, difficultyScore, growPlan, layLocal, maxGap, missionGraph, PIT, pitSteps, placeRoom, planBudget, riseLimit, rngFor, STAGE_HEAT, THEME, trimPlan } from './pipeline.ts';
+import { cfg, kit, manifest, meadow, pitHop, stumps } from './toyWorld.ts';
 import { MARGIN, versionKey, WATER_LINE, WATER_WARN, type LocalRoomSpec, type SectionTemplate, type WorldKit } from './types.ts';
 import { WorldOnce } from './variety.ts';
 import { addKitPlatforms } from '../puzzleKit.ts';
 import { findRoute, type Route } from '../../../tools/inspect/route.ts';
 import { inspectJumps, KID } from '../../../tools/inspect/jumps.ts';
+import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
+import { actionTokens, cosine, profile } from '../../../tools/inspect/analyze.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { Platform } from '../types.ts';
 
@@ -516,4 +518,86 @@ test("a prop's threat is paid from its section's threat budget like a creature's
     assert.ok(paid.gen2.fills.some((f) => f.what === 'teapot'), `seed ${seed}: no teapot laid`);
   }
   assert.ok(lost > 0, 'a teapot leaves less for the spiders');
+});
+
+test("each roll's theme favours a third to a half of a big world's sections: rolls differ more, every section still comes, no rule broken", () => {
+  // a toy world grown to 31 sections (World 5's size): meadows, stump runs, pit hops and spider walks of several makes
+  const big: SectionTemplate[] = [...manifest.sections];
+  for (let i = 0; i < 6; i++) big.push({ ...meadow, id: `toy-meadow${i}`, pieces: [{ ...meadow.pieces[0], w: [420 + 60 * i, 560 + 60 * i] }] });
+  for (let i = 0; i < 8; i++) {
+    big.push({
+      ...stumps, id: `toy-stumps${i}`, difficulty: 2 + (i % 4),
+      pieces: [
+        { ...stumps.pieces[0], w: [600 + 40 * i, 800 + 40 * i] },
+        { ...stumps.pieces[1], place: { kind: 'on', on: 'bank', at: [0.1, 0.25], h: [30 + 6 * i, 50 + 6 * i] } },
+        ...(i % 2 ? [] : [stumps.pieces[2]]),
+      ],
+      sockets: stumps.sockets.filter((k) => i % 2 === 0 || k.on !== 'b'),
+    });
+  }
+  for (let i = 0; i < 7; i++) {
+    big.push({
+      ...pitHop, id: `toy-pithop${i}`, teaches: undefined, difficulty: 4 + (i % 4),
+      pieces: [pitHop.pieces[0], { ...pitHop.pieces[1], place: { kind: 'pit', after: 'near', jump: i % 3 ? 'jump' : 'double', share: [0.5, 0.9] } }, ...(i % 2 ? [pitHop.pieces[2]] : [])],
+      sockets: pitHop.sockets.filter((k) => k.role !== 'tip' && (i % 2 === 1 || k.on !== 'road')),
+    });
+  }
+  for (let i = 0; i < 6; i++) {
+    big.push({
+      id: `toy-walk${i}`, name: 'spider walk', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 3 + i, uses: ['spider'],
+      pieces: [{ key: 'bank', shape: 'bank', w: [700, 900], place: { kind: 'start' } }, { key: 'up', shape: 'bank', w: [400, 500], place: { kind: 'walk', after: 'bank', dy: i % 2 ? -40 : 40 } }],
+      entry: { piece: 'bank', kind: 'ground' }, exit: { piece: 'up', kind: 'ground' }, exitDy: i % 2 ? -40 : 40,
+      sockets: [{ id: 'foe', role: 'enemy', on: 'bank', t: 0.6, maxThreat: 3 }, { id: 'p', role: 'pickup', on: 'up', t: 0.5, dn: 34, count: 2, span: 100 }],
+      mirrorable: true,
+    });
+  }
+  assert.ok(big.length >= 30 && big.length >= THEME.from);
+  const world = (themeShare?: number): WorldKit => ({ ...kit, manifest: { ...manifest, sections: big, ...(themeShare !== undefined ? { themeShare } : {}) } });
+  const ROLLS = 20;
+  const measure = (k: WorldKit) => {
+    const mixes: Array<Map<string, number>> = [];
+    const acts: Array<ReturnType<typeof profile>> = [];
+    const seen = new Set<string>();
+    let repeats = 0;
+    for (let seed = 1; seed <= ROLLS; seed++) {
+      const st = buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'normal' });
+      assert.deepEqual(validateStage(st).errors, [], `seed ${seed}`);
+      assert.deepEqual(st.gen2.errors, [], `seed ${seed}`);
+      const t = modelStage(st, MODEL_TYPICAL).total;
+      assert.ok(t >= targetSeconds(5, 7, 'stealth') && modelStage(st, MODEL_FAST).total >= fastFloor(5, 7, 'stealth'), `seed ${seed}: ${t.toFixed(0)} s`);
+      const m = new Map<string, number>();
+      st.gen2.plan.forEach((p, i) => {
+        m.set(p.template, (m.get(p.template) ?? 0) + 1);
+        seen.add(p.template);
+        if (i && st.gen2.plan[i - 1].template === p.template) repeats++;
+      });
+      mixes.push(m);
+      const R = pickRoute('stealth', st).used;
+      acts.push(profile(actionTokens(R.br.beats, R.br.total)));
+      if (k.manifest.themeShare === undefined) {
+        const n = st.gen2.theme!.length / big.length;
+        assert.ok(n > 0.15 && n < 0.7, `seed ${seed}: the theme holds ${(n * 100).toFixed(0)}% of the sections`);
+      } else assert.equal(st.gen2.theme, undefined);
+    }
+    const cos = (a: Map<string, number>, b: Map<string, number>) => {
+      let d = 0, na = 0, nb = 0;
+      for (const [id, v] of a) (d += v * (b.get(id) ?? 0)), (na += v * v);
+      for (const v of b.values()) nb += v * v;
+      return d / Math.sqrt(na * nb);
+    };
+    let mix = 0, act = 0, n = 0;
+    for (let i = 0; i < ROLLS; i++) for (let j = i + 1; j < ROLLS; j++) (mix += 1 - cos(mixes[i], mixes[j])), (act += 1 - cosine(acts[i], acts[j])), n++;
+    return { mix: mix / n, act: act / n, seen, repeats };
+  };
+  const all = measure(world(1));
+  const themed = measure(world());
+  assert.ok(themed.mix > all.mix + 0.05, `the section mix: ${themed.mix.toFixed(3)} themed against ${all.mix.toFixed(3)}`);
+  assert.ok(themed.act > all.act, `the action 3-grams: ${themed.act.toFixed(3)} themed against ${all.act.toFixed(3)}`);
+  // every section the stealth stage can use comes in some roll (the carry room once per stage at most; the rest are open to it)
+  const usable = big.filter((t) => t.id !== 'toy-carry');
+  assert.deepEqual(usable.filter((t) => !themed.seen.has(t.id)).map((t) => t.id), [], 'sections no roll used');
+  // the cooldown still holds: no section twice running
+  assert.equal(themed.repeats, 0);
+  // a world under THEME.from sections draws from them all, as it did (the toy world's pinned geometry test holds it)
+  assert.equal(buildGen2Stage({ config: cfg('5-7', 'stealth'), kit, seed: 1, difficulty: 'normal' }).gen2.theme, undefined);
 });

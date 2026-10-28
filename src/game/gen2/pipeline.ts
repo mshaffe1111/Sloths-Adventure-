@@ -408,6 +408,8 @@ export interface Laid {
   width: number;
   bottom: number;
   nextId: number;
+  /** the sections the roll's theme favoured (undefined: it favoured them all) */
+  theme?: string[];
 }
 
 export interface LayOptions {
@@ -431,6 +433,23 @@ const SHRINE_BANK = 560;
 /** the plain-walk seconds at the start before any animal may stand (§2 "Opening seconds": 3-5 s) */
 const OPEN_SECONDS = 5;
 
+/**
+ * Each roll's theme (C1, as a world grows): with ~30 sections and ~25 slots a stage drew most of the pool every roll, so rolls looked
+ * alike (World 5's 5-7: 0.38 diversity on 20 rolls). Once a world holds `from` sections, each roll favours a share of them (rolled
+ * from `share`, a third to a half): a section is in the roll's theme when its own number for the roll (rngFor(seed, 47, its id)) is
+ * under the share, so adding a section to the world leaves every other section's membership alone. A node's bag holds the theme's
+ * candidates for it, topped up with the nearest others (lowest numbers first) to one more than the cooldown's length, so the cooldown
+ * always has one it allows; a node whose themed candidates all leave the corridor falls back on every candidate. Every section is in
+ * some rolls' themes, so every one is reachable across rolls.
+ */
+export const THEME = { from: 12, share: [1 / 3, 1 / 2] } as const;
+/** a string's FNV-1a hash (a section id's salt for its theme stream) */
+const hashOf = (s: string): number => {
+  let a = 2166136261;
+  for (let i = 0; i < s.length; i++) a = Math.imul(a ^ s.charCodeAt(i), 16777619) >>> 0;
+  return a | 0;
+};
+
 /** the seconds a section costs the typical first-timer (the time model's walk, its animals, its own extra) */
 function sectionSeconds(L: LocalLayout, tpl: SectionTemplate, budget: StageBudget): number {
   const foes = L.sockets.filter((s) => s.role === 'enemy').reduce((s, k) => s + (k.chance ?? 1), 0) * budget.enemyShare;
@@ -441,7 +460,8 @@ function sectionSeconds(L: LocalLayout, tpl: SectionTemplate, budget: StageBudge
  * Pass 3. Each node is filled with sections until its share of the seconds is met. A candidate must fit the node's phase, the
  * stage's archetype and moves, not use a mechanic before it is taught, keep its cap, and keep the route inside the corridor; the
  * bag (ShuffleBag) and the cooldown (CooldownQueue) decide among the rest, weighted toward the node's tension (scaled into the band)
- * and its wanted tags, and toward sections that drift back when the route nears the corridor's edge. Each slot rolls from its own
+ * and its wanted tags, and toward sections that drift back when the route nears the corridor's edge; in a world of THEME.from sections
+ * or more each node's bag holds the roll's theme (THEME). Each slot rolls from its own
  * stream, so a swap at one slot leaves the others' geometry as it was.
  */
 export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit, seed: number, opt: LayOptions = {}): Laid {
@@ -477,7 +497,16 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
   let cur = { x: RUNWAY, y: M.ground.y, kind: 'ground' as PortKind, piece: runway };
   const sections: PlacedSection[] = [];
   const plan: PlanSlot[] = [];
-  const cool = new CooldownQueue<string>(Math.max(1, Math.min(4, Math.floor(M.sections.length / 2))));
+  const coolN = Math.max(1, Math.min(4, Math.floor(M.sections.length / 2)));
+  const cool = new CooldownQueue<string>(coolN);
+  // (the roll's theme: THEME)
+  const themeShare = Math.min(1, roll(rngFor(seed, 43), M.themeShare ?? (M.sections.length >= THEME.from ? THEME.share : 1)));
+  const near = new Map(M.sections.map((t) => [t.id, rngFor(seed, 47, hashOf(t.id))()]));
+  const themed = (cands: SectionTemplate[]): SectionTemplate[] => {
+    if (themeShare >= 1) return cands;
+    const keep = new Set([...cands].sort((a, b) => near.get(a.id)! - near.get(b.id)!).filter((t, i) => near.get(t.id)! < themeShare || i <= coolN));
+    return cands.filter((t) => keep.has(t));
+  };
   for (const id of opt.recent ?? []) cool.use(id);
   // (sub-block versions: none twice in a world while another is left, A5 / C4)
   const once = new WorldOnce<string>();
@@ -521,7 +550,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     const key = `${n.phase}|${cands.map((c) => c.id).join(',')}`;
     let bag = bags.get(key);
     if (!bag) {
-      bag = new ShuffleBag(pickRng, cands, (t) => Math.max(1, Math.round(weight(t) * 3)));
+      bag = new ShuffleBag(pickRng, themed(cands), (t) => Math.max(1, Math.round(weight(t) * 3)));
       bags.set(key, bag);
     }
     const tries: SectionTemplate[] = [];
@@ -660,6 +689,7 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     width: R(shrine.x + shrine.width + 40),
     bottom: baseline,
     nextId: pid,
+    ...(themeShare < 1 ? { theme: M.sections.filter((t) => near.get(t.id)! < themeShare).map((t) => t.id) } : {}),
   };
 }
 
@@ -1168,6 +1198,7 @@ function assemble(req: BuildRequest, budget: StageBudget, graph: MissionGraph, s
     graph,
     sections: laid.sections.map(({ uid, template, node, phase, tension, mirrored, x0, x1, seconds }) => ({ uid, template, node, phase, tension, mirrored, x0, x1, seconds })),
     fills: filled.fills,
+    ...(laid.theme ? { theme: laid.theme } : {}),
     looks,
     modelled: { typical: 0, fast: 0 },
     errors: [],
