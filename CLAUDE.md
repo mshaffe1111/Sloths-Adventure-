@@ -19,7 +19,7 @@ Matt's Claude memory file `/areas/sloths-adventure.md` has his dated decisions.
   - touch controls only;
   - every stage works in portrait and landscape;
   - the loop is locked at 30 fps on purpose.
-- **Building or checking a stage, puzzle room or generator rule: read `reference/STAGE-RULES.md` first** (Matt's rules, the numbers every stage must meet from his Gemini research `reference/GEMINI-PCG-RESEARCH.md`, puzzle-room rules, using all the art, the checks in order, and the mistakes we already paid for). Pass it on in every helper brief.
+- **Building or checking a stage, puzzle room or generator rule: read `reference/STAGE-RULES.md` first** (Matt's rules, the numbers every stage must meet from his Gemini research `reference/GEMINI-PCG-RESEARCH.md`, with every recommendation's status in `reference/GEMINI-LEDGER.md`, puzzle-room rules, using all the art, the checks in order, and the mistakes we already paid for). Pass it on in every helper brief.
 - **Stage rules**:
   - crumbling platforms are never required;
   - straight up/down on a vine always climbs;
