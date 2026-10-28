@@ -148,8 +148,9 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
   const jumpMax = (dy: number) => reachJump(-dy, true) * 1.04;
 
   // the top: the ledge broke away behind him; the only way is down
-  let cur = ledge(120, 1180, 0);
-  row(400, 1100, -34, 5, 'hibiscus');
+  // (2026-10-28, the stage inspector: the first ledge was 3.4 quiet seconds long; Dot's two lines still fit on it)
+  let cur = ledge(120, 900, 0);
+  row(380, 840, -34, 4, 'hibiscus');
   /** which way the path runs: 1 right, -1 left */
   let dir: 1 | -1 = 1;
   /** the end of the ledge he is on, the way he is going */
@@ -321,7 +322,7 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
     hint(160, 'The ledge is gone: the only way now is down. The mist below is a long fall: miss a ledge and you go back to the last flag');
   });
   beat('Learn: little drops', () => {
-    hint(cur.x + 700, 'Jump the gaps! Flick up, and keep your thumb on the glass as you fall', 'Jump the gaps! Hold Jump as you fall', 'Jump the gaps! Hold Space as you fall');
+    hint(cur.x + cur.width - 360, 'Jump the gaps! Flick up, and keep your thumb on the glass as you fall', 'Jump the gaps! Hold Jump as you fall', 'Jump the gaps! Hold Space as you fall');
     for (let k = 0; k < 4; k++) drop({ leaf: false });
     flag();
   });
