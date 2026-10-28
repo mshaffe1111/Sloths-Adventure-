@@ -46,6 +46,7 @@ import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
 import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
+import { releasesStage, resumeAction } from './components/screenFlow.ts';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -344,13 +345,17 @@ export default function App() {
   }, [screen]);
 
   // nothing needs the game loop on the menu and story screens, nor the stage it was playing: letting go of the engine frees that
-  // stage's world (its terrain, creatures and effects) while the menus are up; the next stage builds a new one
+  // stage's world (its terrain, creatures and effects) while the menus are up; the next stage builds a new one. A memory replayed
+  // from the pause menu's Trophy Room plays over the paused stage instead (screenFlow.ts: freeing it froze Resume, Matt 2026-10-26)
+  const stageReleased = useRef(false);
   useEffect(() => {
-    if (['title', 'world_map', 'story_cutscene', 'world_story', 'world_mid', 'boss_intro', 'boss_defeat', 'ending_story', 'memory'].includes(screen)) {
+    if (releasesStage(screen, { trophyFrom, memoryBack: memoryPlay?.back ?? null })) {
       engineRef.current?.stop();
       engineRef.current = null;
       launchSeq.current++;
+      stageReleased.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen]);
 
   // switching apps or locking the phone mid-jump must not drop the player back into live play
@@ -574,6 +579,7 @@ export default function App() {
     setGuideLine(null);
     setDistanceRatio(0);
     setScreen('playing');
+    stageReleased.current = false;
 
     // the stage's picture sheets, loaded and decoded behind the menu (stagePreload.ts): what is still on its way gets a moment more,
     // so the first frames of play are not the browser decoding a 10 to 20 MB sheet (QA's 376 to 472 ms freezes as a stage began)
@@ -761,6 +767,12 @@ export default function App() {
   };
 
   const resumeGame = () => {
+    // the stage was let go of while the menu was up: start it again rather than resume a frozen picture that still reads touches
+    if (resumeAction(!!engineRef.current, stageReleased.current) === 'restart') {
+      recorder.event('resumeRestart', activeLevel.id);
+      launchEngine(activeLevel);
+      return;
+    }
     sound.playPause(false);
     setScreen('playing');
     // a lesson card or a just-found note is still up: the stage stays still behind it, and closing it carries on
