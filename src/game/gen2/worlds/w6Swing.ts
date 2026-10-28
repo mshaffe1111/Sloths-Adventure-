@@ -150,10 +150,166 @@ const humpRun: SectionTemplate = {
   mirrorable: true,
 };
 
+// ───────────────────────────── the swings over the black water ─────────────────────────────
+//
+// A liana swings by itself (Matt, 2026-10-28: a fixed amplitude and period on the game clock; up and down climb, left and right only
+// turn him; letting go carries the vine's speed at his grip). Each liana hangs past a ledge's end and its perch is sized by the core
+// from the release window (pipeline lianaBand: Easy 300 ms, Normal 167 ms), so the gap under it is wider than any jump: the swing is
+// the way over. Chains keep a root perch between every two swings (levelCheck follows ledge -> liana -> ledge, never liana to liana).
+// A liana section is never mirrored, and needs the swing move (the core infers it).
+
+const liana = (key: string, after: string): SectionPiece => ({ key, shape: 'liana', w: 0, place: { kind: 'swing', after } });
+/** the perch past a liana (`dy` from the swing's ledge), a landing (Easy widens it) */
+const perch = (key: string, after: string, w: SectionPiece['w'], dy: SectionPiece['w'] = 0): SectionPiece => bank(key, w, { kind: 'land', after, dy }, { landing: true });
+/** a climbing vine at the end of `on`, `h` px tall, and the root wall it leads up onto (a whole bank: out of a double jump's reach) */
+const climbWall = (vine: string, on: string, wall: string, h: number, w: SectionPiece['w']): SectionPiece[] => [
+  { key: vine, shape: 'vine', w: 0, place: { kind: 'climb', on, at: 1, h } },
+  bank(wall, w, { kind: 'over', on: vine, at: 0, dy: 0 }, { main: true }),
+];
+
+/** one swing over the water, root to root: the first of a stage, a perch wide enough to walk on from */
+const firstSwing: SectionTemplate = {
+  id: 'w6s-first-swing',
+  name: 'one swing over the water',
+  archetypes: ['vine_runner', 'sprint'],
+  phases: ['ki', 'sho'],
+  difficulty: 3,
+  pieces: [bank('a', [220, 280]), liana('l1', 'a'), perch('b', 'l1', [380, 460])],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'b', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.3, 2, 100), scenery('lilies', 'b', [0.7, 0.85], 0.5)],
+  mirrorable: false,
+};
+
+/** two swings with a root perch between: swing, land, swing */
+const swingPair: SectionTemplate = {
+  id: 'w6s-swing-pair',
+  name: 'two swings, a root between',
+  archetypes: ['vine_runner', 'sprint'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 5,
+  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('p1', 'l1', [180, 230], [-30, 20]), liana('l2', 'p1'), perch('b', 'l2', [300, 380])],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'b', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.3, 2, 90), foe('foe', 'b', [0.7, 0.9], ['frog'], 1.5, { phases: ['ten', 'ketsu'], chance: 0.5 })],
+  mirrorable: false,
+};
+
+/** three swings, root perches between: the long way over the black water (a vine stage's climax) */
+const swingChain: SectionTemplate = {
+  id: 'w6s-swing-chain',
+  name: 'three swings over the black water',
+  archetypes: ['vine_runner'],
+  phases: ['ten', 'ketsu'],
+  difficulty: 7,
+  pieces: [
+    bank('a', [160, 200]),
+    liana('l1', 'a'),
+    perch('p1', 'l1', [160, 200], [-20, 20]),
+    liana('l2', 'p1'),
+    perch('p2', 'l2', [160, 200], [-20, 20]),
+    liana('l3', 'p2'),
+    perch('b', 'l3', [260, 320]),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'b', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), petals('b', 'b', 0.4, 2, 90)],
+  mirrorable: false,
+  extraSeconds: 2,
+};
+
+/** a swing onto a root bank, a climbing vine up its root wall (too high to jump), and down the far side */
+const swingClimb: SectionTemplate = {
+  id: 'w6s-swing-climb',
+  name: 'swing, then climb the root wall',
+  archetypes: ['vine_runner', 'sprint'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 5,
+  pieces: [
+    bank('a', [180, 220]),
+    liana('l1', 'a'),
+    perch('b', 'l1', [260, 320]),
+    ...climbWall('v', 'b', 'wall', 230, [220, 260]),
+    down('c', 'wall', 230, [240, 300]),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('b', 'b', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 90), foe('foe', 'c', [0.6, 0.85], SMALL, 2.5, { phases: LIVE, chance: 0.5 })],
+  mirrorable: false,
+};
+
+/** a root wall with a climbing vine up it, petals at the top, down again (the climb taught safely, no water) */
+const vineWall: SectionTemplate = {
+  id: 'w6s-vine-wall',
+  name: 'climb the root wall',
+  archetypes: ['vine_runner', 'sprint'],
+  phases: ['ki', 'sho', 'rest'],
+  difficulty: 2,
+  pieces: [bank('a', [300, 360]), ...climbWall('v', 'a', 'wall', 220, [240, 280]), down('b', 'wall', 220, [200, 260]), hop('c', 'b', [220, 280])],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('a', 'a', 0.4, 2, 80), petals('wall', 'wall', 0.5, 3, 140), scenery('snag', 'c', 0.6, 0.5)],
+  mirrorable: false,
+};
+
+/** "the water is watching": a swing onto a long watched root bank, roots to duck into while the spear looks (6-2 taught it) */
+const swingWatch: SectionTemplate = {
+  id: 'w6s-swing-watch',
+  name: 'swing onto the watched root cover',
+  archetypes: ['vine_runner'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  uses: [WATCH],
+  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('b', 'l1', [700, 800]), up('knee', 'b', 40, [130, 160]), down('c', 'knee', 40, [160, 200])],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [watch('b', 0.55), hideAt('h1', 'b', 0.2), petals('pb', 'b', 0.4, 2, 80), hideAt('h2', 'b', 0.6), hideAt('h3', 'b', 0.92), petals('knee', 'knee', 0.5, 1)],
+  mirrorable: false,
+};
+
+/** root knees to hop, then a swing down onto a lower root and a step back up */
+const kneesSwing: SectionTemplate = {
+  id: 'w6s-knees-swing',
+  name: 'knees, then a swing down',
+  archetypes: ['vine_runner', 'sprint'],
+  phases: ['sho', 'ten'],
+  difficulty: 5,
+  pieces: [bank('a', [150, 190]), hop('k1', 'a', [150, 180]), hop('k2', 'k1', [180, 220]), liana('l1', 'k2'), perch('b', 'l1', [220, 260], [30, 40]), up('c', 'b', 35, [240, 300])],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('k1', 'k1', 0.5, 1), petals('k2', 'k2', 0.5, 1), petals('b', 'b', 0.5, 2, 80), foe('foe', 'c', [0.6, 0.85], SMALL, 2.5, { phases: ['ten'], chance: 0.5 })],
+  mirrorable: false,
+};
+
+/** a swing onto a root bank where a hunter prowls: land, then deal with it */
+const swingHunter: SectionTemplate = {
+  id: 'w6s-swing-hunter',
+  name: 'swing onto the hunter\'s bank',
+  archetypes: ['vine_runner', 'sprint'],
+  phases: ['ten', 'ketsu'],
+  difficulty: 6,
+  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('b', 'l1', [460, 540]), hop('c', 'b', [220, 260])],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('b', 'b', 0.2, 2, 80), foe('foe', 'b', [0.55, 0.75], ['tayra', 'ocelot', 'frog'], 3), petals('c', 'c', 0.5, 1)],
+  mirrorable: false,
+};
+
 // ───────────────────────────── the set ─────────────────────────────
 
-/** World 6's swing-stage sections (the ground ones now; the lianas and the dark roots join them) */
-export const W6_SWING_SECTIONS: readonly SectionTemplate[] = [rootIsland, rootKnees, perchSteps, watchedRoot, humpRun];
+/** World 6's swing-stage sections: the root ground, the swings and climbs (the dark-root stretches join them with the core's dark zone) */
+export const W6_SWING_SECTIONS: readonly SectionTemplate[] = [
+  rootIsland, rootKnees, perchSteps, watchedRoot, humpRun,
+  firstSwing, swingPair, swingChain, swingClimb, vineWall, swingWatch, kneesSwing, swingHunter,
+];
 
 /**
  * World 6's kit for stage `stage` with the swing sections and that stage's puzzle room joined (the world's own manifest, gen2/worlds/w6.ts, stays as it is: the

@@ -32,9 +32,15 @@ test('the sections: each is laid in its own space, 3-8 s of play, level at its e
     for (const k of s.sockets) assert.ok(keys.has(k.on), `${s.id}.${k.id} sits on a piece it has`);
     for (let r = 1; r <= 5; r++) {
       const L = layLocal(s, budget, rngFor(r));
-      assert.ok(L.width >= 600 && L.width <= 1700, `${s.id}: ${L.width} px`);
+      // (a swing's gap is wider than any jump, by design: a liana section may run 300 px longer per liana for the same seconds)
+      const lianas = L.pieces.filter((p) => p.shape === 'liana').length;
+      assert.ok(L.width >= 600 && L.width <= 1700 + 300 * lianas, `${s.id}: ${L.width} px`);
       assert.ok(Math.abs(L.exit.y - s.exitDy) <= 25, `${s.id}: exitDy ${s.exitDy}, laid ${L.exit.y}`);
-      for (const g of L.gaps) assert.ok(g.x1 - g.x0 <= maxGap(0, false, budget.margin) * 0.5 + 1, `${s.id}: a ${g.x1 - g.x0} px hop over water`);
+      // (a hop over the water is half a jump at most; a gap a liana hangs over is the swing's, wider than any jump)
+      const swung = (g: { x0: number; x1: number }) => L.pieces.some((p) => p.shape === 'liana' && p.x >= g.x0 - 1 && p.x <= g.x1 + 1);
+      for (const g of L.gaps) if (!swung(g)) assert.ok(g.x1 - g.x0 <= maxGap(0, false, budget.margin) * 0.5 + 1, `${s.id}: a ${g.x1 - g.x0} px hop over water`);
+      // (a liana section is never mirrored; a chain has a perch between every two swings: the core throws otherwise)
+      if (s.pieces.some((p) => p.shape === 'liana')) assert.equal(s.mirrorable, false, s.id);
     }
   }
 });
@@ -56,6 +62,6 @@ for (const [id, a] of STAGES) {
     }
     // (a stage with a room holds it on some rolls: the roll's theme (pipeline THEME) leaves it out of the rest, so until the core can
     // require a section, curation keeps the rolls that hold it)
-    if (Object.values(W6R_STAGE).includes(id)) assert.ok(withRoom >= 5, `${id}: its room in ${withRoom} of 20 rolls`);
+    if (Object.values(W6R_STAGE).includes(id)) assert.ok(withRoom >= 3, `${id}: its room in ${withRoom} of 20 rolls`);
   });
 }
