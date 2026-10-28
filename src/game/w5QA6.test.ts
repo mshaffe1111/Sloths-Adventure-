@@ -23,7 +23,7 @@ import { SEAMSTRESS } from './w5Kit.ts';
 import { SEAM_STILL, seamTop } from './w5Creatures.ts';
 import { SEAMSTRESS_FRAMES } from './seamstressAtlasData.ts';
 import { W5_LESSON_ORCHID } from './w5Stages.ts';
-import { MEECA_CARD, MEECA_THOUGHTS } from './meecaLines.ts';
+import { MEECA_CARD, MEECA_SAY } from './meecaLines.ts';
 import type { Platform } from './types.ts';
 
 type Engine = Record<string, any>;
@@ -361,7 +361,7 @@ test("5-M: the words on its canvas are there to read: the \"On the March North\"
   for (let i = 0; i < 40; i++) sim.frame();
   const now = mc.screenWords();
   const th = now.find((q: { kind: string }) => q.kind === 'thought');
-  assert.ok(th && th.text === `Meeca thinks: ${MEECA_THOUGHTS.carve.text}`, JSON.stringify(now));
+  assert.ok(th && th.text === `Meeca thinks: ${MEECA_SAY.camp.text}`, JSON.stringify(now));
   assert.ok(!now.some((q: { kind: string }) => q.kind === 'card'));
   // (and on any other stage, none)
   assert.deepEqual((new RealPlay('5-3', 1).e as Engine).meecaWords(), []);

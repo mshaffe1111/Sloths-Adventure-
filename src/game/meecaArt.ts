@@ -1,12 +1,12 @@
 /**
- * meecaArt — the pictures of Meeca's stage (5-M), built to the approved mock-ups (2026-10-26): Meeca herself (meeca-standard's run,
- * jump, climb and crouch, meeca-carve at a trunk, meeca-blanket at the end), the column (Lieutenant Pell and the General's soldiers,
- * pell-anim / soldier-anim, with their lanterns), each watching guard's ring (amber, filling while his back is turned; full and
- * flashing as he turns: the tell), her place in line (a dashed pink outline of her), the trunks with their words cut in the scratch
- * alphabet letter by letter and the pink hold-to-carve meter, the ferns, her thoughts (a pink cloud, never Dot's parchment), the
- * dusk grade, the "On the March North" card and the story box of the ending.
+ * meecaArt — the pictures of Meeca's stage (5-M, "On the March North"), built to the approved mock-ups (2026-10-28): Meeca herself
+ * (meeca-standard's walk, run, jump and climb; her new poses from Matt's sheet for the cake, the trap chair, the silk, the teapot,
+ * tiptoe, wonder and caught; her pinecone carry; meeca-carve at a trunk; meeca-blanket at the end), Flicker, the night camp, the trunks
+ * with their words cut in the scratch alphabet letter by letter and the circle-and-finger guide the first time, the clearing's lantern
+ * stakes, Lieutenant Pell and the General's soldiers (pell-anim / soldier-anim), her thoughts (a pink cloud) and the others' bubbles,
+ * the night grade with its lights, the "On the March North" card and the story box of the ending.
  *
- * World pieces draw in world units; the overlays (`drawScreen*`) in CSS px. Every sheet draws a plain stand-in while it loads.
+ * World pieces draw in world units; the overlays in CSS px. Every sheet draws a plain stand-in while it loads.
  */
 import { trackAtlas } from './atlasLoader.ts';
 import { makeCreatureAnim } from './creatureAnim.ts';
@@ -17,11 +17,15 @@ import { MEECA_BLANKET_FRAMES, MEECA_BLANKET_UP, MEECA_BLANKET_URL } from './mee
 import { MEECA_FRAMES, MEECA_STAND_H } from './meecaStandardData.ts';
 import { drawMeecaFrame, jennifurFrame, MEECA_UNITS } from './jennifurSprite.ts';
 import { drawScratch, drawW5, w5ArtReady } from './w5Art.ts';
-import { carvingTrunk, drawCarving, drawFern } from './w5Look.ts';
+import { carvingTrunk, drawCarving } from './w5Look.ts';
 import { shakyLetters } from './w5Kit.ts';
-import { LANE_UP, MEECA_G, TELL, TURN_BACK, type MeecaStage, type MeecaTrunk } from './meecaStage.ts';
-import { MEECA_CARD, MEECA_ENDING } from './meecaLines.ts';
-import type { Guard, MeecaPlay } from './meecaPlay.ts';
+import { LOOK_S, type Guard, type MeecaPlay } from './meecaPlay.ts';
+import { MEECA_CARD, type MeecaSceneLine, type Speaker } from './meecaLines.ts';
+import type { MeecaStage, MeecaTrunk } from './meecaStage.ts';
+import { drawGlow, drawNightPiece, nightArtReady } from './meecaNightArt.ts';
+import type { NightArtName } from './meecaNightData.ts';
+import type { KitPlay } from './puzzlePlay.ts';
+import { CHAIR } from './puzzleKit.ts';
 import type { PlayerState as Player } from './types.ts';
 
 const INK = '#3a2414';
@@ -59,56 +63,90 @@ export function warmMeecaArt() {
   SOLDIER_CLIPS.ready();
   carveSheet();
   blanketSheet();
+  nightArtReady();
 }
 
 // ───────────────────────────── Meeca ─────────────────────────────
 
-/** which of her frames she shows (the tests read it) */
-export function meecaPose(p: Player, mc: MeecaPlay, t: number): string {
-  if (mc.wrapped) return 'blanket';
-  if (mc.carvingNow || mc.phase === 'card') return 'carve';
-  if (mc.phase === 'caught') return mc.laneK > 0.5 || Math.abs(p.vx) > 5 ? `walk_${Math.floor(t * 8) % 8}` : 'alarm';
-  if (p.climbing) return `climb_${Math.floor(Math.abs(p.y) / 9) % 6}`;
-  if (!p.grounded) return p.vy < 0 ? 'jump_up' : 'jump_fall';
-  if (p.ducking) return 'crouch';
+/** which picture of hers she shows: a frame of meeca-standard ('std'), of her night sheet ('night'), carving, or in the blanket */
+export function meecaPose(p: Player, mc: MeecaPlay, kit: KitPlay | null, t: number): { sheet: 'std' | 'night' | 'carve' | 'blanket'; name: string } {
+  const std = (name: string) => ({ sheet: 'std' as const, name });
+  const night = (name: NightArtName) => ({ sheet: 'night' as const, name });
+  if (mc.wrapped) return { sheet: 'blanket', name: 'meeca_blanket' };
+  if (mc.carvingNow) return { sheet: 'carve', name: 'carve' };
+  if (mc.phase === 'look') return night(mc.lookT < LOOK_S + 1.2 ? 'mp15' : 'mp16');
+  if (mc.phase === 'endingA' || mc.phase === 'endingB' || mc.phase === 'done') return mc.turned && mc.phase === 'endingA' ? night('mp16') : std(jennifurFrame('idle', t));
+  const hp = kit?.heldPose();
+  if (hp) {
+    if (hp.kind === 'chair') return night(hp.t < 0.3 ? 'mp5' : 'mp6');
+    if (hp.kind === 'chairHeld') return night(hp.dir > 0 ? 'mp7' : 'mp6');
+    if (hp.kind === 'pop') return night('mp8');
+    if (hp.kind === 'silk') return night('mp9');
+    if (hp.kind === 'shake') return night('mp10');
+    if (hp.kind === 'tip') return night(hp.t < 0.45 ? 'mp11' : 'mp12');
+    if (hp.kind === 'sip') return std('sleepy');
+  }
+  const th = kit?.heldThing();
+  const walking = Math.abs(p.vx) > 12;
+  if (th?.variant === 'cake') {
+    if (th.pose === 'pick' || th.pose === 'set') return night('mp1');
+    if (th.pose === 'throw') return std('leap');
+    return night(walking ? (Math.floor(p.walkCycle / 1.6) % 2 ? 'mp4' : 'mp3') : 'mp2');
+  }
+  if (th) {
+    if (th.pose === 'pick') return night('mc1');
+    if (th.pose === 'set') return night('mc13');
+    if (th.pose === 'throw') return night(th.u < 0.33 ? 'mc9' : th.u < 0.66 ? 'mc10' : 'mc11');
+    return night(walking ? (['mc5', 'mc6', 'mc7', 'mc8'] as const)[Math.floor(p.walkCycle / 1.4) % 4] : 'mc3');
+  }
+  if (p.climbing) return std(`climb_${Math.floor(Math.abs(p.y) / 9) % 6}`);
+  if (!p.grounded) return std(p.vy < 0 ? 'jump_up' : 'jump_fall');
+  if (p.ducking) return std('crouch');
   const v = Math.abs(p.vx);
-  if (v > 150) return `run_${Math.floor(p.walkCycle / 1.7) % 7}`;
-  if (v > 8) return `walk_${Math.floor(p.walkCycle / 1.05) % 8}`;
-  return jennifurFrame('idle', t);
+  if (mc.tiptoe) return night(v > 8 ? (Math.floor(p.walkCycle / 1.3) % 2 ? 'mp14' : 'mp13') : 'mp13');
+  if (v > 150) return std(`run_${Math.floor(p.walkCycle / 1.7) % 7}`);
+  if (v > 8) return std(`walk_${Math.floor(p.walkCycle / 1.05) % 8}`);
+  return std(jennifurFrame('idle', t));
 }
 
-/** Meeca, the player, with her feet at (p.x, p.y): a little up on the column's lane while she is in line */
-export function drawMeecaHero(ctx: CanvasRenderingContext2D, p: Player, mc: MeecaPlay, t: number) {
-  const pose = meecaPose(p, mc, t);
-  const lift = LANE_UP * mc.laneK;
+/** Meeca, the player, with her feet at (p.x, p.y) */
+export function drawMeecaHero(ctx: CanvasRenderingContext2D, p: Player, mc: MeecaPlay, kit: KitPlay | null, t: number) {
+  const pose = meecaPose(p, mc, kit, t);
   ctx.save();
-  ctx.translate(p.x, p.y - lift);
-  // her shadow (on the lane, or under her on the path)
-  ctx.fillStyle = 'rgba(20, 8, 30, 0.32)';
-  ctx.beginPath();
-  ctx.ellipse(0, 1, p.ducking ? 26 : 20, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.translate(p.x, p.y);
+  if (p.grounded && !p.climbing) {
+    ctx.fillStyle = 'rgba(10, 8, 30, 0.34)';
+    ctx.beginPath();
+    ctx.ellipse(0, 1, p.ducking ? 26 : 20, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
   const flip = p.facing < 0;
-  if (flip) ctx.scale(-1, 1);
   let ok = false;
-  if (pose === 'carve') {
-    const img = carveSheet();
-    const f = MEECA_CARVE_FRAMES[MEECA_CARVE_SEQ[Math.floor(t * MEECA_CARVE_FPS) % MEECA_CARVE_SEQ.length]];
-    if (img && f) {
-      ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
-      ok = true;
-    } else ok = drawMeecaFrame(ctx, 'pickup', 1, 1, flip);
-  } else if (pose === 'blanket') {
-    const img = blanketSheet();
-    const f = MEECA_BLANKET_FRAMES.meeca_blanket;
-    const k = K / MEECA_BLANKET_UP;
-    if (img && f) {
-      ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
-      ok = true;
-    }
-  } else if (MEECA_FRAMES[pose]) ok = drawMeecaFrame(ctx, pose, 1, 1, flip);
+  // (sat in the soft chair, her picture is the chair with her in it: drawn on the floor, its seat under her)
+  const inChair = pose.name === 'mp5' || pose.name === 'mp6' || pose.name === 'mp7';
+  if (pose.sheet === 'night') ok = drawNightPiece(ctx, pose.name as NightArtName, 0, inChair ? CHAIR.seat + 4 : 2, { flip });
+  else {
+    if (flip) ctx.scale(-1, 1);
+    if (pose.sheet === 'carve') {
+      const img = carveSheet();
+      const f = MEECA_CARVE_FRAMES[MEECA_CARVE_SEQ[Math.floor(t * MEECA_CARVE_FPS) % MEECA_CARVE_SEQ.length]];
+      if (img && f) {
+        ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * K, -f.ay * K, f.w * K, f.h * K);
+        ok = true;
+      } else ok = drawMeecaFrame(ctx, 'pickup', 1, 1, flip);
+    } else if (pose.sheet === 'blanket') {
+      const img = blanketSheet();
+      const f = MEECA_BLANKET_FRAMES.meeca_blanket;
+      const k = K / MEECA_BLANKET_UP;
+      if (img && f) {
+        ctx.drawImage(img, f.x, f.y, f.w, f.h, -f.ax * k, -f.ay * k, f.w * k, f.h * k);
+        ok = true;
+      }
+    } else if (MEECA_FRAMES[pose.name]) ok = drawMeecaFrame(ctx, pose.name, 1, 1, flip);
+  }
   if (!ok) {
     // (the sheet is on its way: a plain pink figure)
+    if (flip && pose.sheet === 'night') ctx.scale(-1, 1);
     ctx.fillStyle = '#e9a0b8';
     ctx.strokeStyle = INK;
     ctx.lineWidth = 2;
@@ -120,197 +158,186 @@ export function drawMeecaHero(ctx: CanvasRenderingContext2D, p: Player, mc: Meec
   ctx.restore();
 }
 
-// ───────────────────────────── the column ─────────────────────────────
+/** what she carries, when her pose has no hands for it (the cake's poses and the pinecone's hold it painted): never, here */
+export const MEECA_HOLDS_PAINTED = true;
 
-function guardFrame(kind: 'pell' | 'soldier', coat: 'a' | 'b', g: Guard, t: number): string | undefined {
-  const A = kind === 'pell' ? PELL_CLIPS : SOLDIER_CLIPS;
-  const s = (n: string) => (kind === 'pell' ? n : `${n}_${coat}`);
-  switch (g.pose) {
-    case 'march':
-    case 'walk':
-      return A.loop(s('march'), t + (kind === 'pell' ? 0 : g.x * 0.003), 12);
-    case 'turn':
-      return A.at(s('turn'), g.poseT / TELL);
-    case 'look':
-      return kind === 'pell' ? A.ping('lookHold', t, 8) : A.ping(s('hold'), t, 8);
-    case 'back':
-      return A.at(kind === 'pell' ? 'turnBack' : s('back'), g.poseT / TURN_BACK);
-    case 'catch':
-      return kind === 'pell' ? A.at('catch', g.poseT / 1.0) : A.ping(s('idle'), t, 10);
-    case 'offer':
-      return kind === 'pell' ? A.at('offer', g.poseT / 1.8) : A.ping(s('idle'), t, 10);
-    default:
-      return A.ping(s('idle'), t + g.x * 0.002, 10);
+// ───────────────────────────── Flicker ─────────────────────────────
+
+/** Flicker: a few frames of wings, his glowing tail, a little sad when he says the light was his */
+export function drawFlicker(ctx: CanvasRenderingContext2D, mc: MeecaPlay, p: Player, t: number) {
+  const f = mc.flicker;
+  if (!f.on || f.show <= 0.01) return;
+  const talking = mc.bubble?.who === 'flicker';
+  const sad = mc.small && (mc.phase === 'endingB' || mc.phase === 'done');
+  const showing = mc.ringOn >= 0;
+  const frame: NightArtName = sad ? 'fl15' : showing ? 'fl16' : talking ? (Math.floor(t * 6) % 2 ? 'fl13' : 'fl1') : (['fl1', 'fl2', 'fl3', 'fl2'] as const)[Math.floor(t * 12) % 4];
+  // (he faces the way he flies, and her when he is still)
+  const face = f.x < p.x ? 1 : -1;
+  const blink = f.show < 1 ? (Math.floor(t * 14) % 2 ? 0.4 : 1) * f.show : 1;
+  drawGlow(ctx, f.x + face * 10, f.y - 6, 70, 'rgba(214, 255, 150, A)', 0.65 * blink);
+  ctx.save();
+  ctx.globalAlpha *= blink;
+  // (his sheet faces left: mirrored to face right)
+  if (!drawNightPiece(ctx, frame, f.x, f.y + 14, { flip: face > 0, scale: sad ? 0.85 : 1 })) {
+    ctx.fillStyle = '#6b4320';
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, 9, 0, Math.PI * 2);
+    ctx.fill();
   }
+  ctx.restore();
+  drawGlow(ctx, f.x + face * 9, f.y + 2, 16, 'rgba(240, 255, 190, A)', 0.9 * blink);
 }
 
-/** the lantern's light: on the ground and round the lantern (hidden behind him while he looks back) */
-function lanternGlow(ctx: CanvasRenderingContext2D, g: Guard, k = 1) {
-  const back = g.pose === 'look' || (g.pose === 'turn' && g.poseT > TELL * 0.6) || (g.pose === 'back' && g.poseT < TURN_BACK * 0.5);
-  const lx = g.x + g.face * 26, ly = g.y - 40;
+/** the circle-and-finger guide the first time she stands at a trunk: a glowing dashed ring on the bark and a ghost finger tracing it */
+export function drawCarveRing(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, t: number) {
+  const cx = tr.textX;
+  const cy = tr.textY + tr.size * 0.7 * Math.max(0, tr.lines.length - 1) * 0.6;
+  const r = 34;
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
-  const pool = ctx.createRadialGradient(g.x + g.face * 14, g.y + 2, 0, g.x + g.face * 14, g.y + 2, 90 * k);
-  pool.addColorStop(0, 'rgba(255, 190, 110, 0.22)');
-  pool.addColorStop(1, 'rgba(255, 190, 110, 0)');
-  ctx.fillStyle = pool;
-  ctx.fillRect(g.x - 110, g.y - 40, 220, 70);
-  if (!back) {
-    const r = 64 * k;
-    const gl = ctx.createRadialGradient(lx, ly, 0, lx, ly, r);
-    gl.addColorStop(0, 'rgba(255, 214, 140, 0.5)');
-    gl.addColorStop(0.4, 'rgba(255, 180, 90, 0.2)');
-    gl.addColorStop(1, 'rgba(255, 170, 80, 0)');
-    ctx.fillStyle = gl;
-    ctx.fillRect(lx - r, ly - r, r * 2, r * 2);
-  }
+  drawGlow(ctx, cx, cy, r + 26, 'rgba(214, 255, 160, A)', 0.45);
+  ctx.setLineDash([7, 7]);
+  ctx.lineDashOffset = -t * 30;
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = 'rgba(232, 255, 196, 0.9)';
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // the arrow on it: round the way the finger goes
+  const a0 = -Math.PI / 2 + ((t * Math.PI * 2) / 1.3) % (Math.PI * 2);
+  const ax = cx + Math.cos(a0) * r, ay = cy + Math.sin(a0) * r;
+  // the ghost finger: a pale fingertip, its nail toward the ring's middle
+  ctx.translate(ax, ay);
+  ctx.rotate(a0 + Math.PI / 2);
+  ctx.globalAlpha = 0.85;
+  ctx.fillStyle = 'rgba(255, 236, 222, 0.92)';
+  ctx.strokeStyle = 'rgba(120, 80, 70, 0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(-8, -6, 16, 34, 8);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255, 250, 246, 0.95)';
+  ctx.beginPath();
+  ctx.ellipse(0, -1, 5, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 
-export function drawGuard(ctx: CanvasRenderingContext2D, kind: 'pell' | 'soldier', coat: 'a' | 'b', g: Guard, t: number) {
-  ctx.save();
-  ctx.translate(g.x, g.y);
-  ctx.fillStyle = 'rgba(20, 8, 30, 0.3)';
-  ctx.beginPath();
-  ctx.ellipse(0, 1, 24, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  if (g.face < 0) ctx.scale(-1, 1);
-  const name = guardFrame(kind, coat, g, t);
-  const A = kind === 'pell' ? PELL_CLIPS : SOLDIER_CLIPS;
-  if (!(name && A.draw(ctx, name, kind === 'pell' ? PELL_K : SOLDIER_K))) {
-    ctx.fillStyle = kind === 'pell' ? '#7d7a52' : coat === 'a' ? '#6f7448' : '#76703f';
-    ctx.strokeStyle = INK;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(-20, -90, 40, 90, 16);
-    ctx.fill();
-    ctx.stroke();
-  }
-  ctx.restore();
-}
+// ───────────────────────────── the camp, the clearing ─────────────────────────────
 
-/** the column, back to front (the soldiers furthest ahead first), each with his lantern's light */
-export function drawColumn(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view: { x0: number; x1: number }, t: number) {
-  const st = mc.st;
-  for (let i = st.marchers.length - 1; i >= 0; i--) {
-    const g = mc.guards[i];
-    if (g.x < view.x0 - 160 || g.x > view.x1 + 160) continue;
-    lanternGlow(ctx, g);
-    const m = st.marchers[i];
-    drawGuard(ctx, m.kind, m.coat, g, t);
-  }
-}
+const SLEEPERS = new Set(['guard1', 'guard2', 'guard3', 'guard4', 'guard6', 'guard8', 'guardStump']);
 
-/** a watching guard's ring over his head: amber filling while his back is turned, full and flashing as he turns, his eye open as he looks */
-export function drawWatchRing(ctx: CanvasRenderingContext2D, x: number, y: number, ph: 'away' | 'turn' | 'look' | 'back', k: number, t: number, s = 1) {
-  const r = 14 * s;
-  ctx.save();
-  ctx.translate(x, y);
-  const hot = ph === 'turn' || ph === 'look';
-  const pulse = ph === 'turn' ? 1 + 0.12 * Math.sin(t * 22) : 1;
-  ctx.scale(pulse, pulse);
-  if (hot) {
-    const gl = ctx.createRadialGradient(0, 0, r * 0.5, 0, 0, r * 2.4);
-    gl.addColorStop(0, ph === 'look' ? 'rgba(255, 110, 80, 0.55)' : 'rgba(255, 180, 70, 0.55)');
-    gl.addColorStop(1, 'rgba(255, 150, 60, 0)');
-    ctx.fillStyle = gl;
-    ctx.beginPath();
-    ctx.arc(0, 0, r * 2.4, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.fillStyle = 'rgba(30, 14, 40, 0.85)';
-  ctx.strokeStyle = INK;
-  ctx.lineWidth = 2 * s;
-  ctx.beginPath();
-  ctx.arc(0, 0, r, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  ctx.lineCap = 'round';
-  ctx.lineWidth = 3.6 * s;
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
-  ctx.beginPath();
-  ctx.arc(0, 0, r - 3.5 * s, 0, Math.PI * 2);
-  ctx.stroke();
-  const frac = ph === 'away' ? k : ph === 'back' ? 1 - k : 1;
-  ctx.strokeStyle = ph === 'look' ? '#ff6b4a' : frac > 0.8 ? '#ffb347' : '#ffcf6e';
-  ctx.beginPath();
-  ctx.arc(0, 0, r - 3.5 * s, -Math.PI / 2, -Math.PI / 2 + frac * Math.PI * 2);
-  ctx.stroke();
-  // his eye: shut while his back is turned, opening as he turns, open as he looks
-  const open = ph === 'look' ? 1 : ph === 'turn' ? k : 0;
-  ctx.strokeStyle = '#fff3d6';
-  ctx.fillStyle = '#fff3d6';
-  ctx.lineWidth = 1.8 * s;
-  const ew = 6 * s;
-  if (open < 0.2) {
-    ctx.beginPath();
-    ctx.arc(0, -3 * s, ew, 0.25 * Math.PI, 0.75 * Math.PI);
-    ctx.stroke();
-    for (const a of [0.35, 0.5, 0.65]) {
-      const px = ew * Math.cos(a * Math.PI), py = -3 * s + ew * Math.sin(a * Math.PI);
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(px + 2.2 * s * Math.cos(a * Math.PI), py + 2.2 * s * Math.sin(a * Math.PI));
-      ctx.stroke();
+/** the night camp behind her: the tents, the packs, the fire and the column asleep round it */
+export function drawCamp(ctx: CanvasRenderingContext2D, st: MeecaStage, view: { x0: number; x1: number }, t: number) {
+  if (view.x0 > st.campEnd + 300) return;
+  for (const c of st.camp) {
+    if (c.x < view.x0 - 200 || c.x > view.x1 + 200) continue;
+    if (c.n === 'fire') {
+      drawGlow(ctx, c.x, c.y - 30, 150, 'rgba(255, 150, 70, A)', 0.55 + 0.08 * Math.sin(t * 9) + 0.05 * Math.sin(t * 23));
     }
-  } else {
-    ctx.beginPath();
-    ctx.ellipse(0, 0, ew, ew * 0.62 * open, 0, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.fillStyle = ph === 'look' ? '#ff6b4a' : '#ffcf6e';
-    ctx.beginPath();
-    ctx.arc(0, 0, 2.2 * s * open, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.restore();
-}
-
-let placeCache: { c: HTMLCanvasElement; ax: number; ay: number } | null = null;
-/** a pink, see-through copy of her standing frame (for her place in line), made once the sheet is in */
-function placeSilhouette(): { c: HTMLCanvasElement; ax: number; ay: number } | null {
-  if (placeCache) return placeCache;
-  if (typeof document === 'undefined') return null;
-  try {
-    const f = MEECA_FRAMES.idle;
-    const c = document.createElement('canvas');
-    const w = Math.ceil(f.w * K) + 8, h = Math.ceil(f.h * K) + 8;
-    c.width = w * 2;
-    c.height = h * 2;
-    const x = c.getContext('2d');
-    if (!x) return null;
-    x.scale(2, 2);
-    x.translate(4 + f.ax * K, 4 + f.ay * K);
-    if (!drawMeecaFrame(x, 'idle', 1, 1, false)) return null;
-    x.setTransform(1, 0, 0, 1, 0, 0);
-    x.globalCompositeOperation = 'source-in';
-    x.fillStyle = 'rgba(255, 175, 215, 0.55)';
-    x.fillRect(0, 0, c.width, c.height);
-    placeCache = { c, ax: 4 + f.ax * K, ay: 4 + f.ay * K };
-    return placeCache;
-  } catch {
-    return null;
+    if (c.n === 'stakeLit') drawGlow(ctx, c.x + 14, c.y - 78, 70, 'rgba(255, 214, 140, A)', 0.75);
+    drawNightPiece(ctx, c.n as NightArtName, c.x, c.y + 3, { flip: c.flip, scale: c.scale });
+    // a sleeper's slow Zzz
+    if (SLEEPERS.has(c.n)) {
+      const u = (t * 0.35 + c.x * 0.01) % 1;
+      ctx.save();
+      ctx.globalAlpha = 0.7 * Math.sin(u * Math.PI);
+      ctx.fillStyle = '#dcd6ff';
+      ctx.font = `700 ${11 + u * 6}px Fredoka, sans-serif`;
+      ctx.fillText('z', c.x + 14 + u * 16, c.y - 70 - u * 34);
+      ctx.restore();
+    }
   }
 }
 
-/** her place in the line: a dashed pink outline of her, and a dashed ring under it */
-export function drawPlace(ctx: CanvasRenderingContext2D, x: number, t: number) {
-  const y = MEECA_G - LANE_UP;
-  const sil = placeSilhouette();
+/** the clearing: the four lantern stakes (lit as the guards come), and the guards themselves from the moonflower on */
+export function drawClearing(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view: { x0: number; x1: number }, t: number) {
+  const c = mc.st.clearing;
+  if (c.stakes[0] > view.x1 + 300 || c.stakes[3] < view.x0 - 300) return;
+  const lit = mc.phase === 'look' ? Math.max(0, Math.min(1, (mc.lookT - LOOK_S) / 1.2)) : mc.phase === 'play' ? 0 : 1;
+  for (const x of c.stakes) {
+    if (lit > 0) drawGlow(ctx, x + 14, c.y - 78, 80, 'rgba(255, 214, 140, A)', 0.75 * lit);
+    drawNightPiece(ctx, lit > 0.5 ? 'stakeLit' : 'stake', x, c.y + 3);
+  }
+  if (mc.phase === 'play' || (mc.phase === 'look' && mc.lookT < LOOK_S)) return;
+  for (let i = mc.soldiers.length - 1; i >= 0; i--) {
+    lanternGlow(ctx, mc.soldiers[i]);
+    drawGuard(ctx, 'soldier', mc.soldiers[i].coat, mc.soldiers[i], t);
+  }
+  lanternGlow(ctx, mc.pell);
+  drawGuard(ctx, 'pell', 'a', mc.pell, t);
+  if (mc.pell.pose === 'offer' && !mc.wrapped) drawBlanketProp(ctx, mc.pell.x - 46, mc.pell.y - 30);
+}
+
+/** everything behind her: the camp, the trunks and their words (the guide ring the first time), the clearing */
+export function drawMeecaBack(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view: { x0: number; x1: number }, t: number) {
+  const st = mc.st;
+  drawCamp(ctx, st, view, t);
+  st.trunks.forEach((tr, i) => {
+    if (tr.x + tr.w < view.x0 - 100 || tr.x - tr.w > view.x1 + 100) return;
+    const cut = mc.cutChars(i);
+    const at = drawTrunk(ctx, tr, cut);
+    // (the trail mark: her M, and an arrow back the way she came, cut with the last stroke)
+    if (tr.index < 0 && cut >= tr.lines.join('').replace(/ /g, '').length) drawArrowMark(ctx, tr.textX + tr.size * 1.3, tr.textY);
+    if (at && i === mc.marked && (mc.carvingNow || (cut > 0 && cut % 1 > 0.01))) {
+      if (mc.carvingNow) shavings(ctx, at.x - at.k * 0.15, at.y + at.k * 0.25, t);
+      drawCarveMeter(ctx, at.x, at.y, tr.size * 0.78, at.frac);
+    }
+    if (mc.ringOn === i && !mc.carvingNow) drawCarveRing(ctx, tr, t);
+  });
+  drawClearing(ctx, mc, view, t);
+}
+
+/** in front of her: Flicker */
+export function drawMeecaFront(ctx: CanvasRenderingContext2D, mc: MeecaPlay, p: Player, t: number) {
+  drawFlicker(ctx, mc, p, t);
+}
+
+/** the trail mark's arrow, cut beside her M */
+function drawArrowMark(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.save();
-  ctx.globalAlpha = 0.75 + 0.2 * Math.sin(t * 3);
-  if (sil) ctx.drawImage(sil.c, x - sil.ax, y - sil.ay, sil.c.width / 2, sil.c.height / 2);
-  ctx.setLineDash([5, 5]);
-  ctx.lineWidth = 2.5;
-  ctx.strokeStyle = 'rgba(255, 190, 222, 0.95)';
-  ctx.beginPath();
-  ctx.ellipse(x, y - 1, 30, 8, 0, 0, Math.PI * 2);
-  ctx.stroke();
-  if (!sil) {
+  ctx.lineCap = 'round';
+  for (const [c, w] of [['rgba(38, 20, 10, 0.85)', 5], ['#f7e6c2', 3]] as const) {
+    ctx.strokeStyle = c;
+    ctx.lineWidth = w;
     ctx.beginPath();
-    ctx.roundRect(x - 15, y - 84, 30, 82, 13);
+    ctx.moveTo(x + 16, y);
+    ctx.lineTo(x - 14, y);
+    ctx.moveTo(x - 6, y - 8);
+    ctx.lineTo(x - 15, y);
+    ctx.lineTo(x - 6, y + 8);
     ctx.stroke();
   }
   ctx.restore();
+}
+
+// ───────────────────────────── the overlays (CSS px) ─────────────────────────────
+
+/**
+ * The night (CSS px, over the play): the moonlight pressed down over the ground, the props and the people (the strips behind are
+ * already in moonlight, tools/art/w5puzzle/night.py), and a soft vignette; then the close lights (Flicker, the fire, the lanterns,
+ * the moonflower) bring their colour back. One multiply and a few gradients a frame: cheap at 30 fps. `dark`: the last path's own dark
+ * is on (the engine's darkness), so the grade eases off.
+ */
+export function drawNightGrade(ctx: CanvasRenderingContext2D, W: number, H: number, lights: ReadonlyArray<{ x: number; y: number; r: number; c: string; a: number }>, dark: number) {
+  ctx.save();
+  ctx.globalAlpha = 1 - 0.7 * dark;
+  ctx.globalCompositeOperation = 'multiply';
+  const lg = ctx.createLinearGradient(0, 0, 0, H);
+  lg.addColorStop(0, '#9aa6dc');
+  lg.addColorStop(0.6, '#a8b0e0');
+  lg.addColorStop(1, '#8a92c8');
+  ctx.fillStyle = lg;
+  ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = 'source-over';
+  const rg = ctx.createRadialGradient(W / 2, H * 0.45, Math.min(W, H) * 0.3, W / 2, H * 0.5, Math.max(W, H) * 0.75);
+  rg.addColorStop(0, 'rgba(8, 10, 30, 0)');
+  rg.addColorStop(1, 'rgba(8, 10, 30, 0.42)');
+  ctx.fillStyle = rg;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+  for (const l of lights) if (l.x > -l.r && l.x < W + l.r && l.y > -l.r && l.y < H + l.r) drawGlow(ctx, l.x, l.y, l.r, l.c, l.a);
 }
 
 // ───────────────────────────── the trunks and the words ─────────────────────────────
@@ -431,55 +458,63 @@ function shavings(ctx: CanvasRenderingContext2D, x: number, y: number, t: number
   ctx.restore();
 }
 
-/** everything behind her: the trunks and their words, the column, the guards' rings, her place */
-export function drawMeecaBack(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view: { x0: number; x1: number }, t: number) {
-  const st = mc.st;
-  st.trunks.forEach((tr, i) => {
-    if (tr.x + tr.w < view.x0 - 100 || tr.x - tr.w > view.x1 + 100) return;
-    const cut = mc.cutChars(i);
-    const at = drawTrunk(ctx, tr, cut);
-    if (at && i === mc.done && (mc.carvingNow || (cut > 0 && cut % 1 > 0.01))) {
-      if (mc.carvingNow) shavings(ctx, at.x - at.k * 0.15, at.y + at.k * 0.25, t);
-      drawCarveMeter(ctx, at.x, at.y, tr.size * 0.78, at.frac);
-    }
-  });
-  if (mc.phase === 'play' && !mc.inLine) drawPlace(ctx, mc.slotX, t);
-  drawColumn(ctx, mc, view, t);
+// ───────────────────────────── Pell and the soldiers ─────────────────────────────
+
+function guardFrame(kind: 'pell' | 'soldier', coat: 'a' | 'b', g: Guard, t: number): string | undefined {
+  const A = kind === 'pell' ? PELL_CLIPS : SOLDIER_CLIPS;
+  const s = (n: string) => (kind === 'pell' ? n : `${n}_${coat}`);
+  if (g.pose === 'march' || g.pose === 'walk') return A.loop(s('march'), t + (kind === 'pell' ? 0 : g.x * 0.003), 12);
+  if (g.pose === 'offer') return kind === 'pell' ? A.at('offer', Math.min(1, g.poseT / 1.8)) : A.ping(s('idle'), t, 10);
+  return A.ping(s('idle'), t + g.x * 0.002, 10);
 }
 
-/** in front of her: the ferns (she crouches into them) and the rings over the watching guards */
-export function drawMeecaFront(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view: { x0: number; x1: number }, t: number) {
-  for (const f of mc.st.ferns) if (f.x > view.x0 - 140 && f.x < view.x1 + 140) drawFern(ctx, f.x, f.y + 14, f.w, t);
-  if (mc.phase !== 'play') return;
-  const s = mc.st.stretches[Math.min(mc.done, mc.st.stretches.length - 1)];
-  for (const w of s.watch) {
-    const st = mc.watchOf(w.who);
-    if (!st) continue;
-    const g = mc.guards[w.who];
-    drawWatchRing(ctx, g.x + 2, g.y - 118, st.ph, st.k, t, 1.25);
-  }
-}
-
-// ───────────────────────────── the overlays (CSS px) ─────────────────────────────
-
-/** the stage's special light: the violet sky pressed down, a low warm glow, a soft vignette (the mock-ups' grade, lighter) */
-export function drawDuskGrade(ctx: CanvasRenderingContext2D, W: number, H: number) {
+/** the lantern's light: on the ground and round the lantern (hidden behind him while he looks back) */
+function lanternGlow(ctx: CanvasRenderingContext2D, g: Guard, k = 1) {
+  const back = false;
+  const lx = g.x + g.face * 26, ly = g.y - 40;
   ctx.save();
-  ctx.globalCompositeOperation = 'multiply';
-  const lg = ctx.createLinearGradient(0, 0, 0, H);
-  lg.addColorStop(0, '#d6c2f0');
-  lg.addColorStop(0.55, '#efdcec');
-  lg.addColorStop(1, '#c8b2d2');
-  ctx.fillStyle = lg;
-  ctx.fillRect(0, 0, W, H);
-  ctx.globalCompositeOperation = 'source-over';
-  const rg = ctx.createRadialGradient(W / 2, H * 0.45, Math.min(W, H) * 0.3, W / 2, H * 0.5, Math.max(W, H) * 0.75);
-  rg.addColorStop(0, 'rgba(20, 8, 30, 0)');
-  rg.addColorStop(1, 'rgba(20, 8, 30, 0.38)');
-  ctx.fillStyle = rg;
-  ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = 'lighter';
+  const pool = ctx.createRadialGradient(g.x + g.face * 14, g.y + 2, 0, g.x + g.face * 14, g.y + 2, 90 * k);
+  pool.addColorStop(0, 'rgba(255, 190, 110, 0.22)');
+  pool.addColorStop(1, 'rgba(255, 190, 110, 0)');
+  ctx.fillStyle = pool;
+  ctx.fillRect(g.x - 110, g.y - 40, 220, 70);
+  if (!back) {
+    const r = 64 * k;
+    const gl = ctx.createRadialGradient(lx, ly, 0, lx, ly, r);
+    gl.addColorStop(0, 'rgba(255, 214, 140, 0.5)');
+    gl.addColorStop(0.4, 'rgba(255, 180, 90, 0.2)');
+    gl.addColorStop(1, 'rgba(255, 170, 80, 0)');
+    ctx.fillStyle = gl;
+    ctx.fillRect(lx - r, ly - r, r * 2, r * 2);
+  }
   ctx.restore();
 }
+
+export function drawGuard(ctx: CanvasRenderingContext2D, kind: 'pell' | 'soldier', coat: 'a' | 'b', g: Guard, t: number) {
+  ctx.save();
+  ctx.translate(g.x, g.y);
+  ctx.fillStyle = 'rgba(20, 8, 30, 0.3)';
+  ctx.beginPath();
+  ctx.ellipse(0, 1, 24, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (g.face < 0) ctx.scale(-1, 1);
+  const name = guardFrame(kind, coat, g, t);
+  const A = kind === 'pell' ? PELL_CLIPS : SOLDIER_CLIPS;
+  if (!(name && A.draw(ctx, name, kind === 'pell' ? PELL_K : SOLDIER_K))) {
+    ctx.fillStyle = kind === 'pell' ? '#7d7a52' : coat === 'a' ? '#6f7448' : '#76703f';
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(-20, -90, 40, 90, 16);
+    ctx.fill();
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+
+// ───────────────────────────── the words on the screen (CSS px) ─────────────────────────────
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, max: number): string[] {
   const out: string[] = [];
@@ -545,7 +580,11 @@ export function drawThought(ctx: CanvasRenderingContext2D, text: string, headX: 
     else if (avoid.x1 + 10 + w <= W - 8) bx = avoid.x1 + 10;
     else if (avoid.x0 - 10 - w >= 8) bx = avoid.x0 - 10 - w;
   }
-  if (by < top) by = Math.min(H - h - 10, Math.max(top, headY + 10));
+  if (by < top) {
+    // no room over her (the view pulled back, upright): beside her head, the side with more room, never over her
+    by = Math.max(top, Math.min(H - h - 10, headY - h / 2));
+    bx = headX + 34 + w <= W - 8 ? headX + 34 : Math.max(8, headX - 34 - w);
+  }
   ctx.globalAlpha = a;
   const cx = bx + w / 2, cy = by + h / 2;
   // the trail of puffs to her head
@@ -586,26 +625,41 @@ export function drawThought(ctx: CanvasRenderingContext2D, text: string, headX: 
   return { x: bx, y: by, w, h };
 }
 
-/** Pell's own few words beside him (a catch): a plain grey speech tag, his story colour */
-export function drawPellSay(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, W: number, top: number) {
+
+/** someone's words in their own bubble beside them (Flicker's or the Butler's): a dark tag with their name */
+export function drawSay(ctx: CanvasRenderingContext2D, who: Speaker, text: string, x: number, y: number, W: number, H: number, top: number, a = 1, avoid?: { x: number; y: number; w: number; h: number } | null) {
   ctx.save();
+  ctx.globalAlpha = a;
   ctx.font = `600 13px Fredoka, sans-serif`;
-  const lines = wrap(ctx, text, Math.min(200, W - 40));
+  const lines = wrap(ctx, text, Math.min(210, W - 40));
   const w = Math.max(...lines.map((l) => ctx.measureText(l).width)) + 22;
-  const h = lines.length * 16 + 12;
-  const bx = Math.max(8, Math.min(W - w - 8, x - w / 2));
-  const by = Math.max(top, y - h);
-  ctx.fillStyle = 'rgba(42, 30, 48, 0.9)';
-  ctx.strokeStyle = '#9aa3ad';
+  const h = lines.length * 16 + 26;
+  let bx = Math.max(8, Math.min(W - w - 8, x - w / 2));
+  let by = Math.max(top, Math.min(H - h - 8, y - h));
+  // (never over her thought: above it, or else beside it)
+  if (avoid && bx < avoid.x + avoid.w && bx + w > avoid.x && by < avoid.y + avoid.h && by + h > avoid.y) {
+    if (avoid.y - h - 8 >= top) by = avoid.y - h - 8;
+    else if (avoid.x + avoid.w + 8 + w <= W - 8) bx = avoid.x + avoid.w + 8;
+    else bx = Math.max(8, avoid.x - 8 - w);
+  }
+  const name = who === 'butler' ? 'THE BUTLER' : who === 'flicker' ? 'FLICKER' : 'LIEUTENANT PELL';
+  const edge = who === 'flicker' ? '#d9f99d' : who === 'butler' ? '#c4b5fd' : '#9aa3ad';
+  ctx.fillStyle = 'rgba(30, 22, 44, 0.92)';
+  ctx.strokeStyle = edge;
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.roundRect(bx, by, w, h, 10);
   ctx.fill();
   ctx.stroke();
+  ctx.fillStyle = edge;
+  ctx.font = `700 10px Fredoka, sans-serif`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(name, bx + 10, by + 10);
+  ctx.font = `600 13px Fredoka, sans-serif`;
   ctx.fillStyle = '#f3efe6';
   ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  lines.forEach((l, i) => ctx.fillText(l, bx + w / 2, by + 6 + 8 + i * 16));
+  lines.forEach((l, i) => ctx.fillText(l, bx + w / 2, by + 26 + i * 16));
   ctx.restore();
 }
 
@@ -618,7 +672,7 @@ function inked(ctx: CanvasRenderingContext2D, text: string, x: number, y: number
   ctx.fillText(text, x, y);
 }
 
-/** the "On the March North" card over the opening shot: the game's chapter card in dusk violet (upright on the top half, sideways on the left) */
+/** the "On the March North" card over the opening shot: the game's chapter card at night (upright on the top half, sideways on the left) */
 export function drawTitleCard(ctx: CanvasRenderingContext2D, W: number, H: number, a: number, t: number) {
   if (a <= 0) return;
   const land = W > H;
@@ -654,9 +708,9 @@ export function drawTitleCard(ctx: CanvasRenderingContext2D, W: number, H: numbe
   ctx.restore();
 }
 
-/** the ending's story box, in dusk violet (StoryPlayer's .sp-box), with the speaker's name pill, the dots and Next */
-export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number, line: number, a: number, t: number) {
-  const l = MEECA_ENDING[line];
+/** the ending's story box, at night (StoryPlayer's .sp-box), with the speaker's name pill, the dots and Next */
+export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number, scene: readonly MeecaSceneLine[], line: number, a: number, t: number) {
+  const l = scene[line];
   if (!l || a <= 0) return;
   const land = W > H;
   const pad = land ? 14 : 12;
@@ -665,6 +719,8 @@ export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number
   ctx.save();
   ctx.globalAlpha = a;
   ctx.font = `500 ${fs}px 'Atkinson Read', sans-serif`;
+  // (Flicker says his very small)
+  if (l.beat === 'small') ctx.font = `italic 500 ${Math.round(fs * 0.82)}px 'Atkinson Read', sans-serif`;
   const lines = wrap(ctx, l.text, bw - 34);
   const bh = 26 + lines.length * fs * 1.45 + 44;
   const bx = (W - bw) / 2;
@@ -683,7 +739,7 @@ export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number
   ctx.lineWidth = 1.5;
   ctx.stroke();
   // the name
-  const dot = l.who === 'Meeca' ? PINK : '#9aa3ad';
+  const dot = l.who === 'Meeca' ? PINK : l.who === 'Flicker' ? '#d9f99d' : '#9aa3ad';
   ctx.font = `700 14px Fredoka, sans-serif`;
   const nw = ctx.measureText(l.who).width + 40;
   const ng = ctx.createLinearGradient(0, by - 14, 0, by + 14);
@@ -703,14 +759,14 @@ export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number
   ctx.textBaseline = 'middle';
   ctx.fillText(l.who, bx + 42, by + 1);
   // the words
-  ctx.font = `500 ${fs}px 'Atkinson Read', sans-serif`;
+  ctx.font = l.beat === 'small' ? `italic 500 ${Math.round(fs * 0.82)}px 'Atkinson Read', sans-serif` : `500 ${fs}px 'Atkinson Read', sans-serif`;
   ctx.fillStyle = '#fbf4de';
   ctx.textBaseline = 'alphabetic';
   lines.forEach((s, i) => ctx.fillText(s, bx + 16, by + 26 + fs + i * fs * 1.45));
   // the dots and Next
   const fy = by + bh - 22;
   let dx = bx + 16;
-  for (let i = 0; i < MEECA_ENDING.length; i++) {
+  for (let i = 0; i < scene.length; i++) {
     const on = i === line;
     ctx.fillStyle = on ? '#ffd23a' : i < line ? 'rgba(255, 190, 220, 0.55)' : 'rgba(255,255,255,0.22)';
     ctx.beginPath();
@@ -718,7 +774,7 @@ export function drawSceneBox(ctx: CanvasRenderingContext2D, W: number, H: number
     ctx.fill();
     dx += (on ? 22 : 6) + 6;
   }
-  const label = line === MEECA_ENDING.length - 1 ? 'Done' : 'Next ›';
+  const label = line === scene.length - 1 ? 'Done' : 'Next ›';
   ctx.font = `700 15px Fredoka, sans-serif`;
   const lw = ctx.measureText(label).width + 36;
   const nx = bx + bw - lw - 14;

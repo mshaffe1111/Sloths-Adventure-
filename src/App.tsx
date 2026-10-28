@@ -1176,6 +1176,7 @@ export default function App() {
           trophyCount={badgeCount}
           trophyTotal={BADGES.length}
           skills={skills}
+          onAskHint={activeLevel.id === MEECA_STAGE_ID ? () => engineRef.current?.meecaHint() ?? null : undefined}
           onToggleMute={handleToggleMute}
           onResume={resumeGame}
           onRestart={restartLevel}

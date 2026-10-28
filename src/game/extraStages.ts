@@ -1,7 +1,9 @@
 /**
  * Extra stages that sit between a world's own ten (stagePlan.ts), the way the secret Thornbark's Hollow sits outside them
  * (secret.ts, miniIndex 11). The first is Dot's netting flight, right after 4-5 (Matt, 2026-10-25): cleared, it opens 4-6.
- * The second is Meeca's stage, right after 5-5 (Matt, 2026-10-26): cleared, it opens 5-6.
+ * The second is Meeca's stage, "On the March North", the first stage of World 5 (Matt, 2026-10-27/28: she got away on the march
+ * north, weeks before Pokey comes; a special map stage with her face, as 4-D has Dot's, so the built stages keep their numbers): the
+ * World 4 guardian's clear opens it, and its clear opens 5-1.
  *
  * They come with the hand-built stages (protoStage.ts protoStageEnabled: the game's stages since 2026-10-24, no switch since
  * 2026-10-26), and are never in the list outside a browser, so the generator's own tests see the hundred stages they always did.
@@ -37,26 +39,26 @@ export function dotStageConfig(): LevelConfig {
   };
 }
 
-// ── Meeca's stage, after 5-5 (meecaStage.ts, run by meecaPlay.ts) ──
+// ── Meeca's stage, the first of World 5 (meecaStage.ts, run by meecaPlay.ts) ──
 export const MEECA_STAGE_ID = '5-M';
 
 /**
- * Meeca's own stage, right after 5-5 and required (Matt, 2026-10-26; HANDOFF "World 5 decisions"): it opens on a "On the March North"
- * card, after 5-5's pouch scene, and you play Meeca marched through the sanctuary at dusk. Its slot in World 5's list is kept here, the
- * way Dot's flight sits after 4-5: 5-5's clear opens it, and its clear opens 5-6.
+ * Meeca's own stage, the first of World 5 and required (Matt, 2026-10-26/27/28; HANDOFF "World 5 decisions"): it opens on the "On the
+ * March North" card, and you play Meeca the night she got away from the General's column in the Orchid Sanctuary, weeks before Pokey
+ * comes. Its slot in the list is kept here, the way Dot's flight sits after 4-5: 4-10's clear opens it, and its clear opens 5-1.
  */
 export function meecaStageConfig(): LevelConfig {
   return {
     worldIndex: 5,
     miniIndex: 12,
     id: MEECA_STAGE_ID,
-    name: 'Three Days Earlier',
+    name: 'On the March North',
     objectiveType: 'stealth',
     targetCount: 5,
     timeLimit: 0,
-    levelWidth: 10000,
-    levelHeight: 1000,
-    description: 'On the march north. Marched through the sanctuary at dusk, Meeca carves on the move.',
+    levelWidth: 52000,
+    levelHeight: 1200,
+    description: 'The night Meeca got away. Learn each rule the hard way, and carve it on a tree for Pokey.',
     unlocked: false,
     completed: false,
     stars: 0,
@@ -68,7 +70,7 @@ export function meecaStageConfig(): LevelConfig {
 /** the extra stages, each with the id of the stage it follows */
 export const EXTRA_STAGES: Array<{ after: string; config: () => LevelConfig }> = [
   { after: '4-5', config: dotStageConfig },
-  { after: '5-5', config: meecaStageConfig },
+  { after: '4-10', config: meecaStageConfig },
 ];
 
 /** extra stages planned but not built yet: each one's place (the stage it follows) is kept, and it joins EXTRA_STAGES once built */

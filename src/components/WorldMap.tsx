@@ -8,6 +8,7 @@ import { HeroPose } from './HeroPose.tsx';
 import { Icon } from './icons/index.tsx';
 import { Crest } from './icons/Crest.tsx';
 import { stageTypeInfo } from './icons/stageTypes.ts';
+import { MEECA_STAGE_ID } from '../game/extraStages.ts';
 
 interface WorldMapProps {
   levels: LevelConfig[];
@@ -103,6 +104,8 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   }, [activeWorldId]);
   const curWorld = WORLDS_DATA.find((w) => w.id === activeWorldId) || WORLDS_DATA[0];
   const worldLevels = useMemo(() => levels.filter((l) => l.worldIndex === activeWorldId), [levels, activeWorldId]);
+  // a world's first stage is open once the world is: its first in the list (World 5's is Meeca's own, 5-M, before 5-1: required)
+  const firstOf = (l: LevelConfig) => l.id === worldLevels[0]?.id;
   const totalStars = levels.reduce((a, l) => a + (l.stars || 0), 0);
 
   const worldUnlocked = (id: number) => id === 1 || testUnlockOn() || levels.some((l) => l.worldIndex === id - 1 && l.miniIndex === 10 && l.completed);
@@ -111,7 +114,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   const defaultPick = () => {
     const r = worldLevels.find((l) => l.id === resumeId);
     if (r) return r.id;
-    const next = worldLevels.find((l) => (l.unlocked || l.miniIndex === 1) && !l.completed);
+    const next = worldLevels.find((l) => (l.unlocked || firstOf(l)) && !l.completed);
     return (next ?? worldLevels[worldLevels.length - 1])?.id;
   };
   const [pickId, setPickId] = useState<string | undefined>(defaultPick);
@@ -121,7 +124,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   }, [activeWorldId]);
   const picked = worldLevels.find((l) => l.id === pickId) ?? worldLevels[0];
   // once the card has stayed on a playable stage for a moment (not while flicking through worlds), get that stage's sheets ready
-  const pickedOpen = !!picked && (picked.unlocked || picked.miniIndex === 1);
+  const pickedOpen = !!picked && (picked.unlocked || firstOf(picked));
   useEffect(() => {
     if (!picked || !pickedOpen || !onPick) return;
     const t = window.setTimeout(() => onPick(picked), 450);
@@ -184,7 +187,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
 
   const hereIdx = worldLevels.findIndex((l) => l.id === resumeId);
   // the next stage to play in this world: it gets the pulse ring (and the boss a glow)
-  const nextIdx = worldLevels.findIndex((l) => (l.unlocked || l.miniIndex === 1) && !l.completed);
+  const nextIdx = worldLevels.findIndex((l) => (l.unlocked || firstOf(l)) && !l.completed);
 
   return (
     <div className="fixed inset-0 z-40 bg-[#10241a] flex flex-col select-none font-game text-white overflow-hidden">
@@ -262,7 +265,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
           const p = nodes.pts[i];
           if (!p) return null;
           const isBoss = lvl.miniIndex === 10;
-          const open = lvl.unlocked || lvl.miniIndex === 1;
+          const open = lvl.unlocked || firstOf(lvl);
           const size = isBoss ? bossSize : nodeSize;
           const sel = lvl.id === picked?.id;
           const type = stageTypeInfo(lvl.objectiveType);
@@ -288,8 +291,8 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                   <Crest world={lvl.worldIndex} size={size} locked={!open} className="map-crest" />
                 ) : (
                   <>
-                    {/* an extra stage between the world's own (extraStages.ts: Dot's netting flight) shows its flier, not a number */}
-                    {!open ? <Icon name="lock" size={Math.round(size * 0.5)} /> : lvl.miniIndex > 10 ? <Icon name="hummingbird" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
+                    {/* an extra stage between the world's own (extraStages.ts) shows whose it is, not a number: Dot's flier, Meeca's face */}
+                    {!open ? <Icon name="lock" size={Math.round(size * 0.5)} /> : lvl.id === MEECA_STAGE_ID ? <Crest world="meeca" size={Math.round(size * 0.74)} bare /> : lvl.miniIndex > 10 ? <Icon name="hummingbird" size={Math.round(size * 0.62)} /> : <span>{lvl.miniIndex}</span>}
                     <span className="map-tbadge" style={{ width: badgePx, height: badgePx }} title={type.label}>
                       <Icon name={type.icon} size={Math.round(badgePx * 0.78)} />
                     </span>
@@ -379,7 +382,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 {picked.completed && picked.highScore > 0 && <span>{picked.highScore.toLocaleString()} pts</span>}
               </div>
             </div>
-            {picked.unlocked || picked.miniIndex === 1 ? (
+            {picked.unlocked || firstOf(picked) ? (
               <button type="button" className="title-btn title-btn-start map-play" onClick={() => onSelectLevel(picked)} data-start="true">
                 {picked.completed ? 'REPLAY' : 'PLAY'}
               </button>
