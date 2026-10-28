@@ -11,7 +11,8 @@
  */
 import { WIND_GROUND_SHARE } from './zones.ts';
 
-export type NestKind = 'plain' | 'knot' | 'fall' | 'guard' | 'glide';
+/** (`trade`: up a terrace on Dot's knot pulley, its stone got back from a capuchin with a mango: the puzzle kit's room, 2026-10-28) */
+export type NestKind = 'plain' | 'knot' | 'fall' | 'guard' | 'glide' | 'trade';
 
 /** a nest on the cliff (W4Extras.cliffNests): its cage (a collectible id), the puzzle around it, and the ledge it sits on */
 export interface CliffNest {
