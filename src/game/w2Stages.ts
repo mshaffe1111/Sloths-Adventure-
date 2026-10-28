@@ -20,10 +20,12 @@ import { gapFor, driftX, logLayout, LOG_DROP, LOG_HEIGHT, surfaceBelowBank, type
 import type { W2Decor } from './riverArt.ts';
 import { W2_FRAMES } from './w2PropsData.ts';
 import type { GeneratedStage } from './stageGenerator.ts';
+import { SAFE_APPROACH } from './levelCheck.ts';
 import { addKitPlatforms, kitPlatId, type Anchor, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 import type { Collectible, Enemy, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
+import { buildW2Sections, w2Picks, type W2Kit, type W2Look, type W2Plan } from './w2Sections.ts';
 
-export type W2Plan = '2-1' | '2-2' | '2-3' | '2-4' | '2-5' | '2-6' | '2-7' | '2-8' | '2-9';
+export type { W2Plan } from './w2Sections.ts';
 export const W2_STAGES: Record<string, W2Plan> = {
   '2-1': '2-1',
   '2-2': '2-2',
@@ -68,9 +70,30 @@ const BANK_H = 90;
 export const SURFACE = G + surfaceBelowBank;
 const LOG_Y = G + LOG_DROP;
 
+/**
+ * 2-6 (World 1's climb, built up the bank houses: protoStage.ts buildKapok): no animal's patch within 200 px of a flag (levelCheck
+ * SAFE_APPROACH; 123 of 200 rolls had one, 2026-10-28). Its patrol is cut back to stop short of the flag; one standing too near to cut
+ * back loses the flag instead (the flags either side of it still hold).
+ */
+function clearFlags<S extends GeneratedStage>(st: S): S {
+  const away = SAFE_APPROACH + 8;
+  const flags = st.checkpoints ?? [];
+  for (const e of st.enemies) {
+    if (e.type === 'eagle') continue;
+    for (let i = flags.length - 1; i >= 0; i--) {
+      const f = flags[i];
+      if (Math.abs(e.y - f.y) >= 400) continue;
+      if (Math.abs(e.x - f.x) < away) flags.splice(i, 1);
+      else if (f.x < e.x) e.patrolMinX = Math.max(e.patrolMinX, f.x + away);
+      else e.patrolMaxX = Math.min(e.patrolMaxX, f.x - away);
+    }
+  }
+  return st;
+}
+
 export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): GeneratedStage & { proto: ProtoExtras } {
   // 2-6 Up the Bank Houses: World 1's climbing stage (1-4) built up the riverbank village instead of the kapok
-  if (plan === '2-6') return buildKapok(config, seed, true);
+  if (plan === '2-6') return clearFlags(buildKapok(config, seed, true));
   const R = stream(seed * 7 + 2);
   const P: Platform[] = [];
   const V: Vine[] = [];
@@ -90,6 +113,8 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
   let expert = 0;
   const RUN = 285;
   const one = reachJump(0, false);
+  /** the bank's dressing for this roll (w2Sections.ts w2Picks): set before the sections are built */
+  let look: W2Look = 'reeds';
 
   // ----- the kit -----
   const bank = (x0: number, x1: number, y = G) => {
@@ -199,6 +224,21 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     });
   };
   const piece = (n: W2Decor['n'], x: number, b: number, w: number, extra: Partial<W2Decor> = {}) => decor.push({ n, x, b, w, ...extra });
+  /**
+   * a stretch of bank dressed in the roll's look (STAGE-RULES §4: a fresh roll changes it, a retry keeps it): reeds; the moorings, a
+   * mooring pole or a spare log pulled up on the bank; or the cottages, a round door with its window, or the washing out
+   */
+  const dress = (dx: number, b: number) => {
+    if (look === 'moorings') {
+      if (R.chance(0.5)) piece('pole', dx, b + 4, 64, { flip: R.chance(0.5) });
+      else piece('logShort', dx, b + 6, 110, { flip: R.chance(0.5) });
+    } else if (look === 'cottages') {
+      if (R.chance(0.5)) {
+        piece('door', dx, b + 6, 160, { flip: R.chance(0.5) });
+        piece('window', dx + 130, b - 30, 70);
+      } else piece('laundry', dx, b + 4, 170);
+    } else reeds(dx, b + 4);
+  };
 
   // the cursor: x is the open end of the bank Pokey is on
   let bankFrom = 0;
@@ -213,7 +253,19 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     x = at;
     bankY = y;
   };
-  const flag = () => checkpoints.push({ x: x - 80, y: bankY, reached: false });
+  /**
+   * a flag at the open end of the bank. An animal's patch too near it (a snake's bank just before) walks the bank on until the flag is
+   * well clear of it (levelCheck: nothing that bites within 200 px of a safe spot)
+   */
+  const flag = () => {
+    const near = () => E.reduce((m, e) => Math.min(m, Math.abs(e.y - bankY) < 400 ? Math.max(0, e.patrolMinX - (x - 80), x - 80 - e.patrolMaxX) : Infinity), Infinity);
+    const d = near();
+    if (d < 230) {
+      run(240 - d);
+      expert += (240 - d) / RUN;
+    }
+    checkpoints.push({ x: x - 80, y: bankY, reached: false });
+  };
   const beat = (name: string, f: () => void) => {
     const x0 = x;
     f();
@@ -226,8 +278,34 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     run(len);
     expert += len / RUN;
     if (flowers && len > 260) row(x0 + 80, x - 80, bankY - 34, Math.max(2, Math.round(len / 170)), R.pick(['hibiscus', 'orchid'] as const));
-    if (len > 300 && R.chance(0.6)) reeds(R.r(x0 + 60, x - 60), bankY + 4);
+    if (len > 300 && R.chance(0.6)) dress(R.r(x0 + 60, x - 60), bankY);
     pieces.push({ k: 'rest', x0, x1: x });
+  }
+
+  /**
+   * the plain bank before a stage's first danger (START_WALK and more): nothing can hurt, but a low step up onto a rise of the bank and
+   * back down again every couple of seconds, so the walk is never four seconds with nothing to do (each step 20 px, under the lip's hoist,
+   * 26 px, physics.ts FORGIVE: a plain walk carries him up it, STAGE-RULES §2 "Plain walk")
+   */
+  function startWalk(len: number) {
+    const x0 = x;
+    const y0 = bankY;
+    const step = 20;
+    let up = false;
+    run(Math.min(len, R.r(380, 440)));
+    while (x - x0 < len - 260) {
+      close();
+      up = !up;
+      open(x, y0 - (up ? step : 0));
+      run(Math.min(R.r(300, 380), Math.max(120, len - (x - x0) - 140)));
+    }
+    if (up) {
+      close();
+      open(x, y0);
+    }
+    run(Math.max(0, len - (x - x0)));
+    expert += len / RUN;
+    pieces.push({ k: 'start', x0, x1: x });
   }
 
   /**
@@ -335,7 +413,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
   }
 
   /** a lily pond: still water crossed on floating pads, a flower above each */
-  function lilyPond(pads: number, deepFlowers = true, special?: { at: number; put: (cx: number, top: number) => void }) {
+  function lilyPond(pads: number, deepFlowers = true, special?: { at: number; put: (cx: number, top: number) => void }, opts: { safe?: boolean } = {}) {
     const x0p = x;
     run(R.r(145, 160));
     close();
@@ -362,7 +440,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     }
     px += Math.round(one * R.r(0.42, 0.55));
     // still water: no logs, so nothing drifts (speed 0)
-    rivers.push({ x0: px0, x1: px, surfaceY: SURFACE, dir: 1, speed: 0 });
+    rivers.push({ x0: px0, x1: px, surfaceY: SURFACE, dir: 1, speed: 0, ...(opts.safe ? { safe: { backX: px0 - 70, backY: G } } : {}) });
     reeds(px0 - 20, G + 6);
     reeds(px + 20, G + 6);
     open(px);
@@ -451,7 +529,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       reeds(edge - 20, G + 6, R.chance(0.5));
       reeds(farX + 24, G + 6, R.chance(0.5));
       open(farX);
-      run(opts.island ?? R.r(140, 200));
+      run(opts.island ?? R.r(110, 160));
       expert += (edge - x0r) / RUN + (farX - edge) / 430 + 0.3 * n + (x - farX) / RUN;
       pieces.push({ k: `swing${n}`, x0: x0r, x1: x });
       return;
@@ -471,10 +549,11 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
    */
   function stairs(rise: number, up: boolean) {
     const x0s = x;
-    run(R.r(100, 120));
+    run(R.r(70, 90));
     close();
     // (each step low enough to walk straight up, and a tread wide enough to stand on: at 28 px wide and 22 px high a small thumb hopping
     // them ran off a step before its flick came)
+    // (16 px a step: at 20 px the kid bot hopped them and missed, 2-7 and 2-9 on 13 of 20 bot rolls, 2026-10-28)
     const n = Math.max(3, Math.ceil(rise / 16));
     const r = rise / n;
     const tread = 34;
@@ -498,7 +577,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     const topY = up ? toY - 25 * ky : fromY - 25 * ky;
     decor.push({ n: 'steps', x: left + w / 2, b: topY + h, w, h, flip: up });
     open(ex, toY);
-    run(R.r(100, 120));
+    run(R.r(70, 90));
     expert += (x - x0s) / RUN + n * 0.08;
     pieces.push({ k: up ? 'stairsUp' : 'stairsDown', x0: x0s, x1: x });
   }
@@ -539,7 +618,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       path = bank(xs, px, G);
       open(px, G);
     }
-    run(tail ?? R.r(140, 200));
+    run(tail ?? R.r(110, 150));
     expert += (x - x0p) / RUN + n * 0.4;
     pieces.push({ k: water ? 'porchesWater' : 'porches', x0: x0p, x1: x });
     return { path, xs, px };
@@ -570,7 +649,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     });
     // flowers up the shaft: the ride collects them (the lower two: a jump from the path reaches them too)
     for (let i = 1; i <= 2; i++) flower(sx + W / 2, G - ((G - top) * i) / 4 - 40, 'hibiscus');
-    run(R.r(140, 160));
+    run(R.r(90, 110));
     expert += (x - x0l) / RUN + (G - top) / 95 + 2.4;
     pieces.push({ k: up ? 'liftUp' : 'liftDown', x0: x0l, x1: x });
     return { sx, top };
@@ -596,21 +675,21 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     const v0 = x;
     // the jetty reaches out over the last river, when the village's bank is where one ends
     if (rivers.some((r) => Math.abs(r.x1 - bankFrom) < 2)) piece('jetty', bankFrom - 50, SURFACE + 26, 210, { flip: true });
-    run(110);
+    run(90);
     piece('sign', x, G + 4, 132, { text: ['PLEASE BE', 'PATIENT'] });
-    run(110);
+    run(90);
     piece('mailbox', x, G + 2, 54);
-    run(100);
+    run(90);
     mailman(x, x + 300);
     piece('door', x + 60, G + 6, 210);
     piece('window', x + 230, G - 30, 82);
-    run(230);
+    run(200);
     piece('laundry', x, G + 4, 200);
-    run(170);
+    run(150);
     piece('door', x, G + 6, 190, { flip: true });
     piece('chimney', x + 120, G - 72, 60);
     decor.push({ cel: 'tc.scroll', x: x + 220, b: G + 2, k: 0.42, flip: true });
-    run(320);
+    run(270);
     expert += (x - v0) / RUN;
   }
 
@@ -676,7 +755,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
   // ----- the river's other ways across, and the puzzle rooms (puzzleKit.ts) -----
 
   /** stepping stones across a shallow creek: still water, a stone a hop from the next (a fall in costs a life unless `safe`) */
-  function stones(n: number, opts: { safe?: boolean; flowers?: boolean } = {}) {
+  function stones(n: number, opts: { safe?: boolean; flowers?: boolean; wide?: boolean } = {}) {
     const x0s = x;
     run(R.r(145, 160));
     close();
@@ -684,7 +763,8 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     let sx = sx0;
     for (let i = 0; i < n; i++) {
       sx += Math.round(one * R.r(0.36, 0.46));
-      const w = Math.round(R.r(76, 92));
+      // (`wide`: flat-topped stones, room to land a hop that runs on a little: a first-timer overshot the narrow ones into the creek)
+      const w = Math.round(opts.wide ? R.r(104, 124) : R.r(76, 92));
       P.push({ id: pid++, x: sx, y: ISLAND_TOP, width: w, height: 110, type: 'solid', style: 'moss_stone' });
       if (opts.flowers) flower(sx + w / 2, ISLAND_TOP - 60, 'lotus');
       sx += w;
@@ -700,6 +780,35 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
   }
 
   /**
+   * a creek of reed islands: little islands a hop apart, each channel between them its own water (a hop, a few steps on the island, a
+   * hop): crossed hop by hop, where stepping stones are one long run of hops. A fall in costs a life unless `safe` (back on the island)
+   */
+  function channels(n: number, opts: { safe?: boolean; flowers?: boolean } = {}) {
+    const x0c = x;
+    run(R.r(145, 160));
+    close();
+    let cx = x;
+    for (let i = 0; i <= n; i++) {
+      const g = Math.round(one * R.r(0.34, 0.42));
+      rivers.push({ x0: cx, x1: cx + g, surfaceY: SURFACE, dir: 1, speed: 0, ...(opts.safe ? { safe: { backX: cx - 50, backY: i ? ISLAND_TOP : G } } : {}) });
+      // (the flowers over each channel, where the hop goes)
+      if (opts.flowers) flower(cx + g / 2, ISLAND_TOP - 80, 'hibiscus');
+      cx += g;
+      if (i === n) break;
+      const w = Math.round(R.r(150, 190));
+      P.push({ id: pid++, x: cx, y: ISLAND_TOP, width: w, height: 110, type: 'solid', style: 'moss_stone' });
+      if (opts.flowers) flower(cx + w / 2, ISLAND_TOP - 40, 'lotus');
+      reeds(cx + R.r(16, 36), ISLAND_TOP + 4, R.chance(0.5));
+      cx += w;
+    }
+    open(cx);
+    run(R.r(145, 160));
+    // (each channel is its own water: a moment to read it before the hop)
+    expert += (x - x0c) / RUN + (n + 1) * 1.3;
+    pieces.push({ k: 'channels', x0: x0c, x1: x });
+  }
+
+  /**
    * a mooring post at the foot of a high bank, too high to jump: up the post's rope to its shelf, a hop onto the bank, and a drop
    * off its far side (the reeds' village way up out of the water)
    */
@@ -709,12 +818,22 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     const px = x;
     const topY = G - 236;
     post(px, topY);
+    // flowers up the rope: the climb gathers them
+    flower(px, G - 90, 'orchid');
+    flower(px, G - 170, 'orchid');
     // (the shelf runs from px - 40 to px + 160; the high bank starts a hop past its end)
     run(160 + Math.round(R.r(46, 60)));
     close();
     open(x, G - 200);
-    // (longer than any jump: the only way over it is up the post)
-    run(R.r(340, 370));
+    // (too high to jump: the only way up is the post. A short stretch on top: at 340-370 px the walk from the post's top to the drop
+    // and on to the next crossing was over 4 s with nothing to do, 2026-10-28)
+    // (with a low step up along the top, 20 px, walked over: the climb and the walk on top had nothing else to do in them; and flowers
+    // up there, the climb's reward)
+    run(R.r(110, 130));
+    close();
+    open(x, G - 220);
+    run(R.r(110, 130));
+    row(x - 200, x - 40, G - 254, 3, 'orchid');
     // and a drop off its far end, back down to the water's level
     close();
     open(x, G);
@@ -932,583 +1051,29 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     pieces.push({ k: 'gallery', x0, x1: x });
   }
 
-  // ======================================================================================================================
-  if (plan === '2-1') {
-    // 2-1 Down to the River: hop the drifting logs down to the riverbank village. The world's first river, and only the river: down the
-    // carved bank to the water, the logs learnt where a splash costs nothing, then deep water and a creek of stepping stones, then rivers
-    // that flow back at him, then all of it quicker, a breath of bank between each crossing, down to the village.
-    open(0, G - 150);
-    /** the river's narrow crossings: two logs, with him or back at him (closer logs, coming toward him) */
-    const withIt = (speed: number, o: { safe?: boolean; tag?: string } = {}) => river(1, speed, 2, 120, o);
-    const back = (speed: number) => river(-1, speed, 2, 108, { gap: 80 });
-    beat('Learn: the logs drift', () => {
-      run(R.r(110, 130));
-      expert += 0.5;
-      hint(120, 'Down to the river!');
-      stairs(150, false);
-      breath();
-      hint(x + 20, 'The logs drift with the river. Hop on and ride!');
-      // the teaching rivers: slow water, two logs' worth, and a miss is only a splash
-      river(1, 52, 2, 130, { safe: true, tag: 'learn' });
-      hint(x - 120, 'Missed? Splash! Try again from the bank.');
-      breath();
-      withIt(55, { safe: true, tag: 'learn' });
-      breath();
-      // a wider one, three logs: ride one the whole way, or hop along them (still safe)
-      river(1, 58, 3, 124, { safe: true, tag: 'learn' });
-      flag();
-    });
-    beat('Develop: deep water', () => {
-      breath();
-      hint(x + 10, 'Deep water now. Stay on the logs!');
-      withIt(62);
-      heart(x - 40, G - 60);
-      snakeBank();
-      withIt(66);
-      breath();
-      hint(x + 10, 'Stepping stones. Hop, hop, hop!');
-      stones(3);
-      breath();
-      withIt(68);
-      breath();
-      // a golden seed over a river, higher than a hop from a log: a double jump from a log at its moment
-      const r = withIt(70);
-      goldenSeed((r.x0 + r.x1) / 2, LOG_Y - 175);
-      flag();
-    });
-    beat('Twist: against the current', () => {
-      breath();
-      hint(x + 10, 'This river flows back at you. Wait for a log, then hop on.');
-      back(56);
-      heart(x - 50, G - 60);
-      breath();
-      back(60);
-      breath();
-      river(1, 66, 3, 122);
-      breath();
-      withIt(72);
-      snakeBank();
-      back(62);
-      breath();
-      river(-1, 60, 3, 110, { gap: 84 });
-      flag();
-    });
-    beat('Finish: down to the village', () => {
-      let n = 0;
-      // (the village's walk adds about 5 s)
-      while (expert < EXPERT_SECONDS + 18 && n < 16) {
-        const k = n % 6;
-        if (k === 2) snakeBank();
-        else breath();
-        if (k === 4) back(64 + n);
-        else if (k === 5) river(1, 76, 3, 122);
-        else if (k % 2) back(62 + n);
-        else withIt(72 + n);
-        if (++n % 3 === 0) flag();
-      }
-      rest(R.r(140, 230), false);
-      heart(x - 60, G - 60);
-      // the village: its jetty out over the last river's bank, the sign, the mailbox, round doors in the bank
-      villageEnd();
-    });
-  } else if (plan === '2-7') {
-    // 2-7 The Mailman's Route: the long way round the river, the way the mailman goes: up the carved steps, along the porches over the
-    // water, into the basket of a rope lift and up the bank, over the river on the logs and on the rope-swing frames, and past every door
-    // marked PLEASE BE PATIENT to the end of his round.
-    open(0);
-    beat('Learn: up the steps, along the porches', () => {
-      run(R.r(140, 170));
-      hint(140, 'Follow the mailman’s route round the village!');
-      mailman(160, 380);
-      stairs(Math.round(R.r(110, 130)), true);
-      hint(x - 100, 'Hop along the porches');
-      // the first porches: over the water, but a splash only puts him back on the steps
-      porchRun(3, true, undefined, true);
-      patientDoor(x - 60);
-      stairs(Math.round(G - bankY), false);
-      flag();
-      piece('mailbox', x - 40, G + 2, 54);
-    });
-    beat('Develop: the basket lift, porches over the river', () => {
-      hint(x + 40, 'Step into the basket. It carries you up!');
-      lift(true);
-      porchRun(3, true);
-      heart(x - 60, bankY - 60);
-      guardedHigh(R.r(460, 520));
-      lift(false);
-      river(1, 70, 2, 120);
-      flag();
-      piece('mailbox', x - 40, G + 2, 54);
-    });
-    beat('Twist: the swing frames', () => {
-      breath();
-      hint(x + 10, 'Swing across on the rope frames!');
-      swingRiver(2, { frames: true });
-      breath();
-      patientDoor(x - 110);
-      swingRiver(3, { frames: true });
-      heart(x - 40, G - 60);
-      // a golden seed above the next lift's crane: a double jump from the basket at the top
-      const lf = lift(true);
-      goldenSeed(lf.sx + 48, lf.top - 175);
-      porchRun(2, true);
-      stairs(Math.round(G - bankY), false);
-      flag();
-    });
-    beat('Finish: the end of the round', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 16 && n < 10) {
-        breath();
-        const k = n % 4;
-        if (k === 0) {
-          guardedRest(R.r(560, 620), 0.5);
-          porchRun(R.i(2, 3), true);
-        } else if (k === 1) river(n % 2 ? -1 : 1, 72, 2, n % 2 ? 108 : 120, n % 2 ? { gap: 80 } : {});
-        else if (k === 2) swingRiver(n % 3 === 2 ? 3 : 2, { frames: true });
-        else {
-          stairs(Math.round(R.r(110, 130)), true);
-          porchRun(3, true);
-          stairs(Math.round(G - bankY), false);
-        }
-        if (++n % 2 === 0) flag();
-      }
-      rest(R.r(140, 220), false);
-      heart(x - 60, G - 60);
-      villageEnd();
-    });
-  } else if (plan === '2-8') {
-    // 2-8 Reed Cages: more little ones caught in the reeds, in reed cages hung on pulleys off the islands of still water that rises once he
-    // steps in. Each cage's island has its pile of river stones and its counter-basket: a stone in, and the cage comes up out of the water
-    // and opens. Learn on basins where a fall costs nothing; then deep basins with more cages; the twist puts the stones on the island
-    // before the cage's, across the water, to be thrown over while the water climbs.
-    open(0);
-    const narrow = (dir: 1 | -1, speed: number) => (dir === 1 ? river(1, speed, 2, 120) : river(-1, speed, 2, 108, { gap: 80 }));
-    beat('Learn: the water rises', () => {
-      run(R.r(200, 240));
-      hint(180, 'More little ones in the reeds! Free them before the water rises.');
-      floodBasin(2, [1], 30, { safe: true, tips: { enter: 'A stone in the basket lifts the cage. Before the water rises!' } });
-      hint(x - 220, 'Back on the bank before the islands go under!');
-      breath();
-      floodBasin(3, [0, 2], 30, { safe: true });
-      flag();
-    });
-    beat('Develop: deep water', () => {
-      breath();
-      hint(x + 10, 'Deep water now. Be quick!');
-      floodBasin(3, [1, 2], 26);
-      heart(x - 40, G - 60);
-      snakeBank();
-      narrow(1, 66);
-      breath();
-      floodBasin(3, [0, 2], 28);
-      flag();
-    });
-    beat('Twist: stones across the water', () => {
-      breath();
-      floodBasin(3, [1], 26, { across: true, tips: { enter: 'The stones are on the next island. Throw one over!', hold: 'Flick toward the cage’s island to throw it.' } });
-      heart(x - 40, G - 60);
-      breath();
-      // a golden seed over the middle of a basin, a double jump from an island before it floods
-      const sx = x;
-      floodBasin(4, [2], 26, { across: true });
-      goldenSeed(sx + (x - sx) * 0.3, ISLAND_TOP - 170);
-      flag();
-    });
-    beat('Finish: before the water rises', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 14 && n < 8) {
-        if (n % 3 === 1) snakeBank();
-        else breath();
-        if (n % 3 === 2) narrow(n % 2 ? -1 : 1, 70);
-        else floodBasin(3, n % 2 ? [1] : [0, 2], 26, { across: n % 2 === 1 });
-        if (++n % 2 === 0) flag();
-      }
-      rest(R.r(300, 400), false);
-    });
-  } else if (plan === '2-9') {
-    // 2-9 The River King's Court: fight through the court to the king. His guards (royal snappers, upright with spears) block a blow to
-    // the front, jab further than a snapper bites, and need two hits; from behind, or open after a jab, they go down; a kick staggers one
-    // back into whoever stands behind him. The court's bell is the stage's own: rung, every guard in earshot comes to look at it
-    // (noise.ts), noticing nobody. Learn: the court gate opens to the bell, and one guard at a time; then the court's lily ponds with
-    // guards between; the twist is the gallery, porches over the court floor with the bell at their head: ring it and the guards below all
-    // turn to it, and he hops down behind them; then a row of guards close enough for one good kick to bowl them over, to the king.
-    open(0);
-    const narrow = (dir: 1 | -1, speed: number) => (dir === 1 ? river(1, speed, 2, 120) : river(-1, speed, 2, 108, { gap: 80 }));
-    /** a stretch of bank with guards (and snappers between them) spread along it, clear of the flags at either end */
-    const guardBank = (n: number, spacing: [number, number], snappers = 0) => {
-      const x0g = x;
-      run(R.r(160, 200));
-      for (let i = 0; i < n; i++) {
-        run(R.r(spacing[0], spacing[1]));
-        guard(x);
-        if (i < snappers) {
-          run(R.r(spacing[0] * 0.6, spacing[1] * 0.6));
-          turtle(x);
-        }
-      }
-      run(R.r(270, 300));
-      row(x0g + 120, x - 120, G - 34, Math.max(2, Math.round((x - x0g) / 220)), 'hibiscus');
-      expert += (x - x0g) / RUN + n * 2.4 + snappers * 1.6;
-      pieces.push({ k: `guards${n}`, x0: x0g, x1: x });
-    };
-    /** the court's dressing along a stretch of bank: lanterns on posts and the king's banners, taking turns (Matt's court sheet) */
-    const courtLanterns = (x0c: number, x1c: number) => {
-      let k = 0;
-      for (let lx = x0c + 80; lx < x1c - 60; lx += R.r(240, 320)) {
-        if (k++ % 2) piece('banner', lx, G + 6, 64, { flip: R.chance(0.5) });
-        else piece('lantern', lx, G + 4, 40);
-      }
-    };
-    beat('Learn: the court bell, one guard', () => {
-      run(R.r(120, 150));
-      hint(120, 'The river king’s court! The gate opens to the bell.');
-      piece('sign', 120, G + 4, 132, { text: ['THE KING’S', 'COURT'] });
-      // the court gate: the bell beside it (the first bell: no guard this side of the gate, and nothing to fall in)
-      const g = bellGate({ enter: 'Ring the court bell. Tap it!', open: 'Dong! The gate opens. The guards come to look at a bell.' });
-      // the first guard, past the gate: near enough to hear the bell, and come to look
-      // (the guard's tip before the first guard: it was said 240 px past him, after the first jab, the first-timer bot 2026-10-28)
-      hint(g.bellX + 160, 'Head-on he blocks. Hit him from behind, or kick him!');
-      run(R.r(220, 260));
-      guard(Math.max(x, g.bellX + 520), G, 100);
-      run(R.r(280, 320));
-      expert += 4;
-      guardBank(2, [320, 380]);
-      narrow(1, 66);
-      flag();
-    });
-    beat('Develop: the lily court', () => {
-      breath();
-      // the court's lily ponds, a guard on the bank between each
-      lilyPond(4);
-      guardBank(1, [200, 240]);
-      lilyPond(5);
-      heart(x - 40, G - 60);
-      guardBank(2, [280, 340], 2);
-      lilyPond(4);
-      flag();
-    });
-    beat('Twist: the gallery', () => {
-      breath();
-      hint(x + 20, 'Up to the gallery! Ring the bell, and come down behind the guards.');
-      bellGallery(3);
-      heart(x - 40, G - 60);
-      const c0 = x;
-      // close together: a guard kicked along this bank meets every one behind him
-      hint(x + 20, 'The court! Kick one guard into the rest!');
-      guardBank(4, [110, 140]);
-      courtLanterns(c0, x);
-      // a golden seed high over the court: the top of a double jump from the middle of the bank
-      goldenSeed((c0 + x) / 2, G - 190);
-      lilyPond(5);
-      flag();
-    });
-    beat('Finish: to the king', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 10 && n < 10) {
-        breath();
-        const c = x;
-        guardBank(n % 3 === 0 ? 4 : 2, n % 3 === 0 ? [120, 150] : [260, 320], n % 2);
-        courtLanterns(c, x);
-        if (n % 3 === 1 && expert < EXPERT_SECONDS - 24) {
-          stairs(Math.round(R.r(90, 110)), true);
-          porchRun(2, true);
-          stairs(Math.round(G - bankY), false);
-        } else lilyPond(n % 2 ? 4 : 5);
-        if (++n % 2 === 0) flag();
-      }
-      // the king's court: through the archway, along the lily-pad carpet between the banners, to his throne on its dais, the shell
-      // gong beside it. (The throne is empty: the king waits in his lair, the boss fight.)
-      rest(R.r(140, 200), false);
-      const k0 = x;
-      run(100);
-      piece('archway', x, G + 6, 230);
-      run(110);
-      piece('sign', x, G + 4, 140, { text: ['BOW TO', 'THE KING'] });
-      // the king's own guard at the foot of the carpet, the last of them
-      guard(x + 150, G, 90);
-      expert += 2.4;
-      run(100);
-      for (let i = 0; i < 3; i++) piece('lilyCarpet', x + 90 + i * 170, G + 16, 200);
-      piece('banner', x + 30, G + 6, 70);
-      piece('banner', x + 480, G + 6, 70, { flip: true });
-      run(460);
-      piece('gong', x - 30, G + 6, 120);
-      piece('dais', x + 140, G + 14, 250);
-      piece('throne', x + 140, G - 30, 200);
-      run(480); // the sanctuary door stands past the dais, not in front of the throne
-      expert += (x - k0) / RUN;
-    });
-  } else if (plan === '2-2') {
-    // 2-2 Petals for the Crown: the river king wants admiring. Gather flowers for his crown: over the logs, high and low, across the lily
-    // ponds and along the stepping stones. The flowers show the way: they arc where the hop goes. The twist is the ferry: a river too
-    // wide to jump, its raft moored under the far bank behind a sluice, and a lever to set the current running.
-    open(0);
-    beat('Learn: flowers over the water', () => {
-      // (four seconds and more of dry bank with flowers before the first water, and that first river costs no life: a splash puts him
-      // back on the bank. It was 0.8 s of walking to deep water, and QA's upright player lost a life at 0.9 s, before Dot's gap tip could
-      // come: 2026-10-28)
-      // (no petals on it: the gap's lesson comes first, then the petals')
-      rest(START_WALK, false);
-      hint(180, 'Gather flowers for the river king’s crown!');
-      // (the first river's tip well before its edge, about 3 s of walking: the lesson for it comes only 340 px short, and Dot takes a
-      // moment to fly in)
-      hint(x - 750, 'Flick up when a log drifts close.');
-      river(1, 60, 2, 124, { flowers: 6, safe: true, tag: 'learn' });
-      breath();
-      // (the pond's tip before the pond, not after it: it was said 260 px before its far bank, after the first drownings)
-      hint(x + 60, 'Hop the lily pads. The flowers show the way.');
-      lilyPond(5);
-      breath();
-      stones(3, { flowers: true });
-      flag();
-    });
-    beat('Develop: high and low', () => {
-      breath();
-      // flowers high over the river: a double jump from a log reaches the top row
-      const r = river(1, 70, 3, 124, { flowers: 5 });
-      arc(r.x0 + 70, r.x1 - 70, LOG_Y - 170, 4, 'orchid', 30);
-      heart(x - 40, G - 60);
-      snakeBank();
-      // the note (World 2's story find) waits on a lily pad in the middle of a quiet pond
+  // ----- the stage: its sections in the versions the roll picks (w2Sections.ts) -----
+  const picks = w2Picks(plan, seed);
+  const sec: W2Kit = {
+    R, config, V, C,
+    get x() { return x; },
+    get bankY() { return bankY; },
+    get expert() { return expert; },
+    addExpert: (s) => { expert += s; },
+    run, open, beat, flag, hint, rest, breath, snakeBank, guardedRest, river, stones, lilyPond, swingRiver, stairs, porchRun, lift, guardedHigh,
+    mailman, patientDoor, villageEnd, floodBasin, cageRoom, ferryRoom, bellGate, bellGallery, sandbar, island, postUp, channels, startWalk, heart, goldenSeed,
+    piece: (n, px, b, w, extra) => piece(n as W2Decor['n'], px, b, w, extra as Partial<W2Decor>),
+    row, arc, flower, turtle, guard, snake,
+    mark: (k, x0) => pieces.push({ k, x0, x1: x }),
+    nextCid: () => cid++,
+    enemies: () => E.length,
+    noteId: () => {
       const note = findForStage(config.worldIndex, config.miniIndex);
-      lilyPond(6, true, {
-        at: 3,
-        put: (cx, top) => {
-          if (note && note.kind === 'note') C.push({ id: cid++, type: 'find', findId: note.id, hidden: false, x: cx, y: top - 40, collected: false, bobPhase: 0 });
-          else flower(cx, top - 52, 'lotus');
-        },
-      });
-      breath();
-      stones(4, { flowers: true });
-      flag();
-    });
-    beat('Twist: the ferry', () => {
-      breath();
-      // the first sluice: the water costs nothing here
-      ferryRoom({
-        safe: true, flowers: 6,
-        tips: { enter: 'The raft is tied up over there. Pull the lever to let the river run!', open: 'Here comes the raft. Hop on and ride!' },
-      });
-      heart(x - 50, G - 60);
-      breath();
-      lilyPond(4);
-      breath();
-      const rs = river(1, 72, 2, 122, { flowers: 6 });
-      // the golden seed over the middle of the river, a double jump from a log
-      goldenSeed((rs.x0 + rs.x1) / 2, LOG_Y - 178);
-      flag();
-    });
-    beat('Finish: the crown', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 6 && n < 12) {
-        const k = n % 4;
-        if (k === 1) snakeBank();
-        else breath();
-        if (k === 0) lilyPond(5);
-        else if (k === 1) river(n % 2 ? -1 : 1, 64 + n, 2, n % 2 ? 108 : 122, { flowers: 6, ...(n % 2 ? { gap: 80 } : {}) });
-        else if (k === 2) stones(R.i(3, 4), { flowers: true });
-        else lilyPond(4);
-        if (++n % 2 === 0) flag();
-      }
-      rest(R.r(300, 400), false);
-    });
-  } else if (plan === '2-4') {
-    // 2-4 Over the Water: swing across the river on the hanging vines. Learn over water that costs no life, two vines at a time; then
-    // longer chains over the deep river; the twist mixes the two rules: a swing lands on an island in the middle of the river, and the
-    // logs carry him on from there.
-    open(0);
-    beat('Learn: swing over the water', () => {
-      rest(R.r(260, 300), false);
-      hint(200, 'Swing over the river! Jump into a vine to grab it.');
-      swingRiver(2, { safe: true });
-      hint(x - 160, 'Missed? Splash! Try again from the bank.');
-      rest(R.r(100, 170), false);
-      swingRiver(2, { safe: true });
-      flag();
-    });
-    beat('Develop: the long swing', () => {
-      rest(R.r(100, 170), false);
-      hint(x + 10, 'Deep water now. Let go at the front of the swing.');
-      swingRiver(3);
-      heart(x - 40, G - 60);
-      snakeBank();
-      swingRiver(3);
-      flag();
-    });
-    beat('Twist: vines and logs', () => {
-      rest(R.r(100, 170), false);
-      hint(x + 10, 'Swing to the island, then ride the logs!');
-      swingRiver(2, { island: Math.round(R.r(430, 480)) });
-      river(1, 70, 2, 120);
-      heart(x - 40, G - 60);
-      rest(R.r(100, 170), false);
-      // a golden seed above the last vine of a long chain, a leap from the top of its swing
-      const v0 = V.length;
-      swingRiver(4);
-      const last = V[V.length - 1];
-      if (V.length > v0) goldenSeed(last.x + 40, last.topY + 40);
-      flag();
-    });
-    beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 12 && n < 12) {
-        if (n % 3 === 1) snakeBank();
-        else rest(R.r(100, 170), false);
-        if (n % 3 === 2) {
-          swingRiver(2, { island: Math.round(R.r(430, 480)) });
-          river(n % 2 ? -1 : 1, 70, 2, n % 2 ? 108 : 120, n % 2 ? { gap: 80 } : {});
-        } else swingRiver(n % 2 ? 4 : 3);
-        if (++n % 2 === 0) flag();
-      }
-      rest(R.r(300, 400), false);
-    });
-  } else if (plan === '2-5') {
-    // 2-5 River Snappers: chase the snapping turtles off the bank, and out on the river: the snappers' own fight. Learn: one at a time;
-    // a blow to the face only sends it into its shell, so get behind it or stomp it. Develop: a row of them on one stretch of bank, where
-    // a kicked shell bowls the rest over. Twist: the river itself, a snapper on each sandbar between the crossings, so every fight is on
-    // a patch of sand with the logs drifting either side.
-    open(0);
-    const narrow = (dir: 1 | -1, speed: number) => (dir === 1 ? river(1, speed, 2, 120) : river(-1, speed, 2, 108, { gap: 80 }));
-    /** a long bank with snappers spread along it, each on its own patch, clear of the flags at either end */
-    const snapperBank = (n: number, spacing: [number, number]) => {
-      const x0b = x;
-      run(R.r(160, 200));
-      for (let i = 0; i < n; i++) {
-        run(R.r(spacing[0], spacing[1]));
-        turtle(x);
-      }
-      run(R.r(340, 380));
-      row(x0b + 120, x - 120, G - 34, Math.max(2, Math.round((x - x0b) / 200)), 'hibiscus');
-      expert += (x - x0b) / RUN + n * 1.6;
-      pieces.push({ k: `snappers${n}`, x0: x0b, x1: x });
-    };
-    /** a sandbar between two crossings with a snapper on it: the fight, then the rest of the sand to breathe on before the next logs */
-    const sandFight = () => {
-      const ix = x;
-      island(R.r(470, 520));
-      // (far enough along the sand to be clear of a flag on the bank before it)
-      turtle(ix + 220, G, 90);
-      expert += (x - ix) / RUN + 2;
-    };
-    beat('Learn: one snapper', () => {
-      // (the first snapper well past four seconds of walking: it was 1 s in, and bit him before Dot's first line, QA 2026-10-28)
-      // (and past five and a half seconds: at 4.7 s the first-timer bot's plain walk was still bitten, 2026-10-28)
-      rest(START_WALK + 400);
-      hint(200, 'Snappers! Hit one from behind, or jump on it.');
-      run(R.r(120, 160));
-      turtle(x, G, 100);
-      run(R.r(380, 440));
-      expert += 3;
-      hint(x - 200, 'Head-on, it hides. Kick the shell!');
-      snapperBank(2, [300, 360]);
-      narrow(1, 66);
-      flag();
-    });
-    beat('Develop: bowl them over', () => {
-      breath();
-      hint(x + 20, 'A row of snappers. Kick a shell into the others!');
-      // close together: a shell kicked along this bank meets every one of them
-      snapperBank(4, [110, 140]);
-      heart(x - 40, G - 60);
-      narrow(-1, 62);
-      sandFight();
-      narrow(1, 70);
-      flag();
-    });
-    beat('Twist: snappers on the sandbars', () => {
-      hint(x + 10, 'Snappers out on the sandbars!');
-      for (let k = 0; k < 3; k++) {
-        sandFight();
-        narrow(k % 2 ? 1 : -1, 66 + k * 3);
-      }
-      heart(x - 40, G - 60);
-      // a golden seed high over a row of snappers: the top of a double jump from the middle of the bank
-      const sx = x;
-      snapperBank(3, [200, 240]);
-      goldenSeed((sx + x) / 2, G - 190);
-      flag();
-    });
-    beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS - 4 && n < 12) {
-        if (n % 3 === 2) {
-          breath();
-          snapperBank(n % 2 ? 2 : 4, n % 2 ? [260, 320] : [120, 150]);
-        } else sandFight();
-        narrow(n % 2 ? -1 : 1, 68 + n * 2);
-        if (++n % 2 === 0) flag();
-      }
-      rest(R.r(300, 400), false);
-    });
-  } else {
-    // 2-3 Stuck in the Reeds: little ones in reed cages hung over the water on ropes, each over its pulley with a counter-basket on the
-    // bank (Matt's sheet). Stones in the basket lift a cage out of the water, and all the way up its floor drops open. Learn with one
-    // stone over water that costs nothing; then a heavier cage, two stones (the first lifts it halfway); the twist puts the stones on a
-    // reed island across a channel, to be thrown over; the last baskets hang high, and the stones go up into them with a flick. Between
-    // the cages, the reeds: the mooring posts up onto the high banks, snakes in the reeds, a lily pond, a river or two.
-    open(0);
-    const critters = R.shuffle<Critter>(['capy', 'duck', 'otter']);
-    const narrow = (dir: 1 | -1, speed: number, o: { safe?: boolean } = {}) => (dir === 1 ? river(1, speed, 2, 120, o) : river(-1, speed, 2, 108, { ...o, gap: 80 }));
-    beat('Learn: a cage on a rope', () => {
-      run(R.r(160, 200));
-      hint(150, 'Little ones are stuck in reed cages. Free them!');
-      cageRoom({
-        need: STONE, mode: 'bank', safe: true, critter: critters[0],
-        tips: { enter: 'A cage on a rope! Stones in the basket lift it.', hold: 'Tap by the basket to drop it in.', open: 'Up it comes! The little one is free!' },
-      });
-      breath();
-      hint(x + 20, 'Climb the post to get up the bank!', 'Climb the post: hold Up to get up the bank!', 'Climb the post: hold W or Up to get up the bank!');
-      postUp();
-      narrow(1, 55, { safe: true });
-      flag();
-    });
-    beat('Develop: a heavier cage', () => {
-      breath();
-      cageRoom({ need: STONE * 2, mode: 'bank', critter: critters[1], tips: { enter: 'A heavy one! One stone lifts it halfway.' } });
-      heart(x - 40, G - 60);
-      snakeBank();
-      narrow(1, 60);
-      breath();
-      lilyPond(4, false);
-      breath();
-      postUp();
-      flag();
-    });
-    beat('Twist: stones across the water', () => {
-      breath();
-      cageRoom({
-        need: STONE, mode: 'across', critter: critters[2],
-        tips: { enter: 'The stones are on the island. Throw one over!', hold: 'Hands full! Flick toward the bank to throw it.' },
-      });
-      heart(x - 40, G - 60);
-      snakeBank();
-      // a golden seed over a river, higher than a hop from a log: a double jump from a log at its moment
-      const r = narrow(1, 64);
-      goldenSeed((r.x0 + r.x1) / 2, LOG_Y - 175);
-      breath();
-      postUp();
-      flag();
-    });
-    beat('Finish: the high baskets', () => {
-      breath();
-      cageRoom({ need: STONE * 2, mode: 'high', critter: critters[0], tips: { enter: 'The basket hangs high. Flick up to throw!' } });
-      heart(x - 40, G - 60);
-      snakeBank();
-      narrow(-1, 60);
-      breath();
-      postUp();
-      cageRoom({ need: STONE, mode: 'high', critter: critters[1] });
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 4 && n < 8) {
-        if (n % 2) snakeBank();
-        else breath();
-        if (n % 2) narrow(n % 4 === 1 ? -1 : 1, 62 + n);
-        else postUp();
-        if (++n % 2 === 0) flag();
-      }
-      rest(R.r(300, 400), false);
-    });
-  }
+      return note && note.kind === 'note' ? note.id : null;
+    },
+    LOG_Y, ISLAND_TOP, START_WALK, EXPERT_SECONDS, G, STONE,
+  };
+  look = picks.look;
+  buildW2Sections(plan, sec, picks);
 
   const exitX = x - 220;
   close();

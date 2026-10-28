@@ -174,6 +174,11 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   lowStumps). And soft pits read as two hops (a drop in, a hop out), never a jump; ropes the same before Shimmy Rope. Variety (era's
   action 3-grams) only moves when the letters change: bounces up walls, branches 240 up (no floor within 200: a jump), climbs that are
   the only way on, snakes, the eagle. Rearranging hops among hops changes nothing it can see.
+- **Variety one section at a time doesn't show** (World 2, 2026-10-28): three versions of each section, each picked on its own, still
+  read 0.83-0.95 alike on the 200-roll tool, because it compares the mix of things to do (action 3-grams) and every water crossing
+  reads the same (logs, pads, stones: a river and hops). What works: one version (a flavour) that carries through the whole stage, four
+  of them, differing in the heavy beats (animals, climbs and swings, puzzles), not only in the kind of crossing. Measure with
+  `tools/inspect/era.ts` while authoring, not after.
 - **One length number lies**: the time model and a real-engine bot disagree by about a minute on Meeca's stage (model 5:09-5:17,
   bot 4:16-4:25; the bot never hesitates). Give both, and say which one the target is on.
 
