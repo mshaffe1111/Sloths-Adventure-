@@ -8,7 +8,7 @@ Last updated: 2026-10-28 (after release PR #40).
 - PR #40 (2026-10-28): Worlds 3-4 rebuilt, upright puzzle camera, QA batch 1 fixes, sheets load at stage start, browser fields in
   recordings, the one-time slow-phone tip, the Android build fix (first successful APK, run 40721485781).
 
-## On the work branch, not live yet
+## On the work branch, not live yet (pushed for safe keeping; draft PR #41 tracks it, not a release)
 
 - Docs: GEMINI-PCG-RESEARCH.md, STAGE-RULES.md, GEMINI-LEDGER.md, LEAD-PLAYBOOK.md, this file.
 - Meeca's art sheets (meeca-poses, meeca-props) and their cuts.
