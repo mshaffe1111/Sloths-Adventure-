@@ -53,6 +53,11 @@ export interface RiverZone {
    */
   flowT?: number;
   flowRate?: number;
+  /**
+   * 2-2's ferry: one wide raft instead of a row of logs (a sluice runs this river, puzzleKit.ts: shut, the raft waits moored under the far
+   * bank; open, the current brings it round to him). The level check lets a raft river have its one log.
+   */
+  raft?: boolean;
 }
 
 /** the clock a log moves by: its river's own when a sluice runs that river (RiverZone.flowT), else the game's */

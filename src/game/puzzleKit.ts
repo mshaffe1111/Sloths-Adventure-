@@ -68,8 +68,10 @@ export type PieceSpec =
   | { kind: 'lever'; id: string; at: Anchor; on?: boolean }
   | { kind: 'basket'; id: string; at: Anchor; mouth: number; need?: number; drop?: number }
   /** `by`: the basket whose weight raises it (a counterweight), or any piece whose output winds it up while on (a pinwheel); `hold`: it
-   * stays where it was wound to when that goes off (a ratchet), instead of coming back down */
-  | { kind: 'lift'; id: string; at: Anchor; w: number; rise: number; by: string; hold?: boolean }
+   * stays where it was wound to when that goes off (a ratchet), instead of coming back down; `cage`: the reed cage it hangs (World 2: a
+   * cage collectible's id). A cage's lift has no plank to stand on: the cage hangs on the rope where the plank would be, and lifted all
+   * the way up its floor drops open and the little one is free (puzzlePlay.ts) */
+  | { kind: 'lift'; id: string; at: Anchor; w: number; rise: number; by: string; hold?: boolean; cage?: number }
   | { kind: 'beetle'; id: string; at: Anchor; sight?: number }
   | { kind: 'reset'; id: string; at: Anchor }
   /** a plank on a pivot at `at` (its ends' tops at the anchor's height when down): weight on one end lowers it and raises the other into a
@@ -234,7 +236,8 @@ export function addKitPlatforms(platforms: Platform[], kit: KitExtras): void {
         platforms.push({ id: kitPlatId(ri, pc.id, 0), x: at.x - KIT.gateW / 2, y: at.y - KIT.doorH, width: KIT.gateW, height: KIT.doorH, type: 'solid', art: 'kit' });
         platforms.push({ id: kitPlatId(ri, pc.id, 1), x: at.x - KIT.gateW / 2, y: at.y - h, width: KIT.gateW, height: h - KIT.doorH, type: 'solid', art: 'kit' });
       } else {
-        platforms.push({ id: kitPlatId(ri, pc.id, 0), x: at.x - pc.w / 2, y: at.y, width: pc.w, height: 20, type: 'solid', art: 'kit' });
+        // (a hanging cage's rope end: nothing to stand on, so it is never solid)
+        platforms.push({ id: kitPlatId(ri, pc.id, 0), x: at.x - pc.w / 2, y: at.y, width: pc.w, height: 20, type: 'solid', art: 'kit', ...(pc.kind === 'lift' && pc.cage !== undefined ? { broken: true } : {}) });
       }
     });
   });

@@ -10,7 +10,7 @@
  *   - pick up a thing on his piece of ground; set it down there (on a plate there, or at a spot a beetle will see), or into a basket
  *     in reach; throw it, up or forward, from anywhere along his piece of ground facing either way, with the game's own flight
  *     (puzzleKit.ts flyAll: it lands on a plate, falls in a basket, knocks a lever, or is lost and comes back to its source);
- *   - stand on a plate on his piece of ground; pull a lever there.
+ *   - stand on a plate on his piece of ground; pull a lever there; ring a bell there (for an instant: a gate it opens must latch).
  * After each move a beetle that can see food goes and eats it and falls asleep there (its rule, puzzleKit.ts stepBeetle).
  *
  * A room fails when no state lets him reach the platform past its way on (its gate never opens, or its lift never rises), or when a
@@ -304,7 +304,8 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     seesaws.forEach((ss, i) => o.set(ss.spec.id, tiltOf(s, i) !== (ss.spec.rest ?? -1)));
     traders.forEach((t, i) => o.set(t.spec.id, s.traded[i]));
     ledges.forEach((l, i) => o.set(l.spec.id, litOf(s, i)));
-    bells.forEach((b) => o.set(b.spec.id, false));
+    // (a bell rings only for a moment: it is on only in the instant he rings it, long enough for a latching gate to latch: ringing)
+    bells.forEach((b, i) => o.set(b.spec.id, ringing === i));
     // (a gate may listen to another gate, a pinwheel to a shutter, a lift to a pinwheel: settle a few times)
     for (let pass = 0; pass < 3; pass++) {
       shutters.forEach((sh) => o.set(sh.spec.id, evalWire(sh.spec.open, w)));
@@ -425,6 +426,8 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   };
 
   // ── after a move: beetles go for food they can see; latching gates stay open ──
+  /** the bell he is ringing this instant (its index), or -1 */
+  let ringing = -1;
   const settle = (s: State) => {
     for (let guard = 0; guard < 6; guard++) {
       let changed = false;
@@ -486,6 +489,8 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
   let solved = false;
   let opened = false;
   const exitSpec = room.pieces.find((p) => p.id === room.exit)!;
+  // (a room whose way on is a hanging cage's lift, World 2's reed cages, is solved only with the cage lifted all the way: freed)
+  const cageExit = exitSpec.kind === 'lift' && exitSpec.cage !== undefined;
   const push = (s: State) => {
     settle(s);
     const k = keyOf(s);
@@ -512,7 +517,7 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     const hw = LW.piece(s.pid, s.rx);
     const ways = hw ? reach(LW, LW.g.key(hw), held >= 0 ? 'carry' : 'free') : new Set<string>();
     // past the way on?
-    for (const n of ways) {
+    for (const n of cageExit && !o.get(exitSpec.id) ? [] : ways) {
       const p = pieceOfKey(LW, n);
       if (p && p.id === room.beyond.on && beyond.x >= p.x - 2 && beyond.x <= p.x + p.width + 2) solved = true;
     }
@@ -538,6 +543,15 @@ function checkRoom(stage: GeneratedStage, ri: number, room: RoomSpec, graphFor: 
     // (a lever on the ground beside his, in a tap's reach: the game's own rule, puzzlePlay.ts control)
     const inReach = (x: number, y: number) => Math.max(0, here.x - x, x - (here.x + here.width)) <= reach2 && y >= here.y - KIT.up && y <= here.y + KIT.down;
     if (held < 0) {
+      // ring a bell here: what latches to it stays open after the ring has gone (a gate a bell opens must latch)
+      bells.forEach((b, bi) => {
+        if (!onHere(b.plat, b.x) && !inReach(b.x, b.y)) return;
+        const t = clone(s);
+        ringing = bi;
+        settle(t);
+        ringing = -1;
+        push(t);
+      });
       // pull a lever here
       levers.forEach((l, li) => {
         if (!onHere(l.plat, l.x) && !inReach(l.x, l.y)) return;

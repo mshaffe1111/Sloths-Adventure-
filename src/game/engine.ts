@@ -594,7 +594,7 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
-    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers }) : null;
+    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles }) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
@@ -1149,13 +1149,22 @@ export class GameEngine {
         }
       }
     }
-    // 2-8: rising water. It starts once he steps in, and covers the low reed islands
+    // 2-8: rising water. It starts once he steps in, and covers the low reed islands; out on a bank again (either one) it drains away as
+    // fast as it rose, so a little one left behind can still be gone back for (every one of them is the goal)
     for (const r of this.currentStage.rivers ?? []) {
       const f = r.flood;
       if (!f) continue;
       f.y0 ??= r.surfaceY;
       let at = this.floodAt.get(r);
-      if (at === undefined && p.x > f.trigger && !this.isGameOver) {
+      const inBasin = p.x > f.trigger && p.x < r.x1 + 10;
+      if (at !== undefined && !inBasin && p.grounded) {
+        at = Math.min(this.gameTime, at + 2 * dt);
+        if (at >= this.gameTime) {
+          this.floodAt.delete(r);
+          at = undefined;
+        } else this.floodAt.set(r, at);
+      }
+      if (at === undefined && inBasin && !this.isGameOver) {
         at = this.gameTime;
         this.floodAt.set(r, at);
         if (!this.floodTold) {
@@ -3357,6 +3366,17 @@ export class GameEngine {
     if (m.lunge && p.grounded) p.vx = Math.max(-380, Math.min(380, p.vx + p.facing * m.lunge));
   }
 
+  /** a little one is free: out of its cage (punched open, or lifted out on its pulley, puzzlePlay.ts) */
+  private freeCritter(c: Collectible) {
+    if (c.collected) return;
+    c.collected = true;
+    c.freedAt = this.gameTime;
+    this.player.crittersRescued++;
+    this.runScore += 400;
+    sound.playCritterRescued();
+    this.addFloatingText('RESCUED! +400', c.x, c.y - 30, '#c084fc');
+  }
+
   /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
   private somethingToKick(): boolean {
     const p = this.player;
@@ -3364,7 +3384,7 @@ export class GameEngine {
     const near = (x: number, y: number) => Math.abs(x - cx) < KICK_NEAR_PX && Math.abs(y - cy) < KICK_NEAR_PX * 0.6;
     for (const e of this.enemies) if (!e.defeated && near(e.x + (e.width ?? 0) / 2, e.y)) return true;
     if (this.boss && near(this.boss.x, this.boss.y)) return true;
-    for (const c of this.collectibles) if (c.type === 'cage' && !c.collected && near(c.x, c.y)) return true;
+    for (const c of this.collectibles) if (c.type === 'cage' && !c.collected && !this.kit?.holdsCage(c) && near(c.x, c.y)) return true;
     return false;
   }
 
@@ -3445,19 +3465,18 @@ export class GameEngine {
       const cr: Rect = { x: c.x - 24, y: c.y - 26, w: 48, h: 52 };
       if (!rectsOverlap(box, cr)) continue;
       a.hits.add(1_000_000 + c.id);
+      // (a reed cage hung over the water, World 2: too tough to break, the pulley lifts it out: puzzlePlay.ts)
+      if (this.kit?.holdsCage(c)) {
+        this.addFloatingText('LIFT IT OUT!', c.x, c.y - 40, '#fde68a');
+        continue;
+      }
       a.connected = true;
       c.cageHp = (c.cageHp ?? 2) - m.damage;
       this.hitstopTimer = Math.max(this.hitstopTimer, 0.04);
       sound.playHitImpact(true, 'chitin');
       this.spawnDebrisBurst(c.x, c.y, '#ca8a04');
-      if (c.cageHp <= 0) {
-        c.collected = true;
-        c.freedAt = this.gameTime;
-        p.crittersRescued++;
-        this.runScore += 400;
-        sound.playCritterRescued();
-        this.addFloatingText('RESCUED! +400', c.x, c.y - 30, '#c084fc');
-      } else {
+      if (c.cageHp <= 0) this.freeCritter(c);
+      else {
         this.addFloatingText('CRACK!', c.x, c.y - 20, '#fef08a');
       }
     }
@@ -5052,6 +5071,11 @@ export class GameEngine {
         if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
         return;
       }
+      // a reed cage hanging over the water: the kit draws it (puzzlePlay.ts), and the little one hopping home once it is free
+      if (item.type === 'cage' && this.kit?.holdsCage(item)) {
+        if (item.collected) drawW2Cage(ctx, item, this.gameTime, true);
+        return;
+      }
       // World 2's painted reed cages, and the little one hopping home once it is free
       if (item.type === 'cage' && item.critter && drawW2Cage(ctx, item, this.gameTime)) return;
       // 4-8's eaglets in their nests, the netting over them, and their parents (w4Nests.ts)
@@ -6303,6 +6327,7 @@ export class GameEngine {
       },
       float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
       passTip: (text) => this.callbacks.onGuide?.(text, 0, true),
+      freeCage: (c) => this.freeCritter(c),
       sfx: (kind) => {
         if (kind === 'pick') sound.playVineGrab();
         else if (kind === 'drop' || kind === 'land') sound.playLand(kind === 'drop' ? 0.4 : 0.25);
