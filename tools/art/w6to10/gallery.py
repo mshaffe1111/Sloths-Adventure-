@@ -28,6 +28,9 @@ WHO = {
     'seamstress': ('The Seamstress', 'World 5 creature'),
     'mantis': ('Orchid Mantis', 'World 5 creature'),
     'dozer': ('Dozer moth', 'World 5 creature'),
+    'flicker': ('Flicker', 'the firefly guide, from his own Gemini cells: the moves he needs from World 6 to the end'),
+    'title': ('Pokey and Meeca on the title', 'done first for the title (already handed over); kept here for the record'),
+    'plate': ('Moving lair paintings', 'the calm lair paintings below, brought gently to life (no characters)'),
 }
 STILLS = [
     ('lair', 'Painted lairs', 'One painting per guardian, calm and in the last third of the fight (the Prowler\'s lair is the model).'),
@@ -35,6 +38,8 @@ STILLS = [
     ('free', 'Collars off', 'The guardians and the General, free, for the ending (each from its own character model).'),
     ('collar', 'The collar breaking', 'Closed, cracked, splitting, falling, open.'),
     ('prop', 'Props, Worlds 7-10', 'Single props on grey, to cut out.'),
+    ('prop2', 'Props, side-on retries', 'The props that came out at an angle the first time, asked for flat side-on.'),
+    ('sign', 'Water warning sign', 'A little post sign for the water edge, no words: World 5 garden look and a jungle one for Worlds 6-10.'),
 ]
 
 
@@ -51,7 +56,8 @@ def main(dirs):
     clips = sorted(n[:-5] for n in files if n.startswith('w6t-') and n.endswith('.webp') and not n.endswith('-strip.webp'))
     by = {}
     for c in clips:
-        _, who, mv, seed = c.split('-')
+        parts = c.split('-')
+        who, mv = parts[1], '-'.join(parts[2:-1])
         by.setdefault(who, {}).setdefault(mv, []).append(c)
     for n, p in files.items():
         if n.startswith('w6t-'):
@@ -78,8 +84,10 @@ def main(dirs):
         for mv, cs in by[w].items():
             cards = ''.join(card(c, f'{c}.webp', f"{mv} · seed {c.rsplit('-s', 1)[1]}") for c in cs)
             rows.append(f'<div class="move"><h3>{html.escape(mv)}</h3><div class="grid">{cards}</div></div>')
+        ph = (f'<details class="phone"><summary>Phone size check (portrait and landscape, game size then 0.5x)</summary>'
+              f'<img loading="lazy" src="img/phone-{w}.webp" alt="{html.escape(title)} at phone size"></details>') if (IMG / f'phone-{w}.webp').exists() else ''
         sec.append(f'<section id="{w}"><h2>{html.escape(title)}</h2><p class="sub">{html.escape(sub)} · '
-                   f'{sum(len(c) for c in by[w].values())} clips, {len(by[w])} moves</p>{"".join(rows)}</section>')
+                   f'{sum(len(c) for c in by[w].values())} clips, {len(by[w])} moves</p>{ph}{"".join(rows)}</section>')
     for k, t, d in STILLS:
         ns = [n for n in still_names if n.startswith(k + '-')]
         if not ns:
@@ -118,6 +126,8 @@ section { background:var(--panel); border:1px solid var(--line); border-radius:1
 .card.good { outline:2px solid var(--good); }
 .card.bad { outline:2px solid var(--bad); opacity:.8; }
 .v { color:var(--muted); }
+.phone summary { cursor:pointer; color:var(--muted); font-size:14px; margin:4px 0; }
+.phone img { width:100%; height:auto; border-radius:8px; }
 .card.bad .v { color:var(--bad); }
 .card.good .v { color:var(--good); }
 </style></head><body><main>

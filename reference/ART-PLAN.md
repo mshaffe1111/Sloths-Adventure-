@@ -41,6 +41,46 @@ Today all six W6-10 guardians cut between still poses. The Queen (W5) and the Sk
 The overnight run's ten creature designs (gallery https://claude.ai/artifact/J6iuizvLB1iC6Ge8whThe9) already have 3-4 clips each in
 `mshaffe111/slothadv-gen/clips/cr-*` and `m1k-*`: **not regenerated here** (Matt still has to pick the designs).
 
+### Flicker, the firefly guide (Matt, 2026-10-28: "enough Flicker animations that we can get through the game")
+
+Where he is used after Meeca's stage (`reference/STORY-REVIEW-2026-10-27.md` items 4, 6-10, approved; STAGE-RULES "Dot (or Flicker
+while Dot is away) explains any locked exit"; GEMINI-LEDGER F6 "Flicker's on-request tiered hints": sparkle at 15 s, a thought at 30 s,
+a demonstration at 50 s):
+
+- 5-M (Meeca's stage): first line in the dark, "Round and round" (shows the circle), "I was the light" (very small).
+- World 6 halfway scene: he arrives ("You're Pokey ... Flicker. Somebody who owes her."); 6-6 "Look where I'm lighting" (lights the way
+  in the dark roots); 6-8 sits on the root beside Pokey; 6-9 warns "It's nearly noon"; after the Reaver he "had gone ahead to light the
+  next root".
+- World 7: the only company ("There was only Flicker"; "Flicker blinks"; "Flicker didn't fill it").
+- World 8: leads with his family's lights ("Flicker went on ahead"); falls asleep with Pokey; meets Dot on Pokey's satchel strap,
+  "glowing at her"; banter (he holds his ground: "You're hovering."); lights the branch before Dot can say which.
+- World 9: "Glow quietly." / "I don't have a quiet setting."; "Yes." with Pokey in the Pell scene.
+- World 10: guides Pokey with Dot to the end; the ending, all together.
+- Every stage from 6-5 on: locked-exit explanations and the tiered hints while Dot is away.
+
+States he needs, and where each comes from:
+
+| State | Use | Source |
+|---|---|---|
+| fly loop | following, travelling | exists (`reference/animation-sheets/flicker/fly`, 2026-10-28) |
+| hover | idle beside Pokey, hint tier 1 | exists (`flicker/hover`) |
+| perch / rest | on the root, on the satchel strap, asleep | exists (`flicker/perch`) + new **doze** |
+| talk | every line, tier 2 thought | Matt's cells fl1/fl13 in the game; new **talk** loop clip |
+| show the way (circle) | "Round and round", tier 3 demonstration | new **show** clip (cell 16) |
+| lead ahead | "Look where I'm lighting", "went on ahead" | new **lead** (looks back, beckons) and **dart** (bursts ahead) |
+| glow pulse | lighting the dark, "glowing at her", tier 1 sparkle | new **glow** clip |
+| turn | turning to Pokey or Dot | new **turn** clip |
+| happy | banter, the ending | new **happy** (laughs, bounces) |
+| worried | 6-9 "nearly noon", World 10 | new **worried** |
+| sad / very small | "I was the light", "Somebody who owes her" | cell fl15 + new **sad** clip |
+| startled | meeting Dot, hazards | new **startled** |
+| smug / holds his ground | "You're hovering.", "You can say the next one." | new **smug** (cell 4) and **shrug** (cell 7) |
+| blink | "Flicker blinks" | new **blink** |
+
+All new clips start from Matt's own cells (cut exactly as `tools/art/w5puzzle/cut.py` does), so no new character model is needed: the
+clips can only move what he drew. If Matt wants poses the sheet lacks (back view, holding something), a Flicker model (~$3.30) or a
+second Gemini sheet comes next.
+
 ### Backdrops and props (finish the game)
 
 - Lairs: only the Prowler (`lairs/prowler-lair.webp`) and Thornbark (`backdrops/hollow.webp`) have a painting (2560x1430); the
