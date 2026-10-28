@@ -36,7 +36,15 @@ test('4-1: the rocks are fair: a warning first, time to spare, never where he mu
     const rocks = st.proto.w4?.rocks ?? [];
     assert.ok(rocks.length >= 3, `seed ${s}: only ${rocks.length} rocks`);
     const lands = new Set<number>();
-    for (const r of rocks) {
+    // (round 4, Matt 2026-10-28 "Harder, still safe": rocks also come down the trunks he climbs, warned by grit from above; a hit knocks
+    // him off the trunk, the climb again, never a life. The ledge rocks keep the old rules, and come first: their lesson is lower)
+    const ledgeRocks = rocks.filter((r) => !r.air);
+    for (const r of rocks.filter((q) => q.air)) {
+      assert.ok(rockFits(r) && r.warn >= 1.4, `seed ${s}: a climb rock without time to warn`);
+      assert.ok(st.vines.some((v) => v.vineType === 'tree_climb' && Math.abs(v.x - r.x) < 2 && r.land >= v.bottomY), `seed ${s}: a climb rock off its trunk`);
+      assert.ok(r.land < Math.max(...ledgeRocks.map((q) => q.land)), `seed ${s}: a climb rock below the ledge rocks' lesson`);
+    }
+    for (const r of ledgeRocks) {
       assert.ok(rockFits(r) && r.warn >= 1, `seed ${s}: a rock without time to warn`);
       assert.ok(r.top < r.land - 200, `seed ${s}: a rock that hardly falls`);
       assert.ok(!lands.has(r.land), `seed ${s}: two rocks on one ledge`);
