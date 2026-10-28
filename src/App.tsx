@@ -50,6 +50,7 @@ import { midSceneAfter } from './game/midScene.ts';
 import { preloadStage, readyToStart } from './game/stagePreload.ts';
 import { releasesStage, resumeAction } from './components/screenFlow.ts';
 import { bootDone } from './game/boot.ts';
+import { ScreenVeil, STAGE_LIVE_EVENT } from './components/ScreenVeil.tsx';
 
 const worldStoryKey = (w: number) => `sloth_story_w${w}`;
 function hasSeenWorldStory(w: number): boolean {
@@ -712,6 +713,8 @@ export default function App() {
         engineRef.current?.stop();
         engineRef.current = engine;
         engine.start();
+        // (the screen's iris opens once the stage is drawing: ScreenVeil.tsx)
+        window.dispatchEvent(new Event(STAGE_LIVE_EVENT));
       }, 20);
     });
   }, []);
@@ -848,6 +851,14 @@ export default function App() {
           style={{ touchAction: 'none' }}
         />
       </div>
+
+      <ScreenVeil
+        screen={screen}
+        stage={{
+          kicker: activeLevel.secret ? 'Secret stage' : `World ${activeLevel.worldIndex} · Stage ${activeLevel.id}`,
+          name: activeLevel.name,
+        }}
+      />
 
       {ctestGate && (
         <ControlTestGate

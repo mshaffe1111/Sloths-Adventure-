@@ -51,11 +51,13 @@
       .boot-vine svg { width: 100%; height: 100%; overflow: visible; }
       .boot-vine .track { fill: none; stroke: rgba(255, 246, 223, .14); stroke-width: 5; stroke-linecap: round; }
       .boot-vine .grow { fill: none; stroke: #7cc35a; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--p, .04)); transition: stroke-dashoffset .5s ease; filter: drop-shadow(0 0 6px rgba(160, 240, 120, .45)); }
+      .boot-vine .glow { fill: none; stroke: rgba(230, 255, 190, .85); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: .05 .95; animation: boot-run 1.8s linear infinite; }
+      @keyframes boot-run { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
       .boot-vine .lf { fill: #8fd26a; stroke: #2c5a1f; stroke-width: 1.4; transform-box: fill-box; transform-origin: 50% 100%; transform: scale(0); transition: transform .5s cubic-bezier(.2, 1.6, .4, 1); }
       .boot-vine .lf.on { transform: scale(1); }
       .boot-vine .tip { animation: boot-sway 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 100%; }
       @keyframes boot-sway { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(10deg); } }
-      @media (prefers-reduced-motion: reduce) { .boot-vine .tip { animation: none; } #boot-bg { transition: opacity .6s ease; } }
+      @media (prefers-reduced-motion: reduce) { .boot-vine .tip, .boot-vine .glow { animation: none; } .boot-vine .glow { display: none; } #boot-bg { transition: opacity .6s ease; } }
     </style>
   </head>
   <body>
@@ -69,6 +71,7 @@
         <svg viewBox="0 0 300 46">
           <path class="track" d="M6 30 C 56 10, 96 44, 150 26 S 246 12, 294 28" />
           <path class="grow" pathLength="1" d="M6 30 C 56 10, 96 44, 150 26 S 246 12, 294 28" />
+          <path class="glow" pathLength="1" d="M6 30 C 56 10, 96 44, 150 26 S 246 12, 294 28" />
           <path class="lf" data-at=".12" d="M42 21 c -8 -4 -10 -12 -4 -18 c 6 4 8 12 4 18 z" />
           <path class="lf" data-at=".3" d="M95 30 c 6 -6 14 -6 18 0 c -6 4 -12 4 -18 0 z" />
           <path class="lf" data-at=".5" d="M150 26 c -6 -6 -6 -14 0 -18 c 5 5 5 12 0 18 z" />
@@ -103,8 +106,14 @@
         } catch (e) { el.classList.add('boot-fonts'); }
         setTimeout(function () { el.classList.add('boot-fonts'); }, 4000);
         setTimeout(done, 20000);
-        // the script is on its way: creep the vine a little so the page feels alive while it downloads
-        var creep = setInterval(function () { if (p < 0.3) set(p + 0.012); else clearInterval(creep); }, 250);
+        // the vine never stands still: while the game downloads it creeps on by itself, slower and slower toward the end (it never
+        // reaches it by creeping), and the real progress from the title (boot.ts) takes over whenever that is further along
+        var creep = 0.04;
+        var timer = setInterval(function () {
+          if (el.classList.contains('done')) return clearInterval(timer);
+          creep += (0.92 - creep) * 0.028;
+          set(creep);
+        }, 200);
       })();
     </script>
     <div id="root"></div>

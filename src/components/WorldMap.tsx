@@ -231,7 +231,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
 
       {/* the trail */}
       <div ref={trailRef} className="relative z-10 flex-1 min-h-0">
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${box.w} ${box.h}`} aria-hidden="true">
+        <svg key={activeWorldId} className="map-trail absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${box.w} ${box.h}`} aria-hidden="true">
           {/* the road: dark edge, then every stretch in its own colour. Warm gold where Pokey has been, muted sand for what is still ahead */}
           <path d={pathD} fill="none" stroke="rgba(10,18,12,.55)" strokeWidth={nodeSize * 0.62} strokeLinecap="round" strokeLinejoin="round" />
           {segs.map((s, i) => {
@@ -284,7 +284,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 }}
                 className={`map-node ${open ? (lvl.completed ? 'done' : 'ready') : 'locked'} ${isBoss ? 'boss' : ''} ${sel ? 'sel' : ''} ${isNext ? 'next' : ''}`}
                 data-type={lvl.objectiveType}
-                style={{ left: p.x - size / 2, top: p.y - size / 2, width: size, height: size }}
+                style={{ left: p.x - size / 2, top: p.y - size / 2, width: size, height: size, ['--i' as string]: i }}
                 aria-label={`Stage ${lvl.id}: ${lvl.name}, ${type.label}${lvl.completed ? `, ${lvl.stars} stars` : open ? '' : ', locked'}`}
               >
                 {isBoss ? (
@@ -383,7 +383,8 @@ export const WorldMap: React.FC<WorldMapProps> = ({
               </div>
             </div>
             {picked.unlocked || firstOf(picked) ? (
-              <button type="button" className="title-btn title-btn-start map-play" onClick={() => onSelectLevel(picked)} data-start="true">
+              <button type="button" className="gx-plank gx-plank-gold map-play" onClick={() => onSelectLevel(picked)} data-start="true">
+                <Icon name="play" size={18} />
                 {picked.completed ? 'REPLAY' : 'PLAY'}
               </button>
             ) : (

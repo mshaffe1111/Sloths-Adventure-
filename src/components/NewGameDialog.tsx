@@ -1,4 +1,5 @@
 import React from 'react';
+import { GhostOnExit } from './fx/exitGhost.ts';
 import { browserStore, buildSave, resetProgress } from '../game/saveFile.ts';
 import { Icon } from './icons/index.tsx';
 import { DIFFICULTY_LABEL, difficulty, setDifficulty, type Difficulty } from '../game/difficulty.ts';
@@ -40,6 +41,7 @@ export const NewGameDialog: React.FC<Props> = ({ onClose, onStarted, onBackup })
 
   return (
     <div className="ui-scrim" role="dialog" aria-modal="true" aria-label="New game" onClick={onClose}>
+      <GhostOnExit />
       <div className="ui-panel ui-saveload" onClick={(e) => e.stopPropagation()}>
         <div className="ui-panel-head">
           <div>

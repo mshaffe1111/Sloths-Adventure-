@@ -32,6 +32,18 @@ interface Props {
 }
 
 const fmt = (n: number) => n.toLocaleString('en-US');
+
+/** each card's window shows the far painting of the world the creature lives in (2026-10-28), behind its picture or its shadow */
+let FAR: Record<string, string> = {};
+try {
+  FAR = import.meta.glob('../assets/backdrops/w*-far.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+} catch {
+  FAR = {};
+}
+const cardWorld = (w: number): React.CSSProperties | undefined => {
+  const u = FAR[`../assets/backdrops/w${w}-far.webp`];
+  return u ? ({ ['--cw' as string]: `url("${u}")` } as React.CSSProperties) : undefined;
+};
 const unitLabel = (b: BadgeDef, have: number, need: number) =>
   b.unit === 'h' ? `${have} of ${need} h` : b.unit === 'min' ? `${have} of ${need} min` : `${fmt(have)} of ${fmt(need)}`;
 
@@ -184,7 +196,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 const n = store.kills[id] ?? 0;
                 return (
                   <div key={id} className={`tr-card ${met ? '' : 'lock'}`}>
-                    <div className="tr-cpic">
+                    <div className="tr-cpic" style={cardWorld(e.first)}>
                       <CreaturePic id={id} w={120} h={74} locked={!met} />
                     </div>
                     <div className="tr-cn">{met ? e.name : '???'}</div>
@@ -203,7 +215,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 const met = roadMet(r, levels);
                 return (
                   <div key={r.id} className={`tr-card ${met ? '' : 'lock'}`}>
-                    <div className="tr-cpic">
+                    <div className="tr-cpic" style={cardWorld(r.first)}>
                       <CreaturePic id={r.id} w={120} h={74} locked={!met} />
                     </div>
                     <div className="tr-cn">{met ? r.name : '???'}</div>
@@ -222,7 +234,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 const done = bossDone(g.world);
                 return (
                   <div key={g.world} className={`tr-card ${done ? '' : 'lock'}`}>
-                    <div className="tr-cpic">
+                    <div className="tr-cpic" style={cardWorld(g.world)}>
                       <CreaturePic id={g.art} w={120} h={74} locked={!done} />
                     </div>
                     <div className="tr-cn">{done ? g.name : '???'}</div>

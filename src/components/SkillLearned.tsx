@@ -1,4 +1,5 @@
 import React from 'react';
+import { GhostOnExit } from './fx/exitGhost.ts';
 import { sound } from '../game/audio.ts';
 import type { SkillDef } from '../game/skills.ts';
 import { HeroPose } from './HeroPose.tsx';
@@ -57,6 +58,7 @@ export const SkillLearned: React.FC<{ skill: SkillDef; onContinue: () => void }>
 
   return (
     <div className="clr-scrim sk-scrim select-none">
+      <GhostOnExit />
       <div className="clr-card sk-card" role="dialog" aria-label={`New skill: ${skill.name}`}>
         <div className="clr-ribbon">
           <svg viewBox="0 0 420 68" preserveAspectRatio="none" aria-hidden="true">

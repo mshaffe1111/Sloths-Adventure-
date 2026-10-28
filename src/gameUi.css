@@ -390,14 +390,64 @@
 .map-card-desc { color: #f3e3c0; }
 .map-card-meta { color: #ffd36a; }
 
-/* ───────── the trophy room: a dark wooden cabinet ───────── */
-.tr-screen { background: radial-gradient(ellipse at 50% 0%, rgba(255, 210, 140, .16), transparent 60%), var(--gx-wood-grain), linear-gradient(180deg, #4a2c14, #2a180a); }
+/* the map comes on in order (2026-10-28): the trail draws itself along, the stages pop up one after another, Pokey drops onto his,
+   and the stage card rises; a new world plays it again */
+.map-trail { animation: map-trail-in .9s cubic-bezier(.4, 0, .2, 1) .08s backwards; }
+@keyframes map-trail-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.map-node { animation: map-node-in .5s cubic-bezier(.2, 1.6, .4, 1) calc(.18s + var(--i, 0) * .055s) backwards; }
+@keyframes map-node-in { from { opacity: 0; transform: scale(.2); } }
+.map-here { animation: map-here-in .6s cubic-bezier(.3, 1.5, .5, 1) .75s backwards; }
+@keyframes map-here-in { from { opacity: 0; transform: translate(-50%, -34px); } to { opacity: 1; transform: translateX(-50%); } }
+.map-card { animation: gx-rise .55s cubic-bezier(.2, 1.4, .4, 1) .3s backwards; }
+.map-meds { animation: gx-fade .5s ease .2s backwards; }
+.map-play { gap: 6px; }
+.map-med-pic { border: 3px solid #6b4421 !important; box-shadow: 0 0 0 1.5px #2a1608, 0 3px 8px rgba(0, 0, 0, .45) !important; }
+.map-med.on .map-med-pic { border-color: #ffd23a !important; box-shadow: 0 0 0 2px #6b4421, 0 0 12px rgba(255, 210, 58, .5) !important; }
+.map-med.locked .map-med-pic { filter: saturate(.35) brightness(.62); }
+@media (prefers-reduced-motion: reduce) { .map-trail, .map-node, .map-here, .map-card, .map-meds { animation: none; } }
+
+/* ───────── the trophy room: a dark wooden cabinet; the jungle cards are collector's cards (2026-10-28) ───────── */
+.tr-screen { background: radial-gradient(ellipse at 50% 0%, rgba(255, 210, 140, .16), transparent 60%), var(--gx-wood-grain), linear-gradient(180deg, #4a2c14, #2a180a); animation: fx-screen-in .38s ease both; }
+.tr-head { display: flex; align-items: center; gap: 12px; }
+.tr-head .ui-x { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 50%; border-width: 3px; box-shadow: inset 0 2px 0 rgba(255, 232, 190, .4), 0 3px 0 #24130a, 0 6px 10px rgba(0, 0, 0, .35); }
+.tr-head .ui-x:active { transform: translateY(2px); box-shadow: 0 1px 0 #24130a; }
 .tr-h1 { font-family: var(--font-fun); font-weight: 400; color: #ffd83c; text-shadow: 0 2px 0 #3b1a06, 0 0 1px #3b1a06; }
-.tr-sec { font-family: var(--font-fun); font-weight: 400; color: #f3d9a6; }
-.tr-tabs button { font-family: var(--font-fun); font-weight: 400; color: #f3e3c0; border: 2px solid #2a1608; background: var(--gx-wood-grain), linear-gradient(180deg, #8a5a2c, #5e3a18); }
+.tr-sec { display: flex; align-items: center; gap: 10px; font-family: var(--font-fun); font-weight: 400; font-size: 17px; color: #f3d9a6; }
+.tr-sec::after { content: ''; flex: 1; height: 2px; border-radius: 2px; background: linear-gradient(90deg, rgba(243, 217, 166, .45), rgba(243, 217, 166, 0)); }
+.tr-tabs { display: flex; gap: 8px; margin: 12px 0 4px; }
+.tr-tabs button { flex: 1 1 0; min-width: 0; min-height: 42px; padding: 8px 10px; cursor: pointer; white-space: nowrap; font-family: var(--font-fun); font-weight: 400; font-size: 14.5px; color: #f3e3c0; text-shadow: 0 1px 0 #2a1608;
+  border: 2.5px solid #2a1608; border-radius: 12px 14px 4px 4px; background: var(--gx-wood-grain), linear-gradient(180deg, #8a5a2c, #5e3a18); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .25), 0 3px 0 #1a0e05; transition: transform .09s ease; }
+.tr-tabs button:active { transform: translateY(2px); }
 .tr-tabs button.on { color: #fff4d8; text-shadow: 0 1px 0 #4a2208; background: var(--gx-wood-grain), linear-gradient(180deg, #f0b04a, #d9822b 52%, #a85a17); border-color: #4a2208; }
-.tr-badge, .tr-card { background: linear-gradient(180deg, #3a2210, #24140a); border-color: rgba(255, 220, 160, .14); }
-.tr-badge.got, .tr-card:not(.lock) { border-color: rgba(246, 211, 106, .6); }
+.tr-badge { background: linear-gradient(180deg, #3a2210, #24140a); border-color: rgba(255, 220, 160, .14); }
+.tr-badge.got { border-color: rgba(246, 211, 106, .6); }
+/* a card: parchment in a thin wooden edge, its picture in a window onto the creature's own world, its name, a line, and where it lives */
+.tr-card { position: relative; display: flex; flex-direction: column; gap: 5px; padding: 7px 7px 8px; border-radius: 14px; color: var(--gx-ink);
+  border: 3px solid #6b4421; background: linear-gradient(180deg, #fbf0d4, #ecd7a8); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .45), 0 4px 0 #24130a, 0 9px 16px rgba(0, 0, 0, .35);
+  animation: tr-card-in .45s cubic-bezier(.2, 1.3, .4, 1) backwards; }
+.tr-grid > .tr-card:nth-child(1) { animation-delay: .04s; } .tr-grid > .tr-card:nth-child(2) { animation-delay: .08s; } .tr-grid > .tr-card:nth-child(3) { animation-delay: .12s; }
+.tr-grid > .tr-card:nth-child(4) { animation-delay: .16s; } .tr-grid > .tr-card:nth-child(5) { animation-delay: .2s; } .tr-grid > .tr-card:nth-child(6) { animation-delay: .24s; }
+.tr-grid > .tr-card:nth-child(n+7) { animation-delay: .28s; }
+@keyframes tr-card-in { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
+.tr-card:not(.lock) { border-color: #8a5a14; box-shadow: inset 0 0 0 1.5px rgba(255, 236, 170, .7), 0 0 0 1.5px rgba(246, 211, 106, .5), 0 4px 0 #24130a, 0 9px 16px rgba(0, 0, 0, .35); }
+.tr-cpic { position: relative; height: 92px; border-radius: 9px; overflow: hidden; display: flex; align-items: center; justify-content: center;
+  border: 2px solid rgba(60, 35, 10, .75); box-shadow: inset 0 0 0 1.5px rgba(255, 240, 200, .35), inset 0 -16px 22px rgba(10, 20, 8, .35);
+  background: linear-gradient(180deg, rgba(255, 240, 200, .08), rgba(20, 40, 20, .25)), var(--cw, radial-gradient(circle at 50% 70%, #2f7a4f, #12301f)) center 62% / cover no-repeat, #24402a; }
+.tr-cpic > * { position: relative; z-index: 1; filter: drop-shadow(0 3px 2px rgba(10, 16, 6, .45)); }
+.tr-card.lock { border-color: #4a3622; background: linear-gradient(180deg, #e3d3b0, #cdb98e); }
+.tr-card.lock .tr-cpic::before { content: ''; position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse at 50% 60%, rgba(16, 32, 22, .35), rgba(10, 20, 14, .72)); }
+.tr-card.lock .tr-cpic > * { filter: none; opacity: .92; }
+.tr-card.lock .tr-cpic::after { content: '?'; position: absolute; z-index: 2; right: 6px; top: 6px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--font-fun); font-size: 14px; color: #fff4d8; background: radial-gradient(circle at 40% 35%, #c99256, #74461f); border: 2px solid #2a1608; box-shadow: 0 2px 0 rgba(0, 0, 0, .35); }
+.tr-cn { font-family: var(--font-fun); font-weight: 400; font-size: 15px; line-height: 1.15; color: #4a2a10; padding: 0 2px; }
+.tr-card.lock .tr-cn { color: #6b5333; letter-spacing: .1em; }
+.tr-ct { font-family: var(--font-ui); font-weight: 500; font-size: 12px; line-height: 1.32; color: var(--gx-ink); min-height: 48px; padding: 0 2px; }
+.tr-card.lock .tr-ct { color: #6b5333; }
+.tr-cf { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 5px 2px 0; border-top: 1.5px solid rgba(120, 80, 30, .25);
+  font-family: var(--font-ui); font-weight: 700; font-size: 11px; color: #6b4a22; }
+.tr-cf b { color: #a5520f; display: inline-flex; align-items: center; }
+@keyframes fx-screen-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tr-card, .tr-screen { animation: none; } }
 .tr-reward { background: linear-gradient(180deg, #3a2210, #24140a); border-color: rgba(255, 220, 160, .18); }
 .tr-reward small { color: #f3d9a6; }
 .htp-tipicon { background: #4a2c14; border-radius: 9px; padding: 3px; }
@@ -441,3 +491,31 @@
   background: var(--gx-wood-grain), linear-gradient(180deg, #c99256, #9b6331 52%, #74461f); box-shadow: inset 0 2px 0 rgba(255, 232, 190, .45), 0 3px 0 #24130a; }
 .jr-back .ic { color: #fff4d8; }
 .jr-foot-note { color: var(--gx-ink-soft); }
+
+/* ───────── screen to screen (ScreenVeil.tsx): the iris into a stage, with the stage's title card while it gets ready, and a quick
+   dip through the dark green into the map and the Trophy Room ───────── */
+@property --sv-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+.sv-iris { position: fixed; inset: 0; z-index: 45; pointer-events: none; display: grid; place-items: center; --sv-r: 0%;
+  background: radial-gradient(circle at 50% 56%, rgba(11, 26, 19, 0) calc(var(--sv-r) - 4%), rgba(11, 26, 19, .94) var(--sv-r), #0b1a13 calc(var(--sv-r) + 8%));
+  animation: sv-cover .18s ease both; }
+.sv-iris::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 45%, rgba(255, 220, 150, .12), transparent 60%); }
+.sv-iris.open { animation: sv-open .85s cubic-bezier(.55, .05, .3, 1) forwards; }
+.sv-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0 24px; text-align: center; animation: sv-card-in .5s cubic-bezier(.2, 1.3, .4, 1) .08s both; }
+.sv-iris.open .sv-card { animation: sv-card-out .4s ease forwards; }
+.sv-kicker { font-family: var(--font-sub); font-weight: 800; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: #f0c46a; text-shadow: 0 1px 0 #2a1608; }
+.sv-name { font-family: var(--font-fun); font-weight: 400; font-size: clamp(26px, 7vw, 40px); line-height: 1.05; color: #fff4d8; text-shadow: 0 3px 0 #2a1608, 0 0 18px rgba(0, 0, 0, .5); }
+.sv-leaf { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; margin-bottom: 4px; background: radial-gradient(circle at 40% 35%, rgba(255, 246, 200, .18), rgba(255, 246, 200, .04)); border: 2px solid rgba(240, 196, 106, .4); }
+.sv-leaf .ic { animation: sv-leaf 1.6s ease-in-out infinite; }
+@keyframes sv-cover { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sv-open { 0% { --sv-r: 0%; } 100% { --sv-r: 125%; } }
+@keyframes sv-card-in { from { opacity: 0; transform: translateY(10px) scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes sv-card-out { to { opacity: 0; transform: scale(1.08); } }
+@keyframes sv-leaf { 0%, 100% { transform: rotate(-14deg); } 50% { transform: rotate(14deg); } }
+.sv-dip { position: fixed; inset: 0; z-index: 45; pointer-events: none; background: #0b1a13; animation: sv-dip .42s ease forwards; }
+@keyframes sv-dip { from { opacity: 1; } to { opacity: 0; } }
+/* the dialogs lift in like the menus */
+.ui-panel { animation: fx-card-in .4s cubic-bezier(.2, 1.25, .4, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .sv-iris.open { animation: sv-dip .35s ease forwards; }
+  .sv-card, .sv-iris.open .sv-card, .sv-leaf .ic, .ui-panel { animation: none; }
+}

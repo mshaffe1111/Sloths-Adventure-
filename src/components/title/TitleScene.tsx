@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { standardAtlas, warmStandardAtlas } from '../../game/heroStandard.ts';
 import { STD_FRAMES } from '../../game/heroStandardData.ts';
-import { drawMeecaFrame, jennifurSpriteReady } from '../../game/jennifurSprite.ts';
+import { MEECA_UNITS, drawMeecaFrame, jennifurSpriteReady } from '../../game/jennifurSprite.ts';
+import { MEECA_FRAMES, MEECA_STAND_H } from '../../game/meecaStandardData.ts';
 import { drawPaintedLeaf, warmLeaves } from '../../game/leafSprites.ts';
 import { drawPaintedButterfly } from '../../game/butterflySprites.ts';
 import { drawPlantAt, plantsPainted } from '../../game/plantSprites.ts';
@@ -135,8 +136,10 @@ function makeBeam(light: [number, number, number]): HTMLCanvasElement {
   c.fillStyle = across;
   c.fillRect(0, 0, 96, 384);
   c.globalCompositeOperation = 'destination-in';
+  // (feathered at the top as well, so a tilted shaft never shows the straight end of its picture)
   const down = c.createLinearGradient(0, 0, 0, 384);
-  down.addColorStop(0, 'rgba(0,0,0,.9)');
+  down.addColorStop(0, 'rgba(0,0,0,0)');
+  down.addColorStop(0.14, 'rgba(0,0,0,.9)');
   down.addColorStop(0.55, 'rgba(0,0,0,.35)');
   down.addColorStop(1, 'rgba(0,0,0,0)');
   c.fillStyle = down;
@@ -154,7 +157,7 @@ function makeMist(light: [number, number, number]): HTMLCanvasElement {
   let seed = 7;
   const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
   for (let i = 0; i < 26; i++) {
-    const x = rnd() * 768, y = 54 + (rnd() - 0.5) * 40, r = 40 + rnd() * 60;
+    const x = rnd() * 768, y = 64 + (rnd() - 0.5) * 24, r = 36 + rnd() * 50;
     for (const dx of [-768, 0, 768]) {
       const g = c.createRadialGradient(x + dx, y, 0, x + dx, y, r);
       g.addColorStop(0, rgba(tint, 0.34));
@@ -165,6 +168,15 @@ function makeMist(light: [number, number, number]): HTMLCanvasElement {
       c.fill();
     }
   }
+  // feathered top and bottom: the band has no edge anywhere, only a soft middle
+  c.globalCompositeOperation = 'destination-in';
+  const fade = c.createLinearGradient(0, 0, 0, 128);
+  fade.addColorStop(0, 'rgba(0,0,0,0)');
+  fade.addColorStop(0.4, 'rgba(0,0,0,1)');
+  fade.addColorStop(0.62, 'rgba(0,0,0,1)');
+  fade.addColorStop(1, 'rgba(0,0,0,0)');
+  c.fillStyle = fade;
+  c.fillRect(0, 0, 768, 128);
   return cv;
 }
 
@@ -194,6 +206,9 @@ function loadWorld(n: number): World {
   return w;
 }
 
+/** the worlds kept decoded: the one on show, the one coming next, and the first one (the title always opens on it) */
+const WORLD_CACHE = new Map<number, World>();
+
 let logImg: HTMLImageElement | null = null;
 let logReady = false;
 function loadLog() {
@@ -206,6 +221,124 @@ function loadLog() {
   };
   im.onerror = () => (logReady = true);
   im.src = TITLE_LOG_URL;
+}
+
+/**
+ * One frame of Pokey or Meeca, cut out of its sheet once and cleaned: the sheets keep a faint haze of near-clear pixels around each
+ * figure, which the light grading over the pair would otherwise turn into a pale box behind them. Anything fainter than a whisper
+ * goes; the soft edge of the figure itself stays. Meeca's frames are cut already facing left (toward Pokey), her bib turned back.
+ */
+interface Cut {
+  cv: HTMLCanvasElement;
+  /** where the feet are in the cut, in its pixels */
+  ax: number;
+  ay: number;
+  /** sheet pixels to her game units (Meeca only; Pokey's frames are drawn at H / 205 per pixel) */
+  k: number;
+}
+const CUTS = new Map<string, Cut>();
+function clean(cv: HTMLCanvasElement) {
+  const c = cv.getContext('2d', { willReadFrequently: true });
+  if (!c || !cv.width || !cv.height) return;
+  const im = c.getImageData(0, 0, cv.width, cv.height);
+  const d = im.data;
+  for (let i = 3; i < d.length; i += 4) {
+    const a = d[i];
+    d[i] = a < 34 ? 0 : a > 200 ? a : Math.round(((a - 34) / 166) * 200);
+  }
+  c.putImageData(im, 0, 0);
+}
+function pokeyCut(atlas: HTMLImageElement, name: string): Cut | null {
+  const key = 'p:' + name;
+  const have = CUTS.get(key);
+  if (have) return have;
+  const f = STD_FRAMES[name];
+  if (!f) return null;
+  const cv = document.createElement('canvas');
+  cv.width = f.w;
+  cv.height = f.h;
+  cv.getContext('2d')!.drawImage(atlas, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+  clean(cv);
+  const cut = { cv, ax: f.ax, ay: f.ay, k: 1 };
+  CUTS.set(key, cut);
+  return cut;
+}
+function meecaCut(name: string): Cut | null {
+  const key = 'm:' + name;
+  const have = CUTS.get(key);
+  if (have) return have;
+  const f = MEECA_FRAMES[name];
+  if (!f) return null;
+  const cv = document.createElement('canvas');
+  cv.width = Math.ceil(f.w);
+  cv.height = Math.ceil(f.h);
+  const c = cv.getContext('2d')!;
+  const k = (MEECA_UNITS / MEECA_STAND_H) * f.s;
+  c.translate(f.w - f.ax, f.ay);
+  c.scale(-1, 1);
+  if (!drawMeecaFrame(c, name, 1, 1 / k, true)) return null;
+  clean(cv);
+  const cut = { cv, ax: f.w - f.ax, ay: f.ay, k };
+  CUTS.set(key, cut);
+  return cut;
+}
+
+/** the world's light over a picture: warm from above, the undergrowth's shade at the foot, a little of the world's dusk overall */
+function grade(g: CanvasRenderingContext2D, pal: Palette, y0: number, y1: number, w: number, h: number) {
+  g.save();
+  g.globalCompositeOperation = 'source-atop';
+  const gr = g.createLinearGradient(0, y0, 0, y1);
+  gr.addColorStop(0, rgba(pal.light, 0.14));
+  gr.addColorStop(0.55, rgba(pal.light, 0.03));
+  gr.addColorStop(0.8, rgba(pal.shade, 0.18));
+  gr.addColorStop(1, rgba(pal.shade, 0.5));
+  g.fillStyle = gr;
+  g.fillRect(0, 0, w, h);
+  g.fillStyle = rgba(pal.shade, 0.22 * pal.dark);
+  g.fillRect(0, 0, w, h);
+  g.restore();
+}
+/** the light, quantised, so a pose is graded again only when the light has really changed */
+const palKey = (p: Palette) => [...p.light, ...p.shade].map((v) => Math.round(v / 10)).join('.') + ':' + Math.round(p.dark * 20);
+
+/** a pose in the world's light, with a thin rim of that light on its lit (upper left) edge; made once per pose and light */
+const GRADED = new Map<string, Cut>();
+function gradedCut(cut: Cut, name: string, pal: Palette, pk: string): Cut {
+  const key = name + '|' + pk;
+  const have = GRADED.get(key);
+  if (have) return have;
+  if (GRADED.size > 80) GRADED.clear();
+  const P = 4;
+  const w = cut.cv.width + P * 2, h = cut.cv.height + P * 2;
+  const sprite = document.createElement('canvas');
+  sprite.width = w;
+  sprite.height = h;
+  const s = sprite.getContext('2d')!;
+  s.drawImage(cut.cv, P, P);
+  // (the figure's own height: its top to its feet)
+  const gs = s.createLinearGradient(0, P, 0, P + cut.ay);
+  s.globalCompositeOperation = 'source-atop';
+  gs.addColorStop(0, rgba(pal.light, 0.14));
+  gs.addColorStop(0.55, rgba(pal.light, 0.03));
+  gs.addColorStop(0.88, rgba(pal.shade, 0.14));
+  gs.addColorStop(1, rgba(pal.shade, 0.26));
+  s.fillStyle = gs;
+  s.fillRect(0, 0, w, h);
+  s.fillStyle = rgba(pal.shade, 0.22 * pal.dark);
+  s.fillRect(0, 0, w, h);
+  const out = document.createElement('canvas');
+  out.width = w;
+  out.height = h;
+  const o = out.getContext('2d')!;
+  o.drawImage(cut.cv, P - 1.6, P - 2.2);
+  o.globalCompositeOperation = 'source-in';
+  o.fillStyle = rgba(mix(pal.light, [255, 255, 255], 0.3), 0.34);
+  o.fillRect(0, 0, w, h);
+  o.globalCompositeOperation = 'source-over';
+  o.drawImage(sprite, 0, 0);
+  const g = { cv: out, ax: cut.ax + P, ay: cut.ay + P, k: cut.k };
+  GRADED.set(key, g);
+  return g;
 }
 
 interface Mote {
@@ -260,7 +393,7 @@ export const TitleScene = React.forwardRef<
     loadLog();
     warmLeaves();
     plantsPainted();
-    const cache = new Map<number, World>();
+    const cache = WORLD_CACHE;
     const get = (n: number) => {
       let s = cache.get(n);
       if (!s) {
@@ -286,9 +419,8 @@ export const TitleScene = React.forwardRef<
       g.fillStyle = rg;
       g.fillRect(0, 0, 48, 48);
     }
-    // the pair and their log are drawn into their own layer first, so the world's light can be graded over all of them at once
-    const actors = document.createElement('canvas');
-    const rim = document.createElement('canvas');
+    // the log and its ferns, in the world's light (made again only when the light or the size changes)
+    const logLayer = { key: '', back: document.createElement('canvas'), front: document.createElement('canvas') };
 
     let box: DOMRect | null = null;
     let boxAt = 0;
@@ -306,8 +438,8 @@ export const TitleScene = React.forwardRef<
       const pokeyAtlas = standardAtlas();
       const ready = first.ready && !!pokeyAtlas && jennifurSpriteReady() && logReady;
       st.ready = ready;
-      // the game's own pace: 30 frames a second (15 with a menu over it, 4 while the splash still covers it)
-      const fps = st.arriveAt === null ? 4 : dimRef.current ? 15 : 30;
+      // the game's own pace: 30 frames a second (10 with a menu over it, 4 while the splash still covers it)
+      const fps = st.arriveAt === null ? 4 : dimRef.current ? 10 : 30;
       if (now - last < 1000 / fps - 3) return;
       last = now;
       if (!ready) return;
@@ -339,7 +471,7 @@ export const TitleScene = React.forwardRef<
       const nextN = list[(idx + 1) % list.length];
       if (list.length > 1) {
         get(nextN);
-        for (const k of [...cache.keys()]) if (k !== list[idx] && k !== nextN && k !== list[(idx - 1 + list.length) % list.length]) cache.delete(k);
+        for (const k of [...cache.keys()]) if (k !== list[0] && k !== list[idx] && k !== nextN && k !== list[(idx - 1 + list.length) % list.length]) cache.delete(k);
       }
       const prevW = list.length > 1 && showT > hold && into < FADE ? cache.get(list[(idx - 1 + list.length) % list.length]) : undefined;
       const fadeK = prevW && prevW.ready && cur.ready ? Math.min(1, into / FADE) : 1;
@@ -350,8 +482,11 @@ export const TitleScene = React.forwardRef<
       const inK = Math.min(1, arr / (reduced ? 0.6 : 1.1));
       const settle = reduced ? 0 : 1 - Math.min(1, arr / 2.6);
       const settleZ = 1 + 0.07 * settle * settle;
-      c.fillStyle = rgba(pal.shade, 1);
-      c.fillRect(0, 0, w, h);
+      // (the far strip covers the whole frame once it is in: the ground colour is needed only while it fades up)
+      if (inK < 1 || !showing.far) {
+        c.fillStyle = rgba(pal.shade, 1);
+        c.fillRect(0, 0, w, h);
+      }
 
       const portrait = h > w;
       const pan = reduced ? 2.5 : 8;
@@ -425,9 +560,10 @@ export const TitleScene = React.forwardRef<
         // the far mist band, behind the near strip
         if (s.mist) {
           c.save();
-          c.globalAlpha = alpha * inK * (0.55 + 0.15 * Math.sin(t * 0.13));
-          const mh = h * 0.2, mw = mh * 6;
-          const my = Math.min(groundY - mh * 0.8, h * 0.62);
+          // (low and faint: a haze lying in the trees behind the log, never a patch)
+          c.globalAlpha = alpha * inK * (0.3 + 0.08 * Math.sin(t * 0.13));
+          const mh = h * 0.24, mw = mh * 6;
+          const my = groundY - mh * 0.7;
           const off = -((t * pan * 0.9) % mw);
           for (let x = off; x < w; x += mw) c.drawImage(s.mist, x, my, mw + 1, mh);
           c.restore();
@@ -458,21 +594,51 @@ export const TitleScene = React.forwardRef<
       } else paint(showing, 1, into / hold);
 
       // ---- the pair on their log ----
+      // (everything here is drawn from small pictures made once: the log and the ferns already in the world's light, and each pose of
+      // the two of them already graded and rimmed; only when the light changes, in a world's crossfade, are they made again)
       if (b && logImg && pokeyAtlas) {
-        const pad = H * 0.5;
-        const ax0 = logX - pad, ay0 = feet - H * 1.35, aw = logW + pad * 2, ah = groundY - ay0 + H * 0.25;
-        const pw = Math.ceil(aw * dpr), ph = Math.ceil(ah * dpr);
-        if (actors.width !== pw || actors.height !== ph) {
-          actors.width = rim.width = pw;
-          actors.height = rim.height = ph;
+        const pk = palKey(pal);
+        // the shadow the log throws on the ground
+        const sy = groundY - logH * 0.04;
+        const lg = c.createRadialGradient(cx, sy, 0, cx, sy, logW * 0.6);
+        lg.addColorStop(0, rgba(mix(pal.shade, [0, 0, 0], 0.6), 0.55 * inK));
+        lg.addColorStop(1, rgba(pal.shade, 0));
+        c.save();
+        c.fillStyle = lg;
+        c.translate(cx, sy);
+        c.scale(1, 0.16);
+        c.beginPath();
+        c.arc(0, 0, logW * 0.6, 0, Math.PI * 2);
+        c.fill();
+        c.restore();
+        // the log and its ferns, in the world's light
+        const lx0 = logX - H * 0.45, ly0 = logTop - H * 0.12, lw = logW + H * 0.9, lh = groundY + H * 0.2 - ly0;
+        const lkey = `${pk}|${Math.round(lw * dpr)}|${Math.round(lh * dpr)}|${plantsPainted() ? 1 : 0}`;
+        if (logLayer.key !== lkey) {
+          logLayer.key = lkey;
+          const gy0 = feet - H - ly0, gy1 = groundY - ly0;
+          for (const [cvL, which] of [[logLayer.back, 'back'], [logLayer.front, 'front']] as const) {
+            cvL.width = Math.ceil(lw * dpr);
+            cvL.height = Math.ceil(lh * dpr);
+            const g = cvL.getContext('2d')!;
+            g.setTransform(dpr, 0, 0, dpr, 0, 0);
+            g.imageSmoothingEnabled = true;
+            g.imageSmoothingQuality = 'high';
+            const ox = logX - lx0, oy = logTop - ly0, gyy = groundY - ly0;
+            if (which === 'back') g.drawImage(logImg, ox, oy, logW, logH);
+            else {
+              // ferns at the log's ends and one in front of its middle
+              drawPlantAt(g, 61, ox + logW * 0.04, gyy + H * 0.05, H * 0.62, false);
+              drawPlantAt(g, 59, ox + logW * 0.52, gyy + H * 0.08, H * 0.36, true);
+              drawPlantAt(g, 26, ox + logW * 0.97, gyy + H * 0.05, H * 0.56, true);
+            }
+            grade(g, pal, gy0, gy1, lw, lh);
+          }
         }
-        const a = actors.getContext('2d')!;
-        a.setTransform(1, 0, 0, 1, 0, 0);
-        a.clearRect(0, 0, pw, ph);
-        a.setTransform(dpr, 0, 0, dpr, -ax0 * dpr, -ay0 * dpr);
-        a.imageSmoothingEnabled = true;
-        a.imageSmoothingQuality = 'high';
-        a.drawImage(logImg, logX, logTop, logW, logH);
+        c.save();
+        c.globalAlpha = inK;
+        c.drawImage(logLayer.back, lx0, ly0, lw, lh);
+        c.restore();
         // the two of them hop onto it as the title arrives
         const hop = (delay: number) => {
           if (reduced) return { dy: 0, sq: 1, al: Math.min(1, Math.max(0, (arr - delay) / 0.4)) };
@@ -490,84 +656,48 @@ export const TitleScene = React.forwardRef<
         // contact shadows on the moss
         for (const [u, al] of [[POKEY_AT, ph1.al], [MEECA_AT, ph2.al]] as const) {
           const x = logX + logW * u;
-          const g = a.createRadialGradient(x, feet + 1, 0, x, feet + 1, H * 0.26);
+          const g = c.createRadialGradient(x, feet + 1, 0, x, feet + 1, H * 0.26);
           g.addColorStop(0, `rgba(25,14,4,${0.5 * al})`);
           g.addColorStop(1, 'rgba(25,14,4,0)');
-          a.fillStyle = g;
-          a.beginPath();
-          a.ellipse(x, feet + 1, H * 0.26, H * 0.055, 0, 0, Math.PI * 2);
-          a.fill();
+          c.fillStyle = g;
+          c.beginPath();
+          c.ellipse(x, feet + 1, H * 0.26, H * 0.055, 0, 0, Math.PI * 2);
+          c.fill();
         }
         // Pokey, on the left, facing her; Meeca on the right, facing him
         const pose = pairPose(t, PAIR_STEPS);
         const breathe = 1 + Math.sin(t * 2.1) * 0.012;
         {
-          const f = STD_FRAMES[pose.pokey] ?? STD_FRAMES.idle;
+          const raw = pokeyCut(pokeyAtlas, pose.pokey) ?? pokeyCut(pokeyAtlas, 'idle');
+          const cut = raw && gradedCut(raw, 'p:' + pose.pokey, pal, pk);
           const k = H / 205;
-          a.save();
-          a.globalAlpha = ph1.al;
-          a.translate(logX + logW * POKEY_AT, feet + ph1.dy);
-          a.scale(k * (2 - ph1.sq), k * breathe * ph1.sq);
-          a.drawImage(pokeyAtlas, f.x, f.y, f.w, f.h, -f.ax, -f.ay, f.w, f.h);
-          a.restore();
+          if (cut) {
+            c.save();
+            c.globalAlpha = ph1.al;
+            c.translate(logX + logW * POKEY_AT, feet + ph1.dy);
+            c.scale(k * (2 - ph1.sq), k * breathe * ph1.sq);
+            c.drawImage(cut.cv, -cut.ax, -cut.ay);
+            c.restore();
+          }
         }
         {
-          const s = (H * 0.97) / 90;
+          const sm = (H * 0.97) / 90;
           const bounce = pose.meecaHop ? Math.abs(Math.sin(pose.meecaHop * Math.PI)) * H * 0.07 : 0;
-          a.save();
-          a.globalAlpha = ph2.al;
-          a.translate(logX + logW * MEECA_AT, feet + ph2.dy - bounce);
-          a.scale(-s * (2 - ph2.sq), s * (1 + Math.sin(t * 2.3 + 1) * 0.01) * ph2.sq);
-          drawMeecaFrame(a, pose.meeca, 1, 1, true);
-          a.restore();
+          const raw = meecaCut(pose.meeca) ?? meecaCut('idle');
+          const cut = raw && gradedCut(raw, 'm:' + pose.meeca, pal, pk);
+          if (cut) {
+            const kk = sm * cut.k;
+            c.save();
+            c.globalAlpha = ph2.al;
+            c.translate(logX + logW * MEECA_AT, feet + ph2.dy - bounce);
+            c.scale(kk * (2 - ph2.sq), kk * (1 + Math.sin(t * 2.3 + 1) * 0.01) * ph2.sq);
+            c.drawImage(cut.cv, -cut.ax, -cut.ay);
+            c.restore();
+          }
         }
-        // ferns at the log's ends, in front of it
-        a.globalAlpha = 1;
-        drawPlantAt(a, 25, logX + logW * 0.04, groundY + H * 0.05, H * 0.62, false);
-        drawPlantAt(a, 58, logX + logW * 0.5, groundY + H * 0.08, H * 0.42, true);
-        drawPlantAt(a, 26, logX + logW * 0.97, groundY + H * 0.05, H * 0.56, true);
-        // the world's light over all of it: warm from above, the undergrowth's shade at the foot
-        a.setTransform(1, 0, 0, 1, 0, 0);
-        a.globalCompositeOperation = 'source-atop';
-        const gy0 = (feet - H - ay0) * dpr, gy1 = (groundY - ay0) * dpr;
-        const grade = a.createLinearGradient(0, gy0, 0, gy1);
-        grade.addColorStop(0, rgba(pal.light, 0.14));
-        grade.addColorStop(0.55, rgba(pal.light, 0.03));
-        grade.addColorStop(0.8, rgba(pal.shade, 0.18));
-        grade.addColorStop(1, rgba(pal.shade, 0.5));
-        a.fillStyle = grade;
-        a.fillRect(0, 0, pw, ph);
-        // a little of the world's darkness, so they sit in the dusk worlds and do not glow in them
-        a.fillStyle = rgba(pal.shade, 0.22 * pal.dark);
-        a.fillRect(0, 0, pw, ph);
-        a.globalCompositeOperation = 'source-over';
-        // the rim: their shape in the world's light, set a hair toward the light, drawn behind them
-        const r = rim.getContext('2d')!;
-        r.setTransform(1, 0, 0, 1, 0, 0);
-        r.globalCompositeOperation = 'source-over';
-        r.clearRect(0, 0, pw, ph);
-        r.drawImage(actors, 0, 0);
-        r.globalCompositeOperation = 'source-in';
-        r.fillStyle = rgba(mix(pal.light, [255, 255, 255], 0.3), 1);
-        r.fillRect(0, 0, pw, ph);
-        // the shadow the log throws on the ground
-        const lg = c.createRadialGradient(cx, groundY - logH * 0.04, 0, cx, groundY - logH * 0.04, logW * 0.6);
-        lg.addColorStop(0, rgba(mix(pal.shade, [0, 0, 0], 0.6), 0.55));
-        lg.addColorStop(1, rgba(pal.shade, 0));
         c.save();
-        c.fillStyle = lg;
-        c.translate(cx, groundY - logH * 0.04);
-        c.scale(1, 0.16);
-        c.translate(-cx, -(groundY - logH * 0.04));
-        c.beginPath();
-        c.arc(cx, groundY - logH * 0.04, logW * 0.6, 0, Math.PI * 2);
-        c.fill();
-        c.restore();
-        c.save();
-        c.globalAlpha = 0.34 * inK;
-        c.drawImage(rim, ax0 - 1.3, ay0 - 1.8, aw, ah);
         c.globalAlpha = inK;
-        c.drawImage(actors, ax0, ay0, aw, ah);
+        c.drawImage(logLayer.front, lx0, ly0, lw, lh);
         c.restore();
       }
 
@@ -613,7 +743,8 @@ export const TitleScene = React.forwardRef<
     raf = requestAnimationFrame(draw);
     return () => {
       cancelAnimationFrame(raf);
-      cache.clear();
+      // keep only the first world, so coming back to the title is instant and the next visit starts from it
+      for (const k of [...cache.keys()]) if (k !== list[0]) cache.delete(k);
     };
   }, [key, hold, stageSelector]);
 

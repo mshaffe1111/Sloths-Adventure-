@@ -1,4 +1,5 @@
 import React from 'react';
+import { GhostOnExit } from './fx/exitGhost.ts';
 import { sound } from '../game/audio.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { HeroPose } from './HeroPose.tsx';
@@ -65,6 +66,7 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
 
   return (
     <div className="clr-scrim select-none">
+      <GhostOnExit />
       <svg className="clr-confetti" viewBox="0 0 960 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <g fill="#fbbf24">
           <path d="M120 120l5 10 11 1-8 8 2 11-10-6-10 6 2-11-8-8 11-1z" />

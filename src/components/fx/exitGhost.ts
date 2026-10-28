@@ -51,3 +51,14 @@ export function useExitGhost(ref: React.RefObject<HTMLElement | null>, ms = 200)
     };
   }, [ref, ms]);
 }
+
+/** the same soft close for a pop-up whose root is simply the element this sits in (put it first inside the root) */
+export const GhostOnExit: React.FC<{ ms?: number }> = ({ ms }) => {
+  const mark = React.useRef<HTMLSpanElement>(null);
+  const root = React.useRef<HTMLElement | null>(null);
+  React.useLayoutEffect(() => {
+    root.current = mark.current?.parentElement ?? null;
+  }, []);
+  useExitGhost(root, ms);
+  return React.createElement('span', { ref: mark, hidden: true });
+};
