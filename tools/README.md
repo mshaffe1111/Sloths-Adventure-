@@ -75,6 +75,25 @@ npx tsx tools/inspect/inspect.ts --worlds 1-5
 npx tsx --test tools/inspect/analyze.test.ts
 ```
 
+**The first-timer bot** (`--firsttimer`, `firsttimer.ts`, `firsttimerReport.ts`; the pre-QA pass, HANDOFF §6) plays every stage in the
+REAL engine (`src/game/realPlay.ts`) the way a new player on a phone does, on Easy with a kid's thumb and on Normal with an adult's: it
+goes the way the stage leads, flicks a plain short jump only when stopped or at an edge (a double only where a single failed), climbs a
+trunk it touches, stands at a puzzle and is put past it, and heeds warnings and Dot's tips about a second after they are on screen. The
+thumb follows Matt's Gemini research (latency N(+90 ms, 65 ms) kid / N(+30, 30) adult, hold noise 80 / 35 ms, 8% / 3% of flicks cut to a
+2-frame tap, drift ~N(+4, 2) px/s with reversal dead time, log-normal late lift-off, 0.4 s hesitation and a 133-200 ms thumb swap before
+a tap). Dot is followed through the game's own guide queue. It reports, per stage and setting: harm in the first 5 s (and holding right
+from frame one), the first hit of each kind against the tip that teaches it, stuck spots (8 s without progress) and loops, hits and
+lives a minute, Dot's repeats, gaps under 10 s, lines up 20 s+ with their thing out of reach, re-teaching and long lines; and the
+Gemini gates (survival per jump 85% / 70%, minimum input window 300 / 167 ms measured in the engine, peak stress per burst 2.5 / 5.5,
+backtracking ratio). Every finding names the `reference/STAGE-RULES.md` rule it breaks. A table and a worst-first list go into
+`report.html`, everything into `report.json` (`firstTimer`).
+
+```
+npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer [--ft-trials 2] [--ft-windows 12] [--stages 1-7,2-2] [--seed 1]
+npx tsx --test tools/inspect/firsttimer.test.ts
+FT_TRACE=1 ...   # every jump the bot tries, on stderr;  FT_FRAMES=16.8,18.7 ...   # every frame in that stretch of play
+```
+
 ## tools/control-test-collector.gs
 
 This is the Google Apps Script behind the touch-control test (`#ctest`). It writes testers' recordings into Matt's Google Sheet. The real key lives only in Matt's deployed script and in the page, and is not repeated here.
