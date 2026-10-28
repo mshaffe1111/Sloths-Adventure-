@@ -5276,7 +5276,9 @@ function buildLongBranch(config: LevelConfig, seed: number): GeneratedStage & { 
 
   // ---- Learn: the long branch, calm
   beat('Learn: the long branch', () => {
-    sec(4);
+    // (seven sections before the first gap: over four seconds of running, so the gap's tip is up before he can fall. With four, a plain
+    // run fell in at 3.3 s: stageStart.test.ts)
+    sec(7);
     hint(300, 'This branch goes on and on');
     row(x - TILE * 3, x - 60, level - 34, 3, 'hibiscus');
     gap(one * 0.4);

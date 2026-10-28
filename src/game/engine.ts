@@ -36,7 +36,7 @@ import { setHeroCoat } from './heroSprite.ts';
 import { generateStage, GeneratedStage } from './stageGenerator.ts';
 import { coachWanted, firstJumpSpot, markCoachDone, TouchCoach, type CoachStep } from './touchCoach.ts';
 import { controlStyle } from './controlPrefs.ts';
-import { cardSafe, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
+import { cardSafe, HARMLESS_LESSONS, lessonInputMode, lessonsOn, lessonsSeen, markLessonSeen, pickLesson, type LessonId } from './lessons.ts';
 import { rockAt } from './rockfall.ts';
 import { gameSpeed, startingLives } from './assist.ts';
 import { ASSIST, LEAN_SPEED, PHYS, airCarry, airTakeOff, blockBeside, secondJumpV, canGrabSwing, easeAssist, inSweetSpot, knockDir, newAirDrive, releaseCall, RELEASE, setTimedSwing, swingGrab, swingLanding, SWING_LAND, swingStep, timedLaunch, type SwingState } from './physics.ts';
@@ -462,6 +462,8 @@ export class GameEngine {
   /** when the last lesson (or find) was shown or closed: the swing's lesson needs only a second's breather after it */
   private lessonAt = -1e9;
   private lessonFrame = 0;
+  /** the last lesson said (a harmless one, such as the petals', does not hold back the lesson for a danger ahead: HARMLESS_LESSONS) */
+  private lessonLast: LessonId | null = null;
   private lessonSeen: Set<LessonId> | null = null;
   /** a lesson that came due while stopping was not safe (mid-air, mid-swing, a foe at hand): it opens once he is safe (cardSafe) */
   private lessonWaiting: { id: LessonId; at: number } | null = null;
@@ -4783,7 +4785,9 @@ export class GameEngine {
     // grabbing, pumping and letting go are all needed the moment he jumps for it (QA, 1-6, 2026-10-26: a gap card just before the vine
     // left the swing's lesson waiting until after his first let-go)
     const id = picked === 'swing' ? picked : this.lessonWaiting?.id ?? picked;
-    if (!id || (quiet && id !== 'swing')) return;
+    // (nor is a danger's lesson held back by the breather after a harmless one: the petals' lesson at 2.6 s held the gap's back for six
+    // seconds, past the first gap of 1-8 and 2-2's first river, QA 2026-10-28)
+    if (!id || (quiet && id !== 'swing' && !(this.lessonLast && HARMLESS_LESSONS.has(this.lessonLast) && !HARMLESS_LESSONS.has(id)))) return;
     // only when stopping cannot hurt him: standing or holding on, not hurt, no foe at hand, nothing falling on him (lessons.ts cardSafe).
     // The swing's lesson may also come on the vine: a liana keeps swinging with no thumb, and a lesson that waited for him to land came
     // only after his first let-go, when grabbing, pumping and letting go had all been needed already (QA, 1-6, 2026-10-26)
@@ -4797,6 +4801,7 @@ export class GameEngine {
     // no card and no pause: the lesson is one of Dot's lines, said in play (dotGuide.ts)
     this.lessonQuietUntil = this.gameTime + 6;
     this.lessonAt = this.gameTime;
+    this.lessonLast = id;
     this.callbacks.onLesson?.(id);
   }
 
