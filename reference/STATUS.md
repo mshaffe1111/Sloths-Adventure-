@@ -73,11 +73,10 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 
 ## Open decisions for Matt (ask one at a time)
 
-1. Generator: how many checked layouts to ship per stage (architect proposes 16).
-2. Generator: does every Easy fall land in a soft pit, even in World 6's water?
-3. Generator: about 30 sections per world: OK?
-4. Generator: 5-8 generated or hand-built?
-5. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
+1. Generator: does every Easy fall land in a soft pit, even in World 6's water?
+2. Generator: about 30 sections per world: OK?
+3. Generator: 5-8 generated or hand-built?
+4. Meeca's new lines (camp, Flicker, rooms 1-3, hints) and the new map line.
 
 ## Decided today (also on the Docs roadmap)
 
@@ -89,6 +88,7 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - Meeca's Room 4 is the tea channel. World 5's night strips are made in code.
 - Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
+- Generator: 16 checked layouts shipped per stage (Matt 2026-10-28).
 - Variety pass for Worlds 1-4, all four at once. Push (release PR #41). Flicker's animations for the whole game. The polish pass
   on the title and every menu. Jungle Cards updated to today's creatures.
 - Dot toned down. All research in the repo; one rulebook; the lead checks every helper's work before merging.
