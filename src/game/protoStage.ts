@@ -351,6 +351,22 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       P.push({ id: pid++, x: sides[i].x1, y: floor, width: w, height: HOLLOW_Y + 10 - floor, type: 'solid', style: 'moss_stone' });
     }
   };
+  /**
+   * the floor of a stepping-stone pit before the second jump is practised (1-1): each gap between two stones (or a stone and a bank)
+   * has its own mossy floor one easy hop under its lower side, and nothing else lies below, so a miss is always a hop back up. (Over
+   * one long floor under the stones the level check walked him along under the raised floors and the stones, and the inspector's kid
+   * bot then had to climb 105 px out of a pit that is not there, 2026-10-28.)
+   */
+  const plainPit = (edge: number, stones: Platform[], far: number) => {
+    const sides = [{ x0: edge, x1: edge, top: G }, ...stones.map((q) => ({ x0: q.x, x1: q.x + q.width, top: q.y })), { x0: far, x1: far, top: G }];
+    for (let i = 0; i + 1 < sides.length; i++) {
+      const w = sides[i + 1].x0 - sides[i].x1;
+      if (w <= 0) continue;
+      // (one easy hop under the lower side, and never more than 90 under the higher: a kid's short flick gets out either way)
+      const floor = Math.min(HOLLOW_Y, Math.max(sides[i].top, sides[i + 1].top) + PLAIN_CLIMB, Math.min(sides[i].top, sides[i + 1].top) + 90);
+      P.push({ id: pid++, x: sides[i].x1, y: floor, width: w, height: HOLLOW_Y + 10 - floor, type: 'solid', style: 'moss_stone' });
+    }
+  };
   const block = (x0: number, x1: number, h: number) => {
     const p: Platform = { id: pid++, x: x0, y: G - h, width: x1 - x0, height: h, type: 'solid', style: 'moss_stone' };
     P.push(p);
@@ -727,8 +743,11 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       prevTop = top;
     }
     const far = Math.round(px + reachJump(prevTop - G, dbl) * R.r(share[0], share[1]));
-    softPit(edge, far);
-    pitFloors(edge, stones, far, plain);
+    if (plain) plainPit(edge, stones, far);
+    else {
+      softPit(edge, far);
+      pitFloors(edge, stones, far, plain);
+    }
     open(far);
     run(R.r(160, 240));
     expert += (x - x0) / RUN + 0.6 * heights.length;
@@ -773,13 +792,124 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     pieces.push({ k: 'highrun', x0, x1: x });
   }
 
+  // ----- World 1's open ground, rebuilt (2026-10-28, the stage inspector): something to do every second or two, never a long empty
+  // walk and never only petals on flat ground, with a short plain rest after each burst. Gentle: nothing taller than one easy hop.
+  /** a mossy rock lying across the path, one easy hop high, a petal on top */
+  function logHop(h = R.i(34, 46)) {
+    const w = Math.round(R.r(120, 170));
+    block(x, x + w, h);
+    flower(x + w / 2, G - h - 34, 'orchid');
+    run(w);
+    expert += w / RUN + 0.15;
+  }
+  /** a little dip of soft moss to jump (a miss is a hop back out, never a life) */
+  function dip(share = R.r(0.34, 0.46)) {
+    const edge = x;
+    close();
+    const far = Math.round(edge + reachJump(0, false) * share);
+    softPit(edge, far);
+    open(far);
+    expert += (far - edge) / RUN + 0.15;
+  }
+  /** a wide gap of soft moss that the second jump crosses (level both sides: across, never up), petals arcing over it */
+  function leap(share = R.r(0.64, 0.72)) {
+    const edge = x;
+    close();
+    const far = Math.round(edge + reachJump(0, true) * share);
+    softPit(edge, far);
+    arc(edge - 30, far + 30, G - 150, 3, 'hibiscus');
+    open(far);
+    expert += (far - edge) / RUN + 0.4;
+  }
+  /** `n` hops or dips (the kinds rolled from `kinds`) about a second apart, then plain ground to rest on (`restAfter` px) */
+  function busy(n: number, kinds: ReadonlyArray<'log' | 'dip' | 'leap'> = ['log', 'dip'], restAfter = R.r(280, 340)) {
+    const x0 = x;
+    for (let k = 0; k < n; k++) {
+      const go = k ? R.r(200, 290) : R.r(110, 170);
+      run(go);
+      expert += go / RUN;
+      const kind = R.pick(kinds);
+      if (kind === 'log') logHop();
+      else if (kind === 'leap') leap();
+      else dip();
+    }
+    run(restAfter);
+    expert += restAfter / RUN;
+    pieces.push({ k: 'rest', x0, x1: x });
+  }
+  /**
+   * World 1's first stumps: three or four, each at most 50 above the one before (never higher than 90), each wide enough for a short
+   * thumb to land on, with no thin step in the gaps (the inspector's kid bot missed 30-45 px steps and 100 px step-ups, 2026-10-28)
+   */
+  function lowStumps() {
+    const x0 = x;
+    run(R.r(80, 130));
+    const n = R.i(3, 4);
+    let h = 0;
+    for (let k = 0; k < n; k++) {
+      h = k === 0 ? R.i(40, 50) : Math.max(36, Math.min(90, h + R.pick([40, 50, -30] as const)));
+      const w = Math.round(R.r(130, 170));
+      block(x, x + w, h);
+      flower(x + w / 2, G - h - 34, 'orchid');
+      run(w + Math.round(R.r(70, 105)));
+    }
+    run(R.r(20, 50));
+    expert += (x - x0) / 240;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+  /**
+   * the high road over busy ground: the same branches as highRoad, and on the floor below, where the way runs on for anyone who did
+   * not take the mushroom, a low rock or a dip every second or so (the quick way under the branches was a 19 s empty walk)
+   */
+  function highRoadOver() {
+    const x0 = x;
+    run(R.r(160, 220));
+    P.push({ id: pid++, x: x, y: G - 30, width: 70, height: 30, type: 'bouncy' });
+    const y = Math.round(G - R.r(175, 200));
+    let bx = x + 40;
+    const n = R.i(3, 4);
+    for (let k = 0; k < n; k++) {
+      const w = Math.round(R.r(170, 240));
+      branch(bx, bx + w, y);
+      row(bx + 30, bx + w - 30, y - 34, 2, 'hibiscus');
+      bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.55));
+    }
+    // the floor below: from past the mushroom to the end of the road, rocks a hop high (well under the branches)
+    const end = bx;
+    run(180);
+    while (end - x > 330) {
+      const go = R.r(200, 280);
+      run(go);
+      if (end - x < 200) break;
+      logHop(R.i(30, 40));
+    }
+    x = Math.max(x, end) + R.r(90, 130);
+    // (where the road comes down, a dip to jump as he lands: no empty walk after it)
+    dip();
+    run(R.r(160, 220));
+    expert += (x - x0) / RUN + 1.2;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+  /** the last stretch: two little jumps, and the shrine a short run past them (the old walk home was four empty seconds) */
+  function homeRun(kinds: ReadonlyArray<'log' | 'dip'> = ['dip', 'log']) {
+    run(R.r(180, 240));
+    if (R.pick(kinds) === 'log') logHop(); else dip();
+    run(R.r(220, 280));
+    if (R.pick(kinds) === 'log') logHop(); else dip();
+    // (the shrine stands 260 short of the end: about a second and a half of plain ground to it)
+    run(R.r(640, 700));
+    expert += 4.2;
+  }
+
   if (plan === '1-1') {
     // 1-1 Into the Canopy: run and jump. Taught over soft moss, tested on stepping stones at three heights, and twisted at the end
     // into gaps only the second jump crosses. The touch coach teaches the gestures at the start (engine.ts), so the hints come later.
+    // (Rebuilt 2026-10-28: the open ground between the pieces holds hops and dips, the stumps and stones stay one easy jump up, and
+    // the finish keeps the double jump to gaps over level stones: no tall double jumps in World 1's first stages, Matt.)
     beat('Learn: run and jump', () => {
-      rest(R.r(700, 850));
-      stumps();
-      rest(R.r(250, 350));
+      rest(R.r(400, 440));
+      lowStumps();
+      busy(1, ['log'], R.r(240, 290));
       hint(x + 40, 'Jump the little gaps', 'Jump the little gaps', 'Jump the little gaps');
       const one = reachJump(0, false);
       for (const w of [one * 0.35, one * 0.45, one * 0.55]) {
@@ -796,10 +926,11 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       // (the second jump is not taught yet: every stone is one plain jump up, and every gap between them a hop deep: `plain`)
       hint(x + 60, 'Hop from stone to stone', 'Hop from stone to stone', 'Hop from stone to stone');
       pillars([60, 120, 60], [0.5, 0.62], false, true);
-      rest(R.r(250, 350));
-      pillars(R.shuffle([40, 100, 140, 80]), [0.55, 0.68], false, true);
+      busy(R.i(1, 2));
+      pillars(R.shuffle([40, 80, 110, 70]), [0.55, 0.68], false, true);
       mushroomCache();
-      pillars([90, 30, 120, 60], [0.58, 0.7], false, true);
+      dip();
+      pillars([70, 30, 100, 60], [0.58, 0.7], false, true);
       flag();
     });
     beat('Twist: the second jump', () => {
@@ -812,17 +943,19 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       run(PRACTICE_AT + 160 + 140);
       expert += (PRACTICE_AT + 300) / RUN;
       const two = reachJump(0, true);
-      for (const w of [two * 0.62, two * 0.72, two * 0.82]) {
-        run(R.r(220, 300));
+      [two * 0.62, two * 0.72, two * 0.82].forEach((w, i) => {
+        // (the first gap close after the practice shelf)
+        run(i ? R.r(220, 300) : R.r(100, 140));
         const edge = x;
         close();
         const far = Math.round(edge + w);
         softPit(edge, far);
         flower(edge + w / 2, G - 150, 'hibiscus');
         open(far);
-      }
+      });
       run(R.r(200, 260));
-      pillars([60, 140], [0.7, 0.8], true);
+      // (the second jump across, never up: level stones far apart)
+      pillars([60, 70, 50], [0.6, 0.72], true, true);
       flag();
     });
     beat('Finish', () => {
@@ -830,13 +963,14 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       let n = 0;
       while (expert < EXPERT_SECONDS - 10 && n < 24) {
         const k = n % 3;
-        if (k === 0) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.72], n > 2);
-        else if (k === 1) highRoad();
-        else { rest(R.r(250, 400)); stumps(); }
+        if (k === 0) pillars(R.shuffle([50, 80, 60, 70]), [0.55, 0.7], n > 2, true);
+        else if (k === 1) highRoadOver();
+        // (the second jump, practised: a wide gap or two of soft moss)
+        else { busy(R.i(1, 2), ['leap', 'leap', 'log']); lowStumps(); }
         n++;
         if (n % 3 === 0) flag();
       }
-      rest(R.r(700, 900));
+      homeRun();
     });
   }
 
@@ -847,14 +981,15 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   function trailUp(nook: boolean) {
     const x0 = x;
     run(R.r(160, 220));
-    const steps = [50, 100, 150];
+    // (each step 40 up, and wide: World 1's second stage asks for nothing a short flick misses, 2026-10-28)
+    const steps = [40, 80, 120];
     for (const h of steps) {
-      const w = R.r(90, 120);
+      const w = R.r(115, 140);
       block(x, x + w, h);
       flower(x + w / 2, G - h - 34, 'orchid');
-      run(w + R.r(50, 80));
+      run(w + R.r(50, 75));
     }
-    const y = G - Math.round(R.r(185, 200));
+    const y = G - Math.round(R.r(165, 180));
     let bx = x - 30;
     const n = R.i(3, 4);
     let nookAt = -1;
@@ -866,8 +1001,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
     }
     if (nook && nookAt > 0) {
-      // up a double jump from the run: a hidden shelf of petals behind leaves
+      // a hidden shelf of petals behind leaves, up a mushroom that grows on the run (no tall double jump in World 1's first stages)
       const ny = y - Math.round(R.r(140, 160));
+      P.push({ id: pid++, x: Math.round(nookAt - 35), y: y - 30, width: 70, height: 30, type: 'bouncy' });
       branch(nookAt - 60, nookAt + 160, ny);
       row(nookAt - 20, nookAt + 100, ny - 34, 3, 'hibiscus');
       // World 1's note waits on the shelf (the generated 1-2 places it itself; a hand-built stage has to: finds.ts, a note in stage 2)
@@ -875,9 +1011,13 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       if (note && note.kind === 'note') C.push({ id: cid++, type: 'find', findId: note.id, hidden: false, x: nookAt + 140, y: ny - 40, collected: false, bobPhase: 0 });
       covers.push({ x: nookAt - 90, y: ny - 80, w: 280, h: 110 });
     }
-    // the petals lead back down to the floor
+    // the petals lead back down to the floor, and on over a dip
     arc(bx - 60, bx + 160, y + 20, 3, 'orchid');
-    x = bx + R.r(200, 260);
+    x = bx + R.r(110, 150);
+    const e0 = x;
+    dip(R.r(0.45, 0.55));
+    arc(e0 - 30, x + 30, G - 110, 2, 'hibiscus');
+    run(R.r(280, 330));
     expert += (x - x0) / RUN + 2;
     pieces.push({ k: 'highrun', x0, x1: x });
   }
@@ -901,12 +1041,18 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
         row(bx + 40, bx + w - 40, y - 34, 2, 'hibiscus');
         bx += w + Math.round(reachJump(0, false) * R.r(0.35, 0.5));
       }
-      // low: the branches carry on overhead with nothing on them, and the petals are on the floor
-      const lowLen = Math.round(R.r(520, 700));
+      // low: the branches carry on overhead with nothing on them, and the petals are on the floor, arcing over a dip of soft moss
+      const lowLen = Math.round(R.r(560, 700));
       branch(bx, bx + lowLen, y);
       arc(bx - 40, bx + 120, y + 60, 2, 'orchid');
-      row(bx + 160, bx + lowLen - 40, G - 34, Math.round(lowLen / 200), 'orchid');
-      x = bx + lowLen + R.r(80, 140);
+      for (const u of [0.3, 0.7]) {
+        x = Math.max(x + 120, bx + Math.round(lowLen * u));
+        const e0 = x;
+        dip(R.r(0.5, 0.6));
+        // (low, under the branches overhead: never tucked up against them)
+        arc(e0 - 30, x + 30, G - 95, 2, 'hibiscus');
+      }
+      x = Math.max(x + 200, bx + lowLen + R.r(60, 110));
     }
     expert += (x - x0) / RUN + 4;
     pieces.push({ k: 'highrun', x0, x1: x });
@@ -928,12 +1074,59 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     }
   }
 
+  /** a mushroom on the path up to a short branch of petals, and the petals arcing back down over a dip (1-2's trail, in between) */
+  function petalPerch() {
+    const x0 = x;
+    run(R.r(140, 200));
+    P.push({ id: pid++, x: x, y: G - 30, width: 70, height: 30, type: 'bouncy' });
+    const y = G - Math.round(R.r(170, 185));
+    const bx = x + 40, w = Math.round(R.r(220, 260));
+    branch(bx, bx + w, y);
+    row(bx + 40, bx + w - 40, y - 34, 3, 'hibiscus');
+    x = bx + w + Math.round(R.r(70, 110));
+    const e0 = x;
+    dip(R.r(0.45, 0.55));
+    arc(e0 - 20, x + 20, G - 110, 2, 'orchid');
+    run(R.r(260, 320));
+    expert += (x - x0) / RUN + 1.2;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
+  /**
+   * the petal tree: a mushroom on the path up to a branch of petals, a second mushroom growing on that branch up to a higher one, and
+   * down again past the end, over a dip (1-2's trail climbs by bounces, where 1-1 climbs stone by stone)
+   */
+  function petalClimb() {
+    const x0 = x;
+    run(R.r(140, 200));
+    P.push({ id: pid++, x: x, y: G - 30, width: 70, height: 30, type: 'bouncy' });
+    const y1 = G - Math.round(R.r(170, 182));
+    const b1x = x + 40, w1 = Math.round(R.r(260, 300));
+    branch(b1x, b1x + w1, y1);
+    row(b1x + 40, b1x + 120, y1 - 34, 2, 'hibiscus');
+    const m2 = b1x + w1 - 110;
+    P.push({ id: pid++, x: m2, y: y1 - 30, width: 70, height: 30, type: 'bouncy' });
+    const y2 = y1 - Math.round(R.r(150, 165));
+    const b2x = m2 + 30, w2 = Math.round(R.r(240, 280));
+    branch(b2x, b2x + w2, y2);
+    row(b2x + 50, b2x + w2 - 40, y2 - 34, 3, 'orchid');
+    x = b2x + w2 + Math.round(R.r(60, 100));
+    const e0 = x;
+    dip(R.r(0.45, 0.55));
+    arc(e0 - 20, x + 20, G - 110, 2, 'hibiscus');
+    run(R.r(260, 320));
+    expert += (x - x0) / RUN + 2;
+    pieces.push({ k: 'highrun', x0, x1: x });
+  }
+
   if (plan === '1-2') {
     // 1-2 The Petal Trail: the petals show the way. Taught on the floor (they arc over each gap where the jump goes), tested up the
     // stumps to the branches overhead, twisted into a trail that swaps between high and low. The stage asks for 33 of them.
+    // (Rebuilt 2026-10-28: the trail is bounces and arcs, up and down, where 1-1 is hops along stones; the steps are 40 up and wide,
+    // the hidden shelf is a mushroom up, and between the pieces the petals go up a mushroom and arc back down over a dip.)
     beat('Learn: follow the petals', () => {
-      rest(R.r(500, 650));
-      hint(x - 200, 'Follow the petals', 'Follow the petals', 'Follow the petals');
+      rest(R.r(300, 340));
+      hint(x - 160, 'Follow the petals', 'Follow the petals', 'Follow the petals');
       row(x - 160, x + 40, G - 34, 3, 'orchid');
       const one = reachJump(0, false);
       for (const w of [one * 0.4, one * 0.5, one * 0.6]) {
@@ -946,13 +1139,13 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
         open(far);
       }
       run(R.r(160, 220));
-      stumps();
+      lowStumps();
       flag();
     });
     beat('Test: up to the branches', () => {
       hint(x + 60, 'The petals go up', 'The petals go up', 'The petals go up');
       trailUp(false);
-      rest(R.r(300, 400));
+      petalClimb();
       trailUp(true);
       flag();
     });
@@ -965,13 +1158,14 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       let n = 0;
       while (expert < EXPERT_SECONDS - 10 && n < 24) {
         const k = n % 3;
-        if (k === 0) trailUp(false);
-        else if (k === 1) { rest(R.r(250, 400)); stumps(); }
-        else highRoad();
+        // (the trail's own beat: up a mushroom to the petals and down again, where 1-1 hops along stones)
+        if (k === 1) splitTrail();
+        else if (k === 0) petalClimb();
+        else petalPerch();
         n++;
         if (n % 3 === 0) flag();
       }
-      rest(R.r(700, 900));
+      homeRun(['dip']);
     });
     thinFinish(PETAL_GOAL_12);
   }
