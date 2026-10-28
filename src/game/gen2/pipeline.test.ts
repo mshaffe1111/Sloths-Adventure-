@@ -465,3 +465,55 @@ test("a soft pit's way out is one plain jump at a time onto a tread a kid's thum
   }
   assert.ok(stepped > 0, 'some pits are deep and wide enough for steps');
 });
+
+test("a prop's threat is paid from its section's threat budget like a creature's (sockets in order); no threat, nothing changes", () => {
+  // a section with a teapot's socket before a spider's: a teapot that costs 3 leaves a Sho or early Ten section too little for a spider
+  const kettle: SectionTemplate = {
+    id: 'toy-kettle', name: 'kettle', archetypes: 'any', phases: ['sho', 'ten', 'ketsu'], difficulty: 5, weight: 3, uses: ['spider'],
+    pieces: [{ key: 'bank', shape: 'bank', w: [900, 1000], place: { kind: 'start' } }],
+    entry: { piece: 'bank', kind: 'ground' }, exit: { piece: 'bank', kind: 'ground' }, exitDy: 0,
+    sockets: [
+      { id: 'pot', role: 'prop', on: 'bank', t: 0.3, allow: ['steam'] },
+      { id: 'foe', role: 'enemy', on: 'bank', t: 0.7, maxThreat: 3 },
+    ],
+    mirrorable: true,
+  };
+  const worldWith = (pot?: number, bell?: number): WorldKit => ({
+    ...kit,
+    manifest: {
+      ...manifest,
+      sections: [...manifest.sections, kettle],
+      props: [
+        ...manifest.props.map((p) => (p.id === 'bell' && bell !== undefined ? { ...p, threat: bell } : p)),
+        { id: 'teapot', tags: ['steam'], w: 60, minApart: 300, beat: true, ...(pot !== undefined ? { threat: pot } : {}) },
+      ],
+    },
+  });
+  const build = (k: WorldKit, seed: number) => buildGen2Stage({ config: cfg('5-7', 'stealth'), kit: k, seed, difficulty: 'normal' });
+  const fillsOf = (st: ReturnType<typeof build>) => st.gen2.fills.map((f) => `${f.section}/${f.socket}=${f.what}`).sort();
+  let lost = 0;
+  for (const seed of [1, 2, 3]) {
+    // (the default is 0: a world that gives no prop a threat builds exactly what it did)
+    const free = build(worldWith(), seed);
+    assert.deepEqual(fillsOf(build(worldWith(0, 0), seed)), fillsOf(free), `seed ${seed}: threat 0 is no threat`);
+    assert.equal(sig(build(worldWith(0, 0), seed)), sig(free));
+    // a prop dearer than any section's budget is never laid, and costs the creatures nothing
+    const dear = build(worldWith(99, 99), seed);
+    assert.ok(!dear.gen2.fills.some((f) => f.what === 'teapot' || f.what === 'bell' || f.what === 'pebbles'), `seed ${seed}: a 99-threat prop laid`);
+    assert.deepEqual(dear.gen2.fills.filter((f) => f.role === 'enemy').map((f) => `${f.section}/${f.socket}=${f.what}`), free.gen2.fills.filter((f) => f.role === 'enemy').map((f) => `${f.section}/${f.socket}=${f.what}`));
+    // a teapot of 3 and a bell of 1: every section holds no more threat, props and animals together, than its budget
+    const paid = build(worldWith(3, 1), seed);
+    assert.deepEqual(validateStage(paid).errors, [], `seed ${seed}`);
+    const cost: Record<string, number> = { teapot: 3, bell: 1, spider: 2 };
+    for (const s of paid.gen2.sections) {
+      const spent = paid.gen2.fills.filter((f) => f.section === s.uid && f.socket !== 'topup' && f.role !== 'tip' && f.what).reduce((t, f) => t + (cost[f.what!] ?? 0), 0);
+      assert.ok(spent <= paid.gen2.budget.threat * s.tension + 1e-9, `seed ${seed} ${s.uid}: ${spent} threat in a budget of ${(paid.gen2.budget.threat * s.tension).toFixed(1)}`);
+    }
+    // (and the teapots really spend it: kettles that hold a teapot hold fewer spiders than with a free one)
+    const spiders = (st: ReturnType<typeof build>) =>
+      st.gen2.fills.filter((f) => f.socket === 'foe' && f.what && st.gen2.fills.some((g) => g.section === f.section && g.socket === 'pot' && g.what === 'teapot')).length;
+    lost += spiders(free) - spiders(paid);
+    assert.ok(paid.gen2.fills.some((f) => f.what === 'teapot'), `seed ${seed}: no teapot laid`);
+  }
+  assert.ok(lost > 0, 'a teapot leaves less for the spiders');
+});

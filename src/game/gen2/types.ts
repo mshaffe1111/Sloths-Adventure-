@@ -67,6 +67,10 @@ export interface PropDef {
   minApart: number;
   /** a prop that hurts or slows (a cake, a teapot's steam): Easy drops it from sockets marked `easy: 'drop'` */
   hazard?: boolean;
+  /** what it costs from a section's threat budget, in the creatures' units (a teapot's steam, the Butler: a prop that acts like an
+   *  animal). A socket it would fill holds it only while the section has that much threat left, and it spends it, the way a creature
+   *  does, in socket order. Default 0: scenery costs nothing */
+  threat?: number;
   /** counts as an action beat for dead time (§2): jumping a thread, dodging steam. Scenery does not */
   beat?: boolean;
   /** the looks it can wear (art keys), rotated by the roll (artRoll.ts rollLook) */

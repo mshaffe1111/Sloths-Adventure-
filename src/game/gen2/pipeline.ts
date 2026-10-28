@@ -739,7 +739,8 @@ export interface Filled {
 /**
  * Pass 4. In order: flags (rests, and wherever 35 s passed without one), Dot's tips (the first time a mechanic is met), linked
  * source/receptor pairs (both or neither, A7), the other props (a bag per tag, a short cooldown so the same prop is not next to
- * itself), creatures (paid from each section's threat budget: the budget times its tension, 60% on Easy; patches kept clear of
+ * itself; a prop with a threat, PropDef.threat, is paid from the section's threat budget like a creature, in socket order), creatures
+ * (paid from each section's threat budget: the budget times its tension, 60% on Easy; patches kept clear of
  * the start's opening seconds and of every safe spot; then Poisson spacing over all of them), pickups, the quota items, and petal
  * arcs over the jumps. Every roll is made whether or not Easy then drops the piece, so Easy and Normal stay on the same streams.
  */
@@ -802,12 +803,15 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
     if (def.beat) sec.beats.push({ x: k.x, letter: 'S' });
   };
 
+  const propThreat = (id: string) => M.props.find((p) => p.id === id)?.threat ?? 0;
+
   // creatures
   const creatureBag = new ShuffleBag<CreatureDef>(rng, M.creatures);
   const foes: Array<RoutePiece & { e: Enemy; fill: FilledSocket; sec: PlacedSection }> = [];
 
   for (const [si, sec] of laid.sections.entries()) {
-    // (Normal's threat on both difficulties, so the sockets roll alike; Easy's 60% is a count cut after the spacing, below)
+    // (Normal's threat on both difficulties, so the sockets roll alike; Easy's 60% is a count cut after the spacing, below. Props with
+    // a threat (PropDef.threat) spend it too, in socket order with the creatures)
     let threat = budget.threat * sec.tension;
     let objectives = 0;
     for (const [ki, k] of sec.sockets.entries()) {
@@ -827,7 +831,11 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       } else if (s.role === 'receptor') {
         const src = sec.sockets.find((q) => q.socket.id === s.link);
         const pair = src && M.pairs.find((p) => (!s.allow?.length || s.allow.includes(p.receptor)) && Math.abs(src.x - k.x) >= p.minApart && Math.abs(src.x - k.x) <= p.maxApart);
-        const ok = want && !!pair && !(dropOnEasy && M.props.find((p) => p.id === pair.receptor)?.hazard);
+        // (a pair's threat is both halves'; it is spent whether or not Easy then drops it, so Easy's creatures roll as Normal's)
+        const cost = pair ? propThreat(pair.receptor) + propThreat(pair.source) : 0;
+        const paid = want && !!pair && cost <= threat;
+        if (paid) threat -= cost;
+        const ok = paid && !(dropOnEasy && M.props.find((p) => p.id === pair!.receptor)?.hazard);
         fillProp(sec, k, ok ? pair!.receptor : null);
         if (src) fillProp(sec, src, ok ? pair!.source : null);
       } else if (s.role === 'source') {
@@ -835,7 +843,10 @@ export function fillSockets(laid: Laid, budget: StageBudget, kit: WorldKit, seed
       } else if (s.role === 'prop') {
         const what = propFor(s);
         const def = what ? M.props.find((p) => p.id === what) : undefined;
-        fillProp(sec, k, want && def && !(dropOnEasy && def.hazard) ? what : null);
+        // (a prop that acts like an animal is paid from the section's threat like one: none left, the socket stays empty)
+        const paid = want && !!def && (def.threat ?? 0) <= threat;
+        if (paid) threat -= def!.threat ?? 0;
+        fillProp(sec, k, paid && !(dropOnEasy && def!.hazard) ? what : null);
       } else if (s.role === 'enemy') {
         const pick = creatureBag.draw();
         const c = [pick, ...M.creatures].find(
