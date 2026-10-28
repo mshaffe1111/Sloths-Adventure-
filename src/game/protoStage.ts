@@ -3273,10 +3273,13 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // in the forest, so the vines cannot see him there: ride the liana while the vine in the next gap looks, and leap while it sleeps.
     // The timed swing's gold ring says when to let go; the vine's eye says whether. World 3's photo album is in a fern on the way.
     // (Rebuilt 2026-10-28, the stage inspector: hops on the way in and between the chains, and a short run home.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts): longer chains, real jumps over the
+    // stream with vines over the gaps, or the grotto dark between the chains.)
+    const v = W3P!;
     beat('Start', () => {
       rest(R.r(420, 480));
       hint(x - 320, 'Thorn vines hang between the lianas. Swing past without touching the thorns');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: one vine in the gap', () => {
@@ -3284,11 +3287,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hint(x - 260, 'Hang on while the thorn vine looks. Let go while it sleeps');
       thornChain(2, true, [4.8, 5.6]);
       busy(1);
-      thornChain(2, true, [4.4, 5.2]);
+      if (v.learn === 0) thornChain(2, true, [4.4, 5.2]);
+      else { w3Stones([50, 100, 60], [0.5, 0.6]); thornChain(2, false, [4.4, 5.2]); }
       flag();
     });
     beat('Develop: a longer chain', () => {
-      thornChain(3, false, [4.2, 5]);
+      if (v.develop === 0) thornChain(3, false, [4.2, 5]);
+      else if (v.develop === 1) { deepRun(3, 1); thornChain(2, false, [4.2, 5]); }
+      else vineRow(3, [4, 4.8], [360, 430], true, true);
       flag();
       // the photo album, in a Hush Fern on a quiet stretch between the chains
       const book = findForStage(config.worldIndex, config.miniIndex);
@@ -3313,17 +3319,18 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       run(R.r(300, 360));
       expert += (x - landX) / RUN + 1.6;
       flag();
+      if (v.twist === 1) deepRun(4, 1);
+      else if (v.twist === 2) glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true });
+      else thornChain(2, false, [3.8, 4.6]);
+      flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 6 && n < 14) {
-        const k = n % 3;
-        if (k === 0) thornChain(R.i(3, 4), false, [3.6, 4.4]);
-        else if (k === 1) { busy(1); stumps(); }
-        else vineRow(R.i(2, 3), [3.6, 4.4], [360, 430]);
-        n++;
-        flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => thornChain(R.i(3, 4), false, [3.6, 4.4]), () => { busy(1); stumps(); }, () => thornChain(4, false, [3.4, 4.2])],
+        [() => vineRow(R.i(2, 3), [3.6, 4.4], [360, 430], true, true), () => { busy(1); stumps(); }, () => { vineRow(3, [3.4, 4.2], [340, 420]); thornChain(2, false, [3.6, 4.4]); }],
+        [() => deepRun(4, 1), () => thornChain(3, false, [3.6, 4.4]), () => deepRun(5, 2)],
+      ];
+      w3Finish(EXPERT_SECONDS + 14, kits[v.finish], 1);
       homeRun();
     });
   }
@@ -3346,6 +3353,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // a heart on the high shelf: the ring is a long fight
     C.push({ id: cid++, type: 'heart', x: Math.round(Tp.x + Tp.width / 2), y: ty - 80, collected: false, bobPhase: 0 });
     const wall = block(r0 + W, r0 + W + 120, 330);
+    // (2026-10-28, the variety pass: grotto stones on the ring's floor, one under the high shelf and one by the way out, so the walk
+    // across the cleared ring is not five quiet seconds)
+    for (const [rx, rh] of [[r0 + W / 2 - 60, 38], [r0 + W - 100, 40]] as const) { block(rx, rx + 90, rh); flower(rx + 45, G - rh - 34, 'orchid'); }
     const mid = (pl: Platform) => pl.x + pl.width / 2;
     RING = {
       x0: r0, x1: r0 + W, wallId: wall.id,
@@ -3375,48 +3385,51 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // the old vines and the dark between fights, and the ring, where they leap in out of the dark in waves until every one is down and
     // the way opens. (Rebuilt 2026-10-28, the stage inspector: World 3's last stage before the lair goes up the trunks to fight on the
     // branches and passes the sleeping vines again, where 3-3 fights on the limestone shelves: two different fights, not one twice.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts); real jumps over the stream; a hop just
+    // past the ring, where every roll had a 5 s quiet walk.)
+    const v = W3P!;
     const placed = () => E.filter((e) => e.type === 'ocelot' || e.type === 'jaguar').length;
     beat('Start', () => {
       const x0 = x;
       rest(R.r(420, 480));
       prints(x0 + 200, x - 80);
       hint(x0 + 120, 'Pawprints in a circle, and they all go one way...');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: two at once', () => {
-      hint(x + 40, 'Two prowlers! Keep one in front of you');
+      hint(x - 200, 'Two prowlers! Keep one in front of you');
+      rest(R.r(220, 260));
       prowlFloor(['ocelot', 'ocelot']);
       busy(1);
-      prowlTree();
+      if (v.learn === 0) prowlTree();
+      else { deepRun(3, 1); prowlTree(); }
       flag();
     });
     beat('Develop: the jaguar, the vines and the dark', () => {
       prowlFloor(['jaguar', 'ocelot']);
       flag();
-      vineRow(2, [4.4, 5.2], [380, 440]);
-      prowlTree();
-      flag();
-      glowDark(R.r(1150, 1300), 1, { rocks: true });
-      prowlTree();
+      if (v.develop === 0) { prowlTree(); flag(); chain(2, false, 'gorge'); prowlTree(); }
+      else if (v.develop === 1) { glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true }); vineRow(2, [4.4, 5.2], [380, 440]); flag(); vineRow(2, [4.4, 5.2], [380, 440], true, true); }
+      else { deepRun(4, 1); prowlFloor(['ocelot']); flag(); deepRun(3, 1); vineRow(2, [4.4, 5.2], [380, 440], true, true); }
       flag();
     });
     beat('Twist: the ring', () => {
+      if (v.twist === 1) { prowlTree(); flag(); }
+      else if (v.twist === 2) { glowDark(R.r(1000, 1100), 1, { rocks: true, deep: true }); flag(); }
       hint(x + 60, 'The ring! They will come out of the dark. Drive them all off to open the way');
       prowlerRing();
+      // (out of the ring, a hop and a dip straight away: the walk on from the broken pillar was five quiet seconds on every roll)
+      busy(2, ['log', 'dip'], R.r(230, 270));
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while ((expert < EXPERT_SECONDS + 16 || placed() < Math.ceil(PROWLER_GOAL_39 * 1.4)) && n < 16) {
-        const k = n % 4;
-        if (k === 0) { prowlTree(); prowlFloor(['ocelot', 'ocelot']); }
-        else if (k === 1) { vineRow(2, [4, 4.8], [360, 430], true); prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot', 'ocelot']); }
-        else if (k === 2) { stumps(); prowlTree(); }
-        else { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot', 'ocelot']); }
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => { prowlTree(); prowlTree(); }, () => { chain(3, false, 'gorge'); prowlTree(); }, () => { prowlTree(); prowlFloor(['ocelot']); }],
+        [() => { deepRun(4, 1); prowlFloor(['ocelot', 'ocelot']); }, () => { prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot', 'ocelot']); deepRun(3, 1); }, () => deepRun(5, 2)],
+        [() => { glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true }); prowlFloor(['ocelot', 'ocelot']); }, () => { vineRow(3, [4, 4.8], [360, 430], true, true); prowlFloor(['ocelot']); }, () => { sporeRest(R.r(440, 500)); sporeGap(true); prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot']); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 16, kits[v.finish], 2, () => placed() < Math.ceil(PROWLER_GOAL_39 * 1.4));
       homeRun();
     });
   }

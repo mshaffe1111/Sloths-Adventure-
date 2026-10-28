@@ -40,7 +40,7 @@ const KINDS: Record<string, Partial<Record<'develop' | 'twist' | 'finish', reado
   '3-6': { develop: ['stones', 'spore', 'abyss'], twist: ['dark', 'spore', 'abyss'], finish: ['stones', 'abyss', 'vine'] },
   '3-7': { develop: ['eyes', 'vine', 'abyss'], twist: ['dark', 'plate'], finish: ['vine', 'eyes', 'abyss'] },
   '3-8': { develop: ['chain', 'abyss', 'row'], twist: ['chain', 'abyss', 'dark'], finish: ['chain', 'row', 'abyss'] },
-  '3-9': { develop: ['tree', 'dark', 'abyss'], twist: ['floor', 'shelf', 'dark'], finish: ['tree', 'abyss', 'dark'] },
+  '3-9': { develop: ['tree', 'dark', 'abyss'], twist: ['floor', 'tree', 'dark'], finish: ['tree', 'abyss', 'dark'] },
 };
 
 /** the grotto's dressing sets: what stands on the floor and what hangs from the roof (two halves, the stages take turns) */
