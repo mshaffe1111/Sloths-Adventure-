@@ -4,6 +4,7 @@
  */
 import type { InspectOutput, StageReport, PairReport, Hotspot } from './inspect.ts';
 import type { JumpReport } from './jumps.ts';
+import { renderFirstTimer } from './firsttimerReport.ts';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
@@ -298,6 +299,8 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: 
   <div class="letters">${Object.entries(LETTER).map(([l, d]) => `<b>${l}</b><span>${esc(d)}</span>`).join('')}</div>
   </details>
 </section>
+
+${renderFirstTimer(out.firstTimer)}
 
 <section>
   <h2>Most dead time</h2>
