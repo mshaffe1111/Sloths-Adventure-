@@ -27,7 +27,7 @@ import type { Gen2Stage } from './types.ts';
 import type { Difficulty } from '../difficulty.ts';
 import type { LevelConfig, Platform } from '../types.ts';
 import { buildGen2Stage, layLocal, placeRoom, planBudget, rngFor } from './pipeline.ts';
-import type { LocalAnchor, SectionTemplate } from './types.ts';
+import type { SectionTemplate } from './types.ts';
 import { W5_MANIFEST } from './worlds/w5.ts';
 import { ARENA, cakeRoom, teaRoom, TEA_RISE, W5_ARENA_SECTIONS, W5_ROOM_SECTIONS, W5A_ROOM_HINTS, W5A_TIPS, w5ArenaKit } from './worlds/w5Arena.ts';
 
@@ -46,7 +46,8 @@ const words = (s: string) => s.split(/\s+/).filter(Boolean).length;
 
 // ───────────────────────────── 5-9 through the pipeline ─────────────────────────────
 
-test("5-9 on 20 seeds, Normal and Easy: levelCheck passes, 2:00+ for the quick player, the arena's sections in it, enough spiders", () => {
+test("5-9 on 20 seeds, Normal and Easy: levelCheck passes, 2:00+ for the quick player, the arena's sections in it, enough spiders, both rooms in some rolls", () => {
+  const rooms = new Map<string, number>();
   for (const seed of SEEDS) {
     for (const d of ['normal', 'easy'] as const) {
       const st = buildGen2Stage({ config: cfg(d), kit, seed, difficulty: d });
@@ -58,8 +59,13 @@ test("5-9 on 20 seeds, Normal and Easy: levelCheck passes, 2:00+ for the quick p
       // (the goal asks for QUOTA; the roll lays a margin over it, before the shrine)
       const before = st.enemies.filter((e) => e.x < st.exitTotemX).length;
       assert.ok(before >= cfg(d).targetCount + 2, `seed ${seed} ${d}: ${before} animals before the shrine`);
+      if (d === 'normal') for (const r of st.kit?.rooms ?? []) rooms.set(r.id.replace(/^s\d+-/, ''), (rooms.get(r.id.replace(/^s\d+-/, '')) ?? 0) + 1);
+      // (a puzzle moment, not a puzzle stage: one room a roll at most, STAGE-RULES §3)
+      assert.ok((st.kit?.rooms ?? []).length <= 1, `seed ${seed} ${d}: ${(st.kit?.rooms ?? []).length} rooms`);
     }
   }
+  // (the rooms come through the pipeline itself, placed on the stitched pieces and proven by levelCheck above)
+  assert.ok((rooms.get('cake') ?? 0) >= 1 && (rooms.get('tea') ?? 0) >= 1, JSON.stringify([...rooms]));
 });
 
 /**
@@ -148,8 +154,6 @@ test("the arena's sections: every beat is ground the route crosses, each ends le
 const RUNWAY = 700;
 /**
  * A stage of one room section between two plain banks: the section laid by the pipeline's own layLocal, its room placed by placeRoom.
- * (placeRoom does not yet rename a teapot's `into` or map its trough's anchors: reported to the architect. Here both are done the way
- * the fix will, so the tea room's own check runs now.)
  */
 function roomStage(tpl: SectionTemplate, d: Difficulty, keep: (p: RoomSpec['pieces'][number]) => boolean = () => true): GeneratedStage & { room: RoomSpec } {
   const L = layLocal(tpl, planBudget(cfg(d), W5_MANIFEST, d), rngFor(1), false);
@@ -165,9 +169,7 @@ function roomStage(tpl: SectionTemplate, d: Difficulty, keep: (p: RoomSpec['piec
   plats.push(end);
   const idOf = (k: string) => ids.get(k)!;
   const room = placeRoom(tpl.room!, 's1', idOf);
-  room.pieces = room.pieces
-    .map((p) => (p.kind === 'teapot' ? { ...p, into: `s1-${p.into}`, trough: (p.trough as unknown as LocalAnchor[] | undefined)?.map((a): Anchor => ({ ...a, on: idOf(a.on) })) } : p))
-    .filter(keep);
+  room.pieces = room.pieces.filter(keep);
   addKitPlatforms(plats, { rooms: [room] });
   const exitX = end.x + 300;
   return {

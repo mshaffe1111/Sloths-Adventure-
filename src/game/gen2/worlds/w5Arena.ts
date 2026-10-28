@@ -27,8 +27,7 @@
  * The world's own pieces (prop and creature ids, the emitters into proto.w5) are World 5's manifest's (gen2/worlds/w5.ts, piece A);
  * here the sockets ask for TAGS (W5A_TAGS), and `withArena` adds these sections, the tips and the arena props a kit needs.
  */
-import type { Anchor } from '../../puzzleKit.ts';
-import type { LocalAnchor, LocalRoomSpec, PropDef, PropEmitter, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
+import type { LocalRoomSpec, PropDef, PropEmitter, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 import { W5_TAG, w5Kit, w5Of } from './w5.ts';
 
 /** the tags the sockets ask for (World 5's manifest, w5.ts W5_TAG, and this file's two scenery props) */
@@ -96,6 +95,9 @@ const down = (key: string, after: string, dy: number, w: SectionPiece['w']): Sec
 /** a soft pit hopped: `share` of the widest gap the difficulty allows (a miss is a climb out, never a life) */
 const hop = (key: string, after: string, w: SectionPiece['w'], share: SectionPiece['w'] = [0.35, 0.55], landing = false): SectionPiece =>
   bank(key, w, { kind: 'pit', after, jump: 'jump', share }, landing ? { landing } : {});
+/** a wide soft pit, crossed with the second jump (the twist's and the finish's: taught in 5-1, asked here near its margin) */
+const leap = (key: string, after: string, w: SectionPiece['w'], share: SectionPiece['w'] = [0.6, 0.85]): SectionPiece =>
+  bank(key, w, { kind: 'pit', after, jump: 'double', share }, { landing: true });
 
 /** start: the garden gate. An arch over a mound; Dot says why the shrine is shut, before any spider */
 export const gardenGate: SectionTemplate = {
@@ -351,7 +353,7 @@ export const threadLawn: SectionTemplate = {
   mirrorable: true,
 };
 
-/** Ten: the Butler's lawn (his tray: punch it away or hop him), a hop, then spiders, a mound out */
+/** Ten: the Butler's lawn (his tray: punch it away or hop him), a leap, a spider just past the landing, a mound out */
 export const butlerLawn: SectionTemplate = {
   id: 'w5a-butler-lawn',
   name: "arena: the Butler's lawn",
@@ -361,7 +363,7 @@ export const butlerLawn: SectionTemplate = {
   weight: 2,
   pieces: [
     bank('lawn', [300, 360], { kind: 'start' }),
-    hop('yard', 'lawn', [560, 640], [0.5, 0.7], true),
+    leap('yard', 'lawn', [560, 640], [0.5, 0.75]),
     up('mound', 'yard', 48, [150, 190]),
     down('out', 'mound', 48, [280, 320]),
   ],
@@ -371,8 +373,8 @@ export const butlerLawn: SectionTemplate = {
   sockets: [
     tip('lawn', 0.08),
     prop('butler', 'lawn', [0.5, 0.6], W5A_TAGS.host),
-    sleeper('s1', 'yard', [0.12, 0.18]),
-    foe('f1', 'yard', [0.5, 0.56]),
+    foe('f1', 'yard', [0.3, 0.36]),
+    sleeper('s1', 'yard', [0.62, 0.68]),
     petals('pm', 'mound', 0.5, 1),
     sleeper('s2', 'out', [0.4, 0.5]),
     foe('f2', 'out', [0.8, 0.86], { chance: 0.6 }),
@@ -380,7 +382,7 @@ export const butlerLawn: SectionTemplate = {
   mirrorable: true,
 };
 
-/** Ten/Ketsu: a wide soft pit, a spider on the far lawn, a second hop, another spider */
+/** Ten/Ketsu: a wide soft pit (the second jump), a spider waiting past the landing, a second hop, a sleeper */
 export const pitLawn: SectionTemplate = {
   id: 'w5a-pit-lawn',
   name: 'arena: across the soft pits',
@@ -390,7 +392,7 @@ export const pitLawn: SectionTemplate = {
   weight: 2,
   pieces: [
     bank('near', [240, 300], { kind: 'start' }),
-    hop('far', 'near', [520, 600], [0.65, 0.85], true),
+    leap('far', 'near', [520, 600], [0.6, 0.85]),
     hop('far2', 'far', [320, 380], [0.45, 0.65], true),
   ],
   entry: { piece: 'near', kind: 'ground' },
@@ -398,8 +400,8 @@ export const pitLawn: SectionTemplate = {
   exitDy: 0,
   sockets: [
     tip('near', 0.2),
-    sleeper('s1', 'far', [0.2, 0.26]),
-    foe('f1', 'far', [0.7, 0.78]),
+    foe('f1', 'far', [0.3, 0.36]),
+    sleeper('s1', 'far', [0.75, 0.82]),
     sleeper('s2', 'far2', [0.6, 0.7], { chance: 0.85 }),
   ],
   mirrorable: false,
@@ -416,7 +418,7 @@ export const teapotLawn: SectionTemplate = {
   pieces: [
     bank('lawn', [300, 360], { kind: 'start' }),
     up('mound', 'lawn', 48, [200, 240]),
-    hop('mound2', 'mound', [160, 200], [0.4, 0.55], true),
+    leap('mound2', 'mound', [160, 200], [0.5, 0.75]),
     down('yard', 'mound2', 48, [560, 640]),
     hop('out', 'yard', [180, 220], [0.35, 0.5], true),
   ],
@@ -446,7 +448,7 @@ export const queensGarden: SectionTemplate = {
   weight: 2,
   pieces: [
     bank('gate', [170, 210], { kind: 'start' }),
-    hop('yardA', 'gate', [600, 680], [0.45, 0.65], true),
+    leap('yardA', 'gate', [600, 680], [0.55, 0.8]),
     { key: 'road', shape: 'branch', w: [220, 280], place: { kind: 'over', on: 'yardA', at: [0.34, 0.42], dy: [-155, -140] }, main: false },
     up('mound', 'yardA', 48, [150, 190]),
     down('yardB', 'mound', 48, [600, 680]),
@@ -458,10 +460,10 @@ export const queensGarden: SectionTemplate = {
   sockets: [
     tip('gate', 0.1),
     prop('arch', 'gate', [0.5, 0.6], W5A_TAGS.gate),
-    sleeper('s1', 'yardA', [0.1, 0.16]),
-    foe('f1', 'yardA', [0.45, 0.52]),
+    foe('f1', 'yardA', [0.3, 0.36]),
+    sleeper('s1', 'yardA', [0.6, 0.66]),
     petals('road', 'road', 0.5, 3, 160),
-    sleeper('s2', 'yardA', [0.86, 0.92]),
+    foe('f1b', 'yardA', [0.92, 0.96], { chance: 0.7 }),
     petals('pm', 'mound', 0.5, 1),
     foe('f2', 'yardB', [0.3, 0.38]),
     sleeper('s3', 'yardB', [0.62, 0.68]),
@@ -481,7 +483,7 @@ export const teaLawn: SectionTemplate = {
   weight: 2,
   pieces: [
     bank('lawn', [280, 340], { kind: 'start' }),
-    hop('yard', 'lawn', [600, 680], [0.5, 0.7], true),
+    leap('yard', 'lawn', [600, 680], [0.55, 0.8]),
     up('mound', 'yard', 44, [150, 190]),
     down('out', 'mound', 44, [420, 480]),
   ],
@@ -491,8 +493,7 @@ export const teaLawn: SectionTemplate = {
   sockets: [
     tip('lawn', 0.08),
     prop('chair', 'lawn', [0.45, 0.55], W5A_TAGS.seat),
-    sleeper('s1', 'yard', [0.1, 0.16]),
-    foe('f1', 'yard', [0.45, 0.52]),
+    foe('f1', 'yard', [0.3, 0.36]),
     prop('cake', 'yard', [0.68, 0.72], W5A_TAGS.treat, { easy: 'drop' }),
     sleeper('s2', 'yard', [0.9, 0.95]),
     petals('pm', 'mound', 0.5, 1),
@@ -579,9 +580,7 @@ export const teaRoomSpec: LocalRoomSpec = {
     { kind: 'reset', id: 'post', at: ta(60) },
     { kind: 'basket', id: 'basket', at: ta(230), mouth: 110, need: 1, drop: 70 },
     // (the pot on its table by the lift: tipped from the lift's plank, its tea lifts him; tipped from the floor, the lift goes up alone)
-    // (its trough's anchors are the section's own, by key, like every `at`: types.ts LocalPieceSpec and pipeline.ts placeRoom do not map
-    // a trough or a teapot's `into` yet, reported to the architect; until then this room fails its check in a stage and is swapped out)
-    { kind: 'teapot', id: 'pot', at: ta(405, -110), into: 'basket', trough: [ta(320, -122), ta(238, -116)] as LocalAnchor[] as unknown as Anchor[] },
+    { kind: 'teapot', id: 'pot', at: ta(405, -110), into: 'basket', trough: [ta(320, -122), ta(238, -116)] },
     { kind: 'lift', id: 'lift', at: { on: 'well', at: 0.5, dy: -TEA_DROP }, w: TEA_WELL, rise: TEA_RISE, by: 'basket' },
     // (the Butler in his arch: it never opens, and it stands on the floor: nobody slips under it)
     { kind: 'gate', id: 'butler', at: tb(50), open: { any: [] }, h: TEA_RISE, look: 'butler' },
