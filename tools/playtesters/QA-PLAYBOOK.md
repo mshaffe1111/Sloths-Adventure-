@@ -69,6 +69,9 @@ Matt's weekly usage is tight. QA manages it:
   full hold on Easy, a plain walk stuck, a ledge reached but slid off, controls not doing what the thumb did, a puzzle costing a life,
   a goal that can't be met fairly. HARD BUT FAIR = a taught move asked with tighter timing, in combination or with an enemy.
   Report both; the coders fix the unfair ones and keep the fair ones. A world that feels EASIER than the one before is a bug too.
+  Difficulty bands (Matt, 2026-10-28): each world has its own band and the bands climb world by world. Inside a world a stage may
+  be easier than the one before (a breather is fine). Bugs to tag: OUT OF BAND (a stage far outside its world's band, e.g. a World 2
+  stage as hard as a World 4 one) and EASIER WORLD (a whole world easier than the one before).
 - **Checklist**: `tools/playtesters/QA-CHECKLIST.md` (Matt's stage rulebook, 12 rules). Every finding carries its rule number.
 - **Worlds 1-4**: first-timer standard (0.8 s reaction + 0.6 s margin on boss openings; anything needing several tries or untaught is a problem).
 - **World 5 on** (Matt, 2026-10-26): harder is fine. Fail a stretch only if it can't be done or hits without warning. Count tries anyway.

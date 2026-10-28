@@ -22,3 +22,6 @@ Normal, a first-timer) run before a build reaches QA, so anything found here mea
 Tag every "too hard" finding UNFAIR (rules 1-4, 7, 9, controls not doing what the thumb did, an off-screen hit with no tell) or
 HARD BUT FAIR (a taught move with tighter timing, in combination or with an enemy). A world that feels easier than the one
 before it is a bug too (Matt, 2026-10-28).
+  Difficulty bands (Matt, 2026-10-28): each world has its own band and the bands climb world by world. Inside a world a stage may
+  be easier than the one before (a breather is fine). Bugs to tag: OUT OF BAND (a stage far outside its world's band, e.g. a World 2
+  stage as hard as a World 4 one) and EASIER WORLD (a whole world easier than the one before).
