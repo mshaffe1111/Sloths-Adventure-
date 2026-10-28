@@ -651,6 +651,155 @@ const stumpGap: SectionTemplate = {
   mirrorable: false,
 };
 
+// ───────────────────────────── more of the world (toward ~30: 5-7, 5-9 and the later stages share them) ─────────────────────────────
+
+/** creatures wrapped in silk, hanging by the path: punch them open (5-5's), a thread between them */
+const cocoonRow: SectionTemplate = {
+  id: 'w5-cocoon-row',
+  name: 'cocoons by the path',
+  archetypes: 'any',
+  phases: ['ki', 'sho', 'ten'],
+  difficulty: 4,
+  uses: ['cocoon'],
+  pieces: [bank('bank', [950, 1100])],
+  entry: { piece: 'bank', kind: 'ground' },
+  exit: { piece: 'bank', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    petals('lead', 'bank', 0.08, 2, 80),
+    prop('c1', 'bank', [0.24, 0.28], ['cocoon']),
+    thread('thread', 'bank', [0.46, 0.5], { phases: LIVE }),
+    chair('chair', 'bank', [0.46, 0.5], { phases: ['ki'] }),
+    prop('c2', 'bank', [0.68, 0.72], ['cocoon'], { chance: 0.8 }),
+    sleeper('foe', 'bank', [0.88, 0.92], { phases: LIVE, chance: 0.6 }),
+  ],
+  mirrorable: true,
+};
+
+/** a warm pot puffing between two stumps: hop up, wait out the puff on top, hop on */
+const potStumps: SectionTemplate = {
+  id: 'w5-pot-stumps',
+  name: 'teapot between stumps',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  uses: ['pot'],
+  pieces: [bank('bank', [950, 1100]), stump('a', 'bank', [0.16, 0.22], [55, 80]), stump('b', 'bank', [0.66, 0.72], [60, 85])],
+  entry: { piece: 'bank', kind: 'ground' },
+  exit: { piece: 'bank', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    stumpPetal('a'),
+    prop('pot', 'bank', [0.44, 0.48], ['pot']),
+    stumpPetal('b'),
+    cake('cake', 'b', 0.5, { phases: HOT, dn: 0 }),
+    awake('foe', 'bank', [0.88, 0.93], { phases: HOT, chance: 0.6 }),
+  ],
+  mirrorable: true,
+};
+
+/** a soft chair at the lip of a soft gap (5-1's twist): its tug at the very spot he jumps from */
+const chairGap: SectionTemplate = {
+  id: 'w5-chair-gap',
+  name: 'chair at the lip',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  uses: ['chair'],
+  pieces: [
+    bank('near', [480, 580]),
+    { key: 'far', shape: 'bank', w: [680, 840], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.65, 0.9] }, landing: true },
+  ],
+  entry: { piece: 'near', kind: 'ground' },
+  exit: { piece: 'far', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    petals('near', 'near', 0.2, 2, 80),
+    chair('chair', 'near', [0.66, 0.72]),
+    petals('far', 'far', 0.2, 2, 80),
+    thread('thread', 'far', [0.44, 0.5]),
+    sleeper('s1', 'far', [0.66, 0.72], { phases: LIVE }),
+    awake('foe', 'far', [0.86, 0.92], { phases: ['ketsu'], chance: 0.6 }),
+  ],
+  mirrorable: false,
+};
+
+/** the Butler on the far side of a gap, his cake stand on the near side: he holds out the tray as you land */
+const butlerGap: SectionTemplate = {
+  id: 'w5-butler-gap',
+  name: 'the Butler past the gap',
+  archetypes: 'any',
+  phases: ['ten', 'ketsu'],
+  difficulty: 7,
+  uses: ['butler'],
+  pieces: [
+    bank('near', [480, 560]),
+    { key: 'far', shape: 'bank', w: [760, 900], place: { kind: 'pit', after: 'near', jump: 'jump', share: [0.6, 0.85] }, landing: true },
+  ],
+  entry: { piece: 'near', kind: 'ground' },
+  exit: { piece: 'far', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    petals('near', 'near', 0.15, 1),
+    { id: 'stand', role: 'source', on: 'near', t: [0.42, 0.48] },
+    { id: 'butler', role: 'receptor', on: 'far', t: [0.36, 0.42], link: 'stand', allow: ['butler'] },
+    petals('far', 'far', 0.62, 2, 80),
+    thread('thread', 'far', [0.78, 0.82]),
+    sleeper('s1', 'far', [0.92, 0.95], { chance: 0.6 }),
+  ],
+  mirrorable: false,
+  extraSeconds: 1,
+};
+
+/** stumps climbing like stairs, a thread strung low before each: hop the thread, hop the stump */
+const threadStairs: SectionTemplate = {
+  id: 'w5-thread-stairs',
+  name: 'thread stairs',
+  archetypes: 'any',
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  uses: ['thread', 'doze'],
+  pieces: [
+    bank('bank', [1050, 1200]),
+    stump('a', 'bank', [0.2, 0.24], [50, 60]),
+    stump('b', 'bank', [0.5, 0.54], [70, 88]),
+    stump('c', 'bank', [0.8, 0.84], [55, 70]),
+  ],
+  entry: { piece: 'bank', kind: 'ground' },
+  exit: { piece: 'bank', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    thread('t1', 'bank', [0.1, 0.12]),
+    stumpPetal('a'),
+    thread('t2', 'bank', [0.38, 0.41]),
+    stumpPetal('b'),
+    sleeper('s1', 'bank', [0.66, 0.7], { phases: LIVE }),
+    stumpPetal('c'),
+    thread('t3', 'bank', [0.94, 0.96], { phases: HOT, chance: 0.6 }),
+  ],
+  mirrorable: true,
+};
+
+/** a bower to rest in: the guests who sat (the decor), a mossy stump, a soft chair to slide past, the flag */
+const bower: SectionTemplate = {
+  id: 'w5-bower',
+  name: 'rest bower',
+  archetypes: 'any',
+  phases: ['rest', 'goal', 'start'],
+  difficulty: 1,
+  pieces: [bank('bank', [700, 820]), stump('st', 'bank', [0.2, 0.26], [45, 55])],
+  entry: { piece: 'bank', kind: 'ground' },
+  exit: { piece: 'bank', kind: 'ground' },
+  exitDy: 0,
+  sockets: [
+    stumpPetal('st'),
+    chair('chair', 'bank', [0.52, 0.58], { phases: ['rest', 'goal'] }),
+    petals('row', 'bank', 0.72, 2, 80),
+    flag('bank', 0.84),
+  ],
+  mirrorable: true,
+};
+
 /** World 5's building blocks (5-7's ground and stealth set; 5-9's arena helper adds its gates) */
 export const W5_SECTIONS: SectionTemplate[] = [
   garden,
@@ -678,4 +827,10 @@ export const W5_SECTIONS: SectionTemplate[] = [
   seamstress,
   gauntlet,
   stumpGap,
+  cocoonRow,
+  potStumps,
+  chairGap,
+  butlerGap,
+  threadStairs,
+  bower,
 ];

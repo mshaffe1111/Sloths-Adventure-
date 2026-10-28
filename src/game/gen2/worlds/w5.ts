@@ -20,7 +20,7 @@
  */
 import { G } from '../../protoStage.ts';
 import { newTeapot, orchidTiming, TABLE_CARD, W5_TEACH, type W5Extras } from '../../w5Kit.ts';
-import { W5_LESSON_ORCHID } from '../../w5Stages.ts';
+import { COCOON_UP, W5_LESSON_ORCHID } from '../../w5Stages.ts';
 import type { Enemy } from '../../types.ts';
 import type { CreatureDef, FilledSocket, PropDef, PropEmitter, PropPair, StageSink, WorldKit, WorldManifest } from '../types.ts';
 import { W5_SECTIONS } from './w5Sections.ts';
@@ -45,6 +45,7 @@ export const W5_PROP = {
   table: 'table',
   cakeStand: 'cakeStand',
   orchid: 'orchid',
+  cocoon: 'cocoon',
 } as const;
 export type W5PropId = (typeof W5_PROP)[keyof typeof W5_PROP];
 
@@ -59,6 +60,7 @@ export const W5_TAG = {
   table: 'table',
   stand: 'stand',
   orchid: 'orchid',
+  cocoon: 'cocoon',
   /** the stealth stages' want (pipeline WANT.stealth): what keeps him out of sight, or what he must slip past unheard */
   cover: 'cover',
   /** creatures: awake ones rush, dozing ones wait for a hum */
@@ -99,6 +101,8 @@ export const W5_PROPS: PropDef[] = [
   { id: W5_PROP.table, tags: [W5_TAG.table], w: 200, minApart: 2400 },
   { id: W5_PROP.cakeStand, tags: [W5_TAG.stand], w: 70, minApart: 600 },
   { id: W5_PROP.orchid, tags: [W5_TAG.orchid], w: W5_LESSON_ORCHID.w, minApart: 400, beat: true },
+  // a creature wrapped in silk, hanging where a standing punch lands (5-5's): three punches set it free (a rescue's quota counts it)
+  { id: W5_PROP.cocoon, tags: [W5_TAG.cocoon], w: 70, minApart: 260, beat: true },
 ];
 
 export const W5_PAIRS: PropPair[] = [
@@ -214,6 +218,7 @@ export function w5Emitters(stage: number): Record<W5PropId, PropEmitter> {
     table: (f, _p, out) => push(out, 'tables', { x: f.x, y: f.y, card: TABLE_CARD }, stage),
     // (a doily on its stool with a cake tier on it: w5Play draws the 'doily' decor so; scenery, never eaten)
     cakeStand: (f, _p, out) => push(out, 'decor', { n: 'doily', x: f.x, b: f.y, w: 64 }, stage),
+    cocoon: (f, _p, out) => push(out, 'cocoons', { x: f.x, y: f.y - COCOON_UP }, stage),
     // a closing orchid over the grass, one plain hop up (5-3's lesson orchid), two petals in its cup; a miss is a step back to the grass
     orchid: (f, _p, out) => {
       const L = W5_LESSON_ORCHID;

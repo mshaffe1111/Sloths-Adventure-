@@ -144,10 +144,11 @@ test('the props reach the engine as World 5 extras: pairs both or neither, every
   assert.ok(pairs >= SEEDS.length / 2, `the tea table and the cake stand are laid with their pot and their Butler (${pairs})`);
 });
 
-test('the inspector on 8 rolls: no quiet stretch over 4 s, 2:00+ for its quick player, and the rolls differ (0.35+)', () => {
+test('the inspector on 20 rolls: no quiet stretch over 4 s, 2:00+ for its quick player, and the rolls differ (0.35+)', () => {
   const profs: Array<ReturnType<typeof profile>> = [];
-  for (const seed of SEEDS.slice(0, 8)) {
-    for (const difficulty of ['normal', 'easy'] as const) {
+  // (20 rolls, the brief's count: over 8 the mean of 28 pairs is too noisy to judge 0.35 by)
+  for (const seed of SEEDS) {
+    for (const difficulty of seed <= 8 ? (['normal', 'easy'] as const) : (['normal'] as const)) {
       const st = build(seed, difficulty);
       const R = pickRoute('stealth', st).used;
       assert.notEqual(R.route.traced, 'failed');
