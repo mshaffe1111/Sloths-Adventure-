@@ -15,6 +15,11 @@ Every pose and animation sheet Matt supplies lives here, so nothing he draws is 
 - `story/` the eighteen story sheets (2026-10-21) the cutscenes are built from; the game's `src/assets/characters/cels-*.webp` atlases are cut from them (cell by cell, keyed from the grey), see below.
 - `jennifur/` her emotion sheets.
 - `pokey-swim/` Pokey's World 6 swimming (2026-10-27, generated with the HF pipeline, not yet in the game): cut-out frames of the surface crawl, underwater glide, tread-water idle and first-swim moment, with `meta.json` (frames, size, waterline anchor, fps). Made by `tools/art/w6/swim/`.
+  The first-swim moment was redone on 2026-10-28 (strict side view, one face style, on Matt's say-so to replace it if clearly better).
+- `flicker/`, `meeca/`, `beetle/`, `butler/`, `runners/`, `caiman/` (2026-10-28, not yet in the game): Matt's Gemini characters animated with
+  the HF pipeline from his own cells (motion model clips), plus `crab/` and `piranha/` cut from older clips. Each holds one folder of
+  cut-out frames per move and `meta.json` (frames, size, anchor: ground line, a flier's middle or the waterline, fps, loop or one-shot).
+  Made by `tools/art/anim/`.
 - `slomatt-and-jennifur/` the shared sheets, including one with walk, jump, punch, kick, hurt and defeat drawn for both.
 
 ## What the six action-study sheets add to the game

@@ -1,5 +1,5 @@
 {
- "tag": "w5anim",
+ "tag": "anim",
  "motion": {
   "high": [
    "mshaffe111/slothadv-motion-lora",
@@ -13,55 +13,55 @@
  },
  "clips": [
   {
-   "name": "w5anim-flicker-hover-s3",
+   "name": "anim-flicker-hover-s3",
    "src": "starts/flicker-hover.webp",
-   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail hovers in place, its little wings beating fast in a blur, its round body bobbing gently up and down, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail hovers in place, its pink see-through wings flapping up and down in clear strokes, always clearly visible, its round body bobbing gently up and down, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
    "w": 704,
    "h": 704
   },
   {
-   "name": "w5anim-flicker-hover-s11",
+   "name": "anim-flicker-hover-s11",
    "src": "starts/flicker-hover.webp",
-   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail hovers in place, its little wings beating fast in a blur, its round body bobbing gently up and down, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail hovers in place, its pink see-through wings flapping up and down in clear strokes, always clearly visible, its round body bobbing gently up and down, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
    "w": 704,
    "h": 704
   },
   {
-   "name": "w5anim-flicker-fly-s3",
+   "name": "anim-flicker-fly-s3",
    "src": "starts/flicker-fly.webp",
-   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail flies forward in place, leaning forward, its wings beating hard and fast, its body bobbing, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail flies forward in place, leaning forward, its pink see-through wings flapping hard in big clear strokes, always clearly visible, its body bobbing, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
    "w": 704,
    "h": 704
   },
   {
-   "name": "w5anim-flicker-fly-s11",
+   "name": "anim-flicker-fly-s11",
    "src": "starts/flicker-fly.webp",
-   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail flies forward in place, leaning forward, its wings beating hard and fast, its body bobbing, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail flies forward in place, leaning forward, its pink see-through wings flapping hard in big clear strokes, always clearly visible, its body bobbing, a smooth repeating flying cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
    "w": 704,
    "h": 704
   },
   {
-   "name": "w5anim-flicker-perch-s3",
+   "name": "anim-flicker-perch-s3",
    "src": "starts/flicker-perch.webp",
-   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail flutters down a little and settles as if onto a perch, folds its wings, closes its eyes contentedly and its tail glows brighter, then sits still, side view facing right the whole time, it stays in the middle of the frame",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail flutters down a little and settles as if onto a perch, folds its wings down along its back, closes its eyes contentedly, then sits still, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
    "w": 704,
    "h": 704
   },
   {
-   "name": "w5anim-flicker-perch-s11",
+   "name": "anim-flicker-perch-s11",
    "src": "starts/flicker-perch.webp",
-   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail flutters down a little and settles as if onto a perch, folds its wings, closes its eyes contentedly and its tail glows brighter, then sits still, side view facing right the whole time, it stays in the middle of the frame",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a tiny round brown firefly with big shiny eyes, an orange and brown striped body, pink see-through wings and a glowing tail flutters down a little and settles as if onto a perch, folds its wings down along its back, closes its eyes contentedly, then sits still, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
    "w": 704,
    "h": 704
   },
   {
-   "name": "w5anim-meeca-carry-s3",
+   "name": "anim-meeca-carry-s3",
    "src": "starts/meeca-carry.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a young girl sloth in a pink headband, a pink race vest with the number 07 and green shorts walks forward in place hugging a big pinecone to her chest with both arms, a steady happy walking cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
@@ -69,7 +69,7 @@
    "h": 704
   },
   {
-   "name": "w5anim-meeca-carry-s11",
+   "name": "anim-meeca-carry-s11",
    "src": "starts/meeca-carry.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a young girl sloth in a pink headband, a pink race vest with the number 07 and green shorts walks forward in place hugging a big pinecone to her chest with both arms, a steady happy walking cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
@@ -77,7 +77,7 @@
    "h": 704
   },
   {
-   "name": "w5anim-meeca-throw-s3",
+   "name": "anim-meeca-throw-s3",
    "src": "starts/meeca-throw.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a young girl sloth in a pink headband, a pink race vest with the number 07 and green shorts winds up and throws the pinecone forward overarm with a big swing, follows through and watches it fly away, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
@@ -85,7 +85,7 @@
    "h": 704
   },
   {
-   "name": "w5anim-meeca-throw-s11",
+   "name": "anim-meeca-throw-s11",
    "src": "starts/meeca-throw.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a young girl sloth in a pink headband, a pink race vest with the number 07 and green shorts winds up and throws the pinecone forward overarm with a big swing, follows through and watches it fly away, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
@@ -93,7 +93,7 @@
    "h": 704
   },
   {
-   "name": "w5anim-beetle-waddle-s3",
+   "name": "anim-beetle-waddle-s3",
    "src": "starts/beetle-waddle.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big round teal-blue beetle with a shiny domed shell, short dark legs, a sleepy face and a little gold bow tie waddles forward in place on its six short legs, its round shell rocking from side to side, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
@@ -101,7 +101,7 @@
    "h": 480
   },
   {
-   "name": "w5anim-beetle-waddle-s11",
+   "name": "anim-beetle-waddle-s11",
    "src": "starts/beetle-waddle.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big round teal-blue beetle with a shiny domed shell, short dark legs, a sleepy face and a little gold bow tie waddles forward in place on its six short legs, its round shell rocking from side to side, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
@@ -109,7 +109,7 @@
    "h": 480
   },
   {
-   "name": "w5anim-beetle-eat-s3",
+   "name": "anim-beetle-eat-s3",
    "src": "starts/beetle-eat.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big round teal-blue beetle with a shiny domed shell, short dark legs, a sleepy face and a little gold bow tie chews happily with its cheeks stuffed full, munching, then swallows and licks its lips, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
@@ -117,7 +117,7 @@
    "h": 480
   },
   {
-   "name": "w5anim-beetle-eat-s11",
+   "name": "anim-beetle-eat-s11",
    "src": "starts/beetle-eat.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big round teal-blue beetle with a shiny domed shell, short dark legs, a sleepy face and a little gold bow tie chews happily with its cheeks stuffed full, munching, then swallows and licks its lips, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
@@ -125,7 +125,7 @@
    "h": 480
   },
   {
-   "name": "w5anim-beetle-sleepy-s3",
+   "name": "anim-beetle-sleepy-s3",
    "src": "starts/beetle-sleepy.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big round teal-blue beetle with a shiny domed shell, short dark legs, a sleepy face and a little gold bow tie yawns a huge yawn, its eyelids droop, it sinks down low on its legs and falls asleep, breathing slowly, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
@@ -133,7 +133,7 @@
    "h": 480
   },
   {
-   "name": "w5anim-beetle-sleepy-s11",
+   "name": "anim-beetle-sleepy-s11",
    "src": "starts/beetle-sleepy.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big round teal-blue beetle with a shiny domed shell, short dark legs, a sleepy face and a little gold bow tie yawns a huge yawn, its eyelids droop, it sinks down low on its legs and falls asleep, breathing slowly, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
@@ -141,7 +141,7 @@
    "h": 480
   },
   {
-   "name": "w5anim-beetle-sleep-s3",
+   "name": "anim-beetle-sleep-s3",
    "src": "starts/beetle-sleep.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big round teal-blue beetle with a shiny domed shell, short dark legs, a sleepy face and a little gold bow tie sleeps peacefully with its eyes shut, its shell rising and falling with slow deep breaths, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
@@ -149,7 +149,7 @@
    "h": 480
   },
   {
-   "name": "w5anim-beetle-sleep-s11",
+   "name": "anim-beetle-sleep-s11",
    "src": "starts/beetle-sleep.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a big round teal-blue beetle with a shiny domed shell, short dark legs, a sleepy face and a little gold bow tie sleeps peacefully with its eyes shut, its shell rising and falling with slow deep breaths, a smooth repeating cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
@@ -157,7 +157,7 @@
    "h": 480
   },
   {
-   "name": "w5anim-butler-walk-s3",
+   "name": "anim-butler-walk-s3",
    "src": "starts/butler-walk.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac spider butler with big black eyes, a striped purple waistcoat, a black bow tie, a white lace apron and long thin black legs walks forward in place in a huffy dignified strut, nose in the air and eyes closed, holding a silver tray up high on one hand, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
@@ -165,7 +165,7 @@
    "h": 704
   },
   {
-   "name": "w5anim-butler-walk-s11",
+   "name": "anim-butler-walk-s11",
    "src": "starts/butler-walk.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac spider butler with big black eyes, a striped purple waistcoat, a black bow tie, a white lace apron and long thin black legs walks forward in place in a huffy dignified strut, nose in the air and eyes closed, holding a silver tray up high on one hand, a smooth repeating walking cycle, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
@@ -173,7 +173,7 @@
    "h": 704
   },
   {
-   "name": "w5anim-butler-horror-s3",
+   "name": "anim-butler-horror-s3",
    "src": "starts/butler-horror.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac spider butler with big black eyes, a striped purple waistcoat, a black bow tie, a white lace apron and long thin black legs stares in horror at the tea splashed all over his tray, recoils with wide eyes and an open mouth, his legs trembling, then droops in despair, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 3,
@@ -181,12 +181,78 @@
    "h": 704
   },
   {
-   "name": "w5anim-butler-horror-s11",
+   "name": "anim-butler-horror-s11",
    "src": "starts/butler-horror.webp",
    "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a fluffy lilac spider butler with big black eyes, a striped purple waistcoat, a black bow tie, a white lace apron and long thin black legs stares in horror at the tea splashed all over his tray, recoils with wide eyes and an open mouth, his legs trembling, then droops in despair, side view facing right the whole time, it stays in the middle of the frame",
    "seed": 11,
    "w": 704,
    "h": 704
+  },
+  {
+   "name": "anim-otter-scamper-s3",
+   "src": "starts/otter-scamper.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a sleek dark brown river otter with a woven basket of fish on its back scampers forward in place on all fours in a quick bounding run, its long tail swaying, a smooth repeating running cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "anim-otter-scamper-s11",
+   "src": "starts/otter-scamper.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a sleek dark brown river otter with a woven basket of fish on its back scampers forward in place on all fours in a quick bounding run, its long tail swaying, a smooth repeating running cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "anim-otter-swim-s3",
+   "src": "starts/otter-swim.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a sleek dark brown river otter swims forward in place at the surface, its long body undulating and its tail sweeping, its paws paddling, a smooth repeating swimming cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480,
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, turning to face the camera, changing art style, leaving the frame, water, waves, ripples, splashes"
+  },
+  {
+   "name": "anim-otter-swim-s11",
+   "src": "starts/otter-swim.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a sleek dark brown river otter swims forward in place at the surface, its long body undulating and its tail sweeping, its paws paddling, a smooth repeating swimming cycle, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480,
+   "neg": "camera movement, zoom, pan, tracking shot, background change, scenery, extra limbs, extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, turning to face the camera, changing art style, leaving the frame, water, waves, ripples, splashes"
+  },
+  {
+   "name": "anim-otter-jab-s3",
+   "src": "starts/otter-jab.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a sleek dark brown river otter with a woven basket of fish on its back stands up and jabs its spear forward hard, then pulls it back to the ready, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "anim-otter-jab-s11",
+   "src": "starts/otter-jab.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a sleek dark brown river otter with a woven basket of fish on its back stands up and jabs its spear forward hard, then pulls it back to the ready, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 704,
+   "h": 704
+  },
+  {
+   "name": "anim-caiman-snap-s3",
+   "src": "starts/caiman-snap.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a caiman disguised as a mossy tree root, lies perfectly still with its eyes shut, then suddenly opens a yellow eye, lifts its long jaws and snaps them shut hard, then settles back down flat and closes its eye, looking like a mossy root again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 3,
+   "w": 832,
+   "h": 480
+  },
+  {
+   "name": "anim-caiman-snap-s11",
+   "src": "starts/caiman-snap.webp",
+   "prompt": "slothadv motion, painted storybook cartoon, static locked-off camera, flat plain grey background, smooth weighty motion, a caiman disguised as a mossy tree root, lies perfectly still with its eyes shut, then suddenly opens a yellow eye, lifts its long jaws and snaps them shut hard, then settles back down flat and closes its eye, looking like a mossy root again, side view facing right the whole time, it stays in the middle of the frame",
+   "seed": 11,
+   "w": 832,
+   "h": 480
   }
  ]
 }

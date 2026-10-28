@@ -1,0 +1,70 @@
+{
+ "hover": {
+  "n": 9,
+  "w": 195,
+  "h": 192,
+  "ax": 112.0,
+  "ay": 105.1,
+  "anchor": "middle",
+  "fps": 12,
+  "loop": true,
+  "clip": "anim-flicker-hover-s3",
+  "frames": [
+   36,
+   37,
+   38,
+   39,
+   40,
+   41,
+   42,
+   43,
+   44
+  ],
+  "k": 0.5036
+ },
+ "fly": {
+  "n": 7,
+  "w": 212,
+  "h": 207,
+  "ax": 122.7,
+  "ay": 120.4,
+  "anchor": "middle",
+  "fps": 12,
+  "loop": true,
+  "clip": "anim-flicker-fly-s11",
+  "frames": [
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14
+  ],
+  "k": 0.5585
+ },
+ "perch": {
+  "n": 10,
+  "w": 239,
+  "h": 267,
+  "ax": 116.8,
+  "ay": 264.6,
+  "anchor": "ground",
+  "fps": 8,
+  "loop": false,
+  "clip": "anim-flicker-perch-s3",
+  "frames": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   10
+  ],
+  "k": 0.554
+ }
+}

@@ -1,0 +1,9 @@
+anim jobs, 2026-10-28: spec-anim.json (30 clips = 15 moves x seeds 3 and 11), split over three jobs. Cap for the whole task $16, including the
+first-swim second pass already run (~$0.86, see w6/swim/jobs.txt).
+anim-0 6ae1ca5f41e90535df771d70 created 2026-10-28T10:11:43Z
+anim-1 6ae1cabc3fb22a235dd3d792 created 2026-10-28T10:13:17Z
+anim-2 6ae1cabe41e90535df771dbd created 2026-10-28T10:13:19Z
+anim-0 finished 10:57:13Z (45.5 min), anim-1 finished 10:55:29Z (42.2 min), anim-2 finished 10:56:35Z (43.3 min); all 30 clips made
+total 131.0 min on rtx-pro-6000 at ~$2.75/h = ~$6.00; with the first-swim pass (~$0.86) the task spent ~$6.86 of its $16 cap
+crab and piranha: no new spend (old slothadv-gen clips brought over by anim-fetch-crab-piranha, cpu-basic)
+picks: picks.json (one seed per move; the other seed kept in the bucket under anim/clips/)

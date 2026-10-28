@@ -30,9 +30,9 @@ WHO = {
 END = ', side view facing right the whole time, it stays in the middle of the frame'
 # move: what it does (the start picture and clip size are in prep_starts.STARTS)
 MOVES = {
-    'flicker-hover': 'hovers in place, its little wings beating fast in a blur, its round body bobbing gently up and down, a smooth repeating cycle',
-    'flicker-fly': 'flies forward in place, leaning forward, its wings beating hard and fast, its body bobbing, a smooth repeating flying cycle',
-    'flicker-perch': 'flutters down a little and settles as if onto a perch, folds its wings, closes its eyes contentedly and its tail glows brighter, then sits still',
+    'flicker-hover': 'hovers in place, its pink see-through wings flapping up and down in clear strokes, always clearly visible, its round body bobbing gently up and down, a smooth repeating cycle',
+    'flicker-fly': 'flies forward in place, leaning forward, its pink see-through wings flapping hard in big clear strokes, always clearly visible, its body bobbing, a smooth repeating flying cycle',
+    'flicker-perch': 'flutters down a little and settles as if onto a perch, folds its wings down along its back, closes its eyes contentedly, then sits still',
     'meeca-carry': 'walks forward in place hugging a big pinecone to her chest with both arms, a steady happy walking cycle',
     'meeca-throw': 'winds up and throws the pinecone forward overarm with a big swing, follows through and watches it fly away',
     'beetle-waddle': 'waddles forward in place on its six short legs, its round shell rocking from side to side, a smooth repeating walking cycle',
@@ -66,5 +66,4 @@ def spec(sub, prefix):
 
 
 if __name__ == '__main__':
-    spec('w5anim', ('flicker', 'meeca', 'beetle', 'butler'))
-    spec('w6anim', ('otter', 'caiman'))
+    spec('anim', ('flicker', 'meeca', 'beetle', 'butler', 'otter', 'caiman'))  # one spec, split over PARTS jobs

@@ -12,11 +12,11 @@ from pathlib import Path
 from PIL import Image
 
 GREY = (200, 200, 200)
-LONG = 640  # long side of the uploaded picture (the job scales it to the clip size)
+LONG = 448  # long side of the uploaded picture (the job scales it to the clip size; the cells are only ~100-250 px, so 448 keeps all their detail and keeps the base64 upload small)
 STARTS = {
     'flicker-hover': ('w5:flicker-08', True, (704, 704), 0.55),
     'flicker-fly': ('w5:flicker-12', True, (704, 704), 0.55),
-    'flicker-perch': ('w5:flicker-10', True, (704, 704), 0.5),
+    'flicker-perch': ('w5:flicker-08', True, (704, 704), 0.5),
     'meeca-carry': ('w5:meeca-carry-06', False, (704, 704), 0.78),
     'meeca-throw': ('w5:meeca-carry-09', False, (704, 704), 0.75),
     'beetle-waddle': ('w5:beetle-02', False, (832, 480), 0.62),
@@ -53,7 +53,10 @@ if __name__ == '__main__':
     tot = 0
     for name, (cell, flip, wh, share) in STARTS.items():
         p = out / f'{name}.webp'
-        make(cell, flip, wh, share, dirs).save(p, 'WEBP', quality=88, method=6)
+        im = make(cell, flip, wh, share, dirs)
+        im.save(p, 'WEBP', quality=88, method=6)
+        if p.stat().st_size > 9000:  # the busy butler cells: a smaller file is easier to put through the connector intact
+            im.save(p, 'WEBP', quality=70, method=6)
         tot += p.stat().st_size
         print(name, p.stat().st_size)
     print('total', tot)

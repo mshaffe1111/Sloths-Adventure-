@@ -1,0 +1,137 @@
+{
+ "flicker-hover": [
+  "w5:flicker-08",
+  true,
+  [
+   704,
+   704
+  ],
+  0.55
+ ],
+ "flicker-fly": [
+  "w5:flicker-12",
+  true,
+  [
+   704,
+   704
+  ],
+  0.55
+ ],
+ "flicker-perch": [
+  "w5:flicker-08",
+  true,
+  [
+   704,
+   704
+  ],
+  0.5
+ ],
+ "meeca-carry": [
+  "w5:meeca-carry-06",
+  false,
+  [
+   704,
+   704
+  ],
+  0.78
+ ],
+ "meeca-throw": [
+  "w5:meeca-carry-09",
+  false,
+  [
+   704,
+   704
+  ],
+  0.75
+ ],
+ "beetle-waddle": [
+  "w5:beetle-02",
+  false,
+  [
+   832,
+   480
+  ],
+  0.62
+ ],
+ "beetle-eat": [
+  "w5:beetle-10",
+  true,
+  [
+   832,
+   480
+  ],
+  0.62
+ ],
+ "beetle-sleepy": [
+  "w5:beetle-12",
+  true,
+  [
+   832,
+   480
+  ],
+  0.62
+ ],
+ "beetle-sleep": [
+  "w5:beetle-16",
+  true,
+  [
+   832,
+   480
+  ],
+  0.55
+ ],
+ "butler-walk": [
+  "w5:butler-09",
+  false,
+  [
+   704,
+   704
+  ],
+  0.78
+ ],
+ "butler-horror": [
+  "w5:butler-05",
+  false,
+  [
+   704,
+   704
+  ],
+  0.78
+ ],
+ "otter-scamper": [
+  "w6:runners-02",
+  false,
+  [
+   832,
+   480
+  ],
+  0.55
+ ],
+ "otter-swim": [
+  "w6:runners-11",
+  false,
+  [
+   832,
+   480
+  ],
+  0.35
+ ],
+ "otter-jab": [
+  "w6:runners-05",
+  false,
+  [
+   704,
+   704
+  ],
+  0.75
+ ],
+ "caiman-snap": [
+  "w6:caiman-items-02",
+  false,
+  [
+   832,
+   480
+  ],
+  0.45
+ ]
+}
