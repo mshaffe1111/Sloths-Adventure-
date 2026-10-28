@@ -573,7 +573,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     checkpoints.push({ x: wallX + 140, y: G - 230, reached: false });
     if (R.chance(0.6)) snake(wallX + plateau * R.r(0.55, 0.75), G - 230, 110);
     open(wallX + plateau);
-    run(R.r(160, 240));
+    run(R.r(110, 150));
     expert += (logX - x0) / RUN + (wallX - 55 - LOG.w - logX) / PUSH + 2.5 + (x - wallX) / RUN;
     pieces.push({ k: 'log', x0, x1: x });
   }
@@ -654,7 +654,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     open(top.x + top.width);
     run(R.r(110, 150));
     dip();
-    run(R.r(330, 370));
+    run(R.r(230, 260));
     expert += (x - x0) / RUN + (SEE.logW + 160) / PUSH + 4;
     pieces.push({ k: 'log', x0, x1: x });
   }
