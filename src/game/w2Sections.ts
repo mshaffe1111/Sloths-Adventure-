@@ -95,7 +95,7 @@ export interface W2Kit {
 
 /** the flavours each stage rolls among (2-6 is World 1's climbing stage built up the bank houses: protoStage.ts buildKapok) */
 export const W2_FLAVOURS: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-1': ['deep', 'creek', 'reeds'],
+  '2-1': ['deep', 'creek', 'reeds', 'swings'],
   '2-2': ['high', 'ponds', 'snakes', 'posts'],
   '2-3': ['posts', 'ponds', 'snakes', 'vines'],
   '2-4': ['chains', 'islands', 'reeds', 'ponds'],
@@ -120,7 +120,7 @@ export interface W2Picks {
  * snakes, posts), 2-3 and 2-8 (the cages), 2-4 and 2-7 (swings and lifts), 2-5 and 2-9 (the animals).
  */
 const BY_DRAW: Record<Exclude<W2Plan, '2-6'>, readonly string[]> = {
-  '2-1': ['deep', 'creek', 'reeds', 'reeds'],
+  '2-1': ['deep', 'creek', 'reeds', 'swings'],
   '2-2': ['snakes', 'posts', 'high', 'ponds'],
   '2-3': ['posts', 'ponds', 'snakes', 'vines'],
   '2-8': ['channels', 'reeds', 'logs', 'islands'],
@@ -251,7 +251,9 @@ class Crossings {
     else if (kind === 'swing3') k.swingRiver(3);
     else if (kind === 'swing4') k.swingRiver(4);
     else if (kind === 'island') {
-      k.swingRiver(2, { island: Math.round(k.R.r(430, 480)) });
+      // (an island long enough to land the swing and catch his breath, short enough that the logs come next: at 430-480 px it was over
+      // two seconds of plain walking)
+      k.swingRiver(2, { island: Math.round(k.R.r(320, 360)) });
       k.river(n % 2 ? -1 : 1, sp, 2, n % 2 ? 108 : 120, n % 2 ? { gap: 80 } : {});
     } else if (kind === 'frames') k.swingRiver(n % 3 === 2 ? 3 : 2, { frames: true });
     else if (kind === 'porches') {
@@ -421,6 +423,38 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
         k.channels(4);
         k.flag();
       });
+    } else if (flavour === 'swings') {
+      // the old rope swings: frames standing in the river, swung across between the log rivers
+      k.beat('Develop: the rope swings', () => {
+        k.breath();
+        k.hint(k.x + 10, 'Swing across on the rope frames!');
+        k.rest(R.r(240, 280), false);
+        k.swingRiver(2, { frames: true });
+        k.heart(k.x - 40, k.G - 60);
+        k.breath();
+        k.hint(k.x + 10, 'Deep water now. Stay on the logs!');
+        withIt(62);
+        k.breath();
+        k.swingRiver(2, { frames: true });
+        k.breath();
+        const r = withIt(66);
+        k.goldenSeed((r.x0 + r.x1) / 2, k.LOG_Y - 175);
+        k.flag();
+      });
+      k.beat('Twist: swings and the current', () => {
+        k.breath();
+        k.hint(k.x + 10, 'This river flows back at you. Wait for a log, then hop on.');
+        k.rest(R.r(240, 280), false);
+        back(58);
+        k.heart(k.x - 50, k.G - 60);
+        k.breath();
+        k.swingRiver(3, { frames: true });
+        k.breath();
+        back(62);
+        k.breath();
+        k.swingRiver(2, { frames: true });
+        k.flag();
+      });
     } else {
       // the reeds: a snake on every bank between the rivers, and mooring posts up the high banks
       k.beat('Develop: snakes in the reeds', () => {
@@ -453,11 +487,12 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
       });
     }
     k.beat('Finish: down to the village', () => {
-      type T = 'with' | 'back' | 'wide' | 'snake' | 'stones' | 'pond' | 'sandbar' | 'post' | 'channels';
+      type T = 'with' | 'back' | 'wide' | 'snake' | 'stones' | 'pond' | 'sandbar' | 'post' | 'channels' | 'swing';
       const kinds: Record<string, T[]> = {
         deep: ['with', 'back', 'wide', 'sandbar', 'with', 'back'],
         creek: ['channels', 'pond', 'back', 'channels', 'stones', 'pond'],
         reeds: ['snake', 'post', 'snake', 'snake', 'post', 'snake'],
+        swings: ['swing', 'with', 'swing', 'back', 'swing'],
       };
       const turns = new Turns<T>(rng, kinds[flavour], 2);
       let n = 0;
@@ -474,7 +509,8 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
           else k.breath();
           if (t === 'with') withIt(72 + n + (late ? 4 : 0));
           else if (t === 'back') back(62 + n + (late ? 4 : 0));
-          else if (t === 'wide') k.river(1, 76, 3, 122);
+          else if (t === 'wide') k.river(1, 78, 2, 112);
+          else if (t === 'swing') k.swingRiver(n % 3 === 1 ? 3 : 2, { frames: true });
           else if (t === 'stones') k.stones(R.i(4, 5), { wide: true });
           else if (t === 'pond') k.lilyPond(R.i(4, 6), false);
           else if (t === 'channels') k.channels(R.i(3, 5));
@@ -874,9 +910,9 @@ const PLANS: Record<Exclude<W2Plan, '2-6'>, (k: W2Kit, flavour: string, rng: Rng
     // the river; or the river itself, the logs and the sandbars
     const kinds: Record<string, Kind[]> = {
       porches: ['porches', 'porches', 'with', 'porches'],
-      lifts: ['lift', 'lift', 'snake', 'lift'],
+      lifts: ['lift', 'snake', 'lift', 'with', 'lift'],
       swings: ['frames', 'frames', 'frames', 'back'],
-      logs: ['with', 'back', 'snake', 'sandbar', 'back'],
+      logs: ['with', 'back', 'snake', 'sandbar', 'with'],
     };
     const cross = new Crossings(k, { speed: 66 });
     cross.know('porches');

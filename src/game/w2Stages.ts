@@ -388,7 +388,8 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     const x0 = x;
     close();
     open(x, G - 20);
-    run(R.r(100, 130));
+    // (wide enough to land a flick on: at 100-130 px a running flick from its foot carried him over it, plainWalk.test.ts)
+    run(R.r(170, 200));
     close();
     open(x, G);
     run(R.r(20, 40));
