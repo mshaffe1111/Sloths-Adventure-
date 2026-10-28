@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { clipLength, frameAt, timeline, type Cast } from './clipPlayer.ts';
-import { POKEY_CAST, meecaStandIn } from './titleCast.ts';
+import { MEECA_CAST, POKEY_CAST } from './titleCast.ts';
 
 const F = { x: 0, y: 0, w: 10, h: 10, ax: 5, ay: 10 };
 const SHOW: Cast = {
@@ -55,13 +55,21 @@ test('frames: the idle goes round, a moment holds on its last frame, nothing is 
   assert.equal(frameAt(SHOW, segs, 0.5).frame, 0, 'the idle loop has come round');
 });
 
-test('the stand-in casts play the frames there are: Pokey and Meeca rest on their idle and blink now and then', () => {
-  for (const cast of [POKEY_CAST, meecaStandIn('x' as unknown as CanvasImageSource, 100, 200, 50, 198, 190)]) {
-    const segs = timeline(cast, 11, 120);
-    const blinks = segs.filter((s) => s.clip === 'blink');
-    assert.ok(blinks.length >= 120 / 7 && blinks.length <= 120 / 2.5, `${blinks.length} blinks in two minutes`);
-    for (const b of blinks) assert.ok(b.end - b.start < 0.2, 'a blink is quick');
-    assert.equal(frameAt(cast, segs, 0.5).clip, 'idle');
-    for (const c of Object.values(cast.clips)) assert.ok(cast.sheets[c.sheet], `${c.sheet} is a sheet of the cast`);
+test("the title casts: each rests on its looping idle and plays its moments now and then, starting each from the idle's first frame", () => {
+  for (const cast of [POKEY_CAST, MEECA_CAST]) {
+    const segs = timeline(cast, 11, 240);
+    const idle = cast.clips[cast.idle];
+    assert.ok(idle.loop, 'the idle loops');
+    const turn = idle.frames.length / idle.fps;
+    for (const s of segs.filter((x) => x.clip === cast.idle).slice(0, -1)) {
+      const turns = (s.end - s.start) / turn;
+      assert.ok(Math.abs(turns - Math.round(turns)) < 1e-6, 'an idle stretch is whole turns of its loop');
+    }
+    const moments = segs.filter((s) => s.clip !== cast.idle);
+    assert.ok(moments.length >= 240 / 16 && moments.length <= 240 / 5, `${moments.length} moments in four minutes`);
+    for (const c of Object.values(cast.clips)) {
+      assert.ok(cast.sheets[c.sheet], `${c.sheet} is a sheet of the cast`);
+      for (const f of c.frames) assert.ok(f.ax > 0 && f.ax < f.w && f.ay > f.h * 0.9 && f.ay <= f.h, 'the feet are at the bottom of the frame');
+    }
   }
 });

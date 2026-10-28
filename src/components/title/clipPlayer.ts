@@ -66,8 +66,12 @@ export function timeline(cast: Cast, seed: number, until: number): Segment[] {
   const [g0, g1] = cast.gap;
   let t = 0;
   let last = '';
+  // (a looping idle rests for whole turns of its loop, so a moment always starts from the idle's first frame: no jump between them)
+  const idle = cast.clips[cast.idle];
+  const turn = idle?.loop ? clipLength(idle) : 0;
   while (t < until) {
-    const rest = g0 + next() * Math.max(0, g1 - g0);
+    let rest = g0 + next() * Math.max(0, g1 - g0);
+    if (turn > 0) rest = Math.max(1, Math.round(rest / turn)) * turn;
     out.push({ clip: cast.idle, start: t, end: t + rest });
     t += rest;
     if (!cast.moments.length) break;

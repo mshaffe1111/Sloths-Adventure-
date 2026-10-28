@@ -345,7 +345,6 @@
   background: var(--gx-parch) padding-box, var(--gx-wood-grain) border-box, linear-gradient(180deg, #a86d38, #7a4a20) border-box;
   box-shadow: 0 0 0 3px #2a1608, inset 0 0 0 2px rgba(120, 80, 30, .35), inset 0 0 30px rgba(140, 90, 30, .32), 0 20px 50px rgba(0, 0, 0, .6);
 }
-.clr-ribbon h2 { font-family: var(--font-fun); font-weight: 400; }
 .clr-hero::before { background: radial-gradient(circle, rgba(255, 214, 110, .55), rgba(255, 214, 110, 0) 68%); }
 .clr-stage { color: var(--gx-ink-soft); font-weight: 700; }
 .clr-chip { background: var(--gx-wood-grain), linear-gradient(180deg, #5a3618, #452812); border: 2px solid #2a1608; color: #fff4d8; }
@@ -558,3 +557,28 @@
   .tr-dot { top: -38px; }
 }
 @media (prefers-reduced-motion: reduce) { .pm-peek, .pm-tiles > *, .pm-skills, .pm-side, .tr-inner { animation: none; } }
+/* the stage-cleared card: Dot perched beside Pokey */
+.clr-hero { position: relative; }
+.clr-dot { right: -6px; top: 4px; animation: kit-in .5s cubic-bezier(.2, 1.3, .4, 1) .55s backwards; }
+@media (prefers-reduced-motion: reduce) { .clr-dot { animation: none; } }
+
+/* a pop-up is open over the title: its own buttons and corner pieces step back, so nothing shows round the panel's edge */
+.gx2-covered .gx2-ui { opacity: 0; transition: opacity .2s ease; pointer-events: none; }
+/* a phone on its side: the menu fits without cutting anything; a column that must scroll fades softly at its edges, and ends on whole rows */
+@media (orientation: landscape) and (max-height: 560px) {
+  .pm-main, .pm-side { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 8px, #000 calc(100% - 18px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 8px, #000 calc(100% - 18px), transparent 100%); padding-bottom: 18px; }
+  .pm-tiles { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .pm-tiles > *, .pm-tiles > :last-child:nth-child(odd), .pm-tiles > :nth-last-child(2):nth-child(3n+1), .pm-tiles > :last-child:nth-child(3n+2), .pm-tiles > :last-child:nth-child(3n+1) { grid-column: auto; min-height: 66px; padding: 6px 3px 5px; gap: 3px; flex-direction: column; justify-content: center; text-align: center; }
+  .pm-tiles > :last-child:nth-child(odd) .pm-tile-t { align-items: center; }
+  .pm-tiles:has(> :nth-child(6)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pm-tile b { font-size: 12.5px; white-space: normal; line-height: 1.05; }
+  .pm-tile small { display: none; }
+  .pm-tile-ic { width: 30px; height: 30px; }
+  .pm-tile-ic .ic { width: 18px; height: 18px; }
+  .pm-tile-badge { top: 3px; right: 3px; }
+  .pm-sound { padding: 7px 0 6px; gap: 3px; }
+  .pm-polish-note { font-size: 11.5px; }
+  .pm-vol { height: 34px; }
+  .pm-skill b { font-size: 13px; }
+  .tr-screen { -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent); }
+}

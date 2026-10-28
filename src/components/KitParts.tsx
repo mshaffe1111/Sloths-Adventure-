@@ -1,7 +1,8 @@
 import React from 'react';
 import { DOT_PERCH_URL } from './hud/painted.tsx';
 import { DOT_PERCH_ATLAS_SIZE, DOT_PERCH_FRAMES } from '../game/dotPerchAtlasData.ts';
-import { POKEY_IDLE_URL } from './title/titleCast.ts';
+/** Pokey's painted title portrait */
+const POKEY_IDLE_URL = new URL('../assets/hero/title-idle.webp', import.meta.url).href;
 
 /**
  * The shared kit's character pieces (2026-10-28, Matt: "the same type of detail with the other menus, so it looks consistent"): only

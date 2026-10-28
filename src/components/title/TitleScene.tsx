@@ -1,13 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { drawMeecaFrame, jennifurSpriteReady, MEECA_UNITS } from '../../game/jennifurSprite.ts';
-import { MEECA_FRAMES, MEECA_STAND_H } from '../../game/meecaStandardData.ts';
 import { LEAVES_URL, warmLeaves } from '../../game/leafSprites.ts';
 import { LEAF_FRAMES } from '../../game/leafAtlasData.ts';
 import { drawPaintedLeaf } from '../../game/leafSprites.ts';
 import { drawPaintedButterfly } from '../../game/butterflySprites.ts';
 import { drawPlantAt, plantsPainted } from '../../game/plantSprites.ts';
-import { frameAt, timeline, type Cast, type Segment } from './clipPlayer.ts';
-import { POKEY_CAST, meecaStandIn } from './titleCast.ts';
+import { frameAt, timeline, type Cast, type ClipFrame, type Segment } from './clipPlayer.ts';
+import { MEECA_CAST, POKEY_CAST } from './titleCast.ts';
 
 /**
  * The living title scene (Matt, 2026-10-28: "a highly polished start screen"): one canvas, drawn at the game's own 30 frames a second.
@@ -269,187 +267,56 @@ function loadLog() {
   logImg = loadImage(TITLE_LOG_URL, () => (logReady = true));
 }
 
-// ---- the pair's casts: the sheets they are drawn from, loaded once ----
+// ---- the pair's casts: their clip sheets (titleCast.ts). The idles load with the title; a moment's sheet loads a few seconds before it
+// plays and is let go after, so only the idles and one moment are ever held decoded ----
 interface LiveCast {
   cast: Cast;
   segs: Segment[];
-  pics: Record<string, CanvasImageSource | null>;
-  ready: boolean;
+  pics: Record<string, HTMLImageElement | null | undefined>;
 }
 let pokey: LiveCast | null = null;
 let meeca: LiveCast | null = null;
-function loadPokey() {
-  if (pokey || typeof Image === 'undefined') return;
-  const live: LiveCast = { cast: POKEY_CAST, segs: timeline(POKEY_CAST, 17, 900), pics: {}, ready: false };
-  pokey = live;
-  const names = Object.keys(POKEY_CAST.sheets);
-  let left = names.length;
-  for (const n of names) {
-    const src = POKEY_CAST.sheets[n];
-    if (typeof src !== 'string') {
-      live.pics[n] = src;
-      if (--left === 0) live.ready = true;
-      continue;
-    }
-    loadImage(src, (im) => {
-      live.pics[n] = im;
-      if (--left === 0) live.ready = true;
-    });
-  }
+function liveCast(cast: Cast, seed: number): LiveCast {
+  return { cast, segs: timeline(cast, seed, 1800), pics: {} };
 }
-/** Meeca's stand-in sheet: her standing frame and her blink from her standard sheet, cut facing Pokey, side by side */
-function loadMeeca(): boolean {
-  if (meeca) return meeca.ready;
-  if (!jennifurSpriteReady()) return false;
-  const a = MEECA_FRAMES.idle, bl = MEECA_FRAMES.blink;
-  if (!a || !bl) return false;
-  // (both frames at the one scale of her standing frame: one pixel of the stand-in sheet is one pixel of her own sheet)
-  const one = 1 / ((MEECA_UNITS / MEECA_STAND_H) * a.s);
-  const fw = Math.ceil(Math.max(a.w, bl.w)), fh = Math.ceil(Math.max(a.h, bl.h));
-  const sheet = document.createElement('canvas');
-  sheet.width = fw * 2;
-  sheet.height = fh;
-  const g = sheet.getContext('2d')!;
-  for (const [i, name] of [[0, 'idle'], [1, 'blink']] as const) {
-    g.save();
-    // her feet at the same place in both frames, facing left (toward Pokey), the number on her bib turned back
-    g.translate(i * fw + fw - a.ax, a.ay);
-    g.scale(-1, 1);
-    drawMeecaFrame(g, name, 1, one, true);
-    g.restore();
-  }
-  const cast = meecaStandIn(sheet, fw, fh, fw - a.ax, a.ay, a.ay - 4);
-  meeca = { cast, segs: timeline(cast, 5, 900), pics: { stand: sheet }, ready: true };
-  return true;
+/** start fetching a sheet (once); true when it is in */
+function ensure(live: LiveCast, sheet: string): boolean {
+  const have = live.pics[sheet];
+  if (have) return true;
+  if (have === null) return false;
+  const src = live.cast.sheets[sheet];
+  if (typeof src !== 'string') return false;
+  live.pics[sheet] = null;
+  loadImage(src, (im) => {
+    if (live.pics[sheet] === null) live.pics[sheet] = im ?? undefined;
+  });
+  return false;
 }
-
-/**
- * One frame of a cast, cut out of its sheet, cleaned and lit: the sheets keep a faint haze of near-clear pixels round each figure, which
- * the light would turn into a pale box behind them, so anything fainter than a whisper goes (the soft edge of the figure stays); then
- * the world's light is graded over it and a thin rim of that light is set on its lit edge. Made once per frame and light.
- */
-interface Lit {
-  cv: HTMLCanvasElement;
-  ax: number;
-  ay: number;
+function loadCasts() {
+  if (typeof Image === 'undefined') return;
+  if (!pokey) pokey = liveCast(POKEY_CAST, 17);
+  if (!meeca) meeca = liveCast(MEECA_CAST, 5);
+  ensure(pokey, POKEY_CAST.idle);
+  ensure(meeca, MEECA_CAST.idle);
 }
-const LIT = new Map<string, Lit>();
-function clean(cv: HTMLCanvasElement) {
-  const c = cv.getContext('2d', { willReadFrequently: true });
-  if (!c || !cv.width || !cv.height) return;
-  const W = cv.width, Hh = cv.height;
-  const im = c.getImageData(0, 0, W, Hh);
-  const d = im.data;
-  // (1) the haze goes and the figure is made solid: below a whisper is clear, above two thirds is opaque, a short ramp between
-  for (let i = 3; i < d.length; i += 4) {
-    const a = d[i];
-    d[i] = a < 34 ? 0 : a >= 170 ? 255 : Math.round(((a - 34) / 136) * 255);
-  }
-  // (2) small holes inside the figure (a sheet keyed the white of Meeca's headband out, so the forest showed through it) are filled
-  // with the colour round them. A hole is a clear patch that cannot be reached from the edge of the frame, and is small.
-  const n = W * Hh;
-  const seen = new Uint8Array(n);
-  const clear = (k: number) => d[k * 4 + 3] < 128;
-  const stack: number[] = [];
-  for (let x = 0; x < W; x++) for (const y of [0, Hh - 1]) if (clear(y * W + x)) { seen[y * W + x] = 1; stack.push(y * W + x); }
-  for (let y = 0; y < Hh; y++) for (const x of [0, W - 1]) if (clear(y * W + x) && !seen[y * W + x]) { seen[y * W + x] = 1; stack.push(y * W + x); }
-  while (stack.length) {
-    const k = stack.pop()!;
-    const x = k % W, y = (k - x) / W;
-    for (const q of [x > 0 ? k - 1 : -1, x < W - 1 ? k + 1 : -1, y > 0 ? k - W : -1, y < Hh - 1 ? k + W : -1]) {
-      if (q >= 0 && !seen[q] && clear(q)) {
-        seen[q] = 1;
-        stack.push(q);
-      }
-    }
-  }
-  const limit = n * 0.006;
-  for (let k0 = 0; k0 < n; k0++) {
-    if (seen[k0] || !clear(k0)) continue;
-    // one hole: gather it, and the colour of the solid pixels round it
-    const hole: number[] = [];
-    let r = 0, g = 0, b = 0, m = 0;
-    seen[k0] = 1;
-    stack.push(k0);
-    while (stack.length) {
-      const k = stack.pop()!;
-      hole.push(k);
-      const x = k % W, y = (k - x) / W;
-      for (const q of [x > 0 ? k - 1 : -1, x < W - 1 ? k + 1 : -1, y > 0 ? k - W : -1, y < Hh - 1 ? k + W : -1]) {
-        if (q < 0) continue;
-        if (clear(q)) {
-          if (!seen[q]) {
-            seen[q] = 1;
-            stack.push(q);
-          }
-        } else {
-          r += d[q * 4];
-          g += d[q * 4 + 1];
-          b += d[q * 4 + 2];
-          m++;
-        }
-      }
-    }
-    if (hole.length > limit || !m) continue;
-    // (a keyed-out white: lighten the edge colour toward white, as the paint there was)
-    const lr = Math.min(255, (r / m) * 0.35 + 170), lg = Math.min(255, (g / m) * 0.35 + 166), lb = Math.min(255, (b / m) * 0.35 + 158);
-    for (const k of hole) {
-      d[k * 4] = lr;
-      d[k * 4 + 1] = lg;
-      d[k * 4 + 2] = lb;
-      d[k * 4 + 3] = 255;
-    }
-  }
-  c.putImageData(im, 0, 0);
-}
-function litFrame(live: LiveCast, who: string, clip: string, i: number, pal: Palette, pk: string): Lit | null {
-  const key = `${who}:${clip}:${i}|${pk}`;
-  const have = LIT.get(key);
-  if (have) return have;
-  const c = live.cast.clips[clip];
-  const f = c?.frames[i];
-  const pic = c && live.pics[c.sheet];
-  if (!f || !pic) return null;
-  if (LIT.size > 120) LIT.clear();
-  const P = 4;
-  const w = f.w + P * 2, h = f.h + P * 2;
-  const cut = document.createElement('canvas');
-  cut.width = w;
-  cut.height = h;
-  const cg = cut.getContext('2d', { willReadFrequently: true })!;
-  // (Meeca's stand-in frames are painted paler and flatter than Pokey's: a touch more colour and contrast puts them on one footing)
-  if (who === 'm' && 'filter' in cg) cg.filter = 'saturate(1.14) contrast(1.06)';
-  cg.drawImage(pic, f.x, f.y, f.w, f.h, P, P, f.w, f.h);
-  if ('filter' in cg) cg.filter = 'none';
-  clean(cut);
-  const sprite = document.createElement('canvas');
-  sprite.width = w;
-  sprite.height = h;
-  const s = sprite.getContext('2d')!;
-  s.drawImage(cut, 0, 0);
-  s.globalCompositeOperation = 'source-atop';
-  const gs = s.createLinearGradient(0, P, 0, P + f.ay);
-  gs.addColorStop(0, rgba(pal.light, 0.14));
-  gs.addColorStop(0.55, rgba(pal.light, 0.03));
-  gs.addColorStop(0.88, rgba(pal.shade, 0.14));
-  gs.addColorStop(1, rgba(pal.shade, 0.26));
-  s.fillStyle = gs;
-  s.fillRect(0, 0, w, h);
-  s.fillStyle = rgba(pal.shade, 0.22 * pal.dark);
-  s.fillRect(0, 0, w, h);
-  const out = document.createElement('canvas');
-  out.width = w;
-  out.height = h;
-  const o = out.getContext('2d')!;
-  o.drawImage(cut, -1.6, -2.2);
-  o.globalCompositeOperation = 'source-in';
-  o.fillStyle = rgba(mix(pal.light, [255, 255, 255], 0.3), 0.34);
-  o.fillRect(0, 0, w, h);
-  o.globalCompositeOperation = 'source-over';
-  o.drawImage(sprite, 0, 0);
-  const lit = { cv: out, ax: f.ax + P, ay: f.ay + P };
-  LIT.set(key, lit);
-  return lit;
+/** the frame to draw at time t (the idle's, while a moment's sheet is still on its way); fetches what comes next, lets go of the rest */
+function castFrame(live: LiveCast, t: number): { pic: HTMLImageElement; f: ClipFrame } | null {
+  const { cast, segs } = live;
+  const at = frameAt(cast, segs, t);
+  const total = segs.length ? segs[segs.length - 1].end : 1;
+  const u = ((t % total) + total) % total;
+  // the next moment's sheet, three seconds ahead; any other moment's let go
+  const soon = new Set<string>([cast.idle]);
+  for (const sg of segs) if (sg.end > u && sg.start < u + 3) soon.add(cast.clips[sg.clip]?.sheet ?? cast.idle);
+  for (const sh of soon) ensure(live, sh);
+  for (const k of Object.keys(live.pics)) if (!soon.has(k) && live.pics[k]) live.pics[k] = undefined;
+  const clip = cast.clips[at.clip];
+  const pic = clip && live.pics[clip.sheet];
+  if (clip && pic) return { pic, f: clip.frames[at.frame] };
+  const idle = cast.clips[cast.idle];
+  const ip = live.pics[idle.sheet];
+  if (!ip) return null;
+  return { pic: ip, f: idle.frames[Math.floor(u * idle.fps) % idle.frames.length] };
 }
 
 /** the world's light over a picture: warm from above, the undergrowth's shade at the foot, a little of the world's dusk overall */
@@ -545,8 +412,7 @@ export const TitleScene = React.forwardRef<
     const list = key.split(',').map(Number).filter((n) => n > 0);
     if (!list.length) return;
     const reduced = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    loadPokey();
-    loadMeeca();
+    loadCasts();
     loadLog();
     warmLeaves();
     plantsPainted();
@@ -577,6 +443,8 @@ export const TitleScene = React.forwardRef<
       g.fillStyle = rg;
       g.fillRect(0, 0, 48, 48);
     }
+    // the pair's own small picture for lighting a frame
+    const pairLight = document.createElement('canvas');
     // the log and its ferns, in the world's light (made again only when the light or the size changes)
     const logLayer = { key: '', back: document.createElement('canvas'), front: document.createElement('canvas') };
 
@@ -593,7 +461,7 @@ export const TitleScene = React.forwardRef<
       if (!cv || document.hidden) return;
       const st = state.current;
       const first = get(list[0]);
-      const ready = first.ready && (backdrop || (!!pokey?.ready && loadMeeca() && logReady));
+      const ready = first.ready && (backdrop || (!!pokey?.pics[POKEY_CAST.idle] && !!meeca?.pics[MEECA_CAST.idle] && logReady));
       st.ready = ready;
       // the game's own pace: 30 frames a second (10 with a menu over it, 4 while the splash still covers it)
       // (a backdrop comes on by itself, and draws a little less often: the screen over it is what the player looks at)
@@ -642,7 +510,8 @@ export const TitleScene = React.forwardRef<
       const b = box && box.width > 40 && box.height > 40 ? box : null;
       // (never drawn more than about twice the size of their painted frames: today's frames are small, and blown up further they go
       // soft; the art helper's sheets at 600 px and more let them grow to fill the box)
-      const sharp = pokey && meeca ? (Math.min(pokey.cast.height, meeca.cast.height / 0.95) * 2.1) / dpr : h;
+      // (never drawn more than about twice the size of their painted frames)
+      const sharp = (POKEY_CAST.height * 2.1) / dpr;
       // (sideways the box runs to the bottom of the screen: the pair stand on the log with a band of its face showing under them)
       const H = Math.min(sharp, b ? (portrait ? Math.min(b.height * 0.9, w * 0.72) : Math.min(b.height / 1.6, b.width * 0.54)) : h * 0.3);
       const cx = b ? b.left + b.width / 2 : w / 2;
@@ -777,6 +646,7 @@ export const TitleScene = React.forwardRef<
 
       // ---- the pair on their log ----
       if (logImg && pokey && meeca && !backdrop) {
+        const lightCv = pairLight;
         c.save();
         camera(1);
         c.globalAlpha = light;
@@ -820,7 +690,10 @@ export const TitleScene = React.forwardRef<
         // they come up with the light; then only what was painted moves, and a very slow breath
         const show = reduced ? light : Math.min(1, Math.max(0, (arr - 0.35) / 0.9));
         const sep = H * 0.34;
-        for (const [live, who, x, tall, seed] of [[pokey, 'p', cx - sep, H, 0], [meeca, 'm', cx + sep, H * 0.95, 2.1]] as const) {
+        // (one scale for both: the art has them at their real sizes, Meeca a head shorter)
+        const k = H / POKEY_CAST.height;
+        for (const [live, x, seed] of [[pokey, cx - sep, 0], [meeca, cx + sep * 0.95, 2.1]] as const) {
+          const tall = live.cast.height * k;
           // contact shadow on the moss
           const g = c.createRadialGradient(x, feet + 1, 0, x, feet + 1, tall * 0.25);
           g.addColorStop(0, `rgba(25,14,4,${0.5 * show})`);
@@ -829,16 +702,33 @@ export const TitleScene = React.forwardRef<
           c.beginPath();
           c.ellipse(x, feet + 1, tall * 0.25, tall * 0.05, 0, 0, Math.PI * 2);
           c.fill();
-          const at = frameAt(live.cast, live.segs, t);
-          const lit = litFrame(live, who, at.clip, at.frame, pal, pk) ?? litFrame(live, who, live.cast.idle, 0, pal, pk);
-          if (!lit) continue;
-          const k = tall / live.cast.height;
-          const breath = reduced ? 1 : 1 + Math.sin((t + seed) * ((Math.PI * 2) / 4.6)) * 0.005;
+          const fr = castFrame(live, t + seed);
+          if (!fr) continue;
+          const { pic, f } = fr;
+          // the world's light over the frame, made in a small picture of its own (warm from above, the undergrowth's shade at the feet)
+          if (lightCv.width < f.w || lightCv.height < f.h) {
+            lightCv.width = Math.max(lightCv.width, f.w);
+            lightCv.height = Math.max(lightCv.height, f.h);
+          }
+          const lc = lightCv.getContext('2d')!;
+          lc.globalCompositeOperation = 'source-over';
+          lc.clearRect(0, 0, lightCv.width, lightCv.height);
+          lc.drawImage(pic, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+          lc.globalCompositeOperation = 'source-atop';
+          const gr = lc.createLinearGradient(0, f.ay - live.cast.height, 0, f.ay);
+          gr.addColorStop(0, rgba(pal.light, 0.13));
+          gr.addColorStop(0.55, rgba(pal.light, 0.02));
+          gr.addColorStop(0.88, rgba(pal.shade, 0.14));
+          gr.addColorStop(1, rgba(pal.shade, 0.26));
+          lc.fillStyle = gr;
+          lc.fillRect(0, 0, f.w, f.h);
+          lc.fillStyle = rgba(pal.shade, 0.2 * pal.dark);
+          lc.fillRect(0, 0, f.w, f.h);
           c.save();
           c.globalAlpha = light * show;
           c.translate(x, feet + 1);
-          c.scale(k, k * breath);
-          c.drawImage(lit.cv, -lit.ax, -lit.ay);
+          c.scale(k, k);
+          c.drawImage(lightCv, 0, 0, f.w, f.h, -f.ax, -f.ay, f.w, f.h);
           c.restore();
         }
         c.drawImage(logLayer.front, lx0, ly0, lw, lh);

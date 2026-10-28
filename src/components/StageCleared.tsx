@@ -1,5 +1,6 @@
 import React from 'react';
 import { GhostOnExit } from './fx/exitGhost.ts';
+import { DotPerched } from './KitParts.tsx';
 import { sound } from '../game/audio.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { HeroPose } from './HeroPose.tsx';
@@ -93,6 +94,8 @@ export const StageCleared: React.FC<StageClearedProps> = ({ levelConfig, starsEa
 
         <div className="clr-hero">
           <HeroPose frame={pose} height={heroH} maxWidth={heroW} className={`clr-pose s${starsEarned}`} label={poseLabel} />
+          {/* Dot, his guide, perched beside him for the moment (painted perch frame, held still) */}
+          <DotPerched size={58} className="clr-dot" facing="left" />
         </div>
 
         <div className="clr-main">
