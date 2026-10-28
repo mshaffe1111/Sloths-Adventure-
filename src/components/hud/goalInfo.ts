@@ -26,8 +26,8 @@ export interface GoalInfo {
   /** the noun for the counter's accessible label ("petals") */
   noun: string;
   /**
-   * a collect or rescue stage: the counter also shows, small and light, how far along the stage he is (QA v200, 5-3 and 5-5 upright:
-   * the goal count alone gave no sense of how much was left)
+   * a collect, rescue or beat-the-animals stage: the counter also shows, small and light, how far along the stage he is (QA v200, 5-3
+   * and 5-5 upright: the goal count alone gave no sense of how much was left; and 1-9 and 2-5, 2026-10-28)
    */
   far?: boolean;
 }
@@ -108,5 +108,6 @@ export function goalInfo(cfg: Cfg, dotStage = false): GoalInfo {
     icon = { kind: 'drawn', name: 'foe' };
     slotIcon = () => icon;
   }
-  return { kind: 'count', line, sub: 'to open the sanctuary', icon, slotIcon, noun: g.many, far: type === 'harvest' || type === 'rescue' };
+  // (a beat-the-animals stage too: 1-9's and 2-5's counters showed no sense of how much stage was left, QA 2026-10-28)
+  return { kind: 'count', line, sub: 'to open the sanctuary', icon, slotIcon, noun: g.many, far: type === 'harvest' || type === 'rescue' || type === 'purge' || type === 'gauntlet' };
 }

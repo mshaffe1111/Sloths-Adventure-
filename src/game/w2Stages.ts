@@ -48,6 +48,11 @@ export const CAGES_28 = 7;
 export const COURT_GOAL_29 = 14;
 /** a reed island's top in a rising river: just above the still water (it starts 20 px below), so the water covers it as it rises */
 export const ISLAND_TOP = 600;
+/**
+ * px of plain bank from the spawn before a stage's first danger (World 2): more than four seconds of walking at his top run (285 px/s),
+ * so Dot's first tip (she waits 2.5 s at a stage's start: dotGuide.ts CALM) is up before anything can hurt him (stageStart.test.ts)
+ */
+export const START_WALK = 1150;
 /** the stages with puzzle rooms (puzzleKit.ts): the reed cages on their pulleys (2-3, 2-8), the ferry's sluice (2-2), the court's bell (2-9) */
 export const W2_PUZZLES: ReadonlySet<string> = new Set(['2-2', '2-3', '2-8', '2-9']);
 /** a stone weighs this much in a counter-basket (puzzleKit.ts ITEM.stone) */
@@ -1161,11 +1166,12 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       // the court gate: the bell beside it (the first bell: no guard this side of the gate, and nothing to fall in)
       const g = bellGate({ enter: 'Ring the court bell. Tap it!', open: 'Dong! The gate opens. The guards come to look at a bell.' });
       // the first guard, past the gate: near enough to hear the bell, and come to look
+      // (the guard's tip before the first guard: it was said 240 px past him, after the first jab, the first-timer bot 2026-10-28)
+      hint(g.bellX + 160, 'Head-on he blocks. Hit him from behind, or kick him!');
       run(R.r(220, 260));
       guard(Math.max(x, g.bellX + 520), G, 100);
       run(R.r(280, 320));
       expert += 4;
-      hint(x - 240, 'Head-on he blocks. Hit him from behind, or kick him!');
       guardBank(2, [320, 380]);
       narrow(1, 66);
       flag();
@@ -1238,12 +1244,20 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     // wide to jump, its raft moored under the far bank behind a sluice, and a lever to set the current running.
     open(0);
     beat('Learn: flowers over the water', () => {
-      run(R.r(200, 240));
+      // (four seconds and more of dry bank with flowers before the first water, and that first river costs no life: a splash puts him
+      // back on the bank. It was 0.8 s of walking to deep water, and QA's upright player lost a life at 0.9 s, before Dot's gap tip could
+      // come: 2026-10-28)
+      // (no petals on it: the gap's lesson comes first, then the petals')
+      rest(START_WALK, false);
       hint(180, 'Gather flowers for the river king’s crown!');
-      river(1, 60, 2, 124, { flowers: 6 });
+      // (the first river's tip well before its edge, about 3 s of walking: the lesson for it comes only 340 px short, and Dot takes a
+      // moment to fly in)
+      hint(x - 750, 'Flick up when a log drifts close.');
+      river(1, 60, 2, 124, { flowers: 6, safe: true, tag: 'learn' });
       breath();
+      // (the pond's tip before the pond, not after it: it was said 260 px before its far bank, after the first drownings)
+      hint(x + 60, 'Hop the lily pads. The flowers show the way.');
       lilyPond(5);
-      hint(x - 260, 'Hop the lily pads. The flowers show the way.');
       breath();
       stones(3, { flowers: true });
       flag();
@@ -1377,7 +1391,9 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       expert += (x - ix) / RUN + 2;
     };
     beat('Learn: one snapper', () => {
-      run(R.r(300, 340));
+      // (the first snapper well past four seconds of walking: it was 1 s in, and bit him before Dot's first line, QA 2026-10-28)
+      // (and past five and a half seconds: at 4.7 s the first-timer bot's plain walk was still bitten, 2026-10-28)
+      rest(START_WALK + 400);
       hint(200, 'Snappers! Hit one from behind, or jump on it.');
       run(R.r(120, 160));
       turtle(x, G, 100);

@@ -6,14 +6,15 @@ import { goalInfo } from './goalInfo.ts';
 
 const start = (o: Partial<HudValues> = {}): HudValues => ({ hp: 5, maxHp: 5, goal: 0, target: 16, lives: 3, score: 0, stage: '1-5', power: null, ...o });
 
-test('at the start of a stage: hearts and goal small, the stage name blooms, lives, score and power hidden', () => {
+test('at the start of a stage: hearts, lives and goal small, the stage name blooms, score and power hidden', () => {
   const t = newBloom();
   bloomUpdate(t, start(), 0);
   const v = bloomView(t, 10);
   assert.equal(v.hearts, 'small');
   assert.equal(v.goal, 'small');
   assert.equal(v.stage, 'bloom');
-  assert.equal(v.lives, 'hidden');
+  // (lives show from the start: QA 2026-10-28, they were hidden until the first was lost)
+  assert.equal(v.lives, 'small');
   assert.equal(v.score, 'hidden');
   assert.equal(v.power, 'hidden');
   // and the name goes away by itself
@@ -25,7 +26,7 @@ test('nothing changes when the same values come again (the game re-renders many 
   bloomUpdate(t, start(), 0);
   for (let ms = 100; ms < 5000; ms += 33) bloomUpdate(t, start(), ms);
   const v = bloomView(t, 5000);
-  assert.deepEqual([v.hearts, v.goal, v.lives, v.score, v.stage, v.power], ['small', 'small', 'hidden', 'hidden', 'hidden', 'hidden']);
+  assert.deepEqual([v.hearts, v.goal, v.lives, v.score, v.stage, v.power], ['small', 'small', 'small', 'hidden', 'hidden', 'hidden']);
   assert.equal(nextBloomEdge(t, 5000), -1);
 });
 
@@ -52,7 +53,7 @@ test('two hits close together add up while the bloom is still up', () => {
   assert.equal(bloomView(t, 1500).heartDelta, -2);
 });
 
-test('a pickup blooms the goal counter; lives and score bloom in for a moment and go away', () => {
+test('a pickup blooms the goal counter; lives bloom for a moment and settle small, the score blooms in and goes away', () => {
   const t = newBloom();
   bloomUpdate(t, start(), 0);
   bloomUpdate(t, start({ goal: 1, score: 100 }), 3000);
@@ -68,7 +69,7 @@ test('a pickup blooms the goal counter; lives and score bloom in for a moment an
   v = bloomView(t, 6100);
   assert.equal(v.lives, 'bloom');
   assert.equal(v.livesDelta, -1);
-  assert.equal(bloomView(t, 6000 + BLOOM_MS.lives + 1).lives, 'hidden');
+  assert.equal(bloomView(t, 6000 + BLOOM_MS.lives + 1).lives, 'small');
   // about 2 s
   assert.ok(BLOOM_MS.lives >= 1800 && BLOOM_MS.lives <= 2400);
 });
@@ -232,11 +233,13 @@ test("the goal card's words fit the stage", () => {
   }
 });
 
-test('collect and rescue stages also show, small, how far along the stage he is (QA v200, 5-3 and 5-5 upright); the others do not', () => {
+test('collect, rescue and beat-the-animals stages also show, small, how far along the stage he is (QA v200, 5-3 and 5-5 upright; 1-9 and 2-5, 2026-10-28); the others do not', () => {
   const cfg = (o: object) => ({ id: '5-3', worldIndex: 5, miniIndex: 3, objectiveType: 'harvest', targetCount: 116, ...o });
   assert.equal(goalInfo(cfg({})).far, true);
   assert.equal(goalInfo(cfg({ id: '5-5', miniIndex: 5, objectiveType: 'rescue', targetCount: 12 })).far, true);
-  for (const t of ['relic_hunt', 'purge', 'gauntlet', 'sprint', 'vine_runner', 'boss_lair']) assert.ok(!goalInfo(cfg({ objectiveType: t, targetCount: 4 })).far, t);
+  assert.equal(goalInfo(cfg({ id: '2-5', worldIndex: 2, miniIndex: 5, objectiveType: 'purge', targetCount: 17 })).far, true);
+  assert.equal(goalInfo(cfg({ id: '1-9', worldIndex: 1, miniIndex: 9, objectiveType: 'gauntlet', targetCount: 9 })).far, true);
+  for (const t of ['relic_hunt', 'sprint', 'vine_runner', 'boss_lair']) assert.ok(!goalInfo(cfg({ objectiveType: t, targetCount: 4 })).far, t);
   // (Meeca's warnings count, and say nothing of the way)
   assert.ok(!goalInfo(cfg({ id: '5-M', objectiveType: 'relic_hunt', targetCount: 5 })).far);
 });

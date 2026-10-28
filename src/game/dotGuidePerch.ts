@@ -412,8 +412,9 @@ export function hoverSpot(v: GuideView): { x: number; y: number } {
   const cx = (p.x0 + p.x1) / 2;
   const half = (p.x1 - p.x0) / 2;
   const top = guideSafeArea(v.cssW, v.cssH).rect.y0 + 20;
-  // (his painting is wider than his body box: keep clear of his arms)
-  const off = half + 52;
+  // (his painting is wider than his body box: keep clear of his arms and his pack; at 52 her wing sat on his back upright, QA 1-7,
+  // 2026-10-28)
+  const off = half + 64;
   let x = cx - v.facing * off;
   let y = Math.max(top, p.y0 - 14);
   if (x < 28 || x > v.cssW - 28) {

@@ -4,7 +4,9 @@
  *
  * - Hearts and the goal counter are always on screen, small. When they change (a heart lost or won back, a petal collected) they
  *   bloom big for a moment and settle again.
- * - Lives, score, the stage name and the power-up are hidden. They bloom in when they change, hold for about 2 s, then go away
+ * - Lives are always on screen too, small, and bloom when one is lost or won (QA 2026-10-28: hidden until the first was lost, nobody
+ *   knew how many they had).
+ * - Score, the stage name and the power-up are hidden. They bloom in when they change, hold for about 2 s, then go away
  *   (a power-up stays, small, while it lasts, with its draining ring).
  * - The goal counter glows once at half the quota, at "1 more", and when the goal is met; met, it stays gold and still.
  *
@@ -191,7 +193,8 @@ export function bloomView(t: BloomTrack, now: number): BloomView {
   return {
     hearts: up(t, 'hearts', now) ? 'bloom' : 'small',
     goal: up(t, 'goal', now) ? 'bloom' : 'small',
-    lives: up(t, 'lives', now) ? 'bloom' : 'hidden',
+    // (lives always show, small: hidden until the first was lost, a player did not know how many he had, QA 2026-10-28)
+    lives: up(t, 'lives', now) ? 'bloom' : 'small',
     score: up(t, 'score', now) ? 'bloom' : 'hidden',
     stage: up(t, 'stage', now) ? 'bloom' : 'hidden',
     power: up(t, 'power', now) ? 'bloom' : v?.power ? 'small' : 'hidden',

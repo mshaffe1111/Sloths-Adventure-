@@ -6,6 +6,16 @@ export function totalKills(s: StageStats | null | undefined): number {
   return Object.values(s.kills).reduce((a, b) => a + b, 0);
 }
 
+/**
+ * the Flowers chip on the out-of-lives card: on a gather stage, picked so far of the goal, as the HUD's bar counts it (the bar said 107
+ * and the card "1/122", QA 2-2, 2026-10-28); elsewhere, of every flower the stage holds. Null when there are none.
+ */
+export function floraChip(s: StageStats | null | undefined): string | null {
+  if (!s) return null;
+  if (s.floraGoal) return `${s.floraGoal.cur}/${s.floraGoal.target}`;
+  return s.floraTotal > 0 ? `${s.floraCollected}/${s.floraTotal}` : null;
+}
+
 export interface Praise {
   /** a few words, shown big */
   title: string;

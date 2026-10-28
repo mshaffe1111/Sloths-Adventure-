@@ -72,6 +72,9 @@ export function zoneAt(zones: WatchZone[], x: number): WatchZone | undefined {
 export function stepWatch(s: WatchState, dt: number, zone: WatchZone | undefined, roll: () => number): { warned?: boolean; passed?: boolean } {
   s.t += dt;
   if (s.phase === 'calm') {
+    // (the first calm of the stage is a whole calm of the zone, not the 3 s a new watch starts with: the eagle came 3 s into 1-7's
+    // first bushes, before the hide was taught, QA 2026-10-28)
+    if (s.passes === 0 && zone) s.dur = Math.max(s.dur, zone.calm[0]);
     if (!zone) {
       s.t = Math.min(s.t, s.dur * 0.5); // out of the watched stretch the calm waits; stepping back in, half of it is still to come
       return {};
@@ -106,6 +109,12 @@ export function stepWatch(s: WatchState, dt: number, zone: WatchZone | undefined
   }
   return {};
 }
+
+/**
+ * the first pass of a stage is a warning that cannot hurt: if it sees him, it dives and pulls up short (the hide is taught by then, but
+ * not yet tried; QA 2026-10-28, 1-7: "It saw you! Slide down in a bush!" came only after the first hit)
+ */
+export const harmlessPass = (s: WatchState) => s.passes === 0;
 
 /** where the shadow's middle is during a pass (world x): it crosses the view from beyond one edge to beyond the other */
 export function shadowX(s: WatchState, camX: number, viewW: number): number {

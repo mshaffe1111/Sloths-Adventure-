@@ -149,8 +149,10 @@ export function buildLongDrop(config: LevelConfig, seed: number): GeneratedStage
 
   // the top: the ledge broke away behind him; the only way is down
   // (2026-10-28, the stage inspector: the first ledge was 3.4 quiet seconds long; Dot's two lines still fit on it)
-  let cur = ledge(120, 900, 0);
-  row(380, 840, -34, 4, 'hibiscus');
+  // (to 1400: a plain run off the first edge fell into the mist at 3.5 s, before the jump tip had had its time; now it is past 5 s,
+  // stageStart.test.ts and the first-timer bot)
+  let cur = ledge(120, 1400, 0);
+  row(380, 1340, -34, 7, 'hibiscus');
   /** which way the path runs: 1 right, -1 left */
   let dir: 1 | -1 = 1;
   /** the end of the ledge he is on, the way he is going */
