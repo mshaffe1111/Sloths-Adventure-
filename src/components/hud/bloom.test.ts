@@ -232,11 +232,13 @@ test("the goal card's words fit the stage", () => {
   }
 });
 
-test('collect and rescue stages also show, small, how far along the stage he is (QA v200, 5-3 and 5-5 upright); the others do not', () => {
+test('collect, rescue and beat-the-animals stages also show, small, how far along the stage he is (QA v200, 5-3 and 5-5 upright; 1-9 and 2-5, 2026-10-28); the others do not', () => {
   const cfg = (o: object) => ({ id: '5-3', worldIndex: 5, miniIndex: 3, objectiveType: 'harvest', targetCount: 116, ...o });
   assert.equal(goalInfo(cfg({})).far, true);
   assert.equal(goalInfo(cfg({ id: '5-5', miniIndex: 5, objectiveType: 'rescue', targetCount: 12 })).far, true);
-  for (const t of ['relic_hunt', 'purge', 'gauntlet', 'sprint', 'vine_runner', 'boss_lair']) assert.ok(!goalInfo(cfg({ objectiveType: t, targetCount: 4 })).far, t);
+  assert.equal(goalInfo(cfg({ id: '2-5', worldIndex: 2, miniIndex: 5, objectiveType: 'purge', targetCount: 17 })).far, true);
+  assert.equal(goalInfo(cfg({ id: '1-9', worldIndex: 1, miniIndex: 9, objectiveType: 'gauntlet', targetCount: 9 })).far, true);
+  for (const t of ['relic_hunt', 'sprint', 'vine_runner', 'boss_lair']) assert.ok(!goalInfo(cfg({ objectiveType: t, targetCount: 4 })).far, t);
   // (Meeca's warnings count, and say nothing of the way)
   assert.ok(!goalInfo(cfg({ id: '5-M', objectiveType: 'relic_hunt', targetCount: 5 })).far);
 });
