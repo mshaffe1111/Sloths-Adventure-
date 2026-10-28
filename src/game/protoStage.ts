@@ -702,16 +702,16 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   }
 
   /** a tree to climb all the way up, and back down: flowers on the trunk and on the branch at the top */
-  function climbTree() {
+  function climbTree(tight = false) {
     const x0 = x;
-    run(R.r(300, 360));
+    run(tight ? R.r(250, 300) : R.r(300, 360));
     const tX = x - 150;
     const perchY = 300;
     trunk(tX, G, perchY);
     branch(tX - 40, tX + 220, perchY);
     for (let i = 0; i < 4; i++) flower(tX, G - 70 - i * 60, 'hibiscus');
     row(tX + 60, tX + 190, perchY - 34, 2, 'orchid');
-    run(R.r(200, 260));
+    run(tight ? R.r(150, 200) : R.r(200, 260));
     expert += (x - x0) / RUN + (2 * (G - perchY)) / CLIMB;
     pieces.push({ k: 'kapok', x0, x1: x });
   }
@@ -1198,18 +1198,21 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
    * a rope over a wide soft pit, a snake on the near ledge beside its end. Before Shimmy Rope is learned (clearing this stage) he drops
    * into the moss and climbs out the far side; after, he shimmies across. `bonus`: petals along under the rope for the shimmy.
    */
-  function ropeGap(guard: boolean, bonus: boolean) {
+  function ropeGap(guard: boolean, bonus: boolean, tight = false) {
     const x0 = x;
-    run(R.r(260, 340));
+    // (`tight`: World 1's rebuilt stages run up to it and away from it quicker, 2026-10-28)
+    run(tight ? R.r(150, 210) : R.r(260, 340));
     const edge = x;
     if (guard) snake(edge - 120, G, 140);
     close();
     const far = Math.round(edge + R.r(380, 430));
     softPit(edge, far);
+    // (`tight`: a mossy rock to hop on the moss below, for whoever crosses down there)
+    if (tight) P.push({ id: pid++, x: Math.round((edge + far) / 2 - 50), y: HOLLOW_Y - 40, width: 100, height: 40, type: 'solid', style: 'moss_stone' });
     ROPES.push({ id: ROPES.length + 1, x0: edge - 44, x1: far + 44, y: G - 146, g0: G, g1: G, required: false });
     if (bonus) row(edge + 60, far - 60, G - 146 + 86 - 40, 3, 'hibiscus');
     open(far);
-    run(R.r(220, 300));
+    run(tight ? R.r(170, 230) : R.r(220, 300));
     expert += (x - x0) / RUN + 2.5 + (guard ? 1.5 : 0);
     pieces.push({ k: 'snakes', x0, x1: x });
   }
@@ -1255,9 +1258,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     });
     beat('Twist: the rope guard', () => {
       hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
-      ropeGap(true, false);
+      ropeGap(true, false, true);
       snakeWalk(1);
-      ropeGap(true, true);
+      ropeGap(true, true, true);
       flag();
     });
     beat('Finish', () => {
@@ -1271,13 +1274,13 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
         if (n % 3 === 0) flag();
       }
       // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
-      ropeGap(false, true);
+      ropeGap(false, true, true);
       homeRun();
     });
   }
 
   /** petals arcing over soft gaps only a double jump crosses: the top of each arc is higher than one jump reaches */
-  function doubleArcs() {
+  function doubleArcs(tight = false) {
     const x0 = x;
     run(R.r(180, 240));
     const two = reachJump(0, true);
@@ -1288,7 +1291,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       softPit(edge, far);
       arc(edge - 40, far + 40, Math.round(G - 20 - JUMP_RISE - 45), 3, 'hibiscus');
       open(far);
-      run(R.r(240, 320));
+      run(tight ? R.r(190, 250) : R.r(240, 320));
     }
     expert += (x - x0) / RUN + 2;
     pieces.push({ k: 'stumps', x0, x1: x });
@@ -1320,7 +1323,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   /** a tree to climb, with World 1's keepsake hidden in a Hush Fern at the end of its branch (crouch beside it to search) */
   function fernTree() {
     const x0 = x;
-    run(R.r(300, 360));
+    run(R.r(250, 300));
     const tX = x - 150;
     const perchY = 300;
     trunk(tX, G, perchY);
@@ -1329,7 +1332,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     row(tX + 60, tX + 160, perchY - 34, 2, 'orchid');
     const keep = findForStage(config.worldIndex, config.miniIndex);
     if (keep && keep.kind === 'keepsake') C.push({ id: cid++, type: 'find', findId: keep.id, hidden: true, x: tX + 250, y: perchY - 26, collected: false, bobPhase: 0 });
-    run(R.r(260, 320));
+    run(R.r(170, 220));
     expert += (x - x0) / RUN + (2 * (G - perchY)) / CLIMB;
     pieces.push({ k: 'kapok', x0, x1: x });
   }
@@ -1351,47 +1354,80 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     branch(lx, lx + 120, gy);
     goldenSeed(lx + 60, gy - 34);
     hint(tX - 60, 'Something shiny, far away...', 'Something shiny, far away...', 'Something shiny, far away...', undefined);
-    x = lx + 120 + R.r(380, 460);
+    const end = lx + 120 + R.r(380, 460);
+    // the floor on under the lookout and the far ledge: dips of moss to jump (never a rock: from on top of one a double jump would
+    // reach the ledge the glide is for)
+    x = tX + 240;
+    while (end - x > 420) {
+      run(R.r(180, 260));
+      dip();
+    }
+    x = Math.max(x, end);
     expert += (x - x0) / RUN + (2 * (G - perchY)) / CLIMB;
     pieces.push({ k: 'kapok', x0, x1: x });
+  }
+  /** a dip with two petals arcing over it */
+  function dipArc() {
+    const e0 = x;
+    dip();
+    // (each over a bank's edge, at the top of the jump across)
+    arc(e0 - 30, x + 30, G - 125, 2, 'hibiscus');
+  }
+  /** a low branch with a snake on it, awake, and petals behind it: punch it off, or hop it (1-5's punch group; 1-3 walks among snakes) */
+  function snakeLedge() {
+    const x0 = x;
+    run(R.r(150, 200));
+    const bx = x, w = Math.round(R.r(300, 340));
+    branch(bx, bx + w, G - 90);
+    snake(bx + w * 0.45, G - 90, 80);
+    row(bx + w * 0.7, bx + w - 30, G - 124, 2, 'hibiscus');
+    x = bx + w + Math.round(R.r(60, 100));
+    dipArc();
+    run(R.r(260, 320));
+    expert += (x - x0) / RUN + 1.6;
+    pieces.push({ k: 'snakes', x0, x1: x });
   }
 
   if (plan === '1-5') {
     // 1-5 More Petals: everything so far, mixed. Every group of petals asks for a different move (a climb, a rope, a double jump, a
     // bounce, a punch), then the petals go onto creaking branches that give way: grab and keep moving. The keepsake hides in a fern
     // up a tree, and a seed far out from a lookout waits for the Leaf Glide.
+    // (Rebuilt 2026-10-28: a dip or a rock between the groups, and a finish of climbs, ropes, creaking runs and snakes, where 1-2's
+    // trail is bounces and stairs: the two read as different stages now.)
     beat('Start', () => {
-      rest(R.r(650, 800));
+      rest(R.r(400, 440));
+      busy(1, ['log']);
       flag();
     });
     beat('Test: a move for every group', () => {
       hint(x + 40, 'Every group of petals needs a different move', 'Every group of petals needs a different move', 'Every group of petals needs a different move');
       mixed(
-        () => fernTree(),
-        () => ropeGap(false, true),
-        () => doubleArcs(),
-        () => mushroomCache(),
-        () => { rest(R.r(200, 300)); snakes(); },
+        () => { logHop(); fernTree(); dipArc(); },
+        () => ropeGap(false, true, true),
+        () => doubleArcs(true),
+        () => { dipArc(); mushroomCache(); },
+        () => snakeLedge(),
       );
       flag();
     });
     beat('Twist: creaking branches', () => {
       hint(x + 60, 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving', 'Creaky branches! Grab the petals and keep moving');
       creakRun();
-      rest(R.r(250, 350));
+      busy(1);
       creakRun();
+      dipArc();
       flag();
     });
     beat('Finish', () => {
       let n = 0;
-      const pieceList = [() => ropeGap(false, true), () => creakRun(), () => doubleArcs(), () => { rest(R.r(250, 350)); stumps(); }, () => highRoad()];
+      const pieceList = [() => ropeGap(false, true, true), () => { creakRun(); dipArc(); }, () => { logHop(); climbTree(true); dipArc(); }, () => snakeLedge(), () => doubleArcs(true)];
       while (expert < EXPERT_SECONDS - 22 && n < 24) {
         pieceList[n % pieceList.length]();
         n++;
         if (n % 3 === 0) flag();
       }
       glideLookout();
-      rest(R.r(700, 900));
+      homeRun();
     });
     thinFinish(PETAL_GOAL_15);
   }
