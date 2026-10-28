@@ -263,7 +263,7 @@ Matt, 2026-10-28: "before we turn it over to the QA-ers, we're doing a first pas
 
 1. Run the inspector on the worlds that changed, with the first-timer bot: `npx tsx tools/inspect/inspect.ts --worlds N --firsttimer`
    (`--stages 1-7,2-2` for single stages; `--seed 2` for another roll). It writes `tools/inspect/out/report.html` and `report.json`.
-   About 5-6 minutes for Worlds 1-4; `--ft-trials 1 --ft-windows 0` is about twice as fast.
+   About 10 minutes for Worlds 1-4 (2-3 a world); `--ft-trials 1 --ft-windows 0` is about three times as fast.
 2. Read the kid/adult jump hotspots and the section "First-timer bot: the pre-QA pass" (worst findings first; each names the
    `reference/STAGE-RULES.md` rule it breaks: Opening seconds, Plain walk, 1-7's eagle, Dot pacing, plus the Gemini gates).
 3. Fix what it flags (anything hurting in the first 5 s, harm before its tip, plain-walk loops and stuck spots, Dot's pacing), re-run,
