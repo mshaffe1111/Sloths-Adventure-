@@ -51,3 +51,11 @@
 - On a trunk wrapped in vine, stand right against it, `flick up`, then `steer up` about 6 s to reach the log on top. Don't steer up from a step away; nothing happens.
 - If she hunches over with a reddish tint and stops reacting, taps, shakes, holds and circles don't free her. Don't spend pictures waiting on it. Note the time and spot.
 - Pictures: about 15 went on the first tall ledge and the loop. Turn sideways once early on to get the lay of the land, then go by the words.
+
+## 2026-10-28, puzzle rooms run (v216, Meeca night stage rooms 2-5, upright with one room sideways, session 8)
+- `tap` next to a loose object picks it up; Meeca says the drop or throw gesture once and then never again. Tap sets it down; `flick up` throws it a short way. Read that first line carefully, it doesn't come back.
+- The pick-up tap only catches when you're right on top of the thing. A step off and the tap is just a punch. Step in 100-150 ms at a time and tap each step.
+- Carving: `circle 3 2000` standing at the left foot of the trunk, right under the dotted letters, is what fills them in. Holds do nothing. The circle drifts her a little, so start close.
+- Sideways (`turn`) shows a whole puzzle room in one picture; upright only shows half. Turn first in any room with parts spread out, then turn back.
+- Steering gets eaten for the first second or so after a warp or near webs. Wiggle, then lifted `flick up-right` hops.
+- Pictures: puzzle rooms eat them fast because you can't tell what changed from the words. Budget 8 per room and turn sideways once instead of taking three upright shots.

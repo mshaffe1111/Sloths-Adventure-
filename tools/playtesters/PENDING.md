@@ -182,3 +182,19 @@ Earlier read of the same log, kept for the details:
      (about 6 tries at the first one, 2-3 at the next).
    - [minor] "Webs eat plain steering" (both runs): only lifted hops move her through webby stretches; nothing teaches it.
    - Not checked yet: rooms 2-5, the tea channel, the ending, puzzle framing upright (rule 7).
+11. [5-M rooms 2-5, Matt bot run 3, started at each room with the QA rig's `warp`; 0 lives, never sent back]
+   - [UNFAIR, rule 7/12, confirmed by state] No room nudges a stuck player. QA idled 32 s in room 3: nothing was said. Room 3's
+     only lines are "A rope! Up I go.", "Sticky! Let go, let go!" and "Flick up to throw it." The bot stalled 70 s in room 3 (the
+     silk is a trap by design; the pinecone throw at the knot never landed for it), 25 s in room 4 (no idea what to do first),
+     and at the tall dark trunk in room 5. Never reached the ending. A Flicker nudge after ~20 s stuck, pointing at the piece
+     (not the answer), would fix most of this.
+   - [major, rule 7] Room 2: upright you can't see both plates and the gate together, and the plates look like dirt. The gate
+     opened without the bot knowing why; no plate looks pressed (rule 10). Sideways it all fits and was solvable.
+   - [major, rule 2] Pick-up is never taught before room 2 needs it: the bot found "tap to pick up" by accident, and the tap is
+     fussy (a little off and it's a punch). "Flick up to throw it." shows once.
+   - [major, rule 12] Carving the room 2 warning took ~35 s: circles at the middle of the trunk did nothing; it took at the left
+     foot. No ring showed where to stand (the ring shows only before the first mark).
+   - [minor] Meeca stuck at room 3's entrance with no web around; took a wiggle and hops.
+   - [polish] "M. 1/5" in the HUD has no word for what it counts.
+   - Good: room 4's contraption fits upright; room 2 fits sideways; the carving reveal; no lives lost anywhere; memory 10-17 MB.
+   - Not checked: room 3-5 solutions, the tea channel working, the ending. Rooms 3-4 not sideways.
