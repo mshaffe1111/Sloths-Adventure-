@@ -17,7 +17,7 @@ compression, together with `reference/STATUS.md`.**
 | `reference/HANDOFF.md` | The code map, how to test and release, the art pipeline. | when the process changes |
 | Docs roadmap (Y664eSHsuhSWhwQAq52pVa) | Matt's roadmap: decisions with dates, ticked as they ship. | with every decision and every release |
 
-STATUS.md and the rulebook are committed on the work branch, so they survive the session; they reach GitHub with the next push.
+STATUS.md and the rulebook are committed on the work branch and pushed to it for safe keeping (Matt, 2026-10-28: the container is temporary; a push to the work branch is not a release, a release still waits for his "push").
 
 ## 2. Intake: nothing Matt or QA says is only in the chat
 
