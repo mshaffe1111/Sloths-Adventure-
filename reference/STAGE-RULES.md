@@ -181,6 +181,11 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   `tools/inspect/era.ts` while authoring, not after.
 - **One length number lies**: the time model and a real-engine bot disagree by about a minute on Meeca's stage (model 5:09-5:17,
   bot 4:16-4:25; the bot never hesitates). Give both, and say which one the target is on.
+- **What the 200-roll tool can't see** (World 4 variety pass, 2026-10-28): its route walks straight along a floor past a rock lying on
+  it (only a separate floor piece, a dip or a step, makes a beat), and a falling rock that lands below the path (4-7's) is never met.
+  So a glide stage is all J and V to it, and 4-7 stays 99.8% alike however its sections roll. Variety the tool counts needs versions
+  with different kinds of action (vines, waits, puzzles, foes), not the same jumps in another order; a roll-wide "ground" theme (hops
+  or second-jump leaps between pieces) moved World 4 more than any single section did.
 
 ## 7. Where things are
 

@@ -35,9 +35,14 @@ import { ROCK, rockFits, type RockDrop } from './rockfall.ts';
 import type { Pool, Waterfall } from './waterfalls.ts';
 import type { W4Decor } from './w4Play.ts';
 import type { Collectible, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
+import { W4Roll } from './w4Sections.ts';
 
 /** the wet stair under a fall: how high and how deep each step is, and how much floor the water covers in front of it */
-export const WET = { rise: 130, tread: 130, margin: 110 } as const;
+// (tread 130 to 220, 2026-10-28: on a 130 px deep step the double jump up the next one had to be pressed within 67-133 ms on Normal and
+// 100 ms on Easy, the first-timer bot; under the fair floors of 167 / 300 ms, STAGE-RULES §1b. The cave ledge stays wider than a step)
+export const WET = { rise: 130, tread: 220, margin: 110 } as const;
+/** the cave ledge behind a surge's water: wider than any wet step, room to wait in */
+const CAVE_W = WET.tread + 100;
 /** the pushable boulder */
 export const BOULDER = { w: 96, h: 88 } as const;
 /**
@@ -54,7 +59,7 @@ export const ROCK_TIP = 'Rocks coming loose again! Stop before the shadow, and g
  * foot. So its quiet spell is long enough for a player to climb from the foot of the water to the next dry spot (the cave behind it,
  * or out of the water at the top): a moment to start and the walk in, and a double jump for each wet step (s).
  */
-export const SURGE_CLIMB = { start: 1.0, perJump: 0.9 } as const;
+export const SURGE_CLIMB = { start: 1.0, perJump: 1.1 } as const;
 export const quietFor = (jumps: number, rolled: number): number => Math.round(Math.max(rolled, SURGE_CLIMB.start + SURGE_CLIMB.perJump * jumps) * 10) / 10;
 
 /** what the tests read back about the falls: which platforms each one pours over, and the beat it belongs to */
@@ -360,7 +365,7 @@ export function buildWaterfallSteps(
     wetStep();
     wetStep();
     // the cave ledge
-    up(WET.rise, 240);
+    up(WET.rise, CAVE_W);
     const cy = y;
     decor.push({ n: 'cave', x: x - 120, b: cy + 12, w: 230 });
     flower(x - 200, cy - 34, 'hibiscus');
@@ -552,16 +557,22 @@ export function buildWaterfallSteps(
     breath();
     flag();
   });
-  beat('Develop: the thief', () => {
+  // (2026-10-28, the variety pass: 200 rolls of 4-3 were 95% alike, all eight parts in one order. Now the roll (w4Sections.ts) picks
+  // the order of the two Develop parts, of the three parts after the surge (each needs only what came before it), and the finish's
+  // theme: terraces and trees, more surges, or the long terraces with their rocks)
+  const roll = new W4Roll(seed, '4-3');
+  const thiefPart = () => beat('Develop: the thief', () => {
     thief();
     flag();
     breath();
   });
-  beat('Develop: the high shelf', () => {
+  const shelfPart = () => beat('Develop: the high shelf', () => {
     plugFall('hops');
     breath();
     flag();
   });
+  if (roll.pick(['thiefFirst', 'shelfFirst'] as const) === 'thiefFirst') { thiefPart(); shelfPart(); }
+  else { shelfPart(); thiefPart(); }
   beat('Twist: the pool and the log', () => {
     plugFall('pool');
     breath();
@@ -576,25 +587,30 @@ export function buildWaterfallSteps(
     breath();
     flag();
   });
-  beat('Develop: the thief behind the falls', () => {
-    thiefFalls();
-    flag();
-    terrace();
-    breath();
-    flag();
-  });
-  beat('Twist: the tide pool', () => {
-    tidePool();
-    breath();
-    flag();
-    rockRest(R.r(420, 480));
-  });
-  beat('Twist: the boulder up the surge', () => {
-    plugFall('surge');
-    breath();
-    flag();
-    terrace(true);
-  });
+  const after: Array<() => void> = [
+    () => beat('Develop: the thief behind the falls', () => {
+      thiefFalls();
+      flag();
+      terrace();
+      breath();
+      flag();
+    }),
+    () => beat('Twist: the tide pool', () => {
+      tidePool();
+      breath();
+      flag();
+      rockRest(R.r(420, 480));
+    }),
+    () => beat('Twist: the boulder up the surge', () => {
+      plugFall('surge');
+      breath();
+      flag();
+      terrace(true);
+    }),
+  ];
+  const order = [[0, 1, 2], [1, 0, 2], [2, 1, 0], [0, 2, 1], [1, 2, 0], [2, 0, 1]];
+  for (const i of order[Math.floor(roll.rng() * order.length)]) after[i]();
+  const theme = roll.theme('finish', ['terraces', 'surges', 'rocks'] as const);
   beat('Finish: to the shrine', () => {
     terrace(true);
     surgePair();
@@ -602,7 +618,13 @@ export function buildWaterfallSteps(
     flag();
     let n = 0;
     while (expert < stageSeconds('4-3') + 4 && n < 24) {
-      terrace(true);
+      if (theme === 'surges' && n % 3 === 1) {
+        surgeFall(false);
+        breath();
+      } else if (theme === 'rocks' && n % 2 === 0) {
+        rockRest(R.r(420, 480));
+        stairs(R.i(2, 3), R.r(88, 100), R.r(190, 240));
+      } else terrace(true);
       n++;
       if (n % 3 === 0) flag();
     }
