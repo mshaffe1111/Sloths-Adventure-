@@ -17,7 +17,7 @@
  * for a fern to search.
  */
 import { lookHash, rollLook } from './artRoll.ts';
-import { roomBox } from './puzzleKit.ts';
+import { anchorAt, roomBox } from './puzzleKit.ts';
 import type { KitDecor } from './puzzleArt.ts';
 import type { KitArtName } from './puzzleAtlasData.ts';
 import type { W3Decor } from './w3Art.ts';
@@ -60,7 +60,27 @@ export function dressStage(d: DressInput): KitDecor[] {
     floor(d, out, inRoom);
   }
   if (d.world === 4) bridges(d, out, inRoom);
+  if (d.world === 1) world1(d, out);
   return out;
+}
+
+/**
+ * World 1's rooms (1-4's squirrels' lift, 1-6's seesaws, 1-7's acorn meadow), from Matt's World 1 sheet:
+ *   1-4  the squirrels' home on their tree, a hollow log with a round door on the ledge the lift goes up to: it opens as the lift tops out
+ *   1-6  a branch gate at the top of the bank the seesaw is the way up to: shut, it rises out of the way as the seesaw tips
+ *   all  a petal bundle, the room's reward: it rises out of the spot past the way on as he gets there (a picture: it is not a pickup and
+ *        counts for nothing, so no goal or count changes)
+ * (1-6's first seesaw shows itself and needs nothing doing: no gate and no reward there)
+ */
+function world1(d: DressInput, out: KitDecor[]) {
+  for (const r of d.rooms) {
+    if (r.id.startsWith('seesaw-show')) continue;
+    const top = d.platforms.find((p) => p.id === r.right.on);
+    if (r.id.startsWith('squirrel-lift') && top) out.push({ n: 'nestDoorShut', open: 'nestDoorOpen', room: r.id, x: top.x + top.width - 70, b: top.y + 8, scale: 0.9 });
+    if (r.id.startsWith('seesaw-') && top) out.push({ n: 'branchGate', room: r.id, rise: true, x: top.x + 75, b: top.y + 6, w: 150 });
+    const b = anchorAt(r.beyond, d.platforms);
+    if (b) out.push({ n: 'petalBundle', room: r.id, pop: true, x: b.x, b: b.y - 20, scale: 1.3 });
+  }
 }
 
 function riddle(d: DressInput, out: KitDecor[]) {

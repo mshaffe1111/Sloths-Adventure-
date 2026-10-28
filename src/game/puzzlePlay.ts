@@ -679,6 +679,30 @@ export class KitPlay {
     }
   }
 
+  /** when each room's way on first opened, and when he first got to the spot past it (kit time): for the dressing (artDress.ts) */
+  private done = new Map<string, { solved?: number; arrived?: number }>();
+  private watchDone(p: Player) {
+    for (const room of this.rooms) {
+      let d = this.done.get(room.spec.id);
+      if (d?.arrived !== undefined) continue;
+      if (!d) this.done.set(room.spec.id, (d = {}));
+      // (a room let on by a thing carried, 1-7's acorns, is done when he is through it)
+      const byItem = room.items.some((it) => it.spec.id === room.spec.exit);
+      if (d.solved === undefined && !byItem && this.output(room, room.spec.exit)) d.solved = this.t;
+      const b = room.beyond;
+      if (b && Math.abs(p.x - b.x) < 70 && Math.abs(p.y - b.y) < 90 && (byItem || d.solved !== undefined)) {
+        d.arrived = this.t;
+        d.solved ??= this.t;
+      }
+    }
+  }
+
+  /** a room's progress for the pictures dressing it: seconds since its way on opened and since he got through (undefined: not yet) */
+  roomDone(id: string): { solved?: number; arrived?: number } {
+    const d = this.done.get(id);
+    return { solved: d?.solved === undefined ? undefined : this.t - d.solved, arrived: d?.arrived === undefined ? undefined : this.t - d.arrived };
+  }
+
   /** one of Matt's use poses (the rope pull, the crank, the push), facing the piece he works at (x, y) */
   private usePose(n: KitArtName, x: number, y: number, p: Player, dur: number) {
     if (this.held) return;
@@ -854,6 +878,7 @@ export class KitPlay {
     if (next) h.passTip?.(next);
     for (const room of this.rooms) this.stepRoom(room, dt, h, platforms);
     if (this.sipT > 0) this.sipT = Math.max(0, this.sipT - dt);
+    this.watchDone(p);
     if (this.pan) {
       this.pan.t -= dt;
       if (this.pan.t <= 0) this.pan = null;
@@ -2092,6 +2117,11 @@ export class KitPlay {
   }
 
   private drawSluice(ctx: CanvasRenderingContext2D, sl: SluiceRun) {
+    // World 2: Matt's trough from the sluice's foot out over the river, its water running once the sluice is open, dry while it is shut
+    if (this.look.world === 2 && sl.river) {
+      const toRight = (sl.river.x0 + sl.river.x1) / 2 >= sl.x;
+      drawKitArt(ctx, sl.open ? 'channel' : 'channelDry', sl.x + (toRight ? 92 : -92), sl.y + 20, { scale: 0.85, flip: toRight });
+    }
     if (!drawKitArt(ctx, sl.open ? 'sluiceOpen' : 'sluiceShut', sl.x, sl.y + 10)) {
       ctx.fillStyle = sl.open ? 'rgba(120, 80, 40, 0.4)' : '#7c5a32';
       ctx.fillRect(sl.x - 40, sl.y - 100, 80, 100);

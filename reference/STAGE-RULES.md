@@ -85,8 +85,20 @@ Last updated 2026-10-28.
   drawn is a bug (check with a grep over `puzzleAtlasData.ts` keys and the stage atlases).
 - **State frames matter:** a pressed plate shows pressed, a rung bell swings, a struck vine shows tangled, a lit lantern glows.
 - **Rotate looks by the roll:** where a world has several props or decor sets for one job, the layout roll picks among them (a retry
-  keeps the look, a fresh roll changes it), with a cooldown so the same set isn't used in two stages in a row. `artRoll.ts` `rollLook` does it (stages take turns between two halves of the looks, the roll picks within the half); `artDress.ts`
-  is World 3-4's dressing from Matt's puzzle sheets (pictures only: no platform, pickup or piece moves).
+  keeps the look, a fresh roll changes it), with a cooldown so the same set isn't used in two stages in a row. `artRoll.ts`
+  `rollLook` does it (stages take turns between two halves of the looks, the roll picks within the half); `artDress.ts` is the
+  dressing from Matt's puzzle sheets in World 1's rooms and Worlds 3-4 (pictures only: no platform, pickup or piece moves).
+  `artDress.test.ts` fails on any kit atlas piece that is not drawn.
+- **Where the World 1-4 sheets stand** (2026-10-28; `reference/prop-sheets/w1to4/`):
+  - `pokey-carry`: all 16 poses used (carry, throw, set down, rope pull at a bell, crank at World 2's winch, lever push).
+  - `w1-puzzle`: all 16 used. 1-4's squirrels' nest door opens as the lift tops out; a petal bundle rises as each 1-4, 1-6 and 1-7
+    room's reward (a picture, not a pickup); 1-6's branch gate rises as the seesaw tips. Plates and the knot log are seen in the kit
+    test room only (no World 1 stage has a weight plate).
+  - `w2-puzzle`: 15 of 16 used, including 2-2's trough (dry while the sluice is shut, running once it opens). The fishing net is not:
+    it is pink on the magenta key and lost its colour; it needs a re-paint on green.
+  - `w3-puzzle`: all 20 used. The pressed stone plate is wired, but no World 3 room has a weight plate yet.
+  - `w4-puzzle`: all 16 used.
+  - The eight far backdrops: all assigned.
 - Each world goes through the day: its far backdrops change across its stages (`stageBackdrops.ts`).
 - New art comes from Matt's Gemini sheets: give him copy-paste prompts with the reference to attach (key colour: magenta, or green
   when the subject wears pink), then cut with `tools/art/w5puzzle/cut.py` and check the cuts on a dark background.

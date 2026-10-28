@@ -68,7 +68,7 @@ for sheet, rows in {
                   (13, 'nestDoorOpen', 0.7, 0.62), (15, 'petalBundle', 0.45, 0.3), (16, 'branchGate', 0.8, 0.7)],
     'w2-puzzle': [(1, 'riverStone', 0.6, 0.3), (3, 'pulleyPost', 0.8, 0.8, {'clear': [(106, 104, 256, 256, 'all')]}), (4, 'basket2', 0.7, 0.5), (5, 'basket2Full', 0.7, 0.5),
                   (6, 'cageShut', 0.7, 0.55), (7, 'cageLifted', 0.7, 0.55), (8, 'sluiceShut', 0.8, 0.62), (9, 'sluiceOpen', 0.8, 0.62),
-                  (10, 'channel', 0.8, 0.7), (11, 'bell', 0.6, 0.48), (11, 'bellFrame', 0.6, 0.48, {'clear': [(96, 98, 164, 176, 'bronze')]}), (12, 'bellRing', 0.5, 0.36), (13, 'winch2', 0.7, 0.55), (14, 'raft', 0.8, 0.7)],
+                  (10, 'channel', 0.8, 0.7), (10, 'channelDry', 0.8, 0.7, {'clear': [(0, 0, 256, 256, 'water')]}), (11, 'bell', 0.6, 0.48), (11, 'bellFrame', 0.6, 0.48, {'clear': [(96, 98, 164, 176, 'bronze')]}), (12, 'bellRing', 0.5, 0.36), (13, 'winch2', 0.7, 0.55), (14, 'raft', 0.8, 0.7)],
     'w3-puzzle': [(1, 'mushroom', 0.5, 0.36), (2, 'mushroomDim', 0.5, 0.36), (3, 'pebble', 0.35, 0.22), (4, 'fern1', 0.6, 0.5),
                   (5, 'fern2', 0.6, 0.5), (6, 'fern3', 0.6, 0.5), (7, 'fern4', 0.6, 0.5), (8, 'fernStone', 0.6, 0.5),
                   (9, 'fernDoorShut', 0.8, 0.7), (10, 'fernDoorOpen', 0.8, 0.7), (11, 'stonePlate', 0.6, 0.45), (12, 'stonePlateDown', 0.6, 0.45),
@@ -126,6 +126,11 @@ def clear_boxes(im, x0, y0, x1, y1, boxes):
         box = (xx >= bx0) & (xx < bx1) & (yy >= by0) & (yy < by1)
         if mode == 'all':
             m = box
+        elif mode == 'water':
+            # the trough's water (pale blue and white): painted over from the wood round it; the stream falling off its end goes clear
+            luma = 0.3 * R + 0.59 * G + 0.11 * B
+            m = box & (key < 0.2) & (B > R + 12) & (luma > 110)
+            m = ndimage.binary_dilation(ndimage.binary_closing(m, iterations=2), iterations=2) & box
         elif mode == 'bronze':
             m = box & (key < 0.2) & (R - B > 35)
             m = ndimage.binary_dilation(m, iterations=2) & box
@@ -133,7 +138,7 @@ def clear_boxes(im, x0, y0, x1, y1, boxes):
             sat = np.max(cell, axis=2) - np.min(cell, axis=2)
             m = box & (key < 0.2) & (sat < 48)
             m = ndimage.binary_dilation(ndimage.binary_closing(m, iterations=2), iterations=2) & box
-        if mode == 'grey':
+        if mode in ('grey', 'water'):
             im = fill_hole(im, x0, y0, m)
             cell = im[y0:y1, x0:x1]
             R, G, B = cell[..., 0], cell[..., 1], cell[..., 2]
