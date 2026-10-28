@@ -25,6 +25,8 @@ import { renderReport } from './report.ts';
 import { inspectJumps, ADULT, KID, TRIALS, type JumpReport, type Timing } from './jumps.ts';
 import { surfaceOf } from '../../src/game/stageMetrics.ts';
 import { runFirstTimerPass, type FirstTimerPass } from './firsttimerReport.ts';
+import { pacing, type MissAt, type Pacing } from './pacing.ts';
+import { computeBands, type BandsOutput } from './bands.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -102,6 +104,8 @@ export interface StageReport {
   offRoute: Record<string, number>;
   density: number[];
   sections: Array<{ name: string; t0: number; t1: number }>;
+  /** action density, rhythm groups, rest pads and the tension curve against Gemini's table (pacing.ts), on each setting's own stage */
+  pacing: { normal: Pacing; easy: Pacing };
 }
 
 export interface PairReport { world: number; a: string; b: string; cos: number; win: number; ta: number; tb: number; sa: string; sb: string; flagged: boolean; why: string[] }
@@ -256,6 +260,12 @@ function main() {
     ].sort((a, b) => a.t - b.t);
     const timed = [...jN].filter((j) => j.timing).sort((a, b) => a.timing!.safe - b.timing!.safe);
     const rest = restCheck(br.beats, br.total, samples);
+    // (a jump beat's miss share: the bot's jump nearest its take-off)
+    const missAt = (js: JumpReport[]): MissAt => (x, y) => {
+      const j = js.find((q) => q.rate !== null && Math.abs(q.x - x) < 80 && Math.abs(q.y - y) < 120);
+      return j ? 1 - j.rate! : 0;
+    };
+    const secs = sections(st, samples, br.beats, br.total);
     const tokens = actionTokens(br.beats, br.total);
     const ws = windows(tokens, br.total);
     wins.set(e.id, ws);
@@ -307,7 +317,11 @@ function main() {
       counts: counts(st),
       offRoute: br.offRoute,
       density: density(br.beats, br.total),
-      sections: sections(st, samples, br.beats, br.total),
+      sections: secs,
+      pacing: {
+        normal: pacing(br.beats, br.total, 'normal', { chase: !!st.proto?.chase, missAt: missAt(jN), sections: secs }),
+        easy: pacing(ebr.beats, ebr.total, 'easy', { chase: !!easy.proto?.chase, missAt: missAt(jE), sections: sections(easy, eSamples, ebr.beats, ebr.total) }),
+      },
     });
     process.stderr.write(`${e.id} ${route.traced} ${br.total.toFixed(0)}s beats ${beatCount} dead ${dn.total.toFixed(0)}s (${Date.now() - t0} ms)\n`);
   }
@@ -342,7 +356,8 @@ function main() {
 
   // the first-timer bot in the real engine, Easy and Normal (the pre-QA pass)
   const firstTimer = opt.firsttimer ? runFirstTimerPass(stages.map((e) => ({ id: e.id, name: e.name, world: e.world })), opt.seed, { trials: opt.ftTrials, windows: opt.ftWindows, log: (m) => process.stderr.write(m) }) : undefined;
-  const out = { firstTimer, generated: new Date().toISOString(), seed: opt.seed, worlds: opt.worlds, weights: WEIGHT, thresholds: { normal: NORMAL_GAP, easy: EASY_GAP, cosine: cosAt, window: winAt, firstCosine: COS_FLAG, firstWindow: WIN_FLAG, firstFlags: oldFlags }, bots: { trials: TRIALS, kid: KID, adult: ADULT, kidHot: KID_HOT, adultHot: ADULT_HOT }, stages: reports, pairs, skipped, dist };
+  const bands = computeBands(reports, firstTimer);
+  const out = { firstTimer, bands, generated: new Date().toISOString(), seed: opt.seed, worlds: opt.worlds, weights: WEIGHT, thresholds: { normal: NORMAL_GAP, easy: EASY_GAP, cosine: cosAt, window: winAt, firstCosine: COS_FLAG, firstWindow: WIN_FLAG, firstFlags: oldFlags }, bots: { trials: TRIALS, kid: KID, adult: ADULT, kidHot: KID_HOT, adultHot: ADULT_HOT }, stages: reports, pairs, skipped, dist };
   fs.mkdirSync(path.dirname(opt.json), { recursive: true });
   fs.writeFileSync(opt.json, JSON.stringify(out, null, 1));
   fs.mkdirSync(path.dirname(opt.html), { recursive: true });
@@ -359,6 +374,8 @@ export type InspectOutput = {
   dist: { cos: number[]; win: number[] };
   /** the first-timer bot's pass (--firsttimer) */
   firstTimer?: FirstTimerPass;
+  /** difficulty score per stage, each world's band and §1b's flags (bands.ts) */
+  bands: BandsOutput;
 };
 
 main();
