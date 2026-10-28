@@ -176,6 +176,8 @@ const WORLD_VIEW_H = 540;
 const WALL_OFF = 9;
 const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
+/** how fast the shift that shows a landing across a gap eases in and out (per second), and for a landing still out of the view */
+const LAND_EASE = { rate: 4.5, fast: 10 } as const;
 const INTRO_ZOOM_FROM = 0.9; // a gentle dolly: the old 0.78 opened on a wide shot full of dark ground, so every stage began noticeably darker
 const INTRO_ZOOM_SECS = 1.3;
 
@@ -358,6 +360,13 @@ export class GameEngine {
   /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
   private camAnchorY = NaN;
   private camLookX: number = CAM.lookAhead;
+  /** the way the view looks (his facing, held through a swing), and the facing he caught the swinging vine with */
+  private camFacing = 1;
+  private camSwingFacing = 1;
+  private camSwung = false;
+  /** the eased shift that shows a landing across a gap (world px; cameraFollow.ts showBoth, LAND_EASE) */
+  private camLandX = 0;
+  private camLandY = 0;
   /** how much of the run lead the view is taking (cameraFollow.ts camRun) */
   private camRunK = 0;
   private camRunSlow = 0;
@@ -4504,11 +4513,17 @@ export class GameEngine {
 
     // the framing for this screen's shape: less look-ahead on a narrow upright phone, his feet lower on a squat sideways one (cameraFollow.ts)
     const fr = framing(this.viewCssW, this.viewCssH, vw);
+    // the way the view looks: the way he faces, but on a swinging vine the way he faced as he caught it, held for the whole swing (each
+    // swing back turns him round, and the view swung back and forth with it, QA 2026-10-28 `camjump`, 1-6's swing frames)
+    if (p.isVineSwinging && !this.camSwung) this.camSwingFacing = p.facing < 0 ? -1 : 1;
+    this.camSwung = !!p.isVineSwinging;
+    const facing = p.isVineSwinging ? this.camSwingFacing : p.facing;
+    this.camFacing = facing;
     // Look-ahead tracking: eased across when he turns, and a height that ignores hops and swings (cameraFollow.ts: the screen jiggled)
-    this.camLookX = camLook(this.camLookX, p.facing, dt, fr.look);
+    this.camLookX = camLook(this.camLookX, facing, dt, fr.look);
     // (and at a run, on a narrow view, it leads further: cameraFollow.ts runLead; it follows the look-ahead's side, so a turn eases it over)
-    this.camRunK = camRun(this.camRunK, p.vx, p.facing, dt);
-    this.camRunSlow = camRun(this.camRunSlow, p.vx, p.facing, dt, RUN.settle);
+    this.camRunK = camRun(this.camRunK, p.vx, facing, dt);
+    this.camRunSlow = camRun(this.camRunSlow, p.vx, facing, dt, RUN.settle);
     const runX = runOffset(vw, this.camRunK, this.camRunSlow, dt, fr) * Math.max(-1, Math.min(1, this.camLookX / (fr.look || 1)));
     const sv = p.isVineSwinging ? this.nearSwingVine : null;
     this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
@@ -4546,15 +4561,27 @@ export class GameEngine {
     if (this.roomK === 0) this.roomAim = null;
     // near the end of a ledge with a gap ahead, the view shows the far side too (cameraFollow.ts landingAhead)
     let landShown: Box | null = null;
+    let landX = 0;
+    let landY = 0;
     if (!look && !kf && !this.chase?.active && !this.currentStage.arena) {
       const land = this.landingToShow(dt);
       landShown = land;
       if (land) {
         const v = showBoth(this.camera.targetX, this.camera.targetY, p.x, p.y, land, vw, vh);
-        this.camera.targetX = v.x;
-        this.camera.targetY = v.y;
+        landX = v.x - this.camera.targetX;
+        landY = v.y - this.camera.targetY;
       }
     }
+    // (the shift that shows the landing eases in and out, never all at once: a turn on a stone between two gaps, or a turn on a swing,
+    // swapped the landing from one side to the other and the view jumped 130-200 px in a frame, QA 2026-10-28 `camjump`; a landing
+    // still outside the view, as when he turns round at the end of a ledge and jumps at once for the vine he now faces, comes in faster,
+    // so it is on screen as he leaves the ledge for it, QA 2026-10-26)
+    const behind = !!landShown && (landShown.x0 < this.camera.x || landShown.x1 > this.camera.x + vw);
+    const lk = Math.min(1, dt * (behind ? LAND_EASE.fast : LAND_EASE.rate));
+    this.camLandX += (landX - this.camLandX) * lk;
+    this.camLandY += (landY - this.camLandY) * lk;
+    this.camera.targetX += this.camLandX;
+    this.camera.targetY += this.camLandY;
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
@@ -4580,10 +4607,7 @@ export class GameEngine {
 
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * RUN.follow);
-    // (a landing still outside the view, as when he turns round at the end of a ledge and jumps at once for the vine he now faces, is
-    // panned to twice as fast, so it is on screen as he leaves the ledge for it, QA 2026-10-26)
-    const behind = !!landShown && (landShown.x0 < this.camera.x || landShown.x1 > this.camera.x + vw);
-    this.camera.x += (this.camera.targetX - this.camera.x) * (behind ? Math.min(1, dt * 13) : smoothFactor);
+    this.camera.x += (this.camera.targetX - this.camera.x) * smoothFactor;
     this.camera.y += (this.camera.targetY - this.camera.y) * smoothFactor;
     // the easing never loses him off the side: the aim keeps him in the view, but on a narrow view the eased camera trailed a quick swing
     // back by 60 px or more, and on 5-4's long silk lines upright (320 x 782) he swung out past the left edge (QA v200). The framing is
@@ -4624,7 +4648,7 @@ export class GameEngine {
     const sv = p.isVineSwinging ? this.nearSwingVine : null;
     if (sv) {
       const hang = { x: sv.x, width: 0, y: sv.topY + (p.swingLength ?? 100) + 30 };
-      this.camLand = landingAhead(sv.x, p.facing, hang, this.platforms, this.vines.filter((v) => v !== sv));
+      this.camLand = landingAhead(sv.x, this.camFacing, hang, this.platforms, this.vines.filter((v) => v !== sv));
       this.camLandKeep = 1.2;
       return this.camLand;
     }
