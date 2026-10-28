@@ -883,7 +883,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       pieces: [
         { kind: 'reset', id: `post${ri}`, at: at(A, postX) },
         { kind: 'bell', id: `bell${ri}`, at: at(A, bellX) },
-        { kind: 'gate', id: `gate${ri}`, at: at(A, gateX), open: `bell${ri}`, latch: true },
+        { kind: 'gate', id: `gate${ri}`, at: at(A, gateX), open: `bell${ri}`, latch: true, look: 'reeds' },
       ],
       exit: `gate${ri}`, beyond: at(A, gateX + 110), ground: [A.id], tips,
     });

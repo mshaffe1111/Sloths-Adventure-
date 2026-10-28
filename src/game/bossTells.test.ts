@@ -248,3 +248,51 @@ test("3-10: a move's first wind-up, when Dot names it, runs long enough to read 
     Object.assign(sim.def.moves, moves);
   }
 });
+
+test("2-10, 4-10 and 5-10: the body never hurts by touch while the boss winds up (QA, Matt's 2up4: 4 of 8 hearts in 2-10 were touching a winding-up caiman)", () => {
+  for (const id of ['2-10', '4-10', '5-10']) {
+    const sim = new BossPlay(id);
+    sim.skipEntrance();
+    const b = sim.boss;
+    for (const mv of Object.keys(sim.def.moves)) {
+      for (const t of [0, 0.3, 0.5, 0.9, 2]) {
+        assert.equal(bodyHurts({ ...b, ai: { ...b.ai!, state: 'tell', move: mv, t } } as BossEntity, sim.def), false, `${id} ${mv} tell ${t}`);
+      }
+      for (const state of ['rec', 'idle', 'stun'] as const) {
+        assert.equal(bodyHurts({ ...b, ai: { ...b.ai!, state, move: mv, t: 0.2 } } as BossEntity, sim.def), false, `${id} ${mv} ${state}`);
+      }
+    }
+  }
+  // 2-10 as 3-10: the body itself never hurts; the roll and the whip carry their own strike boxes once the move begins
+  const croc = new BossPlay('2-10');
+  croc.skipEntrance();
+  for (const mv of Object.keys(croc.def.moves)) {
+    assert.equal(bodyHurts({ ...croc.boss, ai: { ...croc.boss.ai!, state: 'act', move: mv, t: 0.1 } } as BossEntity, croc.def), false, `2-10 ${mv} act`);
+  }
+});
+
+test('2-10: Pokey standing against the caiman through his wind-ups is never hurt before a move begins', () => {
+  const sim = new BossPlay('2-10');
+  sim.skipEntrance();
+  const log = (sim.e as unknown as { bossHurtLog: Array<{ by: string; state: string; move: string | null }> }).bossHurtLog;
+  let tells = 0;
+  let was = '';
+  for (let i = 0; i < 30 * 60; i++) {
+    // glued to his side, with no safe time after a hit (so every touch that would hurt is logged)
+    const b = sim.boss;
+    sim.p.x = b.x - b.width / 2 + 10;
+    sim.p.y = sim.arena.floor - sim.p.height;
+    sim.p.vx = 0;
+    sim.p.invincibleTimer = 0;
+    sim.p.hp = sim.p.maxHp;
+    sim.frame();
+    const st = sim.boss.ai?.state ?? '';
+    if (st === 'tell' && was !== 'tell') tells++;
+    was = st;
+  }
+  assert.ok(tells >= 5, `only ${tells} wind-ups in a minute`);
+  assert.deepEqual(log.filter((h) => h.state === 'tell' && !h.by.startsWith('hazard')), [], 'hurt during a wind-up');
+  assert.ok(!log.some((h) => h.by === 'body'), 'hurt by touching his body');
+  // (and the moves themselves still land: the test would pass for a boss that never hurt)
+  assert.ok(log.some((h) => h.state === 'act'), 'never hurt by a move either');
+});

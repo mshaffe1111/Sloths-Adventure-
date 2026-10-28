@@ -52,6 +52,12 @@ export const TUNING = {
   /** px up / down from the vertical anchor for jump / duck while steering */
   jumpDy: 34,
   duckDy: 42,
+  /** a steering thumb's duck must be going down this steeply over its last 150 ms (down / across): 1 is 45 degrees … */
+  duckSlant: 1,
+  /** … and 2 (63 degrees) while running, when the thumb sweeps about as it turns */
+  duckSlantRun: 2,
+  /** how far back (ms) that slant is measured: a sweep that ends going straight down is still a sweep */
+  duckTrailMs: 300,
   /** a flick must cover this many px … */
   flickPx: 46,
   /** … at no less than this speed (px per ms) to count the moment it happens … */
@@ -205,6 +211,8 @@ interface Finger {
   ducked: boolean;
   /** recent (t,y) samples for the vertical-speed gate */
   hist: { t: number; y: number; x?: number }[];
+  /** the last DUCK_TRAIL_MS of the path (a duck must be going down over it, not across: duckDown) */
+  trail: { t: number; x: number; y: number }[];
   tapT0: number;
   /** after a jump: the highest the thumb has been, and the lowest since (for the wiggle that jumps again) */
   pk: number;
@@ -320,7 +328,7 @@ export class TouchGestures {
   down(id: number, x: number, y: number, t: number) {
     this.now = t;
     if (this.fingers.has(id)) return;
-    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y, x }], tapT0: t, pk: y, tr: y, early: false, megaDone: false, lowY: y, lowX: x, riseT0: NaN, sx: 0, airDown: this.canAir(), trX: x };
+    const f: Finger = { id, role: 'pending', x0: x, y0: y, x, y, t0: t, ax: x, ay: y, consumed: false, jumped: false, ducked: false, hist: [{ t, y, x }], trail: [{ t, x, y }], tapT0: t, pk: y, tr: y, early: false, megaDone: false, lowY: y, lowX: x, riseT0: NaN, sx: 0, airDown: this.canAir(), trX: x };
     const m = this.mover();
     if (m) {
       // a second finger: ignore it if it is practically on top of the steering thumb
@@ -358,6 +366,8 @@ export class TouchGestures {
     f.y = y;
     f.hist.push({ t, y, x });
     while (f.hist.length > 2 && t - f.hist[0].t > 150) f.hist.shift();
+    f.trail.push({ t, x, y });
+    while (f.trail.length > 2 && t - f.trail[0].t > TUNING.duckTrailMs) f.trail.shift();
     if (f.role === 'mover') this.steer(f);
     else if (f.role === 'pending' || f.role === 'action') this.judge(f, t, false);
     else if (f.role === 'ignored') this.palmFlick(f, t);
@@ -408,8 +418,11 @@ export class TouchGestures {
       const wasTap = stillTap;
       this.setDir('none');
       this.setClimb(0);
-      this.duckOn = false;
-      this.sink.duck(false);
+      // (only when it was ducking: a "duck off" on every lift filled the play log with duck toggles that never were, QA's 279)
+      if (this.duckOn) {
+        this.duckOn = false;
+        this.sink.duck(false);
+      }
       if (f.jumped) this.sink.jumpRelease();
       // a finger that started the run and lifts like a flick was a kick all along: quick, long, sideways, then off the glass. This holds
       // on the left half too, where the run starts at once and a flick used to leave only a stutter (speed decides, not the side)
@@ -607,12 +620,23 @@ export class TouchGestures {
     const rope = this.rope();
     const rc = rope ? this.recent(f) : null;
     const ropeDown = !rc || (rc.my > 0 && rc.my >= rc.sx);
+    // (and the thumb must be going down, not across: `dx` above is held to the steering anchor's 30 px, so a long diagonal swipe,
+    // turning round, read as "more down than sideways" and ducked. Replaying Cheddarbob's fingers (iPhone 393x658, one finger): his
+    // duck-ons came from swipes down and across as he turned, 138 px left and 115 down. Over the last 300 ms a duck now has to be
+    // mostly down: steeper than 45 degrees standing, than 63 degrees while running. The sideways part is all the sideways travel in that
+    // time, so a thumb that ran one way and swept back the other, ending about where it was, is not "straight down")
+    let across = 0;
+    for (let i = 1; i < f.trail.length; i++) across += Math.abs(f.trail[i].x - f.trail[i - 1].x);
+    const downNow = f.y - f.trail[0].y >= across * (running ? TUNING.duckSlantRun : TUNING.duckSlant);
     const wantDuck = this.duckOn
       ? dy > TUNING.duckDy * 0.6 && !(running && Math.abs(dx) > dy)
-      : dy > startDy && dy > Math.abs(dx) * (running ? 1 : 0.6) && ropeDown;
+      : dy > startDy && dy > Math.abs(dx) * (running ? 1 : 0.6) && ropeDown && downNow;
     if (wantDuck !== this.duckOn) {
       this.duckOn = wantDuck;
       this.sink.duck(wantDuck);
+      // hysteresis: out of a duck, the next one needs a fresh slide down from here, so a thumb wobbling about the line never flickers
+      // him up and down (the anchor was where the thumb first went down, and a small slide back down crossed it again)
+      if (!wantDuck) f.ay = f.y;
     }
     // a jump needs an upward SPEED (or a really long push): a thumb that slowly creeps up while running, or comes back
     // from a deep duck, is not a jump

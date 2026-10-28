@@ -13,7 +13,7 @@ import { FALLS } from '../../src/game/waterfalls.ts';
 import { VINE } from '../../src/game/thornVine.ts';
 import { skillHeldAt } from '../../src/game/skills.ts';
 import { roomBox, type RoomSpec } from '../../src/game/puzzleKit.ts';
-import { RUN, type Route, type Seg } from './route.ts';
+import { CLIMB, RUN, type Route, type Seg } from './route.ts';
 import type { Stage } from './stages.ts';
 
 export type Letter = 'W' | 'h' | 'J' | 'V' | 'C' | 'Z' | 'P';
@@ -208,6 +208,22 @@ export function findBeats(stage: Stage, route: Route, samples: Sample[]): BeatRe
     if (w.veil || w.plug || !w.surge) continue;
     const i = firstIn(samples, { x0: w.x - 40, x1: w.x + w.width + 40, y0: w.top - 40, y1: w.bottom + 60 });
     if (i < 0) off('surging falls'); else add(i, 'Z', 'surging waterfall: wait for it to ease', w.surge.pour / 2);
+  }
+  // (a plug fall: the level check rolls its boulder in once he can get behind it and then walks the stage dry, so the route goes
+  // straight up its stair; the detour up to the shelf and the push is a beat where the route first comes under the shelf's near end,
+  // where the way up to it starts, or to the water, 2026-10-28)
+  for (const w of w4?.falls ?? []) {
+    if (!w.plug) continue;
+    const b = stage.platforms.find((p) => p.id === w.plug!.platformId);
+    if (!b) continue;
+    const i = firstIn(samples, { x0: Math.min(w.x, (b.push?.min ?? w.x) - 60) - 40, x1: w.x + w.width + 40, y0: w.top - 40, y1: w.bottom + 60 });
+    const up = Math.max(0, w.bottom - (b.y + b.height));
+    if (i < 0) off('plugged falls');
+    else {
+      add(i, 'P', 'plugged fall: up to the boulder and roll it in', up / CLIMB + Math.abs(w.plug.atX - b.x) / 120 + 1.5);
+      // (the walk on under the shelf to the water is the way back down from it: part of the detour, not quiet)
+      raw[raw.length - 1].act = Math.max(0, (w.x - samples[i].x) / RUN);
+    }
   }
   for (const r of w4?.rocks ?? []) {
     const i = firstIn(samples, { x0: r.x - 70, x1: r.x + 70, y0: r.land - 160, y1: r.land + 40 });

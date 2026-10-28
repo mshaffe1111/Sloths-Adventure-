@@ -7,7 +7,8 @@ import { lessonDotLine, type LessonId } from '../../game/lessons.ts';
 import { dotLine, dotText, engineGuideLine, swapLine } from '../../game/dotLines.ts';
 import { countedText, GuideQueue, noteSaid, readMs, showFor, wordCount, type GuideLine, type MoveId, type Showing, type TopicId } from '../../game/dotGuide.ts';
 import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../game/dotGuideWatch.ts';
-import { SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markSkillSeen, markSkipOffered, offersSkip, seenSkills, skipTips } from '../../game/dotGuideHelp.ts';
+import { SKIP_ARM_MS, SKIP_DONE, SKIP_DONE_MS, dotHelp, helpAllows, markSkillSeen, markSkipOffered, offersSkip, seenSkills, skipTapCounts, skipTips } from '../../game/dotGuideHelp.ts';
+import { recorder } from '../../game/playRecorder.ts';
 import { emptyGuideView, toScreenX, toScreenY, type GuideView } from '../../game/dotGuideView.ts';
 import {
   aheadRect,
@@ -260,11 +261,37 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
   const [toast, setToast] = useState<{ x: number; y: number; n: number } | null>(null);
 
   // Skip tips (her very first tip on this phone): Dot's help goes to Quiet, the rest of this line goes at once, and a short note says
-  // how to turn tips back on. The button swallows its touch: it is never also a punch or a jump.
+  // how to turn tips back on. The button swallows its touch: it is never also a punch or a jump. It needs a deliberate tap: for its
+  // first SKIP_ARM_MS it is faded and lets touches through to the game, and only a touch that went down on it counts (QA: a
+  // first-timer on Quiet from his first second). Pressing it is logged for the QA team.
   const swallow = (e: React.SyntheticEvent) => e.stopPropagation();
-  const onSkip = (e: React.SyntheticEvent) => {
+  const skipAt = useRef(0);
+  const skipDown = useRef(false);
+  const [skipArmed, setSkipArmed] = useState(false);
+  const skipShown = run.skipN >= 0 && show?.n === run.skipN;
+  useEffect(() => {
+    if (!skipShown) return;
+    skipAt.current = performance.now();
+    skipDown.current = false;
+    setSkipArmed(false);
+    recorder.event('skipOffer', show!.line.key);
+    const t = window.setTimeout(() => setSkipArmed(true), SKIP_ARM_MS);
+    return () => window.clearTimeout(t);
+  }, [skipShown]); // eslint-disable-line react-hooks/exhaustive-deps
+  const onSkipDown = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    skipDown.current = true;
+  };
+  const onSkip = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
+    const shownMs = performance.now() - skipAt.current;
+    // (a click with no pointer behind it, detail 0, is a key: Enter or Space on the focused button)
+    if (!skipTapCounts(shownMs, skipDown.current, e.detail === 0)) {
+      recorder.event('skipIgnored', `${(shownMs / 1000).toFixed(1)}s${skipDown.current ? '' : ' not down here'}`);
+      return;
+    }
+    recorder.event('skipTips', `${(shownMs / 1000).toFixed(1)}s ${show?.line.key ?? ''}`);
     run.help = skipTips();
     run.skipN = -1;
     // (what Quiet would not have said goes too; the locked-exit lines stay)
@@ -1194,9 +1221,9 @@ export const DotGuide: React.FC<DotGuideProps> = (props) => {
             {run.skipN === show!.n && (
               <button
                 type="button"
-                className="dg-skip"
+                className={`dg-skip${skipArmed ? '' : ' unarmed'}`}
                 onClick={onSkip}
-                onPointerDown={swallow}
+                onPointerDown={onSkipDown}
                 onPointerUp={swallow}
                 onTouchStart={swallow}
                 onTouchEnd={swallow}

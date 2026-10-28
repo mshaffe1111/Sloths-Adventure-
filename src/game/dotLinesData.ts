@@ -106,6 +106,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["hint.1-6.grabVine", "1-6", "stage hint", "move", "Flick up into the vine to grab it", null, null, "flick-up", null],
   ["hint.1-6.leapVine", "1-6", "stage hint", "move", "Flick up again as you swing forward", null, null, "flick-up", null],
   ["hint.1-6.log", "1-6", "stage hint", "move", "Keep sliding into the log to push it", "Keep sliding into the log to push it", null, "slide", "log"],
+  ["hint.1-6.logWall", "1-6", "stage hint", "info", "Too high to jump, even twice. Look around!", "Too high to jump, even twice. Look around!", null, null, null],
   ["hint.1-6.trunk", "1-6", "stage hint", "move", "Flick up beside the trunk, keep your thumb up", "Flick up at the trunk, then slide up.", null, "climb-up", "trunk"],
   ["eng.watch.hide.bush", "1-7", "guide", "move", "Here it comes! Slide down inside a bush to hide", "Slide down in a bush to hide!", null, "slide-down", "nearest bush"],
   ["eng.watch.seen.bush", "1-7", "guide", "move", "It saw you! Get into a bush before its shadow reaches you", "It saw you! Slide down in a bush!", null, "slide-down", "nearest bush"],
