@@ -211,6 +211,16 @@ test('water costs a life (warned first on Easy), mud lands soft; the props reach
         pairs += src;
       }
     }
+    if (!soft) {
+      // over water: no glide trap (two gaps within the leaf's reach, ~457 px: the route glides there and a first-timer who has not been
+      // told to glide drowns), no flag within 150 px before a lip (every respawn there went straight back in)
+      const falls = [...(st.gen2.falls ?? [])].sort((a, c) => a.x0 - c.x0);
+      for (let i = 0; i + 1 < falls.length; i++) assert.ok(falls[i + 1].x1 - falls[i].x0 > 470, `${tag}: a glide trap at ${falls[i].x0}`);
+      for (const c of st.checkpoints ?? []) assert.ok(!falls.some((f) => f.x0 - c.x >= 0 && f.x0 - c.x < 150), `${tag}: the flag at ${c.x} stands at the water's lip`);
+    }
+    // (the opening: the gate has no gap at all)
+    const gate = st.gen2.sections[0];
+    assert.ok(!(st.gen2.falls ?? []).some((f) => f.x0 < gate.x1), `${tag}: a gap in ${gate.template}`);
     // every tide's low water outlasts the walk across its mud (zones.ts tideCrossTime), and every animal keeps to its patch
     for (const z of w6.tides ?? []) assert.ok(z.period - z.warn - z.active >= (z.x1 - z.x0) / (285 * 0.78 * 0.8) + 1, `${tag}: a tide too quick for its mud`);
     for (const e of st.enemies) assert.ok(e.edgeMinX === e.patrolMinX && e.edgeMaxX === e.patrolMaxX, tag);
