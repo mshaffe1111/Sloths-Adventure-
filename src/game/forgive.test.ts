@@ -6,12 +6,16 @@
  *   G3 ledge landing: a jump toward a ledge that comes down with his foot 10 px short of it lands on Easy (12 px allowed) but not on
  *      Normal (8 px).
  *   G4 a jump into a 90 px face carries over its lip, in World 1 and in a generated world.
+ *   G8 the validator: an Easy step that needs a full-hold jump fails easyHoldCheck; one a 70% hold climbs passes.
  */
 import test, { after } from 'node:test';
 import assert from 'node:assert/strict';
 import { RealPlay } from './realPlay.ts';
 import { setDifficulty } from './difficulty.ts';
-import { ASSIST, FORGIVE } from './physics.ts';
+import { ASSIST, FORGIVE, JUMP_RISE, reachJump, reachJumpHeld, EASY_HOLD } from './physics.ts';
+import { easyHoldCheck, validateStage } from './levelCheck.ts';
+import { buildProtoStage, HAND_STAGES } from './protoStage.ts';
+import { levelConfig } from './realPlay.ts';
 import type { Platform } from './types.ts';
 
 const Y = 600;
@@ -128,4 +132,27 @@ function face(id: string, h: number): boolean {
 test('G4 a jump into a 90 px face carries over its lip, in World 1 and in a generated world (6-3)', () => {
   assert.ok(face('1-3', 90), 'World 1');
   assert.ok(face('6-3', 90), 'World 6, generated');
+});
+
+test('G8 the validator: an Easy step that needs a full-hold jump fails; one a 70% hold climbs passes', () => {
+  assert.ok(reachJumpHeld(0.85 * JUMP_RISE, false) < 0, 'a 70% hold does not rise 85% of a full jump');
+  assert.ok(reachJump(0.85 * JUMP_RISE, false) > 0);
+  const make = (rise: number) => {
+    const st = buildProtoStage(levelConfig('1-3'), 1, HAND_STAGES['1-3']);
+    const A = floor(0, 900);
+    const B = floor(900, 1900, Y - rise, rise + 90);
+    Object.assign(st, {
+      config: { ...st.config, objectiveType: 'sprint', targetCount: 1 },
+      platforms: [A, B], vines: [], ropes: [], enemies: [], rivers: [], checkpoints: [], zones: [], updrafts: [], kit: undefined,
+      collectibles: [{ id: 1, type: 'exit_totem', x: 1700, y: Y - rise - 30, collected: false, bobPhase: 0 }],
+      spawnX: 100, spawnY: Y, exitTotemX: 1700, exitTotemY: Y - rise,
+    });
+    return st;
+  };
+  const hard = make(Math.round(0.85 * JUMP_RISE));
+  assert.ok(validateStage(hard).ok, `the full jump climbs it: ${validateStage(hard).errors.join('; ')}`);
+  assert.ok(easyHoldCheck(hard).length > 0, 'a 70% hold does not');
+  const fine = make(Math.round(0.5 * JUMP_RISE));
+  assert.deepEqual(easyHoldCheck(fine), []);
+  assert.equal(EASY_HOLD, 0.7);
 });

@@ -337,6 +337,13 @@ export const reachBounceGlide = (dy: number, dbl: boolean) => reachMinGlide(dy, 
 /** Max horizontal gap for a normal jump / double jump / mushroom bounce. dy > 0 = target is higher. */
 export const reachJump = (dy: number, dbl: boolean) => reachMin(dy, PHYS.jumpV, PHYS.maxRun, dbl);
 export const reachBounce = (dy: number, dbl: boolean) => reachMin(dy, PHYS.bounceV, PHYS.maxRun, dbl);
+/**
+ * Easy's jump: a thumb that lets go early (a ~70% hold, Matt's Gemini research G8: "no Easy gap may need a full hold"). Modelled as a
+ * launch that rises `share` of a full jump's height (the engine's early release caps the rise the same way, PHYS.cutV); the second jump
+ * is as it is.
+ */
+export const EASY_HOLD = 0.7;
+export const reachJumpHeld = (dy: number, dbl: boolean, share = EASY_HOLD) => reachMin(dy, Math.round(PHYS.jumpV * Math.sqrt(share)), PHYS.maxRun, dbl);
 
 // ---- Swinging lianas -------------------------------------------------------
 
