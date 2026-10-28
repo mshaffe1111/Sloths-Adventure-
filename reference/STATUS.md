@@ -90,6 +90,10 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 2. Naturalist medal: still the 11 predators, or all 18 journal cards (the 7 new "met on the road" ones too)?
 3. Pell's and the soldiers' journal tips read right?
 
+Step G (lead's gen2 hook-up) must also: run heartsAtFlags and fixPickups on gen2 stages; make easyStage() skip gen2 stages (no double
+softening); one per-stage kit chooser (5-9 uses w5ArenaKit); judge World 5's band with the first-timer bot after hook-up (the
+inspector-only score can't show it: 5-7 reads ~21 before the first-timer); draw the water-warning sign (placeholder post until art).
+
 Pending for the architect when it resumes: commit c912bc3 finished (full suite + build), then the gauntlet/purge top-up in fillSockets
 (quota + 2 on Normal) and Easy's quota at round(0.6 x targetCount) (5-9 builder found 5-9 lays 16-26 of 26 animals).
 
@@ -103,6 +107,7 @@ Pending for the architect when it resumes: commit c912bc3 finished (full suite +
 - Meeca's Room 4 is the tea channel. World 5's night strips are made in code.
 - Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
+- Title screen direction approved by Matt (2026-10-28, from the idle videos: "I like the way that it's carved in").
 - Title logo: carved into bark, carved in stroke by stroke on the first title of a session (chips, gold glow), shown carved after;
   the ribbon is deleted (Matt 2026-10-28). Title pair get real animation clips from the motion model (no code twitching).
 - Dot's water warning (gen2, Easy repeats it after 12 s): "Careful, water! Flick up and over." (Matt chose C).

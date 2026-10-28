@@ -159,6 +159,14 @@ first 5 s of walking, §2 "Opening seconds"), then `poissonPlace` over all creat
 between two of a kind, 120 px between any two; stretches longer than the quiet cap with nothing to do are reported as `barren`).
 Easy then keeps the first of each kind and 60% of the rest. **Pickups** (rows on a surface), **quota items** (cages, relics: the
 node's count shared among its sections' `objective` sockets), **petal arcs** over the jumps (half a beat, E1), a harvest's top-up.
+**A purge's or gauntlet's top-up** (2026-10-28, for 5-9's goal of 26): the threat budgets alone lay too few animals for a goal
+that counts them, so, like a harvest's flowers, the world's creatures (those tagged `topup`, else every ground creature, from a
+bag; a world's `spawn` hook registers its own, e.g. World 5's sleeping spiders) are added on the widest main-route pieces, round
+by round (middles, then quarters, then eighths), Poisson-spaced against every animal and prop, never in the opening seconds, a
+rest, a room or within 400 px before a flag, never under a stump, until the goal + 2 stand before the shrine. Easy is held to
+easyMode's goal, round(0.6 x the goal) (`quota.check`, `checkStage`), and lays that + 2. The goal stays the designed number. If the
+animals don't fit, pass 5 lengthens the stage (never a re-roll), and a stage too long for the ceiling but no shorter than its
+animals allow ships long (the 2-minute floor is the rule; the ceiling is not).
 Every roll is drawn whether or not Easy keeps the piece, so the streams stay aligned. A prop reaches the engine through its
 world's **emitter** (`WorldKit.emit[propId]`): the manifest stays data, the one piece of code per world writes the extras the
 engine already plays (World 5: `proto.w5.chairs`, `cakes`, `threads`, `teapots`).
