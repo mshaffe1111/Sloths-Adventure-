@@ -1738,26 +1738,28 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     // apart and shorter calms, then twisted onto a rope line with bushes hanging from it. One bush hides a way up to a secret path.
     // (Rebuilt 2026-10-28: a rock or two to hop between the bushes, and the finish opens with the acorn meadow, the kit's noise lure:
     // the squirrels' acorns thrown to draw the eagle off; then more of the same until a quick player needs two minutes.)
+    // (QA the same day, an expert took 16 hits: the calms between passes are longer, 9-11 s while it teaches and 6-8 s after, about
+    // half again; the meadow keeps its own, which its puzzle is built on, stage17.test.ts)
     beat('Start', () => {
       rest(R.r(380, 430));
       flag();
     });
     beat('Learn: hide in the bushes', () => {
       hint(x + 20, 'An eagle is watching. Slide down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide', 'An eagle is watching. Hold down inside a bush to hide');
-      bushRow(5, [380, 470], ['tall', 'tall', 'wide'], [7.5, 9], true);
+      bushRow(5, [380, 470], ['tall', 'tall', 'wide'], [9, 11], true);
       flag();
     });
     beat('Test: farther apart', () => {
       hint(x + 40, 'Run when it has gone by', 'Run when it has gone by', 'Run when it has gone by');
-      bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [4.8, 6], true);
-      secretBush([4.8, 6]);
+      bushRow(3, [700, 820], ['wide', 'fern', 'tall'], [6.5, 8], true);
+      secretBush([6.5, 8]);
       lowStumps();
-      bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [4.6, 5.6], true);
+      bushRow(3, [740, 880], ['fern', 'tall', 'wide'], [6, 7.5], true);
       flag();
     });
     beat('Twist: the rope line', () => {
       hint(x + 60, 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by', 'Bushes on the rope too. Hang inside one while it goes by');
-      ropeBushes([4.6, 5.4]);
+      ropeBushes([6, 7]);
       flag();
     });
     beat('Finish: the acorn meadow', () => {
@@ -1766,8 +1768,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       let n = 0;
       // (a quick player who waits out the passes in the bushes: 1-7 runs long, three minutes, and the meadow is part of it)
       while (expert < EXPERT_SECONDS + 62 && n < 12) {
-        if (n % 2 === 0) bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [4.4, 5.4], true);
-        else ropeBushes([4.4, 5.2]);
+        if (n % 2 === 0) bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [6, 7.5], true);
+        else ropeBushes([6, 7]);
         n++;
         flag();
       }

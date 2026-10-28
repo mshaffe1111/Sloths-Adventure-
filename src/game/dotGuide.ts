@@ -392,7 +392,7 @@ export function classifyLine(text: string, inBoss = false): Pick<GuideLine, 'kin
   if (inBoss) return { kind: 'danger' };
   // (World 5: the silk creeping up him, the wrap itself and a thread's hum come in at once, over whatever is being read: the creep is the
   // only warning before the wrap takes a heart, QA v193)
-  if (/^(It saw you|She saw you|Here (she|it) comes|Ouch!|A (thorn )?vine is stirring|Her shadow!|Eyes in the dark|The eyes are back|The glowworms noticed|Don't stand still here|Wrapped up!|Wake up, Pokey|It hummed!)/i.test(t)) {
+  if (/^(It saw you|She saw you|Here (she|it) comes|Hide! |Ouch!|A (thorn )?vine is stirring|Her shadow!|Eyes in the dark|The eyes are back|The glowworms noticed|Don't stand still here|Wrapped up!|Wake up, Pokey|It hummed!)/i.test(t)) {
     return { kind: 'danger', topic: /bush/i.test(t) ? 'bush' : /fern/i.test(t) ? 'fern' : undefined };
   }
   if (/to open the sanctuary|before the sanctuary opens/i.test(t)) return { kind: 'goal' };

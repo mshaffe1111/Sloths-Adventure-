@@ -36,6 +36,8 @@ export class InputEngine {
   public onSwing = false;
   /** the engine says he is hanging from a shimmy rope: the steering thumb's sideways creep there never hops off or drops */
   public onRope = false;
+  /** the engine says he stands inside a bush (or fern) a watcher's stretch hides him in: there a slide down hides him even mid-run */
+  public inCover = false;
   /** the engine says, every frame: a mega punch can start (it is not cooling down), so a held thumb only announces one that will happen */
   public megaReady = true;
   private jumpBufferTimer = 0;

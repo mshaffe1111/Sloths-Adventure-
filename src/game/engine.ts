@@ -3,7 +3,7 @@ import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
-import { hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
+import { harmlessPass, hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
 import { liftY, pickFloor } from './lift.ts';
@@ -1131,6 +1131,8 @@ export class GameEngine {
     }
     // (Meeca never kicks: a sideways flick is a run)
     if (this.mc) this.input.kickNear = false;
+    // inside a bush a watcher's stretch hides him in: a slide down there hides him even mid-run (touchGestures.ts inCover)
+    this.input.inCover = !!this.proto?.watch && p.grounded && (this.proto.bushes ?? []).some((b) => !b.secret && !b.hanging && p.x > b.x + 10 && p.x < b.x + b.w - 10 && Math.abs(p.y - b.y) < 10);
     // on a trunk, a liana or a rope nothing carries him: what he does when he lets go is his own
     if (p.climbing || p.isVineSwinging || p.hanging) this.airDrive = newAirDrive();
     // the glide leaf is gone the moment he lands or grabs anything
@@ -6058,6 +6060,9 @@ export class GameEngine {
   }
 
   /** step the watching eagle and its dive (1-7) */
+  /** the eagle caught him out in the open on its last pass (Dot calls the next warning too) */
+  private watchCaught = false;
+
   private updateWatch(dt: number) {
     const p = this.player;
     const bushes = this.proto?.bushes ?? [];
@@ -6081,7 +6086,12 @@ export class GameEngine {
         markTipHeard(id, 'watch:hide');
         const duck = lessonInputMode() === 'screen' ? `Slide down inside a ${hide}` : `Hold down inside a ${hide}`;
         this.guide(cliffs ? `Here she comes! Stand behind a waterfall, or ${duck.toLowerCase()}` : `Here it comes! ${duck} to hide`, 3);
+      } else if (!hidden(bushes, { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging }) && (this.watch.passes <= 2 || this.watchCaught)) {
+        // (the sign over his head was in the world only: Dot says it too, for the next two passes and after any pass that caught him,
+        // when he is out in the open. QA 2026-10-28)
+        this.guide(cliffs ? 'Hide! Water or a bush!' : `Hide! Into a ${hide}!`, 2.4);
       }
+      this.watchCaught = false;
     }
     const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
     if (this.watch.phase === 'pass') {
@@ -6098,7 +6108,14 @@ export class GameEngine {
       // the strike: unless he made it into a bush (or behind the water) in time
       if (this.watch.seen && before < WATCH.dive && this.watch.diveT >= WATCH.dive) {
         if (water || hidden(bushes, me)) this.addFloatingText('PHEW!', p.x, p.y - 70, '#bbf7d0');
-        else this.damagePlayer(1);
+        else if (harmlessPass(this.watch)) {
+          // (the first pass only warns: it pulls up short of him)
+          this.addFloatingText('TOO CLOSE!', p.x, p.y - 80, '#fbbf24');
+          this.watchCaught = true;
+        } else {
+          this.damagePlayer(1);
+          this.watchCaught = true;
+        }
       }
     }
     // a bush rustles while he moves in it
@@ -6162,7 +6179,10 @@ export class GameEngine {
     } else if (w.phase === 'warn') {
       // it turns for its run: at the edge, flaring, and its shadow starts to show there
       const u = w.t / WATCH.warn;
-      e.x = w.dir === 1 ? cam.x - 40 + 60 * u : cam.x + cam.viewportWidth + 40 - 60 * u;
+      // (in from the edge to well inside the view, all of it on screen by the screech's end: upright, it sat half off the edge with
+      // only its "!" showing, QA 2026-10-28)
+      const inX = Math.min(130, cam.viewportWidth * 0.2);
+      e.x = w.dir === 1 ? cam.x - 40 + (40 + inX) * Math.min(1, u * 1.6) : cam.x + cam.viewportWidth + 40 - (40 + inX) * Math.min(1, u * 1.6);
       e.y = cam.y + 125;
       e.facing = w.dir;
       e.swoopPhase = 'telegraph';
@@ -6175,10 +6195,14 @@ export class GameEngine {
         // the dive: from where it saw him down to him, then back up and away
         const u = Math.min(1, w.diveT / WATCH.dive);
         const k = u < 1 ? u * u : 1;
-        e.x = this.watchFrom.x + (this.player.x - this.watchFrom.x) * k;
-        e.y = this.watchFrom.y + (this.player.y - 40 - this.watchFrom.y) * k;
+        // (the harmless first pass pulls up short of him; and after a strike it climbs away on its way, never sitting on him: QA
+        // 2026-10-28, 1-7, "the eagle sits on Pokey when it hits")
+        const short = harmlessPass(w) ? 70 : 0;
+        const away = Math.max(0, Math.min(1, (w.diveT - WATCH.dive) / 0.7));
+        e.x = this.watchFrom.x + (this.player.x - this.watchFrom.x) * k + w.dir * 320 * away;
+        e.y = this.watchFrom.y + (this.player.y - 40 - short - this.watchFrom.y) * k - 300 * away * away;
         e.swoopPhase = 'swoop';
-        e.isAttacking = u > 0.6;
+        e.isAttacking = u > 0.6 && away === 0 && !short;
       } else {
         e.x = sx;
         e.y = cam.y + 125;
