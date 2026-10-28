@@ -208,7 +208,9 @@ test('4-8 runtime: a guard will not let him by, nor over; a gust knocks it down 
     const z = st.zones!.find((q) => q.kind === 'wind' && q.x0 <= m.x0! && q.x1 >= m.x1!)!;
     const s = newCapuchin(m);
     let down = 0, knocks = 0;
-    for (let t = 0; t < z.period * 3; t += 1 / 30) {
+    // (three cycles, and the last knock's time on the ground to its end: with a gust right at the start of the clock, the third knock's
+    // down time ran past the third cycle and was cut short, 2026-10-28)
+    for (let t = 0; t < z.period * 3 + CAP.down; t += 1 / 30) {
       const zs = zoneState(z, t);
       if (stepGuard(m, s, zs.phase === 'active' ? z.dir * zs.strength : 0, 1 / 30).knocked) knocks++;
       if (!capBlocks(m, s, s.x)) down += 1 / 30;

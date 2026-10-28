@@ -11,6 +11,7 @@ import { DIFFICULTY_LABEL, difficulty, setDifficulty, subscribeDifficulty, type 
 import { DOT_HELP_LABEL, dotHelp, setDotHelp, type DotHelp } from '../game/dotGuideHelp.ts';
 import { dotSaid } from '../game/dotGuide.ts';
 import { DotFace } from './DotFace.tsx';
+import { Icon as Glyph, type IconName } from './icons/index.tsx';
 
 /** "Dot's help" (the new look): Teach me / Just reminders / Quiet, with her last three lines under it */
 export const DotHelpSetting: React.FC = () => {
@@ -20,7 +21,9 @@ export const DotHelpSetting: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <DotFace size={26} />
+          <span className="pm-set-ic" aria-hidden="true">
+            <DotFace size={24} />
+          </span>
           Dot&apos;s help
         </span>
       </div>
@@ -54,10 +57,11 @@ export const DotHelpSetting: React.FC = () => {
 /** keyboard shortcut hints only make sense when there is a keyboard (not on a touch-only phone) */
 export const COARSE = typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches;
 
-export const Icon: React.FC<{ color: string; children: React.ReactNode; size?: number }> = ({ color, children, size = 30 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
-    {children}
-  </svg>
+/** a setting's picture, from the game's own painted icon set, in a small round well */
+export const SetIcon: React.FC<{ name: IconName }> = ({ name }) => (
+  <span className="pm-set-ic" aria-hidden="true">
+    <Glyph name={name} size={20} />
+  </span>
 );
 
 /** the frame-time check (saved on the device; off unless turned on): a corner box with frames per second and a report of freezes */
@@ -69,9 +73,7 @@ export const PerfToggle: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <Icon color="#a5f3fc" size={22}>
-            <path d="M3 12h4l3-8 4 16 3-8h4" />
-          </Icon>
+          <SetIcon name="bolt" />
           Frame-time check
         </span>
         <button
@@ -99,10 +101,7 @@ export const WaysideToggle: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <Icon color="#f9a8d4" size={22}>
-            <path d="M4 5h16v10H9l-5 4z" />
-            <path d="M8 9h8M8 12h5" />
-          </Icon>
+          <SetIcon name="scroll" />
           Story lines in stages
         </span>
         <button
@@ -145,11 +144,7 @@ export const ControlsSetting: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <Icon color="#93c5fd" size={22}>
-            <circle cx="8" cy="12" r="4" />
-            <circle cx="17" cy="8" r="2.5" />
-            <circle cx="17" cy="16" r="2.5" />
-          </Icon>
+          <SetIcon name="paw" />
           Touch controls
         </span>
         <Seg
@@ -222,9 +217,7 @@ export const DifficultySetting: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <Icon color="#fcd34d" size={22}>
-            <path d="M4 18l4-6 4 4 4-8 4 10z" />
-          </Icon>
+          <SetIcon name="shield" />
           Difficulty
         </span>
         <Seg
@@ -252,9 +245,7 @@ export const AssistSetting: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <Icon color="#fda4af" size={22}>
-            <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />
-          </Icon>
+          <SetIcon name="heart" />
           Extra lives
         </span>
         <Seg
@@ -301,11 +292,7 @@ export const OrchSfxToggle: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <Icon color="#fcd34d" size={22}>
-            <path d="M9 18V6l10-2v12" />
-            <circle cx="7" cy="18" r="2.2" />
-            <circle cx="17" cy="16" r="2.2" />
-          </Icon>
+          <SetIcon name="note" />
           Orchestra sound effects
         </span>
         <button
@@ -346,9 +333,7 @@ export const FullscreenSetting: React.FC = () => {
     <div className="pm-sound">
       <div className="pm-sound-h">
         <span className="flex items-center gap-2">
-          <Icon color="#93c5fd" size={22}>
-            <path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5" />
-          </Icon>
+          <SetIcon name="expand" />
           Full screen
         </span>
         <button type="button" data-fs-toggle="true" className="pm-mute pm-polish" aria-pressed={on} onClick={() => setOn(toggleFullscreen())}>

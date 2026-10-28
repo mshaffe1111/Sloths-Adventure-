@@ -14,23 +14,14 @@ export function useShortScreen(): boolean {
   return short;
 }
 
-/** the folded banner across the top of the result cards (stage cleared / game over) */
-export const ClrRibbon: React.FC<{ title: string; tone?: 'gold' | 'dusk' }> = ({ title, tone = 'gold' }) => {
-  const c = tone === 'gold'
-    ? { tail: '#b45309', body: '#fbbf24', edge: '#92400e', shine: '#fde68a' }
-    : { tail: '#9a3412', body: '#fdba74', edge: '#7c2d12', shine: '#ffedd5' };
-  return (
-    <div className={`clr-ribbon ${tone}`}>
-      <svg viewBox="0 0 420 68" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 14h40v46H0l16-23z" fill={c.tail} />
-        <path d="M420 14h-40v46h40l-16-23z" fill={c.tail} />
-        <path d="M30 4h360v56H30z" fill={c.body} stroke={c.edge} strokeWidth="3" strokeLinejoin="round" />
-        <path d="M30 14h360" stroke={c.shine} strokeWidth="3" opacity=".8" />
-      </svg>
-      <h2>{title}</h2>
-    </div>
-  );
-};
+/** the heading across the top of the result cards (stage cleared / game over): carved into a little log like every heading (2026-10-28) */
+export const ClrRibbon: React.FC<{ title: string; tone?: 'gold' | 'dusk' }> = ({ title, tone = 'gold' }) => (
+  <div className={`clr-ribbon ${tone}`}>
+    <h2 className="kit-plaque">
+      <span>{title}</span>
+    </h2>
+  </div>
+);
 
 export interface ChipSpec {
   label: string;

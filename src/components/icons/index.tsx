@@ -18,6 +18,8 @@ export type IconName =
   | 'shield' | 'swords' | 'boot' | 'key' | 'bolt' | 'paw' | 'magnet' | 'bulb' | 'compass' | 'crown' | 'check' | 'cross' | 'arrow'
   // a few more the menus and badges need
   | 'medal' | 'burst' | 'ghost' | 'sloth' | 'hummingbird' | 'cage'
+  // the title and the menus (2026-10-28): sound, full screen, settings, the cards, play, restart, save
+  | 'speaker' | 'mute' | 'expand' | 'shrink' | 'gear' | 'cards' | 'play' | 'restart' | 'save'
   // the nine stage types (a boss stage is shown by its painted crest; `boss` is the plain heraldic stand-in)
   | 'sprint' | 'harvest' | 'purge' | 'ascent' | 'stealth' | 'vine' | 'relic' | 'rescue' | 'gauntlet' | 'boss';
 
@@ -248,6 +250,61 @@ const ART: Record<IconName, React.ReactNode> = {
   check: <path d="M4.8 12.6l4.8 4.8 9.6-10.2" fill="none" stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" />,
   cross: <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" />,
   arrow: <path d="M4.5 12h14M12.5 5.5 19 12l-6.5 6.5" fill="none" stroke="currentColor" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" />,
+
+  speaker: (
+    <>
+      {shape('M3.4 9.2h3.8l5-4.2v14l-5-4.2H3.4z', WOOD, { fill: '#f6d78a', stroke: '#7c4a1c' })}
+      {tube('M15.4 8.6a4.6 4.6 0 0 1 0 6.8', SKY, 1.9, 'a')}
+      {tube('M18.2 5.8a8.6 8.6 0 0 1 0 12.4', SKY, 1.9, 'b')}
+      {shine('M5 10.8v1.6', '#fff7d6', 0.9)}
+    </>
+  ),
+  mute: (
+    <>
+      {shape('M3.4 9.2h3.8l5-4.2v14l-5-4.2H3.4z', WOOD, { fill: '#f6d78a', stroke: '#7c4a1c' })}
+      {tube('M15.6 9.2l5 5.6M20.6 9.2l-5 5.6', RED, 2.1)}
+    </>
+  ),
+  expand: (
+    <>
+      {tube('M3.8 9V3.8H9M15 3.8h5.2V9M3.8 15v5.2H9M20.2 15v5.2H15', GOLD, 2.4)}
+    </>
+  ),
+  shrink: (
+    <>
+      {tube('M9 3.8V9H3.8M15 3.8V9h5.2M9 20.2V15H3.8M15 20.2V15h5.2', GOLD, 2.4)}
+    </>
+  ),
+  gear: (
+    <>
+      {shape('M10.3 2.6h3.4l.5 2.5 1.8.8 2.1-1.4 2.4 2.4-1.4 2.1.8 1.8 2.5.5v3.4l-2.5.5-.8 1.8 1.4 2.1-2.4 2.4-2.1-1.4-1.8.8-.5 2.5h-3.4l-.5-2.5-1.8-.8-2.1 1.4-2.4-2.4 1.4-2.1-.8-1.8-2.5-.5v-3.4l2.5-.5.8-1.8-1.4-2.1 2.4-2.4 2.1 1.4 1.8-.8z', WOOD)}
+      <circle cx="12" cy="12" r="3.3" fill="#f6d78a" stroke={WOOD.o} strokeWidth={1.6} />
+      {shine('M8.2 7.2l1.4-.7', WOOD.h, 0.95, 1.4)}
+    </>
+  ),
+  cards: (
+    <>
+      {shape('M4.2 6.6l7.4-2.2 3.6 12.4-7.4 2.2z', PAPER, { fill: '#bbf7d0', stroke: GREEN.o })}
+      {shape('M10.6 4.4h8a1.6 1.6 0 0 1 1.6 1.6v13a1.6 1.6 0 0 1-1.6 1.6h-8A1.6 1.6 0 0 1 9 19V6a1.6 1.6 0 0 1 1.6-1.6z', PAPER)}
+      {shape('M12 7.4h5.2v5.4H12z', ORANGE, { strokeWidth: 1.2, fill: '#fdba74' })}
+      {shine('M12 15.4h5.2M12 17.6h3.4', '#d6a756', 1, 1.2)}
+    </>
+  ),
+  play: <path d="M7.4 4.6v14.8l12-7.4z" fill="currentColor" stroke="currentColor" strokeWidth={1.6} strokeLinejoin="round" />,
+  restart: (
+    <>
+      {tube('M19.4 12.6A7.4 7.4 0 1 1 16.6 6.2', MINT, 2.4)}
+      {shape('M14.2 2.8l5.6 1.8-2.6 5z', MINT, { strokeWidth: 1.3 })}
+    </>
+  ),
+  save: (
+    <>
+      {shape('M4 4.4h12.6l3.4 3.4v11.8H4z', SKY)}
+      {shape('M7.2 4.4h8v4.8h-8z', PAPER, { strokeWidth: 1.3 })}
+      {shape('M7 13.2h10v6.4H7z', PAPER, { strokeWidth: 1.3 })}
+      {shine('M9 15.6h6M9 17.6h4', '#d6a756', 1, 1.1)}
+    </>
+  ),
 
   medal: (
     <>

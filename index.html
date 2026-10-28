@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Sloths Rainforest Adventures</title>
     <meta name="description" content="Help Pokey the sloth climb, swing and sneak through 10 rainforest worlds and 100 stages to rescue Meeca, the sloth he loves." />
-    <meta name="theme-color" content="#0e3b28" />
+    <meta name="theme-color" content="#0b1a13" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -16,10 +16,104 @@
     <meta property="og:description" content="Help Pokey the sloth climb, swing and sneak through 10 rainforest worlds and 100 stages to rescue Meeca, the sloth he loves." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!--
+      The opening splash (2026-10-28): it is in the page itself, so the very first thing drawn is the jungle's dark green and the logo,
+      never a white page. Everything the title needs (the fonts, World 1's painting, Pokey's and Meeca's sheets) starts downloading
+      here at once, alongside the game's script, and the splash stays up until the title has all of it (src/game/boot.ts), so the
+      title arrives in one piece. The fonts are the same files the game's style sheet uses, so nothing is fetched twice.
+    -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/src/assets/fonts/cherry-bomb-one-latin-400-normal.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/src/assets/fonts/baloo-2-latin-800-normal.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/src/assets/fonts/outfit-latin-700-normal.woff2" />
+    <link rel="preload" as="image" href="/src/assets/backdrops/w1-mid.webp" />
+    <link rel="preload" as="image" href="/src/assets/backdrops/w1-near.webp" />
+    <link rel="preload" as="image" href="/src/assets/title/clip-pokey-idle.webp" />
+    <link rel="preload" as="image" href="/src/assets/title/clip-meeca-idle.webp" />
+    <link rel="preload" as="image" href="/src/assets/title/log.webp" />
+    <link rel="preload" as="image" href="/src/assets/title/slab.webp" />
+    <style>
+      html, body { margin: 0; height: 100%; background: #0b1a13; }
+      #boot { position: fixed; inset: 0; z-index: 9999; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4vh;
+        background: radial-gradient(120% 75% at 50% 32%, #2b5532 0%, #163420 48%, #0b1a13 100%); color: #fff6df; transition: opacity .7s ease, visibility 0s linear .7s; }
+      #boot.done { opacity: 0; visibility: hidden; pointer-events: none; }
+      #boot-bg { position: absolute; inset: -4%; width: 108%; height: 108%; object-fit: cover; opacity: 0; filter: blur(6px) saturate(1.05) brightness(.62); transform: scale(1.06); transition: opacity 1.2s ease, transform 8s ease-out; }
+      #boot-bg.in { opacity: 1; transform: scale(1.02); }
+      #boot::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 38%, rgba(255, 224, 150, .22), transparent 58%), radial-gradient(ellipse at 50% 50%, transparent 52%, rgba(4, 12, 8, .65) 100%); }
+      .boot-logo { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; opacity: 0; transform: translateY(10px) scale(.96); transition: opacity .6s ease, transform .9s cubic-bezier(.2, 1.4, .4, 1); }
+      .boot-ready .boot-logo { opacity: 1; transform: none; }
+      /* the title's log, its name only scored in so far: the title carves it for real (src/components/title/CarvedLogo.tsx) */
+      .boot-slab { width: min(86vw, 70vh, 420px); height: auto; overflow: visible; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .45)); }
+      .boot-slab .score { fill: none; stroke: rgba(255, 236, 196, .55); stroke-linecap: round; stroke-linejoin: round; }
+      .boot-vine { position: relative; z-index: 1; width: min(62vw, 300px); height: 46px; }
+      .boot-vine svg { width: 100%; height: 100%; overflow: visible; }
+      .boot-vine .track { fill: none; stroke: rgba(255, 246, 223, .14); stroke-width: 5; stroke-linecap: round; }
+      .boot-vine .grow { fill: none; stroke: #7cc35a; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--p, .04)); transition: stroke-dashoffset .5s ease; filter: drop-shadow(0 0 6px rgba(160, 240, 120, .45)); }
+      .boot-vine .glow { fill: none; stroke: rgba(230, 255, 190, .85); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: .05 .95; animation: boot-run 1.8s linear infinite; }
+      @keyframes boot-run { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+      .boot-vine .lf { fill: #8fd26a; stroke: #2c5a1f; stroke-width: 1.4; transform-box: fill-box; transform-origin: 50% 100%; transform: scale(0); transition: transform .5s cubic-bezier(.2, 1.6, .4, 1); }
+      .boot-vine .lf.on { transform: scale(1); }
+      .boot-vine .tip { animation: boot-sway 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 100%; }
+      @keyframes boot-sway { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(10deg); } }
+      @media (prefers-reduced-motion: reduce) { .boot-vine .tip, .boot-vine .glow { animation: none; } .boot-vine .glow { display: none; } #boot-bg { transition: opacity .6s ease; } }
+    </style>
   </head>
   <body>
+    <div id="boot" aria-hidden="true">
+      <img id="boot-bg" src="/src/assets/backdrops/w1-far.webp" alt="" decoding="async" onload="this.classList.add('in')" />
+      <div class="boot-logo">
+        <svg class="boot-slab" viewBox="0 0 1000 490" role="img" aria-label="Sloths: Rainforest Adventures">
+          <image href="/src/assets/title/slab.webp" x="20" y="30" width="960" height="449.5" preserveAspectRatio="none" onload="document.getElementById('boot').classList.add('boot-ready')" />
+          <path class="score" stroke-width="13.1" d="M275.3 240.3L249.3 226.8L220.4 231.6L206.8 253.9L222.2 275.1L259.0 288.1L274.4 309.3L260.8 331.6L231.9 336.4L205.9 322.9M318.3 230.0L321.7 338.8L394.2 336.5M470.7 227.6L442.3 246.8L436.3 283.3L444.9 319.3L474.5 336.4L502.9 317.3L508.9 280.8L500.4 244.7L470.7 227.6M550.6 234.2L623.1 236.2M586.9 235.2L583.8 344.0M666.7 231.7L669.7 340.5M739.3 229.7L742.2 338.6M668.2 286.1L740.8 284.1M855.8 246.7L830.0 232.9L801.1 237.3L787.2 259.5L802.3 280.9L839.0 294.3L854.1 315.7L840.2 337.9L811.3 342.3L785.5 328.5" />
+          <path class="score" stroke-width="5.7" d="M164.9 426.3L165.6 385.7L185.9 386.0L192.5 396.3L185.6 406.3L165.2 406.0M177.4 406.2L192.0 426.8M199.6 424.5L214.7 384.3L226.7 425.5M205.6 409.8L221.8 410.4M250.3 386.4L249.7 427.0M242.2 386.2L258.5 386.5M241.6 426.9L257.8 427.2M270.6 424.2L272.4 383.6L297.7 425.4L299.4 384.8M335.1 385.3L307.9 384.3L306.6 425.0M307.3 404.7L327.6 405.4M357.1 385.9L346.2 392.6L343.5 406.2L346.2 419.7L357.0 426.5L367.9 419.8L370.6 406.2L367.9 392.7L357.1 385.9M377.6 426.1L379.1 385.5L399.5 386.2L405.8 396.7L398.7 406.6L378.4 405.8M390.6 406.3L404.7 427.1M441.8 383.9L414.7 383.8L414.6 424.5L441.8 424.6M414.7 404.2L435.0 404.2M477.5 388.6L467.9 383.3L457.1 384.9L451.8 393.1L457.4 401.1L471.0 406.3L476.6 414.4L471.3 422.6L460.5 424.1L450.9 418.9M485.9 384.1L513.0 384.5M499.5 384.3L498.8 425.0M544.4 425.7L558.1 385.1L571.5 425.8M549.9 410.8L566.2 410.8M580.2 384.8L580.3 425.5L596.6 425.5L607.4 414.6L607.3 395.6L596.4 384.8L580.2 384.8M615.8 383.9L631.0 424.0L642.8 382.8M678.4 384.5L651.3 383.5L649.9 424.2L677.0 425.1M650.6 403.8L670.9 404.6M685.3 424.5L686.9 383.9L712.4 425.6L714.0 384.9M722.5 385.4L749.7 385.7M736.1 385.6L735.7 426.3M758.1 386.0L757.3 417.2L763.9 426.8L777.4 427.2L784.5 417.8L785.2 386.7M793.3 424.7L793.7 384.0L814.1 384.3L820.7 394.5L813.8 404.6L793.5 404.4M805.7 404.5L820.4 425.0M856.4 384.6L829.3 384.0L828.3 424.6L855.4 425.3M828.8 404.3L849.2 404.8M891.9 389.9L882.5 384.2L871.6 385.3L866.0 393.3L871.2 401.5L884.6 407.4L889.8 415.6L884.1 423.6L873.2 424.7L863.9 419.0" />
+        </svg>
+      </div>
+      <div class="boot-vine">
+        <svg viewBox="0 0 300 46">
+          <path class="track" d="M6 30 C 56 10, 96 44, 150 26 S 246 12, 294 28" />
+          <path class="grow" pathLength="1" d="M6 30 C 56 10, 96 44, 150 26 S 246 12, 294 28" />
+          <path class="glow" pathLength="1" d="M6 30 C 56 10, 96 44, 150 26 S 246 12, 294 28" />
+          <path class="lf" data-at=".12" d="M42 21 c -8 -4 -10 -12 -4 -18 c 6 4 8 12 4 18 z" />
+          <path class="lf" data-at=".3" d="M95 30 c 6 -6 14 -6 18 0 c -6 4 -12 4 -18 0 z" />
+          <path class="lf" data-at=".5" d="M150 26 c -6 -6 -6 -14 0 -18 c 5 5 5 12 0 18 z" />
+          <path class="lf" data-at=".68" d="M204 18 c 7 -3 14 0 16 6 c -7 2 -13 0 -16 -6 z" />
+          <path class="lf" data-at=".86" d="M256 18 c -8 -3 -11 -11 -6 -17 c 6 3 9 11 6 17 z" />
+          <path class="lf on tip" d="M8 28 c -2 -9 3 -16 11 -17 c 1 8 -3 15 -11 17 z" />
+        </svg>
+      </div>
+    </div>
+    <script>
+      // the splash's own little API (src/game/boot.ts drives it): set(p) grows the vine, done() fades it away. It also lets itself go after
+      // 20 s whatever happens, so a stuck download can never hold the game behind it.
+      (function () {
+        var el = document.getElementById('boot');
+        var p = 0;
+        var leaves = el.querySelectorAll('.lf[data-at]');
+        function set(v) {
+          p = Math.max(p, Math.min(1, v || 0));
+          el.style.setProperty('--p', String(Math.max(0.04, p)));
+          for (var i = 0; i < leaves.length; i++) if (p >= +leaves[i].getAttribute('data-at')) leaves[i].classList.add('on');
+        }
+        function done() {
+          if (el.classList.contains('done')) return;
+          set(1);
+          el.classList.add('done');
+          setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 900);
+        }
+        window.__boot = { set: set, done: done, t0: Date.now() };
+        // the log shows once its picture is here (it is small: 12 KB); after 4 s whatever happens
+        setTimeout(function () { el.classList.add('boot-ready'); }, 4000);
+        setTimeout(done, 20000);
+        // the vine never stands still: while the game downloads it creeps on by itself, slower and slower toward the end (it never
+        // reaches it by creeping), and the real progress from the title (boot.ts) takes over whenever that is further along
+        var creep = 0.04;
+        var timer = setInterval(function () {
+          if (el.classList.contains('done')) return clearInterval(timer);
+          creep += (0.92 - creep) * 0.028;
+          set(creep);
+        }, 200);
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

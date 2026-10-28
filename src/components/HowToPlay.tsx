@@ -1,4 +1,5 @@
 import React from 'react';
+import { GhostOnExit } from './fx/exitGhost.ts';
 import { HeroFaceIcon } from './HeroFaceIcon.tsx';
 import { GestureGlyph } from './GestureGlyph.tsx';
 import { Icon } from './icons/index.tsx';
@@ -278,6 +279,7 @@ export const HowToPlay: React.FC<Props> = ({ onClose, intro = false }) => {
 
   return (
     <div className="ui-scrim select-none" role="dialog" aria-modal="true" aria-label="Pokey's Journal" onClick={onClose}>
+      <GhostOnExit />
       <div className={`ui-panel jr${short ? ' jr-short' : ''}`} onClick={(e) => e.stopPropagation()}>
         <div className="jr-head">
           {page && !short ? (

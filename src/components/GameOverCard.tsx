@@ -1,4 +1,5 @@
 import React from 'react';
+import { GhostOnExit } from './fx/exitGhost.ts';
 import type { LevelConfig } from '../game/types.ts';
 import type { StageStats } from '../game/badges.ts';
 import { HeroPose } from './HeroPose.tsx';
@@ -42,6 +43,7 @@ export const GameOverCard: React.FC<GameOverCardProps> = ({ levelConfig, score, 
 
   return (
     <div className="clr-scrim lost select-none">
+      <GhostOnExit />
       <div className="clr-card lost" role="dialog" aria-label="Out of lives">
         <ClrRibbon title="TUCKERED OUT!" tone="dusk" />
 

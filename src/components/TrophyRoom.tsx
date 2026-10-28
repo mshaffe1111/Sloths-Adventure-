@@ -11,6 +11,8 @@ import { BONUS_FIND, FINDS, allFound, type FindDef } from '../game/finds.ts';
 import { photoUrl } from '../game/photos.ts';
 import { itemUrl } from '../game/items.ts';
 import { MEMORIES, MEMORY_ORDER, type MemoryId } from '../game/storyChapters.ts';
+import { SceneBackdrop } from './title/TitleScene.tsx';
+import { DotPerched, Plaque } from './KitParts.tsx';
 
 interface Props {
   store: BadgeStore;
@@ -29,9 +31,23 @@ interface Props {
   /** the flashbacks seen so far, and a way to watch one again */
   memories?: MemoryId[];
   onReplayMemory?: (id: MemoryId) => void;
+  /** the world whose painting lives behind the room (the one last played) */
+  world?: number;
 }
 
 const fmt = (n: number) => n.toLocaleString('en-US');
+
+/** each card's window shows the far painting of the world the creature lives in (2026-10-28), behind its picture or its shadow */
+let FAR: Record<string, string> = {};
+try {
+  FAR = import.meta.glob('../assets/backdrops/w*-far.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+} catch {
+  FAR = {};
+}
+const cardWorld = (w: number): React.CSSProperties | undefined => {
+  const u = FAR[`../assets/backdrops/w${w}-far.webp`];
+  return u ? ({ ['--cw' as string]: `url("${u}")` } as React.CSSProperties) : undefined;
+};
 const unitLabel = (b: BadgeDef, have: number, need: number) =>
   b.unit === 'h' ? `${have} of ${need} h` : b.unit === 'min' ? `${have} of ${need} min` : `${fmt(have)} of ${fmt(need)}`;
 
@@ -61,7 +77,7 @@ const MedalCell: React.FC<{ b: BadgeDef; got: boolean; ctx: EvalContext }> = ({ 
   );
 };
 
-export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, onOpenFind, memories = [], onReplayMemory }) => {
+export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHeart, choice, onChoice, onBack, initialTab = 'badges', finds, onOpenFind, memories = [], onReplayMemory, world = 1 }) => {
   const [tab, setTab] = useState<'badges' | 'journal' | 'library'>(initialTab);
   const ctx = useMemo<EvalContext>(() => ({ store, levels, gateFound, thornHeart, finds }), [store, levels, gateFound, thornHeart, finds]);
   const earnedIds = useMemo(() => new Set(evaluate(ctx)), [ctx]);
@@ -80,13 +96,18 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
 
   return (
     <div className="tr-screen" role="dialog" aria-label="Trophy Room">
+      <SceneBackdrop world={world} />
       <div className="tr-inner">
+        {/* Dot keeps the cards: perched on the panel's edge */}
+        <DotPerched size={74} className="tr-dot" />
         <div className="tr-head">
           <button type="button" className="ui-x" onClick={onBack} aria-label="Back">
             <Icon name="arrow" size={16} rotate={180} />
           </button>
           <div className="tr-titles">
-            <h1 className="tr-h1">Trophy Room</h1>
+            <Plaque as="h1" className="tr-h1">
+              Trophy Room
+            </Plaque>
             <div className="tr-sub">
               <b className="tr-points">{fmt(points)}</b> of {fmt(TOTAL_POINTS)} points · {earnedCount} of {BADGES.length} medals
             </div>
@@ -184,7 +205,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 const n = store.kills[id] ?? 0;
                 return (
                   <div key={id} className={`tr-card ${met ? '' : 'lock'}`}>
-                    <div className="tr-cpic">
+                    <div className="tr-cpic" style={cardWorld(e.first)}>
                       <CreaturePic id={id} w={120} h={74} locked={!met} />
                     </div>
                     <div className="tr-cn">{met ? e.name : '???'}</div>
@@ -203,7 +224,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 const met = roadMet(r, levels);
                 return (
                   <div key={r.id} className={`tr-card ${met ? '' : 'lock'}`}>
-                    <div className="tr-cpic">
+                    <div className="tr-cpic" style={cardWorld(r.first)}>
                       <CreaturePic id={r.id} w={120} h={74} locked={!met} />
                     </div>
                     <div className="tr-cn">{met ? r.name : '???'}</div>
@@ -222,7 +243,7 @@ export const TrophyRoom: React.FC<Props> = ({ store, levels, gateFound, thornHea
                 const done = bossDone(g.world);
                 return (
                   <div key={g.world} className={`tr-card ${done ? '' : 'lock'}`}>
-                    <div className="tr-cpic">
+                    <div className="tr-cpic" style={cardWorld(g.world)}>
                       <CreaturePic id={g.art} w={120} h={74} locked={!done} />
                     </div>
                     <div className="tr-cn">{done ? g.name : '???'}</div>

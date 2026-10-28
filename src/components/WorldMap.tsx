@@ -2,7 +2,9 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { testUnlockOn } from '../game/testUnlock.ts';
 import type { LevelConfig } from '../game/types.ts';
 import { WORLDS_DATA } from '../game/worldsData.ts';
-import { VistaCanvas, WorldThumb, requestThumbs } from './VistaCanvas.tsx';
+import { WorldThumb, requestThumbs } from './VistaCanvas.tsx';
+import { SceneBackdrop } from './title/TitleScene.tsx';
+import { Plaque } from './KitParts.tsx';
 import { SaveLoadDialog } from './SaveLoadDialog.tsx';
 import { HeroPose } from './HeroPose.tsx';
 import { Icon } from './icons/index.tsx';
@@ -192,7 +194,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
   return (
     <div className="fixed inset-0 z-40 bg-[#10241a] flex flex-col select-none font-game text-white overflow-hidden">
       <div key={activeWorldId} className="absolute inset-0 map-fade">
-        <VistaCanvas worlds={[activeWorldId]} pan={6} front={false} />
+        <SceneBackdrop world={activeWorldId} />
       </div>
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(8,20,13,.78) 0%, rgba(8,20,13,.12) 24%, rgba(8,20,13,.1) 52%, rgba(8,20,13,.82) 100%)' }} />
 
@@ -204,7 +206,9 @@ export const WorldMap: React.FC<WorldMapProps> = ({
         </button>
         <div className="text-center min-w-0 order-3 basis-full sm:order-none sm:basis-auto">
           <div className="ui-kicker">World {curWorld.id} of 10</div>
-          <h1 className="map-title truncate">{curWorld.name}</h1>
+          <Plaque as="h1" className="map-title">
+            {curWorld.name}
+          </Plaque>
         </div>
         <div className="flex items-center gap-1.5 sm:gap-2 whitespace-nowrap">
           {thornHeart && (
@@ -231,7 +235,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
 
       {/* the trail */}
       <div ref={trailRef} className="relative z-10 flex-1 min-h-0">
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${box.w} ${box.h}`} aria-hidden="true">
+        <svg key={activeWorldId} className="map-trail absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${box.w} ${box.h}`} aria-hidden="true">
           {/* the road: dark edge, then every stretch in its own colour. Warm gold where Pokey has been, muted sand for what is still ahead */}
           <path d={pathD} fill="none" stroke="rgba(10,18,12,.55)" strokeWidth={nodeSize * 0.62} strokeLinecap="round" strokeLinejoin="round" />
           {segs.map((s, i) => {
@@ -284,7 +288,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({
                 }}
                 className={`map-node ${open ? (lvl.completed ? 'done' : 'ready') : 'locked'} ${isBoss ? 'boss' : ''} ${sel ? 'sel' : ''} ${isNext ? 'next' : ''}`}
                 data-type={lvl.objectiveType}
-                style={{ left: p.x - size / 2, top: p.y - size / 2, width: size, height: size }}
+                style={{ left: p.x - size / 2, top: p.y - size / 2, width: size, height: size, ['--i' as string]: i }}
                 aria-label={`Stage ${lvl.id}: ${lvl.name}, ${type.label}${lvl.completed ? `, ${lvl.stars} stars` : open ? '' : ', locked'}`}
               >
                 {isBoss ? (
@@ -383,7 +387,8 @@ export const WorldMap: React.FC<WorldMapProps> = ({
               </div>
             </div>
             {picked.unlocked || firstOf(picked) ? (
-              <button type="button" className="title-btn title-btn-start map-play" onClick={() => onSelectLevel(picked)} data-start="true">
+              <button type="button" className="gx-plank gx-plank-gold map-play" onClick={() => onSelectLevel(picked)} data-start="true">
+                <Icon name="play" size={18} />
                 {picked.completed ? 'REPLAY' : 'PLAY'}
               </button>
             ) : (
