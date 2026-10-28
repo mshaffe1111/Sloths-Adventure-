@@ -559,7 +559,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
   // so it fits an upright phone as well as a sideways one, and a miss is a hop out of a 60 px pit: never a life.
   /** a spot on a platform as a kit anchor (0..1 along its top) */
   const onP = (p: Platform, ax: number, dy = 0): Anchor => ({ on: p.id, at: (ax - p.x) / p.width, ...(dy ? { dy } : {}) });
-  const SEE = { w: 320, rise: 110, pit: 60, logW: 140, logH: 60, bank: 270 } as const;
+  const SEE = { w: 260, rise: 110, pit: 60, logW: 140, logH: 60, bank: 270 } as const;
   /** the bank Pokey is on, from where it started to the cursor, ended here and returned (the kit anchors its pieces on it) */
   const endBank = (): Platform => {
     const p = bank(bankFrom, x);
@@ -588,14 +588,14 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const x0 = x;
     run(R.r(150, 190));
     const logX = Math.round(x);
-    if (!demo) run(SEE.logW + R.r(120, 150));
+    if (!demo) run(SEE.logW + R.r(70, 90));
     const floor = endBank();
     const edge = x;
     const pivot = edge + SEE.w / 2;
     const pit = bank(edge, edge + SEE.w, G + SEE.pit, 'moss_stone');
     const id = `seesaw${ROOMS.length}`;
     const kit: RoomSpec['pieces'] = [
-      { kind: 'reset', id: `post${ROOMS.length}`, at: onP(floor, Math.max(floor.x + 20, demo ? edge - 120 : logX - 60)) },
+      { kind: 'reset', id: `post${ROOMS.length}`, at: onP(floor, Math.max(floor.x + 20, demo ? edge - 120 : logX - 45)) },
       { kind: 'seesaw', id, at: onP(pit, pivot, -SEE.pit), w: SEE.w, rise: SEE.rise, rest: -1 },
     ];
     if (demo) {
@@ -621,7 +621,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     topRock(top, 0.62);
     ROOMS.push({
       id: `seesaw-${ROOMS.length}`,
-      left: onP(floor, logX - 80), right: { on: top.id, at: 0, dx: 60 }, above: 420, below: SEE.pit + 10,
+      left: onP(floor, logX - 60), right: { on: top.id, at: 0, dx: 60 }, above: 420, below: SEE.pit + 10,
       pieces: kit, exit: id, beyond: { on: top.id, at: 0.3 }, ground: [floor.id, pit.id],
       tips: { enter: 'Too high! Push the log onto the near end.' },
     });
@@ -647,7 +647,7 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const rise = 100, high = 260, logH = 50;
     block(edge - 110, edge - 10, 40);
     const pit = bank(edge, edge + SEE.w, G + SEE.pit, 'moss_stone');
-    const farFloor = bank(edge + SEE.w, edge + SEE.w + 270);
+    const farFloor = bank(edge + SEE.w, edge + SEE.w + 250);
     const logX = farFloor.x + 30;
     P.push({ id: pid++, x: logX, y: G - logH, width: SEE.logW, height: logH, type: 'solid', style: 'log', push: { min: pivot + 10, max: farFloor.x + farFloor.width } });
     const top = cliff(farFloor.x + farFloor.width, farFloor.x + farFloor.width + R.r(400, 480), high);
@@ -662,9 +662,9 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     const id = `seesaw${ROOMS.length}`;
     ROOMS.push({
       id: `seesaw-twist-${ROOMS.length}`,
-      left: onP(floor, edge - 190), right: { on: top.id, at: 0, dx: 60 }, above: 440, below: SEE.pit + 10,
+      left: onP(floor, edge - 140), right: { on: top.id, at: 0, dx: 60 }, above: 440, below: SEE.pit + 10,
       pieces: [
-        { kind: 'reset', id: `post${ROOMS.length}`, at: onP(floor, edge - 160) },
+        { kind: 'reset', id: `post${ROOMS.length}`, at: onP(floor, edge - 128) },
         { kind: 'seesaw', id, at: onP(pit, pivot, -SEE.pit), w: SEE.w, rise, rest: 1 },
       ],
       exit: id, beyond: { on: top.id, at: 0.4 }, ground: [floor.id, pit.id, farFloor.id],

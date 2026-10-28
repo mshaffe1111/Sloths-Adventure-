@@ -12,6 +12,7 @@ import { RealPlay } from './realPlay.ts';
 import { GameEngine } from './engine.ts';
 import { CAM, camLag, camRun, FRAME, framing, HERO_HEAD, HUD_BAND, RUN, runLead, runOffset } from './cameraFollow.ts';
 import { PHYS } from './physics.ts';
+import { assignTerritories } from './enemyBrain.ts';
 
 const FLOOR = 700;
 /** how much of the snake must be in view before it counts as seen (px of world) */
@@ -35,8 +36,11 @@ function setup(w: number, h: number) {
 /** seconds the snake is on screen before it bites, and where Pokey sits across the screen (fraction of its width) as it does */
 function warning(w: number, h: number): { secs: number; heroAt: number; vw: number } {
   const { r, e, snake0 } = setup(w, h);
-  const snake = { ...snake0, asleep: false, x: 1500, y: FLOOR - snake0.height, patrolMinX: 1400, patrolMaxX: 1700, facing: -1, defeated: false };
+  // (the hunting ground the engine worked out for 1-3's own first snake is not this one's: it gets its own, on this floor)
+  const { huntMinX: _h0, huntMaxX: _h1, edgeMinX: _e0, edgeMaxX: _e1, ...base } = snake0;
+  const snake = { ...base, asleep: false, x: 1500, y: FLOOR - snake0.height, patrolMinX: 1400, patrolMaxX: 1700, facing: -1, defeated: false };
   e.enemies = [snake];
+  assignTerritories(e.enemies, e.platforms, (q: { y: number; height: number }) => q.y + q.height);
   r.safe = false;
   r.stand(200, FLOOR);
   r.p.invincibleTimer = 0;
