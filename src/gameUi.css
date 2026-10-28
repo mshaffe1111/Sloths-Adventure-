@@ -154,7 +154,7 @@
 }
 /* a phone on its side: everything a size smaller */
 @media (max-height: 430px) and (orientation: landscape) {
-  .gx2-carve { --lw: min(42vw, 92vh, 360px); }
+  .gx2-carve { --lw: min(36vw, 74vh, 310px); }
   .gx2-planks .gx-plank { min-width: 128px; padding: 7px 12px; font-size: 13.5px; }
   .gx2-sign { min-width: 280px; padding: 8px 34px 7px; }
   .gx2-sign .gx-sign-t { font-size: 20px; }

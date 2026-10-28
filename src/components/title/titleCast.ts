@@ -6,7 +6,8 @@
  * Meeca 390.6. Meeca's clips face the camera (they are drawn as painted, not turned).
  *
  * The idles are fetched with the title; a moment's sheet is fetched a few seconds before it plays and let go after (TitleScene.tsx).
- * (The pair's laugh together is being redone by the art helper and is not used yet.)
+ * The two of them also share a moment now and then (PAIR_LAUGH: Pokey nudges her shoulder, she smiles, they settle), one picture of
+ * both, drawn with each one's feet where their idles stand.
  */
 import type { Cast, ClipFrame } from './clipPlayer.ts';
 
@@ -44,3 +45,15 @@ export const MEECA_CAST: Cast = {
 
 /** the sheets the title waits for (the idles); the moments' come later */
 export const TITLE_IDLE_SHEETS = [POKEY_CAST.sheets.idle as string, MEECA_CAST.sheets.idle as string];
+
+/**
+ * The moment they share: one sheet of both of them, Pokey's feet at (px, py) and Meeca's at (mx, my) in every cell. Rarer than the
+ * single moments: every 25 to 40 s.
+ */
+export const PAIR_LAUGH = {
+  url: url('pair-laugh'),
+  clip: { sheet: 'pair', fps: 12, frames: grid(25, 6, 606, 451, 161.7, 450.1) },
+  pokeyFeet: [161.7, 450.1] as const,
+  meecaFeet: [448.7, 447.3] as const,
+  gap: [25, 40] as [number, number],
+};

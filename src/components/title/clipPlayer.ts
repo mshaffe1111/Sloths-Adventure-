@@ -111,3 +111,25 @@ export function frameAt(cast: Cast, segs: Segment[], t: number): { clip: string;
   const i = Math.floor((u - seg.start) * c.fps);
   return { clip: seg.clip, frame: c.loop ? i % c.frames.length : Math.min(c.frames.length - 1, Math.max(0, i)) };
 }
+
+/**
+ * A moment the two of them play together (one picture of both): now and then, every `gap` seconds, at a time when both are resting on
+ * their idles for the whole of it (with `margin` seconds of idle each side), so it never cuts a single moment short. Returns the
+ * windows [start, end) in seconds, on the same clock as the two timelines.
+ */
+export function sharedMoments(a: { cast: Cast; segs: Segment[] }, b: { cast: Cast; segs: Segment[] }, length: number, gap: [number, number], seed: number, until: number, margin = 0.4): Array<[number, number]> {
+  const next = rng(seed);
+  const idleAt = (x: { cast: Cast; segs: Segment[] }, t0: number, t1: number) =>
+    x.segs.some((s) => s.clip === x.cast.idle && s.start <= t0 && s.end >= t1);
+  const out: Array<[number, number]> = [];
+  let t = gap[0] + next() * (gap[1] - gap[0]);
+  while (t < until) {
+    // the first time from here (in tenths of a second) when both idle round the whole window
+    let s = t;
+    while (s < until && !(idleAt(a, s - margin, s + length + margin) && idleAt(b, s - margin, s + length + margin))) s += 0.1;
+    if (s >= until) break;
+    out.push([s, s + length]);
+    t = s + length + gap[0] + next() * (gap[1] - gap[0]);
+  }
+  return out;
+}

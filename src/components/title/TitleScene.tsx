@@ -4,8 +4,8 @@ import { LEAF_FRAMES } from '../../game/leafAtlasData.ts';
 import { drawPaintedLeaf } from '../../game/leafSprites.ts';
 import { drawPaintedButterfly } from '../../game/butterflySprites.ts';
 import { drawPlantAt, plantsPainted } from '../../game/plantSprites.ts';
-import { frameAt, timeline, type Cast, type ClipFrame, type Segment } from './clipPlayer.ts';
-import { MEECA_CAST, POKEY_CAST } from './titleCast.ts';
+import { frameAt, sharedMoments, timeline, type Cast, type ClipFrame, type Segment } from './clipPlayer.ts';
+import { MEECA_CAST, PAIR_LAUGH, POKEY_CAST } from './titleCast.ts';
 
 /**
  * The living title scene (Matt, 2026-10-28: "a highly polished start screen"): one canvas, drawn at the game's own 30 frames a second.
@@ -292,6 +292,33 @@ function ensure(live: LiveCast, sheet: string): boolean {
   });
   return false;
 }
+/** the moment they share: when it plays (on the same clock as their timelines), and its sheet (fetched a few seconds before) */
+let pairWins: Array<[number, number]> = [];
+let pairPic: HTMLImageElement | null | undefined;
+function pairFrame(t: number): { pic: HTMLImageElement; f: ClipFrame } | null {
+  if (!pokey || !meeca) return null;
+  if (!pairWins.length) {
+    const c = PAIR_LAUGH.clip;
+    pairWins = sharedMoments(pokey, meeca, c.frames.length / c.fps, PAIR_LAUGH.gap, 9, 1800);
+  }
+  const total = pokey.segs.length ? pokey.segs[pokey.segs.length - 1].end : 1;
+  const u = ((t % total) + total) % total;
+  const w = pairWins.find(([s, e]) => u >= s - 3 && u < e);
+  if (!w) {
+    pairPic = undefined;
+    return null;
+  }
+  if (pairPic === undefined) {
+    pairPic = null;
+    loadImage(PAIR_LAUGH.url, (im) => {
+      if (pairPic === null) pairPic = im ?? undefined;
+    });
+  }
+  if (u < w[0] || !pairPic) return null;
+  const c = PAIR_LAUGH.clip;
+  return { pic: pairPic, f: c.frames[Math.min(c.frames.length - 1, Math.floor((u - w[0]) * c.fps))] };
+}
+
 function loadCasts() {
   if (typeof Image === 'undefined') return;
   if (!pokey) pokey = liveCast(POKEY_CAST, 17);
@@ -513,10 +540,10 @@ export const TitleScene = React.forwardRef<
       // (never drawn more than about twice the size of their painted frames)
       const sharp = (POKEY_CAST.height * 2.1) / dpr;
       // (sideways the box runs to the bottom of the screen: the pair stand on the log with a band of its face showing under them)
-      const H = Math.min(sharp, b ? (portrait ? Math.min(b.height * 0.9, w * 0.72) : Math.min(b.height / 1.6, b.width * 0.54)) : h * 0.3);
+      const H = Math.min(sharp, b ? (portrait ? Math.min(b.height * 0.9, w * 0.72) : Math.min(b.height / 1.3, b.width * 0.6)) : h * 0.3);
       const cx = b ? b.left + b.width / 2 : w / 2;
       const logW = H * 1.95;
-      const feet = b ? b.bottom - (portrait ? H * 0.05 : logW * 0.457 * 0.6) : h * 0.7;
+      const feet = b ? b.bottom - (portrait ? H * 0.05 : logW * 0.457 * 0.45) : h * 0.7;
       const logH = logImg && logImg.naturalWidth ? (logW * logImg.naturalHeight) / logImg.naturalWidth : logW * 0.46;
       const logTop = feet - logH * LOG_TOP;
       const logX = cx - logW / 2;
@@ -689,22 +716,12 @@ export const TitleScene = React.forwardRef<
         c.drawImage(logLayer.back, lx0, ly0, lw, lh);
         // they come up with the light; then only what was painted moves, and a very slow breath
         const show = reduced ? light : Math.min(1, Math.max(0, (arr - 0.35) / 0.9));
-        const sep = H * 0.34;
-        // (one scale for both: the art has them at their real sizes, Meeca a head shorter)
+        // (one scale for both: the art has them at their real sizes, Meeca a head shorter; they stand as far apart as in the picture of
+        // the two of them together, so that one cuts in and out with no jump)
         const k = H / POKEY_CAST.height;
-        for (const [live, x, seed] of [[pokey, cx - sep, 0], [meeca, cx + sep * 0.95, 2.1]] as const) {
-          const tall = live.cast.height * k;
-          // contact shadow on the moss
-          const g = c.createRadialGradient(x, feet + 1, 0, x, feet + 1, tall * 0.25);
-          g.addColorStop(0, `rgba(25,14,4,${0.5 * show})`);
-          g.addColorStop(1, 'rgba(25,14,4,0)');
-          c.fillStyle = g;
-          c.beginPath();
-          c.ellipse(x, feet + 1, tall * 0.25, tall * 0.05, 0, 0, Math.PI * 2);
-          c.fill();
-          const fr = castFrame(live, t + seed);
-          if (!fr) continue;
-          const { pic, f } = fr;
+        const apart = (PAIR_LAUGH.meecaFeet[0] - PAIR_LAUGH.pokeyFeet[0]) * k;
+        const pair = pairFrame(t);
+        const paintLit = (pic: HTMLImageElement, f: ClipFrame, fx: number, fy: number, x: number) => {
           // the world's light over the frame, made in a small picture of its own (warm from above, the undergrowth's shade at the feet)
           if (lightCv.width < f.w || lightCv.height < f.h) {
             lightCv.width = Math.max(lightCv.width, f.w);
@@ -715,7 +732,7 @@ export const TitleScene = React.forwardRef<
           lc.clearRect(0, 0, lightCv.width, lightCv.height);
           lc.drawImage(pic, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
           lc.globalCompositeOperation = 'source-atop';
-          const gr = lc.createLinearGradient(0, f.ay - live.cast.height, 0, f.ay);
+          const gr = lc.createLinearGradient(0, fy - POKEY_CAST.height, 0, fy);
           gr.addColorStop(0, rgba(pal.light, 0.13));
           gr.addColorStop(0.55, rgba(pal.light, 0.02));
           gr.addColorStop(0.88, rgba(pal.shade, 0.14));
@@ -728,9 +745,24 @@ export const TitleScene = React.forwardRef<
           c.globalAlpha = light * show;
           c.translate(x, feet + 1);
           c.scale(k, k);
-          c.drawImage(lightCv, 0, 0, f.w, f.h, -f.ax, -f.ay, f.w, f.h);
+          c.drawImage(lightCv, 0, 0, f.w, f.h, -fx, -fy, f.w, f.h);
           c.restore();
+        };
+        for (const [live, x, seed] of [[pokey, cx - apart / 2, 0], [meeca, cx + apart / 2, 0]] as const) {
+          const tall = live.cast.height * k;
+          // contact shadow on the moss
+          const g = c.createRadialGradient(x, feet + 1, 0, x, feet + 1, tall * 0.25);
+          g.addColorStop(0, `rgba(25,14,4,${0.5 * show})`);
+          g.addColorStop(1, 'rgba(25,14,4,0)');
+          c.fillStyle = g;
+          c.beginPath();
+          c.ellipse(x, feet + 1, tall * 0.25, tall * 0.05, 0, 0, Math.PI * 2);
+          c.fill();
+          if (pair) continue;
+          const fr = castFrame(live, t + seed);
+          if (fr) paintLit(fr.pic, fr.f, fr.f.ax, fr.f.ay, x);
         }
+        if (pair) paintLit(pair.pic, pair.f, PAIR_LAUGH.pokeyFeet[0], PAIR_LAUGH.pokeyFeet[1], cx - apart / 2);
         c.drawImage(logLayer.front, lx0, ly0, lw, lh);
         c.restore();
       }
@@ -805,7 +837,7 @@ export const TitleScene = React.forwardRef<
         corner('big_C10_0', -big * 0.16, h - big * (portrait ? 0.3 : 0.2), big, -0.5, false, 0);
         corner('big_B09_0', w + big * 0.14, h - big * (portrait ? 0.34 : 0.22), big * 0.9, 0.6, true, 1.7);
         if (!portrait) corner('big_C06_0', w + big * 0.05, -big * 0.12, big * 0.8, 2.6, false, 3.1);
-        // one leaf crosses in front every half a minute or so, close and soft
+        // one leaf crosses in front every half a minute or so, close and soft (Matt likes it: "a little character")
         if (!reduced) {
           const lap = ((t + 9) % 27) / 9;
           if (lap < 1) {

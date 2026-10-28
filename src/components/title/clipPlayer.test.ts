@@ -73,3 +73,20 @@ test("the title casts: each rests on its looping idle and plays its moments now 
     }
   }
 });
+
+test('the moment they share comes every 25 to 40 s, only while both rest on their idles, never cutting a single moment short', async () => {
+  const { sharedMoments } = await import('./clipPlayer.ts');
+  const { PAIR_LAUGH } = await import('./titleCast.ts');
+  const a = { cast: POKEY_CAST, segs: timeline(POKEY_CAST, 17, 600) };
+  const b = { cast: MEECA_CAST, segs: timeline(MEECA_CAST, 5, 600) };
+  const len = PAIR_LAUGH.clip.frames.length / PAIR_LAUGH.clip.fps;
+  const wins = sharedMoments(a, b, len, PAIR_LAUGH.gap, 9, 600);
+  assert.ok(wins.length >= 600 / 50 && wins.length <= 600 / 25, `${wins.length} shared moments in ten minutes`);
+  for (const [s, e] of wins) {
+    for (const x of [a, b]) {
+      const over = x.segs.filter((g) => g.end > s && g.start < e);
+      assert.ok(over.every((g) => g.clip === x.cast.idle), 'nobody is in a single moment during it');
+    }
+  }
+  for (let i = 1; i < wins.length; i++) assert.ok(wins[i][0] - wins[i - 1][1] >= PAIR_LAUGH.gap[0] - 1e-9);
+});
