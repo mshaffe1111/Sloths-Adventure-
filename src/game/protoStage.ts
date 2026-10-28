@@ -1345,7 +1345,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     run(R.r(160, 220));
     const edge = x;
     close();
-    let bx = edge + Math.round(reachJump(G - y, false) * R.r(0.45, 0.6));
+    // (`deep`: over the stream, lower shelves and shorter gaps: a first-timer's flick, not a full jump, 2026-10-28)
+    const sh: [number, number] = deep ? [0.32, 0.4] : [0.45, 0.6];
+    let bx = edge + Math.round(reachJump(G - y, false) * R.r(sh[0], sh[1]));
     let m = 0;
     for (let k = 0; k < n; k++) {
       const w = Math.round(R.r(210, 280));
@@ -1353,7 +1355,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       branch(bx, bx + w, top);
       if (k !== 0 || n < 3) { snake(bx + w / 2, top, w - 90); m++; }
       else row(bx + 50, bx + w - 50, top - 34, 2, 'orchid');
-      bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.55));
+      bx += w + Math.round(reachJump(0, false) * (deep ? R.r(0.32, 0.4) : R.r(0.4, 0.55)));
     }
     const far = Math.round(bx + 20);
     softPit(edge, far);
@@ -2260,9 +2262,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     const edge = x;
     close();
     // (`deep`, 2026-10-28: over the stream, no moss below: a miss costs a life, so the gap stays well inside a jump)
-    const far = Math.round(edge + reachJump(0, false) * (deep ? R.r(0.52, 0.62) : R.r(0.55, 0.68)));
+    const far = Math.round(edge + reachJump(0, false) * (deep ? R.r(0.44, 0.54) : R.r(0.55, 0.68)));
     if (!deep) softPit(edge, far);
-    arc(edge - 30, far + 30, G - 110, 4);
+    arc(edge - 30, far + 30, G - 110, deep ? 3 : 4);
     open(far);
     run(R.r(300, 360));
     sporeZone(edge - 150, far + 150, [edge - 110, far + 100]);
@@ -2274,7 +2276,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * moment wakes the ones ahead (zones.ts GLOW_STILL / GLOW_REACH), and they stay lit. Gaps are soft (a mossy floor below). `ferns`:
    * a fern to stop in before each gap (3-2's eyes cannot see him in one). Returns where the stops are, for the stealth stretches.
    */
-  function glowDark(len: number, gaps: number, opts: { ferns?: boolean; rocks?: boolean; lead?: boolean; deep?: boolean } = {}): number[] {
+  function glowDark(len: number, gaps: number, opts: { ferns?: boolean; rocks?: boolean; lead?: boolean } = {}): number[] {
     const x0 = x;
     const e0 = expert;
     let hops = 0;
@@ -2305,9 +2307,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       else go(seg);
       const edge = x;
       close();
-      // (`deep`, 2026-10-28: the gaps in the dark are over the stream; the glowworm over each one shows it before the jump)
-      const far = Math.round(edge + reachJump(0, false) * (opts.deep ? R.r(0.48, 0.6) : R.r(0.5, 0.66)));
-      if (!opts.deep) softPit(edge, far);
+      // (the gaps in the dark always have soft moss below: before the glowworms wake he cannot see them, and a fall into the stream there
+      // would be a blind jump costing a life; the first-timer drowned in them six times running, 2026-10-28)
+      const far = Math.round(edge + reachJump(0, false) * R.r(0.5, 0.66));
+      softPit(edge, far);
       flower(edge + (far - edge) / 2, G - 110, 'orchid');
       glow((edge + far) / 2);
       open(far);
@@ -2385,7 +2388,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     run(R.r(160, 220));
     const edge = x;
     close();
-    let bx = edge + Math.round(reachJump(G - y, false) * R.r(0.45, 0.6));
+    // (`deep`: over the stream, lower shelves and shorter gaps: a first-timer's flick, not a full jump, 2026-10-28)
+    const sh: [number, number] = deep ? [0.32, 0.4] : [0.45, 0.6];
+    let bx = edge + Math.round(reachJump(G - y, false) * R.r(sh[0], sh[1]));
     let m = 0;
     for (let k = 0; k < n; k++) {
       const w = Math.round(R.r(240, 300));
@@ -2393,7 +2398,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       branch(bx, bx + w, top);
       if (k !== 0 || n < 3) { prowler('ocelot', bx + w / 2, top, w - 100); m++; }
       else row(bx + 50, bx + w - 50, top - 34, 2, 'orchid');
-      bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.55));
+      bx += w + Math.round(reachJump(0, false) * (deep ? R.r(0.32, 0.4) : R.r(0.4, 0.55)));
     }
     const far = Math.round(bx + 20);
     // (`deep`, 2026-10-28: the shelves stand over the stream, a punch and a jump at once)
@@ -2447,8 +2452,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   };
   /**
    * the deep: a run of real jumps over the grotto's underground stream (no moss below: a miss costs a life). Stones stand up out of the
-   * water, some a step higher, some across a gap only the second jump crosses, each landing wide (130-180 px) and every gap well inside
-   * what the jump reaches (at most 72% of it: a press window well over the 167 ms floor). `n` stones; `dbl`: how many of the gaps want
+   * water, some a step higher, some across a gap only the second jump crosses, each landing wide (160-210 px) and every gap well inside
+   * what the jump reaches (at most 40% of a single jump, 52% of a double: a press window well over the 167 ms floor). `n` stones; `dbl`: how many of the gaps want
    * the second jump. Easy lays a stepping stone in each second-jump gap (easyMode.ts easyStones), so it stays a single jump there.
    */
   function deepRun(n: number, dbl = 1, rise = true) {
@@ -2461,13 +2466,19 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     let px = edge, prevTop = G;
     for (let k = 0; k <= n; k++) {
       const last = k === n;
-      const up = !last && rise && R.chance(0.45) ? Math.round(R.r(40, 80)) : 0;
-      const top = last ? G : Math.max(G - 150, Math.min(G + 20, prevTop - up + (up ? 0 : Math.round(R.r(-20, 30)))));
-      const two = want.has(k) && !up;
-      const gap = Math.round(reachJump(prevTop - top, two) * (two ? R.r(0.62, 0.72) : R.r(0.5, 0.66)));
-      px += Math.max(70, gap);
+      // (`dbl`: where a second-jump gap was, a step up instead: the first-timer tries the second jump only where a single one has failed
+      // him, and over the stream that failure is a life; the second jump is World 3's over soft moss, as in 3-1's twist, 2026-10-28)
+      const up = !last && (want.has(k) || (rise && R.chance(0.4))) ? Math.round(R.r(30, 60)) : 0;
+      // (never a stone lower than the one before: a stone a little lower and close by was walked off rather than jumped, and the
+      // first-timer drowned ten times at one 80 px gap, 2026-10-28)
+      const top = last ? G : Math.max(G - 150, prevTop - up);
+      const two = false;
+      // (a first-timer's flick is short, so a gap over the stream is short too: a third of a full jump; the second-jump gaps half of a
+      // double jump, and the first-timer tries the second jump only where the first has failed him, 2026-10-28)
+      const gap = Math.round(reachJump(prevTop - top, two) * (two ? R.r(0.46, 0.52) : R.r(0.32, 0.4)));
+      px += Math.max(56, gap);
       if (last) break;
-      const w = Math.round(R.r(130, 180));
+      const w = Math.round(R.r(160, 210));
       deepStone(px, w, top);
       flower(px + w / 2, top - 34, 'orchid');
       // a petal arc over each second-jump gap (it shows the way across)
@@ -2646,17 +2657,17 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hint(x + 60, 'Too dark to see. Stand still and listen...');
       // (the first dark is flat, stones in it; what comes round it changes with the roll: spores, the stream, or vines)
       glowDark(R.r(1000, 1100), 0, { rocks: true });
-      if (v.twist === 0) { sporeGap(); glowDark(R.r(1250, 1400), 1, { rocks: true, deep: true }); sporeGap(true); }
-      else if (v.twist === 1) { deepRun(3, 1); glowDark(R.r(1250, 1400), 2, { rocks: true, deep: true }); }
-      else { chain(3, false, 'gorge'); glowDark(R.r(1150, 1300), 1, { deep: true }); chain(2, false, 'gorge'); }
+      if (v.twist === 0) { sporeGap(); glowDark(R.r(1250, 1400), 1, { rocks: true }); sporeGap(true); }
+      else if (v.twist === 1) { deepRun(3, 1); glowDark(R.r(1250, 1400), 2, { rocks: true }); }
+      else { chain(3, false, 'gorge'); glowDark(R.r(1150, 1300), 1, { }); chain(2, false, 'gorge'); }
       flag();
     });
     beat('Finish', () => {
       // (each version leans on one thing, drawn from a shuffle bag: lianas over the stream, the spores and the dark, or the deep)
       const kits: Array<Array<() => void>> = [
-        [() => chain(3, false, 'gorge'), () => chain(4, false, 'gorge'), () => highRoadOver(), () => { chain(2, false, 'gorge'); busy(1); }],
-        [() => { sporeRest(R.r(440, 500)); sporeGap(true); }, () => glowDark(R.r(1100, 1250), 1, { rocks: true, deep: true }), () => { sporeGap(true); sporeGap(); }, () => glowDark(R.r(1000, 1150), 2, { deep: true })],
-        [() => deepRun(5, 2), () => w3Stones(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]), () => deepRun(4, 1), () => { busy(1); stumps(); }],
+        [() => chain(3, false, 'gorge'), () => { chain(2, false, 'gorge'); busy(1); }, () => highRoadOver(), () => { chain(2, false, 'gorge'); busy(1); }],
+        [() => { sporeRest(R.r(440, 500)); sporeGap(true); }, () => glowDark(R.r(1100, 1250), 1, { rocks: true }), () => { sporeGap(true); sporeGap(); }, () => glowDark(R.r(1000, 1150), 2, { rocks: true })],
+        [() => deepRun(4, 2), () => w3Stones(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]), () => deepRun(3, 1), () => { busy(1); stumps(); }],
       ];
       w3Finish(EXPERT_SECONDS + 18, kits[v.finish], 3);
       homeRun();
@@ -2681,9 +2692,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       if (v.learn === 0) {
         glowDark(R.r(1150, 1300), 1, { rocks: true });
         busy(1);
-        glowDark(R.r(1600, 1800), 2, { rocks: true, deep: true });
+        glowDark(R.r(1600, 1800), 2, { rocks: true });
       } else {
-        glowDark(R.r(1450, 1600), 2, { rocks: true, deep: true });
+        glowDark(R.r(1450, 1600), 2, { rocks: true });
         deepRun(3, 1);
       }
       flag();
@@ -2695,14 +2706,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       bushRow(4, [420, 520], ['grotto'], [7, 8.5], true);
       flag();
       if (v.develop === 0) bushRow(3, [620, 720], ['grotto'], [5, 6.2], true);
-      else if (v.develop === 1) { const x0 = x; glowDark(R.r(1300, 1450), 1, { ferns: true, deep: true }); ZONES.push({ x0, x1: x, calm: [6, 7.2] }); expert += 3; }
+      else if (v.develop === 1) { const x0 = x; glowDark(R.r(1300, 1450), 1, { ferns: true, rocks: true }); ZONES.push({ x0, x1: x, calm: [6, 7.2] }); expert += 3; }
       else { chain(3, false, 'gorge'); bushRow(3, [560, 660], ['grotto'], [5.4, 6.4], true); }
       flag();
     });
     beat('Twist: the eyes in the dark', () => {
       hint(x + 20, 'Stop inside a fern. The eyes cannot see you there, and the glowworms can');
       const x0 = x;
-      glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true, deep: v.twist === 0 });
+      glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true });
       ZONES.push({ x0, x1: x, calm: [5.5, 6.8] });
       expert += 4;
       flag();
@@ -2718,7 +2729,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         // (a breath of plain floor between the ferns' eyes and the dark's)
         rest(R.r(110, 150));
         const x0 = x;
-        glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true, deep: true });
+        glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true });
         ZONES.push({ x0, x1: x, calm: [5, 6.2] });
         expert += 4;
       };
@@ -2726,8 +2737,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const ferns = () => bushRow(4, [460, 560], ['grotto'], [4.2, 5.2], true);
       const kits: Array<Array<() => void>> = [
         [ferns, ferns, () => { busy(1); ferns(); }],
-        [dark, () => { glowDark(R.r(1200, 1350), 1, { rocks: true, deep: true }); deepRun(2, 1, false); }, dark],
-        [() => chain(3, false, 'gorge'), () => chain(4, false, 'gorge'), () => { deepRun(3, 1); chain(2, false, 'gorge'); }],
+        [dark, () => { glowDark(R.r(1200, 1350), 1, { rocks: true }); deepRun(2, 1, false); }, dark],
+        [() => { chain(2, false, 'gorge'); climbTree(true); }, () => chain(3, false, 'gorge'), () => { climbTree(true); chain(2, false, 'gorge'); }],
       ];
       w3Finish(EXPERT_SECONDS + 34, kits[v.finish], 1);
       homeRun();
@@ -2764,23 +2775,23 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     beat('Develop: on the shelves', () => {
       prowlShelves(3, G - 130);
       busy(1);
-      if (v.develop === 0) { stumps(); prowlShelves(4, G - 150, true); }
-      else if (v.develop === 1) { glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true }); prowlFloor(['ocelot']); }
-      else { deepRun(3, 1); prowlShelves(3, G - 150, true); }
+      if (v.develop === 0) { stumps(); prowlShelves(4, G - 115, true); }
+      else if (v.develop === 1) { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot']); }
+      else { deepRun(3, 1); prowlShelves(3, G - 115, true); }
       flag();
     });
     beat('Twist: the big one', () => {
       hint(x + 40, 'A jaguar! Three hits, and jump when it crouches to pounce');
       prowlFloor(['jaguar']);
       if (v.twist === 0) { sporeGap(true); prowlFloor(['ocelot', 'jaguar']); }
-      else if (v.twist === 1) { busy(1); prowlShelves(3, G - 140, true); }
+      else if (v.twist === 1) { busy(1); prowlShelves(3, G - 110, true); }
       else { sporeRest(R.r(440, 500)); sporeGap(); prowlFloor(['ocelot', 'jaguar']); }
       flag();
     });
     beat('Finish', () => {
       const kits: Array<Array<() => void>> = [
-        [() => prowlShelves(R.i(3, 4), G - Math.round(R.r(120, 160)), true), () => prowlShelves(3, G - 140, true), () => { busy(1); prowlFloor(['ocelot', 'ocelot']); }],
-        [() => { glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true }); prowlFloor(['ocelot']); }, () => { glowDark(R.r(1000, 1100), 0, { rocks: true }); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot', 'ocelot']); }, () => { sporeRest(R.r(440, 500)); glowDark(R.r(1000, 1100), 1, { rocks: true, deep: true }); }],
+        [() => prowlShelves(R.i(3, 4), G - Math.round(R.r(105, 120)), true), () => prowlShelves(3, G - 110, true), () => { busy(1); prowlFloor(['ocelot', 'ocelot']); }],
+        [() => { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot']); }, () => { glowDark(R.r(1000, 1100), 0, { rocks: true }); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot', 'ocelot']); }, () => { sporeRest(R.r(440, 500)); glowDark(R.r(1000, 1100), 1, { rocks: true }); }],
         [() => { chain(3, false, 'gorge'); prowlFloor(['ocelot', 'ocelot']); }, () => { chain(4, false, 'gorge'); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot']); }, () => { chain(3, false, 'gorge'); chain(2, false, 'gorge'); }],
       ];
       w3Finish(EXPERT_SECONDS + 6, kits[v.finish], 2, () => placed() < Math.ceil(PROWLER_GOAL_33 * 1.5));
@@ -2982,7 +2993,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     beat('Twist: vines in the dark', () => {
       hint(x + 40, 'In the dark, standing still does two things');
       const z0 = x;
-      glowDark(R.r(1500, 1700), 1, { rocks: true, deep: v.twist !== 2 });
+      glowDark(R.r(1500, 1700), 1, { rocks: true });
       // the vines hang between the glowworms, clear of where the dark starts
       for (let vx = z0 + 640; vx < x - 420; vx += R.r(380, 460)) if (!P.some((pl) => pl.style === 'moss_stone' && vx > pl.x - 120 && vx < pl.x + pl.width + 120)) thornAt(vx, [3.6, 4.4]);
       expert += 3;
@@ -3044,7 +3055,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     beat('Twist: ferns in the dark', () => {
       hint(x + 40, 'Ferns in the dark too. Stand still, and the glowworms help you look');
       const z0 = x;
-      const stops = glowDark(R.r(1500, 1700), 1, { rocks: true, deep: v.twist !== 0 });
+      const stops = glowDark(R.r(1500, 1700), 1, { rocks: true });
       // a fern by the first stop, and plain ones about, clear of the stones and the gap
       const clear = (fx: number) => !P.some((pl) => pl.style === 'moss_stone' && fx > pl.x - 140 && fx < pl.x + pl.width + 140);
       thingFern(stops[0] + 130, G);
@@ -3215,14 +3226,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       watchedFerns(2, [6.5, 7.5]);
       flag();
       if (v.develop === 0) { sporeRest(R.r(520, 600)); watchedFerns(3, [5.8, 6.8]); }
-      else if (v.develop === 1) { chain(3, false, 'gorge'); chain(3, false, 'gorge'); }
+      else if (v.develop === 1) { chain(3, false, 'gorge'); climbTree(true); chain(2, false, 'gorge'); }
       else { deepRun(3, 1); fernPatch(3, true); deepRun(3, 1); }
       flag();
     });
     beat('Twist: ferns in the dark, under the vines', () => {
       hint(x + 40, 'In the dark, under a vine, crouching by a fern does three things at once');
       const z0 = x;
-      const stops = glowDark(R.r(1600, 1800), 2, { rocks: true, lead: true, deep: v.twist === 0 });
+      const stops = glowDark(R.r(1600, 1800), 2, { rocks: true, lead: true });
       // a vine over the first stop, with the fern that hides a thing under it; plain ferns about
       const vx = stops[0] + 150;
       thornAt(vx, [4.2, 5]);
@@ -3239,9 +3250,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       whichFern();
       flag();
       const kits: Array<Array<() => void>> = [
-        [() => chain(4, false, 'gorge'), () => { chain(3, false, 'gorge'); vineFerns(2, [3.8, 4.6], [380, 450]); }, () => { chain(3, false, 'gorge'); fernPatch(3, true); }],
+        [() => { chain(3, false, 'gorge'); climbTree(true); }, () => { chain(2, false, 'gorge'); vineFerns(2, [3.8, 4.6], [380, 450]); }, () => { climbTree(true); chain(2, false, 'gorge'); fernPatch(3, true); }],
         [() => watchedFerns(R.i(2, 3), [5.2, 6.2]), () => bushRow(3, [560, 660], ['grotto'], [4.6, 5.6], true), () => watchedFerns(3, [5, 6])],
-        [() => { deepRun(4, 1); fernPatch(3, true); }, () => deepRun(5, 2), () => { busy(1); lowStumps(); run(R.r(110, 140)); busy(1); }],
+        [() => { deepRun(4, 1); fernPatch(3, true); }, () => deepRun(5, 2), () => { deepRun(3, 1); w3Stones([50, 100, 70], [0.5, 0.6]); }],
       ];
       w3Finish(EXPERT_SECONDS + 14, kits[v.finish], 2, () => thingsPlaced < GRANDMA_GOAL_37 + 3);
       homeRun();
@@ -3324,7 +3335,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       expert += (x - landX) / RUN + 1.6;
       flag();
       if (v.twist === 1) deepRun(4, 1);
-      else if (v.twist === 2) glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true });
+      else if (v.twist === 2) glowDark(R.r(1150, 1300), 1, { rocks: true });
       else thornChain(2, false, [3.8, 4.6]);
       flag();
     });
@@ -3414,13 +3425,13 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       prowlFloor(['jaguar', 'ocelot']);
       flag();
       if (v.develop === 0) { prowlTree(); flag(); chain(2, false, 'gorge'); prowlTree(); }
-      else if (v.develop === 1) { glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true }); vineRow(2, [4.4, 5.2], [380, 440]); flag(); vineRow(2, [4.4, 5.2], [380, 440], true, true); }
+      else if (v.develop === 1) { glowDark(R.r(1150, 1300), 1, { rocks: true }); vineRow(2, [4.4, 5.2], [380, 440]); flag(); vineRow(2, [4.4, 5.2], [380, 440], true, true); }
       else { deepRun(4, 1); prowlFloor(['ocelot']); flag(); deepRun(3, 1); vineRow(2, [4.4, 5.2], [380, 440], true, true); }
       flag();
     });
     beat('Twist: the ring', () => {
       if (v.twist === 1) { prowlTree(); flag(); }
-      else if (v.twist === 2) { glowDark(R.r(1000, 1100), 1, { rocks: true, deep: true }); flag(); }
+      else if (v.twist === 2) { glowDark(R.r(1000, 1100), 1, { rocks: true }); flag(); }
       hint(x + 60, 'The ring! They will come out of the dark. Drive them all off to open the way');
       prowlerRing();
       // (out of the ring, a hop and a dip straight away: the walk on from the broken pillar was five quiet seconds on every roll)
@@ -3431,7 +3442,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const kits: Array<Array<() => void>> = [
         [() => { prowlTree(); prowlTree(); }, () => { chain(3, false, 'gorge'); prowlTree(); }, () => { prowlTree(); prowlFloor(['ocelot']); }],
         [() => { deepRun(4, 1); prowlFloor(['ocelot', 'ocelot']); }, () => { prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot', 'ocelot']); deepRun(3, 1); }, () => deepRun(5, 2)],
-        [() => { glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true }); prowlFloor(['ocelot', 'ocelot']); }, () => { vineRow(3, [4, 4.8], [360, 430], true, true); prowlFloor(['ocelot']); }, () => { sporeRest(R.r(440, 500)); sporeGap(true); prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot']); }],
+        [() => { glowDark(R.r(1150, 1300), 1, { rocks: true }); prowlFloor(['ocelot', 'ocelot']); }, () => { vineRow(3, [4, 4.8], [360, 430], true, true); prowlFloor(['ocelot']); }, () => { sporeRest(R.r(440, 500)); sporeGap(true); prowlFloor([R.chance(0.4) ? 'jaguar' : 'ocelot', 'ocelot']); }],
       ];
       w3Finish(EXPERT_SECONDS + 16, kits[v.finish], 2, () => placed() < Math.ceil(PROWLER_GOAL_39 * 1.4));
       homeRun();
