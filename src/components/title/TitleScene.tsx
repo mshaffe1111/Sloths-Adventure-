@@ -1,26 +1,31 @@
 import React, { useEffect, useRef } from 'react';
-import { standardAtlas, warmStandardAtlas } from '../../game/heroStandard.ts';
-import { STD_FRAMES } from '../../game/heroStandardData.ts';
-import { MEECA_UNITS, drawMeecaFrame, jennifurSpriteReady } from '../../game/jennifurSprite.ts';
+import { drawMeecaFrame, jennifurSpriteReady, MEECA_UNITS } from '../../game/jennifurSprite.ts';
 import { MEECA_FRAMES, MEECA_STAND_H } from '../../game/meecaStandardData.ts';
-import { drawPaintedLeaf, warmLeaves } from '../../game/leafSprites.ts';
+import { LEAVES_URL, warmLeaves } from '../../game/leafSprites.ts';
+import { LEAF_FRAMES } from '../../game/leafAtlasData.ts';
+import { drawPaintedLeaf } from '../../game/leafSprites.ts';
 import { drawPaintedButterfly } from '../../game/butterflySprites.ts';
 import { drawPlantAt, plantsPainted } from '../../game/plantSprites.ts';
-import { PAIR_STEPS, pairPose, type PoseStep } from './titleActors.ts';
+import { frameAt, timeline, type Cast, type Segment } from './clipPlayer.ts';
+import { POKEY_CAST, meecaStandIn } from './titleCast.ts';
 
 /**
  * The living title scene (Matt, 2026-10-28: "a highly polished start screen"): one canvas, drawn at the game's own 30 frames a second.
  *
- *   the painting   each world's far, middle and near strips (src/assets/backdrops), the far and middle ones slowly pushed in for depth,
- *                  every strip drifting at its own pace; the next world crossfades in over a few seconds while the push carries on
- *   the air        soft light shafts from the canopy and two bands of mist drifting at different depths, tinted by the world's own light
- *   the pair       Pokey and Meeca on Matt's painted mossy log (World 1's prop sheet), ferns at its ends, the near foliage behind it, soft
- *                  contact shadows, and the world's light graded over them (warm from above, the shade of the undergrowth at their feet,
- *                  a thin rim of light on the lit side), breathing, blinking, glancing at each other, Meeca's little bounce and wave
- *   the life       fireflies (brighter in the darker worlds), a couple of painted butterflies and a few falling painted leaves
+ *   the camera     it starts close on the pair in the dark and draws back as the light comes up (the title's reveal), then drifts
+ *                  slowly from side to side for ever: the far painting slides one way, the leaves in front the other, the pair stay put
+ *   the depth      far: the world's far strip out of focus; middle: its middle strip, pushed in slowly; the pair's plane: the near strip
+ *                  with Matt's painted mossy log in it; in front: big out-of-focus leaves at the corners, one drifting past now and then,
+ *                  and the near foliage turned over as a dark canopy across the top
+ *   the air        soft light shafts and two bands of mist, all in the world's own light; fireflies (brighter in the darker worlds),
+ *                  painted butterflies and a few falling leaves
+ *   the pair       Pokey and Meeca, large, the heart of the picture, drawn only from painted frames played as clips (clipPlayer.ts,
+ *                  titleCast.ts): an idle, and now and then a moment. Their only other motion is a very slow breath. The world's
+ *                  light is graded over them and the log (warm above, the undergrowth's shade at the feet, a thin rim of light)
+ *   the worlds     every biome takes a turn, crossfading slowly while the far and middle strips push in
  *
- * Nothing in it re-renders React. `arrive` starts the entrance: the painting fades up from the splash with a gentle settle, then the
- * two of them hop onto the log. With reduced motion asked for, the push and the drift are slower, and nothing flies or falls.
+ * Nothing in it re-renders React. `arrive` starts the entrance. With reduced motion asked for, the camera holds still, the drift and
+ * the push are gone, and nothing flies or falls.
  */
 
 let FILES: Record<string, string> = {};
@@ -33,8 +38,6 @@ const stripUrl = (w: number, p: 'far' | 'mid' | 'near') => FILES[`../../assets/b
 export const TITLE_LOG_URL = new URL('../../assets/title/log.webp', import.meta.url).href;
 /** where the log's top (the moss they stand on) is, as a share of the painting's height, and where each of them stands along it */
 const LOG_TOP = 0.165;
-const POKEY_AT = 0.31;
-const MEECA_AT = 0.7;
 
 interface Palette {
   /** the world's light (its sky), the shade of its undergrowth, and how dark the world is overall (0 bright .. 1 dark) */
@@ -52,6 +55,9 @@ interface World {
   ground: number;
   beam: HTMLCanvasElement | null;
   mist: HTMLCanvasElement | null;
+  /** the far strip out of focus (the depth of the scene), and the near strip turned over as a soft dark canopy over the top */
+  farSoft: HTMLCanvasElement | null;
+  canopy: HTMLCanvasElement | null;
 }
 
 const DEFAULT_PAL: Palette = { light: [255, 226, 160], shade: [22, 44, 28], dark: 0.4 };
@@ -180,8 +186,27 @@ function makeMist(light: [number, number, number]): HTMLCanvasElement {
   return cv;
 }
 
+/**
+ * A picture made soft, as a camera would see something far behind or close in front of what it is focused on: blurred where the
+ * browser can blur a canvas, and drawn small (so it is soft when drawn large) where it cannot.
+ */
+function soften(src: CanvasImageSource, sw: number, sh: number, scale: number, blur: number, draw?: (g: CanvasRenderingContext2D, w: number, h: number) => void): HTMLCanvasElement {
+  const cv = document.createElement('canvas');
+  cv.width = Math.max(2, Math.round(sw * scale));
+  cv.height = Math.max(2, Math.round(sh * scale));
+  const g = cv.getContext('2d')!;
+  g.imageSmoothingEnabled = true;
+  g.imageSmoothingQuality = 'high';
+  const canFilter = 'filter' in g;
+  if (canFilter) g.filter = `blur(${blur * scale}px)`;
+  if (draw) draw(g, cv.width, cv.height);
+  else g.drawImage(src, 0, 0, cv.width, cv.height);
+  if (canFilter) g.filter = 'none';
+  return cv;
+}
+
 function loadWorld(n: number): World {
-  const w: World = { far: null, mid: null, near: null, ready: false, pal: DEFAULT_PAL, ground: 0.78, beam: null, mist: null };
+  const w: World = { far: null, mid: null, near: null, ready: false, pal: DEFAULT_PAL, ground: 0.78, beam: null, mist: null, farSoft: null, canopy: null };
   const parts = (['far', 'mid', 'near'] as const).filter((p) => stripUrl(n, p));
   let left = parts.length;
   for (const p of parts) {
@@ -195,6 +220,21 @@ function loadWorld(n: number): World {
           if (w.near) w.ground = readGround(w.near);
           w.beam = makeBeam(w.pal.light);
           w.mist = makeMist(w.pal.light);
+          const far = w.far!;
+          w.farSoft = soften(far, far.naturalWidth, far.naturalHeight, 0.5, 5);
+          if (w.near) {
+            const near = w.near;
+            // the near foliage turned over and darkened: leaves hanging into the top of the picture, close and out of focus
+            w.canopy = soften(near, near.naturalWidth, near.naturalHeight, 0.25, 7, (g, cw, ch) => {
+              g.translate(0, ch);
+              g.scale(1, -1);
+              g.drawImage(near, 0, 0, cw, ch);
+              g.setTransform(1, 0, 0, 1, 0, 0);
+              g.globalCompositeOperation = 'source-atop';
+              g.fillStyle = rgba(mix(w.pal.shade, [0, 0, 0], 0.35), 0.72);
+              g.fillRect(0, 0, cw, ch);
+            });
+          }
           w.ready = true;
         };
         // decoded before it is first drawn, so the first frame with it is not a decode
@@ -209,78 +249,207 @@ function loadWorld(n: number): World {
 /** the worlds kept decoded: the one on show, the one coming next, and the first one (the title always opens on it) */
 const WORLD_CACHE = new Map<number, World>();
 
+function loadImage(url: string, done: (im: HTMLImageElement | null) => void): HTMLImageElement {
+  const im = new Image();
+  im.decoding = 'async';
+  im.onload = () => {
+    const ok = () => done(im);
+    if (im.decode) im.decode().then(ok, ok);
+    else ok();
+  };
+  im.onerror = () => done(null);
+  im.src = url;
+  return im;
+}
+
 let logImg: HTMLImageElement | null = null;
 let logReady = false;
 function loadLog() {
   if (logImg || typeof Image === 'undefined') return;
-  const im = new Image();
-  logImg = im;
-  im.onload = () => {
-    void im.decode?.().catch(() => {}).finally(() => (logReady = true));
-    if (!im.decode) logReady = true;
-  };
-  im.onerror = () => (logReady = true);
-  im.src = TITLE_LOG_URL;
+  logImg = loadImage(TITLE_LOG_URL, () => (logReady = true));
+}
+
+// ---- the pair's casts: the sheets they are drawn from, loaded once ----
+interface LiveCast {
+  cast: Cast;
+  segs: Segment[];
+  pics: Record<string, CanvasImageSource | null>;
+  ready: boolean;
+}
+let pokey: LiveCast | null = null;
+let meeca: LiveCast | null = null;
+function loadPokey() {
+  if (pokey || typeof Image === 'undefined') return;
+  const live: LiveCast = { cast: POKEY_CAST, segs: timeline(POKEY_CAST, 17, 900), pics: {}, ready: false };
+  pokey = live;
+  const names = Object.keys(POKEY_CAST.sheets);
+  let left = names.length;
+  for (const n of names) {
+    const src = POKEY_CAST.sheets[n];
+    if (typeof src !== 'string') {
+      live.pics[n] = src;
+      if (--left === 0) live.ready = true;
+      continue;
+    }
+    loadImage(src, (im) => {
+      live.pics[n] = im;
+      if (--left === 0) live.ready = true;
+    });
+  }
+}
+/** Meeca's stand-in sheet: her standing frame and her blink from her standard sheet, cut facing Pokey, side by side */
+function loadMeeca(): boolean {
+  if (meeca) return meeca.ready;
+  if (!jennifurSpriteReady()) return false;
+  const a = MEECA_FRAMES.idle, bl = MEECA_FRAMES.blink;
+  if (!a || !bl) return false;
+  // (both frames at the one scale of her standing frame: one pixel of the stand-in sheet is one pixel of her own sheet)
+  const one = 1 / ((MEECA_UNITS / MEECA_STAND_H) * a.s);
+  const fw = Math.ceil(Math.max(a.w, bl.w)), fh = Math.ceil(Math.max(a.h, bl.h));
+  const sheet = document.createElement('canvas');
+  sheet.width = fw * 2;
+  sheet.height = fh;
+  const g = sheet.getContext('2d')!;
+  for (const [i, name] of [[0, 'idle'], [1, 'blink']] as const) {
+    g.save();
+    // her feet at the same place in both frames, facing left (toward Pokey), the number on her bib turned back
+    g.translate(i * fw + fw - a.ax, a.ay);
+    g.scale(-1, 1);
+    drawMeecaFrame(g, name, 1, one, true);
+    g.restore();
+  }
+  const cast = meecaStandIn(sheet, fw, fh, fw - a.ax, a.ay, a.ay - 4);
+  meeca = { cast, segs: timeline(cast, 5, 900), pics: { stand: sheet }, ready: true };
+  return true;
 }
 
 /**
- * One frame of Pokey or Meeca, cut out of its sheet once and cleaned: the sheets keep a faint haze of near-clear pixels around each
- * figure, which the light grading over the pair would otherwise turn into a pale box behind them. Anything fainter than a whisper
- * goes; the soft edge of the figure itself stays. Meeca's frames are cut already facing left (toward Pokey), her bib turned back.
+ * One frame of a cast, cut out of its sheet, cleaned and lit: the sheets keep a faint haze of near-clear pixels round each figure, which
+ * the light would turn into a pale box behind them, so anything fainter than a whisper goes (the soft edge of the figure stays); then
+ * the world's light is graded over it and a thin rim of that light is set on its lit edge. Made once per frame and light.
  */
-interface Cut {
+interface Lit {
   cv: HTMLCanvasElement;
-  /** where the feet are in the cut, in its pixels */
   ax: number;
   ay: number;
-  /** sheet pixels to her game units (Meeca only; Pokey's frames are drawn at H / 205 per pixel) */
-  k: number;
 }
-const CUTS = new Map<string, Cut>();
+const LIT = new Map<string, Lit>();
 function clean(cv: HTMLCanvasElement) {
   const c = cv.getContext('2d', { willReadFrequently: true });
   if (!c || !cv.width || !cv.height) return;
-  const im = c.getImageData(0, 0, cv.width, cv.height);
+  const W = cv.width, Hh = cv.height;
+  const im = c.getImageData(0, 0, W, Hh);
   const d = im.data;
+  // (1) the haze goes and the figure is made solid: below a whisper is clear, above two thirds is opaque, a short ramp between
   for (let i = 3; i < d.length; i += 4) {
     const a = d[i];
-    d[i] = a < 34 ? 0 : a > 200 ? a : Math.round(((a - 34) / 166) * 200);
+    d[i] = a < 34 ? 0 : a >= 170 ? 255 : Math.round(((a - 34) / 136) * 255);
+  }
+  // (2) small holes inside the figure (a sheet keyed the white of Meeca's headband out, so the forest showed through it) are filled
+  // with the colour round them. A hole is a clear patch that cannot be reached from the edge of the frame, and is small.
+  const n = W * Hh;
+  const seen = new Uint8Array(n);
+  const clear = (k: number) => d[k * 4 + 3] < 128;
+  const stack: number[] = [];
+  for (let x = 0; x < W; x++) for (const y of [0, Hh - 1]) if (clear(y * W + x)) { seen[y * W + x] = 1; stack.push(y * W + x); }
+  for (let y = 0; y < Hh; y++) for (const x of [0, W - 1]) if (clear(y * W + x) && !seen[y * W + x]) { seen[y * W + x] = 1; stack.push(y * W + x); }
+  while (stack.length) {
+    const k = stack.pop()!;
+    const x = k % W, y = (k - x) / W;
+    for (const q of [x > 0 ? k - 1 : -1, x < W - 1 ? k + 1 : -1, y > 0 ? k - W : -1, y < Hh - 1 ? k + W : -1]) {
+      if (q >= 0 && !seen[q] && clear(q)) {
+        seen[q] = 1;
+        stack.push(q);
+      }
+    }
+  }
+  const limit = n * 0.006;
+  for (let k0 = 0; k0 < n; k0++) {
+    if (seen[k0] || !clear(k0)) continue;
+    // one hole: gather it, and the colour of the solid pixels round it
+    const hole: number[] = [];
+    let r = 0, g = 0, b = 0, m = 0;
+    seen[k0] = 1;
+    stack.push(k0);
+    while (stack.length) {
+      const k = stack.pop()!;
+      hole.push(k);
+      const x = k % W, y = (k - x) / W;
+      for (const q of [x > 0 ? k - 1 : -1, x < W - 1 ? k + 1 : -1, y > 0 ? k - W : -1, y < Hh - 1 ? k + W : -1]) {
+        if (q < 0) continue;
+        if (clear(q)) {
+          if (!seen[q]) {
+            seen[q] = 1;
+            stack.push(q);
+          }
+        } else {
+          r += d[q * 4];
+          g += d[q * 4 + 1];
+          b += d[q * 4 + 2];
+          m++;
+        }
+      }
+    }
+    if (hole.length > limit || !m) continue;
+    // (a keyed-out white: lighten the edge colour toward white, as the paint there was)
+    const lr = Math.min(255, (r / m) * 0.35 + 170), lg = Math.min(255, (g / m) * 0.35 + 166), lb = Math.min(255, (b / m) * 0.35 + 158);
+    for (const k of hole) {
+      d[k * 4] = lr;
+      d[k * 4 + 1] = lg;
+      d[k * 4 + 2] = lb;
+      d[k * 4 + 3] = 255;
+    }
   }
   c.putImageData(im, 0, 0);
 }
-function pokeyCut(atlas: HTMLImageElement, name: string): Cut | null {
-  const key = 'p:' + name;
-  const have = CUTS.get(key);
+function litFrame(live: LiveCast, who: string, clip: string, i: number, pal: Palette, pk: string): Lit | null {
+  const key = `${who}:${clip}:${i}|${pk}`;
+  const have = LIT.get(key);
   if (have) return have;
-  const f = STD_FRAMES[name];
-  if (!f) return null;
-  const cv = document.createElement('canvas');
-  cv.width = f.w;
-  cv.height = f.h;
-  cv.getContext('2d')!.drawImage(atlas, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
-  clean(cv);
-  const cut = { cv, ax: f.ax, ay: f.ay, k: 1 };
-  CUTS.set(key, cut);
-  return cut;
-}
-function meecaCut(name: string): Cut | null {
-  const key = 'm:' + name;
-  const have = CUTS.get(key);
-  if (have) return have;
-  const f = MEECA_FRAMES[name];
-  if (!f) return null;
-  const cv = document.createElement('canvas');
-  cv.width = Math.ceil(f.w);
-  cv.height = Math.ceil(f.h);
-  const c = cv.getContext('2d')!;
-  const k = (MEECA_UNITS / MEECA_STAND_H) * f.s;
-  c.translate(f.w - f.ax, f.ay);
-  c.scale(-1, 1);
-  if (!drawMeecaFrame(c, name, 1, 1 / k, true)) return null;
-  clean(cv);
-  const cut = { cv, ax: f.w - f.ax, ay: f.ay, k };
-  CUTS.set(key, cut);
-  return cut;
+  const c = live.cast.clips[clip];
+  const f = c?.frames[i];
+  const pic = c && live.pics[c.sheet];
+  if (!f || !pic) return null;
+  if (LIT.size > 120) LIT.clear();
+  const P = 4;
+  const w = f.w + P * 2, h = f.h + P * 2;
+  const cut = document.createElement('canvas');
+  cut.width = w;
+  cut.height = h;
+  const cg = cut.getContext('2d', { willReadFrequently: true })!;
+  // (Meeca's stand-in frames are painted paler and flatter than Pokey's: a touch more colour and contrast puts them on one footing)
+  if (who === 'm' && 'filter' in cg) cg.filter = 'saturate(1.14) contrast(1.06)';
+  cg.drawImage(pic, f.x, f.y, f.w, f.h, P, P, f.w, f.h);
+  if ('filter' in cg) cg.filter = 'none';
+  clean(cut);
+  const sprite = document.createElement('canvas');
+  sprite.width = w;
+  sprite.height = h;
+  const s = sprite.getContext('2d')!;
+  s.drawImage(cut, 0, 0);
+  s.globalCompositeOperation = 'source-atop';
+  const gs = s.createLinearGradient(0, P, 0, P + f.ay);
+  gs.addColorStop(0, rgba(pal.light, 0.14));
+  gs.addColorStop(0.55, rgba(pal.light, 0.03));
+  gs.addColorStop(0.88, rgba(pal.shade, 0.14));
+  gs.addColorStop(1, rgba(pal.shade, 0.26));
+  s.fillStyle = gs;
+  s.fillRect(0, 0, w, h);
+  s.fillStyle = rgba(pal.shade, 0.22 * pal.dark);
+  s.fillRect(0, 0, w, h);
+  const out = document.createElement('canvas');
+  out.width = w;
+  out.height = h;
+  const o = out.getContext('2d')!;
+  o.drawImage(cut, -1.6, -2.2);
+  o.globalCompositeOperation = 'source-in';
+  o.fillStyle = rgba(mix(pal.light, [255, 255, 255], 0.3), 0.34);
+  o.fillRect(0, 0, w, h);
+  o.globalCompositeOperation = 'source-over';
+  o.drawImage(sprite, 0, 0);
+  const lit = { cv: out, ax: f.ax + P, ay: f.ay + P };
+  LIT.set(key, lit);
+  return lit;
 }
 
 /** the world's light over a picture: warm from above, the undergrowth's shade at the foot, a little of the world's dusk overall */
@@ -298,47 +467,31 @@ function grade(g: CanvasRenderingContext2D, pal: Palette, y0: number, y1: number
   g.fillRect(0, 0, w, h);
   g.restore();
 }
-/** the light, quantised, so a pose is graded again only when the light has really changed */
+/** the light, quantised, so a frame is lit again only when the light has really changed */
 const palKey = (p: Palette) => [...p.light, ...p.shade].map((v) => Math.round(v / 10)).join('.') + ':' + Math.round(p.dark * 20);
 
-/** a pose in the world's light, with a thin rim of that light on its lit (upper left) edge; made once per pose and light */
-const GRADED = new Map<string, Cut>();
-function gradedCut(cut: Cut, name: string, pal: Palette, pk: string): Cut {
+// ---- the leaves in front of the camera: big, close, out of focus, in the shade ----
+let leafAtlas: HTMLImageElement | null = null;
+let leafAtlasReady = false;
+const FRONT_LEAVES = ['big_C10_0', 'big_B09_0', 'big_C06_0', 'big_B06_0'];
+const fronts = new Map<string, HTMLCanvasElement>();
+function frontLeaf(name: string, shade: [number, number, number], pk: string): HTMLCanvasElement | null {
+  if (!leafAtlasReady || !leafAtlas) return null;
   const key = name + '|' + pk;
-  const have = GRADED.get(key);
+  const have = fronts.get(key);
   if (have) return have;
-  if (GRADED.size > 80) GRADED.clear();
-  const P = 4;
-  const w = cut.cv.width + P * 2, h = cut.cv.height + P * 2;
-  const sprite = document.createElement('canvas');
-  sprite.width = w;
-  sprite.height = h;
-  const s = sprite.getContext('2d')!;
-  s.drawImage(cut.cv, P, P);
-  // (the figure's own height: its top to its feet)
-  const gs = s.createLinearGradient(0, P, 0, P + cut.ay);
-  s.globalCompositeOperation = 'source-atop';
-  gs.addColorStop(0, rgba(pal.light, 0.14));
-  gs.addColorStop(0.55, rgba(pal.light, 0.03));
-  gs.addColorStop(0.88, rgba(pal.shade, 0.14));
-  gs.addColorStop(1, rgba(pal.shade, 0.26));
-  s.fillStyle = gs;
-  s.fillRect(0, 0, w, h);
-  s.fillStyle = rgba(pal.shade, 0.22 * pal.dark);
-  s.fillRect(0, 0, w, h);
-  const out = document.createElement('canvas');
-  out.width = w;
-  out.height = h;
-  const o = out.getContext('2d')!;
-  o.drawImage(cut.cv, P - 1.6, P - 2.2);
-  o.globalCompositeOperation = 'source-in';
-  o.fillStyle = rgba(mix(pal.light, [255, 255, 255], 0.3), 0.34);
-  o.fillRect(0, 0, w, h);
-  o.globalCompositeOperation = 'source-over';
-  o.drawImage(sprite, 0, 0);
-  const g = { cv: out, ax: cut.ax + P, ay: cut.ay + P, k: cut.k };
-  GRADED.set(key, g);
-  return g;
+  const f = LEAF_FRAMES[name];
+  if (!f) return null;
+  if (fronts.size > 24) fronts.clear();
+  const atlas = leafAtlas;
+  const cv = soften(atlas, f.w * 2, f.h * 2, 1, 3, (g, w, h) => {
+    g.drawImage(atlas, f.x, f.y, f.w, f.h, 6, 6, w - 12, h - 12);
+    g.globalCompositeOperation = 'source-atop';
+    g.fillStyle = rgba(mix(shade, [0, 0, 0], 0.3), 0.62);
+    g.fillRect(0, 0, w, h);
+  });
+  fronts.set(key, cv);
+  return cv;
 }
 
 interface Mote {
@@ -359,6 +512,8 @@ export interface TitleSceneHandle {
   /** start the entrance now */
   arrive: () => void;
 }
+
+const ease = (u: number) => (u <= 0 ? 0 : u >= 1 ? 1 : 1 - Math.pow(1 - u, 3));
 
 export const TitleScene = React.forwardRef<
   TitleSceneHandle,
@@ -388,11 +543,12 @@ export const TitleScene = React.forwardRef<
     const list = key.split(',').map(Number).filter((n) => n > 0);
     if (!list.length) return;
     const reduced = !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    warmStandardAtlas();
-    jennifurSpriteReady();
+    loadPokey();
+    loadMeeca();
     loadLog();
     warmLeaves();
     plantsPainted();
+    if (!leafAtlas) leafAtlas = loadImage(LEAVES_URL, (im) => (leafAtlasReady = !!im));
     const cache = WORLD_CACHE;
     const get = (n: number) => {
       let s = cache.get(n);
@@ -406,7 +562,7 @@ export const TitleScene = React.forwardRef<
 
     // the life of the scene: fireflies, leaves, butterflies (positions are shares of the screen)
     const flies: Mote[] = Array.from({ length: reduced ? 6 : 16 }, () => ({ x: rand(), y: 0.2 + rand() * 0.7, s: 0.6 + rand() * 0.8, p: rand() * 6.3, c: rand() }));
-    const leaves: Mote[] = reduced ? [] : Array.from({ length: 7 }, () => ({ x: rand(), y: rand(), s: 0.5 + rand() * 0.5, p: rand() * 6.3, c: Math.floor(rand() * 100000) }));
+    const leaves: Mote[] = reduced ? [] : Array.from({ length: 6 }, () => ({ x: rand(), y: rand(), s: 0.5 + rand() * 0.5, p: rand() * 6.3, c: Math.floor(rand() * 100000) }));
     const glow = document.createElement('canvas');
     glow.width = glow.height = 48;
     {
@@ -435,14 +591,13 @@ export const TitleScene = React.forwardRef<
       if (!cv || document.hidden) return;
       const st = state.current;
       const first = get(list[0]);
-      const pokeyAtlas = standardAtlas();
-      const ready = first.ready && !!pokeyAtlas && jennifurSpriteReady() && logReady;
+      const ready = first.ready && !!pokey?.ready && loadMeeca() && logReady;
       st.ready = ready;
       // the game's own pace: 30 frames a second (10 with a menu over it, 4 while the splash still covers it)
       const fps = st.arriveAt === null ? 4 : dimRef.current ? 10 : 30;
       if (now - last < 1000 / fps - 3) return;
       last = now;
-      if (!ready) return;
+      if (!ready || !pokey || !meeca) return;
 
       const w = cv.clientWidth || window.innerWidth, h = cv.clientHeight || window.innerHeight;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -462,129 +617,151 @@ export const TitleScene = React.forwardRef<
       c.imageSmoothingQuality = 'high';
 
       const t = (now - t0) / 1000;
-      const arr = st.arriveAt === null ? 0 : (now - st.arriveAt) / 1000;
+      const arr = st.arriveAt === null ? 0 : Math.max(0, (now - st.arriveAt) / 1000);
       // which world is showing, how far into its turn, and the one before it while it fades out
-      const showT = Math.max(0, arr);
-      const idx = list.length > 1 ? Math.floor(showT / hold) % list.length : 0;
-      const into = list.length > 1 ? showT - Math.floor(showT / hold) * hold : showT;
+      const idx = list.length > 1 ? Math.floor(arr / hold) % list.length : 0;
+      const into = list.length > 1 ? arr - Math.floor(arr / hold) * hold : arr;
       const cur = get(list[idx]);
       const nextN = list[(idx + 1) % list.length];
       if (list.length > 1) {
         get(nextN);
         for (const k of [...cache.keys()]) if (k !== list[0] && k !== list[idx] && k !== nextN && k !== list[(idx - 1 + list.length) % list.length]) cache.delete(k);
       }
-      const prevW = list.length > 1 && showT > hold && into < FADE ? cache.get(list[(idx - 1 + list.length) % list.length]) : undefined;
+      const prevW = list.length > 1 && arr > hold && into < FADE ? cache.get(list[(idx - 1 + list.length) % list.length]) : undefined;
       const fadeK = prevW && prevW.ready && cur.ready ? Math.min(1, into / FADE) : 1;
       const showing = cur.ready ? cur : prevW && prevW.ready ? prevW : first;
       const pal: Palette = prevW && prevW.ready && fadeK < 1 ? { light: mix(prevW.pal.light, showing.pal.light, fadeK), shade: mix(prevW.pal.shade, showing.pal.shade, fadeK), dark: prevW.pal.dark + (showing.pal.dark - prevW.pal.dark) * fadeK } : showing.pal;
-
-      // the entrance: the painting fades up from the splash's green and settles from a little close
-      const inK = Math.min(1, arr / (reduced ? 0.6 : 1.1));
-      const settle = reduced ? 0 : 1 - Math.min(1, arr / 2.6);
-      const settleZ = 1 + 0.07 * settle * settle;
-      // (the far strip covers the whole frame once it is in: the ground colour is needed only while it fades up)
-      if (inK < 1 || !showing.far) {
-        c.fillStyle = rgba(pal.shade, 1);
-        c.fillRect(0, 0, w, h);
-      }
+      const pk = palKey(pal);
 
       const portrait = h > w;
-      const pan = reduced ? 2.5 : 8;
-      // the pair's place: their log, its top, and how tall they stand
+      // ---- the pair's place: large, the heart of the picture; the log under them runs out past the edges and behind the buttons ----
       const b = box && box.width > 40 && box.height > 40 ? box : null;
-      // (they and their log fit the box: about 1.85 times their height from the tops of their heads to the foot of the log)
-      const H = b ? (portrait ? Math.min(b.height / 1.8, w * 0.42) : Math.min(b.height / 1.62, b.width * 0.34, h * 0.4)) : 0;
-      const logW = H * 1.85;
-      const logH = logImg && logImg.naturalWidth ? (logW * logImg.naturalHeight) / logImg.naturalWidth : logW * 0.46;
+      // (never drawn more than about twice the size of their painted frames: today's frames are small, and blown up further they go
+      // soft; the art helper's sheets at 600 px and more let them grow to fill the box)
+      const sharp = (Math.min(pokey.cast.height, meeca.cast.height / 0.95) * 2.1) / dpr;
+      const H = Math.min(sharp, b ? (portrait ? Math.min(b.height * 0.9, w * 0.72) : Math.min(b.height * 0.9, b.width * 0.54)) : h * 0.3);
       const cx = b ? b.left + b.width / 2 : w / 2;
-      const feet = b ? (portrait ? b.bottom - logH * 0.92 : b.bottom - logH * 0.62) : h * 0.7;
+      const feet = b ? b.bottom - H * (portrait ? 0.05 : 0.02) : h * 0.7;
+      const logW = H * 1.95;
+      const logH = logImg && logImg.naturalWidth ? (logW * logImg.naturalHeight) / logImg.naturalWidth : logW * 0.46;
       const logTop = feet - logH * LOG_TOP;
       const logX = cx - logW / 2;
       const groundY = logTop + logH * 0.86;
 
+      // ---- the camera: the reveal draws back from close on the pair; then a slow drift from side to side ----
+      const reveal = reduced ? 1 : ease(arr / 2.8);
+      const zoom = 1 + 0.28 * (1 - reveal);
+      const fx = cx, fy = feet - H * 0.55;
+      const drift = reduced ? 0 : Math.sin((t * Math.PI * 2) / 38) * w * 0.03 + Math.sin((t * Math.PI * 2) / 71 + 1) * w * 0.014;
+      const rise = reduced ? 0 : (1 - reveal) * h * 0.04 + Math.sin((t * Math.PI * 2) / 47) * h * 0.004;
+      /** a layer at `depth` (0 the far distance, 1 the pair's plane, more than 1 in front): its share of the zoom and of the drift */
+      const camera = (depth: number) => {
+        const z = Math.pow(zoom, Math.min(1.4, 0.35 + depth * 0.65));
+        c.translate(fx, fy);
+        c.scale(z, z);
+        c.translate(-fx + drift * (1 - depth), -fy + rise * (1 - depth * 0.5));
+      };
+      const light = reduced ? Math.min(1, arr / 0.6) : ease(arr / 1.3);
+
+      if (light < 1 || !showing.far) {
+        c.fillStyle = '#0b1a13';
+        c.fillRect(0, 0, w, h);
+      }
+      const strip = (im: CanvasImageSource | null, iw: number, ih: number, speed: number, top: number, height: number, sway = 0) => {
+        if (!im || !ih) return;
+        if (sway) {
+          // the canopy breathing: the top of the strip leans a touch, its foot stays put
+          const foot = top + height;
+          c.translate(0, foot);
+          c.transform(1, 0, sway, 1, 0, 0);
+          c.translate(0, -foot);
+        }
+        const kk = height / ih;
+        const tw = iw * kk;
+        const pad = w * 0.4;
+        const off = -((t * speed + 0.5 * tw) % (tw * 2)) - pad;
+        for (let x = off, i = 0; x < w + pad; x += tw, i++) {
+          if (x + tw < -pad) continue;
+          if (i % 2) {
+            c.save();
+            c.translate(x + tw, top);
+            c.scale(-1, 1);
+            c.drawImage(im, 0, 0, tw + 0.5, height);
+            c.restore();
+          } else c.drawImage(im, x, top, tw + 0.5, height);
+        }
+      };
       const paint = (s: World, alpha: number, k: number) => {
         if (!s.ready || alpha <= 0) return;
-        c.save();
-        c.globalAlpha = alpha * inK;
-        const strip = (im: HTMLImageElement | null, speed: number, top: number, height: number, zoom: number, sway = 0) => {
-          if (!im) return;
-          c.save();
-          // pushed in about a point a little above the middle
-          const fx = w / 2, fy = h * 0.42;
-          c.translate(fx, fy);
-          c.scale(zoom, zoom);
-          c.translate(-fx, -fy);
-          if (sway) {
-            // the canopy breathing: the top of the strip leans a touch, its foot stays put
-            const foot = top + height;
-            c.translate(0, foot);
-            c.transform(1, 0, sway, 1, 0, 0);
-            c.translate(0, -foot);
-          }
-          const kk = height / im.naturalHeight;
-          const tw = im.naturalWidth * kk;
-          const off = -((t * speed + 0.5 * tw) % (tw * 2));
-          for (let x = off, i = 0; x < w + 2; x += tw, i++) {
-            if (x + tw < -2) continue;
-            if (i % 2) {
-              c.save();
-              c.translate(x + tw, top);
-              c.scale(-1, 1);
-              c.drawImage(im, 0, 0, tw + 0.5, height);
-              c.restore();
-            } else c.drawImage(im, x, top, tw + 0.5, height);
-          }
-          c.restore();
-        };
-        // the push-in: far most, middle less, the near strip not at all (it carries the log)
         const push = reduced ? 0 : k;
-        strip(s.far, pan * 0.3, -h * 0.01, h * 1.03, settleZ * (1 + 0.07 * push));
-        strip(s.mid, pan, -h * 0.02, h * 1.03, settleZ * (1 + 0.045 * push), reduced ? 0 : Math.sin(t * 0.35) * 0.006);
-        // light from the canopy
+        c.save();
+        c.globalAlpha = alpha * light;
+        // far: out of focus, pushed in the most
+        c.save();
+        camera(0.1);
+        const kb = 1 + 0.06 * push;
+        c.translate(w / 2, h * 0.42);
+        c.scale(kb, kb);
+        c.translate(-w / 2, -h * 0.42);
+        const far = s.farSoft ?? s.far;
+        if (far && s.far) strip(far, s.far.naturalWidth, s.far.naturalHeight, reduced ? 0.8 : 2.4, -h * 0.02, h * 1.05);
+        c.restore();
+        // middle
+        c.save();
+        camera(0.45);
+        const kb2 = 1 + 0.035 * push;
+        c.translate(w / 2, h * 0.42);
+        c.scale(kb2, kb2);
+        c.translate(-w / 2, -h * 0.42);
+        if (s.mid) strip(s.mid, s.mid.naturalWidth, s.mid.naturalHeight, reduced ? 2 : 6, -h * 0.02, h * 1.04, reduced ? 0 : Math.sin(t * 0.35) * 0.005);
+        c.restore();
+        // light from the canopy (brighter as the title reveals itself)
         if (s.beam) {
           c.save();
+          camera(0.6);
           c.globalCompositeOperation = 'screen';
-          const beams = portrait ? [[0.18, 0.55], [0.46, 0.8], [0.8, 0.5]] : [[0.12, 0.5], [0.34, 0.75], [0.6, 0.6], [0.86, 0.45]];
+          const flare = reduced ? 0 : Math.max(0, Math.sin(Math.min(1, arr / 2.4) * Math.PI)) * 0.22;
+          const beams = portrait ? [[0.18, 0.55], [0.48, 0.8], [0.82, 0.5]] : [[0.12, 0.5], [0.34, 0.75], [0.6, 0.6], [0.86, 0.45]];
           for (let i = 0; i < beams.length; i++) {
             const [bx, bs] = beams[i];
             const pulse = 0.55 + 0.45 * Math.sin(t * (0.21 + i * 0.07) + i * 1.9);
-            c.globalAlpha = alpha * inK * (0.1 + 0.16 * pulse) * (1.1 - s.pal.dark * 0.5);
+            c.globalAlpha = alpha * light * ((0.1 + 0.16 * pulse) * (1.1 - s.pal.dark * 0.5) + flare);
             c.save();
-            c.translate(w * bx + Math.sin(t * 0.05 + i) * w * 0.02, -h * 0.05);
+            c.translate(w * bx + Math.sin(t * 0.05 + i) * w * 0.02, -h * 0.08);
             c.rotate(0.32);
-            c.drawImage(s.beam, -w * 0.09 * bs, 0, w * 0.18 * bs + 40, h * 1.15);
+            c.drawImage(s.beam, -w * 0.09 * bs, 0, w * 0.18 * bs + 40, h * 1.2);
             c.restore();
           }
           c.restore();
         }
-        // the far mist band, behind the near strip
+        // the far mist band, low in the trees behind the log
         if (s.mist) {
           c.save();
-          // (low and faint: a haze lying in the trees behind the log, never a patch)
-          c.globalAlpha = alpha * inK * (0.3 + 0.08 * Math.sin(t * 0.13));
+          camera(0.7);
+          c.globalAlpha = alpha * light * (0.3 + 0.08 * Math.sin(t * 0.13));
           const mh = h * 0.24, mw = mh * 6;
           const my = groundY - mh * 0.7;
-          const off = -((t * pan * 0.9) % mw);
-          for (let x = off; x < w; x += mw) c.drawImage(s.mist, x, my, mw + 1, mh);
+          const off = -((t * (reduced ? 1 : 7)) % mw) - mw;
+          for (let x = off; x < w + mw; x += mw) c.drawImage(s.mist, x, my, mw + 1, mh);
           c.restore();
         }
-        // the near strip: its ground line under the log, so the log lies in the undergrowth
+        // the near strip: the pair's plane (it does not scroll: the log lies in it); its ground line under the log
         if (s.near) {
-          const nh = portrait ? Math.min(h * 0.46, w * 1.05) : h * 0.82;
+          c.save();
+          camera(1);
+          const nh = portrait ? Math.min(h * 0.5, w * 1.15) : h * 0.86;
           const nTop = groundY - s.ground * nh;
-          strip(s.near, pan * 1.55, nTop, nh, 1, reduced ? 0 : Math.sin(t * 0.6 + 1) * 0.012);
+          strip(s.near, s.near.naturalWidth, s.near.naturalHeight, 0, nTop, nh, reduced ? 0 : Math.sin(t * 0.6 + 1) * 0.008);
           // under the strip, the floor of the forest in its shade
           const below = nTop + nh - 1;
-          if (below < h) {
-            // (it starts a little above the strip's foot and fades in, so the strip melts into it instead of ending on a line)
-            const top = below - nh * 0.16;
-            const g = c.createLinearGradient(0, top, 0, h);
-            g.addColorStop(0, rgba(s.pal.shade, 0));
-            g.addColorStop(Math.min(0.99, (nh * 0.16) / Math.max(1, h - top)), rgba(s.pal.shade, 1));
-            g.addColorStop(1, rgba(mix(s.pal.shade, [0, 0, 0], 0.55), 1));
-            c.fillStyle = g;
-            c.fillRect(0, top, w, h - top + 1);
-          }
+          const top = below - nh * 0.16;
+          const g = c.createLinearGradient(0, top, 0, h * 1.3);
+          g.addColorStop(0, rgba(s.pal.shade, 0));
+          g.addColorStop(Math.min(0.99, (nh * 0.16) / Math.max(1, h * 1.3 - top)), rgba(s.pal.shade, 1));
+          g.addColorStop(1, rgba(mix(s.pal.shade, [0, 0, 0], 0.55), 1));
+          c.fillStyle = g;
+          c.fillRect(-w * 0.3, top, w * 1.6, h * 1.3 - top + 1);
+          c.restore();
         }
         c.restore();
       };
@@ -594,14 +771,14 @@ export const TitleScene = React.forwardRef<
       } else paint(showing, 1, into / hold);
 
       // ---- the pair on their log ----
-      // (everything here is drawn from small pictures made once: the log and the ferns already in the world's light, and each pose of
-      // the two of them already graded and rimmed; only when the light changes, in a world's crossfade, are they made again)
-      if (b && logImg && pokeyAtlas) {
-        const pk = palKey(pal);
+      if (logImg) {
+        c.save();
+        camera(1);
+        c.globalAlpha = light;
         // the shadow the log throws on the ground
         const sy = groundY - logH * 0.04;
         const lg = c.createRadialGradient(cx, sy, 0, cx, sy, logW * 0.6);
-        lg.addColorStop(0, rgba(mix(pal.shade, [0, 0, 0], 0.6), 0.55 * inK));
+        lg.addColorStop(0, rgba(mix(pal.shade, [0, 0, 0], 0.6), 0.55));
         lg.addColorStop(1, rgba(pal.shade, 0));
         c.save();
         c.fillStyle = lg;
@@ -627,76 +804,38 @@ export const TitleScene = React.forwardRef<
             const ox = logX - lx0, oy = logTop - ly0, gyy = groundY - ly0;
             if (which === 'back') g.drawImage(logImg, ox, oy, logW, logH);
             else {
-              // ferns at the log's ends and one in front of its middle
-              drawPlantAt(g, 61, ox + logW * 0.04, gyy + H * 0.05, H * 0.62, false);
-              drawPlantAt(g, 59, ox + logW * 0.52, gyy + H * 0.08, H * 0.36, true);
-              drawPlantAt(g, 26, ox + logW * 0.97, gyy + H * 0.05, H * 0.56, true);
+              // ferns where the log meets the undergrowth
+              drawPlantAt(g, 61, ox + logW * 0.1, gyy + H * 0.05, H * 0.5, false);
+              drawPlantAt(g, 26, ox + logW * 0.9, gyy + H * 0.05, H * 0.46, true);
             }
             grade(g, pal, gy0, gy1, lw, lh);
           }
         }
-        c.save();
-        c.globalAlpha = inK;
         c.drawImage(logLayer.back, lx0, ly0, lw, lh);
-        c.restore();
-        // the two of them hop onto it as the title arrives
-        const hop = (delay: number) => {
-          if (reduced) return { dy: 0, sq: 1, al: Math.min(1, Math.max(0, (arr - delay) / 0.4)) };
-          const u = (arr - delay) / 0.62;
-          if (u <= 0) return { dy: -H * 0.5, sq: 1, al: 0 };
-          if (u >= 1.4) return { dy: 0, sq: 1, al: 1 };
-          if (u < 1) {
-            const e = u * u;
-            return { dy: -H * 0.5 * (1 - e), sq: 1 + 0.04 * (1 - u), al: Math.min(1, u * 3) };
-          }
-          const v = (u - 1) / 0.4;
-          return { dy: 0, sq: 1 - 0.07 * Math.sin(v * Math.PI), al: 1 };
-        };
-        const ph1 = hop(0.45), ph2 = hop(0.62);
-        // contact shadows on the moss
-        for (const [u, al] of [[POKEY_AT, ph1.al], [MEECA_AT, ph2.al]] as const) {
-          const x = logX + logW * u;
-          const g = c.createRadialGradient(x, feet + 1, 0, x, feet + 1, H * 0.26);
-          g.addColorStop(0, `rgba(25,14,4,${0.5 * al})`);
+        // they come up with the light; then only what was painted moves, and a very slow breath
+        const show = reduced ? light : Math.min(1, Math.max(0, (arr - 0.35) / 0.9));
+        const sep = H * 0.34;
+        for (const [live, who, x, tall, seed] of [[pokey, 'p', cx - sep, H, 0], [meeca, 'm', cx + sep, H * 0.95, 2.1]] as const) {
+          // contact shadow on the moss
+          const g = c.createRadialGradient(x, feet + 1, 0, x, feet + 1, tall * 0.25);
+          g.addColorStop(0, `rgba(25,14,4,${0.5 * show})`);
           g.addColorStop(1, 'rgba(25,14,4,0)');
           c.fillStyle = g;
           c.beginPath();
-          c.ellipse(x, feet + 1, H * 0.26, H * 0.055, 0, 0, Math.PI * 2);
+          c.ellipse(x, feet + 1, tall * 0.25, tall * 0.05, 0, 0, Math.PI * 2);
           c.fill();
+          const at = frameAt(live.cast, live.segs, t);
+          const lit = litFrame(live, who, at.clip, at.frame, pal, pk) ?? litFrame(live, who, live.cast.idle, 0, pal, pk);
+          if (!lit) continue;
+          const k = tall / live.cast.height;
+          const breath = reduced ? 1 : 1 + Math.sin((t + seed) * ((Math.PI * 2) / 4.6)) * 0.005;
+          c.save();
+          c.globalAlpha = light * show;
+          c.translate(x, feet + 1);
+          c.scale(k, k * breath);
+          c.drawImage(lit.cv, -lit.ax, -lit.ay);
+          c.restore();
         }
-        // Pokey, on the left, facing her; Meeca on the right, facing him
-        const pose = pairPose(t, PAIR_STEPS);
-        const breathe = 1 + Math.sin(t * 2.1) * 0.012;
-        {
-          const raw = pokeyCut(pokeyAtlas, pose.pokey) ?? pokeyCut(pokeyAtlas, 'idle');
-          const cut = raw && gradedCut(raw, 'p:' + pose.pokey, pal, pk);
-          const k = H / 205;
-          if (cut) {
-            c.save();
-            c.globalAlpha = ph1.al;
-            c.translate(logX + logW * POKEY_AT, feet + ph1.dy);
-            c.scale(k * (2 - ph1.sq), k * breathe * ph1.sq);
-            c.drawImage(cut.cv, -cut.ax, -cut.ay);
-            c.restore();
-          }
-        }
-        {
-          const sm = (H * 0.97) / 90;
-          const bounce = pose.meecaHop ? Math.abs(Math.sin(pose.meecaHop * Math.PI)) * H * 0.07 : 0;
-          const raw = meecaCut(pose.meeca) ?? meecaCut('idle');
-          const cut = raw && gradedCut(raw, 'm:' + pose.meeca, pal, pk);
-          if (cut) {
-            const kk = sm * cut.k;
-            c.save();
-            c.globalAlpha = ph2.al;
-            c.translate(logX + logW * MEECA_AT, feet + ph2.dy - bounce);
-            c.scale(kk * (2 - ph2.sq), kk * (1 + Math.sin(t * 2.3 + 1) * 0.01) * ph2.sq);
-            c.drawImage(cut.cv, -cut.ax, -cut.ay);
-            c.restore();
-          }
-        }
-        c.save();
-        c.globalAlpha = inK;
         c.drawImage(logLayer.front, lx0, ly0, lw, lh);
         c.restore();
       }
@@ -704,18 +843,19 @@ export const TitleScene = React.forwardRef<
       // ---- the air in front: the near mist, fireflies, butterflies, leaves ----
       if (showing.mist && !reduced) {
         c.save();
-        c.globalAlpha = 0.13 * inK;
+        camera(1.15);
+        c.globalAlpha = 0.12 * light;
         const mh = h * 0.16, mw = mh * 6;
         const my = groundY - mh * 0.45;
-        const off = -((t * pan * 2.2 + mw * 0.4) % mw);
-        for (let x = off; x < w; x += mw) c.drawImage(showing.mist, x, my, mw + 1, mh);
+        const off = -((t * 14 + mw * 0.4) % mw) - mw;
+        for (let x = off; x < w + mw; x += mw) c.drawImage(showing.mist, x, my, mw + 1, mh);
         c.restore();
       }
       c.save();
       c.globalCompositeOperation = 'lighter';
-      const flyK = (0.3 + 0.7 * pal.dark) * inK;
+      const flyK = (0.3 + 0.7 * pal.dark) * light;
       for (const m of flies) {
-        const x = (m.x + Math.sin(t * 0.13 * m.s + m.p) * 0.06) * w;
+        const x = (m.x + Math.sin(t * 0.13 * m.s + m.p) * 0.06) * w + drift * -0.2;
         const y = (m.y + Math.sin(t * 0.21 * m.s + m.p * 2) * 0.04) * h;
         const blink = Math.max(0, Math.sin(t * (0.8 + m.s * 0.6) + m.p * 3));
         const r = (5 + 6 * m.s) * (0.7 + 0.3 * blink);
@@ -736,8 +876,55 @@ export const TitleScene = React.forwardRef<
           const fall = (t * (0.025 + m.s * 0.02) + m.p) % 1.25;
           const x = (m.x + Math.sin(t * 0.4 * m.s + m.p) * 0.05 + fall * 0.08) * w;
           const y = (fall - 0.1) * h;
-          drawPaintedLeaf(c, 1, m, x, y, t, Math.min(w, h) / 520, 0.9 * inK);
+          drawPaintedLeaf(c, 1, m, x, y, t, Math.min(w, h) / 520, 0.9 * light);
         }
+      }
+
+      // ---- in front of the camera: the dark canopy over the top, big soft leaves at the corners, one drifting past now and then ----
+      if (showing.canopy) {
+        c.save();
+        camera(1.5);
+        c.globalAlpha = light * 0.9;
+        const chh = portrait ? h * 0.15 : h * 0.24;
+        const im = showing.canopy;
+        const tw = (im.width / im.height) * chh * 1.6;
+        for (let x = -w * 0.3 - ((t * 3) % tw); x < w * 1.3; x += tw) c.drawImage(im, x, -chh * 0.62, tw + 1, chh * 1.6);
+        c.restore();
+      }
+      {
+        c.save();
+        camera(1.6);
+        c.globalAlpha = light;
+        const big = Math.min(w, h) * (portrait ? 0.62 : 0.5);
+        const corner = (name: string, x: number, y: number, size: number, rot: number, flip: boolean, sway: number) => {
+          const leaf = frontLeaf(name, pal.shade, pk);
+          if (!leaf) return;
+          c.save();
+          c.translate(x, y);
+          c.rotate(rot + (reduced ? 0 : Math.sin(t * 0.5 + sway) * 0.04));
+          if (flip) c.scale(-1, 1);
+          const k = size / Math.max(leaf.width, leaf.height);
+          c.drawImage(leaf, (-leaf.width * k) / 2, (-leaf.height * k) / 2, leaf.width * k, leaf.height * k);
+          c.restore();
+        };
+        corner('big_C10_0', -big * 0.16, h - big * (portrait ? 0.3 : 0.2), big, -0.5, false, 0);
+        corner('big_B09_0', w + big * 0.14, h - big * (portrait ? 0.34 : 0.22), big * 0.9, 0.6, true, 1.7);
+        if (!portrait) corner('big_C06_0', w + big * 0.05, -big * 0.12, big * 0.8, 2.6, false, 3.1);
+        // one leaf crosses in front every half a minute or so, close and soft
+        if (!reduced) {
+          const lap = ((t + 9) % 27) / 9;
+          if (lap < 1) {
+            const x = -big * 0.6 + lap * (w + big * 1.2);
+            const y = h * (portrait ? 0.64 : 0.55) + Math.sin(lap * Math.PI) * -h * 0.12;
+            corner('big_B06_0', x, y, big * 1.15, -0.4 + lap * 0.9, false, 0.5);
+          }
+        }
+        c.restore();
+      }
+      // the dark the reveal comes out of
+      if (light < 1) {
+        c.fillStyle = `rgba(11,26,19,${(1 - light) * 0.85})`;
+        c.fillRect(0, 0, w, h);
       }
     };
     raf = requestAnimationFrame(draw);
@@ -751,5 +938,3 @@ export const TitleScene = React.forwardRef<
   return <canvas ref={cvRef} className="ts-scene" aria-hidden="true" />;
 });
 TitleScene.displayName = 'TitleScene';
-
-export type { PoseStep };

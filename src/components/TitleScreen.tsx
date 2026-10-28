@@ -14,6 +14,12 @@ import type { SkillId } from '../game/skills.ts';
 import { testUnlockOn, setTestUnlock, nextTapRun, UNLOCK_TAPS } from '../game/testUnlock.ts';
 import { bootDone, bootProgress, bootShowing, fontsReady, waitForAll } from '../game/boot.ts';
 
+/** the scatter as the logo lands: [angle, distance, kind] */
+const BURST: Array<[number, number, string]> = [
+  [-160, 120, 'lf'], [-130, 150, 'sp'], [-100, 110, 'lf'], [-70, 160, 'sp'], [-40, 130, 'lf'], [-15, 170, 'sp'],
+  [10, 140, 'lf'], [35, 165, 'sp'], [60, 120, 'lf'], [95, 150, 'sp'], [130, 115, 'lf'], [165, 140, 'sp'],
+];
+
 /** every biome takes a turn behind the logo */
 const SHOWCASE = [1, 2, 4, 6, 3, 8, 5, 7, 9, 10];
 
@@ -187,6 +193,13 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
         </div>
 
         <div className="gx2-logo">
+          {/* the reveal: a burst of golden light and a scatter of leaves and sparks as the word lands */}
+          <span className="gx2-flash" aria-hidden="true" />
+          <span className="gx2-burst" aria-hidden="true">
+            {BURST.map(([a, d, k], i) => (
+              <i key={i} className={k} style={{ ['--a' as string]: `${a}deg`, ['--d' as string]: `${d}px` }} />
+            ))}
+          </span>
           <LogoWord />
           <span className="gx2-glint g1" aria-hidden="true" />
           <span className="gx2-glint g2" aria-hidden="true" />

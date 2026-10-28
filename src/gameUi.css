@@ -128,14 +128,26 @@
 
 /* ---- the entrance (TitleScreen.tsx): nothing shows until the splash goes, then it all arrives in order ---- */
 .gx2-wait .gx2-ui { visibility: hidden; }
-.gx2-arrive .gx2-top { animation: gx-down .6s ease calc(var(--t) * .9s) backwards; }
-.gx2-arrive .gx2-word span { animation: gx-letter .8s cubic-bezier(.22, 1.5, .45, 1) calc(var(--t) * (.2s + var(--i) * .075s)) backwards; }
-.gx2-arrive .gx2-ribbon { animation: gx-unfurl .75s cubic-bezier(.3, 1.35, .5, 1) calc(var(--t) * .75s) backwards; }
-.gx2-arrive .gx2-glint.g1 { animation: gx-glint 5.6s ease-out calc(var(--t) * 1.3s + .2s) infinite; }
-.gx2-arrive .gx2-glint.g2 { animation: gx-glint 5.6s ease-out calc(var(--t) * 1.3s + 2.1s) infinite; }
-.gx2-arrive .gx2-glint.g3 { animation: gx-glint 5.6s ease-out calc(var(--t) * 1.3s + 3.9s) infinite; }
-.gx2-arrive .gx2-sign, .gx2-arrive .gx2-planks > *, .gx2-arrive .gx-tags > * { animation: gx-rise .6s cubic-bezier(.2, 1.45, .4, 1) calc(var(--t) * (1s + var(--i, 0) * .065s)) backwards; }
-.gx2-arrive .gx2-credit { animation: gx-fade .8s ease calc(var(--t) * 1.6s) backwards; }
+/* the reveal (with the scene's camera drawing back out of the dark, TitleScene.tsx): the letters slam down one by one, a burst of gold
+   light and a scatter of leaves and sparks as the word lands, the ribbon unfurls, then the buttons come up in turn */
+.gx2-arrive .gx2-top { animation: gx-down .6s ease calc(var(--t) * 1.9s) backwards; }
+.gx2-arrive .gx2-word span { animation: gx-letter .8s cubic-bezier(.22, 1.5, .45, 1) calc(var(--t) * (.8s + var(--i) * .07s)) backwards; }
+.gx2-arrive .gx2-ribbon { animation: gx-unfurl .75s cubic-bezier(.3, 1.35, .5, 1) calc(var(--t) * 1.4s) backwards; }
+.gx2-arrive .gx2-glint.g1 { animation: gx-glint 5.6s ease-out calc(var(--t) * 2s + .2s) infinite; }
+.gx2-arrive .gx2-glint.g2 { animation: gx-glint 5.6s ease-out calc(var(--t) * 2s + 2.1s) infinite; }
+.gx2-arrive .gx2-glint.g3 { animation: gx-glint 5.6s ease-out calc(var(--t) * 2s + 3.9s) infinite; }
+.gx2-arrive .gx2-sign, .gx2-arrive .gx2-planks > *, .gx2-arrive .gx-tags > * { animation: gx-rise .6s cubic-bezier(.2, 1.45, .4, 1) calc(var(--t) * (1.85s + var(--i, 0) * .065s)) backwards; }
+.gx2-arrive .gx2-credit { animation: gx-fade .8s ease calc(var(--t) * 2.5s) backwards; }
+.gx2-flash { position: absolute; z-index: -1; left: 50%; top: 34%; width: 130%; aspect-ratio: 1.6; translate: -50% -50%; pointer-events: none; opacity: 0; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 244, 190, .95) 0%, rgba(255, 210, 110, .55) 30%, rgba(255, 190, 80, 0) 68%); mix-blend-mode: screen; }
+.gx2-arrive .gx2-flash { animation: gx-flash 1.1s ease-out calc(var(--t) * 1.15s) backwards; }
+@keyframes gx-flash { 0% { opacity: 0; transform: scale(.25); } 22% { opacity: 1; } 100% { opacity: 0; transform: scale(1.5); } }
+.gx2-burst { position: absolute; z-index: 4; left: 50%; top: 36%; width: 0; height: 0; pointer-events: none; }
+.gx2-burst i { position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; opacity: 0; }
+.gx2-burst i.lf { width: 16px; height: 10px; border-radius: 0 100% 0 100%; background: linear-gradient(135deg, #a9e36c, #3f8a2e); box-shadow: inset 0 0 0 1px rgba(29, 74, 27, .7); }
+.gx2-burst i.sp { width: 12px; height: 12px; background: #fff6c8; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); filter: drop-shadow(0 0 3px #ffd23a); }
+.gx2-arrive .gx2-burst i { animation: gx-burst 1.15s cubic-bezier(.15, .8, .3, 1) calc(var(--t) * 1.2s) backwards; }
+@keyframes gx-burst { 0% { opacity: 1; transform: rotate(var(--a)) translateX(10px) scale(.4); } 70% { opacity: 1; } 100% { opacity: 0; transform: rotate(var(--a)) translateX(var(--d)) translateY(26px) rotate(200deg) scale(1); } }
 @keyframes gx-letter { 0% { opacity: 0; transform: translateY(calc(var(--y, 0px) - 1.1em)) rotate(calc(var(--r, 0deg) * -2)) scale(.7, 1.15); } 40% { opacity: 1; } 70% { transform: translateY(calc(var(--y, 0px) + .04em)) rotate(var(--r, 0deg)) scale(1.06, .92); } 100% { transform: translateY(var(--y, 0px)) rotate(var(--r, 0deg)); } }
 @keyframes gx-unfurl { 0% { opacity: 0; clip-path: inset(0 47% 0 47%); transform: scaleX(.35); } 30% { opacity: 1; } 100% { clip-path: inset(-30% -10% -30% -10%); transform: none; } }
 @keyframes gx-rise { 0% { opacity: 0; transform: translateY(28px) rotate(var(--rot, 0deg)) scale(.92); } 60% { opacity: 1; } 100% { transform: rotate(var(--rot, 0deg)); } }
@@ -148,7 +160,7 @@
 .gx2-leave .ts-scene { transition: opacity .24s ease; opacity: .55; }
 @media (prefers-reduced-motion: reduce) {
   .gx2-arrive .gx2-top, .gx2-arrive .gx2-word span, .gx2-arrive .gx2-ribbon, .gx2-arrive .gx2-sign, .gx2-arrive .gx2-planks > *, .gx2-arrive .gx-tags > *, .gx2-arrive .gx2-credit { animation: gx-fade .45s ease backwards; }
-  .gx2-arrive .gx2-glint, .gx-shine::before { animation: none; }
+  .gx2-arrive .gx2-glint, .gx-shine::before, .gx2-arrive .gx2-flash, .gx2-arrive .gx2-burst i { animation: none; }
   .gx2-leave .gx2-ui > * { transform: none !important; }
 }
 
@@ -157,8 +169,8 @@
   .gx2-ui { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr auto auto; grid-template-areas: 'top' 'logo' 'stage' 'post' 'credit'; }
   .gx2-stage { min-height: 24vh; }
   .gx2-logo { margin-top: 2vh; }
-  .gx2-word { font-size: clamp(50px, 16vw, 90px); }
-  .gx2-ribbon { width: min(86vw, 380px); }
+  .gx2-word { font-size: clamp(46px, 14vw, 80px); }
+  .gx2-ribbon { width: min(76vw, 330px); }
   .gx2-post { margin: 1vh 0 2vh; align-self: end; }
   .gx2-post::before { display: none; }
   .gx2-planks { width: min(92vw, 380px); }
