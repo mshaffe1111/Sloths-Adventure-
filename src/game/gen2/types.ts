@@ -15,7 +15,8 @@ import type { Difficulty } from '../difficulty.ts';
 import type { Anchor, PieceSpec, RoomSpec } from '../puzzleKit.ts';
 import type { GeneratedStage } from '../stageGenerator.ts';
 import type { ProtoExtras } from '../protoStage.ts';
-import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform } from '../types.ts';
+import type { Zone } from '../zones.ts';
+import type { Collectible, Enemy, EnemyType, LevelConfig, ObjectiveType, Platform, Vine } from '../types.ts';
 import type { Rng } from './variety.ts';
 
 export type { Difficulty, Rng };
@@ -137,7 +138,18 @@ export interface WorldManifest {
 
 // ───────────────────────────── a section ─────────────────────────────
 
-export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy';
+/** a platform, or one of the two hanging pieces: a `liana` (a swing, placed by `swing`) and a `vine` (a climb, placed by `climb`) */
+export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy' | 'liana' | 'vine';
+
+/**
+ * A liana's own swing (Matt, 2026-10-28): it swings by itself, `amp` radians either side of hanging straight down, one there-and-back
+ * every `period` seconds on the game clock; the player can't pump it (up and down climb, left and right only turn), and a jump off it
+ * carries the vine's velocity at his grip, so letting go is a timing window (pipeline lianaRelease).
+ */
+export interface LianaSwing {
+  amp: number;
+  period: number;
+}
 
 /**
  * Where a piece goes, relative to another piece of the same section (never a fixed x, y), so the rolls can stretch a piece and the
@@ -148,15 +160,30 @@ export type PieceShape = 'bank' | 'branch' | 'block' | 'stone' | 'bouncy';
  *                        (pipeline maxGap: Easy 0.65, Normal 0.82 of the physical reach, never past what levelCheck accepts)
  *   pit                  a gap at the same height with a pit under it (soft: a floor and a step out); the jump kind decides its width
  *   on                   an obstacle standing on `on`'s top, `at` (0..1) along it, `h` px tall (a stump, a block)
- *   over                 a floating ledge over `on`, its left end `at` along it, its top `dy` above (negative) `on`'s top
+ *   over                 a floating ledge over `on`, its left end `at` along it, its top `dy` above (negative) `on`'s top (over a
+ *                        vine: `at` 0 is the vine, so `{ on: 'vine', at: 0, dy: 0 }` is a ledge whose left end is the vine's top)
+ *   swing                a liana (shape 'liana') hanging past `after`'s end: its anchor `top` px above `after`'s top, `reach` px out
+ *                        from the end (what a running jump grabs), swinging by itself (`amp`, `period`: LianaSwing; rolled once per use,
+ *                        the same on Easy and Normal). Needs the 'swing' move. A gap with a pit under it runs from `after` to the
+ *                        piece that lands from it
+ *   land                 a ledge past a liana (`after` names the liana): its near end at `share` of the band where letting go lands
+ *                        on it with a release window of at least LIANA.window (Easy 300 ms, Normal 167 ms), `dy` below (+) or above the
+ *                        ledge the swing started from. A chain of swings has a perch between every two: liana, land, liana, land
+ *                        (levelCheck follows ledge -> liana -> ledge, never liana to liana)
+ *   climb                a climbing vine (shape 'vine') standing on `on`, `at` (0..1) along it, `h` px tall. Needs the 'climb' move
+ * A gap rule (jump, double, pit, land) with `water: true` is water whatever the world's falls (World 6's creeks): nothing is laid under
+ * it, the stage has its water line, a fall costs a life on Normal and on Easy alike, and Dot warns before it (WATER_WARN, Matt's rule)
  */
 export type PlaceRule =
   | { kind: 'start' }
   | { kind: 'walk'; after: string; dy?: Range }
-  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range }
-  | { kind: 'pit'; after: string; jump: 'jump' | 'double'; share?: Range }
+  | { kind: 'jump' | 'double'; after: string; dy?: Range; share?: Range; water?: boolean }
+  | { kind: 'pit'; after: string; jump: 'jump' | 'double'; share?: Range; water?: boolean }
   | { kind: 'on'; on: string; at: Range; h: Range }
-  | { kind: 'over'; on: string; at: Range; dy: Range };
+  | { kind: 'over'; on: string; at: Range; dy: Range }
+  | { kind: 'swing'; after: string; top?: Range; reach?: Range; amp?: Range; period?: Range }
+  | { kind: 'land'; after: string; dy?: Range; share?: Range; water?: boolean }
+  | { kind: 'climb'; on: string; at: Range; h: Range };
 
 export interface SectionPiece {
   /** the piece's name inside its section (sockets and rooms point at it) */
@@ -236,6 +263,19 @@ export interface LocalRoomSpec extends Omit<RoomSpec, 'left' | 'right' | 'beyond
   pieces: LocalPieceSpec[];
 }
 
+/**
+ * A zone a section lays over its own pieces (the engine's zones.ts Zone, placed by piece key):
+ *   tide   World 6's mudflat (6-4 Low Tide): the piece `on` is the mud, a bank on each side of it (levelCheck: its neighbours end and
+ *          start at its ends); the water rises on a timer and sweeps him back toward where he came from. `low` is the low spell (s,
+ *          default TIDE.low), never shorter than the walk across the mud takes (zones.ts tideCrossTime: the pipeline lengthens it);
+ *          `warn` (>= 0.9 s), `active` (<= 3 s) and `force` (px/s) default to TIDE's. Its beat on the clock is rolled per use
+ * Nothing stands or flies inside a zone (no animal, no flag: levelCheck), so creature sockets and flags inside one stay empty.
+ */
+export type SectionZone = { kind: 'tide'; on: string; low?: Range; warn?: number; active?: number; force?: number };
+
+/** a tide zone's defaults (zones.ts tideRecipes): a long low spell, a rise you can see coming, high water */
+export const TIDE = { low: [5.6, 7.0], warn: 1.8, active: 2.2, force: 190 } as const;
+
 /** how a section joins its neighbours: on the ground (a walk, a step or a pit between) or from a ledge (a jump) */
 export type PortKind = 'ground' | 'ledge';
 
@@ -277,6 +317,8 @@ export interface SectionTemplate {
    */
   subBlocks?: SubBlock[];
   room?: LocalRoomSpec;
+  /** zones it lays over its pieces (a tide over a mudflat, darkness over a hollow) */
+  zones?: SectionZone[];
   /** may be flipped left to right (a room never is: it reads left to right; painted light stays upper left) */
   mirrorable: boolean;
   /** how often the bag holds it (default 1) */
@@ -377,6 +419,8 @@ export interface PlacedSection {
   pieces: PlacedPiece[];
   /** platforms the stitcher laid before it (a pit's floor and walls, a helper stone) */
   seam: Platform[];
+  /** its hanging pieces (lianas and climbing vines), by key; a liana carries its own swing */
+  vines: Array<{ key: string; vine: Vine; swing?: LianaSwing }>;
   /** the sockets resolved to world points (filled in pass 4) */
   sockets: Array<{ socket: Socket; x: number; y: number; piece: Platform }>;
   room?: RoomSpec;
@@ -409,6 +453,9 @@ export interface StageSink {
   proto: ProtoExtras;
   /** the world's own extras (World 5: proto.w5), for its emitters */
   extras: Record<string, unknown>;
+  /** the stage's zones (zones.ts): the sections' own, and any an emitter lays (a prop's darkness over its span); no animal or flag
+   *  is left standing inside one */
+  zones: Zone[];
   nextPlatformId: () => number;
   nextCollectibleId: () => number;
   nextEnemyId: () => number;
@@ -469,7 +516,7 @@ export interface Gen2Meta {
   errors: string[];
   /** stretches longer than the dead-time cap with nothing interactive (poissonPlace's `unfilled`), [x0, x1] */
   barren: Array<[number, number]>;
-  /** the route's gaps and what a fall into each one ends in (soft: a climb out; water or void: a life) */
+  /** the route's gaps and what a fall into each one ends in (soft: a climb out; water or void: a life; a section's `water` gap is water) */
   falls?: Array<{ x0: number; x1: number; y: number; kind: PitKind }>;
 }
 
@@ -509,3 +556,16 @@ export const WATER_WARN = { lead: 480, every: 12 } as const;
 export const WATER_LINE = 'Careful, water! Flick up and over.';
 /** the quiet a stretch may have before it is dead time (§2 / E2) */
 export const QUIET = { easy: 3.0, normal: 2.0, rest: 4.0 } as const;
+/**
+ * Lianas (World 6): the release window a jump off one must leave onto the next perch (s: Easy 300 ms, Normal 167 ms, five frames at
+ * 30 fps), and the defaults of the `swing` place rule: the swing (LianaSwing amp in radians, period in seconds), how high above the
+ * ledge it hangs from, how far out from the ledge's end, and its length (it hangs to 30 px under the ledge at most)
+ */
+export const LIANA = {
+  window: { easy: 0.3, normal: 0.167 },
+  amp: [0.7, 0.85],
+  period: [1.8, 2.2],
+  top: [360, 420],
+  reach: [160, 190],
+  len: 410,
+} as const;
