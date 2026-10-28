@@ -1214,33 +1214,49 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     pieces.push({ k: 'snakes', x0, x1: x });
   }
 
+  /** snakes on the open ground, each after a rock to hop: hop, then punch it or hop it too (1-3's walks were empty between snakes) */
+  function snakeWalk(m: number) {
+    const x0 = x;
+    for (let k = 0; k < m; k++) {
+      run(R.r(150, 210));
+      logHop();
+      run(R.r(150, 200));
+      snake(x + 70, G, 120);
+      flower(x + 70, G - 120, 'orchid');
+      run(R.r(250, 300));
+    }
+    expert += (x - x0) / RUN + 1.5 * m;
+    pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
   if (plan === '1-3') {
     // 1-3 Branch Snakes: punching. One snake asleep on a wide branch to learn on, then snakes on narrow branches (punch or hop),
     // then a snake guarding a rope: clearing the stage teaches Shimmy Rope, and a short rope near the end is there to try it on.
+    // (Rebuilt 2026-10-28: the walks between the snakes hold rocks to hop and dips, the stumps stay low, no tall double jumps.)
     beat('Learn: the sleeping snake', () => {
-      rest(R.r(600, 750));
+      rest(R.r(420, 470));
       const wx = x + 120;
       branch(wx, wx + 420, G - 90);
       snake(wx + 260, G - 90, 60, true);
       row(wx + 40, wx + 160, G - 124, 2, 'orchid');
       hint(wx - 80, 'Hop up beside the sleeping snake and tap to punch it', 'Hop up beside the sleeping snake and press Punch', 'Hop up beside the sleeping snake and press J to punch');
-      run(R.r(700, 800));
+      run(R.r(600, 640));
       expert += 3;
-      snakes();
+      snakeWalk(2);
       flag();
     });
     beat('Test: snakes on the branches', () => {
       hint(x + 60, 'Punch the snakes or hop over them', 'Punch the snakes or hop over them', 'Punch the snakes or hop over them');
       snakeBranches(3, G - 130);
-      rest(R.r(250, 350));
-      stumps();
+      busy(1);
+      lowStumps();
       snakeBranches(4, G - 150);
       flag();
     });
     beat('Twist: the rope guard', () => {
       hint(x + 60, 'A snake guards the rope', 'A snake guards the rope', 'A snake guards the rope');
       ropeGap(true, false);
-      snakes();
+      snakeWalk(1);
       ropeGap(true, true);
       flag();
     });
@@ -1249,14 +1265,14 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
       while (expert < EXPERT_SECONDS - 10 && n < 24) {
         const k = n % 3;
         if (k === 0) snakeBranches(R.i(3, 4), G - Math.round(R.r(120, 160)));
-        else if (k === 1) { rest(R.r(250, 400)); snakes(); }
-        else { stumps(); rest(R.r(200, 300)); }
+        else if (k === 1) { busy(1); snakeWalk(2); }
+        else { lowStumps(); busy(1, ['dip']); }
         n++;
         if (n % 3 === 0) flag();
       }
       // the short rope to try the new move on (it needs the skill this stage teaches, so it is a reason to come back)
       ropeGap(false, true);
-      rest(R.r(600, 800));
+      homeRun();
     });
   }
 
