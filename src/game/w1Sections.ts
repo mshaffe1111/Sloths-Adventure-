@@ -89,7 +89,7 @@ export interface W1Kit {
   // ----- climbs (1-4 on), creaking branches (1-5 on)
   climbTree: (tight?: boolean) => void;
   /** a wall too tall to jump with a trunk beside it: up the trunk, across its branch onto the high ground (1-5 on) */
-  climbWall: () => void;
+  climbWall: (guard?: boolean) => void;
   fernTree: () => void;
   glideLookout: () => void;
   creakRun: () => void;
@@ -255,6 +255,7 @@ const SECTIONS: Record<W1Stage, Table> = {
           k.lowStumps();
           k.busy(2, ['dip']);
           k.mushroomCache();
+          k.busy(1, ['dip', 'log']);
           POOL.stones(k);
         },
       },
@@ -263,6 +264,7 @@ const SECTIONS: Record<W1Stage, Table> = {
           k.pillars([60, 110, 60], [0.5, 0.62], false, true);
           POOL.hopDip(k);
           k.mushroomCache();
+          k.dip();
           k.lowStumps();
         },
       },
@@ -321,8 +323,8 @@ const SECTIONS: Record<W1Stage, Table> = {
         // stones and dips: hops up the stones, low stumps, rocks and dips
         id: 'stoneRoad', beat: 'hop', build: (k) => fillTo(k, k.EXPERT - 10, null, [
           (k) => POOL.stones(k),
-          (k) => k.busy(3, ['log', 'dip', 'leap']),
-          (k) => { k.lowStumps(); k.pillars(k.R.pick([[50, 80, 60, 70], [60, 70, 50, 80]]), [0.55, 0.7], true, true); },
+          (k) => k.busy(3, ['log', 'dip']),
+          (k) => { k.lowStumps(); k.pillars(k.R.pick([[50, 80, 60, 70], [60, 70, 50, 80]]), [0.55, 0.68], false, true); },
         ]),
       },
     ],
@@ -379,21 +381,25 @@ const SECTIONS: Record<W1Stage, Table> = {
   // 1-3 Branch Snakes: punching. The roll's rhythm: snakes up on the branches (punch or hop them over the moss), snakes on the
   // ground between rocks and dips, or the two mixed with low ledges and bounces. Every twist starts at a rope with its guard.
   '1-3': {
-    rhythms: ['branches', 'ground', 'mix'],
+    rhythms: ['branches', 'ground', 'mix', 'walls'],
     start: [
       { id: 'walk', beat: 'ground', build: (k) => k.snakeWalk(2) },
-      { id: 'branch', beat: 'branches', build: (k) => { k.snakeWalk(1); k.snakeBranches(2, k.G - 120); } },
+      { id: 'wall', beat: 'walls', build: (k) => { k.snakeWalk(1); k.bounceWall(true, false); k.snakeWalk(2); } },
+      { id: 'branch', beat: 'branches', build: (k) => { k.snakeWalk(1); k.snakeBranches(2, k.G - 100); } },
       { id: 'ledge', beat: 'mix', build: (k) => { k.snakeLedge(); k.busy(1); k.snakeLedge(); } },
     ],
     develop: [
       { id: 'branches', beat: 'branches', build: (k) => { k.snakeBranches(3, k.G - 130); k.busy(1); k.lowStumps(); k.snakeBranches(4, k.G - 150); } },
       { id: 'ground', beat: 'ground', build: (k) => { k.snakeBranches(3, k.G - 130); k.snakeWalk(2); k.lowStumps(); k.snakeWalk(2); } },
       { id: 'ledges', beat: 'mix', build: (k) => { k.snakeBranches(3, k.G - 130); k.snakeLedge(); k.busy(1); k.snakeLedge(); k.snakeBranches(3, k.G - 150); } },
+      // (up the walls a mushroom bounces him up, a snake waiting where he comes down)
+      { id: 'walls', beat: 'walls', build: (k) => { k.snakeBranches(3, k.G - 130); k.bounceWall(true, false); k.snakeWalk(2); k.bounceWall(true, false); k.snakeWalk(2); } },
     ],
     twist: [
       { id: 'ropeBranches', beat: 'branches', build: (k) => { k.ropeGap(true, false, true); k.snakeBranches(3, k.G - 140); k.ropeGap(true, true, true); } },
       { id: 'ropeWalk', beat: 'ground', build: (k) => { k.ropeGap(true, false, true); k.snakeWalk(1); k.ropeGap(true, true, true); } },
       { id: 'ropeLedge', beat: 'mix', build: (k) => { k.ropeGap(true, false, true); k.bounceWall(true, false); k.snakeLedge(); k.ropeGap(true, true, true); } },
+      { id: 'ropeWall', beat: 'walls', build: (k) => { k.ropeGap(true, false, true); k.bounceWall(true, false); k.snakeWalk(2); k.ropeGap(true, true, true); } },
     ],
     finish: [
       {
@@ -417,6 +423,13 @@ const SECTIONS: Record<W1Stage, Table> = {
           (k) => { k.highLeaps(4, true, true, true); k.snakeWalk(1); },
         ]),
       },
+      {
+        id: 'walls', beat: 'walls', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.bounceWall(true); k.snakeWalk(3); },
+          (k) => { k.snakeWalk(2); k.bounceWall(true); },
+          (k) => { k.bounceWall(true, false); k.snakeWalk(2); },
+        ]),
+      },
     ],
   },
   // 1-4 Up the Kapok: the climb's middle is a run of hops and ropes (buildKapok); the roll picks their rhythm and how often a snake
@@ -436,7 +449,8 @@ const SECTIONS: Record<W1Stage, Table> = {
       {
         id: 'everything', beat: 'fight', build: (k) => {
           const groups: Build[] = [
-            (k) => { k.logHop(); k.fernTree(); k.dipArc(); },
+            // (a dip first: right after the mushroom's cache, the fern tree's top was a way onto the cache)
+            (k) => { k.dipArc(); k.logHop(); k.fernTree(); k.dipArc(); },
             (k) => k.ropeGap(false, true, true),
             (k) => k.doubleArcs(true),
             (k) => { k.dipArc(); k.mushroomCache(); },
@@ -472,54 +486,64 @@ const SECTIONS: Record<W1Stage, Table> = {
       {
         id: 'climbs', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 22, null, [
           (k) => k.climbWall(),
-          (k) => { k.climbWall(); k.ropeGap(false, true, true); },
+          (k) => { k.climbWall(); k.logHop(); k.climbTree(true); k.dipArc(); },
           (k) => { k.creakRun(); k.dipArc(); k.climbWall(); },
         ]),
       },
       {
         id: 'bounces', beat: 'bounce', build: (k) => fillTo(k, k.EXPERT - 22, null, [
-          (k) => { k.doubleArcs(true); k.bounceWall(true, false); },
+          (k) => { k.bounceWall(true, false); k.highLeaps(3, false, true); },
           (k) => k.highLeaps(5, true, true),
           (k) => k.highLeaps(4, false, true),
         ]),
       },
     ],
   },
-  // 1-6 (the 'proto' plan) Swinging Vines: the swing, the fallen log and its seesaws, the canopy road. The roll's rhythm leans on the
-  // gorge's vines, the climbs up the kapoks and the canopy, or the ground between them (hops, snakes, bounces). The puzzle rooms are
-  // in every roll; the twist is the canopy road with its glide seed, in one of three orders.
+  // 1-6 (the 'proto' plan) Swinging Vines: the swing, the fallen log and its seesaws, the canopy road. Four flavours carried through
+  // the stage, each leaning on a different heavy beat between the lessons: the gorge's vines, climbs up the kapoks and walls, snakes on
+  // the ground and on ledges, or bounces up to high branches. The swing lessons, the puzzle rooms and the canopy road with its glide
+  // seed are in every roll.
   '1-6': {
-    rhythms: ['swing', 'climb', 'ground'],
+    rhythms: ['swing', 'climb', 'fight', 'bounce'],
     develop: [
       { id: 'gorge', beat: 'swing', build: (k) => { k.chain(k.R.i(2, 3), false); k.busy(1); k.flag(); k.kapok(); k.chain(3, false); } },
-      { id: 'kapoks', beat: 'climb', build: (k) => { k.kapok(); k.snakeWalk(1); k.flag(); k.climbWall(); k.kapok(); } },
-      { id: 'ground', beat: 'ground', build: (k) => { k.chain(2, false); k.snakeWalk(1); k.stumps(); k.flag(); k.kapok(); k.highLeaps(3, false, true); } },
+      { id: 'kapoks', beat: 'climb', build: (k) => { k.kapok(); k.climbWall(); k.flag(); k.climbWall(); k.kapok(); } },
+      { id: 'snakes', beat: 'fight', build: (k) => { k.kapok(); k.snakeWalk(2); k.flag(); k.snakeLedge(); k.snakeWalk(1); } },
+      { id: 'bounces', beat: 'bounce', build: (k) => { k.kapok(); k.highLeaps(4, false, true); k.flag(); k.bounceWall(true, false); k.highLeaps(3, true); } },
     ],
     twist: [
       { id: 'roadVines', beat: 'swing', build: (k) => { k.canopy(true); k.flag(); k.highRun(); } },
-      { id: 'roadKapok', beat: 'climb', build: (k) => { k.canopy(true); k.flag(); k.kapok(); k.canopy(false); } },
-      { id: 'roadGround', beat: 'ground', build: (k) => { k.canopy(true); k.flag(); k.busy(2); k.snakeWalk(1); } },
+      { id: 'roadKapok', beat: 'climb', build: (k) => { k.canopy(true); k.flag(); k.kapok(); k.climbWall(); } },
+      { id: 'roadSnakes', beat: 'fight', build: (k) => { k.canopy(true); k.flag(); k.snakeWalk(2); k.snakeLedge(); } },
+      { id: 'roadHigh', beat: 'bounce', build: (k) => { k.canopy(true); k.flag(); k.highLeaps(5, true, true); } },
     ],
     finish: [
       {
         id: 'vines', beat: 'swing', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.chain(k.R.i(3, 4), false); k.busy(1); },
-          (k) => { k.highRun(); k.busy(1); },
+          (k) => { k.chain(k.R.i(3, 4), false); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
+          (k) => { k.highRun(); k.busy(1, ['log', 'dip'], k.R.r(150, 190)); },
           (k) => { k.chain(3, false); k.highRun(); },
         ], 2, 16),
       },
       {
         id: 'climbs', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.kapok(); k.busy(1); },
-          (k) => { k.canopy(false); k.busy(1); },
+          (k) => { k.kapok(); k.climbWall(); },
+          (k) => k.climbWall(),
           (k) => { k.climbWall(); k.kapok(); },
         ], 2, 16),
       },
       {
-        id: 'ground', beat: 'ground', build: (k) => fillTo(k, k.EXPERT - 10, null, [
-          (k) => { k.stumps(); k.snakeWalk(1); k.busy(1); },
-          (k) => { k.highLeaps(4, false, true, true); k.busy(1); },
-          (k) => { k.snakeLedge(); k.bounceWall(true); },
+        id: 'snakes', beat: 'fight', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.snakeWalk(2); k.busy(1, ['dip'], k.R.r(150, 190)); },
+          (k) => { k.snakeLedge(); k.snakeWalk(1); },
+          (k) => { k.snakeBranches(3, k.G - 130); k.snakeLedge(); },
+        ], 2, 16),
+      },
+      {
+        id: 'bounces', beat: 'bounce', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => k.highLeaps(5, false, true),
+          (k) => { k.bounceWall(true, false); k.highLeaps(4, true, true); },
+          (k) => k.highLeaps(4, true, true),
         ], 2, 16),
       },
     ],
@@ -553,14 +577,14 @@ const SECTIONS: Record<W1Stage, Table> = {
       {
         id: 'bushes', beat: 'bushes', build: (k) => fillTo(k, k.EXPERT + 62, null, [
           (k) => k.bushRow(3, [720, 880], ['tall', 'wide', 'fern'], [6, 7.5], true),
-          (k) => k.ropeBushes([6, 7]),
+          (k) => { k.bushRow(2, [700, 820], ['wide', 'fern'], [6, 7.5], true); k.busy(2, ['log', 'dip'], k.R.r(180, 220)); },
           (k) => { k.bushRow(2, [720, 860], ['fern', 'tall'], [6, 7.5], true); k.lowStumps(); },
         ], 1, 12),
       },
       {
         // the eagle's stretches with a wall to bounce up between them, out of its sight
         id: 'rope', beat: 'rope', build: (k) => fillTo(k, k.EXPERT + 62, null, [
-          (k) => { k.ropeBushes([6, 7]); k.bounceWall(true, false); },
+          (k) => { k.bushRow(2, [700, 820], ['wide', 'tall'], [6, 7.5], true); k.bounceWall(true, false); },
           (k) => { k.bounceWall(true, false); k.bushRow(2, [720, 860], ['wide', 'tall'], [6, 7.5], true); k.bounceWall(true, false); },
           (k) => { k.bounceWall(true, false); k.bounceWall(true, false); },
         ], 1, 12),
@@ -586,16 +610,24 @@ const SECTIONS: Record<W1Stage, Table> = {
   // way over walls, or snakes on the high branches a mushroom bounces him up to. The ring is every roll's twist; the sleeping guard
   // keeps its seed in every roll.
   '1-9': {
-    rhythms: ['branch', 'climb', 'leap'],
+    rhythms: ['branch', 'climb', 'leap', 'ground'],
+    start: [
+      { id: 'branch', beat: 'branch', build: (k) => { k.busy(1); k.guardBranch(true); k.snakeWalk(1); } },
+      { id: 'trunk', beat: 'climb', build: (k) => { k.busy(1); k.trunkGuard(); k.snakeWalk(2); } },
+      { id: 'high', beat: 'leap', build: (k) => { k.busy(1); k.highLeaps(4, false, true, true); } },
+      { id: 'wall', beat: 'ground', build: (k) => { k.bounceWall(true, false); k.snakeWalk(2); } },
+    ],
     develop: [
       { id: 'branches', beat: 'branch', build: (k) => { k.ropeGuard(); k.guardBranch(true); k.flag(); k.sleepingGuard(); k.snakeWalk(1); k.guardBranch(true); } },
-      { id: 'trunks', beat: 'climb', build: (k) => { k.trunkGuard(); k.snakeWalk(1); k.flag(); k.sleepingGuard(); k.trunkGuard(); k.snakeWalk(2); } },
+      { id: 'trunks', beat: 'climb', build: (k) => { k.trunkGuard(); k.snakeWalk(1); k.flag(); k.sleepingGuard(); k.climbWall(true); k.trunkGuard(); k.snakeWalk(1); } },
       { id: 'leaps', beat: 'leap', build: (k) => { k.highLeaps(4, false, true, true); k.guardBranch(true); k.flag(); k.sleepingGuard(); k.highLeaps(5, false, true, true); } },
+      { id: 'walls', beat: 'ground', build: (k) => { k.bounceWall(true, false); k.snakeWalk(2); k.flag(); k.sleepingGuard(); k.bounceWall(true, false); k.snakeWalk(2); k.ropeGuard(); } },
     ],
     twist: [
       { id: 'ringBranch', beat: 'branch', build: (k) => { k.snakeRing(); k.dip(); k.guardBranch(true); } },
-      { id: 'ringClimb', beat: 'climb', build: (k) => { k.snakeRing(); k.trunkGuard(); } },
+      { id: 'ringClimb', beat: 'climb', build: (k) => { k.snakeRing(); k.climbWall(true); k.snakeWalk(1); } },
       { id: 'ringLeap', beat: 'leap', build: (k) => { k.snakeRing(); k.highLeaps(3, true, true); } },
+      { id: 'ringWall', beat: 'ground', build: (k) => { k.snakeRing(); k.bounceWall(true, false); k.snakeWalk(2); } },
     ],
     finish: [
       {
@@ -606,10 +638,11 @@ const SECTIONS: Record<W1Stage, Table> = {
         ], 2, 12),
       },
       {
-        id: 'trunks', beat: 'climb', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+        // (climbs take longer than fights: this flavour runs a little past two minutes, so it still holds enough to fight)
+        id: 'trunks', beat: 'climb', build: (k) => fillTo(k, k.EXPERT + 8, null, [
+          (k) => { k.climbWall(true); k.snakeWalk(1); },
           (k) => { k.trunkGuard(); k.snakeWalk(1); },
-          (k) => { k.snakeWalk(1); k.trunkGuard(); },
-          (k) => { k.climbWall(); k.snakeWalk(2); },
+          (k) => { k.climbWall(true); k.trunkGuard(); },
         ], 2, 12),
       },
       {
@@ -617,6 +650,13 @@ const SECTIONS: Record<W1Stage, Table> = {
           (k) => k.highLeaps(5, false, true, true),
           (k) => k.highLeaps(4, true, true, true),
           (k) => { k.bounceWall(true, false); k.guardBranch(true); },
+        ], 2, 12),
+      },
+      {
+        id: 'walls', beat: 'ground', build: (k) => fillTo(k, k.EXPERT - 10, null, [
+          (k) => { k.bounceWall(true, false); k.snakeWalk(2); },
+          (k) => { k.bounceWall(true); k.snakeWalk(3); },
+          (k) => { k.bounceWall(true, false); k.ropeGuard(); },
         ], 2, 12),
       },
     ],
@@ -641,10 +681,10 @@ export function w1Chase(seed: number): ChasePiece[] {
 const KAPOK: Record<string, { steps: Array<'hops' | 'rope'>; snakes: number }> = {
   // the old rhythm: two ropes, then hops
   ropes: { steps: ['rope', 'rope', 'hops'], snakes: 0.4 },
-  // hops along and up the branches, a rope now and then
-  hops: { steps: ['hops', 'rope', 'hops', 'rope', 'rope'], snakes: 0.3 },
-  // rope and hops in turn, and a snake on most wide branches
-  snakes: { steps: ['rope', 'hops'], snakes: 0.8 },
+  // hops along and up the branches between the ropes, and no snakes
+  hops: { steps: ['hops', 'rope', 'hops', 'rope', 'rope'], snakes: 0 },
+  // rope and hops in turn, and a snake on every wide branch
+  snakes: { steps: ['rope', 'hops'], snakes: 1 },
 };
 /** this roll's run of hops and ropes up 1-4's kapok, and the chance of a snake on a wide branch */
 export function w1Kapok(seed: number): { steps: Array<'hops' | 'rope'>; snakes: number } {
