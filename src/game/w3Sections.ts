@@ -33,8 +33,8 @@ export const W3_VERSIONS: Record<string, { start: number; learn: number; develop
 /** the kind of stretch each version is, by stage and section: the stage's cooldown keeps one kind out of two sections */
 const KINDS: Record<string, Partial<Record<'develop' | 'twist' | 'finish', readonly string[]>>> = {
   '3-1': { develop: ['spore', 'abyss', 'vine'], twist: ['spore', 'abyss', 'vine'], finish: ['vine', 'spore', 'abyss'] },
-  '3-2': { develop: ['fern', 'dark', 'abyss'], twist: ['dark', 'plate'], finish: ['fern', 'dark', 'abyss'] },
-  '3-3': { develop: ['shelf', 'dark', 'abyss'], twist: ['floor', 'shelf', 'spore'], finish: ['shelf', 'dark', 'abyss'] },
+  '3-2': { develop: ['fern', 'dark', 'vine'], twist: ['dark', 'plate'], finish: ['fern', 'dark', 'vine'] },
+  '3-3': { develop: ['shelf', 'dark', 'abyss'], twist: ['spore', 'shelf', 'floor'], finish: ['shelf', 'dark', 'vine'] },
   '3-4': { develop: ['rope', 'hops', 'dark'], twist: ['rope', 'prowl', 'dark'] },
   '3-5': { develop: ['row', 'abyss', 'dark'], twist: ['dark', 'abyss', 'row'], finish: ['row', 'spore', 'abyss'] },
   '3-6': { develop: ['stones', 'spore', 'abyss'], twist: ['dark', 'spore', 'abyss'], finish: ['stones', 'abyss', 'shelf'] },

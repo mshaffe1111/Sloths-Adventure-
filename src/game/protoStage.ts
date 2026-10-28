@@ -2485,15 +2485,15 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   /**
    * World 3's stone plate (Matt's `stonePlate` / `stonePlateDown`, wired in the kit but never seen in a stage before): a root gate across
    * the way, a mossy stone plate in front of it, and a heap of pebbles by the door. Standing on the plate opens the roots, but stepping
-   * off to go through shuts them: a pebble set on the plate holds it down. `two` (the twist): two plates, both to be held down, the second
-   * past a stone a hop high. Nothing here hurts; a pebble lost rolls back to the heap.
+   * off to go through shuts them: a pebble set on the plate holds it down. `two` (the twist): two plates, both to be held down (a pebble
+   * each: two trips with his hands full, on a flat floor, since carrying he cannot jump). Nothing here hurts; a pebble lost rolls back to the heap.
    */
   function plateRoom(two: boolean) {
     const x0 = x;
     run(R.r(150, 190));
     const door = x;
     const before = endBank();
-    const span = two ? 760 : 600;
+    const span = two ? 800 : 600;
     run(span);
     const floor = endBank();
     const n = ROOMS.length;
@@ -2505,11 +2505,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     ];
     const ground = [floor.id];
     if (two) {
-      const rock = block(door + 400, door + 500, 40);
-      flower(door + 450, G - 74, 'orchid');
-      ground.push(rock.id);
+      parts.push({ kind: 'item', id: `pebbleB${n}`, variant: 'pebble', source: `heap${n}`, for: `plateB${n}` });
       parts.push({ kind: 'plate', id: `plateB${n}`, at: onP(floor, door + 580) });
-      parts.push({ kind: 'gate', id: `roots${n}`, at: onP(floor, door + 700), open: { all: [`plateA${n}`, `plateB${n}`] }, look: 'roots' });
+      parts.push({ kind: 'gate', id: `roots${n}`, at: onP(floor, door + 680), open: { all: [`plateA${n}`, `plateB${n}`] }, look: 'roots' });
     } else parts.push({ kind: 'gate', id: `roots${n}`, at: onP(floor, door + 520), open: `plateA${n}`, look: 'roots' });
     ROOMS.push({
       id: `${two ? 'platesTwo' : 'plate'}-${n}`,
@@ -2664,19 +2662,26 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   if (plan === '3-2') {
     // 3-2 Glowworm Path: something is watching. First the dark alone (stop and listen, and the glowworms light the gaps), then the eyes
     // alone (hide in the ferns while they look), then both: stop inside a fern, where the eyes cannot see him and the glowworms can.
-    // (Rebuilt 2026-10-28, the stage inspector: stones to hop in the dark and between the ferns, and the glowing mushroom, the puzzle
-    // kit's carried light, where no glowworm reaches: taught at the end of the dark, and in the finish the ledge too high for its light
-    // from the floor.)
+    // The glowing mushroom, the puzzle kit's carried light, where no glowworm reaches: taught at the end of the dark, and in the finish the
+    // ledge too high for its light from the floor (or, on some rolls, World 3's stone plates).
+    // (The variety pass, 2026-10-28: two or three versions of each section, picked by the roll (w3Sections.ts), and real jumps over the
+    // stream in the dark and between the ferns.)
+    const v = W3P!;
     beat('Start', () => {
       rest(R.r(380, 440));
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: stop and listen', () => {
       hint(x + 20, 'Too dark to see the way. Stand still and listen...');
-      glowDark(R.r(1150, 1300), 1, { rocks: true });
-      busy(1);
-      glowDark(R.r(1600, 1800), 2, { rocks: true });
+      if (v.learn === 0) {
+        glowDark(R.r(1150, 1300), 1, { rocks: true });
+        busy(1);
+        glowDark(R.r(1600, 1800), 2, { rocks: true, deep: true });
+      } else {
+        glowDark(R.r(1450, 1600), 2, { rocks: true, deep: true });
+        deepRun(3, 1);
+      }
       flag();
       glowRoom(false);
       flag();
@@ -2685,35 +2690,42 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       hint(x + 20, 'Eyes in the dark! Slide down inside a fern to hide', 'Eyes in the dark! Hold down inside a fern to hide', 'Eyes in the dark! Hold down inside a fern to hide');
       bushRow(4, [420, 520], ['grotto'], [7, 8.5], true);
       flag();
-      bushRow(3, [620, 720], ['grotto'], [5, 6.2], true);
+      if (v.develop === 0) bushRow(3, [620, 720], ['grotto'], [5, 6.2], true);
+      else if (v.develop === 1) { const x0 = x; glowDark(R.r(1300, 1450), 1, { ferns: true, deep: true }); ZONES.push({ x0, x1: x, calm: [6, 7.2] }); expert += 3; }
+      else { chain(3, false, 'gorge'); bushRow(3, [560, 660], ['grotto'], [5.4, 6.4], true); }
       flag();
     });
     beat('Twist: the eyes in the dark', () => {
       hint(x + 20, 'Stop inside a fern. The eyes cannot see you there, and the glowworms can');
       const x0 = x;
-      glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true });
+      glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true, deep: v.twist === 0 });
       ZONES.push({ x0, x1: x, calm: [5.5, 6.8] });
       expert += 4;
       flag();
+      // (on some rolls World 3's stone plate here, Matt's pressed plate seen at last)
+      if (v.twist === 1) { busy(1); plateRoom(false); flag(); }
     });
     beat('Finish', () => {
       busy(1);
-      glowRoom(true);
+      if (v.finish === 2 && v.twist !== 1) plateRoom(true);
+      else glowRoom(true);
       flag();
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 34 && n < 12) {
-        if (n % 2 === 0) bushRow(3, [620, 760], ['grotto'], [4.6, 5.6], true);
-        else {
-          // (a breath of plain floor between the ferns' eyes and the dark's)
-          rest(R.r(110, 150));
-          const x0 = x;
-          glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true });
-          ZONES.push({ x0, x1: x, calm: [5, 6.2] });
-          expert += 4;
-        }
-        n++;
-        flag();
-      }
+      const dark = () => {
+        // (a breath of plain floor between the ferns' eyes and the dark's)
+        rest(R.r(110, 150));
+        const x0 = x;
+        glowDark(R.r(1600, 1800), 2, { ferns: true, rocks: true, deep: true });
+        ZONES.push({ x0, x1: x, calm: [5, 6.2] });
+        expert += 4;
+      };
+      // (the ferns' finish: rows a little closer, the eyes quicker)
+      const ferns = () => bushRow(4, [460, 560], ['grotto'], [4.2, 5.2], true);
+      const kits: Array<Array<() => void>> = [
+        [ferns, ferns, () => { busy(1); ferns(); }],
+        [dark, () => { glowDark(R.r(1200, 1350), 1, { rocks: true, deep: true }); deepRun(2, 1, false); }, dark],
+        [() => chain(3, false, 'gorge'), () => chain(4, false, 'gorge'), () => { deepRun(3, 1); chain(2, false, 'gorge'); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 34, kits[v.finish], 1);
       homeRun();
     });
   }
@@ -2722,49 +2734,52 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     // 3-3 Footprints in a Circle: drive off the prowlers circling in the dark. One ocelot on open ground to learn on, then ocelots on
     // the limestone shelves, then a jaguar (three hits, and it pounces), and in the finish, prowlers in the dark by glowworm light.
     // (Rebuilt 2026-10-28, the stage inspector: stones to hop between the fights, and the shelves are 3-3's own: where 3-9 climbs the
-    // trunks to fight on the branches, here every fight but the floor's is a jump up onto a shelf over a soft pit.)
+    // trunks to fight on the branches, here every fight but the floor's is a jump up onto a shelf.)
+    // (The variety pass, 2026-10-28: versions of each section picked by the roll (w3Sections.ts): shelves over the stream, fights in the
+    // dark, or fights between liana chains; the first prowler's tip well before it, 3-3's Easy ocelot hit before its tip was read.)
+    const v = W3P!;
     const placed = () => E.filter((e) => e.type === 'ocelot' || e.type === 'jaguar').length;
     beat('Start', () => {
       const x0 = x;
       rest(R.r(420, 480));
       prints(x0 + 200, x - 80);
       hint(x0 + 120, 'Footprints... a prowler is near');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: a prowler', () => {
-      hint(x + 40, 'A prowler! Punch it twice, or kick it');
+      hint(x - 200, 'A prowler! Punch it twice, or kick it');
+      // (a breath of floor after the tip: it is read before the first prowler is near)
+      rest(R.r(220, 260));
       prowlFloor(['ocelot']);
       busy(1);
-      prowlFloor(['ocelot', 'ocelot']);
+      if (v.learn === 0) prowlFloor(['ocelot', 'ocelot']);
+      else { w3Stones([60, 110, 70], [0.5, 0.6]); prowlFloor(['ocelot', 'ocelot']); }
       flag();
     });
     beat('Develop: on the shelves', () => {
       prowlShelves(3, G - 130);
       busy(1);
-      stumps();
-      prowlShelves(4, G - 150);
+      if (v.develop === 0) { stumps(); prowlShelves(4, G - 150, true); }
+      else if (v.develop === 1) { glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true }); prowlFloor(['ocelot']); }
+      else { deepRun(3, 1); prowlShelves(3, G - 150, true); }
       flag();
     });
     beat('Twist: the big one', () => {
       hint(x + 40, 'A jaguar! Three hits, and jump when it crouches to pounce');
       prowlFloor(['jaguar']);
-      sporeGap();
-      prowlFloor(['ocelot', 'jaguar']);
+      if (v.twist === 0) { sporeGap(true); prowlFloor(['ocelot', 'jaguar']); }
+      else if (v.twist === 1) { busy(1); prowlShelves(3, G - 140, true); }
+      else { sporeRest(R.r(440, 500)); sporeGap(); prowlFloor(['ocelot', 'jaguar']); }
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while ((expert < EXPERT_SECONDS + 6 || placed() < Math.ceil(PROWLER_GOAL_33 * 1.5)) && n < 16) {
-        const k = n % 3;
-        if (k === 0) prowlShelves(R.i(3, 4), G - Math.round(R.r(120, 160)));
-        else if (k === 1) {
-          // the dark between the fights: wait for the glowworms, then on
-          glowDark(R.r(1150, 1300), 1, { rocks: true });
-        } else { busy(1); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot']); }
-        n++;
-        if (n % 2 === 0) flag();
-      }
+      const kits: Array<Array<() => void>> = [
+        [() => prowlShelves(R.i(3, 4), G - Math.round(R.r(120, 160)), true), () => prowlShelves(3, G - 140, true), () => { busy(1); prowlFloor(['ocelot', 'ocelot']); }],
+        [() => { glowDark(R.r(1150, 1300), 1, { rocks: true, deep: true }); prowlFloor(['ocelot']); }, () => { glowDark(R.r(1000, 1100), 0, { rocks: true }); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot', 'ocelot']); }, () => { sporeRest(R.r(440, 500)); glowDark(R.r(1000, 1100), 1, { rocks: true, deep: true }); }],
+        [() => { chain(3, false, 'gorge'); prowlFloor(['ocelot', 'ocelot']); }, () => { chain(4, false, 'gorge'); prowlFloor([R.chance(0.35) ? 'jaguar' : 'ocelot']); }, () => { chain(3, false, 'gorge'); chain(2, false, 'gorge'); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 6, kits[v.finish], 2, () => placed() < Math.ceil(PROWLER_GOAL_33 * 1.5));
       homeRun();
     });
   }
