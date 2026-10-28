@@ -67,11 +67,11 @@ const rootIsland: SectionTemplate = {
   archetypes: ['vine_runner', 'sprint'],
   phases: ['start', 'rest', 'goal'],
   difficulty: 1,
-  pieces: [bank('a', [220, 260]), up('knee', 'a', 40, [160, 200]), down('b', 'knee', 40, [240, 280])],
+  pieces: [bank('a', [200, 240]), up('knee', 'a', 40, [140, 170]), down('b', 'knee', 40, [240, 280]), up('knee2', 'b', 40, [110, 140]), down('c', 'knee2', 40, [160, 200])],
   entry: { piece: 'a', kind: 'ground' },
-  exit: { piece: 'b', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
-  sockets: [scenery('lilies', 'a', [0.2, 0.4]), petals('knee', 'knee', 0.5, 2, 80), flag('b', 0.55), scenery('snag', 'b', [0.8, 0.9], 0.5)],
+  sockets: [scenery('lilies', 'a', [0.2, 0.4]), petals('knee', 'knee', 0.5, 2, 80), flag('b', 0.5), petals('knee2', 'knee2', 0.5, 1), scenery('snag', 'c', [0.6, 0.8], 0.5)],
   mirrorable: true,
 };
 
@@ -113,16 +113,17 @@ const watchedRoot: SectionTemplate = {
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
   uses: [WATCH],
-  pieces: [bank('a', [160, 200]), hop('b', 'a', [760, 860], [0.3, 0.4]), up('knee', 'b', 40, [140, 170]), down('c', 'knee', 40, [180, 220])],
+  pieces: [bank('a', [160, 200]), hop('b', 'a', [420, 480], [0.3, 0.4]), up('mid', 'b', 40, [110, 140]), down('b2', 'mid', 40, [320, 380]), up('knee', 'b2', 40, [140, 170]), down('c', 'knee', 40, [180, 220])],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
   sockets: [
     watch('b'),
-    hideAt('h1', 'b', 0.1),
-    petals('pb', 'b', 0.32, 2, 90),
-    hideAt('h2', 'b', 0.5),
-    hideAt('h3', 'b', 0.9),
+    hideAt('h1', 'b', 0.15),
+    petals('pb', 'b', 0.55, 2, 90),
+    hideAt('h2', 'b', 0.9),
+    petals('mid', 'mid', 0.5, 1),
+    hideAt('h3', 'b2', 0.5),
     petals('knee', 'knee', 0.5, 1),
     foe('foe', 'c', [0.6, 0.8], ['frog'], 1.5, { phases: ['ten', 'ketsu'], chance: 0.5 }),
   ],
@@ -184,6 +185,7 @@ const firstSwing: SectionTemplate = {
   exit: { piece: 'b', kind: 'ground' },
   exitDy: 0,
   sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.3, 2, 100), scenery('lilies', 'b', [0.7, 0.85], 0.5)],
+  weight: 2,
   mirrorable: false,
 };
 
@@ -199,6 +201,7 @@ const swingPair: SectionTemplate = {
   exit: { piece: 'b', kind: 'ground' },
   exitDy: 0,
   sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.3, 2, 90), foe('foe', 'b', [0.7, 0.9], ['frog'], 1.5, { phases: ['ten', 'ketsu'], chance: 0.5 })],
+  weight: 2,
   mirrorable: false,
 };
 
@@ -222,6 +225,7 @@ const swingChain: SectionTemplate = {
   exit: { piece: 'b', kind: 'ground' },
   exitDy: 0,
   sockets: [petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), petals('b', 'b', 0.4, 2, 90)],
+  weight: 2,
   mirrorable: false,
   extraSeconds: 2,
 };
@@ -244,6 +248,7 @@ const swingClimb: SectionTemplate = {
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
   sockets: [petals('b', 'b', 0.4, 2, 80), petals('wall', 'wall', 0.5, 2, 90), foe('foe', 'c', [0.6, 0.85], SMALL, 2.5, { phases: LIVE, chance: 0.5 })],
+  weight: 2,
   mirrorable: false,
 };
 
@@ -270,11 +275,12 @@ const swingWatch: SectionTemplate = {
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 6,
   uses: [WATCH],
-  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('b', 'l1', [700, 800]), up('knee', 'b', 40, [130, 160]), down('c', 'knee', 40, [160, 200])],
+  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('b', 'l1', [380, 440]), up('mid', 'b', 40, [110, 140]), down('b2', 'mid', 40, [280, 340]), up('knee', 'b2', 40, [130, 160]), down('c', 'knee', 40, [160, 200])],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
-  sockets: [watch('b', 0.55), hideAt('h1', 'b', 0.2), petals('pb', 'b', 0.4, 2, 80), hideAt('h2', 'b', 0.6), hideAt('h3', 'b', 0.92), petals('knee', 'knee', 0.5, 1)],
+  sockets: [watch('b', 0.6), hideAt('h1', 'b', 0.3), petals('pb', 'b', 0.6, 2, 80), hideAt('h2', 'b', 0.95), petals('mid', 'mid', 0.5, 1), hideAt('h3', 'b2', 0.6), petals('knee', 'knee', 0.5, 1)],
+  weight: 2,
   mirrorable: false,
 };
 
@@ -290,6 +296,7 @@ const kneesSwing: SectionTemplate = {
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
   sockets: [petals('k1', 'k1', 0.5, 1), petals('k2', 'k2', 0.5, 1), petals('b', 'b', 0.5, 2, 80), foe('foe', 'c', [0.6, 0.85], SMALL, 2.5, { phases: ['ten'], chance: 0.5 })],
+  weight: 2,
   mirrorable: false,
 };
 
@@ -305,6 +312,7 @@ const swingHunter: SectionTemplate = {
   exit: { piece: 'c', kind: 'ground' },
   exitDy: 0,
   sockets: [petals('b', 'b', 0.2, 2, 80), foe('foe', 'b', [0.55, 0.75], ['tayra', 'ocelot', 'frog'], 3), petals('c', 'c', 0.5, 1)],
+  weight: 2,
   mirrorable: false,
 };
 
@@ -409,6 +417,7 @@ const darkRoots: SectionTemplate = {
   exit: { piece: 'e', kind: 'ground' },
   exitDy: 0,
   sockets: [darkTip('a'), ...darkEnds('a', 'e'), petals('b', 'b', 0.5, 1), petals('k', 'k', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.4, 2, 80)],
+  weight: 2,
   mirrorable: true,
 };
 
@@ -426,12 +435,14 @@ const darkSteps: SectionTemplate = {
     up('c', 'b', 55, [150, 180]),
     hop('d', 'c', [160, 200], [0.3, 0.38], false),
     down('e', 'd', 55, [130, 160]),
-    down('f', 'e', 55, [220, 260]),
+    down('e2', 'e', 55, [130, 160]),
+    hop('f', 'e2', [200, 240], [0.3, 0.38], false),
   ],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'f', kind: 'ground' },
   exitDy: 0,
-  sockets: [darkTip('a'), ...darkEnds('a', 'f'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.5, 1)],
+  sockets: [darkTip('a'), ...darkEnds('a', 'f'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('d', 'd', 0.5, 1), petals('e', 'e', 0.5, 1), petals('f', 'f', 0.4, 1)],
+  weight: 2,
   mirrorable: true,
 };
 
@@ -458,6 +469,7 @@ const darkLong: SectionTemplate = {
   exit: { piece: 'g', kind: 'ground' },
   exitDy: 0,
   sockets: [darkTip('a'), ...darkEnds('a', 'g'), petals('b', 'b', 0.5, 1), petals('c', 'c', 0.5, 1), petals('k', 'k', 0.5, 1), petals('e', 'e', 0.5, 1), petals('f', 'f', 0.5, 1)],
+  weight: 2,
   mirrorable: true,
 };
 
