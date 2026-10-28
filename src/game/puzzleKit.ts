@@ -64,7 +64,8 @@ export type PieceSpec =
   | { kind: 'item'; id: string; variant: ItemVariant; at?: Anchor; source?: string; for?: string; with?: string }
   | { kind: 'source'; id: string; variant: ItemVariant; at: Anchor; look?: 'tree' | 'pile' }
   | { kind: 'plate'; id: string; at: Anchor; w?: number; need?: number }
-  | { kind: 'gate'; id: string; at: Anchor; open: Wire; latch?: boolean; h?: number }
+  /** `look`: the wall over the door: the root wall (World 1's, the default) or bundled reeds (World 2's court) */
+  | { kind: 'gate'; id: string; at: Anchor; open: Wire; latch?: boolean; h?: number; look?: 'roots' | 'reeds' }
   | { kind: 'lever'; id: string; at: Anchor; on?: boolean }
   | { kind: 'basket'; id: string; at: Anchor; mouth: number; need?: number; drop?: number }
   /** `by`: the basket whose weight raises it (a counterweight), or any piece whose output winds it up while on (a pinwheel); `hold`: it

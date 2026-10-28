@@ -1,3 +1,4 @@
+import { SlowWatch } from './slowTip.ts';
 import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
@@ -74,7 +75,7 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
-import { ROOM_CAM, roomLean, roomView } from './puzzleCamera.ts';
+import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
@@ -88,7 +89,7 @@ import { FALLS } from './waterfalls.ts';
 import { drawNest } from './w4Nests.ts';
 import { drawW4Bush } from './w4Art.ts';
 import { camAnchor, camLook, camRun, CAM, FRAME, framing, RUN, runOffset, snapCam, HUD_BAND, landingAhead, landingBox, showBoth, underHud, keepHeroX, type Box } from './cameraFollow.ts';
-import { warmCreatureAnims } from './creatureAnim.ts';
+import { ArrivalWarm, warmStageSheets } from './sheetWarm.ts';
 import { drawZoneBases, drawZoneEffects, drawDrowsyVeil, drawCrumbleTiles, drawDarkness } from './zoneArt.ts';
 import {
   drawHeroSloth,
@@ -176,6 +177,8 @@ const WORLD_VIEW_H = 540;
 const WALL_OFF = 9;
 const PORTRAIT_VIEW_W = 440; // was 360: only ~270 units of warning ahead of the hero in portrait
 /** the play-start dolly-in: begins at this fraction of the final zoom and settles over this long */
+/** how fast the shift that shows a landing across a gap eases in and out (per second), and for a landing still out of the view */
+const LAND_EASE = { rate: 4.5, fast: 10 } as const;
 const INTRO_ZOOM_FROM = 0.9; // a gentle dolly: the old 0.78 opened on a wide shot full of dark ground, so every stage began noticeably darker
 const INTRO_ZOOM_SECS = 1.3;
 
@@ -196,6 +199,8 @@ export interface GameEngineCallbacks {
   onLivesChange?: (lives: number, maxLives: number) => void;
   /** the game loop failed over and over: the app should leave the stage */
   onFatal?: () => void;
+  /** the picture is at its lightest and still under 10 frames a second for a while: the app may show the one-time tip (slowTip.ts) */
+  onSlowDevice?: () => void;
   /** a guiding line (a stage tip, the goal, a reminder, the sealed door): the app has Dot say it (Wayside.tsx) */
   onGuide?: (text: string, seconds: number, passed?: boolean) => void;
   onBossEncounter?: (boss: BossEntity) => void;
@@ -253,6 +258,8 @@ export class GameEngine {
   private collectibles: Collectible[];
   /** the hand-built stage's extras (protoStage.ts): logs to push, hints, leaves over secrets */
   private proto: ProtoExtras | null = null;
+  /** the stage's sheets still to arrive and be drawn once (sheetWarm.ts) */
+  private arrivals = new ArrivalWarm([]);
   /** the stretches of this stage, in order (the control test's end questions list them) */
   public stretchNames(): string[] {
     return (this.proto?.beats ?? []).map((b) => b[2]);
@@ -326,6 +333,7 @@ export class GameEngine {
    * screen genuinely cannot keep up (the simulation itself never changes).
    */
   private quality = startQuality(typeof performance !== 'undefined' ? performance.now() : 0);
+  private slowWatch = new SlowWatch();
   private gov = new FrameGovernor();
 
   private hitstopTimer: number = 0;
@@ -355,9 +363,18 @@ export class GameEngine {
   private glowWake = new Map<number, number>();
   /** World 3's thorn vines: a lash under way (by vine index: when it saw him, which way, whether it has landed), and the cycle it was in */
   private vineLash = new Map<number, { at: number; dir: number; landed: boolean; cycle: number }>();
+  /** and the noise (its game time) each vine last struck at (3-5's pebble lure: once per noise) */
+  private vineStruck = new Map<number, number>();
   /** the height the camera keeps level with, and its eased look-ahead (cameraFollow.ts) */
   private camAnchorY = NaN;
   private camLookX: number = CAM.lookAhead;
+  /** the way the view looks (his facing, held through a swing), and the facing he caught the swinging vine with */
+  private camFacing = 1;
+  private camSwingFacing = 1;
+  private camSwung = false;
+  /** the eased shift that shows a landing across a gap (world px; cameraFollow.ts showBoth, LAND_EASE) */
+  private camLandX = 0;
+  private camLandY = 0;
   /** how much of the run lead the view is taking (cameraFollow.ts camRun) */
   private camRunK = 0;
   private camRunSlow = 0;
@@ -368,8 +385,14 @@ export class GameEngine {
   /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
   private kit: KitPlay | null = null;
   private kitHostObj: KitHost | null = null;
-  /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey and the puzzle part both fit (puzzleCamera.ts, never below 0.75) */
+  /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey, the puzzle part and what it works all fit (puzzleCamera.ts:
+   * never below 0.75 sideways, further upright, roomFloor) */
   private roomZoom = 1;
+  /** the zoom a room pulls back from (css px per world px: the usual framing, applyZoom) */
+  private roomUsual = 1;
+  /** how far the room's framing is blended in (0 outside, 1 inside a room), and where it last aimed (the view's middle) */
+  private roomK = 0;
+  private roomAim: { x: number; y: number; pan: boolean } | null = null;
   /** World 5: the vines the lessons may teach (not its silk lines, which its own tip teaches) */
   private lessonVines: Vine[] | null = null;
   /** the parts of World 5's stage Dot's bubble keeps off (Meeca's carvings), in world units, then on the page (guideKeepOut.ts) */
@@ -585,10 +608,13 @@ export class GameEngine {
     this.glowStill = 0;
     this.glowWake.clear();
     this.vineLash.clear();
+    this.vineStruck.clear();
     resetHeroClips();
     warmHeroClips();
-    // the clip sheets of the creatures in this stage start loading now, not as each one first comes on screen
-    warmCreatureAnims(new Set(this.enemies.flatMap((e) => (e.type === 'turtle' && e.royal ? ['guard'] : [e.type]))));
+    // every sheet this stage can draw starts loading now (its creatures' clips: a snake's is the golden snake's; the eagle over a
+    // watched stretch, a ring's drop-ins, Pokey on a liana, the bushes), not as each first comes on screen; and each is drawn once the
+    // frame it arrives, not when he meets it (sheetWarm.ts: QA's 'blank wait' lines and the freezes after a sheet)
+    this.arrivals = new ArrivalWarm(warmStageSheets({ enemies: this.enemies, vines: this.vines, proto: this.proto }));
     if (this.proto) for (const h of this.proto.hints) h.shown = false;
     this.passTips = [];
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
@@ -719,6 +745,8 @@ export class GameEngine {
       this.quality++;
       noteStepDown(this.quality, performance.now());
       this.resizeCanvas();
+      // (drawn again at once: resizing clears the canvas, and this runs after the frame was drawn, so the screen showed one black frame)
+      this.render();
     }
     perfNote(`slow: stepped down (quality ${this.quality}, polish ${polishEnabled() ? polishTier() : 'off'})`);
   }
@@ -762,7 +790,10 @@ export class GameEngine {
     // never show more height than the level has
     // (a boss fight in a tall, narrow window may show some sky above the arena rather than crop the fight to the level's height)
     const bossFight = !!this.currentStage?.arena && portrait;
-    this.zoom = Math.max(base * dolly * this.bossZoom * this.roomZoom, bossFight ? 0.4 : h / levelH);
+    // (a puzzle room pulls back from that, past the level's height if it must: upright a room never fit across a view the level's height
+    // tall; the extra is the sky over the level, updateCamera. Its floor is roomFloor, puzzleCamera.ts)
+    this.roomUsual = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
+    this.zoom = bossFight ? Math.max(base * dolly * this.bossZoom * this.roomZoom, 0.4) : this.roomUsual * this.roomZoom;
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -914,12 +945,18 @@ export class GameEngine {
       // judge the real frame gap: too slow for a moment -> a lighter picture (never while a menu holds the game, or once at the lightest)
       if (!this.isPaused && (this.quality < 2 || (polishEnabled() && polishTier() < 2)) && this.gov.feed(elapsed)) this.stepQuality();
       else if (!this.isPaused && this.quality === 2) this.gov.feed(elapsed);
+      // at the lightest picture and still under 10 frames a second for a while: the browser itself is the trouble (slowTip.ts)
+      if (!this.isPaused && this.slowWatch.feed(elapsed, this.gov.lastAvg, this.quality === 2 && !(polishEnabled() && polishTier() < 2))) {
+        if (recorder.on) recorder.glitch('slowtip', `avg ${Math.round(this.gov.lastAvg)}ms`);
+        this.callbacks.onSlowDevice?.();
+      }
       // steady for a while at a lightened picture: back up a notch (it used to stay low for good after one slow start)
       if (!this.isPaused && this.quality > 0 && this.gov.takeUp()) {
         if (recorder.on) recorder.glitch('quality', `q${this.quality}→${this.quality - 1} steady avg ${Math.round(this.gov.lastAvg)}ms`);
         this.quality--;
         noteStepUp(this.quality, performance.now());
         this.resizeCanvas();
+        this.render();
         perfNote(`steady: stepped up (quality ${this.quality})`);
       }
       this.failStreak = 0;
@@ -2337,7 +2374,8 @@ export class GameEngine {
       if (c.type === 'relic' && c.hidden) {
         // World 3: one of Grandma's things in a fern (Dot hid them very fast, because there were boots): crouch beside it, like a Hush Fern
         const close = Math.abs(p.x - c.x) < 64 && Math.abs(p.y - (c.y + 26)) < 26 && p.grounded;
-        c.near = close && !p.ducking;
+        // (3-7's riddle fern says nothing when he is beside it: the stones in the light tell it)
+        c.near = close && !p.ducking && !c.riddle;
         if (close && p.ducking) c.search = Math.min(1, (c.search ?? 0) + dt / FIND_SEARCH_SECONDS);
         else if ((c.search ?? 0) > 0) c.search = Math.max(0, (c.search ?? 0) - dt * 1.6);
         if ((c.search ?? 0) >= 1) {
@@ -3396,6 +3434,9 @@ export class GameEngine {
     const st = this.input.state;
     let s = p.climbing ? 'c' : p.isVineSwinging ? 's' : p.hanging ? 'h' : p.grounded ? (p.ducking ? 'k' : 'g') : 'a';
     if (p.attackMove) s += ':' + p.attackMove;
+    // Meeca's stage: the column carrying her in line, or Pell walking her back after a catch (QA read 0.8 s of her moving with no
+    // finger down as a loss of control: it was the march, meecaPlay.ts after(); the log now says so)
+    if (this.mc) s += this.mc.phase === 'caught' ? ':caught' : this.mc.inLine ? ':line' : '';
     // what the controls are holding (touch, pad or keys alike)
     const held = (st.left ? 'L' : '') + (st.right ? 'R' : '') + (st.up ? 'U' : '') + (st.down ? 'D' : '');
     if (held) s += '/' + held;
@@ -4495,11 +4536,17 @@ export class GameEngine {
 
     // the framing for this screen's shape: less look-ahead on a narrow upright phone, his feet lower on a squat sideways one (cameraFollow.ts)
     const fr = framing(this.viewCssW, this.viewCssH, vw);
+    // the way the view looks: the way he faces, but on a swinging vine the way he faced as he caught it, held for the whole swing (each
+    // swing back turns him round, and the view swung back and forth with it, QA 2026-10-28 `camjump`, 1-6's swing frames)
+    if (p.isVineSwinging && !this.camSwung) this.camSwingFacing = p.facing < 0 ? -1 : 1;
+    this.camSwung = !!p.isVineSwinging;
+    const facing = p.isVineSwinging ? this.camSwingFacing : p.facing;
+    this.camFacing = facing;
     // Look-ahead tracking: eased across when he turns, and a height that ignores hops and swings (cameraFollow.ts: the screen jiggled)
-    this.camLookX = camLook(this.camLookX, p.facing, dt, fr.look);
+    this.camLookX = camLook(this.camLookX, facing, dt, fr.look);
     // (and at a run, on a narrow view, it leads further: cameraFollow.ts runLead; it follows the look-ahead's side, so a turn eases it over)
-    this.camRunK = camRun(this.camRunK, p.vx, p.facing, dt);
-    this.camRunSlow = camRun(this.camRunSlow, p.vx, p.facing, dt, RUN.settle);
+    this.camRunK = camRun(this.camRunK, p.vx, facing, dt);
+    this.camRunSlow = camRun(this.camRunSlow, p.vx, facing, dt, RUN.settle);
     const runX = runOffset(vw, this.camRunK, this.camRunSlow, dt, fr) * Math.max(-1, Math.min(1, this.camLookX / (fr.look || 1)));
     const sv = p.isVineSwinging ? this.nearSwingVine : null;
     this.camAnchorY = camAnchor(this.camAnchorY, { y: p.y, grounded: p.grounded, climbing: p.climbing, hanging: !!p.hanging, swingBottom: sv ? sv.topY + (p.swingLength ?? 100) : undefined }, vh);
@@ -4518,24 +4565,46 @@ export class GameEngine {
     }
     // a puzzle room (puzzleCamera.ts): the view leans from him toward the part of the puzzle that matters now, or goes to a far gate
     // that has just opened; outside every room this is nothing
-    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom) : null;
+    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom, this.roomFloorNow()) : null;
     if (kf) {
-      const c = kf.pan ? { x: kf.x, y: kf.y } : roomLean(p.x, p.y - 45, kf.x, kf.y);
-      const v = kf.pan ? { x: c.x - vw / 2, y: c.y - vh / 2 } : roomView(c.x, c.y, vw, vh, p.x, p.y);
-      this.camera.targetX = v.x;
-      this.camera.targetY = v.y;
+      // (moved from the lean point just enough to keep the key box in: the stone, its basket and the cage it lifts, all at once)
+      const lean = roomLean(p.x, p.y - 45, kf.x, kf.y);
+      this.roomAim = { ...(kf.pan ? { x: kf.x, y: kf.y } : kf.box ? roomCentre(lean, kf.box, vw, vh) : lean), pan: kf.pan };
     }
+    // (the room's framing blends in over ROOM_CAM.blend s coming in, and out again leaving, from the last place it aimed: the aim no
+    // longer swaps at the room's edge, which swung the view 130 px at once)
+    this.roomK = Math.max(0, Math.min(1, this.roomK + (kf ? dt : -dt) / ROOM_CAM.blend));
+    const ra = this.roomAim;
+    if (ra && this.roomK > 0) {
+      const v = ra.pan ? { x: ra.x - vw / 2, y: ra.y - vh / 2 } : roomView(ra.x, ra.y, vw, vh, p.x, p.y);
+      const k = this.roomK * this.roomK * (3 - 2 * this.roomK);
+      this.camera.targetX += (v.x - this.camera.targetX) * k;
+      this.camera.targetY += (v.y - this.camera.targetY) * k;
+    }
+    if (this.roomK === 0) this.roomAim = null;
     // near the end of a ledge with a gap ahead, the view shows the far side too (cameraFollow.ts landingAhead)
     let landShown: Box | null = null;
+    let landX = 0;
+    let landY = 0;
     if (!look && !kf && !this.chase?.active && !this.currentStage.arena) {
       const land = this.landingToShow(dt);
       landShown = land;
       if (land) {
         const v = showBoth(this.camera.targetX, this.camera.targetY, p.x, p.y, land, vw, vh);
-        this.camera.targetX = v.x;
-        this.camera.targetY = v.y;
+        landX = v.x - this.camera.targetX;
+        landY = v.y - this.camera.targetY;
       }
     }
+    // (the shift that shows the landing eases in and out, never all at once: a turn on a stone between two gaps, or a turn on a swing,
+    // swapped the landing from one side to the other and the view jumped 130-200 px in a frame, QA 2026-10-28 `camjump`; a landing
+    // still outside the view, as when he turns round at the end of a ledge and jumps at once for the vine he now faces, comes in faster,
+    // so it is on screen as he leaves the ledge for it, QA 2026-10-26)
+    const behind = !!landShown && (landShown.x0 < this.camera.x || landShown.x1 > this.camera.x + vw);
+    const lk = Math.min(1, dt * (behind ? LAND_EASE.fast : LAND_EASE.rate));
+    this.camLandX += (landX - this.camLandX) * lk;
+    this.camLandY += (landY - this.camLandY) * lk;
+    this.camera.targetX += this.camLandX;
+    this.camera.targetY += this.camLandY;
     const bs = this.boss;
     if (bs && !bs.defeated && this.currentStage.arena) {
       // frame both fighters, but never let Pokey slip off the edge
@@ -4561,10 +4630,7 @@ export class GameEngine {
 
     // Smooth damp camera
     const smoothFactor = Math.min(1, dt * RUN.follow);
-    // (a landing still outside the view, as when he turns round at the end of a ledge and jumps at once for the vine he now faces, is
-    // panned to twice as fast, so it is on screen as he leaves the ledge for it, QA 2026-10-26)
-    const behind = !!landShown && (landShown.x0 < this.camera.x || landShown.x1 > this.camera.x + vw);
-    this.camera.x += (this.camera.targetX - this.camera.x) * (behind ? Math.min(1, dt * 13) : smoothFactor);
+    this.camera.x += (this.camera.targetX - this.camera.x) * smoothFactor;
     this.camera.y += (this.camera.targetY - this.camera.y) * smoothFactor;
     // the easing never loses him off the side: the aim keeps him in the view, but on a narrow view the eased camera trailed a quick swing
     // back by 60 px or more, and on 5-4's long silk lines upright (320 x 782) he swung out past the left edge (QA v200). The framing is
@@ -4576,8 +4642,10 @@ export class GameEngine {
     // Clamp camera within stage bounds
     this.camera.x = Math.max(0, Math.min(this.currentStage.config.levelWidth - vw, this.camera.x));
     const maxY = this.currentStage.config.levelHeight - vh;
-    // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues)
-    this.camera.y = Math.max(this.currentStage.arena || this.mc ? Math.min(0, maxY) - (this.mc ? 600 : 0) : 0, Math.min(maxY, this.camera.y));
+    // a normal stage never shows past its top; a boss arena in a tall window may (the sky simply continues), and so may a puzzle room
+    // pulled back further than the level is tall (upright): its foot stays the level's foot, the extra is sky over the top
+    const overTop = this.currentStage.arena || this.mc || this.roomZoom < 1;
+    this.camera.y = Math.max(overTop ? Math.min(0, maxY) - (this.mc ? 600 : 0) : 0, Math.min(maxY, this.camera.y));
   }
 
   /** the ledge he last stood on, the landing the view is showing, and how long it is kept once he has left the ground (s) */
@@ -4603,7 +4671,7 @@ export class GameEngine {
     const sv = p.isVineSwinging ? this.nearSwingVine : null;
     if (sv) {
       const hang = { x: sv.x, width: 0, y: sv.topY + (p.swingLength ?? 100) + 30 };
-      this.camLand = landingAhead(sv.x, p.facing, hang, this.platforms, this.vines.filter((v) => v !== sv));
+      this.camLand = landingAhead(sv.x, this.camFacing, hang, this.platforms, this.vines.filter((v) => v !== sv));
       this.camLandKeep = 1.2;
       return this.camLand;
     }
@@ -4903,6 +4971,8 @@ export class GameEngine {
     const ctx = this.ctx;
     const dpr = this.renderDpr();
     const world = WORLDS_DATA[this.currentStage.config.worldIndex - 1] || WORLDS_DATA[0];
+    // (a sheet of this stage's that has just arrived: drawn once into the corner, under this frame)
+    this.arrivals.frame(ctx);
 
     ctx.save();
     ctx.scale(dpr * this.zoom, dpr * this.zoom);
@@ -6224,14 +6294,41 @@ export class GameEngine {
       }
       const lash = this.vineLash.get(i);
       if (lash && this.gameTime - lash.at > VINE.windup + VINE.out) this.vineLash.delete(i);
-      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging }, this.listens(v.x, v.bud))) {
+      // a vine that hears the kit's noise while it looks (a pebble landing, a bell: noise.ts) strikes at the noise, once, and then
+      // listens to it, seeing nobody (3-5's pebble lure: the vine strikes the clack while he slips past)
+      const ear = this.kit ? heard(this.kit.noises, v.x, v.bud, this.gameTime) : null;
+      if (ear && ph.phase === 'look' && !this.vineLash.has(i) && this.vineStruck.get(i) !== ear.t) {
+        this.vineStruck.set(i, ear.t);
+        this.vineLash.set(i, { at: this.gameTime, dir: ear.x >= v.x ? 1 : -1, landed: true, cycle });
+        sound.playWhoosh();
+      }
+      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging }, !!ear)) {
         // something flying past is struck at once (a leap is through its reach in half a second); on the ground it winds up first
-        this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
+        // (an awake vine swats him back the way he came)
+        this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: v.awake ? (p.facing >= 0 ? -1 : 1) : p.x >= v.x ? 1 : -1, landed: false, cycle });
         sound.playWhoosh();
       }
       const l = this.vineLash.get(i);
       if (l && !l.landed && this.gameTime - l.at >= VINE.windup) {
         l.landed = true;
+        if (v.awake && inReach(v, p.x, p.y) && !p.isVineSwinging) {
+          // the awake vine (3-5's pebble lure): a swat back out of its reach, never a heart (a puzzle never costs a life)
+          p.vx = l.dir * 430;
+          p.vy = -PHYS.hurtKnockV;
+          p.grounded = false;
+          p.squashX = 1.3;
+          p.squashY = 0.7;
+          this.airDrive = newAirDrive();
+          // (his steering comes back a moment later, so the swat reads as a swat and carries him out of its reach)
+          this.inputGrace = Math.max(this.inputGrace, 0.5);
+          this.graceMoves = -1;
+          this.camera.trauma = Math.min(1, this.camera.trauma + 0.3);
+          if (!tipHeard(id, 'vine:awake')) {
+            markTipHeard(id, 'vine:awake');
+            this.guide("Swatted! This old vine doesn't sleep. It turns to any little sound, though", 3.6);
+          }
+          continue;
+        }
         // (caught the next liana before it landed: he is out of its sight again)
         if (inReach(v, p.x, p.y) && p.invincibleTimer <= 0 && !p.isVineSwinging) {
           const flying = !p.grounded;
@@ -6376,11 +6473,16 @@ export class GameEngine {
     }
   }
 
+  /** the most a puzzle room may pull back now, of the usual zoom (puzzleCamera.ts roomFloor: further upright than sideways) */
+  private roomFloorNow(): number {
+    return roomFloor(this.viewCssW, this.viewCssH, this.roomUsual);
+  }
+
   /** the puzzle rooms, each frame (puzzlePlay.ts): carrying, he walks slower; the room's framing eases in, and out again outside it */
   private stepKit(dt: number) {
     this.dragSpeed *= this.kit!.step(dt, this.kitHost(), this.platforms);
     const cam = this.camera;
-    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom);
+    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom, this.roomFloorNow());
     const want = kf ? (kf.pan ? this.roomZoom : kf.zoom) : 1;
     const prev = this.roomZoom;
     this.roomZoom += (want - this.roomZoom) * Math.min(1, dt * ROOM_CAM.ease);

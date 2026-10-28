@@ -10,13 +10,19 @@ import type { PlayerState } from './types.ts';
 
 let img: HTMLImageElement | null = null;
 let ready = false;
+/** Pokey hanging from a liana: his sheet (stagePreload.ts and sheetWarm.ts get it ready before he first grabs one) */
+export const HERO_VINE_URL = new URL('../assets/hero/hero-vine.webp', import.meta.url).href;
+/** start loading his hanging sheet */
+export function warmHeroVine() {
+  load();
+}
 function load() {
   if (img || typeof Image === 'undefined') return;
   const im = new Image();
   img = im;
   trackAtlas(
     im,
-    new URL('../assets/hero/hero-vine.webp', import.meta.url).href,
+    HERO_VINE_URL,
     () => {
       ready = true;
     },

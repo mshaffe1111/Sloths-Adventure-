@@ -88,6 +88,19 @@ const SKIP_KEY = 'sloth_dot_skip_offered';
 /** the words she says when it is tapped (about 2 s) */
 export const SKIP_DONE = 'Tips off. Turn them back on in the Menu.';
 export const SKIP_DONE_MS = 2200;
+/**
+ * the button only takes a tap once the bubble has been up this long (ms), and only a touch that went down on the button itself:
+ * Dot's first tip comes in the opening seconds, while the thumb is busy with the game, and a tap meant for a punch or a jump that
+ * landed on it turned a first-timer's teaching off (QA: Cheddarbob played on Quiet from his first second). Until then the button
+ * is faded and lets the touch through to the game.
+ */
+export const SKIP_ARM_MS = 1200;
+/** does this press of Skip tips count? (`shownMs`: how long the bubble has been up; `downHere`: the touch began on the button;
+ *  `keyboard`: pressed with a key, which is always on purpose) */
+export function skipTapCounts(shownMs: number, downHere: boolean, keyboard = false): boolean {
+  if (keyboard) return true;
+  return downHere && shownMs >= SKIP_ARM_MS;
+}
 
 export function skipOffered(s: Pick<Storage, 'getItem'> | null = store()): boolean {
   try {

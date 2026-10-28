@@ -89,6 +89,9 @@
 .dg-skip span { display: inline-block; padding: 6px 13px 7px; border-radius: 13px; font: 700 14px/1 var(--font-heading, system-ui, sans-serif); color: #fff3d6;
   background: linear-gradient(180deg, #8a5a2c, #5e3a18); border: 2px solid #3a2414; box-shadow: inset 0 1px 0 rgba(255, 230, 190, .35), 0 2px 0 #2a1608; }
 .dg-skip:active span { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255, 230, 190, .35); }
+/* (its first moments: faded, and a touch there goes to the game, so a tap meant for a punch never turns the tips off) */
+.dg-skip.unarmed { pointer-events: none; opacity: .45; }
+.dg-skip { transition: opacity .25s ease; }
 .dg-skip:focus-visible { outline: 3px solid #ffd65a; outline-offset: 1px; border-radius: 14px; }
 .dg-toast { visibility: visible; animation: dg-toast 2.5s ease both; }
 @keyframes dg-toast { 0% { opacity: 0; scale: .9; } 8% { opacity: 1; scale: 1; } 86% { opacity: 1; } 100% { opacity: 0; } }

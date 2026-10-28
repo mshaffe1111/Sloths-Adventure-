@@ -25,6 +25,9 @@ FOLDERS['w5puzzle'] = SHEETS = {  # name: (cols, rows, key)
     'meeca-carry': (4, 4, 'magenta'),
     'butler': (4, 4, 'green'),
     'camp': (4, 4, 'magenta'),
+    # Meeca's stage (2026-10-28): her new poses on green (she wears pink), and the stage's props (nothing pink on them)
+    'meeca-poses': (4, 4, 'green'),
+    'meeca-props': (4, 4, 'magenta'),
 }
 # World 6: nothing in the swamp is pink, so every sheet has the pink tint removed (it shows in the dark openings)
 FOLDERS['w6'] = {'kit': (4, 4, 'magenta'), 'water': (4, 4, 'magenta'), 'caiman-items': (4, 4, 'magenta'),
@@ -34,7 +37,7 @@ FOLDERS['w6'] = {'kit': (4, 4, 'magenta'), 'water': (4, 4, 'magenta'), 'caiman-i
 FOLDERS['w1to4'] = {'pokey-carry': (4, 4, 'magenta'), 'w1-puzzle': (4, 4, 'magenta'), 'w2-puzzle': (4, 4, 'magenta'),
                     'w3-puzzle': (4, 5, 'magenta'), 'w4-puzzle': (4, 4, 'magenta')}
 INSET = 6
-DEPINK = {'flicker', 'pieces', 'kit', 'water', 'caiman-items', 'runners', 'pokey-carry', 'w1-puzzle', 'w2-puzzle', 'w3-puzzle', 'w4-puzzle'}
+DEPINK = {'flicker', 'pieces', 'meeca-props', 'kit', 'water', 'caiman-items', 'runners', 'pokey-carry', 'w1-puzzle', 'w2-puzzle', 'w3-puzzle', 'w4-puzzle'}
 
 
 def keyness(rgb, key):

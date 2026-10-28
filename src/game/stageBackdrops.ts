@@ -5,7 +5,7 @@
  *
  *   World 1  1-1 to 1-3 sunrise over the canopy, 1-4 to 1-6 the world's own morning, 1-7 to 1-9 the great kapok view
  *   World 2  2-1 to 2-3 the world's own riverbank, 2-4 to 2-6 the rapids, 2-7 to 2-9 the village in the evening
- *   World 3  3-1 to 3-5 the world's own grotto, 3-6 to 3-9 the glowworm cavern
+ *   World 3  3-1 to 3-3 the world's own grotto, 3-4 and 3-5 looking up the sinkhole at the moon, 3-6 to 3-9 the glowworm cavern
  *   World 4  4-1 to 4-3 the terraces, 4-4 to 4-6 the world's own cliffs, 4-7 to 4-9 above the mist
  *
  * A guardian's lair (stage 10) keeps the world's own set, as do the map, the title and the stories. World 5 has its own light
@@ -17,7 +17,7 @@ import { w5BackdropStem } from './w5Backdrop.ts';
 export const FAR_BY_STAGE: Record<number, Record<number, string>> = {
   1: { 1: 'w1sunrise', 2: 'w1sunrise', 3: 'w1sunrise', 7: 'w1kapok', 8: 'w1kapok', 9: 'w1kapok' },
   2: { 4: 'w2rapids', 5: 'w2rapids', 6: 'w2rapids', 7: 'w2evening', 8: 'w2evening', 9: 'w2evening' },
-  3: { 6: 'w3cavern', 7: 'w3cavern', 8: 'w3cavern', 9: 'w3cavern' },
+  3: { 4: 'w3sinkhole', 5: 'w3sinkhole', 6: 'w3cavern', 7: 'w3cavern', 8: 'w3cavern', 9: 'w3cavern' },
   4: { 1: 'w4terraces', 2: 'w4terraces', 3: 'w4terraces', 7: 'w4mist', 8: 'w4mist', 9: 'w4mist' },
 };
 

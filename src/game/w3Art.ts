@@ -26,6 +26,11 @@ export interface W3Decor {
   /** drawn only while the platform with this id stands (or, with `whenBroken`, once it has broken): 3-9's ring wall */
   wall?: number;
   whenBroken?: boolean;
+  /**
+   * a fern that rustles on its own every few seconds, as a fern hiding one of Grandma's things does (3-7's "Which fern?": the empty ferns
+   * rustle too, so rustling tells nothing there): the number sets its beat
+   */
+  rustle?: number;
 }
 
 /** the sheet's address (stagePreload.ts decodes it before a World 3 stage starts) */
@@ -93,9 +98,16 @@ export function drawW3Decor(
       ctx.restore();
       continue;
     }
+    if (d.n === 'fern' && d.rustle !== undefined) {
+      drawW3Fern(ctx, { x: left, w: d.w, y: d.b - 6 }, false, thingTell(d.rustle, t), t);
+      continue;
+    }
     blit(ctx, d.n, left, top, d.w, h, d.flip);
   }
 }
+
+/** how hard a fern that hides something rustles on its own right now (0..1): a quick shiver every five seconds or so, on its own beat */
+const thingTell = (id: number, t: number) => Math.max(0, Math.sin(t * 1.25 + id * 2.3) - 0.8) / 0.2;
 
 /** a fern to hide in (World 3's bushes): the still fern, or the rustling one while he moves inside it */
 export function drawW3Fern(ctx: CanvasRenderingContext2D, b: { x: number; w: number; y: number }, inside: boolean, rustle: number, t: number): boolean {
@@ -344,8 +356,7 @@ export function drawThornVine(
 export function drawThingFern(ctx: CanvasRenderingContext2D, item: { id: number; search?: number }, t: number, w = 150): boolean {
   if (!w3ArtReady()) return false;
   const search = item.search ?? 0;
-  const tell = Math.max(0, Math.sin(t * 1.25 + item.id * 2.3) - 0.8) / 0.2;
-  const rustle = Math.max(search > 0 ? 1 : 0, tell);
+  const rustle = Math.max(search > 0 ? 1 : 0, thingTell(item.id, t));
   drawW3Fern(ctx, { x: -w / 2, w, y: 26 - 6 }, false, rustle, t);
   return true;
 }

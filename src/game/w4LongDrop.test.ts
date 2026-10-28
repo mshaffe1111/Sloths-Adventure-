@@ -9,6 +9,8 @@ import { buildLongDrop, DRAFT_HOVER, FLAG_LEDGE, leafReach, LONG_DROP_VIEW, type
 import { HERO_HEAD, HUD_BAND } from './cameraFollow.ts';
 import type { LevelConfig, Platform } from './types.ts';
 import type { Updraft } from './w4Play.ts';
+import { RealPlay } from './realPlay.ts';
+import { rockHits, type RockDrop } from './rockfall.ts';
 
 const cfg = { worldIndex: 4, miniIndex: 7, id: '4-7', name: '4-7', objectiveType: 'sprint', targetCount: 1, timeLimit: 0, levelWidth: 9000, levelHeight: 900, description: '', unlocked: true, completed: false, stars: 0, highScore: 0, bestTime: 0 } as LevelConfig;
 const SEEDS = Array.from({ length: 16 }, (_, i) => 1 + i * 37);
@@ -341,5 +343,46 @@ test('4-7 upright: a crossing too wide for the view shows its warm air from the 
       assert.ok(toAir + 60 <= fit, `seed ${s}: the warm air is ${toAir} px out from the edge`);
       assert.ok(toLedge + 60 <= fit, `seed ${s}: the ledge is ${Math.round(toLedge)} px past the middle of the warm air`);
     }
+  }
+});
+
+test("4-7 in the real engine: the falling rocks leave a fair line, and a rock that hits him mid-glide costs a heart, never the ledge", () => {
+  // (QA: Matt lost 5 lives to the mist in 9 visits to "Twist: falling rocks". A hit knocked him back at 200 px/s, and with the thumb
+  // held still on the leaf, nothing steering to win it back, he drifted back over the drop into the mist)
+  for (const seed of [1, 38]) {
+    const sim = new RealPlay('4-7', seed);
+    sim.safe = false;
+    const st = sim.stage as unknown as { proto: { beats: Array<[number, number, string]>; w4: { rocks: RockDrop[] } } };
+    const beat = st.proto.beats.find((b) => b[2].startsWith('Twist: falling rocks'))!;
+    let checked = 0;
+    for (const rk of st.proto.w4.rocks.filter((r) => r.x > beat[0] && r.x < beat[1])) {
+      const from = sim.platforms.filter((p) => p.x + p.width < rk.x && p.y > rk.top && p.y < rk.land).sort((a, b) => b.x + b.width - (a.x + a.width))[0];
+      const to = sim.platforms.filter((p) => p.x > rk.x && p.y > from.y && p.y < rk.land).sort((a, b) => a.x - b.x)[0];
+      if (!to) continue; // (a rock of a sweep the other way, below)
+      checked++;
+      let safe = 0;
+      const N = 24;
+      for (let k = 0; k < N; k++) {
+        // run off the ledge with a flick, then the thumb held still (the leaf open, no steering), from every moment of the rock's cycle
+        sim.stand(from.x + from.width - 90, from.y);
+        sim.p.hp = sim.p.maxHp;
+        sim.p.invincibleTimer = 0;
+        sim.t = (rk.every * k) / N - rk.offset + rk.every * 20;
+        let jumped = false, hit = false;
+        for (let i = 0; i < 30 * 6 && !sim.died; i++) {
+          const press = !jumped && sim.p.x >= from.x + from.width - 12;
+          if (press) jumped = true;
+          sim.frame({ right: !jumped || press, press, jump: jumped });
+          if (rockHits(rk, sim.t, sim.p.x, sim.p.y, 64)) hit = true;
+          if (jumped && sim.p.grounded) break;
+        }
+        const landed = !sim.died && sim.p.grounded && Math.abs(sim.p.y - to.y) < 3;
+        assert.ok(landed, `seed ${seed} rock ${rk.x}: from ${((rk.every * k) / N).toFixed(1)} s into its cycle he did not reach the next ledge${hit ? ' (hit)' : ''}`);
+        if (!hit) safe++;
+      }
+      // (only leaving late in the grit's warning meets the rock)
+      assert.ok(safe >= N - 3, `seed ${seed} rock ${rk.x}: only ${safe} of ${N} moments to go are clear`);
+    }
+    assert.ok(checked >= 3, `seed ${seed}: ${checked} rocks checked`);
   }
 });

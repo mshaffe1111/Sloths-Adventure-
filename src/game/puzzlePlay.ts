@@ -8,12 +8,12 @@
 import {
   anchorAt, BEETLE, evalWire, falseLeaves, flowRate, flyStep, ITEM, KIT, kitGround, kitPlatId, ledgeLit, liftLevel, onPlate, plateDown, roomBox,
   seesawDy, seesawTilt, setDownX, sluiceFlow, stepBeetle, stepFlow, throwStart, THROW, tradeTakes, useReach, isLit, type BeetleState, type Body,
-  type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec, type ThrowKind,
+  type FlightWorld, type ItemVariant, type KitExtras, type PieceSpec, type RoomSpec, type ThrowKind, type Wire, wireIds,
 } from './puzzleKit.ts';
 import { drawKitArt, handOf, kitArtReady, kitSize } from './puzzleArt.ts';
-import type { KitArtName } from './puzzleAtlasData.ts';
+import { KIT_ART, type KitArtName } from './puzzleAtlasData.ts';
 import { drawWallArt } from './protoArt.ts';
-import { ROOM_CAM, roomZoom } from './puzzleCamera.ts';
+import { boxFits, fitZoom, heroBox, ROOM_CAM, roomZoom, unionBox, type CamBox } from './puzzleCamera.ts';
 import { NOISE, prune, type Noise } from './noise.ts';
 import { zoneEffect, type Zone } from './zones.ts';
 import type { RiverZone } from './river.ts';
@@ -107,6 +107,8 @@ interface RoomRun {
   spec: RoomSpec;
   ri: number;
   box: { x0: number; x1: number; y0: number; y1: number };
+  /** the spot past the way on (world), for the camera */
+  beyond: { x: number; y: number } | null;
   items: ItemRun[];
   plates: PlateRun[];
   gates: GateRun[];
@@ -136,6 +138,63 @@ interface RoomRun {
   told: Set<string>;
 }
 
+/**
+ * A wall of bundled reeds over a gate (World 2's court, in the reeds of its archway and its woven gate): upright bundles side by side,
+ * their tops ragged, tied across with two ropes. (The kit's wall piece is World 2's riverbank column: over the court gate it read as a
+ * pillar of earth, not a wall.)
+ */
+function drawReedWall(ctx: CanvasRenderingContext2D, x: number, top: number, bottom: number, w: number) {
+  const n = Math.max(3, Math.round(w / 20));
+  const bw = w / n;
+  ctx.save();
+  ctx.lineJoin = 'round';
+  for (let i = 0; i < n; i++) {
+    const bx = x + i * bw;
+    const t = top - 6 + ((i * 5) % 3) * 5;
+    ctx.fillStyle = i % 2 ? '#b38545' : '#c89a58';
+    ctx.strokeStyle = '#4a3014';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(bx + 1, bottom);
+    ctx.lineTo(bx + 1, t + 6);
+    ctx.lineTo(bx + bw * 0.3, t);
+    ctx.lineTo(bx + bw * 0.55, t + 4);
+    ctx.lineTo(bx + bw * 0.8, t - 2);
+    ctx.lineTo(bx + bw - 1, t + 6);
+    ctx.lineTo(bx + bw - 1, bottom);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // (the reeds in the bundle)
+    ctx.strokeStyle = 'rgba(90, 58, 24, 0.55)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    for (const k of [0.32, 0.6]) {
+      ctx.moveTo(bx + bw * k, t + 8);
+      ctx.lineTo(bx + bw * k, bottom);
+    }
+    ctx.stroke();
+  }
+  // the two ropes that tie it
+  for (const y of [top + 18, top + (bottom - top) * 0.55]) {
+    if (y > bottom - 12) continue;
+    ctx.fillStyle = '#7a5228';
+    ctx.fillRect(x - 2, y, w + 4, 6);
+    ctx.strokeStyle = '#3b2610';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(x - 2, y, w + 4, 6);
+    ctx.fillStyle = 'rgba(255, 230, 170, 0.35)';
+    ctx.fillRect(x - 1, y + 1, w + 2, 1.5);
+  }
+  ctx.restore();
+}
+
+/** where each seesaw painting's round pivot is across its frame (atlas px, measured from puzzle-kit.webp) */
+const SEESAW_PIVOT: Record<'seesawLevel' | 'seesawUpR' | 'seesawUpL', number> = { seesawLevel: 105, seesawUpR: 105, seesawUpL: 90 };
+
+/** the active part: where it is, how big a ring Dot's pointer wants, and which piece it is (none: the room's middle) */
+type Focus = { x: number; y: number; r: number; id?: string };
+
 /** Pokey's pose while he carries, throws or sets down (null: his own sprite) */
 type Pose = { kind: 'pick' | 'throw' | 'set'; t: number; dur: number } | null;
 
@@ -159,7 +218,7 @@ export class KitPlay {
   private pan: { x: number; y: number; t: number } | null = null;
   /** the puzzle piece Dot points at (GuideView.kit): the active part while he is in a room, nothing outside one */
   readonly guideThings: Array<{ x: number; y: number; r: number }> = [];
-  private focusPt = { x: 0, y: 0, r: 30 };
+  private focusPt: Focus = { x: 0, y: 0, r: 30 };
   private t = 0;
   /** a room's lines still to take down, one a frame */
   private passing: string[] = [];
@@ -173,7 +232,7 @@ export class KitPlay {
     kit.rooms.forEach((spec, ri) => {
       const at = (pc: PieceSpec) => ('at' in pc && pc.at ? anchorAt(pc.at, byId) : null);
       const room: RoomRun = {
-        spec, ri, box: roomBox(spec, byId), items: [], plates: [], gates: [], levers: [], baskets: [], lifts: [], beetles: [], sources: [], resets: [],
+        spec, ri, box: roomBox(spec, byId), beyond: anchorAt(spec.beyond, byId), items: [], plates: [], gates: [], levers: [], baskets: [], lifts: [], beetles: [], sources: [], resets: [],
         seesaws: [], bells: [], ledges: [], marks: [], shutters: [], pinwheels: [], sluices: [], traders: [],
         ground: new Set([...spec.ground, ...kitGround(spec, ri)]), changes: 0, calm: 0, turns: 0, fails: 0, lastDir: 0, sparkle: false, told: new Set(),
       };
@@ -941,12 +1000,12 @@ export class KitPlay {
    * The part of the puzzle that matters now: what he holds goes to its target; else, of the parts the way on still waits for, a thing
    * meant for one that is not there yet, or the part itself; and when nothing is left, the way on.
    */
-  focus(room: RoomRun): { x: number; y: number; r: number } {
+  focus(room: RoomRun): Focus {
     const exit = room.spec.pieces.find((q) => q.id === room.spec.exit);
     if (this.held && this.held.room === room.ri) {
       const it = room.items[this.held.item];
       const t = it.spec.for ? this.where(room, it.spec.for) : null;
-      if (t) return t;
+      if (t) return { ...t, id: it.spec.for };
     }
     const out = (id: string) => this.output(room, id);
     let leaves: string[] = [];
@@ -961,25 +1020,114 @@ export class KitPlay {
         const there = (pl && it.mode === 'rest' && it.plat === pl.plat && onPlate(it.x, pl.x, pl.w)) || (it.mode === 'basket' && room.baskets[it.basket]?.spec.id === leaf);
         if (there) continue;
         if (it.mode === 'wait') {
-          return { x: it.home.x, y: it.home.y - 20, r: 30 };
+          return { x: it.home.x, y: it.home.y - 20, r: 30, id: it.spec.id };
         }
-        return { x: it.x, y: it.y - it.r, r: 28 };
+        return { x: it.x, y: it.y - it.r, r: 28, id: it.spec.id };
       }
       const w = this.where(room, leaf);
-      if (w) return w;
+      if (w) return { ...w, id: leaf };
     }
-    return this.where(room, room.spec.exit) ?? { x: (room.box.x0 + room.box.x1) / 2, y: room.box.y1 - 80, r: 40 };
+    const e = this.where(room, room.spec.exit);
+    return e ? { ...e, id: room.spec.exit } : { x: (room.box.x0 + room.box.x1) / 2, y: room.box.y1 - 80, r: 40 };
+  }
+
+  /** a piece's box (world), by id: what must show of it (a cage and its floor, a seesaw's whole plank and its raised end, a gate) */
+  private pieceBox(room: RoomRun, id: string): CamBox | null {
+    const lf = room.lifts.find((q) => q.spec.id === id);
+    if (lf) {
+      const pl = lf.plat;
+      const top = lf.cage ? kitSize('cageShut').h + 12 : 46;
+      return { x0: pl.x - 8, x1: pl.x + pl.width + 8, y0: pl.y - top, y1: pl.y + 28 };
+    }
+    const ss = room.seesaws.find((q) => q.spec.id === id);
+    if (ss) return { x0: ss.x - ss.w / 2 - 12, x1: ss.x + ss.w / 2 + 12, y0: ss.y - ss.rise - 24, y1: ss.y + 16 };
+    const g = room.gates.find((q) => q.spec.id === id);
+    if (g) return { x0: g.x - KIT.gateW / 2 - 20, x1: g.x + KIT.gateW / 2 + 20, y0: g.y - KIT.doorH - 16, y1: g.y + 8 };
+    const b = room.baskets.find((q) => q.spec.id === id);
+    if (b) return { x0: b.x - 44, x1: b.x + 44, y0: this.mouthY(room, b) - 34, y1: b.y + 8 };
+    const bl = room.bells.find((q) => q.spec.id === id);
+    if (bl) return { x0: bl.x - 34, x1: bl.x + 34, y0: bl.y - 122, y1: bl.y + 6 };
+    const it = room.items.find((q) => q.spec.id === id);
+    if (it) {
+      const at = it.mode === 'wait' ? { x: it.home.x, y: it.home.y - 20 } : { x: it.x, y: it.y - it.r };
+      return { x0: at.x - 40, x1: at.x + 40, y0: at.y - 40, y1: at.y + it.r + 12 };
+    }
+    const bt = room.beetles.find((q) => q.spec.id === id);
+    if (bt) {
+      const gy = room.box.y1 - room.spec.below;
+      return { x0: bt.st.x - 40, x1: bt.st.x + 40, y0: gy - 50, y1: gy + 6 };
+    }
+    const w = this.where(room, id);
+    return w ? { x0: w.x - w.r, x1: w.x + w.r, y0: w.y - w.r, y1: w.y + w.r } : null;
   }
 
   /**
-   * What the camera should do (puzzleCamera.ts): inside a room, lean toward the active part and pull back to fit both (never below
-   * ROOM_CAM.minZoom); for a moment after a far gate opens, go to it. Null outside every room: the camera is as it always is.
+   * What a part works, nearest first (the room's wiring): a thing goes to what it is for (and a thing for a plate a beetle wanders by
+   * brings the beetle: the lure and the creature); a basket raises its lift; a plate, lever, bell or pinwheel works the gates, shutters,
+   * sluices and lifts wired to it; a trader drops what it holds.
    */
-  camFocus(p: Player, vw: number, vh: number): { x: number; y: number; zoom: number; pan: boolean } | null {
+  private worksOn(room: RoomRun, id: string): string[] {
+    const out: string[] = [];
+    const reads = (w: Wire) => wireIds(w).includes(id);
+    for (const pc of room.spec.pieces) {
+      if (pc.id === id) {
+        if (pc.kind === 'item' && pc.for) {
+          out.push(pc.for);
+          const pl = room.plates.find((q) => q.spec.id === pc.for);
+          if (pl) for (const bt of room.beetles) if (pl.x >= bt.span.x0 && pl.x <= bt.span.x1) out.push(bt.spec.id);
+        }
+        continue;
+      }
+      if (pc.kind === 'lift' && pc.by === id) out.push(pc.id);
+      if ((pc.kind === 'gate' || pc.kind === 'shutter' || pc.kind === 'sluice') && reads(pc.open)) out.push(pc.id);
+      if (pc.kind === 'item' && pc.with === id) out.push(pc.id);
+    }
+    return out;
+  }
+
+  /**
+   * The room's key box (puzzleCamera.ts): the active part and, nearest first, what it works and what that works in turn (the stone, its
+   * basket, the basket's cage), as much of it as fits in a view vw x vh (world px: the view pulled back as far as a room may). Once the
+   * way on is in it, the spot past the way on too (past a seesaw, the bank its raised end reaches), if that fits. Pokey is not in it: the
+   * camera adds him.
+   */
+  keyBox(room: RoomRun, f: Focus, vw: number, vh: number): CamBox {
+    let box: CamBox = (f.id ? this.pieceBox(room, f.id) : null) ?? { x0: f.x - f.r, x1: f.x + f.r, y0: f.y - f.r, y1: f.y + f.r };
+    if (!f.id) return box;
+    const seen = new Set<string>([f.id]);
+    const queue = [...this.worksOn(room, f.id)];
+    while (queue.length) {
+      const id = queue.shift()!;
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const b = this.pieceBox(room, id);
+      if (!b) continue;
+      const u = unionBox(box, b);
+      if (!boxFits(u, vw, vh)) break;
+      box = u;
+      queue.push(...this.worksOn(room, id));
+    }
+    const by = room.beyond;
+    if (seen.has(room.spec.exit) && by) {
+      const u = unionBox(box, { x0: by.x - 30, x1: by.x + 30, y0: by.y - 60, y1: by.y + 6 });
+      if (boxFits(u, vw, vh)) box = u;
+    }
+    return box;
+  }
+
+  /**
+   * What the camera should do (puzzleCamera.ts): inside a room, lean toward the active part, and pull back to fit him, it and what it
+   * works (keyBox), but never below `floor` of the usual zoom (roomFloor), nor below ROOM_CAM.minZoom for the lean alone; for a moment
+   * after a far gate opens, go to it. `vw`, `vh`: the view at the usual zoom. Null outside every room: the camera is as it always is.
+   */
+  camFocus(p: Player, vw: number, vh: number, floor: number = ROOM_CAM.minZoom): { x: number; y: number; zoom: number; pan: boolean; box?: CamBox } | null {
     if (this.pan) return { x: this.pan.x, y: this.pan.y, zoom: 1, pan: true };
     if (this.inRoom < 0) return null;
     const f = this.focusPt;
-    return { x: f.x, y: f.y, zoom: roomZoom(vw, vh, p.x, p.y - 45, f.x, f.y), pan: false };
+    const keys = this.keyBox(this.rooms[this.inRoom], f, vw / floor, vh / floor);
+    const box = unionBox(keys, heroBox(p.x, p.y));
+    const zoom = Math.min(roomZoom(vw, vh, p.x, p.y - 45, f.x, f.y), fitZoom(vw, vh, box, floor));
+    return { x: f.x, y: f.y, zoom, pan: false, box };
   }
 
   // ───────────────────────────── drawing ─────────────────────────────
@@ -1156,8 +1304,9 @@ export class KitPlay {
   private drawGate(ctx: CanvasRenderingContext2D, g: GateRun) {
     const w = g.wall;
     const doorTop = g.door.y;
-    // the root wall over the door (it never opens), then the vine gate in it, shut or open
-    if (!drawWallArt(ctx, w.x - 6, w.y, doorTop + 14, w.width + 12)) {
+    // the root wall over the door (it never opens), then the vine gate in it, shut or open (World 2's court: a wall of bundled reeds)
+    if (g.spec.look === 'reeds') drawReedWall(ctx, w.x - 6, w.y, doorTop + 14, w.width + 12);
+    else if (!drawWallArt(ctx, w.x - 6, w.y, doorTop + 14, w.width + 12)) {
       ctx.fillStyle = '#4a3420';
       ctx.fillRect(w.x, w.y, w.width, doorTop - w.y + 10);
     }
@@ -1283,7 +1432,7 @@ export class KitPlay {
 
   private drawSeesaw(ctx: CanvasRenderingContext2D, s: SeesawRun) {
     const [l, r] = s.ends;
-    const n: KitArtName = s.show < -0.5 ? 'seesawUpR' : s.show > 0.5 ? 'seesawUpL' : 'seesawLevel';
+    const n: 'seesawLevel' | 'seesawUpR' | 'seesawUpL' = s.show < -0.5 ? 'seesawUpR' : s.show > 0.5 ? 'seesawUpL' : 'seesawLevel';
     // (the painted plank and its round pivot, stretched to the plank's length; its feet on the ground under the pivot)
     const sz = kitSize(n);
     const k = (s.w + 24) / sz.w;
@@ -1297,7 +1446,10 @@ export class KitPlay {
       ctx.strokeRect(s.x - 13, s.y - 4, 26, s.foot - s.y + 8);
       ctx.restore();
     }
-    if (!drawKitArt(ctx, n, s.x, s.y + 10, { scale: k })) {
+    // (drawn by its round pivot, not by its feet: tilted, the painting's low end touches the ground too, so its measured feet sat ~55 px
+    // off the pivot, left of the post for the right end up and right of it for the left end up)
+    const f = KIT_ART[n];
+    if (!drawKitArt(ctx, n, s.x + (f.ax - SEESAW_PIVOT[n]) * f.k * k, s.y + 10, { scale: k })) {
       ctx.save();
       ctx.strokeStyle = '#8b5a2b';
       ctx.lineWidth = 12;

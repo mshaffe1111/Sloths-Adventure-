@@ -398,3 +398,42 @@ test('a quick tap that slides a little sideways still punches', () => {
   t.up(1, 290, 250);
   assert.equal(t.count('punch'), 1);
 });
+
+test("a steering thumb's swipe down and across as it turns does not duck; a slide straight down still does (Cheddarbob, one finger)", () => {
+  // his fingers, replayed through these rules: running right, then a sweep left and down (138 px left, 115 down in 200 ms)
+  const t = rig();
+  t.down(1, 330, 190);
+  t.drag(1, 330, 190, 380, 195, 250);
+  assert.ok(t.has('move:right'));
+  t.drag(1, 380, 195, 242, 310, 200, 12);
+  t.drag(1, 242, 310, 238, 330, 120, 4);
+  assert.ok(t.has('move:left'));
+  assert.ok(!t.has('duck:true'), t.log.join(' '));
+  t.up(1, 238, 330);
+  // and the lift says nothing about ducking: it never ducked (a "duck off" on every lift was most of the log's 279 "toggles")
+  assert.ok(!t.has('duck:false'), t.log.join(' '));
+  // a thumb pulled straight down while running ducks
+  const r = rig();
+  r.down(1, 150, 200);
+  r.drag(1, 150, 200, 230, 200, 300);
+  r.drag(1, 230, 200, 234, 275, 250);
+  assert.ok(r.has('duck:true'), r.log.join(' '));
+  r.up(1, 234, 275);
+  assert.equal(r.log[r.log.length - 1], 'duck:false');
+});
+
+test('out of a duck, a thumb wobbling about the line does not flicker him up and down', () => {
+  const t = rig();
+  t.down(1, 150, 200);
+  t.drag(1, 150, 200, 150, 255, 300);
+  assert.equal(t.count('duck:true'), 1);
+  t.drag(1, 150, 255, 150, 222, 200); // eased back up: he stands
+  assert.equal(t.log[t.log.length - 1], 'duck:false');
+  // small slides about where he stood up: never a duck again
+  for (let i = 0; i < 10; i++) t.drag(1, 150, i % 2 ? 245 : 222, 150, i % 2 ? 222 : 245, 120, 4);
+  assert.equal(t.count('duck:true'), 1, t.log.join(' '));
+  // a real slide down from there ducks again
+  t.drag(1, 150, 222, 150, 275, 250);
+  assert.equal(t.count('duck:true'), 2);
+  t.up(1, 150, 275);
+});
