@@ -4,19 +4,23 @@
  *     each failing without its key piece, none able to be passed by, each narrow and tall enough for an upright phone, each with a
  *     lantern-stake reset post, nothing in them that hurts;
  *   - the whole stage walks from her bedroll to the last tree; every dip has a one-jump way out and every wall reaches the ground;
- *   - the trails between the rooms: real moves every few seconds, rolled from real alternatives;
- *   - its length for a quick player (stageTime.ts MODEL_FAST): 5:00 to 5:30 on every roll;
+ *   - the trails between the rooms: real moves every few seconds, rolled from real alternatives; the high way the only way on (Matt,
+ *     2026-10-28: "you can just run straight across the bottom"): with what is above the path taken away, no section's floor gets her
+ *     through, and a section with a trunk cannot be done without climbing it;
+ *   - Easy: no jump on it needs a full hold (Gemini G8, rolls 1-3), and Easy still makes a good stage;
+ *   - its length for a quick player (stageTime.ts MODEL_FAST): 3:20 to 4:20 on every roll;
  *   - every word: the five warnings, "Last one. For Pokey.", Flicker's first line, "Hairpin. Good. Round and round." and every Pell line
  *     word for word, the ending in the approved order, the card "at night", the hints under ten words;
  *   - what she carves is kept with the game for 5-6; the stage sits first in World 5, at night, and the HUD counts "M. n/5".
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildMeecaStage, meecaCheckStage, meecaGeneratedStage, meecaSeconds, TRAIL_SECTIONS, MEECA_G } from './meecaStage.ts';
+import { buildMeecaStage, meecaCheckStage, meecaGeneratedStage, meecaSeconds, TRAIL_SECTIONS, MEECA_G, GULLY } from './meecaStage.ts';
 import { FLICKER_HINTS, MEECA_CARD, MEECA_ENDING, MEECA_ENDING_A, MEECA_ENDING_B, MEECA_GOAL, MEECA_SAY, MEECA_WARNINGS, ROOM_LINES, wordsIn } from './meecaLines.ts';
 import { carvingsForPokey, loadCarved, markCarvingsDone, parseCarved, recordCarving } from './meecaCarved.ts';
 import { EXTRA_STAGES, MEECA_STAGE_ID, meecaStageConfig, withExtraStages } from './extraStages.ts';
-import { validateStage } from './levelCheck.ts';
+import { easyHoldCheck, validateStage } from './levelCheck.ts';
+import { easyStage } from './easyMode.ts';
 import { kitPlatId, roomBox, tipText, type RoomSpec } from './puzzleKit.ts';
 import { levelConfig } from './realPlay.ts';
 import { generateStage, setLayoutVariant } from './stageGenerator.ts';
@@ -108,11 +112,50 @@ test("5-M's trails: something to do every few seconds (STAGE-RULES §2), rolled 
   assert.ok(new Set(seqs).size === seqs.length, 'every roll lays its trails out differently');
 });
 
-test("5-M's length: 5:00 to 5:30 for a quick player on every roll (stageTime.ts MODEL_FAST), longer for a typical one", () => {
+test("5-M's trails: the high way is the only way on: no section's floor gets her through, and no section with a trunk can be done without it", () => {
+  const reaches = (st: GeneratedStage) => !validateStage(meecaCheckStage(st as ReturnType<typeof build>)).errors.some((e) => e.startsWith('exit platform'));
+  const kinds = new Set<string>();
+  for (const s of SEEDS) {
+    const m = build(s).proto.meeca!;
+    for (const tr of m.trails) {
+      for (const sec of tr.sections) {
+        kinds.add(sec.kind);
+        const at = `seed ${s}: ${tr.name}, ${sec.kind} at ${sec.x0}`;
+        const inSec = (x: number) => x >= sec.x0 && x < sec.x1;
+        // the floor alone: everything above the path (branches, logs, stumps, the tall bank) taken away, its trunks off
+        const floor = build(s);
+        floor.platforms = floor.platforms.filter((p) => !(inSec(p.x) && (p.y < MEECA_G - 1 || p.style === 'log' || p.style === 'branch')));
+        for (const v of floor.vines) if (!v.kit && inSec(v.x)) v.off = true;
+        assert.ok(!reaches(floor), `${at}: the floor gets her past it`);
+        // a trunk in it is the only way on: switched off, she cannot get on
+        const trunks = build(s);
+        let n = 0;
+        for (const v of trunks.vines) if (!v.kit && inSec(v.x)) (v.off = true, n++);
+        if (n) assert.ok(!reaches(trunks), `${at}: its trunk is not needed`);
+        // (and its gully is deeper than a second jump climbs: what stops the floor is a wall, not a hop)
+        if (sec.kind !== 'double') assert.ok(floor.platforms.some((p) => inSec(p.x) && p.y === MEECA_G + GULLY), `${at}: no gully`);
+      }
+    }
+  }
+  assert.deepEqual([...kinds].sort(), ['canopy', 'double', 'fallen', 'hollow', 'logs']);
+});
+
+test("5-M on Easy: no jump needs a full hold (Gemini G8, rolls 1-3), and Easy breaks nothing", () => {
+  const errs = (e: string[]) => new Set(e.map((x) => x.replace(/[\d.]+/g, '#')));
+  for (const s of [1, 2, 3]) {
+    const easy = meecaCheckStage(easyStage(build(s)) as ReturnType<typeof build>);
+    const full = errs(validateStage(easy).errors);
+    assert.deepEqual([...full], [], `roll ${s}: ${[...full].join('; ')}`);
+    const added = [...errs(easyHoldCheck(easy))].filter((e) => !full.has(e));
+    assert.deepEqual(added, [], `roll ${s}: only a full-hold jump reaches it on Easy: ${added.join('; ')}`);
+  }
+});
+
+test("5-M's length: 3:20 to 4:20 for a quick player on every roll (stageTime.ts MODEL_FAST), longer for a typical one", () => {
   for (const s of SEEDS) {
     const st = build(s);
     const fast = meecaSeconds(st);
-    assert.ok(fast >= 300 && fast <= 330, `seed ${s}: ${fast.toFixed(0)} s`);
+    assert.ok(fast >= 200 && fast <= 260, `seed ${s}: ${fast.toFixed(0)} s`);
     assert.ok(meecaSeconds(st, MODEL_TYPICAL) > fast);
   }
 });

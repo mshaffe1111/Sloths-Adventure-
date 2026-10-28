@@ -1,7 +1,8 @@
 /**
  * meecaBot — a quick player for Meeca's stage (5-M) in the real engine (realPlay.ts), with the pad's controls and a finger tracing
  * circles to carve: it plays every room the right way (no traps, no hints), reads each line about as fast as a quick reader does, and
- * taps the story box on. Its clock is the stage's length for a quick player (meecaReal.test.ts holds it to 5:00 to 5:30).
+ * taps the story box on. Its clock is the stage's length for a quick player who never misses (meecaReal.test.ts: at least 2:30;
+ * the time model, meecaStage.ts meecaSeconds, gives 3:20 to 4:20).
  *
  * Each step is a small plan the bot works through a frame at a time; `hardWay` makes it fall for each room's trap first (the chair,
  * the silk line, a polite cup of tea), as a curious player would, to prove the traps hold and let go and cost nothing.
@@ -10,6 +11,7 @@ import type { RealPlay, Pad } from './realPlay.ts';
 import type { MeecaPlay } from './meecaPlay.ts';
 import type { KitPlay } from './puzzlePlay.ts';
 import type { Platform } from './types.ts';
+import { MEECA_G as MEECA_PATH } from './meecaStage.ts';
 
 /** a quick reader: how long a line of the story box stays before the tap (s) */
 export const readQuick = (text: string): number => Math.max(0.9, 0.5 + 0.22 * text.trim().split(/\s+/).length);
@@ -85,14 +87,16 @@ export class MeecaBot {
       const on = this.sim.standingOn === to.id && pl.grounded;
       if (on && pl.x >= to.x + Math.min(40, to.width / 2)) return true;
       // (past it already: a jump carried her over a short piece of ground)
-      if (pl.grounded && pl.x > to.x + to.width && Math.abs(pl.y - to.y) < 160) return true;
+      if (pl.grounded && pl.x > to.x + to.width && pl.y - to.y > -160 && pl.y - to.y < 220) return true;
       const here = this.sim.platforms.find((q) => q.id === this.sim.standingOn);
       const ahead = to.x - pl.x;
       const higher = pl.y - to.y;
       let pad: Pad = { right: true };
       if (pl.grounded) {
         second = false;
-        const atEdge = !!here && here.id !== to.id && pl.x > here.x + here.width - 22;
+        // (the next piece of ground going on at the same height is no edge: she walks onto it)
+        const seam = !!here && Math.abs(to.x - (here.x + here.width)) < 3 && Math.abs(to.y - here.y) < 3;
+        const atEdge = !!here && here.id !== to.id && !seam && pl.x > here.x + here.width - 22;
         const atFace = higher > 20 && ahead < 70 && ahead > -to.width;
         // (lower ground ahead, and this the edge of what she stands on: she just walks off)
         if (here && here.id !== to.id && (atFace || (atEdge && higher > -40))) pad = { right: true, press: true };
@@ -296,4 +300,45 @@ export class MeecaBot {
     this.room4();
     this.room5();
   }
+}
+
+/**
+ * The floor of a trail section, walked (meecaStage.test.ts, meecaReal.test.ts, tools/inspect/meecaPace.ts): from the path at x0, hold
+ * right (and with `hop`, jump at whatever stops her, a second flick at the top) for up to 30 s, with the section's trunks switched off.
+ * `through`: she stood on the path at x1. Matt (2026-10-28): the floor must never get her past a climb.
+ */
+export function floorWalker(sim: RealPlay, x0: number, x1: number, hop: boolean): { through: boolean; climbs: number } {
+  const mc = (sim.e as { mc: MeecaPlay }).mc;
+  mc.phase = 'play';
+  mc.marked = mc.st.trunks.length;
+  let climbs = 0;
+  for (const v of sim.vines) {
+    if (v.kit || v.x < x0 - 40 || v.x > x1 + 40) continue;
+    v.off = true;
+    climbs++;
+  }
+  const g = sim.platforms.filter((p) => p.x <= x0 + 4 && p.x + p.width >= x0 + 4).sort((a, b) => b.y - a.y).find((p) => p.y <= MEECA_PATH + 1);
+  sim.stand(x0 + 4, g ? g.y : MEECA_PATH);
+  let best = sim.p.x;
+  let still = 0;
+  let air = 0;
+  for (let i = 0; i < 30 * 30; i++) {
+    const p = sim.p;
+    let pad: Pad = { right: true };
+    if (hop && p.grounded && still >= 3) {
+      pad = { right: true, press: true };
+      still = 0;
+      air = 0;
+    } else if (hop && !p.grounded) {
+      air++;
+      pad = air === 9 ? { right: true, press: true } : { right: true, jump: air < 16 };
+    }
+    sim.frame(pad);
+    if (sim.p.x > best + 1) {
+      best = sim.p.x;
+      still = 0;
+    } else still++;
+    if (sim.p.x >= x1 - 10 && sim.p.grounded && Math.abs(sim.p.y - MEECA_PATH) < 3) return { through: true, climbs };
+  }
+  return { through: false, climbs };
 }
