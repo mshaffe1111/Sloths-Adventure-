@@ -59,3 +59,14 @@
 - Sideways (`turn`) shows a whole puzzle room in one picture; upright only shows half. Turn first in any room with parts spread out, then turn back.
 - Steering gets eaten for the first second or so after a warp or near webs. Wiggle, then lifted `flick up-right` hops.
 - Pictures: puzzle rooms eat them fast because you can't tell what changed from the words. Budget 8 per room and turn sideways once instead of taking three upright shots.
+
+## 2026-10-28, v219 replays (Worlds 1-4, upright with one sideways stretch, session 8)
+- Tall stump with a spring mushroom beside it: plain `flick up` + `steer up` at the stump face does nothing, and walking onto the mushroom doesn't bounce you. What worked: step back onto the mushroom (`steer left 400`), lift, wait 300, `flickhold up 400`, wait 200, then steer right: Pokey catches the lip. Then `steer up` 500 and steer right to pull over.
+- Walking speed upright: about 180 px of screen per 650 ms of steering. Use that to stop at a ladder instead of overshooting.
+- Ladders climb slowly: 6 s of `steer up` from the bottom to the top. If you lift halfway he just hangs there, which is fine.
+- Narrow wooden platforms: a long steer walks you straight off the end, and you drop all the way to the bottom of the climb. Keep it to short steers on platforms (under 900 ms).
+- Upright, the next ladder or post is often off the edge of the screen. One sideways look (`turn`) shows the whole floor. Do it first on any climbing stage.
+- Cave gaps over water: a plain walk drops you into a narrow gap and the water takes a whole life. Lifted hops don't clear it reliably either. Stop at every edge in a cave and look before you go on.
+- A wall taller than a double jump with Dot saying "This way": the way up is usually back the way you came. Go back up the step you dropped from, then double hop right off it.
+- Sneak stages: the bird or eagle hits you every few seconds in the open. Steer down inside a bush or behind a waterfall, wait 1500, then go. Upright you often can't see the next bush in time.
+- Pictures: blew past 40 again, about 85 this time. Ladder stages and caves are where they go. Budget 5 per play and spend the first one on a sideways look.

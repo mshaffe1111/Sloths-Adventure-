@@ -198,3 +198,26 @@ Earlier read of the same log, kept for the details:
    - [polish] "M. 1/5" in the HUD has no word for what it counts.
    - Good: room 4's contraption fits upright; room 2 fits sideways; the carving reveal; no lives lost anywhere; memory 10-17 MB.
    - Not checked: room 3-5 solutions, the tea channel working, the ending. Rooms 3-4 not sideways.
+
+## D. Matt bot, replays of Worlds 1-4 (v219 / PR #42; 1-7, 2-6, 3-1, 4-5, each on ?layout=1 and 7, Normal, upright); key items rechecked on PR #43 (762ca32)
+1. [blocker, UNFAIR, rule 2, out of band; CONFIRMED on #43] 3-1, 12-16%, the water gap after the first mushroom: the bot lost all
+   3 lives in ~10 s, in both versions (game over at 0:49 and 0:51). QA on #43, plain hops right from the start: life lost at 14%
+   (game time 35-37 s), and no tip about the water before it (the only lines were the edge, flowers, flag and heart tips). The gap
+   isn't visible from the screen before. A World 3 opener; the "soft pits" promise doesn't cover this water.
+2. [major, UNFAIR, rule 2] 1-7 17% and 25%: Dot says "Flick up into the trunk to grab it", but that does nothing at the tall root
+   stump (about 6 tries); what works is the spring mushroom beside it (lift, held flick up, steer onto the lip). Teach the mushroom,
+   or let the grab work.
+3. [major, UNFAIR, rule 7/2] 2-6 version 1 upright, 0-11%: "Up through the village! Slide up a post" comes at 2% after you've
+   passed the ladder, and upright shows only dirt wall; about 90 s lost before "Still stuck? Follow my arrow." Plank ends walk you
+   off to the floor. Version 7 shows the ladder straight away.
+4. [major, HARD BUT FAIR, but World 1 band] 1-7 bird: hearts 5 to 1 in about 80 s, 3 lives in version 1; upright the next bush is
+   often off screen; a small fern at ~12% didn't hide him.
+5. [minor, rule 4/8] 4-5 23%: a tall block a floor double jump can't reach while Dot says "Flick up again midair to jump twice";
+   the way is to climb back up the step you dropped from (about 5 tries; failed after 4 in version 7).
+6. [minor, rule 7] 1-7 version 1, 34%: "The squirrels' acorn tree! Carry one out with you." The bot never got an acorn and walked
+   on to 73%. If optional, word it so; if not, it can be walked past.
+7. [minor, rule 8; CONFIRMED on #43, 3-1 too] "Hurt? Grab a heart to heal." shows at 5 of 5 hearts (1-7 8-10%, 3-1 13-14%).
+8. [polish] 2-6 version 7, ~9%: Pokey stands a few px past the plank's end, in the air.
+- Variety: real in 1-7 (canopy secret, acorn tree, double-jump spot 53% vs 63%) and 4-5 (opening line, flag); 3-1's cave mouth
+  changes but the deadly gap is the same in both; 2-6's opening was the same in both as far as reached (rule 6).
+- Memory: peaks to 42/84 MB at 3-1 v7's end, back to 15 MB after; no page errors.
