@@ -1,3 +1,4 @@
+import { buildKitStage, KIT_STAGE_ID } from './kitStage.ts';
 import { buildProtoStage, HAND_STAGES, protoStageEnabled } from './protoStage.ts';
 import { buildW2Stage, W2_STAGES } from './w2Stages.ts';
 import { DOT_STAGE_ID, dotGeneratedStage } from './dotFlightStage.ts';
@@ -78,6 +79,8 @@ export interface GeneratedStage {
   deepFall?: number;
   /** Dot's netting flight (dotFlightStage.ts): she flies it, there is no ground, and the engine hands the stage to dotFlightRun.ts */
   dot?: import('./dotFlightStage.ts').DotStage;
+  /** puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): their pieces and wires, for a hand-built stage or the generator alike */
+  kit?: import('./puzzleKit.ts').KitExtras;
   /** what the generator built (for tests and debugging) */
   meta?: {
     attempt: number;
@@ -2762,6 +2765,8 @@ export function variantAttemptFor(config: LevelConfig, variant: number, maxAttem
 }
 
 export function generateStage(config: LevelConfig): GeneratedStage {
+  // the puzzle kit's test room (Matt's test link: ?autostart=1&level=kit, kitStage.ts)
+  if (config.id === KIT_STAGE_ID) return buildKitStage(config);
   // the hand-built 1-6 (a test, off by default: protoStage.ts)
   if (config.id === CTEST_STAGE_ID && !config.secret && ctestEnabled()) return buildProtoStage(config, ctestSeed(), 'ctest');
   // Dot's netting flight, the extra stage after 4-5 (dotFlightStage.ts); it is only in the stage list with the New stages switch on
