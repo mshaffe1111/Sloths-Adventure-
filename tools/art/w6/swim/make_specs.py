@@ -49,6 +49,40 @@ CLIPS = {
 }
 
 
+# second pass at the first-swim moment (Matt, 2026-10-27): the first take's panic frames turned three-quarter to the camera and the
+# face changed style between the panic and the grin, so these stills and clips insist on a strict side-on profile throughout
+PROFILE = (', seen in strict side profile exactly from the side, facing right, only his right side and one eye visible, '
+           'leather satchel on its strap across his chest and bandage wraps on both wrists')
+FIRST2_STILLS = {
+    'first2a': ('pokeysloth startled and panicking, eyes wide and mouth open in a gasp, both arms flung up and flailing above his head, '
+                'legs kicking, body upright as if he has just dropped into deep water', (11, 22, 33)),
+    'first2b': ('pokeysloth startled and splashing, eyes wide, mouth open, both arms slapping forward and down in a frantic paddle in '
+                'front of his chest, legs kicking, body upright as if he has just dropped into deep water', (11, 22, 33)),
+}
+FIRST2_NEG = NEG + ', front view, three-quarter view, facing the viewer, looking at the camera, both eyes visible'
+FIRST2_CLIP = ('stays in side profile facing right the whole time: he flails his arms wildly in panic for a moment, then calms down, '
+               'smiles proudly with the same face and paddles steadily with both paws in front of his chest, he stays in the '
+               'middle of the frame')
+FIRST2_CLIP_NEG = ('camera movement, zoom, pan, tracking shot, background change, scenery, water, waves, ripples, splashes, extra limbs, '
+                   'extra characters, human hands, fingers, blurry, deformed, text, watermark, flicker, morphing, turning to face the '
+                   'camera, front view, three-quarter view, facing the viewer, both eyes visible, changing art style, leaving the frame')
+
+
+def first2_stills():
+    items = [{'name': f'{mv}-{s}', 'prompt': words + PROFILE + END, 'seed': s, 'w': 1024, 'h': 1024, 'neg': FIRST2_NEG}
+             for mv, (words, seeds) in FIRST2_STILLS.items() for s in seeds]
+    (H / 'spec-swim-first2-stills.json').write_text(json.dumps({'tag': 'swim-first2-stills', 'stills': {'lora': POKEY, 'neg': FIRST2_NEG,
+                                                                                                         'items': items}}, indent=1))
+    print(len(items), 'stills')
+
+
+def first2_clips(srcs, seeds):
+    cl = [{'name': f'w6-pokey-first2-{Path(src).stem}-s{s}', 'src': src, 'prompt': M + P + FIRST2_CLIP, 'neg': FIRST2_CLIP_NEG,
+           'seed': s, 'w': 704, 'h': 704} for src in srcs for s in seeds]
+    (H / 'spec-swim-first2-clips.json').write_text(json.dumps({'tag': 'swim-first2-clips', 'motion': MOTION, 'clips': cl}, indent=1))
+    print(len(cl), 'clips')
+
+
 def stills():
     items = [{'name': f'{mv}-{s}', 'prompt': words + END, 'seed': s, 'w': wh[0], 'h': wh[1]}
              for mv, (words, seeds, wh) in STILLS.items() for s in seeds]
@@ -87,5 +121,9 @@ if __name__ == '__main__':
         stills()
     elif sys.argv[1] == 'clips':
         clips(json.loads(sys.argv[2]))
+    elif sys.argv[1] == 'first2-stills':
+        first2_stills()
+    elif sys.argv[1] == 'first2-clips':  # first2-clips '["stills/first2a-22.png", ...]' '[3, 11]'
+        first2_clips(json.loads(sys.argv[2]), json.loads(sys.argv[3]))
     else:
         args(sys.argv[2], *map(int, sys.argv[3:5]))
