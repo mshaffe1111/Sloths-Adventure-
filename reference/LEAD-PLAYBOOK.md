@@ -28,8 +28,9 @@ goes onto the Docs roadmap and, if it is a rule, into STAGE-RULES.md or CLAUDE.m
 
 1. **Is it already covered?** Check STATUS.md for a running helper on the same files or topic; if one is, send it the work
    (SendMessage) instead of starting another. Never two helpers on the same files.
-2. **At most 3-4 helpers at once**, and only on separate files. Matt pays for every one; a helper that waits on another's result
-   waits, it is not started early.
+2. **As many helpers at once as there are separate jobs** (Matt, 2026-10-28: he would rather run twice as many to finish sooner),
+   but only on separate files, and a helper that needs another's result waits for it. Split big jobs into pieces that own separate
+   (new) files with agreed interfaces.
 3. **The brief must include:** the goal in Matt's words; "read reference/STAGE-RULES.md and reference/GEMINI-LEDGER.md first" and the
    sections that apply; the files it owns and the files other helpers own right now; the exact checks it must run (STAGE-RULES §5),
    **on more than one roll**; the deliverables (screenshots upright and sideways, before/after numbers, notes); "update the ledger

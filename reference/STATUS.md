@@ -24,11 +24,15 @@ Last updated: 2026-10-28 (after release PR #40).
 | QA batch 2 | Worlds 1-2 fixes: 2-2 opening drowning (+ no stage hurts in its opening seconds), 1-7 eagle, 2-5 opening hit and predator count, dips/lips that stop a plain walk, lingering tips, fight-count progress bars, 2-2 flower totals, lives shown from the start, 1-7 polish; Dot toned down (W1-4); jump forgiveness engine-wide by difficulty (ledger G1-G4, G8) | W1-2 stage code, Dot's lines, engine movement, levelCheck | 2026-10-28 |
 | 200-roll tool | Expressive range: 200 rolls per stage of Worlds 1-5, heatmaps, diversity vs 0.35, rule failures across rolls (ledger C5) | tools/inspect/era.ts (new files) | 2026-10-28 |
 | Art placement | Every unused World 1-4 sheet piece placed (22 found); state frames; looks rotate by the roll with a cooldown; W1-2 drawing swaps only | puzzleArt, atlas, W3-4 decor | 2026-10-28 |
+| Generator: architect | The new generator's written design for Matt (World 5's 5-7..5-9 first, then Worlds 6-10), its data shapes and the six-pass skeleton | src/game/gen2/ (types, pipeline, design doc) | 2026-10-28 |
+| Generator: variety tools | Shuffle bag, cooldown queue, Poisson spacing (min gap between same-kind pieces, max gap with nothing), all seeded | src/game/gen2/variety.ts (+ test) | 2026-10-28 |
+| Pacing measures | Inspector: action density, rhythm-group length, tension curve per stage, the difficulty-band chart per world | tools/inspect/pacing.ts, bands.ts (new files) | 2026-10-28 |
 | Meeca's stage | "On the March North": camp, Flicker, five puzzle rooms (tea channel in room 4), the approved ending; night strips in code; replaces 5-M outright | Meeca/5-M files, W5 night strips | 2026-10-28 |
 
 ## Budget
 
-Matt is on the Max plan (2026-10-28): two building helpers at a time is fine (Worlds 1+2, then 3+4). Still no duplicate or
+Matt is on the Max plan (2026-10-28) and wants more helpers in parallel to finish sooner ("even twice as many"): run every
+separate job at once, never two on the same files. Still no duplicate or
 unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so and it drops to one world at a time.
 
 ## Open decisions for Matt
@@ -52,6 +56,13 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - Batch 1 (2026-10-28 morning): all fixed, live in PR #40.
 - Batch 2 (2026-10-28, Worlds 1-2 on build 39fc3db): 9 items, being fixed (helper "QA batch 2").
 - Asked of QA (2026-10-28): run the Matt bot through every stage of Worlds 3 and 4 on the live build; report on Matt's "send".
+
+## Waiting to start (they need another helper's result)
+
+- Seed curation (pick each stage's best rolls): needs the 200-roll tool.
+- Validator upgrades (per-difficulty jump margins D2, local self-repair D3, room-box size J3, co-visibility F7, min spacing C2): needs
+  QA batch 2 to land (it is in levelCheck.ts).
+- The generator's World 5 building blocks for 5-7..5-9: needs the architect's design and Matt's OK.
 
 ## Queued next (in Matt's order; Matt chose 2026-10-28: the Worlds 1-4 pass starts right after step 1, before the rest of World 5)
 
