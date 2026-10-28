@@ -1345,9 +1345,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     run(R.r(160, 220));
     const edge = x;
     close();
-    // (`deep`: over the stream, lower shelves and shorter gaps: a first-timer's flick, not a full jump, 2026-10-28)
-    const sh: [number, number] = deep ? [0.32, 0.4] : [0.45, 0.6];
-    let bx = edge + Math.round(reachJump(G - y, false) * R.r(sh[0], sh[1]));
+    let bx = edge + Math.round(reachJump(G - y, false) * R.r(0.45, 0.6));
     let m = 0;
     for (let k = 0; k < n; k++) {
       const w = Math.round(R.r(210, 280));
@@ -1355,7 +1353,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       branch(bx, bx + w, top);
       if (k !== 0 || n < 3) { snake(bx + w / 2, top, w - 90); m++; }
       else row(bx + 50, bx + w - 50, top - 34, 2, 'orchid');
-      bx += w + Math.round(reachJump(0, false) * (deep ? R.r(0.32, 0.4) : R.r(0.4, 0.55)));
+      bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.55));
     }
     const far = Math.round(bx + 20);
     softPit(edge, far);

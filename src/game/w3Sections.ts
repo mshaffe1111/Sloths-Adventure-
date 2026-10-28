@@ -238,7 +238,7 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
     for (let k = 0; k < n; k++) {
       const w = Math.round(wide ? R.r(150, 200) : R.r(180, 240));
       const rise = Math.round(wide ? R.r(40, 80) : R.r(20, 60));
-      const gap = Math.round(reachJump(rise, false) * (wide ? R.r(0.55, 0.68) : R.r(0.4, 0.55)));
+      const gap = Math.round(reachJump(rise, false) * (wide ? R.r(0.62, 0.74) : R.r(0.4, 0.55)));
       const at = (d: 1 | -1) => (d === 1 ? cur.x + cur.width + gap : cur.x - gap - w);
       const fits = (d: 1 | -1) => (d === 1 ? W - SINK_MARGIN - (cur.x + cur.width) : cur.x - SINK_MARGIN) >= gap + w && !blocked(at(d), at(d) + w, cur.y - rise);
       if (!fits(dir)) {
@@ -302,7 +302,9 @@ export function buildSinkhole(config: LevelConfig, seed: number): GeneratedStage
     if (pk.develop === 2) hint('Prowlers on the shelves! Punch, or hop past', 'Prowlers on the shelves! Punch, or hop past', 'Prowlers on the shelves! Punch, or hop past', cur.y + 10);
     let n = 0;
     while (expert < 140 - 38 && n < 30) {
-      if (pk.develop === 0) rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
+      // (every version meets the sinkhole's ocelots now and then: on a wide shelf at a rope's far end)
+      if (n % 3 === 2 && prowlShelf()) { /* the prowler's shelf was this round's crossing */ }
+      else if (pk.develop === 0) rope(Math.round(R.r(390, 460)), Math.round(R.r(300, 380)), n % 2 ? 3 : 0);
       else if (pk.develop === 1) hops(R.i(4, 5), true); else if (n % 2 === 0 && n > 0) {
         if (!prowlShelf()) hops(2, true);
       } else hops(R.i(2, 3), n > 1);
