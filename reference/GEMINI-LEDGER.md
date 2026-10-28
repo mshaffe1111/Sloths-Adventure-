@@ -107,7 +107,7 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 
 | # | Recommendation | Status | Where / what is next |
 |---|---|---|---|
-| J1 | Zoom floor 0.72-0.75x; protagonist at least 8-10% of the short screen side | PART | upright rooms may zoom out to the sideways scale (~0.5 screen px per world px on a 360-wide phone), below Gemini's floor. Next: measure Pokey's share of the screen and decide with Matt. |
+| J1 | Zoom floor 0.72-0.75x; protagonist at least 8-10% of the short screen side | NO | Matt decided (2026-10-28): the whole puzzle room stays in view upright, so Pokey may shrink to the sideways scale (~0.5 screen px per world px on a 360-wide phone). Rooms are still built narrow and tall so it rarely comes to that. |
 | J2 | Lean 35% toward the active part (source before pickup, receptor after) | IN | `puzzleCamera.ts`, keyBox. |
 | J3 | Puzzle rooms in a 500 x 750 px box (fits both orientations) | PART | narrow-and-tall rule; not checked by size. Next: the validator checks each room's box. |
 | J4 | A 0.8 s pan to a far gate, or a visible conduit between switch and gate | IN | first-open pan; troughs and ropes. |
@@ -115,7 +115,7 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 
 ## Summary (2026-10-28)
 
-Of 56 recommendations: **18 IN, 24 PART, 11 NOT, 3 NO** (B1 the engine switch, I1's per-playthrough shuffling, J5 the peek gesture). The biggest gaps:
+Of 56 recommendations: **18 IN, 23 PART, 11 NOT, 4 NO** (B1 the engine switch, I1's per-playthrough shuffling, J1 the zoom floor (Matt keeps the whole room in view), J5 the peek gesture). The biggest gaps:
 1. **Variety (C1, C3, C4, C8, C10):** rolls of a stage barely differ. Section variants, sockets, shuffle bags and cooldowns.
 2. **Movement forgiveness for every stage and both difficulties (G1-G4, G8).**
 3. **Difficulty-scaled rules (D2, E2, F1, F5)** so Easy is truly easier, not only fewer boss hits.
