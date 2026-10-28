@@ -26,22 +26,25 @@ const build = (id: string, a: LevelConfig['objectiveType'], seed: number, diffic
 };
 
 test('the sections: each is laid in its own space, 3-8 s of play, level at its ends, its water hops half a jump at most', () => {
-  const budget = planBudget(cfg('6-3', 'vine_runner'), M6, 'normal');
+  // (every roll lays, on both settings: a liana's perch must keep Easy's 300 ms release window too, or the core throws)
+  for (const d of ['normal', 'easy'] as const) {
+  const budget = planBudget(cfg('6-3', 'vine_runner'), { ...M6, moves: [...M6.moves, 'glide'] }, d);
   for (const s of W6_SWING_SECTIONS) {
     const keys = new Set(s.pieces.map((p) => p.key));
     for (const k of s.sockets) assert.ok(keys.has(k.on), `${s.id}.${k.id} sits on a piece it has`);
-    for (let r = 1; r <= 5; r++) {
+    for (let r = 1; r <= 30; r++) {
       const L = layLocal(s, budget, rngFor(r));
-      // (a swing's gap is wider than any jump, by design: a liana section may run 300 px longer per liana for the same seconds)
+      // (a swing's gap is wider than any jump, by design: a liana section may run 330 px longer per liana for the same seconds)
       const lianas = L.pieces.filter((p) => p.shape === 'liana').length;
-      assert.ok(L.width >= 600 && L.width <= 1700 + 300 * lianas, `${s.id}: ${L.width} px`);
+      assert.ok(L.width >= 600 && L.width <= 1700 + 330 * lianas, `${s.id}: ${L.width} px`);
       assert.ok(Math.abs(L.exit.y - s.exitDy) <= 25, `${s.id}: exitDy ${s.exitDy}, laid ${L.exit.y}`);
-      // (a hop over the water is half a jump at most; a gap a liana hangs over is the swing's, wider than any jump)
+      // (a hop over the water is half a jump at most, never under the core's 60 px; a gap a liana hangs over is the swing's, wider than any jump)
       const swung = (g: { x0: number; x1: number }) => L.pieces.some((p) => p.shape === 'liana' && p.x >= g.x0 - 1 && p.x <= g.x1 + 1);
-      for (const g of L.gaps) if (!swung(g)) assert.ok(g.x1 - g.x0 <= maxGap(0, false, budget.margin) * 0.5 + 1, `${s.id}: a ${g.x1 - g.x0} px hop over water`);
+      for (const g of L.gaps) if (!swung(g)) assert.ok(g.x1 - g.x0 <= Math.max(60, maxGap(0, false, budget.margin) * 0.5) + 1, `${s.id}: a ${g.x1 - g.x0} px hop over water`);
       // (a liana section is never mirrored; a chain has a perch between every two swings: the core throws otherwise)
       if (s.pieces.some((p) => p.shape === 'liana')) assert.equal(s.mirrorable, false, s.id);
     }
+  }
   }
 });
 

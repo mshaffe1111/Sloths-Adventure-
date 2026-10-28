@@ -196,7 +196,7 @@ const swingPair: SectionTemplate = {
   archetypes: ['vine_runner', 'sprint'],
   phases: ['sho', 'ten', 'ketsu'],
   difficulty: 5,
-  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('p1', 'l1', [180, 230], [-30, 20]), liana('l2', 'p1'), perch('b', 'l2', [300, 380])],
+  pieces: [bank('a', [180, 220]), liana('l1', 'a'), perch('p1', 'l1', [180, 230], [0, 20]), liana('l2', 'p1'), perch('b', 'l2', [300, 380])],
   entry: { piece: 'a', kind: 'ground' },
   exit: { piece: 'b', kind: 'ground' },
   exitDy: 0,
@@ -215,9 +215,9 @@ const swingChain: SectionTemplate = {
   pieces: [
     bank('a', [160, 200]),
     liana('l1', 'a'),
-    perch('p1', 'l1', [160, 200], [-20, 20]),
+    perch('p1', 'l1', [210, 250], [0, 12]),
     liana('l2', 'p1'),
-    perch('p2', 'l2', [160, 200], [-20, 20]),
+    perch('p2', 'l2', [210, 250]),
     liana('l3', 'p2'),
     perch('b', 'l3', [260, 320]),
   ],
@@ -313,6 +313,52 @@ const swingHunter: SectionTemplate = {
   exitDy: 0,
   sockets: [petals('b', 'b', 0.2, 2, 80), foe('foe', 'b', [0.55, 0.75], ['tayra', 'ocelot', 'frog'], 3), petals('c', 'c', 0.5, 1)],
   weight: 2,
+  mirrorable: false,
+};
+
+/** a swing down onto a low root (a pit's depth under the ledge), and a climbing vine back up the root wall past it */
+const swingDropClimb: SectionTemplate = {
+  id: 'w6s-swing-drop-climb',
+  name: 'swing down, climb back up (run)',
+  archetypes: ['vine_runner', 'sprint'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 6,
+  weight: 2,
+  pieces: [
+    bank('a', [180, 220]),
+    liana('l1', 'a'),
+    perch('b', 'l1', [220, 260], [70, 80]),
+    ...climbWall('v', 'b', 'wall', 200, [200, 240]),
+    down('c', 'wall', 125, [200, 240]),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'c', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('a', 'a', 0.4, 1), petals('b', 'b', 0.5, 2, 80), petals('wall', 'wall', 0.5, 2, 90), foe('foe', 'c', [0.6, 0.85], SMALL, 2.5, { phases: ['ten', 'ketsu'], chance: 0.4 })],
+  mirrorable: false,
+};
+
+/** a swing, then a quick run of knees and hops (a sprint's rhythm: swing, hop, hop, hop) */
+const swingRun: SectionTemplate = {
+  id: 'w6s-swing-run',
+  name: 'a swing, then the knees (run)',
+  archetypes: ['vine_runner', 'sprint'],
+  phases: ['sho', 'ten', 'ketsu'],
+  difficulty: 5,
+  weight: 2,
+  pieces: [
+    bank('a', [180, 220]),
+    liana('l1', 'a'),
+    perch('b', 'l1', [200, 240]),
+    up('k1', 'b', 45, [100, 130]),
+    down('c', 'k1', 45, [120, 150]),
+    hop('d', 'c', [150, 180]),
+    hop('e', 'd', [220, 260]),
+  ],
+  entry: { piece: 'a', kind: 'ground' },
+  exit: { piece: 'e', kind: 'ground' },
+  exitDy: 0,
+  sockets: [petals('b', 'b', 0.5, 1), petals('k1', 'k1', 0.5, 1), petals('d', 'd', 0.5, 1), foe('foe', 'e', [0.6, 0.85], ['frog', 'tayra'], 2.5, { phases: LIVE, chance: 0.5 })],
   mirrorable: false,
 };
 
@@ -501,7 +547,7 @@ const darkClimb: SectionTemplate = {
 /** World 6's swing-stage sections: the root ground, the swings and climbs, the dark roots */
 export const W6_SWING_SECTIONS: readonly SectionTemplate[] = [
   rootIsland, rootKnees, perchSteps, watchedRoot, humpRun,
-  firstSwing, swingPair, swingChain, swingClimb, vineWall, swingWatch, kneesSwing, swingHunter,
+  firstSwing, swingPair, swingChain, swingClimb, vineWall, swingWatch, kneesSwing, swingHunter, swingDropClimb, swingRun,
   darkRoots, darkSteps, darkLong, darkClimb,
 ];
 
