@@ -238,6 +238,7 @@ export const DOT_LINES: readonly DotLineRow[] = [
   ["way.3-8", "3-8", "wayside", "story", "Old vines only watch for things in a hurry. So don't hurry. You're very good at that.", "Old vines only watch for hurrying. So don't. You're good at that.", null, null, null],
   ["hint.3-9.prints", "3-9", "stage hint", "story", "Pawprints in a circle, and they all go one way...", "Pawprints in a circle, and they all go one way...", null, null, "pawprints"],
   ["way.3-9", "3-9", "wayside", "story", "Seems to me a ring is just a road that forgot where it was going.", "Seems to me we've been here.", null, null, null],
+  ["hint.4-1.snakes", "4-1", "stage hint", "move", "Snakes on the ledges! Punch them or hop over them", "Snakes! Tap to punch, or hop over.", null, "tap", "snakes"],
   ["hint.4-1.climb", "4-1", "stage hint", "move", "The ledge broke away! Climb back up. Slide up a trunk to climb", "Ledge gone! Slide up a trunk to climb.", null, "climb-up", "trunk"],
   ["skill.glide.controls", "4-1", "skill card", "move", "Jump: then hold Jump as you start to fall. Left/Right: steer while you drift. Let go: to drop normally", "Flick up, keep your thumb on the glass.", null, "flick-hold", "the card's gesture picture"],
   ["hint.4-2.leaf", "4-2", "stage hint", "move", "Your leaf! Flick up, then keep your thumb on the glass as you fall", "Flick up, keep your thumb on the glass.", null, "flick-hold", "first wide gap"],

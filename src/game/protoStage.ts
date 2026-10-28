@@ -5132,7 +5132,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
    */
   const w4Climb = cliff || mist ? (() => {
     const t = new W4Roll(seed, cliff ? '4-1' : '4-6').theme('climb', ['hops', 'ropes', 'turns'] as const);
-    return { theme: t, hopsAt: (n: number) => (t === 'hops' ? n % 4 !== 1 : t === 'ropes' ? n % 3 === 2 : n % 2 === 0) };
+    return { theme: t, hopsAt: (n: number) => (t === 'hops' ? n % 4 !== 1 : t === 'ropes' ? n % 4 === 3 : n % 2 === 0) };
   })() : null;
   /** where he stands now, and which way the climb is heading across the tree */
   let cur: Platform;
@@ -5832,6 +5832,28 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     }
     return n;
   };
+  // (round 5, 4-1: a roll that climbs by turns is the snakes' flavour: a snake on the wide ledges, on the part of each clear of the
+  // flags (the level check's SAFE_APPROACH, with room to spare) and of the puzzle room; World 1's punch comes back, and the rolls differ
+  // in what they do, not only in where. Fewer rocks then, and never on a snake's ledge)
+  if (cliff && w4Climb?.theme === 'turns') {
+    const spots = [...checkpoints, { x: crown.x + crown.width / 2, y: crown.y }];
+    const wide = P.filter((p) => p !== P[0] && p !== crown && p.width >= 300 && p.y < P[0].y - 400 && p.y > crown.y + 300 && p.id !== spot?.platformId && !pulley.plats.includes(p.id)).sort((a, b) => b.y - a.y);
+    let lowest = -Infinity;
+    for (const p of wide) {
+      if (ROOMS.some((rm) => { const b = roomBox(rm, P); return p.x < b.x1 + 160 && p.x + p.width > b.x0 - 160 && p.y > b.y0 - 160 && p.y < b.y1 + 160; })) continue;
+      // the stretches of the ledge clear of every flag near its height
+      let parts: Array<[number, number]> = [[p.x + 60, p.x + p.width - 60]];
+      for (const q of spots) {
+        if (Math.abs(q.y - p.y) >= 420) continue;
+        parts = parts.flatMap(([a, b]): Array<[number, number]> => [[a, Math.min(b, q.x - 240)], [Math.max(a, q.x + 240), b]]).filter(([a, b]) => b - a >= 120);
+      }
+      const best = parts.sort((u, v) => v[1] - v[0] - (u[1] - u[0]))[0];
+      if (!best || !R.chance(0.85)) continue;
+      snake((best[0] + best[1]) / 2, p.y, best[1] - best[0]);
+      lowest = Math.max(lowest, p.y);
+    }
+    if (lowest > -Infinity) hint('Snakes on the ledges! Punch them or hop over them', 'Snakes on the ledges! Punch them or hop over them', 'Snakes on the ledges! Punch them or hop over them', lowest + 200);
+  }
   if (cliff) {
     // (and since 2026-10-28 up to the last hops under the crown, 300 under it: the frond's ledge and the crown stay quiet)
     const ledges = P.filter((p) => p !== P[0] && p !== crown && p.y < P[0].y - 600 && p.y > crown.y + 300 && p.width >= 260 && p.id !== spot?.platformId && !pulley.plats.includes(p.id)).sort((a, b) => b.y - a.y);
@@ -5843,14 +5865,18 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     // climb is mostly those hops now, and the rocks are its beat)
     // (round 2, 2026-10-28: a roll whose climb is by hops is the rockfall flavour, a rock over every wide ledge it can, up to sixteen)
     // (round 3: every 4-1 roll, World 4 sitting above World 3: the warning stays 1.4 s, so each rock is fair, there are just more)
-    const rockFlavour = !!w4Climb;
-    const every = rockFlavour ? 1 : Math.max(1, Math.floor(ledges.length / 12));
+    // (round 5: the rockfall is the hops' flavour; a roll by ropes or by turns (its snakes) has a few, so the rolls differ in what
+    // they hold)
+    const rockFlavour = w4Climb?.theme === 'hops';
+    const every = rockFlavour ? 1 : Math.max(1, Math.floor(ledges.length / 6));
     const inGroup = (g: number[]) => [g[Math.floor(g.length / 2)], ...g].map((id) => ledges.find((p) => p.id === id)).filter((p): p is Platform => !!p);
     const order = [...hopGroups.map(inGroup), ...ledges.filter((_, k) => k % every === 0).map((p) => [p])];
     for (const tries of order) {
-      if (rocks.length >= (rockFlavour ? 16 : 10)) break;
+      if (rocks.length >= (rockFlavour ? 16 : w4Climb?.theme === 'ropes' ? 3 : 5)) break;
       for (const p of tries) {
         if (rocks.some((q) => q.land === p.y)) continue;
+        // (not over a snake's ledge: one thing at a time)
+        if (E.some((e) => Math.abs(e.y + 14 - p.y) < 6 && e.x > p.x - 40 && e.x < p.x + p.width + 40)) continue;
         const busy = climbsAt(p);
         const rx = [0.5, 0.38, 0.62].map((u) => Math.round(p.x + p.width * u)).find((rx) => busy.every((bx) => Math.abs(bx - rx) > ROCK.radius + 90));
         if (rx === undefined) continue;
@@ -5865,7 +5891,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     }
     // (round 4: rocks down the trunks too, from above the lowest ledge rock: the ledge's lesson comes first)
     const ledgeFirst = rocks.reduce((m, q) => Math.max(m, q.land), -Infinity);
-    if (ledgeFirst > -Infinity) climbRocks(ledgeFirst, 10);
+    if (ledgeFirst > -Infinity) climbRocks(ledgeFirst, rockFlavour ? 10 : 4);
     // (Dot names the first one he comes to: the lowest; as he climbs up toward its ledge, a trunk's height below it, so the line is
     // up before he stands under the rock: at its own height it came after the first hit on some rolls, 2026-10-28)
     const firstRock = rocks.reduce<RockDrop | undefined>((a, q) => (!a || q.land > a.land ? q : a), undefined);
