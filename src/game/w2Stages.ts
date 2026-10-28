@@ -1166,11 +1166,12 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       // the court gate: the bell beside it (the first bell: no guard this side of the gate, and nothing to fall in)
       const g = bellGate({ enter: 'Ring the court bell. Tap it!', open: 'Dong! The gate opens. The guards come to look at a bell.' });
       // the first guard, past the gate: near enough to hear the bell, and come to look
+      // (the guard's tip before the first guard: it was said 240 px past him, after the first jab, the first-timer bot 2026-10-28)
+      hint(g.bellX + 160, 'Head-on he blocks. Hit him from behind, or kick him!');
       run(R.r(220, 260));
       guard(Math.max(x, g.bellX + 520), G, 100);
       run(R.r(280, 320));
       expert += 4;
-      hint(x - 240, 'Head-on he blocks. Hit him from behind, or kick him!');
       guardBank(2, [320, 380]);
       narrow(1, 66);
       flag();
@@ -1254,8 +1255,9 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       hint(x - 750, 'Flick up when a log drifts close.');
       river(1, 60, 2, 124, { flowers: 6, safe: true, tag: 'learn' });
       breath();
+      // (the pond's tip before the pond, not after it: it was said 260 px before its far bank, after the first drownings)
+      hint(x + 60, 'Hop the lily pads. The flowers show the way.');
       lilyPond(5);
-      hint(x - 260, 'Hop the lily pads. The flowers show the way.');
       breath();
       stones(3, { flowers: true });
       flag();
@@ -1390,7 +1392,8 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     };
     beat('Learn: one snapper', () => {
       // (the first snapper well past four seconds of walking: it was 1 s in, and bit him before Dot's first line, QA 2026-10-28)
-      rest(START_WALK + 150);
+      // (and past five and a half seconds: at 4.7 s the first-timer bot's plain walk was still bitten, 2026-10-28)
+      rest(START_WALK + 400);
       hint(200, 'Snappers! Hit one from behind, or jump on it.');
       run(R.r(120, 160));
       turtle(x, G, 100);

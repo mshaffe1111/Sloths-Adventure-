@@ -1897,6 +1897,8 @@ export function buildProtoStage(config: LevelConfig, seed = 1, plan: StagePlan =
     // run on after the high ground and the ring.)
     beat('Learn: one guard at a time', () => {
       rest(R.r(380, 420));
+      // (two rocks to hop before the first guard: the first-timer bot, jumping onto its stump, was bitten 3.5 s in, 2026-10-28)
+      busy(2, ['log'], R.r(120, 160));
       hint(x + 40, 'A guard! Wait for it to rear and strike, then tap to punch it', 'A guard! Wait for it to rear and strike, then press Punch', 'A guard! Wait for it to rear and strike, then press J to punch');
       guardBranch(true);
       busy(1);

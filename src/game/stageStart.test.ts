@@ -18,7 +18,7 @@ import { lessonDotLine, type LessonId } from './lessons.ts';
 import { DANGER } from './dotGuideWatch.ts';
 
 /** seconds of plain walking in which nothing may hurt him */
-export const START_SAFE = 4;
+export const START_SAFE = 5;
 /** Dot's first line is up at least this long (s) before the first thing that hurts him */
 const LEAD = 0.8;
 /** how long the plain walk goes on (s), looking for the first thing that hurts */

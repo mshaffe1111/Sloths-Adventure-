@@ -6085,6 +6085,8 @@ export class GameEngine {
   /** step the watching eagle and its dive (1-7) */
   /** the eagle caught him out in the open on its last pass (Dot calls the next warning too) */
   private watchCaught = false;
+  /** how many of the watcher's later warnings Dot has said this stage (watchCaught) */
+  private watchVoiced = 0;
 
   private updateWatch(dt: number) {
     const p = this.player;
@@ -6109,7 +6111,9 @@ export class GameEngine {
         markTipHeard(id, 'watch:hide');
         const duck = lessonInputMode() === 'screen' ? `Slide down inside a ${hide}` : `Hold down inside a ${hide}`;
         this.guide(cliffs ? `Here she comes! Stand behind a waterfall, or ${duck.toLowerCase()}` : `Here it comes! ${duck} to hide`, 3);
-      } else if (!hidden(bushes, { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging }) && (this.watch.passes <= 2 || this.watchCaught)) {
+      } else if (this.watchVoiced < 3 && !hidden(bushes, { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging }) && (this.watch.passes <= 2 || this.watchCaught)) {
+        // (three times a stage at most: the first-timer bot heard it six times in 1-7; the sign over his head stays every pass)
+        this.watchVoiced++;
         // (the sign over his head was in the world only: Dot says it too, for the next two passes and after any pass that caught him,
         // when he is out in the open. QA 2026-10-28)
         this.guide(cliffs ? 'Hide! Water or a bush!' : `Hide! Into a ${hide}!`, 2.4);
