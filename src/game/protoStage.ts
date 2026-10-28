@@ -44,6 +44,7 @@ import type { FruitTree, W4Extras } from './w4Play.ts';
 import type { Waterfall } from './waterfalls.ts';
 import type { Capuchin } from './capuchin.ts';
 import { dressStage } from './artDress.ts';
+import { w3Pick } from './w3Sections.ts';
 import { addKitPlatforms, type Anchor, type KitExtras, type RoomSpec, type RoomTips } from './puzzleKit.ts';
 
 export const PROTO_STAGE_ID = '1-6';
@@ -2253,13 +2254,14 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     expert += 2.5;
   }
   /** a gap with a cloud on both sides of it: jump it while the air is clear */
-  function sporeGap() {
+  function sporeGap(deep = false) {
     const x0 = x;
     run(R.r(300, 360));
     const edge = x;
     close();
-    const far = Math.round(edge + reachJump(0, false) * R.r(0.55, 0.68));
-    softPit(edge, far);
+    // (`deep`, 2026-10-28: over the stream, no moss below: a miss costs a life, so the gap stays well inside a jump)
+    const far = Math.round(edge + reachJump(0, false) * (deep ? R.r(0.52, 0.62) : R.r(0.55, 0.68)));
+    if (!deep) softPit(edge, far);
     arc(edge - 30, far + 30, G - 110, 4);
     open(far);
     run(R.r(300, 360));
@@ -2272,7 +2274,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * moment wakes the ones ahead (zones.ts GLOW_STILL / GLOW_REACH), and they stay lit. Gaps are soft (a mossy floor below). `ferns`:
    * a fern to stop in before each gap (3-2's eyes cannot see him in one). Returns where the stops are, for the stealth stretches.
    */
-  function glowDark(len: number, gaps: number, opts: { ferns?: boolean; rocks?: boolean; lead?: boolean } = {}): number[] {
+  function glowDark(len: number, gaps: number, opts: { ferns?: boolean; rocks?: boolean; lead?: boolean; deep?: boolean } = {}): number[] {
     const x0 = x;
     const e0 = expert;
     let hops = 0;
@@ -2303,8 +2305,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       else go(seg);
       const edge = x;
       close();
-      const far = Math.round(edge + reachJump(0, false) * R.r(0.5, 0.66));
-      softPit(edge, far);
+      // (`deep`, 2026-10-28: the gaps in the dark are over the stream; the glowworm over each one shows it before the jump)
+      const far = Math.round(edge + reachJump(0, false) * (opts.deep ? R.r(0.48, 0.6) : R.r(0.5, 0.66)));
+      if (!opts.deep) softPit(edge, far);
       flower(edge + (far - edge) / 2, G - 110, 'orchid');
       glow((edge + far) / 2);
       open(far);
@@ -2377,7 +2380,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     pieces.push({ k: 'kapok', x0, x1: x });
   }
   /** limestone shelves over a soft pit with ocelots on them (punch them, or hop them) */
-  function prowlShelves(n: number, y: number) {
+  function prowlShelves(n: number, y: number, deep = false) {
     const x0 = x;
     run(R.r(160, 220));
     const edge = x;
@@ -2393,11 +2396,134 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       bx += w + Math.round(reachJump(0, false) * R.r(0.4, 0.55));
     }
     const far = Math.round(bx + 20);
-    softPit(edge, far);
+    // (`deep`, 2026-10-28: the shelves stand over the stream, a punch and a jump at once)
+    if (!deep) softPit(edge, far);
     open(far);
     run(R.r(320, 380));
     expert += (x - x0) / RUN + 2.2 * m;
     pieces.push({ k: 'snakes', x0, x1: x });
+  }
+
+  // ----- World 3's harder ground (the variety pass, 2026-10-28: STAGE-RULES §1b, World 3 sits between World 2 and World 4) -----
+  /** the roll's picks for a World 3 stage: which version of each section, the mirror, the dressing (w3Sections.ts) */
+  const W3P = config.worldIndex === 3 ? w3Pick(plan, seed) : undefined;
+  /** the pieces of a section in the roll's order: as given, or the other way about on a mirrored roll (C8) */
+  const w3Order = (...fs: Array<() => void>) => (W3P?.mirror ? fs.reverse() : fs).forEach((f) => f());
+  /**
+   * World 3's stepping stones in a soft pit, with a one-jump way out of every gap (STAGE-RULES §2 "Plain walk"; the gap list: the
+   * first-timer was stuck 17-20 times a run in 3-1's stone pits, a 180-270 px face ahead and 130 px back). Every gap between two stones
+   * (or a stone and a bank) has its own mossy floor one easy hop under its higher side (plainPit, as 1-1's), so a miss is a hop back up.
+   */
+  function w3Stones(heights: number[], share: [number, number]) {
+    const x0 = x;
+    run(R.r(140, 200));
+    const edge = x;
+    close();
+    let px = edge, prevTop = G;
+    const stones: Platform[] = [];
+    for (const h of heights) {
+      const top = G - h;
+      px += Math.round(reachJump(prevTop - top, false) * R.r(share[0], share[1]));
+      const w = Math.round(R.r(120, 160));
+      const p: Platform = { id: pid++, x: px, y: top, width: w, height: HOLLOW_Y - top + 10, type: 'solid', style: 'moss_stone' };
+      P.push(p);
+      stones.push(p);
+      flower(px + w / 2, top - 34, 'orchid');
+      px += w;
+      prevTop = top;
+    }
+    const far = Math.round(px + reachJump(prevTop - G, false) * R.r(share[0], share[1]));
+    plainPit(edge, stones, far);
+    open(far);
+    run(R.r(160, 220));
+    expert += (x - x0) / RUN + 0.6 * heights.length;
+    pieces.push({ k: 'stumps', x0, x1: x });
+  }
+  /** a stone pillar standing up out of the deep (no floor under it: the water below costs a life) */
+  const deepStone = (x0: number, w: number, top: number) => {
+    const p: Platform = { id: pid++, x: Math.round(x0), y: Math.round(top), width: Math.round(w), height: WATER + 40 - Math.round(top), type: 'solid', style: 'moss_stone' };
+    P.push(p);
+    return p;
+  };
+  /**
+   * the deep: a run of real jumps over the grotto's underground stream (no moss below: a miss costs a life). Stones stand up out of the
+   * water, some a step higher, some across a gap only the second jump crosses, each landing wide (130-180 px) and every gap well inside
+   * what the jump reaches (at most 72% of it: a press window well over the 167 ms floor). `n` stones; `dbl`: how many of the gaps want
+   * the second jump. Easy lays a stepping stone in each second-jump gap (easyMode.ts easyStones), so it stays a single jump there.
+   */
+  function deepRun(n: number, dbl = 1, rise = true) {
+    const x0 = x;
+    run(R.r(180, 240));
+    const edge = x;
+    close();
+    // which gaps want the second jump (never the first: the run starts with a plain one)
+    const want = new Set(R.shuffle(Array.from({ length: n }, (_, i) => i + 1)).slice(0, Math.min(dbl, n)));
+    let px = edge, prevTop = G;
+    for (let k = 0; k <= n; k++) {
+      const last = k === n;
+      const up = !last && rise && R.chance(0.45) ? Math.round(R.r(40, 80)) : 0;
+      const top = last ? G : Math.max(G - 150, Math.min(G + 20, prevTop - up + (up ? 0 : Math.round(R.r(-20, 30)))));
+      const two = want.has(k) && !up;
+      const gap = Math.round(reachJump(prevTop - top, two) * (two ? R.r(0.62, 0.72) : R.r(0.5, 0.66)));
+      px += Math.max(70, gap);
+      if (last) break;
+      const w = Math.round(R.r(130, 180));
+      deepStone(px, w, top);
+      flower(px + w / 2, top - 34, 'orchid');
+      // a petal arc over each second-jump gap (it shows the way across)
+      if (two) arc(px - gap + 10, px - 10, Math.min(prevTop, top) - 150, 3, 'hibiscus');
+      px += w;
+      prevTop = top;
+    }
+    open(px);
+    run(R.r(240, 300));
+    expert += (x - x0) / RUN + 0.5 * n;
+    pieces.push({ k: 'gorge', x0, x1: x });
+    // (new, needs Matt's approval: Dot's line before the first real drop of a World 3 stage)
+    once('deep', () => hint(edge - 200, 'No moss down there. Jump true!'));
+  }
+  /**
+   * World 3's stone plate (Matt's `stonePlate` / `stonePlateDown`, wired in the kit but never seen in a stage before): a root gate across
+   * the way, a mossy stone plate in front of it, and a heap of pebbles by the door. Standing on the plate opens the roots, but stepping
+   * off to go through shuts them: a pebble set on the plate holds it down. `two` (the twist): two plates, both to be held down, the second
+   * past a stone a hop high. Nothing here hurts; a pebble lost rolls back to the heap.
+   */
+  function plateRoom(two: boolean) {
+    const x0 = x;
+    run(R.r(150, 190));
+    const door = x;
+    const before = endBank();
+    const span = two ? 760 : 600;
+    run(span);
+    const floor = endBank();
+    const n = ROOMS.length;
+    const parts: RoomSpec['pieces'] = [
+      { kind: 'reset', id: `post${n}`, at: onP(floor, door + 16) },
+      { kind: 'source', id: `heap${n}`, variant: 'pebble', at: onP(floor, door + 100), look: 'pile' },
+      { kind: 'item', id: `pebble${n}`, variant: 'pebble', source: `heap${n}`, for: `plateA${n}` },
+      { kind: 'plate', id: `plateA${n}`, at: onP(floor, door + 300) },
+    ];
+    const ground = [floor.id];
+    if (two) {
+      const rock = block(door + 400, door + 500, 40);
+      flower(door + 450, G - 74, 'orchid');
+      ground.push(rock.id);
+      parts.push({ kind: 'plate', id: `plateB${n}`, at: onP(floor, door + 580) });
+      parts.push({ kind: 'gate', id: `roots${n}`, at: onP(floor, door + 700), open: { all: [`plateA${n}`, `plateB${n}`] }, look: 'roots' });
+    } else parts.push({ kind: 'gate', id: `roots${n}`, at: onP(floor, door + 520), open: `plateA${n}`, look: 'roots' });
+    ROOMS.push({
+      id: `${two ? 'platesTwo' : 'plate'}-${n}`,
+      left: onP(before, door - 30), right: onP(floor, door + span - 10), above: 400, below: 60,
+      pieces: parts, exit: `roots${n}`, beyond: onP(floor, door + span - 30), ground,
+      tips: two
+        ? { enter: 'Two stone plates this time.', hold: 'One pebble each. Tap to set it down.' }
+        : { enter: 'Roots! That stone plate opens them. Stepping off shuts them.', hold: 'Pebbles are heavy enough. Tap to set it down.', open: 'Held open!' },
+    });
+    run(R.r(90, 130));
+    logHop(R.i(34, 44));
+    run(R.r(120, 160));
+    expert += (x - x0) / RUN + (two ? 8 : 5);
+    pieces.push({ k: 'log', x0, x1: x });
   }
 
   // ----- World 3's puzzle rooms (the shared puzzle kit, puzzleKit.ts; 2026-10-28) -----
@@ -2469,52 +2595,68 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     pieces.push({ k: 'log', x0, x1: x });
   }
 
+  /** World 3's openings (the variety pass): every one safe (soft moss under every dip), a hop or two in the first seconds */
+  const w3Start = (v: number) => {
+    if (v === 0) busy(2, ['log', 'dip'], R.r(230, 270));
+    else if (v === 1) { lowStumps(); busy(1, ['dip'], R.r(230, 270)); }
+    else { busy(1, ['log'], R.r(150, 190)); w3Stones([40, 70], [0.45, 0.55]); }
+  };
+  /** World 3's finish: pieces drawn from a shuffle bag (C1) until a quick player has had the stage's time, a flag every `every` */
+  const w3Finish = (target: number, kit: Array<() => void>, every = 2, more: () => boolean = () => false) => {
+    const next = W3P!.bag(kit);
+    let n = 0;
+    while ((expert < target || more()) && n < 24) {
+      next()();
+      n++;
+      if (n % every === 0) flag();
+    }
+  };
+
   if (plan === '3-1') {
     // 3-1 Into the Grotto: follow the glowworm light down into the grotto. Run and hop on the grotto's stones, wait out the sleepy
     // spores, and in the twist meet the dark: stand still, and the glowworms wake.
-    // (Rebuilt 2026-10-28, the stage inspector: a hop or two on the way in, stones to hop in the dark and under the spores, the high road
-    // with stones on the floor below it, and a short run home: nowhere an empty walk.)
+    // (The variety pass, 2026-10-28: two or three versions of each section, picked by the roll (w3Sections.ts); the stone pits have a
+    // one-jump way out of every gap (w3Stones); from the Develop on, real jumps over the grotto's stream (deepRun), World 3's step up
+    // from World 2.)
+    const v = W3P!;
     beat('Start: the grotto mouth', () => {
       rest(R.r(420, 480));
       W3D.push({ n: 'grottoMouth', x: x - 140, b: G + 8, w: 320 });
       hint(x - 300, 'Into the grotto!');
-      busy(2, ['log', 'dip'], R.r(230, 270));
+      w3Start(v.start);
       flag();
     });
     beat('Learn: the grotto stones', () => {
-      stumps();
-      busy(1);
-      pillars([60, 120, 60], [0.5, 0.62]);
+      if (v.learn === 0) w3Order(() => stumps(), () => busy(1), () => w3Stones([60, 120, 60], [0.5, 0.62]));
+      else w3Order(() => w3Stones([50, 90, 130, 80], [0.5, 0.62]), () => highRoadOver());
       busy(1);
       flag();
     });
     beat('Develop: the sleepy spores', () => {
       hint(x + 40, 'Mushrooms puff sleepy spores. Wait for them to clear');
-      sporeRest(R.r(560, 640));
-      sporeGap();
-      pillars(R.shuffle([40, 100, 140, 80]), [0.55, 0.68]);
-      sporeGap();
+      sporeRest(R.r(440, 500));
+      if (v.develop === 0) w3Order(() => sporeGap(), () => w3Stones(R.shuffle([40, 100, 140, 80]), [0.55, 0.68]), () => sporeGap(true));
+      else if (v.develop === 1) w3Order(() => deepRun(3, 1), () => sporeGap(true), () => deepRun(3, 1));
+      else w3Order(() => chain(2, false, 'gorge'), () => sporeGap(true), () => chain(3, false, 'gorge'));
       flag();
     });
     beat('Twist: the dark', () => {
       hint(x + 60, 'Too dark to see. Stand still and listen...');
-      // (the first dark is flat, two stones in it; then the spores between; then a dark with a gap)
+      // (the first dark is flat, stones in it; what comes round it changes with the roll: spores, the stream, or vines)
       glowDark(R.r(1000, 1100), 0, { rocks: true });
-      sporeGap();
-      glowDark(R.r(1250, 1400), 1, { rocks: true });
+      if (v.twist === 0) { sporeGap(); glowDark(R.r(1250, 1400), 1, { rocks: true, deep: true }); sporeGap(true); }
+      else if (v.twist === 1) { deepRun(3, 1); glowDark(R.r(1250, 1400), 2, { rocks: true, deep: true }); }
+      else { chain(3, false, 'gorge'); glowDark(R.r(1150, 1300), 1, { deep: true }); chain(2, false, 'gorge'); }
       flag();
     });
     beat('Finish', () => {
-      let n = 0;
-      while (expert < EXPERT_SECONDS + 4 && n < 24) {
-        const k = n % 4;
-        if (k === 0) pillars(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]);
-        else if (k === 1) sporeGap();
-        else if (k === 2) highRoadOver();
-        else { busy(1); stumps(); }
-        n++;
-        if (n % 3 === 0) flag();
-      }
+      // (each version leans on one thing, drawn from a shuffle bag: lianas over the stream, the spores and the dark, or the deep)
+      const kits: Array<Array<() => void>> = [
+        [() => chain(3, false, 'gorge'), () => chain(4, false, 'gorge'), () => highRoadOver(), () => { chain(2, false, 'gorge'); busy(1); }],
+        [() => { sporeRest(R.r(440, 500)); sporeGap(true); }, () => glowDark(R.r(1100, 1250), 1, { rocks: true, deep: true }), () => { sporeGap(true); sporeGap(); }, () => glowDark(R.r(1000, 1150), 2, { deep: true })],
+        [() => deepRun(5, 2), () => w3Stones(R.shuffle([50, 110, 70, 130]), [0.55, 0.7]), () => deepRun(4, 1), () => { busy(1); stumps(); }],
+      ];
+      w3Finish(EXPERT_SECONDS + 18, kits[v.finish], 3);
       homeRun();
     });
   }
@@ -2636,7 +2778,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
    * a row of thorn vines, `spacing` apart: room to stand between two of them and freeze. `pits`: every other vine hangs over a soft pit,
    * hopped while it sleeps.
    */
-  function vineRow(n: number, sleep: [number, number], spacing: [number, number], pits = false) {
+  function vineRow(n: number, sleep: [number, number], spacing: [number, number], pits = false, deep = false) {
     const x0 = x;
     const e0 = expert;
     // (2026-10-28, the stage inspector: a grotto stone to hop on the way up to the row and on the way out of it, clear of every reach)
@@ -2650,7 +2792,8 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         const edge = x;
         close();
         const far = edge + w;
-        softPit(edge, far);
+        // (`deep`, 2026-10-28: the gap under the vine is over the stream: wait on the bank while it looks, jump while it sleeps)
+        if (!deep) softPit(edge, far);
         thornAt((edge + far) / 2, sleep);
         open(far);
         // (the next vine is measured from this one, so the pocket between them stays as wide as the rest)
