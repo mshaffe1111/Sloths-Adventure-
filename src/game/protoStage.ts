@@ -2616,7 +2616,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   };
   /**
    * a wall of grotto rock too high to jump (250-300 up), and a root hanging down its face to climb (the way on goes up it, so it is not a
-   * detour); along its top, and down the far side with a hop as he lands. `n` walls, one after another. Nothing here costs a life.
+   * detour); a rock to hop along its top, and down the far side with a short gap over the stream to jump as he lands. `n` walls, one after another. Nothing here costs a life.
    */
   function rootClimb(n: number) {
     const x0 = x;
@@ -2629,9 +2629,15 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       const top = cliff(x, x + w, h);
       trunk(x - 34, G, G - h);
       for (let i = 0; i < 2; i++) flower(x - 34, G - 80 - i * 70, 'hibiscus');
-      row(top.x + 90, top.x + w - 60, top.y - 34, Math.max(2, Math.round(w / 150)), 'orchid');
+      // (a rock to hop on the top, and a dip just past the foot of the far side: the climb is a burst, not a climb and a walk)
+      topRock(top, 0.55);
+      flower(top.x + 60, top.y - 34, 'orchid');
       open(x + w);
-      expert += h / CLIMB + 0.8 + w / RUN;
+      run(R.r(70, 100));
+      // (a short gap over the stream past the foot: a third of a jump, the first-timer's flick clears it)
+      close();
+      open(x + Math.round(reachJump(0, false) * R.r(0.32, 0.38)));
+      expert += h / CLIMB + 0.8 + w / RUN + 0.3;
     }
     run(R.r(160, 200));
     expert += (x - x0) / RUN;
@@ -3290,6 +3296,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
       expert += 3;
       flag();
       if (v.twist === 1) { busy(1); plateRoom(false); flag(); }
+      else if (v.twist === 2) { rootClimb(2); flag(); }
     });
     beat('Finish', () => {
       busy(1, ['log'], R.r(140, 180));
@@ -4470,7 +4477,9 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
   if (config.worldIndex === 3) {
     const darkAt = (px: number) => GZ.some((z) => z.kind === 'dark' && px > z.x0 - 80 && px < z.x1 + 80);
     for (const pc of pieces) {
-      if (pc.k !== 'rest' && pc.k !== 'snakes') continue;
+      // (over the stream and the chasms only the roof's pieces hang: nothing stands where there is no floor)
+      const roofOnly = pc.k === 'gorge';
+      if (pc.k !== 'rest' && pc.k !== 'snakes' && !roofOnly) continue;
       for (let cx = pc.x0 + R.r(80, 200); cx < pc.x1 - 80; cx += R.r(280, 460)) {
         // (the variety pass: the set of floor pieces and hanging pieces rotates with the roll, w3Sections.ts W3_DECOR_SETS)
         const set = W3P!.decor;
@@ -4478,7 +4487,7 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
         const k = R.pick(kinds);
         const w = k === 'stalagmites' ? R.r(140, 200) : k === 'mushrooms' ? R.r(84, 110) : k === 'fern' ? R.r(140, 180) : k === 'pawprint' ? R.r(92, 110) : k === 'bones' ? R.r(100, 120) : R.r(100, 130);
         const busy = BUSHES.some((b) => cx > b.x - 60 && cx < b.x + b.w + 60) || C.some((c) => (c.hidden || c.type === 'find') && Math.abs(c.x - cx) < 170) || W3D.some((d) => d.n === 'fern' && Math.abs(d.x - cx) < 170);
-        if (!busy) W3D.push({ n: k, x: Math.round(cx), b: G + 8, w: Math.round(w), flip: R.chance(0.5) });
+        if (!busy && !roofOnly) W3D.push({ n: k, x: Math.round(cx), b: G + 8, w: Math.round(w), flip: R.chance(0.5) });
         if (R.chance(0.5)) {
           // (a lit glowworm thread never hangs in the dark, where they sleep until he listens)
           const hangs = set.hang.filter((n) => n !== 'glowLit' || !darkAt(cx));

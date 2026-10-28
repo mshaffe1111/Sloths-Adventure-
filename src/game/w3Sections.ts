@@ -4,12 +4,13 @@
  * The 200-roll tool found every World 3 stage 91-99% alike from roll to roll: the platforms moved, but the order of things to do never
  * changed. Now each stage has two or three authored versions of its main sections (Start, Learn, Develop, Twist, Finish), and the layout
  * roll picks one of each:
- *   - the versions of a section come out of a shuffle bag (gen2/variety.ts ShuffleBag) drawn on the roll's own stream, and a cooldown
- *     (CooldownQueue) over the whole stage keeps one kind of stretch from turning up in two sections of one stage (a dark twist after a
- *     dark develop), so a stage always mixes its world's things;
- *   - the Finish draws its pieces from a shuffle bag (C1) instead of cycling them in a fixed order;
+ *   - each version is a kind of stretch (the dark, the spores, the stream, lianas and roots, prowlers, ferns, plates...); the roll first
+ *     draws a theme, one kind the roll leans on, and each section's version is a weighted pick (pickWeighted) that favours it, so two
+ *     rolls differ in what they ask most, not only in where (the 200-roll tool scores rolls by their mix of actions);
+ *   - a cooldown (CooldownQueue) leans the Twist away from the Develop's kind, so the middle of a stage usually changes pace;
+ *   - the Finish draws its pieces from a shuffle bag (ShuffleBag, C1) instead of cycling them in a fixed order;
  *   - `mirror` flips the order of the pieces inside a section where nothing depends on it (C8, as far as a side-scroller allows; the
- *     sinkhole climb mirrors for real: its first trunk on the left or the right);
+ *     sinkhole climb mirrors for real: its first root on the left or the right);
  *   - the grotto's dressing (which pieces stand on the floor, which hang from the roof) rotates with the roll, the stages taking turns
  *     between two halves of the sets (STAGE-RULES §4, as artRoll.ts rollLook does for the kit's sets).
  * The picks are a pure function of the stage and the layout number: a retry keeps the stage, a fresh roll changes it. (Keeping the version
@@ -33,7 +34,7 @@ export const W3_VERSIONS: Record<string, { start: number; learn: number; develop
   '3-4': { start: 1, learn: 2, develop: 3, twist: 3, finish: 2 },
   '3-5': { start: 3, learn: 2, develop: 3, twist: 3, finish: 3 },
   '3-6': { start: 3, learn: 2, develop: 3, twist: 3, finish: 3 },
-  '3-7': { start: 3, learn: 2, develop: 3, twist: 2, finish: 3 },
+  '3-7': { start: 3, learn: 2, develop: 3, twist: 3, finish: 3 },
   '3-8': { start: 3, learn: 2, develop: 3, twist: 3, finish: 3 },
   '3-9': { start: 3, learn: 2, develop: 3, twist: 3, finish: 3 },
 };
@@ -44,9 +45,9 @@ const KINDS: Record<string, Partial<Record<'develop' | 'twist' | 'finish', reado
   '3-2': { develop: ['fern', 'dark', 'vine'], twist: ['dark', 'plate', 'vine'], finish: ['fern', 'abyss', 'vine'] },
   '3-3': { develop: ['shelf', 'dark', 'abyss'], twist: ['spore', 'shelf', 'floor'], finish: ['shelf', 'dark', 'vine'] },
   '3-4': { develop: ['rope', 'hops', 'thorn'], twist: ['rope', 'prowl', 'hops'] },
-  '3-5': { develop: ['row', 'abyss', 'vine'], twist: ['dark', 'abyss', 'row'], finish: ['row', 'abyss', 'vine'] },
+  '3-5': { develop: ['row', 'abyss', 'vine'], twist: ['row', 'abyss', 'vine'], finish: ['row', 'abyss', 'vine'] },
   '3-6': { develop: ['stones', 'spore', 'abyss'], twist: ['dark', 'spore', 'abyss'], finish: ['stones', 'abyss', 'vine'] },
-  '3-7': { develop: ['eyes', 'vine', 'abyss'], twist: ['dark', 'plate'], finish: ['vine', 'eyes', 'abyss'] },
+  '3-7': { develop: ['eyes', 'vine', 'abyss'], twist: ['eyes', 'plate', 'vine'], finish: ['vine', 'eyes', 'abyss'] },
   '3-8': { develop: ['chain', 'abyss', 'row'], twist: ['chain', 'abyss', 'dark'], finish: ['chain', 'row', 'abyss'] },
   '3-9': { develop: ['tree', 'dark', 'abyss'], twist: ['floor', 'tree', 'dark'], finish: ['tree', 'abyss', 'dark'] },
 };
@@ -94,8 +95,8 @@ export function w3Pick(stage: string, seed: number): W3Pick {
   const rng = rngOf(seed * 31 + no * 7919);
   const one = (n: number) => new ShuffleBag(rng, Array.from({ length: n }, (_, i) => i)).draw() ?? 0;
   // the roll's theme: one kind of stretch the roll leans on (two rolls of a stage then differ in what they ask most, not only in where:
-  // the 200-roll tool scores rolls by their mix of actions). Each section leans on the theme; the Twist never repeats the Develop's
-  // kind (the stage's cooldown), so the middle of a stage always changes pace.
+  // the 200-roll tool scores rolls by their mix of actions). Each section leans on the theme; off the theme, the Twist leans away from
+  // the Develop's kind (the stage's cooldown), so the middle of a stage usually changes pace.
   const kinds = KINDS[stage] ?? {};
   const all = [...new Set(Object.values(kinds).flat())];
   const theme = all.length ? all[Math.floor(rng() * all.length)] : '';
@@ -104,8 +105,10 @@ export function w3Pick(stage: string, seed: number): W3Pick {
     const ks = kinds[sec];
     if (!ks) return one(n);
     const ids = Array.from({ length: n }, (_, i) => i);
-    const allowed = sec === 'twist' ? ids.filter((i) => cool.allows(ks[i])) : ids;
-    const i = pickWeighted(rng, allowed.length ? allowed : ids, (i) => (ks[i] === theme ? 6 : 1)) ?? 0;
+    // (the Twist only leans away from the Develop's kind: a cooldown that forbade it outright fought the theme, and rolls came out more
+    // alike, 2026-10-28)
+    const w = (i: number) => (ks[i] === theme ? 10 : sec === 'twist' && !cool.allows(ks[i]) ? 0.5 : 1);
+    const i = pickWeighted(rng, ids, w) ?? 0;
     cool.use(ks[i]);
     return i;
   };

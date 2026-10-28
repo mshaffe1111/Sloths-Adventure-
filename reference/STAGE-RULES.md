@@ -170,6 +170,19 @@ test link, the QA testers or a release until the lead has re-run them, on more t
   that is stale (she has walked on ~500 px) is dropped, not queued.
 - **One length number lies**: the time model and a real-engine bot disagree by about a minute on Meeca's stage (model 5:09-5:17,
   bot 4:16-4:25; the bot never hesitates). Give both, and say which one the target is on.
+- **The first-timer drowns where the inspector's bots never miss** (World 3's variety pass, 2026-10-28): real gaps over water at half a
+  jump's reach, a stone a little lower and close by, a second-jump gap, and every liana chain over water cost the first-timer 2-12 lives a
+  minute, while the noisy route bots cleared the same jumps 98% of the time. It plays short flicks, never a run-up, and tries the second
+  jump only where the first has failed (a death over water). Over water: gaps a third of a jump, never a lower stone, no second-jump gaps
+  (put those over soft moss), one liana chain a stage outside the vine stages; and measure the band with `--firsttimer`, not the bots.
+- **A gap in the dark over water is a blind jump**: before the glowworms wake the gap cannot be seen. Gaps in a dark zone keep soft moss
+  below (the first-timer drowned six times running in one).
+- **Variety is a different mix of actions, not a different order.** The 200-roll tool scores rolls by their bag of action 3-grams: two
+  versions of a section that use the same moves (hops and the dark, in another order) read 90-95% alike. A version has to lean on a move
+  the others don't (lianas or roots, real jumps, prowlers, the eyes), and the roll's sections should lean the same way (a theme), or the
+  stage still reads ~0.7 alike. A fixed piece in every roll (a climax, a teaching room) pulls the rolls back together.
+- **A climb detour is invisible**: a tree to climb up and back down beside the path was walked past by the quick route (quiet stretches,
+  short stages). Climbing counts only where the way on goes up it (a root up a wall too high to jump, `rootClimb`).
 
 ## 7. Where things are
 
