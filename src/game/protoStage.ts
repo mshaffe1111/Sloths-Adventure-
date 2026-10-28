@@ -4844,9 +4844,7 @@ export function buildKapok(config: LevelConfig, seed: number, village = false, g
     const x0 = cur.x + cur.width;
     // (the branch he is on joins it: it is not in the way)
     const clear = (y: number) => !P.some((p) => p !== P[0] && p !== cur && p.x < x0 + span + 30 && p.x + p.width > x0 - 30 && Math.abs(p.y - y) < 130);
-    // (and nothing close under the lift's notch: from a branch there the kid bot jumped 157 px up into it, a double jump onto 100 px
-    // that it made 54-65% of the time, on 4 of 10 rolls, 2026-10-28)
-    if (!clear(cur.y) || !clear(cur.y - RISE) || !clear(cur.y - RISE / 2) || !clear(cur.y + 250)) return false;
+    if (!clear(cur.y) || !clear(cur.y - RISE) || !clear(cur.y - RISE / 2)) return false;
     dir = 1;
     const y = cur.y;
     const floor = ledge(x0, x0 + FLOOR, y);
