@@ -35,6 +35,7 @@ import type { Omen, Updraft } from './w4Play.ts';
 import type { Zone } from './zones.ts';
 import type { Collectible, LevelConfig, Platform, TreeStructure, Vine } from './types.ts';
 import { PAST_SHRINE } from './rules.ts';
+import { W4Roll } from './w4Sections.ts';
 
 /** the aerie's goal: guards blown off their ledges (the stage holds more than this, and every one stands on the way) */
 export const GUARD_GOAL_49 = 8;
@@ -550,6 +551,10 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     guardPass(1, true);
     flag();
   });
+  // (2026-10-28, the variety pass: 200 rolls of 4-9 were 97% alike. The roll (w4Sections.ts) orders the Develop's three parts after
+  // the knot, the second Twist's two, and the finish draws its pairs from a bag leaning to the roll's theme: the guards, the falls and
+  // rocks, or the climbs)
+  const roll = new W4Roll(seed, '4-9');
   beat('Develop: Dot and the boulder', () => {
     hopRest();
     hint(x + 60, 'Tied up again! Stand still under the knot, and I will fly up');
@@ -558,13 +563,19 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     guardPass(R.chance(0.5) ? 1 : -1, false);
     closeTops();
     flag();
-    hopRest();
-    hint(x + 40, 'Water pours over that gap. Get up top and keep sliding into the boulder to roll it under the water', 'Water pours over that gap. Get up top and hold the pad into the boulder to roll it under the water', 'Water pours over that gap. Get up top and hold right into the boulder to roll it under the water');
-    plugFall(R.chance(0.5));
-    flag();
-    hopRest();
-    secretKnot();
-    flag();
+    const plug = () => {
+      hopRest();
+      hint(x + 40, 'Water pours over that gap. Get up top and keep sliding into the boulder to roll it under the water', 'Water pours over that gap. Get up top and hold the pad into the boulder to roll it under the water', 'Water pours over that gap. Get up top and hold right into the boulder to roll it under the water');
+      plugFall(R.chance(0.5));
+      flag();
+    };
+    const secret = () => {
+      hopRest();
+      secretKnot();
+      flag();
+    };
+    if (roll.pick(['plugFirst', 'secretFirst'] as const) === 'plugFirst') { plug(); secret(); }
+    else { secret(); plug(); }
   });
   beat('Twist: over the drop', () => {
     hint(x + 60, 'Too far to jump. Jump, and keep your thumb on the glass to open your leaf', 'Too far to jump. Jump, and hold Jump to open your leaf', 'Too far to jump. Jump, and hold Space to open your leaf');
@@ -582,38 +593,65 @@ export function buildAerie(config: LevelConfig, seed: number): GeneratedStage & 
     flag();
   });
   beat('Twist: the mist and the turning wind', () => {
-    mistClimb(true);
-    flag();
-    hint(x + 40, 'Two guards, and their winds take turns. Pass the first, keep going, and be behind the second when its gust comes');
-    guardPair();
-    flag();
+    const mist = () => {
+      mistClimb(true);
+      flag();
+    };
+    const pair = () => {
+      hint(x + 40, 'Two guards, and their winds take turns. Pass the first, keep going, and be behind the second when its gust comes');
+      guardPair();
+      flag();
+    };
+    if (roll.pick(['mistFirst', 'pairFirst'] as const) === 'mistFirst') { mist(); pair(); }
+    else { pair(); hopRest(); mist(); }
   });
+  type Piece49 = 'knot' | 'rocks' | 'plug' | 'climb' | 'glide' | 'pair';
+  const theme = roll.theme('finish', ['guards', 'falls', 'climbs'] as const);
+  const counts: Record<typeof theme, Record<Piece49, number>> = {
+    guards: { knot: 1, rocks: 2, plug: 1, climb: 1, glide: 0, pair: 2 },
+    falls: { knot: 1, rocks: 1, plug: 2, climb: 0, glide: 2, pair: 0 },
+    climbs: { knot: 2, rocks: 0, plug: 1, climb: 2, glide: 1, pair: 0 },
+  };
+  const bag = roll.bag<Piece49>(['knot', 'rocks', 'plug', 'climb', 'glide', 'pair'], (k) => counts[theme][k]);
   beat('Finish: to the aerie', () => {
     // the ideas again in new pairs, a flag after each, until a quick player has had about five minutes (stageSeconds('4-9'))
     let n = 0;
+    let rocksSaid = false;
+    let plugs = 0;
     while (expert < stageSeconds('4-9') - 16 && n < 24) {
-      const k = n % 4;
-      if (k === 0) {
+      const k = bag.draw()!;
+      if (k === 'knot') {
         knotWall(R.r(290, 320));
         guardPass(R.chance(0.5) ? 1 : -1, false);
         closeTops();
-      } else if (k === 1) {
-        if (n === 1) hint(x + 40, 'A guard, and rocks past its ledge. Through, then stop short of the shadow');
+      } else if (k === 'rocks') {
+        if (!rocksSaid) hint(x + 40, 'A guard, and rocks past its ledge. Through, then stop short of the shadow');
+        rocksSaid = true;
         guardPass(1, true, { rock: true });
-      } else if (k === 2) {
+      } else if (k === 'plug') {
+        plugs++;
         plugFall(R.chance(0.5));
         rockRest(R.r(480, 560));
-      } else {
+      } else if (k === 'climb') {
         if (R.chance(0.5)) mistClimb(false);
         else treeUp(R.r(300, 330));
         guardPass(R.chance(0.5) ? 1 : -1, true);
-      }
+      } else if (k === 'glide') {
+        glideGap({ rock: R.chance(0.5), draft: R.chance(0.5) });
+      } else guardPair();
       hopRest();
       flag();
       n++;
     }
-    // (hops on the way to the gate make up any last seconds the dice left short)
-    for (let k = 0; k < 8 && expert < stageSeconds('4-9') - 9; k++) hopRest();
+    // (the finish always holds a second boulder fall: the stage's falls come back once more before her aerie)
+    if (!plugs) {
+      plugFall(R.chance(0.5));
+      hopRest();
+      flag();
+    }
+    // (hops on the way to the gate make up any last seconds the dice left short: to within the walk to her gate, so no make-up walk
+    // after it runs the quiet past four seconds, 2026-10-28)
+    for (let k = 0; k < 12 && expert < stageSeconds('4-9') - 3; k++) hopRest();
     stairs(3);
     omens.push({ kind: 'shadow', x: r(x), y });
     hint(x + 40, 'Her aerie is right above us, Pokey. I am staying right beside you. All the way up');
