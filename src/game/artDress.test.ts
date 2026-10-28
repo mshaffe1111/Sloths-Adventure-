@@ -6,7 +6,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { buildProtoStage, type StagePlan } from './protoStage.ts';
+import { buildProtoStage, HAND_STAGES, type StagePlan } from './protoStage.ts';
 import { dressStage, RIDDLE_FERNS } from './artDress.ts';
 import { KIT_ART } from './puzzleAtlasData.ts';
 import { generateAllLevels } from './worldsData.ts';
@@ -14,7 +14,7 @@ import type { LevelConfig } from './types.ts';
 
 const levels = generateAllLevels();
 const cfg = (id: string): LevelConfig => levels.find((l) => l.id === id)!;
-const W34 = ['3-1', '3-2', '3-3', '3-4', '3-5', '3-6', '3-7', '3-8', '3-9', '4-1', '4-2', '4-3', '4-4', '4-5', '4-6', '4-7', '4-8', '4-9'] as StagePlan[];
+const W34 = ['1-4', '1-6', '1-7', '3-1', '3-2', '3-3', '3-4', '3-5', '3-6', '3-7', '3-8', '3-9', '4-1', '4-2', '4-3', '4-4', '4-5', '4-6', '4-7', '4-8', '4-9'] as StagePlan[];
 
 test('every piece of the puzzle kit atlas is drawn somewhere in the game', () => {
   const dir = new URL('.', import.meta.url).pathname;
@@ -22,10 +22,8 @@ test('every piece of the puzzle kit atlas is drawn somewhere in the game', () =>
     .filter((f) => f.endsWith('.ts') && !f.endsWith('.test.ts') && f !== 'puzzleAtlasData.ts')
     .map((f) => readFileSync(dir + f, 'utf8'))
     .join('\n');
-  // (the lure beetle's sheet is World 5's, not one of the World 1-4 sheets: four of its sixteen frames are not drawn yet. World 1's
-  // squirrel nest door and petal bundle and World 2's trough need a place in their stages: the follow-up once World 1 and 2's stage
-  // fixes are in, 2026-10-28)
-  const notYet = new Set(['b3', 'b4', 'b9', 'b14', 'nestDoorShut', 'nestDoorOpen', 'petalBundle', 'channel']);
+  // (the lure beetle's sheet is World 5's, not one of the World 1-4 sheets: four of its sixteen frames are not drawn yet)
+  const notYet = new Set(['b3', 'b4', 'b9', 'b14']);
   const unused = Object.keys(KIT_ART).filter((n) => !notYet.has(n) && !new RegExp(`['"\`]${n}['"\`]`).test(src));
   assert.deepEqual(unused, []);
 });
@@ -33,7 +31,7 @@ test('every piece of the puzzle kit atlas is drawn somewhere in the game', () =>
 test('the dressing adds pictures only: platforms, pickups, enemies and rooms are the same as without it', () => {
   for (const id of W34) {
     for (const seed of [1, 2, 38]) {
-      const st = buildProtoStage(cfg(id), seed, id);
+      const st = buildProtoStage(cfg(id), seed, HAND_STAGES[id]);
       const before = JSON.stringify({ p: st.platforms, c: st.collectibles, e: st.enemies, k: st.kit, z: st.zones, t: st.proto.thorns });
       // (dressing it again sees the same stage and changes nothing in it)
       const again = dressStage({ world: Number(id[0]), stage: Number(id[2]), seed, platforms: st.platforms, rooms: st.kit?.rooms ?? [], collectibles: st.collectibles, w3decor: st.proto.w3decor });
@@ -74,5 +72,27 @@ test('World 3 floor sets and World 4 bridges: never the same set in two stages i
       const b = sets(`${w}-${m + 1}` as StagePlan, 7);
       if (a && b) assert.notEqual(a, b, `${w}-${m} and ${w}-${m + 1}`);
     }
+  }
+});
+
+test("World 1's rooms: the squirrels' nest door on 1-4's lifts, the branch gate up 1-6's seesaw banks, and a petal bundle for every room", () => {
+  for (const seed of [1, 2, 3]) {
+    const by = (id: string) => buildProtoStage(cfg(id), seed, HAND_STAGES[id]);
+    const s14 = by('1-4');
+    const lifts = (s14.kit?.rooms ?? []).filter((r) => r.id.startsWith('squirrel-lift'));
+    assert.ok(lifts.length >= 1);
+    for (const r of lifts) {
+      const kd = (s14.proto.kitDecor ?? []).filter((d) => d.room === r.id);
+      assert.ok(kd.some((d) => d.n === 'nestDoorShut' && d.open === 'nestDoorOpen'), `seed ${seed} ${r.id}`);
+      assert.ok(kd.some((d) => d.n === 'petalBundle' && d.pop), `seed ${seed} ${r.id}`);
+    }
+    const s16 = by('1-6');
+    const gated = (s16.kit?.rooms ?? []).filter((r) => r.id.startsWith('seesaw-') && !r.id.startsWith('seesaw-show'));
+    assert.ok(gated.length >= 1);
+    for (const r of gated) assert.ok((s16.proto.kitDecor ?? []).some((d) => d.n === 'branchGate' && d.rise && d.room === r.id), `seed ${seed} ${r.id}`);
+    const s17 = by('1-7');
+    for (const r of s17.kit?.rooms ?? []) assert.ok((s17.proto.kitDecor ?? []).some((d) => d.n === 'petalBundle' && d.room === r.id), `seed ${seed} ${r.id}`);
+    // (a picture, not a pickup: the stage's pickups are the same as without the dressing)
+    for (const st of [s14, s16, s17]) assert.ok(!st.collectibles.some((c) => (c as { findId?: string }).findId === 'petalBundle'));
   }
 });
