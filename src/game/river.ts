@@ -46,7 +46,29 @@ export interface RiverZone {
    * islands in it (the banks stay dry). Back to where it started when he respawns. `y0` is filled in by the engine (the starting level).
    */
   flood?: { y1: number; seconds: number; trigger: number; y0?: number };
+  /**
+   * the puzzle kit's sluice gate (puzzleKit.ts 'sluice') runs this river's current: `flowT` is the river's own clock, which its logs
+   * and its streaks follow instead of the game's (it runs on at 1 with the current, backwards at -1 when the sluice turns the current
+   * about, and stands still at 0 when the sluice stops it); `flowRate` is how fast it runs now. Unset: the game's clock, as always.
+   */
+  flowT?: number;
+  flowRate?: number;
+  /**
+   * 2-2's ferry: one wide raft instead of a row of logs (a sluice runs this river, puzzleKit.ts: shut, the raft waits moored under the far
+   * bank; open, the current brings it round to him). The level check lets a raft river have its one log.
+   */
+  raft?: boolean;
 }
+
+/** the clock a log moves by: its river's own when a sluice runs that river (RiverZone.flowT), else the game's */
+export function logClock(rivers: readonly RiverZone[] | undefined, d: DriftInfo, t: number): number {
+  for (const r of rivers ?? []) if (r.flowT !== undefined && d.x0 >= r.x0 - 1 && d.x1 <= r.x1 + 1) return r.flowT;
+  return t;
+}
+
+/** the gap between neighbouring logs a hop can take, for logs flowing `dir` (levelCheck.ts checks the river's own; a sluice that turns
+ * the current about must keep the logs hoppable the other way too, puzzleCheck.ts) */
+export const hopLimit = (dir: 1 | -1): number => (dir === 1 ? 80 : 130);
 
 /** how high a rising river is `since` seconds after it began (y grows downward: it moves from y0 up to y1) */
 export function floodLevel(f: { y1: number; seconds: number }, y0: number, since: number | undefined): number {

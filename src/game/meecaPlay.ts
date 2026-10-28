@@ -182,7 +182,7 @@ export class MeecaPlay {
     return (this.phase === 'card' && this.cardOut < 0) || this.phase === 'ending' || this.phase === 'done';
   }
   /**
-   * the words on the screen now, as the stage draws them on its canvas (the "Three days earlier" card, her thought cloud, Pell's words,
+   * the words on the screen now, as the stage draws them on its canvas (the "On the March North" card, her thought cloud, Pell's words,
    * the ending's story box): the page puts them in its text too (MeecaWords.tsx), so screen readers and QA's bots can read them
    * (QA v200: nothing of 5-M's was in the page)
    */

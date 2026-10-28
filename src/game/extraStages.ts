@@ -41,7 +41,7 @@ export function dotStageConfig(): LevelConfig {
 export const MEECA_STAGE_ID = '5-M';
 
 /**
- * Meeca's own stage, right after 5-5 and required (Matt, 2026-10-26; HANDOFF "World 5 decisions"): it opens on a "Three days earlier"
+ * Meeca's own stage, right after 5-5 and required (Matt, 2026-10-26; HANDOFF "World 5 decisions"): it opens on a "On the March North"
  * card, after 5-5's pouch scene, and you play Meeca marched through the sanctuary at dusk. Its slot in World 5's list is kept here, the
  * way Dot's flight sits after 4-5: 5-5's clear opens it, and its clear opens 5-6.
  */
@@ -56,7 +56,7 @@ export function meecaStageConfig(): LevelConfig {
     timeLimit: 0,
     levelWidth: 10000,
     levelHeight: 1000,
-    description: 'Three days earlier. Marched through the sanctuary at dusk, Meeca carves on the move.',
+    description: 'On the march north. Marched through the sanctuary at dusk, Meeca carves on the move.',
     unlocked: false,
     completed: false,
     stars: 0,

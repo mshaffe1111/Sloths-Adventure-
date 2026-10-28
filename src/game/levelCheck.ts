@@ -13,6 +13,8 @@ import { HANG_DROP, ROPE_OVERLAP, ropeYAt } from './rope.ts';
 import { maxRise } from './protoCheck.ts';
 import type { Waterfall } from './waterfalls.ts';
 import { PAST_SHRINE } from './rules.ts';
+import { checkRooms, kitSolved, type KitWall } from './puzzleCheck.ts';
+import { hopLimit } from './river.ts';
 import { skillGuaranteedAt, skillHeldAt } from './skills.ts';
 import { idleTime, isDamaging, sporeClearTime, SPORE_CLEAR_MIN, isStatic, tideCrossTime, CRUMBLE_TILE_W, CRUMBLE_RUN_MAX, CRUMBLE_STEP } from './zones.ts';
 import {
@@ -236,6 +238,11 @@ export interface CheckOptions {
   frozen?: ReadonlySet<number>;
   /** handed the graph the check walked last (its pieces of ground, its links, what was reached), for tests that ask more of it */
   inspect?: (g: CheckGraph) => void;
+  /**
+   * walls that stand where they are (a puzzle room's shut gates, puzzleCheck.ts): like pouring water, no ground under one is somewhere to
+   * stand and no jump or climb crosses it. Given, the stage's puzzle rooms are not checked again (this is one of their layouts).
+   */
+  walls?: readonly KitWall[];
 }
 
 /** the graph a check walked: every piece of ground (a platform, less what a boulder or pouring water covers), the links, what was reached */
@@ -286,6 +293,19 @@ function cutSpans(spans: Array<[number, number]>, x0: number, x1: number): Array
 }
 
 export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): CheckResult {
+  // a stage with puzzle rooms (puzzleKit.ts): the stage is walked as it is once every room is solved (its gates open, its lifts up), and
+  // each room is checked on its own, symbolically, that it can be solved (puzzleCheck.ts), on this graph with its gates shut as walls
+  if (stage.kit?.rooms.length && !opts.walls) {
+    const res = validateStage(kitSolved(stage), { ...opts, walls: [] });
+    const graphFor = (platforms: GeneratedStage['platforms'], walls: readonly KitWall[]) => {
+      let g: CheckGraph | null = null;
+      validateStage({ ...stage, platforms, kit: undefined }, { walls, inspect: (x) => { g = x; } });
+      return g!;
+    };
+    res.errors.push(...checkRooms(stage, graphFor));
+    res.ok = res.errors.length === 0;
+    return res;
+  }
   const errors: string[] = [];
   const cfg = stage.config;
   // The engine keeps the hero inside [20, W - 20]: ground beyond that cannot be stood on, a vine out there cannot be grabbed, and a
@@ -306,6 +326,7 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
   const keys = new WeakMap<Platform, string>();
   const layout = () => {
     pouring = falls.filter((w) => fallPours(w, (id) => (byId.has(id) ? boulderX(id) : undefined)));
+    for (const w of opts.walls ?? []) pouring.push({ id: -1, x: w.x, width: w.width, top: w.top, bottom: w.bottom });
     plats = [];
     for (const p0 of stage.platforms) {
       if (p0.broken) continue;
@@ -703,12 +724,14 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
     const logs = plats.filter((p) => p.type === 'drift' && p.drift && p.drift.x0 === r.x0 && p.drift.x1 === r.x1);
     // (still water, a lily pond, has no current and no logs: it is crossed on its pads, which the reach check covers)
     if (r.speed === 0 || r.open) { /* no logs to space */ }
+    // (a ferry raft, run by a sluice: one wide log that carries him the whole way across, river.ts `raft`)
+    else if (r.raft && logs.length === 1 && logs[0].width >= 160) { /* one raft */ }
     else if (logs.length < 2) errors.push(`river at x=${Math.round(r.x0)} has fewer than two logs`);
     else {
       const d = logs[0].drift!;
       const spacing = ((d.x1 - d.x0 + d.width) / logs.length);
       const gap = spacing - d.width;
-      const limit = d.dir === 1 ? 80 : 130;
+      const limit = hopLimit(d.dir);
       if (gap < 60) errors.push(`river at x=${Math.round(r.x0)}: logs overlap or nearly touch`);
       if (gap > limit) errors.push(`river at x=${Math.round(r.x0)}: ${Math.round(gap)}px between logs is too far to hop`);
     }

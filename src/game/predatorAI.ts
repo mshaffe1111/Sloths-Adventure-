@@ -348,6 +348,14 @@ export function stepPredator(e: Enemy, p: PlayerRef, dt: number): PredatorStep {
           enter(e, 'patrol');
           e.attackCooldown = 1.2;
         }
+      } else if (e.state === 'patrol' && e.lureX !== undefined) {
+        // listening to a noise (noise.ts): it goes to it along its ground and stands watching it, noticing nobody
+        const [lo, hi] = walkBounds(e);
+        const to = clamp(e.lureX, lo, hi);
+        const d = to - e.x;
+        e.facing = e.lureX >= e.x ? 1 : -1;
+        e.vx = Math.abs(d) < 4 ? 0 : Math.sign(d) * Math.max(speed, 30);
+        e.x += e.vx * dt;
       } else if (e.state === 'patrol') {
         if (roam(e, p, dt, feet, PERSONALITY.turtle, ready, speed, ev)) {
           e.facing = toward;

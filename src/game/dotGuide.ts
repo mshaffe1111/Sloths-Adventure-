@@ -31,7 +31,9 @@ export type TopicId =
   | 'vine' | 'trunk' | 'rope' | 'log' | 'foe' | 'gap' | 'ledge' | 'petal' | 'cage' | 'bush' | 'fern' | 'mushroom'
   | 'crumble' | 'moving' | 'water' | 'heart' | 'power' | 'relic' | 'flag' | 'exit' | 'controls'
   // (World 5's pieces Dot points at: GuideView.w5)
-  | 'cocoon' | 'orchid' | 'seamstress';
+  | 'cocoon' | 'orchid' | 'seamstress'
+  // (a puzzle room's active part: GuideView.kit)
+  | 'puzzle';
 export type GuideWho = 'Dot' | 'Pokey' | 'Petal';
 
 export interface GuideLine {
@@ -402,6 +404,8 @@ export function classifyLine(text: string, inBoss = false): Pick<GuideLine, 'kin
 /** the move a tip asks for, from its words (the first gesture it names), with the topic and the gesture picture */
 export function moveOf(t: string): Pick<GuideLine, 'move' | 'topic' | 'glyph' | 'skill'> | null {
   const s = t.toLowerCase();
+  // (a puzzle room's lines name a tap or a flick, but what closes them is the puzzle, not a punch or a jump: they are read)
+  if (PUZZLE_WORDS.test(s)) return null;
   if (/\bleaf\b|glide|thumb on the glass as you fall|hold (jump|space) as you fall/.test(s)) return { move: 'glide', topic: 'controls', glyph: 'up', skill: 'glide' };
   if (/again in the air|jump twice|second jump|jump again as you fly|press (jump|space) again/.test(s)) return { move: 'double', topic: topicOf(s) ?? 'controls', glyph: 'up', skill: 'double' };
   if (/swing forward|let go (while|when|as)|leap off/.test(s)) return { move: 'leap', topic: 'vine', glyph: 'jump', skill: 'leap' };
@@ -416,8 +420,12 @@ export function moveOf(t: string): Pick<GuideLine, 'move' | 'topic' | 'glyph' | 
 }
 
 /** what an information line is about, for the ring */
+/** the words of a puzzle room's lines (kitStage.ts tips): Dot's ring goes on the puzzle's active part */
+export const PUZZLE_WORDS = /\bacorn|\bthe plates?\b|far plate|two plates|basket to|flick up to throw|beetle|love cake|cake on the|signpost|\blever/;
+
 export function topicOf(t: string): TopicId | undefined {
   const s = t.toLowerCase();
+  if (PUZZLE_WORDS.test(s)) return 'puzzle';
   if (/petal|flower|bloom/.test(s)) return 'petal';
   if (/\bvine\b|liana/.test(s)) return 'vine';
   if (/tree|trunk/.test(s)) return 'trunk';

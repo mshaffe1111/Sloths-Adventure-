@@ -2,7 +2,7 @@ import React from 'react';
 import type { GameEngine } from '../game/engine.ts';
 
 /**
- * Meeca's stage draws all its words on the canvas (the "Three days earlier" card, her thought clouds, Pell's words, the ending's story
+ * Meeca's stage draws all its words on the canvas (the "On the March North" card, her thought clouds, Pell's words, the ending's story
  * box). This puts the same words in the page, out of sight, each with an aria-label of its real words: screen readers and QA's bots
  * read them (QA v200: none of 5-M's words were in the page). It asks the engine a few times a second (engine.ts meecaWords).
  */

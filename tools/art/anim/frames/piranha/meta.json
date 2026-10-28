@@ -1,0 +1,49 @@
+{
+ "chomp": {
+  "n": 10,
+  "w": 192,
+  "h": 154,
+  "ax": 91.6,
+  "ay": 76.4,
+  "anchor": "middle",
+  "fps": 10,
+  "loop": true,
+  "clip": "m1k-piranha-chomp-s3",
+  "frames": [
+   15,
+   17,
+   19,
+   21,
+   23,
+   25,
+   27,
+   29,
+   31,
+   33
+  ],
+  "k": 0.5
+ },
+ "leap": {
+  "n": 9,
+  "w": 204,
+  "h": 121,
+  "ax": 111.3,
+  "ay": 53.5,
+  "anchor": "middle",
+  "fps": 10,
+  "loop": false,
+  "clip": "cr-piranha-leap-s7",
+  "frames": [
+   9,
+   11,
+   14,
+   17,
+   20,
+   22,
+   24,
+   26,
+   28
+  ],
+  "k": 0.5
+ }
+}

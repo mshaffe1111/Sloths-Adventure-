@@ -164,7 +164,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
       P('Sir, I found a medal in a fern. On the back it says, "For the next cub."', TEA, { cue: 'tender', i: 0.4, p: VIL }),
       GF('I scratched that on the back the day they gave it to me, for the river. I was keeping it for a cub who would need it more than I did.', '=', { p: VIL }),
       P('I think I\'m a little old to be a cub, sir.', '=', { p: VIL }),
-      GF('You are exactly the right age to be brave and foolish. Keep it.', '=', { cue: 'resolve', i: 0.5, sting: 'triumph', p: VIL }),
+      GF('You are the right age. Keep it.', '=', { cue: 'resolve', i: 0.5, p: VIL }),
     ]),
     ...when(has('w4_keepsake'), [
       P('There was half a ribbon in a fern. The knot was still tied.', TEA, { cue: 'sorrow', i: 0.4, p: VIL }),
@@ -183,7 +183,7 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
     ]),
     ...when(all, [
       M('That\'s every one, Grandpa. Every last thing of hers.', TEA, { cue: 'tender', i: 0.6, sting: 'bloom', p: VIL }),
-      GF('In ferns. Of course. Thank you for being patient enough to find them, boy.', '=', { cue: 'grandma', i: 0.5, p: VIL }),
+      GF('In ferns. Of course.', '=', { cue: 'grandma', i: 0.5, p: VIL }),
     ]),
     ...when(has('w10_keepsake'), [
       P('Sir, I think this is yours. It was in a fern.', TEA, { cue: 'grandma', i: 0.5, p: VIL }),
@@ -191,7 +191,6 @@ export function finalePanels(found: string[] = []): StoryPanel[] {
       N('The General turned it over in his big hands. Then, very gently, he rang it. One clear note went out over the village and up the mountain, the way it used to go down a garden path.', TEA,
         { cue: 'meeca', i: 0.7, sting: 'bloom', p: { ...VIL, zoom: 1.6, focusX: 0.7, fx: [{ at: 0.6, kind: 'glints', x: 0.7, y: 0.6 }] } }),
       GF('Somebody is coming home.', TEA, { cue: 'meeca', i: 0.8, p: VIL }),
-      M('Yes, Grandpa. You are.', '=', { p: VIL }),
     ]),
     N('Far off in the east, the last of the storm said something. Pokey was holding a teacup in one hand. He went on holding it in one hand.', TEA, { cue: 'tender', i: 0.4, p: { ...VIL, zoom: 1.4, focusX: 0.3 } }),
   ]);

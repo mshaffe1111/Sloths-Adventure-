@@ -59,7 +59,7 @@ export interface SceneOptions {
 }
 
 /** minimum seconds between two plays of the same effect, so a held button or a coin spray never machine-guns */
-const MIN_GAP: Record<string, number> = { step: 0.17, flower: 0.035, leaf: 0.04, fruit: 0.05, whoosh: 0.07, jump: 0.06, hit: 0.04, climb: 0.1, land: 0.08, uiTap: 0.04, glide: 0.03 };
+const MIN_GAP: Record<string, number> = { step: 0.17, flower: 0.035, leaf: 0.04, fruit: 0.05, whoosh: 0.07, jump: 0.06, hit: 0.04, climb: 0.3, land: 0.08, uiTap: 0.04, glide: 0.03 };
 
 export class Conductor {
   private ctx: AudioContext | null = null;
@@ -127,7 +127,8 @@ export class Conductor {
         // iPhones follow the ringer switch for Web Audio unless the page says this is playback, not a notification
         const session = (navigator as unknown as { audioSession?: { type: string } }).audioSession;
         if (session) session.type = 'playback';
-        this.core = new AudioCore(ctx);
+        // a phone gets the light room (core.ts): the two long convolution rooms were too much for a busy iPhone's sound
+        this.core = new AudioCore(ctx, { lightRoom: PHONE });
       } catch {
         this.core = null;
         // the context was made before the core failed: close it, or every later tap would make (and leak) another one
@@ -431,6 +432,11 @@ export class Conductor {
    * gap. The control test logs it with the frame rate (engine.ts).
    */
   private lagMs = 0;
+  /** ticks since the last report, and how many of them found the final output silent while music was meant to be playing: a mix that cuts
+   *  out between effects (heard on an iPhone, 2026-10-28) shows here even when the sound clock keeps time */
+  private heardTicks = 0;
+  private silentTicks = 0;
+  private meterBuf: Float32Array<ArrayBuffer> | null = null;
   private lastTickReal = 0;
   private lastTickAudio = 0;
   /** a short line for the control test's recording: light or full sound, the buffer, and the sound lost since the last call */
@@ -439,7 +445,9 @@ export class Conductor {
     if (!ctx) return 'no sound';
     const lag = Math.max(0, Math.round(this.lagMs));
     this.lagMs = 0;
-    return `${this.lite ? 'lite' : 'full'} ${ctx.state} buf${Math.round((ctx.baseLatency ?? 0) * 1000)}ms lag${lag}ms`;
+    const silent = this.heardTicks ? Math.round((100 * this.silentTicks) / this.heardTicks) : 0;
+    this.heardTicks = this.silentTicks = 0;
+    return `${this.lite ? 'lite' : 'full'} ${ctx.state} buf${Math.round((ctx.baseLatency ?? 0) * 1000)}ms lag${lag}ms silent${silent}%`;
   }
 
   private tick = () => {
@@ -458,6 +466,15 @@ export class Conductor {
     }
     this.lastTickReal = real;
     this.lastTickAudio = now;
+    if (this.playback && !this.paused && !this.muted) {
+      // the meter holds the last ~40 ms of the final output: music that is playing is never that quiet
+      const buf = (this.meterBuf ??= new Float32Array(new ArrayBuffer(core.meter.fftSize * 4)));
+      core.meter.getFloatTimeDomainData(buf);
+      let peak = 0;
+      for (let i = 0; i < buf.length; i += 4) peak = Math.max(peak, Math.abs(buf[i]));
+      this.heardTicks++;
+      if (peak < 0.0005) this.silentTicks++;
+    }
     const until = now + LOOKAHEAD;
     this.playback?.update(until);
     this.amb?.update(until);

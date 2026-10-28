@@ -2,7 +2,7 @@ import { lastSheet } from './atlasLoader.ts';
 import { FlipFlopWatch, frameSpread, JitterWatch } from './glitchWatch.ts';
 import { goalLine } from './stagePlan.ts';
 import { markTipHeard, tipHeard } from './tipMemory.ts';
-import { hidden, newWatch, sees, shadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
+import { hidden, lureShadow, newWatch, sees, shadowX as plainShadowX, stepWatch, WATCH, zoneAt, type WatchState } from './watcher.ts';
 import { caught, newChase, restartAt, sectionState, stepChase, type ChaseState } from './chase.ts';
 import { recorder } from './playRecorder.ts';
 import { liftY, pickFloor } from './lift.ts';
@@ -13,6 +13,7 @@ import { SectionTrack } from './sectionTrack.ts';
 import { difficulty, isEasy } from './difficulty.ts';
 import { VINE_HANG } from './heroVine.ts';
 import { easyStage } from './easyMode.ts';
+import { withGoals } from './goals.ts';
 
 import type {
   LevelConfig,
@@ -64,12 +65,16 @@ import { drawCaimanSprite } from './caimanSprite.ts';
 import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
-import { driftCycle, driftProgress, driftX, floodLevel, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
+import { heard } from './noise.ts';
+import { mayRegrow, regrowDelay } from './regrow.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
 import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
+import { KitPlay, type KitHost } from './puzzlePlay.ts';
+import { ROOM_CAM, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
 import { setGuideKeepOuts, type KeepOutBox } from './guideKeepOut.ts';
@@ -154,8 +159,6 @@ function wayDodgeOn(): boolean {
 /** How many world units tall the screen shows. */
 /** how long Pokey crouches beside a Hush Fern before it gives up what it hides */
 const FIND_SEARCH_SECONDS = 0.9;
-/** seconds before a crumbled platform grows back */
-const REGROW_SECONDS = 3;
 /** how near a flower must be to pick it while swinging on a vine (34 on foot) */
 const SWING_PICK = 56;
 /** a Jump or a direction let go this short a time before a pause still counts as held when play carries on (seconds) */
@@ -362,6 +365,11 @@ export class GameEngine {
   private w4: W4Play | null = null;
   /** World 5's stillness and silk, chairs, cakes, teapots, threads, sheets, orchids and cocoons for this run (w5Play.ts) */
   private w5: W5Play | null = null;
+  /** the stage's puzzle rooms (puzzleKit.ts, run by puzzlePlay.ts): things to carry and throw, plates, gates, levers, lifts, beetles */
+  private kit: KitPlay | null = null;
+  private kitHostObj: KitHost | null = null;
+  /** 1 = normal; below 1 pulls the camera back in a puzzle room so Pokey and the puzzle part both fit (puzzleCamera.ts, never below 0.75) */
+  private roomZoom = 1;
   /** World 5: the vines the lessons may teach (not its silk lines, which its own tip teaches) */
   private lessonVines: Vine[] | null = null;
   /** the parts of World 5's stage Dot's bubble keeps off (Meeca's carvings), in world units, then on the page (guideKeepOut.ts) */
@@ -538,7 +546,7 @@ export class GameEngine {
     // Generate Stage data
     // Easy (difficulty.ts): the vines' wide sweet spot, then the same stage made gentler (easyMode.ts)
     setTimedSwing(isEasy());
-    this.currentStage = isEasy() ? easyStage(generateStage(config)) : generateStage(config);
+    this.currentStage = isEasy() ? easyStage(withGoals(generateStage(config))) : withGoals(generateStage(config));
     if (import.meta.env?.DEV) (window as unknown as { __engine?: unknown }).__engine = this; // dev-only debug handle
     this.platforms = this.currentStage.platforms;
     this.vines = this.currentStage.vines;
@@ -586,6 +594,7 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
+    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles }) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
@@ -753,7 +762,7 @@ export class GameEngine {
     // never show more height than the level has
     // (a boss fight in a tall, narrow window may show some sky above the arena rather than crop the fight to the level's height)
     const bossFight = !!this.currentStage?.arena && portrait;
-    this.zoom = Math.max(base * dolly * this.bossZoom, bossFight ? 0.4 : h / levelH);
+    this.zoom = Math.max(base * dolly * this.bossZoom * this.roomZoom, bossFight ? 0.4 : h / levelH);
     this.camera.viewportWidth = w / this.zoom;
     this.camera.viewportHeight = h / this.zoom;
   }
@@ -1067,7 +1076,8 @@ export class GameEngine {
     // the touch recogniser reads this: in the air with a second jump to spare, a shorter slide up is that jump
     this.input.airJumpReady = !p.grounded && p.jumpsLeft > 0 && !p.climbing && !p.isVineSwinging && !p.hanging && !this.isGameOver;
     if (this.refined) {
-      this.input.kickNear = this.somethingToKick();
+      // (carrying, a flick toward is a throw: the touch rules keep it a kick, never a run)
+      this.input.kickNear = this.somethingToKick() || !!this.kit?.holding;
       this.input.onVine = p.climbing || !!p.isVineSwinging;
       this.input.onSwing = !!p.isVineSwinging;
       this.input.onRope = !!p.hanging;
@@ -1095,6 +1105,8 @@ export class GameEngine {
     }
 
     this.lessonTick();
+    // the puzzle kit reads the intents again (puzzlePlay.ts control): a tap by a piece uses it, and carrying, the jump and kick throw
+    if (this.kit) this.kitControls();
 
     if (this.coach && !this.coach.done) {
       this.coach.update(dt, p.x, this.coachWasGrounded && !p.grounded && p.vy < -200);
@@ -1122,7 +1134,8 @@ export class GameEngine {
     for (const plat of this.platforms) {
       if (plat.type !== 'drift' || !plat.drift || plat.broken) continue;
       const d = plat.drift;
-      const nx = driftX(d, this.gameTime);
+      // (a river a sluice runs keeps its own clock: puzzleKit.ts 'sluice')
+      const nx = driftX(d, logClock(this.currentStage.rivers, d, this.gameTime));
       // a log that wraps from one end of the river to the other must not drag its rider across the whole window
       const dx = Math.abs(nx - plat.x) > d.width * 2 ? 0 : nx - plat.x;
       plat.x = nx;
@@ -1136,13 +1149,22 @@ export class GameEngine {
         }
       }
     }
-    // 2-8: rising water. It starts once he steps in, and covers the low reed islands
+    // 2-8: rising water. It starts once he steps in, and covers the low reed islands; out on a bank again (either one) it drains away as
+    // fast as it rose, so a little one left behind can still be gone back for (every one of them is the goal)
     for (const r of this.currentStage.rivers ?? []) {
       const f = r.flood;
       if (!f) continue;
       f.y0 ??= r.surfaceY;
       let at = this.floodAt.get(r);
-      if (at === undefined && p.x > f.trigger && !this.isGameOver) {
+      const inBasin = p.x > f.trigger && p.x < r.x1 + 10;
+      if (at !== undefined && !inBasin && p.grounded) {
+        at = Math.min(this.gameTime, at + 2 * dt);
+        if (at >= this.gameTime) {
+          this.floodAt.delete(r);
+          at = undefined;
+        } else this.floodAt.set(r, at);
+      }
+      if (at === undefined && inBasin && !this.isGameOver) {
         at = this.gameTime;
         this.floodAt.set(r, at);
         if (!this.floodTold) {
@@ -1224,6 +1246,7 @@ export class GameEngine {
       if (this.proto?.thorns) this.stepThornVines();
       if (this.w4) this.stepW4(dt);
       if (this.w5) this.stepW5(dt);
+      if (this.kit) this.stepKit(dt);
     }
     this.drowsyShow += (this.drowsy - this.drowsyShow) * Math.min(1, dt * 4);
     if (this.drowsy > 0) {
@@ -1359,6 +1382,11 @@ export class GameEngine {
         }
       }
     }
+    // hands full (puzzlePlay.ts): no climbing a trunk, no catching a vine
+    if (this.kit?.holding) {
+      nearTreeVine = null;
+      nearSwingVine = null;
+    }
     this.nearTreeVine = nearTreeVine;
     this.nearSwingVine = nearSwingVine;
 
@@ -1402,15 +1430,16 @@ export class GameEngine {
       // Climb Up / Down
       if (this.input.state.up || this.climbAssist > 0) {
         p.y = Math.max(nearTreeVine.topY - 4, p.y - 220 * dt);
+        // one soft grip per hand, a little uneven like real hands (every 0.18 s sounded like the audio skipping on an iPhone)
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
-          this.treeClimbAudioTimer = 0.18;
+          this.treeClimbAudioTimer = 0.36 + Math.random() * 0.12;
         }
       } else if (this.input.state.down) {
         p.y = Math.min(nearTreeVine.bottomY + 4, p.y + 220 * dt);
         if (this.treeClimbAudioTimer <= 0) {
           sound.playTreeClimb();
-          this.treeClimbAudioTimer = 0.18;
+          this.treeClimbAudioTimer = 0.36 + Math.random() * 0.12;
         }
       }
 
@@ -1764,7 +1793,7 @@ export class GameEngine {
         // Leaf Glide: holding Jump while falling opens the leaf and slows the fall
         const lift = (this.currentStage.config.worldIndex === 9 && ventLift(this.currentStage.zones, p.x, p.y - 32, this.gameTime)) || !!this.w4?.inUpdraft(p.x, p.y - 32);
         // (pouring water folds the leaf: World 4's falls cannot be glided through, w4Play.ts inPour)
-        const glideCap = glideStep(this.glide, { has: this.skills.has('glide') && !this.w4?.inPour(p.x, p.y), airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
+        const glideCap = glideStep(this.glide, { has: this.skills.has('glide') && !this.w4?.inPour(p.x, p.y) && !this.kit?.holding, airborne: !p.grounded && !p.climbing, held: this.input.state.jumpHeld, vy: p.vy, lift }, dt);
         p.vy = glideBrake(p.vy, glideCap, dt);
         if (lift && this.glide.on) {
           p.vy = glideLift(p.vy, dt);
@@ -1996,16 +2025,16 @@ export class GameEngine {
         plat.fragileTimer -= dt;
         if (plat.fragileTimer <= 0) {
           plat.broken = true;
-          plat.regrowAt = this.gameTime + REGROW_SECONDS;
+          plat.regrowAt = this.gameTime + regrowDelay(plat.id);
           this.spawnDebrisBurst(plat.x + plat.width * 0.5, plat.y, '#a16207');
           sound.playHitImpact(true);
         }
       }
-      // a crumbled platform comes back a few seconds later (never while Pokey is where it would appear), so a stage can
-      // never be left with a gap nobody can cross: falling costs a little time, never the way on
+      // a crumbled platform is a penalty (regrow.ts): it comes back only after half a minute or so, and only off screen, so it never
+      // pops back in view (no stage needs one: falling costs time, never the way on)
       if (plat.broken && plat.type === 'fragile' && plat.regrowAt !== undefined && this.gameTime >= plat.regrowAt) {
-        const inside = p.x + 20 > plat.x && p.x - 20 < plat.x + plat.width && p.y > plat.y - 70 && p.y < plat.y + plat.height + 10;
-        if (!inside) {
+        const cam = this.camera;
+        if (mayRegrow(plat, this.gameTime, { x: cam.x, y: cam.y, w: cam.viewportWidth, h: cam.viewportHeight }, p)) {
           plat.broken = false;
           plat.fragileTimer = undefined;
           plat.regrowAt = undefined;
@@ -2123,6 +2152,8 @@ export class GameEngine {
       } else if (isPredator(e.type)) {
         // Ground animals (snake, ocelot, jaguar, boa, caiman, tayra, night harpy) each hunt in their own way (enemyBrain.ts), then
         // attack: telegraph -> committed attack -> vulnerable recovery
+        // a snapper hears the puzzle kit's noise (noise.ts) and goes to it
+        if (e.type === 'turtle') e.lureX = this.kit ? heard(this.kit.noises, e.x, e.y, this.gameTime)?.x : undefined;
         const step = stepPredator(e, { x: p.x, y: p.y, facing: p.facing, ducking: p.ducking }, dt);
         // the tree snake has no call of its own: it hisses like the boa
         // (the night harpy chitters and thumps like the tayra)
@@ -3335,6 +3366,17 @@ export class GameEngine {
     if (m.lunge && p.grounded) p.vx = Math.max(-380, Math.min(380, p.vx + p.facing * m.lunge));
   }
 
+  /** a little one is free: out of its cage (punched open, or lifted out on its pulley, puzzlePlay.ts) */
+  private freeCritter(c: Collectible) {
+    if (c.collected) return;
+    c.collected = true;
+    c.freedAt = this.gameTime;
+    this.player.crittersRescued++;
+    this.runScore += 400;
+    sound.playCritterRescued();
+    this.addFloatingText('RESCUED! +400', c.x, c.y - 30, '#c084fc');
+  }
+
   /** refined controls: is an animal, the boss or a cage close enough that a sideways flick should kick? */
   private somethingToKick(): boolean {
     const p = this.player;
@@ -3342,7 +3384,7 @@ export class GameEngine {
     const near = (x: number, y: number) => Math.abs(x - cx) < KICK_NEAR_PX && Math.abs(y - cy) < KICK_NEAR_PX * 0.6;
     for (const e of this.enemies) if (!e.defeated && near(e.x + (e.width ?? 0) / 2, e.y)) return true;
     if (this.boss && near(this.boss.x, this.boss.y)) return true;
-    for (const c of this.collectibles) if (c.type === 'cage' && !c.collected && near(c.x, c.y)) return true;
+    for (const c of this.collectibles) if (c.type === 'cage' && !c.collected && !this.kit?.holdsCage(c) && near(c.x, c.y)) return true;
     return false;
   }
 
@@ -3423,19 +3465,18 @@ export class GameEngine {
       const cr: Rect = { x: c.x - 24, y: c.y - 26, w: 48, h: 52 };
       if (!rectsOverlap(box, cr)) continue;
       a.hits.add(1_000_000 + c.id);
+      // (a reed cage hung over the water, World 2: too tough to break, the pulley lifts it out: puzzlePlay.ts)
+      if (this.kit?.holdsCage(c)) {
+        this.addFloatingText('LIFT IT OUT!', c.x, c.y - 40, '#fde68a');
+        continue;
+      }
       a.connected = true;
       c.cageHp = (c.cageHp ?? 2) - m.damage;
       this.hitstopTimer = Math.max(this.hitstopTimer, 0.04);
       sound.playHitImpact(true, 'chitin');
       this.spawnDebrisBurst(c.x, c.y, '#ca8a04');
-      if (c.cageHp <= 0) {
-        c.collected = true;
-        c.freedAt = this.gameTime;
-        p.crittersRescued++;
-        this.runScore += 400;
-        sound.playCritterRescued();
-        this.addFloatingText('RESCUED! +400', c.x, c.y - 30, '#c084fc');
-      } else {
+      if (c.cageHp <= 0) this.freeCritter(c);
+      else {
         this.addFloatingText('CRACK!', c.x, c.y - 20, '#fef08a');
       }
     }
@@ -4052,7 +4093,7 @@ export class GameEngine {
 
     if (!rope) {
       p.hanging = false;
-      if (this.ropeCooldown > 0 || p.grounded || p.climbing || p.isVineSwinging || this.isGameOver) return false;
+      if (this.ropeCooldown > 0 || p.grounded || p.climbing || p.isVineSwinging || this.isGameOver || this.kit?.holding) return false;
       const handY = p.y - HAND_REACH;
       for (const r of this.ropes) {
         // (from beside a post, over the ledge it stands on, counts: a jump straight up next to the post catches the rope's end, and he
@@ -4255,6 +4296,8 @@ export class GameEngine {
     p.jumpsLeft = 2;
     p.invincibleTimer = 2.0;
     this.respawnFlash = 0.6;
+    // what he was carrying goes back to its source
+    this.kit?.onRespawn();
     this.inputGrace = 0.35;
     this.graceMoves = this.input.moves;
     const fr = framing(this.viewCssW, this.viewCssH, this.camera.viewportWidth);
@@ -4305,7 +4348,7 @@ export class GameEngine {
           const span = 140;
           for (let k = Math.floor(a / span) - 1; k < b / span + 1; k++) {
             for (let row = 0; row < 3; row++) {
-              const sx = (((k * span + row * 47 + t * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
+              const sx = (((k * span + row * 47 + (r.flowT ?? t) * r.speed * r.dir) % (r.x1 - r.x0 + span)) + (r.x1 - r.x0 + span)) % (r.x1 - r.x0 + span);
               const x = r.x0 + sx - span * 0.5;
               const y = wave(x) + 7 + row * 9;
               ctx.beginPath();
@@ -4473,9 +4516,18 @@ export class GameEngine {
       // (never so far that he leaves the view: his feet stay above the bottom tenth)
       this.camera.targetY = Math.max(this.camera.targetY, p.y - vh * 0.9);
     }
+    // a puzzle room (puzzleCamera.ts): the view leans from him toward the part of the puzzle that matters now, or goes to a far gate
+    // that has just opened; outside every room this is nothing
+    const kf = !look && this.kit ? this.kit.camFocus(p, vw * this.roomZoom, vh * this.roomZoom) : null;
+    if (kf) {
+      const c = kf.pan ? { x: kf.x, y: kf.y } : roomLean(p.x, p.y - 45, kf.x, kf.y);
+      const v = kf.pan ? { x: c.x - vw / 2, y: c.y - vh / 2 } : roomView(c.x, c.y, vw, vh, p.x, p.y);
+      this.camera.targetX = v.x;
+      this.camera.targetY = v.y;
+    }
     // near the end of a ledge with a gap ahead, the view shows the far side too (cameraFollow.ts landingAhead)
     let landShown: Box | null = null;
-    if (!look && !this.chase?.active && !this.currentStage.arena) {
+    if (!look && !kf && !this.chase?.active && !this.currentStage.arena) {
       const land = this.landingToShow(dt);
       landShown = land;
       if (land) {
@@ -4726,6 +4778,7 @@ export class GameEngine {
     out.hazards = this.hazards;
     out.bushes = this.proto?.bushes ?? out.bushes;
     out.w5 = this.w5?.guideThings ?? NO_W5_THINGS;
+    out.kit = this.kit?.guideThings ?? NO_W5_THINGS;
     out.popups = this.floatingTexts;
     // (a boss's open weak spot, for Dot to keep her bubble off: copied into the view, no new object)
     const bs = this.boss;
@@ -4933,7 +4986,7 @@ export class GameEngine {
     for (const pl of this.platforms) {
       const d = pl.drift;
       if (pl.type !== 'drift' || !d || pl.broken) continue;
-      const travelled = driftProgress(d, this.gameTime) * driftCycle(d) * d.speed;
+      const travelled = driftProgress(d, logClock(this.currentStage.rivers, d, this.gameTime)) * driftCycle(d) * d.speed;
       const lead = d.speed * 1.1;
       if (travelled > d.width || travelled < d.width - lead) continue;
       const ex = d.dir === 1 ? d.x0 + 18 : d.x1 - 18;
@@ -4963,7 +5016,9 @@ export class GameEngine {
       if (!this.onScreen(v.x, (v.top + v.bud) / 2, 400)) continue;
       const ph = vinePhase(v, this.gameTime);
       const l = this.vineLash.get(i);
-      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : this.player.x >= v.x ? 1 : -1, this.gameTime);
+      // (listening to the kit's noise, it looks toward the noise: noise.ts)
+      const ear = this.kit ? heard(this.kit.noises, v.x, v.bud, this.gameTime) : null;
+      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : ear ? (ear.x >= v.x ? 1 : -1) : this.player.x >= v.x ? 1 : -1, this.gameTime);
     }
     // 4-7: in the air, a shadow on the ledge he is coming down to
     if (this.proto?.w4?.deepFall !== undefined && !this.player.grounded && !this.player.climbing) {
@@ -4974,6 +5029,7 @@ export class GameEngine {
     }
     this.w4?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.currentStage.zones ?? [], this.platforms);
     this.w5?.drawBack(ctx, this.gameTime, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
+    this.kit?.drawBack(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     if (this.mc) drawMeecaBack(ctx, this.mc, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth }, this.gameTime);
     this.markKeepOuts();
     // World 3's glowworms, hanging over the dark (asleep until he stands still: stepGlowworms)
@@ -5013,6 +5069,11 @@ export class GameEngine {
       if (this.w5?.drawItem(ctx, item, this.gameTime, this.currentStage.config.worldIndex)) return;
       if (item.type === 'seed') {
         if (!item.collected && !drawSeedArt(ctx, item, this.gameTime)) drawSeed(ctx, item, this.gameTime);
+        return;
+      }
+      // a reed cage hanging over the water: the kit draws it (puzzlePlay.ts), and the little one hopping home once it is free
+      if (item.type === 'cage' && this.kit?.holdsCage(item)) {
+        if (item.collected) drawW2Cage(ctx, item, this.gameTime, true);
         return;
       }
       // World 2's painted reed cages, and the little one hopping home once it is free
@@ -5164,15 +5225,19 @@ export class GameEngine {
       ctx.save();
       ctx.translate(drawOff, 0);
     }
-    if (rig) {
+    // carrying, throwing or setting down: Matt's carry poses (puzzlePlay.ts drawPokey)
+    const kitPose = !!this.kit && this.kit.drawPokey(ctx, this.player);
+    if (kitPose) { /* drawn */ }
+    else if (rig) {
       const hp = this.player;
       drawGroundShadow(ctx, rig, this.platforms, hp.x, hp.y, 30 * (hp.ducking ? 1.3 : 1.05));
       drawBackGlow(ctx, rig, hp.x, hp.y - 38, 78, 0.13);
       if (this.quality === 0 && polishTier() === 0 && !pskip('lit')) drawLit(ctx, rig, dpr * this.zoom, hp.x, hp.y, (c) => drawHeroSloth(c, hp, this.gameTime));
       else drawHeroSloth(ctx, hp, this.gameTime);
     } else if (this.mc) drawMeecaHero(ctx, this.player, this.mc, this.gameTime);
-    else drawHeroSloth(ctx, this.player, this.gameTime);
+    else if (!kitPose) drawHeroSloth(ctx, this.player, this.gameTime);
     if (shiftOff) ctx.restore();
+    this.kit?.drawFront(ctx, this.player, kitPose);
     heroClipsLive(false);
     if (this.proto?.bushes) this.drawBushes(ctx);
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, true);
@@ -5277,6 +5342,8 @@ export class GameEngine {
           lights.push({ x: l.x - cx0, y: l.y - cy0, r: u > 0.01 ? l.r * (0.35 + 0.65 * u) : 42 });
         }
       }
+      // the puzzle kit's glowing things (World 3's mushroom), carried or set down
+      for (const l of this.kit?.lights() ?? []) lights.push({ x: l.x - cx0, y: l.y - cy0, r: l.r });
       // every flower and leaf glows a little, so a reward is never lost in the dark
       for (const c of this.collectibles) {
         if (c.collected || (c.type !== 'flower' && c.type !== 'leaf')) continue;
@@ -5881,6 +5948,23 @@ export class GameEngine {
     ctx.fillRect(fromLeft ? 0 : vw - width, 0, width, vh);
   }
 
+  /** does a watcher at (x, y) hear the puzzle kit's noise now (noise.ts) */
+  private listens(x: number, y: number): boolean {
+    return !!this.kit && !!heard(this.kit.noises, x, y, this.gameTime);
+  }
+
+  /**
+   * Where the watching eagle's shadow is: sweeping across the view (watcher.ts), or, when a noise in its watched stretch draws it
+   * (noise.ts), circling over the noise.
+   */
+  private shadowX(w: WatchState, camX: number, viewW: number): number {
+    const zones = this.proto?.watch ?? [];
+    for (const n of this.kit?.noises ?? []) {
+      if (w.phase === 'pass' && zoneAt(zones, n.x) && heard([n], n.x, n.y, this.gameTime)) return lureShadow(n.x, this.gameTime);
+    }
+    return plainShadowX(w, camX, viewW);
+  }
+
   /** step the watching eagle and its dive (1-7) */
   private updateWatch(dt: number) {
     const p = this.player;
@@ -5909,7 +5993,7 @@ export class GameEngine {
     }
     const me = { x: p.x, y: p.y, ducking: !!p.ducking, grounded: p.grounded, hanging: !!p.hanging };
     if (this.watch.phase === 'pass') {
-      const sx = shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
+      const sx = this.shadowX(this.watch, this.camera.x, this.camera.viewportWidth);
       if (!water && sees(this.watch, sx, bushes, me)) {
         this.watch.seen = true;
         this.watchFrom = { x: sx, y: this.camera.y + 125 };
@@ -5959,7 +6043,7 @@ export class GameEngine {
         const k = u * u;
         this.watchEyes = { x: this.watchFrom.x + (this.player.x - this.watchFrom.x) * k, y: this.watchFrom.y + (this.player.y - 70 - this.watchFrom.y) * k, s: 1.3 + 0.5 * k, a: 1, narrow: 0.6 };
       } else {
-        const sx = shadowX(w, cam.x, cam.viewportWidth);
+        const sx = this.shadowX(w, cam.x, cam.viewportWidth);
         this.watchEyes = { x: sx, y: cam.y + 175, s: 1.3, a: 1, narrow: 0 };
         this.watchShadowAt = { x: sx, a: 0.5 };
       }
@@ -5993,7 +6077,7 @@ export class GameEngine {
       scale = 0.6 + 0.4 * u;
       this.watchShadowAt = { x: w.dir === 1 ? cam.x + 30 : cam.x + cam.viewportWidth - 30, a: 0.18 + 0.3 * u };
     } else {
-      const sx = shadowX(w, cam.x, cam.viewportWidth);
+      const sx = this.shadowX(w, cam.x, cam.viewportWidth);
       e.facing = w.dir;
       if (w.seen) {
         // the dive: from where it saw him down to him, then back up and away
@@ -6082,6 +6166,17 @@ export class GameEngine {
    */
   private stepGlowworms(dt: number, zones: readonly import('./zones.ts').Zone[] | undefined) {
     const p = this.player;
+    // a glowing mushroom's light wakes the glowworms it reaches, carried or set down (puzzleKit.ts ITEM.mushroom)
+    const lamps = this.kit?.lights() ?? [];
+    if (lamps.length) {
+      for (const z of zones ?? []) {
+        if (z.kind !== 'dark') continue;
+        for (const l of z.lights ?? []) {
+          if (!l.sleep || l.id === undefined || this.glowWake.has(l.id)) continue;
+          if (lamps.some((m) => Math.hypot(m.x - l.x, m.y - l.y) <= m.r + 40)) this.glowWake.set(l.id, this.gameTime);
+        }
+      }
+    }
     const dark = (zones ?? []).filter((z) => z.kind === 'dark' && z.lights?.some((l) => l.sleep) && p.x >= z.x0 - 120 && p.x <= z.x1 + 120);
     if (!dark.length) {
       this.glowStill = 0;
@@ -6129,7 +6224,7 @@ export class GameEngine {
       }
       const lash = this.vineLash.get(i);
       if (lash && this.gameTime - lash.at > VINE.windup + VINE.out) this.vineLash.delete(i);
-      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging })) {
+      if (!this.vineLash.has(i) && (lash?.cycle ?? -1) !== cycle && vineSees(v, this.gameTime, { ...p, swinging: p.isVineSwinging }, this.listens(v.x, v.bud))) {
         // something flying past is struck at once (a leap is through its reach in half a second); on the ground it winds up first
         this.vineLash.set(i, { at: this.gameTime - (p.grounded ? 0 : VINE.windup - 0.1), dir: p.x >= v.x ? 1 : -1, landed: false, cycle });
         sound.playWhoosh();
@@ -6215,6 +6310,82 @@ export class GameEngine {
     if (out.knocked) this.inputGrace = Math.max(this.inputGrace, FALLS.stagger);
     // a freed eaglet's parent beating its wings over the nest (4-8): a tailwind on top of the gust lanes
     this.windV += out.wind;
+  }
+
+  /** the puzzle kit's view of the engine this frame (one object, its fields kept up to date) */
+  private kitHost(): KitHost {
+    const id = this.currentStage.config.id;
+    const h = (this.kitHostObj ??= {
+      t: 0,
+      player: this.player,
+      standingOn: -1,
+      easy: isEasy(),
+      tip: (key, text, seconds) => {
+        if (tipHeard(id, key)) return;
+        markTipHeard(id, key);
+        this.guide(text, seconds);
+      },
+      float: (text, x, y, color) => this.addFloatingText(text, x, y, color),
+      passTip: (text) => this.callbacks.onGuide?.(text, 0, true),
+      freeCage: (c) => this.freeCritter(c),
+      sfx: (kind) => {
+        if (kind === 'pick') sound.playVineGrab();
+        else if (kind === 'drop' || kind === 'land') sound.playLand(kind === 'drop' ? 0.4 : 0.25);
+        else if (kind === 'throw' || kind === 'lost') sound.playWhoosh();
+        else if (kind === 'press' || kind === 'lift') sound.playTreeClimb();
+        else if (kind === 'gate') sound.playShrineUnlocked();
+        else if (kind === 'lever') sound.playPunch();
+        else if (kind === 'munch') sound.playFruitPickup();
+        else if (kind === 'reset') sound.playCheckpoint();
+        else if (kind === 'ring') sound.playShrineUnlocked();
+        else if (kind === 'noise') sound.playHitImpact(false);
+        else if (kind === 'tilt') sound.playLand(0.3);
+        else if (kind === 'trade') sound.playFruitPickup();
+      },
+    });
+    h.t = this.gameTime;
+    h.player = this.player;
+    h.standingOn = this.standingOnId;
+    return h;
+  }
+
+  /**
+   * The puzzle kit's controls, from the intents as they are (touchGestures.ts and the input are untouched): a tap with a piece in reach
+   * in front of him uses it instead of punching; carrying, the jump intent throws up and forward, the kick intent throws forward and a
+   * tap sets it down, and none of them is ever a jump, a kick or a punch while his hands are full.
+   */
+  private kitControls() {
+    const inp = this.input.state;
+    const took = this.kit!.control({ tap: inp.punchPressed, up: inp.jumpPressed, side: inp.kickPressed, sideDir: inp.kickDir }, this.kitHost(), this.platforms);
+    if (took.tap) inp.punchPressed = false;
+    if (took.up) {
+      inp.jumpPressed = false;
+      this.upIntent = 0;
+    }
+    if (took.side) {
+      inp.kickPressed = false;
+      inp.kickDir = 0;
+    }
+    if (this.kit!.holding) {
+      inp.megaPunchPressed = false;
+      inp.jumpPressed = false;
+      inp.punchPressed = false;
+      inp.kickPressed = false;
+      this.jumpBufferTimer = 0;
+      this.atkQueue = null;
+    }
+  }
+
+  /** the puzzle rooms, each frame (puzzlePlay.ts): carrying, he walks slower; the room's framing eases in, and out again outside it */
+  private stepKit(dt: number) {
+    this.dragSpeed *= this.kit!.step(dt, this.kitHost(), this.platforms);
+    const cam = this.camera;
+    const kf = this.kit!.camFocus(this.player, cam.viewportWidth * this.roomZoom, cam.viewportHeight * this.roomZoom);
+    const want = kf ? (kf.pan ? this.roomZoom : kf.zoom) : 1;
+    const prev = this.roomZoom;
+    this.roomZoom += (want - this.roomZoom) * Math.min(1, dt * ROOM_CAM.ease);
+    if (Math.abs(want - this.roomZoom) < 0.002) this.roomZoom = want;
+    if (this.roomZoom !== prev) this.applyZoom();
   }
 
   /**

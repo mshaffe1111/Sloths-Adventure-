@@ -4,7 +4,7 @@
  * pell-anim / soldier-anim, with their lanterns), each watching guard's ring (amber, filling while his back is turned; full and
  * flashing as he turns: the tell), her place in line (a dashed pink outline of her), the trunks with their words cut in the scratch
  * alphabet letter by letter and the pink hold-to-carve meter, the ferns, her thoughts (a pink cloud, never Dot's parchment), the
- * dusk grade, the "Three days earlier" card and the story box of the ending.
+ * dusk grade, the "On the March North" card and the story box of the ending.
  *
  * World pieces draw in world units; the overlays (`drawScreen*`) in CSS px. Every sheet draws a plain stand-in while it loads.
  */
@@ -618,7 +618,7 @@ function inked(ctx: CanvasRenderingContext2D, text: string, x: number, y: number
   ctx.fillText(text, x, y);
 }
 
-/** the "Three days earlier" card over the opening shot: the game's chapter card in dusk violet (upright on the top half, sideways on the left) */
+/** the "On the March North" card over the opening shot: the game's chapter card in dusk violet (upright on the top half, sideways on the left) */
 export function drawTitleCard(ctx: CanvasRenderingContext2D, W: number, H: number, a: number, t: number) {
   if (a <= 0) return;
   const land = W > H;

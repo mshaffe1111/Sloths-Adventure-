@@ -47,6 +47,11 @@ export interface Zone {
    * still near them for a moment (GLOW_STILL), then they wake one after another and stay lit (engine.ts). `id` names one for its threads.
    */
   lights?: Array<{ x: number; y: number; r: number; sleep?: boolean; id?: number }>;
+  /**
+   * the puzzle kit's wind shutter (puzzleKit.ts 'shutter', World 4) has this gust lane shut: it is calm, whatever its rhythm says, until
+   * the shutter opens again (the kit sets it each frame)
+   */
+  shut?: boolean;
 }
 
 export type ZonePhase = 'idle' | 'warn' | 'active';
@@ -75,6 +80,7 @@ export const GLOW_REACH = { back: 260, ahead: 1050, speed: 900, fade: 0.6 } as c
 export const isStatic = (z: Pick<Zone, 'kind'>) => z.kind === 'web' || z.kind === 'dark' || z.kind === 'crumble';
 
 export function zoneState(z: Zone, t: number): ZoneState {
+  if (z.shut) return { phase: 'idle', u: 0, strength: 0, untilActive: Infinity };
   if (isStatic(z)) return { phase: 'active', u: 0, strength: 1, untilActive: 0 };
   const s = (((t + z.offset) % z.period) + z.period) % z.period;
   const idle = idleTime(z);

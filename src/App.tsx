@@ -40,6 +40,7 @@ import { TrophyRoom } from './components/TrophyRoom.tsx';
 import { BadgeToast } from './components/BadgeToast.tsx';
 import { applyUpdate, autoUpdateAllowed } from './game/updates.ts';
 import { ControlTestDone, ControlTestGate, RecordingBadge } from './components/ControlTestGate.tsx';
+import { KIT_STAGE_ID, kitStageConfig, setKitStart } from './game/kitStage.ts';
 import { ctestEnabled, newMix, recorder } from './game/playRecorder.ts';
 import { CTEST_STAGE_ID } from './game/stageGenerator.ts';
 import { DOT_STAGE_ID, MEECA_STAGE_ID, newStagesOn } from './game/extraStages.ts';
@@ -394,13 +395,16 @@ export default function App() {
     else sound.setAmbient(null);
   }, [screen, activeLevel, musicSalt]);
 
-  // Check URL parameters (?autostart=1)
+  // Check URL parameters (?autostart=1); the same keys after # work too, since a shared Claude link passes on only the # part
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(`${window.location.search.slice(1)}&${window.location.hash.slice(1)}`);
     if (params.get('autostart') === '1') {
       // ?level=5-10 jumps straight to that stage (handy for checking a boss)
       const wanted = params.get('level');
-      startLevel(allLevels.find((l) => l.id === wanted) ?? allLevels[0]);
+      // (?level=kit is the puzzle kit's test room, which is in no world's list: kitStage.ts)
+      // (&room=seesaw starts the test room at that room's door)
+      if (wanted === KIT_STAGE_ID) setKitStart(params.get('room'));
+      startLevel(allLevels.find((l) => l.id === wanted) ?? (wanted === KIT_STAGE_ID ? kitStageConfig() : allLevels[0]));
     }
   }, []);
 

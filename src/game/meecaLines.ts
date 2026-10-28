@@ -71,7 +71,7 @@ export const PELL_CATCH: readonly string[] = ['Back in line, please, Miss. I am 
 /** the title card over the opening (the game's chapter card, in dusk violet) */
 export const MEECA_CARD = {
   kicker: 'WORLD 5 · MEECA',
-  title: ['Three days', 'earlier'],
+  title: ['On the March', 'North'],
   sub: ['The Orchid Sanctuary, at dusk.', 'You are Meeca.'],
   tap: 'TAP TO BEGIN',
 } as const;

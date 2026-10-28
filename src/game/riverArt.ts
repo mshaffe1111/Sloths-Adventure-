@@ -343,6 +343,8 @@ export function drawW2Cage(
     freedAt?: number;
   },
   t: number,
+  /** a cage hanging from a pulley (2-3, 2-8: the puzzle kit draws its cage, puzzlePlay.ts): only the little one in it, and its hop home */
+  bare = false,
 ): boolean {
   if (!riverArtReady() || !c.critter || c.critter === 'eaglet') return false;
   const floor = c.y + 26;
@@ -353,6 +355,7 @@ export function drawW2Cage(
   if (!c.collected) {
     const shiver = Math.sin(t * 9) * 0.6;
     drawW2Piece(ctx, pics.sad, c.x + shiver, floor - 4, 44);
+    if (bare) return true;
     // (until Matt's redrawn set arrives the dome cage stands in for the whole one too: the first sheet's whole cage was a solid bundle
     // that hid the little one. Cracked, it shakes.)
     const hurt = (c.cageHp ?? 2) < 2;
@@ -360,10 +363,12 @@ export function drawW2Cage(
     return true;
   }
   // the burst cage stays where it was, fading away
-  ctx.save();
-  ctx.globalAlpha *= Math.max(0, 1 - Math.max(0, since - FREED_HOP) / 1.5);
-  drawW2Piece(ctx, 'cageC', c.x, floor + 2, 92);
-  ctx.restore();
+  if (!bare) {
+    ctx.save();
+    ctx.globalAlpha *= Math.max(0, 1 - Math.max(0, since - FREED_HOP) / 1.5);
+    drawW2Piece(ctx, 'cageC', c.x, floor + 2, 92);
+    ctx.restore();
+  }
   if (since <= FREED_HOP) {
     // three hops away from the cage, getting smaller as it runs home into the reeds
     const u = since / FREED_HOP;
