@@ -277,7 +277,8 @@ export function drawMeecaBack(ctx: CanvasRenderingContext2D, mc: MeecaPlay, view
   st.trunks.forEach((tr, i) => {
     if (tr.x + tr.w < view.x0 - 100 || tr.x - tr.w > view.x1 + 100) return;
     const cut = mc.cutChars(i);
-    const at = drawTrunk(ctx, tr, cut);
+    // (the faint guide of words still to cut shows only while she can cut them: in the Pell scene's lantern light it read as carved)
+    const at = drawTrunk(ctx, tr, cut, mc.phase === 'play' || mc.phase === 'last');
     // (the trail mark: her M, and an arrow back the way she came, cut with the last stroke)
     if (tr.index < 0 && cut >= tr.lines.join('').replace(/ /g, '').length) drawArrowMark(ctx, tr.textX + tr.size * 1.3, tr.textY);
     if (at && i === mc.marked && (mc.carvingNow || (cut > 0 && cut % 1 > 0.01))) {
@@ -350,7 +351,7 @@ export const trunkSeed = (tr: MeecaTrunk) => tr.index * 13 + 5;
  * A trunk and its words. `cut` characters are cut (a fraction for the one under the pin, revealed left to right); the rest show as a
  * faint dashed guide of what she means to write. Returns the middle of the letter being cut (for the meter), or null.
  */
-export function drawTrunk(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, cut: number): { x: number; y: number; k: number; frac: number } | null {
+export function drawTrunk(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, cut: number, guide = true): { x: number; y: number; k: number; frac: number } | null {
   const size = tr.size;
   // the painted trunk, sized as w5Look sizes a carving's (or its drawn stand-in while the art loads)
   const c = { x: tr.textX, y: tr.textY, lines: [...tr.lines], size, trunk: { ground: tr.ground, w: tr.w, h: tr.h } };
@@ -382,6 +383,12 @@ export function drawTrunk(ctx: CanvasRenderingContext2D, tr: MeecaTrunk, cut: nu
         ctx.translate(cx, cy);
         ctx.rotate(l.rot * 1.3);
         if (stc <= 0) {
+          if (!guide) {
+            ctx.restore();
+            n++;
+            lx += adv;
+            return;
+          }
           ctx.setLineDash([size * 0.06, size * 0.12]);
           drawScratch(ctx, l.ch, 0, 0, k, 0.09, 'rgba(255, 236, 214, 0.38)', 0.55);
         } else {
