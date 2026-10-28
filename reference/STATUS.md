@@ -103,6 +103,7 @@ Pending for the architect when it resumes: commit c912bc3 finished (full suite +
 - Meeca's Room 4 is the tea channel. World 5's night strips are made in code.
 - Slow phones: recordings name the browser; the one-time "open in Chrome/Safari" tip.
 - QA: one bot, random levels. Our bots (kid/Easy, adult/Normal, first-timer) run before anything goes to QA.
+- Title screen direction approved by Matt (2026-10-28, from the idle videos: "I like the way that it's carved in").
 - Title logo: carved into bark, carved in stroke by stroke on the first title of a session (chips, gold glow), shown carved after;
   the ribbon is deleted (Matt 2026-10-28). Title pair get real animation clips from the motion model (no code twitching).
 - Dot's water warning (gen2, Easy repeats it after 12 s): "Careful, water! Flick up and over." (Matt chose C).
