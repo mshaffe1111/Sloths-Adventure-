@@ -223,8 +223,8 @@ export const LOOKS: Record<number, Look> = {
 
 /**
  * World 5's light by stage (Matt, 2026-10-26): the gold above is 5-1 to 5-3; these turn the screen tint, the water and the drawn ground
- * duskier as the orchids close (5-4 to 5-6, and Meeca's bonus stage), then to a misty violet twilight (5-7 to 5-9: still a lit sky,
- * never night, World 8 is the night). Which stage is which comes from w5Backdrop.ts (w5Mood), the same as the painted strips.
+ * duskier as the orchids close (5-4 to 5-6), then to a misty violet twilight (5-7 to 5-9: still a lit sky, never night, World 8 is
+ * the night). The one night is Meeca's own stage (5-M), the night she got away. Which stage is which comes from w5Backdrop.ts (w5Mood), the same as the painted strips.
  */
 export const W5_MOOD_LOOKS: Record<W5Mood, Partial<Look>> = {
   gold: {},
@@ -251,6 +251,19 @@ export const W5_MOOD_LOOKS: Record<W5Mood, Partial<Look>> = {
     rays: '#e0d0ff', rayA: 0.12, grade: ['#8a74c8', 0.08],
     ground: { cap: '#6e7a70', capHi: '#b0b8b4', capDark: '#3e4646', dirt: '#4c4450', dirtDark: '#1e1a26', stone: '#a8a2b8', outline: '#14101c', kind: 'grass' },
     water: { top: '#7a729a', bottom: '#2a2646', foam: '#ece6fa' },
+  },
+  // Meeca's night (5-M): moonlight, matched to the night camp painting and the moonlit strips (tools/art/w5puzzle/night.py)
+  night: {
+    sky: ['#0e1430', '#1a2450', '#2c3a6e', '#41508a'],
+    sun: { x: 0.26, y: 0.42, r: 56, core: '#eef2ff', glow: '#7c8cd0' },
+    clouds: { top: '#4a5890', bottom: '#1c2448', n: 3 },
+    farCols: ['#2a3466', '#1c2450', '#8a98d0'], haze: '#3a4680',
+    hills: ['#2a3060', '#1e2450', '#141a3a'],
+    crowns: ['#5a5aa0', '#4a6a9a', '#7a6ab0', '#2e4a60'],
+    leaves: ['#2e5a5a', '#3e4a7a', '#6a5a9a', '#1e3a40'],
+    rays: '#c8d4ff', rayA: 0.05, grade: ['#1a2460', 0.12],
+    ground: { cap: '#44546a', capHi: '#8a9ab8', capDark: '#222c3e', dirt: '#2e2c44', dirtDark: '#12101e', stone: '#6e7094', outline: '#08060e', kind: 'grass' },
+    water: { top: '#3a4670', bottom: '#10142a', foam: '#c8d0f0' },
   },
 };
 /** the light of the World 5 stage being played (gold off the stages: the map, a story, another world's stage) */
@@ -288,7 +301,7 @@ function tintAll(c: string, m: Mood): string {
 }
 
 /** the rolls each World 5 light may take (the gold stays gold; the dusk may blush; the twilight may mist) */
-const W5_ROLLS: Record<W5Mood, string[]> = { gold: ['vivid', 'golden', 'vivid'], dusk: ['vivid', 'rose', 'golden'], twilight: ['vivid', 'mist', 'cool'] };
+const W5_ROLLS: Record<W5Mood, string[]> = { gold: ['vivid', 'golden', 'vivid'], dusk: ['vivid', 'rose', 'golden'], twilight: ['vivid', 'mist', 'cool'], night: ['vivid'] };
 
 function makeVariant(base: Look, world: number, seed: number, w5?: W5Mood): Look {
   const r = rng(world * 8191 + seed * 31 + 7);
