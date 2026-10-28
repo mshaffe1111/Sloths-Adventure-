@@ -74,7 +74,10 @@ Matt's Claude memory has a long file about this game (`/areas/sloths-adventure.m
 
 ### Design rules for stages (check every stage against these)
 
-- **Crumbling platforms**: crumbling/breakaway platforms are never needed to finish a stage. They grow back after 3 s, so nobody can be left stuck.
+**The full rulebook is `reference/STAGE-RULES.md`** (the numbers each stage must meet, puzzle rooms, art use, the checks in order,
+and the mistakes we already paid for). The short list:
+
+- **Crumbling platforms**: crumbling/breakaway platforms are never needed to finish a stage. A broken one grows back after 30-35 s, only when it is off screen.
 - **Climbing**: on a vine or trunk, straight up or down always climbs; only a diagonal slide jumps off.
 - **Length**: every stage takes at least 2 minutes even for a quick player (5+ minutes is fine). Each stage is a little harder than the last, with an easy start to hook players.
 - **Teaching**: every new mechanic is taught where it first appears (lesson cards, `src/game/lessons.ts`). Dot, the hummingbird, is the in-stage guide for tips and goals, and never repeats a tip on replays.
