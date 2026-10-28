@@ -1149,13 +1149,22 @@ export class GameEngine {
         }
       }
     }
-    // 2-8: rising water. It starts once he steps in, and covers the low reed islands
+    // 2-8: rising water. It starts once he steps in, and covers the low reed islands; out on a bank again (either one) it drains away as
+    // fast as it rose, so a little one left behind can still be gone back for (every one of them is the goal)
     for (const r of this.currentStage.rivers ?? []) {
       const f = r.flood;
       if (!f) continue;
       f.y0 ??= r.surfaceY;
       let at = this.floodAt.get(r);
-      if (at === undefined && p.x > f.trigger && !this.isGameOver) {
+      const inBasin = p.x > f.trigger && p.x < r.x1 + 10;
+      if (at !== undefined && !inBasin && p.grounded) {
+        at = Math.min(this.gameTime, at + 2 * dt);
+        if (at >= this.gameTime) {
+          this.floodAt.delete(r);
+          at = undefined;
+        } else this.floodAt.set(r, at);
+      }
+      if (at === undefined && inBasin && !this.isGameOver) {
         at = this.gameTime;
         this.floodAt.set(r, at);
         if (!this.floodTold) {

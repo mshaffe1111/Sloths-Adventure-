@@ -190,6 +190,24 @@ test('a hanging cage in play: no punch breaks it; a stone set in its basket lift
   assert.equal(r.p.crittersRescued, before + 1);
 });
 
+test('2-8 in play: the water rises while he is in a basin, and drains away once he is back on a bank (a cage left behind can be gone back for)', () => {
+  const r = new RealPlay('2-8', 1);
+  const basin = r.stage.rivers!.find((q) => q.flood)!;
+  const isl = r.platforms.filter((q) => q.y === 600 && q.x > basin.x0 && q.x < basin.x1).sort((a, b) => a.x - b.x)[0];
+  const still = basin.surfaceY;
+  r.stand(isl.x + 40, isl.y);
+  r.wait(6);
+  const risen = basin.surfaceY;
+  assert.ok(risen < still - 5, `it rises with him in the basin (${still} -> ${risen})`);
+  r.stand(basin.x0 - 120, G);
+  r.wait(8);
+  assert.ok(Math.abs(basin.surfaceY - still) < 0.5, `back on the bank, it drains (${basin.surfaceY})`);
+  // and in again, it starts rising again
+  r.stand(isl.x + 40, isl.y);
+  r.wait(2);
+  assert.ok(basin.surfaceY < still - 0.5);
+});
+
 /** the room check's errors for a stage, as the level check runs it (levelCheck.ts hands the rooms its own graph) */
 function roomErrors(st: ReturnType<typeof buildW2Stage>): string[] {
   return validateStage(st).errors.filter((e) => e.startsWith('room '));

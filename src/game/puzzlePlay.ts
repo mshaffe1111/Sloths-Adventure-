@@ -1027,7 +1027,11 @@ export class KitPlay {
         ctx.beginPath();
         ctx.rect(sl.river.x0, sl.river.surfaceY - 400, sl.river.x1 - sl.river.x0, 600);
         ctx.clip();
-        for (const r of sl.rafts) drawKitArt(ctx, 'raft', r.x + r.width / 2, r.y + 30 + Math.sin(this.t * 2.1 + r.id) * 1.5, { w: r.width * 1.12, h: r.width * 0.5 });
+        // (the painting's deck, about a quarter down it, level with the raft's top: where he stands)
+        for (const r of sl.rafts) {
+          const h = r.width * 0.44;
+          drawKitArt(ctx, 'raft', r.x + r.width / 2, r.y + h * 0.72 + Math.sin(this.t * 2.1 + r.id) * 1.5, { w: r.width * 1.1, h });
+        }
         ctx.restore();
       }
       for (const b of room.bells) this.drawBell(ctx, b);

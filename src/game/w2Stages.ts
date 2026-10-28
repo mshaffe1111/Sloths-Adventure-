@@ -763,7 +763,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       run(R.r(110, 140));
       first = close()!;
       const g1 = Math.round(R.r(84, 100));
-      const iw = Math.round(R.r(190, 220));
+      const iw = Math.round(R.r(280, 300));
       const ch = Math.round(R.r(110, 125));
       const ix = x + g1;
       rivers.push({ x0: x, x1: ix, surfaceY: SURFACE, dir: 1, speed: 0, ...(o.safe ? { safe: { backX: x - 60, backY: G } } : {}) });
@@ -772,14 +772,15 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
       rivers.push({ x0: ix + iw, x1: ix + iw + ch, surfaceY: SURFACE, dir: 1, speed: 0, ...(o.safe ? { safe: { backX: ix + iw - 50, backY: G } } : {}) });
       reeds(ix + iw - 30, G + 4, true);
       open(ix + iw + ch);
-      run(R.r(230, 260));
+      run(R.r(150, 170));
       basketX = x;
       run(64);
       A = close()!;
     } else {
-      run(R.r(130, 160));
+      // (narrow: the signpost, the pile, the basket and the cage all in one upright phone's view)
+      run(R.r(80, 100));
       pileX = x;
-      run(R.r(150, 180));
+      run(R.r(100, 120));
       basketX = x;
       run(64);
       A = first = pileP = close()!;
@@ -810,7 +811,7 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     });
     if (!o.ground) {
       open(E + POOL_W);
-      run(R.r(150, 190));
+      run(R.r(190, 220));
     }
     expert += (x - x0) / RUN + stones2 * 3 + (o.mode === 'bank' ? 1 : 3);
     pieces.push({ k: `cage-${o.mode}`, x0, x1: x });
@@ -829,7 +830,8 @@ export function buildW2Stage(config: LevelConfig, seed = 1, plan: W2Plan): Gener
     const postX = x;
     run(R.r(110, 130));
     const leverX = x;
-    run(R.r(110, 130));
+    // (the lever a few steps back from the water: he sees the raft come round from there)
+    run(R.r(240, 260));
     const A = close()!;
     const rx0 = x;
     const W = Math.round(R.r(500, 540));
