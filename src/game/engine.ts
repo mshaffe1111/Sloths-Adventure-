@@ -67,7 +67,7 @@ import { drawJaguarSprite } from './jaguarSprite.ts';
 import { renderWorldObjects, drawWater } from './terrain.ts';
 import { drawLadder, drawLily, drawLogComing, drawRiverLog, drawRiverWater, drawW2Cage, drawW2Decor, drawW2Lift, riverArtReady } from './riverArt.ts';
 import { driftCycle, driftProgress, driftX, floodLevel, logClock, LOG_DROP, DRIFT_CATCH } from './river.ts';
-import { heard } from './noise.ts';
+import { heard, NOISE } from './noise.ts';
 import { mayRegrow, regrowDelay } from './regrow.ts';
 import { zoneEffect, windPush, zoneDrag, columnHit, inZone, ventLift, drowsyLevel, drowsySpeed, drowsyJump, GLOW_STILL, GLOW_REACH } from './zones.ts';
 import { drawGlowworm, drawThornVine, drawW3Decor, drawW3Fern, drawW3Piece, GLOWWORM_H, w3FernHeight } from './w3Art.ts';
@@ -75,6 +75,7 @@ import { inReach, VINE, vinePeriod, vinePhase, vineSees } from './thornVine.ts';
 import { drawAbyss, drawLandingShadow, W4Play } from './w4Play.ts';
 import { cardScale, W5Play } from './w5Play.ts';
 import { KitPlay, type KitHost } from './puzzlePlay.ts';
+import { drawKitDecor } from './puzzleArt.ts';
 import { ROOM_CAM, roomCentre, roomFloor, roomLean, roomView } from './puzzleCamera.ts';
 /** no World 5 pieces for Dot to point at (any other world) */
 const NO_W5_THINGS: readonly never[] = [];
@@ -620,7 +621,7 @@ export class GameEngine {
     this.pushLogs = this.platforms.filter((pl) => !!pl.push && !pl.art); // (a pushed boulder is World 4's to paint: w4Play.ts)
     this.w4 = this.proto?.w4 ? new W4Play(this.proto.w4, this.platforms, this.vines) : null;
     this.w5 = this.proto?.w5 ? new W5Play(this.proto.w5, this.platforms, this.vines) : null;
-    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles }) : null;
+    this.kit = this.currentStage.kit ? new KitPlay(this.currentStage.kit, this.platforms, { zones: this.currentStage.zones, rivers: this.currentStage.rivers, collectibles: this.collectibles, world: config.worldIndex, stage: config.miniIndex }) : null;
     if (this.currentStage.dot) this.startDot(this.currentStage.dot);
     if (this.proto?.meeca) this.startMeeca(this.proto.meeca);
     this.drawPlats = this.pushLogs.length || this.proto?.chase || this.platforms.some((pl) => pl.art)
@@ -5034,6 +5035,8 @@ export class GameEngine {
       ctx.restore();
     }
 
+    // Matt's World 3 and 4 puzzle sheets set in behind the ground (artDress.ts: World 4's far rope bridge, the broken one's ends)
+    if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.player.x, true);
     // World 4's pieces that stand back behind the ground (4-3's pool basins)
     this.w4?.drawUnder(ctx, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth });
     // Render In-World Trees, Vines and Platforms
@@ -5080,6 +5083,8 @@ export class GameEngine {
     }
     if (this.proto?.decor) drawW2Decor(ctx, this.proto.decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false);
     if (this.proto?.w3decor) drawW3Decor(ctx, this.proto.w3decor, this.camera.x, this.camera.x + this.camera.viewportWidth, this.gameTime, false, (id) => this.glowLit(id), (id) => !!this.platforms.find((pl) => pl.id === id)?.broken);
+    // Matt's World 3 and 4 puzzle sheets set in as dressing (artDress.ts)
+    if (this.proto?.kitDecor) drawKitDecor(ctx, this.proto.kitDecor, { x0: this.camera.x, x1: this.camera.x + this.camera.viewportWidth, y0: this.camera.y, y1: this.camera.y + this.camera.viewportHeight }, this.player.x);
     // World 3's sleeping thorn vines (thornVine.ts)
     for (let i = 0; i < (this.proto?.thorns?.length ?? 0); i++) {
       const v = this.proto!.thorns![i];
@@ -5088,7 +5093,9 @@ export class GameEngine {
       const l = this.vineLash.get(i);
       // (listening to the kit's noise, it looks toward the noise: noise.ts)
       const ear = this.kit ? heard(this.kit.noises, v.x, v.bud, this.gameTime) : null;
-      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : ear ? (ear.x >= v.x ? 1 : -1) : this.player.x >= v.x ? 1 : -1, this.gameTime);
+      // (struck at it, it hangs tangled while it listens: harmless, it sees nobody then)
+      const knot = ear && !l && this.vineStruck.get(i) === ear.t ? Math.max(0, ear.t + NOISE.dur - this.gameTime) : -1;
+      drawThornVine(ctx, v, ph.phase, ph.u, l ? (this.gameTime - l.at) / (VINE.windup + VINE.out) : -1, l ? l.dir : ear ? (ear.x >= v.x ? 1 : -1) : this.player.x >= v.x ? 1 : -1, this.gameTime, knot);
     }
     // 4-7: in the air, a shadow on the ledge he is coming down to
     if (this.proto?.w4?.deepFall !== undefined && !this.player.grounded && !this.player.climbing) {

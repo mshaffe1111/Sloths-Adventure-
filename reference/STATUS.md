@@ -10,6 +10,8 @@ Last updated: 2026-10-28 (after release PR #40).
 
 ## On the work branch, not live yet (pushed for safe keeping; draft PR #41 tracks it, not a release)
 
+- Generator variety tools (merged 2026-10-28): src/game/gen2/variety.ts (ShuffleBag, CooldownQueue, WorldOnce, poissonPlace,
+  pickWeighted), not yet used by stages.
 - The first-timer bot (merged 2026-10-28): `npx tsx tools/inspect/inspect.ts --worlds 1-4 --firsttimer` (~10 min). Known weak spots of
   the bot: World 2 lily-pad rivers (its life counts there are pessimistic) and tall climbs (572-863 px 'stuck' in 1-4, 2-6, 3-4,
   4-3, 4-6 may be the bot, not the stage): check by hand before acting on those.
@@ -25,8 +27,8 @@ Last updated: 2026-10-28 (after release PR #40).
 | 200-roll tool | Expressive range: 200 rolls per stage of Worlds 1-5, heatmaps, diversity vs 0.35, rule failures across rolls (ledger C5) | tools/inspect/era.ts (new files) | 2026-10-28 |
 | Art placement | Every unused World 1-4 sheet piece placed (22 found); state frames; looks rotate by the roll with a cooldown; W1-2 drawing swaps only | puzzleArt, atlas, W3-4 decor | 2026-10-28 |
 | Generator: architect | The new generator's written design for Matt (World 5's 5-7..5-9 first, then Worlds 6-10), its data shapes and the six-pass skeleton | src/game/gen2/ (types, pipeline, design doc) | 2026-10-28 |
-| Generator: variety tools | Shuffle bag, cooldown queue, Poisson spacing (min gap between same-kind pieces, max gap with nothing), all seeded | src/game/gen2/variety.ts (+ test) | 2026-10-28 |
 | Pacing measures | Inspector: action density, rhythm-group length, tension curve per stage, the difficulty-band chart per world | tools/inspect/pacing.ts, bands.ts (new files) | 2026-10-28 |
+| Worlds 3-4 gap list | Measure only: 3 rolls, the first-timer bot, art use; per-stage gaps and variety ideas, so the W3-4 variety pass starts tonight | nothing (read-only) | 2026-10-28 |
 | Meeca's stage | "On the March North": camp, Flicker, five puzzle rooms (tea channel in room 4), the approved ending; night strips in code; replaces 5-M outright | Meeca/5-M files, W5 night strips | 2026-10-28 |
 
 ## Budget
@@ -56,6 +58,14 @@ unasked work (LEAD-PLAYBOOK §7); if the weekly limit gets close, Matt says so a
 - Batch 1 (2026-10-28 morning): all fixed, live in PR #40.
 - Batch 2 (2026-10-28, Worlds 1-2 on build 39fc3db): 9 items, being fixed (helper "QA batch 2").
 - Asked of QA (2026-10-28): run the Matt bot through every stage of Worlds 3 and 4 on the live build; report on Matt's "send".
+
+## Two tracks (Matt, 2026-10-28)
+
+- **Today's code track:** the four original helpers (QA batch 2, art placement, the 200-roll tool, Meeca's stage) stay on bringing the
+  current game up to speed plus bug fixes: when one reports and passes the checks, the lead sends it its next piece of that track
+  (it keeps its context, which saves tokens) instead of starting a new helper.
+- **Generator track:** the architect, the variety tools and the pacing measures, then seed curation, the validator upgrades and
+  World 5's building blocks.
 
 ## Waiting to start (they need another helper's result)
 

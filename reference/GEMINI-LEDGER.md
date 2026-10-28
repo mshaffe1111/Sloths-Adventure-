@@ -30,10 +30,10 @@ Status: **IN** in the game / **PART** partly / **NOT** not yet / **NO** decided 
 
 | # | Recommendation | Status | Where / what is next |
 |---|---|---|---|
-| C1 | Shuffle bags instead of plain random for pieces and props | NOT | Next: W1-5 section variants and decor sets drawn from a bag per world; Gen chunk picks from a bag. |
-| C2 | Poisson spacing: a minimum gap between same-kind pieces, a maximum gap with nothing (no barren stretches) | PART | the maximum gap is enforced as dead time; the minimum gap is not. Next: add both to the validator. |
+| C1 | Shuffle bags instead of plain random for pieces and props | built (gen2/variety.ts), not yet used by stages | `ShuffleBag`, `pickWeighted` (2026-10-28). Next: W1-5 section variants and decor sets drawn from a bag per world; Gen chunk picks from a bag. |
+| C2 | Poisson spacing: a minimum gap between same-kind pieces, a maximum gap with nothing (no barren stretches) | PART; spacing built (gen2/variety.ts), not yet used by stages | the maximum gap is enforced as dead time. `poissonPlace` (2026-10-28) does both gaps at placement time. Next: add the minimum gap to the validator. |
 | C3 | Sockets inside rooms with 3 variations each (3^4 = 81 per room) | NOT | Next: the main tool for W1-5 variety. |
-| C4 | Cooldown: no chunk twice within 2 levels; no sub-block twice in a world | NOT | Next: with C1. |
+| C4 | Cooldown: no chunk twice within 2 levels; no sub-block twice in a world | built (gen2/variety.ts), not yet used by stages | `CooldownQueue` (last 14 ids), `WorldOnce` (2026-10-28). Next: the gen2 pipeline picks chunks and decor sets through them. |
 | C5 | Expressive range analysis: 200-1,000 rolls, metric heatmaps, diversity D_sim >= 0.35 | NOT -> being built | `tools/inspect/era.ts` (helper, 2026-10-28). Measured by hand on 3 rolls: 0.87-1.00 alike. |
 | C6 | Weighted action strings (W 0.2, h 0.5, J 1, V 2, C 2.2, P 2.8, S 3) | IN | `tools/inspect/beats.ts` weights. |
 | C7 | 3-gram cosine across stages (reject > 0.78 adjacent) and 18-beat sliding windows (reject < 0.28) | IN | inspector `similar`, `windows` (window threshold set from our data). |

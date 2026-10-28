@@ -42,7 +42,9 @@ goes onto the Docs roadmap and, if it is a rule, into STAGE-RULES.md or CLAUDE.m
 A helper's report is not proof. Before merging:
 1. Read the report against the brief: every item done, or said why not.
 2. Merge into the work branch; resolve conflicts by reading both sides (watch for the same thing added twice).
-3. **Re-run the checks myself:** type check; the inspector on the changed worlds on seeds 1, 2 and 3; the first-timer bot; the
+3. **Re-run the checks myself** (two tiers, Matt wants speed, 2026-10-28: between rounds the FAST gate, about 5 min: type check, the
+   changed files' tests, the inspector on the changed worlds on seeds 1-3, the first-timer bot on the changed worlds; the FULL gate,
+   below, once per batch before the test link goes to QA and before every release): type check; the inspector on the changed worlds on seeds 1, 2 and 3; the first-timer bot; the
    200-roll tool when layout code changed; the puzzle validator and real-engine tests; the full suite; the build.
 4. Look at the screenshots, upright and sideways, myself.
 5. Only then: the test link, then STATUS.md, then tell Matt in plain words with the honest flaws.

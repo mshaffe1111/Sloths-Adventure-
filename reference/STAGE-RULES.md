@@ -82,7 +82,8 @@ Last updated 2026-10-28.
   drawn is a bug (check with a grep over `puzzleAtlasData.ts` keys and the stage atlases).
 - **State frames matter:** a pressed plate shows pressed, a rung bell swings, a struck vine shows tangled, a lit lantern glows.
 - **Rotate looks by the roll:** where a world has several props or decor sets for one job, the layout roll picks among them (a retry
-  keeps the look, a fresh roll changes it), with a cooldown so the same set isn't used in two stages in a row.
+  keeps the look, a fresh roll changes it), with a cooldown so the same set isn't used in two stages in a row. `artRoll.ts` `rollLook` does it (stages take turns between two halves of the looks, the roll picks within the half); `artDress.ts`
+  is World 3-4's dressing from Matt's puzzle sheets (pictures only: no platform, pickup or piece moves).
 - Each world goes through the day: its far backdrops change across its stages (`stageBackdrops.ts`).
 - New art comes from Matt's Gemini sheets: give him copy-paste prompts with the reference to attach (key colour: magenta, or green
   when the subject wears pink), then cut with `tools/art/w5puzzle/cut.py` and check the cuts on a dark background.

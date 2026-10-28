@@ -18,6 +18,7 @@ import { NOISE, prune, type Noise } from './noise.ts';
 import { zoneEffect, type Zone } from './zones.ts';
 import type { RiverZone } from './river.ts';
 import { drawW4 } from './w4Art.ts';
+import { rollLook } from './artRoll.ts';
 import { drawW2Cage } from './riverArt.ts';
 import type { Collectible, Platform, PlayerState as Player } from './types.ts';
 
@@ -27,6 +28,10 @@ export interface KitWorld {
   zones?: Zone[];
   rivers?: RiverZone[];
   collectibles?: Collectible[];
+  /** the world and the stage's number in it (1-9): the pieces wear that world's look (Matt's World 1-4 sheets), and where a world has
+   *  several looks for one job the stage's roll picks one (artRoll.ts) */
+  world?: number;
+  stage?: number;
 }
 
 export interface KitHost {
@@ -99,6 +104,15 @@ interface ShutterRun { spec: Extract<PieceSpec, { kind: 'shutter' }>; x: number;
 interface PinwheelRun { spec: Extract<PieceSpec, { kind: 'pinwheel' }>; x: number; y: number; spin: boolean; ang: number }
 interface SluiceRun { spec: Extract<PieceSpec, { kind: 'sluice' }>; x: number; y: number; river: RiverZone | undefined; open: boolean; rate: number; rafts: Platform[] }
 interface TraderRun { spec: Extract<PieceSpec, { kind: 'trader' }>; x: number; y: number; plat: number; done: boolean; t: number }
+
+/** where the bell hangs in Matt's belfry (from its top, a share of the frame's height) and how tall the bell is in it */
+const BELL_HANG = 0.37;
+const BELL_H = 0.4;
+/** the wheel on World 2's pulley post: its middle across and down the frame (shares) */
+const POST_WHEEL = { x: 0.66, y: 0.2 };
+/** Matt's anchor peg: its rock's top (atlas px from the frame's top), and the knot round it (shares across and down the frame) */
+const PEG_ROCK = 88;
+const PEG_KNOT = { x: 0.6, y: 0.32 };
 
 /** a bell's box a thrown thing knocks (world) */
 const bellBox = (b: { x: number; y: number }) => ({ x0: b.x - 26, x1: b.x + 26, y0: b.y - 110, y1: b.y - 20 });
@@ -196,7 +210,7 @@ const SEESAW_PIVOT: Record<'seesawLevel' | 'seesawUpR' | 'seesawUpL', number> = 
 type Focus = { x: number; y: number; r: number; id?: string };
 
 /** Pokey's pose while he carries, throws or sets down (null: his own sprite) */
-type Pose = { kind: 'pick' | 'throw' | 'set'; t: number; dur: number } | null;
+type Pose = { kind: 'pick' | 'throw' | 'set'; t: number; dur: number } | { kind: 'use'; n: KitArtName; t: number; dur: number; facing: 1 | -1; at: { x: number; y: number } } | null;
 
 const ART_OF: Record<ItemVariant, KitArtName> = { acorn: 'acorn', stone: 'stone', pinecone: 'pinecone', cake: 'cake', pebble: 'pebble', mushroom: 'mushroom', mango: 'mango' };
 /** Pokey's carry poses are painted holding an acorn: carrying anything else, the same pose with the acorn painted out (packkit.py e*) */
@@ -226,8 +240,21 @@ export class KitPlay {
   /** the noises made in the rooms (noise.ts), for the watchers to hear: the engine hands each the one it hears */
   readonly noises: Noise[] = [];
 
+  /** the world the pieces are drawn for, and the looks the stage's roll picked (artRoll.ts) */
+  private readonly look: { world: number; stone: KitArtName };
+  private readonly platforms: Platform[];
+
   constructor(kit: KitExtras, platforms: Platform[], world: KitWorld = {}) {
     const byId = new Map(platforms.map((p) => [p.id, p]));
+    this.platforms = platforms;
+    // (the layout roll, as the rooms stand: a retry of the same roll builds them in the same places, a fresh roll moves them)
+    const roll = kit.rooms.reduce((s, r) => s + Math.round(anchorAt(r.left, byId)?.x ?? 0), 0);
+    const w = world.world ?? 0;
+    this.look = {
+      world: w,
+      // World 2's thrown stones: Matt's river stone or the round grey one, by the roll (never the same look two stages running)
+      stone: w === 2 ? rollLook(['riverStone', 'stone'] as const, world.stage ?? 1, roll, 2) : 'stone',
+    };
     this.extraZones = (world.zones ?? []).filter((z) => z.kind === 'wind');
     kit.rooms.forEach((spec, ri) => {
       const at = (pc: PieceSpec) => ('at' in pc && pc.at ? anchorAt(pc.at, byId) : null);
@@ -436,8 +463,16 @@ export class KitPlay {
           if (b) consider(b.x, this.mouthY(room, b), () => this.pickUp(room, ri, ii, h));
         }
       });
-      room.levers.forEach((l) => consider(l.x, l.y, () => this.pull(room, l, h)));
-      room.bells.forEach((b) => consider(b.x, b.y, () => this.ring(room, b, h)));
+      room.levers.forEach((l) => consider(l.x, l.y, () => {
+        this.pull(room, l, h);
+        // (Matt's poses: a crank turned on World 2's winch, a lever pushed everywhere else)
+        this.usePose(this.look.world === 2 ? 'p15' : 'p16', l.x, l.y, p, 0.55);
+      }));
+      room.bells.forEach((b) => consider(b.x, b.y, () => {
+        this.ring(room, b, h);
+        // (he rings it by its rope: the rope pull)
+        this.usePose('p14', b.x, b.y, p, 0.7);
+      }));
       // (a trader asked with empty hands: Dot says what it wants)
       room.traders.forEach((t) => {
         if (!t.done) consider(t.x, t.y, () => h.float(`IT WANTS A ${t.spec.wants.toUpperCase()}`, t.x, t.y - 120, '#fde68a'));
@@ -463,6 +498,12 @@ export class KitPlay {
       room.told.add('hold');
       h.tip(`kit:${room.spec.id}:hold`, room.spec.tips.hold, 4);
     }
+  }
+
+  /** one of Matt's use poses (the rope pull, the crank, the push), facing the piece he works at (x, y) */
+  private usePose(n: KitArtName, x: number, y: number, p: Player, dur: number) {
+    if (this.held) return;
+    this.pose = { kind: 'use', n, t: 0, dur, facing: x >= p.x ? 1 : -1, at: { x, y } };
   }
 
   private pull(room: RoomRun, l: LeverRun, h: KitHost) {
@@ -1145,7 +1186,11 @@ export class KitPlay {
         ctx.beginPath();
         ctx.rect(pl.x - pw, pl.y - ph, pw * 2, ph + 8);
         ctx.clip();
-        const drew = drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph });
+        // (World 3's is Matt's mossy stone plate, sunk among its rubble while held down)
+        const stoneP = this.look.world === 3;
+        const drew = stoneP
+          ? drawKitArt(ctx, pl.show > 0.5 ? 'stonePlateDown' : 'stonePlate', pl.x, pl.y + ph * 0.5 + pl.show * 4, { w: pw * (pl.show > 0.5 ? 1.2 : 1), h: ph * 0.72 })
+          : drawKitArt(ctx, pl.show > 0.5 ? 'platePressed' : 'plate', pl.x, pl.y + ph * 0.55 + pl.show * 4, { w: pw, h: ph });
         ctx.restore();
         if (!drew) {
           ctx.fillStyle = pl.down ? '#d9b24a' : '#8b6a3e';
@@ -1153,6 +1198,7 @@ export class KitPlay {
         }
       }
       for (const l of room.levers) {
+        if (this.look.world === 2 && this.drawWinch(ctx, room, l)) continue;
         if (!drawKitArt(ctx, l.show > 0.5 ? 'leverOn' : 'leverOff', l.x, l.y + 4)) {
           ctx.strokeStyle = '#6b4a2b';
           ctx.lineWidth = 6;
@@ -1216,6 +1262,24 @@ export class KitPlay {
     const pose = this.pose;
     if (!this.held && !pose) return false;
     if (p.climbing || p.isVineSwinging || p.hanging) return false;
+    if (pose?.kind === 'use') {
+      // ringing a bell by its rope (the rope from the belfry down to the rope in his hands), cranking a winch, pushing a lever
+      if (pose.n === 'p14') {
+        const f = KIT_ART.p14;
+        const handTop = p.y + 2 - f.h * f.k;
+        const ropeX = p.x + (f.w * 0.66 - f.ax) * f.k * pose.facing;
+        ctx.save();
+        ctx.strokeStyle = '#c9a66b';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(ropeX, handTop + 4);
+        ctx.lineTo(pose.at.x, pose.at.y - kitSize('bell').h * 0.66);
+        ctx.stroke();
+        ctx.restore();
+      }
+      drawKitArt(ctx, pose.n, p.x, p.y + 2, { flip: pose.facing < 0 });
+      return true;
+    }
     const f: 1 | -1 = p.facing >= 0 ? 1 : -1;
     const it = this.held ? this.rooms[this.held.room].items[this.held.item] : null;
     let n: KitArtName;
@@ -1234,13 +1298,18 @@ export class KitPlay {
     drawKitArt(ctx, pose2, p.x, p.y + 2, { flip: f < 0 });
     if (it && other) {
       const hand = handOf(pose2, p.x, p.y + 2, f);
-      if (hand) this.drawItem(ctx, it, hand.x, hand.y + kitSize(ART_OF[it.variant]).h * 0.5, 0);
+      if (hand) this.drawItem(ctx, it, hand.x, hand.y + kitSize(this.artOf(it.variant)).h * 0.5, 0);
     }
     return true;
   }
 
+  /** how a thing is painted in this world (World 2's stones are its river stones on some rolls) */
+  private artOf(v: ItemVariant): KitArtName {
+    return v === 'stone' ? this.look.stone : ART_OF[v];
+  }
+
   private drawItem(ctx: CanvasRenderingContext2D, it: ItemRun, x: number, y: number, rot: number, scale = 1) {
-    if (drawKitArt(ctx, ART_OF[it.variant], x, y + 2, { rot, scale })) return;
+    if (drawKitArt(ctx, this.artOf(it.variant), x, y + 2, { rot, scale })) return;
     ctx.save();
     ctx.fillStyle = it.variant === 'cake' ? '#f9a8d4' : it.variant === 'stone' ? '#94a3b8' : '#92400e';
     ctx.beginPath();
@@ -1311,7 +1380,14 @@ export class KitPlay {
       ctx.fillRect(w.x, w.y, w.width, doorTop - w.y + 10);
     }
     const gw = KIT.gateW + 50;
-    if (!drawKitArt(ctx, g.show > 0.5 ? 'gateOpen' : 'gateShut', g.x, g.y + 4, { w: gw, h: KIT.doorH + 10 })) {
+    // World 1: Matt's branch gate, drawn up out of the way as it opens; World 3: Grandma's fern stone door, rolled aside
+    const lw = this.look.world;
+    const drew = !g.spec.look && lw === 1
+      ? g.show > 0.98 || drawKitArt(ctx, 'branchGate', g.x, g.y + 4 - g.show * (KIT.doorH + 20), { w: gw + 20, h: KIT.doorH + 14, alpha: 1 - g.show * 0.85 })
+      : !g.spec.look && lw === 3
+        ? drawKitArt(ctx, g.show > 0.5 ? 'fernDoorOpen' : 'fernDoorShut', g.x, g.y + 6, { w: gw + 40, h: KIT.doorH + 20 })
+        : drawKitArt(ctx, g.show > 0.5 ? 'gateOpen' : 'gateShut', g.x, g.y + 4, { w: gw, h: KIT.doorH + 10 });
+    if (!drew) {
       ctx.fillStyle = g.open ? 'rgba(92, 64, 32, 0.35)' : '#6b4a2b';
       ctx.fillRect(g.door.x, doorTop, g.door.width, KIT.doorH);
     }
@@ -1335,7 +1411,7 @@ export class KitPlay {
       ctx.stroke();
       ctx.restore();
       drawKitArt(ctx, 'winch', cx, top + 30, { scale: 0.6 });
-      if (!drawKitArt(ctx, 'liftPlank', cx, pl.y + 16, { w: pl.width + 12, h: 30 })) {
+      if (!this.drawPlank(ctx, pl)) {
         ctx.fillStyle = '#8b5a2b';
         ctx.fillRect(pl.x, pl.y, pl.width, 16);
       }
@@ -1358,6 +1434,8 @@ export class KitPlay {
       ctx.lineTo(b.x, top + 6);
       ctx.stroke();
       ctx.restore();
+      // (World 4: Dot's knot, the pulley's rope tied off round a peg in the rock above it)
+      if (this.look.world === 4) this.drawPeg(ctx, px, py);
       if (!drawKitArt(ctx, 'pulley', px, py + 52, { scale: 0.7 })) {
         ctx.fillStyle = '#6b4a2b';
         ctx.beginPath();
@@ -1365,7 +1443,7 @@ export class KitPlay {
         ctx.fill();
       }
     }
-    if (!drawKitArt(ctx, 'liftPlank', pl.x + pl.width / 2, pl.y + 16, { w: pl.width + 12, h: 30 })) {
+    if (!this.drawPlank(ctx, pl)) {
       ctx.fillStyle = '#8b5a2b';
       ctx.fillRect(pl.x, pl.y, pl.width, 16);
     }
@@ -1383,14 +1461,16 @@ export class KitPlay {
     const cageH = kitSize('cageShut').h;
     const wheelX = (b.x + cx) / 2;
     const wheelY = Math.min(b.y - b.spec.mouth - kitSize('basket2').h, l.baseY - l.spec.rise - cageH) - 40;
-    // the post, from the bank up to the pulley's arm
+    // Matt's pulley post (World 2's sheet), from the bank up to its wheel, the wheel where the ropes run (its hanging ropes are the game's)
+    const pp = kitSize('pulleyPost');
+    const postH = (b.y + 6 - wheelY) / (1 - POST_WHEEL.y);
+    const postW = (postH * pp.w) / pp.h;
+    const drewPost = drawKitArt(ctx, 'pulleyPost', wheelX - (POST_WHEEL.x - 0.5) * postW, b.y + 6, { w: postW, h: postH });
     ctx.save();
-    ctx.fillStyle = '#6b4a2b';
-    ctx.strokeStyle = '#2f1d0e';
-    ctx.lineWidth = 3;
-    const postX = wheelX - 34;
-    ctx.fillRect(postX - 9, wheelY - 18, 18, b.y - wheelY + 22);
-    ctx.strokeRect(postX - 9, wheelY - 18, 18, b.y - wheelY + 22);
+    if (!drewPost) {
+      ctx.fillStyle = '#6b4a2b';
+      ctx.fillRect(wheelX - 43, wheelY - 18, 18, b.y - wheelY + 22);
+    }
     ctx.strokeStyle = '#a07a4a';
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -1400,12 +1480,6 @@ export class KitPlay {
     ctx.lineTo(b.x, this.mouthY(room, b) - kitSize('basket2').h * 0.5);
     ctx.stroke();
     ctx.restore();
-    if (!drawKitArt(ctx, 'pulley', wheelX, wheelY + 60, { scale: 0.62 })) {
-      ctx.fillStyle = '#6b4a2b';
-      ctx.beginPath();
-      ctx.arc(wheelX, wheelY, 15, 0, Math.PI * 2);
-      ctx.fill();
-    }
     if (!c.collected) {
       // (the little one first, the bars over it)
       drawW2Cage(ctx, c, this.t, true);
@@ -1417,10 +1491,72 @@ export class KitPlay {
     } else drawKitArt(ctx, 'cageLifted', cx, floor + 30);
   }
 
+  /** a lift's plank: World 4's is the plank of Matt's rope lift, every other world's the plank of World 1's swing */
+  private drawPlank(ctx: CanvasRenderingContext2D, pl: Platform): boolean {
+    const cx = pl.x + pl.width / 2;
+    if (this.look.world === 4) return drawKitArt(ctx, 'ropeLift', cx, pl.y + 20, { w: pl.width + 16, h: 34 });
+    return drawKitArt(ctx, 'liftPlank', cx, pl.y + 16, { w: pl.width + 12, h: 30 });
+  }
+
+  /** Dot's knot (World 4): the pulley's rope tied off round Matt's anchor peg on the nearest rock over the pulley, and down to it */
+  private drawPeg(ctx: CanvasRenderingContext2D, px: number, py: number) {
+    let best: Platform | null = null;
+    for (const q of this.platforms) {
+      if (q.y > py + 10 || q.y < py - 260 || q.x > px + 220 || q.x + q.width < px - 220 || q.width < 60) continue;
+      if (!best || Math.abs(q.y - py) < Math.abs(best.y - py)) best = q;
+    }
+    if (!best) return;
+    const f = KIT_ART.anchorPeg;
+    const s = 0.62;
+    const x = Math.max(best.x + 40, Math.min(best.x + best.width - 40, px));
+    // (its rock's top level with the ledge's: the rest of its rock hangs over the ledge's face)
+    const bottom = best.y + (f.h - PEG_ROCK) * f.k * s;
+    if (!drawKitArt(ctx, 'anchorPeg', x, bottom, { scale: s })) return;
+    const kx = x + (f.w * PEG_KNOT.x - f.ax) * f.k * s;
+    const ky = bottom - f.h * f.k * s * (1 - PEG_KNOT.y);
+    ctx.save();
+    ctx.strokeStyle = '#a07a4a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(kx, ky);
+    ctx.lineTo(px, py + 4);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /**
+   * World 2's lever is a winch (Matt's sheet): wound, its rope runs taut to the sluice gate it holds up; let go, the rope hangs slack.
+   * Turning, it gives a little shake. False until the sheet has loaded.
+   */
+  private drawWinch(ctx: CanvasRenderingContext2D, room: RoomRun, l: LeverRun): boolean {
+    if (!kitArtReady()) return false;
+    const f = KIT_ART.winch2;
+    const sz = kitSize('winch2', 0.8);
+    const turning = l.show > 0.05 && l.show < 0.95;
+    const drumX = l.x + (f.w * 0.45 - f.ax) * f.k * 0.8;
+    const drumY = l.y + 4 - sz.h * 0.72;
+    const sl = room.sluices.find((q) => wireIds(q.spec.open).includes(l.spec.id));
+    if (sl) {
+      const tx = sl.x, ty = sl.y - 78;
+      ctx.save();
+      ctx.strokeStyle = '#c9a66b';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(drumX, drumY);
+      const sag = (1 - l.show) * 70;
+      ctx.quadraticCurveTo((drumX + tx) / 2, Math.max(drumY, ty) + sag, tx, ty);
+      ctx.stroke();
+      ctx.restore();
+    }
+    return drawKitArt(ctx, 'winch2', l.x, l.y + 4, { scale: 0.8, rot: turning ? Math.sin(this.t * 40) * 0.03 : 0 });
+  }
+
   private drawBasket(ctx: CanvasRenderingContext2D, room: RoomRun, b: BasketRun) {
     const my = this.mouthY(room, b);
     // (World 2's counter-basket, by a hanging cage: the rope basket of river stones)
     if (room.lifts.some((l) => l.cage && room.baskets[l.basket] === b) && drawKitArt(ctx, b.count > 0 ? 'basket2Full' : 'basket2', b.x, my + kitSize('basket2').h * 0.62)) return;
+    // (World 4: the cliff folk's rope net, full of the broken ledge's stones once he has put them in)
+    if (this.look.world === 4 && drawKitArt(ctx, b.count > 0 ? 'netFull' : 'net', b.x, my + kitSize('net').h * 0.42)) return;
     const sz = kitSize('basket');
     const bottom = my + sz.h * 0.55;
     if (!drawKitArt(ctx, b.count > 0 ? 'basketFull' : 'basket', b.x, bottom)) {
@@ -1464,7 +1600,21 @@ export class KitPlay {
   private drawBell(ctx: CanvasRenderingContext2D, b: BellRun) {
     const u = this.t - b.rung;
     const swing = u < 1.6 ? Math.sin(u * 16) * 0.12 * (1 - u / 1.6) : 0;
-    if (!drawKitArt(ctx, 'bell', b.x, b.y + 3, { rot: swing })) {
+    // rung, Matt's belfry stands still and the bell in it swings (his swinging bell, its ringing lines and all, turned each way in turn)
+    if (u < 1.6 && kitArtReady()) {
+      drawKitArt(ctx, 'bellFrame', b.x, b.y + 3);
+      const fr = kitSize('bellFrame');
+      const top = b.y + 3 - fr.h * (1 - BELL_HANG);
+      const k = (fr.h * BELL_H) / kitSize('bellRing').h;
+      const side = Math.sin(u * 16) >= 0 ? 1 : -1;
+      const a = Math.sin(u * 16) * 0.3 * (1 - u / 1.6);
+      ctx.save();
+      ctx.translate(b.x, top);
+      ctx.rotate(a);
+      // (the painting leans one way: mirrored for the swing the other way; hung by its loop at the top)
+      drawKitArt(ctx, 'bellRing', 0, kitSize('bellRing', k).h, { scale: k, flip: side < 0 });
+      ctx.restore();
+    } else if (!drawKitArt(ctx, 'bell', b.x, b.y + 3, { rot: swing })) {
       ctx.fillStyle = '#b45309';
       ctx.beginPath();
       ctx.arc(b.x, b.y - 60, 18, 0, Math.PI * 2);
@@ -1501,6 +1651,8 @@ export class KitPlay {
   }
 
   private drawShutter(ctx: CanvasRenderingContext2D, s: ShutterRun) {
+    // (behind it, the crack in the cliff the gusts blow out of: the shutter is what stops them)
+    drawKitArt(ctx, 'gustCrack', s.x - 6 * (s.zone?.dir ?? 1), s.y + 8, { scale: 0.82, alpha: 0.95, flip: (s.zone?.dir ?? 1) < 0 });
     if (!drawKitArt(ctx, s.open ? 'shutterOpen' : 'shutterShut', s.x, s.y + 3)) {
       ctx.fillStyle = s.open ? 'rgba(161, 98, 7, 0.4)' : '#a16207';
       ctx.fillRect(s.x - 50, s.y - 110, 100, 110);
