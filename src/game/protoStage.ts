@@ -2595,6 +2595,10 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
 
   /** World 3's openings (the variety pass): every one safe (soft moss under every dip), a hop or two in the first seconds */
   const w3Start = (v: number) => {
+    // (a little more plain floor first: the first hop came 300 px from the spawn, before he was up to speed, and the first-timer's press
+    // window there was 133 ms on Normal, under the 167 ms floor)
+    run(R.r(150, 190));
+    expert += 0.6;
     if (v === 0) busy(2, ['log', 'dip'], R.r(230, 270));
     else if (v === 1) { lowStumps(); busy(1, ['dip'], R.r(230, 270)); }
     else { busy(1, ['log'], R.r(150, 190)); w3Stones([40, 70], [0.45, 0.55]); }
@@ -4409,14 +4413,19 @@ function buildPlan(config: LevelConfig, seed: number, plan: StagePlan): Generate
     for (const pc of pieces) {
       if (pc.k !== 'rest' && pc.k !== 'snakes') continue;
       for (let cx = pc.x0 + R.r(80, 200); cx < pc.x1 - 80; cx += R.r(280, 460)) {
-        const kinds = plan === '3-2' ? (['stalagmites', 'mushrooms', 'clawRock', 'stalagmites'] as const) : (['stalagmites', 'mushrooms', 'fern', 'stalagmites', 'clawRock'] as const);
+        // (the variety pass: the set of floor pieces and hanging pieces rotates with the roll, w3Sections.ts W3_DECOR_SETS)
+        const set = W3P!.decor;
+        const kinds = plan === '3-2' ? set.floor.filter((n) => n !== 'fern') : set.floor;
         const k = R.pick(kinds);
-        const w = k === 'stalagmites' ? R.r(140, 200) : k === 'mushrooms' ? R.r(84, 110) : k === 'fern' ? R.r(140, 180) : R.r(100, 130);
+        const w = k === 'stalagmites' ? R.r(140, 200) : k === 'mushrooms' ? R.r(84, 110) : k === 'fern' ? R.r(140, 180) : k === 'pawprint' ? R.r(92, 110) : k === 'bones' ? R.r(100, 120) : R.r(100, 130);
         const busy = BUSHES.some((b) => cx > b.x - 60 && cx < b.x + b.w + 60) || C.some((c) => (c.hidden || c.type === 'find') && Math.abs(c.x - cx) < 170) || W3D.some((d) => d.n === 'fern' && Math.abs(d.x - cx) < 170);
         if (!busy) W3D.push({ n: k, x: Math.round(cx), b: G + 8, w: Math.round(w), flip: R.chance(0.5) });
         if (R.chance(0.5)) {
-          const hangLit = !darkAt(cx) && R.chance(0.45);
-          W3D.push({ n: hangLit ? 'glowLit' : 'stalactite', x: Math.round(cx + R.r(-90, 90)), b: G - 480, w: Math.round(hangLit ? R.r(70, 90) : R.r(110, 150)), hang: true, flip: R.chance(0.5) });
+          // (a lit glowworm thread never hangs in the dark, where they sleep until he listens)
+          const hangs = set.hang.filter((n) => n !== 'glowLit' || !darkAt(cx));
+          const hn = R.pick(hangs.length ? hangs : ['stalactite' as const]);
+          const hw = hn === 'glowLit' ? R.r(70, 90) : hn === 'mossCurtain' ? R.r(160, 220) : R.r(110, 150);
+          W3D.push({ n: hn, x: Math.round(cx + R.r(-90, 90)), b: G - 480, w: Math.round(hw), hang: true, flip: R.chance(0.5) });
         }
       }
     }
