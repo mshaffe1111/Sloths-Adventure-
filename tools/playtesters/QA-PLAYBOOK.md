@@ -63,6 +63,12 @@ Matt's weekly usage is tight. QA manages it:
 8. Update the bot's notebook entry, `STATUS.md` stage table, commit, push this branch. Tell Matt in a few lines.
 
 ## 6. Judging (what counts as a problem)
+- **UNFAIR or HARD BUT FAIR** (Matt, 2026-10-28): the game gets harder as it goes; later players are expected to lose lives and
+  replay. Easy is gentler but keeps double jumps and tougher moves (softened). Tag every "too hard" finding:
+  UNFAIR = hurt in the opening seconds, hurt before the tip, an off-screen hit with no tell, a jump needing near-perfect timing or a
+  full hold on Easy, a plain walk stuck, a ledge reached but slid off, controls not doing what the thumb did, a puzzle costing a life,
+  a goal that can't be met fairly. HARD BUT FAIR = a taught move asked with tighter timing, in combination or with an enemy.
+  Report both; the coders fix the unfair ones and keep the fair ones. A world that feels EASIER than the one before is a bug too.
 - **Checklist**: `tools/playtesters/QA-CHECKLIST.md` (Matt's stage rulebook, 12 rules). Every finding carries its rule number.
 - **Worlds 1-4**: first-timer standard (0.8 s reaction + 0.6 s margin on boss openings; anything needing several tries or untaught is a problem).
 - **World 5 on** (Matt, 2026-10-26): harder is fine. Fail a stretch only if it can't be done or hits without warning. Count tries anyway.

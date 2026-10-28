@@ -18,3 +18,7 @@ Normal, a first-timer) run before a build reaches QA, so anything found here mea
 10. Art: a prop that pops in late, a missing state (a pressed plate that doesn't look pressed, a bell that doesn't swing).
 11. Device: frame rate, freezes, and the Device column's browser part (in-app browser, "framed", software drawing in 'env').
 12. Anything a 7-10-year-old wouldn't understand or would find unfair.
+
+Tag every "too hard" finding UNFAIR (rules 1-4, 7, 9, controls not doing what the thumb did, an off-screen hit with no tell) or
+HARD BUT FAIR (a taught move with tighter timing, in combination or with an enemy). A world that feels easier than the one
+before it is a bug too (Matt, 2026-10-28).
