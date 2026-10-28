@@ -51,6 +51,8 @@ test('goals: Normal gets its share; Easy keeps the stage\'s own (lower) bar, and
   assert.equal(st.config.targetCount, 18);
   assert.equal(st.easyGoal, 9);
   assert.equal(withGoals(st).config.targetCount, 18, 'set once');
+  // a stage whose own quota already asked more: Easy still gets a lower bar than Normal
+  assert.equal(withGoals(stageOf(cfg('harvest', 19), fl)).easyGoal, 14);
   const easy = easyStage(withGoals(stageOf(cfg('harvest', 9), fl)) as never);
   assert.equal(easy.config.targetCount, 9);
   const foes = Array.from({ length: 10 }, (_, i) => ({ id: i, type: i % 2 ? 'snake' : 'ocelot', x: 300 + i * 300, y: 560, attackCooldown: 1 }) as unknown as Enemy);

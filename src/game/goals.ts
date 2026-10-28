@@ -24,6 +24,9 @@ export const GOAL_SHARE = {
   rescue: 1,
 } as const;
 
+/** Easy never asks more than this share of Normal's goal */
+export const EASY_UNDER = 0.8;
+
 type Stage = GeneratedStage & { proto?: { ring?: { waves: unknown[][] }; w4?: { monkeys?: Array<{ job: string; blowOff?: number }> }; w5?: { cocoons?: unknown[] } } };
 
 /** is a collectible lying on a crumbling platform (one that breaks: fragile, or a ruin tile with a crumble time) */
@@ -70,7 +73,8 @@ export function withGoals<T extends GeneratedStage>(st: T): T {
   if (st.easyGoal !== undefined || st.boss) return st;
   const g = normalGoal(st as Stage);
   if (g === null) return st;
-  st.easyGoal = Math.min(st.config.targetCount, g);
+  // (a stage's own quota that already asked as much as Normal now does, or more, still leaves Easy a lower bar: EASY_UNDER of Normal's)
+  st.easyGoal = Math.max(1, Math.min(st.config.targetCount, Math.round(g * EASY_UNDER)));
   st.config = { ...st.config, targetCount: g };
   return st;
 }
