@@ -9,7 +9,55 @@ import { validateStage } from '../levelCheck.ts';
 import { fastFloor, MODEL_FAST, MODEL_TYPICAL, modelStage, targetSeconds } from '../stageTime.ts';
 import { bandFor, buildGen2Stage, difficultyScore, layLocal, maxGap, placeRoom, planBudget, rngFor, STAGE_HEAT } from './pipeline.ts';
 import { cfg, kit, manifest, pitHop } from './toyWorld.ts';
-import { MARGIN } from './types.ts';
+import { MARGIN, type LocalRoomSpec } from './types.ts';
+import { addKitPlatforms } from '../puzzleKit.ts';
+import type { GeneratedStage } from '../stageGenerator.ts';
+import type { Platform } from '../types.ts';
+
+test("a section's teapot room keeps its basket and its trough through placeRoom, and passes puzzleCheck", () => {
+  // (Meeca's tea room, meecaStage.ts, as a section's room on its own pieces by key: the pot pours down the trough into the basket,
+  // the basket raises the lift, and the Butler's arch is the wall the lift climbs over)
+  const G = 580;
+  const P: Platform[] = [
+    { id: 11, x: 0, y: G, width: 590, height: 90, type: 'solid' },
+    { id: 12, x: 590, y: G + 60, width: 110, height: 90, type: 'solid' },
+    { id: 13, x: 700, y: G, width: 500, height: 90, type: 'solid' },
+  ];
+  const ids: Record<string, number> = { floor: 11, well: 12, floor2: 13 };
+  const at = (on: string, x: number, dy?: number) => {
+    const p = P.find((q) => q.id === ids[on])!;
+    return { on, at: (x - p.x) / p.width, ...(dy ? { dy } : {}) };
+  };
+  const local: LocalRoomSpec = {
+    id: 'tea',
+    left: at('floor', 180), right: at('floor2', 820), above: 420, below: 90,
+    pieces: [
+      { kind: 'reset', id: 'post', at: at('floor', 200) },
+      { kind: 'basket', id: 'basket', at: at('floor', 370), mouth: 110, need: 1, drop: 70 },
+      { kind: 'teapot', id: 'pot', at: at('floor', 545, -110), into: 'basket', trough: [at('floor', 460, -122), at('floor', 378, -116)] },
+      { kind: 'lift', id: 'lift', at: { on: 'well', at: 0.5, dy: -60 }, w: 110, rise: 250, by: 'basket' },
+      { kind: 'gate', id: 'butler', at: at('floor2', 750), open: { any: [] }, h: 250, look: 'butler' },
+    ],
+    exit: 'lift',
+    beyond: at('floor2', 860),
+    ground: ['floor', 'well'],
+  };
+  const room = placeRoom(local, 's11', (k) => ids[k]);
+  const pot = room.pieces.find((p) => p.kind === 'teapot') as Extract<(typeof room.pieces)[number], { kind: 'teapot' }>;
+  assert.equal(pot.into, 's11-basket');
+  assert.deepEqual(pot.trough!.map((a) => a.on), [11, 11]);
+  const kitX = { rooms: [room] };
+  addKitPlatforms(P, kitX);
+  const st = {
+    config: { ...cfg('5-9', 'sprint'), levelWidth: 1200 }, trees: [], platforms: P, vines: [], ropes: [], enemies: [], boss: null,
+    collectibles: [{ id: 1, type: 'exit_totem', x: 1100, y: G - 30, collected: false, bobPhase: 0 }],
+    spawnX: 60, spawnY: G, exitTotemX: 1100, exitTotemY: G, kit: kitX,
+  } as GeneratedStage;
+  assert.deepEqual(validateStage(st).errors, []);
+  // (and the room really is the way on: without its teapot it cannot be opened)
+  st.kit!.rooms[0].pieces = st.kit!.rooms[0].pieces.filter((p) => p.kind !== 'teapot');
+  assert.match(validateStage(st).errors.join('\n'), /room s11-tea/);
+});
 
 const SEEDS = [1, 2, 3, 4, 5];
 const sig = (st: ReturnType<typeof buildGen2Stage>) => st.platforms.map((p) => `${p.x},${p.y},${p.width}`).join(';');
