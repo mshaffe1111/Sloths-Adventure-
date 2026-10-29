@@ -85,6 +85,8 @@ export interface MeecaStage {
   /** the camp: from 0 to campEnd she walks on tiptoe past the sleeping column */
   campEnd: number;
   camp: CampProp[];
+  /** the first gully past the camp (her thought: the way on is the high way) */
+  highX: number;
   /** the two paths that look the same (her thought, "Which way is back?") */
   forkX: number;
   /** where Flicker's light blinks on, as she reaches flickerX */
@@ -100,7 +102,12 @@ export interface MeecaStage {
   trails: MeecaTrail[];
 }
 
-export type TrailKind = 'stumps' | 'dip' | 'tree' | 'log' | 'double';
+/**
+ * The kinds of trail section (2026-10-28, after Matt played it: "climbing is unneeded because you can just run straight across the
+ * bottom"). Every one is a high way that is the only way on: its floor is a deep gully whose only way out is the stairs back at its near
+ * end (or, for the bank, a wall), so a climb, a branch, a log or a jump is the way across, never a walk under it.
+ */
+export type TrailKind = 'canopy' | 'logs' | 'hollow' | 'fallen' | 'double';
 /** a step along a trail: onto a platform, or up a climbing trunk */
 export type TrailStep = { kind: 'plat'; id: number } | { kind: 'climb'; vine: number };
 export interface MeecaTrail {
@@ -108,9 +115,13 @@ export interface MeecaTrail {
   x1: number;
   name: string;
   steps: TrailStep[];
+  /** its sections, in order: the kind, and where each starts and ends (on the path, G) */
+  sections: Array<{ kind: TrailKind; x0: number; x1: number }>;
 }
 /** how many sections each trail has: out of the camp, after the mark, then before rooms 2 to 5 (tuned to the stage's length) */
-export const TRAIL_SECTIONS: readonly number[] = [4, 8, 9, 9, 9, 9];
+export const TRAIL_SECTIONS: readonly number[] = [2, 4, 4, 4, 4, 4];
+/** a gully's floor, this far below the path: deeper than a second jump climbs (DOUBLE_RISE ~185), so its far wall is a wall */
+export const GULLY = 260;
 
 /** how long a warning's cut takes, from `from` characters already cut (s of holding) */
 export function carveSeconds(lines: readonly string[], from = 0): number {
@@ -184,98 +195,153 @@ export function buildMeecaStage(seed = 1): MeecaStage {
     vines.push(v);
     return v;
   };
+  /** ground at the path's height whose face goes down to a gully's floor (walls reach the ground: STAGE-RULES §6) */
+  const gbank = (x0: number, x1: number): Platform => ground(x0, x1, G, GULLY + BANK);
   /**
-   * The sections a trail is made of (each starts and ends on the ground, G): every one a few real moves (STAGE-RULES §2: no quiet
-   * stretch over about 4 s, a rest after each burst), never deadly (a miss lands on soft ground with a one-jump way out).
+   * A gully from x0 to x1: stairs down at its near end (three steps a short hop each: the floor leads back the way she came), a soft
+   * floor, and its far end the next bank's face, too high to jump. A miss costs a walk back, never a life.
+   */
+  const gully = (x0: number, x1: number): Platform => {
+    const fy = G + GULLY;
+    for (let i = 1; i <= 3; i++) ground(x0 + (i - 1) * 56, x0 + i * 56, G + i * 65, fy + BANK - (G + i * 65));
+    return ground(x0 + 168, x1, fy, BANK);
+  };
+  const log = (x0: number, x1: number, y: number): Platform => {
+    const p: Platform = { id: pid++, x: x0, y, width: x1 - x0, height: 30, type: 'solid', style: 'log' };
+    P.push(p);
+    return p;
+  };
+  /**
+   * The sections a trail is made of (each starts and ends on the path, G, and the next one's bank is its far side): each a few real
+   * moves (STAGE-RULES §2: no quiet stretch over about 4 s, a rest after each burst) and a way on that the floor does not give.
    */
   const SECTIONS: Record<TrailKind, (x: number, steps: TrailStep[]) => number> = {
-    // stumps to hop over, of rolled heights
-    stumps: (x, steps) => {
-      const n = R.i(3, 4);
-      let cx = x;
-      for (let i = 0; i < n; i++) {
-        const g = ground(cx, cx + R.i(150, 210), G);
-        steps.push({ kind: 'plat', id: g.id });
-        const w = R.i(90, 120);
-        const b = block(g.x + g.width, g.x + g.width + w, G - R.i(52, 84));
-        steps.push({ kind: 'plat', id: b.id });
-        cx = b.x + b.width;
-      }
-      const g = ground(cx, cx + R.i(150, 200), G);
-      steps.push({ kind: 'plat', id: g.id });
-      return g.x + g.width;
-    },
-    // a soft dip with stepping stumps across it (a miss: the dip's floor, a hop out either side)
-    dip: (x, steps) => {
-      const w = R.i(420, 500);
-      const floor = ground(x, x + w, G + 80, BANK);
-      const n = 2;
-      for (let i = 0; i < n; i++) {
-        const sx = x + Math.round((w * (i + 1)) / (n + 1)) - 50;
-        const st = block(sx, sx + 100, G - R.i(20, 40));
-        steps.push({ kind: 'plat', id: st.id });
-      }
-      void floor;
-      const g = ground(x + w, x + w + R.i(200, 260), G);
-      steps.push({ kind: 'plat', id: g.id });
-      return g.x + g.width;
-    },
-    // up a tree, along its branches, and down again
-    tree: (x, steps) => {
-      const g0 = ground(x, x + 220, G);
-      const perch = G - R.i(260, 300);
+    // up a tree on the near bank, along its branch and over the gully on the next ones, and down onto the far bank
+    canopy: (x, steps) => {
+      const g0 = gbank(x, x + 250);
+      steps.push({ kind: 'plat', id: g0.id });
+      const perch = G - R.i(220, 245);
       const v = climbTree(x + 120, perch);
       steps.push({ kind: 'climb', vine: v.id });
-      const b1 = branch(x + 80, x + 330, perch);
-      steps.push({ kind: 'plat', id: b1.id });
-      const b2x = b1.x + b1.width + R.i(90, 120);
-      const b2 = branch(b2x, b2x + R.i(220, 280), perch - R.i(-20, 40));
-      steps.push({ kind: 'plat', id: b2.id });
-      // (the ground goes on under them: the drop from the far branch lands on it)
-      const g1 = ground(g0.x + g0.width, b2.x + b2.width + R.i(220, 280), G);
+      let b = branch(x + 70, x + 300, perch);
+      steps.push({ kind: 'plat', id: b.id });
+      const n = R.i(2, 3);
+      for (let i = 0; i < n; i++) {
+        const bx = b.x + b.width + R.i(80, 115);
+        b = branch(bx, bx + R.i(150, 200), Math.max(G - 250, Math.min(G - 205, b.y + R.i(-25, 25))));
+        steps.push({ kind: 'plat', id: b.id });
+      }
+      // (the last branch reaches out over the far bank: she walks off its end onto it)
+      const farX = b.x + b.width - 90;
+      gully(g0.x + g0.width, farX);
+      const g1 = gbank(farX, b.x + b.width + R.i(150, 200));
       steps.push({ kind: 'plat', id: g1.id });
       return g1.x + g1.width;
     },
-    // a fallen log over the path: stump steps up onto it, along it, and off its end
-    log: (x, steps) => {
-      const s1 = block(x + 120, x + 220, G - 70);
-      steps.push({ kind: 'plat', id: s1.id });
-      const len = R.i(360, 480);
-      const lg = block(x + 300, x + 300 + len, G - R.i(140, 156), 'log');
-      steps.push({ kind: 'plat', id: lg.id });
-      const g = ground(x, x + 300 + len + R.i(240, 300), G);
-      // (the ground under the step and the log is the same piece: the bot's last step is it, past the log)
-      steps.push({ kind: 'plat', id: g.id });
-      return g.x + g.width;
+    // logs jammed across a gully, hop to hop (they do not reach the floor: under them is the gully's floor, and the stairs back)
+    logs: (x, steps) => {
+      const g0 = gbank(x, x + 200);
+      steps.push({ kind: 'plat', id: g0.id });
+      const n = R.i(3, 4);
+      let ex = g0.x + g0.width;
+      let y = G;
+      for (let i = 0; i < n; i++) {
+        const lx = ex + R.i(85, 115);
+        y = Math.max(G - 70, Math.min(G + 20, y + R.i(-40, 30)));
+        const l = log(lx, lx + R.i(110, 140), y);
+        steps.push({ kind: 'plat', id: l.id });
+        ex = l.x + l.width;
+      }
+      const gx = ex + R.i(85, 110);
+      gully(g0.x + g0.width, gx);
+      const g1 = gbank(gx, gx + R.i(170, 210));
+      steps.push({ kind: 'plat', id: g1.id });
+      return g1.x + g1.width;
     },
-    // a tall bank only a second jump (flick again at the top) gets up
-    double: (x, steps) => {
-      const g0 = ground(x, x + 180, G);
-      const top = G - R.i(136, 148);
-      const b = block(g0.x + g0.width, g0.x + g0.width + R.i(260, 340), top);
+    // down the stairs into a hollow; its far side is a wall, and a trunk against it is the only way up and out
+    hollow: (x, steps) => {
+      const g0 = gbank(x, x + 180);
+      steps.push({ kind: 'plat', id: g0.id });
+      const wallX = g0.x + g0.width + R.i(400, 470);
+      const floor = gully(g0.x + g0.width, wallX);
+      steps.push({ kind: 'plat', id: floor.id });
+      const fy = G + GULLY;
+      const tree: TreeStructure = { id: tid++, x: wallX - 34, groundY: fy, topY: G - 170, trunkWidth: 70, hasClimbVine: true, canopyRadius: 140 };
+      trees.push(tree);
+      const v: Vine = { id: vid++, x: wallX - 34, topY: G - 2, bottomY: fy - 6, swaySpeed: 0.9, swayPhase: (wallX * 0.007) % 6.28, vineType: 'tree_climb', treeId: tree.id };
+      vines.push(v);
+      steps.push({ kind: 'climb', vine: v.id });
+      // (a root lip over the trunk's top, at the path's height: she climbs up onto it, then the bank)
+      branch(wallX - 80, wallX, G);
+      const g1 = gbank(wallX, wallX + R.i(200, 250));
+      steps.push({ kind: 'plat', id: g1.id });
+      // a stump on the far bank to hop before the next thing
+      const s = block(g1.x + g1.width, g1.x + g1.width + 90, G - R.i(55, 75));
+      s.height = G + GULLY + BANK - s.y;
+      steps.push({ kind: 'plat', id: s.id });
+      const g2 = gbank(s.x + s.width, s.x + s.width + R.i(150, 190));
+      steps.push({ kind: 'plat', id: g2.id });
+      return g2.x + g2.width;
+    },
+    // a fallen tree over a gully, broken in two: a stump step up onto it, a hop up onto its higher half, and off its end onto the bank
+    fallen: (x, steps) => {
+      const g0 = gbank(x, x + 260);
+      steps.push({ kind: 'plat', id: g0.id });
+      const s1 = block(x + 110, x + 200, G - 70);
+      s1.height = G + GULLY + BANK - s1.y;
+      steps.push({ kind: 'plat', id: s1.id });
+      const ly = G - R.i(140, 150);
+      const len = R.i(460, 540);
+      const lx = x + 230;
+      const breakX = lx + R.i(200, len - 220);
+      const a = log(lx, breakX, ly);
+      steps.push({ kind: 'plat', id: a.id });
+      const b = log(breakX, lx + len, ly - R.i(40, 50));
       steps.push({ kind: 'plat', id: b.id });
-      const g1 = ground(b.x + b.width, b.x + b.width + R.i(220, 280), G);
+      const farX = lx + len - 90;
+      gully(g0.x + g0.width, farX);
+      const g1 = gbank(farX, lx + len + R.i(150, 200));
+      steps.push({ kind: 'plat', id: g1.id });
+      return g1.x + g1.width;
+    },
+    // a tall bank only a second jump (flick again at the top) gets up: the bank itself is the wall, and off its far end she drops down
+    double: (x, steps) => {
+      const g0 = gbank(x, x + 180);
+      steps.push({ kind: 'plat', id: g0.id });
+      const top = G - R.i(136, 146);
+      const b = ground(g0.x + g0.width, g0.x + g0.width + R.i(240, 300), top, G + GULLY + BANK - top);
+      steps.push({ kind: 'plat', id: b.id });
+      const g1 = gbank(b.x + b.width, b.x + b.width + R.i(200, 250));
       steps.push({ kind: 'plat', id: g1.id });
       return g1.x + g1.width;
     },
   };
   /** a trail `n` sections long from x (on the ground), the kinds dealt from a shuffled bag so no kind comes twice running */
-  const trail = (x: number, n: number, name: string): number => {
+  const trail = (x: number, n: number, name: string, lead = 0): number => {
     const steps: TrailStep[] = [];
+    // (down off a room's high exit: a little path first, so the first branches are not a jump from the room's top)
+    if (lead) {
+      const g = ground(x, x + lead, G);
+      steps.push({ kind: 'plat', id: g.id });
+      x += lead;
+    }
+    const sections: MeecaTrail['sections'] = [];
     const x0 = x;
     let bag: TrailKind[] = [];
     let last: TrailKind | null = null;
     for (let i = 0; i < n; i++) {
-      if (!bag.length) bag = R.shuffle(['stumps', 'dip', 'tree', 'log', 'double'] as TrailKind[]);
+      if (!bag.length) bag = R.shuffle(['canopy', 'logs', 'hollow', 'fallen', 'double'] as TrailKind[]);
       let k = bag.pop()!;
       if (k === last && bag.length) {
         bag.unshift(k);
         k = bag.pop()!;
       }
       last = k;
+      const sx = x;
       x = SECTIONS[k](x, steps);
+      sections.push({ kind: k, x0: sx, x1: x });
     }
-    trails.push({ x0, x1: x, steps, name });
+    trails.push({ x0, x1: x, steps, sections, name });
     beats.push([x0, x, `Trail: ${name}`]);
     return x;
   };
@@ -332,7 +398,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
   rooms.push(sit);
   const t1 = trunk(0, ledge1.x + 260, ledge1.y, 30, 'sit');
   beats.push([r1, t1.x + 100, "Room 1: DON'T SIT (the chair, the sapling)"]);
-  cx = trail(ledge1.x + ledge1.width, TRAIL_SECTIONS[2], 'on through the orchids');
+  cx = trail(ledge1.x + ledge1.width, TRAIL_SECTIONS[2], 'on through the orchids', 220);
 
   // ── ROOM 2: DON'T EAT ──
   const r2 = cx;
@@ -390,7 +456,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
   rooms.push(silkRoom);
   const t3 = trunk(2, cliffX + 300, cliff.y, 28, 'silk');
   beats.push([c0, t3.x + 100, 'Room 3: HANDS OFF THE SILK (the silk line, the knot, the ladder)']);
-  cx = trail(cliff.x + cliff.width, TRAIL_SECTIONS[4], 'down from the bank');
+  cx = trail(cliff.x + cliff.width, TRAIL_SECTIONS[4], 'down from the bank', 220);
 
   // ── ROOM 4: NO TEA. BE RUDE. ──
   const d0 = cx + 60;
@@ -467,7 +533,7 @@ export function buildMeecaStage(seed = 1): MeecaStage {
   ];
   const width = bank.x + bank.width;
   const st: MeecaStage = {
-    seed, width, spawn: { x: spawn, y: G }, campEnd, camp, forkX, flickerX, flickerAt: { x: flickerX + 150, y: G - 130 },
+    seed, width, spawn: { x: spawn, y: G }, campEnd, camp, highX: trails[0].x0 + 120, forkX, flickerX, flickerAt: { x: flickerX + 150, y: G - 130 },
     trunks, darkX0: e0 - 60, clearing, beats, trails,
   };
   BUILT.set(st, { platforms: P, vines, trees, kit, zones });
@@ -498,10 +564,13 @@ export function meecaGeneratedStage(config: LevelConfig, seed: number): Generate
   };
 }
 
-/** the stage for the level check: its end is the last tree (the clearing), as a shrine would be */
+/**
+ * The stage for the level check: its end is the last tree (the clearing), as a shrine would be; and she has no leaf (meecaPlay.ts
+ * filter), so the check walks her as at a stage before the glide is needed (4-6: the second jump and everything else as in World 5).
+ */
 export function meecaCheckStage(stage: GeneratedStage & { proto: { meeca?: MeecaStage } }): GeneratedStage {
   const t = stage.proto.meeca!.trunks[stage.proto.meeca!.trunks.length - 1];
-  return { ...stage, exitTotemX: t.standX, exitTotemY: t.standY };
+  return { ...stage, config: { ...stage.config, worldIndex: 4, miniIndex: 6 }, exitTotemX: t.standX, exitTotemY: t.standY };
 }
 
 /**

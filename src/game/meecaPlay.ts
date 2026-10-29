@@ -283,6 +283,10 @@ export class MeecaPlay {
       this.steer = 0;
       return;
     }
+    // she has no leaf (she is not Pokey): a thumb held down through a fall never opens a glide. (Only past the top of the jump: the
+    // hang at its top, and the short hop's cut on the way up, are as his.)
+    const p = this.host.player;
+    if (!p.grounded && !p.climbing && p.vy >= 90) s.jumpHeld = false;
     // at a trunk, tracing a circle (or holding the hold key) is carving: she stands still for it
     if (this.carveSpot && (this.circle > 0 || this.hold || this.carveLeft > 0)) {
       s.left = s.right = s.jumpPressed = false;
@@ -359,6 +363,7 @@ export class MeecaPlay {
   /** the camp, the paths that look the same, and Flicker's light blinking on */
   private stepPrologue() {
     const p = this.host.player;
+    if (p.x >= this.st.highX) this.say(MEECA_SAY.high);
     if (p.x >= this.st.forkX) this.say(MEECA_SAY.lost);
     if (!this.flicker.on && p.x >= this.st.flickerX) {
       this.flicker.on = true;
