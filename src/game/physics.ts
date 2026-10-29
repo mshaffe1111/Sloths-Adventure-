@@ -365,57 +365,174 @@ export interface SwingVine {
   x: number;
   topY: number;
   bottomY: number;
+  /** this vine's own swing (the self-swing, below): radians either side; 0 hangs still. Default `TIMED.amp`; the stage fits it (swingSetup) */
+  swingAmp?: number;
+  /** seconds for one swing there and back. Default `TIMED.period` (Normal 2.85, Easy 3.3) */
+  swingPeriod?: number;
+  /** where in its swing it is at clock 0, as a share of a period (0..1). Default 0; the stage sets it (swingSetup) */
+  swingPhase?: number;
 }
 
 export interface SwingState {
   angle: number;
   omega: number;
   len: number;
-}
-
-/** Can a body at (x, y) grab this liana? */
-export function canGrabSwing(x: number, y: number, v: SwingVine): boolean {
-  return Math.abs(x - v.x) < TIMED.grabX && y >= v.topY - 15 && y <= v.bottomY + 30;
-}
-
-/** Start swinging from the body's actual position and velocity (no teleport). */
-export function swingGrab(b: AirBody, v: SwingVine): SwingState {
-  const dx = b.x - v.x;
-  const dy = Math.max(b.y - v.topY, SWING.minLen * 0.6);
-  const len = Math.max(SWING.minLen, Math.min(v.bottomY - v.topY - 10, Math.hypot(dx, dy)));
-  const angle = Math.max(-SWING.maxAngle, Math.min(SWING.maxAngle, Math.atan2(dx, dy)));
-  const omega = (b.vx * Math.cos(angle) - b.vy * Math.sin(angle)) / len;
-  return { angle, omega, len };
+  /**
+   * the vine's swing clock (seconds) at this state. A state made without one (a test's or a check's "he is here, moving this way")
+   * takes the moment of the vine's swing that matches it on its first step (swingClockAt).
+   */
+  t?: number;
+  /** the vine's swing, radians either side (what the sweet spot and the let-go are measured against); `TIMED.amp` when not known */
+  amp?: number;
 }
 
 /**
- * The timed swing (Matt, 2026-10-24): a vine swings by itself, at the same height and the same rhythm every time, and the only thing
- * the player decides is WHEN to let go. Holding a direction no longer pumps it and sliding up no longer shortens it (together they let
- * Pokey whip himself almost to the top of the screen). `TIMED` holds the numbers; Easy (difficulty.ts) widens the sweet spot and slows
- * the rhythm a little. Pure and shared by the engine, the stage builder and the reachability checks, so they always agree.
+ * Can a body at (x, y) grab this liana? At clock `t` the vine hangs at its swing's angle there, and he catches it within `TIMED.grabX` of
+ * the line it makes; with no clock it is the line it swings through hanging straight down (the checks' "a jump timed for the vine":
+ * a ledge jump can always wait for the vine to come past).
+ */
+export function canGrabSwing(x: number, y: number, v: SwingVine, t?: number): boolean {
+  const a = t === undefined ? 0 : vineAngle(v, t);
+  if (a === 0) return Math.abs(x - v.x) < TIMED.grabX && y >= v.topY - 15 && y <= v.bottomY + 30;
+  const dx = x - v.x;
+  const dy = y - v.topY;
+  const along = dx * Math.sin(a) + dy * Math.cos(a);
+  const across = dx * Math.cos(a) - dy * Math.sin(a);
+  return Math.abs(across) < TIMED.grabX && along >= -15 && along <= v.bottomY - v.topY + 30;
+}
+
+/**
+ * Catch a liana. With the vine's clock `t` (the engine's), he takes hold of it where it is: the vine is never pulled about by the catch,
+ * his hands go onto it at his height. With no clock (the checks, the tests), the vine is taken to be where he meets it, moving the way he
+ * moves (a jump timed for the vine).
+ */
+export function swingGrab(b: AirBody, v: SwingVine, t?: number): SwingState {
+  const dx = b.x - v.x;
+  const dy = Math.max(b.y - v.topY, SWING.minLen * 0.6);
+  const most = Math.max(SWING.minLen, v.bottomY - v.topY - 10);
+  if (t !== undefined) {
+    const angle = vineAngle(v, t);
+    const along = dx * Math.sin(angle) + dy * Math.cos(angle);
+    return { angle, omega: vineOmega(v, t), len: Math.max(SWING.minLen, Math.min(most, along)), t, amp: vineAmp(v) };
+  }
+  const len = Math.max(SWING.minLen, Math.min(most, Math.hypot(dx, dy)));
+  const amp = vineAmp(v);
+  const angle = Math.max(-amp, Math.min(amp, Math.atan2(dx, dy)));
+  const omega = (b.vx * Math.cos(angle) - b.vy * Math.sin(angle)) / len;
+  const at = swingClockAt(v, angle, omega);
+  return { angle: vineAngle(v, at), omega: vineOmega(v, at), len, t: at, amp };
+}
+
+/**
+ * The self-swing (Matt, 2026-10-28, a hotfix after an iPhone tester's "the vines swing wildly"; Donkey Kong Country's ropes): every
+ * swinging vine swings on its own, all the time, with or without him on it: a fixed swing (`swingAmp` either side, one `swingPeriod`
+ * there and back) worked out from the game's clock, never pushed by forces, so no frame rate, stall or thumb can change it. On it, up and
+ * down climb (his grip moves along the vine, the swing does not change), left and right only turn him the way he will leap, and the one
+ * choice is when to let go: he leaves with the vine's speed at his grip (the leap, timedLaunch).
+ * `TIMED` holds the default numbers; Easy (difficulty.ts) widens the sweet spot and slows the rhythm a little. Pure and shared by the
+ * engine, the stage builders and the reach checks, so they always agree.
  */
 export const TIMED = {
-  /** seconds for one full swing there and back, whatever the vine's length */
-  period: 1.9,
-  /** how far the swing goes either side of hanging straight down (radians, about 46 degrees) */
-  amp: 0.8,
-  /** how fast a grab that is too small or too big settles to `amp` (rad/s^2 of push, and the share of speed taken off per second) */
-  settle: 3.2,
-  trim: 2.5,
-  /** the sweet spot: moving toward the next vine, between these angles past straight down (radians; negative = still behind it) */
-  sweetFrom: -0.12,
-  sweetTo: 0.72,
+  /**
+   * seconds for one full swing there and back, whatever the vine's length. Matt (2026-10-28, after the first preview): slower, about
+   * one and a half times the old 1.9 s
+   */
+  period: 2.85,
+  /**
+   * the most a vine swings either side of hanging straight down (radians, about 26 degrees; Matt: calmer, it was 0.8). A vine whose
+   * neighbour hangs close swings less, so their swings never meet (swingSetup)
+   */
+  amp: 0.45,
+  /**
+   * the sweet spot: moving toward the next vine, between these shares of the vine's swing past straight down (negative = still behind
+   * it; 1 = the front of the swing)
+   */
+  sweetFrom: -0.15,
+  sweetTo: 0.9,
   /** how close (px) a flying body's hands must come to a vine to catch it */
   grabX: 60,
 };
 
 /** Easy or Normal for the swing: called by the engine when a stage starts (and by the tests) */
 export function setTimedSwing(easy: boolean) {
-  TIMED.period = easy ? 2.2 : 1.9;
-  TIMED.sweetFrom = easy ? -0.32 : -0.12;
-  TIMED.sweetTo = easy ? 0.95 : 0.72;
+  TIMED.period = easy ? 3.3 : 2.85;
+  TIMED.sweetFrom = easy ? -0.4 : -0.15;
+  TIMED.sweetTo = easy ? 1.2 : 0.9;
   TIMED.grabX = easy ? 76 : 60;
 }
+
+export const vineAmp = (v: SwingVine): number => v.swingAmp ?? TIMED.amp;
+export const vinePeriod = (v: SwingVine): number => v.swingPeriod ?? TIMED.period;
+/** the vine's angle (radians, + = its foot out to the right) at swing clock `t` */
+export function vineAngle(v: SwingVine, t: number): number {
+  const a = vineAmp(v);
+  return a === 0 ? 0 : a * Math.sin(2 * Math.PI * (t / vinePeriod(v) + (v.swingPhase ?? 0)));
+}
+/** how fast it turns (rad/s) at swing clock `t` */
+export function vineOmega(v: SwingVine, t: number): number {
+  const T = vinePeriod(v);
+  return vineAmp(v) * ((2 * Math.PI) / T) * Math.cos(2 * Math.PI * (t / T + (v.swingPhase ?? 0)));
+}
+/** the swing clock (0 .. one period) at which the vine is at `angle`, turning the way `omega` turns (+ when it is still) */
+export function swingClockAt(v: SwingVine, angle: number, omega: number): number {
+  const a = vineAmp(v);
+  const T = vinePeriod(v);
+  const s = a === 0 ? 0 : Math.asin(Math.max(-1, Math.min(1, angle / a)));
+  const ph = omega >= 0 ? s : Math.PI - s;
+  const u = ph / (2 * Math.PI) - (v.swingPhase ?? 0);
+  return (((u % 1) + 1) % 1) * T;
+}
+
+/** two lianas a leap apart (the next one to the right, within this far and this much higher or lower at the top) are a chain */
+export const CHAIN = { dx: 560, dTop: 200 };
+export const isChain = (A: SwingVine, B: SwingVine) => B.x > A.x && B.x - A.x < CHAIN.dx && Math.abs(B.topY - A.topY) < CHAIN.dTop;
+
+/**
+ * Neighbouring swings never meet (Matt, 2026-10-28): how far (px) Pokey's body reaches either side of the vine he hangs on, and the gap
+ * kept between his body at the front of one vine's swing and the next vine at the back of its own.
+ */
+export const SWING_CLEAR = { body: 30, margin: 20 };
+/** how far a vine's foot swings out either side (px) */
+export const swingReach = (v: SwingVine): number => (v.bottomY - v.topY) * Math.sin(vineAmp(v));
+/** do two vines hang side by side (their heights overlap), so that their swings could meet? */
+const sideBySide = (a: SwingVine, b: SwingVine) => a.topY < b.bottomY + 40 && b.topY < a.bottomY + 40;
+/** the clear space (px) between the two vines' swings, with Pokey hanging at the front of either: 0 or more is apart */
+export function swingClearance(a: SwingVine, b: SwingVine): number {
+  return Math.abs(b.x - a.x) - swingReach(a) - swingReach(b) - SWING_CLEAR.body - SWING_CLEAR.margin;
+}
+
+/**
+ * Each swinging vine's own swing, for a stage (only what an author has not set). Its size: the most it can swing (`TIMED.amp`) or less,
+ * so that it takes at most half the clear space to each neighbour hanging beside it and their swings never meet, at any moment of either
+ * (swingClearance). Its place in the swing: the next liana of a chain swings `chainPhase` of a swing ahead of the one before it (the
+ * offset that gives the widest moment to leap across, never in step with it), any other a golden share of a swing on from the one before,
+ * so a row of vines never moves as one. Deterministic from the stage and its roll. Climbing vines hang still. Called by the engine when
+ * a stage starts (and by the test harness and the checks).
+ */
+export function swingSetup(vines: Array<SwingVine & { vineType?: string }>) {
+  const sw = vines.filter((v) => v.vineType !== 'tree_climb').sort((a, b) => a.x - b.x || a.topY - b.topY);
+  for (const v of sw) {
+    if (v.swingAmp !== undefined) continue;
+    const L = Math.max(1, v.bottomY - v.topY);
+    let room = L * Math.sin(TIMED.amp);
+    for (const w of sw) {
+      if (w === v || !sideBySide(v, w)) continue;
+      room = Math.min(room, (Math.abs(w.x - v.x) - SWING_CLEAR.body - SWING_CLEAR.margin) / 2);
+    }
+    v.swingAmp = room <= 0 ? 0 : Math.min(TIMED.amp, Math.asin(Math.min(1, room / L)));
+  }
+  sw.forEach((v, i) => {
+    if (v.swingPhase !== undefined) return;
+    const A = i > 0 ? sw[i - 1] : undefined;
+    const base = A?.swingPhase ?? 0;
+    v.swingPhase = A && isChain(A, v) ? (base + chainPhase(A, v)) % 1 : (base + 0.618034) % 1;
+  });
+}
+
+/** the moments of a vine's swing a check tries the next vine at (any phase a stage can give it) */
+export const PHASES = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875];
+/** B as it swings relative to A with B `d` of a swing ahead (the checks try every one) */
+export const phased = <V extends SwingVine>(A: SwingVine, B: V, d: number): V => ({ ...B, swingPhase: (A.swingPhase ?? 0) + d });
 
 /** how big a swing is (radians either side) from where it is and how fast it moves, on the timed rhythm */
 export function timedAmp(angle: number, omega: number): number {
@@ -425,22 +542,17 @@ export function timedAmp(angle: number, omega: number): number {
 }
 
 /**
- * One step of a swing. `steer` is only a hint for which way to start a swing from a dead hang (the way he faces); `climb` is ignored:
- * the vine keeps the length it was grabbed at.
+ * One step of a swing: the vine's clock moves on `dt` and the vine is where its self-swing puts it then (nothing he does changes it).
+ * `steer` is not used (left and right only turn him); `climb` moves his grip along it: up (-1) shortens his hold, down (+1) lets him
+ * slide lower (straight up or down on a vine always climbs it, a stage rule).
  */
 export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0 | 1, climb: -1 | 0 | 1 = 0) {
-  const w = (2 * Math.PI) / TIMED.period;
-  s.omega += -w * w * Math.sin(s.angle) * dt;
-  const amp = timedAmp(s.angle, s.omega);
-  if (amp < TIMED.amp - 0.01) {
-    const dir = Math.abs(s.omega) > 0.05 ? Math.sign(s.omega) : steer || 1;
-    s.omega += dir * TIMED.settle * dt;
-  } else if (amp > TIMED.amp + 0.02) {
-    s.omega *= 1 - Math.min(0.5, TIMED.trim * dt);
-  }
-  s.angle = Math.max(-1.05, Math.min(1.05, s.angle + s.omega * dt));
-  // straight up or down on a vine always climbs it (a stage rule): up shortens his hold, down lets him slide lower. The timed swing
-  // keeps its rhythm at any length, so climbing never spoils the sweet spot (lost in the timed swing of 2026-10-24, restored 10-25)
+  void steer;
+  if (s.t === undefined) s.t = swingClockAt(v, s.angle, s.omega);
+  s.t += dt;
+  s.angle = vineAngle(v, s.t);
+  s.omega = vineOmega(v, s.t);
+  s.amp = vineAmp(v);
   s.len += climb * SWING.climb * dt;
   s.len = Math.max(SWING.minLen, Math.min(v.bottomY - v.topY, s.len));
   const tang = s.omega * s.len;
@@ -459,19 +571,16 @@ export function swingStep(s: SwingState, v: SwingVine, dt: number, steer: -1 | 0
  *  - a platform under the vine's hanging point, his feet within 14 px of its top (he climbed down onto it, and they would otherwise
  *    sink into it): 'land', as before;
  *  - a ledge out to one side: when he holds down and toward it together for `heldS`, from up to `reach` px above its top ('step' when he is above
- *    it: he steps off and drops onto it); or with his thumb off the steering for `idleS`, his feet within 14 px, near the end of the
- *    swing's stroke (`apexOmega`), where the swing slows and turns.
+ *    it: he steps off and drops onto it). Hands off is never getting off (2026-10-28): the vines swing on their own, so hands off is
+ *    a player waiting for the moment to leap, and the calmer swing's turn sat right over 1-6's raised ledge (it used to set him down
+ *    there at the end of a stroke).
  * A sideways steer on its own is never getting off: a thumb pumping the swing holds toward the ledge for half of every stroke, and the
  * first version, which stepped off on a steer toward it, stepped QA's pumping bot off at the first pump after a climb down (v192).
  * `dy`: his feet below the platform's top (px; negative = above it).
  */
 export const SWING_LAND = {
-  /** rad/s: slower than this is the end of a stroke (a full timed swing peaks at about 2.6 rad/s on Normal, 2.2 on Easy) */
-  apexOmega: 1.0,
   /** px above a ledge's top that holding down and toward it steps off onto it */
   reach: 40,
-  /** seconds with no steer held before a hands-off landing (a pumping thumb passes through no steer between strokes) */
-  idleS: 0.3,
   /**
    * seconds down and the same sideways steer must be held together, against the swing's motion, to get off that way: a thumb pumping
    * the swing turns round with it every stroke (a beat late at most, about a third of a second), and its count starts again
@@ -483,13 +592,11 @@ export interface SwingHands {
   steer: -1 | 0 | 1;
   /** down is held (climbing down) */
   down: boolean;
-  /** seconds since a sideways steer was last held */
-  idle: number;
   /** seconds down and this same steer have been held together against the swing (engine.ts swingDownHeld) */
   held: number;
 }
 export function swingLanding(
-  s: { angle: number; omega: number },
+  _s: { angle: number; omega: number; amp?: number },
   vineX: number,
   plat: { x: number; width: number },
   hands: SwingHands,
@@ -499,14 +606,17 @@ export function swingLanding(
   if (vineX >= plat.x - 10 && vineX <= plat.x + plat.width + 10) return dy > -14 ? 'land' : null;
   const side = plat.x + plat.width / 2 < vineX ? -1 : 1;
   if (hands.steer === side && hands.down && hands.held >= SWING_LAND.heldS) return dy > -14 ? 'land' : dy > -SWING_LAND.reach ? 'step' : null;
-  if (hands.steer !== 0 || hands.idle < SWING_LAND.idleS) return null;
-  return dy > -14 && Math.abs(s.omega) < SWING_LAND.apexOmega ? 'land' : null;
+  return null;
 }
 
 /** is this the moment to let go toward `dir`? (moving that way, between just behind straight down and most of the way up the front) */
 export function inSweetSpot(s: SwingState, dir: -1 | 1): boolean {
-  const moving = Math.sign(s.omega) === dir && Math.abs(s.omega) > 0.2;
-  const a = s.angle * dir;
+  const amp = s.amp ?? TIMED.amp;
+  // (a vine hanging still, its neighbours too close for it to swing: any moment is the moment)
+  if (amp < 0.05) return true;
+  const top = amp * ((2 * Math.PI) / TIMED.period);
+  const moving = Math.sign(s.omega) === dir && Math.abs(s.omega) > 0.075 * top;
+  const a = (s.angle * dir) / amp;
   return moving && a >= TIMED.sweetFrom && a <= TIMED.sweetTo;
 }
 
@@ -519,11 +629,20 @@ export function inSweetSpot(s: SwingState, dir: -1 | 1): boolean {
  */
 export const LEAN_HOP = 130;
 export function timedLaunch(s: SwingState, dir: -1 | 1, leaned = false): { vx: number; vy: number; sweet: boolean } {
-  const tang = s.omega * s.len;
+  // the leap carries the vine's speed at his grip, counted as the old swing's (0.8 rad either side, two-thirds the time: 1.9 s, Easy
+  // 2.2) at the same point of its swing: the calmer, slower swing of 2026-10-28 throws him as far as the old one did from the same
+  // moment, so every gap the stages were built for keeps its reach (a vine hanging nearly still throws no harder than four times its speed)
+  const k = Math.min(4, (0.8 / Math.max(0.2, s.amp ?? TIMED.amp)) * 1.5);
+  const tang = s.omega * s.len * k;
   const vx = Math.cos(s.angle) * tang;
   const vy = -Math.sin(s.angle) * tang;
   if (inSweetSpot(s, dir)) {
     const l = tarzanLaunch(vx, vy, dir);
+    // and as high: the old swing let go higher up its arc at the same point of its swing (the calmer one hangs straighter), so the leap
+    // rises that much more, to the same top
+    const amp = s.amp ?? TIMED.amp;
+    const lift = amp > 0.05 ? Math.max(0, s.len * (Math.cos(s.angle) - Math.cos((s.angle / amp) * 0.8))) : 0;
+    if (lift > 0 && l.vy < 0) l.vy = Math.max(SWING.leapVyMin, -Math.sqrt(l.vy * l.vy + 2 * PHYS.gravUp * lift));
     return { ...l, sweet: true };
   }
   // anywhere else he only lets go: a small hop off the vine with part of its speed, never a fling up the screen or back the way he came
@@ -537,7 +656,7 @@ export function timedLaunch(s: SwingState, dir: -1 | 1, leaned = false): { vx: n
  *  - `late`: a press up to this long after the sweet spot ended, while he is still well out in front, is the leap the sweet spot gave;
  *  - `early`: a press while he swings forward but has not reached it yet waits (this long at most) and leaps when he gets there.
  */
-export const RELEASE = { late: 0.36, early: 0.32, lateFrom: 0.3, earlyFrom: -0.7 };
+export const RELEASE = { late: 0.36, early: 0.32, lateFrom: 0.375, earlyFrom: -0.875 };
 
 /**
  * what a press to let go toward `dir` does now: 'sweet' (leap), 'late' (leap as from the sweet spot just passed), 'early' (hold the press
@@ -546,7 +665,8 @@ export const RELEASE = { late: 0.36, early: 0.32, lateFrom: 0.3, earlyFrom: -0.7
  */
 export function releaseCall(s: SwingState, dir: -1 | 1, sinceSweet: number): 'sweet' | 'late' | 'early' | 'now' {
   if (inSweetSpot(s, dir)) return 'sweet';
-  const a = s.angle * dir;
+  // (as shares of the vine's swing, like the sweet spot)
+  const a = (s.angle * dir) / (s.amp ?? TIMED.amp);
   if (sinceSweet <= RELEASE.late && a >= RELEASE.lateFrom) return 'late';
   if (Math.sign(s.omega) === dir && a >= RELEASE.earlyFrom && a < TIMED.sweetFrom) return 'early';
   return 'now';
@@ -559,6 +679,98 @@ export function tarzanLaunch(vx: number, vy: number, dir: -1 | 1) {
     vx: dir * speed,
     vy: Math.max(SWING.leapVyMin, Math.min(-PHYS.vineReleaseV, vy - 300)),
   };
+}
+
+/** the flights a let-go can make: the jump held, a flick, and the second jump at a few moments */
+export const LETGO_FLIGHTS: ReadonlyArray<{ held: number; dbl: number }> = [
+  { held: 99, dbl: 99 }, { held: 7, dbl: 99 }, { held: 99, dbl: 0.15 }, { held: 99, dbl: 0.3 }, { held: 99, dbl: 0.45 },
+];
+
+/**
+ * ms of ONE swing on A in which a press to let go toward +x gets him there (`hits`, asked every frame of the flight with the vines'
+ * clock), as the engine plays a press (engine.ts and RELEASE): in the sweet spot he leaps; a beat early the press waits for it; a beat
+ * late it is the sweet spot's leap; anywhere else a hop off the vine. Caught near the bottom of the vine and higher up: the worse counts.
+ */
+export function pressWindow(
+  A: SwingVine,
+  hits: (c: AirBody, t: number, prevY: number) => boolean,
+  flights: ReadonlyArray<{ held: number; dbl: number }> = LETGO_FLIGHTS,
+  grips: readonly number[] = [0.7, 0.95],
+): number {
+  const DT = 1 / 30;
+  const len = A.bottomY - A.topY;
+  const n = Math.round(vinePeriod(A) / DT);
+  let worst = Infinity;
+  for (const g of grips) {
+    const s0 = swingGrab({ x: A.x - 40, y: A.topY + Math.min(len * g, len - 20), vx: 300, vy: 100 }, A);
+    // two swings and a bit of states: the presses are the second swing (the first gives "since the sweet spot")
+    const st: Array<{ s: SwingState; r: { x: number; y: number }; sweet: boolean }> = [];
+    for (let k = 0; k < 2 * n + 20; k++) {
+      const r = swingStep(s0, A, DT, 1, 0);
+      st.push({ s: { ...s0 }, r, sweet: inSweetSpot(s0, 1) });
+    }
+    let lastSweet = -1e9;
+    let snap: SwingState | null = null;
+    for (let k = 0; k < n; k++) if (st[k].sweet) { lastSweet = k; snap = st[k].s; }
+    let ok = 0;
+    for (let k = n; k < 2 * n; k++) {
+      if (st[k].sweet) { lastSweet = k; snap = st[k].s; }
+      const call = releaseCall(st[k].s, 1, (k - lastSweet) * DT);
+      let at = k, from: SwingState = st[k].s;
+      if (call === 'late' && snap) from = snap;
+      if (call === 'early') {
+        let m = k;
+        while (m < k + Math.round(RELEASE.early / DT) && !st[m].sweet) m++;
+        at = m;
+        from = st[m].s;
+      }
+      const l = timedLaunch(from, 1);
+      let made = false;
+      for (const f of flights) {
+        const c: AirBody = { x: st[at].r.x, y: st[at].r.y, vx: l.vx, vy: l.vy };
+        let t = 0, used = false;
+        for (let i = 1; i <= 90 && !made; i++) {
+          if (!used && t >= f.dbl) {
+            c.vy = -PHYS.doubleV;
+            used = true;
+          }
+          const prevY = c.y;
+          airStep(c, DT, 1, i <= f.held);
+          t += DT;
+          if (hits(c, st[at].s.t! + t, prevY)) made = true;
+          if (c.y > A.bottomY + 500) break;
+        }
+        if (made) break;
+      }
+      if (made) ok++;
+    }
+    worst = Math.min(worst, ok * DT * 1000);
+  }
+  return worst;
+}
+
+const chainCache = new Map<string, number>();
+/**
+ * How far ahead in its swing (a share of a period) the next liana of a chain swings: the offset that gives the widest moment in A's swing
+ * to leap across and catch B (pressWindow, the jump held or flicked), never less than a tenth of a swing either way (Matt: never in step).
+ * Pure and cached: the stage's phases and the checks use the same answer.
+ */
+export function chainPhase(A: SwingVine, B: SwingVine): number {
+  const key = `${A.x},${A.topY},${A.bottomY},${vineAmp(A)},${B.x},${B.topY},${B.bottomY},${vineAmp(B)},${TIMED.period},${TIMED.grabX},${TIMED.sweetFrom},${TIMED.sweetTo}`;
+  const known = chainCache.get(key);
+  if (known !== undefined) return known;
+  const a: SwingVine = { x: A.x, topY: A.topY, bottomY: A.bottomY, swingAmp: vineAmp(A), swingPeriod: A.swingPeriod, swingPhase: 0 };
+  let best = 0.25, bestW = -1;
+  for (let k = 2; k <= 14; k++) {
+    const b: SwingVine = { x: B.x, topY: B.topY, bottomY: B.bottomY, swingAmp: vineAmp(B), swingPeriod: B.swingPeriod, swingPhase: k / 16 };
+    const w = pressWindow(a, (c, t) => canGrabSwing(c.x, c.y, b, t), LETGO_FLIGHTS.slice(0, 2));
+    if (w > bestW + 1e-6) {
+      bestW = w;
+      best = k / 16;
+    }
+  }
+  chainCache.set(key, best);
+  return best;
 }
 
 /** which way a hit knocks him: away from where it came from (`fromX`), or back the way he faces when that is not known */

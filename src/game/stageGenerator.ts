@@ -2579,8 +2579,10 @@ function buildBoss(gen: Gen): GeneratedStage {
       const wall = gen.T.find((t) => Math.abs(t.x - (left - 40)) < 1);
       gen.V.push({ id: gen.vid++, x: left + dx, topY: floor - (def.climbTop ?? 430), bottomY: floor - 20, swaySpeed: 1.0, swayPhase: 0, vineType: 'tree_climb', ...(wall ? { treeId: wall.id } : {}) });
     }
+    // (a boss arena's liana hangs still, physics.ts swingAmp 0: swinging on its own through the arena it caught a player dodging the
+    // boss, the Sky Sovereign's dodging bot hit 77 times against 52, 2026-10-28; it is climbed and leapt from as before)
     for (const v of def.vines ?? []) {
-      gen.V.push({ id: gen.vid++, x: left + v.dx, topY: floor - v.top, bottomY: floor - v.bottom, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true });
+      gen.V.push({ id: gen.vid++, x: left + v.dx, topY: floor - v.top, bottomY: floor - v.bottom, swaySpeed: 1.1, swayPhase: 0, vineType: 'swing_liana', isSwingingVine: true, swingAmp: 0 });
     }
     // the Sky Sovereign's rock pillars: walls with a top to stand on (sovereignFight.ts; the engine cracks and breaks them)
     if (def.pillars) {

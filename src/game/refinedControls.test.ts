@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TouchGestures } from './touchGestures.ts';
 import { SWING, swingStep } from './physics.ts';
-import { autoPump, AUTO_SWING, refinedControls } from './refinedControls.ts';
+import { refinedControls } from './refinedControls.ts';
 
 function pad(near: boolean, refined = true) {
   const out: string[] = [];
@@ -50,34 +50,25 @@ test('refined controls: the old rules still kick on that swipe (nothing changes 
   assert.ok(out.includes('kick'), out.join(' '));
 });
 
-test('refined controls: a vine swings itself up to a good size from a dead hang, and then stops pushing', () => {
-  const v = { x: 0, topY: 0, bottomY: 400 };
-  const s = { angle: 0, omega: 0, len: 380 };
-  let maxA = 0;
-  for (let f = 0; f < 30 * 6; f++) {
-    swingStep(s, v, 1 / 30, autoPump(s.angle, s.omega, s.len, SWING.g, 1), 0);
-    if (f > 30 * 3) maxA = Math.max(maxA, Math.abs(s.angle));
-  }
-  assert.ok(maxA > AUTO_SWING * 0.8 && maxA < AUTO_SWING * 1.25, `swing settles near ${AUTO_SWING} rad, got ${maxA.toFixed(2)}`);
-});
-
 test('timed swing: whatever is held, the vine settles to the same height and rhythm', async () => {
   const { TIMED, setTimedSwing } = await import('./physics.ts');
   setTimedSwing(false);
   const v = { x: 0, topY: 0, bottomY: 420 };
   for (const hold of [1, -1] as const) {
     const s = { angle: 0, omega: 0, len: 380 };
-    let maxA = 0, minA = 0, flips = 0, prev = 0;
+    let maxA = 0, minA = 0, prev = 0;
+    const turns: number[] = [];
     for (let f = 0; f < 60 * 10; f++) {
       swingStep(s, v, 1 / 60, hold, 0);
       if (f > 60 * 5) {
         maxA = Math.max(maxA, s.angle); minA = Math.min(minA, s.angle);
-        if (prev && Math.sign(s.omega) !== prev) flips++;
+        if (prev && Math.sign(s.omega) !== prev) turns.push(f / 60);
       }
       prev = Math.sign(s.omega);
     }
     assert.ok(Math.abs(maxA - TIMED.amp) < 0.06 && Math.abs(-minA - TIMED.amp) < 0.06, `swings both ways to ${TIMED.amp}: ${minA.toFixed(2)}..${maxA.toFixed(2)}`);
-    const period = (2 * 5) / flips; // 5 s watched, two turns per swing
+    // (the time between the first and last turn watched: two turns a swing; a count of turns in a fixed 5 s depends on where it starts)
+    const period = (2 * (turns[turns.length - 1] - turns[0])) / (turns.length - 1);
     assert.ok(Math.abs(period - TIMED.period) < 0.15, `period ${period.toFixed(2)} s, wanted ${TIMED.period}`);
   }
 });

@@ -67,10 +67,21 @@ function swingFor(r: RealPlay, v: Vine, mode: Mode, len: number, secs: number, t
   r.swing(v, { angle: 0, omega: 2.5, len });
   let oldRule = 0;
   for (let i = 0; i < Math.round(secs * 30); i++) {
+    const a0 = r.p.swingAngle ?? 0, l0 = r.p.swingLength ?? len;
     r.frame(hands(r, mode, toward));
     const p = r.p;
     if (!p.isVineSwinging) return { swinging: false, t: i / 30, oldRule };
-    if (r.platforms.some((q) => p.x >= q.x - 10 && p.x <= q.x + q.width + 10 && Math.abs(p.y - q.y) < 14 && p.vy >= 0)) oldRule++;
+    // (the old rule, on the swing's path through the frame as well as where the frame left him: the band it caught is a hair wide, and
+    // the swing's fixed rhythm, physics.ts, steps over it at 30 frames a second)
+    const a1 = p.swingAngle ?? 0, l1 = p.swingLength ?? len;
+    for (let k = 1; k <= 8; k++) {
+      const a = a0 + ((a1 - a0) * k) / 8, l = l0 + ((l1 - l0) * k) / 8;
+      const x = v.x + Math.sin(a) * l, y = v.topY + Math.cos(a) * l;
+      if (p.vy >= 0 && r.platforms.some((q) => x >= q.x - 10 && x <= q.x + q.width + 10 && Math.abs(y - q.y) < 14)) {
+        oldRule++;
+        break;
+      }
+    }
   }
   return { swinging: true, t: secs, oldRule };
 }
@@ -130,9 +141,14 @@ test("QA's v192 repro: grab on 1-6, steer down 400 ms, then steer right, then le
 });
 
 test('1-6: holding down and toward the ledge as the swing carries him past it puts him on it, and he stays there', () => {
-  for (const seed of [1, 2, 3, 4]) {
+  // (the calmer swing of 2026-10-28 reaches the raised ledge's corner only where the vine hangs close enough to it: those rolls, and
+  // at least one)
+  let tried = 0;
+  for (const seed of [1, 2, 3, 4, 5, 6, 7, 8]) {
     const r = new RealPlay('1-6', seed);
     const { v, ledge } = firstVine(r);
+    if (v.x - (v.bottomY - v.topY) * Math.sin(v.swingAmp ?? 0) > ledge.x + ledge.width + 6) continue;
+    tried++;
     const out = swingFor(r, v, 'downToward', v.bottomY - v.topY, 6);
     assert.ok(!out.swinging && out.t < 2.5, `seed ${seed}: still swinging after ${out.t.toFixed(2)} s`);
     r.wait(1);
@@ -140,6 +156,7 @@ test('1-6: holding down and toward the ledge as the swing carries him past it pu
     assert.ok(p.grounded && Math.abs(p.y - ledge.y) < 1 && p.x >= ledge.x && p.x <= ledge.x + ledge.width, `seed ${seed}: at x${Math.round(p.x)} y${Math.round(p.y)} grounded ${p.grounded}`);
     assert.ok(!r.died, `seed ${seed}: he fell`);
   }
+  assert.ok(tried >= 1, 'no roll of 1-6 hangs its first liana where the swing reaches the ledge');
 });
 
 test("the control test's swing stretch: pumping its lianas at full length never sets him down on a ledge beside them", async () => {
@@ -187,11 +204,12 @@ test('a floor under the vine is still landed on as he climbs down onto it, pumpi
   }
 });
 
-test('swingLanding: a ledge beside the vine only on down-and-toward, or hands off a while at the end of the stroke; a steer alone never', () => {
+test('swingLanding: a ledge beside the vine only on down-and-toward; a steer alone or hands off never', () => {
   const left = { x: 500, width: 380 };
-  const fast = { angle: -0.45, omega: 2.1 };
-  const slow = { angle: -0.78, omega: 0.4 };
-  const h = (steer: -1 | 0 | 1, down = false, idle = steer ? 0 : 1, held = down ? 1 : 0) => ({ steer, down, idle, held });
+  // (the swing of 2026-10-28: 0.45 rad either side, its top speed about 1 rad/s at the bottom)
+  const fast = { angle: -0.25, omega: 0.85, amp: 0.45 };
+  const slow = { angle: -0.44, omega: 0.15, amp: 0.45 };
+  const h = (steer: -1 | 0 | 1, down = false, _idle = 0, held = down ? 1 : 0) => ({ steer, down, held });
   assert.equal(swingLanding(fast, 1070, left, h(1), 5), null, 'pumping away from it');
   assert.equal(swingLanding(fast, 1070, left, h(-1), 5), null, 'a steer toward it (half of every pump)');
   assert.equal(swingLanding(slow, 1070, left, h(-1), 5), null, 'a steer toward it at the end of the stroke');
@@ -201,7 +219,8 @@ test('swingLanding: a ledge beside the vine only on down-and-toward, or hands of
   assert.equal(swingLanding(fast, 1070, left, h(-1, true), -30), 'step', 'down and toward it, a little above it: steps off onto it');
   assert.equal(swingLanding(fast, 1070, left, h(-1, true), -SWING_LAND.reach - 1), null, 'too far above');
   assert.equal(swingLanding(fast, 1070, left, h(-1, true, 0, 0.2), -10), null, 'down and toward only just pressed together (a pumping thumb drifting down)');
-  assert.equal(swingLanding(slow, 1070, left, h(0), 5), 'land', 'hands off a while, at the end of the stroke');
+  // (hands off is a player waiting on a self-swinging vine, never getting off: 2026-10-28)
+  assert.equal(swingLanding(slow, 1070, left, h(0), 5), null, 'hands off a while, at the end of the stroke');
   assert.equal(swingLanding(slow, 1070, left, h(0, false, 0.1), 5), null, 'between two pumping strokes');
   assert.equal(swingLanding(fast, 1070, { x: 900, width: 300 }, h(1), 5), 'land', 'a floor under the vine, pumping');
 });
@@ -335,7 +354,7 @@ function letGo(s: { angle: number; omega: number }, facing: -1 | 1, steer: -1 | 
 
 test('letting go of a liana leaps the way the flick leaned, even against the held steer and the way he faces', () => {
   // swinging LEFT through the sweet spot for a leap left, facing right with the steer still held right after a pump that way
-  const goingLeft = { angle: -0.2, omega: -2.4 };
+  const goingLeft = { angle: -0.12, omega: -0.9 };
   assert.ok(inSweetSpot({ ...goingLeft, len: 300 }, -1));
   let r = letGo(goingLeft, 1, 1, -1);
   assert.ok(!r.p.isVineSwinging && r.p.vx < -250 && r.p.facing === -1 && r.e.launched, `lean left: vx ${Math.round(r.p.vx)} facing ${r.p.facing}`);
@@ -344,13 +363,13 @@ test('letting go of a liana leaps the way the flick leaned, even against the hel
   r = letGo(goingLeft, 1, 1, 0);
   assert.ok(!r.p.isVineSwinging && r.p.facing === 1 && !r.e.launched, `no lean: vx ${Math.round(r.p.vx)} facing ${r.p.facing}`);
   // facing left, swinging right: a flick up and right leaps right (it used to throw him backward)
-  const goingRight = { angle: 0.2, omega: 2.4 };
+  const goingRight = { angle: 0.12, omega: 0.9 };
   r = letGo(goingRight, -1, 0, 1);
   assert.ok(!r.p.isVineSwinging && r.p.vx > 250 && r.p.facing === 1, `lean right: vx ${Math.round(r.p.vx)} facing ${r.p.facing}`);
   r = letGo(goingRight, -1, 0, 0);
   assert.ok(!r.p.isVineSwinging && r.p.facing === -1, `no lean, facing left: facing ${r.p.facing}`);
   // a press a beat before the sweet spot for its lean is held until he gets there, then leaps that way
-  r = letGo({ angle: 0.5, omega: -1.8 }, 1, 1, -1);
+  r = letGo({ angle: 0.28, omega: -0.7 }, 1, 1, -1);
   assert.ok(!r.p.isVineSwinging && r.p.vx < -250, `early press leaning left: vx ${Math.round(r.p.vx)}`);
 });
 
@@ -547,8 +566,9 @@ test('1-6, a fresh player: the swing lesson (Dot\'s lines) comes before his firs
         const what = `seed ${seed} ${view}: ${o.shown.map((s) => `${s.id}@${s.t.toFixed(1)}`).join(' ')}, grab ${o.grabAt.toFixed(1)}, let go ${o.letGoAt.toFixed(1)}`;
         assert.ok(o.letGoAt > 0, `${what}: never let go`);
         assert.ok(o.swing < o.letGoAt, what);
-        // (and within a second of the grab at the latest: pumping and letting go are needed from then on)
-        assert.ok(o.swing <= o.grabAt + 1, what);
+        // (and within a second of the grab at the latest, or of the first moment any lesson may come, 2.5 s in, engine.ts lessonTick:
+        // the vines swing on their own now, physics.ts, and the first one can swing out to meet a player who runs straight at it)
+        assert.ok(o.swing <= Math.max(o.grabAt, 2.5) + 1, what);
       }
     }
   }
