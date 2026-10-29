@@ -22,22 +22,25 @@
  * World 10 is the climb Pokey makes alone (Dot goes ahead along the netting in the world's first scene: wayside.ts dotPresent). The swing
  * is a move he has had since World 4, so no section here teaches it and none says a line.
  *
- * Which stages: 10-6 The Iron Netting (a vine runner: every section here), and as heavy beats among the ground, 10-3 Thunder (stealth)
- * and 10-7 The Walls (purge) (W10S_STAGES; the chain runs and the three-swing chain only in 10-6, W10S_ONLY, so no two stages of the world
- * share a 20 s stretch: STAGE-RULES §2 "Sameness"). The main World 10 builder (gen2-w10) folds them in with withW10Swing.
+ * Which stages: 10-6 The Iron Netting (a vine runner: every section here), and as heavy beats among the ground, 10-7 The Walls (purge) and, in its finale, 10-9 The Fortress Gate (a gauntlet: the cage and chain pairs and the guarded cage only) (W10S_STAGES; the chain runs and the three-swing chain only in 10-6, W10S_ONLY, so no two stages of the world
+ * share a 20 s stretch; 10-3 Thunder takes none: its storm-watched stretches need the room, w10.test.ts: STAGE-RULES §2 "Sameness"). The main World 10 builder (gen2-w10) folds them in with withW10Swing.
  */
 import type { Difficulty, SectionPiece, SectionTemplate, Socket, WorldKit } from '../types.ts';
 
 // ───────────────────────────── the stages, the tags ─────────────────────────────
 
 /** the stages these sections go to (w10Game.ts folds them in with withW10Swing) */
-export const W10S_STAGES: readonly number[] = [3, 6, 7];
+export const W10S_STAGES: readonly number[] = [6, 7, 9];
 /** sections only one stage takes (the rest go to every stage of W10S_STAGES): the long chains are the Iron Netting's own */
 export const W10S_ONLY: Record<string, number[]> = {
   'w10s-chain-run': [6],
   'w10s-storm-ropes': [6],
-  'w10s-cage-pair': [6, 7],
+  'w10s-cage-pair': [6, 7, 9],
+  'w10s-chain-pair': [6, 7, 9],
+  'w10s-cage-guard': [6, 7, 9],
 };
+/** 10-9 The Fortress Gate (a gauntlet) takes only these, its finale's swings over the gate's chasm (the rest stay out of it) */
+const GATE_SWINGS = new Set(['w10s-cage-pair', 'w10s-chain-pair', 'w10s-cage-guard']);
 /**
  * The animals a swing section's sockets may hold, by the world's creature tags (w10.ts W10_TAG once the main builder's kit is in: the
  * fortress's guards on the walls). Until then the stand-in kit's tags (w10SwingHarness.ts) are World 6's: 'hunter' (prowlers), 'quick'.
@@ -71,14 +74,16 @@ type Opt = Partial<Socket>;
 const petals = (id: string, on: string, t: Socket['t'], count = 2, span = 120): Socket => ({ id, role: 'pickup', on, t, dn: 34, count, span });
 const foe = (id: string, on: string, t: Socket['t'], kinds: readonly string[], max: number, o: Opt = {}): Socket => ({ id, role: 'enemy', on, t, allow: [...kinds], maxThreat: max, easy: 'soften', ...o });
 const scenery = (id: string, on: string, t: Socket['t'], chance = 0.6): Socket => ({ id, role: 'prop', on, t, allow: [W10S_SCENERY], chance });
+/** a flag's spot on a section's last perch (each section has one: the pipeline's fallback, 80 px short of the section's end, can stand
+ *  at the next section's chasm, w10.test.ts) */
 const flag = (on: string, t: Socket['t']): Socket => ({ id: 'flag', role: 'flag', on, t });
 
 const bank = (key: string, w: W, place: SectionPiece['place'] = { kind: 'start' }, o: Partial<SectionPiece> = {}): SectionPiece => ({ key, shape: 'bank', w, place, ...o });
 /** a rampart step up `dy` px (one plain hop), or down */
 const up = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'walk', after, dy: -dy });
 const down = (key: string, after: string, dy: number, w: W): SectionPiece => bank(key, w, { kind: 'walk', after, dy });
-/** a hop over a gap in the wall walk: a third of a jump or so */
-const hop = (key: string, after: string, w: W, share: W = [0.3, 0.42]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share }, { landing: true });
+/** a hop over a gap in the wall walk: a third of a jump or so, soft (a run of hops over World 10's deep chasms is a glide trap: w10.test.ts) */
+const hop = (key: string, after: string, w: W, share: W = [0.3, 0.42]): SectionPiece => bank(key, w, { kind: 'pit', after, jump: 'jump', share, soft: true }, { landing: true });
 /** a swing past `after`'s end, its anchor 400-420 px up (a longer one throws him further: its perch can lie past the glide) */
 const liana = (key: string, after: string): SectionPiece => ({ key, shape: 'liana', w: 0, place: { kind: 'swing', after, top: [400, 420] } });
 /** how far a perch sits above its swing's ledge (STAGE-RULES §6: a level perch past the glide is out of the calm swing's reach) */
@@ -106,7 +111,7 @@ const firstChain = swingSection({
   pieces: [bank('a', [220, 260]), liana('l1', 'a'), perch('b', 'l1', [260, 300]), up('k', 'b', 40, [120, 150]), down('c', 'k', 40 - RAISE, [200, 240])],
   first: 'a',
   last: 'c',
-  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.4, 2, 80), petals('k', 'k', 0.5, 1), scenery('crates', 'c', [0.55, 0.8], 0.5), flag('c', 0.6)],
+  sockets: [petals('a', 'a', 0.35, 2, 80), petals('b', 'b', 0.4, 2, 80), petals('k', 'k', 0.5, 1), scenery('crates', 'c', [0.55, 0.8], 0.5), flag('b', 0.6)],
 });
 
 /** up the battlement stair, a torn banner off its top step, down the far side */
@@ -128,7 +133,7 @@ const bannerStair = swingSection({
   ],
   first: 'a',
   last: 'c',
-  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.4, 1), petals('b', 'b', 0.5, 2, 80), foe('foe', 'c', [0.6, 0.85], W10S_FOES.small, 2.5, { phases: ['ten'], chance: 0.5 })],
+  sockets: [petals('s1', 's1', 0.5, 1), petals('s2', 's2', 0.4, 1), petals('b', 'b', 0.5, 2, 80), foe('foe', 'c', [0.6, 0.85], W10S_FOES.small, 2.5, { phases: ['ten'], chance: 0.5 }), flag('b', 0.6)],
 });
 
 /** a chain with a cage hung under it, onto a wall walk where a guard keeps watch: land, then deal with him */
@@ -141,7 +146,7 @@ const cageGuard = swingSection({
   pieces: [bank('a', [190, 230]), liana('l1', 'a'), perch('b', 'l1', [470, 540]), hop('c', 'b', [170, 200]), down('d', 'c', -RAISE, [170, 210])],
   first: 'a',
   last: 'd',
-  sockets: [petals('b', 'b', 0.2, 2, 80), foe('foe', 'b', [0.55, 0.75], W10S_FOES.guard, 3), petals('c', 'c', 0.5, 1), scenery('rack', 'd', [0.5, 0.8], 0.5)],
+  sockets: [petals('b', 'b', 0.2, 2, 80), foe('foe', 'b', [0.55, 0.75], W10S_FOES.guard, 3), petals('c', 'c', 0.5, 1), scenery('rack', 'd', [0.5, 0.8], 0.5), flag('b', 0.25)],
 });
 
 /** a swing, then the crenels at a run (a sprint's rhythm: swing, hop, hop, a knee) */
@@ -165,7 +170,7 @@ const swingCrenels = swingSection({
   ],
   first: 'a',
   last: 'f',
-  sockets: [petals('b', 'b', 0.5, 1), petals('k1', 'k1', 0.5, 1), petals('d', 'd', 0.5, 1), petals('k2', 'k2', 0.5, 1), foe('foe', 'f', [0.6, 0.85], W10S_FOES.small, 2.5, { chance: 0.5 })],
+  sockets: [petals('b', 'b', 0.5, 1), petals('k1', 'k1', 0.5, 1), petals('d', 'd', 0.5, 1), petals('k2', 'k2', 0.5, 1), foe('foe', 'f', [0.6, 0.85], W10S_FOES.small, 2.5, { chance: 0.5 }), flag('b', 0.6)],
 });
 
 /** a tower top, a swing across to the next tower, and down its outer stair in two drops with a knee between */
@@ -186,7 +191,7 @@ const towerGap = swingSection({
   ],
   first: 'a',
   last: 'c',
-  sockets: [petals('t', 't', 0.5, 1), petals('b', 'b', 0.4, 2, 80), petals('k', 'k', 0.5, 1), scenery('brazier', 'c', [0.5, 0.8], 0.6), flag('c', 0.7)],
+  sockets: [petals('t', 't', 0.5, 1), petals('b', 'b', 0.4, 2, 80), petals('k', 'k', 0.5, 1), scenery('brazier', 'c', [0.5, 0.8], 0.6), flag('b', 0.6)],
 });
 
 // ───────────────────────────── chains of swings ─────────────────────────────
@@ -201,7 +206,7 @@ const chainPair = swingSection({
   pieces: [bank('a', [200, 240]), liana('l1', 'a'), perch('p1', 'l1', [210, 240]), down('p1d', 'p1', -RAISE, [140, 170]), liana('l2', 'p1d'), perch('b', 'l2', [220, 260]), down('c', 'b', -RAISE, [200, 240])],
   first: 'a',
   last: 'c',
-  sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.4, 2, 90), foe('foe', 'c', [0.6, 0.85], W10S_FOES.small, 2, { phases: ['ten', 'ketsu'], chance: 0.4 }), flag('c', 0.5)],
+  sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.4, 2, 90), foe('foe', 'c', [0.6, 0.85], W10S_FOES.small, 2, { phases: ['ten', 'ketsu'], chance: 0.4 }), flag('b', 0.6)],
 });
 
 /** three swings along the netting, perches between (the Iron Netting's climax) */
@@ -227,7 +232,7 @@ const chainRun = swingSection({
   ],
   first: 'a',
   last: 'c',
-  sockets: [petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), petals('b', 'b', 0.4, 2, 90), flag('c', 0.5)],
+  sockets: [petals('p1', 'p1', 0.5, 1), petals('p2', 'p2', 0.5, 1), petals('b', 'b', 0.4, 2, 90), flag('b', 0.6)],
 });
 
 /** two storm ropes off the netting, a merlon between, then the crenels (the storm's own stretch: the ropes toss, the swing doesn't) */
@@ -252,7 +257,7 @@ const stormRopes = swingSection({
   ],
   first: 'a',
   last: 'e',
-  sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.4, 2, 80), petals('d', 'd', 0.5, 1), foe('foe', 'e', [0.6, 0.85], W10S_FOES.small, 2.5, { chance: 0.5 })],
+  sockets: [petals('p1', 'p1', 0.5, 1), petals('b', 'b', 0.4, 2, 80), petals('d', 'd', 0.5, 1), foe('foe', 'e', [0.6, 0.85], W10S_FOES.small, 2.5, { chance: 0.5 }), flag('b', 0.6)],
 });
 
 /** a cage swing, a guarded merlon, a chain or banner swing off its far end, down to the wall walk */
@@ -276,7 +281,7 @@ const cagePair = swingSection({
   ],
   first: 'a',
   last: 'c',
-  sockets: [petals('p1a', 'p1', 0.15, 1), foe('foe', 'p1', [0.5, 0.65], W10S_FOES.guard, 3), petals('b', 'b', 0.4, 2, 80), flag('c', 0.6)],
+  sockets: [petals('p1a', 'p1', 0.15, 1), foe('foe', 'p1', [0.5, 0.65], W10S_FOES.guard, 3), petals('b', 'b', 0.4, 2, 80), flag('b', 0.6)],
 });
 
 // ───────────────────────────── the set ─────────────────────────────
@@ -288,7 +293,8 @@ export const W10_SWING_SECTIONS: readonly SectionTemplate[] = [
 ];
 
 /** does stage `stage` take section `id` (W10S_STAGES, W10S_ONLY) */
-export const w10SwingFor = (stage: number, id: string): boolean => W10S_STAGES.includes(stage) && (!W10S_ONLY[id] || W10S_ONLY[id].includes(stage));
+export const w10SwingFor = (stage: number, id: string): boolean =>
+  W10S_STAGES.includes(stage) && (stage !== 9 || GATE_SWINGS.has(id)) && (!W10S_ONLY[id] || W10S_ONLY[id].includes(stage));
 
 /**
  * World 10's kit for stage `stage` with the swing sections joined, for the stages that take them (W10S_STAGES, W10S_ONLY; none for the

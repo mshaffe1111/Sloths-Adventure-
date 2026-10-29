@@ -10,6 +10,8 @@
 import type { Difficulty, WorldKit, WorldManifest } from '../types.ts';
 import { w10Kit } from './w10.ts';
 import { W10_LESSON_SECTIONS, W10_STAGE_ONLY } from './w10Ground.ts';
+import { W10_ROOM_REQUIRED, withW10Rooms } from './w10Rooms.ts';
+import { withW10Swing } from './w10Swing.ts';
 
 /** the stages of World 10 the game builds with gen2 */
 export const W10_GAME_STAGES = ['10-1', '10-3', '10-6', '10-7', '10-9'] as const;
@@ -18,13 +20,16 @@ export const W10_GAME_STAGES = ['10-1', '10-3', '10-6', '10-7', '10-9'] as const
 export const W10_REQUIRED: NonNullable<WorldManifest['required']> = {
   '10-1': [{ section: W10_LESSON_SECTIONS.rods, phase: 'ki' }, { section: W10_LESSON_SECTIONS.spikes }],
 };
+// (and each stage's puzzle room, w10Rooms.ts: 10-1's hoist after its lessons, 10-3's beam, 10-7's gatehouse)
+for (const [id, rs] of Object.entries(W10_ROOM_REQUIRED)) W10_REQUIRED[id] = [...(W10_REQUIRED[id] ?? []), ...rs];
 
 /** which stage holds which sections (STAGE-RULES §2 "Sameness"): w10Ground's W10_STAGE_ONLY, the rest by archetype and theme */
 const forStage = (stage: number, id: string): boolean => !W10_STAGE_ONLY[id] || W10_STAGE_ONLY[id].includes(stage);
 
 /** World 10's kit for one stage as the game plays it on `difficulty` */
-export function w10GameKit(stage: number, _difficulty: Difficulty = 'normal'): WorldKit {
-  const k = w10Kit(stage);
+export function w10GameKit(stage: number, difficulty: Difficulty = 'normal'): WorldKit {
+  // (the swing builder's swings over the iron netting and the stage's room, Easy's version on Easy: w10Swing.ts, w10Rooms.ts)
+  const k = withW10Swing(withW10Rooms(w10Kit(stage), stage, difficulty), stage, difficulty);
   const sections = k.manifest.sections.filter((s) => forStage(stage, s.id));
   return { ...k, manifest: { ...k.manifest, sections, required: W10_REQUIRED } };
 }

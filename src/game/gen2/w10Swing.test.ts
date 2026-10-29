@@ -17,7 +17,7 @@ import { W10_LIANA_LOOK, W10_SWING_SECTIONS, W10S_STAGES, w10SwingFor, w10SwingL
 import { pickRoute } from '../../../tools/inspect/eraRoll.ts';
 
 const SEEDS = Array.from({ length: 20 }, (_, i) => i + 1);
-const STAGES = ['10-1', '10-3', '10-6', '10-7'];
+const STAGES = ['10-1', '10-3', '10-6', '10-7', '10-9'];
 const cache = new Map<string, Gen2Stage>();
 const build = (id: string, seed: number, difficulty: 'easy' | 'normal') => {
   const k = `${id}:${seed}:${difficulty}`;
@@ -46,14 +46,15 @@ test('the sections: each is laid in its own space at its size (600-1700 px, +370
   }
 });
 
-test('which stages take which swings: 10-3, 10-6 and 10-7; the long chains only in the Iron Netting', () => {
+test('which stages take which swings: 10-6, 10-7 and 10-9\'s finale (10-3 none); the long chains only in the Iron Netting', () => {
   const base = w10StandIn(1).manifest;
   for (let s = 1; s <= 9; s++) {
     const got = withW10Swing({ manifest: { ...base, sections: [] } }, s).manifest.sections.map((x) => x.id);
     const want = W10S_STAGES.includes(s) ? W10_SWING_SECTIONS.filter((x) => w10SwingFor(s, x.id)).map((x) => x.id) : [];
     assert.deepEqual(got, want, `10-${s}`);
   }
-  assert.ok(w10SwingFor(6, 'w10s-chain-run') && !w10SwingFor(3, 'w10s-chain-run') && !w10SwingFor(7, 'w10s-storm-ropes'));
+  assert.ok(w10SwingFor(6, 'w10s-chain-run') && !w10SwingFor(3, 'w10s-chain-pair') && !w10SwingFor(7, 'w10s-storm-ropes'));
+  assert.deepEqual(W10_SWING_SECTIONS.filter((x) => w10SwingFor(9, x.id)).map((x) => x.id).sort(), ['w10s-cage-guard', 'w10s-cage-pair', 'w10s-chain-pair']);
 });
 
 for (const id of STAGES) {
@@ -65,7 +66,9 @@ for (const id of STAGES) {
         assert.deepEqual(checkStage(st, st.gen2.budget).errors, [], at);
         const fast = modelStage(st, MODEL_FAST).total;
         assert.ok(fast >= st.gen2.budget.seconds.fastFloor && fast >= 120, `${at}: fast ${fast.toFixed(0)} s`);
-        assert.ok(!st.platforms.some((p) => p.type === 'fragile'), 'nothing crumbles');
+        // (World 10's crumbling ramparts are the ground's, never required; nothing in a swing section or a room crumbles)
+        const mine = st.gen2.sections.filter((s) => /^w10[sr]-/.test(s.template));
+        assert.ok(!st.platforms.some((p) => p.type === 'fragile' && mine.some((s) => p.x >= s.x0 && p.x < s.x1)), `${at}: a crumbling piece in a swing or a room`);
         const rooms = st.gen2.sections.map((s) => s.template).filter((t) => t in W10R_STAGE);
         const own = Object.entries(W10R_STAGE).filter(([, s]) => s === id).map(([t]) => t);
         assert.deepEqual(rooms, own, `${at}: rooms ${rooms}`);

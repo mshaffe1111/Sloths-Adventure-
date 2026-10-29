@@ -67,7 +67,7 @@ export const HOIST = {
   dip: 60,
   /** the wall walk over the floor (out of a double jump's reach), its width */
   rise: 260,
-  wall: 340,
+  wall: 240,
   /** the alcove: the lever, its portcullis and the rubble behind it (Normal) */
   lever: 95,
   door: 180,
@@ -121,9 +121,11 @@ const hoistPieces: SectionPiece[] = [
   // (the wall walk, a whole bank down to the ground: a wall beside a pit reaches the pit's floor, STAGE-RULES §6. An `over` piece: a
   // `walk` rise is clamped to a hop)
   bank('wall', HOIST.wall, { kind: 'over', on: 'pit', at: 1, dy: -(HOIST.dip + HOIST.rise) }, { main: true }),
-  // (down again to the floor's height in two drops: the route leaves the room level with where it came in)
-  bank('down', [130, 150], { kind: 'walk', after: 'wall', dy: HOIST.rise / 2 }),
-  bank('out', [220, 260], { kind: 'walk', after: 'down', dy: HOIST.rise / 2 }),
+  // (a merlon on the wall walk, a hop up, then down again to the floor's height in two drops: the route leaves the room level with where
+  // it came in, and keeps a hop: the inspector reads the room as one beat where it starts, so a plain walk out read as 4-6 s quiet on 10-1)
+  bank('merlon', [90, 100], { kind: 'walk', after: 'wall', dy: -40 }),
+  bank('down', [120, 140], { kind: 'walk', after: 'merlon', dy: HOIST.rise / 2 + 40 }),
+  bank('out', [200, 240], { kind: 'walk', after: 'down', dy: HOIST.rise / 2 }),
 ];
 
 const hoist = (d: Difficulty): SectionTemplate => ({
@@ -136,12 +138,14 @@ const hoist = (d: Difficulty): SectionTemplate => ({
   maxPerStage: 1,
   weight: 40,
   // (lever, through, a stone, onto the plank, the throw, up: about 16 s for a first-timer)
-  extraSeconds: d === 'easy' ? 10 : 16,
+  // (the same on Easy: Easy lays Normal's plan, so the length loop must see the same room)
+  extraSeconds: 16,
   pieces: hoistPieces,
   entry: { piece: 'floor', kind: 'ground' },
   exit: { piece: 'out', kind: 'ground' },
   exitDy: 0,
-  sockets: [],
+  // (a flag's spot early on the way out, so a rest flag never stands at the end of it, by the next section's chasm: w10.test.ts)
+  sockets: [{ id: 'flag', role: 'flag', on: 'out', t: 0.3 }],
   room: hoistSpec(d),
   mirrorable: false,
 });
@@ -207,7 +211,7 @@ export const beamRoom: SectionTemplate = {
   entry: { piece: 'floor', kind: 'ground' },
   exit: { piece: 'out', kind: 'ground' },
   exitDy: 0,
-  sockets: [],
+  sockets: [{ id: 'flag', role: 'flag', on: 'out', t: 0.3 }],
   room: beamRoomSpec,
   mirrorable: false,
 };
@@ -233,7 +237,7 @@ export const GATE = {
   doorH: 450,
   /** floor B: a step down past the floor (a carry walks down a step), and its width */
   step: 30,
-  floorB: 300,
+  floorB: 170,
 } as const;
 
 const gf = along('floor', GATE.floor);
@@ -257,7 +261,7 @@ const gateSpec = (d: Difficulty): LocalRoomSpec => ({
     { kind: 'gate', id: 'door', at: gf(GATE.door), open: d === 'easy' ? 'lever' : { all: ['plate', 'lever'] }, h: GATE.doorH },
   ],
   exit: 'door',
-  beyond: gb(160),
+  beyond: gb(130),
   ground: ['floor', 'crate', 'scaffold'],
   tips: {
     enter: W10R_TIPS.gateEnter,
@@ -273,6 +277,9 @@ const gatePieces: SectionPiece[] = [
   // (the scaffold over the floor past the crate: a hop up from the crate's top)
   { key: 'scaffold', shape: 'branch', w: GATE.scafW, place: { kind: 'over', on: 'floor', at: GATE.scafX / GATE.floor, dy: -GATE.scafUp }, main: false },
   bank('floorB', GATE.floorB, { kind: 'walk', after: 'floor', dy: GATE.step }),
+  // (a knee past the portcullis: the inspector reads the room as one beat where it starts, so a plain walk out read as 4 s quiet)
+  bank('knee', [90, 100], { kind: 'walk', after: 'floorB', dy: -40 }),
+  bank('out', [200, 240], { kind: 'walk', after: 'knee', dy: 40 }),
 ];
 
 const gate = (d: Difficulty): SectionTemplate => ({
@@ -285,12 +292,12 @@ const gate = (d: Difficulty): SectionTemplate => ({
   maxPerStage: 1,
   weight: 40,
   // (up the crates, the lever, down, a stone to the plate, through: about 14 s for a first-timer)
-  extraSeconds: d === 'easy' ? 8 : 14,
+  extraSeconds: 14,
   pieces: gatePieces,
   entry: { piece: 'floor', kind: 'ground' },
-  exit: { piece: 'floorB', kind: 'ground' },
+  exit: { piece: 'out', kind: 'ground' },
   exitDy: GATE.step,
-  sockets: [],
+  sockets: [{ id: 'flag', role: 'flag', on: 'out', t: 0.3 }],
   room: gateSpec(d),
   mirrorable: false,
 });

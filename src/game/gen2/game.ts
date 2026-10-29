@@ -21,6 +21,7 @@ import { w5ArenaKit } from './worlds/w5Arena.ts';
 import { w6Finish } from './worlds/w6.ts';
 import { W6_GAME_STAGES, w6GameKit } from './worlds/w6Game.ts';
 import { w10Finish } from './worlds/w10.ts';
+import { w10SwingLooks } from './worlds/w10Swing.ts';
 import { W10_GAME_STAGES, w10GameKit } from './worlds/w10Game.ts';
 
 export interface Gen2Entry {
@@ -49,11 +50,11 @@ const w6Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
 });
 
 /** World 10's stages (w10Game.ts): its sections, the swings and the stage's room in one kit, on the difficulty played; w10Finish puts
- *  Pokey's line before the first soldier */
+ *  Pokey's line before the first soldier, w10SwingLooks gives each swing its look (chain, banner, cage, rope: w10SwingArt.ts) */
 const w10Entry = (stage: number, o: Partial<Gen2Entry> = {}): Gen2Entry => ({
   kit: (d) => w10GameKit(stage, d ?? 'normal'),
   kitName: `w10Game.ts:w10GameKit(${stage})`,
-  finish: w10Finish,
+  finish: (st) => w10SwingLooks(w10Finish(st)),
   ...o,
 });
 
