@@ -1,0 +1,59 @@
+{
+ "note": "painted sky above the far strips, tools/art/hfbatch/skygpu.py, 2026-10-29",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   0.8
+  ]
+ },
+ "tw": 1024,
+ "items": [
+  {
+   "name": "w1kapok-sky-s92-7",
+   "strength": 0.92,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ac2e43e7247d4646f912cac7a4a9ece2239719c2/src/assets/backdrops/w1kapok-far.webp",
+   "prompt": "slothadv style, painted storybook illustration, the upper part of a wide side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as the bottom of the picture, no text. the great kapok tree's leafy green canopy overhead with lilac orchids, patches of blue sky between the leaves"
+  },
+  {
+   "name": "w1-midtop-s92-7",
+   "strength": 0.92,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ac2e43e7247d4646f912cac7a4a9ece2239719c2/src/assets/backdrops/w1-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a cut-out layer of a side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as below, isolated on one flat solid pure magenta background filling every gap, no sky, no haze, no glow, no gradient, no text. the tall mossy rainforest trees carry on up: trunks, spreading leafy green canopy, hanging lianas and little orchids",
+   "bg": [
+    255,
+    0,
+    255
+   ],
+   "ext": 0.45
+  },
+  {
+   "name": "w5dusk1-midtop-s92-7",
+   "strength": 0.92,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ac2e43e7247d4646f912cac7a4a9ece2239719c2/src/assets/backdrops/w5dusk1-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a cut-out layer of a side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as below, isolated on one flat solid pure green background filling every gap, no sky, no haze, no glow, no gradient, no text. the tall purple-barked orchid trees carry on up: trunks and branches with big white and pink orchids, fine spider webs",
+   "bg": [
+    0,
+    255,
+    0
+   ],
+   "ext": 0.45
+  },
+  {
+   "name": "w3-midtop-s92-7",
+   "strength": 0.92,
+   "seed": 7,
+   "src": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ac2e43e7247d4646f912cac7a4a9ece2239719c2/src/assets/backdrops/w3-mid.webp",
+   "prompt": "slothadv style, painted storybook illustration, a cut-out layer of a side-scrolling game background, soft cel shading, thin dark outline, hand-painted gouache brushwork, the same colours and light as below, isolated on one flat solid pure magenta background filling every gap, no sky, no haze, no glow, no gradient, no text. the dark cave roof carries on up: dark mossy rock, twisting roots, glowworm threads with tiny glowing dots",
+   "bg": [
+    255,
+    0,
+    255
+   ],
+   "ext": 0.45
+  }
+ ]
+}
