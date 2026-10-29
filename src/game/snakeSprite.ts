@@ -156,7 +156,6 @@ export function drawSnakeSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, tim
   ctx.save();
   ctx.translate(enemy.x, enemy.y + GROUND);
   ctx.scale(b.fs, 1);
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.4)';
   // a slow breath, so a snake that is waiting is never a still picture
   const breathe = r.mode === 'prowl' ? Math.sin(time * 5 + enemy.id) * 0.025 : 0;
   ctx.scale(1 - breathe, 1 + breathe);

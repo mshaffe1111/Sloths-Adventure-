@@ -105,7 +105,7 @@ export function drawLairBack(ctx: CanvasRenderingContext2D, kind: LairKind, v: L
   if (kind === 'monarch') return drawMonarchBack(ctx, v, a, time, bossX, phase);
   if (kind === 'warcamp') return drawWarcampBack(ctx, v, a, time, bossX, phase);
   if (kind === 'venom') return drawVenomBack(ctx, v, a, time, bossX);
-  if (kind === 'croc') return drawCrocBack(ctx, v, a, time, bossX);
+  if (kind === 'croc') return drawCrocBack(ctx, v, a, time, bossX, phase);
   const k = KITS[kind];
   const [r, g, b] = k.glow;
   ctx.save();

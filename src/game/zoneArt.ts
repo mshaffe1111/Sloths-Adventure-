@@ -9,6 +9,11 @@ import { zoneState, idleTime, type Zone, type ZoneState } from './zones.ts';
 import type { Platform } from './types.ts';
 import { drawBadWater } from './badWaterArt.ts';
 import { crumbleArtReady, drawCrumbleTile } from './crumbleArt.ts';
+import { drawW3Piece, w3ArtReady } from './w3Art.ts';
+import { drawW5Box, w5ArtReady } from './w5Art.ts';
+import { dotPropsReady, drawPiece } from './dotFlightArt.ts';
+import { drawFx } from './bossFx.ts';
+import { drawLeafBit } from './leafSprites.ts';
 
 const hash = (n: number) => {
   const v = Math.sin(n * 127.1 + 311.7) * 43758.5453;
@@ -50,10 +55,16 @@ export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zon
     if (!visible(z, cam)) continue;
     if (z.kind === 'geyser') { drawVent(ctx, z, zoneState(z, t), t); continue; }
     if (z.kind === 'bolt') { drawRod(ctx, z, zoneState(z, t), t); continue; }
+    if (z.kind === 'web') { drawWebBack(ctx, z); continue; }
     if (z.kind !== 'spore' || !z.emit) continue;
     const st = zoneState(z, t);
     const swell = st.phase === 'warn' ? 1 + 0.32 * Math.sin(st.u * Math.PI * (0.5 + st.u * 2.5)) ** 2 + 0.1 * st.u : st.phase === 'active' ? 1.12 - 0.12 * st.u + 0.06 * Math.sin(t * 18) * st.strength : 1;
     const glow = st.phase === 'warn' ? 0.3 + 0.7 * st.u : st.phase === 'active' ? 0.6 * st.strength : 0;
+    if (w3ArtReady()) {
+      drawPaintedMushrooms(ctx, z, swell, glow, t);
+      continue;
+    }
+    // (the shapes below are the stand-in while Matt's grotto sheet loads)
     z.emit.forEach((ex, i) => {
       const by = z.baseY;
       ctx.save();
@@ -98,6 +109,39 @@ export function drawZoneBases(ctx: CanvasRenderingContext2D, zones: readonly Zon
       ctx.restore();
     });
   }
+}
+
+/** how wide a painted spore cluster is drawn (World 3 sheet 'mushrooms', the same piece as the grotto's dressing) */
+const MUSH_W = 112;
+
+/**
+ * The spore mushrooms from Matt's grotto sheet: the cluster on its moss mound, swelling (wider and squatter) on the warning and glowing
+ * as it puffs. The swell, the glow and the cloud stay code: small touches on the painted piece.
+ */
+function drawPaintedMushrooms(ctx: CanvasRenderingContext2D, z: Zone, swell: number, glow: number, t: number) {
+  z.emit!.forEach((ex, i) => {
+    const by = z.baseY + 6;
+    ctx.save();
+    ctx.translate(ex, by);
+    if (glow > 0) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(0, -10, 70, 22, 0, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.globalAlpha = 0.55 * glow;
+      ctx.drawImage(sporeGlowPic(), -70, -80, 140, 140);
+      ctx.restore();
+    }
+    // a slow sway about the mound, and the swell about the same point
+    ctx.rotate(Math.sin(t * 1.4 + i * 1.7) * 0.025);
+    ctx.scale(i % 2 ? -swell : swell, 2 - swell);
+    drawW3Piece(ctx, 'mushrooms', 0, 0, MUSH_W);
+    if (glow > 0) {
+      ctx.globalCompositeOperation = 'lighter';
+      drawW3Piece(ctx, 'mushrooms', 0, 0, MUSH_W, 0.4 * glow);
+    }
+    ctx.restore();
+  });
 }
 
 /** the clouds and gusts themselves: drawn over the player, so the hero is inside them */
@@ -177,27 +221,22 @@ function drawGust(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof 
   ctx.beginPath();
   ctx.rect(z.x0, band.top, w, h);
   ctx.clip();
-  ctx.lineCap = 'round';
-  // streaks racing along the band, longer and faster the harder it blows: light and thin, fading out toward the band's top and bottom
-  const n = level > 0 ? Math.max(8, Math.round((w * h) / 5200)) : 0;
+  // the painted wind (the gust strip, bossFx.ts) racing along the band, more and faster the harder it blows, fading out toward the
+  // band's top and bottom and in and out at its ends (no stroked lines: Matt 2026-10-29, repeating effects are painted)
+  const n = level > 0 ? Math.max(4, Math.round((w * h) / 16000)) : 0;
   const speed = z.force * (st.phase === 'active' ? 2.6 : 1.1);
   for (let i = 0; i < n; i++) {
     const sx = hash(i * 2.1 + z.x0 * 0.01);
     const sy = hash(i * 5.3 + z.x1 * 0.01);
-    const len = 40 + sx * 80 * (0.4 + level);
-    const travel = (t * speed * (0.7 + sy * 0.6) + sx * (w + 200)) % (w + 200);
-    const x = z.dir === 1 ? z.x0 - 100 + travel : z.x1 + 100 - travel;
+    const len = 110 + sx * 110 * (0.4 + level);
+    const travel = (t * speed * (0.7 + sy * 0.6) + sx * (w + 260)) % (w + 260);
+    const x = z.dir === 1 ? z.x0 - 130 + travel : z.x1 + 130 - travel;
     const y = band.top + 14 + sy * (h - 28) + Math.sin(t * 2 + i) * 4;
-    const fade = Math.sin(Math.PI * Math.min(1, Math.max(0, (y - band.top) / h)));
-    const a = level * fade * (0.5 + sy * 0.5);
-    ctx.strokeStyle = i % 3 === 0 ? `rgba(240, 253, 250, ${0.42 * a})` : `rgba(204, 251, 241, ${0.26 * a})`;
-    ctx.lineWidth = 1.5 + sy * 1.6;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.quadraticCurveTo(x + z.dir * len * 0.5, y - 5 * Math.sin(t * 3 + i), x + z.dir * len, y);
-    ctx.stroke();
+    const fade = Math.sin(Math.PI * Math.min(1, Math.max(0, (y - band.top) / h))) * Math.min(1, travel / 90, (w + 260 - travel) / 90);
+    const a = level * fade * (0.45 + sy * 0.4);
+    drawFx(ctx, 'gust', x, y, len, { h: len * 0.16, alpha: a, flipX: z.dir === -1 });
   }
-  // leaves tumbling with it
+  // painted leaves tumbling with it
   const leaves = level > 0 ? Math.round(w / 90) + 2 : 0;
   for (let i = 0; i < leaves; i++) {
     const sx = hash(i * 9.9 + z.x0 * 0.02);
@@ -205,37 +244,15 @@ function drawGust(ctx: CanvasRenderingContext2D, z: Zone, st: ReturnType<typeof 
     const travel = (t * speed * (0.55 + sy * 0.4) + sx * (w + 160)) % (w + 160);
     const x = z.dir === 1 ? z.x0 - 80 + travel : z.x1 + 80 - travel;
     const y = band.top + 30 + sy * (h - 60) + Math.sin(t * 3.4 + i * 2) * 14;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(t * (2 + sx * 3) * z.dir + i);
-    ctx.fillStyle = `rgba(${i % 2 ? '134, 239, 172' : '74, 222, 128'}, ${Math.min(0.85, 0.1 + level * 0.75)})`;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 10, 4.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    drawLeafBit(ctx, i % 4 === 3 ? 'warm' : 'green', sx, x, y, 18 + sy * 6, t * (2 + sx * 3) * z.dir + i, Math.cos(t * 4 + i * 1.7), Math.min(0.95, 0.1 + level * 0.85));
   }
   ctx.restore();
-  // chevrons that say which way it blows: they pulse in the warning and stay solid while it blows
+  // which way it blows: the painted arrow, pale, pulsing in the warning and steady while it blows
   if (st.phase !== 'idle') {
-    const a = st.phase === 'warn' ? 0.3 + 0.5 * Math.abs(Math.sin(st.u * Math.PI * 6)) : 0.85 * st.strength;
+    const a = st.phase === 'warn' ? 0.35 + 0.5 * Math.abs(Math.sin(st.u * Math.PI * 6)) : 0.85 * st.strength;
     const cx = (z.x0 + z.x1) / 2;
     const cy = gustBand(z).top + 34;
-    ctx.save();
-    ctx.strokeStyle = `rgba(255, 255, 255, ${a})`;
-    ctx.shadowColor = 'rgba(15, 23, 42, 0.8)';
-    ctx.shadowBlur = 4;
-    ctx.lineWidth = 5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    for (let k = -1; k <= 1; k++) {
-      const x = cx + k * 34;
-      ctx.beginPath();
-      ctx.moveTo(x - z.dir * 9, cy - 13);
-      ctx.lineTo(x + z.dir * 9, cy);
-      ctx.lineTo(x - z.dir * 9, cy + 13);
-      ctx.stroke();
-    }
-    ctx.restore();
+    drawFx(ctx, 'warnArrow', cx, cy, 78, { alpha: a, flipX: z.dir === -1, recolor: '#e6fffa' });
   }
 }
 
@@ -457,7 +474,49 @@ function drawBolt(ctx: CanvasRenderingContext2D, z: Zone, st: ZoneState, t: numb
 // Webs (World 5)
 // ---------------------------------------------------------------------------
 
+/** the silk bridge's picture (w5PropsData.ts 'silkBridge'): its planks run this far down it, and its height is kept to this at the most */
+const BRIDGE_DECK = 0.62;
+const BRIDGE_MAX_H = 150;
+/** a patch's webs: Dot's see-through silk strung low across the path ('silkWide'), about this wide and this far apart */
+const PATCH_WEB = { w: 96, step: 70 } as const;
+
+/** Matt's painted silk behind Pokey: the silk bridge strung over the gap, or the back row of a patch's webs */
+function drawWebBack(ctx: CanvasRenderingContext2D, z: Zone) {
+  if (z.bridge) {
+    if (!w5ArtReady()) return;
+    const x0 = z.x0 - 14, w = z.x1 - z.x0 + 28;
+    const h = Math.min(BRIDGE_MAX_H, (w * 122) / 412);
+    drawW5Box(ctx, 'silkBridge', x0, z.baseY - h * BRIDGE_DECK, w, h);
+    return;
+  }
+  drawPatchWebs(ctx, z, 0, 0.85);
+}
+
+/**
+ * one row of a patch's webs, standing on the ground along it (`row` 0 the back one, 1 the front one, set half a step along and a
+ * little smaller), mirrored in turn so the row doesn't repeat; the path shows through the strands. False until the sheet has loaded.
+ */
+function drawPatchWebs(ctx: CanvasRenderingContext2D, z: Zone, row: 0 | 1, alpha: number): boolean {
+  if (!dotPropsReady()) return false;
+  const w = z.x1 - z.x0;
+  const n = Math.max(1, Math.round((w - PATCH_WEB.w * 0.5) / PATCH_WEB.step));
+  const step = (w - PATCH_WEB.w * 0.6) / n;
+  const ww = PATCH_WEB.w * (row ? 0.85 : 1);
+  for (let i = 0; i <= n - row; i++) {
+    const x = z.x0 + PATCH_WEB.w * 0.3 + (i + row * 0.5) * step;
+    const sd = hash(i * 4.3 + row * 9.1 + z.x0 * 0.01);
+    drawPiece(ctx, 'silkWide', x, z.baseY + 4, ww * (0.9 + 0.2 * sd), { ay: 1, flip: (i + row) % 2 === 1, alpha });
+  }
+  return true;
+}
+
 function drawWeb(ctx: CanvasRenderingContext2D, z: Zone, t: number) {
+  // over him: a patch's front row of webs, so he is in them (the bridge he walks on top of), and the dew catching the light
+  if (z.bridge ? w5ArtReady() : drawPatchWebs(ctx, z, 1, 0.55)) {
+    drawDew(ctx, z, Math.max(4, Math.round((z.x1 - z.x0) / 34)), z.bridge ? 40 : 60);
+    return;
+  }
+  // (the shapes below are the stand-in while World 5's sheet loads)
   const w = z.x1 - z.x0;
   const n = Math.max(4, Math.round(w / 34));
   ctx.save();
@@ -496,15 +555,20 @@ function drawWeb(ctx: CanvasRenderingContext2D, z: Zone, t: number) {
     });
     ctx.stroke();
   }
-  // dew
+  drawDew(ctx, z, n, 60);
+  ctx.restore();
+}
+
+/** beads of dew on the silk, up to `rise` over the ground */
+function drawDew(ctx: CanvasRenderingContext2D, z: Zone, n: number, rise: number) {
+  const w = z.x1 - z.x0;
   ctx.fillStyle = 'rgba(200, 240, 255, 0.9)';
   for (let i = 0; i < Math.round(n * 0.8); i++) {
     const sd = hash(i * 6.1 + z.x0 * 0.02);
     ctx.beginPath();
-    ctx.arc(z.x0 + sd * w, z.baseY - 6 - hash(i * 2.3 + z.x1 * 0.02) * 60, 1.8, 0, Math.PI * 2);
+    ctx.arc(z.x0 + sd * w, z.baseY - 6 - hash(i * 2.3 + z.x1 * 0.02) * rise, 1.8, 0, Math.PI * 2);
     ctx.fill();
   }
-  ctx.restore();
 }
 
 // ---------------------------------------------------------------------------

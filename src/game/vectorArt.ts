@@ -11,10 +11,12 @@ import { isPetalStage, relicArt } from './stagePlan.ts';
 import { drawPlantSprite, plantsPainted } from './plantSprites.ts';
 import { rng, tone } from './artKit.ts';
 import { drawAura } from './readable.ts';
+import { drawPickupArt, drawThornGateArt } from './stageArt.ts';
 import { drawHushFern, drawKeepersBell, drawSearchHint } from './findArt.ts';
 import { drawThingFern } from './w3Art.ts';
 import { leaf } from './rainforest.ts';
 import { drawGiantBat } from './bossBat.ts';
+import { FONT_UI } from './fonts.ts';
 
 export { drawTreeSnake, drawHarpyEagle, drawOcelot, drawHazardEntity };
 
@@ -499,7 +501,6 @@ export function drawBossEntity(
   ctx.save();
   ctx.translate(boss.x, boss.y);
   ctx.scale(boss.facing * 1.5, 1.5);
-  const hit = boss.hitFlashTimer > 0;
   const breath = Math.sin(time * 3) * 2;
   const angry = boss.telegraphTimer > 0 || boss.isAttacking;
   // The animal rigs measure motion from position, so tell them where the boss really is (mirrored when it faces left).
@@ -534,7 +535,6 @@ export function drawBossEntity(
     }
     case 2: {
       // Crocus Rex: river crocodile king
-      if (hit) ctx.filter = 'brightness(2.4)';
       ctx.save();
       ctx.scale(0.78, 0.78);
       ctx.translate(0, 8);
@@ -657,7 +657,6 @@ export function drawBossEntity(
     }
     case 7: {
       // Stone Idol Golem
-      if (hit) ctx.filter = 'brightness(2.2)';
       const ST = '#8c929c';
       softBlob(ctx, -12, 12, 11, 9, 0, mixc(ST, '#444', 0.2));
       softBlob(ctx, 12, 12, 11, 9, 0, mixc(ST, '#444', 0.2));
@@ -730,12 +729,10 @@ export function drawBossEntity(
     }
     case 8: {
       // Night-Wing Monarch: a giant fruit bat with a crown
-      if (hit) ctx.filter = 'brightness(2.2)';
       ctx.save();
       ctx.scale(1.25, 1.25);
       drawGiantBat(ctx, time, angry);
       ctx.restore();
-      if (hit) ctx.filter = 'none';
       break;
     }
     case 9: {
@@ -781,7 +778,6 @@ export function drawBossEntity(
     }
     default: {
       // Fortress General Iron-Claw: armoured gorilla
-      if (hit) ctx.filter = 'brightness(2.2)';
       const FUR = '#566073';
       // cape
       ctx.fillStyle = '#b3262e';
@@ -978,7 +974,7 @@ export function drawGirlfriendDaisy(
 
   if (isRescued) {
     ctx.fillStyle = '#ec4899';
-    ctx.font = '18px sans-serif';
+    ctx.font = `18px ${FONT_UI}`;
     ctx.fillText('❤️', -9, -72 + Math.sin(time * 5) * 4);
   }
   ctx.restore();
@@ -987,50 +983,6 @@ export function drawGirlfriendDaisy(
 /**
  * Procedural Vector Renderer for Collectibles
  */
-/** the hidden Thorn Gate: a ring of thorny vines around a violet glow */
-function drawThornGate(ctx: CanvasRenderingContext2D, time: number) {
-  const pulse = 0.65 + 0.35 * Math.sin(time * 3);
-  const glow = ctx.createRadialGradient(0, 0, 4, 0, 0, 44);
-  glow.addColorStop(0, `rgba(196, 181, 253, ${0.75 * pulse})`);
-  glow.addColorStop(0.6, `rgba(124, 58, 237, ${0.35 * pulse})`);
-  glow.addColorStop(1, 'rgba(124, 58, 237, 0)');
-  ctx.fillStyle = glow;
-  ctx.beginPath();
-  ctx.arc(0, 0, 44, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.lineCap = 'round';
-  for (let k = 0; k < 2; k++) {
-    ctx.strokeStyle = k === 0 ? '#14532d' : '#4ade80';
-    ctx.lineWidth = k === 0 ? 6 : 3;
-    ctx.beginPath();
-    for (let i = 0; i <= 28; i++) {
-      const a = (i / 28) * Math.PI * 2;
-      const r = 23 + Math.sin(a * 5 + time * 1.5) * 3.5;
-      const x = Math.cos(a) * r * 0.82;
-      const y = Math.sin(a) * r;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-  }
-  ctx.fillStyle = '#c4b5fd';
-  for (let i = 0; i < 10; i++) {
-    const a = (i / 10) * Math.PI * 2 + 0.3;
-    const x = Math.cos(a) * 23 * 0.82;
-    const y = Math.sin(a) * 23;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(a);
-    ctx.beginPath();
-    ctx.moveTo(0, -3);
-    ctx.lineTo(9, 0);
-    ctx.lineTo(0, 3);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-}
-
 /**
  * A soft round glow, painted once and drawn as a picture. Every pickup on screen used to build one or two fresh radial gradients on every
  * frame (over a hundred a second-and-a-half of play); the picture is the same gradient, kept, and the screen batches the draws of one picture.
@@ -1087,7 +1039,7 @@ export function drawCollectible(
   world = 1,
   mini = 1
 ) {
-  if (item.collected) return;
+  if (item.collected && item.type !== 'thorn_gate') return;
 
   ctx.save();
   ctx.translate(item.x, item.y);
@@ -1109,7 +1061,8 @@ export function drawCollectible(
 
   switch (item.type) {
     case 'thorn_gate': {
-      drawThornGate(ctx, time);
+      // painted (stageArt.ts): shut until he steps in, then torn open (drawn the moment it is taken, as the stage leaves)
+      drawThornGateArt(ctx, time, item.collected);
       break;
     }
     case 'find': {
@@ -1253,179 +1206,27 @@ export function drawCollectible(
         ctx.fillStyle = '#ffffff';
         ctx.strokeStyle = '#c0284a';
         ctx.lineWidth = 3;
-        ctx.font = 'bold 12px sans-serif';
+        ctx.font = `bold 12px ${FONT_UI}`;
         ctx.strokeText(`HP: ${item.cageHp}`, -16, -27);
         ctx.fillText(`HP: ${item.cageHp}`, -16, -27);
       }
       break;
     }
 
-    case 'heart': {
-      const pulse = Math.sin(time * 5 + item.bobPhase) * 0.1 + 0.92;
-      ctx.save();
-      ctx.scale(pulse, pulse);
-      const glow = ctx.createRadialGradient(0, 0, 3, 0, 0, 22);
-      glow.addColorStop(0, 'rgba(255, 140, 170, 0.5)');
-      glow.addColorStop(1, 'rgba(255, 140, 170, 0)');
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(0, 0, 22, 0, Math.PI * 2);
-      ctx.fill();
-      const hg = ctx.createRadialGradient(-4, -6, 2, 0, 0, 16);
-      hg.addColorStop(0, '#ff8aa0');
-      hg.addColorStop(0.55, '#ee3358');
-      hg.addColorStop(1, '#b8183c');
-      ctx.fillStyle = hg;
-      ctx.beginPath();
-      ctx.moveTo(0, 13);
-      ctx.bezierCurveTo(-18, 2, -15, -13, -6.5, -12);
-      ctx.bezierCurveTo(-2, -11.5, 0, -8, 0, -6);
-      ctx.bezierCurveTo(0, -8, 2, -11.5, 6.5, -12);
-      ctx.bezierCurveTo(15, -13, 18, 2, 0, 13);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-      ctx.beginPath();
-      ctx.ellipse(-7, -7, 3.4, 2, -0.6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-      break;
-    }
-
-    case 'super_heart': {
-      const pulse = Math.sin(time * 6 + item.bobPhase) * 0.12 + 0.92;
-      ctx.save();
-      ctx.scale(pulse, pulse);
-      const halo = ctx.createRadialGradient(0, 0, 4, 0, 0, 30);
-      halo.addColorStop(0, 'rgba(255, 220, 90, 0.7)');
-      halo.addColorStop(1, 'rgba(255, 200, 40, 0)');
-      ctx.fillStyle = halo;
-      ctx.beginPath();
-      ctx.arc(0, 0, 30, 0, Math.PI * 2);
-      ctx.fill();
-      for (let i = 0; i < 6; i++) {
-        const pa = (i * Math.PI) / 3 + time * 1.5;
-        softBlob(ctx, Math.cos(pa) * 13, Math.sin(pa) * 13, 6, 9, pa + Math.PI / 2, '#ffd23a', 0.35);
-      }
-      const hg = ctx.createRadialGradient(-4, -6, 2, 0, 0, 18);
-      hg.addColorStop(0, '#ff7a92');
-      hg.addColorStop(0.55, '#e0183e');
-      hg.addColorStop(1, '#9c0f30');
-      ctx.fillStyle = hg;
-      ctx.beginPath();
-      ctx.moveTo(0, 15);
-      ctx.bezierCurveTo(-20, 3, -17, -14, -7, -13);
-      ctx.bezierCurveTo(-2, -12.5, 0, -9, 0, -7);
-      ctx.bezierCurveTo(0, -9, 2, -12.5, 7, -13);
-      ctx.bezierCurveTo(17, -14, 20, 3, 0, 15);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-      ctx.beginPath();
-      ctx.ellipse(-8, -8, 3.8, 2.2, -0.6, 0, Math.PI * 2);
-      ctx.fill();
-      drawCrown(ctx, 0, -17, 0.7);
-      ctx.restore();
-      break;
-    }
-
-    case 'powerup_speed': {
-      const pulse = Math.sin(time * 8 + item.bobPhase) * 0.08 + 0.95;
-      ctx.save();
-      ctx.scale(pulse, pulse);
-      const gl = ctx.createRadialGradient(0, 0, 4, 0, 0, 26);
-      gl.addColorStop(0, 'rgba(80, 240, 180, 0.6)');
-      gl.addColorStop(1, 'rgba(80, 240, 180, 0)');
-      ctx.fillStyle = gl;
-      ctx.beginPath();
-      ctx.arc(0, 0, 26, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(170, 255, 220, 0.9)';
-      ctx.lineWidth = 2.6;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.arc(0, 0, 19, time * 8, time * 8 + Math.PI * 0.8);
-      ctx.stroke();
-      for (let i = 0; i < 4; i++) {
-        const pa = (i * Math.PI) / 2 + time * 2;
-        softBlob(ctx, Math.cos(pa) * 8.5, Math.sin(pa) * 8.5, 9, 5, pa, '#22c993', 0.35);
-      }
-      softBlob(ctx, 0, 0, 7, 7, 0, '#fff6a8', 0.25);
-      ctx.fillStyle = '#f59e0b';
-      ctx.beginPath();
-      ctx.moveTo(-2, -6);
-      ctx.lineTo(3, -0.5);
-      ctx.lineTo(0, 0);
-      ctx.lineTo(2, 6);
-      ctx.lineTo(-3, 0.5);
-      ctx.lineTo(0, 0);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-      break;
-    }
-
-    case 'powerup_invincible': {
-      const pulse = Math.sin(time * 9 + item.bobPhase) * 0.1 + 0.95;
-      ctx.save();
-      ctx.scale(pulse, pulse);
-      const gl = ctx.createRadialGradient(0, 0, 4, 0, 0, 28);
-      gl.addColorStop(0, 'rgba(255, 220, 80, 0.7)');
-      gl.addColorStop(1, 'rgba(255, 200, 40, 0)');
-      ctx.fillStyle = gl;
-      ctx.beginPath();
-      ctx.arc(0, 0, 28, 0, Math.PI * 2);
-      ctx.fill();
-      const rot = time * 1.6;
-      for (let i = 0; i < 8; i++) {
-        const pa = (i * Math.PI) / 4 + rot;
-        softBlob(ctx, Math.cos(pa) * 11, Math.sin(pa) * 11, 7, 3.4, pa, i % 2 ? '#ffb02e' : '#ffd84a', 0.35);
-      }
-      softBlob(ctx, 0, 0, 8.5, 8.5, 0, '#fff3b0', 0.3);
-      ctx.fillStyle = '#f59e0b';
-      ctx.beginPath();
-      for (let k = 0; k < 10; k++) {
-        const r = k % 2 ? 2.8 : 6.2;
-        const a = (k / 10) * Math.PI * 2 - Math.PI / 2;
-        ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-      break;
-    }
-
+    case 'heart':
+    case 'super_heart':
+    case 'powerup_speed':
+    case 'powerup_invincible':
     case 'powerup_magnet': {
-      const pulse = Math.sin(time * 6 + item.bobPhase) * 0.08 + 0.95;
-      ctx.save();
-      ctx.scale(pulse, pulse);
-      const gl = ctx.createRadialGradient(0, 0, 4, 0, 0, 26);
-      gl.addColorStop(0, 'rgba(110, 190, 255, 0.6)');
-      gl.addColorStop(1, 'rgba(110, 190, 255, 0)');
-      ctx.fillStyle = gl;
-      ctx.beginPath();
-      ctx.arc(0, 0, 26, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(160, 220, 255, 0.9)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 20, 9, time * 3, 0, Math.PI * 2);
-      ctx.stroke();
-      for (let i = 0; i < 5; i++) {
-        const pa = (i * Math.PI * 2) / 5 + time * 1.5;
-        softBlob(ctx, Math.cos(pa) * 8, Math.sin(pa) * 8, 8, 5, pa, '#8a7cf0', 0.35);
-      }
-      softBlob(ctx, 0, 0, 6, 6, 0, '#38d8f0', 0.3);
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(-1.8, -2, 1.6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+      // painted to match the HUD hearts (stageArt.ts, VI-12), breathing in their own light; nothing until the sheet is in
+      drawPickupArt(ctx, item.type, time, item.bobPhase);
       break;
     }
 
     case 'exit_totem': {
       // the sanctuary door stands still (it must not bob with the pickups); see sanctuaryDoor.ts
       ctx.translate(0, -bobY);
-      drawSanctuaryDoor(ctx, time, !!item.isLocked, item.missing);
+      drawSanctuaryDoor(ctx, time, !!item.isLocked, item.missing, world);
       break;
     }
   }

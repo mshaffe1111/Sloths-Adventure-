@@ -9,6 +9,7 @@ import { drawCrumbleTile } from './crumbleArt.ts';
 import { drawW7SwingLiana, drawW7TempleWall, drawW7WallVines, HIGH_LEDGE, highLedge } from './w7TempleArt.ts';
 import { drawW7Face } from './w7FaceArt.ts';
 import { shakeOffset } from './spanArt.ts';
+import { drawFallsPillar } from './w4FallsArt.ts';
 import type { Collectible, Platform } from './types.ts';
 import { trackAtlas } from './atlasLoader.ts';
 import { PROTO_FRAMES, type ProtoFrame } from './protoAtlasData.ts';
@@ -655,11 +656,52 @@ export function paintedPlatforms(platforms: Platform[]): Set<number> {
   return out;
 }
 
+/**
+ * The vine painted on this world's trunk piece, on its own: its olive strands kept, the trunk's stone and the outlines at its sides
+ * taken out, cut once (per kit world) so it can climb the waterfall set's pillar instead (ProtoSceneState.pillars)
+ */
+const vines = new Map<number, HTMLCanvasElement | null>();
+function trunkVine(): HTMLCanvasElement | null {
+  if (vines.has(kitWorld)) return vines.get(kitWorld)!;
+  const { img, f } = frameOf('trunk');
+  let out: HTMLCanvasElement | null = null;
+  if (typeof document !== 'undefined') {
+    const cv = document.createElement('canvas');
+    cv.width = f.w;
+    cv.height = f.h;
+    const g = cv.getContext('2d', { willReadFrequently: true });
+    if (g) {
+      g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+      try {
+        const d = g.getImageData(0, 0, f.w, f.h);
+        const px = d.data;
+        for (let i = 0; i < px.length; i += 4) {
+          const x = (i / 4) % f.w;
+          const r = px[i], gg = px[i + 1], b = px[i + 2];
+          const olive = gg >= b && gg > 40;
+          const dark = r + gg + b < 150;
+          // (the vine's own outline is dark too: kept away from the column's two sides, where the stone's outline runs)
+          const inside = x > f.w * 0.14 && x < f.w * 0.86;
+          if (!(olive || (dark && inside))) px[i + 3] = 0;
+        }
+        g.putImageData(d, 0, 0);
+        out = cv;
+      } catch {
+        out = null;
+      }
+    }
+  }
+  vines.set(kitWorld, out);
+  return out;
+}
+
 export interface ProtoSceneState {
   /** when each crumbling branch broke (game time) */
   brokeAt: Map<number, number>;
   /** game time each log last moved */
   movedAt: Map<number, number>;
+  /** the climb trunks are the wet stone pillar of World 4's waterfall set with the trunk's own vine over it (4-3, by its falls) */
+  pillars?: boolean;
 }
 
 /** three painted brown vines hanging from a wall's lip down its face to the floor, each its own length and side */
@@ -732,7 +774,9 @@ export function drawProtoScene(
     ctx.beginPath();
     ctx.rect(v.x - tw, v.topY - 30, tw * 2, bottom + 14 - (v.topY - 30));
     ctx.clip();
-    for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
+    const vine = st.pillars && drawFallsPillar(ctx, v.x, tw, v.topY - 30, bottom + 14) ? trunkVine() : null;
+    if (vine) for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) ctx.drawImage(vine, v.x - tw / 2, y, tw, th);
+    else for (let y = bottom + 10 - th; y > v.topY - 30 - th; y -= th - 6) blit(ctx, 'trunk', v.x - tw / 2, y, tw, th);
     ctx.restore();
   }
   // branches (a perch where a climb trunk ends under one)

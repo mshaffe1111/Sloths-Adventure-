@@ -2,12 +2,15 @@ import React from 'react';
 import { orchSfxEnabled, setOrchSfxPref } from '../audio/sfxOrch.ts';
 import { sound } from '../game/audio.ts';
 import { waysideEnabled, setWaysidePref } from '../game/wayside.ts';
-import { controlStyle, padSide, setControlStyle, setPadSide, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
+import { setShakeLevel, shakeLevel, type ShakeLevel } from '../game/screenShake.ts';
+import { canBuzz, hapticsOn, setHaptics, vibrate } from '../game/haptics.ts';
+import { controlStyle, padSide, setControlStyle, setPadSide, steerHand, setSteerHand, touchSensitivity, setTouchSensitivity, type ControlStyle, type PadSide } from '../game/controlPrefs.ts';
+import { showTouches, setShowTouches, type ShowTouches } from '../game/touchMarks.ts';
 import { perfEnabled, perfOffered, setPerfPref } from '../game/perfLog.ts';
 import { jumpHelp, setJumpHelp, type JumpHelp } from '../game/jumpHelp.ts';
 import { fullscreenSupported, isFullscreen, launchedAsApp, toggleFullscreen } from '../game/fullscreen.ts';
 import { extraLives, gameSpeed, setExtraLives, setGameSpeed, type ExtraLives, type GameSpeed } from '../game/assist.ts';
-import { DIFFICULTY_LABEL, difficulty, setDifficulty, subscribeDifficulty, type Difficulty } from '../game/difficulty.ts';
+import { DIFFICULTY_LABEL, difficulty, switchDifficulty, subscribeDifficulty, type Difficulty } from '../game/difficulty.ts';
 import { DOT_HELP_LABEL, dotHelp, setDotHelp, type DotHelp } from '../game/dotGuideHelp.ts';
 import { dotSaid } from '../game/dotGuide.ts';
 import { DotFace } from './DotFace.tsx';
@@ -122,6 +125,62 @@ export const WaysideToggle: React.FC = () => {
   );
 };
 
+/** how hard the screen shakes on a big hit or a boss's slam (AN-10); Gentle to start with where the phone asks for less motion */
+export const ShakeSetting: React.FC = () => {
+  const [v, setV] = React.useState<ShakeLevel>(() => shakeLevel());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <SetIcon name="burst" />
+          Screen shake
+        </span>
+        <Seg<ShakeLevel>
+          value={v}
+          options={[
+            { id: 'full', label: 'Full' },
+            { id: 'gentle', label: 'Gentle' },
+            { id: 'off', label: 'Off' },
+          ]}
+          onPick={(n) => {
+            setShakeLevel(n);
+            setV(n);
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+/** the phone's buzz for a hurt, a hard landing, a boss's slam, a flag and a clear, and the button presses (AN-9; on unless turned off) */
+export const HapticsToggle: React.FC = () => {
+  const [on, setOn] = React.useState(() => hapticsOn());
+  return (
+    <div className="pm-sound">
+      <div className="pm-sound-h">
+        <span className="flex items-center gap-2">
+          <SetIcon name="bolt" />
+          Vibration
+        </span>
+        <button
+          type="button"
+          className="pm-mute pm-polish"
+          aria-pressed={on}
+          onClick={() => {
+            const v = !on;
+            setHaptics(v);
+            setOn(v);
+            if (v) vibrate(20);
+          }}
+        >
+          {on ? 'On' : 'Off'}
+        </button>
+      </div>
+      <small className="pm-polish-note">{canBuzz() ? 'A buzz when Pokey is hurt, lands hard, a boss slams, at a flag and at the shrine.' : 'This browser cannot buzz the phone (iPhones never do).'}</small>
+    </div>
+  );
+};
+
 /** a row of exclusive choices, drawn as a segmented button */
 function Seg<T extends string>({ value, options, onPick }: { value: T; options: { id: T; label: string }[]; onPick: (v: T) => void }) {
   return (
@@ -140,6 +199,11 @@ export const ControlsSetting: React.FC = () => {
   const [style, setStyle] = React.useState<ControlStyle>(() => controlStyle());
   const [side, setSide] = React.useState<PadSide>(() => padSide());
   const [help, setHelp] = React.useState<JumpHelp>(() => jumpHelp());
+  const [marks, setMarks] = React.useState<ShowTouches>(() => showTouches());
+  const [hand, setHand] = React.useState<PadSide>(() => steerHand());
+  const [sens, setSens] = React.useState<number>(() => touchSensitivity());
+  // (iPhones never buzz for a web page: there the marks are the only feedback a touch gets, CT-14)
+  const noBuzz = typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function';
   return (
     <div className="pm-sound">
       <div className="pm-sound-h">
@@ -205,6 +269,75 @@ export const ControlsSetting: React.FC = () => {
               ? 'No buttons: slide, flick and tap anywhere. A tap punches and every jump is a move up. In the air a short slide up (or a wiggle of your thumb) is the second jump.'
               : 'Like On, and the second jump also pushes Pokey forward the way he faces, so one thumb can jump twice and cross a gap. Push the other way to brake. A first jump is always just a jump.'}
       </small>
+      {style === 'screen' && (
+        <div className="pm-sound-h" style={{ marginTop: 8 }}>
+          <span className="pm-polish-note" style={{ margin: 0 }}>
+            Steer with
+          </span>
+          <Seg
+            value={hand}
+            options={[
+              { id: 'left', label: 'Left' },
+              { id: 'right', label: 'Right' },
+            ]}
+            onPick={(v) => {
+              setSteerHand(v);
+              setHand(v);
+            }}
+          />
+        </div>
+      )}
+      {style === 'screen' && (
+        <div className="pm-sound-h" style={{ marginTop: 8 }}>
+          <span className="pm-polish-note" style={{ margin: 0 }}>
+            Sensitivity
+          </span>
+          <span className="flex items-center gap-2">
+            <input
+              type="range"
+              min={0.75}
+              max={1.35}
+              step={0.05}
+              value={sens}
+              aria-label="Touch sensitivity"
+              style={{ width: 120, accentColor: '#10b981' }}
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                setTouchSensitivity(v);
+                setSens(v);
+              }}
+            />
+            <span className="pm-polish-note" style={{ margin: 0, minWidth: 34, textAlign: 'right' }}>
+              {Math.round(sens * 100)}%
+            </span>
+          </span>
+        </div>
+      )}
+      {style === 'screen' && (
+        <div className="pm-sound-h" style={{ marginTop: 8 }}>
+          <span className="pm-polish-note" style={{ margin: 0 }}>
+            Show touches
+          </span>
+          <Seg
+            value={marks}
+            options={[
+              { id: 'auto', label: 'Auto' },
+              { id: 'on', label: 'On' },
+              { id: 'off', label: 'Off' },
+            ]}
+            onPick={(v) => {
+              setShowTouches(v);
+              setMarks(v);
+            }}
+          />
+        </div>
+      )}
+      {style === 'screen' && (
+        <small className="pm-polish-note">
+          {marks === 'off' ? 'No marks under your fingers.' : `A ring shows where your steering thumb is, and each move flashes its name${marks === 'auto' ? ' (in World 1, while the moves are new)' : ''}.`}
+          {noBuzz ? " This phone doesn't buzz for web games, so the marks are your feedback." : ''}
+        </small>
+      )}
     </div>
   );
 };
@@ -227,7 +360,7 @@ export const DifficultySetting: React.FC = () => {
             { id: 'normal', label: DIFFICULTY_LABEL.normal.name },
           ]}
           onPick={(v) => {
-            setDifficulty(v);
+            switchDifficulty(v);
             setLevel(v);
           }}
         />

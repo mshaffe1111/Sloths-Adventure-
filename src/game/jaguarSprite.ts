@@ -130,7 +130,6 @@ export function drawJaguarSprite(ctx: CanvasRenderingContext2D, enemy: Enemy, ti
     ctx.ellipse(-2, 1 + lift, 36 * (1 - Math.min(0.4, lift / 100)), 5, 0, 0, Math.PI * 2);
     ctx.fill();
   }
-  if (enemy.hitFlashTimer > 0) ctx.filter = 'brightness(2.2)';
   // in the air the engine already lifts the animal, so the pose hangs from its lowest paw instead of the painted ground line
   if (clip) {
     const c = JAGUAR_ANIM[clip];

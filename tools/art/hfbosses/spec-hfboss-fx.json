@@ -1,0 +1,253 @@
+{
+ "note": "hfboss-fx: boss art batch, hf-art-bosses, 2026-10-29",
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/ebd423fbdfff3afc0867a2727321b78ffea540c6/tools/art/hfbatch/starts/",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "marker-s62-7",
+   "start": "start-marker.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: at the top a glowing red and orange danger mark painted on the ground, a flat wide oval seen low from the side, a ring of hot cracked earth glowing red with a bright core; below it on the left a fat glowing red-orange arrow pointing right with a dark outline and a pale highlight; on the right a fat glowing red-orange arrow pointing down; along the bottom three long glowing red claw-scratch streaks across the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "marker-s62-23",
+   "start": "start-marker.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: at the top a glowing red and orange danger mark painted on the ground, a flat wide oval seen low from the side, a ring of hot cracked earth glowing red with a bright core; below it on the left a fat glowing red-orange arrow pointing right with a dark outline and a pale highlight; on the right a fat glowing red-orange arrow pointing down; along the bottom three long glowing red claw-scratch streaks across the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "marker-s75-7",
+   "start": "start-marker.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: at the top a glowing red and orange danger mark painted on the ground, a flat wide oval seen low from the side, a ring of hot cracked earth glowing red with a bright core; below it on the left a fat glowing red-orange arrow pointing right with a dark outline and a pale highlight; on the right a fat glowing red-orange arrow pointing down; along the bottom three long glowing red claw-scratch streaks across the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "marker-s75-23",
+   "start": "start-marker.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces, each separate on the background: at the top a glowing red and orange danger mark painted on the ground, a flat wide oval seen low from the side, a ring of hot cracked earth glowing red with a bright core; below it on the left a fat glowing red-orange arrow pointing right with a dark outline and a pale highlight; on the right a fat glowing red-orange arrow pointing down; along the bottom three long glowing red claw-scratch streaks across the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-croc-s62-7",
+   "start": "start-fx-croc.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a crocodile boss in a night river, each separate on the background: along the top a long band of dark teal river water seen from the side with a white foam crest along its top edge; a grey-blue piranha fish side view facing right with a red belly, a pale eye and sharp white teeth; a curling wave of thick brown mud thrown up from the ground; a splash of white-cyan water droplets. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-croc-s62-23",
+   "start": "start-fx-croc.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a crocodile boss in a night river, each separate on the background: along the top a long band of dark teal river water seen from the side with a white foam crest along its top edge; a grey-blue piranha fish side view facing right with a red belly, a pale eye and sharp white teeth; a curling wave of thick brown mud thrown up from the ground; a splash of white-cyan water droplets. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-croc-s75-7",
+   "start": "start-fx-croc.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a crocodile boss in a night river, each separate on the background: along the top a long band of dark teal river water seen from the side with a white foam crest along its top edge; a grey-blue piranha fish side view facing right with a red belly, a pale eye and sharp white teeth; a curling wave of thick brown mud thrown up from the ground; a splash of white-cyan water droplets. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-croc-s75-23",
+   "start": "start-fx-croc.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a crocodile boss in a night river, each separate on the background: along the top a long band of dark teal river water seen from the side with a white foam crest along its top edge; a grey-blue piranha fish side view facing right with a red belly, a pale eye and sharp white teeth; a curling wave of thick brown mud thrown up from the ground; a splash of white-cyan water droplets. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-sov-s62-7",
+   "start": "start-fx-sov.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a giant eagle boss in a storm, each separate on the background: along the top a low bank of dark violet storm clouds with lilac highlights; a jagged fork of white-violet lightning; a golden eagle feather flying right like a dart; swept white-cyan streaks of wind. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-sov-s62-23",
+   "start": "start-fx-sov.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a giant eagle boss in a storm, each separate on the background: along the top a low bank of dark violet storm clouds with lilac highlights; a jagged fork of white-violet lightning; a golden eagle feather flying right like a dart; swept white-cyan streaks of wind. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-sov-s75-7",
+   "start": "start-fx-sov.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a giant eagle boss in a storm, each separate on the background: along the top a low bank of dark violet storm clouds with lilac highlights; a jagged fork of white-violet lightning; a golden eagle feather flying right like a dart; swept white-cyan streaks of wind. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-sov-s75-23",
+   "start": "start-fx-sov.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a giant eagle boss in a storm, each separate on the background: along the top a low bank of dark violet storm clouds with lilac highlights; a jagged fork of white-violet lightning; a golden eagle feather flying right like a dart; swept white-cyan streaks of wind. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure bright green background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-queen-s62-7",
+   "start": "start-fx-queen.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a giant spider boss, each separate on the background: a ball of white spider silk wound tight with loose threads; a flat splat of sticky white web stuck on the ground seen from the side; a silk-wrapped cocoon hanging on a thread; a long jet of green venom spraying to the right, thick at the left and breaking into droplets at the right end; a low ripple of white silk threads along the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-queen-s62-23",
+   "start": "start-fx-queen.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a giant spider boss, each separate on the background: a ball of white spider silk wound tight with loose threads; a flat splat of sticky white web stuck on the ground seen from the side; a silk-wrapped cocoon hanging on a thread; a long jet of green venom spraying to the right, thick at the left and breaking into droplets at the right end; a low ripple of white silk threads along the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-queen-s75-7",
+   "start": "start-fx-queen.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a giant spider boss, each separate on the background: a ball of white spider silk wound tight with loose threads; a flat splat of sticky white web stuck on the ground seen from the side; a silk-wrapped cocoon hanging on a thread; a long jet of green venom spraying to the right, thick at the left and breaking into droplets at the right end; a low ripple of white silk threads along the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 7,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "fx-queen-s75-23",
+   "start": "start-fx-queen.webp",
+   "prompt": "slothadv style, a sheet of game effect pieces for a giant spider boss, each separate on the background: a ball of white spider silk wound tight with loose threads; a flat splat of sticky white web stuck on the ground seen from the side; a silk-wrapped cocoon hanging on a thread; a long jet of green venom spraying to the right, thick at the left and breaking into droplets at the right end; a low ripple of white silk threads along the ground. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.75,
+   "seed": 23,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "dust-s50-7",
+   "start": "start-dust.webp",
+   "prompt": "slothadv style, an animation strip of eight frames left to right, each separate on the background: a soft puff of tan jungle dust kicked up from the ground, small and low at first, billowing out round and wide, then thinning and breaking into wisps. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 2048,
+   "h": 256
+  },
+  {
+   "name": "dust-s50-23",
+   "start": "start-dust.webp",
+   "prompt": "slothadv style, an animation strip of eight frames left to right, each separate on the background: a soft puff of tan jungle dust kicked up from the ground, small and low at first, billowing out round and wide, then thinning and breaking into wisps. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 2048,
+   "h": 256
+  },
+  {
+   "name": "dust-s62-7",
+   "start": "start-dust.webp",
+   "prompt": "slothadv style, an animation strip of eight frames left to right, each separate on the background: a soft puff of tan jungle dust kicked up from the ground, small and low at first, billowing out round and wide, then thinning and breaking into wisps. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 2048,
+   "h": 256
+  },
+  {
+   "name": "dust-s62-23",
+   "start": "start-dust.webp",
+   "prompt": "slothadv style, an animation strip of eight frames left to right, each separate on the background: a soft puff of tan jungle dust kicked up from the ground, small and low at first, billowing out round and wide, then thinning and breaking into wisps. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 2048,
+   "h": 256
+  },
+  {
+   "name": "spark-s50-7",
+   "start": "start-spark.webp",
+   "prompt": "slothadv style, an animation strip of six frames left to right, each separate on the background: a cartoon hit spark, a bright yellow-white star burst with an orange outline, small, then bursting out big, then breaking into short separate rays. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.5,
+   "seed": 7,
+   "w": 1536,
+   "h": 256
+  },
+  {
+   "name": "spark-s50-23",
+   "start": "start-spark.webp",
+   "prompt": "slothadv style, an animation strip of six frames left to right, each separate on the background: a cartoon hit spark, a bright yellow-white star burst with an orange outline, small, then bursting out big, then breaking into short separate rays. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.5,
+   "seed": 23,
+   "w": 1536,
+   "h": 256
+  },
+  {
+   "name": "spark-s62-7",
+   "start": "start-spark.webp",
+   "prompt": "slothadv style, an animation strip of six frames left to right, each separate on the background: a cartoon hit spark, a bright yellow-white star burst with an orange outline, small, then bursting out big, then breaking into short separate rays. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 7,
+   "w": 1536,
+   "h": 256
+  },
+  {
+   "name": "spark-s62-23",
+   "start": "start-spark.webp",
+   "prompt": "slothadv style, an animation strip of six frames left to right, each separate on the background: a cartoon hit spark, a bright yellow-white star burst with an orange outline, small, then bursting out big, then breaking into short separate rays. Soft cel shading, thin dark outline, light from the upper left, painted storybook illustration, slothadv style Evenly lit, on one flat plain pure magenta background, no shadow, no text.",
+   "neg": "text, letters, numbers, watermark, frame, border, photo, 3d render, blurry, gradient background, scenery, sky, cast shadow, people, sloth, character",
+   "strength": 0.62,
+   "seed": 23,
+   "w": 1536,
+   "h": 256
+  }
+ ]
+}

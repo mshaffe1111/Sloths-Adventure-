@@ -286,7 +286,8 @@ export function lessonsOn(): boolean {
 export function lessonInputMode(): InputMode {
   let coarse = false;
   try {
-    coarse = !!window.matchMedia?.('(pointer: coarse)').matches;
+    // (any touch screen counts: a phone whose main pointer reads as fine, a stylus say, must never be told "For your keyboard": UI-12)
+    coarse = !!window.matchMedia?.('(pointer: coarse)').matches || !!window.matchMedia?.('(any-pointer: coarse)').matches || (navigator.maxTouchPoints ?? 0) > 0;
   } catch {
     /* no window */
   }

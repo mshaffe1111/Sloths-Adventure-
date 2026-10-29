@@ -163,7 +163,8 @@ export const WAYSIDE: Record<number, WorldWay> = {
     stages: {
       2: petal('start', 'Flowers push up between the old stones, thin and stubborn. He tells the buds to take their time.'),
       3: petal('half', 'Ten stone chairs in a ring, and one of them knocked over. He sets it upright before he goes on.'),
-      4: petal('half', 'Every statue faces the temple, as if waiting for somebody to finish a sentence.'),
+      // (7-4 is the slide: its line comes at the start, in the temple hall, before the floor gives way)
+      4: petal('start', 'Every statue faces the temple, as if waiting for somebody to finish a sentence.'),
       5: pokey('start', 'I\'m the loudest thing in these ruins. That has never happened before.'),
       7: pokey('half', 'There\'s a ledge about Dot\'s size, made for sitting on and complaining from. I check it anyway.'),
       8: petal('near', 'The steps were cut for someone much bigger. He climbs each one like a small wall, and doesn\'t mind.'),

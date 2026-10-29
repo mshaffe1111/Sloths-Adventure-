@@ -606,6 +606,9 @@ export function validateStage(stage: GeneratedStage, opts: CheckOptions = {}): C
       }
     });
 
+    // a scripted way on that is no jump or climb (7-4: the floor crumbles into the slide, and the slide comes out in the chamber)
+    for (const l of stage.links ?? []) link(`p${l.from}`, `p${l.to}`);
+
     // 4. walk the graph
     const start = plats.find((p) => stage.spawnX >= ext(p)[0] - 4 && stage.spawnX <= ext(p)[1] + 4 && Math.abs(p.y - stage.spawnY) < 6);
     if (!start) return false;

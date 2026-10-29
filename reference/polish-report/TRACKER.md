@@ -18,14 +18,14 @@ Last updated: 2026-10-29 2:35 PM ET.
 | VI-6 | Magenta leaking on World 5 dusk and twilight |  | polish-edges | in progress (full rebuild running) |
 | VI-7 | Grey seams in the soil, including on the new generator |  | polish-a1 | MERGED into ccr 2026-10-29 1:25 PM ET (next test link) |
 | VI-8 | Ground tiles repeat and band | HF | hf-art-ground (HF art + wiring) | started 1:10 PM ET |
-| VI-9 | Pit water is code-drawn in Worlds 1, 3, 4 and 5 | HF | hf-art-stage (HF art + wiring) | started 1:10 PM ET |
-| VI-10 | Exit door and checkpoint flags are code-drawn in every world but World 5 | HF | hf-art-stage (HF art + wiring) | started 1:10 PM ET |
+| VI-9 | Pit water is code-drawn in Worlds 1, 3, 4 and 5 | HF | hf-art-stage (HF art + wiring) | round 1 in 3:25 PM ET; round 2 running (open gates, net, W5 water) |
+| VI-10 | Exit door and checkpoint flags are code-drawn in every world but World 5 | HF | hf-art-stage (HF art + wiring) | round 1 in 3:25 PM ET; round 2 running (open gates, net, W5 water) |
 | VI-11 | Shimmy ropes are a dashed yellow line | HF | hf-art-bosses (HF art + wiring) | started 1:45 PM ET |
-| VI-12 | Pickups and the thorn gate are vector shapes | HF | hf-art-stage (HF art + wiring) | started 1:10 PM ET |
+| VI-12 | Pickups and the thorn gate are vector shapes | HF | hf-art-stage (HF art + wiring) | round 1 in 3:25 PM ET; round 2 running (open gates, net, W5 water) |
 | VI-13 | World 5's props are pastel stickers with thick outlines | HF | hf-art-ground (HF art + wiring) | started 1:10 PM ET |
 | VI-14 | Boss lairs: one painted, the rest code-drawn, while finished lair art sits unused | HF | hf-art-bosses (HF art + wiring) | started 1:45 PM ET |
 | VI-15 | Boss projectiles, hazards and danger rings are vector shapes | HF | hf-art-bosses (HF art + wiring) | started 1:45 PM ET |
-| VI-16 | Code-drawn stand-ins still in shipped stages | HF | hf-art-stage (HF art + wiring) | started 1:10 PM ET |
+| VI-16 | Code-drawn stand-ins still in shipped stages | HF | hf-art-stage (HF art + wiring) | round 1 in 3:25 PM ET; round 2 running (open gates, net, W5 water) |
 | VI-17 | World 1 and World 5 look the same every visit | HF | hf-art-ground (HF art + wiring) | started 1:10 PM ET |
 | VI-18 | Smaller visual notes | HF | hf-art-ground (World 6 water) + hf-art-bosses (4-D bridge, 4-D counter, 5-M title) + polish-edges (World 4 grade) | started |
 
@@ -49,18 +49,18 @@ Last updated: 2026-10-29 2:35 PM ET.
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| CT-1 | A one-thumb running jump loses 40% of its distance about half the time |  | polish-controls | built on branch, under lead review |
-| CT-2 | Pad: you can't climb a liana, and pushing up again on a trunk leaps off |  | polish-controls | built on branch, under lead review |
-| CT-3 | Ordinary climbing strokes leap off a trunk or liana |  | polish-controls | built on branch, under lead review |
-| CT-4 | Stopping on a trunk overshoots about 90 px, then a thumb left slightly sideways drops him off |  | polish-controls | built on branch, under lead review |
+| CT-1 | A one-thumb running jump loses 40% of its distance about half the time |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-2 | Pad: you can't climb a liana, and pushing up again on a trunk leaps off |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-3 | Ordinary climbing strokes leap off a trunk or liana |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-4 | Stopping on a trunk overshoots about 90 px, then a thumb left slightly sideways drops him off |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
 | CT-5 | The other thumb's straight-up flick lets go of a vine |  | polish-controls | waiting on Matt's decision (does a second thumb's straight flick on a vine climb?) |
-| CT-6 | A back swipe from the screen edge can leave the game |  | polish-controls | built on branch, under lead review |
-| CT-7 | Resting the action thumb fires a mega, and its next flick is eaten |  | polish-controls | built on branch, under lead review |
+| CT-6 | A back swipe from the screen edge can leave the game |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-7 | Resting the action thumb fires a mega, and its next flick is eaten |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
 | CT-8 | The two halves of the screen behave differently |  | polish-a2 (step 1) | in progress |
-| CT-9 | Short quick flicks on the ground do nothing, or punch |  | polish-controls | built on branch, under lead review |
-| CT-10 | A jump near a trunk grabs the trunk |  | polish-controls | built on branch, under lead review |
-| CT-11 | The thumb's arc reverses the steering at take-off |  | polish-controls | built on branch, under lead review |
-| CT-12 | Jump height jitters, and a jump right after a hit comes out low |  | polish-controls | built on branch, under lead review |
+| CT-9 | Short quick flicks on the ground do nothing, or punch |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-10 | A jump near a trunk grabs the trunk |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-11 | The thumb's arc reverses the steering at take-off |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
+| CT-12 | Jump height jitters, and a jump right after a hit comes out low |  | polish-controls | Build 2 PASSED review 3:00 PM ET (misreads 4.7% → 2.8%); merge after the gate |
 | CT-13 | The Pad lesson's text is false |  | — | waiting on Matt's decision |
 | CT-14 | No feedback in Screen mode, and iPhones have no vibration |  | polish-controls Build 3 | queued after Build 2 |
 | CT-15 | The palm rule eats second-thumb taps |  | polish-controls Build 3 | queued after Build 2 |
@@ -83,29 +83,29 @@ Last updated: 2026-10-29 2:35 PM ET.
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| SN-1 | The old "pingy" effects are the default |  | polish-audio | DECIDED by Matt: orchestral set deleted, classic set tuned to each stage |
+| SN-1 | The old "pingy" effects are the default |  | polish-sfx | REVISED by Matt 4:05 PM ET: the classic set is "crap" too: whole effect set rebuilt with real sounds (session_01FhBbYLYe1b66N7kEhtr9gq), previews first |
 | SN-2 | Effects swing 20 dB in loudness |  | polish-a2 | in progress |
-| SN-3 | Silent or wrong sounds at key moments |  | polish-audio | in progress (listening clips first; may use Hugging Face) |
+| SN-3 | Silent or wrong sounds at key moments |  | polish-sfx (moved from polish-audio 4:06 PM ET) | in progress (listening clips first; may use Hugging Face) |
 | SN-4 | Every boss tell sounds like a jaguar |  | Build 1 (Matt's other session, polish-build1) | built, waiting for that session to push to GitHub |
 | SN-5 | The victory sting fires in the level, so the Stage Cleared card has only star chimes |  | polish-a2 | in progress |
 | SN-6 | Pausing switches to the World 1 tune |  | polish-a2 | in progress |
 | SN-7 | Nothing ducks under speech, and Dot is silent in play |  | polish-a2 | in progress |
 | SN-8 | Some instruments jump in volume at their loop point |  | polish-audio | in progress (listening clips first; may use Hugging Face) |
-| SN-9 | Ambience is fully synthesized |  | polish-audio | in progress (listening clips first; may use Hugging Face) |
-| SN-10 | The boss intro card plays no sound |  | polish-audio | in progress (listening clips first; may use Hugging Face) |
+| SN-9 | Ambience is fully synthesized |  | polish-sfx (moved from polish-audio 4:06 PM ET) | in progress (listening clips first; may use Hugging Face) |
+| SN-10 | The boss intro card plays no sound |  | polish-sfx (moved from polish-audio 4:06 PM ET) | in progress (listening clips first; may use Hugging Face) |
 
 ## Story (8)
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| ST-1 | Story scenes are blurry, stand on a code-drawn strip, and sometimes don't match the words | HF | polish-a1 (code part MERGED) + story pass (repainted plates) | code done; art waits for the story review |
-| ST-2 | Characters aren't lit like the scene, and their shadows are weak | HF | — | story pass (waits for Matt's story review) |
+| ST-1 | Story scenes are blurry, stand on a code-drawn strip, and sometimes don't match the words | HF | polish-a1 (code part MERGED) + story-art (HF: plates, cels, upright framing) | code done; art started 3:15 PM ET (Matt: "our very first concept arts... still stuck in there") |
+| ST-2 | Characters aren't lit like the scene, and their shadows are weak | HF | story-art (cloud session_01FhBbYMSNFxnWxPbZJPdRan) | started 3:15 PM ET |
 | ST-3 | Meeca's carvings never pay off |  | — | story pass (waits for Matt's story review) |
-| ST-4 | The Stage Cleared clue repeats every world |  | — | story pass (waits for Matt's story review) |
+| ST-4 | The Stage Cleared clue repeats every world |  | story-a | started 3:20 PM ET (Matt: "placeholders are out") |
 | ST-5 | The exit has three names and the same victory line everywhere |  | Build 1 (Matt's other session, polish-build1) | built, waiting for that session to push to GitHub |
-| ST-6 | Boss quotes and aim text read as placeholder |  | — | story pass (waits for Matt's story review) |
-| ST-7 | The ending card's copy is out of date |  | — | story pass (waits for Matt's story review) |
-| ST-8 | Placeholder stage names |  | — | story pass (waits for Matt's story review) |
+| ST-6 | Boss quotes and aim text read as placeholder |  | story-a | started 3:20 PM ET (Matt: "placeholders are out") |
+| ST-7 | The ending card's copy is out of date |  | story-a | started 3:20 PM ET (Matt: "placeholders are out") |
+| ST-8 | Placeholder stage names |  | story-a | started 3:20 PM ET (Matt: "placeholders are out") |
 
 ## Dot (17)
 
@@ -176,7 +176,7 @@ Last updated: 2026-10-29 2:35 PM ET.
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|
-| PF-1 | iPhones in portrait drop frames |  | qa-fix-e (slow-phone frame drops overlap) then its own pass | partly in progress |
+| PF-1 | iPhones in portrait drop frames |  | polish-pf1 (cloud session_01FhBbYKVyEjhCyWwVmH9dfG) | started 3:05 PM ET |
 | PF-2 | The download is heavy |  | — | later: download size |
 | PF-3 | Leftovers |  | polish-c (cloud) | started 1:35 PM ET |
 
@@ -192,7 +192,14 @@ Last updated: 2026-10-29 2:35 PM ET.
 | X-6 | 7-3 ring of chairs | HF | hf-w7-chairs, then gen2-w7 wires | art MERGED into ccr; wiring with gen2-w7 |
 | X-7 | Stone Sentry guard for 7-5 | HF (exists) | gen2-w7 | cutting in |
 | X-8 | Floating capital-letter lesson labels; no speech box over Pokey | | polish-dot | in progress |
-| X-9 | Music: varied songs per world, adaptive, Hugging Face models allowed | HF | polish-audio | in progress |
+| X-9 | Music: varied songs per world, adaptive, Hugging Face models allowed | HF | polish-audio | v1 REJECTED by Matt 2:45 PM ET ("I can't tell the difference"); v2: new lead instrument + tempo + groove per world, new tunes per stage in shuffled 8-bar chunks, obvious danger/dark/exit layers, HF pilot (Worlds 1, 3, 9 chunks). Matt: worlds must sound like new places; reference = a mix of Donkey Kong Country (genre + groove per world) and Ori (emotional orchestral). Each world its own style, not new settings |
+| X-14 | Pokey teeter / step-back frames at a ledge's end (painted; the slide is a stand-in) | HF | next Pokey art session | queued |
+| X-15 | 6-8 Stilt Climb (W6 special) | HF ledge set | w6-stilt-climb | PASSED review 3:00 PM ET; merge after the gate |
+| X-16 | Upright looks faded next to sideways: the strips are fitted to the view height, about 3.5x blow-up upright against 1.6x sideways (Matt 3:45 PM ET) | HF + code | polish-edges (with the backdrops-hd swap) | sent 3:47 PM ET; Matt: build it, no mock-up |
+| X-17 | Sound effects "pings everywhere, sounds like pinball", worst the falling rocks (Matt 4:00 PM ET): real stone/wood/water sounds, varied, capped repeats, pickups softer | HF/CC0 audio | polish-sfx | sent 4:01 PM ET; old/new previews first (reference/audio-previews/sfx-v1/) |
+| X-18 | Falling-rock warning drawn as grey squares (grit, hopping stones, trickle) and flat ellipse shadows; sweep all repeating effects drawn as code shapes (Matt 4:02 PM ET) | HF + code | hazard-anim | started 4:03 PM ET |
+| X-19 | Seams and cleanness across every stage (Matt 4:08 PM ET); walk tool + seam detector becomes a required check for any look change | tool + HF | polish-clean | started 4:09 PM ET |
+| X-13 | Classic-family effects redo (no orchestra), tuned to each stage's key, checkpoint hiss gone | | polish-audio | built; held to send with music v2 (fix two clipping peaks) |
 | X-10 | QA batch E: replay 2 fps (survey no longer draws; root cause needs an Android replay), Facebook iPhone blur dropped steering (FIXED), load stutters (FIXED) | | qa-fix-e | MERGED into ccr 1:45 PM ET |
 | X-12 | Control-test opening too hard for first-timers: Matt chose Easy gaps sized to Easy reach + two more flags (2026-10-29) | | qa-fix-e | in progress |
 | X-11 | Spider webs and swing glow (painted-swaps) | | painted-swaps | PASSED review; merges with X-2 |
@@ -201,7 +208,7 @@ Last updated: 2026-10-29 2:35 PM ET.
 
 Matt's seven calls (2026-10-29, "Yes, all seven"): slowness costs once at the World 6 tea; Pokey's parents in one painted background with no
 words; add Dot's lost pocket; the player's thumb does the let-go; three keepsakes in the finale, the rest in the satchel; the garden hub later
-(after steps 1-8); a playable prologue morning if there's time. Missing: the SR-1 to SR-43 list the report points to (asked Matt for it).
+(after steps 1-8); a playable prologue morning if there's time. SR-1 to SR-43 arrived from Matt 3:05 PM ET: reference/story-report/story-review-SR-1-to-SR-43.txt (SR-38 to SR-43, Dot in play and menu text, go to polish-dot).
 
 | Item | What | Art | Owner (branch) | Status |
 |---|---|---|---|---|

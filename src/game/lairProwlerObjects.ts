@@ -10,6 +10,7 @@
  * the cave when the lights go out (prowlerGlow in lairProwler.ts).
  */
 import type { Platform, TreeStructure, Vine } from './types.ts';
+import { drawLairRope, drawLairRopeLine } from './ropeArt.ts';
 import { CAP_COLORS, glowcap, prowlerGlow, stampGlow } from './lairProwler.ts';
 
 interface Cam {
@@ -313,34 +314,13 @@ function drawRoot(ctx: CanvasRenderingContext2D, v: Vine, cam: Cam, time: number
   ctx.lineJoin = 'round';
   if (swing) {
     // up into the dark
-    ctx.strokeStyle = '#06100d';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(v.x, v.topY);
-    ctx.lineTo(v.x, cam.y - 30);
-    ctx.stroke();
-    ctx.strokeStyle = '#27493a';
-    ctx.lineWidth = 4.4;
-    ctx.stroke();
+    drawLairRopeLine(ctx, v.x, v.topY, v.x, cam.y - 30, 7, '#4f8a6a', '#27493a');
   }
   ctx.strokeStyle = 'rgba(120, 255, 220, 0.12)';
   ctx.lineWidth = 22;
   trace(ctx, at, N);
   ctx.stroke();
-  ctx.strokeStyle = '#06100d';
-  ctx.lineWidth = 9.5;
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.strokeStyle = '#2d5a45';
-  ctx.lineWidth = 6;
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.strokeStyle = '#4f9a74';
-  ctx.lineWidth = 1.8;
-  ctx.setLineDash([5, 9]);
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.setLineDash([]);
+  drawLairRope(ctx, at, N, 9.5, '#6fbf94', '#2d5a45');
   // knots with a tiny glow, so a climbing vine reads as something to grab
   for (let i = 2; i < N - 1; i += swing ? 7 : 4) {
     const p = at(i / N);
