@@ -44,7 +44,9 @@ What they show:
 
 - **The level checker works on its reach model, not the engine,** and where he stands is unchanged, so no route it accepts can change.
 - **Engine reach tests:** 4-4 `w4RealReach` passes again (it failed with the real step-back); the full suite is green.
-- **The inspector's bots on Worlds 1-2 (`tools/inspect/inspect.ts --worlds 1-2 --firsttimer`, seeds 1, 2, 3):** FT_RESULTS
+- **The inspector's bots on Worlds 1-2 (`tools/inspect/inspect.ts --worlds 1-2 --firsttimer`, seeds 1, 2, 3):** run on this branch with the edge switched on and switched off: **byte-identical** on all three seeds (every bot, every stage: finish times, dead time, beats, findings). Only the picture moves, so play cannot change.
+  - For the record, against the tree before the edge work (e4b3596) the first-timer finished 46 / 48 / 54 of 72 trials before and 44 / 47 / 52 now, mean finish 169 / 201 / 210 s against 172 / 196 / 211 s. That gap is the run-speed tweak taken back in 30e1485 (README, CT-1), not the edge: the same runs with the edge off match these exactly.
+  - (The first version, which moved him for real, cost 1 trial a seed, all three right at the 360 s limit; it is gone.)
 
 ## Polish check
 
