@@ -24,6 +24,7 @@ import './shelfArt.ts';
 import './worldLedges.ts';
 import { drawGroundBody, drawGroundCap } from './groundArt.ts';
 import { drawSwingLianaArt, paintedKitEnabled } from './protoArt.ts';
+import { drawW9SwingFrames } from './w9SwingArt.ts';
 import { drawSilkStrand } from './w5Look.ts';
 import { drawStep, drawPillar } from './columnArt.ts';
 import { drawBadWater } from './badWaterArt.ts';
@@ -1324,6 +1325,8 @@ export function renderWorldObjects(
     drawGameTree(ctx, t, look, time);
     ctx.restore();
   }
+  // (World 9: each swing chain's basalt posts and charred beam, behind the ground, so the posts stand behind the ledges' fronts)
+  if (worldId === 9 && paintedKitEnabled()) drawW9SwingFrames(ctx, platforms, vines, left, right);
   for (const v of vines) {
     if (v.x < left || v.x > right) continue;
     drawGameVine(ctx, v, look, time);
