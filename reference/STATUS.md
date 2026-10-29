@@ -2,6 +2,38 @@
 
 Last updated: 2026-10-29 7:55 PM ET. HOTFIX PR #49 (#ctest on the testers' link only) MERGED and LIVE 7:36 PM ET. Matt's bug "2nd basket on 1-4 impossible, a platform blocks the rock": fixed by the lead, 1a6ba43 (liftRoom keeps its air clear; test over 40 layouts both ways), gate13 running, goes in test link v7. PF-1 merged b4337d7. PAUSE LIFTED (Matt ~7:55 PM ET, via PF-1: "let's start getting some jobs turned back on"): resumed 8:00 PM ET polish-levels (LV-2 approved, option A: Normal W3 + W5+, bands gate W3>=32 W4>=40), polish-audio (v4 title/menu/map APPROVED 7:50 PM ET, wiring), W7 r5, W8 (+swing), 8-4, W9 (+swing), W10 (+swing), W5 rebuild, polish-clean (+sweeps), polish-dot W5-8 sweep; PF-1b step 1 started (ground decor + plants baked, pixel-identical). polish-sfx waits on Matt's listen of 27 previews. polish-edges DONE d1b21a2d (5 skies; 11 held), merge for v7. Work test link v6 (early 10 PM build) published 7:30 PM ET: music, Dot, ground, controls b4, W7, HD backdrops + upright, story art, W4 Normal, #ctest (7 stale files still to null: scratchpad/ebkB.json). Gate11 2015/2013/0 fail. RELEASE PR #48 MERGED and LIVE (deploy succeeded 6:31 PM ET), waiting on Matt to merge; testers link EnK5 v231 = the release build (replaced Build 1 per Matt). PAUSED (Matt 5:33 PM ET, budget): story-art, polish-sfx, polish-clean + 4 sweeps, W7, W8, 8-4, W9 x2, W10 x2, W5 rebuild, polish-levels, polish-dot follow-up. RUNNING for 9 PM: polish-audio (wiring), hf-art-ground (ccr merge), polish-edges (X-16 + HD), PF-1, polish-controls b4. Test link moved to 10 PM ET (Matt 5:40 PM), merge cutoff 9:10 PM; World 7 r5 and polish-levels W4 Normal resumed to make it; HF art work exempt from the pause (story-art, sfx gen, 8-4 art, W9/W10 art, W5 repaint). Reevaluate after 10 PM. Merged 4:20 PM ET: polish-a2, controls b3, hf-art-stage (gate5 running). Sent back: polish-edges (interior blur, X-16), W7 r4 (wall seams, see-through faces, plinth ghosts), polish-dot 776c001 (4-4 rocks line + hint sweep, old base). Decided: W8 lit-bough falls deadly on Normal, dark gaps soft. Music v3 sent to Matt to listen. polish-c rebasing. Matt's QA session blocked on his approval.
 
+## THE FINISH LINE (lead manages; Matt 2026-10-29 ~7:55 PM ET: "take control again and really manage this... finishing the game and finishing the polish... keep up with people... make sure things are moving along and we're not going to run into issues")
+
+How the lead runs it: a check-in every 30 min (send_later, re-armed each time). Each check-in: list_sessions; read every report; review against LEAD-PLAYBOOK §4; merge what passes (fetch first, one gate per batch); send back what doesn't; nudge anything idle or stuck with no report for 60+ min; update this board; tell Matt only decisions and finished things. Test link cutoff 10:40 PM ET, link 11 PM ET.
+
+Track A, finish the game (owner, next milestone):
+| Piece | Owner | Next | State |
+|---|---|---|---|
+| World 5 rebuild (5-6 gen2, 5-8 hand, one art style) | w5-rebuild | stages built, stills | running |
+| World 7 | gen2-w7 (idle) | Matt plays test link; CLIMB_CLEAR re-curate | r5 merged |
+| World 8 + 8-4 Lantern Run | gen2-w8 (+swing), w8-lantern | levelCheck wall fix, curation C; 8-4 build-out | running |
+| World 9, World 10 | gen2-w9/w10 (+swings) | curation to targets | running |
+| Bosses 6-10, 7-10, 8-10 | (to start) | after W7 + W8 pass (Matt) | waiting |
+| Bosses 9-10, 10-10 | (to plan) | after W9/W10 pass | waiting |
+| Story S-6 journal + satchel, S-8 hidden finds, S-1 open rows, people who come back | story-a | mock-up first, lines to lead | started 7:55 PM |
+| Story art S-7 ending cards, S-11 parents, S-4 wall pose | story-art | picks to lead | started 7:55 PM |
+| Dot as character S-5 (rest points only) | polish-dot | lines to lead | after pointer removal |
+
+Track B, finish the polish:
+| Piece | Owner | Next | State |
+|---|---|---|---|
+| Tracker refresh, every audit item owned | lead's agent | TRACKER.md + Matt's decision list | running |
+| Dot pointer/ring/arrow out everywhere, no repeat tips | polish-dot | before/after stills | running |
+| Sound effects rebuilt (wired without waiting, Matt vetoes in game) | polish-sfx | commit by 10:40 PM | running |
+| Title/menu/map music v4 (approved) | polish-audio | wired | running |
+| LV-2 harder Normal W3-4 (combinations) | polish-levels | W4 first two stages measured | running |
+| Cleanness sweep, every stage both ways | polish-clean + 4 sweeps | findings list to lead | running |
+| Repeating effects remainder (SWEEP.md) | hazard-anim | batches with video | started 7:55 PM |
+| iPhone speed, bake procedural art (PF-1b step 1) | PF-1 | pixel-diff + frame proof | running |
+| 11 held portrait skies | polish-edges (idle) | needs better start pictures | to restart |
+
+Collision watch (two helpers, one file): polish-dot + story-a (dotLinesData), w5-rebuild + polish-levels (W5 Normal), PF-1b + hf-art-ground (ground decor), polish-sfx + polish-audio (audio files). Each pair told to agree before editing; the lead merges them in that order.
+
 Every polish-report item, with its owner and status: reference/polish-report/TRACKER.md (keep it current with this board).
 ## Running (2026-10-29 ~09:35 ET; Matt: "start 7", "start World 6's special stage", "a reset for free, run full capacity", "start 8", "run as we did yesterday")
 
