@@ -8,7 +8,7 @@ import { RealPlay } from './realPlay.ts';
 import { HANG_DROP, ropeYAt } from './rope.ts';
 import type { Rope } from './types.ts';
 import { TouchGestures, TUNING } from './touchGestures.ts';
-import { PadInput } from './padControl.ts';
+import { PadInput, pickButton, BUTTON_REACH, type PadButtonSpot } from './padControl.ts';
 import { TouchRig, stroke, type TouchEv } from './touchRig.ts';
 
 const G = 2000;
@@ -252,4 +252,39 @@ test('CT-17: a second thumb that lands and flicks up (its first move reported 50
     assert.ok(s.words.includes('punchCancel'), `jab taken back: ${s.words}`);
     assert.ok(s.swings.every((w) => !w.struck), `nothing struck: ${JSON.stringify(s.swings)}`);
   }
+});
+
+// ───────────────────────────── CT-18: the Pad buttons' reach ─────────────────────────────
+
+/** the three buttons where PadController.tsx draws them (on the left, --b 80 px: a 390 x 844 phone held upright) */
+function padSpots(h = 844, b = 80): PadButtonSpot[] {
+  const at = (bt: string, left: number, bottom: number, size: number) => ({ b: bt, cx: 10 + left + (size * b) / 2, cy: h - 10 - bottom - (size * b) / 2, r: (size * b) / 2 });
+  return [at('kick', 0.45 * b, 1.45 * b, 1), at('punch', 1.55 * b, 0.7 * b, 1), at('jump', 0.1 * b, 0, 1.2)];
+}
+
+test('CT-18: a touch that misses a Pad button by a few px still presses it, and anywhere in the buttons\' half presses the nearest', () => {
+  const spots = padSpots();
+  const by = (b: string) => spots.find((s) => s.b === b)!;
+  // dead on, and just outside each drawn edge (up to 0.3 of its radius), every way round
+  for (const s of spots) {
+    assert.equal(pickButton(s.cx, s.cy, spots), s.b);
+    for (let a = 0; a < 360; a += 30) {
+      const d = s.r * (1 + (BUTTON_REACH - 1) * 0.9);
+      const x = s.cx + d * Math.cos((a * Math.PI) / 180), y = s.cy + d * Math.sin((a * Math.PI) / 180);
+      // (where two reaches overlap, the one it is deeper in wins)
+      if (spots.some((o) => o !== s && Math.hypot(x - o.cx, y - o.cy) < o.r * BUTTON_REACH)) continue;
+      assert.equal(pickButton(x, y, spots), s.b, `${s.b}, just outside it at ${a} degrees`);
+    }
+  }
+  // the gap between Jump and Kick: split between them, never nothing
+  const j = by('jump'), k = by('kick');
+  const gap = Math.hypot(k.cx - j.cx, k.cy - j.cy) - j.r - k.r;
+  assert.ok(gap > 0, 'there is a gap');
+  const ux = (k.cx - j.cx) / (gap + j.r + k.r), uy = (k.cy - j.cy) / (gap + j.r + k.r);
+  assert.equal(pickButton(j.cx + ux * (j.r + 2), j.cy + uy * (j.r + 2), spots), 'jump');
+  assert.equal(pickButton(k.cx - ux * (k.r + 2), k.cy - uy * (k.r + 2), spots), 'kick');
+  // high up the half, far from all of them: the nearest (Kick, the top one)
+  assert.equal(pickButton(100, 300, spots), 'kick');
+  // out to the right, by Punch
+  assert.equal(pickButton(by('punch').cx + 80, by('punch').cy, spots), 'punch');
 });

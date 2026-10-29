@@ -79,6 +79,35 @@ export interface PadInputTarget {
   setHold(src: string, on: boolean): void;
 }
 
+/** a Pad button on screen: its centre and radius (px) */
+export interface PadButtonSpot<B extends string = string> {
+  b: B;
+  cx: number;
+  cy: number;
+  r: number;
+}
+
+/** each button answers a touch this much bigger than it is drawn (polish report CT-18) */
+export const BUTTON_REACH = 1.3;
+
+/**
+ * Which button a touch in the buttons' half of the screen presses (polish report CT-18: a touch that missed by a few px did nothing, and
+ * the gap between Jump and Kick is 15-22 px): one inside a button's reach (BUTTON_REACH) presses it; anywhere else in that half, the
+ * nearest button, measured from its edge, so the big Jump keeps its share.
+ */
+export function pickButton<B extends string>(x: number, y: number, spots: PadButtonSpot<B>[]): B | null {
+  let best: B | null = null;
+  let bestD = Infinity;
+  for (const s of spots) {
+    const d = Math.hypot(x - s.cx, y - s.cy) - s.r * BUTTON_REACH;
+    if (d < bestD) {
+      bestD = d;
+      best = s.b;
+    }
+  }
+  return best;
+}
+
 /** the Punch button held this long upgrades its punch to the mega (ms) */
 export const MEGA_HOLD_MS = 320;
 
