@@ -19,7 +19,7 @@ import type { GeneratedStage } from './stageGenerator.ts';
 import type { Collectible, Enemy, Platform } from './types.ts';
 import { doubleAllowed, heldMaxGap, jumpOK, PICKUP_APART, SAFE_APPROACH, validateStage, type CheckGraph } from './levelCheck.ts';
 import { EASY_HOLD } from './physics.ts';
-import { EASY_FLOOR, goalHave } from './goals.ts';
+import { easyGoalFor, goalHave } from './goals.ts';
 import { floorWater } from './waterTeach.ts';
 import type { ProtoExtras } from './protoStage.ts';
 
@@ -125,6 +125,7 @@ export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>, out?:
   // (a ledge Easy may widen: plain ground, not a pushed log, a painted piece or a pad)
   const widenable = (p: Platform) => (p.type === 'solid' || p.type === 'fragile') && !p.push && !p.art && !p.lily && !p.crown;
   let id = Math.max(0, ...stage.platforms.map((p) => p.id)) + 1;
+  const rivers = stage.rivers ?? [];
   let n = 0;
   for (const B of [...stage.platforms]) {
     if (B.broken || heldIds.has(B.id) || !fullIds.has(B.id) || B.type === 'drift' || B.type === 'moving' || B.push) continue;
@@ -150,7 +151,10 @@ export function easyHoldSoften(stage: Stage, frozen?: ReadonlySet<number>, out?:
     if (!best) continue;
     const { A, gap, side, room } = best;
     const others = stage.platforms.filter((q) => q !== B && q.id !== A.id && !q.broken);
-    if (room >= 0 && side !== 0 && widenable(B)) {
+    // (never the edge of a bank where a river begins or ends: it grew out over the water, the bank no longer stood where the water stops,
+    // and the river check failed on 110 of 200 control-test rolls on Easy, 2026-10-29; a catch ledge below does the job instead)
+    const riverEdge = side === 1 ? rivers.some((r) => Math.abs(B.x - r.x1) <= 2) : side === -1 ? rivers.some((r) => Math.abs(B.x + B.width - r.x0) <= 2) : false;
+    if (room >= 0 && side !== 0 && widenable(B) && !riverEdge) {
       // a wider landing: the ledge reaches toward him, as far as the held jump needs (and never past the gap)
       const d = Math.min(Math.max(0, gap - 4), Math.ceil(gap - room) + 6);
       // (the strip it grows by must be clear: nothing standing up through its top there)
@@ -237,6 +241,12 @@ function flagLedge(stage: Stage, p: Platform, reach: ReadonlySet<number>, x = p.
   return flagSpot(stage, x, p.y);
 }
 /** no animal close to a flag at (x, y), and out of the zones */
+/** a flag's respawn needs a run-up to the water ahead (LV-9, 2026-10-29: a flag 134 px short of 2-5's log river put Easy's first-timer
+ *  back in the water again and again, and it beat fewer snappers before the shrine than with no flag there) */
+export const FLAG_WATER_RUNUP = 320;
+/** (a river stage with no ledge that far from the water takes the best it has, at least this much) */
+export const FLAG_WATER_RUNUP_MIN = 200;
+const clearOfWater = (stage: Stage, x: number, runup = FLAG_WATER_RUNUP) => !(stage.rivers ?? []).some((r) => x > r.x0 - runup && x < r.x1 + 40);
 const flagSpot = (stage: Stage, x: number, y: number) =>
   !animalNear(stage, x, y) && !(stage.zones ?? []).some((z) => x > z.x0 - 40 && x < z.x1 + 40 && y > z.top - 40 && y < z.bottom + 40);
 
@@ -281,21 +291,25 @@ export function capFlagSpans(stage: Stage, max = FLAG_SPAN_MAX, reached?: readon
       const want = x0 + (x1 - x0) / Math.ceil((x1 - x0) / max);
       let best: Platform | null = null;
       let bestX = 0;
-      for (const p of ledges) {
-        // (the spot on the ledge nearest the split, 60 px in from its ends, with no animal close: a long bank can hold a patrol at
-        // one end and a safe flag at the other)
-        const a = Math.max(p.x + 60, x0 + 400);
-        const b = Math.min(p.x + p.width - 60, x1 - 400, x0 + max);
-        if (a > b) continue;
-        const c = Math.max(a, Math.min(b, want));
-        for (let d = 0; d <= b - a; d += 40) {
-          const x = [c - d, c + d].find((q) => q >= a && q <= b && flagSpot(stage, q, p.y));
-          if (x === undefined) continue;
-          if (!best || Math.abs(x - want) < Math.abs(bestX - want)) {
-            best = p;
-            bestX = x;
+      // (clear of the water by a full run-up if any ledge is; a river stage with none takes the best it has)
+      for (const runup of [FLAG_WATER_RUNUP, FLAG_WATER_RUNUP_MIN]) {
+        if (best) break;
+        for (const p of ledges) {
+          // (the spot on the ledge nearest the split, 60 px in from its ends, with no animal close: a long bank can hold a patrol at
+          // one end and a safe flag at the other)
+          const a = Math.max(p.x + 60, x0 + 400);
+          const b = Math.min(p.x + p.width - 60, x1 - 400, x0 + max);
+          if (a > b) continue;
+          const c = Math.max(a, Math.min(b, want));
+          for (let d = 0; d <= b - a; d += 40) {
+            const x = [c - d, c + d].find((q) => q >= a && q <= b && flagSpot(stage, q, p.y) && clearOfWater(stage, q, runup));
+            if (x === undefined) continue;
+            if (!best || Math.abs(x - want) < Math.abs(bestX - want)) {
+              best = p;
+              bestX = x;
+            }
+            break;
           }
-          break;
         }
       }
       if (!best) continue;
@@ -386,6 +400,8 @@ export function easyStage(stage: Stage): Stage {
   if (gen2 && stage.gen2!.budget.difficulty !== 'easy') throw new Error(`easyStage: ${stage.config.id} is a gen2 stage built for Normal; build it with generateStage(config, 'easy')`);
   // Easy keeps the stage's own lower bar (goals.ts raised Normal's to its share of what the stage holds)
   if (stage.easyGoal !== undefined) stage.config = { ...stage.config, targetCount: stage.easyGoal };
+  // (the pieces Easy adds from here on: stones, steps and catch ledges, numbered after the stage's own)
+  const firstAdded = Math.max(0, ...stage.platforms.map((p) => p.id)) + 1;
 
   // (World 2's lily pads 40 px wider on Easy, QA 2026-10-29: a kid's hop that came down past a pad's middle ran on off its far end; the
   // gaps between them shrink to match, and Easy's other ledge widening leaves pads alone)
@@ -427,13 +443,20 @@ export function easyStage(stage: Stage): Stage {
   if (!gen2) {
     const keep = easyKeep(stage.enemies);
     const before = goalHave(stage as never) ?? 0;
+    const enemiesBefore = stage.enemies.length;
     stage.enemies = stage.enemies.filter((e) => keep.has(e));
     const ring = stage.proto?.ring;
     if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
     if ((kind === 'purge' || kind === 'gauntlet') && before > 0) {
-      // (the gentler fight goal, 0.6 of Easy's, and never under 60% of the animals Easy keeps: LV-6)
+      // (LV-6: Normal's goal scaled to the animals Easy keeps, then Easy's share of that (65%), never under the goal this fight had
+      // before (0.6 of the old Easy goal). Not a share of Easy's goal for the whole stage: that asked 2-5's kids for 16 of the 21
+      // snappers Easy keeps)
       const have = goalHave(stage as never) ?? 0;
-      const target = Math.min(have, Math.max(Math.round(stage.config.targetCount * 0.6), Math.ceil(have * EASY_FLOOR - 1e-9)));
+      const normal = stage.normalGoal ?? stage.config.targetCount;
+      // (today's: 0.6 of the old Easy goal when the stage had animals to cut; a fight of guards only, 4-9, kept the old goal whole)
+      const old = stage.easyToday ?? stage.config.targetCount;
+      const today = enemiesBefore > 0 ? Math.max(1, Math.min(stage.enemies.length, Math.round(old * 0.6))) : old;
+      const target = Math.min(have, easyGoalFor(Math.round((normal * have) / before), today));
       stage.config = { ...stage.config, targetCount: Math.max(1, target) };
     }
     for (const e of stage.enemies) e.attackCooldown = Math.max(e.attackCooldown, 0) * 1.5;
@@ -446,6 +469,13 @@ export function easyStage(stage: Stage): Stage {
     const ring = stage.proto?.ring;
     if (ring) ring.waves = ring.waves.map((w) => w.filter((_, i) => i % 2 === 0));
   }
+
+  // a pickup a piece Easy added now stands in sits on its top instead (a step built over a flower, 2026-10-29: 'flower inside platform')
+  for (const c of stage.collectibles) {
+    const q = stage.platforms.find((p) => p.id >= firstAdded && c.x >= p.x && c.x <= p.x + p.width && c.y > p.y + 2 && c.y < p.y + p.height - 2);
+    if (q) c.y = q.y - 34;
+  }
+
   // flags, and a heart at every flag
   let cid = Math.max(0, ...stage.collectibles.map((c) => c.id)) + 1;
   const next = () => cid++;

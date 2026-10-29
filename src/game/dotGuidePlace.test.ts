@@ -127,29 +127,28 @@ function memStore() {
 }
 const tip = (kind: GuideLine['kind'], who: GuideLine['who'] = 'Dot') => ({ kind, who });
 
-test('Skip tips: offered once per device, on her first tip from the second stage on (never on 1-1\'s coach lines); tapping it turns tips off (Quiet) but keeps the locked-exit lines', () => {
+test('Skip tips: offered on her very first tip only, once per device; tapping it turns tips off (Quiet) but keeps the locked-exit lines', () => {
   const s = memStore();
   const none = new Set<string>();
   assert.equal(skipOffered(s), false);
   // not on a must-know line, a warning, a story, or someone else's line
-  assert.equal(offersSkip(tip('must'), 'teach', '1-2', s), false);
-  assert.equal(offersSkip(tip('danger'), 'teach', '1-2', s), false);
-  assert.equal(offersSkip(tip('story'), 'teach', '1-2', s), false);
-  assert.equal(offersSkip(tip('teach', 'Pokey'), 'teach', '1-2', s), false);
-  // DOT-5: never in the first stage (its coach lines: "Slide your thumb to run"), nor when the setting is not Teach me
-  assert.equal(offersSkip(tip('teach'), 'teach', '1-1', s), false);
-  assert.equal(offersSkip(tip('info'), 'teach', '1-1', s), false);
-  assert.equal(offersSkip(tip('teach'), 'reminders', '1-2', s), false);
-  // the first tip of the second stage: yes; marked as offered when it goes up, it is never offered again
-  assert.equal(offersSkip(tip('teach'), 'teach', '1-2', s), true);
+  assert.equal(offersSkip(tip('must'), 'teach', none, s), false);
+  assert.equal(offersSkip(tip('danger'), 'teach', none, s), false);
+  assert.equal(offersSkip(tip('story'), 'teach', none, s), false);
+  assert.equal(offersSkip(tip('teach', 'Pokey'), 'teach', none, s), false);
+  // not once anything has been taught on this phone, or the setting is not Teach me
+  assert.equal(offersSkip(tip('teach'), 'teach', new Set(['move:run']), s), false);
+  assert.equal(offersSkip(tip('teach'), 'reminders', none, s), false);
+  // the first tip: yes; marked as offered when it goes up, it is never offered again
+  assert.equal(offersSkip(tip('teach'), 'teach', none, s), true);
   markSkipOffered(s);
-  assert.equal(offersSkip(tip('teach'), 'teach', '1-3', s), false);
-  assert.equal(offersSkip(tip('info'), 'teach', '1-3', s), false);
+  assert.equal(offersSkip(tip('teach'), 'teach', none, s), false);
+  assert.equal(offersSkip(tip('info'), 'teach', none, s), false);
   // not tapped: Teach me stays
   assert.equal(dotHelp(s), 'teach');
   // tapped (on another fresh phone): Quiet, and still offered only once
   const s2 = memStore();
-  assert.equal(offersSkip(tip('teach'), 'teach', '1-2', s2), true);
+  assert.equal(offersSkip(tip('teach'), 'teach', none, s2), true);
   assert.equal(skipTips(s2), 'quiet');
   assert.equal(dotHelp(s2), 'quiet');
   assert.equal(skipOffered(s2), true);

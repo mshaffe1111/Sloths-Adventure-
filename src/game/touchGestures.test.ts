@@ -11,6 +11,8 @@ function rig() {
     jumpPress: () => log.push('jump'),
     jumpRelease: () => log.push('jumpUp'),
     punch: () => log.push('punch'),
+    // (a jab thrown as a finger landed and taken back as it flicked off was never a punch: CT-17)
+    punchCancel: () => void (log.includes('punch') && log.splice(log.lastIndexOf('punch'), 1)),
     kick: () => log.push('kick'),
     mega: () => log.push('mega'),
     feedback: () => {},
@@ -184,9 +186,9 @@ test('a second finger planted on top of the steering thumb is ignored', () => {
   const t = rig();
   t.down(1, 200, 250);
   t.drag(1, 200, 250, 280, 250, 300);
-  t.down(2, 230, 270); // knuckle / other finger of the same hand
+  t.down(2, 250, 270); // knuckle / other finger of the same hand (36 px away: within palmPx since CT-15 made it 45)
   t.wait(60);
-  t.up(2, 230, 270);
+  t.up(2, 250, 270);
   assert.ok(!t.has('punch'));
 });
 
@@ -286,6 +288,8 @@ function rigEnv(env: { megaReady?: () => boolean } = {}) {
     jumpPress: () => log.push('jump'),
     jumpRelease: () => log.push('jumpUp'),
     punch: () => log.push('punch'),
+    // (a jab thrown as a finger landed and taken back as it flicked off was never a punch: CT-17)
+    punchCancel: () => void (log.includes('punch') && log.splice(log.lastIndexOf('punch'), 1)),
     kick: () => log.push('kick'),
     mega: () => log.push('mega'),
     feedback: (k) => log.push(`fb:${k}`),

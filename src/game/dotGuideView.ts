@@ -101,6 +101,8 @@ export interface GuideView {
   chase: boolean;
   /** Dot's own flight stage (she is the player: no perch, no ring, and Pokey's state means nothing) */
   flight: boolean;
+  /** 7-4's slide (w7SlideRun.ts): the view is behind Pokey's back, and no story aside covers the flume ahead */
+  slide?: boolean;
   levelH: number;
   enemies: readonly GuideEnemy[];
   platforms: readonly GuidePlatform[];

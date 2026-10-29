@@ -50,3 +50,68 @@ hfb-w7chairs-fix 6ae37f4cad9610e5cb314126 rtx-pro-6000 17:15:56Z-17:17:08Z (1.2 
   eleventh chair at 0.45 (dimmed to the kit stone and a dab of moss at its feet first), the rock painted out roughly then 0.5.
   Pasted back feathered inside each fix's area (chairfix.py paste), cut with dim=1400:0.84:385. Both kept.
 running total ~5.3 min = ~$0.25. Close-ups: reference/prop-sheets/qa-notes/hf-w7-chairs/review-v3-crop.jpg (full: review-v3.jpg)
+hf-art-blocking (2026-10-29, cap $10), branch hf-art-blocking: starts blockstart.py, spec make_blocking_spec.py, cut blockcut.py.
+Results in the bucket mshaffe111/w5-xfer under hfbatch/blocking/props/. Review sheets in reference/prop-sheets/qa-notes/hf-art-blocking/.
+hfb-blocking-a 6ae3821dad9610e5cb314439 rtx-pro-6000 17:27:58Z-17:35:00Z (7.0 min, ~$0.32): 20 takes, 5 starts x 2 strengths x seeds 5/17
+  w6ledges-a-s68-17 KEPT (ledges), w6perches-a-s55-17 KEPT (perches) -> src/assets/w6/ledges.webp; wood graded off its lilac cast.
+    w6ledges seed 5 THROWN (white light beams painted over the root shelf and deck).
+  w7anchors-a-s55-17 cut, but the lintels came out thin and the start's top outline left a dark line (redone in round b).
+  w7walls-a-s68-5 cut (worn stone sloth face, mixed blocks), but one big root per strip at similar heights reads as a pattern
+    when strips sit side by side (redone in round b).
+  w4falls: bodies s62-17, pillar s76-17, lips + splash s76-5 KEPT; mist + plume (all takes) THROWN: hard cartoon cloud blobs.
+hfb-blocking-b 6ae386955ddcdc0830263868 rtx-pro-6000 17:47:01Z-17:52:50Z (5.8 min, ~$0.27): 20 takes, 5 starts x 2 strengths x seeds 17/29
+  w7anchors-b-s62-17 KEPT (thick carved lintels running off the top, twisted liana knots); each anchor also gets its own liana
+    run (liana-a1..a4, the stretch under the frame, seamless) so the hanging part continues the knot's liana exactly.
+  w7lianas-b-s65-17 KEPT as liana-1..6 (four woody, two braided; spares for longer drops). s55 takes: plain painted tubes.
+  w7walls-b-s62-17 KEPT for wall-1, wall-2, wall-4; wall-3 (the worn stone sloth face) from w7walls-b-s68-17. s62-29/s68-29
+    THROWN: the face came back as a bright cartoon sloth. All strips graded down to the W7 kit wall's tone.
+  w4mist-b-s60-17 KEPT (mist-1, mist-2: soft, wispy, see-through), w4mist-b-s60-29 KEPT (plume). s75 takes: puffier, more cartoon.
+  w6wedge-b-s58-17 KEPT (a round log wedged between two arching stilt roots; ledge cell and the first perch cell).
+    s58-29/s68-29 THROWN: the roots turned into stumps with the log on top; s68-17 squared the log into a beam.
+running total ~12.8 min on rtx-pro-6000 = ~$0.59 of the $10 cap.
+
+Boss art (2026-10-29, cap $10 after the lead's correction from $14), branch hf-art-bosses: starts bossstarts.py / bossstarts2.py /
+venomstart.py, specs make_spec.py / make_spec2.py / make_spec3.py, cut bosscut.py / venomcut.py, dot bridges dotbridge.py (no GPU).
+hfboss-fx     6ae385fdad9610e5cb3148fc rtx-pro-6000 17:44:29Z-17:52:17Z (7.8 min, ~$0.36): 24 takes, the warning marker, the Crocus Rex /
+  Sky Sovereign / Tarantula Queen effects sheets, dust and spark strips, 2 strengths x 2 seeds. KEPT: marker-s75-7 (ring, both arrows,
+  dash trail), fx-croc-s75-23 (flood water, piranha), fx-queen-s75-7 (silk ball, web splat, cocoon, venom jet, silk ripple), fx-sov-s75-23
+  (lightning, feather, gust), spark-s62-7. THROWN: the storm clouds (four smooth blobs), the mud wave (a dome), the splash (a ring of
+  beads), the dust (tan eggs): the start shapes came through too plainly; redone in round 2.
+hfboss-lairs  6ae385faad9610e5cb3148f1 rtx-pro-6000 17:44:26Z-17:56:10Z (11.7 min, ~$0.54): 16 plates at 2048x1152 and 8 foreground
+  strips. KEPT: lair-croc-calm-s68-7 + lair-croc-rage-s68-7, lair-sov-calm-s68-7 + lair-sov-rage-s68-7 (same seed, so the calm and rage
+  plates share their layout and cross-fade), fg-croc-s75-23, fg-sov-s75-23. Not used: croc calm s55 takes (banded moon halo), calm-s68-23
+  (stray marks bottom left). The Silk Hollow needed none: lair-queen-calm/rage (w6to10/lairs) is the Queen's own lair, now wired.
+hfboss-fx2    6ae38bcf5ddcdc0830263d64 rtx-pro-6000 18:09:19Z-18:14:35Z (5.3 min, ~$0.24): round 2 at 0.8 / 0.88. KEPT: fx-storm-s80-7
+  (three thunderclouds), fx-mud-s88-7 (breaking mud wave, crown splash), dust2-s80-23 (puff, billow, wisps; its late frames' pink cast
+  pulled back to tan in bosscut.py).
+hfboss-venom  6ae3907aad9610e5cb31546f rtx-pro-6000 18:29:14Z-18:30:35Z (1.35 min, ~$0.06): Venom Fang's body strip. KEPT venombody-s62-7.
+total ~26.2 min on rtx-pro-6000 = ~$1.20 of the $10 cap.
+hfboss-r4     6ae396a55ddcdc08302647b4 rtx-pro-6000 18:55:33Z-19:01:52Z (6.3 min, ~$0.29): round 4 (bossstarts4.py,
+  make_spec4.py, bosscut4.py), 12 takes. KEPT: fg-moss-s70-23 (Spanish moss off a branch; its lilac key cast graded to grey-green; replaces
+  the round-1 'teal icicles' fringe over the same reeds), croc-props-s75-7 (rowboat with its start's mud slab cut off, the crossed-out wave
+  sign, the helmet heap, two cattail clumps), fx3-s72-7 (three pale pennants tinted in the game, the pole, the screech wave graded to
+  cyan-white), fx3-s85-23 (the weak-point ring, its pink glow graded to gold). Not used: fg-moss s82 (branchy, reads as roots), s70-7
+  (fine, thinner); croc-props s62 (start shapes too plain), s75-23 (boat on a flat slab); fx3 s85-7 (screech grew an arrowhead), s72-23
+  (stray flecks), s85-23's pennants (spear tips doubling the pole).
+total ~32.5 min on rtx-pro-6000 = ~$1.49 of the $10 cap.
+Every-stage pieces (2026-10-29, cap $14), branch hf-art-stage: starts stagestarts.py, spec make_stage_spec.py, cut stagecut.py
+(stage-picks.json), wired by src/game/stageArt.ts. Raw takes in the bucket under hfbatch/stage/props/.
+hfb-stage-0 6ae38205ad9610e5cb314420 rtx-pro-6000 17:27:33Z-17:39:31Z (12.0 min, ~$0.55): the 9 gate pairs (W1-4, W6-10), s55/s70 x seeds 7/23.
+  Shut halves KEPT (w1 s55-23, w2 s70-23, w3 s70-23, w4 s70-7, w6 s70-23, w7 s70-7, w8 s70-23, w9 s70-7, w10 s70-7). Every open
+  half THROWN: they kept the start's flat cone of light, which reads as drawn; s55 takes also painted rain streaks on the key.
+hfb-stage-1 6ae38208ad9610e5cb314426 rtx-pro-6000 17:27:36Z-17:34:24Z (6.8 min, ~$0.31): flag, pit water W1/3/4/5, pickups, Thorn
+  Gate, netting, finds. KEPT flag-s70-7 (s55 takes smear the pennant's tip pink), pickups-s70-23, thorn-s70-23, net-s70-7,
+  finds-s55-23 (plain column; the lit frames are re-lit from it so they line up), water w1-s55-7, w3-s70-7, w4-s70-23, w5-s55-23.
+hfb-stage-2 6ae3858a5ddcdc083026376e rtx-pro-6000 17:42:34Z-17:49:13Z (6.65 min, ~$0.30): open gates from each picked shut take
+  (start-gateopen-w<N>: door gone, a dark way with a soft light), s45/s60 x 7/23, and World 5's gate from its totem (s42/s55).
+  KEPT gateopen-w<N>-s60-7 for all nine (a painted passage with its own light; the s45 takes keep the start's flat rectangle),
+  gate-w5-s55-7.
+total ~25.5 min on rtx-pro-6000 = ~$1.17 of the $14 cap. Reviews: reference/prop-sheets/qa-notes/hf-art-stage/.
+Round 3 (the lead's review: the open door read as a dark hole; World 5's water repeated every ~210 px):
+hfb-stage-3 6ae39f625ddcdc08302650d1 rtx-pro-6000 19:32:50Z-19:39:27Z (6.6 min, ~$0.30): the open gates lit from inside
+  (start-gatelit-w<N>: the round-2 pick's way through filled with the world beyond, faint, in the world's own light; World 10's floor
+  spikes put back from the first round's open half), s40/s52 x 7/23, all ten worlds; World 4 and 5's water from uneven starts
+  (start-water2-w<N>), s55/s65 x 7/23. KEPT gatelit s52: w1-23, w2-7, w3-23, w4-7, w5-7, w6-23, w7-23, w8-23, w9-7, w10-7 (s40 keeps too
+  much of the start's flat fill). water2-w4-s55-7 KEPT (uneven flecks); water2-w5-s55-23 KEPT (petals scattered, no beat); the -7 takes
+  THROWN (the start's piece seams show as vertical lines).
+running total ~32.1 min on rtx-pro-6000 = ~$1.47 of the $14 cap.

@@ -11,6 +11,7 @@
  * (sovereignStorm in lairSovereign.ts).
  */
 import type { Platform, TreeStructure, Vine } from './types.ts';
+import { drawLairRope, drawLairRopeLine } from './ropeArt.ts';
 import { sovereignStorm } from './lairSovereign.ts';
 import { drawSkyPillar } from './sovereignArt.ts';
 
@@ -236,25 +237,7 @@ function drawStoneLedge(ctx: CanvasRenderingContext2D, p: Platform, time: number
 /** a moving ledge is a woven plank platform on two ropes from the sky */
 function drawHangingPlanks(ctx: CanvasRenderingContext2D, p: Platform, cam: Cam, time: number) {
   const k = sovereignStorm();
-  ctx.strokeStyle = '#3a2a1e';
-  ctx.lineWidth = 4.4;
-  ctx.lineCap = 'round';
-  for (const rx of [p.x + 14, p.x + p.width - 14]) {
-    ctx.beginPath();
-    ctx.moveTo(rx, p.y + 4);
-    ctx.lineTo(rx, cam.y - 30);
-    ctx.stroke();
-    ctx.strokeStyle = '#b88c52';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([4, 7]);
-    ctx.beginPath();
-    ctx.moveTo(rx, p.y + 4);
-    ctx.lineTo(rx, cam.y - 30);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.strokeStyle = '#3a2a1e';
-    ctx.lineWidth = 4.4;
-  }
+  for (const rx of [p.x + 14, p.x + p.width - 14]) drawLairRopeLine(ctx, rx, p.y + 4, rx, cam.y - 30, 6, null, '#b88c52');
   const top = p.y;
   const bot = p.y + Math.max(p.height, 20);
   ctx.fillStyle = stormy([172, 126, 78], k);
@@ -403,35 +386,13 @@ function drawRope(ctx: CanvasRenderingContext2D, v: Vine, cam: Cam, time: number
   ctx.lineJoin = 'round';
   if (swing) {
     // up into the sky
-    ctx.strokeStyle = '#2a1a10';
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(v.x, v.topY);
-    ctx.lineTo(v.x, cam.y - 30);
-    ctx.stroke();
-    ctx.strokeStyle = '#a98050';
-    ctx.lineWidth = 4.4;
-    ctx.stroke();
+    drawLairRopeLine(ctx, v.x, v.topY, v.x, cam.y - 30, 7, null, '#a98050');
   }
   ctx.strokeStyle = 'rgba(255, 220, 160, 0.14)';
   ctx.lineWidth = 20;
   trace(ctx, at, N);
   ctx.stroke();
-  ctx.strokeStyle = '#2a1a10';
-  ctx.lineWidth = 9.5;
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.strokeStyle = '#a98050';
-  ctx.lineWidth = 6;
-  trace(ctx, at, N);
-  ctx.stroke();
-  // the braid
-  ctx.strokeStyle = '#5c3e20';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([4, 6]);
-  trace(ctx, at, N);
-  ctx.stroke();
-  ctx.setLineDash([]);
+  drawLairRope(ctx, at, N, 9.5, null, '#a98050');
   // knots, so a climbing rope reads as something to grab
   for (let i = 2; i < N - 1; i += swing ? 7 : 4) {
     const p = at(i / N);

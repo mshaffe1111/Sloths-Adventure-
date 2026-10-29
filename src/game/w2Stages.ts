@@ -877,10 +877,12 @@ function buildW2Plan(config: LevelConfig, seed: number, plan: W2Plan): Generated
     flower(px, G - 170, 'orchid');
     // (the shelf runs from px - 40 to px + 160; the high bank starts a hop past its end)
     run(160 + Math.round(R.r(46, 60)));
-    // (LV-11, polish report 2026-10-29: a 72 px step at the foot of the bank, so the floor before it is never a dip with no way out:
+    // (LV-11, polish report 2026-10-29: in 2-3, a 72 px step at the foot of the bank, so the floor before it is never a dip with no way out:
     // the scripted player fell back 6-7 times at this 200 px wall. From the step the bank is a double jump; the post is still the
     // easy way up)
-    P.push({ id: pid++, x: x - 96, y: G - 72, width: 96, height: 72 + BANK_H, type: 'solid', style: 'moss_stone' });
+    // (2-3 only: elsewhere the double jump off the step skipped the climb, and 2-2's quick route lost its climbs, 50 of 200 rolls over
+    // the dead-time limit)
+    if (plan === '2-3') P.push({ id: pid++, x: x - 96, y: G - 72, width: 96, height: 72 + BANK_H, type: 'solid', style: 'log' });
     close();
     open(x, G - 200);
     // (too high to jump: the only way up is the post. A short stretch on top: at 340-370 px the walk from the post's top to the drop

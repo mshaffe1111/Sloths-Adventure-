@@ -102,7 +102,7 @@ test('a lava strip waits for its warning, then grows from the fence and stays', 
   assert.equal(list.length, 1, 'and it stays');
 });
 
-import { ENTRANCE_LONG, ENTRANCE_SHORT, entranceBeat, takeEntranceLength } from './bossEntrance.ts';
+import { ENTRANCE_LONG, ENTRANCE_SHORT, NAME_MARGIN, TEA_POUR, entranceBeat, fitName, takeEntranceLength } from './bossEntrance.ts';
 
 test('the entrance goes dark, opens eyes, reveals, roars once, then names the boss', () => {
   const at = (u: number) => entranceBeat(u * ENTRANCE_LONG, ENTRANCE_LONG);
@@ -116,6 +116,32 @@ test('the entrance goes dark, opens eyes, reveals, roars once, then names the bo
   const end = entranceBeat(ENTRANCE_LONG, ENTRANCE_LONG);
   assert.equal(end.bars, 0);
   assert.equal(end.dark, 0);
+});
+
+test('a tea entrance (the Queen) is lit by the pour: she is shown and the dark lifts by half, the roar and the name as usual', () => {
+  const at = (u: number) => entranceBeat(u * ENTRANCE_LONG, ENTRANCE_LONG, true);
+  const pour = (TEA_POUR[0] + TEA_POUR[1]) / 2;
+  assert.equal(at(TEA_POUR[0] + 0.02).reveal, 1, 'shown from the start of the pour');
+  assert.ok(at(pour).dark < 0.4, 'the cup and the pot can be seen');
+  assert.ok(at(0.27).eyes > 0.5 && at(0.27).reveal === 0, 'the eyes still open first');
+  assert.equal(at(0.66).roaring, true);
+  assert.ok(at(0.9).nameIn === 0 && at(0.9).nameAlpha > 0.9);
+  assert.ok(bossDefFor(5).entrance?.tea, 'the Tarantula Queen takes her tea');
+});
+
+test('a boss name card fits the view, side margins kept: long names go on two lines upright, nothing runs edge to edge', () => {
+  // a stand-in for the canvas: Fredoka bold is about 0.62 em a letter
+  const ctx = { font: '', measureText(t: string) { return { width: t.length * 0.62 * Number(/(\d+(\.\d+)?)px/.exec(this.font)![1]) } as TextMetrics; } };
+  for (const vw of [320, 390, 844]) {
+    for (const name of ['VENOM FANG', 'CROCUS REX', 'SHADOW PROWLER', 'SKY SOVEREIGN', 'TARANTULA QUEEN']) {
+      const full = Math.min(vw * 0.11, 96);
+      const { lines, size } = fitName(ctx, name, vw - 2 * NAME_MARGIN, full);
+      const widest = Math.max(...lines.map((l) => l.length * 0.62 * size)) + size * 0.16;
+      assert.ok(widest <= vw - 2 * NAME_MARGIN + 0.5, `${name} at ${vw}: ${widest}`);
+      assert.ok(size <= full && lines.length <= 2 && lines.join(' ') === name);
+    }
+  }
+  assert.equal(fitName(ctx, 'TARANTULA QUEEN', 390 - 32, 42.9).lines.length, 2, 'upright the Queen goes on two lines');
 });
 
 test('the first meeting is long, a retry is short', () => {

@@ -1,0 +1,368 @@
+{
+ "tag": "w7slide-img",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ],
+  "pokey": [
+   "mshaffe111/pokey-qwen-lora",
+   "pokey_qwen_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "floor-s55-5",
+   "start": "floor.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth by water, a shallow carved groove running straight down the middle, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "floor-s55-17",
+   "start": "floor.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth by water, a shallow carved groove running straight down the middle, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "floor-s70-5",
+   "start": "floor.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth by water, a shallow carved groove running straight down the middle, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "floor-s70-17",
+   "start": "floor.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a smooth worn carved stone slide floor seen from directly above: large flagstones of pale amber stone polished smooth by water, a shallow carved groove running straight down the middle, green moss in the cracks between the stones, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.7,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "wall-roots-s45-5",
+   "start": "wall-roots.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved geometric meander patterns and glyphs in the stone blocks, brown strangler-fig roots creeping over it, patches of moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.45,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "wall-roots-s45-17",
+   "start": "wall-roots.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved geometric meander patterns and glyphs in the stone blocks, brown strangler-fig roots creeping over it, patches of moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.45,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "wall-roots-s60-5",
+   "start": "wall-roots.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved geometric meander patterns and glyphs in the stone blocks, brown strangler-fig roots creeping over it, patches of moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "wall-roots-s60-17",
+   "start": "wall-roots.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved geometric meander patterns and glyphs in the stone blocks, brown strangler-fig roots creeping over it, patches of moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.6,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "wall-glyph-s55-5",
+   "start": "wall-glyph.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved stone tablets of maze glyphs set into fitted amber stone blocks, a carved band of geometric pattern, a little moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "wall-glyph-s55-17",
+   "start": "wall-glyph.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved stone tablets of maze glyphs set into fitted amber stone blocks, a carved band of geometric pattern, a little moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "wall-glyph-s70-5",
+   "start": "wall-glyph.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved stone tablets of maze glyphs set into fitted amber stone blocks, a carved band of geometric pattern, a little moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.7,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "wall-glyph-s70-17",
+   "start": "wall-glyph.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a carved ancient temple wall seen straight on, carved stone tablets of maze glyphs set into fitted amber stone blocks, a carved band of geometric pattern, a little moss, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a flat seamless repeating texture seen straight on, evenly lit, fills the whole picture edge to edge, no horizon, no perspective",
+   "strength": 0.7,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mouth-s60-5",
+   "start": "mouth.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, looking straight down a long ancient stone slide chute inside a temple, the smooth stone floor and carved walls with fig roots running away from us toward a dark tunnel mouth in the middle, two flickering torches on the walls lighting the stone gold and orange, deep shadow beyond, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, the view from just behind someone sliding down it, no people, no characters",
+   "strength": 0.6,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mouth-s60-17",
+   "start": "mouth.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, looking straight down a long ancient stone slide chute inside a temple, the smooth stone floor and carved walls with fig roots running away from us toward a dark tunnel mouth in the middle, two flickering torches on the walls lighting the stone gold and orange, deep shadow beyond, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, the view from just behind someone sliding down it, no people, no characters",
+   "strength": 0.6,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mouth-s75-5",
+   "start": "mouth.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, looking straight down a long ancient stone slide chute inside a temple, the smooth stone floor and carved walls with fig roots running away from us toward a dark tunnel mouth in the middle, two flickering torches on the walls lighting the stone gold and orange, deep shadow beyond, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, the view from just behind someone sliding down it, no people, no characters",
+   "strength": 0.75,
+   "seed": 5,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "mouth-s75-17",
+   "start": "mouth.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, looking straight down a long ancient stone slide chute inside a temple, the smooth stone floor and carved walls with fig roots running away from us toward a dark tunnel mouth in the middle, two flickering torches on the walls lighting the stone gold and orange, deep shadow beyond, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, the view from just behind someone sliding down it, no people, no characters",
+   "strength": 0.75,
+   "seed": 17,
+   "w": 1024,
+   "h": 1024
+  },
+  {
+   "name": "obstacles-s50-5",
+   "start": "obstacles.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a sheet of six separate game obstacles in a 3 by 2 grid for a slide game, each seen from the front: a fallen stone column lying sideways, a toppled giant stone statue head lying on its side, a low carved stone beam on two stone blocks, a broken gap across a stone floor with a raised broken lip, a small pile of stone rubble and roots, a tangle of strangler-fig roots. ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots. Every obstacle alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "obstacles-s50-17",
+   "start": "obstacles.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a sheet of six separate game obstacles in a 3 by 2 grid for a slide game, each seen from the front: a fallen stone column lying sideways, a toppled giant stone statue head lying on its side, a low carved stone beam on two stone blocks, a broken gap across a stone floor with a raised broken lip, a small pile of stone rubble and roots, a tangle of strangler-fig roots. ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots. Every obstacle alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.5,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "obstacles-s65-5",
+   "start": "obstacles.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a sheet of six separate game obstacles in a 3 by 2 grid for a slide game, each seen from the front: a fallen stone column lying sideways, a toppled giant stone statue head lying on its side, a low carved stone beam on two stone blocks, a broken gap across a stone floor with a raised broken lip, a small pile of stone rubble and roots, a tangle of strangler-fig roots. ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots. Every obstacle alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.65,
+   "seed": 5,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "obstacles-s65-17",
+   "start": "obstacles.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a sheet of six separate game obstacles in a 3 by 2 grid for a slide game, each seen from the front: a fallen stone column lying sideways, a toppled giant stone statue head lying on its side, a low carved stone beam on two stone blocks, a broken gap across a stone floor with a raised broken lip, a small pile of stone rubble and roots, a tangle of strangler-fig roots. ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots. Every obstacle alone in its own cell with clear space around it, on one flat plain pure magenta background, no floor, no shadow, no text",
+   "strength": 0.65,
+   "seed": 17,
+   "w": 1536,
+   "h": 1024
+  },
+  {
+   "name": "chamber-s50-5",
+   "start": "chamber.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from openings in the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.5,
+   "seed": 5,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "chamber-s50-17",
+   "start": "chamber.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from openings in the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.5,
+   "seed": 17,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "chamber-s65-5",
+   "start": "chamber.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from openings in the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.65,
+   "seed": 5,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "chamber-s65-17",
+   "start": "chamber.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from openings in the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.65,
+   "seed": 17,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "pokey-straight-a-s45",
+   "start": "pokey-straight-a.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.45,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, sitting and sliding straight ahead down a slide on his bottom, both arms held low at his sides for balance, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  },
+  {
+   "name": "pokey-straight-a-s60",
+   "start": "pokey-straight-a.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, sitting and sliding straight ahead down a slide on his bottom, both arms held low at his sides for balance, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  },
+  {
+   "name": "pokey-straight-b-s45",
+   "start": "pokey-straight-b.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.45,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, sitting and sliding straight ahead fast on his bottom, leaning slightly back, arms low at his sides, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  },
+  {
+   "name": "pokey-straight-b-s60",
+   "start": "pokey-straight-b.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, sitting and sliding straight ahead fast on his bottom, leaning slightly back, arms low at his sides, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  },
+  {
+   "name": "pokey-lean-left-s45",
+   "start": "pokey-lean-left.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.45,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, sliding on his bottom and leaning hard to the left into a turn, his left arm reaching down and his right arm out to the side, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  },
+  {
+   "name": "pokey-lean-left-s60",
+   "start": "pokey-lean-left.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, sliding on his bottom and leaning hard to the left into a turn, his left arm reaching down and his right arm out to the side, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  },
+  {
+   "name": "pokey-prep-left-s45",
+   "start": "pokey-prep-left.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.45,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, sliding on his bottom, starting to lean to the left, looking left over his shoulder, his left arm reaching out low, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  },
+  {
+   "name": "pokey-prep-left-s60",
+   "start": "pokey-prep-left.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, sliding on his bottom, starting to lean to the left, looking left over his shoulder, his left arm reaching out low, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  },
+  {
+   "name": "pokey-jump-s45",
+   "start": "pokey-jump.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.45,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, jumping in the air in a seated position with both arms thrown up and out, feet tucked under him, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  },
+  {
+   "name": "pokey-jump-s60",
+   "start": "pokey-jump.jpg",
+   "lora": "pokey",
+   "seed": 5,
+   "strength": 0.6,
+   "w": 1024,
+   "h": 1024,
+   "neg": "face, eyes, front view, side view, ground, floor, slope, dust, shadow, scenery, text, watermark, blurry, photo, 3d render, extra limbs, extra arms, extra animals, two bags, strap on the right shoulder",
+   "prompt": "pokeysloth seen from directly behind, the back of his round brown furry head and back, a dark brown leather satchel strap running diagonally across his back from his upper left shoulder down to a small brown leather satchel bag on his right hip, cream cloth wraps on both wrists, light tan fur on his arms, jumping in the air in a seated position with both arms thrown up and out, feet tucked under him, full body in frame with space around him, painted storybook illustration, plain flat grey background"
+  }
+ ],
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/13ddf631908a5f574f366045a8f118938a580cf4/reference/prop-sheets/qa-notes/7-4-slide-art/starts/"
+}

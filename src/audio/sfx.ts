@@ -12,7 +12,7 @@
 import { runFx as runClassic } from './sfxClassic.ts';
 import { AudioCore, envelope } from './core.ts';
 import { bell, congaHi, harp, kalimba, marimba, pluck, rim, steelpan, woodblock, type NoteVoice } from './instruments.ts';
-import { FX_MIX, FX_REF } from './sfxMix.ts';
+import { fxGain } from './sfxMix.ts';
 import { CLASSIC_WITH_BELLS, hopNote, isPingySample, landNote, orchSfxEnabled, PING_FLOOR_HZ, playFigure, soften, swapMallet, type MalletKind } from './sfxOrch.ts';
 import type { KeyInfo } from './music.ts';
 import { unpackHit, roarPitch, streakStage, type Material } from './combat.ts';
@@ -1053,14 +1053,6 @@ export const SFX: Record<string, Fx> = {
     noise(core, { t, type: 'lowpass', f0: 300, f1: 4000, q: 0.7, peak: 0.12, dec: 0.28, attack: 0.1, dst: d, pink: true });
     tone(core, { t, f0: 260, f1: 520, dec: 0.18, peak: 0.08, dst: d });
   },
-  /** at the shrine (SN-5): a short rising chime in the stage's key; the full victory sting waits for the Stage Cleared card */
-  exitChime(core, key) {
-    const t = core.ctx.currentTime;
-    const d = out(core, 0.5);
-    [0, 2, 4, 7].forEach((n, i) => note(core, bell, t + i * 0.07, ladder(key, n), i === 3 ? 0.75 : 0.55, d));
-    note(core, harp, t, ladder(key, 0) - 12, 0.5, d);
-    noise(core, { t: t + 0.2, type: 'highpass', f0: 6000, peak: 0.06, dec: 0.5, dst: d });
-  },
   /** the first beat of a level */
   levelStart(core, key) {
     const t = core.ctx.currentTime;
@@ -1071,23 +1063,6 @@ export const SFX: Record<string, Fx> = {
 };
 
 export type SfxName = keyof typeof SFX;
-
-/**
- * Each effect's own loudness with no trim (LUFS, short-term over the effect's sound, through the master chain; four versions averaged),
- * measured offline after the recorded effects were normalised (and once more after the first mix, for those more than 1 dB off) (SN-2, 2026-10-29: tools/audio/sfx_loudness.py, rendered by
- * tools/audio/sfx_render.mjs). runFx brings every effect to FX_REF with it first, so the trims (sfxMix.ts FX_MIX) are the mix alone. Re-measure after
- * changing a recipe.
- */
-const FX_LOUDNESS: Record<string, number> = {
-  checkpoint: -12.7, climb: -24.8, doubleJump: -15.0, eagle: -22.4, flower: -19.0, fruit: -14.5, glide: -21.5, heart: -16.2, hit: -26.4, hurt: -18.1,
-  jump: -27.0, kick: -11.4, land: -16.8, megaPunch: -11.0, oneUp: -9.1, power: -11.9, punch: -12.5, relic: -9.0, roar: -15.0, shrine: -9.4,
-  step: -26.1, superHeart: -11.8, vine: -21.8, whoosh: -19.2, exitChime: -12.7,
-};
-/** the gain runFx gives an effect: to FX_REF, then its trim */
-export function fxGain(name: string): number {
-  const own = FX_LOUDNESS[name];
-  return (own === undefined ? 1 : 10 ** ((FX_REF - own) / 20)) * (FX_MIX[name] ?? 1);
-}
 
 
 /** which version of the effect to play and how long the combo is: both change the sound a little */

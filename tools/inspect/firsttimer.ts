@@ -30,16 +30,16 @@
 import { DT, RealPlay, levelConfig, type Pad } from '../../src/game/realPlay.ts';
 import { GameEngine } from '../../src/game/engine.ts';
 import { setDifficulty } from '../../src/game/difficulty.ts';
-import { GuideQueue, calmFor, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
+import { GuideQueue, type GuideLine, type MoveId, type TopicId } from '../../src/game/dotGuide.ts';
 import { engineGuideLine } from '../../src/game/dotLines.ts';
 import { lessonDotLine, type LessonId } from '../../src/game/lessons.ts';
-import { DEATH_TOPIC, DeathWatch, MoveWatch, StruggleWatch, inDanger, type DeathCause, type StruggleHelp } from '../../src/game/dotGuideWatch.ts';
+import { MoveWatch, StruggleWatch, inDanger, type StruggleHelp } from '../../src/game/dotGuideWatch.ts';
 import { emptyGuideView, type GuideView } from '../../src/game/dotGuideView.ts';
 import { findTarget } from '../../src/game/dotGuidePerch.ts';
 
 /** a move tip about one of these is over once none is in view (as DotGuide.tsx has it) */
 const GONE_TOPICS = new Set<TopicId>(['trunk', 'vine', 'rope', 'log', 'foe']);
-import { TIMED, vineAmp } from '../../src/game/physics.ts';
+import { reachJump, reachJumpHeld, TIMED, vineAmp } from '../../src/game/physics.ts';
 import type { Platform } from '../../src/game/types.ts';
 import { findRoute } from './route.ts';
 import { buildRoll } from './eraRoll.ts';
@@ -285,9 +285,6 @@ class DotShadow {
   readonly queue: GuideQueue;
   readonly moves = new MoveWatch();
   readonly struggle = new StruggleWatch();
-  readonly deaths = new DeathWatch();
-  /** what got him, each life lost (DOT-10) */
-  readonly lostTo: DeathCause[] = [];
   clock = 0;
   readonly shown: Shown[] = [];
   private open = new Map<number, Shown>();
@@ -297,7 +294,7 @@ class DotShadow {
   private prevJR = 0;
   constructor(readonly stageId: string) {
     const w = Number(stageId.split('-')[0]);
-    this.queue = new GuideQueue(calmFor(w, stageId));
+    this.queue = new GuideQueue(w >= 1 && w <= 4 && !/-D$/.test(stageId));
   }
   private say(l: GuideLine | null | undefined) {
     if (l) this.queue.push(l, this.clock);
@@ -331,19 +328,16 @@ class DotShadow {
       this.restart = false;
     }
     if (!v.boss) {
-      if (v.lives < this.prevLives) {
-        const fell = this.alive.y > v.levelH - 140 || (this.alive.falling && !this.alive.foe);
-        const cause = this.deaths.cause(v, fell ? 'fall' : this.alive.foe ? 'foe' : 'other');
-        this.lostTo.push(cause);
-        const h = this.struggle.death(this.alive.x, this.alive.y, cause);
-        this.help(h, h?.cause ? DEATH_TOPIC[h.cause] : undefined);
-        this.restart = true;
-        this.deaths.reset();
-      } else if (v.hp > 0 && v.py < v.levelH - 10) {
+      if (v.hp > 0 && v.py < v.levelH - 10) {
         let foe = false;
         for (const en of v.enemies) if (!en.defeated && Math.abs(en.x - v.px) < 150 && Math.abs(en.y - v.py) < 160) foe = true;
         this.alive = { x: v.px, y: v.py, foe: foe || v.hurt, falling: !v.grounded && v.vy > 400 };
-        this.deaths.step(v, DT * 1000);
+      }
+      if (v.lives < this.prevLives) {
+        const fell = this.alive.y > v.levelH - 140 || (this.alive.falling && !this.alive.foe);
+        const h = this.struggle.death(this.alive.x, this.alive.y, fell ? 'fall' : this.alive.foe ? 'foe' : 'other');
+        this.help(h, h?.cause === 'fall' ? 'gap' : h?.cause === 'foe' ? 'foe' : undefined);
+        this.restart = true;
       }
       const jr = this.moves.count('jump') + this.moves.count('run') + this.moves.count('grab');
       if (jr !== this.prevJR) {
@@ -883,6 +877,26 @@ export class FirstTimerRun {
     return !q.broken;
   }
   /** a floor under x near his feet (from a little above to `down` px below) */
+  /**
+   * The jump for the edge ahead: a double where he failed before (SpotMemory), and once Dot's double-jump tip has been on screen for his
+   * read time (takeIn: learned 'double'), a double at a gap wider than one jump on his setting (Easy: a thumb that lets go at about 70%).
+   * Before this the bot never doubled at a gap it had not missed, so a tip teaching the second jump could not change what it did.
+   */
+  private jumpFor(p: { x: number; y: number }, dir: -1 | 0 | 1, here: Platform | null): 'single' | 'double' {
+    const plan = this.mem.plan(p.x, p.y);
+    if (plan === 'double' || !this.learned.has('double') || !here || dir === 0) return plan;
+    const edgeX = dir > 0 ? here.x + here.width : here.x;
+    let gap = Infinity;
+    for (const q of this.sim.platforms) {
+      if (q.broken || q === here || Math.abs(q.y - here.y) > 40) continue;
+      const d = dir > 0 ? q.x - edgeX : edgeX - (q.x + q.width);
+      // (a piece that starts at the edge itself carries the same ground on: not across a gap)
+      if (d >= 5 && d < gap) gap = d;
+    }
+    const one = this.who.setting === 'easy' ? reachJumpHeld(0, false) : reachJump(0, false);
+    return gap > one && gap < 600 ? 'double' : 'single';
+  }
+
   floorAt(x: number, y: number, down = 40): Platform | null {
     // (a top under the water is no floor to him: a cage's lift resting in its pool, 10 px under the surface, round 5 2-8, read as a
     // step down and was walked onto, a drowning, again and again; a person sees it is under water)
@@ -1223,7 +1237,7 @@ export class FirstTimerRun {
         this.padPause = null;
         if (dir !== 0 && !this.floorAt(p.x + dir * 80, p.y, 40)) {
           const on = this.prog.target(p, 160);
-          if (!(on && on.y > p.y + 50)) return this.decide(dir, this.mem.plan(p.x, p.y), false, side(dir));
+          if (!(on && on.y > p.y + 50)) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
         }
       }
     }
@@ -1285,7 +1299,7 @@ export class FirstTimerRun {
           }
         }
         this.edgeWait = -1;
-        if (!drops) return this.decide(dir, this.mem.plan(p.x, p.y), false, side(dir));
+        if (!drops) return this.decide(dir, this.jumpFor(p, dir, here), false, side(dir));
       }
       // an animal walking at him: hop it (or punch it, once told how), or walk on into it
       for (const m of e.enemies as any[]) {

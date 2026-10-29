@@ -47,7 +47,7 @@ all files: before -26.3 to -9.4 LUFS (16.9 dB), peaks up to +0.5 dBTP (uiClick_3
            after  -26.5 to -15.9 LUFS, every group's versions within 1.0 dB, peaks at most -1.4 dBTP.
 
 2. The game's effects as heard (rendered offline through the whole master chain, four versions each: tools/audio/sfx_render.mjs).
-   Each is brought to -18 LUFS by its own measured loudness (sfx.ts FX_LOUDNESS), then trimmed (sfxMix.ts FX_MIX, the old TRIMS).
+   Each is brought to -18 LUFS by its own measured loudness (sfxMix.ts FX_LOUDNESS), then trimmed (sfxMix.ts FX_MIX, the old TRIMS).
 
 effect       | trim old -> new | before (LUFS)                   | after (LUFS)                    | aim
 jump         | 1.45 -> 0.50 |  -24.7 (versions 1.8 dB apart) |  -24.8 (versions 0.7 dB apart) | aim  -24.0

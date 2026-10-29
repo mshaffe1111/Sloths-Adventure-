@@ -1,7 +1,7 @@
 LV-11: ways out of the dips (first-timer bot, tools/inspect --firsttimer, seed 1, two runs each setting)
 
-2-3: the floor at the foot of a mooring post's 200 px bank. A 72 px moss-stone step now stands at the bank's foot (every World 2 stage
-with a post: w2Stages.ts postUp). From the step the bank is a double jump; the post's rope is still the easy way up.
+2-3: the floor at the foot of a mooring post's 200 px bank. A 72 px earth step now stands at the bank's foot (2-3 only:
+in 2-2 the double jump off it skipped the rope climb, and 50 of 200 rolls went over the dead-time limit; 2-3 itself has 5 of 200). From the step the bank is a double jump; the post's rope is still the easy way up.
   before: 8-9 places per run "a 200 px wall ahead, in a dip 200 px deep", fell back 5-8 times each
   after:  0 such flags (Easy and Normal)
 

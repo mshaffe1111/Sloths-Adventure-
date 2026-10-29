@@ -1,0 +1,53 @@
+{
+ "tag": "w7slide-img3",
+ "loras": {
+  "style": [
+   "mshaffe111/slothadv-style-lora",
+   "slothadv_style_v1.safetensors",
+   1.0
+  ]
+ },
+ "items": [
+  {
+   "name": "chamber2b-s55-5",
+   "start": "chamber2b.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber: high in the left wall the dark mouth of a stone slide chute in a carved stone archway wrapped in fig roots, a carved stone spout and a stone slope under it down to the floor, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.55,
+   "seed": 5,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "chamber2b-s55-17",
+   "start": "chamber2b.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber: high in the left wall the dark mouth of a stone slide chute in a carved stone archway wrapped in fig roots, a carved stone spout and a stone slope under it down to the floor, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.55,
+   "seed": 17,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "chamber2b-s68-5",
+   "start": "chamber2b.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber: high in the left wall the dark mouth of a stone slide chute in a carved stone archway wrapped in fig roots, a carved stone spout and a stone slope under it down to the floor, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.68,
+   "seed": 5,
+   "w": 1792,
+   "h": 768
+  },
+  {
+   "name": "chamber2b-s68-17",
+   "start": "chamber2b.jpg",
+   "lora": "style",
+   "prompt": "slothadv style, painted storybook illustration, soft painted brush texture, thin dark outline, a wide side-on view of a great underground temple chamber: high in the left wall the dark mouth of a stone slide chute in a carved stone archway wrapped in fig roots, a carved stone spout and a stone slope under it down to the floor, carved stone walls with fig roots, ruined shrines, stone stairs and arches, giant carved stone faces, shafts of golden sunlight falling from the roof, a flat stone floor along the bottom, ancient overgrown temple ruins in warm golden light, amber and grey carved stone with worn geometric patterns, green moss, strangler-fig roots, a game background, no people, no characters",
+   "strength": 0.68,
+   "seed": 17,
+   "w": 1792,
+   "h": 768
+  }
+ ],
+ "base": "https://raw.githubusercontent.com/mshaffe1111/Sloths-Adventure-/d8bc1aa4759188e999e1f513b2218b032c946f78/reference/prop-sheets/qa-notes/7-4-slide-art/starts/"
+}
